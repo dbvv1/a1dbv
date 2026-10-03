@@ -1,65 +1,89 @@
-# MCP（Model Context Protocol）
+# 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10。
+> 核实时间：2026-10-03。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
 
-## 是什么
+## 1. 现状
 
-MCP 是让 AI 应用以统一方式连接外部工具/数据的开放协议（常被比作“AI 的 USB-C”）。
-一个 MCP Server 可以暴露三类能力：**Tools**（可调用的操作）、**Resources**（可读的数据）、**Prompts**（预置提示模板）。
+- **规范版本**：2024-11-05 → 2025-03-26 → 2025-06-18 → 2025-11-25 → **2026-07-28（当前）**。
+- **治理**：已交给 Linux 基金会旗下的 Agentic AI Foundation（AAIF）；OpenAI、Google、AWS 等都已采用。
+- **规模**：Tier-1 SDK（TypeScript / Python / Go / C#）月下载量接近 5 亿，TS 和 Python 累计都超过 10 亿。
 
-- 治理：已移交 Linux 基金会下的 **Agentic AI Foundation (AAIF)**，OpenAI、Google 等均已采用。
-- 最新规范：**2026-07-28** 版——无状态协议核心、多轮请求（Multi Round-Trip Requests）、基于 Header 的路由、可缓存的列表结果、授权加固、正式的扩展框架。TS / Python / Go / C# 四个一级 SDK 已跟进。
-- 传输方式：本地 `stdio`（子进程）与远程 `HTTP`（Streamable HTTP）。
+### 2026-07-28 版本改了什么
 
-## 在 Claude Code 中使用
+| 变化 | 意义 |
+|---|---|
+| **无状态核心**：取消 `initialize` 握手和 `Mcp-Session-Id` | 服务端可以水平扩展、走普通负载均衡；需要状态时，由工具返回显式句柄，让模型作为参数传回 |
+| `Mcp-Method` / `Mcp-Name` HTTP 头 | 网关、限流、WAF 只看 header 就能路由和鉴权 |
+| **MRTR**（多轮请求）取代服务端主动发起的 elicitation / sampling / roots | 不再需要长连接的双向流 |
+| 列表结果可缓存（`ttlMs`、`cacheScope`、确定性排序） | 客户端能缓存工具清单，**上游的 prompt cache 也更稳定** |
+| 授权加固：RFC 9207 issuer 校验、凭证绑定 issuer、**DCR 弃用改用 CIMD** | 修补授权服务器混淆类漏洞 |
+| 正式的扩展框架：Tasks、MCP Apps（交互式 UI）、企业托管授权 | 新功能以扩展形式加入 |
+| **弃用 Roots、Sampling、Logging**（至少保留 12 个月）；旧的 HTTP+SSE 传输停用 | 新实现不应再用这些 |
+
+**路线图（2026-08-22）** 五个方向：Agent 消息原语（长循环、流式、中途调整）、HTTP 原生传输、Agent 身份与企业安全（DPoP、工作负载身份联合）、改进原语（结果处理、**工具数量膨胀后的渐进式披露**）、SDK 开发体验。
+
+## 2. MCP vs CLI：社区争论与数据
+
+| | MCP | CLI（配合 Skill 说明用法） |
+|---|---|---|
+| Token 成本 | 社区基准：GitHub MCP 比 `gh` CLI 贵 **2–3 倍**；Code Mode 最省，但仍约为 CLI 的 2 倍，而且更慢 **[社区：摘要]** | 最低 |
+| 可组合性 | 一次调用一个工具 | 管道、jq、tail，可以分块处理 |
+| 参数契约 | 有类型 schema，模型编不出不存在的参数 | 要靠 `--help`，不够稳 |
+| 凭证 | 可以完全不进入模型上下文 | 往往在环境变量或命令行里 |
+| 适用 | **没有 shell 的环境**、需要隔离凭证、团队级工具发现、SaaS 远程服务 | 本地开发、Agent 有 shell |
+
+**Anthropic 官方的立场**也在往“少直接调用工具”的方向走 **[一手]**：
+- Claude Code 文档：“CLI 工具是与外部服务交互最省上下文的方式”。
+- 《Code execution with MCP》：把 MCP 服务器以**代码 API 的形式放在文件系统上**，让模型写代码调用、在沙箱里过滤数据，示例从 15 万 token 降到 2 千 token（-98.7%）。
+- 《Advanced tool use》：Tool Search（按需发现工具，上下文 -85%）、Programmatic Tool Calling（-37% token）、Tool Use Examples（复杂参数准确率 72% → 90%）。
+- Claude Code 现在启动时**只加载 MCP 工具名**，完整 schema 按需加载，单个工具描述上限 2048 字符。
+
+**本仓库的判断**：✅ 有 shell 的场景，**首选 CLI + Skill**；MCP 用于浏览器自动化、SaaS 远程服务、需要凭证隔离的数据库或内部系统，以及没有 CLI 的系统（比如游戏引擎编辑器）。
+
+## 3. 推荐的 MCP 服务器
+
+> 原则：只装当前工作需要的；安装前读源码或确认官方来源；固定版本号。
+
+| 服务器 | 用途 | 评级 | 备注 |
+|---|---|---|---|
+| [Context7](https://github.com/upstash/context7) | 拉取库和框架的**最新文档**，减少 API 幻觉 | ✅ | 官方插件市场有 |
+| [Playwright MCP](https://github.com/microsoft/playwright-mcp) / Chrome DevTools MCP | 浏览器自动化、前端验证 | ✅（Web 项目） | 长时任务 harness 用它做端到端验证 |
+| [GitHub MCP](https://github.com/github/github-mcp-server) | Issue、PR、CI | 🧪 | 本地有 `gh` 时优先用 CLI |
+| [Serena](https://github.com/oraios/serena) | LSP 驱动的语义检索与编辑 | 🧪 | 用 Claude Code 的话，官方 LSP 插件可能已经够用 |
+| Sentry / Datadog / Grafana 等可观测性服务 | 查线上问题 | 🧪 | ⚠️ **数据来源不可信**（见下方 agentjacking 事件） |
+| 数据库（Postgres、Supabase 等） | 查数据 | 🧪 | 只读账号 |
+| Figma | 设计稿转代码 | 🧪 | |
+| 记忆类 MCP | 跨会话记忆 | 👀 | 方案太多，质量不一 |
+
+**安全提醒**：2026-06 的“agentjacking”研究中，攻击者用公开的 Sentry DSN 往错误事件里注入指令，Claude Code、Cursor、Codex 通过 Sentry MCP 读到这些事件后执行了攻击者的命令 **[二手]**。**任何“外部人员能写入”的数据源都是注入入口**。
+
+## 4. 写好给 Agent 用的工具
+
+摘自 Anthropic《Writing effective tools for agents》（2025-09）**[一手]**：
+
+1. **少而精**：把常用工作流合成一个工具（如 `schedule_event`），而不是给每个 API 端点各包一个工具。
+2. **命名空间**：`asana_projects_search`、`asana_users_search`，避免模型混淆。
+3. **返回有意义的内容**：用人类可读的标识代替 UUID；提供 `response_format`（简洁 / 详细）参数。
+4. **控制 token**：默认分页、过滤、截断；**错误信息要告诉模型下一步该怎么做**。
+5. **工具描述就是提示词**：像给新同事写文档一样写清楚。
+6. **评估驱动**：用真实任务跑评估，读 Agent 的执行记录，让 Claude 帮你改进工具。
+
+在 2026-07-28 规范下写服务端还要注意：**不要依赖会话状态**（需要状态就返回句柄）；列表结果设置缓存提示；用 CIMD 做客户端注册。
+
+## 5. 在 Claude Code 中使用
 
 ```bash
-# 添加（默认 local 作用域；--scope project 会写入项目的 .mcp.json 供团队共享）
 claude mcp add --scope project context7 -- npx -y @upstash/context7-mcp
 claude mcp add --transport http github https://api.githubcopilot.com/mcp/
-
-claude mcp list          # 查看
-/mcp                     # 会话内查看状态、认证
+/mcp                     # 查看状态、认证；/mcp reconnect all 重连所有服务器
 ```
 
-项目级 `.mcp.json` 示例见 [`templates/unity/.mcp.json.example`](../templates/unity/.mcp.json.example)。
+- 项目级 `.mcp.json` 提交到仓库给团队共享；token 用 `${ENV_VAR}` 引用，不要写死。
+- 组织可以用 `managedMcpServers` 统一下发。
 
-## 推荐服务器（通用开发）
+## 来源
 
-> 原则：**只装当前工作真正需要的**。每个 MCP 都会占用上下文（工具描述），也会增加攻击面。
-
-| 服务器 | 作用 | 优先级 |
-|---|---|---|
-| [GitHub MCP](https://github.com/github/github-mcp-server)（官方） | Issue/PR/代码搜索/CI 日志 | ⭐⭐⭐ |
-| [Context7](https://github.com/upstash/context7) | 拉取库/框架的**最新文档**，减少 API 幻觉 | ⭐⭐⭐ |
-| [Playwright MCP](https://github.com/microsoft/playwright-mcp) | 浏览器自动化（基于可访问性快照） | ⭐⭐（Web 相关时） |
-| [Serena](https://github.com/oraios/serena) | 基于 LSP 的语义代码检索与编辑 | ⭐⭐（大仓库） |
-| Sequential Thinking / Memory 类 | 结构化思考、跨会话记忆 | ⭐ 视需求 |
-| 数据库类（Postgres / SQLite / Supabase） | 查询数据 | ⭐ 视需求 |
-| Figma Dev Mode MCP | 设计稿 → UI 代码 | ⭐ UI 密集项目 |
-| Linear / Jira / Notion / Slack | 任务与知识库 | ⭐ 团队协作 |
-
-## Unity 相关 MCP
-
-详见 [`unity/01-unity-ai-stack.md`](../unity/01-unity-ai-stack.md)。速览：
-
-| 方案 | 维护方 | 说明 |
-|---|---|---|
-| **Unity CLI `unity mcp`** | Unity 官方 | `unity mcp` 启动 MCP Server，`unity mcp configure` 一键写入 Claude Code/Cursor/VS Code 等客户端配置；免费 |
-| **Unity AI MCP Server** | Unity 官方 | Unity AI（Unity 6）组件之一 |
-| [CoplayDev/unity-mcp](https://github.com/CoplayDev/unity-mcp) | 社区（最流行） | 资产、场景、脚本、测试、Profiling、构建；Unity 2021.3 ~ 6.x |
-| [IvanMurzak/Unity-MCP](https://github.com/IvanMurzak/Unity-MCP) | 社区 | 70+ 工具，**支持运行时（游戏内）**，一行特性即可自定义工具 |
-| [CoderGamester/mcp-unity](https://github.com/CoderGamester/mcp-unity) | 社区 | Node.js 服务端 + WebSocket，Unity 6+ |
-
-## 自己写 MCP Server
-
-- 官方 SDK：TypeScript / Python / Go / C#（C# SDK 对 Unity/.NET 工具链很友好）。
-- 什么时候值得写：团队内部工具（如关卡配置表、打包平台、内部 Wiki）需要被 Agent 反复调用时。
-- 什么时候**不必**写：如果一个 CLI 命令 + Skill 说明就能搞定，优先用 Skill（更省上下文）。
-
-## 资源
-
-- 规范与文档：<https://modelcontextprotocol.io>
-- 2026-07-28 规范发布说明：<https://blog.modelcontextprotocol.io/posts/2026-07-28/>
-- 官方参考服务器：<https://github.com/modelcontextprotocol/servers>
-- 发现服务器：[MCP Registry](https://registry.modelcontextprotocol.io)、[mcpservers.org](https://mcpservers.org)、[awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)
+- [MCP 2026-07-28 规范发布说明](https://blog.modelcontextprotocol.io/posts/2026-07-28/)、[2026-08-22 路线图](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/blog/content/posts/2026-08-22-mcp-roadmap.md)
+- Anthropic：[Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)、[Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use)、[Writing tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
+- HN：[I benchmarked GitHub CLI, MCP, Tool Search, Code Mode](https://news.ycombinator.com/item?id=47495475)、[When does MCP make sense vs CLI?](https://news.ycombinator.com/item?id=47208398)、[MCP was always a bad idea?](https://news.ycombinator.com/item?id=49779329)（摘要）
+- [CSA 研究笔记：Agentjacking（MCP + Sentry 注入）](https://labs.cloudsecurityalliance.org/research/csa-research-note-agentjacking-mcp-sentry-injection-20260612/)（二手）
