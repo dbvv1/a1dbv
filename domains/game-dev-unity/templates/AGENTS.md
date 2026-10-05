@@ -12,6 +12,8 @@
 
 ## 目录结构
 
+<!-- 只保留非标准的部分：Agent 需要知道代码放在哪、哪些目录不能碰。不要写完整的目录树。 -->
+
 ```
 Assets/
   _Project/            # TODO：本项目代码与资源根目录
@@ -47,9 +49,9 @@ TODO：列出主要模块（asmdef）及依赖方向，例如 `Core ← Gameplay
 
 ## 代码约定
 
-- 命名：TODO（例：类型/方法 PascalCase，私有字段 `_camelCase`，常量 PascalCase）
-- 序列化字段用 `[SerializeField] private`，不暴露 public 字段。
-- 不要对 `UnityEngine.Object` 使用 `?.` / `??`（Unity 重载了 null 判定）。
+- 命名和格式由 `.editorconfig` 和 IDE 检查，不在这里重复（避免“Lint 泄漏”）。
+- 序列化字段用 `[SerializeField] private`，不暴露 public 字段；字段改名要加 `[FormerlySerializedAs]`，否则场景和 Prefab 里的数据会丢失。
+- 不要对 `UnityEngine.Object` 使用 `?.` / `??`（Unity 重载了 null 判定）。如果已经启用了 Microsoft.Unity.Analyzers（UNT0007 / UNT0008 会检查），这一条可以删掉。
 - 热路径（`Update`/`FixedUpdate`/`LateUpdate`）禁止：GC 分配、LINQ、`GetComponent`/`Find*`、字符串拼接、装箱。
 - 业务逻辑尽量写在纯 C# 类中（便于 EditMode 测试），MonoBehaviour 只做胶水。
 - 异步：TODO（UniTask / Awaitable / 协程，统一一种）。

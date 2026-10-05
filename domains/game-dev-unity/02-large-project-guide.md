@@ -1,6 +1,6 @@
 # 大型 Unity 项目 × AI 落地指南
 
-> 核实时间：2026-10-03。
+> 核实时间：2026-10-05。
 > 目标：让 Agent 在大型 Unity 项目里**看得见、改得对、验得了、回得去**。通用方法见主干 [07 工作流](../../docs/07-workflows.md)，这里只写 Unity 特有的部分。
 
 ## 1. 项目前置条件（一次性设置）
@@ -12,7 +12,7 @@
 | 用 `.asmdef` 拆分程序集 | `Assets/**` | 缩短编译时间；给 AI 清晰的模块边界和依赖方向 |
 | 生成 `.sln` / `.csproj` | Preferences → External Tools → Regenerate project files | 让 LSP 和 `dotnet build` 能在编辑器外分析代码 |
 | Unity 模板的 `.gitignore` | 仓库根 | 排除 `Library/ Temp/ Logs/ obj/ Build/ UserSettings/` |
-| Unity 6+：安装 Pipeline 包 | `unity pipeline install` | 让 Agent 能通过 Unity CLI 驱动编辑器 |
+| Unity 6+：安装 Pipeline 包 | `unity pipeline install`（新项目可用 `unity projects create --with-pipeline`） | 让 Agent 能通过 Unity CLI 驱动编辑器 |
 | `permissions.deny` 加上 `Read(Library/**)` 等规则 | `.claude/settings.json` | 官方大仓库指南的做法：不让 Agent 读生成物（见 templates） |
 
 ## 2. 禁区与规则
@@ -61,11 +61,11 @@ unity test . --affected --since origin/main          # 只跑受改动影响的�
 
 官方 `playmode-verification-loop` 的要点 **[一手]**：
 1. 进入 Play 模式只是准备工作，**不算验证**；
-2. 确认游戏**确实在推进**：失去焦点的编辑器可能停在第 1 帧，`unity status` 仍显示 playing；
+2. 确认游戏**确实在推进**：失去焦点的编辑器可能停在第 1 帧，`unity status` 仍显示 playing。Unity CLI beta.12 起，`unity status --format json` 会返回 `frameCount` 和 `playerLoopTicking`：**隔几秒查两次，帧数增加了才算在运行**；
 3. 截图（注意截到的可能是冻结的画面），并读 Console；
 4. 用 `unity command eval` 实时读取或调整状态。
 
-社区实测的结论 **[二手]**：AI 能写出“看起来正确但实际不可玩”的游戏。**手感和美术一致性必须由人来验收。**
+社区实测的结论：AI 能写出“看起来正确但实际不可玩”的游戏 **[二手]**；Simon Willison 也观察到，vibe 出来的游戏“看起来像游戏，但大约只好玩 75 秒”，好玩的玩法循环仍然超出 Agent 的能力 **[社区：原文]**。**手感、玩法和美术一致性必须由人来验收。**
 
 ## 6. 日志位置
 

@@ -1,6 +1,6 @@
 # 12 · 资源索引
 
-> 只收录读过、并且能说明“为什么值得看”的资源。核实时间：2026-10-03。
+> 只收录读过、并且能说明“为什么值得看”的资源。核实时间：2026-10-05。
 
 ## 1. 一手信息源（优先级最高）
 
@@ -26,6 +26,19 @@
 8. [Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode) / [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)
 9. [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
 10. [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)
+
+## 1.5 技术社区与一线博客（了解“真正好用什么”）
+
+| 来源 | 为什么看 | 怎么读 |
+|---|---|---|
+| **[Simon Willison 的博客](https://simonwillison.net)** | 最勤奋、最可信的一线实践者：新模型首日评测、价格对比、安全问题（“致命三要素”就是他提出的）、年度复盘 | [Atom 订阅](https://simonwillison.net/atom/everything/)；必读：[Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/)、[2026 in LLMs](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/) |
+| **Hacker News** | 新工具和新模型的第一反应，评论区常有一线实测 | 用 Algolia API 按热度和时间筛选：`https://hn.algolia.com/api/v1/search?query=claude%20code&tags=story&numericFilters=points>150` |
+| **[Lobsters](https://lobste.rs/t/ai)** | 比 HN 更偏技术、更冷静，常有对 AI 编程的批判性讨论 | 在 `.json` 结尾的地址拿结构化数据 |
+| **[Latent Space](https://www.latent.space)** | AI 工程领域最重要的播客和日报（AINews）；常有厂商核心成员的访谈 | [RSS](https://www.latent.space/feed) |
+| **[Embrace The Red](https://embracethered.com)** | Agent 安全攻防的一线研究（提示注入、auto mode 绕过） | 重大发布后看 |
+| **[METR](https://metr.org/blog/)** | 关于 AI 生产力和能力的最严谨研究 | 每月 |
+| **V2EX、知乎、掘金、linux.do** | 中文社区的实际痛点：封号、额度、国产模型接入、团队协作 | V2EX 有公开 API（`/api/topics/show.json?node_name=claude`）；linux.do 拦截机房 IP |
+| Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA） | 用户量最大，适合看问题的普遍程度 | 拦截机房 IP，需要在本地浏览器看 |
 
 ## 2. 精选清单
 
@@ -66,12 +79,16 @@
 
 ## 6. 待验证（Backlog）
 
-- [ ] 在网络开放的环境中**读论文全文**：arXiv 2602.11988、2607.27250、2608.25241、2607.04697
-- [ ] 读 METR 2026 原始报告，核实“−4%”和“1.4–2 倍”的数据
-- [ ] 复核 Codex 2026 年时间线（官方 changelog）与 guardian 配置
-- [ ] 复核 Cursor 3、Antigravity、Kiro 的官方文档
-- [ ] 补充 Reddit（r/ClaudeAI、r/ChatGPTCoding、r/cursor）与 X 上的社区反馈
+**2026-10-05 已完成**：读了 arXiv 原文（2602.11988、2606.15828、2607.27250、2601.20404、2608.25241、2607.04697 等）、METR 原始报告、GitClear 报告、官方榜单数据、Codex 官方文档、Cursor 官方页面、Unity 官方文档；读了 HN、Lobsters、V2EX 原帖。
+
+**仍待验证**：
+- [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
+- [ ] linux.do、知乎上的中文实践经验
+- [ ] Antigravity、Kiro、JetBrains Junie 的官方文档
+- [ ] danluu《What's the best programming language for coding agents?》（当前网络策略拦截）
+- [ ] Terminal-Bench 4.0 的具体排名（页面由 JS 渲染）
+- [ ] 实测：Claude Projects、Codex Ultra 模式、Agent Teams 的成本和收益
 - [ ] 实测：Superpowers 在中型项目中的效果与开销
-- [ ] 实测：Claude Code Agent Teams 与 Dynamic Workflows 的成本和收益
-- [ ] 实测：国产 Coding Plan 接入 Claude Code 后的功能完整度
-- [ ] 官方榜单（swebench.com、tbench.ai、Scale）的当前数据
+- [ ] 实测：GLM-5.3 / Qwen 3.8 27B 配合 OpenCode 或 Pi 做日常开发
+- [ ] 实测：Claude Code 的 harness 开销（复现 Systima 的测量）
+- [ ] Gemini 4 Argon 开放后的评测

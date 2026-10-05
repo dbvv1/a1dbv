@@ -1,6 +1,6 @@
 # Claude Code
 
-> 核实时间：2026-10-03（最新版本 v2.1.288）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
+> 核实时间：2026-10-05（最新版本 v2.1.288）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
 > 评级：✅ **采用**（主力 Agent 首选之一）
 
 ## 1. 定位
@@ -80,14 +80,39 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 7. **Writer / Reviewer 分离**：一个会话写，另一个新会话审；评审子 Agent 要告诉它“只报影响正确性的问题”，否则会过度挑刺。
 8. **批量改动**：先让 Claude 列出文件清单，用 `claude -p` 循环处理；在前 2–3 个文件上调好提示词再全量跑。
 
-## 5. 已知问题与社区反馈
+## 5. 2026 下半年的重要变化
 
-- **额度**：Max 订阅“几天就用完周额度”是 issue 区点赞最高的问题（1498 个赞）；2026-05 到 09 的 +50% 周额度促销结束后争议持续 **[社区]**。
-- **质量波动**：“2 月更新后无法胜任复杂工程任务”（583 个赞），以及对“You're absolutely right!”式附和、口头禅的抱怨 **[社区]**。
-- **终端体验**：滚动跳动、闪烁类 issue 长期高票（后来推出 fullscreen 渲染器缓解）**[社区]**。
+| 变化 | 说明 | 证据 |
+|---|---|---|
+| **Opus 5.5 / Sonnet 5.5** | Opus 5.5“在大多数工作上达到 Fable 5.1 水平”，价格比 Opus 5 便宜；写作更清楚，长任务更稳；有测试者在不到一天内完成了 68 万行的代码迁移 | [一手：Anthropic] |
+| **auto mode 成为默认**（2026-08） | 交互会话默认由分类器审批 | [一手] |
+| **Claude Projects**（2026-09 公测） | 在桌面 App 和 Web 中，一个对话就是一个项目，Claude 自动拆成线程、作为并行云端会话运行，你离开后也继续 | [一手] |
+| **Mods**（v2.1.287） | 用 TypeScript 修改界面和更深层的行为，社区已经做出了在 Claude Code 里跑的俄罗斯方块 | [一手] |
+| 原生读取 AGENTS.md（v2.1.277） | 早期版本曾出现“只在开启遥测时才读 AGENTS.md”的 bug，已修复 | [一手 + 社区] |
+
+**Opus 5.5 的官方用法建议**（[Getting the most out of Opus 5.5](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)）**[一手]**：
+- 一条消息给出完整任务、完成标准和停下来的条件；
+- 删掉“think hard”这类话，改用 effort 控制；
+- 运行中可以直接追加消息；
+- 在 CLAUDE.md 里写停止规则；
+- 长任务把清单写进 TASKS.md；
+- 规定总结格式为“Blocked on me / Changed / Found”；
+- 评审只列“会因此拒绝合并”的问题；
+- 要求它标出无法确认的内容。
+
+本仓库的模板已采用这些做法。
+
+## 6. 已知问题与社区反馈
+
+- **额度**：Max 订阅“几天就用完周额度”是 issue 区点赞最高的问题（1498 个赞）；中文用户还普遍遇到**封号** **[社区]**。
+- **Harness 开销大** **[社区：原文]**：Systima 实测，在你开口前 Claude Code 就发送约 33k token（OpenCode 约 7k），而且会在会话中反复重写缓存。应对：精简 CLAUDE.md 和 MCP，开始前定好模型和 effort，用 `/cost` 观察缓存。
+- **透明度争议** **[社区：原文]**：v2.1.196 被逆向发现会根据 API 地址和时区，悄悄改变系统提示里日期字符串的写法（疑似为了识别蒸馏），HN 2445 票。阿里以“后门风险”为由禁止员工使用 Claude Code **[二手]**。
+- **auto mode 被绕过** **[社区：原文]**：Embrace The Red 用“总结网页 → 让 Claude 自己写解码脚本并在攻击者目录里运行 → 被同名 `struct.py` 劫持”的链条，在小样本上做到了 60–80% 的成功率。**auto mode 不能代替隔离。**
+- **Opus 5.5“太独立”**：有用户反馈它在 auto mode 下越权，授权在一个区域执行的操作被它扩展到了另外 5 个区域 **[社区]**。
+- **质量波动**：“2 月更新后无法胜任复杂工程任务”（583 个赞）；附和用户、口头禅等问题 **[社区]**。
 - **checkpoint 不跟踪 Bash 造成的文件改动**，它不能代替 git **[一手]**。
 
-## 6. 推荐起步配置
+## 7. 推荐起步配置
 
 ```bash
 # 1. 项目里生成 CLAUDE.md 初稿，再人工删减
@@ -109,3 +134,6 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 - 官方文档：[Best practices](https://code.claude.com/docs/en/best-practices)、[Run agents in parallel](https://code.claude.com/docs/en/agents)、[Memory](https://code.claude.com/docs/en/memory)、[Extend Claude Code](https://code.claude.com/docs/en/features-overview)、[Large codebases](https://code.claude.com/docs/en/large-codebases)
 - [Mods 源码](https://github.com/anthropics/claude-code/tree/main/mods)
 - [GitHub issues（按点赞排序）](https://github.com/anthropics/claude-code/issues?q=is%3Aissue%20sort%3Areactions-%2B1-desc)
+- [Claude Opus 5.5](https://www.anthropic.com/claude-opus-5-5)、[Getting the most out of Opus 5.5](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)、[Maximizing the value of your Claude Code sessions](https://claude.com/blog/maximizing-the-value-of-your-claude-code-sessions)
+- [Systima token 开销实测](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)、[隐写标记](https://thereallo.dev/blog/claude-code-prompt-steganography)、[Breaking auto mode](https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/)
+- [Latent Space：Claude Code's Next Era](https://www.latent.space/p/thariq)

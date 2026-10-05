@@ -1,6 +1,6 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-03。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
+> 核实时间：2026-10-05。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
 
 ## 1. 现状
 
@@ -38,7 +38,20 @@
 - 《Advanced tool use》：Tool Search（按需发现工具，上下文 -85%）、Programmatic Tool Calling（-37% token）、Tool Use Examples（复杂参数准确率 72% → 90%）。
 - Claude Code 现在启动时**只加载 MCP 工具名**，完整 schema 按需加载，单个工具描述上限 2048 字符。
 
-**本仓库的判断**：✅ 有 shell 的场景，**首选 CLI + Skill**；MCP 用于浏览器自动化、SaaS 远程服务、需要凭证隔离的数据库或内部系统，以及没有 CLI 的系统（比如游戏引擎编辑器）。
+**2026 下半年的风向回转** **[社区：原文]**：
+- 2025 年到 2026 年 3 月，“MCP 已死、CLI 赢了”的说法很流行（Garry Tan 等人都这么说）。
+- 无状态规范发布后，**Simon Willison** 重新看好 MCP：给 Agent 一个能上网的 shell 风险很高，而且需要强模型才能驾驭；MCP 工具更容易审计和控制，**小的本地模型也能用好**。
+- 一直反对 MCP 的极简 harness **Pi** 在 1.0 中把 MCP 纳入了核心（《You said no MCP》），理由是 MCP 改进了，而且支持它所需的改动（一个解释器沙箱，即 code mode）本身就很有用。但他们也指出，**可组合性差仍然是 MCP 最大的问题**。
+- 新的用途：给桌面应用暴露 MCP，用自然语言配置它们（本地 Qwen + Pi 就能驱动）。
+
+**本仓库的判断**：
+- ✅ 强模型 + 有 shell 的本地开发：**首选 CLI + Skill**（便宜、可组合）。
+- ✅ 以下场景用 MCP：
+  - 浏览器自动化、SaaS 远程服务；
+  - 需要隔离凭证的数据库或内部系统；
+  - 没有 CLI 的系统（比如游戏引擎编辑器）；
+  - **用小模型或本地模型驱动**；
+  - **不想给 Agent 开放 shell 和网络的高风险环境**。
 
 ## 3. 推荐的 MCP 服务器
 
@@ -85,5 +98,6 @@ claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 
 - [MCP 2026-07-28 规范发布说明](https://blog.modelcontextprotocol.io/posts/2026-07-28/)、[2026-08-22 路线图](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/blog/content/posts/2026-08-22-mcp-roadmap.md)
 - Anthropic：[Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)、[Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use)、[Writing tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
+- [Simon Willison：Stateless MCP has recaptured my interest](https://simonwillison.net/2026/Jul/31/stateless-mcp/)、[Earendil（Pi）：You said no MCP](https://earendil.com/posts/you-said-no-mcp/)
 - HN：[I benchmarked GitHub CLI, MCP, Tool Search, Code Mode](https://news.ycombinator.com/item?id=47495475)、[When does MCP make sense vs CLI?](https://news.ycombinator.com/item?id=47208398)、[MCP was always a bad idea?](https://news.ycombinator.com/item?id=49779329)（摘要）
 - [CSA 研究笔记：Agentjacking（MCP + Sentry 注入）](https://labs.cloudsecurityalliance.org/research/csa-research-note-agentjacking-mcp-sentry-injection-20260612/)（二手）

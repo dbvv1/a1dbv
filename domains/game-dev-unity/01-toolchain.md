@@ -1,13 +1,13 @@
 # Unity AI 工具链
 
-> 核实时间：2026-10-03。
-> 依据：克隆并阅读 [Unity-Technologies/unity-agent-plugin](https://github.com/Unity-Technologies/unity-agent-plugin) 源码（33 个 Skill，约 7400 行 SKILL.md）**[一手]**；Unity 官网和文档站在整理环境中无法访问，相关内容来自搜索摘要 **[二手]**。
+> 核实时间：2026-10-05。
+> 依据：克隆并阅读 [Unity-Technologies/unity-agent-plugin](https://github.com/Unity-Technologies/unity-agent-plugin) 源码（33 个 Skill，约 7400 行 SKILL.md）；读了 [Unity CLI 更新日志](https://docs.unity.com/en-us/unity-cli/release-notes)和 [Unity MCP 官方博客](https://unity.com/blog/unity-ai-mcp-how-to-get-started) **[一手]**。
 
 ## 1. 官方方案
 
 ### 1.1 Unity CLI ✅（整个工具链的核心）
 
-Unite 2026 发布，2026-06-30 进入 1.0 beta；Unity Hub 会自动安装 **[二手]**。官方插件中的 `unity-cli` Skill 给出了详细用法 **[一手]**：
+2026-06-30 发布 1.0.0-beta.1，**目前最新是 1.0.0-beta.12（2026-09-30）**；Unity Hub 会自动安装 **[一手]**。官方插件中的 `unity-cli` Skill 给出了详细用法 **[一手]**：
 
 **驱动正在运行的编辑器**（需要 Unity 6.0 及以上，项目中安装 Pipeline 包 `com.unity.pipeline`：`unity pipeline install`）：
 ```bash
@@ -19,6 +19,11 @@ unity recompile                    # 让运行中的编辑器重新编译并报�
 unity command editor_play --project-path /path/to/Proj   # 打开了多个编辑器时要指定项目
 ```
 - 编辑器常驻时，命令约 **200–600ms** 返回，不需要重新编译或 domain reload。
+- **beta.12 新增** **[一手]**：
+  - `unity projects create --with-pipeline`：新建项目时就装好 Pipeline 包，编辑器一打开 Agent 就能驱动它；
+  - `unity status --format json` 在 Play 模式下返回 **`frameCount` 和 `playerLoopTicking`**，可以据此判断游戏是不是真的在运行；
+  - `unity command <name> --result-only` 只输出结果；
+  - `unity projects exec -- <命令>` 对所有项目批量执行；`unity projects clean` 清理缓存。
 - 可以用 `[CliCommand]` 和 `[CliArg]` 特性**自定义**暴露给 Agent 的命令。
 
 **无头运行、测试、构建**：
@@ -33,7 +38,10 @@ unity build --target StandaloneWindows64 --output-path ./Build/Game.exe --format
 - 退出码：`unity test` 返回 **8 = 有测试失败**，**6 = 基础设施问题**（编译错误、License、崩溃、超时）。CI 可以只重试 6、不重试 8。
 - `unity commands --grep <关键词>` 搜索命令；CI 中用 `UNITY_SERVICE_ACCOUNT_ID` / `UNITY_SERVICE_ACCOUNT_SECRET` 认证。
 
-**MCP 模式**：`unity mcp` 以 stdio 方式启动 MCP 服务器，把编辑器命令暴露为工具；`unity mcp configure` 一步写入 16 种客户端的配置；免费，没有并发限制 **[二手]**。
+**MCP 模式** **[一手]**：
+- `unity mcp` 以 stdio 方式启动 MCP 服务器，把编辑器命令暴露为工具；`unity mcp configure <客户端>` 一步写入配置。
+- 配置 Claude Code 时，如果已经启用的插件里有同样的 `unity mcp` 服务器，它会提示并跳过，避免**重复注册**。
+- `unity bug mcp`（等同于 `unity mcp configure --server issue-tracker`）：把 **Unity Issue Tracker** 接给 AI，让它在你报 bug 之前先查是不是已知问题。
 
 **已知的坑（官方 Skill 原文 [一手]）**：
 | 坑 | 处理 |
@@ -74,11 +82,17 @@ codex plugin add unity@unity-agent-plugin
 **评价**：这些 Skill 偏重**功能搭建**（UI、2D、URP、服务接入），对**大型项目的代码架构、重构、性能**帮助有限，这部分仍然要靠项目自己的 AGENTS.md、Skill 和评审子 Agent（见本目录 templates）。
 
 ### 1.3 Unity AI（编辑器内）🧪
-2026-05-04 开放 Beta（Unity 6）**[二手]**：
+2026-05-04 开放 Beta（Unity 6）：
 - **AI Assistant**：编辑器内的 Agent，有 Ask / Agent / Plan 三种模式；
 - **AI Gateway**：在编辑器里接入你自己的 Claude、GPT 等，**不消耗 Unity 点数**；
-- **MCP Server**。
-- 计费：Personal 版试用 14 天（1000 点数），之后每月 10 美元 1000 点；Pro、Enterprise、Industry 席位自带点数。
+- **Unity AI MCP Server** **[一手：Unity 博客 2026-05-11]**：
+  - 随 AI Assistant 包一起提供；
+  - 要求 Unity 6+、项目已连接 Unity Cloud、**有 AI beta 的试用或订阅**；
+  - 在 Edit > Project Settings > AI > Unity MCP 中自动配置客户端；中继程序在 `~/.unity/relay/`（参数 `--mcp`）；
+  - **客户端第一次连接时要在编辑器里手动批准**。
+
+> **两条官方 MCP 路线的区别**：Unity AI MCP 需要订阅，并依赖 AI Assistant 包和 Unity Cloud；Unity CLI 的 `unity mcp` 是**免费**的，依赖 Pipeline 包。做 Claude Code 或 Codex 工作流，优先用后者（官方 Agent 插件走的也是 Unity CLI）。
+- 计费：Personal 版试用 14 天（1000 点数），之后每月 10 美元 1000 点；Pro、Enterprise、Industry 席位自带点数 **[二手]**。
 
 **定位**：适合编辑器内的小任务和资源生成；大型项目的代码工作仍以外部 Coding Agent 为主。
 
@@ -116,5 +130,6 @@ codex plugin add unity@unity-agent-plugin
 - [Unity-Technologies/unity-agent-plugin](https://github.com/Unity-Technologies/unity-agent-plugin)（`skills/unity-cli/SKILL.md` 与 `references/`）
 - [Unity-Technologies/skills](https://github.com/Unity-Technologies/skills)
 - [Unity plugin – Claude 插件目录](https://claude.com/plugins/unity)
-- [Unity CLI 参考](https://docs.unity.com/en-us/unity-cli/unity-cli-reference)、[Unity AI 开放 Beta](https://discussions.unity.com/t/unity-ai-s-open-beta-now-live-for-unity-6/1718560)（二手）
+- [Unity CLI 更新日志](https://docs.unity.com/en-us/unity-cli/release-notes)、[Unity CLI 参考](https://docs.unity.com/en-us/unity-cli/unity-cli-reference)、[Unity MCP 官方博客](https://unity.com/blog/unity-ai-mcp-how-to-get-started)
+- [Simon Willison：2026 in LLMs](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)（关于用 Agent 做游戏的观察）
 - 社区实测：[Claude Code 改 TPS 游戏](https://dev.classmethod.jp/en/articles/unity-mcp-tps-game-claude-code-modification/)、[2D 游戏压力测试](https://dev.classmethod.jp/en/articles/unity-mcp-claude-code-2d-game-verification/)（二手）

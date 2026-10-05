@@ -1,15 +1,17 @@
 # IDE 类工具与其他
 
-> 核实时间：2026-10-03。这一类大多闭源，本仓库主要依据官方博客和论坛摘要 **[二手]**，有一手来源的会标出。
+> 核实时间：2026-10-05。Cursor 部分已直接读取官方博客、changelog 和 HN 原帖；其余未标注的为 **[二手]**。
 
 ## Cursor
 
 | 项 | 内容 |
 |---|---|
-| 形态 | VS Code 分支 + 自研模型 **Composer**（2.x / 2.5） |
-| 2026 重点 | **Cursor 3**：统一的 Agent 工作区（Agents Window）、多仓库布局；Agent 可以在本地、worktree、云端、远程 SSH 运行，并在本地和云端之间交接；Cloud / Background Agents 在云端 VM 里工作，最后提 PR；Bugbot 做 PR 评审 |
-| 社区反馈 | Cursor 3 新界面褒贬不一，有人反馈功能变少、看不到上下文占用 **[社区]**；**定价争议持续**：Bugbot 在 2026-05 从每席位 40 美元改为按用量计费（约 1–1.5 美元/次），论坛多帖抗议；“成本莫名上涨”“新定价太离谱”等帖子很多 **[社区]** |
-| 评级 | 🧪 **试用**：IDE 体验好，但成本不透明。适合偏好图形界面、以 Web/TS 为主的团队 |
+| 形态 | VS Code 分支。**Cursor 3** 是重新打造的、以 Agent 为中心的界面：多仓库工作区、所有本地和云端 Agent 集中在侧栏（包括从手机、Web、Slack、GitHub、Linear 发起的）、本地和云端之间**快速交接**、云端 Agent 会附上演示和截图供你核验、完整的 LSP、内置浏览器、**插件市场**（MCP、Skills、子 Agent，支持团队私有市场）**[一手]** |
+| 自研模型 | **Composer 2**（官方称“自家的前沿编码模型，额度高”）**[一手]** |
+| 2026-09 新功能 | **Rollouts** 机器人：为每个 PR 写监控计划，按环境跟踪部署健康度，发现回归后可以开回滚 PR；**Security Review** 机器人；Cursor Projects；自托管机器；`/goal`；云端子 Agent 各自运行在独立机器上 **[一手：changelog]** |
+| **公司变动** | 2026-06 **SpaceX 宣布以 600 亿美元收购 Cursor**；2026-08 **OpenAI 停止向 Cursor 提供模型**（此前 Anthropic 已因违反服务条款封禁 xAI）；Cursor 推出 GitHub 替代品 **Origin** **[社区：HN 原帖 + 官方公告标题]** |
+| 社区反馈 | 定价长期有争议：Bugbot 改为按次计费；2026-08 从用量页面和 CSV 导出里移除了费用信息。HN 上很多人已转向 Claude Code 或 Codex；仍在用 Cursor 的人看重的是：代码已经索引好，在编辑器内审阅改动很方便，以及可以在多个模型之间切换（如今少了 OpenAI）**[社区]** |
+| 评级 | 👀 **评估**（上一版是“试用”）：产品力仍强，但**模型供应和公司归属都不确定**。新项目不建议把它作为唯一依赖；已经在用的话，配置尽量用开放格式（AGENTS.md、Skills、MCP），方便迁移 |
 
 ## JetBrains（IntelliJ / Rider / PyCharm…）
 
@@ -51,7 +53,7 @@ ACP 的发起方，原生支持外部 Agent 接入，适合追求编辑器性能
 
 ## 来源
 
-- [Meet the new Cursor（Cursor 3）](https://cursor.com/blog/cursor-3)、[Updates to Bugbot（2026-05）](https://cursor.com/blog/may-2026-bugbot-changes)、[论坛：Bugbot 按量计费的讨论](https://forum.cursor.com/t/the-new-usage-based-bugbot-pricing-punishes-iterative-workflows-and-power-users/161134)、[论坛：成本上涨的讨论](https://forum.cursor.com/t/cursor-costs-are-climbing-without-a-clear-reason/157233)
+- [Meet the new Cursor（Cursor 3）](https://cursor.com/blog/cursor-3)、[Cursor changelog](https://cursor.com/changelog)、HN：[SpaceX 收购 Cursor](https://news.ycombinator.com/item?id=48553224)、[OpenAI 对 Cursor 的决定](https://news.ycombinator.com/item?id=49486172)、[Cursor Origin](https://news.ycombinator.com/item?id=49334209)、[Updates to Bugbot（2026-05）](https://cursor.com/blog/may-2026-bugbot-changes)、[论坛：Bugbot 按量计费的讨论](https://forum.cursor.com/t/the-new-usage-based-bugbot-pricing-punishes-iterative-workflows-and-power-users/161134)、[论坛：成本上涨的讨论](https://forum.cursor.com/t/cursor-costs-are-climbing-without-a-clear-reason/157233)
 - [What's New in Rider 2026.1](https://www.jetbrains.com/rider/whatsnew/2026-1/)、[Junie 结束 Beta](https://blog.jetbrains.com/junie/2026/06/junie-coding-agent-out-of-beta/)
 - [Martin Fowler：Understanding SDD（Kiro、spec-kit、Tessl）](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
 - 国内工具：[CSDN：2026 年 7 月国内 Coding Plan 对比](https://blog.csdn.net/zhangay1998/article/details/162555439)、[CSDN：TRAE / Kimi Code / Qoder 实测](https://www.csdn.net/article/2026-08-24/164033550)、[codingplan.org](https://codingplan.org/en)

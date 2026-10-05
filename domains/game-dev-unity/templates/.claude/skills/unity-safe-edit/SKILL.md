@@ -8,7 +8,7 @@ user-invocable: false
 
 ## 判断走哪条路
 
-1. **编辑器已打开且有 Unity MCP / Unity CLI 可用** → 用编辑器 API 修改（最安全）。
+1. **编辑器已打开且有 Unity MCP / Unity CLI 可用** → 用编辑器 API 修改（最安全）。例如 `unity command eval --caller plugin --skill unity-safe-edit '<C#>'`。改完后在编辑器里保存场景或资源，再用 `git diff` 确认变化。
 2. **可以写编辑器脚本** → 写一个 `Editor/` 下的一次性菜单脚本（`[MenuItem]`），用 `PrefabUtility`、`EditorSceneManager`、`AssetDatabase`、`SerializedObject` 修改，再让用户执行或通过 MCP 执行。
 3. **只能改文本** → 仅限修改简单标量字段（数字、布尔、字符串），并且：
    - 不新增/删除 YAML 文档块（`--- !u!`）

@@ -1,6 +1,6 @@
 # 领域分支：游戏开发 / Unity
 
-> 核实时间：2026-10-03。前置阅读：主干的 [07 工作流](../../docs/07-workflows.md)（验证闭环）和 [03 上下文工程](../../docs/03-context-engineering.md)。
+> 核实时间：2026-10-05。前置阅读：主干的 [07 工作流](../../docs/07-workflows.md)（验证闭环）和 [03 上下文工程](../../docs/03-context-engineering.md)。
 
 | 文档 | 内容 |
 |---|---|
@@ -27,5 +27,5 @@ Unity 2021.3 / 2022 LTS：
 ## 三个最重要的认识
 
 1. **让 Agent 驱动编辑器，不要手改场景和 Prefab 的 YAML。** Unity 官方 Skill 原话：“有编辑器可用时，驱动它，而不是手工编辑场景或资源文件” **[一手]**。
-2. **进入 Play 模式不等于验证通过。** 失去焦点的编辑器可能停在第 1 帧，而状态仍显示“playing”，截图拍到的也可能是冻结的画面。要确认帧在推进、读 Console、再截图 **[一手]**。
+2. **进入 Play 模式不等于验证通过。** 失去焦点的编辑器可能停在第 1 帧，而状态仍显示“playing”。用 `unity status --format json` 的 `frameCount` / `playerLoopTicking` 确认帧确实在推进，再读 Console、截图 **[一手]**。
 3. **编译错误会让编辑器进入 Safe Mode，这时 CLI 连不上编辑器。** 要从 Editor.log 里过滤出 `error CS####` 并修正源码，不能指望通过编辑器修复 **[一手]**。

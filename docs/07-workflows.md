@@ -1,6 +1,6 @@
 # 07 · 工作流方法论
 
-> 核实时间：2026-10-03。
+> 核实时间：2026-10-05。
 
 ## 1. 核心：验证闭环 ✅
 
@@ -39,6 +39,42 @@
 ```
 然后**开一个新会话**按 SPEC.md 实现（上下文干净，只专注实现）。
 好的 Spec 是自包含的：写明涉及的文件和接口，**写明不做什么**，最后有一个端到端的验证步骤 **[一手]**。
+
+## 3.5 Fable 级模型时代的提示与收尾 ✅
+
+来源：Anthropic《Getting the most out of Opus 5.5》**[一手]**，Simon Willison《Agentic Engineering Patterns》**[社区]**。
+
+**交代任务**
+```
+把支付接口从旧 client 迁到新 client。
+完成标准：所有接口都用新 client，旧 client 已删除，测试套件全部通过。
+只有当某个测试失败、而你解释不了原因时，才停下来问我。
+```
+- 一条消息给出**完整任务 + 完成标准 + 停止条件**，然后放手让它做。
+- 删掉“think carefully / 一步步思考”这类话：模型自己会思考，改用 effort 控制。
+- 运行中想起什么，直接追加消息，不必重启任务。
+- 设计类任务：**列出要避开的具体样式**（只说“别太普通”只会换成另一种默认风格）。
+
+**开局的短提示**
+- `First run the tests`：让 Agent 知道有测试套件、大致了解项目规模、进入“测试心态”。
+- `Use red/green TDD`：先写测试、确认失败，再实现。
+
+**长任务**
+- 在 CLAUDE.md 里写**停止规则**（模板已包含）：不需要你时继续做，只在无法继续或要做破坏性操作时停下。
+- 把清单写进 `TASKS.md`，边做边勾。它不怕上下文压缩，你也可以直接看文件了解进度。
+- 审计和迁移类任务拆给子 Agent，**主 Agent 要逐个检查子 Agent 交回的证据**，最后汇总成一张表。
+
+**收尾与验证**
+- 总结格式固定为：**Blocked on me / Changed / Found**，先看需要你决定的事项。
+- **Agent 式手工测试**：测试通过不等于能用，让 Agent 用 `python -c`、curl、浏览器自动化实际跑一遍。
+- 要求它“**标出无法确认的内容，并说明查过哪里**”。
+- 评审提示：“只列你会因此拒绝合并的问题，给出文件、行号、原因，以及怎么证明它是错的。”
+
+**理解与交接**
+- **线性走读**：让 Agent 为代码写一份逐段讲解，适合接手 vibe 出来的代码。
+- **术语对齐**：评审前让 Agent 列出它自创的术语和含义，你改名后它全局替换；长期维护一份 GLOSSARY.md（Lobsters 上的做法）。
+- **交接**：用 `/handoff` 写交接文档，在新会话里接着做（可以跨厂商），在 HN 上比 `/compact` 更受推荐。
+- **PR 礼仪**：不要把自己都没审过的代码丢给同事；PR 要小，并附上证据（手工测试记录、截图）。
 
 ## 4. 测试驱动（TDD）🧪
 
@@ -118,7 +154,8 @@
 
 ## 来源
 
-- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)、[/goal](https://code.claude.com/docs/en/goal)
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)、[/goal](https://code.claude.com/docs/en/goal)、[Getting the most out of Opus 5.5](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)
+- [Simon Willison：Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/)、[Reducing the cognitive load of AI changes](https://amoffat.github.io/blog/cognitive-load.html)
 - Anthropic：[Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)、[Building a C compiler](https://www.anthropic.com/engineering/building-c-compiler)
 - [Ralph Wiggum 插件](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum)
 - [Martin Fowler：Understanding SDD](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)、HN：[SDD: The Waterfall Strikes Back](https://news.ycombinator.com/item?id=45935763)（摘要）

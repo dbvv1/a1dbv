@@ -36,7 +36,10 @@ generic/
 | code-reviewer 只报正确性问题 | 官方最佳实践：被要求找问题的评审者会过度报告 |
 | verifier 独立核对 | 长时任务研究：做事和评判要分开 |
 | spec-interview | 官方最佳实践：“让 Claude 采访你”，然后开新会话实现 |
-| handoff | 长时任务 harness 的进度文件做法 |
+| handoff | 长时任务 harness 的进度文件做法；HN 上比 `/compact` 更受推荐 |
+| CLAUDE.md 的停止规则、TASKS.md、Blocked on me / Changed / Found | Anthropic《Getting the most out of Opus 5.5》 |
+| AGENTS.md 不写概览和 lint 规则 | 2026 年的研究：概览没用；62% 的文件有 Lint 泄漏（[03](../docs/03-context-engineering.md)） |
+| 评审只报会拒绝合并的问题，并说明如何证明它会出错 | Anthropic 官方评审提示 |
 
 ## 使用步骤
 

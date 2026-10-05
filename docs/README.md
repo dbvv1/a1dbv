@@ -7,7 +7,7 @@
 | 刚开始用 AI coding | 00 → 01 → 07 → 03 |
 | 已在用，想用得更好 | 03 → 07 → 06 → 05 → 09 |
 | 要给团队落地 | 00 → 01 → 10 → 06 → 05 → 09 → 11 |
-| 关注前沿与争议 | 00 → 11 → 08 → 04 |
+| 关注前沿与争议 | **13** → 00 → 11 → 08 → 04 |
 
 ## 评级与证据体系
 
@@ -30,15 +30,18 @@
 | **[二手]** | 只有搜索摘要或单一第三方文章，未能读到原文，需谨慎 |
 | **[经验]** | 业内常见做法或作者经验判断，没有单一出处 |
 
-> **本次核实的限制（2026-10-03）**：整理环境的网络策略屏蔽了 HN、Reddit、arXiv、多数个人博客、Unity 与 OpenAI 官方文档站。因此：
-> - GitHub 上的内容（源码、changelog、issue、README）和 Anthropic 官网是直接读取的 **[一手]**；
-> - HN 讨论与论文结论大多来自搜索摘要，标为 **[社区]/[研究]（摘要）** 或 **[二手]**；
-> - OpenAI / Unity 官方文档内容通过其 GitHub 仓库交叉核实。
-> 在本地网络更开放的环境中复核这些条目，是下一轮维护的重点。
+> **核实情况（2026-10-05 第二轮）**：网络放开后，本轮直接读取了：
+> - arXiv 论文原文或摘要原文、METR 和 GitClear 原始报告、SWE-bench 和 Scale 官方榜单数据；
+> - OpenAI（learn.chatgpt.com）、Cursor、Unity 的官方文档；
+> - HN（通过 Algolia API 读原帖和评论）、Lobsters、V2EX、Simon Willison 博客、Latent Space。
+>
+> 上一轮基于搜索摘要的结论**有几处被更正**，比如 AGENTS.md 研究的结论、METR 数据的方向、Codex Auto-review 的配置名、并行冲突率的含义。
+> 仍未覆盖：Reddit、linux.do（拦截机房 IP），以及少数被网络策略拦截的博客。
+> **[研究：摘要]** 表示读了 arXiv 的摘要原文，但没有读全文；**[研究：原文]** 表示读了正文。
 
 ## 维护流程
 
-1. **跟踪一手源**（见 [12-resources](12-resources.md#5-如何持续跟进)）：每周看一次 Claude Code / Codex / Gemini CLI 的 changelog，MCP 与 Agent Skills 规范仓库。
+1. **跟踪一手源和社区**（见 [12-resources](12-resources.md#5-如何持续跟进)）：每周看一次 Claude Code、Codex、Gemini CLI 的 changelog 和 HN 热帖；每月更新一次 [13 前沿雷达](13-frontier-radar.md)。
 2. **新东西先进 Backlog**：写进 `12-resources.md` 的“待验证”列表，验证后再进正文。
 3. **每条结论配证据**：没有来源的不写；只有二手来源的标出来。
 4. **定期删除**：被取代的工具、过时的数字直接删掉，不保留“历史版本”（git 历史里有）。

@@ -1,17 +1,21 @@
 # 08 · 多 Agent 与并行
 
-> 核实时间：2026-10-03。
+> 核实时间：2026-10-05。
 > 一句话：**并行能提高吞吐量，但评审是瓶颈。只在任务彼此独立时并行。**
 
 ## 1. 证据
 
 | 来源 | 发现 |
 |---|---|
-| Anthropic C 编译器项目 **[一手]** | 16 个 Opus 4.6 实例并行约 2 周，近 2000 个会话，20 亿输入 token 和 1.4 亿输出 token，花费约 2 万美元，写出 10 万行的 Rust C 编译器。**专业分工有效**（解析、代码生成、性能、代码质量、文档）；但当所有 Agent 卡在同一个瓶颈（编译 Linux 内核）上时会互相覆盖修改，解决办法是随机把大部分文件交给 GCC 编译，只把剩下的文件交给自研编译器 |
-| arXiv 2607.04697（Agent PR 的合并冲突率）**[研究：摘要]** | 相同 Agent 实例并行工作时，文本冲突率约 **19.8%** |
-| 并行加速研究 **[研究：摘要]** | 组件独立的任务加速 11–52%；**强耦合任务每字符反而慢 5.8%** |
-| HN 实践者 **[社区：摘要]** | 在对正确性要求高的工作上，2–3 个专注的 Agent 比 6–8 个互相竞争的更可靠；“几分钟的合并冲突处理就可能抵消并行的收益”；评审和编排的认知负担很重 |
-| Claude Code 官方 **[一手]** | “同时运行多个会话或子 Agent 会成倍增加 token 用量” |
+| Anthropic C 编译器项目 **[一手]** | 16 个 Opus 4.6 实例并行约 2 周，约 2000 个会话，20 亿输入 token 和 1.4 亿输出 token，花费约 2 万美元，写出 10 万行的 Rust C 编译器。**专业分工有效**；但当所有 Agent 卡在同一个瓶颈上时会互相覆盖修改 |
+| **AI Agent PR 的合并冲突**（arXiv 2607.04697，33,596 个 Agent PR）**[研究：摘要原文]** | 40.2% 的仓库出现过同时活跃的 Agent PR。真实重放 747 次三方合并：**同一种 Agent 的并发 PR 冲突率 19.8%，不同 Agent 之间 41.7%**；84.4% 的冲突文件是源代码，约 42% 是结构性冲突（修改/删除、同时新增） |
+| **CodeCRDT**（arXiv 2510.18893，600 次实验）**[研究：摘要原文]** | 有的任务最多**加速 21.1%**，有的任务反而**慢 39.4%**；语义冲突率 5–10%。成败取决于任务结构 |
+| **Co-Coder**（arXiv 2606.00953）**[研究：摘要原文]** | 先用静态分析建依赖图，按内聚度切分任务再并行：相比顺序执行、按文件并行以及 **Claude Code Agent Teams**，通过率最多 +14%、提速最多 2.1 倍、API 成本最多 −35%；依赖越密的项目收益越大 → **怎么切分比开多少个 Agent 更重要** |
+| Systima token 实测 **[社区：原文]** | 同一个小任务直接做花 12.1 万 token，分给 2 个子 Agent 做花 **51.3 万**（每个子 Agent 每轮都重读自己的系统提示和工具定义） |
+| HN 与 Lobsters 实践者 **[社区]** | 对正确性要求高的工作上，2–3 个专注的 Agent 比 6–8 个互相竞争的更可靠；“瓶颈在**理解**而不在生成，Agent 集群只加快生成”；有人一下开了 7 个子 Agent，还没完成就把额度烧光了 |
+| Anthropic 对 Opus 5.5 的建议 **[一手]** | 审计、迁移、跨大代码库的评审适合拆给子 Agent 并行，**但主 Agent 要逐个检查子 Agent 交回的证据**，最后汇总成一张表 |
+
+> 上一版里“并行加速 11–52%、耦合任务慢 5.8%”这两个数字找不到出处，已删除。
 
 ## 2. Claude Code 的 5 种并行方式（官方文档 [一手]）
 
@@ -21,7 +25,7 @@
 | **Agent View**（`claude agents`） | 你派发独立任务，回头再看 | 只向你汇报（可用跨会话消息） | 派发后的会话会自动进入独立 worktree | 研究预览 |
 | **Agent Teams** | 由 Claude 担任 lead，负责计划、分配和监督 | 队员之间直接发消息，共享任务列表 | **不自动隔离**，需要按文件划分任务 | 实验，默认关闭 |
 | **Dynamic Workflows** | 由一个**脚本**持有计划，而不是靠 Claude 一轮轮判断 | 结果之间交叉验证 | — | 稳定 |
-| **Projects** | 一个长期对话，在云端开并行线程 | 共享仓库、指令和记忆 | 云端会话 | 公测 |
+| **Projects** | 一个长期对话，Claude 自己拆成线程，作为并行云端会话运行，你离开后也继续 | 共享仓库、指令和记忆 | 云端会话 | 公测（2026-09） |
 
 辅助：`--worktree`、`.worktreeinclude`（指定复制进 worktree 的未跟踪文件）、`worktree.sparsePaths`、跨会话消息、`/batch`（拆成 5–30 个 worktree 子 Agent）。
 
@@ -58,4 +62,5 @@
 - [Run agents in parallel](https://code.claude.com/docs/en/agents)、[Agent teams](https://code.claude.com/docs/en/agent-teams)、[Dynamic workflows](https://code.claude.com/docs/en/workflows)、[Worktrees](https://code.claude.com/docs/en/worktrees)
 - [Building a C compiler with parallel Claudes](https://www.anthropic.com/engineering/building-c-compiler)
 - HN：[Parallel coding agents with tmux and Markdown specs](https://news.ycombinator.com/item?id=47218318)、[Embracing the parallel coding agent lifestyle](https://news.ycombinator.com/item?id=45489884)、[Multi-agentic software development is a distributed systems problem](https://news.ycombinator.com/item?id=47761625)（摘要）
-- [arXiv 2607.04697](https://arxiv.org/pdf/2607.04697)（摘要）
+- 论文：[arXiv 2607.04697](https://arxiv.org/abs/2607.04697)、[arXiv 2510.18893](https://arxiv.org/abs/2510.18893)、[arXiv 2606.00953](https://arxiv.org/abs/2606.00953)
+- [Systima token 开销实测](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)
