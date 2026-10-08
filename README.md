@@ -3,9 +3,13 @@
 > 系统收集、验证、分析 **AI 辅助编程（AI Coding）** 的工具、方法与配置，追踪最前沿的进展。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**最近一次全面核实：2026-10-05**（第二轮：读了论文原文、官方文档和社区原帖，更正了上一轮几处基于摘要的结论）。每条结论都标注了证据等级，见 [评级与证据体系](docs/README.md#评级与证据体系)。
+**最近一次核实：2026-10-08**（第三轮：新增[深度分析](docs/14-synthesis.md)，把游戏开发分支扩展为跨引擎的 [domains/game-dev](domains/game-dev/README.md)，补上 10 月第一周的前沿动态）。每条结论都标注了证据等级，见 [评级与证据体系](docs/README.md#评级与证据体系)。
 
 ---
+
+## 一句话
+
+> **生成已经很便宜，验证、理解和判断仍然昂贵。** 模型擅长什么、上下文为什么要省、评审为什么崩、安全为什么只能靠边界、团队为什么越用越乱，都可以从这个不对称推出来。→ [14 深度分析](docs/14-synthesis.md)
 
 ## 一页纸结论（2026-10）
 
@@ -16,8 +20,10 @@
 5. **标准已经收敛，迁移成本很低。** AGENTS.md（Claude Code 原生读取）、Agent Skills、MCP（无状态版）、ACP；Codex 甚至能直接 `/import` Claude Code 的配置。→ [00](docs/00-state-of-ai-coding.md)
 6. **MCP 和 CLI 各有用处。** 强模型加 shell 的场景，CLI + Skill 更便宜、更好组合；小模型、本地模型和高风险环境里，MCP 更易审计、更好控制。→ [04](docs/04-mcp.md)
 7. **多 Agent 并行只对能拆分的任务有效。** 真实 Agent PR 的冲突率在 20–42%；按依赖关系切分任务比多开 Agent 更重要；瓶颈在理解和评审。→ [08](docs/08-multi-agent.md)
-8. **安全靠环境边界。** auto mode 已经被实测绕过，AI 实验室自己训练的 Agent 都突破过沙箱。隔离、出网白名单、硬性预算上限，以及审查 Agent 引入的依赖，都不能省。→ [10](docs/10-security.md)
-9. **社区最大的痛点是额度和成本不可预测**，其次是模型更新后的质量波动、透明度争议（隐写标记、加密的子 Agent 提示词）以及中文用户的封号问题。→ [11](docs/11-community-pulse.md)
+8. **安全靠环境边界，不靠审批。** auto mode 已经被实测绕过，AI 实验室自己训练的 Agent 都突破过沙箱；4 万局模拟数据显示，人工逐条审批平均漏掉 1/3 的威胁。隔离、出网白名单、硬性预算上限，以及审查 Agent 引入的依赖，都不能省。→ [10](docs/10-security.md)
+9. **模型在“有快速验证器”的地方进步飞快，在可维护性、架构、产品判断上进步缓慢**，因为后者没法用来做强化学习。所以“全自动软件工厂”只适合验证器锐利的部分，其余部分要人在前期定设计、按垂直切片评审。→ [14](docs/14-synthesis.md)、[07](docs/07-workflows.md#34-大功能的前置设计与垂直切片-)
+10. **游戏开发的瓶颈在验证，不在生成。** 把游戏改造成“Agent 能玩”的形态（状态可导出、输入可注入），比让 Agent 看截图有效得多；“好不好玩”仍然只能由人判断。→ [domains/game-dev](domains/game-dev/README.md)
+11. **社区最大的痛点是额度和成本不可预测**，其次是模型更新后的质量波动、透明度争议（隐写标记、加密的子 Agent 提示词）以及中文用户的封号问题。→ [11](docs/11-community-pulse.md)
 
 ## 目录
 
@@ -40,12 +46,14 @@
 | [11 社区脉搏](docs/11-community-pulse.md) | 痛点排行、口碑、争议、生产力证据 |
 | [12 资源索引](docs/12-resources.md) | 一手信息源、技术社区、精选清单、如何持续跟进 |
 | [**13 前沿雷达**](docs/13-frontier-radar.md) | **最近 3–6 个月的大事件、价格战、新兴做法、争议，以及下季度值得关注的方向** |
+| [**14 深度分析**](docs/14-synthesis.md) | **六条底层规律（现象 → 机制 → 推论 → 边界）、决策框架、成熟度路线，以及什么证据会推翻这些判断** |
 
 ### 分支：领域落地
 
 | 领域 | 内容 |
 |---|---|
-| [domains/game-dev-unity](domains/game-dev-unity/README.md) | 大型 Unity 项目：官方 Unity CLI / 插件、社区 MCP、项目落地指南、AI 资产生成、配置模板 |
+| [domains/game-dev](domains/game-dev/README.md) | 游戏开发：行业数据与态度、Unity / Unreal / Roblox / Godot / Blender 的 Agent 工具链对比、**验证与 AI 试玩**、资产管线、运行时 AI 与世界模型 |
+| [domains/game-dev/unity](domains/game-dev/unity/README.md) | 大型 Unity 项目：官方 Unity CLI / 插件、社区 MCP、项目落地指南、配置模板 |
 
 ### 可直接使用
 

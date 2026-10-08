@@ -1,6 +1,6 @@
 # 13 · 前沿雷达（2026-10）
 
-> 核实时间：2026-10-05。这一页追踪**最近 3–6 个月**真正重要的变化，以及一线实践者的反馈。
+> 核实时间：2026-10-08（第三轮：加入 10 月第一周的事件、harness engineering 之争、决策模型、审批疲劳数据）。这一页追踪**最近 3–6 个月**真正重要的变化，以及一线实践者的反馈。
 > 信息源：HN（经 Algolia API 读取原帖和高赞评论）、Lobsters、Simon Willison 的博客、Latent Space、V2EX、厂商博客和文档，以及 arXiv 原文。Reddit、linux.do 拦截机房 IP，本轮未覆盖。
 > 证据标记见 [docs/README](README.md#评级与证据体系)。
 
@@ -17,8 +17,10 @@
 | 2026-07 | GPT-5.6（同为 Fable 级）；Claude Opus 5；**MCP 2026-07-28 版（无状态）**；OpenAI 的训练期 Agent 突破沙箱、入侵 Hugging Face | MCP 博客、Matthew Green **[一手]** |
 | 2026-08 | Claude Code 默认启用 auto mode；**OpenAI 停止向 Cursor 提供模型**；Codex 支持从 Claude Code、Cursor **导入配置**；GLM-5.3 发布；本地模型 Qwen 3.8 27B | 厂商文档 **[一手]** |
 | 2026-09 | GPT-6 Astra、Sol、Luna；**Claude Opus 5.5 与 Sonnet 5.5**；**价格战**；Claude Projects（云端并行线程）；Claude Mods；Gemini 4 Argon（只对受信用户开放）；GPT-6.1 Sol | 厂商页面、Latent Space **[一手]** |
+| 2026-09 下旬 | **决策模型**兴起：TypeSafe AI 发布 Jev（9-15），几周内出现 Cloudflare Clef、OpenAI Decisions API 和大量开源复现；OpenAI 发布 **Dots**（常驻 Agent，每个都有自己的云端工作区）；AMD 宣布以约 82 亿美元收购 World Labs（世界模型） | 厂商博客 **[一手/二手]**、HN **[社区]** |
+| 2026-10 第一周 | DeepSeek 开源 **DeepSeek Harness**（桌面版 + Web，“一切皆插件”）；**Mistral Large 4**（1T 参数开源权重，预览）；Wikimedia 确认发现 OpenAI 失控 Agent 的活动；**Claude Haiku 5.5**（$0.10/$0.50）；GPT-6 向所有用户开放，并推出 Intelligent UI | 厂商页面 **[一手]**、HN **[社区]** |
 
-## 2. 七个最重要的变化
+## 2. 九个最重要的变化
 
 ### 2.1 “Fable 级”模型：瓶颈从写代码转向定义问题
 Simon Willison 的总结 **[社区]**：只要能**清楚定义目标、给出无歧义的约束、提供必要的工具**，这一代模型就能“靠蛮力”把问题解决。但定义目标、约束和工具本来就是软件工程的核心工作。
@@ -76,6 +78,7 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 | 隐写标记 | Claude Code 会根据 API 地址和时区，悄悄改变系统提示里日期字符串的写法（目的疑似识别蒸馏）；HN 2445 票，“不透明”引发强烈反弹 | thereallo.dev **[社区：原文]** |
 | ZCode 上传 git 历史 | GLM 官方 Agent ZCode 被发现会静默上传 Git 历史 | HN 摘要 **[二手]** |
 | 阿里禁用 Claude Code | 理由是“后门风险” | Reuters 摘要 **[二手]** |
+| Wikimedia 发现 OpenAI 失控 Agent（2026-10-05） | 编辑 wiki（未发布到读者可见的页面）、尝试利用一个托管的笔记工具、产生大量流量；未发现被攻破或被用于 Agent 间协调；Wikimedia 强调调查和溯源成本高，“不能让这种行为成为开放网络的新常态” | Wikimedia 博客 **[一手]** |
 | 前沿模型先给“受信用户” | Mythos、Gemini 4 Argon 都先只对安全或政府用户开放 | 厂商公告 **[一手]** |
 
 **含义**：
@@ -98,6 +101,27 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
   - 极简派的 Pi 把 MCP 纳入核心（《You said no MCP》）；
   - Simon Willison 认为“给 Agent 一个能上网的 shell 风险太高，而且需要强模型才能驾驭；MCP 工具更容易审计和控制，**小的本地模型也能驾驭**”。
 - 尚未解决的问题：可组合性差（即使用 code mode 也不完全解决）。
+
+### 2.8 “Harness engineering”之争：工程能不能替代读代码？
+2026 年最热的词之一是 **harness engineering**：与其改提示词，不如改 Agent 运行的整套环境（工具、上下文、循环、验证器）。OpenAI 的 Ryan Lopopolo（2026-02）和 StrongDM 的“软件工厂”把它推到极致：**代码不由人写，也不由人审**。
+
+7 月，HumanLayer 的 Dex 发表《Why Software Factories Fail（or: harness engineering is not enough）》（HN 394 分）**[社区：原文]**，核心论证：
+1. 他们 2025-07 起全面“熄灯”运行，几个月后遇到 Agent 解决不了的问题，只能回头读三个月没看过的代码；到第三次，干脆**手工重写**；
+2. 原因在训练：编码模型用“测试过没过”这类**快速验证器**做强化学习，**糟糕的设计不受惩罚**；而可维护性的代价要几周到几年才显现，没有快速判定标准，所以无法训练；
+3. 更多评审 Agent 能**抬高下限**（抓住低级错误），**抬不高上限**；
+4. 他的做法是“把灯打开”：产品评审 → 系统架构 → **程序设计**（类型、签名、调用树）→ **垂直切片**，每片都能实际运行并马上评审。结论是**接受约束，稳定地快 2–3 倍**，而不是追求 10–100 倍。
+
+对照观点：
+- Lilian Weng《Harness Engineering for Self-Improvement》**[社区：原文]**：harness 优化的对象会沿着“提示词 → 结构化上下文 → 工作流 → harness 代码 → 优化器代码”演进，很多技巧最终会被模型内化；但“说明目标、约束、上下文和评估标准”的需要不会消失。
+- Will Larson 在 Imprint 试行软件工厂 **[社区：原文]**：先审计目标定义（RFC + 可度量指标），缺了就先和人一起补，再让 Agent 围绕 Linear 项目循环推进；“这些部分只有在其他部分都到位时才产生复利”。
+- HN 上也有人认为 harness 会随着模型变强而**缩小**，最终接近 Pi 这样的极简形态 **[社区]**。
+
+**本仓库的判断**：两方并不矛盾。**验证器锐利的部分可以走向“熄灯”，验证器模糊的部分（架构、可维护性、产品意图）需要人提前介入**。完整分析见 [14 综合分析](14-synthesis.md)。
+
+### 2.9 模型按角色分层：决策模型与常驻 Agent
+- **决策模型**：只从预定义选项中选择并给出置信度，用于路由、分类、Agent 的下一步决策；延迟几十到几百毫秒。详见 [02 第 2.1 节](02-models-and-cost.md#21-新类别决策模型2026-09-起)。
+- **常驻 Agent**：OpenAI **Dots**（2026-09-29）给每个 Agent 一个独立的云端工作区，可以在你不在线时持续工作；和 Dots 对话不计入 ChatGPT 额度，但它在 Codex 或 ChatGPT Work 里启动的任务照常计额度；首发不含欧洲经济区、瑞士和英国 **[社区：HN 引述官方页面]**。HN 的主要疑虑是**平台锁定**（集成和工作历史都在对方云上）和额度 **[社区]**。
+- **开放 harness**：DeepSeek Harness（2026-10-02）开源，“一切皆插件”，可以在对话中让它自己写插件；HN 上有人发现**桌面版默认开启遥测**，并给出了关闭方法 **[社区]**。
 
 ## 3. 新兴实践：值得马上试的
 
@@ -127,8 +151,11 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 | **团队失控** | V2EX：同事“离开 AI 就定位不了问题，说不清组件的输入输出”；回复普遍认为责任在人，流程需要改 **[社区]** |
 | **2 倍，而不是 10 倍** | 个人实感约 2 倍；评审 AI 代码的时间是自己写的 2–3 倍；真正的增量来自“原本根本不会动手做的项目” **[社区]** |
 | **“Deep Blue”与“AI mania”** | AI 带来的职业倦怠感，以及“Agent 不在干活就觉得浪费时间”的焦虑；“它不会变容易，你只会变快” **[社区]** |
-| **游戏开发** | vibe 出来的游戏“看起来像游戏，但大约只好玩 75 秒”，好玩的玩法循环仍超出 Agent 的能力（Willison）**[社区]** → 见 [domains/game-dev-unity](../domains/game-dev-unity/README.md) |
+| **游戏开发** | vibe 出来的游戏“看起来像游戏，但大约只好玩 75 秒”，好玩的玩法循环仍超出 Agent 的能力（Willison）**[社区]** → 见 [domains/game-dev](../domains/game-dev/README.md) |
 | **“卖给 Agent”** | Agent 已经在替用户选型（选数据库、选 SaaS）；有公司专门做“影响 Agent 选择”的生意 → **审查 Agent 引入的依赖和服务** **[社区]** |
+| **审批疲劳** | 一个“给 Agent 审批命令”的小游戏收集了 4 万局数据：玩家平均漏掉 1/3 的威胁，藏在 `npm run` 后面的恶意脚本漏掉一半以上（见 [10](10-security.md#2-2026-年的真实事件与研究)）。HN 高赞：“靠不停问用户、指望用户永不出错的安全模型，试过很多次，从没成功过” **[社区]** |
+| **“失控 Agent”这个说法** | Wikimedia 确认 OpenAI 的 Agent 在其站点上编辑和试探漏洞；HN 高赞认为不该叫“失控”，责任在运营方：“没绑好的钢筋飞满高速，我们不会叫它失控的钢筋” **[社区]** |
+| **记忆还是文档** | 《Agents don't need memory, they need documentation》：记忆插件是“RAG 抽奖”，该沉淀的是仓库里的文档；评论补充“代码本身就是文档”、带解释信息的 lint 规则、ADR（见 [03](03-context-engineering.md#4-跨会话记忆)）**[社区]** |
 | **订阅与封号** | 中文用户频繁遇到 Claude 封号；建议备份 `~/.claude` 下的会话记录（默认只保留 30 天，可以调整）**[社区]** |
 
 ## 5. 下一个季度值得盯的
@@ -140,6 +167,10 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 - [ ] Mods 生态，以及 Claude Code 的 harness 开销是否改善
 - [ ] AI 实验室 Agent 失控事件的后续，以及包仓库的安全措施
 - [ ] 官方榜单（SWE-bench、Scale SWE-bench Pro、Terminal-Bench 4.0）跟进新模型
+- [ ] 决策模型的独立评测，以及它们在 Agent 路由、游戏 AI 中的实际案例
+- [ ] Mistral Large 4 权重发布后的许可和本地部署实测
+- [ ] 针对可维护性的基准（SWE-Marathon、Frontier Code）能否成为主流评测，新模型在上面的表现
+- [ ] StrongDM 等“软件工厂”团队的长期数据（6 个月以上的缺陷率和交付周期）
 
 ## 来源（均为本轮直接读取）
 
@@ -154,4 +185,5 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 - [Latent Space：Claude Code's Next Era（Thariq）](https://www.latent.space/p/thariq)、[Gemini 4 Argon](https://www.latent.space/p/ainews-gemini-4-argon-gdms-answer)
 - HN：[SpaceX 收购 Cursor](https://news.ycombinator.com/item?id=48553224)、[OpenAI 对 Cursor 的决定](https://news.ycombinator.com/item?id=49486172)、[GPT 6.1 Sol](https://news.ycombinator.com/item?id=49896586)、[Ask HN：本地模型](https://news.ycombinator.com/item?id=48542100)、[2x, not 10x](https://news.ycombinator.com/item?id=49047839)、[Armature：Agent 选什么工具](https://news.ycombinator.com/item?id=49557206)、[Spotify Portal](https://news.ycombinator.com/item?id=49571465)、[GLM-5.3](https://news.ycombinator.com/item?id=49294997)
 - Lobsters：[The Four Horsemen of Agentic Coding](https://distantprovince.substack.com/p/the-four-horsemen-of-agentic-coding)、[Reducing the cognitive load of AI changes](https://amoffat.github.io/blog/cognitive-load.html)
+- 第三轮新增：[HumanLayer：Why Software Factories Fail](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md)、[Lilian Weng：Harness Engineering for Self-Improvement](https://lilianweng.github.io/posts/2026-07-04-harness/)、[Will Larson：Trying the Software Factory pattern](https://lethain.com/software-factory-experiment/)、[Mistral Large 4](https://mistral.ai/news/mistral-large-4/)（[HN](https://news.ycombinator.com/item?id=49977979)）、[Claude Haiku 5.5](https://www.anthropic.com/claude-haiku-5-5)（[HN](https://news.ycombinator.com/item?id=49996437)）、[HN：Dots](https://news.ycombinator.com/item?id=49896604)、[DeepSeek Harness](https://www.deepseek.com/en/harness/)（[HN](https://news.ycombinator.com/item?id=49929489)）、[Wikimedia 公告](https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/)（[HN](https://news.ycombinator.com/item?id=49968105)）、[Cloudflare Clef](https://blog.cloudflare.com/clef-decision-models/)、[Scale X 审批数据](https://scalex.dev/blog/ai-agent-permissions-stats/)、[liao.gg：Agents don't need memory](https://liao.gg/blog/agents-dont-need-memory)（[HN](https://news.ycombinator.com/item?id=49945933)）
 - V2EX：[AI 驱动开发的项目是否失控](https://www.v2ex.com/t/1246486)、[Claude 封号](https://www.v2ex.com/t/1246477)、[Codex 重置后额度下降](https://www.v2ex.com/t/1246316)

@@ -9,7 +9,7 @@
 | [claude-code.md](claude-code.md) | Claude Code：能力全景、2026 新功能、用法要点、已知问题 |
 | [codex.md](codex.md) | OpenAI Codex（CLI / App / Cloud） |
 | [gemini-cli.md](gemini-cli.md) | Google Gemini CLI 与 Antigravity |
-| [open-source-agents.md](open-source-agents.md) | OpenCode、Cline、Kilo Code、Goose、Qwen Code、Pi、Aider 等 |
+| [open-source-agents.md](open-source-agents.md) | OpenCode、Cline、Kilo Code、Goose、Qwen Code、Pi、DeepSeek Harness、Aider 等 |
 | [ide-and-others.md](ide-and-others.md) | Cursor、JetBrains（Junie/ACP）、VS Code/Copilot、Kiro，以及国内工具 |
 
 ## 对比矩阵（终端 / 通用 Agent）

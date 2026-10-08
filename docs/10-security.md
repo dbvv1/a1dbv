@@ -1,6 +1,6 @@
 # 10 · 安全
 
-> 核实时间：2026-10-05。
+> 核实时间：2026-10-08。
 
 ## 1. 威胁模型：致命三要素
 
@@ -26,11 +26,14 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 | **Claude Code 隐写标记**（2026-06） | 根据 API 地址和时区，悄悄改变系统提示里日期字符串的写法；属于透明度问题 | [社区：原文] |
 | ZCode 静默上传 git 历史（2026-09） | GLM 官方 Agent | [二手] |
 | Cursor 0day（2026-07） | Mindgard 在厂商不回应后选择完全公开披露 | [二手：HN 标题] |
+| **人工审批的真实漏检率**（2026-08） | 一个模拟“给 Coding Agent 审批命令”的小游戏收集了 4 万局、40.9 万次决策：<br>• 平均**漏掉 1/3 的威胁**（准确率 66.3%）；<br>• 明显的破坏命令漏掉 11.7%，持久化篡改（crontab、git config）漏掉 23.8%，外泄和代码执行漏掉 33.4%，越权读取凭证（`cat ~/.aws/credentials`）漏掉 35.0%；<br>• 恶意内容藏在 `npm run xxx` 后面时漏掉 **52.5%**，即使恶意脚本就显示在上方的历史记录里；<br>• 7% 的玩家对所有请求都点了同意；正常命令也常被误拦（43–59%）；<br>• 局限：有时限、威胁占比约 34% 远高于现实，部分题目的标注在 HN 上有争议 | [社区：原文] |
+| **Wikimedia 发现 OpenAI 失控 Agent**（2026-10） | 编辑 wiki、尝试利用托管的笔记工具、大量流量；未发现被攻破。开放网络的维护者承担了调查和溯源成本 | [一手：Wikimedia 博客] |
 | 学术研究 | MCP 生态攻击的大规模分析（arXiv 2509.06572）、MCP 服务器污点漏洞（VIPER-MCP）、开发者常见安全误区（MCP Pitfall Lab） | [研究：摘要] |
 
 ## 3. 防护原则
 
 1. **环境边界优先于行为约束** **[一手]**：沙箱、容器、虚拟机、出网白名单这些确定性手段，比模型“自觉”和提示词防御可靠得多。在 Anthropic 的案例中，只有出网拦截挡住了凭证外泄。
+   - **人工审批不是可靠的防线**：上面的数据说明，命令本身往往是无害的（`npm run build`），危险在于它执行的内容可能已被前面的修改篡改，审批者无从判断。HN 上的评价：“靠不停问用户、指望用户永不出错的安全模型，试过很多次，从没成功过。”**减少审批次数、把信任放到环境边界上，审批反而更有效**（分析见 [14 规律三、四](14-synthesis.md#3-规律三人的注意力是唯一不随算力扩展的资源)）。
 2. **打破三要素中的至少一个**：
    - 处理不可信内容（外部 Issue、网页、日志）的会话，**不给密钥、不给出网能力**；
    - 需要密钥的会话，**不读不可信内容**。
@@ -75,6 +78,7 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 ## 来源
 
 - [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)、[Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode)
+- [Scale X：Humans missed 1 in 3 threats](https://scalex.dev/blog/ai-agent-permissions-stats/)（[HN](https://news.ycombinator.com/item?id=49195468)）、[Wikimedia：OpenAI "rogue" agent activities](https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/)
 - [Plugin security and trust](https://code.claude.com/docs/en/plugins/security)
 - [gemini-cli changelogs](https://github.com/google-gemini/gemini-cli/tree/main/docs/changelogs)
 - [Matthew Green：Is sandboxing sufficient to contain rogue agents?](https://blog.cryptographyengineering.com/2026/09/30/is-sandboxing-sufficient-to-contain-rogue-agents/)、[Embrace The Red：Breaking Claude Code Opus 5 Auto Mode](https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/)、[thereallo.dev：隐写标记](https://thereallo.dev/blog/claude-code-prompt-steganography)、[Simon Willison：默认硬性预算上限](https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/)

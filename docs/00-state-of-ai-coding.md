@@ -86,6 +86,8 @@ Claude Code 官方市场已有 **315 个插件** **[一手]**（含 13 个语言
 4. **度量**：记录哪些任务 AI 做得好或差，定期修剪指令和 Skill（`/skill-doctor`、`/doctor prompt-audit`）。
 5. **安全基线**：沙箱 / 容器、最小权限、不可信输入隔离、密钥不进上下文。
 
+> 这些建议背后的“为什么”（验证不对称、上下文预算、人的注意力瓶颈等六条规律）见 [14 深度分析](14-synthesis.md)。
+
 ## 来源
 
 - Claude Code changelog（v2.1.0–2.1.288）与官方文档 [code.claude.com/docs](https://code.claude.com/docs)

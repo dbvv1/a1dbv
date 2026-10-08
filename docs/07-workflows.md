@@ -1,6 +1,6 @@
 # 07 · 工作流方法论
 
-> 核实时间：2026-10-05。
+> 核实时间：2026-10-08。
 
 ## 1. 核心：验证闭环 ✅
 
@@ -39,6 +39,22 @@
 ```
 然后**开一个新会话**按 SPEC.md 实现（上下文干净，只专注实现）。
 好的 Spec 是自包含的：写明涉及的文件和接口，**写明不做什么**，最后有一个端到端的验证步骤 **[一手]**。
+
+## 3.4 大功能的前置设计与垂直切片 ✅
+
+来自 HumanLayer《Why Software Factories Fail》**[社区：原文]**，和访谈式 Spec 互补：
+
+| 环节 | 对齐什么 | 形式 |
+|---|---|---|
+| 产品评审 | 解决什么问题、怎么算成功（最好是用户结果或可观测指标） | 短文档 + **粗糙的 HTML 原型**（“一个原型能结束三段文字吵不完的争论”） |
+| 系统架构 | 服务、接口、数据如何交互 | 时序图、接口形状、表结构 |
+| **程序设计** | 代码的形状：类型、函数签名、文件布局、调用栈 | **伪代码调用树**（可以用 diff 语法标出新增和删除）、文件树 diff |
+| **垂直切片** | 实现顺序 | 每片都是能实际运行的端到端路径，做完马上评审 |
+
+- **模型天然偏好“水平计划”**：先写数据库迁移，再写服务层、API，最后写前端，直到最后才能摸到可运行的东西。要**明确要求它按垂直切片计划**：先定接口并返回假数据，用 curl 验证 → 前端接假数据 → 接服务层 → 接数据库 → 补业务逻辑和错误处理。
+- 每次评审 100–200 行再纠偏，比面对 2000 行再返工便宜得多。
+- **按任务大小分流**：约 40% 的任务一次完成或稍作修改；中等任务写一份合并的计划文档；只有大任务才走完整的四个环节。
+- 作者的总结：“**30 分钟的计划能省几个小时的评审**。”接受模型的约束，稳定地快 2–3 倍，而不是追求 10–100 倍。
 
 ## 3.5 Fable 级模型时代的提示与收尾 ✅
 
@@ -155,6 +171,7 @@
 ## 来源
 
 - [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)、[/goal](https://code.claude.com/docs/en/goal)、[Getting the most out of Opus 5.5](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)
+- [HumanLayer：Why Software Factories Fail](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md)
 - [Simon Willison：Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/)、[Reducing the cognitive load of AI changes](https://amoffat.github.io/blog/cognitive-load.html)
 - Anthropic：[Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)、[Building a C compiler](https://www.anthropic.com/engineering/building-c-compiler)
 - [Ralph Wiggum 插件](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum)

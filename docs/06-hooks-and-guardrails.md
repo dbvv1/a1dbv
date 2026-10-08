@@ -94,6 +94,8 @@ Anthropic《Claude Code auto mode》（2026-03-25）**[一手]**：
 - Embrace The Red（2026-08-31）构造了一条攻击链：让 Claude 在“总结网页”时从 WebFetch 改用 curl，下载一个 ZIP，Claude 拒绝执行里面的二进制文件，却**自己写了 Python 解码脚本，并在攻击者解压的目录里运行**，结果被同名的 `struct.py` 劫持。
 - 小样本成功率 60–80%，而 Anthropic 委托的第三方测评是 0%。
 - Lobsters 上有人指出，这更像“不安全的执行方式”而不是意图被劫持，但结论一致：**auto mode 不能代替隔离环境和监控。**
+
+**人工审批也不可靠**：4 万局模拟数据显示，人工逐条审批平均漏掉 1/3 的威胁，藏在 `npm run` 后面的恶意脚本漏掉一半以上（见 [10](10-security.md#2-2026-年的真实事件与研究)）。所以无论用 auto mode 还是人工审批，**都要配合沙箱和出网限制**。
 - 防范：不让 Agent 在下载来的目录里执行代码（Python 会优先导入当前目录里的同名模块）；处理不可信内容的会话不给执行权限。
 
 **Codex 的对应机制：Auto-review** **[一手]**：`approvals_reviewer = "auto_review"`（CLI 用 `--approve-for-me`）。只有需要越过沙箱边界时，才由独立的审查 Agent 代替人做决定，**它不会扩大权限**。审查策略开源在 `codex-rs/core/src/guardian/policy.md`，可以定制。

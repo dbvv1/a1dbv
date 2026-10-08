@@ -1,6 +1,6 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-05。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
+> 核实时间：2026-10-08。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
 
 ## 1. 现状
 
@@ -81,6 +81,12 @@
 5. **工具描述就是提示词**：像给新同事写文档一样写清楚。
 6. **评估驱动**：用真实任务跑评估，读 Agent 的执行记录，让 Claude 帮你改进工具。
 
+**大型工具集的范例：Epic 的 Unreal MCP** **[一手：Epic 官方插件]**：
+- 几百个工具分在 30 多个工具集里，但服务器整个会话**只公开 3 个元工具**（`list_toolsets`、`describe_toolset`、`call_tool`），具体工具在服务端分发，不进 `tools/list`。官方理由是保持上下文小、**提示缓存命中**。
+- Epic 给工具作者定的四条原则：**Clean**（比底层 API 更简单）、**Complete**（CRUD 对称：能 set 就能 get，能 create 就能 delete）、**Composable**（同类操作用一致的类型）、**DRY**（不重复已有的通用工具）。
+- 工具失败时往往只返回状态而不抛异常，所以 Skill 里要求 Agent “**不是明确的成功，就当作失败**”。
+- 详见 [game-dev/02](../domains/game-dev/02-engines-and-agent-tooling.md#22-unreal几百个工具藏在工具搜索后面)。
+
 在 2026-07-28 规范下写服务端还要注意：**不要依赖会话状态**（需要状态就返回句柄）；列表结果设置缓存提示；用 CIMD 做客户端注册。
 
 ## 5. 在 Claude Code 中使用
@@ -97,6 +103,7 @@ claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 ## 来源
 
 - [MCP 2026-07-28 规范发布说明](https://blog.modelcontextprotocol.io/posts/2026-07-28/)、[2026-08-22 路线图](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/blog/content/posts/2026-08-22-mcp-roadmap.md)
+- [EpicGames/unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)（克隆阅读）
 - Anthropic：[Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)、[Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use)、[Writing tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
 - [Simon Willison：Stateless MCP has recaptured my interest](https://simonwillison.net/2026/Jul/31/stateless-mcp/)、[Earendil（Pi）：You said no MCP](https://earendil.com/posts/you-said-no-mcp/)
 - HN：[I benchmarked GitHub CLI, MCP, Tool Search, Code Mode](https://news.ycombinator.com/item?id=47495475)、[When does MCP make sense vs CLI?](https://news.ycombinator.com/item?id=47208398)、[MCP was always a bad idea?](https://news.ycombinator.com/item?id=49779329)（摘要）

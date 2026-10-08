@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 核实时间：2026-10-05。
+> 核实时间：2026-10-08。
 > 一句话：**模型能力已经够强，效果差多半是上下文的问题。给少了它会猜，给多了它会分心。**
 
 ## 1. 原理（Anthropic《Effective context engineering》，2025-09 [一手]）
@@ -117,6 +117,17 @@
 | Gemini CLI 的 memory 收件箱 | 记忆要经人审阅后才生效 | 🧪 |
 | 第三方记忆 MCP（MAMA、Selvedge、roampal 等） | 方案很多，质量参差不齐 | 👀 |
 
+**记忆还是文档？** 2026-10 的一篇文章《Agents don't need memory, they need documentation》（HN 380 分）**[社区：原文]** 引发了讨论：
+- 观点：记忆插件本质上是“**RAG 抽奖**”，存进去的东西什么时候被召回、召回得对不对都不可控；Agent 真正需要的是**写在仓库里、人也能读的文档**。
+- HN 评论的补充：
+  - “代码本身就是文档”：好的命名和结构比任何记忆都可靠；
+  - 把约定写成 **lint 规则，并附上解释性错误信息**，Agent 犯错的那一刻就能得到原因（比指令文件更及时、更确定）；
+  - 用**架构决策记录（ADR）**记下“为什么这样设计”，例如 mattpocock/skills 里的做法。
+- **本仓库的判断**：
+  - 优先把会话中学到的东西沉淀成**文档、测试或 lint 规则**，它们可评审、可 diff、可回滚，对人也有用；
+  - 自动记忆只存个人偏好，并定期审阅。
+  - 分析见 [14 规律二](14-synthesis.md#2-规律二上下文是预算信息应该拉而不是推)。
+
 ## 来源
 
 - [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
@@ -124,4 +135,5 @@
 - 官方文档：[Best practices](https://code.claude.com/docs/en/best-practices)、[Memory](https://code.claude.com/docs/en/memory)、[Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Codex `codex-rs/core/src/agents_md.rs`、`codex-rs/config/src/config_toml.rs`
 - 论文：[arXiv 2602.11988](https://arxiv.org/abs/2602.11988)（读了正文）、[arXiv 2606.15828](https://arxiv.org/abs/2606.15828)（读了正文）、[arXiv 2607.27250](https://arxiv.org/abs/2607.27250)、[arXiv 2601.20404](https://arxiv.org/abs/2601.20404)、[arXiv 2608.25241](https://arxiv.org/abs/2608.25241)、[arXiv 2511.12884](https://arxiv.org/abs/2511.12884)（读了 arXiv 摘要原文）
+- [liao.gg：Agents don't need memory, they need documentation](https://liao.gg/blog/agents-dont-need-memory)（[HN](https://news.ycombinator.com/item?id=49945933)）
 - Harness 开销实测：[Systima](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)（72KB 指令文件让每次请求多约 2 万 token）

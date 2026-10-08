@@ -4,16 +4,16 @@
 
 | 领域 | 状态 | 内容 |
 |---|---|---|
-| [game-dev-unity](game-dev-unity/README.md) | ✅ 已整理 | 大型 Unity 项目：Unity CLI / 官方插件 / 社区 MCP、落地指南、AI 资产生成、模板 |
+| [game-dev](game-dev/README.md) | ✅ 已整理 | 游戏开发：行业数据与态度、引擎工具链对比（Unity / Unreal / Roblox / Godot / Blender）、验证与 AI 试玩、资产管线、运行时 AI |
+| [game-dev/unity](game-dev/unity/README.md) | ✅ 已整理 | 大型 Unity 项目：Unity CLI / 官方插件 / 社区 MCP、落地指南、配置模板 |
 
 ## 新增领域的结构约定
 
 ```
 domains/<领域名>/
-├── README.md                 # 一页纸推荐方案 + 目录
-├── 01-toolchain.md           # 领域专用的 Agent、Skill、MCP 工具链（带评级和证据）
-├── 02-*-guide.md             # 落地指南：禁区、验证闭环、适合和不适合交给 AI 的任务
-└── templates/                # 在 templates/generic 基础上增加的领域配置
+├── README.md                 # 一页纸结论 + 目录
+├── 0N-*.md                   # 领域环境、工具链、验证闭环、领域特有问题（带评级和证据）
+└── <子领域>/                 # 如 game-dev/unity/：具体技术栈的落地指南和 templates/
 ```
 
-原则：**通用的东西放主干，领域分支只写增量。**
+原则：**通用的东西放主干，领域分支只写增量；跨技术栈的放领域根目录，特定技术栈的放子目录。**

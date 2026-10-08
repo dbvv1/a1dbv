@@ -81,6 +81,8 @@
 
 **2026-10-05 已完成**：读了 arXiv 原文（2602.11988、2606.15828、2607.27250、2601.20404、2608.25241、2607.04697 等）、METR 原始报告、GitClear 报告、官方榜单数据、Codex 官方文档、Cursor 官方页面、Unity 官方文档；读了 HN、Lobsters、V2EX 原帖。
 
+**2026-10-08 第三轮已完成**：克隆阅读了 Epic 的 Unreal 插件和 Claude 官方插件市场清单；读了 Roblox Studio MCP 和 Blender Lab MCP 的官方文档；读了 GDC 2026 调查摘要和 Steam AI 游戏全量统计原文；读了 HumanLayer《Why Software Factories Fail》、Lilian Weng 的 harness 文章、Will Larson 的软件工厂实验、Scale X 审批数据、Cloudflare Clef 博客、Mistral Large 4 文档、Claude Code 2.1.292–2.1.293 changelog；读了 HN 上 Godot 禁止 AI 代码、AI 试玩、Dots、DeepSeek Harness、Wikimedia 等讨论。
+
 **仍待验证**：
 - [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验
@@ -92,3 +94,11 @@
 - [ ] 实测：GLM-5.3 / Qwen 3.8 27B 配合 OpenCode 或 Pi 做日常开发
 - [ ] 实测：Claude Code 的 harness 开销（复现 Systima 的测量）
 - [ ] Gemini 4 Argon 开放后的评测
+- [ ] Godot 基金会博客原文（本轮只读到 PC Gamer 的转述）
+- [ ] GDC 2026 完整报告 PDF（本轮只读了官方摘要）；Faros 完整报告（只读了公开摘要）
+- [ ] TypeSafe Jev 的官方技术说明和独立评测（本轮只有二手报道）
+- [ ] OpenAI Dots、GPT-6 for everyone 的官方页面（openai.com 对本环境返回 403，只读了 HN 引述）
+- [ ] Unreal 5.8 MCP 的官方发布说明（本轮只确认了插件位于 Experimental 目录）
+- [ ] 实测：在 Unity 项目中做“Agent 可试玩”改造（状态导出 + 输入注入 + 场景加载）的成本和效果
+- [ ] 实测：用决策模型（Clef / Strands Decider）做 NPC 决策原型，和行为树对比
+- [ ] llmskirmish（Agent 可以玩的 RTS）、nunu ai（像素级游戏测试）的原文

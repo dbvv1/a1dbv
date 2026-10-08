@@ -39,6 +39,20 @@ TODO：列出主要模块（asmdef）及依赖方向，例如 `Core ← Gameplay
 | PlayMode 测试 | `.claude/skills/unity-run-tests/scripts/run_tests.sh PlayMode [过滤条件]` |
 | 只跑受改动影响的测试（Unity CLI） | `unity test . --affected --since origin/main` |
 
+## 试玩验证接口
+
+<!-- 让 Agent 不靠截图就能验证运行时行为（见 domains/game-dev/03-verification-and-playtesting.md）。
+     没有这些接口就删掉本节；有了就写清楚命令，并要求 Agent 每完成一项功能都用它验证。 -->
+
+| 目的 | 命令 |
+|---|---|
+| 导出当前游戏状态（JSON） | TODO（如自定义 `[CliCommand]`：`unity command game_state --result-only`） |
+| 注入玩家动作 | TODO（如 `unity command game_action --action Jump`） |
+| 加载测试场景 | TODO（如 `unity command load_fixture --name boss_phase2`） |
+| 控制时间 / 固定随机种子 | TODO |
+
+每完成一项玩法功能：用上面的接口验证正常路径和至少两个异常场景，再做下一项。手感、乐趣、美术效果留给人工试玩，在总结里列出需要人看的点。
+
 ## 硬性规则
 
 1. **不要读写** `Library/`、`Temp/`、`obj/`、`Logs/`、`UserSettings/`。

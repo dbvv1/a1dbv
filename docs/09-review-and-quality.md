@@ -1,17 +1,25 @@
 # 09 · 评审与质量
 
-> 核实时间：2026-10-05。
+> 核实时间：2026-10-08。
 
 ## 1. 质量数据：AI 代码的真实代价
 
 | 来源 | 发现 |
 |---|---|
 | GitClear × GitKraken《The Maintainability Gap》（2026），分析了 2023–2026 年的 6.23 亿次代码变更 **[一手：厂商报告，相关性]** | 重复代码块 **+81%**（每百万变更行从 40.3 增到 73.0）；同一提交内的复制粘贴 +41%；掩盖错误的代码 +47%；两周内返工 +15%；跨文件函数调用 −35%；重构式移动从占变更行的 13% 降到 **3.8%**（复制粘贴是它的约 5 倍）；对一年以上旧代码的更新 −74%。报告的概括是：默认的 AI 工作流倾向于交付“原子式”代码（只走通主路径、让一个测试通过、关掉一张工单），而复用、整合、暴露错误这些看不见的工作被拖欠了 |
+| Faros AI《The Acceleration Whiplash》（2026 Q2，2.2 万名开发者、4,000 个团队、两年遥测）**[一手：厂商报告页，相关性]** | AI 采用度高时：PR 体积 **+51%**、每个 PR 的 bug **+28%**、评审时间中位数 **5 倍**、每个 PR 的事故 **3 倍**、代码返工 **10 倍**；报告称成熟团队也不能幸免，结论和 DORA 2025 相反。注意：厂商在卖相关产品，只读了公开摘要 |
 | 开发者调查 **[二手]** | 约 66% 的开发者认为 AI 输出“几乎正确”：好到能合并，又坏到需要返工 |
 | Anthropic 长时任务实验 **[一手]** | 模型自评时会“自信地夸奖平庸的工作” |
 | *A Few Pages of Markdown*（arXiv 2608.25241，441 个仓库）**[研究：摘要原文]** | 在 Agent 主导的仓库里，没有提交 AI 配置的认知复杂度增幅约是有配置的两倍（+53% 对 +27%），静态分析告警增幅是 1.7 倍（观察性研究） |
 
 **含义**：AI 倾向于**复制而不是复用、新增而不是重构**。评审时要特别关注重复、绕过错误处理、不触碰旧代码的“打补丁”式改动。
+
+**为什么会这样（训练层面的解释）**：HumanLayer 的 Dex 指出，编码模型用“测试过没过”这类快速验证器做强化学习，SWE-bench 类任务的奖励只有“修好了指定问题、没弄坏其他测试”，**糟糕的设计不受惩罚**；可维护性的代价要几周到几年才显现，没有快速判定标准，所以训练不出来。更多评审 Agent 能**抬高下限，抬不高上限** **[社区：原文]**。已有评测在尝试补上这一块（Cognition Frontier Code 惩罚“改动前就不会失败的测试”，并用裁判模型审查 diff）。完整分析见 [14 规律一](14-synthesis.md#1-规律一能力地图就是验证器地图)。
+
+**对评审的启示**：
+1. 把评审重心前移到**设计**（类型、接口、调用关系），而不是等 2000 行 diff 出来再看；
+2. 让 Agent 按**垂直切片**提交，每次 100–200 行；
+3. 测试代码本身要像需求一样认真审。
 
 ## 2. 评审手段
 
@@ -63,6 +71,8 @@ Anthropic 给 Opus 5.5 的评审提示：“Review the diff on this branch again
 
 ## 来源
 
+- [Faros AI：The Acceleration Whiplash](https://www.faros.ai/research/ai-acceleration-whiplash)（厂商报告页）
+- [HumanLayer：Why Software Factories Fail](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md)
 - [GitClear：The Maintainability Gap（2026）](https://www.gitclear.com/the_ai_code_quality_maintainability_gap)（二手）
 - [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
 - [Agent Skills：Evaluating skills](https://github.com/agentskills/agentskills/blob/main/docs/skill-creation/evaluating-skills.mdx)

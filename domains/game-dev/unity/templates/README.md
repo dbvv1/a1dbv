@@ -1,6 +1,6 @@
 # Unity 项目模板
 
-在 [templates/generic](../../../templates/generic/) 的基础上，增加 Unity 专用的部分。
+在 [templates/generic](../../../../templates/generic/) 的基础上，增加 Unity 专用的部分。
 
 ```
 templates/
@@ -25,7 +25,7 @@ templates/
 ```bash
 # 1. 先装通用模板，再用 Unity 模板覆盖
 cp -r templates/generic/{AGENTS.md,CLAUDE.md,.claude} <Unity项目>/
-cp -r domains/game-dev-unity/templates/{AGENTS.md,CLAUDE.md,.claude} <Unity项目>/
+cp -r domains/game-dev/unity/templates/{AGENTS.md,CLAUDE.md,.claude} <Unity项目>/
 chmod +x <Unity项目>/.claude/hooks/*.sh <Unity项目>/.claude/skills/*/scripts/*.sh
 
 # 2. 官方插件与 LSP（在 Claude Code 中）

@@ -19,7 +19,7 @@
 - **Junie** 于 2026-06-17 结束 Beta；Junie CLI 与 IDE 之间也走 ACP **[二手]**。
 - ReSharper 2026.2 把 ACP 带进了 Visual Studio **[二手]**。
 - 评级：🧪 **试用**。主力 IDE 是 JetBrains 的话，用 ACP 接 Claude Code 或 Codex，比换 IDE 更合适。
-- C# / Unity 开发者的首选 IDE 仍是 Rider（见 [domains/game-dev-unity](../../domains/game-dev-unity/README.md)）。
+- C# / Unity 开发者的首选 IDE 仍是 Rider（见 [domains/game-dev/unity](../../domains/game-dev/unity/README.md)）。
 
 ## VS Code + GitHub Copilot
 
