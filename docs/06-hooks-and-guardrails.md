@@ -105,6 +105,7 @@ Anthropic《Claude Code auto mode》（2026-03-25）**[一手]**：
 | 层级 | 做法 | 适用 |
 |---|---|---|
 | OS 级沙箱 | Claude Code：macOS Seatbelt / Linux bubblewrap，`/sandbox` 开启；可设网络严格白名单、屏蔽凭证文件 | 本机日常 |
+| OS 级沙箱（Copilot） | GitHub Copilot 本地沙箱 2026-10-07 正式可用：基于微软 MXC，在三大系统上限制文件、网络、Git 和 GitHub CLI 凭证；**企业托管设置可以强制开启且开发者无法放宽** **[一手]** | 用 Copilot 的团队 |
 | 容器 | devcontainer、[container-use](https://github.com/dagger/container-use)（每个 Agent 一个容器）、[aicontainer](https://github.com/stefanoginella/aicontainer) | 放开权限的自动任务 |
 | 微虚拟机 / 虚拟机 | [brood-box](https://github.com/stacklok/brood-box)、Lima、Incus | 不可信代码、高风险任务 |
 | 云端临时环境 | Claude Code on the web、Codex Cloud | 无需本地环境的任务 |

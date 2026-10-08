@@ -85,6 +85,8 @@
 
 **2026-10-08 第四轮已完成**：游戏分支压缩为“AI 与游戏开发的结合”；主干新增 [15 按任务类型的打法](15-task-playbooks.md)、[16 自建 Agent](16-building-agents.md)；读了 OpenAI DevDay 2026、Agents、Decisions、Codex SDK 官方文档，Claude Code 2.1.289–2.1.294 和 Gemini CLI v0.63 changelog，以及 Claude API 官方 Skill 中关于 Agent 设计和 Managed Agents 的说明。
 
+**2026-10-08 第五轮已完成**：新增 [17 故障排查](17-troubleshooting.md)、[18 团队落地与治理](18-team-adoption.md)、Unity / Unreal 引擎基础；读了 Claude API 官方 Skill 中的模型行为与提示调整说明、GitHub Copilot 和 Cursor 的最新 changelog。
+
 **仍待验证**：
 - [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验
