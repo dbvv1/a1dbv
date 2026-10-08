@@ -7,6 +7,7 @@
 |---|---|
 | [01-toolchain.md](01-toolchain.md) | UE 5.8 官方 MCP（架构、配置、写自己的工具、**打包版也能跑 MCP**）、Epic 的 Claude Code 插件、5.8 中和 AI 相关的功能、UEFN 的 AI 功能、社区方案、IDE |
 | [02-large-project-guide.md](02-large-project-guide.md) | 大型项目落地：二进制资产与禁区、Live Coding 和 UBT 两档编译、命令行自动化测试、PIE 和打包版的试玩验证、Perforce、评审清单 |
+| [**03-engine-fundamentals.md**](03-engine-fundamentals.md) | **Unreal 基础知识**：对象模型、Gameplay Framework、反射与 UHT、GC、模块与构建、蓝图与 C++ 分工、常用系统（Subsystem、Enhanced Input、GAS、StateTree）、网络同步、资产管理、World Partition 与渲染、测试调试、版本路线；每节附“AI 要点” |
 | [templates/](templates/README.md) | 可以拷进 UE 项目的配置：AGENTS.md、CLAUDE.md、保护 Hook、`ue-build` / `ue-run-tests` Skill、`ue-code-reviewer` 子 Agent |
 
 ## 一页纸推荐（2026-10）

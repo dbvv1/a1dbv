@@ -1,7 +1,7 @@
 # 领域分支：AI coding × 游戏开发
 
 > 核实时间：2026-10-08。
-> 这个分支只回答一个问题：**主干里的 AI coding 方法，放到游戏开发里具体怎么用？** 只写相对主干的增量。
+> 这个分支回答：**主干里的 AI coding 方法，放到游戏开发里具体怎么用？** 重点是 AI 与游戏开发的结合；Unity 和 Unreal 子目录里也有**引擎基础知识**，作为和 AI 协作的前提（每节都标出 Agent 在这里容易犯的错）。
 > 前置阅读：[07 工作流](../../docs/07-workflows.md)（验证闭环）、[14 深度分析](../../docs/14-synthesis.md)（底层规律）。
 
 ## 1. 结合方式全景：游戏开发每个环节里 AI 做什么
@@ -51,5 +51,5 @@
 | [01 引擎接入](01-engine-integration.md) | Unity、Unreal、Roblox、Godot、Blender 的官方 Agent 接入；三种设计思路；引擎选择对 AI coding 的影响 |
 | [**02 验证与试玩**](02-verification-and-playtesting.md) | 验证阶梯 L0–L6、“Agent 可试玩”改造、真实案例、什么必须留给人 |
 | [03 游戏中的生成式 AI](03-generative-ai-in-games.md) | Agent 驱动的资产管线、游戏运行时的 AI（NPC、决策模型、世界模型）、披露与玩家态度 |
-| [unity/](unity/README.md) | 大型 Unity 项目：Unity CLI 和官方插件、编译和测试闭环、配置模板 |
-| [unreal/](unreal/README.md) | 大型 Unreal 项目：UE 5.8 官方 MCP 和 Epic 插件、Live Coding 与 UBT、自动化测试、配置模板 |
+| [unity/](unity/README.md) | Unity：**引擎基础知识**（每节附 AI 要点）、Unity CLI 和官方插件、大型项目的编译和测试闭环、配置模板 |
+| [unreal/](unreal/README.md) | Unreal：**引擎基础知识**（每节附 AI 要点）、UE 5.8 官方 MCP 和 Epic 插件、Live Coding 与 UBT、自动化测试、配置模板 |
