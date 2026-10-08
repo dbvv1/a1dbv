@@ -15,6 +15,7 @@
 generic/
 ├── AGENTS.md                      # 跨工具项目指令骨架（填 TODO）
 ├── CLAUDE.md                      # 导入 AGENTS.md，加上 Claude Code 专属约定
+├── REVIEW.md                      # 给 AI 评审者的规则：严重度、证据门槛、Nit 上限、复审收敛
 ├── .mcp.json.example              # 项目级 MCP 示例（Context7、Playwright）
 └── .claude/
     ├── settings.json              # 权限（只读 git 命令放行；push 需确认；不读密钥和生成物）+ Hook 注册
@@ -41,11 +42,12 @@ generic/
 | CLAUDE.md 的停止规则、TASKS.md、Blocked on me / Changed / Found | Anthropic《Getting the most out of Opus 5.5》 |
 | AGENTS.md 不写概览和 lint 规则 | 2026 年的研究：概览没用；62% 的文件有 Lint 泄漏（[03](../docs/03-context-engineering.md)） |
 | 评审只报会拒绝合并的问题，并说明如何证明它会出错 | Anthropic 官方评审提示 |
+| REVIEW.md 的结构（严重度、证据门槛、Nit 上限、复审收敛） | Claude Code Review 文档（[09](../docs/09-review-and-quality.md#用-reviewmd-调教评审)） |
 
 ## 使用步骤
 
 ```bash
-cp -r templates/generic/{AGENTS.md,CLAUDE.md,.claude} <你的项目>/
+cp -r templates/generic/{AGENTS.md,CLAUDE.md,REVIEW.md,.claude} <你的项目>/
 chmod +x <你的项目>/.claude/hooks/*.sh
 ```
 1. 填好 `AGENTS.md` 里的所有 TODO，删掉注释。

@@ -57,6 +57,7 @@ Dex 举的 SWE-bench 例子很说明问题：奖励只有两项，**修好了指
 ### 现象
 - 研究：LLM 生成的指令文件**不提高成功率，却让成本增加 20% 以上**；仓库概览没用；62% 的文件把 linter 该管的规则写了进去 → [03](03-context-engineering.md#22-指令文件到底有没有用研究证据)。
 - 实测：Claude Code 在你开口前就发送约 33k token；一个 72KB 的指令文件让每次请求多约 2 万 token；分给 2 个子 Agent 后 token 从 12.1 万涨到 51.3 万 → [13](13-frontier-radar.md#23-harness-的隐性成本被量化了)。
+- 本仓库实测：长指令文件（LLM 生成、526 行）让同一个修 bug 任务的成本变成 1.6–2.7 倍，而真正改变行为的只是其中几行；两行的短文件以约 6% 的成本做到了同样的行为改变 → [19](19-experiments.md#4-e3指令文件长短)。
 - Epic 的 Unreal MCP 有几百个工具，却**只公开 3 个元工具**，官方理由是“让上下文窗口保持很小，提示缓存保持命中” → [game-dev/01](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)。
 - 《Agents don't need memory, they need documentation》（HN 380 分）认为记忆插件是“**RAG 抽奖**”：存进去的东西什么时候被召回、召回得对不对都不可控 **[社区：原文]**。
 

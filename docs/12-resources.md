@@ -87,6 +87,8 @@
 
 **2026-10-08 第五轮已完成**：新增 [17 故障排查](17-troubleshooting.md)、[18 团队落地与治理](18-team-adoption.md)、Unity / Unreal 引擎基础；读了 Claude API 官方 Skill 中的模型行为与提示调整说明、GitHub Copilot 和 Cursor 的最新 changelog。
 
+**2026-10-08 第六轮已完成**：在云端环境做了三组实测（[19](19-experiments.md)）；加厚了 [08 多 Agent](08-multi-agent.md)（两种立场的调和、子 Agent 配置、委派写法）、[09 评审](09-review-and-quality.md)（Code Review 数据、REVIEW.md、分层评审）和 [10 安全](10-security.md)（四个案例拆解、auto mode 误差、沙箱手册、CI 安全、Anthropic 的 SDLC）。
+
 **仍待验证**：
 - [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验
@@ -96,7 +98,9 @@
 - [ ] 实测：Claude Projects、Codex Ultra 模式、Agent Teams 的成本和收益
 - [ ] 实测：Superpowers 在中型项目中的效果与开销
 - [ ] 实测：GLM-5.3 / Qwen 3.8 27B 配合 OpenCode 或 Pi 做日常开发
-- [ ] 实测：Claude Code 的 harness 开销（复现 Systima 的测量）
+- [x] ~~实测：Claude Code 的 harness 开销（复现 Systima 的测量）~~：已在云端环境复现，见 [19](19-experiments.md)
+- [ ] 实测：在本地机器（非云端会话）上重测 E1，区分云端额外工具带来的开销；`--bare` 模式下的最小开销
+- [ ] 实测：E2、E3 扩大样本（更多任务、更多仓库、Opus），以及“更难的 bug”下指令文件的作用
 - [ ] Gemini 4 Argon 开放后的评测
 - [ ] Godot 基金会博客原文（本轮只读到 PC Gamer 的转述）
 - [ ] GDC 2026 完整报告 PDF（本轮只读了官方摘要）；Faros 完整报告（只读了公开摘要）

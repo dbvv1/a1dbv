@@ -40,9 +40,9 @@
 | [05 Skills 与插件](docs/05-skills-and-plugins.md) | Agent Skills 规范、编写与评估方法、插件市场与值得装的东西 |
 | [06 Hooks 与护栏](docs/06-hooks-and-guardrails.md) | Hooks、权限模式、auto mode 实测数据、沙箱 |
 | [07 工作流](docs/07-workflows.md) | 验证闭环、探索-计划-实现、访谈式 Spec、TDD、SDD（含批评）、Ralph 循环、长时任务 harness |
-| [08 多 Agent 与并行](docs/08-multi-agent.md) | 5 种并行方式、编排工具、证据与适用边界 |
-| [09 评审与质量](docs/09-review-and-quality.md) | AI 代码评审、质量数据、给自己的 AI 配置做评估 |
-| [10 安全](docs/10-security.md) | 威胁模型、2026 真实事件、防护清单 |
+| [08 多 Agent 与并行](docs/08-multi-agent.md) | 5 种并行方式、“读并行、写串行”的证据、子 Agent 配置与委派写法、操作手册 |
+| [09 评审与质量](docs/09-review-and-quality.md) | 质量数据、托管评审的实际数据、REVIEW.md、分层评审流水线、给 AI 配置做评估 |
+| [10 安全](docs/10-security.md) | 威胁模型、真实事件与四个案例拆解、auto mode 误差、沙箱手册、CI 安全、参考架构、清单 |
 | [11 社区脉搏](docs/11-community-pulse.md) | 痛点排行、口碑、争议、生产力证据 |
 | [12 资源索引](docs/12-resources.md) | 一手信息源、技术社区、精选清单、如何持续跟进 |
 | [**13 前沿雷达**](docs/13-frontier-radar.md) | **最近 3–6 个月的大事件、价格战、新兴做法、争议，以及下季度值得关注的方向** |
@@ -51,6 +51,7 @@
 | [16 自建 Agent](docs/16-building-agents.md) | 什么时候值得自己搭；Claude Agent SDK / Tool Runner / Managed Agents 与 OpenAI Agents API / SDK / Codex SDK 的对比和选择 |
 | [**17 故障排查**](docs/17-troubleshooting.md) | Agent 跑偏怎么办：谎报完成、改测试、范围蔓延、过度请示、上下文腐化、API 幻觉、成本暴涨、破坏性操作……症状 → 原因 → 处理，附官方测试过的提示词 |
 | [18 团队落地与治理](docs/18-team-adoption.md) | 推广路线、准入与数据政策、配置治理、成本治理、度量、评审规范、人的成长、检查清单 |
+| [**19 实测记录**](docs/19-experiments.md) | 本仓库亲手跑的实验：harness 固定开销、指令文件长短对比、子 Agent 成本；含方法和复现步骤 |
 
 ### 分支：领域落地
 
@@ -64,7 +65,7 @@
 
 | 路径 | 内容 |
 |---|---|
-| [templates/](templates/README.md) | 通用项目模板（AGENTS.md、CLAUDE.md、settings、Hooks、Skills、Subagents）与个人全局模板 |
+| [templates/](templates/README.md) | 通用项目模板（AGENTS.md、CLAUDE.md、REVIEW.md、settings、Hooks、Skills、Subagents）与个人全局模板 |
 | [ai-config/](ai-config/README.md) + [scripts/](scripts/) | 本地 AI 配置的脱敏导出（白名单 + 密钥扫描） |
 
 ## 维护约定
