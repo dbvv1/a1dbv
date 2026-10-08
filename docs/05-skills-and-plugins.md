@@ -1,6 +1,6 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-03。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
+> 核实时间：2026-10-08。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
 
 ## 1. Agent Skills 规范要点
 
@@ -89,6 +89,26 @@ codex plugin add <plugin>@<marketplace>
 | [gstack](https://github.com/garrytan/gstack)（Garry Tan） | YC 总裁的个人“软件工厂”配置 | 👀 学习参考 |
 
 > ⚠️ **插件、Skill 本质上是给 Agent 的可执行指令加脚本**。官方建议：只从可信来源安装，安装前审阅内容（尤其是脚本依赖和让 Agent 访问外部网络的指令）。社区有扫描工具：[NVIDIA SkillSpector](https://github.com/NVIDIA/SkillSpector)，以及用于锁定 Skill 版本的 [SkilLock](https://github.com/skills-lock/skil-lock)。
+
+## 3.5 Skill 正在变成跨平台的“知识分发格式”（2026 下半年）
+
+| 平台 | Skill 的形态 | 来源 |
+|---|---|---|
+| Claude Code / Claude API | `SKILL.md` 文件夹；API 的 Skills 已结束 beta；Managed Agents 可以在会话开始时从 GitHub 仓库根目录的 `.claude/skills` 加载 | **[一手]** |
+| OpenAI | Agents API / Responses 支持 Skills；ChatGPT 插件把工具、Skill 和界面扩展打包在一起；Claude Code 插件也可以提交到 OpenAI 的插件目录 | developers.openai.com、learn.chatgpt.com **[一手]** |
+| Unity | 官方插件 33 个 Skill；`npx skills add Unity-Technologies/skills` 给其他 Agent 安装 | **[一手]** |
+| Unreal | 除了给 Claude Code 的 3 个 Skill，**引擎内部还有一套 Agent Skill**（Python 类或 UAsset），编辑器里的 Agent 通过 `AgentSkillToolset` 发现，“项目 Skill 优先于通用默认做法” | Epic 插件源码 **[一手]** |
+| Roblox | Studio MCP 提供 `skill` 工具，按需返回调试、设备模拟等参考资料 | **[一手]** |
+
+**Epic 给 Skill 作者的六条原则**（`unreal-skill` Skill，适用于任何平台）**[一手]**：
+- **Novel**：只写 Agent 不知道、用工具也查不到的东西；
+- **Collegial**：像给懂行的同事做简报，而不是写文档；
+- **Flexible**：概念解释和步骤说明按需混合；
+- **Durable**：不要写会变的属性名和工具名，否则改名后会悄悄失效；
+- **Agnostic**：不提编排系统、角色名、模型名；
+- **Parsimonious**：每个 token 都有成本，“删掉不会被想念的句子”。
+
+这和 [03](03-context-engineering.md) 的研究结论一致：**只写 Agent 猜不到的、写错代价大的**。
 
 ## 4. Skill、MCP、Subagent、Hook、CLAUDE.md 怎么选
 

@@ -1,6 +1,6 @@
 # 00 · AI Coding 现状总览（2026-10）
 
-> 核实时间：2026-10-05。评级与证据标记见 [docs/README](README.md#评级与证据体系)。最近 3 个月的事件、价格表和新做法见 **[13 前沿雷达](13-frontier-radar.md)**。
+> 核实时间：2026-10-08。评级与证据标记见 [docs/README](README.md#评级与证据体系)。最近 3 个月的事件、价格表和新做法见 **[13 前沿雷达](13-frontier-radar.md)**。
 
 ## 1. 格局：从“补全”到“Agent 舰队”
 
@@ -10,11 +10,13 @@
 2025  终端 Agent           Claude Code、Codex CLI、Gemini CLI；MCP 普及；Skills 出现
 2026  Agent 平台化         插件市场、后台/云端 Agent、多 Agent 编排、开放标准收敛、
                           auto mode（分类器代替人审批）、引擎/平台厂商官方入场
+2026 下半年  常驻 Agent      Dots、Claude Projects：有自己云端环境、在对话之间持续工作的 Agent；
+                          模型按角色分层（前沿模型 / 便宜模型 / 决策模型）
 ```
 
 今天主流 Coding Agent 的能力已经高度趋同 **[一手]**：它们都支持 MCP、Skills、Hooks、Subagents、Plan 模式、AGENTS.md、后台/云端任务、插件市场。两大厂商 issue 区里点赞最高的功能请求（Hooks、Subagents、Plan 模式、AGENTS.md、ACP）几乎都已实现（见 [11-community-pulse](11-community-pulse.md)）。**差异更多体现在模型、harness 细节、价格与额度上。**
 
-## 2. 七个关键趋势
+## 2. 九个关键趋势
 
 ### 2.1 开放标准收敛 ✅
 | 标准 | 作用 | 状态（2026-10） |
@@ -54,6 +56,15 @@ Claude Code 官方市场已有 **315 个插件** **[一手]**（含 13 个语言
 - Gemini CLI 2026 年 8–9 月的版本几乎全是安全加固（间接提示注入、MCP OAuth SSRF、凭证泄漏）**[一手]**。
 - **AI 实验室自己训练中的 Agent 突破了沙箱**：入侵 Hugging Face、往包仓库上传包，OpenAI、Anthropic、Google、Meta 都有案例 **[社区：原文]**。
 - 最强的前沿模型开始**先只对安全或政府用户开放**（Claude Mythos、Gemini 4 Argon）**[一手]**。
+
+### 2.8 从“会话”到“常驻 Agent”
+- OpenAI **Dots**（2026-09-29，DevDay）：由 GPT-6 Astra 驱动，有自己的云端电脑和浏览器，在对话之间持续推进工作，需要判断时再找你；Codex 新增**可复用的云端环境**和 Security Cloud 仓库扫描 **[一手：learn.chatgpt.com]**。
+- Anthropic **Claude Projects**、Managed Agents（托管的 Agent 运行环境）走的是同一方向 **[一手]**。
+- **含义**：Agent 越来越像“同事”而不是“工具”。真正的约束从“它能不能做”变成“**它的权限边界和汇报机制是否设计好**”（见 [10](10-security.md)、[16](16-building-agents.md)）。
+
+### 2.9 模型分层与“harness engineering”之争
+- 模型按角色分化：前沿模型做规划和难题；Haiku 5.5、GPT-6 Luna 这类便宜模型做子任务；2026-09 出现的**决策模型**（Jev、Clef 等）专做“从有限选项中选一个” → [02](02-models-and-cost.md#21-新类别决策模型2026-09-起)。
+- 围绕“软件工厂能不能不读代码”的争论：一方认为把 harness（工具、上下文、循环、验证器）做好就够了；HumanLayer 等人的反驳是，模型用“测试过没过”训练，**可维护性没有快速判定标准**，所以仍要人在前期定设计、按切片评审 → [13](13-frontier-radar.md#28-harness-engineering之争工程能不能替代读代码)、[14](14-synthesis.md)。
 
 ## 3. 共识（可以放心照做）
 

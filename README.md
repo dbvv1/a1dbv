@@ -3,7 +3,7 @@
 > 系统收集、验证、分析 **AI 辅助编程（AI Coding）** 的工具、方法与配置，追踪最前沿的进展。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**最近一次核实：2026-10-08**（第三轮：新增[深度分析](docs/14-synthesis.md)，把游戏开发分支扩展为跨引擎的 [domains/game-dev](domains/game-dev/README.md)，补上 10 月第一周的前沿动态）。每条结论都标注了证据等级，见 [评级与证据体系](docs/README.md#评级与证据体系)。
+**最近一次核实：2026-10-08**（第四轮：游戏分支压缩为“AI 与游戏开发怎么结合”，主干补上[按任务类型的打法](docs/15-task-playbooks.md)和[自建 Agent](docs/16-building-agents.md)，并同步了 OpenAI DevDay、Claude Code 2.1.294 等最新变化）。每条结论都标注了证据等级，见 [评级与证据体系](docs/README.md#评级与证据体系)。
 
 ---
 
@@ -16,7 +16,7 @@
 1. **验证闭环比模型选择更重要。** 给 Agent 一个它自己能跑的检查（测试、构建、截图），这是“得盯着它干活”和“可以放手”的分水岭。Fable 级模型（Opus 5.5、GPT-6 Astra）只要有**清晰的完成标准、约束和工具**，就能靠蛮力把问题做完，**定义问题**成了最核心的技能。→ [07](docs/07-workflows.md)、[13](docs/13-frontier-radar.md)
 2. **上下文和 token 都是成本。** 上下文越满，效果越差；实测 Claude Code 在你开口前就发送约 33k token，一个 72KB 的指令文件让每次请求多约 2 万 token，拆给子 Agent 后 token 会成倍增加。→ [03](docs/03-context-engineering.md)、[02](docs/02-models-and-cost.md)
 3. **指令文件（CLAUDE.md / AGENTS.md）主要提升效率，而不是正确率。** 2026 年的研究（读了原文）：LLM 生成的指令文件让成本增加 20% 以上，却不提高成功率；人写的略好但不显著；**仓库概览没用**；62% 的文件把 linter 该管的规则写了进去。写短、人工写、只写 Agent 猜不到的东西。→ [03](docs/03-context-engineering.md#22-指令文件到底有没有用研究证据)
-4. **价格战已经开打。** 2026-09 同档模型价格下降 40–50%；Opus 5.5 达到 Fable 5.1 的水平、价格更低；但订阅额度在收紧。开源权重模型（GLM-5.3、Qwen 3.8）逼近前沿。→ [02](docs/02-models-and-cost.md)
+4. **价格战已经开打，模型在按角色分层。** 2026-09 同档模型价格下降 40–50%；Opus 5.5 达到 Fable 5.1 的水平、价格更低；Haiku 5.5 降到 $0.10 / $0.50，适合做子 Agent；新出现的“决策模型”专做路由和分类。但订阅额度在收紧。开源权重模型（GLM-5.3、Qwen 3.8）逼近前沿。→ [02](docs/02-models-and-cost.md)
 5. **标准已经收敛，迁移成本很低。** AGENTS.md（Claude Code 原生读取）、Agent Skills、MCP（无状态版）、ACP；Codex 甚至能直接 `/import` Claude Code 的配置。→ [00](docs/00-state-of-ai-coding.md)
 6. **MCP 和 CLI 各有用处。** 强模型加 shell 的场景，CLI + Skill 更便宜、更好组合；小模型、本地模型和高风险环境里，MCP 更易审计、更好控制。→ [04](docs/04-mcp.md)
 7. **多 Agent 并行只对能拆分的任务有效。** 真实 Agent PR 的冲突率在 20–42%；按依赖关系切分任务比多开 Agent 更重要；瓶颈在理解和评审。→ [08](docs/08-multi-agent.md)
@@ -47,6 +47,8 @@
 | [12 资源索引](docs/12-resources.md) | 一手信息源、技术社区、精选清单、如何持续跟进 |
 | [**13 前沿雷达**](docs/13-frontier-radar.md) | **最近 3–6 个月的大事件、价格战、新兴做法、争议，以及下季度值得关注的方向** |
 | [**14 深度分析**](docs/14-synthesis.md) | **六条底层规律（现象 → 机制 → 推论 → 边界）、决策框架、成熟度路线，以及什么证据会推翻这些判断** |
+| [**15 按任务类型的打法**](docs/15-task-playbooks.md) | 理解代码、调试、新功能、重构、迁移、补测试、性能、评审、文档、原型：每类任务的风险、打法、验证和提示词 |
+| [16 自建 Agent](docs/16-building-agents.md) | 什么时候值得自己搭；Claude Agent SDK / Tool Runner / Managed Agents 与 OpenAI Agents API / SDK / Codex SDK 的对比和选择 |
 
 ### 分支：领域落地
 

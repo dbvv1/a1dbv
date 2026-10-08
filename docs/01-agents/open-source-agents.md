@@ -24,6 +24,24 @@
 - **想要“一切皆插件”、让 Agent 自己扩展界面和工具** → DeepSeek Harness（先评估数据合规）。
 - **想理解 Agent 原理、自己搭 harness，或配本地模型** → Pi，并配合阅读 [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code)（拆解 Coding Agent 的组成部分）。
 
+## 开源 Agent 的三个真实优势
+
+| 优势 | 证据 |
+|---|---|
+| **harness 开销小** | 同一模型、同样任务抓包对比：Claude Code 在你开口前发送约 33k token，OpenCode 约 7k；OpenCode 的提示前缀逐字节不变，缓存只写一次 **[社区：Systima 原文]** |
+| **可以接任何模型**，包括本地和国产 | HN“有人用本地模型做日常编码吗”（1318 票）的常见组合：Pi 或 OpenCode + llama.cpp / unsloth；Qwen Code 原生支持国产模型和钉钉、飞书 **[社区]** |
+| **能读源码、能改** | 出了问题可以看实现；DeepSeek Harness、Pi 都可以用插件或扩展改造界面和工具 |
+
+**但要清楚它的上限**：HN 的共识是家用硬件能跑的模型大约相当于 Haiku 4.5，接近前沿的开源模型约 1T 参数，家里跑不动；而且“**瓶颈常常在 harness 的体验**（排队、打断、子 Agent、目标管理），不在模型” **[社区]**。另一方面，厂商在自家 harness 里对模型做强化学习，第一方工具在工具调用的稳定性上通常更好（见 [14 规律五](../14-synthesis.md#5-规律五模型在商品化可迁移的工程资产在增值)）。
+
+## 评估一个开源 Agent 的清单
+
+1. **维护状态**：最近提交、发版节奏、issue 响应（Aider 已经明显放缓）；
+2. **安全默认值**：默认是否沙箱、是否逐步审批、是否默认开启遥测（DeepSeek Harness 桌面版默认开启）；
+3. **开放格式支持**：AGENTS.md、Agent Skills、MCP，决定你的配置能不能带走；
+4. **非交互模式**：能否在 CI 里无头运行并返回清楚的退出码；
+5. **用你自己的 5–10 个真实任务试**：同一个模型在不同 harness 里的表现差距可能很大，只有自己的任务能说明问题（方法见 [09 第 3 节](../09-review-and-quality.md#3-给自己的-ai-配置做评估)）。
+
 ## 共同注意事项
 
 1. 开源 Agent 的效果**强依赖所接的模型**：同一个 harness 接不同模型，差距可能很大。
@@ -32,4 +50,4 @@
 
 ## 来源
 
-各项目 GitHub 仓库 README（2026-10-03 读取）；Pi 相关：[Earendil：You said no MCP](https://earendil.com/posts/you-said-no-mcp/)、[Latent Space：Pi 1.0, Pi Durable](https://www.latent.space/p/ainews-pi-10-pi-durable-and-aie-nyc)、HN：[Ask HN：本地模型](https://news.ycombinator.com/item?id=48542100)；DeepSeek Harness：[官网](https://www.deepseek.com/en/harness/)、[HN 讨论](https://news.ycombinator.com/item?id=49929489)。
+各项目 GitHub 仓库 README（2026-10-03 读取）；Pi 相关：[Earendil：You said no MCP](https://earendil.com/posts/you-said-no-mcp/)、[Latent Space：Pi 1.0, Pi Durable](https://www.latent.space/p/ainews-pi-10-pi-durable-and-aie-nyc)、HN：[Ask HN：本地模型](https://news.ycombinator.com/item?id=48542100)；[Systima token 开销实测](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)；DeepSeek Harness：[官网](https://www.deepseek.com/en/harness/)、[HN 讨论](https://news.ycombinator.com/item?id=49929489)。

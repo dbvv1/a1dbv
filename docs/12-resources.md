@@ -83,6 +83,8 @@
 
 **2026-10-08 第三轮已完成**：克隆阅读了 Epic 的 Unreal 插件和 Claude 官方插件市场清单；读了 Roblox Studio MCP 和 Blender Lab MCP 的官方文档；读了 GDC 2026 调查摘要和 Steam AI 游戏全量统计原文；读了 HumanLayer《Why Software Factories Fail》、Lilian Weng 的 harness 文章、Will Larson 的软件工厂实验、Scale X 审批数据、Cloudflare Clef 博客、Mistral Large 4 文档、Claude Code 2.1.292–2.1.293 changelog；读了 HN 上 Godot 禁止 AI 代码、AI 试玩、Dots、DeepSeek Harness、Wikimedia 等讨论。
 
+**2026-10-08 第四轮已完成**：游戏分支压缩为“AI 与游戏开发的结合”；主干新增 [15 按任务类型的打法](15-task-playbooks.md)、[16 自建 Agent](16-building-agents.md)；读了 OpenAI DevDay 2026、Agents、Decisions、Codex SDK 官方文档，Claude Code 2.1.289–2.1.294 和 Gemini CLI v0.63 changelog，以及 Claude API 官方 Skill 中关于 Agent 设计和 Managed Agents 的说明。
+
 **仍待验证**：
 - [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验
@@ -97,7 +99,8 @@
 - [ ] Godot 基金会博客原文（本轮只读到 PC Gamer 的转述）
 - [ ] GDC 2026 完整报告 PDF（本轮只读了官方摘要）；Faros 完整报告（只读了公开摘要）
 - [ ] TypeSafe Jev 的官方技术说明和独立评测（本轮只有二手报道）
-- [ ] OpenAI Dots、GPT-6 for everyone 的官方页面（openai.com 对本环境返回 403，只读了 HN 引述）
+- [x] ~~OpenAI Dots 的官方说明~~：已通过 learn.chatgpt.com 的 Markdown 版读到（在 URL 后加 `.md`）；openai.com 新闻页仍返回 403
+- [ ] GPT-6 全量开放和 Intelligent UI 的官方说明
 - [ ] Unreal 5.8 MCP 的官方发布说明（本轮只确认了插件位于 Experimental 目录）
 - [ ] 实测：在 Unity 项目中做“Agent 可试玩”改造（状态导出 + 输入注入 + 场景加载）的成本和效果
 - [ ] 实测：用决策模型（Clef / Strands Decider）做 NPC 决策原型，和行为树对比

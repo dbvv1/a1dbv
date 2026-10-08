@@ -1,6 +1,6 @@
 # 11 · 社区脉搏
 
-> 核实时间：2026-10-05。
+> 核实时间：2026-10-08（第 1 节的 issue 排行是 2026-10-03 的快照；第 5、7 节加入了 10 月第一周的讨论）。
 > 数据来源：GitHub issue 区、HN（经 Algolia API 读取原帖和高赞评论）、Lobsters、V2EX、METR 和 GitClear 原始报告，均为直接读取。
 > 局限：Reddit 和 linux.do 拦截机房 IP，本轮未覆盖。最近 3 个月的事件和新做法见 [13 前沿雷达](13-frontier-radar.md)。
 
@@ -76,8 +76,22 @@
 | 多 Agent 并行是否值得 | 分布式系统问题、评审瓶颈 | [08](08-multi-agent.md) |
 | 指令文件有没有用 | 研究显示对正确率影响很小 | [03](03-context-engineering.md#22-指令文件到底有没有用研究证据) |
 | 模型的“性格” | 附和、口头禅、话太多；社区写了专门的提示词来纠正 | — |
+| 软件工厂能不能不读代码 | HumanLayer 复盘全自动实验以重写告终 vs “做好 harness 就行” | [13](13-frontier-radar.md#28-harness-engineering之争工程能不能替代读代码)、[14](14-synthesis.md) |
+| 记忆还是文档 | 记忆插件是“RAG 抽奖”，该沉淀的是仓库里的文档和 lint 规则 | [03](03-context-engineering.md#4-跨会话记忆) |
+| 人工审批是否可靠 | 4 万局数据：漏掉 1/3 的威胁；“靠用户永不出错的安全模型从没成功过” | [10](10-security.md#2-2026-年的真实事件与研究) |
 
-## 6. 中文社区（V2EX 直接读取）
+## 6. 2026-10 第一周的社区情绪 **[社区：HN 原帖与评论]**
+
+| 话题 | 观点分布 | 对实践的含义 |
+|---|---|---|
+| **成本清算**（Meta、微软被报道压缩员工的 Claude 用量，HN 287 分） | 从“鼓励 tokenmaxxing”转向“管理层出面控成本” | 团队要有按项目、按人的用量度量，以及硬性上限（见 [02](02-models-and-cost.md#3-订阅额度与成本控制)） |
+| **编程还好玩吗**（《Vibecoding isn't as fun as writing code by hand》192 分；Haskell 社区《How to keep enjoying programming in a world of LLMs》353 分） | 两极分化：有人觉得“讨厌的部分一夜之间消失了”，领域专家说“终于能实现以前要雇人才能做的想法”；也有人担心**技能退化**（“连一个很小的项目都突然想不清架构”）；有人预测 12 个月内会回摆到“手写为主 + AI 结对” | 关键模块保持亲手写和亲手读；把 AI 当结对而不是代写，是可持续的折中（见 [14 第 10 节](14-synthesis.md#10-几个反直觉的结论)） |
+| **隐私**（Anthropic 向警方报告用户的“日记”内容，829 分） | 一方理解“不报告也会被骂”；另一方提醒“你不是在和秘密好友聊天，而是在和大科技公司聊天”，并转向本地模型 | 敏感内容不要放进云端对话；企业用户要了解数据保留和合规条款（见 [10](10-security.md)） |
+| **常驻 Agent 的锁定风险**（OpenAI Dots，769 分） | 担心集成、工作历史都在对方云上，难以迁移；也有人认为多个常驻 Agent 分工协作很有价值 | 配置和知识沉淀在开放格式里（AGENTS.md、Skills、MCP），降低迁移成本 |
+| **开源 harness 的数据流向**（DeepSeek Harness，416 分） | 桌面版默认开启遥测，有人给出关闭方法；也有人质疑二进制和插件自更新的安全性 | 安装前看遥测和更新机制；企业环境要有允许使用的工具清单 |
+| **欧洲模型**（Mistral Large 4，1997 分） | 欢迎开源权重和欧洲主权；也有人认为进步慢于中美 | 有数据主权要求的团队多了一个开源权重选项 |
+
+## 7. 中文社区（V2EX 直接读取）
 
 - **封号**：中文用户频繁遇到 Claude 账号被封（有人用了两年的 Max 订阅号在半夜被封）。社区推测与使用语言、额度用满、作息异常有关，但官方没有解释。实用建议：定期备份 `~/.claude` 下的会话记录（默认只保留 30 天，可以调整）。
 - **额度“重置”**：10 月 3 日 Codex 重置后，多人反馈总额度大约打了六折；也有人认为 GPT-6.1 Sol 很耐用，Astra 配合 6.1 Sol 使用最划算。
@@ -91,4 +105,5 @@
 - HN：[Ask HN: Is Codex really on par with Claude Code?](https://news.ycombinator.com/item?id=47750069)、[Ask HN: Claude Code or Codex?](https://news.ycombinator.com/item?id=48989357)、[Claude Code now reads AGENTS.md](https://news.ycombinator.com/item?id=49760187)
 - [Cursor 论坛：Pricing megathread](https://forum.cursor.com/t/pricing-megathread-and-q-a/116395)
 - METR：[2025 RCT](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)、[2026-02 实验设计更新](https://metr.org/blog/2026-02-24-uplift-update/)、[2026-05 问卷](https://metr.org/blog/2026-05-11-ai-usage-survey/)
+- HN（10 月）：[Meta 和微软压缩 Claude 用量](https://news.ycombinator.com/item?id=49997161)、[Vibecoding isn't as fun](https://news.ycombinator.com/item?id=49979306)、[How to keep enjoying programming](https://news.ycombinator.com/item?id=49854875)、[Anthropic 报告用户日记](https://news.ycombinator.com/item?id=49961057)、[Dots](https://news.ycombinator.com/item?id=49896604)、[DeepSeek Harness](https://news.ycombinator.com/item?id=49929489)、[Mistral Large 4](https://news.ycombinator.com/item?id=49977979)
 - [2x, not 10x](https://obryant.dev/p/2x-not-10x/)、V2EX：[封号](https://www.v2ex.com/t/1246477)、[额度](https://www.v2ex.com/t/1246316)、[团队失控](https://www.v2ex.com/t/1246486)

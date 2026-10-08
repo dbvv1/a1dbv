@@ -1,6 +1,6 @@
 # 06 · Hooks、权限与护栏
 
-> 核实时间：2026-10-05。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
+> 核实时间：2026-10-08。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
 
 ## 1. 为什么需要 Hooks
 

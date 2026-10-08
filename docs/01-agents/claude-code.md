@@ -1,23 +1,26 @@
 # Claude Code
 
-> 核实时间：2026-10-05（最新版本 v2.1.288）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
+> 核实时间：2026-10-08（最新版本 v2.1.294）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
 > 评级：✅ **采用**（主力 Agent 首选之一）
 
 ## 1. 定位
 
 Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多步自主完成任务。可在终端、VS Code、JetBrains、桌面 App、Web（claude.ai/code，云端容器）、手机 App 上使用。它的扩展体系（CLAUDE.md、Skills、Hooks、Subagents、MCP、插件、LSP、Mods）是目前最完整的。
 
-## 2. 模型与价格（v2.1.280–2.1.284 changelog）
+## 2. 模型与价格（v2.1.280–2.1.293 changelog）
 
 | 模型 | ID | 上下文 | 价格（输入/输出，每百万 token） | 缓存读取 |
 |---|---|---|---|---|
 | Fable 5.1 | `claude-fable-5-1` | 1M | $10 / $50 | $0.25 |
 | Opus 5.5（默认 Opus） | `claude-opus-5-5` | 1M | $4 / $20 | $0.20 |
-| Sonnet 5.5（默认 Sonnet） | `claude-sonnet-5-5` | 1M | $2 / $10 | $0.20 |
+| Sonnet 5.5（默认 Sonnet） | `claude-sonnet-5-5` | 1M | $2 / $10 | $0.10（2026-10 减半） |
+| **Haiku 5.5**（默认 Haiku，v2.1.293） | `claude-haiku-5-5` | 1M | $0.10 / $0.50（超过 10 万 token 的请求为 $0.50 / $2.50） | — |
 
 - `/model` 切换模型，`/effort` 调推理强度（low → max），`maxEffortLevel` 可设上限。
 - 订阅用户（Pro/Max）受 5 小时与每周额度限制，这是社区头号痛点（见 [11](../11-community-pulse.md)）。
 - `/cost` 能看到 prompt cache 命中率和缓存未命中的可能原因（v2.1.260）；`promptCacheTtl` 可设为 1 小时。
+- **子 Agent 可以单独指定 effort**（v2.1.292，Agent 工具的 `effort` 参数）：配合 Haiku 5.5，可以让检索类子 Agent 用便宜模型、低 effort，主会话用 Opus 5.5。
+- Max 和 Team 订阅开始每月附带 API 额度（Max 5x 100 美元、Max 20x 200 美元、Team 最多 500 美元）**[一手：Anthropic 公告]**。
 
 ## 3. 能力全景
 
@@ -68,6 +71,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | `/insights` | 回顾近期会话，估算 auto mode 能省掉多少次确认 |
 | `/fewer-permission-prompts` | 扫描历史，生成只读命令白名单 |
 | `claude plugin validate / eval` | 校验插件，并对插件跑评测打分 |
+| `/code-review --max-findings <n>\|all` | 控制评审报告的问题数量；中等 effort 下对 Opus 5.5 和 Sonnet 5.5 也会报告清理类问题和违反 CLAUDE.md 约定的问题（v2.1.290） |
 
 ## 4. 用法要点（官方最佳实践精华）
 
@@ -88,6 +92,11 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | **auto mode 成为默认**（2026-08） | 交互会话默认由分类器审批 | [一手] |
 | **Claude Projects**（2026-09 公测） | 在桌面 App 和 Web 中，一个对话就是一个项目，Claude 自动拆成线程、作为并行云端会话运行，你离开后也继续 | [一手] |
 | **Mods**（v2.1.287） | 用 TypeScript 修改界面和更深层的行为，社区已经做出了在 Claude Code 里跑的俄罗斯方块 | [一手] |
+| **Claude Mods 与内置的“You should know”**（v2.1.287–2.1.289） | Mods 让插件可以修改更深层的行为；内置 Mod“You should know”让一个旁观的子 Agent 帮你盯住你和 Claude 可能遗漏的事（`/plugin enable cc-plugin-you-should-know@builtin`） | [一手] |
+| **Managed Agents 接入**（v2.1.290） | `/claude-api managed-agents-onboard` 可以把文档或控制台模板直接变成托管 Agent 的配置（见 [16 自建 Agent](../16-building-agents.md)） | [一手] |
+| 无人值守和交互会话区别对待（v2.1.289–2.1.290） | 后台命令的时间限制只用于 `-p`、Agent SDK、CI 和云端会话；WebSearch 额度改为按小时恢复（每小时 100 次） | [一手] |
+| auto mode 的长会话处理（v2.1.289） | 会话太长、客户端安全分类器审不过来时，会先压缩而不是逐次弹出确认或失败 | [一手] |
+| 自然语言写的 Hook 更可靠（v2.1.294） | 修复了写成指令（如“Block commands that…”）的 `prompt` / `agent` Hook 放行了本该拦截的操作；Stop Hook 写成“构建失败就继续”时，Claude 更少提前停下 | [一手] |
 | 原生读取 AGENTS.md（v2.1.277） | 早期版本曾出现“只在开启遥测时才读 AGENTS.md”的 bug，已修复 | [一手 + 社区] |
 
 **Opus 5.5 的官方用法建议**（[Getting the most out of Opus 5.5](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)）**[一手]**：

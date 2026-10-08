@@ -1,11 +1,11 @@
 # Gemini CLI 与 Antigravity
 
-> 核实时间：2026-10-03。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.61）**[一手]**。
+> 核实时间：2026-10-08。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
 > 评级：🧪 **试用**（预算敏感、多模态、Google 生态）
 
 ## 1. 基本情况
 
-- 开源（Apache-2.0），`npm install -g @google/gemini-cli`；最新稳定版 **v0.61.0（2026-09-23）**，基本每周一个版本。
+- 开源（Apache-2.0），`npm install -g @google/gemini-cli`；最新稳定版 **v0.63.0（2026-10-06）**，基本每周一个版本。
 - **免费额度**：个人 Google 账号每分钟 60 次、每天 1000 次请求；Gemini 3 系列模型，1M 上下文。
 - 文档站：[geminicli.com/docs](https://geminicli.com/docs/)。
 
@@ -25,6 +25,7 @@ ACP 模式、auto memory（带“收件箱”审阅流程）、checkpointing 与
 | v0.44 | 05-27 | Unified Auto Mode；Sublime Text / Emacs 集成 |
 | v0.54 | 08-06 | 集成 **Antigravity agent runner** 做 PR 自动化 |
 | v0.58–0.61 | 09 | **几乎全是安全加固**：symlink 与容器 socket 隔离、MCP OAuth SSRF、workspace trust 改为默认拒绝、扩展环境变量需授权、通过构建文件与不可信参数的**间接提示注入** |
+| v0.63 | 10-06 | **非交互模式下可以自主执行计划**（无人值守的多步工作流不再需要逐步确认）；限制工具输出大小、优化长时间 Agent 循环的内存；修复无头环境下的认证死循环 |
 
 > **解读**：8–9 月密集的安全修复说明 Coding Agent 已成为真实的攻击目标（另见 [10-security](../10-security.md)）。无论用哪家，都要保持更新。
 

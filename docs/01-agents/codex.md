@@ -1,6 +1,6 @@
 # OpenAI Codex（CLI / App / Cloud）
 
-> 核实时间：2026-10-05。依据 [openai/codex 源码](https://github.com/openai/codex)和 [Releases](https://github.com/openai/codex/releases)，以及官方文档（**已迁移到 [learn.chatgpt.com](https://learn.chatgpt.com/llms.txt)**，在页面地址后加 `.md` 可以拿到 Markdown 原文）**[一手]**。
+> 核实时间：2026-10-08。依据 [openai/codex 源码](https://github.com/openai/codex)和 [Releases](https://github.com/openai/codex/releases)，以及官方文档（**已迁移到 [learn.chatgpt.com](https://learn.chatgpt.com/llms.txt)**，在页面地址后加 `.md` 可以拿到 Markdown 原文）**[一手]**。
 > 评级：✅ **采用**（主力或交叉评审）
 
 ## 1. 形态与入口
@@ -52,6 +52,20 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 ### 源码里能看到的模块
 `codex-rs/` 下有：`code-mode`、`memories`、`agent-roles`、`agent-message-board`、`hooks`、`skills`、`plugin`、`worktree`、`cloud-tasks`、`external-agent-migration`、`ollama` / `lmstudio`、`windows-sandbox-rs` 等。功能开关里还能看到 `Goals`、`BrowserUse`、`ComputerUse`、`MemoryTool`、`GuardianApproval` 等 **[一手]**。
 
+## 3.5 DevDay 2026（2026-09-29）的变化 **[一手：learn.chatgpt.com]**
+
+| 变化 | 说明 |
+|---|---|
+| **GPT-6.1 Sol** | “接近 Astra 的性能、更低的价格”，用于复杂编码；API 里支持 Responses 的多 Agent beta 和欧盟数据驻留 |
+| **Astra Ultrafast** | Codex 和 Work 中更快的 GPT-6 Astra，只对 500 美元/月的 Pro 档和部分企业、教育计划开放 |
+| **可复用的云端环境** | 描述开发环境 → Codex 准备并测试 → 发布；之后的新任务都在用这个文件系统的隔离工作区里启动，电脑休眠时云端任务也能继续 |
+| **Codex Security Cloud**（研究预览） | 扫描已连接的 GitHub 仓库或监控新提交，给出发现、验证证据和补丁，再创建草稿 PR |
+| **Dots**（常驻 Agent） | 由 GPT-6 Astra 驱动，有自己的云端电脑和浏览器；在对话之间持续推进工作，需要判断时再找你；可以连接一台本地电脑；在 Codex 或 Work 里启动的任务照常计入额度 |
+| **企业 Agent Security** | 统一管控本地和 Codex Cloud 执行时能用的工具、文件和网络访问 |
+| **MCP Events** | 让 ChatGPT 订阅 MCP 服务器的事件并据此行动（要求 MCP 2.0，基于草案规范的 webhook 投递） |
+
+**含义**：OpenAI 在把 Codex 从“你发起的会话”推向“**常驻、云端、有自己环境的 Agent**”，和 Claude Projects 是同一个方向（见 [13](../13-frontier-radar.md#24-云端大脑本地双手会话管理正在被托管)）。
+
 ## 4. 优势与短板
 
 **优势**
@@ -73,6 +87,8 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 - 在 Claude Code 中调用 Codex：社区有 [skill-codex](https://github.com/skills-directory/skill-codex)。
 
 ## 来源
+
+- [learn.chatgpt.com：What's new](https://learn.chatgpt.com/docs/whats-new)、[DevDay 2026](https://learn.chatgpt.com/docs/whats-new/devday-2026)、[Dots](https://learn.chatgpt.com/docs/dots)（Markdown 版：在 URL 后加 `.md`）
 
 - [openai/codex](https://github.com/openai/codex)、[Releases](https://github.com/openai/codex/releases)、[Issues（按点赞排序）](https://github.com/openai/codex/issues?q=is%3Aissue%20sort%3Areactions-%2B1-desc)
 - 官方文档：[What's new](https://learn.chatgpt.com/docs/whats-new)、[Models](https://learn.chatgpt.com/docs/models)、[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)、[AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Import](https://learn.chatgpt.com/docs/import)

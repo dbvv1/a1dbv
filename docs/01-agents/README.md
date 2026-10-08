@@ -1,6 +1,6 @@
 # 01 · Coding Agent 对比与选型
 
-> 核实时间：2026-10-05。功能变化以周计，以各自 changelog 为准；最新动态见 [13 前沿雷达](../13-frontier-radar.md)。
+> 核实时间：2026-10-08。功能变化以周计，以各自 changelog 为准；最新动态见 [13 前沿雷达](../13-frontier-radar.md)。
 
 ## 深度页
 
@@ -17,7 +17,7 @@
 | 维度 | Claude Code | Codex | Gemini CLI | OpenCode |
 |---|---|---|---|---|
 | 厂商 / 许可 | Anthropic / 闭源（插件与 mods 源码公开） | OpenAI / 开源（Rust） | Google / Apache-2.0 | 社区 / 开源 |
-| 主力模型 | Claude Opus 5.5 / Sonnet 5.5 / Fable 5.1 / Haiku | GPT-6.1 Sol / GPT-6 Sol、Luna、Astra（GPT-5.5 于 10-14 退役） | Gemini 3.x（Gemini 4 Argon 尚未开放） | 任意（BYOK、本地模型） |
+| 主力模型 | Claude Opus 5.5 / Sonnet 5.5 / Fable 5.1 / Haiku 5.5 | GPT-6.1 Sol / GPT-6 Sol、Luna、Astra（GPT-5.5 于 10-14 退役） | Gemini 3.x（Gemini 4 Argon 尚未开放）；v0.63 起非交互模式可自主执行计划 | 任意（BYOK、本地模型） |
 | 订阅可用 | Pro / Max / Team / Enterprise | ChatGPT Free / Go / Plus / Pro（$200、$500）/ Business / Enterprise | 个人 Google 账号有免费额度 | 取决于所接的服务商 |
 | 指令文件 | CLAUDE.md（+ AGENTS.md，v2.1.277 起）、`.claude/rules/` 按路径生效 | AGENTS.md | GEMINI.md（可配置） | AGENTS.md |
 | Skills | ✅（规范起源方，扩展字段最多） | ✅ | ✅ | ✅ |
@@ -28,8 +28,9 @@
 | 沙箱 | macOS Seatbelt / Linux bubblewrap，可配网络白名单 | 默认沙箱（macOS Seatbelt / Linux bubblewrap / Windows sandbox） | Seatbelt / Docker | — |
 | 自动审批 | auto mode（分类器，2026-08 起默认） | Auto-review 审查 Agent（`approvals_reviewer = "auto_review"`，策略开源） | Unified Auto Mode | — |
 | 回滚 | checkpoint + `/rewind` | `/undo` 被移除（issue #9203），`/rewind` 未实现（issue #11626） | checkpointing + rewind | — |
-| 云端 / 远程 | Web、手机、Remote Control、Routines、**Projects**（云端并行线程） | Codex Cloud、ChatGPT 桌面 App、Ultra 多 Agent 模式 | — | 桌面 App（Beta） |
+| 云端 / 远程 | Web、手机、Remote Control、Routines、**Projects**（云端并行线程） | Codex Cloud（**可复用的云端环境**，2026-09）、ChatGPT 桌面 App、Ultra 多 Agent 模式、常驻 Agent **Dots** | — | 桌面 App（Beta） |
 | Harness 开销 | 开口前约 33k token（Systima 实测） | — | — | 约 7k token |
+| 程序化调用 | `claude -p`、Claude Agent SDK、Managed Agents（见 [16](../16-building-agents.md)） | `codex exec`、Codex SDK、app-server、Agents API | 非交互模式 | `opencode run` 等 |
 | 跨工具迁移 | 读 AGENTS.md | `/import` 可导入 Claude Code、Cursor 的配置 | — | 读 AGENTS.md |
 
 **[一手]** 各列均来自对应仓库源码、changelog 或官方文档；Harness 开销来自 Systima 的抓包实测 **[社区：原文]**。

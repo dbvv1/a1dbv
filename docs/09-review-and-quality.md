@@ -26,7 +26,7 @@
 ### 本地 / 会话内
 | 手段 | 说明 | 评级 |
 |---|---|---|
-| `/code-review`（Claude Code 内置） | 在新鲜上下文里审当前 diff 找 bug；`--max-findings` 控制数量 | ✅ |
+| `/code-review`（Claude Code 内置） | 在新鲜上下文里审当前 diff 找 bug；`--max-findings` 控制数量；v2.1.290 起中等 effort 下对 Opus 5.5 / Sonnet 5.5 也会报告清理类问题和违反 CLAUDE.md 约定的问题 | ✅ |
 | `/code-review ultra` / `claude ultrareview` | 云端多 Agent 深度评审，会验证发现的问题；CLI 形式可放进 CI | 🧪 |
 | `/security-review`、`security-guidance` 插件 | 安全审查；后者在编辑时就提示 9 类常见风险 | 🧪 |
 | `/simplify` | 只看复用、简化、效率，不找 bug | 🧪 |
@@ -45,6 +45,7 @@ Anthropic 给 Opus 5.5 的评审提示：“Review the diff on this branch again
 | Codex `/review`、Codex Cloud | 与 ChatGPT 订阅绑定 | 🧪 |
 | Cursor Bugbot / Security Review / Rollouts | Bugbot 2026-05 改为按次计费（约 1–1.5 美元/次），社区不满；2026-09 新增安全评审和部署监控机器人（Teams / Enterprise） | 👀 |
 | Codex `@codex review` / `@codex security review` | 可以在 AGENTS.md 里写自定义评审规则 | 🧪 |
+| **Codex Security Cloud**（研究预览，2026-09 DevDay） | 扫描已连接的 GitHub 仓库或监控新提交，给出发现、**验证证据**和补丁，再生成草稿 PR | 👀 **[一手]** |
 | CodeRabbit、Greptile、Qodo | 第三方评审服务，都有 Claude Code 官方插件 | 👀 |
 
 ## 3. 给自己的 AI 配置做评估
