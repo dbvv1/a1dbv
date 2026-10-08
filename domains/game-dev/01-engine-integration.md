@@ -1,4 +1,4 @@
-# 各引擎的 Agent 工具链对比与设计分析
+# 引擎接入：让 Agent 操作游戏引擎
 
 > 核实时间：2026-10-08。
 > 依据 **[一手]**：
@@ -7,7 +7,8 @@
 > - Blender Lab 的 [MCP Server 页面](https://www.blender.org/lab/mcp-server/)；
 > - Claude 官方插件市场的 `marketplace.json`（共 315 个插件，游戏相关的只有 Unity 和 Unreal 两个官方插件）。
 >
-> Unity 的细节见 [unity/01-toolchain.md](unity/01-toolchain.md)，Unreal 的细节见 [unreal/01-toolchain.md](unreal/01-toolchain.md)，本页只做横向比较。
+> 为什么需要专门的接入：游戏的场景和资产不是纯文本（Unity 是引用脆弱的 YAML，Unreal 是二进制），Agent 不能手改，只能通过引擎的接口操作。
+> Unity 的细节见 [unity/01-toolchain.md](unity/01-toolchain.md)，Unreal 的细节见 [unreal/01-toolchain.md](unreal/01-toolchain.md)，本页做横向比较。
 
 ## 1. 总览
 
@@ -61,25 +62,28 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 | **按需发现，不一次性塞满工具** | Skill 按需加载 | 3 个元工具 + `describe_toolset` | 工具数适中，用 `skill` 工具提供参考资料 | 工具定义占上下文，还会破坏提示缓存（见主干 [03](../../docs/03-context-engineering.md)、[04](../../docs/04-mcp.md)） |
 | **显式指定目标实例** | `--project-path` | 端口和 URL | `studio_id` | 编辑器是有状态的，多开时不能靠“当前会话” |
 | **区分“连上了”和“真的在运行”** | `frameCount` 和 `playerLoopTicking` | 代理在线不代表 Unreal 可达，要用只读调用确认 | `get_studio_state` | 编辑器可能卡住、在编译、在 PIE |
-| **把验证做成工具** | `unity test`、Play 模式检查 | 自动化测试工具集、Live Coding 诊断 | `playtest` 子 Agent、输入模拟、控制台输出 | Agent 能自己验证，才能放手（见 [03 验证与试玩](03-verification-and-playtesting.md)） |
+| **把验证做成工具** | `unity test`、Play 模式检查 | 自动化测试工具集、Live Coding 诊断 | `playtest` 子 Agent、输入模拟、控制台输出 | Agent 能自己验证，才能放手（见 [02 验证与试玩](02-verification-and-playtesting.md)） |
 | **修改有风险，要有恢复点** | 版本控制是前提 | 先存盘 | 只连信任的客户端 | 编辑器修改不一定能撤销 |
 
-## 3. 引擎对 Agent 友好程度的结构性差异
+## 3. 引擎选择对 AI coding 的影响
 
 同样的模型，在不同引擎里效果差很多。原因主要是结构性的，不是模型的问题 **[经验：综合官方文档和社区反馈]**：
 
-| 维度 | 对 Agent 友好 | 对 Agent 不友好 |
-|---|---|---|
-| 场景和资产格式 | 纯文本、引用简单（Godot 的 `.tscn`；有社区评论说这让 Godot 成了最适合 AI 辅助的引擎之一 **[社区]**） | 二进制（Unreal 的 `.uasset`）；文本但引用脆弱（Unity YAML 里的 fileID 和 GUID） |
-| 逻辑放在哪里 | 代码（C#、GDScript、Luau、Rust） | 可视化脚本（蓝图）：只能通过编辑器工具改，diff 和评审都困难 |
-| 无头测试 | 有命令行测试运行器、退出码清楚 | 只能在编辑器里点 |
-| 编译和重载速度 | 秒级（热重载、Live Coding） | 分钟级（完整编译、domain reload） |
-| 官方 Agent 工具 | 有，而且能驱动运行中的编辑器 | 只能靠社区桥接 |
+| 因素 | Unity | Unreal | Godot | 自研 / Bevy / Web |
+|---|---|---|---|---|
+| 模型熟悉程度 | **高**：C# 和 Unity 的代码语料极多 | 中：宏多（`UCLASS`、`UPROPERTY`），**版本间 API 变化大**，模型容易写出旧 API | 中低：GDScript 语料少，Godot 3 → 4 变化大，常被混用 | 取决于语言 |
+| API 的“真相来源” | 引擎闭源，只有 C# 参考源码 | **安装版自带引擎头文件**，让 Agent grep 头文件是对付 API 幻觉最有效的手段 | 开源 | 自己的代码 |
+| 场景和资产格式 | YAML 文本，但 fileID / GUID 引用脆弱 → 禁止手改 | **二进制** → 只能通过编辑器工具 | `.tscn` 纯文本，最友好（社区评价 **[社区]**） | 通常是代码或文本 |
+| 逻辑在哪里 | C# 为主 | **C++ 和蓝图混合**，蓝图逻辑对通用编码 Agent 不可见 | GDScript / C# | 代码 |
+| 编译反馈 | `unity recompile` 秒级；domain reload | Live Coding 秒级（只限函数体）；改头文件要完整编译，分钟级 | 脚本即改即用 | 取决于工具链 |
+| 无头测试 | `unity test`，退出码清楚 | `UnrealEditor-Cmd` 加自动化测试，JSON 报告 | 社区方案 | 通常最容易 |
+| 官方 Agent 接入 | Unity CLI + 33 个 Skill | 编辑器内置 MCP（实验性），**打包版也能托管** | 无 | — |
 
 **推论**：
-- **二进制资产多、蓝图多的 Unreal 项目，更依赖官方 MCP**：Agent 读不了 `.uasset`，只能通过编辑器工具操作。
+- **UE 项目的 AI 化程度，取决于“逻辑有多少在 C++ 里”**。蓝图越重，越依赖官方 MCP；C++ 越多，通用编码 Agent 越能发挥。
 - **Unity 项目要坚持“逻辑写在纯 C# 里”**：这一条同时提高可测试性和 Agent 的效率（见 [unity/02](unity/02-large-project-guide.md#4-测试)）。
-- **自研引擎和纯代码框架（Bevy、Web 游戏）反而最省事**：一切都是代码，Agent 用通用的编码工作流就行。难点从“怎么接编辑器”变成“怎么验证运行时行为”。
+- **UE 项目要在 AGENTS.md 里写明引擎源码位置**，并要求“不确定的 API 先查头文件”。
+- **自研引擎和纯代码框架（Bevy、Web 游戏）反而最省事**：一切都是代码，难点从“怎么接编辑器”变成“怎么验证运行时行为”。
 
 ## 4. 选型建议
 
@@ -103,3 +107,4 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 - [Blender Lab：MCP Server](https://www.blender.org/lab/mcp-server/)；[ahujasid/blender-mcp](https://github.com/ahujasid/blender-mcp)
 - [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official)（`marketplace.json`）
 - HN：[Godot 不再接受 AI 代码](https://news.ycombinator.com/item?id=48743472)（关于 Godot 文本场景格式的评论）
+- 引擎份额：[VG Insights：The Big Game Engine Report of 2025（PDF）](https://app.sensortower.com/vgi/assets/reports/The_Big_Game_Engines_Report_of_2025.pdf)、[GDC 2026 State of the Game Industry](https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/)

@@ -98,7 +98,7 @@ codex plugin add unity@unity-agent-plugin
 
 ### 1.4 其他官方
 - [Unity-Technologies/industry-ai-workflows](https://github.com/Unity-Technologies/industry-ai-workflows)：实验性插件市场，面向 Asset Manager、Asset Transformer（CAD/3D 处理）、管线自动化。
-- Claude 官方市场里还有 Epic 的 `unreal-engine-skills-for-claude-code`，和 Unity 方案的对比见 [02 引擎工具链对比](../02-engines-and-agent-tooling.md)。
+- Claude 官方市场里还有 Epic 的 `unreal-engine-skills-for-claude-code`，和 Unity 方案的对比见 [01 引擎工具链对比](../01-engine-integration.md)。
 
 ## 2. 社区 MCP
 

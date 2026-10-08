@@ -67,7 +67,7 @@ unity test . --affected --since origin/main          # 只跑受改动影响的�
 
 社区实测的结论：AI 能写出“看起来正确但实际不可玩”的游戏 **[二手]**；Simon Willison 也观察到，vibe 出来的游戏“看起来像游戏，但大约只好玩 75 秒”，好玩的玩法循环仍然超出 Agent 的能力 **[社区：原文]**。**手感、玩法和美术一致性必须由人来验收。**
 
-更系统的做法（验证阶梯 L0–L6、把游戏改造成“Agent 能玩”的形态）见 [03 验证与试玩](../03-verification-and-playtesting.md)。
+更系统的做法（验证阶梯 L0–L6、把游戏改造成“Agent 能玩”的形态）见 [02 验证与试玩](../02-verification-and-playtesting.md)。
 
 ## 6. 日志位置
 

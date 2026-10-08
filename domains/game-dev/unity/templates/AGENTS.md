@@ -41,7 +41,7 @@ TODO：列出主要模块（asmdef）及依赖方向，例如 `Core ← Gameplay
 
 ## 试玩验证接口
 
-<!-- 让 Agent 不靠截图就能验证运行时行为（见 domains/game-dev/03-verification-and-playtesting.md）。
+<!-- 让 Agent 不靠截图就能验证运行时行为（见 domains/game-dev/02-verification-and-playtesting.md）。
      没有这些接口就删掉本节；有了就写清楚命令，并要求 Agent 每完成一项功能都用它验证。 -->
 
 | 目的 | 命令 |

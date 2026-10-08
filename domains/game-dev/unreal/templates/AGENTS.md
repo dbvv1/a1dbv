@@ -55,7 +55,7 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 
 ## 试玩验证接口
 
-<!-- 让 Agent 不靠截图就能验证运行时行为（见 domains/game-dev/03-verification-and-playtesting.md）。
+<!-- 让 Agent 不靠截图就能验证运行时行为（见 domains/game-dev/02-verification-and-playtesting.md）。
      推荐写成测试工具集（Python 或 C++ AICallable），通过 Unreal MCP 调用；开发版打包后也可以托管 MCP。 -->
 
 | 目的 | 工具 / 命令 |

@@ -49,12 +49,12 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 - **C++**：继承 `UToolsetDefinition`，类标 `UCLASS(BlueprintType, Hidden)`，方法标 `UFUNCTION(meta = (AICallable))`；不想公开的方法加 `meta = (AIIgnore)`。适合用到 Python 没暴露的功能、复杂的 `USTRUCT` 类型，或者调用很频繁的工具。
 - 写完执行 `ModelContextProtocol.RefreshTools`，客户端重连。**Live Coding 不会传播新增的 `UFUNCTION`，新增工具要重启编辑器。**
 - 官方建议：一个工具只做一件事；返回结构化类型而不是自由文本。
-- Epic 插件里的 `create-toolset` Skill 能生成脚手架，并给出四条设计原则（Clean、Complete、Composable、DRY，见 [02 引擎对比](../02-engines-and-agent-tooling.md#22-unreal几百个工具藏在工具搜索后面)）。
+- Epic 插件里的 `create-toolset` Skill 能生成脚手架，并给出四条设计原则（Clean、Complete、Composable、DRY，见 [01 引擎对比](../01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)）。
 
 ### 1.4 一个容易被忽略的能力：打包后的游戏也能跑 MCP
 插件分三个模块，其中 `ModelContextProtocol` 和 `ModelContextProtocolEngine` 是**运行时模块**。**打包（cooked / shipping）后的游戏可以在启动时调用 `IModelContextProtocolModule::StartServer()` 托管 MCP 服务器**。工具要用 `IModelContextProtocolModule::AddTool()` 显式注册，这种情况下工具不经过工具搜索，会直接全部公开 **[一手]**。
 
-**这对游戏验证意义很大**：可以在开发版或测试版里注册“导出游戏状态、注入玩家动作、加载测试场景”这类工具，让 Agent **直接玩打包后的游戏**，而不只是编辑器里的 PIE（Play-in-Editor）。这正是 [03 验证与试玩](../03-verification-and-playtesting.md) 里 L3/L4 需要的接口。⚠️ 不要把它打进正式发行版：没有认证。
+**这对游戏验证意义很大**：可以在开发版或测试版里注册“导出游戏状态、注入玩家动作、加载测试场景”这类工具，让 Agent **直接玩打包后的游戏**，而不只是编辑器里的 PIE（Play-in-Editor）。这正是 [02 验证与试玩](../02-verification-and-playtesting.md) 里 L3/L4 需要的接口。⚠️ 不要把它打进正式发行版：没有认证。
 
 ### 1.5 已知限制（官方）
 - 只支持 HTTP 和 SSE，**不支持 stdio 和 WebSocket**；
@@ -90,7 +90,7 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 | Terminal 插件 | 5.8 | 编辑器内终端，可以直接跑 Claude Code |
 | Editor Python 脚本 | 成熟 | MCP 工具集和批处理的基础；5.8 新增 `CreateAsset` 的 `bOverwriteExisting` 等**方便自动化**的选项 |
 | Learning Agents | 持续更新 | 用强化学习或模仿学习训练 NPC（运行时 AI，不是编码辅助） |
-| NNE（Neural Network Engine） | 5.8 升级到 ONNX Runtime 1.24.3 | 在游戏里运行 ONNX 模型（比如本地的决策模型，见 [05](../05-runtime-ai-and-world-models.md)） |
+| NNE（Neural Network Engine） | 5.8 升级到 ONNX Runtime 1.24.3 | 在游戏里运行 ONNX 模型（比如本地的决策模型，见 [03](../03-generative-ai-in-games.md#2-游戏运行时的-ai)） |
 | MetaHuman Animator | 5.8 支持单个摄像头的无标记全身和面部动捕 | 资产管线 |
 | MetaHuman Generator 工具集 | 5.8 新增 | Agent 可以通过 MCP 创建 MetaHuman、调肤色、眼睛颜色和体型 |
 

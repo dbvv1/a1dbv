@@ -85,7 +85,7 @@
 - 几百个工具分在 30 多个工具集里，但服务器整个会话**只公开 3 个元工具**（`list_toolsets`、`describe_toolset`、`call_tool`），具体工具在服务端分发，不进 `tools/list`。官方理由是保持上下文小、**提示缓存命中**。
 - Epic 给工具作者定的四条原则：**Clean**（比底层 API 更简单）、**Complete**（CRUD 对称：能 set 就能 get，能 create 就能 delete）、**Composable**（同类操作用一致的类型）、**DRY**（不重复已有的通用工具）。
 - 工具失败时往往只返回状态而不抛异常，所以 Skill 里要求 Agent “**不是明确的成功，就当作失败**”。
-- 详见 [game-dev/02](../domains/game-dev/02-engines-and-agent-tooling.md#22-unreal几百个工具藏在工具搜索后面)。
+- 详见 [game-dev/01](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)。
 
 在 2026-07-28 规范下写服务端还要注意：**不要依赖会话状态**（需要状态就返回句柄）；列表结果设置缓存提示；用 CIMD 做客户端注册。
 

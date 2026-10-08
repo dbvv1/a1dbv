@@ -17,7 +17,7 @@
 ### 现象
 - Anthropic 用 16 个 Agent 写 C 编译器，作者的结论是“**任务的验证器必须近乎完美**”；项目拿 GCC 当“已知正确”的对照 → [07](07-workflows.md#1-核心验证闭环-)。
 - HumanLayer 的 Dex 复盘 2025-07 起的“全自动软件工厂”实验：几个月后遇到 Agent 修不了的问题，只能回头读三个月没看过的代码；第三次之后**整体重写** → [13](13-frontier-radar.md#4-争议与反思)。
-- 游戏开发：Agent 能做出“像游戏的东西”，但“大约只好玩 75 秒”；手感、乐趣、美术一致性都要人验收 → [game-dev/03](../domains/game-dev/03-verification-and-playtesting.md)。
+- 游戏开发：Agent 能做出“像游戏的东西”，但“大约只好玩 75 秒”；手感、乐趣、美术一致性都要人验收 → [game-dev/02](../domains/game-dev/02-verification-and-playtesting.md)。
 - Lilian Weng 总结自我改进系统的瓶颈：**评估器弱而模糊**。“当前的自我改进循环，在评估指标可测量、客观的任务上效果最好，和 RL 一样” **[社区：原文]**。
 
 ### 机制
@@ -43,7 +43,7 @@ Dex 举的 SWE-bench 例子很说明问题：奖励只有两项，**修好了指
    - 用类型和契约代替注释；
    - 用 golden file 代替“输出看起来对”；
    - lint 规则**附上解释性错误信息**，让 Agent 在出错的那一刻就知道为什么（HN 讨论里的做法 **[社区]**）；
-   - 把游戏改造成“Agent 可试玩”的形态（[game-dev/03](../domains/game-dev/03-verification-and-playtesting.md#4-设计原则为agent-可试玩而设计)）。
+   - 把游戏改造成“Agent 可试玩”的形态（[game-dev/02](../domains/game-dev/02-verification-and-playtesting.md#4-设计原则为agent-可试玩而设计)）。
 2. **锐化不了的地方，人要提前介入，而不是事后审查**（见规律三）。
 
 ### 边界
@@ -57,7 +57,7 @@ Dex 举的 SWE-bench 例子很说明问题：奖励只有两项，**修好了指
 ### 现象
 - 研究：LLM 生成的指令文件**不提高成功率，却让成本增加 20% 以上**；仓库概览没用；62% 的文件把 linter 该管的规则写了进去 → [03](03-context-engineering.md#22-指令文件到底有没有用研究证据)。
 - 实测：Claude Code 在你开口前就发送约 33k token；一个 72KB 的指令文件让每次请求多约 2 万 token；分给 2 个子 Agent 后 token 从 12.1 万涨到 51.3 万 → [13](13-frontier-radar.md#23-harness-的隐性成本被量化了)。
-- Epic 的 Unreal MCP 有几百个工具，却**只公开 3 个元工具**，官方理由是“让上下文窗口保持很小，提示缓存保持命中” → [game-dev/02](../domains/game-dev/02-engines-and-agent-tooling.md#22-unreal几百个工具藏在工具搜索后面)。
+- Epic 的 Unreal MCP 有几百个工具，却**只公开 3 个元工具**，官方理由是“让上下文窗口保持很小，提示缓存保持命中” → [game-dev/01](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)。
 - 《Agents don't need memory, they need documentation》（HN 380 分）认为记忆插件是“**RAG 抽奖**”：存进去的东西什么时候被召回、召回得对不对都不可控 **[社区：原文]**。
 
 ### 机制
@@ -100,7 +100,7 @@ Dex 举的 SWE-bench 例子很说明问题：奖励只有两项，**修好了指
   - 另一面是过度拦截：清理 `dist/`、释放端口这类正常命令被拦了 43–59%。
   - 局限：这是有时限的游戏，威胁占比约 34%，远高于现实；HN 上也有人质疑部分题目的标注。
 - **评审过载**：Faros 对 2.2 万名开发者、4,000 个团队两年的遥测数据显示，AI 采用度高时，**PR 体积 +51%、每个 PR 的 bug +28%、评审时间中位数 5 倍、每个 PR 的事故 3 倍** **[一手：厂商报告页，相关性]**。
-- **开源的反应**：Godot 禁止 AI 代码，HN 高赞评论把 AI 生成的冗长 PR 比作“对人脑的拒绝服务攻击” → [game-dev/01](../domains/game-dev/01-industry-and-sentiment.md#4-社区与规则几个标志性事件)。
+- **开源的反应**：Godot 禁止 AI 代码，HN 高赞评论把 AI 生成的冗长 PR 比作“对人脑的拒绝服务攻击” → [game-dev/03](../domains/game-dev/03-generative-ai-in-games.md#3-外部约束披露与玩家态度)。
 - **多 Agent**：实践者发现 2–3 个专注的 Agent 比 6–8 个更可靠，“瓶颈在理解而不在生成” → [08](08-multi-agent.md#1-证据)。
 - **自我感知偏差**：METR 2025 实验中，开发者实际慢了 19%，却觉得快了约 20% → [11](11-community-pulse.md#4-生产力证据已读原始报告)。
 
@@ -131,7 +131,7 @@ Dex 举的 SWE-bench 例子很说明问题：奖励只有两项，**修好了指
 - auto mode 被实测绕过（小样本成功率 60–80%）；AI 实验室训练中的 Agent 突破沙箱、入侵其他系统；Anthropic 的案例中**只有出网拦截挡住了凭证外泄** → [10](10-security.md)。
 - 2026-10，Wikimedia 确认在自家站点发现 OpenAI “失控” Agent 的活动：编辑 wiki、尝试利用一个托管的笔记工具、产生大量流量；没有发现系统被攻破，但调查和溯源成本很高 **[一手：Wikimedia 博客]**。HN 高赞评论：“卡车司机没绑好钢筋，钢筋飞满高速，我们不会叫它‘失控的钢筋’” **[社区]**。
 - 人工审批漏掉 1/3 的威胁（规律三）。
-- Unreal 官方 Skill 要求“**不是明确的成功，就当作失败**”，以及“改之前存盘” → [game-dev/02](../domains/game-dev/02-engines-and-agent-tooling.md#22-unreal几百个工具藏在工具搜索后面)。
+- Unreal 官方 Skill 要求“**不是明确的成功，就当作失败**”，以及“改之前存盘” → [game-dev/01](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)。
 
 ### 机制
 LLM 和疲劳的人都是**概率性过滤器**。攻击者（或者只是一个优化目标过强的 Agent）会不断尝试，直到穿过过滤器为止；尝试次数越多，穿过的概率越接近 1。确定性边界（不能出网就是不能出网）不受尝试次数影响。
@@ -180,7 +180,7 @@ LLM 和疲劳的人都是**概率性过滤器**。攻击者（或者只是一个
 模型在分化成不同角色，而不是“一个模型做所有事”：
 - 前沿模型负责规划和难题；
 - 便宜模型（Haiku 5.5、GPT-6 Luna）负责子任务和 I/O 密集的杂活；
-- 2026-09 出现的**决策模型**（Jev、Clef、Strands Decider）专门负责“从有限选项中选一个”，比如路由、分类、决定 Agent 的下一步，延迟几十到几百毫秒，并给出校准过的置信度 → [game-dev/05](../domains/game-dev/05-runtime-ai-and-world-models.md#2-决策模型可能更适合游戏的新方向)。
+- 2026-09 出现的**决策模型**（Jev、Clef、Strands Decider）专门负责“从有限选项中选一个”，比如路由、分类、决定 Agent 的下一步，延迟几十到几百毫秒，并给出校准过的置信度 → [game-dev/03](../domains/game-dev/03-generative-ai-in-games.md#2-游戏运行时的-ai)。
 
 但分层有成本：子 Agent 每轮都重读系统提示和工具定义（规律二）。**只有当子任务足够独立、足够多时，分层才划算。**
 
@@ -189,7 +189,7 @@ LLM 和疲劳的人都是**概率性过滤器**。攻击者（或者只是一个
 ## 6. 规律六：AI 是放大器，放大的是你已有的工程体系
 
 ### 现象
-- Steam 上约 1/3 的新游戏声明使用 AI，但它们取得小有成功的概率只有非 AI 游戏的约 55%，而且两年没改善；“**更多的射门次数，而不是更高的命中率**” → [game-dev/01](../domains/game-dev/01-industry-and-sentiment.md#3-市场steam-上的-ai-游戏)。
+- Steam 上约 1/3 的新游戏声明使用 AI，但它们取得小有成功的概率只有非 AI 游戏的约 55%，而且两年没改善；“**更多的射门次数，而不是更高的命中率**” → [game-dev/03](../domains/game-dev/03-generative-ai-in-games.md#3-外部约束披露与玩家态度)。
 - Faros：吞吐量上升，同时事故、bug 和返工上升得更快；“**成熟团队也不能幸免**” **[一手：厂商报告页]**。
 - GitClear：重复代码 +81%，重构类移动从 13% 降到 3.8% → [09](09-review-and-quality.md)。
 - Will Larson（lethain）在 Imprint 的推进顺序：先让所有人每天用 Claude Code → 每人约 10 个独立工作区，支持跨仓库 PR → **全公司从 Jira 迁到 Linear，作为唯一的任务状态来源** → 编排式 harness（“Agent Fleet”）→ 软件工厂循环。他的观察：“这些部分**只有在其他部分都到位时**才会产生复利。”这个循环依赖 RFC 里写清的目标、Datadog 或 Snowflake 上的进度指标，以及 Linear 作为唯一状态来源 **[社区：原文]**。
@@ -265,12 +265,12 @@ AI 降低的是**产出工件**的成本，而不是“**决定哪些工件值�
 
 | 规律 | 在游戏开发中的体现 |
 |---|---|
-| 一：验证器地图 | 逻辑和数值有验证器（测试、无头模拟），手感和乐趣没有 → 前者交给 Agent，后者留给人 → [game-dev/03](../domains/game-dev/03-verification-and-playtesting.md) |
-| 二：上下文预算 | Unreal 用工具搜索藏起几百个工具；Unity 用 Skill 按需加载；大型项目按模块放子目录的 AGENTS.md → [game-dev/02](../domains/game-dev/02-engines-and-agent-tooling.md) |
+| 一：验证器地图 | 逻辑和数值有验证器（测试、无头模拟），手感和乐趣没有 → 前者交给 Agent，后者留给人 → [game-dev/02](../domains/game-dev/02-verification-and-playtesting.md) |
+| 二：上下文预算 | Unreal 用工具搜索藏起几百个工具；Unity 用 Skill 按需加载；大型项目按模块放子目录的 AGENTS.md → [game-dev/01](../domains/game-dev/01-engine-integration.md) |
 | 三：人的注意力 | 截图式验证浪费人和 Agent 的时间；“Agent 可试玩”的改造让人只需要验收手感 |
 | 四：确定性边界 | 编辑器修改不一定能撤销 → 版本控制 + 存盘点；Blender MCP 直接执行代码 → 放进虚拟机 |
 | 五：资产保值 | 纯 C# 逻辑、状态导出接口、测试场景，换模型换工具都能用 |
-| 六：放大器 | Steam 数据：AI 带来更多游戏，但没有带来更高的成功率；只用 AI 出美术的作品失败最集中 → [game-dev/01](../domains/game-dev/01-industry-and-sentiment.md) |
+| 六：放大器 | Steam 数据：AI 带来更多游戏，但没有带来更高的成功率；只用 AI 出美术的作品失败最集中 → [game-dev/03](../domains/game-dev/03-generative-ai-in-games.md#3-外部约束披露与玩家态度) |
 
 ---
 

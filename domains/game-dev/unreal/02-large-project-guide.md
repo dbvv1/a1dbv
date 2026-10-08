@@ -75,7 +75,7 @@ UnrealEditor-Cmd.exe MyGame.uproject \
 
 ## 5. 运行时验证（PIE 与打包版）
 
-参考 [03 验证与试玩](../03-verification-and-playtesting.md) 的验证阶梯，UE 的落点是：
+参考 [02 验证与试玩](../02-verification-and-playtesting.md) 的验证阶梯，UE 的落点是：
 
 | 层级 | UE 中的做法 |
 |---|---|
