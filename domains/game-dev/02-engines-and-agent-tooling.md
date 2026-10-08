@@ -7,7 +7,7 @@
 > - Blender Lab 的 [MCP Server 页面](https://www.blender.org/lab/mcp-server/)；
 > - Claude 官方插件市场的 `marketplace.json`（共 315 个插件，游戏相关的只有 Unity 和 Unreal 两个官方插件）。
 >
-> Unity 的细节见 [unity/01-toolchain.md](unity/01-toolchain.md)，本页只做横向比较。
+> Unity 的细节见 [unity/01-toolchain.md](unity/01-toolchain.md)，Unreal 的细节见 [unreal/01-toolchain.md](unreal/01-toolchain.md)，本页只做横向比较。
 
 ## 1. 总览
 
@@ -42,7 +42,8 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
   4. **一定要检查返回结果**：很多工具失败时不会抛异常，只是返回状态变了；不是明确的成功，就当失败处理；
   5. **留意 PIE**（Play-in-Editor）：运行时很多编辑器工具的行为会变。
 - Epic 给“写工具集”定的原则（`create-toolset` Skill）也很通用：**Clean**（API 比 Unreal 原生 API 更简单，“技术美术不看实现也能懂”）、**Complete**（CRUD 对称：能 set 就要能 get，能 create 就要能 delete）、**Composable**（同类操作用一致的类型）、**DRY**（通用的属性读写已经有 `ObjectTools`，不要重复造）。
-- 已知限制：HTTP 服务器**没有认证**，默认只监听本机；工具调用在游戏线程上**串行执行** **[二手：社区指南]**。
+- 已知限制：HTTP 服务器**没有认证**，默认只监听本机；工具调用在游戏线程上**串行执行** **[一手：Epic 文档]**。
+- **打包后的游戏也能托管 MCP 服务器**（运行时模块 + `IModelContextProtocolModule::AddTool()`），这让 Agent 可以直接测试打包版 **[一手]**。详见 [unreal/01](unreal/01-toolchain.md#14-一个容易被忽略的能力打包后的游戏也能跑-mcp)。
 
 ### 2.3 Roblox：把 Agent 能力直接做进编辑器
 官方文档列出的工具里有几项是其他引擎没有的 **[一手]**：
@@ -86,7 +87,7 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 |---|---|
 | Unity 6+ | 官方插件 + Unity CLI（见 [unity/](unity/README.md)） |
 | Unity 2021 / 2022 LTS | CoplayDev/unity-mcp + batchmode 脚本 |
-| Unreal 5.8+ | 启用 `ModelContextProtocol` + `AllToolsets`（或只启用需要的工具集），安装 Epic 的插件；**用版本控制并且勤存盘**；不要把端口暴露到本机以外 |
+| Unreal 5.8+ | 见 [unreal/](unreal/README.md)：启用 Unreal MCP + `AllToolsets`（或只启用需要的工具集），安装 Epic 的插件；**用版本控制并且勤存盘**；不要把端口暴露到本机以外 |
 | Unreal 5.8 以下 | 社区方案（如 UnrealClaude）**[二手]**；或者等升级。C++ 部分照常用通用编码工作流 |
 | Roblox | 直接用 Studio 内置 MCP；`playtest` 子 Agent 和输入模拟是目前**官方支持最完整的游戏验证能力** |
 | Godot | 社区 MCP 选“连接运行中编辑器”的一类，确认支持你的 Godot 版本；纯代码工作用文件级就够 |

@@ -23,7 +23,7 @@
 | L1 | 纯逻辑单元测试 | 规则和公式对不对 | Agent | Unity EditMode 测试（逻辑写在纯 C# 类里） |
 | L2 | **无头模拟 / 批量对局** | 数值平衡、边界情况、崩溃 | Agent | 把一场战斗模拟上千次，看胜率分布 **[社区]** |
 | L3 | **状态接口驱动的试玩** | 功能在真实游戏循环里是否成立 | Agent | 文本渲染器 + HTTP 输入接口（见第 3 节） |
-| L4 | 引擎驱动的试玩 | 场景、物理、UI 是否正常 | Agent | Roblox `playtest` 子 Agent + 输入模拟；Unity Play 模式 + `frameCount` 检查 + `eval`；Unreal 自动化测试 |
+| L4 | 引擎驱动的试玩 | 场景、物理、UI 是否正常 | Agent | Roblox `playtest` 子 Agent + 输入模拟；Unity Play 模式 + `frameCount` 检查 + `eval`；Unreal 自动化测试，以及**打包版托管 MCP**（见 [unreal/01](unreal/01-toolchain.md#14-一个容易被忽略的能力打包后的游戏也能跑-mcp)） |
 | L5 | 像素 + 系统输入的 Agent | 无法暴露内部状态的游戏 | Agent / 第三方服务 | 一个做了两年类似工具的团队也是从纯文本表示起步，后来发现只有少数游戏适用，转向纯像素和系统输入的方案（nunu ai）**[社区：HN 评论，厂商自述]** |
 | L6 | **人工试玩** | 手感、乐趣、美术一致性 | **人** | 没有替代品 |
 

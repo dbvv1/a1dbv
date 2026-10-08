@@ -52,8 +52,9 @@
 
 | 领域 | 内容 |
 |---|---|
-| [domains/game-dev](domains/game-dev/README.md) | 游戏开发：行业数据与态度、Unity / Unreal / Roblox / Godot / Blender 的 Agent 工具链对比、**验证与 AI 试玩**、资产管线、运行时 AI 与世界模型 |
+| [domains/game-dev](domains/game-dev/README.md) | 游戏开发：行业数据与态度、**引擎格局**、Unity / Unreal / Roblox / Godot / Blender 的 Agent 工具链对比、**验证与 AI 试玩**、资产管线、运行时 AI 与世界模型 |
 | [domains/game-dev/unity](domains/game-dev/unity/README.md) | 大型 Unity 项目：官方 Unity CLI / 插件、社区 MCP、项目落地指南、配置模板 |
+| [domains/game-dev/unreal](domains/game-dev/unreal/README.md) | 大型 Unreal 项目：UE 5.8 官方 MCP 与 Epic 插件、Live Coding 与 UBT 编译、命令行自动化测试、配置模板 |
 
 ### 可直接使用
 

@@ -13,7 +13,9 @@
 | [**03 验证与试玩**](03-verification-and-playtesting.md) | **游戏为什么难验证？怎么让 Agent 自己试玩？什么必须留给人？**（本分支最重要的一篇） |
 | [04 资产管线](04-asset-pipeline.md) | 3D、2D、音频、动画生成工具的现状；Agent 在管线里该做什么 |
 | [05 运行时 AI 与世界模型](05-runtime-ai-and-world-models.md) | LLM NPC、决策模型、Genie / Marble 离生产还有多远 |
+| [06 引擎格局](06-engine-landscape.md) | 大厂是不是都转向 UE5？独立游戏是不是仍以 Unity / Godot 为主？Unity 和 UE 怎样趋同？引擎选择对 AI coding 有什么影响 |
 | [unity/](unity/README.md) | 大型 Unity 项目落地：Unity CLI 和官方插件、编译和测试闭环、配置模板 |
+| [unreal/](unreal/README.md) | 大型 Unreal 项目落地：UE 5.8 官方 MCP 和 Epic 插件、Live Coding 与 UBT、命令行自动化测试、配置模板 |
 
 ## 一页纸结论（2026-10）
 
@@ -22,13 +24,14 @@
 3. **游戏的瓶颈在验证，不在生成。** 截图式验证又慢又不可靠；最划算的做法是把游戏改造成“Agent 能玩”的形态：状态可导出、输入可注入、时间可控、场景可加载。→ [03](03-verification-and-playtesting.md)
 4. **“好不好玩”没有自动判定标准，所以人工试玩是结构性的必需，不是补救。** Agent 能做出“像游戏的东西”，做不出“好玩的东西”。→ [03](03-verification-and-playtesting.md#5-什么必须留给人)
 5. **AI 带来的是数量，不是质量。** Steam 上约 1/3 的新游戏声明使用 AI，但它们取得小有成功的概率只有非 AI 游戏的约 55%；只拿 AI 出美术的作品失败最集中。→ [01](01-industry-and-sentiment.md#3-市场steam-上的-ai-游戏)
-6. **运行时 AI 先看决策模型，再看对话 NPC。** 游戏 AI 的多数决策是“从有限选项中选一个”，2026-09 出现的决策模型正好擅长这个；世界模型目前只适合概念探索。→ [05](05-runtime-ai-and-world-models.md)
+6. **按销量算，UE 和自研引擎主导大作；按数量算，Unity 主导小游戏。** Steam 2024 年新游戏中 Unity 占 51%、UE 占 28%；但百万销量级的游戏里自研引擎占 46%、UE 占 31%、Unity 只占 22%。自研引擎正在让位给 UE5，Godot 是增长最快的小引擎。→ [06](06-engine-landscape.md)
+7. **运行时 AI 先看决策模型，再看对话 NPC。** 游戏 AI 的多数决策是“从有限选项中选一个”，2026-09 出现的决策模型正好擅长这个；世界模型目前只适合概念探索。→ [05](05-runtime-ai-and-world-models.md)
 
 ## 按引擎的推荐起点
 
 | 引擎 | 起点 |
 |---|---|
 | Unity 6+ | [unity/](unity/README.md)：官方插件 + Unity CLI + 本仓库模板 |
-| Unreal 5.8+ | [02 第 2.2 节](02-engines-and-agent-tooling.md#22-unreal几百个工具藏在工具搜索后面)：启用 ModelContextProtocol + Epic 插件，照搬它的五条安全规则 |
+| Unreal 5.8+ | [unreal/](unreal/README.md)：Unreal MCP + Epic 插件 + 本仓库模板 |
 | Roblox | [02 第 2.3 节](02-engines-and-agent-tooling.md#23-roblox把-agent-能力直接做进编辑器)：Studio 内置 MCP，用好 `playtest` 子 Agent |
 | Godot / 自研 / Web | 通用编码工作流 + [03](03-verification-and-playtesting.md) 的“Agent 可试玩”改造 |

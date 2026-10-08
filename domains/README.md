@@ -6,6 +6,7 @@
 |---|---|---|
 | [game-dev](game-dev/README.md) | ✅ 已整理 | 游戏开发：行业数据与态度、引擎工具链对比（Unity / Unreal / Roblox / Godot / Blender）、验证与 AI 试玩、资产管线、运行时 AI |
 | [game-dev/unity](game-dev/unity/README.md) | ✅ 已整理 | 大型 Unity 项目：Unity CLI / 官方插件 / 社区 MCP、落地指南、配置模板 |
+| [game-dev/unreal](game-dev/unreal/README.md) | ✅ 已整理 | 大型 Unreal 项目：UE 5.8 官方 MCP / Epic 插件、Live Coding 与 UBT、自动化测试、配置模板 |
 
 ## 新增领域的结构约定
 

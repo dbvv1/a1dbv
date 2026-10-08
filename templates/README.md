@@ -7,6 +7,7 @@
 | [`generic/`](generic/) | **任意项目通用**的 AI 协作配置 | 项目根目录 |
 | [`global/`](global/) | 个人全局偏好 | `~/.claude/CLAUDE.md` |
 | [`../domains/game-dev/unity/templates/`](../domains/game-dev/unity/templates/) | Unity 项目（在 generic 基础上增加的部分） | Unity 项目根目录 |
+| [`../domains/game-dev/unreal/templates/`](../domains/game-dev/unreal/templates/) | Unreal 项目（在 generic 基础上增加的部分） | UE 项目根目录（`.uproject` 所在目录） |
 
 ## generic 内容
 

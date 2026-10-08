@@ -102,3 +102,7 @@
 - [ ] 实测：在 Unity 项目中做“Agent 可试玩”改造（状态导出 + 输入注入 + 场景加载）的成本和效果
 - [ ] 实测：用决策模型（Clef / Strands Decider）做 NPC 决策原型，和行为树对比
 - [ ] llmskirmish（Agent 可以玩的 RTS）、nunu ai（像素级游戏测试）的原文
+- [ ] 实测：Unreal 模板脚本（`ue-build`、`ue-run-tests`）在真实 UE 5.8 项目上运行（本轮只用伪造的引擎测试过）；确认 `index.json` 的字段与真实报告一致
+- [ ] 实测：UE 5.8 打包版托管 MCP 做自动试玩的可行性和性能开销
+- [ ] Epic 官方的 UE 5.8 新闻页（unrealengine.com 对本环境返回 403，读的是论坛发布帖和 dev.epicgames.com 的发布说明）；UE6 时间表的官方来源
+- [ ] 团结引擎 2.0 与“团结 Codely”的官方资料（本轮只有媒体转述）

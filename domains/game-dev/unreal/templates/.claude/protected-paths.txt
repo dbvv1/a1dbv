@@ -1,0 +1,17 @@
+# Unreal 项目受保护路径规则（由 hooks/protect-paths.sh 读取）
+# 格式：<deny|ask> <glob> [原因]；glob 相对项目根目录，* 可跨目录；第一条命中的规则生效
+
+deny  Binaries/*            编译产物，禁止编辑
+deny  Intermediate/*        UBT/UHT 生成目录，禁止编辑（包括 .generated.h）
+deny  DerivedDataCache/*    派生数据缓存，禁止编辑
+deny  Saved/*               运行时生成目录（日志、自动保存、打包产物），禁止编辑
+deny  Plugins/*/Binaries/*      插件编译产物，禁止编辑
+deny  Plugins/*/Intermediate/*  插件生成目录，禁止编辑
+deny  *.uasset              .uasset 是二进制资产，文本编辑会直接损坏。请通过 Unreal MCP 或 Editor Python 修改
+deny  *.umap                .umap 是二进制关卡，文本编辑会直接损坏。请通过 Unreal MCP 或 Editor Python 修改
+ask   Config/*              ini 配置影响全项目和所有平台，确认修改吗？
+ask   *.uproject            项目描述文件（插件、模块、引擎版本），确认修改吗？
+ask   *.uplugin             插件描述文件，确认修改吗？
+ask   *.Target.cs           编译目标配置影响所有构建，确认修改吗？
+ask   Plugins/*/ThirdParty/*    第三方库，建议加包装层而不是直接修改。确认修改吗？
+ask   Source/ThirdParty/*       第三方库，建议加包装层而不是直接修改。确认修改吗？

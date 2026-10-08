@@ -8,6 +8,7 @@
 | [01-toolchain.md](01-toolchain.md) | Unity 官方（Unity CLI、官方插件、Unity AI）与社区 MCP 的对比和选型 |
 | [02-large-project-guide.md](02-large-project-guide.md) | 大型项目落地：禁区、编译和测试闭环、Play 模式验证、大仓库 |
 | [../04-asset-pipeline.md](../04-asset-pipeline.md) | AI 生成 3D、2D、音频、动画资源（跨引擎，已上移） |
+| [Unreal 分支](../unreal/README.md) | 对照阅读：两个引擎在 AI 接入上的差异 |
 | [templates/](templates/) | 可以拷进 Unity 项目的配置（在 [templates/generic](../../../templates/generic/) 基础上增加 Unity 专用部分） |
 
 ## 一页纸推荐（2026-10）
