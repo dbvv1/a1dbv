@@ -29,7 +29,9 @@
 | 实验仓库 | [hukkin/tomli](https://github.com/hukkin/tomli) @43a86ad（纯 Python 的 TOML 解析器，`src/` 下约 940 行，带完整的 unittest 测试集） |
 | 隔离 | 每次运行复制一份干净目录；用新的 `--session-id` 加 `--no-session-persistence`；去掉父会话的会话类环境变量，避免嵌套会话串在一起 |
 | 权限 | root 下不能用 `--dangerously-skip-permissions`，改用 `--allowedTools=Read,Edit,Write,Bash,Glob,Grep` 预先放行 |
-| 成本 | 取结果里的 `total_cost_usd`（包含子 Agent） |
+| 成本 | 历史客户端报告的 `total_cost_usd`，作为 API 等价估算；原作者记录称包含子 Agent，缺原事件，未独立核对范围 |
+
+**成本口径补充（2026-10-11 UTC+8）**：E1–E3 的美元与成本倍数均指历史客户端报告的 **API 等价估算**，不是实际账单、订阅扣费或额度百分比。当前 [Claude Code 文档](https://code.claude.com/docs/en/costs)说明会话美元值由 token 与价表估算，订阅用量另计；这不能反向证明历史版本的计价完全正确。原事件、当时价表与子任务去重清单未提交，保留历史数字，不按今日价格重算。
 
 **踩过的坑**（复现时注意）：
 - `--tools` 是可变参数，`--tools Read,Edit "prompt"` 会把提示词也当成工具名，报 “Input must be provided”。要写成 `--tools=Read,Edit`；
@@ -40,6 +42,10 @@
 ## 3. E1：固定开销
 
 **方法**：在空目录里发一句“只回复 OK”，记录 `input_tokens + cache_creation_input_tokens + cache_read_input_tokens`。
+
+**此求和只适用于这里的 Anthropic 字段**（[官方字段定义](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)）：其 `input_tokens` 不含缓存读取/写入。OpenAI [Agents usage](https://developers.openai.com/api/docs/guides/agents-api/observability) 的 cached input 已包含在 input，reasoning 已包含在 output；不能再相加，推理按输出计费。例：5,000 input（含 1,500 cached）+ 900 output（含 200 reasoning）= 5,900 total，不是 7,600。
+
+未来记录须保留 provider、schema、精确模型/速度与原字段；归一化后区分总输入、缓存读/写子集、总输出和推理子集。缺项记“未知”而非零。OpenAI Agents usage 未单列 cache-write 数量时，不能据此精算该项费用；也不能假定 Codex 客户端日志与 API schema 相同。本段不指称历史 E1 已发生重复计数。
 
 | 条件 | 每次请求的输入 token | 备注 |
 |---|---|---|
@@ -52,11 +58,11 @@
 | + CLAUDE.md 20KB | 38,862（+7,304） | |
 | + CLAUDE.md 72KB | 57,299（+25,741） | Systima 报告约 +20k，同一数量级 |
 
-**一个词的回复要多少钱**：Haiku 5.5 约 0.0012 美元（大部分命中缓存）；Opus 5.5 约 0.052 美元。
+**一个词回复的历史 API 等价估算**：Haiku 5.5 约 0.0012 美元（大部分命中缓存）；Opus 5.5 约 0.052 美元。
 
 **解读**：
 - 约 31.6k 中，约 26k 来自工具定义，这和 Systima 抓包得到的“开口前约 33k”是同一量级。云端会话自带的远程工具可能让这个数偏大；
-- 指令文件每 1KB 约增加 350 token（英文 ASCII 文本），而且**每一轮**都要付：在 E3 的长文件条件下，Haiku 平均 13.5 轮，每轮都带着这约 1 万 token（30KB）；
+- 指令文件每 1KB 约增加 350 token（英文 ASCII 文本）；E3 长文件条件下 Haiku 平均 13.5 轮，每轮输入都包含约 1 万 token（30KB）。其费用须区分缓存读取、写入与普通输入，不能把累计原始输入全部乘普通输入单价；
 - 提示缓存能跨会话命中，所以“开口前的 token”在价格上打了折（缓存读取约为正常价格的 1/10），但**上下文窗口的占用一点不少**。
 
 ## 4. E3：指令文件长短
@@ -85,7 +91,7 @@
 | 新测试在有 bug 的代码上会失败 | 2/2 | 9/9 | 8/8 |
 | 回归测试放在哪 | `test_misc.py` | `test_misc.py` | **`tests/data/valid/*.toml` + `.json`**（项目自己的数据驱动测试） |
 | 用的测试命令 | **pytest**（环境里碰巧装了） | 项目的 unittest 命令 | 项目的 unittest 命令 |
-| 平均成本 Haiku / Sonnet（美元） | 0.0066 / 0.047 | 0.0070 / 0.050 | **0.0106 / 0.125** |
+| 平均 API 等价估算 Haiku / Sonnet（美元） | 0.0066 / 0.047 | 0.0070 / 0.050 | **0.0106 / 0.125** |
 | 平均输入 token Haiku / Sonnet | 161k / 56k | 163k / 54k | **309k / 162k** |
 | 平均轮数 Haiku / Sonnet | 12.3 / 7.7 | 12.5 / 7.3 | 13.5 / 8.0 |
 | 耗时中位数 Haiku / Sonnet（秒） | 27.6 / 22.7 | 27.7 / 20.1 | 35.0 / 31.8 |
@@ -119,7 +125,7 @@
 | | D 直接做 | S 两个子 Agent |
 |---|---|---|
 | 找全 29 处 | 3/3 | 3/3 |
-| 平均成本（美元） | 0.0055 | **0.0109**（约 2.0 倍） |
+| 平均 API 等价估算（美元） | 0.0055 | **0.0109**（约 2.0 倍） |
 | 平均输入 token（含子 Agent） | 61k | 108k（约 1.8 倍） |
 | 平均耗时（秒，墙钟） | 17.6 | **47.1**（约 2.7 倍；30.8–70.2） |
 | 主 Agent 轮数 | 6 | 1–4 |

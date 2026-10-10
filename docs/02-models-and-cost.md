@@ -2,6 +2,8 @@
 
 > 核实时间：2026-10-08（加入 Claude Haiku 5.5、Mistral Large 4、决策模型）。模型以“周”为单位更新，本页给出**选择原则**和**当前快照**；最新动态见 [13 前沿雷达](13-frontier-radar.md)。
 
+> 局部复核：2026-10-11（UTC+8；2026-10-10 UTC）只复核本页的计费口径、OpenAI Sol 版本价格与订阅速度倍率、Claude Haiku/Opus 价差。其他厂商条目和能力判断仍保留原核实日期，不代表全表重新验证。
+
 ## 1. 原则：按任务分档，而不是追榜单
 
 | 任务 | 档位 | 当前代表（2026-10） |
@@ -19,15 +21,17 @@
 - 删掉“think carefully / 一步步思考”这类话（模型自己会思考，改用 effort 控制）；
 - 想要快速回答时直接说“Answer directly”。
 
-## 2. 价格快照（每百万 token）
+## 2. 价格快照（API 美元/百万 token）
+
+**先分口径**：下表为 API 单价，不能换算订阅内任务数或额度百分比。本轮复核的 OpenAI Sol 两行采用 Standard、单请求输入不超过 272K token 的基础档；Claude Haiku 5.5 按总输入是否超过 100K 分档。缓存写入、长上下文与速度附加条件见表后；其他历史条目的计费条件须回到各自来源确认。
 
 | 模型 | 输入 | 缓存读取 | 输出 | 来源 |
 |---|---|---|---|---|
-| **Claude Haiku 5.5** | $0.10（>10 万 token 的请求 $0.50） | — | $0.50（>10 万：$2.50） | [一手：Anthropic 公告、Claude Code changelog] |
+| **Claude Haiku 5.5**（Standard） | $0.10（总输入 >100K：$0.50） | $0.01（>100K：$0.05） | $0.50（>100K：$2.50） | [一手：API 价表](https://platform.claude.com/docs/en/about-claude/pricing) |
 | GPT-6 Luna | $0.10 | $0.01 | $0.50 | [社区：Willison 整理] |
 | Mistral Large 4（预览，限时价） | $0.68（原价 $1.36） | $0.07 | $2.09（原价 $4.18） | [一手：Mistral 文档] |
-| GPT-6 Sol | $2 | $0.20 | $10 | 同上 |
-| GPT-6.1 Sol | — | $0.10 | — | HN 引用 OpenAI 公告 |
+| GPT-6 Sol（`gpt-6-sol`，Standard ≤272K） | $2 | $0.20 | $10 | [一手：模型页](https://developers.openai.com/api/docs/models/gpt-6-sol) |
+| GPT-6.1 Sol（`gpt-6.1-sol`，Standard ≤272K） | $2 | $0.10 | $10 | [一手：模型页](https://developers.openai.com/api/docs/models/gpt-6.1-sol) |
 | Grok 4.7 | $2 | $0.50 | $6 | [社区] |
 | **Claude Sonnet 5.5** | $2 | $0.10（2026-10 减半） | $10 | [一手：Claude Code changelog、Anthropic 公告] |
 | **Claude Opus 5.5** | $4 | $0.20 | $20 | [一手] |
@@ -35,14 +39,19 @@
 | **Claude Fable 5.1** | $10 | $0.25 | $50 | [一手] |
 | GPT-6 Astra | $10 | $1 | $50 | [社区] |
 
+**表中未展开的计费维度** **[一手；本轮局部复核]**：
+- `gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。见上方精确模型页。
+- [OpenAI 缓存写入价](https://developers.openai.com/api/docs/guides/prompt-caching)替代该部分普通输入价，**不是两项叠加收费**。每个输入 token 按普通输入、缓存读或缓存写中的适用类别计价。
+- Haiku 5.5 的 100K 门槛包含缓存读取与写入，逐请求判断，不是整段会话累计值；缓存写入还区分 TTL。完整规则见 [Claude API 价表](https://platform.claude.com/docs/en/about-claude/pricing)。
+
 - **Claude Haiku 5.5**（2026-10-07）**[一手：Anthropic 公告]**：
-  - 比 Haiku 4.5 便宜约 75%，1M 上下文，OSWorld 72.4%；Anthropic 推荐把它用作**子 Agent 模型**；
+  - 按 Standard 输入/输出单价，Haiku 4.5 的 $1/$5 对比 Haiku 5.5 ≤100K 档 $0.10/$0.50，下降 **90%**；>100K 档 $0.50/$2.50 则下降 **50%**，不是统一 75%。这是单价算术，不是任务总成本降幅 **[一手价表 + 算术]**；原公告还报告 1M 上下文、OSWorld 72.4%，并推荐子 Agent 用途（能力项本轮未复核）；
   - 同日 Sonnet 5.5 的缓存读取价格减半；
   - 订阅用户开始**每月附带 API 额度**：Max 5x 100 美元、Max 20x 200 美元、Team 最多 500 美元（团队共享）。
 - **Mistral Large 4**（2026-10-06，公开预览）**[一手：Mistral 博客和文档]**：1.05T 总参数、52B 激活的 MoE，原生多模态，1M 上下文；**月底发布权重**；在欧洲自有数据中心训练。官方称在开源权重模型中达到领先、在视觉定位上超过闭源前沿模型。HN 上 Simon Willison 实测认为这是“Mistral 至今最好的模型”，也有人认为进步慢于中美实验室 **[社区]**。
-- 2026-09 的价格战让同档价格下降 40–50%：GPT-6 系列约为 GPT-5.6 的一半；Opus 5.5 比 Opus 5（$5/$25）便宜，**能力达到 Fable 5.1 水平** **[一手：Anthropic]**。
-- **Prompt cache 是最大的杠杆**：缓存读取约为输入价的十分之一甚至更低。会导致缓存失效的操作：切换模型或 effort、改动工具定义或系统提示、空闲超过 TTL（Claude Code 可以设成 1 小时）。`/cost` 会显示命中率和失效原因 **[一手]**。
-- **Harness 本身也有成本**：实测 Claude Code 在你开口前就发送约 33k token，OpenCode 约 7k；一份 72KB 的指令文件让每次请求多约 2 万 token（详见 [13](13-frontier-radar.md#23-harness-的隐性成本被量化了)）**[社区：原文]**。本仓库在云端环境复现：默认约 31.6k，用 `--tools=` 收窄工具后降到 3–6k；72KB 的指令文件让每次请求多约 2.6 万 token（[19](19-experiments.md#3-e1固定开销)）**[经验：实测]**。
+- **降价必须指定比较对象和计费项**：Opus 5 的 Standard 输入/输出 $5/$25 → Opus 5.5 $4/$20，下降 **20%**（[一手价表](https://platform.claude.com/docs/en/about-claude/pricing)）。原“同档模型整体下降 40–50%”缺少固定样本与统一口径，不作为市场统计；“达到 Fable 5.1 水平”保留为厂商能力主张，不能据此认定所有任务质量等价。
+- **Prompt cache 是最大的杠杆**：缓存读取约为输入价的十分之一甚至更低。缓存规则须按厂商、模型与配置区分：[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)说明，更改顶层 `output_config.effort` 会使消息缓存失效，对工具/系统缓存的影响依模型而异；显式写出原默认值不算变化，支持逐消息 effort 的模型也有保留前缀的路径。模型切换、前缀改动和 TTL 是排查因素，不能一概断言每次修改都会清空全部缓存。当前 [Claude Code 成本文档](https://code.claude.com/docs/en/costs)将缓存统计放在 `/usage` 的 Session 区；它覆盖主会话，不能当作全部子 Agent 的合计 **[一手]**。
+- **Harness 本身也有成本**：实测 Claude Code 在你开口前就发送约 33k token，OpenCode 约 7k；一份 72KB 的指令文件让每次请求多约 2 万 token（详见 [13](13-frontier-radar.md#23-harness-的隐性成本被量化了)）**[社区：原文]**。本仓库在云端环境复现：默认约 31.6k，用 `--tools=` 收窄工具后降到 3–6k；72KB 的指令文件让每次请求多约 2.6 万 token（[19](19-experiments.md#3-e1固定开销)）**[经验：历史实测]**。这些是含缓存的原始输入量，不是按普通输入价计费的 token，也不能直接推算订阅消耗；原逐次数据缺失的限制见 [19](19-experiments.md)。
 
 ### 2.1 新类别：决策模型（2026-09 起）👀
 
@@ -55,12 +64,21 @@
 
 | | 订阅（Claude Pro/Max、ChatGPT Plus/Pro…） | API 按量 |
 |---|---|---|
-| 成本 | 固定，重度使用时单价低 | 用多少付多少 |
-| 限制 | **5 小时额度 + 每周额度**，规则经常变 | 速率限制 |
+| 成本 | 固定订阅费覆盖一定用量；额外 credits 另计，是否划算取决于实际任务 | 按适用 token 类别、速度及工具等用量计费 |
+| 限制 | 按产品和计划区分；当前 Codex/Work Pro 无 5 小时限制，Plus 等有时间窗口额度，周限制也可能适用 | 速率限制及适用的账户/项目开销控制 |
 | 适合 | 个人交互开发 | CI、批处理、团队计费、自建工具 |
 
+**Codex / Work 的三种计量口径**（2026-10-10 UTC，[一手：Pricing](https://learn.chatgpt.com/docs/pricing)）：
+
+| 速度（相对同一模型 Standard） | 订阅内额度消耗 | 另购 credits / Enterprise 按量 credits |
+|---|---|---|
+| Fast | 2.5 倍 | 2 倍 |
+| GPT-6 Astra / GPT-6.1 Sol Ultrafast | 8 倍 | 6 倍 |
+
+API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅内可做任务数。Codex credits 无独立缓存写入收费，API 的缓存写入规则不能移植到 credits。Work 与 Codex 共享用量，任务上下文、推理、工具和缓存都会影响消耗；这里没有读取任何用户账户额度。
+
 **2026 下半年的变化**：
-- OpenAI 推出 **500 美元/月的 Pro 档**（含 Ultrafast），原 200 美元 Pro 档在 Codex 和 Work 里的额度从 Plus 的 20 倍降到 10 倍 **[社区：HN 引用公告]**；10 月 3 日重置后，V2EX 用户普遍感觉额度大约打了六折 **[社区]**。
+- 当前 Pro 提供 $100/$200/$500 月费档；$500 档包含 **Ultrafast 访问资格**，不等于无限 Ultrafast 用量（[一手](https://learn.chatgpt.com/docs/pricing)）。此前记录的“$200 Pro 从 Plus 20 倍降至 10 倍”与“10 月 3 日后体感六折”没有附精确日期和可复核社区原帖，本轮标为**未核实历史说法，不作为当前套餐合同**。
 - **GPT-5.5 于 2026-10-14 在 ChatGPT 和 Codex 中退役**（API 不受影响），Plus 以上换 `gpt-6-sol`，Free/Go 换 `gpt-6-luna` **[一手：OpenAI 文档]**。
 - Anthropic 2026-05 到 09 的 +50% 周额度促销结束后，“几天就用完周额度”的抱怨持续存在（claude-code issue 区点赞第一）**[一手]**。
 - 企业侧：Meta、微软、Uber 都经历了从鼓励“tokenmaxxing”到限制 AI 开销的转变；有工程负责人反映每人每月 token 花费在 200–500 美元，个别超过 2000 美元 **[社区]**。
