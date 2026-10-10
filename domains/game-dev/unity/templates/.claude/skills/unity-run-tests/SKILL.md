@@ -18,6 +18,8 @@ argument-hint: "[EditMode|PlayMode] [testFilter]"
 
 ## 前提
 
+需要 Python 3 可靠解析 XML 报告；缺失解析器、损坏报告、零测试或未完成测试不能当作通过。
+
 编辑器**不能**打开着这个项目。如果打开了，就通过 Unity CLI 或 MCP 在编辑器内运行 Test Runner。
 
 ## 处理结果

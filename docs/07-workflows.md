@@ -103,12 +103,14 @@
 
 | 工具 | 风格 | 评级 |
 |---|---|---|
-| [GitHub Spec Kit](https://github.com/github/spec-kit) | Constitution → Specify → Clarify → Plan → Tasks → Implement | 👀 |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | 功能流程含 Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge；当前另有 bug/想法评估入口 | 🧪 按任务规模选择 |
 | [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 轻量，偏增量变更（`/opsx:propose`），支持 30+ 工具 | 🧪 |
 | [Kiro](https://kiro.dev) | IDE 形态，EARS 格式需求 | 👀 |
 | [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | 模拟敏捷团队的多个角色，产出物很多 | 👀 |
 
 **批评（[社区]：Martin Fowler、HN《SDD: The Waterfall Strikes Back》）**
+
+下面是历史使用体验，不代表当前版本只有完整 SDD 一条路径；2026-10-10 源码已提供独立 bug 流程，见 [21 的版本与原帖](21-agent-patterns.md)。
 - Spec Kit 给一个简单的日期显示功能生成了 **1300 行 Markdown**；审阅大量生成的 Markdown 可能比审代码还累；
 - Kiro 把任务拆得过细，而且**规格会漂移**：实现中发现的约束不会回写到文档；
 - 有人报告写规格占了项目一半的时间；用完整 SDD 修 bug 显然是大材小用。

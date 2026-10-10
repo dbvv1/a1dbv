@@ -1,7 +1,4 @@
 {
-  "enabledPlugins": {
-    "unreal-engine-skills-for-claude-code@claude-plugins-official": true
-  },
   "permissions": {
     "allow": [
       "Bash(git status*)",
@@ -20,6 +17,12 @@
       "Write(*.uproject)"
     ],
     "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/secrets/**)",
+      "Read(node_modules/**)",
+      "Read(dist/**)",
+      "Read(build/**)",
       "Read(Binaries/**)",
       "Read(Intermediate/**)",
       "Read(DerivedDataCache/**)",

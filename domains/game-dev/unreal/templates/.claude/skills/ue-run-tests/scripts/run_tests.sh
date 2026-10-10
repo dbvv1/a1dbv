@@ -6,7 +6,7 @@
 #   使用 UnrealEditor-Cmd -ExecCmds="Automation RunTest <过滤>;Quit" -ReportExportPath=<目录>，并解析 index.json。
 #   编辑器开着时也可以运行（会另起一个无界面进程），但会更慢；改了 C++ 后先用 ue-build 编译。
 #
-# 退出码：0 全部通过；1 有测试失败；2 环境问题（找不到引擎、没有生成报告、没有匹配的测试）
+# 退出码：0 全部通过；1 有测试失败；2 环境问题（找不到引擎、没有生成报告、没有匹配的测试、报告无效或测试未完成）
 # 环境变量：UE_PROJECT（.uproject 路径）、UE_ENGINE_ROOT（引擎根目录）、UE_EDITOR（直接指定编辑器可执行文件）、
 #           UE_TEST_EXTRA_ARGS（附加参数）
 
@@ -71,9 +71,35 @@ find_editor() {
 summarize() {
   python3 - "$1" <<'PY'
 import json, sys
-with open(sys.argv[1], encoding="utf-8-sig") as f:
-    data = json.load(f)
-tests = data.get("tests", [])
+
+def unique_object(pairs):
+  result = {}
+  for key, value in pairs:
+    if key in result:
+      raise ValueError(f'重复的 JSON 字段：{key}')
+    result[key] = value
+  return result
+
+try:
+  with open(sys.argv[1], encoding="utf-8-sig") as f:
+    data = json.load(f, object_pairs_hook=unique_object)
+  if not isinstance(data, dict) or not isinstance(data.get("tests"), list):
+    raise ValueError('缺少 tests 数组')
+  tests = data["tests"]
+  if any(not isinstance(t, dict) for t in tests):
+    raise ValueError('测试条目必须是对象')
+  for t in tests:
+    entries = t.get('entries', [])
+    if (not isinstance(entries, list)
+        or any(not isinstance(e, dict) or not isinstance(e.get('event', {}), dict)
+               for e in entries)):
+      raise ValueError('无效的测试日志条目')
+  for key in ('succeeded', 'succeededWithWarnings', 'failed', 'notRun', 'inProcess'):
+    if key in data and (type(data[key]) is not int or data[key] < 0):
+      raise ValueError(f'无效的测试计数：{key}')
+except (OSError, UnicodeError, ValueError) as exc:
+  print(f'✗ 无法解析测试报告：{exc}', file=sys.stderr)
+  sys.exit(2)
 def state(t):
     return str(t.get("state", "")).lower()
 failed = [t for t in tests if state(t) in ("fail", "failed")]
@@ -86,7 +112,16 @@ for t in failed[:30]:
         print("  " + str(ev.get("message", "")).strip().replace("\n", "\n  "))
 if len(failed) > 30:
     print(f"\n…另有 {len(failed) - 30} 个失败用例，见报告目录。")
-sys.exit(3 if not tests else (1 if failed else 0))
+if not tests:
+  sys.exit(3)
+if failed or data.get('failed', 0):
+  sys.exit(1)
+if (data.get('notRun', 0) or data.get('inProcess', 0)
+    or any(state(t) != 'success' for t in tests)
+    or (('succeeded' in data or 'succeededWithWarnings' in data)
+        and data.get('succeeded', 0) + data.get('succeededWithWarnings', 0) != len(tests))):
+  print('✗ 报告包含未运行、未完成、未知状态或不一致的结果。', file=sys.stderr)
+  sys.exit(2)
 PY
 }
 
@@ -102,8 +137,7 @@ EDITOR="$(find_editor)" || { log "找不到引擎：设置 UE_ENGINE_ROOT 或 UE
 
 REPORT_DIR="$PROJECT_DIR/Saved/Automation/ai-report"
 LOG="$PROJECT_DIR/Saved/Logs/ai-test.log"
-mkdir -p "$PROJECT_DIR/Saved/Logs"
-rm -rf "$REPORT_DIR"
+mkdir -p "$PROJECT_DIR/Saved/Logs" && rm -rf "$REPORT_DIR" || { log "无法准备新的报告目录：$REPORT_DIR"; exit 2; }
 
 # shellcheck disable=SC2206  # 有意按空格拆分附加参数
 extra=(${UE_TEST_EXTRA_ARGS:-})
@@ -128,4 +162,8 @@ if [ "$status" -eq 3 ]; then
   echo "✗ 没有匹配“$FILTER”的测试。用 -ExecCmds=\"Automation List;Quit\" 查看可用的测试名。"
   exit 2
 fi
-exit "$status"
+if [ "$code" -ne 0 ]; then
+  echo "✗ 编辑器异常退出（退出码 $code），不能仅凭报告认定测试完成。日志：$LOG"
+  exit 2
+fi
+case "$status" in 0|1) exit "$status" ;; *) exit 2 ;; esac

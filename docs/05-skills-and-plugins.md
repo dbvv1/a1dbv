@@ -21,7 +21,7 @@ skill-name/            # 目录名必须与 name 字段一致
 | `metadata` | | 任意键值对 |
 | `allowed-tools` | | 预授权工具，空格分隔（实验性） |
 
-**渐进式披露的三个阶段**：发现（只加载 name 和 description）→ 激活（读取完整 SKILL.md）→ 执行（按需运行脚本、读取参考文件）。所以装很多 Skill 也只占很少的上下文。
+**渐进式披露的三个阶段**：发现（加载 name 和 description）→ 激活（读取完整 SKILL.md）→ 执行（按需运行脚本、读取参考文件）。它降低了相对一次性加载全部正文的成本，但每个 Skill 的描述仍有累计开销，重复或宽泛的触发描述还会影响选择；不能据此推导“安装任意数量都没有代价”。
 
 **Claude Code 的扩展字段** **[一手]**：`disable-model-invocation`（只能手动调用）、`user-invocable: false`（只给模型用）、`context: fork` + `agent`（在子 Agent 里运行）、`paths`（按文件 glob 自动激活）、`effort`、`model`、`arguments`、`hooks`；正文可以用 `$ARGUMENTS`、`${CLAUDE_SKILL_DIR}`，以及 `` !`cmd` `` 动态注入命令输出。注意 Claude Code 中 description 加 when_to_use 合计超过 **1536 字符会被截断**。
 
@@ -119,7 +119,7 @@ codex plugin add <plugin>@<marketplace>
 | 总在从浏览器复制 Agent 看不到的数据 | **MCP**（或 CLI） |
 | Agent 为找一个符号读了很多文件 | **LSP 插件** |
 | 某个支线任务的输出淹没了对话 | **Subagent** |
-| 某件事必须每次都发生 | **Hook** |
+| 某个运行时事件需要机械检查 | **Hook**，并验证匹配、超时、错误处理和替代路径；不代替沙箱 |
 | 第二个仓库也要用同一套配置 | 打包成**插件** |
 | 想要固定的回答风格或长度 | **Output style** |
 

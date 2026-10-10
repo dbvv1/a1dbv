@@ -3,7 +3,9 @@
 > 系统收集、验证、分析 **AI 辅助编程（AI Coding）** 的工具、方法与配置，追踪最前沿的进展。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**最近一次核实：2026-10-08**（第四轮：游戏分支压缩为“AI 与游戏开发怎么结合”，主干补上[按任务类型的打法](docs/15-task-playbooks.md)和[自建 Agent](docs/16-building-agents.md)，并同步了 OpenAI DevDay、Claude Code 2.1.294 等最新变化）。每条结论都标注了证据等级，见 [评级与证据体系](docs/README.md#评级与证据体系)。
+**本轮重点核实：2026-10-11（UTC+8）**：Codex 长程任务、社区工作流和模板验证；其余专题保留各自核实日期。新增 [可执行闭环](docs/20-codex-long-horizon.md) 与 [开源机制借鉴](docs/21-agent-patterns.md)。
+
+**此前核实：2026-10-08**（第四轮：游戏分支压缩为“AI 与游戏开发怎么结合”，主干补上[按任务类型的打法](docs/15-task-playbooks.md)和[自建 Agent](docs/16-building-agents.md)，并同步了 OpenAI DevDay、Claude Code 2.1.294 等最新变化）。每条结论都标注了证据等级，见 [评级与证据体系](docs/README.md#评级与证据体系)。
 
 ---
 
@@ -14,13 +16,13 @@
 ## 一页纸结论（2026-10）
 
 1. **验证闭环比模型选择更重要。** 给 Agent 一个它自己能跑的检查（测试、构建、截图），这是“得盯着它干活”和“可以放手”的分水岭。Fable 级模型（Opus 5.5、GPT-6 Astra）只要有**清晰的完成标准、约束和工具**，就能靠蛮力把问题做完，**定义问题**成了最核心的技能。→ [07](docs/07-workflows.md)、[13](docs/13-frontier-radar.md)
-2. **上下文和 token 都是成本。** 上下文越满，效果越差；实测 Claude Code 在你开口前就发送约 33k token，一个 72KB 的指令文件让每次请求多约 2 万 token，拆给子 Agent 后 token 会成倍增加。→ [03](docs/03-context-engineering.md)、[02](docs/02-models-and-cost.md)
-3. **指令文件（CLAUDE.md / AGENTS.md）主要提升效率，而不是正确率。** 2026 年的研究（读了原文）：LLM 生成的指令文件让成本增加 20% 以上，却不提高成功率；人写的略好但不显著；**仓库概览没用**；62% 的文件把 linter 该管的规则写了进去。写短、人工写、只写 Agent 猜不到的东西。→ [03](docs/03-context-engineering.md#22-指令文件到底有没有用研究证据)
+2. **按任务结果衡量上下文和 token 成本。** 本仓库小样本实验观察到冗长指令和微小任务拆分增加开销；这些数字与模型、缓存、工具集有关，不能外推为所有长上下文或子 Agent 都更差。→ [03](docs/03-context-engineering.md)、[02](docs/02-models-and-cost.md)
+3. **指令文件需要针对任务验证。** 所引研究在指定 Python 仓库和模型上未观察到可靠的成功率增益，却观察到额外成本；不显著不等于证明无效。优先保留项目特有命令、约束与难以发现的知识，审阅 AI 草稿并做对照。→ [03](docs/03-context-engineering.md#22-指令文件到底有没有用研究证据)
 4. **价格战已经开打，模型在按角色分层。** 2026-09 同档模型价格下降 40–50%；Opus 5.5 达到 Fable 5.1 的水平、价格更低；Haiku 5.5 降到 $0.10 / $0.50，适合做子 Agent；新出现的“决策模型”专做路由和分类。但订阅额度在收紧。开源权重模型（GLM-5.3、Qwen 3.8）逼近前沿。→ [02](docs/02-models-and-cost.md)
-5. **标准已经收敛，迁移成本很低。** AGENTS.md（Claude Code 原生读取）、Agent Skills、MCP（无状态版）、ACP；Codex 甚至能直接 `/import` Claude Code 的配置。→ [00](docs/00-state-of-ai-coding.md)
+5. **开放格式降低迁移成本，但运行语义仍要验证。** AGENTS.md（Claude Code 原生读取）、Agent Skills、MCP（无状态版）、ACP；Codex 甚至能直接 `/import` Claude Code 的配置。→ [00](docs/00-state-of-ai-coding.md)
 6. **MCP 和 CLI 各有用处。** 强模型加 shell 的场景，CLI + Skill 更便宜、更好组合；小模型、本地模型和高风险环境里，MCP 更易审计、更好控制。→ [04](docs/04-mcp.md)
 7. **多 Agent 并行只对能拆分的任务有效。** 真实 Agent PR 的冲突率在 20–42%；按依赖关系切分任务比多开 Agent 更重要；瓶颈在理解和评审。→ [08](docs/08-multi-agent.md)
-8. **安全靠环境边界，不靠审批。** auto mode 已经被实测绕过，AI 实验室自己训练的 Agent 都突破过沙箱；4 万局模拟数据显示，人工逐条审批平均漏掉 1/3 的威胁。隔离、出网白名单、硬性预算上限，以及审查 Agent 引入的依赖，都不能省。→ [10](docs/10-security.md)
+8. **安全需要分层边界，审批不能单独承担防护。** auto mode 已经被实测绕过，AI 实验室自己训练的 Agent 都突破过沙箱；4 万局模拟数据显示，人工逐条审批平均漏掉 1/3 的威胁。隔离、出网白名单、硬性预算上限，以及审查 Agent 引入的依赖，都不能省。→ [10](docs/10-security.md)
 9. **模型在“有快速验证器”的地方进步飞快，在可维护性、架构、产品判断上进步缓慢**，因为后者没法用来做强化学习。所以“全自动软件工厂”只适合验证器锐利的部分，其余部分要人在前期定设计、按垂直切片评审。→ [14](docs/14-synthesis.md)、[07](docs/07-workflows.md#34-大功能的前置设计与垂直切片-)
 10. **游戏开发的瓶颈在验证，不在生成。** 把游戏改造成“Agent 能玩”的形态（状态可导出、输入可注入），比让 Agent 看截图有效得多；“好不好玩”仍然只能由人判断。→ [domains/game-dev](domains/game-dev/README.md)
 11. **社区最大的痛点是额度和成本不可预测**，其次是模型更新后的质量波动、透明度争议（隐写标记、加密的子 Agent 提示词）以及中文用户的封号问题。→ [11](docs/11-community-pulse.md)
@@ -52,6 +54,8 @@
 | [**17 故障排查**](docs/17-troubleshooting.md) | Agent 跑偏怎么办：谎报完成、改测试、范围蔓延、过度请示、上下文腐化、API 幻觉、成本暴涨、破坏性操作……症状 → 原因 → 处理，附官方测试过的提示词 |
 | [18 团队落地与治理](docs/18-team-adoption.md) | 推广路线、准入与数据政策、配置治理、成本治理、度量、评审规范、人的成长、检查清单 |
 | [**19 实测记录**](docs/19-experiments.md) | 本仓库亲手跑的实验：harness 固定开销、指令文件长短对比、子 Agent 成本；含方法和复现步骤 |
+| [**20 Codex 长程执行闭环**](docs/20-codex-long-horizon.md) | 验收 ID、恢复、子任务收集、版本证据与停止条件；连接可测试资产 |
+| [**21 开源机制借鉴**](docs/21-agent-patterns.md) | Superpowers、Spec Kit、OpenSpec、GSD 等的当前机制、反例与采用边界 |
 
 ### 分支：领域落地
 

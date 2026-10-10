@@ -37,7 +37,7 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 - 代码评审的自定义规则也写在 AGENTS.md 里。
 
 ### 审批、沙箱与 Auto-review
-- 审批策略：`untrusted` / `on-request` / `never` / 细粒度策略；沙箱模式：`read-only` / `workspace-write` / `danger-full-access`。Linux 默认用 bubblewrap，macOS 用 Seatbelt，Windows 有独立的沙箱实现。
+- 审批策略：`on-request` / `never` / 细粒度策略；2026-10-10 的当前配置参考已将显式 `untrusted` 列为不支持（不要与项目 `trust_level = "untrusted"` 混淆），`on-failure` 已弃用。见 [配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)；沙箱模式：`read-only` / `workspace-write` / `danger-full-access`。Linux 默认用 bubblewrap，macOS 用 Seatbelt，Windows 有独立的沙箱实现。
 - **Auto-review**：配置 `approvals_reviewer = "auto_review"`，CLI 用 `--approve-for-me`，桌面 App 里叫“Approve for me”（上一版写的 `guardian_subagent` 有误，已更正）**[一手]**
   - 只在交互式审批下生效：需要越过沙箱边界时（提权执行命令、被拦的网络请求、写可写目录以外的文件、需要审批的 MCP 调用、Computer Use 访问新域名），由**独立的审查 Agent** 代替人来决定。
   - 它是“换一个审批者”，**不会扩大权限**（不会增加可写目录，也不会放开网络）。
@@ -65,6 +65,10 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 | **MCP Events** | 让 ChatGPT 订阅 MCP 服务器的事件并据此行动（要求 MCP 2.0，基于草案规范的 webhook 投递） |
 
 **含义**：OpenAI 在把 Codex 从“你发起的会话”推向“**常驻、云端、有自己环境的 Agent**”，和 Claude Projects 是同一个方向（见 [13](../13-frontier-radar.md#24-云端大脑本地双手会话管理正在被托管)）。
+
+## 3.6 从说明到可验证配置（2026-10-11 增补）
+
+按需采用 [Codex 原生模板](../../templates/codex/README.md)，先核对运行时支持与生效状态，再选择受控写入范围；长任务使用 [验收和恢复记录](../20-codex-long-horizon.md)。TOML 可解析不是运行兼容性证明。模板未在真实 Codex 客户端执行，不会自动安装或扩大权限。
 
 ## 4. 优势与短板
 
