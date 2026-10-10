@@ -22,23 +22,5 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Runtime
-        run: |
-          python3 --version
-          python3 -c 'import sys; assert sys.version_info >= (3, 11)'
-      - name: Local document targets and config syntax
-        run: python3 scripts/check_repo.py
-      - name: Deterministic tests
-        run: python3 -m unittest discover -s tests -v
-      - name: Hook jq backend regressions
-        run: |
-          command -v jq
-          TEST_PARSER=jq python3 -m unittest discover -s tests -p test_protect_paths.py -v
-      - name: Evaluation fixture sanity (no models)
-        run: python3 experiments/workflow-ablation/evaluator/selftest.py
-      - name: Public result audit regressions (synthetic data)
-        run: python3 -m unittest discover -s experiments/context-results-audit -v
-      - name: External outcome recovery probe (no services)
-        run: python3 -m unittest discover -s experiments/recovery-outcome -v
-      - name: Shell syntax
-        run: find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -n1 bash -n
+      - name: Offline repository checks (no models or native engines)
+        run: python3 scripts/check_offline.py
