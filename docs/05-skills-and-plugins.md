@@ -1,6 +1,6 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-08。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
+> 核实时间：2026-10-08；第 2 节评估边界于 2026-10-11（UTC+8）复核，其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
 
 ## 1. Agent Skills 规范要点
 
@@ -50,9 +50,11 @@ skill-name/            # 目录名必须与 name 字段一致
 
 ### 评估
 - 先写 2–3 个测试用例：提示词要多样、真实，至少包含一个边界情况。
-- **对比“有 Skill”和“没有 Skill”** 两种情况：两边都通过的断言没有区分度，删掉；只在有 Skill 时通过的，说明 Skill 在起作用。
+- **对比“有 Skill”和“没有 Skill”**：预先固定验收项，保留必要的回归检查。两边都通过的断言可从能力增益分析中单列，另加有区分度的任务；单次只在有 Skill 时通过仅是候选收益信号，需独立任务与重复运行确认。**[经验：评估建议]**
 - 测触发效果：准备“应该触发”和“不应该触发”的查询，多跑几次；按 60/40 划分训练集和验证集，避免过拟合。
 - Claude Code 中：`/skill-doctor` 查成本和使用率；`claude plugin eval` 跑评测。
+
+[Skills 规范的迭代指南](https://agentskills.io/skill-creation/evaluating-skills#analyzing-patterns)确实建议替换两边总通过的断言，用于改进能力测试；[Anthropic 评估指南](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)另强调饱和测试仍有回归价值。不要在确认性比较中看完结果再删验收项、改变分母；2–3 个用例只是起步，见 [09](09-review-and-quality.md#3-给自己的-ai-配置做评估)。**[一手：方法指南；经验：采用边界]**
 
 ## 3. 插件与市场
 

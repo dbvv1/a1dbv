@@ -1,6 +1,6 @@
 # 06 · Hooks、权限与护栏
 
-> 核实时间：2026-10-08。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
+> 核实时间：2026-10-08；第 2 节失败与 Stop 边界于 2026-10-11（UTC+8）复核，其余未重验。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
 
 ## 1. 为什么需要 Hooks
 
@@ -36,7 +36,11 @@ CLAUDE.md 里的指令可能被模型忽略；命令型 Hook 能把某个事件�
 |---|---|
 | 0 | 成功；如果 stdout 是 JSON，就按结构化结果处理 |
 | 2 | **阻止**（适用于 PreToolUse、UserPromptSubmit、Stop 等可以阻止的事件），stderr 作为原因反馈给 Claude |
-| 其他 | 非阻塞错误，照常执行 |
+| 其他 | 默认通常为非阻塞错误；有效 JSON、事件特例与 `onFailure` 会改变处理 |
+
+**失败策略与版本边界（2026-10-11）[一手：当前文档，未做运行时实测]**：[官方 `onFailure` 文档](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails)规定，`command` / `http` Hook 默认 `"continue"`；`"block"` 需 **v2.1.295+**，可将无法启动、异常退出、超时或无效输出等失败按事件的阻止语义处理（`PermissionRequest` 为拒绝）。它**不适用于 Stop、SubagentStop、TaskCompleted、TeammateIdle，也不适用于 async / asyncRewake**。不要把此字段套到 [19](19-experiments.md) 的 v2.1.294 历史实验，或未经目标运行时测试就改配置。
+
+[Stop 的限制](https://code.claude.com/docs/en/hooks#stop)：用户中断不触发它；API 错误触发 `StopFailure`；默认连续继续 8 次后会覆盖下一次阻止而结束，工具调用会重置计数。此外，[退出码文档](https://code.claude.com/docs/en/hooks#exit-code-output)指出，Stop / SubagentStop / TaskCompleted（以及插件 UserPromptSubmit）若退出 2、stdout 为空且 stderr 表示缺文件，会按非阻塞错误处理。必须分别测试正常失败、缺文件、超时与事件覆盖，不能由“装了 Hook”推断必定完成。
 
 PreToolUse 的结构化决定：
 ```json
@@ -49,7 +53,7 @@ PreToolUse 的结构化决定：
 |---|---|---|
 | 保护目录或文件（生成物、密钥、第三方代码） | PreToolUse（Edit/Write） | 本仓库模板：[`protect-paths.sh`](../templates/generic/.claude/hooks/protect-paths.sh) |
 | 编辑后自动格式化或 lint | PostToolUse | 跑完把问题通过 `additionalContext` 反馈给 Claude |
-| **完成前强制验证** | Stop | 测试没过就阻止结束（官方推荐的确定性做法；注意连续阻止有上限） |
+| **完成前程序化检查** | Stop | 正常触发且按协议返回时可要求继续；失败策略、事件覆盖与连续阻止上限见上文 |
 | 危险命令拦截 | PreToolUse（Bash） | 例如 `rm -rf`、强推；社区有 [claude-code-safety-net](https://github.com/kenryu42/claude-code-safety-net)、[Dippy](https://github.com/ldayton/Dippy)（用 AST 解析判断 bash 命令是否安全） |
 | 提示注入扫描 | PostToolUse | [parry-guard](https://github.com/vaporif/parry-guard) 检查工具输出 |
 | 强制 TDD | PreToolUse | [tdd-guard](https://github.com/nizos/tdd-guard) |
