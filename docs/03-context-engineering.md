@@ -156,7 +156,11 @@
 
 [OpenHands SDK #4544](https://github.com/OpenHands/software-agent-sdk/issues/4544) 报告（1.42.1，2026-08-19）：规则的“已激活”状态保留，但承载规则的事件被压缩删除，阻止后续再注入。issue 9 月因不活跃自动关闭，不等于已修复。**[社区：单例，有最小探针；本轮未复测]**
 
-测试不能只问“恢复包存在吗”，还要问当前规则是否实际可见、可重载，最新取消是否仍生效。
+截至观察版本 [`c4b93299`](https://github.com/OpenHands/software-agent-sdk/commit/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9)，源码仍保留该故障链：路径规则正文挂在事件 `extended_content`，激活标记按会话去重；压缩删除承载事件却未同步重置标记。更细的差异是 [observation 的字符串转换](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/event/llm_convertible/observation.py#L68-L86)不带该扩展正文，而 [condenser](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/context/condenser/llm_summarizing_condenser.py#L247-L251)使用字符串摘要。日志表示不一定等于模型实际输入。**[一手：2026-10-10 UTC 源码复核；未独立运行当前 SDK]**
+
+[PR #4565](https://github.com/OpenHands/software-agent-sdk/pull/4565) 截至核实时仍未合并，提供历史真实模型失败报告及 [固定版本的回归测试](https://github.com/OpenHands/software-agent-sdk/tree/86e067dadd0a2398f6140c9f16220790be38af35/tests/integration/tests)。作者的 Opus 5 运行针对旧 commit，不是本仓复测当前 main；不能把 open PR 当已发布修复。测试的两个重要防假绿条件是：先证明承载事件确实被压缩移出，再区分注入通道中保留或重新出现的标记与摘要偶然回显；标记检查本身不等于完整正文校验。场景没有建立应标无效，不能算复现或通过。**[社区：作者历史实测；一手：未合并测试源码]**
+
+测试不能只问“恢复包存在吗”，还要问当前规则是否实际可见、可重载，最新取消是否仍生效。真实验收应核对实际模型输入或权威来源重载；上游测试只检查特定注入通道的方式不应直接成为所有 harness 的标准。现有恢复清单足够，不为此增加规则登记框架或另一套合成探针。**[经验：采用与不采用判断]**
 
 [PMPA](https://arxiv.org/html/2609.13889v1) 与 [SkillJack v2](https://arxiv.org/html/2608.03509v2) 分别展示了跨会话恶意规则持久化及由污染轨迹产生技能后删除源仍留衍生物的故障方式。**[研究：原文，限定 harness/模型/合成任务]** PMPA 使用替代后端模型和模拟工作区；SkillJack 主要统计路由层面的策略违规代理指标，不是实际外部服务被攻破。不可把这些数字外推为默认 Codex/Claude 产品事故率；但这些故障方式支持将来源信任、授权和记忆召回分开处理。
 
