@@ -30,6 +30,10 @@ jobs:
         run: python3 scripts/check_repo.py
       - name: Deterministic tests
         run: python3 -m unittest discover -s tests -v
+      - name: Hook jq backend regressions
+        run: |
+          command -v jq
+          TEST_PARSER=jq python3 -m unittest discover -s tests -p test_protect_paths.py -v
       - name: Evaluation fixture sanity (no models)
         run: python3 experiments/workflow-ablation/evaluator/selftest.py
       - name: Public result audit regressions (synthetic data)
