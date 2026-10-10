@@ -1,0 +1,15 @@
+{
+  "fixture_version": 1,
+  "sha256": {
+    "agent-input/baseline/intervals.py": "31ac50c3838d735182018830d3a6282c8f971fed60a470e705d27b2a243abd02",
+    "agent-input/baseline/tests/test_intervals.py": "24d920d2fe6d2d5cee5d941eb2213f8e1894a4d1acd094733d06e47f600e2588",
+    "agent-input/task.md": "bf61e1bd2bf6e8395b30d19b40e0b11eaa845159854ad60528911826e06873c8",
+    "conditions/neutral.md": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "conditions/padded.md": "4564bbc4086604151b543e030b731d9d2492d1d2ff94011eb8187a823161b125",
+    "conditions/short.md": "1df2ae32ed435f160f40584557be399db1970039fd9cda3f6ce2bd50d1bf6b31",
+    "evaluator/checks.py": "19f2bcfece4bc44a914332ed98d2cdee6c7a68beda8ad0120dacbe4f9ef96d97",
+    "evaluator/grade.py": "7c424d9bfa10dc4aca9914113de3a5b0470c2ddbfaebe59dc40ce3541aba52d3",
+    "evaluator/reference.patch": "e57c3d4ccc005e2533a171d160157015c5162f4d7135273751ab9e1bad49e561",
+    "evaluator/selftest.py": "3ff5818d36a7bb178a3be14cae1350c472a3ec95c526c371bc73e4911e6c1b66"
+  }
+}

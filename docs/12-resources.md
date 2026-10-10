@@ -89,6 +89,15 @@
 
 **2026-10-08 第六轮已完成**：在云端环境做了三组实测（[19](19-experiments.md)）；加厚了 [08 多 Agent](08-multi-agent.md)（两种立场的调和、子 Agent 配置、委派写法）、[09 评审](09-review-and-quality.md)（Code Review 数据、REVIEW.md、分层评审）和 [10 安全](10-security.md)（四个案例拆解、auto mode 误差、沙箱手册、CI 安全、Anthropic 的 SDLC）。
 
+**2026-10-11 第七轮（Codex 与长程任务）**：按当前默认分支 `73905442` 盘点 86 个文件；重点读取 Codex 官方 AGENTS/Skills/Subagents/配置/安全文档及近期社区 issue，阅读 Superpowers、Spec Kit、OpenSpec、GSD Core、OpenHands SDK 的固定版本，见 [20](20-codex-long-horizon.md)、[21](21-agent-patterns.md)。新增可执行验收记录、Codex 模板及离线回归测试；没有安装这些第三方框架，也没有进行真实 Codex/引擎或收费模型对照。本文其余专题的旧核实日期不因此自动更新。
+
+**新增待验证**：
+- [ ] Codex 模板在目标客户端上的加载、角色权限、技能触发与执行；本轮只做静态检查
+- [ ] 真实引擎报告 schema 与通过/失败/取消状态；模拟引擎回归不能替代
+- [ ] 长任务冷恢复、压缩、迟到 worker、未知外部副作用的真实运行对照
+- [ ] 重做有原始工件留存的 E1–E3，隔离指令内容与长度的影响
+- [ ] Hook 的完整路径语义与异常策略；当前模板只作部分编辑工具护栏，不是安全沙箱
+
 **仍待验证**：
 - [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验

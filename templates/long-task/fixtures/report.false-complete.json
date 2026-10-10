@@ -1,0 +1,44 @@
+{
+  "task_id": "synthetic-pagination-migration",
+  "spec_revision": "contract-v1",
+  "revision": "synthetic-work-v3",
+  "status": "complete",
+  "stop_reason": "budget_exhausted",
+  "steps_used": 20,
+  "checks": [
+    {
+      "id": "api-regression",
+      "acceptance_id": "AC-1",
+      "status": "passed",
+      "evidence": {
+        "revision": "synthetic-work-v2",
+        "ref": "synthetic://logs/api-regression"
+      }
+    },
+    {
+      "id": "empty-page",
+      "acceptance_id": "AC-1",
+      "status": "failed"
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "vertical-slice",
+      "status": "complete"
+    },
+    {
+      "id": "final-review",
+      "status": "not_run"
+    }
+  ],
+  "workers": [
+    {
+      "id": "api-worker",
+      "status": "complete"
+    },
+    {
+      "id": "ui-worker",
+      "status": "blocked"
+    }
+  ]
+}

@@ -1,3 +1,18 @@
+# 受保护路径规则（由 hooks/protect-paths.sh 读取）
+# 格式：<deny|ask> <glob> [原因]；glob 相对项目根目录，* 可跨目录；第一条命中的规则生效
+# 按项目实际情况增删。
+
+deny  .git/*            不要直接修改 .git 目录
+deny  node_modules/*    依赖目录，请通过包管理器修改
+deny  dist/*            构建产物，请修改源文件后重新构建
+deny  build/*           构建产物，请修改源文件后重新构建
+deny  .env              密钥文件，禁止编辑
+deny  .env.*            密钥文件，禁止编辑
+ask   *.lock            锁文件通常应由包管理器生成，确认要手改吗？
+ask   *package-lock.json  锁文件通常应由包管理器生成，确认要手改吗？
+ask   .github/workflows/*  CI 配置影响整个团队，确认修改吗？
+
+# Unreal 领域增量（通用基线在前，避免覆盖保护）
 # Unreal 项目受保护路径规则（由 hooks/protect-paths.sh 读取）
 # 格式：<deny|ask> <glob> [原因]；glob 相对项目根目录，* 可跨目录；第一条命中的规则生效
 

@@ -1,6 +1,6 @@
 # 07 · 工作流方法论
 
-> 核实时间：2026-10-08。
+> 核实时间：2026-10-08；Hook 完成边界与迁移拆分建议于 2026-10-11（UTC+8）复核，其余未重验。
 
 ## 1. 核心：验证闭环 ✅
 
@@ -12,7 +12,7 @@
 |---|---|
 | 弱 | 在提示里写：“实现后运行测试，修到通过” |
 | 中 | `/goal <完成条件>`：每轮由**独立的评估器**检查，直到条件满足 |
-| 强（确定性） | **Stop hook** 运行检查脚本，不通过就不让结束 |
+| 程序化检查（有条件） | **命令型 Stop hook** 按运行时协议阻止正常收尾；需测试缺文件、超时和连续阻止上限，不代替最终验收或权限边界，见 [06](06-hooks-and-guardrails.md) |
 | 交叉验证 | 验证子 Agent 或 Dynamic Workflow：让一个**全新的模型尝试推翻结果** |
 
 还要让 Agent **出示证据**（测试输出、跑过的命令和结果、截图），而不是只说“已完成”。
@@ -78,7 +78,7 @@
 **长任务**
 - 在 CLAUDE.md 里写**停止规则**（模板已包含）：不需要你时继续做，只在无法继续或要做破坏性操作时停下。
 - 把清单写进 `TASKS.md`，边做边勾。它不怕上下文压缩，你也可以直接看文件了解进度。
-- 审计和迁移类任务拆给子 Agent，**主 Agent 要逐个检查子 Agent 交回的证据**，最后汇总成一张表。
+- 审计和迁移中**可独立调查的部分**可拆给子 Agent；实际迁移先对齐共享接口和依赖顺序。**主 Agent 要逐个检查子 Agent 交回的证据**，再验证整合结果，见 [08](08-multi-agent.md)。
 
 **收尾与验证**
 - 总结格式固定为：**Blocked on me / Changed / Found**，先看需要你决定的事项。
@@ -103,12 +103,14 @@
 
 | 工具 | 风格 | 评级 |
 |---|---|---|
-| [GitHub Spec Kit](https://github.com/github/spec-kit) | Constitution → Specify → Clarify → Plan → Tasks → Implement | 👀 |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | 功能流程含 Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge；当前另有 bug/想法评估入口 | 🧪 按任务规模选择 |
 | [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 轻量，偏增量变更（`/opsx:propose`），支持 30+ 工具 | 🧪 |
 | [Kiro](https://kiro.dev) | IDE 形态，EARS 格式需求 | 👀 |
 | [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | 模拟敏捷团队的多个角色，产出物很多 | 👀 |
 
 **批评（[社区]：Martin Fowler、HN《SDD: The Waterfall Strikes Back》）**
+
+下面是历史使用体验，不代表当前版本只有完整 SDD 一条路径；2026-10-10 源码已提供独立 bug 流程，见 [21 的版本与原帖](21-agent-patterns.md)。
 - Spec Kit 给一个简单的日期显示功能生成了 **1300 行 Markdown**；审阅大量生成的 Markdown 可能比审代码还累；
 - Kiro 把任务拆得过细，而且**规格会漂移**：实现中发现的约束不会回写到文档；
 - 有人报告写规格占了项目一半的时间；用完整 SDD 修 bug 显然是大材小用。
@@ -152,7 +154,7 @@
 |---|---|
 | 项目事实或约定（搞错了两次） | CLAUDE.md / AGENTS.md |
 | 操作流程（第三次粘贴） | Skill |
-| 必须强制执行的规则 | Hook（官方 `hookify` 插件能从对话生成） |
+| 可机械检查的流程约束 | 命令型 Hook，并测试失败路径；权限约束交给沙箱等运行时边界 |
 | 某类审查 | Subagent |
 | 跨仓库通用 | 插件 |
 

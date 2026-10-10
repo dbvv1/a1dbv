@@ -1,0 +1,12 @@
+# 核实时间：2026-10-10；🧪 示例，未进行 Codex 运行时实测。
+# [一手] https://learn.chatgpt.com/docs/config-file/config-reference
+# [经验] 此 profile 的选择，不是所有任务的通用推荐。合并现有配置，不直接覆盖。
+model = "gpt-6.1-sol"
+model_reasoning_effort = "high"
+
+[agents]
+enabled = true
+# 上限不含主线程；3 是本示例选择，不是官方默认值。
+max_concurrent_threads_per_session = 3
+default_subagent_model = "gpt-6.1-sol"
+default_subagent_reasoning_effort = "high"

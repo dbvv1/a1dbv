@@ -28,6 +28,8 @@ out/
 tmp/
 .cache/
 coverage/
+__pycache__/
+*.py[cod]
 
 # Claude Code local settings
 .claude/settings.local.json

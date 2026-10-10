@@ -1,6 +1,6 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-08。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
+> 核实时间：2026-10-08；第 2 节评估边界于 2026-10-11（UTC+8）复核，其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
 
 ## 1. Agent Skills 规范要点
 
@@ -21,7 +21,7 @@ skill-name/            # 目录名必须与 name 字段一致
 | `metadata` | | 任意键值对 |
 | `allowed-tools` | | 预授权工具，空格分隔（实验性） |
 
-**渐进式披露的三个阶段**：发现（只加载 name 和 description）→ 激活（读取完整 SKILL.md）→ 执行（按需运行脚本、读取参考文件）。所以装很多 Skill 也只占很少的上下文。
+**渐进式披露的三个阶段**：发现（加载 name 和 description）→ 激活（读取完整 SKILL.md）→ 执行（按需运行脚本、读取参考文件）。它降低了相对一次性加载全部正文的成本，但每个 Skill 的描述仍有累计开销，重复或宽泛的触发描述还会影响选择；不能据此推导“安装任意数量都没有代价”。
 
 **Claude Code 的扩展字段** **[一手]**：`disable-model-invocation`（只能手动调用）、`user-invocable: false`（只给模型用）、`context: fork` + `agent`（在子 Agent 里运行）、`paths`（按文件 glob 自动激活）、`effort`、`model`、`arguments`、`hooks`；正文可以用 `$ARGUMENTS`、`${CLAUDE_SKILL_DIR}`，以及 `` !`cmd` `` 动态注入命令输出。注意 Claude Code 中 description 加 when_to_use 合计超过 **1536 字符会被截断**。
 
@@ -50,9 +50,11 @@ skill-name/            # 目录名必须与 name 字段一致
 
 ### 评估
 - 先写 2–3 个测试用例：提示词要多样、真实，至少包含一个边界情况。
-- **对比“有 Skill”和“没有 Skill”** 两种情况：两边都通过的断言没有区分度，删掉；只在有 Skill 时通过的，说明 Skill 在起作用。
+- **对比“有 Skill”和“没有 Skill”**：预先固定验收项，保留必要的回归检查。两边都通过的断言可从能力增益分析中单列，另加有区分度的任务；单次只在有 Skill 时通过仅是候选收益信号，需独立任务与重复运行确认。**[经验：评估建议]**
 - 测触发效果：准备“应该触发”和“不应该触发”的查询，多跑几次；按 60/40 划分训练集和验证集，避免过拟合。
 - Claude Code 中：`/skill-doctor` 查成本和使用率；`claude plugin eval` 跑评测。
+
+[Skills 规范的迭代指南](https://agentskills.io/skill-creation/evaluating-skills#analyzing-patterns)确实建议替换两边总通过的断言，用于改进能力测试；[Anthropic 评估指南](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)另强调饱和测试仍有回归价值。不要在确认性比较中看完结果再删验收项、改变分母；2–3 个用例只是起步，见 [09](09-review-and-quality.md#3-给自己的-ai-配置做评估)。**[一手：方法指南；经验：采用边界]**
 
 ## 3. 插件与市场
 
@@ -119,7 +121,7 @@ codex plugin add <plugin>@<marketplace>
 | 总在从浏览器复制 Agent 看不到的数据 | **MCP**（或 CLI） |
 | Agent 为找一个符号读了很多文件 | **LSP 插件** |
 | 某个支线任务的输出淹没了对话 | **Subagent** |
-| 某件事必须每次都发生 | **Hook** |
+| 某个运行时事件需要机械检查 | **Hook**，并验证匹配、超时、错误处理和替代路径；不代替沙箱 |
 | 第二个仓库也要用同一套配置 | 打包成**插件** |
 | 想要固定的回答风格或长度 | **Output style** |
 

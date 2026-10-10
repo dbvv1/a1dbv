@@ -5,7 +5,7 @@
 #   有 Unity CLI（unity）时使用 `unity test`，否则使用编辑器 batchmode（-runTests）。
 #   编辑器必须未打开该项目（否则请通过 Unity CLI/MCP 在编辑器内运行 Test Runner）。
 #
-# 退出码：0 全部通过；1 有测试失败；2 环境问题（找不到 Unity、项目被锁、编译错误、无结果文件）
+# 退出码：0 全部通过；1 有测试失败；2 环境问题（找不到 Unity、项目被锁、编译错误、报告无效或测试未完成）
 # 环境变量：UNITY_PROJECT（默认当前目录）、UNITY_EDITOR（无 Unity CLI 时的编辑器路径）
 
 set -uo pipefail
@@ -44,13 +44,23 @@ find_unity_editor() {
 
 # 解析 NUnit3 XML：汇总 + 至多 30 个失败用例（消息与前 5 行堆栈）
 summarize() {
-  if command -v python3 >/dev/null 2>&1; then
-    python3 - "$1" <<'PY'
+  python3 - "$1" <<'PY'
 import sys, xml.etree.ElementTree as ET
-root = ET.parse(sys.argv[1]).getroot()
-a = root.attrib
+try:
+  root = ET.parse(sys.argv[1]).getroot()
+  if root.tag != 'test-run':
+    raise ValueError('缺少 NUnit3 test-run 根节点')
+  a = root.attrib
+  counts = {key: int(a[key]) for key in ('total', 'passed', 'failed', 'skipped')}
+  counts['inconclusive'] = int(a.get('inconclusive', '0'))
+  if any(value < 0 for value in counts.values()):
+    raise ValueError('测试计数不能为负数')
+except (OSError, ET.ParseError, KeyError, ValueError) as exc:
+  print(f'✗ 无法解析测试报告：{exc}', file=sys.stderr)
+  sys.exit(2)
 print(f"结果：{a.get('result')}  总数 {a.get('total')} | 通过 {a.get('passed')} | 失败 {a.get('failed')} | 跳过 {a.get('skipped')}  耗时 {a.get('duration')}s")
-failed = [tc for tc in root.iter('test-case') if tc.get('result') == 'Failed']
+tests = list(root.iter('test-case'))
+failed = [tc for tc in tests if tc.get('result') == 'Failed']
 for tc in failed[:30]:
     msg = (tc.findtext('failure/message') or '').strip()
     stack = (tc.findtext('failure/stack-trace') or '').strip().splitlines()[:5]
@@ -61,11 +71,15 @@ for tc in failed[:30]:
         print("    " + line.strip())
 if len(failed) > 30:
     print(f"\n…另有 {len(failed) - 30} 个失败用例，见结果文件。")
+if failed or counts['failed'] or a.get('result') == 'Failed':
+  sys.exit(1)
+if (not tests or counts['total'] != len(tests)
+    or counts['passed'] != len(tests) or counts['skipped'] or counts['inconclusive']
+    or a.get('result') != 'Passed'
+    or any(tc.get('result') != 'Passed' for tc in tests)):
+  print('✗ 没有匹配的测试，或报告包含跳过、未完成或不一致的结果。', file=sys.stderr)
+  sys.exit(2)
 PY
-  else
-    grep -o '<test-run[^>]*>' "$1" | head -n1
-    grep -o '<test-case[^>]*result="Failed"[^>]*>' "$1" | grep -o 'fullname="[^"]*"' | head -n 30
-  fi
 }
 
 if [ -f "$PROJECT/Temp/UnityLockfile" ]; then
@@ -73,8 +87,9 @@ if [ -f "$PROJECT/Temp/UnityLockfile" ]; then
   exit 2
 fi
 
-mkdir -p "$LOG_DIR"
-rm -f "$RESULTS"
+command -v python3 >/dev/null 2>&1 || { log "需要 python3 解析测试报告。"; exit 2; }
+
+mkdir -p "$LOG_DIR" && rm -f "$RESULTS" || { log "无法准备新的测试结果路径：$RESULTS"; exit 2; }
 
 if command -v unity >/dev/null 2>&1; then
   args=(test "$PROJECT" --mode "$PLATFORM" --output "$RESULTS" --log-file "$LOG")
@@ -100,6 +115,14 @@ if [ ! -f "$RESULTS" ]; then
 fi
 
 summarize "$RESULTS"
+report_status=$?
+# 仅当进程和报告都成功时返回 0；解析失败不能被进程退出码掩盖。
+case "$report_status" in
+  0) ;;
+  1) [ "$status" -eq 0 ] && status=1 ;;
+  *) status=2 ;;
+esac
 echo
 echo "结果文件：$RESULTS"
+[ "$code" -eq 0 ] || log "Unity 进程退出码：$code；日志：$LOG"
 exit "$status"

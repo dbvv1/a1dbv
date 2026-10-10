@@ -22,6 +22,12 @@
       "Write(Packages/manifest.json)"
     ],
     "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/secrets/**)",
+      "Read(node_modules/**)",
+      "Read(dist/**)",
+      "Read(build/**)",
       "Read(Library/**)",
       "Read(Temp/**)",
       "Read(obj/**)",

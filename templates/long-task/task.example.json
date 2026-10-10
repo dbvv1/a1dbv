@@ -1,0 +1,30 @@
+{
+  "task_id": "synthetic-pagination-migration",
+  "spec_revision": "contract-v1",
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "分页接口保持原有响应与空页行为（合成任务）",
+      "checks": [
+        "api-regression",
+        "empty-page"
+      ]
+    },
+    {
+      "id": "AC-2",
+      "description": "客户端迁移后完成端到端翻页（合成任务）",
+      "checks": [
+        "pagination-e2e"
+      ]
+    }
+  ],
+  "checkpoints": [
+    "vertical-slice",
+    "final-review"
+  ],
+  "workers": [
+    "api-worker",
+    "ui-worker"
+  ],
+  "max_steps": 20
+}

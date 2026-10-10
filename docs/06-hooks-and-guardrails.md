@@ -1,11 +1,15 @@
 # 06 · Hooks、权限与护栏
 
-> 核实时间：2026-10-08。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
+> 核实时间：2026-10-08；本仓路径 Hook 回归与第 2 节失败 / Stop 边界于 2026-10-11（UTC+8）复核，其余未重验。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
 
 ## 1. 为什么需要 Hooks
 
-CLAUDE.md 里的指令是**建议**，模型可能忽略；Hook 是**确定性**的，每次都执行。
-原则：**“必须每次都发生”的事写成 Hook**，比如编辑后格式化、禁止改某个目录、提交前跑检查。
+CLAUDE.md 里的指令可能被模型忽略；命令型 Hook 能把某个事件的检查交给程序，但**只有事件被触发、匹配正确、处理器成功运行且返回值被运行时执行时**才有相应效果。Hook 超时、解析失败、工具匹配遗漏和另一条写入路径都可能使保护失效；prompt / agent 型 Hook 也包含模型判断。
+原则：把可机械检查的流程放入 Hook，同时测试失败路径；访问控制仍依靠沙箱、文件权限和出网约束。不要把“配置了 Hook”写成“所有路径都已强制保护”。**[经验：本仓库模板静态审计，2026-10-11]**
+
+本仓库的 `protect-paths.sh` 是**编辑工具的辅助拦截示例**：仅注册 Edit / Write / MultiEdit / NotebookEdit，不拦截任意 Bash 写入；它只做路径的词法规范化，不解析符号链接；缺失规则、缺失路径或路径在项目范围外时不返回决定。无效 JSON、字段类型或缺失解析器现在返回状态 1 和诊断，**不等于运行时必定阻止操作**。因此不能用来承诺密钥隔离、只读目录或恶意输入下的安全边界。使用前应为目标运行时补测试；不要靠扩写提示词补足操作系统权限。**[一手：仓库脚本与 settings.json；不是完整安全审计]**
+
+2026-10-11 回归：修正路径别名漏匹配、解析失败伪装成功及决定 JSON 转义；通用、Unity、Unreal 三份脚本同步。26 个测试方法分别在 jq-only 和 python3-only 路径下通过，覆盖合成盘符 / UNC 输入，但未执行真实 Windows / macOS 或 Claude Code。保留的边界与复测命令见 [E6](19-experiments.md#10-e6路径-hook-的确定性回归)。**[经验：离线脚本实测]**
 
 ## 2. Claude Code Hooks 速查
 
@@ -34,7 +38,11 @@ CLAUDE.md 里的指令是**建议**，模型可能忽略；Hook 是**确定性**
 |---|---|
 | 0 | 成功；如果 stdout 是 JSON，就按结构化结果处理 |
 | 2 | **阻止**（适用于 PreToolUse、UserPromptSubmit、Stop 等可以阻止的事件），stderr 作为原因反馈给 Claude |
-| 其他 | 非阻塞错误，照常执行 |
+| 其他 | 默认通常为非阻塞错误；有效 JSON、事件特例与 `onFailure` 会改变处理 |
+
+**失败策略与版本边界（2026-10-11）[一手：当前文档，未做运行时实测]**：[官方 `onFailure` 文档](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails)规定，`command` / `http` Hook 默认 `"continue"`；`"block"` 需 **v2.1.295+**，可将无法启动、异常退出、超时或无效输出等失败按事件的阻止语义处理（`PermissionRequest` 为拒绝）。它**不适用于 Stop、SubagentStop、TaskCompleted、TeammateIdle，也不适用于 async / asyncRewake**。不要把此字段套到 [19](19-experiments.md) 的 v2.1.294 历史实验，或未经目标运行时测试就改配置。
+
+[Stop 的限制](https://code.claude.com/docs/en/hooks#stop)：用户中断不触发它；API 错误触发 `StopFailure`；默认连续继续 8 次后会覆盖下一次阻止而结束，工具调用会重置计数。此外，[退出码文档](https://code.claude.com/docs/en/hooks#exit-code-output)指出，Stop / SubagentStop / TaskCompleted（以及插件 UserPromptSubmit）若退出 2、stdout 为空且 stderr 表示缺文件，会按非阻塞错误处理。必须分别测试正常失败、缺文件、超时与事件覆盖，不能由“装了 Hook”推断必定完成。
 
 PreToolUse 的结构化决定：
 ```json
@@ -47,7 +55,7 @@ PreToolUse 的结构化决定：
 |---|---|---|
 | 保护目录或文件（生成物、密钥、第三方代码） | PreToolUse（Edit/Write） | 本仓库模板：[`protect-paths.sh`](../templates/generic/.claude/hooks/protect-paths.sh) |
 | 编辑后自动格式化或 lint | PostToolUse | 跑完把问题通过 `additionalContext` 反馈给 Claude |
-| **完成前强制验证** | Stop | 测试没过就阻止结束（官方推荐的确定性做法；注意连续阻止有上限） |
+| **完成前程序化检查** | Stop | 正常触发且按协议返回时可要求继续；失败策略、事件覆盖与连续阻止上限见上文 |
 | 危险命令拦截 | PreToolUse（Bash） | 例如 `rm -rf`、强推；社区有 [claude-code-safety-net](https://github.com/kenryu42/claude-code-safety-net)、[Dippy](https://github.com/ldayton/Dippy)（用 AST 解析判断 bash 命令是否安全） |
 | 提示注入扫描 | PostToolUse | [parry-guard](https://github.com/vaporif/parry-guard) 检查工具输出 |
 | 强制 TDD | PreToolUse | [tdd-guard](https://github.com/nizos/tdd-guard) |
