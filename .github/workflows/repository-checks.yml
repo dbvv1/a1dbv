@@ -1,0 +1,38 @@
+name: Repository checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'dot/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repo-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      # actions/checkout v7.0.1 verified 2026-10-10; pin actual content.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Runtime
+        run: |
+          python3 --version
+          python3 -c 'import sys; assert sys.version_info >= (3, 11)'
+      - name: Local document targets and config syntax
+        run: python3 scripts/check_repo.py
+      - name: Deterministic tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Evaluation fixture sanity (no models)
+        run: python3 experiments/workflow-ablation/evaluator/selftest.py
+      - name: Public result audit regressions (synthetic data)
+        run: python3 -m unittest discover -s experiments/context-results-audit -v
+      - name: Shell syntax
+        run: find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -n1 bash -n

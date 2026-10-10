@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "record_kind": "template",
+  "experiment_id": null,
+  "task_id": "compact-ranges-01",
+  "pair_id": null,
+  "attempt_id": null,
+  "condition": null,
+  "order_index": null,
+  "status": "not_run",
+  "started_at_utc": null,
+  "finished_at_utc": null,
+  "pins": {
+    "revision": null,
+    "dirty_diff_sha256": null,
+    "manifest_sha256": null,
+    "environment_digest": null,
+    "python": null,
+    "client_version": null,
+    "model_snapshot": null,
+    "effort": null,
+    "seed": null,
+    "prompt_sha256": null,
+    "tool_config_sha256": null
+  },
+  "quality": {
+    "public_pass": null,
+    "held_out_pass": null,
+    "accepted_behavior": null,
+    "agent_claimed_success": null,
+    "regression_fails_baseline_for_right_reason": null,
+    "regression_passes_candidate": null,
+    "scope_compliant": null,
+    "tests_weakened": null
+  },
+  "time_seconds": {
+    "wall": null,
+    "queue": null,
+    "human_review": null,
+    "human_rework": null
+  },
+  "usage": {
+    "uncached_input_tokens": null,
+    "cache_read_tokens": null,
+    "cache_write_tokens": null,
+    "output_tokens": null,
+    "reasoning_tokens": null,
+    "reasoning_is_output_subset": null,
+    "requests": null,
+    "retries": null,
+    "subagent_requests": null,
+    "tool_calls": null,
+    "includes_subagents": null,
+    "provider_field_definitions": null
+  },
+  "cost": {
+    "currency": null,
+    "actual_api_billed": null,
+    "api_estimate": null,
+    "price_as_of": null,
+    "subscription_quota_debit": null,
+    "subscription_quota_unit": null,
+    "tool_fees": null,
+    "compute_fees": null,
+    "human_cost": null
+  },
+  "evidence": {
+    "candidate_sha256": null,
+    "diff_path": null,
+    "transcript_path": null,
+    "grader_json_path": null,
+    "commands_and_exit_codes_path": null,
+    "billing_source": null
+  },
+  "failure_category": null,
+  "notes": "NOT RUN: empty template; null means unmeasured, not zero."
+}

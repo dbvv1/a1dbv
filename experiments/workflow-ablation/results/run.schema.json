@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Workflow ablation raw attempt (not a results claim)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_kind", "experiment_id", "task_id", "pair_id", "attempt_id", "condition", "order_index", "status", "started_at_utc", "finished_at_utc", "pins", "quality", "time_seconds", "usage", "cost", "evidence", "failure_category", "notes"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"enum": ["template", "trial"]},
+    "experiment_id": {"type": ["string", "null"]},
+    "task_id": {"type": ["string", "null"]},
+    "pair_id": {"type": ["string", "null"]},
+    "attempt_id": {"type": ["string", "null"]},
+    "condition": {"enum": [null, "A", "B", "C"]},
+    "order_index": {"type": ["integer", "null"], "minimum": 0},
+    "status": {"enum": ["not_run", "completed", "failed", "timeout", "budget_exhausted", "blocked"]},
+    "started_at_utc": {"type": ["string", "null"]},
+    "finished_at_utc": {"type": ["string", "null"]},
+    "pins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "dirty_diff_sha256", "manifest_sha256", "environment_digest", "python", "client_version", "model_snapshot", "effort", "seed", "prompt_sha256", "tool_config_sha256"],
+      "properties": {
+        "revision": {"type": ["string", "null"]},
+        "dirty_diff_sha256": {"type": ["string", "null"]},
+        "manifest_sha256": {"type": ["string", "null"]},
+        "environment_digest": {"type": ["string", "null"]},
+        "python": {"type": ["string", "null"]},
+        "client_version": {"type": ["string", "null"]},
+        "model_snapshot": {"type": ["string", "null"]},
+        "effort": {"type": ["string", "null"]},
+        "seed": {"type": ["integer", "null"], "minimum": 0},
+        "prompt_sha256": {"type": ["string", "null"]},
+        "tool_config_sha256": {"type": ["string", "null"]}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public_pass", "held_out_pass", "accepted_behavior", "agent_claimed_success", "regression_fails_baseline_for_right_reason", "regression_passes_candidate", "scope_compliant", "tests_weakened"],
+      "properties": {
+        "public_pass": {"type": ["boolean", "null"]},
+        "held_out_pass": {"type": ["boolean", "null"]},
+        "accepted_behavior": {"type": ["boolean", "null"]},
+        "agent_claimed_success": {"type": ["boolean", "null"]},
+        "regression_fails_baseline_for_right_reason": {"type": ["boolean", "null"]},
+        "regression_passes_candidate": {"type": ["boolean", "null"]},
+        "scope_compliant": {"type": ["boolean", "null"]},
+        "tests_weakened": {"type": ["boolean", "null"]}
+      }
+    },
+    "time_seconds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wall", "queue", "human_review", "human_rework"],
+      "properties": {
+        "wall": {"type": ["number", "null"], "minimum": 0},
+        "queue": {"type": ["number", "null"], "minimum": 0},
+        "human_review": {"type": ["number", "null"], "minimum": 0},
+        "human_rework": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uncached_input_tokens", "cache_read_tokens", "cache_write_tokens", "output_tokens", "reasoning_tokens", "reasoning_is_output_subset", "requests", "retries", "subagent_requests", "tool_calls", "includes_subagents", "provider_field_definitions"],
+      "properties": {
+        "uncached_input_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "cache_read_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "cache_write_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "output_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "reasoning_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "reasoning_is_output_subset": {"type": ["boolean", "null"]},
+        "requests": {"type": ["integer", "null"], "minimum": 0},
+        "retries": {"type": ["integer", "null"], "minimum": 0},
+        "subagent_requests": {"type": ["integer", "null"], "minimum": 0},
+        "tool_calls": {"type": ["integer", "null"], "minimum": 0},
+        "includes_subagents": {"type": ["boolean", "null"]},
+        "provider_field_definitions": {"type": ["string", "null"]}
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "actual_api_billed", "api_estimate", "price_as_of", "subscription_quota_debit", "subscription_quota_unit", "tool_fees", "compute_fees", "human_cost"],
+      "properties": {
+        "currency": {"type": ["string", "null"]},
+        "actual_api_billed": {"type": ["number", "null"], "minimum": 0},
+        "api_estimate": {"type": ["number", "null"], "minimum": 0},
+        "price_as_of": {"type": ["string", "null"]},
+        "subscription_quota_debit": {"type": ["number", "null"], "minimum": 0},
+        "subscription_quota_unit": {"type": ["string", "null"]},
+        "tool_fees": {"type": ["number", "null"], "minimum": 0},
+        "compute_fees": {"type": ["number", "null"], "minimum": 0},
+        "human_cost": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_sha256", "diff_path", "transcript_path", "grader_json_path", "commands_and_exit_codes_path", "billing_source"],
+      "properties": {
+        "candidate_sha256": {"type": ["string", "null"]},
+        "diff_path": {"type": ["string", "null"]},
+        "transcript_path": {"type": ["string", "null"]},
+        "grader_json_path": {"type": ["string", "null"]},
+        "commands_and_exit_codes_path": {"type": ["string", "null"]},
+        "billing_source": {"type": ["string", "null"]}
+      }
+    },
+    "failure_category": {"type": ["string", "null"]},
+    "notes": {"type": ["string", "null"]}
+  }
+}
