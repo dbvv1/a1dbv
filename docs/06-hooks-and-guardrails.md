@@ -50,6 +50,8 @@ PreToolUse 的结构化决定：
 ```
 `permissionDecision` 可以取 `allow` / `deny` / `ask` / `defer`。PostToolUse 可以返回 `additionalContext`，用来提醒 Claude（例如“这是生成文件，请改源文件”）。
 
+**2026-10-10 补核**：2.1.295 新增 `onFailure: "block"`，2.1.296 继续修复部分 managed hooks 行为，见 [官方变更来源 S1](research/2026-10-10-audit.md)。本仓库现有路径保护模板只匹配编辑类工具，不覆盖 Bash 或其他工具写入；不能将其当作完整沙箱。如何验收故障路径见 [20](20-codex-long-horizon.md)。**[一手：变更记录 + 经验：边界分析]**
+
 ### 高价值的 Hook 场景
 | 场景 | 事件 | 说明 |
 |---|---|---|
@@ -106,7 +108,7 @@ Anthropic《Claude Code auto mode》（2026-03-25）**[一手]**：
 **人工审批也不可靠**：4 万局模拟数据显示，人工逐条审批平均漏掉 1/3 的威胁，藏在 `npm run` 后面的恶意脚本漏掉一半以上（见 [10](10-security.md#2-2026-年的真实事件与研究)）。所以无论用 auto mode 还是人工审批，**都要配合沙箱和出网限制**。
 - 防范：不让 Agent 在下载来的目录里执行代码（Python 会优先导入当前目录里的同名模块）；处理不可信内容的会话不给执行权限。
 
-**Codex 的对应机制：Auto-review** **[一手]**：`approvals_reviewer = "auto_review"`（CLI 用 `--approve-for-me`）。只有需要越过沙箱边界时，才由独立的审查 Agent 代替人做决定，**它不会扩大权限**。审查策略开源在 `codex-rs/core/src/guardian/policy.md`，可以定制。
+**Codex 的对应机制：Auto-review** **[一手：2026-10-11 补核]**：reviewer 选择与 CLI `--approve-for-me` 的完整组合配置不同；不自动扩大长期配置，不表示单次获批提权不能越过原沙箱。审批策略不等于交互界面，Computer Use App 级审批仍直接交给用户。当前默认策略在 `codex-rs/prompts/templates/guardian/policy.md`；本地 `policy`、`extra_policy` 与托管优先级须分别核对，统一见 [Codex 专题](01-agents/codex.md#审批沙箱与-auto-review)。未运行真实审批服务。
 
 ## 5. 沙箱
 

@@ -77,7 +77,29 @@
 3. **发现新东西**：先记进下面的“待验证”，验证后再写进正文。
 4. **每季度**：重跑私有评估集，审视自己的配置（`/doctor prompt-audit`、`/skill-doctor`），删掉过时内容。
 
+## 5.5 本轮直接读取的项目与实践（2026-10-10）
+
+本轮研究入口与固定来源见 [24 社区工作流](24-community-workflows.md)：Superpowers、Matt Pocock Skills、HumanLayer、Pi、Aider、OpenHands、Spec Kit；另读取了 Superpowers 的失败 Issue、Pi 使用者 Discussion、BAML 与 Ghostty 的公开 PR。按“具体做法—证据—限制—怎样试”整理，而不按 star 排名。
+
+官方规范和运行时补核见 [来源记录](research/2026-10-10-audit.md)：Claude Code 2.1.295–296、Agent Skills、Gemini 行为评估和记忆、Codex app-server、MCP 2026-07-28、Python Agent SDK、Playwright MCP。
+
+**本轮以文档/源码调查为主**；pi-trim 另做了离线检查及数据复算，没有模型效果重跑。研究现以 Codex 为主、Claude Code 为辅，其他项目提取思想；下一步见 [长期队列 R15](research/BACKLOG.md)。本轮 HN、Lobsters 网络受限，历史读取记录不作为本轮新证据。
+
 ## 6. 待验证（Backlog）
+
+**2026-10-11 不同作者样本**：已选读 [simonw/research](https://github.com/simonw/research/tree/4f5f23ed56019c498baabe9063a646f50a386a73) 中 Starlette Skill/demo 与 Datasette prompt 研究，分析并入 [24](24-community-workflows.md)。不是 Codex 专属实测，也不是全部项目审计；博客本轮代理拒绝。需继续追有原始轨迹的案例。
+
+
+**2026-10-11 官方 Cookbook**：已读取 GitHub 固定原文中的 ExecPlan、Goals、阶段流程与迭代修复，对实际选用及教学条件形成[独立分析](research/2026-10-11-codex-cookbook.md)。未执行付费修复流程，旧模型示例不作为 Astra 最新参数指南。
+
+
+**2026-10-10 正向案例复核**：[Catalog Compare](research/2026-10-10-catalog-compare.md) 已从社区原帖追到固定源码，完成公开核心/导出测试和补充精确数值检查；浏览器与商业结果未实测。采用其可复核验收思路，不推断模型排名。
+
+
+**2026-10-10 后续实读**：Codex #52555/#51670/#52345/#50771 已按[证据记录](research/2026-10-10-codex-continuity.md)分析；发现反例但不计总体故障率。OpenAI [skills](https://github.com/openai/skills/tree/49f948faa9258a0c61caceaf225e179651397431) 的 skill-creator 与 gh-fix-ci 已读，结论并入 [05](05-skills-and-plugins.md)；未安装。待追的是具备公开任务与改动结果的正向实践，以及这些具体问题的修复轨迹，不继续堆相似抱怨。
+
+
+**2026-10-10 Codex 主线补充**：已读 [KPI 项目求助 #52835](https://github.com/openai/codex/discussions/52835)、[跨会话记忆 #52372](https://github.com/openai/codex/discussions/52372) 及 LSP/撤销讨论；分析并入 [Codex 专题](01-agents/codex.md)。前两项没有独立产品验证，记忆演示也不等于自动回忆。待继续寻找不同作者的使用记录，避免把同一回复者在两帖中的意见当成两份独立效果证据。
 
 **2026-10-05 已完成**：读了 arXiv 原文（2602.11988、2606.15828、2607.27250、2601.20404、2608.25241、2607.04697 等）、METR 原始报告、GitClear 报告、官方榜单数据、Codex 官方文档、Cursor 官方页面、Unity 官方文档；读了 HN、Lobsters、V2EX 原帖。
 

@@ -34,7 +34,7 @@ Claude Code 官方市场已有 **315 个插件** **[一手]**（含 13 个语言
 ### 2.3 自主性提升：auto mode / guardian
 人工逐条审批导致“审批疲劳”——Anthropic 披露用户约 **93%** 的权限请求都点了同意 **[一手]**。于是两家都引入了“用模型审模型”：
 - Claude Code **auto mode**（v2.1.283 起成为交互会话默认模式）：真实流量最终误拦率 0.4%，但对真实“过度执行”动作的漏放率 **17%** **[一手]**。
-- Codex **Auto-review**（`approvals_reviewer = "auto_review"`）：只在越过沙箱边界时由独立的审查 Agent 决定，不扩大权限，审查策略开源 **[一手]**。
+- Codex **Auto-review**：`approvals_reviewer = "auto_review"` 选择审批者，`--approve-for-me` 另带审批/沙箱组合配置。它不自动改写长期权限；获批提权仍可能使单次动作越过原沙箱。Computer Use 的 App 级审批直接交给用户；详见 [当前契约与源码边界](01-agents/codex.md#审批沙箱与-auto-review)。**[一手：2026-10-11 补核；未做运行时实测]**
 - 第三方用小样本做到了 60–80% 的 auto mode 绕过成功率，而官方委托的测评是 0% **[社区：原文]**。
 
 → 自主性提高了，但**不能代替环境隔离**（见 [10-security](10-security.md)）。

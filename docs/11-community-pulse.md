@@ -4,6 +4,12 @@
 > 数据来源：GitHub issue 区、HN（经 Algolia API 读取原帖和高赞评论）、Lobsters、V2EX、METR 和 GitClear 原始报告，均为直接读取。
 > 局限：Reddit 和 linux.do 拦截机房 IP，本轮未覆盖。最近 3 个月的事件和新做法见 [13 前沿雷达](13-frontier-radar.md)。
 
+## 本轮新增：实际工作流与失败案例（2026-10-10）
+
+本轮直接读取的 GitHub 原帖汇总在 [24 社区工作流](24-community-workflows.md)：Superpowers 计划与测试共享盲点、接口修改后的计划漂移；Pi 用户的 Issue 驱动开发、单次硬预算和提示裁剪；BAML 的公开交付与 Ghostty 的维护者责任讨论。单个帖子按作者报告处理，不包装为全社区统计。
+
+HN Algolia 与 Lobsters 本轮请求返回代理 403，以下历史社区记录未因此重新核实。
+
 ## 1. 痛点排行：issue 区点赞数（2026-10-03）
 
 ### anthropics/claude-code

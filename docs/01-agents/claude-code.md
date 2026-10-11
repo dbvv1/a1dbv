@@ -1,11 +1,11 @@
 # Claude Code
 
-> 核实时间：2026-10-08（最新版本 v2.1.294）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
+> 核实时间：2026-10-11（本轮针对规则加载与工作流建议补核；已读 changelog 至 2.1.296，模型价格和套餐仍为历史记录，未全量复核）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
 > 评级：✅ **采用**（主力 Agent 首选之一）
 
 ## 1. 定位
 
-Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多步自主完成任务。可在终端、VS Code、JetBrains、桌面 App、Web（claude.ai/code，云端容器）、手机 App 上使用。它的扩展体系（CLAUDE.md、Skills、Hooks、Subagents、MCP、插件、LSP、Mods）是目前最完整的。
+Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多步自主完成任务。可在终端、VS Code、JetBrains、桌面 App、Web（claude.ai/code，云端容器）、手机 App 上使用。它提供指令文件、Skills、Hooks、Subagents、MCP、插件等扩展；是否需要这些能力，应按任务判断，不能仅由扩展数量推断实际效率。**[研究：采用判断]**
 
 ## 2. 模型与价格（v2.1.280–2.1.293 changelog）
 
@@ -30,7 +30,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | `CLAUDE.md` | 托管策略 / 用户（`~/.claude/CLAUDE.md`）/ 项目（`./CLAUDE.md` 或 `./.claude/CLAUDE.md`）/ 本地（`CLAUDE.local.md`）四层；支持 `@path` 导入 |
 | **AGENTS.md** | v2.1.277 起：项目**没有** CLAUDE.md 时读取 AGENTS.md；两者都有时默认只读 CLAUDE.md。可在 `/config` → Project instructions 改为 `claude-md-and-agents-md` |
 | `.claude/rules/*.md` | 用 `paths:` glob 让规则只在处理匹配文件时加载 |
-| 子目录 CLAUDE.md | Claude 读到该目录文件时按需加载；`claudeMdExcludes` 可排除不相关的 |
+| 子目录 CLAUDE.md | 按文件访问路径按需加载；2.1.288/293 分别修复 Write/Edit 和部分单文件 Bash 读取遗漏，见下文；`claudeMdExcludes` 可排除不相关的 |
 | Auto memory | Claude 自己记录的经验（按仓库存储，worktree 间共享），每次加载前 200 行或 25KB |
 
 ### 3.2 扩展
@@ -73,16 +73,24 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | `claude plugin validate / eval` | 校验插件，并对插件跑评测打分 |
 | `/code-review --max-findings <n>\|all` | 控制评审报告的问题数量；中等 effort 下对 Opus 5.5 和 Sonnet 5.5 也会报告清理类问题和违反 CLAUDE.md 约定的问题（v2.1.290） |
 
-## 4. 用法要点（官方最佳实践精华）
+## 4. 用法要点（历史官方资料摘录与本仓库修正）
 
-1. **给它一个能自己跑的检查**：测试、构建退出码、截图对比。约束力从弱到强：写在提示里 → `/goal` → Stop hook → 独立验证子 Agent。
+1. **给它一个能自己跑的检查**：测试、构建退出码、截图对比。这些机制解决不同问题：Goal 维持目标，Hook 检查可执行条件，独立验证提供另一视角；不存在未经条件限定的强弱排序。**[研究：修正]**
 2. **探索 → 计划 → 实现 → 提交**。一句话能说清的改动就跳过计划。`Ctrl+G` 可以在编辑器里直接改计划。
 3. **大功能先让它采访你**：“用 AskUserQuestion 详细采访我……最后写成 SPEC.md”，然后**开新会话**按 Spec 实现。
-4. **积极管理上下文**：不相关的任务之间 `/clear`；同一问题纠正两次还错，就 `/clear` 后用更好的提示重来；`/btw` 问的问题不进入上下文。
-5. **CLAUDE.md 逐行问自己**：“删掉这行会不会出错？”不会就删。规则被忽略往往说明文件太长。
-6. **优先用 CLI**（`gh`、`aws`……），这是最省上下文的接外部服务方式。
+4. **积极管理上下文**：不相关的任务之间 `/clear`；同一问题反复纠正仍错时，先判断是错误上下文、实现缺陷还是验证缺口；若需要新会话，先保存产物和关键判断；`/btw` 问的问题不进入上下文。
+5. **CLAUDE.md 逐行问自己**：“删掉这行会不会出错？”不会就删。规则未生效时也要检查加载路径和版本，不能直接归因于文件太长。
+6. **按任务选择 CLI 或结构化工具**（如 `gh`）：已有可靠命令可减少配置，但输出过长、权限不匹配或接口不稳定也会增加成本；没有跨工具对照时不称其“一定最省”。
 7. **Writer / Reviewer 分离**：一个会话写，另一个新会话审；评审子 Agent 要告诉它“只报影响正确性的问题”，否则会过度挑刺。
 8. **批量改动**：先让 Claude 列出文件清单，用 `claude -p` 循环处理；在前 2–3 个文件上调好提示词再全量跑。
+
+## 4.5 与主力 Codex 配合：先核对规则是否真的加载
+
+固定 [Claude Code changelog](https://github.com/anthropics/claude-code/blob/2301018b1f61073c501a8e7a4813ef48c239163b/CHANGELOG.md) 记录了三个具体修复：2.1.287 避免 resume/压缩后同一文件夹的 CLAUDE.md 重复附加；2.1.288 修复 Write/Edit 访问范围内规则未加载；2.1.293 修复通过单文件 `cat/head/tail/sed -n/grep` 阅读时嵌套规则未加载。这些是官方发布说明，未在本轮运行对应旧版/新版对照。**[一手]**
+
+✅ 当 Codex/Claude 表现不一致时，先查入口文件、导入、路径范围和实际版本，再判断是模型偏好还是提示太长。不要靠在两个文件里重复粘贴全部约束来补一个加载问题；也不要由这几条修复推断所有 shell 读取方式都会自动加载规则。**[研究：采用判断]**
+
+🧪 Claude 偶尔参与时，优先交给它一个明确任务或独立问题，而不是每次 Codex 修改都强制交叉评审。交接内容写当前目的、已完成产物、失败证据和需要检验的假设；若评审只复述 Codex 的总结，两种模型也可能共享同一个盲点。**[研究：针对用户情境的建议]**
 
 ## 5. 2026 下半年的重要变化
 
@@ -114,7 +122,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 ## 6. 已知问题与社区反馈
 
 - **额度**：Max 订阅“几天就用完周额度”是 issue 区点赞最高的问题（1498 个赞）；中文用户还普遍遇到**封号** **[社区]**。
-- **Harness 开销大** **[社区：原文]**：Systima 实测，在你开口前 Claude Code 就发送约 33k token（OpenCode 约 7k），而且会在会话中反复重写缓存。本仓库在云端环境复现了同一量级（约 31.6k，其中约 26k 是工具定义，见 [19](../19-experiments.md)）。应对：精简 CLAUDE.md 和 MCP，开始前定好模型和 effort，用 `/cost` 观察缓存；headless 和 CI 场景用 `--tools=` 只开需要的工具。
+- **Harness 开销大** **[社区：原文]**：Systima 实测，在你开口前 Claude Code 就发送约 33k token（OpenCode 约 7k），而且会在会话中反复重写缓存。本仓库历史报告记录了约 31.6k 的同量级输入，但原始产物待补齐，工具定义占比的归因尚待核实（见 [19](../19-experiments.md)）。应对：精简 CLAUDE.md 和 MCP，按当前字段核对模型、effort 与缓存前缀，用 `/usage` 的 Session 区观察主会话缓存（不含所有子 Agent，详见 [成本口径](../02-models-and-cost.md)）；headless 和 CI 场景用 `--tools=` 只开需要的工具。
 - **透明度争议** **[社区：原文]**：v2.1.196 被逆向发现会根据 API 地址和时区，悄悄改变系统提示里日期字符串的写法（疑似为了识别蒸馏），HN 2445 票。阿里以“后门风险”为由禁止员工使用 Claude Code **[二手]**。
 - **auto mode 被绕过** **[社区：原文]**：Embrace The Red 用“总结网页 → 让 Claude 自己写解码脚本并在攻击者目录里运行 → 被同名 `struct.py` 劫持”的链条，在小样本上做到了 60–80% 的成功率。**auto mode 不能代替隔离。**
 - **Opus 5.5“太独立”**：有用户反馈它在 auto mode 下越权，授权在一个区域执行的操作被它扩展到了另外 5 个区域 **[社区]**。

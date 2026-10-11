@@ -144,6 +144,10 @@ REVIEW.md 也要短：越长，关键规则越被稀释。本仓库提供了一�
 
 [19 的 E5](19-experiments.md#8-e5公开结果表的离线复核)给出真实 CSV 的取舍敏感性核对；[工作流消融夹具](../experiments/workflow-ablation/)只验证评估器机制，不提供模型效果数据。E1–E3 历史实测缺完整原始工件，不能照文章就精确复现。
 
+### 将配置评估变成可复查的记录
+
+进一步落地见 [22 评估 Agent](22-agent-evaluation.md)：区分任务成功率与断言通过率，保留失败和重试成本，使用留出集并校准模型裁判。历史 [19 实测记录](19-experiments.md) 的原始产物尚未随仓库提供，本轮没有独立复现；不宜单独用其汇总数字支持推广。
+
 ## 4. 实践清单
 
 - [ ] 按风险选择 AI 评审；保留独立测试和必要的人工评审，不把“每次都用”当成已证实收益
@@ -162,3 +166,9 @@ REVIEW.md 也要短：越长，关键规则越被稀释。本仓库提供了一�
 - [Code Review for Claude Code](https://claude.com/blog/code-review)（2026-03，内部数据）、[How Anthropic secures its AI-native SDLC](https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle)（Intercom 数据）
 - [Claude Code：Code review](https://code.claude.com/docs/en/code-review)、[Ultrareview](https://code.claude.com/docs/en/ultrareview)、[Plugin evals](https://code.claude.com/docs/en/plugin-evals)
 - [Cursor Bugbot 计费变更](https://cursor.com/blog/may-2026-bugbot-changes)
+
+## 可执行案例：独立验证要独立到什么程度
+
+[Catalog Compare 复核](research/2026-10-10-catalog-compare.md) 提供一个具体例子：原项目使用另一个 CSV 解析器核对导出，但这并未独立核对全部业务数值。本轮运行公开检查并补充原 CSV → Python Decimal → 实际输出的比较，41 个匹配行通过；同时发现旧浏览器记录未覆盖当前 HTML hash。**[研究：离线执行]**
+
+✅ 采用多种验证视角时，说明独立的是预期、解析实现、计算方式还是执行环境。多开一个 reviewer 不自动获得这些独立性；反过来，一份可重跑的确定性检查可能比另一段赞同意见更有用。不要把检查数当作质量分数。**[研究：采用判断]**

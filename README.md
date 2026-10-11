@@ -1,31 +1,46 @@
 # a1dbv — AI Coding 前沿知识库
 
-> 系统收集、验证、分析 **AI 辅助编程（AI Coding）** 的工具、方法与配置，追踪最前沿的进展。
+> 帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**本轮重点核实：2026-10-11（UTC+8）**：Codex 长程任务、社区工作流、评测与记忆证据；其余专题保留各自核实日期。查看 [当前目标、验收和下一步](docs/maintenance-roadmap.md)、[可执行闭环](docs/20-codex-long-horizon.md) 与 [开源机制借鉴](docs/21-agent-patterns.md)。
+**本轮更新：2026-10-11**：研究以 **Codex 为主、Claude Code 为辅**。已核对 Codex 官方机制与 Cookbook、社区使用反馈、Skills 的实际触发及一个可重跑的产品案例。入口：[Codex 实际使用分析](docs/01-agents/codex.md)、[官方示例的取舍](docs/research/2026-10-11-codex-cookbook.md)、[Catalog Compare 独立复核](docs/research/2026-10-10-catalog-compare.md)。历史专题保留各自日期，本轮未声称全仓事实均已重新验证。
 
-**此前核实：2026-10-08**（第四轮：游戏分支压缩为“AI 与游戏开发怎么结合”，主干补上[按任务类型的打法](docs/15-task-playbooks.md)和[自建 Agent](docs/16-building-agents.md)，并同步了 OpenAI DevDay、Claude Code 2.1.294 等最新变化）。每条结论都标注了证据等级，见 [评级与证据体系](docs/README.md#评级与证据体系)。
+执行资产与历史验证见 [维护路线](docs/maintenance-roadmap.md)、[长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
 
 ---
 
 ## 一句话
 
-> **生成已经很便宜，验证、理解和判断仍然昂贵。** 模型擅长什么、上下文为什么要省、评审为什么崩、安全为什么只能靠边界、团队为什么越用越乱，都可以从这个不对称推出来。→ [14 深度分析](docs/14-synthesis.md)
+> **让 AI 扩大能做的事情，同时保留对结果的理解与判断。** 本仓库关注真实开发能力、人的关键反馈，以及工具和流程的收益与代价。→ [研究方向与选题标准](docs/research/README.md)、[14 深度分析](docs/14-synthesis.md)
 
-## 一页纸结论（2026-10）
+## 一页纸：怎样把 AI 编程用好
 
-1. **先定义能独立核查的完成标准。** 测试、构建和截图能缩短反馈，但清晰目标与工具不保证任何模型必定完成；验收覆盖、约束执行、恢复和人工判断仍须分别验证。**[经验：工作流建议]**→ [07](docs/07-workflows.md)、[13](docs/13-frontier-radar.md)
-2. **按任务结果衡量上下文和 token 成本。** 本仓库小样本实验观察到冗长指令和微小任务拆分增加开销；这些数字与模型、缓存、工具集有关，不能外推为所有长上下文或子 Agent 都更差。→ [03](docs/03-context-engineering.md)、[02](docs/02-models-and-cost.md)
-3. **指令文件需要针对任务验证。** 所引研究在指定 Python 仓库和模型上未观察到可靠的成功率增益，却观察到额外成本；不显著不等于证明无效。优先保留项目特有命令、约束与难以发现的知识，审阅 AI 草稿并做对照。→ [03](docs/03-context-engineering.md#22-指令文件到底有没有用研究证据)
-4. **按完成任务的成本选模型。** 部分明确模型与计费项降价，但幅度取决于版本、上下文档、缓存和速度；单价更低不证明质量等价或任务更便宜。API 账单、另购 credits 与订阅内额度是三种口径，不能由 API / credit 单价直接推算订阅内额度；比较时同时记录验收结果与返工。→ [02](docs/02-models-and-cost.md)、[19](docs/19-experiments.md)
-5. **开放格式降低迁移成本，但运行语义仍要验证。** AGENTS.md（Claude Code 原生读取）、Agent Skills、MCP（无状态版）、ACP；Codex 甚至能直接 `/import` Claude Code 的配置。→ [00](docs/00-state-of-ai-coding.md)
-6. **MCP 和 CLI 各有用处。** 强模型加 shell 的场景，CLI + Skill 更便宜、更好组合；小模型、本地模型和高风险环境里，MCP 更易审计、更好控制。→ [04](docs/04-mcp.md)
-7. **多 Agent 并行只对能拆分的任务有效。** 真实 Agent PR 的冲突率在 20–42%；按依赖关系切分任务比多开 Agent 更重要；瓶颈在理解和评审。→ [08](docs/08-multi-agent.md)
-8. **安全需要分层边界，审批不能单独承担防护。** auto mode 已经被实测绕过，AI 实验室自己训练的 Agent 都突破过沙箱；4 万局模拟数据显示，人工逐条审批平均漏掉 1/3 的威胁。隔离、出网白名单、硬性预算上限，以及审查 Agent 引入的依赖，都不能省。→ [10](docs/10-security.md)
-9. **容易测量的正确性不等于完整工程质量。** 可维护性、架构和产品判断难以由单一测试覆盖；“因为不能强化学习所以进步慢”不是本仓已证明的因果结论。无人值守的范围应以可验证风险为界，其余部分保留设计和分层评审。**[经验：采用边界]**→ [14](docs/14-synthesis.md)、[07](docs/07-workflows.md#34-大功能的前置设计与垂直切片-)
-10. **游戏开发的瓶颈在验证，不在生成。** 把游戏改造成“Agent 能玩”的形态（状态可导出、输入可注入），比让 Agent 看截图有效得多；“好不好玩”仍然只能由人判断。→ [domains/game-dev](domains/game-dev/README.md)
-11. **社区最大的痛点是额度和成本不可预测**，其次是模型更新后的质量波动、透明度争议（隐写标记、加密的子 Agent 提示词）以及中文用户的封号问题。→ [11](docs/11-community-pulse.md)
+以下是本仓库的实践判断 **[经验：综合建议]**；对应章节区分来源事实、作者经验和未验证假设。
+
+1. **先定义可观察的完成标准。** 编译、业务测试、浏览器操作和人工判断各覆盖不同问题。不要只接受 Agent 的完成声明。→ [07 工作流](docs/07-workflows.md)、[23 浏览器验证](docs/23-browser-verification.md)
+2. **上下文按任务提供。** 先定位相关事实，常驻规则只写必要信息；把暂时的搜索过程压缩为可复查的结论。长度、工具数量与推理强度都要通过任务对照决定。→ [03](docs/03-context-engineering.md)、[22](docs/22-agent-evaluation.md)
+3. **先解决一个反复出现的失败，再增加一个 Skill。** 访谈、调试、评审、交接各有用途；不要同时堆叠几套争夺控制权的完整流程。→ [05](docs/05-skills-and-plugins.md)、[24 社区工作流](docs/24-community-workflows.md)
+4. **模型、工具、流程一起评估。** API 账单、另购 credits 与订阅内额度分开记录；比较首次成功、重试、总费用、人工审查和返工，避免只看排行榜、最佳一次结果或生成行数。→ [02](docs/02-models-and-cost.md)、[22](docs/22-agent-evaluation.md)
+5. **并行要有清楚的交付边界。** 任务可分、上下文可交接、结果有人整合时才值得拆分；接口改变后也要更新尚未执行的计划。→ [08](docs/08-multi-agent.md)、[24](docs/24-community-workflows.md)
+6. **自动运行需要故障恢复。** 进程结束、外部请求超时、旧记忆和日志截断都可能让“继续”变成重复或误判。显式状态、有限重试与写操作对账很重要。→ [20](docs/20-codex-long-horizon.md)
+7. **约束由实际执行边界落实。** 类型 schema、Hook 和模型评审都有适用范围；权限、凭证与副作用不能只靠提示词声明。→ [06](docs/06-hooks-and-guardrails.md)、[10](docs/10-security.md)
+8. **快速原型用来发现问题，真实交付需要补足证据。** 先打通核心路径，亲自试用；接入真实用户、数据或收费前检查权限、持久化、故障恢复和维护方式。→ [24](docs/24-community-workflows.md)
+9. **读实践者的失败记录，也读源码与官方规范。** 开源作者、维护者和使用者有不同目标；个人成功案例不代表普遍收益，社区热度不等于证据。→ [11](docs/11-community-pulse.md)、[24](docs/24-community-workflows.md)
+10. **领域验证决定自主程度。** 游戏中的编译、状态与自动试玩可以逐步自动化，手感与乐趣仍需要人体验。→ [游戏开发](domains/game-dev/README.md)
+
+## 按目标开始阅读
+
+| 你现在要做什么 | 推荐入口 |
+|---|---|
+| 优化主力 Codex，兼顾 Claude Code | [Codex](docs/01-agents/codex.md) → [Claude Code](docs/01-agents/claude-code.md) |
+| 看真实开发者怎样使用 Skills 和 Agent | [24 社区工作流与失败案例](docs/24-community-workflows.md) |
+| 判断工作流是否对强模型仍有价值 | [24 的独立分析](docs/24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) |
+| 解决具体编码任务 | [15 按任务类型的打法](docs/15-task-playbooks.md) |
+| 判断新模型、Skill 或配置是否值得换 | [22 Agent 评估](docs/22-agent-evaluation.md) |
+| 做长任务、自建 Agent 或无人值守流程 | [16 自建 Agent](docs/16-building-agents.md) → [20 可靠的长任务](docs/20-codex-long-horizon.md) |
+| 查看长期研究重点和待验证问题 | [研究路线](docs/research/README.md) |
+| 查看两端分工、实施任务和提交评审 | [协作入口](docs/collaboration/README.md) |
+| 核实这轮内容依据与限制 | [本轮审查](docs/research/2026-10-10-audit.md) |
 
 ## 目录
 
@@ -53,9 +68,12 @@
 | [16 自建 Agent](docs/16-building-agents.md) | 什么时候值得自己搭；Claude Agent SDK / Tool Runner / Managed Agents 与 OpenAI Agents API / SDK / Codex SDK 的对比和选择 |
 | [**17 故障排查**](docs/17-troubleshooting.md) | Agent 跑偏怎么办：谎报完成、改测试、范围蔓延、过度请示、上下文腐化、API 幻觉、成本暴涨、破坏性操作……症状 → 原因 → 处理，附官方测试过的提示词 |
 | [18 团队落地与治理](docs/18-team-adoption.md) | 推广路线、准入与数据政策、配置治理、成本治理、度量、评审规范、人的成长、检查清单 |
-| [**19 实测记录**](docs/19-experiments.md) | 本仓库亲手跑的实验：harness 固定开销、指令文件长短对比、子 Agent 成本；含方法和复现步骤 |
+| [**19 实测记录**](docs/19-experiments.md) | 历史模型实验与当前离线回归；区分原始产物缺口、模拟检查与真实运行 |
 | [**20 Codex 长程执行闭环**](docs/20-codex-long-horizon.md) | 验收 ID、恢复、子任务收集、版本证据与停止条件；连接可测试资产 |
 | [**21 开源机制借鉴**](docs/21-agent-patterns.md) | Superpowers、Spec Kit、OpenSpec、GSD 等的当前机制、反例与采用边界 |
+| [22 Agent 评估](docs/22-agent-evaluation.md) | 真实任务集、对照、留出集、行为与结果、成本、模型裁判与原始证据 |
+| [23 浏览器验证](docs/23-browser-verification.md) | 用户路径、持久化、视觉、异常恢复、会话隔离与测试自修复 |
+| [24 社区工作流](docs/24-community-workflows.md) | 七个开源项目、维护者与使用者原帖、工作流分歧和失败案例 |
 
 ### 分支：领域落地
 

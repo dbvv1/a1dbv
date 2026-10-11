@@ -56,6 +56,10 @@
 - **按任务大小分流**：约 40% 的任务一次完成或稍作修改；中等任务写一份合并的计划文档；只有大任务才走完整的四个环节。
 - 作者的总结：“**30 分钟的计划能省几个小时的评审**。”接受模型的约束，稳定地快 2–3 倍，而不是追求 10–100 倍。
 
+### 流程也需要删减
+
+强 Agent 已稳定完成规划、实现和验证时，小任务不必再套完整规格、逐任务子 Agent 和多轮评审。先观察具体失败，再增加相应方法；目标清楚时保持自主推进。删流程要保留目标反馈：已知用户反例须改变下一动作，局部测试通过不能替代全部范围；“知道尚未完成却停工”的反例与源码核对见 [续接研究](research/2026-10-10-codex-continuity.md)。对 Superpowers、组合式 Skills 与轻量结对的实际比较见 [24 社区工作流](24-community-workflows.md)。**[经验：采用判断]**
+
 ## 3.5 Fable 级模型时代的提示与收尾 ✅
 
 来源：Anthropic《Getting the most out of Opus 5.5》**[一手]**，Simon Willison《Agentic Engineering Patterns》**[社区]**。
@@ -178,3 +182,7 @@
 - Anthropic：[Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)、[Building a C compiler](https://www.anthropic.com/engineering/building-c-compiler)
 - [Ralph Wiggum 插件](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum)
 - [Martin Fowler：Understanding SDD](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)、HN：[SDD: The Waterfall Strikes Back](https://news.ycombinator.com/item?id=45935763)（摘要）
+
+## 官方示例也要匹配协作方式
+
+OpenAI Cookbook 同时有“里程碑后自主继续”的 ExecPlan 和“每阶段等待人工批准”的阶段式教程。它们并非对所有用户的统一指令。✅ 先按当前授权和协作需要选择，再借鉴有用的证据与恢复机制；不把两套相反的停止规则都复制进全局配置。迭代修复教程的 staged 轮数也不能转为生产任务的固定返工次数。**[一手；研究：采用判断，见官方原文及代码核对](research/2026-10-11-codex-cookbook.md)**

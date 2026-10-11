@@ -12,9 +12,11 @@
 | [Goose](https://github.com/aaif-goose/goose) | 桌面 / CLI / API（Rust） | 通用 Agent（不限于编码）；15+ 服务商；可通过 ACP 使用 Claude/ChatGPT/Gemini 订阅；**已加入 Linux 基金会旗下 AAIF** | 2026-10 | 🧪 试用 |
 | [Qwen Code](https://github.com/QwenLM/qwen-code) | 终端 / IDE / 桌面 / Web / 聊天软件 | 自带 auto memory、auto skills、子 Agent、Agent Teams；支持 OpenAI / Anthropic / Gemini / Qwen 协议，可接本地模型；集成钉钉、飞书、微信 | 2026-10 | 🧪 试用（国内团队友好） |
 | [GitHub Copilot CLI](https://github.com/github/copilot-cli) | 终端 | 默认带 GitHub MCP；与 Issue / PR 深度集成；需要 Copilot 订阅 | 2026-10 | 🧪 试用（重度 GitHub 用户） |
-| [Pi](https://pi.dev)（Earendil Works） | 终端 | 只有 4 个工具（读、写、编辑、bash）、**系统提示极小**（省 token），其余靠 TypeScript 扩展；2026-10 发布 **1.0** 和实验性的 Pi Durable（长时会话）；在《You said no MCP》中宣布**把 MCP 纳入核心**；HN 上很多人用它配合本地模型 | 2026-10 | 🧪 试用 **[社区：原文]** |
+| [Pi](https://pi.dev)（Earendil Works） | 终端 / SDK / RPC | 轻量可扩展；当前 main 文档包含 MCP、codemode；不内置子 Agent/plan mode，流程由扩展决定；默认继承运行进程权限 | 2026-10-10 读取 main | 🧪 适合愿意定制的人；见 [固定来源 C4](../24-community-workflows.md) |
 | [DeepSeek Harness](https://www.deepseek.com/en/harness/) | 桌面 App（macOS、Windows）+ Web UI | 2026-10-02 公开预览并开源；基于 Cordis 的“一切皆插件”架构，可以在“Creator 模式”里让它自己写插件；实验性功能包括 Agent Teams、自动审批评审、定时任务 | 2026-10 | 👀 评估：**桌面版默认开启遥测**（HN 用户给出了关闭方法），数据合规需要自行评估 **[一手：官网；社区：HN]** |
 | [Aider](https://github.com/Aider-AI/aider) | 终端 | 老牌、git 友好、repo map | **2026-05-22** | ⛔ 暂缓：维护放缓，README 仍推荐 Claude 3.7 |
+
+**本轮补核（2026-10-10）**：Pi、Aider 和 OpenHands 的机制与范围见 [24](../24-community-workflows.md)。Aider 当前检出的 HEAD 日期确为 2026-05-22；维护节奏影响新采用判断，但其 repo map、ask/code 和测试反馈仍有学习价值。不能只凭旧 README 的模型列表判定这些方法失效。
 
 ## 怎么选
 
