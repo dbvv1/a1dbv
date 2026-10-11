@@ -1,6 +1,6 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-08；第 1 节权限可移植性与第 2 节评估边界于 2026-10-11（UTC+8）复核，其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
+> 核实时间：2026-10-08；第 1 节权限可移植性、第 2 节评估边界与第 3 节 gstack 机制于 2026-10-11（UTC+8）复核，其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
 
 ## 1. Agent Skills 规范要点
 
@@ -98,7 +98,7 @@ codex plugin add <plugin>@<marketplace>
 | [Superpowers](https://github.com/obra/superpowers) | 一整套开发方法论：头脑风暴出 Spec → 分块评审设计 → 写一份“连缺乏判断力的新手都能照做”的计划 → 子 Agent 驱动开发并逐个评审 → TDD、系统化调试、worktree、完成前验证 | 🧪 **试用**。同时进入 Claude 与 Codex 官方市场，支持十几种 Agent；对习惯“直接开写”的人约束很强，小任务会觉得重 |
 | Ralph Wiggum 循环（官方 `ralph-loop`） | “Ralph 就是一个 bash 循环”：用 Stop hook 拦住退出，把同一个提示反复喂给 Agent，直到输出约定的完成标记 | 🧪 **试用**：适合有明确、可机器检查的完成条件的任务；**一定要设 `--max-iterations`** |
 | [Compound Engineering](https://github.com/EveryInc/compound-engineering-plugin)（Every） | 把每次犯的错沉淀成经验和规则 | 👀 思路很好 |
-| [gstack](https://github.com/garrytan/gstack)（Garry Tan） | YC 总裁的个人“软件工厂”配置 | 👀 学习参考 |
+| [gstack](https://github.com/garrytan/gstack) | 工作流 Skill 与辅助脚本；本轮只核对内容绑定的验证回执 | 🧪 **机制级试用**：复用前核对内容、命令与环境，不能把源码指纹当完整有效性证明；见 [21 的采用边界](21-agent-patterns.md#验证回执能复用什么) **[一手：固定源码与测试；经验：采用判断]** |
 
 > ⚠️ **插件、Skill 本质上是给 Agent 的可执行指令加脚本**。官方建议：只从可信来源安装，安装前审阅内容（尤其是脚本依赖和让 Agent 访问外部网络的指令）。社区有扫描工具：[NVIDIA SkillSpector](https://github.com/NVIDIA/SkillSpector)，以及用于锁定 Skill 版本的 [SkilLock](https://github.com/skills-lock/skil-lock)。
 
