@@ -37,6 +37,7 @@
 | 判断新模型、Skill 或配置是否值得换 | [20 Agent 评估](docs/20-agent-evaluation.md) |
 | 做长任务、自建 Agent 或无人值守流程 | [16 自建 Agent](docs/16-building-agents.md) → [21 可靠的长任务](docs/21-reliable-agent-workflows.md) |
 | 查看长期研究重点和待验证问题 | [研究路线](docs/research/README.md) |
+| 查看两端分工、实施任务和提交评审 | [协作入口](docs/collaboration/README.md) |
 | 核实这轮内容依据与限制 | [本轮审查](docs/research/2026-10-10-audit.md) |
 
 ## 目录
