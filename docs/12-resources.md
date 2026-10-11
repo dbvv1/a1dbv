@@ -121,6 +121,7 @@
 - [ ] Hook 的完整路径语义与异常策略；当前模板只作部分编辑工具护栏，不是安全沙箱
 
 **仍待验证**：
+- [ ] 项目知识与运行反馈对实际 AI Coding 的影响：官方 Playwright interactive/CLI Skill 与 Codex 迁移教程的指定段落已读，见[方向分析](research/2026-10-12-development-conditions.md)；真实任务收益、游戏原始运行轨迹仍待验证。未安装这些 Skills，未将官网教程当作效果实测。
 - [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验
 - [ ] Antigravity、Kiro、JetBrains Junie 的官方文档
