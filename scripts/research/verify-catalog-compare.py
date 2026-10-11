@@ -32,23 +32,29 @@ with localcontext() as context:
       for side in ("before", "after"):
         source = inputs[side]
         column = source[0].index(case["options"][side + "_value_column"])
-        assert len(row[side]) == 1, (case["id"], row["key"], side)
+        if len(row[side]) != 1:
+          raise ValueError((case["id"], row["key"], side))
         raw = source[row[side][0]["record"] - 1][column].strip()
         if case["options"][side + "_decimal"] == "comma":
           raw = raw.replace(",", ".")
         values[side] = Decimal(raw)
-        assert values[side] == Decimal(row[side + "Number"]), (case["id"], row["key"], side)
-      assert values["after"] - values["before"] == Decimal(row["delta"]), (case["id"], row["key"], "delta")
-      assert (values["after"] == values["before"]) == (row["status"] == "unchanged")
+        if values[side] != Decimal(row[side + "Number"]):
+          raise ValueError((case["id"], row["key"], side))
+      if values["after"] - values["before"] != Decimal(row["delta"]):
+        raise ValueError((case["id"], row["key"], "delta"))
+      if (values["after"] == values["before"]) != (row["status"] == "unchanged"):
+        raise ValueError((case["id"], row["key"], "status"))
       matched_rows += 1
     for expected in case["expected"]["rows"]:
       if expected["status"] not in ("changed", "unchanged"):
         continue  # Unmatched rows do not promise normalized Number fields.
       actual = [row for row in rows if row["key"] == expected["sku"]]
-      assert len(actual) == 1, (case["id"], expected["sku"])
+      if len(actual) != 1:
+        raise ValueError((case["id"], expected["sku"]))
       for field, key in (("before_numeric", "beforeNumber"), ("after_numeric", "afterNumber"), ("delta", "delta")):
         if field in expected:
-          assert Decimal(str(expected[field])) == Decimal(actual[0][key]), (case["id"], key)
+          if Decimal(str(expected[field])) != Decimal(actual[0][key]):
+            raise ValueError((case["id"], key))
           expected_numeric_fields += 1
 receipt = json.loads((checkout / "docs/browser-verification.json").read_text())
 print(json.dumps({
