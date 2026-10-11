@@ -4,8 +4,8 @@
 
 ## 1. 为什么需要 Hooks
 
-CLAUDE.md 里的指令是**建议**，模型可能忽略；Hook 是**确定性**的，每次都执行。
-原则：**“必须每次都发生”的事写成 Hook**，比如编辑后格式化、禁止改某个目录、提交前跑检查。
+CLAUDE.md 提供模型指令；代码型 Hook 可以在匹配事件发生时执行程序化检查，但实际保障取决于事件覆盖、配置加载和失败处理。prompt/agent Hook 还包含模型判断。
+原则：把需要稳定执行的检查写成 Hook，并验证拒绝、超时和启动失败路径；权限与隔离仍由执行环境落实。**[经验：工程建议；版本依据见本轮 S1](research/2026-10-10-audit.md)**
 
 ## 2. Claude Code Hooks 速查
 
@@ -34,13 +34,15 @@ CLAUDE.md 里的指令是**建议**，模型可能忽略；Hook 是**确定性**
 |---|---|
 | 0 | 成功；如果 stdout 是 JSON，就按结构化结果处理 |
 | 2 | **阻止**（适用于 PreToolUse、UserPromptSubmit、Stop 等可以阻止的事件），stderr 作为原因反馈给 Claude |
-| 其他 | 非阻塞错误，照常执行 |
+| 其他 | 通常作为非阻塞错误；2.1.295+ 的 command/HTTP hooks 可用 `onFailure: "block"` 改为阻止，需按事件和配置验证 |
 
 PreToolUse 的结构化决定：
 ```json
 {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"..."}}
 ```
 `permissionDecision` 可以取 `allow` / `deny` / `ask` / `defer`。PostToolUse 可以返回 `additionalContext`，用来提醒 Claude（例如“这是生成文件，请改源文件”）。
+
+**2026-10-10 补核**：2.1.295 新增 `onFailure: "block"`，2.1.296 继续修复部分 managed hooks 行为，见 [官方变更来源 S1](research/2026-10-10-audit.md)。本仓库现有路径保护模板只匹配编辑类工具，不覆盖 Bash 或其他工具写入；不能将其当作完整沙箱。如何验收故障路径见 [21](21-reliable-agent-workflows.md)。**[一手：变更记录 + 经验：边界分析]**
 
 ### 高价值的 Hook 场景
 | 场景 | 事件 | 说明 |

@@ -72,7 +72,7 @@ OpenAI 的对应划分 **[一手：developers.openai.com]**：
 ```
 
 **两个容易混淆的点** **[一手]**：
-- **Tool Runner 不等于 Claude Agent SDK。** 前者是普通 Anthropic SDK 里的一个辅助功能，没有内置工具、没有文件系统；后者是“打包成库的 Claude Code”。Python 版 Agent SDK 需要另外安装 Claude Code CLI，它在底层驱动的就是 Claude Code。
+- **Tool Runner 不等于 Claude Agent SDK。** 前者是普通 Anthropic SDK 里的一个辅助功能，没有内置工具、没有文件系统；后者是“打包成库的 Claude Code”。**2026-10-10 更正**：Python 版 Agent SDK 的官方发行包已捆绑 Claude Code CLI，默认无需另外安装；可用 `ClaudeAgentOptions(cli_path=...)` 指定其他 CLI。见 [官方 README 固定来源 S6](research/2026-10-10-audit.md) **[一手：安装文档，未运行验证]**。
 - **Agent Skills 不等于 Managed Agents。** 前者是给模型加载的知识包，后者是托管的运行环境。
 
 ## 4. 设计要点（不管用哪家）

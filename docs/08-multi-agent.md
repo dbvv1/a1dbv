@@ -150,6 +150,10 @@ Anthropic 研究系统的经验 **[一手]**：**委派写得含糊，子 Agent 
 - `TaskCompleted` 以退出码 2 退出，可以阻止任务被标记完成，比如测试没过；
 - `TeammateIdle` 以退出码 2 退出，可以让队员继续工作。
 
+## 10. 强 Agent 上何时不拆分
+
+如果单个 Agent 已能保留必要上下文并完成任务，拆分可能只增加交接和审查成本。不要按模型角色名称预设多 Agent 更可靠；同一计划派生的实现与评审也可能共享盲点。Superpowers 的真实配置、使用者失败反馈及 Codex + GPT-6 Astra 下的条件判断见 [23](23-community-workflows.md)。**[经验：采用判断，未做该组合对照]**
+
 ## 来源
 
 - [Run agents in parallel](https://code.claude.com/docs/en/agents)、[Agent teams](https://code.claude.com/docs/en/agent-teams)、[Dynamic workflows](https://code.claude.com/docs/en/workflows)、[Worktrees](https://code.claude.com/docs/en/worktrees)

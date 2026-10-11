@@ -50,9 +50,23 @@ skill-name/            # 目录名必须与 name 字段一致
 
 ### 评估
 - 先写 2–3 个测试用例：提示词要多样、真实，至少包含一个边界情况。
-- **对比“有 Skill”和“没有 Skill”** 两种情况：两边都通过的断言没有区分度，删掉；只在有 Skill 时通过的，说明 Skill 在起作用。
+- **对比“有 Skill”和“没有 Skill”**：两边都通过的断言不宜用于夸大增益，但必要的业务与安全底线仍要保留。只在候选方案通过的结果是改进线索，还需重复运行排除偶然性。**[经验：工程建议，参考官方评估指南]**
 - 测触发效果：准备“应该触发”和“不应该触发”的查询，多跑几次；按 60/40 划分训练集和验证集，避免过拟合。
 - Claude Code 中：`/skill-doctor` 查成本和使用率；`claude plugin eval` 跑评测。
+
+完整的任务选择、对照、留出集、原始产物和人工复查方法见 [20 评估 Agent](20-agent-evaluation.md)，按真实任务决定是否需要增加流程。本轮重新读取的官方评估指南见 [S2](research/2026-10-10-audit.md)。
+
+## 2.5 主力 Codex：Skill 应补什么，又可能增加什么
+
+OpenAI 官方 [skill-creator](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/skill-creator/SKILL.md) 明确写着 “Default assumption: Codex is already very smart”，要求只增加模型不具备的上下文，按任务脆弱性选择自由度，并把参考资料按需加载。这里支持的是**领域知识、可靠脚本、特定工具契约与真实约束**；不等于官方保证任何短 Skill 都更有效。**[一手：固定提交，2026-10-10 读取；研究：解释]**
+
+但官方出品也必须逐项检查。[gh-fix-ci](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/gh-fix-ci/SKILL.md) 提供 GitHub Actions 日志定位脚本与字段兼容方法，同时明确要求先出计划、经显式批准再实施，并将外部 CI 提供商排除。✅ 日志定位方法值得借鉴；🧪 完整 Skill 是否适合日常自主修 CI，取决于你是否需要这个人工关口。如果用户已授权修复且希望持续执行，不能仅凭“官方”二字认定该流程匹配。研究这个文件不代表已在本会话调用它。**[一手；研究：采用判断]**
+
+Superpowers 的轻量分支也要和入口规则一起看：[using-superpowers](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/using-superpowers/SKILL.md) 要求哪怕仅 1% 可能相关也先调用 Skill，并要求未 brainstorm 时在进入 Plan 前调用 brainstorming；后者又允许清楚的小任务直接执行、用户跳过问题。因此准确判断是：**存在广泛触发与额外衔接的可能，同时存在跳过路径**，不是所有任务都必跑全套，也不是有轻量路径就没有额外成本。**[一手；研究：配置分析，未测延迟]**
+
+✅ 选择原则：优先采用减少重复摸索的具体资源；若 Skill 引入额外提问、确认、委派或评审，明确它解决哪个已观察到的失败。不要把 token 长度当成唯一成本——要求多等一轮人的短指令也可能比长参考资料更打断工作。删掉步骤时仍需保留范围与失败反馈，见 [Codex 续接反例](research/2026-10-10-codex-continuity.md)。**[研究：采用判断]**
+
+对“是否真的有用”，还应检查运行环境：官方合作示例中，独立工具循环与 Codex 收到的 server instructions 不同，结果也不同；但其评分器又漏检答案数值和调用顺序。本轮已重评记录并运行定向反例，见 [插件评估核对](research/2026-10-11-codex-cookbook.md#5-插件评估真实环境更有意义但评分器仍要核查)。✅ 验证实际安装与行为，不只拿 Skill 文本单独问模型打分。**[研究]**
 
 ## 3. 插件与市场
 
@@ -83,7 +97,7 @@ codex plugin add <plugin>@<marketplace>
 
 | 名称 | 是什么 | 评价 |
 |---|---|---|
-| [Superpowers](https://github.com/obra/superpowers) | 一整套开发方法论：头脑风暴出 Spec → 分块评审设计 → 写一份“连缺乏判断力的新手都能照做”的计划 → 子 Agent 驱动开发并逐个评审 → TDD、系统化调试、worktree、完成前验证 | 🧪 **试用**。同时进入 Claude 与 Codex 官方市场，支持十几种 Agent；对习惯“直接开写”的人约束很强，小任务会觉得重 |
+| [Superpowers](https://github.com/obra/superpowers) | 一整套开发方法论：头脑风暴出 Spec → 分块评审设计 → 写一份“连缺乏判断力的新手都能照做”的计划 → 子 Agent 驱动开发并逐个评审 → TDD、系统化调试、worktree、完成前验证 | ⛔ **暂缓设为全局默认**；🧪 有明确流程缺陷再试。强 Agent 已具备的规划、验证能力不必重复叠加；当前版本也提供轻量分支。见 [23 的配置分析与采用判断](23-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) |
 | Ralph Wiggum 循环（官方 `ralph-loop`） | “Ralph 就是一个 bash 循环”：用 Stop hook 拦住退出，把同一个提示反复喂给 Agent，直到输出约定的完成标记 | 🧪 **试用**：适合有明确、可机器检查的完成条件的任务；**一定要设 `--max-iterations`** |
 | [Compound Engineering](https://github.com/EveryInc/compound-engineering-plugin)（Every） | 把每次犯的错沉淀成经验和规则 | 👀 思路很好 |
 | [gstack](https://github.com/garrytan/gstack)（Garry Tan） | YC 总裁的个人“软件工厂”配置 | 👀 学习参考 |

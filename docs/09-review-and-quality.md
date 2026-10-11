@@ -12,7 +12,7 @@
 | Anthropic 长时任务实验 **[一手]** | 模型自评时会“自信地夸奖平庸的工作” |
 | *A Few Pages of Markdown*（arXiv 2608.25241，441 个仓库）**[研究：摘要原文]** | 在 Agent 主导的仓库里，没有提交 AI 配置的认知复杂度增幅约是有配置的两倍（+53% 对 +27%），静态分析告警增幅是 1.7 倍（观察性研究） |
 
-**含义**：AI 倾向于**复制而不是复用、新增而不是重构**。评审时要特别关注重复、绕过错误处理、不触碰旧代码的“打补丁”式改动。
+**分析边界**：这些观察性或厂商样本提示应检查重复、错误处理和维护负担，但不能单独证明 AI 是原因，也不能外推到所有模型与团队。评审中可将它们作为风险线索，再用当前代码和反例确认。
 
 **为什么会这样（训练层面的解释）**：HumanLayer 的 Dex 指出，编码模型用“测试过没过”这类快速验证器做强化学习，SWE-bench 类任务的奖励只有“修好了指定问题、没弄坏其他测试”，**糟糕的设计不受惩罚**；可维护性的代价要几周到几年才显现，没有快速判定标准，所以训练不出来。更多评审 Agent 能**抬高下限，抬不高上限** **[社区：原文]**。已有评测在尝试补上这一块（Cognition Frontier Code 惩罚“改动前就不会失败的测试”，并用裁判模型审查 diff）。完整分析见 [14 规律一](14-synthesis.md#1-规律一能力地图就是验证器地图)。
 
@@ -130,9 +130,13 @@ REVIEW.md 也要短：越长，关键规则越被稀释。本仓库提供了一�
 - 只看“测试通过”会漏掉很多差异。在实测中，所有条件都修好了 bug，区别体现在**用了什么测试命令、是否装了额外依赖、回归测试放在哪里**；
 - 这些信息要从执行记录里提取，也就是 Anthropic 说的“读执行记录”。
 
+### 将配置评估变成可复查的记录
+
+进一步落地见 [20 评估 Agent](20-agent-evaluation.md)：区分任务成功率与断言通过率，保留失败和重试成本，使用留出集并校准模型裁判。历史 [19 实测记录](19-experiments.md) 的原始产物尚未随仓库提供，本轮没有独立复现；不宜单独用其汇总数字支持推广。
+
 ## 4. 实践清单
 
-- [ ] 每个 PR 至少一次 AI 评审，加上人工评审
+- [ ] 按风险决定评审深度：高风险改动需要独立验证；小而明确的修改避免叠加没有新增检查价值的多轮 AI 评审
 - [ ] 评审重点：重复代码、被吞掉的错误、旧代码是否该改却没改、测试是否真的在测
 - [ ] 关键路径用交叉模型评审
 - [ ] 维护一个私有评估集，换模型或大改配置时重跑
@@ -148,3 +152,9 @@ REVIEW.md 也要短：越长，关键规则越被稀释。本仓库提供了一�
 - [Code Review for Claude Code](https://claude.com/blog/code-review)（2026-03，内部数据）、[How Anthropic secures its AI-native SDLC](https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle)（Intercom 数据）
 - [Claude Code：Code review](https://code.claude.com/docs/en/code-review)、[Ultrareview](https://code.claude.com/docs/en/ultrareview)、[Plugin evals](https://code.claude.com/docs/en/plugin-evals)
 - [Cursor Bugbot 计费变更](https://cursor.com/blog/may-2026-bugbot-changes)
+
+## 可执行案例：独立验证要独立到什么程度
+
+[Catalog Compare 复核](research/2026-10-10-catalog-compare.md) 提供一个具体例子：原项目使用另一个 CSV 解析器核对导出，但这并未独立核对全部业务数值。本轮运行公开检查并补充原 CSV → Python Decimal → 实际输出的比较，41 个匹配行通过；同时发现旧浏览器记录未覆盖当前 HTML hash。**[研究：离线执行]**
+
+✅ 采用多种验证视角时，说明独立的是预期、解析实现、计算方式还是执行环境。多开一个 reviewer 不自动获得这些独立性；反过来，一份可重跑的确定性检查可能比另一段赞同意见更有用。不要把检查数当作质量分数。**[研究：采用判断]**
