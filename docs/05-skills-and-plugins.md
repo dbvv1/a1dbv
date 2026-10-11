@@ -1,6 +1,6 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-08；第 2 节评估边界于 2026-10-11（UTC+8）复核，其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
+> 核实时间：2026-10-08；第 1 节权限可移植性与第 2 节评估边界于 2026-10-11（UTC+8）复核，其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
 
 ## 1. Agent Skills 规范要点
 
@@ -19,11 +19,21 @@ skill-name/            # 目录名必须与 name 字段一致
 | `license` | | 许可证名或许可文件 |
 | `compatibility` | | 不超过 500 字符；说明环境要求（目标产品、系统依赖、网络等） |
 | `metadata` | | 任意键值对 |
-| `allowed-tools` | | 预授权工具，空格分隔（实验性） |
+| `allowed-tools` | | 规范中的预授权工具声明，空格分隔（实验性）；是否支持及如何生效取决于宿主，不是通用权限白名单 |
 
 **渐进式披露的三个阶段**：发现（加载 name 和 description）→ 激活（读取完整 SKILL.md）→ 执行（按需运行脚本、读取参考文件）。它降低了相对一次性加载全部正文的成本，但每个 Skill 的描述仍有累计开销，重复或宽泛的触发描述还会影响选择；不能据此推导“安装任意数量都没有代价”。
 
 **Claude Code 的扩展字段** **[一手]**：`disable-model-invocation`（只能手动调用）、`user-invocable: false`（只给模型用）、`context: fork` + `agent`（在子 Agent 里运行）、`paths`（按文件 glob 自动激活）、`effort`、`model`、`arguments`、`hooks`；正文可以用 `$ARGUMENTS`、`${CLAUDE_SKILL_DIR}`，以及 `` !`cmd` `` 动态注入命令输出。注意 Claude Code 中 description 加 when_to_use 合计超过 **1536 字符会被截断**。
+
+### 能加载，不等于权限语义可移植
+
+**✅ 采用：迁移 Skill 时单独核对权限；不为兼容而默认扩权。** 适合跨客户端复用或审查外部 Skill 的项目；仅改正文的小任务不必引入新验证框架。**[经验：设计建议]**
+
+- **规范**：`allowed-tools` 仍是实验字段，规范明确提示不同 agent 的支持可能不同。格式合法不能证明运行时实现了授权或限制。[一手：[字段定义](https://agentskills.io/specification#allowed-tools-field)]
+- **Claude Code 当前契约**：该字段给调用 Skill 的当前轮次免询问许可，下次用户消息到来后清除；它不移除未列出的工具，后者仍按权限设置处理。deny / ask 规则仍可覆盖它。项目 Skill 的此字段不受工作区信任闸门保护，未信任目录中的 `-p` 运行也可能应用它；应在运行前审查，而不是把“只列 Read”当成只读沙箱。组织的 `allowManagedPermissionRulesOnly` 从 v2.1.282 起可忽略项目/个人等来源的该字段。[一手：[授权范围与托管例外](https://code.claude.com/docs/en/skills#pre-approve-tools-for-a-skill)、[注入命令的权限检查](https://code.claude.com/docs/en/skills#permission-checks-on-injected-commands)]
+- **OpenCode 的具体反例**：v1.19.0（提交 `733b2c627e5aec39cb33cc22373bdce33053ef2c`）CLI 的 [Skill 加载器](https://github.com/anomalyco/opencode/blob/733b2c627e5aec39cb33cc22373bdce33053ef2c/packages/opencode/src/skill/index.ts) 只把名称、描述、位置、正文存入 Skill 信息，没有把 `allowed-tools` 转为权限；[Skill 工具](https://github.com/anomalyco/opencode/blob/733b2c627e5aec39cb33cc22373bdce33053ef2c/packages/opencode/src/tool/skill.ts) 另以技能名请求 `skill` 权限后返回内容。[对应测试](https://github.com/anomalyco/opencode/blob/733b2c627e5aec39cb33cc22373bdce33053ef2c/packages/opencode/test/tool/skill.test.ts) 检查了加载请求和返回内容，不能据此宣称正文里的后续工具调用已获准或被限制。此处是发布版本源码/测试阅读，没有运行该客户端，也不外推到插件或其他版本。[一手：开源实现与测试]
+
+**最小核对**：固定客户端版本，分别记录“能发现 / 能加载 / 调用者是谁 / 工具实际允许或拒绝什么”。离线检查可列出模板中的权限字段、Hook 和动态命令，并核对目标版本的解析与调用路径；这只证明检查了声明和源码。真正的允许/拒绝行为需另在获授权的隔离环境验证，本轮未运行，不新增模拟宿主来冒充兼容性测试。**[经验：验证边界]**
 
 ## 2. 写好 Skill（规范仓库的最佳实践 [一手]）
 
