@@ -2,6 +2,8 @@
 
 > 按 [PROTOCOL.md](../../PROTOCOL.md) 填写，在运行任何一轮之前提交。之后的修改另记修订，不改动本节。
 > 用户已授权本次付费调用（2026-10-12 会话内授权，总额上限见下）。
+>
+> **修订 1（2026-10-12，运行前）**：因 Claude 侧额度不足，**本先导取消，0 轮运行，没有任何结果**。排程、隔离规则和指标保留，供 Codex（dot 端）改用 `codex exec` 执行时参考；`runner.py` 中的客户端命令和用量字段需按 Codex 改写，见 [Claude 指导记录](../../../../docs/collaboration/reviews/2026-10-12-362491e-claude.md#p2-用-codex-自己跑-workflow-ablation)。
 
 ## 目的与边界
 
