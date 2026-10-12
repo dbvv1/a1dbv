@@ -1,0 +1,1 @@
+List every place in src/tomli/ where TOMLDecodeError is raised. For each, give the file:line of the `raise` statement and a one-line description of the input condition that triggers it. Output one markdown table, then the total count. Do the work yourself; do not use subagents.
