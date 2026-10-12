@@ -125,6 +125,8 @@
 - [ ] Hook 的完整路径语义与异常策略；当前模板只作部分编辑工具护栏，不是安全沙箱
 
 **仍待验证**：
+- [ ] 当前 Codex 项目的后续交付与维护：[Ra & Apep 与 KPI 案例](research/2026-10-12-codex-delivery-cases.md)已读原帖；前者由对端记录完成六场景本地浏览器对照，本侧未独立复跑，后者没有公开源码/具体故障，均未取得模型成本或长期维护效果，不把新帖当成新模型实验。
+- [ ] HumanLayer/BAML 的长期收益：对端记录已核对原问题、双 PR 同起点补丁、原/回填计划与测试入口，见[案例复核](research/2026-10-12-baml-and-review.md)；可支持具体位置选择与计划纠错分析，未运行 BAML、读取完整会话或取得发布后维护数据，不据此给 RPI 或当前模型提效结论。
 - [ ] 项目知识与运行反馈对实际 AI Coding 的影响：官方 Playwright interactive/CLI Skill 与 Codex 迁移教程的指定段落已读，见[方向分析](research/2026-10-12-development-conditions.md)；真实任务收益、游戏原始运行轨迹仍待验证。未安装这些 Skills，未将官网教程当作效果实测。
 - [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验

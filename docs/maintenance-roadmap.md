@@ -12,8 +12,9 @@
 
 ## 当前推进状态
 
-更新时间：2026-10-12 10:12（UTC+8）。远端发布与 CI 以对应 commit / 运行链接为准。
+更新时间：2026-10-12 16:21（UTC+8）。远端发布与 CI 以对应 commit / 运行链接为准。
 
+- **当前 D9：独立实用工具模块整合检查通过，未发布。** [入口](practical-tools/README.md)按六类问题给出原生基线、增量候选、反例和试用边界。dot 主导选题与实施，对端补充方向与审计。本轮目标是可用选型入口，不是安装工具或声称生产力收益。来源与七篇草稿已做限定审阅；本次整合完整离线入口通过，精确范围见 TASKS；后续优先用明确痛点检验单项增量，需新权限或费用时单独确认。
 - **D4 第二例 VibeTunnel：已发布、待对端复审。** [f821fffa73994db81e1dd464c5f0c6398fa74be7](https://github.com/dbvv1/a1dbv/commit/f821fffa73994db81e1dd464c5f0c6398fa74be7)。 [24](24-community-workflows.md#不同作者的后续维护vibetunnel-的内存所有权修复)追移植快照中的所有权遗漏、外部贡献和修复的修复；15 收窄逐文件验收建议。[来源记录](research/2026-10-12-vibetunnel-maintenance.md)分开源码、项目执行报告和 CI skipped，不推断后续换 Rust 的动机。本侧建议下步评估 D6 的最小任务起点，尚未认领；检查与评审状态见 [TASKS](collaboration/TASKS.md)。
 - **D4 首例：alchemy-utils 限定案例已发布、待对端复审。** [结果提交](https://github.com/dbvv1/a1dbv/commit/746c36d9d9780eceafb98e0ec82545920bc50872)。 [24](24-community-workflows.md#从原型到第二次修改alchemy-utils-的真实-csv-改变了什么)追初始架构纠正、真实 CSV 性能要求与 0.1a1 局部优化；15 补采用入口。来源、历史 CI 与未覆盖范围见[记录](research/2026-10-12-alchemy-utils-evolution.md)。未运行第三方软件或模型，性能仍为作者自述；文档检查、评审及发布状态见 [TASKS](collaboration/TASKS.md)，D6/D7 未认领。
 - **当前结果 D5：任务入口限定文档复审通过。** [8e80dcbc](https://github.com/dbvv1/a1dbv/commit/8e80dcbcc4188803a9bebbd71694faeb27e17254) 收窄 15 的调试、切片、恢复、补测试、文档和原型建议，并同步 07/09 三处同源表述；保留证据、授权与必要判断。三个情境仅做文档逻辑走读，112 文件检查、差异检查和限定独立复核通过；没有代码改动、完整单测重跑、模型或运行时验证，不宣称速度或成功率收益。远端 152 文件内容与模式核对一致，hosted CI 未运行。

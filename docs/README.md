@@ -16,6 +16,10 @@
 | 想理解“为什么”、做判断和规划 | **14** → 07 → 09 → 10 → 13 |
 | 游戏开发 | 07 → **14** → [domains/game-dev](../domains/game-dev/README.md) |
 
+## 实用工具独立入口
+
+[实用工具模块](practical-tools/README.md) 按六类实际问题比较原生基线与增量候选，包含 Magpie/CC Switch、ccusage、Worktrunk、Serena/Context7、Chrome DevTools MCP 和 Codex Action。每页保留版本、证据、适用条件、数据/权限边界与尚未运行的试用方案；不按热度默认安装。核实与限定文档审阅日期为 2026-10-12，不等于客户端测试。
+
 ## 评级与证据体系
 
 ### 评级（借鉴 ThoughtWorks 技术雷达）
