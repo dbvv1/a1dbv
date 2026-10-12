@@ -4,7 +4,7 @@
 > 信息源：HN（经 Algolia API 读取原帖和高赞评论）、Lobsters、Simon Willison 的博客、Latent Space、V2EX、厂商博客和文档，以及 arXiv 原文。Reddit、linux.do 拦截机房 IP，本轮未覆盖。
 > 证据标记见 [docs/README](README.md#评级与证据体系)。
 
-## 本轮精选：哪些变化会影响实际工作（2026-10-10）
+## 本轮精选：哪些变化会影响实际工作（2026-10-13 补充）
 
 以下是本轮直接读取的新证据与判断；原有时间线和历史价格表没有全量重新核实。
 
@@ -16,7 +16,7 @@
 | Pi 的 codemode + MCP | 工具组合和结果过滤在开源 harness 中有具体实现；不是第一方 API 独有路线 | [C4](24-community-workflows.md)，项目文档，未运行 |
 | Superpowers 用户报告计划/测试共享盲点、接口修改后计划漂移 | 完整流程本身也会制造错误；评审须能挑战计划 | [C8](24-community-workflows.md)，用户原帖，未复现 |
 | Pi 用户的 Issue 驱动 Orbi、按运行硬预算、pi-trim | 研究重点从“能否自动写”转向审过的版本、重试证据与真实成本 | [C10](24-community-workflows.md)，使用者/维护者自述 |
-| HumanLayer 连续需求评估与软件工厂复盘 | 新需求做对不等于旧行为不坏；强模型与高 effort 不能直接替代回归和设计判断 | [C3](24-community-workflows.md)，作者报告，未复现 |
+| 连续需求评测的原始机制与第三方质疑 | 先区分持续失败与新增退化，核对可见规格／反馈与判定器，再用结果选择模型或流程 | [SlopCodeBench 追查](research/2026-10-13-slopcodebench.md)：源码、配置计数与两个局部探测；未重跑模型或更正排名 |
 
 **本仓库判断**：对已能自主规划和验证的强 Agent，默认采用轻量流程；只有明确失败模式才增加对应 Skill，不默认叠加完整方法论。具体以 Codex + GPT-6 Astra 为例的分析见 [24](24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻)。这是条件建议，不是未经执行的性能排名。
 
