@@ -89,7 +89,7 @@
 
 - [x] VibeTunnel 的 Codex 移植后维护：已追到固定移植快照、贡献者所有权修复及修复的修复，见[来源记录](research/2026-10-12-vibetunnel-maintenance.md)。源码与历史 CI 已核对，运行结果仍为项目自述；未复测生产力或长期维护成本。
 
-- [x] alchemy-utils 的 Codex 原型到真实 CSV 优化：已核对公开需求、人的架构修正、两版源码与历史 CI，见 [D4 来源记录](research/2026-10-12-alchemy-utils-evolution.md)；未重跑模型、性能或数据库测试，长期维护效果仍未知。
+- [x] alchemy-utils 的 Codex 原型到真实 CSV 优化：已核对公开需求、人的架构修正、两版源码与历史 CI，见 [D4 来源记录](research/2026-10-12-alchemy-utils-evolution.md)；随后对端报告固定版本的 30 次 SQLite API 调用，本侧只读源码核查分批机制、未复跑，完整执行材料缺口见该记录；未重跑模型、性能或上游全套数据库测试，长期维护效果仍未知。**[一手：来源调查与源码核查；经验：对端运行报告]**
 
 **2026-10-11 不同作者样本**：已选读 [simonw/research](https://github.com/simonw/research/tree/4f5f23ed56019c498baabe9063a646f50a386a73) 中 Starlette Skill/demo 与 Datasette prompt 研究，分析并入 [24](24-community-workflows.md)。不是 Codex 专属实测，也不是全部项目审计；博客本轮代理拒绝。需继续追有原始轨迹的案例。
 

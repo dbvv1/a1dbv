@@ -3,7 +3,7 @@
 > 帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**本轮更新：2026-10-11**：研究以 **Codex 为主、Claude Code 为辅**。已核对 Codex 官方机制与 Cookbook、社区使用反馈、Skills 的实际触发及一个可重跑的产品案例。入口：[Codex 实际使用分析](docs/01-agents/codex.md)、[官方示例的取舍](docs/research/2026-10-11-codex-cookbook.md)、[Catalog Compare 独立复核](docs/research/2026-10-10-catalog-compare.md)。历史专题保留各自日期，本轮未声称全仓事实均已重新验证。
+**本轮更新：2026-10-12**：以 **Codex 为主、Claude Code 为辅**。dot 主导的[实用工具模块](docs/practical-tools/README.md)提供按问题选型入口；新增[五类任务的最小输入与能力条件](docs/01-agents/codex.md#先给什么遇到什么再增加能力)。对端对 `54083033` 的[两条持续开发案例限定审计](docs/collaboration/reviews/2026-10-12-5408303.md)及 SQLite 运行报告作为补充，本侧只读源码交叉核查分批机制，未复跑其 30 次调用；完整运行材料缺口见[记录](docs/research/2026-10-12-alchemy-utils-evolution.md#本侧整合复核与运行证据缺口)。审计不覆盖本侧后续工具模块；历史专题保留各自核实日期。
 
 执行资产与历史验证见 [维护路线](docs/maintenance-roadmap.md)、[长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
 
