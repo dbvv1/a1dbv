@@ -1,0 +1,11 @@
+--- a/src/tomli/_parser.py	2026-10-08 08:16:31.307741616 +0000
++++ b/src/tomli/_parser.py	2026-10-08 08:17:01.807639025 +0000
+@@ -619,7 +619,7 @@
+     hex_str = src[pos : pos + hex_len]
+     if len(hex_str) != hex_len or not HEXDIGIT_CHARS.issuperset(hex_str):
+         raise TOMLDecodeError("Invalid hex value", src, pos)
+-    pos += hex_len
++    pos += hex_len - 1
+     hex_int = int(hex_str, 16)
+     if not is_unicode_scalar_value(hex_int):
+         raise TOMLDecodeError(

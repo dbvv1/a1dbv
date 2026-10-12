@@ -1,0 +1,154 @@
+{
+ "seed": 20261012,
+ "shuffled_base": [
+  "C",
+  "A",
+  "B"
+ ],
+ "schedule": [
+  {
+   "order_index": 1,
+   "model": "claude-haiku-5-5",
+   "repeat": 1,
+   "condition": "C",
+   "pair_id": "haiku-r1",
+   "attempt_id": "haiku-r1-C-a1"
+  },
+  {
+   "order_index": 2,
+   "model": "claude-haiku-5-5",
+   "repeat": 1,
+   "condition": "A",
+   "pair_id": "haiku-r1",
+   "attempt_id": "haiku-r1-A-a1"
+  },
+  {
+   "order_index": 3,
+   "model": "claude-haiku-5-5",
+   "repeat": 1,
+   "condition": "B",
+   "pair_id": "haiku-r1",
+   "attempt_id": "haiku-r1-B-a1"
+  },
+  {
+   "order_index": 4,
+   "model": "claude-sonnet-5-5",
+   "repeat": 1,
+   "condition": "C",
+   "pair_id": "sonnet-r1",
+   "attempt_id": "sonnet-r1-C-a1"
+  },
+  {
+   "order_index": 5,
+   "model": "claude-sonnet-5-5",
+   "repeat": 1,
+   "condition": "A",
+   "pair_id": "sonnet-r1",
+   "attempt_id": "sonnet-r1-A-a1"
+  },
+  {
+   "order_index": 6,
+   "model": "claude-sonnet-5-5",
+   "repeat": 1,
+   "condition": "B",
+   "pair_id": "sonnet-r1",
+   "attempt_id": "sonnet-r1-B-a1"
+  },
+  {
+   "order_index": 7,
+   "model": "claude-haiku-5-5",
+   "repeat": 2,
+   "condition": "A",
+   "pair_id": "haiku-r2",
+   "attempt_id": "haiku-r2-A-a1"
+  },
+  {
+   "order_index": 8,
+   "model": "claude-haiku-5-5",
+   "repeat": 2,
+   "condition": "B",
+   "pair_id": "haiku-r2",
+   "attempt_id": "haiku-r2-B-a1"
+  },
+  {
+   "order_index": 9,
+   "model": "claude-haiku-5-5",
+   "repeat": 2,
+   "condition": "C",
+   "pair_id": "haiku-r2",
+   "attempt_id": "haiku-r2-C-a1"
+  },
+  {
+   "order_index": 10,
+   "model": "claude-sonnet-5-5",
+   "repeat": 2,
+   "condition": "A",
+   "pair_id": "sonnet-r2",
+   "attempt_id": "sonnet-r2-A-a1"
+  },
+  {
+   "order_index": 11,
+   "model": "claude-sonnet-5-5",
+   "repeat": 2,
+   "condition": "B",
+   "pair_id": "sonnet-r2",
+   "attempt_id": "sonnet-r2-B-a1"
+  },
+  {
+   "order_index": 12,
+   "model": "claude-sonnet-5-5",
+   "repeat": 2,
+   "condition": "C",
+   "pair_id": "sonnet-r2",
+   "attempt_id": "sonnet-r2-C-a1"
+  },
+  {
+   "order_index": 13,
+   "model": "claude-haiku-5-5",
+   "repeat": 3,
+   "condition": "B",
+   "pair_id": "haiku-r3",
+   "attempt_id": "haiku-r3-B-a1"
+  },
+  {
+   "order_index": 14,
+   "model": "claude-haiku-5-5",
+   "repeat": 3,
+   "condition": "C",
+   "pair_id": "haiku-r3",
+   "attempt_id": "haiku-r3-C-a1"
+  },
+  {
+   "order_index": 15,
+   "model": "claude-haiku-5-5",
+   "repeat": 3,
+   "condition": "A",
+   "pair_id": "haiku-r3",
+   "attempt_id": "haiku-r3-A-a1"
+  },
+  {
+   "order_index": 16,
+   "model": "claude-sonnet-5-5",
+   "repeat": 3,
+   "condition": "B",
+   "pair_id": "sonnet-r3",
+   "attempt_id": "sonnet-r3-B-a1"
+  },
+  {
+   "order_index": 17,
+   "model": "claude-sonnet-5-5",
+   "repeat": 3,
+   "condition": "C",
+   "pair_id": "sonnet-r3",
+   "attempt_id": "sonnet-r3-C-a1"
+  },
+  {
+   "order_index": 18,
+   "model": "claude-sonnet-5-5",
+   "repeat": 3,
+   "condition": "A",
+   "pair_id": "sonnet-r3",
+   "attempt_id": "sonnet-r3-A-a1"
+  }
+ ]
+}

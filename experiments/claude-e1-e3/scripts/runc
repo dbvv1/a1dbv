@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# 隔离的 claude -p：不复用父会话 ID、不持久化、不连父会话的消息通道
+exec env -u CLAUDE_CODE_SESSION_ID -u CLAUDE_CODE_REMOTE_SESSION_ID -u CLAUDE_CODE_MESSAGING_SOCKET \
+  -u CLAUDE_CODE_MESSAGING_TOKEN -u CLAUDE_CODE_TEE_SDK_STDOUT -u CLAUDE_CODE_POST_FOR_SESSION_INGRESS_V2 \
+  -u CLAUDE_CODE_SYNC_SESSION_REFS -u CLAUDE_CODE_SYNC_SKILLS -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
+  -u CLAUDE_ADDITIONAL_DIRECTORIES -u CLAUDE_CODE_CHILD_SESSION \
+  claude -p --no-session-persistence --session-id "$(python3 -c 'import uuid;print(uuid.uuid4())')" --output-format json "$@"
