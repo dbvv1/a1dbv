@@ -1,0 +1,6 @@
+{"case":"valid_text","results":[{"variant":"old_msg_data","ok":false,"error":"SyntaxError"},{"variant":"new_msg","ok":true,"result":{"name":"Ada"}}]}
+{"case":"message_event_shape","results":[{"variant":"old_msg_data","ok":true,"result":{"name":"Ada"}},{"variant":"new_msg","ok":false,"error":"SyntaxError"}]}
+{"case":"malformed_text","results":[{"variant":"old_msg_data","ok":false,"error":"SyntaxError"},{"variant":"new_msg","ok":false,"error":"SyntaxError"}]}
+{"case":"missing_message","results":[{"variant":"old_msg_data","ok":false,"error":"TypeError"},{"variant":"new_msg","ok":false,"error":"SyntaxError"}]}
+{"case":"binary_json","results":[{"variant":"old_msg_data","ok":false,"error":"SyntaxError"},{"variant":"new_msg","ok":false,"error":"SyntaxError"}]}
+{"verified":10}
