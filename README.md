@@ -3,7 +3,7 @@
 > 帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**本轮更新：2026-10-11**：研究以 **Codex 为主、Claude Code 为辅**。已核对 Codex 官方机制与 Cookbook、社区使用反馈、Skills 的实际触发及一个可重跑的产品案例。入口：[Codex 实际使用分析](docs/01-agents/codex.md)、[官方示例的取舍](docs/research/2026-10-11-codex-cookbook.md)、[Catalog Compare 独立复核](docs/research/2026-10-10-catalog-compare.md)。历史专题保留各自日期，本轮未声称全仓事实均已重新验证。
+**本轮更新：2026-10-12**：以 **Codex 为主、Claude Code 为辅**。新增[按任务选择最小输入与能力](docs/01-agents/codex.md#先给什么遇到什么再增加能力)，[复审 dot 的两条持续开发案例](docs/collaboration/reviews/2026-10-12-5408303.md)，并独立复现“批大小改变落库数据”的兼容差异；此前另有 BAML 实现决策与浏览器前后对照。证据改变实际建议，不等同模型或完整工作流效果排名；历史专题保留各自核实日期。
 
 执行资产与历史验证见 [维护路线](docs/maintenance-roadmap.md)、[长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
 
