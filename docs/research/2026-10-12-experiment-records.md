@@ -1,0 +1,259 @@
+# 历史实验与确定性检查：方法、原表与证据缺口
+
+
+> 资料整理：2026-10-12。这里承接 [19 正文](../19-experiments.md) 的实验参数、精确历史表、复现命令与检查范围，采用建议只维护在正文。“本轮”和测试数量仍指各节原运行，不是此次迁移时重跑。E1–E3 是原作者报告；E4/E6 为确定性测试，E5 为公开 CSV 的算术复核，不能合成模型收益结论。
+
+## 产物状态与引用口径
+
+E1–E3 的实验未重跑。2026-10-12 补交的 [experiments/claude-e1-e3](../../experiments/claude-e1-e3/README.md)包含精简轨迹、提示词、埋 bug 补丁和脚本；清单所列 `logs/` 汇总及 `/context` 补测原始文件尚未入库。保留汇总，不将其升级为本侧独立复现。**[经验：历史报告与仓库产物核对]**
+
+原 E1 缓存读取数不能拆出工具定义；2.1.296 的 `/context` 补测支持下方新分项，只与 2.1.294 作同量级对照。E3 同时改变文件长度和测试约定，原解读中的局部归因未独立消融。以下美元及成本倍数均为历史客户端报告的 API 等价估算，不能作为账单或订阅扣额。早期审计原时点见 [2026-10-10 记录](2026-10-10-audit.md#3-历史实验的证据缺口)。
+
+## 1. 原报告总览
+
+此表保留历史汇总的原数字与四舍五入口径；逐条件原表在后续各节，当前采用建议只维护在 [19](../19-experiments.md#1-先看结论)。
+
+| 实验 | 问题 | 观察到的结果 |
+|---|---|---|
+| **E1 固定开销** | 一个“回复一个词”的请求，在你开口前已经发了多少 token？ | 默认 **31,558** 输入 token，其中 **26,709** 为缓存读取。2026-10-12 补测分项：工具定义约 22.9k、系统提示 2.4k、Skills 列表 2.4k（`/context` 估算，2.1.296）。只开 3 个工具降到 5.7k，不开工具降到 2.9k。CLAUDE.md 每 1KB 约多 350 token，输入与缓存计费须分别核对。与 Systima 报告的总量相近，未证明组成相同 |
+| **E3 指令文件** | 没有 / 短（2 条）/ 长（LLM 生成、526 行）的 CLAUDE.md，修同一个 bug 有什么差别？ | **27 次全部修好**，测试全过。差别不在成败，而在过程：短文件让回归测试从 2/9 提高到 9/9，并让 Agent 用项目自己的测试命令；长文件的成本是无文件时的 **1.6 倍（Haiku）/ 2.7 倍（Sonnet）**，过程差异与“测试怎么加”的约定一致，但未独立消融该段 |
+| **E2 子 Agent** | 同一个只读调查任务，直接做与拆给 2 个子 Agent 做相比如何？ | 同一任务各 3 次均找全 29 处（不是 29 个独立任务），拆分后成本约 **2 倍**、耗时约 **2.7 倍** |
+
+## 2. 环境与方法
+
+| 项 | 设置 |
+|---|---|
+| Agent | Claude Code 2.1.294，headless 模式：`claude -p --output-format json`（E1）或 `stream-json --verbose`（E2、E3，用来提取每一次工具调用） |
+| 模型 | Haiku 5.5 为主；E1 和 E3 各加了一组 Sonnet 5.5，E1 还测了 Opus 5.5 |
+| 运行环境 | Claude Code on the web 的云端容器，以 root 运行。**云端会话自带额外工具**，默认开销可能高于本地 |
+| 实验仓库 | [hukkin/tomli](https://github.com/hukkin/tomli) @43a86ad（纯 Python 的 TOML 解析器，`src/` 下约 940 行，带完整的 unittest 测试集） |
+| 隔离 | 每次运行复制一份干净目录；用新的 `--session-id` 加 `--no-session-persistence`；去掉父会话的会话类环境变量，避免嵌套会话串在一起 |
+| 权限 | root 下不能用 `--dangerously-skip-permissions`，改用 `--allowedTools=Read,Edit,Write,Bash,Glob,Grep` 预先放行 |
+| 成本 | 历史客户端报告的 `total_cost_usd`，作为 API 等价估算；原作者记录称包含子 Agent，缺原事件，未独立核对范围 |
+
+**成本口径补充（2026-10-11 UTC+8）**：E1–E3 的美元与成本倍数均指历史客户端报告的 **API 等价估算**，不是实际账单、订阅扣费或额度百分比。当前 [Claude Code 文档](https://code.claude.com/docs/en/costs)说明会话美元值由 token 与价表估算，订阅用量另计；这不能反向证明历史版本的计价完全正确。原事件、当时价表与子任务去重清单未提交，保留历史数字，不按今日价格重算。
+
+**踩过的坑**（复现时注意）：
+- `--tools` 是可变参数，`--tools Read,Edit "prompt"` 会把提示词也当成工具名，报 “Input must be provided”。要写成 `--tools=Read,Edit`；
+- `--bare` 在这个环境里报认证错误，没能测到最小开销；
+- 不给 stdin 时会多等 3 秒，要把 stdin 指向 `/dev/null`；
+- 这个仓库的测试要用 `PYTHONPATH=src python3 -m unittest`，`unittest discover -s tests` 会因相对导入失败。正是这种“猜不到的命令”构成了 E3 中短指令文件的内容。
+
+## 3. E1：固定开销
+
+**方法**：在空目录里发一句“只回复 OK”，记录 `input_tokens + cache_creation_input_tokens + cache_read_input_tokens`。
+
+**此求和只适用于这里的 Anthropic 字段**（[官方字段定义](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)）：其 `input_tokens` 不含缓存读取/写入。OpenAI [Agents usage](https://developers.openai.com/api/docs/guides/agents-api/observability) 的 cached input 已包含在 input，reasoning 已包含在 output；不能再相加，推理按输出计费。例：5,000 input（含 1,500 cached）+ 900 output（含 200 reasoning）= 5,900 total，不是 7,600。
+
+未来记录须保留 provider、schema、精确模型/速度与原字段；归一化后区分总输入、缓存读/写子集、总输出和推理子集。缺项记“未知”而非零。OpenAI Agents usage 未单列 cache-write 数量时，不能据此精算该项费用；也不能假定 Codex 客户端日志与 API schema 相同。本段不指称历史 E1 已发生重复计数。
+
+| 条件 | 每次请求的输入 token | 备注 |
+|---|---|---|
+| 默认（Haiku 5.5） | **31,558** | 其中 26,709 为缓存读取；分项见 3.1 |
+| 默认（Sonnet 5.5 / Opus 5.5） | 30,784 / 30,384 | 和模型基本无关 |
+| `--tools=Read,Edit,Bash` | 5,661 | 只留 3 个工具 |
+| `--tools=`（不开工具） | 2,939 | `/context` 显示只剩系统提示约 2.2k，另有约 0.7k 未分类 |
+| `--disable-slash-commands` | 37,651 | **反而多了约 6k**，可复现（3 次一致），原因不明 |
+| + CLAUDE.md 2KB | 32,495（+937） | |
+| + CLAUDE.md 20KB | 38,862（+7,304） | |
+| + CLAUDE.md 72KB | 57,299（+25,741） | Systima 报告约 +20k，同一数量级 |
+
+**一个词回复的历史 API 等价估算**：Haiku 5.5 约 0.0012 美元（大部分命中缓存）；Opus 5.5 约 0.052 美元。
+
+**解读**：
+- 默认请求里最大的一块是工具定义（约 2.3 万，见 3.1）。总输入与 Systima 约 33k 的报告同量级，但不代表组成相同；
+- 指令文件每 1KB 约增加 350 token（英文 ASCII 文本）；E3 长文件条件下 Haiku 平均 13.5 轮，每轮输入都包含约 1 万 token（30KB）。其费用须区分缓存读取、写入与普通输入，不能把累计原始输入全部乘普通输入单价；
+- 缓存命中不等于从上下文中删除这些输入。读取单价与模型、服务商和时间有关，[当前缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)不能统一简化为普通输入价的 1/10，也不用于按今日价格改写历史估算。
+
+### 3.1 补测：用 `/context` 分项（2026-10-12）
+
+**[经验：Claude 报告的实测]** 原始分项与 API 汇总文件尚未随提交提供，见[产物缺口](../../experiments/claude-e1-e3/README.md#内容)；以下保留 Claude 报告的测量与结论。方法：在同样的空目录和 CLAUDE.md 条件下运行 `claude -p "/context"`。headless 模式下这条命令不调用模型、费用为 0。同时各发一次真实请求，用来对照 API 实际计数。环境为 Claude Code 2.1.296，与原 E1 的 2.1.294 不同，所以只作同量级对照，不当作原数据的精确拆分。
+
+| 条件 | 系统提示 | 工具定义 | Skills 列表 | 指令文件 | `/context` 合计 | API 实际输入 |
+|---|---|---|---|---|---|---|
+| 默认 | 2.4k | **22.9k** | 2.4k | — | 27.7k | 33,213 |
+| `--tools=Read,Edit,Bash` | 2.2k | 2.5k | — | — | 4.7k | 5,761 |
+| `--tools=` | 2.2k | — | — | — | 2.2k | 2,940 |
+| CLAUDE.md 2KB | 2.4k | 22.9k | 2.4k | 765 | 28.5k | 34,145 |
+| CLAUDE.md 20KB | 2.4k | 22.9k | 2.4k | 7.1k | 34.9k | 40,517 |
+| CLAUDE.md 72KB | 2.4k | 22.9k | 2.4k | 25.6k | 53.3k | 58,958 |
+
+- 工具定义约占默认请求 API 输入的 **69%**；只留 3 个工具时，工具部分降到 2.5k。另有 19.2k 的“延迟加载工具”没有进入上下文，不计入上表；
+- 三个带 CLAUDE.md 的条件，缓存读取都是 28,377，接近“系统提示 + 工具 + Skills”的合计。这说明被缓存的公共前缀主要就是这三部分，指令文件排在它们后面；
+- `/context` 合计比 API 实际输入少 0.7k–5.5k，这部分的组成**未确认**；
+- `--disable-slash-commands` 会让 `/context` 本身不可用，那个条件下多出的约 6k 仍然原因不明。
+
+## 4. E3：指令文件长短
+
+**任务**：在 tomli 里埋一个真实感的 off-by-one bug（`parse_hex_char` 中 `pos += hex_len` 改成 `pos += hex_len - 1`），让 `s = "café"` 解析成 `café9`，导致 14 个测试失败。提示词只描述用户看到的症状：“用户报告解析 `s = "café"` 得到 `café9` 而不是 `café`，请修复。”
+
+**三种条件**：
+
+| 条件 | CLAUDE.md 内容 |
+|---|---|
+| **A 无** | 没有 CLAUDE.md |
+| **B 短** | 2 条、约 250 字节：测试命令（并说明 `discover -s tests` 不能用）；修 bug 要加回归测试，不能改弱或删除已有测试 |
+| **C 长** | 让 Haiku 5.5 “全面分析仓库，写一份详尽的 CLAUDE.md”，得到 526 行、约 30KB：项目概览、每个模块的架构、构建测试命令、约定、坑、贡献流程。**这就是 `/init` 式自动生成的典型产物** |
+
+**每次运行后自动检查**：
+- 完整测试集是否通过；
+- 是否新增了测试，以及**把源码还原成有 bug 的版本后，新测试是否失败**（证明它真的是回归测试）；
+- 从 stream-json 里提取每一条 Bash 命令：用的测试命令是什么、是否越界改动。
+
+**结果**（Haiku 5.5 每种条件 6 次，Sonnet 5.5 每种 3 次）：
+
+| | A 无 | B 短 | C 长 |
+|---|---|---|---|
+| 修好 bug、测试全过 | 9/9 | 9/9 | 9/9 |
+| 加了回归测试 | **2/9**（Haiku 2/6，Sonnet 0/3） | **9/9** | 8/9（Haiku 6/6，Sonnet 2/3） |
+| 新测试在有 bug 的代码上会失败 | 2/2 | 9/9 | 8/8 |
+| 回归测试放在哪 | `test_misc.py` | `test_misc.py` | **`tests/data/valid/*.toml` + `.json`**（项目自己的数据驱动测试） |
+| 用的测试命令 | **pytest**（环境里碰巧装了） | 项目的 unittest 命令 | 项目的 unittest 命令 |
+| 平均 API 等价估算 Haiku / Sonnet（美元） | 0.0066 / 0.047 | 0.0070 / 0.050 | **0.0106 / 0.125** |
+| 平均输入 token Haiku / Sonnet | 161k / 56k | 163k / 54k | **309k / 162k** |
+| 平均轮数 Haiku / Sonnet | 12.3 / 7.7 | 12.5 / 7.3 | 13.5 / 8.0 |
+| 耗时中位数 Haiku / Sonnet（秒） | 27.6 / 22.7 | 27.7 / 20.1 | 35.0 / 31.8 |
+
+**过程观察与归因限制**：A 条件全部使用环境里已安装的 pytest；B/C 使用项目 unittest 命令。C 的数据驱动测试路径与其中几行目录约定一致，原报告据此提出“可把相关约定放入短文件”；该段没有单独消融，不能将全部改进归给这几行。历史四舍五入的成本比较是短文件多约 6%，长文件 Haiku 多 60%、Sonnet 多 165%，耗时多 25–40%；以表中原均值为准，不能外推稳定倍数。**[经验：原报告；研究：归因校准]**
+
+**局限**：
+- 只有一个任务、一个仓库，n 很小（每格 3–6 次）；
+- bug 比较简单，没测到“难任务上指令文件是否帮忙”；
+- C 文件由 Haiku 生成，换更强的模型生成，质量可能不同；
+- 回归测试的差异有一部分是因为 B 和 C **明确要求**了加测试。这本身就是结论：把要求写下来，Agent 就照做；不写，它多半不做。
+
+## 5. E2：子 Agent 的成本
+
+**任务**（只读）：列出 `src/tomli/` 中所有抛出 `TOMLDecodeError` 的位置，给出 `file:line` 和触发条件，输出一张表和总数。标准答案用 grep 得到：29 处，全部在 `_parser.py`。
+
+| 条件 | 提示词差异 |
+|---|---|
+| **D 直接做** | “自己做，不要用子 Agent” |
+| **S 子 Agent** | “用 Agent 工具并行启动两个子 Agent：一个看 `_parser.py` 第 1–450 行，另一个看其余部分，然后合并结果” |
+
+两组都用 Haiku 5.5，工具为 `Read,Glob,Grep,Bash,Agent`，各 3 次。
+
+**结果**：
+
+| | D 直接做 | S 两个子 Agent |
+|---|---|---|
+| 找全 29 处 | 3/3 | 3/3 |
+| 平均 API 等价估算（美元） | 0.0055 | **0.0109**（约 2.0 倍） |
+| 平均输入 token（含子 Agent） | 61k | 108k（约 1.8 倍） |
+| 平均耗时（秒，墙钟） | 17.6 | **47.1**（约 2.7 倍；30.8–70.2） |
+| 主 Agent 轮数 | 6 | 1–4 |
+
+**解读**：
+- 对这种“一个文件、grep 就能定位”的任务，拆分只增加了开销，结果没有变好。与 Systima 的观察方向一致（同一小任务 12.1 万 → 51.3 万 token），但本次的倍数更小，因为工具集只有 5 个，每个子 Agent 的固定开销较小；
+- 耗时变长，是因为子 Agent 要从零读文件，主 Agent 还要等两个子 Agent 都返回后再合并；
+- 直接做的那组在一次运行中还**主动说明了排除项**（第 118 行只是警告字符串里提到了异常名，第 709 行抛的是 `RecursionError`），说明单个 Agent 掌握全局时更容易做出这类判断。
+
+## 6. 如何在自己的仓库复现
+
+1. **准备**：选一个有测试的仓库，埋一个会让测试失败的小 bug，提交成基线；
+2. **每次运行复制一份目录**，放进不同的指令文件；
+3. **运行**：
+
+   ```bash
+   claude -p --no-session-persistence --session-id "$(uuidgen)" \
+     --output-format stream-json --verbose \
+     --model claude-haiku-5-5 \
+     --tools=Read,Edit,Write,Bash,Glob,Grep \
+     --allowedTools=Read,Edit,Write,Bash,Glob,Grep \
+     "<只描述症状的提示词>" < /dev/null > run.jsonl
+   ```
+
+4. **检查**：
+   - 跑完整测试；
+   - `git diff --numstat` 和 `git ls-files --others` 看改了什么；
+   - `git stash push -- src` 把源码还原成有 bug 的版本，看新测试是否失败，再 `git stash pop`；
+5. **提取过程**：从 `run.jsonl` 中 `type == "assistant"` 的消息里取出 `tool_use`，统计 Bash 命令；`type == "result"` 的事件里有 `total_cost_usd`、`num_turns` 和 `usage`；
+6. **重复运行并保留每次记录**：三次只是先导，不保证统计把握；同一配置的成本在不同运行之间可以相差 2 倍（E3 中 Haiku 的 B 条件最低 0.0055、最高 0.0120 美元）。
+
+## 7. E4：模板的确定性回归（2026-10-11 UTC+8）
+
+**[经验：实测]** 本轮在 Linux、Python 3.12.14、Bash 环境验证仓库改动，基线为 `73905442b2da0a473573d1e98b65752613ad29f6`。所有引擎、配置与路径均用临时合成夹具；没有读取真实个人配置或执行 Unity / Unreal。
+
+| 检查 | 实際结果 | 不能由此推导 |
+|---|---|---|
+| 引擎报告验证 | 6 个测试方法、66 次模拟引擎执行通过；同一扩展测试集对基线脚本出现 43 个失败子用例 | 真实引擎所有版本 schema 都兼容 |
+| 长任务验收记录 | 16 个用例通过；旧版本证据、缺项、未完成 worker、预算停止、坏 JSON 均有反例 | 模型真的做完了任务或日志真实 |
+| 配置导出 | 18 个用例通过；扫描失败不落地、README 检测、符号链接、旧目录、暂存篡改等 | 自动脱敏完整或可安全无人发布 |
+| 模板叠加 | 7 个用例通过；保护规则、REVIEW、空目录保护、重复操作、末尾斜线及父级符号链接 | 实际 Claude 权限和引擎环境已测试 |
+| 文档/配置检查器 | 6 个用例通过；本地链接与 JSON/TOML/example 语法 | 外链、锚点和全部内容事实已验证 |
+
+合计 **53 个 unittest 方法通过**。模型调用数、token 和订阅消耗没有测量；不能把此表与 E1–E3 的模型实验混为一组。
+
+可复现命令（Python 3.11+；Bash）：
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 scripts/check_repo.py
+find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -n1 bash -n
+git diff --check
+```
+
+源码与测试：[测试目录](../../tests)、[任务记录校验器](../../scripts/validate_task.py)、[仓库检查器](../../scripts/check_repo.py)。基线对照使用临时目录里的旧脚本加同一套新测试，未替换工作树中的修复版本。测试数量按这一轮记录；以后变更应重跑并保留失败证据。
+
+### 一次 Skill 恢复行为探测（不是运行时兼容测试）
+
+**[经验：单次合成探测]** 给独立云端 agent 两个新 Codex Skill 正文和一份有意不一致的合成任务：当前 spec v3 / 工作版本 c2+dirty:a7；旧报告 spec v2/c1；旧日志 8 passed；worker 仅有“运行中”；外部任务 J17 超时且结果未知；另一任务曾有发布批准，当前只许准备补丁。
+
+观察：输出拒绝验收，逐项指出陈旧证据、缺最终 worker 回执、未知外部结果；不重发 J17，不沿用另一任务的发布授权，给出核对与重验步骤。未运行真实代码，也没有改任何外部任务。
+
+这只是一次直接提供 Skill 正文的行为探测，没有测试自动发现/触发、Codex 客户端、压缩机制、真正中断恢复或成功率分布。下一步应按 [20 的实验表](../20-codex-long-horizon.md#8-下一轮实测不把建议写成实验结论) 做受控对照；未运行的实验保持待验证。
+
+## 8. E5：公开结果表的离线复核
+
+**[经验：实测，2026-10-10 UTC]** 对 Khatri 的 [上下文文件实验结果表](https://github.com/codeprakhar25/context-files-coding-agents/blob/084c40708e7211b0e6a0fe8d74337b2e048a832c/data/results_summary.csv)做 Python 标准库算术复核；没有运行模型、付费 API、原测试或重算论文显著性。
+
+- 固定 commit：`084c40708e7211b0e6a0fe8d74337b2e048a832c`
+- CSV SHA256：`96809726f635925bfe7cc0f91cbfea85d2b5ff7fc116a5934e168e2e280505f9`
+- 291 行、288 个 `(agent, strategy, task_id, repeat_index)` 单元；**没有完全相同的重复行**，而是 3 个单元各有两条不同运行记录
+
+| 条件 | 原始全行通过数/行数 | 每单元取最新记录通过数/单元数 |
+|---|---|---|
+| Claude / none | 25/47 | 24/45 |
+| Claude / always_on | 25/46 | 25/45 |
+| Claude / selective | 25/45 | 25/45 |
+| Codex / none | 30/51 | 30/51 |
+| Codex / always_on | 29/51 | 29/51 |
+| Codex / selective | 27/51 | 27/51 |
+
+取最新或最早都得到同一组正确性计数，与作者的 [计数溯源](https://github.com/codeprakhar25/context-files-coding-agents/blob/084c40708e7211b0e6a0fe8d74337b2e048a832c/paper/data/key_numbers.md)一致；README 的直接全行 groupby 则不同。重复单元的 run ID、时间和执行指标不同，可能是重跑，但**CSV 不能证明重试原因或作者原定取舍政策**。54 条 Codex 记录的 run ID 为空，因此不能拿 run ID 去重。
+
+**含义**：这是汇总口径的可复核歧义，不是论文结论被推翻或不当行为证据。正确性标签相同不代表成本数据也能随便取一条。本仓库提供 [离线脚本、13 个单测及复核说明](../../experiments/context-results-audit)，不附带第三方 CSV；按固定链接取得后，脚本校验 hash 并同时输出三种口径。
+
+## 9. 下一次 Codex 实验：先导，不预报收益
+
+**[经验：历史实验建议，未运行]** 以下保存当时提出的设计规模，当前运行需另有预算与授权，不由本记录自动启动。最小问题：“只加一段项目特有的验证指令，是否减少漏验，而不增加人工返工？”
+
+已有 [workflow-ablation 夹具](../../experiments/workflow-ablation)演示隔离、验收与记录机制；它是单一合成任务，不是下面 6 个真实任务已准备好，更不是已取得模型效果数据。
+
+1. 先准备 2 个校准任务、另留 6 个真实评估任务，覆盖 bug、功能、测试、跨文件改动与无需改生产代码的反例；验证器在已知好/坏补丁上先过自测
+2. 基线和处理组保留相同安全约束，只增加一项 Skill/指令；6 任务 × 2 条件 × 2 次新会话 = 24 次先导，随机交错 A/B，固定模型、effort、权限和预算
+3. 分别记严格验收、有效回归测试、错误完成声明、耗时、可用用量和盲评人工分钟；是否加载 Skill 只是操纵检查；隐藏答案和测试不放进 agent 工作区
+4. 明显回归、未加载或环境不等价就停止诊断；全过只能比较过程，不能宣称正确率提高；有稳定机制后再用新任务扩大评估，按方差决定重复数
+
+只有已获授权的订阅环境才运行；不为本实验开 API 计费、买额度或启动额外付费服务。订阅内也消耗配额与时间。现在可免费完成验证器、日志 schema 和已公开数据的复核；这些准备工作本身不证明模型效果。
+
+## 10. E6：路径 Hook 的确定性回归
+
+**[经验：离线实测，2026-10-11 UTC+8]** 对基线提交 `445b8168fa1fc7124bed4d89d1b4f0f74265b72d` 的 `protect-paths.sh` 构造临时规则与 JSON 事件，复现三类问题：`./` / `..` 别名漏匹配、JSON 解析错误被返回 0 掩盖，以及原因中的控制字符生成非法输出 JSON。没有读写真实受保护文件或调用 Claude Code。
+
+修正保留 jq 或 python3 二选一；使用完整 JSON 序列化，验证字段类型并传播错误，按事件 cwd 做词法路径归一。盘符兼容性回归在发布前被发现并修正；通用 / Unity / Unreal 三份脚本必须逐字相同。
+
+```sh
+python3 -m unittest discover -s tests -p test_protect_paths.py -v
+TEST_PARSER=jq python3 -m unittest discover -s tests -p test_protect_paths.py -v
+```
+
+每种后端各 26 个测试方法通过，第二次是同一组测试换解析器，不是额外 26 个独立任务。缺少某后端时对应测试可能跳过；完整双后端验证必须确认 jq 与 python3 均存在且输出没有 skip。测试会隔离 PATH，只提供被测解析器和必要工具，子进程有 10 秒超时。
+
+明确限制：状态 1 不是 deny 决定，不保证运行时阻止；缺规则 / 缺路径 / 项目外路径仍无决定。词法 `..` 不等于符号链接解析；继承反斜杠替换约定，不覆盖所有合法 POSIX 文件名。盘符与 UNC 仅为 Linux 上的合成输入，未测 Windows 原生路径语义、大小写、macOS、Bash 3.2、真实 Hook 触发、并发修改或所有规则语法。不会因此把辅助 Hook 描述为文件系统安全边界；没有修改 settings 或权限。
+
+## 来源
+
+- 实验仓库：[hukkin/tomli](https://github.com/hukkin/tomli)（MIT）
+- 对照：[Systima：Claude Code vs OpenCode token 开销](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)
+- Claude Code 文档：[Headless / CLI reference](https://code.claude.com/docs/en/cli-reference)、[Subagents](https://code.claude.com/docs/en/sub-agents)
