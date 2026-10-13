@@ -196,6 +196,18 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 - MatLat固定代码`a0ce5d359bb58cad503099d109955b1c88dbab05`的[README](https://github.com/KAIST-Visual-AI-Group/MatLat/blob/a0ce5d359bb58cad503099d109955b1c88dbab05/README.md)与[官方权重卡](https://huggingface.co/32V/MatLat)明确checkpoint v1.0.0为CC BY-NC 4.0。代码根LICENSE未核得通用许可，第三方依赖另核；论文CC BY不授权商业运行这些权重，未取得单独商业输出授权，因此仅研究观察、不作商用免费默认。
 - 原生Unity/Unreal材质和粒子沿项目已适用的引擎条款；引擎模板、商店包和第三方flipbook逐个核。VideoMatGen和Scenario VFX只作研究对照，未核清完整部署包/底模授权，不进入商用推荐默认。
 
+## WP7追加：视频编辑、正式导出与自动化入口
+
+核实2026-10-14 03:41 UTC+8。完整来源、固定代码及反例见[WP7许可增量](2026-10-14-game-wp7-video.md#七许可增量模型自动化入口与导出分开)；已有Wan/LTX/Runway基础许可行保留，不把新托管型号外推为旧权重许可。[一手／研究]
+
+- **Google付费Developer API**：`gemini-omni-1.1-flash`、`veo-3.1-generate-preview`/fast/lite都是专有服务，不开放权重；[特别条款](https://ai.google.dev/gemini-api/terms)不主张输出所有权、允许合规专业/商业用途，仍由用户承担输入/输出权利。Paid不用于改进但非零留存；[地区表](https://ai.google.dev/gemini-api/docs/available-regions)未列中国大陆/香港。离线导出成片与向玩家开放API分别核，不以消费者订阅代API合同。
+- **Omni具体模式**：[详细页](https://ai.google.dev/gemini-api/docs/omni)已明确首尾帧插值与片尾延展；EEA/瑞士/英国上传视频编辑/延展受限，自产片多轮接续另有路径。总入口较旧的Veo用途推荐不能证明Omni缺少能力。此为访问与能力条件，不改变输出权利；首尾控制也不是连续性保证。
+- **Runway Aleph2.0 / Gen-4.5**：[当前条款§4.4](https://runway.com/terms-ofuse)不限制合规输出商用，默认允许输入/输出训练；平台内第三方关键帧模型须另核。输出商业权不授权任意网页自动化、抓取或绕过导出限制；[官方Dev API](https://docs.dev.runwayml.com/guides/using-the-api/)是程序化入口，Web订阅与API计价分开。API对玩家开放时的归属标示/终端协议义务沿已有记录。
+- **正式导出**：[Runway API结果链接](https://docs.dev.runwayml.com/assets/outputs/)24–48小时过期，官方要求保存自己的副本；[Veo文档](https://ai.google.dev/gemini-api/docs/veo)保留视频2天。合法输出归属、可取得文件和持续URL可用性是不同问题；保留生成ID、时间/套餐/条款、合法下载与本地master，不把临时URL交作游戏资源。
+- **LTX依赖与披露**：[Gemma条款入口](https://ai.google.dev/gemma/terms)明确Gemma4另用[Apache2](https://ai.google.dev/gemma/apache_2)，不能继续套Gemma3条款；实际LTX适配编码器`gemma4-12b-ltx-v1`及LoRA/升级器仍逐包核，不以原始Apache覆盖LTX社区许可。[固定LICENSE-2_x](https://github.com/Lightricks/LTX-2/blob/be6d6d0a69d11a0a399c462ed92606692e5f8697/LICENSE-2_x)Attachment A(5)另要求明确可理解地披露机器生成，§6要求保留既有溯源/标识；低于营收门槛也不能省略这层义务。
+
+这些许可只放行条件评估，不保证可注册版权、全地区销售、平台接收或零手修质量；没有创建账户、接受协议、下载权重或运行服务。[研究]
+
 ## 发布渠道不能被生成许可替代
 
 - [Steam Content Survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey)当前重点是随游戏交付、由玩家消费的AI内容（美术、音频、叙事、本地化等），不以一般开发效率工具使用为重点；区分预生成与运行时生成，后者另需说明防止非法内容的措施。披露不豁免侵权或其他内容规则。这里没有访问开发者后台、提交问卷或验证某款游戏已获准。**[一手：2026-10-14官方原文]**
