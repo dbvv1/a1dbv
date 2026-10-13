@@ -1,6 +1,6 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-08。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
+> 核实时间：2026-10-08；2026-10-13 仅补语义检索工具的采用条件。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
 
 ## 1. 现状
 
@@ -66,7 +66,7 @@
 | [Context7](https://github.com/upstash/context7) | 拉取库和框架的**最新文档**，减少 API 幻觉 | ✅ | 官方插件市场有 |
 | [Playwright MCP](https://github.com/microsoft/playwright-mcp) / Chrome DevTools MCP | 浏览器自动化、前端验证 | ✅（Web 项目） | 长时任务 harness 用它做端到端验证 |
 | [GitHub MCP](https://github.com/github/github-mcp-server) | Issue、PR、CI | 🧪 | 本地有 `gh` 时优先用 CLI |
-| [Serena](https://github.com/oraios/serena) | LSP 驱动的语义检索与编辑 | 🧪 | 用 Claude Code 的话，官方 LSP 插件可能已经够用 |
+| [Serena](https://github.com/oraios/serena) | LSP 驱动的语义检索与编辑 | 🧪 | 所需语言和操作已覆盖时先用原生 LSP；动态关系与版本差异仍需[搜索和阅读互补](research/2026-10-13-context-tool-choice.md)，不因语义工具名重复安装 |
 | Sentry / Datadog / Grafana 等可观测性服务 | 查线上问题 | 🧪 | ⚠️ **数据来源不可信**（见下方 agentjacking 事件） |
 | 数据库（Postgres、Supabase 等） | 查数据 | 🧪 | 只读账号 |
 | Figma | 设计稿转代码 | 🧪 | |
