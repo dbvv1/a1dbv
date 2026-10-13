@@ -10,7 +10,7 @@
 | 路径 | 内容 |
 |---|---|
 | `logs/e1.jsonl` | E1 每次请求一行：条件、`input_tokens` / 缓存写入 / 缓存读取、输出、`total_cost_usd`、耗时 |
-| `logs/e3-haiku.jsonl`、`logs/e3-sonnet.jsonl` | E3 每轮一行：条件、测试结果、diff 统计、执行过的全部 Bash 命令、工具调用计数、token、费用 |
+| `logs/e3-haiku.jsonl`、`logs/e3-sonnet.jsonl` | E3 每轮一行：条件、测试结果、diff 统计、主流程 Bash 命令摘要（每条最多 160 字符）、工具调用计数、token、费用 |
 | `logs/e2.jsonl` | E2 每轮一行（D 直接做 / S 两个子 Agent） |
 | `logs/context-breakdown-2026-10-12.json`、`logs/api-2026-10-12.jsonl` | 第 3.1 节的 `/context` 分项，以及同日的 API 实际计数（Claude Code 2.1.296） |
 | `transcripts/*.jsonl` | E2、E3 每轮的精简轨迹：助手文本、工具调用和输入、工具结果（每条截断到 1500 字符）、最终结果事件。`A-haiku-0` 是正式运行前的冒烟测试，不计入统计 |
@@ -23,6 +23,8 @@
 - 会话临时目录替换为 `<exp>` 或 `<tmp>`，父仓库路径替换为 `<parent-repo>`，会话 ID 替换为 `<uuid>`；
 - 去掉了 stream-json 中的增量事件和 init 事件里的环境字段，只保留版本、模型和工具列表；
 - 脚本里的路径常量也做了同样替换，**需要改回本地路径才能运行**。
+
+**2026-10-13（UTC+8）核对**：主要汇总可从公开文件复算，样本有效范围、E2 的主流程 `usage` 与累计 `modelUsage` 区别见[研究记录](../../docs/research/2026-10-12-experiment-records.md#产物状态与引用口径)。`ran_full_suite` 只是摘要上的字符串启发式；本次未重跑模型或独立重现有效回归。
 
 **缺口**：
 - E1 没有保存逐次的 stream，只有汇总记录；
