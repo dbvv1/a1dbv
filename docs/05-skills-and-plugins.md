@@ -1,6 +1,6 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-08；第 1 节权限可移植性、第 2 节评估边界与第 3 节 gstack 机制于 2026-10-11（UTC+8）复核，第 2.5 节领域增量与第 4 节前两项选择建议于 2026-10-13 复核；其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
+> 核实时间：2026-10-08；第 1 节权限可移植性、第 2 节评估边界与第 3 节 gstack 机制于 2026-10-11（UTC+8）复核，第 2.5 节领域增量与第 4 节前两项选择建议于 2026-10-13 复核；10-13（UTC）补核 LSP 会话边界与采用条件；其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
 
 ## 1. Agent Skills 规范要点
 
@@ -111,13 +111,15 @@ codex plugin add <plugin>@<marketplace>
 
 | 类别 | 插件 | 评级 |
 |---|---|---|
-| **代码智能** | `typescript-lsp`、`pyright-lsp`、`gopls-lsp`、`rust-analyzer-lsp`、`csharp-lsp`、`jdtls-lsp`、`kotlin-lsp`、`clangd-lsp`、`swift-lsp`、`php-lsp`、`ruby-lsp`、`lua-lsp` | ✅ 强类型项目必装 |
+| **代码智能** | `typescript-lsp`、`pyright-lsp`、`gopls-lsp`、`rust-analyzer-lsp`、`csharp-lsp`、`jdtls-lsp`、`kotlin-lsp`、`clangd-lsp`、`swift-lsp`、`php-lsp`、`ruby-lsp`、`lua-lsp` | 🧪 按诊断／语义导航缺口试用，先核会话支持与项目解析 |
 | **Anthropic 官方工作流** | `code-review`、`code-simplifier`、`pr-review-toolkit`、`feature-dev`、`commit-commands`、`claude-md-management`、`claude-code-setup`、`hookify`、`security-guidance`、`claude-security`、`skill-creator`、`plugin-dev`、`mcp-server-dev` | 🧪 按需 |
 | **方法论** | `superpowers`、`mattpocock-skills`、`ralph-loop` | 🧪 见下文 |
 | **文档 / 检索** | `context7`、`serena`、`lumen`（本地语义代码搜索） | 🧪 |
 | **浏览器** | `playwright`、`chrome-devtools-mcp`、`browser-use` | 🧪（Web 项目） |
 | **评审 / 安全** | `coderabbit`、`greptile`、`qodo`、`semgrep`、`sonarqube` | 👀 |
 | **游戏引擎** | `unity`、`unreal-engine-skills-for-claude-code` | 见 [domains](../domains/README.md) |
+
+**LSP 按缺口接入，不按语言标签必装。** 日常修错先用项目已有类型检查，需要语义引用时先复用现有 IDE／LSP。Claude Code 插件不含服务器二进制，安装后还须确认实际诊断或查询；官方云会话不启动插件语言服务器，本地安装不能给该云任务补上导航。见[官方机制与采用边界](research/2026-10-13-context-tool-choice.md#源码检索map语义引用与当前状态--6-客户端接入边界)。**[一手：官方文档；经验：采用判断]** **局限**：能力可用不等于已证明节省上下文或总耗时。
 
 ### 方法论类插件
 
@@ -157,7 +159,7 @@ codex plugin add <plugin>@<marketplace>
 | 反复遗漏、且所有相关任务都适用的项目约定 | 先排除过期或错误资料，再在 CLAUDE.md / AGENTS.md 加一条并指向权威来源 |
 | 重复任务需要仓库没有的领域配方或经过验证的资源 | **窄 Skill**；已有文档、脚本或模板可直接复用时，只加入口 |
 | 总在从浏览器复制 Agent 看不到的数据 | **MCP**（或 CLI） |
-| Agent 为找一个符号读了很多文件 | **LSP 插件** |
+| 同名符号多，需要确认语义引用，现有搜索难以消歧 | 先用现有 **IDE／LSP**；缺少时再评估插件，并核对会话支持与项目解析 |
 | 某个支线任务的输出淹没了对话 | **Subagent** |
 | 某个运行时事件需要机械检查 | **Hook**，并验证匹配、超时、错误处理和替代路径；不代替沙箱 |
 | 第二个仓库也要用同一套配置 | 打包成**插件** |
