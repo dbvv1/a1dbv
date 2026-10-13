@@ -130,6 +130,22 @@
 [研究] 本轮未运行模型/引擎、未安装或下载权重、未购买或接受协议。仍需解决：Udio当前ToS正文；Tripo/Rodin的追溯/终止细节；TRELLIS受限依赖的合法替代与可运行验证；GVHMR的独立checkpoint、人体模型许可。对这些缺口保持条件，不把未知改写成许可已拒绝或已授予。
 
 
+## WP2追加：近期图像型号与原生瓦片基线
+
+2026-10-14（UTC+8）按WP2实际候选补齐；旧版行保留，不把系列名当统一许可。**[一手／研究]**
+
+| 对象 | 代码 | 权重 | 输出与采用门槛 |
+|---|---|---|---|
+| GPT Image 2.5 Sunburst/Flare，2026-09-08 snapshot | 专有API | 不授自托管 | [当前服务合同](https://openai.com/policies/services-agreement/)在双方之间、依法规定客户输出归属；具体[Sunburst](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst)/[Flare](https://developers.openai.com/api/docs/models/gpt-image-2.5-flare)为现行接口。地区/账户、输入权利与输出审查仍需满足；不保证独占或不侵权，不以ChatGPT订阅代API合同 |
+| Google `gemini-nano-banana-2.1` Developer API | 专有；示例Apache不授模型代码 | 不开放 | [API特别条款](https://ai.google.dev/gemini-api/terms)面向专业/商业，Google不主张输出所有权，非独占。按[可用地区](https://ai.google.dev/gemini-api/docs/available-regions)访问；输出用于离线游戏不等于向玩家提供API，后者另有地区/年龄/EEA等付费条件 |
+| FLUX3 Image API | 专有服务 | 商业权重另洽，不是免费开放 | [Developer Terms](https://bfl.ai/legal/developer-terms-of-service)及[API条款](https://bfl.ai/legal/flux-api-service-terms)允许合规商业输出，内容凭证/输入权利义务保留；本轮读非EU版，EU合同另核。默认合同可用于模型改进，保密资产不直接上传；不外推自托管 |
+| Qwen-Image-2.1指定Git/HF版 | Qwen Research | 同研究许可 | [固定代码许可](https://github.com/QwenLM/Qwen-Image-2.1/blob/bb8e2172e08c6720652a4a23ad1c406e5b6ed1ee/LICENSE)与[固定权重许可](https://huggingface.co/Qwen/Qwen-Image-2.1/raw/d26bb61231c349cf6b7896fa83353113880e1ba3/LICENSE)限制商业生产、须另许，无小收入自动豁免；不以只交付PNG规避，不进入免费商用默认 |
+| Unity Tilemap Extras4.1.2（Unity6000.0） | 官方包LICENSE外链UCL；第三方另含MIT通知 | 无 | [官方包](https://download.packages.unity.com/com.unity.2d.tilemap.extras/-/com.unity.2d.tilemap.extras-4.1.2.tgz)和当前[UCL1.4](https://unity.com/legal/licenses/unity-companion-license)需有效Unity Engine License，保留通知；用户内容与Work派生分开，素材独立授权。仅建议Unity内匹配官方包功能，不复制旧Git代码或跨引擎清权 |
+
+Google未付费服务通常会将输入/输出用于改进并可人工审查；EEA/瑞士/英国另有例外。有active billing项目等条件时AI Studio即使免费也按Paid数据规则；Paid不用于改进但保留有限安全日志，不能写成零留存。地区清单未列中国大陆/香港，中文界面不代表所在地可用；不通过改地区或代理绕过。**[一手：现行条款；研究：数据和访问边界]**
+
+Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，不能据此追认历史版本；实际包通知与旧SHA不同，详见[WP2固定证据](2026-10-14-game-wp2-2d-assets.md#1-第二次修改为什么优先改结构)。这些行只放行有条件的调查/使用路径，不证明资产质量。
+
 ## 发布渠道不能被生成许可替代
 
 - [Steam Content Survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey)当前重点是随游戏交付、由玩家消费的AI内容（美术、音频、叙事、本地化等），不以一般开发效率工具使用为重点；区分预生成与运行时生成，后者另需说明防止非法内容的措施。披露不豁免侵权或其他内容规则。这里没有访问开发者后台、提交问卷或验证某款游戏已获准。**[一手：2026-10-14官方原文]**

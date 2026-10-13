@@ -117,9 +117,11 @@
 
 ### G1：资产供给与零手修边界
 
-以下每项均为 **候选，未认领**。每类先回答一个会改变制作方式的问题，不能扩成安装教程或资源名单。预期建议的落点以现有[生成式 AI 页](../../domains/game-dev/03-generative-ai-in-games.md) §1、§3 和[验证页](../../domains/game-dev/02-verification-and-playtesting.md)为主。
+以下保留来源摸底候选；当前工作包状态以[TASKS](../collaboration/TASKS.md)为准，不重复认领。每类先回答一个会改变制作方式的问题，不能扩成安装教程或资源名单。预期建议的落点以现有[生成式 AI 页](../../domains/game-dev/03-generative-ai-in-games.md) §1、§3 和[验证页](../../domains/game-dev/02-verification-and-playtesting.md)为主。
 
 #### 2D：能否交付同一套可替换资产，而非若干好看的图片？
+
+已由[WP2理论结论](2026-10-14-game-wp2-2d-assets.md)接续：更新近期模型/许可、三档首试与动画反证；原始Qwen摸底仍作历史起点。真实引擎与第二次修改试验后置，不把理论交付写成实验通过。
 
 - **要回答的问题（主线 2／3）**：概念图、UI、图标、静态精灵与逐帧精灵各自能否零手修达到实际显示尺寸下的可读性、透明边缘、锚点和成套一致性？概念图只约束方向，不能计入游戏资产合格率；UI 文字与交互布局优先由引擎绘制，避免把文字烘焙进图后难以修改和本地化。
 - **一手来源／优先对象**：👀 [Qwen-Image](https://github.com/QwenLM/Qwen-Image/tree/6b5e1f5cec987d404be5ac6657db3b9aacb56a89)（最后提交 2026-02-10，代码 Apache-2.0），核对已公布的 Image-2512、Edit-2511、Layered 路径及多图编辑；不把 README 中的 2.0 发布消息直接当作已核实开放权重。真实游戏采用未核实；多图编辑能力也不证明连续动画帧稳定。
