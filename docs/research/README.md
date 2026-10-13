@@ -36,7 +36,7 @@
 | [2026-10-13-game-asset-editing-boundary.md](2026-10-13-game-asset-editing-boundary.md) | 二 | 游戏README/01：撤回“必须官方Agent接口”，按源码、文本和二进制资产选路径，默认用Editor API | Unity同版本官方冲突文档、.meta机制、Unreal API/二进制说明及Rider历史失引用原帖；未测引擎 |
 | [2026-10-13-godot-contribution-policy.md](2026-10-13-godot-contribution-policy.md) | 四 | 18/14及游戏页：按接收渠道决定工作方式；披露、人审与小改动不自动获准 | 一手公告/已合并政策/两个小PR关闭及制定讨论，Asset Store例外；证实渠道准入，不证明代码质量 |
 | [2026-10-13-handy-retest-adoption.md](2026-10-13-handy-retest-adoption.md) | 一，兼四 | 18：实际局部受益与主线采用分开；限定暂停/直播等场景再决定支持责任 | 两位非作者运行PR版，其中一位固定SHA/设备/播放器/repeated cycles，后续Windows多源失败及未完补丁；无标准计时/跨平台可靠性或合并决定 |
-| [2026-10-13-immich-handover.md](2026-10-13-immich-handover.md) | 四 | 18/24：交接说明与最终接口对齐；18 观察下一位维护者的实际修改 | Immich 审查/补丁链；后补 Echoes 受控接管实验，不等于长期维护等价，也不补足本案例 Android 复测/支持工时 |
+| [2026-10-13-immich-handover.md](2026-10-13-immich-handover.md) | 三、四 | 18/24：交接说明与最终接口对齐；18 观察下一位维护者的实际修改，学习陌生模块时可选相关小变更检验 | Immich 审查/补丁链、Echoes 接管实验、Trio 测验与儿童手动修改实验；不证明学习练习的因果收益、职业长期维护等价或本例 Android 复测/支持工时 |
 | [2026-10-13-omlx-postmerge.md](2026-10-13-omlx-postmerge.md) | 四，兼三 | 22及交接建议：扩大输入时同步能力探针/缓存键；合法降级不等于恢复用户性能目标 | AI归属一行补丁→维护者合并后真实tool探针与回归；两版相同22方法、8渲染与2前缀比较；严格模板恢复无用户闭环 |
 | [2026-10-13-product-feedback-contract.md](2026-10-13-product-feedback-contract.md#codexbar发布后的理解反馈) | 一 | 15 §10：修改版仍让用户解释核心值和行动；同名控件不能代替同义需求；本轮补试用允许停止 | 已包含颜色逻辑的发布版→理解反馈→可选符号；本轮新读2024/2025创业RCT作为去留决策的有限迁移证据，未证明AI开发收益 |
 | [2026-10-13-prototype-feedback.md](2026-10-13-product-feedback-contract.md#reset-alerts反馈与作者修改报告)（已合并） | 一 | 15 §10：优先解决试用者理解核心结果的障碍，附带功能不自动成为清单 | Reset Alerts跨时区访客反馈与作者称改本地时间；仅帖子，无补丁/生效验证/送达/二次使用；并入更强证据链 |
