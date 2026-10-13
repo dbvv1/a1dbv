@@ -32,6 +32,7 @@
 | 游戏资产的修改边界 | 14:17（UTC+8）本轮完成，限定复核通过 | [证据与反例](../research/2026-10-13-game-asset-editing-boundary.md)；分支 `dot/asset-editing-boundary-20261013`，起点 `2b0a142`；完整离线 14 阶段及 `git diff --check` 通过，未运行真实引擎 |
 | 浏览器测试自修复边界 | 14:21（UTC+8）来源与局部运行完成，限定复核通过 | [固定来源与反例](../research/2026-10-13-browser-healing-outcomes.md)；分支 `dot/browser-healing-20261013`，起点 `b9fddfb`；完整离线 14 阶段及 `git diff --check` 通过，区分修复通过与缺陷隔离，未运行真实模型修复 |
 | 工具模块：会话用量指标 | 本轮固定源码与上游测试阅读完成，限定复核通过 | [指标与落盘证据](../research/2026-10-13-session-usage-metrics.md)；分支 `dot/session-usage-metrics-20261013`，起点 `994d08d`；完整离线 14 阶段及 `git diff --check` 通过；明确整轮吞吐与纯生成速度区别，未运行 ccusage |
+| 云端增量审计与缓存排查 | 14:48（UTC+8）dot 独立复核通过，整合中 | [b9fddfb 审计](reviews/2026-10-13-b9fddfb.md)；oMLX 54 行结果由 dot 侧重新取固定源码独立复跑，逐字一致；保留对端 Immich 限定审计；整合树完整离线通过，未测真实缓存，不代表整仓审计 |
 | workflow-ablation 先导 | 跳过 | 预算未填写，0 轮新模型运行 |
 
 ## 进行中的任务

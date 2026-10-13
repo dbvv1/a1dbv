@@ -4,6 +4,8 @@
 
 > 局部复核：2026-10-11（UTC+8；2026-10-10 UTC）只复核本页的计费口径、OpenAI Sol 版本价格与订阅速度倍率、Claude Haiku/Opus 价差。其他厂商条目和能力判断仍保留原核实日期，不代表全表重新验证。
 
+> 2026-10-13：开头的模型切换建议与本页已有缓存边界对齐；[本轮审计](collaboration/reviews/2026-10-13-b9fddfb.md)未重验价表。
+
 ## 1. 原则：按任务分档，而不是追榜单
 
 | 任务 | 档位 | 当前代表（2026-10） |
@@ -14,7 +16,7 @@
 | 路由、分类、“从有限选项中选一个” | 决策模型（新类别） | Jev、Cloudflare Clef、Strands Decider 2B、OpenAI Decisions API（见第 2.1 节） |
 | 离线 / 保密 | 本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B（见第 5 节） |
 
-**在 Claude Code 里落地**：主会话用强模型；子 Agent 的 frontmatter 写 `model: haiku` / `sonnet`；用 `CLAUDE_CODE_SUBAGENT_MODEL` 统一指定子 Agent 模型；**开始前就定好模型和 effort**（中途切换会让 prompt cache 失效，Anthropic 官方建议 **[一手]**）。
+**在 Claude Code 里落地**：主会话用适合任务的模型；需要子 Agent 时，可在 frontmatter 写 `model: haiku` / `sonnet`，或用 `CLAUDE_CODE_SUBAGENT_MODEL` 统一指定。尽量减少没有任务理由的模型和 effort 切换；缓存影响按下文 [Prompt cache 的厂商与配置边界](#2-价格快照api-美元百万-token)判断，不为保缓存而拒绝必要的模型调整。**[一手：配置接口；经验：使用建议]**
 
 **Fable 级模型的用法** **[一手 + 社区]**：
 - 一条消息给出完整任务、**什么算完成**、什么时候停下来问；
