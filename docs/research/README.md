@@ -12,6 +12,10 @@
 
 ## 游戏工作包研究
 
+从[七阶段路线图](../../domains/game-dev/06-indie-roadmap.md)进入采用建议；WP0–13各一份研究记录，共14份，理论交付完成、正式评审状态见[TASKS](../collaboration/TASKS.md)。真实引擎、生成成本与零手修发行仍待获准验证。
+
+- [WP12 独立游戏路线图](2026-10-14-game-wp12-indie-roadmap.md)：真人反馈与跨系统二改先于扩量，渠道准备前移；七阶段分工和收窄／停止条件
+
 - [WP13 游戏Agent配置](2026-10-14-game-wp13-agent-config.md)：将导入身份、取消所有者、定义/实例与旧档边界写入现有模板，不新增Hook或框架
 
 - [WP7 视频与过场](2026-10-14-game-wp7-video.md)：先比删除/静态/引擎镜头，Omni与Veo模式边界、Aleph范围计价、LTX固定源码与跳过恢复反例
