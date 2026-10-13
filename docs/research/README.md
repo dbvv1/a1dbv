@@ -33,7 +33,7 @@
 | [2026-10-13-context-tool-choice.md](2026-10-13-context-tool-choice.md#源码检索map语义引用与当前状态) | 二 | 03/04：repo map、语义引用、文本检索按问题组合，撤回无条件替代；先查读取的状态/版本 | Aider缓存/名称图固定源码与官方测试、clangd动态索引及buffer/磁盘机制、原始失败报告；测试只读未运行 |
 | [2026-10-13-context7-version-boundary.md](2026-10-13-context-tool-choice.md#文档检索版本选择与生成内容刷新)（已合并） | 二 | 03/04（迁移现工具页建议）：缺目标版本时不用closest match作兼容承诺；刷新不证明所有内容层重建 | 固定查询链/测试，#3309生成内容刷新层、#2772版本元数据误读及维护者纠正；无真实查询或后端验证 |
 | [2026-10-13-domain-skill-contract.md](2026-10-13-domain-skill-contract.md) | 二，兼三 | 05 §2.5：平台迁移核对真实契约；导出先确定原生对象要求，复用生成器/模板，再补窄参考 | Cloudflare Skill→官方契约→历史迁移修复链；10项JS表达式及原生pivot结构探测；不是真实休眠、Excel操作或Skill增益对照 |
-| [2026-10-13-game-asset-editing-boundary.md](2026-10-13-game-asset-editing-boundary.md) | 二 | 游戏README/01：撤回“必须官方Agent接口”，按源码、文本和二进制资产选路径，默认用Editor API | Unity同版本官方冲突文档、.meta机制、Unreal API/二进制说明及Rider历史失引用原帖；未测引擎 |
+| [2026-10-13-game-asset-editing-boundary.md](2026-10-13-game-asset-editing-boundary.md) | 二、三；G1 | 游戏README/01：撤回“必须官方Agent接口”，按源码、文本和二进制资产选路径，默认用Editor API；游戏03分开规格设置与有损网格处理 | Unity同版本官方冲突文档、.meta机制、Unreal API/二进制说明及Rider历史失引用原帖；trellis2mlx固定源码/回归与产物报告，未测引擎 |
 | [2026-10-13-godot-contribution-policy.md](2026-10-13-godot-contribution-policy.md) | 四 | 18/14及游戏页：按接收渠道决定工作方式；披露、人审与小改动不自动获准 | 一手公告/已合并政策/两个小PR关闭及制定讨论，Asset Store例外；证实渠道准入，不证明代码质量 |
 | [2026-10-13-handy-retest-adoption.md](2026-10-13-handy-retest-adoption.md) | 一，兼四 | 18：实际局部受益与主线采用分开；限定暂停/直播等场景再决定支持责任 | 两位非作者运行PR版，其中一位固定SHA/设备/播放器/repeated cycles，后续Windows多源失败及未完补丁；无标准计时/跨平台可靠性或合并决定 |
 | [2026-10-13-immich-handover.md](2026-10-13-immich-handover.md) | 三、四 | 18/24：交接说明与最终接口对齐；18 观察下一位维护者的实际修改，学习陌生模块时可选相关小变更检验 | Immich 审查/补丁链、Echoes 接管实验、Trio 测验与儿童手动修改实验；不证明学习练习的因果收益、职业长期维护等价或本例 Android 复测/支持工时 |
