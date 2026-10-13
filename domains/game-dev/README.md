@@ -1,6 +1,6 @@
 # 领域分支：AI coding × 游戏开发
 
-> 核实时间：2026-10-08。
+> 核实时间：2026-10-08；资产编辑边界于 2026-10-13 单独复核。
 > 这个分支回答：**主干里的 AI coding 方法，放到游戏开发里具体怎么用？** 重点是 AI 与游戏开发的结合；Unity 和 Unreal 子目录里也有**引擎基础知识**，作为和 AI 协作的前提（每节都标出 Agent 在这里容易犯的错）。
 > 前置阅读：[07 工作流](../../docs/07-workflows.md)（验证闭环）、[14 深度分析](../../docs/14-synthesis.md)（底层规律）。
 
@@ -10,7 +10,7 @@
 |---|---|---|---|---|---|
 | **策划 → 规格** | 把玩法描述整理成规格：状态机、数值表、边界情况、验收标准 | 访谈式 Spec（`spec-interview` Skill） | 人审规格 | **定核心玩法和“好玩”的标准** | [07](../../docs/07-workflows.md#3-大功能访谈式-spec-) |
 | **玩法和系统代码** | 写 C# / C++ 逻辑、补测试、重构 | Claude Code / Codex + 引擎 LSP | 编译 + 单元测试（L0–L1） | 定架构和接口，按切片评审 | [unity/02](unity/02-large-project-guide.md)、[unreal/02](unreal/02-large-project-guide.md) |
-| **编辑器和资产操作** | 搭场景、改 Prefab / 蓝图、批量设置导入参数 | **引擎官方 MCP / CLI**（Unity CLI、Unreal MCP、Roblox Studio MCP） | 检查工具返回值，存盘点 | 不让 Agent 手改序列化文件或二进制资产 | [01](01-engine-integration.md) |
+| **编辑器和资产操作** | 搭场景、改 Prefab / 蓝图、批量设置导入参数 | 引擎 Editor API，按需通过 MCP / CLI 调用 | 检查保存结果与资产引用，保留恢复点 | 按格式与引用关系选择修改路径 | [01](01-engine-integration.md) |
 | **运行时验证** | 自己试玩：导出状态、注入输入、加载测试场景、批量模拟 | 试玩接口（自定义命令或 MCP 工具） | 验证阶梯 L2–L5 | **手感、乐趣、美术**（L6） | [**02**](02-verification-and-playtesting.md) |
 | **工具和管线** | 编辑器扩展、导入后处理、配置表解析、构建脚本 | 通用编码工作流 | 脚本测试 | — | [unity/02](unity/02-large-project-guide.md#9-哪些任务适合交给-ai) |
 | **资产生成** | 调 3D / 2D / 音频生成 API，批量导入、规范化、记录来源 | API 或 MCP + 编辑器脚本 | 导入检查 | 美术把关风格 | [03](03-generative-ai-in-games.md#1-资产管线agent-负责搬运和规范) |
@@ -19,7 +19,7 @@
 
 ## 2. 和普通软件相比，游戏的三个特殊点
 
-1. **资产不是纯文本**：Unity 的 YAML 引用脆弱，Unreal 的 `.uasset` 是二进制。所以**编辑器操作必须走引擎官方的 Agent 接口**，不能让 Agent 手改文件。各引擎的接法见 [01](01-engine-integration.md)。
+1. **源码与资产要分开处理**：C# / C++ 源码可按普通编码流程编辑；资产修改默认交给引擎 Editor API，不要求专用 Agent 接口。Unity 文本资产须维护 GUID / fileID 与 Prefab 关系，直接修改仅作经项目验证的受限例外；Unreal 的 `.uasset` / `.umap` 不做文本补丁。**[一手＋经验：格式与采用边界见 [01](01-engine-integration.md)]**
 2. **验证最难**：实时、状态多、涌现行为，而且“好不好玩”没有自动判定标准。所以要把游戏**改造成 Agent 能玩的形态**，并把人工试玩当作结构性的必需环节。这是本分支最重要的内容，见 [02](02-verification-and-playtesting.md)。
 3. **内容侧有外部约束**：
    - GDC 2026 调查中 52% 的从业者认为生成式 AI 对行业有害（2024 年是 18%）；

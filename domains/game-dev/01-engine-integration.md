@@ -1,13 +1,13 @@
 # 引擎接入：让 Agent 操作游戏引擎
 
-> 核实时间：2026-10-08。
+> 核实时间：2026-10-08；资产编辑边界于 2026-10-13 单独复核。
 > 依据 **[一手]**：
 > - Epic 官方插件 [unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)：克隆后读了全部 3 个 Skill、setup 和 operations 文档、SessionStart Hook，最近提交 2026-09-17；
 > - Roblox 官方文档 [Connect to the Roblox Studio MCP server](https://create.roblox.com/docs/en-us/studio/mcp)（2026-10-07 更新）；
 > - Blender Lab 的 [MCP Server 页面](https://www.blender.org/lab/mcp-server/)；
 > - Claude 官方插件市场的 `marketplace.json`（共 315 个插件，游戏相关的只有 Unity 和 Unreal 两个官方插件）。
 >
-> 为什么需要专门的接入：游戏的场景和资产不是纯文本（Unity 是引用脆弱的 YAML，Unreal 是二进制），Agent 不能手改，只能通过引擎的接口操作。
+> **✅ 资产修改默认用引擎 Editor API，不要求专用 Agent 接口。** C# / C++ 源码可直接编辑；Unity 的 Force Text 只决定序列化格式，GUID / fileID 与 Prefab 关系仍须保持完整，直接文本修改仅作经项目验证的受限例外；Unreal 的 `.uasset` / `.umap` 不做文本补丁。Unity 官方文档对外部 YAML 编辑的表述存在冲突，因此不承诺直改安全；结果仍须目标版本引擎加载与引用检查。**[一手＋经验：见[来源与真实失败反例](../../docs/research/2026-10-13-game-asset-editing-boundary.md)]**
 > Unity 的细节见 [unity/01-toolchain.md](unity/01-toolchain.md)，Unreal 的细节见 [unreal/01-toolchain.md](unreal/01-toolchain.md)，本页做横向比较。
 
 ## 1. 总览
@@ -73,7 +73,7 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 |---|---|---|---|---|
 | 模型熟悉程度 | **高**：C# 和 Unity 的代码语料极多 | 中：宏多（`UCLASS`、`UPROPERTY`），**版本间 API 变化大**，模型容易写出旧 API | 中低：GDScript 语料少，Godot 3 → 4 变化大，常被混用 | 取决于语言 |
 | API 的“真相来源” | 引擎闭源，只有 C# 参考源码 | **安装版自带引擎头文件**，让 Agent grep 头文件是对付 API 幻觉最有效的手段 | 开源 | 自己的代码 |
-| 场景和资产格式 | YAML 文本，但 fileID / GUID 引用脆弱 → 禁止手改 | **二进制** → 只能通过编辑器工具 | `.tscn` 纯文本，最友好（社区评价 **[社区]**） | 通常是代码或文本 |
+| 场景和资产格式 | 可用 YAML 序列化；默认经 Editor API 修改，直改例外见上文 | `.uasset` / `.umap` 为**二进制**，经编辑器/API 修改，不做文本补丁 | `.tscn` 纯文本，最友好（社区评价 **[社区]**） | 通常是代码或文本 |
 | 逻辑在哪里 | C# 为主 | **C++ 和蓝图混合**，蓝图逻辑对通用编码 Agent 不可见 | GDScript / C# | 代码 |
 | 编译反馈 | `unity recompile` 秒级；domain reload | Live Coding 秒级（只限函数体）；改头文件要完整编译，分钟级 | 脚本即改即用 | 取决于工具链 |
 | 无头测试 | `unity test`，退出码清楚 | `UnrealEditor-Cmd` 加自动化测试，JSON 报告 | 社区方案 | 通常最容易 |

@@ -29,11 +29,12 @@
 | 长期任务二：上下文研究范围 | 全文／公开产物核查与只读算术完成 | [Context Files 复核](../research/2026-10-13-context-study-reassessment.md)；收窄失败归因，补 E5 过滤依据及 clip 参数含义 |
 | 长期任务二：效率收益的验收边界 | 全文／公开附录只读复算完成 | [AGENTS 效率证据](../research/2026-10-13-agents-efficiency.md)；有效分母、不同估计量和正确性未评估分别记录 |
 | 长期任务四：接收渠道政策 | 官方规则／制定讨论／执行案例核对完成 | [Godot](../research/2026-10-13-godot-contribution-policy.md)；披露不代替准入，贡献与资产商店规则分开 |
+| 游戏资产的修改边界 | 14:17（UTC+8）本轮完成，限定复核通过 | [证据与反例](../research/2026-10-13-game-asset-editing-boundary.md)；分支 `dot/asset-editing-boundary-20261013`，起点 `2b0a142`；完整离线 14 阶段及 `git diff --check` 通过，未运行真实引擎 |
 | workflow-ablation 先导 | 跳过 | 预算未填写，0 轮新模型运行 |
 
 ## 进行中的任务
 
-- **进行中：游戏资产的修改边界。** 核对游戏分支“所有编辑器操作必须走官方 Agent 接口”的绝对说法；按源码、文本序列化／GUID 和二进制资产区分可用路径，不把模拟检查当作真实引擎验证。
+- **浏览器测试自修复。** 核对官方 healer 允许改预期值／fixme 与真实修正链，不把退出码绿色当恢复通过。
 - **发布检查。** 每项运行 `python3 scripts/check_offline.py`、`git diff --check`，随后非强制快进 main 或走 PR；hosted CI 以精确提交实际状态为准，历史计费阻塞未解决，离线通过不当作 CI 通过。
 
 后续从[四条长期任务](../research/BACKLOG.md#四条长期任务以真实开发结果组织研究)选有价值的缺口；无新证据就不制造提交。分支协作见[说明](README.md)。
