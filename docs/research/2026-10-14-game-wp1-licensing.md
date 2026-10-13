@@ -146,6 +146,18 @@ Google未付费服务通常会将输入/输出用于改进并可人工审查；E
 
 Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，不能据此追认历史版本；实际包通知与旧SHA不同，详见[WP2固定证据](2026-10-14-game-wp2-2d-assets.md#1-第二次修改为什么优先改结构)。这些行只放行有条件的调查/使用路径，不证明资产质量。
 
+## WP3追加：现成3D资产与处理工具
+
+核实2026-10-14 UTC+8。以下[一手]许可与[研究]采用范围配套[WP3](2026-10-14-game-wp3-3d-assets.md)，不将质量建议扩大到全站资源。
+
+- [Kenney Nature Kit](https://kenney.nl/assets/nature-kit)：指定资产CC0，无生成权重；保留具体下载包许可，不能只引用另一包Generic Items。
+- [Quaternius Universal Base Characters](https://quaternius.com/packs/universalbasecharacters.html)：指定包CC0商业可用；免费Standard和完整Source/引擎交付不是同一获取范围，额外动作逐项核。付费获取不改变页面所声明的CC0资产权利。
+- [Poly Haven许可](https://polyhaven.com/license)：模型/纹理/HDRI资产CC0，网站文案、商标与展示渲染不包括在内。[API页](https://polyhaven.com/our-api)2026-07-18更新为含商用免费，使用其服务的产品有来源标示等条件；下载后资产权利与持续API接入义务分开，不将页面读取扩大为任意抓取授权。
+- 处理库主许可分别核对：[meshoptimizer b233043](https://github.com/zeux/meshoptimizer/blob/b2330430776a95a1545f03fc7bf16927f8cadc59/LICENSE.md)、[xatlas f700c7](https://github.com/jpcy/xatlas/blob/f700c7790aaa030e794b52ba7791a05c085faf0c/LICENSE)、[CoACD 131010c](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/LICENSE)均MIT，无模型权重；分发保留通知，输入网格和第三方依赖另核。
+- [Infinigen a0d1a0d](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/LICENSE)：主BSD-3-Clause，明确标注部分CC0；不由根许可包办外部素材/包。本轮仅借配方，不部署完整导出器。
+- Meshy7.1/T2、TripoP1/P2、Rodin2.5仍按上文对应服务合同和实际生成/导出计划；型号更新不自动更改旧免费资产权利。
+- 暂缓商业默认：LATO.2主代码/官方权重卡虽MIT，默认安装引入nvdiffrast0.4.0受非商业研究条款限制；TaoFlowForge根Apache2不证明ModelScope权重和DINOv3依赖已清权；Marble完整合同本轮未核清。固定来源在WP3研究，三者不得借主许可进入无条件商用推荐。
+
 ## 发布渠道不能被生成许可替代
 
 - [Steam Content Survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey)当前重点是随游戏交付、由玩家消费的AI内容（美术、音频、叙事、本地化等），不以一般开发效率工具使用为重点；区分预生成与运行时生成，后者另需说明防止非法内容的措施。披露不豁免侵权或其他内容规则。这里没有访问开发者后台、提交问卷或验证某款游戏已获准。**[一手：2026-10-14官方原文]**

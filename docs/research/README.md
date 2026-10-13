@@ -12,6 +12,8 @@
 
 ## 游戏工作包研究
 
+- [WP3 3D资产](2026-10-14-game-wp3-3d-assets.md)：原生低模商业入口、固定处理库、作者产物与依赖许可反证；静态/场景/角色分开
+
 - [WP11 Gameplay架构](2026-10-14-game-wp11-gameplay-architecture.md)：固定实例/退出契约，比较HFSM、BT、GAS和局部ECS；保留真实修改与许可反证
 
 - [WP10 客户端核心模块](2026-10-14-game-wp10-client-modules.md)：11模块选择及取消/池复用、存档迁移、输入重入反证；未运行引擎
