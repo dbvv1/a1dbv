@@ -70,6 +70,10 @@ cat "$audit_tmp/findings.json"
 - 此结果说明 README 汇总示例与单元平衡口径有歧义，不说明作者有不当行为，也没有证明论文结论反转
 - 没有重跑 agent、gold tests、显著性/等效性检验或成本效果分析。13 个单测通过只验证这个分析器的行为
 
+## 后续资料（2026-10-13）
+
+[公开 DB 与作者脚本复核](../../docs/research/2026-10-13-context-study-reassessment.md)补上 error 过滤依据，并提供只读 SQL 与精确算术复算。上面的 CSV 三种口径保留为历史敏感性分析；本目录分析器未改为推断 CSV 中不存在的 error 字段，也未重跑模型。
+
 ## 许可与公开边界
 
 已读固定 commit 的 [MIT LICENSE](https://github.com/codeprakhar25/context-files-coding-agents/blob/084c40708e7211b0e6a0fe8d74337b2e048a832c/LICENSE)，版权为 2026 Prakhar Khatri；同版本 README 明确把 `data/` 聚合结果置于相同条款。若另行转载 CSV，应保留原许可和归属。这不授权转载未公开日志、凭据或其他目标仓库。本目录只保留来源链接/hash和新写的分析代码；第三方数据不随仓库分发。
