@@ -12,6 +12,8 @@
 
 ## 游戏工作包研究
 
+- [WP13 游戏Agent配置](2026-10-14-game-wp13-agent-config.md)：将导入身份、取消所有者、定义/实例与旧档边界写入现有模板，不新增Hook或框架
+
 - [WP7 视频与过场](2026-10-14-game-wp7-video.md)：先比删除/静态/引擎镜头，Omni与Veo模式边界、Aleph范围计价、LTX固定源码与跳过恢复反例
 
 - [WP5 材质与特效](2026-10-14-game-wp5-material-effects.md)：共同参数源与运行时时间，固定CLI/XR源码、CC0旧包/AI输入许可边界及真实采用反证
