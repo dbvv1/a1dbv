@@ -70,7 +70,7 @@ Ghostty 的 [PR #8289](https://github.com/ghostty-org/ghostty/pull/8289) 中，�
 
 本节只保存判断所依赖的入口配置与反证；任务选择表和净收益建议统一维护在 [24 正文](../24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻)。
 
-补读入口文件后，可以更具体地解释成本来源：[using-superpowers](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/using-superpowers/SKILL.md) 要求哪怕 1% 可能相关也先加载，采用极低触发阈值，并在 Plan 前安排 brainstorming。这与 Codex 原生 Plan 已包含探索与澄清存在功能重叠；是否实际重复取决于所装版本、任务与运行路径，未做组合实测。[官方 Skill 也可能带额外批准关口](../05-skills-and-plugins.md#25-主力-codexskill-应补什么又可能增加什么)，不能只批评社区项目。**[一手；研究：采用判断]**
+补读入口文件后，可以更具体地解释成本来源：[using-superpowers](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/using-superpowers/SKILL.md) 要求哪怕 1% 可能相关也先加载，采用极低触发阈值，并在 Plan 前安排 brainstorming。这与 Codex 原生 Plan 已包含探索与澄清存在功能重叠；是否实际重复取决于所装版本、任务与运行路径，未做组合实测。[官方 Skill 也可能带额外批准关口](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)，不能只批评社区项目。**[一手；研究：采用判断]**
 
 同时避免稻草人：本轮读取的 Superpowers 允许简单任务直接做，也有 inline 执行路径。应检查所装版本的实际触发情况，不把它概括成“任何任务都会强制全套流程”。用户采用率是否下降，需要另外的数据；本轮没有这样的证据。**[一手：C1 + 分析边界]**
 

@@ -1,6 +1,6 @@
 # 窄领域 Skill：Cloudflare WebSocket 契约与历史修复链
 
-> 核实：2026-10-13（UTC+8）。长期任务二。本轮新读官方 Skill、固定文档与实际修复；只执行自行编写的纯 JavaScript 表达式探测，未部署 Cloudflare 或运行模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-主力-codexskill-应补什么又可能增加什么)。
+> 核实：2026-10-13（UTC+8）。长期任务二。本轮新读官方 Skill、固定文档与实际修复；只执行自行编写的纯 JavaScript 表达式探测，未部署 Cloudflare 或运行模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
 
 ## 1. 为什么选这个来源
 

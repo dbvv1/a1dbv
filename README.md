@@ -3,7 +3,7 @@
 > 帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**本轮更新：2026-10-13**：以 **Codex 为主、Claude Code 为辅**，dot 主导，Claude 与云端 Codex 的建议作补充。[任务级入口](docs/01-agents/codex.md#先给什么遇到什么再增加能力)、正文分层与协作归档已完成；[整体评估与专项审计](docs/collaboration/reviews/2026-10-13-331e093.md)修正模板覆盖、默认流程和撤回结论回流问题。[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)继续追产品试用、能力增量、连续修改和接管成本；新增内容的证据及验证范围见各页。
+**本轮更新：2026-10-13**：[任务级入口](docs/01-agents/codex.md#先给什么遇到什么再增加能力)、正文分层与协作归档已完成；[整体评估与专项审计](docs/collaboration/reviews/2026-10-13-331e093.md)修正模板覆盖、默认流程和撤回结论回流问题。[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)继续追产品试用、能力增量、连续修改和接管成本；新增内容的证据及验证范围见各页。
 
 执行资产与历史验证见 [维护路线](docs/maintenance-roadmap.md)、[长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
 
@@ -36,7 +36,7 @@
 
 | 你现在要做什么 | 推荐入口 |
 |---|---|
-| 优化主力 Codex，兼顾 Claude Code | [Codex](docs/01-agents/codex.md) → [Claude Code](docs/01-agents/claude-code.md) |
+| 使用 Codex 或 Claude Code | [Codex](docs/01-agents/codex.md) → [Claude Code](docs/01-agents/claude-code.md) |
 | 看真实开发者怎样使用 Skills 和 Agent | [24 社区工作流与失败案例](docs/24-community-workflows.md) |
 | 判断工作流是否对强模型仍有价值 | [24 的独立分析](docs/24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) |
 | 解决具体编码任务 | [15 按任务类型的打法](docs/15-task-playbooks.md) |

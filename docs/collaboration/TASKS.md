@@ -11,7 +11,7 @@
 | D3 双方历史整合 | 已合入 main | [main](https://github.com/dbvv1/a1dbv/tree/main)；保留普通合并历史 |
 | D4 两条演化案例 | 已有结果，对端限定审计通过 | [54083033 审计](reviews/2026-10-12-5408303.md)；SQLite [完整程序与原输出](../../experiments/alchemy-batch-semantics/README.md)已补交并重新核对，原审计不覆盖工具模块 |
 | D5 任务建议校准 | 已完成 | [任务打法](../15-task-playbooks.md) |
-| D6 最小输入与能力触发 | 本轮完成，五情境走读通过 | [Codex §6](../01-agents/codex.md#6-主力使用从实际问题选择方法) → [15](../15-task-playbooks.md) |
+| D6 最小输入与能力触发 | 本轮完成，五情境走读通过 | [Codex §6](../01-agents/codex.md#6-使用建议从实际问题选择方法) → [15](../15-task-playbooks.md) |
 | D7 分析推论校准 | 云端完成本轮限定修订，待对端复审 | [331e093 整体评估](reviews/2026-10-13-331e093.md)：模板覆盖已复现并移除用法；默认流程、成熟度与撤回数字同步校准，未全面重验事实 |
 | D8 优化模式校验修复 | 已完成回归及限定审计 | [D5/D8 审计](reviews/2026-10-12-f551db7.md) |
 | D9 实用工具独立模块 | 已发布来源评估；实机试用仍按需求 | [工具入口](../practical-tools/README.md) |
@@ -32,7 +32,8 @@
 | 游戏资产的修改边界 | 14:17（UTC+8）本轮完成，限定复核通过 | [证据与反例](../research/2026-10-13-game-asset-editing-boundary.md)；分支 `dot/asset-editing-boundary-20261013`，起点 `2b0a142`；完整离线 14 阶段及 `git diff --check` 通过，未运行真实引擎 |
 | 浏览器测试自修复边界 | 14:21（UTC+8）来源与局部运行完成，限定复核通过 | [固定来源与反例](../research/2026-10-13-browser-healing-outcomes.md)；分支 `dot/browser-healing-20261013`，起点 `b9fddfb`；完整离线 14 阶段及 `git diff --check` 通过，区分修复通过与缺陷隔离，未运行真实模型修复 |
 | 工具模块：会话用量指标 | 本轮固定源码与上游测试阅读完成，限定复核通过 | [指标与落盘证据](../research/2026-10-13-session-usage-metrics.md)；分支 `dot/session-usage-metrics-20261013`，起点 `994d08d`；完整离线 14 阶段及 `git diff --check` 通过；明确整轮吞吐与纯生成速度区别，未运行 ccusage |
-| 云端增量审计与缓存排查 | 14:48（UTC+8）dot 独立复核通过，整合中 | [b9fddfb 审计](reviews/2026-10-13-b9fddfb.md)；oMLX 54 行结果由 dot 侧重新取固定源码独立复跑，逐字一致；保留对端 Immich 限定审计；整合树完整离线通过，未测真实缓存，不代表整仓审计 |
+| 云端增量审计与缓存排查 | 14:48（UTC+8）dot 独立复核通过，已普通合入 main | [整合提交 5d528ca](https://github.com/dbvv1/a1dbv/commit/5d528caa9a02395b2df38cddc38d4afc5960bde7)；[b9fddfb 审计](reviews/2026-10-13-b9fddfb.md)；oMLX 54 行结果由 dot 侧重新取固定源码独立复跑，逐字一致；保留对端 Immich 限定审计；整合树完整离线通过，未测真实缓存，不代表整仓审计 |
+| 公开入口中性表述 | 14:56（UTC+8）文案修订完成，限定复核通过 | README、工具入口与当前研究定位按工具／任务表述；历史原文与模型证据范围保留。完整离线 14 阶段、受影响页 20 个锚点引用及 `git diff --check` 通过 |
 | workflow-ablation 先导 | 跳过 | 预算未填写，0 轮新模型运行 |
 
 ## 进行中的任务

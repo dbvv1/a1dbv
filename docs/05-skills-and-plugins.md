@@ -68,7 +68,7 @@ skill-name/            # 目录名必须与 name 字段一致
 
 完整的任务选择、对照、留出集、原始产物和人工复查方法见 [22 评估 Agent](22-agent-evaluation.md)，按真实任务决定是否需要增加流程。本轮重新读取的官方评估指南见 [S2](research/2026-10-10-audit.md)。
 
-## 2.5 主力 Codex：Skill 应补什么，又可能增加什么
+## 2.5 Codex：Skill 应补什么，又可能增加什么
 
 OpenAI 官方 [skill-creator](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/skill-creator/SKILL.md) 明确写着 “Default assumption: Codex is already very smart”，要求只增加模型不具备的上下文，按任务脆弱性选择自由度，并把参考资料按需加载。这里支持的是**领域知识、可靠脚本、特定工具契约与真实约束**；不等于官方保证任何短 Skill 都更有效。**[一手：固定提交，2026-10-10 读取；研究：解释]**
 

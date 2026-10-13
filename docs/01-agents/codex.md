@@ -1,7 +1,7 @@
 # OpenAI Codex（CLI / App / Cloud）
 
 > 核实时间：2026-10-11（本轮复核指令加载、模式、审批与使用讨论；版本、套餐和产品发布信息沿用 10-08 记录，未重新确认）。历史依据 [openai/codex 源码](https://github.com/openai/codex)和 [Releases](https://github.com/openai/codex/releases)，以及官方文档（历史记录指向 [learn.chatgpt.com](https://learn.chatgpt.com/llms.txt)；另一侧早期读取受代理限制；本次已补读当前 Auto-review、配置参考和托管配置页面，仍不据此宣称全面迁移或其他官网内容均已核实）**[一手]**。
-> 评级：✅ **采用**（主力或交叉评审）
+> 评级：✅ **采用**（日常开发或交叉评审）
 
 ## 1. 形态与入口
 
@@ -91,9 +91,9 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 - **共享配置**：不要假定两边原生加载相同文件。将共同约定维护在一处，并在各自入口显式引用；检查实际加载路径。Codex 的 `CLAUDE.md` fallback 不会与同目录 `AGENTS.md` 自动叠加。导入能力也不等于持续同步语义已经验证。**[一手：S1；研究：采用建议]**
 - 在 Claude Code 中调用 Codex：社区有 [skill-codex](https://github.com/skills-directory/skill-codex)。
 
-## 6. 主力使用：从实际问题选择方法
+## 6. 使用建议：从实际问题选择方法
 
-> 当前重点：Codex 主线，Claude Code 辅线；以下“采用判断”是本仓库分析，不冒充官方最佳实践。另一侧早期官网读取受限；已补读官方 Cookbook 的 GitHub 原文，本次另补核审批/配置页面，其他具体行为引用固定源码。**[研究]**
+> 以下“采用判断”是本仓库分析，不冒充官方最佳实践。另一侧早期官网读取受限；已补读官方 Cookbook 的 GitHub 原文，本次另补核审批/配置页面，其他具体行为引用固定源码。**[研究]**
 
 ### 先给什么，遇到什么再增加能力
 
@@ -175,7 +175,7 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 | 改了 effort 但行为没有对应变化 | CLI 的 Plan 有单独 effort 覆盖，普通 effort 更新不改活动 Plan mask | ✅ 先检查当前模式及生效设置；不能只看配置文件里一个值 |
 | 长会话首输出慢，工具尚未运行 | #52555 的单对测量在 reasoning token 为零时仍有明显差异；输入规模不同 | 🧪 保存必要状态后比较新会话；不能简单归因于“想太久”或承诺压缩解决 |
 | 说知道未完成，却结束回合 | #52345/#50771 有具体自述；运行时回合续接不是业务验收 | ✅ 阶段汇报后仍推进已授权剩余工作；有已知反例就让它影响下一动作，而非只加结尾免责声明 |
-| 准备全面重写底层提示来提速 | 官方 schema 对 `model_instructions_file` 明确强烈不建议 | ⛔ 不作为主力默认优化；先删掉重复的项目级流程，保留必要反馈与约束 |
+| 准备全面重写底层提示来提速 | 官方 schema 对 `model_instructions_file` 明确强烈不建议 | ⛔ 不作为默认优化；先删掉重复的项目级流程，保留必要反馈与约束 |
 
 **轻量不等于失去目标反馈。** 强 Agent 上不默认叠加完整 Superpowers，仍是当前建议；但它的理由是避免没有新增价值的步骤，不是认定模型不会偏离、停工或忽略验证结果。高 effort 抱怨没有同任务对照，不能据此统一推荐降低 Astra effort。**[研究：采用判断]**
 

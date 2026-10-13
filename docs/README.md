@@ -8,7 +8,7 @@
 | 想评估配置、跑长任务或验收前端 | [22 评估](22-agent-evaluation.md) → [20 可靠性](20-codex-long-horizon.md) → [23 浏览器验证](23-browser-verification.md) |
 | 刚开始用 AI coding | 00 → 01 → 07 → **15** → 03 |
 | 已在用，想用得更好 | **15** → 03 → **19** → 07 → 06 → 05 → 09 |
-| Codex 主力、想改善当前任务 | **[Codex 任务入口](01-agents/codex.md#6-主力使用从实际问题选择方法)** → [15 任务打法](15-task-playbooks.md)；出现跨会话恢复问题再看 [20](20-codex-long-horizon.md)，需要组件再选 [模板](../templates/codex/README.md) |
+| 用 Codex 改善当前任务 | **[Codex 任务入口](01-agents/codex.md#6-使用建议从实际问题选择方法)** → [15 任务打法](15-task-playbooks.md)；出现跨会话恢复问题再看 [20](20-codex-long-horizon.md)，需要组件再选 [模板](../templates/codex/README.md) |
 | 想把 Agent 嵌进自己的产品或流水线 | **16** → 04 → 10 → 06 |
 | 要给团队落地 | 00 → **18** → 01 → 10 → 06 → 05 → 09 → 19 → 11 |
 | Agent 用得不顺、总跑偏 | **17** → 15 → 03 → 07 |

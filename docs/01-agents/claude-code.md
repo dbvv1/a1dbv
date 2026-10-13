@@ -1,7 +1,7 @@
 # Claude Code
 
 > 核实时间：2026-10-11（本轮针对规则加载与工作流建议补核；已读 changelog 至 2.1.296，模型价格和套餐仍为历史记录，未全量复核）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
-> 评级：✅ **采用**（主力 Agent 首选之一）
+> 评级：✅ **采用**（日常开发 Agent 选项之一）
 
 ## 1. 定位
 
@@ -84,7 +84,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 7. **Writer / Reviewer 分离**：一个会话写，另一个新会话审；评审子 Agent 要告诉它“只报影响正确性的问题”，否则会过度挑刺。
 8. **批量改动**：先让 Claude 列出文件清单，用 `claude -p` 循环处理；在前 2–3 个文件上调好提示词再全量跑。
 
-## 4.5 与主力 Codex 配合：先核对规则是否真的加载
+## 4.5 与 Codex 配合：先核对规则是否真的加载
 
 固定 [Claude Code changelog](https://github.com/anthropics/claude-code/blob/2301018b1f61073c501a8e7a4813ef48c239163b/CHANGELOG.md) 记录了三个具体修复：2.1.287 避免 resume/压缩后同一文件夹的 CLAUDE.md 重复附加；2.1.288 修复 Write/Edit 访问范围内规则未加载；2.1.293 修复通过单文件 `cat/head/tail/sed -n/grep` 阅读时嵌套规则未加载。这些是官方发布说明，未在本轮运行对应旧版/新版对照。**[一手]**
 
