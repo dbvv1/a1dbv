@@ -150,6 +150,40 @@ PASS: local mechanism checks; NOT NumPy/Hypothesis execution or model benefit
 
 程序 SHA256：`7f7130436211bb82e4eb334afbc5ef56c713c4eaecd5f64168be13ab37194263`；输出 SHA256：`a2c69ab5866f715813a88228a914fafe2fa974f2dbfcfc58d537172fab7caf72`。未运行新的模型、NumPy或Hypothesis实验，也未测交付总成本；没有据此证明额外 Skill 比直接提示更有效。
 
+### 外部生产者校准错误预期
+
+> 核实：2026-10-13 UTC。15 §6 的窄增量：外部兼容预期应来自生产者，有证据时修正旧断言；不要求增加 reviewer 或重复用例。**[研究：采用判断]**
+
+RTK 的[真实用户报告 #2367](https://github.com/rtk-ai/rtk/issues/2367)是 Windows 默认当前项目发现为零。[旧源码 5d32d073](https://github.com/rtk-ai/rtk/blob/5d32d0736f686b69d1e8b9dc45c007d4eb77a0a2/src/discover/provider.rs#L404-L410)已有 Windows 测试，却与实现、注释共同把合成路径 `C:\Users\foo\bar` 的预期写成 `C:-Users-foo-bar`；真实生产者目录应为双连字符。该基线 [CI](https://github.com/rtk-ai/rtk/actions/runs/29001896511) 的 Linux/macOS/Windows `cargo test --all` 步骤均成功，但原始 Windows 日志已返回 410，未逐例确认该用例的执行结果。**[社区：故障报告；一手：源码与 CI 元数据]**
+
+[已合入 #2952](https://github.com/rtk-ai/rtk/pull/2952)（head `40fccbd8ef11d7cfda951253fa6f63944f1188e4`）同时添加冒号替换、修正文档和旧断言；贡献者报告原机默认命令 0→1，维护者[要求删除重复测试](https://github.com/rtk-ai/rtk/pull/2952#pullrequestreview-4922112994)，最终补丁只修正旧用例。另一贡献者[检查生产者目录后撤回大小写归因并报告 0→30](https://github.com/rtk-ai/rtk/issues/2919#issuecomment-5008576670)，其 #3043 未合入，不能当成 #2952 发布后的独立复测。**[一手：补丁与评审；社区：运行报告]**
+
+反例与边界：改断言不必然是弱化验收，重复同路径测试也不必然更可靠；`--all` 找到历史仅能辅助诊断，不能替代当前项目筛选。上述实跑均属贡献者报告；[有 Claude Code 标记的 #2368](https://github.com/rtk-ai/rtk/pull/2368)是未合入的修正稿，不能据此归因 AI 写出原 bug，也未证明所有版本或大小写场景恢复。
+
+标准库局部探测：只用合成路径与临时空文件，按已读源码写出的 **Python 逻辑模型，非 Rust/Windows/RTK 执行**；固定期望目录不调用编码函数生成。旧编码找到 0 个，新编码恰好找到 1 个，无关目录均未命中。**[研究：本轮实际运行，机制范围]**
+
+```python
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+cwd = r"C:\Users\foo\bar"
+with TemporaryDirectory() as tmp:
+    root = Path(tmp)
+    for slug in ("C--Users-foo-bar", "C--Users-other-project"):
+        (root / slug).mkdir()
+        (root / slug / "session.jsonl").touch()
+    for label, chars, count in (("old", "/._\\ []", 0), ("new", "/._\\ []:", 1)):
+        encoded = "".join("-" if not c.isascii() or c in chars else c for c in cwd)
+        hits = sorted(p.parent.name for d in root.iterdir()
+                      if encoded in d.name for p in d.glob("*.jsonl"))
+        assert len(hits) == count
+        assert "C--Users-other-project" not in hits
+        print(label, encoded, hits)
+print("PASS: Python logic model only; NOT Rust, Windows or RTK execution")
+```
+
+输出：`old C:-Users-foo-bar []`；`new C--Users-foo-bar ['C--Users-foo-bar']`；`PASS: Python logic model only; NOT Rust, Windows or RTK execution`。它只验证已选映射与过滤逻辑的区别，不验证生产者完整算法或真实 CLI。
+
 ## 三、领域知识比通用规划更可能是持久资产
 
 对存量系统，API 类型只描述部分约束。舍入、时区、历史错误码、哪个任务实际运行、哪些异常被业务接受，经常决定修改是否正确。把这些整理成可追踪的案例、数据说明和短设计理由，可能比再教强模型“先计划后执行”更有增量。**[经验：待案例检验的判断]**
