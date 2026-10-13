@@ -55,6 +55,7 @@
 | [2D资产](assets/2d.md) | 前沿方法与三档首试、原生/现成基线、静态/动画/瓦片和二次修改的采用边界 |
 | [3D资产](assets/3d.md) | 原生低模/高密度源、模块场景/变形角色分开；UV、LOD、碰撞和第二次修改 |
 | [动画与绑定](assets/animation.md) | 完整动作基线、自动绑定/动捕、root/loop/接触与第二次修改 |
+| [材质与特效](assets/materials.md) | 共同PBR结构、原生运行时与flipbook三档、预算和二次修改；CLI及素材许可分层 |
 | [音频资产](assets/audio.md) | SFX/音乐/配音三档、循环状态切换、声音连续性与局部修改边界 |
 | [04 客户端核心模块](04-client-modules.md) | 11个模块的最小交付线，取消/所有权、旧档、输入暂停与最低设备预算 |
 | [05 Gameplay架构](05-gameplay-architecture.md) | 状态/数据/技能/相机与关卡的最低结构，HFSM、行为树、GAS、ECS的采用条件 |

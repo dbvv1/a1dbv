@@ -109,6 +109,8 @@
 
 ## 游戏开发方向
 
+WP5已补[材质特效三档与反证](2026-10-14-game-wp5-material-effects.md)：共同参数源和原生运行时优先；下一获准阶段比较一块湿度可改的砖与可取消蓄力/命中特效的首产、二改、淘汰与设备预算。Material Maker1.7 CLI单独验证尺寸/失败退出/缺目录，GUI不因该故障撤回；MatLat NC不作商用基线。当前未运行模型或引擎。
+
 WP4已补[动画绑定与修改边界](2026-10-14-game-wp4-animation.md)：后续同骨架换装备/提前命中及改变速度，分验root、循环、接触；先修骨轴/rest映射再重生成，受限依赖方案不默认商用。当前仅理论，真实试验后置。
 
 WP8已补[成套一致性的机制与反例](2026-10-14-game-wp8-style-consistency.md)：后续以跨类别旧件/新件和局部修改比较原生参考与必要LoRA，不按件数自动训练；先修输入/配置变更后的缓存和QA失效，保留完整批准输出。
@@ -152,7 +154,7 @@ WP10已补[客户端模块建议与反证](2026-10-14-game-wp10-client-modules.m
 - **要回答的问题（主线 2／3）**：同一材质族改变颜色、尺度和磨损后，平铺接缝、法线方向、roughness／smoothness、通道打包及不同光照下的观感能否一致？“有几张贴图”不等于它们描述同一表面。
 - **一手来源／优先对象**：👀 [Material Maker](https://github.com/RodZill4/material-maker/tree/174f15edece663bf10f78588840873fa2fd17bc7)（2026-10-07，MIT，程序化节点工具而非生成模型）；👀 [TRELLIS.2 texturing 示例](https://github.com/microsoft/TRELLIS.2/blob/75fbf0183001ed9876c8dbb35de6b68552ee08bd/example_texturing.py)（状态同上）。两者真实游戏采用本轮未核实。
 - **会改变选择的实据／瓶颈**：Material Maker 的 [parse_args.gd](https://github.com/RodZill4/material-maker/blob/174f15edece663bf10f78588840873fa2fd17bc7/parse_args.gd) 有批量导出、尺寸和目标 profile，但找不到指定 profile 时会按名称相似度回退；自动化必须核对实际采用的 profile，不能只看退出成功。程序可转换通道和色彩空间，不能凭格式转换补出一致的物理材质含义；也未验证其 CLI 在目标机器无显示环境下可运行。
-- **预期改变的建议**：§1 增加“先复用可参数化材质，再生成缺少的外观”这一待验证分界；若节点模板满足要求，就让 Agent 改参数和导出规则，避免每张贴图重新抽样。
+- **当前建议与剩余问题**：WP5已在[材质专题](../../domains/game-dev/assets/materials.md)采用共同参数图/现成材质优先，并补1.7固定源码的尺寸参数接线错误及独立CLI故障边界；上方为此前摸底快照。下一步仅在获准实验中核同题重新打光、二次修改及输出失败行为，不重复工具名单。
 
 #### 绑定与动画：自动绑定和动作生成之间还缺多少人工？
 

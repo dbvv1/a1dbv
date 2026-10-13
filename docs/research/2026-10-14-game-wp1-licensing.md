@@ -184,6 +184,18 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 
 这些是直接条款/固定源码核对及采用边界，不是法律担保，也未接受新协议、调用或下载模型。**[一手／研究]**
 
+## WP5追加：材质、特效与素材复用
+
+核实2026-10-14 UTC+8。代码、权重与输出分别核；完整成本、来源及反证见[WP5 §六](2026-10-14-game-wp5-material-effects.md#六许可核查明细法律结论仅为候选准入)。以下为候选准入，不是法律担保或零手修效果验证。**[一手／研究]**
+
+- Material Maker更新为1.7固定`4c6cea67b659e1eb472f91590e06b2b1c5245916`，[MIT](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/LICENSE.md)与[README](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/README.md)不替[社区材料](https://www.materialmaker.org/materials)的CC0/BY/BY-SA及外部节点/贴图清权。无生成权重；保留分发通知，未见专门营收门槛。CLI问题单独评估，不改变软件许可或否定GUI路线。
+- Effekseer运行时/工具沿[固定主MIT](https://github.com/effekseer/Effekseer/blob/82b37081a302b9f9eff0bf14dc6c845fca8c3c54/LICENSE)及第三方通知；推荐版本1.80.7不等于任意master。[官方样例页](https://effekseer.github.io/en/contribute.html)新样例区CC0，可作原runtime和烘焙对照；旧project弾幕GIrls／NITORI BOX／LotusCraft区仅明确随Effekseer播放免费，不推定换runtime或独立售包。无生成权重，实际包留来源与许可。
+- Poly Haven指定纹理沿[资产CC0](https://polyhaven.com/license)，同模型/HDRI，排除网站文字、商标和预览渲染。[2026-07-18 API页](https://polyhaven.com/our-api)明确含商用免费；使用live API的产品需向用户标示来源，每个请求使用独有User-Agent等。该服务义务不把已下载资产改为需署名许可，也不是任意抓站授权。
+- Substance Designer/Sampler为封闭商业席位，不赋予开放权重自托管权；库资产另遵[2025-04-22 Substance 3D Assets条款](https://www.adobe.com/go/substance3dassets)。§2/3允许作为Modified/Larger Work发行并禁止独立提取；§4保留已付费下载资产退订后合规使用；§3.3禁止资产/衍生输出用于直接或间接创建、训练、测试、改进AI/ML。EDU例外不外推商业账户，worldwide资产许可不表示服务在每地可购买。软件自有输入与库存材料不能混同。
+- EmberGen [EULA](https://jangafx.com/legal/end-user-license-agreement)（2025-07-19）允许适用商业许可生产；trial导出购买适用许可后才可商用，教育版不得商业产出，输入权利自负。Indie §3.2核本人/关联方当年或上年合并收入或项目预算低于US$1M，以及商业委托客户门槛。[当前直接永久价](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie)US$300、可选维护US$180/年，未税且维护默认续订可退出；价格FAQ的月租18个月转永久与EULA12个月有冲突，不据此承诺月租转永久期限。
+- MatLat固定代码`a0ce5d359bb58cad503099d109955b1c88dbab05`的[README](https://github.com/KAIST-Visual-AI-Group/MatLat/blob/a0ce5d359bb58cad503099d109955b1c88dbab05/README.md)与[官方权重卡](https://huggingface.co/32V/MatLat)明确checkpoint v1.0.0为CC BY-NC 4.0。代码根LICENSE未核得通用许可，第三方依赖另核；论文CC BY不授权商业运行这些权重，未取得单独商业输出授权，因此仅研究观察、不作商用免费默认。
+- 原生Unity/Unreal材质和粒子沿项目已适用的引擎条款；引擎模板、商店包和第三方flipbook逐个核。VideoMatGen和Scenario VFX只作研究对照，未核清完整部署包/底模授权，不进入商用推荐默认。
+
 ## 发布渠道不能被生成许可替代
 
 - [Steam Content Survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey)当前重点是随游戏交付、由玩家消费的AI内容（美术、音频、叙事、本地化等），不以一般开发效率工具使用为重点；区分预生成与运行时生成，后者另需说明防止非法内容的措施。披露不豁免侵权或其他内容规则。这里没有访问开发者后台、提交问卷或验证某款游戏已获准。**[一手：2026-10-14官方原文]**
