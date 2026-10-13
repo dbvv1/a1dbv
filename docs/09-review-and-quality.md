@@ -1,6 +1,6 @@
 # 09 · 评审与质量
 
-> 核实时间：2026-10-11（UTC+8）；HumanLayer 推论于 10-12 定点复核；10-13 将额外 reviewer 与跨厂商互审改为条件试用，其余未重验。
+> 核实时间：2026-10-11（UTC+8）；HumanLayer 推论于 10-12 定点复核；10-13 补充条件评审与原需求的输入交接，其余未重验。
 
 ## 1. 质量数据：AI 代码的真实代价
 
@@ -33,7 +33,7 @@
 | 自定义评审子 Agent | 已有明确的漏审类型或复杂变更需要独立检查时使用（模板：[code-reviewer](../templates/generic/.claude/agents/code-reviewer.md)） | 🧪 按风险试用 |
 | **另一家的模型交叉评审** | 比较新增有效发现、误报和审查成本；换品牌不自动获得独立证据 | 🧪 不默认每次互审 |
 
-**评审子 Agent 的提示要点（官方 [一手]）**：只给它 diff 和评判标准，不给实现过程中的推理；明确要求“**只报告影响正确性或违背需求的问题，不报告风格偏好**”。被要求找问题的评审者几乎总能找出点什么，追着每一条改会导致过度设计。
+**评审子 Agent 的提示要点**：给 diff 和能追到原需求或已确认验收的判据，不灌入实现过程中的推理；明确要求“**只报告影响正确性或违背需求的问题，不报告风格偏好**”。遇权限、解析或接口变化，沿具体风险查未改的消费者，必要时用能区分假设的输入核验；计划合规与用户目标成立分别判断。复用已有判据，不要求所有任务另写 spec 或增加 reviewer。固定源码与反证见[输入交接记录](research/2026-10-13-review-inputs.md)。**[研究：采用判断]**
 
 Anthropic 给 Opus 5.5 的评审提示：“Review the diff on this branch against main. **List only problems you'd block the merge for.** For each one, give the file and line, why it's wrong, and how to show it fails.” 有测试者反馈，Opus 5.5 在最低 effort 下找到的 bug 比 Opus 5 在高 effort 下还多，误报也更少 **[一手]**。
 
