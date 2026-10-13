@@ -1,10 +1,10 @@
-主线：二，兼三
-改变的建议：05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代
-新证据：新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测
+主线：二，兼三／四
+改变的建议：05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界
+新证据：新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
-> 核实：2026-10-12。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
+> 核实：2026-10-12；2026-10-13（UTC+8）仅补核 §五 Discourse 后续演化案例，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
 
 ## 核心判断
 
@@ -82,6 +82,20 @@ S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 架构与可维护性紧随其后，但落在实际第二次修改：依赖边界是否减少了需要理解的内容，测试是否提供独立预期，Agent 是否帮助人建立解释，而不是默认代码越小或模块越多越适合 AI。
 
 模型/Skill/多 Agent 比较继续保留，条件是能指向未解决的具体困难。热门项目、硬件、本地模型、资产生成、游戏引擎和技术社区都可以进入选题，但要说清它改变了哪项开发能力、替代方案是什么、额外成本是什么。仅与 AI 相邻、无法改变采用判断的材料，不优先写进核心正文。
+
+### Discourse：共享组件承接后续需求
+
+✅ 对语义相同的新视图，先复用现有组件；真实需求出现时，再检查能否只扩展共享边界，不提前建立通用框架。**[研究：采用判断，2026-10-13]**
+
+**起点与归属。** [#38888](https://github.com/discourse/discourse/pull/38888) 由 markvanlan 提交，2026-04-16 合并；[固定提交](https://github.com/discourse/discourse/commit/8feeaa5d69cd9462cc6aa4f560cb1e953e588e0b) 列 Claude Opus 4.6 及多位人类 coauthor，记录作者声明的 AI 参与，不包含生成过程，不能归因全部代码。[初始 header](https://github.com/discourse/discourse/blob/8feeaa5d69cd9462cc6aa4f560cb1e953e588e0b/frontend/discourse/app/components/nested-view-header.gjs) 直接导入并渲染已有 TopicCategory。**[一手：署名与源码]**
+
+**真正的下一需求。** 8 月 11 日，另一贡献者 nullchristo 的 [#42520](https://github.com/discourse/discourse/pull/42520) 为客户插件在 category/tags 旁增加信息提供扩展点。[合并补丁](https://github.com/discourse/discourse/commit/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e) 只改共享 TopicCategory 的包装 outlet 和 docked header 的 topic 参数；同版本 [nested/header](https://github.com/discourse/discourse/blob/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e/frontend/discourse/app/components/nested/header.gjs) 仍调用它，未另改树加载或复制 nested 专属实现。此人的登录名不同于初始作者与列出的人类 coauthor，但不能断言是首次接触项目。**[一手：需求、补丁与调用链]**
+
+**交付边界。** 后续 PR 获批准并合并。[core frontend 原日志](https://github.com/discourse/discourse/actions/runs/31506849232/job/93830516975) 核实运行版本为 `48d4571d4d747ae4fade0c49fd9e851fb693cd78`，即 head `cd63a1cc4b647701f505131af05bd7368fdf4bc5` 与 base `3908561e29d2187ac622eadd8a59fa3ba54ebac1` 的测试合并；`qunit:test` 汇总 6473 passed、0 skipped/failed。补丁没有新增测试，日志中通用 PluginOutlet 用例不等于新客户插件验收；原需求说将支持该插件，没有客户部署、复测或人力计时。本次只读源码与日志，未复跑。**[一手：CI 原日志；研究：范围限定]**
+
+**反例约束。** [真实管理员报告](https://meta.discourse.org/t/im-struggling-to-recover-deleted-post-how-to-fix/403161/1)显示，已删除 nested topic 的 500 阻断恢复。[#40134](https://github.com/discourse/discourse/pull/40134) 的[固定修复](https://github.com/discourse/discourse/commit/a051d96b6526c7a2ad2b7754863d7364e6401c28)给 OP 查询补接已有 visibility helper，并新增 staff show/context 返回 200 与 placeholder、non-staff 返回 404 的断言。修复作者 xfalcox 也是初始人类 coauthor，属团队维护；手工恢复未勾选，不能写用户已成功恢复。**[社区：用户原帖；一手：补丁]**
+
+因此，UI 复用可以承接下一次扩展，却不能保证后台生命周期完整；让 Agent 同时检查必要的查看、删除、恢复路径。局部补接能满足契约时，无需升级为架构重写。**[研究：采用建议]**
 
 ### 能推翻或改变这个优先级的证据
 
