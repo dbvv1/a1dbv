@@ -43,13 +43,13 @@
 |---|---|---|
 | **Evaluating AGENTS.md**（ETH Zurich 等，arXiv 2602.11988，v3 2026-09） | Claude Code（Sonnet 4.5）、Codex（GPT-5.2 / 5.1 mini）、Qwen Code；SWE-bench Lite 300 题 + 新建的 CTXbench（138 题，来自 12 个**自带开发者手写指令文件**的仓库） | **LLM 生成的文件**：成功率 −0.5% / −2%（不显著），**成本 +20–23%**（显著）。**开发者手写的文件**：平均 +2.4%（p=0.21，不显著），但**显著优于 LLM 生成的**（p=0.038），对 Claude Code 以外的 Agent 都有提升，成本最多 +19%。指令会被遵守（更多测试、更广的探索、更多推理 token），但在该研究设置中**没有观察到仓库概览的可靠收益**（Sonnet 生成的文件 100% 都写了概览）。文件长度没有显著影响。**局限：只测了 Python**，在训练数据较少的语言和工具链上效果可能不同 **[研究：原文]** |
 | **Do Context Files Help Coding Agents?**（arXiv 2607.27250，2026-07） | Sonnet 4.6 / GPT-5.5，3 个 Python 仓库，15／17 任务；公开分析过滤后 288 条记录 | 样本中未检测出正确率收益；10–15pp 是作者限定的描述性等价区间，不能外推为普遍无效。两仓检索语料不匹配、注入渠道不同；[全文及公开数据复核](research/2026-10-13-context-study-reassessment.md)还发现任务提示、功效参数与失败归因需分开解释。**[研究：全文；经验：公开数据与源码复核]** |
-| **On the Impact of AGENTS.md Files on Efficiency**（arXiv 2601.20404，2026-01） | 10 个仓库、124 个 PR，有无 AGENTS.md 对照 | **运行时间中位数 −28.6%，输出 token −16.6%**，完成情况相当 **[研究：摘要]** |
+| **On the Impact of AGENTS.md Files on Efficiency**（arXiv 2601.20404v2，2026-03） | GPT-5.2-Codex；10 仓库、124 个候选小 PR，附录有 113 对有效运行 | 运行时间／输出 token 中位数分别低约 28.6%／16.6%（按两组中位数计算）；50 题人工合理性检查不是正确率或测试通过率对照，不能解释为同等正确性下的提效保证；[附录复算](research/2026-10-13-agents-efficiency.md)另限定有效分母、CLI 配对版本与 total 口径。**[研究：全文；经验：公开数据复算]** |
 | **Configuration Smells in AGENTS.md Files**（arXiv 2606.15828，2026-07） | 灰色文献综述 + 100 个热门仓库 | 6 种“配置坏味道”，见 2.3 节；**Lint 泄漏 62%、上下文膨胀 42%、Skill 泄漏 35%** **[研究：原文]** |
 | **A Few Pages of Markdown**（arXiv 2608.25241，2026-08） | 441 个仓库，RAMP 成熟度模型 | 引入 Agent 后提交数增加 28–38%（与成熟度无关）。但在 Agent 主导的仓库里，**没有提交 AI 配置**的认知复杂度增幅约是有配置的两倍（+53% 对 +27%），静态分析告警增幅是 1.7 倍。73.8% 的配置文件提交后再没改过（“设了就忘”）。属观察性研究，只能作为假设 **[研究：摘要]** |
 | **Agent READMEs**（arXiv 2511.12884） | 1,925 个仓库的 2,303 个指令文件 | 指令文件像配置代码一样频繁小改；内容以测试步骤（75.9%）、实现细节（70.8%）、架构（68.1%）为主；**安全（14.8%）和性能（14.5%）很少写** **[研究：摘要]** |
 
 **综合结论**：
-1. 指令文件的价值在于**效率**（少走弯路、省 token）、**行为约束**（命令、禁区、非标准约定）和**长期质量**（相关性证据），不能据这些样本保证提高正确率，也不能排除在其他任务中的收益。
+1. 指令文件值得评估的价值包括**效率**（少走弯路、省 token）、**行为约束**（命令、禁区、非标准约定）和**长期质量**（相关性证据）；速度与输出量必须和正确性、返工一起比较，不能据这些样本承诺等质量提效，也不能排除其他任务的收益。
 2. **不要让 AI 生成后原样提交**：上述研究在其 Python 仓库、模型和任务样本中观察到 LLM 生成文件增加成本而未显著提高成功率，不能外推到所有仓库和最新模型。把 `/init` 产出当草稿，保留可验证改变行为的项目特有信息，再做有无配置的对照。
 3. **不要自动复制完整概览、目录树和逐文件说明**。只在它们提供难以从代码发现的信息、并有任务价值时保留；上述研究不构成对所有架构地图的否定。
 4. 越是小众的语言或工具链（比如 Unity 特有的编辑器和序列化约定），越值得写进去，因为模型的先验知识更少。
@@ -190,7 +190,7 @@
 - [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - 官方文档：[Best practices](https://code.claude.com/docs/en/best-practices)、[Memory](https://code.claude.com/docs/en/memory)、[Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Codex `codex-rs/core/src/agents_md.rs`、`codex-rs/config/src/config_toml.rs`
-- 论文：[arXiv 2602.11988](https://arxiv.org/abs/2602.11988)（读了正文）、[arXiv 2606.15828](https://arxiv.org/abs/2606.15828)（读了正文）、[arXiv 2607.27250](https://arxiv.org/abs/2607.27250)（10-13 读全文并核公开源码／数据）、[arXiv 2601.20404](https://arxiv.org/abs/2601.20404)、[arXiv 2608.25241](https://arxiv.org/abs/2608.25241)、[arXiv 2511.12884](https://arxiv.org/abs/2511.12884)（读了 arXiv 摘要原文）
+- 论文：[arXiv 2602.11988](https://arxiv.org/abs/2602.11988)（读了正文）、[arXiv 2606.15828](https://arxiv.org/abs/2606.15828)（读了正文）、[arXiv 2607.27250](https://arxiv.org/abs/2607.27250)（10-13 读全文并核公开源码／数据）、[arXiv 2601.20404](https://arxiv.org/abs/2601.20404)（10-13 读 v2 全文）、[arXiv 2608.25241](https://arxiv.org/abs/2608.25241)、[arXiv 2511.12884](https://arxiv.org/abs/2511.12884)（读了 arXiv 摘要原文）
 - [liao.gg：Agents don't need memory, they need documentation](https://liao.gg/blog/agents-dont-need-memory)（[HN](https://news.ycombinator.com/item?id=49945933)）
 - Harness 开销实测：[Systima](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)（72KB 指令文件让每次请求多约 2 万 token）
 
