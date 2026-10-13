@@ -170,6 +170,20 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 
 声音权利须另核剧本、表演者/数字复制品、媒体/语言/角色/商业范围与后续补录；基础服务可商用不能替代这些授权。**[一手：直接许可／研究：使用边界]**
 
+## WP4追加：动作、绑定与2D骨骼
+
+2026-10-14 UTC+8补核。完整逐项代码/权重/输出及直接链接见[WP4 §4](2026-10-14-game-wp4-animation.md#4-授权边界与wp1对应项)，本表不把商用输出等价可公开再分发原始FBX。
+
+- Mixamo：[官方FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html)允许商业游戏、限定账户/地区；[附加条款](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Mixamo-Addl-Terms-en_US-20210623.pdf)限制内容/输出用于AI创建、训练、测试或改进，普通引擎重定向不据此解释为训练。
+- Uthana：[Terms v1.1.0](https://uthana.com/terms)区分付费输出和免费CC BY4.0，默认数据改进与明示no-training不同；Text3.0/Video2.1/Locomotion均须保实际生成版本和合法输入。
+- Rokoko：[v2.0.1](https://www.rokoko.com/terms-of-use)（2026-07-16）区分用户内容、Rokoko Assets与自动访问；§4.4未特许的脚本不放行。DeepMotion[条款](https://www.deepmotion.com/terms-of-use)免费非商用、付费输出可永久商业嵌入，但原素材再分发和未授权机器人/脚本仍限制。
+- Spine：编辑器、runtime及资产包三层独立；[编辑器许可](https://us.esotericsoftware.com/spine-editor-license)的收入/投资融资门槛和[资产包许可](https://en.esotericsoftware.com/spine-asset-pack-license)源文件分发范围不能由买包替代。Unity2D Animation原生方案另沿具体包/引擎许可。
+- AccuRIG仅作软件候选，实际ActorCore/CC Base/自有内容按对应EULA/SKU核；Move One、Cascadeur完整输出权利链本轮未闭合，不列免费商业默认。
+- MoCapAnythingV2代码`c99fb22`和官方epoch60权重卡虽MIT，默认BRIA RMBG1.4免费仅非商业，Truebones等素材另许；先获依赖许可或验证替代，不删除安装步骤就假定合规。
+- Shards `94bd4787`为MIT代码，示例Mixamo/Meshy文件权利并不随代码许可；本轮只读机制，不复制示例素材。
+
+这些是直接条款/固定源码核对及采用边界，不是法律担保，也未接受新协议、调用或下载模型。**[一手／研究]**
+
 ## 发布渠道不能被生成许可替代
 
 - [Steam Content Survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey)当前重点是随游戏交付、由玩家消费的AI内容（美术、音频、叙事、本地化等），不以一般开发效率工具使用为重点；区分预生成与运行时生成，后者另需说明防止非法内容的措施。披露不豁免侵权或其他内容规则。这里没有访问开发者后台、提交问卷或验证某款游戏已获准。**[一手：2026-10-14官方原文]**
