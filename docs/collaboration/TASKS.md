@@ -30,11 +30,12 @@
 | 长期任务二：效率收益的验收边界 | 全文／公开附录只读复算完成 | [AGENTS 效率证据](../research/2026-10-13-agents-efficiency.md)；有效分母、不同估计量和正确性未评估分别记录 |
 | 长期任务四：接收渠道政策 | 官方规则／制定讨论／执行案例核对完成 | [Godot](../research/2026-10-13-godot-contribution-policy.md)；披露不代替准入，贡献与资产商店规则分开 |
 | 游戏资产的修改边界 | 14:17（UTC+8）本轮完成，限定复核通过 | [证据与反例](../research/2026-10-13-game-asset-editing-boundary.md)；分支 `dot/asset-editing-boundary-20261013`，起点 `2b0a142`；完整离线 14 阶段及 `git diff --check` 通过，未运行真实引擎 |
+| 浏览器测试自修复边界 | 14:21（UTC+8）来源与局部运行完成，限定复核通过 | [固定来源与反例](../research/2026-10-13-browser-healing-outcomes.md)；分支 `dot/browser-healing-20261013`，起点 `b9fddfb`；完整离线 14 阶段及 `git diff --check` 通过，区分修复通过与缺陷隔离，未运行真实模型修复 |
 | workflow-ablation 先导 | 跳过 | 预算未填写，0 轮新模型运行 |
 
 ## 进行中的任务
 
-- **浏览器测试自修复。** 核对官方 healer 允许改预期值／fixme 与真实修正链，不把退出码绿色当恢复通过。
+- **会话用量指标。** 核对 ccusage 的 `--speed` 计价档与 tok/s、去重和缓存口径，仅公开源码／合成数据。
 - **发布检查。** 每项运行 `python3 scripts/check_offline.py`、`git diff --check`，随后非强制快进 main 或走 PR；hosted CI 以精确提交实际状态为准，历史计费阻塞未解决，离线通过不当作 CI 通过。
 
 后续从[四条长期任务](../research/BACKLOG.md#四条长期任务以真实开发结果组织研究)选有价值的缺口；无新证据就不制造提交。分支协作见[说明](README.md)。
