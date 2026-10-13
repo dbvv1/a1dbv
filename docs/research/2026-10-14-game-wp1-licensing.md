@@ -119,7 +119,7 @@
 - [一手] Eleven Music Exhibit A 另限 Starter/Creator/Pro 仅个人，Scale实体<10人、Business实体<50人；Indie收入按扣除平台/分发费及退款等的净额计，单游戏含各版本和DLC，实体口径含关联方。不是“独立开发者自称indie即可”。
 - [一手] Music §4.7 对超门槛未在60天内升级者另有存量例外：窗口结束前已分发的游戏副本内嵌输出可继续随那些副本使用和分发；不能误推必须撤回所有已售副本，也不能据此放行后续新发行。
 - [研究] Music免费栏虽有宽泛Media Rights文字，仍明确禁止下载，不能推荐成可直接导出游戏音乐。升级后旧输出再降级的复杂存续情形宜取得书面确认；音乐素材库再分发与成品游戏同步使用也须分别看授权。
-- [一手] Suno旧[追溯帮助](https://help.suno.com/en/articles/2425729)说明免费旧歌不自动获得商业权，个别歌曲可能获特别许可；它不能代替新版Download/Remix条款。具体月下载额度在账户计划页，本轮未登录，不编造数值。
+- [一手] Suno旧[追溯帮助](https://help.suno.com/en/articles/2425729)说明免费旧歌不自动获得商业权，个别歌曲可能获特别许可；它不能代替新版Download/Remix条款。WP6随后读到公开年付计划页Pro每月20首/Premier60首下载，与2500/10000生成credits分开；实际账户余额和购买时SKU仍未核。
 - [一手] Udio [官方WMG说明](https://help.udio.com/en/articles/12874375-udio-warner-music-group-wmg-partnership)称仍受2025-10-29过渡ToS约束、允许网址分享；网址分享与可下载入游戏是两件事。[研究] 停止导出证据足以暂缓新资产管线，不足以认定历史合法下载曲的权利已被撤销。
 - [一手] TangoFlux固定候选为 `164420faa2b3f8a28bb013ccde7006422a616fc7`，其网页/raw本轮多次提取失败，实际核读的是官方main许可证。[研究] 不能将作者的UK非商业研究例外说明当全球商用授权。
 
@@ -157,6 +157,18 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 - [Infinigen a0d1a0d](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/LICENSE)：主BSD-3-Clause，明确标注部分CC0；不由根许可包办外部素材/包。本轮仅借配方，不部署完整导出器。
 - Meshy7.1/T2、TripoP1/P2、Rodin2.5仍按上文对应服务合同和实际生成/导出计划；型号更新不自动更改旧免费资产权利。
 - 暂缓商业默认：LATO.2主代码/官方权重卡虽MIT，默认安装引入nvdiffrast0.4.0受非商业研究条款限制；TaoFlowForge根Apache2不证明ModelScope权重和DINOv3依赖已清权；Marble完整合同本轮未核清。固定来源在WP3研究，三者不得借主许可进入无条件商用推荐。
+
+## WP6追加：现行音频型号与声音连续性
+
+核实2026-10-14 UTC+8；精确来源与成本边界见[WP6](2026-10-14-game-wp6-audio.md#七授权总表的增量依据)。
+
+- [现行Eleven模型](https://elevenlabs.io/docs/overview/models)含eleven_v4/v4_turbo、eleven_text_to_sound_v2及music_v2_5；前两类沿一般TTS/SFX合同，Music仍适用特别门槛，不能按品牌统一清权。当前入口是否Beta及输入声音授权单独核。[Voice Library](https://elevenlabs.io/docs/eleven-creative/voices/voice-library)没有notice period的音色可立即下架；已导出音频权利不承诺未来同音色补录。
+- [Suno公开定价](https://suno.com/pricing)：本次年付显示Pro/Premier分别20/60首下载每月；生成credit另算。v6/v6-wild/v6-mini版本不改变既有Download及Remix门槛，编辑界面名字不能代替具体功能的法律分类。
+- [ACE XL-turbo官方卡](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo)明确MIT与商用输出；主代码沿固定ca1e85f，实际LM/音频组件与输入权利独立核。作者数据合规声明不当独立审计。
+- [Stable Audio3 Small-SFX卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)：代码MIT，权重Community，T5Gemma另受[Gemma条款](https://ai.google.dev/gemma/terms)。[Community正文](https://stability.ai/community-license-agreement)要求商业注册；本人及关联方合计任何来源年收入超过100万美元，免费许可终止并须另获授权，不能仅计算本游戏收入。输出归属不保证版权/独占；只交付WAV与分发或托管模型分别履约。本轮未注册/下载/接受新协议。
+- Kenney [Interface Sounds](https://kenney.nl/assets/interface-sounds)及[Music Jingles](https://kenney.nl/assets/music-jingles)指定包CC0，可商用；入库保留包内许可，不把该结论外推任意转载或额外动作/素材。
+
+声音权利须另核剧本、表演者/数字复制品、媒体/语言/角色/商业范围与后续补录；基础服务可商用不能替代这些授权。**[一手：直接许可／研究：使用边界]**
 
 ## 发布渠道不能被生成许可替代
 
