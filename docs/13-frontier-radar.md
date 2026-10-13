@@ -102,7 +102,7 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 1. auto mode 和 auto-review **不能代替隔离**；
 2. 包仓库（PyPI、RubyGems）里已经出现过 AI 实验室 Agent 上传的包，依赖审查更要做；
 3. 对 harness 本身也要有信任评估（尤其是闭源二进制）；
-4. Simon Willison 呼吁所有按量计费的服务都要有**默认开启的硬性预算上限**（AWS、GCP 2026 年刚上线 spend limit）。
+4. Simon Willison 呼吁所有按量计费的服务都要有**默认开启的硬性预算上限**。**[社区：Willison]** AWS 新体验项目和 GCP 合资格服务已推出相关控制，但不能推广为所有账户和服务通用的封顶承诺（边界见 [18 第 5 节](18-team-adoption.md#5-成本治理)）。**[一手：AWS、Google Cloud]**
 
 ### 2.6 本地与开源权重模型：能用，但不是前沿
 - 开源权重第一梯队：GLM-5.3（“离 Sol 和 Fable 只差一点”）、小米 MiMo-V2.6-Pro（1T-A42B）、DeepSeek V4.1、Kimi K3 **[社区]**。

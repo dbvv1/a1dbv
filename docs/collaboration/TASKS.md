@@ -19,6 +19,7 @@
 | 协作减负 | 本轮完成 | 历史叙述[原样归档](archive/README.md)；不另建状态系统 |
 | 长期任务二：领域契约增量 | 本轮完成 | [05 建议](../05-skills-and-plugins.md#领域增量输入形状和状态寿命比再检查一次具体)及[证据](../research/2026-10-13-domain-skill-contract.md)；下一真实任务再评价净收益 |
 | 长期任务一：试用情境反馈 | 本轮完成来源研究 | [15 原型建议](../15-task-playbooks.md#10-原型和一次性脚本)及[原帖证据](../research/2026-10-13-prototype-feedback.md)；修改后效果仍待验证 |
+| 云预算承诺校准 | 本轮完成官方来源核对与正文修订 | [采用建议](../18-team-adoption.md#5-成本治理)及[范围证据](../research/2026-10-13-cloud-spend-boundaries.md)；区分 AWS 项目税前上限、GCP 服务级停用与普通预算告警 |
 | workflow-ablation 先导 | 跳过 | 预算未填写，0 轮新模型运行 |
 
 ## 进行中的任务

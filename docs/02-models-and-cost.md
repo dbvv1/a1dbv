@@ -90,7 +90,7 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 3. **谨慎使用子 Agent**：同一任务拆给 2 个子 Agent 后 token 增加约 4 倍 **[社区：原文]**；
 4. 让嘈杂的命令安静输出（加 quiet 参数），或者放到子 Agent 里跑；
 5. 把 I/O 密集的杂活交给便宜模型（Spotify Portal 的做法）👀；
-6. **按量计费的云服务一定要设硬性预算上限**：Agent 会自己开通付费服务；AWS（2026-09）和 GCP（2026-07）已有 spend limit **[社区：Willison]**。
+6. **给按量计费设预算与停用边界**：有开通权限的 Agent 可能产生额外费用；AWS 新体验项目和 GCP 合资格服务已有 spend limit / spend cap，但适用范围和超额计费不同，不能视为所有云服务通用的硬性封顶（见 [18 第 5 节](18-team-adoption.md#5-成本治理)）。**[一手：AWS、Google Cloud；研究：采用建议]**
 
 ## 4. 国内 Coding Plan
 
