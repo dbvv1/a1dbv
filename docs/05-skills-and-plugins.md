@@ -1,6 +1,6 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-08；第 1 节权限可移植性、第 2 节评估边界与第 3 节 gstack 机制于 2026-10-11（UTC+8）复核，其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
+> 核实时间：2026-10-08；第 1 节权限可移植性、第 2 节评估边界与第 3 节 gstack 机制于 2026-10-11（UTC+8）复核，第 2.5 节领域增量与第 4 节前两项选择建议于 2026-10-13 复核；其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
 
 ## 1. Agent Skills 规范要点
 
@@ -88,6 +88,12 @@ Cloudflare 官方 Durable Objects Skill 指向休眠、状态恢复与测试资�
 
 **关键局限**：这证明领域契约会改变实现，尚未证明当前强模型加载 Skill 比直接查文档更有收益。
 
+### 原生文件对象：补创建配方，不重复安装已有工具
+
+**✅ 为代码生成的文件先确定“用户还要操作什么”，再补窄配方。** 要求原生 Excel 透视表时，正确的分组数值仍不能代替 PivotTable；SkillsBench 的具体任务在已有 openpyxl/pandas 的环境中提供缓存、字段与对象关系的创建配方，补的是用法而非新工具。本轮最小探测也区分了静态汇总与可重新读出的 pivot/cache 结构。固定来源与实测见[原生对象研究](research/2026-10-13-domain-skill-contract.md#6-原生文件对象创建配方与静态汇总的区别)。**[一手：任务与源码；研究：本轮程序实测]**
+
+开发导出功能时，先找项目已有生成器或目标应用验证过的模板；没有时才🧪试用对应格式/版本的窄参考，并在目标客户端验收实际操作。若只需静态结果，或原生 Agent 加一条资料链接即可稳定交付，就撤回额外 Skill。**[经验：本仓库采用判断]** **局限：文件结构往返不证明客户端功能；历史模型成绩也不证明当前强模型比直接查文档更省时。**
+
 ## 3. 插件与市场
 
 插件 = Skills + Subagents + Hooks + MCP +（可选）LSP、Output style、Mods 的打包。
@@ -148,8 +154,8 @@ codex plugin add <plugin>@<marketplace>
 
 | 你遇到的情况 | 加什么 |
 |---|---|
-| Agent 把某个约定或命令搞错了两次 | CLAUDE.md / AGENTS.md 加一行 |
-| 第三次粘贴同一段操作流程 | **Skill** |
+| 反复遗漏、且所有相关任务都适用的项目约定 | 先排除过期或错误资料，再在 CLAUDE.md / AGENTS.md 加一条并指向权威来源 |
+| 重复任务需要仓库没有的领域配方或经过验证的资源 | **窄 Skill**；已有文档、脚本或模板可直接复用时，只加入口 |
 | 总在从浏览器复制 Agent 看不到的数据 | **MCP**（或 CLI） |
 | Agent 为找一个符号读了很多文件 | **LSP 插件** |
 | 某个支线任务的输出淹没了对话 | **Subagent** |
@@ -157,7 +163,7 @@ codex plugin add <plugin>@<marketplace>
 | 第二个仓库也要用同一套配置 | 打包成**插件** |
 | 想要固定的回答风格或长度 | **Output style** |
 
-（改编自 Claude Code 官方文档《Extend Claude Code》 **[一手]**）
+工具类别参考 Claude Code 官方文档《Extend Claude Code》；表中的选择条件是本仓库建议，尤其前两项按信息缺口与复用价值判断，不按固定出错或粘贴次数触发。**[一手：工具类别；经验：选择建议]**
 
 ## 来源
 
