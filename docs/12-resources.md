@@ -106,7 +106,7 @@
 **2026-10-10 后续实读**：Codex #52555/#51670/#52345/#50771 已按[证据记录](research/2026-10-10-codex-continuity.md)分析；发现反例但不计总体故障率。OpenAI [skills](https://github.com/openai/skills/tree/49f948faa9258a0c61caceaf225e179651397431) 的 skill-creator 与 gh-fix-ci 已读，结论并入 [05](05-skills-and-plugins.md)；未安装。待追的是具备公开任务与改动结果的正向实践，以及这些具体问题的修复轨迹，不继续堆相似抱怨。
 
 
-**2026-10-10 Codex 主线补充**：已读 [KPI 项目求助 #52835](https://github.com/openai/codex/discussions/52835)、[跨会话记忆 #52372](https://github.com/openai/codex/discussions/52372) 及 LSP/撤销讨论；分析并入 [Codex 专题](01-agents/codex.md)。前两项没有独立产品验证，记忆演示也不等于自动回忆。待继续寻找不同作者的使用记录，避免把同一回复者在两帖中的意见当成两份独立效果证据。
+**2026-10-10 Codex 使用机制补充**：已读 [KPI 项目求助 #52835](https://github.com/openai/codex/discussions/52835)、[跨会话记忆 #52372](https://github.com/openai/codex/discussions/52372) 及 LSP/撤销讨论；分析并入 [Codex 专题](01-agents/codex.md)。前两项没有独立产品验证，记忆演示也不等于自动回忆。待继续寻找不同作者的使用记录，避免把同一回复者在两帖中的意见当成两份独立效果证据。
 
 **2026-10-05 已完成**：读了 arXiv 原文（2602.11988、2606.15828、2607.27250、2601.20404、2608.25241、2607.04697 等）、METR 原始报告、GitClear 报告、官方榜单数据、Codex 官方文档、Cursor 官方页面、Unity 官方文档；读了 HN、Lobsters、V2EX 原帖。
 
@@ -129,7 +129,7 @@
 
 **仍待验证**：
 - [ ] 当前 Codex 项目的后续交付与维护：[Ra & Apep 与 KPI 案例](research/2026-10-12-codex-delivery-cases.md)已读原帖；前者由对端记录完成六场景本地浏览器对照，本侧未独立复跑，后者没有公开源码/具体故障，均未取得模型成本或长期维护效果，不把新帖当成新模型实验。
-- [ ] HumanLayer/BAML 的长期收益：对端记录已核对原问题、双 PR 同起点补丁、原/回填计划与测试入口，见[案例复核](research/2026-10-12-baml-and-review.md)；可支持具体位置选择与计划纠错分析，未运行 BAML、读取完整会话或取得发布后维护数据，不据此给 RPI 或当前模型提效结论。
+- [ ] HumanLayer/BAML 的长期收益：对端记录已核对原问题、双 PR 同起点补丁、原/回填计划与测试入口，见[案例复核](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)；可支持具体位置选择与计划纠错分析，未运行 BAML、读取完整会话或取得发布后维护数据，不据此给 RPI 或当前模型提效结论。
 - [ ] 项目知识与运行反馈对实际 AI Coding 的影响：官方 Playwright interactive/CLI Skill 与 Codex 迁移教程的指定段落已读，见[方向分析](research/2026-10-12-development-conditions.md)；真实任务收益、游戏原始运行轨迹仍待验证。未安装这些 Skills，未将官网教程当作效果实测。
 - [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验

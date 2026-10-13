@@ -14,7 +14,7 @@
 
 **实践推论 [经验：建议]**：这些相关性和厂商数据值得用来选择抽检重点，但不能单独证明 AI 导致了上述变化。评审可特别检查重复、绕过错误处理、不触碰旧代码的“打补丁”式改动。
 
-**评估缺口与训练解释要分开**：HumanLayer 的 Dex 认为，快速测试型奖励不能充分约束长期设计质量，进而推测模型难学会维护性、更多评审不能提高上限 **[社区：作者假设]**。前者提示应该看后续修改；后者不能从公开 benchmark 推导，因为它不代表全部训练信号，而且生成与评审的输入、搜索机会不同。不要把“缺少长期质量证明”写成“模型不可能改善”。[BAML 双 PR 与原文复核](research/2026-10-12-baml-and-review.md)记录具体反例和边界；更广的采用分析见 [14](14-synthesis.md#1-规律一能力地图就是验证器地图) **[研究]**。
+**评估缺口与训练解释要分开**：HumanLayer 的 Dex 认为，快速测试型奖励不能充分约束长期设计质量，进而推测模型难学会维护性、更多评审不能提高上限 **[社区：作者假设]**。前者提示应该看后续修改；后者不能从公开 benchmark 推导，因为它不代表全部训练信号，而且生成与评审的输入、搜索机会不同。不要把“缺少长期质量证明”写成“模型不可能改善”。[BAML 双 PR 与原文复核](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)记录具体反例和边界；更广的采用分析见 [14](14-synthesis.md#1-规律一能力地图就是验证器地图) **[研究]**。
 
 **对评审的启示**：
 1. 把评审重心前移到**设计**（类型、接口、调用关系），而不是等 2000 行 diff 出来再看；
@@ -33,7 +33,7 @@
 | 自定义评审子 Agent | 已有明确的漏审类型或复杂变更需要独立检查时使用（模板：[code-reviewer](../templates/generic/.claude/agents/code-reviewer.md)） | 🧪 按风险试用 |
 | **另一家的模型交叉评审** | 比较新增有效发现、误报和审查成本；换品牌不自动获得独立证据 | 🧪 不默认每次互审 |
 
-**评审子 Agent 的提示要点**：给 diff 和能追到原需求或已确认验收的判据，不灌入实现过程中的推理；明确要求“**只报告影响正确性或违背需求的问题，不报告风格偏好**”。遇权限、解析或接口变化，沿具体风险查未改的消费者，必要时用能区分假设的输入核验；计划合规与用户目标成立分别判断。复用已有判据，不要求所有任务另写 spec 或增加 reviewer。固定源码与反证见[输入交接记录](research/2026-10-13-review-inputs.md)。**[研究：采用判断]**
+**评审子 Agent 的提示要点**：给 diff 和能追到原需求或已确认验收的判据，不灌入实现过程中的推理；明确要求“**只报告影响正确性或违背需求的问题，不报告风格偏好**”。遇权限、解析或接口变化，沿具体风险查未改的消费者，必要时用能区分假设的输入核验；计划合规与用户目标成立分别判断。复用已有判据，不要求所有任务另写 spec 或增加 reviewer。固定源码与反证见[输入交接记录](research/2026-10-12-baml-and-review.md#后续任务相同-brief-与过期接口)。**[研究：采用判断]**
 
 Anthropic 给 Opus 5.5 的评审提示：“Review the diff on this branch against main. **List only problems you'd block the merge for.** For each one, give the file and line, why it's wrong, and how to show it fails.” 有测试者反馈，Opus 5.5 在最低 effort 下找到的 bug 比 Opus 5 在高 effort 下还多，误报也更少 **[一手]**。
 
@@ -47,6 +47,10 @@ Anthropic 给 Opus 5.5 的评审提示：“Review the diff on this branch again
 | Codex `@codex review` / `@codex security review` | 可以在 AGENTS.md 里写自定义评审规则 | 🧪 |
 | **Codex Security Cloud**（研究预览，2026-09 DevDay） | 扫描已连接的 GitHub 仓库或监控新提交，给出发现、**验证证据**和补丁，再生成草稿 PR | 👀 **[一手]** |
 | CodeRabbit、Greptile、Qodo | 第三方评审服务，都有 Claude Code 官方插件 | 👀 |
+
+### 重复的窄评审：何时接 Codex Action
+
+**👀 每个 PR 重复相同窄评审时，再评估 [Codex Action](https://github.com/openai/codex-action)。** 基线是手动 Codex 评审、确定性 CI 与人工判断；隔离 runner、最小权限和预算具备后，才试统一触发与报告，不默认批准/合并。固定 [Action SHA](https://github.com/openai/codex-action/blob/bdf19a4a223ec2549a3e2274a0cf61556bc07675/action.yml)及 CLI 依赖；该版本 Windows 仅接受 unsafe，应改用合适的隔离 runner。**关键局限**：自动化不保证更多有效发现，空/失败报告不算无问题；按[安全文档](https://github.com/openai/codex-action/blob/main/docs/security.md)隔离不可信 PR 与凭据、特权步骤，误报或费用失控就保留手动。**[一手；经验：采用判断，2026-10-12，未运行]**
 
 ### 托管多 Agent 评审的实际数据：Claude Code Review
 

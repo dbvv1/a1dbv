@@ -63,16 +63,20 @@
 
 | 服务器 | 用途 | 评级 | 备注 |
 |---|---|---|---|
-| [Context7](https://github.com/upstash/context7) | 拉取库和框架的**最新文档**，减少 API 幻觉 | ✅ | 官方插件市场有 |
-| [Playwright MCP](https://github.com/microsoft/playwright-mcp) / Chrome DevTools MCP | 浏览器自动化、前端验证 | ✅（Web 项目） | 长时任务 harness 用它做端到端验证 |
+| [Context7](https://github.com/upstash/context7) | 库/框架文档检索 | 🧪 | 先核依赖版本；[检索便利不证明兼容](#文档检索context7-不替代版本判断) |
+| [Playwright MCP](https://github.com/microsoft/playwright-mcp) / Chrome DevTools MCP | 浏览器探索与运行诊断 | 🧪 按缺口试用 | 先复用项目测试，采用条件见 [23](23-browser-verification.md#诊断缺口chrome-devtools-mcp) |
 | [GitHub MCP](https://github.com/github/github-mcp-server) | Issue、PR、CI | 🧪 | 本地有 `gh` 时优先用 CLI |
-| [Serena](https://github.com/oraios/serena) | LSP 驱动的语义检索与编辑 | 🧪 | 所需语言和操作已覆盖时先用原生 LSP；动态关系与版本差异仍需[搜索和阅读互补](research/2026-10-13-context-tool-choice.md)，不因语义工具名重复安装 |
+| [Serena](https://github.com/oraios/serena) | LSP 驱动的语义检索与编辑 | 🧪 | 所需语言和操作已覆盖时先用原生 LSP；动态关系与版本差异仍需[搜索和阅读互补](research/2026-10-13-context-tool-choice.md#源码检索map语义引用与当前状态)，不因语义工具名重复安装；[Serena 版本与试用边界](03-context-engineering.md#25-跨文件符号检索何时补-serena) |
 | Sentry / Datadog / Grafana 等可观测性服务 | 查线上问题 | 🧪 | ⚠️ **数据来源不可信**（见下方 agentjacking 事件） |
 | 数据库（Postgres、Supabase 等） | 查数据 | 🧪 | 只读账号 |
 | Figma | 设计稿转代码 | 🧪 | |
 | 记忆类 MCP | 跨会话记忆 | 👀 | 方案太多，质量不一 |
 
 **安全提醒**：2026-06 的“agentjacking”研究中，攻击者用公开的 Sentry DSN 往错误事件里注入指令，Claude Code、Cursor、Codex 通过 Sentry MCP 读到这些事件后执行了攻击者的命令 **[二手]**。**任何“外部人员能写入”的数据源都是注入入口**。
+
+### 文档检索：Context7 不替代版本判断
+
+**🧪 频繁用错库 API，现有检索不可靠时再试 [Context7](https://github.com/upstash/context7/blob/master/README.md)。** 基线是 lockfile 版本、该版官方文档与已安装类型定义；MCP 或 CLI + Skills 补查找便利，按[官方 Skill](https://github.com/upstash/context7/blob/master/skills/find-docs/SKILL.md)先解析 ID，只传通用问题与库/版本，不传秘密、个人数据或专有代码。**关键局限**：closest match、无版本 ID 与生成摘要都不能证明兼容，精确版本缺失就回官方资料并编译；[固定查询链](research/2026-10-13-context-tool-choice.md#文档检索版本选择与生成内容刷新)限定该判断，本地入口也不等于离线服务。**[一手；经验：采用判断，2026-10-13，未安装]**
 
 ## 4. 写好给 Agent 用的工具
 

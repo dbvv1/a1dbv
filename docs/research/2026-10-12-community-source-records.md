@@ -1,8 +1,12 @@
+主线：二为主，兼四
+改变的建议：24：原生能力足够时保持轻量，拆开领域知识与控制步骤；h3o 交付需核对目标环境与范围
+新证据：10-10/11 来源资料在 10-12 迁移：Skill 配置、社区首帖、h3o 固定产物；不是 10-12 新效果研究。工具逐项概述和重复问题可删减，独有来源保留
+
 # 社区工作流：固定来源与案例资料
 
 > 资料迁移：2026-10-12。以下承接 [24 正文](../24-community-workflows.md) 中尚无独立研究页的配置阅读、原帖范围、Starlette/DSPy/h3o 案例和待核问题，保留原记录的日期、精确数字与反证；迁移没有重新运行上游或模型。
 > 调查时间：原配置与社区调查为 2026-10-10，h3o 于 10-11 补核。HN Algolia 与 Lobsters 请求被网络代理拒绝，社区样本来自 GitHub，不代表整个开发者群体。
-> 已有专页的完整资料继续在 [BAML/HumanLayer](2026-10-12-baml-and-review.md)、[SlopCodeBench](2026-10-13-slopcodebench.md)、[alchemy-utils](2026-10-12-alchemy-utils-evolution.md)、[VibeTunnel](2026-10-12-vibetunnel-maintenance.md)、[Ra & Apep/KPI](2026-10-12-codex-delivery-cases.md)，不复制成另一套案例记录；这些页保留本侧/对端的执行归属。
+> 已有专页的完整资料继续在 [BAML/HumanLayer](2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)、[SlopCodeBench](2026-10-13-slopcodebench.md)、[alchemy-utils](2026-10-12-alchemy-utils-evolution.md)、[VibeTunnel](2026-10-12-vibetunnel-maintenance.md)、[Ra & Apep/KPI](2026-10-12-codex-delivery-cases.md)，不复制成另一套案例记录；这些页保留本侧/对端的执行归属。
 
 ## 2. Superpowers：重点看 Skill 之间怎样衔接
 
@@ -33,6 +37,12 @@
 - 一次实现一个纵向行为切片，而不是先批量写完所有猜测中的测试，再批量补实现。
 
 也要看不适合照搬的约定：当前 `tdd` 要求先与用户确认测试边界，并把重构安排在 review 阶段；这是一套特定协作约定，不是 TDD 的唯一含义。已有明确验收与授权时，不应因为引入一个模板而重复询问每一步。**[经验：工程判断]**
+
+### 小型入口的知识与控制成本
+
+[官方 skill-creator 固定快照](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/skill-creator/SKILL.md)建议补非显然知识、按脆弱性选择自由度，不证明某个 Skill 已有效；C2 的短 TDD 入口仍要求先确认边界，C1 的调试入口有串行阶段并继续加载 TDD／验证要求。比较完整触发路径与人工等待，不按文件长度判断开销。**[一手：已读配置；研究：采用判断]**
+
+C1 调试入口将多次失败关联架构，并写出无根因案例的百分比，但未给对应统计；保留“停止重复猜测、改变诊断方式”，不以次数确诊架构或把该比例当仓库事实。已有明确授权和验收时也不为通用模板重复询问；契约未定时确认仍可能有价值。**[一手：原文；研究：反证与边界]**
 
 ## 5. Pi：少预设流程，开放可组合能力
 

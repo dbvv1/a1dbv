@@ -6,7 +6,7 @@
 
 ## 1. 官方示例也有不同的协作目标
 
-| 示例 | 直接读到的做法 | 对当前主力 Codex 的判断 |
+| 示例 | 直接读到的做法 | 对 Codex 任务的采用判断 |
 |---|---|---|
 | [Using PLANS.md for multi-hour problem solving](https://github.com/openai/openai-cookbook/blob/5bd6cb40b6b84b69b2032d810610aa85064102df/articles/codex_exec_plans.md) | 面向复杂功能/大重构；示例让 Agent 到下一里程碑时自主继续，不再问 next steps；文档要能支持无历史接手 | ✅ 借鉴目标、关键决定和恢复信息；🧪 跨会话复杂实施再采用详细计划。文章点名 GPT-5.2-Codex，七小时例子不是 Astra 效果保证 |
 | [Iterating development workflows with Codex](https://github.com/openai/openai-cookbook/blob/5bd6cb40b6b84b69b2032d810610aa85064102df/examples/codex/iterating-development-workflows-with-codex.md) | 明确说除可选 AGENTS.md 外，其他文件是可选工作流约定；示例生成阶段文件、批准包、记录，并要求每阶段停下 | 👀 适合需要人工阶段控制的团队；不适合作为用户已授权长期自主研究的全局默认。采纳其证据和复盘思路，避免复制整套停顿与文件结构 |
