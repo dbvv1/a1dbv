@@ -43,3 +43,16 @@
 - [产物清单](https://github.com/lyonsno/trellis2mlx/blob/c0e66f782ac86f86212e049cf029478602b0e8d2/docs/examples.json) 含参数、GLB 哈希和展示路线；本轮实际查看 bear 正面截图，文件 SHA256 与清单一致。完整固定 Git 树未包含对应 GLB 或原始网格，无法独立检查面数与修复前后差异；清单里的哈希不是已验证的 GLB，截图也不证明没有人工修补。**[一手：清单与截图；研究：本轮检查边界]**
 
 **剩余边界**：未核实真实游戏采用或 Unity / Unreal 中的发布质量；展示渲染不替代目标硬件、相机距离、动画与资产预算验证。此例支持先区分生成缺陷与后处理损伤，不支持任何美术风格天然更适合 AI，也不证明风格一致性或完整无美术流程。未安装、运行上游软件或生成新资产；上述离线入口通过记录属于先前编辑边界修订，不是这项上游修复的复现。**[研究：范围；经验：外推限制]**
+
+
+## 生成资产返工：先判断缺陷来自哪一层
+
+2026-10-13（UTC+8）；主线二／三。改变游戏 03 §1.1：先定位生成、后处理或运行时错误，再选修补或重生成。**🧪 采用这条诊断顺序，不采用整套管线作为零手修发售方案。** **[经验：采用判断]**
+
+- **三种缺陷不能合算为模型失败。** 固定 [corosolto/client@3ce6485 的返工记录](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/docs/reports/PR773-CONTINUATION.md)及[生成登记](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/mint-assets.json)及[作者流程记录](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/.claude/skills/fabrica-personagens/SKILL.md#L56-L96)分别记载脸部碎片修补未果后重生成、区域 UV 脚本修颜色、修正锁骨重定向。前一项是作者实验报告；原始／拒绝 GLB 存仓库外，未独立重现所有失败尝试，不能断言重生成总比修补有效。**[一手：作者记录；研究：范围核对]**
+- **程序错误应先修程序。** [3435ddb 补丁](https://github.com/corosolto/client/commit/3435ddb93b25bf790c147e24592afaed1a012720)将锁骨移出 Arm/Hand 的绝对旋转路线，改用 rest delta；旧版约 179° 是作者报告，不是本轮前后测量。[纹理脚本](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/tools/personagens/retoque-textura.mjs)按身体区域映射 UV、替换颜色，只处理首个 mesh/primitive，需资产特定阈值、颜色和 mask 视觉选择，不能称通用自动修复。**[一手：固定源码与报告]**
+- **确有被运行时引用的产物。** [PR #773](https://github.com/corosolto/client/pull/773)于 2026-10-09 10:15:09（UTC+8）合并；固定 [glbchars.js](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/public/js/glbchars.js#L322-L355)加载 Dama 角色并优先读取动画合包。这里的采用指合并源码引用，不是已验证线上部署或商业发售。**[一手：PR 与源码]**
+- **实际复算。** 本轮用自有 Python 标准库解析固定[角色 GLB](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/public/models/characters/dama.glb)、[独立 idle](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/public/models/anims/dama/idle.glb)及[动画合包](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/public/models/anims/dama.glb)，两次复跑一致：角色 678,684 bytes，SHA256 `34a33e1f0f0a6c3d74721452efe88aeae7888813d61f0b0e737491e4553b47ec` 与登记相符；合包 11 个命名动作。按[上游 OMB1](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/tools/eval/ombro-check.mjs)定义读取 idle 两肩各 86 个旋转采样，以角色同名节点 rest 为参照，计算 `degrees(2*acos(min(1,abs(dot(q,q_rest)))))`：左肩最大 7.8169°、右肩 9.0393°，均低于项目 30° 线，独立文件和实际合包结果相同。解析额外核对 GLB 头、chunk/accessor 边界、两肩非空；采样四元数平方范数误差最大约 `1.80e-6`。只检查存储关键帧的局部数值，没有执行上游脚本、插值渲染、其他动作、模型或引擎。**[研究：真实文件的确定性计算，非模型实验]**
+- **绿色检查仍可能保留已知缺陷。** [选择界面门槛复盘](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/docs/reports/PR773-SELECT-GATE-2026-10-09.md)承认新十个角色超过旧全局蒙皮阈值，视觉接受后冻结逐角色债务；最终是 0/63 阻塞、22/63 冻结债务，不是全部通过原质量线。保留既有缺陷并防恶化是交付取舍，不应写成模型已修好。**[一手：作者报告；经验：验收含义]**
+
+**反证与停止边界。** 单角色约 3,400 credits 的旧登记与作者后续纠正的十角色合计 11,756 credits 存在口径冲突，没有账单，故不比较净成本。未取得拒绝版本或真实引擎环境；不证明全程无人绘制、目标硬件表现、Unity/Unreal 可用性或第二次需求修改后的持续生产能力。这些缺口不能靠继续解析最终文件补齐；正文只采用故障分流，不扩大为工具推荐。**[研究：未闭合证据；经验：外推限制]**
