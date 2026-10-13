@@ -26,6 +26,20 @@
 
 **Issue #2450：修改了接口，却没有更新尚未执行的计划。** 发帖者描述某次修复收紧了脚本参数，代码修对了，后续任务的文本仍引用旧调用方式。建议修复接口时搜索剩余计划和待派发 brief，更新调用契约。**[社区：原帖，未独立复现；C8]**
 
+### 文档评审循环：实际撤回与按需保留
+
+补核：2026-10-13 UTC。只读公开提交、测试与原帖，未运行模型；本段支持 05 §2.5 的窄建议。
+
+- **固定撤回。** [e6221a48](https://github.com/obra/superpowers/commit/e6221a48c54141e0ef04adaea4895a8150fc57a1) 将 brainstorming／writing-plans 的独立 reviewer、修改与再派发循环改成同会话自审，检查占位符、规格覆盖和接口一致性；用户读规格的关口仍保留。**[一手：补丁]**
+- **实际采用者的取舍。** [#1130 维护者回复](https://github.com/obra/superpowers/issues/1130#issuecomment-4270863186) 说明此前采用后收到用户负面反馈，自行评测未见结果改善，因等待和 token 成本拒绝恢复默认流程。[提案作者随后撤回上游推动](https://github.com/obra/superpowers/issues/1130#issuecomment-4275742384)，但保留自己复杂计划的按次独立检查，并承认没有反驳数据。**[社区：双方使用自述与决定]**
+- **数值仍是自报。** 撤回提交说明报告五个版本共25次比较、约25分钟额外等待，quality scores 未见改善；本轮限定检索只找到摘要，没有逐次评分、用时和完整模型配置。共同署名不能确定全部运行模型，补丁又同时补强自审约束，不能据此计算当前模型净收益或宣称纯原生无 Skill 等价。**[一手：作者报告；研究：边界]**
+- **公开测试不是该对照。** [同 SHA 的测试](https://github.com/obra/superpowers/blob/e6221a48c54141e0ef04adaea4895a8150fc57a1/tests/claude-code/test-document-review-system.sh) 只构造含 TODO／推迟说明的规格、调用一次 Claude 并检查输出，没有自审对照或上述评分表；本轮未执行。**[一手：测试阅读]**
+- **当前仍保留窄的独立检查。** 固定 v7.0.0 的 [writing-plans](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/writing-plans/SKILL.md) 仍用自审，其 Native 执行路径仍含最终独立分支检查；[brainstorming](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/brainstorming/SKILL.md) 对书面设计采用单轮 builder check，找实施者还需确认的问题。这不是恢复通用审批循环，本轮也未证明其净收益。**[一手：固定配置]**
+
+**采用判断**：先让同会话核对普通文档内容；发现实施者无法决定的具体问题，或独立检查确实补上遗漏时，再按次保留。只有通用意见与额外等待时可撤回该循环，仍保留必要测试与验收。这里的内容 reviewer 不是工具执行权限的安全 Auto-review，也不能替代或取消用户确认。**[经验：建议范围]**
+
+复访需要逐次原始对照，或复杂真实计划中独立发现、修复与后续使用结果；不靠重复抱怨或更多字面检查扩大结论。**[研究：下一证据条件]**
+
 ## 3. Matt Pocock：控制权与领域语言
 
 作者 README 自述每天用这些 Skills 做工程工作，主张小、可修改、可组合，反对流程工具过度接管。这是作者立场，不是对其他框架效果的客观裁决。**[社区：作者自述；C2]**
