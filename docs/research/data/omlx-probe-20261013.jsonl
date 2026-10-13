@@ -1,0 +1,54 @@
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_preserves_tail_system_when_template_keeps_position", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_explicit_capability_overrides_marker_order_false_positive", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_model_specific_relocation_precedes_capability_fallback", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_partial_mode_does_not_use_model_specific_relocation", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_preserves_between_turn_system_when_template_keeps_position", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_preserves_between_system_after_tool_when_exact_probe_passes", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_preserves_tail_system_after_tool_when_exact_probe_passes", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "assertion_failure", "test": "test_falls_back_when_template_rejects_system_after_tool", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_merges_consecutive_tail_systems_in_place_when_preserved", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_when_template_drops_mid_system", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_when_template_moves_mid_system_to_front", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_when_template_raises", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_appends_tail_system_to_user", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_prepends_system_before_next_user", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_keeps_native_tool_history_when_safe", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_refuses_tool_call_boundary", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_refuses_multimodal_user_target", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_merges_leading_system_messages", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_for_unsupported_mid_system_placement", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_partial_mode_keeps_strict_fallback", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_probe_cache_key_distinguishes_tools_branch", "version": "before"}
+{"detail": "TypeError: chat_template_preserves_mid_system() got an unexpected keyword argument 'preceding_role'", "kind": "upstream_test", "result": "error", "test": "test_probe_cache_key_distinguishes_preceding_role", "version": "before"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_preserves_tail_system_when_template_keeps_position", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_explicit_capability_overrides_marker_order_false_positive", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_model_specific_relocation_precedes_capability_fallback", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_partial_mode_does_not_use_model_specific_relocation", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_preserves_between_turn_system_when_template_keeps_position", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_preserves_between_system_after_tool_when_exact_probe_passes", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_preserves_tail_system_after_tool_when_exact_probe_passes", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_when_template_rejects_system_after_tool", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_merges_consecutive_tail_systems_in_place_when_preserved", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_when_template_drops_mid_system", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_when_template_moves_mid_system_to_front", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_when_template_raises", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_appends_tail_system_to_user", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_prepends_system_before_next_user", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_keeps_native_tool_history_when_safe", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_refuses_tool_call_boundary", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_refuses_multimodal_user_target", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_user_note_policy_merges_leading_system_messages", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_falls_back_for_unsupported_mid_system_placement", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_partial_mode_keeps_strict_fallback", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_probe_cache_key_distinguishes_tools_branch", "version": "after"}
+{"detail": "", "kind": "upstream_test", "result": "pass", "test": "test_probe_cache_key_distinguishes_preceding_role", "version": "after"}
+{"detail": "", "kind": "render_matrix", "placement": "tail", "render": "pass", "roles": ["system", "user", "assistant", "tool", "system"], "tokenizer": "ToolHistoryTokenizer", "unchanged": true, "version": "before"}
+{"detail": "", "kind": "render_matrix", "placement": "between", "render": "pass", "roles": ["system", "user", "assistant", "tool", "system", "assistant"], "tokenizer": "ToolHistoryTokenizer", "unchanged": true, "version": "before"}
+{"detail": "ValueError: mid-system message must follow a user", "kind": "render_matrix", "placement": "tail", "render": "error", "roles": ["system", "user", "assistant", "tool", "system"], "tokenizer": "UserOnlyMidSystemTokenizer", "unchanged": true, "version": "before"}
+{"detail": "ValueError: mid-system message must follow a user", "kind": "render_matrix", "placement": "between", "render": "error", "roles": ["system", "user", "assistant", "tool", "system", "assistant"], "tokenizer": "UserOnlyMidSystemTokenizer", "unchanged": true, "version": "before"}
+{"detail": "", "kind": "render_matrix", "placement": "tail", "render": "pass", "roles": ["system", "user", "assistant", "tool", "system"], "tokenizer": "ToolHistoryTokenizer", "unchanged": true, "version": "after"}
+{"detail": "", "kind": "render_matrix", "placement": "between", "render": "pass", "roles": ["system", "user", "assistant", "tool", "system", "assistant"], "tokenizer": "ToolHistoryTokenizer", "unchanged": true, "version": "after"}
+{"detail": "", "kind": "render_matrix", "placement": "tail", "render": "pass", "roles": ["system", "user", "assistant", "tool"], "tokenizer": "UserOnlyMidSystemTokenizer", "unchanged": false, "version": "after"}
+{"detail": "", "kind": "render_matrix", "placement": "between", "render": "pass", "roles": ["system", "user", "assistant", "tool", "assistant"], "tokenizer": "UserOnlyMidSystemTokenizer", "unchanged": false, "version": "after"}
+{"after": "system:Root\nuser:Use the lookup tool\nassistant:\ntool:result\nsystem:Runtime tip", "before": "system:Root\nuser:Use the lookup tool\nassistant:\ntool:result", "keeps_rendered_text_prefix": true, "kind": "append_prefix", "tokenizer": "ToolHistoryTokenizer", "version": "after"}
+{"after": "system:Root\n\nRuntime tip\nuser:Use the lookup tool\nassistant:\ntool:result", "before": "system:Root\nuser:Use the lookup tool\nassistant:\ntool:result", "keeps_rendered_text_prefix": false, "kind": "append_prefix", "tokenizer": "UserOnlyMidSystemTokenizer", "version": "after"}

@@ -31,6 +31,7 @@
 | 长期任务四：接收渠道政策 | 官方规则／制定讨论／执行案例核对完成 | [Godot](../research/2026-10-13-godot-contribution-policy.md)；披露不代替准入，贡献与资产商店规则分开 |
 | 游戏资产的修改边界 | 14:17（UTC+8）本轮完成，限定复核通过 | [证据与反例](../research/2026-10-13-game-asset-editing-boundary.md)；分支 `dot/asset-editing-boundary-20261013`，起点 `2b0a142`；完整离线 14 阶段及 `git diff --check` 通过，未运行真实引擎 |
 | 浏览器测试自修复边界 | 14:21（UTC+8）来源与局部运行完成，限定复核通过 | [固定来源与反例](../research/2026-10-13-browser-healing-outcomes.md)；分支 `dot/browser-healing-20261013`，起点 `b9fddfb`；完整离线 14 阶段及 `git diff --check` 通过，区分修复通过与缺陷隔离，未运行真实模型修复 |
+| 云端增量审计与缓存排查 | 本轮限定复核完成；待对端阅读 | [b9fddfb 审计](reviews/2026-10-13-b9fddfb.md)；oMLX 两版共 44 次原测试方法及 10 次局部对照，Immich 审查／最终源码相符；修正 02/17，未重测真实缓存，不代表本批全部提交已审 |
 | workflow-ablation 先导 | 跳过 | 预算未填写，0 轮新模型运行 |
 
 ## 进行中的任务
