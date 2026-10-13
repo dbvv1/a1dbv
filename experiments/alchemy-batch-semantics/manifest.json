@@ -1,0 +1,21 @@
+{
+  "recorded_run_date": "2026-10-12",
+  "rechecked_date": "2026-10-13",
+  "timezone": "Asia/Shanghai",
+  "upstream": "https://github.com/simonw/alchemy-utils",
+  "scope": "SQLite synthetic API calls; no model or upstream test suite",
+  "artifacts": {
+    "before": {
+      "commit": "05c3b3d15ad518b1dfca172847d21d0272bf39f5",
+      "output": "before-20261012.jsonl",
+      "sha256": "34209e0f0e91109107ed0f7c1f8a113474e93d62f061d564877e2cefe0b69d33",
+      "source_files_compared": 9
+    },
+    "after": {
+      "commit": "c2432fb580317dd6a8cdf3e3451a2fc6a85631f7",
+      "output": "after-20261012.jsonl",
+      "sha256": "9045bbf1de2b530118dcba8903f73ac9f441ed4ba802aa8c9b764e9729017ad3",
+      "source_files_compared": 9
+    }
+  }
+}

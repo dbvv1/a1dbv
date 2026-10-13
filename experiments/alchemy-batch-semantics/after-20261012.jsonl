@@ -1,0 +1,16 @@
+{"python": "3.12.14", "sqlalchemy": "2.0.43", "sqlite": "3.53.1"}
+{"mode": "missing", "batch_size": 1, "rows": [[1, "fallback"], [2, "new"]]}
+{"mode": "missing", "batch_size": 2, "rows": [[1, null], [2, "new"]]}
+{"mode": "missing", "batch_size": 100, "rows": [[1, null], [2, "new"]]}
+{"mode": "null", "batch_size": 1, "rows": [[1, null], [2, "new"]]}
+{"mode": "null", "batch_size": 2, "rows": [[1, null], [2, "new"]]}
+{"mode": "null", "batch_size": 100, "rows": [[1, null], [2, "new"]]}
+{"mode": "homogeneous", "batch_size": 1, "rows": [[1, "one"], [2, "new"]]}
+{"mode": "homogeneous", "batch_size": 2, "rows": [[1, "one"], [2, "new"]]}
+{"mode": "homogeneous", "batch_size": 100, "rows": [[1, "one"], [2, "new"]]}
+{"mode": "upsert", "batch_size": 1, "rows": [[1, "keep"], [2, "new"]]}
+{"mode": "upsert", "batch_size": 2, "rows": [[1, null], [2, "new"]]}
+{"mode": "upsert", "batch_size": 100, "rows": [[1, null], [2, "new"]]}
+{"mode": "all_missing", "batch_size": 1, "rows": [[1, "fallback"], [2, "fallback"]]}
+{"mode": "all_missing", "batch_size": 2, "rows": [[1, "fallback"], [2, "fallback"]]}
+{"mode": "all_missing", "batch_size": 100, "rows": [[1, "fallback"], [2, "fallback"]]}

@@ -9,7 +9,7 @@
 | D1 审批与权限边界 | 已完成限定修订 | [历史审计](reviews/2026-10-11-4946f93.md) |
 | D2 E1 缓存归因与分项 | Claude 已完成，不重做 | [19 §3.1](../19-experiments.md#31-补测用-context-分项2026-10-12)；22.9k 来自补测，原 E1 不是精确拆分 |
 | D3 双方历史整合 | 已合入 main | [main](https://github.com/dbvv1/a1dbv/tree/main)；保留普通合并历史 |
-| D4 两条演化案例 | 已有结果，对端限定审计通过 | [54083033 审计](reviews/2026-10-12-5408303.md)；其范围不覆盖后续工具模块 |
+| D4 两条演化案例 | 已有结果，对端限定审计通过 | [54083033 审计](reviews/2026-10-12-5408303.md)；SQLite [完整程序与原输出](../../experiments/alchemy-batch-semantics/README.md)已补交并重新核对，原审计不覆盖工具模块 |
 | D5 任务建议校准 | 已完成 | [任务打法](../15-task-playbooks.md) |
 | D6 最小输入与能力触发 | 本轮完成，五情境走读通过 | [Codex §6](../01-agents/codex.md#6-主力使用从实际问题选择方法) → [15](../15-task-playbooks.md) |
 | D7 分析推论校准 | 候选，未认领 | [研究队列](../research/BACKLOG.md) |
