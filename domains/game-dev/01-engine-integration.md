@@ -1,6 +1,6 @@
 # 引擎接入：让 Agent 操作游戏引擎
 
-> 核实时间：2026-10-08；资产编辑边界于 2026-10-13 单独复核。
+> 核实时间：2026-10-08；资产编辑边界与 WP9 接入契约于 2026-10-14（UTC+8）单独复核。
 > 依据 **[一手]**：
 > - Epic 官方插件 [unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)：克隆后读了全部 3 个 Skill、setup 和 operations 文档、SessionStart Hook，最近提交 2026-09-17；
 > - Roblox 官方文档 [Connect to the Roblox Studio MCP server](https://create.roblox.com/docs/en-us/studio/mcp)（2026-10-07 更新）；
@@ -14,7 +14,7 @@
 
 | 引擎 / 工具 | 官方 Agent 接入 | 形态 | 关键能力 | 成熟度 | 评级 |
 |---|---|---|---|---|---|
-| **Unity 6+** | Unity CLI + 官方插件（33 个 Skill）；`unity mcp` | **CLI 优先**，MCP 只是 CLI 的一种暴露方式 | 驱动打开的编辑器、`unity test` / `build`、Play 模式帧数检查 | CLI 1.0 beta，插件 2026-09 发布 | ✅ |
+| **Unity 6+** | Unity CLI + 官方插件；`unity mcp` | **CLI 优先**，MCP 只是 CLI 的一种暴露方式 | 驱动打开的编辑器、`unity test` / `build`、Play 模式帧数检查 | CLI 1.0 beta，插件 2026-09 发布 | ✅ |
 | **Unreal 5.8** | 引擎内置的 **ModelContextProtocol** 插件 + Epic 的 Claude Code 插件 | 编辑器内的 HTTP MCP 服务器（默认 `127.0.0.1:8000/mcp`）+ 工具搜索 | 30 多个工具集、数百个工具：Actor、蓝图、材质、Niagara、Sequencer、Control Rig、GAS、自动化测试、Live Coding 编译 | 插件位于 `Engine/Plugins/Experimental`，**实验性** **[一手]** | 🧪 |
 | **Roblox Studio** | **内置**在 Studio 中的 MCP 服务器 | stdio；一键连接 Claude Code、Codex CLI、Cursor、Gemini CLI、Antigravity、VS Code | 脚本读写、执行 Luau、**AI 生成网格和材质**、**内置的 explore / playtest 子 Agent**、**模拟玩家键鼠输入**、截图 | 正式功能，持续更新 | ✅ |
 | **Godot 4** | 无官方 Agent 接入 | 社区 MCP，分“文件级”和“连接运行中编辑器”两类 | 场景树、脚本、运行项目 | 社区项目质量参差不齐 | 👀 |
@@ -28,7 +28,7 @@
 
 ### 2.1 Unity：CLI 优先，Skill 承载知识
 - 核心是一个**命令行工具**（`unity status / command / test / build`），MCP 只是把同样的能力再包一层。
-- 领域知识写在 33 个 Skill 里（UI、2D、URP、服务接入等），按需加载。
+- 领域知识写在按需加载的 Skill 里（UI、2D、URP、服务接入等）。
 - **优点**：同一套命令既给人用，也给 Agent 和 CI 用；退出码设计清楚（8 表示测试失败，6 表示基础设施问题），天然适合自动化。
 - **代价**：Skill 偏重“功能搭建”，大型项目的架构知识仍要自己写。
 
@@ -39,11 +39,11 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 - 官方安全规则（值得照搬到任何“驱动有状态编辑器”的场景）：
   1. **改之前存盘，改完再存一次**：MCP 修改不一定能撤销，涉及多个资产就当作破坏性操作；
   2. **等编译结束再调工具**：C++ 用 `LiveCodingToolset.CompileLiveCoding`，它会阻塞到编译完成并返回 MSVC 诊断；
-  3. **有依赖的修改要串行**：MCP 接受并发请求，但执行顺序不保证；多个 Agent 可以共用一个编辑器，但改动冲突会出问题；
-  4. **一定要检查返回结果**：很多工具失败时不会抛异常，只是返回状态变了；不是明确的成功，就当失败处理；
+  3. **有依赖或同资产的修改要串行**：2026-09-17 官方 Skill 允许工具支持时的独立并发，异步操作可以重叠，执行与完成顺序不保证；多个 Agent 共用编辑器时仍须避免状态冲突；
+  4. **一定要检查返回结果**：很多工具失败时不会抛异常，只是返回状态变了；结果不明确时先回读实际状态，不把返回失败当成没有发生修改；
   5. **留意 PIE**（Play-in-Editor）：运行时很多编辑器工具的行为会变。
 - Epic 给“写工具集”定的原则（`create-toolset` Skill）也很通用：**Clean**（API 比 Unreal 原生 API 更简单，“技术美术不看实现也能懂”）、**Complete**（CRUD 对称：能 set 就要能 get，能 create 就要能 delete）、**Composable**（同类操作用一致的类型）、**DRY**（通用的属性读写已经有 `ObjectTools`，不要重复造）。
-- 已知限制：HTTP 服务器**没有认证**，默认只监听本机；工具调用在游戏线程上**串行执行** **[一手：Epic 文档]**。
+- 已知限制：HTTP 服务器**没有认证**，默认只监听本机；工具调用经游戏线程同步分发；官方文档仍不建议重叠请求，但较新的 Skill 允许安全独立并发，不能把分发串行理解成异步作业不会重叠 **[一手：见[WP9 契约对照](../../docs/research/2026-10-14-game-wp9-engine-handoff.md)]**。
 - **打包后的游戏也能托管 MCP 服务器**（运行时模块 + `IModelContextProtocolModule::AddTool()`），这让 Agent 可以直接测试打包版 **[一手]**。详见 [unreal/01](unreal/01-toolchain.md#14-一个容易被忽略的能力打包后的游戏也能跑-mcp)。
 
 ### 2.3 Roblox：把 Agent 能力直接做进编辑器
@@ -77,7 +77,7 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 | 逻辑在哪里 | C# 为主 | **C++ 和蓝图混合**，蓝图逻辑对通用编码 Agent 不可见 | GDScript / C# | 代码 |
 | 编译反馈 | `unity recompile` 秒级；domain reload | Live Coding 秒级（只限函数体）；改头文件要完整编译，分钟级 | 脚本即改即用 | 取决于工具链 |
 | 无头测试 | `unity test`，退出码清楚 | `UnrealEditor-Cmd` 加自动化测试，JSON 报告 | 社区方案 | 通常最容易 |
-| 官方 Agent 接入 | Unity CLI + 33 个 Skill | 编辑器内置 MCP（实验性），**打包版也能托管** | 无 | — |
+| 官方 Agent 接入 | Unity CLI + 官方按需 Skill | 编辑器内置 MCP（实验性），**打包版也能托管** | 无 | — |
 
 **推论**：
 - **UE 项目的 AI 化程度，取决于“逻辑有多少在 C++ 里”**。蓝图越重，越依赖官方 MCP；C++ 越多，通用编码 Agent 越能发挥。
@@ -90,14 +90,29 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 | 你的情况 | 建议 |
 |---|---|
 | Unity 6+ | 官方插件 + Unity CLI（见 [unity/](unity/README.md)） |
-| Unity 2021 / 2022 LTS | CoplayDev/unity-mcp + batchmode 脚本 |
+| Unity 2021 / 2022 LTS | 评估固定版本 CoplayDev/unity-mcp + batchmode 脚本；逐工具核对导入／移动契约（见 Unity 工具页） |
 | Unreal 5.8+ | 见 [unreal/](unreal/README.md)：启用 Unreal MCP + `AllToolsets`（或只启用需要的工具集），安装 Epic 的插件；**用版本控制并且勤存盘**；不要把端口暴露到本机以外 |
-| Unreal 5.8 以下 | 社区方案（如 UnrealClaude）**[二手]**；或者等升级。C++ 部分照常用通用编码工作流 |
+| Unreal 5.8 以下 | 资产批处理直接用 Editor Python；另有社区桥可评估（如 UnrealClaude）。C++ 部分照常用通用编码工作流 |
 | Roblox | 直接用 Studio 内置 MCP；`playtest` 子 Agent 和输入模拟是目前**官方支持最完整的游戏验证能力** |
 | Godot | 社区 MCP 选“连接运行中编辑器”的一类，确认支持你的 Godot 版本；纯代码工作用文件级就够 |
 | Blender | 官方 MCP 用于场景分析，社区 MCP 用于资产获取；**都放在虚拟机或无敏感数据的机器上** |
 
 > ⚠️ 不要同时装多个连接同一个编辑器的 MCP：工具重复，Agent 容易选错，上下文也会膨胀。
+
+## 5. 第二次重生成：更新已有对象，保留正确含义
+
+**✅ 先复用引擎导入器，Agent 入口只负责发起与回读。** Unity 6+ 默认选官方 CLI/Pipeline；AI Assistant 包内旧 MCP 已被[官方弃用](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)，`unity mcp` 继续支持。批量规格先用 Unity Presets/AssetPostprocessor，或 Unreal Editor Python 与适配格式的 Interchange pipeline；不用新建导入服务，也不必为了批处理强升到支持 MCP 的引擎版本。**[一手＋经验]**
+
+| 第二次修改 | 最小采用规格 | 失败时停止什么 |
+|---|---|---|
+| 原位替换像素／网格 | 记录已有 GUID/对象路径、语义名称、单位与 pivot 坐标约定；保留已有目标 | 出现额外 `_1` 资产或旧使用点仍指旧内容，不能宣告替换完成 |
+| 新增／重排子资产 | 从源身份映射旧 Sprite、动画、材质槽，分清生成字段与程序员调整 | 对应关系不唯一，停止自动重排，转明确迁移 |
+| 修改导入规则 | 复用预设／pipeline，明确哪些属性重应用、哪些保留 | 未声明字段被覆盖，回退本批并查导入策略 |
+| 更新下游使用 | 回读 Prefab/Blueprint、动画、挂点及运行时加载键 | 无 Missing 但换错动作或锚点移位，仍算失败 |
+
+依据是官方 Sprite Smart 的空间匹配、Prefab 名称匹配与 Interchange 显式覆盖策略；具体采用／改造／不用、固定源码及反例见 [WP9 研究](../../docs/research/2026-10-14-game-wp9-engine-handoff.md)。**[一手；经验：最小规格]**
+
+**关键局限**：GUID/路径存在或接口返回成功都不证明语义正确，仍须在目标版本引擎检验第二次修改后的真实引用与行为。**[经验；本轮未运行引擎]**
 
 ## 来源
 

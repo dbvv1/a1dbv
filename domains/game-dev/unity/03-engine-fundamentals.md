@@ -1,6 +1,6 @@
 # Unity 引擎基础：给 AI 协作准备的知识地图
 
-> 核实时间：2026-10-08。
+> 核实时间：2026-10-08；WP9 的导入与身份边界于 2026-10-14（UTC+8）复核。
 > 这一篇是**基础知识**：Unity 的核心概念和机制。每个小节最后都有“**AI 要点**”，说明 Agent 在这里常犯什么错、应该在 AGENTS.md 里写什么、用什么手段验证。
 > 概念以 [Unity 官方手册](https://docs.unity3d.com/Manual/) 为准（各节附链接）；“AI 要点”来自本仓库的实践总结和社区反馈 **[经验]**。版本信息见最后一节。
 
@@ -76,9 +76,13 @@ Awake → OnEnable → Start → (每个物理步) FixedUpdate → (每帧) Upda
 | 直接引用（Inspector 拖拽） | 随场景或 Prefab 一起加载 | 小项目默认方式 |
 | `Resources` 文件夹 | 按路径加载，所有内容都会打进包 | 不建议新项目使用 |
 | **[Addressables](https://docs.unity3d.com/Packages/com.unity.addressables@latest)** | 按地址异步加载、按组打包、支持远程内容更新 | 中大型项目首选 |
-| AssetPostprocessor | 导入时自动处理资源（压缩格式、导入设置） | **很适合交给 Agent 写** |
+| Presets / AssetPostprocessor | 复用导入规格，必要时增加持续规则 | 先预设，再按明确字段所有权写小型后处理器 |
 
-**AI 要点**：Agent 写“加载资源”的代码时常用 `Resources.Load` 或同步加载，要在 AGENTS.md 写明项目用 Addressables，以及异步加载和释放（`Release`）的约定，否则会内存泄漏。
+**AI 要点**：在 AGENTS.md 写明项目实际采用的加载方式；采用 Addressables 时约定异步加载与释放，不为单纯重生成资产而强迁移小项目。**[经验]**
+
+**✅ 二次导入保留正确的对象与字段。** [官方 Preset 依赖示例](https://docs.unity3d.com/6000.0/Documentation/Manual/DefaultPresetsByFolder.html)可复用；修改压缩等规则时，不顺带重置自定义 pivot、outline 或材料 remap。更新 Prefab 优先局部修改：官方 [SaveAsPrefabAsset](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/PrefabUtility.SaveAsPrefabAsset.html)整体覆盖按子对象名称匹配，同名对象及同类型重复组件有引用歧义。**[一手＋经验]**
+
+Addressables 的 [AssetReference](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/api/UnityEngine.AddressableAssets.AssetReference.html)区分主资产 GUID 与子对象名称／ID；已有远程分发项目还须按[官方更新流程](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/content-update-builds-overview.html)保留每个平台发布基线的 content state 文件。**关键局限**：它解决加载与分发，不会修复切片重排、名称碰撞或 GUID 仍在但换错内容；详见 [WP9 证据与采用边界](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md)。**[一手＋经验]**
 
 ## 7. 渲染管线
 
