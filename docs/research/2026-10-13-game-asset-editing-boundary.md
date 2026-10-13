@@ -56,3 +56,14 @@
 - **绿色检查仍可能保留已知缺陷。** [选择界面门槛复盘](https://github.com/corosolto/client/blob/3ce648572534e098c63b5b88ef367dc1e7833ea8/docs/reports/PR773-SELECT-GATE-2026-10-09.md)承认新十个角色超过旧全局蒙皮阈值，视觉接受后冻结逐角色债务；最终是 0/63 阻塞、22/63 冻结债务，不是全部通过原质量线。保留既有缺陷并防恶化是交付取舍，不应写成模型已修好。**[一手：作者报告；经验：验收含义]**
 
 **反证与停止边界。** 单角色约 3,400 credits 的旧登记与作者后续纠正的十角色合计 11,756 credits 存在口径冲突，没有账单，故不比较净成本。未取得拒绝版本或真实引擎环境；不证明全程无人绘制、目标硬件表现、Unity/Unreal 可用性或第二次需求修改后的持续生产能力。这些缺口不能靠继续解析最终文件补齐；正文只采用故障分流，不扩大为工具推荐。**[研究：未闭合证据；经验：外推限制]**
+
+
+## 2D：静态可用不推出角色动画可用
+
+2026-10-13（UTC+8）；主线二／三。撤回游戏 03 §1.2 对“2D／概念图”统一写“成熟”；**🧪 静态资产按实际尺寸与真实修改验收，动画独立验证。** 这是一条采用条件，不是生成模型排名，也不是认定所有 2D 生成不可用。**[经验：采用判断]**
+
+- **实际引入与撤回。** Little Apartment, Big City 的 [287b0d1](https://github.com/TechProGabe/little-apartment-big-city/commit/287b0d115055d6c16e0d6b77b12637d460ca5cd7) 引入 128px 生成角色和加载路径；作者明确新 idle 仍配旧 walk、侧背面尚未接成四向，源码也仅对右向镜像正面。[直接子提交 88c32e6](https://github.com/TechProGabe/little-apartment-big-city/commit/88c32e601d33f202980232eff9338ba8d03d7cbe)实际删除六张 PNG、`PC_SHEETS` 和玩家 PNG 绘制分支，复用 `addCharacter`，新增配色和长发覆盖层；通用图集加载器仍保留给世界／道具。风格不符是作者解释，撤回是可核查补丁，不能据此杜撰未提交的试验轮数或回退后的玩家收益。**[一手：Git 与源码；作者报告]**
+- **尺寸正确只是必要检查。** 本轮只读六张固定 PNG 的头与哈希：四张静态图均 128×128、两张 walk 为 512×128，其中两张 walk 与 manifest 的 128×128×4 切帧规格相符，六张均有 alpha 通道。结构检查没有判定透明边缘质量、身份或动作；[作者美术记录](https://github.com/TechProGabe/little-apartment-big-city/blob/88c32e601d33f202980232eff9338ba8d03d7cbe/kb/art-direction.md)报告参考图锁姿态、去掉参考又可能身份漂移，不能把该路径的问题推广为所有图像模型的定律。复核可从引入提交的 `public/images/characters/` 读取 PNG 签名后 IHDR 的两个 big-endian uint32，与 `src/game/sprites.ts` 中帧宽／高／数比较；不需模型调用。**[研究：文件结构测量；一手：作者记录]**
+- **反证：静态用途没有一起撤回。** 后续 [374038f](https://github.com/TechProGabe/little-apartment-big-city/commit/374038f44a042cde1029e7eaf0b318eeccb621c4)加入 14 个说话者肖像并更新游戏映射；[固定修名脚本](https://github.com/TechProGabe/little-apartment-big-city/blob/2acbbd04af72ca082bd43eed20972ea873db5523/scripts/fix-nameplates.mjs)覆盖四张肖像的指定姓名区域再绘制字体。[作者记录](https://github.com/TechProGabe/little-apartment-big-city/blob/2acbbd04af72ca082bd43eed20972ea873db5523/kb/art-direction.md)称图像编辑会串脸或改名失败；修正前 staging 输入未入 Git，未独立复现修图成功率。规则明确的文字可用程序处理，不能外推到姿态与蒙皮；大肖像采用也不能证明小图标／连续动画可用。**[一手：代码与作者报告；研究：范围限制]**
+
+**验收含义。** 本轮核对的是 React/Canvas 游戏的采用／撤回历史，没有运行上游游戏、模型、修图脚本或 Unity，也没有独立美术评审、完整主动工时和商用授权链；公开可读不等于可复用这些资产。程序绘制回退依赖现有身体／配色模板，不能保证任何程序员零美术投入都能从头复刻。固定视角小资产在第二次需求修改后的前后产物、淘汰样本、实际尺寸与打包辨识仍缺；应保持条件化试用，而不是用本案例冒充该完整试验。**[研究：未覆盖范围；经验：停止外推]**
