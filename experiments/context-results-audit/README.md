@@ -72,7 +72,7 @@ cat "$audit_tmp/findings.json"
 
 ## 后续资料（2026-10-13）
 
-[公开 DB 与作者脚本复核](../../docs/research/2026-10-13-context-study-reassessment.md)补上 error 过滤依据，并提供只读 SQL 与精确算术复算。上面的 CSV 三种口径保留为历史敏感性分析；本目录分析器未改为推断 CSV 中不存在的 error 字段，也未重跑模型。
+[公开 DB 与作者脚本复核](../../docs/research/2026-10-13-context-study-reassessment.md#context-files失败解释与分析参数)补上 error 过滤依据，并提供只读 SQL 与精确算术复算。上面的 CSV 三种口径保留为历史敏感性分析；本目录分析器未改为推断 CSV 中不存在的 error 字段，也未重跑模型。
 
 ## 许可与公开边界
 

@@ -1,8 +1,12 @@
+主线：二为主，兼四
+改变的建议：24：原生能力足够时保持轻量，拆开领域知识与控制步骤；h3o 交付需核对目标环境与范围
+新证据：10-10/11 来源资料在 10-12 迁移：Skill 配置、社区首帖、h3o 固定产物；不是 10-12 新效果研究。工具逐项概述和重复问题可删减，独有来源保留
+
 # 社区工作流：固定来源与案例资料
 
 > 资料迁移：2026-10-12。以下承接 [24 正文](../24-community-workflows.md) 中尚无独立研究页的配置阅读、原帖范围、Starlette/DSPy/h3o 案例和待核问题，保留原记录的日期、精确数字与反证；迁移没有重新运行上游或模型。
 > 调查时间：原配置与社区调查为 2026-10-10，h3o 于 10-11 补核。HN Algolia 与 Lobsters 请求被网络代理拒绝，社区样本来自 GitHub，不代表整个开发者群体。
-> 已有专页的完整资料继续在 [BAML/HumanLayer](2026-10-12-baml-and-review.md)、[SlopCodeBench](2026-10-13-slopcodebench.md)、[alchemy-utils](2026-10-12-alchemy-utils-evolution.md)、[VibeTunnel](2026-10-12-vibetunnel-maintenance.md)、[Ra & Apep/KPI](2026-10-12-codex-delivery-cases.md)，不复制成另一套案例记录；这些页保留本侧/对端的执行归属。
+> 已有专页的完整资料继续在 [BAML/HumanLayer](2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)、[SlopCodeBench](2026-10-13-slopcodebench.md)、[alchemy-utils](2026-10-12-alchemy-utils-evolution.md)、[VibeTunnel](2026-10-12-vibetunnel-maintenance.md)、[Ra & Apep/KPI](2026-10-12-codex-delivery-cases.md)，不复制成另一套案例记录；这些页保留本侧/对端的执行归属。
 
 ## 2. Superpowers：重点看 Skill 之间怎样衔接
 
@@ -22,6 +26,20 @@
 
 **Issue #2450：修改了接口，却没有更新尚未执行的计划。** 发帖者描述某次修复收紧了脚本参数，代码修对了，后续任务的文本仍引用旧调用方式。建议修复接口时搜索剩余计划和待派发 brief，更新调用契约。**[社区：原帖，未独立复现；C8]**
 
+### 文档评审循环：实际撤回与按需保留
+
+补核：2026-10-13 UTC。只读公开提交、测试与原帖，未运行模型；本段支持 05 §2.5 的窄建议。
+
+- **固定撤回。** [e6221a48](https://github.com/obra/superpowers/commit/e6221a48c54141e0ef04adaea4895a8150fc57a1) 将 brainstorming／writing-plans 的独立 reviewer、修改与再派发循环改成同会话自审，检查占位符、规格覆盖和接口一致性；用户读规格的关口仍保留。**[一手：补丁]**
+- **实际采用者的取舍。** [#1130 维护者回复](https://github.com/obra/superpowers/issues/1130#issuecomment-4270863186) 说明此前采用后收到用户负面反馈，自行评测未见结果改善，因等待和 token 成本拒绝恢复默认流程。[提案作者随后撤回上游推动](https://github.com/obra/superpowers/issues/1130#issuecomment-4275742384)，但保留自己复杂计划的按次独立检查，并承认没有反驳数据。**[社区：双方使用自述与决定]**
+- **数值仍是自报。** 撤回提交说明报告五个版本共25次比较、约25分钟额外等待，quality scores 未见改善；本轮限定检索只找到摘要，没有逐次评分、用时和完整模型配置。共同署名不能确定全部运行模型，补丁又同时补强自审约束，不能据此计算当前模型净收益或宣称纯原生无 Skill 等价。**[一手：作者报告；研究：边界]**
+- **公开测试不是该对照。** [同 SHA 的测试](https://github.com/obra/superpowers/blob/e6221a48c54141e0ef04adaea4895a8150fc57a1/tests/claude-code/test-document-review-system.sh) 只构造含 TODO／推迟说明的规格、调用一次 Claude 并检查输出，没有自审对照或上述评分表；本轮未执行。**[一手：测试阅读]**
+- **当前仍保留窄的独立检查。** 固定 v7.0.0 的 [writing-plans](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/writing-plans/SKILL.md) 仍用自审，其 Native 执行路径仍含最终独立分支检查；[brainstorming](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/brainstorming/SKILL.md) 对书面设计采用单轮 builder check，找实施者还需确认的问题。这不是恢复通用审批循环，本轮也未证明其净收益。**[一手：固定配置]**
+
+**采用判断**：先让同会话核对普通文档内容；发现实施者无法决定的具体问题，或独立检查确实补上遗漏时，再按次保留。只有通用意见与额外等待时可撤回该循环，仍保留必要测试与验收。这里的内容 reviewer 不是工具执行权限的安全 Auto-review，也不能替代或取消用户确认。**[经验：建议范围]**
+
+复访需要逐次原始对照，或复杂真实计划中独立发现、修复与后续使用结果；不靠重复抱怨或更多字面检查扩大结论。**[研究：下一证据条件]**
+
 ## 3. Matt Pocock：控制权与领域语言
 
 作者 README 自述每天用这些 Skills 做工程工作，主张小、可修改、可组合，反对流程工具过度接管。这是作者立场，不是对其他框架效果的客观裁决。**[社区：作者自述；C2]**
@@ -33,6 +51,12 @@
 - 一次实现一个纵向行为切片，而不是先批量写完所有猜测中的测试，再批量补实现。
 
 也要看不适合照搬的约定：当前 `tdd` 要求先与用户确认测试边界，并把重构安排在 review 阶段；这是一套特定协作约定，不是 TDD 的唯一含义。已有明确验收与授权时，不应因为引入一个模板而重复询问每一步。**[经验：工程判断]**
+
+### 小型入口的知识与控制成本
+
+[官方 skill-creator 固定快照](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/skill-creator/SKILL.md)建议补非显然知识、按脆弱性选择自由度，不证明某个 Skill 已有效；C2 的短 TDD 入口仍要求先确认边界，C1 的调试入口有串行阶段并继续加载 TDD／验证要求。比较完整触发路径与人工等待，不按文件长度判断开销。**[一手：已读配置；研究：采用判断]**
+
+C1 调试入口将多次失败关联架构，并写出无根因案例的百分比，但未给对应统计；保留“停止重复猜测、改变诊断方式”，不以次数确诊架构或把该比例当仓库事实。已有明确授权和验收时也不为通用模板重复询问；契约未定时确认仍可能有价值。**[一手：原文；研究：反证与边界]**
 
 ## 5. Pi：少预设流程，开放可组合能力
 

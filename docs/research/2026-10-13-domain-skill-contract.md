@@ -1,6 +1,10 @@
-# 窄领域 Skill：Cloudflare WebSocket 契约与历史修复链
+主线：二，兼三
+改变的建议：05 §2.5 / §4：按平台契约或原生对象的知识缺口补窄参考；已有实现、脚本或模板足够就不再加 Skill
+新证据：Cloudflare 迁移修复与 10 项表达式探测；另读原生 pivot 任务/配方并实测文件结构往返；不是平台、Excel 或当前模型收益对照
 
-> 核实：2026-10-13（UTC+8）。长期任务二。本轮新读官方 Skill、固定文档与实际修复；只执行自行编写的纯 JavaScript 表达式探测，未部署 Cloudflare 或运行模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
+# 窄领域 Skill：平台契约与原生对象创建配方
+
+> 核实：2026-10-13。长期任务二。第 1–5 节为 Cloudflare 调查（UTC+8）；第 6 节同日追加原生 pivot 调查（UTC）。分别执行自行编写的 JavaScript 表达式与 Python 文件结构探测，未部署 Cloudflare、运行 Office 应用或新模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
 
 ## 1. 为什么选这个来源
 
@@ -92,7 +96,7 @@ console.log(JSON.stringify({verified}));
 
 ### 采用：只为平台相关任务补一个入口
 
-主力 Codex 处理 Durable Objects WebSocket 新增/迁移/恢复故障时，先查当前版本的回调形状、状态寿命、恢复 API 与限制；从仓库已有代码和测试开始。给出的验收应包括文本输入、业务是否允许二进制、失效输入、同一连接跨休眠状态恢复以及断线后的持久数据。[研究：建议]
+使用 Codex 处理 Durable Objects WebSocket 新增/迁移/恢复故障时，先查当前版本的回调形状、状态寿命、恢复 API 与限制；从仓库已有代码和测试开始。给出的验收应包括文本输入、业务是否允许二进制、失效输入、同一连接跨休眠状态恢复以及断线后的持久数据。[研究：建议]
 
 若要保存可复用指导，最小内容可以是：“涉及 Durable Objects WebSocket 时，先核对当前官方休眠、回调与 attachment 契约；区分连接级状态和持久数据，验证恢复后的业务行为。”再给两条官方入口即可，不必在全局配置中复制所有 API、迁移、部署命令或完整聊天示例。[研究：缩减方案]
 
@@ -125,3 +129,85 @@ console.log(JSON.stringify({verified}));
 - **S4b**：[ID 序列化修正 efcd1e402b69ece88eb2688f3f99e8714e332d80](https://github.com/cloudflare/workers-chat-demo/commit/efcd1e402b69ece88eb2688f3f99e8714e332d80)；[恢复处第 220–233 行](https://github.com/cloudflare/workers-chat-demo/blob/efcd1e402b69ece88eb2688f3f99e8714e332d80/src/chat.mjs#L220-L233)、[写入处第 300–304 行](https://github.com/cloudflare/workers-chat-demo/blob/efcd1e402b69ece88eb2688f3f99e8714e332d80/src/chat.mjs#L300-L304)。
 - **S4c**：[消息回调修正 54f0defb5ae28f943ecb26097f15eca243102b53](https://github.com/cloudflare/workers-chat-demo/commit/54f0defb5ae28f943ecb26097f15eca243102b53)；[父版本第 344–345 行](https://github.com/cloudflare/workers-chat-demo/blob/e50e762bd3d7d0645a0f5d7fed56e55f024828a4/src/chat.mjs#L344-L345)、[修正后第 344–345 行](https://github.com/cloudflare/workers-chat-demo/blob/54f0defb5ae28f943ecb26097f15eca243102b53/src/chat.mjs#L344-L345)。
 - **S5**：[当前固定示例恢复第 220–239 行](https://github.com/cloudflare/workers-chat-demo/blob/dd32ce87617a9df6c614004d2fc2fb0628698121/src/chat.mjs#L220-L239)、[接入与 attachment 第 288–304 行](https://github.com/cloudflare/workers-chat-demo/blob/dd32ce87617a9df6c614004d2fc2fb0628698121/src/chat.mjs#L288-L304)、[用户名第 344–352 行](https://github.com/cloudflare/workers-chat-demo/blob/dd32ce87617a9df6c614004d2fc2fb0628698121/src/chat.mjs#L344-L352)、[历史消息持久化第 391–397 行](https://github.com/cloudflare/workers-chat-demo/blob/dd32ce87617a9df6c614004d2fc2fb0628698121/src/chat.mjs#L391-L397)。
+
+
+## 6. 原生文件对象：创建配方与静态汇总的区别
+
+### 新任务与最小基线
+
+本节调查的是**代码生成报表时，静态汇总能否满足原生 PivotTable 的交付目标**。来源是公开 benchmark 任务，不是已经交付给生产用户的报表案例。SkillsBench 的人口/收入分析要求四张 pivot 表及源数据表，其中 `Quarter` 指收入四分位组 Q1–Q4，并非日历季度。[一手：P1]
+
+同一任务环境预装 openpyxl 3.1.5、pandas 2.2.3 和 pdfplumber 0.11.4；XLSX Skill 给出缓存、字段索引及行/列/数值字段的构造配方，没有新增执行工具。模型本来仍可通过库源码、官方参考、项目生成器取得这些知识。因此可比较的更简单基线是“一条资料入口或直接复用现有生成器”，不应只比较完全没有资料与整份 Skill。[一手：P2–P3；研究：机制判断]
+
+openpyxl 官方文档以保留、修改已有 pivot 为支持方向，明确不以客户端新建 pivot 为设计目标，也没有专门管理 API。开发导出功能时，优先找已经在目标应用验证过的模板；确实需要从零创建且缺少配方时，再试窄参考。[一手：P4；经验：采用顺序]
+
+### 历史效果与实际成本
+
+论文 v1 报告该任务七模型无 Skill 时均未通过，有 Skill 后平均通过率为 85.7%；其 Codex/GPT-5.2 案例曾用静态 DataFrame 整形，缺少 pivot 对象。这是作者历史运行报告，不是本轮模型复跑；后列公开源码快照也未证实与二月论文运行逐字相同。该任务同时提供 PDF Skill，不能将整个增益都归给 pivot 配方。[研究：P5]
+
+公开 verifier 检查对象字段和部分源数据，没有打开 Excel 验证操作/重算，也未逐张充分核对数值字段选中了哪个源列。另有仍 open 的 #996 报告：任务要求保留原始数据，oracle 却 inner join，保留 Other Territories 会被拒绝。因此不把整体通过率直接等同业务正确率，也不据此推翻所有历史对象创建结果。[一手：P6–P7；研究：边界]
+
+固定 XLSX Skill 为 7,845 字节；文件大小不是 token、等待或人的投入。真正需比较的是读取、对象构造返工与版本/客户端验证成本。本轮没有任务级净耗时/净美元证据，不承诺“更快/更便宜”；确定性探测只用已有库与自造数据，没有安装、付费模型或外部服务。[一手：P3；研究：成本边界]
+
+### 本轮可复核的结构探测
+
+以下为本轮自行编写的完整程序，调用已安装 openpyxl 3.1.5，以三条自造数据在内存中操作；没有执行下载的上游脚本或 oracle。协调方独立重跑，JSON 输出一致。这里只检查 ZIP 部件、库对象与重新读取，不进行 OOXML schema 验证或 Excel/LibreOffice 操作。[研究：本轮实际执行]
+
+```python
+"""Deterministic representation probe; no model comparison or Excel execution."""
+from io import BytesIO
+from zipfile import ZipFile
+import json, openpyxl
+from openpyxl import Workbook,load_workbook
+from openpyxl.pivot.table import TableDefinition, Location, PivotField, DataField, RowColField
+from openpyxl.pivot.cache import CacheDefinition,CacheField,CacheSource,WorksheetSource,SharedItems
+DATA=[['STATE','EARNERS'],['A',10],['A',20],['B',5]]
+def wb_base():
+ w=Workbook(); w.active.title='SourceData'
+ for r in DATA:w.active.append(r)
+ return w
+def pack(w):
+ b=BytesIO();w.save(b);b.seek(0);return b
+out=[]
+w=wb_base();s=w.create_sheet('Summary');s.append(['STATE','EARNERS']);s.append(['A',30]);s.append(['B',5]);b=pack(w)
+assert list(load_workbook(b)['Summary'].values)[1:]==[('A',30),('B',5)]
+assert len(load_workbook(b)['Summary']._pivots)==0
+out.append({'case':'static_sum_baseline','numeric_summary_correct':True,'native_pivot_count':0})
+for cacheid in [0,1,7]:
+ w=wb_base();s=w.create_sheet('Summary')
+ c=CacheDefinition(cacheSource=CacheSource(type='worksheet',worksheetSource=WorksheetSource(ref='A1:B4',sheet='SourceData')),cacheFields=[CacheField(name='STATE',sharedItems=SharedItems()),CacheField(name='EARNERS',sharedItems=SharedItems())],refreshOnLoad=True)
+ p=TableDefinition(name='EarnersByState',cacheId=cacheid,dataCaption='Values',location=Location(ref='A3:B6',firstHeaderRow=1,firstDataRow=1,firstDataCol=1))
+ p.pivotFields=[PivotField(axis='axisRow',showAll=False),PivotField(dataField=True,showAll=False)]
+ p.rowFields=[RowColField(x=0)];p.dataFields=[DataField(name='Total earners',fld=1,subtotal='sum')];p.cache=c;s.add_pivot(p)
+ b=pack(w);r=load_workbook(b);p2=r['Summary']._pivots[0]
+ assert p2.cache.cacheSource.worksheetSource.ref=='A1:B4'
+ assert p2.dataFields[0].fld==1 and p2.dataFields[0].subtotal=='sum'
+ out.append({'case':'native_pivot','input_cache_id':cacheid,'roundtrip_cache_id':p2.cacheId,'native_pivot_count':len(r['Summary']._pivots),'source_ref':p2.cache.cacheSource.worksheetSource.ref,'rendered_cell_values':list(r['Summary'].values),'zip_pivot_parts':[n for n in ZipFile(b).namelist() if n.startswith('xl/pivot')]})
+print(json.dumps({'openpyxl':openpyxl.__version__,'results':out,'boundary':'In-memory OOXML structure and openpyxl roundtrip only. No Excel or LibreOffice calculation, UI, external benchmark, or LLM execution.'},indent=2))
+```
+
+观察结果：静态基线正确写入 A=30、B=5，但含 0 个 pivot；三个原生对象情境均可重新读取 1 个 pivot，源范围为 `A1:B4`、数值字段为第 2 列且聚合为 sum，ZIP 含 pivot table、cache definition 及关系文件。三个原生情境的工作表已存储单元格值列表均为空；这不说明目标应用打开/刷新成功或失败。[研究：结构探测结果]
+
+**小反例**：输入 cacheId 分别为 0、1、7 时，本地均成功往返，重读 ID 与输入相同；因此 P3 中“非 0 必然令 openpyxl 读取 KeyError”的绝对措辞不成立。但这不证明任意 ID 满足 OOXML 关系或 Excel 要求，不能将该探测当作安全 ID 配方。[研究：局部反例]
+
+**已通过**：上述静态数值、原生对象和库往返断言。**未运行**：完整 benchmark/模型、人口收入数据连接、schema 验证、Excel/LibreOffice 打开、刷新或字段重排。原生对象存在与最终用户可操作是两个验收层次。[研究：验证范围]
+
+### 采用、缩减与撤回
+
+✅ 先确定用户还要操作什么：只需静态数值时，简单汇总即可；需要原生对象时，保留对象和目标客户端行为验收。🧪 只在已有实现/模板缺失且对象构造知识确实导致返工时，补对应版本的窄参考。若项目生成器已经可靠，或原生 Agent 加一条链接即可稳定交付，撤回额外 Skill，保留代码、模板与测试；若目标应用不可验证，不据文件结构宣称已经交付可用。[经验：本仓库采用判断]
+
+这支持 05 §4 按信息缺口与复用价值选择入口，不支持固定“出错两次/粘贴三次”即安装 Skill；当前强模型与短链接基线的净收益仍未确定。[研究：适用边界]
+
+### 原生对象的固定来源
+
+以下 SkillsBench 源码统一固定为 `27738384b1df694ea2ae466e416f476e94d8fab9`，本轮只读，不与二月历史成绩强行绑定：
+
+- **P1**：[task.md](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/task.md)。
+- **P2**：[Dockerfile](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/Dockerfile)。
+- **P3**：[XLSX Skill](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/skills/xlsx/SKILL.md)、[PDF Skill](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/skills/pdf/SKILL.md)。
+- **P4**：[openpyxl 官方 Pivot Tables 文档](https://openpyxl.readthedocs.io/en/stable/pivot.html)。读取页标题为 3.1.3，本轮运行库为 3.1.5。
+- **P5**：[SkillsBench 论文 v1](https://arxiv.org/html/2602.12670v1)，§3.2、I.5 与 I.7 的 sales-pivot-analysis 案例。未读取完整逐次轨迹或重算成本。
+- **P6**：[verifier](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/verifier/test_outputs.py)、[oracle](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/oracle/solve.sh)。仅源码阅读，未执行。
+- **P7**：[join 语义争议 #996](https://github.com/benchflow-ai/skillsbench/issues/996)。2026-07-12 原报告，2026-10-13 读取仍 open；没有独立复现其 MAX 运行。
+
+SkillsBench 根 [LICENSE](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/LICENSE) 为 Apache-2.0；本文未复制整份 Skill 或 oracle，探测为自行编写。openpyxl 已安装元数据为 MIT；若另行转载上游实现，仍须核对具体文件来源与适用版权声明。[一手：许可与本地元数据；经验：复用边界]

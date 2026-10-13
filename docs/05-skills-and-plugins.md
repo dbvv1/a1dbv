@@ -1,6 +1,6 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-08；第 1 节权限可移植性、第 2 节评估边界与第 3 节 gstack 机制于 2026-10-11（UTC+8）复核，其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
+> 核实时间：2026-10-08；第 1 节权限可移植性、第 2 节评估边界与第 3 节 gstack 机制于 2026-10-11（UTC+8）复核，第 2.5 节领域增量与第 4 节前两项选择建议于 2026-10-13 复核；10-13（UTC）补核 LSP 会话边界与采用条件；其余未重验。规范依据 [agentskills/agentskills](https://github.com/agentskills/agentskills) 仓库文档原文 **[一手]**。
 
 ## 1. Agent Skills 规范要点
 
@@ -78,6 +78,8 @@ Superpowers 的轻量分支也要和入口规则一起看：[using-superpowers](
 
 ✅ 选择原则：优先采用减少重复摸索的具体资源；若 Skill 引入额外提问、确认、委派或评审，明确它解决哪个已观察到的失败。不要把 token 长度当成唯一成本——要求多等一轮人的短指令也可能比长参考资料更打断工作。删掉步骤时仍需保留范围与失败反馈，见 [Codex 续接反例](research/2026-10-10-codex-continuity.md)。**[研究：采用判断]**
 
+**✅ 普通规格／计划的占位符、覆盖与接口一致性先做同会话自审；独立检查针对已识别缺口，不默认循环求批准。** Superpowers 曾实际撤回通用文档 reviewer 循环，复杂计划的使用者则保留按次自选，见[撤回与保留依据](research/2026-10-12-community-source-records.md#文档评审循环实际撤回与按需保留)。局限是收益数据仍属作者自报，不能推出所有独立评审无用，也不改变安全 Auto-review 或用户确认要求。**[一手／社区；经验：采用判断，2026-10-13]**
+
 对“是否真的有用”，还应检查运行环境：官方合作示例中，独立工具循环与 Codex 收到的 server instructions 不同，结果也不同；但其评分器又漏检答案数值和调用顺序。本轮已重评记录并运行定向反例，见 [插件评估核对](research/2026-10-11-codex-cookbook.md#5-插件评估真实环境更有意义但评分器仍要核查)。✅ 验证实际安装与行为，不只拿 Skill 文本单独问模型打分。**[研究]**
 
 ### 领域增量：输入形状和状态寿命比“再检查一次”具体
@@ -87,6 +89,12 @@ Superpowers 的轻量分支也要和入口规则一起看：[using-superpowers](
 Cloudflare 官方 Durable Objects Skill 指向休眠、状态恢复与测试资料；官方聊天室迁移实际修过对象 ID 序列化和 `msg.data` 误用。新回调直接给文本内容，伪造 `{data: text}` 的测试却能让旧错实现通过。本轮 10 项零成本表达式探测区分了这两种输入，也确认文本修复不自动支持二进制；因此验收应匹配真实回调与状态恢复，而不是只增加评审次数。固定来源、修复链、输出及撤回条件见[研究记录](research/2026-10-13-domain-skill-contract.md)。**[一手：官方源码和修复；研究：表达式实测]**
 
 **关键局限**：这证明领域契约会改变实现，尚未证明当前强模型加载 Skill 比直接查文档更有收益。
+
+### 原生文件对象：补创建配方，不重复安装已有工具
+
+**✅ 为代码生成的文件先确定“用户还要操作什么”，再补窄配方。** 要求原生 Excel 透视表时，正确的分组数值仍不能代替 PivotTable；SkillsBench 的具体任务在已有 openpyxl/pandas 的环境中提供缓存、字段与对象关系的创建配方，补的是用法而非新工具。本轮最小探测也区分了静态汇总与可重新读出的 pivot/cache 结构。固定来源与实测见[原生对象研究](research/2026-10-13-domain-skill-contract.md#6-原生文件对象创建配方与静态汇总的区别)。**[一手：任务与源码；研究：本轮程序实测]**
+
+开发导出功能时，先找项目已有生成器或目标应用验证过的模板；没有时才🧪试用对应格式/版本的窄参考，并在目标客户端验收实际操作。若只需静态结果，或原生 Agent 加一条资料链接即可稳定交付，就撤回额外 Skill。**[经验：本仓库采用判断]** **局限：文件结构往返不证明客户端功能；历史模型成绩也不证明当前强模型比直接查文档更省时。**
 
 ## 3. 插件与市场
 
@@ -105,13 +113,15 @@ codex plugin add <plugin>@<marketplace>
 
 | 类别 | 插件 | 评级 |
 |---|---|---|
-| **代码智能** | `typescript-lsp`、`pyright-lsp`、`gopls-lsp`、`rust-analyzer-lsp`、`csharp-lsp`、`jdtls-lsp`、`kotlin-lsp`、`clangd-lsp`、`swift-lsp`、`php-lsp`、`ruby-lsp`、`lua-lsp` | ✅ 强类型项目必装 |
+| **代码智能** | `typescript-lsp`、`pyright-lsp`、`gopls-lsp`、`rust-analyzer-lsp`、`csharp-lsp`、`jdtls-lsp`、`kotlin-lsp`、`clangd-lsp`、`swift-lsp`、`php-lsp`、`ruby-lsp`、`lua-lsp` | 🧪 按诊断／语义导航缺口试用，先核会话支持与项目解析 |
 | **Anthropic 官方工作流** | `code-review`、`code-simplifier`、`pr-review-toolkit`、`feature-dev`、`commit-commands`、`claude-md-management`、`claude-code-setup`、`hookify`、`security-guidance`、`claude-security`、`skill-creator`、`plugin-dev`、`mcp-server-dev` | 🧪 按需 |
 | **方法论** | `superpowers`、`mattpocock-skills`、`ralph-loop` | 🧪 见下文 |
 | **文档 / 检索** | `context7`、`serena`、`lumen`（本地语义代码搜索） | 🧪 |
 | **浏览器** | `playwright`、`chrome-devtools-mcp`、`browser-use` | 🧪（Web 项目） |
 | **评审 / 安全** | `coderabbit`、`greptile`、`qodo`、`semgrep`、`sonarqube` | 👀 |
 | **游戏引擎** | `unity`、`unreal-engine-skills-for-claude-code` | 见 [domains](../domains/README.md) |
+
+**LSP 按缺口接入，不按语言标签必装。** 日常修错先用项目已有类型检查，需要语义引用时先复用现有 IDE／LSP。Claude Code 插件不含服务器二进制，安装后还须确认实际诊断或查询；官方云会话不启动插件语言服务器，本地安装不能给该云任务补上导航。见[官方机制与采用边界](research/2026-10-13-context-tool-choice.md#源码检索map语义引用与当前状态--6-客户端接入边界)。**[一手：官方文档；经验：采用判断]** **局限**：能力可用不等于已证明节省上下文或总耗时。
 
 ### 方法论类插件
 
@@ -148,16 +158,16 @@ codex plugin add <plugin>@<marketplace>
 
 | 你遇到的情况 | 加什么 |
 |---|---|
-| Agent 把某个约定或命令搞错了两次 | CLAUDE.md / AGENTS.md 加一行 |
-| 第三次粘贴同一段操作流程 | **Skill** |
+| 反复遗漏、且所有相关任务都适用的项目约定 | 先排除过期或错误资料，再在 CLAUDE.md / AGENTS.md 加一条并指向权威来源 |
+| 重复任务需要仓库没有的领域配方或经过验证的资源 | **窄 Skill**；已有文档、脚本或模板可直接复用时，只加入口 |
 | 总在从浏览器复制 Agent 看不到的数据 | **MCP**（或 CLI） |
-| Agent 为找一个符号读了很多文件 | **LSP 插件** |
+| 同名符号多，需要确认语义引用，现有搜索难以消歧 | 先用现有 **IDE／LSP**；缺少时再评估插件，并核对会话支持与项目解析 |
 | 某个支线任务的输出淹没了对话 | **Subagent** |
 | 某个运行时事件需要机械检查 | **Hook**，并验证匹配、超时、错误处理和替代路径；不代替沙箱 |
 | 第二个仓库也要用同一套配置 | 打包成**插件** |
 | 想要固定的回答风格或长度 | **Output style** |
 
-（改编自 Claude Code 官方文档《Extend Claude Code》 **[一手]**）
+工具类别参考 Claude Code 官方文档《Extend Claude Code》；表中的选择条件是本仓库建议，尤其前两项按信息缺口与复用价值判断，不按固定出错或粘贴次数触发。**[一手：工具类别；经验：选择建议]**
 
 ## 来源
 

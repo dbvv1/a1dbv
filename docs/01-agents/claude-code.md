@@ -1,6 +1,7 @@
 # Claude Code
 
 > 核实时间：2026-10-11（本轮针对规则加载与工作流建议补核；已读 changelog 至 2.1.296，模型价格和套餐仍为历史记录，未全量复核）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
+> 2026-10-13（UTC）补核 LSP 官方会话边界并收窄安装建议，未运行客户端。
 > 评级：✅ **采用**（日常开发 Agent 选项之一）
 
 ## 1. 定位
@@ -40,7 +41,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | Subagents | 隔离大量中间结果（检索、评审） | 与主会话隔离 |
 | Hooks | 必须每次执行的规则 | 零（除非返回内容） |
 | MCP | 连接外部系统 | 低：启动时只加载工具名，schema 按需加载 |
-| LSP 插件 | 跳转定义、查引用、编辑后诊断 | 低，而且能减少文件读取 |
+| LSP 插件 | 当前会话支持且有诊断／语义导航缺口时，见 [05 的采用条件](../05-skills-and-plugins.md#3-插件与市场) | 取决于诊断与查询返回量，净收益需按任务验证 |
 | 插件 | 打包分发以上所有东西 | 取决于内容 |
 | Output style | 全局改变语气、长度、格式 | 每次请求都有 |
 | Mods（v2.1.287） | 用 TypeScript 改界面（面板、按钮）和更深层的行为 | — |
@@ -134,7 +135,8 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 ```bash
 # 1. 项目里生成 CLAUDE.md 初稿，再人工删减
 /init
-# 2. 装对应语言的 LSP 插件（以 TypeScript 为例）
+# 2. 可选：有诊断／引用缺口且当前会话支持时，先准备语言服务器二进制
+# 再装对应插件（以 TypeScript 为例；官方云会话不启动插件语言服务器）
 /plugin install typescript-lsp@claude-plugins-official
 # 3. 常用官方插件
 /plugin install code-review@claude-plugins-official
@@ -143,7 +145,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 /plugin install claude-code-setup@claude-plugins-official
 ```
 
-模板见 [templates/generic](../../templates/generic/)。
+LSP 的安装与实际加载边界见 [05](../05-skills-and-plugins.md#3-插件与市场)；不按语言标签默认安装。模板见 [templates/generic](../../templates/generic/)。
 
 ## 来源
 

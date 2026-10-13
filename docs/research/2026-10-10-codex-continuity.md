@@ -63,3 +63,13 @@
 另读 [#48802](https://github.com/openai/codex/issues/48802)：作者在定制 CLI、代理与单组顺序比较中报告，resume 后 request-level effort 基线改变，候选实现的缓存读取比例不同。此例不是官方原版客户端对照。固定源码 `core/src/session/reasoning_effort.rs` 确实区分 request baseline 与追加的可信 `ConfigurationUpdate`；因此只看请求顶层 effort，可能漏掉后续配置更新，不能直接断言用户选择没生效。缓存比例与费用、延迟也不能相互替代。**[一手：源码；社区：报告；研究：解释]**
 
 ✅ 借鉴：排查时分开“目标编辑是否进入历史”“压缩是否保留变更”“模型是否实际遵循”“回合是否继续”。检查一个层面的修复，不能自动关闭其他层面的问题。对用户日常使用，先保留明确续接状态和当前版本；没有实测依据时，不推荐安装报告中的私有候选补丁、频繁切 effort 或反复压缩。**[研究：采用判断]**
+
+## 5. 2026-10-13：解释器重置，先对账再恢复
+
+官方 [PR #52825](https://github.com/openai/codex/pull/52825) 于 2026-10-10 08:51 UTC 合并，提交 `806d9732c974bc8a51b8317c1bd8985544fe627c`，是本页原固定快照的下一提交。[恢复实现](https://github.com/openai/codex/blob/806d9732c974bc8a51b8317c1bd8985544fe627c/codex-rs/code-mode/src/grpc_session/reconnect.rs) 在创建 execute/wait 请求时捕获运行时 generation；若恢复替换了运行时，旧 generation 的请求被拒并收到明确重置错误。错误说明运行中 cell 与存值丢失，但先前外部工具操作可能已经完成，应先检查结果，再发起新 `exec`。**[一手：源码]**
+
+[gRPC 回归测试](https://github.com/openai/codex/blob/806d9732c974bc8a51b8317c1bd8985544fe627c/codex-rs/code-mode-host/tests/grpc.rs) 覆盖并发请求、恢复前创建但恢复后才轮询的请求、新调用成功而旧存值为空。[PR #52952](https://github.com/openai/codex/pull/52952) 于同日 18:26 UTC 合并，提交 `b871a1b9f6eb58aa21ec6c307b5b08b1ba5b2613`；其 [hung-host 恢复测试](https://github.com/openai/codex/blob/b871a1b9f6eb58aa21ec6c307b5b08b1ba5b2613/codex-rs/core/src/code_mode_host_tests.rs) 进一步断言被拒的恢复调用没有写入值，下次新执行才成功。本轮只读实现与测试定义，未运行 Rust 测试或模型对照。**[一手：测试定义，非实测]**
+
+✅ 对应 [20 §9](../20-codex-long-horizon.md#9-超时后动作究竟发生了吗)：遇到明确 runtime reset，先核对先前工具操作和外部任务的实际结果，再重建解释器内所需状态并继续。cell 或 `store` 值丢失，不能推出外部 subprocess、worker 已停止，也不能推出外部写入已撤销；结果未知时先对账，不原样重放整段带副作用操作。**[研究：采用判断]**
+
+发布边界：2026-10-13 10:45 UTC 核对官方 [release 列表](https://github.com/openai/codex/releases)，最新可见稳定版 [0.162.1](https://github.com/openai/codex/releases/tag/rust-v0.162.1) 发布于 10 月 9 日，最新可见预发布 [0.163.0-alpha.5](https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.5) 发布于 10 月 10 日 00:26 UTC，均早于这两项合并；没有建立 Desktop 部署对应。此证据支持安全恢复动作，不证明未完成目标会自动续接或子结果会自动唤醒父任务，原 §7.1 的受限 Stop 试用判断不变。**[一手：发布元数据；研究：边界]**

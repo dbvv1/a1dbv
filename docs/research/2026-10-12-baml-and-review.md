@@ -1,16 +1,21 @@
-# 从 BAML 双 PR 追查：研究、人的判断和评审究竟补了什么
+主线：二，额外能力何时值得加；三，连续修改仍然可靠
+改变的建议：07/08/09/15/24 只为会改变实现的未知事实定向研究；复用原需求与独立验收，接口改变后更新剩余计划，不默认追加评审
+新证据：BAML 同起点双 PR 与计划纠错、后续 Superpowers 固定 brief/评审路径及实验混杂；两条来源链独立保留，不合并成流程净收益
 
+# 实现决策与评审：让原需求和运行反馈纠正计划
+
+## BAML：实现反馈纠正研究计划
 > 整合归属：本文来自对端固定提交 `cdfe3b50be30579469af21b9fe46f62bfe7d786c`，保留其当轮来源阅读、判断与执行记录。下文“本轮”“独立”等指对端原研究，不是本侧整合时重新执行；本侧未复跑浏览器、BAML 或模型，也未独立取得 BAML 上游 Git 对象证明同父关系。
 
 > 核实：2026-10-12（北京时间）。对象为 2025 年 Claude Code 历史案例，不是当前 Codex/Astra 或 Claude 的效果测试。评级：✅ 借鉴“围绕实现决策调查并继续核验”；🧪 按明确不确定性选择前置研究；不据此默认采用完整 RPI。新增工作是直接读取原始问题、两个计划、两条 PR、固定补丁和测试入口，以及重审作者前后文章。未运行 BAML、模型或视频会话。
 
-## 1. 先把作者故事拆成可核对的主张
+### BAML：实现反馈纠正研究计划 · 1. 先把作者故事拆成可核对的主张
 
 HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试修复 BAML #1252，首次研究错误地判定 bug 无效；他丢弃后重新指导研究，又分别运行无研究计划和使用研究结果的计划，提交 #2258 与 #2259。后者被维护者接受，前者关闭。作者认为两者都能解决问题，但有研究方案选择了更好的位置和测试方式。**[社区：S1 作者自述]**
 
 这包含四种不同主张：事情确实发生；补丁有什么差异；差异来自研究；研究值得付出的时间。前两项可通过公共产物交叉核对，后两项需要更多过程与成本数据。不能从“一个合并、一个关闭”直接跳到后两项。
 
-## 2. 独立核对到的同任务差异
+### BAML：实现反馈纠正研究计划 · 2. 独立核对到的同任务差异
 
 原始 [Issue #1252](https://github.com/BoundaryML/baml/issues/1252) 要求：测试中误用单 `@assert` 应报 linter 错误。公开回复给出单 `@` 测试悄悄通过、双 `@@` 才执行预期断言的示例；本轮读正文与代码片段，未运行示例或查看截图内容。**[社区：原始报告]**
 
@@ -31,7 +36,7 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 
 合并提交为 `f741e4319b4f95657a08e46f4404d258a1d91e5a`；相对其父提交，最终改动是三个文件、58 行。初始提交还带两份调查/计划文档，后续专门移除。独立比较确认三个实现/测试文件从 `86029cc` 到合并提交未变化。**[一手：Git diff]** 研究有价值不等于研究文档必须成为目标项目的永久内容；本案例只证明发生了移除，没有证据说明维护者要求移除。
 
-## 3. 最重要的新发现：有研究的计划也在实施中被纠正
+### BAML：实现反馈纠正研究计划 · 3. 最重要的新发现：有研究的计划也在实施中被纠正
 
 公开演示仓库保存的原始计划，把断言样例写在 `args` 内部的 `input/count` 键值上。PR 最初提交里的回填计划则明确写道：原计划假设测试参数能带字段属性，但它们是键值对；应检查的是测试块的 `functions`、`args` 字段。最终两个测试也确实分别把属性放在 `functions` 后、`args` 块后。**[一手：S2 原计划、S3 回填计划与最终测试]**
 
@@ -43,7 +48,7 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 
 这改变了可迁移建议：**研究产物应保留“为什么选这个位置”和未决假设，但允许实现反馈推翻局部方案。** 如果把“严格按计划”作为主要验收，反而可能保留计划中的错误。也不能由此推断研究无用；位置选择与局部纠错可以同时成立。**[研究：采用判断]**
 
-## 4. 自动评审和测试记录能证明多少
+### BAML：实现反馈纠正研究计划 · 4. 自动评审和测试记录能证明多少
 
 两个 PR 的 Ellipsis 自动评审都写了 “Looks good to me”。这说明那两次可见评审没有公开否定任一路线；不代表评审毫无作用，也不能证明它们发现了维护者取舍的原因。自动评审的耗时与阅读行数更不能当作开发速度比较。**[一手：公开机器人回执；研究：解释边界]**
 
@@ -51,7 +56,7 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 
 回填计划的复选框、PR 中“全测通过”都是当时报告，不是本轮测试结果；其中命令文本也不能作为执行日志。页面另外显示 Codecov 报告 patch coverage 23.07692%，但没有核对覆盖收集方式，不能据此声称新增测试未运行或修复失败。
 
-## 5. 这个对照仍然不能回答什么
+### BAML：实现反馈纠正研究计划 · 5. 这个对照仍然不能回答什么
 
 共享基线是优点，但它不是随机对照：
 
@@ -63,7 +68,7 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 
 因此，“研究可能帮助定位正确的变更层次”有具体支撑；“RPI 比直接使用强 Agent 更快、更可维护”仍未得到证明。**[研究：证据取舍]**
 
-## 6. 重读作者的后来复盘：哪里值得借，哪里不能跟随
+### BAML：实现反馈纠正研究计划 · 6. 重读作者的后来复盘：哪里值得借，哪里不能跟随
 
 《Why Software Factories Fail》自述团队从 2025 年 7 月减少读代码，之后遇到难解问题并重写。早期 ACE 本身也强调人的深入参与、读测试、纠正研究和保持团队理解。因此不能把两篇文章压缩成“作者早期完全不要人，后来发现需要人”，更不能把 BAML 外部贡献等同于团队后来重写的系统。**[社区：S1/S4；研究：叙事校准]**
 
@@ -80,7 +85,7 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 
 “30 分钟计划省几小时审查”“稳定快 2–3 倍”可作为作者倡议，当前资料不足以成为我们的效果承诺。要研究的是新增前置工作是否减少了更昂贵的后续错误，而非先固定时长或固定四阶段。
 
-## 7. 对仓库方向的实际修正
+### BAML：实现反馈纠正研究计划 · 7. 对仓库方向的实际修正
 
 前几轮优先项目知识与反馈，这仍有价值，但现在可以说得更准确：**研究的核心单位应是一项会影响结果的开发决策，而非一个工具、一个流程或一篇文章。** 本案例的决策是在哪一层拒绝非法断言，以及怎样构造真正对应 AST 的测试。知识、工具和人的介入是改善决策的不同手段。
 
@@ -90,7 +95,7 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 
 本轮已经形成一个直接产物链，补上此前只列调查入口的不足；仍未取得发布后维护轨迹。下一步应找当前 Codex、不同作者的任务，观察同类实现决策如何被处理，或找到该项目真实后续变更；没有证据时不把这个案例升级成长期收益证明。
 
-## 来源与复核范围
+### BAML：实现反馈纠正研究计划 · 来源与复核范围
 
 - **S1**：[ACE 固定原文](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/1a9b65e53bcf2052b7ef1778fbcfe2af65858a1e/ace-fca.md)。本轮重点读案例全过程、失败、人的参与和 mental alignment。
 - **S2**：[演示产物目录](https://github.com/ai-that-works/ai-that-works/tree/738a9c18b0302737d5d354d9988f34482966cce6/2025-08-05-advanced-context-engineering-for-coding-agents/thoughts/shared)。完整读一个研究文件及有/无研究两个计划；不是完整会话。
@@ -98,3 +103,46 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 - **S4**：[WSFF 固定原文](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/1a9b65e53bcf2052b7ef1778fbcfe2af65858a1e/wsff.md)。本轮读团队复盘、训练论证、评估与四阶段建议；作者披露经营相关协作工具公司，利益关系提示取样问题，不自动否定内容。
 - **S5**：[Where does the time go](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/1a9b65e53bcf2052b7ef1778fbcfe2af65858a1e/side-quests/where-does-the-time-go.md)，本轮完整读取。
 - 本轮尝试读取 OpenAI harness engineering、StrongDM 工厂、Faros 报告原页，均被网络代理拒绝；它们在 S4 中的转述没有升级为本轮已读一手资料。GitHub API 和 PR `.diff` 入口亦受限，改用公开 HTML、raw 文件与 Git 对象取得上述材料，没有绕过权限或执行外部工作流。
+
+## 后续任务：相同 brief 与过期接口
+核实：2026-10-13（UTC+8）。本轮读取 GitHub 原帖、评论、固定源码与作者实验材料；未运行上游代码或模型。
+
+### 后续任务：相同 brief 与过期接口 · 可以改变的建议
+
+✅ 复用原请求、现有验收或已确认规格作为判据，不只把同一份计划摘要交给实现者和评审者。接口或行为约束改变时，让受影响的剩余任务失效并更新后再派发。简单任务已有充分检查时，不另写 spec、不增 reviewer；独立会话并不等于独立判据。**[研究：采用判断]**
+
+### 后续任务：相同 brief 与过期接口 · 原帖与固定实现
+
+[#2470](https://github.com/obra/superpowers/issues/2470) 报告计划内代码、测试共用错误模型：新用途 JWT 被旧登录验证器接受、字符串前缀检查与实际 URL 解析不一致等。它指向未改代码接缝和反例不足；作者的约 40 个 probe 成功报告没有公开应用补丁／日志，未独立复现。[#2450](https://github.com/obra/superpowers/issues/2450) 则报告正确修复收紧 CLI 调用后，后续计划仍用旧接口；作者说 scoped 与 final review 最终发现，问题是发现太晚，不是所有评审都漏掉。**[社区：作者原帖]**
+
+核实时两 issue 均 open，评论和 timeline 为空；按 issue 号搜提交无结果。只能说所查入口未见维护者回应或直接关联修复，不能证明没有其他相关改进。下述八九月提交早于两个十月 issue，不是它们的响应。**[一手：GitHub 状态；检索边界]**
+
+主分支固定 `bb92a77741419a4ab5f06e711a283343f1ada0c3`；dev 为 `d079e1b85c8f964cb52da5e2be678c9fdfc8759b`，二者 tree 均为 `4ac675daa3415bc836f707c7e60237ac7b66c7d5`。相关机制如下。**[一手：Git 元数据与源码]**
+
+- [SDD setup](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/SKILL.md#L155-L181) 已要求读 spec、按其裁决计划冲突；[task reviewer](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/task-reviewer-prompt.md) 可报 plan-mandated 缺陷，也可按具体风险查 diff 外代码、运行 focused test。因此不能概括为“只能服从计划”或“禁止独立验证”。
+- reviewer 与 implementer 明确共用同一 brief；[task-brief](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/scripts/task-brief#L30-L36) 仅抽取计划的 Task 文本。SDD dispatch 另要求带先前接口决策，故存在补交信息通路，但依赖 controller 正确使用。
+- [fix loop](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/SKILL.md#L354-L443) 未在接口变化后明确要求刷新剩余计划和已生成未派发 brief；这是流程缺口，不是实际 agent 必然漏做的证明。
+- [inline final review](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/executing-plans/SKILL.md#L234-L268) 明确传 plan、spec、Review Focus；[SDD final review](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/SKILL.md#L445-L468) 明确 diff 和 deferred/parked ledger，却无相同输入列表。只据评审数量不能推断覆盖面。
+- [brainstorming](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/brainstorming/SKILL.md) 已要求区分用户选择与 agent 自定并让用户确认描述；但 [builder check](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/brainstorming/builder-check-prompt.md) 只拿设计文档，检查能否规划，不直接对照原请求。其通过不能证明设计忠实于用户原意。
+
+### 后续任务：相同 brief 与过期接口 · #2086：小补丁支持什么，实验不能证明什么
+
+已合并 [PR #2086](https://github.com/obra/superpowers/pull/2086) 的[固定补丁](https://github.com/obra/superpowers/commit/538d65120be78ad147fc82ea392da2ed0edc4cdc)仅两文件 +7/-1：plan header 加 Spec 路径，执行端读取。作者报告同一六任务、五项合成冲突中，无 spec 解决 0–1/5，spec-present stock 三次为 4/5、5/5、4/5。它是作者历史实验报告，不是五个独立项目或本轮运行。**[一手：补丁及合并状态；社区：作者实验报告]**
+
+本轮独立读取研究仓库固定 `6e6f33ff0e6a724c6568c5d9252d001a15559b0b` 的材料后，结论需收窄。**[研究：实验设计与夹具阅读]**
+
+1. **文件与权威确认混在一起。** [spec 组 story](https://github.com/prime-radiant-inc/superpowers-autoresearch/blob/6e6f33ff0e6a724c6568c5d9252d001a15559b0b/campaigns/cost-pathologies/scenarios/cp-x10-spec/story.md) 不仅增加文件，开场还点名它，模拟用户遇冲突会明确回复 spec 有权威性。[作者日志 L342–380](https://github.com/prime-radiant-inc/superpowers-autoresearch/blob/6e6f33ff0e6a724c6568c5d9252d001a15559b0b/logs/2026-08-03-plan-decomposition-campaign.md#L342-L380) 明言 stock control 检出五项后，靠该答复才继续裁决；[无 spec 组](https://github.com/prime-radiant-inc/superpowers-autoresearch/blob/6e6f33ff0e6a724c6568c5d9252d001a15559b0b/campaigns/cost-pathologies/scenarios/cp-x10-consistency/story.md) 没有此答复。可支持上位判据可达且权威明确，不能隔离成文件自身净效应。
+2. **不同不自动等于错。** [答案表](https://github.com/prime-radiant-inc/superpowers-autoresearch/blob/6e6f33ff0e6a724c6568c5d9252d001a15559b0b/campaigns/cost-pathologies/scenarios/cp-x10-spec/seeded-truth-ledger.md) 中不同组件 timeout、命名或入口 priority 下限，在真实系统可能有意不同；[新增 spec](https://github.com/prime-radiant-inc/superpowers-autoresearch/blob/6e6f33ff0e6a724c6568c5d9252d001a15559b0b/campaigns/cost-pathologies/scenarios/cp-x10-spec/fixtures/docs/superpowers/specs/job-queue-spec.md) 明确要求统一后才可判违规。0–1/5 不是一般漏洞漏检率。
+3. **公开叙述日志不等于原轨迹。** PR 称 raw records public；本轮取得日志、报告和合成 fixture，未在未截断的递归 tree 中定位 cp-x10 各 rep 原始 rollout／最终树，不能独立重算。[预设完成树](https://github.com/prime-radiant-inc/superpowers-autoresearch/tree/6e6f33ff0e6a724c6568c5d9252d001a15559b0b/campaigns/cost-pathologies/fixtures/cp-x10-consistency-outcomes/complete)不是模型输出。日志还披露判分曾把空 root 当缺陷消失、随后修正手查；此处保留限制，不重复开展判定器审计。
+
+另一个[固定补丁 7474980](https://github.com/obra/superpowers/commit/7474980bb9649fe818aace41ea0724b6a6e11def) 已要求最终 reviewer 不因 spec 沉默忽略实际使用行为，列出 Declined to judge，并让 inline 传 Review Focus。这反驳“完全没有挑战 spec 的设计”，但不能代替原请求→spec 的核对。**[一手：补丁；研究：边界]**
+
+### 后续任务：相同 brief 与过期接口 · 最小动作、成本与停止条件
+
+- 原意遗漏：选原请求中的具体成功条件对照实际使用路径；只有用户能决定的歧义才问，不能凭“合理用户”创造新需求。
+- 接缝遗漏：按具体风险检查新产物→旧消费者、旧输入→新路径，例如新 token 到旧 verifier；已有测试未区分假设时再补反例，不统一规定 probe 数量。
+- 接口改变：定位受影响的剩余任务、交付命令和已生成 brief，更新后再派发，并核验实际消费者路径，不重审整仓。
+
+这些动作增加少量来源阅读、影响面定位和定向验证；本轮未测净时间／费用收益。判据已在输入、无跨任务消费者且已有独立检查的简单修改可不叠加；额外 reviewer 若只重复发现，应撤掉而保留必要的输入与运行检查。**[研究：条件建议]**
+
+本轮已区分错误计划自洽、原意遗漏、未改代码接缝及后续计划过期，08/09 只作最小建议修订。下一阶段需要原报告的公开补丁与同条件复测，或不同真实任务中新增发现、误报与人工处理成本；没有这些证据，不为完成流程新建模板或重复本轮审计。

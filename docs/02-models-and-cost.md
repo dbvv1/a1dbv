@@ -87,12 +87,22 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 - 2026-10 有报道称 **Meta 和微软在压缩员工的 Claude 使用量**，原因是成本 **[二手：HN 287 分的报道]**。HN 讨论的重点是“成本清算”：按量计费的 Agent 开销已经大到需要管理层出面控制。
 
 **控制成本的做法** ✅：
-1. 用 `npx ccusage` 分析本地日志里的用量 **[一手]**；
+1. 先查原生状态和服务商账单；需要历史定位时，按[下节边界](#31-查异常消耗ccusage-只补历史诊断)试用 ccusage，不把估算当结算 **[一手；经验：采用判断]**；
 2. 无关任务之间 `/clear`；离开键盘前先 `/compact`（缓存还在时压缩更便宜）**[一手：Anthropic 博客]**；
 3. **谨慎使用子 Agent**：同一任务拆给 2 个子 Agent 后 token 增加约 4 倍 **[社区：原文]**；
 4. 让嘈杂的命令安静输出（加 quiet 参数），或者放到子 Agent 里跑；
 5. 把 I/O 密集的杂活交给便宜模型（Spotify Portal 的做法）👀；
 6. **给按量计费设预算与停用边界**：有开通权限的 Agent 可能产生额外费用；AWS 新体验项目和 GCP 合资格服务已有 spend limit / spend cap，但适用范围和超额计费不同，不能视为所有云服务通用的硬性封顶（见 [18 第 5 节](18-team-adoption.md#5-成本治理)）。**[一手：AWS、Google Cloud；研究：采用建议]**
+
+### 3.1 查异常消耗：ccusage 只补历史诊断
+
+**🧪 原生状态无法解释历史异常时，再试 ccusage。** 当前会话先查 Codex [`/status`、`/statusline`](https://learn.chatgpt.com/docs/developer-commands?surface=cli)，实际结算看服务商；[ccusage](https://github.com/ccusage/ccusage/blob/main/docs/guide/codex/index.md)补日/月/会话报告，已知 UUID 可用 `ccusage codex session --id <完整UUID> --json` 定位。只读获准的脱敏日志，能解释差异才保留；本地读取不授权上传。**关键局限**：实验性适配无法补回缺失日志，token、估算成本、实扣与剩余额度不能互换；[计量复核](research/2026-10-13-session-usage-metrics.md)记录缓存分项与修复链，速度另见 [17](17-troubleshooting.md#会话用量与速度不能混算)。**[一手；经验：采用判断，2026-10-13，未运行]**
+
+### 3.2 多账号与网关：先区分显式切换和请求调度
+
+**Magpie：👀 评估自动多账号调度。** 基线是官方登录与明确的账号/项目边界；多个已授权个人账号确有配额分担需求，才评估[按配额调度、会话黏性与指定账号](https://github.com/yetone/magpie/blob/main/docs/reference.md#how-magpie-picks-an-account)。**关键局限**：黏性不是硬隔离、[额度阈值也不保证绝不超额](https://github.com/yetone/magpie/issues/1295)；须核对真实请求账号与凭据流向，公司任务不自动 fallback 到个人订阅。**[一手；社区：单例；经验：采用判断，2026-10-12，未实测]**
+
+**CC Switch：👀 评估显式账号与供应商切换。** 官方登录及独立配置已够用就不加；需要统一管理时，比较[独立账号卡与切换后重启](https://github.com/farion1231/cc-switch/blob/main/docs/release-notes/v3.20.0-en.md)。[4.0 已有 Routing 与 Aggregation](https://github.com/farion1231/cc-switch/blob/main/docs/release-notes/v4.0.0-en.md)，不能仅按直连切换器比较；官方 ChatGPT 卡排除自动 failover。**关键局限**：切卡不证明旧进程已换身份，登录包写入与 [OAuth 代理的账户/条款风险](https://github.com/farion1231/cc-switch/blob/main/docs/user-manual/en/2-providers/2.1-add.md)须单独审查，不让两个管理器同时改配置。**[一手；经验：采用判断，2026-10-12，未实测]**
 
 ## 4. 国内 Coding Plan
 
@@ -109,7 +119,7 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 **注意**：
 - 换成第三方模型后，Claude Code 的部分功能（如 auto mode 分类器）可能不可用或效果不同。
 - 代码会发送给相应厂商，按合规要求选择；GLM 官方的 ZCode 被曝会静默上传 git 历史 **[二手]**。
-- 多个服务商之间切换：社区常用 cc-switch。比较网站：[codingplan.org](https://codingplan.org/en)。
+- 多个服务商之间切换：先判断是显式切换还是请求调度，见[账号与网关边界](#32-多账号与网关先区分显式切换和请求调度)。比较网站：[codingplan.org](https://codingplan.org/en)。
 
 ## 5. 本地 / 开源权重模型
 

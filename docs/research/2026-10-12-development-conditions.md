@@ -1,6 +1,10 @@
+主线：二，兼三／四
+改变的建议：05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索
+新证据：新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照
+
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
-> 核实：2026-10-12。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
+> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
 
 ## 核心判断
 
@@ -46,6 +50,140 @@
 
 还必须独立判断执行前提：该快照的 interactive Skill 要求关闭沙箱，并给出安装命令。这不应成为知识库的默认环境建议；本轮没有安装、关闭沙箱或测试运行兼容性。可以借鉴观察与动作的设计，优先使用当前已支持的浏览器入口。**[一手：S1；经验：采用范围]**
 
+### React：生产构建故障中的定向日志
+
+✅ 当状态更新依赖时序，先在实际失败的构建中复现，再记录相关状态随时间的变化；只需现有浏览器和定向日志时，不必增加调试平台。**[经验：23 §4 采用建议，2026-10-13]**
+
+**故障与新增反馈。** Dan Abramov 于 2026-02-18 提交的 [#35821](https://github.com/react/react/issues/35821) 包含[公开复现](https://github.com/gaearon/react-udv-bug)：输入经 server action 返回 JSX，`useDeferredValue` 在开发构建追上输入，在生产构建经常卡在旧值。[3 月 24 日原帖](https://bsky.app/profile/danabra.mov/post/3mhrdue7gds2h)称此前 Claude 未能定位或写出失败测试；[紧接原帖](https://bsky.app/profile/danabra.mov/post/3mhrdwgnhkc2h)说明后来按浏览器复现、阅读人指定的相关源码、给生产 bundle 加日志、修复的顺序完成。这支持“给 Agent 实际状态变化”，不证明源码阅读本身不可能发现问题。**[一手：故障报告与作者自述，非完整模型运行记录]**
+
+**实现决定与回归契约。** [固定合并提交 `c0d218f0f3e02ed581f74096e56baa947213135d`](https://github.com/react/react/commit/c0d218f0f3e02ed581f74096e56baa947213135d) 在 `pingSuspendedRoot` 不能立即重启当前 render 的分支保存 pinged lanes，避免随后被标记为 suspended 而失去重试；没有增加业务层轮询。新增测试让兄弟组件在同一 render 内 resolve 先前挂起的数据，最终必须渲染 updated；另一个既有测试记录新增的重试行为。运行中“何时发生 resolve/ping”由此变成确定的回归条件，而非仅检查页面存在。**[一手：补丁与回归代码；研究：机制归纳]**
+
+**结果边界。** [#36134](https://github.com/react/react/pull/36134) 署名由 Claude 编写/调试，获 acdlite 批准，2026-03-24 合入并关闭原 issue；本例固定修复版本是上述提交，未核实首次包含它的正式发布版本，不表示当前仍有该缺陷。PR 页面显示 245 checks passed；其 Test Plan 列出撤掉源修复应令新测试失败、修复 bundle 应解决原 repro，但这不是本轮读到的原始红绿日志或浏览器复验记录。本轮未读原 CI 逐项日志、未独立重跑，也未取得原会话日志。**[一手：署名、合入与平台聚合结果；研究：验证范围]**
+
+**替代解释与最小接入。** review 指出源码已有相关 TODO，作者也给了源码范围与日志建议；专家知识、可靠复现和会话差异都可能有贡献，不能把成功或作者所述耗时单独归因于日志。保留失败构建与输入，只观察能区分假设的状态；把确认的触发条件写入已有回归。临时日志可能改变调度，因此最终需移除诊断输出，再复测原用户路径。这是单个有专家参与的历史修复，不是工具效果对照。**[一手：review 与作者记录；经验：接入与反证要求]**
+
+### 属性测试：搜索反例不等于确认或修好缺陷
+
+核实：2026-10-13。主线二；改变 15 §6：输入组合多、有明确契约且执行便宜时，试用小范围属性搜索，不默认加测试 Skill 或全仓扫描。**[经验：采用判断]**
+
+
+1. [NumPy PR #29609](https://github.com/numpy/numpy/pull/29609)：Agent 提议并执行 Wald 样本非负属性；作者称自己花了数小时验证、定位并亲自编写修复。Agent 发现不等于 Agent 修好。[维护者独立复验](https://github.com/numpy/numpy/pull/29609#issuecomment-3210974565)表明初始 mean=1e8 在他的构建不失败，改1e9才得到3个负样本；作者确认同样结果。**[一手：原始PR与回复]**
+2. [最终合并补丁](https://github.com/numpy/numpy/commit/0ce0ef0bae095e44770a20b64177f07f11758715)不是 PR 初稿公式；最终为 `d=1+sqrt(1+4*scale/Y)`、`X=mean*(1-2/d)`，新增固定seed、mean=1e9、scale=2.25、1000样本的回归。[2.3.4发布](https://github.com/numpy/numpy/releases/tag/v2.3.4)列入backport #29926；[2.3.4固定Generator实现](https://github.com/numpy/numpy/blob/1458b9e79d1a5755eae9adcb346758f449b6b430/numpy/random/src/distributions/distributions.c#L846-L861)已改变，[同版本legacy_wald](https://github.com/numpy/numpy/blob/1458b9e79d1a5755eae9adcb346758f449b6b430/numpy/random/src/legacy/legacy-distributions.c#L147-L163)仍是旧式。不要概括为所有numpy.random.wald入口都已修复，也不把正文早期残余失败自动归给最终版。**[一手：固定源码与发布]**
+3. 属性根据：[NumPy 2.3官方API](https://numpy.org/doc/2.3/reference/random/generated/numpy.random.Generator.wald.html)规定正mean/scale，输出Wald分布；非负性得到维护者确认。它不是复制实现中间值作为预期。**[一手：API与维护者]**
+4. [dateutil #1437维护者回复](https://github.com/dateutil/dateutil/issues/1437#issuecomment-3225141158)：method=1返回Julian名义年月日，但Python date按Gregorian算weekday，2015-03-30因此显示非周日；method=2才转Gregorian为2015-04-12。原报告被判预期行为。以“Easter必须周日”跨日历强加断言会制造误报。[官方方法契约](https://dateutil.readthedocs.io/en/stable/easter.html)也分三种算法。**[一手：原始判定与API]**
+
+#### 成本与限制
+
+- 采用已有测试环境；仅当组合输入确实难枚举才加小范围属性测试。生成器需要维护有效域，过窄丢掉边界，太宽会测无效输入。语义不清、UI感受、慢且有真实外部副作用的路径不应先用大规模随机执行。**[经验：采用/撤回条件]**
+- [Hypothesis官方运行次数说明](https://hypothesis.readthedocs.io/en/latest/explanation/test-case-count.html)指出过滤重试、失败收缩、解释与重放会使实际执行次数超出max_examples；因此该字段不是调用/耗时硬预算，昂贵路径要单列隔离与总时限。[重放API](https://hypothesis.readthedocs.io/en/latest/reference/api.html#hypothesis.reproduce_failure)的blob不保证跨Hypothesis版本，永久回归优先保留显式输入。**[一手：当前文档，2026-10-13]**
+- [研究全文v1](https://arxiv.org/html/2510.09907v1)使用Opus4.1扫描933模块，API总成本$5474.20，不含本例人工修复工时；最初50份人工复核来自初筛分数前80%，不能把56%合法率当984份完整普查。本轮未取得当前强Agent“无PBT/有PBT”同任务净收益对照，本轮也没跑模型。**[一手：论文；研究：适用边界]**
+
+#### 本轮零成本公式对照
+
+以下是本轮自己编写、实际运行的 Python 标准库程序；不执行 NumPy、Hypothesis、上游仓库代码或模型。固定三组 mean、scale=2.25，枚举 n=i/1000（i=1..9999），只对照抽样公式的中间 X；80 位 Decimal 采用独立的无抵消有理化式。不是随机分布、跨平台 NumPy 或 Hypothesis 生成/收缩性能验证。**[研究：局部机制实测]**
+
+```python
+"""Own standard-library numerical probe, not a NumPy or model run.
+Formula provenance: NumPy 0ce0ef0bae095e44770a20b64177f07f11758715.
+Only n > 0 is covered; Python division-by-zero differs from NumPy's C path.
+"""
+import math
+import platform
+from decimal import Decimal, localcontext
+
+
+def old_x(mean, scale, n):
+    y = mean * n * n
+    return mean + mean / (2 * scale) * (y - math.sqrt(4 * scale * y + y * y))
+
+
+def merged_x(mean, scale, n):
+    y = mean * n * n
+    d = 1 + math.sqrt(1 + 4 * scale / y)
+    return mean * (1 - 2 / d)
+
+
+def reference_x(mean, scale, n):
+    # Independent rationalization, with no subtraction of near-equal terms.
+    with localcontext() as ctx:
+        ctx.prec = 80
+        mu, lam, z = map(lambda v: Decimal(str(v)), (mean, scale, n))
+        y = mu * z * z
+        return mu / (1 + y / (2 * lam) + (y * (4 * lam + y)).sqrt() / (2 * lam))
+
+
+print('python', platform.python_version(), 'mantissa_bits', __import__('sys').float_info.mant_dig)
+for mean in (1.0, 1000.0, 1e9):
+    cases = [(i, i / 1000) for i in range(1, 10000)]
+    failures = [(i, n, old_x(mean, 2.25, n)) for i, n in cases if old_x(mean, 2.25, n) < 0]
+    after = sum(merged_x(mean, 2.25, n) < 0 for _, n in cases)
+    print('grid', 'mean', mean, 'scale', 2.25, 'n=0.001..9.999', 'cases', len(cases), 'old_negative', len(failures), 'merged_negative', after)
+    if failures:
+        i, n, old = failures[0]
+        ref = reference_x(mean, 2.25, n)
+        new = merged_x(mean, 2.25, n)
+        print('first_in_grid', 'i', i, 'n', n, 'old', repr(old), 'merged', repr(new), 'reference', format(ref, '.25g'))
+        assert old < 0 < new and ref > 0
+        assert abs(Decimal(str(new)) / ref - 1) < Decimal('1e-6')
+        assert after == 0
+# A counterexample to treating non-negativity alone as numerical accuracy.
+mean, scale, n = 1e20, 2.25, 1.0
+new, ref = merged_x(mean, scale, n), reference_x(mean, scale, n)
+print('weak_oracle', 'mean', mean, 'n', n, 'merged', new, 'reference', format(ref, '.25g'), 'nonnegative_pass', new >= 0)
+assert new == 0 and ref > 2
+print('PASS: local mechanism checks; NOT NumPy/Hypothesis execution or model benefit')
+```
+
+原始输出：
+
+```text
+python 3.12.14 mantissa_bits 53
+grid mean 1.0 scale 2.25 n=0.001..9.999 cases 9999 old_negative 0 merged_negative 0
+grid mean 1000.0 scale 2.25 n=0.001..9.999 cases 9999 old_negative 0 merged_negative 0
+grid mean 1000000000.0 scale 2.25 n=0.001..9.999 cases 9999 old_negative 52 merged_negative 0
+first_in_grid i 1235 n 1.235 old -52.98190641403198 merged 1.4751921906253074 reference 1.475192180407241681105309
+weak_oracle mean 1e+20 n 1.0 merged 0.0 reference 2.249999999999999999898750 nonnegative_pass True
+PASS: local mechanism checks; NOT NumPy/Hypothesis execution or model benefit
+```
+
+同一小网格在普通参数下两式均无负值，在 mean=1e9 下旧式52次负值、最终式0次；首个反例n=1.235与独立高精度正值对照。另一个极端输入使最终式归零，非负检查仍通过，说明单一属性不能充当数值精度验收。程序只覆盖n>0，不能用Python除零行为推断C实现。**[研究：实际结果与边界]**
+
+程序 SHA256：`7f7130436211bb82e4eb334afbc5ef56c713c4eaecd5f64168be13ab37194263`；输出 SHA256：`a2c69ab5866f715813a88228a914fafe2fa974f2dbfcfc58d537172fab7caf72`。未运行新的模型、NumPy或Hypothesis实验，也未测交付总成本；没有据此证明额外 Skill 比直接提示更有效。
+
+### 外部生产者校准错误预期
+
+> 核实：2026-10-13 UTC。15 §6 的窄增量：外部兼容预期应来自生产者，有证据时修正旧断言；不要求增加 reviewer 或重复用例。**[研究：采用判断]**
+
+RTK 的[真实用户报告 #2367](https://github.com/rtk-ai/rtk/issues/2367)是 Windows 默认当前项目发现为零。[旧源码 5d32d073](https://github.com/rtk-ai/rtk/blob/5d32d0736f686b69d1e8b9dc45c007d4eb77a0a2/src/discover/provider.rs#L404-L410)已有 Windows 测试，却与实现、注释共同把合成路径 `C:\Users\foo\bar` 的预期写成 `C:-Users-foo-bar`；真实生产者目录应为双连字符。该基线 [CI](https://github.com/rtk-ai/rtk/actions/runs/29001896511) 的 Linux/macOS/Windows `cargo test --all` 步骤均成功，但原始 Windows 日志已返回 410，未逐例确认该用例的执行结果。**[社区：故障报告；一手：源码与 CI 元数据]**
+
+[已合入 #2952](https://github.com/rtk-ai/rtk/pull/2952)（head `40fccbd8ef11d7cfda951253fa6f63944f1188e4`）同时添加冒号替换、修正文档和旧断言；贡献者报告原机默认命令 0→1，维护者[要求删除重复测试](https://github.com/rtk-ai/rtk/pull/2952#pullrequestreview-4922112994)，最终补丁只修正旧用例。另一贡献者[检查生产者目录后撤回大小写归因并报告 0→30](https://github.com/rtk-ai/rtk/issues/2919#issuecomment-5008576670)，其 #3043 未合入，不能当成 #2952 发布后的独立复测。**[一手：补丁与评审；社区：运行报告]**
+
+反例与边界：改断言不必然是弱化验收，重复同路径测试也不必然更可靠；`--all` 找到历史仅能辅助诊断，不能替代当前项目筛选。上述实跑均属贡献者报告；[有 Claude Code 标记的 #2368](https://github.com/rtk-ai/rtk/pull/2368)是未合入的修正稿，不能据此归因 AI 写出原 bug，也未证明所有版本或大小写场景恢复。
+
+标准库局部探测：只用合成路径与临时空文件，按已读源码写出的 **Python 逻辑模型，非 Rust/Windows/RTK 执行**；固定期望目录不调用编码函数生成。旧编码找到 0 个，新编码恰好找到 1 个，无关目录均未命中。**[研究：本轮实际运行，机制范围]**
+
+```python
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+cwd = r"C:\Users\foo\bar"
+with TemporaryDirectory() as tmp:
+    root = Path(tmp)
+    for slug in ("C--Users-foo-bar", "C--Users-other-project"):
+        (root / slug).mkdir()
+        (root / slug / "session.jsonl").touch()
+    for label, chars, count in (("old", "/._\\ []", 0), ("new", "/._\\ []:", 1)):
+        encoded = "".join("-" if not c.isascii() or c in chars else c for c in cwd)
+        hits = sorted(p.parent.name for d in root.iterdir()
+                      if encoded in d.name for p in d.glob("*.jsonl"))
+        assert len(hits) == count
+        assert "C--Users-other-project" not in hits
+        print(label, encoded, hits)
+print("PASS: Python logic model only; NOT Rust, Windows or RTK execution")
+```
+
+输出：`old C:-Users-foo-bar []`；`new C--Users-foo-bar ['C--Users-foo-bar']`；`PASS: Python logic model only; NOT Rust, Windows or RTK execution`。它只验证已选映射与过滤逻辑的区别，不验证生产者完整算法或真实 CLI。
+
 ## 三、领域知识比通用规划更可能是持久资产
 
 对存量系统，API 类型只描述部分约束。舍入、时区、历史错误码、哪个任务实际运行、哪些异常被业务接受，经常决定修改是否正确。把这些整理成可追踪的案例、数据说明和短设计理由，可能比再教强模型“先计划后执行”更有增量。**[经验：待案例检验的判断]**
@@ -78,6 +216,20 @@ S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 架构与可维护性紧随其后，但落在实际第二次修改：依赖边界是否减少了需要理解的内容，测试是否提供独立预期，Agent 是否帮助人建立解释，而不是默认代码越小或模块越多越适合 AI。
 
 模型/Skill/多 Agent 比较继续保留，条件是能指向未解决的具体困难。热门项目、硬件、本地模型、资产生成、游戏引擎和技术社区都可以进入选题，但要说清它改变了哪项开发能力、替代方案是什么、额外成本是什么。仅与 AI 相邻、无法改变采用判断的材料，不优先写进核心正文。
+
+### Discourse：共享组件承接后续需求
+
+✅ 对语义相同的新视图，先复用现有组件；真实需求出现时，再检查能否只扩展共享边界，不提前建立通用框架。**[研究：采用判断，2026-10-13]**
+
+**起点与归属。** [#38888](https://github.com/discourse/discourse/pull/38888) 由 markvanlan 提交，2026-04-16 合并；[固定提交](https://github.com/discourse/discourse/commit/8feeaa5d69cd9462cc6aa4f560cb1e953e588e0b) 列 Claude Opus 4.6 及多位人类 coauthor，记录作者声明的 AI 参与，不包含生成过程，不能归因全部代码。[初始 header](https://github.com/discourse/discourse/blob/8feeaa5d69cd9462cc6aa4f560cb1e953e588e0b/frontend/discourse/app/components/nested-view-header.gjs) 直接导入并渲染已有 TopicCategory。**[一手：署名与源码]**
+
+**真正的下一需求。** 8 月 11 日，另一贡献者 nullchristo 的 [#42520](https://github.com/discourse/discourse/pull/42520) 为客户插件在 category/tags 旁增加信息提供扩展点。[合并补丁](https://github.com/discourse/discourse/commit/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e) 只改共享 TopicCategory 的包装 outlet 和 docked header 的 topic 参数；同版本 [nested/header](https://github.com/discourse/discourse/blob/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e/frontend/discourse/app/components/nested/header.gjs) 仍调用它，未另改树加载或复制 nested 专属实现。此人的登录名不同于初始作者与列出的人类 coauthor，但不能断言是首次接触项目。**[一手：需求、补丁与调用链]**
+
+**交付边界。** 后续 PR 获批准并合并。[core frontend 原日志](https://github.com/discourse/discourse/actions/runs/31506849232/job/93830516975) 核实运行版本为 `48d4571d4d747ae4fade0c49fd9e851fb693cd78`，即 head `cd63a1cc4b647701f505131af05bd7368fdf4bc5` 与 base `3908561e29d2187ac622eadd8a59fa3ba54ebac1` 的测试合并；`qunit:test` 汇总 6473 passed、0 skipped/failed。补丁没有新增测试，日志中通用 PluginOutlet 用例不等于新客户插件验收；原需求说将支持该插件，没有客户部署、复测或人力计时。本次只读源码与日志，未复跑。**[一手：CI 原日志；研究：范围限定]**
+
+**反例约束。** [真实管理员报告](https://meta.discourse.org/t/im-struggling-to-recover-deleted-post-how-to-fix/403161/1)显示，已删除 nested topic 的 500 阻断恢复。[#40134](https://github.com/discourse/discourse/pull/40134) 的[固定修复](https://github.com/discourse/discourse/commit/a051d96b6526c7a2ad2b7754863d7364e6401c28)给 OP 查询补接已有 visibility helper，并新增 staff show/context 返回 200 与 placeholder、non-staff 返回 404 的断言。修复作者 xfalcox 也是初始人类 coauthor，属团队维护；手工恢复未勾选，不能写用户已成功恢复。**[社区：用户原帖；一手：补丁]**
+
+因此，UI 复用可以承接下一次扩展，却不能保证后台生命周期完整；让 Agent 同时检查必要的查看、删除、恢复路径。局部补接能满足契约时，无需升级为架构重写。**[研究：采用建议]**
 
 ### 能推翻或改变这个优先级的证据
 

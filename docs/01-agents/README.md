@@ -24,7 +24,7 @@
 | 插件市场 | ✅ 官方 315 个 | ✅（2026-03 起） | Extensions | 插件 |
 | Hooks | ✅ 约 30 种事件；支持 command / http / mcp_tool / prompt / agent 五种类型 | ✅ | ✅ | ✅ |
 | 子 Agent / 并行 | 子 Agent、Agent View、Agent Teams（实验）、Dynamic Workflows、云端 Projects | 子 Agent（已 GA）、云端任务 | 子 Agent | `@general` 子 Agent |
-| LSP 代码智能 | ✅ 13 种语言官方插件 | ❌（issue #8745 仍开放） | — | ✅ |
+| LSP 代码智能 | ✅ 官方插件；[需服务器二进制，官方云会话不启动](../05-skills-and-plugins.md#3-插件与市场) | ❌（issue #8745 仍开放） | — | ✅ |
 | 沙箱 | macOS Seatbelt / Linux bubblewrap，可配网络白名单 | 默认沙箱（macOS Seatbelt / Linux bubblewrap / Windows sandbox） | Seatbelt / Docker | — |
 | 自动审批 | auto mode（分类器，2026-08 起默认） | Auto-review 审查 Agent（`approvals_reviewer = "auto_review"`，策略开源） | Unified Auto Mode | — |
 | 回滚 | checkpoint + `/rewind` | `/undo` 被移除（issue #9203），`/rewind` 未实现（issue #11626） | checkpointing + rewind | — |
