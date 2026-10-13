@@ -37,6 +37,7 @@
 | 长期任务三：计划与评审输入 | 15:16（UTC+8）来源与固定源码核对完成，限定复核通过 | [输入交接与反证](../research/2026-10-13-review-inputs.md)；08/09 补原需求判据与接口变更后的计划更新；完整离线 14 阶段及 `git diff --check` 通过，未运行上游模型 |
 | E1–E3 补交证据口径 | 15:28（UTC+8）公开记录算术核对及文案修订完成，限定复核通过 | [既有研究记录](../research/2026-10-12-experiment-records.md#产物状态与引用口径)；补公开产物状态、E2 累计字段与过程摘要边界，保留历史采用建议；完整离线 14 阶段及 `git diff --check` 通过，未重跑模型 |
 | 长期任务一：发布后理解与呈现契约 | 16:14（UTC+8）固定来源与文案修订完成，本地验收通过 | [CodexBar 反馈链](../research/2026-10-13-product-feedback-contract.md)；分支 `dot/product-feedback-contract-20261013`，起点 `c1460a6`；15 融合理解反馈与符号语义比较；完整离线 14 阶段及 `git diff --check` 通过，未证开启颜色或最终符号版复测 |
+| 方向锚点复盘评审（云端） | 待 dot 结果提交，未判“范围内通过” | 当前基线 [`d3db2c3ebae12f0e9d04bd490c742009e7ea323c`](https://github.com/dbvv1/a1dbv/commit/d3db2c3ebae12f0e9d04bd490c742009e7ea323c) 只有锚点／分工指令，尚无其后的复盘结果；32 份日期命名研究记录、7 个 practical-tools 文件作为验收前基数；此前新增 3 份均早于锚点，不合算为新一轮超限。候选已写入 BACKLOG 主线一／二／四，均未认领；不替 dot 执行整理 |
 | workflow-ablation 先导 | 跳过 | 预算未填写，0 轮新模型运行 |
 
 ## 进行中的任务
