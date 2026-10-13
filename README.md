@@ -3,7 +3,7 @@
 > 帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**本轮更新：2026-10-13**：以 **Codex 为主、Claude Code 为辅**，dot 主导，Claude 与云端 Codex 的建议作补充。[实用工具模块](docs/practical-tools/README.md)保留按问题选型入口；新增 [SlopCodeBench 原始机制调查与局部复现](docs/research/2026-10-13-slopcodebench.md)，区分持续失败、新增回归与评分设施问题，并明确[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)。下一步依次完善[任务级使用入口](docs/01-agents/codex.md#先给什么遇到什么再增加能力)、正文与研究记录分层、协作任务归档。工具与案例的证据归属、验证范围见各页记录。
+**本轮更新：2026-10-13**：以 **Codex 为主、Claude Code 为辅**，dot 主导，Claude 与云端 Codex 的建议作补充。[任务级入口](docs/01-agents/codex.md#先给什么遇到什么再增加能力)、正文分层与协作归档已完成；[整体评估与专项审计](docs/collaboration/reviews/2026-10-13-331e093.md)修正模板覆盖、默认流程和撤回结论回流问题。[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)继续追产品试用、能力增量、连续修改和接管成本；新增内容的证据及验证范围见各页。
 
 执行资产与历史验证见 [维护路线](docs/maintenance-roadmap.md)、[长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
 
@@ -44,7 +44,7 @@
 | 做长任务、自建 Agent 或无人值守流程 | [16 自建 Agent](docs/16-building-agents.md) → [20 可靠的长任务](docs/20-codex-long-horizon.md) |
 | 查看长期研究重点和待验证问题 | [研究路线](docs/research/README.md) |
 | 查看两端分工、实施任务和提交评审 | [协作入口](docs/collaboration/README.md) |
-| 核实这轮内容依据与限制 | [本轮审查](docs/research/2026-10-10-audit.md) |
+| 核实最新审计范围与仓库问题 | [整体评估](docs/collaboration/reviews/2026-10-13-331e093.md)；[历史来源审查](docs/research/2026-10-10-audit.md) |
 
 ## 目录
 

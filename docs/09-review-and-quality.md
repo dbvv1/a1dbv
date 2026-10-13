@@ -1,6 +1,6 @@
 # 09 · 评审与质量
 
-> 核实时间：2026-10-11（UTC+8；评估证据核对为 2026-10-10 UTC）；HumanLayer 训练与评审推论于 2026-10-12 定点复核，其余未重验。
+> 核实时间：2026-10-11（UTC+8）；HumanLayer 推论于 10-12 定点复核；10-13 将额外 reviewer 与跨厂商互审改为条件试用，其余未重验。
 
 ## 1. 质量数据：AI 代码的真实代价
 
@@ -30,8 +30,8 @@
 | `/code-review ultra` / `claude ultrareview` | 云端多 Agent 深度评审，会验证发现的问题；CLI 形式可放进 CI | 🧪 |
 | `/security-review`、`security-guidance` 插件 | 安全审查；后者在编辑时就提示 9 类常见风险 | 🧪 |
 | `/simplify` | 只看复用、简化、效率，不找 bug | 🧪 |
-| 自定义评审子 Agent | 按项目规范评审（模板：[code-reviewer](../templates/generic/.claude/agents/code-reviewer.md)） | ✅ |
-| **另一家的模型交叉评审** | Claude 写的让 Codex 审，反之亦然 | ✅ |
+| 自定义评审子 Agent | 已有明确的漏审类型或复杂变更需要独立检查时使用（模板：[code-reviewer](../templates/generic/.claude/agents/code-reviewer.md)） | 🧪 按风险试用 |
+| **另一家的模型交叉评审** | 比较新增有效发现、误报和审查成本；换品牌不自动获得独立证据 | 🧪 不默认每次互审 |
 
 **评审子 Agent 的提示要点（官方 [一手]）**：只给它 diff 和评判标准，不给实现过程中的推理；明确要求“**只报告影响正确性或违背需求的问题，不报告风格偏好**”。被要求找问题的评审者几乎总能找出点什么，追着每一条改会导致过度设计。
 

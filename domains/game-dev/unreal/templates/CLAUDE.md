@@ -9,7 +9,7 @@
 - PIE 正在运行时，很多编辑器工具的行为会变；结果不对时先检查 PIE 状态。
 - 编译：只改了 `.cpp` 函数体 → MCP Live Coding；其他情况 → `ue-build` Skill。改完逻辑 → `ue-run-tests` Skill。
 - 探索性的资产修改，优先请我在编辑器里开一个 Sandbox（UE 5.8+），确认后再合回项目。
-- 大范围检索交给 Explore 子 Agent；功能完成后让 `ue-code-reviewer` 子 Agent 评审。
+- 可独立的大范围检索可交给 Explore；涉及引擎生命周期、资产或接口风险时可用 `ue-code-reviewer`，不为每项修改固定叠加评审。
 - 不需要我参与的步骤就继续做；只有在没有我就无法继续（比如需要关闭或重启编辑器），或者要做破坏性操作（批量修改资产、改 Config 或 `.uproject`、强推）之前，才停下来问。
 - 长时间运行结束时，用 **Blocked on me / Changed / Found** 三个标题总结。
 - 压缩上下文时，保留已修改文件清单、是否需要重启编辑器，以及使用过的编译和测试命令。
