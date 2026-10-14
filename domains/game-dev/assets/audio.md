@@ -28,8 +28,9 @@
 1. **先辨识，再丰富。** 保留关键提示的标志性起音；脚步、碰撞等高频声音在同一语义内做有限变体，别把“随机更多”当成质量。Overwatch 开发者公开材料将角色／威胁辨识与较少的关键声音变化联系起来；这是作者实践，不是本项目反应时间测试。[一手／研究]
 2. **先给重要声音留位置，再加响度。** 先分关键反馈、普通效果、环境、音乐与语音；战斗密集时削减非必要叠加，必要时让音乐／环境为台词或警告短暂让位。世界声源表达方向和距离，UI／自身确认按玩法决定是否保持稳定位置；不照搬大型射击游戏的复杂威胁评分，也不给所有项目统一 ducking 分贝数。[研究]
 3. **Unity 6.3 LTS 先用原生机制。** [Audio Random Container](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioRandomContainer-UI.html)已有 Shuffle、避免最近重复及音高／音量变化；[AudioMixer](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioMixerInspectors.html)有 Send／Duck Volume。先调这些，再决定是否写额外选择器。玩家音量和状态混音分开控制，避免脚本写入的 exposed 参数锁住快照变化。[一手／研究]
-4. **让音乐承接情绪，不随状态抖动。** 探索／战斗转换按已设计的乐句安排，瞬间进出战斗先平滑状态；胜负短曲可有明确插入规则。少量循环能成立就不加分层，只有反复修改转场、分层与参数曲线成为主要工作，才🧪比较 FMOD 的可视化制作和实时调音收益。[研究]
-5. **听不到也不丢玩法。** 依 [Xbox XAG 103](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/103)／[105](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/105)，分组音量、单声道选项与关键声音的视觉替代一起设计；方向性警告的替代要保留方向和事件含义，台词字幕不能代替所有声音信息。音乐／音效关闭后仍能理解关键状态。[一手／研究]
+4. **Unreal 先分清声源、混音和调度。** 普通播放沿用 Sound Wave／Sound Cue；需要程序化变化时🧪用 MetaSound Source，把共用逻辑放 Patch、同图不同参数做 Preset。Sound Class／Mix 管分类与状态，Submix 管汇总效果，Sound Concurrency 管叠加淘汰；MetaSounds 不包办这些职责。短音必须结束，静音组件仍可能占并发预算；不要为“不断音乐”给全部声源打开 PlayWhenSilent。当前按 UE 5.8 文档核对；MetaSounds 已在 5.4 正式转为 Production Ready，试用评级针对是否值得增加制作复杂度，非认定它仍为 Beta。文档冲突与边界详见 [WP6 引擎对照](../../../docs/research/2026-10-14-game-wp6-audio.md#105-unityunreal同一质量目标不同原生职责)。[一手／研究]
+5. **让音乐承接情绪，不随状态抖动。** 探索／战斗转换按已设计的乐句安排，瞬间进出战斗先平滑状态；胜负短曲可有明确插入规则。少量循环能成立就不加分层，只有反复修改转场、分层与参数曲线成为主要工作，才🧪比较 FMOD 的可视化制作和实时调音收益。[研究]
+6. **听不到也不丢玩法。** 依 [Xbox XAG 103](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/103)／[105](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/105)，分组音量、单声道选项与关键声音的视觉替代一起设计；方向性警告的替代要保留方向和事件含义，台词字幕不能代替所有声音信息。音乐／音效关闭后仍能理解关键状态。[一手／研究]
 
 **最重要的验收：** 在普通音量和实际高频操作下，玩家能否分清结果、感到动作节奏、听清危险，同时愿意连续听下去；低音量、普通扬声器、单声道和无声再检查信息是否丢失。先减重复、装饰层和过强压低效果，再考虑生成更多资产或换中间件；API 正确不证明这些体验已成立。[研究]
 
@@ -65,7 +66,7 @@ SFX v2 接口当前允许 0.5–30 秒及 loop 参数；能力页与接口的最
 
 **✅ 先定探索、战斗、胜负等状态，再定乐句长度和切换点。** 少量可循环 BGM 配独立 jingle 往往足够；需要连续强度变化时，才增加同长度、同节拍、同调性和同起点的分层。分离 API 产生的 stem 需查串音和混响，不等于拿到了原生独立录音轨。[一手／研究]
 
-Unity 的[PlayScheduled](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AudioSource.PlayScheduled.html)基于 dspTime 安排开播、支持预缓冲；[TransitionToSnapshots](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Audio.AudioMixer.TransitionToSnapshots.html)做混音状态过渡。它们不会替你找正确乐句；不要用 Update 计时精度替代音频时钟，也不要指望快照切换自动对齐节拍。[一手／研究]
+Unity 的[PlayScheduled](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html)基于 dspTime 安排开播、支持预缓冲；[TransitionToSnapshots](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Audio.AudioMixer.TransitionToSnapshots.html)做混音状态过渡。Unreal 对应先用 [Quartz](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-quartz-in-unreal-engine) 的 Clock／Play Quantized 提前安排拍点。两者都不会替你找正确乐句；Update／Tick 中提前提交调度可以，等到拍点才发普通 Play 不等价，混音淡变也不自动对齐节拍。采样级音频调度不使游戏线程回调、输入判定或设备输出变成零延迟。[一手／研究]
 
 导入前保留母版与精确循环采样点；首尾波形检查只能筛 click，仍要听乐句是否完整、尾音是否被切、重复是否突兀。第二版“战斗更密、16 小节改 8 小节”优先改已有层与段落；生成缺口才用 Music inpainting 或 ACE repaint。ACE turbo 有局部 repaint，但 extract/lego/complete 在固定版本只列于 base，不能用“ACE 支持”笼统推给 turbo。局限：局部编辑入口不证明未改区间位级不变，也不证明听感衔接成功。[一手／研究]
 

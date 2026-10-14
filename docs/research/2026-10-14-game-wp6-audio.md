@@ -220,3 +220,31 @@ Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/communi
 
 
 [研究：本节验证] 两个负责文档的 `git diff --check` 与 `scripts/check_repo.py`（177 文件）通过；GFM 渲染核对新章节锚点及三行比较表。未重跑完整离线入口，未试听、运行模型／引擎或进行玩家研究；不将文档检查当成听感、低延迟或无障碍验收。
+
+### 10.5 Unity／Unreal：同一质量目标，不同原生职责
+
+**版本与证据范围（2026-10-14 UTC）：** Unity 使用本文既有的 6000.3 LTS 基线，[支持页](https://unity.com/releases/unity-6/support)列支持至 2027-12；不是宣称 LTS 永远优于 Update。UE 按 [5.8 正式发布公告](https://www.unrealengine.com/news/unreal-engine-5-8-is-now-available)（2026-06-23）与下列当前标注 5.8 的文档核对，不声称测过最新 hotfix。[UE 5.4 发布说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.4-release-notes?application_version=5.4)已明确 MetaSounds 转为 Production Ready／退出 Beta；当前 [MetaSounds Quick Start](https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-quick-start)却仍显示 Beta 警示，两份官方文档存在不一致。成熟度采用明确发布里程碑，不用教程遗留横幅将整个系统降回 Beta；表中🧪针对项目是否需要新增图制作复杂度，具体 SeekRestart 的实验状态另外核查。生产就绪不证明本项目设备表现或所有版本兼容。[一手／研究]
+
+| 玩家质量目标 | Unity 6000.3 原生路径 | UE 5.8 原生路径与采用判断 |
+|---|---|---|
+| 命中、格挡、脚步清楚且不机械重复 | 实际玩法事件触发 AudioSource／Random Container；保留关键起音，限制变体 | ✅ 普通 Sound Wave／Sound Cue 已满足就沿用；🧪需要随速度、材质或强度改变声源时再用 MetaSound。避免为了换系统重写已合格反馈 |
+| 密集战斗仍能听见危险 | AudioMixer 分类、Send／Duck Volume 留位置；priority／real voices 处理资源竞争，事件层限制重触发 | Sound Class／Sound Mix 处理分组状态，Submix 汇总处理，Sound Concurrency 处理最大并发、重触发与淘汰；三者不能互相替代 |
+| 音乐连续、分层同步、转场不抖动 | 以 dspTime 提前 PlayScheduled；快照只负责混音变化 | Quartz Clock／Play Quantized 提前安排边界；MetaSound 可组织声源图。先有合法可循环素材与正确乐句，再设计转场；即时命中不等音乐边界 |
+
+表中采用顺序是任务推导，不是跨引擎音质／性能排名。[研究] UE [Sound Classes](https://dev.epicgames.com/documentation/unreal-engine/sound-classes-in-unreal-engine?lang=en-US)确认分组参数、Sound Class Mixes 和路由；[Audio Mixer Overview](https://dev.epicgames.com/documentation/unreal-engine/audio-mixer-overview-in-unreal-engine)区分音频逻辑线程与做 DSP／混音的 audio render thread，并说明 Submix 汇总效果。**不要把 Unity 的 AudioMixer 资产与 UE 同名底层 renderer 当成一一对应产品，也不要把 MetaSound 当总线混音器或游戏状态机。** 玩家偏好音量与临时情境衰减分别控制、检验两者叠加，是两条路线共同的设计要求。[一手／研究]
+
+**动作和节奏：精确渲染靠提前安排，不靠游戏线程准点回调。** [Unity PlayScheduled 6000.3](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html)公开代码用两个 AudioSource 交替拼段、在 Update 中提前排未来 dspTime，给加载／缓冲留准备时间；它不是“禁止 Update”，也不是每帧减倒计时后普通 Play。[Quartz Overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-quartz-in-unreal-engine)说明游戏线程通过 Clock Handle 提交未来请求，Clock／Metronome 在 audio render thread 按拍或时间定位，甚至可在 buffer 中间开始。采用：可预知的音乐和周期声音提前安排，未知命中结果就绪即触发；节奏玩法的输入时间戳／判定窗口另以选定时基校准，不以 Blueprint 拍点通知到达时间冒充音频实际开播。调度无法追回迟交请求，也不消除声卡／蓝牙延迟、素材首用加载或游戏逻辑卡顿；缓冲和准备提前量需在目标设备测，本文不给通用毫秒数。[一手／研究]
+
+**过载先查生命周期，再提高 voice 上限。** [MetaSounds Reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-reference-guide-in-unreal-engine)确认 Source 可独立出声、Patch 用于复用；Preset 继承只读父图并覆盖输入，父图修改会传至子 Preset。适合“同一脚步结构换材质／参数”，不适合假设每个变体图已独立冻结。带 UE.Source.OneShot 的短音若未触发 On Finished，会持续播放；尾音结束后必须完成，而循环环境音应明确其停止／销毁归属。[一手／研究]
+
+[Sound Concurrency Reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-concurrency-reference-guide)确认 Max Count 统计所有 active components，不只听得见的声音；同一共享资产统一状态，多条规则须全部满足，Retrigger Time 拒绝的声音忽略虚拟化设置，Voice Steal Release Time 可给淘汰声淡出。采用：普通撞击、环境与关键提示不要挤在一个未区分用途的全局限额里；选 Prevent New／Stop Oldest／优先级策略时明确保护的是新警告还是旧尾音。把所有优先级抬高、只调距离或只压音量不能解决掩蔽。[一手／研究]
+
+[EVirtualizationMode](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/EVirtualizationMode)的反例尤其重要：PlayWhenSilent 继续占 voice；Restart 的循环在恢复时从头开始；SeekRestart 在该页仍标 EXPERIMENTAL，只承诺尝试定位。需要保持音乐相位时，不能随意套用远处环境音的 Restart，也不能把 PlayWhenSilent 写成免费虚拟化。先限制持续声源数量并验证返回可听范围／资源竞争后的恢复，再决定保留播放的 CPU、解码和内存成本是否值得；虚拟化不等于免加载、免 DSP 或清晰混音。[一手／研究]
+
+**先借现成的小例子，不移植完整框架。** Unity 的 PlayScheduled 页有可读调度示例；UE Quick Start 有炸弹从持续火花到爆炸、以及速度驱动风声的具体图和生命周期连接，可先按自己的合法音频重建最小声源。[Lyra 官方样例说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-in-unreal-engine)提供随引擎更新的模块化项目，Quick Start 指向它的更复杂环境响应；适合后续获准时只检查所需音频部分，不因它完整就引入多人框架。公开教程可读不等于素材可任意再分发；本轮未下载 Lyra、未阅读其实际包内许可／源码，不称其为开放许可音频素材库，也不声称完成 5.8 移植验证。[一手／研究]
+
+**中间件的门槛仍是制作瓶颈。** 现有原生能表达少量状态、混音和调度时，✅留在原生；当第二次修改反复卡在大量音乐过渡、参数曲线或跨角色事件制作，再🧪比较 FMOD／Wwise 的实际编辑工作量与集成／bank／许可维护成本。本节不新增 Wwise 版本、价格或性能结论，不因为出现 Quartz／MetaSounds 就认为中间件失去价值，也不为专业音质强行增加一套系统。[研究]
+
+后续验证只需围绕这三个质量目标增加压力情境：连续命中时警告不丢；短音停止后 active／voice 数回落；游戏帧抖动时已提前排好的音乐边界保持连续；离开再返回、暂停恢复及 16→8 小节修改后不重启错位。具体改善仍要实际听、测目标设备；本节是公开 API／示例阅读，未运行引擎、试听或做延迟／性能实验。[研究]
+
+[研究：10.5 验证] 2026-10-14 完整 `python3 scripts/check_offline.py` 14 阶段通过，套件非空且无 skip；`git diff --check` 通过。只证明仓库文档／配置与既有确定性检查通过，不证明上述音频实现、目标设备表现或许可清权完成。
