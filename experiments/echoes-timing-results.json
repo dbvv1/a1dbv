@@ -1,0 +1,46 @@
+{
+  "source_commit": "472ebca6d20af5d6de4264897ba98220ce521fd0",
+  "fixture_origin": "embedded_public_data_projection",
+  "fixture_sha256": "f1535b8884281dc6ba6be315d2c38a8ead2c49d829430de01696976f3559df42",
+  "scope": "Descriptive timing aggregates among valid submissions; not causal effects",
+  "groups": {
+    "ai": {
+      "valid_submissions": 40,
+      "valid_timings": 39,
+      "median_minutes": 136.06666666666666,
+      "by_timing_source": {
+        "measured": {
+          "n": 21,
+          "median_minutes": 105.45
+        },
+        "estimated": {
+          "n": 18,
+          "median_minutes": 195.0
+        },
+        "excluded": {
+          "n": 1,
+          "median_minutes": null
+        }
+      }
+    },
+    "human": {
+      "valid_submissions": 35,
+      "valid_timings": 33,
+      "median_minutes": 172.63333333333333,
+      "by_timing_source": {
+        "measured": {
+          "n": 18,
+          "median_minutes": 105.125
+        },
+        "estimated": {
+          "n": 15,
+          "median_minutes": 240.0
+        },
+        "excluded": {
+          "n": 2,
+          "median_minutes": null
+        }
+      }
+    }
+  }
+}
