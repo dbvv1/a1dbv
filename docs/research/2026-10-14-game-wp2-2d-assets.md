@@ -93,3 +93,79 @@
 后续经允许才做小切片：同一母版/目标尺寸下新增外观相似但功能不同道具，或改变攻击时序/地形连接；保留全部拒绝图、usage、主动工时与修改前后资产。当前不执行该试验。**[经验：后续区分方案的最小任务]**
 
 内部独立复核交叉核对价格/快照、Qwen研究许可、QA步行假设、JatCool人工paint及UCL版本边界；已修正RGB距离和全网证据措辞。`python3 scripts/check_offline.py` 14阶段与 `git diff --check` 按本结果提交执行；真实客户端/模型/引擎与hosted CI不由此推定。
+
+## 9. 阶段 F-b：图像动态事实表
+
+2026-10-14 重新读取下列官方原文。`2026-11-14／选型前`表示建议最迟复核日；换型号、套餐、地区、输入用途或合同版本时提前复核，不表示已有定时监控。价格为美元 API 标价，不能代替账户实际账单或订阅权益。[一手／研究]
+
+**审计两个疑点均已消除。** 官方图像指南在同一小节点名 Sunburst 和 Flare，随后明确两者的透明背景都使用 `background: "transparent"`，输出格式为 PNG 或 WebP；Flare 另有独立型号页和日期快照。单一型号页没有重复透明说明，不构成“不支持”的证据；这次确认的是接口契约，没有调用模型验证边缘质量。[一手／研究]
+
+| 事实 | 来源 | 核实日 | 复核日或触发 | 对推荐的影响 |
+|---|---|---|---|---|
+| Sunburst 存在；固定 `gpt-image-2.5-sunburst-2026-09-08`；官方定位重编辑精度，可用于 Image API 或 Responses 图像工具 | [Sunburst 型号页](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst) | 2026-10-14 | 2026-11-14／选型前 | 保留透明静态精改首试；定位不等于游戏实测冠军 |
+| Flare 存在；固定 `gpt-image-2.5-flare-2026-09-08`；官方定位快速日常高质量生成，支持文本／图像输入和上述两 API 入口 | [Flare 型号页](https://developers.openai.com/api/docs/models/gpt-image-2.5-flare) | 2026-10-14 | 2026-11-14／选型前 | 保留速度对照，不把它当不存在或仅消费端功能 |
+| 两者均支持透明 PNG/WebP；质量档包括 low/medium/high/xhigh/max/auto；总像素至少 655,360，边长倍数为 16 | [图像指南：Size and quality options](https://developers.openai.com/api/docs/guides/image-generation#size-and-quality-options) | 2026-10-14 | 2026-11-14／接口变化时 | 保留透明推荐；32/64 像素格须缩小后验收 |
+| 两者 Standard 每百万 token：文本输入 $5、缓存 $1.25，图像输入 $8、缓存 $2、图像输出 $30；Batch 图像输出 $15；旧 Image 2 计算器不能估 2.5 消耗 | [Sunburst](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst)、[Flare](https://developers.openai.com/api/docs/models/gpt-image-2.5-flare) | 2026-10-14 | 2026-11-14／预算前 | 同费率不证明同单张成本；用实际 usage、接受率与等待成本决定 |
+| OpenAI API 输出在双方之间、法律允许范围归客户；输入清权、输出审查由客户负责；默认不以内容改进服务，除非明确同意 | [Services Agreement §4](https://openai.com/policies/services-agreement/) | 2026-10-14 | 2026-11-14／签约或地区变化 | API 路线有条件保留；不以 ChatGPT 订阅替代 API 合同 |
+| API 服务访问／提供受支持地区清单限制，不能从 API 访问规则推导离线游戏的全球销售禁区 | [官方 API 地区清单](https://help.openai.com/en/articles/5347006-openai-api-supported-countries-and-territories) | 2026-10-14 | 2026-11-14／实际访问前 | 使用者按真实所在地核查，不绕过地区限制 |
+| 旧 `gpt-image-2-2026-04-21` 仍列型号快照；ChatGPT 图像功能另受居住地消费条款管辖，不能当固定 API 快照 | [旧型号页](https://developers.openai.com/api/docs/models/gpt-image-2)、[非欧洲条款](https://openai.com/policies/row-terms-of-use/)、[条款入口](https://openai.com/policies/terms-of-use/) | 2026-10-14 | 2026-11-14／换入口时 | 保留历史产物标识，不将旧演示归为 2.5 实证 |
+| `gemini-nano-banana-2.1` 存在；支持 1K/2K/4K、最多 14 张参考；这些是能力上限，不是主体一致性保证 | [Google 型号页](https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1) | 2026-10-14 | 2026-11-14／选型前 | 保留无 alpha 要求插图的性价比首试 |
+| Nano Banana 2.1 Standard：输入 $1.50/M，文本及思考输出 $7.50/M，图像输出 $30/M；1K $0.0336、2K $0.0504、4K 约 $0.113；Batch 分别 $0.0168/$0.0252/$0.0567 | [Google 定价相应型号段](https://ai.google.dev/gemini-api/docs/pricing#gemini-nano-banana-2.1) | 2026-10-14 | 2026-11-14／预算前 | 原价格确认；计入输入、思考、搜索、拒绝样本，不能当全调用总价 |
+| Google 不主张生成内容所有权且输出可能重复；Paid 不用于改进产品但有有限安全日志；Unpaid 通常允许改进及人工审阅，EEA/瑞士/英国与 active billing 条件另见正文 | [Gemini API 条款](https://ai.google.dev/gemini-api/terms) | 2026-10-14 | 2026-11-14／账户或合同变化 | 商用及保密路线仍须区分 API、AI Studio 和消费者订阅 |
+| Gemini API 访问须在可用地区；面向 EEA/瑞士/英国用户的 API Client 只能用 Paid Services | [条款](https://ai.google.dev/gemini-api/terms)、[地区](https://ai.google.dev/gemini-api/docs/available-regions) | 2026-10-14 | 2026-11-14／实际访问前 | 离线生成与向玩家开放 API 分开评估 |
+| FLUX 3 Image 当前 768sq/1K/2K/4K 每张 $0.041/$0.048/$0.100/$0.607，响应含 cost；计价按 resolution 档 | [BFL 定价](https://docs.bfl.ai/quick_start/pricing) | 2026-10-14 | 2026-11-14／预算前 | 确认原 1K/2K 预算，不套过期促销 |
+| FLUX 3 Image 有多参考及 bounding-box 布局入口；grounding 默认开启，可设 false | [官方功能页](https://docs.bfl.ai/flux_3/flux3_image_overview) | 2026-10-14 | 2026-11-14／选型前 | 保留布局专项对照；原创素材不需搜索时关闭 grounding |
+| FLUX API 非 EU 合同允许合规商业输出，保留来源凭证；默认授予服务商改进／训练用输入输出的许可；自托管不是 API 合同所授权 | [Developer Terms §3–6](https://bfl.ai/legal/developer-terms-of-service)、[API Terms §2](https://bfl.ai/legal/flux-api-service-terms) | 2026-10-14 | 2026-11-14／地区或合同变化 | 保密项目先核合同；EU 版不能由本次非 EU 阅读放行 |
+| klein-4B 及 base-4B 各自权重 LICENSE 为 Apache-2.0；独立 flux2 推理代码亦为 Apache-2.0 | [4B 权重](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B/blob/main/LICENSE.md)、[base-4B 权重](https://huggingface.co/black-forest-labs/FLUX.2-klein-base-4B/blob/a3b4f4849157f664bdbc776fd7453c2783562f4d/LICENSE.md)、[固定代码](https://github.com/black-forest-labs/flux2/blob/50fe5162777813d869182b139e83b10743caef15/LICENSE.md) | 2026-10-14 | 2026-11-14／换 checkpoint 时 | 保留本地免模型许可费首试；软件通知、依赖和输入另核 |
+| klein-9B 与 FLUX.2-dev 权重为 Non-Commercial v2.1：模型限非商业／非生产；输出商用条款不反授商业运行 | [9B 许可](https://huggingface.co/black-forest-labs/FLUX.2-klein-9B/blob/main/LICENSE.md)、[dev 许可](https://huggingface.co/black-forest-labs/FLUX.2-dev/blob/main/LICENSE.md) | 2026-10-14 | 2026-11-14／换许可时 | 不免费升级商用；无小团队自动豁免 |
+| BFL 商业自托管按选定模型和付费计划授权，须报告用量；许可到期／终止后停用并删除模型，API 接入另约 | [Self-Hosted Terms §1–8](https://bfl.ai/legal/self-hosted-commercial-license-terms) | 2026-10-14 | 2026-11-14／购买或终止前 | 不把一次下载当永久商用权，也不自行推断旧输出权利 |
+| Qwen-Image-2512、Edit-2511 官方卡为 Apache-2.0；对应 Qwen-Image 代码 Apache-2.0 | [2512](https://huggingface.co/Qwen/Qwen-Image-2512)、[2511](https://huggingface.co/Qwen/Qwen-Image-Edit-2511)、[固定代码](https://github.com/QwenLM/Qwen-Image/blob/6b5e1f5cec987d404be5ac6657db3b9aacb56a89/LICENSE) | 2026-10-14 | 2026-11-14／换 checkpoint 时 | 保留初图与编辑本地对照；模型许可不保证输出独占或清权 |
+| Qwen-Image-Layered 官方卡与独立代码 Apache-2.0，可分多 RGBA 层 | [模型卡](https://huggingface.co/Qwen/Qwen-Image-Layered)、[固定代码许可](https://github.com/QwenLM/Qwen-Image-Layered/blob/54c4fe47e76d745775e03fc66ee38457280ed9ea/LICENSE) | 2026-10-14 | 2026-11-14／换版本时 | 保留分层专项候选；不等于恢复被遮挡内容或可绑定源稿 |
+| Qwen-Image-2.1 代码 Research License §2 仅非商业研究／评估；当前官方模型卡也标 Research License。HF 固定 LICENSE 的 raw/blob/resolve 本次提取失败，不能声称此次重算了旧哈希 | [固定代码许可](https://github.com/QwenLM/Qwen-Image-2.1/blob/bb8e2172e08c6720652a4a23ad1c406e5b6ed1ee/LICENSE)、[当前模型卡](https://huggingface.co/Qwen/Qwen-Image-2.1) | 2026-10-14（代码与卡已核；权重原文复取未成） | 2026-11-14／任何商业采用前 | 保留暂缓默认商业；不能以旧 Apache 版本或 RGBA 功能清权 |
+| Adobe 自有 Firefly Image Model 5 在官方当前列表；非 beta 输出可商用，beta 除产品明禁；FAQ 列中国、俄罗斯、白俄罗斯等不可用 | [型号列表](https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/current-firefly-promotions.html)、[FAQ](https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html) | 2026-10-14 | 2026-11-14／实际生成前 | WP1 条件候选保留；未取得同题接受率，不替换本页三档 |
+| Adobe 输出仍须输入清权、保留水印／来源元数据，禁止用生成输出训练或改进 AI；第三方模型和指定计划赔偿另约 | [2026-04-23 特别条款 §1–3、7–8](https://www.adobe.com/cc-shared/assets/pdf/legal/servicetou/adobe-generative-ai-product-specific-terms-en-us-20260423.pdf) | 2026-10-14 | 2026-11-14／合同或计划变化 | 普通商用不等于成品游戏 IP 赔偿；不能拿 Firefly 输出训练风格 LoRA |
+| Kenney Generic Items 官方页仍为 CC0，提供免费获取；该包许可不替商标／肖像或其他包清权 | [指定资产包](https://kenney.nl/assets/generic-items) | 2026-10-14 | 2026-11-14／换包时 | 保留现成图标优先 |
+| Game-icons 固定版按作者为 CC BY 3.0 或明确标出的 CC0；Lorc/Delapouite 仍需署名，不能整库当 CC0 | [固定许可](https://github.com/game-icons/icons/blob/82d948812bfe3f269ef8f731dcdb07b08160edc4/license.txt) | 2026-10-14 | 2026-11-14／新增作者资产时 | 保留匹配图标，但按作者留许可和改动说明 |
+| ComfyUI 固定编排代码为 GPL-3.0；商用不被禁止，分发须履行 GPL；节点／checkpoint 不由此清权 | [固定 LICENSE 原文](https://raw.githubusercontent.com/Comfy-Org/ComfyUI/8010b48d2c1be986613f8e8c761527d205bd756f/LICENSE) | 2026-10-14 | 2026-11-14／换节点或部署方式 | 保留已有本地工作流，不拿编排器许可包办全链 |
+| Tilemap Extras 4.1.2 官方包 LICENSE 外链 UCL；本次重读 2,129,707 字节包并核得上文同一 SHA-256；第三方通知含 Rule/Rule Override 等 MIT 贡献，整包不是 MIT。UCL 当前 v1.4，需有效 Engine License | [官方包](https://download.packages.unity.com/com.unity.2d.tilemap.extras/-/com.unity.2d.tilemap.extras-4.1.2.tgz)、[当前 UCL](https://unity.com/legal/licenses/unity-companion-license) | 2026-10-14 | 2026-11-14／换 Unity 或包版本 | 保留匹配版本包；未安装执行，不扩大到跨引擎代码许可 |
+
+本表没有把未读取的账号权益、原生 alpha 的缺省值、免费商用追溯、未公开许可或模型成功率写成确定事实。固定版本源码／许可继续以正文 SHA 为复现锚点；动态入口用于检查是否出现影响后续选型的新合同。[研究]
+
+## 10. 阶段 F-c：像素专用服务补缺
+
+**结论：🧪 PixelLab 进入“像素小资产、同一动作批量换装”的质量／控制性专项首试；🧪 Retro Diffusion RD Fast/Plus 进入低成本静态像素对照，RD Pro 作为多参考升级。两者均为云服务，不占本地免费档；完整成套现成资产仍优先。** 这是按许可、低分辨率接口和第二次修改控制选择的试验顺序，未生成、导入或测量成套一致性。[研究]
+
+### 先核许可和数据，再谈动画
+
+- **PixelLab：** [2025-11-23 条款 §1–4](https://www.pixellab.ai/termsofservice)允许合规商业使用／修改／分发输出，不授服务软件或模型权重；禁止未经许可拿输出训练模型，并引用 [Open RAIL-M](https://github.com/CompVis/stable-diffusion/blob/main/LICENSE)的用途条件。程序化使用走官方 API；转售／另建服务应先联系。输入和第三方权利仍由用户负责，合同“own copyrights”不能保证所在法域实际承认 AI 输出版权。[一手／研究]
+- **PixelLab 保密：** FAQ 的“不训练”不能覆盖条款 §3.4 的通知例外；生成前检查 UI／工具说明是否通知训练或保存。套餐页面另列俄罗斯、白俄罗斯、伊朗、委内瑞拉不支持，不能从可读文档推定当地可购买／可使用。[一手]
+- **Retro Diffusion：** 云端浏览器读取 [2026-09-28 新条款 §4–7、11](https://retrodiffusion.ai/terms)。输出在双方之间归生成者，涵盖免费、余额、套餐、API/MCP；不保证独占或版权。用户不可将输出用于 AI 训练、微调、蒸馏或评估，服务商可用输出改进／训练自身模型；免费输出和自愿公开内容可能连同提示、设置公开。自动化须官方 API/MCP/官方应用／扩展，不以网页脚本代 API。MCP 仓库 MIT 不授服务权重。[一手／研究]
+- **Retro 的适用日期：** 新账号从 9 月 28 日起适用新版；此前账号延后 30 天，即 10 月 28 日前仍适用 [2025-08-19 旧版 PDF](https://retrodiffusion.ai/assets/terms-8312c717.pdf)。旧版 §7 保留用户 Designs/Materials 权利，§3/6 的自动化禁令没有新版的明确 API 例外；不能替现有账号提前套新版。PDF 本轮从官方链接读取正文，未登录或接受新协议。[一手／研究]
+
+### 控制性：改同一组帧，而不是重新抽一组
+
+PixelLab [当前 API 目录](https://www.pixellab.ai/pixellab-api)有 Pixflux/Bitforge 的低分辨率、参考、强制调色板和透明输出路径；`animate-with-text-v3` 接受起帧及可选末帧，最高 256×256、最多 16 帧。`edit-animation-v2` 和 `transfer-outfit-v2` 分别用于跨帧指令修改、参考换装，适合验证“第二次修改保动作、换装备”。**教程的接口范围已滞后：** [Edit animation](https://www.pixellab.ai/docs/tools/edit-animation-pro)和[Transfer outfit](https://www.pixellab.ai/docs/tools/transfer-outfit-pro)仍写仅 Aseprite/Pixelorama 扩展，但当前 API 目录已明确列出对应端点；保留 API 候选，实际调用前复核 schema，不能因教程措辞就认定 API 不存在。[一手／研究]
+
+按教程尺寸约束，32–64px 的批改最多 16 帧，换装最多 15 帧；81–128px 分别降到 4/3 帧。长动作分组后会新增组间漂移风险。姿态或骨骼输入是生成条件，不证明输出保持同一拓扑或可直接导出可编辑骨架；返回一组可继续编辑的位图，与导出语义图层／rig 是不同交付。[一手／研究]
+
+Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blob/main/README.md)和[MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md)列参考图、透明背景、调色板、图生图、Wang/blob tileset、GIF/sprite-sheet，以及基于起帧的动作生成；RD Pro 最多 9 张参考。采用其低分辨率和结构化导出作为对照，不把“game-ready”或“保持角色”宣传当逐帧验收通过。[一手／研究]
+
+**共同撤回条件：** 同规格换装后脚底、武器接触、事件帧或方向身份漂移且只能手画修复；新瓦片不能接旧地形；第二次修改必须反复整组重抽。此时改用现成动画／已有正确分层／更少动作方向。脚本可重排、裁切、统一 palette 和检查坐标，不能修缺肢体或缺遮挡面。[经验]
+
+### 像素专项的动态事实增量
+
+| 事实 | 来源 | 核实日 | 复核日或触发 | 对推荐的影响 |
+|---|---|---|---|---|
+| PixelLab 为专有云服务；条款允许合规商业输出，禁未经许可用输出训练；结合 Open RAIL-M 用途条件 | [条款 §1–4](https://www.pixellab.ai/termsofservice)、[所链 RAIL-M](https://github.com/CompVis/stable-diffusion/blob/main/LICENSE) | 2026-10-14 | 2026-11-14／选型前 | 纳入专项试用；不能拿这些图再训练自有风格模型 |
+| PixelLab 月付公开初始价 $12/$24/$50，分别 2000/5000/10000 generations/月；某些工具一次消耗多个 generations，非逐张成品价 | [套餐](https://www.pixellab.ai/#checkout)，云端浏览器选中月付查看 | 2026-10-14 | 2026-11-14／预算前 | 不混用套餐额度和 API 估价；未购买，税／实际账户另核 |
+| PixelLab 免费试用显示 40 次快速、之后每天 5 次慢速最多积累 20；商用输出说明覆盖试用；地区排除 Russia/Belarus/Iran/Venezuela | [套餐及脚注](https://www.pixellab.ai/#checkout) | 2026-10-14 | 2026-11-14／使用前 | 可提出零购买对照，但免费云额度不等于本地免费或全部工具可用 |
+| Pixflux 64×64 非透明 API 估价 $0.00793、透明 $0.0084；Edit animation/Transfer outfit Pro ≤128px 每调用估价 $0.08，≤170px $0.115，≤256px $0.15 | [官方 API 目录对应端点](https://www.pixellab.ai/pixellab-api) | 2026-10-14 | 2026-11-14／预算前 | 静态与跨帧编辑分开计费，估价不当账单或接受成本 |
+| PixelLab 当前 API 已列批量编辑和换装端点，与功能教程“仅扩展”范围不一致；文本动画 v3 支持起／末帧与最多 16 帧 | [API 目录](https://www.pixellab.ai/pixellab-api)、[编辑教程](https://www.pixellab.ai/docs/tools/edit-animation-pro)、[换装教程](https://www.pixellab.ai/docs/tools/transfer-outfit-pro) | 2026-10-14 | 实际调用前核 schema；最迟 2026-11-14 | 保留自动化候选，文档矛盾不是实测失败 |
+| Retro 2026-09-28 新条款只立即覆盖新账号，旧账号于 2026-10-28 起适用；旧版 PDF 仍提供 | [新条款](https://retrodiffusion.ai/terms)、[旧版 PDF](https://retrodiffusion.ai/assets/terms-8312c717.pdf) | 2026-10-14 | 2026-10-28／账号选型前 | 旧账号自动化先核适用合同，不能统一按新条款放行 |
+| Retro 新版输出归生成者且含免费；免费／公开输出可公开展示，平台可用输出训练；用户不能自行用于 AI 训练／评估；服务代码／权重未开放 | [新条款 §4–7、11](https://retrodiffusion.ai/terms) | 2026-10-14 | 2026-10-28／保密素材使用前 | 适合可公开专项样本；保密资产或 LoRA 数据用途不默认 |
+| Retro 公开首页 RD Fast $0.03、Plus $0.06、Pro $0.18/图，动画 $0.07/段起；官方 MCP README 仍写 Fast 约 $0.015 起 | [首页](https://retrodiffusion.ai/)、[MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md) | 2026-10-14 | 每次预算先估价；最迟 2026-11-14 | 口径有差异，不选最低宣传价预算；采用官方免费 cost estimate 与真实账单 |
+| Retro API/MCP 提供低分辨率、参考、调色板、GIF/sprite-sheet、瓦片和起帧动画；具体尺寸依 style，Pro 最多 9 参考 | [官方 MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md) | 2026-10-14 | 2026-11-14／style 或接口变化 | 纳入静态性价比／多参考对照；未独立证明动画连续性或零手修 |
+
+本次只读公开资料与云端浏览器公示；没有上传素材、创建账号、获取密钥、生成、付费、安装扩展或运行引擎。服务网页是动态实现，HTTP 提取空白不当作“没有条款”；采用云端浏览器读取了 Retro 完整新条款、PixelLab 月付显示及 Retro 价格。[研究：实际验证范围]
+
+阶段 F 本工作线检查：`python3 scripts/check_offline.py` 14/14 阶段通过、非空测试且无 skips；`git diff --check` 通过。末次事实表补入现成资产／编排器／官方包的许可后，另跑本地文档检查；不代表模型、引擎或托管 CI 实测。[研究]
