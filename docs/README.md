@@ -25,7 +25,7 @@
 | 核心建议（短摘要） | 唯一主专题 | 相关入口 |
 |---|---|---|
 | 1. 完成由可观察的验收决定；计划深度与会话切换按未知和上下文负担选择 | [07 工作流](07-workflows.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Claude §4](01-agents/claude-code.md#4-按任务选择的用法要点)、[14](14-synthesis.md)、[15](15-task-playbooks.md) |
-| 2. 先用最小原型和真人任务判断价值，分清没机会、没理解、运行失败与不值得继续 | [15 任务打法 §10](15-task-playbooks.md#10-原型和一次性脚本) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex §6](01-agents/codex.md#6-使用建议从实际问题选择方法)、[24](24-community-workflows.md)、[游戏路线图](../domains/game-dev/06-indie-roadmap.md) |
+| 2. 先比较现成方案、局部补充与完整替代，用真人任务判断价值，分清没机会、没理解、运行失败与不值得继续 | [15 任务打法 §10](15-task-playbooks.md#10-原型和一次性脚本) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex §6](01-agents/codex.md#6-使用建议从实际问题选择方法)、[24](24-community-workflows.md)、[游戏路线图](../domains/game-dev/06-indie-roadmap.md) |
 | 3. 按任务保留必要上下文，核对加载、版本和来源；不靠固定长度判断价值 | [03 上下文工程](03-context-engineering.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex](01-agents/codex.md)、[Claude](01-agents/claude-code.md)、[14](14-synthesis.md)、[18](18-team-adoption.md) |
 | 4. 原生起步；已有能力缺口或有依据的质量目标，都可选择最小有效补充，不默认加 Skill | [05 Skills §2.5](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex §6](01-agents/codex.md#6-使用建议从实际问题选择方法)、[Claude §7](01-agents/claude-code.md#7-推荐起步先原生扩展按需选择)、[14 §8](14-synthesis.md#8-成熟度路线)、[22](22-agent-evaluation.md)、[24](24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻)、[13](13-frontier-radar.md) |
 | 5. 必要行为不退步；目标质量、费用、等待、主动工时及首试／重试分别比较，无目标收益或代价不可接受就撤回 | [22 Agent 评估](22-agent-evaluation.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[02](02-models-and-cost.md)、[05](05-skills-and-plugins.md)、[09](09-review-and-quality.md)、[19](19-experiments.md)、[24](24-community-workflows.md) |
