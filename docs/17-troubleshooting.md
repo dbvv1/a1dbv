@@ -123,7 +123,7 @@
 |---|---|
 | 子 Agent 滥用（同一任务拆给 2 个子 Agent，token 从 12.1 万涨到 51.3 万）**[社区：原文]** | “只在并行或独立的工作流中使用子 Agent；单个文件的读取和顺序操作直接做” **[一手：Anthropic 针对 Opus 4.6 的提示]** |
 | 缓存命中下降 | 对照模型/effort、请求前缀、TTL 和代理/模板处理；Claude Code 当前统计入口与口径见 [02](02-models-and-cost.md#2-价格快照api-美元百万-token)，用量面板不能代替根因定位 **[经验]** |
-| 指令文件、MCP 太多 | 精简 CLAUDE.md（< 200 行），只装需要的 MCP（见 [03](03-context-engineering.md)） |
+| 指令文件、MCP 太多 | 先核实际加载与成本，删重复／失效指令，只保留当前任务有用的约定与连接，不按固定行数裁剪（见 [03](03-context-engineering.md)） |
 | 循环不停 | Ralph 循环一定要设最大迭代次数；托管 Agent 设硬性预算 |
 | 用强模型做杂活 | 杂活交给 Haiku 5.5 等便宜模型（见 [02](02-models-and-cost.md)） |
 
