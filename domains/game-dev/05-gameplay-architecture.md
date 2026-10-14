@@ -108,16 +108,29 @@
 
 [一手] [Lyra 的能力初始化](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US) 处理 Pawn、PlayerState、输入与 Game Feature 的就绪和移除。[研究] 可读公开机制文档；其整套多人生命周期并非单机默认底座，资源的 AI 使用许可另见第 10 节。
 
-## 8. 相机：复用运行时，保住控制权
+## 8. 相机：先让玩家看懂并控得住，再增加镜头语言
 
-[研究] **做到哪**：每个玩家视口的最终相机有唯一控制权；跟随、瞄准、过场和菜单切换优先级明确；重生／传送重置阻尼，暂停和震动策略明确。Unity 优先适配项目版本的 Cinemachine，UE 先用 CameraComponent／SpringArm／PlayerCameraManager；固定镜头足够时无需复杂化。
+[研究] **质量目标**：玩家在做决定前看见落点、威胁和路线；移动、瞄准与屏幕变化有可预测的关系；镜头把注意力引到重要动作，又不抢走控制。固定镜头／简单跟随能做到这些就是合格基线，不以更多阻尼、震动或自动运镜代表高级。Unity 默认复用匹配项目版本的 Cinemachine，UE 先沿用 CameraComponent／SpringArm／PlayerCameraManager；只补玩法特例。
 
-- **可以省**：每个技能各改 Camera transform、自研通用镜头框架
-- **AI 可承担**：目标绑定、切换逻辑、参数与状态追踪；人验收可读性、瞄准手感和晕动
-- **典型失败**：目标与相机时序不一致导致抖动；传送仍追旧位置；取消过场的旧回调盖过新镜头；静态监听跨 PlayMode 残留
-- **验证**：低帧率、不同固定步长、暂停、传送、重生、快速切镜、过场取消与窄走廊；自动状态断言与真人画面判断结合
+下表是交叉来源后的采用判断，**不是三种玩法的实测排名**。[研究]
 
-[一手] Cinemachine [Brain 源码](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Behaviours/CinemachineBrain.cs) 区分不同更新阶段；2026-08 的 [#1122 修复](https://github.com/Unity-Technologies/com.unity.cinemachine/commit/69b205115495a374fbba329547ba608cdcfe7847) 将 static reset 提前到 SubsystemRegistration 并重建事件。[研究] 项目应核确切修复版，不能因使用成熟库就省掉重入测试；所读主干 changelog 归入 3.1.8-pre.2，不等于所有稳定 3.1.x 已修。
+| 场景与玩家需要 | 默认采用 | 何时调整；不值得增加什么 |
+|---|---|---|
+| 精确平台跳跃：起跳前读落点，空中保留高度参照 | ✅ 房间固定取景，或 Position Composer＋适度死区＋房间边界；水平与垂直分别调 | 长距离冲刺看不清前方才加有界前瞻；落下看不到落点才加下视规则。不要让每次小跳都拖整个背景上下动，也不把速度预测绑到抖动骨骼 |
+| 俯视战斗／小型竞技场：读围攻方向、攻击预告与逃路 | ✅ 固定朝向和稳定尺度，有限跟随；只在确有需要时加入目标偏移 | Boss／双目标无法同屏时试 Target Group＋Group Framing，并限制缩放。把所有敌人纳入构图会被远处杂兵拉远；角色和预告过小就退回固定尺度或改遭遇布局 |
+| 越肩射击／3D 探索：控制观察方向，瞄准与实际命中可信 | ✅ Third Person Follow，瞄准需要时加 Third Person Aim；输入方向与角色动画分离 | 窄角落先调遮挡层、相机半径和进出碰撞响应；关卡仍无可用视线时改空间或局部遮挡表现。不要靠不断自动绕行／换肩替玩家瞄准 |
+
+[一手] 当前 [Unity 6.0 包页](https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-cinemachine)列出的发布版为 **3.1.7**，不是主干预发布版。[Position Composer](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePositionComposer.html)明确前瞻可能放大动画噪声，平滑预测又增加滞后；[Group Framing](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineGroupFraming.html)提供变焦／移动构图。[研究] 先改善取景和输入响应，再补阻尼；一味拉远虽能装下对象，却可能降低战斗可读性。
+
+**三个容易漏掉的体验契约：**
+
+- **转镜不应偷偷改变正在执行的意图。** [Celeste64 固定源码](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1474-L1487)在攀爬持续按方向时保持输入映射，松开后才重算；垂直跟随也区分着地、下降与高度窗。[一手] ✅ 借这种局部机制，勿将它推广成所有地面移动都锁方向；已发布 jam 的代码不是长期架构或舒适度实测。
+- **准星是命中承诺。** [Third Person Aim](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineThirdPersonAim.html)处理相机与角色起点的视差；实际枪口和弹道仍由游戏负责。[研究] 掩体边缘要分别验“镜头看得见”和“枪口打得到”，不要为了稳定准星把有意设计的后坐力也全部抵消。鼠标位移与摇杆速率分别处理，别重复乘帧时间；[Input Axis Controller](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineInputAxisController.html)已有对应选项。[一手]
+- **切镜服务意图，舒适度能退出。** [研究] 揭示谜题可用缓动，瞬移／重生通常应重置而非追过半张地图；战斗中长混合不能让玩家失去落点或瞄准控制。震动、摆动、运动模糊及非必要自动回正应可减弱／关闭；视野与横纵灵敏度按玩法提供调整，依据 [Xbox XAG 117](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117)，不承诺某组参数适合所有人。[一手]
+
+**维护与验收**：[研究] 一个视口由一个最终输出控制者拥有；跟随／瞄准／过场／菜单的优先级、时钟、传送重置、退出恢复写在少量模式配置中，技能只请求效果，不各自写 Camera transform。相机更新阶段要匹配跟随目标的实际移动方式，不统一指定 Fixed 或 Late；同时检查目标插值与镜头平滑叠加的滞后。AI 可实现绑定、状态切换、参数暴露与轨迹记录；人决定取景、力度、节奏。后续真人试玩观察：起跳前能否指出落点、转向后威胁是否及时进入视野、绕柱是否反复拉近拉远、持续输入穿过切镜是否仍按预期移动、关闭镜头效果后是否仍读得懂命中。并保留低帧率、不同固定步长、暂停、重生、过场取消测试；这些观察尚非实测收益。
+
+[一手] Cinemachine [Brain 源码](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Behaviours/CinemachineBrain.cs)区分更新阶段；2026-08 的 [#1122 修复](https://github.com/Unity-Technologies/com.unity.cinemachine/commit/69b205115495a374fbba329547ba608cdcfe7847)将 static reset 提前到 SubsystemRegistration 并重建事件，主干 changelog 归入 3.1.8-pre.2。[研究] 不据此宣称稳定 3.1.7 已含修复。Cinemachine 源码按 Unity Companion License 使用；Celeste64 的 MIT Source 与其 IP／Content 授权分开，详见 [WP11 镜头补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#镜头质量补研从跟得上到看得懂控得住)。
 
 ## 9. 关卡：先能重置遭遇，再扩成大世界
 

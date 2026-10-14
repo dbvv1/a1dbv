@@ -217,3 +217,74 @@
 [一手] 另重读 Unity Behavior [1.0 changelog](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/changelog/CHANGELOG.html)，当前指定文档仍为 1.0.16（2026-05-26）；[LICENSE](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/license/LICENSE.html)仍指 Unity Terms of Service。这证明指定文档内容，不证明全渠道最新版或具体账户安装权限；继续按实际包／计划核，不改为 UCL／MIT。
 
 本次只读公开页面，没有登录、接受协议、购买、读取付费源码或运行引擎；未重算固定历史 SHA。[研究]
+
+## 镜头质量补研：从跟得上到看得懂、控得住
+
+核实：2026-10-14 UTC。主线 1／3／4；改变 05 第 8 节只强调所有权与取消的侧重，补充预判、取景、输入连续性与视觉意图。新证据是 Cinemachine 3.1.7 当前文档、Celeste64 固定源码中的体验规则，以及开发者自述与 2026 年可访问性指南；本次仍只有公开理论／源码研究。[研究]
+
+### 1. 不把“顺滑”压成一个阻尼数
+
+[研究] 相机至少有四个可能冲突的目标：提供决策信息、遵从玩家输入、建立视觉节奏、避免不必要的运动负担。更大死区能保住稳定参照，也会减少某方向的前方视野；更大阻尼降低突变，也会落后；更大视野装下更多威胁，也会缩小命中提示。应先问某个动作缺少哪种信息，再决定移动、变焦、前瞻或固定镜头，不能把复杂相机系统当质量升级的必经步骤。
+
+**[一手] 机制资料与证据边界：**
+
+| 来源／本次核实 | 直接支持的内容 | 不支持的推断 |
+|---|---|---|
+| [Unity 6.0 包页](https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-cinemachine)与 3.1 文档页面元数据 | 当前该渠道发布版 3.1.7；从 2.x 升级有迁移工作 | 不是全渠道永远最新；不能将主干 3.1.8-pre.2 修复说成已进入 3.1.7 |
+| [Position Composer](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePositionComposer.html) | 按屏幕位置、死区、各轴阻尼构图；前瞻会放大噪声，预测平滑增加滞后 | 未给具体游戏的最佳参数，也没有证实“多平滑就更舒服” |
+| [Group Framing](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineGroupFraming.html) | 可用移动／变焦装下目标组，设构图尺度与镜头范围 | 将所有敌人加入组不等于战斗更可读；目标权重和成员资格由玩法决定 |
+| [Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html) | 拉近、保持高度或距离三种避遮挡取舍；最短遮挡时间、保持时间和恢复阻尼可减少无谓调整 | 不保证所有窄走廊有可行视点；看见角色不等于看见落点或敌人预告 |
+| [Confiner 2D](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineConfiner2D.html) | 限制的是含视口尺寸／比例的区域；改变镜头需按文档失效相应缓存，形状重算有成本 | 一个边界多边形不能自动解决所有宽高比的构图；频繁重建并非零成本 |
+
+[研究] **采用顺序**：先固定房间／单目标简单跟随；识别漏看的动作；只对该动作加状态规则；最后才加装饰性运动。新增规则如果只是让片段看起来更“电影感”，却增加玩家重找目标的次数或每间房的修补工作，就撤回。当前 Unity 原生组合通常比新引入另一个通用相机框架更好维护；这是匹配单人需求的判断，不是跨插件性能冠军结论。
+
+### 2. 三种玩法的不同默认，不共享一套“最佳参数”
+
+**[研究] 精确平台跳跃。** 玩家关心的是跳之前的目标、飞行中的高度参照、下落后的安全空间。屏内房间先固定；较大房间用死区和边界，水平前瞻只在高速移动确有漏看时加入。纵轴不用追每一次短跳，可以用着地／超出窗口／下落状态决定何时改变基准。失败条件是过大的窗口让落点来不及出现，或速度前瞻在左右试探时反复翻向。维护责任是关卡作者标出需保留视野的动作区间，程序只实现几种可解释规则；不要让 AI 逐房堆补丁、猜几十个无来源参数。
+
+**[研究] 俯视战斗。** 默认固定朝向、较稳定尺度和有限跟随，让预告尺寸与闪避距离容易学习。小竞技场一次看全即可；Boss 体型或双目标需要时才加目标组，限定最低角色／预告可读尺度。若敌人分散导致镜头越拉越远，先缩小目标集合或调整遭遇空间；“都进画面”不是最高目标。退回条件是玩家读不到关键动画、镜头频繁呼吸式缩放，或新增敌人类型需要改大量相机特殊分支。本文未取得已发布俯视游戏采用此具体组件组合的证据，因此这是机制推导，不标成生产采用案例。
+
+**[研究] 越肩射击／探索。** 探索允许适度跟随惯性，精确瞄准需要更直接的输入响应；不要把摄像机、角色身体朝向和动画骨骼当同一目标。遮挡处理先选少数确定策略，遮挡物过滤与碰撞半径由镜头和关卡共同拥有。保持距离的自动绕行可能改变瞄准关系，拉近可能牺牲周边信息；若二者都不满足，修改关卡几何或局部遮挡表现，收益往往比再加求解分支更明确。局部透明还会引入材质／渲染维护，不能当免费兜底。
+
+### 3. 两种真实开发证据：借机制，不复制整套负担
+
+**Mushroom 11：开发者对自己的游戏的说明。** [Itay Keren 的修订文章](https://gamedesignskills.com/game-design/camera-design-2d-side-scroller-games/)源自 GDC 2015，不能把网页重新发表当新算法。其本人说明区域各自有镜头路径与缩放，解谜区域可取多个块的平均，推进区域偏向最前方块；因为游戏没有跳跃，运动预测较自然。[一手] [研究] 这支持“按玩法定义焦点、必要时由关卡指定区域”的方法。它不支持给所有平台游戏默认开启纵轴速度预测，也没有给出单人长期内容维护工时或对照舒适度数字。每关几十个手工区域正是应纳入成本的部分；只有简单跟随确实无法表达谜题意图才增加区域导演。
+
+**Celeste64：可发布小作品的局部实现。** 本次通过公开 GitHub API 锁定 `EXOK/Celeste64@6edfe1ebd2a21a6134d7675a28e357891025407e`，该主干提交日期 2026-09-07；不是声称该日重新发布游戏。完整读取 [Player.cs](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs)，核对以下路径：[一手]
+
+- 443–460：水平跟随角色，垂直目标依据着地、下落与高度窗选择；使用含 delta 的指数趋近，避免把“每帧固定比例”当时间不变的阻尼
+- 544–589：局部固定镜头区域与一般碰撞修正并存；这说明局部设计镜头可以与常规跟随共存，不证明其射线方案覆盖所有近裁剪或窄角落情形
+- 597–617：普通移动使用当前画面方向建立输入基；1474–1487 的攀爬则在横向输入松回阈值内才重算方向符号，保持转角期间持续输入的意图
+- 480–482：速度会影响 FOV；这仅是作者的效果选择，不构成所有高速移动都应改变 FOV、或已验证减轻晕动的证据
+
+[研究] **✅ 改造局部规则，⛔ 不移植工程结构。** 官方 [ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md)说明由原团队在不足两周内制作，按 jam 级项目学习，Player 自称单体类；发布游戏确实比孤立教程更贴近体验，但不能据此推荐长期维持巨型类。特别值得借的是攀爬的“同一按住意图跨视角变化仍连续”，迁入 Unity 时让移动组件拥有该语义，相机只提供最终朝向，不把该规则塞进通用镜头库。
+
+**许可分层 [一手]**：Celeste64 [Source/License.txt](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/License.txt)为 MIT；ReadMe 明确 Content 与 Celeste IP 归权利人，非商业同人许可不能扩为商业素材许可，FMOD 另有例外。Cinemachine 固定 [LICENSE.md](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/LICENSE.md)指 Unity-dependent 项目的 Unity Companion License，并非 MIT。本文仅借机制与链接，未搬运图像、音频、角色或整段源代码。
+
+### 4. 瞄准、切镜和舒适度属于玩法质量
+
+[一手] 当前 [Third Person Aim 文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineThirdPersonAim.html)区分相机所看点与角色可能命中点。又读固定源码 [CinemachineThirdPersonAim.cs](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Behaviours/CinemachineThirdPersonAim.cs)：先求看向点，再从 `vcam.Follow.position` 检查遮挡。官方样例 [AimTargetManager.cs](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Samples~/Shared%20Assets/Scripts/AimTargetManager.cs)在 CameraUpdatedEvent 后更新屏幕指示，再从传入 firingOrigin 生成射向目标的方向。
+
+[研究] 因而“用了 Third Person Aim 就保证任何枪口无遮挡”是错误扩大：Follow 原点可能并非枪口，发射物大小、弹道、散布仍属武器系统。后续应让准星清楚区分瞄准目标和受阻点，并测近墙／越肩换边／高低差。装饰噪声可取消以保准星，故意的后坐力则需单独建模，否则反馈与命中挑战会一起被抹掉。
+
+[一手] [Input Axis Controller](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineInputAxisController.html)区分输入加减速、混合期抑制、非缩放时间与 Cancel Delta Time；鼠标 delta 本身随帧间隔累积，不能按摇杆角速率再积分一次。[研究] 默认不为精确鼠标瞄准添加无需求平滑；瞄准模式混合时是否继续响应必须由玩法决定，不能照抄“混合期禁输入”开关。
+
+[一手] [切换文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/concept-camera-control-transitions.html)说明混合期间两台虚拟相机可同时 live，甚至停用对象也可能仍参与混合。[研究] “唯一输出控制权”是 Brain／最终输出层唯一，不是要求混合时只有一台虚拟相机；传送、复活、谜题揭示、瞄准切换应分别选择 cut、blend 或重置目标，避免为了统一过渡使快速重试和即时瞄准拖沓。
+
+[一手] [Xbox XAG 117](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117)页面标记更新于 2026-03-04，建议可关闭额外镜头运动、调整视野与横纵灵敏度／自动回正；[Game Accessibility Guidelines](https://gameaccessibilityguidelines.com/avoid-or-provide-option-to-disable-any-difference-between-controller-movement-and-camera-movement/)同样强调可退出非输入驱动效果。[研究] 这是可访问性建议及产品实例，不是统一医疗阈值或本项目已测降低不适。关闭震动后仍应从动作、声音和 UI 获得命中信息；固定视角玩法不必为满足一份通用清单另做第一／第三人称双系统。
+
+### 5. 后续体验验收与维护成本
+
+[研究] 待未来获准运行切片再做；当前不能把以下项目标为通过，也不设伪精确的通用“最佳毫秒”。
+
+| 观察任务 | 需要记录的证据 | 撤回／修改条件 |
+|---|---|---|
+| 同一跳跃在默认镜头、有限前瞻下试玩 | 玩家起跳前是否能指出落点；失误时当时可见区域；急转向后视野恢复 | 只是视频更流畅，但看落点更晚或反向时镜头反复摆动 |
+| 同一遭遇固定尺度与目标组比较 | 预告能否被认出；关键角色屏幕尺度；远处敌人加入时是否被迫缩放 | 更多对象入镜却更难分辨攻击，或每种敌人要补特例 |
+| 掩体边缘瞄准、连续绕柱、开关瞄准 | 准星／受阻点／真实枪口轨迹；拉近恢复次数；同输入下目标稳定性 | 准星承诺与命中不符，避障持续抢控制，碰撞修正产生反复抽动 |
+| 持续按方向经过区域切镜／攀爬转角 | 输入轨迹、最终相机方向、角色运动方向；手柄与键鼠分开 | 同一意图突然逆转或必须松手重找方向，而玩法未告知 |
+| 默认与减弱运动设置完成同一路段 | 主观舒适反馈、是否需要重找目标、关闭效果后命中反馈辨识 | 将“无报错／帧率稳定”当舒适通过；不适参与者不被要求继续 |
+
+[研究] 同时保留原有暂停、低帧率、时钟、传送、重生、过场取消与静态重入检查。第二次修改可只增加“一个下落房间＋一个狭窄掩体角落”，记录新增模式／特殊分支、改动资产数、调参工时；如果小内容修改牵动所有镜头，先简化责任与配置，而非引入更大的导演框架。AI 擅长记录轨迹、实现清楚的模式、暴露参数和维护回归；设计者仍拥有视觉意图、取景节奏、输入承诺和真人舒适验收。
+
+**本次状态**：[研究] 读过上述官方文档、许可及固定源码；未安装或运行引擎、模型、游戏、付费插件，没有玩家 A/B、帧时间测量或舒适度收益主张。本补研的文档检查与整合检查由实际执行结果另记。
