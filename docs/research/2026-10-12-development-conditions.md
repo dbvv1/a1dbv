@@ -1,11 +1,11 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口。[经验]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口。[经验]
 证据摘要：官方权限／运行契约、固定历史补丁、社区使用与接管报告、论文；另有标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究]
 关键边界：普通 headless、bare、trust 与 sandbox 不等价；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
-> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，2026-10-14 UTC 补核 §五 Pydantic AI 演化链，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
+> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，2026-10-14 UTC 补核 §五 Pydantic AI 演化链，2026-10-15（UTC+8）补核 §二 Service Worker 响应来源，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
 
 ## 核心判断
 
@@ -98,6 +98,22 @@
 **具体使用边界。** 选中或保存错误若已能由真实浏览器动作与结果断言揭示，不必新增截图循环；裁切、间距、素材与画布问题则必须补足视觉观察。结果最终正确、但早期点击丢失时，补动作时刻与事件顺序。[Playwright hydration 说明](https://playwright.dev/docs/navigations#hydration)明确指出控件启用早于监听器绑定会吞掉输入，建议应用就绪前禁用控件；不能靠延后测试输入制造通过。直接设置 DOM/组件状态不等于测试真实输入。**[一手：官方机制；经验：最小反馈建议]**
 
 用户是否理解入口、能否恢复误操作、是否接受体验仍需具体任务试用；上表的偏好一致性只提示自动 judge 有边界，未测得真实用户参与的净收益。每次修订保留原功能与视觉要求；仅在现有证据不能判断所需结论时补通道，不扩成默认多 Agent 验收框架。**[经验：采用与停止条件]**
+
+### Service Worker：响应来源决定保存与故障验收入口
+
+核实：2026-10-15（UTC+8）。改变 23 §3/§4：服务器同步的验收增加独立读取，故障注入增加实际命中确认；本地保存不强加服务端要求。复用现有 API／浏览器测试，不增加平台或框架。**[经验：采用判断]**
+
+**成功页面可能完全来自本地。** Playwright [固定修复提交 `ea75b9f` 的回归 L23–98](https://github.com/microsoft/playwright/blob/ea75b9f32ca4120efdfaf8f5b8cfd292f548f197/tests/library/browsercontext-service-worker-policy.spec.ts#L23-L98)覆盖 literal、Cache Storage、network fallback 和 preload fallback；L79–92 要求当前页和同 context 的新页都返回 200、来自 worker、显示 offline，同时目标服务端请求数为 0。恢复在线后才要求请求数变成 1。它证明响应来源的机制，不是业务保存缺陷的实测。**[一手：官方测试定义]**
+
+因此若契约是“已同步到服务端”，刷新／重新开标签页不够：可复用 API 测试读取本次记录。固定 [APIRequestContext 实现 L350–389](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/packages/playwright-core/src/server/fetch.ts#L350-L389)使用 Node 的 HTTP/HTTPS 请求，不经过页面 worker；但服务端缓存和数据库耐久性仍是另一层，不能据此宣称落盘保证。若承诺只是本地持久保存，就验证本地重新打开，联网同步另列结果。**[一手：源码；经验：由机制推导的验收选择]**
+
+**有请求事件，不等于故障规则命中。** 固定 [Chromium 回归 L373–434](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/tests/library/chromium/chromium.spec.ts#L373-L434)同时收集 `page.on('request')`／context 事件与 route 命中：透明 worker 的 `/data.json` 网络请求可由 context 路由处理，页面侧同名请求虽产生事件，却不可路由。[后续回归 L436–538](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/tests/library/chromium/chromium.spec.ts#L436-L538)还区分缓存命中、`/foo` 改写为 `/bar`、合成 200 和透传。因此对页面 URL 注册失败规则，不能直接算故障已注入；检查处理器实际命中及对应响应；在 Chromium 支持范围内，必要时改到 worker 所有的网络请求。**[一手：官方测试；经验：覆盖判断]**
+
+**反证与工具边界。** 透明 worker 也会返回 `fromServiceWorker() === true`，不能把它等同于缓存命中，或要求该字段一律为 false；HTTP cache 与 worker 的 Cache Storage／合成响应也不同。[官方说明](https://playwright.dev/docs/service-workers)把这类 worker 观测／路由能力限定于 Chromium，并明确 worker 主脚本的更新请求仍不能路由；context 路由不是 Firefox／WebKit 的通用补救，也不覆盖所有 worker 请求。同页提醒禁用 worker 会改变实际页面行为，所以普通 API mock 可选择 block，验产品离线能力则不能借此绕过。**[一手；经验：采用边界]**
+
+[真实报告 #42775](https://github.com/microsoft/playwright/issues/42775)在 1.63.0 的 WebKit 上发现：即使 worker 直接生成响应，离线模拟也拒绝导航；停止源站的对照则能返回。它不代表两种故障等价。[修复 #42894](https://github.com/microsoft/playwright/pull/42894)于 2026-10-05 合入上述 `ea75b9f`，在 page target 初始化时显式应用已配置的 offline 状态并补回归。固定测试仍跳过 Electron／旧 WebKit，并对 Firefox 的 network/preload fallback 标 fixme。离线测试失败时应先核工具版本、模拟范围和实际请求，不能直接撤掉产品要求。未核首次正式发布版本；PR 页面仍有失败检查，本轮没有复核其因果或宣称全 CI 通过。**[一手：报告、维护补丁与测试限制；经验：诊断选择]**
+
+本轮通过官方连接器重新读取两组固定测试和 API 请求源码，并核对 issue／PR；未运行浏览器、上游测试或模型，不把测试存在当本仓执行结果，也不证明新模型交付成功率。**[研究：验证范围]**
 
 ### React：生产构建故障中的定向日志
 
