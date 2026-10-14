@@ -1,6 +1,6 @@
 主线：二为主，兼三
-改变的建议：短指令只留会改变行动的项目约束；独立调查或已定接口的实现可并行，单文件 grep 不默认拆。任务结果、过程遵从、等待与 API 等价估算分别比较；worktree 验证还须识别配置、服务和最终产物。[经验：限定采用]
-证据摘要：历史 E1–E3 与补交轨迹算术核对；E3 单一 bug 的 27 次报告均修好，但测试约定与文件长度混杂，E2 拆分成本及等待更高。E4/E6 是确定性回归，E5 是 CSV 复算；后补并行论文有正反例，仍缺完整验收与人审投入，不能外推普遍效率；后补 Git 配置夹具、Playwright 复用源码及 Cargo 维护者反证，区分编辑隔离和运行状态。[经验／研究]
+改变的建议：短指令只留会改变行动的项目约束；独立调查或已定接口的实现可并行，单文件 grep 不默认拆。任务结果、过程遵从、等待与 API 等价估算分别比较；worktree 验证还须识别配置、服务和最终产物；委派先核宿主审批、并发口径与恢复动作。[经验：限定采用]
+证据摘要：历史 E1–E3 与补交轨迹算术核对；E3 单一 bug 的 27 次报告均修好，但测试约定与文件长度混杂，E2 拆分成本及等待更高。E4/E6 是确定性回归，E5 是 CSV 复算；后补并行论文有正反例，仍缺完整验收与人审投入，不能外推普遍效率；后补 Git 配置夹具、Playwright 复用源码及 Cargo 维护者反证，区分编辑隔离和运行状态。10-15补Codex发行源码与Claude宿主文档、两作者故障反例；不是客户端实测。[经验／研究／一手]
 
 # 历史实验与确定性检查：方法、原表与证据缺口
 
@@ -339,3 +339,37 @@ git version 2.47.3
 ```
 
 另一次继承进程 PATH 的初跑为 Git 2.52.0，结果同样，但以上干净环境结果才作为可复查基线。夹具只验证 Git 配置作用域，不验证并发编译、缓存命中、端口争抢、数据库隔离、Claude 客户端或模型收益。未安装／启动 Playwright、Cargo、模型或引擎；上游源码和维护者自述不算本轮上游测试通过。**[研究：验证边界]**
+
+
+## 子Agent宿主契约：并发权限与恢复
+
+> 核实：2026-10-15（UTC+8）。主线二、三；改变 08 §2.1／§5.1／§7 的启动与撤回选择。当前只读公开资料和源码，不运行模型、客户端或上游测试。
+
+**结论。** 独立子任务是否值得拆分之外，还要确认“由谁审批、谁收结果、恢复会重做什么”。优先单层委派；配置人数只调同时占用，不等于限制总调用或费用。需要不同权限的 worker 放在相应权限的父会话里；结果投递异常时由主会话核对并汇总，别增加嵌套来补救。恢复写任务沿 [20](../20-codex-long-horizon.md#9-超时后动作究竟发生了吗)先对账，不另建编排协议。**[经验：采用判断]**
+
+### Codex：文档、发行源码与历史反例
+
+- [现行官方指南](https://learn.chatgpt.com/docs/agent-configuration/subagents#global-settings)用 `agents.max_concurrent_threads_per_session`，保留 `max_threads` 别名；数子线程，不含主线程。权限继承父轮次；无法展示新审批的非交互流程会向父工作流返回失败。ChatGPT Work 使用其宿主工具权限，不暴露本地 CLI 沙箱设置。**[一手：文档]**
+- **已发行基线，不只看 main。** 核查 `rust-v0.162.1`，对应固定提交 [`092d3acd6bec3e3a14bdc7e7a2810ab628ab759d`](https://github.com/openai/codex/releases/tag/rust-v0.162.1)。[`AgentsToml`](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/config/src/config_toml.rs#L753-L785)包含新字段／旧别名，`max_depth` 仅用于 V1，V2 忽略；`job_max_runtime_seconds` 已是兼容 no-op，不能用旧键承诺超时。先探查的 main `1ffa95ee8a02ec68f6ccd758998bcb7d4b32bcdb` 不作为已发布依据。**[一手：固定源码阅读]**
+- **默认数值有后端分支。** [`config/mod.rs`](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/config/mod.rs#L1633-L1649)中 V1 未配置回落到6，V2 内部默认4含主线程；`resolve_multi_agent_v2_config` 把公开 `[agents]` 子线程数加1后转为内部会话上限，`effective_agent_max_threads` 再减1。[对应测试定义](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/config/config_tests.rs#L12166-L12195)与 `multi_agent_v2_uses_agents_max_concurrent_threads_per_session` 固定了口径。不能由常量推断某账户实际选了哪个后端；正文因此不推荐一个默认人数。**[一手：实现／测试阅读，未运行]**
+- **角色不是新权限域。** [`AgentRoleOverrides` 和 `apply_role_to_config_inner`](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/agent/role.rs#L36-L133)只投影允许的模型、指令、能力缩减等字段，不投影角色里的 sandbox／approval 设置；[`apply_role_preserves_parent_sandbox_permissions`](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/agent/role_tests.rs#L394-L433)与 `apply_role_cannot_expand_parent_authority` 是同路径的测试定义。这支持撤回“给 reviewer TOML 写 read-only 就有独立只读沙箱”的做法；不表示所有工具均由同一种沙箱执行。**[一手：源码和测试阅读]**
+- **保留历史反例但不当当前故障。** [adrianto-nanovest 的 #35984](https://github.com/openai/codex/issues/35984)报告 0.144.6 的 schema 注释称未设上限，而实现回落到6。核实日原帖仍 open；此次 0.162.1 的字段注释已改为由后端选择默认，所以不把 issue 状态当新版本仍错的证据。它支持核配置解析与消费路径，而不是只抄说明文字。**[社区：作者报告；一手：新版本反证]**
+
+### Claude：模式与恢复不能互换
+
+[Subagents](https://code.claude.com/docs/en/sub-agents#concurrent-subagent-limit)给出的20是普通 Agent 工具启动门槛；手动 `/subtask`、resume及其他编排入口并非同一硬限。普通后台子Agent应将权限提示送到主会话，但交互／`-p`／SDK 的等待和结果路由不同，forked Skill又有自己的路径。这里只用官方说明界定宿主契约，不声称它能防住所有运行故障。**[一手：文档]**
+
+[Dynamic Workflows](https://code.claude.com/docs/en/workflows#behavior-and-limits)有独立并发控制：默认至多16且受CPU数量影响，不受普通子Agent的20直接统管。更影响选择的是恢复语义：失败Agent之后已完成者也可能重跑；中间人工签字应拆 run。配额暂停并自动续接还有交互订阅等入口条件，不能推广到 `-p`／SDK／后台会话。若操作不能安全重做，先拆出副作用与签字步骤；这不是要求所有只读研究都增加检查点。**[一手：文档；经验：建议]**
+
+[Subagent names](https://code.claude.com/docs/en/sub-agents#subagent-names)另规定：交互会话已启用Teams时，主会话带 `name` 的调用会转为队员，除非本次是fork或调用显式带 `isolation`；frontmatter隔离不防转换，队员在主会话目录运行。命名不是无副作用标签，配置隔离后仍要核实际启动形态。**[一手：文档]**
+
+[Agent Teams 的限制](https://code.claude.com/docs/en/agent-teams#limitations)明确 in-process队员不能随 `/resume`／`/rewind` 恢复，且停止须等当前请求／工具调用结束。因此“先停扩量”不等于已有进程立即消失或写入已撤销；先核实际状态再换单层执行。**[一手；经验：采用]**
+
+**两位不同作者的失败报告，均未独立复现：**
+
+- [balabg94，#101688](https://github.com/anthropics/claude-code/issues/101688)，2026-10-13，2.1.296/macOS：`context: fork` Skill 的交互运行提前返回，两个后台孩子后来向主会话回报，原 fork 的汇总未运行；同项目 `-p` 路径据报完成汇总。核实日 open、无回复。反例针对 forked Skill 路径，不泛化为所有普通子Agent都不会等待；可撤回嵌套，让主会话直接收集所需结果。不能据这个报告把全部工作改为 headless。**[社区：原帖和作者复现]**
+- [RubenARNAUD，#99887](https://github.com/anthropics/claude-code/issues/99887)，2026-10-06，2.1.281/Windows Desktop：子Agent等待用户许可，父Agent仅见运行中，过夜任务停滞。核实日 open。它反驳“后台启动就能无人值守”的保证，不推翻官方权限路由契约，也不支持关闭审批；应拆出需要人在场的步骤。**[社区：原帖，未核日志／修复]**
+
+### 验证与剩余缺口
+
+已交叉读取现行官方文档、0.162.1固定配置/角色应用路径及对应测试定义，并保留文档已更新而历史issue仍open的反证。没有运行上游测试、客户端、模型或付费请求；源码证明上述路径，不证明宿主全部部署、审批交互或实际净收益。08其他旧研究数字、第三方维护状态与云端产品项未在本单元全文重核。本仓完整离线入口首轮14阶段通过（非空套件、无skip），`git diff --check`通过；这些检查不验证上游动态事实。

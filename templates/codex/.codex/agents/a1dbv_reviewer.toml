@@ -1,9 +1,9 @@
-# 核实时间：2026-10-10；🧪 可选角色示例，未进行 Codex 运行时实测。
+# 核实时间：2026-10-15（UTC+8）；🧪 可选角色示例，未进行 Codex 运行时实测。
 # [一手] https://learn.chatgpt.com/docs/agent-configuration/subagents
-# [经验] 不设模型与 effort，使用已解析默认值；实际权限仍需检查。
+# [经验] 不设模型与 effort，使用已解析默认值。以下只读要求是行为约定，不能建立沙箱。
+# [一手] Codex 0.162.1 角色不应用 sandbox_mode；硬性只读由父会话／宿主的有效权限保证。
 name = "a1dbv_reviewer"
 description = "审查给定 diff 的正确性、安全性及缺失测试，返回有证据的可行动问题。"
-sandbox_mode = "read-only"
 developer_instructions = """
 读取指定 diff、相关代码和验收条件，仅在委派范围内审查。
 优先报告真实缺陷，附文件位置、触发条件，以及复现证据或明确推理。

@@ -1,7 +1,11 @@
 # 08 · 多 Agent 与并行
 
-> 核实时间：2026-10-08；任务拆分边界于 2026-10-11（UTC+8）对照官方文档复核；10-13 补充按遗漏风险选用及评审输入交接；10-14 复核并行研究的计时、预算、验收与 worktree 状态边界，其余未重验。
+> 核实时间：2026-10-08；任务拆分边界于 2026-10-11（UTC+8）对照官方文档复核；10-13 补充按遗漏风险选用及评审输入交接；10-14 复核并行研究的计时、预算、验收与 worktree 状态边界，10-15（UTC+8）补核子Agent启动、权限、并发与恢复契约；其余未重验。
 > 一句话：**把可独立验收的工作并行；是否更快，要算到汇总、整合与验收结束，不能只看生成速度。**
+
+## 30 秒选择
+
+✅ 能独立验收、只需回传证据的支线，先用当前会话的子 Agent；Codex 任务需要硬性只读边界时开受限父会话，不把角色名称当沙箱。🧪 需要共享任务协调或可重放的大规模编排，再试 Teams／Workflow。启动前确认审批能送达、结果由谁收集；出现权限等待、缺失汇总或不明写入结果，先停扩量、核对已有动作，再缩回单层委派或串行相关步骤。**[一手；经验：采用判断，依据见 §2.1／§5.1]**
 
 ## 1. 证据
 
@@ -38,19 +42,27 @@ Anthropic 的“多 Agent 提升 90%”和 Cognition 的“不要做多 Agent”
 
 | 方式 | 谁来协调 | Agent 之间通信 | 文件隔离 | 状态 |
 |---|---|---|---|---|
-| **Subagents** | Claude 在一个会话内委派、收集结果 | 只向父会话汇报 | 可以给每个子 Agent 配 worktree | 稳定 |
+| **Subagents** | Claude 在一个会话内委派、收集结果 | 主会话收集结果；具名 Agent 可传消息 | 可以给每个子 Agent 配 worktree | 会话内委派 |
 | **Agent View**（`claude agents`） | 你派发独立任务，回头再看 | 只向你汇报（可用跨会话消息） | 派发后的会话会自动进入独立 worktree | 研究预览 |
 | **Agent Teams** | 由 Claude 担任 lead，负责计划、分配和监督 | 队员之间直接发消息，共享任务列表 | **不自动隔离**，需要按文件划分任务 | 实验，默认关闭 |
-| **Dynamic Workflows** | 由一个**脚本**持有计划，而不是靠 Claude 一轮轮判断 | 结果之间交叉验证 | — | 稳定 |
+| **Dynamic Workflows** | 由一个**脚本**持有计划，而不是靠 Claude 一轮轮判断 | 脚本组织结果与交叉验证 | 需另选隔离方式 | 按账户／入口启用 |
 | **Projects** | 一个长期对话，Claude 自己拆成线程，作为并行云端会话运行，你离开后也继续 | 共享仓库、指令和记忆 | 云端会话 | 公测（2026-09） |
 
-辅助：`--worktree`、`.worktreeinclude`（指定复制进 worktree 的未跟踪文件）、`worktree.sparsePaths`、跨会话消息、`/batch`（拆成 5–30 个 worktree 子 Agent）。
+辅助：`--worktree`、`.worktreeinclude`（复制匹配的忽略文件）、`worktree.sparsePaths`、跨会话消息、`/batch`（拆成 5–30 个 worktree 子 Agent）。
 
 **怎么选**：
 - 支线调查会把主对话塞满 → **Subagent**
 - 手上有几个独立任务，想交出去、只在需要时介入 → **Agent View**
 - 一个大型迁移或审计，要处理成百上千个文件 → **Dynamic Workflow**（或 `/batch`，或用 `claude -p` 写循环）
 - 需要多个 Agent 持续协作讨论 → **Agent Teams**（实验功能，token 消耗大）
+
+### 2.1 启动与撤回：后台不等于无人值守
+
+- **普通子 Agent**：审批提示应回主会话；无人值守任务若会需要新审批，先拆出该步骤，别靠扩大权限消除等待。`/tasks` 查看并停止当前会话后台任务，不能把“已派发”当完成。
+- **Agent Teams**：仍为实验；开启后，主会话给调用加 `name` 可将子 Agent 转成队员，frontmatter 的 worktree 隔离不能阻止转换。需隔离时让本次调用显式传 `isolation` 并核实际目录，或关闭 Teams。in-process 队员不能由 `/resume`／`/rewind` 恢复。需要可靠续接时先用单层委派；恢复后核实队员与产物再派发，不对旧名单继续发任务。
+- **Dynamic Workflow**：适合可重复的批量调查／迁移；需要阶段间人工签字就拆成多个 run。重启可能重跑失败 Agent 之后已完成的 Agent，涉及提交、上传等写入时先按 [20 的对账建议](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)核实际结果，再决定恢复。
+
+依据：[Subagents](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)、[Teams 限制](https://code.claude.com/docs/en/agent-teams#limitations)、[Workflow 恢复](https://code.claude.com/docs/en/workflows#which-agents-run-again)，2026-10-15（UTC+8）**[一手；经验：选择]**。局限：不同宿主的提示与结果投递仍有[公开失败报告](research/2026-10-12-experiment-records.md#子agent宿主契约并发权限与恢复)，本轮没有运行客户端。
 
 ## 3. 第三方编排工具
 
@@ -87,6 +99,14 @@ Anthropic 的“多 Agent 提升 90%”和 Cognition 的“不要做多 Agent”
 | OpenAI Responses **多 Agent beta**、Agents API 的多 Agent 编排 | API 层的多 Agent | developers.openai.com **[一手]** |
 | Claude **Managed Agents 多 Agent 会话** | 协调者 + 子 Agent 的“名册”；官方建议先只放 `self`（让 Agent 委派给自己的副本），再把读大量资料的子任务交给更便宜的 worker 模型（如 Haiku 5.5）；一个预算由所有线程共享 | Claude API 官方 Skill **[一手]** |
 
+### 5.1 Codex 子 Agent：配置作用域先于人数
+
+✅ 当前会话内独立调查可直接委派；自定义角色只在确需复用模型、指令或缩减能力时配置。现行文档与 **Codex 0.162.1 固定源码**均支持 `[agents].max_concurrent_threads_per_session`，旧 `max_threads` 是别名；该字段数的是子线程，不含主线程。默认值随执行后端而异，不把历史“6 个”写成跨宿主保证，也不把并发上限当总费用上限。**[一手：文档／源码]**
+
+**权限在父会话选择。** 角色文件里的 `sandbox_mode`／`approval_policy` 不替换父会话权限；“只读 reviewer”的提示词不构成独立只读沙箱。需要硬性只读时，使用实际只读权限的父会话；交互 CLI 可处理子线程审批，不能展示新审批的非交互入口则会失败。具体有效配置沿 [01](01-agents/codex.md)／[10](10-security.md)核对，不能把 CLI 配置直接套给 ChatGPT Work。**[一手；经验：建议]**
+
+来源：[现行指南](https://learn.chatgpt.com/docs/agent-configuration/subagents#approvals-and-sandbox-controls)与[固定实现／反证](research/2026-10-12-experiment-records.md#子agent宿主契约并发权限与恢复)，2026-10-15（UTC+8）。局限：核过配置与代码路径，不等于各账户、宿主及已安装版本均已验证。
+
 ## 6. 操作手册：从一个大任务到并行执行
 
 1. **先画依赖**：让 Agent 列出要改的模块和文件，以及它们之间的调用和数据依赖（一张表或 Mermaid 图），人确认 **[经验，思路来自 Co-Coder 研究]**；
@@ -110,10 +130,10 @@ Anthropic 的“多 Agent 提升 90%”和 Cognition 的“不要做多 Agent”
 | `permissionMode` | 权限模式 | 只读子 Agent 可以用 `plan` |
 | `skills` / `mcpServers` | 预加载 Skill、只给这个子 Agent 的 MCP | 把重型 MCP 限定在需要它的子 Agent 上，主会话就不必加载它的工具定义 |
 
-**全局控制**：
+**会话控制（2026-10-15 UTC+8 文档复核）**：
 - `CLAUDE_CODE_SUBAGENT_MODEL` 统一指定子 Agent 的模型；再加上 `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` 会强制所有子 Agent 使用它；
-- 子 Agent 默认最多嵌套 3 层（`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`，设为 1 就禁止嵌套）；最多同时运行 20 个（`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`）；
-- **fork**（复制当前对话）会继承父会话的提示缓存，比新开一个子 Agent 便宜，适合需要相同上下文的任务。
+- 默认嵌套 3 层，`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1` 禁止继续嵌套；普通 `Agent` 启动在已有 20 个运行时拒绝，可用 `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` 调整。**这不是全局硬上限**：手动 `/subtask` 与 resume 可越过，Teams／Workflow 另计，ultracode 不受此限；遇限额先收结果，不自动加大值。
+- **fork** 继承当前对话与缓存，适合需要相同上下文的支线；缓存复用不证明整个任务更便宜。Agent View 开启时 `/subtask` 是会话内 fork，`/fork` 是独立后台会话，别混用恢复与生命周期假设。
 
 **什么时候用子 Agent**（官方文档）：
 - 任务会产生大量你不会再看的输出（测试日志、大段文件内容），只需要摘要回到主上下文；

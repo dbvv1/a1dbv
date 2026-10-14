@@ -1,6 +1,6 @@
 # Codex 原生可选模板
 
-核实时间：2026-10-10；🧪 试用。[经验] 适合需要中断恢复或独立审查的项目；简单改字不必采用。这里只有示例，未安装到任何用户配置，也未进行 Codex 运行时实测。
+核实时间：2026-10-10；2026-10-15（UTC+8）复核 reviewer 权限边界；🧪 试用。[经验] 适合需要中断恢复或独立审查的项目；简单改字不必采用。这里只有示例，未安装到任何用户配置，也未进行 Codex 运行时实测。
 
 ## 按需采用，不整包覆盖
 
@@ -21,7 +21,7 @@
 
 [一手] `[agents]` 的 `enabled`、`max_concurrent_threads_per_session`、`default_subagent_model`、`default_subagent_reasoning_effort` 按当前参考核实；并发数不含主线程。独立角色可放在 `.codex/agents/`，以 `name` 标识，不应再在另一种配置形式重复定义同名角色。[配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)、[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
 
-[一手] reviewer 不指定模型和 effort，使用已解析的默认值；显式调用或角色覆盖仍可能改变它们。角色的 `read-only` 不能取代实际运行环境检查，父级实时权限覆盖可能优先。只读审查也不能承诺执行会写缓存或临时文件的测试。[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
+[一手] reviewer 不指定模型和 effort，使用已解析的默认值；显式调用或角色覆盖仍可能改变它们。Codex 0.162.1 的角色文件虽可解析 `sandbox_mode`／`approval_policy`，但角色应用路径不投影这些字段；模板已移除无效的 `sandbox_mode`。只读指令是行为约定，硬性只读须由父会话／宿主的有效权限保证，见 [08 的固定实现与采用边界](../../docs/08-multi-agent.md#51-codex-子-agent配置作用域先于人数)。只读审查也不能承诺执行会写缓存或临时文件的测试。[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
 
 [经验] 主配置不设置审批、沙箱、网络、信任、凭据或持久授权；reviewer 仅请求只读。发现测试需要写入时，交回已有相应授权的执行者。配置不安装工具，不授予发布或部署权限，也不假设 Goals、浏览器、子 Agent、网络和模型在目标环境可用。独立云任务、托管 Work 与 API 编排的能力应另行核实，不能把本地 TOML 当成它们的统一配置。
 
