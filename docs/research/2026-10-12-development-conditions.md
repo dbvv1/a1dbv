@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索；22 §5 成对验收有意改变与相邻保留行为
-新证据：新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照；10-14 新增 Pydantic AI 取消需求→完成路径回归→窄修复的固定源码与评审反馈，未运行上游
+改变的建议：05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索；22 §5 成对验收有意改变与相邻保留行为；18 §7／20 §4 按责任迁移验版本、持久化恢复与旧决定失效
+新证据：新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照；10-14 深化 Pydantic AI 清理→捕获→重放→整轮取消→下游删除补偿层的固定产物、需求、测试定义与历史 CI，未运行上游
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
@@ -255,6 +255,49 @@ S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 **最强反证。** #5771 明说用户最初贴的非流式例子并不触发该路径；#5769 当前正文已经过修改，不能把它当作原始复现成功记录。修复 PR 正文还残留“CallToolsNode 分支不动”的描述，与最终补丁不同，故以上以固定产物和作者后续回复为准。[第三方历史复演](https://www.startearly.ai/regression-case-files/pydantic-ai-release-replay/)另报告 TestModel 在 1.91 通过、1.92 失败、1.106 通过；它是预先选中已知故障版本的事后试验，本文未重跑，也不用于证明其检测产品普遍有效。**[一手：维护者解释；社区：第三方复演]**
 
 **给使用 Agent 的开发者的具体取舍。** 接到改变生命周期的需求时，先写清触发条件、退出方式与应保留的结果，而不把整个旧测试集合统一判为兼容或过时。已有抽象仍能满足不同路径时保留；共享收尾无法区分两种合法契约时，只把策略移到拥有该区别的调用层，同时验相邻路径和公开接口。只有这一步仍无法表达要求时，再提出更大重构。**[研究：从本例提炼的采用条件，不是普遍净收益]**
+
+#### 累计到下一次需求：保存、重放、整轮取消不是同一个契约
+
+> 核实：2026-10-14 UTC。本节接续同一取消／历史链。三项新增要求是**保存中断产物、重新使用这些产物、从外部停止整轮并取回状态**；不把评审轮次或修 bug 数量当作需求次数。**[研究：比较范围]**
+
+| 阶段与真实要求 | 固定产物、责任与操作变化 | 保留什么，什么有意改变 |
+|---|---|---|
+| 1. 取消返回前完成清理；正常返回仍交付完整结果 | 上文 `93a6104` 将事件流清理交给托管迭代器；`49f62a3` 把正常完成排空放到 handler driver，而非恢复共享节点旧循环 | 取消不继续消费与正常完成不丢结果同时成立；先分清退出策略，不统一所有路径 |
+| 2. 前端已显示的中断输出也要保存 | [#3219](https://github.com/pydantic/pydantic-ai/issues/3219) → [#5364／`35fb827`](https://github.com/pydantic/pydantic-ai/commit/35fb8271688f438844e43cb0020d371a34cdc47a)。图节点在异常路径记录部分 response／tool returns，消息增加 interrupted 状态；工具返回非空才追加 request | 从“完成产物”增加到“可辨识的部分产物”；尚未承诺所有捕获历史都可再次发给模型 |
+| 3. 将中断历史用于下一轮，而非仅供观察 | [#5836](https://github.com/pydantic/pydantic-ai/issues/5836) → [#6319／`8602986`](https://github.com/pydantic/pydantic-ai/commit/86029861bb86b210c29b3d3f3f3d5660fefd8c57)。共享历史清理层修复未配对工具调用、处理孤立结果，UI adapter 往返保存 outcome；测试包括不应自动修复的 deferred frontier | 尚待处理的工具与已经中断的工具必须区分；原始记录与发送给 provider 的整理分层，不把修复散到所有调用者 |
+| 4. stop 按钮、线程或工具要停止整轮并拿回状态 | [#5835](https://github.com/pydantic/pydantic-ai/issues/5835) → [#6497／`a19b68a`](https://github.com/pydantic/pydantic-ai/commit/a19b68adeb2d18efd3719bb3c7f738a853d41984)。增加 run-scoped controller、token、外层取消分类与清理完成后的快照；复用 stream/tool teardown，响应级 cancel 保持原义 | 外部 `CancelledError` 继续传播以保留 timeout／TaskGroup 语义，本方取消以 `RunCancelled` 携带状态。新的控制范围要求掌握整轮状态的责任边界，不能只在流末尾补判断 |
+| 5. 新契约的实际反例：首个工具尚未返回就取消 | [用户 #7977](https://github.com/pydantic/pydantic-ai/issues/7977) 在 2.37.0 给出确定性复现；[#7993／`1467456`](https://github.com/pydantic/pydantic-ai/commit/1467456556b9109b5b92eb7c7def8eabb5287775) 去掉旧 `if output_parts` 门槛，保留空 interrupted request | 阶段 2 的“空数据不保存”已不成立：消息还承担“这些工具不会再返回”的恢复信号。错误路径精确消息计数有意改变；修复沿已有 repair 边界完成，无须再次重构整轮控制 |
+
+需求、源码和测试定义为 **[一手]**；用户复现为 **[社区：报告者运行]**。本轮读固定补丁，未运行 Pydantic AI。历史 repair 与 run controller 是不同责任，不能把作用全部归给 #6497。#7993 新增带／不带新 prompt 的恢复、错误退出恢复及多个 dangling calls 覆盖；作者称前三例旧版失败、新版通过，本轮未取得其逐例红绿原日志。
+
+**晚期仍可窄修，而非越改越大。** run 级能力已有后，[#7743](https://github.com/pydantic/pydantic-ai/pull/7743)针对用户 #7722 的 adapter 不接收 token，把可选参数经三个入口转发到已有 run API，并补 native／编码流／dispatch 测试。它支持补接线，不支持再造 UI 专属取消控制器；这是已有承诺的接入缺口，不额外计作新需求。**[一手：补丁与需求；研究：选择解释]**
+
+#### 接收者接下来做了什么：删除补偿层，而非恢复旧测试期待
+
+**[一手：历史 CI；社区：接收者隔离报告]** [akgentic-llm #155](https://github.com/b12consulting/akgentic-llm/issues/155) 的 jltournay 调查了下游 healing／恢复测试失效。独立复核取得同一 `db899ae0e2ba32d9da3cdbf3465025f8dbb4afe5` 的[9 月 2 日 job](https://github.com/b12consulting/akgentic-llm/actions/runs/33616228928/job/100202578437) 885 passed，以及[9 月 3 日 job](https://github.com/b12consulting/akgentic-llm/actions/runs/33759029604/job/100660445431) 9 failed、876 passed。代码相同，环境不同：slim／graph、anyio、ast-serialize、prices、genai 等依赖均变化，不能把这组 CI 当作只改变 Pydantic AI 的对照。作者另报告隔离依赖后将八项定位到 2.37→2.38、另一项定位到 anyio；该因果定位仍归作者报告。
+
+**[一手：最终产物]** [#156／`94779e1`](https://github.com/b12consulting/akgentic-llm/commit/94779e16adc47e964e0976c5311a276953fa6ca7)落实了接管选择：
+
+- 原 `HealingCapability` 在错误钩子看到末尾已是空 request 后不再执行，上游下一轮会补工具返回；下游删除该能力、挂载顺序依赖、公开导出及专属常量，保留预算恢复决策 `LimitRecoveryCapability`。删的是已被承担的责任，删文件数量不是工时收益
+- 最初不改依赖下限的决定被[修正](https://github.com/b12consulting/akgentic-llm/issues/155#issuecomment-5619072935)：2.38 前首个工具未返回的失败路径不会留下该恢复标记，删除会破坏原来可恢复的路径。最终要求从 `>=2.32,<3` 改为 `>=2.38,<3`，保留已有主版本上限
+- 删除公开名字而不留无效 shim，外部旧导入会报 `ImportError`；同时接受模型侧失败说明由项目特定文案变成上游通用 interrupted 文案。PR 要求下一 release 说明导出变化，作者把措辞损失留给 ADR owner 记录，不能称无兼容影响或已全部交付
+- 同批 anyio 修复没有使所有 workaround 都删除：下游保留清理整个 per-loop entry 的 `_evict_anyio_run_vars`，改掉“没有本地补偿就必定泄漏”的负对照。上游只修其中 root-task 缓存，是否重复要逐项比较责任，不能按依赖升级一概撤掉本地层
+
+**后期验收比数删改文件更有意义。** [新测试](https://github.com/b12consulting/akgentic-llm/blob/94779e16adc47e964e0976c5311a276953fa6ca7/tests/test_failed_run_history_resumes.py)经真实 `ReactAgent` 图和离线 `FunctionModel`，检查工具崩溃、预算耗尽后的下一轮模型输入有对应 call ID 的 interrupted return；通用失败要求同一异常对象及 traceback。另把失败事件经 `ModelMessagesTypeAdapter` JSON 往返，在新 agent 上 `restore_context` 后继续，验证持久化状态不会丢失恢复含义。**[一手：测试定义]**
+
+[head CI job](https://github.com/b12consulting/akgentic-llm/actions/runs/34483676695/job/102892459538)绑定 `27ba731a2b696e6f57b7b84a5f46889e0ce9e4ed`，运行使用 slim 2.42.0／anyio 4.15.1，原日志为 **866 passed、99.10%**，包括新文件四例；与作者另报的本地 865 pass／98.3% 分开记录。它是历史确定性框架集成测试，不是本仓运行、真实模型服务或 OS 进程重启：恢复例的新工具名是 `kaboom_again`，下一轮直接返回文本，未证明原工具可以重新执行。**[一手：历史 CI 原日志；研究：运行边界]**
+
+另一维护者 gpiroux 于 9 月 21 日合并，PR 无人工 review 记录，不能据此补写其理解工时。这是上游责任被下游实际采用的证据，不是陌生人首次接手整个项目。相邻仓库 [akgentic-agent #148](https://github.com/b12consulting/akgentic-agent/issues/148) 仍 open，两处说明还声称本地先修历史，实际已改为上游下一轮修复；本轮未核实 release note、ADR-016 落地、外部旧导入迁移或真实服务恢复。**[一手：合并与未闭环事项；研究：交付边界]**
+
+#### 累计采用判断：下一需求改变了谁必须知道什么
+
+✅ **局部补丁**：契约与责任不变，只是入口未传参或生产者漏发既有标记，沿现有 API／repair 层补齐，并验原调用者；#7743 与 #7993 是后期仍可小修的反例。**[研究：采用判断]**
+
+✅ **窄扩展点或责任重构**：新需求只是让外层选择已有行为，先暴露窄入口；若改变控制范围、何时算完成、谁能分类退出，则移到掌握该区别的层。#5771 的正常完成 driver 与 #6497 的整轮 controller 各有范围，共用 finally 排空或统一异常类型无法表达两者契约。**[研究：采用判断]**
+
+✅ **删除过期扩展并交接**：上游现已满足同一用户结果时，先核对最低支持版本并验证持久化恢复路径，再删除重复补偿；交代公开导出、诊断文案、剩余预算策略及跨仓说明归属。下游红测试可能是在期待旧实现，不应为保绿把已移交的责任搬回来；仍承担不同责任的 workaround 则保留。**[研究：采用判断]**
+
+这条链支持条件分界，尚不支持某个模型或架构普遍减少维护工时。下一证据应是下游最低支持版本的完整验收、发布后导入迁移与实际恢复；继续增加相似取消用例不能替代交付结果。
 
 ### 能推翻或改变这个优先级的证据
 
