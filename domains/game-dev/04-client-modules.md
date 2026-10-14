@@ -175,7 +175,9 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 **[一手／研究] Unreal 的对照说明“帧不中断”仍可能回应失败。** 当前 [PSO Precaching](https://dev.epicgames.com/documentation/unreal-engine/pso-precaching-for-unreal-engine)可在 PSO 未就绪时延迟 proxy（因此暂不绘制）或显示默认材质；对关键攻击预警，这些不是免费优化。先让所需组件／PSO 在遭遇前准备，只有定位到自动覆盖遗漏才补 bundled PSO；[Tom Looman 的 Windows DX12 实作](https://tomlooman.com/unreal-engine-psocaching/)同时记录旧版遗漏及 5.6 覆盖改进，不能照搬 5.3 的缺口结论到新版本。
 
-**[研究] 第二次修改就新增一种不同材质／渲染状态的技能。** 分别检查冷缓存首发、同进程第二次施放、重启后的热缓存，以及切画质后的首发；记录首个有效反馈时刻、对应长帧、准备时间和峰值／留存内存。只有首发响应改善且等待、内存和画面完整性仍在预算内，才保留预热或池化扩大范围。AI 可补采集路径、初始化分批和反馈记录，人决定何时允许开始遭遇、简化反馈是否仍清楚；原生选项与作者 trace 不能代替目标设备验证，详细范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)。
+**[研究] 第二次修改就新增一种不同材质／渲染状态的技能。** Unity 6.3 新增运行时 keyword 或修改裁剪规则后，先在目标测试构建中用[严格变体匹配](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-how-many-variants.html#highlight-missing-shaders)暴露未入包的变体，再补采 PSO；相近变体回退和预热完成都不是覆盖证明。
+
+分别检查冷缓存首发、同进程第二次施放、重启后的热缓存，以及切画质后的首发；记录首个有效反馈时刻、对应长帧、准备时间和峰值／留存内存。只有首发响应改善且等待、内存和画面完整性仍在预算内，才保留预热或池化扩大范围。AI 可补采集路径、初始化分批和反馈记录，人决定何时允许开始遭遇、简化反馈是否仍清楚；原生选项与作者 trace 不能代替目标设备验证，详细范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)。
 
 ### 菜单也是控制的一部分
 
