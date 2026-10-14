@@ -1,6 +1,6 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-08；2026-10-13 补语义检索工具的采用条件；2026-10-14（UTC）重写第 2 节成本选择，撤回通用价格排名，并补输出采集与显示裁剪的边界；2026-10-15（UTC+8）补设计上下文及跨会话记忆的采用与撤回条件。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
+> 核实时间：2026-10-08；2026-10-13 补语义检索工具的采用条件；2026-10-14（UTC）重写第 2 节成本选择，撤回通用价格排名，并补输出采集与显示裁剪的边界；2026-10-15（UTC+8）补设计上下文及跨会话记忆的采用与撤回条件、异步任务终态的接入验收。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
 
 ## 1. 现状
 
@@ -65,6 +65,12 @@
 ### 从规范到可运行实现
 
 本轮通过版本化规范再次确认了 2026-07-28 的会话、MRTR 和结果字段变化；**规范存在不代表客户端已兼容**。升级前固定客户端/SDK/服务端版本，验证能力发现、`input_required`、断流恢复与参数错误处理。读写工具还要定义业务幂等性，见 [20 可靠的长任务](20-codex-long-horizon.md) 和 [S5 来源](research/2026-10-10-audit.md)。**[一手 + 经验：工程建议]**
+
+### 异步工具：完成的是哪一层
+
+**🧪 只有操作确实需要后台执行，且客户端／服务端支持同一版 Tasks 时才接入；先复用兼容 SDK 的轮询，不另造 Agent 循环。** 2026-07-28 的 Tasks 是可选扩展，调用可能直接返回结果，也可能返回任务句柄。任务 `completed` 仍可能携带 `isError: true`；官方 TypeScript 的 `resultFromTaskOutcome` 与 C# 的 `CallToolWithPollingAsync` 都不会替调用者把这类工具错误升级成任务失败。接入验收至少覆盖“任务完成但工具失败”，并继续检查业务结果，不能用“没有抛异常”宣布交付。**[一手：[固定规范、实现与测试](research/2026-10-13-context-tool-choice.md#异步工具任务终态与业务结果)；经验：采用判断]**
+
+若工具自身只返回 `queued`，外层调用完成也只证明入队；选型时要确认能否用返回的身份查到所需最终结果，缺少这条路径就不让它承担无人值守的完成承诺。**关键局限**：旧版 Tasks 的错误归类不同，SDK 辅助方法也不保证业务副作用完成；先固定双方实现与能力，结果未知时沿用 [20 的对账与重试原则](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)。**[一手／经验：选择边界]**
 
 ## 3. 推荐的 MCP 服务器
 

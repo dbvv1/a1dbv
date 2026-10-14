@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加
-改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现。[经验]
-证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；未运行模型或上游客户端。[一手／社区／研究]
+改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现；异步工具先复用兼容 SDK，再分开任务终态、工具错误与业务结果。[经验]
+证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；另核 Tasks 新旧错误语义、两 SDK 解包实现与官方回归定义；未运行模型或上游客户端。[一手／社区／研究]
 
 # 上下文获取：问题、版本与状态边界
 
@@ -274,3 +274,32 @@ print('4 assertions passed')
 先明确一类现有记录难以定位的跨会话问题，再选实现；事实必须能回到来源，身份范围可区分，旧决定能被标记取代或从当前查询排除。若出现反复召回失效决定、同名串项目、删除／更正不能保持所需语义，或模型提取、索引、后端和人工纠正负担超过节省的查找，就缩小范围或退回直接可读记录。当前任务的授权、验收与外部操作状态仍查权威来源。**[经验：采用／撤回建议]**
 
 本轮仅建立静态机制差异与可核查反例，没有比较模型完成率、长期召回效果、成本或当前服务端行为。03 的生命周期原则与 20 的恢复清单保留；04 增加条件入口足够，不新建记忆平台教程、模板或实验。**[研究：范围]**
+
+
+## 异步工具：任务终态与业务结果
+
+> 核实：2026-10-15（UTC+8）。主线二；改变 04 的异步工具接入验收，20 的对账原则不重复扩写。只读固定公开源码、协议与测试定义，未安装 SDK、运行模型／服务或执行上游测试。**[一手；研究：范围]**
+
+### 具体缺口与采用判断
+
+04 原有“先核客户端／SDK／服务端版本”没有给出会改变接入判断的状态反例：宿主只等 `completed`，或把 SDK 正常返回当工具成功，会漏掉合法的工具错误。先复用已有 SDK 的任务生命周期支持，再检查解包后的工具结果与业务状态；不是所有 MCP 服务都需要后台任务，也不是加一个 Tasks 包就能补齐服务自己的作业查询。**[研究：失败链推导；经验：采用判断]**
+
+### 固定来源与实现链
+
+| 来源 | 固定版本与观察 | 证明范围 |
+|---|---|---|
+| MCP Tasks 扩展 | [规范 2026-07-28](https://github.com/modelcontextprotocol/ext-tasks/blob/899c1bbc869567670093face3591b39c28ce3219/specification/2026-07-28/tasks.md#capability-negotiation)；`899c1bbc869567670093face3591b39c28ce3219` | 客户端在每次请求声明扩展能力；服务端决定返回直接结果或任务句柄，没有声明不能返回任务。并非所有 MCP 服务默认启用 |
+| TypeScript 扩展客户端 | 同提交 [package.json](https://github.com/modelcontextprotocol/ext-tasks/blob/899c1bbc869567670093face3591b39c28ce3219/packages/ext-tasks/package.json) 声明 `@modelcontextprotocol/ext-tasks` 0.2.2；[api.ts L363–370](https://github.com/modelcontextprotocol/ext-tasks/blob/899c1bbc869567670093face3591b39c28ce3219/packages/ext-tasks/src/client/api.ts#L363-L370) | `resultFromTaskOutcome` 对 completed 原样返回 result；failed 抛 error，cancelled 抛取消错误。它不检查 result.isError |
+| C# 新实现 | `00adf5489910388749686bee2a6a32ae1b149ba6`；[版本声明](https://github.com/modelcontextprotocol/csharp-sdk/blob/00adf5489910388749686bee2a6a32ae1b149ba6/src/Directory.Build.props)为 2.2.0；[后台包装 L245–307](https://github.com/modelcontextprotocol/csharp-sdk/blob/00adf5489910388749686bee2a6a32ae1b149ba6/src/ModelContextProtocol.Extensions.Tasks/Server/McpTasksBuilderExtensions.cs#L245-L307) | 普通结果序列化后 SetCompleted；非协议异常也可包装成 IsError=true 并 SetCompleted。版本号是所读源码声明，不是本地安装或发行验证 |
+| C# 客户端 | 同提交 [轮询 L252–279](https://github.com/modelcontextprotocol/csharp-sdk/blob/00adf5489910388749686bee2a6a32ae1b149ba6/src/ModelContextProtocol.Extensions.Tasks/Client/McpTasksClientExtensions.cs#L252-L279) | CompletedTaskResult 反序列化成 CallToolResult 直接返回；failed／cancelled 另抛异常，因此只捕获异常仍会漏掉工具错误 |
+| C# 官方回归定义 | 同提交 [McpTaskStoreTests L627–653](https://github.com/modelcontextprotocol/csharp-sdk/blob/00adf5489910388749686bee2a6a32ae1b149ba6/tests/ModelContextProtocol.Tests/Server/McpTaskStoreTests.cs#L627-L653) | `ToolReturnsCallToolResultWithIsError_AsTask_StoresAsCompleted_NotFailed` 同时断言 Completed 和结果 isError=true；这里阅读测试，未运行 |
+| 旧版反例 | C# v1.4.1，`2b7fd35fbe58dfb9f00eae8b3393e1a7361b5e01`；[McpTaskStatus L60–68](https://github.com/modelcontextprotocol/csharp-sdk/blob/2b7fd35fbe58dfb9f00eae8b3393e1a7361b5e01/src/ModelContextProtocol.Core/Protocol/McpTaskStatus.cs#L60-L68) | 旧实验性 Tasks 将 isError=true 列入 Failed；这是版本化定义反例，不声称旧实现有缺陷或所有客户端已迁移 |
+
+上述均为**[一手：固定规范／源码／测试定义]**。新版规范的 [Task Execution Errors](https://github.com/modelcontextprotocol/ext-tasks/blob/899c1bbc869567670093face3591b39c28ce3219/specification/2026-07-28/tasks.md#task-execution-errors)明确：JSON-RPC 错误用 failed，普通工具结果即使 isError=true 也用 completed。C# 的[迁移说明](https://github.com/modelcontextprotocol/csharp-sdk/blob/00adf5489910388749686bee2a6a32ae1b149ba6/docs/concepts/tasks/tasks.md)区分 v2 扩展与 v1.3／v1.4 实验协议；不能用旧版状态分支直接解释新版响应。
+
+### 反例、选择与未证事项
+
+- **不是 SDK 吞错。** SDK 按协议保留工具结果，宿主必须读它；将 completed 一律判成功才是本例的错误接法。正常直接返回也要检查同一工具结果，不能只修异步分支。**[研究：实现推论]**
+- **不是工具无错误就证明外部任务完成。** 前文 Graphiti 固定实现的 add_memory 返回 queued，已说明工具可能只负责提交；即使外层没有 isError，事实提取和检索可见性仍是另一层。该案例为已有证据交叉引用，本轮新增证据是 Tasks 和 SDK 的终态解包路径。**[一手；研究：边界]**
+- **不强制新增队列或自建框架。** 同步工具已经覆盖需要时保持原实现；确需后台作业时，优先选能查询目标结果、兼容现有客户端的实现。只有接受回执而无可查询结果时，不能承诺无人值守完成。副作用是否重试仍按 20 对账，不把工具错误自动当作安全重试许可。**[经验：采用／撤回判断]**
+- 本轮没有 Agent 误报的真实运行轨迹，也没有测量 SDK 的净收益、服务持久性或业务幂等性；失败链是固定代码可见的条件推导，不能报告为已复现线上事故。**[研究：验证范围]**
