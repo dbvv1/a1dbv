@@ -7,23 +7,23 @@
 ## 0. UE 和 Unity 在 AI 落地上的三个根本差异
 
 1. **资产是二进制的**：`.uasset` / `.umap` 无法用文本工具读改，只能通过编辑器（MCP、Editor Python、编辑器工具）操作。
-2. **逻辑分散在 C++ 和蓝图里**：蓝图里的逻辑对通用编码 Agent 不可见。
+2. **逻辑分散在 C++ 和蓝图里**：源码可直接检索；蓝图需要核对已配置工具能读取的图、属性和编译结果，不能由二进制格式推定不可见。
 3. **编译循环分两档**：
    - 只改 `.cpp` 函数体：Live Coding，秒级；
    - 改头文件、反射宏（`UPROPERTY`、`UFUNCTION`）、新增类或模块：完整编译并重启编辑器，分钟级。
 
-所以 UE 项目的 AI 化，核心是**把尽量多的逻辑放进 C++、把验证做成命令行可跑的形式、让 Agent 通过 MCP 操作二进制资产**。
+所以 UE 项目的 AI 化，先**保留现有 C++／蓝图分工，沿用已有读改与验证入口，缺能力时收窄任务**，不默认迁移逻辑。蓝图工具的依据与覆盖局限见 [03 第 6 节](03-engine-fundamentals.md#6-蓝图与-c-的分工)（2026-10-14 核实）。**[一手／经验]**
 
 ## 1. 项目前置条件（一次性设置）
 
 | 设置 | 原因 |
 |---|---|
-| **逻辑优先写在 C++**，蓝图只做内容组装和数据配置 | 蓝图逻辑 Agent 只能通过工具读改，diff 和评审都困难；C++ 能被 Agent、编译器和测试同时检查 |
+| **写明现有 C++／蓝图职责及验证入口** | 蓝图修改前核对具体工具 schema、状态回读与编译能力；入口不足时停下相关自动修改，不为 Agent 可读性重写工程 |
 | 数据用 **DataTable（可导入导出 CSV / JSON）** 和 Data Asset | 文本格式的数据源 Agent 能直接读改，导入步骤可以脚本化 |
 | 按功能拆**模块**（`.Build.cs`）和插件 | 缩短编译时间；给 Agent 清晰的边界和依赖方向 |
 | 生成 IDE 项目文件和 `compile_commands.json` | 让 LSP / clangd 能分析代码（见 [01 第 6 节](01-toolchain.md#6-ide-和代码智能)） |
 | **告诉 Agent 引擎源码在哪里** | UE API 版本间变化大，模型常写出旧 API；“不确定就去 grep 引擎头文件”是最有效的防幻觉手段 |
-| UE 5.8+：启用 Unreal MCP + All Toolsets，安装 Epic 插件 | 让 Agent 能操作编辑器和二进制资产 |
+| 沿用已有 Editor Python／项目接口；确有缺口再评估 Unreal MCP | 按 [01 工具链](01-toolchain.md)核对版本，只启用任务所需工具集，不默认 All Toolsets 或安装插件 |
 | 版本控制：Perforce 或 Git + LFS | UE 团队普遍用 Perforce；Git 需要 LFS 管理 `.uasset` |
 
 ## 2. 禁区与规则
@@ -70,7 +70,7 @@ UnrealEditor-Cmd.exe MyGame.uproject \
 模板脚本 [`ue-run-tests`](templates/.claude/skills/ue-run-tests/) 会运行上面的命令，并从 `index.json` 中提取失败用例。
 
 **为可测试性设计**：
-- 游戏规则写成**不依赖 World 的纯 C++ 类或函数**，Automation Spec 可以直接测，不需要启动关卡；
+- 已采用 C++ 的独立游戏规则可写成**不依赖 World 的类或函数**，便于 Automation Spec 直接测试；不据此要求现有蓝图迁移；
 - 需要 World 的测试用 Functional Test（在测试关卡里放置测试 Actor），成本更高，用于关键流程。
 
 ## 5. 运行时验证（PIE 与打包版）
@@ -117,7 +117,7 @@ UnrealEditor-Cmd.exe MyGame.uproject \
 | 纯 C++ 游戏逻辑、数据结构、工具类 | 跨模块重构、改公共头文件（编译影响面大） | 手工“编辑” `.uasset` / `.umap` |
 | 编辑器工具、Editor Python 批处理、MCP 工具集 | GAS、网络同步 | 改引擎源码（除非这就是任务本身） |
 | Automation Spec 测试 | 渲染、材质、Niagara 的性能调优（要有 Insights 数据） | 平台认证、商店配置 |
-| DataTable 数据的批量生成和校验 | 蓝图逻辑修改（通过 MCP，结果要人看） | 没有测试的战斗手感调参 |
+| DataTable 数据的批量生成和校验 | 蓝图逻辑修改（先核对工具 schema、回读及编译，再评审相关行为） | 没有测试的战斗手感调参 |
 | 日志、崩溃堆栈分析 | 动画蓝图、Control Rig | 美术风格一致性 |
 
 ## 10. 推荐的单次任务流程

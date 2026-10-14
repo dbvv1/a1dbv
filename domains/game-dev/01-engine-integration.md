@@ -1,6 +1,6 @@
 # 引擎接入：让 Agent 操作游戏引擎
 
-> 核实时间：2026-10-08；资产编辑边界与 WP9 接入契约于 2026-10-14（UTC+8）单独复核；原生生成器与条件入口于 2026-10-14 UTC 补核。
+> 核实时间：2026-10-08；资产编辑边界与 WP9 接入契约于 2026-10-14（UTC+8）单独复核；原生生成器与条件入口于 2026-10-14 UTC 补核；§3 引擎选择于 2026-10-14 UTC 重新核实。
 > 依据 **[一手]**：
 > - Epic 官方插件 [unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)：克隆后读了全部 3 个 Skill、setup 和 operations 文档、SessionStart Hook，最近提交 2026-09-17；
 > - Roblox 官方文档 [Connect to the Roblox Studio MCP server](https://create.roblox.com/docs/en-us/studio/mcp)（2026-10-07 更新）；
@@ -31,7 +31,7 @@
 | **Godot 4** | 无官方 Agent 接入 | 社区 MCP，分“文件级”和“连接运行中编辑器”两类 | 场景树、脚本、运行项目 | 社区项目质量参差不齐 | 👀 |
 | **Blender 5.1+** | Blender Lab 官方 MCP | 插件 + MCP 服务器，可接 llama.cpp 等本地客户端 | 偏**场景分析和文档查询**（比如找出“屏幕占比小但面数高”的物体） | 官方声明执行 LLM 代码**没有任何防护**，建议在虚拟机里用 | 🧪（在隔离环境里用） |
 | Blender（社区） | [ahujasid/blender-mcp](https://github.com/ahujasid/blender-mcp)（2026-10 仍在更新） | MCP | 偏**资产获取和生成**，教程最多 | 同样直接执行任意 Python | 🧪（在隔离环境里用） |
-| 自研引擎 / Bevy / Web 游戏 | — | 纯代码 | 一切能力都来自代码和测试 | — | ✅ 最适合 Agent（见第 4 节） |
+| Bevy / Web 等代码优先项目 | 依具体框架 | 代码与运行时工具 | 文件可读不等于运行状态、资产和平台行为已可验证 | 按项目核查 | 🧪 按需求评估，不为 Agent 迁移（见第 3 节） |
 
 ## 2. 三种官方设计思路
 
@@ -78,23 +78,20 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 
 ## 3. 引擎选择对 AI coding 的影响
 
-同样的模型，在不同引擎里效果差很多。原因主要是结构性的，不是模型的问题 **[经验：综合官方文档和社区反馈]**：
+**✅ 已有 Unity／Unreal／Godot 工程先维持引擎，补当前任务缺少的读取、修改或验证能力；不因“模型熟悉某语言”或“场景是文本”迁移。** 本页撤回模型熟悉度排名和“纯代码最省事”的普遍结论：现有材料没有同任务、同模型、同质量门槛的跨引擎维护成本比较。**[研究：见 [WP9 选型反证](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#9-引擎选择补核可读代码不等于值得迁移)]**
 
-| 因素 | Unity | Unreal | Godot | 自研 / Bevy / Web |
-|---|---|---|---|---|
-| 模型熟悉程度 | **高**：C# 和 Unity 的代码语料极多 | 中：宏多（`UCLASS`、`UPROPERTY`），**版本间 API 变化大**，模型容易写出旧 API | 中低：GDScript 语料少，Godot 3 → 4 变化大，常被混用 | 取决于语言 |
-| API 的“真相来源” | 引擎闭源，只有 C# 参考源码 | **安装版自带引擎头文件**，让 Agent grep 头文件是对付 API 幻觉最有效的手段 | 开源 | 自己的代码 |
-| 场景和资产格式 | 可用 YAML 序列化；默认经 Editor API 修改，直改例外见上文 | `.uasset` / `.umap` 为**二进制**，经编辑器/API 修改，不做文本补丁 | `.tscn` 纯文本，最友好（社区评价 **[社区]**） | 通常是代码或文本 |
-| 逻辑在哪里 | C# 为主 | **C++ 和蓝图混合**，蓝图逻辑对通用编码 Agent 不可见 | GDScript / C# | 代码 |
-| 编译反馈 | `unity recompile` 秒级；domain reload | Live Coding 秒级（只限函数体）；改头文件要完整编译，分钟级 | 脚本即改即用 | 取决于工具链 |
-| 无头测试 | `unity test`，退出码清楚 | `UnrealEditor-Cmd` 加自动化测试，JSON 报告 | 社区方案 | 通常最容易 |
-| 官方 Agent 接入 | Unity CLI + 官方按需 Skill | 编辑器内置 MCP（实验性），**打包版也能托管** | 无 | — |
+| 已有工程 | 采用／维持 | 何时收窄 Agent 范围 |
+|---|---|---|
+| Unity | 沿用已验证的 C#、场景／Prefab 和 importer；可独立的规则适合单独测试，不为可读性重写全部 MonoBehaviour 或资产 | 只能读代码却读不到序列化字段、对象引用或 Play 状态时，只交付代码层结果，补 Editor API 回读后再改资产 |
+| Unreal | 保留现有 C++／Blueprint 分工；代码 API 查项目对应版本头文件，蓝图任务先发现现有工具能读哪些图、属性和编译结果 | 二进制文件不能靠文本搜索读懂，但不等于接入工具后仍不可见；读不到任务所需状态时停止该部分自动修改，不默认把蓝图迁成 C++ |
+| Godot | 沿用项目版本与 GDScript／C#；文本场景便于差异检查，先用已有 CLI、脚本和项目测试 | 官方已有 headless、场景运行、脚本及导出入口，不必先装 MCP；解析成功仍不足以证明导入、碰撞、UI 或目标平台正确 |
+| Bevy／Web 等代码优先项目 | 已有工具链满足玩法、资产及发布需求时沿用；逐框架核对运行观测与升级契约 | 没有编辑器桥不代表没有维护成本；例如 Bevy 0.16→0.17 的 Entity 序列化变化需要迁移，但不能外推所有框架 |
 
-**推论**：
-- **UE 项目的 AI 化程度，取决于“逻辑有多少在 C++ 里”**。蓝图越重，越依赖官方 MCP；C++ 越多，通用编码 Agent 越能发挥。
-- **Unity 项目要坚持“逻辑写在纯 C# 里”**：这一条同时提高可测试性和 Agent 的效率（见 [unity/02](unity/02-large-project-guide.md#4-测试)）。
-- **UE 项目要在 AGENTS.md 里写明引擎源码位置**，并要求“不确定的 API 先查头文件”。
-- **自研引擎和纯代码框架（Bevy、Web 游戏）反而最省事**：一切都是代码，难点从“怎么接编辑器”变成“怎么验证运行时行为”。
+上述接口边界分别依据 [Unity CLI／Pipeline](https://docs.unity.com/en-us/unity-cli)、[Epic 官方技能](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin/blob/a6aa73ada02a9fb1f5415bec491f9942c519b297/skills/unreal-mcp/SKILL.md)、[Godot 4.5 CLI](https://docs.godotengine.org/en/4.5/tutorials/editor/command_line_tutorial.html)与 [Bevy 指定版本迁移指南](https://bevy.org/learn/migration-guides/0-16-to-0-17/)；表中采用与停止条件是本仓库判断。**[一手／经验]**
+
+**🧪 新项目才把引擎作为候选比较；已有项目只有具体阻塞才重新评估。** 先看玩法与目标平台、现成资产／中间件、维护者能力，再比较 Agent 完成同一变更所需的连接和反馈。迁移理由可以是原引擎无法满足的平台、许可或必要能力；“Agent 写得顺”本身不足以抵偿资产、UI、物理、存档与发布路径重做。先在副本核查受影响的代表性流程，再决定迁移。**[经验]**
+
+Mega Crit 的历史选型重视授权信任、平台与现成引擎服务；Road to Vostok 的 Unity→Godot 迁移遇到资产管线和控制器差异；White Giant 的 Godot 3→4 也在自动转换后手修菜单。这些不同作者的[具体反例](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#91-不同项目的迁移理由与代价)支持检查迁移代价，不能证明哪个引擎的 AI 效率更高。**关键局限：这里是来源与接口核查，没有本仓库跨引擎迁移、当前模型或长期工时实测。** **[一手／研究]**
 
 ## 4. 选型建议
 
@@ -105,7 +102,7 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 | Unreal 5.8+ | 代码／测试沿用既有流程；资产批处理可用已有 Editor Python。确需交互式编辑器入口时，再启用 Unreal MCP 和任务所需工具集，先满足 [5.8.1+ 修复前提](unreal/01-toolchain.md#15-已知限制官方)，不默认 `AllToolsets`；**版本控制并勤存盘，端口只限本机**（见 [unreal/](unreal/README.md)） |
 | Unreal 5.8 以下 | 资产批处理直接用 Editor Python；另有社区桥可评估（如 UnrealClaude）。C++ 部分照常用通用编码工作流 |
 | Roblox | 直接用 Studio 内置 MCP；`playtest` 子 Agent 和输入模拟是目前**官方支持最完整的游戏验证能力** |
-| Godot | 社区 MCP 选“连接运行中编辑器”的一类，确认支持你的 Godot 版本；纯代码工作用文件级就够 |
+| Godot | 先沿用官方 CLI、脚本与项目测试；确缺运行中场景读取／操作时再评估兼容版本的社区桥，不把文件可读当运行行为已验证 |
 | Blender | 官方 MCP 用于场景分析，社区 MCP 用于资产获取；**都放在虚拟机或无敏感数据的机器上** |
 
 > ⚠️ 不要同时装多个连接同一个编辑器的 MCP：工具重复，Agent 容易选错，上下文也会膨胀。

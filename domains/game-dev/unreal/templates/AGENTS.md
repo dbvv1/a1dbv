@@ -57,7 +57,7 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 - 新 Actor 和 Component 默认关闭 Tick（`PrimaryActorTick.bCanEverTick = false`），确实需要时再打开。
 - 网络同步：`Replicated` 属性必须在 `GetLifetimeReplicatedProps` 中注册；Server RPC 必须校验输入。
 - 头文件：前向声明优先，`.generated.h` 必须是最后一个 include。
-- **逻辑写在 C++ 里**，蓝图只做内容组装和数据配置；需要给设计师的扩展点用 `BlueprintImplementableEvent` / `BlueprintNativeEvent`。
+- **沿用现有 C++／蓝图分工**：TODO（职责边界与扩展点）。蓝图修改前核对工具 schema、目标状态回读和编译验证能力；缺少必要入口时停止该部分自动修改并报告，不默认迁成 C++。
 - 数据用 DataTable（CSV / JSON 源文件放在 `TODO` 目录）和 Data Asset。
 - 测试：Automation Spec，测试名以项目名开头（`MyGame.Combat.Damage`）。
 

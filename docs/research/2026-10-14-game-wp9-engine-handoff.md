@@ -1,11 +1,12 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
 ## 当前结论摘要（2026-10-14 UTC）
 
+- **✅ 已有工程不为 Agent 熟悉度或文本格式迁移引擎**；先补所需状态读取与验证。三位开发者的迁移记录及官方接口反证见 §9，不构成模型能力排名。[一手／研究]
 - **✅ 复用已有 importer／Editor API**；只在缺连接时补 CLI／MCP，不默认安装全栈。身份、子资产语义和下游行为分开验收。[经验]
 - Unity 官方旧 AI Assistant MCP 已弃用；`unity mcp` 仍支持。所查 Coplay 同名导入只新增，move 返回值存在源码层潜在误报，均未实测。[一手／研究：§1–2]
 - **🧪 原生生成器只作小批原型对照**。现核 Assistant 2.20.0-pre.2；安装要求 6000.0.76f1、6.3 或更新，3D 限简单单部件且不含绑定／动画。[一手：§8]
@@ -230,3 +231,33 @@ Epic 5.8 Python 单类页读取失败，已读同版本 C++ API；未读完整�
 | 供应商／输出范围 | Unity 输出归属声明与供应商／模型限制并存；原则页限定 6.7 及以下，不外推后续 Editor | [原则](https://unity.com/legal/unityai-guiding-principles)／[目录](https://unity.com/legal/third-party-ai-terms)／[Scenario](https://www.scenario.com/terms-and-conditions)／[Layer](https://layer.ai/terms-of-service) | 2026-11-14；改模型／Editor／发行前 |
 
 成本比较需纳入全部重试、淘汰、后处理、credits 和主动工时；当前资料不足以把 credits 示例换算成每件合格资产的美元成本。没有发现足以证明原生生成器在本基准下优于外部 API 的同题两轮发布闭环，本次不更换 WP2／WP6 的默认推荐；开测前固定版本、许可、续费、候选数及导入对照，见 [G2 前置](2026-10-14-game-wp12-indie-roadmap.md#g2-开测前置原生生成器与外部导入)。[研究]
+
+
+## 9. 引擎选择补核：可读代码不等于值得迁移
+
+核实：2026-10-14 UTC；主线二／GB。改变 01 §3 的引擎选择：撤回无同题基准的模型熟悉度高低、“纯代码最省事”和按 C++ 比例判断 AI 化程度；已有工程先维持、缺什么补什么，新项目另评估。以下是历史作者报告与当前文档核查，不是 AI 迁移效果实验。[研究]
+
+### 9.1 不同项目的迁移理由与代价
+
+- **Mega Crit，内容密集的卡牌项目**：[Casey Yano 2023-10-17 原文](https://caseyyano.com/on-evaluating-godot-b35ea86e8cf4)把 Unity 当年的条款／信任问题作为转向背景；评价 Godot 时先调查，再做 Dancing Duelists 小游戏。作者已有 content-as-code 习惯，但仍希望引擎提供资源、字体与显示服务，不想重造；框架搭建耗去 jam 大部分时间。文章没有给 Slay the Spire 2 完整迁移成本，不能把三周 jam 当迁移工期或通用生产验证。这里也不把 2023 收费争议当现行收费事实。[一手：作者自述]
+- **Road to Vostok，3D FPS**：[作者 2023-10-14 周报](https://www.patreon.com/roadtovostok/posts/godot-port-2-90960806)记录约 175h Godot 使用、迁移进度约 15%，当时库存／AI 等仍待迁。作者认为已迁内容总体顺利，同时报告武器 rig 从 FBX 转 glTF 后的着色调查、导入／导出规则与控制器差异，并自建类型相关测试场景。175h 是当时作者口径，不是总工期或纯返工量；涉及承包者协作，不能充当“无美术修补”的成功证据。[一手：作者自述]
+- **White Giant／Last Dream 2，同引擎大版本迁移**：[Andrew Walker 的迁移记录](https://whitegiantrpg.com/godot-4-migration-getting-started/)以性能和现代图形平台为升级动机；自动转换后九宫格、窗口缩放、字体和布局仍需修复，作者选择逐菜单手修，称每个可需数小时。它反驳“文本格式／转换器存在就不用返工”，不证明当前 Godot 版本仍有相同缺陷，也不推定只有程序员能完成全部修复。[一手：作者自述]
+
+三例的团队、类型与迁移范围不同，不能比较工时排名；Mega Crit 是选型／jam 报告，Vostok 是进行中周报，White Giant 是升级初期记录，均不冒充本仓库复现。共同能支持的判断只到：迁移须有具体需求，并计入现成管线、行为和交付路径的保留成本，不能用代码语料或文件格式替代。[研究]
+
+### 9.2 当前工具能观察什么
+
+- **Unity**：[CLI 官方入口](https://docs.unity.com/en-us/unity-cli)明确控制 Editor 需要 Pipeline 包；代码文件读取与 Editor 状态不是同一个能力。已具备 Editor API／测试的工程先复用，不用以全量重构换取文本可见；具体资源身份风险沿用本记录 §1–5。[一手／经验]
+- **Unreal**：本轮重新读取 [Epic 官方 unreal-mcp Skill](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin/blob/main/skills/unreal-mcp/SKILL.md)，其发现／分发机制与既有[固定版本](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin/blob/a6aa73ada02a9fb1f5415bec491f9942c519b297/skills/unreal-mcp/SKILL.md)相符：工具覆盖蓝图等编辑器状态，先 describe 再调用，并检查编译返回。它足以反驳“蓝图天然不可见”；但本轮未连接引擎读取真实 schema，不承诺每种节点、图和运行状态都有完整观察／编辑覆盖。缺所需读回时收窄任务，而非先转 C++。[一手：官方技能；研究／经验：适用范围]
+- **Godot**：[4.5 官方 CLI](https://docs.godotengine.org/en/4.5/tutorials/editor/command_line_tutorial.html)已提供 headless、场景运行、脚本、导入和导出；`--check-only` 是配合 `--script` 的解析检查，不是玩法验收。项目断言与测试框架另选，不将引擎自身 `--test` 误作游戏全套测试。stable 页面本轮读取失败，改读明确 4.5 版本，不声称它是当前最新版或本机已装能力。[一手／研究]
+- **Bevy**：[0.16→0.17 官方迁移指南](https://bevy.org/learn/migration-guides/0-16-to-0-17/#functionality)明确 Entity 位表示／序列化变动会使旧数据失效甚至崩溃，场景可跨版本破坏。这里只作指定版本、指定机制的维护反例；不据此否定 Bevy，也不推广到 Web、自研或全部代码优先框架。[一手／研究]
+
+[Godot 官方大版本迁移说明](https://docs.godotengine.org/en/stable/tutorials/migrating/index.html)也一般不建议开发中尤其长期工程跨 major 升级，但承认新功能等可能值得迁移。因此“维持”不是永久冻结版本：真实平台／许可／功能阻塞可重新打开选择；先验证受影响流程，再比较迁移成本。[一手／经验]
+
+### 9.3 交付与撤回条件
+
+采用：已有工程补任务所需接口、目标版本 API 来源与反馈；缺蓝图／序列化／运行状态读取时，明确只完成代码层部分。新项目按需求和现成生态选候选，代码可读性只是一个因素。[经验]
+
+不采用：根据没有同题证据的模型熟悉度排名迁移；只因 `.tscn` 或全部源码可读就承诺低成本维护；为 Agent 批量改写现有蓝图、MonoBehaviour 或内容资产。[研究／经验]
+
+重新评估条件：原引擎存在影响交付的具体阻塞，候选在目标平台和代表性资产／UI／物理／存档流程上有可核查优势，并能承担迁移和后续维护。当前只预注册后续验证；未安装、运行引擎／模型、改动游戏工程或测量迁移收益。[经验／研究]
