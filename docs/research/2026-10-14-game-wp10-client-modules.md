@@ -565,3 +565,36 @@
 [研究] 正文仅增加“新语言／名字连带旧内容和字库更新”这一判断；不另写字体百科、翻译后台或通用 UI 框架。AI 可查硬编码与占位符、准备覆盖报告和回归画面，人决定名字政策并判断实际尺寸下的可读性。目标设备的字形、排版、输入提示与内存／首次显示表现仍待授权实测。
 
 [研究] 本轮不采用两条容易误写的材料：Factorio 简繁字体误选只取得搜索线索、论坛正文未成功读取，不列为一手结论；Unity 6.0 旧翻译页中的 ATG 富文本限制不能直接套到 6.3 新英文页，也不据限制项删除推断所有组合已可靠。
+
+
+## 音频并发补研：保住起音不等于保住每次提示
+
+主线：3，第二次增加武器／声音变体后仍保持可读反馈。
+改变的建议：04 的“优先级和并发上限”须区分入口合并、同组抢占和全局竞争；提高 priority 或总量不保证关键提示进入播放。
+新证据：Mindustry v154 发布及其锁定的 Arc／SoLoud 源码、实际 SoundPriority 配置；核实于 2026-10-14 UTC，仅静态阅读，未运行引擎或声音测试。
+
+### 1. 真实游戏的历史改动与依赖链
+
+[一手] [Mindustry v154 发布](https://github.com/Anuken/Mindustry/releases/tag/v154)（2025-12-16，Beta）同时提高 active sound cap 32→100、限制每类约 6 声，并重做多种声音素材，作者称意在避免一种声音淹没其余声音。这是历史生产改动，不是本日新功能；多项改动一起发布，不能把作者报告的改善全部归因于某个限额，更不能照抄数字为独立游戏标准。[研究]
+
+[一手] 发布源码声明的依赖链（非发行二进制溯源）：Mindustry `d1e0307d3906bb350e80d8969a2464ed0b771ffb` 的 [gradle.properties](https://github.com/Anuken/Mindustry/blob/d1e0307d3906bb350e80d8969a2464ed0b771ffb/gradle.properties)锁 `archash=46c0956944`；Arc v154 为 `46c0956944af81db1145625e07108c196d94e260`，其 [build.gradle](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/build.gradle#L69-L72)设置 `SOLOUD_MAX_VOICE_COUNT=100`，[同文件 L144-L146](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/build.gradle#L144-L146)在本地依赖目录不存在时拉取 Anuken/soloud 的 `2025.12.01`，对应 `4b4266fed49b45afc191728b64adf1faca943f5b`。不使用当前 main 解释旧版行为。
+
+### 2. 三道门控及不能省略的反例
+
+- **入口重触发合并。** [Arc Sound.java L31-L85](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/src/arc/audio/Sound.java#L31-L85)在启用 checkFrame 时按同一 Sound 对象的默认 16ms 间隔拒绝新实例；较大音量请求可更新上一声的音量及 pan，然后返回 -1。注释说“同帧”，实际判断经过毫秒数；这不是按敌人、位置或危急程度判断是否同一事件。新声音甚至尚未进入底层优先级选择。[一手]
+- **同组并发。** [Audio.java](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/src/arc/audio/Audio.java#L9-L15)默认值为 6，Sound 加载时应用；[SoLoud play](https://github.com/Anuken/soloud/blob/4b4266fed49b45afc191728b64adf1faca943f5b/src/core/soloud_core_basicops.cpp#L32-L67)为未显式指定组的 source 分配独立组，不能把默认值叫“按语义分组”。游戏另在 [SoundPriority.java L73-L109](https://github.com/Anuken/Mindustry/blob/d1e0307d3906bb350e80d8969a2464ed0b771ffb/core/src/mindustry/audio/SoundPriority.java#L73-L109)把部分火焰、导弹、arc／pulsar 变体共享组，降低修复／脚步优先级，并设通用最小可打断时间为 `min(0.25s, 声音长度一半)`，部分脚步更长。这里有真实内容取舍，不只有 API。[一手]
+- **全局声部竞争。** [findFreeVoice_internal L309-L391](https://github.com/Anuken/soloud/blob/4b4266fed49b45afc191728b64adf1faca943f5b/src/core/soloud_core_getters.cpp#L309-L391)在全局候选中使用 priority、年龄与 protected 条件，但同组已满分支先找非 protected、达到最小播放时间的最老实例，找不到就拒绝；同组替换条件不比较 priority。源码中“no lower volume candidate”注释与实际分支不符，不据注释声称按音量淘汰。游戏配置的 priority 3 注释虽称绝不打断，实现只是设置数值，不等于底层 PROTECTED flag；同组及其他同／更高优先级路径仍须分别核对。[一手]
+
+[研究] 因而，“保护起音”会减少连续重启导致的碎裂，也可能使后来的重要事件进不来；后一风险是分支推导，未测实际听感。✅ 借用已有系统的分组、优先级与重触发功能，仅为需要区别的事件补项目配置：普通同类枪声可合并，关键警告不要与普通装饰声共用会提前拒绝它的入口／组；第二个警告到来时由玩法决定保留旧声还是替换，不能统称永不打断。只更换音色／增加随机变体时维持原本的类别限额，避免每个资产各得一份预算。上述是工程推论，不宣称 Mindustry 已实现任意关键警告保障。
+
+### 3. Unity／Unreal 只复用相关机制
+
+[一手] Unity 6000.3 [priority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-priority.html)在 real voices 不足时优先虚拟化低优先级声源，同优先级再按音量，虚拟化仍跟踪播放位置；数值越小优先级越高，不能照抄 Arc 的数值方向。该设置不影响 WebGL。 [isVirtual](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-isVirtual.html)仅在该 AudioSource 的主声及全部 one-shots 都被剔除时为 true，因此 false 不能证明某次关键 PlayOneShot 已被听见。[研究] 保留原生播放与 Mixer，在已有声音事件入口补必要的类别限制；别用一个混杂的 Source 状态当逐事件成功回执。
+
+[一手] UE [Sound Concurrency](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-concurrency-reference-guide)已支持跨资产共享组、不同淘汰规则与 Retrigger Time；后者拒绝的声音忽略虚拟化设置，多组规则必须全部满足。[研究] ✅ 先配置原生组，明确警告是否受普通重触发限制；不要再写等价限流器，也不要把虚拟化当作被拒绝提示的待播队列。已有 WP6 对静音生命周期、混音与音乐调度的说明继续适用，本节不重列。
+
+### 4. 最小采用与未来验收
+
+[研究] 保留现有音频系统，不把 Arc／SoLoud 移植进 Unity／UE，不加通用威胁评分、专业中间件或全局队列。AI 可整理事件到资产／类别／重要性的映射并添加拒绝原因采集，人决定能合并哪些反馈、能否打断旧起音。未来获准实测时，在同类连发期间插入警告，再增加第二种变体与第二次警告：分别观察是否提交、被哪层合并／拒绝／抢占或虚拟化，并听验标志性起音、方向和时效；过期警告不应稍后补播成当前危险。记录 voice／CPU 预算，但不能以播放调用次数、有效 handle 或非虚拟状态代替听感验收。
+
+[研究] 本轮只核对发布原文、固定依赖和源码分支；不声称性能、提示可听性或最优参数已验证。SoLoud 通用虚拟声文档仅作背景筛选，因与现有 WP6 大量重合且不能替代此 fork 的实现，未另扩章节。
