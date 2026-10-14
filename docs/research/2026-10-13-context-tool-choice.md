@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加
-改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现；异步工具先复用兼容 SDK，再分开任务终态、工具错误与业务结果。[经验]
-证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；另核 Tasks 新旧错误语义、两 SDK 解包实现与官方回归定义；未运行模型或上游客户端。[一手／社区／研究]
+改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现；异步工具先复用兼容 SDK，再分开任务终态、工具错误与业务结果。[经验]；服务接入分清工具面、底层凭证和输入信任，插件仅按实际组件采用。
+证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；另核 Tasks 新旧错误语义、两 SDK 解包实现与官方回归定义；未运行模型或上游客户端。[一手／社区／研究] 新增 GitHub／Supabase 固定权限链、已修 HTTP 多用户漏洞与 Tenet 原研究；未把历史披露当当前复现。
 
 # 上下文获取：问题、版本与状态边界
 
@@ -303,3 +303,47 @@ print('4 assertions passed')
 - **不是工具无错误就证明外部任务完成。** 前文 Graphiti 固定实现的 add_memory 返回 queued，已说明工具可能只负责提交；即使外层没有 isError，事实提取和检索可见性仍是另一层。该案例为已有证据交叉引用，本轮新增证据是 Tasks 和 SDK 的终态解包路径。**[一手；研究：边界]**
 - **不强制新增队列或自建框架。** 同步工具已经覆盖需要时保持原实现；确需后台作业时，优先选能查询目标结果、兼容现有客户端的实现。只有接受回执而无可查询结果时，不能承诺无人值守完成。副作用是否重试仍按 20 对账，不把工具错误自动当作安全重试许可。**[经验：采用／撤回判断]**
 - 本轮没有 Agent 误报的真实运行轨迹，也没有测量 SDK 的净收益、服务持久性或业务幂等性；失败链是固定代码可见的条件推导，不能报告为已复现线上事故。**[研究：验证范围]**
+
+## 服务接入：工具面、凭证与外部内容
+
+> 核实：2026-10-15（UTC+8；读取于 10-14 UTC）。主线二；04 删除不影响选择的下载量／口碑风向，撤回“小模型、浏览器、高风险环境就用 MCP”的无条件建议，改为已有能力基线、服务权限与退出条件。新增证据为官方权限契约、固定服务实现、已修安全公告和原始研究报告；不重复成本、Figma、记忆或 Tasks 调查。**[一手；经验：选择]**
+
+### 接口与装配不是执行边界
+
+- [MCP 2026-07-28 授权规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)适用于 HTTP；stdio SHOULD 从环境取凭证。CIMD 为 SHOULD，DCR 为保留兼容的 MAY；不能把“弃用”写成现有服务已停止支持。规范本身不保证凭证永不进入进程环境，也不提供 OS 沙箱。**[一手；研究：界定]**
+- [同版 HTTP 规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#server-validation)要求按方法携带 metadata headers，服务端校验 header／body 一致。04 撤回“只看 header 就能鉴权”的过强表述；请求字段不替代身份、权限和业务授权。**[一手；经验：选择]**
+- [Claude 插件 manifest](https://code.claude.com/docs/en/plugins-reference#mcpservers)可同时包含 Skills、Hook、LSP 与 MCP 配置；MCP 配置可为本地文件、内联或 bundle。[MCP 文档](https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers)明确启用插件会启动其 MCP，工具与手工配置一起提供。[沙箱范围](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)明确本地 MCP、Hook、LSP 等不受 Bash 沙箱包裹。因此插件可减少装配工作，但没有第三种天然安全边界。这里是 Claude 的实际机制，不外推所有产品的插件格式。**[一手；研究：采用判断]**
+- 同一 MCP 文档的 project scope 区分交互审批与 print／SDK／cloud 启动；后者不能弹提示。正文不再只给“共享 `.mcp.json` + npx 最新包”的安装例子，而让读者先核已有连接、实际组件、固定本地版本与启动审批。该文档描述当前产品，未实跑客户端；组织设置仍按其运行表面配置。**[一手；经验：采用判断]**
+
+### G1：GitHub 的只读与 lockdown 不能替代凭证权限
+
+固定 `github/github-mcp-server` 于 `c59e8c199efbf14467211861de44afaeeb6873e3`（本轮 GitHub commits API 返回的 main）：
+
+- [filters.go L24–54](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/inventory/filters.go#L24-L54)先检查工具自身 Enabled，再按 readOnly／IsReadOnly 过滤，之后处理工具组与显式工具。它选择可用工具，不重签或缩小 GitHub token。[README](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/README.md#lockdown-mode)明确 lockdown 是 best-effort 内容过滤，私有仓库不受同样过滤；不改变底层凭证的读写权限，同一内容可能仍能经其他工具／API 获取。**[一手：固定实现与文档]**
+- [remote-server.md](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/docs/remote-server.md)定义 `/readonly`、单工具组路径和 `X-MCP-Toolsets`／`X-MCP-Readonly`。这证明已有窄接口可复用，不需要为 PR 排障自建新服务器；本轮未登录托管端点，也未确认其部署 SHA。**[一手；经验：选择]**
+- **实际故障与修复边界**：[官方 GHSA-pjp5-fpmr-3349](https://github.com/github/github-mcp-server/security/advisories/GHSA-pjp5-fpmr-3349)列受影响版本 `>=0.22.0, <1.1.2`、修复版 `1.1.2`。条件是 HTTP + lockdown，多用户请求曾复用首个用户的 GraphQL client，使内容信任判断跨身份混淆；不是单用户 stdio 的同等故障，也不是“读到了所有其他用户私有数据”的证明。**[一手：维护者安全公告，未复现]**
+- **当前实现反证**：[dependencies.go L463–487](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/github/dependencies.go#L463-L487)按请求取客户端并带 identity，新建 RepoAccessCache；[lockdown.go L102–113](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/lockdown/lockdown.go#L102-L113)绑定传入客户端。[官方测试 L134–158](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/lockdown/lockdown_test.go#L134-L158)分别创建 attacker／victim 缓存并断言作者信任判断不同；另有 identity scoped keys 测试。阅读不等于执行，但足以拒绝“当前仍使用该 singleton”的描述。**[一手：固定源码／回归定义，未运行]**
+
+**选择**：已有 `gh` 足够时不加层；确需受限远程工具时，按任务选工具面，按目标仓库限底层凭证，按输入来源处理内容。自托管多人 HTTP + lockdown 的旧部署须先升级到至少公告修复版；版本门槛只针对该已知漏洞，不保证所有安全问题消失，也不要求已修部署重新搭建。**[经验：采用边界]**
+
+### D1：Supabase 的项目、查询与用户身份是不同范围
+
+[当前官方 MCP 指南](https://supabase.com/docs/guides/ai-tools/mcp#configuration-options)给出 `project_ref`、`read_only=true`、`features`；安全部分明确开发者 MCP 按开发者权限运行，不应直接交给应用终端用户。生产证据确有必要才访问生产项目；只读不会把敏感列自动变成非敏感数据。此为供应方契约，不是本仓库对实际账户权限的认证。**[一手；研究：范围]**
+
+固定 `supabase/mcp` 于 `f46b3d2996d93baad25cce1b94b46440dcc44ecb`：
+
+- [server.ts L251–275](https://github.com/supabase/mcp/blob/f46b3d2996d93baad25cce1b94b46440dcc44ecb/packages/mcp-server-supabase/src/server.ts#L251-L275)在指定 projectId 时不装配 account tools，并把 projectId／readOnly 传给数据库工具；[L346–351](https://github.com/supabase/mcp/blob/f46b3d2996d93baad25cce1b94b46440dcc44ecb/packages/mcp-server-supabase/src/server.ts#L346-L351)在只读模式隐藏写工具。**[一手：固定源码]**
+- [database-operation-tools.ts L461–476](https://github.com/supabase/mcp/blob/f46b3d2996d93baad25cce1b94b46440dcc44ecb/packages/mcp-server-supabase/src/tools/database-operation-tools.ts#L461-L476)明确阻止只读模式 apply_migration；[L626–635](https://github.com/supabase/mcp/blob/f46b3d2996d93baad25cce1b94b46440dcc44ecb/packages/mcp-server-supabase/src/tools/database-operation-tools.ts#L626-L635)把 read_only 送入 executeSql 并包裹不可信结果；[api-platform.ts L204–222](https://github.com/supabase/mcp/blob/f46b3d2996d93baad25cce1b94b46440dcc44ecb/packages/mcp-server-supabase/src/platform/api-platform.ts#L204-L222)调用 Management API 的 `/v1/projects/{ref}/database/query`，不是以客户 JWT 调应用查询接口。不能据此笼统声称所有 MCP 都绕过 RLS；它只支持不要把这个开发者入口当终端用户隔离。**[一手；研究：机制边界]**
+- [server.database.test.ts L73–123](https://github.com/supabase/mcp/blob/f46b3d2996d93baad25cce1b94b46440dcc44ecb/packages/mcp-server-supabase/src/server.database.test.ts#L73-L123)定义只读查询通过与写入错误断言；[L696–718](https://github.com/supabase/mcp/blob/f46b3d2996d93baad25cce1b94b46440dcc44ecb/packages/mcp-server-supabase/src/server.database.test.ts#L696-L718)断言迁移错误。本轮只读测试，未执行数据库或确认远端角色／RLS 实际状态。**[一手：回归定义，未运行]**
+
+**选择**：查线上问题只开放目标项目的必要读操作；改 schema 继续用开发环境和现有迁移链；给客户查其订单则继续用应用已验证的逐用户授权接口。三种任务不因同属“数据库”而共享开发者权限。若项目只需生成类型或查 schema，避免额外拉取整表业务数据。**[经验：采用判断]**
+
+### S1：agentjacking 原研究证明哪条失败链
+
+直接读取 [Tenet 原文](https://tenetsecurity.ai/blog/agentjacking-coding-agents-with-fake-sentry-errors/)（页面更新 2026-06-17），替换此前只有 CSA 二手转述的依据。研究者报告经公开 DSN 注入伪造错误，Agent 经 Sentry MCP 读取后执行验证包；文中把它称为受控真实环境验证，并给脱敏捕获。该报告的成功率与组织数未由本仓库复算；不能写成当前所有客户端必然中招、所有沙箱无效或已确认恶意攻击规模。**[一手：原研究作者报告，非独立复现]**
+
+本次采用的是“可信服务可以返回外部作者指令，而读取后还存在执行边界”这一具体反例。对于日志／工单中推荐的修复包，先回源码与官方来源核查，再依据用户批准执行；CLI 读取同样内容也不自动免疫。没有必要因这一受控研究一律停用观测工具，也不能只加一句提示词就承诺自动修复安全。**[经验：选择与反证]**
+
+### 验证范围与收敛
+
+只读公开官方文档、固定源码／测试及安全报告；未安装软件、执行上游服务／利用代码、接私人账户或调用付费模型。本文没有新模型质量、成本或安全防御成功率数据。保留 Tasks 原段与固定证据；删除规模、厂商口碑、未给条件的推荐及无固定版本的安装例子，以免它们压过可直接采用的任务判断。完整离线与独立审阅结果随本工作单元交付，不据源码阅读宣称产品实测。

@@ -1,26 +1,16 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-08；2026-10-13 补语义检索工具的采用条件；2026-10-14（UTC）重写第 2 节成本选择，撤回通用价格排名，并补输出采集与显示裁剪的边界；2026-10-15（UTC+8）补设计上下文及跨会话记忆的采用与撤回条件、异步任务终态的接入验收。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
+> 核实时间：2026-10-15（UTC+8；读取于 10-14 UTC）。本页按能力缺口选择接入方式；协议、服务权限与安全反例已核一手来源，固定实现和验证边界见[研究记录](research/2026-10-13-context-tool-choice.md#服务接入工具面凭证与外部内容)。成本、设计、记忆和 Tasks 各节保留各自证据范围；未安装服务或运行模型对照。
 
-## 1. 现状
+## 1. 先决定是否需要新增连接
 
-- **规范版本**：2024-11-05 → 2025-03-26 → 2025-06-18 → 2025-11-25 → **2026-07-28（当前）**。
-- **治理**：已交给 Linux 基金会旗下的 Agentic AI Foundation（AAIF）；OpenAI、Google、AWS 等都已采用。
-- **规模**：Tier-1 SDK（TypeScript / Python / Go / C#）月下载量接近 5 亿，TS 和 Python 累计都超过 10 亿。
+**✅ 已有 CLI、项目测试或可直接读取的资料能完成任务，就不加 MCP。🧪 缺少当前 SaaS 数据、编辑器状态或受限工具接口时，先复用维护中的服务；插件若只是打包同一 MCP，不重复接入。** 插件还可能带 Skills、Hook 或 LSP，采用时看实际增加的组件与权限，不能把包装形式当作额外隔离。依据：[Claude 插件清单](https://code.claude.com/docs/en/plugins-reference#mcpservers)；具体任务见第 3 节。**[一手；经验：采用判断]**
 
-### 2026-07-28 版本改了什么
+2026-07-28 规范会影响新接入，但不构成升级理由本身：
 
-| 变化 | 意义 |
-|---|---|
-| **无状态核心**：取消 `initialize` 握手和 `Mcp-Session-Id` | 服务端可以水平扩展、走普通负载均衡；需要状态时，由工具返回显式句柄，让模型作为参数传回 |
-| `Mcp-Method` / `Mcp-Name` HTTP 头 | 网关、限流、WAF 只看 header 就能路由和鉴权 |
-| **MRTR**（多轮请求）取代服务端主动发起的 elicitation / sampling / roots | 不再需要长连接的双向流 |
-| 列表结果可缓存（`ttlMs`、`cacheScope`、确定性排序） | 客户端能缓存工具清单，**上游的 prompt cache 也更稳定** |
-| 授权加固：RFC 9207 issuer 校验、凭证绑定 issuer、**DCR 弃用改用 CIMD** | 修补授权服务器混淆类漏洞 |
-| 正式的扩展框架：Tasks、MCP Apps（交互式 UI）、企业托管授权 | 新功能以扩展形式加入 |
-| **弃用 Roots、Sampling、Logging**（至少保留 12 个月）；旧的 HTTP+SSE 传输停用 | 新实现不应再用这些 |
-
-**路线图（2026-08-22）** 五个方向：Agent 消息原语（长循环、流式、中途调整）、HTTP 原生传输、Agent 身份与企业安全（DPoP、工作负载身份联合）、改进原语（结果处理、**工具数量膨胀后的渐进式披露**）、SDK 开发体验。
+- 协议取消初始化握手和协议级会话；业务状态改用显式句柄。既有客户端是否支持须单独核实，不能只按服务器声称的规范版本切换。**[一手：[固定规范](research/2026-10-10-audit.md#s5--mcp-2026-07-28-规范)]**
+- HTTP 请求用 `Mcp-Method`／`Mcp-Name` 辅助路由，服务端仍须校验它们与请求体一致；认证、资源权限及注入防护不会由这些头自动提供。**[一手：[传输规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)；经验：边界]**
+- 授权规范面向 HTTP；stdio 通常从环境获取凭证。CIMD 是推荐注册方式，DCR 保留兼容；连接现有服务按双方实际支持选择，不因规范弃用就自行改掉仍需 DCR 的配置。**[一手：[授权规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)]**
 
 ## 2. MCP vs CLI：按任务与调用路径选择
 
@@ -28,33 +18,18 @@
 |---|---|---|
 | 成本 | 取决于工具描述、调用轮数、返回量、缓存及计价；不能由协议名排序 | 现有 shell 可先缩小查询、合并读取；不保证最低成本 |
 | 可组合性 | 可经代码接口组合调用、筛选结果；取决于客户端与服务端实现 | 管道、jq、tail，可以分块处理 |
-| 参数契约 | 有类型 schema，可校验/拒绝不合法参数；不保证模型不会生成错误调用 | 要靠 `--help`，不够稳 |
-| 凭证 | 可以完全不进入模型上下文 | 往往在环境变量或命令行里 |
-| 适用 | **没有 shell 的环境**、需要隔离凭证、团队级工具发现、SaaS 远程服务 | 本地开发、Agent 有 shell |
+| 参数契约 | schema 可校验形状，不保证参数含义或业务操作正确 | 可用稳定参数、结构化输出与退出码；先核实际 CLI 契约 |
+| 凭证 | 远程服务可代管；本地 stdio 仍可能拿到环境凭证 | 也可用凭证存储或环境；避免把秘密直接拼进命令 |
+| 适用 | 当前能力缺口可由受限接口补上，且客户端兼容 | 已有命令足够、执行环境和权限适合当前任务 |
 
 上述成本与组合性判断只作为选型原则；下面的历史对照改变了“CLI 必然最便宜”的建议。**[研究：本仓库解释]**
 
-**Anthropic 官方的立场**也在往“少直接调用工具”的方向走 **[一手]**：
-- Claude Code 文档：“CLI 工具是与外部服务交互最省上下文的方式”。
-- 《Code execution with MCP》：把 MCP 服务器以**代码 API 的形式放在文件系统上**，让模型写代码调用、在沙箱里过滤数据，示例从 15 万 token 降到 2 千 token（-98.7%）。
-- 《Advanced tool use》：Tool Search（按需发现工具，上下文 -85%）、Programmatic Tool Calling（-37% token）、Tool Use Examples（复杂参数准确率 72% → 90%）。
-- Claude Code 使用按需发现工具的机制。**2.1.296 更新**：预先发送的 MCP 工具描述和服务器 instructions 默认限制由 2,048 提高为 4,096 字符；这不是协议对所有工具描述长度的统一上限。见 [S1 变更记录](research/2026-10-10-audit.md) **[一手：changelog，未运行验证]**。
-
-**2026 下半年的风向回转** **[社区：原文]**：
-- 2025 年到 2026 年 3 月，“MCP 已死、CLI 赢了”的说法很流行（Garry Tan 等人都这么说）。
-- 无状态规范发布后，**Simon Willison** 重新看好 MCP：给 Agent 一个能上网的 shell 风险很高，而且需要强模型才能驾驭；MCP 工具更容易审计和控制，**小的本地模型也能用好**。
-- 一直反对 MCP 的极简 harness **Pi** 在 1.0 中把 MCP 纳入了核心（《You said no MCP》），理由是 MCP 改进了，而且支持它所需的改动（一个解释器沙箱，即 code mode）本身就很有用。但他们也指出，**可组合性差仍然是 MCP 最大的问题**。
-- 新的用途：给桌面应用暴露 MCP，用自然语言配置它们（本地 Qwen + Pi 就能驱动）。
+工具描述按需发现、在代码侧过滤结果，都可能减少进入模型的内容；[Anthropic 的 MCP 代码执行方案](https://www.anthropic.com/engineering/code-execution-with-mcp)是实现例子，不是任意任务的成本保证。选择依据是同一任务能否完成及总成本，不能用工具数量、下载量或工具作者的立场替代。**[一手；经验：选择边界]**
 
 **本仓库的判断**：
 - ✅ 强模型已有 shell、任务也在其授权范围内：先缩小查询、分块返回或合并独立读取；原生能力够用就不追加 Skill。最终验收或全量分析需要区分显示裁剪与采集丢失：命令侧先保存完整报告并保留原退出码，再从报告提取字段；提高显示预算不能保证恢复已丢内容。无完整报告且重跑会产生副作用时，先查权威结果，不为补日志自动重跑。依据见[固定输出链路与回归](research/2026-10-13-context-tool-choice.md#工具输出显示裁剪与采集丢失)。**[一手：源码与测试设计；经验：采用判断]** 局限：历史修复改善遗漏提示与首尾保留，没有消除截断，也不代表当前客户端已复测。
 - 🧪 原生调用仍有可测重复开销时，再试一个批处理或结果过滤接口。同一任务分别比较通过情况、计价成本、总等待与人的投入；不因工具数少就判定更优。**[经验：采用判断]**
-- ✅ 以下场景用 MCP：
-  - 浏览器自动化、SaaS 远程服务；
-  - 需要隔离凭证的数据库或内部系统；
-  - 没有 CLI 的系统（比如游戏引擎编辑器）；
-  - **用小模型或本地模型驱动**；
-  - **不想给 Agent 开放 shell 和网络的高风险环境**。
+- 🧪 没有合适 CLI、拿不到所需状态，或需要只暴露窄操作时，才试相应 MCP。小模型／本地模型也要验证实际调用；模型大小、浏览器任务或“禁止 shell”都不足以单独证明 MCP 更适合。**关键局限**：MCP 是接口协议，不是沙箱；例如 Claude Code 的本地 MCP 进程在 Bash 沙箱外运行，需要进程级隔离时按[客户端安全边界](01-agents/claude-code.md)选择宿主。**[一手：[官方沙箱范围](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)；经验：采用判断]**
 
 ### 成本下降，不等于多获得一种能力
 
@@ -72,22 +47,30 @@
 
 若工具自身只返回 `queued`，外层调用完成也只证明入队；选型时要确认能否用返回的身份查到所需最终结果，缺少这条路径就不让它承担无人值守的完成承诺。**关键局限**：旧版 Tasks 的错误归类不同，SDK 辅助方法也不保证业务副作用完成；先固定双方实现与能力，结果未知时沿用 [20 的对账与重试原则](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)。**[一手／经验：选择边界]**
 
-## 3. 推荐的 MCP 服务器
+## 3. 按任务选择服务与权限
 
-> 原则：只装当前工作需要的；安装前读源码或确认官方来源；固定版本号。
+> 先复用已有能力；本地服务固定可核查版本，托管服务核官方端点与当前权限。下表是采用判断，不是安装清单；各行的依据与反证见相应正文。**[经验]**
 
-| 服务器 | 用途 | 评级 | 备注 |
-|---|---|---|---|
-| [Context7](https://github.com/upstash/context7) | 库/框架文档检索 | 🧪 | 先核依赖版本；[检索便利不证明兼容](#文档检索context7-不替代版本判断) |
-| [Playwright MCP](https://github.com/microsoft/playwright-mcp) / Chrome DevTools MCP | 浏览器探索与运行诊断 | 🧪 按缺口试用 | 先复用项目测试，采用条件见 [23](23-browser-verification.md#诊断缺口chrome-devtools-mcp) |
-| [GitHub MCP](https://github.com/github/github-mcp-server) | Issue、PR、CI | 🧪 | 本地有 `gh` 时优先用 CLI |
-| [Serena](https://github.com/oraios/serena) | LSP 驱动的语义检索与编辑 | 🧪 | 所需语言和操作已覆盖时先用原生 LSP；动态关系与版本差异仍需[搜索和阅读互补](research/2026-10-13-context-tool-choice.md#源码检索map语义引用与当前状态)，不因语义工具名重复安装；[Serena 版本与试用边界](03-context-engineering.md#25-跨文件符号检索何时补-serena) |
-| Sentry / Datadog / Grafana 等可观测性服务 | 查线上问题 | 🧪 | ⚠️ **数据来源不可信**（见下方 agentjacking 事件） |
-| 数据库（Postgres、Supabase 等） | 查数据 | 🧪 | 只读账号 |
-| [Figma](https://developers.figma.com/docs/figma-mcp-server/) | 补设计结构与组件映射 | 🧪 按缺口试用 | 截图、组件示例和源码足够时不加；缺 token／组件身份或 variant 对应关系时，见[采用与撤回条件](#设计上下文先判断缺的是外观还是组件契约) |
-| 记忆类 MCP | 跨会话事实检索 | 👀 按缺口评估 | 同任务恢复先用版本化记录；追加观察不等于替代旧决定，见[采用与撤回条件](#跨会话记忆先区分检索与当前状态) |
+| 当前任务 | 先用什么；何时才新增 | 接入后最重要的边界 |
+|---|---|---|
+| 查 Issue、PR、CI | ✅ 已有 `gh` 能查就沿用；🧪 无 shell 或需要受限远程接口时用 GitHub MCP | 只查状态选只读工具面及窄凭证；lockdown 过滤内容，不缩小凭证权限，见下文 |
+| 查数据库／线上异常 | ✅ 已有查询、导出或监控视图够用就不加；🧪 需 Agent 连续查询时接对应服务 | 数据库按项目与角色限权；日志／工单仍是外部内容，不能直接授权后续命令 |
+| 浏览器探索、运行诊断 | ✅ 先复用项目测试；🧪 只有观察／诊断缺口时加 Playwright MCP 或 DevTools MCP | 浏览器登录态、网页内容与执行边界按 [23](23-browser-verification.md#诊断缺口chrome-devtools-mcp)选择 |
+| 库版本与 API 检索 | ✅ lockfile、目标版文档、类型定义；🧪 查找反复失败再试 Context7 | 近邻版本与生成摘要不证明兼容，见下文 |
+| 跨文件符号修改 | ✅ 原生 LSP 加文本搜索；🧪 语义操作缺口再试 Serena | 先核语言／会话支持与当前状态，见 [03](03-context-engineering.md#25-跨文件符号检索何时补-serena) |
+| 设计还原 | ✅ 截图、组件示例与源码；🧪 缺结构／组件契约再用 Figma | 映射须跟随组件 API，最终仍做运行验收，见下文 |
+| 跨会话查事实 | ✅ 最新任务记录；👀 找不到跨任务事实才评估记忆服务 | 可检索不等于事实仍有效，见下文 |
+| 编辑器对象操作 | ✅ 已有脚本／测试接口；🧪 需要当前场景、资产或对象操作再选引擎插件／MCP | 查实际操作覆盖、编辑器版本及结果回读，见[引擎接入](../domains/game-dev/01-engine-integration.md) |
 
-**安全提醒**：2026-06 的“agentjacking”研究中，攻击者用公开的 Sentry DSN 往错误事件里注入指令，Claude Code、Cursor、Codex 通过 Sentry MCP 读到这些事件后执行了攻击者的命令 **[二手]**。**任何“外部人员能写入”的数据源都是注入入口**。
+### GitHub 与数据库：只读具体限制哪一层
+
+**🧪 PR／CI 排障只需要读取时，GitHub MCP 选择只读工具和必要工具组，并让底层凭证仅覆盖目标仓库与所需权限。** `--read-only` 过滤写工具，远程端有 `/readonly`；`--lockdown-mode` 则按作者过滤部分公共仓库内容，不改变凭证读写权限，也不保证所有返回内容可信。若读取不全，先查过滤规则与仓库权限，不立即开 `all` 或扩大 token。[固定实现与官方反例](research/2026-10-13-context-tool-choice.md#服务接入工具面凭证与外部内容)表明这三层不能互相替代。自托管多人 HTTP + lockdown 若仍在 `>=0.22.0, <1.1.2`，先升级到至少 `1.1.2`，修复已公告的跨用户内容判断混淆；该历史漏洞不代表当前托管端点仍受影响。**[一手；经验：采用判断]**
+
+**🧪 数据库诊断先用最窄查询；选 Supabase MCP 时同时限定 `project_ref`、`read_only=true` 与所需 `features`。** 项目范围限制目标，只读模式约束 SQL，工具组决定开放哪些功能。官方开发者 MCP 使用开发者权限，不能当成客户登录后的逐用户数据访问接口；面向终端用户时应复用应用已有鉴权／RLS 路径。要改 schema，则走开发环境与原有迁移／评审流程，不为完成诊断打开生产写权限。**关键局限**：只读仍可读取敏感数据，内容过滤与确认弹窗也不替代授权。[官方契约](https://supabase.com/docs/guides/ai-tools/mcp#security-risks)及[源码核查](research/2026-10-13-context-tool-choice.md#服务接入工具面凭证与外部内容)。**[一手；经验：选择]**
+
+### 日志与工单：读取可信服务不等于相信内容
+
+Tenet 的 [2026-06 原始研究](https://tenetsecurity.ai/blog/agentjacking-coding-agents-with-fake-sentry-errors/)报告：研究者通过公开 Sentry DSN 写入伪造错误，Agent 读取后执行其验证代码。这是研究者自述的受控真实环境测试，不能当作当前各客户端的复现结果或已确认恶意入侵规模。它改变的选择是：**✅ 先查询和定位源码；需要执行日志中建议的命令时，另核命令来源、用途与批准范围，不能把“读取错误”延伸为“安装其推荐软件”。** 对 Sentry、其他可观测性服务或普通 CLI 读到的同类外部内容，都按此边界处理。若隔离不了后续执行权限，就只用它辅助诊断，不交付自动修复闭环。**[一手：研究者报告；经验：采用边界]**
 
 ### 文档检索：Context7 不替代版本判断
 
@@ -117,29 +100,22 @@
 6. **评估驱动**：用真实任务跑评估，读 Agent 的执行记录，让 Claude 帮你改进工具。
 
 **大型工具集的范例：Epic 的 Unreal MCP** **[一手：Epic 官方插件]**：
-- 几百个工具分在 30 多个工具集里，但服务器整个会话**只公开 3 个元工具**（`list_toolsets`、`describe_toolset`、`call_tool`），具体工具在服务端分发，不进 `tools/list`。官方理由是保持上下文小、**提示缓存命中**。
+- 服务器通过 **3 个元工具**（`list_toolsets`、`describe_toolset`、`call_tool`）公开入口，具体工具在服务端分发，不进 `tools/list`。官方理由是保持上下文小、**提示缓存命中**。
 - Epic 给工具作者定的四条原则：**Clean**（比底层 API 更简单）、**Complete**（CRUD 对称：能 set 就能 get，能 create 就能 delete）、**Composable**（同类操作用一致的类型）、**DRY**（不重复已有的通用工具）。
 - 工具失败时往往只返回状态而不抛异常，所以 Skill 里要求 Agent “**不是明确的成功，就当作失败**”。
 - 详见 [game-dev/01](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)。
 
-在 2026-07-28 规范下写服务端还要注意：**不要依赖会话状态**（需要状态就返回句柄）；列表结果设置缓存提示；用 CIMD 做客户端注册。
+新建服务优先复用兼容 SDK，按目标协议处理显式业务句柄、结果与错误；HTTP 授权按双方支持选择注册方式。异步操作沿用第 2 节的完成判据，不把连接成功当成业务完成。**[一手／经验]**
 
-## 5. 在 Claude Code 中使用
+## 5. 在 Claude Code 中接入与撤回
 
-```bash
-claude mcp add --scope project context7 -- npx -y @upstash/context7-mcp
-claude mcp add --transport http github https://api.githubcopilot.com/mcp/
-/mcp                     # 查看状态、认证；/mcp reconnect all 重连所有服务器
-```
+**✅ 先在 `/mcp` 看已有连接；已有插件提供同一服务时不要再手工加一份。** 确有缺口再按[官方 MCP 配置](https://code.claude.com/docs/en/mcp)选择远程 HTTP 或本地 stdio。项目级 `.mcp.json` 可共享配置，但只提交环境变量引用，不提交 token；安装命令、服务器地址和实际工具权限都要纳入评审。插件能自动启动它打包的服务器，不能只看插件名称。**[一手；经验：采用顺序]**
 
-- 项目级 `.mcp.json` 提交到仓库给团队共享；token 用 `${ENV_VAR}` 引用，不要写死。
-- 组织可以用 `managedMcpServers` 统一下发。
+接入后用一个窄任务确认拿到所需数据、目标范围正确、结果与权威来源相符；后续仍反复越权请求、结果不完整或维护负担超过省下的查找，就在 `/mcp` 禁用对应连接并回到已有 CLI／资料。交互会话与非交互启动的项目服务器审批行为不同，不能依赖“启动时总会弹确认”；团队控制按当前客户端的[项目审批与托管配置](https://code.claude.com/docs/en/mcp#project-server-approvals-and-workspace-trust)核对。**关键局限**：本页给出来源核实后的选型与验收条件，没有报告当前客户端端到端实测收益。**[一手；经验：撤回判断]**
 
 ## 来源
 
-- [MCP 2026-07-28 规范发布说明](https://blog.modelcontextprotocol.io/posts/2026-07-28/)、[2026-08-22 路线图](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/blog/content/posts/2026-08-22-mcp-roadmap.md)
-- [EpicGames/unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)（克隆阅读）
-- Anthropic：[Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)、[Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use)、[Writing tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
-- [Simon Willison：Stateless MCP has recaptured my interest](https://simonwillison.net/2026/Jul/31/stateless-mcp/)、[Earendil（Pi）：You said no MCP](https://earendil.com/posts/you-said-no-mcp/)
-- HN：[I benchmarked GitHub CLI, MCP, Tool Search, Code Mode](https://news.ycombinator.com/item?id=47495475)、[When does MCP make sense vs CLI?](https://news.ycombinator.com/item?id=47208398)、[MCP was always a bad idea?](https://news.ycombinator.com/item?id=49779329)（摘要）
-- [CSA 研究笔记：Agentjacking（MCP + Sentry 注入）](https://labs.cloudsecurityalliance.org/research/csa-research-note-agentjacking-mcp-sentry-injection-20260612/)（二手）
+- [服务权限、注入反例与固定实现](research/2026-10-13-context-tool-choice.md#服务接入工具面凭证与外部内容)
+- [MCP 固定规范](research/2026-10-10-audit.md#s5--mcp-2026-07-28-规范)、[授权规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)
+- Anthropic：[Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)、[Writing tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
+- [Epic 官方插件](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)；[引擎侧核实与局限](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)
