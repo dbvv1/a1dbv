@@ -63,6 +63,20 @@ Cascadeur 2026.2 的动画层仍为 Alpha，工具更可编辑不等于零手修
 
 **🧪 Shards of Stone 可借鉴刚体隔离和程序步态，⛔ 不原样采用为通用动画管线。** 固定脚本未实现其承诺的完整 rest 转换／身高缩放，`--loop` 只清零 hips 两轴；作者也承认握剑滚转与成本测量未完成。完整反证见研究记录。[一手／研究]
 
+## 连续性升级：先修具体断点，再选 Motion Matching
+
+**✅ 状态机／Blend Tree＋局部修正是完整质量路线，不只是低配过渡。** 小规模步态、明确攻击段落、需要准确取消时机的玩法，先让同类循环的左右落脚相位对齐，补真正缺少的起步、刹停与转身动作；速度混合不能凭空造出急停重心转移。Unity 6.3 明确要求被混合动作在归一化时间上对齐；短转场和可控打断处理状态切换。[一手／研究：[Blend Trees](https://docs.unity3d.com/6000.3/Documentation/Manual/class-BlendTree.html)]
+
+**🧪 只为看得见的问题加一层。** 步幅与实际速度不符，先有限重定时／stride warping；停止姿态与剩余距离不符，可用 distance matching；切换弹跳可评估惯性化；支撑脚漂移再加带接触相位、释放条件和伸展上限的足锁。它们分别修改采样时间、姿态或连续性，不能互相代替，也不该把髋膝拉坏来追求数字上的零滑动。Unity 原生 Two Bone IK 是求解器，接触识别与锁定策略仍要自己提供。[一手／研究：[距离匹配](https://dev.epicgames.com/documentation/en-us/unreal-engine/distance-matching-in-unreal-engine)、[姿态修正](https://dev.epicgames.com/documentation/en-us/unreal-engine/pose-warping-in-unreal-engine)、[IK](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/constraints/TwoBoneIKConstraint.html)]
+
+**🧪 近景角色频繁急转／启停、移动风格多，且已有相应许可动作覆盖时，再用 Motion Matching 减少逐条编排。** 它从数据库选已有姿态，不是生成缺失动作；搜索、过渡、足锁和动作事件仍需协同。可以只替换移动或入场选姿，攻击／交互保留明确规则。Epic 2026-08 的 GASP 5.8 已把状态机 blendstack、Chooser 内 pose matching 与 Blend Spaces 组合使用，先进路线也不要求全项目二选一。[一手／研究：[官方更新](https://www.unrealengine.com/tech-blog/download-the-latest-game-animation-sample-project-now-updated-for-ue-5-8)]
+
+Unity 可🧪比较作者维护的 JLPM MotionMatching，但要承担同骨架 BVH、特征／标签、重定向和接触策略的接入；不是给几个现成 clip 就自动达到演示质量。Unreal 可借官方 GASP 的局部机制；样例能导出不代表资产已获跨引擎或训练许可。具体固定版本、代码边界与许可见 [WP4 连续性补研](../../../docs/research/2026-10-14-game-wp4-animation.md#连续性补研与升级边界)。[一手／研究]
+
+**👀 Learned motion 暂不作为单人默认升级。** 已有大量合法数据、普通检索确有内存／风格扩展瓶颈，而且能维护训练和回归时才比较。2026-08 的官方 AnimGen 已能在编辑器训练并运行神经控制器，但仍是 Experimental；示例 NPC 模型未提供训练数据，不能按“可以播放”推断“可以按第二次需求重训”。购买动作的游戏使用权也不自动包括训练权。[一手／研究：[AnimGen 示例](https://www.fab.com/listings/df37eb46-09bf-4604-9307-cdc39c769790)]
+
+**第二改用同一玩法问题决定去留：** 让角色移动更快、刹停更短，再增加双手持物侧移。前两项先看能否复用原动作而不破坏脚接触；后一项先找新姿态与步态覆盖，不能只调 IK。比较最终相机下的重心／轮廓、急转连续性、手脚接触和输入后的首个可见回应，再计新增动作、重建／重训与主动工时。若只是多几个参数和剪辑就能做好，保留原路线；若转场组合成为主要负担且数据库已覆盖，才升级检索。[研究]
+
 ## 重定向与2D路线：复用结构，不补不存在的内容
 
 Unity Humanoid 需有效 Avatar 才能跨角色复用动作；Generic 和多足不能直接套用。Unreal IK Retargeter 仍需链映射、Retarget Pose 及 root 设置。自动对齐、IK 与脚部修正是候选起点，不保证道具握持或缺失动作被补齐。[一手／研究]

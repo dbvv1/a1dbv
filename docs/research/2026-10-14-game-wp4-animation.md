@@ -172,3 +172,67 @@ Uthana 8 秒 Text V3 一次 US$0.80，十次候选 US$8；Video 2.1 十条各 8 
 [研究：保留的反证] Shards 固定 SHA 的 rest 基底／身高缩放／`--loop` 反证未撤销，历史开发者展示与估算不改称当前实测。固定版本 Unity／Unreal／2D Animation 机制保持原范围，不声称已经逐版本验证；Epic sample 跨引擎许可、Move One 完整输出合同、ActorCore 实际 SKU、MoCapAnything 合法替代路径仍未闭合。
 
 [研究：阶段 F 本次验证] `python3 scripts/check_repo.py` 检查 177 个文档／config，无错误；四个负责文件的 `git diff --check` 通过。用环境已有 pandoc 按 GFM 转为 HTML，核对两张开头决策表及 20 条音频／22 条动画动态事实均在表格中，事实表各行五列；四文件本地锚点逐一比对，无缺失。仅文档与呈现检查，本次未重跑完整离线 14 阶段，也未验证 hosted CI、试听、模型／引擎或版权安全。没有安装、付费、下载权重或 Git 写入。
+
+
+## 连续性补研与升级边界
+
+核实：2026-10-14 UTC。主线二／三；本节回答「完整动作组已有之后，怎样提高连续性而不让第二次修改失控」。不重复 [WP10](2026-10-14-game-wp10-client-modules.md) 的 motor、碰撞和 root 位移所有权；只比较视觉动作选择、过渡、接触与内容修改。以下为官方正文、作者源码的静态核查及条件推导；未导入插件、运行演示／引擎、训练或测量体验。[研究]
+
+### A. 不把四种不同问题都交给更长 blend
+
+| 看到的缺口 | 最小有效改变与资源要求 | 何时应换动作，而非继续修参数 |
+|---|---|---|
+| 走跑之间双脚交叉、身体忽高忽低 | 同骨架、风格兼容的循环；左右脚接触在归一化时间对齐，再做速度／方向混合 | 源动作步态或身体姿势不兼容，长混合只会平均成含糊动作 |
+| 急停像滑行，转身像原地旋转模型 | 补真实启停／转向动作；有合法根轨迹时派生距离曲线，以剩余距离选采样点；只在小范围修步幅／朝向 | 没有承重、换脚、髋肩转动等内容，IK 或更快循环不会创造它 |
+| 选到了合适动作，切换仍弹跳 | 先查可打断规则与相位；再对合适转换用惯性化延续姿态变化，最后做 IK | 目标姿态相差过大、混合冲淡打击关键帧，需专门过渡或更好的入场姿态 |
+| 支撑脚滑，但手感轨迹已对 | 以动作接触标签控制锁定／释放，有限修正腿链，必要时离线清理 | 持续超出腿长、髋明显下蹲或脚被拖住，说明轨迹／动作不匹配，不无限提高约束 |
+
+表中是本任务的采用判断 [研究]。机制依据：[Unity 6.3 Blend Trees](https://docs.unity3d.com/6000.3/Documentation/Manual/class-BlendTree.html)要求相似动作、相位对齐；[Epic Distance Matching](https://dev.epicgames.com/documentation/en-us/unreal-engine/distance-matching-in-unreal-engine)通过距离曲线驱动采样，曲线可从 root-motion clip 生成；[Pose Warping](https://dev.epicgames.com/documentation/en-us/unreal-engine/pose-warping-in-unreal-engine)区分朝向、步幅和坡度修正，并公开腿伸展／髋位移限幅。其 Slope Warping 节仍警告开发中，不能由页面存在推断整组功能可依赖发行。[一手]
+
+[Unity Animation Rigging 1.4 Two Bone IK](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/constraints/TwoBoneIKConstraint.html)只提供 Root／Mid／Tip、Target／Hint 与权重控制，不提供自动接触识别。[Epic Blend Nodes](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-blueprint-blend-nodes-in-unreal-engine)说明惯性化开始后源动画不再求值，其后续 Notifies 不再触发；Dead Blending 仍列为 Experimental。[研究] 因此把伤害、恢复或脚步的唯一真值藏在即将停止求值的 clip 中，会让换混合方法顺手改变玩法；应核对事件与取消政策，而非把惯性化当无副作用开关。
+
+### B. 近期作者实现：足锁不能只追求零位移
+
+Daniel Holden 的 [2026-07-30 原文](https://theorangeduck.com/page/inverse-kinematics-foot-locking)把现有姿态的小修正、接触期间锁定／退出和离线处理分开；接触判断使用运动信息，锁定超距会释放，避免无限拖住脚。作者强调这是有用配方而非已证明最佳方案。[一手]
+
+固定仓库 `orangeduck/GenoView-InverseKinematics@3b9920c7dd5436c5bc05f045002a64f085c69a9d`，提交 2026-07-30；[LICENSE](https://github.com/orangeduck/GenoView-InverseKinematics/blob/3b9920c7dd5436c5bc05f045002a64f085c69a9d/LICENSE)为 MIT，[README](https://github.com/orangeduck/GenoView-InverseKinematics/blob/3b9920c7dd5436c5bc05f045002a64f085c69a9d/README.md)另指向多个动作数据集。代码许可不替这些数据清权。[研究] 借锁脚机制，不搬示例数据作为商业训练库；把脚漂移与髋膝轮廓一起看，不能优化单个误差到姿态失真。原文示例平面高度夹取也不是任意地形／移动平台的完整接触系统。
+
+### C. Unity：可借作者包，但其数据工作与接触边界要算入成本
+
+固定 `JLPM22/MotionMatching@35fc8ee9a0fd97f12de458ea81eaef7c8219d87a`，提交 2026-04-24；[MIT](https://github.com/JLPM22/MotionMatching/blob/35fc8ee9a0fd97f12de458ea81eaef7c8219d87a/LICENSE)。[README](https://github.com/JLPM22/MotionMatching/blob/35fc8ee9a0fd97f12de458ea81eaef7c8219d87a/README.md)写 Unity 6+、其他版本未测试，定位仍为 work-in-progress，展示的应用以研究项目为主；不把它写成商业游戏实证。[package.json](https://github.com/JLPM22/MotionMatching/blob/35fc8ee9a0fd97f12de458ea81eaef7c8219d87a/com.jlpm.motionmatching/package.json)是 0.3.2，仍声明 Unity 2020.1 最低字段，依赖 Burst／Input System／Splines。README 与元数据不能合成「Unity 2020—6.3 全验证」。[一手／研究]
+
+[作者数据库文档](https://joseluisponton.com/motionmatching-docs/basics/animation_database/)要求相同骨架的 BVH、T-pose、髋轴、骨骼映射、轨迹／姿态特征和预处理数据库；不是任意 FBX 混在一起。[Animator 集成](https://joseluisponton.com/motionmatching-docs/advanced/unity_animator/)通过独立姿态处理、mask 和惯性混合桥接 Animator，可保留上身动作而仅检索下身。[研究] 零手修基准下，程序员可做导入、映射、特征配置与标签脚本，但不能把缺失的双手持物步态交给转换格式解决。
+
+静态源码证据：[MotionMatchingController.cs](https://github.com/JLPM22/MotionMatching/blob/35fc8ee9a0fd97f12de458ea81eaef7c8219d87a/com.jlpm.motionmatching/Runtime/Core/MotionMatchingController.cs)分开暴露搜索间隔、惯性化、足锁、超距释放和轨迹／姿态权重；输入突变会强制搜索，标签改变限定候选集合。`UpdateFootLock` 以接触信息锁定并做双关节 IK，但落脚高度赋值处仍有 TODO／注释，不能把内置 FootLock 称为完整地形落脚。此为固定代码路径观察，非引擎失败复现。[一手／研究]
+
+**🧪 条件采用：** 已有同风格的起停／转向／侧移动作，近景角色经常改变方向，逐条转场维护成为真实负担时，比较此类检索包；只有少数动作时保留原生路线。评估成本包含特征、标签、事件、姿态同步及目标设备 CPU／内存，不能只比较状态机图节点数。[研究]
+
+### D. Unreal 最新官方路线本身就是混合，而非全面替换状态机
+
+[Epic 2026-08-12 GASP 5.8 更新](https://www.unrealengine.com/tech-blog/download-the-latest-game-animation-sample-project-now-updated-for-ue-5-8)说明 Mover Pawn 使用状态机驱动 blendstack，Chooser 的 Pose Match Column 搜索有效动画，且允许 Blend Spaces 加入选择／混合；这是按局部职责组合的官方例子，不是证明任何引擎迁移都更便宜。[一手／研究]
+
+[Pose Search 当前文档](https://dev.epicgames.com/documentation/unreal-engine/motion-matching-in-unreal-engine)公开骨骼／轨迹特征、权重、数据库和重复 Notify 过滤等设置。[研究] Motion Matching 把「手写每对过渡」转成「供给合适数据并定义搜索」，不会让错误步态变正确；查询权重过度偏向即时轨迹或姿态连贯会产生不同取舍。自由移动可用检索，精确攻击／受击继续显式选段和管取消；相同方法也可仅用于复杂动作的入场选姿。
+
+[Fab GASP 条目](https://www.fab.com/listings/880e319a-a59e-4ed2-b268-b32dac7fa016)可确认官方样例入口，但本次公开抓取的 License terms 字段未返回具体条款。[研究] 延续本记录既有跨引擎许可未闭合判断：可以借公开机制，不据「能 Export」放行 Unity 使用，更不自动授予训练权。实际采用须核账户取得的具体资产许可与引擎条款。
+
+### E. Learned motion：有新工具，但可修改性仍是门槛
+
+1. **传统 Learned Motion Matching 的明确收益是压缩／扩展，而非免费补内容。** [Holden 论文页](https://www.theorangeduck.com/page/learned-motion-matching)用网络替换匹配系统组件，减少保存完整动作库的需要。[作者实现](https://github.com/orangeduck/Motion-Matching/blob/57b7250e0d34a4e456a34d47e24c2f05fdcc711e/README.md)固定提交 2025-02-06，注明改特征／匹配权重需重建与重训；代码 MIT，所指 Ubisoft 数据为 CC BY-NC-ND 4.0。[研究] 不能把教程的代码、数据和训练网络当成同一商业授权；更不能从一次训练效果推断第二改只改参数。
+2. **2026-08 的 AnimGen 已是另一条前沿路线。** [UE 5.8 官方 API](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/AnimGen)把它列在 Experimental，控制器以 flow-matching 网络逐帧自回归生成姿态；不能将其直接等同于上述三网络 LMM。[官方示例](https://www.fab.com/listings/df37eb46-09bf-4604-9307-cdc39c769790)包含能重训的持手枪玩家控制器，以及不提供训练数据、不能在编辑器重训的多风格 NPC 控制器。[研究] 后者可显示风格扩展能力，却无法证明新道具／新动作的生产闭环。
+3. **许可与输入另核。** AnimGen 示例公开条款字段未给出可审定的完整许可，同时显示 `Allows usage with AI: No`；该字段与示例明确支持的重训范围如何对应，仍需核具体条款，本轮不把展示／免费获取认定为任意训练授权。教程页抓取未取得正文，不凭搜索摘要补训练配置或耗时。沿用 WP4 已核 Mixamo 训练限制：普通商业游戏可用的 clip，仍可能不能用来训练模型。[研究]
+
+**👀 保持研究候选：** 只有已有路线出现实际数据规模／内存或多风格控制需求，预期收益值得承担训练维护，且拥有可训练数据与可重建工程、目标设备推理预算和回退路线时才比较；若新需求需要作者未提供的数据，而又不允许手工动画制作，应换可覆盖的资产／路线，不能以神经网络名称承诺补齐。[研究]
+
+### F. 第二次修改怎样区分「参数问题」与「新内容问题」
+
+[研究] 对同一角色、同一目标相机，先稳定一次走跑、急转和停止；第二版先改变移动速度／刹停距离，再加双手持物侧移。对照顺序是：
+
+- 原生路线先改采样速度、距离曲线和有限步幅；增加必要持物／侧移动作及 mask，不为凑全覆盖把走路扭成其他步态。
+- 检索路线更新轨迹政策、标签／数据库，并回归旧动作；新内容若不在候选库，先取得来源，不盲调搜索权重。记录重复或遗漏的脚步／攻击事件。
+- 学习路线确认数据可取得且有训练许可，重建必要模型并比较旧动作；没有数据的预训练示例只算可播放，不算可维护。
+
+人的判断：急转时承重是否可信、脚与地面／手与道具是否稳定、重心与轮廓是否保留、输入回应是否被过渡拖慢。程序可记录接触期脚速／漂移、输入至可见动作时间、搜索／动画耗时与峰值内存；这些指标帮助定位，不能替人判美感，也不设跨游戏通用阈值。最终记新增／淘汰动作数、重建或训练等待、主动调试工时和旧动作退化；只要原路线质量满足且修改局部，就没有为「先进」而迁移的理由。[研究]
+
+本补研完成直接来源、提交／许可与关键代码路径核查；没有运行真实引擎、测量零手修通过率、训练开销或质量提升。静态源码反例仅约束可承诺范围，后续实测仍需另获授权。[研究]
+
+本补研交付检查：完整 `python3 scripts/check_offline.py` 14 阶段通过，非空套件、无 skip；两份修改文件 `git diff --check` 通过。文档／配置检查不核外链事实或真实动作质量。[研究：实际离线检查]
