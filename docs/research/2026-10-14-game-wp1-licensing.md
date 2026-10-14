@@ -83,8 +83,8 @@
 | **HY-Motion-1.0 / Lite** | [一手] [固定代码 License.txt](https://github.com/Tencent-Hunyuan/HY-Motion-1.0/blob/4e426f5a1021cbcf7f375458c37b840ee7225229/License.txt)、[官方权重 LICENSE.txt](https://huggingface.co/tencent/HY-Motion-1.0/blob/main/LICENSE.txt) 均为 Tencent 社区许可 | §5(c)将 EU、UK、韩国地域排除延伸到输出；§4同样是发行日上一月合计 MAU >100万另授权。输出不归腾讯不取消地域约束；人体模型等依赖另核 | [研究] ⛔ 不默认全球商用 |
 | **GVHMR** | [一手] [固定 LICENSE](https://github.com/zju3dv/GVHMR/blob/ee960bb6e2ea2d381aa97f08e9b71ef320b624b1/LICENSE)仅教育、研究、非营利，修改须开源且禁商用；未核得独立 checkpoint 完整商用授权 | 商业使用软件本身已不在现有许可内，不能以“只导出动作、不分发代码”放行；checkpoint、SMPL等人体模型、输入视频另核。无“小收入即商业豁免” | [研究] ⛔ 不默认；作者商用联系渠道不等于已获许可 |
 | **Meshy 服务** | [一手] 专有服务；无本地权重授权，插件/SDK不能替代服务合同 | [2026-09-19 条款](https://www.meshy.ai/terms-of-use) §3.2：免费输出 CC BY 4.0，可商用并履行署名等条件；付费输出在法律允许范围内归客户。§3.3：公开到 Community 的 Customer Output（包括3D模型）为 CC0，其余社区内容（包括上传图片）为 CC BY-NC 4.0；不是按3D／非3D文件类型划分。未见一般营收阈值 | [研究] 👀 有条件商用；需区分生成输出与上传输入，再核是否公开到Community |
-| **Tripo 服务** | [一手] 专有代码/模型，§5.1未授本地权重；[当前条款](https://www.tripo3d.ai/terms) | §5.2.1免费用户 Input/Output 权利由平台保留；§5.2.2付费用户可商业使用/分发。官方[商用指南](https://www.tripo3d.ai/help/privacy-policy/how-to-use-tripo-models-commercially)明确免费不授商用。未见一般营收门槛；本轮未核清旧免费资产追溯、退订后持续权利 | [研究] 👀 付费有条件；免费及追溯情形不默认 |
-| **Rodin / Hyper3D** | [一手] 专有服务，无本地权重授权；[当前条款](https://hyper3d.ai/legal/terms) | §5(b)对 Rodin 输出不限制用途，但受全协议、法律与第三方条款约束；[当前计划](https://hyper3d.ai/pricing?lang=en)区分免费预览/旧模型导出与付费广泛导出。未见一般营收门槛；未核清追溯/终止细节 | [研究] 👀 具体计划和合法导出有条件；勿套用 ChatAvatar 的另购商业许可 |
+| **Tripo 服务** | [一手] 专有代码/模型，§5.1未授本地权重；[当前条款](https://www.tripo3d.ai/terms) | §5.2.1免费用户 Input/Output 权利由平台保留；§5.2.2付费用户可商业使用/分发。官方[商用指南](https://www.tripo3d.ai/help/privacy-policy/how-to-use-tripo-models-commercially)明确免费不授商用。未见一般营收门槛；旧免费资产追溯未获确认；终止条款保留 ownership，合法导出仍须保存 | [研究] 👀 付费有条件；免费及追溯情形不默认 |
+| **Rodin / Hyper3D** | [一手] 专有服务，无本地权重授权；[当前条款](https://hyper3d.ai/legal/terms) | §5(b)对 Rodin 输出不限制用途，但受全协议、法律与第三方条款约束；[当前计划](https://hyper3d.ai/pricing?lang=en)区分免费预览/旧模型导出与付费广泛导出。未见一般营收门槛；已核终止可能删除数据及条款存续；特定订单另核 | [研究] 👀 具体计划和合法导出有条件；勿套用 ChatAvatar 的另购商业许可 |
 
 ### TRELLIS 的关键反证：MIT 主体与非商业依赖同时存在
 
@@ -156,7 +156,7 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 - 处理库主许可分别核对：[meshoptimizer b233043](https://github.com/zeux/meshoptimizer/blob/b2330430776a95a1545f03fc7bf16927f8cadc59/LICENSE.md)、[xatlas f700c7](https://github.com/jpcy/xatlas/blob/f700c7790aaa030e794b52ba7791a05c085faf0c/LICENSE)、[CoACD 131010c](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/LICENSE)均MIT，无模型权重；分发保留通知，输入网格和第三方依赖另核。
 - [Infinigen a0d1a0d](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/LICENSE)：主BSD-3-Clause，明确标注部分CC0；不由根许可包办外部素材/包。本轮仅借配方，不部署完整导出器。
 - Meshy7.1/T2、TripoP1/P2、Rodin2.5仍按上文对应服务合同和实际生成/导出计划；型号更新不自动更改旧免费资产权利。
-- 暂缓商业默认：LATO.2主代码/官方权重卡虽MIT，默认安装引入nvdiffrast0.4.0受非商业研究条款限制；TaoFlowForge根Apache2不证明ModelScope权重和DINOv3依赖已清权；Marble完整合同本轮未核清。固定来源在WP3研究，三者不得借主许可进入无条件商用推荐。
+- 暂缓商业默认：LATO.2主代码/官方权重卡虽MIT，默认安装引入nvdiffrast0.4.0受非商业研究条款限制；TaoFlowForge根Apache2不证明ModelScope权重和DINOv3依赖已清权；Marble合同已补核，但 Standard／Pro 的商业口径需按实际订单确认。固定来源在WP3研究，三者不得借主许可进入无条件商用推荐。
 
 ## WP6追加：现行音频型号与声音连续性
 
@@ -251,3 +251,26 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 本次修改后执行`python3 scripts/check_repo.py`，175个文档／config文件无错误；本文件`git diff --check`通过。新加评审小节锚点按标题核对；未把局部文档检查称为本轮完整离线14阶段或hosted CI通过。[一手：本次检查]
 
 整合验证：完整离线14阶段及 `git diff --check` 通过；独立复核上述三项官方来源和正文修订，无实质问题。精确提交的 hosted CI 另查，不将本地检查当作服务端执行。
+
+## 阶段 F 新候选授权入口（2026-10-14）
+
+以下记录准入判断，合同细节与日期统一回到对应 WP 动态事实表，不复制另一套价格清单。没有账户合同、地区或自动化权限证据的候选不得自动投入发行；当前均未购买或生成。[研究]
+
+| 候选 | 商用与接口门槛 | 采用判断及直接证据入口 |
+|---|---|---|
+| Unity AI 原生生成器 | 官方输出归属声明、Evaluation／具体点击条款、第三方模型条件分别成立；未读取具体账号点击条款 | 原型候选；商业生产不默认放行。[WP9 §8](2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线) |
+| PixelLab | 专有云服务；合规输出可商用，遵守所链用途条件；输出训练须许可，程序化使用官方 API | 像素专项对照，不代表已验证零手修。[WP2 §10](2026-10-14-game-wp2-2d-assets.md#10-阶段-f-c像素专用服务补缺) |
+| Retro Diffusion | 2026-09-28 新条款与旧账号生效日期分开，旧账号 10-28 前不能提前套新版自动化例外；免费／公开资产和平台训练条件另核 | 按适用合同保留静态／动画对照，保密与自训用途不默认。[WP2](2026-10-14-game-wp2-2d-assets.md) |
+| Kling 国际版 | 会员商用与一般条款限制分开；积分购买不自动代替会员权；API／中国版另核，地区与官网报价尚缺 | 同镜头修改候选，未清权前不进发行默认。[WP7](2026-10-14-game-wp7-video.md) |
+| Seedance 2.5 | 原厂合同／地区正文尚未取得；Runway 托管报价及一般输出规则不包办全部第三方条件 | 固定镜头对照保留，原厂发行路线待补核。[WP7](2026-10-14-game-wp7-video.md) |
+
+### 发布渠道动态复核表
+
+| 事实与采用门槛 | 本次来源 | 核实日 | 下次复核／触发 |
+|---|---|---|---|
+| Unity Asset Store §1.6 区分功能内容披露与营销辅助例外；差异化／质量仍独立审核 | [规则](https://assetstore.unity.com/publishing/submission-guidelines)，页面更新 2026-05-20；重新读取 | 2026-10-14 | 2026-11-14／提交前 |
+| Fab Standard 摘要允许商业整合、禁止独立再分发；摘要不等于完整法律契约，商品许可仍需取得 | [官方摘要](https://www.fab.com/eula)，本次仍未取得完整 EULA；不宣称已清全部权利 | 2026-10-14 | 2026-11-14／采购前 |
+| Godot Asset Store 允许 AI 内容并要求说明；引擎贡献另有实质生成／Agent 代投限制 | [商店 FAQ](https://docs.godotengine.org/en/stable/community/asset_store/faq.html#can-i-upload-ai-generated-assets-or-code)、[贡献规则](https://contributing.godotengine.org/en/latest/development/contribution_rules.html#ai-assisted-contributions)，本次重新读取 | 2026-10-14 | 2026-11-14／提交前 |
+| Steam 预生成／实时生成披露、反馈责任与发行流程分别核对 | [WP12 三项直接复核](2026-10-14-game-wp12-indie-roadmap.md#六阶段-f-动态事实补核2026-10-14)，不代实际后台审核 | 2026-10-14 | 2026-11-14／提交前 |
+
+[一手／研究] 上表只核平台公开规则；没有替具体资产取得许可、接受协议或提交内容。旧固定许可仍只适用于被引版本，新版或跨用途需重新查。
