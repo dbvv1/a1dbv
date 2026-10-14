@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加；三，连续修改仍然可靠
-改变的建议：只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回。[研究]
-证据摘要：BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文和 Faros 指标核对。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
+改变的建议：按不可猜的契约与可观察偏好选择短规格、测试或样品；只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回。[研究]
+证据摘要：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文和 Faros 指标核对。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
 
 # 实现决策与评审：让原需求和运行反馈纠正计划
 
@@ -217,3 +217,29 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 [一手：作者方法限制] [后续方法说明](https://www.faros.ai/blog/why-cheaper-ai-models-can-cost-more-hidden-model-tax)承认报告为观察性研究，建立关联而非隔离 AI 采用的因果效果。本次未取得完整下载报告及方法附录；各指标有效样本、采用强度定义、聚合权重、准确观察起止、计时端点及混杂控制仍未核实，不能把 2025 报告的方法移植到 2026 版，也不能把总体样本当每一项指标分母。
 
 [研究] 保留“同时观察交付、评审与可靠性”的建议，撤回“churn 全是返工”的译法；这些数字不预测某团队会恶化多少，亦未证明前置评审、特定模型或厂商治理产品能改善结果。未取得逐团队原始数据，不做伪精确因果复算；本轮完成原页、详解、限定语核对及上述算术，未运行模型或团队实验。
+
+
+## 工作流首选：契约与可观察偏好
+
+核实：2026-10-15（UTC+8）。主线二／三；改变 07 的访谈 Spec、TDD 开局与 SDD 适用条件。✅ 按尚未确定的行为／交付契约和需要观察的偏好分流，撤回仅按任务大小决定是否写规格。以下是原文及固定产物核查，不是本仓模型实验。**[研究：采用判断]**
+
+### 原任务到产物：GIF 优化器
+
+Simon Willison 的[原文](https://simonwillison.net/guides/agentic-engineering-patterns/gif-optimization/)说明，他要用浏览器比较 GIF 压缩效果，特意未规定全部 presets；发现 WASM 构建涉及补丁后，追加固定源码、保存构建脚本／补丁并提交 bundle 的要求，以便静态托管直接使用。他展示自己用产物优化演示图，但不满意 Agent 额外加入的 URL 输入，因为存在跨域限制。前者支持保留可观察选择，后者反驳“没写的功能让 Agent 猜就总合适”。**[社区：作者任务、使用与取舍自述]**
+
+[合入提交 `ea924805`](https://github.com/simonw/tools/commit/ea924805f14bc826ca3c51686613cd476ff02251)保留初始任务和追加提示。只读固定文件得到：
+- [HTML](https://github.com/simonw/tools/blob/ea924805f14bc826ca3c51686613cd476ff02251/gif-optimizer.html)的 presets 包含无损、有损、减色与缩放，`processPresets` 展示大小和预览，`setManualControlsFromArgs` 把选中参数带入手动控件，`getManualArgs` 再生成命令。大小可量化，视觉是否可接受仍需判断；源码没有把“最小文件”直接当最终选择。
+- 同文件 URL 入口直接 `fetch(url)`，没有跨域代理；这是作者顾虑的实现路径，并非本轮实测所有 URL 均失败。固定版本仍有该入口，不能把“可能以后删除”写成已删。
+- [build.sh](https://github.com/simonw/tools/blob/ea924805f14bc826ca3c51686613cd476ff02251/lib/gifsicle/build.sh)检出 `07f5c4c`、应用补丁并复制 JS／WASM；[补丁](https://github.com/simonw/tools/blob/ea924805f14bc826ca3c51686613cd476ff02251/lib/gifsicle/gifsicle-wasm.patch)增加调用入口，提交文件表含 WASM。脚本没有固定完整工具链；这证明追加交付要求落到代码，不证明可重复构建已验收。**[一手：固定源码／提交；研究：证据范围]**
+
+因此该例不是“省略规格必然更快”，也不是没有需求：初始任务已经定义比较、下载和调整行为。可迁移的是**把当前能验证的目标交给实现，把需要人决定的偏好留给反馈；新发现的交付约束及时补回任务**。已读原文、合入提交及上述文件，未读取完整 Claude 会话，未运行构建、浏览器或模型，未测返工／主动工时。**[研究：采用与局限]**
+
+### 不同作者的补充与反例
+
+Anthropic 的 [Finding your unknowns](https://claude.com/resources/articles/a-field-guide-to-claude-fable-finding-your-unknowns?fcdaa149_sort_date=desc&query=workflow)（2026-07-06，Thariq Shihipar）提出先用假数据做工具栏布局、暂不连接真实应用；访谈优先问会改变架构的歧义。作者实际视频制作中先试 Remotion 与转录同步，但调色时发现自己连好坏也不会判断，转而学习评价依据。它支持“样品能否帮助决策”的分界，**不支持没有标准就无限试样品**。这是厂商工程师经验，不是独立收益对照；不照搬其每次 brainstorming、新会话或测验习惯。**[一手：作者原文；研究：采用边界]**
+
+[Claude Code 最佳实践](https://code.claude.com/docs/en/best-practices#explore-first-then-plan-then-code)同时给出直接修小改与先规划的示例，并在 Develop your intuition 承认探索时可跳过规划。本文不将其“多文件”提示升级成强制关卡。测试预期来源沿用[既有回归研究](2026-10-12-development-conditions.md#生成回归测试先保留预期再决定是否新增)，不因新增短入口再推广 TDD。**[一手；研究]**
+
+**未采用的近期证据。** [Vibe Coding: An experiment with test-driven development](https://link.springer.com/article/10.1007/s10664-026-10950-z)于 2026-10-09 发布；已读 §3–7，研究在人类／协作、GPT-3.5 全自动与 MGX（GPT-5／Sonnet 4）间改变模型和交互方式，使用两个无需复杂 API／类结构知识的简单任务，并非同模型只改变先测／后测的对照。故不据摘要的工作流优劣建议扩大 07 的 TDD 采用范围；本轮未取得并复算工件。**[研究：排除理由]**
+
+**撤回与下一证据。** 若行为已明确且现有检查充分，撤掉额外访谈／规格／重复测试；若样品不能让人作出选择，先查参考与判据。遇到跨组件兼容、不可逆数据或外部交付约束，不能用“探索”跳过必要决定。进一步提高工作流推荐强度，需要同任务、同模型与预算的顺序对照及真实后续修改成本，不能由一个成功工具或新论文标题替代。**[经验：采用条件；研究：证据缺口]**
