@@ -453,3 +453,58 @@
 4. **第二次内容变化要触到实际地址。** V1 两个关卡分别有进度；V2 改名并换存储位置；V3 删除／替换一个道具。验主档缺失而备份存在、metadata 完好但实体区截断、迁移中断再启动、恢复后立即自动保存以及两个关卡位置互换。断言进度未互串、奖励不重复、旧副本仍可找回，而不只断言 JSON 能读。
 
 [研究] 以上为未来获准的引擎／目标存储验收设计；静态阅读没有证明文件落盘耐久性、UI 实际可达性或商业库净收益。若既有组件通过这些路径且维护更省，就停止自研；若复杂对象图保存只增加引用和迁移负担，回到稳定内容 ID 的窄 DTO，而非继续扩张框架。
+
+## 呈现节奏补研：平均 FPS 与实际看到的动作不是同一个承诺
+
+核实：2026-10-14 UTC。主线 3／4；改变 04 将“高 FPS 仍不顺”主要归于姿态插值或长帧的建议，补上呈现同步、排队和限帧政策。新证据为 Factorio 开发者迁移复盘、osu! 固定等待源码及 2026 年反证讨论、Unity 6.3／UE 5.8 原生契约、Unity 当前版本缺陷记录与 Mir 2 部署案例。本轮仅调查公开资料与静态源码，不运行真实引擎、设备或性能实验。[一手／研究]
+
+### 1. 真实游戏：先辨认问题，不因理论最优重写架构
+
+[一手：作者实述] Factorio 开发者 posila 于 2019-03-19 [说明](https://forums.factorio.com/viewtopic.php?p=415072)，迁移 DirectX 11 时发现帧间隔约 14–18 ms，平均仍达 16.67 ms；显示实际为 59.95 Hz 时，生产与显示渐渐错位，出现重复图像或丢帧。他以 VSync 改变默认行为，但明确效果含观察和理论判断，并未给跨设备对照。完全拆开更新与渲染需要改变渲染准备的数据，接近 1.0 时成本不可接受。
+
+[研究] 可借的是诊断与成本判断：工作量足够小不等于按时显示；成熟游戏也会选择有边界的原生修正，而不为理想架构推翻底座。此为 0.17／当时 Windows 路径，不是今天 Factorio 全平台行为，更不能引用同帖中历史 G-Sync 猜测作为现行配置指南。
+
+### 2. 原生设置必须按平台读，实际帧率不能从目标推定
+
+[一手] Unity 6.3 LTS [Application.targetFrameRate](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)正文区分：桌面 VSync 非零会忽略该目标，软件限帧存在 microstuttering；Android／iOS 使用 targetFrameRate，忽略 vSyncCount；XR 由 SDK 控制。[研究] 因而“统一锁 60”不是跨平台方案。桌面先建立 VSync 基线，移动端使用持续负荷下可维持的原生 pacing 档位；并非宣布 VSync 在所有竞技、VRR 与设备情境下最优。
+
+[一手：实际部署案例] Google 的 [Mir 2 案例](https://developer.android.com/stories/games/swappy)，更新于 2025-02-06，报告该 Unity 游戏启用内置 Optimized Frame Pacing 后，20 FPS 门槛的 Slow Session 比例从 40% 降至 10%。[研究] 支持已有集成值得先试；该指标不是平均帧率、毫秒延迟或满意度，更不是“性能提升四倍”。文中没有足够实验控制与样本信息支持独立游戏的收益预测，游戏本身也不是单人独立制作证明。
+
+[一手] [UE 当前移动 Frame Pacing 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/frame-pacing-for-mobile-devices-in-unreal-engine)页面标 5.8：Android 的 Swappy 从 5.2 起默认启用；支持按 Device Profile 设置及查询目标档位是否受支持。[研究] 不照搬 4.25 旧文再造插件或默认补启用开关；维护成本主要是设备档位、版本升级与回归，而不是新增 runtime。
+
+**版本反证**：[Unity UUM-68029](https://issuetracker.unity.com/issues/8340/applicationsettargetframerate-different-results-when-optimized-frame-pacing-is-used)记录 Optimized Frame Pacing 开关两种路径对同一目标帧率采用不同取整策略；本次页面列 6000.7.0a4 Fixed、6.3.X 等 Won't Fix。[一手] 这不能推成整个 pacing 不可靠，也不是建议发行项目迁移 alpha；它改变验收方法：比较开关时同时记录实际帧率与刷新率，否则可能是在比较不同工作档位，而非纯 pacing 效果。[研究]
+
+### 3. 降排队延迟有代价，不能把最低数值当最好
+
+[一手] Epic [Low-Latency Frame Syncing](https://dev.epicgames.com/documentation/en-us/unreal-engine/low-latency-frame-syncing-in-unreal-engine)当前 5.8 页面解释 game thread 与 render thread 同步，不保证它们紧跟最终呈现；提供 `r.GTSyncType` 选择 render／RHI／swap-chain 同步。降低 `rhi.SyncSlackMS` 缩短 pipeline，也更容易因 hitch 错过帧；模式 2 在不支持的平台回退模式 1。
+
+[研究] 🧪 仅当软件链路显示排队是主要问题时评估；保存原配置，对照响应与长帧，不把文档的 30 Hz 示例数值搬成项目目标，也不把面向旧并行渲染背景的说明当作每个当前平台默认状态的实测。没有证据支持全局禁用 `r.OneFrameThreadLag` 或将 slack 一律设零。
+
+### 4. 开源反证：不要重复修复早已存在的等待实现
+
+[一手] osu-framework 固定提交 `2140bf7dae73a6389ffea01f81319a39392c8ef1`：
+
+- [ThrottledFrameClock.cs](https://github.com/ppy/osu-framework/blob/2140bf7dae73a6389ffea01f81319a39392c8ef1/osu.Framework/Timing/ThrottledFrameClock.cs)选择平台原生等待，测实际睡眠、累计误差，并限制负误差以避免过多追赶帧。
+- [WindowsNativeSleep.cs](https://github.com/ppy/osu-framework/blob/2140bf7dae73a6389ffea01f81319a39392c8ef1/osu.Framework/Platform/Windows/Native/WindowsNativeSleep.cs)先尝试高精度 waitable timer，失败时回退普通 timer，原生等待失败再由调用者回退 Thread.Sleep。
+- 同提交 [LICENCE](https://github.com/ppy/osu-framework/blob/2140bf7dae73a6389ffea01f81319a39392c8ef1/LICENCE)为 MIT；本轮逐文件读 raw 正文，没有安装或运行。它证明已有实现，不能证明目标 Unity／UE 兼容或性能收益。
+
+[一手：维护者讨论] 2026-03-11/12 的 [#6719](https://github.com/ppy/osu-framework/discussions/6719)中，报告者建议改 timer／busy wait；维护者指出已经实现原生 timer，并试过部分混合方案而不认为收益值得。报告者随后承认未先读完整代码，并把突然长停顿与普通等待误差拆成两个问题。该讨论仍为 Unanswered，不是合入修复或效果证据。
+
+[研究] **⛔ 不把此限帧器移植到 Unity／UE，不让 Agent 先写 Sleep／spin loop。** 该框架真正承担自己的循环，商用引擎已有不同同步所有权；叠加等待会增加新的节奏与功耗成本。源码可借“先检查已有实现、识别回退路径”，不能证明忙等一定治好驱动、合成器或显示队列问题。MIT 可复制也不等于值得复制。
+
+### 5. 使用已有观测工具，避免再建 FPS 仪表盘
+
+[一手] [PresentMon 官方 README](https://github.com/GameTechDev/PresentMon/blob/main/README.md)提供 Windows ETW 的 CPU／GPU／Display duration 与 latency；[Console 文档](https://github.com/GameTechDev/PresentMon/blob/main/README-ConsoleApplication.md)区分 DisplayLatency 与 DisplayedTime，后者对未显示帧可以为 NA。README 同时指出 OpenGL／Vulkan 的部分 instrumentation 与 HWS GPU 时序存在精度边界，不能把字段中的零直接解释为没有等待。本次读当前 main 文档，未固定发布版或运行采集，不作为跨版本字段保证。
+
+[研究] 🧪 后续获准设备验证时，现有引擎 Profiler 定位工作热点，呈现仍异常再补 PresentMon 这一既有工具候选；无需自己写跨平台采集库。先确认权限和字段适用性，不为采集自动修改用户系统设置。软件事件只能描述其观测边界；端到端光学测量另需设备方案。
+
+### 6. 下一次修改的最小验证设计
+
+[研究] 固定同一段横向移动／连续转向／一次瞄准攻击，先用已经准备好的资产排除首发路径；第二次修改加入新的画质档或支持另一刷新率。
+
+1. 记录引擎版本、后端、窗口模式、实际刷新率、实际帧率、VSync／pacing／外部限帧状态，先避免多个 limiter 同时作用。
+2. 比较同一路径的帧间隔分布、持续长帧位置、未显示帧和首个可见反馈；分清工作耗时、等待与显示间隔。
+3. 在持续负荷、暂停恢复及改变窗口／刷新率后复测；移动端同时看热降频后的持续表现，不只刚启动几十秒。
+4. 人确认轨迹是否均匀、瞄准是否跟手；若改善一项明显损伤另一项，保留原设置并收窄采用范围。
+
+本轮已核查公开正文、实际开发者说明、固定源码与许可；未复现案例收益、未运行 PresentMon 或真实设备。GitHub commits API 遭遇公开 rate limit，但固定 raw 源码成功读取；没有把源码阅读声称为引擎兼容性或性能通过。[研究]

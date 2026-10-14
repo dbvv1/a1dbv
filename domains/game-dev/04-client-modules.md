@@ -33,13 +33,23 @@
 | 边缘跳跃／落地前短按频繁被玩家当成“没按出来” | 🧪 加短期输入缓冲或离地宽限，让意图连续；分别规定有效期、消费、失效条件。前者保存尚不可执行的指令，后者暂时延长可跳资格 | 它们是玩法容错，不是降低设备延迟。若产生意外自动跳／过期攻击，缩短窗口或收窄适用状态；不能给所有动作统一毫秒值。Celeste 与 Dead Cells 的机制是案例，不是本项目调参答案 [一手／研究：[Celeste 源码](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/Source/Player/Player.cs)、[作者复盘](https://media.gdcvault.com/gdc2019/presentations/Benard-Sebastian-DeepCells.pdf)] |
 | 状态立即改变，画面却迟迟转过去或姿态突然弹跳 | ✅ 先调整原生 Animator 的转场时长、Exit Time 和打断规则；2D 可用少量清楚的起手／命中／收招姿态，3D 先校准位移速度与步态，再做 Blend Tree | 过长混合会冲淡攻击接触瞬间；全部可打断会抹掉战斗承诺。只有接触缺口明确时🧪加 Animation Rigging／IK；骨架和基础动作不合格时，更多约束不能代替资产修正 [一手／研究：[6.3 转场](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)、[Rigging 1.4.1](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/index.html)] |
 | 能造成伤害，但不知道打中了谁、轻击还是重击 | ✅ 从同一次已确认的结果触发清楚的受击姿态、位置明确的短特效和对应声音；先区分命中、护甲／格挡、落空，再🧪加顿帧、震动和拖尾 | 每个效果服务于辨识或力度。群攻／连击出现遮挡、疲劳或失去控制时先减强度和并发；纯视觉后坐力不应顺手改碰撞体。以动作配置收拢时序、强度和开关，别建通用“打击感框架” [一手／研究：[可切换演示及源码](https://deepnight.net/games/game-feel/)] |
-| FPS 很高，移动仍抖；或首发技能明显顿一下 | ✅ 区分模拟姿态不连续与真正的长帧：前者检查物理／呈现节奏并按需插值，后者定位加载、分配、渲染等热点。目标是均匀可预测的动作轨迹和呈现节奏 | Rigidbody Interpolate 会让可见姿态落后一个物理步，Extrapolate 可越过碰撞边界再纠正；两者都不是消除长帧的办法。只给有问题的对象加，不能靠全局提高物理频率掩盖问题 [一手／研究：[6.3 插值](https://docs.unity3d.com/6000.3/Documentation/Manual/rigidbody-interpolation.html)] |
+| FPS 很高，移动仍抖；或首发技能明显顿一下 | ✅ 区分模拟姿态不连续与真正的长帧：前者检查物理／呈现节奏并按需插值，后者定位加载、分配、渲染等热点。姿态连续且无工作尖峰时，再查[呈现同步与排队](#呈现节奏动作已执行画面仍不顺) | Rigidbody Interpolate 会让可见姿态落后一个物理步，Extrapolate 可越过碰撞边界再纠正；两者都不是消除长帧的办法。只给有问题的对象加，不能靠全局提高物理频率掩盖问题 [一手／研究：[6.3 插值](https://docs.unity3d.com/6000.3/Documentation/Manual/rigidbody-interpolation.html)] |
 
 **[研究] 把“丝滑”拆开调，才不会一个改善抵消另一个。** 输入延迟关心按下到被处理；玩法响应关心指令何时允许生效；模拟时间决定碰撞／位移如何推进；呈现插值决定画面展示哪一段姿态；帧间隔方差决定玩家看到的更新是否均匀。引擎内时间戳能定位软件链路，不能直接称为按键到屏幕发光的端到端延迟。相机跟随与取景另见 [05](05-gameplay-architecture.md#8-相机先让玩家看懂并控得住再增加镜头语言)。
 
 **[研究] 顿帧要保住下一次输入和清楚的节奏。** 决定冻结哪些角色／动画／特效、输入缓冲是否继续接收以及用哪种时间过期、声音与界面是否继续；同帧多命中采用有上限的合并策略，避免持续刷新成长期失控。纯演出关闭后应仍能理解命中；若顿帧承担规则上的反应窗口，就明确作为玩法配置维护。Deepnight 演示会用开关改变控制锁定、物理后坐力和动画预备时间，因此“全开对全关”不等于只比较美化效果，细节见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#体验质量深化响应与顺滑让同一个动作值得反复玩)。
 
 **[研究] 较易维护的起点是保留可退回的手感基线。** 保存一组已选动作参数，让 AI 每次只改“起步更利落”“重击接触更清楚”等具体目标，说明同时改变了哪些规则；对照移动、命中、连续攻击和重开后的完整动作。采样计划同时记录输入／动作／反馈时刻、帧时间分布与长帧发生位置，人试玩确认是否更可控、更易读、更有力度。不要把特效数、动画帧数或平均 FPS 当质量评分。
+
+### 呈现节奏：动作已执行，画面仍不顺
+
+**[研究] ✅ 先借原生同步能力，比较实际呈现间隔与操作响应，不先自写限帧器。** Factorio 0.17 开发者曾记录平均约 60 FPS，帧间隔却在 14–18 ms 波动，并与 59.95 Hz 显示节奏漂移；无明显工作尖峰也不能证明画面均匀到达。[一手：[历史开发者调查](https://forums.factorio.com/viewtopic.php?p=415072)] 保留同一段移动／瞄准／攻击作基线，核对实际刷新率、实际帧率与已有同步设置，避免叠加多个等待器；若减少排队后更易掉帧，或顺滑来自额外等待而操作发黏，就撤回并重新取舍。
+
+- **Unity 桌面**：✅ 以原生 VSync 建立顺滑基线；6.3 的 `targetFrameRate` 是可能微卡顿的软件限帧，VSync 非零时会被忽略。更低延迟需求再比较模式。[一手／研究：[6.3 契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)]
+- **Android**：✅ 先用引擎集成的 pacing：Unity Optimized Frame Pacing，UE 5.2 起默认 Swappy；选设备可持续维持的档位，设置值不当作实测结果。[一手／研究：[Unity 游戏案例](https://developer.android.com/stories/games/swappy)、[UE 原生路径](https://dev.epicgames.com/documentation/en-us/unreal-engine/frame-pacing-for-mobile-devices-in-unreal-engine)]
+- **UE 排队延迟**：🧪 证据指向 game／render／RHI 与显示排队时才评估原生 low-latency frame syncing；缩短 pipeline 会牺牲应对长帧的余量，不照抄一组 CVar。[一手／研究：[同步取舍](https://dev.epicgames.com/documentation/en-us/unreal-engine/low-latency-frame-syncing-in-unreal-engine)]
+
+**局限：这些是诊断与选型依据，不能预测目标设备收益；软件呈现事件也不等于屏幕发光的完整端到端测量。** 固定源码、版本反证与后续验证见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#呈现节奏补研平均-fps-与实际看到的动作不是同一个承诺)。[研究]
 
 ## 2. 十一个模块的最低交付线
 
