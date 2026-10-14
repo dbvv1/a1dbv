@@ -1,6 +1,6 @@
 主线：一／二／三／四；客户端体验、验证选择、第二次修改与交付
 改变的建议：[研究] 默认复用引擎成熟组件，仅补所有权、退出和迁移规则；输入、运动、首发／呈现、菜单、存档、本地化、音频与时域画面分别按动作质量验收；game02 按待证事实选观察，不预建验证阶梯
-新证据：[一手／社区] 固定源码、官方契约／问题及开发者复盘；补输入后端、暂停时钟与截图降噪边界，重读笼子退出案例；未做引擎、设备或玩家实测，不能推出性能排名、AI 成功率或体验收益
+新证据：[一手／社区] 固定源码、官方契约／问题及开发者复盘；补输入后端、暂停时钟与截图降噪边界，重读笼子退出案例，补像素量化与连续慢速运动的取舍；未做引擎、设备或玩家实测，不能推出性能排名、AI 成功率或体验收益
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -693,3 +693,30 @@
 [研究] game02 用暂停／设置加入原有蓄力动作作为第二次修改例子，先由项目决定暂停和释放政策，再选择规则、输入、运行时和人工观察；不是通用状态机或固定异常数。复现版本、动作序列和预期结果可以沿用现有 fixture，无需新增目录或测试服务。本轮验证仅文档／链接与仓库离线检查；目标设备、真实引擎与玩家收益留到获准实测。
 
 [研究] 本轮完成完整离线 14 阶段（97／26／10／13／14 项，非空无 skip）与 `git diff --check`。独立新上下文评审对本节及 game02 未发现事实或决策级问题；入口残留的阶梯／先改造建议由整合端同步处理后才算完整交付。检查与评审均不替代引擎／设备／玩家验证。
+
+
+## 像素网格补研：低速步进不是物理插值失效
+
+核实：2026-10-14 UTC。主线一／三；改变 04 将移动抖动优先归入模拟节奏的建议：像素风先分清世界模拟、低分辨率场景和最终放大画面的取整。新证据是不同作者的原型复盘与固定演示实现、Unity 6.3 URP／Cinemachine 3.1.7 契约；不增客户端模块或渲染框架。[一手／研究]
+
+### 1. 两位作者的方案为什么不能互相代替
+
+[一手：作者实述] Slow Rush Games 的 [2024-01-26 复盘](https://www.slowrush.dev/news/pixel-perfect-rendering/)记录：相机吸附改善像素物理纹理与背景之间的相对摇摆，却使其他画面跳动；连对象也吸附仍未整体解决；最终画布的 sub-texel scrolling 改善相机移动，却保留画布内慢速物体的逐 texel 跳动。作者需要摩擦停稳、弧顶和旋转刚体，因此接受像素边缘过滤。该页面仍以矩形代理为主，明确真实精灵尚待接入、性能未 benchmark；关于 Noita／Broforce 的比较仅是该作者转述，本轮未独立核实，不用它证明成熟游戏普遍采用某种过滤。
+
+[一手：固定源码] Daniel Ludwig 的 `code-disaster/gdx-mellow-demo@901d2bcae3819807e54814a4a34d3c72d1236f68`（2016-02-07）提供可读的替代机制。[MellowGame.java L297–368](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/core/src/com/codedisaster/mellow/MellowGame.java#L297-L368)先把 scene camera 按 WORLD_UNIT_SCALE 向下取整，再把剩余位移转换为最终放大画面的 offset；只有 `UpScaleAndBilinearFilterShader` 模式继续拆出小数部分。对应 [fragment shader](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/core/assets/shaders/mellow.fsh)按该小数权重组合四次采样。渲染对象是 tilemap，不能据此宣称独立角色的低速运动已经平滑。
+
+[研究] 可借“低分辨率画面与最终输出分开处理”的思路，不从一个游戏的过滤选择推出默认方案，也不因相机滚动顺滑就认定物体动画／碰撞更顺滑。该 demo 的分辨率与放大倍率写死、运动循环另有逐帧项，不作新项目底座或帧率无关运动范本。[一手] [LICENSE](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/LICENSE)为 MIT；README 单独署名外部 tileset，本轮仅读代码，不把整个示例的美术许可一并视作已清。原博客入口本轮无法读取，机制结论来自实际下载的固定源码；未构建或运行 demo。
+
+### 2. Unity 原生能力：能对齐像素，不替玩家决定取舍
+
+[一手] Unity 6.3 [URP Pixel Perfect Camera](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/2d-pixelperfect-ref.html)明确内置于 Universal 2D template，不应另装只适用于 Built-In 的同名独立包。`Pixel Snapping` 阻止显示在像素之间，但不改变 Transform；`Upscale Render Texture` 先画到参考分辨率或按视口比例扩大后的临时纹理再放大。`Filter Mode` 中 Point／Retro AA 的取舍限定在 Crop Frame 为 Stretch Fill 时：前者清楚但可能闪烁，后者减少闪烁但边缘更软，不能把此开关当通用的慢速对象修复器。
+
+[一手] [Cinemachine 3.1.7 Pixel Perfect 扩展](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePixelPerfect.html)协调两个系统都修改 orthographic size 的冲突；文档明确 blend 期间暂时非 pixel-perfect，Upscale Render Texture 的可用尺寸更少，可能导致明显构图偏差。该页仍用历史 Framing Transposer 名称描述 Target Group 限制，本轮不把它改写成对当前 Position Composer 的已验证缺陷。
+
+[研究] ✅ 有意追求整格视觉时先沿用原生组件，把慢速步进纳入风格验收；🧪 连续慢速／旋转需要更高时，比较呈现分辨率与过滤，不先为此自建渲染器。镜头阻尼／物理插值可以改善上游轨迹，却不会移除最终量化规则；不能为显示上的对齐而无意更改碰撞、平台接触或鼠标命中位置。上述 Unity 设置不映射成 UE 同名等价菜单，本轮没有提出 UE 配置推荐；模拟与呈现分工的判断可跨引擎使用。
+
+### 3. 后续验证与撤回条件
+
+[研究] 同一美术与动作比较严格网格、提高呈现分辨率和有界过滤，分别观察慢速角色、相机跟随、独立平台停稳／旋转，以及视差背景的相对运动。新增第二种窗口尺寸／缩放档后，核边缘闪烁、细小危险提示、mouse-to-world 对齐与切镜取景；不要用单张静止截图或平均 FPS 评分。像素尺寸不一致、过滤使危险边界难辨、增加显著开销或改变预期风格，就收窄／撤回该路线。
+
+本轮完成资料和固定源码阅读；未运行游戏、Unity／UE、shader 或玩家视觉实验，未证明任何路线体验更好。公开源码仅借机制，未来真正采纳前还需按锁定引擎和目标设备验证。[研究]

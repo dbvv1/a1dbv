@@ -33,7 +33,7 @@
 | 边缘跳跃／落地前短按频繁被玩家当成“没按出来” | 🧪 加短期输入缓冲或离地宽限，让意图连续；分别规定有效期、消费、失效条件。前者保存尚不可执行的指令，后者暂时延长可跳资格 | 它们是玩法容错，不是降低设备延迟。若产生意外自动跳／过期攻击，缩短窗口或收窄适用状态；不能给所有动作统一毫秒值。Celeste 与 Dead Cells 的机制是案例，不是本项目调参答案 [一手／研究：[Celeste 源码](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/Source/Player/Player.cs)、[作者复盘](https://media.gdcvault.com/gdc2019/presentations/Benard-Sebastian-DeepCells.pdf)] |
 | 状态立即改变，画面却迟迟转过去或姿态突然弹跳 | ✅ 先调整原生 Animator 的转场时长、Exit Time 和打断规则；2D 可用少量清楚的起手／命中／收招姿态，3D 先校准位移速度与步态，再做 Blend Tree | 过长混合会冲淡攻击接触瞬间；全部可打断会抹掉战斗承诺。只有接触缺口明确时🧪加 Animation Rigging／IK；骨架和基础动作不合格时，更多约束不能代替资产修正 [一手／研究：[6.3 转场](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)、[Rigging 1.4.1](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/index.html)] |
 | 能造成伤害，但不知道打中了谁、轻击还是重击 | ✅ 从同一次已确认的结果触发清楚的受击姿态、位置明确的短特效和对应声音；先区分命中、护甲／格挡、落空，再🧪加顿帧、震动和拖尾 | 每个效果服务于辨识或力度。群攻／连击出现遮挡、疲劳或失去控制时先减强度和并发；纯视觉后坐力不应顺手改碰撞体。以动作配置收拢时序、强度和开关，别建通用“打击感框架” [一手／研究：[可切换演示及源码](https://deepnight.net/games/game-feel/)] |
-| FPS 很高，移动仍抖；或首发技能明显顿一下 | ✅ 区分模拟姿态不连续与真正的长帧：前者检查物理／呈现节奏并按需插值，后者定位加载、分配、渲染等热点。姿态连续且无工作尖峰时，再查[呈现同步与排队](#呈现节奏动作已执行画面仍不顺) | Rigidbody Interpolate 会让可见姿态落后一个物理步，Extrapolate 可越过碰撞边界再纠正；两者都不是消除长帧的办法。只给有问题的对象加，不能靠全局提高物理频率掩盖问题 [一手／研究：[6.3 插值](https://docs.unity3d.com/6000.3/Documentation/Manual/rigidbody-interpolation.html)] |
+| FPS 很高，移动仍抖；或首发技能明显顿一下 | ✅ 区分模拟姿态不连续与真正的长帧：前者检查物理／呈现节奏并按需插值，后者定位加载、分配、渲染等热点。像素风先排除[网格量化](#像素风慢速移动先分清画面网格与模拟运动)；姿态连续且无工作尖峰时，再查[呈现同步与排队](#呈现节奏动作已执行画面仍不顺) | Rigidbody Interpolate 会让可见姿态落后一个物理步，Extrapolate 可越过碰撞边界再纠正；两者都不是消除长帧的办法。只给有问题的对象加，不能靠全局提高物理频率掩盖问题 [一手／研究：[6.3 插值](https://docs.unity3d.com/6000.3/Documentation/Manual/rigidbody-interpolation.html)] |
 
 **[研究] 把“丝滑”拆开调，才不会一个改善抵消另一个。** 输入延迟关心按下到被处理；玩法响应关心指令何时允许生效；模拟时间决定碰撞／位移如何推进；呈现插值决定画面展示哪一段姿态；帧间隔方差决定玩家看到的更新是否均匀。引擎内时间戳能定位软件链路，不能直接称为按键到屏幕发光的端到端延迟。相机跟随与取景另见 [05](05-gameplay-architecture.md#8-相机先让玩家看懂并控得住再增加镜头语言)。
 
@@ -58,6 +58,15 @@
 **[研究] ✅ 将规则信号与透明装饰分开，🧪比较保留 TAA、减弱历史贡献和非时域 AA。** 关键边界用足够屏幕尺寸的稳定形状，风格允许时可由简单不透明／裁剪几何承载，透明烟雾不承担唯一危险范围；硬边或遮挡改变范围理解时撤回这种表达。正确矢量下仍拖影，再比较少积累历史与 SMAA／FXAA：若换来更扰人的闪烁、边缘爬动或纹理模糊，就退回并收窄内容细节，不盲目开最高档。[一手／研究：[AA 取舍](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/anti-aliasing.html)]
 
 **[一手／研究] STP 会隐式启用 TAA，切掉相机 AA 菜单不等于完成非时域对照。** 同时核 render scale 与 Upscaling Filter；原生 STP 的运动、重投影和 Sensitivity 视图可帮助定位，绿色也可能来自新显露区域／快速运动，不能直接等同错误矢量。[STP 依赖](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/stp/stp-upscaler.html)、[调试视图](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/stp/stp-debug-views.html)。**局限：正确输入和更高质量档也不能保证快速高反差物体无拖影，最终按同一完整动作的出现、急转、遮挡后显露和消失阶段判断辨识。** 参数方向、历史修复与未来对照范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#运动可读性补研关键提示不能靠历史积累补成另一个位置)。
+
+### 像素风慢速移动：先分清画面网格与模拟运动
+
+**[研究] ✅ 角色慢走、物体停稳或镜头缓缓跟随时一格一格跳，先检查取整发生在哪一层，再调物理插值或镜头阻尼。** 模拟位置可以连续，低分辨率画面仍只能逐格显示；严格像素网格与连续慢速运动需要取舍。Slow Rush 作者的[实作复盘](https://www.slowrush.dev/news/pixel-perfect-rendering/)中，吸附相机、再吸附对象都引入新的抖动，最终接受过滤以支持慢速和旋转刚体；这是该原型的选择，不是所有像素游戏都应模糊像素的理由。[一手]
+
+- **规则强调清楚的整格轮廓**：[研究] ✅ 先用原生 Pixel Perfect 路线，统一资源 PPU、参考分辨率与缩放政策，接受并检查低速步进；Unity 6.3 URP 已内置，不另装 Built-In 专用包。其 Pixel Snapping 只在渲染时对齐，**不会改 Transform**；不要为了消除画面错位把碰撞／瞄准状态一起取整。[一手：[原生契约](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/2d-pixelperfect-ref.html)]
+- **慢速物理、连续缩放或旋转是玩法需要**：[研究] 🧪 比较保留整格画面、提高呈现分辨率与允许边缘过滤的代价。只平滑最终画布能改善镜头滚动，不保证画布内独立物体也连续；[固定演示源码](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/core/src/com/codedisaster/mellow/MellowGame.java#L297-L368)恰把这两层分开。若细小攻击边缘变糊、轮廓不稳或风格不合，就撤回，不直接换成全场景双线性过滤。[一手／研究]
+
+**[研究] 二改增加一块缓慢停下、会旋转的平台，再核低速跟随与鼠标指向是否仍对齐。** Cinemachine 的 Pixel Perfect 扩展协调的是正交尺寸，不保证所有运动顺滑；混合期间可能暂时不再像素对齐，Upscale Render Texture 也可能改变取景。[一手：[3.1.7 边界](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePixelPerfect.html)] AI 可查重复取整、渲染与模拟状态归属、补同动作对照；人决定清晰度与连续感的取舍。**局限：开发原型与历史演示没有证明目标游戏的可读性或性能收益；**更不构成 UE 通用等价配置，来源与后续对照见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#像素网格补研低速步进不是物理插值失效)。
 
 ## 2. 十一个模块的最低交付线
 
