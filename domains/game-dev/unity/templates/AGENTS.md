@@ -10,6 +10,12 @@
 - 渲染管线：TODO（URP / HDRP / Built-in）
 - 关键包及锁定版本：TODO（Input System、Addressables、UniTask 等；不为本模板新增依赖）
 
+## 已配置接口与验证入口
+
+- 编辑器接口：TODO（现有 Editor 脚本 / Unity CLI + Pipeline / MCP 的名称、版本与能力；没有就写无）。先核对项目配置与实际可用工具，不因本模板出现命令就假定已安装。
+- 编译与测试入口：TODO（项目已有命令、报告位置和编辑器开关前提）。已有入口足够就沿用；下表只保留已采用的样例，未复制或不可用的脚本改为项目真实命令。
+- 缺少必要能力时，报告当前任务、缺少的操作/观测和已完成部分；不自行安装 MCP、LSP、插件或新框架，也不降低资产与权限边界。缺验证入口不等于验证通过。
+
 ## 目录结构
 
 <!-- 只保留非标准的部分：Agent 需要知道代码放在哪、哪些目录不能碰。不要写完整的目录树。 -->
@@ -30,19 +36,22 @@ TODO：列出主要模块（asmdef）及依赖方向，例如 `Core ← Gameplay
 
 ## 常用命令
 
-| 目的 | 命令 |
-|---|---|
-| 编辑器已打开时编译（Unity 6+，Unity CLI） | `.claude/skills/unity-compile-check/scripts/compile_check.sh --editor` |
-| 快速编译检查（不需要 Unity） | `.claude/skills/unity-compile-check/scripts/compile_check.sh --dotnet` |
-| 完整编译（编辑器需关闭） | `.claude/skills/unity-compile-check/scripts/compile_check.sh --batch` |
-| EditMode 测试 | `.claude/skills/unity-run-tests/scripts/run_tests.sh EditMode [过滤条件]` |
-| PlayMode 测试 | `.claude/skills/unity-run-tests/scripts/run_tests.sh PlayMode [过滤条件]` |
-| 只跑受改动影响的测试（Unity CLI） | `unity test . --affected --since origin/main` |
+| 目的 | 适用前提 | 命令样例 |
+|---|---|---|
+| 编辑器已打开时编译 | 已采用该脚本，Unity 6+ 且 CLI/Pipeline 可用 | `.claude/skills/unity-compile-check/scripts/compile_check.sh --editor` |
+| 快速编译检查 | 已采用该脚本，已有 `.sln` 和 dotnet；不代替最终 Unity 编译 | `.claude/skills/unity-compile-check/scripts/compile_check.sh --dotnet` |
+| 完整编译 | 已采用该脚本，引擎可定位，编辑器已关闭；无 CLI 可直接用已有编辑器 | `.claude/skills/unity-compile-check/scripts/compile_check.sh --batch` |
+| EditMode 测试 | 已采用该脚本，python3 和引擎可用，编辑器已关闭 | `.claude/skills/unity-run-tests/scripts/run_tests.sh EditMode [过滤条件]` |
+| PlayMode 测试 | 同上；此脚本不用于已打开同项目的编辑器 | `.claude/skills/unity-run-tests/scripts/run_tests.sh PlayMode [过滤条件]` |
+| 只跑受改动影响的测试 | 已有 Unity CLI，支持该命令，且比较基线存在 | `unity test . --affected --since origin/main` |
+
+编辑器开着但没有可用 CLI 时，使用已配置 MCP 或 Editor 脚本的编译/Test Runner 入口；均没有时先报告缺口，请用户关闭编辑器后沿用 batchmode。不要对同一工程另启 batchmode，也不要把“已有 MCP”当作上述 CLI 命令可用。
 
 ## 试玩验证接口
 
 <!-- 让 Agent 不靠截图就能验证运行时行为（见 domains/game-dev/02-verification-and-playtesting.md）。
-     没有这些接口就删掉本节；有了就写清楚命令，并要求 Agent 每完成一项功能都用它验证。 -->
+     没有这些接口就删掉本节，沿用现有测试并说明运行时观测缺口，不要求新建接口；
+     有了就写清楚真实命令，并要求 Agent 每完成一项功能都用它验证。 -->
 
 | 目的 | 命令 |
 |---|---|
@@ -57,7 +66,7 @@ TODO：列出主要模块（asmdef）及依赖方向，例如 `Core ← Gameplay
 
 1. **不要读写** `Library/`、`Temp/`、`obj/`、`Logs/`、`UserSettings/`。
 2. **不要删除或手写 `.meta`**；移动/重命名资源时 `.meta` 必须一起移动（`git mv`）。新建 C# 文件让 Unity 生成 `.meta`。
-3. **不要手改** `.unity` / `.prefab` / `.asset` 的 YAML，除非只是改简单的数值字段并说明了风险；优先用编辑器 API（`unity command eval`、Unity MCP、编辑器脚本）。
+3. **不要手改** `.unity` / `.prefab` / `.asset` 的 YAML，除非只是改简单的数值字段并说明了风险；优先用已配置的编辑器 API（Unity CLI、Unity MCP、编辑器脚本）。接口缺失不是绕过此规则的理由。
 4. 修改 `ProjectSettings/`、`Packages/manifest.json`、`Assets/Plugins/` 前先征求同意。
 5. 每次修改 C# 后必须通过编译检查；修改逻辑后运行相关测试。
 

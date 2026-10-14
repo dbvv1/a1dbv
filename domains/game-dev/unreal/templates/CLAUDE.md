@@ -4,11 +4,12 @@
 
 ## Claude Code 专属
 
-- 操作编辑器、资产、关卡、蓝图时使用 `unreal-mcp` Skill（Epic 官方插件）：先用 `describe_toolset` 确认工具签名，再用 `call_tool`；有依赖关系的修改**串行**执行。
-- 开始不熟悉的工作前，先通过 `AgentSkillToolset.ListSkills` 查看项目在引擎里注册的 Agent Skill，相关的就加载并遵循。
+- 先按 AGENTS 核对已配置接口与验证入口。已有 Epic 官方 MCP 及 `unreal-mcp` Skill 时，按 Skill 用 `describe_toolset` 确认工具签名，再用 `call_tool`；其他已配置 MCP 按其实际工具签名调用。没有 MCP 时沿用已有 Editor Python/项目脚本；没有安全的资产入口就停写并报告缺口，不自行安装。
+- 开始不熟悉的工作前先读项目已有说明；仅在已配置 MCP 暴露 `AgentSkillToolset.ListSkills` 时查看引擎内注册的 Agent Skill，相关的才加载。没有该工具不阻塞现有脚本可完成的工作。
+- 有依赖关系的资产、关卡、蓝图修改**串行**执行，无论通过 MCP 还是 Editor Python；结果不明确先回读，不盲目重试。
 - PIE 正在运行时，很多编辑器工具的行为会变；结果不对时先检查 PIE 状态。
-- 编译：只改了 `.cpp` 函数体 → MCP Live Coding；其他情况 → `ue-build` Skill。改完逻辑 → `ue-run-tests` Skill。
-- 探索性的资产修改，优先请我在编辑器里开一个 Sandbox（UE 5.8+），确认后再合回项目。
+- 编译：只改 `.cpp` 函数体且已配置入口支持 Live Coding 时才使用；MCP 不是其前提。否则沿用已有 UBT/构建脚本，必要时请我关闭编辑器；头文件、反射、新类/模块改动必须关闭编辑器后完整编译。已采用 `ue-build` / `ue-run-tests` 且前提满足时才使用这些 Skill；改完逻辑仍须跑现有相关测试，不能因缺少 Skill 跳过。
+- 探索性的资产修改，项目已有 Sandbox 且适用时优先请我开启，确认后再合回项目；没有时遵守项目现有的备份、隔离和资产修改确认流程，不为此升级引擎或安装插件。
 - 可独立的大范围检索可交给 Explore；涉及引擎生命周期、资产或接口风险时可用 `ue-code-reviewer`，不为每项修改固定叠加评审。
 - 不需要我参与的步骤就继续做；只有在没有我就无法继续（比如需要关闭或重启编辑器），或者要做破坏性操作（批量修改资产、改 Config 或 `.uproject`、强推）之前，才停下来问。
 - 长时间运行结束时，用 **Blocked on me / Changed / Found** 三个标题总结。

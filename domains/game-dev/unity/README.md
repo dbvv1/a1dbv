@@ -1,6 +1,6 @@
 # 游戏开发 / Unity
 
-> 核实时间：2026-10-08。上级目录：[游戏开发分支](../README.md)（AI 与游戏开发的结合全景、引擎接入对比、验证与试玩、游戏中的生成式 AI）。
+> 核实时间：2026-10-14（入口与模板条件走查）。上级目录：[游戏开发分支](../README.md)（AI 与游戏开发的结合全景、引擎接入对比、验证与试玩、游戏中的生成式 AI）。
 > 前置阅读：主干的 [07 工作流](../../../docs/07-workflows.md)（验证闭环）和 [03 上下文工程](../../../docs/03-context-engineering.md)。
 
 | 文档 | 内容 |
@@ -14,21 +14,20 @@
 
 ## 一页纸推荐（2026-10）
 
-```
-Unity 6+：
-  Claude Code 或 Codex
-  + Unity 官方插件 unity@unity-agent-plugin（33 个 Skills + Unity CLI）
-  + Unity CLI 的 Pipeline 包（com.unity.pipeline）→ Agent 可以直接驱动打开中的编辑器
-  + csharp-lsp 插件（C# 语义导航和诊断）
-  + 本目录 templates（AGENTS.md、保护 Hook、编译和测试 Skill、评审子 Agent）
+**先沿用项目已有的编译、测试和编辑器入口；能完成当前任务，就不增加接口。** Claude Code / Codex 都按同一条边界选择。**[经验]**
 
-Unity 2021.3 / 2022 LTS：
-  Claude Code + 社区 MCP（CoplayDev/unity-mcp）+ csharp-lsp + 本目录 templates
-  （验证闭环用 batchmode 脚本）
-```
+| 当前任务或缺口 | 建议 |
+|---|---|
+| 只改 C#，已有编译和测试脚本 | ✅ 沿用现有命令；已有 `.sln` + dotnet 可做快速检查，最终仍以 Unity 编译和相关测试为准，不为此先装 MCP 或 LSP |
+| 修改场景、Prefab、导入设置或资产引用 | ✅ 使用已经配置的 Editor 脚本、CLI 或 MCP；先确认目标工程与工具能力，再经 Editor API 修改并回读结果 |
+| 确实缺少操作运行中编辑器的入口 | 🧪 Unity 6.0 LTS+ 可评估官方 CLI/Pipeline：能可靠执行 shell 就直接调用，需要 MCP 的客户端再选 `unity mcp`；Unity 2021.3 / 2022 LTS 先沿用兼容脚本，确有缺口才评估社区 MCP |
+| 现有搜索、编译诊断不足以定位跨文件符号或引用 | 🧪 再评估 C# LSP；它不代替 Unity 编译、序列化和运行时验证 |
+| 想复用本目录模板 | 🧪 只合并适用的项目规则、已审阅脚本和检查；填写现有入口，删去不适用的命令。保留项目安全限制，不把整套 Skill、reviewer、Hook 或插件当作前置条件 |
+
+表中为采用判断 **[经验]**；CLI/Pipeline 的版本与直接命令/MCP 分工见[官方迁移说明](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli) **[一手]**。插件选型见 [01 工具链](01-toolchain.md)，模板合并边界见 [templates](templates/README.md)；没有安全的资产操作入口时报告具体缺口，不改写 YAML 绕过、不自行安装。当前仅完成两种接口配置的[文档走查](../../../docs/research/2026-10-14-game-wp13-agent-config.md#4-f1-复核入口必须按已配置能力分支)，未证明真实 Agent 或引擎效果。**[研究]**
 
 ## 三个最重要的认识
 
 1. **让 Agent 驱动编辑器，不要手改场景和 Prefab 的 YAML。** Unity 官方 Skill 原话：“有编辑器可用时，驱动它，而不是手工编辑场景或资源文件” **[一手]**。
-2. **进入 Play 模式不等于验证通过。** 失去焦点的编辑器可能停在第 1 帧，而状态仍显示“playing”。用 `unity status --format json` 的 `frameCount` / `playerLoopTicking` 确认帧确实在推进，再读 Console、截图 **[一手]**。
-3. **编译错误会让编辑器进入 Safe Mode，这时 CLI 连不上编辑器。** 要从 Editor.log 里过滤出 `error CS####` 并修正源码，不能指望通过编辑器修复 **[一手]**。
+2. **进入 Play 模式不等于验证通过。** 已配置 Unity CLI 时，用 `unity status --format json` 的 `frameCount` / `playerLoopTicking` 确认帧确实在推进，再读 Console、截图 **[一手]**。没有 CLI 时，沿用现有测试报告或带时间/帧进度的状态观测；缺失观测就标明未验证，不为一条命令强装 CLI **[经验]**。
+3. **Safe Mode 下不要反复重试编辑器连接。** 已有 CLI 若因 Safe Mode 不可达，先从项目允许读取的 Editor.log 中过滤 `error CS####` 或沿用现有编译入口定位源码错误，修正后按项目流程重启、复验 **[一手＋经验]**。

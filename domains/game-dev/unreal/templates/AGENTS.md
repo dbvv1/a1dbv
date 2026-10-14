@@ -11,6 +11,12 @@
 - 版本控制：TODO（Perforce / Git + LFS）
 - 关键插件及锁定版本：TODO（仅列已采用插件，不为本模板新增 GAS、StateTree 或 Mass）
 
+## 已配置接口与验证入口
+
+- 编辑器接口：TODO（现有 Editor Python / Unreal MCP / 项目工具的名称、版本与能力；没有就写无）。先核对实际配置与可用工具；MCP、Agent Skill、Live Coding 各自确认，不能相互推定。
+- 编译与测试入口：TODO（已有 UBT/项目脚本、报告位置和编辑器开关前提）。已有入口足够就沿用；下表只保留已采用的样例，未复制或不可用的脚本改为项目真实命令。
+- 缺少必要能力时，报告当前任务、缺少的操作/观测和已完成部分；不自行安装 MCP、LSP、插件或新框架，也不改写二进制资产绕过。缺验证入口不等于验证通过。
+
 ## 模块与依赖
 
 <!-- 不要写完整目录树。只写模块边界和依赖方向。 -->
@@ -24,19 +30,21 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 
 ## 常用命令
 
-| 目的 | 命令 |
-|---|---|
-| 编辑器开着、只改了 `.cpp` 函数体 | Unreal MCP：`LiveCodingToolset.CompileLiveCoding` |
-| 命令行编译（编辑器需关闭，或已关闭 Live Coding） | `.claude/skills/ue-build/scripts/build.sh` |
-| 编译游戏本体 | `.claude/skills/ue-build/scripts/build.sh <项目名> Development` |
-| 自动化测试 | `.claude/skills/ue-run-tests/scripts/run_tests.sh <项目名>.<模块>` |
-| 查看可用测试 | `UnrealEditor-Cmd <项目>.uproject -ExecCmds="Automation List;Quit" -unattended -NullRHI` |
+| 目的 | 适用前提 | 命令样例 |
+|---|---|---|
+| 编辑器开着、只改了 `.cpp` 函数体 | 目标环境支持 Live Coding，且已配置 MCP 实际暴露该工具 | Unreal MCP：`LiveCodingToolset.CompileLiveCoding` |
+| 命令行编译 | 已采用该脚本、引擎可定位；编辑器已关闭，或项目已验证关闭 Live Coding 后的构建入口 | `.claude/skills/ue-build/scripts/build.sh` |
+| 编译游戏本体 | 同上，目标名已确认 | `.claude/skills/ue-build/scripts/build.sh <项目名> Development` |
+| 自动化测试 | 已采用该脚本，python3、UnrealEditor-Cmd 和对应构建可用 | `.claude/skills/ue-run-tests/scripts/run_tests.sh <项目名>.<模块>` |
+| 查看可用测试 | 已有可定位的 UnrealEditor-Cmd | `UnrealEditor-Cmd <项目>.uproject -ExecCmds="Automation List;Quit" -unattended -NullRHI` |
+
+没有 MCP 时仍可沿用项目已有 Live Coding 入口（仅适用于函数体改动），或请用户关闭编辑器后用现有 UBT/构建脚本。头文件、反射、新类/模块改动始终按下面的完整构建规则处理，不因某个工具缺失而切到 Hot Reload。
 
 ## 硬性规则
 
 1. **不要读写** `Binaries/`、`Intermediate/`、`DerivedDataCache/`、`Saved/`（`Saved/Logs/` 可以读）。
-2. **`.uasset` / `.umap` 是二进制文件，绝不能用文本工具编辑。** 修改资产、关卡、蓝图一律通过 Unreal MCP 或 Editor Python。
-3. 通过 MCP 做批量修改前后都要存盘；结果不明确时停止后续写入，先回读实际资产状态，不假设完全未修改后盲目重试。明确 success 也须回读目标及引用。
+2. **`.uasset` / `.umap` 是二进制文件，绝不能用文本工具编辑。** 修改资产、关卡、蓝图一律通过已配置的 Unreal MCP 或 Editor Python；均不可用时停写并报告所需操作。
+3. 通过 MCP 或 Editor Python 做批量修改前后都要存盘；结果不明确时停止后续写入，先回读实际资产状态，不假设完全未修改后盲目重试。明确 success 也须回读目标及引用。
 4. 改了头文件、`UPROPERTY` / `UFUNCTION`、新增类或模块：**不要用 Live Coding**，请我关闭编辑器后用命令行完整编译。
 5. 修改 `Config/*.ini`、`.uproject`、`.uplugin`、`*.Target.cs`、`.Build.cs` 的依赖前先征求同意。
 6. 每次改 C++ 后必须编译通过；改了逻辑要运行相关测试。
@@ -56,7 +64,8 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 ## 试玩验证接口
 
 <!-- 让 Agent 不靠截图就能验证运行时行为（见 domains/game-dev/02-verification-and-playtesting.md）。
-     推荐写成测试工具集（Python 或 C++ AICallable），通过 Unreal MCP 调用；开发版打包后也可以托管 MCP。 -->
+     只填写已配置的 Python、自动化测试或 MCP 工具，不要求新建工具集。
+     没有这些接口就删掉本节，沿用现有测试并说明运行时观测缺口。 -->
 
 | 目的 | 工具 / 命令 |
 |---|---|
