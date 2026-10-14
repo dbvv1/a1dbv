@@ -1,6 +1,6 @@
 主线：二／三；G1 2D 资产选型与第二次修改
 改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼，PixelLab／Retro 仅作条件首试
-新证据：[一手] 2026-10-14 模型／服务契约、固定瓦片／精灵源码、包许可及开发者返工；未运行模型／引擎，原生编辑能力不证明零手修成套生产
+新证据：[一手] §11 新增原画布／裁切偏移的真实消费路径、公开图集 JSON 静态解析与 Aseprite 历史修复；此前模型／服务调查保留，均未运行模型／引擎
 
 # WP2：2D资产的前沿方法与零手修边界
 
@@ -39,7 +39,7 @@
 ## 4. 程序可修与应收窄的边界
 
 - 透明边：硬alpha并不证明抠对；[Unity RGB dilation](https://docs.unity3d.com/Manual/texture-type-sprite.html)可缓解透明边滤波伪影，不能补回被删的手指。像素与柔边绘制/VFX采用不同alpha约定。**[一手／经验]**
-- 对齐：共同画布、union bounds和源pivot可保持坐标；逐帧按bbox居中/等大可能抹掉正确跳跃/武器伸出，脚底锁仅对支撑相适用。**[经验：源码机制推导]**
+- 对齐：共同画布、union bounds和源pivot是无裁切元数据时的退路；导入器能消费原尺寸／偏移或映射后的 pivot 时可保留紧裁（§11）。逐帧按bbox居中/等大可能抹掉正确跳跃/武器伸出，脚底锁仅对支撑相适用。**[一手／经验：源码机制推导]**
 - 第二次需求：改价格/语言用原生文本，换主题用映射，改命中时刻用已有动作参数；新增方向、遮挡或轮廓是内容变化，不由文件格式工具自动补齐。**[经验]**
 - 若必要缺陷只能人工画mask、补肢体、刷权重解决，则该路线对该玩法不满足零手修，改动作范围、风格或资源来源；未知通过率不应填假数字。**[经验]**
 
@@ -169,3 +169,32 @@ Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blo
 [研究] Retro 新条款、PixelLab 月付显示和 Retro 价格由公开浏览器正文核得，HTTP 提取空白不等于没有条款；未登录、上传或生成。
 
 [研究] 历史阶段 F 检查：完整离线 14/14、非空无 skip，`git diff --check` 通过；末次许可表补行另跑局部文档检查，不扩为模型、引擎或 hosted CI。
+
+
+## 11. 图集二改：裁切后保留的是位置还是尺寸
+
+核实：2026-10-15（UTC+8）。改变 `assets/2d.md` 的具体选择：不再把“逐帧紧裁”本身当作错误；先看导出数据是否保存源坐标，以及既有消费者是否真正使用。只读资料、下载小型包／JSON并用标准库解析，没有安装或运行导出器、游戏、模型、Unity／Unreal。[研究]
+
+### 同样叫裁切，承诺不同
+
+[TexturePacker 的原生设置契约](https://www.codeandweb.com/texturepacker/documentation/texture-settings)区分：`Trim` 保使用时的原尺寸和锚点；`CropKeepPos` 保位置但使用尺寸缩小；`Crop` 将原位置归零。可用模式依目标框架而异。因此“脚底没移”不能推出 UI 的固有尺寸／布局不变；只保存 atlas `frame` 矩形也不能恢复源画布位置。优先沿用现成格式与消费者，不建议为此购买工具或自建导入框架。[一手／经验]
+
+### 元数据确实走到了哪里
+
+- **Unity：** [官方 Aseprite 3.0 文档](https://docs.unity3d.com/Packages/com.unity.2d.aseprite@3.0/manual/ImporterFeatures.html)当前页面标 3.0.2，动画层导入的 Canvas pivot 按源画布定位，Local 则采用局部空间。本轮从[官方原包 3.0.2](https://download.packages.unity.com/com.unity.2d.aseprite/-/com.unity.2d.aseprite-3.0.2.tgz)读取 `Editor/AsepriteImporter.cs` 的 `CreateNewSpriteMetaData`：Canvas 分支把源 position、packOffset、spriteRect 尺寸交给 `ImportUtilities.CalculateCellPivot`，结果写入 `spriteData.pivot`；`Editor/Utilities/ImportUtilities.cs` 用 canvasSize 和 alignment 换算到裁后矩形坐标。不是仅宣称文件有 pivot 字段。包 2,124,561 bytes，SHA-256 `c3834723a97eb6c1de15e4a1257d97c78fe0c0997fb97e5bee37d66560a9c44c`；package 要求 Unity 6000.3.0a2，许可 UCL。只用于核机制，已有工程选兼容包，不因本文升级；未复测重导入。[一手：官方包静态阅读]
+- **不同作者消费者对照：** Phaser 3.90.0 固定提交 [`a9965625f49cf366584f454556b039e06e8adad6`](https://github.com/phaserjs/phaser/tree/a9965625f49cf366584f454556b039e06e8adad6) 的 [JSONArray](https://github.com/phaserjs/phaser/blob/a9965625f49cf366584f454556b039e06e8adad6/src/textures/parsers/JSONArray.js) 将 `sourceSize`、`spriteSourceSize` 送入 [Frame.setTrim](https://github.com/phaserjs/phaser/blob/a9965625f49cf366584f454556b039e06e8adad6/src/textures/Frame.js)；[Size.setSizeToFrame](https://github.com/phaserjs/phaser/blob/a9965625f49cf366584f454556b039e06e8adad6/src/gameobjects/components/Size.js) 从 realWidth/realHeight 取原尺寸，[Origin](https://github.com/phaserjs/phaser/blob/a9965625f49cf366584f454556b039e06e8adad6/src/gameobjects/components/Origin.js) 按尺寸算 displayOrigin；[MultiPipeline.batchSprite](https://github.com/phaserjs/phaser/blob/a9965625f49cf366584f454556b039e06e8adad6/src/renderer/webgl/pipelines/MultiPipeline.js) 以 `-displayOrigin + frame.x/y` 形成顶点位置。证明“存储裁小、显示仍用源坐标”有现成消费路径，不是迁移引擎建议，也没运行渲染。[一手：固定源码]
+- **Unreal 范围：** [TexturePacker 的 Paper 2D 教程](https://www.codeandweb.com/texturepacker/tutorials/how-to-create-sprite-sheets-with-unreal-paper2d)明确 `.paper2dsprites` 携带坐标、尺寸、pivot，由 Paper 2D 导入；源在 Content 外时应重导入 sheet，单独 reimport texture 不够。本轮只核到供应方契约，未读受许可限制的 Epic 导入器完整源码，不能据此声称任意裁切／重排均安全；不把 Unity 的 Canvas 设置名套给 Unreal。[一手：供应方文档；研究：边界]
+
+### 公开导出物：原尺寸与取样矩形确实不同
+
+从 Phaser 示例仓库固定 [`775715264c0c27ef32d54dd38f5035eccfa02d08/public/assets/atlas/megaset-0.json`](https://github.com/phaserjs/examples/blob/775715264c0c27ef32d54dd38f5035eccfa02d08/public/assets/atlas/megaset-0.json) 下载并用 Python `json`／`hashlib` 解析：20,644 bytes，SHA-256 `088871c0fa0018548499bf890ba3266b89c16e696951815d3e5ea9c6a5382843`，91 条 frame，其中 10 条 `trimmed=true`。`rain` 的取样矩形为 `(272,434,14,14)`，原画布 `17×17`，裁后内容在原画布的 `(2,3)`，pivot `(0.5,0.5)`。在未翻转、原画布中心原点的条件下，对应局部左上角为 `(-6.5,-5.5)`，直接把 14×14 片段居中则为 `(-7,-7)`；两者不是同一位置。[一手：原始 JSON；研究：标准库解析／坐标算术，未验图像像素或动画质量]
+
+复核只需读取该 JSON 的 frames、统计 trimmed，再取 filename 为 rain 的记录；本例没有调用上游代码。示例用于说明字段语义，不把仓库内不同来源美术视为已清商用授权，未复制或推荐其图片。[研究]
+
+### 历史维护反例：同一像素不等于同一源位置
+
+不同使用者的 [Aseprite #2600](https://github.com/aseprite/aseprite/issues/2600)（1.2.25、2020）及 [#3168](https://github.com/aseprite/aseprite/issues/3168)（2022）报告 linked cels／split layers／trim 的 JSON 坐标错误；后者原帖两帧同用 12×14 取样区域，却出现不一致的 `spriteSourceSize`。维护者确认复现，#3168 按重复问题关闭，并非那时已经修复。[一手：作者原帖与维护者回应]
+
+最终关闭关联的 [`b70a29269d63449db3de9d0bddc4d9907c9f42c3`](https://github.com/aseprite/aseprite/commit/b70a29269d63449db3de9d0bddc4d9907c9f42c3) 修改 `doc_exporter.cpp`：linked sample 复用时同时保存 trimmed bounds，并调整布局对 linked／duplicate 的处理。这是历史修复证据，不宣称当前 Aseprite 仍有该问题，也没有重新编译复现。[一手：固定补丁]
+
+**采用与撤回：** 第二版改变武器范围／透明边后，复用已验证的源画布与 pivot 消费路径，比较同动作的源位置；若消费者丢失偏移、尺寸语义变了或原坐标已不可恢复，撤回这次裁切配置，改用共同画布／union bounds。新姿态本身画错仍须换内容；帧身份、时序与 GUID 的另一层问题沿用 [WP9](2026-10-14-game-wp9-engine-handoff.md#12-官方技能仍不能识别这一格代表谁)，不因坐标正确就自动通过。[经验]
