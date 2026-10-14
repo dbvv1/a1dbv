@@ -151,7 +151,9 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 
 ### 输入与暂停：先关玩法权限，再切输入
 
-**[研究] ✅ 先改变玩法权限状态，再禁用 gameplay map、清持续动作、开启 UI 导航；恢复时确认焦点。** [InputAction.Disable](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Actions/InputAction.cs#L967-L986)可同步触发 canceled，因此回调须允许重入，不能把系统取消都当主动松手发射。[一手]
+**[研究] ✅ 先改变玩法权限状态，再禁用 gameplay map、取消不应延续的蓄力等动作，使旧上下文中未消费的离散指令失效；开启 UI 导航，恢复时确认焦点。** [InputAction.Disable](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Actions/InputAction.cs#L967-L986)可同步触发 canceled，因此回调须允许重入，不能把系统取消都当主动松手发射。[一手]
+
+**[研究] 消费菜单确认带来的跳跃／攻击按下，不等于禁止当前仍按住的移动。** Celeste64 在暂停交接与菜单确认后消费按下，底层仍保留持续值；Unity Value action 重新启用也会检查已按住控件。✅ 按动作决定立即读取当前状态，还是等待回中／松键再接受，不把所有输入一律清零；固定源码与边界见 [WP10 输入交接](../../docs/research/2026-10-14-game-wp10-client-modules.md#输入交接补比消费按下不等于等待松键)。恢复手感仍须目标项目试玩。
 
 [UI 输入](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/UISupport.html#distinguishing-between-ui-and-game-input)不自动阻止 gameplay 接收同一点击；[timeScale=0](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Time-timeScale.html)与 [AudioListener.pause](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-pause.html)管不同时间域。[一手] **[研究] 蓄力开菜单、按住移动失焦、设备断连、菜单声音例外作为联合用例，而非各模块单独“正常”。**
 
@@ -181,7 +183,7 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 ### 菜单也是控制的一部分
 
-**[研究] 先保证暂停、改键和返回之后仍知道“我选中了什么、这个键会做什么”。** 手柄／键盘进入菜单应有可见的有效焦点；弹窗只由当前层处理确认／返回，关闭后回到原来的有效选项，原项被移除则选明确后备项。重绑定期间显示取消方式，不能把确认／返回全改没；换设备后提示应对应实际绑定，恢复游戏不能沿用菜单里的残留移动／蓄力。Celeste 的[官方更新记录](https://www.celestegame.com/changelog.html)曾修复改键菜单在教程中冻结、关菜单后方向输入未刷新，并移除与自定义绑定冲突的硬编码重开组合键：菜单边界会直接破坏玩法控制，不只是外观问题。[一手]
+**[研究] 先保证暂停、改键和返回之后仍知道“我选中了什么、这个键会做什么”。** 手柄／键盘进入菜单应有可见的有效焦点；弹窗只由当前层处理确认／返回，关闭后回到原来的有效选项，原项被移除则选明确后备项。重绑定期间显示取消方式，不能把确认／返回全改没；换设备后提示应对应实际绑定，恢复游戏不得复用失效的移动缓存或蓄力执行状态；当前仍按住的移动是否立即恢复，按动作政策处理。Celeste 的[官方更新记录](https://www.celestegame.com/changelog.html)曾修复改键菜单在教程中冻结、关菜单后方向输入未刷新，并移除与自定义绑定冲突的硬编码重开组合键：菜单边界会直接破坏玩法控制，不只是外观问题。[一手]
 
 **[研究] ✅ 保留能完成这些路径的原生 UI，先改造官方样例而非重写输入路由。** [UI vs Game Input 源码](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInputHandler.cs#L304-L345)已有模式切换与导航选择恢复；复用这些机制，再补样例未覆盖的无效焦点与嵌套返回。 uGUI 的导航关系、UI Toolkit 的焦点与事件足以支持简单菜单；前者要防背景点击丢选择，后者重新启用 UIDocument 时须重新建立焦点，不能只验首次打开。🧪 当第二个菜单／弹窗又复制输入归属、返回和恢复逻辑时，再抽共享管理；UE 可评估 CommonUI 的激活层与输入路由，但它仍沿用 UMG 导航规则，不会自动选出合理焦点。版本条件和直接证据见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#菜单补研跨暂停改键与设备切换保住控制)。
 

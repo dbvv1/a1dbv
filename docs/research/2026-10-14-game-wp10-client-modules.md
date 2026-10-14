@@ -392,9 +392,21 @@
 - [一手／研究] 可复用边界同样可见：恢复选择只检查 null，未在该路径验证目标是否仍激活／可交互；`OnControlsChanged` 注释明确不支持 mixed models，状态机只有一个 `InMenu`，没有嵌套弹窗栈。由此不能把整个样例当作完整改键、设备热切换和多层菜单底座；这些是静态覆盖范围，不是本轮复现的游戏故障。
 - [研究] **✅ 优先改造样例中的模式归属与选择保存机制，⛔ 从零写等价事件总线或整包照搬。** 简单 uGUI 项目从所锁定已发布包携带的样例出发，保持其必要输入配置，再按真实缺口补有效目标后备和嵌套返回；已有 UI Toolkit 不为复用这个 uGUI 样例迁移，只借切换边界。第二个菜单若只需补这两项，不引新框架。该样例值得作窄机制参考；官方身份和源码可见都不足以证明其是已发行高品质菜单的完整实现。
 
+#### 输入交接补比：消费按下不等于等待松键
+
+核实：2026-10-14 UTC。主线 3；收窄 04“恢复游戏不能沿用残留移动”的建议，区分旧缓存与设备当前仍按住的意图。新证据为 Celeste64 暂停／菜单调用链、固定 Foster 依赖实现及 Unity 初始状态检查契约；仅静态核查。[研究]
+
+- [一手] 沿用 `EXOK/Celeste64@6edfe1ebd2a21a6134d7675a28e357891025407e`：[Controls.cs](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Data/Controls.cs#L23-L45)为 Jump／Dash 配置 0.1 秒缓冲；`Consume` 消费 Jump、Dash、Climb、Confirm、Cancel、Pause 的按下，不涉及 Move／Camera。[World.SetPaused](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Scenes/World.cs#L416-L435)在暂停和恢复两方向调用它；[Menu](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Helpers/Menu.cs#L248-L254)在确认成功后也消费。[ControlsConfig](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Data/ControlsConfig.cs)中 C 同时绑定确认与跳跃，X 同时绑定取消与冲刺，因此 UI 与玩法共键是具体交接风险。0.1 秒是案例配置，不是推荐窗口。
+- [一手] [csproj](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Celeste64.csproj)固定 FosterFramework 0.4.2；官方 [v0.4.2 tag](https://api.github.com/repos/FosterFramework/Foster/git/refs/tags/v0.4.2)指向 `a5b574f36e5d8928a4d47566c7b924140b653c85`。[VirtualAction.cs](https://github.com/FosterFramework/Foster/blob/a5b574f36e5d8928a4d47566c7b924140b653c85/Framework/Input/Virtual/VirtualAction.cs#L84-L162)的 Update 分别读取 Pressed、Released、Down、Value，未消费且在窗口内的按下继续有效；ConsumePress 只在 Pressed 时清 Pressed、置 PressConsumed，不清 Down／Value。Clear 虽会清值，下次 Update 仍重新读取设备；两者都不是等待物理松键的门禁。`RepeatInterval > 0` 时后续重复逻辑仍可生成 Pressed，新物理按下也会重新接受，因此不能把一次消费当成所有未来事件的屏障。
+- [一手] Unity 1.19 [wantsInitialStateCheck](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/api/UnityEngine.InputSystem.InputAction.html#UnityEngine_InputSystem_InputAction_wantsInitialStateCheck)规定 Value action 重新启用后的下一输入更新检查已操作控件，没有新的状态变化也可触发；Button／PassThrough 可显式启用同类行为。[研究] 不把切换 action map 等同于“旧业务缓冲已清理”或“恢复前必然重新按键”。
+
+**采用与反例。** [研究] ✅ 在已有 UI／玩法交接处使不再属于当前上下文的离散指令失效，并取消不应延续的执行状态；持续值按动作政策重新读取，确需回中／松键才恢复的动作另设该条件。⛔ 不在每次动画／角色状态改变时清全部缓冲，否则落地前短按、连招衔接会受损。Celeste64 的 [Player](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1149-L1165)以 Climb.Down／Jump.Down 接收持续意图，而跳跃启动消费按下；这反对一律强制松键，不证明所有项目都该立即恢复移动。只借机制，沿用其 Source MIT／例外、Content 不放开商用的许可边界；Foster 固定 [LICENSE](https://github.com/FosterFramework/Foster/blob/a5b574f36e5d8928a4d47566c7b924140b653c85/LICENSE)为 MIT。
+
+**第二次修改验收。** [研究] 给暂停菜单增加确认弹窗，并将确认与跳跃设为同键：返回不能多跳一次；暂停期间松开移动后不能沿用旧方向，仍按住时按约定恢复；原有落地前缓冲仍有效。若配置了按住重复，另查恢复后重复事件是否被允许。AI 可追踪输入归属、缓冲消费与动作启动，人决定恢复手感；本轮未运行游戏或引擎，不声称已经验证这些组合。
+
 ### 4. 用第二个菜单判断共享层是否值得
 
-[研究] 在将来获准的真实切片，先用原生做暂停→设置→返回，再新增带滑条、动态隐藏选项和确认弹窗的页面。改一个确认绑定并切换设备，检查四个结果：可见焦点与导航方向一致；提示对应实际可用绑定；关闭弹窗恢复原项或明确后备项；恢复玩法没有残留移动、幽灵攻击或重复确认。让重绑定取消也走完整返回路径。
+[研究] 在将来获准的真实切片，先用原生做暂停→设置→返回，再新增带滑条、动态隐藏选项和确认弹窗的页面。改一个确认绑定并切换设备，检查四个结果：可见焦点与导航方向一致；提示对应实际可用绑定；关闭弹窗恢复原项或明确后备项；恢复玩法不沿用失效的移动缓存、没有幽灵攻击或重复确认，并按约定处理当前仍按住的移动。让重绑定取消也走完整返回路径。
 
 [研究] 记录新增页面需复制或修改哪些政策，以及旧页面是否回归；先用少量共享的打开／关闭边界，只有重复的激活、返回和设备规则实际难维护才引入框架。原生已经达到目标则不迁移，框架仍需每页补同样规则且无明显减负则收回扩展。AI 可以生成绑定、导航与回归场景，人判断焦点是否容易找到、操作是否费力；输入事件日志和截图须互相印证，状态注入不能替代设备路径。这是未来验证设计，非已证实的框架收益。
 
