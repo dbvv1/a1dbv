@@ -29,7 +29,7 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 ## 3. 关键机制
 
 ### AGENTS.md（官方文档 + 源码 `codex-rs/core/src/agents_md.rs`）
-- **全局**：`~/.codex/AGENTS.override.md` 存在时只用它，否则用 `~/.codex/AGENTS.md`；
+- **全局**：依次检查 `~/.codex/AGENTS.override.md`、`~/.codex/AGENTS.md`，使用首个非空文件；空 override 不阻止回退，见 [03 的加载边界](../03-context-engineering.md)；
 - **项目**：从项目根目录（通常是 git 根）逐级走到当前目录，每一级优先用 `AGENTS.override.md`，否则用 `AGENTS.md`；
 - 按从根到当前目录的顺序拼接，越靠近当前目录的越晚出现、优先级越高；
 - 合计上限 `project_doc_max_bytes`，默认 **32 KiB**；
