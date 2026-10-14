@@ -606,6 +606,20 @@
 
 [研究] 未引用 SoLoud 通用虚拟声文档替代此 fork 的实现；该部分沿用 WP6，不再扩章。
 
+### 5. 持续状态声的反例：先校正可听范围与恢复政策
+
+核实：2026-10-15 UTC+8。新增依据限开发者报告、固定数据定义和引擎文档；未试听、运行游戏／引擎或测量辨识收益。此节约束前述短事件并发建议，不撤回合理的限额，也不新增音频管理器。[研究]
+
+**强反例与固定配置。** [Factorio FFF-341](https://www.factorio.com/blog/post/fff-341)（2020-04-03）报告：提高环境上限 15→50 缓解雷达声突然切断，却增加混音拥挤；管道无水仍发声片段，作者将其关联到 working_sound 与同类限额的冲突，移除该限额并缩小可听范围后报告改善。这只证明该历史问题，不证明所有循环声都该取消限额。[一手／研究]
+
+[一手] 官方数据仓库的 2.1.21 固定提交 `374934f81f82b09ec9fc459f92a316bd642ddd82` 中，[sounds.pipe](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/prototypes/entity/sounds.lua#L248-L272)使用 persistent、淡入淡出、音量平滑及活动率控制；同文件的 roboport door 短音另设 aggregation，train_wagon_wheels 持续声仍设同类上限。[WorkingSound 当前文档](https://lua-api.factorio.com/latest/types/WorkingSound.html)（本次标注 2.1.21）定义 persistent 合并同 prototype 工作声，并在该模式忽略 max_sounds_per_prototype。[研究] 这支持按声源语义选政策，不支持“一次声限流、循环声不限流”；现代配置也不能冒充 2020 年修复的原始代码。该仓库[用途声明](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/README.md)是公开原型定义供模组作者查阅，不等于游戏引擎开源或音频素材获准再分发。
+
+**实施时会改变选择的引擎差别。** [一手] Unity 6000.3 [maxDistance](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-maxDistance.html)当前契约区分：Linear 在边界归零，Custom 超界保持曲线末值，Logarithmic 忽略该设置并持续随距离衰减。因此减小 maxDistance 不能作为通用静音／回收方法，先核 rolloff 与曲线末值。其 [priority 虚拟化](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-priority.html)保持播放位置和状态，不等同 Stop 后重新 Play。UE 5.8 [attenuation](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine)的 falloff 从内形状边缘起算，音量衰减与 spatialization 分开；[EVirtualizationMode](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/EVirtualizationMode)中 Restart 恢复循环时从头开始，PlayWhenSilent 继续占 voice，SeekRestart 仍标 Experimental。其余并发、混音和生命周期边界沿用 [WP6 引擎对照](2026-10-14-game-wp6-audio.md#105-unityunreal同一质量目标不同原生职责)，不重复实现一套虚拟化。
+
+[研究] **采用与代价：** 短事件过期可丢，持续状态需按当前活动状态恢复；先调整现有声源的范围、曲线、淡入淡出与恢复配置，成本是逐类调校及复合场景听验。语义相近且不承担独立定位的环境层才考虑合并，定位重要的危险不能只为省声部缩短可听范围。Mindustry 的入口拒绝机制与 Factorio 的持续声反例是两个不同实现的边界证据，不构成通用参数或听感提升证明。
+
+[研究] **未来验收预注册：** 保持原动作规则，加入第二种持续技能／机器声；在竞争前后穿越可听边界，同时切换实际活动状态。检查关键警告是否仍可辨、持续声是否错误重启／残留、已经结束的状态是否再次发出起音；再记录 voice／CPU。若范围缩小藏掉预警，或重启制造假事件，就撤回该配置；不能以没有播放错误或声部减少代替听验。本轮只完成资料核对。
+
 ## 运动可读性补研：关键提示不能靠历史积累补成另一个位置
 
 核实：2026-10-14 UTC。主线二／三；补 04 的运动可读性：时域历史可能造成提示错位、残留和显露延迟，抗锯齿／上采样须在完整动作中验收；依据为官方文档、固定源码及历史 issue。[一手／研究]
