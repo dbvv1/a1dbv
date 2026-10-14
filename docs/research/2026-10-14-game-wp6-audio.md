@@ -176,3 +176,47 @@ Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/communi
 [研究：覆盖边界] 固定 SHA 的 jsfxr／ACE 源码反证、Unity 6 固定版本机制及 Fortnite 历史案例保留原核实范围，未在本次重跑或转换成“当前部署仍在线”声明。Meshy 不属于本表；WP1 的三项核心结论只继承其中音频相关范围。本轮没有试听、模型／引擎运行或新增商业清权结论。
 
 [研究：阶段 F 本次验证] `python3 scripts/check_repo.py` 检查 177 个文档／config，无错误；四个负责文件的 `git diff --check` 通过。用环境已有 pandoc 按 GFM 转为 HTML，核对两张开头决策表及 20 条音频／22 条动画动态事实均在表格中，事实表各行五列；四文件本地锚点逐一比对，无缺失。仅文档与呈现检查，本次未重跑完整离线 14 阶段，也未验证 hosted CI、试听、模型／引擎或版权安全。没有安装、付费、下载权重或 Git 写入。
+
+
+## 十、从可播放到可读、耐听的游戏反馈
+
+核实：2026-10-14 UTC。主线 2／3／4；本节改变“资产合格和播放安全即足够”的隐含建议，增加声音身份、动作时序、混音焦点和可持续制作成本。仅公开文档、开发者讲稿及项目说明阅读；没有试听、下载示例、运行引擎／模型，也没有测得反应速度或疲劳改善。[研究]
+
+### 10.1 先保护可学习的声音身份
+
+[Overwatch 团队 GDC 2016 原始讲稿](https://media.gdcvault.com/gdc2016/Presentations/Lawlor_Neumann_Overwatch_Play_by_Sound.pdf)第 13–21 页按威胁线索分层，第 49 页连接角色身份、上下文与游戏状态，第 71 页反而强调关键声音／语音保持较少变化。作者将这些设计与快速反应、情绪响应联系起来；这是已制作游戏的专家实践，讲稿没有给出可移植的对照实验效应量。[一手]
+
+**采用机制，不复制规模：** 小型动作游戏先区分落空／命中／格挡、危险／奖励，保留各自起音和节奏；在普通脚步、材质撞击内做去重复变体。重量感可以来自瞬态与尾音的关系、动作同步和周围留白，不必把每次命中做得更响、更长。关键提示如果越来越难认，就缩小随机范围或恢复固定音；没有资料支持通用“至少 N 个变体”或任意 pitch 范围。[研究]
+
+动作时序分成输入响应、动作接触、结果确认和背景情绪：起手可即时反馈，真实命中／格挡才播放对应结果；音乐的拍点等待不能套到关键命中。Unity 6.3 [AudioClip 导入说明](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioClip.html)给出预加载、后台加载与解压／压缩／流式取舍；建议将关键短音的就绪检查与首用加载独立处理，不能仅删除文件头静音就宣称端到端低延迟。具体声卡、缓冲与设备体验仍待验证。[一手／研究]
+
+### 10.2 原生基线能解决什么，不能解决什么
+
+| 路线 | 采用判断及真实收益目标 | 代价与撤回条件 |
+|---|---|---|
+| Unity 6.3 LTS AudioSource＋AudioMixer＋Audio Random Container | ✅ 默认。少量事件、普通随机变体、分组混音、简单音乐状态优先原生；不用为基础去重复再建框架 | 仍须设计触发、音色与音乐段落。变体降低辨识就减少；压低效果导致抽吸／情绪断裂就减弱或移除 |
+| 小型自有音频事件配置 | 🧪 只补逻辑 ID、语义类别、触发位置、并发／重触发策略和素材映射；业务代码不掌握文件细节 | 不复制整套音频编辑器；字段和跨模块事件只增加确有用的部分。场景改动无需复用时可保持直接组件 |
+| FMOD 制作工作流 | 🧪 频繁编辑参数化分层、节拍转场、混音并需要边玩边调时再比较；价值在作者迭代，不在品牌自带好音质 | Studio／集成版本、bank 构建／加载、平台输出与许可增加维护。若只播放少数循环而节省不了编辑时间，留在原生 |
+
+[Unity 6.3 Audio Random Container](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioRandomContainer-UI.html)有 Shuffle、Avoid Repeating Last、音高／音量范围，Manual 可随实际事件触发；Automatic 的时间播放不替代脚底接触或命中判定。[一手／研究] 本节仅确认 6000.3 文档能力，不外推旧版本或所有平台已验证。
+
+[AudioMixer Inspector](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioMixerInspectors.html)确认 Send 驱动 Duck Volume，同时说明脚本设置 exposed 参数后，该参数不再随 snapshot 改变。[一手] 因此玩家偏好音量与情境衰减应有独立控制层；这是为了让玩家设置和情绪混音共存，不要求建立复杂总线树。[研究]
+
+[AudioSource.priority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-priority.html)用于超过 real voices 上限后的虚拟化，同优先级再比较音量；WebGL 不受该设置控制。[一手] 这与“已播放的声音互相掩蔽”不同：优先级不能代替清晰混音，项目还需针对高频事件限制重触发／叠加。关键警告、对话、环境谁让位由玩法决定，不能仅按距离或统一优先级数字推断。[研究]
+
+音乐转场的升级目标应具体到编辑任务。[FMOD 2.03 事件制作说明](https://www.fmod.com/docs/2.03/studio/authoring-events.html)已有按拍／小节量化的 transition region 和独立 transition timeline，可编排桥段与交叉淡化；原生 DSP 调度也能实现已设计的简单切换，区别在反复修改时谁更省制作工作，而不是前者才会准时播放。状态频繁来回时先平滑进入／退出条件；节拍等待期间仍保留即时玩法提示。[一手／研究]
+
+### 10.3 现成实现与专业案例的边界
+
+- **Chop Chop：改造思路，不整包采用旧系统。** Unity 官方 [Audio system 说明](https://github.com/UnityTechnologies/open-project-1/wiki/Audio-system)展示原生 AudioSource／AudioListener、cue／配置／空间位置分离和 emitter 池；同页明确当时音乐没有 cross-fade 支持。仓库 [README](https://github.com/UnityTechnologies/open-project-1)声明 2021 年 12 月停止开发、基于 Unity 2020.3；[根许可 Apache-2.0](https://github.com/UnityTechnologies/open-project-1/blob/main/LICENSE)。它证明有公开可读实现，不证明可直接升级到 6.3，也不外推每件附属素材许可。本轮未固定源码复测，正文不推荐照搬其选择器。[一手／研究]
+- **Celeste：学习作者如何组织成品，不作为素材包。** [FMOD 官方项目指南](https://www.fmod.com/docs/2.03/studio/appendix-a-celeste.html)列 Power Up Audio／Lena Raine 的完整项目和事件解释，支持对成品 Live Update；该历史项目要求 FMOD Studio 1.10.xx，不能因指南位于 2.03 就当成当前集成示例。其 EULA 限个人／教育用途，源音频不得另用于新项目；有专业音频人员的成功不能证明单人零手修能复现同样质量。[一手／研究]
+- **FMOD 当前能力与维护：** 本次 [Unity Integration 2.04 指南](https://www.fmod.com/docs/2.04/unity/user-guide.html)说明 bank 加载、平台构建和升级步骤；[Studio 迁移说明](https://www.fmod.com/docs/2.04/studio/advanced-topics.html)要求关注版本兼容，迁移保存后旧版不能再打开。原生不能有效承载频繁的音乐编排修改时才评估中间件，而不是因原生没有某个专业面板就迁移。[一手／研究]
+
+### 10.4 包容性也影响反馈质量
+
+[XAG 103](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/103)要求重要视觉／音频信息有其他感官表达；[XAG 105](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/105)建议独立音量、单声道和可暂停音频（原指南另列短于三秒事件及实时多人会话等例外）；[XAG 104](https://learn.microsoft.com/gaming/accessibility/xbox-accessibility-guidelines/104)展示声音字幕附方向提示。[一手] 采用：从同一玩法事件驱动音效与相应视觉提示，先覆盖失败会影响操作的警告；关音乐不能连带关提示，单声道不能吞掉只在一侧的事件。并非给全部环境声堆满字幕，也不是有几个选项就通过无障碍认证。[研究]
+
+后续获准试玩时，应同时检查：新玩家能否区分结果；密集操作中是否仍听见危险；重复操作是否疲劳；音乐是否自然承接而非频繁重启；扬声器／低音量／单声道／无声能否保持关键信息。把“好听、爽快、可读”和“无 click、无缺引用”分别记录；前者必须有人在玩法中判断，自动峰值／长度检查不能替代。[研究]
+
+
+[研究：本节验证] 两个负责文档的 `git diff --check` 与 `scripts/check_repo.py`（177 文件）通过；GFM 渲染核对新章节锚点及三行比较表。未重跑完整离线入口，未试听、运行模型／引擎或进行玩家研究；不将文档检查当成听感、低延迟或无障碍验收。
