@@ -1,6 +1,6 @@
 主线：3「第二次、第五次修改仍可靠」／4「交付给玩家和维护者」，兼顾主线 2 的已有能力取舍
 改变的建议：04 先完成有回应、可读、连续的核心动作，再以生命周期与设备预算保护迭代；区分输入延迟、容错、呈现插值和帧间隔
-新证据：Input System 1.19、Unity 6.3 运动／PSO／上传／池契约、固定 motor 源码、Dead Cells 复盘与 Windows DX12 首发 trace；并补 Mindustry／Thrive 固定存档路径与 Easy Save 备份契约
+新证据：Input System 1.19、Unity 6.3 运动／PSO／上传／池契约、固定 motor 源码、Dead Cells 复盘与 Windows DX12 首发 trace；并补 Mindustry／Thrive 存档路径、Celeste 字体更新与固定 Rebinding UI 本地化缺口
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -508,3 +508,39 @@
 4. 人确认轨迹是否均匀、瞄准是否跟手；若改善一项明显损伤另一项，保留原设置并收窄采用范围。
 
 本轮已核查公开正文、实际开发者说明、固定源码与许可；未复现案例收益、未运行 PresentMon 或真实设备。GitHub commits API 遭遇公开 rate limit，但固定 raw 源码成功读取；没有把源码阅读声称为引擎兼容性或性能通过。[研究]
+
+## 本地化补研：新语言与旧名字一起维护
+
+核实：2026-10-14 UTC。主线 3／4；仅补 04 已有稳定 key、fallback、长文与设备提示之外的增量：内容更新使字体覆盖、旧自定义文字和样例文案再次失效。只读公开记录、官方文档与固定源码；未运行引擎、字体工具或目标设备。[研究]
+
+### 1. 发行游戏的修复指向旧内容与资源寿命
+
+[一手] [Celeste 官方更新记录](https://www.celestegame.com/changelog.html)的 1.3.0 增加韩语、调整日语本地化与命名界面，并改为仅加载正在使用的语言字体；玩家名含当前语言不能显示的字符时，改用 Madeline 代替空白。1.3.1 仍修复意大利语 Journal 换行。这些是作者报告的已发行修改，不是本轮复现或内存收益测量。
+
+[研究] **✅ 新语言同时检查旧存档名字、语言选择页和旧界面；不只抽查新增译文。** 采用跨语言字体、限制命名字符或明确替代显示，需要游戏自行选择。不能把 Celeste 的角色名替代政策推广到玩家身份、排行榜或聊天，也不能从按语言加载推断应立即释放全部其他字体：混合文字仍可能需要它们。未来第二次修改加入旧字符集没有的名字，再切换语言读取旧名字；成功条件是内容可理解且资源寿命符合预算，不是 JSON 解析成功。
+
+### 2. 官方输入样例可借机制，未交付完整本地化
+
+[一手] 沿用本记录固定的 `Unity-Technologies/InputSystem@05e45ddbaf18a93245b068d787d74b738b90d01c`，本轮通过 GitHub 文件接口读取 [RebindActionUI.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/RebindActionUI.cs) 与 [GamepadIconsExample.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/GamepadIconsExample.cs)。版本和 Unity Companion License 边界沿用前文，不把该提交当已锁定发布包或跨引擎宽松许可。
+
+- `UpdateBindingDisplay` 按 binding ID 查找并调用 `GetBindingDisplayString`，再向显示事件传递文字、device layout 和 control path；`OnActionChange` 响应 `BoundControlsChanged`，包括键盘布局导致的重解析
+- 文件仍有 localization TODO；`UpdateActionLabel` 直接显示 `action.name`，重绑定等待、复合绑定部件提示和取消倒计时使用硬编码英文及字符串插值
+- 图标样例按 DualShock／Gamepad layout 和 control path 选图，找不到图时回文字；但空 layout/path 分支直接返回，不能从样例推断旧图标一定被清除。它是有限设备演示，不是全部控制器的显示政策
+
+[研究] **✅ 改造样例的绑定刷新机制，把动作展示名、等待、取消和倒计时接已有 String Table／Smart String；⛔ 整包照搬成发布菜单。** 内部 action 名不必因翻译改身份；倒计时按语言处理复数，教程提示复用实际动作绑定。这里不新建本地化／图标框架，也不要求为少数文案引入第三方 UI。现有菜单节已规定的改键、设备切换和重开路径顺带检查这些提示即可。
+
+### 3. 字体优化随内容更新，不把 ATG 当无成本开关
+
+[一手] Unity 6.3 [ATG 启用说明](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/enable-and-use-atg.html)属于 **UI Toolkit**，默认未启用，需项目设置及元素的文本生成器配置；不支持静态 font asset。它不能作为现有 uGUI／TMP 自动获得同样能力的依据。[静态字体迁移说明](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/migrate-static-font-assets.html)区分两项目标：字体内容减小用子集字体创建动态资产；控制首次字形生成用动态资产预填充所选字符的 atlas。文档也说明采用 SDFAA 时很多项目不再需要预填充，不能无测量地要求所有语言预热。
+
+[研究] **🧪 目标语言确需复杂排版且项目采用 UI Toolkit 时，评估锁定版本 ATG；已稳定的 uGUI 不因此搬迁。** 若使用子集或预填充，批准文本新增／翻译修改后更新覆盖输入，纳入格式化数字、必要符号和允许的用户文字；不能只取第一版译文做永久字库。动态资产能生成其源字体含有的字形，不能恢复源字体已裁掉的字符。区分冷启动首次显示与语言切换后驻留，收益不成立就撤回优化，保留完整合适字体。
+
+[一手] Unity [font subsetting 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-font-subsetting.html)推荐现成 FontTools，并提醒保留所需 OpenType 布局特性；[FontTools subset 正文](https://fonttools.readthedocs.io/en/stable/subset/)说明 `--ignore-missing-unicodes` 为默认值，`--text`／`--text-file` 间接指定但源字体缺少的字符也可不报错，`--no-ignore-missing-unicodes` 才要求失败。**[研究] 工具退出成功不是覆盖证明。** 按各字体职责核对缺失字符及承接字体；对该字体必须支持的集合使用严格检查，不把计划由另一字体承接的字符误判为整个管线失败。优先现成工具，不写自己的字形裁剪器。实际字体的修改、嵌入和分发权仍需单独核对，本轮未推荐具体字体文件或执行裁剪。
+
+[一手] UE [Asset Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-localization-in-unreal-engine)只提供必要差异：运行时换 culture 或显示不受限用户文字时，推荐 composite font；按 culture 替换整个字体资产只适合更受限项目，已加载本地化资产切换可能需要重启。[研究] 这不是要求全部字体常驻，也不必为 Unity 的 ATG 逐项造对称替代方案。
+
+### 4. 保留与否及证据边界
+
+[研究] 正文仅增加“新语言／名字连带旧内容和字库更新”这一判断；不另写字体百科、翻译后台或通用 UI 框架。AI 可查硬编码与占位符、准备覆盖报告和回归画面，人决定名字政策并判断实际尺寸下的可读性。目标设备的字形、排版、输入提示与内存／首次显示表现仍待授权实测。
+
+[研究] 本轮不采用两条容易误写的材料：Factorio 简繁字体误选只取得搜索线索、论坛正文未成功读取，不列为一手结论；Unity 6.0 旧翻译页中的 ATG 富文本限制不能直接套到 6.3 新英文页，也不据限制项删除推断所有组合已可靠。

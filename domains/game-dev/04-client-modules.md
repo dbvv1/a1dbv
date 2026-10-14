@@ -175,6 +175,10 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 **[研究] 第二次修改加一个带滑条、确认弹窗的设置页，再改键并换设备走回来。** 同时检查导航顺序、可见焦点、当前按键提示、返回目标和角色状态；不能用直接调用按钮回调代替真实输入路径。AI 可生成规则、绑定与回归路径，人判断焦点／反馈是否清楚、操作是否费力；本轮资料比较不能证明目标设备上的完整可用性。
 
+### 新语言也会改变旧内容的显示
+
+**[研究] ✅ 新增语言或角色名时，同时更新字库覆盖，并检查旧存档中的自定义名字。** Celeste [1.3 更新](https://www.celestegame.com/changelog.html)增加韩语时改为按使用语言加载字体，也为切语言后无法显示的玩家名增加替代显示；这不是所有游戏都应替换名字的理由，而是要求明确混合文字的显示政策。字体子集／预填充若只覆盖第一版文本，后续内容也须更新；官方 [Rebinding UI 源码](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/RebindActionUI.cs)仍直接显示 `action.name`、硬编码等待与倒计时，复用绑定刷新机制后应接入既有本地化表，不另建框架。[一手] Unity 6.3 的 ATG 仅在 UI Toolkit 路线评估，其[静态字体迁移](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/migrate-static-font-assets.html)要按减内存或降低首次字形生成分别选择；不据此迁移稳定 uGUI。新增名字／语言后，回看旧名字、冷启动首次显示及切换后的字体驻留；源码与文档不能证明目标设备已通过，细节见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#本地化补研新语言与旧名字一起维护)。
+
 ## 4. 借用的授权边界与升级条件
 
 **[研究] 先采用原生系统，改造项目缺少的窄政策，不用大型模板充当默认底座。** Unity 原生／包遵循引擎及具体包条款；UniTask／ink 为 MIT，Input System 为 Unity Companion License，均不免除资产和第三方通知。Addressables-Sample 固定树未发现许可证文件，先作机制参考，不能当已清商用复制权限；[许可与维护账](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-许可维护与采用边界)记录详细范围。
