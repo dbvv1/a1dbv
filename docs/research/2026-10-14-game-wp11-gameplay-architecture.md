@@ -246,6 +246,14 @@
 
 **[研究] 越肩射击／探索。** 探索允许适度跟随惯性，精确瞄准需要更直接的输入响应；不要把摄像机、角色身体朝向和动画骨骼当同一目标。遮挡处理先选少数确定策略，遮挡物过滤与碰撞半径由镜头和关卡共同拥有。保持距离的自动绕行可能改变瞄准关系，拉近可能牺牲周边信息；若二者都不满足，修改关卡几何或局部遮挡表现，收益往往比再加求解分支更明确。局部透明还会引入材质／渲染维护，不能当免费兜底。
 
+**遮挡补核（2026-10-14）：区分物理碰撞、可见信息与瞄准控制。** [一手] 指定文档元数据为 Cinemachine **3.1.7**；[Decollider](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDecollider.html)处理相机脱离障碍／地形的定位，明确不维护目标视线。[Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html)依赖障碍 collider／物理查询，Maximum Effort 限制处理的命中数；增加上限可能增加成本，不能补救不存在的视点。Transparent Layers 是遮挡排除层，不是淡出材质控制。两者都不能证明枪口可射击或落点可读。[研究] 因而先保住玩家瞄准意图，在允许的相机位移范围内恢复视线；不能为自动绕开柱子而悄悄改变准星方向，也不要把两个组件全部叠加当默认升级。
+
+[研究] **固定朝向下的局部遮挡，🧪 复用材质原语，按玩法选择显隐对象。** [一手] [Shader Graph 17.0.4 Dither](https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Dither-Node.html)文档给出接入 Alpha Clip Threshold 的做法，通过丢弃部分像素模拟透明，同时保留不透明渲染的深度写入等性质；这不是完整遮挡系统。[研究] 程序仍负责可淡出对象集合、遮挡范围、恢复状态；树冠／前景可局部退让，掩体边界、落地表面和攻击预告不能一起消失。显示角色轮廓只能回答“人在哪”，不能回答“往哪落／哪边能躲”；按房间切掉屋顶适合已定义清楚的区域，但新增层高、门窗或穿越状态时也必须回看边界。屏幕空间抖点在实际分辨率和运动中是否干扰提示要另验，本文不宣称它比透明混合更快或更舒服。
+
+[一手] **实际发布后的维护反证：** The Indie Stone 的 [Project Zomboid 42.21 stable 公告](https://projectzomboid.com/blog/news/2026/09/42-21-stable-released/)明确大树影响驾驶视野，修改 cutaway 以免遮住树下房屋／家具，并称仍需继续改进。[研究] 这支持把“更高树冠＋步行改驾驶／瞄准”的二次修改列为验收，不支持该游戏方案普遍最优，也不证明它使用 Cinemachine／Shader Graph。本文只借开发者公开报告，不取得或推荐复制其代码、地图、shader 或美术资产。
+
+[研究] **采用边界与成本：** ✅ 已用 Unity 的项目先复用上述原生组件／节点，避免再接一套通用相机框架；若当前材质无法批量承接显隐参数，或每加一种墙／树都要写例外，先改几何和构图。二改记录新增 collider／材质变体／显隐例外数、恢复遗漏与调参工时；在同一新遮挡物下检查角色、落点、预告、准星和真实弹道，而不是只看角色有没有露出来。Cinemachine [3.1 许可页](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/license/LICENSE.html)与 Shader Graph [17.0 许可页](https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/license/LICENSE.html)均标 UCL、限 Unity-dependent 项目，不能当作可跨引擎搬运的 MIT 代码；引擎计划资格另按 WP1 核。这里增加的是接入／维护责任判断，没有购买插件，也没有测得性能或工时数字。
+
 ### 3. 两种真实开发证据：借机制，不复制整套负担
 
 **Mushroom 11：开发者对自己的游戏的说明。** [Itay Keren 的修订文章](https://gamedesignskills.com/game-design/camera-design-2d-side-scroller-games/)源自 GDC 2015，不能把网页重新发表当新算法。其本人说明区域各自有镜头路径与缩放，解谜区域可取多个块的平均，推进区域偏向最前方块；因为游戏没有跳跃，运动预测较自然。[一手] [研究] 这支持“按玩法定义焦点、必要时由关卡指定区域”的方法。它不支持给所有平台游戏默认开启纵轴速度预测，也没有给出单人长期内容维护工时或对照舒适度数字。每关几十个手工区域正是应纳入成本的部分；只有简单跟随确实无法表达谜题意图才增加区域导演。

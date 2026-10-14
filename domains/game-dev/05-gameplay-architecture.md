@@ -134,6 +134,8 @@
 
 [一手] 当前 [Unity 6.0 包页](https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-cinemachine)列出的发布版为 **3.1.7**，不是主干预发布版。[Position Composer](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePositionComposer.html)明确前瞻可能放大动画噪声，平滑预测又增加滞后；[Group Framing](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineGroupFraming.html)提供变焦／移动构图。[研究] 先改善取景和输入响应，再补阻尼；一味拉远虽能装下对象，却可能降低战斗可读性。
 
+**遮挡不是一个开关。** [一手] Cinemachine 3.1.7 的 [Decollider](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDecollider.html)处理相机脱离障碍／地形的定位，不保证看见目标；[Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html)才尝试恢复目标视线，其 Transparent Layers 只是排除遮挡判断，不会把材质变透明。[研究] ✅ 保留瞄准方向后仍能取景，才用有限拉近／移位；固定朝向玩法若只被可淡出的树冠／前景挡住，🧪 复用 Shader Graph 的 Dither＋Alpha Clip 做局部显隐，保留碰撞和关键边界。若需要同时看见落点、攻击预告与掩体而没有可行视点，先降低／移动遮挡物或改遭遇布局；轮廓只标出角色位置，不能替代这些信息。已发布的 [Project Zomboid 42.21](https://projectzomboid.com/blog/news/2026/09/42-21-stable-released/)仍为大树遮住驾驶视野及树下物件修改 cutaway，说明局部显隐也有持续内容维护成本；实现与许可边界见 WP11。
+
 **三个容易漏掉的体验契约：**
 
 - **转镜不应偷偷改变正在执行的意图。** [Celeste64 固定源码](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1474-L1487)在攀爬持续按方向时保持输入映射，松开后才重算；垂直跟随也区分着地、下降与高度窗。[一手] ✅ 借这种局部机制，勿将它推广成所有地面移动都锁方向；已发布 jam 的代码不是长期架构或舒适度实测。
