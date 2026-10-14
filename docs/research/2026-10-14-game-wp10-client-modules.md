@@ -1,6 +1,6 @@
 主线：3「第二次、第五次修改仍可靠」／4「交付给玩家和维护者」，兼顾主线 2 的已有能力取舍
-改变的建议：04 从框架与模块列表转为所有权、取消／完成语义、内容升级、输入暂停和设备预算；不以 API 名字代替生命周期契约
-新证据：UniTask 固定源码与 #521→#536 修复链、ink 近似存档恢复、Input System 禁用重入，及 Epic 2026 年仍未解决的同帧取消／加载重启报告
+改变的建议：04 先完成有回应、可读、连续的核心动作，再以生命周期与设备预算保护迭代；区分输入延迟、容错、呈现插值和帧间隔
+新证据：Input System 1.19 时序、Unity 6.3 插值／转场／平台呈现、三份许可分层的动作源码与 Dead Cells 作者复盘；保留原异步与存档证据
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -146,3 +146,55 @@
 | Lyra 渠道标签与许可缺口 | [Fab 官方商品页](https://www.fab.com/listings/93faede1-4434-47c0-85f1-bf27c0820ad0)仍写 UE-Only、Allows usage with AI: No；本次提取的 License terms 字段为空 | 保留读公开机制说明；不默认整包交给 Agent 或跨引擎复用。商品标签不是逐文件授权链，具体取得协议仍未闭合；WP11 同样适用 |
 
 仅核公开页面，未下载样例、登录取得许可、运行引擎或验证目标版本修复。[研究]
+
+## 体验质量深化：响应与顺滑，让同一个动作值得反复玩
+
+核实：2026-10-14 UTC。[研究] 本轮把 04 的主目标从“跨模块不出错”补到“操作自然发生、结果清楚、连续游玩舒服”。比较对象是 2D 动作与 3D 第三人称独立游戏；动作节奏、容错和演出强度由玩法决定，不给所有游戏统一管线或参数。仅公开文档／源码研究，没有启动演示、引擎、模型或设备实验。
+
+### 1. 四类时间问题不能用同一种“平滑”处理
+
+| 问题／一手证据 | 改变的建议 | 可推翻或收窄建议的条件 |
+|---|---|---|
+| [Input System 1.19 时序选择](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/timing-select-mode.html)及[固定步长详解](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/timing-optimize-fixed-update.html)：FixedUpdate 在渲染帧内可能零次／多次执行，固定模式按完整时间步归组事件；低延迟需求推荐 Dynamic Update，即使物理施力仍在 FixedUpdate | [研究] 先减少事件等待；保存连续输入，离散指令消费一次，勿把所有输入搬到 FixedUpdate 当性能优化。物理模拟方式与输入采样模式可分别选 | [研究] 小量延迟不影响玩法且统一固定时序明显更简单时，原生固定模式可保留；这里不涉及网络确定性／回滚的时间线设计 |
+| [Unity 6.3 Rigidbody 插值](https://docs.unity3d.com/6000.3/Documentation/Manual/rigidbody-interpolation.html)：Interpolate 用前两次物理姿态并延迟一个物理步；Extrapolate 预测未来姿态，可能越过碰撞边界 | [研究] 插值改善可见轨迹，不自动降低操作延迟。给观察到抖动的对象按需开启，再检查角色／跟随者使用的姿态；不把所有对象插值或全局提高物理频率设为默认 | [研究] 若游戏直接控制的角色更重视即时反馈，新增滞后不合适，可回退该对象插值并重新决定运动／呈现方案；不是跳过碰撞求快 |
+| [Android Frame Pacing 官方说明](https://developer.android.com/games/sdk/frame-pacing)，页面更新 2026-02-26：不均匀显示间隔、重复帧及 queue-stuffing 可增加卡顿／延迟，Unity 已集成 | [研究] 平均 FPS、CPU/GPU 用时与实际呈现间隔分开记录。原生 Android 先用引擎选项，不为独立游戏再实现呈现同步层 | [研究] 平台、图形 API、刷新模式和引擎版本变化需复核；没有目标设备数据，不声称固定幅度改善 |
+| [Unity 6.3 targetFrameRate](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)：桌面软件限帧有 microstutter 风险，vSyncCount 非零时忽略 targetFrameRate；Android 有不同规则 | [研究] 不把 `targetFrameRate=60` 当跨平台顺滑配方。桌面按同步方式选，Android 按目标与刷新率配置；帧间隔稳定和输入延迟同时比较 | [研究] VRR、平台合成器、驱动及硬件队列会影响结果；官方机制不能替目标设备端到端测量 |
+
+[研究] 可用时间戳区分输入处理、动作接受、首次呈现反馈的程序路径；显示器实际发光和外设延迟不在这些日志内。帧时间 p95／p99、最长帧、超过项目预算的频率与发生场景，比单独平均 FPS 更能描述稳定性，但也不代替试玩。此处只提出未来观测，不冒充已采样的数据。
+
+### 2. 具体动作的体验和生产成本
+
+| 情境 | 最小可用且有质量的基线 | 增加能力的触发；目标体验 | 成本／回退 |
+|---|---|---|---|
+| 2D 精确平台／快节奏动作 | 起停、转向、跳高、落点与碰撞关系可理解；少量姿态也明确区分起手／生效／恢复 | [研究] 玩家合理短按常被拒绝时，分别增加按键缓冲和离地宽限；命中难辨时增加受击姿态与短音效，而非先堆粒子 | [研究] 容错会改变可达距离／战斗窗口；过期指令自动执行就收窄状态或时长。像素精度／相机呈现另审，不照抄物理数值 |
+| 3D 第三人称移动／战斗 | 碰撞／位移只有一个负责人，输入方向、转身与姿态协调；先用 Animator／Clip／Blend Tree | [研究] 打断感觉迟钝先查 Exit Time／混合时长；步态不合先对齐位移与动画。确实需要脚／手接触才增加原生 Rigging／IK | [研究] 约束层、骨架一致性及动作覆盖成为新维护成本；移除无明显改善的约束。代码可调接触目标，但不能自动补齐缺失的动作风格 |
+| 重武器或有承诺的动作 | 接受输入后及时给起手反馈，前摇和收招保留可学习节奏 | [研究] 接触缺乏力度时才加短顿帧／声音层次；需要连段时定义缓冲与取消窗口 | [研究] 追求零前摇、任意取消会消掉策略；顿帧过长／频繁会使连击不连贯。所有视觉变化不应悄悄修改伤害窗口 |
+| 高频群战／多目标命中 | 威胁、玩家和命中结果始终可辨，声音并发受控 | [研究] 把特效／音频强度按轻重与重要性分层；多命中顿帧合并设上限，保留必要提示 | [研究] 全屏闪光、累计震动、长拖尾与无限刷新暂停会冲淡重点。可降低纯呈现强度而保持规则相同，规则性暂停则明确记录 |
+
+[一手] [Unity 6.3 转场文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)明确 Exit Time 与条件的组合、Transition Duration 的秒／归一化时间区别、Interruption Source／Ordered Interruption 的排队规则。文档也说明通过转场接触关系调节避免脚滑。它没有证明“所有动作都关闭 Exit Time”最好。[一手] [Animation Rigging 1.4 官方页](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/index.html)实际版本为 1.4.1（页面生成 2026-01-17）；这是当前可核的原生可选能力，不是必须迁移到的动画架构。
+
+[研究] 对单人且无人工美术修补的生产条件，最划算的增强通常是统一接受动作与反馈的时刻、调好有限动作的速度／转场，以及程序可控的短音效、缩放、拖尾。若所需骨架、脚步接触或多方向动作持续不能达到目标，应缩小动作集合或更换许可清楚的可用资产；增加算法复杂度不能保证弥补资产缺口。AI 适合实现可切换参数、读取状态、排查时序；“这个动作有力量还是迟钝”保留给人判断。
+
+### 3. 可借用的优秀实现，以及不能带走的东西
+
+| 来源与固定版本 | 已读的证据；采用单位 | 许可／维护／反证 |
+|---|---|---|
+| [NoelFB/Celeste](https://github.com/NoelFB/Celeste/tree/1b0ce45c75e05649ae91b44a8bb6b196684e4352)，最后提交 2021-08-05，仓库 2023-03-16 归档 | [一手] [Player.cs](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/Source/Player/Player.cs)的 JumpGraceTime、角落修正、可变跳跃、DashBegin 的冻结／波纹／震动；[研究] 采用“精确动作也允许意图容错”的机制，不搬整段角色控制器 | [一手] [README](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/README.md)明确 MIT 只涵盖仓库代码，不含商业游戏及资产；发布的是部分学习源码，不是当前完整可维护模板 |
+| [EXOK/Celeste64](https://github.com/EXOK/Celeste64/tree/6edfe1ebd2a21a6134d7675a28e357891025407e)，最新提交 2026-09-07 | [一手] [Player.cs](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs)的 Jump 同时设置运动、模型拉伸和声音；落地根据此前速度调整形变并发出落地事件／音效；宽限、ground snap 与显示姿态协同。可借动作到反馈的连接，3D 仍可用小规模程序化演出 | [一手] [ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md)：Source 原则上 MIT，标注例外及 FMOD 另算；Content／IP 不随代码放开商用。作者明确称约两周 jam、并非充分优化。[研究] 近期翻译提交不证明其是生产级 Unity 底座 |
+| [deepnight/gamefeel](https://github.com/deepnight/gamefeel/tree/09d24aa05abe1192ad07cd3acd7270e6a5842237)，最新提交 2024-11-10，作者演示 v2 于 2024-05-01 发布 | [一手] [Options.hx](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/src/game/Options.hx)将视觉后坐力、物理后坐力、缓冲、控制锁定等分开；[Hero.hx](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/src/game/en/Hero.hx)把动作与反馈连接。[研究] 借逐项开关和清楚的事件绑定，而非引入 Haxe／Heaps 作为 Unity 插件 | [一手] [LICENSE](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/LICENSE)为 MIT；README 另列 Kronbits Inca tileset，不能用代码许可代替第三方资产核查。作者称学习演示而非实际游戏；未试玩，不给收益排名 |
+
+**[一手＋研究] 演示的反证特别重要。** Deepnight 的 `gunAnimations` 会改变准备射击时序：代码中的预备时间为 0.33／0.06 秒；没有枪械动画时，爆发射击后又加 0.35 秒控制锁作为补偿。`gunRecoilVisual` 只改精灵偏移，`gunRecoilMovement` 改实际运动。故不能把“全开／全关”的差异全部归因于画面美化，也不能推断所有反馈越多越好。以上是固定源码的案例常量，不是本轮测量或通用推荐值。
+
+[一手] [Game.hx](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/src/game/Game.hx)的 slowMo 生命周期用未缩放时间更新，并显式计算游戏速度；`stopFrame` 名称／注释也不能替代阅读实际时长和速度倍率。[研究] Unity 中同样要明确输入缓存、命中判定、动画、粒子、相机、音频与 UI 的时钟政策；不能简单认为 `timeScale=0` 会统一暂停所有反馈，或把注释当完整机制。
+
+### 4. 作者复盘与研究能支持多强的结论
+
+- [一手] Sébastien Bénard 的 [GDC 2019 Dead Cells 复盘](https://media.gdcvault.com/gdc2019/presentations/Benard-Sebastian-DeepCells.pdf)，第 13 页（PDF 索引 13）列及时跳跃、到达位置辅助；第 16 页列自由转向与自动瞄准，第 21 页强调处理不属于挑战本身的细节。[研究] 由此支持减少无意操作摩擦、把挑战留在有意义选择上，不支持所有项目都加自动瞄准或统一容错时长。无未观看视频内容或未公开测量的推断。
+- [一手] Maddy 的 [Celeste & TowerFall Physics](https://www.mattmakesgames.com/articles/celeste_and_towerfall_physics/index.html)解释特定 2D 像素／平台约束下的 Actor／Solid 运动。[研究] 支持为了具体动作设计运动政策，不支持默认绕开 Unity 原生物理并自研引擎。
+- [一手] [Lin 等 2022 impact-feel 论文](https://arxiv.org/abs/2208.06155)摘要报告从玩家评论训练排序模型，再比较前八／后八游戏的反馈特征；认为顿帧、声音一致性、相机控制可能重要。[研究] 这是相关性与特征分析，不能据此声称加入顿帧会使满意度提高固定百分比。本轮未用它制定参数或量化收益。
+
+### 5. 下一步验证和本轮交付边界
+
+[研究] 将来已获授权的垂直切片应以一个高频动作作对照：2D 选跳跃／短连击，3D 选转身移动／一次近战；先让控制规则固定，再分别切换纯呈现，若改缓冲／顿帧窗口则明确另作玩法变化。比较接受输入到首个反馈的程序时刻、长帧位置、玩法误操作和人的可控／可读判断；再做一次需求修改，观察是否只需改动作参数及少量绑定。验证目标是更好的动作，不是通过更多检查项。
+
+本轮完成公开一手正文、固定源码与提交元数据核查；未运行演示、真实引擎、设备测试或用户实验。仓库离线检查只证明文档交付，不能充当上述体验验证。[研究]
