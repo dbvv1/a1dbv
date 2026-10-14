@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加
-改变的建议：03/04 按问题组合检索工具并核对版本与状态；05/Claude 起步配置撤回 LSP 必装，先核会话支持与任务缺口
-新证据：固定索引/缓冲源码、测试、文档查询链、刷新原帖与 LSP 会话边界；后补 onlycodes 固定公开数据复算及轨迹摘录，未运行模型或安装工具
+改变的建议：03/04 按问题组合检索工具并核对版本与状态；05/Claude 起步配置撤回 LSP 必装，先核会话支持与任务缺口；04 全量判断改用命令侧完整报告，区分采集丢失与显示裁剪
+新证据：固定索引/缓冲源码、测试、文档查询链、刷新原帖与 LSP 会话边界；后补 onlycodes 固定公开数据复算及轨迹摘录，未运行模型或安装工具；10-14 补 Codex 固定输出修复与测试阅读、标准库采集算法演示
 
 # 上下文获取：问题、版本与状态边界
 
@@ -170,3 +170,38 @@ Sphinx 摘录中三次原生读取与一次脚本读取也不是逐字相同的�
 **采用判断**：先在已有授权工具里缩小查询、分块返回、合并独立读取；仍有重复高开销，才试用一个窄批处理接口，并比较任务成功、计价成本、等待与人的投入。已有原生路径达到要求就不加 Skill；新接口只是搬走同样的操作，或成本下降却更慢／更难恢复时，按实际目标撤回。工具可用范围、凭证隔离与沙箱不因价格比较放宽。[经验：本仓库建议]
 
 **未采用的候选**：[WebDev-Skills-Bench](https://arxiv.org/html/2608.23067v1)的按钮命名重试与空元素可见性案例能提出假设，但主要对应测试定位器；其每次强制注入、近似等字节的无关 Skill 对照也不等于原生按需加载。匿名工件页本轮未取得文件，故不以该例推出当前 Skill 的净收益或建议改变产品文案。[研究：论文阅读边界]
+
+
+## 工具输出：显示裁剪与采集丢失
+
+> 核实时间：2026-10-14（UTC）。新证据为官方固定修复、回归源码与自写 Python 标准库演示；未运行上游 Rust 测试、Codex 客户端或模型，不推断当前发行版行为。**[一手；经验：局部演示]**
+
+**改变 04 的建议**：定位符号时，原生查询缩小范围通常已足够；需要判断全部记录或验收结果时，则在命令执行侧保存完整报告、保留原退出码，再用原生解析器提取字段。返回给模型的首尾不是完整报告，提高显示预算不能恢复采集阶段已丢内容。若没有完整报告且重跑会重复写入、发布或扣费，先查任务的权威状态和已有产物，不为补日志自动重跑；不因此推荐额外 Skill 或 MCP。**[研究：采用判断]**
+
+### 固定来源与修复范围
+
+- **已合并的 unified exec 修复**：[PR #32150](https://github.com/openai/codex/pull/32150) 于 2026-07-10 合并，固定 SHA `6138909d6ec58b2fbe635ef973e02caecad5a5aa`。它将多次 drain 的收集器改为有界 head/tail 缓冲，并传递遗漏数量；修的是无界累积及遗漏信息丢失，不是让所有输出无损。修复没有给 legacy shell 同步更换采集器。**[一手：补丁]**
+- [buffer 回归 L47–63](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/src/unified_exec/head_tail_buffer_tests.rs#L47-L63)断言 12 字节仅保留 10 字节，drain 后仍有 `omitted=2`、`total=12`；[collector 回归 L238–324](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/src/unified_exec/process_manager_tests.rs#L238-L324)覆盖反复 drain 仍有界、已有遗漏元数据不丢。它们定义修复应保留的性质，阅读断言不等于本轮执行通过。**[一手：测试源码]**
+- [输出回归 L2883–2981](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/tests/suite/unified_exec.rs#L2883-L2981)使用 mock 模型响应及进程输出夹具，断言 `HEAD`、`TAIL`、遗漏标记和观察总大小；它明确含 Windows、无网络、沙箱跳过条件。本轮未运行，也未核实该测试在 CI 的实际结果，不能把 PR 已合并写成各平台已验证。**[一手：测试源码；研究：证据边界]**
+- **另一条历史 legacy shell 路径**：固定 SHA `a6645b6b8a656360fa16fb7e1c6721d0697d3d6a` 的 [append_capped L835–843](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/exec.rs#L835-L843)只留前缀；[read_output L1141–1153](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/exec.rs#L1141-L1153)继续读到 EOF，但不把超出上限的字节加进返回缓冲；[formatter L77–101](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/tools/mod.rs#L77-L101)再裁剪已采集内容。因此该路径的显示尾部可能只是采集前缀的末尾，而非进程真实 EOF。此结论只对应固定历史源码，不据此声称十月发行版或当前会话仍有同一缺陷。**[一手：固定源码；研究：机制推论]**
+
+### 标准库最小演示与反证
+
+以下自写演示在本轮离线执行通过，只模拟两种采集方式的信息边界，不执行上游程序，也不模拟模型决策。`cap` 是演示参数，不是当前客户端能力探针。**[经验：局部演示]**
+
+```python
+cap = 1024 * 1024
+prefix = b'x' * cap
+streams = [prefix + b'\nFINAL=PASS\n', prefix + b'\nFINAL=FAIL\n']
+def headtail(data):
+  return data if len(data) <= cap else data[:cap // 2] + data[-cap // 2:]
+assert streams[0][:cap] == streams[1][:cap]                 # 不同终态，同一前缀
+assert [headtail(x).splitlines()[-1] for x in streams] == [b'FINAL=PASS', b'FINAL=FAIL']
+a = b'H' * cap + b'\nFAIL test_middle\n' + b'T' * cap
+b = b'H' * cap + b'\nPASS test_middle\n' + b'T' * cap
+assert headtail(a) == headtail(b) and b'FAIL' not in headtail(a)
+assert b'FAIL' in a and b'FAIL' not in b                    # 全文才能区分
+print('4 assertions passed')
+```
+
+输出：`4 assertions passed`。反证尤其重要：保住首尾也不保证中间没有失败；官方修复改善可观察性，不能替代完整报告中的业务判据。只有所需字段已经完整、可核对地返回时，才无需再读全文；本轮未测模型成功率、等待时间或额外工具净收益。**[经验：局部演示；研究：采用边界]**
