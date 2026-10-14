@@ -1,10 +1,10 @@
 主线：二，兼三
 改变的建议：05 §2.5 / §4：按平台、原生对象或生产缺省契约补窄参考；验收实际入口，已有实现、脚本或模板足够就不再加 Skill
-新证据：Cloudflare 迁移与表达式探测、原生 pivot 配方与结构往返；另补 Seedkit 历史产物/窄配方、Opus 反证及 AST 静态复核；非当前模型净收益
+新证据：Cloudflare、pivot、Seedkit 的既有契约证据；新增 Next.js 固定三臂定义与原生文档／Skill 内容覆盖比较，非模型净收益
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
-> 核实：2026-10-13。长期任务二。第 1–5 节为 Cloudflare 调查（UTC+8）；第 6 节同日追加原生 pivot 调查（UTC）；第 7 节于 2026-10-14（UTC）补核生产缺省契约与历史生成产物。分别执行自行编写的表达式、文件结构与 AST 探测，未部署 Cloudflare、运行 Office/Django 应用或新模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
+> 核实：2026-10-13。长期任务二。第 1–5 节为 Cloudflare 调查（UTC+8）；第 6 节同日追加原生 pivot 调查（UTC）；第 7 节于 2026-10-14（UTC）补核生产缺省契约与历史生成产物。第 8 节同日追加 Next.js 固定源码比较及累计取舍。分别执行自行编写的表达式、文件结构与 AST 探测，未部署 Cloudflare、运行 Office/Django 应用或新模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
 
 ## 1. 为什么选这个来源
 
@@ -329,3 +329,60 @@ print(json.dumps(checks, sort_keys=True))
 从本文代码块重新提取程序后输出相同；缺少输入文件、把 baseline 的目标表达式改成另一值，两项探测器自检均以退出码 1 拒绝。它们只验证静态检查器不会对缺失或不匹配的输入报通过，不是额外 Django 行为测试。[研究：本轮实际执行]
 
 版本来源：[Skill 臂 uv.lock](https://github.com/viewflow/seedkit-examples/blob/3b2375ebbea72361a5784872664fb828bda985da/02-shop/uv.lock)、[Sonnet baseline uv.lock](https://github.com/viewflow/seedkit-examples/blob/3b2375ebbea72361a5784872664fb828bda985da/baselines/sonnet/02-shop/uv.lock)；`fixes`解析及计数语义见[历史 agents.sh](https://github.com/viewflow/seedkit/blob/0cd958aa4f02bd6c84769fc4e8f4048dc1341a9f/train/agents.sh#L302-L368)。未重算整套成绩，也未据八项静态评分宣称软件已可上线。[一手；研究：范围]
+
+
+## 8. 累计取舍：原生资料、短契约还是完整 Skill
+
+> 核实：2026-10-14（UTC）。只读公开定义和文档、比较固定源文件；没有安装、运行 Next.js／评估器／新模型，也未获取非公开结果。
+
+### 决策及本次改变
+
+**✅ 默认保留当前版本的原生资料与已有生成器；按缺口补精确入口或短验收契约，完整 Skill 只作有条件试用。** 原有 §4 已按信息缺口而非固定次数选择，本次不是再撤回“出错几次就安装”，而是把“已有资料足够”拆开：资料可达不等于实际读到，读到不等于执行了必要顺序，操作配方也不等于获得运行能力。读者可据此避免为检索问题安装完整迁移流程，或用更多文字掩盖缺少运行环境。[经验：累计判断]
+
+前面 Cloudflare 证明契约改变实现，pivot 证明静态结果不等于原生对象，Seedkit 给出产物差异和无 Skill 也能正确的反例；它们都未分离短资料与完整 Skill。新增 Next.js 的价值是公开定义同时存在三种入口，可核对同版本知识究竟在哪，而非再堆一个 API 错误。[研究：证据累计]
+
+### 固定任务与三臂，不能把 baseline 叫作“无文档”
+
+以下源码统一固定 `vercel/next.js@8521c6ae04998fc8ff87ae0d3de24e1fa4e88803`。N1 要求迁移音乐目录的 Partial Prefetching，三种 eager Aurora 链接点击后立即呈现标题和艺术家，推荐内容可流式到达，并保留回归覆盖。[一手：N1]
+
+N2–N3 中三臂都安装同一 Next tarball、执行相同 fixture setup；包内文档原本可读。`agents-md` 另写先读 bundled docs 的短指令，`skills` 则预装本地 Skill，不另写该指令。生成配置使用相同 Claude Code、`claude-opus-4-8`、Haiku judge、build、runs；046 的 1800 秒上限同样传给各臂。它们首先比较**发现方式与预装入口**；相同时间上限不等于实际投入相同，也不是任何历史运行的版本回执。046 的 package.json 没有 `@playwright/test`，共享安装 helper 因此提前返回，不能写成三臂已预装浏览器；Skill 要求补缺失测试依赖仍是待执行操作。[一手：N1–N4；研究：解释]
+
+### 原生路径覆盖了什么，Skill 另加什么
+
+| 实现／验证决定 | 同版本原生 guide N5 | Skill N6 的增量 |
+|---|---|---|
+| 审计 explicit true、bare prop、有效值为 true 的 wrapper；排除 auto／false | L81–87 已给出 | 强调跨整个源码树追踪 wrapper，而非只 grep `app/` |
+| 用 `@next/playwright` 的 `instant()` 检验真实链接点击 | L89–112 已有示例 | 引向 rig-template，处理没有现成测试环境的情况 |
+| 生产模式 flag-off 取得基线，迁移后重跑相同测试 | L114 已说明；L39–52 先审计再开启 | L19–23、L86–98 强化为基线实际通过前禁止改业务代码的顺序门 |
+| session 在缓存外读取，再作为参数传入 | L175–257 已给例子 | 将缓存与失效验证纳入逐步验收 |
+| 移除临时 route export | L352–358 已给官方 codemod | 纳入全局开关后的执行顺序 |
+
+这是固定内容的人工覆盖比较，**不是五项模型测试通过**。下载后可离线按上述行号复查 N5/N6，再检查 N2/N3 的三臂 setup；未执行源文件。读取完整 Git tree（`truncated:false`）确认该 Skill 包只含 `SKILL.md` 与 `rig-template.md`，没有新增可执行脚本；N7 提供生产构建、端口／进程、测试 API、认证状态与产物存活核对等配方。内容引用其他工具或安装命令，不代表工具已可用或权限已获准。[一手：N2–N3、N5–N7；研究：只读复核]
+
+据此区分竞争解释：关键领域事实并非 Skill 独占；新配方可能减少测试环境摸索，但不是新增执行能力；更严格的顺序和更多验证可能减少返工，也可能增加成本。缺少实际读取与执行轨迹时，不能在这些解释中选定净收益来源。[研究]
+
+### 为什么当前公共结果仍不能裁决净收益
+
+- **docs 可进入 Skill。** N5 L23–36 推荐安装该 Skill，N3 L294–299 明示 docs 变体有意沿链接进入 canonical skills。因此不能把它视为禁止 Skill 的纯文档消融；没有轨迹也无法确认 baseline 实际未使用 Skill。[一手；研究]
+- **定义不是原始运行。** N4 的 046/047/050/051/055 标记 `publish:false`，但 N2 不消费该字段，不能仅凭标记断言结果未公开。N8 排除 `evals/results/` 与 `evals/agent-results.json`，本轮完整树未发现 tracked results。未取得绑定三臂同一构建、权限、输出和实际成本的记录；这描述本轮获取范围，不宣称所有公开渠道都不存在记录。[一手；研究]
+- **分数还含过程符合性。** N9 前三项用源码正则，后三项用环境／轨迹 judge，其中最后一项要求实际先通过 flag-off 基线，再保留断言完成迁移。其要求合理但不等于只测最终软件行为；分数若提高，仍应区分顺序符合和交付质量。[一手；研究]
+- **公开榜不能代替这组三臂。** N10 读取时最近运行日期为 2026-09-25，注明 pass@4、AGENTS 列为 additional passes、基础设施失败丢弃重跑，新题未跑计入分母、重做题保留旧结果直到复跑。因此不能当独立 pass@1 两臂，也不能把相同百分比当成质量等价；未取得046完整 Skill 的对应结果。[一手：公开口径；研究：适用边界]
+
+### 采用与撤回边界
+
+找不到／读错版本时先给精确入口；已读但漏掉“迁移前基线→断言不变→迁移后验证”时，先补这条短契约并复用现有 rig。只有窄补充仍留下可定位的跨步骤遗漏，才试完整 Skill，且分别记录新事实、操作配方、实际执行与人的等待。必要行为不退步、返工减少且总投入在事先接受范围内才保留；原生或短契约已经满足、遗漏不改善或额外打断不值得时撤回。若环境无法执行或观察，优先解决获授权的能力缺口，不继续扩写文字。[经验：采用判断]
+
+**尚不能由源码消除的缺口**：同任务／构建／模型／权限下，具有实际资料读取、Skill 使用、逐项行为与成本记录的配对运行，并有真正短契约臂；否则只能解释入口策略。此缺口不阻止采用较小补充，但阻止宣布它已量化胜过完整 Skill。本轮不以未经授权的模型实验填补，也不继续增加相似机制案例。[研究]
+
+### 本节来源
+
+- **N1**：[046 PROMPT.md](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/evals/agent-046-adopt-partial-prefetching/PROMPT.md)、[fixture package.json](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/evals/agent-046-adopt-partial-prefetching/package.json)。
+- **N2**：[run-evals.js，基础变体与生成配置](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/run-evals.js#L41-L90)、[同 timeout 与 skills 变体](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/run-evals.js#L133-L165)。
+- **N3**：[setup.ts，按依赖决定是否安装浏览器](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/lib/setup.ts#L79-L90)、[bundled-docs 指令](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/lib/setup.ts#L181-L210)、[Skill 安装及跨入口说明](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/lib/setup.ts#L294-L325)。
+- **N4**：[eval.config.json](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/eval.config.json)。
+- **N5**：[官方 adoption guide](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/docs/01-app/02-guides/adopting-partial-prefetching.mdx)。
+- **N6**：[Skill](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/skills/next-partial-prefetching-adoption/SKILL.md)。
+- **N7**：[rig-template.md](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/skills/next-partial-prefetching-adoption/rig-template.md)。
+- **N8**：[根 .gitignore](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/.gitignore#L85-L89)、[evals README](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/README.md)。
+- **N9**：[046 EVAL.ts](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/evals/agent-046-adopt-partial-prefetching/EVAL.ts#L39-L74)。
+- **N10**：[公开 Next.js Agent Evals](https://nextjs.org/evals)，2026-10-14 读取的统计说明；动态页面，不绑定本节源码快照或一月历史博客结果。
