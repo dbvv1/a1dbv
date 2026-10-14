@@ -204,3 +204,16 @@
 本轮已执行依赖预检（无缺失）、`python3 scripts/check_repo.py` 和 `python3 scripts/check_offline.py`：完整离线入口 14 阶段通过，五组测试分别运行 97／26／10／13／14 项，均非空、无 skip；`git diff --check` 无错误，两份新文档另查无尾随空白或无效 UTF-8 字符。检查覆盖当时共享工作树，不代表随后整合提交、上游框架测试或真实引擎通过。云端评审尚未进行，不标为“范围内通过”。
 
 本次交付检查：完整离线14阶段、受影响页59处标题引用和 `git diff --check` 通过；内部独立抽查无阻塞，已补ECB计时范围反证。未运行引擎/模型，hosted CI另按发布提交核对。
+
+## 阶段 F 商业资格与版本补核
+
+核实日 2026-10-14；建议 2026-11-14 或选包、购买、融资条件变化时复核。Lyra 的当前渠道标签及未闭合文件许可继承 [WP10 动态表](2026-10-14-game-wp10-client-modules.md#阶段-f-动态状态补核)，不重复声明完整清权。[研究]
+
+| 动态事实 | 本次核实与一手来源 | 对采用的影响 |
+|---|---|---|
+| Opsive 价格、席位与资格不一致 | [购买页](https://opsive.com/assets/behavior-designer-pro/)显示 Personal $145/seat 一次性、Professional $399/year，并写合计收入＋融资 ≥US$200k；[2026-10-02 EULA §2.3、3.1](https://opsive.com/solutions/decision-solution/behavior-designer-pro/eula/)却分别要求直接操作功能者 Professional，以及过去12个月收入 >US$200k 或融资 >US$200k 时持续订阅 | 套餐名称、合计／分别计算与等号边界不能自行调和；采购前取得具体 SKU／席位资格书面确认，不默认单人支付 $145 足够。仅列商业对照，不升级默认 |
+| Opsive 源码持续维护权 | 同一 EULA §4.1 允许订阅到期／终止后只继续使用最后取得版本的对象码，须停止使用并删除源码 | 未来修改成本包含持续许可；不把对象码留用解释为永久源码维护权。未取得账户合同或 Agent 使用许可 |
+
+[一手] 另重读 Unity Behavior [1.0 changelog](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/changelog/CHANGELOG.html)，当前指定文档仍为 1.0.16（2026-05-26）；[LICENSE](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/license/LICENSE.html)仍指 Unity Terms of Service。这证明指定文档内容，不证明全渠道最新版或具体账户安装权限；继续按实际包／计划核，不改为 UCL／MIT。
+
+本次只读公开页面，没有登录、接受协议、购买、读取付费源码或运行引擎；未重算固定历史 SHA。[研究]
