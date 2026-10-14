@@ -104,6 +104,14 @@ Addressables 引用归零不保证马上释放物理内存；同 bundle 仍用�
 
 ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/ink-engine-runtime/CallStack.cs#L52-L83)在剧情位置变化时可能抛错，也可能近似恢复并警告。[一手] **[研究] 旧档经过两次内容修改后，需断言剧情位置、可选项、库存与奖励；捕获恢复 warning，不能静默清档。**
 
+### 存档复用：借序列化与存储能力，自己决定哪些进度能恢复
+
+**[研究] ✅ 小型 Unity 存档保留显式 DTO＋JsonUtility；确需字典／JSON 树迁移时采用项目兼容的 [Newtonsoft 包](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.2/manual/index.html)，不另写序列化器。UE 保留 SaveGame 的槽位与平台存储接口。** 内容迁移、落盘提交、玩家恢复是三个不同责任；无须为它们建立通用对象图框架。已有 Easy Save 项目可复用其缓存写入和备份 API，但其 [CreateBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-createbackup/)会覆盖旧备份，不能把“每次保存后备份一次”当作已保住上一份可用进度。[一手]
+
+**[研究] 先保住已验证可用的旧档，再允许重试、迁移后自动保存或清理旧槽。** 恢复候选分别经过完整读取与内容校验，失败不把默认新游戏写回原槽；让玩家知道恢复到了哪个时间／章节，并可保留原文件。真实游戏 [Mindustry 的 SaveIO](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveIO.java)有写入前移备份、读取失败后退备份，但存档列表的有效性检查只读 metadata；因此“列表看得到”不能作为完整恢复成功的证据。[一手]
+
+**[研究] 第二次改关卡位置时，除了内容 ID，还检查存储地址和附属进度是否一起变化。** Mindustry 的 [sector remap](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L120-L199)先暂存再回填，允许两个关卡交换位置；可借这个迁移顺序，不能把其 Java／Arc 世界保存模块直接移植成 Unity 底座。只补项目需要的迁移和恢复政策；源码、商业候选许可及中断验收见 [WP10 补比](../../docs/research/2026-10-14-game-wp10-client-modules.md#存档复用补比序列化落盘与玩家恢复分开选)。上述机制未在本轮真实引擎／断电环境验证。
+
 ### 输入与暂停：先关玩法权限，再切输入
 
 **[研究] ✅ 先改变玩法权限状态，再禁用 gameplay map、清持续动作、开启 UI 导航；恢复时确认焦点。** [InputAction.Disable](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Actions/InputAction.cs#L967-L986)可同步触发 canceled，因此回调须允许重入，不能把系统取消都当主动松手发射。[一手]

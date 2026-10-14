@@ -1,6 +1,6 @@
 主线：3「第二次、第五次修改仍可靠」／4「交付给玩家和维护者」，兼顾主线 2 的已有能力取舍
 改变的建议：04 先完成有回应、可读、连续的核心动作，再以生命周期与设备预算保护迭代；区分输入延迟、容错、呈现插值和帧间隔
-新证据：Input System 1.19、Unity 6.3 运动／PSO／上传／池契约、固定 motor 源码、Dead Cells 复盘与 Windows DX12 首发 trace；保留异步／存档证据
+新证据：Input System 1.19、Unity 6.3 运动／PSO／上传／池契约、固定 motor 源码、Dead Cells 复盘与 Windows DX12 首发 trace；并补 Mindustry／Thrive 固定存档路径与 Easy Save 备份契约
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -365,3 +365,60 @@
 [研究] 在将来获准的真实切片，先用原生做暂停→设置→返回，再新增带滑条、动态隐藏选项和确认弹窗的页面。改一个确认绑定并切换设备，检查四个结果：可见焦点与导航方向一致；提示对应实际可用绑定；关闭弹窗恢复原项或明确后备项；恢复玩法没有残留移动、幽灵攻击或重复确认。让重绑定取消也走完整返回路径。
 
 [研究] 记录新增页面需复制或修改哪些政策，以及旧页面是否回归；先用少量共享的打开／关闭边界，只有重复的激活、返回和设备规则实际难维护才引入框架。原生已经达到目标则不迁移，框架仍需每页补同样规则且无明显减负则收回扩展。AI 可以生成绑定、导航与回归场景，人判断焦点是否容易找到、操作是否费力；输入事件日志和截图须互相印证，状态注入不能替代设备路径。这是未来验证设计，非已证实的框架收益。
+
+
+## 存档复用补比：序列化、落盘与玩家恢复分开选
+
+核实：2026-10-14 UTC。[一手] 固定源码、官方接口和商店条款；[研究] 为静态路径推导及采用判断。回应的缺口不是再要求 schema roundtrip，而是**哪些现成部分值得直接采用、哪些恢复责任仍由游戏拥有**。仅公开资料与源码阅读，没有下载资产、安装、运行游戏／引擎或做故障注入。
+
+### 1. Mindustry：实际游戏把格式、内容映射与文件恢复分开
+
+[一手] 固定 `Anuken/Mindustry@17012d61d9e4c3cbd9820d87e81c24495486ac53`，commit API 显示 2026-10-08；[README](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/README.md)给出实际游戏发行入口，不是专门为演示保存 API 写的模板。[GPL-3.0 LICENSE](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/LICENSE)允许商业使用但带分发义务；不把 GPL 当作禁止商用，也不当作闭源项目可随意复制的 MIT。这里不复制代码或美术，代码许可核对不代表资产权利已逐项清理。该 SHA 是研究快照，不等于建议追随开发分支。
+
+- [一手] [SaveIO.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveIO.java)：注册 Save1 到 Save13，最新版负责写、按文件版本选择读；未知版本有独立错误。`save` 先把已有主档移为备份，再写主档；捕获写异常时移回备份。`load(Fi, WorldContext)` 在 SaveException 后尝试备份。**版本读取与文件恢复是不同路径。**
+- [一手] `isSaveFileValid` 只调用 `getMeta`；[SaveVersion.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L48-L76)的 metadata 读取不遍历 map／entities 等全部区域。`readContentHeader`（627–654）按保存的名称重建临时内容映射，其中 block 有单独 fallback；它不自动定义所有类型缺失后的玩法政策。
+- [一手] [Saves.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L120-L199)读取 sectorPreset／旧位置，先把待迁移文件移到临时名称，随后集中回填目的地及 sector info，注释明确为允许位置互换。文件目的地、关卡身份和附属进度一起迁移，比“改 ID 映射表”多一个层次。
+- [研究] **采用其职责划分与交换顺序；不采用整个 Java／Arc 世界序列化器作为 Unity／UE 插件。** 依赖和数据模型不同，移植代价高于项目自己的少量迁移函数。内容改名可按类型显式映射；只有真实出现关卡存储位置交换时才做暂存／回填，不默认引入通用迁移图。
+- [一手／研究] 不能把上述保存路径宣传成断电事务：主档先移走，catch 不能在进程被终止后执行；[列表发现](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L65-L78)遍历现存文件并排除名字含 backup 的项。应专门验证“只剩备份时能否从菜单恢复”，不能仅凭内部 load 有 fallback 宣称玩家可达。这里是限定源码路径，不是对发行版本丢档率的测量。
+
+### 2. Thrive：类名存在，不等于迁移器仍适用于新格式
+
+[一手] 固定 `Revolutionary-Games/Thrive@eceb8011d5e86b19dfa75de9e55eee6815fd1450`，commit API 为 2026-10-14；[README](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/README.md)链接 Steam／itch 游戏。[LICENSE.txt](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/LICENSE.txt)为 GPL-3.0-or-later，带独立 mod 动态加载例外；该例外不是复制整个保存模块进任意闭源游戏的通行证。近期仓库活动不保证每个历史接口已完成改造。
+
+- [一手] [Save.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/Save.cs)已经把主要世界状态放进 `save.bin`，metadata 保留 JSON；`ReadFromArchive` 按对象 serialization version 读取，版本 2 新增 JukeboxPlaybackState，旧版取 null。因此存在当前格式的版本化读取，不能说全部旧档能力都坏了。
+- [一手] 同文件的 `LoadJSONStructureFromFile` 明确抛 NotSupportedException，`WriteSaveJSONToFile` 抛 NotImplementedException；[ISaveUpgradeStep.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/ISaveUpgradeStep.cs)仍注册一个 `0.8.3.0-rc1 → 0.8.3.0` 的 UpgradeJustVersionNumber，实际 PerformUpgrade 仍调用这两个旧 JSON 入口，注释说明待 archive 改造。
+- [一手] [SaveUpgrader.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/SaveUpgrader.cs)仅在存在到目标版本的 step 路径时报告可升级；[SaveListItem.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/SaveListItem.cs)先区分损坏、已知不兼容、可升级、较新版本等，再发相应 UI 事件。**旧 helper 遗留不证明普通加载或当前 UI 必然触发它。**
+- [研究] **✅ 借鉴面向玩家的失败分类；⛔ 不直接采用其遗留 JSON upgrader。** 玩家需要知道是文件坏、需要新游戏版本，还是内容不兼容；不能所有错误都显示“没有存档”并自动新建。采用前追到真正读写入口和可达条件，而非凭 `SaveUpgrader` 类名或曾经的功能介绍决定。Thrive 的对象图和 Godot／archive 依赖也不值得为简单 checkpoint 存档迁移过来。
+
+### 3. 原生、开源序列化库与商业候选怎么取舍
+
+[研究] 下表的“采用”指建议复用的机制，不代表本轮安装、购买或已测目标平台。已满足需求的项目不为增加候选迁移。
+
+| 候选 | 可直接借用与最低成本 | 不替项目解决什么／本轮判断 |
+|---|---|---|
+| Unity JsonUtility | 引擎内已有；显式小 DTO 无新增库维护。官方说明只序列化字段，不支持 Dictionary，可用普通 JSON 库补缺口 [一手：[6.3 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/json-serialization.html)] | ✅ 简单 checkpoint／库存保留。它是 JSON 转换器，不是存储提交与恢复系统；不要为存储失败换序列化格式 |
+| Unity Newtonsoft 包 | ✅ 项目需要字典或 JSON 树操作时复用现成包；[官方页](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.2/manual/index.html)列出 LINQ to JSON 并链接源码。[上游许可证](https://github.com/JamesNK/Newtonsoft.Json/blob/13.0.2/LICENSE.md)为 MIT；实际包保留其自带 notices，无另购序列化库费用 [一手] | 不写自己的 JSON parser，不同时塞两份 DLL；按项目已锁包与 AOT／IL2CPP 验证。Unity 包号与上游库号不同，网页包 3.2.2 的说明仍称对应 13.0.2，不把它当上游最新版。不提供内容政策或断电恢复 |
+| UE SaveGame | ✅ 保留 SaveGameToSlot／AsyncSaveGameToSlot 与完成结果；SaveGameToMemory 和 SaveDataToSlot 已把内存序列化与平台写入分开，后两者均同步 [一手：[官方页](https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine)] | 不因多槽而自建跨平台文件系统；主机等平台路径不同。公开指南没有承诺任意多文件原子提交，仍需项目恢复政策；使用受引擎 EULA 约束，不是开源库许可 |
+| Mindustry／Thrive 的整套保存模块 | 实际游戏中的版本／恢复／菜单机制可读，研究成本低 [一手：上述固定源码] | ✅ 借设计与反例；⛔ 不作 Unity／UE 通用保存底座。GPL 分发义务、引擎和世界对象图耦合；本轮未独立验证任何一个游戏的玩家恢复成功率 |
+| Easy Save 3 | 🧪 现有 Unity 项目或确有多类型序列化／工具支持缺口时评估；现成缓存、类型适配及备份调用，免去等价自研 [一手：下列官方 API] | 缓存写入、备份轮换、内容兼容仍分开验收；不为几个 DTO 默认购买，更不因付费就承诺恢复更强。资产包未取得，未审内部落盘实现 |
+
+[一手] Easy Save 的 [CreateBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-createbackup/)复制当前文件为 `.bak`，会覆盖已有备份；[RestoreBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-restorebackup/)返回是否找到并恢复备份，不代表新内容下的完整进度有效。[缓存／性能说明](https://docs.moodkie.com/easy-save-3/es3-guides/performance/)允许把多次键操作合并成一次持久写入；自行用线程时要求一次只在一个线程访问且数据线程安全。说明还明确删除重建 reference manager 会使旧引用 ID 的存档失效。[引用文档](https://docs.moodkie.com/easy-save-3/es3-guides/saving-and-loading-references/)把 manager 定义为 scene-specific，不能把它当跨场景内容身份服务。
+
+[研究] **Easy Save 若已采用，优先借它的缓存与明确的备份 API，再为业务快照和恢复选择加薄层；不要同时自建另一个键值保存框架。** 缓存合并不等于业务一致快照，恢复文件不等于接受进度，场景引用 ID 不等于长期内容 ID。保存升级后立刻覆盖唯一 `.bak` 可能丢失唯一兼容旧版的副本，因此升级保留副本应与普通轮换备份分开。
+
+| 动态事实 | 核实来源／日期 | 选型影响与重核触发 |
+|---|---|---|
+| Easy Save 商店显示 USD 59（税前）、Extension Asset、3.5.27／2026-07-18 | [官方商店](https://assetstore.unity.com/packages/tools/utilities/easy-save-the-complete-save-game-data-serializer-system-768)，2026-10-14 | 单人预算参考，不是含税成交价；购买／包升级或 2026-11-14 先到者重核 |
+| Standard Asset Store EULA，Extension 按 seat；不是开源授权 | [条款 §2.3](https://unity.com/legal/as-terms)，2026-10-14 | 源码若随包提供也不能当作可公开再分发；实际席位和合同在取得时核对 |
+| Asset Store 条款 §3.8 包含 AI 输入限制 | [同一官方条款](https://unity.com/legal/as-terms)，2026-10-14 | ⛔ 未清授权前，不把付费包源码整包输入 Agent；本轮只读公开技术文档，不声称已获得包输入许可。购买、供应商书面许可或条款变化时重核 |
+
+### 4. 最小实现边界与后续验收
+
+[研究] 小型独立游戏只保留三个责任：项目 DTO／内容迁移；现成序列化器＋引擎或已采用库的存储能力；游戏自己的恢复选择与提示。它们可以是少量函数，不要求三个新框架。成熟实现显示这三件事有不同失败模式，不能以“写一个通用 SaveManager”代替取舍。
+
+1. **候选验收先于覆盖。** 分别读取主档、上次已验收的副本和迁移前副本；按版本与完整内容判断。候选对象先独立构造，失败不留下半个世界。选中副本后显示恢复的时间／章节，保留故障原档；全部失败时让玩家选择新开槽，不默认覆盖。
+2. **重新保存是第二个风险点。** 读取失败、回退备份后立即 autosave、升级失败再试都可能轮换掉有效旧档。恢复流程完成前暂停对该槽的自动覆盖；只有明确接受新快照后才按保留政策清理，磁盘满时不为腾空间先删唯一有效副本。
+3. **不承诺跨平台统一的 rename 原子性。** 用所选平台／库提供的提交能力；只有现成路径不满足时才补目标平台的暂存、替换和发现逻辑。不要根据有 try/catch 或 `.bak` 就宣布断电安全。
+4. **第二次内容变化要触到实际地址。** V1 两个关卡分别有进度；V2 改名并换存储位置；V3 删除／替换一个道具。验主档缺失而备份存在、metadata 完好但实体区截断、迁移中断再启动、恢复后立即自动保存以及两个关卡位置互换。断言进度未互串、奖励不重复、旧副本仍可找回，而不只断言 JSON 能读。
+
+[研究] 以上为未来获准的引擎／目标存储验收设计；静态阅读没有证明文件落盘耐久性、UI 实际可达性或商业库净收益。若既有组件通过这些路径且维护更省，就停止自研；若复杂对象图保存只增加引用和迁移负担，回到稳定内容 ID 的窄 DTO，而非继续扩张框架。
