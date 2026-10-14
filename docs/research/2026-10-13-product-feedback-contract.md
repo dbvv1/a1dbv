@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件
 改变的建议：15/24 以真实试用决定修改与去留；15 比较必要能力与运行责任，再选择自建或复用
-新证据：三条产品反馈链、两项创业随机试验、Jules 固定迁移补丁，以及两项模拟反馈与真人结果对照；以及 Motif 短期复访与 CodeAid 更新后使用；另补 OpenWhispr 同一用户的失败与成功复测及固定参数补丁；不合并样本或宣称AI收益
+新证据：三条产品反馈链、两项创业随机试验、Jules 固定迁移补丁，以及两项模拟反馈与真人结果对照；以及 Motif 短期复访与 CodeAid 更新后使用；另补 OpenWhispr 同一用户的失败与成功复测及固定参数补丁；不合并样本或宣称AI收益；补 Home Assistant 两版界面补丁、未合并恢复提案与同一用户推迟升级后再次受扰的历史行为链
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -247,3 +247,38 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 **✅ 控件可用但结果仍错时，先追选定模式是否真正传到后端及其默认值，再增加控件或更换模型。** CodeAid 已区分看懂与完成任务；本例新增可定位的第三种解释：所需能力未被正确启用。复测沿用同一任务语义，保留已有可行替代作参照，避免把产品接线错误误判为模型能力上限。**[经验：条件建议]**
 
 本侧只读原帖、提交、发布 API 和两个 tag；未运行应用或模型，无准确率、投入和长期采用测量。本轮不推荐某个听写产品；已有任务级复测足够支持窄建议，后续仅在取得精确版本/输入的独立复测或真实采用取舍时再扩展，不能以更多同类问题代替证据。**[研究：验证边界]**
+
+
+## Home Assistant：字段保留与原操作路径是两回事
+
+核实时间：2026-10-14（UTC）；以下行为链限定于 2026-01 至 05 月。只读公开 PR、评论和固定提交，未运行 Home Assistant、未检查用户实例，未做模型对照。**[研究：范围]**
+
+### AI 辅助改版，人的设计选择
+
+[初版 #29186](https://github.com/home-assistant/frontend/pull/29186)将 more-info 内联属性折叠面板移到三点菜单中的独立 Attributes 子视图；理由是突出主要信息，其他属性仍可经两次点击访问。PR 披露由 Claude Code 生成；作者在[02-17 回复](https://github.com/home-assistant/frontend/pull/29186#issuecomment-3913593252)明确设计决定由本人负责，并承认低估了同时查看 state 与 attributes、以及移动端触摸目标的需求。不能把人的产品取舍归因为模型错误。**[一手：PR 与作者归属声明]**
+
+[01-27 合并补丁 `08ee742`](https://github.com/home-assistant/frontend/commit/08ee742233657d47aad95d2602256e2d9dd3a967)删除多个 controls 内的 `ha-attributes`，新增属性子视图与菜单接线；`more-info-default` 的渲染变为 `nothing`。这是可核验的界面结构变化，不是运行复现。PR 的测试计划只列属性入口、子视图显示及实体类型，没有列原工作流的并看任务；未勾选只说明记录状态，不能证明作者没有测试。**[一手：固定补丁与计划；研究：验证边界]**
+
+### 独立反馈改变了什么需求
+
+- [Renegade605](https://github.com/home-assistant/frontend/pull/29186#issuecomment-3867230773)报告原折叠面板已能隐藏不想看的内容；改版却使需要它的人不能同时看状态与属性。这里的目标是并看信息，不只是找到字段。**[社区：使用者自报]**
+- [Mariusthvdb](https://github.com/home-assistant/frontend/pull/29186#issuecomment-3912896048)报告手机上多次误触、走错路径，并区分普通生日等附加信息与原始开发者数据。将所有信息移至开发工具不是其接受的替代。**[社区：使用者自报]**
+- [verjager](https://github.com/home-assistant/frontend/pull/29186#issuecomment-3912862626)说明电话传感器的号码、时长及模板实体列表/字典需要快速查看；同时指出其他跳转实体场景可以接受新方案。不能把这些反馈概括为所有人反对改版。**[社区：场景区分]**
+
+### 恢复承诺、关闭提案与真正合入的替代版
+
+作者[02-18 总结](https://github.com/home-assistant/frontend/pull/29186#issuecomment-3919566144)拟恢复主视图折叠面板、保留新视觉，并只在没有面板时提供菜单入口。[恢复提案 #29705](https://github.com/home-assistant/frontend/pull/29705)确有实现，但 **merged=false**；02-25 [关闭说明](https://github.com/home-assistant/frontend/pull/29705#issuecomment-3958315217)改称将采用另一方案。其 head `bd7c9f9bb5c775a34e31e7cbec2b0bd32aa75708` 是提案快照，不是已交付回滚；关闭或临时 merge SHA 不能当成功恢复。**[一手：PR 元数据；社区：维护者说明]**
+
+真正于 02-25 合入的是 [#29811](https://github.com/home-assistant/frontend/pull/29811)，[固定补丁 `efd51d2`](https://github.com/home-assistant/frontend/commit/efd51d22344485beda9346f2f6d5407e980d625b)把子视图改名 Details，加入翻译后状态、原始状态及全部属性，菜单始终提供入口。**它补回了 Details 内的状态与属性同屏显示，但没有恢复原内联路径。** 不应把第二版继续描述成完全无法同屏对照，也不能把“恢复提案”与该替代版混成同一个产物。**[一手：固定补丁；研究：功能区别]**
+
+### 第二版反应与后续真实行为
+
+- [02-26，verjager](https://github.com/home-assistant/frontend/pull/29811#issuecomment-3967262381)仍提出电话状态与号码需要像原来一样快速弹出，要求直接进入 Details 的动作；评论未给安装版本，不能据日期称为发布版独立复测。**[社区：改版反馈；研究：版本边界]**
+- [03-07，Mariusthvdb](https://github.com/home-assistant/frontend/pull/29811#issuecomment-4016031286)说明状态已在新页出现，但换名称与访问路径仍不便，认为新增状态重复了原先已能一起看的信息；同时认可开发工具入口。这支持“补齐字段组合，仍可能没保住操作路径”，不是否定所有新增能力。没有精确安装版本或任务计时。**[社区：第一人称反馈]**
+- [05-07，Renegade605](https://github.com/home-assistant/frontend/pull/29186#issuecomment-4397884447)明确报告：此前延迟升级，但其他内容出现问题，已不能继续延迟；更新后又受到这些改动对工作流的干扰。其“三个大版本”是本人说法，未给前后版本号、故障日志或回退方式。这是同一需求后的真实采用约束与负向再次使用自报，不是已经完成的恢复，也不能量化损失。**[社区：行为结果；研究：边界]**
+
+### 对 15 的净增量与停止条件
+
+**✅ 缩减界面时，把原任务需要的同时可见、触摸目标和上下文保留当作验收对象。** 不用字段仍存在证明工作流无损；先让原使用者重做任务，再决定保留新呈现、恢复旧入口或提供替代。复访可观察继续使用、绕行、延迟升级等行为，但不能从单个报告估算整体留存。与 CodexBar 的符号理解不同，本例是数据可得而操作组合改变；与 Handy 的未合并局部好用不同，本例已有上线后的负向行为。**[经验：由案例提炼的窄建议]**
+
+这条历史链不代表 2026-10 的现状。检索已发现后续 [#53920](https://github.com/home-assistant/frontend/pull/53920)继续调整 Related/Details；当前开发分支 `9ca8f2e98be16f823c7c9e6113cc6c7545db7aee` 的[对话框](https://github.com/home-assistant/frontend/blob/9ca8f2e98be16f823c7c9e6113cc6c7545db7aee/src/dialogs/more-info/ha-more-info-dialog.ts)和[Details](https://github.com/home-assistant/frontend/blob/9ca8f2e98be16f823c7c9e6113cc6c7545db7aee/src/dialogs/more-info/ha-more-info-details.ts)也已演化。本轮未验证当前发布版的全部入口或原用户是否恢复使用；只截至上述历史行为形成建议，不将未找到复测写成不存在。下一次只在有对应版本下的真实操作或采用结果时续接，不再用更多界面源码检查替代用户结果。**[一手：当前源码入口；研究：停止边界]**
