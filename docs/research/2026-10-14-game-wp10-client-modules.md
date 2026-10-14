@@ -1,6 +1,6 @@
 主线：3「第二次、第五次修改仍可靠」／4「交付给玩家和维护者」，兼顾主线 2 的已有能力取舍
 改变的建议：04 先完成有回应、可读、连续的核心动作，再以生命周期与设备预算保护迭代；区分输入延迟、容错、呈现插值和帧间隔
-新证据：Input System 1.19、Unity 6.3 原生运动契约、三种 MIT motor 固定源码及 UCL root-motion 样例；动作反馈与 Dead Cells 复盘，保留异步／存档证据
+新证据：Input System 1.19、Unity 6.3 运动／PSO／上传／池契约、固定 motor 源码、Dead Cells 复盘与 Windows DX12 首发 trace；保留异步／存档证据
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -259,3 +259,49 @@
 - [研究] **第二次修改题**：增加一种旋转升降平台，并让已有攻击可击退站在其边缘的角色。检查接地状态、平台速度、角色自移和击退是否各只应用一次，主动起跳是否解除吸附，落地／重生是否清掉旧附着。AI 可写适配、暴露参数和记录运动贡献，人决定继承动量／转向／恢复控制的体验；若必须改大量无关技能和相机脚本，先收拢所有权，不新建通用运动框架。
 
 本轮完成上述公开源码、许可、版本声明及官方 API 的静态核查；没有导入候选包、运行自动测试／演示、测量性能或证明玩家体验提升。后续真实引擎比较须按仓库现有授权门槛另行安排。[研究]
+
+
+## 首发帧时间补研：从资源已加载到动作可见
+
+核实：2026-10-14 UTC。主线 3／4；改变 04 中“首发卡顿按热点优化”的泛化建议，具体化为下一场遭遇的准备范围、可见反馈与驻留成本。新证据为 Unity 6.3 LTS 英文 PSO／加载／池 API 正文、Epic 当前 PSO 文档和 Tom Looman 的实际 Windows DX12 样例 trace／版本更新。未安装或运行引擎、未测真实设备，不将作者案例数值作为本项目收益。[一手／研究]
+
+### 1. 先定义要保住的动作，再选择把工作移到哪里
+
+[研究] 场景为首次进房、敌人首次预警、玩家第一次施放技能。已有输入缓冲和插值解决不了首次 GPU 管线创建，池化也不保证材质已被真正绘制。最小方案按下一场遭遇准备必须内容，区分取得资产、初始化实例、上传数据、准备绘制；不新建统一“全资源就绪”框架。可见角色、有效攻击提示、可操作反馈与伤害规则必须一致。装饰效果允许降级，关键提示不能为了 trace 无长帧而跳过；延迟开始遭遇是有代价但可解释的产品选择。
+
+### 2. Unity 6.3 原生选项与不能互换的承诺
+
+- [一手] [PSO introduction](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-pso-introduction.html)：GraphicsStateCollection 支持 Unity 6 起的路径，6.3 仍标 experimental，未来可变更／移除；DX12、Vulkan、Metal 使用其图形状态路径，DX11／OpenGL／OpenGLES／WebGL 回退到 shader warmup。Compute 与 ray-tracing shaders 不兼容此 PSO tracing。因此不能写成“所有 shader 已预编译”。
+- [一手] [Other warmup methods](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-prewarm-other.html)：ShaderVariantCollection.WarmUp、Shader.WarmupAllShaders 等旧路径不推荐用于 DX12／Vulkan／Metal，因为缺少 graphics states 可能创建错误的 PSO。[研究] 预加载变体名单和覆盖实际渲染状态不是同一件事；不因为代码调用成功就结束首次绘制验收。
+- [一手] [Trace and manage](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-pso-trace.html)建议每个平台／图形 API 单独采集；修改 shaders 后可再次 trace，将新数据追加至既有 collection。[研究] 第二个技能若只在新质量档、特定 keyword 或新的 pass 下出现，旧路线可能从未覆盖它；ContainsVariant 之类的成员检查也不能单独证明全部实际状态齐全。
+- [一手] [Warm up PSOs](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-prewarm.html)提供 WarmUp 与 WarmUpProgressively，后者按指定 PSO 数量调度，两者返回 job handle。官方列出的定位 marker 为 Shader.CreateGPUProgram 与 CreateGraphicsGraphicsPipelineImpl。[研究] 逐批数量不是毫秒预算保证；在战斗帧同步等待任务仍可能破坏响应。采用条件是目标后端确有首次创建热点，且分组准备的加载成本可接受。
+- [一手] [Application.backgroundLoadingPriority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-backgroundLoadingPriority.html)区分后台读取／反序列化与主线程 integration，明确 Editor 不生效；Low／BelowNormal／Normal／High 对应文档 integration 时间为 2／4／10／50 ms，可观察 Application.Integrate Assets in Background。[研究] 这些不是整帧上限，也不约束全部游戏初始化脚本；不能拿 High 的快速读条测试推导可交互时也合适。
+- [一手] [Texture and mesh loading](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData.html)说明异步上传把 binary 数据拆到后续帧；[资格页](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData-make-compatible.html)要求纹理非 read/write、非 Resources，Android 另需 LZ4；LoadImage 会强制同步路径。网格有独立条件，含 bone weights／BlendShapes 等限制。[研究] 不为异步资格删掉玩法所需 CPU 数据／变形能力；先查具体资产，再权衡提前加载或更小规格。[asyncUploadTimeSlice](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/QualitySettings-asyncUploadTimeSlice.html)是上传预算入口，不能与 backgroundLoadingPriority 当同一个旋钮。
+- [一手] [allowSceneActivation](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AsyncOperation-allowSceneActivation.html)为 false 时进度停在 0.9、isDone 为 false，AsyncOperation 队列也会停滞，例如随后 UnloadSceneAsync 不能执行。[研究] 所以不能等“卸掉旧场景腾内存”才允许新场景激活，却把卸载排在被阻塞队列后；保持旧场景、加载数据和预热对象并存的内存要计入峰值。激活门只决定何时开始，不会自动分摊 Awake／OnEnable 的业务成本。
+
+### 3. 池化与 GC：提前付费的范围必须有上限
+
+[一手] Unity 6.3 [ObjectPool 构造参数](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Pool.ObjectPool_1-ctor.html)明确 defaultCapacity 是内部存储容量，不会创建该数量实例；池空时 createFunc 创建，maxSize 限制可留在池中的实例，满池归还走销毁回调。[研究] 因而“构造容量 100 的池”不能证明首发无创建，“maxSize=100”也不是 100 个同时存活弹体的玩法上限。需要实际预创建指定数量；若用 Get／Release 循环预创建，逐个立即归还可能始终只复用一个对象，应核对独立实例数。耗尽时额外创建、复用最旧装饰效果或拒绝可选效果由项目明确决定，不能静默丢关键弹体／提示。
+
+[一手] [Pooling and reusing](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-reusable-code.html)提供原生 UnityEngine.Pool，要求复用时重置状态，非线程安全；[GC overview](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-garbage-collector.html)说明仍有引用的对象不会被回收。[研究] 保留池对象也保留其资源引用和原生对象成本，GC.Alloc 降为零不代表总驻留降低。按关卡／遭遇释放不再需要的池，检查托管、原生及 GPU 内存，而非只把所有技能池上限相加后永远常驻。
+
+[一手] [GC modes](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-incremental-garbage-collection.html)：增量 GC 默认把工作分摊到多帧，不降低总工作；对象引用变化太多可能使标记反复并回退完整收集，关闭 GC 则有堆持续增长风险。[研究] ✅ 先削减已定位热路径分配，🧪 对重复实例用有边界的池，⛔ 不为一次技能尖峰全局关 GC。若事件原因为 PSO 创建，做池化／GC 改造可能没有改变真正瓶颈。
+
+### 4. Unreal 对照与实际开发者反证
+
+[一手] Epic [PSO Precaching](https://dev.epicgames.com/documentation/unreal-engine/pso-precaching-for-unreal-engine)本次页面标为 UE 5.8，不能外推所有旧版。其 component 路径在 PostLoad 收集并异步编译；未完成时可推迟 proxy、显示默认材质或继续绘制并阻塞。文档同时指出预热后的驱动缓存首次取回仍可能有成本，保留更多低层 PSO 则增加内存。[研究] 新版原生自动路径优先；“有预缓存”不等于“首个反馈完整且准时”，也不保证工作线程竞争没有帧影响。用等待当前 outstanding requests 的 loading screen 不能证明未来尚未加载的技能也已覆盖。
+
+[一手：作者实作] Tom Looman 的 [PSO 文章](https://tomlooman.com/unreal-engine-psocaching/)以 Windows DirectX 12 的 Action Roguelike／Project Orion 样例展示 Insights；图中未处理 PSO 的一项编译为 54.1 ms。作者在 UE 5.3 遇到包括 decal 的自动覆盖缺口，采用 bundled 加 automatic；文内更新明确 5.6 已增加 UDecalComponent 覆盖。文章要求冷驱动缓存、相同关卡与动作复核，并记录 2025-09 NVIDIA 缓存文件扩展变化导致旧引擎清缓存开关失效的版本提醒。[研究] 这是作者实作证据，不是独立重测、同硬件性能对照或所有版本的必现缺陷；不引用其转述的 Fortnite 时间或课程宣传作为收益。
+
+**[研究] 采用与撤回**：✅ 先用锁定版本原生 automatic precaching 和验证；🧪 当 trace 仍指向未覆盖 PSO，再为这些遗漏补 bundled cache。不要把旧作者结论“两个系统必须一起用”作为新引擎默认工程负担。对 critical tell 提前加载／准备，而不是沿用跳绘策略后宣称顺滑；无法在预算内准备时收窄首场内容、材料组合或可选演出，而不首先加自建 shader 管理框架。
+
+### 5. 第二次修改的未来验收设计
+
+[研究] 新增一个使用不同材质／keyword／渲染状态的技能，并允许进房后立即施放。保留旧技能作基线：
+
+1. 冷启动／确认冷驱动缓存、同进程重复施放、重启保留驱动缓存分别记录；不把“第二遍不卡”称为修复。清缓存只限将来获准的测试环境，并确认对应引擎／驱动真的生效，不在本轮操作任何系统缓存。
+2. 对照按键被接受、首个可见角色动作／攻击提示／技能反馈、伤害生效的程序与画面证据；另列长帧 CPU／GPU／等待归因，不把软件 marker 当显示端到端延迟。
+3. 比较无准备、遭遇范围准备及实际必要的扩大范围；同时记录准备总耗时、首次反馈、长帧位置、活动／闲置实例数、峰值与离开遭遇后的留存内存。低优先级准备若延长到玩家必用时刻之后，同样失败。
+4. 改画质／图形后端重新覆盖，退出再进入检查池重置；既检查预热遗漏，也检查为了预热意外触发声音、伤害或奖励。减少装饰实例不能改变关键提示的出现与有效窗口。
+
+本轮只完成公开正文与作者图文核查；未复现 54.1 ms、未验证 Unity 实验 API 在目标补丁上的兼容性、未建立性能排名。离线文档检查只验证仓库交付，不证明上述体验目标已实现。[研究]

@@ -10,7 +10,7 @@
 | 还没有可玩的第一版 | 一套设备、原生输入/UI/物理、窄存档格式 | 明确缺口后再加库 |
 | 换场景后对象或声音残留 | 明确所有者、取消、释放及退出顺序 | 原生加载已不够才考虑资源层 |
 | 存档能读但进度不对 | 稳定内容 ID、格式版本与迁移回归 | 实际跨版本需求出现后扩迁移 |
-| 平均 FPS 好但会卡顿 | 在最低设备测最坏路径和峰值 | 按热点选择缓存、池化或渲染调整 |
+| 平均 FPS 好但首次技能会卡顿 | 分清加载、激活、GPU 上传与首次绘制；准备下一场遭遇必需的反馈 | 按尖峰来源选 PSO 预热、分批初始化或有上限的池，别把缺失画面当顺滑 |
 | 要支持更多平台 | 先补该平台构建、输入与恢复验收 | 不先造跨引擎抽象 |
 
 **[研究] 高质量首先是玩家想做的动作能自然发生、看得懂结果、愿意再做一次。** 动作游戏通常先打通输入响应→可读反馈→稳定帧间隔，再扩演出；已经明显卡顿时先清掉尖峰，节奏／音乐游戏则把时序与音画同步提前。AI 可补实现、参数对照与检查，人决定动作的轻重、容错范围和体验门槛。
@@ -115,6 +115,20 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.5/manual/analysis/profiler/profiling-applications/profiling-target-device)，UE 使用 [Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine)。[一手] **[研究] 测冷启动、首次关卡／技能、峰值战斗、暂停菜单、关卡往返；记录帧时间分布和尖峰、稳态／峰值内存、音频并发、加载时间与包体。** 开发构建定位，发布构建复核；旧关卡、新关卡和解压缓冲短暂并存也要计入。
 
 **[一手／研究] 帧率上限还要与平台呈现方式配套。** Unity 6.3 [targetFrameRate 文档](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)指出桌面软件限帧可能 microstutter，追求稳定帧间隔时优先按 vSyncCount 路径配置；这不是最低输入延迟的通用保证，仍需结合显示器／同步设置。Android 用 targetFrameRate，并评估引擎已集成的 [Optimized Frame Pacing](https://developer.android.com/games/sdk/frame-pacing)，不要另接一套 Swappy。显示刷新率、提交队列和负载共同影响实际呈现，不能仅凭“CPU 每帧不到预算”判定已经顺滑。稳定低档与更高帧率之间按目标设备的持续负载、发热和玩法取舍。
+
+### 首次技能：准备到能回应，而不只是加载完成
+
+**[研究] ✅ 把下一场遭遇必需的角色、攻击提示和技能反馈提前准备好；不要默认在启动时预热整款游戏。** 以“首次进入房间，立刻闪避并释放新技能”为目标：资源取得、实例初始化、GPU 上传、首次绘制都可能花时间。玩家按下后应及时看见动作和关键提示；若准备尚未完成，优先在遭遇开始前用可理解的转场等待，或提供预先准备、语义等价的简化反馈，不让伤害已经生效而攻击提示仍不可见。
+
+| 尖峰实际落点 | 先采用的窄方案 | 代价与撤回条件 |
+|---|---|---|
+| 首次绘制出现 shader／PSO 创建 | 🧪 Unity 6.3 的实验性 GraphicsStateCollection 按目标平台／图形 API 采集，分关卡或技能组预热；支持逐批调度。DX12／Vulkan／Metal 不把旧 ShaderVariantCollection.WarmUp 当完整 PSO 覆盖 | 预热占用启动时间和资源；新材质、keyword、渲染状态或质量档增加后补采。只优化已确认的首次绘制热点；若加载时间变差而首发尖峰未降，回到 trace 查真正原因 [一手／研究：[原生预热](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-prewarm.html)、[旧方法边界](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-prewarm-other.html)] |
+| 加载结束或启用对象时卡 | ✅ 先移走激活时的重初始化，分批准备实例；区分主线程 integration 与纹理／网格上传，再调各自时间预算 | async 不代表所有步骤都离开主线程。Unity backgroundLoadingPriority 只在 Player 生效；提高它可能更快加载却打断当前操作。纹理可读写、Resources 位置及 LoadImage 等会影响异步上传资格，不先换 await 库 [一手／研究：[integration](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-backgroundLoadingPriority.html)、[上传条件](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData-make-compatible.html)] |
+| 连发时反复创建／分配并伴随 GC 尖峰 | ✅ 先减少热路径临时分配，再为确实重复的弹体／特效使用原生 ObjectPool；遭遇前实际创建所需实例，并明确并发上限及耗尽政策 | defaultCapacity 只预留内部存储，maxSize 不限制已借出的并发实例；单设两个数字并未预热。池使对象及依赖继续驻留，缩小／清理不再需要的池，而非为每种技能永久囤积峰值数量 [一手／研究：[池构造契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Pool.ObjectPool_1-ctor.html)] |
+
+**[一手／研究] Unreal 的对照说明“帧不中断”仍可能回应失败。** 当前 [PSO Precaching](https://dev.epicgames.com/documentation/unreal-engine/pso-precaching-for-unreal-engine)可在 PSO 未就绪时延迟 proxy（因此暂不绘制）或显示默认材质；对关键攻击预警，这些不是免费优化。先让所需组件／PSO 在遭遇前准备，只有定位到自动覆盖遗漏才补 bundled PSO；[Tom Looman 的 Windows DX12 实作](https://tomlooman.com/unreal-engine-psocaching/)同时记录旧版遗漏及 5.6 覆盖改进，不能照搬 5.3 的缺口结论到新版本。
+
+**[研究] 第二次修改就新增一种不同材质／渲染状态的技能。** 分别检查冷缓存首发、同进程第二次施放、重启后的热缓存，以及切画质后的首发；记录首个有效反馈时刻、对应长帧、准备时间和峰值／留存内存。只有首发响应改善且等待、内存和画面完整性仍在预算内，才保留预热或池化扩大范围。AI 可补采集路径、初始化分批和反馈记录，人决定何时允许开始遭遇、简化反馈是否仍清楚；原生选项与作者 trace 不能代替目标设备验证，详细范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)。
 
 ## 4. 借用的授权边界与升级条件
 
