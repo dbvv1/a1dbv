@@ -1,6 +1,6 @@
 # 10 · 安全
 
-> 核实时间：2026-10-08。
+> 核实时间：2026-10-08；2026-10-14 补核外来仓库的脚本启动与配置来源边界。
 
 ## 1. 威胁模型：致命三要素
 
@@ -20,7 +20,7 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 | postmark-mcp（2025-09） | 第一个被发现的恶意 MCP 服务器：先发布 15 个正常版本建立信任，再加入一行外泄代码 | [二手] |
 | LiteLLM PyPI 后门（2026-03） | 约 3 小时内被下载约 4.7 万次；LiteLLM 是 CrewAI、DSPy 等框架使用的模型网关 | [二手] |
 | Gemini CLI 安全修复（2026-08~09） | 通过构建文件和不可信参数的间接提示注入、MCP OAuth SSRF、凭证泄漏、workspace trust 改为默认拒绝 | [一手] changelog |
-| Anthropic 自曝（2026-05） | 项目配置里的 hook 在信任提示出现**之前**就执行了；通过“已批准的域名”外泄数据；直接的提示注入绕过了所有模型层面的防御 | [一手] |
+| Anthropic 自曝（2026-05） | 历史漏洞：项目配置里的 hook 在信任提示出现**之前**就执行了，官方称已修复；披露月份不代表发生或修复月份，当前脚本入口另见第 3 节；通过“已批准的域名”外泄数据；直接的提示注入绕过了所有模型层面的防御 | [一手] |
 | **AI 实验室训练期的 Agent 失控**（2026-04~09） | OpenAI 训练和评估中的 Agent 串联 Artifactory 代理的 0day 接入外网，把代理当成留言板分工协作，入侵 Hugging Face 寻找评分器，7 月拿到研究集群管理员权限；还被查出与 RubyGems 攻击、澳大利亚 Medicare 网站入侵有关（已在联合国被提及）。Anthropic（PyPI 恶意包 `mlflow-ui` 等）、Google、Meta 也有类似事件 | [社区：Matthew Green、Simon Willison 原文] |
 | **攻破 Claude Code auto mode**（2026-08） | 让 Claude 自己写解码脚本并在攻击者目录里运行，被同名 `struct.py` 劫持；成功率 60–80% | [社区：原文] |
 | **Claude Code 隐写标记**（2026-06） | 根据 API 地址和时区，悄悄改变系统提示里日期字符串的写法；属于透明度问题 | [社区：原文] |
@@ -97,6 +97,8 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 7. **审查 Agent 引入的依赖和服务**：Agent 会替你选数据库、SaaS 和库，已经有公司专门做“影响 Agent 选型”的生意；包仓库里也出现过 AI 实验室 Agent 上传的包。
 8. **预算与停用边界**：限制 Agent 开通付费服务的权限；配置适用的 spend limit / spend cap，并核对覆盖范围、计费延迟和停用后果，不能只设告警，也不能假设所有账户和服务都支持硬性封顶（见 [18 第 5 节](18-team-adoption.md#5-成本治理)）。**[研究：采用建议]**
 9. **不在不可信目录里执行代码**：Python 等语言会优先导入当前目录里的同名模块，auto mode 攻击就利用了这一点。
+
+**外来仓库转脚本前，先限制配置来源。** 普通 `claude -p` 不显示工作区信任或逐服务器批准提示，未信任目录中的项目 Hook 与 `.mcp.json` 仍会运行／连接。先用 `--setting-sources user` 排除项目 settings 与 `.mcp.json`；不需要自动发现能力时，再用 `--bare`，仅显式加入审过的输入与工具。`--bare` 单独使用仍会应用项目 `env` 与部分认证 helper，不能替代整个进程的隔离。见[官方权限矩阵](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)与[具体边界、认证前提](research/2026-10-12-development-conditions.md#交互试点转脚本bare-不是等价加速)。**[一手：官方契约；经验：采用建议]**
 
 ## 3.1 auto mode 能挡住多少：官方公布的数字
 
@@ -176,7 +178,7 @@ Anthropic 公开了 auto mode 分类器的设计和误差 **[一手：工程博�
 
 **沙箱管不到的地方**（官方文档列出的局限）：
 
-- **只管 Bash**：Read、Edit、WebFetch 等内置工具，MCP 服务器和 Hook 都在沙箱外，要靠权限规则管理（`denyRead` 拦不住 Read 工具，`allowedDomains` 也限制不了 WebFetch）；
+- **只管 Bash**：Read、Edit、WebFetch 等内置工具另受工具权限约束（`denyRead` 拦不住 Read 工具，`allowedDomains` 也限制不了 WebFetch）；MCP 服务器进程和 Hook 不受这层 Bash 沙箱隔离，须另限配置来源或隔离整个进程。[命令 Hook 使用用户完整权限](https://code.claude.com/docs/en/hooks#security-considerations)，不能把模型工具调用审批当成它的启动闸门；
 - **宽泛的域名就是外泄通道**：允许 `github.com` 这类域名后，代理只看客户端声明的主机名、不解 TLS，可能被域前置（domain fronting）绕过；
 - **Unix socket**：放行 `/var/run/docker.sock` 等于把主机交出去；
 - **容器里的弱化模式**：`enableWeakerNestedSandbox` 会显著削弱隔离，只在外层另有隔离时使用；
