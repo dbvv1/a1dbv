@@ -19,8 +19,8 @@
 
 1. **先定义可观察的完成标准。** 编译、业务测试、浏览器操作和人工判断各覆盖不同问题。不要只接受 Agent 的完成声明。→ [07 工作流](docs/07-workflows.md)、[23 浏览器验证](docs/23-browser-verification.md)
 2. **上下文按任务提供。** 先定位相关事实，常驻规则只写必要信息；把暂时的搜索过程压缩为可复查的结论。长度、工具数量与推理强度都要通过任务对照决定。→ [03](docs/03-context-engineering.md)、[22](docs/22-agent-evaluation.md)
-3. **先解决一个反复出现的失败，再增加一个 Skill。** 访谈、调试、评审、交接各有用途；不要同时堆叠几套争夺控制权的完整流程。→ [05](docs/05-skills-and-plugins.md)、[24 社区工作流](docs/24-community-workflows.md)
-4. **模型、工具、流程一起评估。** API 账单、另购 credits 与订阅内额度分开记录；比较首次成功、重试、总费用、人工审查和返工，避免只看排行榜、最佳一次结果或生成行数。→ [02](docs/02-models-and-cost.md)、[22](docs/22-agent-evaluation.md)
+3. **原生起步，有可定位的能力缺口或有依据的质量目标时，再选择最小有效补充。** 先复用资料、项目约定与已有工具，不必等功能失败，也不默认增加 Skill；不要同时堆叠几套争夺控制权的完整流程。→ [05](docs/05-skills-and-plugins.md)、[24 社区工作流](docs/24-community-workflows.md)
+4. **模型、工具、流程一起评估。** 必要行为不退步，目标质量、总费用、实际等待与人工审查／返工分别判断；API 账单、另购 credits 与订阅内额度分开记录，首次成功与重试也分开，避免只看排行榜、最佳一次结果或生成行数。→ [02](docs/02-models-and-cost.md)、[22](docs/22-agent-evaluation.md)
 5. **并行要有清楚的交付边界。** 任务可分、上下文可交接、结果有人整合时才值得拆分；接口改变后也要更新尚未执行的计划。→ [08](docs/08-multi-agent.md)、[24](docs/24-community-workflows.md)
 6. **自动运行需要故障恢复。** 进程结束、外部请求超时、旧记忆和日志截断都可能让“继续”变成重复或误判。显式状态、有限重试与写操作对账很重要。→ [20](docs/20-codex-long-horizon.md)
 7. **约束由实际执行边界落实。** 类型 schema、Hook 和模型评审都有适用范围；权限、凭证与副作用不能只靠提示词声明。→ [06](docs/06-hooks-and-guardrails.md)、[10](docs/10-security.md)
