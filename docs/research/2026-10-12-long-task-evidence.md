@@ -1,6 +1,6 @@
 主线：三
 改变的建议：20：恢复最新目标、行为约束、运行事实与资源；旧绿灯和存在的文件不足以证明续接正确
-新证据：官方设计、故障单例及既有机制资料迁移；此页无新的模型恢复实验，待运行矩阵仍为设计
+新证据：官方设计、故障单例及既有机制资料迁移；2026-10-14 补失败压缩的固定修复、回归定义与发布 tag 核对；无新的模型恢复实验
 
 # 长程任务：来源、反例与实验边界
 
@@ -83,3 +83,27 @@
 | 技能 | 正例两种说法、近邻反例、旧版本配置 | 分开测发现、触发、执行、结果 |
 
 已运行证据的类型是仓库确定性检查和模拟引擎回归，实际记录见 [19](../19-experiments.md)；表中真实模型、跨会话实验仍待执行。恢复设计还需覆盖并发文件修改、旧记忆中的失效命令；检查输出须读取完整报告并保留原退出码，不能据输出尾部猜通过。**[经验：验证范围与剩余问题]**
+
+## 失败压缩的提交边界
+
+> 核实：2026-10-14 14:30 UTC。主线三；改变 20 §4：失败摘要不能代替原结果，恢复前区分响应完成、历史替换和持久化；不新增检查点框架。**[研究：采用判断]**
+
+### 固定修复与回归覆盖
+
+官方 [PR #53932](https://github.com/openai/codex/pull/53932) 于 2026-10-14 09:44 UTC 合并，固定 SHA `400f2356d60c4663d46817a40b4d09c5c86f35ad`。[compact.rs L826–920](https://github.com/openai/codex/blob/400f2356d60c4663d46817a40b4d09c5c86f35ad/codex-rs/core/src/compact.rs#L826-L920) 的旧非 PostTurn 路径在 `OutputItemDone` 就记录压缩输出；修复后先缓冲，收到 `Completed` 才记录，因此断流或 incomplete 的部分摘要不再进入后续模型输入。这修的是本地压缩响应流的历史污染，不是解释器重置、历史序号投影或工具输出截断。**[一手：固定源码与补丁]**
+
+- [断流／重启回归 L1311–1416](https://github.com/openai/codex/blob/400f2356d60c4663d46817a40b4d09c5c86f35ad/codex-rs/core/tests/suite/compact.rs#L1311-L1416)：先执行产生 `ORIGINAL_TOOL_RESULT` 的命令，压缩输出部分摘要后断流；正常续接和 restart 后再压缩的输入，都须保留相同的原消息与工具调用／结果，断流时原 token usage 不变。**[一手：测试定义，未运行]**
+- [incomplete 回归 L1161–1307](https://github.com/openai/codex/blob/400f2356d60c4663d46817a40b4d09c5c86f35ad/codex-rs/core/tests/suite/compact.rs#L1161-L1307)：原超大历史仍超限，下轮仍须压缩，且不包含 `DISCARDED_INCOMPLETE_SUMMARY`。带 usage 的 incomplete 会被单独记账，因此不能把“摘要丢弃”解释为请求未发生或不耗额度。**[一手：测试定义与实现，未运行]**
+- [成功路径 L1525–1636](https://github.com/openai/codex/blob/400f2356d60c4663d46817a40b4d09c5c86f35ad/codex-rs/core/tests/suite/compact.rs#L1525-L1636)：成功输出在响应完成通知前可观察，且带 compaction metadata 写入 rollout。该正常路径断言不覆盖任意磁盘故障或突然终止。**[一手：测试定义，未运行]**
+
+### 反证：响应完成不是持久化事务成功
+
+同一 SHA 的 [session/mod.rs L4322–4382](https://github.com/openai/codex/blob/400f2356d60c4663d46817a40b4d09c5c86f35ad/codex-rs/core/src/session/mod.rs#L4322-L4382) 先替换 live history，再调用持久化；[L4745–4754](https://github.com/openai/codex/blob/400f2356d60c4663d46817a40b4d09c5c86f35ad/codex-rs/core/src/session/mod.rs#L4745-L4754) 对追加失败记录错误并返回 false。因此 #53932 不能被写成完整原子落盘修复，也不能用响应完成事件证明恢复后的磁盘记录一定完整。**[一手：固定源码；研究：边界]**
+
+采用动作：失败时保留原数据，核对实际后端版本，再通过正常续接／恢复检查原消息与工具结果；有原结果就先复用和核对，不因压缩失败重跑外部写入。出现持久化错误、恢复缺项或工具结果未知时，仍按 20 §9 重读当前产物、查权威操作状态后决定重试。修复不验证摘要的语义正确性，也不承诺任意取消／崩溃都恢复成功。**[经验：由机制推导的建议]**
+
+### 发布边界与实际验证范围
+
+本轮读取[官方发布列表](https://github.com/openai/codex/releases)：最新稳定版 [0.162.1](https://github.com/openai/codex/releases/tag/rust-v0.162.1) 发布于 10 月 9 日，最新预发布 [0.163.0-alpha.11](https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.11) 发布于 10 月 14 日 03:27 UTC，早于本修复合并。另直接读取两个 tag 的 [稳定版 compact.rs](https://github.com/openai/codex/blob/rust-v0.162.1/codex-rs/core/src/compact.rs) 与 [预发布 compact.rs](https://github.com/openai/codex/blob/rust-v0.163.0-alpha.11/codex-rs/core/src/compact.rs)，均仍有旧的非 PostTurn 立即记录分支；同期 main 已有缓冲修复。不能建议“升级当前最新版即可解决”，也没有建立 Desktop 部署对应。后续采用前须重新核对发布内容与实际运行后端。**[一手：发布元数据与 tag 源码；研究：采用边界]**
+
+已完成固定补丁、实现、回归断言和两个 tag 的只读核查；没有安装或运行 Codex、模型、上游 Rust 回归，也没有读取私人会话或用量。测试使用 mock 响应且有 `skip_if_no_network`，测试存在或 PR 已合并不等于本轮执行通过；没有另做只能重复控制流的模拟实验。**[研究：验证范围]**
