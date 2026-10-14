@@ -1,6 +1,6 @@
 主线：一／二／三／四；客户端体验、验证选择、第二次修改与交付
 改变的建议：[研究] 默认复用引擎成熟组件，仅补所有权、退出和迁移规则；输入、运动、首发／呈现、菜单、存档、本地化、音频与时域画面分别按动作质量验收；game02 按待证事实选观察，不预建验证阶梯
-新证据：[一手／社区] 固定源码、官方契约／问题及开发者复盘；补输入后端、暂停时钟与截图降噪边界，重读笼子退出案例，补像素量化、信号优先级与呈现设置的玩法信息边界；未做引擎、设备或玩家实测，不能推出性能排名、AI 成功率或体验收益
+新证据：[一手／社区] 固定源码、官方契约／问题及开发者复盘；补输入后端、暂停时钟与截图降噪边界，重读笼子退出案例，补像素量化、信号优先级与呈现设置的玩法信息边界，以及 Thrive 旧报告保存／重译路径和原生文本转换合同；未做引擎、设备或玩家实测，不能推出性能排名、AI 成功率或体验收益
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -572,9 +572,28 @@
 
 ### 4. 保留与否及证据边界
 
-[研究] 正文仅增加“新语言／名字连带旧内容和字库更新”这一判断；不另写字体百科、翻译后台或通用 UI 框架。AI 可查硬编码与占位符、准备覆盖报告和回归画面，人决定名字政策并判断实际尺寸下的可读性。目标设备的字形、排版、输入提示与内存／首次显示表现仍待授权实测。
+[研究] 正文保留“新语言／名字连带旧内容和字库更新”，并补下节旧报告的消息表示与重译责任；不另写字体百科、翻译后台或通用 UI 框架。AI 可查硬编码与占位符、准备覆盖报告和回归画面，人决定名字政策并判断实际尺寸下的可读性。目标设备的字形、排版、输入提示与内存／首次显示表现仍待授权实测。
 
 [研究] 本轮不采用两条容易误写的材料：Factorio 简繁字体误选只取得搜索线索、论坛正文未成功读取，不列为一手结论；Unity 6.0 旧翻译页中的 ATG 富文本限制不能直接套到 6.3 新英文页，也不据限制项删除推断所有组合已可靠。
+
+### 5. 旧报告重译：保留消息含义，而非只存渲染结果
+
+核实：2026-10-14 UTC；主线三／四。现有字体与名字政策不解决旧任务／系统报告已经被存成某种语言的问题。✅ 对承诺随语言更新的系统消息，保留稳定身份、参数类型及历史值；实时值另从当前状态取得。原样保留的玩家文字、引用及历史记录不套此政策。[研究]
+
+**固定游戏路径。** 沿用已核 `Revolutionary-Games/Thrive@eceb8011d5e86b19dfa75de9e55eee6815fd1450`；[维护文档](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/doc/working_with_translations.md)解释延迟翻译以及读档后重译 auto-evo 报告的意图。实际读取以下源码，而非只凭文档断言功能已通过：[一手]
+
+- [LocalizedString.cs L57–77、160–183](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedString.cs#L57-L77)：archive 写读 translationKey 与对象参数数组；ToString 才查译文并按 culture 格式化，捕获 FormatException 后返回译文模板。这避免某类异常，**不保证缺参时仍是可理解的完整句子**。
+- [EditorBase.cs L793–827](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/general/base_stage/EditorBase.cs#L793-L827)：autoEvoExternal 以 LocalizedStringBuilder 写读。[报告组件 L356–365](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditorReportComponent.cs#L356-L365)在 OnTranslationsChanged 重发报告；[MicrobeEditor L568–575](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditor.cs#L568-L575)将保存的 builder 转为当前显示文字，并提供按需生成正文的委托。这里只闭合该路径，不声称每个已打开弹窗都刷新。
+- **反证／复用边界**：[LocalizedStringBuilder.cs L63–108、128–158](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedStringBuilder.cs#L63-L108)的 Append 先写 StringBuilder，FormatString getter 才归并缓冲；WriteToArchive 直接写 formatString 字段。因此“追加后尚未 ToString 就保存”不能凭可序列化接口宣称完整，需核调用顺序。但 [MicrobeEditor.OnEditorReady L397–403](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditor.cs#L397-L403)已有报告显示调用，而 [EditorBase L293–299](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/general/base_stage/EditorBase.cs#L293-L299)把自动保存放在进入编辑器完成之后；不能由类级条件风险推出正常报告存档已丢内容。旧字符串转换也只保留原格式串，不能恢复丢掉的消息身份。[研究：静态推导，未运行]
+
+**引擎合同与采用边界。** Unity 与 UE 均有原生机制，不复制 Thrive 的 GPL 组件；许可沿用本记录此前核查。[研究]
+
+- [Unity Localization 1.5.13 Arguments](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.Arguments.html)明确参数列表不序列化，可用局部持久变量，或从自己的已保存数据重建。[Persistent Variables](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/Persistent-Variables-Source.html)以 IVariableValueChanged 通知引用者；普通 Arguments 内部值变化可用 [RefreshString](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.RefreshString.html)，加载仍进行时会返回 false。不要把“持久变量”名称当成项目存档已接通，也不要把一次刷新调用当成最终显示已更新。[一手／研究]
+- [UE 5.8 Text Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine)的 FTextHistory 支持 culture-correct rebuilding；转 FString 通常丢失 history。确需交给只接受字符串的底层接口时可转换，但上层仍需保留来源并管理刷新。数字保留数值类型，由本地化格式处理复数；对象名的性别／词形不一定能靠插入一个已翻译名词解决。[一手] 这不意味着 FText 自动追踪任意业务变量；参数改变仍要更新对应格式化结果。[研究]
+
+**第二次修改的验收选择。** [研究] 在已有任务／报告中改一次参数结构并新增目标语言：历史数量保持当时含义，实时进度反映当前值；对目标语言实际使用的复数类别准备数值样本，而非只测英语 1／2。比较消息产生后立即保存与先显示后保存，再读档切语言；缺 key、缺参和旧格式要显示明确后备结果。只剩旧译文的记录应保留原文或走已定义迁移，不做字符串逆向猜 key。画面仍按实际尺寸检查换行、字形与操作路径，不以格式化成功代替可读性。
+
+本轮是固定源码／官方正文静态核查，无引擎运行、存档往返或语言审校实测；案例支持表示与更新责任的选择，不证明所有系统消息都应永久保存或引入新框架。[研究]
 
 ## 音频并发补研：保住起音不等于保住每次提示
 

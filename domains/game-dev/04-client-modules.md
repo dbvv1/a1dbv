@@ -222,6 +222,10 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 **[研究] ✅ 新增语言或角色名时，同时更新字库覆盖，并检查旧存档中的自定义名字。** Celeste [1.3 更新](https://www.celestegame.com/changelog.html)增加韩语时改为按使用语言加载字体，也为切语言后无法显示的玩家名增加替代显示；这不是所有游戏都应替换名字的理由，而是要求明确混合文字的显示政策。字体子集／预填充若只覆盖第一版文本，后续内容也须更新；官方 [Rebinding UI 源码](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/RebindActionUI.cs)仍直接显示 `action.name`、硬编码等待与倒计时，复用绑定刷新机制后应接入既有本地化表，不另建框架。[一手] Unity 6.3 的 ATG 仅在 UI Toolkit 路线评估，其[静态字体迁移](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/migrate-static-font-assets.html)要按减内存或降低首次字形生成分别选择；不据此迁移稳定 uGUI。新增名字／语言后，回看旧名字、冷启动首次显示及切换后的字体驻留；源码与文档不能证明目标设备已通过，细节见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#本地化补研新语言与旧名字一起维护)。
 
+**[研究] ✅ 要随当前语言变化的任务记录／系统报告，保留消息身份与有类型的参数，显示时再格式化；不要只保存第一版生成的译文。** Thrive 的[固定实现](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedString.cs#L57-L77)保存 key 与参数，报告在语言变化后重新生成显示；这比只更新语言表更能保住旧内容。[一手] 历史报告保留当时数量，实时任务显示当前数量；玩家输入、引用原文或明确要求原样留存的历史文本仍保存原文，不应被自动翻译。已有旧档只剩译文时，不能可靠地反推出原 key／参数。[研究]
+
+**[研究] 先用原生本地化对象，不另造跨引擎消息框架。** Unity Localization 1.5.13 的 [Arguments 不会被序列化](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.Arguments.html)，读档后需从已存业务数据重建参数；UE [FText 转 FString 会丢失 text history](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine)，仍需换语言的文本不要提前降成普通字符串。[一手] 第二次改数量／加语言时，同时检查旧报告、未首次显示就保存的消息，以及同一面板内的复数与数值更新。**局限：保存了消息身份不等于保存路径、参数刷新或目标语言排版已经正确；**固定源码中的缓冲边界与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-旧报告重译保留消息含义而非只存渲染结果)。
+
 ## 4. 借用的授权边界与升级条件
 
 **[研究] 先采用原生系统，改造项目缺少的窄政策，不用大型模板充当默认底座。** Unity 原生／包遵循引擎及具体包条款；UniTask／ink 为 MIT，Input System 为 Unity Companion License，均不免除资产和第三方通知。Addressables-Sample 固定树未发现许可证文件，先作机制参考，不能当已清商用复制权限；[许可与维护账](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-许可维护与采用边界)记录详细范围。
