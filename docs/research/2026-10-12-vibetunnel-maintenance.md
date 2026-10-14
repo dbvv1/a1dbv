@@ -1,6 +1,6 @@
 主线：三，兼四
-改变的建议：15迁移／24：移植后的所有权义务需单独验证；保留外部契约的局部修复不等于全盘重写
-新证据：历史移植、原始修复、arena binding再修订、固定源码与 CI skip；运行次数属贡献者报告，无本次引擎/上游执行或人力计时
+改变的建议：15迁移／24：移植后的所有权义务需单独验证；15补验新版本写入的状态能否被旧版本消费，恢复后也不能自动再生不兼容状态
+新证据：历史移植、原始修复、arena binding再修订、固定源码与 CI skip；10-14追加Git MIDX原始故障、默认格式回退与发布标签源码；无本次上游执行或人力计时
 
 # D4 来源记录：VibeTunnel 移植后的所有权维护
 
@@ -28,3 +28,20 @@
 - **[研究：候选取舍]** [CodexBar #708](https://github.com/steipete/CodexBar/pull/708)有电池反馈和 Codex review，但未补齐初次实现的 AI 归属链；[VibeTunnel #574](https://github.com/amantus-ai/vibetunnel/pull/574)披露 Claude 协助的 Zig 0.13／Raspberry Pi 适配，但已关闭未合并，Node fallback 自述未核实；[#575](https://github.com/amantus-ai/vibetunnel/issues/575)报告的 beta.15 早于十二月移植，不能接成此次转换的后果；[#611](https://github.com/amantus-ai/vibetunnel/pull/611)补编译前提，单独不足以解释维护转折。因此只采用上述所有权链为第二例。
 
 两例已足以形成限定任务建议，不以继续堆案例为完成条件。下一候选是 D6：把证据转成 Codex 的最小任务起点与改变工作流的具体条件；尚未认领。长期用户负担和人的主动时间仍未知。**[经验：本侧下一步判断]**
+
+
+## 持久状态回退：Git MIDX 的旧读取者边界
+
+> 核实：2026-10-14。主线四，兼三；补充 15 §5 的迁移验收。以下是 2026 年 4 月的非 AI 项目证据，只迁移其验收机制，不证明 Agent 的效率或维护能力。
+
+**真实失败先于默认值收窄。** Johannes Schindelin 在 [4 月 15 日原始邮件](https://www.spinics.net/lists/git/msg523938.html)报告：以 `v2.54.0-rc2` fetch 后，同一仓库被 `v2.53.0` 读取时因不识别 MIDX v2 而退出。原帖提及混用 Git 版本、降级及第三方实现的风险；实际报告只确认上述两个 Git 版本，不能把 libgit2/JGit 也写成已失败。**[社区：维护者实际运行报告]**
+
+此前 [`b2ec8e90c201d2395b67f89f3bf38bb472e43460`](https://github.com/git/git/commit/b2ec8e90c201d2395b67f89f3bf38bb472e43460)为支持 MIDX 层压实，放宽 pack 名排序约束并默认写 v2；提交说明认为旧 Git 会忽略不可用索引。Jeff King 的[原始诊断与候选补丁](https://www.spinics.net/lists/git/msg523949.html)指出旧读取路径仍有 `die()`，并报告在 2.53 上局部改为报错后放弃加载可继续工作；这不是最终合入的修法，也不是原报告者复测。**[一手：固定源码；社区：补丁作者运行报告]**
+
+**清掉产物不等于持续恢复。** Stolee 的[后续澄清](https://www.spinics.net/lists/git/msg524130.html)说明，混用版本时普通维护会再次生成 v2，仅删除索引不能长久解决；Hamano [确认](https://www.spinics.net/lists/git/msg524140.html)还需限制写入版本，或采用已进入 master 的修订。这是维护者的机制判断与恢复建议，未取得用户执行该恢复路径后的记录。**[一手：原始维护讨论]**
+
+最终 [`a12382f99488b8cea82f59a310084e43ff84e99b`](https://github.com/git/git/commit/a12382f99488b8cea82f59a310084e43ff84e99b)没有撤掉新能力：普通写入默认 v1，明确调用 compact 才选 v2，随后仍允许 `midx.version` 配置覆盖；文档同时注明 compact 产物不能供 2.54 之前的 Git 读取。补丁调整 `t5319` 的头部版本预期，既有 [`t5335`](https://github.com/git/git/blob/a12382f99488b8cea82f59a310084e43ff84e99b/t/t5335-compact-multi-pack-index.sh) 继续覆盖 compact 自动选 v2 及强制 v1 的拒绝路径。已读补丁与 [v2.54.0 标签提交的写入分支](https://github.com/git/git/blob/94f057755b7941b321fd11fec1b2e3ca5313a4e0/midx-write.c#L1277-L1289)，并通过 [提交到标签的祖先比较](https://github.com/git/git/compare/a12382f99488b8cea82f59a310084e43ff84e99b...v2.54.0)确认收录；不能把 rc2 的默认行为概括为正式 2.54.0 的默认故障。**[一手：合入产物与发布标签]**
+
+**✅ 有混用或降级要求时，用新版本写过的状态验旧读取者，并检查恢复后谁还会自动写入。** 新格式只服务可选能力时，可以保留能力、收窄默认启用范围；若业务状态不可逆，应另定迁移/恢复方式，不能把这里可重建的索引推广为“删缓存即可回滚”。这是对 Agent 编写升级方案的验收要求，不要求所有纯代码修改增加版本矩阵。**[经验：采用判断]**
+
+本轮只读原始邮件、固定补丁与标签源码；Git Rev News 仅作发现入口。没有安装或执行 Git 上游版本、运行其测试、取得原报告者在最终修订上的成功重试或实际接管工时。当前证据支持纠正默认策略和持久状态边界，不支持已经完成用户恢复闭环。**[研究：验证范围]**
