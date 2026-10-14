@@ -3,7 +3,7 @@
 > 帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**本轮更新：2026-10-13**：[任务级入口](docs/01-agents/codex.md#先给什么遇到什么再增加能力)、正文分层与协作归档已完成；[整体评估与专项审计](docs/collaboration/reviews/2026-10-13-331e093.md)修正模板覆盖、默认流程和撤回结论回流问题。[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)继续追产品试用、能力增量、连续修改和接管成本；新增内容的证据及验证范围见各页。
+**本轮更新：2026-10-15（UTC+8）**：[15 条核心建议](docs/README.md#核心建议一致性清单)明确唯一主专题与相关入口；[两种情境走读](docs/README.md#两种情境的入口走读)同时覆盖已有失败和功能正常但有质量目标；[42 页成熟度基线](docs/README.md#核心页面成熟度)列出具体差距和下一步。[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)继续围绕产品试用、能力增量、连续修改和接管成本；文档成熟度不代表真实模型或游戏效果已验证。
 
 执行资产与历史验证见 [维护路线](docs/maintenance-roadmap.md)、[长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
 
@@ -15,23 +15,25 @@
 
 ## 一页纸：怎样把 AI 编程用好
 
-以下是本仓库的实践判断 **[经验：综合建议]**；对应章节区分来源事实、作者经验和未验证假设。
+以下只保留实践判断的摘要 **[经验：综合建议]**；详细条件、依据和反证由[核心建议清单](docs/README.md#核心建议一致性清单)指定的主专题维护。
 
 1. **先定义可观察的完成标准。** 编译、业务测试、浏览器操作和人工判断各覆盖不同问题。不要只接受 Agent 的完成声明。→ [07 工作流](docs/07-workflows.md)、[23 浏览器验证](docs/23-browser-verification.md)
 2. **上下文按任务提供。** 先定位相关事实，常驻规则只写必要信息；把暂时的搜索过程压缩为可复查的结论。长度、工具数量与推理强度都要通过任务对照决定。→ [03](docs/03-context-engineering.md)、[22](docs/22-agent-evaluation.md)
 3. **原生起步，有可定位的能力缺口或有依据的质量目标时，再选择最小有效补充。** 先复用资料、项目约定与已有工具，不必等功能失败，也不默认增加 Skill；不要同时堆叠几套争夺控制权的完整流程。→ [05](docs/05-skills-and-plugins.md)、[24 社区工作流](docs/24-community-workflows.md)
-4. **模型、工具、流程一起评估。** 必要行为不退步，目标质量、总费用、实际等待与人工审查／返工分别判断；API 账单、另购 credits 与订阅内额度分开记录，首次成功与重试也分开，避免只看排行榜、最佳一次结果或生成行数。→ [02](docs/02-models-and-cost.md)、[22](docs/22-agent-evaluation.md)
+4. **模型、工具、流程一起评估。** 必要行为不退步，目标质量、总费用、实际等待与人工审查／返工分别判断；API 账单、另购 credits 与订阅内额度分开记录，首次成功与重试也分开，避免只看排行榜、最佳一次结果或生成行数。→ [22 评估](docs/22-agent-evaluation.md)、[02 计费口径](docs/02-models-and-cost.md)
 5. **并行要有清楚的交付边界。** 任务可分、上下文可交接、结果有人整合时才值得拆分；接口改变后也要更新尚未执行的计划。→ [08](docs/08-multi-agent.md)、[24](docs/24-community-workflows.md)
 6. **自动运行需要故障恢复。** 进程结束、外部请求超时、旧记忆和日志截断都可能让“继续”变成重复或误判。显式状态、有限重试与写操作对账很重要。→ [20](docs/20-codex-long-horizon.md)
-7. **约束由实际执行边界落实。** 类型 schema、Hook 和模型评审都有适用范围；权限、凭证与副作用不能只靠提示词声明。→ [06](docs/06-hooks-and-guardrails.md)、[10](docs/10-security.md)
-8. **快速原型用来发现问题，真实交付需要补足证据。** 先打通核心路径，亲自试用；接入真实用户、数据或收费前检查权限、持久化、故障恢复和维护方式。→ [24](docs/24-community-workflows.md)
-9. **读实践者的失败记录，也读源码与官方规范。** 开源作者、维护者和使用者有不同目标；个人成功案例不代表普遍收益，社区热度不等于证据。→ [11](docs/11-community-pulse.md)、[24](docs/24-community-workflows.md)
-10. **领域验证决定自主程度。** 游戏中的编译、状态与自动试玩可以逐步自动化，手感与乐趣仍需要人体验。→ [游戏开发](domains/game-dev/README.md)
+7. **约束由实际执行边界落实。** 类型 schema、Hook 和模型评审都有适用范围；权限、凭证与副作用不能只靠提示词声明。→ [10 安全](docs/10-security.md)、[06 Hook 边界](docs/06-hooks-and-guardrails.md)
+8. **快速原型用来判断价值，真实交付需要补足证据。** 先打通核心路径，亲自试用；接入真实用户、数据或收费前检查权限、持久化、故障恢复和维护方式。→ [15 原型](docs/15-task-playbooks.md#10-原型和一次性脚本)、[18 交付与接管](docs/18-team-adoption.md)
+9. **读实践者的失败记录，也读源码与官方规范。** 开源作者、维护者和使用者有不同目标；个人成功案例不代表普遍收益，社区热度不等于证据。→ [09 证据边界](docs/09-review-and-quality.md#1-质量数据ai-代码的真实代价)、[24 实践案例](docs/24-community-workflows.md)
+10. **领域验证决定自主程度。** 游戏按问题组合编译、状态、画面和自动试玩证据，手感与乐趣仍需要人体验。→ [游戏验证](domains/game-dev/02-verification-and-playtesting.md)、[游戏路线图](domains/game-dev/06-indie-roadmap.md)
 
 ## 按目标开始阅读
 
 | 你现在要做什么 | 推荐入口 |
 |---|---|
+| 已有失败，判断先补资料、工具还是流程 | [15 调试](docs/15-task-playbooks.md#2-调试) → [05 最小补充](docs/05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) |
+| 功能正常，希望改善信息表达、响应或可维护性 | [15 真实任务与质量目标](docs/15-task-playbooks.md#10-原型和一次性脚本) → [22 比较与撤回](docs/22-agent-evaluation.md#7-何时推广何时停止) |
 | 使用 Codex 或 Claude Code | [Codex](docs/01-agents/codex.md) → [Claude Code](docs/01-agents/claude-code.md) |
 | 看真实开发者怎样使用 Skills 和 Agent | [24 社区工作流与失败案例](docs/24-community-workflows.md) |
 | 判断工作流是否对强模型仍有价值 | [24 的独立分析](docs/24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) |
@@ -48,7 +50,7 @@
 
 | 文档 | 内容 |
 |---|---|
-| [docs/README.md](docs/README.md) | 阅读顺序、评级与证据体系、维护流程 |
+| [docs/README.md](docs/README.md) | 阅读路径、核心建议归属、逐页成熟度、评级与证据体系 |
 | [00 现状总览](docs/00-state-of-ai-coding.md) | 2026 年 AI coding 的格局、趋势、共识与争议 |
 | [01 Coding Agent](docs/01-agents/README.md) | Agent 对比矩阵与选型；Claude Code / Codex / Gemini CLI / 开源 Agent / IDE 类深度页 |
 | [02 模型与成本](docs/02-models-and-cost.md) | 模型档位、价格、订阅 vs API、额度、国内 Coding Plan、本地模型、基准测试可信度 |

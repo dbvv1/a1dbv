@@ -4,6 +4,8 @@
 
 | 你的情况 | 建议路径 |
 |---|---|
+| 已有失败，想知道先补什么 | [15 调试](15-task-playbooks.md#2-调试) → [05 最小能力补充](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) → [22 保留或撤回](22-agent-evaluation.md#7-何时推广何时停止) |
+| 功能正常，但有明确的质量目标 | [15 原型与真实任务](15-task-playbooks.md#10-原型和一次性脚本) → [05 领域依据](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) → [22 质量比较](22-agent-evaluation.md#5-如何计分而不自欺)；不必先制造失败 |
 | 想看真实社区做法与失败案例 | [24 社区工作流](24-community-workflows.md) → [15 按任务类型的打法](15-task-playbooks.md) |
 | 想评估配置、跑长任务或验收前端 | [22 评估](22-agent-evaluation.md) → [20 可靠性](20-codex-long-horizon.md) → [23 浏览器验证](23-browser-verification.md) |
 | 刚开始用 AI coding | 00 → 01 → 07 → **15** → 03 |
@@ -15,6 +17,43 @@
 | 关注前沿与争议 | **13** → 00 → 11 → 08 → 04 |
 | 想理解“为什么”、做判断和规划 | **14** → 07 → 09 → 10 → 13 |
 | 游戏开发 | 07 → **14** → [domains/game-dev](../domains/game-dev/README.md) |
+
+## 核心建议一致性清单
+
+> 核对日期：2026-10-15（UTC+8）。这是入口摘要的维护清单，不是额外开发流程。每条建议只有一个主专题负责详细依据、条件和反证；其他入口只做摘要和链接。主专题的建议改变时，同一提交核对本行相关入口。**[研究：文档一致性核对]**
+
+| 核心建议（短摘要） | 唯一主专题 | 相关入口 |
+|---|---|---|
+| 1. 完成由可观察的验收决定；计划深度与会话切换按未知和上下文负担选择 | [07 工作流](07-workflows.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Claude §4](01-agents/claude-code.md#4-按任务选择的用法要点)、[14](14-synthesis.md)、[15](15-task-playbooks.md) |
+| 2. 先用最小原型和真人任务判断价值，分清没机会、没理解、运行失败与不值得继续 | [15 任务打法 §10](15-task-playbooks.md#10-原型和一次性脚本) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex §6](01-agents/codex.md#6-使用建议从实际问题选择方法)、[24](24-community-workflows.md)、[游戏路线图](../domains/game-dev/06-indie-roadmap.md) |
+| 3. 按任务保留必要上下文，核对加载、版本和来源；不靠固定长度判断价值 | [03 上下文工程](03-context-engineering.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex](01-agents/codex.md)、[Claude](01-agents/claude-code.md)、[14](14-synthesis.md)、[18](18-team-adoption.md) |
+| 4. 原生起步；已有能力缺口或有依据的质量目标，都可选择最小有效补充，不默认加 Skill | [05 Skills §2.5](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex §6](01-agents/codex.md#6-使用建议从实际问题选择方法)、[Claude §7](01-agents/claude-code.md#7-推荐起步先原生扩展按需选择)、[14 §8](14-synthesis.md#8-成熟度路线)、[22](22-agent-evaluation.md)、[24](24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻)、[13](13-frontier-radar.md) |
+| 5. 必要行为不退步；目标质量、费用、等待、主动工时及首试／重试分别比较，无目标收益或代价不可接受就撤回 | [22 Agent 评估](22-agent-evaluation.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[02](02-models-and-cost.md)、[05](05-skills-and-plugins.md)、[09](09-review-and-quality.md)、[19](19-experiments.md)、[24](24-community-workflows.md) |
+| 6. 按依赖与可独立验收边界拆任务，把整合和人的审查计入并行成本 | [08 多 Agent](08-multi-agent.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[07](07-workflows.md)、[14](14-synthesis.md)、[20](20-codex-long-horizon.md)、[24](24-community-workflows.md) |
+| 7. 额外评审须补明确风险或遗漏，用新增有效发现与核查负担决定保留；换模型不自动获得独立证据 | [09 评审与质量](09-review-and-quality.md#按风险选择评审层不默认逐层叠加) | [00](00-state-of-ai-coding.md)、[Agent 选型](01-agents/README.md)、[Claude §4](01-agents/claude-code.md#4-按任务选择的用法要点)、[05](05-skills-and-plugins.md)、[08](08-multi-agent.md)、[14](14-synthesis.md)、[21](21-agent-patterns.md) |
+| 8. 恢复先核最新目标、证据版本和外部结果；未知副作用先对账，不盲目重试 | [20 长程执行](20-codex-long-horizon.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex](01-agents/codex.md)、[Claude](01-agents/claude-code.md)、[03](03-context-engineering.md)、[17](17-troubleshooting.md)、[21](21-agent-patterns.md) |
+| 9. 权限与副作用由实际执行边界落实；Hook、审批模型和预算配置只在各自覆盖范围生效 | [10 安全](10-security.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[06](06-hooks-and-guardrails.md)、[14](14-synthesis.md)、[16](16-building-agents.md)、[18](18-team-adoption.md) |
+| 10. CLI、MCP 与代码接口按访问、隔离和完整调用成本选择，不设通用快慢或费用排名 | [04 MCP](04-mcp.md) | [00](00-state-of-ai-coding.md)、[Claude §4](01-agents/claude-code.md#4-按任务选择的用法要点)、[05](05-skills-and-plugins.md)、[16](16-building-agents.md)、[23](23-browser-verification.md) |
+| 11. 交付要满足接收渠道的准入、恢复与维护责任；下一位维护者的实际修改比交接文档存在更有说服力 | [18 团队落地](18-team-adoption.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[14](14-synthesis.md)、[15](15-task-playbooks.md)、[24](24-community-workflows.md) |
+| 12. 事实、统计与收益结论保留来源、分母和适用范围；社区单例、厂商自报与相关性不升级为普遍因果 | [09 质量证据](09-review-and-quality.md#1-质量数据ai-代码的真实代价) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[00](00-state-of-ai-coding.md)、[11](11-community-pulse.md)、[14](14-synthesis.md)、[19](19-experiments.md)、[游戏资产总览](../domains/game-dev/03-generative-ai-in-games.md) |
+| 13. 游戏资产先定玩法／设备规格，再核代码、权重、输出和发布规则；现成或程序化资源满足时不重生成 | [游戏 03 资产总览](../domains/game-dev/03-generative-ai-in-games.md) | [游戏入口](../domains/game-dev/README.md)、[2D](../domains/game-dev/assets/2d.md)、[3D](../domains/game-dev/assets/3d.md)、[动画](../domains/game-dev/assets/animation.md)、[材质](../domains/game-dev/assets/materials.md)、[音频](../domains/game-dev/assets/audio.md)、[视频](../domains/game-dev/assets/video.md)、[18](18-team-adoption.md) |
+| 14. 资产导入沿用已有引擎入口；替换和第二次修改要保引用、身份与原消费者，不以首次导入代替生产验证 | [游戏 01 引擎接入](../domains/game-dev/01-engine-integration.md) | [游戏入口](../domains/game-dev/README.md)、[Unity](../domains/game-dev/unity/README.md)、[Unreal](../domains/game-dev/unreal/README.md)、[游戏路线图](../domains/game-dev/06-indie-roadmap.md)、[07](07-workflows.md) |
+| 15. 游戏按要回答的问题组合逻辑、状态、画面和真人试玩证据；功能通过不代替响应、辨识、手感或乐趣的取舍 | [游戏 02 验证与试玩](../domains/game-dev/02-verification-and-playtesting.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[14](14-synthesis.md)、[23](23-browser-verification.md)、[客户端模块](../domains/game-dev/04-client-modules.md)、[gameplay](../domains/game-dev/05-gameplay-architecture.md)、[游戏路线图](../domains/game-dev/06-indie-roadmap.md) |
+
+### 两种情境的入口走读
+
+**情境 A**：已有明确失败，需要纠正。**情境 B**：功能检查通过，但有依据和可比较标准的质量目标，例如让多项结果更容易比较。两者都先保留必要行为与权限边界，再决定补资料、短契约、工具或窄 Skill；B 不要求先发生失败，A 也不自动安装全套流程。
+
+| 入口与核对位置 | A：已有失败 | B：功能正常，有质量目标 |
+|---|---|---|
+| [首页“一页纸”第 3–4 项](../README.md#一页纸怎样把-ai-编程用好) | 定位缺口，选最小补充 | 质量目标可直接进入；质量与代价分开判断 |
+| [Codex §6](01-agents/codex.md#6-使用建议从实际问题选择方法) | 用失败命令、预期和版本复现 | 复用 brief／设计系统，明确目标操作和保留行为 |
+| [Claude §4／§7](01-agents/claude-code.md#7-推荐起步先原生扩展按需选择) | 原生检查不足才按条件补能力 | 有依据的质量目标也可选最小补充，不必先装插件 |
+| [14 §8](14-synthesis.md#8-成熟度路线) | 按缺口选投入 | 从质量目标进入 05／22，不走工具安装等级 |
+| [22 §1／§5／§7](22-agent-evaluation.md#1-要回答的是一个决策) | 比较目标缺口是否改善 | 预设质量标准，保留回归；允许两边功能都通过 |
+| [24 默认基线](24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) | 调试或验证证据补具体问题 | 领域依据可改善信息关系／任务引导，不默认整套 Skill |
+
+以上是 2026-10-15（UTC+8）的文档情境核对，不是运行 Agent 的收益实验；具体保留／缩减／撤回按 [22 §7](22-agent-evaluation.md#7-何时推广何时停止)。
 
 ## 评级与证据体系
 
@@ -58,6 +97,75 @@
 > **第六轮（2026-10-08）**：
 > - 在云端环境用 `claude -p` 做了三组实验，写成 [19 实测记录](19-experiments.md)，证据等级标为 **[经验：实测]**；
 > - 读了 Anthropic 多 Agent 研究系统、Code Review、安全 SDLC 的原文，Cognition 的反方观点，Claude Code 沙箱、Agent Teams、子 Agent 文档，Nx、AWS 安全公告，据此加厚 08、09、10。
+
+## 核心页面成熟度
+
+> 评估日期：2026-10-15（UTC+8；对应 10-14 UTC）。范围：主干 00–24、Codex／Claude 深度页，以及游戏总入口、01–06、六类资产页和 Unity／Unreal 总入口，共 42 页；不覆盖所有引擎子页、模板及研究记录的逐页评级。按本轮可读正文和已有证据记录做编辑评估；新写入内容不等于已通过独立事实审核，审核状态以对应记录为准。本轮没有重新联网认证所有引用，也没有运行模型、浏览器或引擎。**[研究：内容基线评估]**
+
+标准沿用[长期计划 §3](collaboration/LONG-TERM-PLAN.md#3-内容成熟度)。页级看核心采用建议是否成立，不以篇幅、来源数量或离线检查通过数升级；局部实测不自动让整页达到 L4。L3 允许据文档与源码给出有边界的建议，未实测本身不是降到 L2 的理由。
+
+| 级别 | 达到什么程度 |
+|---|---|
+| L1 覆盖 | 主要方案有来源，但读者还需自己拼选择条件 |
+| L2 可采用 | 有简短结论、条件／分档选择和撤回条件；关键依据、时效或跨页一致性仍有具体缺口 |
+| L3 权威 | 关键事实已交叉核对，有反证／失效条件、动态核实日期且核心建议一致；不读研究记录也能做第一个选择 |
+| L4 实证 | 在 L3 基础上，有本仓库可复查实验支持核心建议；静态检查、模拟通过或外部作者自报不能替代 |
+
+### 主干页面
+
+| 页面 | 当前级别 | 具体差距 | 下一步 |
+|---|---|---|---|
+| [00 现状总览](00-state-of-ai-coding.md) | L2 | 强制评审等入口已收窄；标准、市场数量和产品趋势仍混合 10-08 快照与局部更新 | 先复核影响选型的能力与默认行为，删去不影响选择的旧数字 |
+| [01 Agent 选型](01-agents/README.md) | L2 | 选型已按任务条件化；功能矩阵、额度和 Harness 开销来自不同版本／测量条件 | 与两份主力深度页对齐有效版本，避免用旧开销横比当前客户端 |
+| [Codex](01-agents/codex.md) | L2 | §6 可直接选路；形态、套餐和部分发布信息仍沿历史核实范围 | 将影响使用入口的已发布能力与源码能力逐项分开，按发布更新核实日期 |
+| [Claude Code](01-agents/claude-code.md) | L2 | 起步、会话和评审已条件化；功能全景、价格／套餐未全量重核 | 先核当前使用方式所需的版本、会话支持和计费，不将局部修复当整页更新 |
+| [02 模型与成本](02-models-and-cost.md) | L2 | 订阅／API／缓存口径已拆开，价表和能力分档仍混用不同核实日 | 复核会改变模型档位选择的单价、额度与长上下文条件，再同步 13 |
+| [03 上下文工程](03-context-engineering.md) | L2 | 研究正反例与保留判据已补；加载表、会话操作和长度经验仍跨客户端／模型 | 将关键加载与压缩行为绑定目标版本，撤掉与按任务收益矛盾的固定经验阈值 |
+| [04 MCP](04-mcp.md) | L2 | 已撤回接口成本通用排名；§3 的 Figma、记忆类等候选仍缺具体采用／退出条件 | 只保留能对应访问或观察缺口的候选，并写原生已足够时的停止点 |
+| [05 Skills 与插件](05-skills-and-plugins.md) | L2 | §2.5 已能区分资料、短契约与 Skill；市场数量及部分跨平台能力仍为旧快照 | 优先复核会影响安装／权限的宿主行为，把无决策增量的清单收回主专题链接 |
+| [06 Hooks 与护栏](06-hooks-and-guardrails.md) | L2 | Hook 失败与覆盖边界清楚；权限模式、事件全景和自动审批材料仍跨版本 | 按当前宿主核对关键事件与默认权限，不把路径脚本回归扩成运行时安全认证 |
+| [07 工作流](07-workflows.md) | L2 | 已按未知／质量目标选方法；Spec、TDD、Ralph 等选择与停止条件分散于各节 | 用现有任务分流收拢“何时够用／何时撤回”，保留各方案反例 |
+| [08 多 Agent](08-multi-agent.md) | L2 | 完整交付计时与依赖边界已明确；§2／§7 的运行形态、配置与并发值仍沿旧快照 | 核对会改变拆分方式的客户端契约，再同步相关入口 |
+| [09 评审与质量](09-review-and-quality.md) | L2 | 风险选层与统计限制较完整；§2 命令、托管价格和功能未随最新评审证据全量复核 | 前置风险选层入口，核对实际采用的评审入口与计费条件 |
+| [10 安全](10-security.md) | L2 | 脚本启动与插件隔离有近期补核；沙箱默认值和清单仍需按系统／版本对应 | 优先核对会放宽权限的路径、例外和失效后果，保留产品边界 |
+| [11 社区脉搏](11-community-pulse.md) | L1 | 有原帖与数据，但旧 issue 热度／状态不足以直接给当前选型和撤回条件 | 把仍影响选择的失败追到修复／复测，其余留作历史材料或删去 |
+| [12 资源索引](12-resources.md) | L1 | 能找资料，工具列表尚不能独立回答何时采用／不用 | 以主专题的具体问题筛入口，不另建工具榜单或重复推荐 |
+| [13 前沿雷达](13-frontier-radar.md) | L2 | 精选已连接改变的建议；历史时间线和价格表仍未全量更新 | 优先完成每周影响选型的更新，明确每条改变哪项建议及核实范围 |
+| [14 深度分析](14-synthesis.md) | L2 | 双情境与风险入口已同步；§1–6 的综合效果概括仍需逐条回查主专题的样本与适用期 | 先核会决定自主程度和流程投入的概括，避免总论强于其依据 |
+| [15 任务打法](15-task-playbooks.md) | L3 | 各任务有条件建议、反例与验证边界；尚无本仓覆盖原型、多轮变更和接管的完整实证 | 继续追同一任务的实际选择链；获准实测后再检验整条链，不把局部案例相加成成功率 |
+| [16 自建 Agent](16-building-agents.md) | L2 | 自建／复用路径明确；§4.2 缓存和工具变更说法未按 02 的厂商／配置边界展开 | 核对 SDK／托管运行的版本与缓存、预算边界，再决定哪条路径可替换 |
+| [17 故障排查](17-troubleshooting.md) | L2 | 能按症状找到操作；速查仍易把完成误报导向 Stop Hook、恢复问题导向重开 | 按 06／20 先核现有检查、运行版本与恢复状态，再补条件化处理 |
+| [18 团队落地](18-team-adoption.md) | L2 | 接管、许可和成本边界已补；§9 仍用固定指令行数，套餐／数据政策也含旧快照 | 同步 03 的保留判据，再核会影响团队准入与费用的条款 |
+| [19 实测记录](19-experiments.md) | L2 | E1–E3 已补精简产物和汇总，但完整原始轨迹及本侧独立模型复现仍有缺口 | 追齐可得的历史材料；按实验类型引用，不借 E4／E6 确定性回归授整页 L4 |
+| [20 长程执行](20-codex-long-horizon.md) | L3 | 恢复、重试与撤回可直接选择；真实跨会话模型成功率及人工投入未由本仓对照支持 | 先维护发布版本和失败边界；获准实测后选一个既定恢复场景验证 |
+| [21 开源机制](21-agent-patterns.md) | L3 | 固定实现与反例支持机制取舍；未证明整套框架或回执系统的真实净收益 | 持续核对会改变采用条件的上游修订；将来只试选中的最小机制 |
+| [22 Agent 评估](22-agent-evaluation.md) | L3 | 双情境、判定器与成本口径可直接使用；局部复算不等于本仓已运行完整配置对照 | 保留评估设计，获准后以既定真实任务执行，保存全部尝试与人工判断 |
+| [23 浏览器验证](23-browser-verification.md) | L3 | 可按缺失观察选反馈，含自修复／时序反例；没有本仓应用上的完整验证收益对照 | 维护目标浏览器／工具契约；未来实测按真实用户路径检验，不重复加截图循环 |
+| [24 社区工作流](24-community-workflows.md) | L3 | 固定配置、失败原帖和条件选择已交叉呈现；没有当前强模型同任务净收益对照 | 只追能改变取舍的实际交付／再使用证据，不把作者自报升级成模型排名 |
+
+### 游戏核心页面
+
+本表的 L1–L4 是**内容成熟度**，不是游戏 02 中的验证手段编号。资产页的 L3 表示能够据许可、规格和机制选择首试路线，不表示质量排名、商用结果担保或零手修量产已经验证。
+
+| 页面 | 当前级别 | 具体差距 | 下一步 |
+|---|---|---|---|
+| [游戏总入口](../domains/game-dev/README.md) | L2 | 路线与引擎入口已条件化；引擎版本、GDC／VGI 背景仍沿历史快照，历史 WP 表不能当当前待办 | 保留 06 的选路链接，复核仍会影响选择的背景事实，压缩历史盘点 |
+| [01 引擎接入](../domains/game-dev/01-engine-integration.md) | L2 | 默认工具叠加已撤回；§3 的模型熟悉度与“纯代码最省事”推论仍偏普遍 | 按已有工程、任务与验证成本限定推论，不诱导为 Agent 迁移引擎 |
+| [02 验证与试玩](../domains/game-dev/02-verification-and-playtesting.md) | L2 | 已撤回逐级搭建与通用性价比排名；首个选择仍分散于阶梯、回合制案例和输入路径反例 | 压成按规则／实时状态／UI 输入／视觉目标选择的短结论，保留真人试玩条件 |
+| [03 资产与运行时 AI](../domains/game-dev/03-generative-ai-in-games.md) | L2 | 资产部分接近 L3；§2 运行时 AI 的采用／撤回仍缺与建议对应的具体反证 | 先限定运行时推理的失败、成本和替代条件，不以资产部分替整页升级 |
+| [04 客户端模块](../domains/game-dev/04-client-modules.md) | L3 | 现有条件表与源码反例支持选择；模块级短结论尚未齐全，也未联合实测 | 从现有材料提炼每模块的首选／增加／撤回条件；真实设备联合验证待授权 |
+| [05 Gameplay 架构](../domains/game-dev/05-gameplay-architecture.md) | L3 | 生命周期、战斗和相机有取舍依据；部分模块仍需读长节才能选，未有本仓二改实证 | 缩短循环、状态、数据、事件模块的决策入口，保留版本与反证；不据局部机制预测整款体验 |
+| [06 独立游戏路线图](../domains/game-dev/06-indie-roadmap.md) | L3 | 七阶段可直接选下一步；部分依赖页如 01／02 尚未达到 L3，整条路线的证据仍未闭合 | 先提升这些依赖页，再回核阶段入口；完整垂直切片与二改待授权 |
+| [2D 资产](../domains/game-dev/assets/2d.md) | L3 | 三档、许可与分类反证已具备；无本仓静态／逐帧／瓦片分别成立的零手修二改实证 | 保留既有分类验收与全成本记录设计，真实执行待授权 |
+| [3D 资产](../domains/game-dev/assets/3d.md) | L2 | Tripo 几何与纹理需分别锁版本，关键默认值仍只在 WP3 动态事实中 | 在推荐旁前置纹理模型的独立版本条件，不把选定几何型号当整条输出已固定 |
+| [动画与绑定](../domains/game-dev/assets/animation.md) | L2 | 推荐 Uthana Video-to-Motion 2.1，但 API 默认仍为 2.0 的条件留在 WP4 | 在推荐旁明确指定／记录模型版本，再沿同一动作核对后处理能力 |
+| [材质与特效](../domains/game-dev/assets/materials.md) | L3 | 参数化材质、运行时与 flipbook 的条件和反例清楚；无本仓二改后外观／时序／预算联合实证 | 沿既有题保留源、输出和设备预算记录，暂不执行真实引擎验证 |
+| [音频资产](../domains/game-dev/assets/audio.md) | L2 | 外部音频三档与二改较完整；原生生成器的包版本、Loop 与计费需统一核实范围 | 完成本轮原生音频边界的同步与独立审阅，再决定是否达到 L3 |
+| [视频与过场](../domains/game-dev/assets/video.md) | L3 | 价格／合同／局部编辑限制与状态出口已成条件选择；无本仓同镜头二改实证 | 保留窗外变化、时基、全成本及跳过／恢复记录，真实验证待授权 |
+| [Unity 入口](../domains/game-dev/unity/README.md) | L2 | 已按任务选择已有能力；引入 CLI／MCP 后何时撤回，仍需到工具链／模板页拼接 | 补失败、维护成本或能力不足时退回既有 Editor 脚本／命令的简短条件 |
+| [Unreal 入口](../domains/game-dev/unreal/README.md) | L2 | 已取消默认 All Toolsets；“新逻辑优先 C++、蓝图只组装”仍未区分已有工程 | 按已有蓝图、工具可观测性与可测试规则限定选择，避免无收益迁移 |
+
+**先补哪几页**：优先修会阻断选择的已知条件（3D／动画版本入口、原生音频范围），再补主干动态事实与游戏 01／02 的选路。已有 L3 页优先保持反证和时效；L4 所需实测属于后续阶段，当前不执行。表内下一步是待办方向，不表示已完成或已获安装、付费、下载模型、运行引擎的授权。
 
 ## 来源审查与验证状态（2026-10-10；目录于 10-11 整合）
 

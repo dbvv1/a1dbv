@@ -35,8 +35,8 @@
 
 | 引擎 | 起点 |
 |---|---|
-| **Unity 6+** | [unity/](unity/README.md)：Unity CLI + 与版本匹配的官方插件 + 本仓库模板 |
-| **Unreal 5.8+** | [unreal/](unreal/README.md)：Unreal MCP + Epic 插件 + 本仓库模板 |
+| **Unity 6+** | [unity/](unity/README.md)：沿用已有编译／测试；场景与资产操作缺入口时再评估版本匹配的 CLI／Editor API／MCP，模板只合并所需部分 |
+| **Unreal 5.8.1+** | [unreal/](unreal/README.md)：已有 C++ 构建／测试为基线，需要编辑器操作时才增最小 MCP 工具集或现成脚本 |
 | Roblox | [01 第 2.3 节](01-engine-integration.md#23-roblox把-agent-能力直接做进编辑器)：Studio 内置 MCP，用好 `playtest` 子 Agent |
 | Godot / 自研 / Web | 通用编码工作流 + [02](02-verification-and-playtesting.md) 的“Agent 可试玩”改造 |
 

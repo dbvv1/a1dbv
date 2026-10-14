@@ -12,18 +12,16 @@
 
 ## 一页纸推荐（2026-10）
 
-```
-UE 5.8.1+：
-  Claude Code 或 Codex
-  + Unreal MCP（编辑器内置，实验性）+ All Toolsets
-  + Epic 官方插件 unreal-engine-skills-for-claude-code（unreal-mcp / create-toolset / unreal-skill）
-  + Rider 或 clangd（compile_commands.json）
-  + 本目录 templates（命令行编译和测试、二进制资产保护、UObject 评审清单）
+先沿用当前项目的构建、测试和编辑器入口；只补确实缺少的操作能力。**[研究：采用判断]**
 
-UE 5.5–5.7：
-  Claude Code + 通用编码工作流（C++）+ 本目录的命令行编译和测试
-  + 需要操作编辑器时：UnrealClaude（社区）
-```
+| 当前需要 | 起点与增加条件 |
+|---|---|
+| C++ 代码修改 | 已有 UBT／自动化测试与源码检索；不为纯代码先启用 MCP 或安装插件 |
+| UE 5.8.1+ 的编辑器资产操作 | 已配置的 Editor 脚本或接口优先；缺入口时再评估实验性 Unreal MCP，只启用所需工具集，不默认 All Toolsets |
+| UE 5.5–5.7 编辑器操作 | 沿用兼容 Editor Python 或既有入口；确有缺口再评估社区桥，按项目版本核能力 |
+| 符号定位、重复构建或评审遗漏 | 需要时再选 Rider／clangd 或模板中的对应检查，不把整套 Skill／Hook／reviewer 当前置 |
+
+选择边界与版本前提见 [01 工具链](01-toolchain.md)和[模板说明](templates/README.md)；没有安全入口时说明缺口，不直接改二进制资产或扩大全部工具权限。当前为文档建议，未验证具体项目接入效果。
 
 ## 四个最重要的认识
 

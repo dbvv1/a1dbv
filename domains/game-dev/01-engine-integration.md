@@ -102,7 +102,7 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 |---|---|
 | Unity 6+ | 先沿用现有编译／测试及 Editor API；缺运行中编辑器连接时，再选官方 CLI 或适配客户端的 `unity mcp`，官方插件按知识／连接缺口添加（见 [unity/](unity/README.md)） |
 | Unity 2021 / 2022 LTS | 先用已有 batchmode／Editor 脚本；确需实时桥时再评估固定版本 CoplayDev/unity-mcp，逐工具核对导入／移动契约（见 Unity 工具页） |
-| Unreal 5.8+ | 代码／测试沿用既有流程；资产批处理可用已有 Editor Python。确需交互式编辑器入口时，再启用 Unreal MCP 和任务所需工具集，不默认 `AllToolsets`；**版本控制并勤存盘，端口只限本机**（见 [unreal/](unreal/README.md)） |
+| Unreal 5.8+ | 代码／测试沿用既有流程；资产批处理可用已有 Editor Python。确需交互式编辑器入口时，再启用 Unreal MCP 和任务所需工具集，先满足 [5.8.1+ 修复前提](unreal/01-toolchain.md#15-已知限制官方)，不默认 `AllToolsets`；**版本控制并勤存盘，端口只限本机**（见 [unreal/](unreal/README.md)） |
 | Unreal 5.8 以下 | 资产批处理直接用 Editor Python；另有社区桥可评估（如 UnrealClaude）。C++ 部分照常用通用编码工作流 |
 | Roblox | 直接用 Studio 内置 MCP；`playtest` 子 Agent 和输入模拟是目前**官方支持最完整的游戏验证能力** |
 | Godot | 社区 MCP 选“连接运行中编辑器”的一类，确认支持你的 Godot 版本；纯代码工作用文件级就够 |
