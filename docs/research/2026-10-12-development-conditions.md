@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口。[经验]
-证据摘要：官方权限／运行契约、固定历史补丁、社区使用与接管报告、论文；另有标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读。[经验／研究]
+证据摘要：官方权限／运行契约、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究]
 关键边界：普通 headless、bare、trust 与 sandbox 不等价；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
@@ -467,3 +467,28 @@ S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 **输入域与结论边界。** [SQLite 允许 TEXT 包含 NUL](https://sqlite.org/nulinstr.html)，但提醒部分显示和文本函数会截断。项目 README 承诺追踪行更新、相同数据不增长版本，并明示不支持主键更新；本轮未见其排除 NUL 非主键文本，所读实现也未拒绝该值。不过没有真实用户在生产中触发此问题的报告，不能把罕见输入的局部漏报外推为全部同步不可用。若业务明确禁止 NUL，应验证入口拒绝，而非默认判等编码无损；若允许，就需保住区分这些值的语义。**[一手：输入与项目契约；经验：采用边界]**
 
 本轮未运行包 CLI、安装／升级过程、上游测试套件、并发、多表或复合键；固定生成 SQL 与所读实现路径相符，但不等于整库端到端验证。没有提交外部 issue 或补丁，也没有评价模型成功率／工时收益。新增价值是把“补类型测试”具体化为**新编码能接受值，与它能分辨业务上不同的值，是两个验收条件**。**[研究：范围与采用判断]**
+
+
+### SWE-Game：游戏移植的 Visual 分不等于体验质量
+
+**核实：2026-10-15（UTC+8）；主线二／四；改变 22 的评分使用建议。** ✅ 借鉴按证据条件拆分游戏验收；👀 整套基准先作为条件评估对象，不凭总分选游戏 Agent 或宣布移植交付。当前 game02／WP10 已区分状态、输入、连续视听与玩家体验，本轮不重复扩建接口；新增价值是识别同名评分项、版本和演示完成的具体边界。**[研究：采用判断]**
+
+**固定来源。** 阅读 [论文 v3 正文及附录](https://arxiv.org/html/2609.33678v3)，由[作者提交的论文页](https://huggingface.co/papers/2609.33678)核到官方公开仓库；源码固定 `Charly-chan/SWE-Game@157a42b1a8a771a51da41e3df5e29045e246cc6c`。下载源码归档只读检查，未运行上游测试、模型、引擎或下载完整游戏数据。项目自有代码为 Apache-2.0，游戏／资产沿各自许可，不能以根许可证替代素材清权。[版本与数据声明](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/releasing.md)。**[一手；研究：验证边界]**
+
+**先分开论文和发行配置。** 论文 v3 为 247 任务／83 修复；公开清单为 246／82，固定数据 revision 为 `651906f7d922474b8e4754bacd6f7fba38cc0397`。发行默认关闭 Brief Design 和构建类视觉裁判；缺少必要视觉证据时完整合成分留空。README 的结果修订说明指向论文 v1，而 v3 Table 3 仍列 Design 及不同 Brief 总分。因此引用必须写清论文版本／结果集，不能任选一个总数与另一版评分公式拼接；公开记录也明确论文结果不是发行默认设置的新测量。**[一手：上述版本文件、论文 Table 3 与附录 D；研究：比较]**
+
+**独立源码核查反证：Visual 的名字不能替代测量定义。** 当前移植 registry `2026-10.mode5-evidence-five-visual1` 不调用 VLM；[评分契约](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/reference/MODE5_SCORING.md)明确为实现对应关系。运行／Editor／静态支持／文件存在的系数为 1／0.8／0.6／0.25；没有运行证据时仍可得到部分分，最终目标则只接受独立运行证据。保留部分工程成果有价值，但不是严格完成率。**[一手：实现契约；研究：解释]**
+
+- [visual_measure.py L67–112、198–243](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L67-L112)使用英文 OCR 与 score／points、health／hp、progress 等数值标签，核显示值与状态及无输入前后变化；不是所有文字、图标式血条或本地化 UI 的可读性度量
+- [L215–221、244–269](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L215-L269)把非静音且变化的 PCM 作为音频证据，动画按局部外观变化与原生状态佐证，布局按语义角色相对顺序；这些判据没有测警告是否听清、动画是否自然或整体风格是否一致
+- [unity_visual_probe.cs L144–204](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/unity/unity_visual_probe.cs#L144-L204)在探针冻结时间时，依次移除／恢复渲染器与 UI 采图；[漂移检查 L48–64](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L48-L64)拒绝恢复后变化过大的画面。这适合确认像素贡献，不能证明运动顺滑；未见依据可把它描述成关闭 TAA 的实现
+
+以上是逐行只读核查与测量范围推论，不是复现误判率，也未证明论文历史成绩由当前实现产生。**[一手＋研究]**
+
+**负对照能补什么，也会漏什么。** 移植模式重放 witness、匹配无输入和隐藏场景，见[移植运行协议](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/reference/MODE5_RELEASE_PROTOCOL.md)。另一个可借鉴、但不属于移植模式的机制是 Godot 三类构建任务的分段功能演示：[任务协议](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/tasks.md#feature-demonstrations)逐片段冷启动，重放输入、等时长无输入与带评测标志的输入；分段功能并集不能靠重复演示加分，严格完成单列，未要求所有功能挤进一条整局录像。针对应由动作引起的奖励／推进，这比只看胜利画面多一条可反驳证据；合法被动计时则须由任务声明 `requires_player_action: false` 与原因，不可统一判为作弊。[声明校验 L128–141](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/content/rubrics.py#L128-L141)、[负对照测试定义 L86–102](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/tests/test_feature_demonstrations.py#L86-L102)。**[一手；研究：借用条件]**
+
+公开任务仅把 visible 材料交给 Agent，hidden 和裁判留在评估侧；这是访问隔离契约，不能证明训练污染不存在。[Godot 防绕过模块的 LIMITS](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/antigrant.py#L41-L61)直接列出计算标志名的静态扫描盲区，以及 idle／mash 动态探测的 1100 帧预算限制；不能反过来声称完整动态评估一定被这些方式攻破。固定时长无输入只反驳相同窗口内的被动成功，不足以证明所有输入都正确或没有评测特判。**[一手；研究：威胁范围]**
+
+**论文支持到哪里。** 41 个参考游戏为 24 个 2D、17 个 3D；功能校准抽样为构建模式的 100 游戏／1200 条断言，不覆盖所有修复／移植判据；200 个片段的 VLM 视觉得分相关性，不是本发行版移植 Visual 的校准或长期乐趣验证。模型与各自框架一起评，不能单独归因模型。参考路线保留时间，适合检查注册目标，但不同运动调参下路线失败不能单凭总分区分机制缺失与时序不匹配；应回读局部状态和候选演示。本轮未找到独立运行复现，保留作者结果的证据等级。**[一手：论文 §3.4、§4.1、§4.5、Limitations；研究：推广边界]**
+
+**采用与停止。** 比较移植方案时，同版本、同任务、同裁判与预算保存严格运行结果和组件证据；若要决定画质／手感是否达到目标，补目标设备上的连续动作和视听对照，不用换一个分数名字代替。现有验收已覆盖这些事实就不接整套 benchmark。当前只有论文与源码调查、仓库离线检查；实际收益须留到获准实验。**[研究：采用建议]**
