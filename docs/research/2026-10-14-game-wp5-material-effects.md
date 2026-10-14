@@ -1,6 +1,6 @@
-主线：二／三／四；G1 材质、特效的额外能力、第二次修改和发行门槛
-改变的建议：03 材质特效行从“比较工具”收敛为“共同参数源材质＋可控运行时优先；生成贴图／视频只填明确缺口”
-新证据：复核 Material Maker 1.7 固定源码与导出故障、Effekseer 1.80.7／XR、MatLat 非商用权重；新增 Adobe 地区价格快照、Scenario 免费商用限制与数据使用条款冲突；补 TUNIC／Crashlands 2 作者对风格与生产成本的说明、URP 遮挡提示／全屏效果及 on-tile 组合边界
+主线：二／三／四；G1 材质、特效的选型、迭代与发行
+改变的建议：[研究] 共同参数源材质与可控运行时优先，生成只填缺口；关键提示与装饰分层，按设备预算和第二次修改决定保留
+新证据：[一手／研究] Material Maker 固定导出反例、Effekseer／URP 契约、许可冲突及 TUNIC／Crashlands 2 复盘；未实测资产、性能或工时，不作工具质量排名
 
 # WP5 材质与特效：共同参数源、运行时与生成边界
 
@@ -147,13 +147,13 @@
 
 ## 八、集成复核与离线验收
 
-2026-10-14 UTC+8：内部独立复核固定Material Maker参数接线、Effekseer XR提交、新旧样例许可、Adobe输入/资产条款和MatLat权重卡；补URP同图同时赋Metallic/Occlusion槽，以及Poly Haven live API含商用免费但另履行来源标示/User-Agent条件。WP1、03与既有入口同步更新；正式云端评审仍待完成。
+2026-10-14 UTC+8：内部独立复核固定Material Maker参数接线、Effekseer XR提交、新旧样例许可、Adobe输入/资产条款和MatLat权重卡；补URP同图同时赋Metallic/Occlusion槽，以及Poly Haven live API含商用免费但另履行来源标示/User-Agent条件。WP1、03与既有入口已同步；当时未取得正式云端评审。
 
-实际运行`python3 scripts/check_offline.py`完整14阶段：97/26/10/13/14项测试均通过，无skip，8项shell语法通过；`git diff --check`通过。检查的是本仓文档/config与确定性/模拟夹具，不是Material Maker修复、模型效果、原生引擎、hosted CI或零手修资产发售验证。**[研究：验证范围]**
+[研究] 历史交付检查：完整离线 14 阶段，97／26／10／13／14 项测试无 skip、8 项 shell 语法及 `git diff --check` 通过；不覆盖 Material Maker 修复、资产质量、引擎或 hosted CI。
 
 ### 2026-10-14 动态事实补核
 
-[一手／研究] 本次重读上述版本、价格、许可和 Scenario 页面，新增免费输出限制与数据使用条款反证，修正 Adobe 地区价格口径。只做公开资料审读与两份文档编辑；本次 `python3 scripts/check_repo.py` 检查 177 文件、零错误，两个文件的 `git diff --check` 通过；未重跑整套离线测试。链接检查不验证片段锚点、外部网页或事实，也不改变引擎／模型未实测边界。
+[一手／研究] 历史动态补核新增 Scenario 免费输出／数据使用冲突，修正 Adobe 地区价格；局部 `check_repo.py` 177 文件、两文件 `git diff --check` 通过，未重跑完整离线入口。
 
 ## 体验质量深化：有限预算中的视觉层次与统一风格
 

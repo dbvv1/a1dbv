@@ -1,6 +1,6 @@
-主线：二／三；G1 2D资产的能力选择与第二次修改
-改变的建议：先保留原生可修改对象与匹配现成资产；生成路线分静态、逐帧与骨骼，前沿能力不等于零手修生产
-新证据：2026-10-14核对近期模型契约、固定瓦片/精灵源码、官方包许可及开发者失败记录；未运行模型或引擎
+主线：二／三；G1 2D 资产选型与第二次修改
+改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼，PixelLab／Retro 仅作条件首试
+新证据：[一手] 2026-10-14 模型／服务契约、固定瓦片／精灵源码、包许可及开发者返工；未运行模型／引擎，原生编辑能力不证明零手修成套生产
 
 # WP2：2D资产的前沿方法与零手修边界
 
@@ -92,7 +92,7 @@
 
 后续经允许才做小切片：同一母版/目标尺寸下新增外观相似但功能不同道具，或改变攻击时序/地形连接；保留全部拒绝图、usage、主动工时与修改前后资产。当前不执行该试验。**[经验：后续区分方案的最小任务]**
 
-内部独立复核交叉核对价格/快照、Qwen研究许可、QA步行假设、JatCool人工paint及UCL版本边界；已修正RGB距离和全网证据措辞。`python3 scripts/check_offline.py` 14阶段与 `git diff --check` 按本结果提交执行；真实客户端/模型/引擎与hosted CI不由此推定。
+[研究] 初稿独立复核已修正 RGB 距离、全网证据措辞，并核价格／快照、Qwen 许可、QA 步行假设、JatCool 手工 paint 与 UCL；完整离线检查结果见阶段 F 末尾。
 
 ## 9. 阶段 F-b：图像动态事实表
 
@@ -166,6 +166,6 @@ Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blo
 | Retro 公开首页 RD Fast $0.03、Plus $0.06、Pro $0.18/图，动画 $0.07/段起；官方 MCP README 仍写 Fast 约 $0.015 起 | [首页](https://retrodiffusion.ai/)、[MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md) | 2026-10-14 | 每次预算先估价；最迟 2026-11-14 | 口径有差异，不选最低宣传价预算；采用官方免费 cost estimate 与真实账单 |
 | Retro API/MCP 提供低分辨率、参考、调色板、GIF/sprite-sheet、瓦片和起帧动画；具体尺寸依 style，Pro 最多 9 参考 | [官方 MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md) | 2026-10-14 | 2026-11-14／style 或接口变化 | 纳入静态性价比／多参考对照；未独立证明动画连续性或零手修 |
 
-本次只读公开资料与云端浏览器公示；没有上传素材、创建账号、获取密钥、生成、付费、安装扩展或运行引擎。服务网页是动态实现，HTTP 提取空白不当作“没有条款”；采用云端浏览器读取了 Retro 完整新条款、PixelLab 月付显示及 Retro 价格。[研究：实际验证范围]
+[研究] Retro 新条款、PixelLab 月付显示和 Retro 价格由公开浏览器正文核得，HTTP 提取空白不等于没有条款；未登录、上传或生成。
 
-阶段 F 本工作线检查：`python3 scripts/check_offline.py` 14/14 阶段通过、非空测试且无 skips；`git diff --check` 通过。末次事实表补入现成资产／编排器／官方包的许可后，另跑本地文档检查；不代表模型、引擎或托管 CI 实测。[研究]
+[研究] 历史阶段 F 检查：完整离线 14/14、非空无 skip，`git diff --check` 通过；末次许可表补行另跑局部文档检查，不扩为模型、引擎或 hosted CI。

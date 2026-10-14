@@ -27,7 +27,7 @@
 - **[一手／研究]** 后来 [PR #709](https://github.com/amantus-ai/vibetunnel/pull/709)于 2026-07-11 合并为 [`f5c9b388c58f48d44d0f6431ea25228452688f57`](https://github.com/amantus-ai/vibetunnel/commit/f5c9b388c58f48d44d0f6431ea25228452688f57)，改成 Rust 1.97.0、保留 Darwin universal 与 Linux glibc 2.28 约束；固定 [forwarder.md](https://github.com/amantus-ai/vibetunnel/blob/f5c9b388c58f48d44d0f6431ea25228452688f57/docs/forwarder.md)仍说明 session 文件和 IPC 边界。已读 PR body／comments、提交清单及该文档，未全审大补丁。本轮已读材料未说明选择动机，不将 #566 或 Zig 0.16 升级自动当成换语言原因，也不宣布后续无 bug。
 - **[研究：候选取舍]** [CodexBar #708](https://github.com/steipete/CodexBar/pull/708)有电池反馈和 Codex review，但未补齐初次实现的 AI 归属链；[VibeTunnel #574](https://github.com/amantus-ai/vibetunnel/pull/574)披露 Claude 协助的 Zig 0.13／Raspberry Pi 适配，但已关闭未合并，Node fallback 自述未核实；[#575](https://github.com/amantus-ai/vibetunnel/issues/575)报告的 beta.15 早于十二月移植，不能接成此次转换的后果；[#611](https://github.com/amantus-ai/vibetunnel/pull/611)补编译前提，单独不足以解释维护转折。因此只采用上述所有权链为第二例。
 
-两例已足以形成限定任务建议，不以继续堆案例为完成条件。下一候选是 D6：把证据转成 Codex 的最小任务起点与改变工作流的具体条件；尚未认领。长期用户负担和人的主动时间仍未知。**[经验：本侧下一步判断]**
+本例已足以支持限定迁移建议，不再沿早期 D6 分工扩写候选；长期用户负担和人的主动时间仍未知。**[经验：范围判断]**
 
 
 ## 持久状态回退：Git MIDX 的旧读取者边界
