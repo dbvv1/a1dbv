@@ -48,6 +48,18 @@
 
 **改变建议**：[研究] 两引擎共同保留「业务结果至多接受一次＋对象／场景仍有效」断言，并测重入；不要把相似 API 名字当相同取消语义。对 UE 合并加载／动态 bundle 变化，避免先写大量全局缓存优化，先在所用版本测暂停、重开、菜单切换和驻留。
 
+### 资源所有权补比：Load 与 Preload 不能共用退出政策
+
+核实：2026-10-14 UTC，以下官方 API 页面标 UE 5.8；这是公开文档契约，未读取受限引擎源码，也未运行引擎。5.7 参数页本轮未能取得，不把当前页当作固定 5.7 实现证据。[一手]
+
+- [一手] [LoadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/LoadPrimaryAssets)说明资源保留到显式卸载；返回句柄可用于等待／查询，调用者不必保留它来防止卸载。没有新增工作时返回句柄可为 null，但仍调用完成回调。[UnloadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/UnloadPrimaryAssets)仅在此前 Load 是唯一持有来源时才使资源得以释放，不承诺所有引用或物理内存立即消失。
+- [一手] [PreloadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/PreloadPrimaryAssets)要求保留活动句柄；这批资源不属于正式 Loaded 状态，普通 Unload／ChangeBundleState 不影响它，释放该句柄且无其他加载持有时才可释放资源。它与 Load 的同名返回类型不能证明退出政策相同。
+- [一手] [Object Pointers](https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine)明确 `TSoftObjectPtr` 不阻止 GC；`UPROPERTY` 标记的 `TObjectPtr` 才是常见的 UObject 持有引用。保存软引用路径与维持加载后驻留是不同责任。
+
+**[研究] ✅ 优先用上述原生能力，补共享内容的共同所有者，不新增跨引擎资源框架。** Load 用于已决定保持的内容，Preload 可用于可能取消的提前准备；既有路径够用就不切换。第二次修改将单菜单技能预览扩成两个菜单共用、再跨场景保留时，逐个菜单各自 Unload 不是 Addressables 式的消费者引用计数。应先决定共同所有者何时允许卸载，并核对其他强引用；更多常驻内容会增加内存成本，Preload 也需交接和取消收尾，不能仅凭 API 名称推导收益。
+
+**[研究] 具体回归路径是第二次打开与第二种退出。** 已加载菜单再次打开、请求没有新增工作时，若只以返回句柄非空判成功，会误报失败；从预览改为常驻后只丢弃 Load 返回句柄，不能证明驻留已撤销；保留 Preload 句柄却只调用 Unload，也不能证明预加载持有已撤销。这些是文档契约的静态推导，不是已复现故障。未来验收记录完成次数、实际资源身份、持有来源和退出后驻留，并覆盖一个消费者退出而另一个仍使用；无需重复已有场景取消与 PSO 测试清单。
+
 ## 3. ink：存档格式兼容，不等于剧情修改兼容
 
 [一手] 固定 `inkle/ink@35c63e52f1d36060930dc7ed3cfba38ea224b528`，commit API 2026-05-05，版本 1.2.1，MIT [LICENSE](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/LICENSE.txt)。读取 StoryState、Story、CallStack、VariablesState，而不是只读 README。

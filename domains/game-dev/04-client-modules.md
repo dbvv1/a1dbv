@@ -99,7 +99,7 @@
 
 ### 场景切换：取消等待不等于取消工作
 
-**[研究] ✅ 采用一个持有加载句柄的所有者和请求代次：旧代结果只收尾，不得写入当前场景。** 可以继续用已有 Coroutine、Awaitable 或 UniTask；统一的是生命周期约定，不是把底层 API 的完成、取消和主线程时序抹成一样。
+**[研究] ✅ 明确加载／驻留所有者和请求代次：按所用 API 保留必要句柄，旧代结果只收尾，不得写入当前场景。** 可以继续用已有 Coroutine、Awaitable 或 UniTask；统一的是生命周期约定，不是把底层 API 的完成、取消和主线程时序抹成一样。
 
 [Addressables 句柄契约](https://docs.unity3d.com/Packages/com.unity.addressables@2.7/manual/AddressableAssetsAsyncOperationHandle.html)要求使用结果期间保留句柄，失败也清理。[UniTask 固定源码](https://github.com/Cysharp/UniTask/blob/a77a1b4a89824fb6df293099de3060daf2a432c1/src/UniTask/Assets/Plugins/UniTask/Runtime/External/Addressables/AddressablesAsyncExtensions.cs)默认不在取消时 release；预取消会在接管句柄前返回。因此先处理预取消，创建 handle 后指定唯一释放者，不让自动释放和多个 finally 竞争。[一手]
 
@@ -112,6 +112,8 @@
 **[研究] ✅ 按常驻、关卡、临时对象划寿命，只为实测热区加池或缓存。** 池对象归还时取消旧工作、解绑事件、重置动画和输入，不能只等最终 Destroy。复制 handle 结构体也不等于新取得一次资源所有权。
 
 Addressables 引用归零不保证马上释放物理内存；同 bundle 仍用的资产影响卸载，相邻关卡共享依赖反复释放／加载会产生 asset churn。[一手：[资源内存](https://docs.unity3d.com/Packages/com.unity.addressables@2.7/manual/memory-assets.html)] **[研究] 同时观察所有者／handle 数、实际资源驻留和设备峰值；不因缓存高水位直接宣布泄漏，也不因引用归零宣布达标。**
+
+**[一手／研究] UE 不应机械套用 Addressables 的逐次获取／释放约定。** [LoadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/LoadPrimaryAssets)由 Asset Manager 保持驻留直到显式卸载，不要求调用者保留返回句柄；[PreloadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/PreloadPrimaryAssets)却要求保留句柄，且不受普通 Unload／ChangeBundleState 影响。✅ 已确定的内容沿用原生 Load／Unload；试探性准备下一房间才按需要用 Preload，并明确交接。多个菜单共享内容时，由共同所有者协调退出，不把每个菜单关闭都翻译为卸载同一 Primary Asset；第二次打开的无新增工作路径也要验收，详见 [WP10 所有权对照](../../docs/research/2026-10-14-game-wp10-client-modules.md#资源所有权补比load-与-preload-不能共用退出政策)。
 
 ### 旧档升级：版本可读之外还要进度正确
 
