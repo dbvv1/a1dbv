@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加
-改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回。[经验]
-证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；未运行模型或上游客户端。[一手／社区／研究]
+改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现。[经验]
+证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；未运行模型或上游客户端。[一手／社区／研究]
 
 # 上下文获取：问题、版本与状态边界
 
@@ -237,3 +237,40 @@ print('4 assertions passed')
 4. [平台输出说明](https://developers.figma.com/docs/figma-mcp-server/server-returning-web-code/)指出类 React 输出是设计上下文，不代表项目必须改用 React；多框架关联时，桌面端取 Dev Mode 当前选择，远端的设计上下文请求需使用准确的映射 label。连接故障或错框架先查对应上下文，不添加另一套组件实现。**[一手；经验：排查选择]**
 
 **保留／退出判断**：选一个已有组件的实际任务，确认连接是否补齐原先缺失的 token、结构或属性对应；若仍只返回通用布局、映射与当前 API 不符，或维护成本超过少做的查找，就缩减到少数常用组件或退出，回到当前源码／示例。运行后的视觉、键盘、状态与保存验收仍按 [23](../23-browser-verification.md)进行。以上是待实际任务检验的工程判断，没有声称更快、更准确或省 token；当前阶段不执行对照实验。**[经验：采用与撤回条件]**
+
+
+## 跨会话记忆：追加观察与事实失效
+
+> 核实：2026-10-15（UTC+8；读取于 10-14 UTC）。主线二；将 04 的“方案太多、质量不一”改成具体采用／撤回条件。只读公开固定源码和文档，无安装、模型调用、服务端实验或私人记录访问。**[一手；经验：工程判断]**
+
+### 基线与真正需要新增的能力
+
+[20 §4](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)已经要求保留最新目标、被取代要求、版本和下一安全动作；03 §4.4 已要求来源、范围、失效条件和派生物删除检查。本轮不再新增一套恢复清单。已知项目和记录位置时，直接读取当前记录足以解决续接；有多个历史任务、需要按对象／时间找回未知位置的相关经验，才存在额外检索能力缺口。区别不在 Markdown 或数据库，而在如何查到、更新和撤销事实。**[经验：采用边界]**
+
+### M1：官方 reference memory 是追加图，不是当前决定寄存器
+
+固定 `modelcontextprotocol/servers` SHA `bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c`：
+
+- [数据结构 L89–104](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L89-L104)只有实体 name／entityType／observations 与关系端点／类型；没有结构化来源、项目范围、有效期或替代版本字段。可以人为编码进文字或命名，但不能据 schema 声称已自动维护。**[一手：固定源码]**
+- [创建与追加 L517–585](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L517-L585)：createEntities 以 name 跳过既有实体；addObservations 对现有字符串作 includes 去重后 push。具体反例是同一实体先存“使用 A”、后存“改用 B”：两条不同字符串均保留，不产生 supersedes 关系；以相同 name 为另一个项目创建对象也被跳过。此为源码机制推论，不是实际模型失败率。**[一手；研究：反例推导]**
+- [删除 L587–646](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L587-L646)按完整 observation 字符串删除，删实体同时删相连关系；[查询 L655–684](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L655-L684)是 name／类型／观察的小写子串匹配，返回匹配实体，未筛选当前有效观察。不能把它描述为语义召回或自动清理矛盾事实。**[一手：固定源码]**
+- 反证：[每次变更的锁及保存链](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L436-L529)有锁和临时文件替换，不能沿用旧版印象声称当前实现“完全没有并发／落盘保护”；存储保护仍不等于语义冲突裁决。**[一手；研究：限定]**
+
+因此，如果需要的只是“本任务现在采用什么决定”，增加这个服务并不能消除人工维护最新状态的责任；已有版本记录可直接读取时不加。需要明确的实体／关系查询且能自行维护名称范围和来源文字时，才把它作为窄存储候选，而非泛化的自动长期记忆。**[经验：选择]**
+
+### M2：Graphiti 增加时间与来源，但冲突和删除仍有契约边界
+
+固定 `getzep/graphiti` SHA `5126eae0c7659ef521a043b04084506018c9cfcc`，与 M1 为不同作者／实现：
+
+- [MCP 文档](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/README.md#available-tools)提供 group_id、episode 来源追溯、valid_at／invalid_at 筛选和 episode 删除；FalkorDB 按 group 分图，读取／删除需使用原 group。分组可用于范围区分，不能直接当成认证授权隔离保证。README 明标实验性，列出图数据库、LLM 和 embedding 提供方；这些运行与维护成本应纳入选择，不因本地部署就假定无需模型／索引资源。**[一手：文档]**
+- [写入 L403–533](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/src/graphiti_mcp_server.py#L403-L533)将 add_memory 送队列，返回 queued；reference_time 表示事件发生时间，省略时用当前时间。排队成功不代表事实已提取或可检索；晚录入旧决定时须保留原发生时间，不以到达次序冒充事实新旧。**[一手；经验：采用判断]**
+- [冲突解析 L940–1035](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/utils/maintenance/edge_operations.py#L940-L1035)以完全相同端点和规范化事实文本作快速去重，否则向模型请求重复／矛盾候选；[时态处理 L715–783](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/utils/maintenance/edge_operations.py#L715-L783)再按有效时间裁决失效。它比 M1 多了事实演化机制，但候选识别、实体解析和时间输入都可能影响结果；不能声称自动判定真相。**[一手；研究：机制边界]**
+- **删除反例来自文档与实现差异**：[MCP delete_episode L729–755](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/src/graphiti_mcp_server.py#L729-L755)说明保留其他 episode 支持的事实，调用客户端 remove_episode；同一提交的 [core remove_episode L2164–2192](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/graphiti.py#L2164-L2192)却以 edge.episodes[0] 等于被删 episode 作为删边条件，没有要求只剩一个 episode；上述去重路径又会给同一边追加后续 episode UUID。因此“第一条来源 + 后续重复支持”的边，按此源码删除第一来源时仍会被选中删除。节点另按提及次数判断，不能把节点条件套到边。此为同仓库静态契约差异；[MCP 依赖声明](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/pyproject.toml)使用 `graphiti-core[falkordb]>=0.30.2`，不固定为这份源码，因此尚不能确认任一已安装 MCP 的实际行为。未运行数据库验证，不作为已复现生产故障或所有版本／托管服务结论。**[一手；研究：反例推导]**
+
+这改变采用选择：需要多来源保留／撤销语义时，不能只看“支持 provenance 和 delete”就接入；先确认目标版本如何删除共享事实、是否重算衍生摘要，以及结果是否满足任务要求。时间字段和检索能力可能有增量，维护它们却未必比直接查版本化决定更便宜。**[经验：选择]**
+
+### 保留与撤回条件
+
+先明确一类现有记录难以定位的跨会话问题，再选实现；事实必须能回到来源，身份范围可区分，旧决定能被标记取代或从当前查询排除。若出现反复召回失效决定、同名串项目、删除／更正不能保持所需语义，或模型提取、索引、后端和人工纠正负担超过节省的查找，就缩小范围或退回直接可读记录。当前任务的授权、验收与外部操作状态仍查权威来源。**[经验：采用／撤回建议]**
+
+本轮仅建立静态机制差异与可核查反例，没有比较模型完成率、长期召回效果、成本或当前服务端行为。03 的生命周期原则与 20 的恢复清单保留；04 增加条件入口足够，不新建记忆平台教程、模板或实验。**[研究：范围]**

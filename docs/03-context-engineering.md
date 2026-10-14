@@ -128,7 +128,7 @@
 | 进度文件 + git log | Anthropic 长时任务 harness 的做法：`claude-progress.txt` 加 feature 清单（JSON，因为模型不太会乱改 JSON） | ✅ |
 | Claude Code auto memory | Claude 自动记录偏好和纠正，按仓库存储 | 🧪（定期审阅它记了什么） |
 | Gemini CLI 的 memory 收件箱 | 记忆要经人审阅后才生效 | 🧪 |
-| 第三方记忆 MCP（MAMA、Selvedge、roampal 等） | 方案很多，质量参差不齐 | 👀 |
+| 第三方记忆 MCP | 按跨会话检索缺口评估，见 [04 的采用与撤回条件](04-mcp.md#跨会话记忆先区分检索与当前状态) | 👀 |
 
 **记忆还是文档？** Kevin Liao 的 [文章](https://liao.gg/blog/agents-dont-need-memory)（2026-10-03，10-05 更新）描述自己的 Operator Memory 和人工整理经验，属于 **[社区：作者实践/产品观点]**，不是独立比较试验；热度不证明效果：
 - 观点：记忆插件本质上是“**RAG 抽奖**”，存进去的东西什么时候被召回、召回得对不对都不可控；Agent 真正需要的是**写在仓库里、人也能读的文档**。
