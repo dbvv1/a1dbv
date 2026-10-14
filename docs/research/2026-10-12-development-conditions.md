@@ -1,7 +1,7 @@
 主线：二，兼三／四
 改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具。[经验／研究]
-证据摘要：官方权限／运行契约、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究]
-关键边界：普通 headless、bare、trust 与 sandbox 不等价；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
+证据摘要：官方权限／运行契约、固定 sandbox-runtime 的 socket／mask 分支及 Claude Code 2.1.285 版本反证、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究]
+关键边界：普通 headless、bare、trust 与 sandbox 不等价；strict 不排除已配置的沙箱外命令，socket 过滤和可选 mask 的目标／失败默认值须单独核对；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
@@ -60,6 +60,28 @@
 **认证与计费前提也不同。** 同一官方文档说明 bare 不读取订阅 OAuth 或系统钥匙串；Anthropic API 路径使用已提供的 API key／`apiKeyHelper`，外部提供商继续使用各自认证方式。切换前须确认该执行与计费方式已经获准且可用；这不是建议新建凭据、开通付费或把所有提供商改为 Anthropic API key。**[一手：官方文档；经验：采用前提]**
 
 **实际选择与局限。** 交互试点已经靠项目约定完成迁移时，换成 bare 要保留同一任务所需的信息；原命令依赖转后台等待长构建时，也不能只加一个 flag 便声称等价。普通 `-p` 不意味着 bare，官方“未来可能成为默认”的说明也不是当前默认已改变。本轮只核对文档与版本说明，未安装或执行客户端、未测开销和正确率；已有[历史实验](2026-10-12-experiment-records.md)的 bare 调用认证失败，不能补作本判断的成功运行证据。**[经验：采用边界；一手：检查范围]**
+
+### Claude Code 沙箱：开启不等于所有边界已闭合
+
+核实：2026-10-15（UTC+8，读取于 10-14 UTC）。改变 [10 §3.2](../10-security.md#32-claude-code-沙箱操作手册)：保留最小隔离配置，撤回“strict + failIfUnavailable 足以证明封闭运行”和“mask 总能透明认证”的简写；不建议为跑通依赖开放解释器、全部 socket 或真实凭证。**[经验：采用判断]**
+
+**当前契约与历史版本分开。** [官方 strict 说明](https://code.claude.com/docs/en/sandboxing#turn-off-the-retry-with-strict-sandbox-mode)指出 `allowUnsandboxedCommands: false` 只关模型的逃生重试，`excludedCommands` 仍可在外运行；用户级 false 在 v2.1.285 前可能被项目 true 覆盖。当前用户级 false 不会被该 true 覆盖，但并不令整个沙箱 admin-required。托管／显式 `--settings` 中的 false 才触发该强制条件，项目的放宽项被忽略。[固定 v2.1.285 发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.285)另确认项目不得放宽 admin-required、扩 strict allowlist 或重开托管 read-deny。版本事实只支持这组修正，不宣称整个客户端此后无逃逸漏洞。**[一手：官方契约、版本记录]**
+
+**固定公开实现。** 本轮读取 `anthropics/sandbox-runtime` [9a277e5e04af1ab1b04feea4400a6ed8a5b72039](https://github.com/anthropics/sandbox-runtime/tree/9a277e5e04af1ab1b04feea4400a6ed8a5b72039)，为研究时的 main 快照；没有将它冒充任一 Claude Code 发布包实际捆绑的版本。API 路线返回 GitHub 403、`x-ratelimit-remaining: 0`（公开 API 配额耗尽）；公开 git 只读下载成功。未安装依赖、未执行上游测试或沙箱命令。**[一手：源码阅读与取得范围]**
+
+| 会误导选择的简写 | 固定证据与边界 | 采用／撤回 |
+|---|---|---|
+| 必需依赖已齐全，所以 Linux／WSL2 socket 已隔离 | [依赖检查 L1280–1301](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/linux-sandbox-utils.ts#L1280-L1301)把 bwrap／socat 缺失记为 error，缺 seccomp 仅 warning；[执行分支 L3548–3578](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/linux-sandbox-utils.ts#L3548-L3578)在 helper 缺失或 `allowAllUnixSockets` 为 true 时不装该过滤 | `failIfUnavailable` 不能替代可选依赖检查；不是断言每台 WSL2 都缺过滤。官方 [WSL2 说明](https://code.claude.com/docs/en/sandboxing#wsl2-notes)明确 Windows interop 走 Unix socket；阻断前提要单独核对 **[一手]** |
+| mask 没写目标也只给原服务 | [env L97–103](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/credential-mask-env.ts#L97-L103)和 [file L228–234](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/credential-mask-files.ts#L228-L234)默认把 `injectHosts` 取为 `allowedDomains`；[测试定义 L766–842](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/test/sandbox/credential-mask.test.ts#L766-L842)明确覆盖省略该字段时的跨允许域替换 | 仅在启用 mask 时成立；不是默认自动发送所有凭证，也不是主动广播。代理在请求包含对应占位值时替换；确需认证才审目标范围 **[一手：实现、未运行测试定义]** |
+| 提取失败一定拒绝 | [env L189–224](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/credential-mask-env.ts#L189-L224)、[file L315–347](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/credential-mask-files.ts#L315-L347)：仅在可选 mask 的提取未匹配时，省略 `onExtractNoMatch` 得到 warn，跳过该条保护并保留原文；deny 分支移除变量／拒读，error 分支抛错 | 不把这条可选配置失败写成 `mode: deny` 的默认漏洞；不需要认证时保持 deny，有提取规则才须决定不匹配行为 **[一手]** |
+
+**平台反例与范围。** [官方文件 mask 契约](https://code.claude.com/docs/en/sandboxing#mask-credential-files)要求 v2.1.221+，macOS 按拒读，Linux／WSL2 可给占位副本；macOS 文件隔离开启时先按 deny，不能把上述 Linux 路径的 no-match 原文保留泛化到它。[代理认证前提](https://code.claude.com/docs/en/sandboxing#mask-credentials)另要求 TLS termination；缺此前提认证失败不等于秘密明文已发出。这里说明功能边界，不指导上传或配置真实凭证，也没有在用户电脑试读。**[一手：官方契约；研究：限制外推]**
+
+**正文其他纠偏。** `filesystem.disabled` 会关闭受保护路径的文件隔离；`strictAllowlist` 管有效域列表，而列表会合并适用的 `WebFetch` 规则。CLI 沙箱和工具审批、Hook／MCP 进程的区别沿用 [05](../05-skills-and-plugins.md) 与本记录前节，不重复建立防护框架。CI 段同时删去“固定 formatter 命令即可安全”的暗示：[Action 官方安全说明](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md)建议 PR 文件放子目录以避免默认配置加载，却不能证明之后执行 PR 构建代码已隔离；子目录和 `--add-dir` 不是安全容器。[GitHub 的事件说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_run)指出 workflow_run 即使前序任务不具特权，后续也可访问秘密／写 token；pull_request_target 在基础仓库上下文运行。是否实际注入秘密仍取决于 workflow，不写成每次运行都自动获得全部凭据。Action 的 allowed-tools 建议另按[CLI 字段契约](https://code.claude.com/docs/en/cli-reference)限定为免询问规则：`--tools` 才限制内置工具集合，MCP 不受该字段影响，二者均不能替代 token 权限。Nx 案例中恶意脚本明确传 bypass 参数，因此删掉 shell 别名不是断链；外层安装进程也不受 Agent 内层凭证规则保护。**[一手：机制与文档；经验：采用边界]**
+
+**历史反证补核。** [Embrace The Red 原帖](https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/#reliability-and-attack-success-rate-asr)是三个迭代变体各 5 次，3/5、3/5、4/5，不能当通用 ASR；[Anthropic SDLC 原文](https://claude.com/resources/articles/how-anthropic-secures-its-ai-native-software-development-lifecycle)分别报告约 80% 合并代码由 Claude 编写、全部代码超半数由内部 Claude Tag 合并，不能改成同一个子集分母。正文保留反例但收窄统计解释。另把多厂商事故合并叙述缩为 [OpenAI 一手复盘](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)可确认的内部研究模型、弱化防护与共享基础设施突破；不把训练／评估条件外推到发布客户端。RubyGems、Medicare 与其他厂商的合并归属未逐项确证，本轮不保留作核心页证据；ZCode／Cursor 两条仅有二手或 HN 标题，撤出事件表，不能据它们作选型。**[社区：作者实验；一手：厂商自述]**
+
+**验证口径。** 当前官方契约、固定源码和未运行的上游测试定义可交叉支持上述条件选择；没有本仓库运行证据，不宣称当前模型改善、原生 OS 已验证或安全认证。独立评审按 LONG-TERM-PLAN §6 覆盖 10 全页与 03／05／08 一致性；处理上述统计、归因与薄证据问题后确认全页达到 L3，无剩余关键阻塞。完整离线入口 14/14 通过、`git diff --check` 通过；这些只验证仓库文档／配置与确定性测试，不是 L4 模型或 OS 实测。
 
 ### Codex 脚本入口：信任状态不等于有效权限
 
