@@ -81,6 +81,10 @@ Unity 可🧪比较作者维护的 JLPM MotionMatching，但要承担同骨架 B
 
 Unity Humanoid 需有效 Avatar 才能跨角色复用动作；Generic 和多足不能直接套用。Unreal IK Retargeter 仍需链映射、Retarget Pose 及 root 设置。自动对齐、IK 与脚部修正是候选起点，不保证道具握持或缺失动作被补齐。[一手／研究]
 
+**✅ 第二次换比例／装备，先修接触参照与求解顺序，再决定是否换动作。** 握枪、取口袋弹匣与落脚分别参照道具、身体和场景，不用一个永久 offset 修完整动作。路径兼容时复用动作并改目标／代理体积；若只能靠明显拉伸、穿过新装备或破坏关键轮廓才能接触，就按体型／装备选不同动作，或换模型。几何可达只是必要条件；soften 主动不到达是平滑取舍，不能直接算运行失败。[一手／研究；机制与生产反例见 [WP4 比例与装备补研](../../../docs/research/2026-10-14-game-wp4-animation.md#比例与装备补研接触参照可达性与体积)]
+
+**🧪 UE5.8 Relative IK 仅作实验候选：** 它可依据烘焙的身体接触关系适配新比例；修改用于烘焙的 physics asset 后需重新生成数据，碰撞目标修正还受操作顺序影响。它修正 IK goals，不保证整个网格无穿插，不替代已验收动作组。[一手／研究：[官方操作栈](https://dev.epicgames.com/documentation/unreal-engine/retargeting-operation-stack-in-unreal-engine-5-8)]
+
 **✅ 2D 骨骼路线从已正确分层、关节遮盖完整的资产开始。** Unity 官方流程仍含骨骼创建、网格细化、权重调整与姿态检查；Auto Geometry／Auto Weights 不负责补画隐藏肢体或背面。Spine 是成熟创作／运行时工具，不是 AI 自动绑定器；其完整资产包可减少起步工作，旧 Unity 示例工程仍需迁移。[一手／研究]
 
 换色、同规格装备和速度尽量复用 slot／sprite／骨架。转身、背面、大透视或形变需要相应替换图或完整逐帧动作；没有这些内容时，再评估整段生成或收窄动作。逐帧须保共同画布、pivot、身份与事件，详见[2D 专题](2d.md)。[一手／经验]

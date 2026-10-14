@@ -236,3 +236,48 @@ Daniel Holden 的 [2026-07-30 原文](https://theorangeduck.com/page/inverse-kin
 本补研完成直接来源、提交／许可与关键代码路径核查；没有运行真实引擎、测量零手修通过率、训练开销或质量提升。静态源码反例仅约束可承诺范围，后续实测仍需另获授权。[研究]
 
 本补研交付检查：完整 `python3 scripts/check_offline.py` 14 阶段通过，非空套件、无 skip；两份修改文件 `git diff --check` 通过。文档／配置检查不核外链事实或真实动作质量。[研究：实际离线检查]
+
+
+## 比例与装备补研：接触参照、可达性与体积
+
+核实：2026-10-14 UTC。主线二／三；改变「第二版保持骨架换装备即可复用」过于宽泛的理解。新证据为 UE5.8 相对接触机制、固定版本 IK 源码的可达性契约，以及历史生产中的形态分支／攻击覆盖反例。不重复前节 MM、足锁、接触相位或 AnimGen；以下仅资料与源码静态核查，没有模型／引擎运行。[研究]
+
+### A. 先分接触参照，再诊断求解器
+
+[Epic Animation Retargeting](https://dev.epicgames.com/documentation/unreal-engine/animation-retargeting-in-unreal-engine?lang=en-US)用步枪换弹说明：Hand IK Bones 可保道具关系，但伸手到口袋取弹匣时应切换策略；普通跑动始终保源脚位置还可能扭曲腿形。[一手]
+
+[研究] 因此第二改先把动作分成「参照世界／道具／目标角色身体」的接触段。握枪、取弹匣、插回弹匣不共用一个永久偏移。参照系错误可以程序修；新胸甲挡住原来的手臂路径，则即使终点接触正确也未解决问题。先比较合法目标／肩躯干的小范围调整，再选不同进出路径的现成动作或改变装备；不要直接提高 IK 权重。
+
+[Unity Animation Rigging 1.4.1 工作流](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/RiggingWorkflow.html)明确约束按层级深度优先顺序收集执行。[研究] 整理对象层级也可能改变求解结果，顺序应随角色配置保存和回归；后加躯干／瞄准修正可能破坏前面已经成立的手部关系。这是机制推导，非本轮引擎复现。
+
+### B. 固定源码：过近、奇异与软化，不是同一种失败
+
+采用可复核版本标签 `guillaumeblanc/ozz-animation@0.16.0`；[实现 L100–164、L306–345](https://github.com/guillaumeblanc/ozz-animation/blob/0.16.0/src/animation/runtime/ik_two_bone_job.cc#L100-L164)、[接口 L63–110](https://github.com/guillaumeblanc/ozz-animation/blob/0.16.0/include/ozz/animation/runtime/ik_two_bone_job.h#L63-L110)文件头为 MIT。[一手：版本源码]
+
+- `Run()` 的有效执行与 `reached` 分开；前者成功不能证明已接触目标。
+- 两节链除最大伸展距离外，还存在两节长度差绝对值对应的不可达近区。
+- `soften` 主动允许末端落后以避免伸直突跳；因此未精确到达可以是设计取舍，不是执行失败。
+- 接口警告目标方向与 pole 共线／穿越时会翻转，调用者需避免。[一手]
+
+[研究] 新比例即使总臂长相同，也可能因上下臂比例变化让贴身握持落入新的近区。验收应区分数值有效、几何可达、弯曲连续与最终姿态可用；可达只是必要条件，关节限制、装备体积、轮廓仍可能不合格。不要把每个接触残差当 solver 精度问题，也不要用更高迭代数修无解目标。
+
+[Unity 6.3 armStretch](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/HumanDescription-armStretch.html)说明增加伸长可改善平滑，却牺牲真实臂长。[研究] 有限伸缩可按风格接受，但持续明显拉长来满足双手 grip，应撤回该动作／装备组合；不设跨游戏通用比例阈值。
+
+仅借 ozz 的诊断契约，⛔ 不把它推荐为完整引擎重定向替代品：[官方功能表](https://guillaumeblanc.github.io/ozz-animation/documentation/features/)仍将 animation retargeting 列为待规划。其 IK 能力不等于整套接触迁移能力。[一手／研究]
+
+### C. 当前原生反证：体型接触并非一律必须重做
+
+[UE5.8 Retargeting Operation Stack](https://dev.epicgames.com/documentation/unreal-engine/retargeting-operation-stack-in-unreal-engine-5-8)的 Relative IK Retarget 属 Experimental，使用 physics asset 与烘焙 notify 保身体间相对接触；缺该数据不工作。修改用于烘焙的 physics asset 后须重新生成数据；不是任意目标外观修改都无条件要求重烘。Body Intersect Goals 须在 Relative IK 后，否则修正被覆盖。[一手]
+
+[当前设置 API](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Utilities/Struct/MakeRelativeIKSettings)公开骨映射、目标物理代理、可达性权重、道具缩放求解与碰撞推出，所列碰撞体支持 sphere、capsule、box。[一手]
+
+[研究] 🧪 同语义动作只因比例改变而错失身体接触时，可先比较这条路线，修正「接触错只能换动作」的过强结论。接入成本包括源接触烘焙、目标代理与映射、操作顺序和第二改回归；换厚装备须审查代理是否仍代表接触表面。IK goal 避碰不等于沿途肢体、衣摆或刀刃网格无穿插。保持已验收动作路线为默认，不因实验功能存在而承诺零手修发行。
+
+### D. 历史生产反例：主动分动作是合理撤回，不是技术落后
+
+- **Spore，SIGGRAPH 2008 作者论文**：[§4.1.1、§5](https://www.chrishecker.com/images/c/cb/Sporeanim-siggraph08.pdf)按直立、有手／脚等形态条件分动作；作者说明系统不理解体积边界，不能有效表达摸下巴／拥抱，且忽略角色内部碰撞。[一手：历史生产系统] [研究] 强泛化依然需要适用类和内容分支；这不证明今天没有更强技术，也不证明其动画师投入可由单程序员省略。
+- **Warframe，GDC 2016 开发者复盘**：[页24、30](https://media.gdcvault.com/gdc2016/Presentations/Brewer_Daniel_CraftingAIForBosses.pdf)为 Lephantis 五关节腿使用 particle IK 落脚；头部无法攻击身下区域时增加专门攻击。[一手：历史已发布游戏] [研究] 玩法覆盖变化应补动作／能力，不把瞄准目标可到达当作攻击覆盖充分；这不是当前 Unity／Unreal 的性能或可用性证据。
+
+[研究：采用顺序] 修参照和顺序 → 在合法目标、体积代理与有限身体调整内复用 → 按体型／装备选择动作分支 → 仍不满足则换模型／装备或收窄玩法。新增验收关注过近／过远、弯曲翻转、路径穿插及关键姿态，不再扩写通用检查表。记录新增动作、代理／烘焙改动及主动调试时间；本轮没有零手修通过率或第二改工时实测。
+
+本补研交付检查：完整 `python3 scripts/check_offline.py` 14 阶段通过，套件非空、无 skip；两份负责文件的 `git diff --check` 通过。新正文锚点对应本节标题。以上是离线文档／配置与脚本回归，不证明模型、引擎、接触质量或目标设备表现。[研究：实际离线检查]
