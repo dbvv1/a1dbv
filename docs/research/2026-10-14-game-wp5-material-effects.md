@@ -1,6 +1,6 @@
 主线：二／三／四；G1 材质、特效的额外能力、第二次修改和发行门槛
 改变的建议：03 材质特效行从“比较工具”收敛为“共同参数源材质＋可控运行时优先；生成贴图／视频只填明确缺口”
-新证据：复核 Material Maker 1.7 固定源码与导出故障、Effekseer 1.80.7／XR、MatLat 非商用权重；新增 Adobe 地区价格快照、Scenario 免费商用限制与数据使用条款冲突
+新证据：复核 Material Maker 1.7 固定源码与导出故障、Effekseer 1.80.7／XR、MatLat 非商用权重；新增 Adobe 地区价格快照、Scenario 免费商用限制与数据使用条款冲突；补 TUNIC／Crashlands 2 作者对风格与生产成本的说明、URP 遮挡提示／全屏效果及 on-tile 组合边界
 
 # WP5 材质与特效：共同参数源、运行时与生成边界
 
@@ -154,3 +154,52 @@
 ### 2026-10-14 动态事实补核
 
 [一手／研究] 本次重读上述版本、价格、许可和 Scenario 页面，新增免费输出限制与数据使用条款反证，修正 Adobe 地区价格口径。只做公开资料审读与两份文档编辑；本次 `python3 scripts/check_repo.py` 检查 177 文件、零错误，两个文件的 `git diff --check` 通过；未重跑整套离线测试。链接检查不验证片段锚点、外部网页或事实，也不改变引擎／模型未实测边界。
+
+## 体验质量深化：有限预算中的视觉层次与统一风格
+
+核实：2026-10-14 UTC。[研究] 本轮改变的建议是：在已有“参数源＋可控运行时”上，加上每个效果必须传达的玩家信号及整体视觉层次；不是重做像素调色、网格修复或增加通用渲染框架。主线二／三：哪些渲染能力值得增加，以及第二次扩内容时还能否维护统一性。
+
+### 新证据及其能支持的强度
+
+| 一手来源 | 本次核得事实 | 推导与边界 |
+|---|---|---|
+| [TUNIC 作者 Andrew Shouldice 2022-02-21 访谈](https://www.thexboxhub.com/the-tunic-interview-an-exclusive-chat-with-polymath-designer-andrew-shouldice/) | 作者最初按自身建模能力选择平色低模、靠光照建立深度；后来细节过密会与简单世界不一致。作者也明确有音频团队及后期区域装饰／润色帮助 | [研究] 保持共同细节密度与光照语言，比逐件增加精细度更可能支持一致性。不能宣传为单人零手修复刻 TUNIC，不能由采访得出设备性能 |
+| [Crashlands 2 开发者访谈，GameMaker 2025](https://gamemaker.io/en/blog/crashlands-2-game-design-interview) | 团队明确保留滑稽动画、鲜明颜色和黑轮廓，同时转用 Clip Studio、Spine 并增加第二名全职美术；从 540p 提到 1080p 改变了可呈现细节和角色比例。战斗以 telegraph 辅助瞄准 | [研究] 一致性可来自固定可识别特征，而非所有资产复杂度相同；屏幕尺寸约束细节预算。反证是画面升级需要新的制作能力，不是一个后处理按钮；540p→1080p 是该团队历史描述，不是通用目标规格 |
+| [Riot：Clarity in League，2021-03-12](https://www.leagueoflegends.com/en-us/news/dev/clarity-in-league/) | 其开发者要求重要性与注意力匹配，讨论轮廓／朝向、边界一致性和视觉噪声；Jhin 例子将起手时淡出的边界改为持续可见，也说明过大的提示圆会误导可躲避性 | [研究] 借用“清楚传达规则、维持层次”的机制，不移植 MOBA 全套风格规范。案例含真实改动但不是受控玩家实验，也不代表当前所有皮肤都满足其目标 |
+| [Unity 6.3 Render Objects 例子](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/renderer-features/how-to-custom-effect-render-objects.html)与[参考](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/renderer-features/renderer-feature-render-objects.html) | 可按 Layer、AfterRenderingOpaques、Depth Greater 和 Unlit 材质绘制遮挡部分；官方明确多部分模型会自遮挡误高亮，给出排除默认 opaque 层、两个 feature 与 Write Depth 调整的修正。Shader override 模式目前不兼容 SRP Batcher | [研究] 少数对象被墙挡住时，先比较有界对象 pass，别默认全屏边缘检测或复制所有材质。采用成本包括层归属、pass 顺序、角色内部重叠及透明遮挡语义；Material override 和 Shader override 不能混为一谈 |
+| [Unity 6.3 Full Screen Pass](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/renderer-features/renderer-feature-full-screen-pass.html) | 注入点可在透明物前、后处理前／后；Requirements 的 Depth/Normal/Color/Motion 会请求额外数据，Everything 全开，Bind Depth-Stencil 也有成本 | [研究] 只有全屏空间确有必要才新增，按实际采样声明输入。效果看起来只有一层，不等于只增加一次廉价绘制；不能仅凭无代码配置判断维护／GPU 成本 |
+| [uGUI 2.0 Canvas](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/class-Canvas.html) | Overlay 不依赖场景相机，绘于其他图形之上；Camera 模式与 World Space 则具有不同遮挡关系 | [研究] 不需要世界光照／景深的常规 HUD 可先用 Overlay；世界标记另定遮挡政策。不能把 Overlay 当作“不遮挡玩法”的证明，也不一概为 HUD 新建相机栈 |
+| [Unity 6.3 升级指南](https://docs.unity3d.com/6000.3/Documentation/Manual/UpgradeGuideUnity63.html#graphics) | Compatibility Mode 默认剥离，文档不支持以它发行；临时 define 用于迁移，6.4 不再有效 | [研究] 新效果优先原生 Renderer Features；必须自定义时采用目标版本 Render Graph。老教程效果仍可借设计，不直接复制旧 Execute 路径作为新项目底座 |
+| [Unity 6.5 on-tile post-processing](https://docs.unity.com/en-us/engine/6000.5/manual/post-processing-and-full-screen-effects/urp/on-tile-post-processing) | 文档要求一般项目 6.5+、untethered XR 6.3+、URP 并关闭 integrated post-processing；支持 grading、vignette、tonemapping、dithering、film grain。Tile-Only 失效会回退 texture sampling，画面相同却无该带宽收益 | [研究] 已在兼容版本与 tile-based 设备上、只需这些效果时🧪原生路径，保留调色气氛而少做帧缓冲往返；它不等于 Bloom、景深、自定义 outline 全都免费。需在设备上用 Render Graph Viewer 确认输入路径，再量测，不为此单独迁移稳定项目 |
+
+### 实现选择：改善什么，牺牲什么
+
+1. **共用预设优于全场复杂 Shader Graph。** [研究] 先用少量环境／角色／玩法提示材质族。粗糙度、高光、受光方式与细节密度形成统一语言；生成结果按这套规格筛选。若玩法要靠灯光辨识可见性或材质，保留相应 Lit 表达，不能为省成本破坏规则。
+2. **对象级遮挡提示优于默认全屏轮廓。** [研究] 前者适合“玩家被遮挡但仍需知道位置”，后者才可能服务于整幅画面的明确风格需求。对象级也有额外绘制与顺序成本；全屏基于深度／法线的边缘不一定包含透明效果，纹理内部边界也不是几何轮廓。两者都不能代替环境布局和合法可见信息设计。
+3. **关键提示与装饰分开控制。** [研究] 危险边界、方向与生效阶段是玩家采取动作的依据；余烟、碎屑和漂亮拖尾承担氛围。低画质／高并发先缩减后者，但关键提示自身也须控制占屏与叠层。不能只保留全部预警而容许十个实心圆遮住玩家；可用边缘为主、分层或合并策略，但多威胁是否混淆要试玩决定。
+4. **调色是统一呈现的末端校准，不是资产修复。** [研究] 同一套 tone mapping／grading 可以收敛观感；它不会修好错误轮廓、过密纹样或一件资产自身烘死的阴影。Bloom 适合让能量峰值有亮感，但不宜成为唯一危险范围；DOF 可用于非交互近景，但是否能进战斗由可玩区域清晰度决定。
+5. **预算跟着信号保留。** [研究] 最低设备应优先保玩家、关键危险和接触结果；降低装饰覆盖率、时长或阴影质量后，重新确认深度关系仍成立。材质更简单不自动等于整帧更快，CPU／GPU 限制、填充率和目标分辨率仍要分别测。
+
+### 当前实现的版本与组合边界
+
+[一手] [6000.5.0f1 正式发行页](https://unity.com/releases/editor/whats-new/6000.5.0)标注 2026-06-15 发布，已不是仅有文档的预览能力；[6000.6.0f1 发行页](https://unity.com/releases/editor/whats-new/6000.6.0)也已存在。[Unity 支持政策](https://unity.com/releases/unity-6/support)区分 LTS 与 Update，后者支持至下一版发布。故这里的 6.5 是机制核查版本，不是建议今天新锁定的“最新版”，也不表示该特性已回移到一般 6.3 LTS 项目；采用前重新核当前支持版本、包与目标平台。
+
+[一手] [6.5 Tile-Only 具体约束](https://docs.unity.com/en-us/engine/6000.5/manual/analysis/graphics-performance-profiling/in-urp/on-tile-rendering)：保持 tile 数据需要 tile-based GPU 与支持 native render passes 的图形 API；WebGL 不支持。文档排除 depth／opaque textures、TAA／MSAA、内置后处理、HDR、相机栈、Deferred 等，并对缩放／动态分辨率给 Android XR 例外。验证关闭可能静默离开 on-tile；应在目标设备查看实际图。[研究] 因此依赖深度纹理采样的全屏描边不能默认与它无成本叠加；若画面身份依赖这些功能，保留常规 URP 路径更可能合适。这里没有测得带宽、能耗或帧率改善，不为调色单独升级引擎，也不把“已正式发行”视为本项目稳定性通过。
+
+### 单人无美术修补条件下的最小维护单位
+
+[研究] 不新增框架：在现有材质、效果 Prefab 与动作配置里保存少量视觉角色（玩家／危险／交互／装饰）、主色与辅助形状、阶段时序、最大装饰并发、基础光照／调色配置和目标屏幕尺寸。共享参数可以让 AI 批改，关键轮廓与语义由人判断。没有可用轮廓或材质区域时，先换许可清楚的资产／收窄风格，不把手绘 mask、逐帧修边藏进“程序化”成本。
+
+[研究] 第二次修改用一个真正需求验证生产路线：新增明亮雪地关卡，或让两个相近技能同时出现。好路线能通过少量共享参数、提示形状／边缘和装饰强度修改保住识别；若要逐件补灯、逐个重做 shader 或重生成所有纹理，收窄风格／效果体系。禁止用“全局调暗”掩盖雪地识别问题，也不将改动文件数单独当质量结论。
+
+### 未来试玩应回答的问题，不是截图打分
+
+[研究] 在实际游玩尺寸及最低画质下，按完整动作观察：亮／暗背景切换、角色转身、墙后移动、多个威胁叠加、命中后下一招、HUD 警告出现、掉帧时提示阶段。记录玩家是否认错来源／方向／边界、是否错把余烟当持续伤害、下一危险是否被反馈遮掉；配合帧时间与 GPU pass 观察。灰度／色觉模拟和截图对比可暴露候选问题，不能替代人在运动中的识别与反应。
+
+[研究] 成功不是“特效少”或“对比最大”，而是这类玩法最需要的信息可靠，同时保住目标气氛。探索谜题允许刻意隐藏线索，潜行可见性本身可能是规则，不能全局透视／高亮抹掉挑战。本轮未进行这些试玩；无识别率、净工时或性能增益数据。
+
+### 本次来源边界
+
+- 官方旧 TUNIC 博客 URL 本次返回 404，Riot 2017 风格指南及 PDF URL 重定向首页；未用搜索摘要冒充已读正文。采用可读的作者访谈及 Riot 2021 一手开发文章替代。
+- Unity 6.7 Beta 页作为发现线索，最终 on-tile 判断核到 6.5 版本页；不把 Beta 当发行默认，也不声称 6.3 是绝对最新版。
+- 仅采用公开机制和原创综合判断；没有取得或重用商业游戏资产、安装插件、运行源码、访问用户电脑或建立云任务。
