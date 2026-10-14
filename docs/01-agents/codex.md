@@ -52,7 +52,7 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 
 ### 外来仓库转脚本
 
-✅ 只读任务显式使用 `codex exec --sandbox read-only` 并核对有效权限；分别检查配置、AGENTS、Skills 与 Hook 来源，不能用 Git 仓库存在或“项目配置未加载”替代这些检查。当前官方要求非托管 Hook 经定义信任后才运行；审查时也看它引用的脚本。本次[固定源码核查](../research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)区分未设 trust 与显式 untrusted，且 Hook 定义哈希不覆盖脚本内容；这是 2026-10-14 main 的实现证据，未验证已发行客户端。**[一手；经验：采用建议]**
+✅ 只读任务需核对有效只读权限：旧沙箱配置可显式使用 `codex exec --sandbox read-only`；已有文件排除 profile 时不要叠加该旧开关，按 [10 的生效条件](../10-security.md#codex-文件排除的采用条件)选择（2026-10-15，UTC+8 补核）；分别检查配置、AGENTS、Skills 与 Hook 来源，不能用 Git 仓库存在或“项目配置未加载”替代这些检查。当前官方要求非托管 Hook 经定义信任后才运行；审查时也看它引用的脚本。本次[固定源码核查](../research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)区分未设 trust 与显式 untrusted，且 Hook 定义哈希不覆盖脚本内容；这是 2026-10-14 main 的实现证据，未验证已发行客户端。**[一手；经验：采用建议]**
 
 ### 源码里能看到的模块
 `codex-rs/` 下有：`code-mode`、`memories`、`agent-roles`、`agent-message-board`、`hooks`、`skills`、`plugin`、`worktree`、`cloud-tasks`、`external-agent-migration`、`ollama` / `lmstudio`、`windows-sandbox-rs` 等。功能开关里还能看到 `Goals`、`BrowserUse`、`ComputerUse`、`MemoryTool`、`GuardianApproval` 等 **[一手]**。

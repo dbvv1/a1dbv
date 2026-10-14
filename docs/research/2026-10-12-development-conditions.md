@@ -63,7 +63,7 @@
 
 ### Codex 脚本入口：信任状态不等于有效权限
 
-**核实：2026-10-14 UTC；改变 10 §3 与 Codex 专题的脚本入口建议。** ✅ 只读自动化显式选择 `--sandbox read-only`，核对有效权限，并分别审查配置、指令、技能与 Hook 引用脚本；不以项目 trust 或 Git 检查代替执行边界。以下实现固定于 [openai/codex `7a08c5f`](https://github.com/openai/codex/commit/7a08c5f6271e818d832eb9061dac935936e2b539)，为当日 main 快照，不是已发行 CLI／桌面版本的行为验证。**[一手：固定源码；经验：采用判断]**
+**核实：2026-10-14 UTC；改变 10 §3 与 Codex 专题的脚本入口建议。** ✅ 只读自动化须核对有效只读权限：旧沙箱配置可显式选择 `--sandbox read-only`；已有文件排除 profile 时不要叠加该旧开关（2026-10-15 UTC+8 补核，见 [10 的唯一采用建议](../10-security.md#codex-文件排除的采用条件)）。同时分别审查配置、指令、技能与 Hook 引用脚本；不以项目 trust 或 Git 检查代替执行边界。以下实现固定于 [openai/codex `7a08c5f`](https://github.com/openai/codex/commit/7a08c5f6271e818d832eb9061dac935936e2b539)，为当日 main 快照，不是已发行 CLI／桌面版本的行为验证。**[一手：固定源码；经验：采用判断]**
 
 **配置和指令的闸门不同。** [当前配置文档](https://learn.chatgpt.com/docs/config-file/config-basic#configuration-precedence)说明项目配置只对 trusted 项目加载，用户／系统配置仍可生效。固定 [loader](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/config/src/loader/mod.rs#L1056-L1132)将未设 trust 与显式 untrusted 都作为项目配置层的禁用状态，但 [AGENTS 加载](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/agents_md.rs#L56-L87)只在显式 untrusted 时提前返回、保留传入的用户指令；未设 trust 不命中该分支。[exec 的 Git 检查](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/exec/src/lib.rs#L1012-L1019)检查是否找到仓库根，不能从其通过推断 trusted。**[一手：官方契约与固定实现]**
 

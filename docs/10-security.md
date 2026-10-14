@@ -1,6 +1,6 @@
 # 10 · 安全
 
-> 核实时间：2026-10-08；2026-10-14 补核外来仓库的脚本启动与配置来源边界。
+> 核实时间：2026-10-08；2026-10-14 补核外来仓库的脚本启动与配置来源边界；2026-10-15（UTC+8）补核 Codex 文件排除的生效条件。
 
 ## 1. 威胁模型：致命三要素
 
@@ -100,7 +100,16 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 
 **外来仓库转脚本前，先限制配置来源。** 普通 `claude -p` 不显示工作区信任或逐服务器批准提示，未信任目录中的项目 Hook 与 `.mcp.json` 仍会运行／连接。先用 `--setting-sources user` 排除项目 settings 与 `.mcp.json`；不需要自动发现能力时，再用 `--bare`，仅显式加入审过的输入与工具。`--bare` 单独使用仍会应用项目 `env` 与部分认证 helper，不能替代整个进程的隔离。见[官方权限矩阵](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)与[具体边界、认证前提](research/2026-10-12-development-conditions.md#交互试点转脚本bare-不是等价加速)。**[一手：官方契约；经验：采用建议]**
 
-**Codex 需单独核对。** `codex exec` 的只读任务显式选择 `--sandbox read-only`，并核对有效权限与配置、指令、技能来源；项目信任不能替代 sandbox，跳过项目配置也不等于排除所有项目技能。审查 Hook 时还要检查它引用的脚本：本次固定实现记录的是 Hook 定义哈希，不是脚本内容哈希。具体状态、覆盖条件与[源码范围](research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)另列；未运行发布客户端，不将 Claude 的启动行为外推到 Codex。**[一手：官方文档与固定实现；经验：采用建议]**
+**Codex 需单独核对。** `codex exec` 的只读任务需选只读权限：使用旧沙箱配置时可显式选择 `--sandbox read-only`；已有文件排除 profile 时，不再叠加这个旧开关（见下段）。同时核对有效权限与配置、指令、技能来源；项目信任不能替代 sandbox，跳过项目配置也不等于排除所有项目技能。审查 Hook 时还要检查它引用的脚本：本次固定实现记录的是 Hook 定义哈希，不是脚本内容哈希。具体状态、覆盖条件与[源码范围](research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)另列；未运行发布客户端，不将 Claude 的启动行为外推到 Codex。**[一手：官方文档与固定实现；经验：采用建议]**
+
+### Codex 文件排除的采用条件
+
+**🧪 有条件采用权限 profile，先确认生效配置，再让工作区接触秘密。** 官方已支持 macOS、Linux、WSL 和原生 Windows 的本地命令权限；`deny` 可排除读取，但 profile 仍标为 Beta。不要用 `.gitignore`、提示词或 issue 已关闭代替这一边界。**[一手：官方机制；经验：采用建议]**
+
+- **不要混用新旧配置。** 普通配置中，任一已加载 `sandbox_mode`、启动参数 `--sandbox` 或选定配置 profile 中的 `sandbox_mode` 都会让 Codex 使用旧沙箱设置而非 `default_permissions`。托管 `allowed_permission_profiles` 会强制使用权限 profile，是例外；应按部署要求清理冲突，不能把“配置文件里写了 deny”当成已经生效。**[一手]**
+- **按实际执行入口验收。** 确认选中的 profile、工作区与后端；Windows 当前有 MXC／legacy elevated，不能沿用旧的“不支持 Windows”结论。换 CLI、App 或执行环境时，后续验收应在无秘密的隔离样例中确认：允许文件仍可读，指定拒绝文件读取失败；MCP、浏览器、连接器与云环境按各自控制核对。尚未确认时，把真实秘密留在该环境之外。**[一手：平台与作用域；经验：采用／暂缓条件]**
+
+依据：[当前官方权限说明](https://learn.chatgpt.com/docs/permissions)、[固定实现与历史入口反例](research/2026-10-12-community-source-records.md#codex-文件排除从关闭请求到采用条件)。关键局限：本轮只核对公开机制与历史反馈，没有执行上述验收，也没有证明当前每个 App 构建均已接入同一策略。
 
 ## 3.1 auto mode 能挡住多少：官方公布的数字
 

@@ -1,6 +1,6 @@
 主线：二为主，兼四
-改变的建议：原生能力足够时保持轻量；普通文档先自审，只为具体遗漏按次保留独立检查；h3o 交付仍须验目标环境与范围。[经验]
-证据摘要：固定 Skill 配置及 Superpowers 撤回文档评审循环的补丁、维护者成本自述；h3o 产物与作者本机反馈。配置不证明净收益，h3o 的宽兼容声明超过验证范围；未新跑模型。[一手／社区]
+改变的建议：文件排除须确认有效 profile 与实际入口，不能据关闭状态放行；原生能力足够时保持轻量；普通文档先自审，只为具体遗漏按次保留独立检查；h3o 交付仍须验目标环境与范围。[经验]
+证据摘要：Codex 文件排除的固定实现、发布祖先关系、历史入口反例及当前配置优先级；固定 Skill 配置及 Superpowers 撤回文档评审循环的补丁、维护者成本自述；h3o 产物与作者本机反馈。配置不证明净收益，h3o 的宽兼容声明超过验证范围；未新跑模型。[一手／社区]
 
 # 社区工作流：固定来源与案例资料
 
@@ -142,3 +142,32 @@ Simon Willison 的 [research PR #10](https://github.com/simonw/research/pull/10)
 ## 9. 下一轮怎么继续探索
 
 后续问题统一进入 [BACKLOG](BACKLOG.md)，不在本页重复排队。已开展的 [brief／接口追查](2026-10-12-baml-and-review.md#后续任务相同-brief-与过期接口)、[pi-trim 复算](2026-10-10-pi-trim.md)和[检索工具机制核查](2026-10-13-context-tool-choice.md)以各自记录为准；仍缺完整流程的同任务净收益、Orbi 交付链验证及更广社区原帖，不把机制检查当成已补足这些缺口。**[研究：证据状态]**
+
+
+## Codex 文件排除：从关闭请求到采用条件
+
+核实：2026-10-15（UTC+8）。主线二，支持 [10 的唯一采用建议](../10-security.md#codex-文件排除的采用条件)与 [11 的社区案例](../11-community-pulse.md#1-已关闭的需求是否已适合采用)。只读公开资料；没有运行客户端、模型或沙箱，不改变权限，不访问真实秘密。**[研究：范围]**
+
+### 请求、实现、发布与后续
+
+1. [#2847 首帖](https://github.com/openai/codex/issues/2847)要求确定性排除文件读取与传给模型，同时保留其他代码检索；不是只要求搜索降噪。关闭日期为 2026-06-29。**[社区：需求；一手：元数据]**
+2. [固定提交 46f30d02828bd4c52827e5f0482a6f2a982cce5b](https://github.com/openai/codex/commit/46f30d02828bd4c52827e5f0482a6f2a982cce5b)（#18202，2026-05-12）补 Windows deny-read：`core/src/exec.rs` 将拒绝路径交给 elevated 后端，`windows-sandbox-rs/src/spawn_prep.rs` 同步应用 ACL 后才启动；legacy unelevated 的 `WRITE_RESTRICTED` token 不能保证读取拒绝，故拒绝带 deny-read 的运行。`unified_exec/tests.rs::legacy_non_tty_cmd_rejects_deny_read_overrides`包含对应拒绝断言。读取源码与测试定义不等于已执行测试。**[一手：固定补丁]**
+3. [CLI rust-v0.138.0](https://github.com/openai/codex/releases/tag/rust-v0.138.0)于 2026-06-08 发布；[固定提交到该 tag 的比较](https://github.com/openai/codex/compare/46f30d02828bd4c52827e5f0482a6f2a982cce5b...rust-v0.138.0)返回 `status=ahead`、`ahead_by=801`、`behind_by=0`，`merge_base_commit.sha` 为该固定提交。证明这个已发布版本包含实现，不宣称它是首个发布版本，也不证明 Desktop 构建对应关系。**[一手：GitHub 发布与祖先关系]**
+4. [维护者 6 月 29 日回复](https://github.com/openai/codex/issues/2847#issuecomment-4834554458)指向 Beta permission profiles，说明 CLI 能运行时切换，而 App 有更多 agent-loop 创建入口，当时仍在完善。[关闭回复](https://github.com/openai/codex/issues/2847#issuecomment-4835603738)以 Beta 已实现为由关闭并要求另报后续问题。**[一手：维护者说明]**
+5. [7 月 24 日后续](https://github.com/openai/codex/issues/2847#issuecomment-5069244554)报告同用户、同机、同配置：CLI 0.145.0 拒绝读取，Windows App 26.721.31836 仍读取被排除文件。评论请求返回 92 条，检查关闭当日及之后的回复，末条为这项报告，未见其后的维护者修复确认；没有全面搜索所有后继工单或复现，不推断当前 10 月 App 仍有此故障。**[社区：使用者自报；研究：检索限度]**
+
+### 当前契约与会改变选择的边界
+
+[官方 Permissions](https://learn.chatgpt.com/docs/permissions)当前仍标 Beta。普通配置选择中，任一已加载 `sandbox_mode`、显式 `--sandbox` 或选中 config profile 的 `sandbox_mode` 会选择旧沙箱设置，覆盖 `default_permissions` 的使用；托管 `allowed_permission_profiles` 会要求使用权限 profile，是明确例外。这解释为何“已经写入 deny”仍不足以判断生效，不能把旧 `--sandbox read-only` 当成新 profile 上附加的一层保护。**[一手：当前官方契约；研究：采用影响]**
+
+平台现状与旧反例须分开：macOS 用 Seatbelt；Linux／WSL 用 bubblewrap 与 seccomp，不能执行所需操作的宿主无法运行受限策略；Windows 当前有 MXC，另有 legacy elevated 与能力较弱的 unelevated，不能执行的策略应拒绝。该页面声明本地命令控制范围，不把它扩展为 MCP、浏览器、连接器和云环境的一份通用策略，也不以 CLI 源码证明具体 App 已部署。**[一手]**
+
+固定 Windows 补丁把 glob 展开为启动前已有匹配，精确不存在路径则可先物化后拒绝；当前文档仍说明 Linux／WSL／Windows 的 glob 预展开与 `glob_scan_max_depth` 条件。因此，任务中会新建的秘密或深层路径不能仅凭启动时 glob 匹配成功就放行；稳定秘密优先留在环境外，采用固定目录排除时还需核对更具体的允许条目，官方允许更具体路径重新开放子树。此边界支持暂缓放入秘密，不建议自行改 ACL 或靠反复调权限解决。**[一手：固定实现及当前文档；经验：采用边界]**
+
+### 反证、撤回与后续验收设计
+
+- 反对“无法排除文件”：实现与已发布 CLI 确实存在；官方现在支持原生 Windows，旧 App 报告不能当永久平台禁令。**[一手／研究]**
+- 反对“关闭等于所有入口已解决”：维护者当时明确区分入口，随后用户报告不同结果；当前配置优先级仍要求确认真正生效策略。没有当前 App 独立成功或失败结果，保留未知。**[一手／社区／研究]**
+- 后续只在获准的隔离测试环境用无秘密夹具：记录版本、入口、实际 profile 与后端，对照允许文件可读／指定拒绝文件不可读；若采用 glob，覆盖所需深度和任务中新建文件的情境。入口或后端变化后重验；不能用 CLI 通过替代 App 或 MCP 验收。当前阶段只预注册，没有执行。**[研究：后续设计]**
+
+本轮撤回 11 的旧点赞排行和据其推导的整体痛点／趋同结论，不重新认证其他历史社区段落，不把这一个需求升级为社区共识，也不复制 19 的审批策略来源研究。**[研究：收敛范围]**
