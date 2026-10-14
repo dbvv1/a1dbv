@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件
-改变的建议：让真实使用决定继续、改目标或停止；分别验看懂结果、完成任务及有机会时再次使用。改界面要保住原操作路径，选项已出现仍须追后端参数；自建／复用另比必要能力和运行责任。[经验]
-证据摘要：公开需求→补丁→反馈链、创业随机试验与模拟／真人研究。OpenWhispr 有同一使用者失败后成功自报，Home Assistant 有升级后的负向行为；并非所有案例都闭环，也不能合并成 AI 收益或由模拟投票否决需求。[一手／社区／研究]
+改变的建议：让真实任务决定继续、改目标或停止；改界面既保原路径，也区分辨认对象、核对输出与编辑数据；自建／复用另比必要能力和运行责任。[经验]
+证据摘要：公开需求→补丁→使用反馈及相关研究。含成功、负向行为和 Zotero 的预览／编辑取舍；各链覆盖不同环节，不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -278,3 +278,28 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 **✅ 缩减界面时，把原任务需要的同时可见、触摸目标和上下文保留当作验收对象。** 不用字段仍存在证明工作流无损；先让原使用者重做任务，再决定保留新呈现、恢复旧入口或提供替代。复访可观察继续使用、绕行、延迟升级等行为，但不能从单个报告估算整体留存。与 CodexBar 的符号理解不同，本例是数据可得而操作组合改变；与 Handy 的未合并局部好用不同，本例已有上线后的负向行为。**[经验：由案例提炼的窄建议]**
 
 这条历史链不代表 2026-10 的现状。检索已发现后续 [#53920](https://github.com/home-assistant/frontend/pull/53920)继续调整 Related/Details；当前开发分支 `9ca8f2e98be16f823c7c9e6113cc6c7545db7aee` 的[对话框](https://github.com/home-assistant/frontend/blob/9ca8f2e98be16f823c7c9e6113cc6c7545db7aee/src/dialogs/more-info/ha-more-info-dialog.ts)和[Details](https://github.com/home-assistant/frontend/blob/9ca8f2e98be16f823c7c9e6113cc6c7545db7aee/src/dialogs/more-info/ha-more-info-details.ts)也已演化。本轮未验证当前发布版的全部入口或原用户是否恢复使用；只截至上述历史行为形成建议，不将未找到复测写成不存在。下一次只在有对应版本下的真实操作或采用结果时续接，不再用更多界面源码检查替代用户结果。**[一手：当前源码入口；研究：停止边界]**
+
+## Zotero：结果预览与原编辑入口如何取舍
+
+> 核实时间：2026-10-15（UTC+8）。这是 **2024 年的历史产品选择机制**，不是近期创新或 AI 效果案例。读取公开原帖、PR 讨论、固定合并补丁与测试源码；未安装、构建或运行 Zotero。**[研究：核验范围]**
+
+**✅ 功能已经可用时，先分清用户在辨认对象、核对结果还是编辑数据，再选择摘要、预览和原编辑入口。** 这比已有“字段仍在不等于路径保留”多回答一个选择：派生结果可以帮助检查，但不一定适合快速辨认，更不必成为第二套编辑器。建议只用于存在这些任务差异的界面，不要求每个原型提供多种模式。**[经验：采用判断]**
+
+### 从具体任务到修改版操作
+
+1. **原任务。** migugg 在 [2 月 1 日](https://forums.zotero.org/discussion/comment/454025/#Comment_454025)要求 Info 折叠后仍显示作者、年份和标题；[2 月 7 日](https://forums.zotero.org/discussion/comment/454666/#Comment_454666)说明要逐项检查某作者的标签、关联，同时保留条目身份信息，并建议把显示与编辑分开。[Greg](https://forums.zotero.org/discussion/comment/456504/#Comment_456504)另提出折叠后仍需作者和年份。**[社区：用户原帖]**
+2. **修改与明确归因。** [维护者公告](https://forums.zotero.org/discussion/114422/available-for-beta-testing-customizable-item-pane-header)于 5 月 16 日明确感谢上述反馈，介绍可选标题区并恢复 Info 内的 Title 字段。[PR #3791](https://github.com/zotero/zotero/pull/3791)已于 5 月 10 日合并为 [`59b1d75b98eecd2e910a18a8f77b81b44091dd93`](https://github.com/zotero/zotero/commit/59b1d75b98eecd2e910a18a8f77b81b44091dd93)，父提交 `8278140492f16392eadac3c2062bb372020361cd`；[固定默认值](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/defaults/preferences/zotero.js#L77-L79)仍为 `title`。**[社区：维护者归因；一手：补丁]**
+3. **修改版实际任务。** [migugg 当天报告](https://forums.zotero.org/discussion/comment/463100/#Comment_463100)选择书目模式后，能在 Info 折叠时直接核对书目是否正确、完整。这是原请求者操作修改版的自报，比泛泛称赞具体；但没有 beta SHA、计时、样本数或长期留存。其新报告是核对书目，不能替他补成原先逐项检查标签的任务也已复测成功。**[社区；研究：结果边界]**
+
+### 同一呈现的反证与停止扩写
+
+[mjthoraval 的反馈](https://forums.zotero.org/discussion/comment/463196/#Comment_463196)认为紧凑模式易扫读却缺刊物和类型，而书目模式难以快速抽取信息。[维护者](https://forums.zotero.org/discussion/comment/463198/#Comment_463198)提醒它只显示所选样式输出的内容；[另一回复](https://forums.zotero.org/discussion/comment/463102/#Comment_463102)拒绝把书目模式设为所有人的默认。因此能帮助核对输出，不等于最适合辨认对象；也不能将这些自报写成受控比较或总体偏好。**[社区；研究：选择边界]**
+
+PR 曾考虑让用户编辑格式化书目并反写元数据。[维护者](https://github.com/zotero/zotero/pull/3791#issuecomment-1978795985)指出作者、缺失字段等问题；[实现作者](https://github.com/zotero/zotero/pull/3791#issuecomment-1979040500)补充大小写、破折号和本地化日期的反向映射不清楚，同意仅做预览，不复制 Info 编辑器。[固定实现](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/chrome/content/zotero/elements/paneHeader.js#L187-L310)中，Title 和 Title/Creator/Year 仍可编辑标题，Bibliography Entry 是派生显示；不能概括成全部标题区只读。**[一手：设计讨论与源码]**
+
+### 维护成本与验证范围
+
+- 预览仍有维护面：[固定实现](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/chrome/content/zotero/elements/paneHeader.js)处理条目修改／删除的缓存失效、样式／语言切换、缺失样式回退和复制语义。省去第二套编辑器不等于零成本，也不能从代码量算节省工时。**[一手；研究]**
+- [固定测试](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/test/tests/itemPaneTest.js#L80-L145)覆盖条目、样式、语言变化及缺失样式回退。本轮只读这些断言，没有执行上游测试；知识库离线检查也不能证明 Zotero 的运行或使用收益。**[一手：测试源码；研究：验证边界]**
+- [PR 作者](https://github.com/zotero/zotero/pull/3791)报告某些样式曾很慢，缓存改善后仍需低资源设备测试。这是作者性能观察，没有标准计时或净成本数据，不写成已验证性能提升。**[社区：作者自报]**
+- 若目标用户主要在辨认对象，或预览挤占任务空间、显示陈旧、修改入口变难，应重新比较紧凑摘要或原路径，而非继续加字段。后续只有对应版本的连续操作、使用结果或性能数据才值得续接；不以新赞美评论补长期采用，更不从此例推断 AI 生产力。**[经验：撤回与续接条件]**
