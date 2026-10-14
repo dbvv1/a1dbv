@@ -1,6 +1,6 @@
 主线：3「第二次、第五次修改仍可靠」／4「交付给玩家和维护者」，兼顾主线 2 的已有能力取舍
 改变的建议：04 先完成有回应、可读、连续的核心动作，再以生命周期与设备预算保护迭代；区分输入延迟、容错、呈现插值和帧间隔
-新证据：Input System 1.19 时序、Unity 6.3 插值／转场／平台呈现、三份许可分层的动作源码与 Dead Cells 作者复盘；保留原异步与存档证据
+新证据：Input System 1.19、Unity 6.3 原生运动契约、三种 MIT motor 固定源码及 UCL root-motion 样例；动作反馈与 Dead Cells 复盘，保留异步／存档证据
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -198,3 +198,64 @@
 [研究] 将来已获授权的垂直切片应以一个高频动作作对照：2D 选跳跃／短连击，3D 选转身移动／一次近战；先让控制规则固定，再分别切换纯呈现，若改缓冲／顿帧窗口则明确另作玩法变化。比较接受输入到首个反馈的程序时刻、长帧位置、玩法误操作和人的可控／可读判断；再做一次需求修改，观察是否只需改动作参数及少量绑定。验证目标是更好的动作，不是通过更多检查项。
 
 本轮完成公开一手正文、固定源码与提交元数据核查；未运行演示、真实引擎、设备测试或用户实验。仓库离线检查只证明文档交付，不能充当上述体验验证。[研究]
+
+## 3D 运动补研：控制精度、接触连续性与物理重量的取舍
+
+核实：2026-10-14 UTC。[一手] 为官方正文、固定源码与提交元数据；[研究] 为静态路径分析和采用建议。只读公开资料，未安装、运行引擎或试玩演示；本节深化 04 物理选择，不重复输入缓冲与显示插值。
+
+### 1. 先按期望运动选，不能只按组件名字选
+
+**[研究] 默认判断**：常规直立探索／动作角色，以可预测转停、可控落点、稳定接触为目标，✅ 原生 CharacterController 加窄运动层；已有可维护的刚体运动无需迁移。真正需要物体质量、冲量与摩擦相互作用时🧪力驱动动态 Rigidbody；需要原生接触求解但按游戏规则组织速度时🧪速度驱动动态 Rigidbody；稳定接地、任意附着／脱离或复杂台阶规则超过原生便利范围时🧪现成 kinematic motor。后两条都可能很精确，不能写成“Rigidbody 必然笨重、KCC 必然最好”。
+
+[研究] “重量”不等于质量参数：有限加速度、方向反转时的承诺、落地压缩、武器动作时序都能塑造重量，同时保留精确落点；反过来，物理自然推出的移动也可能偏离动作游戏要求。应先描述人在坡顶、被击退、站上转台时想做什么，以及实际结果是否可信，再选哪一层拥有速度。
+
+[一手] Unity 6.3 LTS 的边界：
+
+- [CharacterController 组件](https://docs.unity3d.com/6000.3/Documentation/Manual/class-CharacterController.html)提供壁面滑动、Slope Limit／Step Offset 和 Skin Width。它不自行接受力，也不自动推开 Rigidbody；可在碰撞回调中编写推力。文档中以角色尺度举出的参数不是本仓库的通用推荐值。
+- [Move](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController.Move.html)接收位移增量并受碰撞约束，不自动使用重力；[isGrounded](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController-isGrounded.html)是最近一次 Move／SimpleMove 的接地结果。[velocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController-velocity.html)来自移动前后差值，不追踪在控制器之外施加的 Transform／父级运动。因此它们不能直接充当世界速度、独立探地或平台动量系统。
+- [Rigidbody.linearVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody-linearVelocity.html)是世界空间速度；文档反对每步覆盖速度来期待真实物理，同时给出跳跃立即改速度的用例。[研究] 这是物理真实性边界，不是禁止所有作者控制的角色：采用速度驱动就显式维护允许保留的外力与接触后速度，不能一边全量覆盖、一边期待任意 AddForce 自然持续。
+- [GetPointVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.GetPointVelocity.html)包含角速度；[MovePosition](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.MovePosition.html)描述运动学刚体按物理步移动及插值。[研究] 仅调用 MovePosition 不等于拥有角色的台阶、可走坡、接地和离台政策。
+
+### 2. 三份许可清晰的实现：同样叫 controller，接触政策不同
+
+以下固定 SHA 通过公开 GitHub API 核查，源码原文逐文件读取；时间是仓库提交／活动证据，不代表目标 Unity 版本已通过，不用 star 数推导品质。三者均有实际 motor 实现与演示代码，本轮没有证据把它们写成某商业游戏已验证的底座。只建议借对应机制或有条件试用，代码许可不替代演示资产和依赖核查。
+
+**A. OpenKCC：🧪 需要显式 snap／平台政策时评估，保留现有行为再决定接入。**
+
+- [一手] `nicholas-maltbie/OpenKCC@a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4`，v1.5.0，2023-09-15；[MIT LICENSE.txt](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/LICENSE.txt)。[package.json](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/package.json)声明最低 Unity 2019.4，README 开发版本为 2023.1；不能据此声明 Unity 6.3 已兼容。包还依赖作者的状态机、screenmanager、testutils 及 Unity 包，接入不只是替换一个组件。
+- [一手] [KCCMovementEngine.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/KCCMovementEngine.cs#L303-L339)先去重叠、求移动、按条件 snap down、再更新 grounding／平台。`ShouldSnapDown` 要求此前稳定着地、不滑坡且没有向上运动，避免把主动起跳吸回地面；`GetProjectedMovement` 把移动投影到可行坡面并保留输入长度，体现的是设计好的坡速规则。
+- [一手] [RelativeParentConfig.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/Config/RelativeParentConfig.cs#L73-L108)保存平台相对位置／旋转或采用平台点速度，而非必须改变 Unity 层级；[KCCStateMachine.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/KCCStateMachine.cs#L302-L335)把刚体设为 kinematic，自行施加重力，跳跃显式加入 `GetGroundVelocity()`。后者支持不传动量、权重和默认最大弹射速度，说明“随平台站稳”和“跳出平台的运动”是两个决定。
+- [一手／研究] 窄反例：[RelativeVelocityRigidbodyTracking.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Environment/MovingGround/RelativeVelocityRigidbodyTracking.cs#L45-L64)计算的是两个速度的模之差的绝对值，不是速度向量差的模；等速反向输入在此函数会得到零差。另在 `KCCMovementEngine.GetGroundVelocity` 中，传入权重函数的第二参数是已取得的平台速度，不是单独读取的玩家速度。不能把该可选类名称解释成完整相对速度契约；这是固定路径的静态反例，不是实际引擎故障复现，也不否定其他平台路径。
+- [研究] 可借：显式可站立／滑坡状态、起跳不吸附、平台跟随与发射动量分开。维护代价是查询／去穿透／更新顺序及依赖组合；代码年代本身不构成淘汰理由，但目标版本升级需验证，不能当作近年活跃维护的证据。
+
+**B. Character Movement Fundamentals：🧪 学习／改造速度驱动刚体，不能按“物理控制器”承诺任意冲量自然保留。**
+
+- [一手] `Jan-Ott/CharacterMovementFundamentals@49bd5569c1192dc98ac889046ff358c4eb8eeb44`，2025-02-09；[MIT](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/LICENSE)。[作者 README](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/README.md)说明 2019 发布、内容更新至 2021、支持至 2025-01，之后开源且无暇维护，建议自行 fork。它可以是可读机制来源，不能列为有持续维护承诺的 Unity 6 底座。
+- [一手] [Mover.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Core%20scripts/Mover.cs)冻结旋转、关闭原生重力；地面传感器测距离，生成竖向 ground-adjustment velocity，`SetVelocity` 把它加到作者提供速度后写入 Rigidbody。台阶连续性来自传感器范围和地面距离修正，不是 capsule 自然走台阶。
+- [一手] [AdvancedWalkerController.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Controllers/AdvancedWalkerController.cs)拥有 `momentum`、空中控制、地面／空中摩擦、陡坡滑动和 `AddMomentum`；这是运动状态的明确扩展点。[研究] 对编排击退，调用拥有者合入动量比让另一个脚本随时改 Rigidbody 更一致；不能推导成所有碰撞产生的引擎速度已自动保留。
+- [一手／研究] [MovingPlatform.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Environment/MovingPlatform.cs)是 waypoint 平移样例：直接改平台 Transform，再给触发区中刚体 `MovePosition` 同一位移；未在此路径计算旋转接触点速度。抵达 waypoint 时平台位置被截到目标，但搬运乘客仍用先前 `_movement`，是端点步长值得验证的静态边界，不能据样例宣称各种旋转／高速平台已解决。
+
+**C. SRMove：🧪 台阶连续性优先、愿意维护速度政策的轻量候选。**
+
+- [一手] `NoiRC256/SRMove@a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b`，提交于 2025-12-03（仓库 pushed_at 为 2026-01-26，不将其误写为该源码提交日期）；[MIT](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/LICENSE)。[Readme](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Readme.md)声明开发／测试 Unity 6000.0.32f1，属于作者兼容性说明，不是本轮复测或 6.3 保证。
+- [一手] [AvatarMover.GroundDetection.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.GroundDetection.cs)向前后采样代理地面点来近似坡面；[AvatarMover.Core.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.Core.cs)结合坡面方向、hover 修正、重力和输入，每步写 `linearVelocity`。[研究] 它希望让台阶像连续坡面，适合重视平顺行走的玩法；窄台阶、锐利边缘和需要精确台阶落点的玩法不能直接沿用同一近似范围。
+- [一手] [AvatarMover.API.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.API.cs)的 `Move` 设定单步目标速度，`LeaveGround/EndLeaveGround` 控制吸附暂停／恢复，旧 force 方法已标 Obsolete。跳跃曲线与击退组合属于调用方，不能认为加上组件就有完整动作。
+- [一手／研究] `UpdateMovement` 对平台取得的是 `_groundRb.linearVelocity`；绕中心旋转的平台在边缘仍有点速度，单凭此值不足以表达。README 的 `ParentableGround` 通过层级继承位置／旋转，是另一条可选跟随政策；要另外验证离台时继承、父级缩放、相机参考方向与碰撞受阻，不能将“能跟着平台”概括成所有平台动力学正确。
+
+### 3. root motion 与混合路线：一个最终位移所有者
+
+[一手] Unity 6.3 [OnAnimatorMove](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MonoBehaviour.OnAnimatorMove.html)在状态机／动画求值后、IK 前调用。Unity 官方历史样例 `Standard-Assets-Characters@8f185aa3c782d824976653dd6a6476312daad241` 的 [ThirdPersonBrain.cs](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/Assets/_Standard%20Assets/Characters/Scripts/ThirdPerson/ThirdPersonBrain.cs#L458-L481)只在非 root-motion 模式从 FixedUpdate 驱动 motor，在 root-motion 模式从 OnAnimatorMove 驱动；[ThirdPersonMotor.cs](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/Assets/_Standard%20Assets/Characters/Scripts/ThirdPerson/ThirdPersonMotor.cs#L215-L228)通过 adapter 提交移动，`GetMovementVector` 读取 `animator.deltaPosition`。这是互斥所有权的实际实现，不是 Animator 绕过碰撞直接移动身体。
+
+[一手] 该仓库 [LICENSE.md](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/LICENSE.md)为 Unity Companion License，非 MIT；最后提交 2025-10-23 不能证明运动代码在 Unity 6.3 已通过。[研究] 只借“动画输出期望位移、motor 约束最终位移”的机制，不搬整套历史输入、相机和状态配置。自由移动通常由代码定轨迹、动画匹配实际速度；强调身体承诺的突进可采用动画位移，仍须决定受阻时缩短距离、停止／调整动作还是改变玩法。上述运动路线都能使用 root motion，区别在谁接受、限幅并提交位移，不是有没有 Animator。
+
+[一手] 现代官方反例：Unity [Character Controller 1.4.5](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/index.html)是 ECS 包；[SimulateDynamicBody](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/dynamic-body-interaction.html)让 kinematic 角色模拟质量比例、推与被推，因此“kinematic 不能产生物理互动”不成立。[moving platforms](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/moving-platforms.html)同时区别 TrackedTransform 跟随与 PhysicsVelocity 提供正确推力信息。[研究] 能力可借鉴，非 ECS 项目不因它是官方就迁移架构；需与 GameObject 原生 CharacterController、PhysX Rigidbody 分开说明。
+
+### 4. 升级、撤回与未来验收：以玩家感到的差别为准
+
+- [研究] **先保留原生 CC**：现有坡／阶／平台数量少，窄运动层能表达规则；把重力、grounding、平台贡献和击退集中到一个所有者即可。若补丁开始互相抵消（下坡吸附抹掉跳跃、转台继承破坏突进、每个状态重复查询碰撞），对照现成 motor 的对应机制再升级，不以功能清单长短升级。
+- [研究] **保留速度驱动 Rigidbody**：已获得需要的接触与平顺步态，外部作用都能进入统一速度／momentum 接口。这是有效中间路线；若玩法后来要求持续质量交互、任意外部冲量和堆叠，重新评估力驱动或受控的混合政策，而不是不断增加写 velocity 的脚本。
+- [研究] **撤回过度物理化**：为了精确移动不停抵消摩擦、清掉碰撞速度或禁止自然推力，说明保留的模拟价值可能小于调试成本；把需要的重量感留在作者参数／动画，不用更高 solver iterations 代替运动设计。反过来，若每种碰撞都要手写特例才能做出物理玩具的相互作用，则 kinematic 也可能不划算。
+- [研究] **控制器升级验收**：相同关卡对比上／下坡速度、坡顶是否意外腾空、上／下窄台阶是否稳定、旋转平台站位／起跳方向、平台侧挤与低顶受击、root-motion 撞墙后的动作可读性。测记录只是解释现象，人判断是否更精确、更有重量、更少不明原因失控；不指定跨游戏通用坡角、snap 距离或击退恢复秒数。
+- [研究] **第二次修改题**：增加一种旋转升降平台，并让已有攻击可击退站在其边缘的角色。检查接地状态、平台速度、角色自移和击退是否各只应用一次，主动起跳是否解除吸附，落地／重生是否清掉旧附着。AI 可写适配、暴露参数和记录运动贡献，人决定继承动量／转向／恢复控制的体验；若必须改大量无关技能和相机脚本，先收拢所有权，不新建通用运动框架。
+
+本轮完成上述公开源码、许可、版本声明及官方 API 的静态核查；没有导入候选包、运行自动测试／演示、测量性能或证明玩家体验提升。后续真实引擎比较须按仓库现有授权门槛另行安排。[研究]
