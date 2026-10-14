@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加
 改变的建议：03/04 按问题组合检索工具并核对版本与状态；05/Claude 起步配置撤回 LSP 必装，先核会话支持与任务缺口
-新证据：原研究固定索引/缓冲源码、测试、文档查询链及刷新原帖；后补 Claude Code 官方 LSP 会话与二进制边界，均未运行工具或模型
+新证据：固定索引/缓冲源码、测试、文档查询链、刷新原帖与 LSP 会话边界；后补 onlycodes 固定公开数据复算及轨迹摘录，未运行模型或安装工具
 
 # 上下文获取：问题、版本与状态边界
 
@@ -111,3 +111,62 @@ GitHub API 在本轮返回 master 为 [`33414e6e3fc157c936348ca8ddba25e50dacaeee
 ### 文档检索：版本选择与生成内容刷新 · 验证范围
 
 本次已读固定查询链、相关测试和三帖回复，未安装或运行客户端、真实查询、目标库编译或模型。不能据源码阅读声称后端当前响应已复现。上述证据支持收紧采用行为，不支持断言全部内容不可靠，也不能把已修复历史问题当成当前故障。
+
+## 工具接口：先缩小原生查询，再判断是否补接口
+
+> 核实：2026-10-14（UTC）。主线二；改变 04 §2 的通用成本排名与“CLI 必配 Skill”；新证据是公开历史运行数据的只读复算和作者给出的具体轨迹摘录，未安装、运行上游程序或调用模型。
+
+### 固定来源与干预边界
+
+- **O1**：[论文 v1](https://arxiv.org/html/2607.10569v1)，2026-07-12。比较 Claude Code / Sonnet 4.6 与 Codex CLI / GPT-5.5 的原生、受限 shell、单一 `execute_code` 工具面；不是保持原生工具不变、仅加一个 MCP 的实验。Codex 限制由提示词实施，不能视为权限隔离。[研究：作者历史实验]
+- **O2**：[公开逐次 CSV](https://github.com/hyang0129/onlycodes/blob/7548222e5f33b4e760b3cbeb193e5403f8e2e6cc/paper/data/raw/all_results.csv)，固定仓库 SHA `7548222e5f33b4e760b3cbeb193e5403f8e2e6cc`，内容 blob `04d9e998cf695ff3e8e260b0a394d467e127bfa4`。本节只复算其中 Codex SWE-bench 的 100 题、每臂 3 次；这些行记录 `codex-cli 0.130.0`，不是当前客户端表现。[一手：公开数据]
+- **O3**：[作者轨迹摘录](https://github.com/hyang0129/onlycodes/blob/7548222e5f33b4e760b3cbeb193e5403f8e2e6cc/paper/investigations/concrete_examples_h1_h2.md)，blob `04008109f5e056e11f5438296af8489c12f012b4`。本轮读到的是带命令的摘录，未取得并独立重放完整模型轨迹。[一手：作者摘录]
+- **O4**：[统计脚本](https://github.com/hyang0129/onlycodes/blob/7548222e5f33b4e760b3cbeb193e5403f8e2e6cc/paper/data/scripts/paired_contrasts.py)先按任务跨 seed 求均值，排除 `env_fail`；本轮未执行该第三方脚本。论文成本作缓存调整，并非用户账单或额度；未显著发现通过率差异也不是等价检验。[一手：源码；研究：解释]
+
+### 已复算：同目标的成本与等待并不一起改善
+
+本轮用 Python 标准库读取 O2，逐臂确认 300 行、100 个任务、300 个不同 `(instance_id, seed)`；所选行没有 `env_fail`。三次运行均等权，因此累计成本比与先按任务求均值再比较的成本比相同。[研究：本轮数据复算]
+
+| Codex SWE-bench 臂 | PASS / 运行 | `cost_usd` 合计 | `cost_usd_adjusted` 合计 | `wall_secs` 合计 |
+|---|---:|---:|---:|---:|
+| baseline | 139 / 300 | 200.762607 | 193.352943 | 35,908 |
+| bash_only | 136 / 300 | 210.302009 | 202.696505 | 39,811 |
+| onlycode | 140 / 300 | 164.927510 | 154.859030 | 36,489 |
+
+只读算术：`154.859030 / 193.352943 - 1 = -19.91%`；`36489 / 35908 - 1 = +1.62%`。少工具的 `bash_only` 调整成本却比 baseline 高 4.83%。这确认此历史数据里的成本差，不能证明人的主动投入减少，也不能把累计任务用时当实际并行 campaign 的完成时间。[研究：本轮复算]
+
+复算方式：从 O2 下载 CSV 到自己的工作目录后，执行以下标准库代码；不调用模型、不执行上游代码。没有拿到 CSV 时不要把这段说明当作已运行结果。
+
+```bash
+python3 - all_results.csv <<'PY'
+import collections, csv, sys
+rows = list(csv.DictReader(open(sys.argv[1], newline='')))
+reference_keys = None
+for arm in ('baseline', 'bash_only', 'onlycode'):
+  r = [x for x in rows if x['benchmark'] == 'swebench'
+       and x['agent'] == 'codex' and x['arm'] == arm]
+  assert len(r) == 300 and not any(x['verdict'] == 'env_fail' for x in r)
+  counts = collections.Counter(x['instance_id'] for x in r)
+  assert len(counts) == 100 and set(counts.values()) == {3}
+  keys = {(x['instance_id'], x['seed']) for x in r}
+  assert len(keys) == 300
+  if reference_keys is None:
+    reference_keys = keys
+  assert keys == reference_keys
+  print(arm, sum(x['verdict'] == 'PASS' for x in r),
+        *(round(sum(float(x[k]) for x in r), 6)
+          for k in ('cost_usd', 'cost_usd_adjusted', 'wall_secs')))
+PY
+```
+
+**缺失值与统计口径**：Claude `onlycode` 的 300 行中只有 299 个数值成本（`sphinx-doc__sphinx-9229` seed 2 缺失）；按 O4 先对每题的可用 seed 求均值、再平均任务，得到 0.58603623525，与 `paired_contrasts.csv` 一致；直接平均 299 行得到 0.5686354765886288。差异来自权重与缺失值处理，不能据此判断数据过期。上表 Codex 每题均有三次完整记录；本轮只复算该子集，不声称重现整篇统计推断或重新运行模型。[研究：本轮独立复算]
+
+### 具体任务给出的更窄选择
+
+O3 的 `django__django-11848` seed 1，两臂均 PASS。原生调用把符号与年份等多个词 OR 到一次 `rg` 中，命中无关 fixture 数据后截断；代码接口臂只搜 `parse_http_date`。O2 对应记录的输入 token 为 454,946 对 108,245，等待 78 对 50 秒。这是一个具体有利结果，但查询内容同时变化；原生 shell 本来也能只搜符号，不能据此证明必须增加代码接口。[一手：O2/O3；研究：因果边界]
+
+Sphinx 摘录中三次原生读取与一次脚本读取也不是逐字相同的查询：文件范围与符号定位不同。它展示可组合方式，不能隔离“少两次工具调用”的独立效果。作者选择这些案例来解释总体差异，并非随机抽取的全部任务。[一手：O3；研究：解释]
+
+**采用判断**：先在已有授权工具里缩小查询、分块返回、合并独立读取；仍有重复高开销，才试用一个窄批处理接口，并比较任务成功、计价成本、等待与人的投入。已有原生路径达到要求就不加 Skill；新接口只是搬走同样的操作，或成本下降却更慢／更难恢复时，按实际目标撤回。工具可用范围、凭证隔离与沙箱不因价格比较放宽。[经验：本仓库建议]
+
+**未采用的候选**：[WebDev-Skills-Bench](https://arxiv.org/html/2608.23067v1)的按钮命名重试与空元素可见性案例能提出假设，但主要对应测试定位器；其每次强制注入、近似等字节的无关 Skill 对照也不等于原生按需加载。匿名工件页本轮未取得文件，故不以该例推出当前 Skill 的净收益或建议改变产品文案。[研究：论文阅读边界]
