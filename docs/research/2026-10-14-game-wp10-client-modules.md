@@ -1,6 +1,6 @@
-主线：二／三／四；客户端体验、第二次修改与交付
-改变的建议：[研究] 默认复用引擎成熟组件，仅补所有权、退出和迁移规则；输入、运动、首发／呈现、菜单、存档、本地化、音频与时域画面分别按动作质量验收
-新证据：[一手／社区] 固定源码、官方契约／问题及开发者复盘支持机制判断；未做引擎、设备或玩家实测，不能推出性能排名、AI 成功率或体验收益
+主线：一／二／三／四；客户端体验、验证选择、第二次修改与交付
+改变的建议：[研究] 默认复用引擎成熟组件，仅补所有权、退出和迁移规则；输入、运动、首发／呈现、菜单、存档、本地化、音频与时域画面分别按动作质量验收；game02 按待证事实选观察，不预建验证阶梯
+新证据：[一手／社区] 固定源码、官方契约／问题及开发者复盘；补输入后端、暂停时钟与截图降噪边界，重读笼子退出案例；未做引擎、设备或玩家实测，不能推出性能排名、AI 成功率或体验收益
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -665,3 +665,31 @@
 ### 6. 后续获准验证与二次修改
 
 [研究] 保持同一游戏规则和相机轨迹，分开比较原生分辨率／固定 render scale、时域／非时域路径及内容简化，不让多项同时变化掩盖原因。观察提示出现、急转、遮挡后显露、停止与消失；除单个敌人，还覆盖两个攻击交叠和低帧率。第二次内容修改可将固定 Time 形变改为随技能强度变化，或添加透明余烟，再核运动输入和危险边界是否仍清楚。AI 可查材质／renderer 配置与构造对照，人判断方向、范围、持续伤害是否被误读；帧时间配合观察，静态截图或平均 FPS 不能替代辨识。本轮无识别率、性能或最优参数实测收益。
+
+## 验证选择深化：状态、输入与体验各自需要什么证据
+
+核实：2026-10-15（UTC+8）。主线一／三；改变 game02 的验证阶梯、第一天全接口和“手感不可计算”建议。新证据为输入测试后端、暂停时钟、截图降噪契约，以及重读作者完整试玩记录；只读公开文档和已有研究，未安装／运行引擎、模型或真实 OS 输入。[研究]
+
+### 1. 采用与撤回
+
+[研究] ✅ 按待证事实选已有入口，不按 L0–L6 建设阶梯。规则可独立调用时保留确定性测试；场景生命周期才进入运行时；绑定／焦点走输入系统；设备／OS 路径用目标设备；连续视听品质与人的体验判断不被状态快照替代。撤回新项目第一天全套接口和“至少两个异常场景”的固定数量，风险决定要保留的动作链。不是少测试，而是不让接口数量代替有效断言。
+
+### 2. 本次读取的新一手契约
+
+- Unity [Input testing 1.19](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/Testing.html)：自动输入可脱离平台后端与物理设备；InputTestFixture 提供空白隔离系统，启动代码里的自定义注册也不会自动存在。由此可用来查绑定与动作交互，但测试初始化差异和硬件链需要另外判断。[一手＋研究]
+- UE 5.8 [Automation Driver](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-driver-in-unreal-engine)：替换 Core 输入接口实现，启用时阻断几乎全部平台输入并注入模拟输入；公开 API 不依赖 Slate，但现成定位器针对 Slate，当前动作是键鼠，控制器／触摸列在未来能力。同步 API 不得在 GameThread 运行。它是引擎侧输入模拟，不是 OS 外设覆盖；不为此推荐新装框架。[一手＋研究]
+- [Roblox Studio MCP](https://create.roblox.com/docs/studio/mcp)：playtest 子 Agent、Client／Server Luau、状态／日志／截图、键鼠模拟与 character_navigation 分别存在，各调用指定 studio_id。仅可证明当前文档暴露这些入口，不推断内部键鼠一定走 OS，也不把角色导航等同于玩家控制通过。[一手＋研究]
+- [Unity CLI release notes](https://docs.unity.com/en-us/unity-cli/release-notes)当前页顶部 beta.13（2026-10-07），beta.12 段说明 Play 状态附带 frameCount／playerLoopTicking；[timeScale](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Time-timeScale.html)与 [unscaledDeltaTime](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Time-unscaledDeltaTime.html)表明不同更新路径的时钟不等价。[UE FTickFunction](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/FTickFunction)明确 bTickEvenWhenPaused 控制暂停时 Tick。帧推进是运行证据之一，不证明指定玩法或物理推进；暂停案例同时核世界、UI 和动作缓冲。[一手＋研究]
+- [UE Screenshot Comparison](https://dev.epicgames.com/documentation/en-us/unreal-engine/screenshot-comparison-tool-in-unreal-engine)：提供误差容忍及关闭 TAA、运动模糊、SSR、曝光等降噪选项。固定图像回归可用，但正在检查时域拖影时关闭相关效果会改掉被测对象，需要保留实际配置的连续观察。这是选择观察手段的理由，不是新增视觉测试框架。[一手＋研究]
+
+### 3. 原案例反证与可借用质量机制
+
+[一手] 重读 [Schomay 原文](https://blog.jeffschomay.com/letting-ai-play-my-game)：作者的文字／回合制游戏采用外层文本状态和合成事件；公开轨迹显示解开笼子后仍不能移动，清除 state.caged 后坐标改变；末尾也说人工又发现 bug 和 feel 问题。[研究] 因而保留作者结果，撤回“这类 bug 单元测试通常发现不了”：关键是断言退出状态后的下一动作，独立规则测试或真实事件回归均可承载。作者未给测试体系能力对照，不能推出某类测试无效。
+
+[研究] 延用本记录的 Celeste／Celeste 64／Deepnight 固定源码研究，不冒充本轮重新运行。具体采用单位是可复现的动作条件与可切换的反馈；尤其 Deepnight 的视觉后坐力和实际位移、枪械演出和控制锁不等价，不能用“全部打开”证明纯美术收益。让 Agent 检查时间戳、窗口、状态、帧时间与视听变化，人决定公平、力度、清晰度和长期体验。可测量部分存在，不推出整体乐趣有一个自动合格分。
+
+### 4. 范围与后续
+
+[研究] game02 用暂停／设置加入原有蓄力动作作为第二次修改例子，先由项目决定暂停和释放政策，再选择规则、输入、运行时和人工观察；不是通用状态机或固定异常数。复现版本、动作序列和预期结果可以沿用现有 fixture，无需新增目录或测试服务。本轮验证仅文档／链接与仓库离线检查；目标设备、真实引擎与玩家收益留到获准实测。
+
+[研究] 本轮完成完整离线 14 阶段（97／26／10／13／14 项，非空无 skip）与 `git diff --check`。独立新上下文评审对本节及 game02 未发现事实或决策级问题；入口残留的阶梯／先改造建议由整合端同步处理后才算完整交付。检查与评审均不替代引擎／设备／玩家验证。

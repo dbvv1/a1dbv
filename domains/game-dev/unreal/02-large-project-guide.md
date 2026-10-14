@@ -75,9 +75,9 @@ UnrealEditor-Cmd.exe MyGame.uproject \
 
 ## 5. 运行时验证（PIE 与打包版）
 
-参考 [02 验证与试玩](../02-verification-and-playtesting.md) 的验证阶梯，UE 的落点是：
+按 [02 验证与试玩](../02-verification-and-playtesting.md) 的待证事实选路；优先已有测试与调试入口，缺少必要观察时再选下列能力：
 
-| 层级 | UE 中的做法 |
+| 所需观察 | UE 中的做法 |
 |---|---|
 | 状态导出 / 输入注入 | 写一个**测试工具集**（Python 或 C++ `AICallable`）：`GetGameState`、`PerformAction`、`LoadScenario`；也可以用 `Exec` 函数或控制台命令 |
 | 编辑器内试玩 | 通过 MCP 启动和停止 PIE。注意 **PIE 运行时很多编辑器工具的行为会变**（官方安全规则） |

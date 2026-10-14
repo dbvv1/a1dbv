@@ -1,6 +1,6 @@
 # Unreal AI 工具链
 
-> 核实时间：2026-10-08；WP9 的并发与重导入契约于 2026-10-14（UTC+8）复核。
+> 核实时间：2026-10-08；WP9 的并发与重导入契约于 2026-10-14（UTC+8）复核；2026-10-15（UTC+8）同步验证接口的采用边界。
 > 依据 **[一手]**：
 > - Epic 官方文档 [MCP in Unreal Editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)（UE 5.8）、[UE 5.8 发布说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes)、[5.8 发布帖](https://forums.unrealengine.com/t/unreal-engine-5-8-released/2729274)（含 5.8.1 修复记录）；
 > - 克隆阅读了 Epic 的 [unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)（3 个 Skill + SessionStart Hook）。
@@ -54,7 +54,7 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 ### 1.4 一个容易被忽略的能力：打包后的游戏也能跑 MCP
 插件分三个模块，其中 `ModelContextProtocol` 和 `ModelContextProtocolEngine` 是**运行时模块**。**打包（cooked / shipping）后的游戏可以在启动时调用 `IModelContextProtocolModule::StartServer()` 托管 MCP 服务器**。工具要用 `IModelContextProtocolModule::AddTool()` 显式注册，这种情况下工具不经过工具搜索，会直接全部公开 **[一手]**。
 
-**这对游戏验证意义很大**：可以在开发版或测试版里注册“导出游戏状态、注入玩家动作、加载测试场景”这类工具，让 Agent **直接玩打包后的游戏**，而不只是编辑器里的 PIE（Play-in-Editor）。这正是 [02 验证与试玩](../02-verification-and-playtesting.md) 里 L3/L4 需要的接口。⚠️ 不要把它打进正式发行版：没有认证。
+**🧪 仅在打包版缺少必要观察或动作入口时评估**：先复用现有自动化测试与调试入口；需要时在开发版或测试版注册“导出游戏状态、注入玩家动作、加载测试场景”等窄工具，不因支持 MCP 就改造整套试玩架构。工具调用也不等于真实设备输入或体验已通过，按 [02 验证与试玩](../02-verification-and-playtesting.md) 的待证事实选择验证。**[研究：采用边界]** ⚠️ 不要把它打进正式发行版：没有认证。
 
 ### 1.5 已知限制（官方）
 - 只支持 HTTP 和 SSE，**不支持 stdio 和 WebSocket**；
