@@ -398,6 +398,27 @@
 [研究] 记录新增页面需复制或修改哪些政策，以及旧页面是否回归；先用少量共享的打开／关闭边界，只有重复的激活、返回和设备规则实际难维护才引入框架。原生已经达到目标则不迁移，框架仍需每页补同样规则且无明显减负则收回扩展。AI 可以生成绑定、导航与回归场景，人判断焦点是否容易找到、操作是否费力；输入事件日志和截图须互相印证，状态注入不能替代设备路径。这是未来验证设计，非已证实的框架收益。
 
 
+### 5. 暂停叠加与转场：关闭一层不等于恢复整局
+
+核实：2026-10-14 UTC。主线 3；改变 04 的菜单恢复建议：第二种暂停来源出现后，补持有／释放与加载入口权限，避免把任意关闭动作当全局恢复。新证据为 Thrive 三个已合入补丁及固定实现；仅静态阅读，不是本轮游戏／引擎实测。[研究]
+
+- **暂停状态与清理**：[一手] [#7203 补丁](https://github.com/Revolutionary-Games/Thrive/commit/0deed4285e3d25852707d7bbf639620293c9e1ba)（2026-09-02）将 HUD 的 `Paused = !Paused` 改成传入的 `buttonState`，并在关闭区域灭绝选择框时调用 `EnsureGameIsUnpausedForEditor`，意图避免 HUD 暂停跨到新区域。[PR 原文](https://github.com/Revolutionary-Games/Thrive/pull/7203)明确作者未能触发所报告故障；这是已合入防护，不应写成已复现、已验证消除软锁。未读取其 Discord 报告，也不采用自动生成的 PR 摘要代替作者原文。
+- **不同入口需服从同一阶段**：[一手] [#7290 补丁](https://github.com/Revolutionary-Games/Thrive/commit/1b82f43ac822cf8b149831b1389a0c3686bc498a)（2026-09-17）给 HUD 暂停按钮补 `GameLoading` 判断，原来只检查暂停菜单是否可见。[PR](https://github.com/Revolutionary-Games/Thrive/pull/7290)勾选作者试玩及另一人功能确认；可称维护方确认，不能称本轮验证。
+- **撤回一刀切暂停**：[一手] [#7232 补丁](https://github.com/Revolutionary-Games/Thrive/commit/03b9b8e2b7bbc3a6ecb3159dd38960d69be33d6b)（2026-09-10）在转场发现玩家死亡／消失时补取消入口，并删除取消时无条件重启编辑按钮的代码。[PR 原文](https://github.com/Revolutionary-Games/Thrive/pull/7232)说明此前的修复反而允许死亡后立即点击；按钮应由真实资格条件恢复。开发者最终撤回“转场时暂停游戏”的尝试。[研究] 因而采用取消收尾与资格重判，不推导所有转场都应冻结世界，也不把取消后的所有控件一律启用。
+
+**固定实现与反证。** 以下均实际读取 `Revolutionary-Games/Thrive@1b82f43ac822cf8b149831b1389a0c3686bc498a`：[一手]
+
+1. [PauseManager.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/engine/PauseManager.cs)以 `HashSet<string>` 保存命名暂停原因，`Resume` 仅移除指定原因，集合非空仍暂停。**这不是计数锁**：重复添加同名只报错，不累计；一次释放会移除这个名字，多实例／重入不能仅靠类型名区分。`ForceClear` 注释限定主菜单或直接切换另一局的兜底，并记录剩余锁；不能照搬为普通弹窗关闭动作。
+2. [HUDWithPausing.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/base_stage/HUDWithPausing.cs)的 `EnsureGameIsUnpausedForEditor` 经 `PauseButtonPressed` 释放自己；但菜单可见或 `GameLoading` 时该入口提前返回。因此不能宣称 helper 在任意转场都能撤销 HUD 锁，也不能用方法名证明清理完成。后置日志只报告仍暂停，不会自动解决残留。
+3. [PauseMenu.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/PauseMenu.cs)在 `ReportStageTransition` 将 `GameState` 设为 Invalid，以此表达 `GameLoading`；暂停菜单、鼠标捕获阻止和输入接收注册分别维护。[CreatureStageHUDBase.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/base_stage/CreatureStageHUDBase.cs)的取消入口淡入并清 `MovingToEditor`，不再直接恢复编辑按钮。[研究] 这些具体分工支持把暂停、交互归属和过渡资格分开检查，不证明已有实现覆盖所有交错。
+
+**采用／不用。** [研究] ✅ 在已有 Session／菜单边界明确谁持有暂停、何时可释放、各输入入口何时拒绝新暂停；按钮传目标状态时按目标设置。仅有一个暂停入口且行为可靠时不增加锁系统。出现并存来源时，使用能区分实际持有者的窄机制；退出本局清本局持有，普通弹窗不能清所有原因。⛔ 不照搬字符串集合为通用计数／多实例方案，不把上层输入门禁当无条件释放入口，不用全局暂停掩盖转场前提失效。
+
+[一手／研究] Unity [6.3 timeScale](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Time-timeScale.html)只约定时间缩放、后续帧生效及零值暂停 FixedUpdate／WaitForSeconds；它不是暂停持有或输入权限管理器。本节机制不依赖双引擎同名 API，不另扩引擎框架比较。Thrive 的[固定许可](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/LICENSE.txt)为 GPL-3.0-or-later 并列有例外条款；这里只借机制，不把整套代码推荐为可随意复制的商用引擎组件。
+
+**第二次修改与验证局限。** [研究] 从单暂停菜单增加一个可在暂停中操作的选择框：交错开关两者、加载期间按 HUD 暂停、淡出期间死亡，再进入新局。检查当前有效暂停原因、输入归属、按钮资格和旧局持有；特别覆盖释放时命中菜单可见／Loading 门禁，以及同名多实例。AI 可补状态日志与回归路径，人决定转场是否仍模拟及何时恢复控制。本轮未运行游戏、Unity／UE、设备路径或故障注入；维护方复核与源码可见不能证明移植后的完整可靠性。
+
+
 ## 存档复用补比：序列化、落盘与玩家恢复分开选
 
 核实：2026-10-14 UTC。[一手] 固定源码、官方接口和商店条款；[研究] 为静态路径推导及采用判断。回应的缺口不是再要求 schema roundtrip，而是**哪些现成部分值得直接采用、哪些恢复责任仍由游戏拥有**。仅公开资料与源码阅读，没有下载资产、安装、运行游戏／引擎或做故障注入。

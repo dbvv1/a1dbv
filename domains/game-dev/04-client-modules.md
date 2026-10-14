@@ -173,6 +173,8 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 **[研究] ✅ 保留能完成这些路径的原生 UI，先改造官方样例而非重写输入路由。** [UI vs Game Input 源码](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInputHandler.cs#L304-L345)已有模式切换与导航选择恢复；复用这些机制，再补样例未覆盖的无效焦点与嵌套返回。 uGUI 的导航关系、UI Toolkit 的焦点与事件足以支持简单菜单；前者要防背景点击丢选择，后者重新启用 UIDocument 时须重新建立焦点，不能只验首次打开。🧪 当第二个菜单／弹窗又复制输入归属、返回和恢复逻辑时，再抽共享管理；UE 可评估 CommonUI 的激活层与输入路由，但它仍沿用 UMG 导航规则，不会自动选出合理焦点。版本条件和直接证据见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#菜单补研跨暂停改键与设备切换保住控制)。
 
+**[研究] 新增第二种暂停原因时，关闭一层只撤销它自己的暂停，仍有有效原因就不恢复玩法。** 在现有 Session／菜单代码中明确暂停持有者、加载期间各输入入口的权限和退出本局的清理；按钮给出目标状态时不要再无条件取反。Thrive 的[暂停状态补丁](https://github.com/Revolutionary-Games/Thrive/commit/0deed4285e3d25852707d7bbf639620293c9e1ba)与[加载入口补丁](https://github.com/Revolutionary-Games/Thrive/commit/1b82f43ac822cf8b149831b1389a0c3686bc498a)支持这条窄规则，不必另建暂停框架。**局限：前一报告维护者未能复现，固定实现也有释放前置条件，不能据此称任意嵌套／转场均已可靠；**详见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-暂停叠加与转场关闭一层不等于恢复整局)。[一手／研究]
+
 **[研究] 第二次修改加一个带滑条、确认弹窗的设置页，再改键并换设备走回来。** 同时检查导航顺序、可见焦点、当前按键提示、返回目标和角色状态；不能用直接调用按钮回调代替真实输入路径。AI 可生成规则、绑定与回归路径，人判断焦点／反馈是否清楚、操作是否费力；本轮资料比较不能证明目标设备上的完整可用性。
 
 ### 新语言也会改变旧内容的显示
