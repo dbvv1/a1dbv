@@ -47,7 +47,7 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 ### 1.3 写自己的工具
 - **Python**（推荐，大部分内置工具集就是 Python 写的）：在任意插件的 `Content/Python/` 下写一个继承 `unreal.ToolsetDefinition` 的类，用 `@unreal.uclass()` 装饰类，用 `@toolset_registry.tool_call` 装饰静态方法。**类型标注生成 JSON Schema，Google 风格的 docstring 成为工具描述**。
 - **C++**：继承 `UToolsetDefinition`，类标 `UCLASS(BlueprintType, Hidden)`，方法标 `UFUNCTION(meta = (AICallable))`；不想公开的方法加 `meta = (AIIgnore)`。适合用到 Python 没暴露的功能、复杂的 `USTRUCT` 类型，或者调用很频繁的工具。
-- 写完执行 `ModelContextProtocol.RefreshTools`，客户端重连。**Live Coding 不会传播新增的 `UFUNCTION`，新增工具要重启编辑器。**
+- 写完执行 `ModelContextProtocol.RefreshTools`，客户端重连。**MCP C++ 工具发现有专门限制：新增 `UFUNCTION` 工具须完整重启编辑器；`RefreshTools` 不代替这一步。** 这是工具注册契约，不外推为所有反射对象都不能 Reinstance，见 [官方 authoring 说明](https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor)。
 - 官方建议：一个工具只做一件事；返回结构化类型而不是自由文本。
 - Epic 插件里的 `create-toolset` Skill 能生成脚手架，并给出四条设计原则（Clean、Complete、Composable、DRY，见 [01 引擎对比](../01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)）。
 

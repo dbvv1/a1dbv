@@ -49,6 +49,15 @@ Jeff Schomay 的 [Crossword Dungeon 开发记录](https://blog.jeffschomay.com/l
 
 **何时补接口？** 只有当前无法回答关键问题时，例如看得见“没有攻击”，却分不清输入未到、状态拒绝还是动画延迟，才在已有入口增加对应状态或时间戳。复现场景保留版本、输入序列与预期结果；不要为了自动试玩复制规则实现或改造全部架构。**[研究]**
 
+### 重复 Play 与新进程：先核实这次从什么状态开始
+
+**✅ 第二次改动触及启动、静态订阅／缓存或编辑器热更新时，保留“刚编译后的首次进入”和“不改源码的退出→再进入”两个观察；需要判断首次启动时，再用新进程走同一动作。** 复用项目已有 PlayMode／Functional Test、日志与操作入口，不新建一层试玩服务。只改无共享状态的公式、已有测试已覆盖输入输出时，无须强制双 Play。**[研究]**
+
+- **Unity 使用关闭 Domain Reload 的迭代设置时**：记录 Domain／Scene Reload 开关；第一次完成动作后退出，不修改脚本、不主动刷新，再进入并核对动作结果、回调次数与本局初始状态。脚本变化触发的刷新仍会重载域，所以“每改一次代码就 Play 一次”可能一直看不到残留订阅；另一方面，关闭 Scene Reload 的历史缺陷也曾表现为首次失败、第二次成功，不能只保留较好的那次。[一手／研究：[Unity 6.3 契约](https://docs.unity3d.com/6000.3/Documentation/Manual/domain-reloading.html)；维护反例见下方研究记录]
+- **UE 只改 `.cpp` 也要看改了什么**：Live Coding 后已有对象不自动获得 `.cpp` 构造函数里的新默认值。若改动涉及初始化，回读旧实例及重新完整构建、启动后的实例，并区分蓝图／关卡保存的覆盖值；不要因为热会话仍显示旧值就反复补业务逻辑。涉及 Object Reinstancing 时，另查缓存引用是否失效重建、退出是否正常。[一手／研究：[UE 5.8 Live Coding](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-coding-to-recompile-unreal-engine-applications-at-runtime)]
+
+**关键局限：这些检查区分状态来源，不保证发布正确，也不表示每个改动都要打包。** Realm 的第二次启动挂起与 NGO 的首次进入漏回调都是已处理的历史维护案例；具体版本、修订与未实测范围见 [WP10 重复进入补研](../../docs/research/2026-10-14-game-wp10-client-modules.md#重复进入补研不要让编译刷新替你重置验收状态)。**[研究]**
+
 ## 5. 质量上限：可测的部分交给工具，体验取舍交给人
 
 **✅ 把“手感不好”拆成能修改的假设，而不是写成“没有可计算标准”。** [04 客户端质量](04-client-modules.md)已结合 Celeste、Celeste 64 和 Deepnight 的公开实现，区分输入容错、运动、反馈与呈现。借用其机制时，应保持纯呈现对照与规则变化分开：视觉后坐力与实际位移不是同一改动，顿帧／缓冲也会改变操作时序。**[一手＋研究，证据见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#体验质量深化响应与顺滑让同一个动作值得反复玩)]**

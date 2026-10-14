@@ -1,6 +1,6 @@
 # 大型 Unreal 项目 × AI 落地指南
 
-> 核实时间：2026-10-08。
+> 核实时间：2026-10-08；Live Coding 状态契约补核：2026-10-15（UTC+8）。
 > 目标和 Unity 指南一样：让 Agent 在大型 UE 项目里**看得见、改得对、验得了、回得去**。通用方法见主干 [07 工作流](../../../docs/07-workflows.md)，这里只写 UE 特有的部分。
 > 命令行用法来自 Epic 官方文档 **[一手]**；Build.bat 的参数和目录约定属于 UE 开发的通用做法 **[经验]**，请以你的引擎版本为准。
 
@@ -8,7 +8,7 @@
 
 1. **资产是二进制的**：`.uasset` / `.umap` 无法用文本工具读改，只能通过编辑器（MCP、Editor Python、编辑器工具）操作。
 2. **逻辑分散在 C++ 和蓝图里**：源码可直接检索；蓝图需要核对已配置工具能读取的图、属性和编译结果，不能由二进制格式推定不可见。
-3. **编译循环分两档**：
+3. **本指南的保守编译循环分两档**：
    - 只改 `.cpp` 函数体：Live Coding，秒级；
    - 改头文件、反射宏（`UPROPERTY`、`UFUNCTION`）、新增类或模块：完整编译并重启编辑器，分钟级。
 
@@ -51,7 +51,7 @@
 
 **两个常见的坑**：
 - **Live Coding 开着时，命令行 UBT 会拒绝编译**（提示 Live Coding 处于活动状态）。模板脚本会识别这种情况，提示 Agent 改用 MCP 的 Live Coding，或者先关掉编辑器。
-- **新增 `UFUNCTION`、`UPROPERTY`，或者改了类布局，不要指望 Live Coding**：Epic 文档明确说 Live Coding 不会传播新增的 `UFUNCTION` 声明 **[一手]**。这时要关编辑器、命令行完整编译、再重开。
+- **反射声明／类布局改变时，本指南采用完整编译并重启的保守路径，不是声称引擎绝对不支持热更。** [UE 5.8 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-coding-to-recompile-unreal-engine-applications-at-runtime)说明 Object Reinstancing 可替换含反射宏的对象；维护者仍须通过重载完成委托更新指针或使缓存失效。没有这项维护契约时，不把热编译成功当验收。新增 MCP C++ 工具的 `UFUNCTION` 仍须按[工具注册的专门限制](01-toolchain.md#13-写自己的工具)重启，不能用一般重实例化能力代替。**[一手／研究]**
 
 ## 4. 测试
 
@@ -84,6 +84,8 @@ UnrealEditor-Cmd.exe MyGame.uproject \
 | **打包版试玩** | 在开发版里用 `IModelContextProtocolModule::StartServer()` 托管 MCP，用 `AddTool()` 注册测试工具，让 Agent 直接玩打包后的游戏 **[一手]**。**不要带进正式发行版** |
 | 大规模自动化 | Gauntlet（UE 的自动化测试编排框架），适合 CI 中跑多客户端、多平台 |
 | 性能 | Unreal Insights 采集 trace，让 Agent 读导出的统计，而不是读截图 |
+
+**`.cpp` 构造默认值修改例外**：已有实例不会因 Live Coding 自动取得新值；先查当前实例和资产覆盖，再用完整构建后的新进程复核初始化，别继续改业务函数迁就旧对象。涉及重实例化的缓存还要核退出路径，详见 [重复 Play 与新进程](../02-verification-and-playtesting.md#重复-play-与新进程先核实这次从什么状态开始)。普通函数体改动仍可沿用已有测试，无须一律打包。**[一手／研究：同上 Live Coding 契约]**
 
 ## 6. 日志
 

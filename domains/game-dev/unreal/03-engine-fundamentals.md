@@ -61,7 +61,7 @@ public:
 
 **AI 要点**：
 - 说明符写错、`.generated.h` 不是最后一个 include、`GENERATED_BODY()` 缺失，都会报 UHT 错误（`): Error:`），模板里的 `ue-build` 脚本会提取这类错误（见 [templates](templates/README.md)）；
-- **改了反射宏就要完整编译并重启编辑器**，Live Coding 不处理（见 [02 第 3 节](02-large-project-guide.md#3-编译验证)）。
+- **反射／布局改动采用完整构建与重启作为保守策略**；Live Coding 的 Reinstancing 能更新部分反射对象，但引用／缓存刷新与具体工具注册另有条件，不把该策略解释为引擎完全不支持（见 [02 第 3 节](02-large-project-guide.md#3-编译验证)）。
 
 ## 4. 内存与垃圾回收
 

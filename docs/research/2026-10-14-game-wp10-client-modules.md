@@ -748,3 +748,34 @@
 4. 更新第二种颜色／状态后检查场景、HUD、物品说明及旧内容；新招式持续挤占关键提示时，先减少同时出现的组合或重做表达，再决定是否保留该招式。
 
 **验证范围：**本轮读取上述一手正文与 PDF 文字；没有安装／运行引擎、游戏或模型，也未做色觉、听觉或玩家测试。没有取得可证明提示净收益的实验；AI 可查映射覆盖，人仍需判断节奏、可读性和辅助模式承诺。[研究]
+
+## 重复进入补研：不要让编译刷新替你重置验收状态
+
+核实：2026-10-15（UTC+8）。主线 3；改变 game02 的验证入口选择：第二次改动触及初始化、静态订阅／缓存或热更新时，区分编译后首次进入、无源码变化的重复进入与新进程启动。新证据为 Unity 6.3／UE 5.8 契约及 Realm、NGO 已合入维护链；仅公开资料与源码差分阅读。[一手／研究]
+
+### 已有覆盖与新增选择
+
+WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI 重复监听、编辑器扩展 Domain Reload 开关重入；WP11 已有 Cinemachine static reset 提前的案例。本节不复述这些生命周期责任。缺口在于 **Agent 每次改脚本后只 Play 一次，可能借编译刷新获得了额外初始化；只在热会话里反复成功，也可能看不到首次进入的不同状态**。因此改变的是同一验收动作的起点，不是另建测试架构。[研究]
+
+### Unity：两个已修历史案例给出相反方向
+
+[一手] Unity 6.3 [关闭域重载](https://docs.unity3d.com/6000.3/Documentation/Manual/domain-reloading.html)说明静态字段和事件订阅跨 Play 保留；脚本变化的 Asset Database refresh 仍会重载域。运行时代码可在 `SubsystemRegistration` 重置，编辑器代码另用其编辑器初始化入口；退出解绑与下次启动重新初始化是不同责任。不要为了让验收通过擅自改变项目的 Reload 设置。[研究]
+
+1. **Realm：第一次正常，第二次缺少初始化。** [#2898](https://github.com/realm/realm-dotnet/issues/2898)报告禁域重载后第二次 Play 的登录挂起。维护者解释退出为避免 native 异步挂起会拆除 native hooks，但重进 Play 不再执行负责接线的静态构造器；用户在 2023-01-05 报告预发布包复测成功。[一手：维护者；社区：使用者报告] [#3145](https://github.com/realm/realm-dotnet/pull/3145)于当日合入 [`2a6d23c`](https://github.com/realm/realm-dotnet/commit/2a6d23cc40bac8bd3c9d841b8f731616f889ddab)。API 返回的补丁显示 [Initializer.cs](https://github.com/realm/realm-dotnet/blob/b30e116cb92c23773f49daedff548afb3265796a/Realm/Realm.UnityUtils/Initializer.cs)新增 `OnSubsystemRegistration` 调 `NativeCommon.Initialize()`；`NativeCommon.CleanupNativeResources` 同时重置初始化标志并限制重复清理。[一手：固定差分] 这说明不能把“解绑都做了”当作重入成功，也不表示当前 Realm 仍有此缺陷。[研究]
+2. **NGO：编译后首次失败，随后可能正常。** [#2892](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/issues/2892)记录 Unity 6000.0.0b13／Netcode 2.0.0-exp2，关闭 Scene Reload 后，域重载使子行为缓存成为空列表而非预期 null，跳过重新发现，场景对象不发 `OnNetworkSpawn`；同时禁域重载后再次进入可恢复。[社区：报告者调试，未由本仓复现] [#2906](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/pull/2906)明确修复 #2892，于 2024-05-08 合入 [`cd6ead3`](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/commit/cd6ead3ac07100f5769d080e46dd4f269e8aea40)。固定 [NetworkObject.cs](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/blob/85c6f39f9ef88edc8295bd0cdbcf39c5d0bb362d/com.unity.netcode.gameobjects/Runtime/Core/NetworkObject.cs)差分在 Awake 添加 `m_ChildNetworkBehaviours = null`；PR 还包含其他 spawn 功能，不能把整个 PR 的收益归于此行，也未证实其中测试覆盖全部 Reload 组合。[一手／研究]
+
+**采用判断。** 保留编译／刷新后的第一次动作结果，再在不编辑脚本、不主动刷新的 Stop→Play 后走同一动作；核当前对象、会话初始状态、回调次数及完成结果，而不是只看日志无红字。若二者不同，先查初始化／缓存和所用包版本，不把其中较好的结果当通过，不默认“第二次一定更糟”。没有禁重载或相关状态风险、既有测试已覆盖的纯逻辑改动不追加这条路径。[研究]
+
+### UE：旧实例、反射对象和工具注册不是一个刷新契约
+
+[一手] [UE 5.8 Live Coding](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-coding-to-recompile-unreal-engine-applications-at-runtime)规定 `.cpp` 构造默认值变化不更新已有实例；Object Reinstancing 则可替换反射对象。持有相关指针的代码需通过 `ReloadReinstancingCompleteDelegate`／`ReloadCompleteDelegate` 更新引用或作废缓存，遗留对象还可能在退出时触发析构冲突。[研究] 因而只按“改了 `.cpp`”选热验收不够：初始化变化须读真实实例值及蓝图／关卡覆盖，并在完整构建后的新进程重走启动；缓存变化须包括退出路径。新进程复核也不能抹掉资产已保存的覆盖值。
+
+[一手] [Unreal MCP 官方文档](https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor)又明确限定 C++ 工具新增 `UFUNCTION` 要完整重启；`RefreshTools` 重轮询注册表，客户端可能还需重连以更新 schema。这项工具发现限制不能扩写成所有反射对象一概不支持 Live Coding；一般 Reinstancing 能力也不能反过来推翻新增 MCP 工具的重启要求。[研究] 大项目页保留头文件／反射变更完整编译重启作为保守执行策略，撤回其错误的通用能力归因；不建议因此扩大自动热更范围。
+
+[一手] [PIE 多玩家选项](https://dev.epicgames.com/documentation/unreal-engine/play-in-editor-multiplayer-options-in-unreal-engine?lang=zh-CN)还区分 Net Mode 的 Play Standalone 与 Run Under One Process；前者不自动证明独立进程。[研究] 仅当改动触及跨实例共享状态／联网启动时才额外核实际进程与实例，不向单机公式改动添加多客户端层，也不把独立进程试玩当已完成 cook／发布验证。
+
+### 后续验收范围与停止条件
+
+未来获准运行时，沿用已有最小场景和动作入口，记录代码／包版本、Reload 或 Live Coding／Reinstancing 设置、是否刚编译、进程与实例来源，并分别保留首次、重复进入和按需新进程的结果。已有测试能启动所需真实路径并读出这些结果，就不添加 MCP、HTTP、全局 reset 框架或新的测试层。状态注入／手动清缓存会改变起点；若这是夹具必要步骤，应明确其覆盖的是隔离规则，而非自然启动。[研究]
+
+本轮未运行引擎、第三方游戏、模型或上游测试；公开 issue 的复测是他人报告，固定差分只证明维护机制，不能量化 Agent 净收益或断言当前项目存在同样问题。Realm PR 的网页抓取失败后，使用公开 GitHub API 核实合并 SHA／日期与文件补丁；NGO 同时核了公开 PR 与 API 差分。[研究]
