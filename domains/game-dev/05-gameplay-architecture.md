@@ -13,7 +13,7 @@
 | 少量阶段、敌人和技能 | 原生组件、小状态机、定义与运行实例分离 | 共享层级退出逻辑增多时考虑 HFSM |
 | 优先级决策与行为反复组合 | 现有行为树或 StateTree | 确有内容编辑收益，不因角色数量猜测 |
 | 蓄力、受击、死亡与重开 | 明确打断、取消和唯一结算点 | 复杂标签/效果/预测才评估 GAS |
-| 规模上升、CPU 超预算 | 先定位热点，局部 Jobs/Burst | 测量支持时再局部 ECS |
+| 规模上升、CPU 超预算 | 先定位热点；Unity 可局部 Jobs/Burst | 测量支持时再局部 ECS |
 | 相机或关卡变化 | 现有相机、稳定内容 ID、可重置遭遇 | 流式世界需求出现后增系统 |
 
 框架不能代替第二次修改验收；当前建议基于契约与源码，未证明真实项目净收益。[研究]
@@ -27,7 +27,7 @@
 | 游戏循环 | ✅ 明确 Session 寿命，阶段嵌套时改造为层级状态 | ✅ 少量阶段＋引擎既有回调 | ✅ 同左；⛔ 自建通用引擎循环 |
 | 状态与决策 | 🧪 优先级行为复用时用 Unity Behavior／UE BT、StateTree；👀 商业图工具 | ✅ 简单状态用 enum／小类；层级退出需求再采用 UnityHFSM | ✅ HFSM 为 MIT；⛔ 三种敌人先造图编辑器 |
 | 数据配置 | ✅ 外部内容生产需要时改造表导入与校验 | ✅ 定义＋实例＋版本化存档，沿用 SO／DataAsset | ✅ 自有数据与已有序列化；⛔ 默认热更新后端 |
-| 组件与 ECS | 🧪 数据规模和 CPU 预算需要时局部 ECS | ✅ 组件＋窄规则，热点先评估 Jobs/Burst | ✅ 现有组件；⛔ 只为“可扩展”全工程迁移 |
+| 组件与 ECS | 🧪 数据规模和 CPU 预算需要时局部 ECS | ✅ 组件＋窄规则，Unity 热点先评估 Jobs/Burst | ✅ 现有组件；⛔ 只为“可扩展”全工程迁移 |
 | 事件 | ✅ 必要时增加类型化队列与重入控制 | ✅ 局部调用、跨模块事实通知 | ✅ C# events／UE delegates；⛔ 全局字符串总线 |
 | 战斗技能 | 🧪 UE 复杂效果、标签、属性或预测需求用 GAS | ✅ 小型技能定义＋执行实例＋唯一结算点 | ✅ 引擎组件；⛔ 为几招复刻完整 GAS |
 | 相机 | ✅ Cinemachine／UE 原生相机，再加玩法特例 | ✅ 同左；固定镜头足够时更简单 | ✅ 按引擎条款使用；⛔ 自研通用相机框架 |
@@ -71,6 +71,8 @@
 [一手] Chop Chop 的 [TransitionTableSO](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Assets/Scripts/StateMachine/ScriptableObjects/TransitionTableSO.cs) 每个状态机创建运行实例字典，[StateActionSO](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Assets/Scripts/StateMachine/ScriptableObjects/StateActionSO.cs) 从定义生成普通动作实例；不是所有角色共用一份可变 SO。[后续健康管理修改](https://github.com/UnityTechnologies/open-project-1/commit/753c30e6fda71c6024c69ee5704b71cfa110e160) 将初始血量写入限制到新建实例分支，避免 Awake 重置既有玩家状态。[研究] 可借这个区分，不必借整套编辑器。
 
 ## 5. 组件与 ECS：迁移热点，不迁移口号
+
+[研究] 下文 Jobs/Burst、Entities、ECB 与 enableable 的具体路线仅适用于 Unity；UE 只共用“先定位热点、再局部改变结构”的判断，不把这些包名和时序直接映射到 UE。
 
 [研究] **做到哪**：MonoBehaviour／ActorComponent 处理引擎对象，普通类和函数承担可独立测的规则。只有玩法确实需要大群同构计算，且目标设备 CPU 预算表明现有结构不足时，才比较局部 Jobs/Burst 与 ECS；渲染、蒙皮、碰撞或寻路热点先各自定位。
 
@@ -124,7 +126,7 @@
 
 [研究] **质量目标**：玩家在做决定前看见落点、威胁和路线；移动、瞄准与屏幕变化有可预测的关系；镜头把注意力引到重要动作，又不抢走控制。固定镜头／简单跟随能做到这些就是合格基线，不以更多阻尼、震动或自动运镜代表高级。Unity 默认复用匹配项目版本的 Cinemachine，UE 先沿用 CameraComponent／SpringArm／PlayerCameraManager；只补玩法特例。
 
-下表是交叉来源后的采用判断，**不是三种玩法的实测排名**。[研究]
+下表的组件名是 **Unity Cinemachine 路线**，不是跨引擎 API 对照；UE 路线见本节后文。它是交叉来源后的采用判断，**不是三种玩法的实测排名**。[研究]
 
 | 场景与玩家需要 | 默认采用 | 何时调整；不值得增加什么 |
 |---|---|---|
@@ -134,7 +136,18 @@
 
 [一手] 当前 [Unity 6.0 包页](https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-cinemachine)列出的发布版为 **3.1.7**，不是主干预发布版。[Position Composer](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePositionComposer.html)明确前瞻可能放大动画噪声，平滑预测又增加滞后；[Group Framing](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineGroupFraming.html)提供变焦／移动构图。[研究] 先改善取景和输入响应，再补阻尼；一味拉远虽能装下对象，却可能降低战斗可读性。
 
-**遮挡不是一个开关。** [一手] Cinemachine 3.1.7 的 [Decollider](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDecollider.html)处理相机脱离障碍／地形的定位，不保证看见目标；[Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html)才尝试恢复目标视线，其 Transparent Layers 只是排除遮挡判断，不会把材质变透明。[研究] ✅ 保留瞄准方向后仍能取景，才用有限拉近／移位；固定朝向玩法若只被可淡出的树冠／前景挡住，🧪 复用 Shader Graph 的 Dither＋Alpha Clip 做局部显隐，保留碰撞和关键边界。若需要同时看见落点、攻击预告与掩体而没有可行视点，先降低／移动遮挡物或改遭遇布局；轮廓只标出角色位置，不能替代这些信息。已发布的 [Project Zomboid 42.21](https://projectzomboid.com/blog/news/2026/09/42-21-stable-released/)仍为大树遮住驾驶视野及树下物件修改 cutaway，说明局部显隐也有持续内容维护成本；实现与许可边界见 WP11。
+**Unity：遮挡不是一个开关。** [一手] Cinemachine 3.1.7 的 [Decollider](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDecollider.html)处理相机脱离障碍／地形的定位，不保证看见目标；[Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html)才尝试恢复目标视线，其 Transparent Layers 只是排除遮挡判断，不会把材质变透明。[研究] ✅ 保留瞄准方向后仍能取景，才用有限拉近／移位；固定朝向玩法若只被可淡出的树冠／前景挡住，🧪 复用 Unity Shader Graph 的 Dither＋Alpha Clip 做局部显隐，保留碰撞和关键边界。若需要同时看见落点、攻击预告与掩体而没有可行视点，先降低／移动遮挡物或改遭遇布局；轮廓只标出角色位置，不能替代这些信息。已发布的 [Project Zomboid 42.21](https://projectzomboid.com/blog/news/2026/09/42-21-stable-released/)仍为大树遮住驾驶视野及树下物件修改 cutaway，说明局部显隐也有持续内容维护成本；实现与许可边界见 WP11。
+
+### Unreal：同样的可读性目标，不同的职责边界
+
+**[研究] ✅ 采用既有 CameraComponent＋SpringArm＋PlayerCameraManager，改造少量玩法规则。** [一手] [SpringArm](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/USpringArmComponent)用 ProbeChannel／ProbeSize 防止镜头穿入关卡，默认查询 ECC_Camera；[PlayerCameraManager](https://dev.epicgames.com/documentation/unreal-engine/cameras-in-unreal-engine)管理最终视点与混合；[ControlRotation](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/AController/GetControlRotation)是控制／瞄准朝向，可不同于相机与 Pawn 朝向。[研究] SpringArm 的防穿透不是 Deoccluder 式目标可见性策略，更不负责枪口命中；不要让三个系统各自把旋转写回另一个系统。
+
+- **绕柱越肩瞄准**：[研究] 输入／瞄准规则拥有玩家意图，SpringArm 只在允许范围内修正位置；肩位优先用 SocketOffset，别随意再偏移子 Camera 绕过探测。玩法从最终视点／准星求候选目标，武器再从真实枪口按射线或弹体体积检查路径。相机看见目标而枪口撞柱时显示受阻，命中按武器规则结算；不能从相机直接发射来穿过掩体，也不自动转 ControlRotation 替玩家绕柱。装饰震动与故意后坐力是否影响瞄准须单独规定。这是基于原生契约的设计建议，不是 UE 自动提供的完整射击系统
+- **固定俯视的树冠／落点**：[研究] ✅ 先保固定朝向、尺度和落地参照；🧪 仅对明确允许的前景改造 UE 自己的材质显隐。官方 [Top Down Strategy 模板](https://dev.epicgames.com/documentation/unreal-engine/top-down-template-in-unreal-engine)已有参数化 masked M_Cutout 屋顶开口可作起点。[一手] [研究] 这是屋顶示例，树冠覆盖范围、对象选择和退出恢复仍由项目负责；保留树干、掩体边缘、落地面与攻击预告，不靠整体拉近或只画角色轮廓解决。显隐不改变武器／移动碰撞，不搬运 Unity Shader Graph 节点或受限源码
+
+**[研究] 👀 评估新系统，⛔ 不因“最新”默认迁移。** 本次读取的 UE **5.8** [Gameplay Cameras 插件页](https://dev.epicgames.com/documentation/unreal-engine/API/PluginIndex/GameplayCameras?lang=en-US)与[概览](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-overview?lang=en-US)仍标 **Experimental**。[一手] 只有多套可复用 rig、导演选择和过渡确实减少重复编排时再试；[Quick Start](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-quick-start)已有 Occlusion Material 节点，但存在节点不等于枪口合法、落点可读或新材质自动适配。[研究] 默认沿用原生基线；二改增加一根柱／一层树冠后核准星与枪口分歧、切镜输入连续性、显隐恢复和新增材质例外，细节见 [WP11 UE 补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#unreal-相机补研同一遮挡问题的原生职责与新系统边界)。
+
+### 两引擎共用的体验契约
 
 **三个容易漏掉的体验契约：**
 

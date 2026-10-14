@@ -52,6 +52,8 @@
 
 ### 4. 组件、Jobs/Burst、ECS：先用数据规模和预算选，不用对象数口号选
 
+[研究] 本小节 Jobs/Burst、Entities、ECB、enableable、authoring／烘焙的具体机制属于 Unity；UE 仅共用先定位成本再迁移热点的原则，不据此建立跨引擎 API 等价关系。
+
 **[研究] 默认采用**：MonoBehaviour／ActorComponent 负责引擎对象，纯函数／普通类承担能独立验证的规则。对象多而成本在动画、绘制、碰撞或寻路时，先解决该热点，ECS 不会自动修掉 GPU overdraw、复杂蒙皮和错误导航。单个昂贵批处理也可先用 Jobs/Burst，无须把 UI、对话与相机一起迁到 Entities。
 
 **[一手] 可借官方小样例，不照抄全游戏底座**：[Entities samples 6786a741](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0) README 指向 Unity 6.2／Entities 1.4 系列；实际 `13. StateChange/SetStateSystem.cs` 比较 VALUE、STRUCTURAL_CHANGE、ENABLEABLE_COMPONENT 三种状态表示，并自带 profiler 入口。README 的链接仍写 14，不宜盲复制其旧路径。
@@ -128,7 +130,7 @@
 | 游戏循环 | 明确 session 生命周期，必要时层级状态 | 小局状态机＋引擎既有回调 | 同左；不自建循环框架 |
 | 角色状态／敌人决策 | 确有优先级内容需求时 Unity Behavior／UE BT、StateTree；商业图工具仅评估 | 简单状态先 enum；层级中断再 UnityHFSM | HFSM MIT；有状态机不等于需要图编辑器 |
 | 数据配置 | 有内容团队／外部表需求再 DataTable／校验导入 | SO／DataAsset 定义＋实例＋版本存档 | 自有数据结构与已有序列化；无需求不加后端 |
-| 组件／ECS | 大规模批处理预算失败后局部 ECS | 组件＋窄纯规则，先局部 Jobs/Burst | 引擎现有组件；无实测不整项目迁移 |
+| 组件／ECS | 大规模批处理预算失败后局部 ECS | 组件＋窄纯规则，Unity 先局部 Jobs/Burst | 引擎现有组件；无实测不整项目迁移 |
 | 事件 | 边界清晰的类型化事件／必要队列 | 本地直接调用，跨模块事实通知 | C# events／UE delegates；不用全局字符串总线 |
 | 战斗技能 | UE 复杂效果／预测采用 GAS；Unity 沿已验证模块 | 最小 Definition＋Execution＋唯一结算点 | 自有小技能组件；不为了几招复刻 GAS |
 | 相机 | Cinemachine 或 UE 原生相机配合必要特例 | 同左，固定镜头更简单时直接固定 | Cinemachine UCL／UE 引擎条款；不从零写通用相机 |
@@ -342,3 +344,43 @@
 **本次状态**：[研究] 已读上述开发者原文／访谈、官方补丁和原生文档。未安装或运行引擎、游戏、模型，未付费或做玩家实验；不是玩法质量实测。另检索到 Dead Cells Update 14 的稳定格挡时序修订摘要，但正文抓取超时，未把该摘要纳入采用证据。
 
 **文档检查**：[一手] 本补研修改后 `python3 scripts/check_repo.py` 检查 177 文件、0 errors；限定两文件的 `git diff --check` 通过。检查不覆盖外链事实、片段锚点或真实引擎体验；整仓离线检查由整合方另跑。
+
+
+## Unreal 相机补研：同一遮挡问题的原生职责与新系统边界
+
+核实：2026-10-14 UTC。主线 1／3；改变 05 第 8 节把 Cinemachine 组件名放进通用玩法表、UE 只列三个名称的缺口。新证据为 Epic 当前标 5.8 的原生相机契约、Top Down Strategy 屋顶示例及仍标 Experimental 的 Gameplay Cameras 页面；以下设计组合标为研究判断，不冒充引擎内置玩法。[研究]
+
+### 1. 默认采用什么，谁不能替谁做决定
+
+[一手] [USpringArmComponent](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/USpringArmComponent)公开 API 把 bDoCollisionTest 定义为用 ProbeChannel／ProbeSize 防止 camera clipping；ProbeChannel 默认 ECC_Camera。SocketOffset 在臂端，文档建议用它而非所挂组件的相对偏移以保查询符合预期；bUsePawnControlRotation 决定是否使用 Pawn 的视图／控制朝向。[研究] 这支持默认使用成熟 boom 碰撞机制，但没有提供围绕任意目标搜索可用构图的保证；不能写成 SpringArm 与 Cinemachine Deoccluder 等价。相机不穿墙、目标可见、枪口可射击是三个问题。
+
+[一手] [Cameras](https://dev.epicgames.com/documentation/unreal-engine/cameras-in-unreal-engine)说明 CameraComponent 提供视点参数，ViewTarget 提供候选 POV，PlayerCameraManager 管理最终视图和混合，并通过 GetCameraViewPoint 等公开查询提供结果。[ControlRotation](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/AController/GetControlRotation)则是完整瞄准旋转，可不同于相机与 Pawn 朝向。[研究] 因而沿用 PlayerCameraManager 作为最终视图归属，不要求每个项目新增其子类；控制层拥有输入意图，角色表现可只跟部分轴。碰撞修正不能擅自反写输入，最终视点也不能与角色骨骼朝向混用。
+
+[一手] [Traces Overview](https://dev.epicgames.com/documentation/unreal-engine/traces-in-unreal-engine---overview?lang=en-US)区分 channel／object 查询及 line／shape sweep；Multi Trace by Channel 返回 overlap 到第一个 blocking hit 为止，不是所有遮挡物列表。[研究] 因此相机探测、可见性与武器路径要各自明确过滤和阻挡规则，不共用一个命中结果；要收集多层可淡出树冠，也不能假定一次 blocking channel 查询会拿到后面全部对象。
+
+### 2. 越肩绕柱：改造射击与显示规则，不再造相机框架
+
+**[研究] ✅ 原生基线＋两条独立路径。** 相机按玩家意图定位，SpringArm 负责约定范围内的防穿透；武器负责可发射性、弹道与伤害。这是由上述契约推导的工程建议，不是文档声称 UE 自动实现的两段瞄准算法。
+
+1. 画面准星从实际显示的视点求候选目标；读取时声明与相机更新的先后，避免拿上一帧缓存或混合前 CameraComponent transform 解释当前画面。装饰性 shake 可与瞄准姿态分离，故意后坐力是否改目标由玩法明确，不把所有扰动强制消除
+2. 武器从真实 muzzle／发射点向候选目标验证；hitscan 可用 line，有限尺寸弹体用合适 sweep，弧线弹道不能用一根直线宣称全程畅通。近墙生成重叠也要单独处理
+3. 柱子挡住枪口但没挡镜头时，保留候选目标并清楚标示受阻／实际接触点；按既定规则阻止开火或击中掩体，不能从相机原点发子弹绕过碰撞。伤害提交仍属武器／战斗系统
+4. 需要目标可见性修复时，先限制相机位移和换肩条件，持续输入不应因自动绕柱突然改方向；若取景和掩体公平性无法同时满足，修改柱距／肩位／遭遇，而非叠加一个不可预测的避障导演
+
+[研究] **二改验收**：新增柱子或更长枪身，记录最终 POV、ControlRotation、枪口位置、候选目标、实际阻挡点与伤害结果；左右肩、贴墙、俯仰高低差、连续绕柱、开始／退出瞄准分别检查。能够看见敌人不等于有射线通路，射线畅通不等于有体积弹体可通过。AI 可补轨迹和断言，玩家判断瞄准是否被抢走。
+
+### 3. 固定俯视：借原生 masked 开口，不复制 Unity 材质实现
+
+[一手] [Top Down Template](https://dev.epicgames.com/documentation/unreal-engine/top-down-template-in-unreal-engine)的 Strategy 变体通过 M_Cutout masked material 显露屋顶内空间，以屏幕位置和相机位置计算效果，Material Instance 的 Strength 调开口大小。[研究] **🧪 改造这个局部材质机制**，优先留在已用 UE 材质／实例工作流；它不是完整树冠／落点识别器，也不能证明任意视距、投影或多楼层配置都能直接套用。
+
+[研究] 项目须定义允许淡出的屋顶／树冠集合和所需可见区域，并保存恢复状态；退出遮挡、换目标、重生或卸载后恢复。只挖掉挡信息的前景：树干、可碰撞掩体边缘、落地平面与攻击预告仍提供空间判断。角色轮廓不提供落点；把整棵树隐藏也可能把仍阻挡子弹／移动的树干藏掉。材质显隐只改变画面，不改碰撞。若每种树都要特殊材质或每个房间都要补例外，先简化遮挡几何／镜头与内容，拒绝默认新建通用可见性框架。
+
+[研究] 二改用“更宽树冠＋下层落地点”，观察落下之前能否辨出着陆面、敌人预告和逃路，同时记录新增材质变体／例外与恢复遗漏。屏幕开口／透明表现的稳定性与 GPU 成本须在目标设备验证；本轮没有比较 masked、dither、translucent 的性能，不把 Unity Shader Graph 的节点、许可或行为迁给 UE。这里只读公开文档，未取得模板资产或受许可限制的工程源码。
+
+### 4. 新系统何时值得替换基线
+
+[一手] 当前读取的 [Gameplay Cameras 插件索引](https://dev.epicgames.com/documentation/unreal-engine/API/PluginIndex/GameplayCameras?lang=en-US)、[系统概览](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-overview?lang=en-US)及 [Quick Start](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-quick-start)均明确 Experimental，页面标题标 UE 5.8。概览把 rigs、transitions、director 放进可复用 Camera Asset，带 Camera Debugger；Quick Start 的第三人称与俯视 rig 使用 Occlusion Material，且教学流程移除旧 CameraBoom／FollowCamera。
+
+[研究] **👀 有条件评估**：多角色共享多套 rig／过渡、图形化导演确有内容编辑收益，并愿承担版本兼容与发布回归时，才在隔离切片比较。**⛔ 不默认迁移**：只为一根柱、一层树冠或“5.8 更新”，现有原生路线仍更小；不同时让旧相机和新系统争最终输出。Occlusion Material 是新系统能力的证据，不保证自动保留掩体边界或解决武器合法性；本轮没读它的受限实现，不猜测其采样范围／还原细节。也不把 API 中列出的节点视为稳定或成品游戏采用证明。
+
+[研究] **证据边界与许可**：采用判断来自公开官方职责与示例，不是 UE 引擎运行、商业游戏效果复现或两引擎质量排名。默认 URL 内容可能变化，工程按其实际版本重新核功能与 Experimental 状态；本次带 application_version=5.8 的四个 URL 抓取失败后，读取了可访问默认页面正文，以实际标题和内容作日期限定判断，不声称验证了安装包。仅链接原生功能与公开教学机制；UE 条款及具体资产许可继续适用，Unity 的 Cinemachine／Shader Graph UCL 不能跨引擎移植。未下载资产、受保护源码，未安装、付费或运行引擎／模型。
