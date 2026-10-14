@@ -1,7 +1,7 @@
 # Claude Code
 
 > 核实时间：2026-10-11（本轮针对规则加载与工作流建议补核；已读 changelog 至 2.1.296，模型价格和套餐仍为历史记录，未全量复核）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
-> 2026-10-13（UTC）补核 LSP 官方会话边界；2026-10-14（UTC）补核 2.1.299 的无人值守停止、重复执行与 MCP 匹配修复，以及当前 CLI 预算口径。其余价格、套餐与功能未全量重核，未运行客户端。
+> 2026-10-13（UTC）补核 LSP 官方会话边界；2026-10-14（UTC）补核 2.1.299 的无人值守停止、重复执行与 MCP 匹配修复，以及当前 CLI 预算口径；同日补核插件代码的沙箱边界。其余价格、套餐与功能未全量重核，未运行客户端。
 > 评级：✅ **采用**（日常开发 Agent 选项之一）
 
 ## 1. 定位
@@ -66,6 +66,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 - **Auto mode**（v2.1.283 起为交互会话默认）：分类器代替人工审批，详见 [06](../06-hooks-and-guardrails.md#4-auto-mode实测数据)。
 - 沙箱：macOS Seatbelt / Linux bubblewrap，可设网络白名单（`sandbox.network.strictAllowlist`），可屏蔽凭证（`sandbox.credentials`）。
 - `--safe-mode`：禁用所有自定义内容排查问题；`--restricted`：去掉执行类工具；`--bare`：脚本调用时跳过 hooks、LSP、插件。
+- **✅ 扩展代码单独审查信任边界**：Bash 沙箱不覆盖命令型 Hook、MCP／LSP 服务或 mod 启动的进程；需要连这些扩展一起隔离时，把整个 Claude Code 进程放进受控容器／虚拟机。使用本地 `--plugin-dir` 的旧客户端应优先评估升级到 2.1.299：该版修复了沙箱命令改写插件目录、随后在沙箱外加载其代码的路径；不能由此推断插件本身已被隔离。**[一手：[沙箱范围](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)、[2.1.299 发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.299)；研究：采用判断，未运行客户端]**
 - **升级后 MCP 少了权限，先查匹配而非放宽权限**：2.1.299 收紧 allow 和子 Agent `tools:` 的服务器匹配；`mcp__a` 不再覆盖 `a__b` 或 `a_`。只需单个工具就列具体工具；确需整台服务器时使用完整规范化名 `mcp__<server>__*`，不要用宽泛前缀恢复旧行为。**[一手：[固定 changelog](https://github.com/anthropics/claude-code/blob/db93774d73e8fdbaf315a6f4c175ae99ad3d515a/CHANGELOG.md)；研究：采用判断]**
 
 ### 3.5 诊断与维护
