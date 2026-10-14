@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：Codex 脚本只读显式设 sandbox，配置、指令、技能和 Hook 引用脚本分别检查；10 §3／3.2 在外来仓库脚本启动前限制配置来源；15 §5／Claude 专题按普通 -p 与 --bare 区分项目上下文和后台执行；05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索；22 §5 成对验收有意改变与相邻保留行为；18 §7／20 §4 按责任迁移验版本、持久化恢复与旧决定失效；20 §4 续改失败时检查继承代码的输入／错误契约；22 §4 先核对生成断言的预期来源，复用已检出目标缺陷的测试；15 §5 将配置回退的读写兼容与独立导出入口分验，并在职责迁移试点核对跨系统事实归属
-新证据：10-14 Codex 官方配置／headless／Hook 文档与 main 7a08c5f 固定源码，非发布版实测；10-14 补读 Claude 权限矩阵、Hooks 安全说明及历史信任前执行修复原文；新读 Claude headless 官方契约与 2.1.286 固定发布说明，未运行客户端；新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照；10-14 深化 Pydantic AI 清理→捕获→重放→整轮取消→下游删除补偿层的固定产物、需求、测试定义与历史 CI，未运行上游；补 CodeThread 9月修订及固定构造源码，区分既有行为偏移与结构可维护性；新增生成测试跨 PR 传播的人工变异研究与 TestGen-LLM 原始筛选机制，未重跑模型；新增 n8n 读写开关解耦→维护者补接一次性命令初始化的固定补丁、测试定义及作者运行报告，未独立运行导出路径；新增 Scion 工程团队迁移复盘的事实查询纠正与 Sapling 官方兼容反例，未取得对应源码或独立运行
+改变的建议：Codex 脚本只读显式设 sandbox，配置、指令、技能和 Hook 引用脚本分别检查；10 §3／3.2 在外来仓库脚本启动前限制配置来源；15 §5／Claude 专题按普通 -p 与 --bare 区分项目上下文和后台执行；05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索；22 §5 成对验收有意改变与相邻保留行为；18 §7／20 §4 按责任迁移验版本、持久化恢复与旧决定失效；20 §4 续改失败时检查继承代码的输入／错误契约；22 §4 先核对生成断言的预期来源，复用已检出目标缺陷的测试；15 §5 将配置回退的读写兼容与独立导出入口分验，并在职责迁移试点核对跨系统事实归属；15 §6 新写入路径同时验派生状态与判等编码的输入区分能力
+新证据：10-14 Codex 官方配置／headless／Hook 文档与 main 7a08c5f 固定源码，非发布版实测；10-14 补读 Claude 权限矩阵、Hooks 安全说明及历史信任前执行修复原文；新读 Claude headless 官方契约与 2.1.286 固定发布说明，未运行客户端；新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照；10-14 深化 Pydantic AI 清理→捕获→重放→整轮取消→下游删除补偿层的固定产物、需求、测试定义与历史 CI，未运行上游；补 CodeThread 9月修订及固定构造源码，区分既有行为偏移与结构可维护性；新增生成测试跨 PR 传播的人工变异研究与 TestGen-LLM 原始筛选机制，未重跑模型；新增 n8n 读写开关解耦→维护者补接一次性命令初始化的固定补丁、测试定义及作者运行报告，未独立运行导出路径；新增 Scion 工程团队迁移复盘的事实查询纠正与 Sapling 官方兼容反例，未取得对应源码或独立运行；新增 sqlite-chronicle 四版固定生成 SQL 的标准库32场景复核，确认 BLOB 修复后的 NUL 文本版本漏报，未运行包CLI或模型
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
@@ -412,3 +412,35 @@ S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 - **S1 [一手]**：OpenAI Skills 固定 `49f948faa9258a0c61caceaf225e179651397431`，[interactive](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/playwright-interactive/SKILL.md) 的前提、会话、功能/视觉 QA、viewport 与重启段落；[CLI](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/playwright/SKILL.md) 的前提、核心流程与快照更新段落。只读研究，未采用为本会话指令。
 - **S2 [一手]**：[Code modernization](https://github.com/openai/openai-cookbook/blob/5bd6cb40b6b84b69b2032d810610aa85064102df/examples/codex/code_modernization.md)，读引言至第 4.2 阶段。没有运行教程、验证其业务系统或据此确认当前采用率。
 - **[经验/研究]**：本仓库 Catalog Compare 与验收链检查见正文链接；游戏、地址保存示例是本文分析设计，不是性能实测。当前来源仍偏官方与公开 GitHub，社区原始运行轨迹是下一步证据缺口。
+
+## 写入路径扩展与序列化判等：sqlite-chronicle
+
+核实：2026-10-14 UTC。**✅ 给 Agent 扩展写入路径时，把业务行与派生版本／审计状态一起验；为支持新类型而改变判等编码，还须验证旧类型中需要区分的值。** 本节改变 15 §6 的窄建议，不新增工具或默认评审阶段。**[经验：采用判断]**
+
+### 一手修订链与归属
+
+[Issue #20](https://github.com/simonw/sqlite-chronicle/issues/20)由维护者 Simon Willison 报告：把代码和此前讨论交给 Opus 4.6、Gemini 3 Deep Think、GPT-5.2 探索，其中前两者给出候选方案，GPT-5.2 耗尽上下文。这是作者报告，不能比较模型总体能力。[PR #21](https://github.com/simonw/sqlite-chronicle/pull/21)公开了要求先确认失败、采用候选方案、做 red/green 与生成演示的任务文字、Claude Code 会话链接和 claude 提交；本轮只读公开 PR 与代码，没有读取会话全文或运行模型。维护者称已人工审阅，随后合并并发布 0.5；这不证明所有输入已正确。**[社区：作者报告；一手：公开任务与提交]**
+
+- 原版 [25370bdd](https://github.com/simonw/sqlite-chronicle/blob/25370bdd9ce4d5c3be93d5035e86b44bd9346476/sqlite_chronicle.py)在 AFTER INSERT 中用 `INSERT OR IGNORE` 写 chronicle；外层 `INSERT OR REPLACE` 的冲突策略会传播进触发器，重建跟踪行并重置 added 时间。`recursive_triggers=ON` 还让隐式 DELETE 触发额外版本增长。SQLite [CREATE TRIGGER 官方契约](https://sqlite.org/lang_createtrigger.html)明确外层语句的冲突处理优先于触发器内部策略。**[一手]**
+- [3510fd21](https://github.com/simonw/sqlite-chronicle/commit/3510fd21b57bf5a06eb16bf5830d44919fc3fe11)改为 BEFORE INSERT 保存旧值快照、INSERT 时判等并清理、用 `WHERE NOT EXISTS` 避免冲突策略传播，并为隐式 DELETE 加 guard。后续 [60f09b98](https://github.com/simonw/sqlite-chronicle/blob/60f09b9833f4bbc44ea52cd89cf9c4e5329a804e/README.md)已有对应生成 SQL，但 `json_array` 直接接收 BLOB 会失败。**[一手：固定补丁与生成 SQL]**
+- [9cd5293f](https://github.com/simonw/sqlite-chronicle/commit/9cd5293f5e89825a8824c1f258231e0592d8579f)改用 `json_array(quote(...))`，新增 BLOB、NULL、混合类型回归。这个改动确实消除本轮 BLOB 失败，但 `quote(TEXT)` 在首个 NUL 截断；不同尾部因此可能得到相同快照。截断是 [SQLite 文档规定](https://sqlite.org/lang_corefunc.html#quote)，不是本仓猜测。**[一手；研究：判等推论]**
+- 核查时 main 固定为 [ee8d2a1d](https://github.com/simonw/sqlite-chronicle/blob/ee8d2a1db5090d14279f0acb56b5d46a5c50e44c/sqlite_chronicle.py)。快照表已改成共享表，仍保留这条 quote 判等路径；本轮也运行了此 SHA 的 [README 生成 SQL](https://github.com/simonw/sqlite-chronicle/blob/ee8d2a1db5090d14279f0acb56b5d46a5c50e44c/README.md)，没有把二月补丁直接当作十月现状。**[一手；经验：固定 SQL 执行]**
+
+### 零依赖复核与反例
+
+运行 `python3 experiments/sqlite-chronicle-replace-check.py`。完整[离线脚本](../../experiments/sqlite-chronicle-replace-check.py)、[原始输出](../../experiments/sqlite-chronicle-replace-results.txt)与[上游许可](../../experiments/sqlite-chronicle-LICENSE.txt)随仓保存。SQL fixture 是四个固定 README 的完整 dogs schema，未替换触发器或重写算法；脚本不导入／执行上游 Python，不联网、不安装，数据库均为 `:memory:`。Python 3.12.14 / SQLite 3.53.1，四版 × 两个 recursive_triggers 设置 × 文本、BLOB、NUL 文本、NULL 四种输入，共 32 个场景。脚本退出 0 表示**复现了预期现象，包括已知失败**，不是库质量通过。**[经验：本轮实际运行]**
+
+每场景先插入一行，再将其改为目标值、重复写目标值。观察真实业务数据、版本、删除标记、added 保留与快照清理；added 用 123 作确定性测试标记，未改原触发器。结果如下：
+
+| 固定 SQL | 普通文本改动→重复 | BLOB 改动→重复 | NUL 文本改动→重复 | NULL→NULL |
+|---|---|---|---|---|
+| 原版 25370bdd | 版本 2→3（recursive=1 时 3→5） | 同左 | 同左 | 同左；错误增长 |
+| 首轮方案后 60f09b98 | 2→2 | 首次 REPLACE 抛 `JSON cannot hold BLOB values`；旧行与版本仍保留 | 2→2 | 1→1 |
+| BLOB 修订 9cd5293f | 2→2 | 2→2 | **1→1，漏报真实变化** | 1→1 |
+| 当前固定 ee8d2a1d | 2→2 | 2→2 | **1→1，漏报真实变化** | 1→1 |
+
+后三版上述结果在 recursive_triggers=0/1 一致；原版重置 added，其余保留。NUL 反例为参数绑定的 `a\0x`→`a\0y`：业务值确实变为后者，字节 hex 从 `610078` 变成 `610079`，但最后两版的 `__version` 仍为 1，按 `__version > 1` 查询为空。随后经普通 UPDATE 改成 `a\0z`，版本增为 2；这是同一输入域的写入路径对照。**[经验：完整固定 schema 的执行结果]**
+
+**输入域与结论边界。** [SQLite 允许 TEXT 包含 NUL](https://sqlite.org/nulinstr.html)，但提醒部分显示和文本函数会截断。项目 README 承诺追踪行更新、相同数据不增长版本，并明示不支持主键更新；本轮未见其排除 NUL 非主键文本，所读实现也未拒绝该值。不过没有真实用户在生产中触发此问题的报告，不能把罕见输入的局部漏报外推为全部同步不可用。若业务明确禁止 NUL，应验证入口拒绝，而非默认判等编码无损；若允许，就需保住区分这些值的语义。**[一手：输入与项目契约；经验：采用边界]**
+
+本轮未运行包 CLI、安装／升级过程、上游测试套件、并发、多表或复合键；固定生成 SQL 与所读实现路径相符，但不等于整库端到端验证。没有提交外部 issue 或补丁，也没有评价模型成功率／工时收益。新增价值是把“补类型测试”具体化为**新编码能接受值，与它能分辨业务上不同的值，是两个验收条件**。**[研究：范围与采用判断]**

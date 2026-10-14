@@ -1,0 +1,38 @@
+{"python": "3.12.14", "sqlite": "3.53.1"}
+{"label": "old", "sha": "25370bdd9ce4d5c3be93d5035e86b44bd9346476", "sql_sha256": "f973e5f46a51548e56f45255e4ce24aa4f618f020a95b7ac937dca943e8a1575"}
+{"label": "old", "recursive_triggers": 0, "case": "text", "replace_versions": [2, 3], "error": null, "replace_hex": "50616E63616B6573", "nul_update_control_version": null}
+{"label": "old", "recursive_triggers": 0, "case": "blob", "replace_versions": [2, 3], "error": null, "replace_hex": "CAFE", "nul_update_control_version": null}
+{"label": "old", "recursive_triggers": 0, "case": "nul", "replace_versions": [2, 3], "error": null, "replace_hex": "610079", "nul_update_control_version": null}
+{"label": "old", "recursive_triggers": 0, "case": "null", "replace_versions": [2, 3], "error": null, "replace_hex": "", "nul_update_control_version": null}
+{"label": "old", "recursive_triggers": 1, "case": "text", "replace_versions": [3, 5], "error": null, "replace_hex": "50616E63616B6573", "nul_update_control_version": null}
+{"label": "old", "recursive_triggers": 1, "case": "blob", "replace_versions": [3, 5], "error": null, "replace_hex": "CAFE", "nul_update_control_version": null}
+{"label": "old", "recursive_triggers": 1, "case": "nul", "replace_versions": [3, 5], "error": null, "replace_hex": "610079", "nul_update_control_version": null}
+{"label": "old", "recursive_triggers": 1, "case": "null", "replace_versions": [3, 5], "error": null, "replace_hex": "", "nul_update_control_version": null}
+{"label": "intermediate", "sha": "60f09b9833f4bbc44ea52cd89cf9c4e5329a804e", "sql_sha256": "543e176566152d874001ede2ee3bf655e14b1eddbc73520d72d528583637ae68"}
+{"label": "intermediate", "recursive_triggers": 0, "case": "text", "replace_versions": [2, 2], "error": null, "replace_hex": "50616E63616B6573", "nul_update_control_version": null}
+{"label": "intermediate", "recursive_triggers": 0, "case": "blob", "replace_versions": [], "error": "JSON cannot hold BLOB values", "replace_hex": null, "nul_update_control_version": null}
+{"label": "intermediate", "recursive_triggers": 0, "case": "nul", "replace_versions": [2, 2], "error": null, "replace_hex": "610079", "nul_update_control_version": null}
+{"label": "intermediate", "recursive_triggers": 0, "case": "null", "replace_versions": [1, 1], "error": null, "replace_hex": "", "nul_update_control_version": null}
+{"label": "intermediate", "recursive_triggers": 1, "case": "text", "replace_versions": [2, 2], "error": null, "replace_hex": "50616E63616B6573", "nul_update_control_version": null}
+{"label": "intermediate", "recursive_triggers": 1, "case": "blob", "replace_versions": [], "error": "JSON cannot hold BLOB values", "replace_hex": null, "nul_update_control_version": null}
+{"label": "intermediate", "recursive_triggers": 1, "case": "nul", "replace_versions": [2, 2], "error": null, "replace_hex": "610079", "nul_update_control_version": null}
+{"label": "intermediate", "recursive_triggers": 1, "case": "null", "replace_versions": [1, 1], "error": null, "replace_hex": "", "nul_update_control_version": null}
+{"label": "final", "sha": "9cd5293f5e89825a8824c1f258231e0592d8579f", "sql_sha256": "6dfd9c803bf221484293a56c64464b5a2f2eee59fcb2afd818111eb4a7d246af"}
+{"label": "final", "recursive_triggers": 0, "case": "text", "replace_versions": [2, 2], "error": null, "replace_hex": "50616E63616B6573", "nul_update_control_version": null}
+{"label": "final", "recursive_triggers": 0, "case": "blob", "replace_versions": [2, 2], "error": null, "replace_hex": "CAFE", "nul_update_control_version": null}
+{"label": "final", "recursive_triggers": 0, "case": "nul", "replace_versions": [1, 1], "error": null, "replace_hex": "610079", "nul_update_control_version": 2}
+{"label": "final", "recursive_triggers": 0, "case": "null", "replace_versions": [1, 1], "error": null, "replace_hex": "", "nul_update_control_version": null}
+{"label": "final", "recursive_triggers": 1, "case": "text", "replace_versions": [2, 2], "error": null, "replace_hex": "50616E63616B6573", "nul_update_control_version": null}
+{"label": "final", "recursive_triggers": 1, "case": "blob", "replace_versions": [2, 2], "error": null, "replace_hex": "CAFE", "nul_update_control_version": null}
+{"label": "final", "recursive_triggers": 1, "case": "nul", "replace_versions": [1, 1], "error": null, "replace_hex": "610079", "nul_update_control_version": 2}
+{"label": "final", "recursive_triggers": 1, "case": "null", "replace_versions": [1, 1], "error": null, "replace_hex": "", "nul_update_control_version": null}
+{"label": "latest", "sha": "ee8d2a1db5090d14279f0acb56b5d46a5c50e44c", "sql_sha256": "e9d8db061c74549f68d6d505ea794381fa2d8be265be73ad3f99e7c1fcbc7a51"}
+{"label": "latest", "recursive_triggers": 0, "case": "text", "replace_versions": [2, 2], "error": null, "replace_hex": "50616E63616B6573", "nul_update_control_version": null}
+{"label": "latest", "recursive_triggers": 0, "case": "blob", "replace_versions": [2, 2], "error": null, "replace_hex": "CAFE", "nul_update_control_version": null}
+{"label": "latest", "recursive_triggers": 0, "case": "nul", "replace_versions": [1, 1], "error": null, "replace_hex": "610079", "nul_update_control_version": 2}
+{"label": "latest", "recursive_triggers": 0, "case": "null", "replace_versions": [1, 1], "error": null, "replace_hex": "", "nul_update_control_version": null}
+{"label": "latest", "recursive_triggers": 1, "case": "text", "replace_versions": [2, 2], "error": null, "replace_hex": "50616E63616B6573", "nul_update_control_version": null}
+{"label": "latest", "recursive_triggers": 1, "case": "blob", "replace_versions": [2, 2], "error": null, "replace_hex": "CAFE", "nul_update_control_version": null}
+{"label": "latest", "recursive_triggers": 1, "case": "nul", "replace_versions": [1, 1], "error": null, "replace_hex": "610079", "nul_update_control_version": 2}
+{"label": "latest", "recursive_triggers": 1, "case": "null", "replace_versions": [1, 1], "error": null, "replace_hex": "", "nul_update_control_version": null}
+32 scenarios matched expected observations, including historical failures and residual NUL miss
