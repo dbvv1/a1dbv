@@ -266,7 +266,7 @@ GitHub Copilot 的 HydraFusion（2026-09 研究预览）把分层直接做进了
 |---|---|
 | 一：验证器地图 | 逻辑和数值有验证器（测试、无头模拟），手感和乐趣没有 → 前者交给 Agent，后者留给人 → [game-dev/02](../domains/game-dev/02-verification-and-playtesting.md) |
 | 二：上下文预算 | Unreal 用工具搜索藏起几百个工具；Unity 用 Skill 按需加载；大型项目按模块放子目录的 AGENTS.md → [game-dev/01](../domains/game-dev/01-engine-integration.md) |
-| 三：人的注意力 | 截图式验证浪费人和 Agent 的时间；“Agent 可试玩”的改造让人只需要验收手感 |
+| 三：人的注意力 | 状态接口和自动试玩减少用截图推断逻辑的成本；视觉要求仍需画面证据，手感、乐趣、风格与平衡目标仍由人验收 → [23](23-browser-verification.md)、[game-dev/02](../domains/game-dev/02-verification-and-playtesting.md) |
 | 四：确定性边界 | 编辑器修改不一定能撤销 → 版本控制 + 存盘点；Blender MCP 直接执行代码 → 放进虚拟机 |
 | 五：资产保值 | 纯 C# 逻辑、状态导出接口、测试场景，换模型换工具都能用 |
 | 六：放大器 | Steam 数据：AI 带来更多游戏，但没有带来更高的成功率；只用 AI 出美术的作品失败最集中 → [game-dev/03](../domains/game-dev/03-generative-ai-in-games.md#3-外部约束披露与玩家态度) |
