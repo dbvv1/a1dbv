@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加；三，连续修改仍然可靠
 改变的建议：07/08/09/15/24 只为会改变实现的未知事实定向研究；复用原需求与独立验收，接口改变后更新剩余计划，不默认追加评审
-新证据：BAML 同起点双 PR 与计划纠错、后续 Superpowers 固定 brief/评审路径及实验混杂；并补 CRBugBench、人工受控评审与 RevMate 现场比较；各来源独立保留，不合并成流程净收益
+新证据：BAML 同起点双 PR 与计划纠错、后续 Superpowers 固定 brief/评审路径及实验混杂；并补 CRBugBench、人工受控评审、RevMate 现场比较与 Crossplane 收窄评审的固定配置／采纳链；各来源独立保留，不合并成流程净收益
 
 # 实现决策与评审：让原需求和运行反馈纠正计划
 
@@ -185,3 +185,26 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 ✅ 保留确定性检查和按风险的人审；🧪 只有明确漏审类型时才试额外 Agent。先用同类变更核对其新增、可行动且正确的发现，以及人的验证／修复投入；若只重复已有检查、引入大量无效修改或没有改善目标风险，撤回额外层。新提示也按同样标准，而非因单篇论文一律替换。**[研究：采用判断]**
 
 本轮未得到当前强 Agent 相对“现有测试＋定向人审”的完整净收益对照；下一证据应为同任务的有效新增发现、未发现缺陷与人实际处理投入，或明确修复后的行为。无需为此新建 benchmark 平台或重复既有合成案例。
+
+### Crossplane：有用意见与收窄评审可以同时成立
+
+核实：2026-10-14（UTC）。主线二／三；细化 09 的撤回建议：低价值输出挤占人审时，可先收窄评审强度与状态评论，不必接受全部建议或撤掉全部能力。本轮只读公开 PR、评论、固定配置和代码，未运行 Crossplane、模型或 CI。**[研究：范围与采用判断]**
+
+**实际改变了什么。** Crossplane 维护者 negz 在真实功能 PR [#6777](https://github.com/crossplane/crossplane/pull/6777) 试用 CodeRabbit 后，[说明 assertive 太啰嗦并改为 chill](https://github.com/crossplane/crossplane/pull/6777#issuecomment-3272858121)。[#6794](https://github.com/crossplane/crossplane/pull/6794) 的理由同时承认部分 nit 有用，但不值得投入过多处理时间，也担心新贡献者的负担；该配置修改已合并为 `389bee346cf0d0efea512994aeeeb311ff1ccc00`。随后 [#6795](https://github.com/crossplane/crossplane/pull/6795) 关闭评审前后状态评论，作者[明确保留 GitHub check](https://github.com/crossplane/crossplane/pull/6795#issuecomment-3272904222)。其合并版本 [2ef13c0 的配置](https://github.com/crossplane/crossplane/blob/2ef13c01f8916d4d161ba687c2f2941400cf2b8a/.coderabbit.yaml#L24-L50)同时包含 `profile: "chill"` 与 `review_status: false`。**[社区：维护者取舍；一手：PR 元数据与固定配置]**
+
+这不是“机器人毫无帮助”的案例。同一个 #6777 中可核对以下不同结果：
+
+| 意见及人的处理 | 固定产物／反证 | 能证明什么 |
+|---|---|---|
+| [机器人建议接口参数并加 nil guard](https://github.com/crossplane/crossplane/pull/6777#discussion_r2334776323)；[作者接受前者、拒绝后者](https://github.com/crossplane/crossplane/pull/6777#discussion_r2334832276) | [合并版 mapfunc.go](https://github.com/crossplane/crossplane/blob/221af7eb52a671f9462da4619c89776c593464d2/internal/circuit/mapfunc.go#L28-L34)使用 `Breaker` 参数，没有建议中的 nil guard | 建议被拆分、选择性采纳；未证明修复了已触发的运行时缺陷 |
+| [机器人建议编译期接口断言](https://github.com/crossplane/crossplane/pull/6777#discussion_r2334840022)；[作者接受但改放测试文件](https://github.com/crossplane/crossplane/pull/6777#discussion_r2335051593) | [合并版 token_bucket_test.go](https://github.com/crossplane/crossplane/blob/221af7eb52a671f9462da4619c89776c593464d2/internal/circuit/token_bucket_test.go#L32)包含断言 | 维护预防措施进入合并代码，不是发现一例真实接口错误 |
+| [机器人判定整数 range 无法编译](https://github.com/crossplane/crossplane/pull/6777#discussion_r2334861081)；[作者指出建议错误](https://github.com/crossplane/crossplane/pull/6777#discussion_r2335194071) | [合并版 go.mod](https://github.com/crossplane/crossplane/blob/221af7eb52a671f9462da4619c89776c593464d2/go.mod#L3)指定 Go 1.24；[Go 1.22 官方说明](https://go.dev/doc/go1.22#language)已支持整数 range | 此项语言断言可独立反证；本轮没有编译运行 |
+| [机器人建议状态消息加入时间](https://github.com/crossplane/crossplane/pull/6777#discussion_r2334839986)；[作者认为会引发 condition thrashing](https://github.com/crossplane/crossplane/pull/6777#discussion_r2334869687) | 作者解释条件更新会触发新的 reconcile | 展示核查系统行为的必要性；这一风险仍是维护者判断，未独立复现 |
+
+表中机器人原意见、作者答复及固定代码分别为 **[一手：公开产物]**、**[社区：作者判断]**、**[一手：源码]**；解释为 **[研究]**。#6777 最终合并 SHA 为 `221af7eb52a671f9462da4619c89776c593464d2`。不能把意见被接受、代码出现、真实 bug 被修复、上线风险下降视为同一结果。
+
+**人的负担与测量边界。** 公开线程能看到作者纠正事实、拒绝额外防御代码与说明范围的工作，且有其降低强度的实际决定；没有主动工时、额外等待或完整意见判定分母。#6794 的“接近 200 条评论”明确包含非 CodeRabbit 内容，不作机器人产出数、误报率或净损失统计。也没有 chill 前后同任务对照，不能声称收窄已经改善质量或节省多少时间。**[社区：处理记录；研究：证据边界]**
+
+**排重与排除。** 既有 CRBugBench／Tufano／RevMate 不重复取样。[cuda-python #2137](https://github.com/NVIDIA/cuda-python/issues/2137)有历史关停的作者自述，但本轮所见重启仍是提议；[CCCL #8930](https://github.com/NVIDIA/cccl/pull/8930)确有启用自动评审的合并记录，却没有正确修复与人的投入对照，均不作为净收益证据。Crossplane #6794/#6795 的搜索网页旧缓存显示 open，本轮通过 GitHub 连接器重新取得两者 `merged: true`、合并 SHA、diff 与评论，未沿用缓存状态。**[一手：公开元数据；研究：排除判断]**
+
+**后续门槛。** 保持额外评审按风险试用；若要进一步提高采用评级，需要同类任务中新发现的真缺陷、接受后的正确修复，以及作者／审核者主动投入和等待的可比记录。单个项目的配置取舍不能替代这些测量。**[研究：采用边界]**
