@@ -1,10 +1,10 @@
 主线：二，兼三／四
-改变的建议：05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索
-新证据：新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照
+改变的建议：05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索；22 §5 成对验收有意改变与相邻保留行为
+新证据：新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照；10-14 新增 Pydantic AI 取消需求→完成路径回归→窄修复的固定源码与评审反馈，未运行上游
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
-> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
+> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，2026-10-14 UTC 补核 §五 Pydantic AI 演化链，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
 
 ## 核心判断
 
@@ -230,6 +230,31 @@ S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 **反例约束。** [真实管理员报告](https://meta.discourse.org/t/im-struggling-to-recover-deleted-post-how-to-fix/403161/1)显示，已删除 nested topic 的 500 阻断恢复。[#40134](https://github.com/discourse/discourse/pull/40134) 的[固定修复](https://github.com/discourse/discourse/commit/a051d96b6526c7a2ad2b7754863d7364e6401c28)给 OP 查询补接已有 visibility helper，并新增 staff show/context 返回 200 与 placeholder、non-staff 返回 404 的断言。修复作者 xfalcox 也是初始人类 coauthor，属团队维护；手工恢复未勾选，不能写用户已成功恢复。**[社区：用户原帖；一手：补丁]**
 
 因此，UI 复用可以承接下一次扩展，却不能保证后台生命周期完整；让 Agent 同时检查必要的查看、删除、恢复路径。局部补接能满足契约时，无需升级为架构重写。**[研究：采用建议]**
+
+### Pydantic AI：取消契约改变，不代表正常完成也应改变
+
+> 核实：2026-10-14 UTC。主线三；改变 22 §5：把“本次要改变的行为”与“相邻仍须保留的行为”成对验收，再判断修复应落在哪层。✅ 采用；不是新的模型效果实验。**[研究：采用判断]**
+
+**固定演化链。** 以下源码均只读，未安装或执行 Pydantic AI：
+
+| 阶段 | 固定来源／真实需求 | 能确认什么 |
+|---|---|---|
+| 初始产物 | [v1.91.0 的 `_agent_graph.py`](https://github.com/pydantic/pydantic-ai/blob/b83abdf23d2cfe9940a83b51b1ce7abe0fc9b807/pydantic_ai_slim/pydantic_ai/_agent_graph.py#L668-L677) | 共享节点在消费者返回后继续排空，注释说明用于完整 usage 统计；是行为基线，不是这条路径的历史通过日志 |
+| 后续真实需求 | [#5132](https://github.com/pydantic/pydantic-ai/issues/5132)；[变更 `93a6104`](https://github.com/pydantic/pydantic-ai/commit/93a61042943d3887c737ba753b908f258e8ea162) | 报告者在 1.81.0 的取消复现中记录清理未完成、仍有 4 个任务；#5313 引入托管流的确定性清理，并移除共享节点的排空循环 |
+| 用户故障与修复判定 | [#5769](https://github.com/pydantic/pydantic-ai/issues/5769)、[#5771](https://github.com/pydantic/pydantic-ai/pull/5771) | 报告涉及 1.92–1.105 的空响应／零 usage；维护者将条件收窄为 handler 正常返回但未消费完流，普通无 handler 路径不受影响 |
+| 窄修复产物 | [最终 `49f62a3`](https://github.com/pydantic/pydantic-ai/commit/49f62a386041abd6e0d960dd629c3b4fe28eac63) | 只改 `agent/abstract.py` 与 `tests/test_streaming.py`：在三处 driver 的 handler 正常返回后排空，异常向外传播时不进入该语句；保留共享节点与公开 API |
+
+源码、补丁为 **[一手]**；故障输出为 **[社区：报告者实跑自述]**，并非本仓复现。#5132 明确披露由 AI coding assistant 与用户协作提出；#5313／#5771 另有 Codex、Devin 自动评审，但不能据通用 AI checklist 推断实现由哪个模型生成。
+
+**为什么不能恢复旧循环了事。** 正常返回的 handler 可以只观察部分事件，最终响应仍须完整。共享节点的旧循环位于 `yield` 后、`try` 内，向外传播的异常本来就会跳过它；#5771 指出的另一冲突是显式 `stream.cancel()` 后仍可正常退出上下文，旧循环仍会尝试排空。最终由 driver 在 handler 正常返回后补齐流，向外传播的取消／其他异常则跳过；handler 内部只 `break` 再正常返回仍属于应排空的路径。这里分别保留显式取消与正常完成的契约，调整完成策略的职责归属，不是全局架构重写。**[一手：前后控制流、修复说明；研究：决策解释]**
+
+这也不是“内层已有抽象就绝不动外层”。[Devin 指出](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3349919895) `CallToolsNode` 内层自排空不保证 capability wrapper 完成；[作者明确回复](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3353383025)已修正，最终三处分支一致。[Codex 则提出](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3349656443)删除公开 `AgentStream.drain()` 会破坏调用者；[最终 `result.py`](https://github.com/pydantic/pydantic-ai/blob/49f62a386041abd6e0d960dd629c3b4fe28eac63/pydantic_ai_slim/pydantic_ai/result.py#L173-L177)仍保留该方法。前者有作者确认，后者只有评审与最终产物对应，不能宣称某条反馈单独导致全部修订。**[一手：评审、回复、源码]**
+
+**成对验收与执行边界。** 最终新增四个正常完成测试，分别覆盖 `run`／`run_stream` 的完整文本与工具调用；另一个仅覆盖 `run` 的取消测试使用无限流，handler 抛出 `CancelledError`，要求只发生一次前置 lookahead。它们把“完成结果不丢”与“取消不继续消费”同时写入契约。[先前测试提交](https://github.com/pydantic/pydantic-ai/commit/95d9ff040d327a57423438df060b23bfb3e65d50)报告 `try/finally` 排空变体会失败；[后续提交](https://github.com/pydantic/pydantic-ai/commit/230e6d10ea4ec13198bd80fffc2014b2ac23e13f)将有限 sentinel 改为无限流与计数，以消除不可达的覆盖行。这里确认的是测试定义与作者 mutation-testing 自述，没有取得其原始红绿日志。PR 页面显示 56 checks passed，也不能代替逐测试前后结果。**[一手：测试、提交说明与平台摘要]**
+
+**最强反证。** #5771 明说用户最初贴的非流式例子并不触发该路径；#5769 当前正文已经过修改，不能把它当作原始复现成功记录。修复 PR 正文还残留“CallToolsNode 分支不动”的描述，与最终补丁不同，故以上以固定产物和作者后续回复为准。[第三方历史复演](https://www.startearly.ai/regression-case-files/pydantic-ai-release-replay/)另报告 TestModel 在 1.91 通过、1.92 失败、1.106 通过；它是预先选中已知故障版本的事后试验，本文未重跑，也不用于证明其检测产品普遍有效。**[一手：维护者解释；社区：第三方复演]**
+
+**给使用 Agent 的开发者的具体取舍。** 接到改变生命周期的需求时，先写清触发条件、退出方式与应保留的结果，而不把整个旧测试集合统一判为兼容或过时。已有抽象仍能满足不同路径时保留；共享收尾无法区分两种合法契约时，只把策略移到拥有该区别的调用层，同时验相邻路径和公开接口。只有这一步仍无法表达要求时，再提出更大重构。**[研究：从本例提炼的采用条件，不是普遍净收益]**
 
 ### 能推翻或改变这个优先级的证据
 
