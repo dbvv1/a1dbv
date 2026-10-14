@@ -1,6 +1,6 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
 改变的建议：[经验] 同风格现成／参数化资产优先；自定义刚体首试原生低模，场景和变形角色另判；复用 bpy／gltfpack 后仍验最终预算、身份与元数据
-新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；未运行模型／引擎，目标面数、成功日志与展示不能证明零手修发行质量
+新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加 CC0 门 GLB 二进制轨道复算与关节／整场景导出反例，未运行模型／引擎
 
 # WP3：3D资产路线、原生低模与第二次修改
 
@@ -215,3 +215,86 @@ Shards Asset Toolkit 固定 **94bd478782d9629586d5d1138d2172f0337a7745**，最�
 - [研究] 留存原始请求（几何／纹理版本、seed、质量、PBR、delight）、创建返回的 `data.task_id`、终态结果与采用文件；文档示例没有返回已解析的双版本证明，不能从 `success` 或文件名补造它们。去光照能力不等于实际表面可重新打光，仍验最终材质。
 
 [研究：变化与范围] 这修复正文只选 P1 而未定义纹理的采用缺口；不改 P2 Preview 的候选地位，不将新版纹理宣传当同题质量胜出。没有调用生成／重贴图 API、下载模型或运行引擎。
+
+
+## 11. 装饰改成交互：分件不是运动结构
+
+核实：2026-10-15（UTC+8）。问题限定为“第二次让装饰门可开合，或改变门宽／通道”，不重新排名生成器。[研究]
+
+**改变的选择：** 不只买／生成“多个 mesh”，而是优先已有父子结构、局部连接坐标与运动轨道／关节定义的资产；碰撞独立保留。装饰网格可替换，交互结构先固定。需要自定义尺寸时，选能在几何改变后重建连接坐标的参数化配方；仅整体缩放不能保证通行宽度、门厚、动画及碰撞同时符合玩法。变形角色仍走已有骨架／skin 体系，不从门的刚体动画外推。[经验]
+
+### 11.1 不同交付物回答不同问题
+
+|来源与证据|实际可核的交付|采用／撤回判断|
+|---|---|---|
+|Kenney [Modular Dungeon Kit](https://kenney.nl/assets/modular-dungeon-kit)，下载包内标 2.1、CC0；本轮直接解析指定 GLB|`gate-door.glb` 有两个 mesh、父子节点；三条动画通道都写门扇节点 rotation，二进制数据确有变化；`gate.glb` 则是单节点、无动画|✅ 若画风／尺寸合适，可作门的结构起点；不能从同包名字或网页 Animation 标签认定每件资产都有运动结构，也未证碰撞已适配|
+|不同作者 Quaternius [Medieval Village MegaKit](https://quaternius.com/packs/medievalvillagemegakit.html)，本轮读交付说明|作者承诺网格化拼接；自定义碰撞及引擎工程列在 Source 交付，免费模型不是同一范围|👀 选现成方案仍核下载档位；本轮没有取得该 Source 文件，不把商店承诺计为第二份实际运行／文件验证|
+|Meshy [Auto Split API](https://docs.meshy.ai/en/api/auto-split)，商业端点文档|按可打印部件分割，切面封闭并加固薄区，移除塌陷碎片；保对象的格式可分件，但不保输入纹理|🧪 分件可供后续处理，不能据此代替准确运动轴、限位、碰撞或原拓扑；这是该打印功能边界，不是否定 Meshy 所有游戏资产路线|
+|Infinigen 固定源码，见下|专门关节路径从元数据生成连接关系、轴／范围，视觉和碰撞分开（碰撞须非 `visual_only`）；整场景路径不含 articulation|👀 借已有参数化关节配方；固定 URDF 惯量实现存在静态类型问题，不原样推荐直接执行，也不默认引入整套机器人模拟栈；“同一个工具／同一个扩展名”不保证同样的结构|
+
+表中 Kenney 为本轮产物静态复算；Infinigen 为代码／文档核查；Quaternius 与 Meshy 为作者契约，均不是引擎实测。[一手／研究]
+
+### 11.2 Kenney：不是用节点名称猜门会开
+
+[公开下载 ZIP](https://kenney.nl/media/pages/assets/modular-dungeon-kit/7bed87605b-1771926065/kenney_modular-dungeon-kit_1.0.zip) 的 URL 虽含 1.0，内部 `License.txt` 明写 Modular Dungeon Kit (2.1)，创建日期 2026-02-24，CC0，允许商业使用。以内容和 hash 固定本轮样本，不由 URL 猜版本。[一手]
+
+- ZIP：6,886,434 bytes；SHA-256 `dd0aa6776db8912283cdca60161dee6a8839bbda3558eba2ea501419eb5b4623`
+- `Models/GLB format/gate-door.glb`：SHA-256 `902ac6617d56143799aa2ca73d1113838cb09a9ebc7cbd7c7eeb785504099fd8`
+- 根节点引用 mesh 0，子节点 1 引用 mesh 1，局部位移约 `(1.5, 0, 0)`；三条通道的 target 都是节点 1 的 rotation
+- `open` 为 30 个采样点、时间 0–1 秒；`close` 同为 30 点／0–1 秒；`open-and-close` 为 60 点／0–2 秒。这里“点”是 sampler 样本数，不推断引擎帧率
+- open 的首／末四元数约 `(0, 0, 0, -1)` 与 `(0, 0.76604444, 0, -0.64278764)`；close 顺序相反。读取 BIN accessor，而非仅看动画名字
+- 门扇 POSITION 实值的局部 x 范围 `[-3, 0]`，支持在一侧原点附近转动的结构候选；**不单凭边界确认铰链装配正确**。文件只声明 `KHR_texture_transform` 扩展，不能凭 GLB 的这些字段认定已经交付目标引擎 collider
+
+[一手：本轮标准库解析] 可复核代码如下；输入是上述 ZIP，不运行包内文件，不安装依赖：
+
+```python
+import hashlib, json, struct, zipfile
+from pathlib import Path
+
+raw = Path("kenney_modular-dungeon-kit_1.0.zip").read_bytes()
+print("zip", len(raw), hashlib.sha256(raw).hexdigest())
+with zipfile.ZipFile(Path("kenney_modular-dungeon-kit_1.0.zip")) as z:
+  print(z.read("License.txt").decode())
+  b = z.read("Models/GLB format/gate-door.glb")
+assert struct.unpack_from("<4sII", b) == (b"glTF", 2, len(b))
+size, kind = struct.unpack_from("<II", b, 12)
+assert kind == 0x4E4F534A
+j = json.loads(b[20:20 + size])
+bin_size, bin_kind = struct.unpack_from("<II", b, 20 + size)
+assert bin_kind == 0x004E4942
+blob = b[28 + size:28 + size + bin_size]
+
+def values(index):
+  a = j["accessors"][index]
+  assert a["componentType"] == 5126 and "sparse" not in a
+  v = j["bufferViews"][a["bufferView"]]
+  assert v["buffer"] == 0
+  n = {"SCALAR": 1, "VEC3": 3, "VEC4": 4}[a["type"]]
+  start = v.get("byteOffset", 0) + a.get("byteOffset", 0)
+  stride = v.get("byteStride", n * 4)
+  return [struct.unpack_from("<" + "f" * n, blob, start + k * stride)
+          for k in range(a["count"])]
+
+print("glb", hashlib.sha256(b).hexdigest(), "nodes", j["nodes"])
+for anim in j["animations"]:
+  for channel in anim["channels"]:
+    sampler = anim["samplers"][channel["sampler"]]
+    t, q = values(sampler["input"]), values(sampler["output"])
+    print(anim["name"], channel["target"], len(t), t[0], t[-1], q[0], q[-1])
+for p in j["meshes"][1]["primitives"]:
+  xyz = values(p["attributes"]["POSITION"])
+  print("door x", min(v[0] for v in xyz), max(v[0] for v in xyz))
+```
+
+局限：未做动画播放、碰撞检测、穿门测试、改宽后二次导入；数字确认的是交付文件内的数据，不是零手修游戏效果。[研究]
+
+### 11.3 Infinigen：有明确关节的路径，也有丢关节的路径
+
+固定已有版本 [`a0d1a0dd5644904d3cb921ff24260160ac06ae08`](https://github.com/princeton-vl/infinigen/tree/a0d1a0dd5644904d3cb921ff24260160ac06ae08)，主 BSD-3-Clause／标明部分 CC0 的范围沿 §4 与 WP1，不推完整依赖栈已清权。本轮新增阅读：[关节定义](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/docs/source/UsingJointNodes.md)、[URDF exporter](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/src/infinigen/core/sim/exporters/urdf_exporter.py)、[模拟导出说明](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/docs/source/ExportingToSimulators.md)。[一手]
+
+- 关节节点明确 parent／child、child origin 作为连接位置、轴和范围；父端位置相对父几何 AABB 中心。因此改变形状／尺寸后要重新核连接位置，不能把旧局部坐标当不变量。作者明确关节化以后不再变形拓扑，只允许平移／旋转。[一手]
+- `_populate_links` 写 `visual`，仅在 `not visual_only` 时写 `collision`；外层 `export` 的 `visual_only` 默认是 True，不能只凭选择 URDF 就假定有碰撞。它读取关节属性并生成相对 origin；`_create_joint` 写 parent／child、axis、limit，把 HINGE 映射为 revolute、SLIDING 映射为 prismatic。多关节 body 在此 URDF 路径会抛 NotImplementedError，不从 GUI 支持外推所有导出都支持。[一手：固定代码约 138–210、219–255、289–336 行]
+- **固定实现并非可直接采用的完整管线。** 独立复核发现 URDF exporter 第 162 行将 `mass` 赋为 XML Element，第 170 行却计算 `mass / t.volume`。本轮只用标准库复算 `xml.etree.ElementTree.Element("mass") / 1.0`，得到 `TypeError`；未运行 Blender／trimesh 完整调用，也未验证修复。该问题不影响代码中存在关节／碰撞定义的证据，但撤回直接运行此固定导出器的建议。[一手／研究]
+- 同版文档反而明确：整场景 USD exporter 不含 articulation；没有 `solve_state.json` 时，所述 IsaacSim 场景导入所有对象均为静态 collider。单资产模拟路径和整场景路径不可互换。[一手]
+
+这给出可复用机制，而非另一套需自建的框架：先把活动件与固定件及其连接定义放在结构源中，再附外观；如果只改外观，不重生运动结构。角色蒙皮不是这些刚体关节，不能拿该机制解决衣服变形。[经验] 没有运行 Infinigen、第三方依赖或任何引擎；Unity／Unreal 的实际导入适配仍待后续获准验证。[研究]

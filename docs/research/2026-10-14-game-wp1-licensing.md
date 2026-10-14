@@ -150,6 +150,7 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 核实2026-10-14 UTC+8。以下[一手]许可与[研究]采用范围配套[WP3](2026-10-14-game-wp3-3d-assets.md)，不将质量建议扩大到全站资源。
 
 - [Kenney Nature Kit](https://kenney.nl/assets/nature-kit)：指定资产CC0，无生成权重；保留具体下载包许可，不能只引用另一包Generic Items。
+- [Kenney Modular Dungeon Kit](https://kenney.nl/assets/modular-dungeon-kit)：2026-10-15（UTC+8）读取官方 ZIP 内 `License.txt`，明确 2.1、CC0 及商业使用；下载 URL 中 1.0 不作为版本依据。[WP3 §11](2026-10-14-game-wp3-3d-assets.md#11-装饰改成交互分件不是运动结构)保存下载来源、包与门 GLB 的 SHA-256；不将此许可扩展为其他包或引擎兼容保证。[一手]
 - [Quaternius Universal Base Characters](https://quaternius.com/packs/universalbasecharacters.html)：指定包CC0商业可用；免费Standard和完整Source/引擎交付不是同一获取范围，额外动作逐项核。付费获取不改变页面所声明的CC0资产权利。
 - [Poly Haven许可](https://polyhaven.com/license)：模型/纹理/HDRI资产CC0，网站文案、商标与展示渲染不包括在内。[API页](https://polyhaven.com/our-api)2026-07-18更新为含商用免费，使用其服务的产品有来源标示等条件；下载后资产权利与持续API接入义务分开，不将页面读取扩大为任意抓取授权。
 - 处理库主许可分别核对：[meshoptimizer b233043](https://github.com/zeux/meshoptimizer/blob/b2330430776a95a1545f03fc7bf16927f8cadc59/LICENSE.md)、[xatlas f700c7](https://github.com/jpcy/xatlas/blob/f700c7790aaa030e794b52ba7791a05c085faf0c/LICENSE)、[CoACD 131010c](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/LICENSE)均MIT，无模型权重；分发保留通知，输入网格和第三方依赖另核。
