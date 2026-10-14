@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加；三，连续修改仍然可靠
-改变的建议：按不可猜的契约与可观察偏好选择短规格、测试或样品；只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回。[研究]
-证据摘要：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文和 Faros 指标核对。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
+改变的建议：按不可猜的契约与可观察偏好选择短规格、测试或样品；只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回；先确认真实入口、计费和成功报告，再考虑 CI 门槛。[研究]
+证据摘要：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
 
 # 实现决策与评审：让原需求和运行反馈纠正计划
 
@@ -243,3 +243,28 @@ Anthropic 的 [Finding your unknowns](https://claude.com/resources/articles/a-fi
 **未采用的近期证据。** [Vibe Coding: An experiment with test-driven development](https://link.springer.com/article/10.1007/s10664-026-10950-z)于 2026-10-09 发布；已读 §3–7，研究在人类／协作、GPT-3.5 全自动与 MGX（GPT-5／Sonnet 4）间改变模型和交互方式，使用两个无需复杂 API／类结构知识的简单任务，并非同模型只改变先测／后测的对照。故不据摘要的工作流优劣建议扩大 07 的 TDD 采用范围；本轮未取得并复算工件。**[研究：排除理由]**
 
 **撤回与下一证据。** 若行为已明确且现有检查充分，撤掉额外访谈／规格／重复测试；若样品不能让人作出选择，先查参考与判据。遇到跨组件兼容、不可逆数据或外部交付约束，不能用“探索”跳过必要决定。进一步提高工作流推荐强度，需要同任务、同模型与预算的顺序对照及真实后续修改成本，不能由一个成功工具或新论文标题替代。**[经验：采用条件；研究：证据缺口]**
+
+
+## 评审入口、费用与完成契约
+
+核实：2026-10-14（UTC）。主线二／四；改变 09 §2：云端命令不等于云端实际执行，运行成功不等于无缺陷。以下核查公开官方原文及既有固定 Action 源码，未安装或运行客户端、模型、托管评审、付费 CI，也未新增检查器。**[研究：范围]**
+
+### 新证据如何改变选择
+
+1. [Code Review 的云端升级说明](https://code.claude.com/docs/en/code-review#escalate-to-ultrareview)明确：ultra 不可用时退回本地。故要求云端多 Agent 的任务，应看实际会话执行位置；有结果本身不能确认采用了预期能力。普通本地不读 `REVIEW.md` 是已有证据，本次只是移到入口，不算新发现。**[一手；研究]**
+2. [Ultrareview CLI 契约](https://code.claude.com/docs/en/ultrareview#run-ultrareview-non-interactively)把完成与发现分开：退出 `0` 可带发现，`1` 是启动／运行／超时失败，`130` 是中断；`--json` 为 `bugs.json`。不能把退出码当质量门槛，也不能套托管的 `normal/nit/pre_existing` schema。超时后远端可能继续，重新执行不是续跑，须防止重复付费。**[一手；研究]**
+3. [托管故障说明](https://code.claude.com/docs/en/code-review#retrigger-a-failed-or-timed-out-review)与[输出说明](https://code.claude.com/docs/en/code-review#check-run-output)共同反证“neutral 即有效结果”。正文因此撤回只比较 `normal > 0` 的直接门槛建议，补充应用身份、当前 head SHA、完成状态和 schema 条件；这些是本仓推导的接入要求，不冒充已发布或已测的检查器。**[一手；研究]**
+
+### 仍成立的机制与反证
+
+- `REVIEW.md` 更可靠并非原文没有依据：[官方确实作此主张](https://code.claude.com/docs/en/code-review#what-you-can-tune)，理由是直接传给相关评审 Agent。本次保留机制和厂商归属，只撤回可将它理解为强制保证的措辞；本轮没有遵循率对照。ultrareview 文档未在所读章节承诺同样文件加载路径，因此不从名称或多 Agent 架构推断。**[一手：厂商说明；研究：边界]**
+- [Claude Action](https://code.claude.com/docs/en/github-actions)是 workflow／SDK 集成，支持 API key 和订阅 OAuth；不能借托管服务的价格、读取规则或验证流程为任何 Action 提示担保。[Codex GitHub](https://learn.chatgpt.com/docs/third-party/github)明确使用适用目录的 `AGENTS.md`；[CLI](https://learn.chatgpt.com/docs/codex/cli)另有本地 review。把规则放对位置仍不代替测试／准入策略。**[一手；研究]**
+- 重读 [Codex Action 固定 action.yml](https://github.com/openai/codex-action/blob/bdf19a4a223ec2549a3e2274a0cf61556bc07675/action.yml)，仍按既有 runner／权限建议使用；固定 Action 不等于固定 CLI，不能把普通 exec 的产物误认成上述托管报告。未运行此 Action，不新增能力或净收益结论。**[一手：固定源码；研究]**
+
+### 撤回与页级剩余缺口
+
+**[经验：采用判断]** 接入前还不能区分运行失败、报告失效与有无发现时，只用提示型评审；可控且重复的窄任务才进入自动化。规则无新增有效发现就精简，托管／ultra 的额外费用不能混入“订阅内免费”比较。没有证据支持所有入口同能力，也没有证据支持云端一律比本地值得。
+
+09 本轮维持 **L2**：这次补齐主要采用入口，但全页仍有未在本轮交叉核验的调查数字、模型效果转述、第三方服务与配置审计命令；正文头部保留历史核实范围。下一步应核对或删去仍影响决策的这些条目，不重复 CRBugBench、厂商相关性或再造评审评测平台。未实测本身不是 L3 的否决条件，缺的是全页关键事实的一致、可追溯核对。**[研究：成熟度判断]**
+
+**验证记录。** 独立 reviewer 以新上下文核对这两文件的 diff、官方原文和固定 Action 源码，未发现会改变采用选择的事实问题，认可维持 L2。完整 `python3 scripts/check_offline.py` 14 阶段及 `git diff --check` 通过；这些只验证本仓离线套件和补丁，不证明评审服务或模型效果。**[经验：执行记录]**

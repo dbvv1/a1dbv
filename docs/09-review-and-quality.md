@@ -1,6 +1,10 @@
 # 09 · 评审与质量
 
-> 核实时间：2026-10-11（UTC+8）；HumanLayer 推论于 10-12 定点复核；10-13 补充条件评审与原需求的输入交接；10-14（UTC）以受控评审、现场研究及 Crossplane 实际收窄评审的记录收紧分层建议，另核 Faros Q2 公开详解的指标口径；其余未重验。 2026-10-14（UTC+8）补核 A Few Pages of Markdown v2 分组与时间边界；10-15 补核公开包换算边界。
+> 核实时间：2026-10-11（UTC+8）；HumanLayer 推论于 10-12 定点复核；10-13 补充条件评审与原需求的输入交接；10-14（UTC）以受控评审、现场研究及 Crossplane 实际收窄评审的记录收紧分层建议，另核 Faros Q2 公开详解的指标口径；其余未重验。 2026-10-14（UTC+8）补核 A Few Pages of Markdown v2 分组与时间边界；10-15 补核公开包换算边界；2026-10-14（UTC）补核 §2 本地／云端入口、读取规则、计费及自动门槛契约，未运行客户端或托管评审。
+
+## 30 秒结论
+
+✅ 先保留确定性检查和按风险的人审；写代码时需要第二视角，先用原生本地评审。🧪 只有具体漏审风险值得额外核查费用时，再选云端多 Agent 或交叉模型；同名命令、成功退出和空评论都不能证明完成了同一种评审。规则应放到该入口实际读取的位置。额外层只重复发现、制造无效修改或费用失控时，收窄／撤回。**[研究：采用判断]**
 
 ## 1. 质量数据：AI 代码的真实代价
 
@@ -26,8 +30,9 @@
 ### 本地 / 会话内
 | 手段 | 说明 | 评级 |
 |---|---|---|
-| `/code-review`（Claude Code 内置） | 在新鲜上下文里审当前 diff 找 bug；`--max-findings` 控制数量；v2.1.290 起中等 effort 下对 Opus 5.5 / Sonnet 5.5 也会报告清理类问题和违反 CLAUDE.md 约定的问题 | ✅ |
-| `/code-review ultra` / `claude ultrareview` | 云端多 Agent 深度评审，会验证发现的问题；CLI 形式可放进 CI | 🧪 |
+| `/code-review`（Claude Code 内置） | 本地评审，按正常用量计费；读 `CLAUDE.md`，不读 `REVIEW.md`。默认后台独立上下文；覆盖还随模型、effort 变化，并非只报 bug | ✅ 定向使用 |
+| Codex `/review` | 本地选择未提交改动、某次提交或相对基线；报告发现，不改工作树；认证可选 ChatGPT 或其他支持方式，不能统称为仅订阅入口 | ✅ 定向使用 |
+| `/code-review ultra` / `claude ultrareview` | 云端多 Agent，需 claude.ai 认证，正常本地用量之外计费；先确认实际启动云端及评审基线，CI 完成条件见下文 | 🧪 高风险变更 |
 | `/security-review`、`security-guidance` 插件 | 安全审查；后者在编辑时就提示 9 类常见风险 | 🧪 |
 | `/simplify` | 只看复用、简化、效率，不找 bug | 🧪 |
 | 自定义评审子 Agent | 已有明确的漏审类型或复杂变更需要独立检查时使用（模板：[code-reviewer](../templates/generic/.claude/agents/code-reviewer.md)） | 🧪 按风险试用 |
@@ -37,16 +42,23 @@
 
 Anthropic 给 Opus 5.5 的评审提示：“Review the diff on this branch against main. **List only problems you'd block the merge for.** For each one, give the file and line, why it's wrong, and how to show it fails.” 有测试者反馈，Opus 5.5 在最低 effort 下找到的 bug 比 Opus 5 在高 effort 下还多，误报也更少 **[一手]**。
 
+本地入口依据：[Claude 评审文档](https://code.claude.com/docs/en/code-review#review-a-diff-locally)、[Ultrareview 比较](https://code.claude.com/docs/en/ultrareview#how-ultrareview-compares-to-code-review)、[Codex CLI](https://learn.chatgpt.com/docs/codex/cli)。**[一手：2026-10-14 UTC]**
+
 ### PR / CI
 | 工具 | 说明 | 评级 |
 |---|---|---|
-| [Claude Code GitHub Action](https://github.com/anthropics/claude-code-action) | 在 PR 或 Issue 中 `@claude` 触发；也能做自动评审 | 🧪 |
-| Claude Code Code Review（托管） | 多 Agent 自动审 PR | 🧪 |
-| Codex `/review`、Codex Cloud | 与 ChatGPT 订阅绑定 | 🧪 |
+| [Claude Code GitHub Action](https://code.claude.com/docs/en/github-actions) | 自有 workflow 内运行 Claude；触发、权限、提示由工作流决定，可用 API key 或订阅 OAuth。不是托管 Code Review 的等价入口 **[一手]** | 🧪 需自管 CI |
+| Claude Code Code Review（托管） | Team／Enterprise 研究预览，需组织启用；单独 usage credits 计费，不能由本地订阅可用推断托管可用 **[一手]** | 🧪 关键 PR |
 | Cursor Bugbot / Security Review / Rollouts | Bugbot 2026-05 改为按次计费（约 1–1.5 美元/次），社区不满；2026-09 新增安全评审和部署监控机器人（Teams / Enterprise） | 👀 |
-| Codex `@codex review` / `@codex security review` | 可以在 AGENTS.md 里写自定义评审规则 | 🧪 |
+| [Codex `@codex review` / `@codex security review`](https://learn.chatgpt.com/docs/third-party/github) | 先连接仓库并配置评审；规则写入根／适用子目录的 `AGENTS.md`。安全评审是额外的定向评审，不能把普通评审无发现当安全验收 **[一手]** | 🧪 |
 | **Codex Security Cloud**（研究预览，2026-09 DevDay） | 扫描已连接的 GitHub 仓库或监控新提交，给出发现、**验证证据**和补丁，再生成草稿 PR | 👀 **[一手]** |
 | CodeRabbit、Greptile、Qodo | 第三方评审服务，都有 Claude Code 官方插件 | 👀 |
+
+### 云端入口和 CI：先辨认完成了什么
+
+**[一手：2026-10-14 UTC，官方契约]** `/code-review ultra` 不可用时可能退回本地评审；需要云端能力时，核对实际运行位置。脚本用 `claude ultrareview` 等待结果，不能用会提前退出的 `claude -p '/code-review ultra'` 代替。前者退出码 `0` 只表示完成，**有发现也返回 0**；`--json` 返回原始 `bugs.json`，不是托管 check 的严重度统计。
+
+🧪 Ultrareview 当前通常每次 5–25 美元 usage credits；Pro／Max 用户每账号有一次性 3 次免费额度，并非周期刷新。CI 超时后云任务可能仍在跑，重试会新建并再次计费。先核查旧任务再重试；子命令由用户直接执行时视为接受计费／条款，缺少 merge base 还可能扩大到整仓，接 CI 前须明确预算和范围，不直接照搬命令。[官方入口与计费](https://code.claude.com/docs/en/ultrareview#run-ultrareview-non-interactively)。**[研究：采用判断]**
 
 ### 重复的窄评审：何时接 Codex Action
 
@@ -71,20 +83,22 @@ Anthropic 在 2026-03 推出 Code Review 时公布了内部使用的数据 **[�
 **机制**（官方文档）：
 - 多个 Agent 各查一类问题，再由一个**验证步骤**对照实际代码行为过滤误报，然后去重、按严重度排序；
 - 严重度分三级：🔴 合并前应修的 bug、🟡 小问题、🟣 这次 PR 之前就存在的 bug；
-- check run 永远是中性结论，**不会阻止合并**。要拿它做合并门槛，就在自己的 CI 里解析 check run 输出末尾的 JSON（如 `{"normal": 2, "nit": 1, "pre_existing": 0}`），`normal` 大于 0 就拦下。
+- check run 为 neutral，失败／超时也如此；不能靠它的结论直接阻止合并。官方提供末尾 `bughunter-severity` JSON，`normal` 是 Important 数量。**[一手]**
+
+**若确需门槛 [经验：设计条件]**：先验证报告来自预期应用、对应当前 PR head SHA 且评审已成功完成，再校验统计字段及类型，最后按团队确定的严重度阈值处理。待完成、失败、额度跳过、缺失／解析失败／过期报告都转人工或保持门槛未通过，绝不补成零。自己的门槛检查须另设为 required check；`normal > 0` 是待处理发现，不是已独立证明的 bug。若无法可靠辨认成功报告，先保留提示型评审。[官方输出与失败语义](https://code.claude.com/docs/en/code-review#check-run-output)。
 
 **一个旁证**：Intercom 自动批准 19% 的 PR，由破坏性变更导致的停机时间下降了 35%（Anthropic 博客转述，**[一手：厂商自述]**）。
 
 **怎么看这些数字**：
 - 它们是“验证后再报告”的内部使用信号；“被标为错误不到 1%”缺少完整独立判定的分母，不能直接当成整体误报率、精确率或召回率；
 - 但都是厂商自己的数据。“实质性意见比例”衡量的是覆盖面，不等于逃逸缺陷减少了多少；
-- 每次 15–25 美元，在“每次推送都评审”的模式下成本会成倍增加。小团队可以先用本地 `/code-review`（订阅内）加关键 PR 手动 `@claude review`。
+- 15–25 美元是平均范围而非报价上限；逐 push 会累加。先用本地正常用量评审，符合托管资格且启用服务时，才对关键 PR 手动 `@claude review`。当前裸命令只触发一次，`always` 才订阅后续推送；fork PR 不会因 `always` 自动跟随后续推送。**[一手：2026-10-14 UTC 官方文档；研究：成本选择]**
 
 ### 用 REVIEW.md 调教评审
 
-Code Review 会读两个文件 **[一手：文档]**：
+托管 Code Review 会读两类文件；不要把此契约推广到本地、Action 或 ultrareview **[一手：文档；研究：范围边界]**：
 - `CLAUDE.md`：新引入的违规按 🟡 报告。如果改动让 CLAUDE.md 的某条描述过时了，也会提示更新文档；
-- `REVIEW.md`：只用于评审，直接交给查找和验证问题的 Agent，**比写在长 CLAUDE.md 里更能稳定生效**。
+- 根目录 `REVIEW.md`：给查找、验证及报告阶段使用。官方称这比长 `CLAUDE.md` 更可靠；这是厂商对输入机制的说明，**不是已测的遵循率或强制执行保证**。
 
 官方总结的高效写法：
 
@@ -100,7 +114,7 @@ Code Review 会读两个文件 **[一手：文档]**：
 
 REVIEW.md 也要短：越长，关键规则越被稀释。本仓库提供了一个起点：[templates/generic/REVIEW.md](../templates/generic/REVIEW.md)。
 
-> 注意：本地的 `/code-review` 读 CLAUDE.md，**不读 REVIEW.md**；`--fix` 的改动在后台完成，`/rewind` 撤销不了，要用 git 回退。
+> 注意：后台 `--fix` 修改不在会话 checkpoint 内，须用 git 回退；前台运行的修改可随 `/rewind` 撤销。是否读规则与是否执行规则须分开核验。
 
 ### 按风险选择评审层，不默认逐层叠加
 
@@ -110,7 +124,7 @@ REVIEW.md 也要短：越长，关键规则越被稀释。本仓库提供了一�
 | 1. 作者自查 | 推送前 | 先对照需求、diff 和现有测试；仍有具体风险时调用原生评审 | 实现遗漏与尚未覆盖的行为 |
 | 2. 额外 Agent 评审 | 已有检查仍漏掉某类问题，且新增发现值得人的核查投入时 | 先比较单 Agent 的提示调整／原生能力，再试独立或多模型评审 | 目标风险上的新增有效发现；不重复 CI 已报问题 |
 | 3. 人工评审 | 按项目准入与变更风险，合并前 | 按 [第 1 节](#1-质量数据ai-代码的真实代价)看设计、重复、错误处理及测试；先自行确认关键路径，再核对 AI 意见 | 需求取舍、设计与未被建议覆盖的风险，不只批准 AI 列出的项目 |
-| 4. 抽样复盘 | 每周或每月 | 抽查已合并的 AI PR、AI 评审漏掉的线上问题 | 校准前三层：把漏网的问题写进 REVIEW.md 或测试 |
+| 4. 抽样复盘 | 每周或每月 | 抽查已合并的 AI PR、AI 评审漏掉的线上问题 | 校准前三层：把漏网的问题写进实际入口读取的规则文件或测试 |
 
 **采用判断 [研究]**：新增评审先证明能补已有检查的缺口，不以评论数量证明收益。CRBugBench 的同模型比较中，单评审调整提示可比五候选集成得到相近的历史缺陷检出率，代价更低；但收益随模型变化。另一个人工受控实验观察到 AI 意见会集中人的注意力，未检出审查时间收益。因此高风险人工检查保留自己的范围，额外 Agent 只作补充。**局限**：这些研究没有证明当前 Codex／Claude 在你的仓库优于现有测试加定向人审；现场评论被采纳或随后改代码也不等于修对 bug。[比较、人的负担与边界](research/2026-10-12-baml-and-review.md#额外评审的增量与人的负担)。
 
