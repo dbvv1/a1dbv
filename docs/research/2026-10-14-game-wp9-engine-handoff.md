@@ -1,11 +1,12 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：§10 新增官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
 ## 当前结论摘要（2026-10-14 UTC）
 
+- **✅ 官方 Unity CLI／MCP 按客户端能力选，不当故障回退**；同一 Pipeline 未加载时先修复目标工程，异步启动与桌面截图回退都不算验收通过，见 §10。[一手／研究]
 - **✅ 已有工程不为 Agent 熟悉度或文本格式迁移引擎**；先补所需状态读取与验证。三位开发者的迁移记录及官方接口反证见 §9，不构成模型能力排名。[一手／研究]
 - **✅ 复用已有 importer／Editor API**；只在缺连接时补 CLI／MCP，不默认安装全栈。身份、子资产语义和下游行为分开验收。[经验]
 - Unity 官方旧 AI Assistant MCP 已弃用；`unity mcp` 仍支持。所查 Coplay 同名导入只新增，move 返回值存在源码层潜在误报，均未实测。[一手／研究：§1–2]
@@ -261,3 +262,38 @@ Epic 5.8 Python 单类页读取失败，已读同版本 C++ API；未读完整�
 不采用：根据没有同题证据的模型熟悉度排名迁移；只因 `.tscn` 或全部源码可读就承诺低成本维护；为 Agent 批量改写现有蓝图、MonoBehaviour 或内容资产。[研究／经验]
 
 重新评估条件：原引擎存在影响交付的具体阻塞，候选在目标平台和代表性资产／UI／物理／存档流程上有可核查优势，并能承担迁移和后续维护。当前只预注册后续验证；未安装、运行引擎／模型、改动游戏工程或测量迁移收益。[经验／研究]
+
+
+## 10. 入口可调用不等于编辑与验证闭环
+
+2026-10-14 UTC 补核；改变 01 §2.1 与 unity/01 的采用方式，不全量重核各引擎工具表，也不重复 §9 迁移判断。[研究]
+
+### 10.1 官方 Unity：共用依赖与不等价的回退
+
+[官方迁移契约](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)区分管理 Editor 版本与控制运行中 Editor：后者依赖 Unity 6.0 LTS+ 的 Pipeline。能可靠执行 shell 的 Agent 直接用 CLI；不能时用其 MCP，并非另一个独立恢复后端。[一手]
+
+固定 [`unity-agent-plugin@cf6b2da`](https://github.com/Unity-Technologies/unity-agent-plugin/blob/cf6b2da24e424b0a60d560a57f39f676cb6f79f3/skills/unity-cli/references/integration-advanced.md)的以下契约本轮已阅读全文相关段落：
+
+- **MCP**：服务器在没有 Editor 时也能启动；Editor 添加命令后才出现对应工具，支持目录变更通知。`capture_game_view`／`capture_scene_view` 在 Editor 主线程不及时响应（如 modal）时可回退 OS 整桌面截图，结果附说明。这既改变截图的证据对象，也可能包含其他窗口内容；应核回退标记，保护无关隐私，不把收到图片视为游戏在推进。[一手／经验]
+- **Safe Mode**：项目编译错误使 Pipeline 不加载，`command`、`list`、`status` 与 MCP 均不可连接。恢复是依据窄范围 Editor 日志修复 `.cs`，再恢复 Editor 并确认可达；并非失联的 Pipeline 自己执行修复。资产修改仍暂停。[一手／经验]
+- **状态与权限**：domain reload 后可等目标实例 ready；沙箱可能遮蔽真实运行中的实例，固定 Skill 明确反对静默另起 headless Editor 来近似原任务。本文不采纳任何绕过访问限制的建议；有权限阻塞就由操作者处理。[一手／经验]
+- **扩展边界**：项目可注册静态 `[CliCommand]`，重新编译并 `list` 确认；不要求等待 CLI 发版。只有任务确实缺某个操作、且能用目标版本 Editor API 读回结果时才补窄命令。工具声明、文档存在不证明编译后已注册或该工程能用。[一手／经验]
+
+这些是固定官方 Skill 的契约阅读，CLI／Pipeline 二进制实现和真实 Editor 未运行。第三方 MCP 有自己的包、transport 与生命周期，不能从这里推出它们共享全部故障模式。[研究]
+
+### 10.2 beta.13：修复启动呈现，不等于测试自动闭环
+
+[CLI 发布说明](https://docs.unity.com/en-us/unity-cli/release-notes)顶部仍是 2026-10-07 的 1.0.0-beta.13。本轮只新增两个有关采用的事实：`status` 对阻塞对话框给出 `STATUS_BLOCKED_BY_DIALOG`／`blockedBy`；异步 `unity command run_tests --async_tests true` 启动时不再把尚未完成的任务显示成“0/0 passed”，而提示轮询 `test_status`。这是维护方修复声明，不是本仓库复现旧缺陷或验证新版本。[一手]
+
+采用：区分命令受理、作业终态与测试断言；取得终态后核实际执行数量、模式／筛选和失败／跳过范围。外层成功或零测试都不足以完成预期验收。这里的异步 Editor 命令不是批处理 `unity test`，不能直接套它的退出码判定。[经验]
+
+### 10.3 不同实现对照：Coplay 的等待超时仍可返回 running
+
+本轮只读同一既有快照 [`CoplayDev/unity-mcp@aa5fc638`](https://github.com/CoplayDev/unity-mcp/tree/aa5fc638d623f56178d50329d9ad8c541a57fe66)，不新增桥的采用推荐。[研究]
+
+- [`Server/src/services/tools/run_tests.py`](https://github.com/CoplayDev/unity-mcp/blob/aa5fc638d623f56178d50329d9ad8c541a57fe66/Server/src/services/tools/run_tests.py)：`run_tests` 返回 `job_id`；`get_test_job` 在 `succeeded`／`failed`／`cancelled` 才结束为终态，`wait_timeout` 到期也会返回当前 `GetTestJobResponse`，而不是自动判测试失败。调用成功与 `data.status`、`result.summary` 必须分开读。[一手：源码]
+- [`test_test_job_focus_policy.py`](https://github.com/CoplayDev/unity-mcp/blob/aa5fc638d623f56178d50329d9ad8c541a57fe66/Server/tests/test_test_job_focus_policy.py)使用 `AsyncMock` 替代真实 transport／桌面激活；包含终态取消 nudge、晚到 running 回复不重建预算、外部轮询与等待路径共享策略等用例。它证明上游有这些合成契约检查的源码，不证明真实 Editor 不会卡住，也不能称本轮已跑过测试。[一手／研究]
+
+由两种实现可支持的共同建议仅是：先读所选工具的完成协议；等待超时／连接异常时保留未决状态并核原作业，不直接再启动一份测试。缺最终结果时回到已有可观察的测试入口，或报告尚未验证；不把官方工具或社区测试数量当成可无人值守闭环的证据。[经验]
+
+本轮未安装客户端、运行引擎／模型、激活桌面、执行上游测试或测量采用收益；只增加官方契约与固定源码／测试阅读。后续真实验证仍按当前阶段预注册，不在此执行。[研究]

@@ -1,6 +1,6 @@
 # Unity AI 工具链
 
-> 核实时间：2026-10-05；WP9 的官方接入、二次导入契约于 2026-10-14（UTC+8）复核。
+> 核实时间：2026-10-05；WP9 的官方接入、二次导入契约于 2026-10-14（UTC+8）复核；官方 Pipeline 故障回退与异步验证边界于 2026-10-14 UTC 补核。
 > 依据：克隆并阅读 [Unity-Technologies/unity-agent-plugin](https://github.com/Unity-Technologies/unity-agent-plugin) 源码（33 个 Skill，约 7400 行 SKILL.md）；读了 [Unity CLI 更新日志](https://docs.unity.com/en-us/unity-cli/release-notes)和 [Unity MCP 官方博客](https://unity.com/blog/unity-ai-mcp-how-to-get-started) **[一手]**。
 
 ## 1. 官方方案
@@ -50,6 +50,10 @@ unity build --target StandaloneWindows64 --output-path ./Build/Game.exe --format
 | **Play 模式不等于运行正常**：失去焦点的编辑器可能停在第 1 帧，`unity status` 仍显示 playing，截图可能是冻结的画面 | 按官方 `playmode-verification-loop` 流程：确认帧在推进 → 截图 → 读 Console → 用 `eval` 实时调整 |
 | 沙箱中的 Agent 可能看不到正在运行的编辑器 | 不要据此判断编辑器没开 |
 | CLI 版本旧，会出现像是“文档写错了”的失败 | 查官方 release notes，记录 CLI/Pipeline/Editor 版本并受控升级，不把最新版视为资产兼容保证 |
+
+**✅ CLI／MCP 按客户端能力二选一，不当作故障回退。** 官方 CLI／MCP 的运行中 Editor 操作共用项目 Pipeline；Safe Mode 导致包未加载时，换 `unity mcp` 仍无法驱动它，应由已有文件工具／操作者依据编译日志修复 `.cs` 后恢复连接。已有原生 Editor 脚本满足任务就继续用；这不推断第三方桥也共用同一故障域。[一手／经验]
+
+**测试与截图须读结果。** 官方 beta.13 已声明修正异步 `run_tests` 启动时误显示“0/0 passed”，启动后仍须按 `test_status` 取得终态与实际执行范围；不要把这条异步 Editor 命令和上方 `unity test` 的退出码混为一谈。`unity mcp` 的视图截图在主线程不响应时可回退为整个桌面，必须核返回说明与其他窗口隐私，不能当指定 Game View 已验证。来源与限定见 [WP9 §10](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md#10-入口可调用不等于编辑与验证闭环)。[一手／研究]
 
 ### 1.2 Unity 官方 Agent 插件 ✅
 
