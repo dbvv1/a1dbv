@@ -1,6 +1,6 @@
 主线：三
-改变的建议：20/22/24：Regression来源分类≠新增退化；区分会话/规格/反馈条件并先核判定器
-新证据：固定runner/题库/第三方审计核查；原断言24排列和原复制函数实测；无原campaign绑定/模型成绩重算
+改变的建议：20/22/24：Regression来源分类≠新增退化；22 补充大补丁≠继承自身交付、测试数≠旧契约覆盖
+新证据：固定runner/题库与局部探测；SWE-EVO 论文、固定评估器和48条公开数据只读复核；无模型成绩重算
 
 # 连续开发评测：SlopCodeBench 测到了什么，哪些结论仍不能下
 
@@ -90,3 +90,60 @@ A/F9 开头概括每轮重跑全部先前测试，但官方开关允许例外。
 **下一步有价值的证据**是同一 campaign 的固定规格／题库版本、可见输入、逐测试结果和代码快照。拿不到这些，就无法量化上述问题解释了多少失败，也不能据此否定 xhigh 或宣传某个 Skill 能解决。后续先查公开产物是否补齐，不重新整理同一排行榜，不因局部评测问题无限扩建本仓库的检查器。
 
 本轮支持更新评估方法、跨会话建议及长期研究队列；它不直接证明某种架构、记忆或反馈机制提升了真实模型表现。
+
+## 7. SWE-EVO：大补丁与连续交付的边界
+
+> 核实：2026-10-15（北京时间）。只读论文、源码和公开数据，并用标准库复核集合／数量；没有安装依赖、运行模型、Docker、上游测试或重算排行榜。**[研究：范围]**
+
+**✅ 借鉴发布差分任务，⛔ 不将其成绩代替第二次、第五次修改验收。** 本轮改变的是 22 的任务选择：连续开发必须继承 Agent 自己上一次交付的状态，并保留仍有效的旧契约检查；每次重新从人工版本开始，测不到自己引入的设计取舍如何影响下一需求。大补丁任务仍能检验多文件协调，不能因此说它没有价值。**[研究：采用判断]**
+
+### 7.1 固定材料与问题定义
+
+- **论文**：[arXiv:2512.18470v1](https://arxiv.org/html/2512.18470v1)，2025-12-20，读 §3 构造／指标、§4 设置／分析及局限。§3.1 取两个发布版本的差分，§3.2 给起点代码与发布说明，收一个最终补丁；§4 的 100 次迭代／调用是每实例内预算，不是 100 次已交付需求。多个上游 PR 被聚合成一题，不是 Agent 多次继承自身产物。**[一手：论文；研究：解释]**
+- **实现**：[SWE-EVO/SWE-EVO `9b83d5af943ba7a17567336f5b18239f73960219`](https://github.com/SWE-EVO/SWE-EVO/tree/9b83d5af943ba7a17567336f5b18239f73960219)，提交时间 2026-05-03。重点读下列构造、评估和 SWE-agent 输入路径；不能保证该版本就是论文运行版本。**[一手：源码]**
+- **公开数据**：[Fsoft-AIC/SWE-EVO revision `77310c70d3648d6815f6a7555ecc492bc28c44ec` 的 `SWE-EVO/hf_jsonl/test.jsonl`](https://huggingface.co/datasets/Fsoft-AIC/SWE-EVO/blob/77310c70d3648d6815f6a7555ecc492bc28c44ec/SWE-EVO/hf_jsonl/test.jsonl)，13,251,406 bytes；SHA-256 `a5dc7fccf7d839140e2005b09937e0f83910a61518027ef72d42134542246f87`。48 行，七个项目，其中 DVC 26 行；没有 Django／NumPy，不能照搬 README 的项目例子当作这份数据分布。数据含答案字段不代表 Agent 读到了答案。**[一手：公开数据；经验：只读计数]**
+
+### 7.2 回归判据覆盖什么
+
+[`get_test_directives`](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-bench/swebench/harness/test_spec/python.py#L229-L300)从 gold `test_patch` 的文件名提取执行目标，排除部分非测试扩展和删除文件，再作项目特例处理；[`make_eval_script_list_py`](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-bench/swebench/harness/test_spec/python.py#L414-L475)将这些目标接到测试命令后。不是默认执行仓库全部测试。目标文件内原有测试可以提供大量回归覆盖，但文件外旧契约不能由这些数量保证。**[一手：源码；研究：覆盖边界]**
+
+[`generate_f2p_p2p.py`](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-bench/generate_f2p_p2p.py#L234-L262)比较应用测试补丁后的前／后日志：P2P 要两侧均为 PASSED；F2P 则接受前侧 FAILED、ERROR **或没有该 test ID**、后侧 PASSED。因此当前代码中的 F2P 不都代表曾实际执行并失败的行为；缺失可能来自收集差异，须看原日志才能归因。未取得这些历史日志，不推断其发生比例。**[一手：源码；研究：边界]**
+
+两个数据反例更直接：**[经验：公开 JSON 集合复核；研究：解释]**
+
+1. `iterative__dvc_0.52.1_0.53.1` 有 132 个 F2P、**0 个 P2P**；48 行中只有这一行 P2P 为空，F2P 全非空。[评分实现](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-bench/swebench/harness/grading.py#L206-L244)对空 P2P 返回 1；[Fix Rate 路径](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-bench/evaluate_instance.py#L222-L238)只查 P2P failure 列表为空。该题仍要解决 F2P，不能称为无条件成功；但这里没有 P2P 提供的旧行为保留证据。
+2. Dask `2023.6.0→2023.6.1` 与 `2023.6.1→2023.7.0` 确实相邻：前题 `end_version_commit` 等于后题 `base_commit`，均为 `85c99bc20abc382774cfb6e5bf5f2db76ac09378`。然而前题 105 个 F2P 中，103 个 test ID 不在后题 F2P/P2P 联集中，包括 `dask/bag/tests/test_bag.py::test_map_total_mem_usage`；后题测试补丁只有三份文件，不含这个 bag 测试文件。不能把两题直接串起来就宣称累计回归覆盖。**ID 不在集合不等于行为一定无人覆盖或必然退化**；它说明需要逐项确认旧契约被什么验收替代。
+
+全表 F2P 3,908 个、P2P 38,043 个，平均总数 873.979，吻合论文约 874 的描述；P2P 中位数却为 106.5。这里的意义不是另造排名，而是不能用平均测试数替代每轮保留行为的覆盖。**[经验：只读计数；研究：解释]**
+
+### 7.3 什么是可见输入，什么仍未知
+
+[SWE-agent `from_swe_bench`](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-agent/sweagent/run/batch_instances.py#L170-L191)取 `problem_statement`、`base_commit`、image 和 ID；这份数据没有 `image_assets`，故 extra_fields 为空。该路径没有把 `patch`、`test_patch` 或 `PRs` 注入任务。[默认模板](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-agent/config/default.yaml#L8-L27)呈现 problem_statement，要求修改非测试代码；文字声称已处理测试，并不能证明运行时已经应用目标测试补丁。**[一手：源码；研究：区别]**
+
+[独立评分脚本](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-bench/evaluate_instance.py#L125-L146)读取完成轨迹的补丁，与 gold test_patch 合并后评估。这支持“评分时使用目标测试”，不证明 Agent 执行期间可见目标测试。公开 problem_statement 自带上游 PR／issue 引用；数据还含 gold patch、PR 补丁与目标提交。实际镜像、网络访问、Git 对象保留和完整轨迹未核查，不能宣称完全隔离，也不能指控发生答案泄漏。固定仓库缺少 README 所引用的 OpenHands evaluation 目录，故没有将 SWE-agent 的输入路径外推到该 scaffold。**[一手：源码／数据；研究：验证边界]**
+
+此外，不把当前评分脚本直接当成论文每个分数的复算依据：找不到轨迹的题会在[加载阶段](https://github.com/SWE-EVO/SWE-EVO/blob/9b83d5af943ba7a17567336f5b18239f73960219/SWE-bench/evaluate_instance.py#L131-L147)跳过，最终分母是已加载 instances 数，未必固定 48。评分器的 `test_passed` 接受 PASSED/XFAIL，`test_failed` 接受缺失/FAILED/ERROR；SKIPPED 若被 parser 保留则不进任一列表，不能把输出分数无条件译为“每条都 PASSED”。源码显示这些边界，**没有原日志就不能判断论文运行是否受到影响**。**[一手：源码；研究：解释]**
+
+### 7.4 只读复核方法与采用边界
+
+将上述固定 JSONL 保存为 `test.jsonl`，以下标准库计算只读取文件，不加载评估器、不调用模型：**[经验：本轮已执行同等计算]**
+
+```python
+import hashlib, json, statistics
+from pathlib import Path
+raw = Path('test.jsonl').read_bytes()
+assert hashlib.sha256(raw).hexdigest() == 'a5dc7fccf7d839140e2005b09937e0f83910a61518027ef72d42134542246f87'
+rows = [json.loads(line) for line in raw.splitlines()]
+f = [len(row['FAIL_TO_PASS']) for row in rows]
+p = [len(row['PASS_TO_PASS']) for row in rows]
+print(len(rows), sum(f), sum(p), p.count(0), f.count(0), statistics.median(p))
+by_id = {row['instance_id']: row for row in rows}
+a = by_id['dask__dask_2023.6.0_2023.6.1']
+b = by_id['dask__dask_2023.6.1_2023.7.0']
+print(a['end_version_commit'] == b['base_commit'])
+print(len(set(a['FAIL_TO_PASS']) - set(b['FAIL_TO_PASS']) - set(b['PASS_TO_PASS'])))
+```
+
+输出为 `48 3908 38043 1 0 106.5`、`True`、`103`。没有据此重算成功率、归因模型效果或测试哪种架构更耐改。**[经验：复核结果]**
+
+**给读者的最小改变**：要回答自己的第二次、第五次修改是否可靠，保存上一轮实际交付状态；下一轮从它继续，记录人工修复／参考替换，并检查之前通过且仍有效的契约。测试可保留隐藏部分，不必泄露参考实现；但旧验收删除、改名或换输入时，要说明它已被新契约取代还是仍需覆盖。新需求未通过与旧行为倒退分别报告。若只想比较一次发布差分任务，就采用相应口径，不添加整套连续评测框架。这个增量与前文 SlopCodeBench 的“旧债与新增回归”互补，不替代其真实保留工作区的任务形态。**[研究：采用与停止条件]**
