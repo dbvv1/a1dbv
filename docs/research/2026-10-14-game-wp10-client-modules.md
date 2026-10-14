@@ -277,6 +277,25 @@
 - [研究] **控制器升级验收**：相同关卡对比上／下坡速度、坡顶是否意外腾空、上／下窄台阶是否稳定、旋转平台站位／起跳方向、平台侧挤与低顶受击、root-motion 撞墙后的动作可读性。测记录只是解释现象，人判断是否更精确、更有重量、更少不明原因失控；不指定跨游戏通用坡角、snap 距离或击退恢复秒数。
 - [研究] **第二次修改题**：增加一种旋转升降平台，并让已有攻击可击退站在其边缘的角色。检查接地状态、平台速度、角色自移和击退是否各只应用一次，主动起跳是否解除吸附，落地／重生是否清掉旧附着。AI 可写适配、暴露参数和记录运动贡献，人决定继承动量／转向／恢复控制的体验；若必须改大量无关技能和相机脚本，先收拢所有权，不新建通用运动框架。
 
+
+### 5. Unreal 对照：同样的动作，不同的引擎责任
+
+核实：2026-10-14 UTC。补充主线 3；改变 04 中把 Unity motor 责任隐含当作跨引擎默认的建议。新证据来自 UE 5.8 官方机制、API、Lyra 实例说明和 Mover 的明确发布状态；这里只核公开文档，不声称读过受授权限制的引擎源码或运行过样例。
+
+**[一手／研究] ✅ 采用成熟 CMC，先检查它已有的扩展点。** [CMC 机制](https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-networked-movement-in-the-character-movement-component-for-unreal-engine)说明单机 TickComponent 进入 PerformMovement，统一处理外力／重力、动画 root motion／RMS，再按模式进入 PhysWalking／PhysFalling；MOVE_Custom／PhysCustom 提供特殊运动入口。与 Unity 的 Move 接口相比，UE 的现成层承担更多运动组织，不能从“要唯一 motor”推导出另写一个。网络玩法中 CMC 的 saved moves／重演要求临时运动进入其路径；直接 SetLocation 的客户端运动会被校正。这是需要联网时才增加的设计责任，不是单机采用预测的理由。
+
+**[一手／研究] 平台和 root motion 分别保住原生语义。** [离台速度 API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UCharacterMovementComponent/GetImpartedMovementBaseVelocity)已按 bImpartBaseVelocityX／Y／Z 决定继承分量；先检查项目实际 movement base 行为，不叠加 Unity 控制器里自补的一套平台贡献。[Root Motion 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/root-motion-in-unreal-engine)明确：动画驱动 Movement Component；Walking／Falling 下 Z 向处理受运动模式与重力约束，不能为抬脚／跳跃动画随意切 Flying。文档还提示启用对应 root-motion 提取模式会使 Animation Graph 更新走 Game Thread，应在目标版本检查预算，不能把它视为无成本修复脚滑。
+
+**[一手／研究] RMS 与 GAS 不互相等同，技能结束也不等于位移结束。** RMS 是程序化位移来源，提交参数后由 CMC 执行，并以 handle 管理移除；GAS 提供使用它的 Ability Tasks，但不是使用该机制的前提。官方 [Lyra 5.8 技能实例](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?application_version=5.8)中的 GA_Hero_Dash 在 root-motion force 完成后仍延迟结束 ability，以继续阻止开火／跳跃；GA_ADS 则在 End Ability 恢复速度、输入映射与镜头。可借“请求运动／保留动作限制／成对撤销”的责任划分；不把多人样例的全部 RPC、ASC 与 Experience 依赖搬入几种动作的单机项目。第二次把突进改成可被受击打断时，应同时检查位移来源、Montage、动作限制和镜头是否按设计结束，不能只 Stop Montage。
+
+**[一手] 稳定引擎版本与实验模块分开记。** Epic 的 [5.8 正式发布新闻](https://www.unrealengine.com/news/unreal-engine-5-8-is-now-available)日期为 2026-06-23；本轮核到的 [固定 5.8 Mover 页](https://dev.epicgames.com/documentation/unreal-engine/mover-in-unreal-engine?application_version=5.8)仍明确 Experimental，API／属性／数据格式可变，且说明会继续支持 CMC。不是沿用 5.7 标签推断当前状态，也不把文档默认版本当项目应立即升级的建议。
+
+**[一手／研究] 👀 仅在结构性缺口时评估 Mover。** [5.8 对比页](https://dev.epicgames.com/documentation/unreal-engine/comparing-mover-and-character-movement-component-in-unreal-engine?lang=en-US)列出更宽形体支持、模块化模式与回滚机制，并把 CMC 标为已在许多发行项目使用。Mover 通过模拟步输入命令、模式／instant effects 等修改状态，多个 world frame 可能合入一次 simulation tick；不能移植“每帧随时写 velocity”。确有非标准形体或模块组合需求才承担这个迁移；只有联网玩法才比较 CMC 的 client moves／服务端校正与 Mover 的共享时间线／客户端回滚。没有瓶颈证据，不额外推荐异步运动更新或网络物理后端。
+
+**[一手／研究] 样例先拆可借机制，再决定采用范围。** [Game Animation Sample](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-animation-sample-project-in-unreal-engine)明确重点是动画展示，traversal 等 gameplay 是简单示例；可借 pose／trajectory／movement 数据如何连接，不能把漂亮跨障碍演示当作完整攀爬、战斗打断与发行验证。Lyra 是官方样例，也不等于本轮取得某个已发行游戏的可复核源码。UE 原生与样例按其适用引擎／内容条款使用，公开文档可读不代表代码或资产可任意再分发。本轮未下载资源、未接受新协议。
+
+**[研究] 后续同目标验收**：先保留单机平地／坡顶／旋转平台／撞墙突进的基线，再加入“平台边缘突进途中受击→死亡→重生”的第二次修改；观察胶囊实际运动、网格姿态、movement mode、平台贡献与动作限制，确认无双重移动、残留输入或旧位移源。只有项目确需多人，再增加延迟／丢包下预测与校正，不把离线正确当网络正确。机制比较可改变借用选择，尚不能量化响应或手感收益。
+
 本轮完成上述公开源码、许可、版本声明及官方 API 的静态核查；没有导入候选包、运行自动测试／演示、测量性能或证明玩家体验提升。后续真实引擎比较须按仓库现有授权门槛另行安排。[研究]
 
 

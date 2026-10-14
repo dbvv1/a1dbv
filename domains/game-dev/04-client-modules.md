@@ -63,7 +63,7 @@
 
 ### 3D 角色运动：先选想要的控制，再选碰撞求解方式
 
-**[研究] ✅ 普通直立角色、接触规则简单且原生坡／阶能力已够用时，先用原生 CharacterController；已经好用的 Rigidbody 控制器不为统一架构重写。** “有重量”可以来自加减速、转向承诺、步态与受击恢复，不必让全部运动交给物理。希望玩家被箱子、摆锤和冲量自然影响，才把动态响应作为核心要求；希望台阶、斜坡和旋转平台遵守精确玩法规则，则重点比较 motor 的接地与平台政策。
+**[研究] 以下先比较 Unity GameObject 路线。✅ 普通直立角色、接触规则简单且原生坡／阶能力已够用时，先用原生 CharacterController；已经好用的 Rigidbody 控制器不为统一架构重写。** “有重量”可以来自加减速、转向承诺、步态与受击恢复，不必让全部运动交给物理。希望玩家被箱子、摆锤和冲量自然影响，才把动态响应作为核心要求；希望台阶、斜坡和旋转平台遵守精确玩法规则，则重点比较 motor 的接地与平台政策。
 
 | 想得到的动作 | 采用／改造选择 | 实际增加的责任与撤回条件 |
 |---|---|---|
@@ -79,6 +79,21 @@
 **[研究] 接触质量先验四件事：** 下坡／下台阶不无故腾空，上坡速度符合设计，平台转动时站位与起跳方向可信，受击后输入既不瞬间抹掉击退也不意外长期失控。平台的“站着跟随”“离开继承速度”“被侧面挤压”分别定规则；旋转平台要考虑平台角速度对接触点线速度的贡献，不能只加平台平移速度。Unity [GetPointVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.GetPointVelocity.html)包含角速度。[一手] 简单 parenting 只解决一种跟随方式，碰撞、旋转继承与脱离还需验证。
 
 **[研究] root motion 是位移来源，由唯一运动控制者提交给碰撞求解。** 动态 Rigidbody 的最终位置仍由物理求解器决定，motor 负责组织力／速度请求； 自由移动可由代码定速度、动画跟随；攻击突进可由动画提供期望位移，再经 motor 约束。不要让 Animator、脚本和平台各自写最终 Transform；撞墙后用实际运动校准步态／动作，不能把脚滑全部交给 IK。后续在真实关卡试玩坡顶、窄台阶、低顶跳跃、升降／旋转平台、边缘受击及 root-motion 撞墙，再修改台阶高度或击退规则，确认控制精度和重量感仍一致。固定源码、许可、反例与维护代价见 [WP10 运动比较](../../docs/research/2026-10-14-game-wp10-client-modules.md#3d-运动补研控制精度接触连续性与物理重量的取舍)；本轮资料比较不能替代目标版本的手感验证。
+
+
+#### Unreal：先扩展 CharacterMovement，不搬 Unity 的 motor 调度
+
+**[研究] ✅ 常规胶囊角色先用 ACharacter＋CharacterMovementComponent（CMC）。** Unity 原生 CharacterController 留给项目组织的重力、运动模式和平台政策，不能照搬成 UE 的待建模块。CMC 已在自己的更新路径组织这些责任；先调原生参数、复用运动模式，特殊攀爬／冲刺再评估局部扩展，而非另起 Tick 脚本直接搬 Actor。官方把 CMC 列为已有大量发行项目验证的路线；这不是任意玩法都无需修改的保证。[一手：[CMC／Mover 对比](https://dev.epicgames.com/documentation/unreal-engine/comparing-mover-and-character-movement-component-in-unreal-engine?lang=en-US)]
+
+| 同一个玩家目标 | Unity 的实现责任 | Unreal 的实现责任与误搬成本 |
+|---|---|---|
+| 短按被接受，走／落／跳之间连贯 | 输入采样与 motor／物理消费时序分开；离散输入只消费一次 | CMC 沿 TickComponent／PerformMovement 及运动模式推进；别把 FixedUpdate 规则翻译成另一个定时器，与原生更新重复推进 |
+| 离开旋转平台时动量可信 | 按实际控制器选平台跟随、接地点速度与脱离政策 | 先用 movement base 及离台速度配置；另外叠一遍平台速度可能双算。原生有机制不代表挤压／特殊平台已符合玩法 |
+| 攻击突进碰墙后仍可控 | 动画位移经既有 motor／碰撞层提交 | 动画 root motion 交给 Movement Component；程序化临时位移可评估 Root Motion Sources（RMS）。技能决定开始／取消／恢复控制，不能另写最终 Actor transform |
+
+[一手] CMC 的更新、模式和 RMS 见 [运动机制](https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-networked-movement-in-the-character-movement-component-for-unreal-engine)；离台速度已有 [GetImpartedMovementBaseVelocity](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UCharacterMovementComponent/GetImpartedMovementBaseVelocity)。[研究] RMS 是 CMC 的位移机制，GAS 是可选的技能组织层，不能为一次突进强制引入 GAS。只有玩法要联网时，才补预测／校正验收；单机不先造同步框架。
+
+**[研究] 👀 Mover 是有条件评估项，不是 CMC 的默认升级。** 核实至 2026-10-14，UE 5.8 已正式发布，但 [5.8 Mover](https://dev.epicgames.com/documentation/unreal-engine/mover-in-unreal-engine?application_version=5.8)仍标 Experimental。确需更灵活形体、模块化运动或物理网络回滚，且能承担 API 变更，才评估；已有 CMC 控制器不因“下一代”重写。Mover 需把输入汇入模拟步命令，不能任意改 velocity；这是更新和状态所有权的迁移，不是换组件名。[一手／研究] 版本、Lyra 可借机制、动画样例边界与未来验收见 [WP10 对照](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-unreal-对照同样的动作不同的引擎责任)。
 
 ## 3. 先验收五条跨模块边界
 
