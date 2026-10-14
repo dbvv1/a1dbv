@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、落地补丁和最终说明对齐；18补测接管投入、陌生模块学习及原触发条件下的恢复
-新证据：Immich审查、接管/学习实验；10-14补CBM原用户恢复触发条件后的升级复测，不补足Immich实机/支持工时
+改变的建议：18/24：接收意见、落地补丁和最终说明对齐；18补测接管投入、陌生模块学习、原条件恢复及空库/已有库交付
+新证据：Immich审查、接管/学习实验；10-14补CBM原条件升级复测、PocketBase迁移快照源码与接收者成功回执；不补足Immich实机/支持工时
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -83,3 +83,22 @@
 **不能把恢复结论写成“放宽权限仍同样安全”。** [固定源码 L769–778](https://github.com/DeusData/codebase-memory-mcp/blob/8eabe191d2b45d6a58738392a03235c240af6996/src/cli/activation_transaction.c#L769-L778)要求祖先为 root／当前用户所有的目录；普通 world-write 被拒，但保留 root-owned sticky 目录例外。组可写祖先获警告并允许，是维护者改变信任条件，不是本仓库证明其等价安全。[叶目录检查 L853–889](https://github.com/DeusData/codebase-memory-mcp/blob/8eabe191d2b45d6a58738392a03235c240af6996/src/cli/activation_transaction.c#L853-L889)仍要求当前用户所有、无组／其他写位、通过额外 ACL 检查；诊断补明目录、模式和拒绝规则。采用的是可定位的错误与责任明确的修订，不建议接收者为跑通安装自行放宽权限。**[一手：固定源码；研究：安全边界，非安全审计]**
 
 **验证与反证。** [固定测试 L615–669](https://github.com/DeusData/codebase-memory-mcp/blob/8eabe191d2b45d6a58738392a03235c240af6996/tests/test_activation_transaction.c#L615-L669)分别检查组可写叶目录拒绝时包含目录／模式／规则，以及组可写祖先下可暂存候选；只读测试，不是本次运行。GitHub compare 确认 8eabe191 为 v0.10.2 祖先（ahead_by=5、behind_by=0）。相邻 [#1526](https://github.com/DeusData/codebase-memory-mcp/discussions/1526)另有安装后客户端配置错误，后续 0.10.3 还修订守护进程的同类检查，因此不能把 #1535 的成功外推为所有集成已恢复。本轮还筛过 #472 的构建后安装报告与 #1722 的符号链接安装报告，未取得同样完整的发布后原用户重试链，不采用。全程只读公开材料，未安装或运行 CBM／模型，未核验上游全套 CI，未测长期维护投入。**[一手：源码与提交关系；社区：相邻故障；研究：验证范围]**
+
+
+## 补充证据：结构快照不能代替已有数据的升级交接
+
+核实：2026-10-15（UTC+8）。**改变18 §7：压缩迁移或交接数据库项目时，分别验证空库初始化与已有库升级；交代初始化数据、实例配置和迁移执行身份，不能把结构快照及一个成功的 `down` 当作完整恢复。** 这是有持久状态项目的条件建议，不要求无数据库项目增加备份流程；与[既有 n8n／Grafana 回退研究](2026-10-12-development-conditions.md#n8n配置回退与独立导出入口)的增量是“同一交付物在新旧接收环境执行什么”。**[研究：采用判断]**
+
+**接收者实际缺的是什么。** [PocketBase #6826](https://github.com/pocketbase/pocketbase/discussions/6826)中，kendallroth 升级到 v0.23 时已有生产数据和手写 seed 迁移；本地删除旧迁移、生成 collections snapshot 后，远端的执行历史仍指向旧文件。他担心重复创建并丢数据。维护者指出默认快照保留未列出的字段／集合，建议先在生产副本上升级；seed 另行保留，可保留原文件名并调整内容，让已有库不重复执行、空库仍能初始化。用户最终选择本地整理迁移历史，5月13日报告已顺利工作；这是原接收者的成功自报，没有完整部署日志、逐项数据核对或耗时。**[社区：原帖与最终回执]**
+
+**固定源码说明为什么两条路径不同。** 下列均取 v0.23.0 对应 SHA [`d5dddf3eadaffadc73503c464f6ff8ac6450a874`](https://github.com/pocketbase/pocketbase/commit/d5dddf3eadaffadc73503c464f6ff8ac6450a874)，是历史迁移机制，不作现行升级命令指南。**[一手：固定发布源码]**
+
+- [`migrateCollectionsHandler`](https://github.com/pocketbase/pocketbase/blob/d5dddf3eadaffadc73503c464f6ff8ac6450a874/plugins/migratecmd/migratecmd.go)只查询 collections 配置，再生成模板，没有导出业务记录。故已有库保有 seed 不代表新库可重建 seed；删掉手写数据迁移时须另有初始化来源。**[一手：源码；研究：交付推论]**
+- [`jsSnapshotTemplate`／`goSnapshotTemplate`](https://github.com/pocketbase/pocketbase/blob/d5dddf3eadaffadc73503c464f6ff8ac6450a874/plugins/migratecmd/templates.go)主动剔除 `oauth2.providers`，向前导入使用 `false`，向后函数分别只返回 `null`／`nil`。结构能重建不保证实例登录配置齐全，回退回调存在也不保证能还原先前数据；配置应经安全渠道另行恢复，不把密钥补进公开迁移。**[一手：源码；研究：采用边界]**
+- [`MigrationsRunner`](https://github.com/pocketbase/pocketbase/blob/d5dddf3eadaffadc73503c464f6ff8ac6450a874/core/migrations_runner.go)用文件名查 `_migrations`；已执行且没有 `ReapplyCondition` 时跳过。`history-sync`只删除不再加载的文件名记录；`Down`调用回退函数后删除历史记录，不检查业务状态是否恢复。因此“历史整洁”“输出 Reverted”均不足以证明数据回退；重命名 seed 则可能使已有库把它视为新迁移。**[一手：源码；研究：机制推论，未运行]**
+
+**反证：不是每次快照导入都会删数据，也不是所有状态都承诺保留。** [`ImportCollections`](https://github.com/pocketbase/pocketbase/blob/d5dddf3eadaffadc73503c464f6ff8ac6450a874/core/collection_import.go)在 `deleteMissing=false` 时保留未列出的集合／字段，但仍会更新匹配集合的配置；不能把“extend-only”写成任意旧快照无害重放。原用户承认自己曾把该参数改掉。另一方面，[v0.23 内部迁移](https://github.com/pocketbase/pocketbase/blob/d5dddf3eadaffadc73503c464f6ff8ac6450a874/migrations/1717233556_v0.23_migrate.go)明确删除旧 `logs.db` 且无逆向回调；维护者在上述原帖确认旧日志不导入。若接收方需要保留日志，应在升级前另行保留，不能由应用的“临时数据”分类代替自己的需求。**[一手：源码；社区：解释；研究：反证]**
+
+**如何落到最小交付。** 在已有升级说明中写清：空库从哪里得到必要初始记录与实例配置；已有库凭什么避免重复初始化；哪些数据不会迁移、失败后恢复到哪一份已确认可用的状态。验收选一条真实业务读写／登录路径，而非只看服务启动或迁移退出码。已有可靠自动化覆盖两条路径时直接复用，不再另加一套检查或手工改迁移表流程。Agent 可以从源码提取这些差异、准备待验步骤；生产数据复制、密钥交付和实际升级仍遵循项目授权。**[研究：采用建议]**
+
+**验证范围与下一证据。** 本轮读了公开讨论、固定源码；未运行 PocketBase、数据库或模型，未复核上游 CI，未证明压缩迁移普遍危险或上述建议节省维护工时，也没有证据把此案例归因于 AI 编程。不同作者的[另一恢复报告 #6972](https://github.com/pocketbase/pocketbase/discussions/6972)称完整性检查通过仍有旧记录写入失败，后用不同构建恢复；维护者却不能复现，驱动／ICU 原因仅为用户判断，本轮不据此推荐统一换驱动。下一项有区分力的证据是接收者对空库和旧库两条路径的可复查业务验证；继续增加迁移命令清单不能补足它。**[社区／研究：证据边界]**
