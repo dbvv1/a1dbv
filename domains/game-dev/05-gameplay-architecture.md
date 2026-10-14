@@ -1,6 +1,6 @@
 # Gameplay 架构：让第二次修改仍然可靠
 
-> 核实时间：2026-10-13 UTC（2026-10-14 UTC+8）。适用：单人程序开发独立游戏，Unity 为主、Unreal 作对照。固定源码、历史修改、许可与反证见 [WP11 研究记录](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md)；资源释放、存档实现与目标设备预算见[客户端模块](04-client-modules.md)，试玩方法见[验证页](02-verification-and-playtesting.md)。
+> 核实时间：2026-10-14 UTC。适用：单人程序开发独立游戏，Unity 为主、Unreal 作对照。固定源码、历史修改、许可与反证见 [WP11 研究记录](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md)；资源释放、存档实现与目标设备预算见[客户端模块](04-client-modules.md)，试玩方法见[验证页](02-verification-and-playtesting.md)。
 
 **默认采用引擎现有组件、少量可测试规则和局部状态机；先写清谁拥有状态、谁提交结果、退出时清理什么，再决定是否增加框架。** HFSM、行为树、GAS 和 ECS 解决不同问题，不能按“先进程度”排成升级阶梯。[研究]
 
@@ -107,6 +107,18 @@
 [一手] GAS [官方生命周期](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-abilities-in-unreal-engine) 将 CommitAbility、取消和 EndAbility 分开；未正常结束会继续阻挡动作，Per-Actor 实例复用还需清理成员。[研究] 框架没有替玩法定义退款与取消语义。
 
 [一手] [Lyra 的能力初始化](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US) 处理 Pawn、PlayerState、输入与 Game Feature 的就绪和移除。[研究] 可读公开机制文档；其整套多人生命周期并非单机默认底座，资源的 AI 使用许可另见第 10 节。
+
+### 战斗质量：让玩家读懂承诺、接触与下一步
+
+**[研究] ✅ 先做好一招的节奏，再增加招式。** 前摇让玩家看出动作与方向，接触段让力量集中且命中范围可信，恢复段让下一次移动、闪避或连击的机会可预测。重武器可以慢且不能随时取消，只要风险、收益与敌人的反击机会相配；轻武器可以快且允许衔接，但不能靠每击加长停顿假装沉重。分别调整这三段，别把整段动画统一加速当手感修复。
+
+[一手] Dead Cells 美术 Thomas Vasseur 的[开发复盘](https://www.gamedeveloper.com/production/art-design-deep-dive-using-a-3d-pipeline-for-2d-animation-in-i-dead-cells-i-)强调新武器需要反复重调动画，单改播放速度不足；Death’s Door 的 Mark Foster 在[访谈](https://www.gamedeveloper.com/art/animation-feature)中解释，亲自协调代码与动作是为了控制动作间的连接。[研究] 单人无人工美术修补时，先选能在引擎内分段、重定时或程序化控制的动作资源；缺少清楚起手姿态／接触姿态的素材应替换或简化动作，不能靠混合、拖尾补出不存在的姿态。
+
+- **承诺可学习**：[研究] 每招说明何时可转向、移动、闪避、接下一击，落空和命中是否相同；动画还没收完但允许移动不一定是 bug。保留有意的取消技巧，避免 AI 为“完整播放”删掉它。Dead Cells [33.1／33.3 官方修复](https://deadcells.com/patchnotes/33)曾恢复误删的 Katana 取消及空中技巧。[一手]
+- **预告能变成决定**：[研究] 起手轮廓／方向告诉玩家要避什么，音效帮助及时注意，攻击轨迹与实际危险区域一致；接触效果结束后仍看得到下一威胁。镜头、声音和 VFX 服务同一次决策，不各自争抢注意。Hyper Light Drifter 的[设计者访谈](https://www.gamedeveloper.com/design/how-i-hyper-light-drifter-i-balances-difficulty-with-fairness)说明，单体容易的敌人组合后已足够复杂，一种同时反弹子弹、格挡近战的敌人因组合困难被放弃。[一手] 因而新敌人先验证与旧敌人的围攻、距离和逃路，再决定增加聪明程度。
+- **用原生机制保住节奏**：[研究] Unity 先用已有 Animator、动作配置与事件；[转场文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)里的 Exit Time、混合时长和中断顺序分别控制不同事情，混合更长不一定更自然，可能淹没接触姿态。UE 用 Montage／[Notify State](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-notifies-in-unreal-engine)编排区间，精确分支才评估 Branching Point；特效与挥动声可跟动作，命中声与受击效果仍跟已确认结果，不为此另造通用战斗编辑器。
+
+**[研究] 加一把武器或一个敌人后的验收**：旧招与新招都打同一遭遇，保留命中、落空、格挡、闪避取消和混合围攻；玩家能否说清“何时承诺、为什么挨打、下一步何时可做”，比单次演出更华丽重要。AI 可维护阶段参数和对照录像／事件轨迹，人决定轻重、节奏与公平；开发者复盘和原生功能不证明无美术人员或 AI 已能复现成品质量，详见 [WP11 战斗补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#战斗质量补研动作节奏与遭遇可读性一起设计)。
 
 ## 8. 相机：先让玩家看懂并控得住，再增加镜头语言
 
