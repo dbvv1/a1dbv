@@ -1,6 +1,6 @@
 # 00 · AI Coding 现状总览（2026-10）
 
-> 核实时间：2026-10-08。评级与证据标记见 [docs/README](README.md#评级与证据体系)。最近 3 个月的事件、价格表和新做法见 **[13 前沿雷达](13-frontier-radar.md)**。
+> 核实时间：2026-10-08；2026-10-15（UTC+8）仅收紧 §1 的能力趋同判断，其他节未重核。评级与证据标记见 [docs/README](README.md#评级与证据体系)。最近 3 个月的事件、价格表和新做法见 **[13 前沿雷达](13-frontier-radar.md)**。
 
 ## 1. 格局：从“补全”到“Agent 舰队”
 
@@ -14,7 +14,7 @@
                           模型按角色分层（前沿模型 / 便宜模型 / 决策模型）
 ```
 
-今天主流 Coding Agent 的能力已经高度趋同 **[一手]**：它们都支持 MCP、Skills、Hooks、Subagents、Plan 模式、AGENTS.md、后台/云端任务、插件市场。两大厂商 issue 区里点赞最高的功能请求（Hooks、Subagents、Plan 模式、AGENTS.md、ACP）几乎都已实现（见 [11-community-pulse](11-community-pulse.md)）。**差异更多体现在模型、harness 细节、价格与额度上。**
+**按实际入口选工具，不按功能名称判断可互换。** [11](11-community-pulse.md#1-已关闭的需求是否已适合采用) 已撤回用历史点赞请求推断“功能趋同”的结论；采用时分别核对[指令实际加载](03-context-engineering.md)、[MCP 工具与权限边界](04-mcp.md)、[Skill／插件的宿主支持](05-skills-and-plugins.md)和[子 Agent 的运行形态](08-multi-agent.md)。同名功能不保证配置、权限与生命周期相同，不能仅据清单决定迁移。**[研究：已有专题的采用判断，2026-10-15]**
 
 ## 2. 九个关键趋势
 
