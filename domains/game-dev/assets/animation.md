@@ -1,6 +1,6 @@
 # 动画与绑定：先固定动作契约，再补生成
 
-> 核实时间：2026-10-14（UTC+8）。适用场景：单人程序员、不做人工美术修补。分档是具体任务的首试顺序，不是同题实测冠军；一手来源、固定源码、许可及反证见[WP4 研究记录](../../../docs/research/2026-10-14-game-wp4-animation.md)。
+> 核实时间：2026-10-14（UTC+8）；Uthana 版本与返回契约补核：2026-10-15（UTC+8）。适用场景：单人程序员、不做人工美术修补。分档是具体任务的首试顺序，不是同题实测冠军；一手来源、固定源码、许可及反证见[WP4 研究记录](../../../docs/research/2026-10-14-game-wp4-animation.md)。
 
 ## 30 秒结论
 
@@ -29,6 +29,8 @@
 |**人形角色与动作**|✅ 已验收骨架＋完整现成动作组；缺短表演时🧪Uthana Text-to-Motion 3.0／Video-to-Motion 2.1 等专项候选|✅ 地区可用时 Mixamo 现成动作；需要数值移动控制再🧪Uthana Locomotion；较多自录视频对照 Rokoko Vision 3.0|✅ 已有许可动作＋引擎重定向／IK；🧪SkinTokens 补绑定，不强凑本地动作生成冠军|
 |**2D 角色**|✅ 完整现成骨骼／逐帧角色包；Spine 资产、编辑器及 runtime 分别清权|✅ 已正确分层和绑定的结构＋Unity 2D Animation，复用换装／参数|✅ 自有或已核许可逐帧包、Sprite 动画与刚体部件曲线|
 |**非人形／精确接触**|✅ 专用完整资产组；覆盖不到时修改角色或玩法|🧪 明确分节结构、程序步态与有限 IK|👀 SkinTokens／MoCapAnything 专项研究，先解决依赖和目标骨架问题|
+
+**采用 Uthana Video2.1 时显式选模型：** `create_video_to_motion` 要传 `model="video-to-motion-2.1"`；省略或用旧别名 `video-to-motion-v2` 仍是 2.0。2.1 返回后处理后的 motion IDs，不能直接沿用 2.0 单个基础动作的取值假设；保存请求版本、job ID、完整结果和最终下载的 motion ID，再验接触。同文件短期重传可能复用旧 job；跨模型是否复用未说明，保存并核对返回身份，不能仅按提交次数计新候选。[一手／研究：[Video API](https://uthana.com/docs/api/capabilities/video-to-motion)、[GraphQL 契约](https://uthana.com/docs/api/graphql#create_video_to_motion)]
 
 **撤回条件：** 有限重新生成／录制与程序修正后，仍必须刷权重、补画肢体或逐帧摆姿才能过关，就换资产、缩小动作或改变玩法。若完整现成动作已满足需求，不为使用 AI 而重新生成。[经验]
 

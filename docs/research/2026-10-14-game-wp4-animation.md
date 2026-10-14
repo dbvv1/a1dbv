@@ -277,3 +277,14 @@ Daniel Holden 的 [2026-07-30 原文](https://theorangeduck.com/page/inverse-kin
 [研究：采用顺序] 修参照和顺序 → 在合法目标、体积代理与有限身体调整内复用 → 按体型／装备选择动作分支 → 仍不满足则换模型／装备或收窄玩法。新增验收关注过近／过远、弯曲翻转、路径穿插及关键姿态，不再扩写通用检查表。记录新增动作、代理／烘焙改动及主动调试时间；本轮没有零手修通过率或第二改工时实测。
 
 [研究] 历史比例／装备补研：完整离线 14 阶段（非空无 skip）、两文件 `git diff --check` 与正文锚点通过，仅仓库检查。
+
+
+### Uthana 模型与返回契约补核（2026-10-15 UTC+8）
+
+[一手：当前公开文档，非调用实测] [Video 产品页](https://uthana.com/models/video-to-motion)、[能力文档](https://uthana.com/docs/api/capabilities/video-to-motion)与[GraphQL reference](https://uthana.com/docs/api/graphql#create_video_to_motion)一致：`create_video_to_motion` 的可选 `model` 默认是 `video-to-motion-2.0`，兼容别名 `video-to-motion-v2` 也指向 2.0；选 2.1 必须显式传 `video-to-motion-2.1`。2.0 返回基础 motion，2.1 返回 refined motion IDs。保留原动态表日期，本补核在采用前或 2026-11-15 复核。
+
+- [研究] 接入时保存所请求的完整模型值、视频内容身份、目标 character ID、创建返回的 job ID、终态 `status`／完整 `result` 与最终下载的 motion ID。官方通用教程默认调用和 `result.result.id` 示例不能独立证明 2.1 的精确返回结构；本轮没有取得真实 2.1 返回，不编造字段路径或保证 SDK 已兼容。
+- [一手／研究] 官方说明相同视频正在处理、成功后 24 小时内或失败后 1 小时内重传会返回既有 job。文档未明确跨模型是否共享去重键，因此换 `model` 后也要核 job 身份，不能把同一旧 job 当第二个候选；不为绕过去重主动修改源视频。
+- [一手／研究] 顺查 Text3.0 发现官方页内口径差异：[能力页](https://uthana.com/docs/api/capabilities/text-to-motion#text-to-motion-30)已写 PAYG 账户普遍可用，但 GraphQL reference 的 `create_text_to_motion_job` 仍标 limited release。不能把后一段当当前统一准入结论；实际采用先核账户资格。两者一致要求异步 `create_text_to_motion_job`＋`model="text-to-motion-3.0"`，不是旧同步 `create_text_to_motion` 的默认示例。
+
+[研究：变化与范围] 正文现在把 2.1 的显式选择和结果身份置于推荐旁，避免只记商品名却取到默认 2.0；原有接触、循环和零手修撤回标准不变。本次未登录账户、调用模型或执行引擎验收，不把后处理存在写成质量通过。

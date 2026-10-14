@@ -203,3 +203,15 @@ Shards Asset Toolkit 固定 **94bd478782d9629586d5d1138d2172f0337a7745**，最�
 - **实际账户与运行缺口**：未登录核实际订单、地域可用性、生成记录和结算税费；未下载权重、测试替代依赖或测生产成本。推荐只覆盖表内精确版本与限定用途，任何升级／第三方托管／新增依赖需重新核。[研究]
 
 [研究] 历史阶段 F 增量：`check_repo.py` 177 文件无错误、两文件 `git diff --check` 通过；该轮未重跑完整离线入口。
+
+
+### Tripo 版本选择补核（2026-10-15 UTC+8）
+
+[一手：当前公开文档，非调用实测] 重新交叉读取 [P 系列文本生成](https://developers.tripo3d.ai/en/docs/generation-text-to-model/p)、[图片生成](https://developers.tripo3d.ai/en/docs/generation-image-to-model/p)及[独立纹理端点](https://developers.tripo3d.ai/en/docs/models-texture)。保留上表的历史核实日期；本次只更新以下契约，下次在采用前或 2026-11-15 复核：
+
+- 生成端点的几何字段 `model=P1-20260311`／`P2-20260801` 与纹理字段 `texture_version` 独立；省略后者时 P 系列仍选 `v3.0-20250812`。这是当前文档默认，不是由旧发布日期推测的历史默认。
+- 需要 `delight` 时显式设 `texture_version=v3.5-20260815`；旧纹理模型忽略该开关。`texture_quality=fast` 也要求此版本，否则报 `1004`；fast 与 standard 同价，不以名称推断省钱。灰模要同时关闭 `texture` 和 `pbr`，因为默认 `pbr=true` 会强制打开纹理。
+- 独立 `POST /v3/models/texture` 的纹理版本字段改为 `model`，默认仍为 `v3.0-20250812`；不能把生成端点的 `texture_version` 原样搬来。根据既有 task ID 重贴图时，官方建议再次提供参考图。
+- [研究] 留存原始请求（几何／纹理版本、seed、质量、PBR、delight）、创建返回的 `data.task_id`、终态结果与采用文件；文档示例没有返回已解析的双版本证明，不能从 `success` 或文件名补造它们。去光照能力不等于实际表面可重新打光，仍验最终材质。
+
+[研究：变化与范围] 这修复正文只选 P1 而未定义纹理的采用缺口；不改 P2 Preview 的候选地位，不将新版纹理宣传当同题质量胜出。没有调用生成／重贴图 API、下载模型或运行引擎。
