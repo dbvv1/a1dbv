@@ -305,3 +305,44 @@
 4. 改画质／图形后端重新覆盖，退出再进入检查池重置；既检查预热遗漏，也检查为了预热意外触发声音、伤害或奖励。减少装饰实例不能改变关键提示的出现与有效窗口。
 
 本轮只完成公开正文与作者图文核查；未复现 54.1 ms、未验证 Unity 实验 API 在目标补丁上的兼容性、未建立性能排名。离线文档检查只验证仓库交付，不证明上述体验目标已实现。[研究]
+
+## 菜单补研：跨暂停、改键与设备切换保住控制
+
+核实：2026-10-14 UTC。主线 2／3；改变 04 输入／UI 的建议：从关键页可达，深化为切换后仍可控、反馈可信；同时限定 02 的逻辑动作注入能证明什么。[研究] 本轮读官方正文和发行游戏更新记录，未运行引擎或设备，未安装 UI 框架。
+
+### 1. 先补玩家体验缺口，不因手柄支持迁移 UI
+
+[研究] 场景是按住动作打开暂停，进入设置和改键，弹出确认层，换回键盘或接回手柄，再返回游戏。质量目标是始终知道当前选择、可用操作和返回位置，而且本次确认不会穿到下一层或游戏。对单人独立游戏，先约定当前交互层、初始／返回焦点、绑定提示来源和玩法恢复规则；少量菜单不需要先建通用窗口框架。设备恢复不等于必须自动恢复战斗，恢复时机由游戏决定。
+
+[一手] [Celeste 官方 changelog](https://www.celestegame.com/changelog.html)保留了实际迭代链：v1.4.0 开放更完整的菜单改键，移除会与自定义绑定冲突的硬编码重开组合键；同版修复教程过程中打开键盘／手柄配置菜单冻结。v1.3.3.20 beta 修复关闭菜单时 movement/dash-only 输入未刷新；v1.3.3.13 beta 要求各菜单动作至少保留一个彼此唯一的绑定，失败发声，并让改键操作提示在滚动后仍可见。这些是开发者报告的修改，不是本轮复测结果；beta 的具体规则也不直接升格为所有游戏都应复制的标准。
+
+[研究] 可迁移的判断是改键必须保住回退路径、全局快捷键也要参加冲突检查、退出菜单要刷新正确的玩法输入。不要盲抄 Celeste 的长按重置或唯一键算法；具体策略须适合游戏的设备与玩家。
+
+[一手] Microsoft [XAG112](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/112)要求跨屏幕导航一致、布局变化后导航顺序保持合理，并以重绑定捕获为例说明退出方式必须有明确提示；[XAG113](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/113)强调可辨识的焦点，尤其覆盖在另一界面上的弹窗。[研究] 本轮只借这些与控制连续性直接相关的目标，不把它们扩写成通用无障碍清单，也不声称完成认证。
+
+### 2. 原生机制够用的条件与新增成本
+
+| 原生路线与直接依据 | 改变的建议 | 何时仍不足 |
+|---|---|---|
+| [uGUI 2.0 Navigation](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)支持 Automatic／Explicit；滑条的值方向用于改值，不能用该方向移出滑条 [一手] | [研究] ✅ 已有菜单先保留；规则不符合布局时修少数导航关系，并验证滑条的进出路径，而非把全部导航重写 | [研究] 动态列表、布局重排使手工关系大量失效时，才需要共享导航策略；这是维护缺口，不是 uGUI 一概不能用 |
+| [Unity 6.3 UI Toolkit FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)可指定方向焦点；初始无焦点会使起点不可预测，禁用 UIDocument GameObject 后层级重建，重新启用时须再次设置焦点 [一手] | [研究] ✅ 新布局项目可按现有选型采用；将初始焦点与重开后的焦点恢复一起做。层级重建后重新查找目标，不把旧元素引用当永久身份 | [研究] 自动导航不符合实际布局时补局部规则；“第一次打开可操作”不能证明第二次仍可用 |
+| [Input System 1.19 UI support](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/UISupport.html)：uGUI 需要 UI Input Module，UI Toolkit 2023.2+ 可用 project-wide actions；uGUI 背景点击默认清选择；UI Toolkit `Button` 的 `ClickEvent` 与手柄 submit 不同，而 `Button.clicked` 覆盖两者；UI 消费输入不自动屏蔽 gameplay action [一手] | [研究] ✅ 先用原生映射并明确 UI／玩法模式；键鼠混用时保护／恢复有效选择，采用适合控件的语义激活入口 | [研究] 直接调用业务回调的测试绕过绑定和焦点，必须补输入路径；不要用 debounce 掩盖两层同时响应 |
+| [CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)：激活树参与路由，停用节点不参与；导航仍与基础 UMG 相同。[ActivatableWidget](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)可提供目标焦点、缓存恢复目标及最末激活节点的焦点刷新；默认不自动激活或注册 Back [一手] | [研究] ✅ 简单且已可靠的 UMG 保留；🧪 跨层返回、模态和设备提示需求反复出现时再评估 CommonUI，明确激活、返回和焦点策略 | [研究] 路由不是“接入便自动解决导航”；新依赖和配置要比第二个菜单继续复制政策更省维护，且实际返回目标仍须验证 |
+
+[一手／研究] [CommonUI 与 Enhanced Input 集成页](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-commonui-with-enhnaced-input-in-unreal-engine)核实时仍显示 Experimental，并保留“as of UE 5.2”的未充分测试说明；页面在当前文档入口出现，不足以证明目标新版的可靠性状态，也不能据此一概禁用 CommonUI。使用该集成才核对所锁定版本的实际行为和更新，不为普通 UMG 菜单增加这条依赖。
+
+[一手／研究] [PlayerInput 1.19](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/PlayerInput.html)提供设备丢失／恢复通知，说明原生可以检测这类变化；通知本身不负责游戏的暂停、焦点或恢复政策。先在已有设备管理上补处理，不另造全局设备总线。
+
+### 3. 先读可复用实现：官方 UI vs Game Input
+
+[一手] 固定沿用本记录的 `Unity-Technologies/InputSystem@05e45ddbaf18a93245b068d787d74b738b90d01c`，本次实际读取 [UIvsGameInputHandler.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInputHandler.cs)、[样例 README](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/README.md)及[根 LICENSE](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/LICENSE.md)。这是 Unity Companion License 下供 Unity-dependent 项目使用的公开源码，不是可跨引擎随意复制的 MIT 库。该固定树 [package.json](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/package.json)标 `1.20.2`、最低 Unity `6000.0`；本节固定源码与上文 1.19 文档分列，元数据不证明它已作为稳定包发布或在目标项目运行通过。
+
+- [一手] `SetUIEngaged`（304–327 行）在 UI 模式启用 UI map、停用玩法动作，并恢复上次导航选择；退出时保存选择、清空当前选择并恢复玩法。`SetPlayerActionsEnabled`（331–345 行）特意保留 UIEngage 动作，避免把退出入口一同禁用。主菜单入口另在 `Update` 先置 `InMenu` 再停用 gameplay input 和选择首按钮，`OnContinueClicked` 恢复游戏。
+- [一手／研究] 可复用边界同样可见：恢复选择只检查 null，未在该路径验证目标是否仍激活／可交互；`OnControlsChanged` 注释明确不支持 mixed models，状态机只有一个 `InMenu`，没有嵌套弹窗栈。由此不能把整个样例当作完整改键、设备热切换和多层菜单底座；这些是静态覆盖范围，不是本轮复现的游戏故障。
+- [研究] **✅ 优先改造样例中的模式归属与选择保存机制，⛔ 从零写等价事件总线或整包照搬。** 简单 uGUI 项目从所锁定已发布包携带的样例出发，保持其必要输入配置，再按真实缺口补有效目标后备和嵌套返回；已有 UI Toolkit 不为复用这个 uGUI 样例迁移，只借切换边界。第二个菜单若只需补这两项，不引新框架。该样例值得作窄机制参考；官方身份和源码可见都不足以证明其是已发行高品质菜单的完整实现。
+
+### 4. 用第二个菜单判断共享层是否值得
+
+[研究] 在将来获准的真实切片，先用原生做暂停→设置→返回，再新增带滑条、动态隐藏选项和确认弹窗的页面。改一个确认绑定并切换设备，检查四个结果：可见焦点与导航方向一致；提示对应实际可用绑定；关闭弹窗恢复原项或明确后备项；恢复玩法没有残留移动、幽灵攻击或重复确认。让重绑定取消也走完整返回路径。
+
+[研究] 记录新增页面需复制或修改哪些政策，以及旧页面是否回归；先用少量共享的打开／关闭边界，只有重复的激活、返回和设备规则实际难维护才引入框架。原生已经达到目标则不迁移，框架仍需每页补同样规则且无明显减负则收回扩展。AI 可以生成绑定、导航与回归场景，人判断焦点是否容易找到、操作是否费力；输入事件日志和截图须互相印证，状态注入不能替代设备路径。这是未来验证设计，非已证实的框架收益。
