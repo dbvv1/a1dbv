@@ -1,5 +1,5 @@
 主线：二，额外能力何时值得加
-改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告。[经验]
+改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回。[经验]
 证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；未运行模型或上游客户端。[一手／社区／研究]
 
 # 上下文获取：问题、版本与状态边界
@@ -205,3 +205,35 @@ print('4 assertions passed')
 ```
 
 输出：`4 assertions passed`。反证尤其重要：保住首尾也不保证中间没有失败；官方修复改善可观察性，不能替代完整报告中的业务判据。只有所需字段已经完整、可核对地返回时，才无需再读全文；本轮未测模型成功率、等待时间或额外工具净收益。**[经验：局部演示；研究：采用边界]**
+
+
+## 设计上下文：结构输入与组件契约
+
+> 核实：2026-10-15（UTC+8；读取发生于 10-14 UTC）。主线二；改变 04 原空白 Figma 推荐：从“设计稿转代码”改为按缺失信息试用，并给出退出条件。仅阅读公开文档、固定类型声明、问题及维护者回复；没有账户访问、插件安装、设计调用、模型对照或付费测试。**[一手／社区；经验：采用判断]**
+
+### 设计输入改变哪项选择
+
+截图能交代外观；现有组件示例／源码能交代实现契约，二者已够用时不新增连接。若尚缺布局结构、变量身份或组件对应关系，Figma 的结构输入才有增量；官方明确服务端提供上下文，最终代码与设计系统适配仍由 Agent 完成，而非自动交付成品。[MCP 与 Agent 分工](https://developers.figma.com/docs/figma-mcp-server/mcp-vs-agent/) **[一手；经验：基线选择]**
+
+[Code Connect 集成](https://developers.figma.com/docs/figma-mcp-server/code-connect-integration/)区分 UI 与 CLI：UI 路径／名称关联不等于完整的属性映射；CLI 可提供人为定义的用法片段及属性对应。反复需要将设计的 Size／状态翻译为代码 props 时，维护显式映射比只给颜色和尺寸更直接，但并未证明模型净收益。组件 API 变化后须同步映射。**[一手；经验：选择]**
+
+### 当前维护路径与可核查例子
+
+- [Writing template files](https://developers.figma.com/docs/code-connect/template-files/)的示例显式把 Size 的 Small／Medium／Large 映射到 sm／md／lg，并单独读取 Disabled；这解决的是语义对应，而非截图相似度。嵌套子组件需要自己的关联；slot 的 connectedInstances 只含直接、已连接实例，不含普通文本／图层及更深层实例，不能把返回当完整子树。**[一手：文档示例]**
+- [旧 React 指南](https://developers.figma.com/docs/code-connect/react/)已警告框架专用 parsers 不再更新／支持，template files 是当前维护路径。新建议不再复制旧 `.figma.tsx` 接入教程。**[一手：动态契约]**
+- 固定仓库 `figma/code-connect` 于 `1f75978328b9c3609565f31c4bc7d5d353976f77`（提交时间 2026-10-14T18:12:35Z）；[cli/package.json](https://github.com/figma/code-connect/blob/1f75978328b9c3609565f31c4bc7d5d353976f77/cli/package.json)声明版本 2.0.2。[cli/figma-types.d.ts L36–38](https://github.com/figma/code-connect/blob/1f75978328b9c3609565f31c4bc7d5d353976f77/cli/figma-types.d.ts#L36-L38)也把 SlotResult.connectedInstances 标为 shallow；[L119–140](https://github.com/figma/code-connect/blob/1f75978328b9c3609565f31c4bc7d5d353976f77/cli/figma-types.d.ts#L119-L140)区分 slot、嵌套检索与模板返回。只核声明，不据此声称已执行服务端或验证全部运行语义；仓库版本也不是远端服务版本。**[一手：固定声明]**
+
+### 独立维护反馈与反证
+
+- [Carbon #17607](https://github.com/carbon-design-system/carbon/issues/17607)由该设计系统维护者记录实际接入差异：同一 Figma 菜单项依上下文对应两个 React 组件、单项与整组的 skeleton／props 层级不同。该 2024 年起的清单含划除的已修项，不能把整页当当前缺陷清单；它支持“映射需维护语义差异”，不支持整个产品无效。**[社区：独立项目原帖]**
+- [Code Connect #397](https://github.com/figma/code-connect/issues/397)报告 1.4.4 的嵌套 variant 多余 imports。Figma 维护者 2026-06-02 建议改用 templates；06-04 确认模板与真实代码解耦，组件 prop 改名不会由模板类型检查捕获，并提及 preview。06-06 关闭不是 parser 缺陷已修证明。结论是模板可减少表达限制，却仍须按当前源码核查片段；不把 preview 当应用编译或交互通过。**[社区：用户报告；一手：维护者说明，未复现旧版]**
+- [Code Connect #407](https://github.com/figma/code-connect/issues/407)，2026-08-17 用户报告空 map 可能来自库／设计文件范围混淆或大节点查询超时，而非确实没有映射；本次可见状态 open。仅作为单例提醒，未验证全部客户端。不要因空结果自动重造组件；先查范围与实际组件来源。**[社区：原帖，未复现]**
+
+### 接入限制与撤回
+
+1. [大 frame 官方说明](https://developers.figma.com/docs/figma-mcp-server/avoid-large-frames/)承认慢、错误及不完整返回；只取目标区域，不能靠扩大上下文保证完整。**[一手]**
+2. [当前访问规则](https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/)按 seat／plan 限流且限制支持的客户端；还要求对文件已有权限。此为服务契约，不代表任一读者账户已具备访问。为避免把易变配额写成承诺，实际选择前重查该页。**[一手]**
+3. [Code Connect 当前 Help](https://help.figma.com/hc/en-us/articles/23920389749655-Code-Connect)列 Professional／Organization／Government／Enterprise、Full 或 Dev seat；Professional 限一个 active library 和 framework，停用的连接不会返回给 MCP。MCP 可用与 Code Connect 可用须分别判断，不能沿用旧的 Org／Enterprise-only 概括。**[一手：动态事实]**
+4. [平台输出说明](https://developers.figma.com/docs/figma-mcp-server/server-returning-web-code/)指出类 React 输出是设计上下文，不代表项目必须改用 React；多框架关联时，桌面端取 Dev Mode 当前选择，远端的设计上下文请求需使用准确的映射 label。连接故障或错框架先查对应上下文，不添加另一套组件实现。**[一手；经验：排查选择]**
+
+**保留／退出判断**：选一个已有组件的实际任务，确认连接是否补齐原先缺失的 token、结构或属性对应；若仍只返回通用布局、映射与当前 API 不符，或维护成本超过少做的查找，就缩减到少数常用组件或退出，回到当前源码／示例。运行后的视觉、键盘、状态与保存验收仍按 [23](../23-browser-verification.md)进行。以上是待实际任务检验的工程判断，没有声称更快、更准确或省 token；当前阶段不执行对照实验。**[经验：采用与撤回条件]**

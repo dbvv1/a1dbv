@@ -1,6 +1,6 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-08；2026-10-13 补语义检索工具的采用条件；2026-10-14（UTC）重写第 2 节成本选择，撤回通用价格排名，并补输出采集与显示裁剪的边界。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
+> 核实时间：2026-10-08；2026-10-13 补语义检索工具的采用条件；2026-10-14（UTC）重写第 2 节成本选择，撤回通用价格排名，并补输出采集与显示裁剪的边界；2026-10-15（UTC+8）补设计上下文的采用与撤回条件。规范部分依据 [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol) 仓库中的规范与博客原文 **[一手]**。
 
 ## 1. 现状
 
@@ -78,7 +78,7 @@
 | [Serena](https://github.com/oraios/serena) | LSP 驱动的语义检索与编辑 | 🧪 | 所需语言和操作已覆盖时先用原生 LSP；动态关系与版本差异仍需[搜索和阅读互补](research/2026-10-13-context-tool-choice.md#源码检索map语义引用与当前状态)，不因语义工具名重复安装；[Serena 版本与试用边界](03-context-engineering.md#25-跨文件符号检索何时补-serena) |
 | Sentry / Datadog / Grafana 等可观测性服务 | 查线上问题 | 🧪 | ⚠️ **数据来源不可信**（见下方 agentjacking 事件） |
 | 数据库（Postgres、Supabase 等） | 查数据 | 🧪 | 只读账号 |
-| Figma | 设计稿转代码 | 🧪 | |
+| [Figma](https://developers.figma.com/docs/figma-mcp-server/) | 补设计结构与组件映射 | 🧪 按缺口试用 | 截图、组件示例和源码足够时不加；缺 token／组件身份或 variant 对应关系时，见[采用与撤回条件](#设计上下文先判断缺的是外观还是组件契约) |
 | 记忆类 MCP | 跨会话记忆 | 👀 | 方案太多，质量不一 |
 
 **安全提醒**：2026-06 的“agentjacking”研究中，攻击者用公开的 Sentry DSN 往错误事件里注入指令，Claude Code、Cursor、Codex 通过 Sentry MCP 读到这些事件后执行了攻击者的命令 **[二手]**。**任何“外部人员能写入”的数据源都是注入入口**。
@@ -86,6 +86,12 @@
 ### 文档检索：Context7 不替代版本判断
 
 **🧪 频繁用错库 API，现有检索不可靠时再试 [Context7](https://github.com/upstash/context7/blob/master/README.md)。** 基线是 lockfile 版本、该版官方文档与已安装类型定义；MCP 或 CLI + Skills 补查找便利，按[官方 Skill](https://github.com/upstash/context7/blob/master/skills/find-docs/SKILL.md)先解析 ID，只传通用问题与库/版本，不传秘密、个人数据或专有代码。**关键局限**：closest match、无版本 ID 与生成摘要都不能证明兼容，精确版本缺失就回官方资料并编译；[固定查询链](research/2026-10-13-context-tool-choice.md#文档检索版本选择与生成内容刷新)限定该判断，本地入口也不等于离线服务。**[一手；经验：采用判断，2026-10-13，未安装]**
+
+### 设计上下文：先判断缺的是外观还是组件契约
+
+**🧪 先用目标截图、现有设计系统示例与当前源码；仍无法确定布局约束、token 或应复用哪个组件时，再按小区域读取 Figma 结构。** 已知道组件和 props 的局部样式修改，不必新增连接。反复把设计 variant 翻译成代码 props 时，才考虑维护 Code Connect：官方区分 UI 的路径／名称关联与 CLI 的显式映射，不能把“已连接”当成属性正确。**[一手：[官方契约](https://developers.figma.com/docs/figma-mcp-server/code-connect-integration/)；经验：采用判断]**
+
+只保留能补上上述缺口的连接；返回仍是通用布局、映射过时，或维护负担超过减少的人工查找，就退回当前组件示例与源码；大 frame 先拆小，空结果先核范围／权限／框架，不据此重造组件。当前官方维护方向是 template files；套餐、客户端与框架选择另见[核实记录](research/2026-10-13-context-tool-choice.md#设计上下文结构输入与组件契约)。**关键局限**：模板中的组件片段可能脱离源码类型检查而漂移，结构输入也不能替代[运行后的视觉与交互验收](23-browser-verification.md#2-mcpcli-与测试代码各做什么)。**[一手／社区；经验：撤回判断，2026-10-15，未接入或实测收益]**
 
 ## 4. 写好给 Agent 用的工具
 
