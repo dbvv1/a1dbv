@@ -1,13 +1,13 @@
 # 09 · 评审与质量
 
-> 核实时间：2026-10-11（UTC+8）；HumanLayer 推论于 10-12 定点复核；10-13 补充条件评审与原需求的输入交接；10-14（UTC）以受控评审、现场研究及 Crossplane 实际收窄评审的记录收紧分层建议，其余未重验。
+> 核实时间：2026-10-11（UTC+8）；HumanLayer 推论于 10-12 定点复核；10-13 补充条件评审与原需求的输入交接；10-14（UTC）以受控评审、现场研究及 Crossplane 实际收窄评审的记录收紧分层建议，另核 Faros Q2 公开详解的指标口径；其余未重验。
 
 ## 1. 质量数据：AI 代码的真实代价
 
 | 来源 | 发现 |
 |---|---|
 | GitClear × GitKraken《The Maintainability Gap》（2026），分析了 2023–2026 年的 6.23 亿次代码变更 **[一手：厂商报告，相关性]** | 重复代码块 **+81%**（每百万变更行从 40.3 增到 73.0）；同一提交内的复制粘贴 +41%；掩盖错误的代码 +47%；两周内返工 +15%；跨文件函数调用 −35%；重构式移动从占变更行的 13% 降到 **3.8%**（复制粘贴是它的约 5 倍）；对一年以上旧代码的更新 −74%。报告的概括是：默认的 AI 工作流倾向于交付“原子式”代码（只走通主路径、让一个测试通过、关掉一张工单），而复用、整合、暴露错误这些看不见的工作被拖欠了 |
-| Faros AI《The Acceleration Whiplash》（2026 Q2，2.2 万名开发者、4,000 个团队、两年遥测）**[一手：厂商报告页，相关性]** | AI 采用度高时：PR 体积 **+51%**、每个 PR 的 bug **+28%**、评审时间中位数 **5 倍**、每个 PR 的事故 **3 倍**、代码返工 **10 倍**；报告称成熟团队也不能幸免，结论和 DORA 2025 相反。注意：厂商在卖相关产品，只读了公开摘要 |
+| Faros AI《The Acceleration Whiplash》（2026 Q2，2.2 万名开发者、4,000 个团队、两年遥测）**[一手：厂商公开页及详解，观察性]** | 同一组织最低与最高 AI 采用时期相比，事故数／已合并 PR 数之比约 **3.4 倍**，PR 在评审中停留时间中位数约 **5.4 倍**；代码 churn（季度内已合并代码删行／加行比）约 **9.6 倍**，不能全部译成返工，也可能含有益重构。事故比率不是单个 PR 致事故概率，评审停留不等于主动阅读工时；[公开详解](https://www.faros.ai/blog/ai-acceleration-whiplash-takeaways)未提供完整方法，不能外推本团队恶化幅度 |
 | 开发者调查 **[二手]** | 约 66% 的开发者认为 AI 输出“几乎正确”：好到能合并，又坏到需要返工 |
 | Anthropic 长时任务实验 **[一手]** | 模型自评时会“自信地夸奖平庸的工作” |
 | *A Few Pages of Markdown*（arXiv 2608.25241，441 个仓库）**[研究：摘要原文]** | 在 Agent 主导的仓库里，没有提交 AI 配置的认知复杂度增幅约是有配置的两倍（+53% 对 +27%），静态分析告警增幅是 1.7 倍（观察性研究） |
@@ -166,7 +166,7 @@ Anthropic 内部实践也强调：评审 Agent 职责要窄，**必须证明自�
 
 ## 来源
 
-- [Faros AI：The Acceleration Whiplash](https://www.faros.ai/research/ai-acceleration-whiplash)（厂商报告页）
+- [Faros AI：The Acceleration Whiplash](https://www.faros.ai/research/ai-acceleration-whiplash)（厂商报告页）；[十项详解](https://www.faros.ai/blog/ai-acceleration-whiplash-takeaways)，口径与缺口见[核查附注](research/2026-10-12-baml-and-review.md#faros公开指标的口径补核)
 - [HumanLayer：Why Software Factories Fail](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md)
 - [GitClear：The Maintainability Gap（2026）](https://www.gitclear.com/the_ai_code_quality_maintainability_gap)（二手）
 - [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
