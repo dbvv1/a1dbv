@@ -1,6 +1,6 @@
 # Codex：慢、停止与上下文续接的证据核对
 
-> 核实时间：2026-10-10。范围：官方开源实现与公开使用记录；没有重跑模型对照，没有核实用户私人日志。本页保存证据，实际建议并入 [Codex](../01-agents/codex.md)、[上下文](../03-context-engineering.md) 与 [长任务](../20-codex-long-horizon.md)。
+> 核实时间：2026-10-10；2026-10-14 补 §6 原生历史恢复。范围：官方开源实现与公开使用记录；没有重跑模型对照，没有核实用户私人日志。本页保存证据，实际建议并入 [Codex](../01-agents/codex.md)、[上下文](../03-context-engineering.md) 与 [长任务](../20-codex-long-horizon.md)。
 
 ## 1. 官方实现能确认什么
 
@@ -73,3 +73,25 @@
 ✅ 对应 [20 §9](../20-codex-long-horizon.md#9-超时后动作究竟发生了吗)：遇到明确 runtime reset，先核对先前工具操作和外部任务的实际结果，再重建解释器内所需状态并继续。cell 或 `store` 值丢失，不能推出外部 subprocess、worker 已停止，也不能推出外部写入已撤销；结果未知时先对账，不原样重放整段带副作用操作。**[研究：采用判断]**
 
 发布边界：2026-10-13 10:45 UTC 核对官方 [release 列表](https://github.com/openai/codex/releases)，最新可见稳定版 [0.162.1](https://github.com/openai/codex/releases/tag/rust-v0.162.1) 发布于 10 月 9 日，最新可见预发布 [0.163.0-alpha.5](https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.5) 发布于 10 月 10 日 00:26 UTC，均早于这两项合并；没有建立 Desktop 部署对应。此证据支持安全恢复动作，不证明未完成目标会自动续接或子结果会自动唤醒父任务，原 §7.1 的受限 Stop 试用判断不变。**[一手：发布元数据；研究：边界]**
+
+## 6. 2026-10-14：原生恢复已够时，撤回手工修复
+
+**采用判断：** 对已定位的历史读取故障，先核对原生修复及实际运行版本，再验证原先缺失的内容；不要因为曾需要补偿脚本，就在原生恢复后继续默认修改内部数据库。该增量改变 [20 §4](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)，不新增交接模板。**[经验：采用判断]**
+
+### 失败、修订与同一故障样本的恢复
+
+[#38792](https://github.com/openai/codex/issues/38792) 的 rezzminator 最初报告分页历史仅显示开头，原始 rollout 仍在；旧投影游标与记录序号不一致。其 [9 月 14 日修正](https://github.com/openai/codex/issues/38792#issuecomment-5663495014)使用另一个真实重复边界样本：由 CLI 0.149.1 创建，`token_count(1259)` 后紧接同序号的 `thread_settings_applied`，投影停在该边界。升级至 0.154.0 后仅 resume 一次，不编辑 SQLite 或 JSONL，投影到达文件尾，轮次从 5 增到 8、条目从 415 增到 651，三轮缺失历史重新可见。这是同一故障样本前后的作者报告，不是把最初 0.146.1 的样本误认成最终复测样本。**[社区：公开报告，未独立复现]**
+
+原报告者同时撤回早期数据库重建建议的泛化：重复序号样本在旧版从头重放仍失败，清理派生数据可能把尚可见的前缀也变成空白。因此本页不复制历史数据库修改步骤，也不把第三方修复工具列为默认采用项。**[社区：作者修正；经验：采用边界]**
+
+### 原生改动与版本证据
+
+- [PR #42369](https://github.com/openai/codex/pull/42369)，固定提交 [095ac4f131e759b204fa6368dc42d2feff6eb21a](https://github.com/openai/codex/commit/095ac4f131e759b204fa6368dc42d2feff6eb21a)：`read_projection_steps` 对重复／回退序号推进字节位置并跳过该记录，对向前缺口生成 `SkippedOrdinalRange`，使后续可读历史继续投影；对应测试改为检查异常后仍能取得后续轮次。跳过异常不是重建异常记录中的信息。**[一手：固定补丁与测试定义，未运行]**
+- [PR #42378](https://github.com/openai/codex/pull/42378)，固定提交 [69cebb5d15939bf9b6c1b4647b53879beab91ba2](https://github.com/openai/codex/commit/69cebb5d15939bf9b6c1b4647b53879beab91ba2)：统一先解为 `serde_json::Value` 的持久化记录读取路径；[序号扫描](https://github.com/openai/codex/blob/69cebb5d15939bf9b6c1b4647b53879beab91ba2/codex-rs/rollout/src/ordinal.rs#L56-L88)改用 canonical scanner，避免因嵌套小数解码失败而从较早记录续号。PR 描述包含带小数 rate-limit 的恢复回归。它处理后续读取／续号来源，不能单独替代前项对既有异常的恢复。**[一手：固定源码与 PR]**
+- 官方 [0.154.0 发布页](https://github.com/openai/codex/releases/tag/rust-v0.154.0)日期为 2026-09-09，changelog 列出两项 PR；本轮另读该 [tag 的投影实现](https://github.com/openai/codex/blob/rust-v0.154.0/codex-rs/thread-store/src/local/thread_history_materialization.rs#L150-L290)，确认包含重复／缺口处理。不依赖“已合并”推定已发布，也不据此确定所有 Desktop 捆绑后端的版本。**[一手：发布页与 tag 源码]**
+
+### 可采用的部分与未填平的缺口
+
+保留原数据后，核对受影响后端实际版本并采用含修复的受支持版本；用正常恢复入口检查原来缺失的轮次。若仍失败，保存现象与版本并继续定位，不把清空内部存储当通用重试。对于运行中的后端，磁盘包已升级也不能代替实际进程版本核对。**[经验：由版本与恢复证据推导的建议]**
+
+AI 归属仅到公开调查过程：原帖明确以 Claude 代理身份报告并称用户已审阅；这不证明缺陷或上游补丁由 AI 生成。这里补上的是实际接收修订后的恢复结果，未测接管人的主动工时，也不是职业维护者完成第二次代码修改的证据。原始记录真的删除、其他解码／界面故障、恢复后的模型是否正确理解任务，均不在此次结果内。全程只读公开 issue、PR、固定源码与发布内容；未读取私人日志、运行 Codex、安装修复工具或执行上游 Rust 测试。**[研究：归属与验证范围]**
