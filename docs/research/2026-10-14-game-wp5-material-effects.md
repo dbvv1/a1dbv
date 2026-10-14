@@ -1,10 +1,32 @@
 主线：二／三／四；G1 材质、特效的额外能力、第二次修改和发行门槛
 改变的建议：03 材质特效行从“比较工具”收敛为“共同参数源材质＋可控运行时优先；生成贴图／视频只填明确缺口”
-新证据：核读2026-07 Material Maker 1.7固定源码、2026-10导出故障原帖、2026-08 Effekseer变更及10月XR补丁、MatLat 10月论文与非商用权重、Adobe当前资产许可和真实采用反证
+新证据：复核 Material Maker 1.7 固定源码与导出故障、Effekseer 1.80.7／XR、MatLat 非商用权重；新增 Adobe 地区价格快照、Scenario 免费商用限制与数据使用条款冲突
 
 # WP5 材质与特效：共同参数源、运行时与生成边界
 
-核实时间：2026-10-13 UTC（2026-10-14 UTC+8）。本轮仅阅读公开文档／源码／论文／开发者记录；没有安装软件、下载权重、运行模型或游戏引擎、购买服务、访问用户电脑。证据中的运行数字均标明来源，不是本轮实测。正文见[材质与特效](../../domains/game-dev/assets/materials.md)，授权汇总见[WP1](2026-10-14-game-wp1-licensing.md)。
+核实时间：2026-10-14（UTC+8）；动态事实复核于同日完成。本轮仅阅读公开文档／源码／论文／开发者记录；没有安装软件、下载权重、运行模型或游戏引擎、购买服务、访问用户电脑。证据中的运行数字均标明来源，不是本轮实测。正文见[材质与特效](../../domains/game-dev/assets/materials.md)，授权汇总见[WP1](2026-10-14-game-wp1-licensing.md)。
+
+## 动态事实表：采用前再核，最迟 2026-11-14
+
+[一手／研究] 以下只记录本次可读的一手页面与固定版本，不表示实际安装版本或已通过资产生产验收。复核日期是维护期限，不是许可有效期；采用、上传、购买或升级早于期限时，先做相应复核。引擎合同仍回到 WP1，不在本 WP 重复裁定。
+
+| 事实／精确范围 | 一手来源 | 核实日期 | 下次复核 | 对建议的影响 |
+|---|---|---|---|---|
+| Material Maker releases 仍标 1.7 为 Latest；固定 SHA `4c6cea6…` | [发布页](https://github.com/RodZill4/material-maker/releases/tag/1.7) | 2026-10-14 | 采用前或 2026-11-14 | 图编辑可采用；不把主分支变化当已发布修复 |
+| 1.7 的 `--size` 解析未传给导出；#1506 有跨平台故障自述 | [固定源码](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/parse_args.gd#L98-L165)、[原帖](https://github.com/RodZill4/material-maker/issues/1506) | 2026-10-14 | 批处理采用前或 2026-11-14 | CLI 仍试用；参数接线已核，崩溃／补丁收益未复现 |
+| 编辑器 MIT；社区库有 CC0、BY、BY-SA 分区 | [固定许可](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/LICENSE.md)、[素材库](https://www.materialmaker.org/materials) | 2026-10-14 | 选入每件素材前或 2026-11-14 | 免费工具不覆盖输入素材；保留逐件许可 |
+| Poly Haven 资产 CC0，网页预览／文字等除外；API 另有条件 | [许可](https://polyhaven.com/license)、[API](https://polyhaven.com/our-api) | 2026-10-14 | 采用／API 接入前或 2026-11-14 | 指定纹理仍是免费基线；不扩大为任意抓站许可 |
+| Designer 16、Sampler 6 是 2026 公告所述代际；7 月公告含 Painter 12.1/OpenPBR | [官方公告](https://blog.adobe.com/en/publish/2026/07/21/adobe-substance-3d-unveils-new-innovations-deliver-faster-workflows-openpbr-everywhere-digital-twins-scale) | 2026-10-14 | 锁定实际补丁版前或 2026-11-14 | 保留参数图路线；公告版本不称安装版或最新补丁 |
+| Adobe 当前页面返回日本 Collection 个人 ¥8,180/月、团队 ¥16,280/月/席，含税 | [当前计划](https://www.adobe.com/products/substance3d/plans.html) | 2026-10-14 | 购买前或 2026-11-14 | 旧美元 FAQ 撤出实时预算；必须按账户地区报价 |
+| Substance Assets 当前指向 2025-04-22 条款；限制独立分发及资产／衍生输出用于 AI | [资产专属条款](https://www.adobe.com/go/substance3dassets) | 2026-10-14 | 采用／训练用途改变前或 2026-11-14 | 游戏内合规使用可选；不作训练库默认 |
+| Effekseer 1.80.7（2026-08-22）；Unity 6.5／UE 5.8 支持为变更声明 | [变更记录](https://effekseer.github.io/Helps/18x/Tool/en/ReleaseNotes/18x.html)、[XR 固定提交](https://github.com/effekseer/EffekseerForUnity/commit/ae9bd12596edb12013c98cafc06c71ccf195cc49) | 2026-10-14 | 锁版本／目标后端前或 2026-11-14 | 工具／插件／格式分锁；native renderer 的 XR 不写已验证 |
+| Effekseer 新样例区 CC0，旧样例区仅明确随 Effekseer 播放免费 | [官方样例页](https://effekseer.github.io/en/contribute.html) | 2026-10-14 | 选包／烘焙换 runtime 前或 2026-11-14 | 仅指定新 CC0 包作运行时与烘焙对照 |
+| EmberGen Indie node-locked 永久：首年 US$300，可选维护 US$180/年；未税、默认续维护 | [精确方案页](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie) | 2026-10-14 | 购买前或 2026-11-14 | 纳入维护与税；不将永久理解成终身免费升级 |
+| JangaFX EULA 为 2025-07-19；trial 商用须购许可，Indie 有收入／预算条件；月租永久期与 FAQ 冲突 | [EULA](https://jangafx.com/legal/end-user-license-agreement)、[价格 FAQ](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie) | 2026-10-14 | 采用／购买前或 2026-11-14 | 保留商业模拟候选；不承诺月租 12 或 18 个月自动转永久 |
+| MatLat 权重卡仍是 v1.0.0、CC BY-NC 4.0；论文 v2 不覆盖权重许可 | [权重卡](https://huggingface.co/32V/MatLat)、[论文 v2](https://arxiv.org/html/2512.17302v2) | 2026-10-14 | 商用准入前或 2026-11-14 | 非商用研究观察，不进本地免费发行默认 |
+| VideoMatGen v1 是研究论文；本轮仍未核得完整商用部署包 | [论文及作者项目链接](https://arxiv.org/html/2603.16566v1) | 2026-10-14 | 发现新发布／采用前或 2026-11-14 | 不把论文吞吐量换成本地成本或交付证明 |
+| Scenario VFX Hits 与 alpha 分层是供应商能力声明，无固定底模版本或通过率 | [模型页](https://help.scenario.com/articles/5002595381-scenario-models-custom-trained)、[分层页](https://help.scenario.com/articles/8235214611-image-to-layers-and-video-to-layers-the-essentials) | 2026-10-14 | 试用／锁模型前或 2026-11-14 | 仅隔离对照，不替代可取消的玩法特效 |
+| Scenario 价格页显示 US$15/45/75 月额；免费输出仅个人／评估；自助数据使用以条款核 | [价格](https://www.scenario.com/pricing)、[2026-07-16 条款 §3/4/9](https://www.scenario.com/terms-and-conditions) | 2026-10-14 | 上传／购买／发行前或 2026-11-14 | 不承诺免费商用或不训练；计费切换、具体模型权利需补核 |
 
 ## 一、结论先行：三档首试，不是同题实测排名
 
@@ -64,14 +86,16 @@
 - **A1 [一手]** [Adobe 2026-07-21更新](https://blog.adobe.com/en/publish/2026/07/21/adobe-substance-3d-unveils-new-innovations-deliver-faster-workflows-openpbr-everywhere-digital-twins-scale)：Designer 16、Sampler及Painter 12.1推进OpenPBR，材料库转换也在进行。采用参数化和明确定义的材质语义；Painter新Skew Map Painting仍是人工绘修功能，不能计为本基准自动过关。公告不是Unity/Unreal一致性测试。
 - **A2 [一手]** [Sampler Image to Material](https://experienceleague.adobe.com/en/docs/substance-3d-sampler/using/filters/tools/image-to-material)与[Delight](https://experienceleague.adobe.com/en/docs/substance-3d-sampler/using/filters/tools/delight-ai-powered)，2026-04-07文档：AI路径推断normal/height/roughness并去阴影高光；B2M为程序化估计。保留可试候选，不承诺被遮挡细节可被正确还原。
 - **A3 [一手：产品经理答复]** [UV输入失败案例](https://community.adobe.com/questions-69/material-settings-not-ticked-630115)，2024-01-10：产品方明确I2M不是为UV set贴图而设计。该证据旧于Sampler 6，作为输入风险，不宣称新版本所有UV输入必败；后续若有专门UV保真路径应重审。
-- **A4 [一手，成本]** [价格调整FAQ](https://helpx.adobe.com/substance-3d/pricing-change.html)给出个人Texturing月付US$24.99、年预付US$249.88，Collection月付US$59.99、年预付US$599.88，自2025-03-25起；[当前计划页](https://www.adobe.com/products/substance3d/plans.html)动态金额未稳定抽取。本轮只把FAQ作预算参考，不称2026-10最终报价；地区、税及各应用包含范围在购买时核。按整套材料库和修改工时算成本，不把单张生成价当资产价。
+- **A4 [一手，成本]** [当前计划页](https://www.adobe.com/products/substance3d/plans.html)本次返回日本地区 Collection：个人 ¥8,180/月、团队 ¥16,280/月/席，含税。这是地区页面快照，不是读者所在地报价。[2025 调价 FAQ](https://helpx.adobe.com/substance-3d/pricing-change.html)的美元金额仅是历史参考，不再作当前预算默认。购买前核地区、税、承诺期及应用包含范围。成本按整套材料库和修改工时算，不按单张生成价算。
 
 ### G：前沿联合PBR研究为什么暂不替代默认
 
 - **G1 [研究：作者论文]** [MatLat v2](https://arxiv.org/html/2512.17302v2)，2026-10-08。在材质潜空间联合学习RGB、roughness、metallic，并用局部性约束改善跨视图投影一致性。它支持“专门联合模型优于任意RGB模型分别猜通道”的研究方向，不能据此称包含完整height/normal或具有商用交付证明。
 - **G2 [一手：许可与源码]** MatLat固定SHA `a0ce5d359bb58cad503099d109955b1c88dbab05`（2026-07-16）。[README](https://github.com/KAIST-Visual-AI-Group/MatLat/blob/a0ce5d359bb58cad503099d109955b1c88dbab05/README.md)与[官方权重卡](https://huggingface.co/32V/MatLat)明确checkpoint v1.0.0为CC BY-NC 4.0。**⛔商用生产不用这些免费权重**；论文的CC BY 4.0不是权重许可。代码根`LICENSE`读取404，不能宣称代码MIT；依赖还包括SD3.5、LPIPS、nvdiffrast、Real-ESRGAN和LaMa，未做完整依赖商用审计。
 - **G3 [研究：作者明确局限]** [VideoMatGen](https://arxiv.org/html/2603.16566v1)，2026-03-17，联合base color/height/roughness/metallicity，论文§5自述8×A100单资产2–3分钟、视角不连贯会鬼影/模糊、烘焙仍是简单投影。**👀研究观察，不作本地省钱默认**；没有核得完整可商用部署包，本轮不推荐安装。
-- **G4 [一手：供应商能力，不是成品证明]** [Scenario VFX Hits模型说明](https://help.scenario.com/articles/5002595381-scenario-models-custom-trained)描述的是爆炸/能量爆发等外观；[视频分层](https://help.scenario.com/articles/8235214611-image-to-layers-and-video-to-layers-the-essentials)可导alpha视频层。单帧效果与去背景能力不证明循环、击中帧、逐帧边缘或six-way材质；因此商业生成服务仅作探索对照。本轮未审特定Scenario底模/LoRA完整授权，不能放入商用推荐默认。
+- **G4 [一手：供应商能力，不是成品证明]** [Scenario VFX Hits 模型说明](https://help.scenario.com/articles/5002595381-scenario-models-custom-trained)介绍的是捕捉爆炸／能量爆发外观的 LoRA；[Video to Layers](https://help.scenario.com/articles/8235214611-image-to-layers-and-video-to-layers-the-essentials)输出带 alpha 的视频层，按时长和分辨率计成本。它们不证明循环、击中帧、烟边或 six-way 材质合格，仍只作探索对照。
+- **G5 [一手：现行价格与条款]** [价格页](https://www.scenario.com/pricing)显示 Starter/Pro/Max 为 US$15/45/75 每月、1,500/5,000/10,000 月额度；文本抽取没有锁定月付／年付切换状态，不当作可结账报价。该页明确付费方案含商用许可、免费输出仅个人／评估；[2026-07-16 v2.1.1 条款](https://www.scenario.com/terms-and-conditions) §3.1 将免费限制指向价格页，§4.3 的输出归属不应覆盖方案限制。免费额度不作为发行资产来源。
+- **G6 [一手／研究：保留反证]** 同一价格页声称不将数据用于训练，但现行条款 §4.6 允许自助账户内容用于改进服务／AI；签署企业 MSA/DPA 才有更强承诺。§9 的第三方模型政策和输入处理还须逐模型核对。**不把“输出归用户／付费可商用”写成“不训练／可自托管／权利无风险”。** 本轮没有获得 VFX Hits 精确底模／LoRA 全链授权，也没有账户内治理页证据；保持隔离候选，上传未公开项目资产前先解决数据使用边界。
 
 ### V：运行时、模拟烘焙、生成flipbook三分
 
@@ -126,3 +150,7 @@
 2026-10-14 UTC+8：内部独立复核固定Material Maker参数接线、Effekseer XR提交、新旧样例许可、Adobe输入/资产条款和MatLat权重卡；补URP同图同时赋Metallic/Occlusion槽，以及Poly Haven live API含商用免费但另履行来源标示/User-Agent条件。WP1、03与既有入口同步更新；正式云端评审仍待完成。
 
 实际运行`python3 scripts/check_offline.py`完整14阶段：97/26/10/13/14项测试均通过，无skip，8项shell语法通过；`git diff --check`通过。检查的是本仓文档/config与确定性/模拟夹具，不是Material Maker修复、模型效果、原生引擎、hosted CI或零手修资产发售验证。**[研究：验证范围]**
+
+### 2026-10-14 动态事实补核
+
+[一手／研究] 本次重读上述版本、价格、许可和 Scenario 页面，新增免费输出限制与数据使用条款反证，修正 Adobe 地区价格口径。只做公开资料审读与两份文档编辑；本次 `python3 scripts/check_repo.py` 检查 177 文件、零错误，两个文件的 `git diff --check` 通过；未重跑整套离线测试。链接检查不验证片段锚点、外部网页或事实，也不改变引擎／模型未实测边界。
