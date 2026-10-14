@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、落地补丁和最终说明对齐；18补测接管投入，并具体化陌生模块的学习检验
-新证据：Immich审查补丁链、Echoes接管实验、Trio陌生库测验与儿童手动修改实验；不补足本例真实Android复测/支持工时
+改变的建议：18/24：接收意见、落地补丁和最终说明对齐；18补测接管投入、陌生模块学习及原触发条件下的恢复
+新证据：Immich审查、接管/学习实验；10-14补CBM原用户恢复触发条件后的升级复测，不补足Immich实机/支持工时
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -60,3 +60,16 @@
 [CHI 2023初学者实验](https://arxiv.org/html/2302.07427v2)按配对随机分配Codex权限，90名参与者中69名完成，年龄10–17岁、无文本编程经验；45组代码编写→修改练习中，仅编写阶段可用AI，修改从已验收的可运行代码开始；跳过编写者获提供正确代码，修改时可查文档并获人工反馈。AI组与对照组的修改正确性为66.2%对58.4%（p=.202）；一周后测验同样提供起始代码，但无AI、文档或反馈；修改正确性为47.5%对34.8%（p=.092），测验耗时相近。它提供AI辅助编写未必妨碍随后手动修改的具体反例，但不显著不等于等效，两组都练习修改，不能分离练习本身的效果；儿童入门课程也不能外推为职业开发者的生产维护收益。**[研究：原文，§4–7]**
 
 两项研究分别涉及陌生库测验与真实手动编辑，不能拼成“先问解释、再做一次修改就能长期掌握”的因果链。本次只建议用一个可运行的小变更观察当次学习是否可用；练习本身的净收益、最优频率及长期迁移仍待验证。未开展新真人实验或生产变更。**[经验：采用边界]**
+
+## 补充证据：原用户恢复原触发条件后升级成功
+
+核实：2026-10-14（UTC+8）。**采用判断：升级失败后，先记录临时绕过，再请原接收者在安全可控的原触发条件下重试修订版；不要将环境已改变的成功当作产品修复。** 本例为 [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp)，只采用安装恢复链，不评价其检索收益。**[经验：交接建议]**
+
+1. **原失败与临时绕过。** [#1535](https://github.com/DeusData/codebase-memory-mcp/issues/1535) 的 shochdoerfer 报告 WSL2／Ubuntu 24.04、Linux x64，从 0.8.1 经安装脚本升级到 0.10.0 时失败；清掉缓存仍无效。另一贡献者[定位到目录权限检查](https://github.com/DeusData/codebase-memory-mcp/issues/1535#issuecomment-5250182071)后，原用户[移除安装目录祖先的组写位，安装成功](https://github.com/DeusData/codebase-memory-mcp/issues/1535#issuecomment-5250286016)。这一步只验证绕过，不是发布修复。**[社区：原用户与贡献者运行报告]**
+2. **修订与同人重试。** 维护者[明确选择](https://github.com/DeusData/codebase-memory-mcp/issues/1535#issuecomment-5251984180)将组可写祖先从阻断改为警告，并保留安装叶目录限制；[补丁 8eabe191](https://github.com/DeusData/codebase-memory-mcp/commit/8eabe191d2b45d6a58738392a03235c240af6996)进入 [v0.10.2](https://github.com/DeusData/codebase-memory-mcp/releases/tag/v0.10.2)。同一用户随后[把祖先目录恢复为 0775](https://github.com/DeusData/codebase-memory-mcp/issues/1535#issuecomment-5256998408)，收到具名警告，并确认安装完成、正在运行 0.10.2。成立的是原用户恢复触发条件后的安装／版本运行结果，不是因 issue 关闭而推定修好。**[一手：固定补丁与发布；社区：原用户复测]**
+
+**AI 归属只到相关开发过程。** 引入协调／安装事务的 [PR #1139](https://github.com/DeusData/codebase-memory-mcp/pull/1139)有维护者账号发布的 [Handoff to Claude](https://github.com/DeusData/codebase-memory-mcp/pull/1139#issuecomment-5017316366)，明确记录 Codex 环境中的开发与待接续工作；这是公开的 AI 协作过程证据，不是精确故障行或最终修复的生成归属。初始事务提交 [0e00ef57](https://github.com/DeusData/codebase-memory-mcp/commit/0e00ef5702d4a67b6fed667cf66800a5a0fc75f1)为该 PR 合并提交 dc7178c8 的祖先，也为 v0.10.0 的祖先；GitHub compare 核对两者均 behind_by=0。没有完整模型轨迹，不据此判断 AI 导致该故障或节省了多少支持工时。**[一手：公开开发记录与提交关系；研究：归属边界]**
+
+**不能把恢复结论写成“放宽权限仍同样安全”。** [固定源码 L769–778](https://github.com/DeusData/codebase-memory-mcp/blob/8eabe191d2b45d6a58738392a03235c240af6996/src/cli/activation_transaction.c#L769-L778)要求祖先为 root／当前用户所有的目录；普通 world-write 被拒，但保留 root-owned sticky 目录例外。组可写祖先获警告并允许，是维护者改变信任条件，不是本仓库证明其等价安全。[叶目录检查 L853–889](https://github.com/DeusData/codebase-memory-mcp/blob/8eabe191d2b45d6a58738392a03235c240af6996/src/cli/activation_transaction.c#L853-L889)仍要求当前用户所有、无组／其他写位、通过额外 ACL 检查；诊断补明目录、模式和拒绝规则。采用的是可定位的错误与责任明确的修订，不建议接收者为跑通安装自行放宽权限。**[一手：固定源码；研究：安全边界，非安全审计]**
+
+**验证与反证。** [固定测试 L615–669](https://github.com/DeusData/codebase-memory-mcp/blob/8eabe191d2b45d6a58738392a03235c240af6996/tests/test_activation_transaction.c#L615-L669)分别检查组可写叶目录拒绝时包含目录／模式／规则，以及组可写祖先下可暂存候选；只读测试，不是本次运行。GitHub compare 确认 8eabe191 为 v0.10.2 祖先（ahead_by=5、behind_by=0）。相邻 [#1526](https://github.com/DeusData/codebase-memory-mcp/discussions/1526)另有安装后客户端配置错误，后续 0.10.3 还修订守护进程的同类检查，因此不能把 #1535 的成功外推为所有集成已恢复。本轮还筛过 #472 的构建后安装报告与 #1722 的符号链接安装报告，未取得同样完整的发布后原用户重试链，不采用。全程只读公开材料，未安装或运行 CBM／模型，未核验上游全套 CI，未测长期维护投入。**[一手：源码与提交关系；社区：相邻故障；研究：验证范围]**
