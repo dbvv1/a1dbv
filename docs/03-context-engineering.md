@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 核实时间：2026-10-08；2026-10-11（UTC+8）补充论文版本、记忆/压缩边界与反例；10-13 新增固定项目指令对照、检索工具状态边界，并复核 Context Files 论文全文与公开数据，其余未重验。2026-10-14（UTC+8）补核 A Few Pages of Markdown v2 全文；10-15 补核公开包分组及换算口径，以及 Agent READMEs v2 的维护和内容分类边界。
+> 核实时间：2026-10-08；2026-10-11（UTC+8）补充论文版本、记忆/压缩边界与反例；10-13 新增固定项目指令对照、检索工具状态边界，并复核 Context Files 论文全文与公开数据，其余未重验。2026-10-14（UTC+8）补核 A Few Pages of Markdown v2 全文；10-15 补核公开包分组及换算口径，以及 Agent READMEs v2 的维护和内容分类边界；同日补核共享指令的发现、显式导入与加载观测，其他会话行为未重验。
 > 一句话：**先区分需求、环境、模型能力、上下文和验证器问题；上下文应提供必要信息，而非尽可能堆满。**
 
 ## 1. 原理（Anthropic《Effective context engineering》，2025-09 [一手]）
@@ -23,17 +23,20 @@
 
 ### 2.1 各工具的加载规则（[一手]）
 
-| 工具 | 文件 | 规则 |
-|---|---|---|
-| Claude Code | `CLAUDE.md`（托管 / 用户 / 项目 / 本地）、`.claude/rules/*.md`（`paths:` glob） | 只有 AGENTS.md、没有 CLAUDE.md 时读 AGENTS.md；两者都有时默认只读 CLAUDE.md（可设置为两者都读）；子目录文件按需加载 |
-| Codex | `AGENTS.md`、`AGENTS.override.md` | 从项目根到当前目录逐级收集；总上限 32 KiB；可配置备用文件名 |
-| Gemini CLI | `GEMINI.md`（可配置为其他文件名） | — |
-| Cursor / Copilot / OpenCode 等 | AGENTS.md（另有各自的规则格式） | — |
+**✅ 共享内容可以只维护一份，但是否只留 `AGENTS.md`，要按实际加载入口决定。** Claude Code 的默认发现会被项目路径中的 `CLAUDE.local.md` 等文件抑制；需要兼容这些会话时，保留同目录 `CLAUDE.md` 的显式 `@AGENTS.md` 导入，比要求每位使用者改个人设置更易随仓库交付。没有这些条件、且已确认原生加载时，可只保留 `AGENTS.md`。**[一手：官方契约；经验：采用判断]**
 
-**跨工具推荐做法**：
-- **只用 AGENTS.md**（Claude Code 现在也会读）；或者
-- 以 `CLAUDE.md` 为主，在其中写 `@AGENTS.md` 导入，Claude 专属内容写在下面（本仓库模板采用这种方式）。
-- 规则很多的团队可以用 [rulesync](https://github.com/dyoshikawa/rulesync) 从一个源头生成各工具的配置 **[一手：README]**。
+| 工具 | 文件 | 会改变选择的加载条件 |
+|---|---|---|
+| Claude Code | `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md` | 原生 AGENTS 入口从 v2.1.277 起提供，部分 provider／禁遥测会话到 v2.1.281 才支持。默认检查当前目录及祖先：有 `CLAUDE.md`、`.claude/CLAUDE.md` 或 `CLAUDE.local.md` 就不走 AGENTS 回退；用户级 `~/.claude/CLAUDE.md` 不触发这个抑制。子目录按需发现，不能假定所有指令已在开场加载 |
+| Codex | `AGENTS.md`、`AGENTS.override.md` | 每次运行启动时建立指令链；全局先选首个非空 override／AGENTS，项目从根到当前目录逐层选择 override、AGENTS、备用文件名，每层最多一份；项目文档默认总预算 32 KiB。不能把 Claude 的 `@` 导入或子目录按需发现直接移植过来 |
+| Gemini CLI | `GEMINI.md`（可配置文件名） | 此轮未重核，按目标客户端文档确认 |
+| Cursor / Copilot / OpenCode 等 | 各自规则格式或 AGENTS 入口 | 文件同名不证明发现、合并和刷新规则相同，此轮未重核 |
+
+- **项目路径有 `CLAUDE.local.md` 等抑制项时**：可保留仓库内显式导入，或在支持的用户／托管设置中选 `claude-md-and-agents-md`；不能把该选项写进项目 settings 就当全队生效。共同加载是拼接上下文，不是权限规则的确定性覆盖。**[一手；经验：建议]**
+- **跨仓库时**：`--add-dir` 只增加可访问目录，不默认加载其指令；额外目录加载开关覆盖 CLAUDE 文件与 rules，不覆盖原生 AGENTS 发现。确实需要共享约定时，选择相应 CLAUDE 入口或显式导入，并核实外部导入批准状态，不能只看目录可读。**[一手；经验：建议]**
+- **验证加载时**：新版本用 `/memory` 核对原生 AGENTS 路径，导入入口也核对 `/context`；`InstructionsLoaded` 不报告原生 AGENTS，但会报告 CLAUDE 导入（`include`）。没有该事件不能证明 AGENTS 没读，事件存在也不证明模型遵守了规则。**[一手；经验：建议]**
+
+**关键局限**：以上是指定日期的官方加载契约与发布记录，不是本仓客户端实测；详细优先级、版本差异及反例见[共享指令加载证据](research/2026-10-13-context-tool-choice.md#共享指令发现导入与加载证据)。需要多工具生成配置时可评估 [rulesync](https://github.com/dyoshikawa/rulesync)，但生成文件仍须通过目标客户端的加载检查。**[一手：README；经验：建议]**
 
 ### 2.2 指令文件到底有没有用？（研究证据）
 

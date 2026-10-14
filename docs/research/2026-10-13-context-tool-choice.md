@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加
-改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现；异步工具先复用兼容 SDK，再分开任务终态、工具错误与业务结果。[经验]；服务接入分清工具面、底层凭证和输入信任，插件仅按实际组件采用。
-证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；另核 Tasks 新旧错误语义、两 SDK 解包实现与官方回归定义；未运行模型或上游客户端。[一手／社区／研究] 新增 GitHub／Supabase 固定权限链、已修 HTTP 多用户漏洞与 Tenet 原研究；未把历史披露当当前复现。
+改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现；异步工具先复用兼容 SDK，再分开任务终态、工具错误与业务结果。[经验]；服务接入分清工具面、底层凭证和输入信任，插件仅按实际组件采用；共享指令按宿主发现／导入入口选择，不将个人配置、额外目录权限或 Hook 日志误作加载证明。
+证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；另核 Tasks 新旧错误语义、两 SDK 解包实现与官方回归定义；未运行模型或上游客户端。[一手／社区／研究] 新增 GitHub／Supabase 固定权限链、已修 HTTP 多用户漏洞与 Tenet 原研究；未把历史披露当当前复现；新增 Claude／Codex 指令文档、固定 Claude 发布记录与 Hook 契约交叉核对，未运行客户端。
 
 # 上下文获取：问题、版本与状态边界
 
@@ -347,3 +347,32 @@ print('4 assertions passed')
 ### 验证范围与收敛
 
 只读公开官方文档、固定源码／测试及安全报告；未安装软件、执行上游服务／利用代码、接私人账户或调用付费模型。本文没有新模型质量、成本或安全防御成功率数据。保留 Tasks 原段与固定证据；删除规模、厂商口碑、未给条件的推荐及无固定版本的安装例子，以免它们压过可直接采用的任务判断。完整离线与独立审阅结果随本工作单元交付，不据源码阅读宣称产品实测。
+
+## 共享指令：发现、导入与加载证据
+
+> 核实：2026-10-15（UTC+8，对应 10-14 UTC）。只读官方动态文档与固定发布记录；未启动 Claude Code／Codex、未修改真实配置、未执行模型或加载实验。**[一手：文档与发布记录；研究：采用判断]**
+
+### 共享指令：改变的选择与范围
+
+03 原有“只用 AGENTS.md（Claude Code 现在也会读）”省略了会让共享约定消失的实际条件。改为：已确认原生发现可只留 AGENTS；团队有项目内 `CLAUDE.local.md`、混合版本或附加仓库时，先保留明确的导入入口。不是增加另一份约定，也不要求安装同步工具；不重做 05 插件权限研究。**[研究]**
+
+### 共享指令：直接来源及反证
+
+| 来源 | 已读范围与结论 | 对选择的影响 |
+|---|---|---|
+| [Claude memory](https://code.claude.com/docs/en/memory#when-claude-code-reads-agentsmd) | 原生回退检查当前及祖先的 CLAUDE／`.claude/CLAUDE.md`／CLAUDE.local；不将用户级或 managed CLAUDE、rules 当抑制项；AGENTS.override 不被这个入口发现 | 项目路径增加 `CLAUDE.local.md` 可能让原共享约定不再加载；不能把 Codex override 当跨工具规则 |
+| 同页 [Project instructions](https://code.claude.com/docs/en/memory#choose-which-instruction-files-load) | 默认二选一；共同加载模式按目录先 CLAUDE 后 AGENTS，并去重已导入文件；选项读取用户、`--settings`、managed，忽略 project/local。插件 ID 在 v2.1.285 前后有变化 | 需要全队可复制时不依赖项目内无效选项；不把后出现解释成硬覆盖 |
+| 同页 [导入](https://code.claude.com/docs/en/memory#import-additional-files)及[额外目录](https://code.claude.com/docs/en/memory#load-from-additional-directories) | 相对导入按包含文件定位；代码块／行内代码中的 `@` 不导入。额外目录开关加载 CLAUDE 与 rules，原生 AGENTS 不在覆盖内；原生 AGENTS 的外部导入须此前获准，不弹新批准框 | “请读 AGENTS”的自然语言和实际导入不同；额外目录可读不等于约定已加载 |
+| 同页 [差异](https://code.claude.com/docs/en/memory#where-agentsmd-differs-from-claudemd)与[排障](https://code.claude.com/docs/en/memory#my-agentsmd-isnt-loading) | 原生发现与 CLAUDE 导入的事件不同；v2.1.280 前原生 AGENTS 不显示在 `/memory`／`/context`，新版本可核路径 | 旧版 UI 无路径，或当前契约下原生入口无 Hook 事件，均不能单独证明 AGENTS 缺失 |
+| [Hooks：InstructionsLoaded](https://code.claude.com/docs/en/hooks#instructionsloaded) | CLAUDE 导入 AGENTS 触发 `include`，可记录 `parent_file_path`；原生 AGENTS 不触发。事件异步、不能阻止或修改加载，输出决策字段被忽略 | 日志只证明其覆盖的加载路径，不是执行合规或规则生效验收 |
+| [Codex AGENTS](https://learn.chatgpt.com/docs/agent-configuration/agents-md#how-codex-discovers-guidance) | 启动时建立链，全局与项目分开；项目每层至多一个文件，override 优先，默认项目预算 32 KiB | 文件名可以共享，发现时机、override 与合并路径不能共享假设 |
+
+**顺序与触发补充**：Claude 的 CLAUDE 层级先 managed、再 user，项目路径从文件系统祖先向当前目录拼接，同目录 local 在后；子目录 CLAUDE 在访问相关文件时按需加载。原生 AGENTS 的官方子目录说明指定 Read 触发，不能把 CLAUDE 的所有触发操作自行外推过去。共同加载模式也不是冲突解决器：应移除互相矛盾的约定。**[一手：上述 memory 原文；研究：边界判断]**
+
+**固定版本反证**：[Claude changelog `94506ff0d3bd9185f1752da36e968775021fb48f`](https://github.com/anthropics/claude-code/blob/94506ff0d3bd9185f1752da36e968775021fb48f/CHANGELOG.md)（本次 HEAD，顶版 2.1.300）记录 2.1.277 引入 AGENTS，2.1.281 扩展到 Bedrock／Vertex／Foundry／网关及禁遥测会话，2.1.290 修复子目录文件被 `@` 提及时未附带 AGENTS 的问题。它支持“版本与触发路径影响加载”，不证明任意客户端当前构建已实测。动态 memory／hooks 正文按核实日引用，不能假装它们全部固定在这个 SHA。**[一手：固定发布说明]**
+
+### 共享指令：采用、撤回与未验证
+
+- **采用**：只维护一份公共内容；原生入口条件成立时不额外造包装，否则保留 CLAUDE 显式导入。既有导入与原生共同加载会去重，不能仅为“少一个文件”删除仍承担兼容或观测作用的入口。**[研究：建议]**
+- **撤回**：删除包装前确认它没有 Claude 专属内容、兼容旧会话、外部导入或日志用途；若共享约定缺失，先修正发现路径，不能先归因模型不听话或增加规则长度。**[研究：建议]**
+- **验证分层**：本轮确认文档间契约与发布版本；未执行任何客户端，因此没有实际日志、规则遵循率、token／成本或质量收益。未来只有目标客户端的加载记录及任务行为能验证部署与效果；不以一张配置文件或事件日志替代。**[研究]**

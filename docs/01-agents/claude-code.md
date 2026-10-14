@@ -29,7 +29,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | 机制 | 说明 |
 |---|---|
 | `CLAUDE.md` | 托管策略 / 用户（`~/.claude/CLAUDE.md`）/ 项目（`./CLAUDE.md` 或 `./.claude/CLAUDE.md`）/ 本地（`CLAUDE.local.md`）四层；支持 `@path` 导入 |
-| **AGENTS.md** | v2.1.277 起：项目**没有** CLAUDE.md 时读取 AGENTS.md；两者都有时默认只读 CLAUDE.md。可在 `/config` → Project instructions 改为 `claude-md-and-agents-md` |
+| **AGENTS.md** | v2.1.277 起支持，但默认发现受父目录及 `CLAUDE.md`／`CLAUDE.local.md` 等条件影响；共享约定是否需显式导入、额外目录及加载观察边界见 [03 条件说明](../03-context-engineering.md)。配置模式不等于所有路径都自动加载 |
 | `.claude/rules/*.md` | 用 `paths:` glob 让规则只在处理匹配文件时加载 |
 | 子目录 CLAUDE.md | 按文件访问路径按需加载；2.1.288/293 分别修复 Write/Edit 和部分单文件 Bash 读取遗漏，见下文；`claudeMdExcludes` 可排除不相关的 |
 | Auto memory | Claude 自己记录的经验（按仓库存储，worktree 间共享），每次加载前 200 行或 25KB |
