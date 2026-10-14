@@ -1,6 +1,6 @@
 主线：1（玩法反馈）／3（第二次修改仍可靠）／4（可发布与可维护）。
-改变的建议：从“纯逻辑＋模块化即可”推进为“先固定状态所有者、时钟、退出和重置契约；只在具体复杂度出现时升级 HFSM、行为树、GAS 或 ECS”。
-新证据：读取五个固定 SHA 的项目／包、三个历史修改链及 2026 年官方变更；Chop Chop 的实例化、UnityHFSM #71、Cinemachine #1122、Unity Behavior 1.0.16 给出可核查反例。
+改变的建议：从“纯逻辑＋模块化即可”推进为“先固定状态所有者、时钟、退出和重置契约；只在具体复杂度出现时升级 HFSM、行为树、GAS 或 ECS”；相机另区分可选效果、默认值与首玩入口。
+新证据：读取五个固定 SHA 的项目／包、三个历史修改链及 2026 年官方变更；Chop Chop 的实例化、UnityHFSM #71、Cinemachine #1122、Unity Behavior 1.0.16 给出可核查反例；另补 Endless Sky 加速度镜头的替代实现、试玩分歧、默认值撤回与发布版源码。
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
@@ -442,3 +442,17 @@
 [研究] 最小采用成本是既有状态入口、检查点激活反馈，以及出生点安全、敌人／机关重置和保留进度的内容维护；额外驻留也有内存成本，不承诺零成本即时重试。AI 可记录阶段边界、维护入口与回归，人决定重试距离和失败代价。第二次修改只延长一个已有遭遇或移动一个检查点：重新观察回到同一决策点的全过程，检查旧奖励、已收集物、机关和出生安全，不仅断言场景恢复成功。无需新增回放或通用重试框架。
 
 [一手] [Celeste64 ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md#license)区分 Source 的 MIT（注明例外）、Content／Celeste IP 与 FMOD；本文只借机制，不复制美术音频或将短期 jam 项目当成生产底座。开发者文章不授权使用成品资产。[研究] 本轮已读原文及固定源码，未运行游戏、引擎、模型、计时实验或玩家测试；不报重试耗时、收益比例或单人实现工时。
+
+## Endless Sky：非平台游戏的动感镜头与默认值取舍
+
+核实：2026-10-14 UTC。主线 1；补 05 §8 从“效果能关闭”到分别决定效果、默认值与首玩可发现性。比较的是俯视太空贸易／战斗中的居中跟随与加速度偏移，不重做输入研究，也不声称两种方案通过了全部玩法回归。[研究]
+
+**两个可运行选择及代价。** [一手] [#9638](https://github.com/endless-sky/endless-sky/pull/9638)于 2024-05-19 合并（`ae5c7f1fb6e791a5742cab23a9332f72913893d9`）；[固定 Engine.cpp](https://github.com/endless-sky/endless-sky/blob/cbca555b1cdca081b57ee7473f3db07a31181d96/source/Engine.cpp)的 OFF 返回飞船中心／速度，ON 对相机速度与位置插值，REVERSED 反向偏移。同一飞行与战斗可以保留稳定参照，也可以用偏移强调加速感；偏移会改变前后方可见空间，增加重新定位目标的负担，具体收益属于玩法判断。[研究] [#8446 的讨论](https://github.com/endless-sky/endless-sky/pull/8446#issuecomment-1441120912)明确提出希望高速前进时看见更多前方空间；另一位[反馈者](https://github.com/endless-sky/endless-sky/pull/8446#issuecomment-1441124904)认可动感却担心目标辨识与长时间舒适度。这些是方案反馈，不是计时或晕动测试。[社区]
+
+**改得更顺，不等于所有人都应开启。** [一手／社区] 较早的 [#7347](https://github.com/endless-sky/endless-sky/pull/7347)按推力状态更新偏移；Koranir 在[2023-12-30 比较](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872451536)中认为其起止突兀，并给出替代视频。原方案修订后，alexrovw [实际使用并表示会保留](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872582712)，随后[复测确认](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872604442)复杂转向／停车／倒车下轮廓对齐和反向模式故障已修，但仍指出武器后坐力边例。该 PR 未合并，作者关闭它让位于 #9638；不能把前者的测试移作后者全面通过。#9638 获原方案作者[正面体验评价](https://github.com/endless-sky/endless-sky/pull/9638#pullrequestreview-1807800878)，Koranir 又在[2024-05-18](https://github.com/endless-sky/endless-sky/pull/9638#issuecomment-2119032487)报告用 Marauder Leviathan 试玩后认为效果轻微且增加动感，支持默认开启；最终默认为 ON。没有同一批玩家的受控 A/B，不能宣布后一算法普遍更优。
+
+**后续反馈改变的是默认值。** [一手] [#12252](https://github.com/endless-sky/endless-sky/pull/12252)于 2026-02-12 合并，仅改 Preferences.cpp：将加速度镜头缺省索引从 1 改 0，并去掉 Landing zoom／Show hyperspace flash 的默认开启；[之前](https://github.com/endless-sky/endless-sky/blob/f57851bc0cfe715c6e276a3e1402c131fe368a4c/source/Preferences.cpp#L65-L66)与[之后](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Preferences.cpp#L65-L66)可核。作者认为长设置列表使新人未必找到关闭入口，甚至可能直接退出，但明确写 Testing Done: None；这是维护者的可接近性判断，不是玩家流失数据。[社区] 合并后 Koranir [质疑是否收到实际投诉](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3889579433)；warp-core [说明自己也抱怨](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3897596643)，Amazinite [第一人称表示镜头效果更令人恶心而非有趣](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3898047376)。后者未分离加速度与着陆缩放的贡献，也未给安装版本，不能转写为独立玩家群体共识或精确算法因果。
+
+**交付范围与采用判断。** [一手] 发布版 [v0.11.0](https://github.com/endless-sky/endless-sky/blob/v0.11.0/source/Preferences.cpp#L65-L66)（2026-01-31）仍 ON，[v0.11.1](https://github.com/endless-sky/endless-sky/releases/tag/v0.11.1)（2026-04-25，unstable）的 [changelog](https://github.com/endless-sky/endless-sky/blob/v0.11.1/changelog#L263)与源码已 OFF，[v0.11.2](https://github.com/endless-sky/endless-sky/releases/tag/v0.11.2)（2026-06-27，stable）[仍 OFF](https://github.com/endless-sky/endless-sky/blob/v0.11.2/source/Preferences.cpp#L66-L67)。[固定 Camera.cpp](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Camera.cpp#L46-L74)保留三种模式；[设置读取](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Preferences.cpp#L243-L244)仍采用已保存的值，因此升级不等于所有老玩家实际关闭。[研究] ✅ 对已有明确不适反馈、又不承担必要提示的运动效果，考虑稳定缺省＋可发现的可选效果；代价是喜欢动感者可能不主动发现它，同时增加设置说明与各模式回归成本。不要因此删除有正面反馈的效果，也不默认关闭所有视觉反馈。AI 可实现独立开关、保留旧选择与检查菜单路径；人决定目标体验，首玩测试核实际能否找到并理解开关。
+
+[研究] **证据终点**：已有实现选择、修改后实际使用与后续默认值撤回；人群分母、持续使用时长、默认关闭后的舒适度／留存改善均未知。只读公开源码、原帖与发布信息，未运行游戏／引擎／模型，未测性能或工时。代码按文件声明 GPL-3.0-or-later；这里只借设计关系，不作为可直接复制进 Unity／Unreal 的插件。新增收益复测出现前，不再用更多相似镜头投诉填充此链。
