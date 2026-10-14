@@ -1,10 +1,10 @@
 主线：二，兼三
-改变的建议：05 §2.5 / §4：按平台、原生对象或生产缺省契约补窄参考；验收实际入口，已有实现、脚本或模板足够就不再加 Skill
-新证据：Cloudflare、pivot、Seedkit 的既有契约证据；新增 Next.js 固定三臂定义与原生文档／Skill 内容覆盖比较，非模型净收益
+改变的建议：05 §2.5 / §4：按平台、原生对象或生产缺省契约补窄参考；验收实际入口，已有资源足够就不再加 Skill，明确质量目标也可成为补领域依据的入口
+新证据：Cloudflare、pivot、Seedkit 的既有契约证据；新增 Next.js 固定三臂定义与原生文档／Skill 内容覆盖比较，以及固定 frontend-design 的设计语义与历史操作反例，均非模型净收益
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
-> 核实：2026-10-13。长期任务二。第 1–5 节为 Cloudflare 调查（UTC+8）；第 6 节同日追加原生 pivot 调查（UTC）；第 7 节于 2026-10-14（UTC）补核生产缺省契约与历史生成产物。第 8 节同日追加 Next.js 固定源码比较及累计取舍。分别执行自行编写的表达式、文件结构与 AST 探测，未部署 Cloudflare、运行 Office/Django 应用或新模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
+> 核实：2026-10-13。长期任务二。第 1–5 节为 Cloudflare 调查（UTC+8）；第 6 节同日追加原生 pivot 调查（UTC）；第 7 节于 2026-10-14（UTC）补核生产缺省契约与历史生成产物。第 8 节同日追加 Next.js 固定源码比较及累计取舍；末节同日追加设计质量目标与历史操作反例。分别执行自行编写的表达式、文件结构与 AST 探测，未部署 Cloudflare、运行 Office/Django 应用或新模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
 
 ## 1. 为什么选这个来源
 
@@ -386,3 +386,47 @@ N2–N3 中三臂都安装同一 Next tarball、执行相同 fixture setup；包
 - **N8**：[根 .gitignore](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/.gitignore#L85-L89)、[evals README](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/README.md)。
 - **N9**：[046 EVAL.ts](https://github.com/vercel/next.js/blob/8521c6ae04998fc8ff87ae0d3de24e1fa4e88803/evals/evals/agent-046-adopt-partial-prefetching/EVAL.ts#L39-L74)。
 - **N10**：[公开 Next.js Agent Evals](https://nextjs.org/evals)，2026-10-14 读取的统计说明；动态页面，不绑定本节源码快照或一月历史博客结果。
+
+## 质量提升：领域依据、目标与过程分开判断
+
+> 核实：2026-10-14（UTC）。只读固定 Skill、许可、W3C 技术说明与官方历史复盘；没有生成界面、运行模型或验证真实用户任务效率。
+
+### 改变的建议
+
+**✅ 功能可用并不排除有依据的质量改进。** 05 原有的资料、顺序与能力缺口仍成立；本节补充“明确质量目标”这一入口，不把跨步骤遗漏设为试用 Skill 的唯一前提。先复用项目 brief 与设计系统；需要跨任务复用的领域依据可保存为窄 Skill。是否保留看目标用户的实际操作及修改成本，而非只看截图的新颖程度。[经验：采用判断]
+
+### 固定文本里的四种不同输入
+
+固定读取 `anthropics/skills@dbd4588f9e1033efb41dad4bef2f7947c8993d44` 的 frontend-design；这份 2026-10-09 版本不是下面三月实验的版本回执。[一手：D1；研究：版本边界]
+
+- **设计依据**：视觉结构表达信息关系；编号要对应真实序列，动作反馈与名称要保持可理解的一致性。
+- **目标／偏好**：强化视觉身份、避开模板化默认值；同时以具体 brief 为先。这不能推出所有工作台都应优先追求新颖。
+- **流程**：先计划，再对照 brief、实现与自评；整包试用会同时改变过程。
+- **工具能力**：截图审阅依赖现有环境支持，文本没有创建浏览器执行能力。
+
+以上是内容分类，不是效果测量，也不证明模型原本不知道这些原则。[一手：D1；研究：分类]
+
+### 一项可采用的机制：让信息关系决定结构
+
+并列产品能力不要仅为版式装饰标成 01/02/03；有先后依赖的操作则应显示步骤。前者避免暗示不存在的顺序，后者帮助理解下一步。HTML 的对应依据是 W3C H48：有序、无序及名称—值关系分别有适当的列表结构，辅助技术可据此导航。H48 是充分技术之一，不是唯一合规实现；本例不声称所有编号都代表操作依赖。[一手：D1、D2；经验：应用推导]
+
+这比“再评审一次”多给了一项可判断的选择依据，也不依赖任何特定字体。反过来，不能为避开常见版式而删掉真正步骤；适合品牌展示的视觉偏好也不能自动替代高密度任务中的检索、比较与操作需求。[经验：采用边界]
+
+### 历史产物和操作反例：漂亮仍可能不知下一步
+
+Anthropic 2026-03-24 的游戏制作器复盘公开了同一初始提示的两臂界面及作者实际操作反馈：完整 harness 的 planner 读取 frontend-design，作者报告界面与可玩性改善，但仍需自行探索“先创建 sprite/entity，再填充关卡”的顺序。它支持视觉改善不自动解决任务引导这一反例，不是独立终端用户研究。[一手：D3，作者操作报告]
+
+**不能归因给固定 Skill**：三月实验实际使用的 Skill 提交未锁定，更不能绑定十月文本；两臂同时改变代理架构、迭代、规格和投入，单代理为 20 分钟／9 美元，完整 harness 为 6 小时／200 美元，并由短提示扩展成 16 项功能。该报告不能拆出设计依据、流程或额外预算各自的贡献，也不能证明编号原则已被应用或测量。保留本例是为了限制视觉质量结论，不是推荐整套 harness。[一手：D3；研究：因果边界]
+
+2025-11-12 官方文章另有 dashboard 前后图片，但未提供操作效率或真实任务使用反馈；后半的 web-artifacts-builder 还引入工具脚本，不能与纯设计指导混算。本文不据展示图宣称质量上限或当前模型净收益已经提高。[一手：D4；研究：证据边界]
+
+**停止条件**：已有资料足以支持“质量目标也可成为入口”与信息关系这条窄建议。后续只有取得绑定版本的产物、实际操作反馈与投入，才继续追效果；不为补数字另跑未经授权的模型实验。[经验：研究取舍]
+
+### 来源与许可
+
+- **D1**：[固定 frontend-design](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/frontend-design/SKILL.md)。
+- **D2**：[W3C H48：列表关系与语义](https://www.w3.org/WAI/WCAG22/Techniques/html/H48)，页面标注 2026-01-12 更新。
+- **D3**：[Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)，2026-03-24，游戏制作器的两臂展示与作者操作反馈。
+- **D4**：[Improving frontend design through Skills](https://claude.com/resources/articles/improving-frontend-design-through-skills)，2025-11-12，展示与工具配方边界。
+
+D1 同目录固定 [LICENSE.txt](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/frontend-design/LICENSE.txt) 为 Apache-2.0；本文仅分析和少量转述并链接来源，没有复制整份 Skill、代码或图片，不将该许可外推至官方博客。[一手：许可；研究：使用范围]
