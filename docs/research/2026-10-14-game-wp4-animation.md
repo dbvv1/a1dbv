@@ -1,6 +1,6 @@
 主线：二／三／四；G1 动画、绑定、第二次修改与授权
 改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法
-新证据：[一手／研究] 近期工作流、论文／发行差异、Shards 与固定重定向／IK 源码反证；仅资料及源码核查，未证实接触质量、零手修通过率或二改成本
+新证据：[一手／研究] 近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
 
 # WP4：动画、绑定与第二次修改
 
@@ -288,3 +288,33 @@ Daniel Holden 的 [2026-07-30 原文](https://theorangeduck.com/page/inverse-kin
 - [一手／研究] 顺查 Text3.0 发现官方页内口径差异：[能力页](https://uthana.com/docs/api/capabilities/text-to-motion#text-to-motion-30)已写 PAYG 账户普遍可用，但 GraphQL reference 的 `create_text_to_motion_job` 仍标 limited release。不能把后一段当当前统一准入结论；实际采用先核账户资格。两者一致要求异步 `create_text_to_motion_job`＋`model="text-to-motion-3.0"`，不是旧同步 `create_text_to_motion` 的默认示例。
 
 [研究：变化与范围] 正文现在把 2.1 的显式选择和结果身份置于推荐旁，避免只记商品名却取到默认 2.0；原有接触、循环和零手修撤回标准不变。本次未登录账户、调用模型或执行引擎验收，不把后处理存在写成质量通过。
+
+## 交互与时长补研：分段对位和动作进度
+
+核实：2026-10-15（UTC+8）。主线二／三。改变的选择：已有动作的交互目标改变，不应一律增 IK 或换生成器；先判断是整体对位、局部末端偏差，还是支撑路径／动作种类已经变化。此前比例章节覆盖参照、可达与体积，本节新增时间窗口与姿态／位移双时间线，沿用原生混合路线，不增加 Motion Matching 推荐。[研究]
+
+### A. 原生能力分别承诺什么
+
+- **Unity 6.3 `Animator.MatchTarget`**：[API](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Animator.MatchTarget.html)调整 GameObject 位姿，使 AvatarTarget 在指定状态进度到位；只支持 base layer，需 `applyRootMotion`，同时只能有一个匹配，否则新匹配被丢弃。循环 clip 错过 startNormalizedTime 会移至下一圈。`completeMatch` 的中断选项还影响是否立即到目标。[一手：官方合同] [研究] 因此手／脚分段应顺序调度，不能把两个同时提交的匹配当双手 IK；缩短动画或更换转场后应核起始窗口是否仍会执行。接入仍需遵守既有位移权威，不能顺手让 Animator 与 motor 同时写位置。
+- **UE 5.8 Motion Warping**：[官方文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/motion-warping-in-unreal-engine)以 Montage Notify State 或蓝图配置窗口与命名目标；Skew Warp 对齐窗口末的 root motion，攀上示例要求窗口覆盖手放上障碍的阶段，并可分别选择平移／旋转等修正。[一手] [研究] 不与 Unity 的 base-layer／单匹配约束混同；终点对齐不证明沿途支撑、肢体路径或碰撞安全。本文没有读取受限 UE 引擎源码，原生部分只按公开合同判断。
+
+### B. Unity 独立开发者：缩短对位范围有收益，扩成交互系统仍有内容代价
+
+[UpRoom Games，Brian 的 Procedural Climbing](https://www.uproomgames.com/dev-log/procedural-climbing)（页面更新 2021-11-15）记录迭代：全程手部 target match 让预备阶段沿墙滑动；只在离地到抓边之间修正有改善，但源 root 后退仍使角色掉落。随后拆成手到边、脚上台的两个短匹配，作者报告有限高度方块翻越已可用；约二十段动作＋状态机仍未覆盖他期望的自由攀爬。[一手：开发者自述，非本仓复测]
+
+反证也保留：作者后来使用 FinalIK、两个基础姿态、效应器时序、弹簧／摆动和抓点系统做出更动态的路线；上台等仍用传统动画。它证明程序运动是一条可行探索，不证明只加 IK 即可，更不证明全程没有美术劳动。本文不复制其示例代码，也不以该文章替付费依赖与素材清权。[一手／研究] 采用建议是：有限翻越优先兼容片段与分段对位；自由攀爬确为核心玩法时才比较专用程序方案，并把接触调度、重心响应和进入／退出动作一起算入维护成本。
+
+### C. Unreal 修订链：变速不能只改可见 Montage
+
+[ALS-Refactored 4.13 发布记录](https://github.com/Sixze/ALS-Refactored/releases/tag/4.13)明确修复 mantling Montage 与 root motion source（RMS）失步，以及忽略 Montage play rate；也修过穿顶并增加目标销毁处理。[一手：作者发行说明] 本轮 `git ls-remote` 固定标签为 `4c4b7390f401eaf6bdbf7d205668e5e0a61da86b`；[README](https://github.com/Sixze/ALS-Refactored/blob/4c4b7390f401eaf6bdbf7d205668e5e0a61da86b/README.md)对应 UE 5.3，属于历史修订而非当前 UE 5.8 插件采用推荐；[LICENSE.md](https://github.com/Sixze/ALS-Refactored/blob/4c4b7390f401eaf6bdbf7d205668e5e0a61da86b/LICENSE.md)为 MIT，不据此推定其他来源动画许可。静态读以下路径，不运行项目：
+
+- [AlsCharacter_Actions.cpp](https://github.com/Sixze/ALS-Refactored/blob/4c4b7390f401eaf6bdbf7d205668e5e0a61da86b/Source/ALS/Private/AlsCharacter_Actions.cpp#L463-L529)：取 `StartTime`、剩余片段时长与 `Montage->RateScale`；RMS 的 Duration 为剩余时长除以倍率。末 root Z 近零则拒绝启动。L223–229 还按目标速度上限过滤，L394–400 按在地／空中和高度分 mantling type。[一手：固定实现] 这些是该实现的适用域，不是推荐其他游戏照抄它的阈值。
+- [AlsRootMotionSource_Mantling.cpp](https://github.com/Sixze/ALS-Refactored/blob/4c4b7390f401eaf6bdbf7d205668e5e0a61da86b/Source/ALS/Private/RootMotionSources/AlsRootMotionSource_Mantling.cpp#L37-L62)：由 `MontageStartTime` 加上 RMS elapsed time 乘 `RateScale` 得 MontageTime，再同步 Montage 位置；代码注释注明扣除 DeltaTime 用于避免一帧滞后。目标位置由保存的相对变换重建以跟随移动对象，失效目标则清 RootMotionParams。[一手：固定实现] 借的是两条进度同步和目标寿命的检查点，不将这段项目专用时序公式推广成 UE 通用做法或性能收益。
+
+其自动选起点在 [同文件 L542–599](https://github.com/Sixze/ALS-Refactored/blob/4c4b7390f401eaf6bdbf7d205668e5e0a61da86b/Source/ALS/Private/AlsCharacter_Actions.cpp#L542-L599)直接引用 Laura 的 [2022-05-15 原文](https://landelare.github.io/2022/05/15/climbing-with-root-motion.html)：从源 root Z 找剩余高度，可免手维护一套高度曲线；作者同时说明可能从半段攀爬开始，蓄力另需处理，反弹等多解轨迹需要额外选点规则。示例未覆盖 XY、IK、预备混合，且假设事先预测碰撞后关闭胶囊碰撞，不能作为任意障碍通用模板。[一手／研究] Laura 与 ALS 为明确沿用关系，不计成两个独立成功案例；新根轨迹应保留可选起点的相位语义，不能仅因高度相同就接受。
+
+### D. 采用／撤回与实际验证范围
+
+[研究] **✅ 保留原生路线：** 同类循环相位兼容则混合；同一动作的局部接触偏移则有限 IK／重定向；姿态与支撑顺序正确、整体位置改变则分段对位。**🧪 改造：** 统一动作进度，给交互目标定义可支持的高度／朝向／净空／运动范围。**⛔ 撤回这一动作组合：** 对位只能靠提前离地、删掉必要蓄力、持续悬浮或穿过障碍时，换兼容片段；没有许可片段且不能程序重建可信运动时，收窄可交互范围。缩范围的代价是自由度降低，分动作的代价是内容分支增加，程序方案的代价是主动设计运动与调参；都比把几何误差为零直接算作质量合格诚实。
+
+本轮只读公开官方合同、开发者文章、发行记录和固定源码；没有下载动画包、复制上游实现、运行引擎／模型或测通过率。后续获准实测时，用同一动作改变身材比例、局部／全局时长和目标位置，观察预备承重、抓握后漂移、退出姿态及限制范围外的拒绝行为；与已有比例章节合并验收，不新设实验模块。[研究]
