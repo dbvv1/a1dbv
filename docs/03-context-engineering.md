@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 核实时间：2026-10-08；2026-10-11（UTC+8）补充论文版本、记忆/压缩边界与反例；10-13 新增固定项目指令对照、检索工具状态边界，并复核 Context Files 论文全文与公开数据，其余未重验。
+> 核实时间：2026-10-08；2026-10-11（UTC+8）补充论文版本、记忆/压缩边界与反例；10-13 新增固定项目指令对照、检索工具状态边界，并复核 Context Files 论文全文与公开数据，其余未重验。2026-10-14（UTC+8）补核 A Few Pages of Markdown v2 全文与分组口径。
 > 一句话：**先区分需求、环境、模型能力、上下文和验证器问题；上下文应提供必要信息，而非尽可能堆满。**
 
 ## 1. 原理（Anthropic《Effective context engineering》，2025-09 [一手]）
@@ -45,7 +45,7 @@
 | **Do Context Files Help Coding Agents?**（arXiv 2607.27250，2026-07） | Sonnet 4.6 / GPT-5.5，3 个 Python 仓库，15／17 任务；公开分析过滤后 288 条记录 | 样本中未检测出正确率收益；10–15pp 是作者限定的描述性等价区间，不能外推为普遍无效。两仓检索语料不匹配、注入渠道不同；[全文及公开数据复核](research/2026-10-13-context-study-reassessment.md#context-files失败解释与分析参数)还发现任务提示、功效参数与失败归因需分开解释。**[研究：全文；经验：公开数据与源码复核]** |
 | **On the Impact of AGENTS.md Files on Efficiency**（arXiv 2601.20404v2，2026-03） | GPT-5.2-Codex；10 仓库、124 个候选小 PR，附录有 113 对有效运行 | 运行时间／输出 token 中位数分别低约 28.6%／16.6%（按两组中位数计算）；50 题人工合理性检查不是正确率或测试通过率对照，不能解释为同等正确性下的提效保证；[附录复算](research/2026-10-13-context-study-reassessment.md#agents-效率耗时与正确性的边界)另限定有效分母、CLI 配对版本与 total 口径。**[研究：全文；经验：公开数据复算]** |
 | **Configuration Smells in AGENTS.md Files**（arXiv 2606.15828，2026-07） | 灰色文献综述 + 100 个热门仓库 | 6 种“配置坏味道”，见 2.3 节；**Lint 泄漏 62%、上下文膨胀 42%、Skill 泄漏 35%** **[研究：原文]** |
-| **A Few Pages of Markdown**（arXiv 2608.25241，2026-08） | 441 个仓库，RAMP 成熟度模型 | 引入 Agent 后提交数增加 28–38%（与成熟度无关）。但在 Agent 主导的仓库里，**没有提交 AI 配置**的认知复杂度增幅约是有配置的两倍（+53% 对 +27%），静态分析告警增幅是 1.7 倍。73.8% 的配置文件提交后再没改过（“设了就忘”）。属观察性研究，只能作为假设 **[研究：摘要]** |
+| **A Few Pages of Markdown**（arXiv 2608.25241v2，2026-09） | 441 个企业仓库用于开发 RAMP；另分析 509 个开源处理仓库，核心 agent-first 分层为 214 个无配置对 182 个有配置 | agent-first 指观察期未检出 AI IDE 配置痕迹，不是 Agent 贡献占多数。认知复杂度估计增幅为 +52.7% 对 +26.7%，这是增幅之比，不是总复杂度之比。配置按观察终点分组且多数后于或同期于 Agent 采用，不能解释为预先写文件的因果收益；[方法边界](research/2026-10-13-context-study-reassessment.md#a-few-pages分组时间与维护)另说明维护未被效果评估。**[研究：全文]** |
 | **Agent READMEs**（arXiv 2511.12884） | 1,925 个仓库的 2,303 个指令文件 | 指令文件像配置代码一样频繁小改；内容以测试步骤（75.9%）、实现细节（70.8%）、架构（68.1%）为主；**安全（14.8%）和性能（14.5%）很少写** **[研究：摘要]** |
 
 **综合结论**：
@@ -54,6 +54,7 @@
 3. **不要自动复制完整概览、目录树和逐文件说明**。只在它们提供难以从代码发现的信息、并有任务价值时保留；上述研究不构成对所有架构地图的否定。
 4. 越是小众的语言或工具链（比如 Unity 特有的编辑器和序列化约定），越值得写进去，因为模型的先验知识更少。
 5. 安全和性能这类非功能要求最常被遗漏，值得补上。
+6. **🧪 从短配置试用，按事实变化维护**：写入项目特有的命令、禁区与约定；命令、权限或架构变化，以及失败反例出现时，同步修订并验证。比较正确性、返工与成本，不以文件数量或编辑频率作目标；观察到配置很少修改，不能证明无需维护。**[经验：建议]**
 
 **本仓库历史实验报告（原始产物待补齐，本轮未复现）**（[19 第 4 节](19-experiments.md#4-e3指令文件长短)，n 很小）**[经验：实测]**：同一个 bug 修复任务，27 次运行**全部成功**，有没有指令文件不影响成败，这和上面的研究一致。但两行的短文件让回归测试从 2/9 提高到 9/9，并让 Agent 用了项目自己的测试命令，成本只多约 6%。LLM 生成的 526 行长文件也改变了行为，过程差异与其中测试约定一致，成本是无文件时的 1.6–2.7 倍；没有独立消融，不能断言只有那段起作用。
 
@@ -194,7 +195,7 @@
 - [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - 官方文档：[Best practices](https://code.claude.com/docs/en/best-practices)、[Memory](https://code.claude.com/docs/en/memory)、[Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Codex `codex-rs/core/src/agents_md.rs`、`codex-rs/config/src/config_toml.rs`
-- 论文：[arXiv 2602.11988](https://arxiv.org/abs/2602.11988)（读了正文）、[arXiv 2606.15828](https://arxiv.org/abs/2606.15828)（读了正文）、[arXiv 2607.27250](https://arxiv.org/abs/2607.27250)（10-13 读全文并核公开源码／数据）、[arXiv 2601.20404](https://arxiv.org/abs/2601.20404)（10-13 读 v2 全文）、[arXiv 2608.25241](https://arxiv.org/abs/2608.25241)、[arXiv 2511.12884](https://arxiv.org/abs/2511.12884)（读了 arXiv 摘要原文）
+- 论文：[arXiv 2602.11988](https://arxiv.org/abs/2602.11988)（读了正文）、[arXiv 2606.15828](https://arxiv.org/abs/2606.15828)（读了正文）、[arXiv 2607.27250](https://arxiv.org/abs/2607.27250)（10-13 读全文并核公开源码／数据）、[arXiv 2601.20404](https://arxiv.org/abs/2601.20404)（10-13 读 v2 全文）、[arXiv 2608.25241v2](https://arxiv.org/html/2608.25241v2)（10-14 读全文）、[arXiv 2511.12884](https://arxiv.org/abs/2511.12884)（读了 arXiv 摘要原文）
 - [liao.gg：Agents don't need memory, they need documentation](https://liao.gg/blog/agents-dont-need-memory)（[HN](https://news.ycombinator.com/item?id=49945933)）
 - Harness 开销实测：[Systima](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)（72KB 指令文件让每次请求多约 2 万 token）
 
