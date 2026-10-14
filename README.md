@@ -58,7 +58,7 @@
 | [06 Hooks 与护栏](docs/06-hooks-and-guardrails.md) | Hooks、权限模式、auto mode 实测数据、沙箱 |
 | [07 工作流](docs/07-workflows.md) | 验证闭环、探索-计划-实现、访谈式 Spec、TDD、SDD（含批评）、Ralph 循环、长时任务 harness |
 | [08 多 Agent 与并行](docs/08-multi-agent.md) | 5 种并行方式、“读并行、写串行”的证据、子 Agent 配置与委派写法、操作手册 |
-| [09 评审与质量](docs/09-review-and-quality.md) | 质量数据、托管评审的实际数据、REVIEW.md、分层评审流水线、给 AI 配置做评估 |
+| [09 评审与质量](docs/09-review-and-quality.md) | 质量数据、托管评审的实际数据、REVIEW.md、按风险选择评审层、给 AI 配置做评估 |
 | [10 安全](docs/10-security.md) | 威胁模型、真实事件与四个案例拆解、auto mode 误差、沙箱手册、CI 安全、参考架构、清单 |
 | [11 社区脉搏](docs/11-community-pulse.md) | 痛点排行、口碑、争议、生产力证据 |
 | [12 资源索引](docs/12-resources.md) | 一手信息源、技术社区、精选清单、如何持续跟进 |
