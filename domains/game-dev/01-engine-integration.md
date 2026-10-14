@@ -1,6 +1,6 @@
 # 引擎接入：让 Agent 操作游戏引擎
 
-> 核实时间：2026-10-08；资产编辑边界与 WP9 接入契约于 2026-10-14（UTC+8）单独复核。
+> 核实时间：2026-10-08；资产编辑边界与 WP9 接入契约于 2026-10-14（UTC+8）单独复核；原生生成器与条件入口于 2026-10-14 UTC 补核。
 > 依据 **[一手]**：
 > - Epic 官方插件 [unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)：克隆后读了全部 3 个 Skill、setup 和 operations 文档、SessionStart Hook，最近提交 2026-09-17；
 > - Roblox 官方文档 [Connect to the Roblox Studio MCP server](https://create.roblox.com/docs/en-us/studio/mcp)（2026-10-07 更新）；
@@ -100,9 +100,9 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 
 | 你的情况 | 建议 |
 |---|---|
-| Unity 6+ | 官方插件 + Unity CLI（见 [unity/](unity/README.md)） |
-| Unity 2021 / 2022 LTS | 评估固定版本 CoplayDev/unity-mcp + batchmode 脚本；逐工具核对导入／移动契约（见 Unity 工具页） |
-| Unreal 5.8+ | 见 [unreal/](unreal/README.md)：启用 Unreal MCP + `AllToolsets`（或只启用需要的工具集），安装 Epic 的插件；**用版本控制并且勤存盘**；不要把端口暴露到本机以外 |
+| Unity 6+ | 先沿用现有编译／测试及 Editor API；缺运行中编辑器连接时，再选官方 CLI 或适配客户端的 `unity mcp`，官方插件按知识／连接缺口添加（见 [unity/](unity/README.md)） |
+| Unity 2021 / 2022 LTS | 先用已有 batchmode／Editor 脚本；确需实时桥时再评估固定版本 CoplayDev/unity-mcp，逐工具核对导入／移动契约（见 Unity 工具页） |
+| Unreal 5.8+ | 代码／测试沿用既有流程；资产批处理可用已有 Editor Python。确需交互式编辑器入口时，再启用 Unreal MCP 和任务所需工具集，不默认 `AllToolsets`；**版本控制并勤存盘，端口只限本机**（见 [unreal/](unreal/README.md)） |
 | Unreal 5.8 以下 | 资产批处理直接用 Editor Python；另有社区桥可评估（如 UnrealClaude）。C++ 部分照常用通用编码工作流 |
 | Roblox | 直接用 Studio 内置 MCP；`playtest` 子 Agent 和输入模拟是目前**官方支持最完整的游戏验证能力** |
 | Godot | 社区 MCP 选“连接运行中编辑器”的一类，确认支持你的 Godot 版本；纯代码工作用文件级就够 |
@@ -127,15 +127,19 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 
 ## 6. Unity 内生成器：少量原型资产的候选入口
 
-**🧪 已有 Unity 项目只缺少量占位图标或环境音时，对照原生生成器；正式批量生产先沿用已核授权、规格和导入契约的资产管线。** 原生流程能把候选应用到当前资产、复用生成设置，并用 `Unityai` 标签找回生成内容；它节省的是操作衔接，不是已经证明的质量或二次修改成功率。源码／玩法修改不必为此增加付费生成服务。**[一手＋研究：见 [WP9 生成器补核](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)]**
+**🧪 已有 Unity 项目只缺少量占位图标或环境音时，对照原生生成器；正式批量生产先沿用已清权的资产管线。** 原生 Object Picker 可生成并赋到当前字段，Promote 可替换当前资产，`UnityAI` 标签帮助找回生成内容；价值假设是减少衔接步骤。**[一手＋研究：见 [WP9 生成器补核](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)]**
 
-| 当前任务 | 采用条件 | 保留的边界 |
+2026-10-14 已核 **Assistant 2.20.0-pre.2**：安装文档要求 Unity **6000.0.76f1、6.3 或更新**，并须接受适用条款、连接 Unity Cloud。能力包括 Sprite／贴图／材质／Cubemap、简单单部件 3D、音效与动画；3D 生成物没有独立活动部件、绑定或动画，不能直接承担角色生产。**[一手：[安装](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/install/install-chat.html)；[能力与边界](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#81-何时值得加入原生流程)]**
+
+| 当前任务 | 采用条件 | 何时撤回 |
 |---|---|---|
-| 在场景中快速试一个占位资产 | 🧪 目标包兼容、云连接与 credits 已具备，且适用条款允许当前用途 | 不为几个占位资产默认升级引擎或开订阅 |
-| 用新候选替换当前 Sprite／AudioClip | 🧪 用原生 Promote 操作，再按第 5 节回读旧使用点 | 替换入口与生成记录不是 GUID、子资产身份、pivot 或动画事件稳定契约 |
-| 几百件正式资产、跨引擎复用或长期补录 | ✅ 先保留既有管线；原生生成器仅作有具体收益假设的对照 | 只有授权、零手修质量和两轮总成本都过关，才替换原方案 |
+| 小批原型占位 | 🧪 已有兼容包、云连接、可用 credits；Unity 点击条款及实际模型允许该用途 | 为几个占位资产必须升级工程／开新订阅，或需要手绘 mask、逐帧修补才能合格 |
+| 替换旧 Sprite／AudioClip | 🧪 用对应 Promote 操作，再回读旧使用点、子资产、pivot 与导入设置 | 把 Object Picker 的新建／赋值当全项目替换，或二改改变了既有语义 |
+| 正式生产／跨引擎复用 | 👀 分别核 Unity 生产资格、供应商／模型输出许可、输入权利与渠道披露；两轮质量和总成本合格后再采用 | 任何一层未清楚放行，继续用已有合规管线 |
 
-Unity 官方将 Sprite Generator 定位为原型占位；这是适用性证据，**不是独立的法律禁商用条款**。当前 beta 的生产资格仍需分别核 Unity 点击条款与具体供应商／模型。**零人工美术修补基准排除手绘 mask、调色和逐帧修补作为补救；生成器提供这些界面，不计作本基准已补齐差距。** 包版本、费用与许可复核点见 [WP9 动态事实表](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#84-动态事实表)。**局限：本轮仅完成文档和条款对照，未验证原生生成器相对外部 API 的引用保持率、合格率或工时收益。** [一手／研究]
+**预算先看账户额度与续费。** Personal 的公开试用为 14 天／1,000 credits，FAQ 写期后转 **US$10/月**；不外推到其他套餐。批量变体按各 generation job 累加，月度余额不结转；CLI／MCP 免费不代表生成免费。不要用示例 credits 保证每件合格资产的美元成本。**[一手：[入门](https://unity.com/blog/unity-ai-how-to-get-started)／[FAQ](https://unity.com/features/ai)／[计量](https://docs.unity.com/en-us/ai/credits/credits-about)]**
+
+Unity 的 Sprite 原型定位影响质量选型，不是独立法律禁商用条款；beta 生产资格仍取决于具体点击条款及供应商／模型。**关键局限：公开文档没有证明原生替换可完整保持 GUID／fileID 等身份，本轮也未测零手修质量、引用保持率或工时收益。** 许可反证、动态复核及 [G2 开测前置](../../docs/research/2026-10-14-game-wp12-indie-roadmap.md#g2-开测前置原生生成器与外部导入)见研究记录。**[一手／研究]**
 
 ## 来源
 

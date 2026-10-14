@@ -1,14 +1,19 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：当前官方迁移契约、官方 Sprite Smart 固定源码、Coplay 双快照返回值边界、Prefab/Addressables/Interchange 身份契约
+新证据：官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
-核实：2026-10-13 UTC（2026-10-14 UTC+8）。[一手] 为官方契约／固定源码，[社区] 为原帖报告，[研究] 为本轮交叉核对，[经验] 为采用判断。只调查与文档修订；未运行 Unity/Unreal、上游测试或模型，未安装插件、付费生成、操作用户电脑。
+## 当前结论摘要（2026-10-14 UTC）
 
-**采用成熟 importer，改造项目缺失的窄规则，不用“同名导入＋success”作为完成条件。** GUID/对象路径、子资产语义、pivot、自定义字段与运行时加载键必须分开看。质量档不按 MCP 价格排序：没有证据证明付费 Assistant 比相同 Editor API 更能保持二次身份；最佳性价比是本地 API＋复用规则，免费路线可完全不调用 LLM，模型／引擎／分发费用另计。[经验]
+- **✅ 复用已有 importer／Editor API**；只在缺连接时补 CLI／MCP，不默认安装全栈。身份、子资产语义和下游行为分开验收。[经验]
+- Unity 官方旧 AI Assistant MCP 已弃用；`unity mcp` 仍支持。所查 Coplay 同名导入只新增，move 返回值存在源码层潜在误报，均未实测。[一手／研究：§1–2]
+- **🧪 原生生成器只作小批原型对照**。现核 Assistant 2.20.0-pre.2；安装要求 6000.0.76f1、6.3 或更新，3D 限简单单部件且不含绑定／动画。[一手：§8]
+- Promote 是当前资产替换入口，Object Picker 是新建并赋到原字段；二者都不证明 GUID／fileID、pivot 和旧使用点完整稳定。[一手／研究：§8.2]
+- **👀 商业生产须另过 Unity 点击条款、具体供应商／模型、输入权利与渠道门槛**；输出归用户不等于生产资格。Personal 试用转 US$10/月，批量 job 逐个扣 credits，不外推全部套餐。[一手／研究：§8.3–8.4]
+- 理论结论已可采用；账户点击文本留到执行前核验。没有安装、付费、引擎／模型实测或用户电脑操作，不主张合格率或节省工时。[研究]
 
-已有[资产编辑边界](2026-10-13-game-asset-editing-boundary.md)已论证默认 Editor API、Unity YAML 冲突文档及 .meta 机制，本轮不重复当作新发现；新的增量是下面具体实现的替换行为，而非更多工具名单。
+初始契约核实于 2026-10-13 UTC，生成器补核于 2026-10-14 UTC。已有[资产编辑边界](2026-10-13-game-asset-editing-boundary.md)维护 Editor API／YAML／.meta 的一般原则；本记录维护具体替换行为及其反证。质量档不按 MCP 价格排序：本地 API＋复用规则可不调用 LLM，模型／引擎／分发费用另计。[研究／经验]
 
 ## 1. Unity 官方入口：撤回旧 MCP 并列推荐
 
@@ -34,7 +39,7 @@
 
 许可：[固定 LICENSE.md](https://github.com/Unity-Technologies/unity-agent-plugin/blob/cf6b2da24e424b0a60d560a57f39f676cb6f79f3/LICENSE.md)是 Unity Companion License、Unity-dependent projects；不能标为通用 MIT 工具或把示例照搬成引擎无关商业库。[一手]
 
-### 1.1 Aseprite源项目：复用兼容导入器，不扩大UUID保证
+### 1.3 Aseprite源项目：复用兼容导入器，不扩大UUID保证
 
 [官方FAQ](https://docs.unity3d.com/Packages/com.unity.2d.aseprite@3.0/manual/ImporterFAQ.html#enable-uuid-for-layers)要求源文件启用层UUID；所查[UPM公开镜像快照](https://github.com/needle-mirror/com.unity.2d.aseprite/blob/5d8b44801f295f1bc0df7dd71dfff1943ba92ffe/Editor/AsepriteImporter.cs#L552-L615)按层身份合并，但层内cell仍按序复用spriteId。[pivot合并分支](https://github.com/needle-mirror/com.unity.2d.aseprite/blob/5d8b44801f295f1bc0df7dd71dfff1943ba92ffe/Editor/AsepriteImporter.cs#L905-L978)在尺寸/布局/设置变更时重写数据，不能承诺任何插帧、重排和手调pivot都存活。镜像不是Unity官方托管；7.0.1要求6000.7.0a5，只用来查机制，不推荐为本文升级工程。许可是[Unity Companion](https://github.com/needle-mirror/com.unity.2d.aseprite/blob/5d8b44801f295f1bc0df7dd71dfff1943ba92ffe/LICENSE.md)，不是跨引擎MIT。**[一手：官方FAQ；研究：包镜像固定源码阅读，非引擎测试]**
 
@@ -166,7 +171,7 @@ Importer 切换／引擎升级与普通替换分开；核对旧名称、骨架�
 
 Epic 5.8 Python 单类页读取失败，已读同版本 C++ API；未读完整引擎源码，未测真实引擎质量、性能或工时收益。[研究]
 
-本轮修订四篇专题并新增本记录；内部独立复核已完成，`python3 scripts/check_offline.py` 14阶段及 `git diff --check` 通过；不沿用历史通过，不等于hosted CI或引擎测试。后续须获准在具体工程检验第二次替换，不新建框架。[研究＋经验]
+初版修订四篇专题并建立本记录，彼时独立复核、完整离线 14 阶段与补丁检查通过；这是历史检查，不覆盖后续改动，也不等于 hosted CI 或引擎测试。后续获准后再在具体工程检验第二次替换，不新建框架。[研究＋经验]
 
 ## 7. F1 复核：把接口选择落实到 Unity 入口
 
@@ -178,27 +183,32 @@ Epic 5.8 Python 单类页读取失败，已读同版本 C++ API；未读完整�
 
 ## 8. Unity 原生生成器补核：原型集成不等于发行管线
 
-核实：2026-10-14 UTC。主线二／三；改变 01 的“生成结果如何接入并再次替换”建议。新证据是官方原型定位、Assistant 2.3.0-pre.2 生成／管理契约、现行 beta 与第三方条款、credits 门槛。只读官方网页和文档；未登录、接受协议、安装包、生成资产或运行引擎。本节不是为补品牌而新增的工具名单。[一手／研究]
+核实：2026-10-14 UTC。主线二／三；改变 01 的“生成结果如何接入并再次替换”建议。在既有原型／许可结论上，新增核对 Assistant 2.20.0-pre.2、最低 Editor 前提、Object Picker 与 Promote 区别、逐 generation job 计费；原 Personal 标价并非本轮新涨价。只读官方网页和文档；未登录、接受协议、安装包、生成资产或运行引擎。本节不是为补品牌而新增的工具名单。[一手／研究]
 
 ### 8.1 何时值得加入原生流程
 
 **🧪 已有 Unity 项目的少量原型缺口值得对照；正式批量资产暂不替换既有默认。** Object Picker／Assistant 的就地生成、候选应用和设置复用，有减少导出、选择和赋值步骤的机制依据；没有同题通过率或主动工时实测。[经验]
 
+[Unity 6.3 包目录](https://docs.unity.com/en-us/engine/6000.3/manual/packages-list/packages-all/pack-safe/com-unity-ai-assistant)当前列 **Assistant 2.20.0-pre.2**；以下用该版替换先前 2.3.0-pre.2 的能力引用，不据此建议升级工程。[视觉资产文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sprite/visual-assets.html)覆盖 Sprite／spritesheet、贴图、材质、Cubemap、3D 与地形层；[3D 文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/3d-terrain/3d-generator-overview.html)明确仅适合简单单部件道具，不含独立活动部件、绑定或动画；[Animation 文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Animation/animation-overview.html)另有文本／视频生成 `.anim`。这些入口并存不证明能自动拼成合格可动角色。[一手／研究]
+
+
 [官方 Sprite Generator 工作流](https://unity.com/blog/unity-ai-sprite-generator)（2026-04-28）明确定位为原型占位，预期在发行前换最终人工资产；这是与本项目“无人美术修补做到发行”的直接适用性反证，不是法律禁令。其 spritesheet 由五秒视频均匀抽帧成 4×4 表，不保证动作接触点或脚底稳定；Inpaint／Recolor 介绍含手绘遮罩／调色。**这些手绘步骤不纳入零手修收益，不能用它们兜底生成失败。** [一手＋研究]
 
-[声音生成文档](https://docs.unity.cn/Packages/com.unity.ai.assistant@2.3/manual/Sound/sound-generate-prompt.html)在 **2.3.0-pre.2** 版本中列 Duration、批量变体和 seed，仍称只有一个 Text to Sound 模型，参考时长十秒效果最佳。这仅支持少量 SFX 候选，不证明音乐分层或角色长期补录能力。[声音编辑文档](https://docs.unity.cn/Packages/com.unity.ai.assistant@2.3/manual/Sound/sound-edit.html)中的 Loop 是重复播放；裁剪／包络控件不构成生成无缝循环保证。不要把旧版本能力限制外推到所有当前包，也不能把新的计费品类反推成该旧包已有能力。[一手＋研究]
+[声音生成文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-generate-prompt.html)在 **2.20.0-pre.2** 版本中列 Duration、批量变体和 seed，仍称只有一个 Text to Sound 模型，参考时长十秒效果最佳。这仅支持少量 SFX 候选，不证明音乐分层或角色长期补录能力。[声音编辑文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-edit.html)中的 Loop 是重复播放；裁剪／包络控件不构成生成无缝循环保证。这只是所读版本的生成契约；计费页列出音乐／TTS 品类，不能反推这个 Sound Generator 已提供相应的分层／长期角色管线。[一手＋研究]
 
 外部 API 与原生生成器不必二选一：已合格的外部资源继续经现有 importer；缺少的小批候选才试原生入口。需要固定模型快照、批量资产记录或跨引擎输出时，先保留已有可控管线；这属于架构判断，尚未测出哪条更便宜。[经验]
 
 ### 8.2 修改后引用：有替换入口，没有完整身份保证
 
-[Sprite 管理文档](https://docs.unity.cn/Packages/com.unity.ai.assistant@2.3/manual/Sprite/manage-sprite.html)区分 `Promote to current asset`（替换当前）和 `Promote to new asset`（新建），允许复用 model、prompt、references；生成并应用后才加 `Unityai` 标签。[声音管理文档](https://docs.unity.cn/Packages/com.unity.ai.assistant@2.3/manual/Sound/sound-manage.html)给出 WAV、`Promote to asset`、生成记录与设置复用。[一手：上述均为 Assistant 2.3.0-pre.2 文档]
+[Sprite 管理文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sprite/manage-sprite.html)区分 `Promote to current asset`（替换当前）和 `Promote to new asset`（新建），允许复用 model、prompt、references；生成并应用后才加 `UnityAI` 标签。[声音管理文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-manage.html)给出 WAV、`Promote to asset`、生成记录与设置复用。[一手：上述均为 Assistant 2.20.0-pre.2 文档]
+
+[Object Picker 文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/assets/asset-picker.html)明确为**新建资产并赋回发起操作的字段**，不能当作更新所有旧使用点的替换操作。声音生成页称原始候选保留在工程根 `GeneratedAssets`，管理页描述 `Assets` 中的 WAV；前者不应仅因磁盘存在就算可交付。回读被引用的真实项目路径，保留候选／正式产物的来源对应。[一手；研究：导入边界]
 
 **采用这些原生能力，不另建候选管理服务；已有引用仍按第 5 节验收。** 文档没有承诺 GUID、Sprite 子资产 fileID、切片、pivot、动画事件或运行时 key 全部稳定。本轮没取得该替换路径的官方源码级证明，不能把“原生”写成“第二次修改无损”。新建候选与更新既有身份必须分清；生成记录说明来源，不代表相同模型永远可用或位级重现。[研究＋经验]
 
 ### 8.3 授权：输出权利与 beta 使用资格分开
 
-[现行产品 FAQ](https://unity.com/features/ai)仍称 beta，指向 Evaluation、特定点击条款及 Guiding Principles；[ToS §13](https://unity.com/legal/terms-of-service)（2026-06-30）对 Software Evaluation 默认限非商业内部评估，允许文档／附加条款例外，Online Services Evaluation 则另按适用条款与文档。**不能因 beta 一词笼统断言所有输出禁商用，也不能因付费或官方入口直接放行生产。** 未登录查看具体点击条款，本节不替代账户／包版本层面的生产资格核验。[一手＋研究]
+[现行产品 FAQ](https://unity.com/features/ai)仍称 beta，指向 Evaluation、特定点击条款及 Guiding Principles；[ToS §13](https://unity.com/legal/terms-of-service)（2026-06-30）对 Software Evaluation 默认限非商业内部评估，允许文档／附加条款例外，Online Services Evaluation 则另按适用条款与文档。**不能因 beta 一词笼统断言所有输出禁商用，也不能因付费或官方入口直接放行生产。** 未登录查看具体点击条款；将其明确留作执行前置，不以反复读取同一公开网页替代账户／包版本核验。[一手＋研究]
 
 [Unity Guiding Principles](https://unity.com/legal/unityai-guiding-principles)（2026-08-19，页首限定 Editor 6.7 及以下）称输入输出归用户，同时保留变更供应商／模型的可能，要求开发者核最终内容权利。[第三方目录](https://unity.com/legal/third-party-ai-terms)（2026-07-28）明确生成器还受供应商条款约束。[Scenario §4.3](https://www.scenario.com/terms-and-conditions)允许合规生成资产商用；[Layer §7.2](https://layer.ai/terms-of-service)（2026-10-08）附合规、付费及模型许可限制。这些是“全体禁商用”的反证，却不能替代 Unity 接入条款；不把供应商直接订阅的套餐资格推定给 Unity 用户。[一手＋研究]
 
@@ -211,12 +221,12 @@ Epic 5.8 Python 单类页读取失败，已读同版本 C++ API；未读完整�
 | 动态事实 | 2026-10-14 核实结论 | 一手来源 | 下次复核／触发点 |
 |---|---|---|---|
 | 总体版本与连接 | 官方入口为 Unity 6.0+，需安装 AI 包并连接 Unity Cloud；不是引擎安装后默认已有全部生成能力 | [入门](https://unity.com/blog/unity-ai-how-to-get-started)／[FAQ](https://unity.com/features/ai) | 2026-11-14；选定工程／包前 |
-| 包级前提 | Assistant 2.3.0-pre.2 文档写 Unity 6.0.60f1、6.3 或更新；这是具体版本文档，不是最新版声明 | [安装文档](https://docs.unity.cn/Packages/com.unity.ai.assistant@2.3/manual/install/install-chat.html) | 2026-11-14；包版本变更 |
-| Personal 试用／订阅 | 入门页为 14 天、1,000 credits；当前 FAQ 标试用后 $10/月。付费 Unity 席位有月度额度，不等于无限生成 | [入门](https://unity.com/blog/unity-ai-how-to-get-started)／[FAQ](https://unity.com/features/ai) | 2026-11-14；启用试用／付费前 |
-| 生成计量 | image 1–6、SFX 1–5 credits 是示例而非固定报价；余额用尽暂停，月度重置不结转 | [Credits 文档](https://docs.unity.com/ai/credits/credits-about) | 2026-11-14；估算／执行批次前 |
+| 包级前提 | Unity 6.3 目录当前列 Assistant 2.20.0-pre.2；该版安装要求 6000.0.76f1、6.3 或更新，不沿用旧 2.3 的 6000.0.60f1 门槛 | [包目录](https://docs.unity.com/en-us/engine/6000.3/manual/packages-list/packages-all/pack-safe/com-unity-ai-assistant)／[安装文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/install/install-chat.html) | 2026-11-14；包版本变更 |
+| Personal 试用／订阅 | Personal 入门页为 14 天、1,000 credits；FAQ 明示试用转 US$10/月。这是此前标价补明续费，不是新涨价；付费席位包含访问／额度不等于无限生成 | [入门](https://unity.com/blog/unity-ai-how-to-get-started)／[FAQ](https://unity.com/features/ai) | 2026-11-14；启用试用／付费前 |
+| 生成计量 | image 1–6、SFX 1–5 仅示例；一次多变体按各 generation job 累加。实际用量查 Dashboard；余额为零暂停，月度不结转 | [Credits 文档](https://docs.unity.com/en-us/ai/credits/credits-about) | 2026-11-14；估算／执行批次前 |
 | credits 购买约束 | 一般不退款、到期不结转，追加 credits 亦按适用订阅期；以购买时例外和当地法律为准 | [AI Credits Beta Terms](https://unity.com/legal/unity-ai-credits-terms)（2026-07-28） | 2026-11-14；购买前 |
 | 接入与生成收费分离 | CLI／MCP／官方插件免费，第三方 Agent 经 Gateway 不扣 Unity credits；不能推出资产生成免费 | [FAQ](https://unity.com/features/ai) | 2026-11-14；改变接入方式 |
 | beta 生产资格 | Evaluation＋具体点击条款，须区分 Software／Online Services 与文档例外；未核具体账户点击文本 | [FAQ](https://unity.com/features/ai)／[ToS §13](https://unity.com/legal/terms-of-service) | 2026-11-14；生产使用前 |
 | 供应商／输出范围 | Unity 输出归属声明与供应商／模型限制并存；原则页限定 6.7 及以下，不外推后续 Editor | [原则](https://unity.com/legal/unityai-guiding-principles)／[目录](https://unity.com/legal/third-party-ai-terms)／[Scenario](https://www.scenario.com/terms-and-conditions)／[Layer](https://layer.ai/terms-of-service) | 2026-11-14；改模型／Editor／发行前 |
 
-成本比较需纳入全部重试、淘汰、后处理、credits 和主动工时；当前资料不足以把 credits 示例换算成每件合格资产的美元成本。没有发现足以证明原生生成器在本基准下优于外部 API 的同题两轮发布闭环，本次不更换 WP2／WP6 的默认推荐。[研究]
+成本比较需纳入全部重试、淘汰、后处理、credits 和主动工时；当前资料不足以把 credits 示例换算成每件合格资产的美元成本。没有发现足以证明原生生成器在本基准下优于外部 API 的同题两轮发布闭环，本次不更换 WP2／WP6 的默认推荐；开测前固定版本、许可、续费、候选数及导入对照，见 [G2 前置](2026-10-14-game-wp12-indie-roadmap.md#g2-开测前置原生生成器与外部导入)。[研究]

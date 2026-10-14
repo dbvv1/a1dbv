@@ -52,7 +52,7 @@ ACE 官方 XL-turbo 卡要求至少 12GB 显存时配合 offload 和 INT8；其�
 
 Suno 公开年付的 Pro／Premier 分别限 20／60 首下载每月，不能当生成次数；免费档无商用权。本地也计算力、挑选和维护。Eleven Music 若需无损 WAV 或 192kbps MP3，先核主体资格，再按附表 Pro 或更高的合格计划核预算；Starter／Creator 的下载权不满足该格式要求。局限：本轮未测同题可用率，不能据单价算出完整制作费用。[一手／研究]
 
-👀 已在 Unity 内做少量环境音原型时，可比较 Assistant 2.3.0-pre.2 的 Text to Sound；其 Loop 按钮只是重复播放，不保证无缝循环。生产授权及版本范围见 [WP9 §8](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)，不改变成套资源／jsfxr 优先顺序。[研究：继承已核范围]
+👀 已在 Unity 内做少量环境音原型时，可比较 Text to Sound；2026-10-14 已复核 Assistant **2.20.0-pre.2** 的[生成](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-generate-prompt.html)与[编辑文档](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-edit.html)，Loop 仍仅重复播放，不保证无缝循环。生产授权及版本前提见 [WP9 §8](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)，不因版本更新改变成套资源／jsfxr 优先顺序。[一手／研究：文档复核，未运行引擎]
 
 ## 音效：单事件比整段声音更适合交互
 
