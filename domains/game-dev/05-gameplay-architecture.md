@@ -170,6 +170,10 @@
 - **典型失败**：门永等已销毁敌人的事件；检查点保存运行实例；改生成顺序让相同 seed 变布局；重建内容丢 ID
 - **验证**：逐检查点恢复、完成后离开重返、完成事件重复、出生点被占、最后敌人意外离场；核出口、目标与关键资源可达。程序化地图记录生成器版本，不能只保存 seed 就保证升级兼容
 
+**[研究] 高频失败的玩法，还要让玩家愿意再试。** ✅ 对靠反复练习掌握动作的短挑战，分别检查死亡演出、转场／重建、恢复控制、重走已掌握路程的成本；先缩短无意义等待和重复路程，再决定降低挑战或加提示。检查点改变时给清楚反馈，重试沿用既有生命周期，不先加快照或回放框架。
+
+[一手] Super Meat Boy 作者的[经典设计复盘](https://www.gamedeveloper.com/game-platforms/-i-super-meat-boy-i-s-mcmillen-explains-why-so-hard-)把短关卡与快速复活一起设计；[Celeste64 固定源码](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1968-L1991)仍通过重建 World 重生，提供了先复用场景重开、再按实际成本决定是否局部重置的起点。[研究] 永久死亡、资源消耗或整局承诺若构成玩法，不能套用最近检查点；这些来源也不是本项目的耗时或玩家收益实测，采用成本见 [WP11 重试补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#失败与重试补研回到刚才的决策点)。
+
 [一手] 已发布的 [Daggerfall Unity EnemyMotor](https://github.com/Interkarma/daggerfall-unity/blob/2343305d1d83ccc0de57a81e3b1e61188a997e34/Assets/Scripts/Game/EnemyMotor.cs) 仍按明确顺序处理具体行为，并随 [mod 扩展需求](https://github.com/Interkarma/daggerfall-unity/commit/0519cee99740d4005ef70b99a3a064ac0655ce72) 增加回调。[研究] 大型可玩游戏不要求每层都通用化；其历史兼容、巨型类和原版资源依赖也不宜整套继承。
 
 ## 10. 复用与许可：公开可读不等于任意可复制或可输入 AI
