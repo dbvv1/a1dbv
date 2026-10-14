@@ -1,6 +1,6 @@
 # 06 · Hooks、权限与护栏
 
-> 核实时间：2026-10-08；本仓路径 Hook 回归与第 2 节失败 / Stop 边界于 2026-10-11（UTC+8）复核，其余未重验。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
+> 核实时间：2026-10-08；本仓路径 Hook 回归与第 2 节失败 / Stop 边界于 2026-10-11（UTC+8）复核；StopFailure 与 `/goal` 边界于 2026-10-15（UTC+8）补核，其余未重验。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
 
 ## 1. 为什么需要 Hooks
 
@@ -43,6 +43,8 @@ CLAUDE.md 里的指令可能被模型忽略；命令型 Hook 能把某个事件�
 **失败策略与版本边界（2026-10-11）[一手：当前文档，未做运行时实测]**：[官方 `onFailure` 文档](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails)规定，`command` / `http` Hook 默认 `"continue"`；`"block"` 需 **v2.1.295+**，可将无法启动、异常退出、超时或无效输出等失败按事件的阻止语义处理（`PermissionRequest` 为拒绝）。它**不适用于 Stop、SubagentStop、TaskCompleted、TeammateIdle，也不适用于 async / asyncRewake**。不要把此字段套到 [19](19-experiments.md) 的 v2.1.294 历史实验，或未经目标运行时测试就改配置。
 
 [Stop 的限制](https://code.claude.com/docs/en/hooks#stop)：用户中断不触发它；API 错误触发 `StopFailure`；默认连续继续 8 次后会覆盖下一次阻止而结束，工具调用会重置计数。此外，[退出码文档](https://code.claude.com/docs/en/hooks#exit-code-output)指出，Stop / SubagentStop / TaskCompleted（以及插件 UserPromptSubmit）若退出 2、stdout 为空且 stderr 表示缺文件，会按非阻塞错误处理。必须分别测试正常失败、缺文件、超时与事件覆盖，不能由“装了 Hook”推断必定完成。
+
+**选择边界（2026-10-15，UTC+8）[一手]**：要程序化检查，用命令型 Stop Hook；[`/goal`](https://code.claude.com/docs/en/hooks#stop) 是会话级 prompt 型 Stop Hook。API 错误应由 [`StopFailure`](https://code.claude.com/docs/en/hooks#stopfailure) 记录／通知，其输出和退出码不控制继续执行（`terminalSequence` 是显示例外），不要把它当作自动重试开关；本次未确认这些机制的最低支持版本。
 
 PreToolUse 的结构化决定：
 ```json

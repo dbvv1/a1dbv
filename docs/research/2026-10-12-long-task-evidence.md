@@ -1,6 +1,6 @@
 主线：三
 改变的建议：恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试。[经验]
-证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；未运行新模型恢复实验。[一手／社区／研究]
+证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；未运行新模型恢复实验。[一手／社区／研究]
 
 # 长程任务：来源、反例与实验边界
 
@@ -107,3 +107,20 @@
 本轮读取[官方发布列表](https://github.com/openai/codex/releases)：最新稳定版 [0.162.1](https://github.com/openai/codex/releases/tag/rust-v0.162.1) 发布于 10 月 9 日，最新预发布 [0.163.0-alpha.11](https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.11) 发布于 10 月 14 日 03:27 UTC，早于本修复合并。另直接读取两个 tag 的 [稳定版 compact.rs](https://github.com/openai/codex/blob/rust-v0.162.1/codex-rs/core/src/compact.rs) 与 [预发布 compact.rs](https://github.com/openai/codex/blob/rust-v0.163.0-alpha.11/codex-rs/core/src/compact.rs)，均仍有旧的非 PostTurn 立即记录分支；同期 main 已有缓冲修复。不能建议“升级当前最新版即可解决”，也没有建立 Desktop 部署对应。后续采用前须重新核对发布内容与实际运行后端。**[一手：发布元数据与 tag 源码；研究：采用边界]**
 
 已完成固定补丁、实现、回归断言和两个 tag 的只读核查；没有安装或运行 Codex、模型、上游 Rust 回归，也没有读取私人会话或用量。测试使用 mock 响应且有 `skip_if_no_network`，测试存在或 PR 已合并不等于本轮执行通过；没有另做只能重复控制流的模拟实验。**[研究：验证范围]**
+
+## 2026-10-15：按故障选择压缩、清空与停止检查
+
+> 核实日期：2026-10-15（UTC+8）。改变 [17 §2.1、§2.6、§2.8](../17-troubleshooting.md)：撤回默认清空、交接替代压缩及“强制执行必然完成”的暗示；06 只补停止事件边界。**[研究：采用判断]**
+
+| 一手来源（本轮读取正文） | 改变选择的新证据 | 反证与边界 |
+|---|---|---|
+| [Troubleshooting：auto-compaction thrashing](https://code.claude.com/docs/en/troubleshooting#auto-compaction-stops-with-a-thrashing-error) | 压缩成功后仍可被大文件／工具输出立即填满；应缩小读入、定向压缩或隔离调查。清空后复发须区分 Messages 与启动项占用 | 这是成功压缩后的再填满，不是上一节 Codex 失败压缩的部分摘要污染；同样表现为“打转”不等于同一根因 |
+| [Best practices：纠偏](https://code.claude.com/docs/en/best-practices#course-correct-early-and-often)与[上下文管理](https://code.claude.com/docs/en/best-practices#manage-context-aggressively) | 保留反复纠正错误思路后清空重来的建议；同一任务仍可定向压缩 | 没有据此把清空或交接设成通用恢复默认；次数建议不证明根因 |
+| [Goal：评估机制](https://code.claude.com/docs/en/goal#how-evaluation-works)与[要求](https://code.claude.com/docs/en/goal#requirements) | 会话级 prompt 型 Stop Hook，评估器依赖已展示证据，不独立检查文件或执行命令 | 工作区信任和 Hook 设置可使功能不可用；本轮未确认首次支持版本，不能套用 Codex 的版本号或承诺全部模型／客户端支持 |
+| [Hooks：Stop](https://code.claude.com/docs/en/hooks#stop)与[StopFailure](https://code.claude.com/docs/en/hooks#stopfailure) | API 错误走 StopFailure 而非 Stop；输出／退出码无继续决策权 | terminalSequence 是显示例外；应用自身的恢复动作与 Hook 返回值控制续跑是两件事，不能由此推断 `/goal` 自身绝无重试 |
+
+历史反证保留：17 原有依据包括 [Chroma《Context Rot》](https://research.trychroma.com/context-rot)（2025）关于输入增长与表现下降的研究，以及 [Claude Code changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) 2.1.293 所记的压缩后时序误判修复：把压缩前完成的动作当成压缩后发生，继而撤回或重复已有工作。两者提醒读者，缩小输入并不能排除真实的信息损失或压缩语义缺陷；本轮从正文移至此处保留，没有重新核实这两项历史来源，也不据旧修复断言当前全部压缩故障已消失。**[研究：历史研究；一手：原有 changelog 引用；经验：反证边界]**
+
+采用判断：保留 20 的已有恢复记录建议，不新建框架；需要腾空间先控制输入，错误思路累积再清空，执行失败先查原结果与外部状态。最低版本未确认处只写当前官方文档，不推断发布范围。**[经验：综合建议]**
+
+本轮只读官方页面并修改文档；未安装或运行 Claude Code、真实模型、引擎或恢复实验。仓库离线检查仅用于链接目标、配置及确定性回归，不证明上述恢复建议的模型效果。**[研究：验证边界]**
