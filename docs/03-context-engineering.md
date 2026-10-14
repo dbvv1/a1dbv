@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 核实时间：2026-10-08；2026-10-11（UTC+8）补充论文版本、记忆/压缩边界与反例；10-13 新增固定项目指令对照、检索工具状态边界，并复核 Context Files 论文全文与公开数据，其余未重验。2026-10-14（UTC+8）补核 A Few Pages of Markdown v2 全文与分组口径，以及 Agent READMEs v2 的维护和内容分类边界。
+> 核实时间：2026-10-08；2026-10-11（UTC+8）补充论文版本、记忆/压缩边界与反例；10-13 新增固定项目指令对照、检索工具状态边界，并复核 Context Files 论文全文与公开数据，其余未重验。2026-10-14（UTC+8）补核 A Few Pages of Markdown v2 全文；10-15 补核公开包分组及换算口径，以及 Agent READMEs v2 的维护和内容分类边界。
 > 一句话：**先区分需求、环境、模型能力、上下文和验证器问题；上下文应提供必要信息，而非尽可能堆满。**
 
 ## 1. 原理（Anthropic《Effective context engineering》，2025-09 [一手]）
@@ -45,7 +45,7 @@
 | **Do Context Files Help Coding Agents?**（arXiv 2607.27250，2026-07） | Sonnet 4.6 / GPT-5.5，3 个 Python 仓库，15／17 任务；公开分析过滤后 288 条记录 | 样本中未检测出正确率收益；10–15pp 是作者限定的描述性等价区间，不能外推为普遍无效。两仓检索语料不匹配、注入渠道不同；[全文及公开数据复核](research/2026-10-13-context-study-reassessment.md#context-files失败解释与分析参数)还发现任务提示、功效参数与失败归因需分开解释。**[研究：全文；经验：公开数据与源码复核]** |
 | **On the Impact of AGENTS.md Files on Efficiency**（arXiv 2601.20404v2，2026-03） | GPT-5.2-Codex；10 仓库、124 个候选小 PR，附录有 113 对有效运行 | 运行时间／输出 token 中位数分别低约 28.6%／16.6%（按两组中位数计算）；50 题人工合理性检查不是正确率或测试通过率对照，不能解释为同等正确性下的提效保证；[附录复算](research/2026-10-13-context-study-reassessment.md#agents-效率耗时与正确性的边界)另限定有效分母、CLI 配对版本与 total 口径。**[研究：全文；经验：公开数据复算]** |
 | **Configuration Smells in AGENTS.md Files**（arXiv 2606.15828，2026-07） | 灰色文献综述 + 100 个热门仓库 | 6 种“配置坏味道”，见 2.3 节；**Lint 泄漏 62%、上下文膨胀 42%、Skill 泄漏 35%** **[研究：原文]** |
-| **A Few Pages of Markdown**（arXiv 2608.25241v2，2026-09） | 441 个企业仓库用于开发 RAMP；另分析 509 个开源处理仓库，核心 agent-first 分层为 214 个无配置对 182 个有配置 | agent-first 指观察期未检出 AI IDE 配置痕迹，不是 Agent 贡献占多数。认知复杂度估计增幅为 +52.7% 对 +26.7%，这是增幅之比，不是总复杂度之比。配置按观察终点分组且多数后于或同期于 Agent 采用，不能解释为预先写文件的因果收益；[方法边界](research/2026-10-13-context-study-reassessment.md#a-few-pages分组时间与维护)另说明维护未被效果评估。**[研究：全文]** |
+| **A Few Pages of Markdown**（arXiv 2608.25241v2，2026-09） | 441 个企业仓库用于开发 RAMP；另分析 509 个开源处理仓库，核心 agent-first 分层为 214 个无配置对 182 个有配置 | agent-first 指观察期未检出 AI IDE 配置痕迹，不是 Agent 贡献占多数。认知复杂度的 +52.7%／+26.7% 是作者对 `log(Y+1)` 系数作 `expm1` 的换算，不是原量均值直接涨幅或总复杂度之比。配置按观察终点分组且多数后于或同期于 Agent 采用，不能解释为预先写文件的因果收益；[方法边界](research/2026-10-13-context-study-reassessment.md#a-few-pages分组时间与维护)另说明维护未被效果评估。**[研究：全文；一手：公开分析代码；经验：分组／换算复核]** |
 | **Agent READMEs**（arXiv 2511.12884v2，2026-08） | 1,925 个仓库、2,303 个三类指令文件；内容分类另抽样 332 个英文文件 | 约 59%–67%的文件有多次提交；相邻提交间隔不代表全部文件的维护周期。安全（14.8%）、性能（14.5%）是抽样文件中主题出现率，不是指令效果，也不能判定项目缺少其他治理；[维护与内容口径](research/2026-10-13-context-study-reassessment.md#agent-readmes维护与内容口径)另限定静默期和两仓格式案例。**[研究：v2 全文；一手：公开源码]** |
 
 **综合结论**：
@@ -195,7 +195,7 @@
 - [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - 官方文档：[Best practices](https://code.claude.com/docs/en/best-practices)、[Memory](https://code.claude.com/docs/en/memory)、[Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Codex `codex-rs/core/src/agents_md.rs`、`codex-rs/config/src/config_toml.rs`
-- 论文：[arXiv 2602.11988](https://arxiv.org/abs/2602.11988)（读了正文）、[arXiv 2606.15828](https://arxiv.org/abs/2606.15828)（读了正文）、[arXiv 2607.27250](https://arxiv.org/abs/2607.27250)（10-13 读全文并核公开源码／数据）、[arXiv 2601.20404](https://arxiv.org/abs/2601.20404)（10-13 读 v2 全文）、[arXiv 2608.25241v2](https://arxiv.org/html/2608.25241v2)（10-14 读全文）、[arXiv 2511.12884](https://arxiv.org/abs/2511.12884)（读了 arXiv 摘要原文）
+- 论文：[arXiv 2602.11988](https://arxiv.org/abs/2602.11988)（读了正文）、[arXiv 2606.15828](https://arxiv.org/abs/2606.15828)（读了正文）、[arXiv 2607.27250](https://arxiv.org/abs/2607.27250)（10-13 读全文并核公开源码／数据）、[arXiv 2601.20404](https://arxiv.org/abs/2601.20404)（10-13 读 v2 全文）、[arXiv 2608.25241v2](https://arxiv.org/html/2608.25241v2)（10-14 读全文；10-15 只读核公开包分组／换算／日期编码，未重估 DiD）、[arXiv 2511.12884v2](https://arxiv.org/html/2511.12884v2)（10-14 读全文及固定采集／分析源码）
 - [liao.gg：Agents don't need memory, they need documentation](https://liao.gg/blog/agents-dont-need-memory)（[HN](https://news.ycombinator.com/item?id=49945933)）
 - Harness 开销实测：[Systima](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)（72KB 指令文件让每次请求多约 2 万 token）
 

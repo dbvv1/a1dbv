@@ -154,11 +154,58 @@ PY
 
 [原研究 §3.1–3.3](https://arxiv.org/html/2601.13597v2#S3.SS1) 以首次 Agent PR 定采用月，采集期为 2024-01 至 2025-11，要求至少 10 stars、10 个 Agent PR；agent-first 是整个采集期未发现 Copilot／Cursor／Windsurf IDE 配置痕迹，不是 Agent 贡献多数，代理检测可能漏掉实际使用。采用前活动匹配、分期差分和仓库聚类标准误提供了比简单横截面更强的比较，但不等于随机配置试验。
 
-成熟度取 2025-11 终点快照；agent-first 的 L2+ 组仅 3.8% 在采用月之前已有首个配置。表 5 的百分比由 log 系数转换，约两倍是增幅之比，不是总复杂度之比。配置后置、未观察的模型能力／使用强度和共用匹配对照池限制解释；告警在采用前已有升高，识别比复杂度更弱。不能因这些限制删除关联证据，也不能承诺配置将质量成本减半。
+成熟度取 2025-11 终点快照；agent-first 的 L2+ 组仅 3.8% 在采用月之前已有首个配置。表 5 的百分比由 `log(Y+1)` 系数作 `100 × expm1(β)` 换算，约两倍是这两个换算值之比，不是原量算术均值直接涨幅或总复杂度之比。配置后置、未观察的模型能力／使用强度和共用匹配对照池限制解释；告警在采用前已有升高，识别比复杂度更弱。不能因这些限制删除关联证据，也不能承诺配置将质量成本减半。
 
 §4 的维护观察窗约为 2025-01 至 2026-02；73.8% 是窗内单次提交，控制文件数后维护与成熟度关联不显著。§6.3 未回答维护或内容具体性是否改善结果。因此正文按事实变更修订的做法属于工程建议，而非本研究证明的最佳维护周期。
 
-**公开包检查边界**：[Zenodo 21406147](https://zenodo.org/records/21406147) 的 API 元数据确认 CC-BY-4.0、文件 `repo-maturity-and-software-outcomes-main-updated.zip`（43,251,402 字节，MD5 `150bc76bdcb4601fddc605451a0a6e05`）。本次只核元数据，未读包内容、未独立复算分组／时间／维护分母；这个验证缺口不构成反驳论文结果的证据。
+### 公开包：已核分组与算术，未重估效果
+
+[Zenodo 21406147](https://zenodo.org/records/21406147)，API 元数据许可 CC-BY-4.0。公开 ZIP `repo-maturity-and-software-outcomes-main-updated.zip` 已读取，43,251,402 字节，官方 MD5 `150bc76bdcb4601fddc605451a0a6e05` 一致；SHA256 `efd25b9f0d6427ac7eb629ab03d7d4f8f5c21fa2fa0355568108c8875e24ad7b`。以下路径均以包内 `repo-maturity-and-software-outcomes-main/` 为根。**[一手：固定公开包；经验：标准库复核]**
+
+- `study2/data/maturity_levels.csv` 的 509 行分组为 L1／L2／L3／L4＝236／210／23／40。与 `agent_first.txt` 相交为 214／155／5／22（396）；与 `ide_first.txt` 相交为 22／55／18／18（113）。两名单原有 401／117 项，不应把名单总数当可访问且已分类的分母。
+- `study2/notebooks/DiffinDiff.Rmd` 第 92–105 行实际采用 `log(Y+1)`；`study2/results/static_effects_agent_subset.csv` 的 12 行 `Percent_Change` 与 `100 × expm1(Estimate)` 的最大绝对误差为 8.7e-14。这里只核公开系数的换算，没有独立拟合 DiD，也未验证模型假设。
+- `study1/analyzer/src/temporal_health.py` 第 132–171 行把单条历史立即归为 set-and-forget，不要求最短随访时间；它不等于已证实失效。`docs/PACKAGE_MANIFEST.md` 与 `study1/REPRODUCE_STUDY1.md` 明确企业逐仓及时间序列输入不公开；已读 Study2 标签／面板没有首配置日期，3.8%与73.8%仍未独立复算。
+
+**动态时间轴的条件性实现风险。** 同一 Rmd 第 64–70 行将年月转成 `YYYYMM` 整数，动态调用传入 `horizon=-6:6`、`pretrends=-6:-2`。[didimputation 固定提交 69b4f8d（DESCRIPTION 0.5.0）第 127–130 行](https://github.com/kylebutts/didimputation/blob/69b4f8dfe16b007474721fc5610859b56a80cdc6/R/did_imputation.R#L127-L130)直接相减，不重新映射连续月份，因此这组脚本／库组合把 2025-01 相对 2024-12 算作 89 而非 1。按公开面板的 AF 分层标志、真实日历 ±6 月范围计数，L1 有 236 个采用前／41 个采用后仓库月跨年错位，L2+ 为 210／18；其中采用前计数覆盖 −6…−1，实际 `pretrends=-6:-2` 对应 L1／L2+ 的 228／207 行。这些行不会落入对应的前趋势虚拟变量，不等于退出回归；计数还包含结果缺失，不能称为最终估计样本损失。包未锁库版本、未附运行会话版本，本次也未重估，因此仅将“六个月动态轨迹／前趋势已充分核实”收紧为待核；静态调用不设这些事件窗，不能据此宣布 +52.7%／+26.7% 被推翻。
+
+复核入口（仅读既有 ZIP，不解包或执行其代码；`ZIP` 指向上述固定包）：
+
+```sh
+python3 - "$ZIP" <<'PY'
+import collections, csv, hashlib, io, math, sys, zipfile
+csv.field_size_limit(2_000_000)
+b = open(sys.argv[1], "rb").read()
+assert hashlib.sha256(b).hexdigest() == "efd25b9f0d6427ac7eb629ab03d7d4f8f5c21fa2fa0355568108c8875e24ad7b"
+with zipfile.ZipFile(io.BytesIO(b)) as z:
+    root = "repo-maturity-and-software-outcomes-main/"
+    def text(p): return z.read(root + p).decode()
+    def rows(p): return list(csv.DictReader(io.StringIO(text(p))))
+    levels = rows("study2/data/maturity_levels.csv")
+    print("levels", collections.Counter(r["maturity_level"] for r in levels))
+    for group in ("agent_first", "ide_first"):
+        names = set(text("study2/data/" + group + ".txt").splitlines())
+        print(group, len(names), collections.Counter(r["maturity_level"] for r in levels if r["repo_name"] in names))
+    effects = rows("study2/results/static_effects_agent_subset.csv")
+    print("conversion max error", max(abs(100 * math.expm1(float(r["Estimate"])) - float(r["Percent_Change"])) for r in effects))
+    panel = rows("study2/data/panel_event_monthly.csv")
+    for flag in ("l1_agent_subset", "l2+_agent_subset"):
+        counts = collections.Counter()
+        for r in panel:
+            if r[flag] != "True" or r["event"] in ("", "NA", "0"):
+                continue
+            y, m = map(int, r["time"].split("-"))
+            ey, em = map(int, r["event"].split("-"))
+            calendar = 12 * (y - ey) + m - em
+            numeric = 100 * (y - ey) + m - em
+            if -6 <= calendar <= 6 and calendar != numeric:
+                counts["pre" if calendar < 0 else "post"] += 1
+                if -6 <= calendar <= -2:
+                    counts["pretrends"] += 1
+        print(flag, dict(counts))
+PY
+```
+
+上述分组、换算、日期计数已用标准库实际执行；未安装依赖、运行上游 R／Python 模块、分类器或模型。建议仍是短配置试用、按事实变化维护，新增实现风险不替代对任务正确性、返工和费用的实际比较。
 
 ## Agent READMEs：维护与内容口径
 
