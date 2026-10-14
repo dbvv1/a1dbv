@@ -82,7 +82,7 @@
 | **SkinTokens / TokenRig** | [一手] [固定代码 MIT](https://github.com/VAST-AI-Research/SkinTokens/blob/273b691d35989d71cd17ff2895fdc735097b92d1/LICENSE)；[固定官方模型卡](https://huggingface.co/VAST-AI/SkinTokens/blob/79736cad0fd84de384d5eede659b4ebd24effe33/README.md) 将 `grpo_1400.ckpt`、`skin_vae_2_10_32768/last.ckpt` 标为 MIT | 未见独立输出非商用、营收/地域门槛；输入 mesh、纹理及第三方依赖仍须授权。模型卡列 ArticulationXL、VRoid Hub、ModelsResource 等训练来源，不等于全部训练资产都 MIT | [研究] 👀 指定双 checkpoint 可进入商用评估；不能泛化任意微调或输入角色 |
 | **HY-Motion-1.0 / Lite** | [一手] [固定代码 License.txt](https://github.com/Tencent-Hunyuan/HY-Motion-1.0/blob/4e426f5a1021cbcf7f375458c37b840ee7225229/License.txt)、[官方权重 LICENSE.txt](https://huggingface.co/tencent/HY-Motion-1.0/blob/main/LICENSE.txt) 均为 Tencent 社区许可 | §5(c)将 EU、UK、韩国地域排除延伸到输出；§4同样是发行日上一月合计 MAU >100万另授权。输出不归腾讯不取消地域约束；人体模型等依赖另核 | [研究] ⛔ 不默认全球商用 |
 | **GVHMR** | [一手] [固定 LICENSE](https://github.com/zju3dv/GVHMR/blob/ee960bb6e2ea2d381aa97f08e9b71ef320b624b1/LICENSE)仅教育、研究、非营利，修改须开源且禁商用；未核得独立 checkpoint 完整商用授权 | 商业使用软件本身已不在现有许可内，不能以“只导出动作、不分发代码”放行；checkpoint、SMPL等人体模型、输入视频另核。无“小收入即商业豁免” | [研究] ⛔ 不默认；作者商用联系渠道不等于已获许可 |
-| **Meshy 服务** | [一手] 专有服务；无本地权重授权，插件/SDK不能替代服务合同 | [当前条款](https://www.meshy.ai/terms-of-use) §3.2：免费输出 CC BY 4.0，可商用并履行署名等条件；付费输出在法律允许范围内归客户。§3.3：公开到 Community 的3D输出为 CC0，其他社区内容为 CC BY-NC 4.0。未见一般营收阈值 | [研究] 👀 有条件商用；需区分私有生成、社区3D与参考图 |
+| **Meshy 服务** | [一手] 专有服务；无本地权重授权，插件/SDK不能替代服务合同 | [2026-09-19 条款](https://www.meshy.ai/terms-of-use) §3.2：免费输出 CC BY 4.0，可商用并履行署名等条件；付费输出在法律允许范围内归客户。§3.3：公开到 Community 的 Customer Output（包括3D模型）为 CC0，其余社区内容（包括上传图片）为 CC BY-NC 4.0；不是按3D／非3D文件类型划分。未见一般营收阈值 | [研究] 👀 有条件商用；需区分生成输出与上传输入，再核是否公开到Community |
 | **Tripo 服务** | [一手] 专有代码/模型，§5.1未授本地权重；[当前条款](https://www.tripo3d.ai/terms) | §5.2.1免费用户 Input/Output 权利由平台保留；§5.2.2付费用户可商业使用/分发。官方[商用指南](https://www.tripo3d.ai/help/privacy-policy/how-to-use-tripo-models-commercially)明确免费不授商用。未见一般营收门槛；本轮未核清旧免费资产追溯、退订后持续权利 | [研究] 👀 付费有条件；免费及追溯情形不默认 |
 | **Rodin / Hyper3D** | [一手] 专有服务，无本地权重授权；[当前条款](https://hyper3d.ai/legal/terms) | §5(b)对 Rodin 输出不限制用途，但受全协议、法律与第三方条款约束；[当前计划](https://hyper3d.ai/pricing?lang=en)区分免费预览/旧模型导出与付费广泛导出。未见一般营收门槛；未核清追溯/终止细节 | [研究] 👀 具体计划和合法导出有条件；勿套用 ChatAvatar 的另购商业许可 |
 
@@ -105,7 +105,7 @@
 | 方案及核查范围 | 代码 / 权重 | 输出、地域/规模、下载及订阅门槛 | 采用判断 |
 |---|---|---|---|
 | **ElevenLabs TTS / Sound Effects，非 Beta** | [一手] 专有服务；不授基础权重，用户 voice model 不等于基础模型所有权 | [2026-10-09 一般条款](https://elevenlabs.io/terms-of-use) §1(c)免费非商业、付费可商业，§4(c)用户保留输出权利；仍须输入声音/文本授权及相关附加条款。本轮详读非EEA版，EEA/瑞士/英国居民适用另版，不能把合同版本误写成地域禁售 | [研究] 👀 付费有条件；免费、Beta不默认商用 |
-| **Eleven Music** | [一手] 专有服务，无权重授权；[2026-10-09 Music Terms](https://elevenlabs.io/music-terms)为特别条款 | 免费不可下载；普通计划只支持符合定义的 Indie Game，Studio Game须 Enterprise Music。单游戏累计净收入<50万美元且开发/发行实体上一财年全部游戏净收入<100万美元，含关联方；超限有60天升级窗口。§1.5升级覆盖账户已有输出，退订/降级保留按生成计划的条件 | [研究] 👀 有条件，必须与TTS/SFX分行；不能品牌级“付费都可商用” |
+| **Eleven Music** | [一手] 专有服务，无权重授权；[2026-10-09 Music Terms](https://elevenlabs.io/music-terms)为特别条款 | 免费不可下载；普通计划只支持符合定义的 Indie Game，Studio Game须 Enterprise Music，Enterprise Music Lite仍不覆盖。单游戏累计净收入<50万美元且开发/发行实体上一财年全部游戏净收入<100万美元，含关联方；超限有60天升级窗口。§1.5升级覆盖账户已有输出，退订/降级保留按生成计划的条件 | [研究] 👀 有条件，必须与TTS/SFX分行；不能品牌级“付费都可商用” |
 | **Suno** | [一手] 专有代码与权重，无本地授权；[2026-09-03 生效条款](https://suno.com/terms) | Pro/Premier权利转让仍受商业条款限制；商业利用必须取得该档允许、官方批准渠道的 **Download**。免费/Basic个人非商业；**当前一般条款定义的平台 Remix 即使付费且可下载仍限个人非商业**（另行提供方案除外，不泛化为所有自行改编）。录音/抓流取得副本不算许可下载；合法Download商用权在退订/降级/额度变动后存续 | [研究] 👀 有条件；不能只核订阅，还须核Download与Remix状态 |
 | **Udio 当前过渡服务** | [一手] 专有服务，无本地权重授权 | [当前ToS入口](https://www.udio.com/terms-of-service)可达但本轮未提取正文；[2026-02-17 官方变化说明](https://help.udio.com/en/articles/12683565-changes-associated-with-the-universal-music-group-umg-partnership)仍明确音频/视频/stems下载关闭。付费额度不是商业导出权证明；当前地域、计划商用、追溯等不能据旧条款补推 | [研究] ⛔ 不默认游戏资产来源；须当前合同与正式导出同时核清 |
 | **jsfxr 本地/免费** | [一手] [固定 Unlicense](https://github.com/chr15m/jsfxr/blob/b7b6aa27d62f8f356db267276bf54b451555c49d/UNLICENSE)；参数化合成，无模型权重 | [官方 Free/Pro 对照](https://sfxr.me/)明确两档均可不限商业使用、免费可导出WAV。无订阅依赖，无营收/地域上限见于该许可；第三方音效包另核 | [研究] 👀 商用候选，作为短电子音基线；不是全部Foley替代品 |
@@ -220,3 +220,34 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 只读官方文本、固定源码许可与公开模型卡。未安装、下载权重、调用付费服务、测试模型/引擎或核查读者账户合同；后续推荐新增方案时先补许可行，不把未核实写成允许。
 
 本轮实际检查：`python3 scripts/check_offline.py` 14阶段及 `git diff --check` 通过；内部独立复核交叉读取 Suno/Eleven Music 原条款并修正独占/侵权保证措辞、存量副本例外与平台Remix范围。正式云端评审未取得；hosted CI 必须另按发布SHA核对。
+
+## 2026-10-14 补核：游戏音乐与Meshy输出权利
+
+核实时间：2026-10-14（UTC+8）。针对[增量评审第三节](../collaboration/reviews/2026-10-14-e08dcbc.md#3-仍未完成的独立来源核查)的最高影响三项，重新读取下列官方原文并独立比较本记录与03／音频页；不是仅沿用上一轮引用。本次这些正文均取得，先前另一环境的403仍只代表其访问边界。以下链接为现行网页，所列日期用于标识本次读到的版本，不冒充不可变网页快照。**[一手：本次取文；研究：覆盖范围]**
+
+### 官方原文与定位
+
+每个来源的英文直接引文合计不超过25词；未摘引的结论是对应小节的中文概述。**[研究：记录口径]**
+
+| 来源与页面日期 | 已读的小节／适用范围 | 短引文与本次核对点 |
+|---|---|---|
+| [Eleven Music Terms](https://elevenlabs.io/music-terms)，更新2026-10-09 | §1.1–1.5；§4.1–4.8，尤其§4.8(c)/(j)；Exhibit A。Music服务及适用模型，不替代一般TTS许可或另签合同 | “revenue from all games”；“For Individual Use Only”。游戏／实体收入与计划资格是不同门槛；附表还有下载格式限制。[一手] |
+| [Suno Terms](https://suno.com/terms)，修订2026-08-10、2026-09-03生效 | Intellectual Property Rights下Pro and Premier Accounts、Free or Basic Tier Accounts、Remixes、Permitted Commercial Use；适用一般服务及其定义的平台Remix | “through an approved channel”；“Nothing in this paragraph permits commercial use of any Remix.” 商用Download与Remix排除须同时看。[一手] |
+| [Suno Pricing](https://suno.com/pricing)，页面未标更新日，本次显示年付 | Free／Pro／Premier公开套餐卡；不是登录账户余额 | “20 song downloads per month”；“60 song downloads per month”。分别对应Pro／Premier；生成credits另计。[一手] |
+| [Suno追溯许可帮助](https://help.suno.com/en/articles/2425729)，编辑2025-12-17 | 免费期歌曲升级后的商用权；历史FAQ不能覆盖2026年合同的新增下载条件 | “does not give you retroactive commercial use licensing”。免费旧歌不自动追溯；例外只可能针对特定歌曲。[一手] |
+| [Meshy Terms](https://www.meshy.ai/terms-of-use)，更新2026-09-19 | §2.4定义Customer Output，§3.2免费／付费归属，§3.3公开Community内容；§7.2权利及非唯一性免责 | “Customer Output, including 3D models”；“all other Community Content, including images You upload”。许可分类按输出／其余内容，不只按文件是否3D。[一手] |
+| [Meshy商用帮助](https://help.meshy.ai/en/articles/16102098-can-i-use-meshy-assets-commercially)，2026-08-27 | Free vs. Paid Rights、What Happens If I Downgrade?及FAQ第5项；解释生成时计划，不替代服务合同 | “which plan you were on when you created it”。付费生成后降级保留该次权利，降级后新输出改按免费规则。[一手] |
+
+### 核对后的采用判断
+
+- **Eleven：保留条件准入，补足计划与导出规格。** §4.8(c)两收入条件均为严格小于；单游戏含所有版本／DLC及变现形式，实体按最近已完结财年全部游戏、关联方计入，扣除指定平台等费用及退款／拒付，不是利润。Exhibit A确认Starter／Creator／Pro仅个人，Scale实体少于10名员工、Business少于50名；达到边界须换合格计划。Enterprise Music Lite仍排除Studio Game；无损WAV或192kbps MP3自Pro起，Starter／Creator可下载不代表满足母版规格。§4.7的60天及存量副本例外、§1.5的升降级条件与现有记录相符。[一手：Music上述小节；研究：选型影响]
+- **Suno：现有Download／Remix判断得到原文支持，无须反转。** Pro／Premier的归属文字不能跳过官方允许下载；订阅后录音／抓流不是替代。已取得合法Download的权利存续仍不解除平台Remix非商用限制；“Remixes”定义针对允许其他用户参与的服务功能，不能仅凭编辑菜单名称把自有音频全部后期编辑都判成禁商用。公开20／60额度复核相符，但实际资产下载资格、账户历史及另行提供方案未核。[一手：Suno条款及价格页；研究：范围]
+- **Meshy：纠正分类，保留生成时计划门槛。** 原表“Community的3D输出CC0、其他内容CC BY-NC”过度简化；§3.3实际覆盖公开的全部Customer Output（包括3D），其余Community内容才走CC BY-NC。生成图片／贴图不能仅因不是3D就归非商用，上传参考图也不能借模型CC0洗成已清权。已在本记录主表修正。付费生成、降级后的旧／新资产分别处理；没有证据支持旧免费资产自动私有化或免署名。付费归属不保证独占、可执行版权或不侵权。[一手：Meshy条款／帮助；研究：修订理由]
+
+**正文已同步修订[研究]**：03授权总表Meshy行将“Community 3D 输出 CC0，其他社区内容 CC BY-NC 4.0”替换为“Community 的 Customer Output（包括3D模型）为 CC0；其余社区内容（如上传参考图）为 CC BY-NC 4.0”。Eleven Music行补“Enterprise Music Lite不覆盖Studio Game”；音频页成本／规格段补“Eleven Music需无损WAV或192kbps MP3母版时，先核主体资格，再按附表Pro或更高的合格计划核预算；Starter／Creator的下载权不足以满足该格式要求”。后者是格式与费用前提，不是模型质量胜负。[一手：上述原文；研究：提案]
+
+**本次边界 [研究]**：仅完成上述动态条款的本端限定补核，未代表正式云端评审通过，也未补齐其他checkpoint、图像型号、Steam或全部WP1来源。没有登录账户核SKU、生成／下载资产、试听、购买、安装或运行模型／引擎；复杂的Music升级再降级、特定Suno功能是否属于另行方案、Meshy具体资产生成记录仍须按实际合同／账户证据确认。
+
+本次修改后执行`python3 scripts/check_repo.py`，175个文档／config文件无错误；本文件`git diff --check`通过。新加评审小节锚点按标题核对；未把局部文档检查称为本轮完整离线14阶段或hosted CI通过。[一手：本次检查]
+
+整合验证：完整离线14阶段及 `git diff --check` 通过；独立复核上述三项官方来源和正文修订，无实质问题。精确提交的 hosted CI 另查，不将本地检查当作服务端执行。
