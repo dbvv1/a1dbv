@@ -51,6 +51,14 @@
 
 **局限：这些是诊断与选型依据，不能预测目标设备收益；软件呈现事件也不等于屏幕发光的完整端到端测量。** 固定源码、版本反证与后续验证见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#呈现节奏补研平均-fps-与实际看到的动作不是同一个承诺)。[研究]
 
+### 运动中的清晰度：关键提示不能只在截图里看得清
+
+**[研究] ✅ 小型敌人、攻击边界或方向提示一移动就拖影时，先核运动输入与实际抗锯齿／上采样路径，再决定调画质。** Unity 6.3 URP 只为 opaque／alpha-clipped 材质支持对象运动矢量，透明余烟不能靠“打开矢量”修好；跟随相机中的角色也可能需要 Per Object Motion。先用 Frame Debugger 核对象是否进入 MotionVectors pass，别直接增加锐化。[一手：[支持范围](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/features/motion-vectors.html)、[原生诊断](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/features/motion-vectors-troubleshooting.html)]
+
+**[研究] ✅ 将规则信号与透明装饰分开，🧪比较保留 TAA、减弱历史贡献和非时域 AA。** 关键边界用足够屏幕尺寸的稳定形状，风格允许时可由简单不透明／裁剪几何承载，透明烟雾不承担唯一危险范围；硬边或遮挡改变范围理解时撤回这种表达。正确矢量下仍拖影，再比较少积累历史与 SMAA／FXAA：若换来更扰人的闪烁、边缘爬动或纹理模糊，就退回并收窄内容细节，不盲目开最高档。[一手／研究：[AA 取舍](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/anti-aliasing.html)]
+
+**[一手／研究] STP 会隐式启用 TAA，切掉相机 AA 菜单不等于完成非时域对照。** 同时核 render scale 与 Upscaling Filter；原生 STP 的运动、重投影和 Sensitivity 视图可帮助定位，绿色也可能来自新显露区域／快速运动，不能直接等同错误矢量。[STP 依赖](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/stp/stp-upscaler.html)、[调试视图](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/stp/stp-debug-views.html)。**局限：正确输入和更高质量档也不能保证快速高反差物体无拖影，最终按同一完整动作的出现、急转、遮挡后显露和消失阶段判断辨识。** 参数方向、历史修复与未来对照范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#运动可读性补研关键提示不能靠历史积累补成另一个位置)。
+
 ## 2. 十一个模块的最低交付线
 
 下表的采用／改造／不用是本仓库的 **[研究]** 判断；机制链接为 **[一手]**。AI 失败列是应检查的风险，不是本轮测得的出错频率。

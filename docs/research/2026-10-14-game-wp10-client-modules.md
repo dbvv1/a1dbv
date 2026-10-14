@@ -598,3 +598,50 @@
 [研究] 保留现有音频系统，不把 Arc／SoLoud 移植进 Unity／UE，不加通用威胁评分、专业中间件或全局队列。AI 可整理事件到资产／类别／重要性的映射并添加拒绝原因采集，人决定能合并哪些反馈、能否打断旧起音。未来获准实测时，在同类连发期间插入警告，再增加第二种变体与第二次警告：分别观察是否提交、被哪层合并／拒绝／抢占或虚拟化，并听验标志性起音、方向和时效；过期警告不应稍后补播成当前危险。记录 voice／CPU 预算，但不能以播放调用次数、有效 handle 或非虚拟状态代替听感验收。
 
 [研究] 本轮只核对发布原文、固定依赖和源码分支；不声称性能、提示可听性或最优参数已验证。SoLoud 通用虚拟声文档仅作背景筛选，因与现有 WP6 大量重合且不能替代此 fork 的实现，未另扩章节。
+
+
+## 运动可读性补研：关键提示不能靠历史积累补成另一个位置
+
+核实：2026-10-14 UTC。主线二／三。[研究] 改变 04 的建议：判断抗锯齿／上采样是否值得保留，要看关键角色、方向与危险边界在完整动作中的辨识；既有帧间隔与视觉层次建议没有覆盖历史颜色造成的错位、残留和显露延迟。本轮只做公开文档、固定源码与历史 issue 核查，未运行引擎或观察目标项目画面。
+
+### 1. 先区分输入错误、支持边界与积累取舍
+
+- **支持边界。** [一手] [URP 6.3 motion vectors](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/features/motion-vectors.html)仅支持 opaque／alpha-clipped，不支持透明材质对象矢量；对象矢量还要求 shader pass、renderer 与对象／材质状态满足条件。ForceNoMotion 仍需对象 pass 覆盖相机矢量为零，不能视为省掉 pass 的捷径。[研究] 透明预告与余烟不能统一交给一个“打开运动矢量”修复。
+- **相机相对运动。** [一手] [6.3 troubleshooting](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/features/motion-vectors-troubleshooting.html)说明跟随移动对象的相机若只用 camera motion，会给对象错误的大矢量；先查 Per Object Motion 与 Frame Debugger 的 MotionVectors pass。[研究] 屏幕位置近似不动，不代表世界空间对象无需矢量。
+- **形变输入。** [一手] [6.3 Shader Graph 支持](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/features/motion-vectors-shader-support.html)的 Time-Based 会以今／前帧 Time 运行顶点子图，其他用户参数须逐帧不变；运行时改变技能强度等参数时，不能假定此模式自动正确。Custom 可提供前帧到当前的局部空间位移；Alembic 选项用于相应缓存与 PlayableDirector，普通 MeshRenderer 错开会读错流。[研究] AI 可核对动画参数变化来源与历史值归属，不能批量开启所有选项代替诊断。
+
+### 2. 固定实现：不能抄反参数方向，也不能把最高档当辨识保证
+
+[一手] 公开 `6000.3/staging` 本次解析为提交 `2d2e78cc9d6254bc6e7c9c5552cea053508e86cb`（2026-07-01）。这是固定源码快照，不是确认某个 Editor 补丁已经包含所有相同代码；部署时仍核项目锁定的包／Editor。
+
+- [TemporalAA.cs](https://github.com/Unity-Technologies/Graphics/blob/2d2e78cc9d6254bc6e7c9c5552cea053508e86cb/Packages/com.unity.render-pipelines.universal/Runtime/TemporalAA.cs)：`baseBlendFactor` 表示历史贡献，getter／setter 与内部 `m_FrameInfluence` 通过 `1-x` 转换；后者是当前帧贡献。不能把“提高 frame influence 减少拖影”直接抄成“提高 base blend factor”。
+- 同文件的 `varianceClampScale` 说明较低值减少拖影但增加闪烁；`VeryLow` 不做 motion dilation，注释适用于无／低运动；`VeryHigh` 启用更多过滤。源码定义的是处理路径与成本取舍，不证明某档在本项目动作中最清楚。
+- [TemporalAA.hlsl](https://github.com/Unity-Technologies/Graphics/blob/2d2e78cc9d6254bc6e7c9c5552cea053508e86cb/Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/TemporalAA.hlsl)的 `DoTemporalAA` 采历史颜色、裁剪，再把 `frameInfluence` 传给 `ApplyHistoryColorLerp`；后者由历史色向当前色插值。已对照执行表达式，不只重复参数注释。
+
+[一手] [6.3 AA 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/anti-aliasing.html)承认快速高反差物体可能产生 TAA 拖影；该版本 TAA 与 MSAA、Camera Stacking、Dynamic Resolution 不兼容。MSAA 主要解决几何边缘，不修 specular／texture aliasing。[研究] 所以正确运动矢量只是必要诊断项之一；不能承诺修完矢量即可消除拖尾，也不能为了一个透明提示默认新增相机栈。
+
+### 3. 可比较方案与撤回条件
+
+| 路线 | 采用条件与具体改变 | 撤回／不适用条件 |
+|---|---|---|
+| ✅ 修正原生运动输入，保留时域路线 | 不透明角色／武器／形变对象存在缺失或错误矢量；先核 pass、前后帧位姿与参数，再调滤波 | 确属透明支持边界，或矢量正确仍有残影时，停止盲加开关；不将通用 shader 重写作为单人默认 |
+| 🧪 减少历史积累或收紧颜色约束 | 场景确实需要时域稳定性，但短暂关键提示残留／移动糊掉；小步改变历史贡献与 clamp，保留原值 | 闪烁、边缘爬动比原拖影更妨碍判断时撤回；锐化只改变观感，不能保证恢复错位历史中的真实提示 |
+| 🧪 非时域基线 | 相同分辨率比较 SMAA／FXAA；以几何轮廓为主且路径兼容时比较 MSAA，保住原动作规则 | 高光／纹理闪烁、细小轮廓丢失或预算失败就撤回；不得从“没有历史拖影”推导“所有画面问题解决” |
+| ✅ 收窄内容频率与透明装饰职责 | 危险边界／方向采用足够屏幕尺寸的稳定形状，与余烟分开；风格允许时让关键轮廓由简单 opaque／alpha-clipped 几何承载 | 硬边、覆盖面积或遮挡改变范围理解就撤回；不把全部烟雾改 cutout，不通过任意延长预告时间偷偷改玩法 |
+
+[研究] 后两条与现有 WP5 的信号分层相接，但这里新增的是运动／历史输入约束，不另建效果框架。若最低内部分辨率下关键形状已经难以稳定采样，先考虑简化细节、调整形状／显示尺寸或提高该档输入分辨率，不能要求上采样保证补出所有短暂细节；这些是待目标项目验证的内容决策，不是跨游戏通用像素阈值。
+
+### 4. STP 对照不能只看相机菜单
+
+[一手] [URP 6.3 STP](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/stp/stp-upscaler.html)要求 TAA 预处理，会隐式启用；需要 Shader Model 5.0，不支持 OpenGL ES。[研究] 非时域对照要同时核 Upscaling Filter 与 render scale，不能仅改变相机 AA 标签后宣称完成对照；不要把 STP 当成无需正确运动输入的独立修复。
+
+[一手] [6.3 STP Debug Views](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/stp/stp-debug-views.html)提供输入运动、重投影色差及 Sensitivity；绿色包含无法预测的快速运动、新显露区域或错误矢量，红色标示排除时域预测的像素。[研究] 用原生视图定位后回到实际动作判断；调试色不能直接充当可读性合格／失败评分，也不由此假设所有透明效果都已无拖影。
+
+### 5. 历史反例：实际修复与当前限制分开
+
+- **UUM-72748：可见集合错误确实需要修复。** [一手] [官方 issue](https://issuetracker.unity.com/issues/14144/motion-vectors-for-an-object-are-included-in-the-urp-motion-vector-pass-when-the-objects-layer-mask-is-filtered-out)记录被 layer mask 排除的对象仍进入 URP Motion Vector pass，移动时出现幽灵立方体；2022.3.30f1、6000.0.4f1 可复现，标注修复于 2022.3.37f1、6000.0.8f1，只测 Windows 11。[研究] 这是颜色与矢量对象集合不一致的历史反例，不是今天 6.3 普遍缺陷；对应旧工程先核补丁，不用调滤波掩盖问题。
+- **UUM-26709：较高档位也曾触发专有故障。** [一手] [官方 issue](https://issuetracker.unity.com/issues/6004/temporal-anti-aliasing-taa-produces-severe-artifacting-when-quality-set-to-very-high)记录 URP 14.0.4–16.0.0 的特定 Timeline scrubbing 场景，High 正常、Very High 黑白伪影；页面对相关分支标 Fixed，但未给精确修复补丁。[研究] 仅支持升级／档位变更应覆盖实际动作的判断，不将该历史问题写成禁用当前 Very High 的依据，也不虚构修复版本。
+
+### 6. 后续获准验证与二次修改
+
+[研究] 保持同一游戏规则和相机轨迹，分开比较原生分辨率／固定 render scale、时域／非时域路径及内容简化，不让多项同时变化掩盖原因。观察提示出现、急转、遮挡后显露、停止与消失；除单个敌人，还覆盖两个攻击交叠和低帧率。第二次内容修改可将固定 Time 形变改为随技能强度变化，或添加透明余烟，再核运动输入和危险边界是否仍清楚。AI 可查材质／renderer 配置与构造对照，人判断方向、范围、持续伤害是否被误读；帧时间配合观察，静态截图或平均 FPS 不能替代辨识。本轮无识别率、性能或最优参数实测收益。
