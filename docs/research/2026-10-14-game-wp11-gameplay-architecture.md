@@ -90,7 +90,7 @@
 
 ### 7. 相机：先复用成熟运行时，验收的是可读性与控制权
 
-**[研究] 最低完成度**：一个玩家视口的最终相机拥有明确控制权；跟随、瞄准、过场、菜单切换有优先级；传送与重生重置阻尼，碰撞遮挡不丢关键信息，暂停和相机震动有明确策略。Unity 优先适配目标版本的 Cinemachine，UE 先 CameraComponent／SpringArm／PlayerCameraManager；镜头足够简单可只用固定相机。
+**[研究] 最低完成度**：一个玩家视口的最终相机拥有明确控制权；跟随、瞄准、过场、菜单切换有优先级；传送与重生按意图保留或重置跟随历史，碰撞遮挡不丢关键信息，暂停和相机震动有明确策略。Unity 优先适配目标版本的 Cinemachine，UE 先 CameraComponent／SpringArm／PlayerCameraManager；镜头足够简单可只用固定相机。
 
 **[一手] 固定源码与真实修改链**：Cinemachine [45728f30](https://github.com/Unity-Technologies/com.unity.cinemachine/tree/45728f3030787076f32930101d11d9ca96fe3a0f) 的 Brain 区分 SmartUpdate／FixedUpdate／LateUpdate；2026-02 fast-enter-play 支持后，[2026-08 #1122／69b2051](https://github.com/Unity-Technologies/com.unity.cinemachine/commit/69b205115495a374fbba329547ba608cdcfe7847) 又将 static reset 提前至 SubsystemRegistration，并重新创建 CameraUpdated／Activated 等事件。默认分支 changelog 此项归于 3.1.8-pre.2，不可宣称所有已发布 3.1.x 已修。
 
@@ -384,3 +384,33 @@
 [研究] **👀 有条件评估**：多角色共享多套 rig／过渡、图形化导演确有内容编辑收益，并愿承担版本兼容与发布回归时，才在隔离切片比较。**⛔ 不默认迁移**：只为一根柱、一层树冠或“5.8 更新”，现有原生路线仍更小；不同时让旧相机和新系统争最终输出。Occlusion Material 是新系统能力的证据，不保证自动保留掩体边界或解决武器合法性；本轮没读它的受限实现，不猜测其采样范围／还原细节。也不把 API 中列出的节点视为稳定或成品游戏采用证明。
 
 [研究] **证据边界与许可**：采用判断来自公开官方职责与示例，不是 UE 引擎运行、商业游戏效果复现或两引擎质量排名。默认 URL 内容可能变化，工程按其实际版本重新核功能与 Experimental 状态；本次带 application_version=5.8 的四个 URL 抓取失败后，读取了可访问默认页面正文，以实际标题和内容作日期限定判断，不声称验证了安装包。仅链接原生功能与公开教学机制；UE 条款及具体资产许可继续适用，Unity 的 Cinemachine／Shader Graph UCL 不能跨引擎移植。未下载资产、受保护源码，未安装、付费或运行引擎／模型。
+
+## 跟随历史补研：瞬移、换目标与变帧率
+
+核实：2026-10-14 UTC。主线 3；收窄 05 第 8 节及本文原有“传送与重生重置阻尼”的建议。新证据为 Cinemachine 固定实现／测试与 Epic 变帧率复现报告；没有新增运行时或通用教程。[研究]
+
+### 1. 复用历史管理入口，不让技能各自重写平滑
+
+[一手] 本节 Unity 源码固定为 `45728f3030787076f32930101d11d9ca96fe3a0f`，不是对稳定 3.1.7 安装包的复测。[PositionComposer](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Components/CinemachinePositionComposer.cs)的 `OnTargetObjectWarped` 仅在目标等于 FollowTarget 时平移 `m_PreviousCameraPosition` 并调用预测器 `ApplyTransformDelta`；[Predictor](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Core/Predictor.cs)中后者只平移位置，保留速度历史。`Reset()` 才清速度与平滑速度。
+
+[一手] PositionComposer 在 PreviousState 无效或 FollowTargetChanged 时清预测器，但只在前者重建跟随历史并跳过阻尼。[VirtualCameraBase](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Core/CinemachineVirtualCameraBase.cs)的 `CancelDamping(updateNow)` 包装 `PreviousStateIsValid=false`，可选择立即更新或等正常更新。[固定 changelog](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/CHANGELOG.md)在 2.8.0-pre.1 明确换目标默认平滑，3.0.1 加入 CancelDamping；这不是本轮首次发现的新 API。
+
+**[研究] ✅ 采用／改造一处现有相机模式入口，按事件意图选三种政策：**
+
+- **保留连续性**：同一目标确实整体平移，且希望保留相对构图及原运动趋势，传入真实新旧位置差调用 warp；按项目相机集合通知受影响相机。传送门若还旋转朝向，位置差接口并未完成方向／速度参考系转换
+- **丢弃旧历史**：死亡重生、换角色或载入后要求立即重新取景，用 CancelDamping；已激活的镜头混合另选 cut／blend。零位移 warp 不清旧趋势，直接改 Camera transform 也不等于同步组件缓存
+- **保留设计过渡**：正常观察对象交接或谜题揭示允许平滑时，沿原生切换／混合；不能每次换 Follow 都强制 reset，否则会取消本来想保留的过渡。warp 更不能把两个不同角色当成同一条运动轨迹
+
+[研究] 暂停恢复也不默认清历史：目标与相机时钟都冻结时保持原状态；菜单中允许镜头继续移动则先明确时钟，暂停期间若重生／换目标再按上述政策处理。[固定 Brain](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Behaviours/CinemachineBrain.cs)的 IgnoreTimeScale 在非固定更新选 unscaledDeltaTime；固定路径仍用 fixedDeltaTime。[一手] 勾选它不意味着新增了暂停期间的固定更新调用，也不证明整条输入／混合链使用同一时钟。
+
+### 2. 指数收敛不等于移动目标的跟随完全帧率无关
+
+[一手] Predictor 中 `StandardDamp` 按 `initial * (1-exp(log(0.01)*dt/dampTime))` 返回本次施加量；`StableDamp` 只在 `CINEMACHINE_EXPERIMENTAL_DAMPING` 且非固定步长时由 Damp 路由启用，不能写成默认运行时保证。[DampingTests](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Tests/Editor/DampingTests.cs)比较不同固定 FPS 下的衰减耗时，允许两算法时间比误差小于 7%；它没有覆盖同一运动目标交替帧时间下的屏幕位置一致性。[LookaheadTests](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Tests/Runtime/LookaheadTests.cs)检查换目标标志和移动后预测量非零，也不能替代传送／暂停恢复的玩法验收。
+
+[研究] 零依赖 Python 标准库算术复核：取 dampTime=1 秒、每帧末采样匀速 10 单位／秒的目标，逐步应用上述标量公式。15／30／60／120 FPS 时，静止误差 100 在 1 秒后均剩 1；但移动 5 秒后的追随距离分别为 1.855168528／2.009068115／2.089204983／2.130072239。计算用 `alpha=-math.expm1(-math.log(100)*dt)`、每步 `target+=10*dt; camera+=(target-camera)*alpha`；与离散稳态式 `10*dt/math.expm1(math.log(100)*dt)` 的差约为 2×10⁻¹⁰。**这是采样递推的确定性反例，不是 Cinemachine 实测**：没有目标插值、死区、旋转、硬边界或扩展，更不能据这些数值决定游戏阻尼参数。
+
+[一手] [UE-216449](https://issues.unrealengine.com/issue/UE-216449)给出另一实现的具体反例：SpringArm 开 Camera Lag Substepping 后切换 120／60／30／15 FPS，目标的视口位置／旋转仍改变；报告指出插值子步计算问题，并提到补丁另存 PreviousTargetLoc／PreviousTargetRot。2026-10-14 核实时仍 Backlogged，更新日 2026-09-14，影响列表为 4.27–5.4。**不能据此断言 5.8 必现或已修；公开复现项目链接已移除，本轮未取得补丁或复跑。** [研究] 仅借其验收问题，不建议拷贝无法核实的引擎补丁，也不默认开启实验算法。
+
+### 3. 窄二改题与停止条件
+
+[研究] 给已有跟随增加“保持动量的平移传送”和“清动量的检查点重生”，再在暂停菜单打开时触发后者：复用原有模式入口传递意图，不让每个技能维护独立历史。后续获准的引擎测试比较更新前后目标／相机相对偏移、预测趋势、首个恢复画面与活动混合；另让同一运动在恒定及交替帧间隔下运行，比较屏幕位置和追随滞后。只有设计要立即重取景才断言无旧历史，连续传送则断言历史随真实位移迁移。若小修改必须同时改多个技能、多个 transform 写入者或每个相机扩展，先收拢接口；不用“更多平滑”遮住责任冲突。源码／上游测试阅读和上述算术复核已完成，Unity／Unreal 运行、真人舒适度与维护工时测量未运行；沿用本记录已有 UCL／引擎许可边界。
