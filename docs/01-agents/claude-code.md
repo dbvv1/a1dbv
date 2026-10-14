@@ -1,7 +1,7 @@
 # Claude Code
 
 > 核实时间：2026-10-11（本轮针对规则加载与工作流建议补核；已读 changelog 至 2.1.296，模型价格和套餐仍为历史记录，未全量复核）。主要依据：[CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)、[官方文档](https://code.claude.com/docs)、[Anthropic 工程博客](https://www.anthropic.com/engineering) **[一手]**。
-> 2026-10-13（UTC）补核 LSP 官方会话边界并收窄安装建议，未运行客户端。
+> 2026-10-13（UTC）补核 LSP 官方会话边界；2026-10-14（UTC）补核 2.1.299 的无人值守停止、重复执行与 MCP 匹配修复，以及当前 CLI 预算口径。其余价格、套餐与功能未全量重核，未运行客户端。
 > 评级：✅ **采用**（日常开发 Agent 选项之一）
 
 ## 1. 定位
@@ -57,11 +57,16 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 
 配套：`--worktree`（`-w`）、`worktree.sparsePaths`（大仓库稀疏检出）、跨会话消息、`/batch`（把一个大改动拆给 5–30 个 worktree 子 Agent）、`/loop` 与 Routines（定时）、`/goal`（设完成条件，由独立评估器每轮检查）、Monitor 工具（订阅后台脚本事件）。
 
+**✅ 无人值守先限定停止与重试边界**：`claude -p` 可设 `--max-budget-usd` 和 `--max-turns`，但前者按客户端 API 费用估算停止，含子 Agent、可能超额，恢复进来的历史费用不计入本次上限；后者在 `--input-format stream-json` 中不阻止已排队消息开启各有上限的新一轮。因此它们不能代替跨运行预算或服务商账单上限。**[一手：[CLI reference](https://code.claude.com/docs/en/cli-reference)；研究：采用判断]**
+
+2.1.299 修复了自发续写 mod 越过停止条件，以及重启／MCP 重连时的特定重复执行路径。恢复发布、提交或外部写入前，先查目标端是否已经完成，再决定重试；可控接口使用幂等键。涉及这些路径的旧运行器先评估升级，再做中断／恢复验收，别用多写一句“不要重复”替代运行器修复。修复记录不证明全部路径已具备 exactly-once 保证；本轮依据和未测范围见 [S1a](../research/2026-10-10-audit.md#s1a--2026-10-14-无人值守的停止与重试边界)。**[一手：固定 changelog；研究：采用判断]**
+
 ### 3.4 评审与安全
 - `/code-review`（新鲜上下文找 bug，`--max-findings` 控制数量）、`/code-review ultra` 和 `claude ultrareview`（云端多 Agent 深度评审，可在 CI 里跑）、`/security-review`、`/simplify`。
 - **Auto mode**（v2.1.283 起为交互会话默认）：分类器代替人工审批，详见 [06](../06-hooks-and-guardrails.md#4-auto-mode实测数据)。
 - 沙箱：macOS Seatbelt / Linux bubblewrap，可设网络白名单（`sandbox.network.strictAllowlist`），可屏蔽凭证（`sandbox.credentials`）。
 - `--safe-mode`：禁用所有自定义内容排查问题；`--restricted`：去掉执行类工具；`--bare`：脚本调用时跳过 hooks、LSP、插件。
+- **升级后 MCP 少了权限，先查匹配而非放宽权限**：2.1.299 收紧 allow 和子 Agent `tools:` 的服务器匹配；`mcp__a` 不再覆盖 `a__b` 或 `a_`。只需单个工具就列具体工具；确需整台服务器时使用完整规范化名 `mcp__<server>__*`，不要用宽泛前缀恢复旧行为。**[一手：[固定 changelog](https://github.com/anthropics/claude-code/blob/db93774d73e8fdbaf315a6f4c175ae99ad3d515a/CHANGELOG.md)；研究：采用判断]**
 
 ### 3.5 诊断与维护
 | 命令 | 用途 |
