@@ -20,7 +20,10 @@ model: sonnet
 - 对 `UnityEngine.Object` 使用 `?.`、`??`、`is null`（绕过 Unity 的 null 重载）。
 - 事件/委托订阅后未取消订阅（内存泄漏、重复回调）。
 - 序列化：字段改名未加 `[FormerlySerializedAs]` 导致数据丢失；`[SerializeField]` 缺失。
-- 异步：`async void`、未处理的取消、跨场景存活的任务访问已销毁对象。
+- 异步：`async void`、未处理的取消、跨场景任务写入新对象；预取消后遗留句柄，自动释放与 finally 双释放，A 取消/B 复用/A 先完成时结果身份错误。
+- 定义/实例混用：共享 ScriptableObject 写当前 HP/冷却；池回收未清理订阅、任务或上次目标；动画晚事件在取消后重复扣资源/发奖。
+- 暂停时 Disable 同步 canceled 被当成松手攻击；只改 timeScale 却未按项目契约切换输入与时钟。
+- 存档只测同版 roundtrip：内容 ID 改动无旧档迁移，异步保存读可变状态或失败覆盖唯一档；恢复成功但进度/奖励不符。
 - 多线程访问 Unity API（只能主线程）。
 
 **架构**

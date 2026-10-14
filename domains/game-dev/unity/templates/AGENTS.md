@@ -8,7 +8,7 @@
 - 项目：TODO（游戏名 / 类型 / 目标平台）
 - Unity 版本：TODO（见 `ProjectSettings/ProjectVersion.txt`）
 - 渲染管线：TODO（URP / HDRP / Built-in）
-- 关键包：TODO（Input System、Addressables、UniTask、Netcode…）
+- 关键包及锁定版本：TODO（Input System、Addressables、UniTask 等；不为本模板新增依赖）
 
 ## 目录结构
 
@@ -68,8 +68,17 @@ TODO：列出主要模块（asmdef）及依赖方向，例如 `Core ← Gameplay
 - 不要对 `UnityEngine.Object` 使用 `?.` / `??`（Unity 重载了 null 判定）。如果已经启用了 Microsoft.Unity.Analyzers（UNT0007 / UNT0008 会检查），这一条可以删掉。
 - 热路径（`Update`/`FixedUpdate`/`LateUpdate`）禁止：GC 分配、LINQ、`GetComponent`/`Find*`、字符串拼接、装箱。
 - 业务逻辑尽量写在纯 C# 类中（便于 EditMode 测试），MonoBehaviour 只做胶水。
-- 异步：TODO（UniTask / Awaitable / 协程，统一一种）。
+- 异步：TODO（沿用项目现有 Coroutine / Awaitable / UniTask / Task 边界与版本）。统一取消与所有权约定，不为统一语法重写所有 API；池化 Awaitable 不得重复 await。
 - 注释与文档：TODO（中文/英文）。
+
+## 本项目的状态与资源契约
+
+<!-- 只填写本次修改涉及的现有实现/测试位置；没有相应系统就删去，不要求新建框架。 -->
+
+- 加载所有者及释放入口：TODO。取消消费者等待不等于底层完成或资源释放；创建句柄前处理预取消，创建后由唯一所有者在成功、失败、取消路径收尾，不能自动 release 与 finally 双重释放。旧请求完成只收尾，不写新场景/池对象；高频取消适配器需测 A 取消后 B 复用且 A 先完成的结果身份，业务代次不能证明库内无串线。
+- 定义与实例：TODO（定义、Session/角色/一次施放实例的类型）。共享 ScriptableObject 不存当前 HP、冷却或目标；池回收/状态退出显式清理任务、订阅与命中窗口，不只等 Destroy。计时器的暂停时钟：TODO。
+- 伤害/奖励唯一提交入口：TODO；动画与事件观察者不得重复结算，取消、死亡、换局后的晚事件失效。暂停先关闭玩法权限，再禁用 Input Action Map，防止同步 canceled 被当成松手攻击。
+- 存档类型、旧档夹具与兼容政策：TODO。保存稳定内容 ID、schemaVersion/contentVersion 和一致快照；字段/内容改名需迁移，不以 `[FormerlySerializedAs]` 或同版 roundtrip 代替旧档验证；写入失败保留原档，恢复后进度和奖励须正确。
 
 ## 提交约定
 

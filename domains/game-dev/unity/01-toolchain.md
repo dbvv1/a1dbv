@@ -1,13 +1,13 @@
 # Unity AI 工具链
 
-> 核实时间：2026-10-05。
+> 核实时间：2026-10-05；WP9 的官方接入、二次导入契约于 2026-10-14（UTC+8）复核。
 > 依据：克隆并阅读 [Unity-Technologies/unity-agent-plugin](https://github.com/Unity-Technologies/unity-agent-plugin) 源码（33 个 Skill，约 7400 行 SKILL.md）；读了 [Unity CLI 更新日志](https://docs.unity.com/en-us/unity-cli/release-notes)和 [Unity MCP 官方博客](https://unity.com/blog/unity-ai-mcp-how-to-get-started) **[一手]**。
 
 ## 1. 官方方案
 
 ### 1.1 Unity CLI ✅（整个工具链的核心）
 
-2026-06-30 发布 1.0.0-beta.1，**目前最新是 1.0.0-beta.12（2026-09-30）**；Unity Hub 会自动安装 **[一手]**。官方插件中的 `unity-cli` Skill 给出了详细用法 **[一手]**：
+2026-06-30 发布 1.0.0-beta.1，**本轮核实发布页顶部为 1.0.0-beta.13（2026-10-07）**；Unity Hub 会自动安装 **[一手]**。官方插件中的 `unity-cli` Skill 给出了详细用法 **[一手]**：
 
 **驱动正在运行的编辑器**（需要 Unity 6.0 及以上，项目中安装 Pipeline 包 `com.unity.pipeline`：`unity pipeline install`）：
 ```bash
@@ -49,7 +49,7 @@ unity build --target StandaloneWindows64 --output-path ./Build/Game.exe --format
 | **Safe Mode**：项目有编译错误时编辑器以 Safe Mode 启动，Pipeline 包不加载，CLI 连不上；`unity recompile` 退出码为 7 | 运行 `unity pipeline list` 确认；从 Editor.log 过滤出 `error CS####`，修正源码后重启 |
 | **Play 模式不等于运行正常**：失去焦点的编辑器可能停在第 1 帧，`unity status` 仍显示 playing，截图可能是冻结的画面 | 按官方 `playmode-verification-loop` 流程：确认帧在推进 → 截图 → 读 Console → 用 `eval` 实时调整 |
 | 沙箱中的 Agent 可能看不到正在运行的编辑器 | 不要据此判断编辑器没开 |
-| CLI 版本旧，会出现像是“文档写错了”的失败 | 运行 `unity self-update --check`，始终用最新版 |
+| CLI 版本旧，会出现像是“文档写错了”的失败 | 查官方 release notes，记录 CLI/Pipeline/Editor 版本并受控升级，不把最新版视为资产兼容保证 |
 
 ### 1.2 Unity 官方 Agent 插件 ✅
 
@@ -81,20 +81,13 @@ codex plugin add unity@unity-agent-plugin
 
 **评价**：这些 Skill 偏重**功能搭建**（UI、2D、URP、服务接入），对**大型项目的代码架构、重构、性能**帮助有限，这部分仍然要靠项目自己的 AGENTS.md、Skill 和评审子 Agent（见本目录 templates）。
 
-### 1.3 Unity AI（编辑器内）🧪
-2026-05-04 开放 Beta（Unity 6）：
-- **AI Assistant**：编辑器内的 Agent，有 Ask / Agent / Plan 三种模式；
-- **AI Gateway**：在编辑器里接入你自己的 Claude、GPT 等，**不消耗 Unity 点数**；
-- **Unity AI MCP Server** **[一手：Unity 博客 2026-05-11]**：
-  - 随 AI Assistant 包一起提供；
-  - 要求 Unity 6+、项目已连接 Unity Cloud、**有 AI beta 的试用或订阅**；
-  - 在 Edit > Project Settings > AI > Unity MCP 中自动配置客户端；中继程序在 `~/.unity/relay/`（参数 `--mcp`）；
-  - **客户端第一次连接时要在编辑器里手动批准**。
+### 1.3 编辑器内 Assistant 与已弃用的旧 MCP
 
-> **两条官方 MCP 路线的区别**：Unity AI MCP 需要订阅，并依赖 AI Assistant 包和 Unity Cloud；Unity CLI 的 `unity mcp` 是**免费**的，依赖 Pipeline 包。做 Claude Code 或 Codex 工作流，优先用后者（官方 Agent 插件走的也是 Unity CLI）。
-- 计费：Personal 版试用 14 天（1000 点数），之后每月 10 美元 1000 点；Pro、Enterprise、Industry 席位自带点数 **[二手]**。
+**🧪 有编辑器内对话／生成需求时再选 Assistant，外部 Agent 默认用免费 CLI/Pipeline。** 当前[官方 FAQ](https://unity.com/features/ai)区分编辑器内 Assistant（消耗点数，Personal 试用后 $10/月）、不消耗 Unity 点数的第三方 AI gateway，以及免费的 CLI、MCP server 和官方插件。**[一手]**
 
-**定位**：适合编辑器内的小任务和资源生成；大型项目的代码工作仍以外部 Coding Agent 为主。
+**⛔ 不再新用 `com.unity.ai.assistant` 包内 MCP server。** [官方迁移说明](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)已将其弃用，替代者是基于 Pipeline 的 `unity mcp`；该 CLI MCP 模式继续支持。能可靠执行 shell 时也可直接用 CLI；同时保留 Assistant 的项目需留意官方注明的 2.13+ 共存修复。**[一手]**
+
+**关键局限**：付费 Assistant 或官方身份不构成二次资产替换更可靠的证据，生成结果仍须核验规格、权利及真实引擎表现。**[经验]**
 
 ### 1.4 其他官方
 - [Unity-Technologies/industry-ai-workflows](https://github.com/Unity-Technologies/industry-ai-workflows)：实验性插件市场，面向 Asset Manager、Asset Transformer（CAD/3D 处理）、管线自动化。
@@ -104,7 +97,7 @@ codex plugin add unity@unity-agent-plugin
 
 | 项目 | Unity 版本 | 特点 | 评级 |
 |---|---|---|---|
-| [CoplayDev/unity-mcp](https://github.com/CoplayDev/unity-mcp)（MCP for Unity） | 2021.3 LTS – 6.x | 最流行（约 1.4 万星）；资产、场景、脚本、测试、Profiling、构建；需要 Python 3.10+ 和 uv | ✅ **Unity 6 以下首选** |
+| [CoplayDev/unity-mcp](https://github.com/CoplayDev/unity-mcp)（MCP for Unity） | 2021.3 LTS – 6.x | 最流行（约 1.4 万星）；资产、场景、脚本、测试、Profiling、构建；需要 Python 3.10+ 和 uv | 🧪 **旧版 Unity 的候选桥，逐工具核对契约** |
 | [IvanMurzak/Unity-MCP](https://github.com/IvanMurzak/Unity-MCP) | — | 70+ 工具；**支持运行时（游戏内）接入 LLM**；一行特性就能定义自定义工具 | 🧪 需要运行时 AI 时用 |
 | [CoderGamester/mcp-unity](https://github.com/CoderGamester/mcp-unity) | 6+ | Node.js + WebSocket；30+ 能力 | 👀 |
 
@@ -118,12 +111,20 @@ codex plugin add unity@unity-agent-plugin
 | 场景 | 推荐 |
 |---|---|
 | Unity 6+，用 Claude Code 或 Codex | 官方插件 + Unity CLI（Pipeline 包）。社区 MCP 一般不需要 |
-| Unity 2021 / 2022 LTS | CoplayDev/unity-mcp + batchmode 脚本（见 templates） |
+| Unity 2021 / 2022 LTS | 评估固定版本 CoplayDev/unity-mcp + batchmode 脚本；资产替换遵循下节，不直接重跑新增导入 |
 | 需要游戏运行时接 LLM（NPC 等） | IvanMurzak/Unity-MCP |
 | 在编辑器内对话、做小任务 | Unity AI Assistant，或用 AI Gateway 接入 Claude |
 | CI | `unity test` / `unity build`（退出码对 CI 友好） |
 
 > ⚠️ 不要同时装多个 Unity MCP 或桥接工具：工具会重复，Agent 容易选错，上下文也会膨胀。
+
+## 4. 批量导入与二次替换
+
+**✅ 采用已有 importer 和明确的字段所有权；🧪 社区桥只补所缺入口。** Coplay 10.3.0 固定源码的 `import_model_file` 在目标同名文件存在时添加 `_1` 等后缀，适合导入候选新模型，不能当原位替换；`manage_asset` 的 import 是另一条已知路径重导入入口。其 move/rename 处理器还有与 Unity `MoveAsset` 返回契约相反的判定，属于**源码层潜在误报，未实测**；该 move/rename 误报路径应先修正并验证，结果不明确时按原 GUID 回读路径，不盲重试。固定 SHA、外围包装及测试范围见 [WP9 研究](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md)。**[一手＋研究＋经验]**
+
+**✅ 导入规格先用 Presets，持续规则才加 AssetPostprocessor。** Unity [官方目录 Preset 示例](https://docs.unity3d.com/6000.0/Documentation/Manual/DefaultPresetsByFolder.html)已有规则优先级及依赖追踪扩展，可处理 preset 变化后旧资产重导入；只把项目明确归导入器管理的字段交给规则，保留自定义 pivot、材质 remap 与状态机。普通 PNG 沿用 TextureImporter/Data Provider；确实使用 Aseprite 源文件时再评估兼容官方包与层 UUID。**[一手＋经验]**
+
+**关键局限**：官方 Sprite Smart 也按矩形重叠复用旧对象，重排后可能保留 ID 却改变含义；仍须核对源语义、子资产、锚点及旧使用点。**[一手＋经验；本轮未运行引擎]**
 
 ## 来源
 

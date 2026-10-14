@@ -22,12 +22,14 @@ model: sonnet
 - 判空用 `!= nullptr` 而不是 `IsValid()`，对可能 Pending Kill 的对象不安全。
 - 委托绑定后没有解绑，或者绑定了可能先销毁的对象（应该用 `AddUObject` / `AddWeakLambda`）。
 - 网络同步：`Replicated` 属性未在 `GetLifetimeReplicatedProps` 中注册；Server RPC 没有校验输入；只在服务器或客户端执行的逻辑放错了地方（缺少 `HasAuthority()` 判断）。
-- 异步加载、定时器、Latent Action 回调时对象可能已经销毁。
+- 异步加载、定时器、Latent Action 在取消/卸载后仍提交旧结果；同帧交叉取消导致完成与取消路径重复结算或资源所有者丢失。
+- 共享 DataAsset/CDO 写当前 HP/冷却；池回收或 GAS Per-Actor 再激活保留上次目标；取消后标签/移动锁/命中窗口未清理，Montage 晚事件重复结算。
+- 存档内容 ID 改动无旧档迁移，异步保存读可变状态或失败覆盖唯一档；只证明文件可读而未验证进度/奖励。
 - 在非游戏线程访问 `UObject`。
 
 **性能**
 - 新增了不必要的 Tick；热路径里有 `GetAllActorsOfClass`、`FindComponentByClass`、动态 `Cast` 循环、字符串操作。
-- 同步加载资产（`LoadObject` / 硬引用）导致卡顿，应该用软引用加异步加载。
+- 同步加载资产造成已证实的帧时间尖峰：按驻留需求评估软引用/异步加载；小型常驻资源不因使用硬引用就判错。
 
 **架构与编译**
 - 违反模块依赖方向；`.Build.cs` 新增了不必要的公共依赖。

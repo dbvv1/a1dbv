@@ -18,13 +18,20 @@ user-invocable: false
 ## 移动 / 重命名 / 删除
 
 - 移动或重命名：`git mv Foo.cs Bar.cs && git mv Foo.cs.meta Bar.cs.meta`（文件夹同理，文件夹也有 .meta）。
-- 重命名 MonoBehaviour/ScriptableObject 类时，**文件名必须与类名一致**；GUID 保持不变则引用不丢。
+- 重命名 MonoBehaviour/ScriptableObject 类时，**文件名必须与类名一致**；保留 GUID 只是必要条件，还须回读组件脚本绑定与序列化数据，不能据此保证所有引用不丢。
 - 删除：同时删除 `.meta`；删除前用 Grep 在 `*.unity`、`*.prefab`、`*.asset` 中搜索其 GUID，确认没有引用。
 
 ```bash
 guid=$(grep -m1 '^guid:' Assets/Path/Foo.cs.meta | awk '{print $2}')
 grep -rl "$guid" Assets --include='*.unity' --include='*.prefab' --include='*.asset'
 ```
+
+## 重生成 / 重导入已有资源
+
+- 先读取目标 GUID、子资产身份与语义名称、pivot、单位和下游 Prefab/动画/Addressables 键；复用项目已有 Preset/AssetPostprocessor，声明生成字段和需要保留的调整，不删 `.meta` 后重建。
+- Sprite 重排不能仅凭 Smart 的矩形重叠推断动作身份；Prefab 覆盖会按名称匹配，同名子物体或同物体多个同类型组件可能匹配不唯一。无法唯一映射就停止自动替换，先明确迁移。
+- 工具 success 不等于导入完成；`SaveAsPrefabAsset` 在 `StartAssetEditing` 批次内即使保存成功也可返回 null。结合 success、日志，结束批次并导入后回读，不因 null 盲目创建副本。
+- 回读实际使用点的子资产、材质槽、挂点和加载键，确认仍代表同一动作/道具；GUID 存在或无 Missing 不够。重复导入不得额外生成 `_1` 或覆盖未声明字段。
 
 ## 序列化字段改名
 

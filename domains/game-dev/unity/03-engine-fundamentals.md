@@ -1,6 +1,6 @@
 # Unity 引擎基础：给 AI 协作准备的知识地图
 
-> 核实时间：2026-10-08。
+> 核实时间：2026-10-08；WP9 的导入与身份边界于 2026-10-14（UTC+8）复核。
 > 这一篇是**基础知识**：Unity 的核心概念和机制。每个小节最后都有“**AI 要点**”，说明 Agent 在这里常犯什么错、应该在 AGENTS.md 里写什么、用什么手段验证。
 > 概念以 [Unity 官方手册](https://docs.unity3d.com/Manual/) 为准（各节附链接）；“AI 要点”来自本仓库的实践总结和社区反馈 **[经验]**。版本信息见最后一节。
 
@@ -29,12 +29,12 @@ Awake → OnEnable → Start → (每个物理步) FixedUpdate → (每帧) Upda
 
 - `Awake` 在对象创建时调用（即使组件未启用），适合初始化自身；`Start` 在第一次 `Update` 前调用，适合访问其他对象；
 - 不同对象之间同一回调的先后顺序**默认不确定**，需要时用 Script Execution Order 设置；
-- 异步：协程（`IEnumerator` + `yield`）、Unity 6 的 `Awaitable`、第三方 UniTask。项目里应统一一种。
+- 异步：协程（`IEnumerator` + `yield`）、Unity 6 的 `Awaitable`、第三方 UniTask。统一生命周期、取消和主线程边界；已有方案满足时不为统一语法重写，具体采用条件见[客户端模块](../04-client-modules.md#场景切换取消等待不等于取消工作)。**[研究]**
 
 **AI 要点**：
-- 常见错误：在 `Awake` 里访问其他对象还没初始化的数据；在 `OnDestroy` 里访问已经销毁的对象；协程在对象被禁用后静默停止；
+- 常见错误：在 `Awake` 里访问其他对象还没初始化的数据；在 `OnDestroy` 里访问已经销毁的对象；GameObject 失活／宿主销毁会停止协程，但仅设 `MonoBehaviour.enabled=false` 不会，见[官方协程说明](https://docs.unity3d.com/6000.3/Documentation/Manual/Coroutines.html)；
 - `async void` 和不处理取消的任务，会在场景切换后访问已销毁的对象；
-- 在 AGENTS.md 里写明：**异步方案用哪一种**、跨对象初始化的约定。
+- 在 AGENTS.md 里写明：**各类异步工作的所有者、取消与收尾路径**、跨对象初始化的约定。
 
 ## 3. 序列化：Unity 里最容易被 AI 搞坏的部分
 
@@ -75,10 +75,14 @@ Awake → OnEnable → Start → (每个物理步) FixedUpdate → (每帧) Upda
 |---|---|---|
 | 直接引用（Inspector 拖拽） | 随场景或 Prefab 一起加载 | 小项目默认方式 |
 | `Resources` 文件夹 | 按路径加载，所有内容都会打进包 | 不建议新项目使用 |
-| **[Addressables](https://docs.unity3d.com/Packages/com.unity.addressables@latest)** | 按地址异步加载、按组打包、支持远程内容更新 | 中大型项目首选 |
-| AssetPostprocessor | 导入时自动处理资源（压缩格式、导入设置） | **很适合交给 Agent 写** |
+| **[Addressables](https://docs.unity3d.com/Packages/com.unity.addressables@latest)** | 按地址异步加载、按组打包、支持远程内容更新 | 明确需要分组驻留、按需加载或内容分发时采用；不按项目大小强制 |
+| Presets / AssetPostprocessor | 复用导入规格，必要时增加持续规则 | 先预设，再按明确字段所有权写小型后处理器 |
 
-**AI 要点**：Agent 写“加载资源”的代码时常用 `Resources.Load` 或同步加载，要在 AGENTS.md 写明项目用 Addressables，以及异步加载和释放（`Release`）的约定，否则会内存泄漏。
+**AI 要点**：在 AGENTS.md 写明项目实际采用的加载方式；采用 Addressables 时约定异步加载与释放，不为单纯重生成资产而强迁移小项目。**[经验]**
+
+**✅ 二次导入保留正确的对象与字段。** [官方 Preset 依赖示例](https://docs.unity3d.com/6000.0/Documentation/Manual/DefaultPresetsByFolder.html)可复用；修改压缩等规则时，不顺带重置自定义 pivot、outline 或材料 remap。更新 Prefab 优先局部修改：官方 [SaveAsPrefabAsset](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/PrefabUtility.SaveAsPrefabAsset.html)整体覆盖按子对象名称匹配，同名对象及同类型重复组件有引用歧义。**[一手＋经验]**
+
+Addressables 的 [AssetReference](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/api/UnityEngine.AddressableAssets.AssetReference.html)区分主资产 GUID 与子对象名称／ID；已有远程分发项目还须按[官方更新流程](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/content-update-builds-overview.html)保留每个平台发布基线的 content state 文件。**关键局限**：它解决加载与分发，不会修复切片重排、名称碰撞或 GUID 仍在但换错内容；详见 [WP9 证据与采用边界](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md)。**[一手＋经验]**
 
 ## 7. 渲染管线
 
@@ -94,13 +98,13 @@ Unity 6 的 GPU Resident Drawer、GPU 遮挡剔除用于大量物体的渲染 **
 
 ## 8. 输入与 UI
 
-| 领域 | 旧方案 | 新方案 |
+| 领域 | 已有可用方案 | 按项目需求评估的另一方案 |
 |---|---|---|
 | 输入 | Input Manager（`Input.GetKey`） | **[Input System](https://docs.unity3d.com/Packages/com.unity.inputsystem@latest)**（Action、Action Map、多设备） |
 | 运行时 UI | uGUI（Canvas） | UI Toolkit（类似 Web 的 UXML + USS） |
 | 编辑器 UI | IMGUI | UI Toolkit |
 
-**AI 要点**：模型默认写旧 API（`Input.GetKey`、uGUI）。要写明项目用哪一套；UI Toolkit 的布局用文本描述（UXML、USS），**比 uGUI 的场景对象更适合 Agent 修改**。
+**AI 要点**：写明实际输入与 UI 版本，不因文本布局易编辑就迁移可用 uGUI。新布局密集页面可评估 UI Toolkit；还要比较关键帧动画、焦点与目标设备行为，见[客户端模块的版本选择](../04-client-modules.md#4-借用的授权边界与升级条件)。文本可编辑性不证明 Agent 的正确率更高。**[一手＋研究]**
 
 ## 9. 性能
 
@@ -141,9 +145,9 @@ Unity 6 的 GPU Resident Drawer、GPU 遮挡剔除用于大量物体的渲染 **
 |---|---|---|
 | Unity 版本、C# 版本 | Unity 6.3 LTS，C# 9 | 写出不可用的语法或 API |
 | 渲染管线 | URP 17，使用 Render Graph | 写出 Built-in 管线的代码 |
-| 输入和 UI 方案 | Input System；UI Toolkit | 写出 `Input.GetKey`、uGUI |
-| 异步方案 | UniTask | 混用协程、`async void` |
-| 资源加载 | Addressables，异步加载后必须 Release | `Resources.Load`、内存泄漏 |
+| 输入和 UI 方案 | 实际 Input System／现有输入；uGUI 或 UI Toolkit 版本 | 未经需求更换可用方案、UI 与玩法双触发 |
+| 异步边界 | 原生／UniTask 的具体所有权、取消与收尾契约 | 取消等待却遗失句柄、旧回调写新场景 |
+| 资源加载 | 常驻直接引用；按需 Addressables 并约定释放者 | 双重释放、未持有结果寿命、无预算缓存 |
 | 程序集结构和依赖方向 | `Core ← Gameplay ← UI` | 循环依赖、运行时引用编辑器代码 |
 | Domain Reload 设置 | 已关闭，静态字段要手动重置 | 第二次进入 Play 模式时状态错乱 |
 

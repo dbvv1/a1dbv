@@ -1,6 +1,6 @@
 # Unreal AI 工具链
 
-> 核实时间：2026-10-08。
+> 核实时间：2026-10-08；WP9 的并发与重导入契约于 2026-10-14（UTC+8）复核。
 > 依据 **[一手]**：
 > - Epic 官方文档 [MCP in Unreal Editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)（UE 5.8）、[UE 5.8 发布说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes)、[5.8 发布帖](https://forums.unrealengine.com/t/unreal-engine-5-8-released/2729274)（含 5.8.1 修复记录）；
 > - 克隆阅读了 Epic 的 [unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)（3 个 Skill + SessionStart Hook）。
@@ -18,7 +18,7 @@ Claude Code / Codex / Cursor / Gemini CLI / VS Code
         │  HTTP + SSE（默认 127.0.0.1:8000/mcp，无认证）
         ▼
 Unreal MCP（ModelContextProtocol 插件，在编辑器进程内）
-        │  所有工具调用都在游戏线程上**串行**执行
+        │  经游戏线程同步分发，异步工具的工作可重叠
         ▼
 Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
         │
@@ -30,7 +30,7 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 
 - **必须同时启用 `AllToolsets`**（或单独的工具集插件），否则服务器能启动但没有任何工具。
 - **工具搜索默认开启**：`tools/list` 只返回 `list_toolsets`、`describe_toolset`、`call_tool` 三个元工具，Agent 按需发现。关掉后会一次性公开所有工具，“初始 schema 体积会大得多”。
-- **客户端不应该发出重叠的工具调用**（游戏线程串行执行）。
+- **同资产／有依赖的修改串行；独立调用仅在工具支持时并发。** 官方文档仍不建议重叠请求，较新的 [2026-09-17 官方 Skill](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin/blob/a6aa73ada02a9fb1f5415bec491f9942c519b297/skills/unreal-mcp/SKILL.md)允许安全独立并发并提醒异步操作会重叠、完成顺序不保证；保留这一区别，不把串行 dispatch 等同于整个作业串行。**[一手＋经验]**
 - 默认开启遥测：`ModelContextProtocol.EnableAnalytics` 默认为 `true`，需要的话可以关掉。
 
 ### 1.2 配置步骤
@@ -75,7 +75,7 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 
 | 组成 | 作用 |
 |---|---|
-| `unreal-mcp` Skill | 发现工具 → `describe_toolset` → `call_tool` 的流程；五条安全规则（先存盘、等编译、串行修改、检查结果、留意 PIE）；先查项目注册的 Agent Skill |
+| `unreal-mcp` Skill | 发现工具 → `describe_toolset` → `call_tool` 的流程；五条安全规则（先存盘、等编译、控制并发冲突、检查结果、留意 PIE）；先查项目注册的 Agent Skill |
 | `create-toolset` Skill | 写新工具集（C++ 或 Python）的规范和测试要求 |
 | `unreal-skill` Skill | 写**引擎内的 Agent Skill**（UAsset 或 Python 类），供编辑器里的 Agent 通过 `AgentSkillToolset` 加载 |
 | SessionStart Hook | 从当前目录向上找 `.uproject`，注入“这是 UE 项目，遵循 UE 约定”的提示，并提醒是否需要生成 `.mcp.json`；需要 bash（Windows 用 Git Bash 或 WSL） |
@@ -104,7 +104,7 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 
 | 项目 | 最近提交 | 说明 | 评级 |
 |---|---|---|---|
-| [Natfii/UnrealClaude](https://github.com/Natfii/UnrealClaude) | 2026-06 | 面向 UE 5.7：把 Claude Code CLI 嵌进编辑器面板，并提供 20 多个 MCP 工具（Actor、蓝图、关卡、材质、资产依赖），能通过 Live Coding 编译；作者自己说蓝图编辑“还有 bug，别完全依赖” | 🧪 **5.7 及以下的首选** |
+| [Natfii/UnrealClaude](https://github.com/Natfii/UnrealClaude) | 2026-06 | 面向 UE 5.7：把 Claude Code CLI 嵌进编辑器面板，并提供 20 多个 MCP 工具（Actor、蓝图、关卡、材质、资产依赖），能通过 Live Coding 编译；作者自己说蓝图编辑“还有 bug，别完全依赖” | 🧪 **需要编辑器内 Claude 面板时评估** |
 | [maystudios/claude-skills](https://github.com/maystudios/claude-skills) | 2026-08 | 作者在发行 UE 5.7 游戏的过程中积累的 Skill：GAS、UE5 最佳实践（Enhanced Input、StateTree、PCG、CommonUI、World Partition）、第三方库集成、PCG Python、从 C++ 生成蓝图 `.uasset` | 🧪 当作参考读，挑需要的 |
 | [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp) | 2026-06 | 团队已被 Aura 收购，后续更新转到 Aura | 👀 |
 | [chongdashu/unreal-mcp](https://github.com/chongdashu/unreal-mcp) | **2025-04** | 早期最流行的方案之一，已停止更新 | ⛔ 有官方 MCP 后不建议新用 |
@@ -125,8 +125,18 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 | 场景 | 推荐 |
 |---|---|
 | UE 5.8+，用 Claude Code / Codex | **Unreal MCP（5.8.1+）+ Epic 插件** + 本目录 templates；编辑器里勤存盘，用 Sandboxes 做探索性修改 |
-| UE 5.5–5.7 | UnrealClaude，或只用通用编码工作流（C++）+ 命令行编译和测试（见 [02](02-large-project-guide.md)） |
+| UE 5.5–5.7 | 资产批处理可直接用 Editor Python；需要社区桥时评估 UnrealClaude，C++ 沿用通用编码与编译测试 |
 | 需要 Agent 测打包后的游戏 | 在开发版里用 `IModelContextProtocolModule` 注册测试工具（见 1.4 节） |
 | CI | `RunUAT BuildCookRun` + 命令行自动化测试（见 [02](02-large-project-guide.md#4-测试)） |
 
 > ⚠️ 不要同时启用多个连接同一个编辑器的 MCP（官方 + 社区）：工具重复，Agent 容易选错，上下文也会膨胀。
+
+## 8. 二次资产导入：先定覆盖策略，再选 Agent 入口
+
+**✅ 批处理优先复用 Editor Python 与现有 importer；🧪 按目标格式评估 Interchange。** [官方 Interchange](https://dev.epicgames.com/documentation/unreal-engine/importing-assets-using-interchange-in-unreal-engine?lang=en-US)已有 pipeline stack、Python 示例与材料／骨架冲突预览。已有脚本足够就不自建 MCP，不因“支持自动化”重建被 Blueprint/场景引用的资产。**[一手＋经验]**
+
+- [UAssetImportTask](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Editor/UnrealEd/UAssetImportTask)把替换资产与替换导入设置分开；走 Interchange 时 task 的 DestinationName 被忽略，名称需在 pipeline 配置。异步导入等待完成再读实际输出。**[一手]**
+- [FImportAssetParameters](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/InterchangeEngine/FImportAssetParameters)可指定 ReimportAsset、来源索引和 OverridePipelines；不要把不同参数类型的同名字段当同一契约。**[一手]**
+- [重导入策略](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/InterchangeCore/EReimportStrategyFlags)可选择只换源数据、重应用 pipeline 属性，或保留上次导入以来编辑器修改过的属性。程序员在引擎内调整过的材料、碰撞或挂点应明确归属，再回读真实结果。**[一手＋经验]**
+
+**关键局限**：这些策略不保证材料槽、骨架或动画改名后的语义合并，官方当前指南仍把 FBX Interchange 标为实验性；引擎／importer 迁移须与普通替换分开，历史反例及版本边界见 [WP9 研究](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md)。**[一手＋经验；本轮未运行引擎]**
