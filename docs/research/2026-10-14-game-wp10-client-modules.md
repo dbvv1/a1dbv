@@ -205,7 +205,7 @@
 
 ### 1. 先按期望运动选，不能只按组件名字选
 
-**[研究] 默认判断**：常规直立探索／动作角色，以可预测转停、可控落点、稳定接触为目标，✅ 原生 CharacterController 加窄运动层；已有可维护的刚体运动无需迁移。真正需要物体质量、冲量与摩擦相互作用时🧪力驱动动态 Rigidbody；需要原生接触求解但按游戏规则组织速度时🧪速度驱动动态 Rigidbody；稳定接地、任意附着／脱离或复杂台阶规则超过原生便利范围时🧪现成 kinematic motor。后两条都可能很精确，不能写成“Rigidbody 必然笨重、KCC 必然最好”。
+**[研究] 默认判断**：常规直立探索／动作角色，原生坡／阶与简单接触规则已满足需求时，✅ 原生 CharacterController 加窄运动层；已有可维护的刚体运动无需迁移。真正需要物体质量、冲量与摩擦相互作用时🧪力驱动动态 Rigidbody；需要原生接触求解但按游戏规则组织速度时🧪速度驱动动态 Rigidbody；稳定接地、任意附着／脱离或复杂台阶规则超过原生便利范围时🧪现成 kinematic motor。后两条都可能很精确，不能写成“Rigidbody 必然笨重、KCC 必然最好”。
 
 [研究] “重量”不等于质量参数：有限加速度、方向反转时的承诺、落地压缩、武器动作时序都能塑造重量，同时保留精确落点；反过来，物理自然推出的移动也可能偏离动作游戏要求。应先描述人在坡顶、被击退、站上转台时想做什么，以及实际结果是否可信，再选哪一层拥有速度。
 
@@ -242,6 +242,25 @@
 - [一手] [AvatarMover.API.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.API.cs)的 `Move` 设定单步目标速度，`LeaveGround/EndLeaveGround` 控制吸附暂停／恢复，旧 force 方法已标 Obsolete。跳跃曲线与击退组合属于调用方，不能认为加上组件就有完整动作。
 - [一手／研究] `UpdateMovement` 对平台取得的是 `_groundRb.linearVelocity`；绕中心旋转的平台在边缘仍有点速度，单凭此值不足以表达。README 的 `ParentableGround` 通过层级继承位置／旋转，是另一条可选跟随政策；要另外验证离台时继承、父级缩放、相机参考方向与碰撞受阻，不能将“能跟着平台”概括成所有平台动力学正确。
 
+### 现成 motor 补比：先借已有平台机制，再决定补什么
+
+核实：2026-10-14 UTC。针对「旋转升降平台＋边缘起跳／受击」这一个缺口补比两项；以下是商店元数据、作者公开文档／历史声明，不是包内源码审计或真实游戏实测。此前三份开源实现可读，不足以证明自行补齐原生 CC 比现成 motor 更省维护。[研究]
+
+**D. Easy Character Movement 2（ECM2）：🧪 多种接触规则同时需要时，优先进入条件评估。**
+
+- [一手] [商店页](https://marketplace.unity.com/packages/tools/physics/easy-character-movement-2-193614)列出的版本为 1.4.3、2025-07 发布，USD 80／席位（未含税，购买时重核），列 Unity 6000.0.53f1／2021.3.45f1；不是 Unity 6.3 已验证保证。[changelog](https://oscar-gracian.gitbook.io/easy-character-movement-2/user-manual/general/change-log)记录 1.4.2 提供原生 Unity 6 分发，并修复落到运动平台时运动模式与平台速度应用顺序造成的偏差。这是具体维护证据，不能推成持续支持承诺。在线 changelog 同时已出现未标日期的 **Version 1.5**，与商店列版不同；本轮不据此认定 1.5 已在商店发布。
+- [一手] [CharacterMovement API](https://oscar-gracian.gitbook.io/easy-character-movement-2/user-manual/general/components/character-movement)区分平台跟随、旋转继承（描述为 yaw-only）与起跳／掉落时继承速度；该 API 页仍列 `PauseGroundConstraint`，但上述 1.5 changelog 已将其弃用并改为无需计时器的 `ClearCurrentGround`，因此不能跨版本照抄调用；`LaunchCharacter` 的公开接口支持分别覆盖或叠加速度。`fastPlatformMove` 会省略平台搬运时的 sweep，只适用于已知没有静态阻挡的情形。[研究] 这些入口直接覆盖原文准备自补的政策；不能据此宣称任意翻滚平台、侧挤和网络同步均已解决。
+- [一手／研究] [创建教程](https://oscar-gracian.gitbook.io/easy-character-movement-2/walkthrough/creating-a-character)先创建无外观角色、接模型并调 capsule，尚需接入控制；[扩展教程](https://oscar-gracian.gitbook.io/easy-character-movement-2/walkthrough/extending-a-character)支持继承或事件组合。因此先复用 motor／已有模式，只补输入、技能和动画接口，不为了用包重建整个角色架构。1.4.0 有破坏性 API／Character 重构，1.4.2 又分离 Cinemachine 示例依赖；锁版本、区分运行时与演示依赖，升级仍需回归。[一手：上述 changelog]
+
+**E. Philippe St-Amand 的 Kinematic Character Controller：👀 可复用的历史方案，不升级为 Unity 6 新项目的无条件默认。**
+
+- [一手] [商店页](https://marketplace.unity.com/packages/tools/physics/kinematic-character-controller-99131)当前免费，3.4.4、2022-06 发布，原始 Unity 2020.3.30；不能从旧渲染管线表推出 motor 在现代 URP 必坏，也不能据免费与口碑保证 6.3 兼容。[作者 2022-09 声明](https://discussions.unity.com/t/released-rival-dots-character-controller/843064?page=5)明确 KCC 未被 Unity 收购，转免费后客户支持更有限；其 DOTS 方案 Rival 与这个 GameObject 包不可混同。
+- [一手／研究] [作者发布说明](https://discussions.unity.com/t/released-kinematic-character-controller/678434?page=17)给出复杂台阶、可控模拟更新和自定义运动回调机制；它是复用碰撞／接地底座，再写玩法规则，并非完整游戏角色。历史机制足以反驳「平台只有从零写」；但本轮未取得当前包内源码、现代引擎兼容验证或可核查的指定发行游戏采用证据，不写成比 ECM2／原生更可靠。
+
+**授权先于 Agent 接入。** [一手] 两商店页均列 Standard Unity Asset Store EULA、Extension Asset；免费或随包提供 C# 源码不等于 MIT 开源。[现行条款](https://unity.com/legal/as-terms)标注 2024-12-04 更新：EULA §2.2.1 允许符合条件的嵌入产品用途；§2.3.2 是按席位的 Extension Asset 规则；Terms §3.8(v)／EULA §2.2.1.1(g) 对相关 AI／ML 用途（文字包括输入）要求 Provider 和／或 Unity 明确同意。[研究] 常规获许可的引擎内集成，与把取得的资产包代码／数据交给 coding Agent 是两项判断；需要后者时先取得覆盖具体工作流的明确授权，未清权不默认将包交给 Agent，也不复制进公开仓库。普通公开技术文档不可仅因链接了商店就一概套用资产包许可；本轮仅借公开机制，不据此声称拥有包源码输入权限。这是采用门槛，不是法律意见。
+
+**改变选择顺序。** [研究] 简单静态地形、少量基本坡阶继续保留原生 CC；已明确需要贴地、旋转平台与离台动量组合的新项目，应在写这层之前比较现成 motor。ECM2 的公开接口和 Unity 6 分发使它值得先评估，KCC 的维护／兼容边界使它更适合能自担升级的既有使用者；均不据文档宣布最优。只有实际需求、许可或接入成本排除了现成方案，才补窄层并写清缺口。购买、引擎导入或试玩留到获准阶段；动态价格、许可与版本于实际选型或 2026-11-14 前复核。
+
 ### 3. root motion 与混合路线：一个最终位移所有者
 
 [一手] Unity 6.3 [OnAnimatorMove](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MonoBehaviour.OnAnimatorMove.html)在状态机／动画求值后、IK 前调用。Unity 官方历史样例 `Standard-Assets-Characters@8f185aa3c782d824976653dd6a6476312daad241` 的 [ThirdPersonBrain.cs](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/Assets/_Standard%20Assets/Characters/Scripts/ThirdPerson/ThirdPersonBrain.cs#L458-L481)只在非 root-motion 模式从 FixedUpdate 驱动 motor，在 root-motion 模式从 OnAnimatorMove 驱动；[ThirdPersonMotor.cs](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/Assets/_Standard%20Assets/Characters/Scripts/ThirdPerson/ThirdPersonMotor.cs#L215-L228)通过 adapter 提交移动，`GetMovementVector` 读取 `animator.deltaPosition`。这是互斥所有权的实际实现，不是 Animator 绕过碰撞直接移动身体。
@@ -252,7 +271,7 @@
 
 ### 4. 升级、撤回与未来验收：以玩家感到的差别为准
 
-- [研究] **先保留原生 CC**：现有坡／阶／平台数量少，窄运动层能表达规则；把重力、grounding、平台贡献和击退集中到一个所有者即可。若补丁开始互相抵消（下坡吸附抹掉跳跃、转台继承破坏突进、每个状态重复查询碰撞），对照现成 motor 的对应机制再升级，不以功能清单长短升级。
+- [研究] **先保留原生 CC**：接触规则简单且原生坡／阶已够用，重力与击退由一个所有者组织。平台数量少不代表规则简单；一旦明确需要旋转跟随、贴地和离台动量组合，先比较上述现成 motor，不能等补丁互相抵消后才补做选型。已有方案稳定则保留，不以功能清单长短升级。
 - [研究] **保留速度驱动 Rigidbody**：已获得需要的接触与平顺步态，外部作用都能进入统一速度／momentum 接口。这是有效中间路线；若玩法后来要求持续质量交互、任意外部冲量和堆叠，重新评估力驱动或受控的混合政策，而不是不断增加写 velocity 的脚本。
 - [研究] **撤回过度物理化**：为了精确移动不停抵消摩擦、清掉碰撞速度或禁止自然推力，说明保留的模拟价值可能小于调试成本；把需要的重量感留在作者参数／动画，不用更高 solver iterations 代替运动设计。反过来，若每种碰撞都要手写特例才能做出物理玩具的相互作用，则 kinematic 也可能不划算。
 - [研究] **控制器升级验收**：相同关卡对比上／下坡速度、坡顶是否意外腾空、上／下窄台阶是否稳定、旋转平台站位／起跳方向、平台侧挤与低顶受击、root-motion 撞墙后的动作可读性。测记录只是解释现象，人判断是否更精确、更有重量、更少不明原因失控；不指定跨游戏通用坡角、snap 距离或击退恢复秒数。

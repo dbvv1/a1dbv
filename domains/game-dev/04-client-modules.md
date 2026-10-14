@@ -63,16 +63,18 @@
 
 ### 3D 角色运动：先选想要的控制，再选碰撞求解方式
 
-**[研究] ✅ 普通直立角色、以可控落点和明确转停为主时，先用原生 CharacterController；已经好用的 Rigidbody 控制器不为统一架构重写。** “有重量”可以来自加减速、转向承诺、步态与受击恢复，不必让全部运动交给物理。希望玩家被箱子、摆锤和冲量自然影响，才把动态响应作为核心要求；希望台阶、斜坡和旋转平台遵守精确玩法规则，则重点比较 motor 的接地与平台政策。
+**[研究] ✅ 普通直立角色、接触规则简单且原生坡／阶能力已够用时，先用原生 CharacterController；已经好用的 Rigidbody 控制器不为统一架构重写。** “有重量”可以来自加减速、转向承诺、步态与受击恢复，不必让全部运动交给物理。希望玩家被箱子、摆锤和冲量自然影响，才把动态响应作为核心要求；希望台阶、斜坡和旋转平台遵守精确玩法规则，则重点比较 motor 的接地与平台政策。
 
 | 想得到的动作 | 采用／改造选择 | 实际增加的责任与撤回条件 |
 |---|---|---|
 | 起停利落、贴墙滑动、常规台阶和斜坡，受击距离可编排 | ✅ 原生 CharacterController + 小型运动脚本 | Move 接收位移、处理碰撞，但不施加重力，也不自动响应力／推刚体；平台跟随、离台继承速度和击退由项目定义。不要把 isGrounded 当独立持续探地，它描述最近一次 Move 的结果 |
 | 角色与道具的质量、冲量、摩擦相互作用就是玩法 | 🧪 力驱动的动态 Rigidbody | 接地、可走坡、台阶仍需规则；控制加速度与摩擦可能改变推箱／击退结果。若不断清掉物理响应才能保持落点，改成显式运动政策，不用提高全局迭代数硬补 |
 | 需要原生刚体接触，又希望速度和台阶表现可预测 | 🧪 速度驱动的动态 Rigidbody，保留已有成熟实现 | 是实用折中，但每步覆盖速度会覆盖未合入的外力；把移动、重力、平台和击退贡献收进同一所有者。CMF／SRMove 展示这种路线，不能因组件是 Rigidbody 就承诺自然保留冲量 |
-| 稳定下坡、台阶贴地、旋转平台与起跳动量需要更细控制 | 🧪 现成 kinematic motor，先验证少量缺口再替换 | 接管 sweep／滑动、ground snap、去穿透及平台附着政策，并承担依赖与升级回归；只有缺口减少、修改仍局部时才保留。不要只为“更高级”从零写 motor |
+| 稳定下坡、台阶贴地、旋转平台与起跳动量需要更细控制 | 🧪 先评估现成 kinematic motor，再决定是否补原生层 | 接管 sweep／滑动、ground snap、去穿透及平台附着政策，并承担依赖与升级回归；只有缺口减少、修改仍局部时才保留。不要只为“更高级”从零写 motor |
 
 [一手] 上述原生契约见 Unity 6.3 [CharacterController](https://docs.unity3d.com/6000.3/Documentation/Manual/class-CharacterController.html)、[Move](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController.Move.html)、[isGrounded](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController-isGrounded.html)及 [linearVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody-linearVelocity.html)。Unity 的另一个 [Character Controller 1.4.5 包](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/index.html)面向 ECS，不是给 GameObject 原生组件加功能的即插即用升级。[研究] 普通单人项目不为一个平台切换整套 ECS。
+
+**[研究] 不等平台补丁互相打架才找现成方案。** 需求已同时包含持续贴地、旋转平台跟随与离台动量时，先比较现成 motor 的对应接口，再写项目适配；[ECM2 文档](https://oscar-gracian.gitbook.io/easy-character-movement-2/user-manual/general/components/character-movement)已把平台平移、朝向继承和离台速度分开，并提供主动离地的接地控制入口（方法随版本变化）。[一手] 🧪 ECM2 是有条件的商业候选，Philippe St-Amand 的 KCC 是需自担兼容维护的免费候选；二者的版本、接入与 AI 使用授权边界见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#现成-motor-补比先借已有平台机制再决定补什么)。商店版本与在线文档存在差异，先按实际取得包核对 API；公开接口比对不能证明任一候选在本游戏更好。
 
 **[研究] 接触质量先验四件事：** 下坡／下台阶不无故腾空，上坡速度符合设计，平台转动时站位与起跳方向可信，受击后输入既不瞬间抹掉击退也不意外长期失控。平台的“站着跟随”“离开继承速度”“被侧面挤压”分别定规则；旋转平台要考虑平台角速度对接触点线速度的贡献，不能只加平台平移速度。Unity [GetPointVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.GetPointVelocity.html)包含角速度。[一手] 简单 parenting 只解决一种跟随方式，碰撞、旋转继承与脱离还需验证。
 
