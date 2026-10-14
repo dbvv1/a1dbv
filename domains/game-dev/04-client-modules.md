@@ -11,6 +11,7 @@
 | 换场景后对象或声音残留 | 明确所有者、取消、释放及退出顺序 | 原生加载已不够才考虑资源层 |
 | 存档能读但进度不对 | 稳定内容 ID、格式版本与迁移回归 | 实际跨版本需求出现后扩迁移 |
 | 平均 FPS 好但首次技能会卡顿 | 分清加载、激活、GPU 上传与首次绘制；准备下一场遭遇必需的反馈 | 按尖峰来源选 PSO 预热、分批初始化或有上限的池，别把缺失画面当顺滑 |
+| 密集特效持续掉帧 | 分清实例／更新成本与透明覆盖，先缩无贡献效果 | 确认模拟热点及目标设备支持后再比较 GPU 路线 |
 | 要支持更多平台 | 先补该平台构建、输入与恢复验收 | 不先造跨引擎抽象 |
 
 **[研究] 高质量首先是玩家想做的动作能自然发生、看得懂结果、愿意再做一次。** 动作游戏通常先打通输入响应→可读反馈→稳定帧间隔，再扩演出；已经明显卡顿时先清掉尖峰，节奏／音乐游戏则把时序与音画同步提前。AI 可补实现、参数对照与检查，人决定动作的轻重、容错范围和体验门槛。
@@ -191,6 +192,15 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.5/manual/analysis/profiler/profiling-applications/profiling-target-device)，UE 使用 [Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine)。[一手] **[研究] 测冷启动、首次关卡／技能、峰值战斗、暂停菜单、关卡往返；记录帧时间分布和尖峰、稳态／峰值内存、音频并发、加载时间与包体。** 开发构建定位，发布构建复核；旧关卡、新关卡和解压缓冲短暂并存也要计入。
 
 **[一手／研究] 帧率上限还要与平台呈现方式配套。** Unity 6.3 [targetFrameRate 文档](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)指出桌面软件限帧可能 microstutter，追求稳定帧间隔时优先按 vSyncCount 路径配置；这不是最低输入延迟的通用保证，仍需结合显示器／同步设置。Android 用 targetFrameRate，并评估引擎已集成的 [Optimized Frame Pacing](https://developer.android.com/games/sdk/frame-pacing)，不要另接一套 Swappy。显示刷新率、提交队列和负载共同影响实际呈现，不能仅凭“CPU 每帧不到预算”判定已经顺滑。稳定低档与更高帧率之间按目标设备的持续负载、发热和玩法取舍。
+
+### 密集粒子：先找预算花在哪里，再选 CPU 或 GPU
+
+**[研究] ✅ 少量命中、火花与烟尘先复用原生粒子；卡顿时分清实例／更新成本与透明像素覆盖，不只限粒子数，也不先迁 GPU。** Factorio 的[历史烟雾修复](https://www.factorio.com/blog/post/fff-281)发现到期粒子仍以全透明、大面积绘制；降低更新频率省了模拟，却留下渲染浪费。[一手] 先缩短无贡献的尾部、减少重叠大烟片／昂贵材质和装饰并发，保留命中位置与危险边界；若成本来自大量小实例，再合并相同更新行为或限制实例数。池化只省创建／回收，不能免除活跃效果的更新和绘制。
+
+- **Unity**：✅ 小型反馈保留 Particle System；需要逐粒子 C# 或引擎物理交互时尤其如此。🧪 大规模、主要为呈现的效果才比较 VFX Graph，同时核渲染管线、compute／SSBO 与目标图形 API；17.3 明确不支持 Open GL ES。迁移还要重新制作图、核碰撞语义和维护低档反馈。[一手／研究：[6.3 对照](https://docs.unity3d.com/6000.3/Documentation/Manual/ChoosingYourParticleSystem.html)、[17.3 要求](https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/System-Requirements.html)]
+- **Unreal**：✅ 先用 Niagara Effect Type 的平台／质量档缩减实例、发射量和昂贵 renderer；GPU 模拟仍有 System／Emitter 的 CPU 开销。少量粒子或最低设备 GPU 已紧张时保留 CPU 候选，只有对应模拟热点值得迁移；合并实例也会降低裁剪粒度。[一手／研究：[Niagara 取舍](https://dev.epicgames.com/documentation/en-us/unreal-engine/scalability-and-best-practices-for-niagara)]
+
+**[研究] 只裁掉允许消失的演出，不让画质档改变伤害或地形。** 视觉碰撞不等于玩法碰撞；二改把火花变成可点燃地面的碎片时，把规则留在玩法层，再决定可省的外观。最低设备按目标分辨率比较同一遭遇的近景烟雾、密集小火花、离屏再入屏，分别记录 CPU 更新／GPU 时间及关键提示完整性；减烟后仍超预算，就收窄效果或遭遇并发，而不是继续叠框架。**局限：作者的自研系统与单机历史数字不证明本项目预算；**源码反例、接入成本与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#粒子预算补研模拟规模与透明覆盖不能互相代替)。
 
 ### 首次技能：准备到能回应，而不只是加载完成
 
