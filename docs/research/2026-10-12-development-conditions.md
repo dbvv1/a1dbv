@@ -1,11 +1,11 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读。[经验／研究]
-证据摘要：官方权限／运行契约、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具。[经验／研究]
+证据摘要：官方权限／运行契约、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究]
 关键边界：普通 headless、bare、trust 与 sandbox 不等价；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
-> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，2026-10-14 UTC 补核 §五 Pydantic AI 演化链，2026-10-15（UTC+8）补核 §二 Service Worker 响应来源，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
+> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，2026-10-14 UTC 补核 §五 Pydantic AI 演化链，2026-10-15（UTC+8）补核 §二 Service Worker 响应来源，同日补末节重复代码迁移的三项目维护链与固定源码，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
 
 ## 核心判断
 
@@ -492,3 +492,33 @@ S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 **论文支持到哪里。** 41 个参考游戏为 24 个 2D、17 个 3D；功能校准抽样为构建模式的 100 游戏／1200 条断言，不覆盖所有修复／移植判据；200 个片段的 VLM 视觉得分相关性，不是本发行版移植 Visual 的校准或长期乐趣验证。模型与各自框架一起评，不能单独归因模型。参考路线保留时间，适合检查注册目标，但不同运动调参下路线失败不能单凭总分区分机制缺失与时序不匹配；应回读局部状态和候选演示。本轮未找到独立运行复现，保留作者结果的证据等级。**[一手：论文 §3.4、§4.1、§4.5、Limitations；研究：推广边界]**
 
 **采用与停止。** 比较移植方案时，同版本、同任务、同裁判与预算保存严格运行结果和组件证据；若要决定画质／手感是否达到目标，补目标设备上的连续动作和视听对照，不用换一个分数名字代替。现有验收已覆盖这些事实就不接整套 benchmark。当前只有论文与源码调查、仓库离线检查；实际收益须留到获准实验。**[研究：采用建议]**
+
+## 重复代码迁移：语法规则、类型分析与第二次执行
+
+**主线二／三；改变 15 §4–5。** 核实时间：2026-10-15（UTC+8）。✅ 同一规则覆盖多处、已有适用迁移器时，先复用；少量异质调用或业务语义需逐项决定时，直接让 Agent 补丁并验证。前者的收益是复用明确的匹配与变换规则，不能由此推出当前强 Agent 的净收益。以下来自三个不同项目的历史迁移、维护回复与固定源码，没有安装或运行它们。**[研究：采用判断；一手／社区：下述证据]**
+
+### 语法匹配能省重复劳动，但不等于完成迁移
+
+- **正面使用与遗漏同时存在。** TanStack Query [#6204](https://github.com/TanStack/query/issues/6204) 的 gillkyle 报告，v5.0.0 codemod 成功处理多处 `invalidateQueries`／`refetchQueries`，且[明确说节省了时间](https://github.com/TanStack/query/issues/6204#issuecomment-1772989068)；但其最小复现输出 `0 errors / 1 unmodified / 0 ok`，仍留下自定义 hook 的两种旧调用。约 30 分钟是作者整次升级自报，不是 codemod 对照耗时。**[社区：真实迁移单例]**
+- **第二次核验没有把“已修”视为全部通过。** slax57 在 [5.13.4 复测](https://github.com/TanStack/query/issues/6204#issuecomment-1857715221)中确认 `useQuery` 已处理，指出 `useMutation` 仍遗漏；维护者要求另建 [#6548](https://github.com/TanStack/query/issues/6548)，报告版本为 5.14.0。随后该报告者提交 [#7187](https://github.com/TanStack/query/pull/7187)，维护者批准，2024-04-02 合入 [`798124d`](https://github.com/TanStack/query/commit/798124da1c3e21c8e95b037466905489e19cd029)。补丁将 `useMutation` 纳入匹配并增加带／不带 options 的输入输出夹具。这里只确认固定补丁与维护接收，不把旧版本遗漏当当前缺陷。**[社区：他人复测；一手：修订／夹具]**
+- **解析 TS 语法不是建立完整类型程序。** 本轮固定 [`a8af0e2`](https://github.com/TanStack/query/tree/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads)：[utils](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/utils/index.cjs)沿 AST scope 找变量声明并看是否为数组表达式；[default-import 输出夹具](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/__testfixtures__/default-import.output.tsx)明确保留从另一模块导入的 query key 调用。[测试入口](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/__tests__/remove-overloads.test.cjs)用 `tsx` parser 比较两个输入输出 fixture，不能据此声称跨文件类型推断、全量语义或二次运行已验证。**[一手：源码／测试，只读]**
+
+因此先看目标调用形式是否在迁移器覆盖中，并检查未修改和警告项；退出成功、能解析 `.tsx`、某个相关 issue 关闭，都不是迁移完成的充分条件。混合新旧调用时，分别验证该改、应保留和无法判定的调用。**[经验：采用建议]**
+
+### 类型与框架分析值得增加的具体条件
+
+Angular signal input 的迁移不只是给名字加 `()`，还会改模板、host binding 与 TS 引用。[官方说明](https://angular.dev/reference/migrations/signal-inputs)默认跳过不安全的 input；`--best-effort-mode` 可造成构建破坏，`--analysis-dir` 会静默漏过目录外引用，而 `--path` 限定修改范围不等于限定分析范围。**[一手：文档，2026-10-15 核实]**
+
+固定 [`731ad651`](https://github.com/angular/angular/tree/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration)的 [incompatibility 枚举](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration/src/passes/problematic_patterns/incompatibility.ts)区分继承冲突、写入、accessor、模板 narrowing 等；[golden 输出](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration/test/golden.txt)既有提取局部变量后保持 narrowing 的变换，也有写入或不支持模式的跳过及原因。能在语法之外核对这些约束，是复用框架迁移器的具体理由；保守跳过也是有效结果，不应为提高改动文件数直接强制转换。**[一手：固定源码／期望夹具，未执行]**
+
+**选择边界。** 只涉及已确认来源的统一调用形状，现成语法规则已覆盖时，不必另装完整语义平台；变换取决于导入对象、跨文件引用、继承或类型缩窄时，优先使用能解析本项目的类型／框架迁移器。剩余少量例外交 Agent 逐项读契约、改代码并测试；若大部分都需例外决策，停止扩写通用规则，改为直接补丁。没有证据支持一个通用文件数阈值，也没有本轮同任务 Agent 对照。**[研究／经验：条件判断]**
+
+### 重复执行与第二次需求不是同一项保证
+
+**同一次批处理也可能重复修改同一文件。** Angular 用户 Wandang 的 [#61611](https://github.com/angular/angular/issues/61611)（Angular 19.2.12）报告模板出现 `title()()` 与重复 TODO。维护者[指向已修复的 #61421](https://github.com/angular/angular/issues/61611#issuecomment-2901248608)，其根因是多个 tsconfig 的源文件重叠。固定 [run_in_devkit.ts](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/utils/tsurge/helpers/angular_devkit/run_in_devkit.ts)用文件到编译单元的归属表，避免同一源文件在不同单元重复分析／生成替换；这不是证明所有变换均幂等。维护者通过 [#61612](https://github.com/angular/angular/pull/61612)回移到 19.2.x（落地提交 [`2ae69f7`](https://github.com/angular/angular/commit/2ae69f77e7ef9a6431303cfad54cabb068435d6f)）；本轮只读核对 19.2.13 与 20.0.0 标签的同路径均已包含归属去重，未独立运行或取得该用户修复版复测。**[社区：故障报告；一手：维护回复与源码]**
+
+**调用方的次数也需核对。** Renovate [#8220](https://github.com/renovatebot/renovate/issues/8220) 的 marcodejongh 报告：依赖升级从一次调用变为逐依赖调用后，同仓五处依赖使 codemod 执行五次，部分非幂等变换破坏代码。后续 [#8725](https://github.com/renovatebot/renovate/pull/8725)增加 `executionMode: branch`，历史固定 [`6afbcf8`](https://github.com/renovatebot/renovate/commit/6afbcf8d18afd3e63e0d4d253be64c5a21e736c5)的 [index.spec.ts](https://github.com/renovatebot/renovate/blob/6afbcf8d18afd3e63e0d4d253be64c5a21e736c5/lib/workers/branch/index.spec.ts)在两项升级配置下断言命令只调用一次；作者勾选单元测试及真实仓库验证，发布回复标为 24.109.0。该测试约束调度次数，不检验具体 codemod 输出；`branch` 也不承诺后续重新生成分支时永不再执行。**[社区：使用与作者验证报告；一手：补丁／断言，只读]**
+
+**最小验收与停止条件。** 在已有试点里保留旧形状、已迁移形状、跨文件或业务例外；核对受影响调用和跳过原因，再运行相关类型／行为检查。准备重试或复用脚本时，用第一次产物再执行同一变换，确认预期不再变化；若工具明示一次性，则固定起点并从可恢复副本重做，不能盲重跑。并行分片不能重复拥有同一文件。重跑出现额外变换、覆盖范围不清或例外变多时暂停扩量，修正规则／调度或退回局部补丁。**[经验：建议，未运行本轮迁移实验]**
+
+幂等只回答“相同输入状态再跑会不会继续变”；第二次需求若改变映射或接口契约，须更新规则、回归和适用版本，并从上一轮实际交付状态验证新需求及仍有效的旧行为。不能拿重跑零 diff 代替行为正确，也不能把只读夹具检查写成当前模型收益或持续维护成本下降。**[研究：结论边界]**
