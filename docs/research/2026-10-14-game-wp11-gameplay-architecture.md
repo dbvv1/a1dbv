@@ -1,10 +1,10 @@
 主线：一／三／四；玩法反馈、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，先明确所有者、时钟和退出；实际复杂度再升级 HFSM／行为树／GAS／ECS，相机与重试围绕玩家决策，命令预览复用规则但不承诺任意结果精确
-新证据：[一手／社区] 固定项目源码、修复链、作者复盘及镜头默认值争议；新增 Factorio 预览修正、OpenTTD 试算边界与战术游戏 rewind 对照；[研究] 含确定性算术反例，无引擎／玩家对照，不能证明架构或手感收益
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，先明确所有者、时钟和退出；实际复杂度再升级 HFSM／行为树／GAS／ECS，相机与重试围绕玩家决策，命令预览复用规则但不承诺任意结果精确；多来源效果区分授予所有权与合并语义
+新证据：[一手／社区] 固定项目源码、修复链、作者复盘及镜头默认值争议；新增 OpenRA 条件授予／撤销、Shattered Pixel Dungeon 毒镖／计时源码与 GAS 聚合契约；保留预览及 rewind 对照；[研究] 含确定性算术反例，无引擎／玩家对照，不能证明架构或手感收益
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
-证据核实：原记录为 2026-10-13—14 UTC；命令预览补研为 2026-10-15（UTC+8），各节保留版本和日期。除明标的确定性算术复核外，仅调查公开资料／源码；未运行引擎、游戏、模型或玩家实验，未安装／购买插件。“AI 失败”为契约风险推导，非出错率统计；固定主干不等于稳定发布包。
+证据核实：原记录为 2026-10-13—14 UTC；命令预览及效果叠加补研为 2026-10-15（UTC+8），各节保留版本和日期。除明标的确定性算术复核外，仅调查公开资料／源码；未运行引擎、游戏、模型或玩家实验，未安装／购买插件。“AI 失败”为契约风险推导，非出错率统计；固定主干不等于稳定发布包。
 
 ## 一、研究结论与适用边界
 
@@ -502,3 +502,58 @@
 [研究] 若固定内容与状态组合已满足玩法，撤回运行时生成；若开放表达是挑战本体，固定回复只能作为明确的降级模式，不能宣称体验等价。必须支持断网时，分别决定暂停／恢复、固定内容或独立本地配置，并按目标设备、语言、响应质量验收。等待时长须含识别、排队、生成和播放；本轮没有可横向复用的延迟数字，不设伪通用毫秒门槛。
 
 [研究] 核查范围为公开原文、公告日期和固定 ink 文档；Steam 单篇页面通过公开 HTTP 核对标题与内容，网页解析器只成功读取[公告合集](https://steamcommunity.com/app/2240920/announcements/)。没有下载模型、安装、付费调用、游戏试玩、引擎运行或体验／留存实验。后续只有同题玩法对照与全程费用／支持成本证据，才足以把本节的条件试用提升为效果推荐；不以多个同作者公告冒充独立样本。
+
+## 效果叠加补研：来源所有权不等于合并规则
+
+核实：2026-10-15（UTC+8）。[研究] 改变 §7 的二改选择：第二个技能／光环加入时，先决定一个效果由谁维持、重复施加怎么合并，再决定是否升级框架。原有“取消时清理标签”不足以处理其他来源仍有效、或施放已经结束但毒仍应持续的情况；本节不重做命令事件、预览、镜头和输入研究。
+
+### 1. OpenRA：来源退出只撤自己的授予
+
+[一手] 固定官方仓库 `e180e3225f3930272dd451917467631618f8976f`（提交日期 2026-10-11 UTC）；这是读取时主干，不宣称已发布稳定包。读取了如下完整链路，而非只凭框架接口推断真实使用：
+
+| 固定来源 | 实际机制与边界 |
+|---|---|
+| [Actor.cs](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/Actor.cs) | GrantCondition 分配独立整数 token；UpdateConditionState 从该条件的 token 集合计算数量；RevokeCondition 只移除指定 token。无效 token 会抛异常，因此底层不是幂等释放 |
+| [ProximityExternalCondition.cs](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Mods.Common/Traits/Conditions/ProximityExternalCondition.cs) | ActorEntered 为目标保存 token；ActorExited 先移除本地记录，再以 self 和 token 请求撤销。所有权变更另有重新判断路径，不只等计时到期 |
+| [ExternalCondition.cs](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Mods.Common/Traits/Conditions/ExternalCondition.cs) | 永久 token 按 source 分组；TryRevokeCondition 核来源；限时 token 各有到期 tick。SourceCap／TotalCap 达到限制时可能替换最早到期的限时授予，不是简单拒绝所有新授予 |
+| [TS nod-structures.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ts/rules/nod-structures.yaml)、[TS defaults.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ts/rules/defaults.yaml) | 真实隐形发生器以 ProximityExternalCondition 授予 cloakgenerator；消费者 Cloak 的条件为 cloakgenerator 或 crate-cloak，证明多个授权入口确实用于游戏规则，不只是未用样例 |
+| [RA defaults.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/rules/defaults.yaml)、[DamageMultiplier.cs](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Mods.Common/Traits/Multipliers/DamageMultiplier.cs) | Iron Curtain 条件连接覆盖色、计时条和 Modifier=0 的伤害修饰；修饰器禁用时返回 100。这说明效果状态与表现可共享条件，但不证明任意计时 UI 都准确 |
+
+[研究] 可迁移的选择是：当重叠来源必须分别退出时，以活授予推导“仍受保护”，而不是每个技能都写无敌布尔值。引用计数足够表达纯数量；来源句柄还能识别谁有权撤回与重复释放，但不自动处理清理顺序、对象重生或序列化。只用一个稳定所有者、确定不会重叠时，布尔值仍更简单。OpenRA 是 RTS 引擎及经典游戏重实现，不是 Unity／UE 独立游戏质量排名，也不值得为这一个机制移植它的完整 trait／YAML 系统。
+
+[一手] 项目自己的 [Conditions Wiki](https://github.com/OpenRA/OpenRA/wiki/Conditions)列出实际光环、铁幕与 EMP 使用；页面示例明确针对旧 release-20180307。本次采用上述固定现行路径核实，不把旧 Wiki 的 structures.yaml 路径当当前文件布局。
+
+### 2. Shattered Pixel Dungeon：重复施加未必产生独立层
+
+[一手] 不同作者、回合制 roguelike 的官方仓库固定 `57a4e06a4caf162446d1c28caa7983f0493fecf0`（2026-10-06 UTC；提交说明为 v4.0.2 发行更新），核到实际消费而非仅凭命名：
+
+- [Buff.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Buff.java)：append 创建新实例，affect 优先取同类现有实例；prolong 经 affect 后调用 postpone。按类 detach 会遍历该类效果全部撤销，不能当成某一次施放的独立释放
+- [Actor.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java)：spend 增加调度时间，postpone 仅在原时间早于 now＋duration 时向后延。因此 prolong 是保留更晚结束点，不能从名字译成无条件时长相加
+- [PotionOfHaste.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHaste.java)实际使用 prolong；[FlavourBuff.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FlavourBuff.java)到调度时刻 detach。这是单一可延期效果，不是每瓶药各建一层计时
+- [PoisonDart.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java)调用 affect(Poison).set；[Poison.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java)的 set 取 left 与新 duration 的最大值，另一个 extend 方法才加长；每次伤害由 left/3 的整数部分加一计算。到期或目标死亡 detach，存档保存 left
+
+[研究] 这是“所有 Buff 都改成按施放独立叠层”的反例：即使伤害公式不改，独立层或相加时长也会改变毒镖伤害与重复使用收益。它也反证“只改配置，不会改玩法语义”：将 max 改成 sum 属于平衡规则修改，应由人决定。不会反推所有毒都应合并成一份，也不据此宣称这种公式最公平；回合调度与实时帧时钟不能直接互换。
+
+### 3. Unity 与 UE 的采用边界
+
+[一手] [Unity 6.3 SO 手册](https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html)明确共享数据可由多个对象引用。[研究] Unity 默认沿既有角色组件持有活效果和来源，不把来源／剩余时长写回共享定义；两三个固定规则不需要通用效果编辑器。若本来已有合规的效果模块，先核它的合并键和移除范围，别另造名字相同、语义不同的一层。
+
+[一手] UE 当前公开文档页面显示 5.8，GAS 对非 instant 效果的 [StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)将 None 定义为每次独立实例，而不是拒绝重复；AggregateBySource 与 AggregateByTarget 分别按来源、目标聚合。[持续时间策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingDurationP-?lang=en-US)区分刷新、不刷新、增加时长；[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)区分清整栈、减一层后刷新、仅刷新。已打开正确缩短路径的官方正文，不依赖最初失败的长 URL 或第三方教程。
+
+[研究] 已使用 GAS 的项目先利用这些原生选项；来源聚合不等于每次施放独立计时，到期减一层也不等于每个历史施放各自到期。需要取消单次授予时，合并策略与撤销粒度必须一起选择，不能只保存一个“效果类型”然后全删。这里不声称官方枚举足以证明特定版本的预测、网络、驱散与句柄全部正确；未读取受限引擎源码或 Lyra 内容。
+
+### 4. 窄二改题、许可与验证范围
+
+[研究] 后续预注册：原有冲刺保护增加一个保护光环，再给毒镖增加可选叠加升级。基线与修改后使用相同遭遇，逐项记录有效来源、剩余时间、伤害及玩家可见图标；不预先增加框架。
+
+| 待证规则 | 对照输入与期望，由设计先确认 |
+|---|---|
+| 独立保护来源 | A 生效→B 生效→A 结束，B 仍保护；再 B 结束才移除。重复 A 清理不影响 B；重复是否报错由边界契约决定 |
+| 时长合并 | 原剩余 8，新施加 3：max 保持 8，刷新为 3，相加为 11；独立层则是 8 与 3 两个计时。这里是规则示意，非任何游戏的实测结果 |
+| 效果与施放寿命 | 冲刺结束只释放冲刺保护；毒命中后施法者死亡是否保留按设计断言，不默认清光目标状态 |
+| 驱散与恢复 | 指定来源、清一层、清整类分别测试；驱散后立即重施、旧回调迟到、目标重生不得删新效果 |
+| 可读性 | 两光环重叠及毒升级前后，让玩家解释图标数量、剩余时间和重复使用收益；图标没消失不自动证明伤害规则正确 |
+
+[一手] 两项目已读相关源码头和根 [OpenRA COPYING](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/COPYING)、[SPD LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)：相关代码为 GPL-3.0-or-later。[研究] 本文只提炼机制并链接，不复制实现；欲直接复用须单独处理 GPL 分发义务及素材权利，不推荐作为闭源商用 Unity／UE 的即插即用模块。
+
+**实际范围**：[研究] 读取官方网页、固定公开源码与许可；未构建／运行 OpenRA、SPD、Unity 或 UE，未测帧时序、真人体验、AI 二改成功率与性能，也未执行上表玩法用例。独立 review、仓库离线检查与差异检查仅核本知识库交付，不能变成游戏行为或净收益实证。

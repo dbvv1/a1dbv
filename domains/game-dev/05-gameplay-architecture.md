@@ -1,6 +1,6 @@
 # Gameplay 架构：让第二次修改仍然可靠
 
-> 核实时间：2026-10-15（UTC+8，命令预览补研）；其余各节沿用2026-10-14（UTC）的原核实范围。适用：单人程序开发独立游戏，Unity 为主、Unreal 作对照。固定源码、历史修改、许可与反证见 [WP11 研究记录](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md)；资源释放、存档实现与目标设备预算见[客户端模块](04-client-modules.md)，试玩方法见[验证页](02-verification-and-playtesting.md)。
+> 核实时间：2026-10-15（UTC+8，命令预览及效果叠加补研）；其余各节沿用2026-10-14（UTC）的原核实范围。适用：单人程序开发独立游戏，Unity 为主、Unreal 作对照。固定源码、历史修改、许可与反证见 [WP11 研究记录](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md)；资源释放、存档实现与目标设备预算见[客户端模块](04-client-modules.md)，试玩方法见[验证页](02-verification-and-playtesting.md)。
 
 **默认采用引擎现有组件、少量可测试规则和局部状态机；先写清谁拥有状态、谁提交结果、退出时清理什么，再决定是否增加框架。** HFSM、行为树、GAS 和 ECS 解决不同问题，不能按“先进程度”排成升级阶梯。[研究]
 
@@ -12,7 +12,7 @@
 |---|---|---|
 | 少量阶段、敌人和技能 | 原生组件、小状态机、定义与运行实例分离 | 共享层级退出逻辑增多时考虑 HFSM |
 | 优先级决策与行为反复组合 | 现有行为树或 StateTree | 确有内容编辑收益，不因角色数量猜测 |
-| 蓄力、受击、死亡与重开 | 明确打断、取消和唯一结算点 | 复杂标签/效果/预测才评估 GAS |
+| 蓄力、受击、死亡与重开 | 明确打断、取消、唯一结算点；多来源效果先定合并与撤销规则 | 复杂标签/效果/预测才评估 GAS |
 | 规模上升、CPU 超预算 | 先定位热点；Unity 可局部 Jobs/Burst | 测量支持时再局部 ECS |
 | 相机或关卡变化 | 现有相机、稳定内容 ID、可重置遭遇 | 流式世界需求出现后增系统 |
 
@@ -111,6 +111,17 @@
 [一手] GAS [官方生命周期](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-abilities-in-unreal-engine) 将 CommitAbility、取消和 EndAbility 分开；未正常结束会继续阻挡动作，Per-Actor 实例复用还需清理成员。[研究] 框架没有替玩法定义退款与取消语义。
 
 [一手] [Lyra 的能力初始化](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US) 处理 Pawn、PlayerState、输入与 Game Feature 的就绪和移除。[研究] 可读公开机制文档；其整套多人生命周期并非单机默认底座，资源的 AI 使用许可另见第 10 节。
+
+### 多来源效果：先定合并规则，再增加框架
+
+**[研究] ✅ 第二招也能授予同一状态时，先改效果契约，别让每招各写一个布尔值并在结束时清零。** 单一所有者、不会重叠的状态仍可用布尔值／局部计时器；多个独立来源才保留授予身份或句柄，退出只撤回自己拥有的那份。持续光环可随离开撤销，已经命中的毒则可独立持续；施放结束、来源死亡不自动意味着目标效果结束。
+
+- **独立来源维持同一能力**：两道保护或两座光环重叠，移除一份后其他份仍有效；有／无可从有效授予集合推导。只要次数且释放严格配对时计数已足够，需要识别重复退出／指定来源时再用句柄
+- **重复命中改变同一效果**：先选择保留较长剩余时间、刷新、延长、叠强度或独立计时，再定上限与到期／驱散范围。它们会改变重复攻击是否有收益，不能统一成“计数加一”；图标、层数和倒计时应表达所选规则
+
+[一手] OpenRA 的固定 [Actor](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/Actor.cs) 以 token 集合维护条件，[光环](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Mods.Common/Traits/Conditions/ProximityExternalCondition.cs)退出按来源和 token 撤销；不同作者的 Shattered Pixel Dungeon [毒镖](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java)却复用单个 Poison，其 [set](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java)保留较长剩余时间，extend 才相加。[研究] 借用的是两种不同玩法语义，不是统一 Buff 框架；两项目相关代码为 GPL-3.0-or-later，不作闭源项目可直接复制的默认底座。
+
+**[研究] Unity 继续用定义＋角色自己的活效果集合；UE 已采用 GAS 时沿用它的聚合配置。** [一手] Unity [SO 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html)支持多对象共享数据，因此剩余时间与来源仍放实例；GAS 的 [StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)区分独立实例、按来源、按目标聚合，[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)又区分清整栈与减一层后刷新。[研究] 不把 GAS 的 None 读成“同类效果只留一个”，也不为两种状态迁移整套系统。**局限：句柄与计数只能表达所有权，不能替玩法决定合并、强弱和到期规则。** 二改先验两来源交错结束、重复清理、短效果覆盖长效果和驱散后重施；完整来源、反证与预注册见 [WP11 效果叠加补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#效果叠加补研来源所有权不等于合并规则)。
 
 ### 战斗质量：让玩家读懂承诺、接触与下一步
 
