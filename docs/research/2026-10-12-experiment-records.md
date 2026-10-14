@@ -1,6 +1,6 @@
 主线：二为主，兼三
-改变的建议：短指令只留会改变行动的项目约束；独立调查或已定接口的实现可并行，单文件 grep 不默认拆。任务结果、过程遵从、等待与 API 等价估算分别比较。[经验：限定采用]
-证据摘要：历史 E1–E3 与补交轨迹算术核对；E3 单一 bug 的 27 次报告均修好，但测试约定与文件长度混杂，E2 拆分成本及等待更高。E4/E6 是确定性回归，E5 是 CSV 复算；后补并行论文有正反例，仍缺完整验收与人审投入，不能外推普遍效率。[经验／研究]
+改变的建议：短指令只留会改变行动的项目约束；独立调查或已定接口的实现可并行，单文件 grep 不默认拆。任务结果、过程遵从、等待与 API 等价估算分别比较；worktree 验证还须识别配置、服务和最终产物。[经验：限定采用]
+证据摘要：历史 E1–E3 与补交轨迹算术核对；E3 单一 bug 的 27 次报告均修好，但测试约定与文件长度混杂，E2 拆分成本及等待更高。E4/E6 是确定性回归，E5 是 CSV 复算；后补并行论文有正反例，仍缺完整验收与人审投入，不能外推普遍效率；后补 Git 配置夹具、Playwright 复用源码及 Cargo 维护者反证，区分编辑隔离和运行状态。[经验／研究]
 
 # 历史实验与确定性检查：方法、原表与证据缺口
 
@@ -284,3 +284,58 @@ B.16 的10个Python任务用隐藏pytest：单体7/10、双Agent8/10；geotext�
 - 实验仓库：[hukkin/tomli](https://github.com/hukkin/tomli)（MIT）
 - 对照：[Systima：Claude Code vs OpenCode token 开销](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)
 - Claude Code 文档：[Headless / CLI reference](https://code.claude.com/docs/en/cli-reference)、[Subagents](https://code.claude.com/docs/en/sub-agents)
+
+
+## Worktree隔离到哪里：配置缓存与被测产物
+
+> 核实：2026-10-14（UTC）。主线二、三；改变 08 §4.5／§6.4 的环境与验证建议，不新增编排框架。固定并发数在现版已收敛为按依赖与验收调整，本节不重复撤回。**[研究]**
+
+**采用结论。** 独立分支／worktree 适合隔开源码编辑，不能据此断言配置、构建输出和运行服务也独立。按实际资源拆：独立实现仍可并行，共用可变数据或输出、无法确认服务归属的验证先分离目标或仅串行该步骤；不用为了隔离而重复所有缓存。**[经验：建议]**
+
+### 新证据与会改变的选择
+
+- **Git 配置不是目录私有。** [Git worktree 官方语义](https://git-scm.com/docs/git-worktree#_configuration_file)说明 repository config 默认共享；启用 `extensions.worktreeConfig` 后才可用 `git config --worktree` 配置各树。HEAD／index 分开不代表所有 Git 状态分开。下方离线夹具确认这一点，读者不能把 worker 内的 `git config --local` 当成只改 worker。不是建议自动替用户修改配置。**[一手；研究：夹具]**
+- **复制不是重新绑定。** [Claude Code worktrees](https://code.claude.com/docs/en/worktrees#copy-gitignored-files-into-worktrees)的 `.worktreeinclude` 复制同时匹配且被忽略的文件；项目级插件也可在同仓工作树间加载。复制 `.env` 不改变其中的数据库／服务地址，是从文件复制语义推出的边界，非真实账户试验。因此把原来笼统的环境成本建议收窄为文件复制／检出范围；复制完成不保证缓存有效或服务隔离。**[一手；研究：推论]**
+- **“测试从 B 启动”不证明“测的是 B”。** [Playwright 官方 webServer](https://playwright.dev/docs/test-webserver)约定复用已有 URL／端口上的服务；[v1.56.1 固定版本源码](https://github.com/microsoft/playwright/blob/v1.56.1/packages/playwright/src/plugins/webServerPlugin.ts#L77-L99)的 `_startProcess` 先检查可用性，允许复用时直接返回，尚未启动指定 command/cwd。这证明机制，不是本轮跑过浏览器。**[一手：源码阅读]**
+- **真实维护反例。** [google-meet-clone 的维护记录](https://github.com/videosdk-community/google-meet-clone/blob/main/docs/DECISIONS.md#the-e2e-suite-serves-itself-on-its-own-port-do-not-point-it-back-at-5173)自述 2026-07-16 发现一棵 worktree 的 E2E 使用另一分支服务，部分通过直到新场景失败才察觉；改为专用端口、`--strictPort` 与 `reuseExistingServer: false`。这支持检查被测服务归属，不证明该项目全部测试可靠，也不是独立复现；所读是核实日 main 维护记录，非固定修复 SHA。**[社区：项目维护者报告]**
+- **保留缓存反证。** [Cargo Book](https://doc.rust-lang.org/cargo/reference/build-cache.html)区分最终产物 target-dir 与中间产物 build-dir，并给出用 sccache 跨 workspace 共享依赖的路径。[Cargo #16804](https://github.com/rust-lang/cargo/issues/16804)的提交者将多 Agent worktree 资源压力、锁等待与损坏混写；维护者 2026-03-30 指出锁的目的正是防损坏，疑似损坏应单独提供故障证据，另有人指出三个不同的已有问题。因此不采纳“共享 target 必然损坏”或“全部缓存独占”的概括；保护写入的锁也不等于交付时那个固定路径仍是本任务产物。后一句是身份边界的推论，不是本轮复现 Cargo 错误。**[一手：官方文档；社区：原帖及维护回复；研究：限定]**
+
+由此调整任务切分：共享接口尚未稳定时先收敛语义；接口已定但测试共用可变服务时可继续并行写代码，只收窄验证并发。整合时针对合并后的源码与对应构建／服务重新验收，保存已有测试报告能说明的版本与目标，不增设一套自建调度协议。若原生工具已经正确隔离这些状态，无需额外容器或复制全套依赖。**[经验：采用与退出条件]**
+
+### 零成本离线 Git 夹具
+
+在全新临时仓库执行，入口使用 `env -i PATH=/usr/bin:/bin /bin/bash fixture.sh`；空 HOME／XDG、禁用系统和全局 Git config，不读取用户配置、不联网、不改本工作仓 Git 设置。完整脚本如下，临时数据由 trap 清理。**[研究：本轮实测]**
+
+```bash
+#!/bin/bash
+set -euo pipefail
+base=$(mktemp -d)
+trap 'rm -rf "$base"' EXIT
+mkdir -p "$base/home" "$base/xdg"
+export HOME="$base/home" XDG_CONFIG_HOME="$base/xdg" GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null
+unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR GIT_CONFIG_COUNT GIT_CONFIG_PARAMETERS || true
+export GIT_AUTHOR_NAME=Fixture GIT_AUTHOR_EMAIL=fixture@example.invalid GIT_COMMITTER_NAME=Fixture GIT_COMMITTER_EMAIL=fixture@example.invalid
+git init -q "$base/main"
+git -C "$base/main" -c core.hooksPath=/dev/null commit -qm seed --allow-empty
+git -C "$base/main" -c core.hooksPath=/dev/null worktree add -qb worker "$base/worker"
+git -C "$base/worker" config --local demo.endpoint worker
+printf 'default_shared_config=%s\n' "$(git -C "$base/main" config demo.endpoint)"
+test "$(git -C "$base/main" config demo.endpoint)" = worker
+git -C "$base/main" config extensions.worktreeConfig true
+git -C "$base/worker" config --worktree demo.endpoint isolated
+printf 'main_after_override=%s\nworker_after_override=%s\n' "$(git -C "$base/main" config demo.endpoint)" "$(git -C "$base/worker" config demo.endpoint)"
+test "$(git -C "$base/main" config demo.endpoint)" = worker
+test "$(git -C "$base/worker" config demo.endpoint)" = isolated
+git --version
+```
+
+干净环境实测输出（Git 2.47.3，三项断言通过）：
+
+```text
+default_shared_config=worker
+main_after_override=worker
+worker_after_override=isolated
+git version 2.47.3
+```
+
+另一次继承进程 PATH 的初跑为 Git 2.52.0，结果同样，但以上干净环境结果才作为可复查基线。夹具只验证 Git 配置作用域，不验证并发编译、缓存命中、端口争抢、数据库隔离、Claude 客户端或模型收益。未安装／启动 Playwright、Cargo、模型或引擎；上游源码和维护者自述不算本轮上游测试通过。**[研究：验证边界]**
