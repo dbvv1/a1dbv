@@ -6,15 +6,19 @@
 
 > 2026-10-13：开头的模型切换建议与本页已有缓存边界对齐；[本轮审计](collaboration/reviews/2026-10-13-b9fddfb.md)未重验价表。
 
+> 2026-10-15（UTC+8）时效补核：更新 Gemini 4 Argon 的 GA、迁移与正式计价条件，复查主要厂商发布入口；[核查范围](research/2026-10-10-audit.md#s1b--2026-10-15-主干时效补核)列明未更新项。其他历史型号、价格、套餐与能力判断不因本日期获得重新认证。
+
 ## 1. 原则：按任务分档，而不是追榜单
 
 | 任务 | 档位 | 当前代表（2026-10） |
 |---|---|---|
-| 架构设计、跨模块重构、疑难 bug、长时间无人值守的任务 | 顶档 | Claude Opus 5.5 / Fable 5.1，GPT-6 Astra / 6.1 Sol（高 effort），Gemini 4 Argon（尚未开放） |
+| 架构设计、跨模块重构、疑难 bug、长时间无人值守的任务 | 顶档 | Claude Opus 5.5 / Fable 5.1，GPT-6 Astra / 6.1 Sol（高 effort）；Gemini 4 Argon 已 GA，🧪 按任务评估（见下文） |
 | 日常功能开发、写测试 | 主力档 | Claude Sonnet 5.5 / Opus 5.5（低 effort），GPT-6 Sol（Medium） |
 | 检索型子 Agent、批量小改、格式化 | 快速档 | **Claude Haiku 5.5**（2026-10-07，Claude Code 中的默认 Haiku），GPT-6 Luna，Gemini Flash |
 | 路由、分类、“从有限选项中选一个” | 决策模型（新类别） | Jev、Cloudflare Clef、Strands Decider 2B、OpenAI Decisions API（见第 2.1 节） |
 | 离线 / 保密 | 本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B（见第 5 节） |
+
+**Gemini 4 Argon：从等待开放改为按任务试用。** `gemini-4-argon` 于 2026-10-13 在 Gemini API／AI Studio 正式可用；Free tier 和 Google AI Pro 计划不包含它。已有 Gemini API 工作流迁移时，先移除显式缓存调用，核对 thinking 与输出共享的 token 上限；不要只换模型 ID。🧪 适合需要比较复杂编码或长输出的任务，现有模型已满足要求则不必迁移；是否保留取决于本项目质量、延迟和总费用，GA 不证明收益。**[一手：[发布记录](https://ai.google.dev/gemini-api/docs/changelog)、[迁移指南](https://ai.google.dev/gemini-api/docs/latest-model)；研究：采用判断，2026-10-15，未实测]**
 
 **在 Claude Code 里落地**：主会话用适合任务的模型；需要子 Agent 时，可在 frontmatter 写 `model: haiku` / `sonnet`，或用 `CLAUDE_CODE_SUBAGENT_MODEL` 统一指定。尽量减少没有任务理由的模型和 effort 切换；缓存影响按下文 [Prompt cache 的厂商与配置边界](#2-价格快照api-美元百万-token)判断，不为保缓存而拒绝必要的模型调整。**[一手：配置接口；经验：使用建议]**
 
@@ -37,7 +41,7 @@
 | Grok 4.7 | $2 | $0.50 | $6 | [社区] |
 | **Claude Sonnet 5.5** | $2 | $0.10（2026-10 减半） | $10 | [一手：Claude Code changelog、Anthropic 公告] |
 | **Claude Opus 5.5** | $4 | $0.20 | $20 | [一手] |
-| Gemini 4 Argon | $4（首发 5 折：$2） | 九五折缓存 | $20（$10） | [社区：Latent Space] |
+| Gemini 4 Argon（Standard，截至 2026-11-30） | $2（12-01 起 $4） | $0.10（12-01 起 $0.20） | $10（12-01 起 $20，含 thinking） | [一手：Gemini API 价表](https://ai.google.dev/gemini-api/docs/pricing) |
 | **Claude Fable 5.1** | $10 | $0.25 | $50 | [一手] |
 | GPT-6 Astra | $10 | $1 | $50 | [社区] |
 
@@ -45,6 +49,7 @@
 - `gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。见上方精确模型页。
 - [OpenAI 缓存写入价](https://developers.openai.com/api/docs/guides/prompt-caching)替代该部分普通输入价，**不是两项叠加收费**。每个输入 token 按普通输入、缓存读或缓存写中的适用类别计价。
 - Haiku 5.5 的 100K 门槛包含缓存读取与写入，逐请求判断，不是整段会话累计值；缓存写入还区分 TTL。完整规则见 [Claude API 价表](https://platform.claude.com/docs/en/about-claude/pricing)。
+- Gemini 4 Argon 仅支持隐式缓存，命中后按输入价的 **5%** 计费（优惠 95%，不是“九五折”）；显式 `cachedContents`／`caches.create` 不支持。上表为 Standard，Batch／Flex／Priority 另计，搜索等工具费不在 token 单价内。长期预算按 2026-12-01 起的费率估算。**[一手：上列价表与迁移指南；研究：预算建议，2026-10-15]**
 
 - **Claude Haiku 5.5**（2026-10-07）**[一手：Anthropic 公告]**：
   - 按 Standard 输入/输出单价，Haiku 4.5 的 $1/$5 对比 Haiku 5.5 ≤100K 档 $0.10/$0.50，下降 **90%**；>100K 档 $0.50/$2.50 则下降 **50%**，不是统一 75%。这是单价算术，不是任务总成本降幅 **[一手价表 + 算术]**；原公告还报告 1M 上下文、OSWorld 72.4%，并推荐子 Agent 用途（能力项本轮未复核）；

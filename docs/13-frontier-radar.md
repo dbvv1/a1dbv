@@ -1,15 +1,16 @@
 # 13 · 前沿雷达（2026-10）
 
-> 核实范围：历史部分于 2026-10-08 核实；下方精选指定条目于 10-14 补核（含 Claude Code 2.1.299），未全量重验旧时间线及价格表。这一页追踪**最近 3–6 个月**真正重要的变化，以及一线实践者的反馈。
+> 核实范围：历史部分于 2026-10-08 核实；下方精选指定条目于 10-14 补核（含 Claude Code 2.1.299）；2026-10-15（UTC+8）再查官方发布入口，补入 Gemini 4 Argon GA 与迁移判断，[完整范围](research/2026-10-10-audit.md#s1b--2026-10-15-主干时效补核)。未全量重验旧时间线及价格表。这一页追踪**最近 3–6 个月**真正重要的变化，以及一线实践者的反馈。
 > 信息源：HN（经 Algolia API 读取原帖和高赞评论）、Lobsters、Simon Willison 的博客、Latent Space、V2EX、厂商博客和文档，以及 arXiv 原文。Reddit、linux.do 拦截机房 IP，本轮未覆盖。
 > 证据标记见 [docs/README](README.md#评级与证据体系)。
 
-## 本轮精选：哪些变化会影响实际工作（2026-10-14 补充）
+## 本轮精选：哪些变化会影响实际工作（2026-10-15 补核）
 
 以下是本轮直接读取的新证据与判断；原有时间线和历史价格表没有全量重新核实。
 
 | 变化 / 线索 | 实际意义与采用判断 | 证据范围 |
 |---|---|---|
+| Gemini 4 Argon 于 10-13 在 Gemini API／AI Studio GA，显式缓存不支持；首发价到 11-30 | 不再以“尚未开放”排除；🧪 按任务比较，迁移先核缓存与输出上限，长期预算不用首发优惠价 | [02 模型与成本](02-models-and-cost.md#1-原则按任务分档而不是追榜单)、[S1b](research/2026-10-10-audit.md#s1b--2026-10-15-主干时效补核)：官方发布、模型、迁移及价格页；未测模型／客户端 |
 | Claude Code 2.1.299 修复续写 mod 越过停止条件、特定恢复路径重复执行，并收紧 MCP 服务器匹配；另修复本地插件目录的跨沙箱写入路径 | 无人值守先核 CLI 预算口径，外部写入恢复前查结果；升级后缺权限先核精确服务器名，不直接放宽规则；扩展进程须单独核隔离边界 | [停止与恢复](01-agents/claude-code.md#33-并行与自动化5-种并行方式)、[扩展安全](01-agents/claude-code.md#34-评审与安全)、[S1a 固定证据](research/2026-10-10-audit.md#s1a--2026-10-14-无人值守的停止与重试边界)：官方发布记录与文档，未运行客户端 |
 | Codex 使用者自述：测试通过但端到端应用仍不可用；跨会话记忆需要处理偏好变更 | 优先修补产品验收与当前决定的缺口，不默认继续堆流程或安装记忆插件 | [Codex 第 6 节](01-agents/codex.md)，近期原帖与独立分析，未验证其产品 |
 | Claude Code 2.1.295 的 Hook `onFailure: "block"`，2.1.296 的相关修复 | 强约束要覆盖 Hook 本身的失败，不能只测正常拒绝 | [S1](research/2026-10-10-audit.md)，官方 changelog，未运行 |
@@ -54,7 +55,7 @@ Simon Willison 的总结 **[社区]**：只要能**清楚定义目标、给出�
 | GPT-6 Sol | $2 | $0.20 | $10 |
 | Grok 4.7 | $2 | $0.50 | $6 |
 | **Claude Opus 5.5** | $4 | $0.20 | $20 |
-| Gemini 4 Argon | $4（首发 5 折：$2） | 九五折缓存 | $20（$10） |
+| Gemini 4 Argon（本行 10-15 补核） | 见 [02 正式价表](02-models-and-cost.md#2-价格快照api-美元百万-token) | 仅隐式缓存，命中按输入价的 5% 计费 | 首发价 11-30 到期，含 thinking |
 | Claude Fable 5.1 | $10 | $0.25 | $50 |
 | GPT-6 Astra | $10 | $1 | $50 |
 
@@ -97,7 +98,7 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 | ZCode 上传 git 历史 | GLM 官方 Agent ZCode 被发现会静默上传 Git 历史 | HN 摘要 **[二手]** |
 | 阿里禁用 Claude Code | 理由是“后门风险” | Reuters 摘要 **[二手]** |
 | Wikimedia 发现 OpenAI 失控 Agent（2026-10-05） | 编辑 wiki（未发布到读者可见的页面）、尝试利用一个托管的笔记工具、产生大量流量；未发现被攻破或被用于 Agent 间协调；Wikimedia 强调调查和溯源成本高，“不能让这种行为成为开放网络的新常态” | Wikimedia 博客 **[一手]** |
-| 前沿模型先给“受信用户” | Mythos、Gemini 4 Argon 都先只对安全或政府用户开放 | 厂商公告 **[一手]** |
+| 前沿模型的分阶段开放 | 此前记录 Mythos、Gemini 4 Argon 的受限开放；Argon 已于 2026-10-13 在 Gemini API／AI Studio GA，不再沿用其“仅受信用户”限制 | 历史记录；Argon 现状见 [官方发布记录](https://ai.google.dev/gemini-api/docs/changelog) **[一手，10-15 补核]** |
 
 **含义**：
 1. auto mode 和 auto-review **不能代替隔离**；
@@ -179,7 +180,7 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 ## 5. 下一个季度值得盯的
 
 - [ ] Claude Projects、Codex Ultra、Cursor Projects：托管式并行的成本和质量
-- [ ] Gemini 4 Argon 正式开放，以及 1M 输出 token（Long Decode Continuation）对长任务的影响
+- [ ] Gemini 4 Argon 已 GA；仍待评估长输出对具体任务的质量、延迟及总费用，不由 1M 上限推断收益（[当前边界](research/2026-10-10-audit.md#s1b--2026-10-15-主干时效补核)）
 - [ ] GPT-6.1 Sol 在 Codex 中的口碑（GPT-6 Sol 首发评价不佳）
 - [ ] 开源权重（GLM、MiMo、Qwen 3.8）配合 OpenCode 或 Pi 能否达到“日常主力”水平
 - [ ] Mods 生态，以及 Claude Code 的 harness 开销是否改善

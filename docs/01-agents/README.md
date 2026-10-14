@@ -17,7 +17,7 @@
 | 维度 | Claude Code | Codex | Gemini CLI | OpenCode |
 |---|---|---|---|---|
 | 厂商 / 许可 | Anthropic / 闭源（插件与 mods 源码公开） | OpenAI / 开源（Rust） | Google / Apache-2.0 | 社区 / 开源 |
-| 主力模型 | Claude Opus 5.5 / Sonnet 5.5 / Fable 5.1 / Haiku 5.5 | GPT-6.1 Sol / GPT-6 Sol、Luna、Astra（GPT-5.5 于 10-14 退役） | Gemini 3.x（Gemini 4 Argon 尚未开放）；v0.63 起非交互模式可自主执行计划 | 任意（BYOK、本地模型） |
+| 主力模型 | Claude Opus 5.5 / Sonnet 5.5 / Fable 5.1 / Haiku 5.5 | GPT-6.1 Sol / GPT-6 Sol、Luna、Astra（GPT-5.5 于 10-14 退役） | CLI 以实际可选模型为准；Gemini 4 Argon 于 10-13 在 API／AI Studio GA，不等于 CLI 默认已变（[02](../02-models-and-cost.md)）；v0.63 起非交互模式可自主执行计划 | 任意（BYOK、本地模型） |
 | 订阅可用 | Pro / Max / Team / Enterprise | ChatGPT Free / Go / Plus / Pro（$200、$500）/ Business / Enterprise | 个人 Google 账号有免费额度 | 取决于所接的服务商 |
 | 指令文件 | CLAUDE.md（+ AGENTS.md，v2.1.277 起）、`.claude/rules/` 按路径生效 | AGENTS.md | GEMINI.md（可配置） | AGENTS.md |
 | Skills | ✅（规范起源方，扩展字段最多） | ✅ | ✅ | ✅ |
