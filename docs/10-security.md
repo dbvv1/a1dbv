@@ -100,6 +100,8 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 
 **外来仓库转脚本前，先限制配置来源。** 普通 `claude -p` 不显示工作区信任或逐服务器批准提示，未信任目录中的项目 Hook 与 `.mcp.json` 仍会运行／连接。先用 `--setting-sources user` 排除项目 settings 与 `.mcp.json`；不需要自动发现能力时，再用 `--bare`，仅显式加入审过的输入与工具。`--bare` 单独使用仍会应用项目 `env` 与部分认证 helper，不能替代整个进程的隔离。见[官方权限矩阵](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)与[具体边界、认证前提](research/2026-10-12-development-conditions.md#交互试点转脚本bare-不是等价加速)。**[一手：官方契约；经验：采用建议]**
 
+**Codex 需单独核对。** `codex exec` 的只读任务显式选择 `--sandbox read-only`，并核对有效权限与配置、指令、技能来源；项目信任不能替代 sandbox，跳过项目配置也不等于排除所有项目技能。审查 Hook 时还要检查它引用的脚本：本次固定实现记录的是 Hook 定义哈希，不是脚本内容哈希。具体状态、覆盖条件与[源码范围](research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)另列；未运行发布客户端，不将 Claude 的启动行为外推到 Codex。**[一手：官方文档与固定实现；经验：采用建议]**
+
 ## 3.1 auto mode 能挡住多少：官方公布的数字
 
 Anthropic 公开了 auto mode 分类器的设计和误差 **[一手：工程博客]**。它是判断“要不要放手”的重要依据。

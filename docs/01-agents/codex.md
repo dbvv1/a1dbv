@@ -1,6 +1,6 @@
 # OpenAI Codex（CLI / App / Cloud）
 
-> 核实时间：2026-10-11（本轮复核指令加载、模式、审批与使用讨论；版本、套餐和产品发布信息沿用 10-08 记录，未重新确认）。历史依据 [openai/codex 源码](https://github.com/openai/codex)和 [Releases](https://github.com/openai/codex/releases)，以及官方文档（历史记录指向 [learn.chatgpt.com](https://learn.chatgpt.com/llms.txt)；另一侧早期读取受代理限制；本次已补读当前 Auto-review、配置参考和托管配置页面，仍不据此宣称全面迁移或其他官网内容均已核实）**[一手]**。
+> 核实时间：2026-10-14 补核脚本入口；2026-10-11（本轮复核指令加载、模式、审批与使用讨论；版本、套餐和产品发布信息沿用 10-08 记录，未重新确认）。历史依据 [openai/codex 源码](https://github.com/openai/codex)和 [Releases](https://github.com/openai/codex/releases)，以及官方文档（历史记录指向 [learn.chatgpt.com](https://learn.chatgpt.com/llms.txt)；另一侧早期读取受代理限制；本次已补读当前 Auto-review、配置参考和托管配置页面，仍不据此宣称全面迁移或其他官网内容均已核实）**[一手]**。
 > 评级：✅ **采用**（日常开发或交叉评审）
 
 ## 1. 形态与入口
@@ -49,6 +49,10 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 - **子 Agent 默认开启**；有内置 Agent（如 `default`），可以在 `config.toml` 的 `[agents]` 里设默认值，也可以写自定义 Agent 文件。
 - Hooks、Rules、Skills、Plugins（2026-03 推出；0.147 起支持可移植的 Agent Plugins 和多个插件目录搜索）、Memories、Goals 都已提供 **[一手：文档目录]**。
 - **从其他 Agent 导入**（2026-08-11）：桌面 App 在 Settings > Import、CLI 用 `/import`，可以从 **Claude Code、Claude Cowork、Cursor** 导入指令、设置、Skills、插件、项目和近期工作，并可保持同步 **[一手]**。
+
+### 外来仓库转脚本
+
+✅ 只读任务显式使用 `codex exec --sandbox read-only` 并核对有效权限；分别检查配置、AGENTS、Skills 与 Hook 来源，不能用 Git 仓库存在或“项目配置未加载”替代这些检查。当前官方要求非托管 Hook 经定义信任后才运行；审查时也看它引用的脚本。本次[固定源码核查](../research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)区分未设 trust 与显式 untrusted，且 Hook 定义哈希不覆盖脚本内容；这是 2026-10-14 main 的实现证据，未验证已发行客户端。**[一手；经验：采用建议]**
 
 ### 源码里能看到的模块
 `codex-rs/` 下有：`code-mode`、`memories`、`agent-roles`、`agent-message-board`、`hooks`、`skills`、`plugin`、`worktree`、`cloud-tasks`、`external-agent-migration`、`ollama` / `lmstudio`、`windows-sandbox-rs` 等。功能开关里还能看到 `Goals`、`BrowserUse`、`ComputerUse`、`MemoryTool`、`GuardianApproval` 等 **[一手]**。

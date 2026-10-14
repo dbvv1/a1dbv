@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：10 §3／3.2 在外来仓库脚本启动前限制配置来源；15 §5／Claude 专题按普通 -p 与 --bare 区分项目上下文和后台执行；05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索；22 §5 成对验收有意改变与相邻保留行为；18 §7／20 §4 按责任迁移验版本、持久化恢复与旧决定失效；20 §4 续改失败时检查继承代码的输入／错误契约；22 §4 先核对生成断言的预期来源，复用已检出目标缺陷的测试；15 §5 将配置回退的读写兼容与独立导出入口分验，并在职责迁移试点核对跨系统事实归属
-新证据：10-14 补读 Claude 权限矩阵、Hooks 安全说明及历史信任前执行修复原文；新读 Claude headless 官方契约与 2.1.286 固定发布说明，未运行客户端；新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照；10-14 深化 Pydantic AI 清理→捕获→重放→整轮取消→下游删除补偿层的固定产物、需求、测试定义与历史 CI，未运行上游；补 CodeThread 9月修订及固定构造源码，区分既有行为偏移与结构可维护性；新增生成测试跨 PR 传播的人工变异研究与 TestGen-LLM 原始筛选机制，未重跑模型；新增 n8n 读写开关解耦→维护者补接一次性命令初始化的固定补丁、测试定义及作者运行报告，未独立运行导出路径；新增 Scion 工程团队迁移复盘的事实查询纠正与 Sapling 官方兼容反例，未取得对应源码或独立运行
+改变的建议：Codex 脚本只读显式设 sandbox，配置、指令、技能和 Hook 引用脚本分别检查；10 §3／3.2 在外来仓库脚本启动前限制配置来源；15 §5／Claude 专题按普通 -p 与 --bare 区分项目上下文和后台执行；05/15/23及游戏页：先判断缺事实、操作能力、运行反馈还是决策；项目知识不能被通用规划替代；15 §3 用后续需求检验共享边界；23 §4 先观察失败构建的状态时间线再改重试；15 §6 按契约和运行成本选择属性搜索；22 §5 成对验收有意改变与相邻保留行为；18 §7／20 §4 按责任迁移验版本、持久化恢复与旧决定失效；20 §4 续改失败时检查继承代码的输入／错误契约；22 §4 先核对生成断言的预期来源，复用已检出目标缺陷的测试；15 §5 将配置回退的读写兼容与独立导出入口分验，并在职责迁移试点核对跨系统事实归属
+新证据：10-14 Codex 官方配置／headless／Hook 文档与 main 7a08c5f 固定源码，非发布版实测；10-14 补读 Claude 权限矩阵、Hooks 安全说明及历史信任前执行修复原文；新读 Claude headless 官方契约与 2.1.286 固定发布说明，未运行客户端；新读官方浏览器 Skill 和 Codex 迁移教程；可证机制，未证明净收益；保存/冲刺案例为分析设计，不是实测；10-13 新增 Discourse 固定前后源码、后续需求与 CI 原日志，以及 React 生产故障的作者原帖、固定修复与回归代码；新增 NumPy 属性发现/人工修复链、dateutil 误报与标准库公式对照；10-14 深化 Pydantic AI 清理→捕获→重放→整轮取消→下游删除补偿层的固定产物、需求、测试定义与历史 CI，未运行上游；补 CodeThread 9月修订及固定构造源码，区分既有行为偏移与结构可维护性；新增生成测试跨 PR 传播的人工变异研究与 TestGen-LLM 原始筛选机制，未重跑模型；新增 n8n 读写开关解耦→维护者补接一次性命令初始化的固定补丁、测试定义及作者运行报告，未独立运行导出路径；新增 Scion 工程团队迁移复盘的事实查询纠正与 Sapling 官方兼容反例，未取得对应源码或独立运行
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
@@ -59,6 +59,20 @@
 **认证与计费前提也不同。** 同一官方文档说明 bare 不读取订阅 OAuth 或系统钥匙串；Anthropic API 路径使用已提供的 API key／`apiKeyHelper`，外部提供商继续使用各自认证方式。切换前须确认该执行与计费方式已经获准且可用；这不是建议新建凭据、开通付费或把所有提供商改为 Anthropic API key。**[一手：官方文档；经验：采用前提]**
 
 **实际选择与局限。** 交互试点已经靠项目约定完成迁移时，换成 bare 要保留同一任务所需的信息；原命令依赖转后台等待长构建时，也不能只加一个 flag 便声称等价。普通 `-p` 不意味着 bare，官方“未来可能成为默认”的说明也不是当前默认已改变。本轮只核对文档与版本说明，未安装或执行客户端、未测开销和正确率；已有[历史实验](2026-10-12-experiment-records.md)的 bare 调用认证失败，不能补作本判断的成功运行证据。**[经验：采用边界；一手：检查范围]**
+
+### Codex 脚本入口：信任状态不等于有效权限
+
+**核实：2026-10-14 UTC；改变 10 §3 与 Codex 专题的脚本入口建议。** ✅ 只读自动化显式选择 `--sandbox read-only`，核对有效权限，并分别审查配置、指令、技能与 Hook 引用脚本；不以项目 trust 或 Git 检查代替执行边界。以下实现固定于 [openai/codex `7a08c5f`](https://github.com/openai/codex/commit/7a08c5f6271e818d832eb9061dac935936e2b539)，为当日 main 快照，不是已发行 CLI／桌面版本的行为验证。**[一手：固定源码；经验：采用判断]**
+
+**配置和指令的闸门不同。** [当前配置文档](https://learn.chatgpt.com/docs/config-file/config-basic#configuration-precedence)说明项目配置只对 trusted 项目加载，用户／系统配置仍可生效。固定 [loader](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/config/src/loader/mod.rs#L1056-L1132)将未设 trust 与显式 untrusted 都作为项目配置层的禁用状态，但 [AGENTS 加载](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/agents_md.rs#L56-L87)只在显式 untrusted 时提前返回、保留传入的用户指令；未设 trust 不命中该分支。[exec 的 Git 检查](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/exec/src/lib.rs#L1012-L1019)检查是否找到仓库根，不能从其通过推断 trusted。**[一手：官方契约与固定实现]**
+
+**默认说明不替代有效权限。** [官方 non-interactive 文档](https://learn.chatgpt.com/docs/non-interactive-mode#permissions-and-safety)说明 exec 默认 read-only；固定 [exec 配置](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/exec/src/lib.rs#L584-L615)则默认给 headless 设置 `Never` 审批，Auto-review 另有重建分支。传统 sandbox 配置路径在没有显式 sandbox、项目已有 trusted 或 untrusted 决定时会产生 workspace-write 候选，[同一函数](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/config/src/config_toml.rs#L841-L906)仍有平台与 requirement fallback。named profiles、持久权限恢复及[最终约束解析](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/config/mod.rs#L3721-L3838)另参与计算，最后使用[受约束的 effective profile](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/config/mod.rs#L4253-L4312)；不能由这个候选宣称所有 untrusted 运行都可写，也不能据 main 说发布版默认已经改变。**[一手：文档与源码；研究：分层限定]**
+
+**Skills 发现不跟配置禁用完全重合。** 固定 [skills 根目录实现](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots.rs#L73-L196)遍历包含禁用层的配置目录，并另查项目中的 `.agents/skills`；[测试定义](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots_tests.rs#L244-L289)明确保留 disabled project 的 `.codex/skills` 根。[会话调用路径](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/session/turn_context.rs#L1300-L1323)也有跳过 host discovery 的功能／会话分支。这里只证明发现机制，不证明技能一定自动调用、脚本已执行或获得额外权限。**[一手：固定实现与未运行测试定义]**
+
+**Hook 定义信任是另一道门。** [当前官方契约](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks)要求非托管 Hook 信任当前定义后才运行，新增／修改的定义会被跳过；`/hooks` 可检查来源与待审项，插件启用不自动信任它的 Hook。固定实现的 [hook_hash](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/hooks/src/engine/discovery.rs#L768-L794)哈希规范化事件和 handler 配置，并不读取被调用脚本内容。因此审查定义时也审查脚本及其来源，不能把定义未变当作脚本未变；不建议用 bypass 信任参数处理外来仓库。**[一手：官方契约与固定实现；经验：采用判断]**
+
+**检查范围与不采用。** 本轮仅阅读当前官方页面、上述固定源码和测试定义，未运行 Codex、模型或上游测试，未检查私人配置。未完整审计每种 MCP／shell／插件启动路径，不给“零启动执行”保证，也不把命令沙箱说成整个宿主进程隔离。`--ignore-user-config` 与 `--ignore-rules` 只按官方声明的各自范围理解，不推荐作关闭全部项目能力的通用开关；不增加信任记录修改、凭据迁移或放宽安全的步骤。**[研究：验证范围与撤回边界]**
 
 ### 官方交互浏览器 Skill：值得借什么，不能照搬什么
 
