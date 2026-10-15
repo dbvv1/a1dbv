@@ -168,6 +168,12 @@
 
 **Unity 遮挡：先分“不穿墙”和“看得见”。** [一手／研究] Decollider 修正相机碰撞位置，Deoccluder 才尝试恢复目标视线；Transparent Layers 只排除遮挡判断，不会让材质透明。✅ 保住瞄准意图后仍有可用视点，才用有限拉近／移位；固定朝向只被可退让的树冠／前景挡住时，🧪 用 Shader Graph Dither＋Alpha Clip 做局部显隐。保留碰撞、掩体边界、落地面和攻击预告，定义显隐对象与退出恢复；轮廓只回答“人在哪”。若无可行视点，或每种墙／树都要补材质例外，先改几何与遭遇布局。Project Zomboid 发布后仍修改树冠 cutaway，反证显隐不是免费兜底；实现、案例与 UCL 的 Unity-dependent 限制见 [WP11 遮挡依据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#2-三种玩法的不同默认不共享一套最佳参数)。
 
+### 建造／策略视图：先选支点，再调平滑
+
+**[研究] ✅ 旋转／缩放突然偏离正在看的建筑，先查支点与输入入口。** 鼠标直接指向时可保留光标锚点；按钮可先用当前视口中心，另有选中对象等意图时单独声明，不把全窗口鼠标位置套给所有入口。Tiny Glade [1.11.2](https://steamcommunity.com/games/2198150/announcements/detail/543346166601876516)保留 PC 光标支点，却为 Steam Deck 改用中心区域；旋转时单一中心点落在高塔旁会选中背景，增加阻尼并不改变这个目标。[一手／研究] 中心区域会推断玩家意图，只在单点经常误选时评估，不要求所有游戏增加模式选择器。
+
+**[研究] ✅ 简单缩放优先复用现有视口变换，不额外引入不需要的地形拾取。** OpenRCT2 的[等距缩放修复](https://github.com/OpenRCT2/OpenRCT2/commit/85a0f70ae166cb5d240844c4dffad7c1c9fbbd76)删除高度拾取，用视口内坐标补偿；[按钮修复](https://github.com/OpenRCT2/OpenRCT2/commit/e4f36840bff585b4a3f5581cd2b4714f887b2c02)另接完整缩放路径，说明滚轮通过不能代验按钮。[一手] 二改增加高塔／陡崖、额外视口或另一输入入口，分别核对象边缘、背景与视口中心；**局限：二维等距修复不是 3D 旋转算法，发布说明也不证明目标设备的舒适度收益。** 设计选择与缺陷修复、固定版本及待验范围见 [WP11 支点补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#建造镜头补研旋转缩放支点与输入入口)。
+
 ### Unreal：同样的可读性目标，不同的职责边界
 
 [一手／研究] **✅ 保留原生职责：** CameraComponent 提供视点，SpringArm 用 ProbeChannel／ProbeSize 防穿透（默认 ECC_Camera），PlayerCameraManager 管最终视图与混合；ControlRotation 表达控制／瞄准朝向，可不同于相机和 Pawn 朝向。SpringArm 不等于 Deoccluder，更不负责枪口命中；不要相互反写旋转。
