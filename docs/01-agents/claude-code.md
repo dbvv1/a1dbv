@@ -42,7 +42,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | MCP | 连接外部系统 | 通常只预载工具名与服务器说明，schema 按需加载；自定义 API 网关等路径先核 tool search，见下文 |
 | LSP 插件 | 当前会话支持且有诊断／语义导航缺口时，见 [05 的采用条件](../05-skills-and-plugins.md#3-插件与市场) | 取决于诊断与查询返回量，净收益需按任务验证 |
 | 插件 | 打包分发以上所有东西 | 取决于内容 |
-| Output style | 全局改变语气、长度、格式 | 每次请求都有 |
+| Output style | 只需短回答先用偏好或内置 Concise；自定义 style 还会改变编程指令，见 [05 的保留条件](../05-skills-and-plugins.md#4-skillmcpsubagenthookclaudemd-怎么选) | 主会话每次请求都有；普通子 Agent 不继承 |
 | Mods（v2.1.287） | 用 TypeScript 改界面（面板、按钮）和更深层的行为 | — |
 
 ### 3.3 并行与自动化（5 种并行方式）
