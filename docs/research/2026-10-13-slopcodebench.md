@@ -1,6 +1,6 @@
 主线：三
-改变的建议：20/22/24：Regression来源分类≠新增退化；22 区分大补丁与连续交付，并按错误所在层选择重算、重评或重新生成
-新证据：固定runner/题库与局部探测；SWE-EVO 论文、评估器和48条公开数据；SWE-Milestone 维护修订与固定实现，只读核查，未复算其成绩
+改变的建议：20/22/24：Regression来源分类≠新增退化；22 区分大补丁与连续交付，并按错误所在层选择重算、重评或重新生成；连续代码、会话与验收分开核对
+新证据：固定runner/题库与局部探测；SWE-EVO 论文、评估器和48条公开数据；SWE-Milestone 维护修订与固定实现，只读核查，未复算其成绩；EvoWeb／EvoCode 公开连续产物与恢复记录
 
 # 连续开发评测：SlopCodeBench 测到了什么，哪些结论仍不能下
 
@@ -174,3 +174,42 @@ print(len(set(a['FAIL_TO_PASS']) - set(b['FAIL_TO_PASS']) - set(b['PASS_TO_PASS'
 **采用范围**：先定位错误所在层，保留原产物与修订版本；新规格下给旧产物评分本身可行，只是不能代表模型收到新规格后的行为。修复 Agent 曾看到的环境或反馈也一样。重评范围还要包括受影响但没有有效结果的项，不能只搜到故障文字的项，见[维护者的范围规则](https://github.com/DeepCommit-ai/SWE-Milestone/blob/17a8f1593e172e26b36cea15e2b30fb9536c93f5/docs/versioning.md#L87-L105)。**[一手；研究：采用建议]**
 
 **证据上限**：[原始轨迹仓库](https://huggingface.co/datasets/DeepCommit-ai/SWE-Milestone-log)读取文件要求登录并同意分享联系信息，本轮未申请、登录或绕过，因此没有复算原始日志、产物或排名；同仓记录也不是不同作者的独立重复研究。固定源码支持处理机制，作者报告支持其遇到过的维护问题，不证明普遍收益或某模型应升降级。
+
+
+## 9. 连续产物：代码继承不等于会话恢复或验收通过
+
+> 核实：2026-10-15。✅ 借用已有产物、恢复记录和验收，分别核对代码、会话及新旧功能接合；不新增评测框架，不按这两项研究推荐模型、架构或记忆系统。只读公开源码／轨迹，以标准库比对快照；未运行模型、应用、浏览器或上游评估器。**[研究：采用与范围]**
+
+### EvoWeb：有可追到第五轮的正链
+
+[论文 v1](https://arxiv.org/pdf/2610.16402v1)描述持续修改同一应用，并分别检查新功能、跨请求集成和旧行为；隐藏判定不反馈给下一请求。这里没有仅凭论文定义认定连续性，而是读取[固定仓库 `c5e1875`](https://github.com/two-delta/EvoWeb/tree/c5e18758418bf673e25ff4fdc62978a7687928d5)发布的[完整 Fable 5 run1 ZIP](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/examples_artifacts/full_traces/fable-5-run1.zip)：76,909,252 bytes，SHA-256 `27bed1922b55b902e2ecef44a7a21375500780407d4b2199fd25eb74d53d2d07`。**[一手：论文／原始产物；经验：下载校验]**
+
+归档内 `fable-5-run1/000001/` 是同一个股票报表应用。R1 从通用 React/Vite scaffold 实现查询与可定制报表；R2 加筛选、排序和预设，并让筛选结果进入原报表；R5 加评级与雷达图，再把 Health Score 接回已有报表生成／展示组件。`result.json` 的 `turns[].tasks` 保存任务、预期和 verdict：R1–R5 的现有检查均为 yes。R5 的前三项测评级，第四项测评级进入原报表，第五项重测 R2 的行业与股息率筛选；最后一项的任务和预期与 R2 对应项逐字相同。**[一手：保存轨迹／判定；经验：文本对照]**
+
+源码在首轮 `generation/workspace/`、后续 `turnN/generation/workspace/`；操作在对应 `summary.json` 的 `calls` 与 `trajectory.jsonl`。比较 R4→R5：23 个文件逐字相同，修改 App、Generate、ReportView，新增 ratings、RadarChart、Ratings，恰对应保存的 Agent 编辑操作。已读链未见人工修复或参考实现替换，但没有独立审计足以证明全程绝无未披露干预；runner 还会安装依赖和改写 Vite 端口，不能将全部文件变化归给 Agent。**[经验：字节比对；一手：操作记录；研究：限度]**
+
+这是一条真实的连续代码正链，且所选新功能、集成与旧行为都有作者判定；不是本仓运行通过，也不是完整回归保证。完整 ZIP 不含截图，不能声称视觉复验；仅这一 run 有同等完整代码／会话产物，其他运行的结果文件不等于独立完整复现。**[研究：证据上限；一手：产物说明]**
+
+### 同一代码留下了，不代表会话到达
+
+当前固定 [`backend.py`](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/harness/generators/backend.py#L282-L352)只在工作区不存在时复制模板；[`run_single_sample.py`](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/harness/run_single_sample.py#L1273-L1374)复用工作区、传 history 与 session，恢复后从 checkpoint 的下一请求继续。当前源码未与历史 run 绑定同一提交，不能倒推当时所有实现；实际产物另有直接记录。**[一手：固定源码；研究：版本边界]**
+
+应用 `000008/turn2/checkpoint/` 保存源码压缩包及 `state.json`，其中 `turn=2`、`turn_history` 有四条消息；`000008/logs/worker.log` 记录从第二轮恢复到第三轮，也明确报告恢复后丢失会话。`turn3/generation/summary.json` 同时有 `history_messages_sent=4` 与 `history_lost=true`。因此，“保存过历史”“请求恢复”“模型实际收到”是三件事。反过来，正链 R2/R5 的 `resume_attempted=true`、`history_lost=false` 只证明请求了恢复且检测器未标记丢失，不能证明完整历史成功恢复。**[一手：保存状态／日志；研究：解释]**
+
+只读清点得到 32 份 result、320 个请求记录、307 份 generation summary；缺少 summary 及相关轨迹材料的 13 轮对应[作者披露的六个驱逐应用](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/examples_artifacts/full_traces/README.md)，不能改写成“那13轮没有会话”。六次恢复首轮的 summary 均标记丢失；这是运行记录，不是独立还原模型输入。**[经验：归档计数；一手：作者披露]**
+
+### EvoCode：失败后仍在改自己的代码，不等于此前已交付
+
+另一份公开证据来自[官方数据卡](https://huggingface.co/datasets/UnipatAI/EvoCodeBench/blob/main/README.md)链接的[Doubao 增量轨迹](https://huggingface.co/datasets/UnipatAI/EvoCodeBench/resolve/main/archives/evocodebench_doubao_seed_2_1_pro_trajectories.tar.zst)：4,084,115 bytes，SHA-256 `c860322374c99d575a94cb6b055063c687aed1be83fc9457c4ed22f4a68193bd`，与下载时 LFS 标识一致；浮动 main 须连同校验值定位。数据卡称每任务一次尝试、Terminus-2/high。**[一手：发布数据；经验：校验]**
+
+归档根 `evocodebench_doubao_seed_2_1_pro_trajectories/tasks/` 下，选取 `theme_d12_w1_automation_productivity_greenfield_implementation/harbor_jobs/doubao-seed-2-1-pro/2026-06-24__17-31-38/theme_d12_w1_automation_producti__TvbkBaD/` 的 config、result 及 `steps/round-{1,2}/agent/trajectory.json`：R1 写出的 `cmd/flowr/main.go` 在 R2 被读取，终端容器标识相同；配置未指定参考快进。两轮公开轨迹的 session_id 不同、step 从1重起，首条是当前任务；不能仅据此断言模型完全无记忆，完整后端输入与 wrapper 未核齐。**[一手：轨迹／配置；研究：解释边界]**
+
+这个任务 R1–R7 都记录超时及 reward 0，后续仍继续执行。按评分协议将缺失轮计0，只是计分处理；缺失原因须另查，不能直接认定为模型实际失败。它证明未通过产物也可被继续修改，不证明最终保住全部契约；本轮也未对齐七轮全部测试断言。不能把“连续修改”限定为只有成功状态，或反过来把“继续了”称为验收成功。正文应记录具体协议是否允许续接及当时未通过状态。**[一手：原始结果；研究：采用判断]**
+
+版本尤其不能混：五月 [legacy](https://github.com/UniPat-AI/EvoCodeBench/blob/f8fcfaa1c9ad1c5b0bbc433323b587e4ddea2f32/legacy/README.md) 的连续模式与参考补齐起点的 SR 是不同条件；[固定旧 runner](https://github.com/UniPat-AI/harbor_multiturn/blob/15015bd46d8f09d1cd8b08773b26103d9c6fa517/src/harbor/trial/trial.py#L775-L1033)区分自身状态续接与 reference fast-forward。[六月20日修正说明](https://github.com/UniPat-AI/EvoCodeBench/blob/f8fcfaa1c9ad1c5b0bbc433323b587e4ddea2f32/CHANGELOG.md)将六月13–16日 v1 结果列为 superseded、相关轨迹 withdrawn，作者称在修补 harness 上重新生成；不是只重算，也不等于论文撤稿。grader 泄漏改变了 Agent 输入，上游 [#1961](https://github.com/harbor-framework/harbor/pull/1961)到九月才合并，不能用上游后来的实现替六月运行背书。**[一手：版本／修订记录；研究：范围]**
+
+### 借用什么，到哪里停止
+
+保留上一轮实际产物及其验收状态；按协议记录失败后停止或续接，人工／参考补齐另列。代码、历史、反馈条件分别核对；需求确需新旧功能协作时，验收其接合，不能只分别测新页和旧页。继续使用原项目测试或现成评测，不因为多了两个 benchmark 就新造平台。**[研究：采用建议]**
+
+自动 judge 的旧行为失败仍可能来自导航或交互，不能直接改判为代码回归；静态源码有实现也不能反向判通过。费用字段与计价口径未核齐，缺少人的主动工时，不作成本收益判断。要进一步推荐长期工作流，仍需真实反馈→修复→复验、明确旧契约覆盖及更多独立完整轨迹；本轮不证明无人干预生产可靠性，也不由分数差归因记忆或架构。**[研究：剩余证据与停止条件]**
