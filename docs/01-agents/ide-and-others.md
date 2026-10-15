@@ -1,6 +1,6 @@
 # IDE 类工具与其他
 
-> 核实时间：2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
+> 核实时间：JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
 
 ## Cursor
 
@@ -10,16 +10,16 @@
 | 自研模型 | **Composer 2**（官方称“自家的前沿编码模型，额度高”）**[一手]** |
 | 2026-10 新功能 | **Remote Control**：在 Cursor iOS 应用里查看并回复电脑上运行的本地 Agent（Agent 仍在你的电脑上运行；企业版默认关闭）**[一手：changelog 10-06]** |
 | 2026-09 新功能 | **Rollouts** 机器人：为每个 PR 写监控计划，按环境跟踪部署健康度，发现回归后可以开回滚 PR；**Security Review** 机器人；Cursor Projects；自托管机器；`/goal`；云端子 Agent 各自运行在独立机器上 **[一手：changelog]** |
-| **公司变动** | 2026-06 **SpaceX 宣布以 600 亿美元收购 Cursor**；2026-08 **OpenAI 停止向 Cursor 提供模型**（此前 Anthropic 已因违反服务条款封禁 xAI）；Cursor 推出 GitHub 替代品 **Origin** **[社区：HN 原帖 + 官方公告标题]** |
-| 社区反馈 | 定价长期有争议：Bugbot 改为按次计费；2026-08 从用量页面和 CSV 导出里移除了费用信息。HN 上很多人已转向 Claude Code 或 Codex；仍在用 Cursor 的人看重的是：代码已经索引好，在编辑器内审阅改动很方便，以及可以在多个模型之间切换（如今少了 OpenAI）**[社区]** |
-| 评级 | 👀 **评估**（上一版是“试用”）：产品力仍强，但**模型供应和公司归属都不确定**。新项目不建议把它作为唯一依赖；已经在用的话，配置尽量用开放格式（AGENTS.md、Skills、MCP），方便迁移 |
+| 供模与迁移 | 按实际模型入口、目标任务与合同变化判断，供模过渡及替代路径统一见 [11 §3](../11-community-pulse.md#3-cursor按实际接入路径判断是否迁移)；不把收购新闻或旧口碑当迁移收益证据 **[一手；研究：2026-10-15入口同步]** |
+| 评级 | 🧪 **条件试用**：必要路径、费用和数据政策满足时可保留现有工具；出现具体阻塞才比较替代方案，不因旧“已停供／归属不确定”叙述自动迁移 |
+
 
 ## JetBrains（IntelliJ / Rider / PyCharm…）
 
-- 2026 版 AI Chat 可以选择 **Junie、Claude Agent、Codex、Copilot、Cursor** 等，并通过 **ACP（Agent Client Protocol）Registry** 一键接入外部 Agent **[二手]**。
-- **Junie** 于 2026-06-17 结束 Beta；Junie CLI 与 IDE 之间也走 ACP **[二手]**。
-- ReSharper 2026.2 把 ACP 带进了 Visual Studio **[二手]**。
-- 评级：🧪 **试用**。主力 IDE 是 JetBrains 的话，用 ACP 接 Claude Code 或 Codex，比换 IDE 更合适。
+🧪 **先用覆盖必要路径的现有 IDE 入口，不把同名 Agent 当原 CLI 的透明替代。** AI Chat 集成、ACP Registry／自定义 agent 与独立 Claude Code 插件须分开；Claude Agent 官方页明确它不同于 Claude Code [Beta] 插件。ACP 无需 JetBrains AI 服务订阅，但当前 ACP 文档列 WSL 不支持，这不代表全部 JetBrains 入口或原 CLI 都不能用。**[一手：2026-10-15官方契约]**
+
+Codex 集成可用 JetBrains AI 订阅、ChatGPT 登录或 OpenAI API key；仅 BYOK 路径限定 OpenAI 直接发行的 key。先核目标执行环境、认证及必要命令／插件，满足再替换原路径；原 CLI 已可用而集成缺能力时保留原路径。[官方来源与历史失败](../research/2026-10-12-community-source-records.md#jetbrains同名-agent-不等于原-cli-环境)说明运行时和配置可能不同，未取得当前客户端实测或原用户最终恢复回访。**[一手；社区；研究：采用边界]**
+
 - C# / Unity 开发者的首选 IDE 仍是 Rider（见 [domains/game-dev/unity](../../domains/game-dev/unity/README.md)）。
 
 ## VS Code + GitHub Copilot（CLI / App / VS Code）

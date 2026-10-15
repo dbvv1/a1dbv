@@ -247,3 +247,14 @@ HN 的 [成本串](https://hn.algolia.com/api/v1/items/49997161)（10 月 7 日�
 11 删除点数／情绪排行及不改变具体选择的新闻，撤下未经本轮核实的账号原因猜测、保留期限、采用率和工具指控；不保留或新增敏感个人细节，不裁定事件真假。保留三项条件选择和额度反证，未另建价格表或专题。重新扩大建议需同任务的质量／成本对照、可接手产物或实际迁移记录；更多赞数与体验帖不能替代。**[研究：撤回与重新考虑条件]**
 
 L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条件、04 的凭证／进程边界、10 的模拟审批范围及 18 开头预算判断，收窄 11 §4–5 的五处泛化；未重新认证全部历史动态事实，不因此声称达到 L3。**[研究：本轮修订范围]**
+
+
+## JetBrains：同名 Agent 不等于原 CLI 环境
+
+核实：2026-10-15。对应01选型与JetBrains深页；只读公开文档及原帖，未安装、登录或运行客户端。🧪 已有IDE入口满足必要路径时可继续用；不因同名Agent出现在AI Chat，就推断它继承原CLI的执行环境、认证、命令或插件。**[研究：采用判断]**
+
+- **当前接入契约**：[ACP 2026.2文档](https://www.jetbrains.com/help/ai-assistant/acp.html)（页日期10月7日）区分Registry与自定义agent；Registry安装时IDE管理所需运行时，已有兼容runtime可复用，自定义agent则由IDE作为子进程启动；ACP无需JetBrains AI服务订阅，但当前列WSL不支持。MCP／IDE MCP须按所需能力选择暴露，不等于自动继承全部IDE工具。此WSL限制仅按该ACP页面表述，不外推全部JetBrains产品。**[一手]**
+- **认证与插件分别核**：[Codex集成](https://www.jetbrains.com/help/ai-assistant/codex-agent.html)有JetBrains AI订阅、ChatGPT登录、OpenAI API key三路；只有BYOK限定OpenAI直接key，第三方key即使提供同品牌模型也不支持。[Claude Agent](https://www.jetbrains.com/help/ai-assistant/claude-agent.html)明确不同于独立Claude Code [Beta]插件，slash commands仅支持子集。两种集成都不遵从AI Assistant的`.aiignore`；需要排除敏感文件时沿用[10的实际权限边界](../10-security.md)，不能把编辑器排除规则当通用安全隔离。**[一手：当前产品契约]**
+- **历史使用反例**：[LLM-28234](https://youtrack.jetbrains.com/issue/LLM-28234)原报告在PyCharm26.1.2打开WSL工程，CLI经第三方服务可用，AI Chat却认证失败；改Windows侧认证后仅认证通过，API错误仍在。5月29日维护者解释，IDE管理独立runtime／认证状态，agent跟随IDE backend所在host；直接从Windows打开WSL路径不等于使用WSL CLI状态。6月2日原报告者后续反馈两种Codex入口分别路径失败与provider检测失败，维护者说明当时legacy native／ACP过渡。6月22日因缺补充信息自动关闭为Incomplete，没有最终恢复回执。**[社区：同一用户的初报与后续反馈；一手：维护者解释，未复现]**
+
+原帖及全部4条评论通过匿名公开YouTrack API读取。维护者历史上提出Remote Development等绕过，不足以覆盖当前文档的WSL支持限制；不据旧β标签识别当前实现，不把自动关单当修复。未核到对应闭源客户端固定实现，不用第三方ACP适配器源码冒充该集成；没有当前账户运行结果或效率对照，不能升级为跨平台支持或迁移收益保证。**[研究：证据边界]**

@@ -44,7 +44,7 @@
 | 交叉评审 / 第二意见 | 🧪 按风险增加新上下文评审 | 同模型或跨模型都可能共享盲点；按 [09](../09-review-and-quality.md#2-评审手段)比较新增有效发现、误报与成本，不默认必须换品牌 **[研究]** |
 | 预算有限 / 多模态输入 | 🧪 **Gemini CLI** | 个人账号有免费额度、1M 上下文 **[一手]** |
 | 模型自由、本地模型、私有部署 | 🧪 **OpenCode** / **Qwen Code** / **Goose** | 多服务商、可接本地模型 **[一手]** |
-| 主力在 JetBrains IDE | 🧪 Rider/IntelliJ + ACP 接入 Claude/Codex | 2026 版 AI Chat 可选 Claude Agent、Codex 等 **[二手]** |
+| 已有 JetBrains 工程 | 🧪 先核 AI Chat 集成／ACP 是否覆盖必要路径 | 平台、认证与所需操作满足时保留现有 IDE；CLI 可用不证明 IDE 入口同配置兼容，见 [JetBrains 边界](ide-and-others.md#jetbrainsintellij--rider--pycharm) **[一手；研究：采用判断]** |
 | 愿意自己定制 harness 并维护隔离 | 🧪 **Pi** | 默认启用 4 个工具，可扩展 MCP／codemode；按进程权限运行，隔离需另设。工具少不证明净成本低，见 [固定来源与边界](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界) **[一手；研究：采用判断]** |
 | 新项目依赖持续的模型／接口适配 | ⛔ 暂缓新采用 **Aider** | main 末次提交仍为 2026-05-22，维护风险需考虑；main 已有较新模型配置，不等于稳定版已发布。已有稳定工作流不据此迁移，见 [维护与兼容边界](../research/2026-10-12-community-source-records.md#2026-10-15-aider维护节奏与模型兼容分开判断) **[一手；研究：采用判断]** |
 
