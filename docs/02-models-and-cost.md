@@ -1,6 +1,6 @@
 # 02 · 模型与成本
 
-> 更新：2026-10-15
+> 更新：2026-10-16
 
 ## 1. 原则：按任务分档，而不是追榜单
 
@@ -11,7 +11,7 @@
 | 架构设计、跨模块重构、疑难 bug 中，现有方案出现推理或验证缺口 | 🧪 尝试更强能力 | Claude Opus 5.5 / Fable 5.1、GPT-6 Astra / 6.1 Sol；effort 按下文调整。Gemini 4 Argon 见下方试用条件 |
 | 范围清楚的日常功能开发、写测试 | ✅ 保留已够用的方案 | 新选型可从 Claude Sonnet 5.5 / Opus 5.5、GPT-6.1 Sol 的客户端默认 effort 起步 |
 | 目标明确、结果容易检查的检索型子 Agent、批量小改、格式化 | 🧪 尝试轻量模型 | Claude Haiku 5.5、GPT-6 Luna；复杂调查不因交给子 Agent 就自动降档 |
-| 路由、分类、“从有限选项中选一个” | 决策模型（新类别） | Jev、Cloudflare Clef、Strands Decider 2B、OpenAI Decisions API（见第 2.1 节） |
+| 反复出现的有限选项语义判断 | 🧪 有具体缺口才试决策接口 | 规则或当前模型在质量、等待、成本上不足时再比较；分数、回退与授权见第 2.1 节 |
 | 离线 / 保密 | 本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B（见第 5 节） |
 
 **effort 起点按模型与客户端区分**：Claude Code 当前建议 Opus 5.5／Sonnet 5.5 的日常、范围明确开发从 `medium` 开始；`low` 更适合逐次查看结果的小修改或快速草稿。Sonnet 5.5 在 Claude API 的默认值仍是 `high`，不能照搬客户端默认。Codex 的 GPT-6.1 Sol 从客户端默认 effort 起步，Astra 从 Light（配置值 `low`）起步，再按规划、分析与检查需要调整。同名 effort 不代表跨型号、跨代等强度。以上是厂商使用建议，不能据此认定本项目中的效果等价；表中决策模型与本地候选仍按各自小节的核查范围理解。**[一手：[Claude Code](https://code.claude.com/docs/en/model-config#choose-an-effort-level)、[Claude API](https://platform.claude.com/docs/en/build-with-claude/effort#recommended-effort-levels-for-claude-sonnet-5-5)、[Codex](https://learn.chatgpt.com/docs/models#choosing-a-model)，2026-10-15]**
@@ -61,12 +61,15 @@
 - **Prompt cache 是最大的杠杆**：缓存读取约为输入价的十分之一甚至更低。缓存规则须按厂商、模型与配置区分：[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)说明，更改顶层 `output_config.effort` 会使消息缓存失效，对工具/系统缓存的影响依模型而异；显式写出原默认值不算变化，支持逐消息 effort 的模型也有保留前缀的路径。模型切换、前缀改动和 TTL 是排查因素，不能一概断言每次修改都会清空全部缓存。当前 [Claude Code 成本文档](https://code.claude.com/docs/en/costs)将缓存统计放在 `/usage` 的 Session 区；它覆盖主会话，不能当作全部子 Agent 的合计 **[一手]**。
 - **Harness 本身也有成本**：Systima 在 2026-07、Claude Code 2.1.207／OpenCode 1.17.18 的隔离代理实验中测得首轮约 33k／7k 输入；一份 72KB 的指令文件让每次请求多约 2 万 token（详见 [13](13-frontier-radar.md#23-harness-的隐性成本被量化了)）**[社区：原文]**。本仓库在云端环境复现：默认约 31.6k，用 `--tools=` 收窄工具后降到 3–6k；72KB 的指令文件让每次请求多约 2.6 万 token（[19](19-experiments.md#3-e1固定开销)）**[经验：历史实测]**。这些是含缓存的原始输入量，不是按普通输入价计费的 token，也不能直接推算订阅消耗或作为当前客户端成本排名。选择须比较实际完整任务的质量、返工与含缓存的总成本；历史配置及当前诊断入口见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)，本仓库原逐次数据缺失的限制见 [19](19-experiments.md)。
 
-### 2.1 新类别：决策模型（2026-09 起）👀
+<a id="21-新类别决策模型2026-09-起"></a>
 
-- **是什么**：从**预先定义的选项**中给出结果及概率的模型，不生成自由文本；概率输出不代表已经在目标任务上校准。由 TypeSafe AI 的 **Jev**（2026-09-15 发布）带起，几周内出现了 Cloudflare Clef（开源，基于冻结的 Qwen 骨干 + 选项打分头）、Strands Decider 2B、OpenAI Decisions API（基于 GPT-6 Luna），以及大量 0.8B 级别的社区复现；Ollama 0.35 起支持 **[一手：Cloudflare、Strands 博客；二手：Forkast 关于 Jev]**。 2026-10-15 局部复核：[Clef 官方模型卡](https://huggingface.co/Cloudflare/clef)只说明 logits 经 softmax 得到选项概率；自动路由前仍须检查本任务误判与阈值表现，阈值不能替代实际授权，见 [14 的采用边界](14-synthesis.md#新的分层趋势)。本次不重新认证其余产品条目。**[一手；研究：边界]**
-- **号称的优势**：Jev 自称比前沿 LLM 快约 190 倍、便宜约 440 倍；独立测试（Every）在一个抽取任务上测得快约 25 倍。注意 Jev 的准确率是**和前沿模型的一致率**，不是对照真实标准答案 **[二手]**。
-- **在 AI coding 里的位置**：Agent 流程中大量的路由、分类、“下一步做什么”的判断，目前都交给通用 LLM 来做；决策模型把这部分拆出来，**用置信度决定是自动执行还是交给人**。
-- **判断**：方向值得关注（模型在按角色分层，见 [14 规律五](14-synthesis.md#5-规律五模型在商品化可迁移的工程资产在增值)），但独立评测很少，大量复现出现在几周内，说明门槛不高、格局未定。**现在适合做原型，不建议押注某一家。**
+### 2.1 决策模型：有限选项不等于可以放心执行 🧪
+
+**何时值得加**：已有反复出现的分类、候选路由或检查项预筛，选项含义清楚、需要理解自然语言，而规则或当前模型有具体质量、等待或成本缺口时，再比较决策接口；现有方案够用就保留。不把开放式规划整体改成一次选项打分。是否保留，看本任务误判、复核量及包含失败与升级的总成本；节省被漏报或复核抵消就撤回。**[研究：采用边界，未实测；依据与原测试见 [S1d](research/2026-10-10-audit.md#s1d--2026-10-16-决策接口的评分与执行边界)]**
+
+**先辨分数，再定阈值**：[Clef 模型卡](https://huggingface.co/Cloudflare/clef#model)说明选项 logits 经 softmax 得到概率；[Jev 的 Choice confidence](https://docs.typesafe.ai/confidence)则是从分布计算的集中程度，不能直接读成正确率，也不把其公式套给其他接口或 Score 题型。用本项目有可靠标签的样本检查误报、漏报及阈值下的覆盖率，按错误代价定路由／复核条件；训练时做过校准、输出合法或与强模型一致，都不证明目标任务正确。[OpenAI 指南](https://developers.openai.com/api/docs/guides/decisions#interpret-the-answers)也要求按应用标签与误报／漏报代价设阈值。**[一手：字段与指南；研究：采用判断，2026-10-16（UTC+8）]**
+
+**回退和授权由程序守住**：类别不全时留 `other`／“以上皆非”；缺证据、低于已验证阈值或接口拒绝时，补信息、升级或交人复核，不把这些状态算执行成功。[OpenAI API](https://developers.openai.com/api/reference/resources/decisions/methods/create)可逐题返回 `refusal`，同请求其他题仍可能正常作答，应逐项处理。动作还须通过当前状态、参数和权限检查；高分不会新增授权，也不能跳过原本必需的确认。**[一手：接口与回退指南；研究：执行边界]**
 
 ## 3. 订阅、额度与成本控制
 
