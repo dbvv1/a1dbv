@@ -20,6 +20,8 @@
 
 **快速子 Agent 还要匹配接口**：GPT-6 Luna 若同时需要推理与工具调用，使用 Responses API；Chat Completions 的 function calling 仅支持 `reasoning_effort=none`，不要只按低单价替换现有推理工具链。**[一手：[模型页](https://developers.openai.com/api/docs/models/gpt-6-luna)；研究：选型条件，2026-10-15]**
 
+**Haiku 5.5 的 computer-use API 迁移须按提供方选择**：从 Haiku 4.5 的旧工具迁移，不能只换模型 ID。Claude API／Google Cloud 要用 `computer_toolset_20260801`，并同步改调用分派与结果回传；Amazon Bedrock 则用 `computer_20251124` 及对应 beta header。现有宿主未适配时，先保留可用路径，不因基准分数直接替换。这是自建 API 集成条件，不代表 Claude Code 或桌面 App 的功能变化。**[一手：[迁移指南](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide#move-computer-use-to-the-toolset)、[兼容性契约](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#compatibility)；研究：选择，2026-10-16（UTC+8），未实测]**
+
 **在 Claude Code 里落地**：主会话用适合任务的模型；需要子 Agent 时，可在 frontmatter 写 `model: haiku` / `sonnet`，或用 `CLAUDE_CODE_SUBAGENT_MODEL` 统一指定。尽量减少没有任务理由的模型和 effort 切换；缓存影响按下文 [Prompt cache 的厂商与配置边界](#2-价格快照api-美元百万-token)判断，不为保缓存而拒绝必要的模型调整。**[一手：配置接口；经验：使用建议]**
 
 **Fable 级模型的用法** **[一手 + 社区]**：
@@ -53,7 +55,7 @@
 - Gemini 4 Argon 仅支持隐式缓存，命中后按输入价的 **5%** 计费（优惠 95%，不是“九五折”）；显式 `cachedContents`／`caches.create` 不支持。上表为 Standard，Batch／Flex／Priority 另计，搜索等工具费不在 token 单价内。长期预算按 2026-12-01 起的费率估算。**[一手：上列价表与迁移指南；研究：预算建议，2026-10-15]**
 
 - **Claude Haiku 5.5**（2026-10-07）**[一手：Anthropic 公告]**：
-  - 按 Standard 输入/输出单价，Haiku 4.5 的 $1/$5 对比 Haiku 5.5 ≤100K 档 $0.10/$0.50，下降 **90%**；>100K 档 $0.50/$2.50 则下降 **50%**，不是统一 75%。这是单价算术，不是任务总成本降幅 **[一手价表 + 算术]**；原公告还报告 1M 上下文、OSWorld 72.4%，并推荐子 Agent 用途（能力项本轮未复核）；
+  - 按 Standard 输入/输出单价，Haiku 4.5 的 $1/$5 对比 Haiku 5.5 ≤100K 档 $0.10/$0.50，下降 **90%**；>100K 档 $0.50/$2.50 则下降 **50%**，不是统一 75%。这是单价算术，不是任务总成本降幅 **[一手价表 + 算术]**；[官方模型页](https://platform.claude.com/docs/en/models/haiku-5-5/overview)确认 1M 上下文；[公告](https://www.anthropic.com/claude-haiku-5-5)的 72.4% 是 OSWorld 2.1 离线子集的厂商报告，不能直接当作本项目桌面任务成功率。若据此评估自建 computer-use Agent，先核第 1 节的接口迁移条件；细节见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[一手；研究：采用边界，2026-10-16（UTC+8），未实测]**；
   - 同日 Sonnet 5.5 的缓存读取价格减半；
   - 订阅用户开始**每月附带 API 额度**：Max 5x 100 美元、Max 20x 200 美元、Team 最多 500 美元（团队共享）；须领取且只覆盖合资格运行入口，不能抵所有 Code 用量，见 [18 成本治理](18-team-adoption.md#5-成本治理)（2026-10-15 补核）。
 - **Mistral Large 4**（2026-10-06，公开预览）**[一手：Mistral 博客和文档]**：1.05T 总参数、52B 激活的 MoE，原生多模态，1M 上下文；**月底发布权重**；在欧洲自有数据中心训练。官方称在开源权重模型中达到领先、在视觉定位上超过闭源前沿模型。HN 上 Simon Willison 实测认为这是“Mistral 至今最好的模型”，也有人认为进步慢于中美实验室 **[社区]**。
