@@ -279,6 +279,126 @@ B.16 的10个Python任务用隐藏pytest：单体7/10、双Agent8/10；geotext�
 
 本轮已核对原文/表格；`python3 scripts/check_offline.py` 14阶段通过、无空套件或skip，`git diff --check`通过。不包含新模型、上游项目、真实引擎或人工评审实验。下一次只有拿到同任务完整运行、整合与人工审查记录，才补这项净收益结论。
 
+
+### 架构阈值与完整候选组：不能按45%或87%硬路由
+
+主线二；改变08／09的选择：先比较可观察的任务独立性、协调成本与单体基线，不用论文百分比直接决定新任务的架构。
+新证据：作者v2.2.3的完整候选组评估、修订说明与公开CSV，本轮用Python标准库独立重算计数、选择及均值。
+核实：2026-10-15（UTC+8）；仅静态数据检查，未重拟合回归、运行模型／benchmark，不能代表当前模型或编码现场效果。
+
+**固定来源。** [论文v3](https://arxiv.org/html/2512.08296v3)发表于2026-04-08；本轮读§4.1设置、§4.3选择方法、§5局限与相关附录，未宣称通读全部。作者仓库固定提交[`8673d6a8`](https://github.com/ybkim95/agent-scaling/tree/8673d6a8d5a764a07b08e4283492380d80257223)，对应v2.2.3，提交时间2026-10-12 19:34:34 UTC。[CHANGELOG](https://github.com/ybkim95/agent-scaling/blob/8673d6a8d5a764a07b08e4283492380d80257223/CHANGELOG.md)说明：v2.1.3回归分析误纳10个样本外`gemini-3-flash-preview`配置，v2.2.0改为260行；v2.2.1另修错误放大脚本，v2.2.2仅修改评估措辞，v2.2.3仅更新复现指南。不能将脚本修复解释成重跑模型后的性能改善。**[一手：版本与作者修订]**
+
+**87%不是完整候选组的已验证可靠度。** 论文报告配置级五折交叉验证、87%最佳架构选择，但已读方法没有给出该百分比的成功数、明确分母及逐次选择表。[发布回归源码](https://github.com/ybkim95/agent-scaling/blob/8673d6a8d5a764a07b08e4283492380d80257223/scripts/reproduce_published_regression.py#L44-L68)把同组5种架构散入不同折，断言52组分布于2–5折、无整组留出；这是源码定义／断言，本轮未执行该回归。新增[选择协议](https://github.com/ybkim95/agent-scaling/blob/8673d6a8d5a764a07b08e4283492380d80257223/scripts/architecture_selection_eval.py#L18-L60)则每次留出一个完整“基准×模型”组，用其余255行拟合。这是不同的评价问题，不能写成“同一指标从87%复现下降到44%”。**[研究：原文与协议边界]**
+
+从公开候选预测分数重新取最大值，并按原始表现计命中；所有选择与作者decision表一致。原始数据为260行、52组，每组5架构（4基准各9组，2编码基准各8组）：
+
+| 规则／条件 | 命中观测最优（并列算成功） | 平均regret，百分点 |
+|---|---:|---:|
+| Eq1，Intelligence Index，单体选项使用已测表现 | 23/52（44.2%） | 5.35 |
+| Eq1，Intelligence Index，5选项均预测 | 22/52（42.3%） | 7.17 |
+| Eq1，单体baseline特征改为训练集基准均值、5选项均预测 | 22/52（42.3%） | 5.62 |
+| 同基准其余模型的架构均值规则 | 27/52（51.9%） | 4.89 |
+| 恒选单体 | 22/52（42.3%） | 9.60 |
+
+regret是该组观测最佳表现减所选架构表现，不是金额。后两规则也由260行直接独立计算。41组唯一最佳、8组两者并列、3组三者并列；允许并列命中时随机五选一期望为25.38%，不能拿20%直接比较。首行不计并列时为19/52。**[研究：本仓库静态复算；预测分数仍由作者提供，未独立拟合]**
+
+**保留反证与条件。** 作者[脚本断言](https://github.com/ybkim95/agent-scaling/blob/8673d6a8d5a764a07b08e4283492380d80257223/scripts/architecture_selection_eval.py#L564-L600)的ACI替代规格、已测单体条件为31/52（59.6%），优于其Intelligence Index版本；本轮未重拟合，不能只挑44.2%称整个方法无效。新协议逐折计算标准化、ACI及单体行的基准均值；四多体选项仍使用目标组已测单体表现，这是明示的决策前提，不能直接称违规泄漏。架构级协调汇总仍固定使用发表的轨迹统计，未逐折重估；作者明确称条件式评估，不能改写成完全独立于留出测量。均值规则不使用目标组结果来选架构，但需要同一基准其他模型的完整观测，51.9%不是可直接部署到未知任务的策略，也未证明显著优于Eq1。**[一手：源码；研究：解释]**
+
+**45%只是一条受端点影响的描述。** [阈值脚本](https://github.com/ybkim95/agent-scaling/blob/8673d6a8d5a764a07b08e4283492380d80257223/scripts/threshold_sign_match.py#L9-L19)比较单体与四种多体中事后最佳，单体≥45%时预测多体收益为负。独立复算：编码16组为15/16（93.75%）；改用四多体均值则13/16（81.25%）。41%、43%、45%的结果完全相同，无法确认45%是唯一边界；全部52组在45%仅39/52（75%），20%–80%的1个百分点网格中41%最高、40/52，也只是同数据描述。反例是SWE-bench的GPT-5：单体65%，最佳多体70%。16组来自原260配置，不是独立外部验证；每编码基准仅20任务，跨模型重用，不能等同16次独立任务试验。最佳多体收益的符号也不告诉读者该选哪种多体。**[研究：静态复算与外推边界]**
+
+**样本与预算不可混写。** v3正文SWE单体均值0.522、Terminal单体0.344，与公开逐实例数据包含第9模型`gemini-3-flash-preview`的均值一致；260行SourceData排除它后分别为0.4875、0.3125。Terminal Independent相对单体从9模型的约+1.6%变成8模型的+6.0%（0.33125对0.3125），所以不能概括成“编码子集平均不增益”。归一化Sonnet 4.5名称后，80个编码配置均与1600条逐实例结果平均值吻合；这支持数据内部对应，不证明小差异可泛化。§4.1明确匹配最大总迭代数，不能等同token、金额或端到端交付预算；正文其他位置的预算措辞不补足同成本证据。**[研究：原文核对与独立复算]**
+
+**复算输入。** 以下文件均取自上述固定提交；SHA-256：
+
+| 文件 | SHA-256 |
+|---|---|
+| `data/Source_Data_Fig1_Fig2.csv` | `402a9fea7430bf4dbf1645c8bafd7850811ffb5bb331568e8088d85c4dc9ffd9` |
+| `data/architecture_selection_decisions.csv` | `3582b51e81cb2a993452050bacb3db169340aa6fe54d10cc9b43c5658bd52fb0` |
+| `data/architecture_selection_decisions_option_scores.csv` | `fc9d7be99eb59fd73196f162c5176152173c0e472f2899e370e8d598869ed231` |
+| `scripts/per_instance_results_swe_tb.csv` | `c7bde9eac1f28a29397c10ab10e29f0962595e9dd45f17aedc2d309289b12007` |
+
+在下载的固定源码根目录运行下列程序，只读CSV；不执行上游代码，不安装依赖：
+
+```python
+import csv
+from collections import defaultdict, Counter
+from statistics import mean
+
+
+def read(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+source = read("data/Source_Data_Fig1_Fig2.csv")
+options = read("data/architecture_selection_decisions_option_scores.csv")
+instances = read("scripts/per_instance_results_swe_tb.csv")
+sets, scores = defaultdict(dict), defaultdict(list)
+for r in source:
+    sets[r["dataset"], r["model"]][r["architecture"]] = float(r["performance"])
+for r in options:
+    scores[r["choice_set"]].append(r)
+assert len(source) == 260 and len(sets) == len(scores) == 52
+assert all(len(v) == 5 for v in sets.values())
+sa = "single-agent"
+ties = Counter(sum(abs(x - max(v.values())) < 1e-12 for x in v.values())
+               for v in sets.values())
+print("ties", ties, "random", sum(k * n for k, n in ties.items()) / 260)
+for rule in ("eq1_measured_sa", "eq1_all_predicted", "eq1_benchmark_mean_baseline"):
+    regrets = []
+    for rows in scores.values():
+        pick = max(rows, key=lambda r: float(r["score_" + rule]))
+        regrets.append(max(float(r["performance"]) for r in rows)
+                       - float(pick["performance"]))
+    print(rule, sum(abs(x) < 1e-9 for x in regrets), mean(regrets))
+for rule in ("benchmark", "single"):
+    regrets = []
+    for (d, m), v in sets.items():
+        pick = sa
+        if rule == "benchmark":
+            means = {a: mean(w[a] for (dd, mm), w in sets.items()
+                             if dd == d and mm != m) for a in v}
+            top = sorted(a for a, x in means.items() if abs(x - max(means.values())) < 1e-12)
+            pick = ([a for a in top if a != sa] or top)[0]
+        regrets.append(max(v.values()) - v[pick])
+    print(rule, sum(abs(x) < 1e-12 for x in regrets), mean(regrets))
+coding = {k: v for k, v in sets.items()
+          if k[0] in ("swe-bench-verified", "terminal-bench")}
+for t in (.40, .41, .43, .45):
+    for label, groups in (("coding", coding), ("all", sets)):
+        for endpoint in (max, mean):
+            n = sum(((endpoint([x for a, x in v.items() if a != sa]) - v[sa]) < -1e-12)
+                    == (v[sa] >= t) for v in groups.values())
+            print(t, label, endpoint.__name__, n, len(groups))
+grid = {t / 100: sum(((max(x for a, x in v.items() if a != sa) - v[sa]) < -1e-12)
+                    == (v[sa] >= t / 100) for v in sets.values()) for t in range(20, 81)}
+print("grid best", max(grid.values()), [t for t, n in grid.items() if n == max(grid.values())])
+aliases = {"swe-bench-verified": "swebench-verified", "terminal-bench": "terminalbench"}
+for (d, m), v in coding.items():
+    model = "claude-sonnet-4-5-20250929" if m == "claude-sonnet-4-5" else m
+    for a, expected in v.items():
+        rows = [r for r in instances if r["dataset"] == aliases[d]
+                and r["model"] == model and r["agent_type"] == a]
+        assert len(rows) == 20 and abs(mean(int(r["resolved"]) for r in rows) - expected) < 1e-12
+for d in ("swebench-verified", "terminalbench"):
+    for a in (sa, "multi-agent-independent"):
+        rows = [r for r in instances if r["dataset"] == d and r["agent_type"] == a]
+        print(d, a, "nine", mean(int(r["resolved"]) for r in rows),
+              "eight", mean(int(r["resolved"]) for r in rows
+                            if r["model"] != "gemini-3-flash-preview"))
+```
+
+**采用与撤回。** 先用可独立验收的工作、共享状态和协调成本决定是否值得比较，再以自己的任务与同一验收判据检验单体和候选架构；未知任务的硬路由保持暂缓。若将来有候选组完整留出、输入在决策时可得、预算可比且覆盖目标任务的外部验证，再重估是否采用预测路由。**[经验：建议]**
+
+### 人数配额与角色示例的适用范围
+
+核实：2026-10-15（UTC+8）。主线二；撤回08 §8的通用人数套餐、§9的固定角色照搬。新证据是原作者用例与配额的任务范围核对，不是新增模型实验。
+
+- [Anthropic Research 原文](https://www.anthropic.com/engineering/multi-agent-research-system)“Scale effort to query complexity”把人数／调用数作为搜索系统提示启发式；同文指出共享上下文、依赖多的任务不适合，编码通常比研究更少真正可并行的部分。故保留明确预算与停止条件，不把历史搜索配额推广为编码推荐。**[一手：作者范围；研究：外推边界]**
+- [Teams 用例](https://code.claude.com/docs/en/agent-teams#use-case-examples)分别举三人分视角评审、五人竞争假设的提示；[人数建议](https://code.claude.com/docs/en/agent-teams#choose-an-appropriate-team-size)同时要求有实际同时工作收益才扩量。页面未给这两种角色配置的同任务同预算对照；上述P1也未证明固定人数普遍最优。保留按风险分视角、主动找反证的机制，撤掉固定人数与“值得照搬”的推荐强度。**[一手：文档；研究：证据边界]**
+
+范围：仅原文静读；未重验其他第三方工具状态、云端产品或历史效果数字。未运行模型、客户端或上游实验。
+
 ## 来源
 
 - 实验仓库：[hukkin/tomli](https://github.com/hukkin/tomli)（MIT）
@@ -373,3 +493,15 @@ git version 2.47.3
 ### 验证与剩余缺口
 
 已交叉读取现行官方文档、0.162.1固定配置/角色应用路径及对应测试定义，并保留文档已更新而历史issue仍open的反证。没有运行上游测试、客户端、模型或付费请求；源码证明上述路径，不证明宿主全部部署、审批交互或实际净收益。08其他旧研究数字、第三方维护状态与云端产品项未在本单元全文重核。本仓完整离线入口首轮14阶段通过（非空套件、无skip），`git diff --check`通过；这些检查不验证上游动态事实。
+
+
+### 并行旧研究与编排入口：全文就绪补核
+
+2026-10-15（UTC+8），主线二／三：补齐会改变任务拆分和工具保留选择的剩余边界，不重做前述扩展研究公开数据复算，也不运行模型／客户端。
+
+- [PR 冲突论文 v2 §4.2／§5.3／§7](https://arxiv.org/html/2607.04697v2)：747 为抽样对数，716 可评估；119/601 与 48/115 来自 2024-12—2025-07 同时开放的历史 PR。并发代理、文本合并结果与非受控任务不支持推断同厂／异厂组合的因果优劣。正文保分母与选择限制，不再用醒目百分比暗示搭配原则。[研究]
+- [CodeCRDT v1 §4.3／§5.2／§5.4](https://arxiv.org/html/2510.18893v1)：600 次来自六项 TypeScript／React 任务、两模式各 50 次；语义冲突只抽查 60 次，5–10% 是初步估计，作者保留全面测量缺口。时间从提示提交到模型评估结束，质量主要由模型评分；正文删掉易误读为 600 次完整语义验收的比例，不以该计时替代交付成本。[研究]
+- [Vibe Kanban 2026-04-10 公告](https://www.vibekanban.com/blog/shutdown)：公司关闭，原远程服务安排 30 天后撤下，本地工作区继续可用，项目转开源社区维护。撤回“整个项目停止维护”的表述；公告意图不证明社区现在活跃或能持续维护，已有本地使用者仍应按实际风险决定，而非被迫迁移。[一手／研究]
+- [Conductor 官网](https://www.conductor.build/)与[Cloud FAQ](https://www.conductor.build/docs/cloud/faq)：本地 worktree 与 Cloud microVM 属不同运行路径，当前列桌面、iOS、API 入口。选择前分别核权限、环境及套餐；本轮只读厂商契约，不作实际隔离验证，不自动推荐把代码移到云端。[一手／研究]
+
+独立全页审阅此前已确认任务依赖、完整成本、角色／权限、恢复及相关入口条件；本段只收口上述剩余事实。全文就绪不等于所有产品试用、模型净收益或 hosted CI 已通过。

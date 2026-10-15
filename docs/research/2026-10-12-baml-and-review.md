@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加；三，连续修改仍然可靠
 改变的建议：按不可猜的契约与可观察偏好选择短规格、测试或样品；只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回；先确认真实入口、计费和成功报告，再考虑 CI 门槛。[研究]
-证据摘要：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
+证据摘要：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约、SO 调查分母、模型客户引言、Cursor 当前计费、GitClear 公开图页的指标口径，以及 Intercom 原文、第三方集成固定来源与配置诊断／插件评估范围补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
 
 # 实现决策与评审：让原需求和运行反馈纠正计划
 
@@ -268,3 +268,84 @@ Anthropic 的 [Finding your unknowns](https://claude.com/resources/articles/a-fi
 09 本轮维持 **L2**：这次补齐主要采用入口，但全页仍有未在本轮交叉核验的调查数字、模型效果转述、第三方服务与配置审计命令；正文头部保留历史核实范围。下一步应核对或删去仍影响决策的这些条目，不重复 CRBugBench、厂商相关性或再造评审评测平台。未实测本身不是 L3 的否决条件，缺的是全页关键事实的一致、可追溯核对。**[研究：成熟度判断]**
 
 **验证记录。** 独立 reviewer 以新上下文核对这两文件的 diff、官方原文和固定 Action 源码，未发现会改变采用选择的事实问题，认可维持 L2。完整 `python3 scripts/check_offline.py` 14 阶段及 `git diff --check` 通过；这些只验证本仓离线套件和补丁，不证明评审服务或模型效果。**[经验：执行记录]**
+
+
+## 调查、模型转述与第三方服务的采用边界
+
+核实：2026-10-14（UTC）。主线二／三；只改 09 的三处采用依据，不重做入口与失败契约，也不提升 L2。公开原页阅读，不含模型、客户端或服务实验。**[研究：范围]**
+
+- **调查分母与反证。** [SO 2025 原题](https://survey.stackoverflow.co/2025/ai)为多选题，31,476 人作答（全调查的64.2%），66%／45%分别表示遇到近似正确方案／调试更费时。[方法](https://survey.stackoverflow.co/2025/methodology)写明2025-05-29至06-23收集，主要经自有渠道招募，活跃用户更易入样。故删除“好到能合并”的添加解释；既不能从受访者比例推成代码缺陷比例，也不能预测2026模型效果。保留按实际行为验证的建议，不据此计算返工预算。**[一手：问卷、方法；研究：解释]**
+- **模型优势的归属。** [Opus 5.5 发布页](https://www.anthropic.com/claude-opus-5-5)把低 effort 检出已知缺陷72%、Opus 5高 effort 56%及误报更少，列为Deloitte CIO Carl Bennett的客户引言；未在此处给出任务数、缺陷数、抽样、误报分母及可复查产物。这是正面线索，不能直接选定默认 effort，亦不能与独立评审研究合并成同一个对照。正文撤下具体优势和未在此页找到的逐字提示，沿用已有“给需求、位置、可证明失败”的建议。**[一手：厂商刊载客户自述；研究：边界]**
+- **当前服务契约优先于旧价格新闻。** [Bugbot 当前文档](https://cursor.com/docs/bugbot#pricing)说明用量计费并保留旧seat方案入口，Teams从预付额度或旧Teams按需支出扣除；[当前价格页](https://cursor.com/pricing)按方案列可用功能，未给可用于所有PR的固定单价。[5月公告](https://cursor.com/blog/may-2026-bugbot-changes)中的1–1.5美元是当时均价，老客户在6月8日后下一次续费才转制；[6月更新](https://cursor.com/blog/bugbot-updates-june-2026)又报告成本下降，并已列Security Review入口。因此撤回当前固定按次报价与统一9月新增的描述，不用22%降幅推算新单价。当前[Security Agents](https://cursor.com/docs/security-agents)区分PR评审与存量扫描，按团队用量扣费；[Rollouts](https://cursor.com/docs/rollouts)监控部署，不能凭同一品牌或合并介绍当评审替代。删除未给原帖的“社区不满”，不作价值判断。**[一手：官方文档／历史公告；研究：采用边界]**
+
+**该轮剩余盘点（后续补核见下节及文末）。** 当时尚未核实 GitClear 分母、Anthropic 自评、Intercom、第三方插件归属及配置审计命令，因此未把三项局部修订写成全页 L3。原生本地优先、按风险增加评审及无净增益时撤回的核心建议不变。**[研究：范围与成熟度]**
+
+**验证记录。** 全新上下文独立 reviewer 交叉核对上述原页与两文件 diff，未发现会改变采用选择的事实问题，认可维持L2。实际运行 `python3 scripts/check_offline.py`，14阶段全部通过（非空套件、无skip）；`git diff --check`通过。仅验证本仓离线套件和补丁，不代表模型、客户端或托管服务已验证。
+
+
+## GitClear维护信号的分母与采用边界
+
+核实：2026-10-14（UTC）。主线三；改变 09 §1：将厂商维护代理信号用于定向抽检，不据此认定默认 AI 工作流导致维护退化，亦不设旧代码改动或重构配额。完整 PDF 未取得，以下是公开原页与原报告图页核对，不宣称完整方法已经审完。**[研究：范围与采用判断]**
+
+### 可核查的一手材料与访问范围
+
+[官方落地页](https://www.gitclear.com/the_ai_code_quality_maintainability_gap)公开摘要、图页与下载表单；[报告封面](https://asset.gitclear.com/assets/pages/maintainability-gap-cover-c12f3032b5fc3cbd106b35a69dcff15c2ba0e31daf7c1e7c2d05c36d565effae.png)署 William Harding、2026-06、v2026.6.0，GitClear 与 GitKraken 赞助。作者的[9月发布说明](https://www.gitclear.com/blog/annual_ai_code_quality_research_2026_diff_digest_git_ai_diff_viewer)内嵌原文说明下载需登录或验证邮箱。本轮未提交邮箱或注册账号，公开搜索未取得可核验完整 PDF。官网公开[指标与方法说明](https://www.gitclear.com/industry_stats/ai_code_quality_signal_graphs)可读取 HTML；网页提取工具一度返回 403，普通公开请求可读，同属官方的[GitKraken 子域页面](https://gitkraken.gitclear.com/industry_stats/ai_code_quality_signal_graphs)亦可读。两页是动态数据，不能将其当前总量当作六月报告样本。**[一手；研究：访问边界]**
+
+### 五项会改变采用的发现
+
+1. **重复指标单位冲突，不能拿绝对值设门槛。** 落地页正文把 40.3→73.0 写成每百万变更行；其直接展示的[原报告第8页](https://asset.gitclear.com/assets/pages/maintainability-gap-block-duplication-10c7322d192693dad8b141b15740d29ebd77147127544f51bba38a0662327329.png)图轴及图注却是每千变更行中的重复行，年份为 2023→2026 YTD。相对增幅约81%不受这处单位差异影响，但不是缺陷率，也不能默认为重复块数量。正文保留厂商报告的相对信号并明示冲突，不擅自裁定哪个版本正确。**[一手：正文与原图；研究：解释]**
+2. **移动比例不是全部重构量。** [第11页](https://asset.gitclear.com/assets/pages/maintainability-gap-refactor-vs-paste-66d0411f642c9c302a181f26f32a300ebe83e677ad1a6d1168bd8ebaf9ccd78f.png)图示变更行中移动占比12.7%→3.8%，正文取整为13%；“−70%”是两占比的相对变化，不能换成重构次数、工时或绝对量。该图2026复制粘贴15.7%，除以3.8约4.1，并不支持正文“约5倍”的精确比较。撤下该倍数，不据此预留固定重构百分比。**[一手：原图；研究：计算与边界]**
+3. **旧代码更新占比下降不等于绝对维护量减少。** [第13页](https://asset.gitclear.com/assets/pages/maintainability-gap-legacy-code-b6aa26e7eaa4cfa69dfc5b4504d7569c87110ae5d4c64bfc76ac11daee8c9d37.png)写的是更新或删除超过十二个月未触碰代码的变更占比，2023为1.71%、2026 YTD为0.46%；旁列各年检查行规模10m、12m、46m、58m，不能当同等规模或固定仓库面板。落地页导语写“vs 2022”，正文和图则指2023。即使占比核对无误，分母增长、样本更替、仓库年龄与需求类型都可能改变解释；这只是待控制因素，不声称已经证实哪一种造成变化。**[一手：原图；研究：推论边界]**
+4. **防御性语法与短期删改不是已确认坏代码。** 第8页将 rescue/catch、safe-navigation 和 stubbed methods 等构造作为错误掩盖信号；当前官方指标页又把 null checks、mock guards 等列作防御性惯用法，说明更多通常代表更谨慎。当前页把 churn 定义为两周内被改写或移除的已写行占比。当前定义不保证与六月每项历史计算完全一致，却足以说明不能跳过具体行为核验，把构造密度直接译为已证实吞错、把 churn 全译成缺陷返工。应检查错误是否被掩盖，而非要求减少 catch 或空值检查。**[一手：原图与当前定义；研究：采用边界]**
+5. **公开材料支持预警，不识别工作流因果。** 报告封面总量为6.23亿 changes，不能转述为同数提交、开发者或独立观察。已读部分呈现跨年代理信号；当前指标页说明按模型指纹分组，基线为人类或未归因提交，不等于证实未用AI的对照组。仓库构成、归因阈值和验证细节仍指向完整报告；本轮无法核实其控制语言、任务、仓库年龄、使用者选择等混杂的程度。这不证明报告为假，也不能反向声称完整报告完全没有控制。**[一手：公开方法；研究：因果边界]**
+
+**仍成立与撤回条件。** 重复实现可能增加同步修改负担，代理信号可帮助选择抽检对象；某段重复确实独立演化、异常被有意处理或旧代码无修改需求时，应接受具体解释，不能为了让统计好看强制改动。是否增设评审层仍按有效新增发现和成本决定；上述趋势没有检验额外 reviewer 的净收益。09 维持 L2，完整方法与其余效果转述仍未完成页级核查。**[经验：采用判断；研究：证据缺口]**
+
+**验证记录。** 全新上下文独立 reviewer 核对两文件 diff、公开原图、当前官方定义与算术，未发现会改变采用或需修正的事实错误，认可保留历史口径不确定及完整 PDF 未取得的边界。实际执行 `python3 scripts/check_offline.py`，14阶段通过（非空套件、无skip）；`git diff --check`通过。仅验证本仓离线检查和补丁，不代表模型效果、维护成本或报告完整方法获验证。
+
+
+## 配置诊断、插件评估与第三方集成的范围
+
+核实：2026-10-14（UTC）。主线二／三；撤回“收录插件或运行诊断就值得加一层”的隐含选择。只读官方文档及固定公开源码，未安装、运行模型或连接服务。**[研究：范围]**
+
+- **组织结果不归给托管产品。** [Intercom 2026-04-21 原文](https://www.intercom.com/blog/ai-is-approving-our-pull-requests-heres-how-we-made-it-safe)在两个主代码库报告超过19%自动批准；35%停机下降放在九个月整体研发转型、部署翻倍的背景。自建子Agent审批有仓库指导，拒绝大／复杂／宽范围PR，工程师可改请人审并负责上线监控回滚。其百余PR试点、后续497个自主PR不是随机分配证明；原文没有足够资料分离选样、变更大小和其他流程变化。故不能作为托管Claude Code Review的效果或默认自动批准依据。**[一手：使用方自述；研究：边界]**
+- **自评反例不推出固定互评。** Anthropic 3月复盘关于主观设计自评偏宽松的原句成立，但同文也明确新模型能力范围内evaluator可能是额外负担；沿用[已有原文核对](2026-10-12-long-task-evidence.md#3-历史-harness-自己已经撤去哪些环节)，不另复制实验数字。采用只看具体漏项和净收益，不要求按案例复制轮次。**[一手：作者实验自述；研究：选择]**
+- **诊断不是行为评估。** [Commands](https://code.claude.com/docs/en/commands)及[Skills](https://code.claude.com/docs/en/skills#check-your-setup-with-doctor)确认 `/doctor prompt-audit` 从v2.1.283可用，是模型驱动的过时／冲突指令审计，不能因另有 `/claude-api prompt-audit` 就认定它不存在。`/skill-doctor` 从v2.1.252可用，依赖feature-flag fetching，报告对象是当前会话中的skills，排除bundled及enterprise；这不限定调用历史的统计窗口；[Remote Control不支持，须在宿主终端使用](https://code.claude.com/docs/en/skills#find-unused-skills)。[环境文档](https://code.claude.com/docs/en/env-vars#features-that-need-feature-flag-fetching)说明第三方provider、gateway及禁用相关流量的会话通常不取flags。缺此命令时可直接查加载内容，不要求为了诊断更改隐私设置；调用少不足以证明无用。**[一手：动态契约；研究：选择]**
+- **插件行为评估有明确宿主。** [Plugin evals](https://code.claude.com/docs/en/plugin-evals)适用于Claude Code插件／skills-directory插件，要求v2.1.269+；它使用正常会话的认证／provider，运行与裁判都计入用量。默认有／无插件各三次，不是三次就足够证明收益。隔离运行不加载用户／项目CLAUDE.md、其他插件或配置，即使scaffold写入也不加载；这让插件增量可测，却不能直接测整个真实配置组合。语法/schema用`plugin validate`，会话内skill-creator的格式也不互通。具备条件的订阅账户直接从shell运行可能发布私有artifact，`--no-publish`保留本地；hooks／真实MCP代码不受agent隔离保护，评估通过也不证明插件安全。这些是选工具及设预算的边界，不意味着该工具无用。**[一手：官方契约，未运行]**
+- **市场管理者不等于集成作者。** Anthropic市场固定于[`c2bdb427`](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/.claude-plugin/marketplace.json)：CodeRabbit指向[`3e8763d2`](https://github.com/coderabbitai/skills/blob/3e8763d24d543b48615b82535d02288de3ddae40/README.md)的CLI集成，Greptile指向[`6b725af2`](https://github.com/greptileai/claude-plugin/blob/6b725af2636072cab79e0a5426f6a960b0fd29ef/plugins/greptile/README.md)的MCP及随插件发布的CLI，Qodo指向[`866d301d`](https://github.com/qodo-ai/qodo-skills/blob/866d301dfbec39d5bb18bde72ac0dc770cc759a1/README.md)的skills包且需另装CLI。收录证明存在可接入路径，不证明评审能力、账户可用或净收益。**[一手：固定市场及发布方源码]**
+- **安装可能改变工作流。** 同一Qodo固定版本的[`qodo-review/SKILL.md`](https://github.com/qodo-ai/qodo-skills/blob/866d301dfbec39d5bb18bde72ac0dc770cc759a1/packages/qodo/skills/qodo-review/SKILL.md)包含编码checkpoint与最终评审指导，并说明发送diff及提供的会话context至服务；默认auto可选择deep，不是花费上限。固定版本还声明`qodo review`处于closed preview，未加入的组织会被拒绝；这不是重试可解决的故障。它也禁止对无进展重复发现无限购买评审。不是本仓实际触发观测，但足以支持接入前读触发、外发及费用契约，而不是为已有原生评审再默认加插件。**[一手：固定指令，未运行；研究：采用边界]**
+
+**页级剩余判断。** 本轮补核了此前明确留下的四组事实，不重复已核调查与评审入口，也不自动升级L3。GitClear完整报告、厂商独立效果与本仓模型实测仍未取得；这些不应靠更多引用伪装完成，正文已限制其推论。全页范围还须由独立审阅确认入口一致性及是否仍有影响选择的遗漏；固定风险分层、无需额外工具即可起步的核心建议保持不变。**[研究：成熟度范围]**
+
+**验证记录。** 全新上下文 reviewer 独立读取官方文档及固定源码，指出 Qodo closed preview 的资格门槛遗漏；补明后复核无剩余事实或采用问题。完整 `python3 scripts/check_offline.py` 14阶段通过（非空、无skip），`git diff --check`通过；仅验证本仓离线套件和补丁，不代表模型、插件或托管服务效果已验证。**[经验：执行与复核]**
+
+
+## 安全插件：从提醒到自动模型评审
+
+核实：2026-10-14（UTC）。主线二；改变09中将 security-guidance 当作“编辑时提示9类风险”的采用判断。新增证据是官方市场固定实现及真实失败／修复链；只读下载源码，没有安装、调用模型或运行插件。**[研究：范围]**
+
+**来源身份。** 官方市场 [`c2bdb427`](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/.claude-plugin/marketplace.json) 的 `security-guidance` 指向该仓库 `./plugins/security-guidance`，版本2.0.13；下述文件均固定同一SHA。`anthropics/claude-code` 另有同名目录，但不是该市场条目的实际源，不能把两个仓库的默认模型与安装逻辑混用。**[一手：配置与源码]**
+
+**会改变选择的机制。**
+
+- [`hooks.json`](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/security-guidance/hooks/hooks.json)在编辑后注入模式提示，Stop及Bash commit／push匹配时安排后台评审；[`security_reminder_hook.py`](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/security-guidance/hooks/security_reminder_hook.py)默认开启模式、模型、Stop与commit层，并检查凭据及具体运行条件。因此“默认开启”不是每次都执行成功。`ENABLE_CODE_SECURITY_REVIEW=0`关闭Stop与commit／push模型层；`ENABLE_STOP_REVIEW=0`仅关闭Stop层，不是全部模型调用开关。**[一手：配置和调用路径]**
+- 同一hooks文件独立注册SessionStart的[`ensure_agent_sdk.py`](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/security-guidance/hooks/ensure_agent_sdk.py)：SDK不可用时尝试建立持久venv并`pip install claude-agent-sdk`，特定失败下可改用`pip --target`；继承pip registry设置，未固定SDK版本。这个bootstrap没有读取模型层开关或`SECURITY_GUIDANCE_DISABLE`，所以“关闭模型评审／总开关”不能当作“不会准备依赖”的保证。这里仅证明代码可走到该路径，不声称本机发生安装；不接受这一副作用时不默认安装该插件。**[一手：独立入口与分支阅读；研究：选择]**
+- [`llm.py`](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/security-guidance/hooks/llm.py) 的 `_anthropic_base_url()`默认使用Anthropic端点，支持`ANTHROPIC_BASE_URL`网关；`_call_claude()`在Bedrock／Vertex／Foundry／Mantle等provider标志下转SDK／子CLI，继承provider环境。agentic reviewer允许Read／Grep／Glob查相关代码，`setting_sources=[]`且不启用bypassPermissions。故新增的是后台模型调用和输入范围，不能推断一定新传到一个额外第三方平台，也不能由主会话能调用模型就认定全部评审路径可用。**[一手：实现；研究：范围]**
+- [`README`](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/security-guidance/README.md)说明diff／相关代码发送给配置的模型端点；`llm.py`实际直连路径通过该端点的模型列表选最新Opus，失败时使用固定fallback，SDK路径使用CLI的`opus`别名。升级可改变模型与成本，固定模型需分别考虑`SECURITY_REVIEW_MODEL`及`SG_AGENTIC_MODEL`。组织安全指导拼入diff分析，但agentic路径没有同一`guidance_block()`调用，不能把一处规则文件当所有评审层共同的强制规则。**[一手：说明与实现交叉核对]**
+
+**真实反例与修复范围。** [#2071](https://github.com/anthropics/claude-plugins-official/issues/2071)的作者报告2.0.0在其macOS Python3.9环境下模式提醒可用、SDK评审却未运行；另建3.12 venv仍被3.9宿主导入失败，暴露“bootstrap健康”与实际消费者不一致。该issue已由[#2073](https://github.com/anthropics/claude-plugins-official/pull/2073)关闭，固定2.0.13的[`sg-python.sh`](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/security-guidance/hooks/sg-python.sh)优先兼容SDK的Python3.10+，bootstrap也检查宿主版本。它支持“提醒存在不等于深审可用”的反证，不支持声称当前版本仍普遍失效；README的Python3.8+前提也不足以单独证明SDK层可用。**[社区：作者失败报告；一手：修复状态及固定源码；研究：边界]**
+
+**采用与撤回。** 原生定向安全评审足够时，不为了更多提示增加持续插件。需要持续检查时先辨模式、Stop、commit／push层，确认依赖安装政策、实际数据路由与模型预算；只要模型层未成功运行、重复发现挤占核查或成本不合适，就关闭相应层或撤回插件。既有SAST／依赖扫描与风险人审保留；本轮不声称插件净收益、召回率或修复效果已经验证。**[研究：采用判断]**
+
+**限定独立复核。** 全新上下文reviewer重新读取上述固定市场／实现及失败修复链，核对独立bootstrap、provider路由、默认开关与正文页头，无剩余事实或采用问题。新增本地章节目标存在，`git diff --check`通过；完整离线验收由整合单元串行执行，结果见TASKS。未安装或执行上游插件，不声称真实运行或安全收益。**[经验：验证范围]**
+
+
+## 评审窗口与输入历史的区别
+
+主线三；核实：2026-10-15 UTC。改变的建议：撤回 Claude 入口中将内置 `/code-review` 视为“新鲜上下文”的说法，只在需要隔离实现历史时选择干净会话或非 fork reviewer。新增证据为两份当前官方客户端文档的交叉核对，未运行客户端或模型。**[研究：范围]**
+
+[Code Review](https://code.claude.com/docs/en/code-review#review-a-diff-locally) 的普通命令步骤先说明后台子 Agent 有独立窗口，随后明确终端使用 forked subagent；[Subagents 的 fork 对照](https://code.claude.com/docs/en/sub-agents#how-forks-differ-from-other-subagents)则明确 fork 继承完整会话历史、系统提示和工具。这里不是要求用户另传 `--fork` 才成立的可选评审方式。独立窗口说明后续评审输出不充满主会话，不证明起始输入未含实现推理。**[一手：当前客户端文档]**
+
+**范围及反例。** [评审前台例外](https://code.claude.com/docs/en/code-review#run-in-the-foreground)包括已有评审运行时再次启动、`-p`／SDK 和禁用后台任务；该页标记默认后台自2.1.218起。子 Agent 页另将一般交互 fork mode 默认标记为2.1.232起，不能把它当作 `/code-review` fork 机制首次发布版本。本文只确认读取日的默认终端契约，不推定所有宿主、历史版本或特殊配置等价。同一实现会话内启动默认评审是“窗口独立、历史继承”的具体反例；它可以利用已有背景，也可能继承原假设，但文档本身不证明实际误报率或独立 reviewer 的净收益。**[一手；研究：推论边界]**
+
+**采用与撤回。** 就地复查仍可使用内置命令。只有输入独立性属于当前风险要求时，才另起干净会话或非 fork 子 Agent，并限定交接内容；不把多开一层当作必经流程。Claude 入口与09同步这一判断，未改评审模板、未重做已有权限或套餐核查。**[研究：采用判断]**

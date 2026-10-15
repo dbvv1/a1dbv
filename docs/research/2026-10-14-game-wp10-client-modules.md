@@ -595,6 +595,31 @@
 
 本轮是固定源码／官方正文静态核查，无引擎运行、存档往返或语言审校实测；案例支持表示与更新责任的选择，不证明所有系统消息都应永久保存或引入新框架。[研究]
 
+### 6. 新增语言的显示、编辑和布局不能互相代验
+
+核实：2026-10-15 UTC+8；主线三／四。新增证据为 Unity 6.3 的方向／光标契约、UE 当前 5.8 文档、RTLTMPro 固定源码及历史二改反馈、Mindustry 历史输入报告与另一作者的 poRTL 字幕实现。改变的选择是：已有原生塑形先用原生，现有 TMP 只为具体缺口试现成组件；动态混排不能靠静态倒序与单张截图验收。不重做前述字库优化、消息保存或菜单输入路由。[研究]
+
+**原生能力不等于开一个 RTL 开关。** [一手] Unity 6.3 [language-direction](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/language-direction.html)明确 RTL 属性仅提供基础反转；完整断行、换行与塑形需要 [ATG](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-advanced-text-generator.html)，后者采用 HarfBuzz、ICU 和 FreeType。启用及静态字体迁移条件沿用本节第 3 小节；不把 UI Toolkit 能力扩写成 uGUI／TMP 能力。[光标契约](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/cursor-movement.html)采用 logical movement：英阿混排时按段方向走，跨段可能跳到另一视觉位置。这与 visual movement 是不同政策，不应单凭跳转判错；编辑后实际删改了哪个逻辑字符仍须验证。
+
+[一手] UE [UMG Rich Text Block](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-rich-text-blocks-in-unreal-engine)当前显示 5.8，分别提供 shaping、text flow、Force Direction Preference 和 navigation；[ETextShapingMethod](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/SlateCore/ETextShapingMethod?lang=en-US)列 Auto／KerningOnly／FullShaping，FullShaping 用于复杂 RTL／双向字形。采用原生完整塑形与布局方向，不为普通本地化先加外部渲染器；字体资产的文化切换与任意用户文字边界仍按第 3 小节的 composite font 建议。文档没有保证自定义控件和显式导航会随方向全部正确；地图方向、玩法箭头不能仅因语言改变就一概镜像。[研究]
+
+**已有 TMP 的窄候选与反证。** [一手] 本次静读 `pnarimani/RTLTMPro@f480419bbbffed1be3c129d68cc0182afcfbcac3`（提交日期 2026-04-29）：
+
+- [README](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/README.md)声明 Arabic／Farsi／Hebrew、输入框和富文本支持，并要求字体含相应字符；同时说明 ForceFix 用于强制处理以英文开头的文本，却会影响多行英文。不能只引用功能列表，漏掉同页限定。
+- [RTLTextMeshPro.cs](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/Assets/RTLTMPro/Scripts/Runtime/RTLTextMeshPro.cs#L106-L131)保留 originalText，按 ForceFix／IsRTLInput 选择原文或处理结果；处理路径调用 FixRTL、Reverse，再赋给 TMP。这里是已有渲染器上的适配组件，不是覆盖任意语言与布局的通用排版引擎；并未运行它的输入框或测试套件。
+- [#70 原帖](https://github.com/pnarimani/RTLTMPro/issues/70)中，2021-06-01 使用者先报告 fork 可用，06-23 缩放文本区域后又报告混合文本换行问题；维护者解释当时插件缺少 TMP 内部自动断行位置。**这是历史“首次成功→布局修改后失败”链，不是当前固定提交仍有同一缺陷的证明。** 当前 README 的多行支持声明与历史混排限制不能互相抹掉，后续须测所用版本与实际内容。[一手／研究]
+
+[研究] 🧪 仅对已有 TMP 且确有目标语言缺口的页面试 RTLTMPro，先核字符串绑定是否写入正确组件、富文本／数字政策和动态布局；🧪 已采用 UI Toolkit 的项目先比较 ATG。两者均不值得仅为宣传的语言数量迁移整套菜单。RTLTMPro 固定 [MIT 许可](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/LICENSE)允许带通知复用软件；实际字体、演示资源及所接 TMP 版本另核，不把仓库许可当字体商用证明。README 指向另一维护者的 UPM 分支，本次没有验证其与固定源码的版本等价，接入时须锁定实际包。
+
+**不同作者的游戏反例只支持具体机制。**
+
+- [社区：原报告] Mindustry [#2248](https://github.com/Anuken/Mindustry/issues/2248)记录 Linux build 104 将 back 替换为波斯文字后按钮无文字；[#1943](https://github.com/Anuken/Mindustry/issues/1943)记录 Steam/release 104.10 韩文输入组合末字不可见。它们分别提示显示与输入组合的不同失败，不证明当前 Mindustry 仍坏，也不把报告中的原因猜测写成已确认根因。字体存在或菜单译文正常不能代验玩家实际输入。[研究]
+- [一手：作者说明／源码] `sigmagamma/portl@8a9cc38eee4eec3bc763bf101cc5c444d5060db1`（提交日期 2026-09-04）的 [README](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/README.md)描述 Portal 等 Source 游戏的粉丝翻译；Portal 1 右对齐路径限定 Windows 字体映射及已试的 1366×768，未测试其他尺寸。[text_tools.py](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/src/text_tools.py)调用 arabic_reshaper／bidi，并按配置字符数处理行。固定 [MIT](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/LICENSE)仅支持软件许可判断，不开放游戏资产；未安装补丁或复核实际字幕。这个受限旧游戏补救不能外推为新游戏的动态文字／可编辑输入框方案，更不推荐照搬其系统字体改动。[研究]
+
+**后续只预注册，收窄到一个会失败的真实页面。** [研究] 在已有设置／名字输入页先用原生：目标语言句子混入拉丁玩家名、数字与富文本，再缩窄窗口和放大文字；观察塑形、换行、标点／省略号、选中删除及输入组合提交，最后用手柄进入、确认、返回。第二次修改将短标签变为带变量的长说明，检查实际焦点与点击目标，不以缩小到不可读的字号换取“不溢出”。UI Toolkit 的文字方向不代验整体控件布局；UE 方向偏好也不代验显式导航。
+
+[研究] AI 可查配置、准备文本与控件回归，人或目标语言读者判断真实字号下是否可读、编辑是否可理解。原生已满足就停止加库；现成适配仍需大量逐字符串／逐宽度补丁，或关键页面不可读／不可操作，则暂缓该语言而非自建排版框架。保留原始逻辑文字及未改组件以便撤回；不把已塑形、已倒序的显示结果反写到翻译表／玩家名字。以上是静读后的采用条件，无新引擎、母语用户或目标设备实验。
+
 ## 音频并发补研：保住起音不等于保住每次提示
 
 核实：2026-10-14 UTC。主线 3；Mindustry v154 及锁定 Arc／SoLoud 的静态源码表明，04 的并发上限须拆成入口合并、同组抢占与全局竞争；提高 priority 不保证提示进入播放。[一手／研究]

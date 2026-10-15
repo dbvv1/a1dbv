@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件
-改变的建议：让真实任务决定继续、改目标或停止；改界面既保原路径，也区分辨认对象、核对输出与编辑数据；自建／复用另比必要能力和运行责任，先判替换整套系统还是补工作流的一段。[经验]
-证据摘要：公开需求→补丁→使用反馈及相关研究。含成功、负向行为和 Zotero 的预览／编辑取舍；各链覆盖不同环节，不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
+改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性。[经验]
+证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -334,3 +334,74 @@ Jamie Rumbelow 与 Henry Dashwood 的[2025 年 4 月联合复盘](https://buildw
 - 若窄补充损失必要信息、还需不断找开发者代操作，或只有补齐整条链才有用，撤回当前切分，重新比较范围；不一律继续加功能，也不一律缩小。**[经验]**
 
 实际验证：读两组创始人原文／访谈、首发评论与固定 JS 源码；未运行该库、外部模型或任何用户业务。Segment 的旧《From Show HN to Series D》及维护博文直接访问重定向到 Twilio 分类页，本轮只见检索缓存，不用于证明持续 API 流量或后续修补；GitHub 未认证 issues API 受速率限制，未据此宣称已穷尽早期用户记录。两案例各支持不同机制，不能合成为“局部补充一定更成功”的效果结论。
+
+## LocalSend：省掉完成点击后，为何收窄自动结束
+
+核实：2026-10-15（UTC+8）。主线一；改变 15 §10 的一项选择：减少操作不等于无条件自动结束；失败时若仍需恢复，应收窄自动化，而非只补一个重试控件。以下是历史用户反馈与固定实现，不是 AI 效果实验。
+
+### 原需求、发布后禁用与再次修改
+
+1. **省点击也要解除下一次任务的阻塞。** [#923](https://github.com/localsend/localsend/issues/923)转引 mensa84 的请求：成功传输后自动关闭接收对话框，少点一次。arnabs542 [补充实际困扰](https://github.com/localsend/localsend/issues/923#issuecomment-1826376539)：忘记关闭后，再发文件会提示接收器忙。[首版固定接收器](https://github.com/localsend/localsend/blob/2acfc07159b75fb6c0e5c86c2cd77b61543877d2/app/lib/provider/network/server/controller/receive_controller.dart#L185-L188)只要会话仍存在，就拒绝新请求并返回 HTTP 409；因此不只是装饰性精简。**[社区：原使用报告；一手：源码]**
+2. **有可核查的交付。** [2acfc07](https://github.com/localsend/localsend/commit/2acfc07159b75fb6c0e5c86c2cd77b61543877d2)新增默认关闭的 Auto Finish；接收完成后，满足该选项或 Quick Save 且不是消息会话时，安排关闭会话并回到接收首页。[v1.13.0](https://github.com/localsend/localsend/releases/tag/v1.13.0)于 2023-12-05 UTC 发布。Auto Finish 与自动接受请求不是同一个操作，不能把省掉完成点击写成取消接收授权。**[一手：补丁与发布记录]**
+3. **用户实际禁用了省步功能。** sergd88 在 [#994](https://github.com/localsend/localsend/issues/994)提出发送端也应自动结束。EdwardWilsonJr 的[使用反馈](https://github.com/localsend/localsend/issues/994#issuecomment-1842653145)称立即消失看起来像传输被切断；GarryOneW00d 于 2023-12-06 [明确说试过后关闭了该功能](https://github.com/localsend/localsend/issues/994#issuecomment-1843057315)。后者是采用行为自报，不只是“希望更好看”；两人未给出精确客户端版本或运行日志。**[社区]**
+4. **作者保留自动结束，调整交互。** [#1008](https://github.com/localsend/localsend/pull/1008)明确关闭 #994；[b06ea9d](https://github.com/localsend/localsend/commit/b06ea9d04ac3ef181a8d9ae68cd114301f2c921e)把 Auto Finish 从接收控制器移到进度页，使用从 3 开始的周期计数，并让发送／接收共用退出处理。[v1.13.1 的源码](https://github.com/localsend/localsend/blob/v1.13.1/app/lib/pages/progress_page.dart)包含这项修改。不能据此断言精确等待时间总是三秒，或某个倒计时对所有任务最优；Quick Save 的接收关闭分支仍另行保留。**[一手：补丁与发布源码；研究：范围限定]**
+5. **后来用户发现省步与恢复冲突。** 2024-08-20，sergd88 在 [#1671](https://github.com/localsend/localsend/issues/1671)报告新版虽增加 Retry，开启 Auto Finish 后却来不及点击，要求失败时忽略自动结束。他也是 #923 的早期反馈者和 #994 的提出者，不能写成三个独立样本；未提供精确运行版本或成功重试日志。维护者的[回执](https://github.com/localsend/localsend/issues/1671#issuecomment-2298474064)直接指向 [caab80f](https://github.com/localsend/localsend/commit/caab80f6634905d07e7c006a170e6c02c9c5a0bb)。**[社区：再次使用反馈；一手：对应修订]**
+
+### 固定产物：失败时撤回自动省步
+
+caab80f 在进度页同时修改接收会话和发送会话的状态集合判断：旧 `isFinishedOrError` 接受每个文件属于 skipped、failed 或 finished；新 `isFinishedOrSkipped` 只接受 skipped 或 finished。只要被检查的文件中仍有 failed，就不再满足自动结束条件。源码仍保留“会话不存在则为 true”的回退，不能概括成所有退出路径都已统一或任何故障都不会关闭页面。**[一手：静态源码]**
+
+[2024-11-03 发布的 v1.16.0](https://github.com/localsend/localsend/releases/tag/v1.16.0)的[进度页](https://github.com/localsend/localsend/blob/v1.16.0/app/lib/pages/progress_page.dart#L70-L74)已包含两条状态路径的新判断。这是缩小已有自动化的适用范围，没有为此再加一个重试控件；不能仅因 issue 关闭就声称用户已恢复。**[一手；研究：机制判断]**
+
+### 采用判断与验证边界
+
+让 Agent 实施省步时，提供成功后的下一次任务和失败后的恢复任务；若自动结束使人来不及判断或重试，先比较保留人工结束与按结果状态收窄自动化。这个案例改变的是结束条件的选择，不支持强制所有产品采用倒计时，也不需要另建一套状态框架。**[经验]**
+
+实际验证：读取原帖、评论、三份固定补丁及发布 tag 源码；固定版本 [LICENSE](https://github.com/localsend/localsend/blob/caab80f6634905d07e7c006a170e6c02c9c5a0bb/LICENSE)为 Apache-2.0，本记录只概述行为并链接来源，未复制实现。未安装或运行客户端，未测试任何设备／模型。未找到上述用户在最后修订版重新启用、成功重试或主动工时下降的回执；“禁用后修订”成立，“修订后收益已证”不成立。当前维护性另核到 2026-10-10 的主线提交 [14f3a87](https://github.com/localsend/localsend/commit/14f3a87426eedffaa9d87d011132eca5501abeb8)，不把当前维护活动当作历史功能效果证明。
+
+
+## Metabase：同屏条件与分步预览的竞争取舍
+
+核实：2026-10-15（UTC+8）。主线一；修订 15 §10 的界面选择：需要持续对照不等于所有任务都保留常驻编辑栏，真正的阶段依赖可用步骤与局部预览表达。以下为 **2019 年历史改版**；只读公开原帖、固定发布源码，未运行客户端，不评价当前 Metabase 或 AI 效果。**[研究：范围]**
+
+### 原任务与设计理由
+
+[5 月原帖](https://discourse.metabase.com/t/joins-in-metabase/6260)询问图形界面如何关联表，回复区分既有 SQL 与即将加入的 notebook 路径。[6 月试用者 MarkRx](https://discourse.metabase.com/t/preview-upcoming-changes-to-the-gui-query-builder-updated/6551/5)认可关联能力，同时提出查询与结果同屏有用、阶段归属应更清楚。[7 月设计者回应](https://discourse.metabase.com/t/how-can-i-give-feedback-on-33-beta/6859/4)说明旧栏难容纳更多过滤、指标和分组，拆成 simple／notebook 可给复杂构建与结果更多空间。这些分别是任务、使用反馈与设计理由，不能把新增 join 能力当成纯布局收益。**[社区：原帖与设计者解释]**
+
+另一个明确取舍是查询条件放在哪里：[设计者 #50](https://discourse.metabase.com/t/preview-upcoming-changes-to-the-gui-query-builder-updated/6551/50)希望标题、图例、坐标与表头承担指标和分组的解释，使默认视图更简洁；同帖 [mangefager #42](https://discourse.metabase.com/t/preview-upcoming-changes-to-the-gui-query-builder-updated/6551/42)在实际试用后认为先进编辑器不错，但简单模式中当前汇总选择更难看见。这支持“控件减少可能转移理解负担”，不支持把简单／高级名称当作实际易用性。**[社区；研究：机制推断]**
+
+### 固定产物：两模式与局部预览，不是恢复旧栏
+
+由 [v0.32.0](https://github.com/metabase/metabase/releases/tag/v0.32.0) 与 [v0.33.0](https://github.com/metabase/metabase/releases/tag/v0.33.0) 发布页取得固定提交，直接读取以下实现：
+
+- 前版 `6970194322f7c92400c383e53c81014ed40524db` 的 [QueryBuilder L261–280](https://github.com/metabase/metabase/blob/6970194322f7c92400c383e53c81014ed40524db/frontend/src/metabase/query_builder/containers/QueryBuilder.jsx#L261-L280)同时渲染结构化编辑栏与结果。**[一手：源码]**
+- 新版 `06229af7dc736c3adadc56b74f6645bff984d600` 的 [View L206–240](https://github.com/metabase/metabase/blob/06229af7dc736c3adadc56b74f6645bff984d600/frontend/src/metabase/query_builder/components/view/View.jsx#L206-L240)以白色覆盖层显示 notebook；[切换按钮 L16–36](https://github.com/metabase/metabase/blob/06229af7dc736c3adadc56b74f6645bff984d600/frontend/src/metabase/query_builder/components/view/QuestionNotebookButton.jsx#L16-L36)让可编辑结构化问题在 View 与 Notebook 间切换。这是返回结果视图，不是恢复旧常驻栏。**[一手：源码]**
+- [步骤预览 L30–40、61–68](https://github.com/metabase/metabase/blob/06229af7dc736c3adadc56b74f6645bff984d600/frontend/src/metabase/query_builder/components/notebook/NotebookStepPreview.jsx#L30-L68)限定最多十行、使用表格，步骤变化后显示 Refresh；[Visualize L22–40](https://github.com/metabase/metabase/blob/06229af7dc736c3adadc56b74f6645bff984d600/frontend/src/metabase/query_builder/components/notebook/Notebook.jsx#L22-L40)切回 View，结果需要更新时重新查询。因此局部可检查与完整同屏不是等价能力，十行预览不能保证后续行正确。**[一手；研究：验证边界]**
+
+[新版文档 L27–37](https://github.com/metabase/metabase/blob/06229af7dc736c3adadc56b74f6645bff984d600/docs/users-guide/04-asking-questions.md#L27-L37) 仍描述旧四段编辑栏，与上述实现不一致；不采用这段文字证明旧 UI 留存。固定源码证明机制存在，不证明运行、易用性或净收益。**[一手；研究：来源冲突处理]**
+
+### 同一试用者的发布后回执
+
+[AndrewMBaines 的早期试用](https://discourse.metabase.com/t/preview-upcoming-changes-to-the-gui-query-builder-updated/6551/2)已有具体界面意见；[8 月发布后回执](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/1)明确从 0.31.2 升到 0.33，并在开发环境试过 0.32.x。他认为新位置起初陌生，习惯后好用；[9 月补充](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/4)仍要求先用表核查数据，而非让国家字段自动变地图，并[确认一直走 Custom 入口](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/6)。这不是只看截图的赞美，也不是新用户首次学习的实验；它支持“适应后仍可能采用，同时默认结果仍不合任务”。维护者提出记住人工图表选择或另设结果按钮，本轮未验证这些方案实施。**[社区：同一人的前后使用自报；研究：边界]**
+
+### 与同屏反例一起决定，而非排出布局优劣
+
+既有 [Home Assistant 链](#home-assistant字段保留与原操作路径是两回事)显示恢复状态与属性同页，仍可能未保住原访问路径；Metabase 则显示放弃常驻栏、提供步骤预览和返回入口，也有发布后适应的使用者。两者共同要求从真实任务判断：横向核对需要哪些内容同时可见；阶段依赖在哪；结果是先查数据还是直接看趋势。不能由前者推出所有分步设计较差，也不能由后者要求所有任务双模式。**[研究：竞争解释；经验：采用条件]**
+
+比较布局只限两条路径共有的过滤、汇总、查看结果任务；多阶段聚合与关联本来就增加能力，不能当等功能对照。复访应区分首次陌生、熟悉后仍反复往返及运行故障；若隐藏条件妨碍核查、局部预览不足或默认结果不适合下一步，就调整呈现与入口。没有任务计时、完整样本或长期留存，不能写成净时间收益。后续只有同任务的连续操作或对应版本使用结果才值得续接，不以更多赞美或当前维护活动填补。**[研究：局限与续接条件]**
+
+## Mealie：撤掉实现，不等于撤掉需求
+
+核实时间：2026-10-15（UTC）；历史采用链与当前草稿状态分开记录。
+
+**采用判断**：需求、维护责任与替代可达性分别判断。已实现但无人承担的功能可以退出核心产品；若需求仍在，新的现成能力可以支持窄接入重试，不能据此推断原退出决定错误或新方案一定便宜。[经验]
+
+**需求与退出。** [#660](https://github.com/mealie-recipes/mealie/discussions/660) 中，Plevuus 在2022-12-19报告用过原OCR；2024-02-17，维护者 boc-the-git 明确说无人愿意继续支持、整应用开销高。建议的 iOS AI shortcut 对回复者 rtrnms 的 Android 不适用，维护者也承认自己的平台相同。2024-12-22，Plevuus 又报告升级并试用了新的图片导入，评价积极。这是相同用户名的两次实际使用报告，未绑定完全相同输入、设备或模型，不能称严格前后对照。[社区；一手：维护决定]
+
+**固定退出产物。** [#2838](https://github.com/mealie-recipes/mealie/pull/2838) 于2023-12-15合入，固定提交 [ca9f66ee2448f9786efb866d2d5aa8a33c7780a4](https://github.com/mealie-recipes/mealie/commit/ca9f66ee2448f9786efb866d2d5aa8a33c7780a4)。补丁确实删除 Tesseract 系统依赖、pytesseract 包、OCR路由与相关界面/测试。PR作者称其复杂、多故障、拖累构建和资源；所谓接近使用数据的是 Discord 讨论摘要，不能写成客观零使用。原实现作者 [Miroito 的回复](https://github.com/mealie-recipes/mealie/pull/2838#issuecomment-1861239640)承认自己已无意维护，并认可移除。没有独立测得构建时长、镜像大小或总支持工时变化。[一手：补丁与作者说明]
+
+**换实现重新接入。** [#3974](https://github.com/mealie-recipes/mealie/pull/3974) 于2024-08-17合入，固定提交 [8a15f400e12bb5f5135b543372fbd3b917ff8fbd](https://github.com/mealie-recipes/mealie/commit/8a15f400e12bb5f5135b543372fbd3b917ff8fbd)。[固定API源码](https://github.com/mealie-recipes/mealie/blob/8a15f400e12bb5f5135b543372fbd3b917ff8fbd/mealie/routes/recipe/recipe_crud_routes.py) 的 create_recipe_from_image 接收图片列表，依赖启用 OpenAI 与图片服务开关，返回一个 recipe slug；[固定提示词第9行](https://github.com/mealie-recipes/mealie/blob/8a15f400e12bb5f5135b543372fbd3b917ff8fbd/mealie/services/openai/prompts/recipes/parse-recipe-image.txt#L9)明确一组图片属于一道菜谱。实现是既有Web应用/API里的图片上传，不再依赖 iOS Shortcut；这不等于已经取得 Android 实机复测。合入前 [lindell 实际试用](https://github.com/mealie-recipes/mealie/pull/3974#issuecomment-2278566033)总体肯定，但指出份量混入时间、步骤编号残留，说明图片成功导入仍需核对字段。[一手：固定源码；社区：运行报告]
+
+**近期边界仍未消失。** [#1588](https://github.com/mealie-recipes/mealie/discussions/1588)长期请求PDF批量导入，2024-08已有一张PNG成功的用户报告，也有人反问是否适合三百多份；2026-09-24作者转引 [#8536](https://github.com/mealie-recipes/mealie/pull/8536)。截至2026-10-15（UTC）工具读取，该PR仍为 open/draft、未合入，head [23647e8aa17a6b45e7c38b895e1ab342344d77d2](https://github.com/bferd/mealie/tree/23647e8aa17a6b45e7c38b895e1ab342344d77d2)。它声明 Claude Code 参与初始实现，并选择复用现有 AI 接口/图片处理、增加文档提取库，不重新装回本地OCR栈；源码的 [_extract_document_content](https://github.com/bferd/mealie/blob/23647e8aa17a6b45e7c38b895e1ab342344d77d2/mealie/routes/recipe/recipe_crud_routes.py#L420)合并各文件内容，之后共用一次生成入口。作者明确多文件仍是同一道菜谱，不支持每文件各建一道的批量任务；测试通过和手工验证为作者报告，未本次执行。这是近期的范围选择证据，尚不能写成已采用或已经替换用户整批工作。[一手：草稿与固定源码；社区：历史使用报告]
+
+**适用与反例。** 建议适用于有真实任务、但旧实现拖累维护的原型/产品功能。不把无人维护误判为无人需要，不把外部方案存在误判为目标人能用，也不因一个旧用户再次受益就承诺所有输入与批量迁移完成。若现有非模型入口已满足任务，或新接入仍要求使用者承担不能接受的平台、账号、费用与数据条件，就维持旧入口、外部处理或暂缓接入；不推荐默认增设模型。[经验：从证据推导]
