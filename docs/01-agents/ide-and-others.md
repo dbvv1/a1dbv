@@ -1,6 +1,6 @@
 # IDE 类工具与其他
 
-> 核实时间：国内工具订阅边界与Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
+> 核实时间：CodeBuddy客户端／权限范围、国内工具订阅边界与Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
 
 ## Cursor
 
@@ -62,7 +62,7 @@ ACP 的发起方，原生支持外部 Agent 接入，适合追求编辑器性能
 | Trae | 字节跳动 | 国内免费用户受积分约束；[CN计费](https://docs.trae.cn/ide_plans-and-billing)的Lite单月¥49，连续包月每31天¥45，付费新用户首期优惠¥39。国际版按[实际定价入口](https://www.trae.ai/pricing)核套餐与续费；本次可读页与索引中的$3档口径不同，不能据此确认统一最低价 **[一手；研究：入口未决]** |
 | Qoder | 阿里巴巴 | [国际版Pro](https://docs.qoder.com/zh/account/pricing)$20/月自动续费；[CN全家桶个人Pro](https://docs.qoder.cn/product-overview/account-and-subscription)¥59/月、需阿里云主账号，RAM子账号不能使用个人付费功能。两者各列2,000 Credits/月，不能按数值相同推断跨区共享或相同工作量 **[一手；研究：范围]** |
 | 通义灵码 | 阿里巴巴 | 存量订单须区分CN全家桶、CN原灵码和通义灵码存量；按[官方计费页对应产品线](https://docs.qoder.cn/product-overview/billing-description)核权益，不只凭旧名称购买 **[一手；研究：入口]** |
-| CodeBuddy | 腾讯 | Craft / Ask / Plan 三种模式；可选 GLM、Kimi、DeepSeek、混元模型 **[二手；本轮未补核]** |
+| CodeBuddy | 腾讯 | 🧪 **按地区与客户端选入口**：CN IDE 用 Ask 问答，需要先审方案时才用 Plan；CN 插件的 Plan 是 Craft 设置，CLI 的 `plan` 不保证只读。先核目标入口的模型与权限，现有路径够用就保留；必要能力或权限条件不满足时撤回该入口选择，不按跨端通用模型名单迁移。[官方契约与范围](../research/2026-10-12-community-source-records.md#codebuddy入口与计划权限) **[一手；研究：条件选择，未实测]** |
 | Kimi Code | 月之暗面 | 中国区新套餐Plus ¥99/月起含Code，Go ¥49/月不含；存量资格与用途限制统一见[02 §4](../02-models-and-cost.md#4-国内-coding-plan)，不要按低价会员档推断Code权限 **[一手；研究：入口同步]** |
 | Qwen Code | 阿里通义 | 开源，见 [open-source-agents](open-source-agents.md) |
 
