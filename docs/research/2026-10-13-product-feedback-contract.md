@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件
-改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性。[经验]
-证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
+改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复，往返导航保留任务位置但不在后台更新时抢焦点；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性。[经验]
+证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍、Joplin 位置同步复测与 Discourse 焦点恢复的撤回／重新采用。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -405,3 +405,24 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 **近期边界仍未消失。** [#1588](https://github.com/mealie-recipes/mealie/discussions/1588)长期请求PDF批量导入，2024-08已有一张PNG成功的用户报告，也有人反问是否适合三百多份；2026-09-24作者转引 [#8536](https://github.com/mealie-recipes/mealie/pull/8536)。截至2026-10-15（UTC）工具读取，该PR仍为 open/draft、未合入，head [23647e8aa17a6b45e7c38b895e1ab342344d77d2](https://github.com/bferd/mealie/tree/23647e8aa17a6b45e7c38b895e1ab342344d77d2)。它声明 Claude Code 参与初始实现，并选择复用现有 AI 接口/图片处理、增加文档提取库，不重新装回本地OCR栈；源码的 [_extract_document_content](https://github.com/bferd/mealie/blob/23647e8aa17a6b45e7c38b895e1ab342344d77d2/mealie/routes/recipe/recipe_crud_routes.py#L420)合并各文件内容，之后共用一次生成入口。作者明确多文件仍是同一道菜谱，不支持每文件各建一道的批量任务；测试通过和手工验证为作者报告，未本次执行。这是近期的范围选择证据，尚不能写成已采用或已经替换用户整批工作。[一手：草稿与固定源码；社区：历史使用报告]
 
 **适用与反例。** 建议适用于有真实任务、但旧实现拖累维护的原型/产品功能。不把无人维护误判为无人需要，不把外部方案存在误判为目标人能用，也不因一个旧用户再次受益就承诺所有输入与批量迁移完成。若现有非模型入口已满足任务，或新接入仍要求使用者承担不能接受的平台、账号、费用与数据条件，就维持旧入口、外部处理或暂缓接入；不推荐默认增设模型。[经验：从证据推导]
+
+
+## Joplin与Discourse：导航可达之后保留任务位置
+
+核实：2026-10-15 UTC。改变15 §10.3：同样能到达内容时，比较是否保留当前任务位置，而非默认增加布局、快捷键或焦点动作。以下为不同项目的历史使用链；没有AI生成归属或净收益证据。[经验：采用判断；研究：归属边界]
+
+**Joplin：替代快捷键没有覆盖同一任务。** [原请求与讨论](https://discourse.joplinapp.org/t/desktop-accessibility-add-a-shortcut-for-jumping-into-note-content/44129)中，RastislavKish希望从笔记列表进入阅读区域；维护者先给切换布局等替代方法，另一使用者认为已足够。原请求者澄清主要起点是笔记列表，改布局不是同一操作。讨论随后选择按编辑光标定位预览内容，而非总回顶部。2025-03-20，他[试用3.3.3](https://discourse.joplinapp.org/t/desktop-accessibility-add-a-shortcut-for-jumping-into-note-content/44129/17)肯定位置同步，同时指出新选笔记、没有编辑位置时，仅聚焦viewer容器不会使读屏器自动退出focus mode；聚焦具体内容则可行。环境为Ubuntu Mate22.04／Orca44.2，不能外推全部客户端。[社区：原用户需求与复测]
+
+**实现与测试的范围不同。** [PR #11967](https://github.com/laurent22/joplin/pull/11967)于2025-03-15合入。固定提交`ba5ad18093dd7e92db1905b3c6954c114579832b`的[note-viewer实现](https://github.com/laurent22/joplin/blob/ba5ad18093dd7e92db1905b3c6954c114579832b/packages/app-desktop/gui/note-viewer/index.html)按源行映射找到渲染段落，临时设置`tabindex=0`后聚焦；独立命令无默认快捷键，富文本模式禁用。[自动化测试](https://github.com/laurent22/joplin/blob/ba5ad18093dd7e92db1905b3c6954c114579832b/packages/app-desktop/integration-tests/markdownEditor.spec.ts)只断言viewer容器获焦，具体段落的读屏行为另写在手工测试计划，不能当已执行结果。[一手：固定补丁；研究：验证范围]
+
+**后续修订反证一次成功就够。** 2025-04-29的[#12183](https://github.com/laurent22/joplin/pull/12183)报告Windows／NVDA大文档常跳到顶部；[固定补丁a7bfa21](https://github.com/laurent22/joplin/commit/a7bfa21cd0d2711e45ef3e8c29675b9bb7179cdb)移除临时`tabindex=0`后50ms复原的路径，改为先尝试聚焦，必要时设`tabindex=-1`再聚焦，使段落可由脚本定位但不加入Tab顺序。它没有删除[NoteTextViewer的100ms消息延迟](https://github.com/laurent22/joplin/blob/ba5ad18093dd7e92db1905b3c6954c114579832b/packages/app-desktop/gui/NoteTextViewer.tsx)，不能写成全面取消计时。未取得该修订的独立使用回执，也未找到上述“无编辑位置”分支的最终复测。[一手：作者诊断与补丁；研究：未闭环范围]
+
+**Discourse：恢复位置不能变成每次更新都抢焦点。** 原用户Nolan在2021-12[确认进入主题的改进有用后，继续要求Back返回原主题链接](https://meta.discourse.org/t/discourse-with-a-screen-reader/178105/88)；2022-03仍[报告反复找位置使自己停止阅读部分论坛](https://meta.discourse.org/t/discourse-with-a-screen-reader/178105/95)。首版在Chrome／Safari滚动追加数据时给下一批首行焦点，[#15304](https://github.com/discourse/discourse/pull/15304)于2021-12-15撤回；第二版又因边界问题在beta前[撤回](https://github.com/discourse/discourse/commit/97519a3ea58cd27f8ce05631882aa84dc1af315a)。第三版后，原用户03-30[在另一实例短暂使用](https://meta.discourse.org/t/discourse-with-a-screen-reader/178105/103)，确认返回列表与再进入主题的位置符合预期；回执没有精确部署SHA，不把效果全部归因单笔补丁。[社区：用户及维护者报告；一手：撤回产物]
+
+**后续演化：重访恢复，首次进入仍有取舍。** 沿同帖读至末尾，Nolan在[2024-01-03的回执](https://meta.discourse.org/t/discourse-with-a-screen-reader/178105/160)确认Chrome＋NVDA重访旧主题已能恢复阅读位置并播报，主要痛点得到改善；新主题首次进入仍需手动找首帖，而Firefox可定位。维护者[01-09解释](https://meta.discourse.org/t/discourse-with-a-screen-reader/178105/161)实现有意跳过首帖：同样聚焦会在加载主题URL时造成不必要滚动，干扰其他用户；标题导航失败则待查。这是进入主题分支，不能归因#16257的返回列表补丁，也不能把2023年中途失败写成持续未修复。上述均为历史报告，不代表当前版本；本轮没有取得首次进入问题的最终复测。采用时分首次进入、重访、Back返回及实际浏览器／读屏组合，不统一调用focus；换浏览器也不自动满足原工作环境约束。[社区：用户后续回执；一手：维护者取舍；研究：边界]
+
+**收窄触发源，而非取消目标。** 第三版[#16257](https://github.com/discourse/discourse/pull/16257)于2022-03-23合入；[固定实现eb237e6](https://github.com/discourse/discourse/blob/eb237e634a440f4b26e6c097e7afb9a135bb3781/app/assets/javascripts/discourse/app/components/topic-list-item.js)仅在列表显式启用、条目确为lastViewed且非mobileView时聚焦，避免普通追加／更新及推荐列表随高亮抢焦点。随后[97e7bb1](https://github.com/discourse/discourse/commit/97e7bb1ce483498640f512c1bf9bfe704dc1d402)让监听器也遵守同一开关，[8dd6cb1](https://github.com/discourse/discourse/commit/8dd6cb14eec3d3879e18dbf4a2785d09674a3dd1)兼容主题／插件删除目标元素的情况。后者只避免抛错，不保证被覆写的界面仍有同等导航功能。[一手：固定源码；研究：机制边界]
+
+**维护者也需要看懂行为。** #16257的[审查者](https://github.com/discourse/discourse/pull/16257#issuecomment-1075880874)认为代码看似安全，却无法判断预期体验，要求测试或视频；作者补测试后[公开记录取舍](https://github.com/discourse/discourse/pull/16257#issuecomment-1075945631)：测试窗口失焦可能令本地浏览器测试失败，但CI通过且覆盖重要功能，因此保留，必要时再评估。[固定测试](https://github.com/discourse/discourse/blob/eb237e634a440f4b26e6c097e7afb9a135bb3781/app/assets/javascripts/discourse/tests/acceptance/last-visited-topic-focus-test.js)断言`focused`样式，不等于实际读屏结果；上述CI状态只是作者报告，本轮未取日志或重跑。它支持交接解释具体行为及测试前提，不量化接管成本。[一手：审查、决定与测试源码；研究：采用边界]
+
+**采用与停止条件。** 两例支持先恢复真实往返任务的位置：Joplin是显式跨视图定位与交互模式，Discourse是自动返回恢复与后台追加的区分。让Agent分清首次进入、重访和返回，追踪当前位置的来源及触发事件，再选择直接定位、恢复原对象或维持原焦点；若增强打断其他操作，收窄触发范围后复试，不以更多焦点动作算改善。已有路径满足目标就不增加控制。本轮只读公开原帖、PR和固定补丁，未运行软件、读屏器、测试或模型；短时自报不证明长期留存、全平台可靠性或AI收益。[经验：采用判断；研究：验证范围]

@@ -156,6 +156,8 @@ GitClear 公开材料的重复与移动占比信号可提示检查复用和结�
 
    **按任务选择完整同屏、步骤预览或结果优先。** 要持续对照的条件与结果应保持可见；下一步真正依赖前一步时可分步，但须说明预览范围、更新状态与返回路径，局部预览不能代替完整结果核查。让原使用者连续操作，区分首次陌生与熟悉后仍需反复往返，再决定保留、调整默认或恢复路径；字段可访问不等于操作无损，自动图表也不一定适合先查数据的任务。[Metabase 与 Home Assistant 的竞争取舍](research/2026-10-13-product-feedback-contract.md#metabase同屏条件与分步预览的竞争取舍)支持这种比较，不证明某种布局普遍更快。**[一手／社区；经验：采用建议]**
 
+   **能到达内容后，优先减少反复找回位置。** 对列表→详情→返回、编辑→预览这类往返任务，让 Agent 比较保留任务位置、显式跳转与改变布局；可滚到、可聚焦和有快捷键不是同一体验。分别决定首次进入、重访和返回时应落在哪，不因追加数据或刷新擅自抢焦点；用目标用户的实际浏览器／读屏组合连续操作，换浏览器成功不替代原环境验收。[Joplin 与 Discourse 的前后反馈](research/2026-10-13-product-feedback-contract.md#joplin与discourse导航可达之后保留任务位置)说明位置同步可以改善使用，触发范围过宽也会导致撤回。**局限：特定读屏环境的自报与历史补丁不证明全部平台收益或 AI 提效。** **[社区／一手；经验：采用建议]**
+
    依据：[CodeAid 更新后使用](research/2026-10-13-product-feedback-contract.md#修改版再使用可见性改善仍须通过真实任务)、[CodexBar 兼容取舍](research/2026-10-13-product-feedback-contract.md#codexbar发布后的理解反馈)、[OpenWhispr 同一用户复测](research/2026-10-13-product-feedback-contract.md#openwhispr选项出现后仍须核对实际参数)、[Home Assistant 改版后再使用](research/2026-10-13-product-feedback-contract.md#home-assistant字段保留与原操作路径是两回事)。**[研究：使用报告；一手：补丁]**
 
 
