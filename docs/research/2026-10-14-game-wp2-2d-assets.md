@@ -1,6 +1,6 @@
 主线：二／三；G1 2D 资产选型与第二次修改
-改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择，不以静帧或包体替代验收
-新证据：[一手] §11 新增原画布／裁切偏移的真实消费路径、公开图集 JSON 静态解析与 Aseprite 历史修复；§12新增Ronimo编码器撤回、Factorio跨画风反例及Unity最终Atlas／UE Final编码契约；此前模型／服务调查保留，均未运行模型／引擎
+改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择，不以静帧或包体替代验收
+新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增原画布／裁切偏移的真实消费路径、公开图集 JSON 静态解析与 Aseprite 历史修复；§12新增Ronimo编码器撤回、Factorio跨画风反例及Unity最终Atlas／UE Final编码契约；此前模型／服务调查保留，均未运行模型／引擎
 
 # WP2：2D资产的前沿方法与零手修边界
 
@@ -27,6 +27,17 @@
 **[经验]** 采用“源像素—rig—姿态分离”和共同坐标机制，暂不采用整包的任意输入零手修承诺。其[代码许可说明](https://github.com/JatCool/AI-Sprite-Animation/blob/3818664861613905a377eca26c4ea940c06a646d/docs/licenses.md)为MIT，不覆盖输入美术/可选模型，本轮只借机制、不作为已清权整包推荐。程序改参数属于本场景，人工描部位不属于；有正确现成分层时可改动作参数，没有时先缩小动作/方向或换资产。 2026-10-15 补核：[Ronimo 作者复盘](https://www.gamedeveloper.com/programming/finding-a-suitable-toolchain-for-animating-blightbound-s-2d-characters)（2021-03-11）说明 Awesomenauts 的整张动画缺部件位置／遮挡信息，因此只做整套皮肤，Blightbound 才为独立装备改用部件表示。[一手] 这支持先区分整套换皮与运行时自由配装，再选现成源或生成缺口；其生产仍有人工美术和自制工具，不是零手修证明，也不能沿用文中的历史 Spine 限制。[研究]
 
 [SpriteToMesh v1](https://arxiv.org/html/2602.21153v1)（2026-02-24）只解决分割/布网，骨骼仍列未来工作，域来自赌场Spine资产；[Sprite Sheet Diffusion](https://arxiv.org/html/2412.03685v1)联合外观、姿态和时序，但夸张人体检测失败仍用人工标注；[2025 CVMP短文](https://marcovolino.github.io/docs/papers/2025-wong-cvmp.pdf)的末端像素化更优报告来自845帧/人工关键帧选择。它们支持约束组合或末端降采样的研究路线，不足以推荐默认训练，也不证明小像素动画全链完成。**[一手：论文，未复测]**
+
+
+**2026-10-15 补核：3D 源作为精灵生产母版。** [Dead Cells 美术 Thomas Vasseur 的复盘](https://www.gamedeveloper.com/production/art-design-deep-dive-using-a-3d-pipeline-for-2d-animation-in-i-dead-cells-i-)（2018-01-25）把模型、骨架、关键姿势经小尺寸渲染输出 PNG／法线，改攻击时序时调整关键帧和姿态再输出，并复用模型部件。他把反复改稿视为主要收益，却明确接受闪像素与细节不足，没有逐像素清理。[一手] 可借“回源改后重烘”，不复制自制渲染器；专业美术建模、摆姿不是程序员零手修能力，也不能把作者的改姿过程缩成只调播放速度。[研究]
+
+**何时不再烘焙。** Project Zomboid [2012 年记录](https://projectzomboid.com/blog/news/2012/05/on-the-reanimated-dead/)说明手绘动作、衣服和方向难维护，转用 3D 预渲染；[2014 年记录](https://projectzomboid.com/blog/news/2014/01/body-movin/)又把已有模型／动作接入实时渲染，以减少新增动画带来的纹理页、改善照明。当时仍是开发中方案，有光照问题及模型／精灵切换跳变，不能当已验证性能收益。[一手] 这支持组合扩张后重新比较表示，不建议照搬其引擎迁移或混合 LOD。法线可以支持受限重打光，不能恢复任意新视点、几何遮挡与投影。[研究]
+
+**批量自动化不等于零手修。** [Factorio FFF-194](https://www.factorio.com/blog/post/fff-194)（2017-06-09）展示多方向／图层渲染与后续合成，但 12 种 combinator 的 Photoshop 阶段仍手画亮暗 mask、处理阴影；[FFF-218](https://www.factorio.com/blog/post/fff-218)（2017-11-24）共享角色网格／材质源，仍须重渲大量精灵，高分辨率升级也不只是增加像素。[一手] 合并人工操作的次数不能算消除人工；不借最终画质承诺本场景收益，也不把历史渲染工时换算成今天的预算。[研究]
+
+**直接复用与剩余成本。** [研究] 先沿 [3D 资产](../../domains/game-dev/assets/3d.md)与[绑定动画](../../domains/game-dev/assets/animation.md)的许可／源质量门槛选现成角色和兼容动作，再用已有 Blender 等成熟渲染器、现有图集消费者；只补固定相机、画布／脚底基准、角度表、输出命名与事件帧映射，不造渲染引擎。程序员可选动作、改时间参数，缺轮廓、坏蒙皮或必须手摆新姿势时应换源或缩需求。[Quaternius 基型页](https://quaternius.com/packs/universalbasecharacters.html)标 CC0、Humanoid 与同体系动画兼容，但免费包不等于含已绑定 `.blend`／shader 的 Source 档；实际下载内容和所需动作许可仍分开核。[一手]
+
+[研究] 输出量随动作帧、方向、外观组合增长；可共用图层不代表任意遮挡都能后期叠加。二改预注册：给同一合格源换装备／改时序，比较重烘与保留实时 3D 的重建产物、旧引用、整段轮廓／接触及主动工时；需要手画才能通过就撤回。只读公开文章和产品页，未运行渲染、模型或引擎；Blender 当前相机／命令行文档本轮抓取未成功，具体 API／命令未核，未据此推断其价格或可用性。仅提炼机制，未取得或复制上述游戏资产，不新增代码依赖。
 
 ## 3. 瓦片和自动QA：先确定它究竟验证什么
 
