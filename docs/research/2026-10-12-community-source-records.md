@@ -1,6 +1,6 @@
 主线：二为主，兼四
 改变的建议：[经验／研究] 原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
-新证据：[一手／社区] Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
+新证据：[一手／社区] 国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
 # 社区工作流：固定来源与案例资料
 
@@ -368,3 +368,16 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 固定 `c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617` 的 [settingsSchema](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/settingsSchema.ts#L2442-L2480)列 auto memory 默认开启、Auto Skill 默认关闭及保存确认；[CLI 配置](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/config.ts#L2701)与 [Auto Skill 传递](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/config.ts#L2832-L2839)分别保留 Agent Team／Auto Skill 默认关闭。[core Team 开关](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/core/src/config/config.ts#L10170-L10175)另接受环境变量启用，[Auto Skill getter](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/core/src/config/config.ts#L11047-L11054)还区分受限运行模式。[官方协作说明](https://qwenlm.github.io/qwen-code-docs/en/users/features/multi-agent-coordination/)将 Agent Team 标为实验性；未启用时的普通子 Agent 调查不等于团队协作。**[一手：固定实现与文档]**
 
 [官方 Channels](https://qwenlm.github.io/qwen-code-docs/en/users/features/channels/overview/)及[固定文档](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/docs/users/features/channels/overview.md)说明适配器内置，仍需机器人／账号认证、渠道配置与启动。因此期待自动积累技能、协作团队或聊天接入的读者，应先核相应开关与外部身份，不把安装完成当接入完成。未安装、登录、验证权限或运行客户端；配置存在不证明团队收益，02 的套餐资格与 endpoint 边界仍适用。**[一手；研究：采用边界]**
+
+
+## 国内工具：订阅入口与持续成本
+
+核实：2026-10-16（UTC+8）；主线二。只纠正01已有国内工具行的购买依据，不扩工具名单；02的Kimi资格已核正确，本轮仅同步入口。公开网页正文读取不等于账号资格、结算页或客户端实测。**[一手；研究：范围]**
+
+- **TRAE CN免费不等于无额度约束。** 直接读取[套餐与计费](https://docs.trae.cn/ide_plans-and-billing)：内置模型调用消耗积分，免费用户通过登录、签到和活动获取有限积分；自定义模型不消耗TRAE积分，不等于模型服务商免费。Lite单月¥49；连续包月¥45，付费新用户首期¥39、第二期恢复¥45；自动续费按31天周期。因此撤回“国内核心免费”这一笼统成本依据，比较持续使用时区分单月与连续订阅。**[一手；研究：选择]**
+- **TRAE国际版保留入口差异。** 直接读取[无参数定价页](https://www.trae.ai/pricing)，本次显示Free限Auto mode及有限用量、Pro $20/月自动续费；[计费文档](https://docs.trae.ai/ide/new-plans-and-billing)未返回可读正文。搜索索引另有带产品／跳转参数的官方定价页显示Lite $3/月；未取得可比的当前正文与适用范围，不保存含用户标识的索引URL。该差异不能证明$3全部是首月优惠、已经失效，也不能证明$20是所有地区／入口的最低价。正文撤回无条件“$3起”，引导按实际入口核套餐、免费范围和续费；索引只作待核线索。**[一手：无参数页；二手：索引；研究：未决]**
+- **Qoder现价可保留，资格须写清。** 直接读取[国际版价格](https://docs.qoder.com/zh/account/pricing)与[CN全家桶账号和订阅](https://docs.qoder.cn/product-overview/account-and-subscription)：Pro分别为$20/月与¥59/月，各含2,000 Credits/月。国际版按月自动续费；CN个人订阅需阿里云主账号，RAM子账号不能用个人付费功能，CN全家桶共享额度；CN新购所选月付／年付决定自动续费周期。上述月价未标首期促销，不能把跨区同名套餐或Credits数字等同为可互通权益或相同任务成本。干净的中外定价首页未返回完整价表，最终采用直接读到的官方文档正文，不将搜索索引的¥59当正文验证。**[一手；研究：范围]**
+- **灵码按订单产品线识别。** 直接读取[CN计费说明](https://docs.qoder.cn/product-overview/billing-description)，分CN全家桶、CN原灵码、通义灵码存量页签；这支持修正旧名字的购买入口，不把所有存量订单视为已自动迁移。**[一手；研究：入口]**
+- **Kimi沿用单一主专题。** 直接复核[中国区套餐表](https://www.kimi.com/en/help/membership/membership-overview)：新Go ¥49不含Code，Plus ¥99起含Code，旧Andante等保留原资格；与02 §4一致，仅删除01的¥49／99笼统Code订阅说法。CodeBuddy模型和模式本轮未补核，继续标二手。**[一手；研究：同步与边界]**
+
+未登录、购买、检查个人账户、安装或运行客户端；未验证所有地区可购性、税费、结算优惠、当前模型质量或完成任务成本。仅当上述资格和必要功能满足时条件试用，不据低标价推荐迁移。**[研究：验证边界]**

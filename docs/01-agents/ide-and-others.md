@@ -1,6 +1,6 @@
 # IDE 类工具与其他
 
-> 核实时间：Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
+> 核实时间：国内工具订阅边界与Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
 
 ## Cursor
 
@@ -55,13 +55,15 @@ ACP 的发起方，原生支持外部 Agent 接入，适合追求编辑器性能
 
 ## 国内工具（面向中文开发者）
 
-| 工具 | 厂商 | 要点 **[二手]** |
+🧪 **先按地区、账号和必要功能核资格，再比较续费价与额度。** 免费额度、试用和首期优惠不代表持续工作成本；不满足目标功能或额度需求时，撤回仅凭低标价的选择。以下只补核已有条目的订阅边界，未实测客户端收益；[来源与未决范围](../research/2026-10-12-community-source-records.md#国内工具订阅入口与持续成本)另列。**[研究：选择，2026-10-16]**
+
+| 工具 | 厂商 | 要点与采用边界 |
 |---|---|---|
-| Trae | 字节跳动 | 国内版核心功能免费；国际版每月 3 美元起 |
-| Qoder | 阿里巴巴 | 国际版 Pro 每月 20 美元起，国内个人专业版每月 59 元起 |
-| 通义灵码 | 阿里巴巴 | 与阿里云生态整合 |
-| CodeBuddy | 腾讯 | Craft / Ask / Plan 三种模式；可选 GLM、Kimi、DeepSeek、混元模型 |
-| Kimi Code | 月之暗面 | 2026-01 发布；订阅档每月 49 元 / 99 元 |
+| Trae | 字节跳动 | 国内免费用户受积分约束；[CN计费](https://docs.trae.cn/ide_plans-and-billing)的Lite单月¥49，连续包月每31天¥45，付费新用户首期优惠¥39。国际版按[实际定价入口](https://www.trae.ai/pricing)核套餐与续费；本次可读页与索引中的$3档口径不同，不能据此确认统一最低价 **[一手；研究：入口未决]** |
+| Qoder | 阿里巴巴 | [国际版Pro](https://docs.qoder.com/zh/account/pricing)$20/月自动续费；[CN全家桶个人Pro](https://docs.qoder.cn/product-overview/account-and-subscription)¥59/月、需阿里云主账号，RAM子账号不能使用个人付费功能。两者各列2,000 Credits/月，不能按数值相同推断跨区共享或相同工作量 **[一手；研究：范围]** |
+| 通义灵码 | 阿里巴巴 | 存量订单须区分CN全家桶、CN原灵码和通义灵码存量；按[官方计费页对应产品线](https://docs.qoder.cn/product-overview/billing-description)核权益，不只凭旧名称购买 **[一手；研究：入口]** |
+| CodeBuddy | 腾讯 | Craft / Ask / Plan 三种模式；可选 GLM、Kimi、DeepSeek、混元模型 **[二手；本轮未补核]** |
+| Kimi Code | 月之暗面 | 中国区新套餐Plus ¥99/月起含Code，Go ¥49/月不含；存量资格与用途限制统一见[02 §4](../02-models-and-cost.md#4-国内-coding-plan)，不要按低价会员档推断Code权限 **[一手；研究：入口同步]** |
 | Qwen Code | 阿里通义 | 开源，见 [open-source-agents](open-source-agents.md) |
 
 > 国内另一条常见路线是：**Claude Code / OpenCode 这类 harness + 国产模型的 Coding Plan**（GLM、Kimi、MiniMax 等提供与 Anthropic 兼容的接口）。见 [02 模型与成本](../02-models-and-cost.md#4-国内-coding-plan)。
