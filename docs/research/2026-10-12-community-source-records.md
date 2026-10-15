@@ -341,3 +341,11 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 - **Gemini不再按旧订阅入口推荐。** [当前CLI provider说明](https://goose-docs.ai/docs/guides/cli-providers/)将`gemini-cli`与`gemini_oauth`列为弃用，推荐Google provider的Gemini API key或Vertex AI；固定[`gemini_oauth.rs`](https://github.com/aaif-goose/goose/blob/0df818175bc854229746c81f01ea154b1c6c5e9e/crates/goose/src/providers/gemini_oauth.rs#L931-L947)也在元数据中标明替代路径。[注册代码](https://github.com/aaif-goose/goose/blob/0df818175bc854229746c81f01ea154b1c6c5e9e/crates/goose/src/providers/init.rs#L112-L120)仍保留旧provider，不能把弃用写成代码已删除。此前README笼统宣传三家订阅经ACP接入，不覆盖这些当前限制；消费者6月18日停止旧Login with Google路径的事实及API／企业区别，沿用[本页Gemini核对](#gemini接入资格与-antigravity-迁移)，不扩成Gemini API停用或所有自定义ACP方案不可用。**[一手；研究：撤回范围]**
 
 读者应先选择明确支持自己的认证／计费路径，再决定是否试用Goose；仅有订阅或看到“支持ACP”不足以完成选型。未访问账户、检查凭据、安装适配器、运行客户端／模型，也没有迁移成功或成本收益实测。**[研究：验证边界]**
+
+## Qwen Code：内置不等于默认启用
+
+核实：2026-10-16（UTC+8），主线二。保留内置能力与试用评级，只区分采用前的启用／接入步骤，不把固定 main 当已发行版本或客户端实测。**[一手；研究：范围]**
+
+固定 `c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617` 的 [settingsSchema](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/settingsSchema.ts#L2442-L2480)列 auto memory 默认开启、Auto Skill 默认关闭及保存确认；[CLI 配置](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/config.ts#L2701)与 [Auto Skill 传递](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/config.ts#L2832-L2839)分别保留 Agent Team／Auto Skill 默认关闭。[core Team 开关](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/core/src/config/config.ts#L10170-L10175)另接受环境变量启用，[Auto Skill getter](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/core/src/config/config.ts#L11047-L11054)还区分受限运行模式。[官方协作说明](https://qwenlm.github.io/qwen-code-docs/en/users/features/multi-agent-coordination/)将 Agent Team 标为实验性；未启用时的普通子 Agent 调查不等于团队协作。**[一手：固定实现与文档]**
+
+[官方 Channels](https://qwenlm.github.io/qwen-code-docs/en/users/features/channels/overview/)及[固定文档](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/docs/users/features/channels/overview.md)说明适配器内置，仍需机器人／账号认证、渠道配置与启动。因此期待自动积累技能、协作团队或聊天接入的读者，应先核相应开关与外部身份，不把安装完成当接入完成。未安装、登录、验证权限或运行客户端；配置存在不证明团队收益，02 的套餐资格与 endpoint 边界仍适用。**[一手；研究：采用边界]**

@@ -10,7 +10,7 @@
 | [Cline](https://github.com/cline/cline) | VS Code / JetBrains / CLI / 桌面 App | IDE 可按工具类别配置审批；CLI 支持无头模式，但审批默认值须单独核对，见下；桌面版能定时运行 | 2026-10 | 🧪 试用 |
 | [Kilo Code](https://github.com/Kilo-Org/kilocode) | VS Code / JetBrains / CLI | 开源，多种安装方式 | 2026-10 | 👀 评估 |
 | [Goose](https://github.com/aaif-goose/goose) | 桌面 / CLI / API（Rust） | 通用 Agent；Claude／Codex ACP 先核适配器、认证及资格；Gemini 旧订阅入口已弃用，改核 API key／Vertex AI（[接入条件](../research/2026-10-12-community-source-records.md#goose订阅接入先核适配器身份与资格)）**[一手；研究]**；已加入 AAIF | 2026-10 | 🧪 试用 |
-| [Qwen Code](https://github.com/QwenLM/qwen-code) | 终端 / IDE / 桌面 / Web / 聊天软件 | 自带 auto memory、auto skills、子 Agent、Agent Teams；支持 OpenAI / Anthropic / Gemini / Qwen 协议，可接本地模型；集成钉钉、飞书、微信 | 2026-10 | 🧪 试用（国内团队友好） |
+| [Qwen Code](https://github.com/QwenLM/qwen-code) | 终端 / IDE / 桌面 / Web / 聊天软件 | 内置 auto memory、子 Agent；auto skills 与实验性 Agent Teams 需启用；聊天渠道需配置机器人／账号（[采用前提](../research/2026-10-12-community-source-records.md#qwen-code内置不等于默认启用)）；支持多模型协议与本地模型 | 2026-10 | 🧪 试用（国内团队友好） |
 | [GitHub Copilot CLI](https://github.com/github/copilot-cli) | 终端 | 默认带 GitHub MCP；与 Issue / PR 深度集成；需要 Copilot 订阅 | 2026-10 | 🧪 试用（重度 GitHub 用户） |
 | [Pi](https://pi.dev)（Earendil Works） | 终端 / SDK / RPC | 默认启用 4 个工具，可扩展 MCP／codemode；不内置子 Agent/plan mode；按进程权限运行，工具少不证明净成本低 | 2026-10-15 读取固定 main | 🧪 适合愿意定制并维护隔离的人；见 [固定来源与边界](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界) |
 | [DeepSeek Harness](https://www.deepseek.com/en/harness/) | 桌面 App（macOS、Windows）+ Web UI | 2026-10-02 公开预览并开源；基于 Cordis 的“一切皆插件”架构，可以在“Creator 模式”里让它自己写插件；实验性功能包括 Agent Teams、自动审批评审、定时任务 | 2026-10 | 👀 评估：**桌面版默认开启遥测**（HN 用户给出了关闭方法），数据合规需要自行评估 **[一手：官网；社区：HN]** |
