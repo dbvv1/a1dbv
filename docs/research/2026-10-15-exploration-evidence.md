@@ -283,3 +283,30 @@ TREC支持度研究也显示，群体系统排名相关高，不代表每个断�
 ### 复核增量（2026-10-15）
 
 S5日期以arXiv提交历史为准：v2是2026-01-30，不能把其HTML正文显示的August 24, 2026当作版本日期。已补读最新v3（2026-09-10）的§3.1.2、§5.2、§7/8。并对公开v2/v3 HTML提取文本作只读差分：可见变化为标题Report改为Reports、版本/正文日期、致谢新增制图贡献者；未发现影响上述方法、泄漏或许可边界的文本变化。因此不改变采用结论。此比较不等于PDF图像或TeX字节级完整差分。
+
+## 公开报告漏检：先核原生能力的排除依据
+
+2026-10-16（UTC+8）补核。**改变的选择**：报告因原生能力缺失而推荐绕路时，先定向核发行、提供方和启用条件；只重开被反证影响的分支，不扩成新工具名单。以下是一个公开产物的遗漏修正，未证明未知发现能力、方法收益或整个系统的漏检率。**[经验：条件建议]**
+
+### 固定任务与原推荐
+
+Onyx 的 [DRB id=68 完整问题、六项研究任务与报告](https://github.com/onyx-dot-app/onyx_deep_research_bench/blob/41f404cc61e287ffff18df0f23ce8456503a94bc/report_logs/68.md)要求随业务请求调整 Kubernetes 节点数，峰前扩容、低谷缩容，询问预测式或定时式方案。原问题未指定云、截止日期、Karpenter 版本或“只许 GA”；也没有禁止占位 Pod。“非弹性节点组”是它提出的可能不适配情形，不等于基础设施绝对禁止改变节点数。不能另加这些条件来制造失败。**[一手：公开任务]**
+
+[固定 README L48–55](https://github.com/onyx-dot-app/onyx_deep_research_bench/blob/41f404cc61e287ffff18df0f23ce8456503a94bc/README.md#L48-L55)自述使用 Onyx `nightly-latest-20260207`、GPT-5.2、Serper、Firecrawl；构建标签不是实际运行时间。日志中的研究任务指向2025–2026年资料，但只公开任务摘要和最终答案，不是完整工具调用轨迹。本轮核对 [raw JSONL 第68条](https://github.com/onyx-dot-app/onyx_deep_research_bench/blob/41f404cc61e287ffff18df0f23ce8456503a94bc/eval_results/onyx_raw_results.jsonl#L68)的 prompt／article 均逐字出现在日志中；完整日志 SHA-256：`2a0434f6aaa351bc21c17492c5bcec97c1ed692994e0c987f943ba39c92ee181`。**[一手：产物身份核对；运行配置为作者自述]**
+
+报告§5.1把 Karpenter 归为等待不可调度 Pod 的方案，§5.2建议峰前提高 NodePool limits／启用池，其他分支建议占位 Pod、外围基线容量管理。全文未处理 StaticCapacity／静态 NodePool replicas。问题不只是来源年份：**提高允许的上限，与要求控制器补足目标节点数，不是同一个动作**；若后者已可用，实施层的选择就需要重开。**[一手：完整报告；经验：影响判断]**
+
+### 独立反证：发行能力与实际启用链
+
+- **已发布实现**：[上游 v1.8.0 发行](https://github.com/kubernetes-sigs/karpenter/releases/tag/v1.8.0)包含 Static Capacity；固定 SHA `38e728c99b530f660f685d53d01f2e9ec9696668` 的 [NodePool API L64–75](https://github.com/kubernetes-sigs/karpenter/blob/38e728c99b530f660f685d53d01f2e9ec9696668/pkg/apis/v1/nodepool.go#L64-L75)将 replicas 定义为独立于 Pod demand 的目标节点数，标注 alpha。[扩容控制器 L69–116](https://github.com/kubernetes-sigs/karpenter/blob/38e728c99b530f660f685d53d01f2e9ec9696668/pkg/controllers/static/provisioning/controller.go#L69-L116)按节点数差额创建 NodeClaims；[缩容控制器 L75–130](https://github.com/kubernetes-sigs/karpenter/blob/38e728c99b530f660f685d53d01f2e9ec9696668/pkg/controllers/static/deprovisioning/controller.go#L75-L130)按减少后的目标删除多余 NodeClaims。这是固定源码检查，不是本轮运行结果。**[一手]**
+- **提供方已接入，但默认关闭**：AWS provider [v1.8.1 发行](https://github.com/aws/karpenter-provider-aws/releases/tag/v1.8.1)于2025-10-09（UTC）发布，修复 gate 的 chart 大小写；固定 SHA `1ad0d78f8fa452cf27f4cf607377dd092489e2a0` 的 [go.mod L49](https://github.com/aws/karpenter-provider-aws/blob/1ad0d78f8fa452cf27f4cf607377dd092489e2a0/go.mod#L49)依赖上游1.8.0，[values L229–231](https://github.com/aws/karpenter-provider-aws/blob/1ad0d78f8fa452cf27f4cf607377dd092489e2a0/charts/karpenter/values.yaml#L229-L231)明确 alpha、默认 false，[deployment L128–129](https://github.com/aws/karpenter-provider-aws/blob/1ad0d78f8fa452cf27f4cf607377dd092489e2a0/charts/karpenter/templates/deployment.yaml#L128-L129)将配置传入控制器。[维护者2025-10-14答复](https://github.com/aws/karpenter-provider-aws/issues/8626)确认 AWS v1.8.x 支持。发行与确认早于报告自述的构建标签；不依赖推定实际运行日，也不把 upstream main 当托管服务已上线。**[一手]**
+
+### 修正后的条件决定与停止边界
+
+**只重开自管 AWS Karpenter 的定时容量分支**：支持版本、CRD／NodeClass与 gate 条件满足，且任务允许 alpha 时，先评估由定时任务调整静态 NodePool replicas，再决定是否需要占位 Pod 或另一套容量管理。它满足“可在工作负载需求出现前请求节点”的机制要求，但不是内置预测器／定时器；预测仍须决定何时需要多少节点。默认关闭和 alpha 不因被找到就变成默认采用。**[经验：基于实现的条件建议]**
+
+该[固定 API L39–41、64–90](https://github.com/kubernetes-sigs/karpenter/blob/38e728c99b530f660f685d53d01f2e9ec9696668/pkg/apis/v1/nodepool.go#L39-L90)还限制静态／动态模式切换、limits 与 weight，并忽略静态池的普通 consolidation 设置；不能直接给任意既有动态池补 replicas。目标数不是到点 Ready 保证，配额、启动和排空约束仍须验收；未证明成本、可靠性或低谷缩容延迟达标。此证据不覆盖 EKS Auto Mode、AKS NAP、GKE 的托管支持状态，不推翻原报告其他方案。原任务未给最终环境，所以只形成条件推荐，不选全题赢家。**[一手：API约束；经验：采用边界]**
+
+**不扩搜的反例**：同一报告§4.1已把 KEDA Cron 限定为提前改变工作负载副本、再由节点扩容器响应；其引用的 [KEDA 2.18 官方文档](https://keda.sh/docs/2.18/scalers/cron/)确实以工作负载和时间窗口为对象。这一间接路径已被正确限定，不因它不是节点预测器而追加缺项或重搜。若实际环境不支持 gate，或任务明确排除 alpha，静态容量分支也应停止；保留已有可行方案，不为候选数量扩搜。**[一手；经验：停止判断]**
+
+验证范围：已读完整公开产物、固定发行源码与提供方配置，并核任务／答案身份；没有运行模型、Kubernetes、benchmark或比较人工工时。本例只支持“核对决定性的能力排除依据”，不支持穷尽检索或方法性能结论。
