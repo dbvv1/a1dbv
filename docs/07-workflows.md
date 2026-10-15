@@ -1,6 +1,6 @@
 # 07 · 工作流方法论
 
-> 核实时间：2026-10-08；Hook 与迁移建议于 10-11 复核，HumanLayer 效果说法于 10-12 核对；10-13 收窄 Plan 和新会话的默认要求，10-14 补充第二次需求修改的验收建议；10-15（UTC+8）按契约与反馈收窄 Spec／TDD 首选，其余未重验。
+> 核实时间：2026-10-08；Hook 与迁移建议于 10-11 复核，HumanLayer 效果说法于 10-12 核对；10-13 收窄 Plan 和新会话的默认要求，10-14 补充第二次需求修改的验收建议；10-15（UTC+8）按契约与反馈收窄 Spec／TDD 首选，并复核 Ralph／长时 harness 的采用与撤回、`/goal` 的证据／成本边界及纠错后的流程选择；2026-10-15（UTC+8）独立审阅全文核心建议与相关入口，收敛工具与计划入口冲突；不代表所有外链或当前模型效果已重新验证。
 
 ## 30 秒：先解决哪一种不确定性
 
@@ -15,20 +15,22 @@
 
 > “给 Claude 一个它能运行的检查：测试、构建、截图对比。这是‘你得盯着的会话’和‘你可以走开的会话’的区别。”——Claude Code 官方最佳实践 **[一手]**
 
-没有可运行的检查，“看起来做完了”就是 Agent 唯一的停止信号，**你就成了验证环节**，每个错误都要等你发现。
+✅ **优先复用能检出目标错误的检查；需要人判断的体验仍保留试用反馈。** 续接机制可以减少反复催促，但不能补出缺失的验收依据。**[经验：采用判断]**
 
-| 约束强度 | 做法 |
+| 当前缺口 | 做法 |
 |---|---|
-| 弱 | 在提示里写：“实现后运行测试，修到通过” |
-| 中 | `/goal <完成条件>`：每轮由**独立的评估器**检查，直到条件满足 |
+| 已有可靠检查，只需执行 | 在任务中要求运行检查并展示结果，不另加循环 |
+| 有明确验收，但仍提前收尾 | 🧪 Claude Code `/goal <完成条件>`：由另一个模型判断会话中已展示的证据，决定续接；不会独立读文件或跑检查 |
 | 程序化检查（有条件） | **命令型 Stop hook** 按运行时协议阻止正常收尾；需测试缺文件、超时和连续阻止上限，不代替最终验收或权限边界，见 [06](06-hooks-and-guardrails.md) |
-| 交叉验证 | 验证子 Agent 或 Dynamic Workflow：让一个**全新的模型尝试推翻结果** |
+| 现有检查漏掉关键行为或假设 | 再用能取得独立依据的验证子 Agent；只换上下文不等于新增证据，按 [09](09-review-and-quality.md#按风险选择评审层不默认逐层叠加) 选择 |
 
 还要让 Agent **出示证据**（测试输出、跑过的命令和结果、截图），而不是只说“已完成”。
 
+**`/goal` 的成本与撤回**：会增加评估模型调用及可能的后续工作；已有会话能完成时不必加。目标被清除也可能是模型判为不可能或遇到需处理的错误，应核对停止原因与真实结果。提示中的时间／轮数条款仍由模型判断，不是硬预算；需硬限额时用已有执行环境的相应控制。没有新反馈、只是在重复说明时，清除目标并处理缺口。**局限：这是[官方机制](https://code.claude.com/docs/en/goal)，不是独立验收或净收益证明；细节见[现有核查](research/2026-10-12-long-task-evidence.md#2026-10-15按故障选择压缩清空与停止检查)。[一手；经验：采用边界]**
+
 **来自一线的证据 [一手]**：
 - Anthropic 用 16 个 Agent 写 C 编译器，作者总结：“它会自主解决你给它的任何问题，所以**任务的验证器必须近乎完美**。”项目用 GCC 作为“已知正确”的对照，并把测试输出设计成适合模型阅读（简洁，并按 1–10% 确定性采样）。
-- 长时任务 harness：自评会“自信地夸奖平庸的工作”，**把干活的 Agent 和评判的 Agent 分开**是“强有力的杠杆”。
+- 长时任务 harness：作者报告分离生成与评价后发现了交互缺口，支持针对性补反馈；这是其特定任务的观察，不证明当前任务加一个评判者就有净收益，采用与撤回见 §7。
 
 ## 2. 标准节奏：探索 → 计划 → 实现 → 提交 ✅
 
@@ -106,7 +108,7 @@
 **理解与交接**
 - **线性走读**：让 Agent 为代码写一份逐段讲解，适合接手 vibe 出来的代码。
 - **术语对齐**：评审前让 Agent 列出它自创的术语和含义，你改名后它全局替换；长期维护一份 GLOSSARY.md（Lobsters 上的做法）。
-- **交接**：用 `/handoff` 写交接文档，在新会话里接着做（可以跨厂商），在 HN 上比 `/compact` 更受推荐。
+- **交接**：确需换会话或交给另一工具时，复用现有任务记录，补当前目标、已验结果和未决事项；只需腾空间则按 [03](03-context-engineering.md#3-会话层面的上下文管理) 选压缩。不要假定 `/handoff` 是内置命令，应核对当前宿主／扩展，普通提示也可整理交接。**[一手：当前命令表；经验：采用判断]**
 - **PR 礼仪**：不要把自己都没审过的代码丢给同事；PR 要小，并附上证据（手工测试记录、截图）。
 
 ## 4. 测试驱动（TDD）🧪
@@ -114,7 +116,7 @@
 - 先从原需求、已确认复现或独立计算确定预期；已有测试能检出目标缺陷就复用，只为未覆盖行为补测试，再确认因目标缺陷失败、修复后通过，见 [22 的强验证](22-agent-evaluation.md#修-bug-的强验证)。
 - 不为变绿削弱断言或删除用例；生成测试失败时先核对实现与预期，有独立依据证明预期错误时可以修正测试。
 - 可选形式：一个会话写测试，另一个会话实现；分开上下文不自动获得独立预期，只有能补现有检查的缺口且值得交接成本时再用，见 [09 的按风险选择](09-review-and-quality.md#按风险选择评审层不默认逐层叠加)。
-- 强制工具：[tdd-guard](https://github.com/nizos/tdd-guard)（Hook 实现）；Superpowers 也内置 TDD Skill。
+- 不默认增加强制工具；确有可机械检查的流程缺口时，按 [06 的条件与失败边界](06-hooks-and-guardrails.md#高价值的-hook-场景) 选用，不能把 TDD Skill 或编辑 Hook 当完整执行保障。
 
 ## 5. Spec 驱动开发（SDD）
 
@@ -137,51 +139,46 @@
 
 ## 6. Ralph 循环 🧪
 
-“Ralph 就是一个 bash 循环”（Geoffrey Huntley）：把同一个提示反复喂给 Agent，每一轮都能通过文件和 git 历史看到上一轮的成果，一直迭代到完成。官方插件用 Stop hook 实现：
+✅ **普通会话能连续实现并验证，就不加外层循环。** 🧪 已有明确目标与授权，仍反复在可继续的工作前收尾时，才试受限续接；若缺的是检查覆盖、需求决定或工具权限，重复原提示不能补上它们。先区分两种常被混称为 Ralph 的实现：**[经验：采用判断]**
 
-```
-/ralph-loop "实现 X。要求……全部测试通过后输出 <promise>COMPLETE</promise>" \
-  --completion-promise "COMPLETE" --max-iterations 30
-```
-- **适合**：完成条件明确且能由机器检查的任务（让测试全绿、迁移完成、lint 清零）。
-- **风险**：没有好的验证就会空转烧额度。**务必设上限**。
-- 相关资料：[Ralph Playbook](https://github.com/ClaytonFarr/ralph-playbook)、[awesome-ralph](https://github.com/snwfdhmp/awesome-ralph)。
+- **同一会话续接**：官方 Ralph Loop 插件用 Stop hook 重送提示，不等于清空上下文或启动新进程
+- **新进程循环**：社区 shell 方案每轮重新启动 CLI，靠文件承接状态；只有已观察到上下文／恢复问题，且必要信息能可靠交接时才考虑
 
-## 7. 长时任务 harness（Anthropic 两篇工程博客 [一手]）
+官方固定实现的 `completion-promise` 比较模型文字，不运行项目验收；上限退出也不是完成。只在保留真实验证结果、预算上限与可用取消路径的条件下试用。连续重复同一失败、缺少新反馈，或已需要人决定时应退出循环并处理原因；外部操作结果不明时按 [20](20-codex-long-horizon.md#9-超时后动作究竟发生了吗) 先对账，不能自动重放。**[一手：固定源码；经验：撤回条件]**
 
-**第一篇（2025-11）：Initializer + Coding Agent**
-1. 第一个会话做初始化：写 `init.sh`（启动开发环境）、`claude-progress.txt`（进度），列出 **200 多个功能的 JSON 清单（全部标为 failing）**，做初始提交；
-2. 后续每个会话：`pwd` → 读 git log 和进度文件 → 选优先级最高、还没完成的功能 → 启动开发服务器跑基本的端到端测试 → 实现**一个**功能 → 用浏览器自动化验证 → 提交，留下干净的状态。
-3. 应对的失败模式：一口气想做完整个应用、过早宣布完成、会话之间留下未记录的 bug。
+**局限：两位开发者的表格与投票应用案例说明 fresh-process 路线可用，但没有证明它胜过普通会话；官方终止回归测试也只检查控制逻辑。** 版本、具体任务与反例见[循环采用核查](research/2026-10-12-long-task-evidence.md#循环采用核查续接重置与新增反馈)。**[社区／一手；研究：证据边界]**
 
-**第二篇（2026-03）：Planner / Generator / Evaluator**
-- Planner 把简单需求扩展成完整的产品规格；Generator 负责实现；Evaluator 用 Playwright 按**客观标准**打分并给反馈。
-- 成本参考：Opus 4.5 做一个复古游戏制作器，6 小时花了 200 美元，而单 Agent 20 分钟 9 美元的版本核心功能是坏的；Opus 4.6 做一个 DAW，3 小时 50 分钟花了 124.7 美元。
-- **“上下文焦虑”**：上下文快满时模型会过早收尾 → 重置上下文比压缩效果好（新模型上这个问题有所缓解）。
-- 开工前让 Generator 和 Evaluator **协商“做完”的标准**（sprint contract）。
-- **“找最简单的方案，只在需要时增加复杂度；每次模型更新后重新审视 harness，删掉过时的脚手架。”**
+## 7. 长时 harness：保留解决当前缺口的部分 🧪
+
+✅ **按失效原因补机制，不照搬历史架构。** 跨会话丢状态时补可核对的交接；生成结果漏掉可观察行为时补针对性测试或独立评价；已有检查足够时继续用普通会话。评审放在哪里由风险与中间契约决定，不默认每功能一轮，也不默认全部拖到最后。**[经验：采用判断]**
+
+Anthropic 的两篇历史工程报告应连着读：2025-11 的方案逐功能执行并交接；2026-03 的作者已在 Opus 4.5 上撤去上下文重置、改用自动压缩，又在 4.6 上移除 sprint，转为整轮构建后的评价。不能再由早期 Sonnet 4.5 的问题推出“长任务重置总比压缩好”。保留评价的具体理由是它仍发现 DAW 的拖动、录音等核心交互缺口，而不是运行时间更长或功能更多。**[一手：作者实验报告]**
+
+**撤回方式**：模型或任务变化后，一次移除一个可选环节，看原缺陷是否回来、是否仍产生有用的新反馈，再决定保留；目标质量提高但投入也增加时，明确这一取舍。**局限：这些历史任务并非同预算、同范围的因果对照，不能推导当前模型的固定重置频率、评审轮数或收益率。** [完整范围与不同作者案例](research/2026-10-12-long-task-evidence.md#循环采用核查续接重置与新增反馈)。**[一手；经验：采用与撤回建议]**
 
 ## 8. 把纠错沉淀下来（复利工程）
 
 | 纠正的是什么 | 写到哪里 |
 |---|---|
-| 项目事实或约定（搞错了两次） | CLAUDE.md / AGENTS.md |
-| 操作流程（第三次粘贴） | Skill |
+| 已确认且会影响后续任务的项目事实或约定 | 更新已有资料；确需常驻时才放 CLAUDE.md / AGENTS.md |
+| 需要复用的领域配方或可靠操作步骤 | 先用资料入口／已有脚本，仍有缺口再考虑窄 Skill |
 | 可机械检查的流程约束 | 命令型 Hook，并测试失败路径；权限约束交给沙箱等运行时边界 |
-| 某类审查 | Subagent |
-| 跨仓库通用 | 插件 |
+| 有独立调查价值的某类审查 | 按风险与证据缺口选 Subagent |
+| 多仓库确需共同分发多个组件 | 再考虑插件；仅共享文档不需要插件 |
 
-参考：Every 的 [Compound Engineering](https://github.com/EveryInc/compound-engineering-plugin) 插件。
+不按犯错或粘贴次数自动增加配置；先确认缺的是资料、反馈还是执行边界。新增内容不再改变结果、已失效或维护成本超过价值时删减，具体采用条件由 [03](03-context-engineering.md)、[05](05-skills-and-plugins.md) 和 [06](06-hooks-and-guardrails.md) 维护。Every 的 [Compound Engineering](https://github.com/EveryInc/compound-engineering-plugin) 是一种实现参考，不是流程越多收益越大的证据。**[经验：采用与撤回建议]**
 
-## 9. 常见失败模式（官方总结 [一手]）
+## 9. 常见失败模式（结合官方建议按原因处理）
 
 | 失败模式 | 修复 |
 |---|---|
 | 大杂烩会话：一会儿做 A 一会儿做 B | 不相关的任务之间 `/clear` |
-| 反复纠正：上下文里塞满失败的尝试 | 纠正两次就 `/clear`，写个更好的提示重来 |
-| CLAUDE.md 写得太多 | 狠心删减，或改成 Hook |
+| 反复纠正 | 先区分预期不清、缺反馈与错误思路累积；确需舍弃旧思路时保留已验结论再 `/clear`，不按次数清空 |
+| CLAUDE.md 规则被忽略 | 先核加载、冲突与相关性，再删重复／失效信息；只有机械检查适合 Hook，不能把所有说明转成脚本 |
 | 信任但不验证 | 一定要有测试、脚本或截图；无法验证就不要上线 |
 | 无边界的探索 | 限定调查范围，或交给子 Agent |
+
+以上采用条件与 [03 的会话选择](03-context-engineering.md#3-会话层面的上下文管理)一致；官方的纠正次数是实践建议，不是错误根因或清空收益的证明。**[一手：最佳实践；经验：诊断边界]**
 
 ## 来源
 
@@ -189,7 +186,7 @@
 - [HumanLayer：Why Software Factories Fail](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md)
 - [Simon Willison：Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/)、[Reducing the cognitive load of AI changes](https://amoffat.github.io/blog/cognitive-load.html)
 - Anthropic：[Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)、[Building a C compiler](https://www.anthropic.com/engineering/building-c-compiler)
-- [Ralph Wiggum 插件](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum)
+- [Ralph Loop 插件](https://github.com/anthropics/claude-plugins-official/tree/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/ralph-loop)
 - [Martin Fowler：Understanding SDD](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)、HN：[SDD: The Waterfall Strikes Back](https://news.ycombinator.com/item?id=45935763)（摘要）
 
 ## 官方示例也要匹配协作方式

@@ -1,6 +1,6 @@
 # 09 · 评审与质量
 
-> 核实时间：2026-10-11（UTC+8）；HumanLayer 推论于 10-12 定点复核；10-13 补充条件评审与原需求的输入交接；10-14（UTC）以受控评审、现场研究及 Crossplane 实际收窄评审的记录收紧分层建议，另核 Faros Q2 公开详解的指标口径；其余未重验。 2026-10-14（UTC+8）补核 A Few Pages of Markdown v2 分组与时间边界；10-15 补核公开包换算边界；2026-10-14（UTC）补核 §2 本地／云端入口、读取规则、计费及自动门槛契约，未运行客户端或托管评审。
+> 基础核实：2026-10-11（UTC+8）；最新定点补核：2026-10-15（UTC），终端评审 fork 的历史继承；10-14（UTC）另核 security-guidance 官方市场2.0.13的自动评审、依赖准备和模型端点路径。其他统计、入口与配置的补核日期见[研究记录](research/2026-10-12-baml-and-review.md)及各节来源；2026-10-15（UTC+8）完成全文核心建议与相关入口的独立就绪审阅，沿用既有契约核查并定点重读效果论文；不代表全部外链、客户端或模型已重新验证，未安装或运行插件及新模型实验。
 
 ## 30 秒结论
 
@@ -10,15 +10,15 @@
 
 | 来源 | 发现 |
 |---|---|
-| GitClear × GitKraken《The Maintainability Gap》（2026），分析了 2023–2026 年的 6.23 亿次代码变更 **[一手：厂商报告，相关性]** | 重复代码块 **+81%**（每百万变更行从 40.3 增到 73.0）；同一提交内的复制粘贴 +41%；掩盖错误的代码 +47%；两周内返工 +15%；跨文件函数调用 −35%；重构式移动从占变更行的 13% 降到 **3.8%**（复制粘贴是它的约 5 倍）；对一年以上旧代码的更新 −74%。报告的概括是：默认的 AI 工作流倾向于交付“原子式”代码（只走通主路径、让一个测试通过、关掉一张工单），而复用、整合、暴露错误这些看不见的工作被拖欠了 |
+| GitClear × GitKraken《The Maintainability Gap》（2026-06；2023–2026 年中累计数据），本轮读公开摘要与报告图页，未取得完整 PDF **[一手：厂商公开材料，观察性]** | 报告的重复指标相对增加 **81%**，但落地页正文与报告图页的单位冲突，不能据此设重复率阈值；代码移动占变更行由 2023 年 **12.7%** 降至 2026 YTD 的 **3.8%**，只是重构代理指标的占比，非重构工作量下降。旧代码更新也按占比统计，不能推断维护绝对量减少。可提示抽检重复、复用与错误处理；公开材料不足以把变化归因于默认 AI 工作流，方法及口径边界见[核对记录](research/2026-10-12-baml-and-review.md#gitclear维护信号的分母与采用边界) |
 | Faros AI《The Acceleration Whiplash》（2026 Q2，2.2 万名开发者、4,000 个团队、两年遥测）**[一手：厂商公开页及详解，观察性]** | 同一组织最低与最高 AI 采用时期相比，事故数／已合并 PR 数之比约 **3.4 倍**，PR 在评审中停留时间中位数约 **5.4 倍**；代码 churn（季度内已合并代码删行／加行比）约 **9.6 倍**，不能全部译成返工，也可能含有益重构。事故比率不是单个 PR 致事故概率，评审停留不等于主动阅读工时；[公开详解](https://www.faros.ai/blog/ai-acceleration-whiplash-takeaways)未提供完整方法，不能外推本团队恶化幅度 |
-| 开发者调查 **[二手]** | 约 66% 的开发者认为 AI 输出“几乎正确”：好到能合并，又坏到需要返工 |
-| Anthropic 长时任务实验 **[一手]** | 模型自评时会“自信地夸奖平庸的工作” |
+| [Stack Overflow 2025 调查](https://survey.stackoverflow.co/2025/ai)，该多选题 31,476 人作答 **[一手：自报调查]** | 66% 选择遇到“几乎正确但仍有问题”的 AI 方案，45% 选择调试 AI 代码更费时；这是受访者遇到的挫折，不是输出缺陷率、合并率或实测返工成本 |
+| Anthropic 长时应用开发复盘（2026-03）**[一手：作者实验自述]** | 自评偏宽松在主观设计上尤其明显；作者也发现新模型已能独立完成的任务中，额外 evaluator 会成为负担。只支持对具体缺口增加外部验证，不支持固定多轮互评；[原文与撤去环节](research/2026-10-12-long-task-evidence.md#3-历史-harness-自己已经撤去哪些环节) |
 | *A Few Pages of Markdown*（arXiv 2608.25241v2）**[研究：全文；一手：分析代码；经验：分组／换算复核]** | 441 个仓库用于开发分类器，另在 509 个开源处理仓库中的 agent-first 分层比较：观察期未检出 AI IDE 配置痕迹的仓库，无／有提交配置组的 +52.7%／+26.7% 是作者对认知复杂度 `log(Y+1)` 系数作 `expm1` 的换算，非原量均值直接涨幅。终点配置多在采用 Agent 同期或之后出现，不能把增幅差归因于配置；[分组与方法边界](research/2026-10-13-context-study-reassessment.md#a-few-pages分组时间与维护) |
 
-**实践推论 [经验：建议]**：这些相关性和厂商数据值得用来选择抽检重点，但不能单独证明 AI 导致了上述变化。评审可特别检查重复、绕过错误处理、不触碰旧代码的“打补丁”式改动。
+**实践推论 [经验：建议]**：这些相关性和厂商数据值得用来选择抽检重点，但不能单独证明 AI 导致了上述变化。评审可特别检查重复是否造成同步修改负担、异常处理是否真正吞掉必要信号、改动是否绕开已有抽象；不要为提高指标而机械增加旧代码改动、函数调用或重构配额。
 
-**评估缺口与训练解释要分开**：HumanLayer 的 Dex 认为，快速测试型奖励不能充分约束长期设计质量，进而推测模型难学会维护性、更多评审不能提高上限 **[社区：作者假设]**。前者提示应该看后续修改；后者不能从公开 benchmark 推导，因为它不代表全部训练信号，而且生成与评审的输入、搜索机会不同。不要把“缺少长期质量证明”写成“模型不可能改善”。[BAML 双 PR 与原文复核](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)记录具体反例和边界；更广的采用分析见 [14](14-synthesis.md#1-规律一能力地图就是验证器地图) **[研究]**。
+**评估缺口与训练解释要分开**：HumanLayer 的 Dex 认为，快速测试型奖励不能充分约束长期设计质量，进而推测模型难学会维护性、更多评审不能提高上限 **[社区：作者假设]**。前者提示应该看后续修改；后者不能从公开 benchmark 推导，因为它不代表全部训练信号，而且生成与评审的输入、搜索机会不同。不要把“缺少长期质量证明”写成“模型不可能改善”。[BAML 双 PR 与原文复核](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)记录具体反例和边界；更广的采用分析见 [14](14-synthesis.md#1-规律一验证覆盖与自主权分开判断) **[研究]**。
 
 **对评审的启示**：
 1. 把评审重心前移到**设计**（类型、接口、调用关系），而不是等 2000 行 diff 出来再看；
@@ -30,17 +30,22 @@
 ### 本地 / 会话内
 | 手段 | 说明 | 评级 |
 |---|---|---|
-| `/code-review`（Claude Code 内置） | 本地评审，按正常用量计费；读 `CLAUDE.md`，不读 `REVIEW.md`。默认后台独立上下文；覆盖还随模型、effort 变化，并非只报 bug | ✅ 定向使用 |
+| `/code-review`（Claude Code 内置） | 本地评审，按正常用量计费；读 `CLAUDE.md`，不读 `REVIEW.md`。默认后台独立窗口；终端 fork 继承当前会话历史，不等于独立输入；覆盖随模型、effort 变化 | ✅ 定向使用 |
 | Codex `/review` | 本地选择未提交改动、某次提交或相对基线；报告发现，不改工作树；认证可选 ChatGPT 或其他支持方式，不能统称为仅订阅入口 | ✅ 定向使用 |
 | `/code-review ultra` / `claude ultrareview` | 云端多 Agent，需 claude.ai 认证，正常本地用量之外计费；先确认实际启动云端及评审基线，CI 完成条件见下文 | 🧪 高风险变更 |
-| `/security-review`、`security-guidance` 插件 | 安全审查；后者在编辑时就提示 9 类常见风险 | 🧪 |
+| `/security-review` | 按需安全审查；与自动运行的安全插件分开选择 | 🧪 定向使用 |
+| `security-guidance` 插件 | 官方市场 2.0.13 默认含编辑模式提醒、Stop diff 评审与 commit／push 评审；会增加模型调用，并可能自动准备 SDK 依赖，采用条件见下文 **[一手：固定源码]** | 🧪 有持续安全评审缺口时 |
 | `/simplify` | 只看复用、简化、效率，不找 bug | 🧪 |
 | 自定义评审子 Agent | 已有明确的漏审类型或复杂变更需要独立检查时使用（模板：[code-reviewer](../templates/generic/.claude/agents/code-reviewer.md)） | 🧪 按风险试用 |
 | **另一家的模型交叉评审** | 比较新增有效发现、误报和审查成本；换品牌不自动获得独立证据 | 🧪 不默认每次互审 |
 
+**安全插件先选运行层，而非只看提示规则。** `security-guidance` 2.0.13 已不是只做本地模式提醒：模型评审把 diff／相关代码送往配置的 Anthropic、网关或第三方 provider 路径，并默认跟随最新 Opus。只需要模式提醒时可关闭模型层，但关闭模型层不阻止其独立的 SessionStart SDK 引导安装；不能接受自动准备依赖时，先不装。需要持续模型评审时，先核数据路径、模型预算和实际完成情况，再考虑保留。**关键局限**：出现编辑提醒不证明模型评审运行过，空结果也不证明安全。[固定实现与真实失败反例](research/2026-10-12-baml-and-review.md#安全插件从提醒到自动模型评审)。**[一手；研究：采用判断，2026-10-14 UTC，未运行]**
+
+**独立窗口不等于隔离实现历史。** 当前终端 `/code-review` 默认以 fork 子 Agent 运行，会继承当前会话历史；它适合就地复查，但不能自动满足“不灌入实现推理”的独立审阅要求。确有这类风险时，再另起干净会话或非 fork 评审子 Agent，只传需求、验收与可核查产物；不因此默认叠加 reviewer。前台例外和版本范围见[证据记录](research/2026-10-12-baml-and-review.md#评审窗口与输入历史的区别)。**[一手：2026-10-15 UTC 官方契约；研究：采用判断]**
+
 **评审子 Agent 的提示要点**：给 diff 和能追到原需求或已确认验收的判据，不灌入实现过程中的推理；明确要求“**只报告影响正确性或违背需求的问题，不报告风格偏好**”。遇权限、解析或接口变化，沿具体风险查未改的消费者，必要时用能区分假设的输入核验；计划合规与用户目标成立分别判断。复用已有判据，不要求所有任务另写 spec 或增加 reviewer。固定源码与反证见[输入交接记录](research/2026-10-12-baml-and-review.md#后续任务相同-brief-与过期接口)。**[研究：采用判断]**
 
-Anthropic 给 Opus 5.5 的评审提示：“Review the diff on this branch against main. **List only problems you'd block the merge for.** For each one, give the file and line, why it's wrong, and how to show it fails.” 有测试者反馈，Opus 5.5 在最低 effort 下找到的 bug 比 Opus 5 在高 effort 下还多，误报也更少 **[一手]**。
+**模型与 effort 不按客户引言直接选**：Opus 5.5 发布页的低 effort 优势来自 Deloitte 客户转述，未公开其缺陷集、样本量与误报判定。可作为候选线索，不能据此默认低 effort 足够或替代本仓配对评估。[原始归属与边界](research/2026-10-12-baml-and-review.md#调查模型转述与第三方服务的采用边界)。**[一手：厂商刊载客户自述；研究：采用判断]**
 
 本地入口依据：[Claude 评审文档](https://code.claude.com/docs/en/code-review#review-a-diff-locally)、[Ultrareview 比较](https://code.claude.com/docs/en/ultrareview#how-ultrareview-compares-to-code-review)、[Codex CLI](https://learn.chatgpt.com/docs/codex/cli)。**[一手：2026-10-14 UTC]**
 
@@ -49,10 +54,10 @@ Anthropic 给 Opus 5.5 的评审提示：“Review the diff on this branch again
 |---|---|---|
 | [Claude Code GitHub Action](https://code.claude.com/docs/en/github-actions) | 自有 workflow 内运行 Claude；触发、权限、提示由工作流决定，可用 API key 或订阅 OAuth。不是托管 Code Review 的等价入口 **[一手]** | 🧪 需自管 CI |
 | Claude Code Code Review（托管） | Team／Enterprise 研究预览，需组织启用；单独 usage credits 计费，不能由本地订阅可用推断托管可用 **[一手]** | 🧪 关键 PR |
-| Cursor Bugbot / Security Review / Rollouts | Bugbot 2026-05 改为按次计费（约 1–1.5 美元/次），社区不满；2026-09 新增安全评审和部署监控机器人（Teams / Enterprise） | 👀 |
+| [Cursor Bugbot](https://cursor.com/docs/bugbot#pricing) / [Security Agents](https://cursor.com/docs/security-agents) | Bugbot 按用量计费，旧 seat 方案仍有过渡；先核账户实际方案与预算，不用 5 月平均单次成本作当前报价。Security Reviewer 查 PR，Vulnerability Scanner 查存量代码；部署监控 Rollouts 不能替代评审 **[一手：2026-10-14 UTC 文档；研究：选择边界]** | 👀 已用 Cursor 且有对应缺口时 |
 | [Codex `@codex review` / `@codex security review`](https://learn.chatgpt.com/docs/third-party/github) | 先连接仓库并配置评审；规则写入根／适用子目录的 `AGENTS.md`。安全评审是额外的定向评审，不能把普通评审无发现当安全验收 **[一手]** | 🧪 |
 | **Codex Security Cloud**（研究预览，2026-09 DevDay） | 扫描已连接的 GitHub 仓库或监控新提交，给出发现、**验证证据**和补丁，再生成草稿 PR | 👀 **[一手]** |
-| CodeRabbit、Greptile、Qodo | 第三方评审服务，都有 Claude Code 官方插件 | 👀 |
+| CodeRabbit、Greptile、Qodo | Claude Code 官方市场收录的**第三方集成**，不等于 Anthropic 自研或已证明更有效；先核服务资格、数据外发与是否自动增加评审轮次。[固定来源与差异](research/2026-10-12-baml-and-review.md#配置诊断插件评估与第三方集成的范围) **[一手；研究：采用边界]** | 👀 有具体缺口再接 |
 
 ### 云端入口和 CI：先辨认完成了什么
 
@@ -87,7 +92,7 @@ Anthropic 在 2026-03 推出 Code Review 时公布了内部使用的数据 **[�
 
 **若确需门槛 [经验：设计条件]**：先验证报告来自预期应用、对应当前 PR head SHA 且评审已成功完成，再校验统计字段及类型，最后按团队确定的严重度阈值处理。待完成、失败、额度跳过、缺失／解析失败／过期报告都转人工或保持门槛未通过，绝不补成零。自己的门槛检查须另设为 required check；`normal > 0` 是待处理发现，不是已独立证明的 bug。若无法可靠辨认成功报告，先保留提示型评审。[官方输出与失败语义](https://code.claude.com/docs/en/code-review#check-run-output)。
 
-**一个旁证**：Intercom 自动批准 19% 的 PR，由破坏性变更导致的停机时间下降了 35%（Anthropic 博客转述，**[一手：厂商自述]**）。
+**独立的组织案例，不能当作本产品效果**：[Intercom 原文](https://www.intercom.com/blog/ai-is-approving-our-pull-requests-heres-how-we-made-it-safe)报告其自建审批系统在两个主代码库中自动批准超过 19% 的 PR；停机时间下降 35% 是整体研发转型期间的组织结果。系统限制大而复杂的变更，发布者仍须监控并能回滚；不能据此默认开自动批准或把下降归因于托管 Claude Code Review。**[一手：使用方自述；研究：归因边界]**
 
 **怎么看这些数字**：
 - 它们是“验证后再报告”的内部使用信号；“被标为错误不到 1%”缺少完整独立判定的分母，不能直接当成整体误报率、精确率或召回率；
@@ -145,7 +150,7 @@ Anthropic 内部实践也强调：评审 Agent 职责要窄，**必须证明自�
 | [AGENTS.md 研究 v3](https://arxiv.org/html/2602.11988v3)，300 个 Lite + 138 个 CTXbench 任务，4 个模型配置 **[研究：受控比较]** | 未检出相对无文件的显著成功率改善；生成文件增加约 20–23% 推理费用；应核查具体指令的作用 | 不能从旧版标题推成“所有文件必然降低正确率”；单次/条件、Python 仓库不代表所有项目 |
 | [SkillsBench v4](https://arxiv.org/html/2602.12670v4)，87 个任务、18 个模型—harness 配置 **[研究：配对比较]** | 人工整理包的平均验证器得分 33.9→50.5；Codex GPT-5.5 配置 +19.7 个百分点 | 主分数含部分得分；严格 solved 另报 31.3→47.7%。优先选健康替补运行，不等于首次尝试可靠性；模块数量分组不是长度随机实验 |
 | [规划研究 v3](https://arxiv.org/html/2604.12147v3)，21,120 条 SWE-agent 轨迹，4 个模型、8 种计划 **[研究：消融]** | 短的定位→复现→修复→验证流程有受控支持；额外阶段也可能伤害结果。[原始轨迹](https://github.com/Intelligent-CAT-Lab/Planning-Analysis/tree/main/raw_trajectories)可查 | 不等于原生 Codex 的规划模式或所有任务都该写长计划；遵循计划与成功相关不单独证明因果 |
-| [多 Agent 扩展研究 v3](https://arxiv.org/html/2512.08296v3)，260 配置/6 基准 **[研究：受控比较]** | 在匹配总迭代预算下，协作收益随任务变化，编码子集平均不增益 | 编码仅 20 个任务，区间很宽；“45% 阈值”不是普遍定律，个别模型仍增益；迭代数也不等于 token/金额预算 |
+| [多 Agent 扩展研究 v3](https://arxiv.org/html/2512.08296v3)，260 配置/6 基准 **[研究：受控比较]** | 协作收益随任务变化；先比较单体与候选，不只凭 45% 或 87% 决定新任务的单体／多体架构；[完整候选组评估与静态复算](research/2026-10-12-experiment-records.md#架构阈值与完整候选组不能按45或87硬路由)于 10-15 补核 | 新协议与论文 87% 的评价单位不同；编码每基准 20 任务，阈值依赖收益端点，迭代数也不等于 token／金额预算 |
 | [重复运行研究](https://arxiv.org/html/2609.33812v1)，584 次单一 ML 任务运行 **[研究：重复实验]** | 少量运行的排名不稳；违规高分需先过滤；[原始结果、程序和分析](https://github.com/earino/identical-runs-different-results)可离线复核 | 多次重复同一任务不能代替多样任务，也不能证明某 harness 一般更强 |
 
 🧪 **工件可用性也算证据**：SWE-Skills-Bench 的 [论文](https://arxiv.org/html/2603.15401v1)仅用 Haiku 4.5，报告小幅收益；其 [声明仓库](https://github.com/GeniusHTX/SWE-Skills-Bench)在核对日经网页与 GitHub API 均返回 404，且正文的注入位置描述不一致。不能标为本仓库已复现。持续记忆的选样、检索和工件边界见 [03](03-context-engineering.md)。
@@ -166,6 +171,8 @@ Anthropic 内部实践也强调：评审 Agent 职责要窄，**必须证明自�
 
 [19 的 E5](19-experiments.md#8-e5公开结果表的离线复核)给出真实 CSV 的取舍敏感性核对；[工作流消融夹具](../experiments/workflow-ablation/)只验证评估器机制，不提供模型效果数据。E1–E3 历史实测缺完整原始工件，不能照文章就精确复现。
 
+**已有工具按评估对象选 [一手；研究：采用判断]**：已有 Claude Code 插件／Skill 要测行为时，可评估 [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals) 的有／无插件对照；它不加载项目 `CLAUDE.md` 等配置，不能直接替代整个工作流的配对评估。每次运行及模型裁判都会耗用额度／API 费用，先核预算和报告发布选项；语法诊断、调用次数与评分通过也不等于产品可交付。[范围核对](research/2026-10-12-baml-and-review.md#配置诊断插件评估与第三方集成的范围)。
+
 ### 将配置评估变成可复查的记录
 
 进一步落地见 [22 评估 Agent](22-agent-evaluation.md)：区分任务成功率与断言通过率，保留失败和重试成本，使用留出集并校准模型裁判。历史 [19 实测记录](19-experiments.md) 的原始产物尚未随仓库提供，本轮没有独立复现；不宜单独用其汇总数字支持推广。
@@ -176,18 +183,18 @@ Anthropic 内部实践也强调：评审 Agent 职责要窄，**必须证明自�
 - [ ] 评审重点：重复代码、被吞掉的错误、旧代码是否该改却没改、测试是否真的在测
 - [ ] 关键路径可试交叉模型评审，并抽查误报、漏报与人工处理成本
 - [ ] 维护一个私有评估集，换模型或大改配置时重跑
-- [ ] 定期检查 AI 配置本身：`/doctor prompt-audit`、`/skill-doctor`，以及社区 linter [agnix](https://github.com/agent-sh/agnix)、[ctxlint](https://github.com/ctxlint/Ctxlint)
+- [ ] 配置有冲突或上下文负担时，先检查实际加载内容；Claude Code 可用时用 `/doctor prompt-audit` 找过时／冲突指令，用 `/skill-doctor` 查看调用与上下文成本。它们不能证明效果，少用也不是删除依据；不为这项检查默认安装额外 linter。命令版本与连接限制见[范围核对](research/2026-10-12-baml-and-review.md#配置诊断插件评估与第三方集成的范围) **[一手；研究：采用判断]**
 
 ## 来源
 
 - [Faros AI：The Acceleration Whiplash](https://www.faros.ai/research/ai-acceleration-whiplash)（厂商报告页）；[十项详解](https://www.faros.ai/blog/ai-acceleration-whiplash-takeaways)，口径与缺口见[核查附注](research/2026-10-12-baml-and-review.md#faros公开指标的口径补核)
 - [HumanLayer：Why Software Factories Fail](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md)
-- [GitClear：The Maintainability Gap（2026）](https://www.gitclear.com/the_ai_code_quality_maintainability_gap)（二手）
+- [GitClear：The Maintainability Gap（2026）](https://www.gitclear.com/the_ai_code_quality_maintainability_gap)（一手：公开摘要与报告图页；完整 PDF 未取得）
 - [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
 - [Agent Skills：Evaluating skills](https://github.com/agentskills/agentskills/blob/main/docs/skill-creation/evaluating-skills.mdx)
-- [Code Review for Claude Code](https://claude.com/blog/code-review)（2026-03，内部数据）、[How Anthropic secures its AI-native SDLC](https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle)（Intercom 数据）
+- [Code Review for Claude Code](https://claude.com/blog/code-review)（2026-03，内部数据）、[How Anthropic secures its AI-native SDLC](https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle)（组织实践）；[Intercom 审批原文](https://www.intercom.com/blog/ai-is-approving-our-pull-requests-heres-how-we-made-it-safe)
 - [Claude Code：Code review](https://code.claude.com/docs/en/code-review)、[Ultrareview](https://code.claude.com/docs/en/ultrareview)、[Plugin evals](https://code.claude.com/docs/en/plugin-evals)
-- [Cursor Bugbot 计费变更](https://cursor.com/blog/may-2026-bugbot-changes)
+- [Cursor Bugbot 当前计费](https://cursor.com/docs/bugbot#pricing)、[Security Agents](https://cursor.com/docs/security-agents)、[Rollouts](https://cursor.com/docs/rollouts)
 
 ## 可执行案例：独立验证要独立到什么程度
 
