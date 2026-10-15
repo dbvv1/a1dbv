@@ -1,6 +1,6 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，先明确所有者、时钟和退出；实际复杂度再升级 HFSM／行为树／GAS／ECS，相机与重试围绕玩家决策，命令预览复用规则但不承诺任意结果精确；多来源效果区分授予所有权与合并语义；导航先分通路、让路、停距与位移权，不统一增加或降低重算频率；关卡组合以路线／遭遇意图约束，连通不等于体验通过；重复清理先查结束条件与成长激励，再扩内容；03受限动作仅在开放意图有玩法价值时列候选，缺参数不得放大作用对象；教学区分动作完成、使用时机与正式关卡迁移，不默认加长强制教程；辅助按阻碍与目标选局部调整或整局预设，明确生效时机与切回规则；屏外威胁区分当前可获知信息、应对机会与已承诺攻击；建造视图先按输入入口定支点，再调平滑
-新证据：[一手／社区] 固定项目源码、修复链、作者复盘及镜头默认值争议；新增 Dead Cells／Cogmind 关卡设计与 Shattered Pixel Dungeon 固定生成链，以及 Rogue Legacy／Into the Breach 的成长与胜利条件取舍；保留 Factorio 堵塞复盘、Overgrowth 固定运动源码、Unity／UE 原生导航边界；保留 OpenRA 条件授予／撤销、Shattered Pixel Dungeon 毒镖／计时源码与 GAS 聚合契约；保留预览及 rewind 对照；[研究] 含确定性算术反例，无引擎／玩家对照，不能证明架构或手感收益；新增 Factorio 目标规则、Mantella 固定动作到引擎脚本链及 GoodAI 动作失配／封闭重做原文；新增 Factorio 提示改版／教学依赖、固定原型消费链及 Outer Wilds 开发中教学复盘，作者观察不作受控学习结果；新增 Dead Cells 29 辅助历史修复及 Cogmind 2017／2019／2022 难度设计与发布后回顾；新增 Cogmind 放大视图、Specter of Torment 房间设计、Luna Abyss 开发访谈及 Shattered Pixel Dungeon 固定蓄力／结算链；新增 Tiny Glade 1.11.2 支点默认选择与 OpenRCT2 0.4.26 两条缩放修复
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，先明确所有者、时钟和退出；实际复杂度再升级 HFSM／行为树／GAS／ECS，相机与重试围绕玩家决策，命令预览复用规则但不承诺任意结果精确；多来源效果区分授予所有权与合并语义；导航先分通路、让路、停距与位移权，不统一增加或降低重算频率；关卡组合以路线／遭遇意图约束，连通不等于体验通过；重复清理先查结束条件与成长激励，再扩内容；03受限动作仅在开放意图有玩法价值时列候选，缺参数不得放大作用对象；教学区分动作完成、使用时机与正式关卡迁移，不默认加长强制教程；辅助按阻碍与目标选局部调整或整局预设，明确生效时机与切回规则；屏外威胁区分当前可获知信息、应对机会与已承诺攻击；建造视图先按输入入口定支点，再调平滑；需复现玩法序列时，让纯表现随机沿独立状态所有者消费
+新证据：[一手／社区] 固定项目源码、修复链、作者复盘及镜头默认值争议；新增 Dead Cells／Cogmind 关卡设计与 Shattered Pixel Dungeon 固定生成链，以及 Rogue Legacy／Into the Breach 的成长与胜利条件取舍；保留 Factorio 堵塞复盘、Overgrowth 固定运动源码、Unity／UE 原生导航边界；保留 OpenRA 条件授予／撤销、Shattered Pixel Dungeon 毒镖／计时源码与 GAS 聚合契约；保留预览及 rewind 对照；[研究] 含确定性算术反例，无引擎／玩家对照，不能证明架构或手感收益；新增 Factorio 目标规则、Mantella 固定动作到引擎脚本链及 GoodAI 动作失配／封闭重做原文；新增 Factorio 提示改版／教学依赖、固定原型消费链及 Outer Wilds 开发中教学复盘，作者观察不作受控学习结果；新增 Dead Cells 29 辅助历史修复及 Cogmind 2017／2019／2022 难度设计与发布后回顾；新增 Cogmind 放大视图、Specter of Torment 房间设计、Luna Abyss 开发访谈及 Shattered Pixel Dungeon 固定蓄力／结算链；新增 Tiny Glade 1.11.2 支点默认选择与 OpenRCT2 0.4.26 两条缩放修复；新增 OpenRA 宝石闪光评审修正、BrogueCE 双随机状态与 Unity6.0／UE5.8 原生流及重置契约
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
@@ -794,3 +794,29 @@
 [研究] 二改增加高塔／陡崖，再新增独立视口按钮或另一种输入入口。分别核对象中心、对象边缘、背景与视口边界，检查滚轮和按钮、主视口和额外视口的结果。关闭平滑后仍跳错位置，先修选点／坐标／命令路径；结果正确但过渡突兀，再比较平滑及其延迟。AI 可追坐标转换、补入口和记录轨迹；人决定操作意图是否容易预测。没有具体误选或入口缺陷就保留现有方案，不为新增配置而造通用镜头系统。
 
 **边界与实际验证：** [一手／研究] OpenRCT2 代码标 GPLv3，本轮只提炼机制、不复制代码；实际复用须遵守对应许可证。Tiny Glade 公告不授予代码／资产复用权。只读公开官方 API、网页、固定提交与讨论，未运行游戏／引擎／模型、未安装软件；无舒适度、操作速度或 AI 效率测量。这是通用控制政策，不新增 Unity／Unreal 等价配置。
+
+## 随机所有权补研：装饰二改是否改变玩法序列
+
+核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变05 §6的选择：需要复现玩法序列时，新增纯表现随机先分清状态所有者，沿现有实例／流隔离消费。已有“预览不得改变随机状态”只规定查询副作用；本节回答合法的颜色／音效变体应该消耗哪条流，不重复 seed 与生成器版本存档建议。
+
+### 1. OpenRA：视口相关闪光的评审修正
+
+[一手：维护者评审／合并源码] [PR #18711](https://github.com/OpenRA/OpenRA/pull/18711)新增宝石闪光。维护者在[具体评审](https://github.com/OpenRA/OpenRA/pull/18711#discussion_r711581362)指出：按客户端 `Viewport.AllVisibleCells` 调用 SharedRandom 会导致多人失同步，应改用 LocalRandom；[作者回复](https://github.com/OpenRA/OpenRA/pull/18711#discussion_r711729049)确认已处理。这是评审发现并纠正的风险，不能写成已发行故障统计或本轮复现。
+
+[一手：固定源码] 2021-10-02 合并提交 `a13d04630469fcb994bbbc25e644b4e6b471017c` 的 [WithResourceAnimation L62–103](https://github.com/OpenRA/OpenRA/blob/a13d04630469fcb994bbbc25e644b4e6b471017c/OpenRA.Mods.Cnc/Traits/World/WithResourceAnimation.cs#L62-L103)把间隔、可见格筛选后的洗牌、比例与动画选择接到 LocalRandom；同提交 [Util L201–209](https://github.com/OpenRA/OpenRA/blob/a13d04630469fcb994bbbc25e644b4e6b471017c/OpenRA.Mods.Common/Util.cs#L201-L209)让范围采样显式接收生成器，不再在帮助函数中固定取世界 SharedRandom。[研究] 可借的是调用者明确传入所拥有的流，而不是搬运整个 RTS 架构。不能把全部声音／动画相关代码一律改为局部随机：是否影响权威状态及调用时机才是边界。
+
+### 2. BrogueCE：单人显示与玩法也有不同消费域
+
+[一手：固定源码] `tmewett/BrogueCE@104a20fedbe7d9360d2dfc8ff665571694212ad8`（2026-09-27 主干快照，非本轮确认的发行包）的 [Rogue.h L401–405](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/Rogue.h#L401-L405)区分 substantive／cosmetic；[Math.c L90–133](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/Math.c#L90-L133)保存两份状态并按当前域采样；[IO.c L1768–1805](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/IO.c#L1768-L1805)在颜色随机化前选 cosmetic，完成后恢复原域。[研究] 这为独立单人 roguelike 提供另一种隔离实现；本轮只确认该调用链，不证明所有路径均正确，也不建议在新项目照搬可变全局选择器。
+
+### 3. 复用原生能力，别把重置当续接
+
+- [一手] [Unity 6.0 Random](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Random.html)明确 UnityEngine.Random 是全局共享的静态状态，需要独立生成器时可管理 System.Random 实例。[研究] 小项目可由玩法与表现模块分别持有已有实例并传入采样函数，不要求新增库或每个实体单独播种。
+- [一手] [Unity 6.0 Random.state](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Random-state.html)区分保存／恢复完整状态和 InitState 重新初始化；官方示例中前者续接保存点，后者回到序列开头。[研究] 这不使全局 Random 自动成为多条流；不要在每次表现回调里重设全局 seed 来“隔离”。
+- [一手] [UE 5.8 Random Streams](https://dev.epicgames.com/documentation/en-us/unreal-engine/random-streams-in-unreal-engine)提供 Blueprint RandomStream 结构变量和 From Stream 节点；[FRandomStream](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Core/FRandomStream)分别列 InitialSeed、当前 Seed 与 Reset，Reset 回到初始 seed。[研究] 沿现有所有者保留流状态并选对输入，别每次抽取都重建／重置；这里不承诺任意序列化或跨版本兼容。
+
+[研究] ✅ 需要 seed 挑战、回放或可复查规则结果，且表现二改可能改变采样次数时，先隔离玩法与纯表现的随机消费。无此需求且现有实现没有耦合问题时保留简单方案；同一玩法域内部的规则改动仍可能改变后续序列，分流不使一切修改稳定。视觉对象若参与碰撞、命中或资源规则，按玩法处理，不能仅凭外观归入 cosmetic。
+
+[研究] **二改预注册，未执行：** 固定版本、初始玩法状态与玩法输入轨迹，只增加闪光／音效变体，或改变视口、关闭表现；对照掉落、伤害及目标选择等所需玩法结果，并检查表现路径未抽取玩法流。若恢复中途继续，另核续接的是当前流状态而非重播起点。AI 可追消费者与补回归夹具，人决定哪些结果需复现。不新增锁步／回滚系统；通过也只支持本配置下的随机隔离，不证明跨平台、物理或完整网络确定性。
+
+**许可与验证边界：** BrogueCE 对应源码标 AGPL-3.0-or-later，OpenRA 对应源码标 GPL-3.0-or-later；本节只借机制、不复制代码／资产，实际源码复用须遵守许可证。核对公开评审、固定文件与原生 API，未安装、运行引擎／游戏／模型、执行玩法测试或测量收益。
