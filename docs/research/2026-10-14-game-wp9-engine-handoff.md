@@ -1,6 +1,6 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：§11 新增官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 新增官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 新增官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 新增官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
@@ -110,6 +110,17 @@ pivot、outline、remap 和状态机只有明确归 source/pipeline 管理时才
 [Addressables 2.9.1 AssetReference 契约](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/api/UnityEngine.AddressableAssets.AssetReference.html)同时有 AssetGUID、SubObjectName、SubObjectGUID（适用 SpriteAtlas）。编辑器主资产可加载，不等于运行时子资产正确。[一手]
 
 已有远端分发需求时，[官方更新构建流程](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/content-update-builds-overview.html)要求保留每个平台、每个发布基线的 addressables_content_state.bin；使用内容限制检查和 Update a Previous Build。源文件重导入与对旧 Player 发布内容更新是两回事；小项目不为重生成强加 CDN。[一手＋经验]
+
+### 3.4 UnityGLTF：材质映射设置正确，不代表冷导入结果正确
+
+2026-10-15 UTC 核实。**✅ UnityGLTF 跨资产材质 remap 的二改验收增加干净副本全量导入，检查 Renderer 实际材质，而非只检查映射设置。** 本案例是相同源文件重建导入产物时失败；把它纳入第二次源替换的验收属于研究推论，不是已完成源替换实验。[研究／经验]
+
+- **失败与恢复条件不同。** [#914 原始报告](https://github.com/KhronosGroup/UnityGLTF/issues/914)使用 Unity 6000.0、URP 17.3.0、UnityGLTF 2.18.5、Windows：`Settlement.glb` 将材质 remap 到 `Materials.glb` 的共享材质。初次导入正常；清除导入缓存后全量重导入，Inspector 映射仍正确，Renderer 却使用自身 GLB 的内部同名材质，贴图消失；随后仅重导入 `Settlement.glb` 又正常。因此暖缓存单文件复验不能覆盖冷导入依赖问题。这是报告者的复现记录，本轮未复现。[社区]
+- **修复的是导入产物依赖。** [PR #915](https://github.com/KhronosGroup/UnityGLTF/pull/915)于 2026-09-30 合并；固定 [`41cb963` 的 GLTFImporter.cs L270–286](https://github.com/KhronosGroup/UnityGLTF/blob/41cb963dec3e76615b11db63bab9633f23496b0e/Editor/Scripts/GLTFImporter.cs#L270-L286)从 external-object remap 取得目标资产路径，排除空路径／自身后调用 `DependsOnArtifact`；[L633–651](https://github.com/KhronosGroup/UnityGLTF/blob/41cb963dec3e76615b11db63bab9633f23496b0e/Editor/Scripts/GLTFImporter.cs#L633-L651)另将映射应用到 Renderer 的 `sharedMaterials`。设置表与实际使用点是两层状态。[一手：固定源码；研究：机制归纳]
+- **官方契约与采用回执。** [Unity 6.0 DependsOnArtifact](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AssetImporters.AssetImportContext.DependsOnArtifact.html)规定依赖另一资产的导入结果；该资产改变后，依赖方在它导入后重新导入；尚未导入的依赖也会登记。[维护者审阅](https://github.com/KhronosGroup/UnityGLTF/pull/915#issuecomment-5857066989)要求不用手读 `.meta` 的初稿，改用资产数据库；[报告者回执](https://github.com/KhronosGroup/UnityGLTF/pull/915#issuecomment-5858947741)确认修改解决问题。PR 正文附修复后全量重导入截图，但只改一个生产源码文件、未附自动回归测试，不写成测试套件已通过。[一手／社区]
+- **不是当前版本仍坏。** [`release/2.22.0` 对应 `8b793b8` 的 changelog](https://github.com/KhronosGroup/UnityGLTF/blob/8b793b883f8ae1dfd0f6f09bcf13e1842c000060/CHANGELOG.md#L7-L29)已将 #915 列为修复，记录日期 2026-10-02；[发布标签对象](https://api.github.com/repos/KhronosGroup/UnityGLTF/git/tags/64a3e4056a980cbdca58e569c0bed546b469692e)于 2026-10-05 创建并指向该提交。本轮也核对该版本源码包含修复；这不代表目标工程验证通过，不据此要求无条件升级。固定代码为 [MIT](https://github.com/KhronosGroup/UnityGLTF/blob/41cb963dec3e76615b11db63bab9633f23496b0e/LICENSE)，不推及 issue 示例资产的复用许可。[一手／研究]
+
+**最小验收与停止线。** 后续获得引擎实测授权后，在保留源文件与 `.meta` 的干净副本中比较暖缓存单资产导入与全量导入的“Renderer → 材质槽 → 外部材质资产／子资产”对应；映射表看似正确但实际回落到内部材质仍失败。不要删除工作工程 `Library` 来掩盖问题，也不自建通用依赖框架；优先沿用包含修复的兼容导入器，再验目标工程。本轮仅只读证据核查，未安装、运行引擎或上游测试；不外推为所有导入器、节点重排或任意用户编辑都能保全，也不构造 Unreal 等价 API。[研究／经验]
 
 ## 4. Unreal：显式覆盖策略，不强依赖 MCP
 
