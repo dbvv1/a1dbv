@@ -679,3 +679,31 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 ✅ 先用原任务可见执行记录判断是否继续推进；工具尚未返回时，不靠重复发送相同催促制造队列。恢复后核最新目标、取消要求与剩余工作；若已确认全部输入被处理，就转查模型理解、执行阻塞或验收缺口。若客户端已提供可验证的消费状态或替换旧消息入口，优先用原生能力，无须额外建回执文档。**[经验：采用与撤回条件]**
 
 待测而未执行：在另行获准的受控任务中，让只读工具有界延迟，只发一次 steer，分别记录接受、消息可见、首个执行结果与最终验收，并检查取消／恢复后有无重复。这只能检验选定版本与场景；本轮没有创建排程、访问私人任务／日志、运行上游测试、模型或用户电脑。dot 云协调器源码、线上版本绑定与端到端成功率仍缺证，不能给可靠性排名、SLA 或统一根因。**[研究：预注册方向；经验：实际范围]**
+
+
+## dot 效率选择：少一层包装，不等于少一项验收
+
+主线：二，兼四；按实际能力选择查询、接续与发布路线。
+改变的建议：Codex 页增加 dot 长时使用入口，20 增补差异发布与断点恢复；不加模板或新模块。
+新证据：2026-10-15 核对 dot 官方能力更新、公开接续恢复链、GitHub tree／ref 契约；本仓发布路径观察与效率推断分开。**[一手／社区／经验]**
+
+### 查询与接续：保留有作用的中间层
+
+[电脑与应用](https://learn.chatgpt.com/docs/dots/computers-and-apps)说明插件提供服务信息与工具，访问取决于连接账号、权限与环境；[10 月 9 日更新](https://learn.chatgpt.com/docs/whats-new/dots-october-9-2026)包含已有 Codex thread 的使用与接续改进；[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)说明新任务上下文与原执行环境边界。**[一手]** 由此采用“能力已经足够时不重复包装”，不是取消必要委派或保证插件更快；宿主规定的环境路线仍须遵守。
+
+[#51797](https://github.com/openai/codex/issues/51797)作者报告插件已经足够时仍创建包装任务。这只是 open 状态的用户报告，无已修复或效率对照证据。反例 [#49729](https://github.com/openai/codex/issues/49729)已核正文及全部 56 条评论，失败与恢复须一起读：**[社区：原帖与评论]**
+
+- [10 月 9 日修复说法](https://github.com/openai/codex/issues/49729#issuecomment-6080124963)与[Ubuntu 版本补充](https://github.com/openai/codex/issues/49729#issuecomment-6081558731)只覆盖作者报告，不能外推跨平台恢复
+- [10 月 12 日 macOS](https://github.com/openai/codex/issues/49729#issuecomment-6127397704)与[Windows](https://github.com/openai/codex/issues/49729#issuecomment-6130573116)报告父路线失败而 helper 提供了读取／续接能力；后者包含目标回应与回读，说明中间任务有时确有必要
+- [10 月 13 日 Windows 恢复](https://github.com/openai/codex/issues/49729#issuecomment-6148306271)在原始直读失败后，用已有执行器读取同一目标成功，无需替代任务或改权限；它不证明父路线修复或发送成功
+- [另一 Windows 报告](https://github.com/openai/codex/issues/49729#issuecomment-6153744906)只有发送接受、未见所需回应，不能记为成功接续
+
+✅ 同目标先核原任务和已有授权执行器能否接续；不盲目加中转，也不把读失败等同任务丢失。需要独立判断时保留新上下文评审。插件漏字段、分页不全、版本不明或原任务不支持接续时，应撤回“当前入口已足够”的判断。**[经验：采用与撤回条件]** 未测耗时、token、费用或正确率，不据这些帖子承诺效率提升；未访问用户私人任务验证路线。
+
+### 发布：一般建议与本仓观察分开
+
+[GitHub tree 契约](https://docs.github.com/en/rest/git/trees#create-a-tree)允许在 `base_tree` 上提交多条变更；不传基树会使未列文件在新提交中消失。创建 tree 后仍需 commit 和 ref；[非强制 ref 更新](https://docs.github.com/en/rest/git/refs#update-a-reference)检查 fast-forward。**[一手：2026-10-15 核对]** 读树的递归返回限制不是写树的文件数上限，不据此规定“每批 20 个文件”。
+
+本仓当次环境中，GitHub 连接器可用而 shell Git dry-run 缺少用户名认证；因此不将连接器授权视作 shell 凭据。已发布 [276babc](https://github.com/dbvv1/a1dbv/commit/276babc) 的路径复用了 64 个最终 blob，经过四次建树、四个 commit 和最终非强制 ref 更新，最终树逐文件核验、14 阶段离线检查通过。**[经验：本次操作记录]** 这是一次路径可行性观察，不证明上述次数最优，也不是模型效率实验。
+
+✅ 一般建议是优先 commit 后 push；连接器 fallback 只传相对最新 main 的差异，允许时一次写入，遇上限或失败才拆分；结果未知先核回执与远端状态，再继续尚未完成步骤。若基线变化则重算并核冲突。**[经验：工程建议]** 不以省调用为由跳过验收、授权、分支保护或发布后核对。本轮只核文档与既有操作证据，没有为此新增发布、认证、模型或客户端实验。
