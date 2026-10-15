@@ -803,3 +803,14 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 [Prettier官方配置说明](https://prettier.io/docs/configuration)明确不支持全局配置，以保持项目换电脑后的格式一致；它从被格式化文件位置查配置，并允许项目内限定覆盖。此设计目的不能算用户收益测量，但足以反对把Ruff个人编辑覆盖推广为所有工具都应个人优先。**[一手：官方设计；研究：反例]**
 
 **证据边界。** 上述用户初试、固定源码与官方设计分别计证据；未运行客户端、同步或上游测试，也没有AI净收益证据。**[经验：采用判断；研究：验证范围]**
+
+
+## 原生下拉菜单的截图与语义验收
+
+主线二／四；核实：2026-10-15 UTC。改变23的观测选择：原生 `<select>` 选值与应用结果优先语义验收；只有展开层外观属于要求时，才补目标浏览器／系统实际屏幕，不因网页截图缺失重写控件。**[研究：采用判断]**
+
+Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者报告原生下拉展开后，网页截图在macOS缺少菜单、Ubuntu位置异常、Windows截图挂起；[维护者](https://github.com/microsoft/playwright/issues/38200#issuecomment-3533050490)报告在macOS、Ubuntu及原始CDP／Puppeteer路径复现类似问题。2026-01-07的[关闭说明](https://github.com/microsoft/playwright/issues/38200#issuecomment-3718636129)指出跨平台原生实现不同、无Playwright行动项；随后针对视觉Agent[建议整屏捕获或DOM文本补充](https://github.com/microsoft/playwright/issues/38200#issuecomment-3720341206)。closed及v1.58标签不能当作修复发布证明，也不据历史说明推定所有当前版本／系统都无法截图。**[社区：报告；一手：维护者解释]**
+
+[固定复现库](https://github.com/kisotechnology/playwright-screenshot-issue/tree/0f1f0177f07c3ce70e49168c60d460f89cbda9ef)的`scripts/capture-dropdown.js`以headed Chromium点击原生select，再取全页截图；已查看其展开菜单与缺菜单配图，但图像尺寸不同，不视为本仓取得的严格同条件对照。报告称1.56.1，`package.json`却使用`^1.41.2`且无锁文件，固定源码不等于固定安装版本。**[一手：源码和产物；社区：运行版本自述]**
+
+[当前selectOption契约](https://playwright.dev/docs/api/class-locator#locator-select-option)是选择选项并触发input／change事件；可据此验应用结果，不证明用户看到的原生展开层外观。这里不扩展到所有浏览器UI，也不默认增加桌面工具；未安装、运行浏览器或复演上游。**[一手：官方契约；经验：采用边界]**
