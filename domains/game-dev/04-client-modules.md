@@ -1,6 +1,6 @@
 # 客户端核心模块：让操作有回应，让体验连续
 
-> 核实：2026-10-14 UTC；空间容错及保存响应补核：2026-10-15 UTC；动态 UI 补核：2026-10-16 UTC+8。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
+> 核实：2026-10-14 UTC；空间容错及保存响应补核：2026-10-15 UTC；动态 UI 与模拟输入补核：2026-10-16 UTC+8。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
 
 ## 30 秒结论：先把核心动作做舒服
 
@@ -189,6 +189,12 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 **[研究] 先保住已验证可用的旧档，再允许重试、迁移后自动保存或清理旧槽。** 恢复候选分别经过完整读取与内容校验，失败不把默认新游戏写回原槽；让玩家知道恢复到了哪个时间／章节，并可保留原文件。真实游戏 [Mindustry 的 SaveIO](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveIO.java)有写入前移备份、读取失败后退备份，但存档列表的有效性检查只读 metadata；因此“列表看得到”不能作为完整恢复成功的证据。[一手]
 
 **[研究] 第二次改关卡位置时，除了内容 ID，还检查存储地址和附属进度是否一起变化。** Mindustry 的 [sector remap](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L120-L199)先暂存再回填，允许两个关卡交换位置；可借这个迁移顺序，不能把其 Java／Arc 世界保存模块直接移植成 Unity 底座。只补项目需要的迁移和恢复政策；源码、商业候选许可及中断验收见 [WP10 补比](../../docs/research/2026-10-14-game-wp10-client-modules.md#存档复用补比序列化落盘与玩家恢复分开选)。上述机制未在本轮真实引擎／断电环境验证。
+
+### 模拟输入：保留轻推幅度，再调死区与响应
+
+**[研究] ✅ 慢走、瞄准微调和模拟转向先保留输入幅度，沿原生处理链核对死区与响应曲线；不要把所有非零向量变成满幅，也不要无意重复处理死区。** Unity Input System 1.19 的 Gamepad stick 默认已带死区，给 binding 再加同类 processor 会叠加；优先直接绑定完整 stick，键盘的默认 DigitalNormalized 合成不要原样套给摇杆。[一手：[绑定契约](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/ActionBindings.html)] UE 5.8 沿 Enhanced Input 的连续轴值与原生 modifiers，分别检查 mapping 的原始键值处理和 action 的最终值处理，按作用范围安排处理，并检查两层是否重复变换。[一手／研究]
+
+**[研究] 响应更敏感不一定更好。** SuperTuxKart 的[可选降敏曲线](https://github.com/supertuxkart/stk-code/blob/0334c6cd7432de391b7981b153df32b7bf6d83ea/src/input/gamepad_device.cpp#L161-L169)减弱中心附近的转向变化；可借这种取舍，不照搬曲线或阈值。先验原生基线，只有目标设备与动作仍有缺口才调整，暂不搭通用校准框架。**局限：死区过大损失微调，过小可能暴露漂移；赛车、瞄准和方向离散的动作不能共用一份手感结论。** 第二次换手柄或给瞄准复用移动配置时，复查回中、低幅连续控制、满幅及斜向，检查旧动作是否回归；仅预注册，契约、历史触摸修复与待测项见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#模拟输入补研轻推幅度与处理链不能丢)。
 
 ### 输入与暂停：先定动作权限，再切输入
 

@@ -1,10 +1,10 @@
 主线：一／二／三／四；客户端体验、验证选择、第二次修改与交付
 改变的建议：[研究] 先复用原生组件，按实际症状选择输入、运动、呈现、声音与界面策略；补齐退出、存档、资源和二改责任，不以模块数量代质量。回合演出先调默认等待，再考虑快播放，保留动作完成与奖励条件；既有各项取舍和反证见对应小节。
-新证据：[一手／社区] 本轮补动态 UI 原生重建／缓存契约、重复 CanvasScaler 的项目诊断和已修 Retainer 文本回归；固定源码、官方契约／修复及不同类型游戏开发者记录保留；本轮补 Unity 6.3／UE 5.8 拾取坐标契约与纹理重显示纠正、Unity／UE 保存线程契约、Evil Trout 保存合并与退出经验、Factorio 非阻塞保存代价及历史回归；此前 Slay the Spire／Cogmind／Into the Breach 的节奏证据保留。此前输入／呈现／字体／听点／存档／库存来源仍在各节，未做引擎、设备或玩家实测，不能推出 AI 成功率或体验收益。
+新证据：[一手／社区] 本轮补 Unity 1.19／UE 5.8 模拟幅度与处理链契约、SuperTuxKart 可选降敏与历史触摸修复；此前动态 UI 原生重建／缓存契约、重复 CanvasScaler 的项目诊断和已修 Retainer 文本回归；固定源码、官方契约／修复及不同类型游戏开发者记录保留；本轮补 Unity 6.3／UE 5.8 拾取坐标契约与纹理重显示纠正、Unity／UE 保存线程契约、Evil Trout 保存合并与退出经验、Factorio 非阻塞保存代价及历史回归；此前 Slay the Spire／Cogmind／Into the Breach 的节奏证据保留。此前输入／呈现／字体／听点／存档／库存来源仍在各节，未做引擎、设备或玩家实测，不能推出 AI 成功率或体验收益。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
-证据核实：2026-10-13—15 UTC；动态 UI 补核为 2026-10-16 UTC+8，各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。各轮均未安装付费插件或开展引擎、模型、设备、玩家实测；源码与作者数据不等于本项目复现。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
+证据核实：2026-10-13—15 UTC；动态 UI 与模拟输入补核为 2026-10-16 UTC+8，各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。各轮均未安装付费插件或开展引擎、模型、设备、玩家实测；源码与作者数据不等于本项目复现。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
 
 **[研究] ✅ 默认复用成熟组件；仅补项目缺少的所有权、迁移和模式切换规则。** 先验场景取消、释放、旧档、暂停与设备峰值，再决定是否加框架；无同任务实测，不作质量／性能排名。
 
@@ -424,6 +424,19 @@
 3. **回合制的持续输入会提交下一步。** [一手] 固定 `00-Evan/shattered-pixel-dungeon@57a4e06a4caf162446d1c28caa7983f0493fecf0`（提交标明 v4.0.2）：[Hero.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L868-L930)在无当前动作且非休息时进入 ready 并返回 false；[Actor.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L300-L324)据此停止连续处理并等待。[CellSelector.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/CellSelector.java#L355-L418)在界面阻断时跳过持续输入更新，英雄 ready 后才将方向转换为相邻格命令并调用 next；[GameScene.show](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java#L1434-L1454)先调用 cancel，1716–1726 行清当前动作、休息及键盘 held 记录。**反证：** CellSelector 的 resetKeyHold（482–484 行）只清 heldAction1／2／3，未清 leftStickAction，不能说它给所有设备实现了等松键门禁。[研究] 验收重点增加关闭窗口是否多走一步／多耗回合、目标选择取消是否误提交，以及键盘与摇杆差异；不能把这一命令节奏等同于平台跳跃的短期缓冲窗口。
 
 **采用边界。** [研究] 保留“先更新权限，再触发可能同步取消的输入切换”机制；收窄为按上下文停用动作，不要求所有游戏都有暂停或恢复同一种动作。Mindustry [LICENSE](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/LICENSE)与 Shattered Pixel Dungeon [LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)均为 GPL-3.0 许可文本；本次只借鉴机制并链接，不复制实现为商用引擎组件。仅据固定源码借机制，不主张移植可靠性。
+
+### 模拟输入补研：轻推幅度与处理链不能丢
+
+核实：2026-10-16 UTC+8。主线 3；改变 04 的输入建议：轻推即满幅或微调困难时，先核连续幅度与原生处理链，再改灵敏度，不先加通用校准框架。新证据是 Unity 1.19 固定处理器、UE 5.8 分层契约及 SuperTuxKart 的可选降敏与历史触摸修复；与暂停权限、输入缓冲和坐标变换是不同问题。[研究]
+
+1. **Unity：死区重映射不等于单位向量。** [一手] `InputSystem` 的 `1.19.0` tag 经 GitHub API 核为 `ca8d898356596a91bda6505e506cc1a4bb3a9fa6`，[package.json](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/package.json)亦标 1.19.0。[Gamepad.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Devices/Gamepad.cs#L138-L149)给左右 stick 附加 `stickDeadzone`；[StickDeadzoneProcessor.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Controls/Processors/StickDeadzoneProcessor.cs#L32-L57)取默认阈值、重映射幅度，再按新旧幅度比缩放向量。它保留区间内的连续幅度，并非每个非零输入都变成长度 1；其中 `min=0` 会取全局默认，不能随手作为关闭死区的配方。[1.19 绑定文档](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/ActionBindings.html)明确：给完整 Gamepad stick binding 再加该 processor，会与 control 上的死区叠加。
+2. **数字合成与模拟值分开。** [一手] 同版 [Vector2Composite.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Actions/Composites/Vector2Composite.cs#L126-L154)在 Analog 路径读 float，数字路径读按钮状态；文档列默认 `DigitalNormalized`。因此先直接绑定整个 stick；确需重组方向部件才选 Analog，并重新核其处理链。[研究] 不用“防键盘斜走加速”作为对所有模拟输入调用 `.normalized` 的理由；玩法本来只接受方向或离散步进时则可有意舍弃幅度。
+3. **UE：核两层 modifiers，不猜模板默认值。** [一手] UE 5.8 [FEnhancedActionKeyMapping](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/FEnhancedActionKeyMapping)的 modifiers 处理 raw key value；[UInputAction](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/UInputAction)的 modifiers 处理 final action value。[Enhanced Input](https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine)说明 modifier 输出传给后续 modifier／trigger；[DeadZone](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/UInputModifierDeadZone)将 lower–upper 区间映射到 0–1、外部截断。[研究] 用 Axis1D／Axis2D 保留所需连续值，按动作选单轴或联合轴处理，检查两层是否重复变换；这些契约不证明所有模板、设备或遗留输入设置采用同一默认阈值、形状与次序。
+4. **赛车的相反取舍与真实二改。** [一手] 固定 `supertuxkart/stk-code@0334c6cd7432de391b7981b153df32b7bf6d83ea` 的 [gamepad_device.cpp](https://github.com/supertuxkart/stk-code/blob/0334c6cd7432de391b7981b153df32b7bf6d83ea/src/input/gamepad_device.cpp#L149-L169)区分模拟与数字转向路径，并可选保留符号的平方曲线，减弱中心附近变化；这是“更敏感不总更好”的具体机制，不是通用推荐。[2018 修复 b7856d4](https://github.com/supertuxkart/stk-code/commit/b7856d4991503fc3d13eb567b9dbed2faa8db832)实际修改触摸转向 `getSteeringFactor`，先重映射死区外区间、再独立缩放 sensitivity，替代耦合的分母；这是触摸实现，不能说成手柄修复。源码头部为 GPL-3.0-or-later，本轮只借机制并链接，不复制模块；历史 diff 没有证明目标项目手感改善。
+
+**采用与撤回。** [研究] ✅ 先保住所需幅度，明确每个处理阶段，复用原生处理器；只对仍存在的具体漂移／微调缺口调整。死区过大压缩可用微调范围、过小可能暴露漂移，响应曲线和轴向／径向选择也取决于动作，不给跨设备统一阈值。原生基线已满足就不扩展；方向离散的动作不强求连续幅度。
+
+**第二次修改预注册，当前不执行。** [研究] 同一目标玩法先对照原生基线与单项必要调整，记录回中漂移、起动跳变、低幅连续控制、满幅可达及轴向／斜向差异。二改加入另一种手柄，或给瞄准／转向复用移动配置，检查旧动作、已有设置与处理层有无意外耦合；撤销重复死区或错误单位化已能解决时，不升级框架。真实引擎、硬件与玩家手感均未验证，事件／公式检查不代替它们。
 
 ### 4. 用第二个菜单判断共享层是否值得
 
