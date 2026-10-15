@@ -5,7 +5,7 @@
 
 **本轮更新：2026-10-15（UTC+8）**：[核心建议](docs/README.md#核心建议一致性清单)明确唯一主专题与相关入口；[两种情境走读](docs/README.md#两种情境的入口走读)同时覆盖已有失败和功能正常但有质量目标；[核心页面成熟度](docs/README.md#核心页面成熟度)列出具体差距和下一步。[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)继续围绕产品试用、能力增量、连续修改和接管成本；文档成熟度不代表真实模型或游戏效果已验证。
 
-执行资产与历史验证见 [维护路线](docs/maintenance-roadmap.md)、[长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
+执行资产见 [长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
 
 ---
 
@@ -42,7 +42,7 @@
 | 判断新模型、Skill 或配置是否值得换 | [22 Agent 评估](docs/22-agent-evaluation.md) |
 | 做长任务、自建 Agent 或无人值守流程 | [16 自建 Agent](docs/16-building-agents.md) → [20 可靠的长任务](docs/20-codex-long-horizon.md) |
 | 查看长期研究重点和待验证问题 | [研究路线](docs/research/README.md) |
-| 查看两端分工、实施任务和提交评审 | [协作入口](docs/collaboration/README.md) |
+| 参与维护：开工规则、认领与评审 | [运行手册](docs/collaboration/LONG-TERM-PLAN.md)、[协作目录](docs/collaboration/README.md) |
 | 核对已发布的整体审计与修复 | [10-15 整体审计（基于 795ec5b）](docs/collaboration/reviews/2026-10-15-795ec5b.md)；[五项问题的主要修复](https://github.com/dbvv1/a1dbv/commit/4fa347a)；[历史来源记录](docs/research/2026-10-10-audit.md) |
 
 ## 目录
@@ -96,7 +96,7 @@
 
 ## 维护约定
 
-长期方向与下一批待验证问题见 [维护路线](docs/maintenance-roadmap.md)：AI coding 为主，游戏开发为补充；不以提交数量替代真实收益。
+方向见 [AGENTS.md 方向锚点](AGENTS.md)，怎样参与维护见 [运行手册](docs/collaboration/LONG-TERM-PLAN.md)：AI coding 为主，游戏开发为重点领域；不以提交数量替代真实收益。
 
 - **证据优先**：每条事实注明来源；一手来源（官方文档、源码、changelog）优先；只有搜索摘要的标注为二手。
 - **有判断**：不堆链接，写“适合谁、不适合谁、坑在哪”。
