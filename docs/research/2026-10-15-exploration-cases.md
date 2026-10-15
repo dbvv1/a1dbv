@@ -62,7 +62,7 @@
 
 ### 2. 检索
 
-分两路：视觉参考库按页面类型与风格检索；实际任务模式按“长事务／进度／错误恢复”检索。再追设计规则、示例和研究记录，而不是搜索“最好的 AI 前端主题”。本轮读取 Landbook 投稿／广告规则、Radix Colors 色阶用途、苏格兰政府 Task list 的状态研究。没有实际逐屏视觉评审，所以这里不宣称已找到最美页面。**[一手／研究]**
+分两路：视觉参考库按页面类型与风格检索；实际任务模式按“长事务／进度／错误恢复”检索。再追设计规则、示例和研究记录，而不是搜索“最好的 AI 前端主题”。本轮读取 Landbook 投稿／广告规则、Radix Colors 色阶用途、苏格兰政府 Task list 的状态研究。上述导入后台候选没有实际逐屏视觉评审，不宣称已找到最美页面；下方另补问题列表原图核查，不作为这份导入需求的验收。**[一手／研究]**
 
 ### 3. 甄别：候选与证据
 
@@ -92,6 +92,18 @@
 - [Radix Colors：Understanding the scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale)，本轮读取状态和颜色用途及适用限定 **[一手]**
 - [苏格兰 Task list](https://designsystem.gov.scot/patterns/task-list)，本轮读取 Evidence／Research and testing／When not to use；页面更新2024-09-25，测试2021年，不能当2026年新实验 **[一手：发布方研究摘要]**
 - [Landbook 投稿规则](https://land-book.com/submission-guidelines)与[广告规则](https://land-book.com/advertise)，本轮读取 **[一手：平台条款说明]**
+
+### 视觉补核：问题列表的注意力与内容关系
+
+2026-10-15 补核另一项**演示任务**：开发者筛选、识别并连续处理问题列表；它不是上面的批量导入后台，也不是用户真实主题项目。借用已有设计者“同内容迭代、用真实工作检查”的做法，只补视觉参照怎样转成约束，不另建设计框架。**[经验：假设与选择]**
+
+- **Linear，2026年设计说明**：[原文](https://linear.app/now/behind-the-latest-design-refresh)解释让导航退后、工作内容突出；已实际查看[侧栏对比图](https://webassets.linear.app/images/ornj730p/production/b6d6be14c96978b10553cfb9205be1065087e793-3904x2720.png)与[边界对比图](https://webassets.linear.app/images/ornj730p/production/67561baa677fbc429d94edd080e95aecabb6bae2-3904x2720.png)。暗色界面中选中项与非当前导航有不同权重，不能推成“全部文字变淡”；宣传图有组合排版，不能直接测实际界面对比。支持作者意图与可见差异，没有独立用户提效证据。**[一手／研究：看图]**
+- **GitHub，2014年历史设计**：[Mark Otto 复盘](https://markdotto.com/blog/shipping-the-new-github-issues/)解释单行压缩遇到长内容问题、色点标签恢复文字，并以自己能否连续处理 Issues 检验改版；作者明确未做专门用户研究。已看[最终上线图](https://markdotto.com/uploads/2014/08/github-issues-shipped.png)、[早期迭代](https://markdotto.com/uploads/2014/08/github-issues-v2.png)与[后期迭代](https://markdotto.com/uploads/2014/08/github-issues-v12.png)：浅色列表用标题、文字标签和次要元数据分层。它提供另一种内容组织依据，不代表当前 GitHub 外观或普遍最佳密度。**[一手：历史作者自述／研究：看图]**
+- **GitHub，2024年使用反馈**：[ndren 的字重反馈及附图](https://github.com/orgs/community/discussions/139935#discussioncomment-10813768)报告标题变细后难读，维护者同线程10月21日表示已修；[markerikson 的搜索框反馈及附图](https://github.com/orgs/community/discussions/139935#discussioncomment-10874764)指出搜索框需要更鲜明的背景。已看用户截图，非控制实验；这些是关键对象弱化的历史反例，不是当前缺陷判断。**[社区／一手：维护者回复]**
+
+**转化选择**：本假设下借文字标签与列表分层；需要更克制时只弱化非当前导航，保留搜索、标题及必要状态的可发现性。长标题／多标签先定换行、折叠和展开关系，再选品牌样式，不直接搬配色、字号和图标。后续以同一批内容检查能否找到条目、理解标签并连续筛选；关键入口难找或必要内容需频繁悬停才懂就撤回。审美偏好与品牌一致性另记，不能当作任务速度证据；熟悉用户主要用键盘、内容更短时，紧凑方案仍可能更合适。**[经验：约束与未执行验收]**
+
+**证据与权利边界**：两篇设计说明均来自参与设计者，存在展示自身成果的利益；原始使用反馈提供不同视角，但经济关系未核实。实际看图不等于当前交互、响应式、键盘或用户实测；不据此判两产品高下。只链接来源、提炼关系，未向仓库复制图片、标识、字体、源码或资产；公开可看不等于许可复用。**[研究]**
 
 ## C · 游戏机制借鉴：动作游戏“不听输入”该补什么
 
