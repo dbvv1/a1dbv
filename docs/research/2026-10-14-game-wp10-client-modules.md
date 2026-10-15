@@ -1081,6 +1081,32 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 
 [研究] 二改只预注册：在已有静态 HUD 增加持续数值，再加短位移／闪烁动画；同设备、分辨率和内容量比较原生基线与一个局部改动，记录 UI CPU 重建、draw／GPU、缓存内存及数据变化到可见反馈的时间。开关菜单、控件显隐后用实际点击和已承诺导航方式确认数值、焦点反馈与目标一致，不以直接调用回调代验。CPU 改善不足，或 GPU／内存／反馈延迟超预算则撤回；出现停更先核所用版本及失效契约，不默认每帧强刷整树。本轮仅资料研究，尚无目标设备性能收益与运行正确性结论。
 
+## 墙门遮挡补比：直达被挡不等于通路消失
+
+核实：2026-10-16 UTC+8。主线二／三，GC 客户端声音质量。[研究] 新增选择是按可听规则区分直接遮挡、固定分区和通路需求；不重复 WP6 的混音／音乐，以及本记录的并发、循环和听点。保持现有音频系统，不以声学真实度或功能数量作为统一质量目标。
+
+### 两种生产机制及不能互换的结论
+
+- [一手] Homebody 主程序／技术设计 Alex Belzer 的[项目说明](https://www.alexbelzer.com/work/homebody)明确使用 zoning 处理 obstruction／occlusion，目的是减少每个 emitter 到 listener 的寻路或 raycast。[研究] 固定室内布局已有区域与门关系时，可优先借用这种划分；作者未提供算法、声部规模或测量数据，不能声称本项目更快／听感更好，也不照搬其自建音频系统
+- [一手] Barotrauma 固定提交 `e6e95da83b1b5ca8b55ec52653c7cf6b40e30247` 的 [ShouldMuffleSound](https://github.com/FakeFishGames/Barotrauma/blob/e6e95da83b1b5ca8b55ec52653c7cf6b40e30247/Barotrauma/BarotraumaClient/ClientSource/Sounds/SoundPlayer.cs#L988-L1012)在听者水下／低通等判断之外，比较房间通路的近似距离与声音范围；[Hull 路径查询](https://github.com/FakeFishGames/Barotrauma/blob/e6e95da83b1b5ca8b55ec52653c7cf6b40e30247/Barotrauma/BarotraumaShared/SharedSource/Map/Hull.cs#L1137-L1212)考虑连接 gap、门开闭／损坏／开启程度与客户端预测状态。[研究] 这说明通路和门状态可以影响闷声判断，不证明完整声学传播、精确绕射或声像沿路径转向，也不建议逐声源移植寻路
+
+[一手] Barotrauma 是**受限公开源码**：[固定 README](https://github.com/FakeFishGames/Barotrauma/blob/e6e95da83b1b5ca8b55ec52653c7cf6b40e30247/README.md)要求先读 [EULA](https://github.com/FakeFishGames/Barotrauma/blob/e6e95da83b1b5ca8b55ec52653c7cf6b40e30247/EULA.txt)，后者明确限制于 Barotrauma 相关非商业用途／模组，不允许将代码用于自己的项目或商业用途。本轮全文读取该固定 EULA 的摘要及正式第 1–8 节，未见专门提及 AI、训练或自动化分析的条款；这不是对仓库／网站所有其他条款的无限定许可结论。只记录高层机制，不复制代码、资产或推荐商业移植；也不把公开可读称为可复用开源。
+
+### 原生职责与成本：不是跨引擎同一个开关
+
+- [一手] Unity 6.3 [AudioLowPassFilter](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioLowPassFilter.html)按 cutoff 去掉高频，并提供随开门改变 cutoff 的例子；挂在 AudioSource 或 AudioListener 的作用范围不同。[Physics.Linecast](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Physics.Linecast.html)提供线段碰撞查询及层／trigger 筛选。[研究] 简单门关系先由现有状态驱动相关声源，确需几何遮挡才查询；原语不自动决定声学阻挡层、查询频率、状态所有者与过渡，也不自动找绕行通路
+- [一手] UE 5.8 [Sound Attenuation](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine)原生提供 Occlusion、Trace Channel、低通频率、音量衰减与插值时间。官方指出 simple collision 较便宜但可能误判复杂形体；修改 Visibility 的响应可能影响其他系统，可考虑独立音频 channel。[研究] 先配置这些机制，不另造相同管理器；插值缓和边界变化，却不能纠正错误碰撞或过期门状态，更不补出间接路径
+
+[研究] ✅ 少量直达遮挡满足玩法就停止；房间化关卡需要开门／破洞改变可听关系，先复用既有分区与门状态，代价是内容改动后维护关系。只有更复杂的材质透射／反射等具体需求超出已有方案，才👀评估现成传播工具，并先核目标引擎版本、平台兼容与代码／插件许可；不默认中间件，也不自建声学引擎。运行预算分开看活跃声部、查询与 DSP，不能由 voice 已虚拟化就推定项目自写查询停止；没有目标设备测量，不给统一射线数或更新频率。
+
+### 集成反例与第二次修改：只预注册
+
+[一手] [Steam Audio Unity 当前指南](https://valvesoftware.github.io/steam-audio/doc/unity/guide.html)把 Occlusion、Transmission、Reflections 分开配置；几何默认 static，动态门需配置并导出 Dynamic Object，且只传入其整体 Transform 变化，子物体独立 Transform 变化不受支持。[研究] 因此增加铰链子物体动画后不能假设声学几何已随门更新。这里只把它作为内容维护反例，不是插件采用、许可背书或性能比较。
+
+[研究] 二改增加第二出口或破门，保持同一关键脚步／攻击素材，比较无障碍、隔墙、门开关和隔墙但有绕行通路；沿门边移动，检查开门仍闷、忽强忽弱、应有预警被滤掉及方向误导。再加环境声，分别观察声部、查询和 DSP 成本。AI 查遮挡层、门状态来源、更新频率和几何配置，人判断身份／方向信息、起音和过渡是否符合玩法；几何或状态错误先修对应输入，过滤藏掉关键提示则撤回或缩小适用声源。直接遮挡与区域规则已满足可辨性及预算就收工，不升级为全场景传播项目。
+
+**实际范围：** 作者原文、官方契约、固定源码与许可静读；未试听、运行游戏／引擎，未测辨识率、舒适度、性能或 AI 收益。没有采用未独立核实的 Wiki 修复描述，也不把开发者动机当已测收益。
+
 ## 客户端模块页历史页头
 
 历史原文转存：2026-10-16（UTC+8），来自 `domains/game-dev/04-client-modules.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准。

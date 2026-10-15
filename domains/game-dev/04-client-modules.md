@@ -118,6 +118,15 @@
 | 拉远／切镜后声音失衡 | ✅ 先选听点：远程管理可随视图，近身互动可在角色附近；分别定位置、朝向、速度，切镜不应无意成为高速运动 | Factorio 与 NieR 采用不同默认。[一手] Unity AudioListener／UE listener override 可先表达选择；换听点须重核距离及空间效果，不能笼统保证“角色距离＋相机声像”。核转身、切镜与返回，见 [WP10 听点](../../docs/research/2026-10-14-game-wp10-client-modules.md#听点补比镜头改变时从哪里听) |
 | 音乐被频繁打断 | ✅ 先选跟随角色处境还是关注区域，再选立即混层、等状态稳定或等乐句 | 单加长淡化不解决选择与时点；见[音频页](assets/audio.md#音乐循环和状态切换先于完整成曲) |
 
+### 墙门后的声音：先选可听规则，再选遮挡
+
+**[研究] ✅ 只需区分直达／被挡时，先用原生低通与音量过渡；应能隔墙经开门听见时，不能把直线被挡等同声音到不了。** 优先复用关卡已有房间与门状态，少量固定场景不必逐声源寻路。Homebody 作者用分区减少逐声源查询，Barotrauma 的受限公开源码则以房间连接的近似路径决定是否闷声；这是两种机制证据，不是性能排名，也不证明声像会沿通路转向。[一手]
+
+- **Unity 6.3**：沿用 AudioSource／Mixer；[AudioLowPassFilter](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioLowPassFilter.html)可随开门改 cutoff，需要几何查询时再用 Physics.Linecast。门状态、遮挡层、更新与平滑仍由项目负责；Listener 上的滤波会影响所有到达声音，不能拿来只处理一处墙后声源
+- **UE 5.8**：先配置 [Sound Attenuation 原生 Occlusion](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine)的 trace channel、低通／音量与插值；先核 simple collision 是否误挡，再决定是否用更贵的 complex，不重建同款遮挡管理器
+
+**[研究] 门边跳变、开门仍闷或关键起音被滤掉时，先查几何、状态和过渡，必要时撤回过滤；只有明确需要更复杂的传播效果，才评估现成方案。** 二改增加出口／破门后，再听验墙后提示、开关门与绕行，并分别量声部、查询和 DSP 成本；插值只平滑变化，不能补出缺失通路。作者依据、许可边界与仅预注册的验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#墙门遮挡补比直达被挡不等于通路消失)；本轮未试听或运行引擎。
+
 ### 3D 角色运动：先选想要的控制，再选碰撞求解方式
 
 **[研究] 以下先比较 Unity GameObject 路线。✅ 普通直立角色、接触规则简单且原生坡／阶能力已够用时，先用原生 CharacterController；已经好用的 Rigidbody 控制器不为统一架构重写。** “有重量”可以来自加减速、转向承诺、步态与受击恢复，不必让全部运动交给物理。希望玩家被箱子、摆锤和冲量自然影响，才把动态响应作为核心要求；希望台阶、斜坡和旋转平台遵守精确玩法规则，则重点比较 motor 的接地与平台政策。
