@@ -1,6 +1,6 @@
 主线：二／三；G1 2D 资产选型与第二次修改
-改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收
-新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；此前模型／服务调查保留，均未运行模型／引擎
+改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分输入／混合约定错配与内容缺陷
+新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执；此前模型／服务调查保留，均未运行模型／引擎
 
 # WP2：2D资产的前沿方法与零手修边界
 
@@ -49,7 +49,7 @@
 
 ## 4. 程序可修与应收窄的边界
 
-- 透明边：硬alpha并不证明抠对；[Unity RGB dilation](https://docs.unity3d.com/Manual/texture-type-sprite.html)可缓解透明边滤波伪影，不能补回被删的手指。像素与柔边绘制/VFX采用不同alpha约定。**[一手／经验]**
+- 透明边：先核导出／导入／材质输入与混合约定是否一致（§14），不能见黑边就重生或扩边；硬alpha并不证明抠对；[Unity RGB dilation](https://docs.unity3d.com/Manual/texture-type-sprite.html)可缓解透明边滤波伪影，不能补回被删的手指。像素与柔边绘制/VFX采用不同alpha约定。**[一手／经验]**
 - 对齐：共同画布、union bounds和源pivot是无裁切元数据时的退路；导入器能消费原尺寸／偏移或映射后的 pivot 时可保留紧裁（§11）。逐帧按bbox居中/等大可能抹掉正确跳跃/武器伸出，脚底锁仅对支撑相适用。**[一手／经验：源码机制推导]**
 - 第二次需求：改价格/语言用原生文本，换主题用映射，改命中时刻用已有动作参数；新增方向、遮挡或轮廓是内容变化，不由文件格式工具自动补齐。**[经验]**
 - 若必要缺陷只能人工画mask、补肢体、刷权重解决，则该路线对该玩法不满足零手修，改动作范围、风格或资源来源；未知通过率不应填假数字。**[经验]**
@@ -258,3 +258,23 @@ Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blo
 [研究] 下一次增加破损／装饰版时，若边缘不变，沿现有规则只替中心；若轮廓、转角或跨材质连接改变，补相应源块及规则，不能让中心变体代替新拓扑。保留合格源图，检查整套邻接及项目实际使用的预览、地图色等派生产物；没有这些消费面就不额外建设。所需源块不存在或只能靠手绘补齐时，换来源／缩小需求，不反复重生整套。
 
 **验证边界：** [研究] 已读固定源码、提交差异及官方发布说明；未运行生成器、游戏或引擎，未清点实际打包产物、视觉验收47个切片或验证生成成功率。输入源图如何绘制、全部淘汰样本及主动工时仍未知。上述单项目证据只支持局部变体与派生产物的修改边界，不证明 Unity／Unreal 可直接消费该格式，也不建议移植整套游戏管线。
+
+## 14. 透明边交接：输入纹理不等于混合输出
+
+核实时间：2026-10-16（UTC+8）。**[研究] 改变的选择：源图合格、换导出／导入／shader后才出现边缘异常时，先修消费约定，不先淘汰素材、硬化alpha或盲目扩边。** 既有§4的mask与滤波检查仍保留；PNG带透明通道本身不能说明整条消费链采用何种约定。
+
+### 一次有解决回执的消费者替换
+
+[Spine官方论坛原帖](https://esotericsoftware.com/forum/d/13927-urp-2d-custom-shader-graph)中，使用者报告同一图集用Spine Skeleton Lit正常，换Unity URP自定义Shader Graph后出现黑轮廓。维护者Harald指出导出为PMA、消费者约定不匹配，给出改导出或适配shader两条路线；使用者明确回复改成straight alpha导出解决了问题。[一手：维护者诊断与使用者回执] 这是单次历史兼容案例，不证明今天所有Shader Graph都会出错，也不说明所有黑边都由PMA造成；其价值是已有合格图无需重新生成。
+
+### 两引擎分别核对，先区分输入与输出
+
+- **Unity 6.0。** [Blend参考](https://docs.unity3d.com/6000.0/Documentation/Manual/SL-Blend.html)说明混合消费的是fragment shader的输出；[混合类型](https://docs.unity3d.com/6000.0/Documentation/Manual/writing-shader-blending-modes.html)区分`SrcAlpha OneMinusSrcAlpha`与`One OneMinusSrcAlpha`。[一手] 因而不能只看Blend猜纹理编码：[Spine渲染文档](https://esotericsoftware.com/spine-unity-rendering)展示`Spine/Skeleton`保持PMA混合，启用`Straight Alpha Texture`时才在采样后把RGB乘alpha。[一手] 输入、shader内部转换、最终混合三处须合起来看，避免乘两次或漏乘。[研究]
+- **Unity导入与颜色空间。** [6.0 Sprite导入参考](https://docs.unity3d.com/6000.0/Documentation/Manual/texture-type-sprite.html)把sRGB、Alpha Source与RGB dilation列为不同选项；[alphaIsTransparency API](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/TextureImporter-alphaIsTransparency.html)明确该选项改变全透明区域的颜色数据。[一手] [Spine导出／导入指南](https://esotericsoftware.com/spine-unity-assets)给出成套配置，且其在Gamma空间预乘的导出纹理不支持该runtime的Linear工作流，须用straight路径。[一手] 这是具体生产者／runtime限制，不可写成所有线性渲染都不能预乘；也不能为修一件素材擅自切换全项目颜色空间。优先沿现有项目选择兼容导出及材质输入配置，不把Spine专用勾选推广成所有Unity纹理默认值。[研究]
+- **Unreal 5.6。** [官方Blend Modes](https://dev.epicgames.com/documentation/en-us/unreal-engine/material-blend-modes-in-unreal-engine?application_version=5.6)分别列`Translucent`为源颜色乘Opacity后叠背景，`AlphaComposite`为源颜色直接叠加背景乘一减Opacity。[一手] 对普通半透明图像，这要求核材质输出的颜色是否已按预期预乘；仅换Blend Mode、不核材质图内部转换，并不能保证正确。[研究] [同版Texture Asset Editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/texture-asset-editor-in-unreal-engine?application_version=5.6)另列sRGB及Source Color Settings，包含源编码与颜色空间。[一手] 因而须连同源编码核对，不把Unity／Spine的sRGB或扩边配置照搬到UE，也不把Masked的二值裁切当柔边修复。[研究]
+
+### 采用、撤回与第二次修改
+
+[研究] 保留合格源图和上次正确的导出／导入／材质组合，先在相同尺寸与深浅背景定位异常从哪一步出现。若明确是约定错配，恢复匹配组合；下一次换装重导出、换材质或升级导入器时，重查这条链，不能只比较PNG或alpha通道。约定一致后仍有边缘问题，再分别查透明像素RGB、滤波／mipmap、图集相邻采样与§12压缩；源内容本身的缺肢、漏洞、错误轮廓仍回到原有淘汰／换源条件。不要为保柔边改成硬alpha，也不要把所有halo归因于混合。
+
+**验证与许可边界：** [研究] 仅阅读版本化引擎文档、生产者文档与公开问题回执，未运行shader、引擎、模型或图像处理，未证明目标设备视觉效果及工时收益。Spine仅为真实生产者／消费者案例，不要求购买、安装或接入其runtime；未复制代码或资产，不新增依赖。
