@@ -1,13 +1,13 @@
 # 开源 Coding Agent
 
-> 核实时间：2026-10-15。依据项目文档与源码 **[一手]**，以及 HN 原帖 **[社区]**。
+> 核实时间：2026-10-16（UTC+8）。依据项目文档与源码 **[一手]**，以及 HN 原帖 **[社区]**。
 
 ## 总览
 
 | 项目 | 形态 | 亮点 | 最近提交 | 评级 |
 |---|---|---|---|---|
 | [OpenCode](https://github.com/anomalyco/opencode)（原 sst/opencode） | TUI + 桌面 App（Beta） | 模型无关；内置 `build`（全权限）和 `plan`（规划，权限边界见下）两个 Agent，Tab 切换；`@general` 子 Agent；安装渠道多 | 2026-10 | 🧪 试用 |
-| [Cline](https://github.com/cline/cline) | VS Code / JetBrains / CLI / 桌面 App | 每步人工审批；CLI 支持无头模式，可用于 CI；桌面版能定时运行 | 2026-10 | 🧪 试用 |
+| [Cline](https://github.com/cline/cline) | VS Code / JetBrains / CLI / 桌面 App | IDE 可按工具类别配置审批；CLI 支持无头模式，但审批默认值须单独核对，见下；桌面版能定时运行 | 2026-10 | 🧪 试用 |
 | [Kilo Code](https://github.com/Kilo-Org/kilocode) | VS Code / JetBrains / CLI | 开源，多种安装方式 | 2026-10 | 👀 评估 |
 | [Goose](https://github.com/aaif-goose/goose) | 桌面 / CLI / API（Rust） | 通用 Agent（不限于编码）；15+ 服务商；可通过 ACP 使用 Claude/ChatGPT/Gemini 订阅；**已加入 Linux 基金会旗下 AAIF** | 2026-10 | 🧪 试用 |
 | [Qwen Code](https://github.com/QwenLM/qwen-code) | 终端 / IDE / 桌面 / Web / 聊天软件 | 自带 auto memory、auto skills、子 Agent、Agent Teams；支持 OpenAI / Anthropic / Gemini / Qwen 协议，可接本地模型；集成钉钉、飞书、微信 | 2026-10 | 🧪 试用（国内团队友好） |
@@ -22,9 +22,15 @@
 
 - **想要 Claude Code 的体验，但希望换模型或接本地模型** → OpenCode。
 - **团队在国内，需要接国产模型或用 Coding Plan** → Qwen Code / OpenCode（见 [02 模型与成本](../02-models-and-cost.md#4-国内-coding-plan)）。
-- **主要在 IDE 里工作，希望每一步都审批** → Cline / Kilo Code。
+- **主要在 IDE 里工作，希望保留操作前审批** → Cline 可列入候选，先关闭需人工确认类别的自动批准并核对有效设置；不能把产品名当成“每步必审”的保证，见下。
 - **想要“一切皆插件”、让 Agent 自己扩展界面和工具** → DeepSeek Harness（先评估数据合规）。
 - **想自己搭 harness，且愿意维护扩展与运行隔离** → 🧪 Pi；仅为省 token 不足以支持迁移。理解原理可配合阅读 [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code)（拆解 Coding Agent 的组成部分）。
+
+## Cline：先选宿主，再核有效审批
+
+🧪 **希望在 IDE 中审查文件修改与命令时，可以试用 Cline，但先检查 Auto Approve。** 它支持按工具类别自动批准，不能笼统称为“每步人工审批”。普通 CLI 的当前文档及固定源码以工具自动批准为内置默认；显式参数、已保存设置和 ACP 接入另有优先级或例外，不能直接套用 IDE 的设置。关闭 CLI 的自动批准也不等于所有入口、所有工具都逐次询问。**[一手：官方文档与固定源码]**
+
+**需要审批才继续的任务，先核实际版本、启动方式及有效设置；无人值守则先隔离环境。** 自动批准开关控制是否询问，不证明目录、凭证或出网已受操作系统限制；仍采用 [10 的最小权限与隔离建议](../10-security.md#30-秒结论)。当前 IDE 文档的旧命令分类与固定 main 实现有差异，不把旧菜单说明当成现行保证；[固定来源与宿主边界](../research/2026-10-12-community-source-records.md#cline审批按宿主与有效设置判断)记录差异。未运行客户端、验证实际安装默认值或比较安全效果。**[研究：采用边界]**
 
 ## OpenCode：规划与撤回边界
 
