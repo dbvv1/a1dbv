@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、落地补丁和最终说明对齐；18补测接管投入、陌生模块学习、原条件恢复、空库/已有库交付及原生产物兼容
-新证据：Immich审查、接管/学习实验；10-14补CBM原条件升级复测、PocketBase迁移快照源码与接收者成功回执；10-15补Rollup原生加载故障、工具链修复与产物兼容CI；不补足Immich实机/支持工时
+改变的建议：18/24：接收意见、落地补丁和最终说明对齐；18补测接管投入、陌生模块学习、原条件恢复、空库/已有库交付、原生产物兼容及接替/并存的身份取舍
+新证据：Immich审查、接管/学习实验；10-14补CBM原条件升级复测、PocketBase迁移快照源码与接收者成功回执；10-15补Rollup原生加载故障、工具链修复与产物兼容CI；补Syncthing与Tailscale接替/并存回执及固定机制；不补足Immich实机/支持工时
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -124,6 +124,24 @@
 
 **最小采用与停止条件。** 交付含原生组件时先写清真正承诺的接收环境，复用已有发布产物检查，后续获准验证时观察实际加载和一条关键功能；若失败，保留原锁文件和完整错误cause，定位是包选择／安装还是ABI／运行库，再决定兼容产物或构建修复。纯脚本且无这项边界时不增加矩阵；已有目标环境验收充分时不另造框架。不复制上游特定tarball修补脚本，也不建议为绕过错误直接升级系统库。下一条有价值证据是原接收者在原环境使用4.62.4的成功加载和业务结果，不再增加同一补丁的检查数量。**[经验：条件建议]**
 
+
+## 补充证据：接替恢复与并存试用的身份取舍
+
+核实：2026-10-15；只读原帖、后续回复与固定源码，未运行客户端或容器，未接触真实凭据／设备。**改变18 §7的选择**：数据能恢复，不代表应该复制全部身份；先决定接替旧实例还是保留旧实例试用，再选产品已有的导入和启动机制。这补充前述空库／已有库差异，不另设恢复清单。**[研究：采用判断]**
+
+**Syncthing Tray：保留比较空间，付出重新配对的代价。** [讨论 #390](https://github.com/Martchus/syncthingtray/discussions/390)中，Adhjie于2025-12-03已读迁移说明仍担心损失。维护者建议只导入文件夹／设备设置，避免分歧数据库宣称同一身份；维护者 Martchus 于12-04自报旧 Android 10 手机迁移可用，这是作者自测。2026-02-25原提问者仍使用该app，也反馈内存负担、必要时强退：这是继续使用，不是完整数据审计或长期稳定性证明。讨论时2.0.4导入有回归，不能据此称当前版本仍坏。**[社区：使用自报；一手：维护者解释]**
+
+[固定迁移说明](https://github.com/Martchus/syncthingtray/blob/a67d341af2a5c83ace634644f064cc298eb2d6a4/docs/android.md#migrating-data-from-your-existing-app-setup)区分两路：选择性导入保留**目标现有device ID**，对端须接受该身份与共享；全量导入沿用原配置、数据库和ID，无须对端重配，但旧app不能自行再启动，切回须先停新实例并按说明重新导入更新状态。[固定app.cpp](https://github.com/Martchus/syncthingtray/blob/a67d341af2a5c83ace634644f064cc298eb2d6a4/syncthingwidgets/quick/app.cpp#L1644-L1840)的选择性分支只合并folders/devices，`makeObjectFromDefaults`设`paused=true`；完整分支复制Syncthing home。保留两app不等于能同时写同一目录，维护者仍建议避免同时运行。新身份不是数据隔离。**[一手：固定文档与代码]**
+
+边界：同一固定文档也允许新前端连接原后台，但操作会影响原配置，并非只读沙箱；未找到该分支用户结果，不另作推荐。[a67d341](https://github.com/Martchus/syncthingtray/commit/a67d341af2a5c83ace634644f064cc298eb2d6a4)于2026-02-20 UTC还修复过先前28ece7e引入的参数引用清空问题，说明导入功能仍有后续维护，不能将12月自报当所有后续版本保证。2026-10-15回读[默认分支说明](https://github.com/Martchus/syncthingtray/blob/master/docs/android.md)仍保留两种迁移机制，并承认Android成熟度／资源限制；本案不是替代产品排行。**[一手；研究：证据边界]**
+
+**异源闭环：两台设备要并用，重装不一定重建身份。** [Tailscale #10371](https://github.com/tailscale/tailscale/issues/10371)的原用户于2023-11-23从iPhone备份克隆新机，重装app、删除控制台条目仍不能并用，登录一台会断开另一台。[DentonGentry的回复](https://github.com/tailscale/tailscale/issues/10371#issuecomment-1824970509)要求在新机重置身份存储并重新登录，生成新node key；[原用户同日确认解决](https://github.com/tailscale/tailscale/issues/10371#issuecomment-1824975044)。这是已有功能的历史处理结果，没有对应新修订，不作为当前各版本菜单教程。**[社区：原用户失败与成功；一手：项目贡献者建议]**
+
+**反例：接替服务先修运行入口，不默认清空身份。** [Tailscale #8679](https://github.com/tailscale/tailscale/issues/8679)中，2023-07-21用户报告Kubernetes1.26／Tailscale1.44的pod接替后出现重复node key。[irbekrm于7月26诊断](https://github.com/tailscale/tailscale/issues/8679#issuecomment-1651783672)怀疑新旧pod短暂同用Secret内身份；镜像已含containerboot改进，但旧run.sh覆盖了它。建议停止调用旧脚本并按支持的配置调整，[原用户同日确认解决](https://github.com/tailscale/tailscale/issues/8679#issuecomment-1652556519)。这支持采用受支持接替入口，不证明前后节点ID完全没变。**[社区：原用户回执；一手：项目贡献者诊断]**
+
+[固定a2ca723](https://github.com/tailscale/tailscale/commit/a2ca72393352606e75ed73121551a4a8575a3303)早于该issue：镜像改以containerboot为PID1，向tailscaled转发终止信号、回收子进程，仍支持持久状态，并增加按需认证。旧run.sh也有信号trap，不能说旧版完全不处理退出。代码没有跨pod锁；维护者只说降低出现概率，不能证明强杀、分区或一般故障切换安全。该回执是改回受支持入口及配置后的结果，不能归因于单独信号处理。本次无集群运行或CI通过声明。**[一手：固定源码；研究：因果边界]**
+
+**最小采用边界。** 凭据、实例身份、同步索引／业务进度是不同对象，即使同处一份备份，也须分别决定保留范围；接替旧服务与保留两实例有不同需求。公共讨论不构成生成／重置身份、重新认证、配对或共享授权。Agent可据公开机制提出选择，但实际变更须按授权办理。这些历史案例不证明所有软件都有唯一设备身份，也不测量AI收益或维护工时。**[研究：跨案判断；经验：实施边界]**
 
 ## 18 专题历史核查范围
 
