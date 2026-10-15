@@ -156,7 +156,7 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 - 处理库主许可分别核对：[meshoptimizer b233043](https://github.com/zeux/meshoptimizer/blob/b2330430776a95a1545f03fc7bf16927f8cadc59/LICENSE.md)、[xatlas f700c7](https://github.com/jpcy/xatlas/blob/f700c7790aaa030e794b52ba7791a05c085faf0c/LICENSE)、[CoACD 131010c](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/LICENSE)均MIT，无模型权重；分发保留通知，输入网格和第三方依赖另核。
 - [Infinigen a0d1a0d](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/LICENSE)：主BSD-3-Clause，明确标注部分CC0；不由根许可包办外部素材/包。本轮仅借配方，不部署完整导出器。
 - Meshy7.1/T2、TripoP1/P2、Rodin2.5仍按上文对应服务合同和实际生成/导出计划；型号更新不自动更改旧免费资产权利。
-- 暂缓商业默认：LATO.2主代码/官方权重卡虽MIT，默认安装引入nvdiffrast0.4.0受非商业研究条款限制；TaoFlowForge根Apache2不证明ModelScope权重和DINOv3依赖已清权；Marble合同已补核，但 Standard／Pro 的商业口径需按实际订单确认。固定来源在WP3研究，三者不得借主许可进入无条件商用推荐。
+- 暂缓商业默认：LATO.2主代码/官方权重卡虽MIT，默认安装引入nvdiffrast0.4.0受非商业研究条款限制；TaoFlowForge 已于 2026-10-16 另读固定 ModelScope 权重卡的 Apache-2.0 声明，但必需 DINOv3 的实际来源／版本及适用许可链仍待核，不能由主许可覆盖（[WP3 §10.2](2026-10-14-game-wp3-3d-assets.md#102-taoflowforge补得权重声明仍核实际-dino-适用链)）；Marble合同已补核，但 Standard／Pro 的商业口径需按实际订单确认。固定来源在WP3研究，三者不得借主许可进入无条件商用推荐。
 
 ## WP6追加：现行音频型号与声音连续性
 
