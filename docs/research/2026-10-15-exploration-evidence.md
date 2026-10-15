@@ -1,6 +1,6 @@
 主线：M6／主线 1、2，外部探索怎样支持可采用的选择。
 改变的建议：借现成检索综合与评测量规，只补决定性证据、失败状态和生成交接，不先自建研究框架。
-新证据：2026-10-15 核读托管研究说明、三个固定开源实现、评测论文与评分源码；归档／失败处理、引用定义及禁源边界改变采用条件。
+新证据：2026-10-15 核读托管研究说明、三个固定开源实现、评测论文与评分源码；补核 Steam 公告同源正文读取及限长对照，区分抽取失败、来源身份与权限边界。
 
 # AI 探索：系统与评测证据
 
@@ -205,6 +205,17 @@ TREC支持度研究也显示，群体系统排名相关高，不代表每个断�
 - [2024 Dependency Graph准确性研究](https://mdipenta.github.io/files/ease2024-dependencies.pdf) §3–5：2023年采样297个Java与338个Python项目，核对图谱、dependents和manifest/lock，发现关系不一致。样本要求至少100 stars、100 commits等，不代表小众项目总体或当前错误率；本轮只读论文，未复现。**[一手：历史挖掘研究]**
 
 **转成当前动作**：新找到的采用项目可以继续查其替代方案、迁移和失败记录；若新增材料总出自同一作者圈而目标生态仍未覆盖，改用那个生态的术语与入口。只对改变选择的采用证据核固定版本依赖及实际调用／交付说明，区分示例、测试和生产用途；引用也可能是批评。没有公开关系的新品仍可能漏检，不能靠追踪消除选择偏差；停止沿用需求卡的决定与预算，不另设固定深度或数量规则。**[经验：工程迁移与边界]**
+
+## 原文抽取失败：先核同源正文入口
+
+2026-10-16（UTC+8）补核。✅ 决定性来源只返回标题、摘要或截断内容时，先查已有权限内、官方支持的正文入口，再决定是否保留未知；明确访问拒绝则停止，不换路绕过。已有“使用 API／不升级摘要”原则还不足以指导这一步分流。此建议由下面的单例与接口契约支持，不证明跨站恢复率、搜索质量或工时改善。**[经验：条件建议]**
+
+- **官方契约**：[Steam GetNewsForApp v2](https://partner.steamgames.com/doc/webapi/ISteamNews) 的 `maxlength=0` 返回接口持有的完整内容，非零值限制返回内容长度，内容超过限制时生成摘要；`enddate` 选取早于指定 Unix 时间的条目，`feeds` 限定信息源。普通接口与另需 publisher key 的 Authed 接口分开，不能因普通入口失败而请求或借用额外凭据。**[一手：官方文档]**
+- **实际补读与截断对照**：既有 [WP11 镜头研究](2026-10-14-game-wp11-gameplay-architecture.md#1-tiny-glade按设备改变支点政策不是修正坐标计算)使用的 [Tiny Glade 1.11.2 公告](https://steamcommunity.com/games/2198150/announcements/detail/543346166601876516)，网页抽取本轮仍仅有标题／图像；通过[公开 API](https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2198150&count=5&maxlength=0&enddate=1737072000&feeds=steam_community_announcements)取得正文。目标 `appid=2198150`、`gid=1788945554756976`、`author=anopara`、`date=1736947659`（2025-01-15 13:27:39 UTC）、标题版本 `1.11.2`、`feedname=steam_community_announcements`。相同筛选参数下，`maxlength=0` 的 `contents` 为3903字符／3943 UTF-8字节，含 Rotation、Zoom、Misc 和作者结尾；改为 `maxlength=200` 仅203字符并以省略号结尾。完整 `contents` 的 SHA-256 为 `c562a284adc420d6f54a7ab2b5e32611b7e975ac967feae8fef97aa0da21e571`。独立复核还读取了原公告的公开 HTML：`announcement_body.gid=543346166601876516`、`posttime=1736947659`，其 `body` 与 API 正文逐字符相等且哈希一致；问题是网页抽取不完整，不是网站没有正文。`maxlength=0` 本身不保证转载 feed 含被转载原文全文。这是同一来源的文本完整性核验，未播放动图或验证游戏行为。**[一手：公开响应读取]**
+- **对象和作者不能只凭域名判断**：目标响应的[新闻 URL](https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1788945554756976)经 HTTP 重定向到上述公告，确认 API gid 与网页公告 ID 的对应；不同命名空间不要求 ID 字面相等。未限定 `feeds` 的同一 API 还返回 GamingOnLinux 转载，故官方接口不等于每条内容都由官方作者生产；要核信息源、作者和对象。目标官方公告自身的 `is_external_url=true` 也不能单独判成转载。**[一手：公开响应及重定向读取]**
+- **GitHub 只补接口契约，不算第二个恢复实测**：[Contents API](https://docs.github.com/en/rest/repos/contents#get-repository-content)支持 raw 内容与 `ref`；公开资源可免认证。1–100 MB文件在 object 模式的 `content` 可能为空，应按文档取 raw，不能将空字段认作空文件。[固定链接说明](https://docs.github.com/en/repositories/working-with-files/using-files/getting-permanent-links-to-files)区分会变化的分支与固定 commit；补读应核仓库、路径和 commit，不能拿当前分支替代所引历史版本。**[一手：官方文档]**
+
+**采用边界**：只改变“首次抽取不完整后做什么”，不把读取失败归因为产品没有搜索能力。正文仍缺、身份映射不清或版本不符时保留缺口；遇真实拒绝、需新增权限或超预算则停止该路径。补读恢复的是同一上游原文，不增加独立证据数量；多个核查者读到同一文本也不等于外部复现。不安装抓取框架，不把全文读取等同于结论成立。**[经验：边界判断]**
 
 ## 不确定性与停止依据
 
