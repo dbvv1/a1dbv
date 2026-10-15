@@ -21,7 +21,7 @@
 |---|---|
 | `Library/`、`Temp/`、`obj/`、`Logs/` | **禁止读写**（生成物，体积很大） |
 | `*.meta` | **禁止删除或手写 GUID**。新建脚本让 Unity 生成 meta；移动或重命名时 `.meta` 必须一起 `git mv` |
-| `*.unity`、`*.prefab`、`*.asset`（YAML） | **不要手改**：fileID 和 GUID 引用很容易被弄坏。用编辑器 API 修改：`unity command eval`、MCP，或编辑器脚本 |
+| `*.unity`、`*.prefab`、`*.asset`（YAML） | **默认经 Editor API 修改**：使用已配置的 CLI、MCP 或编辑器脚本；文本修改仅限项目已验证的受限路径，保留 GUID／fileID 并在目标引擎核引用。接口缺失不授权绕过保护 |
 | `ProjectSettings/`、`Packages/manifest.json` | 修改前必须询问（影响整个项目和所有平台） |
 | 第三方插件目录（`Assets/Plugins/`、Asset Store 包） | 只读；需要改时加一层包装或 fork |
 
@@ -61,7 +61,7 @@ unity test . --affected --since origin/main          # 只跑受改动影响的�
 
 官方 `playmode-verification-loop` 的要点 **[一手]**：
 1. 进入 Play 模式只是准备工作，**不算验证**；
-2. 确认游戏**确实在推进**：失去焦点的编辑器可能停在第 1 帧，`unity status` 仍显示 playing。Unity CLI beta.12 起，`unity status --format json` 会返回 `frameCount` 和 `playerLoopTicking`：**隔几秒查两次，帧数增加了才算在运行**；
+2. 确认游戏**确实在推进**：失去焦点的编辑器可能停在第 1 帧，`unity status` 仍显示 playing。CLI 与当前 Pipeline 支持时，`unity status --format json` 才带 `frameCount` 和 `playerLoopTicking`：隔几秒查两次以确认推进；字段缺失时使用既有帧／时间观测，否则标明未验证，不据此判停帧（[字段前提](01-toolchain.md)，2026-10-15 补核）；
 3. 截图（注意截到的可能是冻结的画面），并读 Console；
 4. 用 `unity command eval` 实时读取或调整状态。
 

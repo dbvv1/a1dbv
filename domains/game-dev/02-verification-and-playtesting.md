@@ -23,7 +23,7 @@
 
 | 已有入口 | 能得到的证据；选择边界 |
 |---|---|
-| Unity CLI／Pipeline | `status --format json` 的 `frameCount`、`playerLoopTicking` 可帮助确认 PlayerLoop 推进；还要读本次涉及的玩法状态，不能把帧数增长当作伤害／物理已执行。[一手：[CLI release notes](https://docs.unity.com/en-us/unity-cli/release-notes)；研究] |
+| Unity CLI／Pipeline | 当前 Pipeline 提供时，`status --format json` 的 `frameCount`、`playerLoopTicking` 可帮助确认 PlayerLoop 推进；字段缺失改用既有进度观测，否则标明未验证，不能判为停帧；还要读本次涉及的玩法状态，不能把帧数增长当作伤害／物理已执行。[一手：[CLI release notes](https://docs.unity.com/en-us/unity-cli/release-notes)；研究] |
 | Unity Input System 1.19 | `InputTestFixture` 用隔离的输入系统与合成设备测试绑定、交互和输入处理；不依赖真实平台后端／硬件。适合可重复的输入回归，外设与 OS 问题仍需实机。[一手：[Input testing](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/Testing.html)] |
 | Unreal 5.8 | 原生 Functional Testing 可测关卡，Automation Driver 模拟应用收到的键鼠输入，现成定位器面向 Slate；当前文档未提供手柄／触摸支持。别把它写成通用真实设备试玩，也不因有 MCP 就假定所需测试工具已暴露。[一手：[Automation Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine)、[Automation Driver](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-driver-in-unreal-engine)；研究] |
 | Roblox Studio MCP | 官方提供 `playtest` 子 Agent、状态／日志／截图与键鼠模拟；`character_navigation` 是另一个移动入口。导航到位置并不能证明玩家按键、UI 焦点与操作提示正确；回读应选对 Studio 实例及 Client／Server 状态。[一手：[Studio MCP](https://create.roblox.com/docs/studio/mcp)；研究] |

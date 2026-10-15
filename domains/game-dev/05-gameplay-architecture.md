@@ -1,10 +1,12 @@
 # Gameplay 架构：让第二次修改仍然可靠
 
-> 核实时间：2026-10-15（UTC+8，命令预览及效果叠加补研）；其余各节沿用2026-10-14（UTC）的原核实范围。适用：单人程序开发独立游戏，Unity 为主、Unreal 作对照。固定源码、历史修改、许可与反证见 [WP11 研究记录](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md)；资源释放、存档实现与目标设备预算见[客户端模块](04-client-modules.md)，试玩方法见[验证页](02-verification-and-playtesting.md)。
+> 更新：2026-10-15
+
+适用：单人程序开发独立游戏，Unity 为主、Unreal 作对照。
 
 **默认采用引擎现有组件、少量可测试规则和局部状态机；先写清谁拥有状态、谁提交结果、退出时清理什么，再决定是否增加框架。** HFSM、行为树、GAS 和 ECS 解决不同问题，不能按“先进程度”排成升级阶梯。[研究]
 
-**主要限制**：本轮是源码与官方契约调查，未运行引擎或模型对照；采用判断仍须经同一玩法的第二次修改、目标平台构建与真人试玩验证。
+**主要限制**：这些建议基于源码与官方契约；实际采用仍须经过同一玩法的第二次修改、目标平台构建与真人试玩。
 
 ## 30 秒结论：先保状态，再选框架
 
@@ -12,8 +14,10 @@
 |---|---|---|
 | 少量阶段、敌人和技能 | 原生组件、小状态机、定义与运行实例分离 | 共享层级退出逻辑增多时考虑 HFSM |
 | 优先级决策与行为反复组合 | 现有行为树或 StateTree | 确有内容编辑收益，不因角色数量猜测 |
+| 追击、让路与动态堵门 | 原生导航；分开通路、局部避让、停距与位移所有者 | 原生行为不满足玩法或测得查询／人群成本后再扩展 |
 | 蓄力、受击、死亡与重开 | 明确打断、取消、唯一结算点；多来源效果先定合并与撤销规则 | 复杂标签/效果/预测才评估 GAS |
 | 规模上升、CPU 超预算 | 先定位热点；Unity 可局部 Jobs/Burst | 测量支持时再局部 ECS |
+| 扩充随机关卡 | 稳定动作空间用有用途的房间组合；地形探索用受约束的程序布局 | 连通后还要核路线、遭遇与资源机会，不以布局数量升级 |
 | 相机或关卡变化 | 现有相机、稳定内容 ID、可重置遭遇 | 流式世界需求出现后增系统 |
 
 框架不能代替第二次修改验收；当前建议基于契约与源码，未证明真实项目净收益。[研究]
@@ -58,6 +62,15 @@
 [一手] UnityHFSM [#71](https://github.com/Inspiaaa/UnityHFSM/issues/71) 是直接反例：把 `needsExitTime` 等改只读破坏了真实运行期配置需求，2.3 又恢复可变并明确生效时机。[修复](https://github.com/Inspiaaa/UnityHFSM/commit/94f316fdae5be5abe964f70355bbb697274d38c0) [研究] AI 不应以“最佳实践清理”为由更改既有状态契约。
 
 [一手] Unity Behavior [1.0.16](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/changelog/CHANGELOG.html) 新增 OnSetup／OnTeardown，并修复不可达导航持续 Running 等问题。UE [BT](https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---overview) 有事件驱动的观察／打断；[StateTree](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-state-tree-in-unreal-engine) 以转换触发选状态，同状态任务并发，完成转换不应被理解为自动等待全部任务。[研究] 选择已有体系并锁定版本，不能把所有图工具的 abort、重入和完成语义视为相同。
+
+### 追击与让路：有路径不等于走得自然
+
+**[研究] ✅ 先复用原生导航，分清通路、局部避让、停止位置和最终位移所有者。** 近邻临时挡路先用已有避让；门／箱子改变可通行区域时更新导航表示；近身战另定停距、侧移与是否允许身体卡位，不让所有敌人挤向目标中心。目标更新沿用当前组件的跟随契约，只有测得重复查询成本后才节流／缓存，不能统一降低频率而损失转向响应。
+
+- **Unity**：[AI Navigation 2.0.16](https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/AboutObstacles.html)的局部避让范围短，不能保证绕过堵塞；通常静止但可被推动的箱子可用 carving，移动与静止策略分开，查询要考虑一帧更新延迟。[一手] [混合组件约束](https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/MixingComponents.html)要求导航、非运动学刚体、Root Motion 不争写位置；同一角色的 Agent 与 Obstacle 不同时启用。[研究] 先修这些边界，再考虑外部人群系统
+- **UE**：[原生 RVO／Detour Crowd](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-avoidance-with-the-navigation-system-in-unreal-engine)择一；CharacterMovement RVO 不受 NavMesh 约束，可能越界，需依赖走廊约束时评估 Detour Crowd 并核配置的 Agent 上限。[一手] [研究] 不把 Unity carving 规则照搬到 UE，也不默认同时开两种避让
+
+[一手] [Factorio FFF316](https://www.factorio.com/blog/post/fff-316)面对同类单位互相堵塞，改为取消同类硬碰撞、保留 separation；[Overgrowth 固定源码](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/enemycontrol.as#L3075-L3121)则把攻击停距、侧移和经 NavRaycast 限制的同队排斥组合成目标运动。[研究] 借局部机制，不整搬引擎；需要身体卡位的玩法不照搬取消碰撞。后续二改用“追击中急转＋箱子堵门后移开＋窄门会车＋切攻击／眩晕”检查停距、反复左右转向和旧移动残留；源码不能证明自然度或性能收益，许可与重寻路反例见 [WP11 导航补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#导航补研通路局部让路与停止位置)。
 
 ## 4. 数据驱动：定义、实例、存档分开
 
@@ -137,9 +150,9 @@
 
 ## 8. 相机：先让玩家看懂并控得住，再增加镜头语言
 
-[研究] **质量目标**：玩家在做决定前看见落点、威胁和路线；移动、瞄准与屏幕变化有可预测的关系；镜头把注意力引到重要动作，又不抢走控制。固定镜头／简单跟随能做到这些就是合格基线，不以更多阻尼、震动或自动运镜代表高级。Unity 默认复用匹配项目版本的 Cinemachine，UE 先沿用 CameraComponent／SpringArm／PlayerCameraManager；只补玩法特例。
+[研究] **✅ 先用固定镜头／简单跟随，让玩家在行动前看见落点、威胁和路线，移动与瞄准不被运镜抢走。** Unity 复用匹配项目版本的 Cinemachine，UE 沿用 CameraComponent／SpringArm／PlayerCameraManager；只为看不清或控不住的动作加规则，不把更多阻尼、震动或自动运镜当升级。
 
-下表的组件名是 **Unity Cinemachine 路线**，不是跨引擎 API 对照；UE 路线见本节后文。它是交叉来源后的采用判断，**不是三种玩法的实测排名**。[研究]
+下表组件名仅指 **Unity Cinemachine 路线**，UE 见后文；这是机制推导的选用建议，不是三种玩法的实测排名。[研究]
 
 | 场景与玩家需要 | 默认采用 | 何时调整；不值得增加什么 |
 |---|---|---|
@@ -147,47 +160,54 @@
 | 俯视战斗／小型竞技场：读围攻方向、攻击预告与逃路 | ✅ 固定朝向和稳定尺度，有限跟随；只在确有需要时加入目标偏移 | Boss／双目标无法同屏时试 Target Group＋Group Framing，并限制缩放。把所有敌人纳入构图会被远处杂兵拉远；角色和预告过小就退回固定尺度或改遭遇布局 |
 | 越肩射击／3D 探索：控制观察方向，瞄准与实际命中可信 | ✅ Third Person Follow，瞄准需要时加 Third Person Aim；输入方向与角色动画分离 | 窄角落先调遮挡层、相机半径和进出碰撞响应；关卡仍无可用视线时改空间或局部遮挡表现。不要靠不断自动绕行／换肩替玩家瞄准 |
 
-[一手] 当前 [Unity 6.0 包页](https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-cinemachine)列出的发布版为 **3.1.7**，不是主干预发布版。[Position Composer](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePositionComposer.html)明确前瞻可能放大动画噪声，平滑预测又增加滞后；[Group Framing](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineGroupFraming.html)提供变焦／移动构图。[研究] 先改善取景和输入响应，再补阻尼；一味拉远虽能装下对象，却可能降低战斗可读性。
+[一手／研究] 前瞻会放大动画噪声，预测平滑又增加滞后；先改善取景与输入响应，再加阻尼。版本按项目核：本次核实的 Unity 6.0 渠道发布版为 **3.1.7**，不能把主干 **3.1.8-pre.2** 的静态重入修复算进稳定版。机制、修复与许可详见 [WP11 镜头补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#镜头质量补研从跟得上到看得懂控得住)及 [WP11 相机基线](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#7-相机先复用成熟运行时验收的是可读性与控制权)。
 
-**Unity：遮挡不是一个开关。** [一手] Cinemachine 3.1.7 的 [Decollider](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDecollider.html)处理相机脱离障碍／地形的定位，不保证看见目标；[Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html)才尝试恢复目标视线，其 Transparent Layers 只是排除遮挡判断，不会把材质变透明。[研究] ✅ 保留瞄准方向后仍能取景，才用有限拉近／移位；固定朝向玩法若只被可淡出的树冠／前景挡住，🧪 复用 Unity Shader Graph 的 Dither＋Alpha Clip 做局部显隐，保留碰撞和关键边界。若需要同时看见落点、攻击预告与掩体而没有可行视点，先降低／移动遮挡物或改遭遇布局；轮廓只标出角色位置，不能替代这些信息。已发布的 [Project Zomboid 42.21](https://projectzomboid.com/blog/news/2026/09/42-21-stable-released/)仍为大树遮住驾驶视野及树下物件修改 cutaway，说明局部显隐也有持续内容维护成本；实现与许可边界见 WP11。
+**Unity 遮挡：先分“不穿墙”和“看得见”。** [一手／研究] Decollider 修正相机碰撞位置，Deoccluder 才尝试恢复目标视线；Transparent Layers 只排除遮挡判断，不会让材质透明。✅ 保住瞄准意图后仍有可用视点，才用有限拉近／移位；固定朝向只被可退让的树冠／前景挡住时，🧪 用 Shader Graph Dither＋Alpha Clip 做局部显隐。保留碰撞、掩体边界、落地面和攻击预告，定义显隐对象与退出恢复；轮廓只回答“人在哪”。若无可行视点，或每种墙／树都要补材质例外，先改几何与遭遇布局。Project Zomboid 发布后仍修改树冠 cutaway，反证显隐不是免费兜底；实现、案例与 UCL 的 Unity-dependent 限制见 [WP11 遮挡依据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#2-三种玩法的不同默认不共享一套最佳参数)。
 
 ### Unreal：同样的可读性目标，不同的职责边界
 
-**[研究] ✅ 采用既有 CameraComponent＋SpringArm＋PlayerCameraManager，改造少量玩法规则。** [一手] [SpringArm](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/USpringArmComponent)用 ProbeChannel／ProbeSize 防止镜头穿入关卡，默认查询 ECC_Camera；[PlayerCameraManager](https://dev.epicgames.com/documentation/unreal-engine/cameras-in-unreal-engine)管理最终视点与混合；[ControlRotation](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/AController/GetControlRotation)是控制／瞄准朝向，可不同于相机与 Pawn 朝向。[研究] SpringArm 的防穿透不是 Deoccluder 式目标可见性策略，更不负责枪口命中；不要让三个系统各自把旋转写回另一个系统。
+[一手／研究] **✅ 保留原生职责：** CameraComponent 提供视点，SpringArm 用 ProbeChannel／ProbeSize 防穿透（默认 ECC_Camera），PlayerCameraManager 管最终视图与混合；ControlRotation 表达控制／瞄准朝向，可不同于相机和 Pawn 朝向。SpringArm 不等于 Deoccluder，更不负责枪口命中；不要相互反写旋转。
 
-- **绕柱越肩瞄准**：[研究] 输入／瞄准规则拥有玩家意图，SpringArm 只在允许范围内修正位置；肩位优先用 SocketOffset，别随意再偏移子 Camera 绕过探测。玩法从最终视点／准星求候选目标，武器再从真实枪口按射线或弹体体积检查路径。相机看见目标而枪口撞柱时显示受阻，命中按武器规则结算；不能从相机直接发射来穿过掩体，也不自动转 ControlRotation 替玩家绕柱。装饰震动与故意后坐力是否影响瞄准须单独规定。这是基于原生契约的设计建议，不是 UE 自动提供的完整射击系统
-- **固定俯视的树冠／落点**：[研究] ✅ 先保固定朝向、尺度和落地参照；🧪 仅对明确允许的前景改造 UE 自己的材质显隐。官方 [Top Down Strategy 模板](https://dev.epicgames.com/documentation/unreal-engine/top-down-template-in-unreal-engine)已有参数化 masked M_Cutout 屋顶开口可作起点。[一手] [研究] 这是屋顶示例，树冠覆盖范围、对象选择和退出恢复仍由项目负责；保留树干、掩体边缘、落地面与攻击预告，不靠整体拉近或只画角色轮廓解决。显隐不改变武器／移动碰撞，不搬运 Unity Shader Graph 节点或受限源码
+- **绕柱越肩：** 肩位优先用 SocketOffset，避免偏移子 Camera 绕过探测。输入拥有瞄准意图，SpringArm 只在允许范围修正位置；从最终视点／准星取候选目标，武器再从真实枪口按射线、弹体体积／弹道查路径。枪口撞柱就显示受阻并按武器规则结算，不能从相机发射穿掩体，也不自动转 ControlRotation 替玩家绕柱。[研究]
+- **固定俯视：** 先保朝向、尺度和落地参照；🧪 从 Top Down Strategy 的 masked M_Cutout 屋顶开口改造局部显隐。它不是完整树冠系统，对象选择、范围和恢复由项目负责；同样保留碰撞与关键边界，不靠整体拉近或角色轮廓代替落点信息，也不跨引擎搬运 Unity 节点／受限源码。[一手／研究]
+- **👀 新系统只在减少编排时评估：** 本次读取的 UE **5.8** Gameplay Cameras 仍标 **Experimental**；多套可复用 rig、导演与过渡确有收益才试，不因“最新”默认迁移。已有 Occlusion Material 节点不保证枪口合法、落点可读或材质自动适配。[一手／研究]
 
-**[研究] 👀 评估新系统，⛔ 不因“最新”默认迁移。** 本次读取的 UE **5.8** [Gameplay Cameras 插件页](https://dev.epicgames.com/documentation/unreal-engine/API/PluginIndex/GameplayCameras?lang=en-US)与[概览](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-overview?lang=en-US)仍标 **Experimental**。[一手] 只有多套可复用 rig、导演选择和过渡确实减少重复编排时再试；[Quick Start](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-quick-start)已有 Occlusion Material 节点，但存在节点不等于枪口合法、落点可读或新材质自动适配。[研究] 默认沿用原生基线；二改增加一根柱／一层树冠后核准星与枪口分歧、切镜输入连续性、显隐恢复和新增材质例外，细节见 [WP11 UE 补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#unreal-相机补研同一遮挡问题的原生职责与新系统边界)。
+原生契约、模板限制与版本核实范围见 [WP11 UE 补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#unreal-相机补研同一遮挡问题的原生职责与新系统边界)。
 
 ### 两引擎共用的体验契约
 
-**三个容易漏掉的体验契约：**
+- **持续输入跨切镜仍可预测。** Celeste64 在攀爬持续按方向时保留映射，松开才重算；✅ 借局部机制，不推广成所有地面移动都锁方向，也不照搬 jam 的长期架构。鼠标位移与摇杆速率分开处理，别重复乘帧时间；Unity Input Axis Controller 有对应选项。[一手／研究]
+- **准星与命中分开核。** Unity Third Person Aim 可处理相机／角色起点视差，实际枪口与弹道仍属玩法；两引擎都须区分“镜头看得见”和“枪口打得到”。装饰震动可与瞄准分离，故意后坐力是否影响瞄准另定，不能一并抵消。[一手／研究]
+- **切镜、可选效果与默认值分别决定。** 谜题揭示可缓动，要求立即取景的重生不应追过半张地图，战斗混合不能丢落点或瞄准控制。震动、摆动、运动模糊和非必要自动回正应可减弱／关闭，视野与横纵灵敏度按玩法开放；没有通用舒适参数。[一手／研究] 非必要运动已有明确不适反馈时，考虑稳定缺省＋易发现的动感开关。Endless Sky 保留功能却撤回默认开启，正面体验与不适报告并存：能关闭不足以支持默认开，也不必一律关闭；旧设置仍保留，舒适度／留存收益未测，见 [WP11 默认值取舍](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#endless-sky非平台游戏的动感镜头与默认值取舍)。
 
-- **转镜不应偷偷改变正在执行的意图。** [Celeste64 固定源码](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1474-L1487)在攀爬持续按方向时保持输入映射，松开后才重算；垂直跟随也区分着地、下降与高度窗。[一手] ✅ 借这种局部机制，勿将它推广成所有地面移动都锁方向；已发布 jam 的代码不是长期架构或舒适度实测。
-- **准星是命中承诺。** [Third Person Aim](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineThirdPersonAim.html)处理相机与角色起点的视差；实际枪口和弹道仍由游戏负责。[研究] 掩体边缘要分别验“镜头看得见”和“枪口打得到”，不要为了稳定准星把有意设计的后坐力也全部抵消。鼠标位移与摇杆速率分别处理，别重复乘帧时间；[Input Axis Controller](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineInputAxisController.html)已有对应选项。[一手]
-- **切镜服务意图，舒适度能退出。** [研究] 揭示谜题可用缓动，要求立即重新取景的重生不应追过半张地图；战斗中长混合不能让玩家失去落点或瞄准控制。震动、摆动、运动模糊及非必要自动回正应可减弱／关闭；视野与横纵灵敏度按玩法提供调整，依据 [Xbox XAG 117](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117)，不承诺某组参数适合所有人。[一手]
+输入、瞄准与可访问性依据见 [WP11 镜头补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#镜头质量补研从跟得上到看得懂控得住)；借 Celeste64 机制不等于取得其 Content／IP 商用许可。
 
-**可选效果、默认值和首玩入口分开决定。** [研究] 非必要镜头运动已有明确不适反馈时，考虑稳定跟随作缺省、保留可选动感，并让首玩者容易找到开关。Endless Sky 的[实际改版](https://github.com/endless-sky/endless-sky/pull/12252)保留功能但撤回默认开启，正面试玩与不适报告并存；不能把“能关闭”当成默认开启的充分理由，也不应把所有效果一律关掉。改默认后的舒适度与留存收益未测，旧设置和证据范围见 [WP11](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#endless-sky非平台游戏的动感镜头与默认值取舍)。
+**先选历史政策，再调阻尼。** [研究] Unity 在项目版本有相应入口时：同一目标整体平移、需保留相对构图与运动趋势，用 `OnTargetObjectWarped(target, positionDelta)` 同步历史；重生／换角色后需立即重新取景，用 `CancelDamping()` 清历史，活动混合另选 cut／blend；正常交接仍需设计过渡时保留混合。换 Follow 不等于硬切，零位移 warp 不等于重置，位置 warp 不处理旋转传送与所有扩展状态。
 
-**先决定保留还是丢弃跟随历史，再调阻尼。** [研究] 同一目标整体平移、且设计要求保留原有相对构图／运动趋势时，✅ 在项目版本提供对应入口时，用 Cinemachine 的 `OnTargetObjectWarped(target, positionDelta)` 同步历史；死亡重生、换角色后要求立即重新取景时，✅ 用 `CancelDamping()` 清掉旧历史，按需要另选 cut／blend。不要把换 Follow 当作自动硬切，也不要用零位移 warp 代替重置。[一手] 固定 [Position Composer 源码](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Components/CinemachinePositionComposer.cs)与[原生重置入口](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Core/CinemachineVirtualCameraBase.cs)支持这一区分；旋转传送、活动混合及扩展状态仍须分别核对，不能把位置 warp 当完整传送系统。
+**统一输出与时钟，验移动目标而非阻尼名称。** [研究] 一个视口只有一个最终输出控制者；少量模式配置声明优先级、时钟、历史政策与退出恢复，技能只请求效果。更新阶段匹配目标实际移动方式，不统一选 Fixed／Late，并检查目标插值与镜头平滑叠加的滞后。暂停不默认清历史；目标与相机都冻结可保留，菜单继续运镜则须明确时钟，Unity IgnoreTimeScale 不会制造暂停期间的固定更新。指数阻尼／substepping 不保证整套跟随帧率无关：比较变帧率下移动目标的屏幕位置与追随滞后，不只验静止误差。Unity 固定源码、算术反例及 UE 旧版本问题不能冒充当前引擎复测，见 [WP11 跟随历史补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#跟随历史补研瞬移换目标与变帧率)。
 
-**维护与验收**：[研究] 一个视口由一个最终输出控制者拥有；跟随／瞄准／过场／菜单的优先级、时钟、历史保留／重置与退出恢复写在少量模式配置中，技能只请求效果，不各自写 Camera transform。相机更新阶段要匹配跟随目标的实际移动方式，不统一指定 Fixed 或 Late；同时检查目标插值与镜头平滑叠加的滞后。变帧率要比较移动目标的屏幕位置／追随滞后，不只看静止误差收敛；指数阻尼或 substepping 名称不等于整套跟随帧率无关，依据与边界见 [WP11 跟随历史补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#跟随历史补研瞬移换目标与变帧率)。AI 可实现绑定、状态切换、参数暴露与轨迹记录；人决定取景、力度、节奏。后续真人试玩观察：起跳前能否指出落点、转向后威胁是否及时进入视野、绕柱是否反复拉近拉远、持续输入穿过切镜是否仍按预期移动、关闭镜头效果后是否仍读得懂命中。并保留低帧率、不同固定步长、暂停、重生、过场取消测试；这些观察尚非实测收益。
-
-[一手] Cinemachine [Brain 源码](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Behaviours/CinemachineBrain.cs)区分更新阶段；2026-08 的 [#1122 修复](https://github.com/Unity-Technologies/com.unity.cinemachine/commit/69b205115495a374fbba329547ba608cdcfe7847)将 static reset 提前到 SubsystemRegistration 并重建事件，主干 changelog 归入 3.1.8-pre.2。[研究] 不据此宣称稳定 3.1.7 已含修复。Cinemachine 源码按 Unity Companion License 使用；Celeste64 的 MIT Source 与其 IP／Content 授权分开，详见 [WP11 镜头补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#镜头质量补研从跟得上到看得懂控得住)。
+**后续验收：** [研究] 二改加一根柱／一层树冠，核瞄准与枪口分歧、显隐恢复及新增材质例外；再验起跳前落点、转向后威胁、绕柱抽动、持续输入跨切镜、关闭效果后的命中可读性。低帧率／不同固定步长、暂停、重生和过场取消一起覆盖。AI 实现绑定、切换、参数和轨迹记录；人判断取景、力度、节奏与舒适度。这是待做验收，不是已测收益。
 
 ## 9. 关卡：先能重置遭遇，再扩成大世界
 
 [研究] **做到哪**：关卡定义含稳定 ID、入口、目标和出生表；运行中的 Encounter 拥有所生对象、触发状态和一次性奖励；跨关卡完成标记属于存档域。玩法 ready 与场景加载完成区分，退出有取消／清理钩子。
 
-- **可以省**：小房间游戏的大世界分区、自建关卡编辑器、以随机生成代替关卡设计
-- **AI 可承担**：按既定规则组装模块化房间、校验可达性、生成测试场景；人决定节奏、路线与资源可读性
+- **可以省**：小房间游戏的大世界分区、自建关卡编辑器、无玩法约束的随机铺图
+- **AI 可承担**：按既定规则组装房间或生成布局、自动过滤连接／遭遇违约、生成测试场景；人决定节奏、路线与资源可读性
 - **典型失败**：门永等已销毁敌人的事件；检查点保存运行实例；改生成顺序让相同 seed 变布局；重建内容丢 ID
 - **验证**：逐检查点恢复、完成后离开重返、完成事件重复、出生点被占、最后敌人意外离场；核出口、目标与关键资源可达。程序化地图记录生成器版本，不能只保存 seed 就保证升级兼容
+
+**[研究] ✅ 扩关卡先扩有意义的组合。** 需要稳定跳跃／战斗空间时，先用已有或许可清楚的房间，沿用编辑器，按用途、入口和遭遇条件组装；[Dead Cells 作者](https://deepnight.net/tutorial/the-level-design-of-dead-cells-a-hybrid-approach/)先定房间与 biome 图，再限制敌人组合。[一手] 🧪 若未知地形、绕行与逃生本身就是玩法，可保留受约束的程序布局：[Cogmind 作者](https://www.gridsagegames.com/blog/2019/03/roguelike-level-design-addendum-procedural-layouts/)还检查出口位置、回环和空间比例，并非一律预制房间。[一手] [研究] 连通后再看必经路线的压力／喘息、绕路的资源机会、敌群的应对空间；AI 自动筛明确违约，人用代表性与极端样本判断目标体验，不要求逐个 seed 人审。**局限：模块仍需内容设计，自动规则通过不证明好玩或节省工时。** 固定开源规则消费链、许可和二改条件见 [WP11 关卡组合补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#关卡组合补研连通之后还要选择什么)。
+
+**[研究] 会按提示操作之后，还要知道何时主动使用。** ✅ 先区分动作完成、理解使用时机、在正式关卡迁移使用，别把点击“已读”当学会。对组合操作多、容易漏掉捷径的游戏，可借 [Factorio](https://www.factorio.com/blog/post/fff-361) 的情境推荐、可回查帮助与可选微教程；若自主探索就是核心玩法，可借 [Outer Wilds 作者](https://www.mobiusdigitalgames.com/news/filling-out-the-toolbox)的可选练习与能力提示，避免教程一直发任务、正式游戏却要求自己找目标。[一手／研究] 不必为每个机制搭教程；先看目标玩家是否熟悉操作范式、哪里存在真实误解，不按游戏复杂度单独决定教学量，基础说明能在物件旁讲清就不增加页面。关键前置知识保留明确教学机会，属于探索奖励的谜题答案不提前交给自动提示。**局限：作者观察与触发源码不证明学习收益；**竞争方案、漏学反例及许可见 [WP11 学习迁移补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#学习迁移补研按提示完成之后会不会主动使用)。
+
+[研究] 二改增加工具的一种用途后，用没有逐步指令的变形情境检查玩家能否主动选择它，再决定补短提示还是练习；同时核旧说明、绑定与示例是否仍对得上规则。AI 可提出两个局部方案、实现触发和回查入口，人决定哪些知识必须教、哪些发现应留给玩家；行为次数仅用于减少打扰，不作掌握证明，不先建通用教学框架。
 
 **[研究] 高频失败的玩法，还要让玩家愿意再试。** ✅ 对靠反复练习掌握动作的短挑战，分别检查死亡演出、转场／重建、恢复控制、重走已掌握路程的成本；先缩短无意义等待和重复路程，再决定降低挑战或加提示。检查点改变时给清楚反馈，重试沿用既有生命周期，不先加快照或回放框架。
 
 [一手] Super Meat Boy 作者的[经典设计复盘](https://www.gamedeveloper.com/game-platforms/-i-super-meat-boy-i-s-mcmillen-explains-why-so-hard-)把短关卡与快速复活一起设计；[Celeste64 固定源码](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1968-L1991)仍通过重建 World 重生，提供了先复用场景重开、再按实际成本决定是否局部重置的起点。[研究] 永久死亡、资源消耗或整局承诺若构成玩法，不能套用最近检查点；这些来源也不是本项目的耗时或玩家收益实测，采用成本见 [WP11 重试补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#失败与重试补研回到刚才的决策点)。
+
+**[研究] ✅ 辅助按玩家被挡住的环节与游玩目标选择。** 已有信号的可达表达与主动揭露未知信息分开；前者沿用[客户端设置](04-client-modules.md#信号取舍减掉演出后仍看得懂下一步)，后者明确属于规则选择。只需缓解一种操作／反应负担时，可借 [Dead Cells](https://deadcells.com/patchnotes/29) 的局部调整；需要协调遭遇、资源压力与探索目标时，可借 [Cogmind](https://www.gridsagegames.com/blog/2017/02/adjustable-difficulty/) 的整局预设，后者为计分一致性限定下一局生效。[一手／研究] 全局降速也可以是有意提供的辅助，不默认替代所有局部需求；按玩法决定当局可调还是下一局生效，并让玩家容易找到选择、知道关闭后恢复什么及进度／计分如何处理。沿现有设置与存档实现，二改加敌人或辅助后，核切回、死亡与读档后的实际规则；Dead Cells 曾修复关闭 Assist 后子选项仍生效。[一手] **局限：较易模式能改变进入内容的条件，不证明玩家已掌握标准模式，也不保证各区域等比例变容易。** 竞争方案、历史反例与待验证范围见 [WP11 辅助取舍](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#辅助取舍补研局部调整整局预设与切回规则)。
 
 [一手] 已发布的 [Daggerfall Unity EnemyMotor](https://github.com/Interkarma/daggerfall-unity/blob/2343305d1d83ccc0de57a81e3b1e61188a997e34/Assets/Scripts/Game/EnemyMotor.cs) 仍按明确顺序处理具体行为，并随 [mod 扩展需求](https://github.com/Interkarma/daggerfall-unity/commit/0519cee99740d4005ef70b99a3a064ac0655ce72) 增加回调。[研究] 大型可玩游戏不要求每层都通用化；其历史兼容、巨型类和原版资源依赖也不宜整套继承。
 
@@ -222,3 +242,5 @@
 6. 本项目对依赖做过哪些改造，哪些时序不能“顺手优化”
 
 [研究] **推荐第二次修改题**：把单段冲刺攻击改为“可蓄力、受击中断、按承诺规则扣资源，并能从检查点重开”。它会同时触及实例状态、取消、命中、动画晚事件、相机和关卡重置，比增加一个同类技能更能检验架构。记录改动文件、资产引用、主动工时与回归失败；由人决定手感和趣味性，自动测试负责状态契约。
+
+固定源码、核实日期、历史修改、许可与反证见 [WP11 研究记录](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md)。资源释放、存档实现与目标设备预算见[客户端模块](04-client-modules.md)，试玩方法见[验证页](02-verification-and-playtesting.md)。

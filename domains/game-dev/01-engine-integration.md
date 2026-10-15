@@ -1,6 +1,6 @@
 # 引擎接入：让 Agent 操作游戏引擎
 
-> 核实时间：2026-10-08；资产编辑边界与 WP9 接入契约于 2026-10-14（UTC+8）单独复核；原生生成器与条件入口于 2026-10-14 UTC 补核；§3 引擎选择于 2026-10-14 UTC 重新核实；官方 Unity 入口的故障回退与验证边界于同日补核（非全表重核）。
+> 核实时间：2026-10-08；资产编辑边界与 WP9 接入契约于 2026-10-14（UTC+8）单独复核；原生生成器与条件入口于 2026-10-14 UTC 补核；§3 引擎选择于 2026-10-14 UTC 重新核实；官方 Unity 入口的故障回退与验证边界于同日补核（非全表重核）。 采用入口、安装与权限分层于 2026-10-14 UTC 补核；2026-10-15（UTC+8）独立审阅全文核心选择与相关入口，撤回跨引擎验证排名，未运行引擎或复验所有外链。
 > 依据 **[一手]**：
 > - Epic 官方插件 [unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)：克隆后读了全部 3 个 Skill、setup 和 operations 文档、SessionStart Hook，最近提交 2026-09-17；
 > - Roblox 官方文档 [Connect to the Roblox Studio MCP server](https://create.roblox.com/docs/en-us/studio/mcp)（2026-10-07 更新）；
@@ -25,7 +25,7 @@
 
 | 引擎 / 工具 | 官方 Agent 接入 | 形态 | 关键能力 | 成熟度 | 评级 |
 |---|---|---|---|---|---|
-| **Unity 6+** | Unity CLI + 官方插件；`unity mcp` | **CLI 优先**，MCP 只是 CLI 的一种暴露方式 | 驱动打开的编辑器、`unity test` / `build`、Play 模式帧数检查 | CLI 1.0 beta，插件 2026-09 发布 | ✅ |
+| **Unity 6+** | Unity CLI + 官方插件；`unity mcp` | CLI／MCP 共用项目 Pipeline，按客户端能力选择入口 | 驱动打开的编辑器、`unity test` / `build`、Play 模式帧数检查 | CLI 实验性／1.0 beta；缺入口时评估 | 🧪 |
 | **Unreal 5.8** | 引擎内置的 **ModelContextProtocol** 插件 + Epic 的 Claude Code 插件 | 编辑器内的 HTTP MCP 服务器（默认 `127.0.0.1:8000/mcp`）+ 工具搜索 | 30 多个工具集、数百个工具：Actor、蓝图、材质、Niagara、Sequencer、Control Rig、GAS、自动化测试、Live Coding 编译 | 插件位于 `Engine/Plugins/Experimental`，**实验性** **[一手]** | 🧪 |
 | **Roblox Studio** | **内置**在 Studio 中的 MCP 服务器 | stdio；一键连接 Claude Code、Codex CLI、Cursor、Gemini CLI、Antigravity、VS Code | 脚本读写、执行 Luau、**AI 生成网格和材质**、**内置的 explore / playtest 子 Agent**、**模拟玩家键鼠输入**、截图 | 正式功能，持续更新 | ✅ |
 | **Godot 4** | 无官方 Agent 接入 | 社区 MCP，分“文件级”和“连接运行中编辑器”两类 | 场景树、脚本、运行项目 | 社区项目质量参差不齐 | 👀 |
@@ -82,7 +82,7 @@ Epic 的 `unreal-mcp` Skill 原文 **[一手]**：
 |---|---|---|---|---|
 | **按需发现，不一次性塞满工具** | Skill 按需加载 | 3 个元工具 + `describe_toolset` | 工具数适中，用 `skill` 工具提供参考资料 | 工具定义占上下文，还会破坏提示缓存（见主干 [03](../../docs/03-context-engineering.md)、[04](../../docs/04-mcp.md)） |
 | **显式指定目标实例** | `--project-path` | 端口和 URL | `studio_id` | 编辑器是有状态的，多开时不能靠“当前会话” |
-| **区分“连上了”和“真的在运行”** | `frameCount` 和 `playerLoopTicking` | 代理在线不代表 Unreal 可达，要用只读调用确认 | `get_studio_state` | 编辑器可能卡住、在编译、在 PIE |
+| **区分“连上了”和“真的在运行”** | 当前 Pipeline 提供的 `frameCount`／`playerLoopTicking`；缺字段须换观测或标未验证 | 代理在线不代表 Unreal 可达，要用只读调用确认 | `get_studio_state` | 编辑器可能卡住、在编译、在 PIE |
 | **把验证做成工具** | `unity test`、Play 模式检查 | 自动化测试工具集、Live Coding 诊断 | `playtest` 子 Agent、输入模拟、控制台输出 | Agent 能自己验证，才能放手（见 [02 验证与试玩](02-verification-and-playtesting.md)） |
 | **修改有风险，要有恢复点** | 版本控制是前提 | 先存盘 | 只连信任的客户端 | 编辑器修改不一定能撤销 |
 
@@ -105,13 +105,15 @@ Mega Crit 的历史选型重视授权信任、平台与现成引擎服务；Road
 
 ## 4. 选型建议
 
+**✅ 先只读核对已有能力，再补所缺组件。** Skill／客户端插件已加载、引擎桥已安装、目标实例能执行，以及结果通过检查，是四件不同的事。Unity 的插件不等于项目已有 Pipeline；Unreal 的 Claude 插件也不替代引擎 MCP 与工具集。安装包、启用工具集、写客户端配置或放宽执行权限都不是只读检查，不把“接入 Agent”理解为默认授权整栈。**[一手／经验：见 [WP9 §11](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#11-接入采用门槛版本安装与权限分别确认)]**
+
 | 你的情况 | 建议 |
 |---|---|
 | Unity 6+ | 先沿用现有编译／测试及 Editor API；缺运行中编辑器连接时，再选官方 CLI 或适配客户端的 `unity mcp`，官方插件按知识／连接缺口添加（见 [unity/](unity/README.md)） |
 | Unity 2021 / 2022 LTS | 先用已有 batchmode／Editor 脚本；确需实时桥时再评估固定版本 CoplayDev/unity-mcp，逐工具核对导入／移动契约（见 Unity 工具页） |
 | Unreal 5.8+ | 代码／测试沿用既有流程；资产批处理可用已有 Editor Python。确需交互式编辑器入口时，再启用 Unreal MCP 和任务所需工具集，先满足 [5.8.1+ 修复前提](unreal/01-toolchain.md#15-已知限制官方)，不默认 `AllToolsets`；**版本控制并勤存盘，端口只限本机**（见 [unreal/](unreal/README.md)） |
-| Unreal 5.8 以下 | 资产批处理直接用 Editor Python；另有社区桥可评估（如 UnrealClaude）。C++ 部分照常用通用编码工作流 |
-| Roblox | 直接用 Studio 内置 MCP；`playtest` 子 Agent 和输入模拟是目前**官方支持最完整的游戏验证能力** |
+| Unreal 5.8 以下 | 先沿用 Editor Python 与既有编译／测试；仅在缺交互入口时核查社区桥。UnrealClaude 当前声明 UE 5.7，不能外推 5.5／5.6；还须接受源码构建和权限审查成本（见 Unreal 工具页） |
+| Roblox | 直接用 Studio 内置 MCP；内置 `playtest` 子 Agent、输入模拟与截图，仍按任务核对结果和覆盖范围 |
 | Godot | 先沿用官方 CLI、脚本与项目测试；确缺运行中场景读取／操作时再评估兼容版本的社区桥，不把文件可读当运行行为已验证 |
 | Blender | 官方 MCP 用于场景分析，社区 MCP 用于资产获取；**都放在虚拟机或无敏感数据的机器上** |
 
@@ -119,7 +121,7 @@ Mega Crit 的历史选型重视授权信任、平台与现成引擎服务；Road
 
 ## 5. 第二次重生成：更新已有对象，保留正确含义
 
-**✅ 先复用引擎导入器，Agent 入口只负责发起与回读。** Unity 6+ 默认选官方 CLI/Pipeline；AI Assistant 包内旧 MCP 已被[官方弃用](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)，`unity mcp` 继续支持。批量规格先用 Unity Presets/AssetPostprocessor，或 Unreal Editor Python 与适配格式的 Interchange pipeline；不用新建导入服务，也不必为了批处理强升到支持 MCP 的引擎版本。**[一手＋经验]**
+**✅ 先复用引擎导入器，Agent 入口只负责发起与回读。** Unity 6+ 缺运行中 Editor 连接时再选官方 CLI/Pipeline；AI Assistant 包内旧 MCP 已被[官方弃用](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)，`unity mcp` 继续支持。批量规格先用 Unity Presets/AssetPostprocessor，或 Unreal Editor Python 与适配格式的 Interchange pipeline；不用新建导入服务，也不必为了批处理强升到支持 MCP 的引擎版本。**[一手＋经验]**
 
 | 第二次修改 | 最小采用规格 | 失败时停止什么 |
 |---|---|---|

@@ -1,6 +1,6 @@
 # 音频：先拆成可修改的事件、段落和台词
 
-> 核实时间：2026-10-14（UTC+8）；配音第二次修改边界补核：2026-10-15（UTC+8）。单人程序员、无音频人员、不做人工音频修补。下列三档是任务条件下的首试顺序，不是同规格试听冠军；型号、成本、真实采用、授权增量与固定源码反证见[WP6 研究记录](../../../docs/research/2026-10-14-game-wp6-audio.md)。
+> 核实时间：2026-10-14（UTC+8）；配音二改与全文采用边界补核：2026-10-15（UTC+8）。单人程序员、无音频人员、不做人工音频修补。下列三档是任务条件下的首试顺序，不是同规格试听冠军；型号、成本、真实采用、授权增量与固定源码反证见[WP6 研究记录](../../../docs/research/2026-10-14-game-wp6-audio.md)。
 
 ## 30 秒结论
 
@@ -41,7 +41,7 @@
 | 资源 | 质量优先 | 性价比优先 | 本地／免费 |
 |---|---|---|---|
 | **SFX** | 👀 付费、非 Beta 的 `eleven_text_to_sound_v2`：独特 Foley 和环境音首试，按单事件导出 | ✅ 合适的 Kenney Interface Sounds 等成套包；🧪 jsfxr 短电子音，缺口才生成 | ✅ jsfxr；👀 Stable Audio 3 Small-SFX 仅在 Community 商业注册、收入和 T5Gemma 条件满足时评估 |
-| **音乐** | 👀 `music_v2_5`：分段、参考和局部修补；需要演唱成曲可对照 Suno `v6`，须合法 Download 且核编辑/Remix 范围 | ✅ 少量授权循环＋胜负 jingle＋程序状态机；独特主题才比较生成路线 | 👀 ACE-Step1.5 官方 turbo；显存与维护预算足够再对照 `acestep-v15-xl-turbo`；无硬件时选合法现成资源 |
+| **音乐** | 👀 `music_v2_5`：普通计划先过[Indie 与主体资格](../03-generative-ai-in-games.md#音效音乐与配音同品牌也可能适用不同协议)门槛，再首试分段、参考和局部修补；需要演唱成曲可对照 Suno `v6`，须合法 Download 且核编辑/Remix 范围 | ✅ 少量授权循环＋胜负 jingle＋程序状态机；独特主题才比较生成路线 | 👀 ACE-Step1.5 官方 turbo；显存与维护预算足够再对照 `acestep-v15-xl-turbo`；无硬件时选合法现成资源 |
 | **配音** | 👀 付费、非 Beta 的 `eleven_v4`：固定授权音色与上下文，逐句验收 | 🧪 `eleven_v4_turbo` 或已验收的 `eleven_flash_v2_5` 做大量短句；长旁白保留 Multilingual v2 对照 | 👀 Qwen3-TTS-12Hz-1.7B-CustomVoice＋Tokenizer-12Hz，先用预设音色；文本＋短语音反馈也可作为正式设计 |
 
 旧资产若已合格，不因新型号发布而整批重生。Eleven v4 走 Text to Dialogue API，v4 Turbo 走 Text to Dialogue WebSocket，迁移不能只替换旧 TTS 请求的 model_id；发布时间及版本差异见研究记录。[一手／研究]
@@ -49,6 +49,8 @@
 ACE 官方 XL-turbo 卡要求至少 12GB 显存时配合 offload 和 INT8；其成本不能套用旧 turbo 的低显存说法。Qwen 的 1.7B CustomVoice 支持指令控制和 9 预设音色，0.6B 不能直接继承同等情绪控制承诺。Stable Audio 3 Small-SFX 可 CPU 是作者兼容性声明，不是游戏帧预算测试。[一手／研究]
 
 **成本按合格资产计。** 当前 Eleven API 挂牌 v4 US$0.08／千字符、Turbo/Flash US$0.04／千字符、音乐 US$0.15／分钟，另计套餐、税、编辑和废弃。[一手／研究]
+
+Eleven Music 普通计划要求单游戏累计净收入 <US$50万、开发／发行实体及关联方上一财年全部游戏净收入 <US$100万；不符合 Indie 定义的商业游戏须 Enterprise Music（Lite 不覆盖），否则改选合法现成音乐或已清权的本地路线。主体资格与收入计算口径仍以[授权总表](../03-generative-ai-in-games.md#音效音乐与配音同品牌也可能适用不同协议)为准。[一手／研究]
 
 Suno 公开年付的 Pro／Premier 分别限 20／60 首下载每月，不能当生成次数；免费档无商用权。本地也计算力、挑选和维护。Eleven Music 若需无损 WAV 或 192kbps MP3，先核主体资格，再按附表 Pro 或更高的合格计划核预算；Starter／Creator 的下载权不满足该格式要求。局限：本轮未测同题可用率，不能据单价算出完整制作费用。[一手／研究]
 
@@ -65,6 +67,8 @@ SFX v2 接口当前允许 0.5–30 秒及 loop 参数；能力页与接口的最
 ## 音乐：循环和状态切换先于完整成曲
 
 **✅ 先定探索、战斗、胜负等状态，再定乐句长度和切换点。** 少量可循环 BGM 配独立 jingle 往往足够；需要连续强度变化时，才增加同长度、同节拍、同调性和同起点的分层。分离 API 产生的 stem 需查串音和混响，不等于拿到了原生独立录音轨。[一手／研究]
+
+**[研究] ✅ 先定音乐跟随什么，再选切换时机。** 战斗强度需及时变化且已有对齐版本，可借 [FTL 作曲者所述](https://www.kgou.org/2013-10-06/composing-game-soundtracks-that-move-faster-than-light)的同步播放、交叉淡化；无兼容层则保留完整片段与明确转场。[一手／研究] 远程查看或区域边缘频繁往返时，按玩法选择角色处境或当前关注区域，再考虑等状态稳定／合适乐句才切。Factorio 的[历史选项及使用者回执](https://forums.factorio.com/119140)说明即时跟随视图也可能打断音乐，不支持一律跟随角色坐标。[一手／研究] **局限：对齐不保证音乐相容，延后切换也可能让音乐落后当前处境；**取消过期请求、暂停恢复与二改验收见 [WP6 音乐切换补研](../../../docs/research/2026-10-14-game-wp6-audio.md#音乐切换补研精确播放之前先选状态与时机)。
 
 Unity 的[PlayScheduled](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html)基于 dspTime 安排开播、支持预缓冲；[TransitionToSnapshots](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Audio.AudioMixer.TransitionToSnapshots.html)做混音状态过渡。Unreal 对应先用 [Quartz](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-quartz-in-unreal-engine) 的 Clock／Play Quantized 提前安排拍点。两者都不会替你找正确乐句；Update／Tick 中提前提交调度可以，等到拍点才发普通 Play 不等价，混音淡变也不自动对齐节拍。采样级音频调度不使游戏线程回调、输入判定或设备输出变成零延迟。[一手／研究]
 
