@@ -1107,6 +1107,31 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 
 **实际范围：** 作者原文、官方契约、固定源码与许可静读；未试听、运行游戏／引擎，未测辨识率、舒适度、性能或 AI 收益。没有采用未独立核实的 Wiki 修复描述，也不把开发者动机当已测收益。
 
+## 对白补研：显示完成不等于剧情交付
+
+核实：2026-10-16（UTC+8）。主线一／三；改变 04 的选择是先区分补全文字、结束当前句与退出会话，再按内容决定推进时机。[研究] 不扩展成对话框架选型，也不重复场景取消／ink 旧档迁移。
+
+### 原生组件已区分的交付动作
+
+[一手] 固定 `YarnSpinnerTool/YarnSpinner-Unity@bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d`，对应 [v3.2.8 提交](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/commit/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d)（2026-08-07）；[LICENSE.md](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/LICENSE.md)为 MIT。只静读实现，不安装、执行或宣称所有目标 Unity 版本通过；许可不包含项目另取的字体、配音等资产。
+
+- [LinePresenter.cs L350–368](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LinePresenter.cs#L350-L368)：打字效果使用 `HurryUpToken`，随后按设置自动等待或等待 `NextContentToken`。补全文字不是立即推进剧情。[一手／研究]
+- [VoiceOverPresenter.cs L156–228](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L156-L228)：等待语音时消费下一内容信号，提前结束会淡出并停止；不消费文字加速信号。**缺配音反例：** [L115–127](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L115-L127)在没有语音资产且 `endLineWhenVoiceoverComplete` 开启、取消请求接收者有效时，同样请求结束该句。[一手] [研究] 新语言只有字幕时须明确阅读回退；不是所有 Yarn 配置都会跳过缺配音句子，也不应据此全面关掉自动推进。
+- [LineAdvancer.cs L450–510](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LineAdvancer.cs#L450-L510)：内部输入路径按呈现状态和 `separateHurryUpAndAdvanceControls` 决定补全或下一句，并忽略内容刚收到的同帧输入；公开 `RequestLineHurryUp()` 路径不同，不能凭名称认定两者等价。[一手] [研究] 已有原生组件可表达的政策先配置，不新增跨引擎控制器。退出会话也不等于撤销已分发的[玩法命令](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs#L689-L746)。
+
+[一手] [Line Advancer 官方文档](https://www.yarnspinner.dev/docs/unity/10-components/02-dialogue-view/03-dialogue-advance-input/)明确区分 hurry、next 与 cancel dialogue，但页面仍标 v3.1；本节具体字段与消费路径以固定 3.2.8 源码为准，不把网页“latest”当已与该实现同步。核心政策不依赖引擎，不强加 UE 对照或推荐迁移至 Yarn。
+
+### 不同作者选择不同节奏
+
+1. **Firewatch，特定关键路径保护。** [一手：历史程序员讲稿] [GDC 2017《Do You Copy?》](https://media.gdcvault.com/gdc2017/Presentations/Armstrong_Do_you_copy.pdf)第 50–58 页（PDF 零基 49–57）记录 Julia 对话的打断可能使内部事实与玩家听到的信息脱节，于是形成不能被中止的关键路径会话。[研究] 支持区分可插话段落与必须交付的信息，不支持禁止所有打断。后面第 73–75 页的 Conversation 容器属于 Further Work，不能当已实现方案。
+2. **inkle，短气泡自动推进。** [一手：作者自述] [2026-06-18《Pacing dialogue》](https://medium.com/@inklestudios/pacing-dialogue-5bd5a99bfc20)解释其文本对白独自承担情绪与节奏，采用短句串联，并通常默认自动继续气泡；每十来个词点击一次会带来负担。[研究] 这是撤回“每句必须手动继续”的反例，不是自动播放对所有阅读能力、语言和游戏都更好的证据。
+
+**采用判断：** [研究] 先决定哪次输入只改变呈现、哪次推进当前句、哪次离开会话；关键事实按内容交付要求处理。可插话段落保留打断；重要信息可保护、补述或明确重入，但不能靠关掉全部跳过隐藏事实不同步。选择手动或自动推进要同时考虑文字长度、配音和后续选择；没有通用最快／最慢政策。
+
+**第二次修改只预注册：** [研究] 给原对白加配音及一种缺配音语言，再加可插话分支。分别走补全文字、语音中推进、整段退出、重新进入与自动播放；核可见文字、声音收尾、可选项与关键事实是否符合声明的政策。阅读回退仍来不及或插话造成信息缺失时，撤回相关自动推进／打断范围，不重写整个系统。AI 可生成绑定和路径，人判断阅读、表演与插话自然度。
+
+**实际范围：** [研究] 仓库查重、公开文档、固定源码与创作者原文静读；未运行游戏、引擎、设备或玩家实验，未测体验、性能或 AI 收益。
+
 ## 客户端模块页历史页头
 
 历史原文转存：2026-10-16（UTC+8），来自 `domains/game-dev/04-client-modules.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准。

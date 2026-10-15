@@ -298,6 +298,14 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 **[研究] ✅ 复用完整字体／样式配置；完整段落更难读时，可以撤回新默认。** Thrive 的[字体配置链](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/Lato-Bold.ttf.import)把样式连接到既有 fallback，新增页面与局部覆盖也应保住这条引用；Stardew Valley [1.6.6](https://www.stardewvalley.net/stardew-valley-1-6-6-full-patch-notes/)恢复中文旧默认字体，把新字体留作选项。[一手] 不要求所有游戏新增字体选择器；回退后仍不可读或不可操作，仍暂缓该语言发行。**局限：配置与更新说明不能证明目标设备的阅读质量；**比较与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#7-完整长文可达性与字体默认值的撤回)。
 
+### 对白拖沓：补全文字、推进语音与退出会话分开
+
+**[研究] ✅ 先明确这次输入是补全当前文字、提前结束当前句，还是退出整段会话，再选手动或自动推进。** 沿用已有对话组件；Unity 项目已用 Yarn Spinner 时，其 [LinePresenter](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LinePresenter.cs#L350-L368)分别等待补全与下一句信号，[VoiceOverPresenter](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L156-L197)则在下一句请求后收尾语音。[一手] 不把停止字幕／声音当作已交付剧情，也不假定退出会话会撤销已发出的玩法命令。
+
+**[研究] 按内容节奏决定何时继续，不统一要求逐句点击或全程不可打断。** Firewatch 的[程序员复盘](https://media.gdcvault.com/gdc2017/Presentations/Armstrong_Do_you_copy.pdf)记录打断使角色知道玩家尚未听到的信息，因此保护特定关键路径会话；inkle 的[近期写作复盘](https://medium.com/@inklestudios/pacing-dialogue-5bd5a99bfc20)则说明短气泡通常默认自动推进，避免每小句都要点击。[一手] [研究] 需要插话的对白保留插话，影响后续选择的信息明确保护、补述或重入方式；这些是不同作品的取舍，不是统一播放速度。
+
+**[研究] 新增配音／语言后，同时核没有语音的句子。** Yarn 3.2.8 的语音组件在缺资产且 `endLineWhenVoiceoverComplete` 开启时也会[请求结束该句](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L115-L127)，应按项目决定保留阅读等待等回退，不能只验字幕存在。二改加入可插话分支，分别检查补全、推进、退出与重入后的可选项／关键事实；AI 可接已有组件并生成路径，人判断能否读清、听懂和自然插话。**局限：源码契约不证明体验效果；**固定版本、文档差异与待做验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#对白补研显示完成不等于剧情交付)。
+
 ## 4. 借用的授权边界与升级条件
 
 **[研究] 先采用原生系统，改造项目缺少的窄政策，不用大型模板充当默认底座。** Unity 原生／包遵循引擎及具体包条款；UniTask／ink 为 MIT，Input System 为 Unity Companion License，均不免除资产和第三方通知。Addressables-Sample 固定树未发现许可证文件，先作机制参考，不能当已清商用复制权限；[许可与维护账](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-许可维护与采用边界)记录详细范围。
