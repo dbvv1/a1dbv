@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、落地补丁和最终说明对齐；18补测接管投入、陌生模块学习、原条件恢复、空库/已有库交付、原生产物兼容及接替/并存的身份取舍
-新证据：Immich审查、接管/学习实验；10-14补CBM原条件升级复测、PocketBase迁移快照源码与接收者成功回执；10-15补Rollup原生加载故障、工具链修复与产物兼容CI；补Syncthing与Tailscale接替/并存回执及固定机制；不补足Immich实机/支持工时
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容和接替/并存身份取舍
+新证据：Immich审查、接管/学习实验；CBM原条件恢复及10-16补MSIX/终端对照与升级回执；PocketBase迁移、Rollup原生加载、Syncthing/Tailscale接替链；未补足Immich实机/支持工时
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -84,6 +84,16 @@
 
 **验证与反证。** [固定测试 L615–669](https://github.com/DeusData/codebase-memory-mcp/blob/8eabe191d2b45d6a58738392a03235c240af6996/tests/test_activation_transaction.c#L615-L669)分别检查组可写叶目录拒绝时包含目录／模式／规则，以及组可写祖先下可暂存候选；只读测试，不是本次运行。GitHub compare 确认 8eabe191 为 v0.10.2 祖先（ahead_by=5、behind_by=0）。相邻 [#1526](https://github.com/DeusData/codebase-memory-mcp/discussions/1526)另有安装后客户端配置错误，后续 0.10.3 还修订守护进程的同类检查，因此不能把 #1535 的成功外推为所有集成已恢复。本轮还筛过 #472 的构建后安装报告与 #1722 的符号链接安装报告，未取得同样完整的发布后原用户重试链，不采用。全程只读公开材料，未安装或运行 CBM／模型，未核验上游全套 CI，未测长期维护投入。**[一手：源码与提交关系；社区：相邻故障；研究：验证范围]**
 
+
+### 接收入口增量：同机终端成功仍未验收桌面宿主
+
+核实：2026-10-16（UTC+8）。**改变18 §7的最小验收入口：接收者通过桌面宿主使用时，记录宿主包装与权限上下文，并从该入口重试；终端成功不能替代集成成功。** 这是同一CBM项目的另一接收链，不把原WSL2安装恢复外推到Windows。**[研究：采用判断]**
+
+[cillvius于8月13日报告](https://github.com/DeusData/codebase-memory-mcp/issues/1582#issuecomment-5286217664)：Windows 11 26200、Claude Desktop MSIX、CBM 0.10.3、普通用户；同一exe／同一用户从终端可创建端点并响应`initialize`，宿主启动的五次记录则在创建命名管道前退出。他报告未见相关Win32 `ACCESS_DENIED`，将差异定位到应用对宿主上下文的安全检查。[同一人8月17日回执](https://github.com/DeusData/codebase-memory-mcp/issues/1582#issuecomment-5318894375)称升级0.10.6后Claude Desktop正常连接。这里采用其对照与恢复自报；没有逐字终端启动命令，评论链接的脱敏Procmon gist本轮抓取失败，不能声称独立审核原始轨迹。**[社区：同一接收者前后报告；研究：核查边界]**
+
+相关[固定补丁9a53074c3956a05e8695159f8bdded62d3e725f3](https://github.com/DeusData/codebase-memory-mcp/commit/9a53074c3956a05e8695159f8bdded62d3e725f3)在`src/daemon/ipc.c`仅当`ancestor=true`时容忍AppContainer package／capability SID，最终runtime目录仍传`false`。这是维护者对特定祖先身份的信任调整，不是建议接收者删掉宿主ACL，也不证明调整后安全等价。同补丁的`tests/test_windows_bundle_contract.sh`检查源码中保留这两条边界；它是源码契约检查，不是Windows／MSIX运行测试，本轮亦未执行。[提交比较](https://github.com/DeusData/codebase-memory-mcp/compare/9a53074c3956a05e8695159f8bdded62d3e725f3...v0.10.6)返回`ahead_by=92`、`behind_by=0`，证明补丁在该版本祖先链中；其间多项变更，不能把接收者的恢复单独归因于此补丁。**[一手：固定源码、测试与提交关系；研究：因果和安全边界]**
+
+上文PR #1139的公开AI交接只说明相关项目开发背景，不证明本次故障或补丁由AI生成。最小交付增量是实际宿主入口及其已验范围，不增加全平台矩阵；本轮未安装或运行CBM、Windows或模型，未测主动工时、长期可靠性或AI净收益。**[研究：归属与验证范围]**
 
 ## 补充证据：结构快照不能代替已有数据的升级交接
 
