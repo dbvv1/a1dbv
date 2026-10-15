@@ -169,6 +169,18 @@
 
 [研究] 可用时间戳区分输入处理、动作接受、首次呈现反馈的程序路径；显示器实际发光和外设延迟不在这些日志内。帧时间 p95／p99、最长帧、超过项目预算的频率与发生场景，比单独平均 FPS 更能描述稳定性，但也不代替试玩。此处只提出未来观测，不冒充已采样的数据。
 
+### 物理查询补研：刚改位置不等于物理查询已看到新位置
+
+核实：2026-10-15 UTC。改变的建议：[研究] 移动／放置后的错误命中先查物理状态新鲜度，不把插值、提高物理频率或全局同步开关当修复；范围仅 Unity 3D，UE 对照其原生 tick 合同。
+
+- [一手] [Unity 6.3 同步手册](https://docs.unity.com/en-us/engine/6000.3/manual/physics-section/physics-overview/physics-optimization/cpu/transform-sync)明确默认延后 Transform 同步；直接改 Rigidbody／Collider 的 Transform 后，同帧依赖新位置的查询前应调用 `Physics.SyncTransforms`。全局 Auto Sync 会在每次物理查询前增加隐式同步点。[研究] 因此先批量修改，再在依赖这些修改的查询前同步；若中间又修改，就重新确定同步边界，不承诺“一帧一次”足够或一定获得多少性能收益。
+- [一手] **弃用与删除分开。** [6000.3.0f1 发布说明](https://unity.com/releases/editor/whats-new/6000.3.0f1)标记 `Physics.autoSyncTransforms` deprecated，建议需要时显式同步。官方 UnityCsReference 的 6000.3 分支本轮固定为 `c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1`（提交标题为 6000.3.26f1）；[Physics.deprecated.cs L22–25](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/Modules/Physics/ScriptBindings/Physics.deprecated.cs#L22-L25)仍保留 extern get/set，带 `Obsolete(..., false)` 和 `ExcludeFromDocs`。当前手册仍讲解该开关，不能据此推荐生成新的开关写入代码，也不能反过来声称属性已移除或无效果。
+- [一手] [6.3 SyncTransforms API](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Physics.SyncTransforms.html)只承诺把 Transform 变化送入物理引擎，涉及自身及子层级的 Rigidbody／Collider。[固定 Physics.bindings.cs L763–783](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/Modules/Physics/ScriptBindings/Physics.bindings.cs#L763-L783)中，`Simulate` 走 `Simulate_Internal`，`SyncTransforms` 是独立绑定。[研究] 显式同步不是推进模拟、求解接触或完成一次运动；这里只核了公开 C# 绑定，不冒充原生求解器源码核查。参考源码受 [Unity Reference-Only License](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/LICENSE.md)约束，本轮只阅读机制，不作为可复用运行时代码。
+- [一手] [6.3 MovePosition](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.MovePosition.html)用于运动学刚体连续移动并遵循插值设置，示例在 FixedUpdate；瞬移改用 `Rigidbody.position`。[position 文档](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody-position.html)说明它经物理引擎设置位置，Transform 在下一次模拟步骤后更新，避免直接改 Transform 引起附属 Collider 相对位置重算。[研究] 先保留运动所有者和既定时序，不能把 `MovePosition` 后调用 SyncTransforms 当作运动已完成，也不要求可见 Transform 与物理姿态在每个时点完全相等。没有借用 Rigidbody2D 的时序措辞证明 3D。
+- [一手] [UE 5.8 Actor Ticking](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-ticking-in-unreal-engine)：PrePhysics 的模拟数据来自上一帧；DuringPhysics 不保证读到哪一帧；PostPhysics 已完成当帧模拟，官方以武器／移动 trace 为例。相同 tick group 内可用 `AddTickPrerequisiteActor`／`AddTickPrerequisiteComponent` 等待具体生产者，避免把无关对象全部推迟。[研究] 只对需要当帧模拟结果的消费者采用这条建议，不推出任意 `SetActorLocation` 后的查询都要等 PostPhysics，也不为 UE 编造 Unity 式 flush／auto-sync 对应开关。
+
+**二改与停止条件：** [研究] 后续把原先静态障碍改成同帧脚本移动的障碍，比较批量改位置后直接查询与显式同步后查询的命中／放置结果；原生刚体连续运动另按既定模拟步骤观察，避免混用两类操作。结果满足玩法后再测同步成本，不先加物理频率。若错误来自射线起点在 Collider 内、层矩阵、形状或查询参数，同步不是修复；若查询并不依赖刚写入的位置，也不无条件增加同步点。仅为未来验证设计，未运行引擎、游戏或性能实验。
+
 ### 2. 具体动作的体验和生产成本
 
 | 情境 | 最小可用且有质量的基线 | 增加能力的触发；目标体验 | 成本／回退 |
