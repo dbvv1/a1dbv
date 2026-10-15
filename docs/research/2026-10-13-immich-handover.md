@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容和接替/并存身份取舍
-新证据：Immich审查、接管/学习实验；CBM原条件恢复及10-16补MSIX/终端对照与升级回执；PocketBase迁移、Rollup原生加载、Syncthing/Tailscale接替链；未补足Immich实机/支持工时
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、接替/并存身份取舍及恢复后的逻辑数据集核对
+新证据：Immich审查、接管/学习实验；CBM原条件恢复及10-16补MSIX/终端对照与升级回执；PocketBase迁移、Rollup原生加载、Syncthing/Tailscale接替链；另补Immich恢复后错连库名的原用户重试；未补足实机/支持工时
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -152,6 +152,18 @@
 [固定a2ca723](https://github.com/tailscale/tailscale/commit/a2ca72393352606e75ed73121551a4a8575a3303)早于该issue：镜像改以containerboot为PID1，向tailscaled转发终止信号、回收子进程，仍支持持久状态，并增加按需认证。旧run.sh也有信号trap，不能说旧版完全不处理退出。代码没有跨pod锁；维护者只说降低出现概率，不能证明强杀、分区或一般故障切换安全。该回执是改回受支持入口及配置后的结果，不能归因于单独信号处理。本次无集群运行或CI通过声明。**[一手：固定源码；研究：因果边界]**
 
 **最小采用边界。** 凭据、实例身份、同步索引／业务进度是不同对象，即使同处一份备份，也须分别决定保留范围；接替旧服务与保留两实例有不同需求。公共讨论不构成生成／重置身份、重新认证、配对或共享授权。Agent可据公开机制提出选择，但实际变更须按授权办理。这些历史案例不证明所有软件都有唯一设备身份，也不测量AI收益或维护工时。**[研究：跨案判断；经验：实施边界]**
+
+## 补充证据：恢复成功但应用连接了另一数据库
+
+核实：2026-10-16（UTC+8）。**改变18 §7：恢复后的连接／登录成功不等于接收了预期数据集；再次导入或清空前先区分容器、逻辑数据库与持久目录，验一条已知旧记录及关联文件。** 这不同于前述同步设备身份取舍，也不同于空库初始化／已有库升级；这里是同一服务内应用究竟读了哪个库。**[研究：采用判断]**
+
+**原任务与两次重试。** [Immich #19977](https://github.com/immich-app/immich/discussions/19977)的 StRinke 于2025-07-16报告升级到v1.135.3后曾可用，随后另一电脑登录失败；求助ChatGPT并修改compose、创建`.env`、重启后，自述数据库空了而照片文件仍在。协助者[先要求核旧数据库目录和前后配置](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13783147)，没有把“空了”视作已证实删除。[首轮恢复](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13786400)因命令尾部多出`>`出现shell语法错误；[纠正该符号](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13786493)后，用户[报告导入无报错、可登录但照片不显示](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13786671)。最终他将`DB_DATABASE_NAME`从`immich_postgres`改为`immich`并重启，[同日确认数据回来了](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13790108)。语法纠正与应用连接目标纠正是两个不同步骤；前者成功不能替后者验收。**[社区：原用户及协助者逐次回执]**
+
+**固定发布源码的三个对象。** v1.135.3对应[`6563fa608a5a4414f40264b847e60928916fb986`](https://github.com/immich-app/immich/commit/6563fa608a5a4414f40264b847e60928916fb986)。该版[`docker-compose.yml`](https://github.com/immich-app/immich/blob/6563fa608a5a4414f40264b847e60928916fb986/docker/docker-compose.yml)把容器命名为`immich_postgres`，数据库初始化名称另由`POSTGRES_DB: ${DB_DATABASE_NAME}`传入，磁盘来源则是`${DB_DATA_LOCATION}`挂载；[`example.env`](https://github.com/immich-app/immich/blob/6563fa608a5a4414f40264b847e60928916fb986/docker/example.env)默认逻辑库名为`immich`。服务端[`config.repository.ts`](https://github.com/immich-app/immich/blob/6563fa608a5a4414f40264b847e60928916fb986/server/src/repositories/config.repository.ts)在没有`DB_URL`覆盖时将`DB_DATABASE_NAME`用于数据库连接。源码支持这些名称不能互换；不证明用户当时所有实际环境值，尤其不能忽略URL覆盖。**[一手：固定发布源码；研究：机制边界]**
+
+**当前恢复约束与反证。** 2026-10-16回读[官方恢复说明](https://docs.immich.app/administration/backup-and-restore/)明确：v2.5.0变更备份／恢复流程，更早备份须用版本选择器查看对应手工恢复说明；当前优先推荐Web恢复，恢复会替换现有数据库。文档亦说明数据库保存文件路径及元数据，数据库备份不含照片／视频，文件须另备。因此不把2025年帖中的命令复制成现行教程，也不将任何“文件仍在”推成数据库可省略。真正数据缺失仍可能需要恢复；核对目标是选择恢复动作之前的诊断，不是永远不恢复。**[一手：当前产品文档；经验：采用边界]**
+
+**归因与停止边界。** 原帖没有可靠的原始`.env`、数据库清单、备份内容核对或完整操作日志；协助者关于目录已被清空的说法也是猜测。因此无法判定数据此前被删除、仍留在原卷，还是最终由备份重建；不能宣称这次恢复本来不必要，或量化避免数据损失的收益。ChatGPT参与仅由用户自报，不能将具体错误库名归因到未公开的模型输出。本轮只读公开原帖、含折叠回复的完整讨论、固定源码与当前文档，未运行Immich、数据库或模型。若接收方已有旧记录／文件校验，直接复用；无持久数据项目不增加本项。**[社区／研究：证据边界]**
 
 ## 18 专题历史核查范围
 
