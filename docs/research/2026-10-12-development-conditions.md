@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具。[经验／研究]
-证据摘要：新增 dot 云端同一公开 X URL 抓取 403、正常 Chrome 读取与刷新成功的现场观察（2026-10-15 UTC），另补公开 GET 的 200／已知 ID 测量，均只支持按路径与内容分别诊断；另核 Claude API 拒答／服务错误与 CLI fallback 的不同触发条件；另核 Codex 0.162.1 Hook 输入／输出与异步实现、Claude 当前契约，并对既有 Claude 脚本做 5 类合成输入检查（不执行补丁）。官方权限／运行契约、固定 sandbox-runtime 的 socket／mask 分支及 Claude Code 2.1.285 版本反证、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中。[经验／研究]
+证据摘要：另补 Vitest 5.0.4 原生执行依赖记录、固定源码及 linked workspace 预打包漏选报告（2026-10-15 UTC 核实，未复测）；新增 dot 云端同一公开 X URL 抓取 403、正常 Chrome 读取与刷新成功的现场观察（2026-10-15 UTC），另补公开 GET 的 200／已知 ID 测量，均只支持按路径与内容分别诊断；另核 Claude API 拒答／服务错误与 CLI fallback 的不同触发条件；另核 Codex 0.162.1 Hook 输入／输出与异步实现、Claude 当前契约，并对既有 Claude 脚本做 5 类合成输入检查（不执行补丁）。官方权限／运行契约、固定 sandbox-runtime 的 socket／mask 分支及 Claude Code 2.1.285 版本反证、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
 关键边界：普通 headless、bare、trust 与 sandbox 不等价；strict 不排除已配置的沙箱外命令，socket 过滤和可选 mask 的目标／失败默认值须单独核对；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
@@ -707,3 +707,26 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 本仓当次环境中，GitHub 连接器可用而 shell Git dry-run 缺少用户名认证；因此不将连接器授权视作 shell 凭据。已发布 [276babc](https://github.com/dbvv1/a1dbv/commit/276babc) 的路径复用了 64 个最终 blob，经过四次建树、四个 commit 和最终非强制 ref 更新，最终树逐文件核验、14 阶段离线检查通过。**[经验：本次操作记录]** 这是一次路径可行性观察，不证明上述次数最优，也不是模型效率实验。
 
 ✅ 一般建议是优先 commit 后 push；连接器 fallback 只传相对最新 main 的差异，允许时一次写入，遇上限或失败才拆分；结果未知先核回执与远端状态，再继续尚未完成步骤。若基线变化则重算并核冲突。**[经验：工程建议]** 不以省调用为由跳过验收、授权、分支保护或发布后核对。本轮只核文档与既有操作证据，没有为此新增发布、认证、模型或客户端实验。
+
+
+## 增量验证：已有回归测试是否真的被选中
+
+主线：三；区分测试断言有效与本次验证确实执行了它。
+改变的建议：15 §6 在依赖、预打包配置或非模块夹具变更后显式运行已有消费者，09 只回链；普通增量运行足够时不加评审层。
+新证据：Vitest 原生执行依赖记录的发布、固定实现与测试定义，另有同周预打包漏选报告；2026-10-15 UTC 核实，未运行上游软件。**[一手／社区／研究]**
+
+### 原生能力与反证
+
+[Vitest 5.0.4](https://github.com/vitest-dev/vitest/releases/tag/v5.0.4)发布于 2026-10-12；增加执行依赖记录的 [#11515](https://github.com/vitest-dev/vitest/pull/11515)于 10-08 合并，两者不是同一日期。**[一手：发布与合并记录]** [官方契约](https://vitest.dev/config/experimental.html#experimental-recorddependencies)说明 `experimental.recordDependencies` 默认关闭，按上次实际执行的记录为 `--changed`／`related` 选择测试；动态导入只有执行过才入记录，普通 `fs` 读取和 externalized 模块内部导入不记录。新增 import 后若先提交而未重新运行，后续只改新依赖可能漏选。**[一手：当前文档]**
+
+固定合并提交的[测试定义](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/test/e2e/test/recorded-deps.test.ts)覆盖动态导入、无记录测试与部分运行等边界；[选择实现](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/packages/vitest/src/node/recorded-modules.ts)在没有依赖记录时回退全选，有记录时按变化模块匹配。**部分运行（如 `-t`／`.only`）不创建新记录，只合并到已有记录**，所以刷新导入关系时应完整运行相关测试文件。无记录的测试会运行，不能把“无记录”一概写成漏选。缓存关闭时记录功能不生效。**[一手：固定源码、测试定义与文档；未运行]**
+
+[#11585](https://github.com/vitest-dev/vitest/issues/11585)于 2026-10-14 创建，核实时仍 open、无评论，是**单一作者报告，未经维护者确认或本仓复测**。作者对 linked workspace helper 的改动保留了应失败的已有断言：关闭 optimizer 时 `changed`／`related` 选中并失败，开启后零选中、退出码 0；报告含 5.0.4 与 4.1.10 对照，并称 5.0.4 的记录模式仍漏选。**[社区：作者复现报告]** 固定[受影响模块实现](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L240-L251)过滤 `node_modules` 路径，[后续遍历](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L345-L349)只沿通过过滤的导入继续，支持作者提出的预打包路径机制；源码阅读不等于完整复现，也不证明所有 optimizer 项目均失败。**[一手：固定源码；研究：证据边界]**
+
+### 采用范围与退回条件
+
+- ✅ 先保留项目已有增量测试；依赖关系、optimizer 或非模块夹具改变，显式运行已知消费者，或用项目已有且适用于当前入口的映射。已知相关用例却零选中时，先直接运行该测试，再修触发配置或按风险暂用更宽套件；无需为此添 reviewer 或自建依赖图。**[经验：采用判断]**
+- 🧪 只有实际动态导入是当前选择盲区、且能维护缓存与刷新记录时，试用默认关闭的 `experimental.recordDependencies`；不作为正文 ✅ 的默认开关。已有静态关系已足够时无需启用，本轮没有计时或净成本数据。**[一手：机制；经验：条件试用]**
+- [普通 `related`](https://vitest.dev/guide/cli.html#vitest-related)支持静态可解析导入；非模块读取可按项目需要使用 [watchTriggerPatterns](https://vitest.dev/config/watchtriggerpatterns)，但它是 watch 契约，不能冒充所有 CLI `changed` 的映射。[forceRerunTriggers](https://vitest.dev/config/forcereruntriggers)与 `--changed` 配合时，diff 命中会触发全套；这是有执行成本的特定回退，不是每次修改的默认。**[一手：官方契约；经验：取舍]**
+
+本节沿用已审资料并定点回读官方文档、发布／合并记录和 issue；固定源码与测试定义是阅读证据，不是本仓运行结果。没有安装依赖、运行 Vitest／模型／客户端、触发远端 CI 或测得可靠性提升；报告中的关闭 optimizer 也不升级为普遍推荐。这里补的是已有用例的执行选择，不重复 oracle 质量、外部消费者覆盖或交接流程。**[研究：范围与限制]**
