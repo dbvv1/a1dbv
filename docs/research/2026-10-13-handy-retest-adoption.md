@@ -1,6 +1,6 @@
 主线：一，兼四
-改变的建议：18：实际局部受益与主线采用分开；限定暂停/直播等场景再决定支持责任
-新证据：两位非作者运行PR版，其中一位固定SHA/设备/播放器/repeated cycles，后续Windows多源失败及未完补丁；无标准计时/跨平台可靠性或合并决定
+改变的建议：18：实际局部受益与主线采用分开；接收方重建须覆盖下游包装及真实验收入口
+新证据：暂停媒体的独立运行与Windows未闭环；10-16补Nix/Darwin原接收者补丁失配→刷新→成功回执，以及后续重建和验收报告纠正；无主动工时
 
 # Handy：用户已经用起来，产品选择仍未定
 
@@ -40,3 +40,20 @@
 ## 什么证据会改变判断
 
 若维护者明确选定交互并给出已合并结果，应更新“采用未定”；若固定新版本有多音源、权限缺失或媒体目标切换的实际复测，可缩小当前可靠性缺口；若用户持续使用反馈表明暂停破坏主要场景，应撤回该场景的试用建议。现有证据足以记录局部用户价值，不足以宣称普遍可靠或量化收益。**[经验：复核条件]**
+
+
+## 接收方重建：上游修复还要穿过下游包装
+
+核实：2026-10-16（UTC+8）。**采用判断：接收方从源码重建时，交付物是源码、包装配置和仍需保留的下游补丁的组合。** 先复用接收方现有构建／验收入口，修复后重建这组实际输入；不要只交上游补丁，也不要把一次构建的概述改写成另一验收工具已运行。以下与上文暂停媒体功能是不同维护链，不补足其 Windows 多源复测。只读公开原帖与固定源码，未安装、构建或运行 Handy／Nix。**[研究：采用建议与范围]**
+
+**原接收者遇到的不是单纯缺包。** Nix 打包维护者 philocalyst [报告 Darwin 产物没有正常 Rust 入口、启动无行为](https://github.com/NixOS/nixpkgs/pull/507754#issuecomment-4207777444)。xilec 的 [Handy #1316](https://github.com/cjpais/Handy/pull/1316)将问题定位到 Swift 单文件脚本模式生成 `_main`，在其 Nix 链接环境中盖过 Rust 入口；[固定初始修复 1a683fb](https://github.com/cjpais/Handy/commit/1a683fb4fe59b9e4192c2f330e023dce5a43b699)添加 `-parse-as-library`。PR 的四变体诊断和启动观察是贡献者报告：修订后进入 GUI 事件循环直至测试超时，不是完整语音转录验收；Xcode 路径不能代替 Nix 路径。AI 使用只按该 PR 披露归于调查、注释及 CI 分析，不推断整个打包过程由同一模型完成。**[一手：固定补丁；社区：参与者诊断与运行报告]**
+
+**同一接收者在拿到修复后仍不能重建。** [包装提交 d4eecf0](https://github.com/philocalyst/nixpkgs/commit/d4eecf0c6eecbea221b23f08ca9820ef7d553bfe)明确把源码固定到上述 `1a683fb`；philocalyst 随即[报告旧 `use-nix-swift.patch` 的第三个 hunk 失败](https://github.com/philocalyst/nixpkgs/pull/1#issuecomment-4285794228)。[7da3037 固定 diff](https://github.com/philocalyst/nixpkgs/commit/7da3037ec9751a7903b8ad12e61566dac4d7f2ec)仅刷新补丁头与匹配上下文，保留 `SDKROOT`／`SWIFTC` 及直接调用编译器的适配；不是撤回 `-parse-as-library`。贡献者[要求重试](https://github.com/philocalyst/nixpkgs/pull/1#issuecomment-4285830300)后，原接收者[确认可用](https://github.com/philocalyst/nixpkgs/pull/1#issuecomment-4289836726)，并在[上游再次确认解决 Nix/Darwin 打包问题](https://github.com/cjpais/Handy/pull/1316#issuecomment-4289834836)。回执没有独立贴出受测 SHA，因此绑定来自同线程修订／重试顺序，不能冒充完整可重放日志。**[一手：源码固定关系与补丁；社区：原接收者失败／成功回执]**
+
+**接管投入是具体动作，仍不是工时。** 另一接收者 totoroot 在 `aarch64-darwin` [说明自己除一行修复外，还补了工具链变量与绕过 `xcrun` 的调用](https://github.com/NixOS/nixpkgs/pull/507754#issuecomment-4318585450)，并披露 LLM 辅助；其[后续回执](https://github.com/cjpais/Handy/pull/1316#issuecomment-4321666513)确认产出 app／命令行入口、检查 `onnxruntime` rpath 且在使用，但未测普通 Xcode/Bun 或 Intel Mac。后来他[改用 PR 包装而非自己的临时包](https://github.com/NixOS/nixpkgs/pull/507754#issuecomment-4366576030)。这些是适配、重建与切换到共享包装的主动投入，不含计时，不能据评论间隔计算支持成本，也不能从“可用”补写语音质量或快捷键全覆盖。**[社区：非上游补丁作者的实际操作自报]**
+
+**反证与后续：先前成功不覆盖最新组合。** 同一 totoroot 后来用 `nix build .#handy -L --no-link` [重建失败](https://github.com/NixOS/nixpkgs/pull/507754#issuecomment-4545405929)，缺的是可调用的 `swiftc`；维护者[承认最终建议尚未推送](https://github.com/NixOS/nixpkgs/pull/507754#issuecomment-4545763685)。最终[固定包装 10d9c53](https://github.com/philocalyst/nixpkgs/blob/10d9c5372a0a29b50ff19d9776af4ee93795c6ec/pkgs/by-name/ha/handy/package.nix)显式设置 `SWIFTC`，保留 Darwin 的运行库 rpath，并把 `x86_64-darwin` 列入 `badPlatforms`。这不证明未测试平台也可用。**[社区：后续失败；一手：固定源码]**
+
+接收方要求 `nixpkgs-review` 后，totoroot 的首份概述遭维护者质疑；其[澄清先前只是直接构建，现已手工运行指定工具](https://github.com/NixOS/nixpkgs/pull/507754#issuecomment-4586931332)，[更正报告](https://github.com/NixOS/nixpkgs/pull/507754#issuecomment-4586916819)给出命令 `nixpkgs-review pr 507754`、提交 `10d9c5372a0a29b50ff19d9776af4ee93795c6ec` 和 `aarch64-darwin` 构建成功。它支持该版构建回执，不补作该版完整业务测试。xilec 对[同一 SHA 的 NixOS x86_64-linux](https://github.com/NixOS/nixpkgs/pull/507754#issuecomment-4580338557)另有具体构建命令、GPU 枚举与端到端转录自报，但贡献者自报不能嫁接为 Darwin 结果。这里的修正是运行身份，不宜据此断言早先实际构建从未发生。**[社区：报告纠正与分平台运行自报；研究：证据边界]**
+
+**最小交付与停止条件。** 在已有 PR／包装说明中固定源码版本、下游适配和接收入口，交代哪些补丁仍承担独立职责；上游修复改变上下文时重验补丁应用、构建和必要任务，能沿用接收方自动化就不另造报告流程。若接收方只需要官方二进制，不要求其承担源码包装；已有必要路径验收充分时不增加全平台矩阵。本链没有精确主动工时、Darwin 最终版本的转录细项或长期维护收益，也不证明 AI 提效。**[研究：条件建议]**
