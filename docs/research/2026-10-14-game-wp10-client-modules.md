@@ -1,6 +1,6 @@
 主线：一／二／三／四；客户端体验、验证选择、第二次修改与交付
 改变的建议：[研究] 先复用原生组件，按实际症状选择输入、运动、呈现、声音与界面策略；补齐退出、存档、资源和二改责任，不以模块数量代质量。回合演出先调默认等待，再考虑快播放，保留动作完成与奖励条件；既有各项取舍和反证见对应小节。
-新证据：[一手／社区] 固定源码、官方契约／修复及不同类型游戏开发者记录；本轮补 Unity／UE 保存线程契约、Evil Trout 保存合并与退出经验、Factorio 非阻塞保存代价及历史回归；此前 Slay the Spire／Cogmind／Into the Breach 的节奏证据保留。此前输入／呈现／字体／听点／存档／库存来源仍在各节，未做引擎、设备或玩家实测，不能推出 AI 成功率或体验收益。
+新证据：[一手／社区] 固定源码、官方契约／修复及不同类型游戏开发者记录；本轮补 Unity 6.3／UE 5.8 拾取坐标契约与纹理重显示纠正、Unity／UE 保存线程契约、Evil Trout 保存合并与退出经验、Factorio 非阻塞保存代价及历史回归；此前 Slay the Spire／Cogmind／Into the Breach 的节奏证据保留。此前输入／呈现／字体／听点／存档／库存来源仍在各节，未做引擎、设备或玩家实测，不能推出 AI 成功率或体验收益。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -1012,3 +1012,29 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 [研究] 只预注册实际二改：原版角色跟随镜头增加远程观察或演出后，在同一近处／远处声源场景中检查拉远、转身、切镜、退出及暂停后返回；记录听点位置／朝向／速度与听到的方向、响度、音高。音高异常先核多普勒路径，响度异常先核坐标与衰减，再决定是否改素材。AI 可追模式切换和参数来源；人判断听觉重点与交接是否自然。原生听点可表达模式且交接符合目标即可收工，没有症状不建完整配置图或音频框架。
 
 **实际验证范围：** 公开作者原文、官方更新、引擎文档与固定源码／许可静读；未试听、运行游戏或引擎，未测可辨性、舒适度、性能或 AI 净收益。案例用于选择和反证，不等于本项目听感验证。
+
+## 拾取坐标补研：显示变换不能靠 DPI 猜回去
+
+核实：2026-10-16（UTC+8）。主线三；改变 04 的自定义拖拽／世界拾取／小地图排错顺序：先核位置生产者与消费 API 的坐标约定，再补必要映射。新证据是 Unity 6.3 与 UE 5.8 的原生契约及公开针对性纠正；不重复 WP11 光标／中心支点选择或已有输入归属政策。[研究]
+
+### 原生路径先行，只有跨空间时才转换
+
+| 场景 | 本轮核到的契约与采用边界 |
+|---|---|
+| Unity 6.3 UI Toolkit 事件 | [`position`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/UIElements.IPointerEvent-position.html) 属于 panel；[`localPosition`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/UIElements.IPointerEvent-localPosition.html) 属于 currentTarget，传播到不同接收元素时会变化。[一手] 在需要的空间已有位置就直接使用，不再当原始屏幕像素缩放。[研究] |
+| 外部屏幕位置到 UI Toolkit | [官方 FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html) 给出 `RuntimePanelUtils.ScreenToPanel` 与 `panel.Pick`，并区分 uGUI 屏幕左下原点和 UI Toolkit 左上原点。[一手] 先辨原点再转换，不对已转换事件再翻 Y 或除 DPI。[研究] |
+| uGUI 自定义局部交互 | [`RectTransformUtility.ScreenPointToLocalPointInRectangle`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/RectTransformUtility.ScreenPointToLocalPointInRectangle.html) 转到指定 RectTransform 局部平面；Overlay 的相机为 null，点击可取 `PointerEventData.pressEventCamera`。返回 true 只证明击中平面，不证明在矩形内。[一手] 额外检查实际交互区域；不能把此 API 与 ScreenToPanel 互换。[研究] |
+| 相机世界拾取 | [`ScreenPointToRay`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Camera.ScreenPointToRay.html) 接受左下原点屏幕像素；[相机射线说明](https://docs.unity.com/en-us/engine/6000.3/manual/cameras/camera-view/camera-rays/introduction) 区分 `ViewportPointToRay` 的相机视图 0–1 坐标。[一手] 相机直接渲染到屏幕视口时，可将原生屏幕像素交给该相机的 `ScreenPointToRay`；已有相机归一化视图坐标才用 `ViewportPointToRay`。只有小地图等将相机纹理另行显示时，才先按实际图像区域、裁剪及 UV 映射回对应相机视图；不给留黑、裁剪和纹理复用共用的公式。[研究] |
+| UE 对照，本轮页面标为 5.8 | [`Local to Viewport`](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/UserInterface/Geometry/LocaltoViewport) 的 Pixel Position 是视口分辨率单位，可用于 line trace；Viewport Position 用于视口内其他 widget。[`Get Mouse Position on Viewport`](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Viewport/GetMousePositiononViewport) 返回 viewport widget 局部空间。[一手] 不按名字把所有 viewport 坐标当像素；5.6 参数页本轮未成功读取，不宣称已核该版本。[研究] |
+
+### 实际纠正与当前版本反例
+
+[社区] [2022 年公开报告与回复](https://discussions.unity.com/t/panel-raycaster-ignores-ui-settings-dynamic-resolution-scalar/874565/2)：用户在 2022.1.0b11 将 UI Toolkit 渲染纹理放入缩放 Canvas，描述显示与输入不一致，尝试重建纹理和修改 raycaster。SimonDufour 建议通过 `SetScreenToPanelSpaceFunction` 映射外部显示变换，指出 UI Toolkit 无法自动知道这些操作。**这是针对性改法，未提供已确认修复的复测结果；**不作为当前引擎缺陷或效果证据。
+
+[一手] Unity 6.3 [同名 API](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/UIElements.PanelSettings.SetScreenToPanelSpaceFunction.html) 仍明确支持 targetTexture 用于网格时的映射：有效命中转为纹理像素，无有效目标返回面板外坐标；有超出面板表面的 3D 元素变换时指向另一个 3D 入口。相对地，6.3 已有[原生 World Space UI](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/world-space-ui.html) 和 [Panel Input Configuration](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/world-space-panel-input-configuration.html)。[研究] 因而保留普通按钮与原生世界 UI 的事件路径，只为确实自行重显示的纹理补映射；不从旧帖推出“所有世界 UI 都要手写 raycast”。
+
+### 最小采用与二改预注册
+
+[研究] 沿现有事件处理函数，注明输入空间、消费空间、原点／单位及面板／相机身份即可，不建统一坐标框架。二改调整窗口或 UI 缩放，再加入移位、非全屏的小地图／第二视口；检查中心、边缘、显示区外的可见目标与实际拾取。原生转换满足即停止；原生控件也偏移时查版本问题，坐标已对齐但仍漏点时转查遮挡和路由，不继续堆比例补丁。
+
+**实际验证范围：** 仓库、公开原帖与官方文档静读；未运行游戏、引擎、设备或玩家测试，未证明任何通用缩放公式、修复成功率或 AI 收益。

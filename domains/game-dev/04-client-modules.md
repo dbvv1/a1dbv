@@ -247,6 +247,14 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 **[研究] 第二次修改加一个带滑条、确认弹窗的设置页，再改键并换设备走回来。** 同时检查导航顺序、可见焦点、当前按键提示、返回目标和角色状态；不能用直接调用按钮回调代替真实输入路径。AI 可生成规则、绑定与回归路径，人判断焦点／反馈是否清楚、操作是否费力；本轮资料比较不能证明目标设备上的完整可用性。
 
+### 显示正确但拾取偏移：先核位置来自哪里
+
+**[研究] ✅ 自定义拖拽、世界拾取或小地图在改布局／缩放后偏移，先核生产者与消费 API 的坐标空间、原点、单位及目标面板／相机。** 优先使用原生事件位置与转换，不先手除 DPI、挪美术或扩大点击区；普通按钮继续走原生事件路径。Unity 6.3 UI Toolkit 的 `position` 已是 panel 坐标，`localPosition` 属于当前接收元素，外部屏幕位置才按[官方入口](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)转换；uGUI 用对应 RectTransform 与事件相机转换，命中矩形平面不等于位于矩形内；世界射线则区分屏幕像素与相机归一化视口。[一手／研究]
+
+**[研究] 仅为额外的显示变换补映射。** 渲染纹理经控件／网格移位、缩放或裁剪后，拾取应沿实际显示区域和纹理映射回到对应面板／相机，不能直接复用全窗口位置。Unity 6.3 原生 World Space UI 先用自身输入配置；确实自定义重显示纹理时，才评估 `SetScreenToPanelSpaceFunction` 等入口。UE 5.8 的 `Local to Viewport` 也区分供射线使用的 Pixel Position 与供其他 widget 使用的 Viewport Position，不能共用一套 DPI 公式。[一手] **局限：坐标对齐不证明遮挡、事件路由或引擎版本无缺陷；**历史论坛答复只是针对性改法，不是已确认修复。原生契约与边界见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#拾取坐标补研显示变换不能靠-dpi-猜回去)。
+
+**[研究] 二改只预注册：** 调整窗口／UI 缩放，再加入移位、非全屏的小地图或第二视口；核中心、边缘及显示区外的拾取结果，区外不得误触。原生路径满足就收工；原生控件本身仍偏移时，先查锁定版本问题，不叠加坐标补丁。本轮未运行引擎或设备测试。
+
 ### 新语言也会改变旧内容的显示
 
 **[研究] ✅ 新增语言或角色名时，同时更新字库覆盖，并检查旧存档中的自定义名字。** Celeste [1.3 更新](https://www.celestegame.com/changelog.html)增加韩语时改为按使用语言加载字体，也为切语言后无法显示的玩家名增加替代显示；这不是所有游戏都应替换名字的理由，而是要求明确混合文字的显示政策。字体子集／预填充若只覆盖第一版文本，后续内容也须更新；官方 [Rebinding UI 源码](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/RebindActionUI.cs)仍直接显示 `action.name`、硬编码等待与倒计时，复用绑定刷新机制后应接入既有本地化表，不另建框架。[一手] Unity 6.3 的 ATG 仅在 UI Toolkit 路线评估，其[静态字体迁移](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/migrate-static-font-assets.html)要按减内存或降低首次字形生成分别选择；不据此迁移稳定 uGUI。新增名字／语言后，回看旧名字、冷启动首次显示及切换后的字体驻留；源码与文档不能证明目标设备已通过，细节见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#本地化补研新语言与旧名字一起维护)。
