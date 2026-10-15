@@ -63,6 +63,15 @@
 
 [一手] Unity Behavior [1.0.16](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/changelog/CHANGELOG.html) 新增 OnSetup／OnTeardown，并修复不可达导航持续 Running 等问题。UE [BT](https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---overview) 有事件驱动的观察／打断；[StateTree](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-state-tree-in-unreal-engine) 以转换触发选状态，同状态任务并发，完成转换不应被理解为自动等待全部任务。[研究] 选择已有体系并锁定版本，不能把所有图工具的 abort、重入和完成语义视为相同。
 
+### 感知与搜索：持有目标不等于知道当前位置
+
+**[研究] ✅ 躲避／误导敌人属于玩法时，分开目标身份、最近获知的位置与当前感知状态。** 沿现有状态机／黑板保存已知位置，由允许的视听、队友报告或特殊追踪规则更新；搜索阶段不要因仍持有玩家对象，就持续读取其当前位置。Shattered Pixel Dungeon 的普通追猎区分目标对象与目标格，群体智能模式又明确允许传递位置。[一手] 不必新增记忆框架，也不要求失去视线立即忘记目标。
+
+- **Unity**：[Behavior 1.0 节点](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/node-types.html)区分 Navigate To Location 与 Navigate To Target。[一手／研究] 搜索已知位置时用位置输入，并查上游是否仍每帧从玩家 Transform 刷新；节点选择本身不替玩法实现感知
+- **UE**：[AI Perception](https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine)区分当前感知、已知目标及刺激位置／年龄；[Move To](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-behavior-tree-node-reference-tasks)的 Track Moving Goal 会随目标 Actor 移动更新路径。[一手／研究] 失去感知后检查移动任务是否仍跟踪对象，搜索可切到位置键；需要自动遗忘才配置 Forget Stale Actors 与 Max Age，不能只改一个感知标志就当作停止追踪
+
+**[研究] 局限：全局调度与角色感知承担不同职责，没有通用“所有敌人都必须忘记玩家”的规则。** Left 4 Dead 的导演按队伍位置与压力组织遭遇；有意提供追踪或队友线索可以保留，但要明确何种信息允许进入角色决策。二改增加隐蔽路线／诱饵后，核实际移动目标、线索来源与重新发现；直接追踪本来就是玩法时，保留简单跟随。固定源码、创作者对照、遗忘配置与未运行的验收见 [WP11 感知补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#感知补研角色知道什么与导演调度什么)。
+
 ### 追击与让路：有路径不等于走得自然
 
 **[研究] ✅ 先复用原生导航，分清通路、局部避让、停止位置和最终位移所有者。** 近邻临时挡路先用已有避让；门／箱子改变可通行区域时更新导航表示；近身战另定停距、侧移与是否允许身体卡位，不让所有敌人挤向目标中心。目标更新沿用当前组件的跟随契约，只有测得重复查询成本后才节流／缓存，不能统一降低频率而损失转向响应。

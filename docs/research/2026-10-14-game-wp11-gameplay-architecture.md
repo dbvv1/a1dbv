@@ -820,3 +820,27 @@
 [研究] **二改预注册，未执行：** 固定版本、初始玩法状态与玩法输入轨迹，只增加闪光／音效变体，或改变视口、关闭表现；对照掉落、伤害及目标选择等所需玩法结果，并检查表现路径未抽取玩法流。若恢复中途继续，另核续接的是当前流状态而非重播起点。AI 可追消费者与补回归夹具，人决定哪些结果需复现。不新增锁步／回滚系统；通过也只支持本配置下的随机隔离，不证明跨平台、物理或完整网络确定性。
 
 **许可与验证边界：** BrogueCE 对应源码标 AGPL-3.0-or-later，OpenRA 对应源码标 GPL-3.0-or-later；本节只借机制、不复制代码／资产，实际源码复用须遵守许可证。核对公开评审、固定文件与原生 API，未安装、运行引擎／游戏／模型、执行玩法测试或测量收益。
+
+## 感知补研：角色知道什么与导演调度什么
+
+核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变05 §3的具体选择：躲避／误导属于玩法时，保留目标身份不等于允许搜索任务读取实时位置。已有状态退出、导航让路和玩家屏外威胁分别处理执行寿命、移动与玩家信息；本节只补角色决策的信息来源，不扩写那些机制。
+
+### 跨类型证据与反例
+
+- **Homebody，恐怖探索。** [一手：创作者自述] 主要系统／玩法程序员及技术设计者 Alex Belzer 的[项目页](https://www.alexbelzer.com/work/homebody)说明，他实现了远离玩家时加快巡逻的机制，并用盲角布局让玩家甩脱追逐或遇见敌人。[研究] 它支持通过巡逻与空间设计调节遭遇，未公开足以证明完整感知记忆的数据结构。页面对 Alien: Isolation、Resident Evil 2 的比较及公平性感受属于作者解释，不当作那两部游戏的原始实现证据，也不把他的 GOAP 选择升格为默认方案。
+- **Shattered Pixel Dungeon，回合 roguelike。** [一手：固定源码] `57a4e06a4caf162446d1c28caa7983f0493fecf0` 的 [Mob.Hunting L1284–1324](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L1284-L1324)分开 enemy 对象与 target 格，在 enemyInFOV 时更新目标格，再向该格移动；[后续分支 L1345–1411](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L1345-L1411)在无法继续靠近且失去视野时转游荡，逃跑也可继续使用旧位置。[研究] 只借这些基类分支，不宣称所有怪物、子类或目标选择路径都不读取真值。
+- **同项目的允许共享反例。** [一手] [processSwarmIntel L298–323](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L298-L323)在群体智能挑战、正在追猎并感知目标等条件满足时，把目标位置传给范围内未追猎的同阵营怪物。[研究] 因而不能把“不是亲眼看到”一律判错；队友报告可以是明确允许的信息来源，不要求各角色彼此隔绝。
+- **Left 4 Dead，合作动作射击的全局调度反例。** [一手：Mike Booth／Valve，2009讲义] [The AI Systems of Left 4 Dead](https://cdn.akamai.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf)PDF 第69页按队伍不可见区域与敌人类型选择生成位置，第79–82页估算队伍压力、调节威胁数量，Relax 期间既存特殊感染者仍可攻击。[研究] 导演读取世界状态以组织遭遇，不等于每个角色都应取得持续精确定位；这也反对把全局位置访问一概定性为坏设计。材料不证明每只感染者的感知实现，不推荐单人项目搬整套导演，也不把历史团队经验算成本仓库实测。
+
+### 原生入口：位置输入、感知状态与遗忘不是同一开关
+
+- **Unity Behavior 1.0 文档渠道，本轮读取的节点契约。** [一手] [节点清单](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/node-types.html)将 Navigate To Location 的指定位置与 Navigate To Target 的目标 GameObject 分开；两者使用 NavMeshAgent，缺少时可回退 Transform。[研究] 搜索沿既有位置变量，不由实时对象坐标隐式覆盖；这里只核输入类型，不宣称具体目标刷新频率、内置感知记忆或所有 Unity 版本等价，也不把1.0渠道称为最新发行版。
+- **UE 5.8 当前官方文档。** [一手] [AI Perception](https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine)分别列 Get Currently Perceived Actors 与 Get Known Perceived Actors，刺激携带 Age、Expiration Age、Stimulus Location、Successfully Sensed；Forget Stale Actors 配合 Max Age 管理遗忘，0表示不遗忘。[Move To 任务](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-behavior-tree-node-reference-tasks)的 Track Moving Goal 会随着目标 Actor 移动更新路径。[研究] 搜索可切换到位置键，并核旧任务是否仍跟对象；不能认为感知丢失会自动清除自定义黑板或停止已有追踪。视线丢失也不代表听觉、队友报告或其他允许的线索同时失效。
+
+### 采用、撤回与二改预注册
+
+[研究] ✅ 只在隐蔽、误导或有限情报改变玩家选择时，沿现有角色状态保留目标身份、已知位置和当前感知；线索需要按时间失效才保存年龄／时间。明确哪些线索可覆盖旧位置、何时搜索、返回或继续追踪，不默认建设通用知识库。导演若需要向角色投递提示，声明提示来源与精度；导演能读真值不自动授权普通搜索读同一真值。直接追踪本来就是玩法，或现有规则已满足要求时，保留简单方案。
+
+[研究] **二改预注册，未执行：** 同一追逐场景新增绕角隐蔽路线或一种诱饵声音，记录当前线索来源、已知位置和实际移动目标；分别核失去视线后继续移动、别处声响、队友报告、重新出现，以及导演继续调节压力时的结果。允许持续追踪的角色另按其规则对照，不统一要求停追。AI 可追实时位置读取路径、补调试显示和回归用例，人判断躲避是否有效、搜索是否可理解、压力是否合适；若只是降低响应却没有创造所需选择，缩小或撤回记忆机制，不以等待时间更长当质量提高。
+
+**许可与实际验证：** [一手／研究] Shattered Pixel Dungeon 固定文件头标 GPL-3.0-or-later，根 [LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)为 GPLv3；本节只提炼机制，不复制代码或资产，不列作闭源项目即插用底座。创作者网页／Valve讲义不授予游戏内容复用权。只读仓库、公开网页、PDF文本、固定源码与官方契约，未运行游戏／引擎／模型或玩家实验，未测体验、效率或最佳遗忘时长；共同决策维护一份，仅原生接口分引擎说明。
