@@ -27,7 +27,7 @@
 | LSP 代码智能 | ✅ 官方插件；[需服务器二进制，官方云会话不启动](../05-skills-and-plugins.md#3-插件与市场) | 原生语义导航按客户端／扩展核查，见 [LSP 边界](codex.md#lsp修复反馈与语义操作不能混为一谈) | — | ✅ |
 | 沙箱 | macOS Seatbelt / Linux bubblewrap，可配网络白名单 | 默认沙箱（macOS Seatbelt / Linux bubblewrap / Windows sandbox） | Seatbelt / Docker | — |
 | 自动审批 | auto 分类器；v2.1.283 起交互终端／VS Code 内建默认，受设置与可用性影响，见 [06](../06-hooks-and-guardrails.md#4-auto-mode实测数据) | Auto-review 审查 Agent（`approvals_reviewer = "auto_review"`，策略开源） | Unified Auto Mode | — |
-| 回滚 | checkpoint + `/rewind` | CLI 会话与文件同步恢复仍有历史诉求；按实际入口保留检查点，见 [Codex](codex.md#4-优势与短板) | 编辑记录 `/rewind`／项目快照 `/restore`（需启用），[范围不同](gemini-cli.md#恢复范围) | — |
+| 回滚 | checkpoint + `/rewind` | CLI 会话与文件同步恢复仍有历史诉求；按实际入口保留检查点，见 [Codex](codex.md#4-优势与短板) | 编辑记录 `/rewind`／项目快照 `/restore`（需启用），[范围不同](gemini-cli.md#恢复范围) | TUI `/undo`／`/redo`；文件恢复依赖 Git 与快照，[范围见深页](open-source-agents.md#opencode规划与撤回边界) |
 | 云端 / 远程 | Web、手机、Remote Control、Routines、**Projects**（云端并行；本机资源另选 Remote Control 线程） | Codex Cloud（**可复用的云端环境**，2026-09）、ChatGPT 桌面 App、常驻 Agent **Dots**；并行不以 Ultra 为唯一入口，见 [模型选择](codex.md#2-模型按任务与实际用量选择) | — | 桌面 App（Beta） |
 | Harness 开销 | 历史版本测得较高固定输入；当前按任务、缓存与工具配置核查，见 [开销边界](claude-code.md#6-已知问题与社区反馈) | — | — | 不用旧版本输入量推定当前净成本 |
 | 程序化调用 | `claude -p`、Claude Agent SDK、Managed Agents（见 [16](../16-building-agents.md)） | `codex exec`、Codex SDK、app-server、Agents API | 非交互模式 | `opencode run` 等 |

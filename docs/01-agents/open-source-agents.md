@@ -1,12 +1,12 @@
 # 开源 Coding Agent
 
-> 核实时间：2026-10-08；2026-10-15 补核 Pi／Aider，其余未全量重核。依据各项目仓库 README、最近提交时间 **[一手]**，以及 HN 原帖 **[社区]**。
+> 核实时间：2026-10-15。依据项目文档与源码 **[一手]**，以及 HN 原帖 **[社区]**。
 
 ## 总览
 
 | 项目 | 形态 | 亮点 | 最近提交 | 评级 |
 |---|---|---|---|---|
-| [OpenCode](https://github.com/anomalyco/opencode)（原 sst/opencode） | TUI + 桌面 App（Beta） | 模型无关；内置 `build`（全权限）和 `plan`（只读）两个 Agent，Tab 切换；`@general` 子 Agent；安装渠道多 | 2026-10 | 🧪 试用 |
+| [OpenCode](https://github.com/anomalyco/opencode)（原 sst/opencode） | TUI + 桌面 App（Beta） | 模型无关；内置 `build`（全权限）和 `plan`（规划，权限边界见下）两个 Agent，Tab 切换；`@general` 子 Agent；安装渠道多 | 2026-10 | 🧪 试用 |
 | [Cline](https://github.com/cline/cline) | VS Code / JetBrains / CLI / 桌面 App | 每步人工审批；CLI 支持无头模式，可用于 CI；桌面版能定时运行 | 2026-10 | 🧪 试用 |
 | [Kilo Code](https://github.com/Kilo-Org/kilocode) | VS Code / JetBrains / CLI | 开源，多种安装方式 | 2026-10 | 👀 评估 |
 | [Goose](https://github.com/aaif-goose/goose) | 桌面 / CLI / API（Rust） | 通用 Agent（不限于编码）；15+ 服务商；可通过 ACP 使用 Claude/ChatGPT/Gemini 订阅；**已加入 Linux 基金会旗下 AAIF** | 2026-10 | 🧪 试用 |
@@ -25,6 +25,12 @@
 - **主要在 IDE 里工作，希望每一步都审批** → Cline / Kilo Code。
 - **想要“一切皆插件”、让 Agent 自己扩展界面和工具** → DeepSeek Harness（先评估数据合规）。
 - **想自己搭 harness，且愿意维护扩展与运行隔离** → 🧪 Pi；仅为省 token 不足以支持迁移。理解原理可配合阅读 [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code)（拆解 Coding Agent 的组成部分）。
+
+## OpenCode：规划与撤回边界
+
+🧪 **需要在终端撤回一轮编辑时，OpenCode 仍可列入候选。** TUI 的 `/undo` 撤回最近用户消息及后续回复，并恢复相关文件；`/redo` 可重做被撤回的消息及相关文件变更。文件恢复依赖 Git 项目及可用快照；只恢复会话记录关联的文件，不等于撤销外部操作。若同一文件后来又有人修改，先保留这些改动，再核对恢复后的 diff，不能把它当自动合并。**[一手：官方文档与固定源码；研究：采用判断]**
+
+**只做规划时选 Plan，但不要把模式名当成绝对禁止写入。** 固定 v2.0.30 的内置 Plan 插件默认禁止常规文件编辑，却允许专用计划目录，并通过提示约束只在用户要求时写计划。官方 Agents 页仍把编辑／bash 描述成默认 `ask`，与该实现不同；依赖严格只读时，核对实际版本、有效权限及扩展工具，不照搬该默认值。详见[固定来源与差异](../research/2026-10-12-community-source-records.md#opencode规划权限与文件恢复分开选择)。未运行客户端或验证跨平台恢复。**[一手；研究：采用边界]**
 
 ## 开源 Agent 的采用理由与成本边界
 
