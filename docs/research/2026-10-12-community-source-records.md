@@ -298,3 +298,21 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 §5对照03／04／07／08／09／10／14／18：SDD和并行原来只有争论标签，现回链07／08的具体条件；软件工厂入口同步13 §2.8，区分Dex的团队自报、训练假设与流程倡议，采用结论只在14维护。既有[原文复核](2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)已限制“无法训练”“评审抬不高上限”和“稳定快2–3倍”；初次网页请求未取得内容，随后独立复核已通过GitHub读取固定[`wsff.md@1a9b65e`](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/1a9b65e53bcf2052b7ef1778fbcfe2af65858a1e/wsff.md)，确认这些属于作者假设／倡议，且作者自己也按任务缩减流程：小任务直接做或少量反馈，中等合并设计，大变更才用完整步骤，不把作者的任务占比推广给读者。Weng、Larson及HN对照观点保留历史来源范围，未重新认证。**[研究：入口一致性与读取范围]**
 
 原“模型性格／社区写提示词纠正”没有明确作者、产物或效果来源，移出正文，只留作历史待核线索，不生成新的提示词方案。上述复核没有运行模型、客户端或迁移实验，也不代表所有外链和动态事实重新认证；页级成熟度另经独立审阅决定。**[研究：撤回与验证范围]**
+
+
+## Gemini：接入资格与 Antigravity 迁移
+
+核实：2026-10-16（UTC+8）。对应01入口与Gemini深页；主线二。撤回“个人免费额度→预算敏感或批量任务首试Gemini CLI”，改按消费者、API及已有企业合同区分；Antigravity仅作需核配置与费用的迁移候选。新证据为官方消费者／企业弃用说明、迁移公告及当前迁移／认证文档；只读，无安装、登录、API调用或客户端迁移实验。**[一手；研究：采用范围]**
+
+| 来源与日期 | 已读事实 | 对选择的影响 |
+|---|---|---|
+| [消费者弃用页](https://developers.google.com/gemini-code-assist/docs/deprecations/code-assist-individuals)，页面更新2026-10-09 | 6月18日起，individuals、Google AI Pro／Ultra的Code Assist IDE与Gemini CLI停止服务，该消费者路径不能继续Login with Google | 旧个人免费额度不再作为新采用理由；仅针对所列消费者服务路径；公告未限定版本或地区，不外推其他认证与API路径停用 |
+| [5月19日迁移公告](https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/) | 同样明确消费者6月18日截止；另保留付费Gemini／Enterprise Agent Platform API key；当时企业入口不变；Antigravity初期非1:1功能对等 | 消费者停用与API分别判断；不由付费API可用推出免费API key仍有旧额度；5月企业说明不能覆盖后来的弃用规则 |
+| [企业弃用页](https://docs.cloud.google.com/gemini/docs/codeassist/sunset)，页面更新2026-10-13 | 10月9日起不再新购Standard／Enterprise；旧合同继续支持；加席和年度续订截止2027-01-31，月度续订截止2027-12-31 | 新团队不能按旧订阅表选购；已有团队按自己的合同安排转换，不一律立即迁移 |
+| [Cloud quotas](https://docs.cloud.google.com/gemini/docs/quotas)，页面更新2026-10-13 | 仍列Standard／Enterprise的CLI额度，IDE agent mode与CLI合并计量；一次提示可能产生多次请求 | 额度表不是新订阅资格，不能按请求数计算可完成任务数 |
+| [Antigravity迁移](https://antigravity.google/docs/cli/gcli-migration) | 首次启动可选导入扩展／全局配置及迁移会话token到系统keyring；部分兼容；workspace skills改到`.agents/skills/`；MCP独立配置，部分远程URI字段改为`serverUrl` | 不把安装、导入或同名功能当作认证、权限、全部配置与行为已恢复；没有证据证明自动转换覆盖所有路径 |
+| [Antigravity安装与认证](https://antigravity.google/docs/cli/install/#using-a-gemini-api-key) | API key路径要求`modelProvider`设为`gemini`并提供`GEMINI_API_KEY`；单独环境变量无效；启动只检查非空，实际模型权限可能首次请求才失败 | 迁移要核实际provider与认证；此处不提供凭据、不运行验证，不承诺原免费权益继承 |
+
+**旧页面冲突保留。** [Gemini CLI quota页](https://geminicli.com/docs/resources/quota-and-pricing/)仍列个人1000/day、免费API key 250/day，页尾为2026-06-18；[terms页](https://geminicli.com/docs/resources/tos-privacy/)仍列消费者Google登录及不同API服务分类，其个人隐私链接实际重定向到上述弃用页。后者与5月公告交叉支持特定消费者路径已停，不能用旧表继续承诺60/min、1000/day或免费API替代。Vertex的Express／付费模式仍需按所用项目资格与计费核对，不从消费者变更推导其免费可用或全部关闭。此为公开文档之间的范围与时序核对，不是账号实测。**[一手；研究：冲突取舍]**
+
+**历史读取范围与未覆盖。** 原Gemini深页“未能直接核实Antigravity文档”属于2026-10-08的记录；本轮已直接读取迁移与认证页，撤下该当前化说法及未支撑首步选择的旧二手产品描述。未重核所有Gemini功能矩阵、当前稳定版、模型输入／上下文、Antigravity额度和价格；恢复机制沿用本页既有固定源码，EDK／Auto Memory沿用audit S3的原范围。01仍为L2，不把局部接入补核升级为整页认证。采用前若合同、认证或必要操作变化，回到对应官方契约复核；真实迁移是否成功仍待授权实验。**[研究：边界]**

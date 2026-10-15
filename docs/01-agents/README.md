@@ -18,7 +18,7 @@
 |---|---|---|---|---|
 | 厂商 / 许可 | Anthropic / 闭源（插件与 mods 源码公开） | OpenAI / 开源（Rust） | Google / Apache-2.0 | 社区 / 开源 |
 | 主力模型 | Claude Opus 5.5 / Sonnet 5.5 / Fable 5.1 / Haiku 5.5 | GPT-6.1 Sol / GPT-6 Sol、Luna、Astra（GPT-5.5 于 10-14 退役仅限 ChatGPT 登录；API-key 登录不受影响） | CLI 以实际可选模型为准；Gemini 4 Argon 于 10-13 在 API／AI Studio GA，不等于 CLI 默认已变（[02](../02-models-and-cost.md)）；v0.63 起非交互模式可自主执行计划 | 任意（BYOK、本地模型） |
-| 订阅可用 | Pro / Max / Team / Enterprise | 按入口和 rollout 分档；Free／Go 的桌面 Luna 与各集成例外分别核，见 [Codex 资格](codex.md#1-形态与入口) | 个人 Google 账号有免费额度 | 取决于所接的服务商 |
+| 订阅可用 | Pro / Max / Team / Enterprise | 按入口和 rollout 分档；Free／Go 的桌面 Luna 与各集成例外分别核，见 [Codex 资格](codex.md#1-形态与入口) | 消费者 Google 登录路径已停；API／旧企业合同分别核，见 [接入选择](gemini-cli.md#1-基本情况) | 取决于所接的服务商 |
 | 指令文件 | CLAUDE.md（+ AGENTS.md，v2.1.277 起）、`.claude/rules/` 按路径生效 | AGENTS.md | GEMINI.md（可配置） | AGENTS.md |
 | Skills | ✅（规范起源方，扩展字段最多） | ✅ | ✅ | ✅ |
 | 插件市场 | ✅ 官方 315 个 | ✅（2026-03 起） | Extensions | 插件 |
@@ -42,7 +42,7 @@
 | 复杂、长程、跨模块任务 | 🧪 Claude Code／Codex | 先沿用已有工具与项目验证入口；再按同一任务的正确性、后续修改和总投入选择，生态数量不证明净收益。见 [15](../15-task-playbooks.md)与[22](../22-agent-evaluation.md) **[研究]** |
 | 等待或预算已成为瓶颈 | 🧪 对比候选模型与当前入口 | 分开记录质量、等待、费用与主动工时；不能用零散口碑代替当前账户、任务和模型配置的对照。见 [02](../02-models-and-cost.md) **[研究]** |
 | 交叉评审 / 第二意见 | 🧪 按风险增加新上下文评审 | 同模型或跨模型都可能共享盲点；按 [09](../09-review-and-quality.md#2-评审手段)比较新增有效发现、误报与成本，不默认必须换品牌 **[研究]** |
-| 预算有限 / 多模态输入 | 🧪 **Gemini CLI** | 个人账号有免费额度、1M 上下文 **[一手]** |
+| 考虑 Google 编码入口 | 🧪 先核 **Gemini CLI** 的认证／合同；个人入口另评估 **Antigravity CLI** | 不再以旧个人免费额度新采用 Gemini CLI；保留可用 API／旧企业合同路径，迁移先核必要配置，见 [接入与迁移](gemini-cli.md) **[一手；研究：采用判断]** |
 | 模型自由、本地模型、私有部署 | 🧪 **OpenCode** / **Qwen Code** / **Goose** | 多服务商、可接本地模型 **[一手]** |
 | 已有 JetBrains 工程 | 🧪 先核 AI Chat 集成／ACP 是否覆盖必要路径 | 平台、认证与所需操作满足时保留现有 IDE；CLI 可用不证明 IDE 入口同配置兼容，见 [JetBrains 边界](ide-and-others.md#jetbrainsintellij--rider--pycharm) **[一手；研究：采用判断]** |
 | 愿意自己定制 harness 并维护隔离 | 🧪 **Pi** | 默认启用 4 个工具，可扩展 MCP／codemode；按进程权限运行，隔离需另设。工具少不证明净成本低，见 [固定来源与边界](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界) **[一手；研究：采用判断]** |
