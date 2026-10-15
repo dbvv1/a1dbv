@@ -42,7 +42,7 @@
 | 做长任务、自建 Agent 或无人值守流程 | [16 自建 Agent](docs/16-building-agents.md) → [20 可靠的长任务](docs/20-codex-long-horizon.md) |
 | 查看长期研究重点和待验证问题 | [研究路线](docs/research/README.md) |
 | 查看两端分工、实施任务和提交评审 | [协作入口](docs/collaboration/README.md) |
-| 核实最新审计范围与仓库问题 | [整体评估](docs/collaboration/reviews/2026-10-13-331e093.md)；[历史来源审查](docs/research/2026-10-10-audit.md) |
+| 核对已发布的整体审计与修复 | [10-15 整体审计（基于 795ec5b）](docs/collaboration/reviews/2026-10-15-795ec5b.md)；[五项问题的主要修复](https://github.com/dbvv1/a1dbv/commit/4fa347a)；[历史来源记录](docs/research/2026-10-10-audit.md) |
 
 ## 目录
 

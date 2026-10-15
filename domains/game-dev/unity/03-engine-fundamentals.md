@@ -67,7 +67,7 @@ Awake → OnEnable → Start → (每个物理步) FixedUpdate → (每帧) Upda
 
 `UnityEngine.Object`（包括 GameObject、Component、各种资源）重载了 `==`：对象被 `Destroy` 后，C# 引用并不为 null，但 `== null` 返回 true。
 
-**AI 要点**：模型按普通 C# 习惯写 `?.`、`??`、`is null`，会**绕过 Unity 的重载**，对已销毁对象判断错误。启用 [Microsoft.Unity.Analyzers](https://github.com/microsoft/Microsoft.Unity.Analyzers)（UNT0007、UNT0008 会报出来）比写进 AGENTS.md 更可靠：规则放在能确定执行的一层（见 [docs/14 规律二](../../../docs/14-synthesis.md#2-规律二上下文是预算信息应该拉而不是推)）。
+**AI 要点**：模型按普通 C# 习惯写 `?.`、`??`、`is null`，会**绕过 Unity 的重载**，对已销毁对象判断错误。启用 [Microsoft.Unity.Analyzers](https://github.com/microsoft/Microsoft.Unity.Analyzers)（UNT0007、UNT0008 会报出来）比写进 AGENTS.md 更可靠：规则放在能确定执行的一层（见 [docs/14 规律二](../../../docs/14-synthesis.md#2-规律二按任务选择预先提供与按需获取)）。
 
 ## 6. 资源管理
 
@@ -94,7 +94,7 @@ Addressables 的 [AssetReference](https://docs.unity3d.com/Packages/com.unity.ad
 
 Unity 6 的 GPU Resident Drawer、GPU 遮挡剔除用于大量物体的渲染 **[经验：Unity 6 公开资料]**。
 
-**AI 要点**：**着色器和渲染代码在不同管线之间不通用**。模型训练语料里 Built-in 管线的代码最多，经常在 URP 项目里写出 Built-in 的 Shader 或 `OnRenderImage` 后处理。AGENTS.md 里必须写明管线和版本；官方插件里有 `migrate-birp-to-urp`、`validate-urp-render-graph-renderer-feature` 等 Skill 可用（见 [01](01-toolchain.md#12-unity-官方-agent-插件-)）。
+**AI 要点**：**着色器和渲染代码在不同管线之间不通用**。模型训练语料里 Built-in 管线的代码最多，经常在 URP 项目里写出 Built-in 的 Shader 或 `OnRenderImage` 后处理。AGENTS.md 里必须写明管线和版本；官方插件里有 `migrate-birp-to-urp`、`validate-urp-render-graph-renderer-feature` 等 Skill 可用（见 [01](01-toolchain.md#12-unity-官方-agent-插件-按知识缺口添加)）。
 
 ## 8. 输入与 UI
 

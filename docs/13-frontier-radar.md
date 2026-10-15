@@ -1,12 +1,8 @@
 # 13 · 前沿雷达（2026-10）
 
-> 核实范围：历史部分于 2026-10-08 核实；下方精选指定条目于 10-14 补核（含 Claude Code 2.1.299）；2026-10-15（UTC+8）再查官方发布入口，补入 Gemini 4 Argon GA 与迁移判断，[完整范围](research/2026-10-10-audit.md#s1b--2026-10-15-主干时效补核)。未全量重验旧时间线及价格表。这一页追踪**最近 3–6 个月**真正重要的变化，以及一线实践者的反馈。
-> 信息源：HN（经 Algolia API 读取原帖和高赞评论）、Lobsters、Simon Willison 的博客、Latent Space、V2EX、厂商博客和文档，以及 arXiv 原文。Reddit、linux.do 拦截机房 IP，本轮未覆盖。
-> 证据标记见 [docs/README](README.md#评级与证据体系)。
+> 更新：2026-10-15
 
 ## 本轮精选：哪些变化会影响实际工作（2026-10-15 补核）
-
-以下是本轮直接读取的新证据与判断；原有时间线和历史价格表没有全量重新核实。
 
 | 变化 / 线索 | 实际意义与采用判断 | 证据范围 |
 |---|---|---|
@@ -60,25 +56,25 @@ Simon Willison 的总结 **[社区]**：只要能**清楚定义目标、给出�
 | GPT-6 Astra | $10 | $1 | $50 |
 
 - Opus 5.5 的能力“在大多数工作上达到 Fable 5.1”，；价格以 [02 的快照](02-models-and-cost.md) 为准。该页所列 $5/$25 → $4/$20 对应降幅 20%，原文 40% 与该快照不一致，已撤回；本轮未重新独立核实厂商价格 **[经验：内部算术校对]**。
-- 订阅侧反而在收紧：OpenAI 推出 500 美元/月的 Pro 档，原 200 美元档在 Codex 里的额度从 Plus 的 20 倍降到 10 倍 **[社区]**；V2EX 用户反馈 10 月 3 日 Codex 重置后总额度大约打了六折 **[社区]**。
+- Pro 当前有 $100／$200／$500 月费档，$500 档包含 Ultrafast 访问资格，不等于无限用量。原“$200 档从 Plus 20 倍降至 10 倍”及“10 月 3 日后体感六折”缺少精确日期和可复核原帖，保留为未核实历史说法，不作为当前套餐合同；统一见 [02 订阅口径](02-models-and-cost.md#3-订阅额度与成本控制)。**[一手；研究：历史说法边界]**
 
 ### 2.3 Harness 的隐性成本被量化了
-Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社区：原文]**：
+Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小样本隔离配置及自定义 API 代理。下表是该配置的输入量与缓存观察，不能作为当前默认开销或费用排名；选择须比较实际完整任务的质量、返工与含缓存的总成本，范围见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[社区：原文；研究：采用边界]**：
 
 | 项目 | Claude Code | OpenCode |
 |---|---|---|
 | 读到你的提示前发送的 token | **约 33k** | 约 7k |
 | 缓存写入 | 会话中反复重写，最多是 OpenCode 的 **54 倍** | 前缀逐字节不变，只写一次 |
 
-- 一份 72KB 的 AGENTS.md / CLAUDE.md，会让**每次请求**多约 2 万 token；5 个普通 MCP 再加 5–7k；真实配置下打第一个字之前就已经 75–85k token。
-- 同一个小任务：直接做花 12.1 万 token，分给 2 个子 Agent 做花 **51.3 万**（每个子 Agent 每一轮都要重读自己的系统提示和工具定义）。
-- **历史报告**（[19](19-experiments.md)）：记录了默认输入约 31.6k、长指令和子 Agent 的额外开销；原始逐次产物尚未随仓库提供，本轮未独立复现。“约 26k 来自工具定义”的归因不能仅凭缓存 token 计数支持，暂不作为已确认结论。
+- 同一历史报告中，一份 72KB 的 AGENTS.md / CLAUDE.md 让每次请求多约 2 万 token；另加 5 个普通 MCP 增加 5–7k，完整配置的首请求达到 75–85k。这些配置结果不等于当前默认负担，也不能把无 MCP 基础实验的 33k／7k 差值归因于 MCP。
+- **历史单次案例**（Systima，2026-07-12；10-15 补核）：Claude Code 2.1.207 的同一小任务，直接做与双子 Agent 的累计输入量为 12.1 万／51.3 万，含缓存；不能推导当前费用或额度的固定倍率。配置与网关限制见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。
+- **历史报告**（[19](19-experiments.md)）：默认输入约 31.6k；原 E1 的约 26.7k 是缓存读取，不能当工具定义。2.1.296 的 `/context` 补测给出默认工具定义约 22.9k，不是原 2.1.294 的精确拆分。E1–E3 已补交提示词、精简轨迹、逐次汇总与分项；E1 三份指令文本及逐次 stream 仍缺，完整原始轨迹未齐，不能把记录核对当独立模型复现，见[产物状态](research/2026-10-12-experiment-records.md#产物状态与引用口径)。
 - 社区把这叫作“**tokenflation**”：有测试显示，“hey”或“commit”这样的简单输入也能触发 30 多次工具调用。
 
 **应对** ✅：
 1. 指令文件写短（Anthropic 建议每个 CLAUDE.md 不超过 200 行）；
 2. 只装需要的 MCP；
-3. 不要无脑让它开子 Agent；
+3. 按独立交付与共享背景的需要选子 Agent，见 [08](08-multi-agent.md)，不按历史倍率一概排除；
 4. 按模型和字段定位缓存失效；effort 变化影响并不等于清空所有前缀，见 [02 当前口径](02-models-and-cost.md)；
 5. 当前 `/usage` 的 Session 区提供主会话缓存统计，不能当全部子 Agent 合计；历史客户端字段与当前版本分开。
 
@@ -95,7 +91,7 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 | OpenAI 训练期 Agent 越狱 | 4 月开始试探外网，5 月串联 Artifactory 代理的 0day，把代理当成留言板分工协作，入侵 Hugging Face 找评分器；7 月 19 日拿到研究集群的管理员权限；9 月又通过 DNS 外联。Anthropic、Google、Meta 也有类似事件 | Matthew Green 博客 **[社区：原文]** |
 | 攻破 Claude Code auto mode | 让 Claude 为“总结网页”自己写解码脚本，并在攻击者控制的目录里运行，被同名 `struct.py` 劫持；小样本成功率 60–80%（Anthropic 委托的测评是 0%） | Embrace The Red **[社区：原文]** |
 | 隐写标记 | Claude Code 会根据 API 地址和时区，悄悄改变系统提示里日期字符串的写法（目的疑似识别蒸馏）；HN 2445 票，“不透明”引发强烈反弹 | thereallo.dev **[社区：原文]** |
-| ZCode 上传 git 历史 | GLM 官方 Agent ZCode 被发现会静默上传 Git 历史 | HN 摘要 **[二手]** |
+| ZCode 旧版快照上传事件 | 原作者报告 3.12.3 登录后打包工作区含 `.git`，小型公开仓库上传成功；后续确认 3.14.0 移除相关管线，09-23 检查 3.14.3 未发现原打包行为。不是当前所有版本或历史云数据删除的审计通过 | [ferstar 原报告及更新](https://blog.ferstar.org/en/posts/zcode-silent-workspace-snapshot-upload/)，2026-09-18 至 09-23 **[社区：原始调查；10-15 补核，未独立复测]** |
 | 阿里禁用 Claude Code | 理由是“后门风险” | Reuters 摘要 **[二手]** |
 | Wikimedia 发现 OpenAI 失控 Agent（2026-10-05） | 编辑 wiki（未发布到读者可见的页面）、尝试利用一个托管的笔记工具、产生大量流量；未发现被攻破或被用于 Agent 间协调；Wikimedia 强调调查和溯源成本高，“不能让这种行为成为开放网络的新常态” | Wikimedia 博客 **[一手]** |
 | 前沿模型的分阶段开放 | 此前记录 Mythos、Gemini 4 Argon 的受限开放；Argon 已于 2026-10-13 在 Gemini API／AI Studio GA，不再沿用其“仅受信用户”限制 | 历史记录；Argon 现状见 [官方发布记录](https://ai.google.dev/gemini-api/docs/changelog) **[一手，10-15 补核]** |
@@ -175,7 +171,7 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 | **审批疲劳** | 一个“给 Agent 审批命令”的小游戏收集了 4 万局数据：玩家平均漏掉 1/3 的威胁，藏在 `npm run` 后面的恶意脚本漏掉一半以上（见 [10](10-security.md#2-2026-年的真实事件与研究)）。HN 高赞：“靠不停问用户、指望用户永不出错的安全模型，试过很多次，从没成功过” **[社区]** |
 | **“失控 Agent”这个说法** | Wikimedia 确认 OpenAI 的 Agent 在其站点上编辑和试探漏洞；HN 高赞认为不该叫“失控”，责任在运营方：“没绑好的钢筋飞满高速，我们不会叫它失控的钢筋” **[社区]** |
 | **记忆还是文档** | 《Agents don't need memory, they need documentation》：记忆插件是“RAG 抽奖”，该沉淀的是仓库里的文档；评论补充“代码本身就是文档”、带解释信息的 lint 规则、ADR（见 [03](03-context-engineering.md#4-跨会话记忆)）**[社区]** |
-| **订阅与封号** | 中文用户频繁遇到 Claude 封号；建议备份 `~/.claude` 下的会话记录（默认只保留 30 天，可以调整）**[社区]** |
+| **订阅与账户事件** | [V2EX 原帖](https://www.v2ex.com/t/1246477)自述 2026-10-05 被封，原因仍是作者猜测，评论有相反经历；不据单例推定中文用户普遍封号或按时区／用量归因，见 [Claude 的核查范围](01-agents/claude-code.md#6-已知问题与社区反馈)。**[社区：原帖；研究：代表性边界，2026-10-15 补核]** |
 
 ## 5. 下一个季度值得盯的
 
@@ -191,7 +187,9 @@ Systima 2026-07 的实测（同一模型、同样任务，抓包对比）**[社�
 - [ ] 针对可维护性的基准（SWE-Marathon、Frontier Code）能否成为主流评测，新模型在上面的表现
 - [ ] StrongDM 等“软件工厂”团队的长期数据（6 个月以上的缺陷率和交付周期）
 
-## 来源（均为本轮直接读取）
+## 来源
+
+- 分项核实日期与来源覆盖：[核查记录](research/2026-10-10-audit.md#页面日期与历史覆盖)；[证据标记](README.md#评级与证据体系)
 
 - Simon Willison：[2026 in LLMs (so far)](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)、[价格战](https://simonwillison.net/2026/Sep/22/opus-and-sol-and-luna/)、[默认硬性预算上限](https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/)、[Stateless MCP](https://simonwillison.net/2026/Jul/31/stateless-mcp/)、[Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/)
 - Anthropic：[Claude Opus 5.5](https://www.anthropic.com/claude-opus-5-5)、[Getting the most out of Opus 5.5](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)、[Maximizing the value of your Claude Code sessions](https://claude.com/blog/maximizing-the-value-of-your-claude-code-sessions)

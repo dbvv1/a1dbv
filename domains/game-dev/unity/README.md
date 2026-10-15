@@ -1,6 +1,6 @@
 # 游戏开发 / Unity
 
-> 核实时间：2026-10-14（入口与模板条件走查）。上级目录：[游戏开发分支](../README.md)（AI 与游戏开发的结合全景、引擎接入对比、验证与试玩、游戏中的生成式 AI）。
+> 核实时间：2026-10-15 UTC（入口全文复核；帧字段能力条件与资产修改边界补核，未运行引擎）。上级目录：[游戏开发分支](../README.md)（AI 与游戏开发的结合全景、引擎接入对比、验证与试玩、游戏中的生成式 AI）。
 > 前置阅读：主干的 [07 工作流](../../../docs/07-workflows.md)（验证闭环）和 [03 上下文工程](../../../docs/03-context-engineering.md)。
 
 | 文档 | 内容 |
@@ -28,6 +28,6 @@
 
 ## 三个最重要的认识
 
-1. **让 Agent 驱动编辑器，不要手改场景和 Prefab 的 YAML。** Unity 官方 Skill 原话：“有编辑器可用时，驱动它，而不是手工编辑场景或资源文件” **[一手]**。
-2. **进入 Play 模式不等于验证通过。** 已配置 Unity CLI 时，用 `unity status --format json` 的 `frameCount` / `playerLoopTicking` 确认帧确实在推进，再读 Console、截图 **[一手]**。没有 CLI 时，沿用现有测试报告或带时间/帧进度的状态观测；缺失观测就标明未验证，不为一条命令强装 CLI **[经验]**。
+1. **场景和 Prefab 默认经 Editor API 修改；文本修改只保留项目已验证的受限例外，保留 GUID／fileID 并核引用。** Unity 官方 Skill 原话：“有编辑器可用时，驱动它，而不是手工编辑场景或资源文件” **[一手]**。
+2. **进入 Play 模式不等于验证通过。** 已配置 Unity CLI 且当前 Pipeline 提供帧字段时，用 `unity status --format json` 的 `frameCount` / `playerLoopTicking` 确认帧确实在推进，再读 Console、截图（[官方字段条件](https://github.com/Unity-Technologies/unity-agent-plugin/blob/cf6b2da24e424b0a60d560a57f39f676cb6f79f3/skills/unity-cli/references/integration-advanced.md#L580)）**[一手]**。字段缺失不等于停帧；字段缺失或没有 CLI 时，沿用已有带时间／帧进度的状态观测，并按任务核测试报告；缺失观测就标明运行状态未验证，不为一条命令强装 CLI **[经验]**。
 3. **Safe Mode 下不要反复重试编辑器连接。** 已有 CLI 若因 Safe Mode 不可达，先从项目允许读取的 Editor.log 中过滤 `error CS####` 或沿用现有编译入口定位源码错误，修正后按项目流程重启、复验 **[一手＋经验]**。

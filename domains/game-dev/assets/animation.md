@@ -32,6 +32,9 @@
 
 **采用 Uthana Video2.1 时显式选模型：** `create_video_to_motion` 要传 `model="video-to-motion-2.1"`；省略或用旧别名 `video-to-motion-v2` 仍是 2.0。2.1 返回后处理后的 motion IDs，不能直接沿用 2.0 单个基础动作的取值假设；保存请求版本、job ID、完整结果和最终下载的 motion ID，再验接触。同文件短期重传可能复用旧 job；跨模型是否复用未说明，保存并核对返回身份，不能仅按提交次数计新候选。[一手／研究：[Video API](https://uthana.com/docs/api/capabilities/video-to-motion)、[GraphQL 契约](https://uthana.com/docs/api/graphql#create_video_to_motion)]
 
+**Text3.0 另走异步入口：** 使用 `create_text_to_motion_job` 并显式指定 `text-to-motion-3.0`，通用同步教程不能代表 3.0。官方[能力页](https://uthana.com/docs/api/capabilities/text-to-motion#text-to-motion-30)写 PAYG 全面开放，[GraphQL reference](https://uthana.com/docs/api/graphql#create_text_to_motion_job)仍写 limited release；公开准入口径冲突未消除，接入前核当前账户资格与实际返回模型，未获资格时保留已有可用路线。[一手／研究；2026-10-15 UTC+8]
+
+
 **撤回条件：** 有限重新生成／录制与程序修正后，仍必须刷权重、补画肢体或逐帧摆姿才能过关，就换资产、缩小动作或改变玩法。若完整现成动作已满足需求，不为使用 AI 而重新生成。[经验]
 
 **局限：本轮没有同题质量、零手修通过率或第二次修改成本实测；新版本和演示片不能证明完整发售管线。**[研究]
@@ -81,7 +84,7 @@ Unity 可🧪比较作者维护的 JLPM MotionMatching，但要承担同骨架 B
 
 ## 交互目标二改：先对位，再判断是否仍是同一个动作
 
-**✅ 源动作已有正确的支撑、腾空与抓握顺序，只是台阶高度／站位有变化时，先比较分段对位。** Unity `Animator.MatchTarget` 调整整个角色的位置／旋转，让指定 Avatar 部位在指定进度到位；UE Motion Warping 则在配置的窗口内修改 root motion。它们不是同一套参数，也不等于全程手脚约束。把修正放在合适的移动阶段，接触后再按需要保有限 IK；不要让预备时仍着地的角色提前滑向终点。[一手／研究：[Unity 6.3](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Animator.MatchTarget.html)、[UE](https://dev.epicgames.com/documentation/en-us/unreal-engine/motion-warping-in-unreal-engine)]
+**✅ 源动作已有正确的支撑、腾空与抓握顺序，只是台阶高度／站位有变化时，先比较分段对位。** Unity `Animator.MatchTarget` 调整整个角色的位置／旋转，让指定 Avatar 部位在指定进度到位；UE Motion Warping 则在配置的窗口内修改 root motion。Unity 仅支持 base layer、需开启 `applyRootMotion`，同时仅有一项匹配，手脚目标须顺序调度；先明确 motor／Animator 的位移所有权。它们不是同一套参数，也不等于全程手脚约束。把修正放在合适的移动阶段，接触后再按需要保有限 IK；不要让预备时仍着地的角色提前滑向终点。[一手／研究：[Unity 6.3](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Animator.MatchTarget.html)、[UE](https://dev.epicgames.com/documentation/en-us/unreal-engine/motion-warping-in-unreal-engine)]
 
 **✅ 时长改变时，让姿态采样与位移修正使用一致的动作进度。** 全局变速要同步位移窗口／结束时刻；局部提前抓握则重新定位对应窗口，不能只改总时长。按剩余 root 高度选择播放起点可减少手配曲线，但可能跳过蓄力与起手；只在当前姿态允许直接接入时用，不能把“更早站上台面”当作动作更自然。ALS 历史修复及原作者的这项取舍见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md#交互与时长补研分段对位和动作进度)。[一手／研究]
 

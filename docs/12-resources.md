@@ -1,91 +1,117 @@
 # 12 · 资源索引
 
-> 只收录读过、并且能说明“为什么值得看”的资源。核实时间：2026-10-05。
+> 外部资源基础核实时间：2026-10-05；后续调查各自标日期。2026-10-15（UTC+8）仅按主专题已有证据整理入口，未重核全部外链、版本或服务可用性。
 
-## 1. 一手信息源（优先级最高）
+## 30 秒结论：从问题进入，不从名单安装
 
-| 来源 | 为什么看 | 频率 |
+**✅ 先读对应主专题的条件判断，再沿其中的固定来源核对自己的版本与任务。** 本页帮助定位资料；收录、官方身份和社区热度都不是采用或效果证明。**[经验：阅读建议]**
+
+| 现在要决定什么 | 先读哪里 | 需要核对的原始来源 |
 |---|---|---|
-| [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)（[RSS](https://github.com/anthropics/claude-code/blob/main/feed.xml)） | 最快了解新功能；每个版本都有 | 每周 |
-| [Claude Code 文档](https://code.claude.com/docs)（[llms.txt 索引](https://code.claude.com/docs/llms.txt)） | 官方用法；llms.txt 方便让 Agent 直接读 | 按需 |
-| [Anthropic Engineering](https://www.anthropic.com/engineering) | 质量最高的 Agent 工程文章（上下文工程、长时任务、工具设计、auto mode、安全隔离、评估） | 每月 |
-| [openai/codex Releases](https://github.com/openai/codex/releases) 与源码 | Codex 更新；官方文档访问不了时可直接读源码 | 每周 |
-| [gemini-cli changelogs](https://github.com/google-gemini/gemini-cli/tree/main/docs/changelogs) | Gemini CLI 每周发布 | 每两周 |
-| [MCP 规范仓库](https://github.com/modelcontextprotocol/modelcontextprotocol)（`blog/`、`seps/`） | 规范演进、路线图 | 每月 |
-| [Agent Skills 规范](https://github.com/agentskills/agentskills) | Skill 格式与编写方法 | 按需 |
-| [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | 官方市场里新增了什么 | 每月 |
+| 指令没加载、上下文该增还是减 | [03 上下文](03-context-engineering.md) | 目标客户端加载文档、项目指令与研究原文；不从文件名或篇幅推断效果 |
+| 是否新增服务连接 | [04 MCP](04-mcp.md) | 客户端与服务端契约、源码和权限；已有 CLI／资料够用就不加 |
+| 是否加 Skill、插件或完整流程 | [05 Skills](05-skills-and-plugins.md)、[24 社区工作流](24-community-workflows.md) | 固定 Skill／插件配置、作者实际改动与反例；有能力缺口或有依据的质量目标才补最小环节 |
+| 是否增加评审或配置诊断 | [09 评审](09-review-and-quality.md) | 官方入口、实际报告与独立比较；已有检查够用就不叠加 |
+| 热帖是否足以支持换工具 | [11 社区](11-community-pulse.md) | 原帖、发布实现和实际任务结果；点赞和 issue 关闭不能代替采用证据 |
 
-### Anthropic 工程博客必读清单
-1. [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)：Agent 架构基础
-2. [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
-3. [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
-4. [Equipping agents with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
-5. [Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp) / [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use)
-6. [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) / [Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)
-7. [Building a C compiler with parallel Claudes](https://www.anthropic.com/engineering/building-c-compiler)
-8. [Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode) / [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)
-9. [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
-10. [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)
+**撤回条件**：来源缺少适用版本、任务结果或可核查工件时，退回线索，不据此安装、迁移或承诺收益；新增环节没有补上缺口，或等待、失败与人工处理超过收益时，按主专题缩减或撤回。历史实测的范围以原记录为准，不自动代表当前模型。**[经验：采用边界]**
 
-## 1.5 技术社区与一线博客（了解“真正好用什么”）
+## 1. 官方来源：核对用法与实现
 
-| 来源 | 为什么看 | 怎么读 |
-|---|---|---|
-| **[Simon Willison 的博客](https://simonwillison.net)** | 最勤奋、最可信的一线实践者：新模型首日评测、价格对比、安全问题（“致命三要素”就是他提出的）、年度复盘 | [Atom 订阅](https://simonwillison.net/atom/everything/)；必读：[Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/)、[2026 in LLMs](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/) |
-| **Hacker News** | 新工具和新模型的第一反应，评论区常有一线实测 | 用 Algolia API 按热度和时间筛选：`https://hn.algolia.com/api/v1/search?query=claude%20code&tags=story&numericFilters=points>150` |
-| **[Lobsters](https://lobste.rs/t/ai)** | 比 HN 更偏技术、更冷静，常有对 AI 编程的批判性讨论 | 在 `.json` 结尾的地址拿结构化数据 |
-| **[Latent Space](https://www.latent.space)** | AI 工程领域最重要的播客和日报（AINews）；常有厂商核心成员的访谈 | [RSS](https://www.latent.space/feed) |
-| **[Embrace The Red](https://embracethered.com)** | Agent 安全攻防的一线研究（提示注入、auto mode 绕过） | 重大发布后看 |
-| **[METR](https://metr.org/blog/)** | 关于 AI 生产力和能力的最严谨研究 | 每月 |
-| **V2EX、知乎、掘金、linux.do** | 中文社区的实际痛点：封号、额度、国产模型接入、团队协作 | V2EX 有公开 API（`/api/topics/show.json?node_name=claude`）；linux.do 拦截机房 IP |
-| Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA） | 用户量最大，适合看问题的普遍程度 | 拦截机房 IP，需要在本地浏览器看 |
+下表是查证入口，事实判断仍须定位到具体文档、版本或源码。**[一手：来源入口；经验：使用范围]**
 
-## 2. 精选清单
-
-| 清单 | 说明 |
+| 来源 | 什么时候读 |
 |---|---|
-| [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | 人工精选，分类清晰（入门、编排、Skills、记忆、安全、可观测性、配置、测试、Linting）；仓库里的 CSV 文件便于检索 |
-| [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | 300+ 个 Skills，来自官方团队和社区 |
-| [VoltAgent/awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) | 160+ 个 Subagent 定义 |
-| [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) | MCP 服务器大全 |
-| [openai/codex Discussion #16329](https://github.com/openai/codex/discussions/16329) | Codex 生态 150+ 个工具 |
+| [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)（[RSS](https://github.com/anthropics/claude-code/blob/main/feed.xml)） | 升级或排查版本差异，追到变更影响的官方文档 |
+| [Claude Code 文档](https://code.claude.com/docs)（[llms.txt 索引](https://code.claude.com/docs/llms.txt)） | 核对加载、命令、权限与调用入口 |
+| [Anthropic Engineering](https://www.anthropic.com/engineering) | 研究上下文、工具、长程任务、安全或评估机制；文章案例不直接证明自己的收益 |
+| [openai/codex Releases](https://github.com/openai/codex/releases) 与源码 | 核对发行行为；文档不足时追对应版本实现 |
+| [gemini-cli changelogs](https://github.com/google-gemini/gemini-cli/tree/main/docs/changelogs) | 使用 Gemini CLI 且遇到版本相关问题时 |
+| [MCP 规范仓库](https://github.com/modelcontextprotocol/modelcontextprotocol) | 核对协议契约与提案；再确认目标客户端／服务端是否实现 |
+| [Agent Skills 规范](https://github.com/agentskills/agentskills) | 核对格式；触发与权限另查目标宿主 |
+| [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | 已有明确组件需求时核对插件来源与内容；官方收录不代替权限审查 |
 
-## 3. 入门与深入
+### Anthropic 工程文章：按问题选读
 
-| 资源 | 说明 |
+以下为作者的一手设计说明或案例，不是通用效果排名。**[一手：作者原文]**
+
+1. 架构取舍：[Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
+2. 上下文选择：[Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+3. 工具接口：[Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
+4. Skill 配方：[Equipping agents with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+5. 工具调用与过滤：[Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp) / [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use)
+6. 长程任务：[Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) / [Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+7. 并行案例：[Building a C compiler with parallel Claudes](https://www.anthropic.com/engineering/building-c-compiler)
+8. 权限与隔离：[Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode) / [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)
+9. 评估：[Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
+10. 多 Agent 案例：[Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)
+
+## 1.5 社区与研究：找任务、结果和反例
+
+**✅ 按当前问题检索，再追原始材料。** 作者自述、受控研究和用户评论分别看；没有任务与用户分母的讨论不能用来估计问题普遍程度。采用判断见 [11](11-community-pulse.md) 与 [24](24-community-workflows.md)。**[经验：阅读建议]**
+
+| 来源 | 用途与读法 |
 |---|---|
-| [Writing a good CLAUDE.md（HumanLayer）](https://www.humanlayer.dev/blog/writing-a-good-claude-md) | “指令预算”、渐进式披露 |
-| [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) | 拆解 Coding Agent 的组成，理解原理 |
-| [zebbern/claude-code-guide](https://github.com/zebbern/claude-code-guide) | 单页速查，与官方文档同步 |
-| [obra/superpowers](https://github.com/obra/superpowers) | 一整套 Skill 化的开发方法论，值得读它的 Skill 是怎么写的 |
-| [Martin Fowler：Exploring Gen AI 系列](https://martinfowler.com/articles/exploring-gen-ai.html) | 对 SDD 等方法的冷静分析 |
+| [Simon Willison 的博客](https://simonwillison.net) | 查具体实践与可复核产物；[Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/) 和 [2026 年阶段回顾](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)作入口，结论追到项目与运行记录 **[社区：作者经验]** |
+| [Hacker News](https://news.ycombinator.com/) | 按工具、问题和版本找原帖及反例，不设点赞门槛；[Algolia 查询示例](https://hn.algolia.com/api/v1/search?query=claude%20code&tags=story)只用于定位，再读正文和评论 **[社区]** |
+| [Lobsters](https://lobste.rs/t/ai) | 寻找具体技术讨论与不同意见，核对评论指向的原文 **[社区]** |
+| [Latent Space](https://www.latent.space) | 访谈作为作者观点与项目线索；能力和价格回官方来源核对 **[社区／二手]** |
+| [Embrace The Red](https://embracethered.com) | 安全研究追攻击条件、版本和修复，单例不推总体发生率 **[一手：研究者报告]** |
+| [METR](https://metr.org/blog/) | 读原始研究的方法、样本与局限；不同任务和模型不能直接外推，相关判断见 [09](09-review-and-quality.md) **[研究]** |
+| V2EX、知乎、掘金、linux.do、Reddit | 发现额度、接入与协作问题；保存具体原帖和版本，不按用户量或热度判定共识。访问受限时记录缺口，不把摘要当原帖 **[社区；经验：读取边界]** |
 
-## 4. 实用小工具
+## 2. 清单只用于定位候选
 
-| 工具 | 用途 |
+**👀 已确定缺什么，再搜索以下目录；不因收录量、star 或市场身份安装整套配置。** 候选须回到原仓库核对用途、许可、权限与维护情况，再按 [04](04-mcp.md)、[05](05-skills-and-plugins.md) 判断。**[经验：候选筛选]**
+
+| 索引 | 用来找什么 |
 |---|---|
-| [ccusage](https://github.com/ccusage/ccusage) | `npx ccusage`：分析 Claude Code 本地日志里的用量和成本 |
-| [rulesync](https://github.com/dyoshikawa/rulesync) | 用一份源配置生成多种 Agent 的规则、MCP、命令配置 |
-| [agnix](https://github.com/agent-sh/agnix) | CLAUDE.md、AGENTS.md、SKILL.md、hooks、MCP 配置的 linter 和 LSP |
-| [claude-code-otel](https://github.com/ColeMurray/claude-code-otel) | 用 OpenTelemetry 加 Grafana 观测 Claude Code |
-| [Plannotator](https://github.com/backnotprop/plannotator) | 在图形界面里批注 Plan 模式的计划 |
+| [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | Claude Code 的分类资源 |
+| [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | Skill 候选 |
+| [VoltAgent/awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) | 子 Agent 定义示例 |
+| [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) | MCP 服务候选 |
+| [openai/codex Discussion #16329](https://github.com/openai/codex/discussions/16329) | Codex 社区工具线索 |
 
-## 5. 如何持续跟进
+## 3. 入门与深入：阅读不等于采用
 
-1. **每周**：看 Claude Code、Codex 的 changelog，把重要变化记进对应文档。
-2. **每月**：读 Anthropic 工程博客的新文章，看 MCP 规范仓库的博客，浏览官方插件市场新增的插件。
-3. **发现新东西**：先记进下面的“待验证”，验证后再写进正文。
-4. **每季度**：重跑私有评估集，审视自己的配置（`/doctor prompt-audit`、`/skill-doctor`），删掉过时内容。
+| 资源 | 什么时候值得读 |
+|---|---|
+| [Writing a good CLAUDE.md（HumanLayer）](https://www.humanlayer.dev/blog/writing-a-good-claude-md) | 需要整理项目指令时，结合 [03](03-context-engineering.md) 的加载和效果边界看 **[社区：作者经验]** |
+| [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) | 想理解 Coding Agent 的组成时读实现；教学实现不等于生产配置 **[一手：项目源码]** |
+| [zebbern/claude-code-guide](https://github.com/zebbern/claude-code-guide) | 查用法线索；命令和版本回官方文档确认 **[社区]** |
+| [obra/superpowers](https://github.com/obra/superpowers) | 研究 Skill 衔接；先读 [24](24-community-workflows.md#2-superpowers重点看-skill-之间怎样衔接) 的采用条件与失败案例，不默认全局强制 **[一手：项目配置；经验：采用边界]** |
+| [Martin Fowler：Exploring Gen AI 系列](https://martinfowler.com/articles/exploring-gen-ai.html) | 比较规格与开发流程的不同取舍，回自己的任务判断 **[社区：作者分析]** |
 
-## 5.5 本轮直接读取的项目与实践（2026-10-10）
+## 4. 需要额外工具时，先回主专题
 
-本轮研究入口与固定来源见 [24 社区工作流](24-community-workflows.md)：Superpowers、Matt Pocock Skills、HumanLayer、Pi、Aider、OpenHands、Spec Kit；另读取了 Superpowers 的失败 Issue、Pi 使用者 Discussion、BAML 与 Ghostty 的公开 PR。按“具体做法—证据—限制—怎样试”整理，而不按 star 排名。
+以下替代安装清单；未在主专题形成条件判断的工具，不在本页新增推荐。**[经验：入口边界]**
+
+| 具体问题 | 条件入口 |
+|---|---|
+| 多种 Agent 的配置重复维护 | 先按 [03 §2.1](03-context-engineering.md#21-各工具的加载规则一手)确认实际加载；确需多工具生成配置时再评估 rulesync，生成成功不等于客户端已加载 |
+| 指令冲突、上下文负担或 Skill 调用异常 | 先核实际加载内容，再用目标宿主可用的诊断入口，见 [09 检查清单](09-review-and-quality.md#4-实践清单)；诊断不证明效果，不默认安装额外 linter |
+| 不清楚费用为何增加 | 先核计费口径、额度与任务成本，见 [02 成本控制](02-models-and-cost.md#3-订阅额度与成本控制)；本页不默认执行日志分析工具或增加观测栈 |
+| 计划或评审没有暴露实现问题 | 先按 [09](09-review-and-quality.md) 和 [24](24-community-workflows.md#4-humanlayer从研究与计划到把人的评审重新放回来) 检查证据与接口假设；需要的是可验证反馈，不因存在图形工具就加一层 |
+
+## 5. 什么变化值得继续跟进
+
+1. **升级或遇到具体阻塞时**：核对目标版本的 changelog、文档与实现；只把改变采用、使用或撤回判断的变化写入对应主专题，动态入口见 [13 前沿雷达](13-frontier-radar.md)。
+2. **发现新文章、工具或帖子时**：先问它改变哪项选择。只有名称、宣传或热度的材料不进入推荐；有具体未解问题才保留待验证入口。
+3. **配置事实变化或出现失败反例时**：复核实际加载与结果，按 [03](03-context-engineering.md) 和 [09](09-review-and-quality.md#3-给自己的-ai-配置做评估) 决定保留、缩减或撤回；少用不等于无用，定期检查不等于定期加新闻或插件。
+
+以上为维护建议，不改变下列历史研究的日期和验证范围。**[经验：维护边界]**
+
+## 5.5 历史调查入口（2026-10-10）
+
+2026-10-10 调查的入口与固定来源见 [24 社区工作流](24-community-workflows.md)：Superpowers、Matt Pocock Skills、HumanLayer、Pi、Aider、OpenHands、Spec Kit；另读取了 Superpowers 的失败 Issue、Pi 使用者 Discussion、BAML 与 Ghostty 的公开 PR。按“具体做法—证据—限制—怎样试”整理，而不按 star 排名。
 
 官方规范和运行时补核见 [来源记录](research/2026-10-10-audit.md)：Claude Code 2.1.295–296、Agent Skills、Gemini 行为评估和记忆、Codex app-server、MCP 2026-07-28、Python Agent SDK、Playwright MCP。
 
 **本轮以文档/源码调查为主**；pi-trim 另做了离线检查及数据复算，没有模型效果重跑。研究现以 Codex 为主、Claude Code 为辅，其他项目提取思想；下一步见 [长期队列 R15](research/BACKLOG.md)。本轮 HN、Lobsters 网络受限，历史读取记录不作为本轮新证据。
 
-## 6. 待验证（Backlog）
+## 6. 历史读取记录与待验证线索
+
+以下保留各次调查的范围；“本轮”“已完成”指所在条目的历史日期，不代表本次入口编辑重新读取或执行。待验证项不是当前推荐、最新状态或执行承诺；当前取舍先看主专题，后续候选见 [研究队列](research/BACKLOG.md)。
 
 - [x] **2026-10-13 SlopCodeBench 测量边界**：读固定官方 runner／题库和第三方审计，独立复核 Regression 分类、规格／反馈可见性，局部执行工作区复制函数及错误顺序断言。✅ 采用连续需求和失败转换分析，不据汇总榜选择 effort；[记录](research/2026-10-13-slopcodebench.md)包含固定链接、未取得的原始产物与未运行范围。**[一手；社区；经验：局部实测]**
 

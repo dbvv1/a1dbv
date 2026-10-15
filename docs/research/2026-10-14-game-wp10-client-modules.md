@@ -1,10 +1,10 @@
 主线：一／二／三／四；客户端体验、验证选择、第二次修改与交付
-改变的建议：[研究] 默认复用引擎成熟组件，仅补所有权、退出和迁移规则；输入、运动、首发／呈现、粒子预算、菜单、存档、本地化、音频与时域画面分别按动作质量验收；game02 按待证事实选观察，不预建验证阶梯
-新证据：[一手／社区] 固定源码、官方契约／问题及开发者复盘；补输入后端、暂停时钟与截图降噪边界，重读笼子退出案例，补像素量化、信号优先级与呈现设置的玩法信息边界，以及 Thrive 旧报告保存／重译路径和原生文本转换合同；新增 Factorio 粒子因果、Vercidium 固定样例与两引擎模拟／绘制取舍；未做引擎、设备或玩家实测，不能推出性能排名、AI 成功率或体验收益
+改变的建议：[研究] 默认复用引擎成熟组件，仅补所有权、退出和迁移规则；输入、运动、首发／呈现、粒子预算、菜单、存档、本地化、音频与时域画面分别按动作质量验收；game02 按待证事实选观察，不预建验证阶梯；长文按已承诺输入路径读完，字体默认值可撤回但语言发行门槛不降低；动作已执行的卡角先查空间表达，再按动作选择局部纠偏；镜头变化先选择听点位置、朝向与速度，再调声音衰减
+新证据：[一手／社区] 固定源码、官方契约／问题及开发者复盘；补输入后端、暂停时钟与截图降噪边界，重读笼子退出案例，补像素量化、信号优先级与呈现设置的玩法信息边界，以及 Thrive 旧报告保存／重译路径和原生文本转换合同；新增 Factorio 粒子因果、Vercidium 固定样例与两引擎模拟／绘制取舍；补 Stardew Valley 字体回退、Factorio 长 tooltip 与 Thrive 字体配置链；新增 Factorio 地形通行复盘、Celeste 固定纠偏与后续危险条件修订、Mina 排出维护反例；新增 Factorio 视口听点与远程视图多普勒修复、Overgrowth 固定听点调用链及 NieR 角色附近听点反例；未做引擎、设备或玩家实测，不能推出性能排名、AI 成功率或体验收益
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
-证据核实：2026-10-13—14 UTC，各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。各轮均未安装付费插件或开展引擎、模型、设备、玩家实测；源码与作者数据不等于本项目复现。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
+证据核实：2026-10-13—15 UTC，各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。各轮均未安装付费插件或开展引擎、模型、设备、玩家实测；源码与作者数据不等于本项目复现。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
 
 **[研究] ✅ 默认复用成熟组件；仅补项目缺少的所有权、迁移和模式切换规则。** 先验场景取消、释放、旧档、暂停与设备峰值，再决定是否加框架；无同任务实测，不作质量／性能排名。
 
@@ -595,6 +595,48 @@
 
 本轮是固定源码／官方正文静态核查，无引擎运行、存档往返或语言审校实测；案例支持表示与更新责任的选择，不证明所有系统消息都应永久保存或引入新框架。[研究]
 
+### 6. 新增语言的显示、编辑和布局不能互相代验
+
+核实：2026-10-15 UTC+8；主线三／四。新增证据为 Unity 6.3 的方向／光标契约、UE 当前 5.8 文档、RTLTMPro 固定源码及历史二改反馈、Mindustry 历史输入报告与另一作者的 poRTL 字幕实现。改变的选择是：已有原生塑形先用原生，现有 TMP 只为具体缺口试现成组件；动态混排不能靠静态倒序与单张截图验收。不重做前述字库优化、消息保存或菜单输入路由。[研究]
+
+**原生能力不等于开一个 RTL 开关。** [一手] Unity 6.3 [language-direction](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/language-direction.html)明确 RTL 属性仅提供基础反转；完整断行、换行与塑形需要 [ATG](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-advanced-text-generator.html)，后者采用 HarfBuzz、ICU 和 FreeType。启用及静态字体迁移条件沿用本节第 3 小节；不把 UI Toolkit 能力扩写成 uGUI／TMP 能力。[光标契约](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/cursor-movement.html)采用 logical movement：英阿混排时按段方向走，跨段可能跳到另一视觉位置。这与 visual movement 是不同政策，不应单凭跳转判错；编辑后实际删改了哪个逻辑字符仍须验证。
+
+[一手] UE [UMG Rich Text Block](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-rich-text-blocks-in-unreal-engine)当前显示 5.8，分别提供 shaping、text flow、Force Direction Preference 和 navigation；[ETextShapingMethod](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/SlateCore/ETextShapingMethod?lang=en-US)列 Auto／KerningOnly／FullShaping，FullShaping 用于复杂 RTL／双向字形。采用原生完整塑形与布局方向，不为普通本地化先加外部渲染器；字体资产的文化切换与任意用户文字边界仍按第 3 小节的 composite font 建议。文档没有保证自定义控件和显式导航会随方向全部正确；地图方向、玩法箭头不能仅因语言改变就一概镜像。[研究]
+
+**已有 TMP 的窄候选与反证。** [一手] 本次静读 `pnarimani/RTLTMPro@f480419bbbffed1be3c129d68cc0182afcfbcac3`（提交日期 2026-04-29）：
+
+- [README](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/README.md)声明 Arabic／Farsi／Hebrew、输入框和富文本支持，并要求字体含相应字符；同时说明 ForceFix 用于强制处理以英文开头的文本，却会影响多行英文。不能只引用功能列表，漏掉同页限定。
+- [RTLTextMeshPro.cs](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/Assets/RTLTMPro/Scripts/Runtime/RTLTextMeshPro.cs#L106-L131)保留 originalText，按 ForceFix／IsRTLInput 选择原文或处理结果；处理路径调用 FixRTL、Reverse，再赋给 TMP。这里是已有渲染器上的适配组件，不是覆盖任意语言与布局的通用排版引擎；并未运行它的输入框或测试套件。
+- [#70 原帖](https://github.com/pnarimani/RTLTMPro/issues/70)中，2021-06-01 使用者先报告 fork 可用，06-23 缩放文本区域后又报告混合文本换行问题；维护者解释当时插件缺少 TMP 内部自动断行位置。**这是历史“首次成功→布局修改后失败”链，不是当前固定提交仍有同一缺陷的证明。** 当前 README 的多行支持声明与历史混排限制不能互相抹掉，后续须测所用版本与实际内容。[一手／研究]
+
+[研究] 🧪 仅对已有 TMP 且确有目标语言缺口的页面试 RTLTMPro，先核字符串绑定是否写入正确组件、富文本／数字政策和动态布局；🧪 已采用 UI Toolkit 的项目先比较 ATG。两者均不值得仅为宣传的语言数量迁移整套菜单。RTLTMPro 固定 [MIT 许可](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/LICENSE)允许带通知复用软件；实际字体、演示资源及所接 TMP 版本另核，不把仓库许可当字体商用证明。README 指向另一维护者的 UPM 分支，本次没有验证其与固定源码的版本等价，接入时须锁定实际包。
+
+**不同作者的游戏反例只支持具体机制。**
+
+- [社区：原报告] Mindustry [#2248](https://github.com/Anuken/Mindustry/issues/2248)记录 Linux build 104 将 back 替换为波斯文字后按钮无文字；[#1943](https://github.com/Anuken/Mindustry/issues/1943)记录 Steam/release 104.10 韩文输入组合末字不可见。它们分别提示显示与输入组合的不同失败，不证明当前 Mindustry 仍坏，也不把报告中的原因猜测写成已确认根因。字体存在或菜单译文正常不能代验玩家实际输入。[研究]
+- [一手：作者说明／源码] `sigmagamma/portl@8a9cc38eee4eec3bc763bf101cc5c444d5060db1`（提交日期 2026-09-04）的 [README](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/README.md)描述 Portal 等 Source 游戏的粉丝翻译；Portal 1 右对齐路径限定 Windows 字体映射及已试的 1366×768，未测试其他尺寸。[text_tools.py](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/src/text_tools.py)调用 arabic_reshaper／bidi，并按配置字符数处理行。固定 [MIT](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/LICENSE)仅支持软件许可判断，不开放游戏资产；未安装补丁或复核实际字幕。这个受限旧游戏补救不能外推为新游戏的动态文字／可编辑输入框方案，更不推荐照搬其系统字体改动。[研究]
+
+**后续只预注册，收窄到一个会失败的真实页面。** [研究] 在已有设置／名字输入页先用原生：目标语言句子混入拉丁玩家名、数字与富文本，再缩窄窗口和放大文字；观察塑形、换行、标点／省略号、选中删除及输入组合提交，最后按已承诺支持的输入方式进入、确认、返回；承诺手柄支持时才包含手柄路径。第二次修改将短标签变为带变量的长说明，检查实际焦点与点击目标，不以缩小到不可读的字号换取“不溢出”。UI Toolkit 的文字方向不代验整体控件布局；UE 方向偏好也不代验显式导航。
+
+[研究] AI 可查配置、准备文本与控件回归，人或目标语言读者判断真实字号下是否可读、编辑是否可理解。原生已满足就停止加库；现成适配仍需大量逐字符串／逐宽度补丁，或关键页面不可读／不可操作，则暂缓该语言而非自建排版框架。保留原始逻辑文字及未改组件以便撤回；不把已塑形、已倒序的显示结果反写到翻译表／玩家名字。以上是静读后的采用条件，无新引擎、母语用户或目标设备实验。
+
+### 7. 完整长文可达性与字体默认值的撤回
+
+核实：2026-10-15 UTC；主线三／四。改变建议：从字库覆盖、伸缩布局与菜单可导航，补到实际字体／字号与已承诺输入方式下能读完决策信息；已有布局可靠才优先保留，字体替换可以撤回默认。以下是公开发布说明、作者机制说明与固定资源静读，不是阅读质量或设备实测。[研究]
+
+**不同作者的机制与反例。**
+
+- [一手] Stardew Valley [1.6.6 官方说明](https://www.stardewvalley.net/stardew-valley-1-6-6-full-patch-notes/)分别记录中文文本回到 1.6.3、默认字体恢复原字体、1.6.4 的 smooth font 留作选项、中文对话增加字号滑条，并保留俄文旧字体选项。它支持撤回新默认、不必撤回语言；不能据此把翻译回退归因于字体，或断言旧字体适合所有玩家。[研究] [官方论坛原帖 #24／#25](https://forums.stardewvalley.net/threads/simplified-chinese-typo-display-text-errors.20921/page-2)区分字体外观与整段阅读的拥挤感，只是具体玩家反馈，不是总体偏好或正式实验。[社区]
+- [一手] Stardew Valley [1.6 官方更新记录](https://www.stardewvalley.net/stardew-valley-1-6-update-full-changelog/)把动物商店中被 tooltip 遮住的价格也放入 tooltip，并改进 perfection tracker 按屏幕大小分页、修复高级建档选项 tooltip 超出屏幕及 resize 时背包／制作菜单错位。这些具体修复说明信息是否可读、可用于决定，不能由字形存在或面板尺寸单独代验。[研究]
+- [一手] Factorio [FFF370](https://www.factorio.com/blog/post/fff-370)为避免重做数百个仍在变化的 GUI，主要沿用布局，以控件及父级的边界／位置等推导手柄导航，并为高频快速栏新增 Quick panel；自定义控件仍需处理。它支持保留可靠布局、局部补交互的选择，不要求其他游戏重写几何导航。[研究] [2.0.44 官方说明](https://forums.factorio.com/viewtopic.php?t=128050)只给固定在屏幕右侧的过高 tooltip 增加滚动，默认 Shift＋滚轮；不证明所有 tooltip 或手柄路径可读。官方 [Controls 表](https://wiki.factorio.com/Controls)的 scroll-tooltip-up/down 控制器默认值为 Not set，但上下滚轮文字有疑似重复，本轮不据此判断当前游戏绝对无法手柄滚动。[一手／研究]
+- [一手] Thrive 沿用固定提交 `eceb8011d5e86b19dfa75de9e55eee6815fd1450`：[style guide L668–679](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/doc/style_guide.md#L668-L679)要求复用 LabelSettings，并提醒按钮覆盖指向合适字体，包括中文 fallback。[Body-Bold-Normal.tres](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/gui_common/fonts/Body-Bold-Normal.tres)引用 Lato-Bold.ttf、字号 20；[导入资源](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/Lato-Bold.ttf.import)再指向 NotoSans-Bold 变体并允许系统 fallback；[变体资源](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/variants/NotoSans-Bold.tres)以 NotoSans-Variable 为 base，包含 Emoji、简繁中文、希伯来与泰文等 fallback，中文项实际为 Regular。因此不能说直接引用 ttf 必然缺 fallback，也不能凭 Bold 文件名推断所有文字同粗。[研究]
+
+**采用与撤回。** [研究] ✅ 新页面及局部覆盖复用项目已有完整字体／样式资源链，不让第二页“修字号”复制出缺配置的字体。已有布局可靠时优先保留，短标签合理伸缩，长说明优先现有分页、滚动或详情入口；影响购买／技能选择的条件、数值、代价不能只藏在鼠标 hover 或省略号之后。🧪 完整段落确实更难读时撤回新字体默认，或在维护成本可接受时保留已验证的样式选项；不要求所有游戏新增字体选择器／独立字号滑条。回退仍不可读或不可操作时，上一节暂缓该语言发行的门槛不变。
+
+**后续只预注册。** [研究] 在既有商店／技能详情页将短说明改为含混合名字和数值的长说明，采用目标语言实际 fallback、既有字号选项与最小支持窗口。逐一使用已承诺输入方式读到最后一项代价，确认对应项后返回；承诺支持手柄才验手柄，不新增双输入要求。仅直接调用回调、键鼠滚动或焦点单项通过都不代验完整路径。混排、选中删除、逻辑光标政策仍按上一节。AI 排查样式引用和准备路径，人或目标语言读者判断整段阅读与操作负担；只有真实路径失败才改行距／布局、回退默认或补分页／详情，不先重写整个导航和字体系统。
+
+本轮未运行引擎、游戏、字体解析／渲染、手柄或 UI 自动化，未测性能、玩家收益及当前版本全设备行为。Godot 的 LabelSettings 不硬译为 Unity／UE API；可迁移的是配置复用与任务验证选择。字体各自授权仍需另核，本轮只总结公开机制、不复制或推荐发行这些字体文件。Factorio 控制器 mod guide 正文未能读取，不采用搜索摘要为主证。[研究]
+
 ## 音频并发补研：保住起音不等于保住每次提示
 
 核实：2026-10-14 UTC。主线 3；Mindustry v154 及锁定 Arc／SoLoud 的静态源码表明，04 的并发上限须拆成入口合并、同组抢占与全局竞争；提高 priority 不保证提示进入播放。[一手／研究]
@@ -826,3 +868,81 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 [研究] 先记录最低设备、分辨率、帧率与可用显存／内存；既有遭遇的整体帧预算不能重复分给每个效果。不设置通用粒子数。后续获准后，在目标构建分别观察：少量大透明片、许多小效果实例、同效果离屏再入屏；看 CPU 更新／实例开销、GPU 绘制时间、关键提示及尾部消失，不用编辑器单效果预览代替整场遭遇。
 
 [研究] 二改新增“可点燃地面的碎片”：让 AI 检查伤害／地形写入是否依赖可被裁剪的视觉回调；规则由玩法层执行，外观从结果产生。在低档／离屏仍应保持相同规则，必要的可见危险边界不能随装饰额度消失。试用前保留原效果与预算配置，便于撤回 GPU 迁移或更激进裁剪；若规则已与表现绑定，先分离这项依赖而非另建特效框架。未运行引擎、性能采样或玩家验证。
+
+
+## 空间容错补研：动作已开始却卡在边角
+
+核实：2026-10-15 UTC。主线一／三；补 04 的窄选择：输入已经接受，动作仍被视觉上微小的边角打断时，改碰撞表达还是增加局部纠偏。已有时间缓冲、坡阶／平台、像素量化与足锁不替代这一决定；通用判断只在 04 维护，不新增运动框架。[研究]
+
+### 两种玩法的作者证据：局部补偿不是统一缩小碰撞体
+
+- **俯视建造／探索，Factorio。** [一手：作者历史解释] [FFF346（2020-05-08）](https://www.factorio.com/blog/post/fff-346)说明岸线过渡画面使旧矩形碰撞像无形墙，作者改为按玩家位置与过渡形状处理地形通行，并容许敌人不能通过同样路径。后续加玩家专用参数时，造地后的安全检查仍按整包围盒判断，将合法站位误认为落水而在脚下造地。作者说明同问题曾修过却没有补测试，也提示更早历史的回忆可能不准确。[研究] 需要协调的是各调用对该角色政策的理解，不是让所有实体共用同一通行规则；不把作者自述当当前引擎源码审计。
+- **精确平台，Celeste。** [一手：作者说明] [Celeste & Forgiveness](https://maddymakesgames.com/articles/celeste_and_forgiveness/index.html)分别描述上升顶角侧挪、水平冲刺上缘修正与半实心平台上推；这些定位容错与短期输入缓冲并列。[研究] 只借“按具体动作扩大可接受的微小误差”，不能从单个游戏推出所有动作都应纠偏，或照搬像素距离；没有受控体验收益。
+
+### 固定实现与后续修订：没有墙，不等于可安全纠偏
+
+[一手：源码静读] `NoelFB/Celeste@1b0ce45c75e05649ae91b44a8bb6b196684e4352`：
+
+- [Player.cs L2399–2422](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/Source/Player/Player.cs#L2399-L2422)的水平碰撞纠偏限于 Dash／RedDash 及纯水平速度分支，按有限偏移距离试上下位置，无 Solid 后调用 `MoveVExact`／`MoveHExact`；着地可蹲下分支优先。
+- [L2582–2613](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/Source/Player/Player.cs#L2582-L2613)的上升顶角修正按水平速度符号选择左右，找到无 Solid 点后直接改位置。[研究] 两条应用路径也不同，不能从字段名抽成一个通用“纠偏半径”；本轮只审公开 Player 类，不声称审完商用游戏全部碰撞回调。
+
+[一手：官方历史反证] [V1.4.0.0 changelog](https://www.celestegame.com/changelog.html)明确记录冲刺角与单向平台顶部有刺时不做对应修正、检查改用 hurtbox、禁止向带刺地面下修。固定旧分支不包含这些后来明确补充的条件。[研究] ✅ 借状态限定与有限搜索机制，⛔ 不把旧分支原样当完成方案；按本项目检查危险、经过路径、落点与通行政策。不能将历史修复写成当前仍有缺陷，也不能推断所有顶角修正都遵循完全相同的危险条件。
+
+[一手：许可] 已读同 SHA 的 [README](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/README.md)和 [MIT LICENSE](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/LICENSE)：许可只覆盖仓库代码，不含商业游戏／资产。它是可读学习片段，不是 Unity／UE 即插即用控制器；本节未复制代码。其他作者网页不授予其游戏资产复用权。
+
+### 代价与另一个作者的维护反例
+
+[一手：作者历史报告] [FFF344（2020-04-24）](https://www.factorio.com/blog/post/fff-344)记录给 mod 单位启用地形过渡碰撞后，抽象寻路未支持而崩溃，先撤回、后补支持。是否给敌人启用还涉及已有防御策略与额外计算；文中约5%是历史粗测，不预测本项目成本。[研究] 空间补偿不是仅修改每帧碰撞，多种实体与世界修改路径会扩维护面，允许不同规则也须明确调用范围。
+
+[一手：官方修复] [Mina the Hollower 更新页](https://www.yachtclubgames.com/blog/mina-the-hollower-update-notes/)页头为2026-06-26；其1.0.5记录缩小 Spark 排出检查框以免轻微重叠就排出，并排除箱子、雪球、可移动／可破坏物。1.0.6记录钓竿跳跃落到 speed bump 后卡在墙排出过程，并调整 fishing wall ejection 的位置偏好。各版本没有在该段给出独立发布日期，不把页头日期当所有修复发布日期。
+
+[研究] Spark 是另一对象，不能冒称前述修复全是玩家控制，也不能把已重叠位置的排出等同 Celeste 的动作容错。此来源只反证通用自动挪位的范围：对象类别、动作与目标偏好仍需维护，不证明哪种算法更好。正文不再堆第三案例。
+
+### 最小采用、撤回与第二次修改
+
+[研究] ✅ 显示轮廓误导时先校准碰撞或关卡边界；🧪 明确要宽容微小定位误差时，沿现有运动所有者补有界、状态限定的纠偏，不另造位置写入者或自动寻路。精确卡位／窄缝本身是挑战时可保留阻挡，只改善表达。若更顺滑来自穿过本应阻挡的路线、误入危险或不断添加逐房豁免，就收窄规则，必要时改空间；不一律扩大搜索或缩小身体。
+
+[研究] 仅预注册项目适用的一种二改：平台游戏加带危险边缘的移动平台，或俯视玩法加可放置地形／障碍。比较原规则、空间表达修正、局部纠偏；在动作接受时间不变时看最终位置、触发分支、危险结果及是否仍沿玩家选择的路线。回查旧普通角、两侧都能通过、单向／动态障碍，以及重开或放置后的合法位置。敌我有意不同时按各自承诺判断，不用“路径完全一致”作为目标。
+
+[研究] AI 可追移动、放置／脱困调用与状态分支，准备相同输入回归；人决定哪些近失误应被宽容、哪些路线与风险必须保留。只增加有限查询也不保证比关卡修改更便宜，需在后续阶段记录新增内容的维护成本。
+
+**实际验证范围：** 公开作者原文、官方补丁与固定源码／许可静读；未播放嵌入视频、运行游戏、Unity／UE、模型或玩家实验，未测可控性、最佳偏移或 AI 净收益。结论不依赖引擎专有 API，不给两引擎编造等价配置。
+
+## 听点补比：镜头改变时从哪里听
+
+核实：2026-10-15 UTC。[研究] 本节补运行时世界声的听点选择；既有持续声章节讨论可听范围与恢复，音频资产页讨论音乐选曲／切换，05讨论取景与相机历史，均不能代替这个选择。只补现有音频配置，不新增监听管理框架。
+
+### 视口与角色附近都有成立的条件
+
+| 依据与证据等级 | 可改变的选择 | 反例与边界 |
+|---|---|---|
+| [一手] Factorio 作者在 [FFF-332](https://www.factorio.com/blog/post/fff-332)（2020-01-31）说明默认听点移到屏幕中心，便于地图视图，并调整缩放／衰减 | [研究] 管理或远程操作可优先让正在操作的视图有声音，而非固定在角色身体 | 身体附近的声音也可能因此变远；不能把管理游戏经验泛化成近身动作的默认值，也不能由旧博客推断当前全部参数 |
+| [一手] NieR:Automata 开发者在[声学说明 Part 2](https://www.platinumgames.com/official-blog/article/10027)（2019-01-18）说明，多种视角下默认把听点放在角色附近；舞台等场景另改听点，并对交接作插值 | [研究] 镜头经常拉远／换视角而交互仍围绕身体时，可先保持近身声音稳定；远处演出再局部交接 | 这是非独立游戏的相反选择，只反证“听点必随相机”。不推荐单人复制其 Wwise 工程、多套预设或制作规模；远处展示仍可能需要例外 |
+
+[一手] Factorio 官方 [2.1.21 更新](https://forums.factorio.com/viewtopic.php?p=705355)（2026-10-06）又修复了退出 remote view 时过强的多普勒效应。该完整公告证明视图交接确实有后续维护成本，没有公开这里的修复算法，不能声称其做法就是将速度清零；本轮也未核该版本当前处于哪个发行通道。[研究] 切镜／传送不应无意变成听者高速移动，但是否保留有意的运动音高效果仍由玩法决定。
+
+### 固定源码：位置、朝向、速度是不同输入
+
+[一手] Overgrowth 固定提交 `245fe4828631c84c0023d29d1525f5716ccb6106` 提供另一种 3D 动作实现：
+
+- [玩家镜头脚本](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L11179-L11188)在 focused_character 分支把相机位置、朝向／上方向和零听者速度传给 `UpdateListener`；[Camera::GetPos](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Graphics/camera.cpp#L153-L155)包含追踪距离偏移，不能把它当角色中心
+- [对白镜头](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/dialogue.as#L1180-L1189)取得控制时同样传零听者速度；[自由镜头](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/cam.as#L317)却传入 `vel`，并非所有模式都归零
+- [脚本转发](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Scripting/angelscript/asfuncs.cpp#L1953-L1955)及同文件 L2069 的注册通向[音频接口](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Sound/sound.cpp#L116-L120)，分别设置 listener position、velocity、orientation
+
+[研究] 可借的是按模式明确这三项输入，而非把听者速度自动等同相机位移差。源码没有解释作者全部意图，也没有证明这种听点更好；零听者速度不等于声源速度归零，更不等于所有多普勒均关闭。声像的原点与朝向都重要，“角色位置＋相机朝向”不等于“角色算距离、相机位置算方向”。
+
+[一手] 固定 [README](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/README.md)／[LICENSE](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/LICENSE)说明代码除另注外采用 Apache-2.0；游戏美术／关卡不随代码开放，原资产分发需明确书面许可。[研究] 只借机制，不移植自研引擎或商业资产；实际复制代码仍核文件及依赖声明，保留许可、版权与修改说明。
+
+### 原生入口够先选听点，不保证跨引擎分离声像和衰减
+
+- [一手] Unity 6.3 [AudioListener](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioListener.html)默认在主相机，官方也建议按游戏尝试相机或角色；场景只应有一个正常工作的 listener，混响区亦以听者位置影响听到的声音。[研究] 先移动／定向这个听点，不用两个同时激活的 listener 做过渡；这份文档没有承诺可分别指定衰减原点和声像原点
+- [一手] UE 的 [SetAudioListenerOverride](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Game/Audio/SetAudioListenerOverride)可通过 PlayerController 覆盖位置／朝向；附着组件时参数是偏移，否则是绝对值。[研究] 进入与退出特殊视图都要交接，不能只设置一次而让后续模式继承旧位置
+- [一手] UE 另暴露 [Set Audio Listener Attenuation Override](https://dev.epicgames.com/documentation/unreal-engine/BlueprintAPI/Game/Audio/SetAudioListenerAttenuationOverr-)。[研究] 本轮官方节点页说明有限，不能据名称保证所有遮挡、混响和距离消费者都使用同一覆盖，也不能给 Unity 编造等价接口；没有确切需求不先增加这种分离
+
+### 成本、撤回与第二次修改
+
+[研究] 改听点后重新检查已有距离衰减和空间效果；不要把全体声音改 2D 或逐个提高增益当坐标政策的补丁。插值也不是一律更好：跨地点平滑可能经过无关区域，硬切则可能突变，按演出选择 cut／blend，不给通用秒数。近身声音失衡就收回到角色附近；远程交互缺乏声音反馈再局部交接，而不是积累全局特例。
+
+[研究] 只预注册实际二改：原版角色跟随镜头增加远程观察或演出后，在同一近处／远处声源场景中检查拉远、转身、切镜、退出及暂停后返回；记录听点位置／朝向／速度与听到的方向、响度、音高。音高异常先核多普勒路径，响度异常先核坐标与衰减，再决定是否改素材。AI 可追模式切换和参数来源；人判断听觉重点与交接是否自然。原生听点可表达模式且交接符合目标即可收工，没有症状不建完整配置图或音频框架。
+
+**实际验证范围：** 公开作者原文、官方更新、引擎文档与固定源码／许可静读；未试听、运行游戏或引擎，未测可辨性、舒适度、性能或 AI 净收益。案例用于选择和反证，不等于本项目听感验证。

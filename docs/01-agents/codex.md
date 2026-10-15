@@ -1,6 +1,6 @@
 # OpenAI Codex（CLI / App / Cloud）
 
-> 核实时间：2026-10-14 补核脚本入口，并按既有研究同步能力缺口与质量目标的采用条件；2026-10-11（本轮复核指令加载、模式、审批与使用讨论；版本、套餐和产品发布信息沿用 10-08 记录，未重新确认）。历史依据 [openai/codex 源码](https://github.com/openai/codex)和 [Releases](https://github.com/openai/codex/releases)，以及官方文档（历史记录指向 [learn.chatgpt.com](https://learn.chatgpt.com/llms.txt)；另一侧早期读取受代理限制；本次已补读当前 Auto-review、配置参考和托管配置页面，仍不据此宣称全面迁移或其他官网内容均已核实）**[一手]**。
+> 更新：2026-10-15
 > 评级：✅ **采用**（日常开发或交叉评审）
 
 ## 1. 形态与入口
@@ -8,23 +8,29 @@
 | 形态 | 说明 |
 |---|---|
 | **Codex CLI** | 开源，用 Rust 编写；`curl -fsSL https://chatgpt.com/codex/install.sh \| sh`、`npm i -g @openai/codex` 或 `brew install --cask codex` |
-| **ChatGPT 桌面 App（Codex / Work）** | 2026 年 Codex App 并入 ChatGPT 桌面 App（“ChatGPT Work”）；Linux 版 2026-08 预览 |
+| **ChatGPT 桌面 App（Codex / Work）** | 可使用本机文件、浏览器和受支持的桌面工具；Linux 版仍为预览。Work 也可从 web／mobile 继续符合条件的任务，不是桌面 App 的别名 **[一手：入口记录]** |
 | **Codex Cloud** | 云端任务，可复用的云端环境（DevDay 2026） |
-| IDE 扩展、GitHub / GitLab（beta）、Slack、Linear 集成 | 在 PR 里用 `@codex review` 做代码评审，`@codex security review` 做安全评审 |
+| IDE 扩展与第三方集成 | IDE 内协作或经 GitHub、GitLab（beta）、Slack、Linear 发起工作；各集成的设置和能力分别核对。GitHub PR／GitLab MR 可用 `@codex review`；GitHub 的 `@codex security review` 是另有资格要求的研究预览 **[一手：入口记录]** |
 
-ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含 Codex，额度不同 **[一手：Pricing 文档]**。
+✅ **先按实际任务选入口，再核套餐和开通状态。** 要用内置浏览器验页面，选 web 或桌面 App，CLI／IDE 不提供该内置入口；要操作本机 GUI，核对 macOS／Windows 的 Computer Use 插件与系统权限，不能从 Linux App 可安装推定同样支持。Codex Cloud 适合用已发布环境独立运行的仓库任务，本机文件、浏览器登录和 VPN 不会自动带入。**[一手；经验：采用判断，2026-10-15，详见[入口记录](../research/2026-10-10-codex-continuity.md#8-客户端入口资格与安全评审边界)]**
 
-## 2. 模型（2026-10）
+各档虽包含 Codex，但差异不止额度：当前 [Pricing](https://learn.chatgpt.com/docs/pricing) 给 Free／Go 列的是桌面 App 的 Luna Standard，仍受 rollout 限制；Plus 列出 web／CLI／IDE／iOS 和云端集成。不要把这张套餐表当作所有集成的排除清单，[GitLab beta](https://learn.chatgpt.com/docs/third-party/gitlab)另明确支持所有 ChatGPT plans。专门的 [GitHub Security Review](https://learn.chatgpt.com/docs/security/security-review)限 Pro／Business／Edu／Enterprise，不含 Plus；普通代码评审仍可发现部分安全问题。**[一手：当前文档，2026-10-15]**
 
-| 模型 | 说明 |
+## 2. 模型：按任务与实际用量选择
+
+✅ **按模型与客户端的推荐起点选择 effort，再按任务结果调整；需要并行不必先选 Ultra。** effort 的具体选择统一见 [02 模型与成本](../02-models-and-cost.md)。 下表是官方定位与本仓库采用建议，不是跨模型实测排名。**[一手；经验：2026-10-15，详见[核对记录](../research/2026-10-10-codex-continuity.md#9-模型选择成本口径与历史断言的适用范围)]**
+
+| 选择 | 何时考虑与边界 |
 |---|---|
-| **GPT-6.1 Sol** | DevDay 2026（9 月底）发布；官方称“接近 Astra 的能力、五分之一的价格”；`codex --model gpt-6.1-sol` |
-| GPT-6 Sol / Luna | 2026-09-22 发布，价格约为 GPT-5.6 的一半；Sol Medium 适合日常和复杂编码，Luna High 适合聚焦、可重复的任务。**社区对 GPT-6 Sol 首发的评价偏差** **[社区]** |
-| GPT-6 Astra | 2026-09 发布，推理 + computer use，适合高难度工作；500 美元 Pro 档有 Ultrafast 模式 |
-| **GPT-5.5** | **2026-10-14 在 ChatGPT 和 Codex 中退役**（API 不受影响）。所有写死了 `gpt-5.5` 的配置、自定义 Agent、定时任务和脚本都要改 |
-| Ultra 模式 | 不再是单 Agent 运行，而是把大任务拆给多个子 Agent |
+| **GPT-6.1 Sol** | 官方当前推荐用于复杂编码与反复、长时间工作，称接近 Astra 的能力且成本较低；`codex --model gpt-6.1-sol`。这不是相同任务总成本或质量已验证相当 |
+| **GPT-6 Luna** | 官方定位是目标清楚、可重复的聚焦任务；与较强模型比较实际结果后再用于高频工作 |
+| **GPT-6 Astra** | 官方定位是最困难的跨步骤、跨工具工作；是否值得更高用量取决于该任务的质量要求与结果 |
+| **Max / Ultra** | Max 偏向单任务更深推理；Ultra 用于可有意义拆分的复杂工作。Work web 的 Ultra 还启用最大推理与主动委派，其他 effort 也可显式要求子 Agent；当前 App／CLI／IDE 可通过直接请求或适用的项目／Skill 指令触发并行 |
+| **GPT-5.5 退役** | 2026-10-14 19:00 UTC 起仅影响以 ChatGPT 登录的 Codex，应替换相应配置、Agent、定时任务与脚本中的模型选择；OpenAI API 及 API-key 登录的 Codex 不受该次退役影响 |
 
-注意：2026-07 Codex 的上下文窗口从 372k 缩到 272k（PR #33972）**[社区：HN]**。
+不要将“6.1 Sol 是 Astra 五分之一价格”当作任务预算：当前 Standard credits 的非缓存输入／输出单价符合该比例，缓存输入是十分之一；订阅内含用量与 API 另有口径。effort、速度档、上下文和子 Agent 会改变实际消耗。**[一手；研究：选择边界]**
+
+上下文也按模型、客户端与有效配置核对；2026-07 的 372k → 272k 是 GPT-5.6 bundled 元数据变更，不能当作所有 Codex／API 的当前统一窗口，亦不是自动压缩阈值。**[一手：固定源码；研究，见[证据](../research/2026-10-10-codex-continuity.md#9-模型选择成本口径与历史断言的适用范围)]**
 
 ## 3. 关键机制
 
@@ -48,14 +54,20 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 ### 子 Agent、Hooks、Skills、插件、记忆
 - **子 Agent 默认开启**；有内置 Agent（如 `default`），可以在 `config.toml` 的 `[agents]` 里设默认值，也可以写自定义 Agent 文件。
 - Hooks、Rules、Skills、Plugins（2026-03 推出；0.147 起支持可移植的 Agent Plugins 和多个插件目录搜索）、Memories、Goals 都已提供 **[一手：文档目录]**。
-- **从其他 Agent 导入**（2026-08-11）：桌面 App 在 Settings > Import、CLI 用 `/import`，可以从 **Claude Code、Claude Cowork、Cursor** 导入指令、设置、Skills、插件、项目和近期工作，并可保持同步 **[一手]**。
+- **从其他 Agent 导入**：桌面 App 的 Settings > Import 支持 Claude Code、Claude Cowork、Cursor，并提供自动更新；CLI `/import` 支持 Claude Code、Cursor，限本地空闲会话，远程会话或连接本地 app-server daemon 时不可用，近期聊天入口限近 30 天最多 50 个。不要把 Desktop 的来源与同步能力直接套给 CLI。**[一手：当前 Import 文档／0.162.1 固定源码；2026-10-15 UTC+8]**
+
+### 导入先选范围，再决定是否持续同步
+
+✅ **已有配置只差少数内容时，按项导入并检查目标值；需要 Cowork 或持续自动更新时，按桌面入口核对。** 0.162.1 的设置迁移只补缺失键，MCP 只补缺失的 server 名称，重复导入不能当作源配置覆盖目标的同步。官方所列“导入已有项目文件夹”继续使用同一目录，需要隔离试用时应另选工作副本；“不改原 Agent 配置”不代表以后不会修改原项目。**[一手；经验：采用判断，详见[导入证据](../research/2026-10-10-codex-continuity.md#7-导入入口配置合并与自动更新)]**
+
+🧪 自动更新只在确实需要追随源端时启用，先检查一次导入结果及所选范围；不把关闭自动更新当成撤销已导入内容。Hook、权限和插件的迁移适配分别见 [06](../06-hooks-and-guardrails.md#同名事件不等于可直接迁移claude-code--codex)、[05](../05-skills-and-plugins.md)。**关键局限**：官方契约与发布源码不证明每个桌面构建同步、删除和恢复均可靠，公开失败报告也不代表当前版本普遍失败。**[社区；经验：条件判断]**
 
 ### 外来仓库转脚本
 
 ✅ 只读任务需核对有效只读权限：旧沙箱配置可显式使用 `codex exec --sandbox read-only`；已有文件排除 profile 时不要叠加该旧开关，按 [10 的生效条件](../10-security.md#codex-文件排除的采用条件)选择（2026-10-15，UTC+8 补核）；分别检查配置、AGENTS、Skills 与 Hook 来源，不能用 Git 仓库存在或“项目配置未加载”替代这些检查。当前官方要求非托管 Hook 经定义信任后才运行；审查时也看它引用的脚本。本次[固定源码核查](../research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)区分未设 trust 与显式 untrusted，且 Hook 定义哈希不覆盖脚本内容；这是 2026-10-14 main 的实现证据，未验证已发行客户端。**[一手；经验：采用建议]**
 
 ### 源码里能看到的模块
-`codex-rs/` 下有：`code-mode`、`memories`、`agent-roles`、`agent-message-board`、`hooks`、`skills`、`plugin`、`worktree`、`cloud-tasks`、`external-agent-migration`、`ollama` / `lmstudio`、`windows-sandbox-rs` 等。功能开关里还能看到 `Goals`、`BrowserUse`、`ComputerUse`、`MemoryTool`、`GuardianApproval` 等 **[一手]**。
+`codex-rs/` 下有：`code-mode`、`memories`、`agent-roles`、`agent-message-board`、`hooks`、`skills`、`plugin`、`worktree`、`cloud-tasks`、`external-agent-migration`、`ollama` / `lmstudio`、`windows-sandbox-rs` 等。功能开关里还能看到 `Goals`、`BrowserUse`、`ComputerUse`、`MemoryTool`、`GuardianApproval` 等 **[一手]**。这些名称不构成各客户端的可用入口清单，采用时按上面的公开入口与开通条件判断。**[研究：证据边界]**
 
 ## 3.5 DevDay 2026（2026-09-29）的变化 **[一手：learn.chatgpt.com]**
 
@@ -65,9 +77,11 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 | **Astra Ultrafast** | Codex 和 Work 中更快的 GPT-6 Astra，只对 500 美元/月的 Pro 档和部分企业、教育计划开放 |
 | **可复用的云端环境** | 描述开发环境 → Codex 准备并测试 → 发布；之后的新任务都在用这个文件系统的隔离工作区里启动，电脑休眠时云端任务也能继续 |
 | **Codex Security Cloud**（研究预览） | 扫描已连接的 GitHub 仓库或监控新提交，给出发现、验证证据和补丁，再创建草稿 PR |
-| **Dots**（常驻 Agent） | 由 GPT-6 Astra 驱动，有自己的云端电脑和浏览器；在对话之间持续推进工作，需要判断时再找你；可以连接一台本地电脑；在 Codex 或 Work 里启动的任务照常计入额度 |
+| **Dots**（常驻 Agent） | 由 GPT-6 Astra 驱动，有自己的云端电脑和浏览器；在对话之间持续推进工作，需要判断时再找你；可以连接一台本地电脑；在 Codex 或 Work 里启动的任务照常计入额度；须另核[套餐、地区、年龄及工作区资格](https://learn.chatgpt.com/docs/dots#access)，符合资格仍可能等待逐步开放 |
 | **企业 Agent Security** | 统一管控本地和 Codex Cloud 执行时能用的工具、文件和网络访问 |
 | **MCP Events** | 让 ChatGPT 订阅 MCP 服务器的事件并据此行动（要求 MCP 2.0，基于草案规范的 webhook 投递） |
+
+**安全扫描先核资格，再核费用**：Security Cloud 另需工作区具备[Cloud 扫描访问资格](https://learn.chatgpt.com/docs/security#codex-security-cloud-access-and-prerequisites)、已连接的 GitHub 仓库与兼容云环境，不能由 PR Security Review 的套餐清单推定可用。PR Security Review 消耗所含 Codex 用量或 credits；新建的 Security Cloud 仓库／连续扫描不在套餐所含用量内，按 token 计费，免费扫描额度另有条件。开始扫描前核[Cloud 计费规则](https://learn.chatgpt.com/docs/security/faq#billing)，不要由“套餐含 Codex”推定扫描已包含。**[一手：2026-10-15；适用日期见[入口记录](../research/2026-10-10-codex-continuity.md#8-客户端入口资格与安全评审边界)]**
 
 **含义**：OpenAI 在把 Codex 从“你发起的会话”推向“**常驻、云端、有自己环境的 Agent**”，和 Claude Projects 是同一个方向（见 [13](../13-frontier-radar.md#24-云端大脑本地双手会话管理正在被托管)）。
 
@@ -78,20 +92,20 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 ## 4. 优势与短板
 
 **优势**
-- 速度、自主性和指令遵循应按模型、effort、任务及客户端区分；现有材料不足以支持“社区普遍认为更快”。用户的 Astra 偏慢、保守体验是研究起点，不应被泛化口碑覆盖。**[经验：用户反馈；研究：证据判断]**
+- 速度、自主性和指令遵循应按模型、effort、任务及客户端区分；现有材料不足以支持“社区普遍认为更快”。**[研究：证据判断]**
 - 默认开启沙箱，Auto-review 的策略开源可审计。
 - 开源，可以自己编译和审计；可接本地模型。
-- 迁移成本低：能直接导入 Claude Code 的配置。
+- 提供按项导入入口；是否值得迁移取决于目标配置、权限和实际工作能否接续，不由“支持导入”推定低成本。见上文导入边界与 [00](../00-state-of-ai-coding.md)。**[研究：已有结论同步]**
 
 **短板**
 - **内建 LSP 的需求与收益仍有争论**：[#8745](https://github.com/openai/codex/issues/8745) 本轮页面显示开放，但不能仅凭一个开放功能请求判断所有客户端、扩展的能力。类型检查与语义导航是不同需求，见下文。**[社区：原帖]**
-- 回滚体验弱：`/undo` 已移除（#9203），`/rewind` 未实现（#11626）。
-- **额度和成本**：issue 区点赞第一是“token 消耗太快”（630 个赞）；200 美元 Pro 档额度被下调；10 月 3 日重置后用户普遍觉得额度缩水 **[社区]**。
-- 透明度争议：2026-07 起子 Agent 的提示词被加密（issue #28058），HN 425 票讨论 **[社区]**。
+- **不要把历史回退当作文件恢复**：CLI 的 [#11626](https://github.com/openai/codex/issues/11626) 请求同时恢复会话与代码，2026-10-15 仍开放；不能由此断言所有客户端都无回滚能力。探索前保留可恢复检查点，具体建议见下文。**[社区：原帖；经验]**
+- **用量需按实际工作核对**：有高 effort 下慢、停工与耗额度的[具体报告](https://github.com/openai/codex/issues/51670)，不能据此推出套餐普遍下调或统一降 effort。先核模型、速度档、并行与[当前用量](https://chatgpt.com/codex/settings/usage)，再决定是否换模型或缩小任务。**[社区；经验：采用判断]**
+- **并行任务的可审计性**：[#28058](https://github.com/openai/codex/issues/28058)报告 2026-06 的 MultiAgentV2 加密任务／消息载荷影响人类可读审计记录；这是特定实现的历史报告，不证明当前所有客户端都隐藏子 Agent 提示。需要追踪委派内容时，核所用版本实际可见的任务与结果记录。**[社区；经验]**
 
 ## 5. 与 Claude Code 配合使用
 
-- **交叉评审**：Claude Code 写的代码让 Codex 评审（`/review` 或 `@codex review`），反过来也一样。
+- **交叉评审**：有具体漏审风险值得额外核查费用时，再试另一模型；不默认每次互审。先区分原生本地评审与 GitHub 评审的输入、费用和完成信号，按 [09 的评审层选择](../09-review-and-quality.md)检查新增有效发现与误报。**[研究：已有结论同步]**
 - **共享配置**：不要假定两边原生加载相同文件。将共同约定维护在一处，并在各自入口显式引用；检查实际加载路径。Codex 的 `CLAUDE.md` fallback 不会与同目录 `AGENTS.md` 自动叠加。导入能力也不等于持续同步语义已经验证。**[一手：S1；研究：采用建议]**
 - 在 Claude Code 中调用 Codex：社区有 [skill-codex](https://github.com/skills-directory/skill-codex)。
 
@@ -169,6 +183,17 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 
 另一个不同作者/任务的[公开开发过程](../24-community-workflows.md#codex-实际开发需求纠正与本机验证是不同的工作)来自 Simon Willison：明确 wheel 交付，失败后收紧 PR 范围，再本机验证并发现 Python 版本边界。它是 2025 年 Codex Cloud 案例，不是 Astra 实测；值得采用的是人的具体反馈与产物检查，而非追加一套通用流程。**[社区；经验：采用判断]**
 
+### 长时运行与 Dots：按能力缺口增加任务
+
+✅ 交给 dot 的长任务，先说清目标、验收、允许的操作和停止条件；阶段成果之后继续已授权工作，遇到权限或必要输入缺口再报告阻塞。普通任务的后续不必改成高频排程，固定周期的重复工作才另设计划；恢复与发布见 [20](../20-codex-long-horizon.md)。**[一手：[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory)；经验：采用判断]**
+
+- **先校准一轮，再扩大持续责任**：例如只选一个产品更新来源或一份待更新页面，明确资料、交付位置与需要人判断的变化；先检查首轮实际产物，纠正版式、事实和操作边界，再扩大到更多来源或交付物。依据是[官方起步建议与不同作者的网页／站点工作记录](../research/2026-10-12-development-conditions.md#dot-持续责任起步先校准产物再扩大范围)；早期自报支持这种起步方式，未证明长期无人监督可靠性 **[一手／社区；经验：采用判断]**
+
+- **查询先用已具备的能力**：连接器已提供完整原文、版本和所需结果，就不为同一查询再启动 shell 或执行任务；需要运行测试、本地改动、专属应用，或宿主规定必须由执行环境承接时，保留必要委派
+- **同一交付物先尝试原任务接续**：确认受支持的读取与续接路线，再补本轮变化、仍有效的验收与关键来源，不默认复制全部历史；读取失败先查具体路线，不直接认定原任务不存在。独立评审仍用新上下文，不以续改代替自审
+
+依据是官方插件与任务边界、10 月 9 日接续更新，以及公开的冗余包装与接续失败／恢复反例，详见[证据与撤回条件](../research/2026-10-12-development-conditions.md#dot-效率选择少一层包装不等于少一项验收)。**关键局限**：这些材料支持按能力和上下文选择路线，尚未证明节省多少耗时、token 或费用，也不保证所有客户端的原任务都能接续。**[一手；社区；经验：条件建议]**
+
 ### 慢、保守和反复停下来：先辨认是哪一种问题
 
 本轮结合官方源码与近期原帖，形成以下判断；完整来源、版本边界和反例见 [机制与续接记录](../research/2026-10-10-codex-continuity.md)。**[一手 + 社区；建议为研究判断]**
@@ -184,6 +209,8 @@ ChatGPT 的 Free、Go、Plus、Pro、Business、Edu、Enterprise 各档都包含
 **轻量不等于失去目标反馈。** 强 Agent 上不默认叠加完整 Superpowers，仍是当前建议；但它的理由是避免没有新增价值的步骤，不是认定模型不会偏离、停工或忽略验证结果。高 effort 抱怨没有同任务对照，不能据此统一推荐降低 Astra effort。**[研究：采用判断]**
 
 ## 来源
+
+- 分项核实日期与适用范围：[Codex 证据记录](../research/2026-10-10-codex-continuity.md)
 
 - **S3 当前审批契约（2026-10-11）**：[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)、[配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)、[托管配置](https://learn.chatgpt.com/docs/enterprise/managed-configuration)。本次独立读取；区分审批策略与 UI、长期配置与单次提权、Computer Use App 审批例外，以及 `policy` / `extra_policy` / 托管优先级。未运行客户端或审批服务。
 

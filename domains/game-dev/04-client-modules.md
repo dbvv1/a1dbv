@@ -1,6 +1,6 @@
 # 客户端核心模块：让操作有回应，让体验连续
 
-> 核实：2026-10-14 UTC。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
+> 核实：2026-10-14 UTC；空间容错补核：2026-10-15 UTC。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
 
 ## 30 秒结论：先把核心动作做舒服
 
@@ -35,6 +35,8 @@
 | 状态立即改变，画面却迟迟转过去或姿态突然弹跳 | ✅ 先调整原生 Animator 的转场时长、Exit Time 和打断规则；2D 可用少量清楚的起手／命中／收招姿态，3D 先校准位移速度与步态，再做 Blend Tree | 过长混合会冲淡攻击接触瞬间；全部可打断会抹掉战斗承诺。只有接触缺口明确时🧪加 Animation Rigging／IK；骨架和基础动作不合格时，更多约束不能代替资产修正 [一手／研究：[6.3 转场](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)、[Rigging 1.4.1](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/index.html)] |
 | 能造成伤害，但不知道打中了谁、轻击还是重击 | ✅ 从同一次已确认的结果触发清楚的受击姿态、位置明确的短特效和对应声音；先区分命中、护甲／格挡、落空，再🧪加顿帧、震动和拖尾 | 每个效果服务于辨识或力度。群攻／连击出现遮挡、疲劳或失去控制时先减强度和并发；纯视觉后坐力不应顺手改碰撞体。以动作配置收拢时序、强度和开关，别建通用“打击感框架” [一手／研究：[可切换演示及源码](https://deepnight.net/games/game-feel/)] |
 | FPS 很高，移动仍抖；或首发技能明显顿一下 | ✅ 区分模拟姿态不连续与真正的长帧：前者检查物理／呈现节奏并按需插值，后者定位加载、分配、渲染等热点。像素风先排除[网格量化](#像素风慢速移动先分清画面网格与模拟运动)；姿态连续且无工作尖峰时，再查[呈现同步与排队](#呈现节奏动作已执行画面仍不顺) | Rigidbody Interpolate 会让可见姿态落后一个物理步，Extrapolate 可越过碰撞边界再纠正；两者都不是消除长帧的办法。只给有问题的对象加，不能靠全局提高物理频率掩盖问题 [一手／研究：[6.3 插值](https://docs.unity3d.com/6000.3/Documentation/Manual/rigidbody-interpolation.html)] |
+
+**[研究] 动作已开始却卡在小边角，先查空间，不继续加输入缓冲。** ✅ 显示轮廓误导时先改碰撞／关卡表达；🧪 玩法有意宽容微小定位误差时，只为相应动作加有界纠偏，不全局缩小碰撞体。Celeste 按动作／方向限制纠偏，[后续补丁](https://www.celestegame.com/changelog.html)又禁止向若干带刺边缘做冲刺修正；Factorio 的[玩家地形通行改动](https://www.factorio.com/blog/post/fff-346)则牵连造地后的安全检查。[一手] [研究] 因此检查纠偏路径与落点的危险、单向／动态障碍，以及放置／脱困对该角色规则的理解；敌我可以有意不同。若补偿改走了未选择的路线、越过应保留的障碍或推入危险，就收窄／撤回，精确卡位玩法可保留阻挡。新增一种地形或冲刺时回查旧窄口；案例不给跨游戏最佳距离，固定实现、成本和二改范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#空间容错补研动作已开始却卡在边角)。
 
 **[研究] 把“丝滑”拆开调，才不会一个改善抵消另一个。** 输入延迟关心按下到被处理；玩法响应关心指令何时允许生效；模拟时间决定碰撞／位移如何推进；呈现插值决定画面展示哪一段姿态；帧间隔方差决定玩家看到的更新是否均匀。引擎内时间戳能定位软件链路，不能直接称为按键到屏幕发光的端到端延迟。相机跟随与取景另见 [05](05-gameplay-architecture.md#8-相机先让玩家看懂并控得住再增加镜头语言)。
 
@@ -102,6 +104,10 @@
 **[研究] 密集战斗缺声音时，先区分重触发被合并、同类并发拒绝／抢占和全局声部竞争，再调上限。** ✅ 沿用现有音频系统，为可合并的普通枪声／脚步与必须辨识的警告安排不同政策；新增声音变体时检查是否仍共享同一限额。Mindustry v154 的[实际配置](https://github.com/Anuken/Mindustry/blob/d1e0307d3906bb350e80d8969a2464ed0b771ffb/core/src/mindustry/audio/SoundPriority.java#L73-L109)把部分武器变体归组，并保护声音最初一段不被同组替换；其底层在同组无可替换声部时会拒绝新声，单抬 priority 不能绕过这道门。[一手] **局限：保护旧起音与及时播放新警告存在取舍，分组不能自动证明提示可听。** [WP10 固定源码与反例](../../docs/research/2026-10-14-game-wp10-client-modules.md#音频并发补研保住起音不等于保住每次提示)说明复用边界；不为此另造通用音频框架或搬入另一套运行时。
 
 **[研究] 新增持续技能、机器或环境声后，别把短音的拒绝／抢占政策直接套给循环声。** ✅ 短事件按重要性合并或丢弃过期实例；持续状态声先核活动状态、可听范围与淡入淡出，再决定竞争解除后续播还是重启。Factorio 的[管道反例](https://www.factorio.com/blog/post/fff-341)通过移除同类限额并缩小可听范围修复错误声片段，但提高环境总上限又增加混音杂乱。[一手] 沿用现有声源配置：Unity 的 maxDistance 是否归零取决于 rolloff，UE 的静音续播可能继续占 voice，具体契约见 [WP10 持续声补充](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-持续状态声的反例先校正可听范围与恢复政策)。**局限：缩小范围可能藏掉远处危险，恢复时重播起音也可能误报状态，不能只凭声部数下降验收。**
+
+**[研究] 镜头拉远／切镜后声音失衡，先决定“从哪里听”，再调各声音衰减。** ✅ 远程管理可让听点随视图，近身互动可优先角色附近；分别明确位置、朝向与速度，切镜不应无意成为听者高速运动。[Factorio 作者](https://www.factorio.com/blog/post/fff-332)采用屏幕中心，[NieR 开发者](https://www.platinumgames.com/official-blog/article/10027)则以角色附近为默认、特殊演出另作交接。[一手] 先用 Unity 原生 AudioListener 或 UE PlayerController 的 listener override，核对拉远、转身、切镜和返回，不先上中间件。**局限：换听点会改变原有距离与空间效果；两引擎不能笼统保证“角色算距离、相机算声像”。** 速度维护反例、固定实现及原生接口边界见 [WP10 听点选择](../../docs/research/2026-10-14-game-wp10-client-modules.md#听点补比镜头改变时从哪里听)。
+
+[研究] 音乐频繁打断时，先选它跟随角色处境还是当前关注区域，再决定立即混层、等状态稳定或等乐句，别只加长淡化；具体取舍见[音频页](assets/audio.md#音乐循环和状态切换先于完整成曲)。
 
 ### 3D 角色运动：先选想要的控制，再选碰撞求解方式
 
@@ -235,6 +241,18 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 **[研究] ✅ 要随当前语言变化的任务记录／系统报告，保留消息身份与有类型的参数，显示时再格式化；不要只保存第一版生成的译文。** Thrive 的[固定实现](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedString.cs#L57-L77)保存 key 与参数，报告在语言变化后重新生成显示；这比只更新语言表更能保住旧内容。[一手] 历史报告保留当时数量，实时任务显示当前数量；玩家输入、引用原文或明确要求原样留存的历史文本仍保存原文，不应被自动翻译。已有旧档只剩译文时，不能可靠地反推出原 key／参数。[研究]
 
 **[研究] 先用原生本地化对象，不另造跨引擎消息框架。** Unity Localization 1.5.13 的 [Arguments 不会被序列化](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.Arguments.html)，读档后需从已存业务数据重建参数；UE [FText 转 FString 会丢失 text history](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine)，仍需换语言的文本不要提前降成普通字符串。[一手] 第二次改数量／加语言时，同时检查旧报告、未首次显示就保存的消息，以及同一面板内的复数与数值更新。**局限：保存了消息身份不等于保存路径、参数刷新或目标语言排版已经正确；**固定源码中的缓冲边界与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-旧报告重译保留消息含义而非只存渲染结果)。
+
+### 新语言可读之后，还要能编辑和操作
+
+**[研究] ✅ 字库覆盖、复杂文字塑形和控件布局分别判断；不把翻译齐全、RTL 勾选或单行截图当作语言支持完成。** 已采用 Unity 6.3 UI Toolkit 且目标语言需要复杂排版时，先评估原生 ATG：[语言方向](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/language-direction.html)的 RTL 仅有基础反转，完整换行／塑形还需启用 ATG。[一手] 稳定 uGUI／TMP 先保留，只有具体 RTL 缺口才🧪 [RTLTMPro](https://github.com/pnarimani/RTLTMPro/tree/f480419bbbffed1be3c129d68cc0182afcfbcac3)，把替换文本组件、字体和富文本绑定的维护成本计入；不要另写倒序字符串修补器。
+
+**[研究] UE 先保留 UMG 的塑形与方向设置，不额外接一套 RTL 渲染器。** [原生属性](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-rich-text-blocks-in-unreal-engine)区分 Text Shaping、Text Flow 和控件方向；Kerning Only 不适合阿拉伯语等复杂文本。[一手] 有运行时换语言或任意玩家名字时优先 composite font，不用逐文化换整份字体掩盖混合文字缺口。文字方向改变后，单独核对按钮排列、焦点与实际操作方向，不把世界地图、方向指示等全部镜像。
+
+**[研究] 二改加入拉丁名字／数字／富文本并缩窄窗口后，再检查完整句子、断行、选中删除和菜单返回。** Unity ATG 的[逻辑光标](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/cursor-movement.html)可跨视觉位置跳转，不能把“左键始终向屏幕左”硬写成跨引擎断言。[一手] 先用合适字体和可伸缩布局；关键文字必须缩得难读或交互仍不可靠时，暂缓该语言发行，而不是继续叠补丁。**局限：文档能力与历史项目反馈都不证明目标构建可用；**现成库反例、许可及后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-新增语言的显示编辑和布局不能互相代验)。
+
+**[研究] ✅ 新语言、换字体或放大字号后，要按承诺支持的输入方式读完影响决定的长说明。** 已有布局可靠时优先复用；短标签合理伸缩，长内容先用原生分页、滚动或详情入口，别持续缩字或把条件、代价藏在 hover／省略号后。Stardew Valley [1.6](https://www.stardewvalley.net/stardew-valley-1-6-update-full-changelog/)曾把被 tooltip 遮住的价格纳入提示；Factorio [2.0.44](https://forums.factorio.com/viewtopic.php?t=128050)只为右侧固定长 tooltip 增加滚动。[一手] 若承诺支持手柄，还需能打开、读到末尾并返回原项，不能用键鼠滚动代验。
+
+**[研究] ✅ 复用完整字体／样式配置；完整段落更难读时，可以撤回新默认。** Thrive 的[字体配置链](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/Lato-Bold.ttf.import)把样式连接到既有 fallback，新增页面与局部覆盖也应保住这条引用；Stardew Valley [1.6.6](https://www.stardewvalley.net/stardew-valley-1-6-6-full-patch-notes/)恢复中文旧默认字体，把新字体留作选项。[一手] 不要求所有游戏新增字体选择器；回退后仍不可读或不可操作，仍暂缓该语言发行。**局限：配置与更新说明不能证明目标设备的阅读质量；**比较与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#7-完整长文可达性与字体默认值的撤回)。
 
 ## 4. 借用的授权边界与升级条件
 

@@ -1,11 +1,13 @@
 # Unity AI 工具链
 
-> 核实时间：2026-10-05；WP9 的官方接入、二次导入契约于 2026-10-14（UTC+8）复核；官方 Pipeline 故障回退与异步验证边界于 2026-10-14 UTC 补核。
+> 核实时间：2026-10-05；WP9 的官方接入、二次导入契约于 2026-10-14（UTC+8）复核；官方 Pipeline 故障回退与异步验证边界于 2026-10-14 UTC 补核。 采用入口、安装与权限分层于 2026-10-14 UTC 补核。
 > 依据：克隆并阅读 [Unity-Technologies/unity-agent-plugin](https://github.com/Unity-Technologies/unity-agent-plugin) 源码（33 个 Skill，约 7400 行 SKILL.md）；读了 [Unity CLI 更新日志](https://docs.unity.com/en-us/unity-cli/release-notes)和 [Unity MCP 官方博客](https://unity.com/blog/unity-ai-mcp-how-to-get-started) **[一手]**。
 
 ## 1. 官方方案
 
-### 1.1 Unity CLI ✅（整个工具链的核心）
+### 1.1 Unity CLI 🧪（缺连接时的官方候选）
+
+**✅ 先沿用已有编译／测试与 Editor API，不为使用 Agent 安装整栈。** 官方 CLI 当前仍标实验性；运行中 Editor 控制要求 Unity 6.0+ 与项目 Pipeline，Skill 安装成功并不证明这条连接存在。先检查现有入口和目标实例，需要新增时再批准安装／配置，运行前回读命令 schema。**[一手／经验：见 [WP9 §11](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md#11-接入采用门槛版本安装与权限分别确认)]**
 
 2026-06-30 发布 1.0.0-beta.1，**本轮核实发布页顶部为 1.0.0-beta.13（2026-10-07）**；Unity Hub 会自动安装 **[一手]**。官方插件中的 `unity-cli` Skill 给出了详细用法 **[一手]**：
 
@@ -21,7 +23,7 @@ unity command editor_play --project-path /path/to/Proj   # 打开了多个编辑
 - 编辑器常驻时，命令约 **200–600ms** 返回，不需要重新编译或 domain reload。
 - **beta.12 新增** **[一手]**：
   - `unity projects create --with-pipeline`：新建项目时就装好 Pipeline 包，编辑器一打开 Agent 就能驱动它；
-  - `unity status --format json` 在 Play 模式下返回 **`frameCount` 和 `playerLoopTicking`**，可以据此判断游戏是不是真的在运行；
+  - `unity status --format json` 在 Play 模式下、且已安装 Pipeline 提供字段时返回 **`frameCount` 和 `playerLoopTicking`**；字段缺失不等于停帧，改用已有进度观测或标明未验证（[官方字段契约](https://github.com/Unity-Technologies/unity-agent-plugin/blob/cf6b2da24e424b0a60d560a57f39f676cb6f79f3/skills/unity-cli/references/integration-advanced.md#status)，2026-10-15 补核）；
   - `unity command <name> --result-only` 只输出结果；
   - `unity projects exec -- <命令>` 对所有项目批量执行；`unity projects clean` 清理缓存。
 - 可以用 `[CliCommand]` 和 `[CliArg]` 特性**自定义**暴露给 Agent 的命令。
@@ -55,7 +57,9 @@ unity build --target StandaloneWindows64 --output-path ./Build/Game.exe --format
 
 **测试与截图须读结果。** 官方 beta.13 已声明修正异步 `run_tests` 启动时误显示“0/0 passed”，启动后仍须按 `test_status` 取得终态与实际执行范围；不要把这条异步 Editor 命令和上方 `unity test` 的退出码混为一谈。`unity mcp` 的视图截图在主线程不响应时可回退为整个桌面，必须核返回说明与其他窗口隐私，不能当指定 Game View 已验证。来源与限定见 [WP9 §10](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md#10-入口可调用不等于编辑与验证闭环)。[一手／研究]
 
-### 1.2 Unity 官方 Agent 插件 ✅
+### 1.2 Unity 官方 Agent 插件 🧪（按知识缺口添加）
+
+安装以下插件前先确认需要这些 Skill；官方 Skill 含安装 CLI／Pipeline 的流程，不能把加载知识视为批准后续安装或执行任意 C#。插件采用 Unity Companion License，仅限其许可允许的 Unity-dependent projects，不是通用 MIT 库。**[一手／经验：见 WP9 §11]**
 
 ```bash
 # Claude Code
@@ -87,7 +91,7 @@ codex plugin add unity@unity-agent-plugin
 
 ### 1.3 编辑器内 Assistant 与已弃用的旧 MCP
 
-**🧪 有编辑器内对话／生成需求时再选 Assistant，外部 Agent 默认用免费 CLI/Pipeline。** 当前[官方 FAQ](https://unity.com/features/ai)区分编辑器内 Assistant（消耗点数，Personal 试用后 $10/月）、不消耗 Unity 点数的第三方 AI gateway，以及免费的 CLI、MCP server 和官方插件。**[一手]**
+**🧪 有编辑器内对话／生成需求时再选 Assistant，外部 Agent 确缺实时连接时再评估免费 CLI/Pipeline。** 当前[官方 FAQ](https://unity.com/features/ai)区分编辑器内 Assistant（消耗点数，Personal 试用后 $10/月）、不消耗 Unity 点数的第三方 AI gateway，以及免费的 CLI、MCP server 和官方插件。**[一手]**
 
 **⛔ 不再新用 `com.unity.ai.assistant` 包内 MCP server。** [官方迁移说明](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)已将其弃用，替代者是基于 Pipeline 的 `unity mcp`；该 CLI MCP 模式继续支持。能可靠执行 shell 时也可直接用 CLI；同时保留 Assistant 的项目需留意官方注明的 2.13+ 共存修复。**[一手]**
 
@@ -114,8 +118,8 @@ codex plugin add unity@unity-agent-plugin
 
 | 场景 | 推荐 |
 |---|---|
-| Unity 6+，用 Claude Code 或 Codex | 官方插件 + Unity CLI（Pipeline 包）。社区 MCP 一般不需要 |
-| Unity 2021 / 2022 LTS | 评估固定版本 CoplayDev/unity-mcp + batchmode 脚本；资产替换遵循下节，不直接重跑新增导入 |
+| Unity 6+，用 Claude Code 或 Codex | 已有 Editor API／编译测试满足就沿用；缺实时连接再评估官方 CLI/Pipeline，不能可靠用 shell 时选其 MCP；缺领域知识再加官方插件 |
+| Unity 2021 / 2022 LTS | 先沿用 batchmode／Editor 脚本；确缺实时入口时再评估固定版本 CoplayDev/unity-mcp。包声明最低 2021.3 不等于全版本／全工具实测通过；替换遵循下节 |
 | 需要游戏运行时接 LLM（NPC 等） | IvanMurzak/Unity-MCP |
 | 在编辑器内对话、做小任务 | Unity AI Assistant，或用 AI Gateway 接入 Claude |
 | CI | `unity test` / `unity build`（退出码对 CI 友好） |

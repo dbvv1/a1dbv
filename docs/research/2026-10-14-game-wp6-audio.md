@@ -142,7 +142,7 @@
 | ACE-Step/acestep-v15-xl-turbo | 代码仍固定 MIT；[该官方卡](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo)MIT 并明确商用输出 | 增列指定 XL checkpoint，不靠旧 turbo 卡外推；同样核共享组件与实际依赖，硬件门槛不沿用旧版 |
 | Stable Audio 3 Small-SFX | [代码 MIT](https://github.com/Stability-AI/stable-audio-3/blob/77e0398c26f7d22d801ec1bb036307e8b231f741/LICENSE)；[权重卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)Community，T5Gemma 另条款；无全栈 MIT | Community 商业须注册；本人/关联方合计任何来源年收入>$1M 需另许，非单游戏净收入。输出在法律允许范围归用户，非模型衍生物；材料/模型分发与仅交付 WAV 不能混同 |
 
-Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/community-license-agreement)明确注册、>$1M 时终止原许可、输出归属、AUP 和禁用输出改进其他基础生成模型；不是自动获得企业授权，也不是超门槛可继续用旧免费推理。2026-10-14 再核 Small-SFX 卡，商业／许可入口已直接指向 [Stability 许可页](https://stability.ai/license)，后者明确列 Stable Audio 3.0，并链接 Community 正文；卡另明示 T5Gemma。替换上一轮“指向 Stable Audio Open 1.0 仓库”的链路描述，不改变注册、收入和 T5Gemma 三重条件；采用时保存实际包许可证。[一手/研究]
+Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/community-license-agreement)明确注册、>$1M 时终止原许可、输出归属、AUP 和禁用输出改进其他基础生成模型；不是自动获得企业授权，也不是超门槛可继续用旧免费推理。2026-10-14 UTC 再核 Small-SFX 卡：正文的商业说明入口指向 [Stability 许可页](https://stability.ai/license)，后者明确列 Stable Audio 3.0，并链接 Community 正文；但访问门槛的 License Agreement 仍链接 [Stable Audio Open 1.0 的 LICENSE.md](https://huggingface.co/stabilityai/stable-audio-open-1.0/blob/main/LICENSE.md)，不能写成旧链接已完全消失。卡另明示 T5Gemma。两个入口的区别不改变注册、收入和 T5Gemma 三重条件；采用时核对并保存实际包许可证。[一手/研究]
 
 [T5Gemma 所适用 Gemma 条款](https://ai.google.dev/gemma/terms)（2026-04-01）附录含 T5Gemma，允许按条款使用/分发，含用途限制、分发通知；Google 不主张输出权利，输出不是 Model Derivatives。仅生成 WAV 与向玩家分发/托管模型义务不同。未见一般营收或地区名单额外门槛，不等于免除贸易管制和 AUP。此轮没提交注册/同意门槛，没下载模型。[一手/研究]
 
@@ -184,12 +184,14 @@ Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/communi
 | ACE-Step 1.5 官方 turbo 包 MIT；turbo 不含 base 的 extract／lego／complete | [官方包卡](https://huggingface.co/ACE-Step/Ace-Step1.5)，本次重读；固定代码许可沿用 §2.4 [一手／研究] | 2026-10-14 | 采用前或 2026-11-14 | 不外推第三方微调／输入音乐权利；训练合规只是作者声明 |
 | ACE `acestep-v15-xl-turbo` 卡 MIT，4B DiT、8 步；≥12 GB 需 offload＋INT8 | [XL 卡](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不复用旧低显存预算；模型总量、权重体积、运行显存不同 |
 | Stable Audio 3 Small-SFX／Small-Music 120 秒、Medium 380 秒；Large API／企业 | [官方仓库](https://github.com/Stability-AI/stable-audio-3)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | CPU／速度是作者兼容与性能声明，非本机或游戏帧预算 |
-| Small-SFX：代码 MIT，权重 Community，T5Gemma 另许；商业注册及关联方收入条件 | [模型卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)、[许可入口](https://stability.ai/license)、[Community](https://stability.ai/community-license-agreement)、[Gemma](https://ai.google.dev/gemma/terms)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 修正旧跳转描述；仍不宣称全栈 MIT 或输出绝无侵权风险 |
+| Small-SFX：代码 MIT，权重 Community，T5Gemma 另许；商业注册及关联方收入条件 | [模型卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)、[许可入口](https://stability.ai/license)、[Community](https://stability.ai/community-license-agreement)、[Gemma](https://ai.google.dev/gemma/terms)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 商业说明与访问许可链接分开记录（见 §七）；仍不宣称全栈 MIT 或输出绝无侵权风险 |
 | Qwen3-TTS-12Hz-1.7B-CustomVoice＋Tokenizer-12Hz 均 Apache-2.0；9 音色、10 语言，0.6B 不继承全部控制 | [CustomVoice](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice)、[Tokenizer](https://huggingface.co/Qwen/Qwen3-TTS-Tokenizer-12Hz)，本次重读；固定代码沿用 §2.6 [一手／研究] | 2026-10-14 | 采用前或 2026-11-14 | 指定组合可评估；不授真人声音、剧本或其他 checkpoint 权利 |
 | Kenney Interface Sounds 100 件／Music Jingles 85 件，指定包 CC0 | [Interface](https://kenney.nl/assets/interface-sounds)、[Jingles](https://kenney.nl/assets/music-jingles)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 保存实际包内许可，不外推站外转载 |
 | jsfxr Unlicense；Free 可导出 WAV、Free／Pro 均可商用 | [仓库许可](https://github.com/chr15m/jsfxr/blob/master/UNLICENSE)、[官方对照](https://sfxr.me/)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 保留固定源码的随机噪声／参数非线性反证，不承诺位级复现 |
 | StepAudio 3 Gen 仍仅列观察 | [项目页](https://stepaudiollm.github.io/step-audio-3-gen/)，本次可读，但未取得对应商用权重／服务合同 [一手／研究] | 2026-10-14（未闭合） | 采用前或 2026-11-14 | 不作为 Qwen 免费商业替代，不把论文样例等同生产授权 |
-| Unity Assistant 2.3.0-pre.2 Text to Sound：少量 SFX 原型；Loop 仅重复播放 | [声音生成](https://docs.unity.cn/Packages/com.unity.ai.assistant@2.3/manual/Sound/sound-generate-prompt.html)、[编辑](https://docs.unity.cn/Packages/com.unity.ai.assistant@2.3/manual/Sound/sound-edit.html)；继承 [WP9 §8](2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)，本次独立取文报错，非重新核实 [研究] | 2026-10-14（继承） | 采用前或 2026-11-14 | 维持现成／jsfxr 优先；不把计费品类推成该包已具备音乐／TTS，发行资格按 WP9 条款分层 |
+| Unity Assistant 2.20.0-pre.2 Text to Sound：少量 SFX 原型；Loop 仅重复播放 | [声音生成](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-generate-prompt.html)、[编辑](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-edit.html)；继承 [WP9 §8 的 2.20 文档补核](2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)，本轮未重做原生核查 [研究] | 2026-10-14 UTC（继承） | 采用前或 2026-11-14 | 版本前提与生产授权沿 WP9；维持现成／jsfxr 优先，不把计费品类推成该包已具备音乐／TTS，也不证明无缝循环 |
+
+[一手／研究：全文采用复核，2026-10-14 UTC] 本次重读 [Music Terms](https://elevenlabs.io/music-terms) §4.7–4.8 与附表，确认 Indie 收入、主体资格及高质量下载门槛，正文补直接选择提示；升级／存量的复杂情形仍沿 WP1 的限定范围。交叉重读 API 价页、SFX 接口／能力页、Suno 条款／价格、ACE 官方 turbo／XL 卡、Qwen 指定模型／Tokenizer 卡、Stable 商业入口与访问许可链接、Kenney／jsfxr 官方页，未发现须反转现成／参数化优先的证据。原生与配音二改沿既有范围，未试听、登录账户、接受协议或运行模型／引擎；资料就绪不等于效果实证。
 
 [研究：覆盖边界] 固定 SHA 的 jsfxr／ACE 源码反证、Unity 6 固定版本机制及 Fortnite 历史案例保留原核实范围，未在本次重跑或转换成“当前部署仍在线”声明。Meshy 不属于本表；WP1 的三项核心结论只继承其中音频相关范围。本轮没有试听、模型／引擎运行或新增商业清权结论。
 
@@ -264,3 +266,34 @@ Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/communi
 后续验证只需围绕这三个质量目标增加压力情境：连续命中时警告不丢；短音停止后 active／voice 数回落；游戏帧抖动时已提前排好的音乐边界保持连续；离开再返回、暂停恢复及 16→8 小节修改后不重启错位。具体改善仍要实际听、测目标设备；本节是公开 API／示例阅读，未运行引擎、试听或做延迟／性能实验。[研究]
 
 [研究] 历史 10.5 检查（2026-10-14）：完整离线 14 阶段（非空无 skip）和 `git diff --check` 通过；仅文档／配置与既有夹具，不证音频、设备或许可清权。
+
+## 音乐切换补研：精确播放之前先选状态与时机
+
+主线：GC／主线三，第二次玩法修改后保持反馈连续。[研究]
+改变的建议：从“定义状态、对齐节拍”深化到选择状态来源与切换政策；原生调度负责准确执行，不替代音乐决策。[研究]
+新证据：FTL 作曲者访谈、Factorio 开发者设计及发布后选项／使用者回执；Unity 6.3 暂停契约重新核实。核实：2026-10-15 UTC。[一手]
+
+**两种类型的作品，解决的是不同问题。**
+
+- [FTL 作曲者 Ben Prunty 的 NPR 访谈](https://www.kgou.org/2013-10-06/composing-game-soundtracks-that-move-faster-than-light)（2013-10-06）解释探索／战斗版本同时推进，通过交叉淡化改变强度。[一手] 这是飞船战术 roguelike 的具体制作机制，适合借鉴“变强度而不重开主题”。另一篇[作曲者问答](https://cheerfulghost.com/jdodson/posts/1552/interview-with-ftl-composer-ben-prunty)明确其版本关系从加鼓到几乎不同的曲目都有，不能简化为每首都只增打击乐。[一手] [研究] 对齐版本需要预先制作和验收；采访不是任意 AI 生成片段都能无缝混合的证明。
+- [Factorio FFF-407](https://factorio.com/blog/post/fff-407)（2024-04-19）把 variable tracks 定位为主曲之间的变奏插曲，组合受时间网格及层／段条件约束；主曲仍占主体。作者特别指出，要对战斗等更多状态作出反应，需要音乐从创作阶段为此设计。[一手] [研究] 长时经营的变化需求可以用少量受约束的内容满足，不因“系统能接事件”就扩大到全局自适应配乐。文章的演示明确为 WIP，不把其中示例参数当发行版或推荐值。
+
+**反例：响应更及时，未必听起来更连贯。**
+
+[一手] Factorio [已实现建议串](https://forums.factorio.com/119140)中，2024-11-01 有用户反映远程视图频繁切换使音乐不断改变；开发者 Donion 在 2024-11-20 说明为 2.0.21 添加 `ambient-music-based-on-physical-location`，当时默认 false。2024-12-01，另一使用者 exponential 报告该选项解决了自己的中断问题。[研究] 这是历史选项与自报体验，不是最初发帖者的复测，也没有总体偏好／留存数据。选择实际位置会牺牲当前观察区域的音乐反馈；远程经营本身是玩家主要活动时，保留视图依据、延后切换也可能更合适。默认值只按该历史版本陈述，不保证当前设置入口或默认不变。
+
+**最小实现选择，不扩成新框架。** [研究]
+
+1. 短促而重要的命中／警告，按玩法及时反馈；不能为了 BGM 完整性把必要提示也推迟到下一乐句。
+2. 同主题的强度变化且有兼容层／版本，优先保持共同播放位置、改变混合；无兼容内容就保留完整片段和已设计转场。
+3. 查看／区域状态短时反复变化时，先明确谁拥有选曲依据，再选择稳定期、最短保持或合法乐句边界；这些是可比较方案，不统一规定秒数。若退战后高强度音乐滞留过久，收窄保持条件，而非继续叠延时。
+4. 在已有音乐状态配置记录当前与目标状态、切换边界、请求失效条件和暂停政策。等待期间目标改变时替换或取消旧意图；不把所有瞬时状态按 FIFO 补播。具体 API 能取消哪些已调度内容须按项目版本验证，不承诺已经提交到音频设备的数据可追回。
+
+**原生契约只补会改变上述选择的部分。**
+
+- [Unity 6.3 PlayScheduled](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html)以 DSP 绝对时间提前安排播放；文档说明过去时刻只能尽快开播，不能补回已过去的时间。[一手] [AudioListener.pause](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-pause.html)会冻结 DSP 时钟和已排程请求，部分声音可设 `ignoreListenerPause`。[一手] [研究] 若采用这一暂停政策，就不应恢复时再把同样暂停时长加到排程上；菜单音乐继续播放与整套 DSP 时间冻结也不能混作一种语义。这里不规定所有游戏都暂停音乐。
+- [UE Quartz 当前概述](https://dev.epicgames.com/documentation/unreal-engine/overview-of-quartz-in-unreal-engine)页面显示 5.8：Clock 在音频渲染线程调度，Play Quantized 提前排到音乐边界，game thread handle 为代理。[一手] [研究] 保留现有音频页“提前调度不等于游戏回调或设备输出零延迟”的边界；不能把 Unity Listener 的暂停行为套给 UE。本文没有核成 UE 游戏暂停会自动冻结所有 Clock／Audio Component，因此不写等价自动行为。
+
+**后续只预注册，不运行。** [研究] 同一段已验收音乐对比即时切换与受约束切换；新增远程查看或短战斗后覆盖进入即退出、等待期间换到第三状态、暂停／恢复及卸载。分别记录目标状态、实际音乐状态、请求／生效时刻与是否重复起音；听验连续性及对当前处境的表达。必要提示另验及时性。若只是延迟了不匹配而没有减少打断，就撤回该延时方案。软件时刻不是声卡／耳机端到端延迟，不能由文档推断节省工时或玩家收益。
+
+**证据与许可边界。** [研究] 本轮只读公开原文，未试听、运行游戏、安装中间件或执行引擎；FTL 与 Factorio 未读取完整音频实现，不对其内部淡化曲线、并发或内存作推断。只提炼机制及链接，不复制成品音乐、工程或源码；文章公开不授予资产商用权。引擎资料按所读页面版本说明，非真实构建验证。
