@@ -406,6 +406,18 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 另一维护者 gpiroux 于 9 月 21 日合并，PR 无人工 review 记录，不能据此补写其理解工时。这是上游责任被下游实际采用的证据，不是陌生人首次接手整个项目。相邻仓库 [akgentic-agent #148](https://github.com/b12consulting/akgentic-agent/issues/148) 仍 open，两处说明还声称本地先修历史，实际已改为上游下一轮修复；本轮未核实 release note、ADR-016 落地、外部旧导入迁移或真实服务恢复。**[一手：合并与未闭环事项；研究：交付边界]**
 
+#### 后续依赖升级：旧观察点过时，不等于消费者结果可以丢
+
+> 核实：2026-10-15 UTC。以下是同一下游的后续固定补丁与测试定义，未运行上游或下游代码；不是实际服务恢复回执。**[一手／研究：范围]**
+
+**先区分观察时点与交付结果。** [#167／`5f18045`](https://github.com/b12consulting/akgentic-llm/commit/5f18045a8c9f3138d083318493bb0e896663fa93)将依赖下限从2.38提高到2.54，并把 limit-recovery 验收拆开：错误钩子看到的持久历史以 dangling response 结束；run 展开收尾后，历史仍须紧跟 interrupted marker。补丁改变钩子时点的断言，保留后续 conclusion 返回 `concluded` 的断言。作者在 [#169](https://github.com/b12consulting/akgentic-llm/issues/169)说明恢复行为未变；这不是恢复成功的新现场证据，也不能把历史2.38下限当作当前支持范围。**[一手：固定依赖、补丁与测试；社区：作者诊断]**
+
+**另一次红测试则仍代表必须修的消费者结果。** 上游 [#9627／`107cac9`](https://github.com/pydantic/pydantic-ai/commit/107cac9ec0bdd05bd25085b202189c3787edb024)让动态 system prompt 重评时替换 run 内的消息副本，不再改调用者持有的历史对象；新增测试同时要求本轮得到新文本、旧历史不变，以及并发轮次互不污染。下游 [#171](https://github.com/b12consulting/akgentic-llm/issues/171)报告2.56使第二轮变更不再产生 `LlmSystemPromptEvent`：记录器仍读旧对象，算出的 hash 不变。这是公开 observer 事件缺失，不能只把“两次不同渲染应有两个事件”改成一个。**[一手：上游补丁与测试定义；社区：下游故障报告]**
+
+下游 [#172／`45b089a`](https://github.com/b12consulting/akgentic-llm/commit/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)把本轮 live history 显式传给 `record_system_prompt`，保留原有去重逻辑和[两轮事件断言](https://github.com/b12consulting/akgentic-llm/blob/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274/tests/test_capabilities.py#L363-L384)，没有恢复上游原地修改，也没有重建已删除的 healing 层。[固定 README](https://github.com/b12consulting/akgentic-llm/blob/1f5b7c7e514c853e09d5feadcad07a77000efa7a/README.md#system-prompt-rendering-events)说明该事件供 traces／frontend 显示每轮实际提示词；这是公开消费者契约，不是已核实某个前端真的恢复显示。可选 `messages` 参数保留旧调用形式，但默认读取旧 context 不能保证后续轮次内容新鲜；接入者仍要传对本轮数据。**[一手：实现、测试定义与公开契约]**
+
+**采用边界。** 上游承担的是调用者历史不被改写，下游仍负责发布每轮有效内容；两者都应保留。依赖升级后，先追到消费者实际需要的值和时点，再决定更新内部断言还是修接线。作者称补丁兼容2.54和2.56，本轮未取得双版本完整原日志；未核正式发行版本、旧导入消费者迁移或真实服务恢复，仍不宣称交付闭环或维护工时降低。**[社区：兼容自述；研究：选择与限制]**
+
 #### 累计采用判断：下一需求改变了谁必须知道什么
 
 接到改变生命周期的需求时，先写清触发条件、退出方式与应保留的结果，不把整个旧测试集合统一判为兼容或过时；按以下条件选择修改范围。**[研究：从本链提炼的采用条件，非普遍净收益]**
