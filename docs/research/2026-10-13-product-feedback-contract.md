@@ -426,3 +426,28 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 **维护者也需要看懂行为。** #16257的[审查者](https://github.com/discourse/discourse/pull/16257#issuecomment-1075880874)认为代码看似安全，却无法判断预期体验，要求测试或视频；作者补测试后[公开记录取舍](https://github.com/discourse/discourse/pull/16257#issuecomment-1075945631)：测试窗口失焦可能令本地浏览器测试失败，但CI通过且覆盖重要功能，因此保留，必要时再评估。[固定测试](https://github.com/discourse/discourse/blob/eb237e634a440f4b26e6c097e7afb9a135bb3781/app/assets/javascripts/discourse/tests/acceptance/last-visited-topic-focus-test.js)断言`focused`样式，不等于实际读屏结果；上述CI状态只是作者报告，本轮未取日志或重跑。它支持交接解释具体行为及测试前提，不量化接管成本。[一手：审查、决定与测试源码；研究：采用边界]
 
 **采用与停止条件。** 两例支持先恢复真实往返任务的位置：Joplin是显式跨视图定位与交互模式，Discourse是自动返回恢复与后台追加的区分。让Agent分清首次进入、重访和返回，追踪当前位置的来源及触发事件，再选择直接定位、恢复原对象或维持原焦点；若增强打断其他操作，收窄触发范围后复试，不以更多焦点动作算改善。已有路径满足目标就不增加控制。本轮只读公开原帖、PR和固定补丁，未运行软件、读屏器、测试或模型；短时自报不证明长期留存、全平台可靠性或AI收益。[经验：采用判断；研究：验证范围]
+
+
+## 搜索改进：结果准入、排序与输入次序
+
+核验日期：2026-10-15（UTC）。只读公开讨论、固定提交与版本源码，未安装、运行上游或做模型实验。原有“核参数与默认值”不足以区分结果不应入选、入选却排后、相关性覆盖原顺序；先借用已有的场景策略和查询放宽机制，再决定是否改算法。以下不是参数攻略或新引擎推荐。**[经验：采用判断]**
+
+### fzf：统一评分受损，场景策略后原用户确认
+
+[2022年的#2930](https://github.com/junegunn/fzf/issues/2930)中，pldubouilh对比0.30.0与0.32.1，报告历史检索中常用的git commit --amend被旧路径命令压下。[维护者解释](https://github.com/junegunn/fzf/issues/2930#issuecomment-1220789808)边界加分符合设计，但不同输入有不同需要，不愿堆用户难理解的细粒度调分开关。[固定提交6fb41a2](https://github.com/junegunn/fzf/commit/6fb41a202a97ad3f2437f6e5aee8890268560412)于2022-08-28加入default/path/history，并把三种shell历史入口接入history，列入0.33.0；[原用户随后确认](https://github.com/junegunn/fzf/issues/2930#issuecomment-1232593430)该版解决问题。频繁使用是其情境，不能据此说修复实现了频率学习。**[社区：实际使用与修改后回执；一手：固定补丁]**
+
+**exact不能替代顺序。** 同批讨论中，[james64](https://github.com/junegunn/fzf/issues/2909#issuecomment-1223706339)只记得tcpdump中的dump，却被其他边界匹配压下，试过exact仍不满意；维护者[建议切换排序](https://github.com/junegunn/fzf/issues/2909#issuecomment-1223741655)，[同用户尝试后](https://github.com/junegunn/fzf/issues/2909#issuecomment-1223746580)确认配合查询引号已满足需要。它说明匹配范围和排序应分别选择，不证明所有用户都应关闭排序。**[社区：失败尝试与复试]**
+
+**成熟机制的现行边界。** 核对固定v0.74.5的[评分源码](https://github.com/junegunn/fzf/blob/v0.74.5/src/algo/algo.go#L176-L197)、[手册](https://github.com/junegunn/fzf/blob/v0.74.5/man/man1/fzf.1#L66-L100)与[历史入口](https://github.com/junegunn/fzf/blob/v0.74.5/shell/key-bindings.zsh#L143-L150)：history取消不同边界类别的额外分差，仍保留匹配分，同分依输入次序；它不是纯时间排序。停止排序才保留输入次序，时间含义来自调用方。exact要求连续匹配，不自动取消重排。fzf的fuzzy是有序字符子序列匹配，不等于搜索引擎的拼写纠错。**[一手：版本源码；研究：适用边界]**
+
+也不能把旧拒绝当永久限制：[#3608的2024年回应](https://github.com/junegunn/fzf/issues/3608#issuecomment-1924172099)反对无条件文件名优先，后来[2025年合入的#4192](https://github.com/junegunn/fzf/pull/4192)以path内的pathname同分规则有界支持，进入0.59.0；固定合并为243a76002c93b474cf8401b37670a43803a0a2d2。它既不是无条件basename-first，也没有排除目录匹配；未见原请求者对最终实现的回访，不拿此链代替#2930闭环。**[一手：后续实现；研究：反证]**
+
+### Meilisearch：排前不能解决不应入选，稀有词也不总是意图
+
+[组织讨论#255](https://github.com/orgs/meilisearch/discussions/255)中，LowSociety于2021-12-14报告分类、文章、商户各取三条，某组没有全词匹配仍被弱结果填满，因而无法升级；强匹配排前并不能解决空组的准入问题。后续发布all/last。2025-02的以花束搜索为例的使用者又希望放宽时丢弃稀有的birthday、保留常见bouquet，与frequency偏好相反；维护者解释稀有词可能更能表达意图。未见前者升级成功或后者最终满意的回访，不能写成两例均已解决。**[社区：使用情境；一手：设计回应；研究：反证边界]**
+
+[PR4667](https://github.com/meilisearch/meilisearch/pull/4667)于2024-05-30合并frequency。固定d6bd88ce4f86927017f8f87c97a68cf24f1be49b的[匹配测试](https://github.com/meilisearch/meilisearch/blob/d6bd88ce4f86927017f8f87c97a68cf24f1be49b/meilisearch/tests/search/matching_strategy.rs)分别定义all/last/frequency期望结果，且拼错Capitain Marvel时all仍期望命中：**要求所有词不等于逐字无容错**。这是已读测试定义，未运行，也未查CI。[查询图实现](https://github.com/meilisearch/meilisearch/blob/d6bd88ce4f86927017f8f87c97a68cf24f1be49b/milli/src/search/new/query_graph.rs)按文档频率生成移除顺序，零命中另有处理，不能说成任意OR组合遍历。**[一手：固定源码与测试定义]**
+
+回读[官方搜索API](https://www.meilisearch.com/docs/reference/api/search/search-with-post)：all不放宽，last从末词逐步放宽，frequency按频率丢词；结果是否可因删词入选，不能由排名规则等价代替。可直接借用这些成熟机制，按入口决定宁可少结果还是接受放宽，同时保留所需纠错；不是统一推荐某个策略。**[一手：官方语义；经验：采用判断]**
+
+**证据与停止条件。** fzf有同一用户的版本后确认；Meilisearch只有使用需求、实现与后续相反偏好，两链不拼成同等收益证明。没有长期使用测量、检索评估集或AI净收益证据。现成机制已满足任务就无需改引擎；仍不满足时，先区分准入、排序与输入顺序究竟哪一项缺失。**[研究：验证边界；经验：采用判断]**

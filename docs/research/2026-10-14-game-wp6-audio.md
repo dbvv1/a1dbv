@@ -237,6 +237,12 @@ Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/communi
 
 后续获准试玩时，应同时检查：新玩家能否区分结果；密集操作中是否仍听见危险；重复操作是否疲劳；音乐是否自然承接而非频繁重启；扬声器／低音量／单声道／无声能否保持关键信息。把“好听、爽快、可读”和“无 click、无缺引用”分别记录；前者必须有人在玩法中判断，自动峰值／长度检查不能替代。[研究]
 
+**低音量下的动态范围选择（2026-10-15 UTC 补核）。** [Returnal 音频主管 Loic Couthier 访谈](https://www.asoundeffect.com/returnal-game-audio/)（2021-06-30）说明：为避免玩家误把最大动态范围当最佳音质，依据玩家填写的设备、播放音量和背景噪声推荐模式并解释原因；这主要是建议，不是自动测量／校准。其 Speaker Tuning 的 EQ 与 VO Focus 的对白让位另有职责。[一手] 因此强声够响而弱提示在低音量下丢失，可考虑较窄动态混音；同时发声互盖仍先减层／让位。动态范围指强弱差，不是总音量或资源编码压缩。[研究]
+
+反例：[Alien: Isolation 的 Sam Cooper／Byron Bullock 访谈](https://www.thesoundarchitect.co.uk/alienisolation/)（文末日期 2014-06-27）明确有意采用高动态范围，用安静／沉默强化突然声音的紧张感，同时避免持续紧张造成疲劳。[一手] 这支持保留表现反差，不证明该游戏不能有较窄动态选项；两款专业团队作品仅支撑设计取舍，不保证单人无音频人员能自动复现。[研究]
+
+复用原生混音即可先试，不建新菜单体系或 DSP 框架。[Unity 6.3 Audio Compressor](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioCompressor.html)当前文档明确实际为固定 ∞:1 的 limiter；[UE 5.8 Submix Effect Dynamics Processor](https://dev.epicgames.com/documentation/unreal-engine/BlueprintAPI/Utilities/Struct/MakeSubmixEffectDynamicsProcesso-?lang=en-US)则有 processor type、ratio 与输入／输出增益等设置。[一手] 不套统一参数，沿用既有玩家音量与情境混音分层。每增一种混音，新增敌人／武器／台词都需重核弱提示、轻重辨识、安静到战斗的反差与连续听感；出现过强压低或反差损失就撤回处理，默认已合格不必增模式。公开资料不证明听感改善，本轮未试听或运行引擎。[研究]
+
 [研究] 历史反馈质量补研：两文件 `git diff --check`、`check_repo.py` 177 文件及 GFM 新锚点／三行表通过；未重跑完整离线入口。
 
 ### 10.5 Unity／Unreal：同一质量目标，不同原生职责

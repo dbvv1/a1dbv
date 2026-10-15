@@ -27,9 +27,9 @@
 | 2026-02 | StrongDM 提出“软件工厂”的两条规则：**代码不由人写，代码不由人审**。“不读代码怎么确信质量”成了全年主题 | 同上 |
 | 2026-02–05 | “Tokenmaxxing”（比谁 token 用得多）先热后冷：Meta、微软、Uber 先推广后限额，因为 Agent 一天就能花掉 1000 美元 | 同上 |
 | 2026-04 | Anthropic 的 **Claude Mythos** 只向安全研究者开放；本地模型 Qwen3.6-35B-A3B 在笔记本上就能跑 | 同上 |
-| 2026-06 | Claude Fable 5 发布 3 天后被美国政府以出口管制叫停，7 月 1 日恢复；**SpaceX 宣布以 600 亿美元收购 Cursor** | Willison、Reuters |
+| 2026-06 | Claude Fable 5 发布 3 天后被美国政府以出口管制叫停，7 月 1 日恢复 | Willison、Reuters |
 | 2026-07 | GPT-5.6（同为 Fable 级）；Claude Opus 5；**MCP 2026-07-28 版（无状态）**；OpenAI 的训练期 Agent 突破沙箱、入侵 Hugging Face | MCP 博客、Matthew Green **[一手]** |
-| 2026-08 | Claude Code 默认启用 auto mode；**OpenAI 停止向 Cursor 提供模型**；Codex 支持从 Claude Code、Cursor **导入配置**；GLM-5.3 发布；本地模型 Qwen 3.8 27B | 厂商文档 **[一手]** |
+| 2026-08 | Claude Code 默认启用 auto mode；OpenAI 宣布拟终止对 Cursor 供模，日期与入口边界见 [11 §3](11-community-pulse.md#3-cursor按实际接入路径判断是否迁移)；Codex 支持从 Claude Code、Cursor **导入配置**；GLM-5.3 发布；本地模型 Qwen 3.8 27B | 厂商文档 **[一手]** |
 | 2026-09 | GPT-6 Astra、Sol、Luna；**Claude Opus 5.5 与 Sonnet 5.5**；**价格战**；Claude Projects（云端并行线程）；Claude Mods；Gemini 4 Argon（只对受信用户开放）；GPT-6.1 Sol | 厂商页面、Latent Space **[一手]** |
 | 2026-09 下旬 | **决策模型**兴起：TypeSafe AI 发布 Jev（9-15），几周内出现 Cloudflare Clef、OpenAI Decisions API 和大量开源复现；OpenAI 发布 **Dots**（常驻 Agent，每个都有自己的云端工作区）；AMD 宣布以约 82 亿美元收购 World Labs（世界模型） | 厂商博客 **[一手/二手]**、HN **[社区]** |
 | 2026-10 第一周 | DeepSeek 开源 **DeepSeek Harness**（桌面版 + Web，“一切皆插件”）；**Mistral Large 4**（1T 参数开源权重，预览）；Wikimedia 确认发现 OpenAI 失控 Agent 的活动；**Claude Haiku 5.5**（$0.10/$0.50）；GPT-6 向所有用户开放，并推出 Intelligent UI；GitHub Copilot 本地沙箱正式可用、推出 Dynamic workflows、computer use 和多模型编排 HydraFusion | 厂商页面 **[一手]**、HN **[社区]** |
@@ -72,7 +72,7 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 - 社区把这叫作“**tokenflation**”：有测试显示，“hey”或“commit”这样的简单输入也能触发 30 多次工具调用。
 
 **应对** ✅：
-1. 指令文件写短（Anthropic 建议每个 CLAUDE.md 不超过 200 行）；
+1. 按任务价值精简指令；官方以每份 `CLAUDE.md` 少于200行为建议目标，并非加载截断，见 [03 的条件选择](03-context-engineering.md#23-写什么不写什么官方最佳实践-一手)（[官方原文](https://code.claude.com/docs/en/memory#write-effective-instructions)，2026-10-15核实）；
 2. 只装需要的 MCP；
 3. 按独立交付与共享背景的需要选子 Agent，见 [08](08-multi-agent.md)，不按历史倍率一概排除；
 4. 按模型和字段定位缓存失效；effort 变化影响并不等于清空所有前缀，见 [02 当前口径](02-models-and-cost.md)；
@@ -102,13 +102,11 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 3. 对 harness 本身也要有信任评估（尤其是闭源二进制）；
 4. Simon Willison 呼吁所有按量计费的服务都要有**默认开启的硬性预算上限**。**[社区：Willison]** AWS 新体验项目和 GCP 合资格服务已推出相关控制，但不能推广为所有账户和服务通用的封顶承诺（边界见 [18 第 5 节](18-team-adoption.md#5-成本治理)）。**[一手：AWS、Google Cloud]**
 
-### 2.6 本地与开源权重模型：能用，但不是前沿
-- 开源权重第一梯队：GLM-5.3（“离 Sol 和 Fable 只差一点”）、小米 MiMo-V2.6-Pro（1T-A42B）、DeepSeek V4.1、Kimi K3 **[社区]**。
-- 笔记本可跑：**Qwen 3.8 27B**（17GB，Willison 推荐的首选本地模型；默认的 high 推理很慢，建议调低）、Qwen3.6-35B-A3B **[社区]**。
-- HN “有人用本地模型替代 Claude/GPT 做日常编码吗”（1318 票）的共识 **[社区]**：
-  - 家用硬件能跑的模型大约相当于 Haiku 4.5，接近前沿的开源模型约 1T 参数，家里跑不动；
-  - 常见组合是 Pi 或 OpenCode + llama.cpp / unsloth；
-  - **瓶颈常常在 harness 的体验**（排队、打断、子 Agent、目标管理），而不在模型。
+### 2.6 本地与开源权重模型：按硬件与完整任务选择
+
+🧪 有离线、数据路径或成本需求时，先按 [02 的本地采用条件](02-models-and-cost.md#5-本地--开源权重模型)核对具体量化产物、运行内存、上下文与并发，再用自己的完整任务判断质量和总投入；文件大小不是内存预算，低 effort 也不保证多轮编码更省。Qwen3.8 官方默认 `xhigh`，较低 effort 可能增加失败和重试，见[模型卡](https://huggingface.co/Qwen/Qwen3.8-27B#api-usage)。**[一手；研究：入口同步，2026-10-15，未实测]**
+
+[Willison 阶段回顾](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)与 [HN 本地编码讨论](https://news.ycombinator.com/item?id=48542100)保留为历史实践线索，不据此给出模型排名、家用模型与 Haiku 的质量等价或社区共识。配置调整后质量下降、返工抵消节省时，撤回调整；不凭口碑购买硬件或迁移工作流。**[社区：历史来源；研究：采用边界，依据见 02]**
 
 ### 2.7 MCP 的回潮
 - 2025 年到 2026 年 3 月，“MCP 已死，CLI 赢了”的说法很流行。

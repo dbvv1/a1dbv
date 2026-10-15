@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭。[经验／研究]
-证据摘要：补OCRmyPDF两位用户的不同映射故障与固定分流修复（2026-10-15 UTC，只读，无旧库恢复回执）；补核 dot 官方首轮审阅建议及不同作者的网页／站点工作记录，仅增补持续责任的起步选择，不扩写通用验收／送达规则（2026-10-15 UTC）；另补 Vitest 5.0.4 原生执行依赖记录、固定源码及 linked workspace 预打包漏选报告（2026-10-15 UTC 核实，未复测）；新增 dot 云端同一公开 X URL 抓取 403、正常 Chrome 读取与刷新成功的现场观察（2026-10-15 UTC），另补公开 GET 的 200／已知 ID 测量，均只支持按路径与内容分别诊断；另核 Claude API 拒答／服务错误与 CLI fallback 的不同触发条件；另核 Codex 0.162.1 Hook 输入／输出与异步实现、Claude 当前契约，并对既有 Claude 脚本做 5 类合成输入检查（不执行补丁）。官方权限／运行契约、固定 sandbox-runtime 的 socket／mask 分支及 Claude Code 2.1.285 版本反证、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界。[经验／研究]
+证据摘要：补Ruff个人编辑配置初试与后续内联实现、Firefox单键停止同步及RFP反证、Prettier团队一致性约束（2026-10-15 UTC，只读）；补OCRmyPDF两位用户的不同映射故障与固定分流修复（2026-10-15 UTC，只读，无旧库恢复回执）；补核 dot 官方首轮审阅建议及不同作者的网页／站点工作记录，仅增补持续责任的起步选择，不扩写通用验收／送达规则（2026-10-15 UTC）；另补 Vitest 5.0.4 原生执行依赖记录、固定源码及 linked workspace 预打包漏选报告（2026-10-15 UTC 核实，未复测）；新增 dot 云端同一公开 X URL 抓取 403、正常 Chrome 读取与刷新成功的现场观察（2026-10-15 UTC），另补公开 GET 的 200／已知 ID 测量，均只支持按路径与内容分别诊断；另核 Claude API 拒答／服务错误与 CLI fallback 的不同触发条件；另核 Codex 0.162.1 Hook 输入／输出与异步实现、Claude 当前契约，并对既有 Claude 脚本做 5 类合成输入检查（不执行补丁）。官方权限／运行契约、固定 sandbox-runtime 的 socket／mask 分支及 Claude Code 2.1.285 版本反证、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
 关键边界：普通 headless、bare、trust 与 sandbox 不等价；strict 不排除已配置的沙箱外命令，socket 过滤和可选 mask 的目标／失败默认值须单独核对；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
@@ -559,6 +559,12 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 **选择边界。** 只涉及已确认来源的统一调用形状，现成语法规则已覆盖时，不必另装完整语义平台；变换取决于导入对象、跨文件引用、继承或类型缩窄时，优先使用能解析本项目的类型／框架迁移器。剩余少量例外交 Agent 逐项读契约、改代码并测试；若大部分都需例外决策，停止扩写通用规则，改为直接补丁。没有证据支持一个通用文件数阈值，也没有本轮同任务 Agent 对照。**[研究／经验：条件判断]**
 
+### 批量入口：先选改法，再选执行方式
+
+2026-10-15 UTC回读：[Claude官方fan-out配方](https://code.claude.com/docs/en/best-practices#fan-out-across-files)仍建议前2–3个文件调提示，再全量执行；[commands的/batch条目](https://code.claude.com/docs/en/commands)仍描述5–30个独立单元、计划批准后各在worktree执行。数字本身没有过时，但不是迁移覆盖或操作授权的通用门槛。[Angular当前文档](https://angular.dev/reference/migrations/signal-inputs#configuration-options)则明确：`--path`限修改范围，默认仍分析全workspace；缩小`--analysis-dir`会静默遗漏外部引用。只按文件分片可能破坏现成分析的前提。**[一手：当前官方契约，只读]**
+
+[Anthropic迁移复盘](https://claude.com/resources/articles/ai-code-migration)（2026-07-16）的依赖图与Step 2还区分保结构移植和重设计：三文件逐行比较适用前者，后者改为设计审阅与可丢弃的端到端试跑。这是厂商经验，不证明所有迁移都需相同评审层或扔掉首产。结合本节TanStack再使用反馈及Angular固定机制，15总表／§5与Claude入口统一为“先选改法、按差异试点、再按依赖和风险扩量”，不再把少量文件通过或有测试等同于全量迁移可高自主执行。工具功能表保留真实5–30描述；没有新增模型实验或净收益测量。**[一手：作者复盘；经验：入口收敛]**
+
 ### 重复执行与第二次需求不是同一项保证
 
 **同一次批处理也可能重复修改同一文件。** Angular 用户 Wandang 的 [#61611](https://github.com/angular/angular/issues/61611)（Angular 19.2.12）报告模板出现 `title()()` 与重复 TODO。维护者[指向已修复的 #61421](https://github.com/angular/angular/issues/61611#issuecomment-2901248608)，其根因是多个 tsconfig 的源文件重叠。固定 [run_in_devkit.ts](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/utils/tsurge/helpers/angular_devkit/run_in_devkit.ts)用文件到编译单元的归属表，避免同一源文件在不同单元重复分析／生成替换；这不是证明所有变换均幂等。维护者通过 [#61612](https://github.com/angular/angular/pull/61612)回移到 19.2.x（落地提交 [`2ae69f7`](https://github.com/angular/angular/commit/2ae69f77e7ef9a6431303cfad54cabb068435d6f)）；本轮只读核对 19.2.13 与 20.0.0 标签的同路径均已包含归属去重，未独立运行或取得该用户修复版复测。**[社区：故障报告；一手：维护回复与源码]**
@@ -770,3 +776,41 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 **运行、恢复与归因边界。** #1747补丁定义真实Ghostscript往返测试，但缺Ghostscript时会跳过；文本抽取断言仅在pdftotext存在时运行，并检查大写字母样例，不能代表连字、全部文字或57本书库。#1744补丁另有逐字符映射与抽取测试，测试定义不等于本轮执行或全部CI已核。维护者提出用固定OCRmyPDF对原扫描件重做OCR来修既有文件，但没有找到原用户全库恢复回执；关闭issue不替代这个结果。本轮只读公开讨论、源码和测试，未安装或运行OCR、PDF工具、模型，不能据Claude协助诊断推断故障代码由AI生成或净收益。**[一手：测试范围；社区：恢复建议；研究：证据限制]**
 
 **采用与撤回。** 当兼容故障只由某类输入触发，先保留其他输入仍需要的能力，选择窄格式修复或有条件绕过；若所有支持输入都无需该能力，才可考虑整体删除。已有项目的消费者验收足够时直接复用，不新增全版本矩阵。新证据若显示分流不能保住必要语义，应撤回该绕过、缩小支持范围或改用已验证的消费者；本例没有证明一种文字处理策略可以推广到任意格式或平台。**[经验：条件建议]**
+
+
+## 配置迁移：保留作用阶段与设备边界
+
+核验日期：2026-10-15（UTC）。团队、仓库、个人分层说明谁持有配置，还不足以决定它应在哪个阶段、哪些设备生效。先复用工具已有分层、优先级与选择性同步；需要相同交付产物时保持共享契约，编辑期的合法差异和机器衍生值则分别处理。不为统一配置另建框架，也不把调查建议当作修改用户安全／同步设置的授权。**[经验：采用判断]**
+
+### Ruff：个人覆盖可合并，但文件替代仍可能失去同步
+
+[讨论15991](https://github.com/astral-sh/ruff/discussions/15991)中，stinodego希望个人编辑器规则不强加给同事；维护者建议独立配置与项目合并，2025-02-25用户报告初试符合需要。另一用户jtchen2k说外部文件生效，却失去编辑器跨设备同步；ilCatania则提出项目成员共用、仅编辑期生效的配置诉求，编辑时保留探索代码、提交时清理。它们分别证明个人范围、同步需要与阶段差异，不能合成一个用户已经无损迁移的闭环。**[社区：实际使用与初试；一手：维护者建议]**
+
+[PR16296](https://github.com/astral-sh/ruff/pull/16296)于2025-02-26合并，固定be03cb04c13cbd74467acdb4a1501b620db16975新增内联配置并保留文件路径形式；[配置合并实现与测试](https://github.com/astral-sh/ruff/blob/be03cb04c13cbd74467acdb4a1501b620db16975/crates/ruff_server/src/session/index/ruff_settings.rs)分别处理两种输入，测试特定编辑器设置相对内联配置的优先级。PR注明VS Code需配套扩展修改[#702](https://github.com/astral-sh/ruff-vscode/pull/702)，服务端合并不证明任意旧客户端支持。**[一手：固定源码与测试定义，未运行]**
+
+[当前官方设置文档](https://docs.astral.sh/ruff/editors/settings/)保留这两种入口，注明内联自0.9.8引入；未设置编辑器配置时读取项目配置，冲突可选择编辑器优先、文件优先或仅编辑器。成熟能力可承载个人编辑体验，无需把个人偏好改成共享规则或自建同步服务。没有取得jtchen2k对最终内联版本跨设备同步的回访，不能把前一位用户的文件方案初试升级成这项收益。**[一手：文档；研究：采用边界]**
+
+### Firefox：依赖本机OS的偏好，收窄到单项停止同步
+
+[Bug1851024](https://bugzilla.mozilla.org/show_bug.cgi?id=1851024)涉及`general.smoothScroll`：默认随各机器OS减少动态效果设置变化，用户报告显式关闭后仍被重新开启，涉及Mac与Windows。[维护者最终取舍](https://bugzilla.mozilla.org/show_bug.cgi?id=1851024#c31)是停止同步这一项。固定[ff976fb221cb17c7bec216b8ca2cfa3d913a19a1](https://github.com/mozilla-firefox/firefox/commit/ff976fb221cb17c7bec216b8ca2cfa3d913a19a1)于2024-08-16仅移除`services.sync.prefs.sync.general.smoothScroll=true`并留下注释，相邻其他同步项保留；记录标Firefox131修复。**[社区：使用反馈；一手：决定与固定补丁]**
+
+原作者和QA曾未能复现，另有不启用偏好同步者报告相似症状；故不把所有“重新开启”都归因Sync。页面没有原作者最终版回访，QA白板也不等于验证通过。补丁改变默认同步集合，不证明能覆盖用户另行指定的自定义同步规则，更不支持停止所有偏好同步。**[研究：反证与结果边界]**
+
+更晚的[Bug1928570](https://bugzilla.mozilla.org/show_bug.cgi?id=1928570#c12)报告132版相似表现，维护者排除已停止的Sync，用户后续定位到Resist Fingerprinting，维护者说明属预期设计，并[以 INVALID 关闭该 issue](https://bugzilla.mozilla.org/show_bug.cgi?id=1928570#c16)；不能称为同步补丁复发，也不能说停止同步解决了一切滚动问题。这里只提配置来源差异，不建议读者关闭隐私功能。**[社区：后续定位；一手：维护者解释]**
+
+### 反向约束：共同产物仍须一致
+
+[Prettier官方配置说明](https://prettier.io/docs/configuration)明确不支持全局配置，以保持项目换电脑后的格式一致；它从被格式化文件位置查配置，并允许项目内限定覆盖。此设计目的不能算用户收益测量，但足以反对把Ruff个人编辑覆盖推广为所有工具都应个人优先。**[一手：官方设计；研究：反例]**
+
+**证据边界。** 上述用户初试、固定源码与官方设计分别计证据；未运行客户端、同步或上游测试，也没有AI净收益证据。**[经验：采用判断；研究：验证范围]**
+
+
+## 原生下拉菜单的截图与语义验收
+
+主线二／四；核实：2026-10-15 UTC。改变23的观测选择：原生 `<select>` 选值与应用结果优先语义验收；只有展开层外观属于要求时，才补目标浏览器／系统实际屏幕，不因网页截图缺失重写控件。**[研究：采用判断]**
+
+Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者报告原生下拉展开后，网页截图在macOS缺少菜单、Ubuntu位置异常、Windows截图挂起；[维护者](https://github.com/microsoft/playwright/issues/38200#issuecomment-3533050490)报告在macOS、Ubuntu及原始CDP／Puppeteer路径复现类似问题。2026-01-07的[关闭说明](https://github.com/microsoft/playwright/issues/38200#issuecomment-3718636129)指出跨平台原生实现不同、无Playwright行动项；随后针对视觉Agent[建议整屏捕获或DOM文本补充](https://github.com/microsoft/playwright/issues/38200#issuecomment-3720341206)。closed及v1.58标签不能当作修复发布证明，也不据历史说明推定所有当前版本／系统都无法截图。**[社区：报告；一手：维护者解释]**
+
+[固定复现库](https://github.com/kisotechnology/playwright-screenshot-issue/tree/0f1f0177f07c3ce70e49168c60d460f89cbda9ef)的`scripts/capture-dropdown.js`以headed Chromium点击原生select，再取全页截图；已查看其展开菜单与缺菜单配图，但图像尺寸不同，不视为本仓取得的严格同条件对照。报告称1.56.1，`package.json`却使用`^1.41.2`且无锁文件，固定源码不等于固定安装版本。**[一手：源码和产物；社区：运行版本自述]**
+
+[当前selectOption契约](https://playwright.dev/docs/api/class-locator#locator-select-option)是选择选项并触发input／change事件；可据此验应用结果，不证明用户看到的原生展开层外观。这里不扩展到所有浏览器UI，也不默认增加桌面工具；未安装、运行浏览器或复演上游。**[一手：官方契约；经验：采用边界]**

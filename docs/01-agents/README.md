@@ -27,7 +27,7 @@
 | LSP 代码智能 | ✅ 官方插件；[需服务器二进制，官方云会话不启动](../05-skills-and-plugins.md#3-插件与市场) | 原生语义导航按客户端／扩展核查，见 [LSP 边界](codex.md#lsp修复反馈与语义操作不能混为一谈) | — | ✅ |
 | 沙箱 | macOS Seatbelt / Linux bubblewrap，可配网络白名单 | 默认沙箱（macOS Seatbelt / Linux bubblewrap / Windows sandbox） | Seatbelt / Docker | — |
 | 自动审批 | auto 分类器；v2.1.283 起交互终端／VS Code 内建默认，受设置与可用性影响，见 [06](../06-hooks-and-guardrails.md#4-auto-mode实测数据) | Auto-review 审查 Agent（`approvals_reviewer = "auto_review"`，策略开源） | Unified Auto Mode | — |
-| 回滚 | checkpoint + `/rewind` | CLI 会话与文件同步恢复仍有历史诉求；按实际入口保留检查点，见 [Codex](codex.md#4-优势与短板) | checkpointing + rewind | — |
+| 回滚 | checkpoint + `/rewind` | CLI 会话与文件同步恢复仍有历史诉求；按实际入口保留检查点，见 [Codex](codex.md#4-优势与短板) | 编辑记录 `/rewind`／项目快照 `/restore`（需启用），[范围不同](gemini-cli.md#恢复范围) | — |
 | 云端 / 远程 | Web、手机、Remote Control、Routines、**Projects**（云端并行；本机资源另选 Remote Control 线程） | Codex Cloud（**可复用的云端环境**，2026-09）、ChatGPT 桌面 App、常驻 Agent **Dots**；并行不以 Ultra 为唯一入口，见 [模型选择](codex.md#2-模型按任务与实际用量选择) | — | 桌面 App（Beta） |
 | Harness 开销 | 历史版本测得较高固定输入；当前按任务、缓存与工具配置核查，见 [开销边界](claude-code.md#6-已知问题与社区反馈) | — | — | 不用旧版本输入量推定当前净成本 |
 | 程序化调用 | `claude -p`、Claude Agent SDK、Managed Agents（见 [16](../16-building-agents.md)） | `codex exec`、Codex SDK、app-server、Agents API | 非交互模式 | `opencode run` 等 |
@@ -44,7 +44,7 @@
 | 交叉评审 / 第二意见 | 🧪 按风险增加新上下文评审 | 同模型或跨模型都可能共享盲点；按 [09](../09-review-and-quality.md#2-评审手段)比较新增有效发现、误报与成本，不默认必须换品牌 **[研究]** |
 | 预算有限 / 多模态输入 | 🧪 **Gemini CLI** | 个人账号有免费额度、1M 上下文 **[一手]** |
 | 模型自由、本地模型、私有部署 | 🧪 **OpenCode** / **Qwen Code** / **Goose** | 多服务商、可接本地模型 **[一手]** |
-| 主力在 JetBrains IDE | 🧪 Rider/IntelliJ + ACP 接入 Claude/Codex | 2026 版 AI Chat 可选 Claude Agent、Codex 等 **[二手]** |
+| 已有 JetBrains 工程 | 🧪 先核 AI Chat 集成／ACP 是否覆盖必要路径 | 平台、认证与所需操作满足时保留现有 IDE；CLI 可用不证明 IDE 入口同配置兼容，见 [JetBrains 边界](ide-and-others.md#jetbrainsintellij--rider--pycharm) **[一手；研究：采用判断]** |
 | 愿意自己定制 harness 并维护隔离 | 🧪 **Pi** | 默认启用 4 个工具，可扩展 MCP／codemode；按进程权限运行，隔离需另设。工具少不证明净成本低，见 [固定来源与边界](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界) **[一手；研究：采用判断]** |
 | 新项目依赖持续的模型／接口适配 | ⛔ 暂缓新采用 **Aider** | main 末次提交仍为 2026-05-22，维护风险需考虑；main 已有较新模型配置，不等于稳定版已发布。已有稳定工作流不据此迁移，见 [维护与兼容边界](../research/2026-10-12-community-source-records.md#2026-10-15-aider维护节奏与模型兼容分开判断) **[一手；研究：采用判断]** |
 

@@ -211,9 +211,20 @@ Simon Willison 的 [research PR #10](https://github.com/simonw/research/pull/10)
 
 ### 11 §3 已撤回的旧主张（不作为事实引用）
 
-旧正文把下列内容连成迁移理由：定价抱怨很多；2026-08 用量页和 CSV 移除费用；2026-06 SpaceX 以 600 亿美元收购 Cursor；2026-08 OpenAI 停止模型供应；转售 API 无法竞争官方补贴订阅，很多人因此转向 Claude Code／Codex。**这些仅用于记录本次撤回对象，不是本轮确认的事件或数字。**
+旧正文把下列内容连成迁移理由：定价抱怨很多；2026-08 用量页和 CSV 移除费用；2026-06 SpaceX 以 600 亿美元收购 Cursor；2026-08 OpenAI 停止模型供应；转售 API 无法竞争官方补贴订阅，很多人因此转向 Claude Code／Codex。**这些仅记录此前撤回对象，不可整体当事实引用；收购完成与供模计划现已由下文一手资料补核，其他断言未因此恢复。**
 
-旧来源只有 [Cursor 论坛总帖](https://forum.cursor.com/t/pricing-megathread-and-q-a/116395)，未逐项连接官方交易／供应声明、具体产品通知与可核对迁移者。此次没有重做商业新闻调查，也不据缺证据判断真伪；由于会影响读者迁移或消费，直接从正文删除全部强断言，不让历史未核内容继续担当采用依据。其真假不影响本轮结论：不能依靠这条旧段决定迁移。**[研究：撤回原因与范围]**
+旧来源只有 [Cursor 论坛总帖](https://forum.cursor.com/t/pricing-megathread-and-q-a/116395)，未逐项连接官方交易／供应声明、具体产品通知与可核对迁移者。此前未重做商业新闻调查，也未据缺证据判断真伪；先从正文撤回强断言，避免历史未核内容担当采用依据。以下补核替代其中已取得证据的缺口，仍不能依靠旧段整套推论决定迁移。**[研究：撤回原因与范围]**
+
+
+### Cursor 供模计划与实际入口：2026-10-15 补核
+
+- [OpenAI 8月28日声明](https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex/)宣布拟终止供模合同，提出11月12日截止且不提供未来模型；[当前帮助页](https://help.openai.com/en/articles/20001506-using-openai-models-in-cursor)明确最终日期仍待双方确认，Cursor 可提前结束。因此13旧“8月停止供应”把计划写成已执行，不能沿用；也不承诺过渡期可用至某日。**[一手：计划与当前说明]**
+- **入口不能互换**：该帮助页区分独立 Codex IDE 扩展与本地 Chat／Agent 的 BYOK；扩展不改变 Cursor 原生服务用的模型，BYOK 不覆盖 Tab、Auto、Cloud／Background Agents、Automations、CLI、API／SDK，API 费用也独立于订阅。[Cursor 自身文档](https://cursor.com/help/models-and-usage/api-keys)还把 OpenAI BYOK 限于 standard non-reasoning chat models，以实际模型选择器为准；Teams／Enterprise 另有 Cursor Token Rate，Cursor 的 ZDR 不覆盖 BYOK，请求仍经过其后端构造提示。不能把“可带密钥”当任意模型、云端任务或纯本地路径的替代保证。**[一手：双方当前入口契约]**
+- [Cursor 8月14日公告](https://cursor.com/blog/joining-spacex)确认收购完成，取代“收购事件未核”的旧缺口；它不证明实际性能、费用或迁移收益。Reuters 旧链接本轮未能读取，600亿美元金额不影响当前选择，从13新闻正文撤下，旧断言仍在上节留作审查定位。**[一手：收购完成；研究：收窄范围]**
+
+**采用判断**：仅当必要路径不满足才考虑迁移，先分别核入口、模型支持、费用及数据政策。这里是公开契约核查，未安装客户端、配置凭据或验证真实账户；未恢复旧段“普遍涨价／大量用户迁移”的无据概括。**[经验：条件建议]**
+
+同轮收敛13的指令长度入口：[Claude 官方说明](https://code.claude.com/docs/en/memory#write-effective-instructions)以每份 `CLAUDE.md` 少于200行为建议目标，不是加载截断；`MEMORY.md` 在会话启动时加载首200行或25KB，以先达到者为准。官方另说明 `CLAUDE.md` 不超过4MiB时完整加载、超过则跳过；这不是200行建议的含义，imports也不降低启动加载量。13回链03按任务价值取舍，不把该建议扩成所有指令的硬门槛，未做遵从或成本实验。**[一手；研究：范围]**
 
 
 ## 社区体验、额度与迁移不能代替采用证据
@@ -236,3 +247,27 @@ HN 的 [成本串](https://hn.algolia.com/api/v1/items/49997161)（10 月 7 日�
 11 删除点数／情绪排行及不改变具体选择的新闻，撤下未经本轮核实的账号原因猜测、保留期限、采用率和工具指控；不保留或新增敏感个人细节，不裁定事件真假。保留三项条件选择和额度反证，未另建价格表或专题。重新扩大建议需同任务的质量／成本对照、可接手产物或实际迁移记录；更多赞数与体验帖不能替代。**[研究：撤回与重新考虑条件]**
 
 L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条件、04 的凭证／进程边界、10 的模拟审批范围及 18 开头预算判断，收窄 11 §4–5 的五处泛化；未重新认证全部历史动态事实，不因此声称达到 L3。**[研究：本轮修订范围]**
+
+
+## JetBrains：同名 Agent 不等于原 CLI 环境
+
+核实：2026-10-15。对应01选型与JetBrains深页；只读公开文档及原帖，未安装、登录或运行客户端。🧪 已有IDE入口满足必要路径时可继续用；不因同名Agent出现在AI Chat，就推断它继承原CLI的执行环境、认证、命令或插件。**[研究：采用判断]**
+
+- **当前接入契约**：[ACP 2026.2文档](https://www.jetbrains.com/help/ai-assistant/acp.html)（页日期10月7日）区分Registry与自定义agent；Registry安装时IDE管理所需运行时，已有兼容runtime可复用，自定义agent则由IDE作为子进程启动；ACP无需JetBrains AI服务订阅，但当前列WSL不支持。MCP／IDE MCP须按所需能力选择暴露，不等于自动继承全部IDE工具。此WSL限制仅按该ACP页面表述，不外推全部JetBrains产品。**[一手]**
+- **认证与插件分别核**：[Codex集成](https://www.jetbrains.com/help/ai-assistant/codex-agent.html)有JetBrains AI订阅、ChatGPT登录、OpenAI API key三路；只有BYOK限定OpenAI直接key，第三方key即使提供同品牌模型也不支持。[Claude Agent](https://www.jetbrains.com/help/ai-assistant/claude-agent.html)明确不同于独立Claude Code [Beta]插件，slash commands仅支持子集。两种集成都不遵从AI Assistant的`.aiignore`；需要排除敏感文件时沿用[10的实际权限边界](../10-security.md)，不能把编辑器排除规则当通用安全隔离。**[一手：当前产品契约]**
+- **历史使用反例**：[LLM-28234](https://youtrack.jetbrains.com/issue/LLM-28234)原报告在PyCharm26.1.2打开WSL工程，CLI经第三方服务可用，AI Chat却认证失败；改Windows侧认证后仅认证通过，API错误仍在。5月29日维护者解释，IDE管理独立runtime／认证状态，agent跟随IDE backend所在host；直接从Windows打开WSL路径不等于使用WSL CLI状态。6月2日原报告者后续反馈两种Codex入口分别路径失败与provider检测失败，维护者说明当时legacy native／ACP过渡。6月22日因缺补充信息自动关闭为Incomplete，没有最终恢复回执。**[社区：同一用户的初报与后续反馈；一手：维护者解释，未复现]**
+
+原帖及全部4条评论通过匿名公开YouTrack API读取。维护者历史上提出Remote Development等绕过，不足以覆盖当前文档的WSL支持限制；不据旧β标签识别当前实现，不把自动关单当修复。未核到对应闭源客户端固定实现，不用第三方ACP适配器源码冒充该集成；没有当前账户运行结果或效率对照，不能升级为跨平台支持或迁移收益保证。**[研究：证据边界]**
+
+
+## Gemini：编辑记录撤回与项目快照恢复
+
+核实：2026-10-15。对应01回滚矩阵与Gemini深页。🧪 原生编辑记录撤回够用就不加工具；要恢复项目快照时，先核人机混改与实际文件范围，不能用同名“回滚”能力决定迁移。固定源码为main的`06d329873703ddabe8a842d962342ac4ad779e83`，不是稳定发布版已实测结果；未安装、运行客户端或执行恢复。**[研究：采用判断与验证边界]**
+
+- **两个入口**：[官方 rewind](https://geminicli.com/docs/cli/rewind/)限定AI编辑工具记录，不覆盖shell或人工改动；[checkpointing](https://geminicli.com/docs/cli/checkpointing/)默认关闭，启用后保存shadow Git快照，`/restore`恢复项目与对话并重新提出工具调用。[固定 rewindFileOps](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/cli/src/ui/utils/rewindFileOps.ts#L175-L280)读取工具的fileDiff，内容相符则撤回；已有后改则尝试逆补丁，冲突会告警。因此也不保证任意重叠人工改动都能保留。**[一手：契约与固定实现]**
+- **实际Git环境**：[GitService](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/core/src/services/gitService.ts#L105-L233)在项目根运行，`GIT_DIR`指向history目录的`.git`，`GIT_WORK_TREE`指向实际项目根；[Storage](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/core/src/config/storage.ts#L326-L330)按项目标识取history目录。因此元数据与索引属于shadow，修改的是项目文件；项目自身Git的tracked/untracked分类不能直接代替shadow分类。环境另设global/system配置，不沿用用户全局Git配置。**[一手]**
+- **忽略与快照范围**：setup复制项目根`.gitignore`到history目录，但实际Git工作树仍为项目根，不能把树外副本当作唯一有效规则。按[Git忽略契约](https://git-scm.com/docs/gitignore)，工作树各级`.gitignore`、所用Git目录的`info/exclude`及有效excludesFile共同决定忽略；项目自身`.git/info/exclude`不是shadow的exclude，代码也未把`.geminiignore`转成Git规则。快照对整个工作树执行add/status/commit，并非仅存本次编辑文件；已被shadow跟踪的路径不因新增ignore自动停止跟踪。[checkpointUtils](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/core/src/utils/checkpointUtils.ts)还允许创建快照失败后退回当前shadow commit并记录错误，有checkpoint名不证明取到了新的调用前快照。**[一手；研究：范围推断]**
+- **恢复与清理范围**：GitService按目标commit恢复工作树，没有回退shadow HEAD/index；[Git restore契约](https://git-scm.com/docs/git-restore)允许移除shadow已跟踪但目标树不存在的路径。随后清理shadow未跟踪、当时未忽略的文件及目录；[Git clean契约](https://git-scm.com/docs/git-clean)区分普通清理、忽略文件和嵌套仓库，该实现没有要求清除所有ignored文件或强制清除嵌套Git仓库。若恢复也改变了`.gitignore`，后续清理看到的规则会随之改变，不能承诺恢复前ignored的文件始终保留；更不恢复外部数据库或远端副作用。**[一手：命令契约；研究：组合推断，未执行]**
+- **调用者检查的边界**：[CLI restoreCommand](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/cli/src/ui/commands/restoreCommand.ts)仅在启用checkpointing时注册，检查文件名在目录列表中及JSON/schema后调用[performRestore](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/core/src/commands/restore.ts)。后者先交付历史恢复，再检查Git服务并恢复文件；已读CLI→core→GitService链未见人工修改备份、dry-run或冲突预检。[ACP](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/cli/src/acp/commands/restore.ts)与[A2A](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/a2a-server/src/commands/restore.ts)也调用同一核心，但各有入口检查；本轮不据此宣称所有客户端外层均无安全机制。**[一手：静态调用链；研究：审查范围]**
+
+历史[#11243](https://github.com/google-gemini/gemini-cli/issues/11243)是Windows／0.8.1用户报告对话似已恢复、文件却未恢复，后来以stale／not planned关闭，本轮未取得最终恢复回执；只作历史失败反例，不证明当前版本仍坏。上述来源足以区分恢复机制，不证明当前跨平台成功率、混改保留率或相对其他客户端的净收益。**[社区：原始自报；研究：不可外推范围]**

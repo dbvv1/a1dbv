@@ -52,7 +52,9 @@ Meshy7.1不输出emission，`remove_lighting`接受却忽略；T2不接受该参
 
 ### 3.2 既有真实角色案例只支持诊断边界
 
-[既有资产编辑边界研究](2026-10-13-game-asset-editing-boundary.md)已核corosolto/client：生成碎片、UV脚本、运行时锁骨映射错误分层；有运行时引用，且作者冻结22/63缺陷债务。沿用其精确SHA与直接来源，不把它重新包装成WP3零手修通过案例。它反驳“所有问题继续重生成即可”，也反驳“自动rig后就能发售”。[研究：既有证据复用]
+[既有资产编辑边界研究](2026-10-13-game-asset-editing-boundary.md)已核corosolto/client：生成碎片、UV脚本、运行时锁骨映射错误分层；有运行时引用，且作者冻结22/63缺陷债务。沿用其精确 SHA 与直接来源，支持先定位责任，不是零手修通过案例。[研究：既有证据复用]
+
+2026-10-15 补核：另一作者在 [Navy Island Confidential 第10周记录](https://goblin-games-fr.itch.io/navy-island-confidential/devlog/1039309/week-10)（2025-09-23）重做角色，使用两个不同的 Meshy 生成结果后仍手雕、修纹理，并报告肩部服装切口引发权重问题、动画不够顺，身体纹理清理尚待完成。[一手：作者原帖] 这确认外观重做后仍须验变形与清理成本；没有完整拒绝样本、修复终态或精确模型版本，不据此推算失败率，也不外推当前版本或静态道具。[研究]
 
 ### 3.3 成熟基线也须限定
 
@@ -102,8 +104,17 @@ PBR贴图存在不证明物理一致；需区分base color与烘焙阴影、roug
 
 - 只改颜色/磨损：保网格/UV，先参数化材质或retexture；不重生整体。若服务重贴图重做UV，资产特定像素mask失效，要核实际UV/材质槽。[经验]
 - 箱子变长、门需要打开：参数化/分件优先；图生整体箱子不保证盖子独立、铰链/pivot正确。Meshy Auto Split会重建切面且丢原纹理，不能称无损拆分。[一手：[9月16 changelog](https://docs.meshy.ai/en/api/changelog)；经验]
-- 角色换衣/改变比例：优先同体系服装/骨架；重新生成后的skin、挂点、morph与动画适配需重新验收，seed不能保存这些契约。[经验]
+- 角色换衣/改变比例：优先同体系服装/骨架；重新生成后的skin、挂点、morph与动画适配需重新验收，seed不能保存这些契约。[经验；§3.2 作者二改记录支持重新验收，不证明各项均已失败]
 - 重新生成失败：定位生成、后处理、导入/运行时，再决定重试；持续要人工刷权重或修面才能达标，按本基准失败，缩为静态/刚体角色或换资产。[经验；既有corosolto证据]
+
+**常见组合与局部例外（核实：2026-10-15 UTC+8）。** [研究] 同包一致之后，扩充仍可能耗在重复摆放；先复用已有件的常见组合，不直接增加模型数量，也不规定大件更好。
+
+- [一手：作者复盘] Dreamnoid 的 [Dear Clockmaker Postmortem（2025-10-03）](https://itch.io/devlog/1065157/dear-clockmaker-postmortem.amp)记录从体素转为模块后，细墙件仍增加摆放／迭代负担；改用较大的墙与门框组合，同时保留小网格作局部细节。[研究] 借组合粒度，不抄尺寸或自研编辑器；作者自己制作美术，不是零手修数百资产的证明。
+- [一手：作者讲稿，2013] Joel Burgess 的 [Skyrim 模块复盘](https://www.gamedeveloper.com/design/skyrim-s-modular-approach-to-level-design)展示回环接不上时，补半长走廊会掩盖转角 footprint 错误，积累特殊用法；应修基础连接。[研究] AAA 团队可改源模型，不等于本基准具备该能力；不能参数化修正时换合格源／缩需求，不让生成器不断补接缝。
+
+[一手：原生能力] Unity 6.3 [Nested Prefabs](https://docs.unity3d.com/6000.3/Documentation/Manual/NestedPrefabs.html)可让子件保留自身源链接并属于外层组合，支持 override；不等于自动合批。UE 当前 5.8 [Level Instancing](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-instancing-in-unreal-engine)区分可重复 Actor 集合与适合静态密集外观的 Packed Level Blueprint，编辑会传播到其他实例。[研究] 用已有原生组合即可；Packed Level Blueprint 在此只承担静态外观，动态门／交互保留独立 Actor 或合适的行为容器，不为此加入 World Partition。Unity 的局部 override 不类推为 UE 的同等能力，共享修改与单个例外分别验证。
+
+[研究] **二改只预注册**：常见组合复用后改门宽／墙材质，另留一个特殊入口，核共享修改、局部例外、连接与碰撞，比较重复摆放／修正工时。若多数实例都要拆改就缩组合，不预造所有排列。本文仅静态资料核对，未导入资产或运行引擎；作者生产成本不可外推，公开复盘不授予商业资产许可。
 
 成本记“获得一个被采用且经历第二次修改的资产”所有淘汰、贴图、remesh、导出、主动工时，不记一次成功API费。当前[Meshy定价](https://docs.meshy.ai/en/api/pricing)：T2灰模5、2K/4K贴图总15，7.1灰模20/纹理总30，remesh另5；均是单次API credits，不是美元，也不覆盖订阅/图片输入生成/失败重试。[一手] Rodin营销页与API计费表口径不一致，首试前以实际方案报价确认，不横向编造净成本排名。[研究]
 

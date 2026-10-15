@@ -53,7 +53,7 @@ Anthropic 的“多 Agent 提升 90%”和 Cognition 的“不要做多 Agent”
 **怎么选**：
 - 支线调查会把主对话塞满 → **Subagent**
 - 手上有几个独立任务，想交出去、只在需要时介入 → **Agent View**
-- 一个大型迁移或审计，要处理成百上千个文件 → **Dynamic Workflow**（或 `/batch`，或用 `claude -p` 写循环）
+- 迁移先按 [15 §5](15-task-playbooks.md#5-大规模迁移与升级)选改法并试点，再选调度；迁移或审计确需可重放编排时试 **Dynamic Workflow**，脚本调度可用 `claude -p`，独立单元可选 `/batch`，不只按文件数量决定
 - 需要多个 Agent 持续协作讨论 → **Agent Teams**（实验功能，token 消耗大）
 
 ### 2.1 启动与撤回：后台不等于无人值守

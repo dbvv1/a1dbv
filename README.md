@@ -3,7 +3,7 @@
 > 帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用。
 > 主干是通用的 AI coding；具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**本轮更新：2026-10-15（UTC+8）**：[15 条核心建议](docs/README.md#核心建议一致性清单)明确唯一主专题与相关入口；[两种情境走读](docs/README.md#两种情境的入口走读)同时覆盖已有失败和功能正常但有质量目标；[42 页成熟度基线](docs/README.md#核心页面成熟度)列出具体差距和下一步。[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)继续围绕产品试用、能力增量、连续修改和接管成本；文档成熟度不代表真实模型或游戏效果已验证。
+**本轮更新：2026-10-15（UTC+8）**：[核心建议](docs/README.md#核心建议一致性清单)明确唯一主专题与相关入口；[两种情境走读](docs/README.md#两种情境的入口走读)同时覆盖已有失败和功能正常但有质量目标；[核心页面成熟度](docs/README.md#核心页面成熟度)列出具体差距和下一步。[四条长期研究任务](docs/research/BACKLOG.md#四条长期任务以真实开发结果组织研究)继续围绕产品试用、能力增量、连续修改和接管成本；文档成熟度不代表真实模型或游戏效果已验证。
 
 执行资产与历史验证见 [维护路线](docs/maintenance-roadmap.md)、[长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)。证据等级见 [说明](docs/README.md#评级与证据体系)。
 
@@ -32,6 +32,7 @@
 
 | 你现在要做什么 | 推荐入口 |
 |---|---|
+| 需要向外找方案、参照，判断复用还是自建 | [25 AI 探索任务](docs/25-ai-exploration.md) → [12 来源与待验证](docs/12-resources.md) |
 | 已有失败，判断先补资料、工具还是流程 | [15 调试](docs/15-task-playbooks.md#2-调试) → [05 最小补充](docs/05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) |
 | 功能正常，希望改善信息表达、响应或可维护性 | [15 真实任务与质量目标](docs/15-task-playbooks.md#10-原型和一次性脚本) → [22 比较与撤回](docs/22-agent-evaluation.md#7-何时推广何时停止) |
 | 使用 Codex 或 Claude Code | [Codex](docs/01-agents/codex.md) → [Claude Code](docs/01-agents/claude-code.md) |
@@ -76,6 +77,7 @@
 | [22 Agent 评估](docs/22-agent-evaluation.md) | 真实任务集、对照、留出集、行为与结果、成本、模型裁判与原始证据 |
 | [23 浏览器验证](docs/23-browser-verification.md) | 用户路径、持久化、视觉、异常恢复、会话隔离与测试自修复 |
 | [24 社区工作流](docs/24-community-workflows.md) | 七个开源项目、维护者与使用者原帖、工作流分歧和失败案例 |
+| [25 AI 探索任务](docs/25-ai-exploration.md) | 定义、检索、甄别、收敛、转化、评估；借现成研究工具，输出有证据的选择与生成约束 |
 
 ### 分支：领域落地
 

@@ -1,6 +1,6 @@
 # Gemini CLI 与 Antigravity
 
-> 核实时间：2026-10-08。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
+> 核实时间：2026-10-08（恢复范围于 2026-10-15 补核，其余保留原核实范围）。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
 > 评级：🧪 **试用**（预算敏感、多模态、Google 生态）
 
 ## 1. 基本情况
@@ -13,7 +13,9 @@
 
 ACP 模式、auto memory（带“收件箱”审阅流程）、checkpointing 与 rewind、Skills（含编写指南与最佳实践）、自定义命令、`GEMINI.md`、`.geminiignore`、git worktrees、无头模式、模型路由（model routing）、Plan 模式、沙箱（macOS Seatbelt / Docker）、受信任目录、token 缓存、Hooks、Extensions、语音模式。
 
-和 Claude Code、Codex 的能力面**基本对齐**。
+### 恢复范围
+
+**🧪 只撤回编辑工具产生的改动，可先用原生 `/rewind`；需回到项目快照，则另核 checkpointing 的 `/restore`（默认未启用）。** 后者会修改实际项目工作树，并非只撤 Agent 的编辑。混有人工作业、shell 改动或忽略文件时，先核恢复范围并保留原有 Git／备份；不能仅因都有“回滚”功能就迁移。依据与局限见[固定恢复链](../research/2026-10-12-community-source-records.md#gemini编辑记录撤回与项目快照恢复)。**[一手；研究：采用边界]**
 
 ## 3. 2026 年值得注意的更新
 
