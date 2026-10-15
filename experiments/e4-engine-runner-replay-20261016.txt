@@ -1,0 +1,943 @@
+# E4 引擎报告校验器历史组合复演
+
+主线：M3/M4，拒绝坏验收证据
+改变的建议：补上 E4 固定旧/新脚本、同一测试集的逐项红绿证据；不升级真实引擎或模型结论
+新证据：2026-10-16 UTC+8 独立复演，旧脚本 43 条 unittest 失败记录，修复脚本 6 方法通过
+
+## 结果与范围
+
+本次是重新执行固定历史源码，不是找回 2026-10-11 原始输出。UTC 开始时刻为 2026-10-15T17:15:38.206666+00:00。Python 3.12.14，Bash 5.2.37，Linux。只执行已有 `tests/test_engine_test_runners.py`；未复跑 E4 全部 53 方法。
+
+- 测试源码：`8578b0776a75d3f290487feac6dfbe9fed9d1e48`
+- 旧脚本：`73905442b2da0a473573d1e98b65752613ad29f6`
+- 修复脚本：`8578b0776a75d3f290487feac6dfbe9fed9d1e48`
+- 当前核对快照：`eb79d8ad904a7190ead436804a237f459c54c665`，测试及两份修复脚本与 8578b07 字节一致
+- 旧脚本：`Ran 6 tests` / `FAILED (failures=43)` / 进程 exit 1
+- 修复脚本：`Ran 6 tests` / `OK` / 进程 exit 0
+
+43 的准确单位是 unittest failure records：42 条 subTest 失败，加 1 条 `test_unreal_process_failure_with_report` 方法级失败。不是 43 个测试方法，也不是 43 个不同报告场景。Unity 的 11 个坏报告分别走 Editor/CLI（22），两种进程/坏报告组合（2）；Unreal 报告（18），异常进程方法（1）。旧脚本的该方法在第一条断言失败后中断，第二次 run_mock 未执行；不能称旧脚本跑完全部 66 次调用。修复侧静态路径合计 66 次 run_mock 检查组合，6 方法通过支持全部执行。分组为 Unity 报告 26、Unity 进程 6、Unreal 报告 28、Unreal 进程 2、陈旧报告 2、缺 Python 2。缺 Python 两个组合在启动 mock 引擎前拒绝，因此不能把 66 称为引擎启动或执行次数。旧侧因上述断言中断可静态推导为 65 次 run_mock 调用，本次未加运行时插桩，不将该推导说成独立测量。
+
+## 安全与日志
+
+测试隔离 PATH，编辑器显式指向临时 Python mock，报告和清理全部限定临时合成项目；未运行真实 Unity/Unreal、Hook、模型，未安装任何依赖，未修改正式仓库。jq 可用，但该测试不需要它。
+
+本目录日志来自此次 unittest 完整 stdout/stderr。为公开使用，仅替换临时根路径为 `$REPLAY_ROOT`、Python 安装前缀为 `$PYTHON_PREFIX`，随机 fixture 目录为 `engine-runner-test-<fixture>`；公开文本另去除每行末尾空白，未删除失败记录或修改退出码。源文件 SHA256 与提交见 manifest。原始未替换日志留在隔离复演目录，不用于发布。
+
+测试内部 capture_output，只把失败断言相关子进程输出打印到 unittest 日志；通过用例的子进程 stdout/stderr 不在 unittest 输出中。本次不修改测试来扩大日志记录。
+
+## 可复查命令
+
+在含上述两个提交的仓库运行下列 Bash。仅创建临时目录，不 checkout、不修改工作树。保留目录自行检查，未自动删除。
+
+```bash
+repo=$(git rev-parse --show-toplevel)
+replay=$(mktemp -d)
+fixed=8578b0776a75d3f290487feac6dfbe9fed9d1e48
+old=73905442b2da0a473573d1e98b65752613ad29f6
+for label in old-scripts fixed-scripts; do
+  sha=$fixed
+  [ "$label" != old-scripts ] || sha=$old
+  target="$replay/$label"
+  mkdir -p "$target/tests"
+  git -C "$repo" show "$fixed:tests/test_engine_test_runners.py" > "$target/tests/test_engine_test_runners.py"
+  for path in domains/game-dev/unity/templates/.claude/skills/unity-run-tests/scripts/run_tests.sh domains/game-dev/unreal/templates/.claude/skills/ue-run-tests/scripts/run_tests.sh; do
+    mkdir -p "$target/$(dirname "$path")"
+    git -C "$repo" show "$sha:$path" > "$target/$path"
+  done
+  (cd "$target"; PYTHONDONTWRITEBYTECODE=1 TMPDIR="$replay" python3 -m unittest discover -s tests -p test_engine_test_runners.py -v > stdout.txt 2> stderr.txt; printf '%s\n' "$?" > exit-code.txt)
+done
+printf '%s\n' "$replay"
+```
+
+## 建议正文替换
+
+19 的 E4 可保留历史 53 方法总数，但把 43 称为“失败记录（42 个子用例、1 个方法级失败）”，紧接一句“2026-10-16 UTC+8 用固定历史测试和旧/修复脚本独立复演，旧侧 43 条失败、修复侧 6 方法通过；这是今天的复演输出，非历史原始日志”。研究记录追加同一证据说明，不新增研究专题或测试框架。
+
+
+# 固定来源与执行清单
+
+{
+  "kind": "2026-10-16 UTC+8 independent replay; not historical original output",
+  "started_utc": "2026-10-15T17:15:38.206666+00:00",
+  "repo_head": "eb79d8ad904a7190ead436804a237f459c54c665",
+  "test_sha": "8578b0776a75d3f290487feac6dfbe9fed9d1e48",
+  "baseline_sha": "73905442b2da0a473573d1e98b65752613ad29f6",
+  "fixed_sha": "8578b0776a75d3f290487feac6dfbe9fed9d1e48",
+  "environment": {
+    "python": "Python 3.12.14",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)"
+  },
+  "runs": [
+    {
+      "name": "old-scripts",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_engine_test_runners.py",
+        "-v"
+      ],
+      "cwd": "old-scripts",
+      "exit_code": 1,
+      "failure_count": 43,
+      "files": [
+        {
+          "path": "tests/test_engine_test_runners.py",
+          "source_sha": "8578b0776a75d3f290487feac6dfbe9fed9d1e48",
+          "sha256": "47e639586414d8685665fd982c0d3fbc6533f384fc4127837776899c45ccf3fe",
+          "current_head_identical": true
+        },
+        {
+          "path": "domains/game-dev/unity/templates/.claude/skills/unity-run-tests/scripts/run_tests.sh",
+          "source_sha": "73905442b2da0a473573d1e98b65752613ad29f6",
+          "sha256": "871a3eca3be5edbc06b32d56aec56b6673df05f75a1af556a579620ac942de27",
+          "current_head_identical": false
+        },
+        {
+          "path": "domains/game-dev/unreal/templates/.claude/skills/ue-run-tests/scripts/run_tests.sh",
+          "source_sha": "73905442b2da0a473573d1e98b65752613ad29f6",
+          "sha256": "262c75da1ca9c2fa7a66491b872fda0d3a4761010e3dc86a276906cdafd5b1ed",
+          "current_head_identical": false
+        }
+      ]
+    },
+    {
+      "name": "fixed-scripts",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_engine_test_runners.py",
+        "-v"
+      ],
+      "cwd": "fixed-scripts",
+      "exit_code": 0,
+      "failure_count": 0,
+      "files": [
+        {
+          "path": "tests/test_engine_test_runners.py",
+          "source_sha": "8578b0776a75d3f290487feac6dfbe9fed9d1e48",
+          "sha256": "47e639586414d8685665fd982c0d3fbc6533f384fc4127837776899c45ccf3fe",
+          "current_head_identical": true
+        },
+        {
+          "path": "domains/game-dev/unity/templates/.claude/skills/unity-run-tests/scripts/run_tests.sh",
+          "source_sha": "8578b0776a75d3f290487feac6dfbe9fed9d1e48",
+          "sha256": "5f53eed5e6842dd0e7efa7763c937e36aebb108b3696a20bb59e186f62d9f713",
+          "current_head_identical": true
+        },
+        {
+          "path": "domains/game-dev/unreal/templates/.claude/skills/ue-run-tests/scripts/run_tests.sh",
+          "source_sha": "8578b0776a75d3f290487feac6dfbe9fed9d1e48",
+          "sha256": "00213851842a1ce7f5434ed8bfe6bbfd4a12d0398058605b19d8556fd4aba93c",
+          "current_head_identical": true
+        }
+      ]
+    }
+  ],
+  "started_utc_plus_8": "2026-10-16T01:15:38.206666+08:00",
+  "scope": "Only tests/test_engine_test_runners.py, six existing test methods; no full 53-method E4 rerun",
+  "failure_unit": "43 unittest failure records: 42 subTest failures and one method-level failure"
+}
+
+
+===== old-scripts / exit-code.txt =====
+1
+
+
+===== old-scripts / failure-index.txt =====
+FAIL: test_unity_process_exit_codes (test_engine_test_runners.EngineTestRunners.test_unity_process_exit_codes) (cli=False)
+FAIL: test_unity_process_exit_codes (test_engine_test_runners.EngineTestRunners.test_unity_process_exit_codes) (cli=True)
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='malformed')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='wrong-root')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='missing-counters')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='no-tests')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='failure')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='skipped')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='inconclusive')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='unknown')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='root-incomplete')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='summary-inconclusive')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='inconsistent-counts')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='malformed')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='wrong-root')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='missing-counters')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='no-tests')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='failure')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='skipped')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='inconclusive')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='unknown')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='root-incomplete')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='summary-inconclusive')
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='inconsistent-counts')
+FAIL: test_unreal_process_failure_with_report (test_engine_test_runners.EngineTestRunners.test_unreal_process_failure_with_report)
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='malformed')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='wrong-root')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='bad-test')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='not-run')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='in-process')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='skipped')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='unknown')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='missing-state')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-failed')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-incomplete')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-inconsistent')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-invalid')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-success-count-invalid')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-warning-count-invalid')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-success-count-zero')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='duplicate-failed-count')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='duplicate-state')
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='invalid-entries')
+
+
+===== old-scripts / stdout.txt =====
+[empty stream]
+
+
+===== old-scripts / stderr.txt =====
+test_missing_python_fails_closed (test_engine_test_runners.EngineTestRunners.test_missing_python_fails_closed) ... ok
+test_stale_reports_cannot_pass (test_engine_test_runners.EngineTestRunners.test_stale_reports_cannot_pass) ... ok
+test_unity_process_exit_codes (test_engine_test_runners.EngineTestRunners.test_unity_process_exit_codes) ...
+  test_unity_process_exit_codes (test_engine_test_runners.EngineTestRunners.test_unity_process_exit_codes) (cli=False) ... FAIL
+  test_unity_process_exit_codes (test_engine_test_runners.EngineTestRunners.test_unity_process_exit_codes) (cli=True) ... FAIL
+test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) ...
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='malformed') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='wrong-root') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='missing-counters') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='no-tests') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='failure') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='skipped') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='inconclusive') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='unknown') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='root-incomplete') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='summary-inconclusive') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='inconsistent-counts') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='malformed') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='wrong-root') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='missing-counters') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='no-tests') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='failure') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='skipped') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='inconclusive') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='unknown') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='root-incomplete') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='summary-inconclusive') ... FAIL
+  test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='inconsistent-counts') ... FAIL
+test_unreal_process_failure_with_report (test_engine_test_runners.EngineTestRunners.test_unreal_process_failure_with_report) ... FAIL
+test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) ...
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='malformed') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='wrong-root') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='bad-test') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='not-run') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='in-process') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='skipped') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='unknown') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='missing-state') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-failed') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-incomplete') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-inconsistent') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-invalid') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-success-count-invalid') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-warning-count-invalid') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-success-count-zero') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='duplicate-failed-count') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='duplicate-state') ... FAIL
+  test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='invalid-entries') ... FAIL
+
+======================================================================
+FAIL: test_unity_process_exit_codes (test_engine_test_runners.EngineTestRunners.test_unity_process_exit_codes) (cli=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 117, in test_unity_process_exit_codes
+    self.check(2, 'unity', '<broken', code=failed_code, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 1 != 2 :
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "$PYTHON_PREFIX/lib/python3.12/xml/etree/ElementTree.py", line 1204, in parse
+    tree.parse(source, parser)
+  File "$PYTHON_PREFIX/lib/python3.12/xml/etree/ElementTree.py", line 569, in parse
+    self._root = parser._parse_whole(source)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+xml.etree.ElementTree.ParseError: unclosed token: line 1, column 0
+
+
+======================================================================
+FAIL: test_unity_process_exit_codes (test_engine_test_runners.EngineTestRunners.test_unity_process_exit_codes) (cli=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 117, in test_unity_process_exit_codes
+    self.check(2, 'unity', '<broken', code=failed_code, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 1 != 2 :
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "$PYTHON_PREFIX/lib/python3.12/xml/etree/ElementTree.py", line 1204, in parse
+    tree.parse(source, parser)
+  File "$PYTHON_PREFIX/lib/python3.12/xml/etree/ElementTree.py", line 569, in parse
+    self._root = parser._parse_whole(source)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+xml.etree.ElementTree.ParseError: unclosed token: line 1, column 0
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='malformed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 :
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "$PYTHON_PREFIX/lib/python3.12/xml/etree/ElementTree.py", line 1204, in parse
+    tree.parse(source, parser)
+  File "$PYTHON_PREFIX/lib/python3.12/xml/etree/ElementTree.py", line 569, in parse
+    self._root = parser._parse_whole(source)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+xml.etree.ElementTree.ParseError: unclosed token: line 1, column 0
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='wrong-root')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：None  总数 None | 通过 None | 失败 None | 跳过 None  耗时 Nones
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='missing-counters')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 None | 通过 None | 失败 None | 跳过 None  耗时 Nones
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='no-tests')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 0 | 通过 0 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='failure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 1 : 结果：Failed  总数 2 | 通过 1 | 失败 1 | 跳过 0  耗时 0.1s
+
+✗ Demo.Test1
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='skipped')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 2 | 通过 1 | 失败 0 | 跳过 1  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='inconclusive')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 1 | 通过 0 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='unknown')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 1 | 通过 0 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='root-incomplete')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Inconclusive  总数 1 | 通过 1 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='summary-inconclusive')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 1 | 通过 1 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=False, report='inconsistent-counts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 2 | 通过 1 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ Unity batchmode 运行 EditMode 测试，可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='malformed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 :
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "$PYTHON_PREFIX/lib/python3.12/xml/etree/ElementTree.py", line 1204, in parse
+    tree.parse(source, parser)
+  File "$PYTHON_PREFIX/lib/python3.12/xml/etree/ElementTree.py", line 569, in parse
+    self._root = parser._parse_whole(source)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+xml.etree.ElementTree.ParseError: unclosed token: line 1, column 0
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='wrong-root')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：None  总数 None | 通过 None | 失败 None | 跳过 None  耗时 Nones
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='missing-counters')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 None | 通过 None | 失败 None | 跳过 None  耗时 Nones
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='no-tests')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 0 | 通过 0 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='failure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 1 : 结果：Failed  总数 2 | 通过 1 | 失败 1 | 跳过 0  耗时 0.1s
+
+✗ Demo.Test1
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='skipped')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 2 | 通过 1 | 失败 0 | 跳过 1  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='inconclusive')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 1 | 通过 0 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='unknown')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 1 | 通过 0 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='root-incomplete')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Inconclusive  总数 1 | 通过 1 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='summary-inconclusive')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 1 | 通过 1 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) (cli=True, report='inconsistent-counts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 110, in test_unity_reports_editor_and_cli
+    self.check(status, 'unity', report, cli=cli)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：Passed  总数 2 | 通过 1 | 失败 0 | 跳过 0  耗时 0.1s
+
+结果文件：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml
+→ unity test $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces --mode EditMode --output $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-results-EditMode.xml --log-file $REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Logs/ai-test-EditMode.log
+
+
+======================================================================
+FAIL: test_unreal_process_failure_with_report (test_engine_test_runners.EngineTestRunners.test_unreal_process_failure_with_report)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 155, in test_unreal_process_failure_with_report
+    self.check(2, 'unreal', unreal_report(), code=17)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='malformed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 1 != 2 :
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+  File "$PYTHON_PREFIX/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "$PYTHON_PREFIX/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "$PYTHON_PREFIX/lib/python3.12/json/decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "$PYTHON_PREFIX/lib/python3.12/json/decoder.py", line 354, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='wrong-root')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 1 != 2 :
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+AttributeError: 'list' object has no attribute 'get'
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='bad-test')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 1 != 2 :
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "<stdin>", line 6, in state
+AttributeError: 'NoneType' object has no attribute 'get'
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='not-run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='in-process')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='skipped')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='unknown')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='missing-state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-failed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 1 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 1 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-incomplete')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 1  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-inconsistent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 2 | 通过但有警告 0 | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='summary-invalid')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 zero | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-success-count-invalid')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 999 | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-warning-count-invalid')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 999 | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='single-success-count-zero')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 0 | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='duplicate-failed-count')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='duplicate-state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 0 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 0 | 未运行 ?  耗时 ?s
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+
+
+======================================================================
+FAIL: test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) (report='invalid-entries')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 152, in test_unreal_reports
+    self.check(status, 'unreal', report)
+  File "$REPLAY_ROOT/old-scripts/tests/test_engine_test_runners.py", line 88, in check
+    self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
+AssertionError: 1 != 2 : 结果：总数 1 | 通过 ? | 通过但有警告 ? | 失败 1 | 未运行 ?  耗时 ?s
+
+✗ None
+
+报告：$REPLAY_ROOT/engine-runner-test-<fixture>/project with spaces/Saved/Automation/ai-report/index.json
+→ 运行自动化测试（过滤：Demo），首次启动可能需要几分钟…
+Traceback (most recent call last):
+  File "<stdin>", line 12, in <module>
+TypeError: 'NoneType' object is not iterable
+
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.847s
+
+FAILED (failures=43)
+
+
+===== fixed-scripts / exit-code.txt =====
+0
+
+
+===== fixed-scripts / failure-index.txt =====
+
+
+
+===== fixed-scripts / stdout.txt =====
+[empty stream]
+
+
+===== fixed-scripts / stderr.txt =====
+test_missing_python_fails_closed (test_engine_test_runners.EngineTestRunners.test_missing_python_fails_closed) ... ok
+test_stale_reports_cannot_pass (test_engine_test_runners.EngineTestRunners.test_stale_reports_cannot_pass) ... ok
+test_unity_process_exit_codes (test_engine_test_runners.EngineTestRunners.test_unity_process_exit_codes) ... ok
+test_unity_reports_editor_and_cli (test_engine_test_runners.EngineTestRunners.test_unity_reports_editor_and_cli) ... ok
+test_unreal_process_failure_with_report (test_engine_test_runners.EngineTestRunners.test_unreal_process_failure_with_report) ... ok
+test_unreal_reports (test_engine_test_runners.EngineTestRunners.test_unreal_reports) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.387s
+
+OK
