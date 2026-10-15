@@ -146,6 +146,8 @@
 - **预告能变成决定**：[研究] 起手轮廓／方向告诉玩家要避什么，音效帮助及时注意，攻击轨迹与实际危险区域一致；接触效果结束后仍看得到下一威胁。镜头、声音和 VFX 服务同一次决策，不各自争抢注意。Hyper Light Drifter 的[设计者访谈](https://www.gamedeveloper.com/design/how-i-hyper-light-drifter-i-balances-difficulty-with-fairness)说明，单体容易的敌人组合后已足够复杂，一种同时反弹子弹、格挡近战的敌人因组合困难被放弃。[一手] 因而新敌人先验证与旧敌人的围攻、距离和逃路，再决定增加聪明程度。
 - **用原生机制保住节奏**：[研究] Unity 先用已有 Animator、动作配置与事件；[转场文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)里的 Exit Time、混合时长和中断顺序分别控制不同事情，混合更长不一定更自然，可能淹没接触姿态。UE 用 Montage／[Notify State](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-notifies-in-unreal-engine)编排区间，精确分支才评估 Branching Point；特效与挥动声可跟动作，命中声与受击效果仍跟已确认结果，不为此另造通用战斗编辑器。
 
+**[研究] 屏外威胁先分“规则允许获知但没在画面内”与“来不及应对”，别直接给所有敌人加箭头或停攻击。** 回合策略因放大画面漏掉当前仍可获知的敌人时，✅ 补边缘标记与按需查看，并让标记避开画面内目标；即时动作若看见提示仍来不及转向、定位和躲避，先改入场位置、攻击方向、预告或弹体速度。Cogmind 的[放大视图改造](https://www.gridsagegames.com/blog/2024/02/adventures-in-map-zooming-part-5-qol/)与 Specter of Torment 的[房间布局复盘](https://www.yachtclubgames.com/blog/specter-of-torment-level-design-deep-dive-2-5/)体现这两条不同路线。[一手] [研究] 若玩法要求看见起手才能反制，可考虑限制屏外起手；已发出的攻击是否继续由技能规则决定；不能让表现裁剪意外改变结算，有意随可见性取消则明确写进规则。**局限：合理方案取决于可获得的信息和应对时间，不存在通用“屏外不能攻击”规则。** 固定源码反例与后续对照见 [WP11 屏外威胁补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#屏外威胁补研补信息还是改攻击)。
+
 **[研究] 加一把武器或一个敌人后的验收**：旧招与新招都打同一遭遇，保留命中、落空、格挡、闪避取消和混合围攻；玩家能否说清“何时承诺、为什么挨打、下一步何时可做”，比单次演出更华丽重要。AI 可维护阶段参数和对照录像／事件轨迹，人决定轻重、节奏与公平；开发者复盘和原生功能不证明无美术人员或 AI 已能复现成品质量，详见 [WP11 战斗补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#战斗质量补研动作节奏与遭遇可读性一起设计)。
 
 ## 8. 相机：先让玩家看懂并控得住，再增加镜头语言

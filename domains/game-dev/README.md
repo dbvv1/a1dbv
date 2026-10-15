@@ -56,7 +56,7 @@
 | [音频资产](assets/audio.md) | SFX/音乐/配音三档、循环状态切换、声音连续性与局部修改边界 |
 | [视频与过场](assets/video.md) | 引擎/静态/删除与生成视频取舍，三档、局部修改成本、跳过恢复与本地化 |
 | [04 客户端核心模块](04-client-modules.md) | 11个模块的最小交付线，取消/所有权、旧档、输入暂停与最低设备预算 |
-| [05 Gameplay架构](05-gameplay-architecture.md) | 状态/数据/技能/相机与关卡的最低结构，HFSM、行为树、GAS、ECS的采用条件 |
+| [05 Gameplay架构](05-gameplay-architecture.md) | 状态/数据/技能/相机与关卡的最低结构，HFSM、行为树、GAS、ECS的采用条件；屏外威胁按可获知信息与应对机会选择提示或改攻击 |
 | [unity/](unity/README.md) | Unity：**引擎基础知识**（每节附 AI 要点）、Unity CLI 和官方插件、大型项目的编译和测试闭环、配置模板 |
 | [unreal/](unreal/README.md) | Unreal：**引擎基础知识**（每节附 AI 要点）、UE 5.8 官方 MCP 和 Epic 插件、Live Coding 与 UBT、自动化测试、配置模板 |
 
