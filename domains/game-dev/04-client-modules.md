@@ -246,6 +246,10 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 **[研究] 二改加入拉丁名字／数字／富文本并缩窄窗口后，再检查完整句子、断行、选中删除和菜单返回。** Unity ATG 的[逻辑光标](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/cursor-movement.html)可跨视觉位置跳转，不能把“左键始终向屏幕左”硬写成跨引擎断言。[一手] 先用合适字体和可伸缩布局；关键文字必须缩得难读或交互仍不可靠时，暂缓该语言发行，而不是继续叠补丁。**局限：文档能力与历史项目反馈都不证明目标构建可用；**现成库反例、许可及后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-新增语言的显示编辑和布局不能互相代验)。
 
+**[研究] ✅ 新语言、换字体或放大字号后，要按承诺支持的输入方式读完影响决定的长说明。** 已有布局可靠时优先复用；短标签合理伸缩，长内容先用原生分页、滚动或详情入口，别持续缩字或把条件、代价藏在 hover／省略号后。Stardew Valley [1.6](https://www.stardewvalley.net/stardew-valley-1-6-update-full-changelog/)曾把被 tooltip 遮住的价格纳入提示；Factorio [2.0.44](https://forums.factorio.com/viewtopic.php?t=128050)只为右侧固定长 tooltip 增加滚动。[一手] 若承诺支持手柄，还需能打开、读到末尾并返回原项，不能用键鼠滚动代验。
+
+**[研究] ✅ 复用完整字体／样式配置；完整段落更难读时，可以撤回新默认。** Thrive 的[字体配置链](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/Lato-Bold.ttf.import)把样式连接到既有 fallback，新增页面与局部覆盖也应保住这条引用；Stardew Valley [1.6.6](https://www.stardewvalley.net/stardew-valley-1-6-6-full-patch-notes/)恢复中文旧默认字体，把新字体留作选项。[一手] 不要求所有游戏新增字体选择器；回退后仍不可读或不可操作，仍暂缓该语言发行。**局限：配置与更新说明不能证明目标设备的阅读质量；**比较与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#7-完整长文可达性与字体默认值的撤回)。
+
 ## 4. 借用的授权边界与升级条件
 
 **[研究] 先采用原生系统，改造项目缺少的窄政策，不用大型模板充当默认底座。** Unity 原生／包遵循引擎及具体包条款；UniTask／ink 为 MIT，Input System 为 Unity Companion License，均不免除资产和第三方通知。Addressables-Sample 固定树未发现许可证文件，先作机制参考，不能当已清商用复制权限；[许可与维护账](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-许可维护与采用边界)记录详细范围。
