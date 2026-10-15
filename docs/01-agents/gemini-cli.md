@@ -1,6 +1,6 @@
 # Gemini CLI 与 Antigravity
 
-> 核实时间：接入与迁移于 2026-10-16（UTC+8）补核；恢复范围为 2026-10-15，其余为 2026-10-08。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
+> 核实时间：接入、迁移与沙箱边界于 2026-10-16（UTC+8）补核；恢复范围为 2026-10-15，其余为 2026-10-08。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
 > 评级：🧪 **有条件试用**（已有可用 API／企业合同路径）；个人新接入另评估 Antigravity CLI
 
 ## 1. 基本情况
@@ -14,7 +14,11 @@
 
 ## 2. 功能面（`docs/cli/` 目录）
 
-ACP 模式、auto memory（带“收件箱”审阅流程）、checkpointing 与 rewind、Skills（含编写指南与最佳实践）、自定义命令、`GEMINI.md`、`.geminiignore`、git worktrees、无头模式、模型路由（model routing）、Plan 模式、沙箱（macOS Seatbelt / Docker）、受信任目录、token 缓存、Hooks、Extensions、语音模式。
+ACP 模式、auto memory（带“收件箱”审阅流程）、checkpointing 与 rewind、Skills（含编写指南与最佳实践）、自定义命令、`GEMINI.md`、`.geminiignore`、git worktrees、无头模式、模型路由（model routing）、Plan 模式、[沙箱](#沙箱启用与隔离范围)、受信任目录、token 缓存、Hooks、Extensions、语音模式。
+
+### 沙箱启用与隔离范围
+
+**🧪 需要保护主机资源时，先核实际生效的沙箱配置及读、写、网络范围，再选择后端。** 固定发行版 v0.63.0 默认未启用完整进程沙箱或工具级沙箱；前者的环境变量还能覆盖 `-s`，不能只看启动参数。启用 macOS Seatbelt 后，默认 `permissive-open` 仍允许广泛文件读取和网络访问，另有明确拒绝项；自动审批也不等于 OS 隔离。完整进程与工具级隔离须分开核查，其他版本以对应实现和实际边界为准。见[固定版本、文档冲突与反例](../research/2026-10-12-community-source-records.md#gemini沙箱启用与有效边界)；本仓库未运行客户端或验证隔离效果。**[一手；研究：采用边界]**
 
 ### 恢复范围
 

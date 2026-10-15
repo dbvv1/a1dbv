@@ -1,6 +1,6 @@
 主线：二为主，兼四
 改变的建议：[经验／研究] 原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
-新证据：[一手／社区] CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
+新证据：[一手／社区] Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
 # 社区工作流：固定来源与案例资料
 
@@ -402,3 +402,18 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 ```text
 > 核实时间：CodeBuddy客户端／权限范围、国内工具订阅边界与Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
 ```
+
+
+## Gemini：沙箱启用与有效边界
+
+核实：2026-10-16（UTC+8），主线二，对应01矩阵与Gemini深页。🧪 需要隔离时，先核有效配置、隔离对象与读／写／网络范围；不能仅凭“支持沙箱”、`-s`或自动审批作选择。本轮只读公开文档和固定发行版源码；无安装、客户端／模型运行、实际隔离或安全配置修改。**[研究：范围]**
+
+**发行关系与默认值。** [v0.63.0发布页](https://github.com/google-gemini/gemini-cli/releases/tag/v0.63.0)指向固定提交[`573846625af9e93b3b968e0e0b86bb093a4c9b16`](https://github.com/google-gemini/gemini-cli/commit/573846625af9e93b3b968e0e0b86bb093a4c9b16)，不是用main实现推定已经发布。[设置定义](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/settingsSchema.ts#L1557-L1569)将`tools.sandbox`标作完整进程沙箱，默认undefined；同文件[工具级设置](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/settingsSchema.ts#L1835-L1843)的`security.toolSandboxing`默认false。[未配置用例](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/sandboxConfig.test.ts#L67-L85)明确预期不返回完整进程沙箱配置；[启动路径](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/gemini.tsx#L684-L735)据该配置决定是否进入`start_sandbox`。这是发行源码与上游测试的阅读，未运行这些测试，也不保证其他版本或受管配置的默认行为。**[一手；研究：版本边界]**
+
+**现行文档与发行实现有冲突。** [当前官方沙箱页](https://geminicli.com/docs/cli/sandbox/#configuration)写命令行flag优先于环境变量，再到settings；固定[解析代码](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/sandboxConfig.ts#L43-L59)却用非空`GEMINI_SANDBOX`覆盖传入选项，再把`false`／`0`解析为关闭。[同版测试](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/sandboxConfig.test.ts#L453-L467)也要求环境变量优先于CLI与settings。具体反例：已有`GEMINI_SANDBOX=false`时，只增加`-s`，按该版本解析仍不启用完整进程沙箱；这不排除另行启用的工具级隔离或外部容器。当前文档的“如何关闭工具沙箱”措辞也不能代替该发行版默认值。采用时检查对应版本与实际有效边界，不照搬文档优先级，也不把此冲突外推成所有当前客户端均如此。**[一手；研究：静态反例，非实测]**
+
+**默认Seatbelt不是项目外读取或网络隔离保证。** 固定[启动实现](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/utils/sandbox.ts#L123-L138)选`permissive-open`；该[profile](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/utils/sandbox-macos-permissive-open.sb)允许广泛文件读取与出站网络，写入允许项还包括临时、缓存及额外目录，另明确拒绝部分敏感文件、配置和容器通道。[官方说明](https://geminicli.com/docs/cli/sandbox/#1-macos-seatbelt-macos-only)同样提示广泛读取及联网。若需求是阻止读取项目外普通私人文件或阻断联网，仅开启这个默认profile不足；也不能反过来说所有文件都可读。审批解决是否准许某次动作，不替代上述OS边界。**[一手；研究：采用反例]**
+
+**后端存在不等于同范围可用。** 固定[配置解析](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/sandboxConfig.ts)还接纳Podman、runsc、LXC及windows-native；runsc需Linux与Docker并显式选择，LXC需用户已有运行容器，当前官方页将其标为实验性。版本中另有[Linux工具级实现](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/sandbox/linux/LinuxSandboxManager.ts)与[Windows实现](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/sandbox/windows/WindowsSandboxManager.ts)。这里不将后端名、解析接纳或类存在写成端到端保证；未完整核每个平台的调用链、工具覆盖与宿主依赖，不据此给所有平台统一启用方案。**[一手；研究：未覆盖范围]**
+
+**LSP本轮不扩写。** 固定发行版[内置工具名](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/tools/tool-names.ts)与[工具注册](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/config/config.ts)未核到原生定义跳转、引用查找或语义重命名工具；[IDE集成说明](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/docs/ide-integration/index.md#L7-L48)列出近期文件、光标、选择文本与diff，以及另一路ACP集成，不能据此改为CLI原生LSP支持。矩阵“—”继续表示本轮未核到该原生能力，不表示MCP扩展或其他宿主永远不能提供。未出现改变该项选择的新证据。**[一手；研究：负面证据范围]**
