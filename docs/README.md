@@ -4,6 +4,7 @@
 
 | 你的情况 | 建议路径 |
 |---|---|
+| 答案不在代码库里，需要找现成方案或设计参照 | [25 AI 探索任务](25-ai-exploration.md) → [12 来源与待验证](12-resources.md)；先明确决定和硬约束，再选择检索范围 |
 | 已有失败，想知道先补什么 | [15 调试](15-task-playbooks.md#2-调试) → [05 最小能力补充](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) → [22 保留或撤回](22-agent-evaluation.md#7-何时推广何时停止) |
 | 功能正常，但有明确的质量目标 | [15 原型与真实任务](15-task-playbooks.md#10-原型和一次性脚本) → [05 领域依据](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) → [22 质量比较](22-agent-evaluation.md#5-如何计分而不自欺)；不必先制造失败 |
 | 想看真实社区做法与失败案例 | [24 社区工作流](24-community-workflows.md) → [15 按任务类型的打法](15-task-playbooks.md) |
@@ -39,6 +40,7 @@
 | 13. 游戏资产先定玩法／设备规格，再核代码、权重、输出和发布规则；现成或程序化资源满足时不重生成 | [游戏 03 资产总览](../domains/game-dev/03-generative-ai-in-games.md) | [游戏入口](../domains/game-dev/README.md)、[2D](../domains/game-dev/assets/2d.md)、[3D](../domains/game-dev/assets/3d.md)、[动画](../domains/game-dev/assets/animation.md)、[材质](../domains/game-dev/assets/materials.md)、[音频](../domains/game-dev/assets/audio.md)、[视频](../domains/game-dev/assets/video.md)、[18](18-team-adoption.md) |
 | 14. 资产导入沿用已有引擎入口；替换和第二次修改要保引用、身份与原消费者，不以首次导入代替生产验证 | [游戏 01 引擎接入](../domains/game-dev/01-engine-integration.md) | [游戏入口](../domains/game-dev/README.md)、[Unity](../domains/game-dev/unity/README.md)、[Unreal](../domains/game-dev/unreal/README.md)、[游戏路线图](../domains/game-dev/06-indie-roadmap.md)、[07](07-workflows.md) |
 | 15. 游戏按要回答的问题组合逻辑、状态、画面和真人试玩证据；功能通过不代替响应、辨识、手感或乐趣的取舍 | [游戏 02 验证与试玩](../domains/game-dev/02-verification-and-playtesting.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[14](14-synthesis.md)、[23](23-browser-verification.md)、[客户端模块](../domains/game-dev/04-client-modules.md)、[gameplay](../domains/game-dev/05-gameplay-architecture.md)、[游戏路线图](../domains/game-dev/06-indie-roadmap.md) |
+| 16. 开放探索先定决定与硬约束；关键结论回原文核查，候选转成约束与验收，不以热度、引用数或多 Agent 一致证明质量 | [25 AI 探索任务](25-ai-exploration.md) | [首页](../README.md)、[12 来源与待验证](12-resources.md)、[研究依据](research/2026-10-15-exploration-evidence.md) |
 
 ### 两种情境的入口走读
 
@@ -142,6 +144,7 @@
 | [22 Agent 评估](22-agent-evaluation.md) | L3 | 双情境、判定器与成本口径可直接使用；局部复算不等于本仓已运行完整配置对照 | 保留评估设计，获准后以既定真实任务执行，保存全部尝试与人工判断 |
 | [23 浏览器验证](23-browser-verification.md) | L3 | 可按缺失观察与响应来源选反馈，含自修复／时序／worker 反例；没有本仓应用上的完整验证收益对照 | 维护目标浏览器／工具契约；未来实测按真实用户路径检验，不重复加截图循环 |
 | [24 社区工作流](24-community-workflows.md) | L3 | 固定配置、失败原帖和条件选择已交叉呈现；没有当前强模型同任务净收益对照 | 只追能改变取舍的实际交付／再使用证据，不把作者自报升级成模型排名 |
+| [25 AI 探索任务](25-ai-exploration.md) | L3 | 六步方法、条件选型与三类纸面案例经来源及整合独立审阅；无未知任务检索或模型对照实证 | 以留出需求检验发现能力，维护来源与失败边界；不把熟悉案例走查升级为收益或 L4 |
 
 ### 游戏核心页面
 
