@@ -349,3 +349,14 @@ Anthropic 的 [Finding your unknowns](https://claude.com/resources/articles/a-fi
 **范围及反例。** [评审前台例外](https://code.claude.com/docs/en/code-review#run-in-the-foreground)包括已有评审运行时再次启动、`-p`／SDK 和禁用后台任务；该页标记默认后台自2.1.218起。子 Agent 页另将一般交互 fork mode 默认标记为2.1.232起，不能把它当作 `/code-review` fork 机制首次发布版本。本文只确认读取日的默认终端契约，不推定所有宿主、历史版本或特殊配置等价。同一实现会话内启动默认评审是“窗口独立、历史继承”的具体反例；它可以利用已有背景，也可能继承原假设，但文档本身不证明实际误报率或独立 reviewer 的净收益。**[一手；研究：推论边界]**
 
 **采用与撤回。** 就地复查仍可使用内置命令。只有输入独立性属于当前风险要求时，才另起干净会话或非 fork 子 Agent，并限定交接内容；不把多开一层当作必经流程。Claude 入口与09同步这一判断，未改评审模板、未重做已有权限或套餐核查。**[研究：采用判断]**
+
+
+## 无需修改与部分修复要一起评估
+
+主线二／三；核实：2026-10-15 UTC。改变09的选样：同时检查已修任务的误改与部分修复任务的误停，不以补丁更少单独判断配置改进。**[研究：采用判断]**
+
+[FixedBench论文v1 §3.2](https://arxiv.org/html/2605.07769v1#S3.SS2)报告：显式允许不改，在已修任务上减少无必要修改，却在先应用错误补丁的任务上增加误停。这是作者实验结果，支持增加对照任务，未由本仓独立复算，也不证明任何提示的绝对净收益。**[一手：作者论文；研究：范围]**
+
+作者公开的同一Django任务两条轨迹中，[直接要求修复](https://www.sri.inf.ethz.ch/assets/blog/fixedcode/django__django-11239-fix.traj.html)仍改写已有证书参数传递；[允许不改](https://www.sri.inf.ethz.ch/assets/blog/fixedcode/django__django-11239-fix-or-abstain.traj.html)以mock捕获传给子进程的参数，确认已有实现后留下空补丁。它们只展示有限行为机制，不等于真实TLS连接验证。**[一手：公开轨迹]**
+
+本轮未取得完整运行manifest或部分修复原始产物；论文Best／Worst同时改变Git历史与依赖准备，不能拆成环境收益。允许无补丁交付仍需核当前行为，不能依据历史commit自动停止。未运行上游代码或模型。**[研究：边界]**
