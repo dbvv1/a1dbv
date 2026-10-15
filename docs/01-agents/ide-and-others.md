@@ -1,6 +1,6 @@
 # IDE 类工具与其他
 
-> 核实时间：JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
+> 核实时间：Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
 
 ## Cursor
 
@@ -43,9 +43,11 @@ Codex 集成可用 JetBrains AI 订阅、ChatGPT 登录或 OpenAI API key；仅 
 
 ## Kiro（AWS）
 
-- Spec 驱动 IDE：把需求写成 EARS 格式的 `requirements.md`，再生成 `design.md` 和任务清单 **[二手]**。
-- 批评：任务拆得过细（12 个以上任务，每个再拆 4 个以上子任务）；**规格漂移**（实现中发现的约束不会自动回写到需求和设计文档）**[社区]**。
-- 评级：👀 **评估**。适合学习 SDD 思路，详见 [07 工作流](../07-workflows.md#5-spec-驱动开发sdd)。
+🧪 **条件试用**：需要在实现前审阅、跨步骤保留需求与设计决定时，可试原生规格流程；已有任务与测试足够，就不额外生成三份文档。若文档只是重复已有信息、审阅没有补上实际缺口，退回短说明与现有验证。**[经验：采用与撤回条件]**
+
+官方支持需求先行／设计先行，产出 `requirements.md`、`design.md`、`tasks.md`；修订时需手改或要求 Agent 更新相关文件，再在任务页触发 **Sync Files**。实现发现新约束后仍要确认需求／设计变化并核对受影响任务、代码和验证结果；同步入口及自动勾选不保证语义正确或验收通过。**[一手：官方契约；研究：边界]**
+
+历史小 bug 试用确有文档过重的反例，但不能据此断言当前没有修订能力或仅适合学习 SDD。原文范围、实际维护中的人工澄清案例与未验证项见[规格修订核查](../research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界)；通用选择见 [07](../07-workflows.md#5-spec-驱动开发sdd)。**[社区；研究：条件试用并非已测收益]**
 
 ## Zed
 
@@ -69,5 +71,6 @@ ACP 的发起方，原生支持外部 Agent 接入，适合追求编辑器性能
 - [Meet the new Cursor（Cursor 3）](https://cursor.com/blog/cursor-3)、[Cursor changelog](https://cursor.com/changelog)、HN：[SpaceX 收购 Cursor](https://news.ycombinator.com/item?id=48553224)、[OpenAI 对 Cursor 的决定](https://news.ycombinator.com/item?id=49486172)、[Cursor Origin](https://news.ycombinator.com/item?id=49334209)、[Updates to Bugbot（2026-05）](https://cursor.com/blog/may-2026-bugbot-changes)、[论坛：Bugbot 按量计费的讨论](https://forum.cursor.com/t/the-new-usage-based-bugbot-pricing-punishes-iterative-workflows-and-power-users/161134)、[论坛：成本上涨的讨论](https://forum.cursor.com/t/cursor-costs-are-climbing-without-a-clear-reason/157233)
 - GitHub Changelog：[本地沙箱 GA](https://github.blog/changelog/2026-10-07-local-sandboxing-for-github-copilot-now-generally-available)、[Dynamic workflows](https://github.blog/changelog/2026-10-01-dynamic-workflows-in-copilot-cli-and-the-copilot-app)、[Computer use](https://github.blog/changelog/2026-10-01-github-copilot-can-now-interact-with-desktop-apps)、[HydraFusion](https://github.blog/changelog/2026-09-30-hydrafusion-in-vs-code-and-the-github-copilot-app)
 - [What's New in Rider 2026.1](https://www.jetbrains.com/rider/whatsnew/2026-1/)、[Junie 结束 Beta](https://blog.jetbrains.com/junie/2026/06/junie-coding-agent-out-of-beta/)
-- [Martin Fowler：Understanding SDD（Kiro、spec-kit、Tessl）](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
+- [Kiro Feature Specs](https://kiro.dev/docs/specs/feature-specs/)、[修订与 Sync Files](https://kiro.dev/docs/specs/best-practices/)
+- [Birgitta Böckeler：Understanding SDD（Martin Fowler 网站）](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
 - 国内工具：[CSDN：2026 年 7 月国内 Coding Plan 对比](https://blog.csdn.net/zhangay1998/article/details/162555439)、[CSDN：TRAE / Kimi Code / Qoder 实测](https://www.csdn.net/article/2026-08-24/164033550)、[codingplan.org](https://codingplan.org/en)
