@@ -211,9 +211,20 @@ Simon Willison 的 [research PR #10](https://github.com/simonw/research/pull/10)
 
 ### 11 §3 已撤回的旧主张（不作为事实引用）
 
-旧正文把下列内容连成迁移理由：定价抱怨很多；2026-08 用量页和 CSV 移除费用；2026-06 SpaceX 以 600 亿美元收购 Cursor；2026-08 OpenAI 停止模型供应；转售 API 无法竞争官方补贴订阅，很多人因此转向 Claude Code／Codex。**这些仅用于记录本次撤回对象，不是本轮确认的事件或数字。**
+旧正文把下列内容连成迁移理由：定价抱怨很多；2026-08 用量页和 CSV 移除费用；2026-06 SpaceX 以 600 亿美元收购 Cursor；2026-08 OpenAI 停止模型供应；转售 API 无法竞争官方补贴订阅，很多人因此转向 Claude Code／Codex。**这些仅记录此前撤回对象，不可整体当事实引用；收购完成与供模计划现已由下文一手资料补核，其他断言未因此恢复。**
 
-旧来源只有 [Cursor 论坛总帖](https://forum.cursor.com/t/pricing-megathread-and-q-a/116395)，未逐项连接官方交易／供应声明、具体产品通知与可核对迁移者。此次没有重做商业新闻调查，也不据缺证据判断真伪；由于会影响读者迁移或消费，直接从正文删除全部强断言，不让历史未核内容继续担当采用依据。其真假不影响本轮结论：不能依靠这条旧段决定迁移。**[研究：撤回原因与范围]**
+旧来源只有 [Cursor 论坛总帖](https://forum.cursor.com/t/pricing-megathread-and-q-a/116395)，未逐项连接官方交易／供应声明、具体产品通知与可核对迁移者。此前未重做商业新闻调查，也未据缺证据判断真伪；先从正文撤回强断言，避免历史未核内容担当采用依据。以下补核替代其中已取得证据的缺口，仍不能依靠旧段整套推论决定迁移。**[研究：撤回原因与范围]**
+
+
+### Cursor 供模计划与实际入口：2026-10-15 补核
+
+- [OpenAI 8月28日声明](https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex/)宣布拟终止供模合同，提出11月12日截止且不提供未来模型；[当前帮助页](https://help.openai.com/en/articles/20001506-using-openai-models-in-cursor)明确最终日期仍待双方确认，Cursor 可提前结束。因此13旧“8月停止供应”把计划写成已执行，不能沿用；也不承诺过渡期可用至某日。**[一手：计划与当前说明]**
+- **入口不能互换**：该帮助页区分独立 Codex IDE 扩展与本地 Chat／Agent 的 BYOK；扩展不改变 Cursor 原生服务用的模型，BYOK 不覆盖 Tab、Auto、Cloud／Background Agents、Automations、CLI、API／SDK，API 费用也独立于订阅。[Cursor 自身文档](https://cursor.com/help/models-and-usage/api-keys)还把 OpenAI BYOK 限于 standard non-reasoning chat models，以实际模型选择器为准；Teams／Enterprise 另有 Cursor Token Rate，Cursor 的 ZDR 不覆盖 BYOK，请求仍经过其后端构造提示。不能把“可带密钥”当任意模型、云端任务或纯本地路径的替代保证。**[一手：双方当前入口契约]**
+- [Cursor 8月14日公告](https://cursor.com/blog/joining-spacex)确认收购完成，取代“收购事件未核”的旧缺口；它不证明实际性能、费用或迁移收益。Reuters 旧链接本轮未能读取，600亿美元金额不影响当前选择，从13新闻正文撤下，旧断言仍在上节留作审查定位。**[一手：收购完成；研究：收窄范围]**
+
+**采用判断**：仅当必要路径不满足才考虑迁移，先分别核入口、模型支持、费用及数据政策。这里是公开契约核查，未安装客户端、配置凭据或验证真实账户；未恢复旧段“普遍涨价／大量用户迁移”的无据概括。**[经验：条件建议]**
+
+同轮收敛13的指令长度入口：[Claude 官方说明](https://code.claude.com/docs/en/memory#write-effective-instructions)以每份 `CLAUDE.md` 少于200行为建议目标，不是加载截断；`MEMORY.md` 在会话启动时加载首200行或25KB，以先达到者为准。官方另说明 `CLAUDE.md` 不超过4MiB时完整加载、超过则跳过；这不是200行建议的含义，imports也不降低启动加载量。13回链03按任务价值取舍，不把该建议扩成所有指令的硬门槛，未做遵从或成本实验。**[一手；研究：范围]**
 
 
 ## 社区体验、额度与迁移不能代替采用证据
