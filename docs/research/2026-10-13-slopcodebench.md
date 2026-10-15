@@ -1,6 +1,6 @@
 主线：三
-改变的建议：20/22/24：Regression来源分类≠新增退化；22 补充大补丁≠继承自身交付、测试数≠旧契约覆盖
-新证据：固定runner/题库与局部探测；SWE-EVO 论文、固定评估器和48条公开数据只读复核；无模型成绩重算
+改变的建议：20/22/24：Regression来源分类≠新增退化；22 区分大补丁与连续交付，并按错误所在层选择重算、重评或重新生成
+新证据：固定runner/题库与局部探测；SWE-EVO 论文、评估器和48条公开数据；SWE-Milestone 维护修订与固定实现，只读核查，未复算其成绩
 
 # 连续开发评测：SlopCodeBench 测到了什么，哪些结论仍不能下
 
@@ -147,3 +147,30 @@ print(len(set(a['FAIL_TO_PASS']) - set(b['FAIL_TO_PASS']) - set(b['PASS_TO_PASS'
 输出为 `48 3908 38043 1 0 106.5`、`True`、`103`。没有据此重算成功率、归因模型效果或测试哪种架构更耐改。**[经验：复核结果]**
 
 **给读者的最小改变**：要回答自己的第二次、第五次修改是否可靠，保存上一轮实际交付状态；下一轮从它继续，记录人工修复／参考替换，并检查之前通过且仍有效的契约。测试可保留隐藏部分，不必泄露参考实现；但旧验收删除、改名或换输入时，要说明它已被新契约取代还是仍需覆盖。新需求未通过与旧行为倒退分别报告。若只想比较一次发布差分任务，就采用相应口径，不添加整套连续评测框架。这个增量与前文 SlopCodeBench 的“旧债与新增回归”互补，不替代其真实保留工作区的任务形态。**[研究：采用与停止条件]**
+
+
+## 8. SWE-Milestone：评估修正后重做哪一层
+
+> 核实：2026-10-15。✅ 借用现成评估器的分层处理：算分、执行验收与 Agent 生成分别决定是否重做；无需另造评测框架。只读公开原帖、补丁与固定源码，未运行上游测试、镜像或模型。**[研究：采用判断]**
+
+### 算分错，已有报告可能足够
+
+[#24](https://github.com/DeepCommit-ai/SWE-Milestone/issues/24)报告评分键去掉 Jest／Pytest 测试的文件路径，导致不同文件中的同名测试相互影响；原始报告仍保留完整身份。[#34](https://github.com/DeepCommit-ai/SWE-Milestone/pull/34)于2026-08-22合入 `125009c64feb3bbf8056bd245f48d321abbe0418`，增加从保存报告重算的入口，不重新执行测试或 Agent。其历史数量、AI 辅助审阅和通过测试数均为作者报告，本轮不拿它们证明效果。**[一手：问题／合并记录]**
+
+固定HEAD [`17a8f1593e172e26b36cea15e2b30fb9536c93f5`](https://github.com/DeepCommit-ai/SWE-Milestone/tree/17a8f1593e172e26b36cea15e2b30fb9536c93f5)的 [`rescore_cell`](https://github.com/DeepCommit-ai/SWE-Milestone/blob/17a8f1593e172e26b36cea15e2b30fb9536c93f5/harness/e2e/rescore.py#L525-L715)核可用的分类／仓库配置绑定及原结果能否由保存报告重现，再替换算分字段并保留基础设施、身份不可信等失败锁；缺报告、已检测到的分类／仓库配置漂移或可用分类版本无法解析时，会拒绝重算；它只记录测试配置 hash，仓库配置也须新旧 hash 均存在才比较，不能当成完整输入一致性保证。当前代码也接受多个候选在新旧评分投影均一致的情形，不能照抄PR的“必须唯一候选”当作最终实现。**[一手：固定源码；研究：静态机制核查]**
+
+### 只修评估侧，可重评产物；改变生成条件另算
+
+[固定环境修补规约](https://github.com/DeepCommit-ai/SWE-Milestone/blob/17a8f1593e172e26b36cea15e2b30fb9536c93f5/docs/maintainers/image-patching.md#L21-L32)将评估用镜像／覆盖层与 Agent 使用的 base、base-offline、隔离策略、提示分开：仅前者改变才可沿用冻结提交；后者改变，重评不能回答新条件下 Agent 会如何生成。文档中的旧版本号命名另有后续修订，本节不采用其 patch／minor 规则。**[一手：维护规约；研究：采用边界]**
+
+两例都有公开修订产物：[element-web 的固定提交 `878fcd6`](https://huggingface.co/datasets/DeepCommit-ai/SWE-Milestone-data/commit/878fcd6b895dc85f8c6f7d6cca6ff018da29cf68)新增 milestone 评估镜像覆盖层，复用旧镜像／离线缓存，补 `html-react-parser` 及依赖；不是修改 base／base-offline。[nushell 的 `0ea8c72`](https://huggingface.co/datasets/DeepCommit-ai/SWE-Milestone-data/commit/0ea8c72bab1e2d3ec4506e95a1d1c08f198ca129)只修改4个SRS文件，明确 `execute_xpath_query` 四参、`parse_block` 五参及相关参数位置，改变 Agent 接到的规格。[维护者总结](https://github.com/DeepCommit-ai/SWE-Milestone/blob/17a8f1593e172e26b36cea15e2b30fb9536c93f5/docs/versioning.md#L107-L125)因此分别选择重评冻结提交与要求重新生成。公开diff支持修订对象的区别，历史执行结果仍是作者报告；本轮不引用提升数字。**[一手：固定数据补丁／维护报告；未运行或复算]**
+
+公开清单也可局部核机制：[v1.0](https://github.com/DeepCommit-ai/SWE-Milestone/blob/17a8f1593e172e26b36cea15e2b30fb9536c93f5/manifests/digests-v1.0.tsv)与[v1.0.1](https://github.com/DeepCommit-ai/SWE-Milestone/blob/17a8f1593e172e26b36cea15e2b30fb9536c93f5/manifests/digests-v1.0.1.tsv)各115项；按镜像角色对齐、去掉版本标签比较digest，18处变化均为element评估镜像，14个base／base-offline未变。只是清单字符串比较，未拉镜像，也不能单凭此证明提示、规格和全部生成条件相同。**[一手：固定清单；研究：只读比对]**
+
+### 保存不完整，重评也不能恢复事实
+
+[#33](https://github.com/DeepCommit-ai/SWE-Milestone/issues/33)报告部分旧快照损坏或漏文件，既不能由报告重算，也不能靠冻结快照重评得到可信新结果；作者提出重跑或标无效。[后续纠正](https://github.com/DeepCommit-ai/SWE-Milestone/issues/33#issuecomment-5377900162)将一项“生成代际差”改判为丢失 `internal/` 与旧清理规则交互，说明连零分原因也须回到产物，而不能沿用首次标签。这里不重复已被纠正的分类数量。**[一手：作者调查与后续纠正；未独立复演]**
+
+**采用范围**：先定位错误所在层，保留原产物与修订版本；新规格下给旧产物评分本身可行，只是不能代表模型收到新规格后的行为。修复 Agent 曾看到的环境或反馈也一样。重评范围还要包括受影响但没有有效结果的项，不能只搜到故障文字的项，见[维护者的范围规则](https://github.com/DeepCommit-ai/SWE-Milestone/blob/17a8f1593e172e26b36cea15e2b30fb9536c93f5/docs/versioning.md#L87-L105)。**[一手；研究：采用建议]**
+
+**证据上限**：[原始轨迹仓库](https://huggingface.co/datasets/DeepCommit-ai/SWE-Milestone-log)读取文件要求登录并同意分享联系信息，本轮未申请、登录或绕过，因此没有复算原始日志、产物或排名；同仓记录也不是不同作者的独立重复研究。固定源码支持处理机制，作者报告支持其遇到过的维护问题，不证明普遍收益或某模型应升降级。
