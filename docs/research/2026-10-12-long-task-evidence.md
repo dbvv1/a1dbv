@@ -1,6 +1,6 @@
 主线：三，兼二
 改变的建议：恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流。[经验]
-证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验。[一手／社区／研究]
+证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验；10-16（UTC+8）补续接前分支／HEAD检查的单仓观察与离线Git正反例。[一手／社区／研究／经验]
 
 # 长程任务：来源、反例与实验边界
 
@@ -176,3 +176,72 @@
 - 模型／任务变化：一次移除一个可选环节，保留风险所需的中间契约与检查；只有现实缺口消失才撤回，不预设固定轮数
 
 以上为 **[经验：条件建议]**，不是新的模型效果实验。后续若获准对照，应固定目标质量与范围，分别比较普通会话、同会话续接和新进程循环，纳入未完成行为、误报完成、返工及人工审阅成本；当前不执行。
+
+
+## 续接提交前检查分支与本地基线
+
+> 核实：2026-10-16（UTC+8）。对应20 §9与运行手册 §4.5；只补本地续接的前置条件，不新增检查框架。**[经验：采用范围]**
+
+**观察与发布状态分开**：公开提交 [`a8f70dc`](https://github.com/dbvv1/a1dbv/commit/a8f70dc) 与本地原提交 `d93ca2a` 同父，tree 均为 `44f3fd1b762f507a2fe0f1868f981b7b12181361`。本地续接又产生 `2d4598b`，其父为 `d93ca2a`，只新增 TASKS 的一个空行和同义状态段；这个重复提交未发布。核对远端已发布内容后，保留原本地分支并从远端成果继续，没有改写已发布历史。可用 `git show -s --format='%h %p %T %s'` 与 `git diff <commit>^ <commit>` 核对对象和增量；本地未发布对象不保证在公开克隆中可取得。以上只证明该次内容与提交关系，不推断续接原因或用户取消。**[经验：单仓Git对象与发布核对]**
+
+**改变的选择**：仅靠发布时远端CAS，不能阻止本地先做出重复提交。开始操作时保存预期分支与HEAD，恢复及暂存／提交前对照；不同或缺失先对账，不能在异常后重新采当前值让旧操作通过。原成果已发布且没有实质增量则不重做；需要新工作时，先确认新范围再建立新基线。下例只检查普通单父提交；整合提交须按整合计划核对父集合。**[经验：条件建议]**
+
+以下在独立临时仓库、已安装Git下离线运行；没有访问原会话、凭据，也没有运行模型或引擎。代码仅构造Git状态，不重放原执行过程：
+
+```sh
+set -eu
+repo=$(mktemp -d)
+git -C "$repo" init -q -b task
+git -C "$repo" config user.name offline-check
+git -C "$repo" config user.email offline@example.invalid
+printf 'base\n' > "$repo/content"
+git -C "$repo" add content
+git -C "$repo" commit -qm base
+expected_branch=$(git -C "$repo" symbolic-ref HEAD)
+expected_head=$(git -C "$repo" rev-parse HEAD)
+check_base() {
+  test -n "$expected_branch" && test -n "$expected_head" &&
+  test "$(git -C "$repo" symbolic-ref -q HEAD)" = "$expected_branch" &&
+  test "$(git -C "$repo" rev-parse HEAD)" = "$expected_head"
+}
+git -C "$repo" switch -qc other
+if check_base; then exit 1; fi
+test "$(git -C "$repo" rev-parse HEAD)" = "$expected_head"
+echo 'same-HEAD/wrong-branch: rejected'
+git -C "$repo" switch -q task
+printf 'work\n' >> "$repo/content"
+check_base
+git -C "$repo" add content
+checked_tree=$(git -C "$repo" write-tree)
+check_base
+git -C "$repo" commit -qm work
+test "$(git -C "$repo" rev-parse HEAD^)" = "$expected_head"
+test "$(git -C "$repo" rev-parse HEAD^{tree})" = "$checked_tree"
+echo 'normal-path: passed; parent/tree: matched'
+original=$(git -C "$repo" rev-parse HEAD)
+printf 'redundant status\n' > "$repo/status"
+if check_base; then exit 1; fi
+test "$(git -C "$repo" rev-parse HEAD)" = "$original"
+test -z "$(git -C "$repo" diff --cached --name-only)"
+test -f "$repo/status"
+echo 'advanced-HEAD: rejected; HEAD/index unchanged; work preserved'
+published=$(printf 'counterpart\n' | git -C "$repo" commit-tree "$checked_tree" -p "$expected_head")
+test "$published" != "$original"
+test "$(git -C "$repo" rev-parse "$published^{tree}")" = "$checked_tree"
+echo 'different-commit/same-tree: confirmed'
+expected_head=''
+if check_base; then exit 1; fi
+echo 'missing-expected-HEAD: rejected'
+```
+
+实际输出（退出码0）：
+
+```text
+same-HEAD/wrong-branch: rejected
+normal-path: passed; parent/tree: matched
+advanced-HEAD: rejected; HEAD/index unchanged; work preserved
+different-commit/same-tree: confirmed
+missing-expected-HEAD: rejected
+```
+
+**边界**：相等检查不是原子锁，检查后仍可能发生并发checkout／commit；因此不替代串行整合、受检树核对、发布前的父提交核对或远端CAS。同HEAD下的语义重复也可能通过；提交不同而tree相同只说明快照相同，须结合原操作和发布回执判断是否已交付。未测真实客户端恢复、失败率或节省时间，不声称机制已防住所有重复。**[经验：确定性检查及局限]**
