@@ -172,6 +172,8 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 
 ### 存档复用：借序列化与存储能力，自己决定哪些进度能恢复
 
+**[研究] ✅ 先分“中途离开后续玩”与“回到早先选择”。** 单局需跨多次游玩时，借已有房间／回合等一致状态边界保存，沿现有 Session、DTO 与一次性结算恢复；永久死亡不必要求整局一次坐完。Gungeon 发布后补层间续玩，Cogmind 则把续玩与可回退恢复点分开。[一手] 提示何时可安全退出、回来到哪里；短局无此需求可不加。**边界太远仍迫使玩家等待，任意帧快照又增加维护；不能只靠退出回调保证保存。** 采用依据与反例见 [WP10 存档补比](../../docs/research/2026-10-14-game-wp10-client-modules.md#存档复用补比序列化落盘与玩家恢复分开选)。
+
 **[研究] ✅ 小型 Unity 存档保留显式 DTO＋JsonUtility；确需字典／JSON 树迁移时采用项目兼容的 [Newtonsoft 包](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.2/manual/index.html)，不另写序列化器。UE 保留 SaveGame 的槽位与平台存储接口。** 内容迁移、落盘提交、玩家恢复是三个不同责任；无须为它们建立通用对象图框架。已有 Easy Save 项目可复用其缓存写入和备份 API，但其 [CreateBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-createbackup/)会覆盖旧备份，不能把“每次保存后备份一次”当作已保住上一份可用进度。[一手]
 
 **[研究] 先保住已验证可用的旧档，再允许重试、迁移后自动保存或清理旧槽。** 恢复候选分别经过完整读取与内容校验，失败不把默认新游戏写回原槽；让玩家知道恢复到了哪个时间／章节，并可保留原文件。真实游戏 [Mindustry 的 SaveIO](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveIO.java)有写入前移备份、读取失败后退备份，但存档列表的有效性检查只读 metadata；因此“列表看得到”不能作为完整恢复成功的证据。[一手]
