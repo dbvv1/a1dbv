@@ -1,6 +1,6 @@
 # 客户端核心模块：让操作有回应，让体验连续
 
-> 核实：2026-10-14 UTC；空间容错及保存响应补核：2026-10-15 UTC。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
+> 核实：2026-10-14 UTC；空间容错及保存响应补核：2026-10-15 UTC；动态 UI 补核：2026-10-16 UTC+8。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
 
 ## 30 秒结论：先把核心动作做舒服
 
@@ -246,6 +246,14 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 **[研究] 新增第二种暂停原因时，关闭一层只撤销它自己的暂停，仍有有效原因就不恢复玩法。** 在现有 Session／菜单代码中明确暂停持有者、加载期间各输入入口的权限和退出本局的清理；按钮给出目标状态时不要再无条件取反。Thrive 的[暂停状态补丁](https://github.com/Revolutionary-Games/Thrive/commit/0deed4285e3d25852707d7bbf639620293c9e1ba)与[加载入口补丁](https://github.com/Revolutionary-Games/Thrive/commit/1b82f43ac822cf8b149831b1389a0c3686bc498a)支持这条窄规则，不必另建暂停框架。**局限：前一报告维护者未能复现，固定实现也有释放前置条件，不能据此称任意嵌套／转场均已可靠；**详见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-暂停叠加与转场关闭一层不等于恢复整局)。[一手／研究]
 
 **[研究] 第二次修改加一个带滑条、确认弹窗的设置页，再改键并换设备走回来。** 同时检查导航顺序、可见焦点、当前按键提示、返回目标和角色状态；不能用直接调用按钮回调代替真实输入路径。AI 可生成规则、绑定与回归路径，人判断焦点／反馈是否清楚、操作是否费力；本轮资料比较不能证明目标设备上的完整可用性。
+
+### 动态 UI 变贵：先找谁使它反复重建
+
+**[研究] ✅ 计数器或菜单动画出现已测得的 UI 热点后，先区分布局／几何与批次重建、GPU 绘制成本，再查谁持续写入变化。** 保留已有原生 UI，不先迁移框架或给每个控件加缓存。Unity 开发者的[历史项目诊断](https://discussions.unity.com/t/case-1082192-massive-performance-hit-due-to-ui/715019)发现两个 CanvasScaler 反复写不同缩放值，导致布局与几何重建；这是先去掉重复写入的反例，不是拆 Canvas 的收益证明。[一手／社区]
+
+**[研究] 🧪 原因确实是动态区牵连静态内容时，只改变相关原生边界。** uGUI 按共同更新时机拆小 Canvas，隔离的是批次分析范围，代价是各 Canvas 独立 batching；不把它说成每次重做全树所有 mesh／layout。已有 UI Toolkit 的纯视觉位移先用 Unity 6.3 的 [translate／DynamicTransform](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-use-usage-hints-to-reduce-draw-calls-and-geometry-regeneration.html)，真实内容重排仍走布局。UE 先核既有 [Invalidation](https://dev.epicgames.com/documentation/en-us/unreal-engine/invalidation-in-slate-and-umg-for-unreal-engine)：全局启用后局部 Box 不再叠加；仍有 draw-call 压力才评估 Retainer，其 render target、重绘和降刷新都有代价。原生契约与版本反例见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#动态-ui-补研重建边界不等于停止绘制)。[一手／研究]
+
+**[研究] 第二次修改只预注册：在同一 HUD 加持续变化数值，再加短动画，比较原生基线与一个局部改动。** 同设备／分辨率记录 UI CPU 重建、draw／GPU、缓存内存和变化到可见反馈的时间，开关菜单及控件显隐后用真实输入确认值、焦点反馈和点击目标一致。CPU 改善不足，或 GPU／内存／反馈延迟超预算就撤回边界；不以每帧强刷整树掩盖失效。**局限：历史 Retainer 文本停更已列为 5.4 修复，不证明 UE 5.8 仍有该缺陷；本轮资料未代替引擎与设备验证。**
 
 ### 显示正确但拾取偏移：先核位置来自哪里
 

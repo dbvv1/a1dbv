@@ -1,10 +1,10 @@
 主线：一／二／三／四；客户端体验、验证选择、第二次修改与交付
 改变的建议：[研究] 先复用原生组件，按实际症状选择输入、运动、呈现、声音与界面策略；补齐退出、存档、资源和二改责任，不以模块数量代质量。回合演出先调默认等待，再考虑快播放，保留动作完成与奖励条件；既有各项取舍和反证见对应小节。
-新证据：[一手／社区] 固定源码、官方契约／修复及不同类型游戏开发者记录；本轮补 Unity 6.3／UE 5.8 拾取坐标契约与纹理重显示纠正、Unity／UE 保存线程契约、Evil Trout 保存合并与退出经验、Factorio 非阻塞保存代价及历史回归；此前 Slay the Spire／Cogmind／Into the Breach 的节奏证据保留。此前输入／呈现／字体／听点／存档／库存来源仍在各节，未做引擎、设备或玩家实测，不能推出 AI 成功率或体验收益。
+新证据：[一手／社区] 本轮补动态 UI 原生重建／缓存契约、重复 CanvasScaler 的项目诊断和已修 Retainer 文本回归；固定源码、官方契约／修复及不同类型游戏开发者记录保留；本轮补 Unity 6.3／UE 5.8 拾取坐标契约与纹理重显示纠正、Unity／UE 保存线程契约、Evil Trout 保存合并与退出经验、Factorio 非阻塞保存代价及历史回归；此前 Slay the Spire／Cogmind／Into the Breach 的节奏证据保留。此前输入／呈现／字体／听点／存档／库存来源仍在各节，未做引擎、设备或玩家实测，不能推出 AI 成功率或体验收益。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
-证据核实：2026-10-13—15 UTC，各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。各轮均未安装付费插件或开展引擎、模型、设备、玩家实测；源码与作者数据不等于本项目复现。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
+证据核实：2026-10-13—15 UTC；动态 UI 补核为 2026-10-16 UTC+8，各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。各轮均未安装付费插件或开展引擎、模型、设备、玩家实测；源码与作者数据不等于本项目复现。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
 
 **[研究] ✅ 默认复用成熟组件；仅补项目缺少的所有权、迁移和模式切换规则。** 先验场景取消、释放、旧档、暂停与设备峰值，再决定是否加框架；无同任务实测，不作质量／性能排名。
 
@@ -1038,3 +1038,32 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 [研究] 沿现有事件处理函数，注明输入空间、消费空间、原点／单位及面板／相机身份即可，不建统一坐标框架。二改调整窗口或 UI 缩放，再加入移位、非全屏的小地图／第二视口；检查中心、边缘、显示区外的可见目标与实际拾取。原生转换满足即停止；原生控件也偏移时查版本问题，坐标已对齐但仍漏点时转查遮挡和路由，不继续堆比例补丁。
 
 **实际验证范围：** 仓库、公开原帖与官方文档静读；未运行游戏、引擎、设备或玩家测试，未证明任何通用缩放公式、修复成功率或 AI 收益。
+
+
+## 动态 UI 补研：重建边界不等于停止绘制
+
+核实：2026-10-16 UTC+8；主线三，GC 客户端模块。改变建议：动态 HUD／菜单出现已测得的重建热点后，先查持续使它失效的原因，再选已有原生边界；不因“静态／动态”标签就普遍拆 Canvas 或套 Retainer。本节补性能取舍，不重复菜单输入路由与拾取坐标；未运行引擎或目标设备测试。[研究]
+
+### 先去掉错误变化，再决定是否缓存
+
+[一手／社区] [TokyoWarfareProject 的项目报告与 Unity 工程师诊断](https://discussions.unity.com/t/case-1082192-massive-performance-hit-due-to-ui/715019)发生于 2018-09-16—21：作者对比升级到 2018.3 beta 后的 UI 成本，提供 Player profile；Unity 工程师检查项目发现同一 Canvas 上两个 CanvasScaler 分别写入 1 和 0.47，持续触发尺寸变化通知与几何／布局重建，建议移除重复组件，并说明已加禁止重复组件的标记。作者确认误加组件，但未提供完整修复后 benchmark。因此只支持“检查谁使 UI 反复 dirty”，不引用其 FPS 作为优化收益，也不声称当前版本仍允许同样配置。[研究]
+
+### Unity：按现有 UI 路线选择，不互抄边界
+
+- [一手] [uGUI 官方优化指南](https://unity.com/how-to/unity-ui-optimization-tips)说明 Canvas 内元素改变时需重新分析批次；子 Canvas 维护自己的几何与 batching，可按共同更新时机隔离动态区。**这不是“每改一个值便重建全树全部 mesh／layout”的契约。** 独立 Canvas 不能共享同一次批次合并，更多边界可能增加绘制成本；静态区仍需显示，不等于缓存为不再绘制的像素。该指南未标固定引擎版本，本轮把它作为官方机制说明，不写成 Unity 6.3 实测。[研究]
+- [一手] [Unity 6.3 LTS 移动元素契约](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-use-usage-hints-to-reduce-draw-calls-and-geometry-regeneration.html)（页面构建 2026-10-14）：top／left／width／height／flex 可引起布局重算及传播；style.translate 在 transform 阶段移动，不重算布局；频繁变换可用 DynamicTransform 避免 CPU mesh 更新。**仅视觉移动才走这条路；真实内容重排不能冻结布局来省成本。** 不由此迁移稳定 uGUI 或拆出多个 UIDocument。[研究]
+- [一手] [6.3 平台与网格限制](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-support-for-runtime-ui/uie-performance-consideration-runtime/uie-platform-and-mesh)：尺寸变化会重新生成几何，部分 Android 设备与 Web 不能局部更新 index buffer。官方提示不能替代设备测量；UI Toolkit 的优化选择不保证所有平台都有同样收益。[研究]
+
+### UE：缓存计算与降频绘制分别决策
+
+[一手] [UE 5.8 Invalidation 契约](https://dev.epicgames.com/documentation/en-us/unreal-engine/invalidation-in-slate-and-umg-for-unreal-engine)区分布局／绘制缓存与 Retainer render target。Global Invalidation 启用后，窗口内局部 Invalidation Box 停用；高频变化小部件可设 Volatile，不缓存其 paint 数据，不能据此把整页都设成 volatile。Retainer 重绘成本与内存高于 Invalidation Box，官方建议先用 invalidation，再为剩余 draw-call 压力考虑 Retainer。[研究] 因而先检查项目已有配置，避免加入无效的嵌套缓存，也不要把降低 CPU 计算与降低 GPU 绘制混为同一收益。
+
+[一手] [URetainerBox API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/UMG/URetainerBox)分别定义 RenderOnInvalidation、RenderOnPhase、PhaseCount、RequestRender；[UE 5.5 官方 API 示例](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/RetainerBox?application_version=5.5)明确 PhaseCount=2 时隔帧更新。[研究] 降刷新改变可见反馈的时机，需按实际交互预算验收，不直接宣称固定毫秒输入延迟；每帧强制重绘也不能宣称仍有原先缓存收益。
+
+[社区／一手] [2022-04-25 开发者原帖](https://forums.unrealengine.com/t/text-component-not-updating-inside-retainer-box/539340)报告 UE5 的弯曲 HUD 中生命／弹药文本放入 Retainer 后不更新，移出正常，4.27.2 未遇同样问题；后续用户的 RequestRender、phase 与布局强刷绕法效果不一致，不采用为统一修复。[Epic UE-150807](https://issues.unrealengine.com/issue/UE-150807)给出持续 SetText 的复现，影响 5.0.1，状态 Fixed、Target Fix 5.4、Fix Commit 29900904；创建 2022-05-02，解决 2023-11-22，页面更新 2026-08-07。**这是历史已修回归，不能写成 UE 5.8 当前故障；它说明更新调用成功不等于可见值已更新。** [研究]
+
+### 采用、撤回与第二次修改
+
+[研究] ✅ 现有原生 UI 满足预算就保留；出现实际热点，先分布局／几何／批次与 GPU 绘制，去掉重复写入，再只改一个相关边界。拆分后保留必要交互区的 GraphicRaycaster／原生事件路径，不以省更新为由禁用按钮、冻结焦点或显示旧数值。🧪 uGUI 按共同更新时机拆小 Canvas；UI Toolkit 纯视觉移动用 transform；UMG 先检查 invalidation，Retainer 仅在绘制成本仍需改善且反馈预算允许时比较。
+
+[研究] 二改只预注册：在已有静态 HUD 增加持续数值，再加短位移／闪烁动画；同设备、分辨率和内容量比较原生基线与一个局部改动，记录 UI CPU 重建、draw／GPU、缓存内存及数据变化到可见反馈的时间。开关菜单、控件显隐后用实际点击和已承诺导航方式确认数值、焦点反馈与目标一致，不以直接调用回调代验。CPU 改善不足，或 GPU／内存／反馈延迟超预算则撤回；出现停更先核所用版本及失效契约，不默认每帧强刷整树。本轮仅资料研究，尚无目标设备性能收益与运行正确性结论。
