@@ -225,6 +225,19 @@ Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/communi
 
 音乐转场的升级目标应具体到编辑任务。[FMOD 2.03 事件制作说明](https://www.fmod.com/docs/2.03/studio/authoring-events.html)已有按拍／小节量化的 transition region 和独立 transition timeline，可编排桥段与交叉淡化；原生 DSP 调度也能实现已设计的简单切换，区别在反复修改时谁更省制作工作，而不是前者才会准时播放。状态频繁来回时先平滑进入／退出条件；节拍等待期间仍保留即时玩法提示。[一手／研究]
 
+#### 混音焦点补研：已播放却难辨时让谁退后
+
+核实：2026-10-16 UTC+8。补充两组独立作者、不同玩法的一手制作经验，改变音频正文“必要时短暂让位”为按当前判断任务选择混音；不重写 [WP10 的并发入口与持续声政策](2026-10-14-game-wp10-client-modules.md#音频并发补研保住起音不等于保住每次提示)。以下没有本仓听验或玩家对照实验。[研究]
+
+- **快速战斗兼顾叙事，自动排序不包办焦点。** [王健安的 HARDCORE MECHA 复盘](https://www.audiokinetic.com/zh/blog/sound-design-of-hardcore-mecha/)（2019-11-04；Unity 2017.4.27／Wwise 2017.2.9）区分单人叙事与多人角色／技能信息；自动侧链和 HDR 之外，首次出现的普通敌人另用 state 强调，密集 STG 段落另减部分样本音量并限发声数。制作人不接受机械降音量的效果，作者改用信号驱动补正，对白出现时按主要角色的语音频段压低 SFX。[一手] 这是具体配置和创作取舍，不是 HDR／ducking 普遍失效；英文版与中文原文同源，不计独立案例。[研究]
+- **攀爬重在持续状态，最响的环境未必最重要。** [Cairn 音频总监 Martin Stig Andersen／首席声音设计师 Lukas Julian Lentz 访谈](https://www.asoundeffect.com/cairn-game-audio/)（2026-04-15）说明朝岩壁攀爬时降低环境、突出抓握与呼吸，环顾及抵达平地时重新开放环境。Lentz 回忆瀑布盖住这些声音时自己感到攀爬更难；这是作者观察，不是量化玩家实验。Andersen 同时指出背景过静会显露现实房间噪声，过响又影响抓握声的相对感受。[一手] 不推成瀑布全静音或所有游戏都按视野裁声；只借任务状态与环境分工，不复制其专业拟音、大量资产及多声道成本。[研究]
+
+**✅ 最小采用。** 关键声没进入播放，先排查拒绝／抢占；已播放却被盖住，先减没有新信息的重复与装饰，声音身份本身难分则先换或简化素材。再用已有状态调整音乐／环境比例，保住同场另一关键提示，并在退出状态时恢复。只有局部频段冲突且简单让位损伤其他声音时，才🧪试局部处理；新增声线、武器或环境都增加复核成本，不默认建动态 EQ、威胁评分或全能音频管理器。[研究]
+
+上述作者的术语不能变成“ducking 与 side-chain 二选一”：Unity 6.3 [AudioGroup Inspector](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioMixerInspectors.html)明确 Duck Volume 本身即由 Send 驱动的侧链压缩。[一手] Unity／UE 沿用下节已有原生混音职责；不由案例推出任何引擎或中间件的听感排名。[研究]
+
+**撤回与二改验收只预注册。** 增加第二种关键事件后，在装饰密集、环境最响和状态快速进出时，分别比较原混音、减层与局部让位；听辨两种提示的身份／方向／时效、恢复过程和连续疲劳。明显忽强忽弱、另一危险被压掉或轻重区别丢失，就减弱／撤回处理。保持原伤害与反应窗口，不为错开发声延迟即时警告；事件调用、voice 存活和总响度稳定均不能代替听验。[研究]
+
 ### 10.3 现成实现与专业案例的边界
 
 - **Chop Chop：改造思路，不整包采用旧系统。** Unity 官方 [Audio system 说明](https://github.com/UnityTechnologies/open-project-1/wiki/Audio-system)展示原生 AudioSource／AudioListener、cue／配置／空间位置分离和 emitter 池；同页明确当时音乐没有 cross-fade 支持。仓库 [README](https://github.com/UnityTechnologies/open-project-1)声明 2021 年 12 月停止开发、基于 Unity 2020.3；[根许可 Apache-2.0](https://github.com/UnityTechnologies/open-project-1/blob/main/LICENSE)。它证明有公开可读实现，不证明可直接升级到 6.3，也不外推每件附属素材许可。本轮未固定源码复测，正文不推荐照搬其选择器。[一手／研究]
