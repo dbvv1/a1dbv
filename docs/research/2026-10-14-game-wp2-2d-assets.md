@@ -1,6 +1,6 @@
 主线：二／三；G1 2D 资产选型与第二次修改
-改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择，不以静帧或包体替代验收
-新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增原画布／裁切偏移的真实消费路径、公开图集 JSON 静态解析与 Aseprite 历史修复；§12新增Ronimo编码器撤回、Factorio跨画风反例及Unity最终Atlas／UE Final编码契约；此前模型／服务调查保留，均未运行模型／引擎
+改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收
+新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；此前模型／服务调查保留，均未运行模型／引擎
 
 # WP2：2D资产的前沿方法与零手修边界
 
@@ -237,3 +237,24 @@ Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blo
 [研究] 没有可辨失真且预算满足就沿用现有设置；只为受损类别试目标设备支持的另一格式、有限分辨率调整或无压缩例外，保留其余合格资源。不为理论完整改所有编码、引入新压缩库或自建框架。
 
 **实际范围与许可：** 已读两位作者原文及两引擎官方文档，未运行游戏、引擎、编码器或生成模型，未测体验与性能。仅引用观点和接口，不复制游戏美术或编码器实现；文章公开可读不等于可再发行其资产，没有新增代码依赖。
+
+## 13. 瓦片生产链：连接图组与中心变体分开修改
+
+核实时间：2026-10-16（UTC+8）。[研究] 本节改变的是“新增装饰差异要不要重做整套连接图组”：连接轮廓不变时，先只补中心变体；已有符合布局的源图再评估现成组合器。它补充公开工程修改过程，不补足零手修生产率或主动工时。
+
+**许可先行。** [一手] Mindustry 固定版本的 [LICENSE](https://github.com/Anuken/Mindustry/blob/2bdf2f39f838407be1bd237e3a7fe458b9f6c26e/LICENSE) 是 GPL-3.0；其 ImageTileGenerator 标明移植自 GglLfr/tile-gen，原工具的[固定许可](https://github.com/GglLfr/tile-gen/blob/9ea41647d2c28f6cd8b95f8a4fd12a0b38143cf1/LICENSE)为 Apache-2.0。[研究] 这里只借机制，不复制代码或图像，不把原工具许可套到游戏移植版；也未核这些游戏美术的独立宽松授权。若采用现成工具，仍核具体版本、依赖及输入素材权利。
+
+### 从复用到后续修改的可追踪链
+
+- **把现成组合方式接进生产。** [一手] [2025-06-10 提交 e5c745e](https://github.com/Anuken/Mindustry/commit/e5c745ee16b932a826f11be29eadb40938cd541f)新增 Java 移植及打包调用；输入须为边长可被4整除的正方形，并符合约定布局，程序组合后输出47个编号切片。[研究] 尺寸符合只是入口条件，不代表任意无缝纹理都能转成正确图组
+- **需求从地板扩到墙。** [一手] [2025-07-10 提交 4790c80](https://github.com/Anuken/Mindustry/commit/4790c8013b64ea84018d0ee1adda4b459a6ea8cf)把生成范围扩到 StaticWall，运行时将8邻域的256种掩码映射为47种图块，并为预览生成代表图。此时墙的普通随机变体尚不支持；不是直接把一张漂亮地板复制成墙
+- **增加内容，只扩需要的变化。** [一手] [2025-08-23 提交 42fb6b7](https://github.com/Anuken/Mindustry/commit/42fb6b7a722ccfe71301cdfcdcb41a8286042398)同时加入三种金属墙的源图、独立预览、内容定义及中心变体消费；metal-wall-2 配两个中心变体，只有八邻居全连接（掩码255映到中心索引13）才随机选择，其余继续用原边缘图组。新 metal-tiles-13 配六个中心变体。[研究] 源图增删可查，但删除文件不证明淘汰原因，也没有全部美术尝试或制作工时
+- **公开采用仍有后续缺陷。** [一手] [v151 官方说明](https://github.com/Anuken/Mindustry/releases/tag/v151)列出新增三种环境金属墙与一种地板，并明确是 Beta／Pre-release。[2025-08-25 提交 2bdf2f3](https://github.com/Anuken/Mindustry/commit/2bdf2f39f838407be1bd237e3a7fe458b9f6c26e)随后修复金属墙小地图变黑：旧条件在已有独立预览图时，也跳过了把代表像素存入 `gens`；修复保留不覆盖已有预览图，但仍填充首个变体的代表像素。[研究] 公开 Beta 采用不等于稳定发行质量认证，地图中的资源与派生预览／颜色须分别检查
+
+### 处理范围、下一次修改与停止条件
+
+[一手] 在固定 `2bdf2f3` 树中，[ImageTileGenerator](https://github.com/Anuken/Mindustry/blob/2bdf2f39f838407be1bd237e3a7fe458b9f6c26e/tools/src/mindustry/tools/ImageTileGenerator.java#L16-L60)列出输入约束与全部47项输出；[打包脚本](https://github.com/Anuken/Mindustry/blob/2bdf2f39f838407be1bd237e3a7fe458b9f6c26e/tools/build.gradle#L123-L186)先清理工作输出、复制源图、生成，再打普通与 fallback 图集。生成器移除的是工作输出中的原始 autotile 副本，不是作者源图。[StaticWall](https://github.com/Anuken/Mindustry/blob/2bdf2f39f838407be1bd237e3a7fe458b9f6c26e/core/src/mindustry/world/blocks/environment/StaticWall.java#L40-L55)按连接结果决定是否使用中心变体；[Blocks 定义](https://github.com/Anuken/Mindustry/blob/2bdf2f39f838407be1bd237e3a7fe458b9f6c26e/core/src/mindustry/content/Blocks.java#L913-L941)落实到具体资源。
+
+[研究] 下一次增加破损／装饰版时，若边缘不变，沿现有规则只替中心；若轮廓、转角或跨材质连接改变，补相应源块及规则，不能让中心变体代替新拓扑。保留合格源图，检查整套邻接及项目实际使用的预览、地图色等派生产物；没有这些消费面就不额外建设。所需源块不存在或只能靠手绘补齐时，换来源／缩小需求，不反复重生整套。
+
+**验证边界：** [研究] 已读固定源码、提交差异及官方发布说明；未运行生成器、游戏或引擎，未清点实际打包产物、视觉验收47个切片或验证生成成功率。输入源图如何绘制、全部淘汰样本及主动工时仍未知。上述单项目证据只支持局部变体与派生产物的修改边界，不证明 Unity／Unreal 可直接消费该格式，也不建议移植整套游戏管线。
