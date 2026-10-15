@@ -1,6 +1,6 @@
 主线：二／三／四；G1 动画、绑定、第二次修改与授权
-改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法
-新证据：[一手／研究] 近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
+改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法；二改后的消失／突跳先分范围与屏外求值
+新证据：[一手／研究] Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
 
 # WP4：动画、绑定与第二次修改
 
@@ -318,3 +318,33 @@ Daniel Holden 的 [2026-07-30 原文](https://theorangeduck.com/page/inverse-kin
 [研究] **✅ 保留原生路线：** 同类循环相位兼容则混合；同一动作的局部接触偏移则有限 IK／重定向；姿态与支撑顺序正确、整体位置改变则分段对位。**🧪 改造：** 统一动作进度，给交互目标定义可支持的高度／朝向／净空／运动范围。**⛔ 撤回这一动作组合：** 对位只能靠提前离地、删掉必要蓄力、持续悬浮或穿过障碍时，换兼容片段；没有许可片段且不能程序重建可信运动时，收窄可交互范围。缩范围的代价是自由度降低，分动作的代价是内容分支增加，程序方案的代价是主动设计运动与调参；都比把几何误差为零直接算作质量合格诚实。
 
 本轮只读公开官方合同、开发者文章、发行记录和固定源码；没有下载动画包、复制上游实现、运行引擎／模型或测通过率。后续获准实测时，用同一动作改变身材比例、局部／全局时长和目标位置，观察预备承重、抓握后漂移、退出姿态及限制范围外的拒绝行为；与已有比例章节合并验收，不新设实验模块。[研究]
+
+## 剔除补研：范围、更新与动作内容分开
+
+核实：2026-10-16（UTC+8）。主线二／三；改变的选择是：新动作或装备造成边缘消失／离屏后突跳时，先查运行时交接，不能直接归咎生成／重定向，更不把全关剔除当最终方案。既有接触、进度、位移权威建议不变。[研究]
+
+### A. Unity：范围和 Animator 是两份合同
+
+- [Unity 6.3 可见性排查](https://docs.unity3d.com/6000.3/Documentation/Manual/troubleshooting-skinned-mesh-renderer-visibility.html)明确：导入时按当时动画估计范围；后来 additive、脚本骨骼位移、顶点 shader 与 ragdoll 可能超出。能预估时修改最大覆盖范围，不能预估时可逐帧重算。[一手] [研究] 这支持先修覆盖范围；不支持一个任意放大的全项目数值，也不证明 CPU 重算能自动理解任意 shader 位移。
+- [组件参考](https://docs.unity3d.com/6000.3/Documentation/Manual/class-SkinnedMeshRenderer.html)区分 renderer 停止 skinning 和恢复，以及 `Update When Offscreen` 逐帧覆盖 bounds；root bone 决定其跟随变换。[Renderer.localBounds](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Renderer-localBounds.html)同时说明自定义运行时覆盖不会保存进 scene／prefab，要由脚本设置。[一手] [研究] 换装、重建或池复用须重新核正确覆盖是否存在；不能把调试时曾设置过当作发布构建已持久化。这里说的是运行时 API 覆盖，不笼统否定 Inspector 序列化配置。
+- [AnimatorCullingMode 6.3](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AnimatorCullingMode.html)中，`CullUpdateTransforms` 停 retarget／IK／Transform 写入，`CullCompletely` 停动画，`AlwaysAnimate` 保留屏外动画。[一手] 这不是 renderer 的同名性能开关；范围正确也不能自动补回被政策停掉的骨骼结果。[研究]
+
+**固定参考源码交叉核对。** `UnityCsReference` 标签 `6000.3.0f1` 经 `git ls-remote` 固定到 `cfcd94f14a5cd69f9a5d2b148d4fe626e7fc46ae`。[SkinnedMeshRendererEditor.cs L180–216](https://github.com/Unity-Technologies/UnityCsReference/blob/cfcd94f14a5cd69f9a5d2b148d4fe626e7fc46ae/Editor/Mono/Inspector/SkinnedMeshRendererEditor.cs#L180-L216)在动态更新分支画 world bounds，另一分支用 actual root bone 矩阵编辑 localBounds；[Animator.bindings.cs](https://github.com/Unity-Technologies/UnityCsReference/blob/cfcd94f14a5cd69f9a5d2b148d4fe626e7fc46ae/Modules/Animation/ScriptBindings/Animator.bindings.cs)的枚举注释与 API 合同一致。[一手：固定源码] 这只是托管绑定与 Inspector 佐证，不是读取原生剔除实现或完成运行验证。文件头为 Unity Reference Only License；本轮仅阅读、链接，不复制实现或把它当可移植 MIT 代码。
+
+**真实历史复现与处理。** [UUM-35020](https://issuetracker.unity.com/issues/11868/skinned-mesh-renderer-bounds-are-not-updated-when-moving-bones)列出 2020.3.47f1 至 2023.2.0a14 多版本复现：旋转腿骨后 bounds 未动，只看见腿而看不见 bounds 的相机角度会让腿消失。Unity 标记 **As Designed**，给出开启屏外更新以按姿态重算的处理，不是发布了一个修复版本。[一手：官方复现／处理记录] 它与 6.3 合同共同支持机制诊断；不证明所有消失都是同一原因，也没有本仓复测或性能测量。[研究]
+
+### B. Unreal：tick、骨骼刷新和 bounds 来源分别核
+
+[UE5.8 EVisibilityBasedAnimTickOption](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/EVisibilityBasedAnimTickOption?lang=en-US)明确 `AlwaysTickPose` 未渲染时不刷新 BoneTransforms；`AlwaysTickPoseAndRefreshBones` 保留两者；`OnlyTickPoseWhenRendered` 只在渲染时执行。另有仅保留 Montage 的不同选项，不能当全部 AnimGraph／骨骼求值。[一手] [研究] 因此先找具体消费者需要动作推进、root motion 还是当前骨骼结果，不能仅根据“角色不可见”或枚举里的 Always 决定。
+
+[UE5.8 USkinnedMeshComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/USkinnedMeshComponent)公开：PhysicsAsset 范围更新可只包含标记的 BodySetups，或通过 `bConsiderAllBodiesForBounds` 纳入全部；`bUseBoundsFromLeaderPoseComponent` 直接沿用 leader 的 bounds。`bIncludeComponentLocationIntoBounds` 的说明专门提到角色离开根部、配合仅渲染时 tick 的情况。[一手] [研究] 换大装备须核范围提供者和参与体，不把身体的旧范围视作所有 follower 的正确范围；包含原点也不等于覆盖所有姿态。
+
+[UE4.27 Out of Bounds Pixels](https://dev.epicgames.com/documentation/unreal-engine/out-of-bounds-pixels?application_version=4.27)是历史机制说明：越出 bounds 的几何可能在转相机时消失，父级范围过小、Physics Asset 与 shader 位移是不同原因；扩大投影物范围有代价。[UE5.8 视口显示选项](https://dev.epicgames.com/documentation/en-us/unreal-engine/viewport-show-flags-in-unreal-engine)仍提供 Bounds／Out of Bounds Pixels 诊断。[一手] [研究] 不用旧页“创建默认 physics asset 即可”的措辞保证新装备必定正确，也不把碰撞 capsule 当 renderer 的范围。本文未读取受限 UE 引擎源码，当前语义来自公开 API。
+
+**架构反例，不伪装成成功修复。** [ALS-Community #106](https://github.com/PanicPetal/ALS-Community/issues/106)（2021-01—02）报告 dedicated server 下改成 `AlwaysTickPose` 后原地转身同步出错，原因分析涉及动画后求值曲线与旋转逻辑耦合；维护者确认需要较大结构修改并以 wontfix 关闭。[一手：项目维护者回应；复现细节为报告者记录] 发帖人提出的 Notify 重构没有在该串获得落地验证，关闭也不等于已修好。只借这个历史反例说明“省掉骨骼刷新”可能同时改玩法消费者，不能推广为 UE5.8 全部角色都要全量更新或量化服务器成本。[研究]
+
+### C. 采用与撤回边界
+
+[研究] ✅ 对动作／装备支持范围可界定的角色，先修正确且有限的范围；范围难以预估再比较动态更新。屏外仍运行的玩法保留其必要数据生产者，纯装饰对象可按需求停止或降频。任何方案若只靠巨大 bounds 或全量更新掩盖错误来源，就先回查 root、继承关系、更新模式与真实变形；这些开关既不修权重也不补动作内容。
+
+未来获准实测时，在同一角色上新增大幅动作和长装备，比较持续可见、掠过边缘、完全离屏期间触发动作、返回首帧，以及池复用／换装后的范围。分别记录 bounds、状态进度、所需骨骼／挂点与玩法结果，再按目标设备测动画／skinning／剔除成本；不以仅在编辑器看起来正常或某个开关治好一次现象结束验收。本轮仅公开合同、历史报告与参考源码静态核查，无引擎／模型／设备运行，无资产下载或收益实测。[研究]

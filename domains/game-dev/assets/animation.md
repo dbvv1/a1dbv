@@ -1,6 +1,6 @@
 # 动画与绑定：先固定动作契约，再补生成
 
-> 核实时间：2026-10-14（UTC+8）；Uthana 返回契约、交互对位与时长补核：2026-10-15（UTC+8）。适用场景：单人程序员、不做人工美术修补。分档是具体任务的首试顺序，不是同题实测冠军；一手来源、固定源码、许可及反证见[WP4 研究记录](../../../docs/research/2026-10-14-game-wp4-animation.md)。
+> 核实时间：2026-10-14（UTC+8）；Uthana 返回契约、交互对位与时长补核：2026-10-15（UTC+8）。剔除与屏外更新补核：2026-10-16（UTC+8）。适用场景：单人程序员、不做人工美术修补。分档是具体任务的首试顺序，不是同题实测冠军；一手来源、固定源码、许可及反证见[WP4 研究记录](../../../docs/research/2026-10-14-game-wp4-animation.md)。
 
 ## 30 秒结论
 
@@ -11,6 +11,8 @@
 | 机械、悬浮、规则分节 | ✅ 曲线、程序步态与有限 IK | 自然表演不足再考虑专用资产 |
 | 2D 骨骼角色 | ✅ 从完整分层与绑定资产起步 | 缺背面／隐藏肢体就补资源或缩小动作 |
 | 商用本地／在线服务 | 👀 分开核代码、权重、依赖、输出和自动访问 | 许可未闭合就保留条件，不以免费按钮放行 |
+
+**换动作／装备后只在画面边缘消失或离屏后突跳，先查[包围范围与屏外更新](#换动作后消失或突跳先分包围范围与屏外更新)，不要直接重生成。**[研究]
 
 [研究] 型号、收费与服务条款逐项见 [WP4 动态事实表](../../../docs/research/2026-10-14-game-wp4-animation.md#8-动态事实表2026-10-14-补核)。
 
@@ -103,6 +105,15 @@ Unity Humanoid 需有效 Avatar 才能跨角色复用动作；Generic 和多足�
 **✅ 2D 骨骼路线从已正确分层、关节遮盖完整的资产开始。** Unity 官方流程仍含骨骼创建、网格细化、权重调整与姿态检查；Auto Geometry／Auto Weights 不负责补画隐藏肢体或背面。Spine 是成熟创作／运行时工具，不是 AI 自动绑定器；其完整资产包可减少起步工作，旧 Unity 示例工程仍需迁移。[一手／研究]
 
 换色、同规格装备和速度尽量复用 slot／sprite／骨架。转身、背面、大透视或形变需要相应替换图或完整逐帧动作；没有这些内容时，再评估整段生成或收窄动作。逐帧须保共同画布、pivot、身份与事件，详见[2D 专题](2d.md)。[一手／经验]
+
+## 换动作后消失或突跳：先分包围范围与屏外更新
+
+**✅ 姿态正确不等于引擎能一直正确显示它。** 新增大幅挥击、侧移、程序 IK 或换长装备后，先显示实际 renderer 的 bounds，比较画面中央、边缘、离屏再返回。边缘提前消失先查范围／root／父级继承；离屏期间骨骼或挂点停住再查更新政策；持续可见且正常求值时仍扭曲、滑脚或穿装备，才回到绑定／重定向／动作内容诊断。这是排查顺序，不是按症状直接确诊。[研究]
+
+- **Unity 6.3：** 导入时的动画范围不保证覆盖后加的动作与程序变形。范围可预测时，先修正覆盖支持动作／装备的 renderer bounds；难以预估才比较 `Update When Offscreen` 的逐帧重算。它不等同于 Animator 的更新策略：`CullUpdateTransforms` 会在不可见时停重定向、IK 和 Transform 写入，`CullCompletely` 停动画。屏外仍需骨骼驱动的挂点／判定时，须单独保住所需求值。[一手／研究：[范围诊断](https://docs.unity3d.com/6000.3/Documentation/Manual/troubleshooting-skinned-mesh-renderer-visibility.html)、[Animator](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AnimatorCullingMode.html)]
+- **Unreal 5.8：** 先核实际 bounds 来源，包括 Physics Asset 的参与体和是否沿用 Leader Pose 的范围；新装备不能无条件继承旧身体范围。`AlwaysTickPose` 在未渲染时仍 tick，但不刷新骨骼变换；`AlwaysTickPoseAndRefreshBones` 才同时保留两者。需要屏外骨骼结果时不能只看“Always”名称，也不能把 Unity 的开关照搬过来。[一手／研究：[bounds 配置](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/USkinnedMeshComponent)、[tick 合同](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/EVisibilityBasedAnimTickOption?lang=en-US)]
+
+**✅ 更新政策服从玩法消费者。** 位移权威、伤害／奖励条件与需要当前骨骼的挂点，不能随视觉剔除悄悄停掉；纯装饰角色则不必因此全开屏外求值。先保证正确，再在目标设备比较有限范围、动态范围与必要更新的成本，不设通用巨大 bounds，也不统一关闭剔除。第二改保存范围来源／坐标空间、更新模式和消费者；未来实测覆盖最大姿态、装备切换、离屏中触发动作及返回首帧，并核实际发布构建。**局限：包围盒与求值修好不能证明动作好看，且本轮没有引擎或性能实测。** 历史消失复现、反例与运行时覆盖生命周期见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md#剔除补研范围更新与动作内容分开)。[研究]
 
 ## 授权与成本会改变自动化路线
 
