@@ -1,10 +1,12 @@
-主线：三
-改变的建议：恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试。[经验]
-证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；未运行新模型恢复实验。[一手／社区／研究]
+主线：三，兼二
+改变的建议：恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流。[经验]
+证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验。[一手／社区／研究]
 
 # 长程任务：来源、反例与实验边界
 
 > 资料整理：2026-10-12（UTC）。对应[20 · Codex 长程任务](../20-codex-long-horizon.md)，本页只保存正文省略的来源与细节。正文原有核实时间为 2026-10-11（UTC+8，检索截至 2026-10-10 UTC）；后续补充按所链接研究页的日期定位。本次阅读分层没有重新核实全部外部网页或发布状态。
+
+正文核查沿革补记：2026-10-12 仅调整阅读分层；2026-10-14 补 §4 继承行为诊断、原生历史恢复与失败压缩边界。2026-10-15 补 §5 续接输入接受／处理差异与 §7 dot 停止范围，详细来源见[dot 长任务核对](2026-10-12-development-conditions.md#dot-长任务续接接受处理与停止范围)；其余外部事实仍按各记录日期，不表示本轮全部复核。**[经验：维护范围]**
 
 ## 官方来源与历史时点
 
@@ -119,8 +121,58 @@
 | [Goal：评估机制](https://code.claude.com/docs/en/goal#how-evaluation-works)与[要求](https://code.claude.com/docs/en/goal#requirements) | 会话级 prompt 型 Stop Hook，评估器依赖已展示证据，不独立检查文件或执行命令 | 工作区信任和 Hook 设置可使功能不可用；本轮未确认首次支持版本，不能套用 Codex 的版本号或承诺全部模型／客户端支持 |
 | [Hooks：Stop](https://code.claude.com/docs/en/hooks#stop)与[StopFailure](https://code.claude.com/docs/en/hooks#stopfailure) | API 错误走 StopFailure 而非 Stop；输出／退出码无继续决策权 | terminalSequence 是显示例外；应用自身的恢复动作与 Hook 返回值控制续跑是两件事，不能由此推断 `/goal` 自身绝无重试 |
 
+### 07 采用入口补核：续接不等于验收或硬限额
+
+2026-10-15（UTC+8）重读当前官方 [Goal](https://code.claude.com/docs/en/goal)，新增核对停止、成本与恢复段落；据此收窄 07 §1 的“约束强度”阶梯，不重复 §6–7 已完成的 Ralph／harness 比较。**[一手：文档；研究：修订范围]**
+
+- **退出不等于完成**：[评估机制](https://code.claude.com/docs/en/goal#how-evaluation-works)除 met，还有 impossible；[需处理的错误](https://code.claude.com/docs/en/goal#errors-you-have-to-fix-clear-the-goal)也能清除目标。读者须核停止原因与项目证据，不能看目标消失就收货。
+- **边界由谁执行**：[条件编写](https://code.claude.com/docs/en/goal#write-an-effective-condition)中的轮数／时间条款由模型依据会话判断，不是确定性硬限额；[恢复说明](https://code.claude.com/docs/en/goal#resume-with-an-active-goal)还说明恢复 active goal 时轮数、计时与 token-spend baseline 重置，不能拿这一会话显示代替跨恢复累计预算。
+- **额外成本**：[评估模型与成本](https://code.claude.com/docs/en/goal#evaluation-model-and-cost)明确评估 token 另按配置的小模型计费；即使官方称通常相对主轮次很小，也不能推导整套续接工作流省钱，因为后续实现、验证与审阅仍有成本。
+
+这些来源是功能契约，不是本仓库对模型判定、费用或取消路径的实测；官方也提供清除目标与暂停路径，不能反向说它只能无限续跑。07 因而仅在明确验收下仍提前收尾时试用，已有可靠闭环就保持原流程；硬预算沿用执行环境真正提供的控制，不另建框架。**[一手；经验：采用与撤回]**
+
+07 其余入口仅消除既有主专题冲突：§8 的“两次错误／第三次粘贴”不再自动触发常驻配置或 Skill，沿用 03／05 的增量与成本判断；§9 不按纠正次数清空，也不把全部文字规则搬成 Hook。重读[官方最佳实践](https://code.claude.com/docs/en/best-practices#course-correct-early-and-often)可见次数仍是其经验建议，不是因果证据。当前[完整命令表](https://code.claude.com/docs/en/commands)未列 `/handoff`，故 §3.5 撤回无来源的 HN 偏好推荐，改为按交接需要使用现有记录及普通提示；这不证明任何自定义扩展都不存在该命令，也不要求读者放弃已验证的扩展。**[一手：读取范围；经验：入口一致性]**
+
 历史反证保留：17 原有依据包括 [Chroma《Context Rot》](https://research.trychroma.com/context-rot)（2025）关于输入增长与表现下降的研究，以及 [Claude Code changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) 2.1.293 所记的压缩后时序误判修复：把压缩前完成的动作当成压缩后发生，继而撤回或重复已有工作。两者提醒读者，缩小输入并不能排除真实的信息损失或压缩语义缺陷；本轮从正文移至此处保留，没有重新核实这两项历史来源，也不据旧修复断言当前全部压缩故障已消失。**[研究：历史研究；一手：原有 changelog 引用；经验：反证边界]**
 
 采用判断：保留 20 的已有恢复记录建议，不新建框架；需要腾空间先控制输入，错误思路累积再清空，执行失败先查原结果与外部状态。最低版本未确认处只写当前官方文档，不推断发布范围。**[经验：综合建议]**
 
 本轮只读官方页面并修改文档；未安装或运行 Claude Code、真实模型、引擎或恢复实验。仓库离线检查仅用于链接目标、配置及确定性回归，不证明上述恢复建议的模型效果。**[研究：验证边界]**
+
+
+## 循环采用核查：续接、重置与新增反馈
+
+> 核实：2026-10-15（UTC+8）；对应 07 §6–7。只读公开源码、测试定义与作者原文，没有运行客户端、模型或上游脚本。本节只补原记录未核对的具体采用边界；通用的自报不等于验收、未知结果先对账继续由 20 维护。
+
+### 1. 官方同会话循环不等于每轮重置
+
+[官方 marketplace 固定提交 `c2bdb42`](https://github.com/anthropics/claude-plugins-official/tree/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/ralph-loop) 的 [stop-hook.sh](https://github.com/anthropics/claude-plugins-official/blob/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/ralph-loop/hooks/stop-hook.sh) 读取同一项目状态及 transcript，匹配 promise 或检查迭代上限，否则返回 `decision: block` 并重送原提示。它不启动新 CLI，也不运行项目测试。故不能把社区 fresh-context 经验直接归给该插件。**[一手：固定源码]**
+
+采用前还应区分“有上限参数”和“终止路径可靠”：[#5605](https://github.com/anthropics/claude-plugins-official/pull/5605) 核实时仍 open、未合并；其 head [`a310cc1` 的七项回归](https://github.com/anthropics/claude-plugins-official/blob/a310cc1ae637b67ba7fd14c6f5c21e97d07d48d0/plugins/ralph-loop/tests/stop-hook.test.sh) 用合成 transcript／状态文件检查裸词误完成、promise 空白不对称、无空格计数不增长，以及合法标签、正常增长与上限对照。已读 main 仍保留相应旧分支。测试作者报告七项通过，本文只读定义，未复跑；即使这些修复通过，也没有检验生成代码或业务验收。不要将 PR 存在写成已发布修复，也不把这些受特定输入触发的问题推成所有运行必然失败。**[一手：PR／测试；研究：范围]**
+
+### 2. 不同作者的实际采用链与反证
+
+| 作者与任务 | 可核对的链 | 改变采用判断的限制 |
+|---|---|---|
+| hironori-maruoka，10×20 浏览器表格，公式、依赖重算与环检测 | [2026-01-30 原文](https://developer.mamezou-tech.com/en/blogs/2026/01/30/kiro_cli_ralph/) → [`47b0652` 的循环脚本](https://github.com/hironori-maruoka/kiro-ralph/blob/47b0652978540f56ff2c7e56d485ba6e2ef92e39/afk-ralph.sh) 每轮启动 Kiro CLI、读规格与进度 → [引擎测试](https://github.com/hironori-maruoka/kiro-ralph/blob/47b0652978540f56ff2c7e56d485ba6e2ef92e39/spreadsheet-sample/tests/engine/engine.test.ts) 包含链式更新、错误传播、打破循环后恢复数值 | 脚本以任务勾选和 promise 退出，不独立运行测试；作者观察到进度文件位置漂移，并限制会挂起的 watch／交互命令。博客报126 tests，但同提交 [PROJECT_COMPLETE](https://github.com/hironori-maruoka/kiro-ralph/blob/47b0652978540f56ff2c7e56d485ba6e2ef92e39/spreadsheet-sample/PROJECT_COMPLETE.md) 报115，故不引用统一通过数或称本仓复测。无普通会话基线。**[社区：作者运行；一手：源码／测试]** |
+| Johannes Barop，Ralph 台词浏览／投票应用 | [作者原文](https://www.codecentric.ai/en/knowledge-hub/blog/the-ralph-wiggum-loop-autonomous-code-generation-with-a-fresh-context) → [`ee5d9d1` 的循环](https://github.com/jbarop/unpossible-app/blob/ee5d9d1499d432eb99597f6c849b7e95fa200ce6/ralph-wiggum-loop.sh) → [prompt](https://github.com/jbarop/unpossible-app/blob/ee5d9d1499d432eb99597f6c849b7e95fa200ce6/prompt.md) 要求读规格、选择待办、测试后提交 | 作者报告得到能用的应用；脚本实际只 grep 计划中的完成句，或到50次停止；测试由提示要求，非脚本验收。逐阶段新进程是其实现选择，没有同任务不重置对照，不能证明普通会话不足。**[社区：作者运行；一手：固定脚本]** |
+
+两条链来自不同作者、不同应用，可支持“能这样做”，不能支持“应当这样做”。两份脚本还使用宽权限参数，本文不复制其授权做法。测试存在、作者自述与当前部署结果分开；本轮未启动应用，也没有取得独立使用者的后续维护数据。**[研究：横向判断]**
+
+补充撤回范围：[Konstantin Burkalev 的两个月使用复盘](https://blog.ksdaemon.com/dev/my-take-on-ralph-loop/) 明确把按钮／小端点留给普通提示，且其循环任务完成后仍需大量审阅与修改。它是作者经验，未提供对应任务的公开前后补丁和工时原始表；不采纳其 1.6–1.8 倍估计为效果证据，也不将其按任务大小的门槛升级为通则。这里只支持把审阅与返工纳入采用成本。**[社区：自报；研究：采用边界]**
+
+### 3. 历史 harness 自己已经撤去哪些环节
+
+[Prithvi Rajasekaran，2026-03-24](https://www.anthropic.com/engineering/harness-design-long-running-apps) 的原文比 07 旧摘要更有条件性：Sonnet 4.5 的上下文焦虑促成重置；Opus 4.5 已可使用连续会话和自动压缩；4.6 再取消 sprint，并把评价改为整轮构建后进行。保留评价的实质证据是 DAW 的拖动／录音等交互缺口仍会被发现，而非任务数量。作者还报告大幅删减一度损害结果，随后改为逐项移除；这也反对一口气取消所有检查。**[一手：历史作者实验]**
+
+早期游戏制作器比较同时改变预算、规划范围和评价结构；后续 DAW 又换了模型与任务，不是受控消融。没有据此推定“现在只需最终评审”，也不将作者扩展产品范围的偏好等同用户想要更多功能。**[研究：外推边界]**
+
+### 4. 本轮收敛的选择
+
+- 普通会话已能实现并验证：不安装循环，不为“任务长”自动切会话
+- 有明确可继续工作却停止：先核对停止原因，再试有上限、可取消的续接；原有[提前停止案例](2026-10-10-codex-continuity.md)说明缺口可能存在，但尚未证明 Ralph 能修复该客户端故障
+- 连续上下文确实失效：才试新会话＋最小恢复信息，不能用同会话 Stop 插件代替重置
+- 结果有可观察缺口：补会带来新证据的检查；反复催促、重复同一判断或预算用尽不算质量提升
+- 模型／任务变化：一次移除一个可选环节，保留风险所需的中间契约与检查；只有现实缺口消失才撤回，不预设固定轮数
+
+以上为 **[经验：条件建议]**，不是新的模型效果实验。后续若获准对照，应固定目标质量与范围，分别比较普通会话、同会话续接和新进程循环，纳入未完成行为、误报完成、返工及人工审阅成本；当前不执行。

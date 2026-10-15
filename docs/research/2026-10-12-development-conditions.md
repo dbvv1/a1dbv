@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具。[经验／研究]
-证据摘要：官方权限／运行契约、固定 sandbox-runtime 的 socket／mask 分支及 Claude Code 2.1.285 版本反证、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中。[经验／研究]
+证据摘要：另补 Vitest 5.0.4 原生执行依赖记录、固定源码及 linked workspace 预打包漏选报告（2026-10-15 UTC 核实，未复测）；新增 dot 云端同一公开 X URL 抓取 403、正常 Chrome 读取与刷新成功的现场观察（2026-10-15 UTC），另补公开 GET 的 200／已知 ID 测量，均只支持按路径与内容分别诊断；另核 Claude API 拒答／服务错误与 CLI fallback 的不同触发条件；另核 Codex 0.162.1 Hook 输入／输出与异步实现、Claude 当前契约，并对既有 Claude 脚本做 5 类合成输入检查（不执行补丁）。官方权限／运行契约、固定 sandbox-runtime 的 socket／mask 分支及 Claude Code 2.1.285 版本反证、固定历史补丁、社区使用与接管报告、论文；SWE-Game 固定源码拆分实现对应关系与体验质量；另有 TanStack／Angular／Renovate 迁移维护链与固定夹具，以及标准库公式、路径与 32 场景 SQL 局部复核。它们支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
 关键边界：普通 headless、bare、trust 与 sandbox 不等价；strict 不排除已配置的沙箱外命令，socket 过滤和可选 mask 的目标／失败默认值须单独核对；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
@@ -96,6 +96,30 @@
 **Hook 定义信任是另一道门。** [当前官方契约](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks)要求非托管 Hook 信任当前定义后才运行，新增／修改的定义会被跳过；`/hooks` 可检查来源与待审项，插件启用不自动信任它的 Hook。固定实现的 [hook_hash](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/hooks/src/engine/discovery.rs#L768-L794)哈希规范化事件和 handler 配置，并不读取被调用脚本内容。因此审查定义时也审查脚本及其来源，不能把定义未变当作脚本未变；不建议用 bypass 信任参数处理外来仓库。**[一手：官方契约与固定实现；经验：采用判断]**
 
 **检查范围与不采用。** 本轮仅阅读当前官方页面、上述固定源码和测试定义，未运行 Codex、模型或上游测试，未检查私人配置。未完整审计每种 MCP／shell／插件启动路径，不给“零启动执行”保证，也不把命令沙箱说成整个宿主进程隔离。`--ignore-user-config` 与 `--ignore-rules` 只按官方声明的各自范围理解，不推荐作关闭全部项目能力的通用开关；不增加信任记录修改、凭据迁移或放宽安全的步骤。**[研究：验证范围与撤回边界]**
+
+### Hook 跨宿主迁移：匹配成功不等于协议适配
+
+**核实：2026-10-15（UTC+8）；主线二；改变 06 的迁移选择。** ⛔ 不把本仓 Claude 路径脚本原样作为 Codex 路径策略。模板与模板入口本已限定 `.claude/` 并要求按宿主验证，本轮不是修复脚本 bug，而是给出一个具体不能直接迁移的条件；不新增适配器或权限配置。**[经验：采用判断]**
+
+**来源与版本。** 查询 [官方 latest release](https://api.github.com/repos/openai/codex/releases/latest) 得到 [`rust-v0.162.1`](https://github.com/openai/codex/releases/tag/rust-v0.162.1)（2026-10-09 发布）；[annotated tag 对象](https://api.github.com/repos/openai/codex/git/tags/7a078f6bb4ce0dc2a81408b334ce52979d92c603)指向 commit `092d3acd6bec3e3a14bdc7e7a2810ab628ab759d`。下表源码全部固定于该发布提交；[当前 Codex Hooks 文档](https://learn.chatgpt.com/docs/hooks#pretooluse)与 [Claude Hooks 文档](https://code.claude.com/docs/en/hooks)是访问时契约，不能据此推断所有旧版／桌面宿主都已支持。**[一手：版本元数据、官方契约与源码]**
+
+| 核查点 | 新证据 | 选择与边界 |
+|---|---|---|
+| matcher 与实际输入 | [`hook_names.rs` L28–38](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/tools/hook_names.rs#L28-L38)把 Edit/Write 作为别名；[`apply_patch.rs` L395–400](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/tools/handlers/apply_patch.rs#L395-L400)提供 command 形态的补丁；[`pre_tool_use.rs` L169–189](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/events/pre_tool_use.rs#L169-L189)序列化实际工具名 | matcher 命中不证明 file_path 解析器适用；需按补丁协议处理多文件等情况，不能仅替换字段名 |
+| 决定与失败 | [`output_parser.rs` L441–470](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/engine/output_parser.rs#L441-L470)判 ask 不支持；[`pre_tool_use.rs` L200–309](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/events/pre_tool_use.rs#L200-L309)将错误记 Failed、保留 should_block=false；[同文件测试定义 L555–585](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/events/pre_tool_use.rs#L555-L585)断言此分支 | 不能把 Claude ask 规则直接作为 Codex 人工确认策略；测试定义已读但未执行 |
+| 异步不是准入检查 | [Codex 当前后台契约](https://learn.chatgpt.com/docs/hooks#run-hooks-in-the-background)；固定 [`command_runner.rs` L116–166](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/engine/command_runner.rs#L116-L166)后台调用同一 runner、过滤控制输出，[L276–318](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/engine/command_runner.rs#L276-L318)执行 timeout；[Claude 当前异步契约](https://code.claude.com/docs/en/hooks#run-hooks-in-the-background)明确普通 async 后台不执行 timeout（asyncRewake 另论） | 两者都不能后台阻断原动作；超时、会话结束取消与结果交付不能当通用协议。Claude 本项未核最低版本或闭源实现 |
+
+**现有脚本合成对照（本轮实际运行）。** 静读 [`protect-paths.sh`](../../templates/generic/.claude/hooks/protect-paths.sh)确认它只解析输入与规则，不执行 tool_input；用临时目录、临时规则 `deny generated/** generated file` / `ask review/** needs review`，显式设置 `CLAUDE_PROJECT_DIR` 与 `PROTECTED_PATHS_FILE`，通过 `bash` 调用原脚本。jq 分支结果如下；不是新增跨宿主回归套件，双解析器既有覆盖仍见 E6。
+
+| 合成 stdin 变化（均无秘密） | 实际退出码／stdout |
+|---|---|
+| `tool_name=Edit; tool_input.file_path=generated/a.txt` | 0；PreToolUse permissionDecision=deny |
+| `tool_name=Write; tool_input.file_path=review/a.txt` | 0；PreToolUse permissionDecision=ask |
+| `tool_name=apply_patch; tool_input.command` 含新增 generated/a.txt 的标准补丁文本 | 0；空 stdout，无决定 |
+| `tool_name=Edit; tool_input={}` | 0；空 stdout，无决定 |
+| 无效 JSON `{` | 1；空 stdout，stderr 含解析错误与“无效 Hook 输入” |
+
+运行后确认临时目录未产生补丁目标；临时夹具随测试结束删除。这个对照只证当前脚本如何处理输入，不能证明真实客户端已经触发、已允许写入或确实阻断。未改脚本、未执行补丁、未运行 Codex／Claude／模型／上游 Rust 测试、未修改信任或权限。若目标宿主契约改动，重新核对输入与控制返回；没有真实宿主证据前，06 仍维持 L2，不能把这个窄补核当全页默认权限、事件全景和自动审批材料已核新。**[经验：离线合成检查；研究：限定]**
 
 ### 官方交互浏览器 Skill：值得借什么，不能照搬什么
 
@@ -544,3 +568,165 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 **最小验收与停止条件。** 在已有试点里保留旧形状、已迁移形状、跨文件或业务例外；核对受影响调用和跳过原因，再运行相关类型／行为检查。准备重试或复用脚本时，用第一次产物再执行同一变换，确认预期不再变化；若工具明示一次性，则固定起点并从可恢复副本重做，不能盲重跑。并行分片不能重复拥有同一文件。重跑出现额外变换、覆盖范围不清或例外变多时暂停扩量，修正规则／调度或退回局部补丁。**[经验：建议，未运行本轮迁移实验]**
 
 幂等只回答“相同输入状态再跑会不会继续变”；第二次需求若改变映射或接口契约，须更新规则、回归和适用版本，并从上一轮实际交付状态验证新需求及仍有效的旧行为。不能拿重跑零 diff 代替行为正确，也不能把只读夹具检查写成当前模型收益或持续维护成本下降。**[研究：结论边界]**
+
+
+## 权限模式与第三方 Hook：按实际审批方向选择
+
+主线二／三；核实 2026-10-15（UTC+8）。改变 06 第 2–4 节的选择：dontAsk 与 bypass 分开，plan 不充当只读隔离，自动批准工具不冒充单向拦截。
+新证据是当前官方权限／模式契约与第三方项目自述的交叉比较；删除不帮助选择的事件名单，不重做跨宿主输入或 Stop 回归。
+结论：✅ 原生规则与执行隔离优先；🧪 减少审批和增加拦截分别评估；👀 未验证的第三方扫描器不承担安全承诺。
+
+### 来源与决策差异
+
+- **S1 [一手]**：[Configure permissions](https://code.claude.com/docs/en/permissions#permission-modes)，核对模式表、规则优先级、参数规则。acceptEdits 包含常见文件操作；dontAsk 拒绝须询问的动作；参数匹配不能泛用于 allow。它们决定无人值守任务是否继续，以及读者实际放开了什么。
+- **S2 [一手]**：[Choose a permission mode](https://code.claude.com/docs/en/permission-modes)，核对 Available modes、plan、默认入口、How auto mode evaluates actions 与回退。auto 可用与 useAutoModeDuringPlan 会改变 plan 的命令处理；bypass 可用时另有例外。默认 auto 的版本说法须限定交互终端／VS Code。当前分类器输入包含 CLAUDE.md 与可选 classifierContext；常规编辑、规则命中和特殊人工审批路径不能统称“所有动作交分类器”。这些是产品描述，不改变本任务授权。
+- **S3 [一手]**：[auto mode 工程文](https://www.anthropic.com/engineering/claude-code-auto-mode)，核对 Results 与 Why the prompt-injection probe matters。保留历史三个样本集与误差，不外推到当前构建；原文明确主 Agent 被注入后仍可能绕过分类器。删除“不会被注入影响”的绝对保证。
+- **S4 [一手]**：[Hooks reference](https://code.claude.com/docs/en/hooks#permissionrequest) 的 PermissionRequest 与 FileChanged：前者依赖进入审批流程，后者发生在变化之后；事件存在不等于提供完整拦截。事件名单不再作为成熟度的补全目标。
+- **S5 [一手：作者自述，非安全认证]**：[CC Safety Net README](https://github.com/kenryu42/cc-safety-net)明示不包含进程／文件系统／出网隔离，且损坏配置不会阻止操作；[Dippy README](https://github.com/ldayton/Dippy)明确自动批准安全命令。两者角色不能混为增加一道拒绝门。Dippy 的效率宣传未采纳，原生本已免审批的读取也不足以证明需要安装它。
+- **S6 [一手：作者自述]**：[parry-guard README](https://github.com/vaporif/parry-guard)仍警告早期开发／误报，并依赖扫描模型；不将其示例配置视为已经通过宿主契约验收。[TDD Guard README](https://github.com/nizos/tdd-guard)明确新项目应从后继 Probity 开始。本轮撤下无条件推荐，而不是未经比较直接推荐后继工具。
+
+- **S7 [一手]**：[Shell 沙箱官方范围](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)与 Get started 明示 Hook／MCP／内建文件工具不在 shell 边界内，必需依赖缺失可默认降级。独立评审指出这会改变第三方 Hook 的部署选择；06 补最小范围说明，具体有效配置继续统一在 10 §3.2 维护，不复制一套配置。[How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude) 的信任对话前 Hook 执行案例明确已修复，06 补历史状态并回链 10 的现行脚本入口；[Copilot 官方公告](https://github.blog/changelog/2026-10-07-local-sandboxing-for-github-copilot-now-generally-available/)支持现有三系统／MXC／企业强制策略概述，补直接来源。
+
+### 反证、收敛与验证范围
+
+原生审批不保证足够、第三方工具也未被证明无用；正确选择依赖实际缺口。原生规则不能满足某种命令结构检查时，解析器可能值得试用；减少批准次数本身不是安全提升。第三方文档是动态主分支自述，只支持角色与采用限制，不支持固定版本安全保证。需要实装时须固定版本并核失败策略；此处不执行安装或外部程序。
+
+06 原先把三个攻击变体写为 60–80% 并与不同条件的零成功测评并列，现按 10 安全既有原文核查收敛为 3/5、3/5、4/5，只说明攻击链可行；未新增攻击实验。历史数字的详细解释继续由 10 维护。已有跨宿主、Stop 和路径脚本结论未借本轮放大。
+
+本轮只读公开文档／项目 README 后修改知识库；未运行客户端、审批服务、模型、第三方工具或引擎。整页能否升 L3 另按关键事实、反证、动态日期和入口一致性评审，不能由这一局部修正直接推得；真实客户端实验不是 L3 的前提。
+
+
+## 拒绝诊断：先区分权限、模型与服务故障
+
+> 主线三／四；改变 17 §2.12 的首步：先辨拒绝层，再选择授权、合法澄清或故障恢复；不把所有拒绝归为误报。新证据为以下当前官方协议的交叉核对，核实于 2026-10-15（UTC+8）。**[一手；经验：诊断选择]**
+
+### 来源与会改变选择的差异
+
+- [Claude Code 权限机制](https://code.claude.com/docs/en/permissions#manage-permissions)明确权限由客户端执行，提示／CLAUDE.md 不改变授权；`dontAsk` 可直接拒绝本该询问的动作。其模型拒答分类器与 auto mode 的动作审批不是同一个层面。正文只指向检查与合法授权，不提供改写命令、换工具或去掉保护来绕过拒绝的建议。**[一手；经验]**
+- [Messages API stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons#refusal)将 `refusal` 作为正常响应的停止原因；[API errors](https://platform.claude.com/docs/en/api/errors#http-errors)则区分 401 鉴权、403 资源权限、429 限流／花费上限和 5xx。流式响应开始为 200 后仍可产生 error，故不能仅由 HTTP 状态判断拒答或成功。官方 SDK 已有默认重试，应用再套重试前应核实际设置；花费上限需要恢复访问条件，不能靠盲目等待。**[一手]**
+- [Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback)补足原建议的两类反例：`reasoning_extraction` 应把索取完整内部推理改为结果依据／简短解释，没有推荐回退；服务端 `fallbacks` 仅处理分类器拒答，不处理限流、过载或服务器错误。相反，[CLI reference](https://code.claude.com/docs/en/cli-reference#cli-flags)的 `--fallback-model` 用于主模型过载／不可用。相同“fallback”名字不能当成相同恢复配置。**[一手]**
+
+### 平台与失效条件
+
+服务端拒答回退是 Claude API beta；当前不支持 Message Batches、Bedrock、Google Cloud 或 Microsoft Foundry，Haiku 5.5 亦无服务端回退。显式候选还需兼容请求特性；默认路由无推荐对象、候选过载／限流时仍可保留拒答。因此正文保留“先核平台／模型／特性，再检查最终状态与返回模型”，不把设置了参数写成已恢复。以上事实来自同一厂商不同接口契约的交叉核对，不算多作者效果证据。**[一手；研究：边界]**
+
+撤回旧正文的无条件换问法／删 base64 工具建议：某个模型迁移指南中的针对性办法不能替代原始错误分类；不推断这些办法在其原测试范围无效。公开排障只保留脱敏故障信息，不要求上传完整会话、凭据或私人数据。正常任务的澄清与服务商允许的回退，不构成绕过内容安全或授权要求的许可。**[经验：采用与收敛判断]**
+
+### 验证范围
+
+本单元读取上述官方页面相关段落，核对 17 的速查入口、01 Claude 专题与 10 安全建议的一致性；没有发出真实模型请求、运行客户端／SDK、安装工具或执行权限绕过测试。离线检查与独立评审只能检验本次知识库修订，不能证明拒答误报率、回退成功率或服务连续性收益。整页 L3 仍须另审其余提示建议的原始依据，不因本节改正直接升级。
+
+
+## dot 实际能力诊断：公开网页读取的路径差异
+
+17 页头的核查沿革移至此处：原基础核实为 2026-10-08，成本／缓存于 10-13 补核，上下文恢复、停止机制、拒绝诊断与全文核心建议／模板入口于 10-15（UTC+8）审阅，模型提示范围随之修正；这些文档核查未运行当前模型或 Agent 客户端。下述公开读取观察单独计证，不回填为其他建议的实测。**[经验：维护范围]**
+
+> 主线二，兼三／四；改变 17 的建议：不要由单条读取路径失败判定整体能力不可用。新证据为 2026-10-15 02:42–02:44 UTC 的现场观察及同日 03:02 UTC 的公开 GET 测量；本节汇入本次协作执行的公开页面观察，未由本次文档编辑另行独立复测。**[经验：实际观察与诊断建议]**
+
+### 观察与复现范围
+
+| 对象与条件 | 实际结果 | 能支持什么 |
+|---|---|---|
+| [X 原帖一](https://x.com/thsottiaux/status/2106845241357824205)、[原帖二](https://x.com/thsottiaux/status/2109892247580000595)及[作者公开主页](https://x.com/thsottiaux)的网页抓取 | 返回 403 | 这些 URL 在该次抓取路径失败，不能直接判定所有访问路径失败 |
+| 同一组公开 URL，dot 云端 Chrome 正常打开 | 可读；原帖刷新复测成功；没有登录、验证码或绕过限制 | 当时已有浏览器路径足以读取原始来源，无须据此申请更大权限或安装新工具 |
+| 同期 OpenAI 公开文档与公共 GitHub 的抓取 | 正常 | 不支持“本次环境完全不能联网”；也不能解释 X 的差异根因 |
+
+**公开 GET 补测（2026-10-15T03:02:42.528671Z）**：协作执行端在 shell 使用 Python `urllib.request.urlopen('https://x.com/thsottiaux', timeout=15)`，未附加 cookies 或特殊 headers，最多读取 1,000,000 字节；实际为 HTTP 200、141,804 字节，包含已知帖子 ID `2110151780478927344` 和 `2109892247580000595`。这只证明该次传输成功且响应中存在这些 ID，不验证完整正文或全量实时 timeline；内容证据仍来自上面的 Chrome 原帖核对。未经过登录、验证码或限制绕过，也不推断该 GET、先前抓取与浏览器的底层网络同源。**[经验：实际测量]**
+
+上述均为 **[经验：本次环境观察]**，不是官方能力契约、跨环境对照或稳定成功率测量。第三方转录仅用于发现原帖，随后已回到原帖核对；不能以转录替代来源验证。本记录不复述原帖中的产品能力宣称，也不据此给 dot 作全面能力背书。
+
+### 采用与停止边界
+
+- **先分类再补能力**：当前入口未暴露、操作执行失败、目标页返回错误是不同问题。公开内容可正常读取时，用受支持的原有路径核原文；两条路径结果不同就分别记结果，不把其中一个扩大成全平台结论。**[经验：采用判断]**
+- **不能确定根因**：没有响应头或网络追踪，不能断言是 X 反爬、代理故障或其他特定原因；观察窗口不是帖子发布时间。页面 DOM 未提供可核实的 datetime／时区，不将显示时间猜成 UTC+8。**[经验：证据限制]**
+- **不把恢复写成绕过**：若有明确访问禁令、登录要求、验证码或授权拒绝，按相应边界停下或完成获准步骤；本例无需这些步骤，不支持改身份、换代理或扩大权限。**[经验：适用边界]**
+- **副作用与续接另有规则**：[20 §4／§5／§9](../20-codex-long-horizon.md)已维护状态恢复、子任务结果收集与未知外部操作对账。本例只读，不证明重新发起写入安全。**[经验：范围]**
+
+### 下一问题与验证状态
+
+首轮已足以撤回“抓取失败就整体不可读”的判断；尚未检验 dot 的云端执行与 Git 发布、调度执行与送达、并行结果回收与续接。这些只作为 [BACKLOG](BACKLOG.md#二强-agent-还缺什么额外能力怎样才值得r15r01r05r08r02) 中的待验证能力类别，后续按单一失败场景追踪可观察结果，不收集或公开私人排程、认证日志、授权对话、账号用量或凭据。当前没有运行 Git 认证／发布测试、创建调度、安装软件或启动模型／引擎实验。**[研究：后续范围；经验：验证状态]**
+
+
+## dot 长任务续接：接受、处理与停止范围
+
+主线：二，兼三／四；沿用 dot 能力诊断与 20 的长任务建议，不新增模块。
+改变的建议：20 §5 不以重复催促确认进展，恢复时先核最新要求；§7 分别核对主任务、委派任务与排程。
+新证据：dot 官方契约、公开故障原帖及 Codex 固定源码／测试定义，2026-10-15 UTC 核实；未运行客户端或调度实验。**[一手／社区／研究]**
+
+### 官方契约与实际报告分别证明什么
+
+[Tasks and memory](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)允许 dot 在对话间继续工作，自行暂停与唤醒；固定重复工作另需保存排程。新任务有独立上下文，运行完成后仍须检查输出与错误，不能直接当目标完成或送达。本地任务需要原电脑在线，已配置 Codex 云环境的任务可在用户电脑离线时工作；切换所选电脑不会迁移旧任务。**[一手：当前产品文档]** 该页未给最大阻塞时间、恰好一次投递或崩溃恢复 SLA。
+
+[Control your dot](https://learn.chatgpt.com/docs/dots/controls#stop-work)明确 Pause、Activity 中停止委派任务、Scheduled 中禁用排程是不同控制。**[一手]** 因此不能把其中一处成功扩大成所有层已停；停止后的副作用对账继续按 20 §9，不另设规则。
+
+- [dot #51610](https://github.com/openai/codex/issues/51610)：作者报告 10 月 7 日 macOS 本地任务的 browser bundle 阻塞约 52 分钟，多次 follow-up 返回 `steered`，恢复后集中收到。报告明确是 dot 反复发送，不是系统自行复制；未证明丢失、重复投递或旧指令实际执行，版本与根因未知。任务最终恢复也反驳“这种等待必定永久失败”，但不支持固定等待时长。**[社区：作者观察摘要，无确定性复现]**
+- [dot #52374](https://github.com/openai/codex/issues/52374)：历史报告中，云任务可读但续接返回 UNKNOWN／NOT_FOUND；不同作者补充定时与手动触发都未创建任务、另一次可读但 send 失败。**10 月 12 日 11:50 UTC 的后续报告已验证该补充案例恢复**：原任务未重建，send 启动新轮次，完成后回读得到精确无害标记；未做项目编辑、构建或部署。此前客户端与独立 CLI 均更新，但未隔离客户端变化与同期后端恢复，不能归因或推广为统一修复。不同任务 ID／API 的 CLI 返回 Invalid task ID，也不证明原任务不存在；这些前后结果支持分别核读取、续接与实际产出。**[社区：主帖、补充故障与恢复报告]**
+- [Nigel999 的社区原帖及支持回复](https://community.openai.com/t/dot-repeatedly-reports-progress-but-fails-to-complete-tasks-or-clearly-disclose-that-work-has-stopped/1402528)：用户报告收到进度说法但未完成，后来确认无活动任务；支持要求核 app／系统版本、Activity、审批和阻塞，并未确认根因或修复。**[社区]** 这是不同作者的状态报告问题，不是 #51610 的独立复现或失败率样本。
+
+以上来源明确指 ChatGPT dot、连接电脑或 Codex 委派任务；不把同名 Dot 产品、OpenClaw 或通用 Agent 项目算作 dot 实现。20 §5 原有结果完成／送达／收集／验证四时刻，本轮补的是输入方向：反复催促本身可能积压未处理要求，不能只增加重试。**[研究：证据选择与建议增量]**
+
+### 固定源码旁证与不能外推的边界
+
+公开 GitHub API 本轮返回 main SHA `160b2b1ef62114eeb41e41e5e3be0000d944b713`；按该提交文件树核对以下内容，未由旧路径或搜索摘要推断。
+
+- [turn_input.rs L1–13](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/core/src/session/turn_input.rs#L1-L13)注释明确：reply 在 start／steer／reject 决策后，不等 hooks、模型上下文更新、rollout 持久化或 sampling。[L799–890](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/core/src/session/turn_input.rs#L799-L890)核活动轮次与 expected ID，将输入交给 pending queue，再返回活动／根轮次 ID。**[一手：固定源码]** 未核队列全部持久化路径，不据此宣称所有输入必定丢失或纯内存。
+- [协议 turn.rs L317–352](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/app-server-protocol/src/protocol/v2/turn.rs#L317-L352)响应仅 turn ID；[测试 L294–358](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/app-server/tests/suite/v2/turn_steer.rs#L294-L358)先断言回执，再等对应 client ID 的 UserMessage item，最后等 turn/completed。**[一手：测试定义，未运行]** 与[公开 App Server 契约](https://learn.chatgpt.com/docs/app-server#steer-an-active-turn)一致：接受回执与后续事件分开；这不是 dot 云协调器的公开实现或版本绑定证据。
+
+历史旁证 [#40805](https://github.com/openai/codex/issues/40805)记录旧版 sampling 持续时 steer 接受与消息生命周期延迟，另一作者以 OpenClaw 复现并贴个人 fork 修补和测试结果。**[社区：历史报告]** 仅保留为 Codex 机制证据，不能称官方已发布修复，更不能当作 dot 恢复验证；本轮未核该 fork 与当前产品的合入关系，不推荐“升级即可修复”。
+
+### 采用、反证与后续验证
+
+✅ 先用原任务可见执行记录判断是否继续推进；工具尚未返回时，不靠重复发送相同催促制造队列。恢复后核最新目标、取消要求与剩余工作；若已确认全部输入被处理，就转查模型理解、执行阻塞或验收缺口。若客户端已提供可验证的消费状态或替换旧消息入口，优先用原生能力，无须额外建回执文档。**[经验：采用与撤回条件]**
+
+待测而未执行：在另行获准的受控任务中，让只读工具有界延迟，只发一次 steer，分别记录接受、消息可见、首个执行结果与最终验收，并检查取消／恢复后有无重复。这只能检验选定版本与场景；本轮没有创建排程、访问私人任务／日志、运行上游测试、模型或用户电脑。dot 云协调器源码、线上版本绑定与端到端成功率仍缺证，不能给可靠性排名、SLA 或统一根因。**[研究：预注册方向；经验：实际范围]**
+
+
+## dot 效率选择：少一层包装，不等于少一项验收
+
+主线：二，兼四；按实际能力选择查询、接续与发布路线。
+改变的建议：Codex 页增加 dot 长时使用入口，20 增补差异发布与断点恢复；不加模板或新模块。
+新证据：2026-10-15 核对 dot 官方能力更新、公开接续恢复链、GitHub tree／ref 契约；本仓发布路径观察与效率推断分开。**[一手／社区／经验]**
+
+### 查询与接续：保留有作用的中间层
+
+[电脑与应用](https://learn.chatgpt.com/docs/dots/computers-and-apps)说明插件提供服务信息与工具，访问取决于连接账号、权限与环境；[10 月 9 日更新](https://learn.chatgpt.com/docs/whats-new/dots-october-9-2026)包含已有 Codex thread 的使用与接续改进；[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)说明新任务上下文与原执行环境边界。**[一手]** 由此采用“能力已经足够时不重复包装”，不是取消必要委派或保证插件更快；宿主规定的环境路线仍须遵守。
+
+[#51797](https://github.com/openai/codex/issues/51797)作者报告插件已经足够时仍创建包装任务。这只是 open 状态的用户报告，无已修复或效率对照证据。反例 [#49729](https://github.com/openai/codex/issues/49729)已核正文及全部 56 条评论，失败与恢复须一起读：**[社区：原帖与评论]**
+
+- [10 月 9 日修复说法](https://github.com/openai/codex/issues/49729#issuecomment-6080124963)与[Ubuntu 版本补充](https://github.com/openai/codex/issues/49729#issuecomment-6081558731)只覆盖作者报告，不能外推跨平台恢复
+- [10 月 12 日 macOS](https://github.com/openai/codex/issues/49729#issuecomment-6127397704)与[Windows](https://github.com/openai/codex/issues/49729#issuecomment-6130573116)报告父路线失败而 helper 提供了读取／续接能力；后者包含目标回应与回读，说明中间任务有时确有必要
+- [10 月 13 日 Windows 恢复](https://github.com/openai/codex/issues/49729#issuecomment-6148306271)在原始直读失败后，用已有执行器读取同一目标成功，无需替代任务或改权限；它不证明父路线修复或发送成功
+- [另一 Windows 报告](https://github.com/openai/codex/issues/49729#issuecomment-6153744906)只有发送接受、未见所需回应，不能记为成功接续
+
+✅ 同目标先核原任务和已有授权执行器能否接续；不盲目加中转，也不把读失败等同任务丢失。需要独立判断时保留新上下文评审。插件漏字段、分页不全、版本不明或原任务不支持接续时，应撤回“当前入口已足够”的判断。**[经验：采用与撤回条件]** 未测耗时、token、费用或正确率，不据这些帖子承诺效率提升；未访问用户私人任务验证路线。
+
+### 发布：一般建议与本仓观察分开
+
+[GitHub tree 契约](https://docs.github.com/en/rest/git/trees#create-a-tree)允许在 `base_tree` 上提交多条变更；不传基树会使未列文件在新提交中消失。创建 tree 后仍需 commit 和 ref；[非强制 ref 更新](https://docs.github.com/en/rest/git/refs#update-a-reference)检查 fast-forward。**[一手：2026-10-15 核对]** 读树的递归返回限制不是写树的文件数上限，不据此规定“每批 20 个文件”。
+
+本仓当次环境中，GitHub 连接器可用而 shell Git dry-run 缺少用户名认证；因此不将连接器授权视作 shell 凭据。已发布 [276babc](https://github.com/dbvv1/a1dbv/commit/276babc) 的路径复用了 64 个最终 blob，经过四次建树、四个 commit 和最终非强制 ref 更新，最终树逐文件核验、14 阶段离线检查通过。**[经验：本次操作记录]** 这是一次路径可行性观察，不证明上述次数最优，也不是模型效率实验。
+
+✅ 一般建议是优先 commit 后 push；连接器 fallback 只传相对最新 main 的差异，允许时一次写入，遇上限或失败才拆分；结果未知先核回执与远端状态，再继续尚未完成步骤。若基线变化则重算并核冲突。**[经验：工程建议]** 不以省调用为由跳过验收、授权、分支保护或发布后核对。本轮只核文档与既有操作证据，没有为此新增发布、认证、模型或客户端实验。
+
+
+## 增量验证：已有回归测试是否真的被选中
+
+主线：三；区分测试断言有效与本次验证确实执行了它。
+改变的建议：15 §6 在依赖、预打包配置或非模块夹具变更后显式运行已有消费者，09 只回链；普通增量运行足够时不加评审层。
+新证据：Vitest 原生执行依赖记录的发布、固定实现与测试定义，另有同周预打包漏选报告；2026-10-15 UTC 核实，未运行上游软件。**[一手／社区／研究]**
+
+### 原生能力与反证
+
+[Vitest 5.0.4](https://github.com/vitest-dev/vitest/releases/tag/v5.0.4)发布于 2026-10-12；增加执行依赖记录的 [#11515](https://github.com/vitest-dev/vitest/pull/11515)于 10-08 合并，两者不是同一日期。**[一手：发布与合并记录]** [官方契约](https://vitest.dev/config/experimental.html#experimental-recorddependencies)说明 `experimental.recordDependencies` 默认关闭，按上次实际执行的记录为 `--changed`／`related` 选择测试；动态导入只有执行过才入记录，普通 `fs` 读取和 externalized 模块内部导入不记录。新增 import 后若先提交而未重新运行，后续只改新依赖可能漏选。**[一手：当前文档]**
+
+固定合并提交的[测试定义](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/test/e2e/test/recorded-deps.test.ts)覆盖动态导入、无记录测试与部分运行等边界；[选择实现](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/packages/vitest/src/node/recorded-modules.ts)在没有依赖记录时回退全选，有记录时按变化模块匹配。**部分运行（如 `-t`／`.only`）不创建新记录，只合并到已有记录**，所以刷新导入关系时应完整运行相关测试文件。无记录的测试会运行，不能把“无记录”一概写成漏选。缓存关闭时记录功能不生效。**[一手：固定源码、测试定义与文档；未运行]**
+
+[#11585](https://github.com/vitest-dev/vitest/issues/11585)于 2026-10-14 创建，核实时仍 open、无评论，是**单一作者报告，未经维护者确认或本仓复测**。作者对 linked workspace helper 的改动保留了应失败的已有断言：关闭 optimizer 时 `changed`／`related` 选中并失败，开启后零选中、退出码 0；报告含 5.0.4 与 4.1.10 对照，并称 5.0.4 的记录模式仍漏选。**[社区：作者复现报告]** 固定[受影响模块实现](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L240-L251)过滤 `node_modules` 路径，[后续遍历](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L345-L349)只沿通过过滤的导入继续，支持作者提出的预打包路径机制；源码阅读不等于完整复现，也不证明所有 optimizer 项目均失败。**[一手：固定源码；研究：证据边界]**
+
+### 采用范围与退回条件
+
+- ✅ 先保留项目已有增量测试；依赖关系、optimizer 或非模块夹具改变，显式运行已知消费者，或用项目已有且适用于当前入口的映射。已知相关用例却零选中时，先直接运行该测试，再修触发配置或按风险暂用更宽套件；无需为此添 reviewer 或自建依赖图。**[经验：采用判断]**
+- 🧪 只有实际动态导入是当前选择盲区、且能维护缓存与刷新记录时，试用默认关闭的 `experimental.recordDependencies`；不作为正文 ✅ 的默认开关。已有静态关系已足够时无需启用，本轮没有计时或净成本数据。**[一手：机制；经验：条件试用]**
+- [普通 `related`](https://vitest.dev/guide/cli.html#vitest-related)支持静态可解析导入；非模块读取可按项目需要使用 [watchTriggerPatterns](https://vitest.dev/config/watchtriggerpatterns)，但它是 watch 契约，不能冒充所有 CLI `changed` 的映射。[forceRerunTriggers](https://vitest.dev/config/forcereruntriggers)与 `--changed` 配合时，diff 命中会触发全套；这是有执行成本的特定回退，不是每次修改的默认。**[一手：官方契约；经验：取舍]**
+
+本节沿用已审资料并定点回读官方文档、发布／合并记录和 issue；固定源码与测试定义是阅读证据，不是本仓运行结果。没有安装依赖、运行 Vitest／模型／客户端、触发远端 CI 或测得可靠性提升；报告中的关闭 optimizer 也不升级为普遍推荐。这里补的是已有用例的执行选择，不重复 oracle 质量、外部消费者覆盖或交接流程。**[研究：范围与限制]**

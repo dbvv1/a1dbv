@@ -103,6 +103,8 @@
 
 **[研究] 新增持续技能、机器或环境声后，别把短音的拒绝／抢占政策直接套给循环声。** ✅ 短事件按重要性合并或丢弃过期实例；持续状态声先核活动状态、可听范围与淡入淡出，再决定竞争解除后续播还是重启。Factorio 的[管道反例](https://www.factorio.com/blog/post/fff-341)通过移除同类限额并缩小可听范围修复错误声片段，但提高环境总上限又增加混音杂乱。[一手] 沿用现有声源配置：Unity 的 maxDistance 是否归零取决于 rolloff，UE 的静音续播可能继续占 voice，具体契约见 [WP10 持续声补充](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-持续状态声的反例先校正可听范围与恢复政策)。**局限：缩小范围可能藏掉远处危险，恢复时重播起音也可能误报状态，不能只凭声部数下降验收。**
 
+[研究] 音乐频繁打断时，先选它跟随角色处境还是当前关注区域，再决定立即混层、等状态稳定或等乐句，别只加长淡化；具体取舍见[音频页](assets/audio.md#音乐循环和状态切换先于完整成曲)。
+
 ### 3D 角色运动：先选想要的控制，再选碰撞求解方式
 
 **[研究] 以下先比较 Unity GameObject 路线。✅ 普通直立角色、接触规则简单且原生坡／阶能力已够用时，先用原生 CharacterController；已经好用的 Rigidbody 控制器不为统一架构重写。** “有重量”可以来自加减速、转向承诺、步态与受击恢复，不必让全部运动交给物理。希望玩家被箱子、摆锤和冲量自然影响，才把动态响应作为核心要求；希望台阶、斜坡和旋转平台遵守精确玩法规则，则重点比较 motor 的接地与平台政策。
@@ -235,6 +237,18 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 **[研究] ✅ 要随当前语言变化的任务记录／系统报告，保留消息身份与有类型的参数，显示时再格式化；不要只保存第一版生成的译文。** Thrive 的[固定实现](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedString.cs#L57-L77)保存 key 与参数，报告在语言变化后重新生成显示；这比只更新语言表更能保住旧内容。[一手] 历史报告保留当时数量，实时任务显示当前数量；玩家输入、引用原文或明确要求原样留存的历史文本仍保存原文，不应被自动翻译。已有旧档只剩译文时，不能可靠地反推出原 key／参数。[研究]
 
 **[研究] 先用原生本地化对象，不另造跨引擎消息框架。** Unity Localization 1.5.13 的 [Arguments 不会被序列化](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.Arguments.html)，读档后需从已存业务数据重建参数；UE [FText 转 FString 会丢失 text history](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine)，仍需换语言的文本不要提前降成普通字符串。[一手] 第二次改数量／加语言时，同时检查旧报告、未首次显示就保存的消息，以及同一面板内的复数与数值更新。**局限：保存了消息身份不等于保存路径、参数刷新或目标语言排版已经正确；**固定源码中的缓冲边界与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-旧报告重译保留消息含义而非只存渲染结果)。
+
+### 新语言可读之后，还要能编辑和操作
+
+**[研究] ✅ 字库覆盖、复杂文字塑形和控件布局分别判断；不把翻译齐全、RTL 勾选或单行截图当作语言支持完成。** 已采用 Unity 6.3 UI Toolkit 且目标语言需要复杂排版时，先评估原生 ATG：[语言方向](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/language-direction.html)的 RTL 仅有基础反转，完整换行／塑形还需启用 ATG。[一手] 稳定 uGUI／TMP 先保留，只有具体 RTL 缺口才🧪 [RTLTMPro](https://github.com/pnarimani/RTLTMPro/tree/f480419bbbffed1be3c129d68cc0182afcfbcac3)，把替换文本组件、字体和富文本绑定的维护成本计入；不要另写倒序字符串修补器。
+
+**[研究] UE 先保留 UMG 的塑形与方向设置，不额外接一套 RTL 渲染器。** [原生属性](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-rich-text-blocks-in-unreal-engine)区分 Text Shaping、Text Flow 和控件方向；Kerning Only 不适合阿拉伯语等复杂文本。[一手] 有运行时换语言或任意玩家名字时优先 composite font，不用逐文化换整份字体掩盖混合文字缺口。文字方向改变后，单独核对按钮排列、焦点与实际操作方向，不把世界地图、方向指示等全部镜像。
+
+**[研究] 二改加入拉丁名字／数字／富文本并缩窄窗口后，再检查完整句子、断行、选中删除和菜单返回。** Unity ATG 的[逻辑光标](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/cursor-movement.html)可跨视觉位置跳转，不能把“左键始终向屏幕左”硬写成跨引擎断言。[一手] 先用合适字体和可伸缩布局；关键文字必须缩得难读或交互仍不可靠时，暂缓该语言发行，而不是继续叠补丁。**局限：文档能力与历史项目反馈都不证明目标构建可用；**现成库反例、许可及后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-新增语言的显示编辑和布局不能互相代验)。
+
+**[研究] ✅ 新语言、换字体或放大字号后，要按承诺支持的输入方式读完影响决定的长说明。** 已有布局可靠时优先复用；短标签合理伸缩，长内容先用原生分页、滚动或详情入口，别持续缩字或把条件、代价藏在 hover／省略号后。Stardew Valley [1.6](https://www.stardewvalley.net/stardew-valley-1-6-update-full-changelog/)曾把被 tooltip 遮住的价格纳入提示；Factorio [2.0.44](https://forums.factorio.com/viewtopic.php?t=128050)只为右侧固定长 tooltip 增加滚动。[一手] 若承诺支持手柄，还需能打开、读到末尾并返回原项，不能用键鼠滚动代验。
+
+**[研究] ✅ 复用完整字体／样式配置；完整段落更难读时，可以撤回新默认。** Thrive 的[字体配置链](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/Lato-Bold.ttf.import)把样式连接到既有 fallback，新增页面与局部覆盖也应保住这条引用；Stardew Valley [1.6.6](https://www.stardewvalley.net/stardew-valley-1-6-6-full-patch-notes/)恢复中文旧默认字体，把新字体留作选项。[一手] 不要求所有游戏新增字体选择器；回退后仍不可读或不可操作，仍暂缓该语言发行。**局限：配置与更新说明不能证明目标设备的阅读质量；**比较与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#7-完整长文可达性与字体默认值的撤回)。
 
 ## 4. 借用的授权边界与升级条件
 

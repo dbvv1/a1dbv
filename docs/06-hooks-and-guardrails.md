@@ -1,6 +1,10 @@
 # 06 · Hooks、权限与护栏
 
-> 核实时间：2026-10-08；本仓路径 Hook 回归与第 2 节失败 / Stop 边界于 2026-10-11（UTC+8）复核；StopFailure 与 `/goal` 边界于 2026-10-15（UTC+8）补核，其余未重验。依据 Claude Code 官方 Hooks 文档、changelog 和 Anthropic 工程博客 **[一手]**。
+> 核实时间：2026-10-08；本仓路径 Hook 回归与第 2 节失败 / Stop 边界于 2026-10-11（UTC+8）复核；StopFailure 与 `/goal` 边界于 2026-10-15（UTC+8）补核，跨宿主迁移契约于 2026-10-15（UTC+8）补核；权限模式、自动审批与第三方工具角色于 2026-10-15（UTC+8）补核；其余未重验。依据 Claude Code 官方 Hooks 文档、changelog、Anthropic 工程博客及 Codex 官方文档／固定发布源码 **[一手]**。
+
+## 30 秒结论
+
+✅ 先保证原生有效权限；确需编辑事件辅助拦截、且现有机制不足时，再在 Claude Code 试用本仓路径 Hook；⛔ 不把它原样搬到 Codex。两者即使命中同名事件或 `Edit|Write` matcher，输入和决定协议仍不同。需要立即拦截就用同步 Hook；异步结果只作后续反馈。若目标版本未确认触发、输入及失败语义，撤回“已经受保护”的判断。[一手／经验；跨宿主证据见下节]
 
 ## 1. 为什么需要 Hooks
 
@@ -31,7 +35,7 @@ CLAUDE.md 里的指令可能被模型忽略；命令型 Hook 能把某个事件�
 
 - **处理器类型**：`command`、`http`、`mcp_tool`、`prompt`（让模型判断）、`agent`（让子 Agent 检查）。
 - **`if` 过滤**：用权限规则的语法再加一层筛选，比如 `"if": "Bash(git push*)"`。
-- **常用事件**：`SessionStart`、`UserPromptSubmit`、`PreToolUse`、`PostToolUse`、`PostToolUseFailure`、`PermissionRequest`、`PermissionDenied`、`Stop`、`SubagentStop`、`PreCompact`、`Notification`、`FileChanged`、`CwdChanged`、`WorktreeCreate`/`Remove`、`InstructionsLoaded`、`ConfigChange`、`PreModelSwitch`、`TeammateIdle`、`TaskCompleted` 等。
+- **按目的选事件**：执行前检查用 `PreToolUse`；执行后反馈用 `PostToolUse`；只有进入权限请求流程才用 `PermissionRequest`；完成前检查见下文 `Stop`。`FileChanged` 可观察包括外部写入在内的文件变化，但事后触发，不能阻止写入；不把事件名大全当作覆盖保证。完整事件以[当前参考](https://code.claude.com/docs/en/hooks)为准。**[一手：2026-10-15 补核]**
 
 ### 返回值
 | 退出码 | 含义 |
@@ -60,35 +64,49 @@ PreToolUse 的结构化决定：
 | 保护目录或文件（生成物、密钥、第三方代码） | PreToolUse（Edit/Write） | 本仓库模板：[`protect-paths.sh`](../templates/generic/.claude/hooks/protect-paths.sh) |
 | 编辑后自动格式化或 lint | PostToolUse | 跑完把问题通过 `additionalContext` 反馈给 Claude |
 | **完成前程序化检查** | Stop | 正常触发且按协议返回时可要求继续；失败策略、事件覆盖与连续阻止上限见上文 |
-| 危险命令拦截 | PreToolUse（Bash） | 例如 `rm -rf`、强推；社区有 [claude-code-safety-net](https://github.com/kenryu42/claude-code-safety-net)、[Dippy](https://github.com/ldayton/Dippy)（用 AST 解析判断 bash 命令是否安全） |
-| 提示注入扫描 | PostToolUse | [parry-guard](https://github.com/vaporif/parry-guard) 检查工具输出 |
-| 强制 TDD | PreToolUse | [tdd-guard](https://github.com/nizos/tdd-guard) |
+| 命令风险辅助检查 | PreToolUse（Bash） | 有明确漏检需求才评估第三方解析器；见下方采用边界 |
+| 提示注入扫描 | PostToolUse | 扫描结果只是一层信号，不能据此放宽执行或出网权限 |
 | 桌面通知 | Notification | Agent 需要输入时提醒你 |
 | 非 git 版本控制（Perforce 等） | WorktreeCreate / PreToolUse | 例如编辑前自动 `p4 edit` |
 
+**第三方工具先分清方向（2026-10-15）**：👀 [CC Safety Net](https://github.com/kenryu42/cc-safety-net) 面向执行前拦截，作者明确它不是沙箱，损坏配置不会阻止操作；🧪 [Dippy](https://github.com/ldayton/Dippy) 的主要用途是自动批准判为安全的命令，会减少审批，不能当成单向加固。👀 [parry-guard](https://github.com/vaporif/parry-guard) 仍标早期开发，依赖扫描模型，误报和接入契约需单独评估；原 [TDD Guard](https://github.com/nizos/tdd-guard) 已建议新项目转向其后继项目，不在这里保留无条件“强制 TDD”的推荐。默认先用原生权限；只有具体缺口值得引入相应依赖时再试用，失败行为未确认就撤回保护声明。**[一手：项目 README；经验：采用判断，未安装或实测]**
+
 **把纠错变成 Hook**：官方插件 `hookify` 可以分析对话，自动生成“防止再犯”的 Hook。
+
+### 同名事件不等于可直接迁移（Claude Code → Codex）
+
+**2026-10-15（UTC+8）补核，Codex 发布标签 `rust-v0.162.1` 与当前官方契约。** 本仓模板明确位于 `.claude/`，并非 Codex 适配器；迁移时先改配置发现路径、复核定义信任，再核对输入和输出，不能只换目录或 matcher。**[一手；经验：采用判断]**
+
+- **匹配了也可能没有检查到文件**：Codex 的 `Edit` / `Write` 是 `apply_patch` 别名；事件仍传 `tool_name: "apply_patch"` 和 `tool_input.command` 补丁文本。本仓脚本只取 `file_path` / `notebook_path`，此输入会正常退出但不返回决定；不要据“Hook 运行成功”宣称迁移成功
+- **`ask` 不能照搬**：Claude 的 `PreToolUse` 可请求询问；该 Codex 版本会把 `permissionDecision: "ask"` 记为失败，并继续工具调用。需要人的确认应使用目标宿主支持的审批入口，不以这个返回值代替审批
+- **异步只作反馈**：两者的后台 Hook 都不能阻止触发它的动作；Claude 当前文档还说明普通 `async` 启动后不再执行 Hook 的 `timeout`，Codex 则仍执行超时。迁移长测试或日志时也要重验结束／取消条件，不能只复制 `async: true`
+
+以上是[官方契约、固定发布源码与本仓合成 stdin 对照](research/2026-10-12-development-conditions.md#hook-跨宿主迁移匹配成功不等于协议适配)；没有运行真实客户端，也未为 Codex 新增路径保护实现。**[一手／经验]**
 
 ## 3. 权限模式
 
 | 模式 | 说明 | 适用 |
 |---|---|---|
-| Manual / default | 写文件、执行命令、调用 MCP 都要确认 | 敏感操作、刚开始用时 |
-| acceptEdits | 编辑自动通过，命令仍需确认 | 日常开发 |
-| plan | 只读，只出方案 | 探索、设计 |
-| **auto** | 分类器代替人审批（v2.1.283 起交互会话默认） | 想减少打断，又不想完全放开 |
-| dontAsk / bypassPermissions | 不再询问或完全放开 | **只在容器、虚拟机等隔离环境里用** |
+| Manual / default | 通常询问写入、命令等；内建只读操作及有效 allow 规则可免询问 | 需要逐项审查时 |
+| acceptEdits | 工作目录／附加目录内编辑及常见文件操作命令可自动通过 | 审阅中的日常修改 |
+| plan | 规划工作流，不是 OS 只读隔离；命令行为取决于 auto 可用性和设置 | 先探索，再批准实施 |
+| **auto** | 规则及免审批路径先处理，其余适用动作交分类器；并非每个动作都经模型审核 | 接受分类器误差、且有隔离兜底的任务 |
+| dontAsk | 拒绝原本需要询问的调用；免审批／预批准动作仍可执行 | 预先收紧规则的 CI／脚本 |
+| bypassPermissions | 跳过多数审批，仍有例外 | **仅隔离容器／虚拟机等环境** |
 
-权限规则写在 `.claude/settings.json` 中（`allow` / `ask` / `deny`）；支持按参数匹配，例如 `Agent(model:opus)`。
+**当前契约（2026-10-15）[一手]**：[权限规则](https://code.claude.com/docs/en/permissions#permission-modes)与[模式说明](https://code.claude.com/docs/en/permission-modes)共同决定实际行为。`plan` 在 auto 可用且 `useAutoModeDuringPlan` 开启（默认）时可运行分类器批准的命令；交互终端若提供 bypass 切换，还存在更宽的规划权限例外。要求真正只读时另设执行边界，不能只看模式名。
+
+v2.1.283+ 的内建 auto 默认指**交互终端与 VS Code**，仍受入口、配置和可用性影响；不要推到所有客户端／非交互任务。权限规则可在 `.claude/settings.json` 等设置层配置，按 deny → ask → allow 求值；`Agent(model:opus)` 这类参数规则用于 deny／ask，不是任意参数 allow。具体设置先查[当前文档](https://code.claude.com/docs/en/permissions#match-by-input-parameter)。**[一手]**
 
 ⚠️ v2.1.246 提醒：`Bash(git * main)` 这类**通配符写在子命令前面**的 allow 规则，会把插在子命令前的选项也匹配进去，存在被绕过的风险 **[一手]**。
 
 ## 4. Auto mode：实测数据
 
-Anthropic《Claude Code auto mode》（2026-03-25）**[一手]**：
+以下是 Anthropic《Claude Code auto mode》（2026-03-25）公布的历史评估，2026-10-15 重读原文；不是本仓实测，也不是当前所有版本的安全率。**[一手]**：
 
 **架构**
 - 输入层：一个提示注入探测器先检查工具输出；
-- 输出层：一个**只看用户消息和工具调用**的分类器做审批。它看不到 Claude 的解释和工具输出，所以既不会被 Agent“说服”，也不会被注入内容影响；
+- 输出层：历史设计剥离 Agent 解释和工具输出，减少直接操纵分类器的入口；**不保证抵抗所有注入**，被劫持的主 Agent 仍可能发出漏过检查的动作。当前客户端请求还包含 CLAUDE.md，并可接收 Hook 的 `classifierContext`（v2.1.236+），不能把历史简图当成完整现行输入契约；
 - 分两级：先用快速的单 token 判断，只有可疑时才启用思维链推理。
 
 **默认拦截约 20 条规则**：不可逆的破坏（强推、大量删除）、降低安全性（关日志、装持久化后门）、越过信任边界（运行不可信代码、扫描凭证）、绕过共享基础设施（直接部署生产）。
@@ -99,16 +117,17 @@ Anthropic《Claude Code auto mode》（2026-03-25）**[一手]**：
 | 真实的“过度执行”动作（52 个） | — | — | **17%** |
 | 合成的数据外泄（1000 个） | — | — | 5.7% |
 
-- 被拦后 Agent 会换更安全的做法重试；连续 3 次或累计 20 次被拦，就转交人工。
+- 被拦后可尝试安全替代路径；可交互时，连续 3 次或累计 20 次分类器拒绝会回退询问；无提示宿主的 `-p` 不会因此转交人工。计数与回退见[官方说明](https://code.claude.com/docs/en/permission-modes#when-auto-mode-falls-back)。需要人审的动作另设 ask 规则，不能等阈值触发才算边界。
 - **定位**：用来替代 `--dangerously-skip-permissions`，**不适合高风险基础设施**，也不能代替环境隔离。17% 的漏放率意味着它只是一层防护，不是全部。
 
 **第三方实测：auto mode 可以被绕过** **[社区：原文]**
 - Embrace The Red（2026-08-31）构造了一条攻击链：让 Claude 在“总结网页”时从 WebFetch 改用 curl，下载一个 ZIP，Claude 拒绝执行里面的二进制文件，却**自己写了 Python 解码脚本，并在攻击者解压的目录里运行**，结果被同名的 `struct.py` 劫持。
-- 小样本成功率 60–80%，而 Anthropic 委托的第三方测评是 0%。
-- Lobsters 上有人指出，这更像“不安全的执行方式”而不是意图被劫持，但结论一致：**auto mode 不能代替隔离环境和监控。**
+- 作者迭代载荷后的三个变体各测 5 次，分别为 3/5、3/5、4/5；只支持该攻击链可行，不能与不同条件的受托测评直接比较。原始来源和边界见 [10 安全](10-security.md#2-2026-年的真实事件与研究)。
 
-**人工审批也不可靠**：4 万局模拟数据显示，人工逐条审批平均漏掉 1/3 的威胁，藏在 `npm run` 后面的恶意脚本漏掉一半以上（见 [10](10-security.md#2-2026-年的真实事件与研究)）。所以无论用 auto mode 还是人工审批，**都要配合沙箱和出网限制**。
+**人工审批也可能漏检**：一个限时模拟审批游戏的 4 万局数据中，玩家平均漏掉约 1/3 的威胁，藏在 `npm run` 后面的恶意脚本漏掉一半以上；题目威胁占比和参与方式与生产不同，**不能外推为实际团队漏检率，也不能据此比较人与 auto mode 谁更安全**（[原文与局限](10-security.md#2-2026-年的真实事件与研究)）。这支持保留环境防线：无论采用哪种审批，仍限制凭证、写入和出网范围。**[社区：模拟游戏；经验：采用判断]**
 - 防范：不让 Agent 在下载来的目录里执行代码（Python 会优先导入当前目录里的同名模块）；处理不可信内容的会话不给执行权限。
+
+本节的现行契约与第三方采用取舍见[核查记录](research/2026-10-12-development-conditions.md#权限模式与第三方-hook按实际审批方向选择)；读者需要的选择是：先限制凭证、写入和出网范围，再决定把哪些审批交给分类器或 Hook。**[经验：采用判断]**
 
 **Codex 的对应机制：Auto-review** **[一手：2026-10-11 补核]**：reviewer 选择与 CLI `--approve-for-me` 的完整组合配置不同；不自动扩大长期配置，不表示单次获批提权不能越过原沙箱。审批策略不等于交互界面，Computer Use App 级审批仍直接交给用户。当前默认策略在 `codex-rs/prompts/templates/guardian/policy.md`；本地 `policy`、`extra_policy` 与托管优先级须分别核对，统一见 [Codex 专题](01-agents/codex.md#审批沙箱与-auto-review)。未运行真实审批服务。
 
@@ -116,17 +135,19 @@ Anthropic《Claude Code auto mode》（2026-03-25）**[一手]**：
 
 | 层级 | 做法 | 适用 |
 |---|---|---|
-| OS 级沙箱 | Claude Code：macOS Seatbelt / Linux bubblewrap，`/sandbox` 开启；可设网络严格白名单、屏蔽凭证文件 | 本机日常 |
-| OS 级沙箱（Copilot） | GitHub Copilot 本地沙箱 2026-10-07 正式可用：基于微软 MXC，在三大系统上限制文件、网络、Git 和 GitHub CLI 凭证；**企业托管设置可以强制开启且开发者无法放宽** **[一手]** | 用 Copilot 的团队 |
+| Shell 沙箱 | Claude Code：macOS Seatbelt / Linux、WSL2 bubblewrap；只覆盖沙箱内命令，原生 Windows 不支持 | 本机命令；有效设置见下文 |
+| OS 级沙箱（Copilot） | [GitHub Copilot 本地沙箱](https://github.blog/changelog/2026-10-07-local-sandboxing-for-github-copilot-now-generally-available/) 2026-10-07 正式可用：基于微软 MXC，在三大系统上限制文件、网络、Git 和 GitHub CLI 凭证；**企业托管设置可以强制开启且开发者无法放宽** **[一手]** | 用 Copilot 的团队 |
 | 容器 | devcontainer、[container-use](https://github.com/dagger/container-use)（每个 Agent 一个容器）、[aicontainer](https://github.com/stefanoginella/aicontainer) | 放开权限的自动任务 |
 | 微虚拟机 / 虚拟机 | [brood-box](https://github.com/stacklok/brood-box)、Lima、Incus | 不可信代码、高风险任务 |
 | 云端临时环境 | Claude Code on the web、Codex Cloud | 无需本地环境的任务 |
+
+**先核覆盖，再选隔离层（2026-10-15）**：[官方文档](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)明确文件工具、Hook 和 MCP 进程在 shell 沙箱外；缺必需依赖时默认还可无沙箱继续。要同时约束这些进程，需在容器／虚拟机等外层边界运行整个 Agent；要保护 shell 路径，先按 [10 的有效配置](10-security.md#32-claude-code-沙箱操作手册)核退出／排除项、凭证和出网范围，不能只打开 `/sandbox` 就宣布受保护。**[一手；经验：选择判断]**
 
 Anthropic《How we contain Claude》（2026-05）的结论 **[一手]**：
 1. **环境边界胜过行为约束**：一次诱导外泄 AWS 凭证的攻击，最后只有出网拦截挡住了；
 2. 按用户专业程度选择隔离方式（开发者能看懂 bash 命令，普通知识工作者看不懂）；
 3. **成熟工具胜过自研组件**：虚拟机管理程序和系统调用过滤很可靠，Anthropic 自研的代理反而出过漏洞；
-4. 真实事件：项目配置里的 hook 在信任提示出现**之前**就执行了；通过“已批准的域名”外泄数据（上传到攻击者在合法服务上的账号）。
+4. 历史漏洞：项目配置里的 hook 曾在信任提示出现**之前**执行，官方称已修复；不能据此推断当前入口行为，非交互脚本仍须按 [10 的配置来源边界](10-security.md#3-防护原则)处理。另有通过“已批准的域名”外泄数据的事件（上传到攻击者在合法服务上的账号）。
 
 ## 来源
 

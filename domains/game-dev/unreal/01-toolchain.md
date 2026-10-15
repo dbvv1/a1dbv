@@ -1,6 +1,6 @@
 # Unreal AI 工具链
 
-> 核实时间：2026-10-08；WP9 的并发与重导入契约于 2026-10-14（UTC+8）复核；2026-10-15（UTC+8）同步验证接口的采用边界。
+> 核实时间：2026-10-08；WP9 的并发与重导入契约于 2026-10-14（UTC+8）复核；2026-10-15（UTC+8）同步验证接口的采用边界。 采用入口、安装与权限分层于 2026-10-14 UTC 补核。
 > 依据 **[一手]**：
 > - Epic 官方文档 [MCP in Unreal Editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)（UE 5.8）、[UE 5.8 发布说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes)、[5.8 发布帖](https://forums.unrealengine.com/t/unreal-engine-5-8-released/2729274)（含 5.8.1 修复记录）；
 > - 克隆阅读了 Epic 的 [unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)（3 个 Skill + SessionStart Hook）。
@@ -34,8 +34,10 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 - 默认开启遥测：`ModelContextProtocol.EnableAnalytics` 默认为 `true`，需要的话可以关掉。
 
 ### 1.2 配置步骤
-1. 插件浏览器中启用 **Unreal MCP** 和 **All Toolsets**（会自动启用依赖的 Toolset Registry），重启编辑器。
-2. Editor Preferences → General → Model Context Protocol → 打开 **Auto Start Server**，或在控制台执行 `ModelContextProtocol.StartServer [port]`。命令行参数也可以：`-ModelContextProtocolStartServer`、`-ModelContextProtocolPort=N`。
+先确认当前工程确实缺少交互式入口；已有 Editor Python／测试能完成就沿用。以下是经批准后的配置流程，不能用安装 Skill 成功代替引擎端检查。**[一手／经验：见 [WP9 §11](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md#11-接入采用门槛版本安装与权限分别确认)]**
+
+1. 插件浏览器中启用 **Unreal MCP** 与任务所需的工具集，按提示启用依赖并重启。`AllToolsets` 是加载全部默认工具集的便利入口，不是必须全开的安全前提。
+2. 默认按需启动；仅需持续连接时才在 Editor Preferences → General → Model Context Protocol 打开 **Auto Start Server**。按需可在控制台执行 `ModelContextProtocol.StartServer [port]`。命令行参数也可以：`-ModelContextProtocolStartServer`、`-ModelContextProtocolPort=N`。
 3. 在控制台执行 `ModelContextProtocol.GenerateClientConfig ClaudeCode`，会在项目根目录写入 `.mcp.json`：
    ```json
    { "mcpServers": { "unreal-mcp": { "type": "http", "url": "http://127.0.0.1:8000/mcp" } } }
@@ -102,13 +104,15 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 
 ## 5. 社区方案
 
-| 项目 | 最近提交 | 说明 | 评级 |
+| 项目 | 提交／核实时间 | 说明 | 评级 |
 |---|---|---|---|
-| [Natfii/UnrealClaude](https://github.com/Natfii/UnrealClaude) | 2026-06 | 面向 UE 5.7：把 Claude Code CLI 嵌进编辑器面板，并提供 20 多个 MCP 工具（Actor、蓝图、关卡、材质、资产依赖），能通过 Live Coding 编译；作者自己说蓝图编辑“还有 bug，别完全依赖” | 🧪 **需要编辑器内 Claude 面板时评估** |
+| [Natfii/UnrealClaude](https://github.com/Natfii/UnrealClaude) | 2026-10-14 核固定源码 | 声明 UE 5.7、Windows／Linux／macOS（Apple Silicon）；需自行按平台和引擎版本构建，不能外推支持 5.5／5.6。插件及桥分别核许可与权限，见下文 | 👀 **确需编辑器内面板或实时桥时评估** |
 | [maystudios/claude-skills](https://github.com/maystudios/claude-skills) | 2026-08 | 作者在发行 UE 5.7 游戏的过程中积累的 Skill：GAS、UE5 最佳实践（Enhanced Input、StateTree、PCG、CommonUI、World Partition）、第三方库集成、PCG Python、从 C++ 生成蓝图 `.uasset` | 🧪 当作参考读，挑需要的 |
 | [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp) | 2026-06 | 团队已被 Aura 收购，后续更新转到 Aura | 👀 |
 | [chongdashu/unreal-mcp](https://github.com/chongdashu/unreal-mcp) | **2025-04** | 早期最流行的方案之一，已停止更新 | ⛔ 有官方 MCP 后不建议新用 |
 | [boocs/unreal-clangd](https://github.com/boocs/unreal-clangd) | 2026-06 | VS Code 的 clangd 配置扩展；作者提到 **5.8 预编译版不再附带引擎源码的 response 文件**，影响对引擎源码的支持 | 🧪 用 VS Code 时参考 |
+
+**UnrealClaude 的脚本审批不等于宿主只读。** 固定源码中，脚本自动批准默认关闭，但内置聊天启动配置同时设置跳过 Claude 权限并允许 Write／Edit／Bash；两层不能相互替代。采用前先审查目标快照的宿主与桥权限，不能仅因有脚本弹窗就认为所有修改都逐次批准。插件为 MIT；锁定桥子模块另加可见署名及集成披露条件，不能笼统当纯 MIT，且不替代引擎及模型服务条款；源码快照不是已验证的发行包。**[一手／研究：固定源码、采用反例及局限见 [WP9 §11](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md#11-接入采用门槛版本安装与权限分别确认)]**
 
 ## 6. IDE 和代码智能
 
@@ -124,8 +128,8 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 
 | 场景 | 推荐 |
 |---|---|
-| UE 5.8+，用 Claude Code / Codex | **Unreal MCP（5.8.1+）+ Epic 插件** + 本目录 templates；编辑器里勤存盘，用 Sandboxes 做探索性修改 |
-| UE 5.5–5.7 | 资产批处理可直接用 Editor Python；需要社区桥时评估 UnrealClaude，C++ 沿用通用编码与编译测试 |
+| UE 5.8+，用 Claude Code / Codex | 已有脚本／编译测试满足就沿用；缺交互式入口再评估 Unreal MCP（先满足 5.8.1+ 修复前提）和所需工具集；缺 Claude 领域知识再加 Epic Skill 插件 |
+| UE 5.5–5.7 | 先用 Editor Python 与通用编译测试；UnrealClaude 仅作 5.7 的条件候选，5.5／5.6 兼容须另证，不因该桥未确认就否定既有引擎能力 |
 | 需要 Agent 测打包后的游戏 | 在开发版里用 `IModelContextProtocolModule` 注册测试工具（见 1.4 节） |
 | CI | `RunUAT BuildCookRun` + 命令行自动化测试（见 [02](02-large-project-guide.md#4-测试)） |
 

@@ -1,6 +1,6 @@
 # 游戏开发 / Unreal Engine
 
-> 核实时间：2026-10-08。上级目录：[游戏开发分支](../README.md)。为什么值得单独一个子目录，见 [01 引擎接入第 3 节](../01-engine-integration.md#3-引擎选择对-ai-coding-的影响)和 GDC 2026 调查：AA 工作室 59%、AAA 工作室 47% 用 Unreal，自研引擎的份额正在让给 UE5。
+> 核实时间：2026-10-08；2026-10-15 UTC 入口全文复核，补核编译、MCP 权限与运行时采用边界（未运行引擎）。上级目录：[游戏开发分支](../README.md)。本目录单列 UE 的资产、编译与运行入口；引擎选择见 [01 第 3 节](../01-engine-integration.md#3-引擎选择对-ai-coding-的影响)。
 > 前置阅读：主干的 [07 工作流](../../../docs/07-workflows.md)（验证闭环）和 [03 上下文工程](../../../docs/03-context-engineering.md)。
 
 | 文档 | 内容 |
@@ -27,16 +27,16 @@
 
 1. **保留现有 C++／蓝图分工，按任务核对读改和验证入口。** 二进制格式不等于接入工具后蓝图仍不可见；先确认工具 schema、状态回读和蓝图编译能力，缺必要入口时收窄自动修改范围，不默认迁成 C++。依据与局限见 [03 蓝图与 C++ 的分工](03-engine-fundamentals.md#6-蓝图与-c-的分工)（2026-10-14 核实）。**[一手／经验]**
 2. **编译策略与工具发现分开。** 普通实现改动可用已验证的 Live Coding；反射／布局变化优先完整构建与重启作为保守策略，不宣称 Reinstancing 一概不支持。新增 MCP C++ 工具的 `UFUNCTION` 仍按其官方发现契约完整重启，见 [编译与重复运行边界](02-large-project-guide.md#3-编译验证)。
-3. **让 Agent 去 grep 引擎头文件。** UE 的 API 在版本之间变化大，模型常写出旧 API；安装版自带引擎头文件，这是对付 API 幻觉最便宜、最可靠的手段。
-4. **Unreal MCP 不只是“编辑器遥控器”。** 打包后的游戏也能托管 MCP 服务器 **[一手]**：在开发版里注册“导出状态、注入动作、加载场景”的工具，Agent 就能直接玩打包后的游戏，这是验证闭环的关键一环（见 [02 验证与试玩](../02-verification-and-playtesting.md)）。
+3. **先核目标版本的引擎头文件与编译诊断。** 用项目实际安装版本的声明核对生成代码，不把模型记忆或其他版本的 API 示例直接当作当前契约。**[经验]**
+4. **打包版缺少必要观察或动作入口时，再评估窄 MCP 工具。** 开发／测试版可通过 `AddTool()` 显式注册工具，编辑器工具集不会自动发现；服务器无认证，不对本机外开放，也不随正式发行版启用（[官方运行时与安全边界](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)）**[一手／经验]**。调用成功不等于真实输入或体验验收通过，已有入口足够就不增加 MCP（见 [02 验证与试玩](../02-verification-and-playtesting.md)）。
 
 ## 和 Unity 分支的对照
 
 | | Unity（[unity/](../unity/README.md)） | Unreal（本目录） |
 |---|---|---|
-| 官方 Agent 接入 | Unity CLI（命令行优先）+ 33 个 Skill；`unity mcp` | 编辑器内置 MCP（工具搜索 + 几百个工具）+ 3 个 Skill |
-| 资产格式 | YAML 文本，引用脆弱 → 禁止手改 | 二进制 → 只能通过工具改 |
-| 编译反馈 | `unity recompile` 秒级；batchmode 分钟级 | Live Coding 秒级（仅函数体）；UBT 分钟级 |
-| 测试 | `unity test`，退出码清楚（8 失败 / 6 基础设施问题） | `UnrealEditor-Cmd -ExecCmds="Automation RunTest …"` + `index.json` 报告 |
-| 运行时验证 | `frameCount` 判断游戏是否真的在运行 | PIE 状态；**打包版托管 MCP** |
-| 隔离试错 | 版本控制分支 | 5.8 Sandboxes |
+| 官方 Agent 接入 | 缺实时入口时评估 CLI／Pipeline；CLI／MCP 按客户端能力选择，Skill 按知识缺口添加 | 缺实时入口时评估 5.8.1+ 实验性 MCP 与所需工具集，Skill 按知识缺口添加 |
+| 资产格式 | 默认经 Editor API；文本修改只作项目已验证的受限例外，保留 GUID／fileID 并核引用 | .uasset／.umap 经 Editor API 修改，不做文本补丁 |
+| 编译反馈 | 沿用已有编译入口；CLI 已配置时可用 recompile，不承诺固定时长 | 普通实现改动优先 Live Coding；反射／布局变化默认完整构建重启，详见上文编译边界 |
+| 测试 | 先用已有入口；`unity test` 区分 8／6 并核报告与范围，异步 Editor 测试另取终态 | 命令行自动化测试＋结果报告；核实际执行范围，不以退出成功代替验收 |
+| 运行时验证 | 帧持续推进＋Console／截图／任务断言 | PIE 状态＋任务断言；打包版缺观测时再评估窄 MCP 工具 |
+| 隔离试错 | 沿用项目版本控制与恢复点 | 同样保留版本控制与恢复点；5.8 Sandboxes 可补充编辑器内容试错，不替代代码与资产历史（[官方版本控制说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/collaboration-and-version-control-in-unreal-engine)） |

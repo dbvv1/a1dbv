@@ -66,7 +66,7 @@ TODO：列出主要模块（asmdef）及依赖方向，例如 `Core ← Gameplay
 
 1. **不要读写** `Library/`、`Temp/`、`obj/`、`Logs/`、`UserSettings/`。
 2. **不要删除或手写 `.meta`**；移动/重命名资源时 `.meta` 必须一起移动（`git mv`）。新建 C# 文件让 Unity 生成 `.meta`。
-3. **不要手改** `.unity` / `.prefab` / `.asset` 的 YAML，除非只是改简单的数值字段并说明了风险；优先用已配置的编辑器 API（Unity CLI、Unity MCP、编辑器脚本）。接口缺失不是绕过此规则的理由。
+3. `.unity` / `.prefab` / `.asset` 默认经已配置的编辑器 API（Unity CLI、Unity MCP、编辑器脚本）修改。文本例外必须属于项目已批准且验证过的受限路径，保留 GUID／fileID，并在目标引擎核引用与相关行为；简单数值或说明风险本身不够。接口缺失不授权绕过保护或扩大例外。
 4. 修改 `ProjectSettings/`、`Packages/manifest.json`、`Assets/Plugins/` 前先征求同意。
 5. 每次修改 C# 后必须通过编译检查；修改逻辑后运行相关测试。
 

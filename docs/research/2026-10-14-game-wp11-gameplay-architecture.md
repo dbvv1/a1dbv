@@ -1,10 +1,10 @@
-主线：一／三／四；玩法反馈、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，先明确所有者、时钟和退出；实际复杂度再升级 HFSM／行为树／GAS／ECS，相机与重试围绕玩家决策，命令预览复用规则但不承诺任意结果精确；多来源效果区分授予所有权与合并语义
-新证据：[一手／社区] 固定项目源码、修复链、作者复盘及镜头默认值争议；新增 OpenRA 条件授予／撤销、Shattered Pixel Dungeon 毒镖／计时源码与 GAS 聚合契约；保留预览及 rewind 对照；[研究] 含确定性算术反例，无引擎／玩家对照，不能证明架构或手感收益
+主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，先明确所有者、时钟和退出；实际复杂度再升级 HFSM／行为树／GAS／ECS，相机与重试围绕玩家决策，命令预览复用规则但不承诺任意结果精确；多来源效果区分授予所有权与合并语义；导航先分通路、让路、停距与位移权，不统一增加或降低重算频率；关卡组合以路线／遭遇意图约束，连通不等于体验通过；03受限动作仅在开放意图有玩法价值时列候选，缺参数不得放大作用对象；教学区分动作完成、使用时机与正式关卡迁移，不默认加长强制教程；辅助按阻碍与目标选局部调整或整局预设，明确生效时机与切回规则；屏外威胁区分当前可获知信息、应对机会与已承诺攻击
+新证据：[一手／社区] 固定项目源码、修复链、作者复盘及镜头默认值争议；新增 Dead Cells／Cogmind 关卡设计与 Shattered Pixel Dungeon 固定生成链；保留 Factorio 堵塞复盘、Overgrowth 固定运动源码、Unity／UE 原生导航边界；保留 OpenRA 条件授予／撤销、Shattered Pixel Dungeon 毒镖／计时源码与 GAS 聚合契约；保留预览及 rewind 对照；[研究] 含确定性算术反例，无引擎／玩家对照，不能证明架构或手感收益；新增 Factorio 目标规则、Mantella 固定动作到引擎脚本链及 GoodAI 动作失配／封闭重做原文；新增 Factorio 提示改版／教学依赖、固定原型消费链及 Outer Wilds 开发中教学复盘，作者观察不作受控学习结果；新增 Dead Cells 29 辅助历史修复及 Cogmind 2017／2019／2022 难度设计与发布后回顾；新增 Cogmind 放大视图、Specter of Torment 房间设计、Luna Abyss 开发访谈及 Shattered Pixel Dungeon 固定蓄力／结算链
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
-证据核实：原记录为 2026-10-13—14 UTC；命令预览及效果叠加补研为 2026-10-15（UTC+8），各节保留版本和日期。除明标的确定性算术复核外，仅调查公开资料／源码；未运行引擎、游戏、模型或玩家实验，未安装／购买插件。“AI 失败”为契约风险推导，非出错率统计；固定主干不等于稳定发布包。
+证据核实：原记录为 2026-10-13—14 UTC；命令预览、效果叠加、导航、关卡组合及学习迁移补研为 2026-10-15（UTC+8），各节保留版本和日期。除明标的确定性算术复核外，仅调查公开资料／源码；未运行引擎、游戏、模型或玩家实验，未安装／购买插件。“AI 失败”为契约风险推导，非出错率统计；固定主干不等于稳定发布包。
 
 ## 一、研究结论与适用边界
 
@@ -103,7 +103,7 @@
 **[研究] 最低完成度**：关卡定义（稳定 levelId、入口、目标、出生表）与运行状态分开；每个 Encounter 所有者管理产生的敌人、触发器状态和一次性奖励；完成标记由存档域持有，不依赖 Scene 中对象是否还活着。目标、出口、回退位置可查询，重进关卡不会误发奖励。
 
 - **Unity**：场景承载内容，组合入口注入玩家／服务；Additive／Addressables 的释放细节归 WP10，玩法层必须提供退出／取消钩子。UE 先普通 Level；确实需要流式世界后再上相应分区机制。
-- **可省**：小房间游戏用 World Partition 级系统、纯随机生成替代关卡设计、自建通用关卡编辑器；已有模块化房间足够时让程序生成组合和验证可达性即可。
+- **可省**：小房间游戏用 World Partition 级系统、无玩法约束的随机铺图、自建通用关卡编辑器；已有模块化房间足够时优先组合，但仍需按路线与遭遇目标筛选，详见文末关卡组合补研。
 - **AI 风险 [研究]**：把 Scene load 完当玩法 ready；门只等某个已销毁敌人的事件而永远不开；检查点保存了运行实例引用；生成顺序改变而让种子不再对应同布局；脚本重建关卡丢稳定 ID。
 - **将来验证**：从每个检查点恢复，杀怪后离开再回、完成事件重放、加载失败、出生位置被占、最后敌人离场；验证出口可达、任务可完成、关键资源可取得。程序化地图保留 seed、生成器版本与关键布局数据，只有 seed 不保证版本升级仍兼容。
 
@@ -557,3 +557,194 @@
 [一手] 两项目已读相关源码头和根 [OpenRA COPYING](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/COPYING)、[SPD LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)：相关代码为 GPL-3.0-or-later。[研究] 本文只提炼机制并链接，不复制实现；欲直接复用须单独处理 GPL 分发义务及素材权利，不推荐作为闭源商用 Unity／UE 的即插即用模块。
 
 **实际范围**：[研究] 读取官方网页、固定公开源码与许可；未构建／运行 OpenRA、SPD、Unity 或 UE，未测帧时序、真人体验、AI 二改成功率与性能，也未执行上表玩法用例。独立 review、仓库离线检查与差异检查仅核本知识库交付，不能变成游戏行为或净收益实证。
+
+## 导航补研：通路、局部让路与停止位置
+
+核实：2026-10-15（UTC+8）。[研究] 改变 05 §3 及30秒表的采用条件：状态任务能结束、找到路径，不足以说明敌人移动自然；追击堵塞先分问题，默认利用引擎已有导航，不靠升级行为树、提高重寻路频率或默认加人群框架解决。以下仅源码／官方资料，未运行游戏或引擎。
+
+### 1. 先过许可，再借真实游戏的局部机制
+
+[一手] Overgrowth 固定 [245fe482](https://github.com/WolfireGames/overgrowth/tree/245fe4828631c84c0023d29d1525f5716ccb6106)，提交日期2025-03-20；读取根 LICENSE、README 和 enemycontrol.as 文件头，相关代码为 Apache-2.0，可按其条件复用代码，原游戏美术／关卡不因此开放，分发素材需另获许可。README 说明仓库由社区运作，不能把当前源码可取得当成维护承诺。[研究] 本文只提炼机制、不复制实现，不建议将其自研引擎当 Unity／UE 项目底座。Factorio 只读官方复盘，不取得代码或资产授权；引擎组件按项目实际 Unity／UE 条款使用，不称宽松开源，也不复制受限 UE 源码。
+
+**群体防御的反例。** [一手] Factorio [FFF316，2019-10-11](https://www.factorio.com/blog/post/fff-316)解释：群组转入各自攻击后，单位有路径但互相挡住、反复绕转；团队选择取消同类硬碰撞，保留既有 separation，以减少明显堆叠，并承认可能需要平衡调整。[研究] 这表明碰撞政策会改变拥堵，不支持“所有敌人都应穿过同类”；依赖堵路、推挤或身体卡位的玩法必须保留相应规则，不能为顺滑偷偷删掉战术。
+
+**近身动作的不同选择。** [一手] Overgrowth [enemycontrol.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/enemycontrol.as)的 GetRepulsorForce（3295–3330）只累加同队邻居排斥，并发送 excuse_me；消息分支（1021–1022）设置 move_delay。GetCheckedRepulsorForce（2651–2661）先用 NavRaycast 限制排斥；GetNavMeshMovement（3075–3121）按 target_dist 和 strafe_vel 投射接近／侧移目标，经停距减速后加入受限排斥并限制方向长度。[研究] 这支持把“走到哪”和“在目标周围如何停／让”分开，不证明这些参数适合其他游戏，也不证明物理碰撞已经完全消除。
+
+### 2. 重寻路不能统一加速，也不能统一节流
+
+[一手] Factorio [FFF121，2016-01-15](https://www.factorio.com/blog/post/fff-121)说明直行／局部启发式只用于短距离，会卡在角落；其缓存重用旧路径的中段，并缓存不可达结果，避免重复做昂贵搜索。[研究] 这是该游戏的规模与请求分布下的机制，不是单人项目起步就自建路径缓存的理由；通路改变后的失效责任也不能省略，本文不从复盘推定具体失效实现。
+
+[一手] 相反，Overgrowth 同文件 GetNavMeshMovement（2974–2991）每次进入会调用 GetPath(target_point)，GetPath 包装（2526–2538）重新查询并重置路径点；接近／侧移分支还会重新查询目标。[研究] 不据静读指控它慢，也不以 Factorio 外推所有动作游戏必须低频重算。默认保留原生移动目标跟随能力；测得查询成为热点后，再比较目标变化阈值、时间预算或复用策略，并保留急转响应与障碍更新的正确性。当前没有推荐统一毫秒间隔。
+
+[一手] Overgrowth [navmesh.cpp 的 FindPath](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/AI/navmesh.cpp#L874-L957)还区分 partial result 与终点多边形是否真正到达。[研究] 读到非空路径不能自行判“到达目标”；这与已有 Behavior 不可达终止契约相接，不另造任务框架。
+
+### 3. 原生能力的具体采用边界
+
+- **Unity，AI Navigation 2.0.16**：[AboutObstacles](https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/AboutObstacles.html)说明未 carving 的障碍主要通过短距离局部避让处理，拥挤障碍可能绕不过去；会堵路但通常静止的箱子等适合 carving。默认 Carve Only Stationary 在移动时移除洞，稳定达到时间阈值后再更新；大而缓慢移动的障碍可选择移动超阈值时更新。NavMesh 查询须考虑修改后一帧才生效。[一手] [研究] “动态”不是一律每帧重建网格或全都 carving；移动人群与改变通路的门／箱子应分别处理
+- **Unity 位移权**：[MixingComponents](https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/MixingComponents.html)要求信息单向流动，Agent 与非运动学刚体、Root Motion 争写会冲突；Agent 与 Obstacle 同时启用会自我避让，carving 更可能使其不断映射到洞边。动画跟随速度的简单方案仍可能脚滑。[一手] [研究] 因此声明一个最终位移所有者，不能把行为节点成功当成动画与运动一致；不在此重复动画专题
+- **UE，公开文档显示5.8**：[Using Avoidance](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-avoidance-with-the-navigation-system-in-unreal-engine)区分 CharacterMovement 的 RVO 与 Detour Crowd，要求二者独立择一使用。RVO 不使用 NavMesh 约束，可能走出边界；Detour Crowd 结合走廊可见性／拓扑优化，最大 Agent 数量由设置限定。[一手] [研究] 已满足需求的方案保留；需要走廊约束／更可配群体行为时再评估 Detour Crowd，核半径和数量，不叠开，不把 Unity carving 的时序映射成 UE 承诺。这里未证实任何 UE 特定项目的运行时障碍更新配置
+
+### 4. 后续只预注册一个二改遭遇
+
+[研究] 基线为追击并停在攻击距离；第二次增加一只同队敌人和可移动堵门箱。保留同一房间、动作与目标：目标突然反向→箱子堵住再移开→两敌窄门会车→追击切攻击／眩晕→退出后重启。记录通路状态、目的地更新、期望／实际位移、停止距离与旧移动请求是否残留；逐项定位是哪层失败，不能只看最终抵达。
+
+[研究] 真人再看反复左右摆、贴墙、突然转身、脚滑、攻击前挤叠，以及让路是否破坏身体卡位；性能测查询成本和移动总成本，不能只报寻路次数减少。若原生达到这些要求就不加系统；若让路使单位越界、错过攻击距离或破坏卡位，就收窄／撤回该策略，而非继续叠平滑参数。AI 可补目标生命周期、参数和轨迹记录，人决定停距、碰撞政策及是否自然。本轮未执行这些用例，离线检查只证明知识库交付。
+
+
+## 关卡组合补研：连通之后还要选择什么
+
+**核实：2026-10-15（UTC+8）；主线一／三，GC。** [研究] 改变05 §9“模块化房间＋可达性”的采用边界：✅ 稳定动作空间优先现有房间组合；🧪 地形探索可用受约束程序布局；⛔ 不以生成数量或连通通过率代替体验目标。不是要求自建生成框架，也不是要求人工检查每个 seed。
+
+### 1. 两类游戏，借不同的小机制
+
+- **即时横版动作，Sébastien Bénard / Dead Cells。** [一手：作者历史复盘] [The Level Design of Dead Cells](https://deepnight.net/tutorial/the-level-design-of-dead-cells-a-hybrid-approach/)说明先固定世界连接、设计按用途与 biome 分类的房间，再用概念图约束长度、特殊房间和出口间隔；敌人还受空间及同平台组合限制。文章原发 Gamasutra，此处为作者站转载，不把转载日期当新算法。[研究] 借“用途／连接条件→组合→遭遇限制”的次序；不抄其房间资产，不移植整套 Director，作者说当时该系统已剩很少。房间是人设计的，不能声称单人无美术人员或 AI 已省去内容设计成本。
+- **回合制战术探索，Josh Ge / Cogmind。** [一手：作者历史复盘] [2019 程序布局](https://www.gridsagegames.com/blog/2019/03/roguelike-level-design-addendum-procedural-layouts/)从出口的恢复／逃生价值推导入口出口位置，再约束回环、开阔空间和房间尺度；部分或全部程序布局都存在，自动剔除不满足参数的图。[研究] 这是“所有游戏都该拼预制房”的反例；只借与玩法相关的少数空间目标，不搬整个生成器。作者也提醒俯视全图的观感不代表探索体验。
+- **内容分配是另一层。** [一手] [Cogmind 2015 Map Composition](https://www.gridsagegames.com/blog/2015/05/map-composition/)给洞穴和主区域不同的内容分配方式，并区分气氛、免费收益、风险收益与危险遭遇，显示分布供调整。[研究] 可把既有遭遇按用途分类后检查路线，不需要每个房间有战斗，也不把奖励平均撒满地图。
+
+**反证必须保留。** [一手] [Dungeon Metrics](https://www.gridsagegames.com/blog/2014/07/dungeon-metrics/)2014 正文提出偏僻程度与奖励的关系，但作者在2015-11-06的评论明确说物品分配并未直接这样实现。[研究] 所以不写成“Cogmind 已实现越偏僻奖励越好”；最短路只是辅助指标，也不是未知地图中玩家真实的行走路线。回环、喘息和绕路奖励是否适合本玩法均须判断，不统一设阈值。
+
+### 2. 固定开源调用链：规则确实被消费，但不推荐整套接入
+
+[一手：源码静读] Shattered Pixel Dungeon **v3.2.4，提交 fdb10fc77914000af0907ac63f561ff21279115b**：
+
+1. [RegularLevel.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/fdb10fc77914000af0907ac63f561ff21279115b/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/RegularLevel.java#L104-L119)的 `build` 先取 `initRooms`，清连接后调用 builder，返回 `null` 则重试，成功后交 painter；其默认 `builder()` 在 LoopBuilder 与 FigureEightBuilder 中选择，不能写成所有关卡都只有单环
+2. [RegularBuilder.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/fdb10fc77914000af0907ac63f561ff21279115b/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/builders/RegularBuilder.java#L89-L130)的 `setupRooms` 按入口／出口、商店与 `maxConnections` 分组，消费 `pathLength`、扰动权重及房间尺寸来挑主路房间；这些不是只声明未使用的标签
+3. [LoopBuilder.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/fdb10fc77914000af0907ac63f561ff21279115b/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/builders/LoopBuilder.java#L73-L173)把入口置首、出口插入主路序列中段，布置并接回入口，然后追加分支和可能的相邻连接；放置失败可返回 `null`。这证明拓扑意图在生成前／中被实施，**不证明**每条玩家路线等长、资源充足或生成耗时有上界
+
+[研究] ✅ 借鉴这条分层顺序与少数规则；⛔ 不把整个 Java／LibGDX 游戏作为 Unity／UE 即插用生成插件。固定[源码许可](https://github.com/00-Evan/shattered-pixel-dungeon/blob/fdb10fc77914000af0907ac63f561ff21279115b/LICENSE.txt)为 GPLv3 文本，所读 Java 文件头允许 v3 或后续版本，不能当宽松许可代码直接拷入闭源工程；本轮未复制代码，未核整套美术／关卡资产的独立授权，不推荐提取这些资产。Dead Cells 与 Cogmind 只引用公开设计说明，未取得其代码或内容复用许可。
+
+### 3. 单人采用与二改预注册
+
+[研究] 先用自己已有或许可清楚的房间、遭遇及编辑器；程序员仍负责玩法内容设计，AI 可把规则落成数据与过滤。稳定动作空间优先房间用途／连接条件；地形探索优先少数路线和空间目标。先自动查出口／目标可达、关键资源条件及敌群不兼容，再按预期体验抽看代表性与极端组合：必经路线是否只有连续压力，绕路是否有可理解的机会，玩家是否有应对空间。不把所有空白都判坏，也不要求逐 seed 人审。
+
+[研究] **后续仅预注册**：增加一种敌人或房间后，保留旧规则与一组已知正常／极端种子；记录遭遇违约、必须重走的路段、资源机会位置及新增例外，再由试玩判断选择是否有意义。比较同一内容目标下的房间组合与受约束布局，不以种子数量判胜；若扩组合迫使大量逐房修补，缩小组合范围或替换问题模块。这里未生成地图、运行游戏／引擎或测玩家收益；离线检查只能证明文档交付完整。
+
+## 受限动作补研：开放意图不等于更强战斗 AI
+
+核实：2026-10-15（UTC+8）。主线二／三。[研究] 改变03 §2原先笼统的“同题收益决定”：先区分可用规则表达的战术／需求，与玩家开放意图到有限动作的语义缺口；动作名合法不代表对象、时机与世界结果正确。05既有状态／任务执行契约不变，不重做叙事案例，不增加框架。
+
+### 1. 三个作者体系分别支持什么
+
+- **Factorio：规则服务玩家策略。** [一手：作者历史复盘] StrangePan／Earendel 的 [FFF425（2024-08-23）](https://www.factorio.com/blog/post/fff-425)说明，跨墙敌人若能攻击整个工厂，会逼玩家到处布防；于是用 Gleba 的孢子排放让敌人集中某些设施。它支持“已知规则能产生所需战术就保持规则”，不是效用／行为树之间的性能比较，更不是与 LLM 的实测胜负。正文中的脚本、评分、行为树分工是[研究]建议，不冒称 Factorio 使用了这三套系统。
+- **Mantella：实际模组中的语义到动作接口。** [一手：固定源码] Python端固定 `c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac`（2026-07-16）；Skyrim端固定 `0c5f8513aff61cda1f32c81a962eee36ba74fdb7`（2026-07-11）。[Follow定义](https://github.com/art-from-the-machine/Mantella/blob/c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac/data/actions/follow.json)将被说服同行的角色列入 source，范围为 conversation，并明确标实验性、可能破坏 NPC AI packages。[研究] 借用“自由说服→指定角色同行”作为窄候选，不把其自然语言回复算行动结果，不声称这是完整原创商业游戏或已证实留存收益。
+- **GoodAI：有物理动作仍不等于有好玩的挑战。** [一手：作者历史说明] [2024-04-29 FAQ](https://www.goodai.com/ai-people-announcing-the-next-evolution-of-gaming-ai-npcs/)说明环境／人物／记忆进入模型，动作由游戏执行，失败回传纠正；也承认角色会声称给了物品但世界没有发生。[2024-09-19 Alpha说明](https://www.goodai.com/ai-people-alpha-officially-released/)将其定位为技术概念验证，挑战有限、最初没有场景终局目标。[2025-04-30公告](https://www.goodai.com/ai-people-entered-the-closed-phase/)宣布无限期关闭当前版本并重新思考参与感；本次读取[现行入口](https://www.goodai.com/ai-in-games/)仍写封闭开发。[研究] 这些是作者自述和产品状态，不是证明“LLM导致关闭”的因果研究；不能以宣传中的新颖行为代替玩家价值，也不将该游戏列作现在可直接试玩的候选。
+
+### 2. 固定调用链：required 与兼容回退为什么还不够
+
+[一手：源码静读] 两个仓库分别固定，不假设当前主干组合是经过发布配对验证的版本。读取以下消费链，不只看 JSON 名称：
+
+1. Python [function_manager.py](https://github.com/art-from-the-machine/Mantella/blob/c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac/src/actions/function_manager.py)的工具定义构造会传出 `required`，但 `_validate_arguments_against_schema` 只筛掉未知参数名，没有在这里验证必填齐全或类型。`parse_function_calls` 遇畸形 JSON 将参数置为空字典；空字典仍可生成只含 identifier 的工具结果。有效参数存在时则另有角色范围过滤。不能将函数名里的 validate 理解为完整契约验证。
+2. Skyrim [MantellaConversation.psc](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/Scripts/Source/MantellaConversation.psc#L660-L708)按是否有 arguments 字典选择 advanced 或 legacy 事件。advanced [Follow处理器](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/Scripts/Source/MantellaAdvancedAction_Follow.psc)按 source 名称解析会话 Actor，再设置 WaitingForPlayer、faction，重启 follower quest、EvaluatePackage；真正的移动交给原有游戏系统。
+3. 同版 [legacy处理器](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/Scripts/Source/MantellaAction_OffendForgiveFollow.psc)在会话可取得时遍历参与者，使符合条件的非玩家 NPC 跟随；只有会话不可取得才退到 speaker。它与路由处“缺参数回到 speaker-only”的注释并不等价。[研究] 这是静读可见的作用域扩大路径，未运行重现，不能声称玩家必然遇到；但足以拒绝“有白名单／JSON required就可安全执行”的采用理由。
+
+[一手] 作者 [#441](https://github.com/art-from-the-machine/Mantella/issues/441)还记录过多人会话把 `Npcname: Follow:` 当台词念出来；2025-12-11注明由 [Spell #128](https://github.com/art-from-the-machine/Mantella-Spell/pull/128)修复并关闭。[研究] 不把历史问题报成当前未修，也不据关闭推定所有模型／多角色动作都已可靠；上述参数缺失路径是另一次固定源码核查。
+
+**采用判断。** [研究] 只借接口分层，不移植整套模组。执行侧必须重核允许动作、精确对象、当前前置条件及请求是否仍属于活任务；缺字段、无合法对象、超时／取消后回包应拒绝或保持原状态，不能静默改为所有角色执行。说服阈值、哪些角色可以拒绝与错误是否属于游戏乐趣仍由设计决定；“模型输出是有效JSON”既不是权限验证，也不是跟随已成功。
+
+### 3. 后续窄对照与撤回，不在本轮运行
+
+[研究] 只预注册一个“说服指定角色同行”的同题切片：菜单／现有规则基线对比 LLM 解释开放措辞，共用角色状态、地图、跟随执行器与取消行为。先确定开放理由是否真的让玩家形成不同策略；若只是不同措辞触发同一个按钮，基线足够。若没有开放语义需求，觅食／撤退／目标排序沿原规则或效用评分，任务生命周期沿05状态机／行为树，不默认增加 LLM。
+
+- 正常：指定 A 同行，检查 A 实际进入跟随且 B 不变；拒绝、撤销与再次邀请分别保留明确结果
+- 失败：缺 source、未知角色、角色离场、回复到达前取消／死亡、重复回包；不得扩大目标或让旧请求重启跟随
+- 玩法：玩家是否能解释为何同意／拒绝、是否获得菜单无法表达的有效策略；不能只问“像不像真人”，也不以动作有效率／战斗胜率代替体验
+- 成本：记录从请求到世界响应的等待、超时、每段游玩调用与费用，以及新增一种角色限制后的修改成本；阈值按本玩法节奏和发行预算预先决定，不发明统一毫秒或价格门槛
+
+[研究] 无额外玩家选择则保留基线；错误对象、虚假交付或迟到动作破坏状态则撤掉动作接口直到修复；等待／费用超过预设预算则缩小频率与角色范围，仍不满足就撤回。若开放交涉是核心玩法，菜单回退会改变游戏本身，应承认玩法需要重做，不能称无损降级。
+
+[一手] 已读两端固定根许可：[Mantella LICENSE](https://github.com/art-from-the-machine/Mantella/blob/c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac/LICENSE)为 AGPLv3 文本；[Mantella-Spell LICENSE](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/LICENSE)为 MIT。本文不复制代码，不推荐把 AGPL 服务端当闭源商用即插用模块；Skyrim内容、模型、TTS与服务许可另查。Factorio／GoodAI文章不授予游戏资产或源码使用权。
+
+**实际验证范围：** [研究] 公开网页与固定源码只读；未运行模型、模组、游戏、Unity／UE或上表用例，未测体验净收益。通用决策不据 Skyrim 路径推定 Unity／UE 插件具备同样实现。本单元独立审查范围内通过；`python3 scripts/check_offline.py` 14阶段通过（非空、无skip），`git diff --check`通过；这些只验证知识库交付，不算动作效果实证。
+
+## 学习迁移补研：按提示完成之后会不会主动使用
+
+核实：2026-10-15 UTC。主线一／三／四；补 05 §9 的具体选择：教学步骤能运行之后，是否应增加强制步骤、改为按需帮助或提供可选练习。现有控制／菜单可用性、规则预览和重试验收不能代替学习迁移。本节比较开发者已经采用的设计路线，不推荐新教程框架，也不要求所有机制都做教学。[研究]
+
+### 1. 两条竞争路线：帮助时机与自主选择
+
+- **组合操作与长期经营：按需帮助。** [一手：历史作者解释] Wube 的 [FFF361（2020-10-09）](https://www.factorio.com/blog/post/fff-361)展示逐页提示改成索引、搜索、按条件推荐，并统一微教程入口；基础物件说明仍优先在 tooltip 解释，tips 留给难解释的组合与真实误解。作者还指出静态截图会随更新过期，改用真实模拟演示。[研究] 借帮助的分工与回查机制，不要求独立开发者先造嵌入式模拟器；已有场景中的短演示能讲清就够。代价是持续维护触发、内容与示例，且通知可能被忽略。
+- **自主探索：可选练习与能力提示。** [一手：开发中作者复盘] Mobius 的 [Filling Out The Toolbox（2016-05-27）](https://www.mobiusdigitalgames.com/news/filling-out-the-toolbox)描述 Outer Wilds 从强制工具操作链改为沿途可选练习：旧流程让玩家照做，进入开放世界却不知道下一步；作者于是强调可做什么，而非继续指定该做什么。同文明确承认可选教学会被跳过，多用途探测器尤其难教，补场景用途示意也只是设计意图。[研究] 适合寻找目标本身有价值的玩法，代价是漏学与练习空间的内容成本；这是作者观察，没有受控玩家结果，不能宣布自由教学普遍更好。
+
+### 2. 固定实现：触发与已读不代表掌握
+
+[一手：源码阅读] `wube/factorio-data@374934f81f82b09ec9fc459f92a316bd642ddd82`，提交日期 2026-10-06。已读以下消费链，不只引用字段名：
+
+- [base/data.lua L50](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/data.lua#L50)加载 `prototypes.tips-and-tricks`
+- [bulk-crafting L208–229](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/prototypes/tips-and-tricks.lua#L208-L229)以连续单件下单5次触发提示，连续批量下单3次满足 `skip_trigger`，绑定相应 simulation
+- [ghost-rail-planner L1685–1732](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/prototypes/tips-and-tricks.lua#L1685-L1732)组合玩法条件与已有操作，并依赖 `ghost-building`、`rail-building`
+- [官方 TipsAndTricksItem 契约](https://lua-api.factorio.com/latest/prototypes/TipsAndTricksItem.html)本次页面显示 2.1.21：`skip_trigger` 取消通知但保留列表入口；`dependencies` 依赖前项标记已读。版本化 URL 本轮未取得正文，不把 latest 链接声称为永久固定版本
+
+[研究] 这些实现支持“在需要时提醒、已做过则减少打扰”，不证明玩家理解了目的，更不证明迁移到新场景。不能照搬5次／3次阈值；读过、做过、学会三个状态不应被 Agent 合并。固定公开数据也不包含本轮可审计的完整引擎教学运行时。
+
+[一手／研究：许可] [固定 README](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/README.md)说明公开原型定义用于帮助 mod 作者、查看版本变化和链接讨论；本轮未核到可跨游戏复制的通用开源许可。公开可读不等于任意复制代码／资产或输入 AI 的授权；本节只引用机制与短字段，不把它列为 Unity／UE 可直接移植底座。Mobius 文章同样不授予游戏资产使用权。
+
+### 3. 反例：少指导与完成率都不能单独作为目标
+
+[一手] [FFF213（2017-10-20）](https://www.factorio.com/blog/post/fff-213)记录无顺序微教程的问题：未懂 ghost 就学幽灵铁轨，未懂火车就学信号，因此增加依赖建议。[研究] 保留关键知识的明确教学机会，不把可选练习误写为所有前置条件都能省。
+
+[一手] [FFF342（2020-04-10）](https://www.factorio.com/blog/post/fff-342)同时报告旧 NPE 获得正面新玩家反馈、却仍决定撤回：任务式演示吸引的受众，在正式游戏得不到同类后续内容。[研究] 教程易懂或受欢迎，也可能训练了错误的玩法期待；首玩完成不能代替正式关卡迁移。
+
+[一手] [Outer Wilds 路线复盘（2016-08-18）](https://www.mobiusdigitalgames.com/news/the-intentionality-of-wandering)说明自由选择仍需线索，作者希望玩家有意识地选路，同时讨论怎样保留惊喜。[研究] 操作能力、值得调查的方向、谜题答案分开决定提示范围；自动提示若提前交出本应发现的用途，可能损害核心体验。该边界是设计推导，不是本轮测得的剧透影响。
+
+[一手：历史受控研究] Andersen 等 [The Impact of Tutorials on Games of Varying Complexity（CHI 2012，pp.59–68）](https://grail.cs.washington.edu/projects/game-abtesting/chi2012/chi2012.pdf)在 Refraction、Hello Worlds、Foldit 内随机分配新玩家的教程条件，比较情境提示、提前手册、锁定操作及按需帮助；跨游戏的复杂度没有随机操纵，操作范式与下载门槛不同，玩家经验及自选择人群也可能不同。帮助按钮的跨条件汇总未提供一致的收益证据，且 Hello Worlds 返回率的方向在 Table 3 与正文间不一致，不能据此为已有教学再叠加帮助入口；主要指标是时长、完成关卡与返回行为，不证明无指令情境中的主动使用或知识迁移。[研究] 因此把目标玩家经验与真实误解作为选型条件，不从复杂度或“可选”标签单独推导教学收益。这是 Flash 解谜／平台游戏与蛋白质折叠游戏时代的机制证据，不代表当前 AI 收益。
+
+### 4. 窄二改预注册与撤回条件
+
+[研究] 只选一个已能正确执行、但玩家不会主动使用的工具或组合操作，准备“按需短提示／回查”与“可选小练习”两个局部方案。未来获准试玩时分开记录：是否能按指令完成动作、能否解释或选择适用情境、在无逐步指令的变形情境中能否主动使用；不能压成一个教程通过率。
+
+[研究] 二改增加工具一种用途或改变一种操作，检查旧说明、实际绑定、触发、前置知识与示例是否仍对应规则。频繁漏掉硬前置时保留短而明确的必要教学；强制流程让玩家等待任务而正式玩法要求探索时，减少步骤并提供可回查能力说明；若观察不到真实误解，保留物件旁说明，不扩教学系统。AI 可比较方案、实现局部触发与采集，人决定目标体验和哪些发现不能提前告知。
+
+**实际验证范围：** [研究] 仓库与公开原文／固定源码只读调查；未运行游戏、引擎、模型或玩家实验，未测学习收益、留存、AI 成功率或维护工时。两种设计跨游戏比较不能替代同一玩法对照；结论不依赖 Unity／UE 特性，不拆引擎版本，不引入联网前提。
+
+
+## 辅助取舍补研：局部调整、整局预设与切回规则
+
+核实：2026-10-15（UTC+8）。主线一／三／四；改变 05 §9 的选择：按实际阻碍与游玩目标选局部辅助或协调后的整局预设，明确当局／下一局生效与关闭恢复。新证据为 Dead Cells 29 历史补丁及 Cogmind 作者的设计与发布后回顾；不重复 WP10 的信号映射、输入缓冲或前节的重试／教学迁移，不新增辅助框架。[研究]
+
+### 竞争选择与一手反例
+
+- **即时动作的局部选择。** [一手：官方历史补丁] [Dead Cells 29 系列](https://deadcells.com/patchnotes/29)将按住跳跃／翻滚、盾牌切换及输入自定义与 Assist 选项分列；后者包含敌人伤害／血量、陷阱伤害、格挡窗口与陷阱速度等调整。29.2 修复关闭 Assist 后子选项仍生效；29.3 修复 Multiple Lives 下特定死亡软锁。它们说明菜单开关与实际规则、失败路径必须一起维护，不代表当前版本仍坏。该页另有读档后敌人／Boss 血量复满的修复，但未说明由 Assist 引起，不作因果归属，也不据此声称每种选项都可安全即时切换。[研究]
+- **回合策略的整局选择。** [一手：作者设计说明] Kyzrati 的 [Adjustable Difficulty（2017-02-16）](https://www.gridsagegames.com/blog/2017/02/adjustable-difficulty/)为计分一致性限定难度下一局生效，榜单分模式；调整包括警戒压力、遭遇和出口信息，而非只有伤害倍率。作者区分仍希望练习标准玩法与主要希望探索内容的玩家，也提出低压力可能不迫使玩家学到标准模式所需应对。这是设计取舍与风险判断，不是学习实验或当前版本全部参数的核验。[研究]
+- **可发现性有发布后反证。** [一手：作者观察] [Rebranding Difficulty Modes（2019-09-17）](https://www.gridsagegames.com/blog/2019/09/rebranding-difficulty-modes/)说明此前手册、选项菜单及死亡提示仍常被漏看，于是增加首次启动的显式选择，并改用 Explorer／Adventurer／Rogue 名称。[2022-05-08 回顾](https://www.gridsagegames.com/blog/2022/05/kyzratis-game-design-philosophy/)报告菜单加入后较易模式使用增加、仍为少数。这不证明单一命名改动的效果或留存收益。[研究]
+- **信息可达不等于新增情报。** [一手：同上 2022 回顾] 作者说明标出已警觉敌人位置的功能最初面向所有人，后来因对标准玩法优势过大，从 Rogue 模式撤出。[研究] 将既有危险信号换成能读到的表达，与揭露原本未知的敌人位置必须分别决定；这不意味着标准模式可省掉必要提示，也不意味着所有轮廓都是越权情报。
+
+### 最小采用与撤回边界
+
+[研究] ✅ 沿已有设置／规则配置实现。玩家只被重复按键或一种时机要求挡住时，先提供针对性操作或窗口选项；若多种资源、遭遇和探索规则需要协调，采用少量有明确目标的预设。全局降速也是可选的有意设计，是否保留取决于它对核心节奏、其他时钟和操作的实际影响，不能因局部选项存在就判其劣质。无需把所有参数都暴露给玩家。
+
+[研究] 当局可调能减少被卡住后重开的成本；下一局生效能保住整局规则与计分归属。没有跨游戏唯一答案。选择前说明何时生效、关闭恢复什么、哪些设置随存档或新局保留、进度与计分如何处理；“可关闭”不是抹除已经获得的进度，也不意味着恢复未知情报。上述是实现与产品政策建议，不主张统一锁成就、清档或惩罚辅助玩家。
+
+[研究] 不把探索模式强制设计成标准模式的训练阶段。若明确承诺练习某种应对，应让关键动作／决策仍有使用机会，再由目标玩家试玩判断；若目的是看内容，可以有意改变更多规则。较易模式的成功不能代验标准模式的掌握，亦不支持所有区域难度等比例下降。
+
+### 第二次修改：只预注册，不运行
+
+[研究] 在已有玩法增加一种敌人或一个辅助参数，检查支持的设置组合即可，不穷举全部滑杆：启用后实际生效；关闭或进入下一局时按承诺恢复；死亡、重试、读档后仍使用正确的规则与遭遇状态。对新增情报检查切回后的显示政策，对计分核模式归属，对已获进度核是否按既定政策保留。AI 可追配置消费、恢复路径与回归样例，人决定辅助目标并判断核心玩法是否仍可进入；现有系统足够就停止扩建。
+
+**实际验证范围：** [研究] 已读两位／组作者、即时动作与回合策略的一手网页正文及本仓相关章节；未运行游戏、引擎、模型或玩家实验，未验证成就解锁政策、当前存档兼容性或学习／留存收益。历史补丁证明维护风险曾发生，作者回顾证明其设计和观察，不作为本项目效果保证。
+
+## 屏外威胁补研：补信息还是改攻击
+
+核实：2026-10-15 UTC。主线一／三；在既有“无解先改空间”的建议上，进一步区分视口外但规则允许获知的信息、角色未发现与已经承诺的攻击。新证据为三个作者的不同方案及 Shattered Pixel Dungeon 固定结算路径；不重复 04 的信号强度或 05 的相机实现。[研究]
+
+### 三种选择及代价
+
+- **当前可获知信息超出视口，补查看路径。** [一手：作者开发记录，2024-02-11] [Cogmind 放大视图 QoL](https://www.gridsagegames.com/blog/2024/02/adventures-in-map-zooming-part-5-qol/)展示放大后边缘标记、标记避开已显示机器人、按键聚焦敌群并返回。普通可见对象与传感器信息采用不同表现；标记范围以未放大窗口为基准，目的在于补回放大损失的信息。[研究] 适用于能在行动前查看局面的玩法，不证明实时战斗中频繁转移视图也安全；不把“在画面外”当作原本未知而自动揭示，也不建议复制全部 UI。
+- **动作空间本身让玩家在看不到处受击，先改布局。** [一手：作者复盘，页面标注2020-01-21] [Specter of Torment 房间设计](https://www.yachtclubgames.com/blog/specter-of-torment-level-design-deep-dive-2-5/)用进房间过渡期间触手伸入画面、醒目颜色与运动介绍 Grapps；附近天花板阻止玩家从画面上方绕过而遭受屏外命中。作者还反对把伸出动作随意放慢：那会错误暗示能抢跑通过。[研究] 缺的是正确空间理解时，限制不合适的路线可比再加警报有效；但这种结构约束会缩小自由度，不能推广为所有游戏都应封路。
+- **受限视野仍是核心玩法，改攻击的可应对性。** [一手：开发中团队访谈，2023-06-30] [Luna Abyss 设计者／程序员](https://www.unrealengine.com/developer-interviews/how-unreal-engine-empowered-a-small-team-to-build-luna-abyss-beautiful-bullet-hell-prison)说明第一人称弹幕须在玩家面向攻击者时从前方来；玩家可能背对攻击者，因此以慢弹或长预告留出转向观察时间，加上声音提示，并因身体边界不可见扩大弹幕间隙。[研究] 它与 Grapps 不能合并成“都放慢”：一个保住扫视与躲避时间，另一个需要快速明确地封住道路。文中“避免不可见伤害”为团队自述，未独立复测；不照搬具体速度或间距。
+
+### 固定实现反例：不显示演出，不等于不结算
+
+[一手：源码静读] `00-Evan/shattered-pixel-dungeon@57a4e06a4caf162446d1c28caa7983f0493fecf0`：
+
+- [Eye.java L91–148](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Eye.java#L91-L148)：`canAttack` 用 Eye 自身的 `fieldOfView` 与弹道判断；蓄力后条件不再满足时仍可返回 `beamCharged`。`doAttack` 首先蓄力并消耗时间；释放时用玩家 `heroFOV` 判定是否播放 zap，只有本体位置与射线碰撞位置均不在 `heroFOV` 时，才走直接调用 `deathGaze()` 的分支。
+- [EyeSprite.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/EyeSprite.java)：有 zap 动画时在完成回调调用同一 `deathGaze()`；蓄力声音另受 sprite 的 `visible` 条件限制。
+
+[研究] 该链只证明“行动资格、玩家视野和表现分支不是同一条件”，不证明此敌人在所有情境中公平，也不把 `heroFOV` 冒称屏幕矩形。不能把所有蓄力说成锁定最初目标：目标仍满足条件时 `canAttack` 会更新弹道与目标位置。代码头声明 GPL-3.0-or-later；这里借鉴责任划分，不推荐复制进闭源游戏。三个开发者网页均不授予游戏资产或代码复用权。
+
+### 最小采用与下一次内容修改
+
+[研究] ✅ 沿用技能状态与现有提示层，先指定：玩家此时应知道什么、从注意到执行反制有何机会、进入／离开画面是否有意改变起手或已承诺攻击；表现裁剪不能意外改变结算，有意的可见性规则则明确维护。无需新增“战斗导演”。若提示可见仍无可行躲避，改方向、节奏或布局；若仅因放大漏看当前规则仍允许获知的对象，补查看路径，不能永久跟踪曾经发现而今已失去的信息；若允许威胁隐藏或突袭，按其玩法承诺设计，不以全知为统一目标。
+
+[研究] 后续只预注册同一混合遭遇，增加一种远程攻击，比较正常与缩小可视范围（项目支持的缩放／屏幕比例），包括起手后转开视角、重新看向敌人、失去角色视野、静音／减特效。分别检查能否察觉并作出实际反制，以及已承诺攻击是否按规则继续、取消或重新瞄准。若标记遮住近处目标、自动查看抢走瞄准、或限制出手变成转头冻结敌人的非预期玩法，撤回对应方案。AI 可追状态与表现路径、形成同遭遇替代配置；人决定允许的未知和风险，不用提示数代替质量。
+
+**实际验证范围：** 证据来自仓库既有内容与公开网页／固定源码阅读；读到作者的图示说明和实现，不声称本轮实际播放视频、操作游戏或进行玩家识别测验。未运行引擎、模型或实验；没有体验收益、最佳时长或 AI 净效率结论。本判断不依赖 Unity／UE 特性，只维护一份通用建议。

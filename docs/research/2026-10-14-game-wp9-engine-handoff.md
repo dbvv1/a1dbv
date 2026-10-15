@@ -1,10 +1,12 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：§10 新增官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：§11 新增官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 新增官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
 ## 当前结论摘要（2026-10-14 UTC）
+
+- **✅ 安装／配置／执行／验收分开**；先核已有入口，按缺口补组件，UnrealClaude 不外推 UE 5.5／5.6，脚本审批不代表宿主全局审批，见 §11。[一手／研究]
 
 - **✅ 官方 Unity CLI／MCP 按客户端能力选，不当故障回退**；同一 Pipeline 未加载时先修复目标工程，异步启动与桌面截图回退都不算验收通过，见 §10。[一手／研究]
 - **✅ 已有工程不为 Agent 熟悉度或文本格式迁移引擎**；先补所需状态读取与验证。三位开发者的迁移记录及官方接口反证见 §9，不构成模型能力排名。[一手／研究]
@@ -297,3 +299,48 @@ Epic 5.8 Python 单类页读取失败，已读同版本 C++ API；未读完整�
 由两种实现可支持的共同建议仅是：先读所选工具的完成协议；等待超时／连接异常时保留未决状态并核原作业，不直接再启动一份测试。缺最终结果时回到已有可观察的测试入口，或报告尚未验证；不把官方工具或社区测试数量当成可无人值守闭环的证据。[经验]
 
 本轮未安装客户端、运行引擎／模型、激活桌面、执行上游测试或测量采用收益；只增加官方契约与固定源码／测试阅读。后续真实验证仍按当前阶段预注册，不在此执行。[研究]
+
+## 11. 接入采用门槛：版本、安装与权限分别确认
+
+核实：2026-10-14 UTC。本组改变的选择：已有项目先只读核可用入口，缺连接／知识／工具集才添加对应组件；撤回 Unity／Unreal 工具页的整栈默认，以及 UnrealClaude 可覆盖 UE 5.5–5.7 的暗示。不是对全表新闻或所有社区桥重审。[研究]
+
+### 11.1 许可先行，然后区分组件
+
+- Unity 官方 Skill 的[固定许可](https://github.com/Unity-Technologies/unity-agent-plugin/blob/cf6b2da24e424b0a60d560a57f39f676cb6f79f3/LICENSE.md)是 Unity Companion、Unity-dependent projects；CLI 免费不把 Skill 或引擎变成通用 MIT 组件。[一手]
+- Epic [固定 Skill 许可](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin/blob/a6aa73ada02a9fb1f5415bec491f9942c519b297/LICENSE)为 MIT，范围不扩到 Unreal Engine；UnrealClaude 的[插件许可](https://github.com/Natfii/UnrealClaude/blob/1f978379f0ff9d3af2b3e4032131cc003fa04dcb/UnrealClaude/LICENSE)与其锁定子模块 [ue5-mcp-bridge 许可](https://github.com/Natfii/ue5-mcp-bridge/blob/e7c96c617143f43070d47e41d3783a449d2519a4/LICENSE)分别核查：插件为 MIT；桥自称 MIT License with Attribution Requirement，额外要求可见署名（项目名、原库链接、作者），用于其他 MCP／AI 集成时须在文档披露，不应简写为标准 MIT。不能用代码许可代替引擎或 Claude 服务条件。[一手／经验]
+- Coplay 的固定 MIT 与最低 2021.3 声明已在 §2 核过，本轮不重复；那是包声明，不是各版本、平台及每个工具均获实测保证。已有旧版工程不为官方桥升级引擎。[研究／经验]
+
+### 11.2 Unity：加载 Skill、装 Pipeline 与执行命令不是同一步
+
+[官方 CLI 入口](https://docs.unity.com/en-us/unity-cli)当前明确标为 experimental；[Pipeline 安装文档](https://docs.unity.com/en-us/unity-cli/unity-pipeline/unity-pipeline-package)要求 Editor 6.0+，安装步骤包含登录、装包及依赖、等待重新编译，再用 `pipeline list` 核查。列出 Editor 命令另用 `unity command`，多实例指定工程。[一手]
+
+[固定 unity-cli Skill](https://github.com/Unity-Technologies/unity-agent-plugin/blob/cf6b2da24e424b0a60d560a57f39f676cb6f79f3/skills/unity-cli/SKILL.md#L44-L63)含 CLI 缺失时的安装流程；[官方插件 README](https://github.com/Unity-Technologies/unity-agent-plugin)也说明 Skill 可自动选用并直接修改项目。因而“安装知识插件”不能在本仓库推荐中被写成“已具备编辑器入口”，更不能代替对后续软件安装、项目包变更与任意 C# 执行的授权。[一手／经验]
+
+采用顺序：已有命令／Editor 脚本 → 只读确认工程、版本、可用操作与回读能力 → 缺实时连接才评估 CLI/Pipeline（或同一 CLI 的 MCP）→ 缺领域知识才加 Skill。安装／更新在受控步骤中处理，不放入常规只读 preflight；不把“本机权限相同”解释为 Agent 已获任意操作授权。[经验]
+
+### 11.3 Unreal：最少工具集；旧版桥按作者声明收窄
+
+[Epic 官方配置说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)的 Enable the plugins 段明确允许单独启用所需工具集，`AllToolsets` 是加载全部默认工具的便利入口；Auto Start 默认 false，可按需启动。现有工具页的安装步骤此前仍默认全开，和横向页“按需启用”冲突，现统一为缺入口才启用最少组件。[一手／研究]
+
+UnrealClaude 固定源码为 [`1f978379f0ff9d3af2b3e4032131cc003fa04dcb`](https://github.com/Natfii/UnrealClaude/tree/1f978379f0ff9d3af2b3e4032131cc003fa04dcb)，本轮读取 GitHub API 与原始文件，没有构建或运行：
+
+- [`.uplugin`](https://github.com/Natfii/UnrealClaude/blob/1f978379f0ff9d3af2b3e4032131cc003fa04dcb/UnrealClaude/UnrealClaude.uplugin)声明 VersionName 1.5.1、EngineVersion 5.7.0、Win64／Linux／Mac；[README](https://github.com/Natfii/UnrealClaude/blob/1f978379f0ff9d3af2b3e4032131cc003fa04dcb/README.md)把 macOS 支持收窄到 Apple Silicon，并要求按平台和引擎自行构建，无随附预编译二进制。不是核实了 1.5.1 发布包，更不是 UE 5.5–5.8 兼容认证。[一手／研究]
+- [作者对 UE 5.5 请求的答复](https://github.com/Natfii/UnrealClaude/issues/38#issuecomment-4450203842)明确只支持其使用的 5.7，移植需核工具并重写版本上下文。故撤回 5.5／5.6 的默认候选暗示，保留既有 Editor Python／编译测试，不把一个桥的版本缺口泛化成引擎不可用。[一手／经验]
+- [真实采用反例 #20](https://github.com/Natfii/UnrealClaude/issues/20)：用户称启用插件后 cook/package 失败，作者[承认此前主要验证 Editor builds](https://github.com/Natfii/UnrealClaude/issues/20#issuecomment-4016330571)。该 issue 已关闭，本轮未定位修复或复测，不能写成当前未修故障；它支持编辑器成功与打包闭环须分别验收。[社区／一手：作者回复]
+
+### 11.4 不能用一个权限开关代表整个入口
+
+UnrealClaude 的 [UnrealClaudeSettings.h](https://github.com/Natfii/UnrealClaude/blob/1f978379f0ff9d3af2b3e4032131cc003fa04dcb/UnrealClaude/Source/UnrealClaude/Public/UnrealClaudeSettings.h#L23-L39)把脚本自动批准默认为 false；但 [ClaudeSubsystem.cpp L97–100](https://github.com/Natfii/UnrealClaude/blob/1f978379f0ff9d3af2b3e4032131cc003fa04dcb/UnrealClaude/Source/UnrealClaude/Private/ClaudeSubsystem.cpp#L97-L100)启动内置聊天时设置 `bSkipPermissions = true`，允许 Read／Write／Edit／Grep／Glob／Bash。[ClaudeCodeRunner.cpp L331–335](https://github.com/Natfii/UnrealClaude/blob/1f978379f0ff9d3af2b3e4032131cc003fa04dcb/UnrealClaude/Source/UnrealClaude/Private/ClaudeCodeRunner.cpp#L331-L335)进一步把该配置变成 `--dangerously-skip-permissions` 参数。这是两个不同权限层，脚本弹窗不等于宿主文件／shell 操作都逐次批准。[一手：固定源码]
+
+因此仅在确需面板／实时桥、能承担构建维护且目标快照权限满足项目约束时评估；若不能保留所需审批，就不采用该入口，继续已有脚本和通用客户端。不提供绕过批准的接入配方，也不声称外部客户端路径自动安全。[经验]
+
+局限：这里只读核查许可证、版本声明、安装契约、权限配置和历史采用反例；没有实测安装、真实客户端权限弹窗、当前引擎兼容或打包结果，不能据此升级为 L4。[研究]
+
+
+### 11.5 读者入口不能省掉观测与隔离前提
+
+2026-10-15（UTC+8）复核：Unity 官方插件固定 [`cf6b2da`](https://github.com/Unity-Technologies/unity-agent-plugin/blob/cf6b2da24e424b0a60d560a57f39f676cb6f79f3/skills/unity-cli/references/integration-advanced.md#status) 的 status 契约明确，Play 模式帧字段只有已安装 `com.unity.pipeline` 上报时才存在。因此“装了 CLI”不等于有 `frameCount`／`playerLoopTicking`，缺字段不能诊断停帧。入口、工具链、工程指南与提示模板统一为先用可得的帧／时间进度，否则记录未验证，不要求为取得字段自动升级或安装。帧推进仍不证明玩法断言或玩家体验成立。**[一手：固定文档；研究：选择与范围]**
+
+Unreal 的[官方 MCP 契约](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)允许运行时托管，但须 `AddTool` 显式注册，服务器没有认证，不应暴露本机之外。打包版只有缺必要观察／动作入口时才评估开发或测试版窄工具，不将其写成所有项目的验证前置；注册成功也不证明真实输入与体验。编辑器内容试错不能替代版本控制历史与恢复点。**[一手；研究：采用边界]**
+
+仅公开文档及跨页一致性核查，未安装、运行引擎、测试帧字段或验证网络安全。

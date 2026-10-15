@@ -1,8 +1,8 @@
 # Codex：慢、停止与上下文续接的证据核对
 
-> 核实时间：2026-10-10；2026-10-14 补 §6 原生历史恢复。范围：官方开源实现与公开使用记录；没有重跑模型对照，没有核实用户私人日志。本页保存证据，实际建议并入 [Codex](../01-agents/codex.md)、[上下文](../03-context-engineering.md) 与 [长任务](../20-codex-long-horizon.md)。
+> 核实时间：2026-10-10；2026-10-14 补 §6 原生历史恢复；2026-10-15（UTC+8）补 §7 导入与同步边界、§8 客户端入口与资格、§9 模型选择与历史断言边界。范围：官方开源实现与公开使用记录；没有重跑模型对照，没有核实用户私人日志。本页保存证据，实际建议并入 [Codex](../01-agents/codex.md)、[上下文](../03-context-engineering.md) 与 [长任务](../20-codex-long-horizon.md)。
 
-当前结论：先区分首输出慢、工具等待、权限阻塞和回合停工；明确 runtime reset 后先核对外部结果，历史读取故障优先核原生修复与实际版本，不默认清库或加续接循环。[研究]
+当前结论：模型定位不是实测排名，Ultra 不是多 Agent 的唯一入口；历史窗口与单价倍率不当作当前统一任务预算；先按任务核客户端入口、套餐与开通资格，不由源码模块或“包含 Codex”推定能力齐全；导入按客户端与项目范围选择，重复导入不当作覆盖同步，关闭更新不当撤销；先区分首输出慢、工具等待、权限阻塞和回合停工；明确 runtime reset 后先核对外部结果，历史读取故障优先核原生修复与实际版本，不默认清库或加续接循环。[研究]
 证据：官方固定控制流／恢复补丁与测试定义、社区失败及同一历史样本升级恢复报告；未运行客户端或模型。[一手／社区]
 关键边界：回合完成、修复合并与发布部署不是同一事实；历史可见性恢复也不证明模型已正确续接目标。[研究：证据边界]
 
@@ -99,3 +99,96 @@
 保留原数据后，核对受影响后端实际版本并采用含修复的受支持版本；用正常恢复入口检查原来缺失的轮次。若仍失败，保存现象与版本并继续定位，不把清空内部存储当通用重试。对于运行中的后端，磁盘包已升级也不能代替实际进程版本核对。**[经验：由版本与恢复证据推导的建议]**
 
 AI 归属仅到公开调查过程：原帖明确以 Claude 代理身份报告并称用户已审阅；这不证明缺陷或上游补丁由 AI 生成。这里补上的是实际接收修订后的恢复结果，未测接管人的主动工时，也不是职业维护者完成第二次代码修改的证据。原始记录真的删除、其他解码／界面故障、恢复后的模型是否正确理解任务，均不在此次结果内。全程只读公开 issue、PR、固定源码与发布内容；未读取私人日志、运行 Codex、安装修复工具或执行上游 Rust 测试。**[研究：归属与验证范围]**
+
+
+## 7. 导入入口、配置合并与自动更新
+
+主线：三，兼二。改变 Codex §3 的无差别导入／同步建议；§4 的“低迁移成本”仅同步 00／03／05／11 已有结论，不算新证据。**[研究]**
+新证据：2026-10-15（UTC+8；10-14 UTC 读取）当前官方 Import 契约、发行 0.162.1 的实际选择器和合并实现，以及两个公开导入后问题报告。**[一手／社区]**
+采用判断：先选导入对象与客户端，核目标配置再继续工作；自动更新、完整历史备份和可撤销迁移是不同要求。**[经验]**
+
+### 当前契约与已发行实现分别证明什么
+
+[Import 官方页面](https://learn.chatgpt.com/docs/import)区分 Desktop 与 CLI：Cowork 和自动更新属于桌面入口；CLI 接收 Claude Code／Cursor，`/import` 不能用于运行中任务、远程会话或已连接本地 app-server daemon 的会话，近期聊天限近 30 天最多 50 个。页面将已有项目文件夹的目标明确列为使用同一文件夹的项目。**[一手：当前文档]**
+
+这些条件会改变实际选择：不要为了迁 Cowork 而找 CLI 命令，也不要用近期聊天导入代替完整历史备份；原项目目录导入不是隔离副本。官方保证的是原 Agent setup 不被导入修改／删除，不是后续编码对原项目无副作用。**[研究：契约推导]**
+
+固定版本为 [0.162.1](https://github.com/openai/codex/releases/tag/rust-v0.162.1)（2026-10-09），annotated tag `7a078f6bb4ce0dc2a81408b334ce52979d92c603` 解析到提交 `092d3acd6bec3e3a14bdc7e7a2810ab628ab759d`；以下不是拿 main 模块存在推定已发布，更不代指 Desktop 捆绑版本。**[一手：tag 元数据]**
+
+| 固定来源 | 已读行为 | 选择影响 |
+|---|---|---|
+| [TUI source](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/tui/src/external_agent_config_migration/source.rs#L25-L47)、[flow](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/tui/src/external_agent_config_migration/flow.rs#L255-L325) | 实际来源枚举与检测循环包含 Claude Code、Cursor；[slash 帮助](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/tui/src/slash_command.rs#L115)却仍只写 Claude Code | 单条帮助文案也可能落后；核实际选择器，不反过来否认 Cursor 支持 **[一手：源码]** |
+| [model 默认限额](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/external-agent-migration/src/model.rs#L5-L23)与上述 flow | 默认 30 天／50 个；TUI detect 对年龄和数量传 `None`，使用默认值 | 仅证明这条入口的默认值，不推广为所有服务 API 的硬上限 **[一手：源码]** |
+| [service 设置／MCP 写入](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/external-agent-migration/src/service.rs#L570-L642)、[config_values](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/external-agent-migration/src/config_values.rs#L8-L75) | 设置递归补缺键，已有非表值保留；MCP 按 server 名补入，已有同名项整体保留 | 重导不能保证新的源端值进入目标；核对 Codex 实际值，而非导入成功提示 **[一手：源码；经验：建议]** |
+
+不从上述合并函数推断桌面后台自动更新的冲突、删除传播或双向同步语义；当前文档没有在所读页面给出这些保证。需要这些性质才采用的项目，应先验证所需行为，不默认依赖。原有 Hook／插件迁移契约沿用 05／06，本轮不再研究其全部适配。**[研究：范围]**
+
+### 真实反例与不能推出的结论
+
+- [#39923](https://github.com/openai/codex/issues/39923)：2026-08-21 的 Windows 使用者报告导入后不稳定，关闭自动同步并禁用导入 Skills 后，UI 删除仍报错；重装后登录也未解决。版本自报 `151.0.7922.170`。截至本轮 open、无评论，没有维护者根因或修复验证；只支持“不承诺关闭同步／重装就完整撤销”，不能证明导入必然导致崩溃或当前版本仍必现。**[社区：首帖自述，未复现]**
+- [#53175](https://github.com/openai/codex/issues/53175)：2026-10-11 的 macOS 使用者报告 `26.1007.21159` 把源端工具生成的 transcript 也导入聊天，期望路径排除；主问题是外部归档／删除后的 sidebar 残留。两种现象不合并为同一根因，也不据单帖认定所有版本无过滤能力。本页不复制其内部数据库修复方法。**[社区：首帖，未复现／未审全部讨论]**
+
+因此先按最小所需范围导入，检查聊天和配置，再决定是否开启持续更新；已有状态的去留通过受支持管理入口处理，不把停止同步当回滚。未运行 Codex、Desktop、Rust 测试或迁移夹具；未访问私人文件、安装或调用模型；没有证明迁移净工时或同步可靠性。**[经验：建议；研究：验证边界]**
+
+
+## 8. 客户端入口、资格与安全评审边界
+
+主线：二。改变 Codex §1 的入口选择和 §3.5 的无条件能力理解，不重做 §6 工作法。**[研究]**
+改变的建议：先按实际执行位置和能力选入口，再查套餐、rollout 与工作区资格；普通评审、PR Security Review 和 Cloud 仓库扫描分开选择。**[经验]**
+新证据：2026-10-15（UTC）直接读取当前官方各入口文档及 Markdown 正文；它们是当日公开契约，不是固定发行客户端实测。**[一手]**
+
+### 入口与套餐不能只按产品名判断
+
+| 直接来源 | 核到的边界 | 对采用的影响 |
+|---|---|---|
+| [Pricing](https://learn.chatgpt.com/docs/pricing) | Free／Go 列桌面 App 的 Luna Standard，注明 rollout；Plus 明列 web／CLI／IDE／iOS 和云端代码评审、Slack 集成 | “各档都含 Codex，额度不同”漏掉入口和模型差异；选择前核对应入口 **[一手；经验]** |
+| [GitLab beta](https://learn.chatgpt.com/docs/third-party/gitlab) | 专页明确支持所有 ChatGPT plans，在 Codex cloud 执行；桌面 GitHub 风格的 Create pull request 控件不在该 beta 内 | 不反向把 Pricing 的简表当作所有 Free／Go 集成均不可用的证明 **[一手；研究]** |
+| [Browser](https://learn.chatgpt.com/docs/browser) | 内置 Browser 在 web／desktop 提供，CLI／IDE 不提供；桌面内置浏览器 profile 与普通浏览器分离 | 页面交互选相应入口；需要已有普通浏览器会话时另查浏览器扩展，不能假定自动继承登录 **[一手；经验]** |
+| [Computer Use](https://learn.chatgpt.com/docs/computer-use)、[Linux App](https://learn.chatgpt.com/docs/linux/linux-app) | 桌面 Computer Use 列 macOS／Windows、受支持地区和插件设置；macOS 需 Screen Recording／Accessibility，Windows 需目标处于活动桌面；Linux App 仍为 preview | 可安装 Linux App 不证明可操作本机 GUI；按任务所需系统、插件及权限核对 **[一手；经验]** |
+| [Codex environments](https://learn.chatgpt.com/docs/environments/modes)、[Cloud](https://learn.chatgpt.com/docs/cloud) | Cloud 使用已发布环境，每任务独立文件；本机文件、进程、浏览器登录和 VPN 不自动迁入 | 本机依赖不能只靠切 Cloud 继续；任务改动也不自动成为下次环境起点 **[一手；经验]** |
+| [Get started with Work](https://learn.chatgpt.com/docs/get-started-with-work) | Work 可跨 desktop／web／mobile 继续符合条件的任务；依赖本机资源的步骤仍需连接电脑，旧任务不会因启用同步自动变成新模式 | Work 不是桌面 App 的别名，也不是 Codex Cloud 环境的同义词 **[一手；研究]** |
+
+### 三种安全检查的入口和费用
+
+[GitHub Code Review](https://learn.chatgpt.com/docs/third-party/github)的普通评审可发现安全相关问题；专门的 [Security Review](https://learn.chatgpt.com/docs/security/security-review)更深入检查 PR diff、仓库上下文和威胁模型，处于研究预览。当前专页列 Pro／Business／Edu／Enterprise，明确不含 Plus；配置要求已连接 GitHub 的 Codex cloud，以及相应仓库权限。已有 Security scan 是可选条件，不能写成必须先买／跑一次全仓扫描。该 PR 流程消耗所含 Codex 用量或 ChatGPT credits。**[一手：当前官方正文]**
+
+[Security Cloud setup](https://learn.chatgpt.com/docs/security/setup)则是单独插件，在 Cloud 扫描连接的 GitHub 仓库或持续监控提交；本机仓库扫描使用另一个 Codex Security 插件。[Cloud access and prerequisites](https://learn.chatgpt.com/docs/security#codex-security-cloud-access-and-prerequisites)另明确要求工作区具有 Codex Security Cloud access、已连接的 GitHub 仓库和兼容 Codex cloud 环境；连接与环境可在设置扫描时建立，缺访问资格则找工作区管理员。PR Security Review 的套餐清单不能证明 Cloud 仓库扫描已开通，支付能力也不替代该准入门槛。当前 [Cloud FAQ 的 Billing](https://learn.chatgpt.com/docs/security/faq#billing)写明：2026-10-01 12:53 PM Pacific 后设置的仓库和连续扫描按套餐 token rates 计费，依账单计划使用 credits 或 USD，不在套餐 included usage allowance 中；符合条件的免费扫描 credits 先抵扣。早于该时点设置的连续扫描免费到 2026-10-21，此后需启用付费用量才继续，否则暂停。因此“Codex 额度可用”不能单独回答是否应启动 Cloud 扫描，也不能把 PR Security Review 的用量规则套给它。**[一手；研究：选择影响]**
+
+### 常驻能力和源码模块的证据限度
+
+[Dots access](https://learn.chatgpt.com/docs/dots#access)当前列 Pro 100／200／500（18 岁以上，EEA／英国／瑞士之外）、Business Premium 和 Enterprise；Enterprise 默认关闭，需管理员启用，所有符合条件账户仍受渐进 rollout 影响。正文仅保留资格链接，避免把“各档含 Codex”扩展为常驻 dot 可用。**[一手；经验]**
+
+源码目录和 feature 名称本来就仅能证明实现存在，不证明各客户端公开提供相同入口；本页原“源码里能看到的模块”标题已作此区分，不将其追认成事实错误。反向也不能因存在 feature flag 而否认已文档化的能力：[Long-running work](https://learn.chatgpt.com/docs/long-running-work)明确给出 App／CLI／IDE 的 `/goal`；[Memories](https://learn.chatgpt.com/docs/customization/memories)说明本地 Codex 记忆默认关闭、需启用，且与 Work 的 ChatGPT memory 控制不同。这里只核公开边界，不推断实际同步或各构建部署。**[一手；研究：反证与范围]**
+
+未运行任何客户端、扫描、插件或模型；未测试真实套餐账户、地区或管理员开通状态。没有用源码版本推定托管服务上线，亦未重核模型成本、导入、权限及子 Agent 单元的全部实现。当前文档若变动或账户 rollout 与文档不同，入口和费用判断须按当时设置重新核对。**[研究：验证边界]**
+
+
+## 9. 模型选择、成本口径与历史断言的适用范围
+
+主线：额外能力何时值得加；改变的建议：不为并行强制选择 Ultra，不用历史窗口或统一价格倍率作当前模型选择；新证据：2026-10-15（UTC+8）官方 Models／Subagents／Pricing 原文、0.144 变更前后与 0.162.1 固定模型目录。**[一手；研究]**
+
+### 模型定位和 effort：候选依据，不是收益证明
+
+[Models](https://learn.chatgpt.com/docs/models)当前以 6.1 Sol 作为复杂工作候选、Luna 用于聚焦可重复任务、Astra 用于最困难工作；[Model selection](https://learn.chatgpt.com/docs/model-selection)明确建议同任务比较，并把页面建议作为起点。因此撤下旧表对 6 Sol Medium 的无条件定位及首发社区总体评价，不把官方建议改写为本仓跨模型胜率。当前文档也提醒不同代际 effort 不精确对应。**[一手；研究]**
+
+[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)分入口说明：Work web 的 Ultra 使用最大推理并允许主动委派，其他 intelligence levels 可直接请求子 Agent；App／CLI／IDE 的当前本地版本由直接请求或适用项目／Skill 指令触发。Models 另区分 Max 的单任务深推理与 Ultra 的并行任务分解；Luna 支持到 Max、不支持 Ultra。原“Ultra 不再是单 Agent”并非凭空捏造，但省略其他 effort 的并行入口会误导选择，应补边界，不宣称 Ultra 保证加速或适合所有任务。**[一手；研究]**
+
+Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时间 10 月 15 日 03:00），仅针对 ChatGPT 登录的 Codex；API-key Codex 也不受影响。“所有写死配置都要改”应限受该退役影响的登录方式。**[一手]**
+
+### 价格和上下文：保留口径，撤回统一外推
+
+[Pricing 的 token rates](https://learn.chatgpt.com/docs/pricing#token-rates)列 Standard 每百万 token 的 credits：Astra 输入／缓存输入／输出为 250／25／1250，6.1 Sol 为 50／2.5／250。因此非缓存输入和输出是五分之一，缓存输入是十分之一；该页明确单价不决定订阅内含用量、API 定价独立。[Speed](https://learn.chatgpt.com/docs/agent-configuration/speed)还区分订阅内含用量与付费 credits 的速度档倍率。正文保留较低成本定位，不能保证同任务总费用降至五分之一。**[一手；研究]**
+
+[PR #33972](https://github.com/openai/codex/pull/33972)是 2026-07-18 对 0.144 发布线的 bundled 元数据回移。比较 [base 215fb464](https://github.com/openai/codex/blob/215fb464f1932b5fd7beb5d4615bc1927d80fbf7/codex-rs/models-manager/models.json)与 [head b06f4fa9](https://github.com/openai/codex/blob/b06f4fa9f5602daee76468a957aa78ac173d7333/codex-rs/models-manager/models.json)：5.6 Sol／Terra／Luna 的 context_window 从 372000 改为 272000，5.5 等此前已是 272000，并非全部模型统一缩窗。**[一手：固定源码]**
+
+0.162.1 标签解析到 [092d3acd6bec3e3a14bdc7e7a2810ab628ab759d](https://github.com/openai/codex/tree/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d)，其 [models.json](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/models-manager/models.json)中 Astra／6.1 Sol／6 Sol／6 Luna 为 272000，Daybreak Red 为 372000。[manager.rs](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/models-manager/src/manager.rs)另有远程目录刷新及缓存策略，因此 bundled 数值不证明每个在线会话的有效窗口，更不能替代 API 规格或自动压缩阈值。**[一手；研究]**
+
+### 短板断言与交叉评审入口
+
+[#11626](https://github.com/openai/codex/issues/11626)截至读取仍开放，其首帖具体请求 CLI 同时回退会话和文件，并描述 Esc 回退仅影响历史；本轮读取首帖与末 8 条评论，后段有第三方实现自述及 10 月 10 日文件恢复诉求，未审完全部 48 条评论。它不是全客户端不存在回滚的证明。[#9203](https://github.com/openai/codex/issues/9203)同样仍开放；保留下文探索前做检查点的建议，撤回顶部无客户端范围的弱体验断言。**[社区；研究]**
+
+旧“点赞第一、630赞、200美元 Pro 下调、10月3日后普遍缩水”没有在正文绑定可复核原帖与样本范围。本次读取 [#14593](https://github.com/openai/codex/issues/14593)是 2026-03-13 Business／VS Code／5.3及5.4 High 的个人耗量报告，与上述当期普遍判断不相同；GitHub 检索亦有 10 月个别用量投诉，未提供代表性分母或官方下调证明。故撤回旧普遍断言，改引用本记录已核的 [#51670](https://github.com/openai/codex/issues/51670)作为具体体验报告；没有认定下调从未发生。点赞数和排序不用于证明故障率或选型。**[社区；研究：证据不足的撤回]**
+
+[#28058](https://github.com/openai/codex/issues/28058)首帖创建于 2026-06-13，指向 6 月 5 日合并的 #26210，限定含该变更且开启 MultiAgentV2 的实现；报告对象是 spawn／send／follow-up 的任务／消息载荷及可读审计副本，不是所有子 Agent 的全部提示词。首帖另有 7 月 22 日状态更新，不能把这个日期写成加密起始日期，也未由其证明 10 月全部客户端仍有相同表现。撤下 HN 票数和笼统起始时间，保留按实际版本检查委派记录的选择。**[社区：首帖；研究：范围判断，未重核当前加密实现]**
+
+正文 §5 的无条件交叉评审与 [09](../09-review-and-quality.md)已有条件选择不一致，按该主专题同步：具体漏审风险值得成本时再试，而非每次互审。未新增模型运行、客户端测试或成本实验；本节只证明文档契约、固定源码字段和公开报告的范围。**[研究：同步与验证边界]**

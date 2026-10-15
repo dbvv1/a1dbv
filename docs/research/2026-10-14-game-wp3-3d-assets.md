@@ -1,6 +1,6 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
-改变的建议：[经验] 同风格现成／参数化资产优先；自定义刚体首试原生低模，场景和变形角色另判；复用 bpy／gltfpack 后仍验最终预算、身份与元数据
-新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加 CC0 门 GLB 二进制轨道复算与关节／整场景导出反例，未运行模型／引擎
+改变的建议：[经验] 同风格现成／参数化资产优先；自定义刚体首试原生低模，场景和变形角色另判；复用 bpy／gltfpack 前核目标导入器扩展支持，之后仍验最终预算、身份与元数据
+新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加 CC0 门 GLB 轨道复算、关节导出反例及重贴图 UV／对象身份调用链，未运行模型／引擎
 
 # WP3：3D资产路线、原生低模与第二次修改
 
@@ -298,3 +298,50 @@ for p in j["meshes"][1]["primitives"]:
 - 同版文档反而明确：整场景 USD exporter 不含 articulation；没有 `solve_state.json` 时，所述 IsaacSim 场景导入所有对象均为静态 collider。单资产模拟路径和整场景路径不可互换。[一手]
 
 这给出可复用机制，而非另一套需自建的框架：先把活动件与固定件及其连接定义放在结构源中，再附外观；如果只改外观，不重生运动结构。角色蒙皮不是这些刚体关节，不能拿该机制解决衣服变形。[经验] 没有运行 Infinigen、第三方依赖或任何引擎；Unity／Unreal 的实际导入适配仍待后续获准验证。[研究]
+
+
+## 12. 只换外观：重贴图不是结构无损编辑
+
+核实：2026-10-15（UTC+8）；商业端点采用前或 2026-11-15 复核，固定源码升级后重核。本节只解决二改时旧 UV、材质槽及分件引用是否可沿用，不比较生成美观度。[研究]
+
+**改变的选择：** 已有合格网格且只需改色／粗糙度，优先原材质参数；需要生成新纹理时才进入重贴图，并核它是否改变 UV 或对象结构。UV 像素 mask、材质替换索引和交互节点是不同契约，不能用一个“保 UV”开关全部放行。[经验]
+
+### 12.1 三种证据不能互相替代
+
+|来源|已核契约／机制|对第二次修改的影响|
+|---|---|---|
+|Meshy [Retexture API](https://docs.meshy.ai/en/api/retexture)，本次直接正文|`enable_original_uv=false` 为默认；已有有效 UV 应显式 true。该字段说明只承诺 UV 布局，不包含节点、材质槽、skin 保留承诺|🧪 可选保 UV 重贴图，仍比较实际文件与旧引用；不能省略参数后假设只改像素|
+|Tripo [Texture API](https://developers.tripo3d.ai/en/docs/models-texture)，不同服务作者|支持已有 task／上传模型、按 `part_names` 选此前分割的部件；本页未列同等保原 UV 开关或节点／材质身份保留契约|👀 有按部件处理入口，但不能据此断言未选部件的 UV／材质索引不变；也不能反过来说服务必然破坏它们|
+|Hunyuan3D-2.1 `82920d64`，下节固定源码|关闭 remesh 仍进入 UV 重建；几何数组进入渲染器，再经单对象／单材质 OBJ 转 GLB|⛔ 不将此原样当已有分件／换装资产的保结构重贴图器；这不否定独立静态候选的首次贴图用途|
+
+Meshy 端点当前 `latest` 标 Meshy 7，不能借几何生成页的 7.1 推断重贴图模型也为 7.1；Tripo 纹理版本选择仍沿 §10 已核规则。[一手／研究] Meshy 既有 [cookbook 固定记录](https://github.com/meshy-dev/meshy-cookbook/blob/73bb39e185076a7e0a696add61277221c9ff8feb/examples/06-text-to-restyled-prop/sample-result.json)称无旧 UV 的灰模在开关 true／false 下得到相同统计，但不公开 GLB，不能据此验证“有效旧 UV 被保留”。本次不将旧作者记录算新样本。[一手／研究]
+
+### 12.2 Hunyuan：追到导出消费者，不只读函数名
+
+固定版本 `82920d643c0dc2f7bfd7255f45f62d386edfe60c`，下列文件均直接读取；没有 import 或执行上游代码。[一手]
+
+1. [textureGenPipeline.py L93–120](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/blob/82920d643c0dc2f7bfd7255f45f62d386edfe60c/hy3dpaint/textureGenPipeline.py#L93-L120)：`use_remesh=True` 为默认；false 只让输入路径跳过 remesh，随后仍无条件调用 `mesh_uv_wrap(mesh)`。
+2. [uvwrap_utils.py L20–32](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/blob/82920d643c0dc2f7bfd7255f45f62d386edfe60c/hy3dpaint/utils/uvwrap_utils.py#L20-L32)：Scene 输入先 `dump(concatenate=True)`，再 `xatlas.parametrize(vertices, faces)`，用返回的映射／索引／UV 覆写网格。这里是贴图前重建，不是纹理采样本身改了拓扑；也不把每次顶点数必增当保证。
+3. [MeshRender.py L604–663](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/blob/82920d643c0dc2f7bfd7255f45f62d386edfe60c/hy3dpaint/DifferentiableRenderer/MeshRender.py#L604-L663)与 [mesh_utils.py L41–58、97–131](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/blob/82920d643c0dc2f7bfd7255f45f62d386edfe60c/hy3dpaint/DifferentiableRenderer/mesh_utils.py#L41-L131)：消费者取位置、面与 UV 数组；保存器写一个以输出文件命名的 `o` 和一个 `usemtl Material`。原节点层次／多材质分配没有沿这条接口传入保存器，不能期待原样保留。
+4. [pipeline L186–189](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/blob/82920d643c0dc2f7bfd7255f45f62d386edfe60c/hy3dpaint/textureGenPipeline.py#L186-L189)调用保存后才转 GLB；[转换器 L260–285](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/blob/82920d643c0dc2f7bfd7255f45f62d386edfe60c/hy3dpaint/DifferentiableRenderer/mesh_utils.py#L260-L285)读取这个 OBJ 再导出，不能恢复上游未传递的原对象身份。渲染器保存时用 `get_mesh(normalize=False)`，因此不凭内部归一化另指控最终尺度必丢失。
+
+许可与采用分别判：沿 [WP1／本记录 §7、§10](2026-10-14-game-wp1-licensing.md)已有地域及输出限制，不把公开代码改写为免费全球商用路径；商用候选准入、文件结构与视觉质量是三道独立问题。[研究]
+
+### 12.3 保留还是接受重建成本
+
+- 旧 UV mask 必须复用：保存源文件，显式请求保 UV；输出要核每个 primitive 的 UV 与几何对应，不能只比顶点数或整文件 hash。合法的重排也会改 hash，统计相同也可能换 UV。[经验]
+- 旧材质槽／交互部件／skin 必须复用：另核材质分配、对象局部变换和所需绑定，不能以“保 UV”代替；不满足就保留原资产、改其材质参数，或改用满足结构契约的既有资源。[经验]
+- 接受新 UV 的独立静态候选：把重新烘焙、旧 mask 迁移和引用适配算进成本；不把程序员手绘修补变成默认补救。[经验]
+
+[研究：范围] 新增证据为两家服务的公开契约及另一作者四个固定源文件的调用链；未调用服务、下载权重、运行生成器／Blender／引擎，未取得成对重贴图前后产物。本节不声称任何服务实际保留通过或质量胜出，也不改变原有许可准入和模型首试排序。
+
+
+### 输出兼容：先核消费者再压缩
+
+2026-10-15（UTC+8）全文就绪审阅发现，既有 §9.1 的“压缩扩展需目标导入器支持”未进入正文。此次同步该采用门槛，不重新执行模型、优化器或引擎。
+
+- [固定 gltfpack README](https://github.com/zeux/meshoptimizer/blob/b2330430776a95a1545f03fc7bf16927f8cadc59/gltf/README.md)说明默认量化及可选压缩／纹理／实例路径引入不同扩展。几何预算、节点名称或 extras 保留通过，不能推出目标消费者支持全部必需扩展。[一手]
+- [Unity 官方 glTFast 功能页](https://github.com/Unity-Technologies/com.unity.cloud.gltfast/blob/main/Packages/com.unity.cloud.gltfast/Documentation~/features.md)把 meshopt 解压列为附加包能力。这里只说明先核已具备的解码支持，不代读者安装依赖，也不承诺任一旧版本具备支持。[一手／研究]
+- [Epic glTF 支持文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/gltf-file-format-support-in-unreal-engine)说明不支持必需扩展时不能加载；其中导出扩展表不能反推导入支持。未取得具体项目导入器能力时，保持原文件并关闭未确认的优化或采用已有支持的路径，不新造未经验证的跨引擎兼容矩阵。[一手／研究]
+
+建议只约束采用前提：这不是各引擎当前完整支持清单，也不是实际加载测试；最终文件仍须经过目标项目的导入和二改验收。
