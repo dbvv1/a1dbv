@@ -87,7 +87,7 @@ Will Larson 在 Imprint 的推进顺序可以参考 **[社区：原文]**：
 | **按项目和人归属** | 不同项目用不同的 API Key 或工作区；Claude Code 支持 OpenTelemetry 指标和事件；Anthropic 的 Admin API 可以管理成员、工作区、API Key 和速率限制，用量和成本报告目前需要直接调 HTTP 接口 **[一手]** |
 | **预算与停用边界** | 云服务配置适用的 spend limit / spend cap，并确认超限后的停用行为；托管 Agent 按会话设美元上限；Ralph 循环设最大迭代次数 |
 | **按任务算成本** | 衡量“完成一个任务花多少”，而不是单次请求的价格 |
-| **便宜的先做** | 先做免费的优化（缓存命中、精简指令文件和 MCP、杂活交给便宜模型），再考虑降低模型档位（见 [02](02-models-and-cost.md)、[17 第 2.9 节](17-troubleshooting.md#29-成本暴涨)） |
+| **先定位负担** | 检查缓存、无用指令与工具；任务明确、结果可检查时，再评估轻量模型分流。新增 worker 调用不是免费优化，是否保留看全任务质量、等待与总成本（见 [02](02-models-and-cost.md#3-订阅额度与成本控制)、[17 第 2.9 节](17-troubleshooting.md#29-成本暴涨)） |
 
 **订阅赠额按运行入口核算（2026-10-15，UTC+8 核对）**：[官方资格说明](https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-and-team-plans)保留 Max 5x／20x 每月 100／200 美元、Team 按席位共享最多 500 美元；需合资格订阅满七天并关联单个 Console 组织。自行用该组织 API key 运行的 `claude -p`／Agent SDK 可覆盖，交互 Code、GitHub Action、IDE／桌面发起的 Code 运行及第三方云不覆盖。**局限：赠额不结转，也不是账单上限；耗尽后仍可能消耗已购余额、自动充值或按发票计费。** [研究记录](research/2026-10-13-cloud-spend-boundaries.md#补充地区策略交付与订阅赠额)保存具体条件与反证。**[一手；研究：采用判断]**
 

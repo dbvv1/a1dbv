@@ -155,7 +155,7 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 | **线性走读**：让 Agent 给（vibe 出来的）代码写一份逐段讲解 | 同上 | 🧪 |
 | **术语对齐**：评审前让 Agent 列出它自创的术语，你改名后它统一替换；维护 GLOSSARY.md | Lobsters《Reducing the cognitive load of AI changes》 | 🧪 |
 | **/handoff** 交接文档，替代 `/compact`，还能跨厂商续接 | HN 评论（模板已提供 `handoff`） | ✅ |
-| 把 I/O 密集的杂活（读文件、照模式写测试、更新文档）交给便宜模型 | Spotify Portal（自称省 90% token；HN 对弱模型持保留态度） | 👀 |
+| 问题明确、结果可检查的大量读取或模式化生成，可评估轻量模型分流；调试不因读写量大而降档，见 [02](02-models-and-cost.md#3-订阅额度与成本控制) | [Spotify 原报告](https://engineering.atspotify.com/2026/9/portal-by-spotify-cut-my-claude-code-token-usage-by-90)：约 90% 为主模型侧读取上下文节省自报，作者亦报告漏掉线程安全缺陷；不代表总成本或质量等价 **[一手：作者报告]** | 👀 |
 | PR 要附**证据**（手工测试记录、截图），别把没审过的代码丢给同事 | Simon Willison 的反模式章节 | ✅ |
 
 ## 4. 争议与反思
