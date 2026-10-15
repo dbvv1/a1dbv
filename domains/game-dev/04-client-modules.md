@@ -1,6 +1,6 @@
 # 客户端核心模块：让操作有回应，让体验连续
 
-> 核实：2026-10-14 UTC；空间容错及保存响应补核：2026-10-15 UTC；动态 UI 与模拟输入补核：2026-10-16 UTC+8。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
+> 编辑更新：2026-10-16（UTC+8）。面向单人程序、无人工美术与音频修补，按体验缺口选择客户端模块；Unity 主线、Unreal 对照。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)，来源与核查范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#客户端模块页历史页头)。
 
 ## 30 秒结论：先把核心动作做舒服
 

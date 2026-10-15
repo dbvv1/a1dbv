@@ -1,6 +1,6 @@
 # IDE 类工具与其他
 
-> 核实时间：CodeBuddy客户端／权限范围、国内工具订阅边界与Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
+> 编辑更新：2026-10-16（UTC+8）。按必要能力、接入条件与费用选择 IDE 入口；来源分级与核查日期见[研究记录](../research/2026-10-12-community-source-records.md#ide-页历史页头)。
 
 ## Cursor
 
