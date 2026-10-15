@@ -9,7 +9,7 @@
 | [OpenCode](https://github.com/anomalyco/opencode)（原 sst/opencode） | TUI + 桌面 App（Beta） | 模型无关；内置 `build`（全权限）和 `plan`（规划，权限边界见下）两个 Agent，Tab 切换；`@general` 子 Agent；安装渠道多 | 2026-10 | 🧪 试用 |
 | [Cline](https://github.com/cline/cline) | VS Code / JetBrains / CLI / 桌面 App | IDE 可按工具类别配置审批；CLI 支持无头模式，但审批默认值须单独核对，见下；桌面版能定时运行 | 2026-10 | 🧪 试用 |
 | [Kilo Code](https://github.com/Kilo-Org/kilocode) | VS Code / JetBrains / CLI | 开源，多种安装方式 | 2026-10 | 👀 评估 |
-| [Goose](https://github.com/aaif-goose/goose) | 桌面 / CLI / API（Rust） | 通用 Agent（不限于编码）；15+ 服务商；可通过 ACP 使用 Claude/ChatGPT/Gemini 订阅；**已加入 Linux 基金会旗下 AAIF** | 2026-10 | 🧪 试用 |
+| [Goose](https://github.com/aaif-goose/goose) | 桌面 / CLI / API（Rust） | 通用 Agent；Claude／Codex ACP 先核适配器、认证及资格；Gemini 旧订阅入口已弃用，改核 API key／Vertex AI（[接入条件](../research/2026-10-12-community-source-records.md#goose订阅接入先核适配器身份与资格)）**[一手；研究]**；已加入 AAIF | 2026-10 | 🧪 试用 |
 | [Qwen Code](https://github.com/QwenLM/qwen-code) | 终端 / IDE / 桌面 / Web / 聊天软件 | 自带 auto memory、auto skills、子 Agent、Agent Teams；支持 OpenAI / Anthropic / Gemini / Qwen 协议，可接本地模型；集成钉钉、飞书、微信 | 2026-10 | 🧪 试用（国内团队友好） |
 | [GitHub Copilot CLI](https://github.com/github/copilot-cli) | 终端 | 默认带 GitHub MCP；与 Issue / PR 深度集成；需要 Copilot 订阅 | 2026-10 | 🧪 试用（重度 GitHub 用户） |
 | [Pi](https://pi.dev)（Earendil Works） | 终端 / SDK / RPC | 默认启用 4 个工具，可扩展 MCP／codemode；不内置子 Agent/plan mode；按进程权限运行，工具少不证明净成本低 | 2026-10-15 读取固定 main | 🧪 适合愿意定制并维护隔离的人；见 [固定来源与边界](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界) |
