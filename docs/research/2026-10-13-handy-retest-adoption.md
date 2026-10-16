@@ -1,6 +1,6 @@
 主线：一，兼四
-改变的建议：18：实际局部受益与主线采用分开；接收方重建须覆盖下游包装及真实验收入口
-新证据：暂停媒体的独立运行与Windows未闭环；10-16补Nix/Darwin原接收者补丁失配→刷新→成功回执，以及后续重建和验收报告纠正；无主动工时
+改变的建议：18：局部受益不等于可替换旧功能；保旧平台／设置并核新增权限，接收重建覆盖下游包装
+新证据：暂停媒体独立使用、Nix/Darwin修订回执；10-16补两份降音量固定实现的旧平台／设置差异与权限回退；无主动工时
 
 # Handy：用户已经用起来，产品选择仍未定
 
@@ -9,7 +9,7 @@
 
 ## 采用判断
 
-🧪 **适用于已有用户收益但交互方案仍有分歧的功能：限定试用场景，再决定主线行为与支持责任。** 这个案例补上“非作者实际使用修改版”的证据，支持保留暂停媒体方案的试用价值；它不支持直接合并或跨平台默认开启。暂停适合可续播的歌曲/播客，直播/通话则需考虑衰减等替代路径。后者来自参与者提出的场景区分，本次未审计 ducking 方案 [#1503](https://github.com/cjpais/Handy/pull/1503) 的实现。**[社区：使用者反馈；经验：采用判断]**
+🧪 **适用于已有用户收益但交互方案仍有分歧的功能：限定试用场景，再决定主线行为与支持责任。** 这个案例补上“非作者实际使用修改版”的证据，支持保留暂停媒体方案的试用价值；它不支持直接合并或跨平台默认开启。暂停适合可续播的歌曲/播客，直播/通话则需考虑衰减等替代路径。后者来自参与者提出的场景区分；10-16的[固定实现补核](#体验升级局部补充还是替换旧功能)只确认替换范围与准入成本，不证明 ducking 更可靠。**[社区：使用者反馈；经验：采用判断]**
 
 原用户 apotenza92 在 macOS 26.3、M1 Pro、Handy 0.7.10 上报告 USB 音频接口继续出声，日志却记作已静音，于是把需求改成录音时暂停媒体、结束后恢复，并提交实现。这属于成熟产品的实际使用暴露限制后演化交互方案，不是从零产品验证。[原需求 #998](https://github.com/cjpais/Handy/issues/998) · [PR #1028](https://github.com/cjpais/Handy/pull/1028)。**[社区：原用户／作者自述]**
 
@@ -41,6 +41,20 @@
 
 若维护者明确选定交互并给出已合并结果，应更新“采用未定”；若固定新版本有多音源、权限缺失或媒体目标切换的实际复测，可缩小当前可靠性缺口；若用户持续使用反馈表明暂停破坏主要场景，应撤回该场景的试用建议。现有证据足以记录局部用户价值，不足以宣称普遍可靠或量化收益。**[经验：复核条件]**
 
+
+## 体验升级：局部补充还是替换旧功能
+
+核实：2026-10-16（UTC+8）。**采用判断：体验升级要分别回答新场景有没有价值、旧能力有没有保住；未覆盖旧平台和设置迁移时，先保留旧路径、限制新增功能范围。** 以下与暂停 PR 是同一需求族的不同实现，不是同条件效果比较。**[研究：采用判断]**
+
+**完整替换的反例。** [#1414](https://github.com/cjpais/Handy/pull/1414)固定 `d520b1d47417178ee50a5ae4edf0b2fe2883d81f` 的 [audio.rs](https://github.com/cjpais/Handy/blob/d520b1d47417178ee50a5ae4edf0b2fe2883d81f/src-tauri/src/managers/audio.rs)把原静音改成音量比例／渐变；`get_output_volume` 在非 Windows 返回 `None`，`set_output_volume` 不执行，原 macOS／Linux 静音路径已删除。其 [settings.rs](https://github.com/cjpais/Handy/blob/d520b1d47417178ee50a5ae4edf0b2fe2883d81f/src-tauri/src/settings.rs#L402-L409)把 `mute_while_recording` 换成默认 false 的 `reduce_volume_while_recording`；同文件初始化与读取直接反序列化，未见旧键别名或迁移。因此只带旧键的设置不能沿此路径继承开启状态，即使在 Windows 也不能把 UI 重命名当兼容迁移。这是固定源码判断，未运行旧配置导入；PR 的 build／cargo check 测试计划不提供旧平台功能验收。当前 closed、未合并，未取得关闭原因，不推断维护者因上述问题关闭。**[一手：固定源码与元数据；研究：读取推论]**
+
+**局部补充保住的范围与新成本。** [#1503](https://github.com/cjpais/Handy/pull/1503)固定 `ec74527afb01f75eb4bdb7fc4c2f68b884ccbd38` 的 [settings.rs](https://github.com/newideas99/Handy/blob/ec74527afb01f75eb4bdb7fc4c2f68b884ccbd38/src-tauri/src/settings.rs#L402-L411)保留旧开关键，新增 `recording_duck_volume` 缺省为0；[audio.rs](https://github.com/newideas99/Handy/blob/ec74527afb01f75eb4bdb7fc4c2f68b884ccbd38/src-tauri/src/managers/audio.rs#L324-L409)仍保留 Windows／Linux 硬静音路径。不能因此称 macOS 默认行为完全未变：即使音量为0，也先尝试 Core Audio process tap；[启动接线](https://github.com/newideas99/Handy/blob/ec74527afb01f75eb4bdb7fc4c2f68b884ccbd38/src-tauri/src/commands/mod.rs)在旧静音开关开启时请求系统音频录制权限，并新增 [Swift 构建桥接](https://github.com/newideas99/Handy/blob/ec74527afb01f75eb4bdb7fc4c2f68b884ccbd38/src-tauri/build.rs)。保住旧设置不等于保住旧权限前提。**[一手：固定源码；研究：范围判断]**
+
+**回退存在，不代表拒绝权限后效果相同。** [tap 检查与回退](https://github.com/newideas99/Handy/blob/ec74527afb01f75eb4bdb7fc4c2f68b884ccbd38/src-tauri/src/managers/audio.rs#L107-L285)在不支持、启动失败或300ms未观察到信号时转 AppleScript；无信号也可能是没有播放，不能等同识别了权限拒绝。逐应用分支只在无法解析系统输出音量时进入，系统设置命令失败并非总会继续该分支；浏览器脚本缺对应权限时可静默跳过。恢复会尝试还原保存的值，但调用结果未逐一确认。读者需把新增权限、原生构建与目标设备回退作为选择条件，不因“有 fallback”就承诺可用；本记录不建议开启音频捕获或浏览器脚本权限。作者报告 macOS 26／Apple Silicon、Traktor USB接口及常规输出试用，Intel仅编译设计；未获得该方案的独立使用回执，目前 open、未合并。**[一手：固定源码；社区：作者测试自报]**
+
+**接收方的反证。** 较早的 [#547](https://github.com/cjpais/Handy/pull/547#issuecomment-3908954452)因维护者不愿承担静音退化风险而关闭，要求三平台验证后再考虑合并；这不能嫁接为 #1414 的关闭原因。[#1503维护者](https://github.com/cjpais/Handy/pull/1503#issuecomment-4687579676)另指出重复方案占用审查时间，需清楚说明差异；[作者补查后](https://github.com/cjpais/Handy/pull/1503#issuecomment-4686791007)提供竞品PR比较、暂停版真机自报，并表示可缩为仅补USB接口的tap层。这支持先证明新增职责、再决定完整替换，不证明缩小后已被接收。**[社区：维护者与作者原帖]**
+
+**归因与停止条件。** #1503明确披露 Claude Code参与大部分代码，作者定义行为、真机测试和审阅；#547作者承认AI辅助，#1414所读描述未交代AI身份。不得把平台缺口统一算作AI产出或比较模型能力。暂停对可续播媒体仍有前文非作者证据；没有同条件回退、目标切换和旧设置复测，不给暂停／ducking可靠性排名。当前到固定实现范围即止；只有修订版补回旧路径／迁移或出现独立接收回执才重开，未安装、构建或运行应用，不计算支持工时。**[社区：作者披露；研究：范围与复核条件]**
 
 ## 接收方重建：上游修复还要穿过下游包装
 

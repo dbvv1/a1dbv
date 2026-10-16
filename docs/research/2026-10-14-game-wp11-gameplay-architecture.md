@@ -1,6 +1,6 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
 改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按实际复杂度升级；先明确状态所有者、时钟、退出与输入边界，再调整预览、效果、导航和随机消费。相机、关卡、成长、教学与辅助围绕玩家决策及具体阻碍取舍；物品先定可互换性，任务分历史事实与当前条件；连通、动作完成或规则复用不等于体验、迁移或预测通过，不能用统一参数与扩内容替代诊断
-新证据：[一手／社区] 固定源码、官方契约、修复与评审链及开发者复盘支持正文各项机制与反例；物品含 OpenMW 拆堆修复与 Luanti 合并入口，任务含 Flare 存放规则修改与 Shattered Pixel Dungeon 局部消费链，版本和日期见各节。[研究] 含确定性算术反例；未运行引擎、游戏、模型或玩家对照，不把作者观察写成架构、手感或学习收益的验证
+新证据：[一手／社区] 固定源码、官方契约、修复与评审链及开发者复盘支持正文各项机制与反例；物品含 OpenMW 拆堆修复与 Luanti 合并入口，任务含 Flare 存放规则修改与 Shattered Pixel Dungeon 局部消费链，版本和日期见各节；Overgrowth含1.2组合调整及玩家原帖，修订后单例不代受控前后验证。[研究] 含确定性算术反例；未运行引擎、游戏、模型或玩家对照，不把作者观察写成架构、手感或学习收益的验证
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
@@ -95,6 +95,15 @@
 - **撤回反例 [一手]**：[Overgrowth 1.2 公告，2018-03-15](https://www.wolfire.com/blog/2018/03/Overgrowth-1-2---Combat-improvements/)关闭 casual 之外的攻击吸附，并缩短较高难度肩投的允许距离，保留距离挑战。[研究] 自动修位也会改变动作承诺，不能把更多辅助当免费响应。这是第三人称近战与 Hades 俯视动作玩法的比较，不推广到格斗帧表或联网竞技。
 
 [研究] **成本与二改验收（仅预注册）**：先沿现有原生动画层表达阶段，不为此增加 GAS／新执行框架。许可合适的现成动画缺过渡时，缩窄出口或换片段，不暗含手工补动画。给已有攻击增加重武器或攻速增益，在起手、命中、恢复阶段分别请求移动／防御／再攻击，核控制恢复、攻击次数、费用与已提交效果。若退出意外提高攻击频率、破坏可读预警或抹平武器差异，撤回对应出口；退款、冷却和效果政策复用本节结算责任。这些是维护风险推导，未运行游戏／引擎，未测得具体漏洞或手感收益。
+
+**动画释放边界补核（2026-10-16 UTC+8）。** 主线3；改变的建议：动画淡出后失去后续操作，先核现成回调与释放时机，不统一添加定时解锁；新证据：Epic 历史维护复现与 UE 5.8 当前选项契约，Unity 6.3 过渡状态机制对照。
+
+- **历史失败与修复 [一手]**：[UE-183351](https://issues.unrealengine.com/issue/UE-183351)给出 Lyra 复现：拉长 Montage 淡出，在淡出开始后移动打断，只监听 Completed／Interrupted 来 EndAbility 的能力可能无法结束，继续阻挡其他能力。报告中的 WaitDelay 是局部 workaround，不是本仓推荐；该问题已标 Fixed、Target Fix 5.3、修复提交 `25328943`，不能写成当前版本仍普遍存在的缺陷。本轮只读公开问题与文档，未下载 Lyra 或访问私有引擎源码。
+- **当前原生选择 [一手]**：[UE 5.8 PlayMontageAndWait](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Ability/Tasks/PlayMontageAndWait)将正常淡出与完全播放完成分开；`Allow Interrupt After Blend Out` 为 true 才允许淡出开始后收到 Interrupted，关闭时该阶段打断既无 Interrupted 也无 Complete。页面不作为默认值证据。`Stop When Ability Ends` 为 true 时，正常结束能力也会中止 Montage；显式取消则总会停止。已有项目先核这两个选项及其出口，不因旧报告另造 watchdog 或升级框架。
+- **不同释放边界 [研究]**：① 必须完整播放才交还控制权：保留完成路径，同时覆盖淡出期间的打断／取消；② 淡出开始即可交还控制权：可在此结束本次规则，但核正常 EndAbility 是否截断仍需保留的表现；③ 还要执行后续 Montage／逻辑：当前片段退出只推进／取消相应阶段，不统一结束整个技能。共享清理可以复用，但正常完成与取消不能因此共用成功结算；三个条件不是同一游戏的实测优劣对照。
+- **Unity 对照与适用边界 [一手／研究]**：[Unity 6.3 StateMachineBehaviour](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.html)允许 current、next、interrupted 状态同时活跃，同步层还可对同一状态多次调用；[OnStateExit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.OnStateExit.html)描述的是状态结束评估，不是技能正常完成回执。由此推导：若 Animator 回调承担动作占用／命中窗口，旧状态退出只释放自己的那份，不能无条件恢复共享布尔值、撤销新动作。局部表现仍可用原生状态回调，无需统一迁移到独立动画调度器；没有复测具体游戏，不把文档机制写成当前 Unity 故障。
+
+**[研究] 二改验收仅预注册**：拉长原招式恢复段，在淡出前、淡出中、完成后分别打断并立即再出招；沿现有执行身份记录释放与结果。检查本次锁能释放、旧出口不误结束新动作、取消不提交正常完成结果，以及所选政策下剩余动画是否继续；保持费用／冷却／已提交效果规则。原生配置已满足就停止补层；只有锁定版本的实际路径仍有缺口，才考虑局部补偿，并核重入／重开。本轮未运行引擎、游戏或玩家对照，未证明手感或维护净收益。
 
 ### 7. 相机：先复用成熟运行时，验收的是可读性与控制权
 
@@ -1003,3 +1012,36 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L144-L182)有Delay=5，[ATMine](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L193-L209)不设Delay且排除Mine；[消费者](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/GameRules/WeaponInfo.cs#L234-L265)分别直接执行或走延时，[DelayedImpact](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/Effects/DelayedImpact.cs#L19-L40)单位为tick不是秒。[一手] 游戏规则的延迟与为保护操作完整性而延后是不同目的，不统一换成一种调度器。[研究]
 
 **采用与后续验证。** 只为会重入的动作登记资格／来源；登记不代替合法性检查，取消或失败的返还由原规则决定。二改添加反射或连锁爆炸后，预注册检查重入次数、多目标未完成时死亡、同次多个连锁和原有即时规则；必要时才延后到完整操作边界，不新建通用EventBus。[研究] DCSS源码GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later；只提炼机制，不作闭源引擎可直接复制模块。所读只是选定调用链与历史补丁，未运行游戏、引擎、模型或上游测试，不证明全部路径正确或体验改善。
+
+
+## 组合取舍：先修辅助、规则还是动作出口
+
+核实：2026-10-16（UTC+8）。主线三；改变05 §7：不把目标保持、预告与取消分别正确当作同一次玩家决定已成立。先按失败位置选择窄修正，不默认更强辅助／全部可取消；04仍只维护反馈表达，没有新增引擎API或模块。**[研究：采用判断]**
+
+- **位移后不合理转身，修辅助的作用情境。** [Dead Cells 6系列原公告](https://dead-cells.com/patchnotes/6)中，6.0（2018-02-02）允许翻滚后续接武器连击；6.1（02-09，`6da3294a`）另调近战auto-aim，明确举Phaser造成不合理转身为例；6.5又取消Kunai对身后敌人的自动瞄准。这说明连击连续性和辅助朝向可分别取舍，不是一个“更自由”开关。公告未给算法和玩家测量，不能归因于每帧最近目标，也不支持所有攻击锁死目标。**[一手：版本修订；研究：边界]**
+- **命中不等于威胁解除，先对齐敌人当前状态。** Hades II [Hotfix 3（2026-06-03）](https://steamcommunity.com/games/1145350/announcements/detail/670617245259399701)分别修护甲轮廓缺失、Black Coat意外完全抵消不可打断的Chronos攻击及Cerberus喷火追踪过快；[Hotfix 4（06-10）](https://steamcommunity.com/games/1145350/announcements/detail/707773844292634084)修Dire Auto-Seekers防御态破甲后仍免疫硬直。详情提取只返回标题，条目实读自[同一官方汇总的对应标题段](https://steamcommunity.com/app/1145350/announcements/)。不同修复不可拼成同一根因；不可打断也不等于不受伤。**[一手：官方修订；研究：范围]**
+- **应对后反击也是成立的方案，不要求抢断所有威胁。** Furi设计师Benjamin Le Moullec的[2026-03-20复盘](https://cronosthenewdawndesign.substack.com/p/designing-memorable-boss-fights-lessons)将读起手、闪避／招架、恢复期反击连接；一般命中有反应，但The Edge特定狂暴阶段允许承受攻击而不硬直，并用红色气场提示。作者明确这只是Furi的设计选择。这里只提炼使规则例外可辨，不把其常见两种应对或人物规则推广到所有游戏。**[一手：作者复盘；研究：反例]**
+
+**Overgrowth：补足组合修改前后的使用反馈，不能拆分因果。** 2026-10-16（UTC+8）补核，复用前文1.2生产链，不新增模块。2017-10-29玩家[原评论#11](https://steamcommunity.com/app/25000/discussions/0/1473096694440638724/#c1479856439038181571)报告最高难度通关时，对狼、重装及重武器敌人主要反复飞踢，不用则反复死亡。开发者[10-31最终答复#25](https://steamcommunity.com/app/25000/discussions/0/1473096694440638724/?ctp=2#c1479857071247278872)认为只减伤会变成重复更多次飞踢，承诺另找应对方案；不能据此认定后来每项修订都源于该帖。**[社区：玩家自述；一手：开发者解释]**
+
+[1.2官方公告（2018-03-15）](https://www.wolfire.com/blog/2018/03/Overgrowth-1-2---Combat-improvements/)关闭casual以外的攻击吸附、让AI翻滚躲飞踢、缩短高难度肩投距离，并调整猫的副手投掷。2018-03-21，[玩家UtmostGorilla的#16回应](https://steamcommunity.com/app/25000/discussions/0/2650805212054304885/?ctp=2#c1697168437859266489)直接引用开发者“1.2 Expert飞踢更难”的说明，确认更难命中、成功更有满足感。**[一手：版本修订；社区：修订后体验]** 这是版本指向明确的单玩家反馈，不是同一玩家前后受控比较；没有精确构建、命中率或行为录像，不能分离吸附、AI与其他改动的贡献，也不能证明更广人群受益。**[研究：证据边界]**
+
+**场地反证。** [同帖开头](https://steamcommunity.com/app/25000/discussions/0/2650805212054304885/)的Arrar起初称半速仍难读剑招；[03-21的#12](https://steamcommunity.com/app/25000/discussions/0/2650805212054304885/#c1697168437856609499)继续游玩后认为，狭窄场地及落水风险可能加重此前挫败，开阔关卡更可玩。这里只是同一玩家修正诊断，没有固定构建或遭遇对照，不把它算作1.2修复效果；但足以提醒先核预定的站位／闪避是否有空间，不见“难躲”就统一加长起手。**[社区／研究]**
+
+**采用与撤回。** 前三例不构成同条件排名；Overgrowth补了实际使用报告，仍缺受控前后行为、主动调试投入和完整二改结果。[研究] 若一种攻击挤占其他攻防选择，先核命中、对手应对与脱离风险，再决定局部辅助或规则调整，不只改伤害数值。若原遭遇已清晰、辅助仍支持目标人群且未破坏改选，就保留；若打中仍挨打源于有意承诺，优先让玩家理解并选择躲避，而非抹除风险。**[研究]**
+
+后续获准才以一个既有双敌遭遇加护甲或穿身位移，分别验抢断A与避开A攻击B；观察目标、朝向、敌招是否继续及下一动作资格，不新建全局管理器。本轮没有运行游戏、引擎或模型，不新增实验授权。**[研究：未执行的验证范围]**
+
+## 镜头借出控制：持续更新历史与当前视点分开
+
+2026-10-16（UTC+8）补核。归 GC；改变 05 §8 的历史政策：短暂回看后需要连续返回时，除冻结／清空，还可维护原跟随状态但不输出。**[研究：条件建议]**
+
+**失败与中间修订。** SuperTuxKart [#5270](https://github.com/supertuxkart/stk-code/issues/5270)希望保留驾驶平滑，但开赛、重开与回看结束不应追赶过时方向。[6d04543](https://github.com/supertuxkart/stk-code/commit/6d0454383ca7c151ed42e3bede1a518a13d0546b)先在回切／重开时 snap；作者称做过分屏测试，不是完整测量。[后续反馈](https://github.com/supertuxkart/stk-code/issues/5270#issuecomment-2637678754)仍有未解决项。[#5278](https://github.com/supertuxkart/stk-code/issues/5278)报告在线回切突跳；报告者怀疑首修引入但未 bisect。维护者[以地面为参照逐帧观察](https://github.com/supertuxkart/stk-code/issues/5278#issuecomment-2620599733)，认为车连续而镜头跳，并[解释](https://github.com/supertuxkart/stk-code/issues/5278#issuecomment-2621722909)镜头消费 rewind 更新、旧平滑掩盖问题；[ef8bbed](https://github.com/supertuxkart/stk-code/commit/ef8bbedfa1577612947d66f2a04f3f715b9e7b26)加入重演期间提前返回。不能把这个中间补丁直接当最终推荐。**[社区：症状；一手：维护者说明与补丁]**
+
+**最终接受的是另一种历史政策。** [2025-03-08 f9ffcc6／PR #5365](https://github.com/supertuxkart/stk-code/commit/f9ffcc6310d4e632773acfeadcb9fd03bf446371)删除上述回切 snap 和局部 guard，保存 m_last_smooth_mode；当前视图不平滑时，仍调用 moveCamera(dt, false, …) 更新原模式的内部历史，仅 smooth 为真时写相机位置与 target。见[固定实现](https://github.com/supertuxkart/stk-code/blob/f9ffcc6310d4e632773acfeadcb9fd03bf446371/src/graphics/camera/camera_normal.cpp#L118-L165)及[1.5 发布源码](https://github.com/supertuxkart/stk-code/blob/1.5/src/graphics/camera/camera_normal.cpp#L300-L350)。这是被接受的实现，不是本仓玩家复测；也不能据删除 guard 宣称联网问题已由本轮验证解决。**[一手：固定代码]**
+
+**不要给所有运动再套总滤波。** 不同类型的 Veloren [固定代码](https://github.com/veloren/veloren/blob/2dbddc2ffa36db9a5c69cc831b65a7336ceab6a3/voxygen/src/scene/camera.rs#L580-L637)将位置、距离、FOV 与可选旋转平滑分开；只证明可以独立选择，不证明系数可迁移。Phantom Camera [#522](https://github.com/ramokz/phantom-camera/issues/522)中，对最终 Transform 统一插值的提案被[维护者指出](https://github.com/ramokz/phantom-camera/issues/522#issuecomment-2848644530)会延迟直接旋转；[提议者承认](https://github.com/ramokz/phantom-camera/issues/522#issuecomment-2848660970)只是示意，不是完成方案。该讨论未闭环，不作已交付改进。**[一手／社区]**
+
+**采用与撤回。** 同一对象短暂借出视图、返回要连续时，比较后台维护必要历史与返回重初始化；旧跟随状态失效（如重生或换目标后已不适用）时按新目标重建，是否硬切／混合另定。不要让所有闲置镜头无条件持续碰撞查询；状态失效、维护成本不值或硬切已符合玩法时撤回后台更新。联网应用另核重演时钟与呈现历史，不能只加阻尼遮住污染。后续验“回看期间转弯→松开”，记录目标、后台历史和最终输出；响应只在一个通路变差时只改那个通路。**[研究：待目标项目验证]**
+
+许可与范围：STK 代码 GPL-3.0-or-later，Veloren 为 GPLv3；这里仅提炼机制，不复制到闭源工程。已读固定代码、问题及修订记录；未运行游戏／引擎，未做完整视频体验评估，也未测手感、性能或维护投入。

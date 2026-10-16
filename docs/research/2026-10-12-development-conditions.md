@@ -1,6 +1,6 @@
 主线：二，兼三／四
 改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口，稳定截图不介入待验动画状态；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界；清 lint 先核异步调用契约，允许有依据的窄范围豁免。[经验／研究]
-证据摘要：按下列入口区分证据，具体来源、核实日期、固定版本与验证范围留在各节；这些材料支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
+新证据：原研究证据汇总（日期见各节，非本次编辑新增）；按下列入口区分证据，具体来源、核实日期、固定版本与验证范围留在各节；这些材料支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
 
 - **本仓局部运行**：[Hook 五类合成输入](#hook-跨宿主迁移匹配成功不等于协议适配)（未执行补丁）、[标准库公式](#本轮零成本公式对照)、[路径逻辑模型](#外部生产者校准错误预期)、[32 场景固定 SQL](#写入路径扩展与序列化判等sqlite-chronicle)。各自只验证所列机制
 - **现场观察与操作记录**：[公开网页不同读取路径](#dot-实际能力诊断公开网页读取的路径差异)分别记录抓取 403、Chrome 原帖读取／刷新、GET 200／已知 ID；[发布路径](#发布一般建议与本仓观察分开)另记本仓已完成操作。现场观察不当作独立复测或效率收益
@@ -420,19 +420,21 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 [head CI job](https://github.com/b12consulting/akgentic-llm/actions/runs/34483676695/job/102892459538)绑定 `27ba731a2b696e6f57b7b84a5f46889e0ce9e4ed`，运行使用 slim 2.42.0／anyio 4.15.1，原日志为 **866 passed、99.10%**，包括新文件四例；与作者另报的本地 865 pass／98.3% 分开记录。它是历史确定性框架集成测试，不是本仓运行、真实模型服务或 OS 进程重启：恢复例的新工具名是 `kaboom_again`，下一轮直接返回文本，未证明原工具可以重新执行。**[一手：历史 CI 原日志；研究：运行边界]**
 
-另一维护者 gpiroux 于 9 月 21 日合并，PR 无人工 review 记录，不能据此补写其理解工时。这是上游责任被下游实际采用的证据，不是陌生人首次接手整个项目。相邻仓库 [akgentic-agent #148](https://github.com/b12consulting/akgentic-agent/issues/148) 仍 open，两处说明还声称本地先修历史，实际已改为上游下一轮修复；本轮未核实 release note、ADR-016 落地、外部旧导入迁移或真实服务恢复。**[一手：合并与未闭环事项；研究：交付边界]**
+另一维护者 gpiroux 于 9 月 21 日合并，PR 无人工 review 记录，不能据此补写其理解工时。这是上游责任被下游实际采用的证据，不是陌生人首次接手整个项目。**[一手：合并；研究：采用边界]**
+
+**发行与恢复分开核对（2026-10-16 UTC）。** [v2.3.0](https://github.com/b12consulting/akgentic-llm/releases/tag/v2.3.0)已于9月21日发布并列出#156；[固定发行源码](https://github.com/b12consulting/akgentic-llm/blob/637cb7db9abd8b3e10f95fead05a7f0fee2bebdb/src/akgentic/llm/__init__.py)已删除上述公开导出，[依赖下限](https://github.com/b12consulting/akgentic-llm/blob/637cb7db9abd8b3e10f95fead05a7f0fee2bebdb/pyproject.toml)为`>=2.38,<3`。核实时最新llm发行[v2.4.0](https://github.com/b12consulting/akgentic-llm/releases/tag/v2.4.0)仍用[同一下限](https://github.com/b12consulting/akgentic-llm/blob/e6e3b14e65b4419eac206db3ec8b9e5af5b24ea9/pyproject.toml)。同组织的[framework v2.15.0](https://github.com/b12consulting/akgentic-framework/releases/tag/v2.15.0)和[v2.17.0](https://github.com/b12consulting/akgentic-framework/releases/tag/v2.17.0)分别纳入llm 2.3.0和2.4.0，支持已进入组合发行，不证明服务恢复。llm v2.3.0说明只列删除healing的PR，没有列出两个被删名字的旧导入迁移；[agent #148](https://github.com/b12consulting/akgentic-agent/issues/148)仍open且无评论。最低支持版本的完整验收、ADR-016落地、外部旧导入迁移与真实恢复仍未取得新回执。**[一手：发行页、固定源码与公开状态；研究：交付缺口]**
 
 #### 后续依赖升级：旧观察点过时，不等于消费者结果可以丢
 
-> 核实：2026-10-15 UTC。以下是同一下游的后续固定补丁与测试定义，未运行上游或下游代码；不是实际服务恢复回执。**[一手／研究：范围]**
+> 核实：2026-10-15 UTC；2026-10-16 UTC补核发行范围。以下#167／#172均在最新llm发行v2.4.0之后：已核[提交比较](https://github.com/b12consulting/akgentic-llm/compare/v2.4.0...45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)，不能当作v2.3.0／v2.4.0已交付的修复。未运行上游或下游代码；不是实际服务恢复回执。**[一手／研究：范围]**
 
-**先区分观察时点与交付结果。** [#167／`5f18045`](https://github.com/b12consulting/akgentic-llm/commit/5f18045a8c9f3138d083318493bb0e896663fa93)将依赖下限从2.38提高到2.54，并把 limit-recovery 验收拆开：错误钩子看到的持久历史以 dangling response 结束；run 展开收尾后，历史仍须紧跟 interrupted marker。补丁改变钩子时点的断言，保留后续 conclusion 返回 `concluded` 的断言。作者在 [#169](https://github.com/b12consulting/akgentic-llm/issues/169)说明恢复行为未变；这不是恢复成功的新现场证据，也不能把历史2.38下限当作当前支持范围。**[一手：固定依赖、补丁与测试；社区：作者诊断]**
+**先区分观察时点与交付结果。** [#167／`5f18045`](https://github.com/b12consulting/akgentic-llm/commit/5f18045a8c9f3138d083318493bb0e896663fa93)将依赖下限从2.38提高到2.54，并把 limit-recovery 验收拆开：错误钩子看到的持久历史以 dangling response 结束；run 展开收尾后，历史仍须紧跟 interrupted marker。补丁改变钩子时点的断言，保留后续 conclusion 返回 `concluded` 的断言。作者在 [#169](https://github.com/b12consulting/akgentic-llm/issues/169)说明恢复行为未变；这不是恢复成功的新现场证据。[当前固定master](https://github.com/b12consulting/akgentic-llm/blob/28adec6d370b09af790abbd3f46ed281398183c6/pyproject.toml)要求`>=2.54,<3`，已发行的v2.3.0／v2.4.0仍声明`>=2.38,<3`；先核实际采用的版本，不把master下限套到旧发行，也不把发行声明当最低版本完整验收。**[一手：固定依赖、补丁与测试；社区：作者诊断]**
 
 **另一次红测试则仍代表必须修的消费者结果。** 上游 [#9627／`107cac9`](https://github.com/pydantic/pydantic-ai/commit/107cac9ec0bdd05bd25085b202189c3787edb024)让动态 system prompt 重评时替换 run 内的消息副本，不再改调用者持有的历史对象；新增测试同时要求本轮得到新文本、旧历史不变，以及并发轮次互不污染。下游 [#171](https://github.com/b12consulting/akgentic-llm/issues/171)报告2.56使第二轮变更不再产生 `LlmSystemPromptEvent`：记录器仍读旧对象，算出的 hash 不变。这是公开 observer 事件缺失，不能只把“两次不同渲染应有两个事件”改成一个。**[一手：上游补丁与测试定义；社区：下游故障报告]**
 
 下游 [#172／`45b089a`](https://github.com/b12consulting/akgentic-llm/commit/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)把本轮 live history 显式传给 `record_system_prompt`，保留原有去重逻辑和[两轮事件断言](https://github.com/b12consulting/akgentic-llm/blob/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274/tests/test_capabilities.py#L363-L384)，没有恢复上游原地修改，也没有重建已删除的 healing 层。[固定 README](https://github.com/b12consulting/akgentic-llm/blob/1f5b7c7e514c853e09d5feadcad07a77000efa7a/README.md#system-prompt-rendering-events)说明该事件供 traces／frontend 显示每轮实际提示词；这是公开消费者契约，不是已核实某个前端真的恢复显示。可选 `messages` 参数保留旧调用形式，但默认读取旧 context 不能保证后续轮次内容新鲜；接入者仍要传对本轮数据。**[一手：实现、测试定义与公开契约]**
 
-**采用边界。** 上游承担的是调用者历史不被改写，下游仍负责发布每轮有效内容；两者都应保留。依赖升级后，先追到消费者实际需要的值和时点，再决定更新内部断言还是修接线。作者称补丁兼容2.54和2.56，本轮未取得双版本完整原日志；未核正式发行版本、旧导入消费者迁移或真实服务恢复，仍不宣称交付闭环或维护工时降低。**[社区：兼容自述；研究：选择与限制]**
+**采用边界。** 上游承担的是调用者历史不被改写，下游仍负责发布每轮有效内容；两者都应保留。依赖升级后，先追到消费者实际需要的值和时点，再决定更新内部断言还是修接线。作者称补丁兼容2.54和2.56，本轮未取得双版本完整原日志；这两项后续补丁尚未进入上述llm发行，旧导入消费者迁移和真实服务恢复也无新回执，仍不宣称交付闭环或维护工时降低。**[社区：兼容自述；研究：选择与限制]**
 
 #### 累计采用判断：下一需求改变了谁必须知道什么
 
@@ -931,3 +933,18 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 [一手] [Work Cloud与dots本地访问说明](https://learn.chatgpt.com/docs/enterprise/cloud-local-access#check-hooks-and-network-compatibility)区分云协调／本地执行和local-only，并明确前者不支持command／shell、prompt、agent处理器及本地配置／插件／目录Hook；local-only保留既有受支持Hook。企业远程MCP Hook另需托管设置，不向个人账户提供。由此不能用“文件在同一电脑”推配置等价，也不能把Work模式的切换规则泛化到所有Codex任务。详细支持范围仍以该页为准，不在这里复制企业配置清单。
 
 [研究] 可采用动作是核目标环境、任务类型及所依赖Hook的支持面，再用最小允许动作验证；已有本地流程满足时先复用。若不依赖上述Hook，不能据此要求全部任务切Local。仅阅读公开官方文档，无私人会话／设备日志或个案路径，不复现客户端、Hook或网络故障，不证明所有账户／版本的路由、续接或运行效果。
+
+
+## Claude 转云输入：创建成功不等于输入齐全或成果可取回
+
+主线：三／四，M3；核实：2026-10-16（UTC+8）。
+改变的建议：CLI 转云先核实际输入来源、允许上传范围与成果取回路径，不凭任务链接判定交接完成。
+新证据：当前官方传输契约与 2.1.228、2.1.282–284 等历史公开反例；没有当前客户端实测或固定客户端实现证明。**[一手／社区；研究]**
+
+**当前契约。** 官方[云任务说明](https://code.claude.com/docs/en/claude-code-on-the-web#move-tasks-between-terminal-and-cloud)区分 CLI 新建云任务和既有会话续接：`--cloud` 带任务描述不迁移当前终端对话；其[本地仓库打包说明](https://code.claude.com/docs/en/claude-code-on-the-web#send-local-repositories-without-github)明确无 remote 或相应 GitHub App 未安装时会上传本地 bundle，完成 `/web-setup` 也不排除这一路径。完整克隆可带所有分支历史及已跟踪文件的未提交修改，不含未跟踪文件；过大仓库可能退为当前分支或压平快照。macOS／Linux／WSL 对部分敏感文件名与 Git filter 管理文件排除的是未提交修改，原生 Windows 不做同样排除；不能由此推定已提交历史已脱敏。上传前须审允许范围，不为补输入而默认暂存全部文件。**[一手；研究：操作边界]**
+
+**历史反例与未解决范围。** [#86268](https://github.com/anthropics/claude-code/issues/86268)的 2.1.228/macOS 报告称本地领先提交、已跟踪脏修改进入云端，新未跟踪文件缺失；该 issue 因无活动关闭，不是修复回执。[#81776](https://github.com/anthropics/claude-code/issues/81776)后续报告包括 2.1.282–284 的 GitHub 网页入口可用而 CLI 打包、云端无 remote／推送失败，以及 teleport 未取回提交；另有用户报告不同预检结果和不同绕行结果。它们说明“连接正常”不足以证明实际走远端克隆，不证明当前所有版本仍有同样缺陷，亦不能将评论中的开关当受支持解决方案。**[社区：原帖与评论；研究：范围]**
+
+**采用与撤回。** 转云前确认所需文件、当前版本及允许上传范围；启动后在目标会话核提交、必要输入、remote 与授权的成果取回路径，不等长任务做完才发现输入缺失或无法交付。若不允许传出全部可能打包的内容，先停下核清传输路径；若只需从另一设备继续本地工作，官方[Remote Control](https://code.claude.com/docs/en/remote-control#remote-control-vs-cloud-sessions)保留原机器执行，仍要求机器及进程在线。它并非离线云执行的替代，也不等于没有对话数据传输。原生交接已满足输入与取回要求时直接复用，不额外造同步器。**[一手；经验：条件选择]**
+
+本轮只读公开文档、原帖与评论，未上传仓库、运行客户端／模型或核查私人数据；未验证当前账号的分流、传输过滤与成果恢复，也不把历史反例视为当前失败率或整页 L3 依据。**[研究：验证边界]**

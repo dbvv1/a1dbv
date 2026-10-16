@@ -94,3 +94,20 @@ echo "$?"  # 0
 **纠正测试目标可以是合法修复。** [Keycloak53660](https://github.com/keycloak/keycloak/issues/53660)的nightly报告中，helper对样式label覆盖的input做force点击，帮助菜单动画期间可能未切换，原toBeHidden断言失败。[53663](https://github.com/keycloak/keycloak/pull/53663)于2026-10-07合入[83f6e2a helper](https://github.com/keycloak/keycloak/blob/83f6e2a2fb410468b80b34e98b1c2234f1832398/js/apps/admin-ui/test/masthead/main.ts#L53-L57)，改普通点击关联label；[原开关语义断言](https://github.com/keycloak/keycloak/blob/83f6e2a2fb410468b80b34e98b1c2234f1832398/js/apps/admin-ui/test/masthead/main.spec.ts#L51-L60)继续保留可见→隐藏→可见。[社区／一手] 这不是应用补丁，也不能据nightly失败断言用户功能同样故障；本轮未跑前后版本或取得该精确提交CI的通过证据。[研究]
 
 **采用与撤回。** 先确认目标与真实用户路径；实际存在的遮挡按产品预期处理，匹配已知误报则先核所用工具版本和原条件。force仅作有依据的局部诊断，目标响应仍未发生就不计通过，也不永久推广到所有点击。没有上述证据时保留未定位，不盲加sleep。[研究] 本轮只读原帖、固定源码及回归定义，未运行浏览器、模型或项目测试；不能宣称降低flaky比例。Lexxy1198的内部命令改真实按钮主要重复已有原则，未纳入新结论。
+
+
+## 保留断言之后动作含义仍可能改变
+
+2026-10-16（UTC+8）补核，M4。**改变的选择**：23 §6 在语义一对多时先回原需求，不能只保留旧断言就放行；将耗尽停止与正确诊断分开。以下均是公开受控场景，不是生产应用恢复，本仓未运行模型或浏览器。**[经验：条件建议]**
+
+**可追溯成功仅覆盖已表达的行为。** E2E-Self-Heal [2870f094 的 repair.json](https://github.com/Lee-Dongwook/E2E-Self-Heal/blob/2870f094933e074f1e818a4d90c927cad4812fde/docs-site/src/data/json-contract/repair.json)保存原定位器失败、替换选择器和原测试通过；[PR #380](https://github.com/Lee-Dongwook/E2E-Self-Heal/pull/380)说明产物由真实 CLI、Playwright、Sonnet 4.6 捕获。人为修改只是 id 改名；selector_verifier 与 shadow_verifier 均 skipped，不能补称唯一性已验证。运行身份为作者报告，JSON 为固定产物。**[一手]**
+
+**反例不需要弱化断言。** [split-submit 补丁](https://github.com/Lee-Dongwook/E2E-Self-Heal/blob/2870f094933e074f1e818a4d90c927cad4812fde/examples/scenarios/split-submit/change.patch)把 Submit 拆为 Save draft 与 Publish，均为 submit 类型；[原测试](https://github.com/Lee-Dongwook/E2E-Self-Heal/blob/2870f094933e074f1e818a4d90c927cad4812fde/examples/scenarios/split-submit/spec.ts)仍只检查 Thanks!，[场景标注](https://github.com/Lee-Dongwook/E2E-Self-Heal/blob/2870f094933e074f1e818a4d90c927cad4812fde/examples/scenarios/split-submit/meta.json)预期因歧义拒绝。两个目标都能绿，唯一定位不等于唯一业务含义。**[一手：固定场景]**
+
+[PR #381](https://github.com/Lee-Dongwook/E2E-Self-Heal/pull/381)补齐 benchmark 原本缺失、真实 CLI 已读取的失败时页面 snapshot；作者报告 label-rename 修后 3/3 首轮成功。但 split-submit 在有／无这项修订时各 3/3 都被修复，不能归咎新增 snapshot。没有逐轮 split-submit trace，不能指定模型究竟选了哪个按钮；次数也不是独立生产错误率。该 PR 已合并为 2870f094。**[一手：作者真实模型运行报告，未独立复跑]**
+
+**保持失败与诊断成功分开。** 同一固定版本的 [refusal-loop-cap.json](https://github.com/Lee-Dongwook/E2E-Self-Heal/blob/2870f094933e074f1e818a4d90c927cad4812fde/docs-site/src/data/json-contract/refusal-loop-cap.json)中，删除 onSubmit 后，模型尝试加等待、改选择器；修改断言被守卫拒绝，后两次原测试仍失败，最终 reason 为 loop_cap_reached。它支持工具没有放行坏结果，不证明模型识别出业务缺陷并主动拒绝。**[一手：捕获产物]**
+
+**已修问题不继续当现存缺陷。** 早期 [#281 独立贡献者运行报告](https://github.com/Lee-Dongwook/E2E-Self-Heal/issues/281#issuecomment-6073039483)指出泄题注释、提供方失败混入拒绝等问题；后续 [#331](https://github.com/Lee-Dongwook/E2E-Self-Heal/pull/331)区分 provider_error、[#333](https://github.com/Lee-Dongwook/E2E-Self-Heal/pull/333)移走泄题注释，#381补页面观测且已有复测。不能只引用旧拒绝率，也不能把注释移除与模型行为变化写成已隔离因果。**[社区：独立运行；一手：修订与后续报告]**
+
+采用边界：既有需求能确定目标，就修定位器并补有区分力的结果验收；业务动作有意拆分且缺少选择依据时，停在歧义报告，不猜、不默认选择副作用较大的动作。无需每次定位器修改都加人工审批或新框架。未取得真实生产任务的完整前后使用链，维持试用评级，不宣称无人值守自修复已可靠。

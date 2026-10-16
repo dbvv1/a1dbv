@@ -32,7 +32,7 @@ grep -rl "$guid" Assets --include='*.unity' --include='*.prefab' --include='*.as
 - 先读取目标 GUID、子资产身份与语义名称、pivot、单位和下游 Prefab/动画/Addressables 键；复用项目已有 Preset/AssetPostprocessor，声明生成字段和需要保留的调整，不删 `.meta` 后重建。
 - Sprite 重排不能仅凭 Smart 的矩形重叠推断动作身份；Prefab 覆盖会按名称匹配，同名子物体或同物体多个同类型组件可能匹配不唯一。无法唯一映射就停止自动替换，先明确迁移。
 - 工具 success 不等于导入完成；`SaveAsPrefabAsset` 在 `StartAssetEditing` 批次内即使保存成功也可返回 null。结合 success、日志，结束批次并导入后回读，不因 null 盲目创建副本。
-- 回读实际使用点的子资产、材质槽、挂点和加载键，确认仍代表同一动作/道具；GUID 存在或无 Missing 不够。重复导入不得额外生成 `_1` 或覆盖未声明字段。
+- 回读实际使用点的子资产、材质槽、挂点和加载键，确认仍代表同一动作/道具；GUID 存在或无 Missing 不够。重复导入不得额外生成 `_1` 或覆盖未声明字段。FBX 新增动作时，对照预期动作、Source Take 与实际 clips，只补需要的新条目，保留旧裁剪、循环与事件；不整体重置列表。
 - 若使用 UnityGLTF 跨资产材质 remap，获准实测后，在保留源文件与 `.meta` 的干净工程副本中，对照冷缓存全量导入与暖缓存单资产重导入，复用上述实际使用点检查，核对 Renderer 各材质槽指向的外部材质资产／子资产。Inspector 映射正确或暖导入成功不能代替冷导入验收；回落到内部同名材质仍算失败，不删除工作工程 `Library`。
 
 ## 序列化字段改名

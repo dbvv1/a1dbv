@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物分开
-新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档报告、固定修复与备份建议，尚无修后用户复测/支持工时
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开
+新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档报告、固定修复与备份建议，尚无修后用户复测/支持工时；MinIO停止发行与停维护声明、第三方构建二改及宿主差异回执
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -201,3 +201,17 @@
 **描述与合并测试分开。** 作者称做过逐步故障注入、重复上传和真实数据库sidecar测试，但[审阅](https://github.com/immich-app/immich/pull/30349#discussion_r3672681118)要求撤回其他测试，最终[测试增量](https://github.com/immich-app/immich/blob/cee08a2320dbddb563a7fa8cca7979e4c954edb0/server/src/services/asset-media.service.spec.ts#L297-L336)只在建行前配额超限分支增加清理断言；不能将描述当最终树保留了建行后故障的正向回归。[一手：审阅与测试定义；社区：作者测试自述] 本轮未运行上游测试。
 
 **采用与局限。** 恢复基础故障后，对原失败对象重试并打开／下载接收文件，确认接收副本前不凭成功标记删原件；若仍失败，保留副本、核状态与实体，再按项目支持范围修复。潜在原件损失是PR指出的风险，不是已核实的数据丢失。本例只支持同一自托管操作者恢复后继续维护的验收取舍，不证明跨人交接、AI效果或维护工时；无新模型、服务或数据库实测。[研究]
+
+## 补充证据：接管构建不等于接管源码维护
+
+核实：2026-10-16（UTC）；历史日期均为UTC。M3／主线三、四，改变18§7：接管发行前先核上游是否仍维护源码。只读公开声明、固定构建与接收者回执，未构建／运行镜像、服务、模型或上游测试。**[研究：范围]**
+
+**两次责任变化不能混为一谈。** MinIO在2025-10-15的[固定提交`9e49d5e`](https://github.com/minio/minio/commit/9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a)声明社区版转为source-only、旧二进制不再更新；[#21647维护者回复](https://github.com/minio/minio/issues/21647#issuecomment-3418675115)确认容器需自行构建。到2026-02-12的[固定`7aac2a2`声明](https://github.com/minio/minio/blob/7aac2a2c5b7c882e68c1ce017d8256be2feea27f/README.md)，页首已明确仓库不再维护；[该次diff](https://github.com/minio/minio/commit/7aac2a2c5b7c882e68c1ce017d8256be2feea27f)把原“maintenance／不接受新变更”说明改为“不再维护”。日期标识公开声明修订，不证明具体停止修补的最早日期；下文仍留有源码构建教程，不能据此恢复“源码会继续更新”的承诺。**[一手：固定声明与维护者回复；研究：时间边界]**
+
+**接管产物确实存在，但职责只到所见范围。** [andrasbacsai交付说明](https://github.com/minio/minio/issues/21647#issuecomment-3429334402)提供了amd64／arm64镜像。固定`ab88ac1`的[工作流](https://github.com/coollabsio/minio/blob/ab88ac1ecdf25df56410487e562c29316f9682f8/.github/workflows/build-minio.yml)计划每日查询上游最新release，默认已有同标签GHCR镜像即跳过构建，另有强制重建入口；[Dockerfile](https://github.com/coollabsio/minio/blob/ab88ac1ecdf25df56410487e562c29316f9682f8/Dockerfile)按版本取上游源码构建服务器，并另下载和验证MinIO客户端`mc`。因此它不是全部依赖都由源码自建，计划存在也不证明定时任务实际持续运行。服务器及客户端的所见构建检查是`--version`，不能替代目标部署的业务验收；未核镜像digest、运行日志或全部供应链。**[一手：作者交付与固定实现；研究：边界]**
+
+**接管后还要修交付身份。** 消费者在[#3](https://github.com/coollabsio/minio/issues/3)报告使用`RELEASE.2025-10-15T17-29-55Z`仍提示版本落后一年。接管者2025-10-27的[固定补丁`2cbf9e1`](https://github.com/coollabsio/minio/commit/2cbf9e158dc282541ed078ff39ee4d046fe5c85a)从只填ReleaseTag扩为Version、完整／短CommitID等构建字段，2025年10月28日[请用户复查](https://github.com/coollabsio/minio/issues/3#issuecomment-3454973892)。补丁证明元数据接管有实际二改，不证明原运行故障已恢复。**[社区：接收者报告；一手：固定补丁与作者说明]**
+
+**同一用户的复查保留了反例。** 2025年10月28日原用户[先称警告仍在](https://github.com/coollabsio/minio/issues/3#issuecomment-3455036932)，随后[比较实际入口](https://github.com/coollabsio/minio/issues/3#issuecomment-3455243173)：同机直接Docker运行不告警，原Nomad单实例仍有问题，而相同种类机器上的Nomad集群不告警，因而怀疑自己的环境。没有固定镜像digest、原环境最终修复或排除变量的实验，不能把相同标签当相同字节，不能确定根因是时间、缓存或Nomad，更不能把他的推测写成镜像全面无问题。**[社区：同人复查；研究：因果与产物边界]**
+
+**采用与停止。** 若仅缺构建产物且源码仍有修复来源，可评估现成构建接管，而不是立刻换掉整个依赖；若源码也停止维护，则先确认谁承担后续修复，再比较继续接管、受维护来源或缩小支持范围。新构建时间不意味着包含新修复，同版本字符串也不足以确认实际交付字节。这条历史链足以区分职责，但没有证明任何第三方镜像今天适合生产、旧数据可安全迁移、长期支持成本更低或AI有收益。若要继续推荐具体接管路线，下一证据必须绑定后续修复、实际产物和消费者升级验收；仅有新镜像日期或转载声明就停止，不扩工具名单。**[研究：条件选择与停止]**
