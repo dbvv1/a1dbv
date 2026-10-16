@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开
-新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档报告、固定修复与备份建议，尚无修后用户复测/支持工时；MinIO停止发行与停维护声明、第三方构建二改及宿主差异回执
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开；持久化绕过前核原故障阶段与实际参数
+新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -215,3 +215,17 @@
 **同一用户的复查保留了反例。** 2025年10月28日原用户[先称警告仍在](https://github.com/coollabsio/minio/issues/3#issuecomment-3455036932)，随后[比较实际入口](https://github.com/coollabsio/minio/issues/3#issuecomment-3455243173)：同机直接Docker运行不告警，原Nomad单实例仍有问题，而相同种类机器上的Nomad集群不告警，因而怀疑自己的环境。没有固定镜像digest、原环境最终修复或排除变量的实验，不能把相同标签当相同字节，不能确定根因是时间、缓存或Nomad，更不能把他的推测写成镜像全面无问题。**[社区：同人复查；研究：因果与产物边界]**
 
 **采用与停止。** 若仅缺构建产物且源码仍有修复来源，可评估现成构建接管，而不是立刻换掉整个依赖；若源码也停止维护，则先确认谁承担后续修复，再比较继续接管、受维护来源或缩小支持范围。新构建时间不意味着包含新修复，同版本字符串也不足以确认实际交付字节。这条历史链足以区分职责，但没有证明任何第三方镜像今天适合生产、旧数据可安全迁移、长期支持成本更低或AI有收益。若要继续推荐具体接管路线，下一证据必须绑定后续修复、实际产物和消费者升级验收；仅有新镜像日期或转载声明就停止，不扩工具名单。**[研究：条件选择与停止]**
+
+## 补充证据：解释完整仍须核对原故障阶段
+
+核实：2026-10-16（UTC）；历史日期均为UTC。**改变18 §7：接管会持久化临时绕过的补丁前，先核原故障阶段、实际参数与补丁作用范围，再决定是否把它作为原问题的修复；独立的参数透传需求另验。** 本例不以确定的AI生成归属为前提，也不要求所有小补丁增加完整人工测试流程。**[研究：条件建议]**
+
+**接收者已要求解释，并落实到代码。** Anaconda [PR #7074](https://github.com/rhinstaller/anaconda/pull/7074)声称安装环境使用`split_lock_detect=off`绕过内核故障，但未传到安装后系统，因而首次启动崩溃。维护者[要求写清保留参数的理由及未来移除条件](https://github.com/rhinstaller/anaconda/pull/7074#issuecomment-4507792687)，合并者随后[认可解释并要求同步注释与描述](https://github.com/rhinstaller/anaconda/pull/7074#issuecomment-4508051150)。2026-05-21合入的固定补丁[`77e8e786`](https://github.com/rhinstaller/anaconda/commit/77e8e7869680bab4bce2c404893aeed1f76d7e65)在`data/anaconda.conf`加入该参数及三行注释，写明用于UEFI固件split lock问题、内核修复后可移除。解释与实现确实对齐，不能将后来撤回简化成“缺少文档”。**[一手：审查与固定补丁]**
+
+**重新核原故障后，补丁的作用阶段不成立。** 05-27的[QA评论](https://github.com/rhinstaller/anaconda/pull/7074#issuecomment-4556782893)引用原报告日志指出：安装启动参数中没有`split_lock_detect`；失败发生于安装环境中的`efibootmgr`，并非安装后首次启动；失败后日志仍继续25分钟，与解释中的立即panic／重启矛盾。这是QA对公开原日志的核查，本轮只读取其评论，未独立复现机器故障或核读整份日志；不能据此确定真正的固件根因。它已足以反驳“这个参数在该次安装丢失，导致首启失败”这一采用理由。**[社区：QA核查；研究：证据适用范围]**
+
+**同一合并者撤回参数及理由。** 05-28的[PR #7081](https://github.com/rhinstaller/anaconda/pull/7081)由原合并者提出并合入，固定[`1a27b78b`](https://github.com/rhinstaller/anaconda/commit/1a27b78b061202c250539dc79a8f1b48fbdb68be)直接引用上述QA评论，将原提交的参数和注释一并删除。QA[支持撤回](https://github.com/rhinstaller/anaconda/pull/7081#issuecomment-4561163008)，但明确不认为其危险或恶意，而是缺少理由、应尽量限制透传参数列表；不能把该链写成已证实的安全事故。**[一手：固定撤回与接收决定；社区：理由]**
+
+**smoke成功不能证明所称故障已修。** 原PR最终head `8c34dd785a0b8803bfaf7fbaf79d76d33ac7b89d`的[公开commit status](https://api.github.com/repos/rhinstaller/anaconda/commits/8c34dd785a0b8803bfaf7fbaf79d76d33ac7b89d/status)记录`kickstart-test --testtype smoke`为success，关联[run 26225047049](https://github.com/rhinstaller/anaconda/actions/runs/26225047049)亦为success；网页只显示21/22 checks通过，不写全绿。该run由issue_comment触发，run元数据的head SHA是工作流基线`be84999a`，不能误当补丁SHA：[固定workflow](https://github.com/rhinstaller/anaconda/blob/be84999aa613b0c6cd74448092cafd582e5e6176/.github/workflows/kickstart-tests.yml)读取PR head后checkout、rebase到当时目标分支，再将结果写回PR head。未读取实际运行日志、rebase产物或逐用例结果，因此只确认该PR记录的smoke状态，不声称固定原head字节在原用户机器复现成功。撤回PR的smoke被[显式waive](https://github.com/rhinstaller/anaconda/pull/7081#issuecomment-4561037300)，不能把其检查通过数当作重新运行smoke。**[一手：状态、固定工作流与豁免记录；研究：验证边界]**
+
+**归属与停止。** QA认为原解释是LLM幻觉，但未见作者明确披露或模型轨迹，故仅记录维护者的怀疑，不归因特定模型或认定自主Agent生成。该链证明接收后存在实质撤回，不能证明AI净收益、支持工时、长期维护成本或原用户最终恢复。本轮未运行代码、模型、安装器或上游测试。下一项有价值证据应是独立需求的真实验证或原故障的有效修复；不继续堆同类“解释不可靠”案例。**[社区：归属判断；研究：采用局限]**
