@@ -1,62 +1,49 @@
 # 13 · 前沿雷达（2026-10）
 
-> 更新：2026-10-15
+> 更新：2026-10-17（UTC+8）
 
-## 本轮精选：哪些变化会影响实际工作（2026-10-15 补核）
+<a id="本轮精选哪些变化会影响实际工作2026-10-15-补核"></a>
+## 30 秒选择：这些变化值得你改什么？
 
-| 变化 / 线索 | 实际意义与采用判断 | 证据范围 |
+| 你的问题 | 现在怎么选 | 主要依据与局限 |
 |---|---|---|
-| Gemini 4 Argon 于 10-13 在 Gemini API／AI Studio GA，显式缓存不支持；首发价到 11-30 | 不再以“尚未开放”排除；🧪 按任务比较，迁移先核缓存与输出上限，长期预算不用首发优惠价 | [02 模型与成本](02-models-and-cost.md#1-原则按任务分档而不是追榜单)、[S1b](research/2026-10-10-audit.md#s1b--2026-10-15-主干时效补核)：官方发布、模型、迁移及价格页；未测模型／客户端 |
-| Claude Code 2.1.299 修复续写 mod 越过停止条件、特定恢复路径重复执行，并收紧 MCP 服务器匹配；另修复本地插件目录的跨沙箱写入路径 | 无人值守先核 CLI 预算口径，外部写入恢复前查结果；升级后缺权限先核精确服务器名，不直接放宽规则；扩展进程须单独核隔离边界 | [停止与恢复](01-agents/claude-code.md#33-并行与自动化5-种并行方式)、[扩展安全](01-agents/claude-code.md#34-评审与安全)、[S1a 固定证据](research/2026-10-10-audit.md#s1a--2026-10-14-无人值守的停止与重试边界)：官方发布记录与文档，未运行客户端 |
-| Codex 使用者自述：测试通过但端到端应用仍不可用；跨会话记忆需要处理偏好变更 | 优先修补产品验收与当前决定的缺口，不默认继续堆流程或安装记忆插件 | [Codex 第 6 节](01-agents/codex.md)，近期原帖与独立分析，未验证其产品 |
-| Claude Code 2.1.295 的 Hook `onFailure: "block"`，2.1.296 的相关修复 | 强约束要覆盖 Hook 本身的失败，不能只测正常拒绝 | [S1](research/2026-10-10-audit.md)，官方 changelog，未运行 |
-| 2.1.296 子 Agent `autoCompactWindow`；MCP 预加载描述默认限制增至 4,096 字符 | 上下文预算更可调，但开销与信息损失仍需按任务测 | [S1](research/2026-10-10-audit.md)，官方 changelog |
-| Pi 的 codemode + MCP | 工具组合和结果过滤在开源 harness 中有具体实现；不是第一方 API 独有路线 | [C4](24-community-workflows.md)，项目文档，未运行 |
-| Superpowers 用户报告计划/测试共享盲点、接口修改后计划漂移 | 完整流程本身也会制造错误；评审须能挑战计划 | [C8](24-community-workflows.md)，用户原帖，未复现 |
-| Pi 用户的 Issue 驱动 Orbi、按运行硬预算、pi-trim | 研究重点从“能否自动写”转向审过的版本、重试证据与真实成本 | [C10](24-community-workflows.md)，使用者/维护者自述 |
-| 连续需求评测的原始机制与第三方质疑 | 先区分持续失败与新增退化，核对可见规格／反馈与判定器，再用结果选择模型或流程 | [SlopCodeBench 追查](research/2026-10-13-slopcodebench.md)：源码、配置计数与两个局部探测；未重跑模型或更正排名 |
-
-**本仓库判断**：对已能自主规划和验证的强 Agent，默认采用轻量流程；存在具体能力缺口或有依据的质量目标时，再按 [05 的采用条件](05-skills-and-plugins.md) 判断是否补领域资料或 Skill；不默认叠加完整方法论。具体以 Codex + GPT-6 Astra 为例的分析见 [24](24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻)。这是条件建议，不是未经执行的性能排名。
+| 降价或新模型发布，要不要换？ | ✅ 已有方案够用就保留；质量、等待或预算有缺口才比较。Gemini 4 Argon 已 GA，不再因“未开放”排除，但迁移仍须适配缓存与输出上限；长期预算不能沿用首发价 | [02 模型与成本](02-models-and-cost.md#1-原则按任务分档而不是追榜单)：官方契约与条件候选。单价、窗口和发布状态不证明本项目质量或总成本改善；返工抵消节省就撤回 **[一手／研究]** |
+| 能不能交给 Agent，离开电脑后继续？ | ✅ 先按任务所需资源选云端或本机；本机线程须保持唤醒与连接。恢复外部写入前先查结果，不因版本修复就盲目重试 | [Claude Code 并行与自动化](01-agents/claude-code.md#33-并行与自动化5-种并行方式)：Projects 入口与停止／恢复边界。云端持续运行不保证本机资源可用，停止机制也不等于账户硬预算 **[一手／研究]** |
+| 新流程、Skill 或插件值得加吗？ | ✅ 对已能规划和验证的 Agent，先保留轻量方案；缺领域配方或有明确质量目标时，🧪 加最小补充。没有改善结果、反而增加等待或人工处理，就缩减或撤回 | [05 Skills 与插件](05-skills-and-plugins.md)：规范、宿主实现与采用条件。可加载不等于权限可移植，案例与完整流程都不保证净收益 **[一手／经验]** |
 
 ## 1. 时间线：2026 年发生了什么
 
+以下保留历史事件和当时的判断，供追查来源；当前选型按上面的主专题。旧条目的核实基线为 10-08，后续只局部补核，范围见[核查记录](research/2026-10-10-audit.md#页面日期与历史覆盖)，不能把整条时间线当成当前能力或可用性认证。
+
 | 时间 | 事件 | 来源 |
 |---|---|---|
-| 2025-11 | Claude Opus 4.5 和 GPT-5.1 发布：Coding Agent 从“经常出错”跨到“可以日常依赖” | Simon Willison 年度演讲 **[社区]** |
-| 2026-01–03 | **OpenClaw** 爆火，开创了“Claw”这一类个人或通用 Agent（本质是换了外壳的 Coding Agent）；Mac mini 一度卖断货 | 同上 |
-| 2026-02 | StrongDM 提出“软件工厂”的两条规则：**代码不由人写，代码不由人审**。“不读代码怎么确信质量”成了全年主题 | 同上 |
-| 2026-02–05 | “Tokenmaxxing”（比谁 token 用得多）先热后冷：Meta、微软、Uber 先推广后限额，因为 Agent 一天就能花掉 1000 美元 | 同上 |
-| 2026-04 | Anthropic 的 **Claude Mythos** 只向安全研究者开放；本地模型 Qwen3.6-35B-A3B 在笔记本上就能跑 | 同上 |
+| 2025-11 | Claude Opus 4.5 和 GPT-5.1 发布；Willison 将其与各自 harness 的组合评为开始能日常使用，这是作者判断，不是跨项目可靠性验证 | [Willison 年度演讲](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/) **[社区：作者判断，10-17 补核]** |
+| 2026-01–03 | **OpenClaw** 爆火，开创了“Claw”这一类个人或通用 Agent（本质是换了外壳的 Coding Agent）；Mac mini 一度卖断货 | Willison 演讲 **[社区：历史记录，10-08 基线]** |
+| 2026-02 | StrongDM 提出“软件工厂”的两条规则：**代码不由人写，代码不由人审**。“不读代码怎么确信质量”成了全年主题 | Willison 演讲 **[社区：历史记录，10-08 基线]** |
+| 2026-02–05 | “Tokenmaxxing”（比谁 token 用得多）先热后冷：Meta、微软、Uber 先推广后限额，因为 Agent 一天就能花掉 1000 美元 | Willison 演讲 **[社区：历史记录，10-08 基线]** |
+| 2026-04 | Anthropic 的 **Claude Mythos** 只向安全研究者开放；Willison 报告 Qwen3.6-35B-A3B 的本地运行体验，不代表任意笔记本都适用（配置条件见 [02](02-models-and-cost.md#5-本地--开源权重模型)） | Willison 演讲 **[社区：历史记录，10-08 基线]** |
 | 2026-06 | Claude Fable 5 发布 3 天后被美国政府以出口管制叫停，7 月 1 日恢复 | Willison、Reuters |
-| 2026-07 | GPT-5.6（同为 Fable 级）；Claude Opus 5；**MCP 2026-07-28 版（无状态）**；OpenAI 的训练期 Agent 突破沙箱、入侵 Hugging Face | MCP 博客、Matthew Green **[一手]** |
+| 2026-07 | GPT-5.6（Willison 称其为“Fable 级”，是作者分档）；Claude Opus 5；**MCP 2026-07-28 版（无状态）**；OpenAI 的训练期 Agent 突破沙箱、入侵 Hugging Face | 能力分档：[Willison 演讲](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/) **[社区，10-17 补核]**；其余沿用 MCP 博客／Matthew Green 历史记录 **[一手／社区]** |
 | 2026-08 | Claude Code 默认启用 auto mode；OpenAI 宣布拟终止对 Cursor 供模，日期与入口边界见 [11 §3](11-community-pulse.md#3-cursor按实际接入路径判断是否迁移)；Codex 支持从 Claude Code、Cursor **导入配置**；GLM-5.3 发布；本地模型 Qwen 3.8 27B | 厂商文档 **[一手]** |
-| 2026-09 | GPT-6 Astra、Sol、Luna；**Claude Opus 5.5 与 Sonnet 5.5**；**价格战**；Claude Projects（云端并行线程）；Claude Mods；Gemini 4 Argon（只对受信用户开放）；GPT-6.1 Sol | 厂商页面、Latent Space **[一手]** |
+| 2026-09 | GPT-6 Astra、Sol、Luna；**Claude Opus 5.5 与 Sonnet 5.5**；**价格战**；Claude Projects（云端并行线程）；Claude Mods；Gemini 4 Argon（当时受限开放，当前 GA 条件见 [02](02-models-and-cost.md#1-原则按任务分档而不是追榜单)）；GPT-6.1 Sol | 厂商页面、Latent Space **[一手]** |
 | 2026-09 下旬 | **决策模型**兴起：TypeSafe AI 发布 Jev（9-15），几周内出现 Cloudflare Clef、OpenAI Decisions API 和大量开源复现；OpenAI 发布 **Dots**（常驻 Agent，每个都有自己的云端工作区）；AMD 宣布以约 82 亿美元收购 World Labs（世界模型） | 厂商博客 **[一手/二手]**、HN **[社区]** |
-| 2026-10 第一周 | DeepSeek 开源 **DeepSeek Harness**（桌面版 + Web，“一切皆插件”）；**Mistral Large 4**（1T 参数开源权重，预览）；Wikimedia 确认发现 OpenAI 失控 Agent 的活动；**Claude Haiku 5.5**（$0.10/$0.50）；GPT-6 向所有用户开放，并推出 Intelligent UI；GitHub Copilot 本地沙箱正式可用、推出 Dynamic workflows、computer use 和多模型编排 HydraFusion | 厂商页面 **[一手]**、HN **[社区]** |
+| 2026-10 第一周 | DeepSeek 开源 **DeepSeek Harness**（桌面版 + Web，“一切皆插件”）；**Mistral Large 4**（API 预览；当时公告计划月底发布权重，不等于已可本地部署，见 [02](02-models-and-cost.md#2-价格快照api-美元百万-token)）；Wikimedia 确认发现 OpenAI 失控 Agent 的活动；**Claude Haiku 5.5**（价格随输入档位变化，见 [02](02-models-and-cost.md#2-价格快照api-美元百万-token)）；GPT-6 向所有用户开放，并推出 Intelligent UI；GitHub Copilot 本地沙箱正式可用、推出 Dynamic workflows、computer use 和多模型编排 HydraFusion | 厂商页面 **[一手]**、HN **[社区]** |
 
 ## 2. 九个最重要的变化
 
 ### 2.1 “Fable 级”模型：瓶颈从写代码转向定义问题
-Simon Willison 的总结 **[社区]**：只要能**清楚定义目标、给出无歧义的约束、提供必要的工具**，这一代模型就能“靠蛮力”把问题解决。但定义目标、约束和工具本来就是软件工程的核心工作。
+[Simon Willison 的演讲](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)把“Fable 级”用于描述他认为能在目标、约束和工具明确时解决问题的模型。这是作者的历史分档，不是统一能力标准或完成保证；不据此跳过实际验收，也不以它认定不同型号质量等价。**[社区：作者判断；研究：采用边界，2026-10-17 补核]**
 
 **实践含义**：写好“完成标准 + 约束 + 验证手段”比写好提示词措辞重要得多。Anthropic 给 Opus 5.5 的官方建议也一样：在一条消息里给出完整任务、什么算完成、什么时候停下来问你 **[一手]**。
 
-### 2.2 价格战：同档模型价格一个季度内降了 40–50%
-来源：Simon Willison 2026-09-22 的价格表，以及 OpenAI、Anthropic、Google 官方页面 **[一手/社区]**。
+<a id="22-价格战同档模型价格一个季度内降了-4050"></a>
+### 2.2 降价：先核计费项，再看整项任务成本
 
-| 模型 | 输入 | 缓存读取 | 输出（每百万 token） |
-|---|---|---|---|
-| GPT-6 Luna | $0.10 | $0.01 | $0.50 |
-| GPT-6.1 Sol | — | $0.10 | — |
-| GPT-6 Sol | $2 | $0.20 | $10 |
-| Grok 4.7 | $2 | $0.50 | $6 |
-| **Claude Opus 5.5** | $4 | $0.20 | $20 |
-| Gemini 4 Argon（本行 10-15 补核） | 见 [02 正式价表](02-models-and-cost.md#2-价格快照api-美元百万-token) | 仅隐式缓存，命中按输入价的 5% 计费 | 首发价 11-30 到期，含 thinking |
-| Claude Fable 5.1 | $10 | $0.25 | $50 |
-| GPT-6 Astra | $10 | $1 | $50 |
+✅ 不按“同档模型一季度降 40–50%”估预算或决定迁移：该说法没有固定样本与统一口径，撤回。以 Opus 5 → 5.5 为例，Standard 输入／输出从每百万 token $5／$25 变为 $4／$20，降 **20%**；缓存读取从 $0.50 变为 $0.20，降 **60%**。同一代际也没有单一降幅。**[一手：[Claude 价表](https://platform.claude.com/docs/en/about-claude/pricing)，2026-10-17；算术]**
 
-- Opus 5.5 的能力“在大多数工作上达到 Fable 5.1”，；价格以 [02 的快照](02-models-and-cost.md) 为准。该页所列 $5/$25 → $4/$20 对应降幅 20%，原文 40% 与该快照不一致，已撤回；本轮未重新独立核实厂商价格 **[经验：内部算术校对]**。
-- Pro 当前有 $100／$200／$500 月费档，$500 档包含 Ultrafast 访问资格，不等于无限用量。旧“$200 档从 Plus 20 倍降至 10 倍”仍缺精确日期和可复核依据；“体感六折”已有原始自述及相反体验，缺可复算对照，证据统一见 [11 额度自述](11-community-pulse.md#7-中文社区额度与交付自述)。两者均不能作为当前套餐合同或统一降额的依据；正式口径见 [02](02-models-and-cost.md#3-订阅额度与成本控制)。**[一手；社区：自述；研究：证据边界]**
+[Willison 09-22 的价格文章](https://simonwillison.net/2026/Sep/22/opus-and-sol-and-luna/)分别比较了 Sol 跨代价格、Opus 普通输入／输出与缓存价，还注明旧 GPT-5.6 对照是促销价；保留为历史比较，不推广为全市场统计。“达到 Fable 5.1 水平”是厂商能力主张，不证明所有任务质量等价。**[社区：原文，2026-10-17 补核；研究：范围]**
+
+当前价表、套餐和缓存口径只在 [02 模型与成本](02-models-and-cost.md#2-价格快照api-美元百万-token)维护。选择时比较同一任务的质量、含失败重试的费用和总耗时；已有方案够用就保留，低单价被返工抵消就撤回迁移。API 单价也不能换算订阅额度，额度自述的原帖与反证见 [11](11-community-pulse.md#7-中文社区额度与交付自述)。**[研究：采用边界，非任务效果实测]**
 
 ### 2.3 Harness 的隐性成本被量化了
 Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小样本隔离配置及自定义 API 代理。下表是该配置的输入量与缓存观察，不能作为当前默认开销或费用排名；选择须比较实际完整任务的质量、返工与含缓存的总成本，范围见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[社区：原文；研究：采用边界]**：
@@ -79,9 +66,9 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 5. 当前 `/usage` 的 Session 区提供主会话缓存统计，不能当全部子 Agent 合计；历史客户端字段与当前版本分开。
 
 ### 2.4 “云端大脑，本地双手”：会话管理正在被托管
-- **Claude Projects**（2026-09，公测）：一个对话就是一个项目，Claude 自己拆成线程、作为并行的云端会话运行，彼此传递上下文，你离开后它也继续工作。Boris Cherny 的说法是：“我不再管理会话了。” **[一手：官方文档 + 社区]**
-- Cursor 3 的 Agents Window + Cloud Agents、Codex Cloud + “Ultra”多 Agent 模式也在走同一个方向 **[一手]**。
-- 各家开始互相“吸人”：Codex 能用 `/import` 从 Claude Code、Cursor **导入指令、设置、Skills、插件和近期工作** **[一手]**。
+- **Claude Projects**：云端线程可在电脑关闭后继续；需要本地数据库、模拟器或 VPN 资源时可用本机线程，但电脑须保持唤醒与连接。按资源位置选入口，不能把云端持续运行套给本机；条件统一见 [Claude Code](01-agents/claude-code.md#33-并行与自动化5-种并行方式)。**[一手：沿用该页 2026-10-15 UTC 核查，未运行客户端]**
+- **Codex 并行**：需要拆分任务不必先选 Ultra；当前入口与模型／effort 起点见 [Codex 选型](01-agents/codex.md#2-模型按任务与实际用量选择)，不把“托管”当作更高档位的购买理由。**[一手／研究：已有结论同步]**
+- **Codex 导入**：CLI `/import` 与桌面 Settings > Import 的来源、运行条件和持续更新能力不同；先按项检查结果，重复导入不等于覆盖同步，关闭同步也不撤销已导入内容。范围与迁移条件统一见 [Codex 导入](01-agents/codex.md#导入先选范围再决定是否持续同步)。**[一手／研究：已有结论同步]**
 
 **含义**：开放格式降低了指令和流程知识的迁移成本；工具名称、权限、Hook、会话状态、认证和运行环境仍需适配。Skill 格式兼容不等于执行行为相同。见 [S2 规范与迁移边界](research/2026-10-10-audit.md)。**[经验：工程判断]**
 
@@ -142,19 +129,19 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 
 | 做法 | 来源 | 评级 |
 |---|---|---|
-| **一条消息给出完整任务 + 完成标准 + 何时停下来问** | Anthropic《Getting the most out of Opus 5.5》 **[一手]** | ✅ |
-| **删掉“think carefully / 一步步思考”这类话**，改用 effort 设置 | 同上 | ✅ |
-| 在 CLAUDE.md 里写**“停止规则”**：不需要你时继续做；只在无法继续或有破坏性操作时停下 | 同上（模板已采用） | ✅ |
-| 长任务把清单写进 **TASKS.md**（不怕上下文压缩） | 同上 + 长时任务 harness | ✅ |
-| 规定总结格式：**Blocked on me / Changed / Found** | 同上 | 🧪 |
-| 评审提示词：“**只列你会因此拒绝合并的问题**，给出文件、行号、原因，以及怎么证明它是错的” | 同上 | ✅ |
-| 要求标注“**无法确认的内容和查找过的地方**” | 同上 | ✅ |
-| 设计类任务**列出要避开的具体样式**（只说“别太普通”没用） | 同上 | 🧪 |
+| **一条消息给出完整任务 + 完成标准 + 何时停下来问** | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
+| **删掉“think carefully / 一步步思考”这类话**，改用 effort 设置 | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
+| 在 CLAUDE.md 里写**“停止规则”**：不需要你时继续做；只在无法继续或有破坏性操作时停下 | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
+| 长任务把清单写进 **TASKS.md**（不怕上下文压缩） | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
+| 规定总结格式：**Blocked on me / Changed / Found** | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | 🧪 |
+| 评审提示词：“**只列你会因此拒绝合并的问题**，给出文件、行号、原因，以及怎么证明它是错的” | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
+| 要求标注“**无法确认的内容和查找过的地方**” | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
+| 设计类任务**列出要避开的具体样式**（只说“别太普通”没用） | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | 🧪 |
 | “**First run the tests**”和“**Use red/green TDD**”这类短提示 | Simon Willison《Agentic Engineering Patterns》 | ✅ |
-| **Agent 式手工测试**：让 Agent 用 `python -c`、curl、浏览器自动化实际运行一遍，测试通过不等于能用 | 同上 | ✅ |
-| **线性走读**：让 Agent 给（vibe 出来的）代码写一份逐段讲解 | 同上 | 🧪 |
+| **Agent 式手工测试**：让 Agent 用 `python -c`、curl、浏览器自动化实际运行一遍，测试通过不等于能用 | [Willison：Agentic manual testing](https://simonwillison.net/guides/agentic-engineering-patterns/agentic-manual-testing/) **[社区：作者实践，10-17 补核]** | ✅ |
+| **线性走读**：让 Agent 给（vibe 出来的）代码写一份逐段讲解 | [Willison：Linear walkthroughs](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/) **[社区：作者实践，10-17 补核]** | 🧪 |
 | **术语对齐**：评审前让 Agent 列出它自创的术语，你改名后它统一替换；维护 GLOSSARY.md | Lobsters《Reducing the cognitive load of AI changes》 | 🧪 |
-| **/handoff** 交接文档，替代 `/compact`，还能跨厂商续接 | HN 评论（模板已提供 `handoff`） | ✅ |
+| 跨会话或跨工具续接时，必要时生成交接文档；同任务腾空间仍按宿主选择 compact，二者不互相替代 | [03 会话动作分流](03-context-engineering.md#3-会话层面的上下文管理)；模板 handoff 按需使用 **[研究：采用判断]** | ✅ |
 | 问题明确、结果可检查的大量读取或模式化生成，可评估轻量模型分流；调试不因读写量大而降档，见 [02](02-models-and-cost.md#3-订阅额度与成本控制) | [Spotify 原报告](https://engineering.atspotify.com/2026/9/portal-by-spotify-cut-my-claude-code-token-usage-by-90)：约 90% 为主模型侧读取上下文节省自报，作者亦报告漏掉线程安全缺陷；不代表总成本或质量等价 **[一手：作者报告]** | 👀 |
 | PR 要附**证据**（手工测试记录、截图），别把没审过的代码丢给同事 | Simon Willison 的反模式章节 | ✅ |
 
@@ -166,7 +153,7 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 | **团队交付与理解责任** | V2EX 首帖描述成员不理解组件输入输出，回复有不同主张；不能推成普遍技能退化或必须手写，按 [11 的原帖范围](11-community-pulse.md#7-中文社区额度与交付自述)检查产物能否解释、修改和接手 **[社区／研究]** |
 | **实践者的收益口径** | 初稿后的返工、评审负担与新增任务来自不同作者；不合成统一倍率，新增任务也须验证用途，见 [11 的证据与采用判断](11-community-pulse.md#4-生产力证据来源范围见各行) **[社区／研究]** |
 | **“Deep Blue”与“AI mania”** | AI 带来的职业倦怠感，以及“Agent 不在干活就觉得浪费时间”的焦虑；“它不会变容易，你只会变快” **[社区]** |
-| **游戏开发** | vibe 出来的游戏“看起来像游戏，但大约只好玩 75 秒”，好玩的玩法循环仍超出 Agent 的能力（Willison）**[社区]** → 见 [domains/game-dev](../domains/game-dev/README.md) |
+| **游戏开发** | [Willison 的两次浣熊游戏原型](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)分别使用 Claude Fable 5 与 GPT-5.6 Sol Ultra；“好玩约75秒”是作者体验，原文限于自己及所试 Agent，不证明所有模型无法设计玩法。采用含义是外观完成仍须检验玩法循环，见 [游戏开发](../domains/game-dev/README.md) **[社区：作者报告；研究：范围，2026-10-17 补核，未试玩]** |
 | **“卖给 Agent”** | Agent 已经在替用户选型（选数据库、选 SaaS）；有公司专门做“影响 Agent 选择”的生意 → **审查 Agent 引入的依赖和服务** **[社区]** |
 | **审批疲劳** | 一个“给 Agent 审批命令”的小游戏收集了 4 万局数据：玩家平均漏掉 1/3 的威胁，藏在 `npm run` 后面的恶意脚本漏掉一半以上（见 [10](10-security.md#2-2026-年的真实事件与研究)）。HN 高赞：“靠不停问用户、指望用户永不出错的安全模型，试过很多次，从没成功过” **[社区]** |
 | **“失控 Agent”这个说法** | Wikimedia 确认 OpenAI 的 Agent 在其站点上编辑和试探漏洞；HN 高赞认为不该叫“失控”，责任在运营方：“没绑好的钢筋飞满高速，我们不会叫它失控的钢筋” **[社区]** |
