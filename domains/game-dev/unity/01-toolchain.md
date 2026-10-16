@@ -132,6 +132,8 @@ codex plugin add unity@unity-agent-plugin
 
 **✅ 导入规格先用 Presets，持续规则才加 AssetPostprocessor。** Unity [官方目录 Preset 示例](https://docs.unity3d.com/6000.0/Documentation/Manual/DefaultPresetsByFolder.html)已有规则优先级及依赖追踪扩展，可处理 preset 变化后旧资产重导入；只把项目明确归导入器管理的字段交给规则，保留自定义 pivot、材质 remap 与状态机。普通 PNG 沿用 TextureImporter/Data Provider；确实使用 Aseprite 源文件时再评估兼容官方包与层 UUID。**[一手＋经验]**
 
+FBX 二改还须分别核旧 clip 设置与预期新增动作；改过导入属性后，新 Source Take 可能未进入 clips，不能靠整体重置列表处理。具体取舍与修复范围见 [引擎接入 §5](../01-engine-integration.md#5-第二次重生成更新已有对象保留正确含义)。**[一手／经验]**
+
 **关键局限**：官方 Sprite Smart 也按矩形重叠复用旧对象，重排后可能保留 ID 却改变含义；仍须核对源语义、子资产、锚点及旧使用点。**[一手＋经验；本轮未运行引擎]**
 
 ## 来源

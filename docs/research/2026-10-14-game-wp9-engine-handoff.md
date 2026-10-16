@@ -1,10 +1,12 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：2026-10-16 UTC 补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
 ## 当前结论摘要（2026-10-16 UTC）
+
+- **✅ Unity FBX 保留旧 clip 设置与发现新动作分开验收**；只补预期新条目，不整体重置列表；Fixed 通知不等于自动合并，见 §3.5。[一手／经验]
 
 - **✅ Unity 批量写入后再消费新资产**；scope 内不依赖完整导入结果，最外层释放后核相关资产；逐项失败与异常分别检查，不把批量控制当原子回滚，见 §12。[一手／经验]
 
@@ -123,6 +125,18 @@ pivot、outline、remap 和状态机只有明确归 source/pipeline 管理时才
 - **不是当前版本仍坏。** [`release/2.22.0` 对应 `8b793b8` 的 changelog](https://github.com/KhronosGroup/UnityGLTF/blob/8b793b883f8ae1dfd0f6f09bcf13e1842c000060/CHANGELOG.md#L7-L29)已将 #915 列为修复，记录日期 2026-10-02；[发布标签对象](https://api.github.com/repos/KhronosGroup/UnityGLTF/git/tags/64a3e4056a980cbdca58e569c0bed546b469692e)于 2026-10-05 创建并指向该提交。本轮也核对该版本源码包含修复；这不代表目标工程验证通过，不据此要求无条件升级。固定代码为 [MIT](https://github.com/KhronosGroup/UnityGLTF/blob/41cb963dec3e76615b11db63bab9633f23496b0e/LICENSE)，不推及 issue 示例资产的复用许可。[一手／研究]
 
 **最小验收与停止线。** 后续获得引擎实测授权后，在保留源文件与 `.meta` 的干净副本中比较暖缓存单资产导入与全量导入的“Renderer → 材质槽 → 外部材质资产／子资产”对应；映射表看似正确但实际回落到内部材质仍失败。不要删除工作工程 `Library` 来掩盖问题，也不自建通用依赖框架；优先沿用包含修复的兼容导入器，再验目标工程。本轮仅只读证据核查，未安装、运行引擎或上游测试；不外推为所有导入器、节点重排或任意用户编辑都能保全，也不构造 Unreal 等价 API。[研究／经验]
+
+### 3.5 FBX：保留旧 clip 设置不代表发现新增动作
+
+2026-10-16 UTC 核实；改变 01 §5 的新增子资产验收。**✅ 保留已有 clip 调整，同时核对预期新增动作是否进入导入列表**；源 take 集合、显式 clip 列表与实际导入产物分别检查，不以旧引用正常代替新增内容完整。[经验]
+
+- **版本文档明确保留列表的代价。** [Unity 6.3 Animation tab](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AnimationClip.html#ClipSelectionList)说明，修改 imported clip 属性后，源资产新增动画不会自动进入 clip 列表，需加入新 Source Take；[6.4 同页](https://docs.unity3d.com/6000.4/Documentation/Manual/class-AnimationClip.html#ClipSelectionList)仍有这条说明。源 take 可拆成多个裁剪 clip，不能简单要求两边数量相等。[一手；经验：验收含义]
+- **固定源码区分默认与显式列表。** 既有 [UnityCsReference `0c7f0bf`，ModelImporterClipEditor.cs L303–368](https://github.com/Unity-Technologies/UnityCsReference/blob/0c7f0bfc4f9b21d3d84fffc9ee9001ad82f0fbc4/Modules/AssetPipelineEditor/ImportSettings/ModelImporterClipEditor.cs#L303-L368)按 importedTakeInfos 建默认列表，编辑时转为显式设置；[DeserializeClips L1171–1182](https://github.com/Unity-Technologies/UnityCsReference/blob/0c7f0bfc4f9b21d3d84fffc9ee9001ad82f0fbc4/Modules/AssetPipelineEditor/ImportSettings/ModelImporterClipEditor.cs#L1171-L1182)仅在显式列表为空时建立默认项。这是 6000.0.84f1 的 Inspector 参考实现，不是 6.4 修复或 native 导入器全实现；[许可](https://github.com/Unity-Technologies/UnityCsReference/blob/0c7f0bfc4f9b21d3d84fffc9ee9001ad82f0fbc4/LICENSE.md)为 Unity Reference Only，只据此解释机制，不复制成项目工具。[一手：固定源码；研究：范围]
+- **真实替换记录与修复不能混读。** [UUM-130850](https://issuetracker.unity.com/issues/21902/missing-new-animations-in-clips-section-when-replacing-fbx-file-with-loop-time-enabled)记录改过 Loop Time 后替换 FBX，预期 4 clips、实际 3，新动画仍在 Source Take 下拉框；复现版本包括 6000.0.64f1、6000.3.2f1，仅测 Windows。当前状态列 6.0／6.3 Open，6.4.3f1、6.5.0b4、6.6.0a2 Fixed；但 [6000.4.3f1 release notes](https://unity.com/releases/editor/whats-new/6000.4.3f1)对该编号仅声明新增“take 未被任何 clip 使用”的 UI 通知。不能据 Fixed 推断自动补齐，更不能写全部 6.3 补丁都已复现或升级即可免验。[一手：官方复现与修复声明；研究：交叉核对]
+
+**采用与停止线。** 沿用已有 importer，先核新增 take 与需求对应，再通过现有 Animation 面板或目标版本 Editor API 补需要的 clip，保留旧裁剪、事件与循环设置；不为发现新动作删除 `.meta`、整体重置列表或升级引擎。只要求需求内的 take 被正确使用，不自动导入所有未用 take；同一 take 的多段裁剪、重命名或对应不唯一时显式确认映射。后续获准实测时，比较“旧 clip 已调循环／事件，源文件追加动作”的前后列表、旧设置与下游引用，再验证新动作可用。[经验／研究：仅预注册]
+
+只读官方文档、复现记录、修复说明与固定源码；未运行引擎、下载示例资产或复测修复，没有修复后使用者回执，不能保证任意 importer／引擎版本保全设置，也不把 Unity 机制映射到 Unreal。[研究]
 
 ## 4. Unreal：显式覆盖策略，不强依赖 MCP
 
