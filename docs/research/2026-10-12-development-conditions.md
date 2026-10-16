@@ -933,3 +933,18 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 [一手] [Work Cloud与dots本地访问说明](https://learn.chatgpt.com/docs/enterprise/cloud-local-access#check-hooks-and-network-compatibility)区分云协调／本地执行和local-only，并明确前者不支持command／shell、prompt、agent处理器及本地配置／插件／目录Hook；local-only保留既有受支持Hook。企业远程MCP Hook另需托管设置，不向个人账户提供。由此不能用“文件在同一电脑”推配置等价，也不能把Work模式的切换规则泛化到所有Codex任务。详细支持范围仍以该页为准，不在这里复制企业配置清单。
 
 [研究] 可采用动作是核目标环境、任务类型及所依赖Hook的支持面，再用最小允许动作验证；已有本地流程满足时先复用。若不依赖上述Hook，不能据此要求全部任务切Local。仅阅读公开官方文档，无私人会话／设备日志或个案路径，不复现客户端、Hook或网络故障，不证明所有账户／版本的路由、续接或运行效果。
+
+
+## Claude 转云输入：创建成功不等于输入齐全或成果可取回
+
+主线：三／四，M3；核实：2026-10-16（UTC+8）。
+改变的建议：CLI 转云先核实际输入来源、允许上传范围与成果取回路径，不凭任务链接判定交接完成。
+新证据：当前官方传输契约与 2.1.228、2.1.282–284 等历史公开反例；没有当前客户端实测或固定客户端实现证明。**[一手／社区；研究]**
+
+**当前契约。** 官方[云任务说明](https://code.claude.com/docs/en/claude-code-on-the-web#move-tasks-between-terminal-and-cloud)区分 CLI 新建云任务和既有会话续接：`--cloud` 带任务描述不迁移当前终端对话；其[本地仓库打包说明](https://code.claude.com/docs/en/claude-code-on-the-web#send-local-repositories-without-github)明确无 remote 或相应 GitHub App 未安装时会上传本地 bundle，完成 `/web-setup` 也不排除这一路径。完整克隆可带所有分支历史及已跟踪文件的未提交修改，不含未跟踪文件；过大仓库可能退为当前分支或压平快照。macOS／Linux／WSL 对部分敏感文件名与 Git filter 管理文件排除的是未提交修改，原生 Windows 不做同样排除；不能由此推定已提交历史已脱敏。上传前须审允许范围，不为补输入而默认暂存全部文件。**[一手；研究：操作边界]**
+
+**历史反例与未解决范围。** [#86268](https://github.com/anthropics/claude-code/issues/86268)的 2.1.228/macOS 报告称本地领先提交、已跟踪脏修改进入云端，新未跟踪文件缺失；该 issue 因无活动关闭，不是修复回执。[#81776](https://github.com/anthropics/claude-code/issues/81776)后续报告包括 2.1.282–284 的 GitHub 网页入口可用而 CLI 打包、云端无 remote／推送失败，以及 teleport 未取回提交；另有用户报告不同预检结果和不同绕行结果。它们说明“连接正常”不足以证明实际走远端克隆，不证明当前所有版本仍有同样缺陷，亦不能将评论中的开关当受支持解决方案。**[社区：原帖与评论；研究：范围]**
+
+**采用与撤回。** 转云前确认所需文件、当前版本及允许上传范围；启动后在目标会话核提交、必要输入、remote 与授权的成果取回路径，不等长任务做完才发现输入缺失或无法交付。若不允许传出全部可能打包的内容，先停下核清传输路径；若只需从另一设备继续本地工作，官方[Remote Control](https://code.claude.com/docs/en/remote-control#remote-control-vs-cloud-sessions)保留原机器执行，仍要求机器及进程在线。它并非离线云执行的替代，也不等于没有对话数据传输。原生交接已满足输入与取回要求时直接复用，不额外造同步器。**[一手；经验：条件选择]**
+
+本轮只读公开文档、原帖与评论，未上传仓库、运行客户端／模型或核查私人数据；未验证当前账号的分流、传输过滤与成果恢复，也不把历史反例视为当前失败率或整页 L3 依据。**[研究：验证边界]**

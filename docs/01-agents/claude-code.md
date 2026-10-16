@@ -58,6 +58,8 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 
 **按资源位置和持续时间选入口**：Projects 的本机线程可访问本地数据库、模拟器与 VPN 内资源，要求本机 Claude Code 2.1.280+；它使用本机工具与设置，带项目指令但不预载项目 memory，不能套用云端“关机后继续”的预期。Projects 可从 Web、桌面与手机 App 使用，不是 CLI／IDE 内的项目协调入口。[Projects 官方边界](https://code.claude.com/docs/en/claude-projects#run-a-thread-on-your-own-computer)。Dynamic Workflows 的启用和运行入口见[官方说明](https://code.claude.com/docs/en/workflows)。**[一手：2026-10-15 UTC，未运行客户端]**
 
+**转云先核输入和取回路径**：CLI `--cloud` 新建云任务，不搬走当前终端会话；有 GitHub 连接也可能转为本地仓库打包。完整克隆的 bundle 可含所有分支历史与已跟踪文件的未提交修改，却不含未跟踪文件；部分平台的敏感文件排除不等于历史已脱敏。先确认允许上传的范围、让必要输入进入所选路径，再在云任务核分支／提交、必要文件与结果取回路径，之后才投入长执行。仅需从手机继续原本地工作时，用 Remote Control，电脑仍须在线。**[一手；经验：采用判断，2026-10-16（UTC+8），详见[交接证据](../research/2026-10-12-development-conditions.md#claude-转云输入创建成功不等于输入齐全或成果可取回)]** 历史版本有意外打包、缺 remote 与取回失败的公开报告；它们不证明当前普遍故障，也不支持绕过权限或一律改用另一入口。**[社区；研究：边界]**
+
 **短轮询和独立定时分开选**：当前会话短轮询用 `/loop`；需要电脑关闭后仍运行，选云端 Routines（定时间隔至少一小时）；定时任务必须访问本地文件／工具时，可选 Desktop scheduled tasks，但电脑仍须开机。`/loop` 后台化可脱离终端，不能脱离运行机器；恢复会话会还原部分未过期的 `CronCreate` 任务，但已错过的一次性任务和 self-paced loop 不恢复，不能把“可恢复”当作退出后仍在执行。[调度比较与恢复例外](https://code.claude.com/docs/en/scheduled-tasks#limitations)、[Routines 间隔](https://code.claude.com/docs/en/routines#add-a-schedule-trigger)。**[一手：2026-10-15 UTC；研究：采用判断]**
 
 **✅ 无人值守先限定停止与重试边界**：`claude -p` 可设 `--max-budget-usd` 和 `--max-turns`，但前者按客户端 API 费用估算停止，含子 Agent、可能超额，恢复进来的历史费用不计入本次上限；后者在 `--input-format stream-json` 中不阻止已排队消息开启各有上限的新一轮。因此它们不能代替跨运行预算或服务商账单上限。**[一手：[CLI reference](https://code.claude.com/docs/en/cli-reference)；研究：采用判断]**
