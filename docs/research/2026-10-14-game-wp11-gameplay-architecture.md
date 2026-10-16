@@ -1,6 +1,6 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按实际复杂度升级；先明确状态所有者、时钟、退出与输入边界，再调整预览、效果、导航和随机消费。相机、关卡、成长、教学与辅助围绕玩家决策及具体阻碍取舍；物品先定可互换性，拆分分别保状态与身份契约；连通、动作完成或规则复用不等于体验、迁移或预测通过，不能用统一参数与扩内容替代诊断
-新证据：[一手／社区] 固定源码、官方契约、修复与评审链及开发者复盘支持正文各项机制与反例，物品补研含 OpenMW 拆堆丢状态修复及 Luanti 不同合并入口；版本和日期见对应章节。[研究] 含确定性算术反例；未运行引擎、游戏、模型或玩家对照，不把作者观察写成架构、手感或学习收益的验证
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按实际复杂度升级；先明确状态所有者、时钟、退出与输入边界，再调整预览、效果、导航和随机消费。相机、关卡、成长、教学与辅助围绕玩家决策及具体阻碍取舍；物品先定可互换性，任务分历史事实与当前条件；连通、动作完成或规则复用不等于体验、迁移或预测通过，不能用统一参数与扩内容替代诊断
+新证据：[一手／社区] 固定源码、官方契约、修复与评审链及开发者复盘支持正文各项机制与反例；物品含 OpenMW 拆堆修复与 Luanti 合并入口，任务含 Flare 存放规则修改与 Shattered Pixel Dungeon 局部消费链，版本和日期见各节。[研究] 含确定性算术反例；未运行引擎、游戏、模型或玩家对照，不把作者观察写成架构、手感或学习收益的验证
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
@@ -916,3 +916,25 @@
 [研究] **采用与二改，仅预注册：** 已有背包能承载单件／每栈状态、限制数量或定制合并，并返回余量／存活目标，就先复用。用三把同型剑增加耐久或强化，只改其中一把，再转移、拾回、与另两把合并：核数量守恒、状态不重置不串件；若设计允许恢复为可互换状态后回堆，核旧引用失效或改指存活目标。仅当玩法要跨位置／操作持续引用“这一件”时补身份，不以显示耐久条代替数据契约。AI 可追消费者和补回归，人决定何时仍可互换；组件无法表达所需区别才局部扩展，不迁移整套框架。
 
 **许可与实际验证：** [一手／研究] [OpenMW README](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/README.md#L4-L9)标 GPLv3，运行 Morrowind 需自有游戏；[Luanti引擎](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/LICENSE.txt#L114-L132)为 LGPL-2.1-or-later；实际借鉴的 [farming模块](https://github.com/luanti-org/minetest_game/blob/c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f/mods/farming/license.txt)源码单独 MIT，媒体另有许可，不能把仓库根许可套给每个组件。这里只提炼机制，不复制源码或资产，不把两套引擎推荐为闭源 Unity／Unreal 项目的即插用底座。未运行游戏、引擎、模型或上游用例；未证明性能、维护工时或特定引擎集成收益。
+
+## 任务推进补研：历史事实与当前条件
+
+核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变05 §9的选择：先区分曾经获得、当前可交付与已经完成，再扩任务内容；不把新拾取事件当作唯一进度来源。本节只处理推进条件与消费者，不重做库存事务、叙事存档或遭遇奖励。
+
+**Flare：允许存放物品，会改变原有推进条件。** [一手] 动作RPG Empyrean Campaign 的[作者问题827](https://github.com/flareteam/flare-game/issues/827)指出：任务物品可入仓后，原来以 `requires_status` 代替携物检查的地方需要改用 `requires_item`，对话／任务文字也须对应当前持有。[2020-12-10提交](https://github.com/flareteam/flare-game/commit/d058433aa3759a54148c622913a02ac204196b72)开放主线物品的私人仓库存放，同时为祭坛补当前携刀、为书本补当前羽毛笔、为Florin制墨补花朵／血瓶检查及缺材料对话。[研究] 历史标记可以继续保留，但不能再单独授权需要现物的操作；该变更不是原报告者全面复测证据。
+
+[一手] 游戏固定 `af6eee6d339ac98011864bfe89da837fe7769c28`，引擎固定 `1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f`；固定主干不等于稳定发行。实际消费链如下：
+
+- **已有物品也能满足条件。** Alchemy材料进入[普通一级掉落表](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/loot/level_1.txt#L1-L7)；[Florin对话](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/npcs/florin.txt#L91-L134)接取写 `emp_alchemy_init`，交付要求已接、未完成与当前三种材料，随后只消耗水晶／蘑菇、保留芦荟并写 `emp_alchemy_finish`。条件不要求接取后再拾一次；这是源码路径判断，未跑先取物路线
+- **显示不负责交付。** [日志定义](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/quests/0011_alchemy.txt)按当前材料显示可返回提示，按独立完成状态显示完成；[QuestLog](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/QuestLog.cpp#L163-L200)重算显示。[NPC对话动作](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/NPC.cpp#L917-L933)交给EventManager执行，再由[状态动作](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/EventManager.cpp#L977-L984)推进CampaignManager；不是日志看见材料就自行完成
+- **已解锁不从剩余物品倒推。** [Book交互](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/maps/book_of_the_dead.txt#L340-L355)消耗羽毛笔／墨水并写 `emp_main_underworld`；另一地图的[传送与on_load外观](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/maps/wizards_tower_2.txt#L549-L567)读该状态。[SaveLoad](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/SaveLoad.cpp#L139-L202)分别保存装备／背包与campaign；同文件L510恢复campaign后，日志与地图再消费恢复的数据
+
+[一手] 查询范围也不能靠名字猜：[当前checkItem](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/CampaignManager.cpp#L143-L147)相加背包与装备，不计仓库。[2026-09-29修复](https://github.com/flareteam/flare-engine/commit/d3d5688a59057e6318421d8e959e26287eefd6c1)才把“任一处数量足够”改为两处合计，防止各放一把刀却不能满足两把要求；QuestLog旧注释的“not equipped”不能盖过实际消费者。[研究] 这些资料支持条件和持久状态分工，不证明交付与存档原子性、任意并发安全或所有旧档兼容。
+
+**Shattered Pixel Dungeon：局部状态足够，函数名也有边界。** [一手] 独立作者的回合roguelike固定 `57a4e06a4caf162446d1c28caa7983f0493fecf0`。[墓室生成](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/quest/MassGraveRoom.java#L101-L123)已放CorpseDust；[Wandmaker](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L111-L214)首次介绍写given，后续交互查当前物品，因此已取得物品也可满足，但不表示首次对话自动跳过介绍完成。[确认奖励入口](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndWandmaker.java#L108-L130)消耗任务物品、移除NPC并调用complete；后者把奖励引用清空。任务[保存／恢复](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L249-L293)包含given与奖励状态，[Dungeon实际存档入口](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java#L661-L666)确实调用，不需要从空背包重新推断完成。
+
+[一手／研究] 反过来，[Quest.active](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L378-L447)还查询当前房间、诅咒或怪物；这里核实的[PrisonLevel消费者](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/PrisonLevel.java#L73-L80)选择紧张音乐，不能把active当成已接受／已完成任务的统一判断。两个项目分别支持各自机制，不推出所有游戏都需同一种任务状态表。
+
+[研究] **采用与二改，仅预注册：** 沿现有交互与存档区分已接受／已交付等历史事实、当前条件与推进入口。把“先接再取”改成允许先取物，再验接取、暂存后回来、交付消耗、离开保存与恢复：当前可交付提示对应允许的物品范围，完成与永久解锁不因物品已消耗而回退。设计若改为持续携物／占领才开放，就保留可逆规则；不能把所有世界条件锁存。AI追读写路径并补回归，人决定哪些事实永久、哪些条件允许失效；已有组件能表达就不加通用任务图或事件溯源。
+
+**许可与实际验证：** [一手／研究] [Flare引擎](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#L28-L38)源码GPL-3.0-or-later；[Empyrean Campaign](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/README.md#L17-L25)数据／美术CC-BY-SA 3.0并允许后续版本，不能套用引擎许可。Shattered相关源码文件头标GPL-3.0-or-later。这里只提炼机制，不复制代码、剧情或资产，不推荐为闭源Unity／Unreal即插用底座；共同建议与引擎无关。仅读固定源码、原问题与补丁，未运行游戏、引擎、模型或上游用例，未证明全部分支、保存故障恢复、玩家体验或AI效率收益。
