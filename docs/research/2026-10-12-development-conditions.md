@@ -904,3 +904,20 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 **适用性反例，不追加另一套流程。** [RUF055 #27024](https://github.com/astral-sh/ruff/issues/27024)中 bytes 正则搜索 `memoryview` 与改写后的成员判断不等价；[维护者拒绝 #27040](https://github.com/astral-sh/ruff/pull/27040#issuecomment-5050042567)也反对把所有 bytes-pattern 修复一律标不安全，因为 bytes 目标仍有有效情况，问题在目标类型与规则适用范围。核实时 #27024 仍 open，#27040／#27233／#27715 均关闭未合并；不能拿候选 PR 的测试或安全分类当已交付修复。固定 current main [`9e3ea63` 规则源码](https://github.com/astral-sh/ruff/blob/9e3ea63fb43040782a2ff00147cacf8861674615/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs)仍按 pattern、参数数量和真假值使用条件筛选，未核目标类型，修复的 Safe／Unsafe 分类取决于 comments。本轮另用手写 Python 3.12.14 标准库表达式核对：`memoryview(b"abcdef")` 上 `bool(re.search(b"abc", value))` 为 True、`b"abc" in value` 为 False；bytes 对照为 True／True。这只是局部语义见证，没有执行 Ruff 修复或当前发行版，也不是原用户框架复测；不推断全部修复不可信。**[一手／社区；经验：本轮标准库局部核对；研究：修订状态与采用边界]**
 
 **最小采用与停止条件。** 让 Agent 回到真实调用者及运行器，先判断诊断是在提示缺陷，还是遇到未表达的必要契约。有明确依据时保留代码，对具体规则／函数说明窄范围例外，并沿已有测试验收；若没有必要异步契约，则正常重构，不能用本例逃避合理诊断。不为消警告默认加入 `sleep(0)`：它会新增让出执行的时机，是否需要仍由任务决定。除上述手写标准库表达式外，本轮只读公开报告、文档和源码，未运行 Ruff、pytest、模型或上游测试；没有效率或长期维护收益实测。**[经验：采用建议；研究：验证范围]**
+
+
+## 委派失败被转换为空成功：父任务已经收集也可能误判
+
+主线：二，兼三／四；沿用 20 §5 的子任务完成责任，不新增流程。
+改变的建议：空成功结果出现时，先查宿主是否丢失错误与结束原因；确认缺陷后修交接层、保留原来的子任务身份，不靠换 worker、重复派发或放宽消费者验收掩盖它。
+新证据：OpenCode 公开故障、已发行的窄修复、下游控制复核及 V2 未合入补丁。核实：2026-10-16 UTC；只读源码与公开报告，未运行模型、客户端或上游测试。**[一手／社区；经验：采用判断]**
+
+1. **父任务收到的成功状态可能已经失真。** [OpenCode #42725](https://github.com/anomalyco/opencode/issues/42725)报告 1.18.18 的子任务已在 assistant 消息记录 `info.error`，但 `TaskTool.runTask` 仅取最后的 text、缺失时返回空串；父任务因而收到 `completed` 空结果。它支持排查子消息到父结果的转换，不证明所有空结果都来自同一错误，更不能据此评价某个 worker 模型的能力。**[社区：原报告；研究：归因范围]**
+
+2. **窄修复保留错误和原任务身份，已进入 V1 发行版。** [#43657](https://github.com/anomalyco/opencode/pull/43657)于 2026-08-21 合入 `c313504c824cf2103a4e703d994d1914d84fc8b7`；[固定实现](https://github.com/anomalyco/opencode/blob/c313504c824cf2103a4e703d994d1914d84fc8b7/packages/opencode/src/tool/task.ts#L200-L224)先检查 assistant error，再返回包含原错误和可续接 `task_id` 的失败；[固定回归](https://github.com/anomalyco/opencode/blob/c313504c824cf2103a4e703d994d1914d84fc8b7/packages/opencode/test/tool/task.test.ts#L266-L307)用空文本加模拟 APIError，断言失败及 child ID。[v1.18.20](https://github.com/anomalyco/opencode/releases/tag/v1.18.20)列出该修复，已另核该 tag 的 `task.ts` 包含相应分支。正常路径仍允许无文本，故不能改成“空文本必是 provider 错误”；本轮读到的是源码／测试定义和发行范围，不是独立运行回执。**[一手：固定补丁、测试与发布]**
+
+3. **下游拒绝推进有作用，却无法找回已丢失的错误。** [Gentle AI #3318 的控制复核](https://github.com/Gentleman-Programming/gentle-ai/issues/3318#issuecomment-5647411885)使用 OpenCode 1.18.18、真实 host 和临时 localhost provider：有效文本被接受，格式错误被识别；合法无文本与 HTTP 400 却在插件边界同为 empty。消费者要求 SDD 结果契约，因此拒绝空结果合理，但放宽其阻塞条件无法修复宿主信息丢失。这个历史消费者后来因 [SDD 被移除](https://github.com/Gentleman-Programming/gentle-ai/issues/3318#issuecomment-5836427200)而关闭 issue，不能写成已修复或推荐现行 SDD 流程。控制复核不是原用户采用 v1.18.20 后的真实模型复测，也不能证明该 issue 所有原始发生均有同一根因。**[社区：消费者报告与维护状态；研究：边界]**
+
+4. **旧修复不能外推全部结束形态或新架构。** [V2 #52378](https://github.com/anomalyco/opencode/issues/52378)报告 `finish: error`／`MALFORMED_FUNCTION_CALL` 没有 error 对象时仍成为父任务的 completed；[固定旧 runner](https://github.com/anomalyco/opencode/blob/f46fa72a9285a0e8479e25d400f7026bfd8fe5c8/packages/core/src/session/runner/step.ts#L161-L177)只为 unknown 合成失败。核实时 [#54713](https://github.com/anomalyco/opencode/pull/54713)仍 open、未合入：固定 head `4b1fedc63011a3ce58b33f1036e19e99c16bf56a` 将 explicit error 转为失败并保留 rawFinish，[当前测试](https://github.com/anomalyco/opencode/blob/4b1fedc63011a3ce58b33f1036e19e99c16bf56a/packages/core/test/tool-subagent.test.ts#L298-L354)分别检查前台工具失败和后台父通知 error。PR 正文的 empty-stop control 已被后续修订删除，不能照抄为当前覆盖；补丁明确排除 length 截断。未取得原用户最终复测，不将候选补丁或自动评审的运行说法当成已发行／线上全面修复。**[一手：固定源码与修订状态；社区：故障报告]**
+
+因此只对“缺所需产物但返回成功”的委派故障增加这项诊断：先核对错误是否完整跨过消费边界，再决定原任务续接、换实现或重新派发；若已完整传递错误，就回到实际失败原因，不再归咎交接层。已有原生错误传播足够时不增加包装器或评审树；这些材料不能证明弱模型替代收益、长程完成率或普遍可靠性提升。**[经验：采用与撤回条件]**
