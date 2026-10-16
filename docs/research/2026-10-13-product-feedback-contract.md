@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件
-改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复，往返导航保留任务位置但不在后台更新时抢焦点，连续筛选与确认按操作范围选择延迟，区分一次性恢复与记住的工作流选择，分清防丢失、稳定检查点与可放弃的试改；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性，默认采用现成能力与退休旧实现分开决定。[经验]
-证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍、Joplin 位置同步复测与 Discourse 焦点恢复的撤回／重新采用，以及 KeePassXC 原用户构建后的连续键入反馈、GIMP 原使用者找到持久选项后的恢复与重开回执。新增 n8n 保存／执行的连续修订及原任务仍未满足的反例；VS Code 搜索替换后有兼容路径退休、用户先肯定再收窄成功范围的链。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
+改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复，往返导航保留任务位置但不在后台更新时抢焦点，连续筛选与确认按操作范围选择延迟，区分一次性恢复与记住的工作流选择，分清防丢失、稳定检查点与可放弃的试改，以及再次表达意图、重投与重新入队；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性，默认采用现成能力与退休旧实现分开决定。[经验]
+证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍、Joplin 位置同步复测与 Discourse 焦点恢复的撤回／重新采用，以及 KeePassXC 原用户构建后的连续键入反馈、GIMP 原使用者找到持久选项后的恢复与重开回执。新增 n8n 保存／执行的连续修订及原任务仍未满足的反例；VS Code 搜索替换后有兼容路径退休、用户先肯定再收窄成功范围的链。Karakeep 重存补丁后，既有使用者对归档状态与自动同步排序给出负面回执，API opt-in 尚只有提议认可。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -519,3 +519,18 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 **一次正面回执不足以证明替代完整。** 同一用户JSchiffmacher于2019-06-19 10:01在[配置后回报可用](https://github.com/microsoft/vscode/issues/68237#issuecomment-503494535)，13:41又[收窄成功范围](https://github.com/microsoft/vscode/issues/68237#issuecomment-503565574)：带重音字符搜索仍漏文件，预期超过1000项而只见4项。这是其自报，未独立核对文件集合。维护者此前[解释](https://github.com/microsoft/vscode/issues/68237#issuecomment-464826826)已打开文件走编辑器缓冲区搜索，不能代表整工作区搜索成立；这里不是全部入口都被新引擎替换。因而应核成功结果来自哪条路径，尤其避免先打开样本后只验交互结果、漏掉新组件实际承担的后台／批量入口。**[社区：同人复试与修正；一手：维护者解释；经验：验收建议]**
 
 **采用与停止条件。** 比较“默认换用新组件”和“删除旧实现”的条件：前者可为常见任务提供收益，后者还须覆盖约定保留的必要任务，或由负责人明确接受缩小支持范围；仍有缺口时比较窄适配与必要兜底，而非无限维护两套实现。上述反例相对Mealie增加的是路径归属、回退开关语义变化和用户成功判断被后续操作推翻，不重复把一张样本当整批验收。本例没有AI效果、支持工时、长期维护成本或净收益证据；未据issue仍开放推断2026年发行版的故障状态，也不将主干“原型改用现成方案后的维护净收益”缺口标为完成。**[经验：采用判断；研究：验证边界]**
+
+
+## Karakeep：重复对象不等于重复意图
+
+核实：2026-10-16（UTC）；事件日期以下均为UTC。改变15 §10.3：去重保住对象身份，不等于重复操作应当保留或重置相同状态；按真实目的比较重存与重投，不由调用来源替使用者决定。只读公开讨论和固定补丁，未运行应用、测试或模型。**[经验：采用判断；研究：范围]**
+
+**原使用者要重新入队，不只是保存成功。** Garrett-R在2026-02-22的[#2502](https://github.com/karakeep-app/karakeep/issues/2502)报告：Firefox扩展保存YouTube视频、在Karakeep归档、再保存同一页，界面显示成功但主页未出现；[补充说明](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-3941927859)称数周来误以为保存不稳定，希望解除归档并移到前面。维护者[最初考虑改善已存在提示](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-3940548275)，也指出只解除归档仍会因日期较旧而难找；[02-23同意改行为](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-3943157419)。原用户当天的赞许早于实现，不是修改后验收。**[社区：重复使用任务；一手：开发者选择]**
+
+**固定产物改变了操作语义，未删除原创建时刻。** 07-26合入的[#2962／f2f6431](https://github.com/karakeep-app/karakeep/commit/f2f6431db2da20d45469415574a0b4b6f8086070)，其[父版本a698724](https://github.com/karakeep-app/karakeep/blob/a698724705d44898f01f88fabc516c0dd27be2a1/packages/trpc/routers/bookmarks.ts#L261-L272)命中已有URL直接返回；[修改后router](https://github.com/karakeep-app/karakeep/blob/f2f6431db2da20d45469415574a0b4b6f8086070/packages/trpc/routers/bookmarks.ts)默认解除归档、更新排序日期与modifiedAt，并触发索引和edited webhook，显式提供的部分元数据另可覆盖。[schema](https://github.com/karakeep-app/karakeep/blob/f2f6431db2da20d45469415574a0b4b6f8086070/packages/db/schema.ts#L208-L225)保留数据库createdAt，新增lastSavedAt；旧API字段createdAt却改指lastSavedAt，原创建时刻另以firstCreatedAt暴露。不能照用户报告把API字段变化写成底层原始日期已丢失。**[一手：固定前后产物；研究：语义边界]**
+
+**同一归档状态承担另一人的完成标记。** [07-29的lrnd1回执](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-5114172612)说明自己收藏链接、整理进笔记应用后再归档；新行为无提示地恢复条目，让他混淆已完成的整理工作，询问能否停止。[07-30补充](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-5125800099)表示确认、设置或标明从归档返回均可接受。这是既有使用者的实际反对，不是原请求者复测，也不等于要求整项回滚。**[社区：修改后使用及可接受的候选]**
+
+**已豁免RSS来源，不等于外部RSS同步也无副作用。** [08-06的#2986](https://github.com/karakeep-app/karakeep/issues/2986)中，pluusla报告v0.33.1经n8n每20分钟同步FreshRSS收藏，同URL仍为同ID，但两天前条目的API createdAt变为12分钟前，扰乱日期排序。固定router虽豁免source为rss/import，[REST入口](https://github.com/karakeep-app/karakeep/blob/f2f6431db2da20d45469415574a0b4b6f8086070/packages/api/routes/bookmarks.ts#L54-L63)无source时却设为api；来源标签不完整表达“自动重投”意图。[开发者提出API opt-in](https://github.com/karakeep-app/karakeep/issues/2986#issuecomment-5201910207)，[该用户认可并细化提议](https://github.com/karakeep-app/karakeep/issues/2986#issuecomment-5201946303)，但未取得后续交付与运行复测回执。**[社区：实际负面回执；一手：入口和开发者回应；研究：未闭环边界]**
+
+**采用与停止条件。** 让使用者说明再次提交是要确认已存、重试同步，还是明确把旧对象重新排进任务；分别核对象身份、完成状态与排序含义，再比较保留现状、显式重存或提示确认。不要把每个入口都加开关作为默认答案，也不由单例要求所有产品保留更多状态。[补丁测试定义](https://github.com/karakeep-app/karakeep/blob/f2f6431db2da20d45469415574a0b4b6f8086070/packages/trpc/routers/bookmarks.test.ts)检查普通重存、提供的元数据及rss豁免，不能替代外部调用者的重复任务验收；本轮未运行测试或核CI。没有原请求者明确运行成功、长期收益、维护成本或AI效果证据；不以issue状态或当前未固定分支推断后续版本已修好或仍有故障。**[经验：采用判断；研究：验证边界]**
