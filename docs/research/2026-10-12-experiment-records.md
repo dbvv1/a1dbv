@@ -437,6 +437,16 @@ for d in ("swebench-verified", "terminalbench"):
 
 由此调整任务切分：共享接口尚未稳定时先收敛语义；接口已定但测试共用可变服务时可继续并行写代码，只收窄验证并发。整合时针对合并后的源码与对应构建／服务重新验收，保存已有测试报告能说明的版本与目标，不增设一套自建调度协议。若原生工具已经正确隔离这些状态，无需额外容器或复制全套依赖。**[经验：采用与退出条件]**
 
+### 并行测试：换了夹具数据库，应用连接也要一起换
+
+核实：2026-10-16（UTC+8）。主线二、三；只细化08 §6.4的隔离配置生效时机与实际目标核查，不重复增加“worktree不隔离服务”的一般提醒。**[研究]**
+
+- **真实Agent并行故障。** [Agenticos #189](https://github.com/vstorm-co/agenticos/issues/189)明确报告多个Agent在各自worktree及虚拟环境中，共用一个Postgres容器；两组集成测试对固定数据库反复`drop_all`／`create_all`，互相删表并出现不同的失败集合。单跑通过，不能排除这种并行串扰。**[社区：原作者故障报告]**
+- **修复覆盖应用与夹具两条连接路径。** [#216](https://github.com/vstorm-co/agenticos/pull/216)已合并为`408327b3ecaa70e430cc2253bc2b2fefe30de9b8`。[固定conftest](https://github.com/vstorm-co/agenticos/blob/408327b3ecaa70e430cc2253bc2b2fefe30de9b8/backend/tests/conftest.py)在导入应用配置之前，把测试数据库名派生为每pytest进程独有；集成夹具负责创建和清理。原因是[应用engine在导入时创建](https://github.com/vstorm-co/agenticos/blob/408327b3ecaa70e430cc2253bc2b2fefe30de9b8/backend/app/db/session.py#L14-L20)，若只在后来的夹具中换库，未覆盖的应用连接仍可能指向旧目标。固定[单元回归](https://github.com/vstorm-co/agenticos/blob/408327b3ecaa70e430cc2253bc2b2fefe30de9b8/backend/tests/test_integration_database_isolation.py#L31-L40)比较应用settings与夹具环境目标，[集成回归](https://github.com/vstorm-co/agenticos/blob/408327b3ecaa70e430cc2253bc2b2fefe30de9b8/backend/tests/integration/test_database_isolation.py#L19-L23)用`SELECT current_database()`核实际连接。这是测试定义与源码阅读，不是本轮测试通过。**[一手：固定补丁与回归定义]**
+- **反馈与后续边界。** #216作者自报同机并行两跑由修复前`1 failed / 4 errors`、`1 failed / 9 errors`变为各`216 passed`；[#189另一分支的反馈](https://github.com/vstorm-co/agenticos/issues/189#issuecomment-5189659254)也称手动换私库后`216 passed`，但两处都是同一账号，不是独立使用者复测。后续[#535](https://github.com/vstorm-co/agenticos/pull/535)保留每进程数据库，将每测试重建schema改为一次建schema、测试间`TRUNCATE`，自报重叠子集并行各154通过；不能继续把旧DDL死锁描述为现行实现。该作者另更正最初所谓随机顺序运行未安装`pytest-randomly`，因此不借此扩张为独立或完整随机验证。**[社区：同项目作者自报与更正；一手：后续合并补丁]**
+
+**采用范围。** 只读调查、无共享可变外部状态的测试，不因此增加运行环境。确需隔离的数据库测试，可先在现有实例内按运行分库，并确保应用、夹具和子进程都使用正确目标；这不是所有项目的唯一方案，也不要求每Agent另开完整容器。上述固定实现按同机进程ID命名，不能直接推广为跨主机／PID命名空间的唯一标识；异常强杀也可能留下数据库。无法可靠分离时，沿既有建议只串行相关验证。本轮未运行客户端、模型、数据库、容器或上游测试。**[研究：采用判断与验证范围]**
+
 ### 零成本离线 Git 夹具
 
 在全新临时仓库执行，入口使用 `env -i PATH=/usr/bin:/bin /bin/bash fixture.sh`；空 HOME／XDG、禁用系统和全局 Git config，不读取用户配置、不联网、不改本工作仓 Git 设置。完整脚本如下，临时数据由 trap 清理。**[研究：本轮实测]**
