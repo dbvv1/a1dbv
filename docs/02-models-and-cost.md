@@ -1,6 +1,6 @@
 # 02 · 模型与成本
 
-> 更新：2026-10-16
+> 编辑更新：2026-10-17（UTC+8）
 
 ## 1. 原则：按任务分档，而不是追榜单
 
@@ -54,14 +54,14 @@
 - Haiku 5.5 的 100K 门槛包含缓存读取与写入，逐请求判断，不是整段会话累计值；缓存写入还区分 TTL。完整规则见 [Claude API 价表](https://platform.claude.com/docs/en/about-claude/pricing)。
 - Gemini 4 Argon 仅支持隐式缓存，命中后按输入价的 **5%** 计费（优惠 95%，不是“九五折”）；显式 `cachedContents`／`caches.create` 不支持。上表为 Standard，Batch／Flex／Priority 另计，搜索等工具费不在 token 单价内。长期预算按 2026-12-01 起的费率估算。**[一手：上列价表与迁移指南；研究：预算建议，2026-10-15]**
 
-- **Claude Haiku 5.5**（2026-10-07）**[一手：Anthropic 公告]**：
-  - 按 Standard 输入/输出单价，Haiku 4.5 的 $1/$5 对比 Haiku 5.5 ≤100K 档 $0.10/$0.50，下降 **90%**；>100K 档 $0.50/$2.50 则下降 **50%**，不是统一 75%。这是单价算术，不是任务总成本降幅 **[一手价表 + 算术]**；[官方模型页](https://platform.claude.com/docs/en/models/haiku-5-5/overview)确认 1M 上下文；[系统卡 §8.9.3](https://www-cdn.anthropic.com/e1080d6bf5ae2018ea3c2f414064be03232f5be5/Claude%20Haiku%205.5%20System%20Card.pdf#page=128)将 OSWorld 2.1 离线子集的 72.4% 定义为检查点部分得分，全部检查点通过的严格成功率为 37.1%；两者均为厂商报告，不能直接当作本项目桌面任务成功率。若据此评估自建 computer-use Agent，先核第 1 节的接口迁移条件；细节见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[一手；研究：采用边界，2026-10-16（UTC+8），未实测]**；
-  - 同日 Sonnet 5.5 的缓存读取价格减半；
-  - 订阅用户开始**每月附带 API 额度**：Max 5x 100 美元、Max 20x 200 美元、Team 最多 500 美元（团队共享）；须领取且只覆盖合资格运行入口，不能抵所有 Code 用量，见 [18 成本治理](18-team-adoption.md#5-成本治理)（2026-10-15 补核）。
-- **Mistral Large 4**（2026-10-06，公开预览）**[一手：Mistral 博客和文档]**：1.05T 总参数、52B 激活的 MoE，原生多模态，1M 上下文；**月底发布权重**；在欧洲自有数据中心训练。官方称在开源权重模型中达到领先、在视觉定位上超过闭源前沿模型。HN 上 Simon Willison 实测认为这是“Mistral 至今最好的模型”，也有人认为进步慢于中美实验室 **[社区]**。
+- **Haiku 5.5 降价不等于任务总成本下降**：对比 Haiku 4.5 的 Standard 输入／输出 $1／$5，上表 ≤100K 档下降 **90%**，>100K 档下降 **50%**，不是统一 75%。[官方模型页](https://platform.claude.com/docs/en/models/haiku-5-5/overview)确认 1M 上下文；[系统卡 §8.9.3](https://www-cdn.anthropic.com/e1080d6bf5ae2018ea3c2f414064be03232f5be5/Claude%20Haiku%205.5%20System%20Card.pdf#page=128)的 OSWorld 72.4% 是检查点部分得分，严格成功率为 37.1%，均非本项目实测；自建 computer-use 先核第 1 节的接口迁移条件。**[一手／算术；研究：采用边界，2026-10-16 UTC+8]**
+- **Claude 订阅附带 API 额度仍有用途边界**：Max 5x $100、Max 20x $200、Team 最多 $500／月（团队共享）；须领取且只覆盖合资格运行入口，不能抵所有 Code 用量，见 [18 成本治理](18-team-adoption.md#5-成本治理)。**[一手，2026-10-15 补核]**
+- **Mistral Large 4 仍按预览候选比较**：上表限时价不能当长期预算，参数规模、厂商领先主张和社区好评不能证明本任务更划算；模型与发布条件回[官方页](https://docs.mistral.ai/models/mistral-large-4)。**[一手：预览与价格；研究：采用边界]**
 - **降价必须指定比较对象和计费项**：Opus 5 的 Standard 输入/输出 $5/$25 → Opus 5.5 $4/$20，下降 **20%**（[一手价表](https://platform.claude.com/docs/en/about-claude/pricing)）。原“同档模型整体下降 40–50%”缺少固定样本与统一口径，不作为市场统计；“达到 Fable 5.1 水平”保留为厂商能力主张，不能据此认定所有任务质量等价。
-- **Prompt cache 是最大的杠杆**：缓存读取约为输入价的十分之一甚至更低。缓存规则须按厂商、模型与配置区分：[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)说明，更改顶层 `output_config.effort` 会使消息缓存失效，对工具/系统缓存的影响依模型而异；显式写出原默认值不算变化，支持逐消息 effort 的模型也有保留前缀的路径。模型切换、前缀改动和 TTL 是排查因素，不能一概断言每次修改都会清空全部缓存。当前 [Claude Code 成本文档](https://code.claude.com/docs/en/costs)将缓存统计放在 `/usage` 的 Session 区；它覆盖主会话，不能当作全部子 Agent 的合计 **[一手]**。
-- **Harness 本身也有成本**：Systima 在 2026-07、Claude Code 2.1.207／OpenCode 1.17.18 的隔离代理实验中测得首轮约 33k／7k 输入；一份 72KB 的指令文件让每次请求多约 2 万 token（详见 [13](13-frontier-radar.md#23-harness-的隐性成本被量化了)）**[社区：原文]**。本仓库在云端环境复现：默认约 31.6k，用 `--tools=` 收窄工具后降到 3–6k；72KB 的指令文件让每次请求多约 2.6 万 token（[19](19-experiments.md#3-e1固定开销)）**[经验：历史实测]**。这些是含缓存的原始输入量，不是按普通输入价计费的 token，也不能直接推算订阅消耗或作为当前客户端成本排名。选择须比较实际完整任务的质量、返工与含缓存的总成本；历史配置及当前诊断入口见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)，本仓库原逐次数据缺失的限制见 [19](19-experiments.md)。
+- **缓存收益看实际复用**：长且稳定的前缀在有效期内反复命中时，可降低重复输入成本；折扣按模型价表，不统一按十分之一。[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)的 5 分钟／1 小时写入分别按普通输入价的 1.25／2 倍收费；未复用的写入、缓存重建以及输出、工具与返工仍计入整项任务成本。先查实际命中与总费用，不为保缓存拒绝必要的模型调整。**[一手；研究：采用条件，2026-10-17 UTC+8]**
+
+- **失效排查按厂商与配置**：[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)说明，更改顶层 `output_config.effort` 会使消息缓存失效，对工具/系统缓存的影响依模型而异；显式写出原默认值不算变化，支持逐消息 effort 的模型也有保留前缀的路径。模型切换、前缀改动和 TTL 是排查因素，不能一概断言每次修改都会清空全部缓存。当前 [Claude Code 成本文档](https://code.claude.com/docs/en/costs)将缓存统计放在 `/usage` 的 Session 区；它覆盖主会话，不能当作全部子 Agent 的合计 **[一手]**。
+- **Harness 开销看完整任务**：[Systima 历史实验](13-frontier-radar.md#23-harness-的隐性成本被量化了)与[本仓旧实验](19-experiments.md#3-e1固定开销)记录的是含缓存的原始输入量，不能当普通输入账单、订阅消耗或当前客户端成本排名；本仓原逐次数据还存在缺失。先定位实际负担，再比较质量、返工与含缓存总成本，配置范围和当前诊断见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[社区／经验：历史记录；研究：选择]**
 
 <a id="21-新类别决策模型2026-09-起"></a>
 
@@ -94,8 +94,7 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 - 当前 Pro 提供 $100/$200/$500 月费档；$500 档包含 **Ultrafast 访问资格**，不等于无限 Ultrafast 用量（[一手](https://learn.chatgpt.com/docs/pricing)）。此前“$200 Pro 从 Plus 20 倍降至 10 倍”仍缺精确日期和可复核依据，保留为未核实历史说法；“体感六折”已有 V2EX 第 7 条回复自述，但缺可复算的任务与前后基线，第 8–9 条还有相反体验。原帖与反证统一见 [11 额度自述](11-community-pulse.md#7-中文社区额度与交付自述)，两者均**不能作为当前套餐合同或统一降额的依据**。**[社区：六折原帖；研究：证据边界]**
 - **GPT-5.5 于 2026-10-14 19:00 UTC 起在以 ChatGPT 登录的 Codex 中退役**；OpenAI API 和 API-key 登录的 Codex 不受该次退役影响。受影响的配置按当前可用模型与任务需要替换，不统一指定继任型号，见 [Codex 选择](01-agents/codex.md#2-模型按任务与实际用量选择)。**[一手：当前模型文档，2026-10-15 补核]**
 - Claude 订阅耗尽速度有[具体历史报告](https://github.com/anthropics/claude-code/issues/26271)，但版本、任务与套餐不同，不能从个案或点赞推定当前普遍可用天数；范围见 [Claude](01-agents/claude-code.md#6-已知问题与社区反馈)。**[社区：原帖；研究：边界，2026-10-15 补核]**。
-- 企业侧：Meta、微软、Uber 都经历了从鼓励“tokenmaxxing”到限制 AI 开销的转变；有工程负责人反映每人每月 token 花费在 200–500 美元，个别超过 2000 美元 **[社区]**。
-- 2026-10 有报道称 **Meta 和微软在压缩员工的 Claude 使用量**，原因是成本 **[二手：HN 287 分的报道]**。HN 讨论的重点是“成本清算”：按量计费的 Agent 开销已经大到需要管理层出面控制。
+
 
 **控制成本的做法** ✅：
 1. 先查原生状态和服务商账单；需要历史定位时，按[下节边界](#31-查异常消耗ccusage-只补历史诊断)试用 ccusage，不把估算当结算 **[一手；经验：采用判断]**；

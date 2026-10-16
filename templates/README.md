@@ -44,7 +44,7 @@ generic/
 | code-reviewer 只报正确性问题 | 官方最佳实践：被要求找问题的评审者会过度报告 |
 | verifier 可选独立核对 | 复杂验收时检查当前目标和独立反例；不强制每项任务增加会话 |
 | spec-interview | 关键需求不清时借鉴访谈；是否换会话取决于上下文与交接需要，见 [07](../docs/07-workflows.md) |
-| handoff | 长时任务 harness 的进度文件做法；HN 上比 `/compact` 更受推荐 |
+| handoff | 跨会话交接时保存必要进度；同任务腾空间与跨会话恢复的选择见 [03 会话动作分流](../docs/03-context-engineering.md#3-会话层面的上下文管理) |
 | CLAUDE.md 的停止规则、TASKS.md、Blocked on me / Changed / Found | Anthropic《Getting the most out of Opus 5.5》 |
 | AGENTS.md 不堆重复概览和 lint 规则 | 所引研究在指定样本中未见概览可靠收益；避免复制可由代码获得的信息，不禁止有任务价值的架构地图（[03](../docs/03-context-engineering.md)） |
 | 评审只报会拒绝合并的问题，并说明如何证明它会出错 | Anthropic 官方评审提示 |

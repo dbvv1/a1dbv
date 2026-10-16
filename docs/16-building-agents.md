@@ -116,7 +116,7 @@ Anthropic 的 Agent 设计指南 **[一手]**：Bash 能做几乎所有事，但
 - **先选预算范围**：Claude CLI／Agent SDK 的运行预算按客户端 API 费用估算，恢复历史费用不纳入本次上限；Managed Agents 则按会话累计公开标价，达到后暂停新增模型请求并保留历史与沙箱。托管仍允许执行中的请求及其工具完成并超额，不能当作总账绝不超支。跨任务额度需应用另行累计。**[一手：[CLI reference](https://code.claude.com/docs/en/cli-reference)、[Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets)；研究：选择]**；
 - **内网工具不必等于自建循环**：Managed Agents 可自托管沙箱，让执行、文件和网络出口留在己方；但工具输入输出仍发送到 Anthropic 控制面。若要求这些内容也不得出网，这条路径不合适，换 SDK 也不自动改变云模型的数据边界。**[一手：[Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes)；研究：撤回条件]**；
 - **网络工具默认关闭**：Managed Agents 的 web_search / web_fetch 不受环境网络设置约束，不需要就关掉，需要就用域名白名单 **[一手]**；
-- **决策交给决策模型**：路由、分类、“下一步做什么”这类判断，可以交给 OpenAI Decisions API（public beta，目前只支持 `gpt-6-luna`，官方称比 Responses API 快约 10 倍，支持“概率 / 选项 / 评分”三类问题）或开源的决策模型，置信度阈值须按目标任务校准，不能代替权限审批 **[一手；经验：采用边界]**（见 [02](02-models-and-cost.md#21-新类别决策模型2026-09-起)）。
+- **有限选项判断有缺口才试决策接口**：反复出现的语义路由、分类或检查项预筛，现有规则／模型在质量、等待或成本上不足时，再比较 OpenAI Decisions API 或开源决策模型；不把开放式规划整体改成选项打分。误报、漏报、复核和升级计入总成本，无净收益就撤回。阈值须按目标任务校准，回退与权限由程序守住，见 [02](02-models-and-cost.md#21-新类别决策模型2026-09-起)及[原始契约与比较范围](research/2026-10-10-audit.md#s1d--2026-10-16-决策接口的评分与执行边界)。**[一手；研究：采用边界]**
 
 ## 5. 成本参考
 

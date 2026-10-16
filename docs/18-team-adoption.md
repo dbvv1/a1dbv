@@ -45,7 +45,7 @@ Will Larson 在 Imprint 的推进顺序可以参考 **[社区：原文]**：
 | **数据保留** | ✅ 按实际登录组织、服务入口、模型和功能放行；商业条款下默认不训练不等于零保留，购买 Enterprise 也不自动启用 ZDR。见下方已核边界 **[一手；研究：采用判断]** |
 | **数据驻留** | 分别核存储、推理和端点／第三方处理地区，不凭模型或参数支持直接放行。Anthropic 直连 API 的 `inference_geo` 仅有 `us`／`global`，与存储及端点处理的 workspace geo 分开；OpenAI API 的 GPT-6.1 Sol 支持 US／EU，EU 仍需组织资格、适用保留协议与正确项目／端点。见下方地区边界 **[一手；研究：采用判断]** |
 | **隐私预期** | 2026-10，Anthropic 向警方报告了用户对话中的威胁内容，HN 上的提醒是“你不是在和秘密好友聊天” **[社区]**。敏感内容不要放进云端对话 |
-| **本地模型** | 有强合规要求的场景考虑本地或自托管的开源权重模型（见 [02 第 5 节](02-models-and-cost.md#5-本地--开源权重模型)），但要接受能力差距 |
+| **本地模型** | 有强合规要求时，先核模型、harness、搜索／MCP 与遥测的完整外发路径；再按具体量化、上下文和任务比较本地／自托管方案的质量与总成本，不预设统一能力差距（见 [02 第 5 节](02-models-and-cost.md#5-本地--开源权重模型)）。**[研究：采用边界]** |
 
 **地区边界（2026-10-15，UTC+8 核对）**：[Anthropic 官方](https://platform.claude.com/docs/en/manage-claude/data-residency)当前 workspace geo 仅有 US，US-only 推理按标准 token 费率的 1.1 倍计费；`inference_geo` 不能配置 EU 驻留。[OpenAI 官方](https://developers.openai.com/api/docs/guides/your-data)要求非 US 地区获批滥用监控控制并签适用的 Modified Retention amendment，按实际模型、端点和功能核地区支持。**局限：这些 API 条件不能直接外推到聊天产品、整个 Agent 工具链或第三方处理；不替代自身合同审核。** **[一手；研究：采用判断]**
 
