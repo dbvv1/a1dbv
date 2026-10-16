@@ -1,6 +1,6 @@
 主线：二，兼三、四
-改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；几何验收按消费者实际使用的坐标与单位判定；比较扫描结果前锁工具、数据库和判定身份。[经验]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；未重跑，不归因 Skill 效果。[一手／研究]
+改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；几何验收按消费者实际使用的坐标与单位判定；比较扫描结果前锁工具、数据库和判定身份；调优会修改输入时先核恢复契约与接收入口，再独立验候选。[经验]
+新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；未重跑，不归因 Skill 效果。[一手／研究] 同日补Triton关键字恢复修复、PyTorch接收与2026半输出反例；只读补丁和官方契约，不复跑GPU。
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
@@ -618,3 +618,17 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 [W result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__d130477b/result.json)记录 reward=1，[N result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-no-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__e206127c/result.json)记录 reward=0；CSV 只从工具回显核得，没有独立产物文件与 verifier 逐断言日志。manifest 声明源码 `27738384b1df694ea2ae466e416f476e94d8fab9`；其[判定器](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/software-dependency-audit/verifier/test_outputs.py)的三条期望与 W 相容，却包括 Title／Url 的全字典比较，并以 Package+Version 作键，可能覆盖同一版本的多个 CVE。它不能代替按漏洞身份核集合的实际审计验收。**[一手：产物回显、结果与源码；研究：验收边界]**
 
 两份 config／result 没有历史 verifier 文件哈希或镜像 digest，不能由当前源码断言当次失败的唯一原因。公开费用字段及价格来源为 null，选中集也不含完整重试分母；本节不据运行时间或 token 差额声称美元收益。结论只支持补齐具体参数、冻结外部依赖和核清判定身份，不支持 Skill 的因果胜率或当前强模型净收益。**[一手／研究]**
+
+## 自动调优：重复测量的状态也属于交付契约
+
+**核实：2026-10-17（UTC+8）。** 改变15 §7的下一步选择：重复测量本身改了输入，或相同内核换包装入口后出错，先核恢复与参数传递，复用现有机制做窄修，不以扩大搜索掩盖接入错误。它没有补齐“搜索赢家长期生产仍值得保留”的更强缺口。**[研究：条件选择]**
+
+**原故障与竞争修法。** [Triton #5082](https://github.com/triton-lang/triton/issues/5082)的原地加一内核声明 `restore_value`，以关键字传参后恢复hook仍取位置参数而报IndexError；该例是崩溃，不是它自己证明静默错算。[#5083审阅](https://github.com/triton-lang/triton/pull/5083)比较重排位置列表、缺项补None与完整具名字典；内层heuristics可能补参数，静默截断不合适，最终让hook接收完整字典。[固定0cea7682](https://github.com/triton-lang/triton/commit/0cea768200a9fae1fff9bf66a322af3ab72114ea)按名字clone/copy，正常／异常后恢复及调优后reset_only路径均改为完整参数；回归覆盖位置、关键字两入口，一次调用只应加一。list→dict改变自定义hook接口，不是零成本内部替换。**[社区：原故障；一手：审阅、补丁与测试定义]**
+
+**接收方复用旧克隆路径。** [PyTorch #139851](https://github.com/pytorch/pytorch/pull/139851)于2024-11-08接收为[838958de](https://github.com/pytorch/pytorch/commit/838958de94ed3b9021ddb395fe3e7ed22a60b06c)：把restore_value元数据加入Inductor既有mutated_arg_names，复用其克隆路径；兼容旧restore_idx与新属性，仍暂留kwargs转位置的兼容绕路。测试定义覆盖eager、aot_eager、inductor及compile-time autotune开／关，非Inductor的相应组合明确skip；不能说本仓运行通过，或原生decorator所有参数都被包装支持，当时reset_to_zero等仍被排除。PR有批准与合入，但经历取消／超时和构建失败后force merge，不能报CI全绿。上游[601aec20回补](https://github.com/triton-lang/triton/commit/601aec20e9ee7b20397f501cbedcdadf8acc4005)及维护者所述Inductor静默错误只作接收证据，未独立复测。**[一手：下游固定接入与接收记录]**
+
+**恢复不替代候选资格。** 2026年[Triton #9230](https://github.com/triton-lang/triton/issues/9230)构造两个配置各写一半输出，单个失败，调优后的残留合起来却能通过。维护者解释调用者须保证候选等价，调优器并不知道哪些tensor是输出；关闭是责任边界说明，不是新修复，也不证明2024关键字修复复发。该人工例子支持“独立初态验候选”，不提供生产事故率或吞吐数据。**[社区：可定位示例；一手：维护者契约解释]**
+
+[当前官方autotune API](https://triton-lang.org/main/python-api/generated/triton.autotune.html)仍列restore_value、reset_to_zero及pre/post hooks，明确评估配置会重复运行并重复更新值；自定义hooks会覆盖相应默认恢复逻辑。页面是动态main文档，未固定发行版，只证明读取时原生公开契约，不能外推已安装版本或当前torch.compile的全部支持。清零只适合需要零初态的状态，读取旧值的in-place操作需按契约恢复。**[一手：当前官方文档；研究：入口边界]**
+
+**代价与撤回。** 克隆／恢复增加内存与搬运，自定义hooks迁移和接收方版本桥接也有维护成本；补丁行数不是工时。交付时按任务分别验首次调优、缓存命中后调用及必要别名／外部状态，本链没有这些项目的完整测试证据，不能借本例宣布它们已安全。纯读输入且每候选完整写输出、入口未变且已有隔离时，不额外加restore或清零；真实瓶颈在算法时仍按性能证据继续优化。没有全尝试账本、恢复成本对排名的影响、长期接管工时或当前强Agent对照，不报净收益。**[研究：采用与验证范围]**
