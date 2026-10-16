@@ -1003,3 +1003,16 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L144-L182)有Delay=5，[ATMine](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L193-L209)不设Delay且排除Mine；[消费者](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/GameRules/WeaponInfo.cs#L234-L265)分别直接执行或走延时，[DelayedImpact](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/Effects/DelayedImpact.cs#L19-L40)单位为tick不是秒。[一手] 游戏规则的延迟与为保护操作完整性而延后是不同目的，不统一换成一种调度器。[研究]
 
 **采用与后续验证。** 只为会重入的动作登记资格／来源；登记不代替合法性检查，取消或失败的返还由原规则决定。二改添加反射或连锁爆炸后，预注册检查重入次数、多目标未完成时死亡、同次多个连锁和原有即时规则；必要时才延后到完整操作边界，不新建通用EventBus。[研究] DCSS源码GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later；只提炼机制，不作闭源引擎可直接复制模块。所读只是选定调用链与历史补丁，未运行游戏、引擎、模型或上游测试，不证明全部路径正确或体验改善。
+
+
+## 组合取舍：先修辅助、规则还是动作出口
+
+核实：2026-10-16（UTC+8）。主线三；改变05 §7：不把目标保持、预告与取消分别正确当作同一次玩家决定已成立。先按失败位置选择窄修正，不默认更强辅助／全部可取消；04仍只维护反馈表达，没有新增引擎API或模块。**[研究：采用判断]**
+
+- **位移后不合理转身，修辅助的作用情境。** [Dead Cells 6系列原公告](https://dead-cells.com/patchnotes/6)中，6.0（2018-02-02）允许翻滚后续接武器连击；6.1（02-09，`6da3294a`）另调近战auto-aim，明确举Phaser造成不合理转身为例；6.5又取消Kunai对身后敌人的自动瞄准。这说明连击连续性和辅助朝向可分别取舍，不是一个“更自由”开关。公告未给算法和玩家测量，不能归因于每帧最近目标，也不支持所有攻击锁死目标。**[一手：版本修订；研究：边界]**
+- **命中不等于威胁解除，先对齐敌人当前状态。** Hades II [Hotfix 3（2026-06-03）](https://steamcommunity.com/games/1145350/announcements/detail/670617245259399701)分别修护甲轮廓缺失、Black Coat意外完全抵消不可打断的Chronos攻击及Cerberus喷火追踪过快；[Hotfix 4（06-10）](https://steamcommunity.com/games/1145350/announcements/detail/707773844292634084)修Dire Auto-Seekers防御态破甲后仍免疫硬直。详情提取只返回标题，条目实读自[同一官方汇总的对应标题段](https://steamcommunity.com/app/1145350/announcements/)。不同修复不可拼成同一根因；不可打断也不等于不受伤。**[一手：官方修订；研究：范围]**
+- **应对后反击也是成立的方案，不要求抢断所有威胁。** Furi设计师Benjamin Le Moullec的[2026-03-20复盘](https://cronosthenewdawndesign.substack.com/p/designing-memorable-boss-fights-lessons)将读起手、闪避／招架、恢复期反击连接；一般命中有反应，但The Edge特定狂暴阶段允许承受攻击而不硬直，并用红色气场提示。作者明确这只是Furi的设计选择。这里只提炼使规则例外可辨，不把其常见两种应对或人物规则推广到所有游戏。**[一手：作者复盘；研究：反例]**
+
+**采用与撤回。** 三者分别是横版动作、俯视遭遇与Boss决斗，不构成同条件排名。若原遭遇已清晰、辅助未破坏改选，就保留现有实现；若打中仍挨打源于有意承诺，优先让玩家理解并选择躲避，而非抹除风险。只有组合改变玩家实际选择的证据才能主张体验收益，当前仍缺玩家前后行为、主动调试投入和完整二改结果。**[研究]**
+
+后续获准才以一个既有双敌遭遇加护甲或穿身位移，分别验抢断A与避开A攻击B；观察目标、朝向、敌招是否继续及下一动作资格，不新建全局管理器。本轮没有运行游戏、引擎或模型，不新增实验授权。**[研究：未执行的验证范围]**
