@@ -1,6 +1,6 @@
 主线：二，兼三、四
-改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；几何验收按消费者实际使用的坐标与单位判定。[经验]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。[一手／研究]
+改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；几何验收按消费者实际使用的坐标与单位判定；比较扫描结果前锁工具、数据库和判定身份。[经验]
+新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；未重跑，不归因 Skill 效果。[一手／研究]
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
@@ -204,7 +204,7 @@ print(json.dumps({'openpyxl':openpyxl.__version__,'results':out,'boundary':'In-m
 - **P2**：[Dockerfile](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/Dockerfile)。
 - **P3**：[XLSX Skill](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/skills/xlsx/SKILL.md)、[PDF Skill](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/skills/pdf/SKILL.md)。
 - **P4**：[openpyxl 官方 Pivot Tables 文档](https://openpyxl.readthedocs.io/en/stable/pivot.html)。读取页标题为 3.1.3，本轮运行库为 3.1.5。
-- **P5**：[SkillsBench 论文 v1](https://arxiv.org/html/2602.12670v1)，§3.2、I.5 与 I.7 的 sales-pivot-analysis 案例。未读取完整逐次轨迹或重算成本。
+- **P5**：[SkillsBench 论文 v1](https://arxiv.org/html/2602.12670v1)，§3.2、I.5 与 I.7 的 sales-pivot-analysis 案例。2026-10-13 本节未读取该任务完整逐次轨迹或重算成本；下文 2026-10-17 的运行复核另属 software-dependency-audit，不补齐 pivot 历史运行。
 - **P6**：[verifier](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/verifier/test_outputs.py)、[oracle](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/oracle/solve.sh)。仅源码阅读，未执行。
 - **P7**：[join 语义争议 #996](https://github.com/benchflow-ai/skillsbench/issues/996)。2026-07-12 原报告，2026-10-13 读取仍 open；没有独立复现其 MAX 运行。
 
@@ -591,3 +591,30 @@ XLSX 线索不另扩写正文：[#2013](https://github.com/anthropics/skills/iss
 **撤回也不是算法无价值。** [维护者10-22解释](https://github.com/llvm/llvm-project/pull/104902#issuecomment-2428958718)：重构恢复了此前因比较器引用类型识别而意外关闭的bitset partition分派。它是更大排序路径，不能把回退直接归给AlphaDev的sort3／4／5内核。[#114023](https://github.com/llvm/llvm-project/pull/114023)于10-30以[0fb76bae](https://github.com/llvm/llvm-project/commit/0fb76bae6b2abfe5e0a34557f365a586be989364)重投，明确接受小输入代价以恢复大输入旧退化；固定代码仍保留sort5比较／交换顺序。这不等于小输入也已变快，也不证明所有接收方都应接受同一权衡。**[一手：固定修订；社区：归因与取舍]**
 
 **范围与缺口。** 上述生产反馈不是本仓复测，后续重构包含共享路径变化，不能从其总差分出搜索内核的单独效果；原报告的完整搜索尝试账本、主动维护工时、当前LLM同条件净收益仍缺。#114023作者称CI失败与补丁无关，不当作CI全绿。本轮只读原文、固定代码及公开接收回执，没有运行算法、模型或基准。PerfAgent／Shinka的选中补丁到真实后续接管仍未闭合，因此只收窄交付选择，不声称该缺口已经解决。**[研究：验证边界]**
+
+
+## 依赖扫描：先锁外部数据和判定身份
+
+**核实：2026-10-17（UTC+8）。** 改变 05 §2.5 的选择：先固定扫描器版本、数据库快照与期望答案的身份，再判断还缺哪条指令；精确参数或窄约束已够用时，不增加整套 Skill。本节只读指定公开运行、产物回显及源码，不运行模型、扫描器或上游测试。此前 pivot、Next.js 等案例的历史运行缺口仍分别保留。**[研究：采用判断与范围]**
+
+### 实际执行：离线依赖识别不等于冻结漏洞库
+
+固定 HF revision 为 `f104580363a9642563593c475620196ecd36687d`。同题 MiniMax M3 的 [with 轨迹 W](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__d130477b/trajectory/acp_trajectory.jsonl)与 [without 轨迹 N](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-no-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__e206127c/trajectory/acp_trajectory.jsonl)首条任务文本完全相同；两边展示的锁文件大小及前 50 行相同，但没有全文件哈希，不能断言完整输入字节相同。**[一手：公开 ACP 记录]**
+
+- W 第 6–8 行确实调用离线扫描、CSV 报告、CVSS 提取三个 Skill；第 12 行命令同时带 `--skip-db-update` 与 `--offline-scan`，第 17 行回显三条 CSV。其已查看的预置 DB 更新时间为 2026-01-21。**[一手]**
+- N 第 14 行命令仅用 `--offline-scan`，同条工具输出明确为“Need to update DB”及“Artifact successfully downloaded”；第 21 行回显十四条 CSV，包括更多 minimatch／tar 漏洞。它最终自述使用预缓存库，不能覆盖工具输出已下载新库的事实。**[一手]**
+- 官方 v0.70.0 的 [offline flag](https://github.com/aquasecurity/trivy/blob/8a3177aedf7ee0864920eb1852eef031cd3742b8/pkg/flag/scan_flags.go#L29-L34)说明“do not issue API requests to identify dependencies”，[DB flag](https://github.com/aquasecurity/trivy/blob/8a3177aedf7ee0864920eb1852eef031cd3742b8/pkg/flag/db_flags.go#L27-L37)另说明“skip updating vulnerability database”；v0.71.0 的 [offline](https://github.com/aquasecurity/trivy/blob/9b49920eebb2bf648ba54211617d6078f6105594/pkg/flag/scan_flags.go#L29-L34)与 [DB](https://github.com/aquasecurity/trivy/blob/9b49920eebb2bf648ba54211617d6078f6105594/pkg/flag/db_flags.go#L27-L37)契约相同。因此 `--offline-scan` 不是禁止 DB 刷新的充分条件；这些参数也不等于通用网络隔离。**[一手：官方版本源码]**
+
+W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据库文件哈希。**工具版本及后续数据库均不同，不能把结果差异单独归因于 Skill。** 任务只说可以用离线工具／数据库，没有要求冻结某一天快照；更多记录与固定答案不符，不自动证明真实世界审计更差。**[一手：任务与运行；研究：归因边界]**
+
+### 内容去重先于三次重复的解释
+
+[manifest](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/analysis/skillsbench/v1.1/official-selected/manifest.json)采用 healthy-first latest-3；timeout 只在其他 pass/fail 不足三条时补入，因此不是全尝试分母。[selected_runs](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/analysis/skillsbench/v1.1/official-selected/selected_runs.jsonl)中，with 的 `42320f9d` 与 `d130477b` 虽是两行，但其 config、result、timing 的 Git OID 分别相同，ACP／LLM 的 LFS 内容哈希也分别相同，不能解释为三次独立 with 成功。重复发布的原因未知，不推断数据操纵。**[一手：固定清单与目录元数据；研究：去重判断]**
+
+可复核的内容身份：两者 result OID 均为 `15caf99b31a84ff80c29d7dde14987231247abf1`；ACP SHA-256 均为 `313f37a1a2019d230250ff9eecce4dbd7d362c046a95603889122e083b928713`；LLM SHA-256 均为 `40c5b94481eda64af64aab9fb90042046eb40c38d6a1fbbc2bcc4362cb2f2af9`。依据 [W 目录](https://huggingface.co/api/datasets/benchflow/skillsbench-leaderboard/tree/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__d130477b)、[D 目录](https://huggingface.co/api/datasets/benchflow/skillsbench-leaderboard/tree/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-05__22-55-01-maxeffort/software-dependency-audit__42320f9d)及各自 [W 轨迹元数据](https://huggingface.co/api/datasets/benchflow/skillsbench-leaderboard/tree/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__d130477b/trajectory)／[D 轨迹元数据](https://huggingface.co/api/datasets/benchflow/skillsbench-leaderboard/tree/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-05__22-55-01-maxeffort/software-dependency-audit__42320f9d/trajectory)；本轮下载的 W ACP 哈希与其元数据相符，未下载两份 LLM 全轨迹。**[一手：元数据与内容哈希核对]**
+
+### 产物与判定相容，不等于历史测试身份已闭合
+
+[W result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__d130477b/result.json)记录 reward=1，[N result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-no-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__e206127c/result.json)记录 reward=0；CSV 只从工具回显核得，没有独立产物文件与 verifier 逐断言日志。manifest 声明源码 `27738384b1df694ea2ae466e416f476e94d8fab9`；其[判定器](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/software-dependency-audit/verifier/test_outputs.py)的三条期望与 W 相容，却包括 Title／Url 的全字典比较，并以 Package+Version 作键，可能覆盖同一版本的多个 CVE。它不能代替按漏洞身份核集合的实际审计验收。**[一手：产物回显、结果与源码；研究：验收边界]**
+
+两份 config／result 没有历史 verifier 文件哈希或镜像 digest，不能由当前源码断言当次失败的唯一原因。公开费用字段及价格来源为 null，选中集也不含完整重试分母；本节不据运行时间或 token 差额声称美元收益。结论只支持补齐具体参数、冻结外部依赖和核清判定身份，不支持 Skill 的因果胜率或当前强模型净收益。**[一手／研究]**
