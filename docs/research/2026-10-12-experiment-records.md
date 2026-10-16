@@ -560,8 +560,57 @@ B：相同输入，只多一项显式策略：在官方和项目自身材料之�
 
 运行前提交预注册，执行后再公布候选与判定证据。当前没有执行任何一路。
 
-准备材料已按固定输入逐项核对，参考候选不作为唯一答案。可试用须有全部决定性硬条件的原件依据或具体且证据足够的薄层机制；硬条件未知不计可试用，也不判失败。补齐示例不是额外硬门槛。预先保存的三份材料 SHA-256 如下，核查者使用条件与参考，探索者不接收隐藏参照；结果交付时再公开参照与判定过程。
+以下为 `d5ccf09` 的 v1 历史冻结校验，不代表当时已完成Git交接。参考候选不是唯一答案，未知不自动判失败，补齐示例不是额外硬门槛。v1原约定结果交付时再公开参照；本轮A1改为下述v2公开可交接存档、仅向准备者与核查者分发参考，探索者上下文仍不接收答案。试验产物与判定过程在运行后公布。
 
 - m6-controlled-selection-pilot.md：`d35535a928283e6cec996786ef6106e429a2c0fef62341bfbd21bd190a6ab353`
 - m6-pilot-criteria-v1.md：`0299a005035237ae06b233b2760fbd390b232b86b3ac695f8a3f64237273a4d3`
 - m6-pilot-anchors-v1.md：`1b4f984c01728514e56158ddd1a38933ac511d0ad6da850c18f8234345813748`
+
+
+### A1修复：从Git取得公开交接版v2
+
+2026-10-17（UTC+8）。三份原材料已恢复，逐字节核对上述v1 SHA-256全部一致；条件表有一处私有绝对引用，不能原字节公开。故发布[准备材料v2存档](../../experiments/m6-selection-preparation-v2.json)：仅把该引用改为所指文件名，内容条件不变，但条件表哈希必须改变。任务与锚点原字节不变；这不是用新答案冒充旧冻结件。原hash只作历史识别，不能还原已脱敏的v1条件表；仅凭Git的复核以公开v2作为当前冻结集，不声称能取得全部v1原字节。JSON是传输容器，不是加密或访问控制。
+
+| 可提取材料 | UTF-8字节数 | v2内容SHA-256 | 与v1关系 |
+|---|---:|---|---|
+| m6-controlled-selection-pilot.md | 6363 | `d35535a928283e6cec996786ef6106e429a2c0fef62341bfbd21bd190a6ab353` | 原字节未变 |
+| m6-pilot-criteria-public-v2.md | 8718 | `90e03d762f76a763ddabf555f1b8dffffb04b06dcd05c53ad14d41b542ab5228` | 仅私有引用脱敏；旧hash见上表 |
+| m6-pilot-anchors-v1.md | 10150 | `1b4f984c01728514e56158ddd1a38933ac511d0ad6da850c18f8234345813748` | 原字节未变 |
+
+**准备者／核查者的取得方法。** 在此仓库Git克隆中执行下面命令，固定并输出材料提交SHA，从该Git对象提取而非信任工作树；解析后在新临时目录还原三件UTF-8/LF材料并验长度与哈希。未来运行须记录这个提交SHA及v2版本；若更新内容，先记录新原因和新哈希，不能沿用本表。无须读取其他会话、原执行机器或私人文件。
+
+```bash
+python3 - <<'PY'
+import hashlib, json, pathlib, subprocess, tempfile
+path = 'experiments/m6-selection-preparation-v2.json'
+ref = subprocess.check_output(['git', 'log', '-1', '--format=%H', '--', path], text=True).strip()
+def require(condition, message):
+  if not condition:
+    raise SystemExit(message)
+require(bool(ref), '材料尚未提交，不能作为Git交接验收')
+bundle = json.loads(subprocess.check_output(['git', 'show', ref + ':' + path]))
+require(bundle['version'] == 'v2-public-handoff', '版本不匹配')
+expected = {
+  'm6-controlled-selection-pilot.md': (6363, 'd35535a928283e6cec996786ef6106e429a2c0fef62341bfbd21bd190a6ab353'),
+  'm6-pilot-criteria-public-v2.md': (8718, '90e03d762f76a763ddabf555f1b8dffffb04b06dcd05c53ad14d41b542ab5228'),
+  'm6-pilot-anchors-v1.md': (10150, '1b4f984c01728514e56158ddd1a38933ac511d0ad6da850c18f8234345813748'),
+}
+require(set(bundle['materials']) == set(expected), '材料集合不匹配')
+decoded = {}
+for name, (length, digest) in expected.items():
+  item = bundle['materials'][name]
+  raw = item['text'].encode('utf-8')
+  require(len(raw) == item['bytes'] == length, name + ': 长度不匹配')
+  require(hashlib.sha256(raw).hexdigest() == item['sha256'] == digest, name + ': 哈希不匹配')
+  decoded[name] = raw
+out = pathlib.Path(tempfile.mkdtemp(prefix='m6-preparation-'))
+for name, raw in decoded.items():
+  (out / name).write_bytes(raw)
+  print(name, len(raw), hashlib.sha256(raw).hexdigest())
+print('材料提交:', ref, '提取目录:', out)
+PY
+```
+
+**角色分发边界。** 准备者先完成上述校验，再从任务件抽取本题完整需求、共同要求、统一输出形式、资源边界及本路策略。探索者使用全新上下文，不接收整份存档、条件表、参考候选、排除例或出处，不读取本仓旧案例或准备材料；普通公开搜索自然命中相同原始来源仍允许。已经读过锚点的准备者和本次审查者不担任隔离探索者。核查者取得条件与锚点，以及匿名随机排列的结果，不取得策略标签或执行日志。
+
+**公开性与执行边界。** v2在Git可公开取得，不能声称答案保密、权限隔离或完全盲评；这里只控制实际送入各角色的上下文。发现探索者读到本存档／参考时，应保留泄漏记录并停止将该题计入方法比较，不能换标签掩盖污染。此次交接修复不是实验运行记录；按已确认范围，也必须先发布并核验材料，之后才开跑，不把准备完整记成效果验证。
