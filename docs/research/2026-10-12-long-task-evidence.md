@@ -262,3 +262,19 @@ missing-expected-HEAD: rejected
 ```
 
 **边界**：相等检查不是原子锁，检查后仍可能发生并发checkout／commit；因此不替代串行整合、受检树核对、发布前的父提交核对或远端CAS。同HEAD下的语义重复也可能通过；提交不同而tree相同只说明快照相同，须结合原操作和发布回执判断是否已交付。未测真实客户端恢复、失败率或节省时间，不声称机制已防住所有重复。**[经验：确定性检查及局限]**
+
+
+## 16 页历史页头
+
+历史原文转存：2026-10-16（UTC+8），来自 `docs/16-building-agents.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准，不表示本次重新核实。
+
+```text
+> 核实时间：2026-10-16（UTC+8）补请求超时范围；2026-10-15（UTC+8）局部复核 SDK／托管选型、配置、缓存、预算与程序化工具调用；方案概览基线为 2026-10-08。2026-10-15 完成全文核心建议独立审阅，补 outcomes 终止条件并归一模型价表入口；不代表真实 SDK 或模型效果已验证。
+> 依据 **[一手]**：
+> - Anthropic：Claude API 官方 Skill（随 Claude Code 2.1.294 分发）中的方案比较、Agent 设计和 Managed Agents 文档；克隆查看了 [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)；
+> - OpenAI：developers.openai.com 的 [Agents](https://developers.openai.com/api/docs/guides/agents) 和 [Decisions](https://developers.openai.com/api/docs/guides/decisions) 指南，learn.chatgpt.com 的 [Codex SDK](https://learn.chatgpt.com/docs/codex-sdk)、[app-server](https://learn.chatgpt.com/docs/app-server)、[codex exec](https://learn.chatgpt.com/docs/non-interactive-mode)（Markdown 版）；
+> - Google ADK、AWS Strands、OpenAI Agents SDK 的仓库（只确认了活跃度，2026-10 都有提交）。
+>
+> 前面的章节讲“怎么用现成的 Coding Agent”。这一篇讲**什么时候该自己搭**，以及各家的搭建方式。
+
+```

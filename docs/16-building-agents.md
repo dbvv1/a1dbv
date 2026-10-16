@@ -1,11 +1,7 @@
 # 16 · 自建 Agent：什么时候值得、用什么搭
 
-> 核实时间：2026-10-16（UTC+8）补请求超时范围；2026-10-15（UTC+8）局部复核 SDK／托管选型、配置、缓存、预算与程序化工具调用；方案概览基线为 2026-10-08。2026-10-15 完成全文核心建议独立审阅，补 outcomes 终止条件并归一模型价表入口；不代表真实 SDK 或模型效果已验证。
-> 依据 **[一手]**：
-> - Anthropic：Claude API 官方 Skill（随 Claude Code 2.1.294 分发）中的方案比较、Agent 设计和 Managed Agents 文档；克隆查看了 [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)；
-> - OpenAI：developers.openai.com 的 [Agents](https://developers.openai.com/api/docs/guides/agents) 和 [Decisions](https://developers.openai.com/api/docs/guides/decisions) 指南，learn.chatgpt.com 的 [Codex SDK](https://learn.chatgpt.com/docs/codex-sdk)、[app-server](https://learn.chatgpt.com/docs/app-server)、[codex exec](https://learn.chatgpt.com/docs/non-interactive-mode)（Markdown 版）；
-> - Google ADK、AWS Strands、OpenAI Agents SDK 的仓库（只确认了活跃度，2026-10 都有提交）。
->
+> 编辑更新：2026-10-16（UTC+8）。自建、SDK 与托管的选择；[来源与核查范围](research/2026-10-12-long-task-evidence.md#16-页历史页头)。未实测 SDK 或模型效果。
+
 > 前面的章节讲“怎么用现成的 Coding Agent”。这一篇讲**什么时候该自己搭**，以及各家的搭建方式。
 
 ## 1. 先问：真的需要自建吗？

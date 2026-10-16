@@ -1,6 +1,6 @@
 # Gemini CLI 与 Antigravity
 
-> 核实时间：接入、迁移与沙箱边界于 2026-10-16（UTC+8）补核；恢复范围为 2026-10-15，其余为 2026-10-08。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
+> 编辑更新：2026-10-16（UTC+8）。按接入资格、迁移与隔离需求选择客户端；[来源与核查范围](../research/2026-10-12-community-source-records.md#gemini-页历史页头)。
 > 评级：🧪 **有条件试用**（已有可用 API／企业合同路径）；个人新接入另评估 Antigravity CLI
 
 ## 1. 基本情况

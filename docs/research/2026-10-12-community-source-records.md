@@ -428,3 +428,25 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 - **测试分平台，不合并成一份Windows证明。** [固定测试L51–88](https://github.com/garrytan/gstack/blob/e6edff026519da3e06dce1e91d83932c43527a8d/test/gstack-wtree-windows-paths.test.ts#L51-L88)第一例建真实linked worktree／私有对象目录，通过显式`bash`启动并核对`HEAD^{tree}`；第二例仅在非Windows用git shim合成盘符路径，Windows跳过。[PR #3108](https://github.com/garrytan/gstack/pull/3108)作者的失败→通过及mutation均为Linux记录，并明确只撤掉index修复时测试仍绿：HEAD回退能生成相同哈希，故该用例不单独证明index快路径。上游[Windows Free Tests运行38156016750](https://github.com/garrytan/gstack/actions/runs/38156016750)成功，运行元数据关联PR head `f16fbc6e4dd6247eca6069ff94103049dc643fa4`，实际checkout日志为合成合并提交`42ca1cb`；六分片job日志标Windows Server 2025；固定curation强制纳入此测试，但可读job日志未给出该例逐条结果，不能写成本轮逐例核验或完整`/ship`复测。**[一手：测试、CI元数据与日志；社区：作者本地测试报告]**
 - **后续失败发生在脚本启动前。** [10月15日#3197](https://github.com/garrytan/gstack/issues/3197)的exGeni报告Windows 11／Bun1.4.2、1.91.101.0（`47d639abffa882b8cbb641d7d1dedf08ecada9ec`）：Git Bash手动运行脚本返回tree id，同一脚本被Bun直接spawn则找不到可执行文件；显式bash的独立探针成功。pregate与restamp是实际失败，gate-diff记录`+nowtree`；evidence路径仅源码阅读、未运行。[固定regen调用](https://github.com/garrytan/gstack/blob/47d639abffa882b8cbb641d7d1dedf08ecada9ec/lib/regen.ts#L131-L136)及[evidence调用](https://github.com/garrytan/gstack/blob/47d639abffa882b8cbb641d7d1dedf08ecada9ec/bin/gstack-evidence#L198-L206)确实直接spawn脚本并在失败时丢失指纹。不能把evidence也写成用户已复现，更不能把此故障当盘符修复回退；显式bash的路径回归没有覆盖Bun直接调用。**[社区：单一环境及探针；一手：调用源码；研究：机制区分]**
 - **待修与采用边界。** #3197无评论；其[#3204修复层](https://github.com/garrytan/gstack/pull/3204)及[#3209整合层](https://github.com/garrytan/gstack/pull/3209)本次均open、未合并，不记作已发布恢复。下一次值得改结论的证据是实际消费者入口上的修复与复验，尤其回执确有指纹且被后续检查使用；更多脚本存在、模拟绿灯或版本标题不足以升级平台保证。**[一手：PR状态；研究：复访条件]**
+
+
+## 21 页历史页头
+
+历史原文转存：2026-10-16（UTC+8），来自 `docs/21-agent-patterns.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准，不表示本次重新核实。
+
+```text
+> 核实时间：2026-10-11（UTC+8；原有条目检索截至 2026-10-10 UTC；验证回执小节于 2026-10-11 UTC 补核，Windows 维护链于 2026-10-16 UTC+8 复核）。
+> 评级针对机制的采用范围，不是项目排名。本轮没有安装这些框架，没有跑生产力对照；星数、市场收录和厂商效果宣称都不等于已证明适合本仓库。
+
+```
+
+
+## Gemini 页历史页头
+
+历史原文转存：2026-10-16（UTC+8），来自 `docs/01-agents/gemini-cli.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准，不表示本次重新核实。
+
+```text
+> 核实时间：接入、迁移与沙箱边界于 2026-10-16（UTC+8）补核；恢复范围为 2026-10-15，其余为 2026-10-08。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
+> 评级：🧪 **有条件试用**（已有可用 API／企业合同路径）；个人新接入另评估 Antigravity CLI
+
+```
