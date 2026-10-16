@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、接替/并存身份取舍及恢复后的逻辑数据集核对
-新证据：Immich审查、接管/学习实验；CBM原条件恢复及10-16补MSIX/终端对照与升级回执；PocketBase迁移、Rollup原生加载、Syncthing/Tailscale接替链；另补Immich恢复后错连库名的原用户重试；未补足实机/支持工时
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物分开
+新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档报告、固定修复与备份建议，尚无修后用户复测/支持工时
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -164,6 +164,22 @@
 **当前恢复约束与反证。** 2026-10-16回读[官方恢复说明](https://docs.immich.app/administration/backup-and-restore/)明确：v2.5.0变更备份／恢复流程，更早备份须用版本选择器查看对应手工恢复说明；当前优先推荐Web恢复，恢复会替换现有数据库。文档亦说明数据库保存文件路径及元数据，数据库备份不含照片／视频，文件须另备。因此不把2025年帖中的命令复制成现行教程，也不将任何“文件仍在”推成数据库可省略。真正数据缺失仍可能需要恢复；核对目标是选择恢复动作之前的诊断，不是永远不恢复。**[一手：当前产品文档；经验：采用边界]**
 
 **归因与停止边界。** 原帖没有可靠的原始`.env`、数据库清单、备份内容核对或完整操作日志；协助者关于目录已被清空的说法也是猜测。因此无法判定数据此前被删除、仍留在原卷，还是最终由备份重建；不能宣称这次恢复本来不必要，或量化避免数据损失的收益。ChatGPT参与仅由用户自报，不能将具体错误库名归因到未公开的模型输出。本轮只读公开原帖、含折叠回复的完整讨论、固定源码与当前文档，未运行Immich、数据库或模型。若接收方已有旧记录／文件校验，直接复用；无持久数据项目不增加本项。**[社区／研究：证据边界]**
+
+## 补充证据：修复导出器不等于修复已存备份
+
+核实：2026-10-16（UTC+8）。**改变18 §7：若已确认导出产物中的关联文件被覆盖，应保留现有备份，从完好来源生成独立新产物并核对归属；不把升级工具或重压旧目录当作旧产物已修复。** 这是基于下列源码的采用判断，区别于上一节接收端连错数据库；不要求所有备份重做，也不提供生产恢复命令。**[研究：条件建议]**
+
+**原接收者实际导入后发现串档。** [Paperless-ngx #14428](https://github.com/paperless-ngx/paperless-ngx/issues/14428)的lausser于2026-10-12报告：官方Docker 3.2.1／OpenSUSE MicroOS中，两份日期与标题相同、原文件扩展名不同的文档，原件导出名各异，缩略图和归档PDF却共用名称。三文档最小复现含一份无关对照；用户报告导入后第一份文档的派生文件变成第二份内容，原件与对照正确。ZIP有重复entry警告，目录导出则覆盖且无同类警告。公开证据是命令、manifest摘录和校验结果自报，未提供完整导出包；不据此估计所有用户受影响比例。**[社区：原用户运行报告]**
+
+**另一位维护者修的是产生名称的规则。** stumpylog的[PR #14429](https://github.com/paperless-ngx/paperless-ngx/pull/14429)于2026-10-12合并为[`6e717817c6cf09b4f3570db5cd4272e15ed0d7c4`](https://github.com/paperless-ngx/paperless-ngx/commit/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4)。[修前父提交](https://github.com/paperless-ngx/paperless-ngx/blob/3e0fa7377187fb987d3141d80b603526cce29dcc/src/documents/management/commands/document_exporter.py#L503-L554)按完整原文件名判唯一，却去掉扩展名生成缩略图／归档名；[原报告3.2.1固定源码](https://github.com/paperless-ngx/paperless-ngx/blob/7575d6078227ebdb4cf443f263d53ebc7575aa37/src/documents/management/commands/document_exporter.py#L500-L552)也有相同机制。[修后L503–557](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/management/commands/document_exporter.py#L503-L557)改按去扩展名的完整相对路径判重，再递增编号。[新增测试L1472–1539](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/tests/test_management_exporter.py#L1472-L1539)检查两文档的三类导出名不同、各自内容正确；它只调用目录导出，没有运行ZIP导出或导入，不能代表完整恢复验收。**[一手：固定补丁与测试定义，未运行]**
+
+**消费端不替旧manifest消除歧义。** 修复提交只改导出器与测试，未改importer。固定消费者[先解ZIP到临时目录](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/management/commands/document_importer.py#L461-L480)，再[按每个pk的manifest路径复制文件](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/management/commands/document_importer.py#L624-L666)。两个不同文档共用`__exported_thumbnail_name__`／`__exported_archive_name__`时，不会因升级自动恢复为两个来源。识别本类受影响产物应核这些映射及内容，不能只看原文件名唯一或导出没警告；[导入前检查](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/management/commands/document_importer.py#L543-L585)主要检查原件／归档路径存在且可读，不核这种归属冲突。**[一手：固定源码；研究：机制推论]**
+
+**维护者建议与本仓处理选择分开。** [合并后的评论](https://github.com/paperless-ngx/paperless-ngx/pull/14429#issuecomment-6133609311)建议在发布说明提醒重新打包，原话为“suggest re-zipping”，以确保有已知良好的备份；它不是完整的重新导出教程，也不是原用户已重试成功。仅重压已有目录不会补回已覆盖的字节；从完好源生成独立新产物是本仓推导的条件选择。不能无条件用“更新旧导出目录”替代：[目录输出L141–165](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/export/sinks.py#L141-L165)默认按mtime与size跳过已有文件，开启checksum比较也须调用者提供校验值，而[缩略图复制L574–585](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/management/commands/document_exporter.py#L574-L585)未传该值。本轮未复现同属性错内容的增量导出，只据实现保留边界；新产物验收前不删除现有备份。**[社区：维护者建议；一手：源码；研究：采用推论]**
+
+**反证：原件完好且允许重建时，不必恢复每份派生文件的原字节。** [固定文档L338–351](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/docs/administration.md#L338-L351)允许省略缩略图／归档，再用已有工具重建；算法变化可能使内容和checksum改变。这是由交付要求决定的替代路线，不等于所有归档都可丢弃，也不证明仅剩坏备份时均能恢复。可复用已有sanity checker：[归档检查](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/sanity_checker.py#L240-L279)比较checksum，[缩略图检查](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/sanity_checker.py#L196-L212)只核存在与可读；整体检查通过不补作所有缩略图归属正确的证据。**[一手：固定文档与源码；研究：选择边界]**
+
+**发布、复测与AI归属。** 2026-10-16查询[公开release列表](https://github.com/paperless-ngx/paperless-ngx/releases)最新为[v3.3.1](https://github.com/paperless-ngx/paperless-ngx/releases/tag/v3.3.1)，其发布时间早于修复合并；PR归入3.3.2里程碑，不能写“升级最新版已修”。截至本次读取，issue／PR没有原用户修订后重导出与恢复回执；合并、测试定义与机器人质量报告不补这个缺口。Claude仅由报告者披露用于整理观察报告，不能归因维护者补丁或推断AI提效。本轮只读公开报告与固定源码，未运行Paperless、ZIP导出／恢复、模型或上游测试，未核全套CI、主动工时及长期收益。下一条有价值证据是固定修订版的新导出与原触发条件恢复结果；只有发布通知或继续增加检查项时不扩写。**[一手：发布／PR元数据；社区：使用披露；研究：证据边界]**
 
 ## 18 专题历史核查范围
 
