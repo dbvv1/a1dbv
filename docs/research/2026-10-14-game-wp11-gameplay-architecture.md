@@ -938,3 +938,37 @@
 [研究] **采用与二改，仅预注册：** 沿现有交互与存档区分已接受／已交付等历史事实、当前条件与推进入口。把“先接再取”改成允许先取物，再验接取、暂存后回来、交付消耗、离开保存与恢复：当前可交付提示对应允许的物品范围，完成与永久解锁不因物品已消耗而回退。设计若改为持续携物／占领才开放，就保留可逆规则；不能把所有世界条件锁存。AI追读写路径并补回归，人决定哪些事实永久、哪些条件允许失效；已有组件能表达就不加通用任务图或事件溯源。
 
 **许可与实际验证：** [一手／研究] [Flare引擎](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#L28-L38)源码GPL-3.0-or-later；[Empyrean Campaign](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/README.md#L17-L25)数据／美术CC-BY-SA 3.0并允许后续版本，不能套用引擎许可。Shattered相关源码文件头标GPL-3.0-or-later。这里只提炼机制，不复制代码、剧情或资产，不推荐为闭源Unity／Unreal即插用底座；共同建议与引擎无关。仅读固定源码、原问题与补丁，未运行游戏、引擎、模型或上游用例，未证明全部分支、保存故障恢复、玩家体验或AI效率收益。
+
+## 效果时钟补研：调度时间、行动次数与到期显示
+
+主线三，GC；核实：2026-10-16（UTC+8）。
+改变建议：05 §6 持续效果按行动调度、指定次数或模拟时间选择；首末跳、到期与剩余显示一起定义，不把“声明时钟”简化为统一 N 秒。
+新证据：Shattered Pixel Dungeon 的毒／加速消费者与历史显示修订，不同作者 Flare／Empyrean 的秒数效果、暂停及恢复路径。[研究]
+
+### 回合玩法：调度时间不等于输入次数
+
+[一手：固定源码] Shattered Pixel Dungeon 沿用快照 `57a4e06a4caf162446d1c28caa7983f0493fecf0`。[Actor L39–56](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L39-L56)定义 TICK 与同时间优先级，[调度 L250–325](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L250-L325)选择累计时间最早的 Actor，再按优先级打破平局；[Hero L868–887](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L868-L887)在无待执行动作、未休息时进入 ready 并返回等待。因此这条等待玩家输入的路径不随现实秒数扣效果时间，不能推广成所有回合游戏都如此。
+
+[一手] [Char.speed L770–782](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L770-L782)读取 Haste，[Hero移动 L1873–1906](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L1873-L1906)按移动耗时除以速度消费调度时间；[Poison.act](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java)自行跳伤、消费 TICK，再减少剩余量并判断移除。[研究] 同一段毒的调度时间内，加速可以改变移动机会，不能改成“每次走一步扣一跳”，也不能从移动加速推出所有攻击和效果都加速。
+
+[一手] [FlavourBuff L26–47](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FlavourBuff.java#L26-L47)在被调度时移除；[Buff.visualcooldown L135–143](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Buff.java#L135-L143)为显示采用 cooldown+1，注释解释普通 Buff 晚于英雄行动。[研究] 借的是按行动边界解释剩余值，不照搬加一；若玩法承诺“接下来几次有效攻击”，应直接按对应行动消费，而非用调度时间近似次数。这是条件建议，不声称 SPD 所有效果采用同一规则。
+
+### 即时玩法：模拟秒、菜单与恢复各有边界
+
+[一手：固定源码与实际配置] 本轮读取 `flareteam/flare-engine@1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f`（2026-10-05）与 `flareteam/flare-game@af6eee6d339ac98011864bfe89da837fe7769c28`（2026-08-08）两个主干快照，不冒称已验证发行组合。Empyrean Campaign 的 [Ranger L25–66](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/categories/ranger.txt#L25-L66)实际给 Haste 的移动与攻击效果分别配置秒数；[毒云配置](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/base/ranger/poison_shot_aoe_1.txt)授予 poison，[effects定义](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/effects.txt)将其映射到 damage。这是实际游戏内容消费者，不是只有框架功能清单。
+
+[一手] [Timer L188–244](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/Utils.cpp#L188-L244)按逻辑步递减，以配置步频判整秒；[EffectManager L390–497](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/EffectManager.cpp#L390-L497)先移除已到期效果，再检查本步周期效果，最后推进计时器。周期判断取剩余时间的整秒边界，不足一秒另有初始触发条件。[研究] 只写“持续 N 秒”不能决定首跳、末跳与跳数；该实现也不等于“一定等满一秒才第一跳”。这里只提炼需要明确的边界，不把 Flare 条件推广为默认周期算法。
+
+[一手] [GameStatePlay L857–900](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/GameStatePlay.cpp#L857-L900)仅在未暂停时执行正常角色更新，角色经 [Avatar L490](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/Avatar.cpp#L490)进入 [StatBlock L1096–1097](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/StatBlock.cpp#L1096-L1097)推进效果。[MenuManager L917–919](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/MenuManager.cpp#L917-L919)另按 menus_pause 决定普通菜单是否暂停，退出菜单等另有强制条件；[main L195–235](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/main.cpp#L195-L235)在最小化恢复时重置逻辑时间基准，暂停时也避免累积补帧。[研究] 只有设计要求冻结的间隔才不消费、也不在恢复时追补；菜单中时间继续是另一种合法政策。这里只核正常更新与恢复路径，不宣称暂停屏蔽全部状态修改。
+
+### 显示修订与二改预注册
+
+- [一手：历史用户报告、维护者诊断与补丁] SPD [#1707](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1707)报告加速下时间冻结显示 -0；[维护者解释](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1707#issuecomment-2115939937)称逻辑容忍微小负数以免少给一次行动，显示未同步处理。[c9c6380](https://github.com/00-Evan/shattered-pixel-dungeon/commit/c9c63803492878a7fab35c2be3b74219440de9d2)修正相关图标取整与描述下限。未取得原用户修复后复测；不能从关单推当前全部到期显示正确
+- [一手：历史维护者解释的反例] SPD [#1843](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1843)报告 Salt Cube 下剩余回合显示17、17、15；[维护者2024-09-18回复](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1843#issuecomment-2359484764)解释 Buff 速度变化，但数值只在其行动时更新，并选择保留。[研究] 显示跳变不自动证明结算错误，也不证明玩家必然能理解；该历史反馈不当作当前复现
+- [一手：近期源码修订] Flare [58f0e5b，2026-07-06](https://github.com/flareteam/flare-engine/commit/58f0e5b1242680d6575e5035c960f3a5f025aaf7)把护盾剩余强度与计时字段分开，使有期限护盾的图标 tooltip 也能显示剩余时间。它支持分别表达资源量与期限，不证明毒／加速有过同一缺陷；没有独立用户复测或体验收益测量
+
+[研究] ✅ 沿既有行动队列、模拟更新与效果实例确定推进单位、首末跳、移除和显示，保留每种玩法自己的暂停政策。不为效果种类增加而统一 N 秒、所有输入减一或搬入另一游戏调度器；本节不改变既有多来源合并与撤销建议，也不重复数值组合与命中连锁。
+
+[研究] **二改预注册，未执行：** 同一毒效果新增一种移动加速，检查快慢动作、等待、临界到期时的跳伤及实际行动机会；承诺按次数消费才核对应有效行动。即时版本在下一跳前、到期前分别打开普通菜单、正式暂停与切后台，再恢复，按各自政策核继续或冻结，冻结路径不得补出一串积压跳伤。记录实际状态、计时／次数与 UI 更新边界；AI 可追消费者和补回归，人决定时间压力与可读性。没有具体语义冲突时保留现有简单实现，不以显示更平滑代替结算正确。
+
+**许可与实际验证：** [一手／研究] SPD 对应源码文件头标 GPL-3.0-or-later；Flare 引擎 [README许可节](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#license)说明代码 GPLv3-or-later，游戏内容根 [LICENSE.txt](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/LICENSE.txt)为 CC-BY-SA 3.0。只读固定源码、配置、提交与公开讨论，不复制代码／资产，不列作闭源 Unity／Unreal 项目可直接接入的默认底座。未安装、运行游戏／引擎／模型或做玩家实验，未验证快照组合兼容、跨设备恢复或净收益；通用时间／行动语义维护一份，不新增双引擎重复实现。
