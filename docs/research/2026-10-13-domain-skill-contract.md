@@ -1,6 +1,6 @@
 主线：二，兼三、四
 改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；几何验收按消费者实际使用的坐标与单位判定；比较扫描结果前锁工具、数据库和判定身份。[经验]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；未重跑，不归因 Skill 效果。[一手／研究]
+新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；未重跑，不归因 Skill 效果。[一手／研究] 同日补Triton关键字恢复修复、PyTorch接收与2026半输出反例；只读补丁和官方契约，不复跑GPU。
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
@@ -618,3 +618,13 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 [W result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__d130477b/result.json)记录 reward=1，[N result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-no-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/software-dependency-audit__e206127c/result.json)记录 reward=0；CSV 只从工具回显核得，没有独立产物文件与 verifier 逐断言日志。manifest 声明源码 `27738384b1df694ea2ae466e416f476e94d8fab9`；其[判定器](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/software-dependency-audit/verifier/test_outputs.py)的三条期望与 W 相容，却包括 Title／Url 的全字典比较，并以 Package+Version 作键，可能覆盖同一版本的多个 CVE。它不能代替按漏洞身份核集合的实际审计验收。**[一手：产物回显、结果与源码；研究：验收边界]**
 
 两份 config／result 没有历史 verifier 文件哈希或镜像 digest，不能由当前源码断言当次失败的唯一原因。公开费用字段及价格来源为 null，选中集也不含完整重试分母；本节不据运行时间或 token 差额声称美元收益。结论只支持补齐具体参数、冻结外部依赖和核清判定身份，不支持 Skill 的因果胜率或当前强模型净收益。**[一手／研究]**
+
+## 自动调优：重复测量的状态边界
+
+**2026-10-17（UTC+8），仅保留研究，不扩15正文。** 重复测量修改输入或换编译入口后异常，先核参数传递及恢复；确认缺陷才窄修。当前证据补充接入边界，没有改变15的首选与推荐行，也未闭合搜索赢家长期生产收益。
+
+[Triton #5082](https://github.com/triton-lang/triton/issues/5082)是kwargs下恢复hook取位置参数导致IndexError，不是该例自身证明静默错算。[#5083](https://github.com/triton-lang/triton/pull/5083)比较重排位置、缺项补None与具名字典，最终[0cea7682](https://github.com/triton-lang/triton/commit/0cea768200a9fae1fff9bf66a322af3ab72114ea)按名字恢复并补位置／关键字回归；hook接口从list改dict有兼容成本。**[一手：故障、审阅及固定补丁]**
+
+[PyTorch #139851／838958de](https://github.com/pytorch/pytorch/commit/838958de94ed3b9021ddb395fe3e7ed22a60b06c)把restore_value传入既有mutated_arg_names克隆路径，兼容旧属性并暂留kwargs绕路；测试定义覆盖不同入口，但部分组合skip，当时不支持reset_to_zero等全部原生参数。PR经历取消、超时与构建失败后force merge，可说接收与补测试，不能说CI全绿。[2026年#9230](https://github.com/triton-lang/triton/issues/9230)另构造两候选各写半份输出、残留组合通过的例子；维护者解释候选等价由调用者保证，不是2024修复复发或新生产事故。**[一手／社区；研究：范围]**
+
+[当前原生autotune文档](https://triton-lang.org/main/python-api/generated/triton.autotune.html)仍区分恢复、清零及覆盖默认逻辑的自定义hooks；动态main文档不能代替已安装版本或包装层支持。需要旧值的原地更新不能只清零；候选应从独立初态核正确性。克隆有内存／搬运成本，纯读且完整写输出、隔离已有保障时不默认加恢复。首次调优、缓存命中、别名及外部状态的完整验收仍缺；本轮只读，未跑GPU／模型，不报告排名或净收益。完整早期调查保留在合并历史的 `20023cae`，此处删去重复推导，保留决定性证据与反证。
