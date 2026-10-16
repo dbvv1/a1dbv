@@ -942,7 +942,7 @@
 ## 效果时钟补研：调度时间、行动次数与到期显示
 
 主线三，GC；核实：2026-10-16（UTC+8）。
-改变建议：05 §6 持续效果按行动调度、指定次数或模拟时间选择；首末跳、到期与剩余显示一起定义，不把“声明时钟”简化为统一 N 秒。
+改变建议：05 §7 持续效果按行动调度、指定次数或模拟时间选择；首末跳、到期与剩余显示一起定义，不把“声明时钟”简化为统一 N 秒。
 新证据：Shattered Pixel Dungeon 的毒／加速消费者与历史显示修订，不同作者 Flare／Empyrean 的秒数效果、暂停及恢复路径。[研究]
 
 ### 回合玩法：调度时间不等于输入次数
@@ -972,3 +972,19 @@
 [研究] **二改预注册，未执行：** 同一毒效果新增一种移动加速，检查快慢动作、等待、临界到期时的跳伤及实际行动机会；承诺按次数消费才核对应有效行动。即时版本在下一跳前、到期前分别打开普通菜单、正式暂停与切后台，再恢复，按各自政策核继续或冻结，冻结路径不得补出一串积压跳伤。记录实际状态、计时／次数与 UI 更新边界；AI 可追消费者和补回归，人决定时间压力与可读性。没有具体语义冲突时保留现有简单实现，不以显示更平滑代替结算正确。
 
 **许可与实际验证：** [一手／研究] SPD 对应源码文件头标 GPL-3.0-or-later；Flare 引擎 [README许可节](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#license)说明代码 GPLv3-or-later，游戏内容根 [LICENSE.txt](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/LICENSE.txt)为 CC-BY-SA 3.0。只读固定源码、配置、提交与公开讨论，不复制代码／资产，不列作闭源 Unity／Unreal 项目可直接接入的默认底座。未安装、运行游戏／引擎／模型或做玩家实验，未验证快照组合兼容、跨设备恢复或净收益；通用时间／行动语义维护一份，不新增双引擎重复实现。
+
+## 属性修饰补研：计算顺序与重算
+
+核实：2026-10-16（UTC+8），主线三／GC。改变05第7节：效果所有权与层数不足以定义计算；首次和重建采用同一顺序，区分派生上限与已发生的资源变化。[研究]
+
+**真实二改失败。** Wesnoth [#4419维护者例子](https://github.com/wesnoth/wesnoth/issues/4419#issuecomment-537258606)是先设最大HP为100，再增加100，得到200；重建按修改类型重排后却变100。[报告者补充](https://github.com/wesnoth/wesnoth/issues/4419#issuecomment-537261328)指出移除无关修改也可触发这种重建。[2020-08-20合入的#5085](https://github.com/wesnoth/wesnoth/pull/5085)改为沿修改记录顺序重放，不是把讨论中的每种候选都实现。[一手：公开维护链]
+
+**固定消费者。** 1.18.5对应`7a60ccb925afadc8ae7d4f47891f5ab329786da8`，不称最新版本。[到期删除](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/unit.cpp#L1237-L1267)会进入重建，[恢复基础与应用修改](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/unit.cpp#L984-L1026)及[记录顺序](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/unit.cpp#L2583-L2594)吻合该政策。[当前HP等状态](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/unit.cpp#L186-L207)另保留并受新上限约束，不自动满血。实际[Strong特质](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/data/core/macros/traits.cfg#L128-L146)修改近战，[攻击字段处理](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/attack_type.cpp#L431-L445)后仍经[战斗计算](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/actions/attack.cpp#L182-L207)等后续规则，不能将基础字段当最终扣血。[一手：固定源码]
+
+**没有通用倍率袋。** SPD 4.0.2固定`57a4e06a4caf162446d1c28caa7983f0493fecf0`，[萨满](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Shaman.java#L153-L170)实际授予虚弱／易伤；[攻击链](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L479-L512)先对攻击者虚弱乘0.67、经过取整与防御处理、扣护甲，再对目标易伤乘1.33，之后仍有攻击钩子、damage与护盾，不能称中间值为最终HP差。[治疗药](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java#L76-L84)移除效果，下次攻击重查，不反算上一击。[一手／研究]
+
+OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实际等级规则](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/mods/ra/rules/defaults.yaml#L60-L83)影响伤害；[发射侧／装甲处理](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Warheads/DamageWarhead.cs#L73-L90)和[承伤侧处理](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/Health.cs#L158-L189)分阶段，存在整数转换；禁用[DamageMultiplier](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/Multipliers/DamageMultiplier.cs#L32-L35)返回100%。[历史乘算评审](https://github.com/OpenRA/OpenRA/pull/6079#discussion_r15618105)关于200%与50%回到100%的讨论起点是装填间隔，不伪称伤害bug；这里只支持计算语义须明确，不能推广为整个管线只取整一次。[一手／研究]
+
+**二改仅预注册。** 在已有修饰A上加入B，比较首次与重建、删除无关修饰、A先到期只剩B，以及期间永久成长后移除临时效果；顺序有玩法含义就保留，不机械要求所有输入顺序等价。另核小伤害、护甲抵消、取整、上限降低与当前HP，避免重算重复治疗／扣血。现有函数可表达就复用，不以效果数量增加为由引入DSL。[研究]
+
+**许可与验证。** Wesnoth相关文件为GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later；只提炼机制与公开链接，不将其作为闭源Unity／UE可直接复制的底座。固定源码、历史修复与消费者阅读，不等于本仓重现缺陷或当前版本全部正确；未运行游戏、引擎、模型或上游测试，不证明维护成本、手感或AI收益。[一手／研究]

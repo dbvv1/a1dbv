@@ -153,6 +153,8 @@
 
 **[研究] Unity 继续用定义＋角色自己的活效果集合；UE 已采用 GAS 时沿用它的聚合配置。** [一手] Unity [SO 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html)支持多对象共享数据，因此剩余时间与来源仍放实例；GAS 的 [StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)区分独立实例、按来源、按目标聚合，[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)又区分清整栈与减一层后刷新。[研究] 不把 GAS 的 None 读成“同类效果只留一个”，也不为两种状态迁移整套系统。**局限：句柄与计数只能表达所有权，不能替玩法决定合并、强弱和到期规则。** 二改先验两来源交错结束、重复清理、短效果覆盖长效果和驱散后重施；完整来源、反证与预注册见 [WP11 效果叠加补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#效果叠加补研来源所有权不等于合并规则)。
 
+**[研究] ✅ 第二种增减伤加入时，把计算顺序写清，而不只增加层数。** 明确修饰读取基础值还是上一阶段结果、固定加减／护甲的先后、取整和限幅位置；可撤销属性沿基础值与有效修饰重算，首次计算与重算保持同一政策，不靠反向加减／除法恢复旧值。当前 HP 等已经发生的资源变化另存，最大值变化如何影响它由玩法决定。Wesnoth 曾因重放次序变化让最大 HP 从200变100，SPD 又把虚弱与易伤放在护甲两侧。[一手／研究] 先沿现有属性／伤害函数验“移除无关修饰不改变其余结果”，不造公式语言；**明确规则不代表所有效果可任意组合**，维护证据与二改边界见 [WP11 数值重算](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#属性修饰补研计算顺序与重算)。
+
 ### 选敌：先保意图，再调辅助
 
 **[研究] ✅ 需要持续攻击玩家所选对象时，先定义候选、保持与切换，别用每帧最近目标代替意图。** 沿现有武器／输入状态说明哪些对象进入自动候选、旧目标何时保留或失效、玩家怎样改选；手动目标也可以是位置。自动候选可比手动可选范围窄，但须保留玩法需要的直接选择路径。最近目标、持续自动重选或精确手动瞄准本来就是玩法时，保留简单方案，不默认增加锁定管理器。
