@@ -1,10 +1,12 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 新增官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 新增官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：2026-10-16 UTC 补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
-## 当前结论摘要（2026-10-14 UTC）
+## 当前结论摘要（2026-10-16 UTC）
+
+- **✅ Unity 批量写入后再消费新资产**；scope 内不依赖完整导入结果，最外层释放后核相关资产；逐项失败与异常分别检查，不把批量控制当原子回滚，见 §12。[一手／经验]
 
 - **✅ 安装／配置／执行／验收分开**；先核已有入口，按缺口补组件，UnrealClaude 不外推 UE 5.5／5.6，脚本审批不代表宿主全局审批，见 §11。[一手／研究]
 
@@ -138,7 +140,7 @@ Epic 技能仓库 [LICENSE](https://github.com/EpicGames/unreal-engine-skills-fo
 
 ### 4.2 Interchange 已有的契约比 replace=true 更细
 
-[5.8 UAssetImportTask](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Editor/UnrealEd/UAssetImportTask)分别提供 bReplaceExisting 与 bReplaceExistingSettings；DestinationName 在走 Interchange 时应由 pipeline 指定，该 task 字段被忽略。异步必须等 IsAsyncImportComplete，再读 GetObjects／ImportedObjectPaths，不能把“没有对话框”当导入完成。[一手]
+[5.8 UAssetImportTask](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Editor/UnrealEd/UAssetImportTask)分别提供 bReplaceExisting 与 bReplaceExistingSettings；DestinationName 在走 Interchange 时应由 pipeline 指定，该 task 字段被忽略。异步可先查 IsAsyncImportComplete，结果就绪后再读 GetObjects／ImportedObjectPaths；不能把“没有对话框”当导入完成。另核 [Python 5.6 AssetImportTask](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/AssetImportTask?application_version=5.6)：直接 `get_objects()` 会阻塞到异步结果就绪，`is_async_import_complete()` 提供非阻塞查询，故不要求所有调用都先轮询；这条阻塞行为仅按所读 5.6 契约记录。[一手；2026-10-16 补核]
 
 [5.8 FImportAssetParameters](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/InterchangeEngine/FImportAssetParameters)另有 ReimportAsset、ReimportSourceIndex、OverridePipelines、bFollowRedirectors 和完成回调。不要把不同类型的同名字段混成一份通用参数表；它自身也有 DestinationName，不应从 UAssetImportTask 的限制推论这个类型也忽略它。[一手＋研究]
 
@@ -355,3 +357,27 @@ UnrealClaude 的 [UnrealClaudeSettings.h](https://github.com/Natfii/UnrealClaude
 Unreal 的[官方 MCP 契约](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)允许运行时托管，但须 `AddTool` 显式注册，服务器没有认证，不应暴露本机之外。打包版只有缺必要观察／动作入口时才评估开发或测试版窄工具，不将其写成所有项目的验证前置；注册成功也不证明真实输入与体验。编辑器内容试错不能替代版本控制历史与恢复点。**[一手；研究：采用边界]**
 
 仅公开文档及跨页一致性核查，未安装、运行引擎、测试帧字段或验证网络安全。
+
+## 12. 批量写入与消费新资产分两段
+
+2026-10-16 UTC 核实；改变 01 §5 的批处理顺序与失败处理，不新增管线或 Agent 桥。[研究]
+
+### 12.1 暂停导入期间，不消费尚未完整导入的新资产
+
+[Unity 6.3 StartAssetEditing](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.StartAssetEditing.html)明确：暂停期间新建资产尚未在数据库中完整建立，部分 API 不会按预期工作；批内只做不依赖完整导入结果的操作。Start／Stop 采用嵌套计数，调用数量配平才恢复导入。因此把复制／移动／导入与随后加载、赋引用分开；内层 helper 返回或调用一次 Stop，不足以保证外层暂停已结束。[一手／经验]
+
+[AssetEditingScope](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.AssetEditingScope.html)用 `using` 自动 Dispose；直接配对调用则用 `try/finally` 保证释放。既有固定 [UnityCsReference 6000.0.84f1，`0c7f0bf` 的 AssetDatabase.bindings.cs L192–242](https://github.com/Unity-Technologies/UnityCsReference/blob/0c7f0bfc4f9b21d3d84fffc9ee9001ad82f0fbc4/Modules/AssetDatabase/Editor/ScriptBindings/AssetDatabase.bindings.cs#L192-L242)显示：构造调用 Start，显式 Dispose 调用 Stop；终结器仅告警，不从终结器线程调用 Stop。不能以等待垃圾回收代替释放。该源码是所标 6.0 快照的托管包装，不冒充 6.3 native 实现。[一手：版本文档／固定源码；经验：采用方式]
+
+### 12.2 释放不是整批成功，也未承诺原子回滚
+
+[6.3 CopyAsset](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.CopyAsset.html)在部分过程失败时返回 false，并将错误／警告写入日志；[MoveAsset](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.MoveAsset.html)成功返回空字符串，否则返回错误消息。因此只捕获异常会漏掉这些单项失败；应核每项返回，再于相关导入完成后回读实际资产。[一手／经验]
+
+本次所读批量 API 契约未承诺原子回滚。固定托管 scope 仅包装 Start／Stop，底层是 native extern；这不证明任意失败时底层必定保留或撤销哪些写入。异常后先核已发生的变化，再依项目恢复点处理，不能把 `finally`／Dispose 执行成功写成“整批已恢复”。恢复范围仍需目标项目实测，不新造事务服务。[研究：证据范围；经验：失败处理]
+
+### 12.3 回调可回读，但首次回调不代表预期集合全部完成
+
+[6.3 OnPostprocessAllAssets](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetPostprocessor.OnPostprocessAllAssets.html)在导入完成后调用，允许加载等资产操作；但对多个独立资产的 bulk 操作可能逐资产调用，回调中触发新导入还会再次调用。已有回调入口应按本次预期资产集合核结果，不把第一次回调当整批完成，也不无条件再次导入。这里只收窄已有回读方式，不要求所有批处理新建回调系统。[一手／经验]
+
+Unreal 沿用 §4.2 的任务结果接口，补明已核 Python 5.6 的非阻塞查询与阻塞回读两条路径，不将 Unity 的 scope／计数规则映射过去。公开契约不足以确定两端任意部分失败的写入保留与回滚范围，本轮不作保证。[研究]
+
+验证范围：只读官方版本文档、固定参考源码与现有正文；未运行 Unity／Unreal、故障注入或性能测试，不声称吞吐、成功率或恢复效果提升。[研究]

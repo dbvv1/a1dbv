@@ -123,6 +123,8 @@ Mega Crit 的历史选型重视授权信任、平台与现成引擎服务；Road
 
 **✅ 先复用引擎导入器，Agent 入口只负责发起与回读。** Unity 6+ 缺运行中 Editor 连接时再选官方 CLI/Pipeline；AI Assistant 包内旧 MCP 已被[官方弃用](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)，`unity mcp` 继续支持。批量规格先用 Unity Presets/AssetPostprocessor，或 Unreal Editor Python 与适配格式的 Interchange pipeline；不用新建导入服务，也不必为了批处理强升到支持 MCP 的引擎版本。**[一手＋经验]**
 
+**Unity 批量写入与消费新资产分两段。** [Unity 6.3 批量契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.StartAssetEditing.html)要求 scope 内只做不依赖完整导入结果的操作；用 `AssetEditingScope`／`using` 或 `try/finally` 配对释放，最外层暂停结束且相关导入完成后，再加载新资产并更新下游引用。批量控制未承诺原子回滚；异常或单项失败后，先核各项返回值、日志与实际资产，不因 scope 已退出就宣称整批成功或已恢复。证据与回调边界见 [WP9 §12](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#12-批量写入与消费新资产分两段)。**[一手；经验：采用顺序与失败处理，未运行引擎]**
+
 | 第二次修改 | 最小采用规格 | 失败时停止什么 |
 |---|---|---|
 | 原位替换像素／网格 | 记录已有 GUID/对象路径、语义名称、单位与 pivot 坐标约定；保留已有目标 | 出现额外 `_1` 资产或旧使用点仍指旧内容，不能宣告替换完成 |
