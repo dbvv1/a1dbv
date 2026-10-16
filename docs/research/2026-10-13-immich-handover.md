@@ -1,6 +1,6 @@
 主线：三、四
 改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开；持久化绕过前核原故障阶段与实际参数
-新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑
+新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑；10-17（UTC+8）补PSScriptAnalyzer的独立接收者复测与两项续改合入fork
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -229,3 +229,24 @@
 **smoke成功不能证明所称故障已修。** 原PR最终head `8c34dd785a0b8803bfaf7fbaf79d76d33ac7b89d`的[公开commit status](https://api.github.com/repos/rhinstaller/anaconda/commits/8c34dd785a0b8803bfaf7fbaf79d76d33ac7b89d/status)记录`kickstart-test --testtype smoke`为success，关联[run 26225047049](https://github.com/rhinstaller/anaconda/actions/runs/26225047049)亦为success；网页只显示21/22 checks通过，不写全绿。该run由issue_comment触发，run元数据的head SHA是工作流基线`be84999a`，不能误当补丁SHA：[固定workflow](https://github.com/rhinstaller/anaconda/blob/be84999aa613b0c6cd74448092cafd582e5e6176/.github/workflows/kickstart-tests.yml)读取PR head后checkout、rebase到当时目标分支，再将结果写回PR head。未读取实际运行日志、rebase产物或逐用例结果，因此只确认该PR记录的smoke状态，不声称固定原head字节在原用户机器复现成功。撤回PR的smoke被[显式waive](https://github.com/rhinstaller/anaconda/pull/7081#issuecomment-4561037300)，不能把其检查通过数当作重新运行smoke。**[一手：状态、固定工作流与豁免记录；研究：验证边界]**
 
 **归属与停止。** QA认为原解释是LLM幻觉，但未见作者明确披露或模型轨迹，故仅记录维护者的怀疑，不归因特定模型或认定自主Agent生成。该链证明接收后存在实质撤回，不能证明AI净收益、支持工时、长期维护成本或原用户最终恢复。本轮未运行代码、模型、安装器或上游测试。下一项有价值证据应是独立需求的真实验证或原故障的有效修复；不继续堆同类“解释不可靠”案例。**[社区：归属判断；研究：采用局限]**
+
+## 补充证据：AI参与补丁的独立接收者继续修改
+
+核实：2026-10-16（UTC）。**确认18/24已有接管建议。** PSScriptAnalyzer [#2205](https://github.com/PowerShell/PSScriptAnalyzer/issues/2205)记录升级后原CI分析失败；[#2206作者](https://github.com/PowerShell/PSScriptAnalyzer/pull/2206#issuecomment-5670666150)明确披露Copilot迭代并引入重试。下述接收者不同于原作者，但其自身AI参与未确认。**[一手／社区]**
+
+**真实输入改变“已改善”的范围。** PrzemyslawKlys的[10-08回执](https://github.com/PowerShell/PSScriptAnalyzer/pull/2206#issuecomment-6058563056)将候选`3f5bf19cd024cee6a3339f3b514ebdfe7d8930f8`与上游`411c3d0b197b488285bddd2375b292ab7b8db5e8`比较：使用自己Locksmith／PSWriteHTML的合并模块与原manifest、六条格式化规则。首次格式化调用明显改善，但暖格式化如下；不能把冷、暖或不同负载混成统一收益。**[社区：接收者测量]**
+
+| 暖格式化／CPU缓存域 | 上游→候选（ms） | 耗时增加 |
+|---|---:|---:|
+| Locksmith／0 | 296→520 | 75.7% |
+| Locksmith／1 | 315→688 | 118.4% |
+| PSWriteHTML／0 | 2495→3957 | 58.6% |
+| PSWriteHTML／1 | 约2030→约2030 | 约持平 |
+
+上表为作者均值。原测使用PowerShell 7.6.6／Ryzen 9950X3D2、固定亲和性、轮换样本，域0三次、域1两次，丢弃四轮预热；排除启动／import及模块执行。字节与完整诊断匹配。**本轮仅以`(候选/上游−1)×100`复算前三行并四舍五入，不是本仓性能测量。** **[社区；研究：算术复核]**
+
+**接收者保留实现，提交局部续改。** [fork #15](https://github.com/jessehouwing/PSScriptAnalyzer/pull/15)从上述候选出发，固定[`317b274e`](https://github.com/jessehouwing/PSScriptAnalyzer/commit/317b274ea22b0ed3502a87ed92642f6f88c35398)合并三次AST遍历并保留函数／类／配置顺序，补交错声明抑制测试。另一个[fork #16](https://github.com/jessehouwing/PSScriptAnalyzer/pull/16)的最终head `4400463623b0d708fc41f3d0e4714a88756b65ef`复用函数名正规化并保留private/local可见性，区分直接调用块与命令参数块。两者均基于`3f5bf19`。已读固定diff；原作者10-08分别以`c24849d1`／`e9de0f94`合入fork，不能写成上游发行。**[一手：补丁与合并元数据]**
+
+接收者的[续改回执](https://github.com/PowerShell/PSScriptAnalyzer/pull/2206#issuecomment-6060529367)报告#15组合比较改善部分暖格式化、首调用仍混合；#16的作用域缺口也见于已发行1.25，不是该候选新引入。其82测试、两项既有跳过及运行探针为作者报告，本轮未运行。独立优化[#2224关闭说明](https://github.com/PowerShell/PSScriptAnalyzer/pull/2224#issuecomment-6189217369)表示实现已并入#2206，并非被拒；连接器核#2206仍open、未合并，head为`89bc5e112aa7845f13fda2f251817fb9d95c7a9e`。**[一手／社区]**
+
+**边界与停止。** 这条链补足“另一位实际使用者读懂并继续改”的观察证据；不证明全面采用、长期维护等价或AI净收益，未取得完整人工／模型成本。本例保留实现并补窄修改，不推广为必选方案；停止同义追查。**[研究]**
