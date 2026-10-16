@@ -1,6 +1,6 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按实际复杂度升级；先明确状态所有者、时钟、退出与输入边界，再调整预览、效果、导航和随机消费。相机、关卡、成长、教学与辅助围绕玩家决策及具体阻碍取舍；连通、动作完成或规则复用不等于体验、迁移或预测通过，不能用统一参数与扩内容替代诊断
-新证据：[一手／社区] 固定源码、官方契约、修复与评审链及开发者复盘支持正文各项机制与反例，版本和日期见对应章节。[研究] 含确定性算术反例；未运行引擎、游戏、模型或玩家对照，不把作者观察写成架构、手感或学习收益的验证
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按实际复杂度升级；先明确状态所有者、时钟、退出与输入边界，再调整预览、效果、导航和随机消费。相机、关卡、成长、教学与辅助围绕玩家决策及具体阻碍取舍；物品先定可互换性，拆分分别保状态与身份契约；连通、动作完成或规则复用不等于体验、迁移或预测通过，不能用统一参数与扩内容替代诊断
+新证据：[一手／社区] 固定源码、官方契约、修复与评审链及开发者复盘支持正文各项机制与反例，物品补研含 OpenMW 拆堆丢状态修复及 Luanti 不同合并入口；版本和日期见对应章节。[研究] 含确定性算术反例；未运行引擎、游戏、模型或玩家对照，不把作者观察写成架构、手感或学习收益的验证
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
@@ -896,3 +896,23 @@
 [研究] 记录显示所依据的状态、条件变化与最终执行；AI 可追条件消费和补回归，人决定哪些未知值得保留、预告能否支持所需决定。失真时先修条件同步、缩小显示承诺或简化规则；若信息堆积使当前选择更难读，退回必要粒度，不用更多字段充当质量提高。
 
 **许可与实际验证：** [研究] 仅读仓库和公开开发者访谈／公告，未读取商业反编译代码、复制游戏代码或提取资产；网页不授予游戏内容复用权。未安装、运行游戏／引擎／模型或进行玩家实验。来源支持具体设计取向、作者观察与历史维护，不支持通用体验排名或 AI 效率承诺；机制与引擎无关，只维护一份共同建议。
+
+## 物品补研：数量栈、单件状态与转移身份
+
+核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变 05 §4 的选择：增加耐久／强化，先核可互换性与实际拆分、转移路径，不自动将全部物品改成独立实体。比较开放世界 RPG 运行时 OpenMW 与沙盒游戏 Minetest Game／Luanti；后两者属于同一生态，不算两个独立案例。固定主干不等于稳定发行，本节不扩写 UI 或存档。
+
+**OpenMW：保留状态不等于复制身份。** [一手] 固定 `9ec458174fa5a459b7910cd6990c1acc830b0b8a` 的实际消费者如下：
+
+- [ActionTake](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/actiontake.cpp#L20-L40)的非拖放拾取路径加入容器、删除地面对象，并采用返回目标；[ItemModel.moveItem](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwgui/itemmodel.cpp#L58-L65)区分整堆转移与部分复制。未合并的整堆可沿用身份；合并返回目标栈，不能要求所有旧引用仍指向存活物品
+- [ContainerStore.unstack／restack／stacks](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/containerstore.cpp#L315-L400)拆分时保留原栈指定数量，为余量另发 RefNum；合并时原项归零并返回存活栈。同定义只是必要条件：还核灵魂、剩余使用时间与传统物品脚本；有耐久者须都满耐久，有附魔充能者须都满充能。[研究] 因此两个都剩50%耐久也不能合并，是该项目政策，不是通用相等规则
+- [装备入口](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/inventorystore.cpp#L162-L195)按类别拆一件，[弹药与投掷物](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwclass/weapon.cpp#L84-L105)允许装备时保持栈，不能写成所有装备都拆。普通装备在装备期间另受[合并限制](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/inventorystore.cpp#L547-L565)；[修理](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwmechanics/repair.cpp#L59-L70)恢复后尝试重合并。[灵魂捕获](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwmechanics/actors.cpp#L209-L214)实际采用拆一件、写灵魂、按同灵魂重合并，也反证新增状态不必永久禁堆叠
+
+[一手] 维护证据不是假想风险：[2023拆堆另发身份](https://github.com/OpenMW/openmw/commit/0f608f388ef84db438eda67c06409dcd58056a1e)后，[2024-05-28修复](https://github.com/OpenMW/openmw/commit/ae4bf04798b3ad25a8490d448f8d53b06347e567)仍需处理跨容器拆堆丢灵魂：旧路径只凭定义 RefId 重造，新路径从实例模板复制。当前 [InventoryItemModel.copyItem](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwgui/inventoryitemmodel.cpp#L50-L65)与 [ManualRef](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/manualref.cpp#L101-L109)保留实例数据后清 RefNum／Lua脚本。[研究] 借的是“状态保留、身份不重复分别核”；清脚本是此项目的复制规则，不要求其他游戏拆分时丢弃脚本。GitLab原问题6148／MR2995本轮未取得正文，不据搜索摘要宣称原报告者复测。
+
+**Minetest Game／Luanti：单件工具可用值式状态。** [一手] 游戏固定 `c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f`，[farming实际消费者](https://github.com/luanti-org/minetest_game/blob/c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f/mods/farming/api.lua#L59-L104)将锄头注册为 tool，使用后改 wear 并返回 ItemStack。Luanti 固定 `0e1414682e4be3ffb84d067d0621e98d6bf5cd76` 的 [ItemStack字段](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.h#L146-L154)为 name、count、wear、metadata，没有内置逐件 ID；[tool构造](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L30-L40)限数量1，[默认stack_max](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L721-L738)也是1。[拾取](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L383-L399)返回未收入背包的余量，[地面实体](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item_entity.lua#L325-L348)据此更新或删除；[拆分](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L484-L501)复制状态值后分数量，[跨槽／列表转移](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L826-L891)将余量放回来源；[持用工具](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L515-L538)读取、损耗后写回当前 ItemStack，而非沿用地面实体身份。
+
+[一手／研究] **跨路径反例必须保留：** [stacksWith](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L401-L481)比较 name／wear／metadata，但同文件实际 addItem／itemFits 只比较 name 与 metadata；[掉落物合并](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item_entity.lua#L103-L138)才另比较 wear。耐久工具靠单件限制隔离，不能把函数名推成所有路径支持任意可堆叠耐久装备。[6057原报告](https://github.com/luanti-org/luanti/issues/6057)还指出空元数据使表面相同物品无法合并；[85d7b18修复](https://github.com/luanti-org/luanti/commit/85d7b18d851504e6d9f637c4373cf896b1ce8e4c)避免无内容时生成空键值。[已有单测](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/unittest/test_inventory.cpp#L39-L83)检查 tool 解析为 count=1 并保留 wear；本轮仅读定义，未运行，不能当全路径验收。
+
+[研究] **采用与二改，仅预注册：** 已有背包能承载单件／每栈状态、限制数量或定制合并，并返回余量／存活目标，就先复用。用三把同型剑增加耐久或强化，只改其中一把，再转移、拾回、与另两把合并：核数量守恒、状态不重置不串件；若设计允许恢复为可互换状态后回堆，核旧引用失效或改指存活目标。仅当玩法要跨位置／操作持续引用“这一件”时补身份，不以显示耐久条代替数据契约。AI 可追消费者和补回归，人决定何时仍可互换；组件无法表达所需区别才局部扩展，不迁移整套框架。
+
+**许可与实际验证：** [一手／研究] [OpenMW README](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/README.md#L4-L9)标 GPLv3，运行 Morrowind 需自有游戏；[Luanti引擎](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/LICENSE.txt#L114-L132)为 LGPL-2.1-or-later；实际借鉴的 [farming模块](https://github.com/luanti-org/minetest_game/blob/c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f/mods/farming/license.txt)源码单独 MIT，媒体另有许可，不能把仓库根许可套给每个组件。这里只提炼机制，不复制源码或资产，不把两套引擎推荐为闭源 Unity／Unreal 项目的即插用底座。未运行游戏、引擎、模型或上游用例；未证明性能、维护工时或特定引擎集成收益。

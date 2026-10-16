@@ -92,6 +92,8 @@
 
 [一手] Chop Chop 的 [TransitionTableSO](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Assets/Scripts/StateMachine/ScriptableObjects/TransitionTableSO.cs) 每个状态机创建运行实例字典，[StateActionSO](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Assets/Scripts/StateMachine/ScriptableObjects/StateActionSO.cs) 从定义生成普通动作实例；不是所有角色共用一份可变 SO。[后续健康管理修改](https://github.com/UnityTechnologies/open-project-1/commit/753c30e6fda71c6024c69ee5704b71cfa110e160) 将初始血量写入限制到新建实例分支，避免 Awake 重置既有玩家状态。[研究] 可借这个区分，不必借整套编辑器。
 
+**[研究] ✅ 物品加耐久／强化，先定哪些仍可互换。** 材料可继续数量栈；会单独变化的装备，优先沿现有背包使用单件状态或使用前拆一件，不能只按定义 ID 合并。OpenMW 的真实修复表明拆分另发身份仍可能丢实例数据；Minetest Game 的单件工具则说明耐久本身不要求逐件 ID。[一手／研究] 二改拿三把同型剑，只损耗／强化一把，再转移、拾回与尝试合并：数量守恒，状态不串件、不重置；需要跨操作追踪“这一件”时再补身份与失效规则，已有组件满足就不另造框架。**源码不证明目标项目的维护收益；**合并路径反例、状态／身份区别及许可见 [WP11 物品补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#物品补研数量栈单件状态与转移身份)。
+
 ## 5. 组件与 ECS：迁移热点，不迁移口号
 
 [研究] 下文 Jobs/Burst、Entities、ECB 与 enableable 的具体路线仅适用于 Unity；UE 只共用“先定位热点、再局部改变结构”的判断，不把这些包名和时序直接映射到 UE。
