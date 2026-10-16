@@ -1,5 +1,5 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界。[经验／研究]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界；清 lint 先核异步调用契约，允许有依据的窄范围豁免。[经验／研究]
 证据摘要：按下列入口区分证据，具体来源、核实日期、固定版本与验证范围留在各节；这些材料支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
 
 - **本仓局部运行**：[Hook 五类合成输入](#hook-跨宿主迁移匹配成功不等于协议适配)（未执行补丁）、[标准库公式](#本轮零成本公式对照)、[路径逻辑模型](#外部生产者校准错误预期)、[32 场景固定 SQL](#写入路径扩展与序列化判等sqlite-chronicle)。各自只验证所列机制
@@ -852,3 +852,22 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 最新修订的[固定rc测试](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/cmd/bisync/rc_test.go)经`jobs.NewJob`进入，分别检查专属参数、全局参数及相冲突的布尔值，再观察目标新文件是否存在；这些是本地路径测试，不能推成真实云存储已验。其[合并快照changelog](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/docs/content/bisync.md)列于v1.76，而核实时[最新发布仍为v1.75.2](https://github.com/rclone/rclone/releases/tag/v1.75.2)，不能将这次合并写成已发布到接收者。**[一手：测试源码、合并文档与发布页；研究：交付边界]**
 
 **最小采用与停止条件。** 修改有持久基线的预演功能时，复用现有场景覆盖预演前后及下一次正式调用；换CLI／API／后台入口时，只补实际选项传递与效果检查。纯计算预览没有这类状态就不增加本项，已有连续检查足够也不另造框架。本轮只读公开材料，未运行rclone或模型、未独立核验上游CI通过；没有最终独立用户逐例复测或AI收益证据。**[经验：采用边界；研究：核查范围]**
+
+
+## 清 lint：保留异步调用契约，还是删除 async
+
+主线：三，兼二；改变 15 §4 清理诊断时的选择。
+改变的建议：先核执行上下文及调用者契约；有意的异步边界可窄范围豁免，不机械删除或添加无业务需要的等待；确实无异步契约时仍可重构。
+新证据：Ruff 原用户报告、合入的文档修订与固定规则／运行器源码；ESLint 对 Promise 拒绝处理的独立反例。核实：2026-10-16（UTC+8）。**[一手／社区；经验：采用判断]**
+
+**原问题不是 Ruff 自动删了 async。** [Ruff #23196](https://github.com/astral-sh/ruff/issues/23196)作者在 FastAPI 项目中用 pytest-asyncio 测试 `ContextVar` helper，报告同步测试与异步测试的行为不同；最小复现每次用 `asyncio.run` 执行 coroutine 时输出 `1/1/1`，删除 `async`、直接在外层调用后输出 `1/2/3`。已给版本为 Python 3.11.11、Ruff 0.15.0，未给 pytest-asyncio 版本、配置或完整项目。维护者指出变化来自函数实际执行的时机与上下文；RUF029 只报告函数没有异步语法，不提供 autofix。因此不能写成工具自动破坏了 FastAPI 路由，也不能把用户的缩减复现当完整框架复测。**[社区：原用户与维护者讨论]**
+
+**维护者选择补适用边界，而非要求一律改同步。** [#26641](https://github.com/astral-sh/ruff/pull/26641)于 2026-07-09 合入 [`04d831a`](https://github.com/astral-sh/ruff/commit/04d831a7202b1274a1e1973c4d8443d754a51faa)，仅修改文档注释，说明无 `await` 的测试／callback 也可能有意依赖 async execution context；可以按需要添加真正的 await，或对特定函数禁用规则。[同提交规则源码](https://github.com/astral-sh/ruff/blob/04d831a7202b1274a1e1973c4d8443d754a51faa/crates/ruff_linter/src/rules/ruff/rules/unused_async.rs)只调用 `report_diagnostic`，并已有 class methods、stubs、识别到的 FastAPI routes、`asynccontextmanager` 豁免；[fixture](https://github.com/astral-sh/ruff/blob/04d831a7202b1274a1e1973c4d8443d754a51faa/crates/ruff_linter/resources/test/fixtures/ruff/RUF029.py)表达相应预期。合入文档不等于新增行为修复，PR Test Plan 不当本轮测试回执，未取得原用户后续复测。**[一手：固定补丁与测试源码；研究：证据边界]**
+
+**隔离来自运行方式，不来自 async 关键词本身。** 当前 pytest-asyncio 固定 [`f287e5e` 的测试入口](https://github.com/pytest-dev/pytest-asyncio/blob/f287e5e0f5425380b24c32b64037dfb2ed3cb937/pytest_asyncio/plugin.py#L561-L571)对 async test 复制 context，再由[包装器](https://github.com/pytest-dev/pytest-asyncio/blob/f287e5e0f5425380b24c32b64037dfb2ed3cb937/pytest_asyncio/plugin.py#L891-L908)显式传给 `runner.run`；同文件的 async fixture 另有传播 context 变化及恢复的处理，不能混为所有状态互不影响。[Python Task 契约](https://docs.python.org/3/library/asyncio-task.html#asyncio.Task)也允许显式指定 context，默认才复制当前 context。这些只核实可成立的机制，不证明上述历史项目用了当前实现；直接在同一任务内 await 一个函数也不能据此声称获得独立上下文。**[一手：当前固定源码与官方契约；研究：范围限定]**
+
+**不同语言的同类取舍。** [ESLint `require-await` 的 When Not To Use It](https://eslint.org/docs/latest/rules/require-await#when-not-to-use-it)给出无 await、直接抛异常的 async 函数：调用者依赖返回 Promise 的 `.catch()` 处理拒绝，改同步会转成直接抛异常，需要改变调用者。官方明确允许为这一用途禁用规则。它与 Python 的上下文例子机制不同，共同支持先保住既定调用契约，不证明所有无 await 函数都应保留。**[一手：官方反例；研究：跨机制比较]**
+
+**适用性反例，不追加另一套流程。** [RUF055 #27024](https://github.com/astral-sh/ruff/issues/27024)中 bytes 正则搜索 `memoryview` 与改写后的成员判断不等价；[维护者拒绝 #27040](https://github.com/astral-sh/ruff/pull/27040#issuecomment-5050042567)也反对把所有 bytes-pattern 修复一律标不安全，因为 bytes 目标仍有有效情况，问题在目标类型与规则适用范围。核实时 #27024 仍 open，#27040／#27233／#27715 均关闭未合并；不能拿候选 PR 的测试或安全分类当已交付修复。固定 current main [`9e3ea63` 规则源码](https://github.com/astral-sh/ruff/blob/9e3ea63fb43040782a2ff00147cacf8861674615/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs)仍按 pattern、参数数量和真假值使用条件筛选，未核目标类型，修复的 Safe／Unsafe 分类取决于 comments。本轮另用手写 Python 3.12.14 标准库表达式核对：`memoryview(b"abcdef")` 上 `bool(re.search(b"abc", value))` 为 True、`b"abc" in value` 为 False；bytes 对照为 True／True。这只是局部语义见证，没有执行 Ruff 修复或当前发行版，也不是原用户框架复测；不推断全部修复不可信。**[一手／社区；经验：本轮标准库局部核对；研究：修订状态与采用边界]**
+
+**最小采用与停止条件。** 让 Agent 回到真实调用者及运行器，先判断诊断是在提示缺陷，还是遇到未表达的必要契约。有明确依据时保留代码，对具体规则／函数说明窄范围例外，并沿已有测试验收；若没有必要异步契约，则正常重构，不能用本例逃避合理诊断。不为消警告默认加入 `sleep(0)`：它会新增让出执行的时机，是否需要仍由任务决定。除上述手写标准库表达式外，本轮只读公开报告、文档和源码，未运行 Ruff、pytest、模型或上游测试；没有效率或长期维护收益实测。**[经验：采用建议；研究：验证范围]**
