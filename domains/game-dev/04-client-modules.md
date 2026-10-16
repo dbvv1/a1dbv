@@ -229,6 +229,10 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 
 [UI 输入](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/UISupport.html#distinguishing-between-ui-and-game-input)不自动阻止 gameplay 接收同一点击；[timeScale=0](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Time-timeScale.html)与 [AudioListener.pause](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-pause.html)管不同时间域。[一手] **[研究] 蓄力开菜单、按住移动失焦、设备断连、菜单声音例外作为联合用例，而非各模块单独“正常”。**
 
+**[研究] ✅ 提供手柄反馈时，另定它的结束与恢复政策。** 命中短脉冲设有限时长，已失效的旧命中不在从菜单返回游戏后补播；持续状态恢复前重查是否仍成立，有意冻结后继续同一演出的效果可以保留。换设备／退出本局时取消所属玩家的旧反馈工作，旧设备仍可达则发送停止，再按当前配对发送；不要清掉其他仍在游玩者的反馈。
+
+**[一手／研究] Unity Input System 1.20.1 双马达实现的 `PauseHaptics` 保留速度，`ResetHaptics` 清除；一次 Pause 不会屏蔽后续 `SetMotorSpeeds` 写入。** 因此还须约束持续产生反馈的代码；一名玩家的局内菜单也不能照搬全设备暂停。[固定实现](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Devices/Haptics/DualMotorRumble.cs) UE 5.8 沿目标 PlayerController 使用有限／循环效果、Tag 和 [Play While Paused](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Game/Feedback/ClientPlayForceFeedback)，不强行对应 Unity 接口。原生已能表达这些规则就不加框架；游戏机制、许可与[待测边界见 WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#手柄反馈补研结束暂停与设备交接分开核)。**局限：停止命令不保证硬件即时停下，尚无本轮游戏暂停复测结论。**
+
 ### 本地多人：设备归谁，菜单由谁操作
 
 **[研究] ✅ 仅在项目承诺本地多人时，按玩家实例连接输入；需要同时操作各自菜单时，再隔开 UI 输入来源与目标范围。** Unity Input System 1.20.1 的 `PlayerInput` 路线应读取对应实例的回调或 `actions`，不改读项目级 `InputSystem.actions`；`Gamepad.current` 是全局最近连接／使用的手柄，不能充当某个玩家的身份。[一手：[玩家输入契约](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/use-player-input-component-ui.html)、[current 定义](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.Gamepad.html#UnityEngine_InputSystem_Gamepad_current)]
