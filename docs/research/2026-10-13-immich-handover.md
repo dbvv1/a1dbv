@@ -186,3 +186,18 @@
 以下保留18页头原有的历史核查范围；不表示本次重新核验其中所有动态事实。
 
 核实时间：2026-10-08；2026-10-13 修订成熟度、评审切片和固定提速目标，并补充 §6 接管实验、§7 Handy 复测和 Godot 贡献准入、§8 陌生模块学习检验，2026-10-14 补充 §3 分层许可准入和 §7 原用户升级恢复，2026-10-15 补充 §7 空库／已有库交付差异及 §3 Claude Code／API 的 ZDR 准入边界，同日另核地区控制、Claude 托管策略覆盖与订阅 API 赠额资格，并补充 §7 原生产物交付兼容；其余易变事实未重新核验。
+
+
+## 补充证据：新对象通过，不等于原失败对象已恢复
+
+核实：2026-10-16（UTC+8）。主线四／M3；改变18的恢复验收：上传／导入曾失败时，除新对象和旧数据外，要复验一个原失败对象的关联实体，不只接受同步或重复标记。[研究]
+
+**同一操作者的后续修改。** filips123 在2025-09-29[报告](https://github.com/immich-app/immich/discussions/22062#discussioncomment-14540561)修好数据库约束后新照片正常，故障期间的旧照片仍标为已同步、服务端却缺失；随后[新建相册加入旧失败照片](https://github.com/immich-app/immich/discussions/22062#discussioncomment-14542190)，网页为空，API返回记录，但他实查原文件不存在。其回忆的起因是复制表后替换，可能丢失约束／索引，不当作有准确操作日志的确定归因。[社区：同一用户自报] 讨论主题作者是另一人，不能拼接经历。
+
+**标记与实体分离的机制。** skatsubo 的[复现](https://github.com/immich-app/immich/discussions/22062#discussioncomment-14553614)指出上传先建资产行，后续失败只清文件；重试按checksum去重得到成功／duplicate，恢复约束仍不能补回实体，网页预检查还可能跳过上传。[社区：独立复现者自报] 在按该安装存储条件给出的[残留处理建议](https://github.com/immich-app/immich/discussions/22062#discussioncomment-14553678)之后，filips123于9月30日[确认解决](https://github.com/immich-app/immich/discussions/22062#discussioncomment-14554594)；没有逐文件复验日志。原建议含破坏性数据库操作，不复制为通用配方，保留原件／副本后走项目支持的修复路径。[研究]
+
+**独立补丁不伪装成同一人的升级回执。** 2026-08-03合入的[PR30349](https://github.com/immich-app/immich/pull/30349)、固定[cee08a2实现](https://github.com/immich-app/immich/blob/cee08a2320dbddb563a7fa8cca7979e4c954edb0/server/src/services/asset-media.service.ts#L125-L230)记录本请求创建的资产，在异常路径补偿删除；真正重复路径提前返回，不删既有资产。它不是数据库、文件、队列的统一事务，也不扫旧版本残留。[一手：固定实现] 未证明该PR由前述讨论直接促成，也没有该用户安装该补丁的复测；不拼成连续修复链。[研究]
+
+**描述与合并测试分开。** 作者称做过逐步故障注入、重复上传和真实数据库sidecar测试，但[审阅](https://github.com/immich-app/immich/pull/30349#discussion_r3672681118)要求撤回其他测试，最终[测试增量](https://github.com/immich-app/immich/blob/cee08a2320dbddb563a7fa8cca7979e4c954edb0/server/src/services/asset-media.service.spec.ts#L297-L336)只在建行前配额超限分支增加清理断言；不能将描述当最终树保留了建行后故障的正向回归。[一手：审阅与测试定义；社区：作者测试自述] 本轮未运行上游测试。
+
+**采用与局限。** 恢复基础故障后，对原失败对象重试并打开／下载接收文件，确认接收副本前不凭成功标记删原件；若仍失败，保留副本、核状态与实体，再按项目支持范围修复。潜在原件损失是PR指出的风险，不是已核实的数据丢失。本例只支持同一自托管操作者恢复后继续维护的验收取舍，不证明跨人交接、AI效果或维护工时；无新模型、服务或数据库实测。[研究]
