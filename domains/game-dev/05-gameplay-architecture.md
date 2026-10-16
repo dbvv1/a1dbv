@@ -149,6 +149,14 @@
 
 **[研究] Unity 继续用定义＋角色自己的活效果集合；UE 已采用 GAS 时沿用它的聚合配置。** [一手] Unity [SO 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html)支持多对象共享数据，因此剩余时间与来源仍放实例；GAS 的 [StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)区分独立实例、按来源、按目标聚合，[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)又区分清整栈与减一层后刷新。[研究] 不把 GAS 的 None 读成“同类效果只留一个”，也不为两种状态迁移整套系统。**局限：句柄与计数只能表达所有权，不能替玩法决定合并、强弱和到期规则。** 二改先验两来源交错结束、重复清理、短效果覆盖长效果和驱散后重施；完整来源、反证与预注册见 [WP11 效果叠加补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#效果叠加补研来源所有权不等于合并规则)。
 
+### 选敌：先保意图，再调辅助
+
+**[研究] ✅ 需要持续攻击玩家所选对象时，先定义候选、保持与切换，别用每帧最近目标代替意图。** 沿现有武器／输入状态说明哪些对象进入自动候选、旧目标何时保留或失效、玩家怎样改选；手动目标也可以是位置。自动候选可比手动可选范围窄，但须保留玩法需要的直接选择路径。最近目标、持续自动重选或精确手动瞄准本来就是玩法时，保留简单方案，不默认增加锁定管理器。
+
+[一手／研究] Cogmind 的[官方手册](https://www.gridsagegames.com/cogmind/manual.txt)描述进入开火模式时优先恢复旧目标，无有效旧目标才选最近者，并提供过滤后的循环与查看模式转入开火的例外路径。Hades 曾[扩大特定武器的手柄锁定范围](https://www.supergiantgames.com/blog/hades-long-winter-update-patch-notes/)，又[排除召唤出的 Skelly](https://www.supergiantgames.com/blog/hades-the-blood-price-update-patch-notes/)；Brotato [官方说明](https://store.steampowered.com/app/1942280/Brotato/)则同时列出默认自动开火与手动瞄准选项。**局限：候选资格、保持目标、辅助范围与自动开火不是同一个强度开关，没有通用最强辅助。** 误选增加时先修候选或保持规则，不继续扩大吸附。
+
+[研究] **二改先加一个更近的干扰对象或可攻击召唤物**，核继续原目标、主动换敌、旧目标失效及按设计选择自动候选之外的对象；支持手动／辅助切换时再核切回。记录输入、当前目标和换目标原因，AI 追路径与补回归，人判断能否预测并纠正选择；保持反而阻碍主动改选时，缩小或撤回该规则。版本、固定源码与未执行的预注册见 [WP11 选敌依据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#选敌补研候选保持与主动切换)。
+
 ### 战斗质量：让玩家读懂承诺、接触与下一步
 
 **[研究] ✅ 先做好一招的节奏，再增加招式。** 前摇让玩家看出动作与方向，接触段让力量集中且命中范围可信，恢复段让下一次移动、闪避或连击的机会可预测。重武器可以慢且不能随时取消，只要风险、收益与敌人的反击机会相配；轻武器可以快且允许衔接，但不能靠每击加长停顿假装沉重。分别调整这三段，别把整段动画统一加速当手感修复。
