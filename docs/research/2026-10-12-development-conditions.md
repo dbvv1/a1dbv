@@ -921,3 +921,13 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 4. **旧修复不能外推全部结束形态或新架构。** [V2 #52378](https://github.com/anomalyco/opencode/issues/52378)报告 `finish: error`／`MALFORMED_FUNCTION_CALL` 没有 error 对象时仍成为父任务的 completed；[固定旧 runner](https://github.com/anomalyco/opencode/blob/f46fa72a9285a0e8479e25d400f7026bfd8fe5c8/packages/core/src/session/runner/step.ts#L161-L177)只为 unknown 合成失败。核实时 [#54713](https://github.com/anomalyco/opencode/pull/54713)仍 open、未合入：固定 head `4b1fedc63011a3ce58b33f1036e19e99c16bf56a` 将 explicit error 转为失败并保留 rawFinish，[当前测试](https://github.com/anomalyco/opencode/blob/4b1fedc63011a3ce58b33f1036e19e99c16bf56a/packages/core/test/tool-subagent.test.ts#L298-L354)分别检查前台工具失败和后台父通知 error。PR 正文的 empty-stop control 已被后续修订删除，不能照抄为当前覆盖；补丁明确排除 length 截断。未取得原用户最终复测，不将候选补丁或自动评审的运行说法当成已发行／线上全面修复。**[一手：固定源码与修订状态；社区：故障报告]**
 
 因此只对“缺所需产物但返回成功”的委派故障增加这项诊断：先核对错误是否完整跨过消费边界，再决定原任务续接、换实现或重新派发；若已完整传递错误，就回到实际失败原因，不再归咎交接层。已有原生错误传播足够时不增加包装器或评审树；这些材料不能证明弱模型替代收益、长程完成率或普遍可靠性提升。**[经验：采用与撤回条件]**
+
+## 云端协调与本地执行：同机不等于同一Hook契约
+
+核实：2026-10-16（UTC+8）。M4；改变Codex页长时运行入口：先核协调与执行，再决定能否沿用本地Hook；不以Cloud标签直接推断工具在云容器。[研究]
+
+[一手] 官方[dot电脑与应用](https://learn.chatgpt.com/docs/dots/computers-and-apps#connect-your-computer)明确任务可由云端管理并使用已连接电脑的文件／工具；连接与电脑在线仍是必要前提。[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory)分别列新建本地 Work／Codex 任务、续接现有本地 Codex 任务、使用已配置云环境，且更换选中电脑不会迁移已有任务。这是产品契约，不保证某个具体会话在任意入口都可读取；不能从一次接口未找到目标，推论整台电脑无权访问或任务不存在。
+
+[一手] [Work Cloud与dots本地访问说明](https://learn.chatgpt.com/docs/enterprise/cloud-local-access#check-hooks-and-network-compatibility)区分云协调／本地执行和local-only，并明确前者不支持command／shell、prompt、agent处理器及本地配置／插件／目录Hook；local-only保留既有受支持Hook。企业远程MCP Hook另需托管设置，不向个人账户提供。由此不能用“文件在同一电脑”推配置等价，也不能把Work模式的切换规则泛化到所有Codex任务。详细支持范围仍以该页为准，不在这里复制企业配置清单。
+
+[研究] 可采用动作是核目标环境、任务类型及所依赖Hook的支持面，再用最小允许动作验证；已有本地流程满足时先复用。若不依赖上述Hook，不能据此要求全部任务切Local。仅阅读公开官方文档，无私人会话／设备日志或个案路径，不复现客户端、Hook或网络故障，不证明所有账户／版本的路由、续接或运行效果。
