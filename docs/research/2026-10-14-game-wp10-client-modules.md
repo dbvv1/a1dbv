@@ -10,20 +10,20 @@
 
 ## 1. UniTask：新增自动释放为何仍不能等同完整取消
 
-**[一手] 固定源**：`Cysharp/UniTask@a77a1b4a89824fb6df293099de3060daf2a432c1`，commit API 核实最后提交 2026-10-06；MIT，[LICENSE](https://github.com/Cysharp/UniTask/blob/a77a1b4a89824fb6df293099de3060daf2a432c1/LICENSE)。该提交日期证明近期仓库活动，不代表本文锁定了一个推荐稳定发行版，也不证明目标项目通过。
+**[一手] 固定源**：`Cysharp/UniTask@a77a1b4a89824fb6df293099de3060daf2a432c1`，commit API：2026-10-06；MIT，[LICENSE](https://github.com/Cysharp/UniTask/blob/a77a1b4a89824fb6df293099de3060daf2a432c1/LICENSE)。活动日期不代表推荐稳定版。
 
-[一手] 本轮阅读整个 [AddressablesAsyncExtensions.cs](https://github.com/Cysharp/UniTask/blob/a77a1b4a89824fb6df293099de3060daf2a432c1/src/UniTask/Assets/Plugins/UniTask/Runtime/External/Addressables/AddressablesAsyncExtensions.cs)。关键路径：
+[一手] 已读完整 [AddressablesAsyncExtensions.cs](https://github.com/Cysharp/UniTask/blob/a77a1b4a89824fb6df293099de3060daf2a432c1/src/UniTask/Assets/Plugins/UniTask/Runtime/External/Addressables/AddressablesAsyncExtensions.cs)，关键路径：
 
-1. [一手／研究] `ToUniTask<T>`（约 267–294 行）先判断 token 是否已取消，随后才检查 handle、IsDone，最后注册 source；因此调用者已经执行 LoadAssetAsync，再传预取消 token，不会因 true 自动释放已创建 handle。
-2. [一手] `WithCancellation`／`ToUniTask` 两个重载族默认 `autoReleaseWhenCanceled=false`；成功返回结果不会替调用者建立更长寿命的资源所有权，也不会在对象最终不用时自动 release。
-3. [一手／研究] `Create` 的立即取消注册、`MoveNext` 的 PlayerLoop 取消、`HandleCompleted` 的完成路径分别存在。`cancelImmediately` 改变的是观察取消时机及注册成本，不能推导成后台操作立即终止，也不是跨线程安全承诺。
-4. [一手／研究] [PR #521](https://github.com/Cysharp/UniTask/pull/521)提出取消时 release；评审指出 cancelImmediately 路径遗漏和无效句柄退订风险。[PR #536](https://github.com/Cysharp/UniTask/pull/536)明确因直接改变释放行为会破坏调用者，新增可选 flag；[2.5.2 发布记录](https://github.com/Cysharp/UniTask/releases/tag/2.5.2)列出二者。**改变建议的证据是所有权不能由“取消”一词隐含决定**，并不是宣称 2.5.2 后所有竞态已修好。
-5. [社区] [#649 原帖](https://github.com/Cysharp/UniTask/issues/649)报告取消 A 后复用 source，A 的迟到 callback 让 B await 返回 A 的资源；附了需要 A／B 时序的重现条件。2025-08 stale 关闭为 not planned，未见关联修复。原帖两人报告，不是社区共识。
-6. [一手／研究] 固定源码的 `MoveNext`（441–457）取消后调用 core.TrySetCanceled；`GetResult`（402–418）通常归还池；`TryReturn`（467–475）清 core／handle 并回池，但没有在这里退订旧 handle.Completed；`HandleCompleted`（372–399）会读取完成参数结果。这在结构上支持原帖的风险路径，**未运行真实引擎，不能把静态路径直接标为本项目已复现漏洞，更不能声称任何新增 guard 已解决库内结果串线**。
+1. [一手／研究] `ToUniTask<T>`（267–294）先判 token，后查 handle／IsDone，再注册 source；LoadAssetAsync 后传预取消 token，即使 true 也不自动释放既有 handle。
+2. [一手] `WithCancellation`／`ToUniTask` 两族默认 `autoReleaseWhenCanceled=false`；成功不建立长期所有权，最终不用仍需 release。
+3. [一手／研究] `Create`、`MoveNext`、`HandleCompleted` 分别处理立即注册、PlayerLoop 取消和完成；`cancelImmediately` 只改变观察时机／注册成本，不保证后台终止或跨线程安全。
+4. [一手／研究] [PR #521](https://github.com/Cysharp/UniTask/pull/521) 提议取消时 release，评审指出立即取消遗漏／无效句柄退订风险；[PR #536](https://github.com/Cysharp/UniTask/pull/536) 为免破坏调用者改加可选 flag，[2.5.2 发布记录](https://github.com/Cysharp/UniTask/releases/tag/2.5.2) 列出两者。所有权须显式约定，不据此认为全部竞态已修。
+5. [社区] [#649 原帖](https://github.com/Cysharp/UniTask/issues/649) 两人报告：取消 A 后复用 source，A 迟到 callback 使 B await 返回 A 资源；2025-08 stale 关闭为 not planned，未见修复。
+6. [一手／研究] `MoveNext`（441–457）取消；`GetResult`（402–418）通常回池；`TryReturn`（467–475）清 core／handle 却未退订旧 Completed；`HandleCompleted`（372–399）读取完成参数。静态结构支持 #649 风险，未复现，业务 guard 不能证明库内串线已修。
 
-**采用判断**：[研究] 有大量 PlayerLoop／组合等待需求时继续评估 UniTask；不因一个 issue 全面禁用。对高频取消 Addressables 的业务，不直接复制短博客包装器；首先选不提前取消底层 await 的完成清理路径，或针对锁定包测试／修复后才启用该适配器。业务 generation guard 对旧场景写入有用，但不能单独证明源库未把 A 结果错送给 B。
+**采用判断**：[研究] PlayerLoop／组合等待需求可继续评估 UniTask。高频 Addressables 取消先用不提前取消底层 await 的完成清理，或固定包复测／修复适配器；generation guard 防旧场景写入，却不保证 B 未收到 A。
 
-**未来测试必须包含**：预取消且已创建 handle、取消同帧完成、A 取消后 B 复用并由 A 先完成、autoRelease 两值、cancelImmediately 两值、成功和失败、已有缓存导致同步完成、两个消费者共享真实获取。断言结果身份、完成次数、消费方代次与释放次数；不只断言 await 没抛异常。
+**未来测试**：覆盖预取消前已创建 handle、取消同帧完成、A 取消后 B 复用且 A 先完成、两种 autoRelease／cancelImmediately、成功／失败／缓存同步完成及共享获取；核结果身份、完成／释放次数和消费方代次。
 
 ### 异步选型的窄比较
 
@@ -36,54 +36,54 @@
 | UniTask | 🧪 明确需要 PlayerLoop、组合等待、减少现有适配代码时采用；Addressables 高频取消单独验收 | MIT，具备丰富适配；承担额外版本组合和上述取消／池复用边界，不以“零分配”宣传推断目标游戏无 GC |
 | .NET Task | ✅ 对真正后台／I/O 工作和已有 Task API 按原生契约使用 | 多消费者场景与 Awaitable 不同；不能让 Task.Run 内访问 Unity 对象，也不能把后台线程完成当主线程资产可用 |
 
-[研究] 目标是少数明确的项目边界，不是禁止框架之间任何互操作。若已有方案满足需求且没有 profiler／正确性缺口，不为“先进”添加迁移工作。
+[研究] 已有方案无正确性或 profiler 缺口就保留；允许必要互操作，不为统一语法迁移。
 
 ## 2. Unreal 反证：文档承诺与具体版本缺陷分开
 
-[FStreamableHandle API](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/FStreamableHandle)描述 CancelHandle 会立即 release，取消回调替代完成回调，连延迟队列中的完成回调也应停止；ReleaseHandle 则是移除持有关系，不能一概当作同一操作。[一手]
+[FStreamableHandle API](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/FStreamableHandle)：CancelHandle 立即 release，以取消替代完成回调，延迟队列也应停止；ReleaseHandle 仅移除持有关系。[一手]
 
-[UE-207209](https://issues.unrealengine.com/issue/UE-207209)给出同帧 A／B 在回调里互相 CancelHandle 的自动测试。官方报告指出已有回调被排入执行队列时，完成与取消都可能发生。状态、影响版本与目标修复版本见下文“阶段 F 动态状态补核”；影响版本列表不能直接证明 5.8 必现或已修。[一手]
+[UE-207209](https://issues.unrealengine.com/issue/UE-207209) 的同帧 A／B 互相 CancelHandle 测试报告：已排队时完成与取消都可能发生。状态／影响版／目标修复见阶段 F 表，不能推定 5.8 必现或已修。[一手]
 
-[UE-208804](https://issues.unrealengine.com/issue/UE-208804)进一步记录 ChangeBundleStateForPrimaryAssets 在加入 bundle 时重启 pending load 的性能问题；两次过去的优化被回退，原因包括泄漏、菜单仍驻留及同步加载。动态状态见阶段 F 表。它是有用的官方修复复盘，表明“复用正在加载的数据一定更好”会与所有权和批量句柄关联冲突。[一手]
+[UE-208804](https://issues.unrealengine.com/issue/UE-208804) 记录加入 bundle 时 ChangeBundleStateForPrimaryAssets 重启 pending load；两次优化曾因泄漏、菜单驻留／同步加载回退。状态见阶段 F；复用 pending load 仍受所有权与批量句柄约束。[一手]
 
-**改变建议**：[研究] 两引擎共同保留「业务结果至多接受一次＋对象／场景仍有效」断言，并测重入；不要把相似 API 名字当相同取消语义。对 UE 合并加载／动态 bundle 变化，避免先写大量全局缓存优化，先在所用版本测暂停、重开、菜单切换和驻留。
+**改变建议**：[研究] 两引擎均验结果至多接受一次、场景有效及重入。UE 合并加载／动态 bundle 先验暂停、重开、菜单切换与驻留，再考虑全局缓存。
 
 ### 资源所有权补比：Load 与 Preload 不能共用退出政策
 
-核实：2026-10-14 UTC，以下官方 API 页面标 UE 5.8；这是公开文档契约，未读取受限引擎源码，也未运行引擎。5.7 参数页本轮未能取得，不把当前页当作固定 5.7 实现证据。[一手]
+核实：2026-10-14 UTC。官方 API 标 UE 5.8；仅文档，未读受限源码。5.7 参数页未取得，不作其实现证据。[一手]
 
-- [一手] [LoadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/LoadPrimaryAssets)说明资源保留到显式卸载；返回句柄可用于等待／查询，调用者不必保留它来防止卸载。没有新增工作时返回句柄可为 null，但仍调用完成回调。[UnloadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/UnloadPrimaryAssets)仅在此前 Load 是唯一持有来源时才使资源得以释放，不承诺所有引用或物理内存立即消失。
-- [一手] [PreloadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/PreloadPrimaryAssets)要求保留活动句柄；这批资源不属于正式 Loaded 状态，普通 Unload／ChangeBundleState 不影响它，释放该句柄且无其他加载持有时才可释放资源。它与 Load 的同名返回类型不能证明退出政策相同。
-- [一手] [Object Pointers](https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine)明确 `TSoftObjectPtr` 不阻止 GC；`UPROPERTY` 标记的 `TObjectPtr` 才是常见的 UObject 持有引用。保存软引用路径与维持加载后驻留是不同责任。
+- [一手] [LoadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/LoadPrimaryAssets) 保留到显式卸载，句柄用于等待／查询，非保活必需；无新工作可返回 null 但仍回调。[UnloadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/UnloadPrimaryAssets) 仅在 Load 为唯一持有时允许释放，不保证其他引用／内存立即消失。
+- [一手] [PreloadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/PreloadPrimaryAssets) 必须保留活动句柄；资源非正式 Loaded，普通 Unload／ChangeBundleState 不影响。释放句柄且无其他持有才可释放，退出政策不同于 Load。
+- [一手] [Object Pointers](https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine)：`TSoftObjectPtr` 不阻止 GC；`UPROPERTY` 的 `TObjectPtr` 可持有 UObject。路径与驻留分开。
 
-**[研究] ✅ 优先用上述原生能力，补共享内容的共同所有者，不新增跨引擎资源框架。** Load 用于已决定保持的内容，Preload 可用于可能取消的提前准备；既有路径够用就不切换。第二次修改将单菜单技能预览扩成两个菜单共用、再跨场景保留时，逐个菜单各自 Unload 不是 Addressables 式的消费者引用计数。应先决定共同所有者何时允许卸载，并核对其他强引用；更多常驻内容会增加内存成本，Preload 也需交接和取消收尾，不能仅凭 API 名称推导收益。
+**[研究] ✅ 用原生能力补共同所有者。** Load 保持已决定内容，Preload 做可取消准备；两个菜单共用再跨场景时，逐菜单 Unload 不是消费者计数。先定共同卸载时机、核强引用与常驻成本，Preload 仍需交接收尾。
 
-**[研究] 具体回归路径是第二次打开与第二种退出。** 已加载菜单再次打开、请求没有新增工作时，若只以返回句柄非空判成功，会误报失败；从预览改为常驻后只丢弃 Load 返回句柄，不能证明驻留已撤销；保留 Preload 句柄却只调用 Unload，也不能证明预加载持有已撤销。这些是文档契约的静态推导，不是已复现故障。未来验收记录完成次数、实际资源身份、持有来源和退出后驻留，并覆盖一个消费者退出而另一个仍使用；无需重复已有场景取消与 PSO 测试清单。
+**[研究] 回归重点是第二次打开与不同退出。** 无新增工作时不能仅凭 null handle 判失败；丢弃 Load 句柄或对 Preload 仅调用 Unload 均不证明持有已撤销。未来记录完成次数、资源身份、持有来源和退出驻留，覆盖一个消费者退出、另一个仍使用。
 
 ## 3. ink：存档格式兼容，不等于剧情修改兼容
 
-[一手] 固定 `inkle/ink@35c63e52f1d36060930dc7ed3cfba38ea224b528`，commit API 2026-05-05，版本 1.2.1，MIT [LICENSE](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/LICENSE.txt)。读取 StoryState、Story、CallStack、VariablesState，而不是只读 README。
+[一手] `inkle/ink@35c63e52f1d36060930dc7ed3cfba38ea224b528`，commit API 2026-05-05，1.2.1；MIT [LICENSE](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/LICENSE.txt)。已读 StoryState／Story／CallStack／VariablesState。
 
 - [StoryState.cs](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/ink-engine-runtime/StoryState.cs)明确当前 save 版本 10、最低可读版本 8；LoadJsonObj 检查字段／最低版本，分别处理旧单 flow 和新 flows 结构。[一手]
 - [CallStack.cs](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/ink-engine-runtime/CallStack.cs#L52-L83)使用存档 cPath 和 idx 恢复位置，找不到抛错，近似查找会报警；[Story.cs](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/ink-engine-runtime/Story.cs#L753-L782)的 PointerAtPath 同样有 approximate 警告路径。[一手]
-- **改变建议**：[研究] 测试除 LoadJson 不抛错外，还要捕获 warning 并断言剧情位置、可选项、已领取奖励。可以选择稳定命名节点／显式 checkpoint 迁移，复杂内容变更不保证任意保存点兼容。是否接受回退章节须由产品决定。
-- 采用边界：ink 是叙事状态机，不是通用世界／库存保存系统；小型非叙事游戏没有理由为版本字段而引入它。源码和测试是维护／机制证据；本轮没有把 The Intercept 旧 game jam demo 当现代完整客户端底座，也不声称测过发行游戏生产可靠性。
+- **改变建议**：[研究] 捕获 LoadJson warning，核位置、选项及已领奖励；可用稳定节点／checkpoint 迁移，任意保存点兼容与章节回退须另定。
+- ink 只作叙事状态机，不为非叙事游戏引入通用存档。未核发行游戏可靠性，The Intercept 旧 jam demo 不作现代底座。
 
 ## 4. Input System：Disable 自身会触发回调
 
-[一手／研究] 固定 `Unity-Technologies/InputSystem@05e45ddbaf18a93245b068d787d74b738b90d01c`，commit API 2026-10-06，Unity Companion License [LICENSE.md](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/LICENSE.md)。近期提交本身是 before-render timeout 修复的端口，进一步说明要固定已发布包／更新时序，不能把 develop 当稳定包。
+[一手／研究] `Unity-Technologies/InputSystem@05e45ddbaf18a93245b068d787d74b738b90d01c`，commit API 2026-10-06；Unity Companion License [LICENSE.md](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/LICENSE.md)。该提交为 before-render timeout 修复端口，develop 不作稳定包。
 
 读取 [InputAction.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Actions/InputAction.cs#L967-L986)和 [InputActionState.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Actions/InputActionState.cs#L889-L948)。DisableSingleAction 先 DisableControls，再 ResetActionState；重置会取消正在进行的 action／interaction，然后清字段。[一手]
 
-**改变建议**：[研究] 菜单开启先更新各动作的接收权限，再禁用当前不允许的动作／map；否则 Disable 引发 canceled 时，旧 gameplay 回调可能仍把它看作主动松开并执行结算。模拟暂停与输入权限分别决定，战术暂停不必停用全部玩法输入。取消回调只按动作契约清理；需要“松开触发攻击”的动作必须区分交互正常完成和系统取消。此结论来自契约／源码，不是 Codex 或 Claude 实测错误统计。
+**改变建议**：[研究] 先更新接收权限再禁 action／map，避免同步 canceled 被旧回调当松开结算。战术暂停可保部分输入；取消只清理，松开攻击区分正常完成／系统取消。
 
-还需防止虚拟鼠标＋导航双路：Input System 1.19 官方 UI 文档警告同时让 gamepad 驱动 Virtual Mouse 和 UI navigation 会重复触发。不要加任意毫秒 debounce 来隐藏输入所有权错误。[一手／研究]
+Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navigation 可重复触发；修所有权，不加任意 debounce。[一手／研究]
 
 ## 5. UI 版本纠偏：不是旧功能表的简单延长
 
-本轮读取 [Unity 6.3 LTS 英文 comparison](https://docs.unity3d.com/6000.3/Documentation/Manual/UI-system-compare.html)，文档实际列出 UI Toolkit world-space、custom shaders/materials、RTL/emoji、SVG；Animation Clips／Timeline 集成仍列不支持，uGUI 支持。总体表依旧把 uGUI 列为 Runtime recommendation、UI Toolkit 为 Editor recommendation，因此**不宜用一句“Unity 已全面推荐 UI Toolkit”替代细分决策**。[一手]
+[Unity 6.3 LTS 英文 comparison](https://docs.unity3d.com/6000.3/Documentation/Manual/UI-system-compare.html) 已列 UI Toolkit world-space、custom shaders/materials、RTL/emoji、SVG，仍不支持 Animation Clips／Timeline（uGUI 支持）；总体仍推荐 uGUI runtime、UI Toolkit editor，不能概括为全面推荐后者。[一手]
 
-**采用判断**：[研究] 新的重布局／文本 UI 值得评估 UI Toolkit，已经稳定的 uGUI 或大量 keyframe UI 保留；6.0 与 6.3、英文新页和旧翻译页不能混当相同基线。官方表声明能力不证明其在玩家目标设备零 bug，也不能推出 UI 视觉质量高于另一套。
+**采用判断**：[研究] 新重布局／文本 UI 可评估 UI Toolkit；稳定 uGUI／大量 keyframe UI 保留。6.0／6.3、新英文／旧译文分列，功能表不证明目标设备质量。
 
 ## 6. 许可、维护与采用边界
 
@@ -100,9 +100,9 @@
 | Lyra | [机制文档](https://dev.epicgames.com/documentation/unreal-engine/lyra-sample-game-in-unreal-engine?lang=en-US)定义为随引擎更新的 modular learning resource；[Fab 官方页](https://www.fab.com/listings/93faede1-4434-47c0-85f1-bf27c0820ad0)渠道标签见阶段 F 表 | **✅ 读公开 UI／输入／生命周期说明；⛔ 默认整包输入 Agent 或作为跨引擎资源来源。** 未下载项目，具体文件许可链未确认；不把 sample 当已发行游戏或已清许可的商用复制底座 |
 | FMOD | [官方 licensing](https://www.fmod.com/licensing)核实：免费 Indie 条件为开发者年收入低于 $200k 且项目开发预算低于 $600k；商业项目需注册，logo 要求和 EULA 仍适用。非免费 Indie 当前 $2,000／game，需按购买时重核 | 付费与免费档都可覆盖相同主要功能，不能把价格作为音质排序。仅当复杂音频工作流的节省超过集成／bank 管理成本才🧪；本轮未安装、签约或验证生产净收益 |
 
-**[一手／研究] Lyra 的标签与条款分开看**：[Epic Content License §5(c)(viii) 与 §17](https://www.unrealengine.com/eula/content)限制其覆盖的 NoAI Content 作为生成式 AI 数据集、开发材料或输入。Fab 的 No 标签不能单独证明每个代码文件适用同一协议；普通公开技术说明的阅读不因此被禁，也不能推导成所有 UE 开发禁止 AI。真正接入前保存具体取得渠道、文件和适用协议，不用非官方镜像绕过限制。
+**[一手／研究] Lyra 标签不等于逐文件条款。** [Epic Content License §5(c)(viii) 与 §17](https://www.unrealengine.com/eula/content) 限制所覆盖 NoAI Content 的生成式 AI 数据集、开发材料及输入用途。公开技术说明可读，不等于所有 UE 开发禁 AI；接入前核取得渠道／文件／协议，不用镜像绕过。
 
-许可总结属于资料核对，不代替目标项目的法律审查。没有额外购买需求的模块，不为“商业方案覆盖”虚构一个收费优胜者。
+许可核对不替代目标项目法律审查；无购买需求时不虚构收费优胜者。
 
 ## 7. 后续真实验证矩阵
 
@@ -116,13 +116,13 @@
 | 最低设备满负荷 | 冷启动、首次特效、峰值战斗、切场景时保留必要共享资源 | 在事先约定帧时间和内存范围内；无漏 shader／静音／读取卡顿 | profiler 所证瓶颈，减少资源和并发预算优于全局新框架 |
 | 干净发行构建 | 无编辑器／本地缓存条件，断网，存储失败，目标输入与语言 | 首次可玩、关键路径可达、失败反馈可理解、许可清单完整 | 构建资源清单／目标平台差异，不以模拟测试遮掩 |
 
-[研究] 测量轮数按是否达到稳定、覆盖关键竞态和可重复结果决定，不宣称固定循环次数等同无泄漏证明。自动化记录资源身份、状态转换和性能样本；画面可读性、动画观感、音频舒适度和翻译准确性保留人工验收。
+[研究] 轮数由稳定性、竞态覆盖和可重复结果决定；自动化核资源身份、状态及性能，人验视听质量与翻译。
 
 ## 8. 自检、反证和剩余工作
 
 ### 任务书覆盖
 
-[研究] 正文的 11 个客户端模块及采用边界见 04；本记录保留支撑选择的证据与反证，Unity 异步选型与 Unreal 生命周期对照见前文。
+[研究] 11 个模块的建议在 04 维护；本页留证据、反证与跨引擎边界。
 
 ### 能推翻推荐的条件
 
@@ -133,9 +133,9 @@
 
 ### 下一项有价值的验证
 
-[研究] 优先固定包验证第 1 节 A／B 复用与第 7 节旧档矩阵；先查身份、次数和旧场景写入，不只查异常。真实引擎试验待授权。
+[研究] 优先固定包验证第 1 节 A／B 复用与第 7 节旧档矩阵；真实引擎试验待授权。
 
-补充纠偏：[Unity 6.3 协程文档](https://docs.unity3d.com/6000.3/Documentation/Manual/Coroutines.html)区分 GameObject 失活／宿主销毁会停协程，而 MonoBehaviour.enabled=false 不会。[一手] 对象池回收政策须按实际停用方式写，不能笼统认为“禁用后所有后台行为都停”。
+[Unity 6.3 协程文档](https://docs.unity3d.com/6000.3/Documentation/Manual/Coroutines.html)：GameObject 失活／宿主销毁停协程，`MonoBehaviour.enabled=false` 不停。池回收须按实际停用方式约定。[一手／研究]
 
 ### 实际验证状态
 
@@ -152,11 +152,11 @@
 | 加载取消／重启问题状态 | [UE-207209](https://issues.unrealengine.com/issue/UE-207209)仍 Backlogged，Affects 5.0／5.5、Target Fix 6.0、更新 2026-07-28；[UE-208804](https://issues.unrealengine.com/issue/UE-208804)仍 Backlogged，更新 2026-09-14 | 保留同帧回调与 bundle 重启回归；目标修复版不是已发布修复，也不据影响列表断言其他版本必现 |
 | Lyra 渠道标签与许可缺口 | [Fab 官方商品页](https://www.fab.com/listings/93faede1-4434-47c0-85f1-bf27c0820ad0)仍写 UE-Only、Allows usage with AI: No；本次提取的 License terms 字段为空 | 保留读公开机制说明；不默认整包交给 Agent 或跨引擎复用。商品标签不是逐文件授权链，具体取得协议仍未闭合；WP11 同样适用 |
 
-[研究] 本表只核公开动态状态；未取得样例文件许可或目标版本修复证据。
+[研究] 样例文件许可与目标版本修复证据仍缺。
 
 ## 体验质量深化：响应与顺滑，让同一个动作值得反复玩
 
-核实：2026-10-14 UTC。以下补 04 的动作回应、可读性与连续游玩质量，比较 2D 动作和 3D 第三人称；节奏、容错与演出强度按玩法选择。[研究]
+核实：2026-10-14 UTC。补 04 的动作回应、可读性与连续游玩质量；比较 2D 动作与 3D 第三人称，节奏／容错按玩法选择。[研究]
 
 ### 1. 四类时间问题不能用同一种“平滑”处理
 
@@ -167,19 +167,19 @@
 | [Android Frame Pacing 官方说明](https://developer.android.com/games/sdk/frame-pacing)，页面更新 2026-02-26：不均匀显示间隔、重复帧及 queue-stuffing 可增加卡顿／延迟，Unity 已集成 | [研究] 平均 FPS、CPU/GPU 用时与实际呈现间隔分开记录。原生 Android 先用引擎选项，不为独立游戏再实现呈现同步层 | [研究] 平台、图形 API、刷新模式和引擎版本变化需复核；没有目标设备数据，不声称固定幅度改善 |
 | [Unity 6.3 targetFrameRate](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)：桌面软件限帧有 microstutter 风险，vSyncCount 非零时忽略 targetFrameRate；Android 有不同规则 | [研究] 不把 `targetFrameRate=60` 当跨平台顺滑配方。桌面按同步方式选，Android 按目标与刷新率配置；帧间隔稳定和输入延迟同时比较 | [研究] VRR、平台合成器、驱动及硬件队列会影响结果；官方机制不能替目标设备端到端测量 |
 
-[研究] 可用时间戳区分输入处理、动作接受、首次呈现反馈的程序路径；显示器实际发光和外设延迟不在这些日志内。帧时间 p95／p99、最长帧、超过项目预算的频率与发生场景，比单独平均 FPS 更能描述稳定性，但也不代替试玩。此处只提出未来观测，不冒充已采样的数据。
+[研究] 未来以时间戳定位输入处理、动作接受与首个反馈；p95／p99、最长帧和超预算场景描述稳定性。外设到屏幕发光另测，试玩判断体验。
 
 ### 物理查询补研：刚改位置不等于物理查询已看到新位置
 
-核实：2026-10-15 UTC。改变的建议：[研究] 移动／放置后的错误命中先查物理状态新鲜度，不把插值、提高物理频率或全局同步开关当修复；范围仅 Unity 3D，UE 对照其原生 tick 合同。
+核实：2026-10-15 UTC。移动／放置后的错误命中先查物理状态新鲜度；范围为 Unity 3D，UE 对照原生 tick 合同。[研究]
 
-- [一手] [Unity 6.3 同步手册](https://docs.unity.com/en-us/engine/6000.3/manual/physics-section/physics-overview/physics-optimization/cpu/transform-sync)明确默认延后 Transform 同步；直接改 Rigidbody／Collider 的 Transform 后，同帧依赖新位置的查询前应调用 `Physics.SyncTransforms`。全局 Auto Sync 会在每次物理查询前增加隐式同步点。[研究] 因此先批量修改，再在依赖这些修改的查询前同步；若中间又修改，就重新确定同步边界，不承诺“一帧一次”足够或一定获得多少性能收益。
-- [一手] **弃用与删除分开。** [6000.3.0f1 发布说明](https://unity.com/releases/editor/whats-new/6000.3.0f1)标记 `Physics.autoSyncTransforms` deprecated，建议需要时显式同步。官方 UnityCsReference 的 6000.3 分支本轮固定为 `c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1`（提交标题为 6000.3.26f1）；[Physics.deprecated.cs L22–25](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/Modules/Physics/ScriptBindings/Physics.deprecated.cs#L22-L25)仍保留 extern get/set，带 `Obsolete(..., false)` 和 `ExcludeFromDocs`。当前手册仍讲解该开关，不能据此推荐生成新的开关写入代码，也不能反过来声称属性已移除或无效果。
-- [一手] [6.3 SyncTransforms API](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Physics.SyncTransforms.html)只承诺把 Transform 变化送入物理引擎，涉及自身及子层级的 Rigidbody／Collider。[固定 Physics.bindings.cs L763–783](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/Modules/Physics/ScriptBindings/Physics.bindings.cs#L763-L783)中，`Simulate` 走 `Simulate_Internal`，`SyncTransforms` 是独立绑定。[研究] 显式同步不是推进模拟、求解接触或完成一次运动；这里只核了公开 C# 绑定，不冒充原生求解器源码核查。参考源码受 [Unity Reference-Only License](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/LICENSE.md)约束，本轮只阅读机制，不作为可复用运行时代码。
-- [一手] [6.3 MovePosition](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.MovePosition.html)用于运动学刚体连续移动并遵循插值设置，示例在 FixedUpdate；瞬移改用 `Rigidbody.position`。[position 文档](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody-position.html)说明它经物理引擎设置位置，Transform 在下一次模拟步骤后更新，避免直接改 Transform 引起附属 Collider 相对位置重算。[研究] 先保留运动所有者和既定时序，不能把 `MovePosition` 后调用 SyncTransforms 当作运动已完成，也不要求可见 Transform 与物理姿态在每个时点完全相等。没有借用 Rigidbody2D 的时序措辞证明 3D。
-- [一手] [UE 5.8 Actor Ticking](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-ticking-in-unreal-engine)：PrePhysics 的模拟数据来自上一帧；DuringPhysics 不保证读到哪一帧；PostPhysics 已完成当帧模拟，官方以武器／移动 trace 为例。相同 tick group 内可用 `AddTickPrerequisiteActor`／`AddTickPrerequisiteComponent` 等待具体生产者，避免把无关对象全部推迟。[研究] 只对需要当帧模拟结果的消费者采用这条建议，不推出任意 `SetActorLocation` 后的查询都要等 PostPhysics，也不为 UE 编造 Unity 式 flush／auto-sync 对应开关。
+- [一手] [Unity 6.3 同步手册](https://docs.unity.com/en-us/engine/6000.3/manual/physics-section/physics-overview/physics-optimization/cpu/transform-sync)：默认延后 Transform 同步；直接改 Rigidbody／Collider Transform 后，依赖新位置的同帧查询前调用 `Physics.SyncTransforms`。Auto Sync 每次查询隐式同步。[研究] 批量改后同步，中间再改须重定边界，非保证一帧一次。
+- [一手] [6000.3.0f1 发布说明](https://unity.com/releases/editor/whats-new/6000.3.0f1) 弃用 `Physics.autoSyncTransforms`，建议显式同步；6000.3 固定 `c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1`（6000.3.26f1）的 [Physics.deprecated.cs L22–25](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/Modules/Physics/ScriptBindings/Physics.deprecated.cs#L22-L25) 仍有 extern get/set、`Obsolete(..., false)`／`ExcludeFromDocs`。不生成新开关写入，也不称已移除／无效。
+- [一手] [6.3 SyncTransforms API](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Physics.SyncTransforms.html) 将自身／子层级 Transform 送入物理；[固定 Physics.bindings.cs L763–783](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/Modules/Physics/ScriptBindings/Physics.bindings.cs#L763-L783) 中 `Simulate_Internal` 与 SyncTransforms 为独立绑定。[研究] 同步不推进模拟／求接触；只核公开 C#，未核原生求解器。[Unity Reference-Only License](https://github.com/Unity-Technologies/UnityCsReference/blob/c57f9f00d22b3794130a9bfa76dd7c8b32e4f2f1/LICENSE.md) 仅供参考，不作可复用运行时代码。
+- [一手] [6.3 MovePosition](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.MovePosition.html) 用于运动学连续运动并遵循插值，示例在 FixedUpdate；瞬移用 `Rigidbody.position`。[position 文档](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody-position.html) 说明经物理设置、下次模拟后更新 Transform，可免附属 Collider 重算。[研究] 同步不令 MovePosition 已完成，可见／物理姿态也非时时相等；不外推 Rigidbody2D。
+- [一手] [UE 5.8 Actor Ticking](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-ticking-in-unreal-engine)：PrePhysics 读上一帧，DuringPhysics 不确定，PostPhysics 模拟已完成；同组可用 `AddTickPrerequisiteActor/Component` 等具体生产者。[研究] 仅需要当帧模拟结果才延后，不把任意 SetActorLocation 查询等同，也不造 UE flush。
 
-**二改与停止条件：** [研究] 后续把原先静态障碍改成同帧脚本移动的障碍，比较批量改位置后直接查询与显式同步后查询的命中／放置结果；原生刚体连续运动另按既定模拟步骤观察，避免混用两类操作。结果满足玩法后再测同步成本，不先加物理频率。若错误来自射线起点在 Collider 内、层矩阵、形状或查询参数，同步不是修复；若查询并不依赖刚写入的位置，也不无条件增加同步点。仅为未来验证设计，未运行引擎、游戏或性能实验。
+**二改预注册：** [研究] 把静态障碍改为同帧脚本移动，对照批量修改后直接查询与显式同步；原生刚体运动另按既定模拟步骤观察。正确后再测同步成本。射线起点、层矩阵、形状或参数错误另修；查询不依赖新位置时不加同步。
 
 ### 2. 具体动作的体验和生产成本
 
@@ -190,19 +190,19 @@
 | 重武器或有承诺的动作 | 接受输入后及时给起手反馈，前摇和收招保留可学习节奏 | [研究] 接触缺乏力度时才加短顿帧／声音层次；需要连段时定义缓冲与取消窗口 | [研究] 追求零前摇、任意取消会消掉策略；顿帧过长／频繁会使连击不连贯。所有视觉变化不应悄悄修改伤害窗口 |
 | 高频群战／多目标命中 | 威胁、玩家和命中结果始终可辨，声音并发受控 | [研究] 把特效／音频强度按轻重与重要性分层；多命中顿帧合并设上限，保留必要提示 | [研究] 全屏闪光、累计震动、长拖尾与无限刷新暂停会冲淡重点。可降低纯呈现强度而保持规则相同，规则性暂停则明确记录 |
 
-[一手] [Unity 6.3 转场文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)明确 Exit Time 与条件的组合、Transition Duration 的秒／归一化时间区别、Interruption Source／Ordered Interruption 的排队规则。文档也说明通过转场接触关系调节避免脚滑。它没有证明“所有动作都关闭 Exit Time”最好。[一手] [Animation Rigging 1.4 官方页](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/index.html)实际版本为 1.4.1（页面生成 2026-01-17）；这是当前可核的原生可选能力，不是必须迁移到的动画架构。
+[一手] [Unity 6.3 转场文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html) 区分 Exit Time＋条件、时长单位及打断排队，并说明避免脚滑的接触调节；不支持全关 Exit Time。[Animation Rigging 1.4 官方页](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/index.html) 实际 1.4.1，页生成 2026-01-17，为可选能力。
 
-[研究] 对单人且无人工美术修补的生产条件，最划算的增强通常是统一接受动作与反馈的时刻、调好有限动作的速度／转场，以及程序可控的短音效、缩放、拖尾。若所需骨架、脚步接触或多方向动作持续不能达到目标，应缩小动作集合或更换许可清楚的可用资产；增加算法复杂度不能保证弥补资产缺口。AI 适合实现可切换参数、读取状态、排查时序；“这个动作有力量还是迟钝”保留给人判断。
+[研究] 单人无手工美术修补时，先统一动作／反馈时刻、调有限动作的速度／转场和程序化演出。骨架、接触或方向覆盖仍不足，就缩动作集合或换许可清楚的资产；AI 查时序与参数，人判断力度和迟钝。
 
-**回合演出的等待预算（核实：2026-10-15 UTC+8）。** [研究] ✅ 重复游玩嫌慢时，先比较缩短默认高频反馈与增加可选快速播放；不是所有动画都应瞬间消失。复用现有设置、动作序列／完成标志和一次性结算，不新增第二套简化规则或演出框架。
+**回合等待预算（核实：2026-10-15 UTC+8）。** [研究] ✅ 先比较缩短高频反馈与可选快速播放，沿用动作完成条件和一次性结算。
 
-- **玩家选速度，也要等真正完成。** [一手：官方历史补丁] [Slay the Spire 公告正文](https://store.steampowered.com/news/posts/?appids=646570&enddate=1521157929&feed=steam_community_announcements)记录 2018-02-08 因速通需求加入 Fast Mode；02-15 继续加快卡片移动、营地与事件；02-22 修 Fast Mode + Bite 问题，将战后奖励改为全部动作完成后才出现。[研究] 支持快速路径仍需维护结束条件，不证明具体竞态根因、留存收益或当前仍有故障。
-- **不加新功能的竞争方案。** [一手：作者实际修改自述] Cogmind 作者 [2014-05-27 回复](https://www.gridsagegames.com/blog/2014/05/options-revisited/)说明已加快大多数弹体，较少使用的大型武器仍稍慢；调程序化动画速度会改变外观。其 [2015 年设计说明](https://www.gridsagegames.com/blog/2015/04/cogmind-roguelike/)继续区分弱攻击与强武器／爆炸的演出时间。[研究] 可借按频率与重要性分配等待，不照抄倍率／毫秒，也不能据早期开发回复认定作者永久拒绝倍速。
-- **规则错误的反证。** [一手：官方已发布修复] Into the Breach [v1.2.82 公告正文](https://steamcommunity.com/app/590380/allnews/)（2022-09-06）修正 Fast Combat Speed 下敌人会推动先前回合的尸体的问题。[研究] 快速播放不是天然纯视觉；该记录不揭示根因，更不代表当前版本仍有缺陷。
+- **快速路径仍等完成。** [一手] [Slay the Spire 公告正文](https://store.steampowered.com/news/posts/?appids=646570&enddate=1521157929&feed=steam_community_announcements)：2018-02-08 加 Fast Mode，02-15 加快卡片／营地／事件，02-22 修 Fast Mode＋Bite，奖励改为全部动作完成后出现；未披露竞态根因。[研究]
+- **缩默认演出可不加模式。** [一手] Cogmind [2014-05-27 回复](https://www.gridsagegames.com/blog/2014/05/options-revisited/) 已加快常用弹体，大型少用武器仍慢；程序化速度影响外观。[2015 年设计说明](https://www.gridsagegames.com/blog/2015/04/cogmind-roguelike/) 继续区分弱攻击与强武器／爆炸。[研究] 按频率／重要性分等待，不将早期回复当永久拒绝倍速。
+- **规则反例。** [一手] Into the Breach [v1.2.82 公告正文](https://steamcommunity.com/app/590380/allnews/)（2022-09-06）修 Fast Combat Speed 下敌人推动旧回合尸体；快速路径非天然纯视觉，根因未披露。[研究]
 
-[研究] 三例限卡组构筑、格点 roguelike 与战术回合制，不推成实时反应／节奏游戏统一加速。声音与悬念也可能需要时间：Cogmind [2014-01-12 实现补记](https://www.gridsagegames.com/blog/2014/01/animation-vs-pacing-dilemma-modern-roguelikes/)仍为可听结果保留播放间隔，避免连续声音挤在一起；不照搬其可见／可听预测或自研引擎。
+[研究] 三例限回合类，不外推实时／节奏游戏。Cogmind [2014-01-12 实现补记](https://www.gridsagegames.com/blog/2014/01/animation-vs-pacing-dilemma-modern-roguelikes/) 为可听结果保留间隔避免声音挤在一起；不照搬预测或自研循环。
 
-[研究] **二改只预注册**：已有动作新增击杀后回血／额外效果，对同一输入序列比较普通与快速路径的伤害、回血、死亡清理、随机消耗及奖励次数，确保下一操作不会读到未完成状态；再判断来源、先后与结果能否读懂。新多段效果、声音尾部和奖励过渡都增加维护；若必须堆规则特例或丢失关键辨识，先撤回到较短的原演出。未运行游戏／引擎或玩家实验；只提炼机制，公开说明不授予商业代码／动画／音频资产许可。
+[研究] **二改预注册**：新增击杀回血／额外效果，对照普通和快速路径的伤害、回血、死亡清理、随机消耗及奖励次数，核下一操作与声音尾部、结果辨识。若需堆规则特例或丢失关键信息，退回较短的原演出；公开说明不授予游戏代码／视听资产许可。
 
 ### 3. 可借用的优秀实现，以及不能带走的东西
 
@@ -212,19 +212,19 @@
 | [EXOK/Celeste64](https://github.com/EXOK/Celeste64/tree/6edfe1ebd2a21a6134d7675a28e357891025407e)，最新提交 2026-09-07 | [一手] [Player.cs](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs)的 Jump 同时设置运动、模型拉伸和声音；落地根据此前速度调整形变并发出落地事件／音效；宽限、ground snap 与显示姿态协同。可借动作到反馈的连接，3D 仍可用小规模程序化演出 | [一手] [ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md)：Source 原则上 MIT，标注例外及 FMOD 另算；Content／IP 不随代码放开商用。作者明确称约两周 jam、并非充分优化。[研究] 近期翻译提交不证明其是生产级 Unity 底座 |
 | [deepnight/gamefeel](https://github.com/deepnight/gamefeel/tree/09d24aa05abe1192ad07cd3acd7270e6a5842237)，最新提交 2024-11-10，作者演示 v2 于 2024-05-01 发布 | [一手] [Options.hx](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/src/game/Options.hx)将视觉后坐力、物理后坐力、缓冲、控制锁定等分开；[Hero.hx](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/src/game/en/Hero.hx)把动作与反馈连接。[研究] 借逐项开关和清楚的事件绑定，而非引入 Haxe／Heaps 作为 Unity 插件 | [一手] [LICENSE](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/LICENSE)为 MIT；README 另列 Kronbits Inca tileset，不能用代码许可代替第三方资产核查。作者称学习演示而非实际游戏；未试玩，不给收益排名 |
 
-**[一手＋研究] 演示的反证特别重要。** Deepnight 的 `gunAnimations` 会改变准备射击时序：代码中的预备时间为 0.33／0.06 秒；没有枪械动画时，爆发射击后又加 0.35 秒控制锁作为补偿。`gunRecoilVisual` 只改精灵偏移，`gunRecoilMovement` 改实际运动。故不能把“全开／全关”的差异全部归因于画面美化，也不能推断所有反馈越多越好。以上是固定源码的案例常量，不是本轮测量或通用推荐值。
+**[一手＋研究] Deepnight 反证。** `gunAnimations` 将预备时间设为 0.33／0.06 秒；无枪械动画时爆发射击后另加 0.35 秒控制锁。`gunRecoilVisual` 改精灵偏移，`gunRecoilMovement` 改实际运动。因此全开／全关混合了规则与画面变化；这些是固定源码常量，不是推荐值。
 
-[一手] [Game.hx](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/src/game/Game.hx)的 slowMo 生命周期用未缩放时间更新，并显式计算游戏速度；`stopFrame` 名称／注释也不能替代阅读实际时长和速度倍率。[研究] Unity 中同样要明确输入缓存、命中判定、动画、粒子、相机、音频与 UI 的时钟政策；不能简单认为 `timeScale=0` 会统一暂停所有反馈，或把注释当完整机制。
+[一手] [Game.hx](https://github.com/deepnight/gamefeel/blob/09d24aa05abe1192ad07cd3acd7270e6a5842237/src/game/Game.hx) 的 slowMo 用未缩放时间更新并计算游戏速度，须读 `stopFrame` 实际时长／倍率。[研究] Unity 输入缓存、判定、动画、粒子、相机、音频与 UI 各定时钟，`timeScale=0` 不统一暂停。
 
 ### 4. 作者复盘与研究能支持多强的结论
 
-- [一手] Sébastien Bénard 的 [GDC 2019 Dead Cells 复盘](https://media.gdcvault.com/gdc2019/presentations/Benard-Sebastian-DeepCells.pdf)，第 13 页（PDF 索引 13）列及时跳跃、到达位置辅助；第 16 页列自由转向与自动瞄准，第 21 页强调处理不属于挑战本身的细节。[研究] 由此支持减少无意操作摩擦、把挑战留在有意义选择上，不支持所有项目都加自动瞄准或统一容错时长。无未观看视频内容或未公开测量的推断。
+- [一手] Sébastien Bénard [GDC 2019 Dead Cells 复盘](https://media.gdcvault.com/gdc2019/presentations/Benard-Sebastian-DeepCells.pdf) 第 13 页（PDF 索引 13）为及时跳／到达辅助，16 页自由转向／自动瞄准，21 页处理挑战外细节。[研究] 只支持减少无意摩擦，不普推自瞄或统一容错；未看视频。
 - [一手] Maddy 的 [Celeste & TowerFall Physics](https://www.mattmakesgames.com/articles/celeste_and_towerfall_physics/index.html)解释特定 2D 像素／平台约束下的 Actor／Solid 运动。[研究] 支持为了具体动作设计运动政策，不支持默认绕开 Unity 原生物理并自研引擎。
-- [一手] [Lin 等 2022 impact-feel 论文](https://arxiv.org/abs/2208.06155)摘要报告从玩家评论训练排序模型，再比较前八／后八游戏的反馈特征；认为顿帧、声音一致性、相机控制可能重要。[研究] 这是相关性与特征分析，不能据此声称加入顿帧会使满意度提高固定百分比。本轮未用它制定参数或量化收益。
+- [一手] [Lin 等 2022 impact-feel 论文](https://arxiv.org/abs/2208.06155) 摘要以评论训练排序、比较前八／后八游戏特征，认为顿帧、声音一致性、相机控制可能重要；仅相关分析，不定参数或因果收益。[研究]
 
 ### 5. 下一步验证和本轮交付边界
 
-[研究] 将来已获授权的垂直切片应以一个高频动作作对照：2D 选跳跃／短连击，3D 选转身移动／一次近战；先让控制规则固定，再分别切换纯呈现，若改缓冲／顿帧窗口则明确另作玩法变化。比较接受输入到首个反馈的程序时刻、长帧位置、玩法误操作和人的可控／可读判断；再做一次需求修改，观察是否只需改动作参数及少量绑定。验证目标是更好的动作，不是通过更多检查项。
+[研究] 未来获准切片选一个高频动作：2D 跳跃／短连击，3D 转身／近战。固定规则后切纯呈现，缓冲／顿帧窗口另作玩法变量；记录首反馈、长帧和误操作，由人判断可控／可读。二改再核是否只需动作参数和少量绑定。
 
 ## 3D 运动补研：控制精度、接触连续性与物理重量的取舍
 
@@ -234,139 +234,139 @@
 
 **[研究] 默认判断**：常规直立探索／动作角色，原生坡／阶与简单接触规则已满足需求时，✅ 原生 CharacterController 加窄运动层；已有可维护的刚体运动无需迁移。真正需要物体质量、冲量与摩擦相互作用时🧪力驱动动态 Rigidbody；需要原生接触求解但按游戏规则组织速度时🧪速度驱动动态 Rigidbody；稳定接地、任意附着／脱离或复杂台阶规则超过原生便利范围时🧪现成 kinematic motor。后两条都可能很精确，不能写成“Rigidbody 必然笨重、KCC 必然最好”。
 
-[研究] “重量”不等于质量参数：有限加速度、方向反转时的承诺、落地压缩、武器动作时序都能塑造重量，同时保留精确落点；反过来，物理自然推出的移动也可能偏离动作游戏要求。应先描述人在坡顶、被击退、站上转台时想做什么，以及实际结果是否可信，再选哪一层拥有速度。
+[研究] 加速度、转向承诺、落地形变和武器时序也能塑造重量；先定义坡顶、击退、转台上的期望行为，再决定速度所有者。
 
 [一手] Unity 6.3 LTS 的边界：
 
-- [CharacterController 组件](https://docs.unity3d.com/6000.3/Documentation/Manual/class-CharacterController.html)提供壁面滑动、Slope Limit／Step Offset 和 Skin Width。它不自行接受力，也不自动推开 Rigidbody；可在碰撞回调中编写推力。文档中以角色尺度举出的参数不是本仓库的通用推荐值。
-- [Move](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController.Move.html)接收位移增量并受碰撞约束，不自动使用重力；[isGrounded](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController-isGrounded.html)是最近一次 Move／SimpleMove 的接地结果。[velocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController-velocity.html)来自移动前后差值，不追踪在控制器之外施加的 Transform／父级运动。因此它们不能直接充当世界速度、独立探地或平台动量系统。
-- [Rigidbody.linearVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody-linearVelocity.html)是世界空间速度；文档反对每步覆盖速度来期待真实物理，同时给出跳跃立即改速度的用例。[研究] 这是物理真实性边界，不是禁止所有作者控制的角色：采用速度驱动就显式维护允许保留的外力与接触后速度，不能一边全量覆盖、一边期待任意 AddForce 自然持续。
-- [GetPointVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.GetPointVelocity.html)包含角速度；[MovePosition](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.MovePosition.html)描述运动学刚体按物理步移动及插值。[研究] 仅调用 MovePosition 不等于拥有角色的台阶、可走坡、接地和离台政策。
+- [CharacterController 组件](https://docs.unity3d.com/6000.3/Documentation/Manual/class-CharacterController.html) 提供壁滑、坡限／阶高／Skin Width，不自动受力或推刚体，可用回调补推力；示例尺度参数非通用值。
+- [Move](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController.Move.html) 受碰撞约束且不加重力；[isGrounded](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController-isGrounded.html) 是最近 Move／SimpleMove 接地结果；[velocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController-velocity.html) 来自位移差，不含外部 Transform／父级运动，不能直接当世界速度／独立探地／平台动量。
+- [Rigidbody.linearVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody-linearVelocity.html) 是世界速度，反对逐步覆盖以求真实物理，也给跳跃改速示例。[研究] 速度驱动可用，但须显式保留外力／接触速度，覆盖后不能期待 AddForce 持续。
+- [GetPointVelocity](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.GetPointVelocity.html) 含角速度；[MovePosition](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rigidbody.MovePosition.html) 是运动学按物理步移动／插值接口，不包办坡阶、接地与离台政策。[研究]
 
 ### 2. 三份许可清晰的实现：同样叫 controller，接触政策不同
 
-以下固定 SHA 通过公开 GitHub API 核查，源码原文逐文件读取；时间是仓库提交／活动证据，不代表目标 Unity 版本已通过，不用 star 数推导品质。三者均有实际 motor 实现与演示代码，本轮没有证据把它们写成某商业游戏已验证的底座。只建议借对应机制或有条件试用，代码许可不替代演示资产和依赖核查。
+以下 SHA 经公开 GitHub API 核查，已逐文件读 motor／演示源码。提交活动不证明目标 Unity 兼容或商业采用；代码许可不替代演示资产与依赖核查。
 
 **A. OpenKCC：🧪 需要显式 snap／平台政策时评估，保留现有行为再决定接入。**
 
-- [一手] `nicholas-maltbie/OpenKCC@a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4`，v1.5.0，2023-09-15；[MIT LICENSE.txt](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/LICENSE.txt)。[package.json](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/package.json)声明最低 Unity 2019.4，README 开发版本为 2023.1；不能据此声明 Unity 6.3 已兼容。包还依赖作者的状态机、screenmanager、testutils 及 Unity 包，接入不只是替换一个组件。
-- [一手] [KCCMovementEngine.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/KCCMovementEngine.cs#L303-L339)先去重叠、求移动、按条件 snap down、再更新 grounding／平台。`ShouldSnapDown` 要求此前稳定着地、不滑坡且没有向上运动，避免把主动起跳吸回地面；`GetProjectedMovement` 把移动投影到可行坡面并保留输入长度，体现的是设计好的坡速规则。
-- [一手] [RelativeParentConfig.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/Config/RelativeParentConfig.cs#L73-L108)保存平台相对位置／旋转或采用平台点速度，而非必须改变 Unity 层级；[KCCStateMachine.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/KCCStateMachine.cs#L302-L335)把刚体设为 kinematic，自行施加重力，跳跃显式加入 `GetGroundVelocity()`。后者支持不传动量、权重和默认最大弹射速度，说明“随平台站稳”和“跳出平台的运动”是两个决定。
-- [一手／研究] 窄反例：[RelativeVelocityRigidbodyTracking.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Environment/MovingGround/RelativeVelocityRigidbodyTracking.cs#L45-L64)计算的是两个速度的模之差的绝对值，不是速度向量差的模；等速反向输入在此函数会得到零差。另在 `KCCMovementEngine.GetGroundVelocity` 中，传入权重函数的第二参数是已取得的平台速度，不是单独读取的玩家速度。不能把该可选类名称解释成完整相对速度契约；这是固定路径的静态反例，不是实际引擎故障复现，也不否定其他平台路径。
+- [一手] `nicholas-maltbie/OpenKCC@a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4`，v1.5.0／2023-09-15；[MIT LICENSE.txt](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/LICENSE.txt)。[package.json](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/package.json) 最低 Unity 2019.4，README 开发版 2023.1，未证 6.3；另依赖作者状态机、screenmanager、testutils 与 Unity 包。
+- [一手] [KCCMovementEngine.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/KCCMovementEngine.cs#L303-L339) 依次去重叠→移动→条件 snap→更新 grounding／平台；`ShouldSnapDown` 要求此前稳定着地、不滑坡、无上升，防吸回起跳；`GetProjectedMovement` 投影可行坡面并保输入长度，显式定义坡速。
+- [一手] [RelativeParentConfig.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/Config/RelativeParentConfig.cs#L73-L108) 用相对位置／旋转或平台点速度，无需改层级；[KCCStateMachine.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Character/KCCStateMachine.cs#L302-L335) 设 kinematic、自加重力，跳跃加 `GetGroundVelocity()`，支持无动量／权重／默认弹射上限。站稳与离台动量分别决定。
+- [一手／研究] [RelativeVelocityRigidbodyTracking.cs](https://github.com/nicholas-maltbie/OpenKCC/blob/a1a30ed7f7722ea82a1df6bd01849e0bfde6abf4/Packages/com.nickmaltbie.openkcc/OpenKCC/Environment/MovingGround/RelativeVelocityRigidbodyTracking.cs#L45-L64) 算两速度模之差的绝对值，等速反向得零；`GetGroundVelocity` 给权重函数的第二参数为平台速度，非独读玩家速度。类名不代表完整相对速度契约；仅此静态路径反例，不否定其他平台路径。
 - [研究] 可借：显式可站立／滑坡状态、起跳不吸附、平台跟随与发射动量分开。维护代价是查询／去穿透／更新顺序及依赖组合；代码年代本身不构成淘汰理由，但目标版本升级需验证，不能当作近年活跃维护的证据。
 
 **B. Character Movement Fundamentals：🧪 学习／改造速度驱动刚体，不能按“物理控制器”承诺任意冲量自然保留。**
 
-- [一手] `Jan-Ott/CharacterMovementFundamentals@49bd5569c1192dc98ac889046ff358c4eb8eeb44`，2025-02-09；[MIT](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/LICENSE)。[作者 README](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/README.md)说明 2019 发布、内容更新至 2021、支持至 2025-01，之后开源且无暇维护，建议自行 fork。它可以是可读机制来源，不能列为有持续维护承诺的 Unity 6 底座。
-- [一手] [Mover.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Core%20scripts/Mover.cs)冻结旋转、关闭原生重力；地面传感器测距离，生成竖向 ground-adjustment velocity，`SetVelocity` 把它加到作者提供速度后写入 Rigidbody。台阶连续性来自传感器范围和地面距离修正，不是 capsule 自然走台阶。
-- [一手] [AdvancedWalkerController.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Controllers/AdvancedWalkerController.cs)拥有 `momentum`、空中控制、地面／空中摩擦、陡坡滑动和 `AddMomentum`；这是运动状态的明确扩展点。[研究] 对编排击退，调用拥有者合入动量比让另一个脚本随时改 Rigidbody 更一致；不能推导成所有碰撞产生的引擎速度已自动保留。
-- [一手／研究] [MovingPlatform.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Environment/MovingPlatform.cs)是 waypoint 平移样例：直接改平台 Transform，再给触发区中刚体 `MovePosition` 同一位移；未在此路径计算旋转接触点速度。抵达 waypoint 时平台位置被截到目标，但搬运乘客仍用先前 `_movement`，是端点步长值得验证的静态边界，不能据样例宣称各种旋转／高速平台已解决。
+- [一手] `Jan-Ott/CharacterMovementFundamentals@49bd5569c1192dc98ac889046ff358c4eb8eeb44`，2025-02-09；[MIT](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/LICENSE)。[作者 README](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/README.md)：2019 发布、内容至 2021、支持至 2025-01，开源后无暇维护建议 fork；只作机制来源，不承诺 Unity 6 支持。
+- [一手] [Mover.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Core%20scripts/Mover.cs) 冻结旋转、关重力，传感器距离生成竖向 ground-adjustment velocity，与作者速度相加写 Rigidbody；台阶连续性来自距离修正，不是 capsule 自然能力。
+- [一手] [AdvancedWalkerController.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Controllers/AdvancedWalkerController.cs) 管 `momentum`、空控、摩擦、陡坡与 `AddMomentum`。[研究] 击退进入该所有者，不能另写刚体后假定所有碰撞速度都被保留。
+- [一手／研究] [MovingPlatform.cs](https://github.com/Jan-Ott/CharacterMovementFundamentals/blob/49bd5569c1192dc98ac889046ff358c4eb8eeb44/Character%20Movement%20Fundamentals/Source/Scripts/Environment/MovingPlatform.cs) 是 waypoint 平移：改平台 Transform，再给区域刚体 MovePosition 同位移，无旋转点速度；平台到点截断、乘客仍用原 `_movement`，端点步长待验，不称高速／旋转平台已解决。
 
 **C. SRMove：🧪 台阶连续性优先、愿意维护速度政策的轻量候选。**
 
-- [一手] `NoiRC256/SRMove@a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b`，提交于 2025-12-03（仓库 pushed_at 为 2026-01-26，不将其误写为该源码提交日期）；[MIT](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/LICENSE)。[Readme](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Readme.md)声明开发／测试 Unity 6000.0.32f1，属于作者兼容性说明，不是本轮复测或 6.3 保证。
-- [一手] [AvatarMover.GroundDetection.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.GroundDetection.cs)向前后采样代理地面点来近似坡面；[AvatarMover.Core.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.Core.cs)结合坡面方向、hover 修正、重力和输入，每步写 `linearVelocity`。[研究] 它希望让台阶像连续坡面，适合重视平顺行走的玩法；窄台阶、锐利边缘和需要精确台阶落点的玩法不能直接沿用同一近似范围。
-- [一手] [AvatarMover.API.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.API.cs)的 `Move` 设定单步目标速度，`LeaveGround/EndLeaveGround` 控制吸附暂停／恢复，旧 force 方法已标 Obsolete。跳跃曲线与击退组合属于调用方，不能认为加上组件就有完整动作。
+- [一手] `NoiRC256/SRMove@a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b` 提交 2025-12-03，pushed_at 另为 2026-01-26；[MIT](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/LICENSE)。[Readme](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Readme.md) 自述测 Unity 6000.0.32f1，不保证 6.3。
+- [一手] [AvatarMover.GroundDetection.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.GroundDetection.cs) 前后采样代理点近似坡面；[AvatarMover.Core.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.Core.cs) 合坡向、hover、重力／输入写 linearVelocity。[研究] 平顺台阶可评估，锐边／窄阶精确落点须重选近似范围。
+- [一手] [AvatarMover.API.cs](https://github.com/NoiRC256/SRMove/blob/a09e215b7f96357aafec5f2fba8ed8ff90d8cc6b/Runtime/AvatarMover.API.cs)：Move 设单步速度，LeaveGround/EndLeaveGround 暂停／恢复吸附，旧 force 已 Obsolete；跳跃和击退组合仍归调用者。
 - [一手／研究] `UpdateMovement` 对平台取得的是 `_groundRb.linearVelocity`；绕中心旋转的平台在边缘仍有点速度，单凭此值不足以表达。README 的 `ParentableGround` 通过层级继承位置／旋转，是另一条可选跟随政策；要另外验证离台时继承、父级缩放、相机参考方向与碰撞受阻，不能将“能跟着平台”概括成所有平台动力学正确。
 
 ### 现成 motor 补比：先借已有平台机制，再决定补什么
 
-核实：2026-10-14 UTC。针对「旋转升降平台＋边缘起跳／受击」这一个缺口补比两项；以下是商店元数据、作者公开文档／历史声明，不是包内源码审计或真实游戏实测。此前三份开源实现可读，不足以证明自行补齐原生 CC 比现成 motor 更省维护。[研究]
+核实：2026-10-14 UTC。补比旋转升降平台＋边缘起跳／受击；依据限商店、作者文档及历史声明。此前开源实现不足以证明自补原生 CC 更省维护。[研究]
 
 **D. Easy Character Movement 2（ECM2）：🧪 多种接触规则同时需要时，优先进入条件评估。**
 
-- [一手] [商店页](https://marketplace.unity.com/packages/tools/physics/easy-character-movement-2-193614)列出的版本为 1.4.3、2025-07 发布，USD 80／席位（未含税，购买时重核），列 Unity 6000.0.53f1／2021.3.45f1；不是 Unity 6.3 已验证保证。[changelog](https://oscar-gracian.gitbook.io/easy-character-movement-2/user-manual/general/change-log)记录 1.4.2 提供原生 Unity 6 分发，并修复落到运动平台时运动模式与平台速度应用顺序造成的偏差。这是具体维护证据，不能推成持续支持承诺。在线 changelog 同时已出现未标日期的 **Version 1.5**，与商店列版不同；本轮不据此认定 1.5 已在商店发布。
-- [一手] [CharacterMovement API](https://oscar-gracian.gitbook.io/easy-character-movement-2/user-manual/general/components/character-movement)区分平台跟随、旋转继承（描述为 yaw-only）与起跳／掉落时继承速度；该 API 页仍列 `PauseGroundConstraint`，但上述 1.5 changelog 已将其弃用并改为无需计时器的 `ClearCurrentGround`，因此不能跨版本照抄调用；`LaunchCharacter` 的公开接口支持分别覆盖或叠加速度。`fastPlatformMove` 会省略平台搬运时的 sweep，只适用于已知没有静态阻挡的情形。[研究] 这些入口直接覆盖原文准备自补的政策；不能据此宣称任意翻滚平台、侧挤和网络同步均已解决。
-- [一手／研究] [创建教程](https://oscar-gracian.gitbook.io/easy-character-movement-2/walkthrough/creating-a-character)先创建无外观角色、接模型并调 capsule，尚需接入控制；[扩展教程](https://oscar-gracian.gitbook.io/easy-character-movement-2/walkthrough/extending-a-character)支持继承或事件组合。因此先复用 motor／已有模式，只补输入、技能和动画接口，不为了用包重建整个角色架构。1.4.0 有破坏性 API／Character 重构，1.4.2 又分离 Cinemachine 示例依赖；锁版本、区分运行时与演示依赖，升级仍需回归。[一手：上述 changelog]
+- [一手] [商店页](https://marketplace.unity.com/packages/tools/physics/easy-character-movement-2-193614)：1.4.3／2025-07，USD 80／席位税前，Unity 6000.0.53f1／2021.3.45f1，未证 6.3；购买重核。[changelog](https://oscar-gracian.gitbook.io/easy-character-movement-2/user-manual/general/change-log)：1.4.2 加 Unity 6 分发并修落平台的模式／速度顺序；未标日期的 1.5 已出现，但不证明商店已发。
+- [一手] [CharacterMovement API](https://oscar-gracian.gitbook.io/easy-character-movement-2/user-manual/general/components/character-movement) 分平台跟随、yaw-only 旋转与离台速度；页面仍列 PauseGroundConstraint，1.5 changelog 已弃用改 ClearCurrentGround。LaunchCharacter 可覆盖／叠速，fastPlatformMove 省 sweep，仅适合无静态阻挡。[研究] 先借这些入口，版本勿混抄；翻滚、侧挤和联网仍未证。
+- [一手／研究] [创建教程](https://oscar-gracian.gitbook.io/easy-character-movement-2/walkthrough/creating-a-character) 需接模型、调 capsule、接控制，[扩展教程](https://oscar-gracian.gitbook.io/easy-character-movement-2/walkthrough/extending-a-character) 支持继承／事件；先复用 motor，只补输入／技能／动画。changelog 的 1.4.0 重构破坏 API、1.4.2 分离 Cinemachine 示例，故锁版本、分运行时与演示依赖。
 
 **E. Philippe St-Amand 的 Kinematic Character Controller：👀 可复用的历史方案，不升级为 Unity 6 新项目的无条件默认。**
 
-- [一手] [商店页](https://marketplace.unity.com/packages/tools/physics/kinematic-character-controller-99131)当前免费，3.4.4、2022-06 发布，原始 Unity 2020.3.30；不能从旧渲染管线表推出 motor 在现代 URP 必坏，也不能据免费与口碑保证 6.3 兼容。[作者 2022-09 声明](https://discussions.unity.com/t/released-rival-dots-character-controller/843064?page=5)明确 KCC 未被 Unity 收购，转免费后客户支持更有限；其 DOTS 方案 Rival 与这个 GameObject 包不可混同。
-- [一手／研究] [作者发布说明](https://discussions.unity.com/t/released-kinematic-character-controller/678434?page=17)给出复杂台阶、可控模拟更新和自定义运动回调机制；它是复用碰撞／接地底座，再写玩法规则，并非完整游戏角色。历史机制足以反驳「平台只有从零写」；但本轮未取得当前包内源码、现代引擎兼容验证或可核查的指定发行游戏采用证据，不写成比 ECM2／原生更可靠。
+- [一手] [商店页](https://marketplace.unity.com/packages/tools/physics/kinematic-character-controller-99131) 免费，3.4.4／2022-06，原 Unity 2020.3.30；旧管线表不证明现代 URP 必坏，也未证 6.3。[作者 2022-09 声明](https://discussions.unity.com/t/released-rival-dots-character-controller/843064?page=5)：KCC 未被 Unity 收购，免费后支持有限；GameObject KCC 与 DOTS Rival 分开。
+- [一手／研究] [作者发布说明](https://discussions.unity.com/t/released-kinematic-character-controller/678434?page=17) 有复杂台阶、更新控制及运动回调，可借碰撞／接地底座，非完整角色。当前包源码、现代兼容与指定发行采用未取得，不排名 ECM2／原生。
 
-**授权先于 Agent 接入。** [一手] 两商店页均列 Standard Unity Asset Store EULA、Extension Asset；免费或随包提供 C# 源码不等于 MIT 开源。[现行条款](https://unity.com/legal/as-terms)标注 2024-12-04 更新：EULA §2.2.1 允许符合条件的嵌入产品用途；§2.3.2 是按席位的 Extension Asset 规则；Terms §3.8(v)／EULA §2.2.1.1(g) 对相关 AI／ML 用途（文字包括输入）要求 Provider 和／或 Unity 明确同意。[研究] 常规获许可的引擎内集成，与把取得的资产包代码／数据交给 coding Agent 是两项判断；需要后者时先取得覆盖具体工作流的明确授权，未清权不默认将包交给 Agent，也不复制进公开仓库。普通公开技术文档不可仅因链接了商店就一概套用资产包许可；本轮仅借公开机制，不据此声称拥有包源码输入权限。这是采用门槛，不是法律意见。
+**授权先于 Agent 接入。** [一手] 两店均为 Standard Asset Store EULA／Extension Asset。[现行条款](https://unity.com/legal/as-terms)（2024-12-04）：§2.2.1 允许合条件嵌入，§2.3.2 按席位；Terms §3.8(v)／EULA §2.2.1.1(g) 的 AI／ML 用途（含输入）须 Provider 和／或 Unity 明确同意。[研究] 引擎集成授权不自动覆盖给 Agent 的包代码／数据，未清权不输入或公开复制；普通公开技术文档另论。未取得包输入权限，不作法律意见。
 
-**改变选择顺序。** [研究] 简单静态地形、少量基本坡阶继续保留原生 CC；已明确需要贴地、旋转平台与离台动量组合的新项目，应在写这层之前比较现成 motor。ECM2 的公开接口和 Unity 6 分发使它值得先评估，KCC 的维护／兼容边界使它更适合能自担升级的既有使用者；均不据文档宣布最优。只有实际需求、许可或接入成本排除了现成方案，才补窄层并写清缺口。购买、引擎导入或试玩留到获准阶段；动态价格、许可与版本于实际选型或 2026-11-14 前复核。
+**改变选择顺序。** [研究] 简单坡阶保留原生 CC；明确需要贴地、旋转跟随与离台动量组合时先比较现成 motor。ECM2 值得先评估，KCC 适合能承担升级的既有使用者；需求、许可或接入成本排除现成方案后才补窄层。购买／导入／试玩待授权；动态事实于选型时或 2026-11-14 前复核。
 
 ### 3. root motion 与混合路线：一个最终位移所有者
 
-[一手] Unity 6.3 [OnAnimatorMove](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MonoBehaviour.OnAnimatorMove.html)在状态机／动画求值后、IK 前调用。Unity 官方历史样例 `Standard-Assets-Characters@8f185aa3c782d824976653dd6a6476312daad241` 的 [ThirdPersonBrain.cs](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/Assets/_Standard%20Assets/Characters/Scripts/ThirdPerson/ThirdPersonBrain.cs#L458-L481)只在非 root-motion 模式从 FixedUpdate 驱动 motor，在 root-motion 模式从 OnAnimatorMove 驱动；[ThirdPersonMotor.cs](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/Assets/_Standard%20Assets/Characters/Scripts/ThirdPerson/ThirdPersonMotor.cs#L215-L228)通过 adapter 提交移动，`GetMovementVector` 读取 `animator.deltaPosition`。这是互斥所有权的实际实现，不是 Animator 绕过碰撞直接移动身体。
+[一手] Unity 6.3 [OnAnimatorMove](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MonoBehaviour.OnAnimatorMove.html) 在动画求值后、IK 前。固定 `Standard-Assets-Characters@8f185aa3c782d824976653dd6a6476312daad241` 的 [ThirdPersonBrain.cs](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/Assets/_Standard%20Assets/Characters/Scripts/ThirdPerson/ThirdPersonBrain.cs#L458-L481) 在非 root-motion 用 FixedUpdate，否则用 OnAnimatorMove 驱 motor；[ThirdPersonMotor.cs](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/Assets/_Standard%20Assets/Characters/Scripts/ThirdPerson/ThirdPersonMotor.cs#L215-L228) 经 adapter 提交、GetMovementVector 读 deltaPosition。位移所有权互斥，未绕过碰撞。
 
-[一手] 该仓库 [LICENSE.md](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/LICENSE.md)为 Unity Companion License，非 MIT；最后提交 2025-10-23 不能证明运动代码在 Unity 6.3 已通过。[研究] 只借“动画输出期望位移、motor 约束最终位移”的机制，不搬整套历史输入、相机和状态配置。自由移动通常由代码定轨迹、动画匹配实际速度；强调身体承诺的突进可采用动画位移，仍须决定受阻时缩短距离、停止／调整动作还是改变玩法。上述运动路线都能使用 root motion，区别在谁接受、限幅并提交位移，不是有没有 Animator。
+[一手] [LICENSE.md](https://github.com/Unity-Technologies/Standard-Assets-Characters/blob/8f185aa3c782d824976653dd6a6476312daad241/LICENSE.md) 为 Unity Companion License；最后提交 2025-10-23 未证 6.3。[研究] 只借动画出期望位移、motor 限最终位移；自由移动代码定轨迹，承诺突进可用动画，但须定受阻缩距／停调动作政策。各路线均可用 root motion。
 
-[一手] 现代官方反例：Unity [Character Controller 1.4.5](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/index.html)是 ECS 包；[SimulateDynamicBody](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/dynamic-body-interaction.html)让 kinematic 角色模拟质量比例、推与被推，因此“kinematic 不能产生物理互动”不成立。[moving platforms](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/moving-platforms.html)同时区别 TrackedTransform 跟随与 PhysicsVelocity 提供正确推力信息。[研究] 能力可借鉴，非 ECS 项目不因它是官方就迁移架构；需与 GameObject 原生 CharacterController、PhysX Rigidbody 分开说明。
+[一手] [Character Controller 1.4.5](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/index.html) 是 ECS；[SimulateDynamicBody](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/dynamic-body-interaction.html) 让 kinematic 模拟质量比例与推／被推，反驳无物理互动；[moving platforms](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/moving-platforms.html) 区分 TrackedTransform 跟随与 PhysicsVelocity 推力信息。[研究] 非 ECS 不因官方身份迁移；与 GameObject CC／PhysX 分列。
 
 ### 4. 升级、撤回与未来验收：以玩家感到的差别为准
 
-- [研究] **先保留原生 CC**：接触规则简单且原生坡／阶已够用，重力与击退由一个所有者组织。平台数量少不代表规则简单；一旦明确需要旋转跟随、贴地和离台动量组合，先比较上述现成 motor，不能等补丁互相抵消后才补做选型。已有方案稳定则保留，不以功能清单长短升级。
-- [研究] **保留速度驱动 Rigidbody**：已获得需要的接触与平顺步态，外部作用都能进入统一速度／momentum 接口。这是有效中间路线；若玩法后来要求持续质量交互、任意外部冲量和堆叠，重新评估力驱动或受控的混合政策，而不是不断增加写 velocity 的脚本。
-- [研究] **撤回过度物理化**：为了精确移动不停抵消摩擦、清掉碰撞速度或禁止自然推力，说明保留的模拟价值可能小于调试成本；把需要的重量感留在作者参数／动画，不用更高 solver iterations 代替运动设计。反过来，若每种碰撞都要手写特例才能做出物理玩具的相互作用，则 kinematic 也可能不划算。
-- [研究] **控制器升级验收**：相同关卡对比上／下坡速度、坡顶是否意外腾空、上／下窄台阶是否稳定、旋转平台站位／起跳方向、平台侧挤与低顶受击、root-motion 撞墙后的动作可读性。测记录只是解释现象，人判断是否更精确、更有重量、更少不明原因失控；不指定跨游戏通用坡角、snap 距离或击退恢复秒数。
-- [研究] **第二次修改题**：增加一种旋转升降平台，并让已有攻击可击退站在其边缘的角色。检查接地状态、平台速度、角色自移和击退是否各只应用一次，主动起跳是否解除吸附，落地／重生是否清掉旧附着。AI 可写适配、暴露参数和记录运动贡献，人决定继承动量／转向／恢复控制的体验；若必须改大量无关技能和相机脚本，先收拢所有权，不新建通用运动框架。
+- [研究] **保留原生 CC**：简单接触够用就不升级；平台少也可能规则复杂，贴地／旋转／动量组合先比较现成 motor。
+- [研究] **保留速度驱动 Rigidbody**：接触与步态已达标，外力统一进入 momentum。新增持续质量交互、任意冲量或堆叠时，再评估力驱动／混合政策。
+- [研究] **撤回过度物理化**：不停抵消摩擦／碰撞速度时，可把重量留给参数与动画；反之每次碰撞都需 kinematic 特例，也应重选。
+- [研究] **升级验收**：比较坡速、坡顶腾空、窄台阶、旋转平台站位／起跳、侧挤／低顶受击及 root-motion 撞墙。人判可控与重量，不设通用坡角／snap／恢复时长。
+- [研究] **二改**：旋转升降平台边缘受击；核平台、自移和击退各应用一次，起跳解除吸附，落地／重生清旧附着。牵动大量技能／相机脚本时先收拢所有权；人决定动量与恢复手感。
 
 ### 5. Unreal 对照：同样的动作，不同的引擎责任
 
-核实：2026-10-14 UTC。补充主线 3；改变 04 中把 Unity motor 责任隐含当作跨引擎默认的建议。新证据来自 UE 5.8 官方机制、API、Lyra 实例说明和 Mover 的明确发布状态；这里只核公开文档，不声称读过受授权限制的引擎源码或运行过样例。
+核实：2026-10-14 UTC。以 UE 5.8 官方机制／API、Lyra 和 Mover 状态校正跨引擎责任；未读受限引擎源码或运行样例。[一手／研究]
 
-**[一手／研究] ✅ 采用成熟 CMC，先检查它已有的扩展点。** [CMC 机制](https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-networked-movement-in-the-character-movement-component-for-unreal-engine)说明单机 TickComponent 进入 PerformMovement，统一处理外力／重力、动画 root motion／RMS，再按模式进入 PhysWalking／PhysFalling；MOVE_Custom／PhysCustom 提供特殊运动入口。与 Unity 的 Move 接口相比，UE 的现成层承担更多运动组织，不能从“要唯一 motor”推导出另写一个。网络玩法中 CMC 的 saved moves／重演要求临时运动进入其路径；直接 SetLocation 的客户端运动会被校正。这是需要联网时才增加的设计责任，不是单机采用预测的理由。
+**[一手／研究] ✅ 优先成熟 CMC。** [CMC 机制](https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-networked-movement-in-the-character-movement-component-for-unreal-engine)：TickComponent→PerformMovement 组织外力／重力、root motion／RMS，再进 PhysWalking/Falling；MOVE_Custom/PhysCustom 为扩展点。UE 已承担运动组织，不另造 motor；联网才补 saved moves／重演，直接 SetLocation 会被校正，单机无须预测。
 
-**[一手／研究] 平台和 root motion 分别保住原生语义。** [离台速度 API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UCharacterMovementComponent/GetImpartedMovementBaseVelocity)已按 bImpartBaseVelocityX／Y／Z 决定继承分量；先检查项目实际 movement base 行为，不叠加 Unity 控制器里自补的一套平台贡献。[Root Motion 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/root-motion-in-unreal-engine)明确：动画驱动 Movement Component；Walking／Falling 下 Z 向处理受运动模式与重力约束，不能为抬脚／跳跃动画随意切 Flying。文档还提示启用对应 root-motion 提取模式会使 Animation Graph 更新走 Game Thread，应在目标版本检查预算，不能把它视为无成本修复脚滑。
+**[一手／研究] 平台／root motion 沿原生语义。** [离台速度 API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UCharacterMovementComponent/GetImpartedMovementBaseVelocity) 按 bImpartBaseVelocityX/Y/Z 继承，勿叠加平台速度；[Root Motion 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/root-motion-in-unreal-engine) 由动画驱 Movement Component，Walking/Falling 的 Z 受模式／重力约束，不随意切 Flying。相应提取模式令 Animation Graph 走 Game Thread，须核预算。
 
-**[一手／研究] RMS 与 GAS 不互相等同，技能结束也不等于位移结束。** RMS 是程序化位移来源，提交参数后由 CMC 执行，并以 handle 管理移除；GAS 提供使用它的 Ability Tasks，但不是使用该机制的前提。官方 [Lyra 5.8 技能实例](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?application_version=5.8)中的 GA_Hero_Dash 在 root-motion force 完成后仍延迟结束 ability，以继续阻止开火／跳跃；GA_ADS 则在 End Ability 恢复速度、输入映射与镜头。可借“请求运动／保留动作限制／成对撤销”的责任划分；不把多人样例的全部 RPC、ASC 与 Experience 依赖搬入几种动作的单机项目。第二次把突进改成可被受击打断时，应同时检查位移来源、Montage、动作限制和镜头是否按设计结束，不能只 Stop Montage。
+**[一手／研究] RMS 不要求 GAS。** RMS 参数由 CMC 执行、handle 管移除；GAS 仅提供任务入口。[Lyra 5.8 技能实例](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?application_version=5.8) 的 GA_Hero_Dash 在力结束后仍保持 ability 禁开火／跳，GA_ADS 结束恢复速度／输入／镜头。借请求、限制与撤销，不搬全部多人依赖；突进可受击二改同时核位移源、Montage、限制及镜头。
 
-**[一手] 稳定引擎版本与实验模块分开记。** Epic 的 [5.8 正式发布新闻](https://www.unrealengine.com/news/unreal-engine-5-8-is-now-available)日期为 2026-06-23；本轮核到的 [固定 5.8 Mover 页](https://dev.epicgames.com/documentation/unreal-engine/mover-in-unreal-engine?application_version=5.8)仍明确 Experimental，API／属性／数据格式可变，且说明会继续支持 CMC。不是沿用 5.7 标签推断当前状态，也不把文档默认版本当项目应立即升级的建议。
+**[一手] 版本与模块状态。** [5.8 正式发布新闻](https://www.unrealengine.com/news/unreal-engine-5-8-is-now-available) 为 2026-06-23；[固定 5.8 Mover 页](https://dev.epicgames.com/documentation/unreal-engine/mover-in-unreal-engine?application_version=5.8) 仍 Experimental、API／属性／数据可变并继续支持 CMC。非沿用 5.7 标签，也不要求升级。
 
-**[一手／研究] 👀 仅在结构性缺口时评估 Mover。** [5.8 对比页](https://dev.epicgames.com/documentation/unreal-engine/comparing-mover-and-character-movement-component-in-unreal-engine?lang=en-US)列出更宽形体支持、模块化模式与回滚机制，并把 CMC 标为已在许多发行项目使用。Mover 通过模拟步输入命令、模式／instant effects 等修改状态，多个 world frame 可能合入一次 simulation tick；不能移植“每帧随时写 velocity”。确有非标准形体或模块组合需求才承担这个迁移；只有联网玩法才比较 CMC 的 client moves／服务端校正与 Mover 的共享时间线／客户端回滚。没有瓶颈证据，不额外推荐异步运动更新或网络物理后端。
+**[一手／研究] 👀 结构性缺口才评估 Mover。** [5.8 对比页](https://dev.epicgames.com/documentation/unreal-engine/comparing-mover-and-character-movement-component-in-unreal-engine?lang=en-US) 列宽形体、模块模式／回滚，CMC 已用于多个发行项目；Mover 以模拟步命令／模式／instant effects 改状态，多个 world frame 可合一 tick。非标准形体或组合需求才迁移；联网才比较时间线／校正，不随时写 velocity 或无证推荐异步后端。
 
-**[一手／研究] 样例先拆可借机制，再决定采用范围。** [Game Animation Sample](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-animation-sample-project-in-unreal-engine)明确重点是动画展示，traversal 等 gameplay 是简单示例；可借 pose／trajectory／movement 数据如何连接，不能把漂亮跨障碍演示当作完整攀爬、战斗打断与发行验证。Lyra 是官方样例，也不等于本轮取得某个已发行游戏的可复核源码。UE 原生与样例按其适用引擎／内容条款使用，公开文档可读不代表代码或资产可任意再分发。本轮未下载资源、未接受新协议。
+**[一手／研究] 样例只借机制。** [Game Animation Sample](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-animation-sample-project-in-unreal-engine) 以动画为主、traversal 为简单示例，可借 pose／trajectory／movement 连接，非完整攀爬战斗；Lyra 也非发行游戏源码。引擎／内容条款另核，未下载或接受新协议。
 
-**[研究] 后续同目标验收**：先保留单机平地／坡顶／旋转平台／撞墙突进的基线，再加入“平台边缘突进途中受击→死亡→重生”的第二次修改；观察胶囊实际运动、网格姿态、movement mode、平台贡献与动作限制，确认无双重移动、残留输入或旧位移源。只有项目确需多人，再增加延迟／丢包下预测与校正，不把离线正确当网络正确。机制比较可改变借用选择，尚不能量化响应或手感收益。
+**[研究] 后续验收**：保留平地、坡顶、旋转平台和撞墙突进，二改平台边缘突进→受击→死亡→重生；核胶囊、网格、movement mode、平台贡献及动作限制。确需联网才加延迟／丢包的预测校正验证。
 
 ## 首发帧时间补研：从资源已加载到动作可见
 
-核实：2026-10-14 UTC。主线 3／4；改变 04 中“首发卡顿按热点优化”的泛化建议，具体化为下一场遭遇的准备范围、可见反馈与驻留成本。新证据为 Unity 6.3 LTS 英文 PSO／加载／池 API 正文、Epic 当前 PSO 文档和 Tom Looman 的实际 Windows DX12 样例 trace／版本更新。未安装或运行引擎、未测真实设备，不将作者案例数值作为本项目收益。[一手／研究]
+核实：2026-10-14 UTC。主线 3／4；将首发热点细化为遭遇准备、可见反馈与驻留成本。依据 Unity 6.3 PSO／加载／池 API、Epic PSO 文档及 Tom Looman 的 Windows DX12 样例 trace。[一手／研究]
 
 ### 1. 先定义要保住的动作，再选择把工作移到哪里
 
-[研究] 场景为首次进房、敌人首次预警、玩家第一次施放技能。已有输入缓冲和插值解决不了首次 GPU 管线创建，池化也不保证材质已被真正绘制。最小方案按下一场遭遇准备必须内容，区分取得资产、初始化实例、上传数据、准备绘制；不新建统一“全资源就绪”框架。可见角色、有效攻击提示、可操作反馈与伤害规则必须一致。装饰效果允许降级，关键提示不能为了 trace 无长帧而跳过；延迟开始遭遇是有代价但可解释的产品选择。
+[研究] 首次进房／技能应分别准备资产、实例、上传与绘制；输入缓冲、插值和池化各不能兜底 PSO。只准备下一遭遇必要内容，关键预警与伤害保持一致；装饰可降级，必要时明确延后遭遇。
 
 ### 2. Unity 6.3 原生选项与不能互换的承诺
 
-- [一手] [PSO introduction](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-pso-introduction.html)：GraphicsStateCollection 支持 Unity 6 起的路径，6.3 仍标 experimental，未来可变更／移除；DX12、Vulkan、Metal 使用其图形状态路径，DX11／OpenGL／OpenGLES／WebGL 回退到 shader warmup。Compute 与 ray-tracing shaders 不兼容此 PSO tracing。因此不能写成“所有 shader 已预编译”。
-- [一手] [Other warmup methods](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-prewarm-other.html)：ShaderVariantCollection.WarmUp、Shader.WarmupAllShaders 等旧路径不推荐用于 DX12／Vulkan／Metal，因为缺少 graphics states 可能创建错误的 PSO。[研究] 预加载变体名单和覆盖实际渲染状态不是同一件事；不因为代码调用成功就结束首次绘制验收。
-- [一手] [Trace and manage](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-pso-trace.html)建议每个平台／图形 API 单独采集；修改 shaders 后可再次 trace，将新数据追加至既有 collection。[研究] 第二个技能若只在新质量档、特定 keyword 或新的 pass 下出现，旧路线可能从未覆盖它；ContainsVariant 之类的成员检查也不能单独证明全部实际状态齐全。
-- [一手] Unity 6.3 [裁剪说明](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-variant-stripping.html)指出，所需变体被裁掉后可能回退到相近变体；运行时切换 `shader_feature` 分支也有遗漏风险。[严格变体匹配与构建日志](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-how-many-variants.html#highlight-missing-shaders)可分别暴露缺失变体／keywords，及构建中的各阶段裁剪结果。[研究] 第二次新增运行时 keyword 或修改裁剪规则时，先用目标平台／后端的严格匹配测试构建检查必需反馈是否使用正确变体，修正入包范围，再补采实际 PSO；扩大预热不能补回已裁掉的代码。严格匹配无报错只覆盖本次执行到的组合，不证明所有运行时路径、画质档和图形状态齐全，也不能代替冷缓存首发测量。
-- [一手] [Warm up PSOs](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-prewarm.html)提供 WarmUp 与 WarmUpProgressively，后者按指定 PSO 数量调度，两者返回 job handle。官方列出的定位 marker 为 Shader.CreateGPUProgram 与 CreateGraphicsGraphicsPipelineImpl。[研究] 逐批数量不是毫秒预算保证；在战斗帧同步等待任务仍可能破坏响应。采用条件是目标后端确有首次创建热点，且分组准备的加载成本可接受。
-- [一手] [Application.backgroundLoadingPriority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-backgroundLoadingPriority.html)区分后台读取／反序列化与主线程 integration，明确 Editor 不生效；Low／BelowNormal／Normal／High 对应文档 integration 时间为 2／4／10／50 ms，可观察 Application.Integrate Assets in Background。[研究] 这些不是整帧上限，也不约束全部游戏初始化脚本；不能拿 High 的快速读条测试推导可交互时也合适。
-- [一手] [Texture and mesh loading](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData.html)说明异步上传把 binary 数据拆到后续帧；[资格页](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData-make-compatible.html)要求纹理非 read/write、非 Resources，Android 另需 LZ4；LoadImage 会强制同步路径。网格有独立条件，含 bone weights／BlendShapes 等限制。[研究] 不为异步资格删掉玩法所需 CPU 数据／变形能力；先查具体资产，再权衡提前加载或更小规格。[asyncUploadTimeSlice](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/QualitySettings-asyncUploadTimeSlice.html)是上传预算入口，不能与 backgroundLoadingPriority 当同一个旋钮。
-- [一手] [allowSceneActivation](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AsyncOperation-allowSceneActivation.html)为 false 时进度停在 0.9、isDone 为 false，AsyncOperation 队列也会停滞，例如随后 UnloadSceneAsync 不能执行。[研究] 所以不能等“卸掉旧场景腾内存”才允许新场景激活，却把卸载排在被阻塞队列后；保持旧场景、加载数据和预热对象并存的内存要计入峰值。激活门只决定何时开始，不会自动分摊 Awake／OnEnable 的业务成本。
+- [一手] [PSO introduction](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-pso-introduction.html)：GraphicsStateCollection 自 Unity 6，6.3 仍 experimental 可变／移除；DX12/Vulkan/Metal 用图形状态，DX11/OpenGL/OpenGLES/WebGL 回退 warmup；不兼容 compute／ray-tracing tracing。
+- [一手] [Other warmup methods](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-prewarm-other.html) 不推荐 DX12/Vulkan/Metal 用旧 WarmUp／WarmupAllShaders，缺 graphics states 可建错 PSO；变体名单不代表绘制状态覆盖。[研究]
+- [一手] [Trace and manage](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-pso-trace.html) 要按平台／API 采集，改 shader 后可追加 trace。[研究] 新画质／keyword／pass 需补覆盖，ContainsVariant 不证明实际状态齐全。
+- [一手] [裁剪说明](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-variant-stripping.html)：裁掉变体可回退近似，运行时 shader_feature 亦有遗漏；[严格变体匹配与构建日志](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-how-many-variants.html#highlight-missing-shaders) 暴露缺变体／keyword 及裁剪过程。[研究] 二改先在目标后端严格匹配测试修入包，再补 PSO；预热补不回代码，无错也只覆盖执行组合，冷首发另测。
+- [一手] [Warm up PSOs](https://docs.unity3d.com/6000.3/Documentation/Manual/shader-prewarm.html) 提供 WarmUp／WarmUpProgressively（按 PSO 数量）并回 job handle；定位 marker 为 Shader.CreateGPUProgram／CreateGraphicsGraphicsPipelineImpl。[研究] 数量非毫秒保证，战斗同步等仍可卡；首次创建确为热点且加载成本可接受才采用。
+- [一手] [Application.backgroundLoadingPriority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-backgroundLoadingPriority.html) 分后台读／反序列化与主线程 integration，Editor 不生效；Low/BelowNormal/Normal/High 为 2/4/10/50 ms，可看 Application.Integrate Assets in Background。非整帧或全部初始化上限，High 读条快不保证游玩适合。[研究]
+- [一手] [Texture and mesh loading](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData.html) 将 binary 上传跨帧；[资格页](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData-make-compatible.html)：纹理非 read/write、非 Resources，Android 要 LZ4；LoadImage 强制同步，网格另有 bone weights／BlendShapes 条件。[asyncUploadTimeSlice](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/QualitySettings-asyncUploadTimeSlice.html) 只调上传，非 backgroundLoadingPriority。[研究] 不为资格删玩法 CPU 数据／形变，先权衡提前加载或降规格。
+- [一手] [allowSceneActivation](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AsyncOperation-allowSceneActivation.html)=false 时停 0.9、isDone=false 并阻 AsyncOperation 队列，随后卸载也不能运行。[研究] 不能等队列后卸载腾内存再激活；计入旧场景／新数据／预热并存峰值，激活门不分摊 Awake/OnEnable。
 
 ### 3. 池化与 GC：提前付费的范围必须有上限
 
-[一手] Unity 6.3 [ObjectPool 构造参数](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Pool.ObjectPool_1-ctor.html)明确 defaultCapacity 是内部存储容量，不会创建该数量实例；池空时 createFunc 创建，maxSize 限制可留在池中的实例，满池归还走销毁回调。[研究] 因而“构造容量 100 的池”不能证明首发无创建，“maxSize=100”也不是 100 个同时存活弹体的玩法上限。需要实际预创建指定数量；若用 Get／Release 循环预创建，逐个立即归还可能始终只复用一个对象，应核对独立实例数。耗尽时额外创建、复用最旧装饰效果或拒绝可选效果由项目明确决定，不能静默丢关键弹体／提示。
+[一手] [ObjectPool 构造参数](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Pool.ObjectPool_1-ctor.html)：defaultCapacity 仅存储容量，空池才 createFunc，maxSize 限闲置保留、满池归还销毁。[研究] 容量不证明预创建或玩法并发上限；Get/Release 立即归还可能只反复用一件。核独立实例数，明确耗尽时创建／复用装饰／拒绝可选，不能丢关键弹体。
 
-[一手] [Pooling and reusing](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-reusable-code.html)提供原生 UnityEngine.Pool，要求复用时重置状态，非线程安全；[GC overview](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-garbage-collector.html)说明仍有引用的对象不会被回收。[研究] 保留池对象也保留其资源引用和原生对象成本，GC.Alloc 降为零不代表总驻留降低。按关卡／遭遇释放不再需要的池，检查托管、原生及 GPU 内存，而非只把所有技能池上限相加后永远常驻。
+[一手] [Pooling and reusing](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-reusable-code.html) 要求复用重置且非线程安全；[GC overview](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-garbage-collector.html) 不回收仍被引用对象。[研究] 池也持资源／原生成本，零 GC.Alloc 不等于低驻留；按遭遇释放，核托管／原生／GPU。
 
-[一手] [GC modes](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-incremental-garbage-collection.html)：增量 GC 默认把工作分摊到多帧，不降低总工作；对象引用变化太多可能使标记反复并回退完整收集，关闭 GC 则有堆持续增长风险。[研究] ✅ 先削减已定位热路径分配，🧪 对重复实例用有边界的池，⛔ 不为一次技能尖峰全局关 GC。若事件原因为 PSO 创建，做池化／GC 改造可能没有改变真正瓶颈。
+[一手] [GC modes](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-incremental-garbage-collection.html)：增量分摊而非少做，引用频变可回退完整收集，关闭有堆增长风险。[研究] 先修热分配、按需有界池；PSO 热点不靠全局关 GC 解决。
 
 ### 4. Unreal 对照与实际开发者反证
 
-[一手] Epic [PSO Precaching](https://dev.epicgames.com/documentation/unreal-engine/pso-precaching-for-unreal-engine)本次页面标为 UE 5.8，不能外推所有旧版。其 component 路径在 PostLoad 收集并异步编译；未完成时可推迟 proxy、显示默认材质或继续绘制并阻塞。文档同时指出预热后的驱动缓存首次取回仍可能有成本，保留更多低层 PSO 则增加内存。[研究] 新版原生自动路径优先；“有预缓存”不等于“首个反馈完整且准时”，也不保证工作线程竞争没有帧影响。用等待当前 outstanding requests 的 loading screen 不能证明未来尚未加载的技能也已覆盖。
+[一手] [PSO Precaching](https://dev.epicgames.com/documentation/unreal-engine/pso-precaching-for-unreal-engine) 标 UE 5.8；component 在 PostLoad 收集异步编译，未完可延 proxy、默认材质或阻塞绘制；驱动缓存首取仍有成本，留更多 PSO 增内存。[研究] 原生自动优先，仍验关键反馈／线程竞争；当前请求完成不保证未来未加载技能覆盖。
 
-[一手：作者实作] Tom Looman 的 [PSO 文章](https://tomlooman.com/unreal-engine-psocaching/)以 Windows DirectX 12 的 Action Roguelike／Project Orion 样例展示 Insights；图中未处理 PSO 的一项编译为 54.1 ms。作者在 UE 5.3 遇到包括 decal 的自动覆盖缺口，采用 bundled 加 automatic；文内更新明确 5.6 已增加 UDecalComponent 覆盖。文章要求冷驱动缓存、相同关卡与动作复核，并记录 2025-09 NVIDIA 缓存文件扩展变化导致旧引擎清缓存开关失效的版本提醒。[研究] 这是作者实作证据，不是独立重测、同硬件性能对照或所有版本的必现缺陷；不引用其转述的 Fortnite 时间或课程宣传作为收益。
+[一手：作者实作] [PSO 文章](https://tomlooman.com/unreal-engine-psocaching/) 为 Windows DX12 Action Roguelike／Project Orion，图示一项 54.1 ms 编译。5.3 缺 decal 用 bundled＋automatic，更新说明 5.6 已覆盖 UDecalComponent；要求冷缓存同动作，并记 2025-09 NVIDIA 扩展变化使旧清缓存开关失效。[研究] 非独立同硬件对照，不用转述 Fortnite／课程宣传预测收益。
 
-**[研究] 采用与撤回**：✅ 先用锁定版本原生 automatic precaching 和验证；🧪 当 trace 仍指向未覆盖 PSO，再为这些遗漏补 bundled cache。不要把旧作者结论“两个系统必须一起用”作为新引擎默认工程负担。对 critical tell 提前加载／准备，而不是沿用跳绘策略后宣称顺滑；无法在预算内准备时收窄首场内容、材料组合或可选演出，而不首先加自建 shader 管理框架。
+**[研究] 采用与撤回**：✅ 锁版本使用原生 automatic precaching；🧪 trace 证实遗漏才补 bundled cache。关键预警提前准备；预算不足就缩首场内容／材质组合，不能靠跳绘关键提示换顺滑。
 
 ### 5. 第二次修改的未来验收设计
 
-[研究] 新增一个使用不同材质／keyword／渲染状态的技能，并允许进房后立即施放。保留旧技能作基线：
+[研究] 预注册新增不同材质／keyword／渲染状态技能，允许进房立即施放，并保留旧技能基线：
 
-1. 冷启动／确认冷驱动缓存、同进程重复施放、重启保留驱动缓存分别记录；不把“第二遍不卡”称为修复。清缓存只限将来获准的测试环境，并确认对应引擎／驱动真的生效，不在本轮操作任何系统缓存。
-2. 对照按键被接受、首个可见角色动作／攻击提示／技能反馈、伤害生效的程序与画面证据；另列长帧 CPU／GPU／等待归因，不把软件 marker 当显示端到端延迟。
-3. 比较无准备、遭遇范围准备及实际必要的扩大范围；同时记录准备总耗时、首次反馈、长帧位置、活动／闲置实例数、峰值与离开遭遇后的留存内存。低优先级准备若延长到玩家必用时刻之后，同样失败。
-4. 改画质／图形后端重新覆盖，退出再进入检查池重置；既检查预热遗漏，也检查为了预热意外触发声音、伤害或奖励。减少装饰实例不能改变关键提示的出现与有效窗口。
+1. 区分冷驱动缓存、同进程重复和重启保留缓存；未来仅在获准环境清缓存，并确认引擎／驱动实际生效。
+2. 对照输入接受、首个动作／预警／技能反馈及伤害时刻，归因 CPU／GPU／等待长帧；软件 marker 不代表光学端到端延迟。
+3. 比较无准备、遭遇范围及必要扩大范围的耗时、反馈、长帧、活动／闲置实例、峰值与离场留存；准备迟于必用时刻同样失败。
+4. 换画质／后端重查覆盖，退出重进核池重置及预热误触发的声音／伤害／奖励；装饰降档不得改关键提示窗口。
 
-[研究] 54.1 ms 为作者 trace，Unity 实验 API 尚无目标补丁兼容验证；不据此建立性能排名。
+[研究] Unity 实验 API 的目标补丁兼容性待验；54.1 ms 仅是作者 trace。
 
 ## 菜单补研：跨暂停、改键与设备切换保住控制
 
@@ -374,13 +374,13 @@
 
 ### 1. 先补玩家体验缺口，不因手柄支持迁移 UI
 
-[研究] 场景是按住动作打开暂停，进入设置和改键，弹出确认层，换回键盘或接回手柄，再返回游戏。质量目标是始终知道当前选择、可用操作和返回位置，而且本次确认不会穿到下一层或游戏。对单人独立游戏，先约定当前交互层、初始／返回焦点、绑定提示来源和玩法恢复规则；少量菜单不需要先建通用窗口框架。设备恢复不等于必须自动恢复战斗，恢复时机由游戏决定。
+[研究] 按住动作进入暂停→设置／改键→弹窗→换设备→返回，目标是焦点、可用操作与返回位置清楚，确认不穿透。先定交互层、焦点、绑定提示与恢复政策；设备恢复不必自动恢复战斗。
 
-[一手] [Celeste 官方 changelog](https://www.celestegame.com/changelog.html)保留了实际迭代链：v1.4.0 开放更完整的菜单改键，移除会与自定义绑定冲突的硬编码重开组合键；同版修复教程过程中打开键盘／手柄配置菜单冻结。v1.3.3.20 beta 修复关闭菜单时 movement/dash-only 输入未刷新；v1.3.3.13 beta 要求各菜单动作至少保留一个彼此唯一的绑定，失败发声，并让改键操作提示在滚动后仍可见。这些是开发者报告的修改，不是本轮复测结果；beta 的具体规则也不直接升格为所有游戏都应复制的标准。
+[一手] [Celeste 官方 changelog](https://www.celestegame.com/changelog.html)：v1.4.0 加菜单改键、删冲突重开组合，修教程内进配置冻结；v1.3.3.20 beta 修关闭菜单未刷新 movement/dash-only；v1.3.3.13 beta 要各菜单动作留唯一键、失败发声并保滚动后提示可见。beta 规则不作普适标准。
 
-[研究] 可迁移的判断是改键必须保住回退路径、全局快捷键也要参加冲突检查、退出菜单要刷新正确的玩法输入。不要盲抄 Celeste 的长按重置或唯一键算法；具体策略须适合游戏的设备与玩家。
+[研究] 保住改键退出路径，把全局快捷键纳入冲突检查，退出菜单刷新玩法输入；不照搬唯一键／长按重置算法。
 
-[一手] Microsoft [XAG112](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/112)要求跨屏幕导航一致、布局变化后导航顺序保持合理，并以重绑定捕获为例说明退出方式必须有明确提示；[XAG113](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/113)强调可辨识的焦点，尤其覆盖在另一界面上的弹窗。[研究] 本轮只借这些与控制连续性直接相关的目标，不把它们扩写成通用无障碍清单，也不声称完成认证。
+[一手] [XAG112](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/112) 要跨屏一致、布局变后合理导航及重绑定退出提示；[XAG113](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/113) 要焦点清楚，含覆盖弹窗。仅借连续控制目标，未做认证。[研究]
 
 ### 2. 原生机制够用的条件与新增成本
 
@@ -391,13 +391,13 @@
 | [Input System 1.19 UI support](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/UISupport.html)：uGUI 需要 UI Input Module，UI Toolkit 2023.2+ 可用 project-wide actions；uGUI 背景点击默认清选择；UI Toolkit `Button` 的 `ClickEvent` 与手柄 submit 不同，而 `Button.clicked` 覆盖两者；UI 消费输入不自动屏蔽 gameplay action [一手] | [研究] ✅ 先用原生映射并明确 UI／玩法模式；键鼠混用时保护／恢复有效选择，采用适合控件的语义激活入口 | [研究] 直接调用业务回调的测试绕过绑定和焦点，必须补输入路径；不要用 debounce 掩盖两层同时响应 |
 | [CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)：激活树参与路由，停用节点不参与；导航仍与基础 UMG 相同。[ActivatableWidget](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)可提供目标焦点、缓存恢复目标及最末激活节点的焦点刷新；默认不自动激活或注册 Back [一手] | [研究] ✅ 简单且已可靠的 UMG 保留；🧪 跨层返回、模态和设备提示需求反复出现时再评估 CommonUI，明确激活、返回和焦点策略 | [研究] 路由不是“接入便自动解决导航”；新依赖和配置要比第二个菜单继续复制政策更省维护，且实际返回目标仍须验证 |
 
-[一手／研究] [CommonUI 与 Enhanced Input 集成页](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-commonui-with-enhnaced-input-in-unreal-engine)核实时仍显示 Experimental，并保留“as of UE 5.2”的未充分测试说明；页面在当前文档入口出现，不足以证明目标新版的可靠性状态，也不能据此一概禁用 CommonUI。使用该集成才核对所锁定版本的实际行为和更新，不为普通 UMG 菜单增加这条依赖。
+[一手／研究] [CommonUI 与 Enhanced Input 集成页](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-commonui-with-enhnaced-input-in-unreal-engine) 仍标 Experimental，并留“as of UE 5.2”测试不足说明，不能据当前入口断言新版可靠或全面禁 CommonUI；仅使用该集成时核锁定版，普通 UMG 不增依赖。
 
-[一手／研究] [PlayerInput 1.19](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/PlayerInput.html)提供设备丢失／恢复通知，说明原生可以检测这类变化；通知本身不负责游戏的暂停、焦点或恢复政策。先在已有设备管理上补处理，不另造全局设备总线。
+[一手／研究] [PlayerInput 1.19](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/PlayerInput.html) 有设备丢失／恢复通知，但暂停、焦点与恢复仍由项目在现有设备管理中处理。
 
 ### 3. 先读可复用实现：官方 UI vs Game Input
 
-[一手] 固定沿用本记录的 `Unity-Technologies/InputSystem@05e45ddbaf18a93245b068d787d74b738b90d01c`，本次实际读取 [UIvsGameInputHandler.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInputHandler.cs)、[样例 README](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/README.md)及[根 LICENSE](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/LICENSE.md)。这是 Unity Companion License 下供 Unity-dependent 项目使用的公开源码，不是可跨引擎随意复制的 MIT 库。该固定树 [package.json](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/package.json)标 `1.20.2`、最低 Unity `6000.0`；本节固定源码与上文 1.19 文档分列，元数据不证明它已作为稳定包发布或在目标项目运行通过。
+[一手] 同固定 InputSystem `05e45ddbaf18a93245b068d787d74b738b90d01c` 的 [UIvsGameInputHandler.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInputHandler.cs)、[样例 README](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/README.md)、[根 LICENSE](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/LICENSE.md) 已读；Unity-dependent Companion License，非跨引擎 MIT。[package.json](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/package.json) 标 1.20.2／最低 6000.0，与 1.19 文档分列，不据元数据确认稳定发行。
 
 - [一手] `SetUIEngaged`（304–327 行）在 UI 模式启用 UI map、停用玩法动作，并恢复上次导航选择；退出时保存选择、清空当前选择并恢复玩法。`SetPlayerActionsEnabled`（331–345 行）特意保留 UIEngage 动作，避免把退出入口一同禁用。主菜单入口另在 `Update` 先置 `InMenu` 再停用 gameplay input 和选择首按钮，`OnContinueClicked` 恢复游戏。
 - [一手／研究] 可复用边界同样可见：恢复选择只检查 null，未在该路径验证目标是否仍激活／可交互；`OnControlsChanged` 注释明确不支持 mixed models，状态机只有一个 `InMenu`，没有嵌套弹窗栈。由此不能把整个样例当作完整改键、设备热切换和多层菜单底座；这些是静态覆盖范围，不是本轮复现的游戏故障。
@@ -405,156 +405,156 @@
 
 #### 混用补核：提示变化不等于退出 UI
 
-核实：2026-10-17 UTC+8；主线三。改变 04 对上述样例的采用边界：项目已承诺混用时，分别判断提示、交互方式与焦点，不把设备通知直接当成退出 UI 的意图；不扩展设备模块或校准方案。[研究]
+核实：2026-10-17 UTC+8；主线三。已承诺混用时，提示、交互方式与焦点分开判断；设备通知不自动意味着退出 UI。[研究]
 
-- **Unity 样例的具体前提。** [一手] 同一固定树的 [场景配置](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInput.unity)将 `m_ControlsChangedEvent` 连到 `OnControlsChanged`；[PlayerInput 契约与实现](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L574-L595)说明通知包括所用设备集合、control scheme、绑定及键盘布局变化，不只是玩家换了物理设备。[handler 80–106行](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInputHandler.cs#L80-L106)按已分配设备判断 `ControlStyle`，注释明确此方式不支持 mixed models；结果为 GamepadJoystick 就调用 `SetUIEngaged(false)`。该方法保存后清空导航选择、停用 UI map、启用 Player map 中除 UIEngage 外的动作；它操作的是样例的 UI engagement，不会直接关闭主菜单对象或将 `m_State` 改为 InGame。[研究] 因此可借显式交接与选择保存，不把整段回调照搬为提示刷新；这不是 Unity 整体不支持混用，也不是对样例运行故障的复现。
-- **同一手柄也可改变交互语义。** [一手] DevilutionX [#4242 原报告](https://github.com/diasurgical/DevilutionX/issues/4242)描述背包光标缺失、发暗或卡住，仅推测窗口模式、屏外起始位置相关。[2022-04-03 固定修复](https://github.com/diasurgical/DevilutionX/commit/79c7eee10aee93d7fa3429decdcb5921a1522bd5)将 `ControlDevice` 与 `ControlMode` 分开：手柄模拟鼠标时保留手柄设备身份，模拟点击可使用指针交互语义；硬件光标显示／定位不再仅由交互模式判断。补丁还含光标调色板等修改，不能将全部故障归给单一变量；本轮未取得修复后独立玩家复测。这里只借设备与交互语义不可等同的机制，不推荐新增一套全局变量，更不把它称作漂移修复。
-- **真实混用可以只给提示另一个选择。** [社区／一手] Deadlock [2024-09 原帖](https://forums.playdeadlock.com/threads/game-hitches-when-using-analog-input.27479/)报告持续摇杆移动、鼠标观察／点击时提示交替并卡顿；开发者随后讨论图标锁定与 Steam Input actions 补齐。[2024-11-07 官方更新](https://forums.playdeadlock.com/threads/11-07-2024-update.44786/)发布混用 glyph swapping 改进及 Automatic／Keyboard & Mouse Only／Game Pad Only 三种提示锁定，同时更新动作、配置并提示部分用户需重绑摇杆／陀螺仪。原帖 aeodyn0 于11-08自报启用 Overlay、重做配置后正常。[研究] 这是多项同时改变后的反馈，不证明提示锁定单独消除了卡顿，也不能仅据提示交替断定性能根因；它支持为合法混用提供独立的提示策略，而非要求把模拟移动改成 WASD 或禁用手柄。
-- **UE 合成事件的对照。** [一手] [CommonUI Input Technical Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)说明手柄 Accept 可以生成合成鼠标点击；导航则先解析方向、找有效目标、设置 user focus，下一 tick 才将合成光标移到目标。[研究] 所以收到鼠标事件不必然意味着玩家改用物理鼠标；应核实际导航与合成路径，不因事件类型直接重建选择。这只核原生语义，不证明 CommonUI 自动解决混用或值得为此迁移。
+- **Unity 样例前提。** [一手] [场景配置](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInput.unity) 连接 OnControlsChanged；[PlayerInput 契约与实现](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L574-L595) 通知涵盖设备集合、scheme、绑定／键盘布局。[handler 80–106行](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInputHandler.cs#L80-L106) 按分配设备判 ControlStyle，明确不支持 mixed models；GamepadJoystick 时 SetUIEngaged(false) 保存／清选择、停 UI map、启除 UIEngage 的 Player 动作，但不关主菜单或改 InGame。[研究] 借交接，勿整段作提示刷新；非 Unity 全体混用限制。
+- **设备与交互语义分开。** [一手] DevilutionX [#4242 原报告](https://github.com/diasurgical/DevilutionX/issues/4242) 报光标缺失／暗／卡，窗口／屏外原因仅猜测；[2022-04-03 固定修复](https://github.com/diasurgical/DevilutionX/commit/79c7eee10aee93d7fa3429decdcb5921a1522bd5) 分 ControlDevice／ControlMode，手柄模拟指针仍保设备身份，硬件光标另判。补丁亦改调色板，未有独立复测，不能单因归属或称漂移修复。
+- **混用可另定提示。** [社区／一手] Deadlock [2024-09 原帖](https://forums.playdeadlock.com/threads/game-hitches-when-using-analog-input.27479/) 报摇杆＋鼠标时图标交替／卡顿；[2024-11-07 官方更新](https://forums.playdeadlock.com/threads/11-07-2024-update.44786/) 改 glyph swapping，提供 Automatic／Keyboard & Mouse Only／Game Pad Only，并改动作／配置、提示重绑。aeodyn0 于 11-08 开 Overlay 重配后自报正常。[研究] 多项同改不能归功提示锁或确认根因，只支持独立提示策略。
+- **UE 合成事件。** [一手] [CommonUI Input Technical Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)：手柄 Accept 可合成鼠标点击；导航找目标、设 user focus，下 tick 才移合成光标。[研究] 鼠标事件不证明物理鼠标切入，先核路径，不直接重建选择。
 
-**采用与撤回。** [研究] ✅ 对已经承诺的混用，若只是提示样式变化，保留当前菜单、有效焦点与仍获准的输入；实际开始导航、指针操作或明确进出 UI 时，再按项目政策交接。若项目本来采用互斥设备模式，可保留明确、可用的交接，不推广为禁止所有设备驱动切换。出现切换振荡先区分真实混用、合成事件和噪声；本文不增加统一阈值，沿用已有按动作核处理链的建议。提示锁定不能掩盖确认／返回不可达；仅改提示已满足就不扩路由，新增政策破坏合法混用则撤回。上述资料与固定补丁未代替目标设备的菜单、焦点和帧时间验证，本轮无游戏／引擎运行。
+**采用与撤回。** [研究] ✅ 混用中仅提示变化时保留菜单、有效焦点与获准输入；实际导航／指针操作或明确进出 UI 时才交接。互斥模式可保留可靠切换。振荡先分真实混用、合成事件和噪声；提示锁定不能掩盖确认／返回不可达，新增政策破坏混用就撤回。
 
 #### 输入交接补比：消费按下不等于等待松键
 
-核实：2026-10-14 UTC。主线 3；收窄 04“恢复游戏不能沿用残留移动”的建议，区分旧缓存与设备当前仍按住的意图。新证据为 Celeste64 暂停／菜单调用链、固定 Foster 依赖实现及 Unity 初始状态检查契约；仅静态核查。[研究]
+核实：2026-10-14 UTC；主线三。收窄恢复后残留移动建议：旧缓存与设备仍按住的意图分开。依据 Celeste64、锁定 Foster 实现及 Unity 初始检查契约。[研究]
 
-- [一手] 沿用 `EXOK/Celeste64@6edfe1ebd2a21a6134d7675a28e357891025407e`：[Controls.cs](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Data/Controls.cs#L23-L45)为 Jump／Dash 配置 0.1 秒缓冲；`Consume` 消费 Jump、Dash、Climb、Confirm、Cancel、Pause 的按下，不涉及 Move／Camera。[World.SetPaused](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Scenes/World.cs#L416-L435)在暂停和恢复两方向调用它；[Menu](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Helpers/Menu.cs#L248-L254)在确认成功后也消费。[ControlsConfig](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Data/ControlsConfig.cs)中 C 同时绑定确认与跳跃，X 同时绑定取消与冲刺，因此 UI 与玩法共键是具体交接风险。0.1 秒是案例配置，不是推荐窗口。
-- [一手] [csproj](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Celeste64.csproj)固定 FosterFramework 0.4.2；官方 [v0.4.2 tag](https://api.github.com/repos/FosterFramework/Foster/git/refs/tags/v0.4.2)指向 `a5b574f36e5d8928a4d47566c7b924140b653c85`。[VirtualAction.cs](https://github.com/FosterFramework/Foster/blob/a5b574f36e5d8928a4d47566c7b924140b653c85/Framework/Input/Virtual/VirtualAction.cs#L84-L162)的 Update 分别读取 Pressed、Released、Down、Value，未消费且在窗口内的按下继续有效；ConsumePress 只在 Pressed 时清 Pressed、置 PressConsumed，不清 Down／Value。Clear 虽会清值，下次 Update 仍重新读取设备；两者都不是等待物理松键的门禁。`RepeatInterval > 0` 时后续重复逻辑仍可生成 Pressed，新物理按下也会重新接受，因此不能把一次消费当成所有未来事件的屏障。
-- [一手] Unity 1.19 [wantsInitialStateCheck](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/api/UnityEngine.InputSystem.InputAction.html#UnityEngine_InputSystem_InputAction_wantsInitialStateCheck)规定 Value action 重新启用后的下一输入更新检查已操作控件，没有新的状态变化也可触发；Button／PassThrough 可显式启用同类行为。[研究] 不把切换 action map 等同于“旧业务缓冲已清理”或“恢复前必然重新按键”。
+- [一手] 同 Celeste64 `6edfe1ebd2a21a6134d7675a28e357891025407e`：[Controls.cs](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Data/Controls.cs#L23-L45) 的 Jump/Dash 缓冲 0.1 秒，Consume 清六种按下，不含 Move/Camera；[World.SetPaused](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Scenes/World.cs#L416-L435) 暂停／恢复均消费，[Menu](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Helpers/Menu.cs#L248-L254) 确认后亦消费。[ControlsConfig](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Data/ControlsConfig.cs) 的 C=确认／跳、X=取消／冲刺，故有共键风险；时长非推荐。
+- [一手] [csproj](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Celeste64.csproj) 锁 Foster 0.4.2，[v0.4.2 tag](https://api.github.com/repos/FosterFramework/Foster/git/refs/tags/v0.4.2)→`a5b574f36e5d8928a4d47566c7b924140b653c85`。[VirtualAction.cs](https://github.com/FosterFramework/Foster/blob/a5b574f36e5d8928a4d47566c7b924140b653c85/Framework/Input/Virtual/VirtualAction.cs#L84-L162) Update 分 Pressed/Released/Down/Value；ConsumePress 仅清有效 Pressed、置 PressConsumed，不清持续值。Clear 后仍再读设备，均非松键门禁；RepeatInterval>0 可再生 Pressed，新物理按下亦可接受。
+- [一手] Unity 1.19 [wantsInitialStateCheck](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/api/UnityEngine.InputSystem.InputAction.html#UnityEngine_InputSystem_InputAction_wantsInitialStateCheck)：Value 重启后下一更新检查已操作控件，无新变化也可触发；Button/PassThrough 可启同类行为。map 切换不保证清业务缓存或要求重新按键。[研究]
 
-**采用与反例。** [研究] ✅ 在已有 UI／玩法交接处使不再属于当前上下文的离散指令失效，并取消不应延续的执行状态；持续值按动作政策重新读取，确需回中／松键才恢复的动作另设该条件。⛔ 不在每次动画／角色状态改变时清全部缓冲，否则落地前短按、连招衔接会受损。Celeste64 的 [Player](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1149-L1165)以 Climb.Down／Jump.Down 接收持续意图，而跳跃启动消费按下；这反对一律强制松键，不证明所有项目都该立即恢复移动。只借机制，沿用其 Source MIT／例外、Content 不放开商用的许可边界；Foster 固定 [LICENSE](https://github.com/FosterFramework/Foster/blob/a5b574f36e5d8928a4d47566c7b924140b653c85/LICENSE)为 MIT。
+**采用与反例。** [研究] UI 交接清失效离散指令／执行状态，持续值按政策重读，需松键另设门禁；不在每次角色变状态时清连招／落地缓冲。[Player](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1149-L1165) 持续读 Climb.Down/Jump.Down，跳启动消费按下，反对一律松键。Celeste64 Source MIT／例外、Content 限制沿前文；Foster [LICENSE](https://github.com/FosterFramework/Foster/blob/a5b574f36e5d8928a4d47566c7b924140b653c85/LICENSE) 为 MIT。
 
-**第二次修改验收。** [研究] 给暂停菜单增加确认弹窗，并将确认与跳跃设为同键：返回不能多跳一次；暂停期间松开移动后不能沿用旧方向，仍按住时按约定恢复；原有落地前缓冲仍有效。若配置了按住重复，另查恢复后重复事件是否被允许。AI 可追踪输入归属、缓冲消费与动作启动，人决定恢复手感。
+**二改预注册。** [研究] 增加确认弹窗，确认与跳跃共键：返回不多跳；暂停中松开不沿用旧方向，仍按住按政策恢复，落地前缓冲仍有效；另核按住重复。AI 追输入归属，人定恢复手感。
 
-**跨玩法补比（2026-10-14）：哪些条件会改变上述建议。** [研究] Celeste64 是 3D 平台动作游戏；与 Celeste 并列不构成射击、策略、回合或菜单密集玩法的覆盖。其源码支持按下与持续值分层、共键交接的具体实现，不支持“恢复必须立即移动／必须等松键”或某种手感最优。以下只选会改变 04 默认做法的三种情境，不按游戏类型名字推导实现。
+**跨玩法补比（2026-10-14）。** [研究] Celeste64 只支持平台动作的按下／持续值和共键交接机制，不能决定所有玩法的恢复政策；以下三例进一步收窄默认做法。
 
-1. **战术暂停仍允许下令。** [一手] 固定 `Anuken/Mindustry@17012d61d9e4c3cbd9820d87e81c24495486ac53`，作者 [README](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/README.md)称其为自动化塔防 RTS。[Control.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/core/Control.java#L707-L712)在暂停中仍调用 input.update；[DesktopInput.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/input/DesktopInput.java#L276-L315)允许暂停时平移相机，438–439 行才用未暂停条件限制角色运动。[InputHandler.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/input/InputHandler.java#L1174-L1208)提交移动／攻击指令，330–355 行的处理函数写目标或命令队列，不因暂停而拒绝；[Logic.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/core/Logic.java#L519-L544)另行阻断模拟。[研究] 因而暂停不等于整张 gameplay map 无效；选择、相机、下令可以保留，角色直接控制另定权限。第二次增加暂停中排队指令时，检查恢复后顺序与次数，不把队列当旧按键缓存删除。
+1. **战术暂停仍能下令。** [一手] `Mindustry@17012d61d9e4c3cbd9820d87e81c24495486ac53`，[README](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/README.md) 为自动化塔防 RTS；[Control.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/core/Control.java#L707-L712) 暂停仍更新 input，[DesktopInput.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/input/DesktopInput.java#L276-L315) 仍移相机、438–439 才限角色，[InputHandler.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/input/InputHandler.java#L1174-L1208) 提交命令、330–355 写目标／队列不因暂停拒绝，[Logic.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/core/Logic.java#L519-L544) 另停模拟。[研究] 分选择／相机／下令与角色权限；二改队列核恢复顺序／次数，不当旧按键删除。
 
-2. **本地菜单不等于全局暂停，hold 也不等于 toggle。** [一手] 同一固定 Mindustry 的 [BaseDialog.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/ui/dialogs/BaseDialog.java#L27-L38)只在非联网时由弹窗改变暂停状态；[Control.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/core/Control.java#L746-L753)联网时仍可显示菜单，但不由该入口冻结世界。这不能推成联网绝无其他全局暂停机制。[DesktopInput.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/input/DesktopInput.java#L300-L310)按 commandmodehold 设置在 keyDown 与 keyTap 翻转模式之间选择，不满足交互资格时清 commandMode。[研究] 菜单只接管本地输入的玩法不能无条件设置全局 Paused；同一个逻辑动作也可能选择按住或切换。恢复时分别决定设备当前值、模式状态、蓄力执行状态和已提交命令的命运，不能用“连续／离散”二分替代全部规则；该例也不能决定其他游戏蓄力该保留还是取消。
+2. **本地菜单与 hold/toggle。** [一手] 同 Mindustry [BaseDialog.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/ui/dialogs/BaseDialog.java#L27-L38) 仅离线弹窗改暂停，[Control.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/core/Control.java#L746-L753) 联网显示菜单不由此冻结，非证明其他暂停不存在；[DesktopInput.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/input/DesktopInput.java#L300-L310) 依 commandmodehold 选 keyDown／keyTap，失资格清模式。[研究] 恢复分别定当前值、模式、蓄力和已提交命令，不以连续／离散二分替所有政策。
 
-3. **回合制的持续输入会提交下一步。** [一手] 固定 `00-Evan/shattered-pixel-dungeon@57a4e06a4caf162446d1c28caa7983f0493fecf0`（提交标明 v4.0.2）：[Hero.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L868-L930)在无当前动作且非休息时进入 ready 并返回 false；[Actor.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L300-L324)据此停止连续处理并等待。[CellSelector.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/CellSelector.java#L355-L418)在界面阻断时跳过持续输入更新，英雄 ready 后才将方向转换为相邻格命令并调用 next；[GameScene.show](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java#L1434-L1454)先调用 cancel，1716–1726 行清当前动作、休息及键盘 held 记录。**反证：** CellSelector 的 resetKeyHold（482–484 行）只清 heldAction1／2／3，未清 leftStickAction，不能说它给所有设备实现了等松键门禁。[研究] 验收重点增加关闭窗口是否多走一步／多耗回合、目标选择取消是否误提交，以及键盘与摇杆差异；不能把这一命令节奏等同于平台跳跃的短期缓冲窗口。
+3. **回合持续输入会交下一步。** [一手] `shattered-pixel-dungeon@57a4e06a4caf162446d1c28caa7983f0493fecf0`（v4.0.2）：[Hero.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L868-L930) 无动作／非休息时 ready 并 false，[Actor.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L300-L324) 停连续处理；[CellSelector.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/CellSelector.java#L355-L418) UI 阻断跳持续更新，ready 才方向转格命令＋next；[GameScene.show](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java#L1434-L1454) 先 cancel，1716–1726 清动作／休息／键盘 held。**反证：** resetKeyHold（482–484）未清 leftStickAction，不是全设备松键门禁。[研究] 验关窗多走／耗回合、取消误提交及键盘／摇杆差异，非平台短缓冲。
 
-**采用边界。** [研究] 保留“先更新权限，再触发可能同步取消的输入切换”机制；收窄为按上下文停用动作，不要求所有游戏都有暂停或恢复同一种动作。Mindustry [LICENSE](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/LICENSE)与 Shattered Pixel Dungeon [LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)均为 GPL-3.0 许可文本；本次只借鉴机制并链接，不复制实现为商用引擎组件。仅据固定源码借机制，不主张移植可靠性。
+**采用边界。** [研究] 先更新权限再切可能同步取消的输入，按上下文停动作；无需所有游戏同暂停政策。Mindustry [LICENSE](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/LICENSE)、SPD [LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt) 为 GPL-3.0，只借机制不移植商用引擎组件。
 
 ### 手柄反馈补研：结束、暂停与设备交接分开核
 
-核实：2026-10-16 UTC+8；主线三，GC。改变 04 暂停处的窄选择：动作不再接受输入，不代表已经停止马达；区分有期限的事件、仍成立的持续来源和玩家／设备交接。现有动作权限与本地多人输入建议不变，不新增反馈框架。[研究]
+核实：2026-10-16 UTC+8；主线三。动作停收输入未必停止马达：分别核事件期限、持续来源与玩家／设备交接。[研究]
 
-**两位作者的实际机制。** [一手] SuperTuxKart 固定 `b0689319aed2c932f76fbd86729f39cdf3fd7d65` 的 [local_player_controller.cpp L474–508](https://github.com/supertuxkart/stk-code/blob/b0689319aed2c932f76fbd86729f39cdf3fd7d65/src/karts/controller/local_player_controller.cpp#L474-L508)给碰撞传入有限时长、过滤紧邻碰撞，回滚重演时不触发，并寻找关联到该玩家、允许反馈的设备；[SDL 调用 L262–274](https://github.com/supertuxkart/stk-code/blob/b0689319aed2c932f76fbd86729f39cdf3fd7d65/src/input/sdl_controller.cpp#L262-L274)继续传入时长。另一作者的地牢游戏 Barony 固定 `962a5ce36d10207beef7d8673876e0cebf8e76e4`：[滚石 L1552–1579](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/src/actboulder.cpp#L1552-L1579)只在未停止且有水平速度时周期请求滚动反馈；[效果 L3011–3028](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/src/player.cpp#L3011-L3028)有期限，[L2842–2899](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/src/player.cpp#L2842-L2899)清过期项并按优先级选播放。[研究] 持续来源可以续发有限反馈，不必自动变成无限循环；它仍可留下有限尾部，不能说来源停止便立即归零。这两例不决定本项目的时长、合并策略或暂停恢复手感。
+**两作者机制。** [一手] STK `b0689319aed2c932f76fbd86729f39cdf3fd7d65` 的 [local_player_controller.cpp L474–508](https://github.com/supertuxkart/stk-code/blob/b0689319aed2c932f76fbd86729f39cdf3fd7d65/src/karts/controller/local_player_controller.cpp#L474-L508) 给碰撞设有限时长，过滤紧邻事件，回滚重演不触发，选所属玩家允许反馈设备，[SDL 调用 L262–274](https://github.com/supertuxkart/stk-code/blob/b0689319aed2c932f76fbd86729f39cdf3fd7d65/src/input/sdl_controller.cpp#L262-L274) 继续传时长。Barony `962a5ce36d10207beef7d8673876e0cebf8e76e4` 的 [滚石 L1552–1579](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/src/actboulder.cpp#L1552-L1579) 未停且有水平速度才周期请求，[效果 L3011–3028](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/src/player.cpp#L3011-L3028) 有期限，[L2842–2899](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/src/player.cpp#L2842-L2899) 清过期并按优先级播放。[研究] 持续来源可续有限反馈，但仍有尾部；非通用时长／恢复政策。
 
-**设备身份修正也不能整段照搬。** [一手] Barony 于 2022-06-20 的 [87255f2](https://github.com/TurningWheel/Barony/commit/87255f20b1d8c2545e57ef8143935ac00813cdd9)指出 gamecontroller ID 与 haptic ID 不同，改从实际 joystick 打开 haptic，并在插拔时重新获取；次日 [d6eeaad](https://github.com/TurningWheel/Barony/commit/d6eeaadafcd2b3cd02de4ac75de0f9e3fab0473b)又以可靠性为由改用 `SDL_GameControllerRumble`，停用旧 `reinitHaptic` 路径。[研究] 可借的是输出沿真实设备归属，不是另建编号体系。当前固定树的 [doRumble／stopRumble L3155–3197](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/src/player.cpp#L3155-L3197)分别可走 GameController 播放和 Haptic 停止，不能仅凭停止函数名宣称覆盖当前后端；未把静态差异认定为实际残震缺陷。
+**设备修正与后续撤换。** [一手] Barony [87255f2](https://github.com/TurningWheel/Barony/commit/87255f20b1d8c2545e57ef8143935ac00813cdd9)（2022-06-20）因 gamecontroller／haptic ID 不同改从 joystick 打开、插拔重取；次日 [d6eeaad](https://github.com/TurningWheel/Barony/commit/d6eeaadafcd2b3cd02de4ac75de0f9e3fab0473b) 改用 SDL_GameControllerRumble 并停 reinitHaptic。当前 [doRumble／stopRumble L3155–3197](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/src/player.cpp#L3155-L3197) 播放／停止可分别走 GameController／Haptic，故须核实际后端；仅静态差异，非已复现残震。[研究]
 
-**Unity 1.20.1：暂停缓存不等于禁止后续输出。** [一手] 沿下节已核的 tag／许可，固定 `a934411756c8862cb0f54da514a9b7cc1c000a2b`。[haptics 文档](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/Documentation~/gamepad-haptics.md)区分设备方法与影响所有设备的 InputSystem 方法；[DualMotorRumble.cs](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Devices/Haptics/DualMotorRumble.cs)的 Pause 发送零速度但保留字段，Resume 重发缓存速度，Reset 将字段与输出归零；SetMotorSpeeds 没有时长参数，也不检查暂停门闩。[研究] 因而停止接收输入／取消计时任务与发出马达停止命令分别负责，暂停之后仍写速度的持续来源也须按政策停用；不能盲目 Resume 已失效的命中。借用 [PlayerInput.devices L846–860](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L846-L860)的玩家配对，局部菜单只处理约定玩家；真正全局暂停才考虑全设备操作。硬件／驱动响应、保护与支持另验，不把这份双马达实现当所有平台的硬件时序保证。
+**Unity 1.20.1。** [一手] 固定 `a934411756c8862cb0f54da514a9b7cc1c000a2b`，[haptics 文档](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/Documentation~/gamepad-haptics.md) 分单设备／全设备；[DualMotorRumble.cs](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Devices/Haptics/DualMotorRumble.cs) Pause 输出零但留缓存，Resume 重发，Reset 清缓存／输出；SetMotorSpeeds 无时长也不查暂停。[研究] 输入停收／任务取消不等于马达停止，持续写入也须管。用 [PlayerInput.devices L846–860](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L846-L860) 配对，局部菜单只处理所属玩家，不盲恢复旧命中；硬件时序另验。
 
-**UE 5.8：沿自身效果与控制器契约。** [一手] [Force Feedback](https://dev.epicgames.com/documentation/en-us/unreal-engine/force-feedback-in-unreal-engine)按曲线最后关键点得出时长，并从目标 PlayerController 播放；[Client Play](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Game/Feedback/ClientPlayForceFeedback)分别提供单次／循环、Ignore Time Dilation、Play While Paused，同 Tag 的新效果替换旧效果；[Client Stop](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Game/Feedback/ClientStopForceFeedback)可按 Effect／Tag 停止。[PlayDynamicForceFeedback](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/APlayerController/PlayDynamicForceFeedback)另有 Start／Update／Stop，负 Duration 会持续到停止，原生 C++ 可保留返回 handle。[研究] 已有有限曲线或循环效果能表达需求便保留，不因 Unity 的速度接口而统一迁到动态反馈；本地菜单是否令世界暂停仍按原政策决定。
+**UE 5.8。** [一手] [Force Feedback](https://dev.epicgames.com/documentation/en-us/unreal-engine/force-feedback-in-unreal-engine) 从目标 PlayerController 播放，时长至最后关键点；[Client Play](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Game/Feedback/ClientPlayForceFeedback) 有单次／循环、Ignore Time Dilation、Play While Paused，同 Tag 替换；[Client Stop](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Game/Feedback/ClientStopForceFeedback) 按 Effect／Tag 停；[PlayDynamicForceFeedback](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/APlayerController/PlayDynamicForceFeedback) 有 Start/Update/Stop，负 Duration 至主动停止，C++ 可留 handle。[研究] 有限／循环已够用就保留，不因 Unity 接口迁动态反馈。
 
-**采用与撤回。** [研究] ✅ 已提供手柄反馈、正在加菜单／持续状态／设备切换时，在现有玩家与动作代码内明确期限、停止和恢复条件；短脉冲过期后不补播，持续来源恢复前重新判断。有意冻结后继续同一演出的效果可保留，不要求所有命中遇暂停都丢弃。换设备／退出时作废所属玩家的旧待发送／待停止工作，可达旧设备发送停止，新配对只接收当前有效反馈；不误清其他仍在游玩者的效果。原生入口已完整表达这些规则就停止加层；只为保住旧命中而积累特殊恢复逻辑，则先撤回其跨菜单延续。
+**采用与撤回。** [研究] ✅ 沿现有动作明确期限及停止／恢复条件：过期短脉冲不补播，持续来源恢复前重判；有意冻结后续演的效果可保留。换设备／退出作废该玩家旧任务，可达旧设备发送停止，新设备只接当前有效反馈，不误清其他玩家。原生足够即停；跨菜单延续旧命中需堆特例时撤回。
 
-**许可与验证范围。** [一手] STK 上述文件页首为 GPL-3.0-or-later；Barony [LICENSE.txt](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/LICENSE.txt)为 BSD-2-Clause，[README](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/README.md)仍要求购得游戏副本才能游玩，代码许可不扩大资产许可。Unity 仍按 Unity-dependent 的 Companion License，仅核公开机制，不跨引擎复制；UE 仅用官方文档。[研究] 本轮未找到独立游戏“暂停残震修复＋复测”完整证据链；暂停选择是原生契约与源码推导，不是已复现改善。二改只预注册：短命中中途开菜单，持续状态暂停后取消再返回，A→B 换设备同时保留第二玩家反馈；核旧命中是否补播、旧任务是否误停新效果、旧设备和其他玩家是否受误操作。共同未实测边界见页首，停止命令不承诺物理马达即时停下。
+**许可与缺口。** [一手] STK 文件 GPL-3.0-or-later；Barony [LICENSE.txt](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/LICENSE.txt) BSD-2-Clause，[README](https://github.com/TurningWheel/Barony/blob/962a5ce36d10207beef7d8673876e0cebf8e76e4/README.md) 仍须购游戏，资产另限；Unity Companion 仅 Unity-dependent，UE 仅读文档。[研究] 未找到暂停残震修复＋复测完整链。二改预注册：短命中开菜单、持续来源暂停后取消、A→B 换设备并保第二玩家；核旧补播、误停新反馈、旧设备／他人误操作。停止命令不保证马达即时停。
 
 ### 本地多人补研：设备配对与 UI 目标范围分开核
 
-核实：2026-10-16 UTC+8；主线三，GC。改变 04 的窄选择：已有单玩家输入扩成同屏多人时，不把全局动作／最近设备当作某个玩家，也不把分开的画面当成独立菜单控制。原暂停、设备恢复、取消重入和模拟幅度建议保留；只有玩法确需本地多人／独立菜单才采用本节，不预建多人框架。[研究]
+核实：2026-10-16 UTC+8；主线三。仅确需本地多人时，按玩家区分设备、动作和菜单选择；分屏不证明输入独立。[研究]
 
-**版本与许可。** [一手] [Unity 6.0 官方包页](https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-inputsystem)列 1.20.1 为 released；[1.20.1 tag API](https://api.github.com/repos/Unity-Technologies/InputSystem/git/ref/tags/1.20.1)指向 `a934411756c8862cb0f54da514a9b7cc1c000a2b`，[package.json](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/package.json)标同版、最低 Unity 6000.0。本节固定该树，不据此重标前文 1.19 文档或 1.20.2 样例，也不要求已有项目仅为本建议升级。[LICENSE](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/LICENSE.md)仍为 Unity-dependent 项目的 Unity Companion License；只借机制，不跨引擎复制实现。[研究]
+**版本／许可。** [一手] [Unity 6.0 官方包页](https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-inputsystem) 列 released 1.20.1，[1.20.1 tag API](https://api.github.com/repos/Unity-Technologies/InputSystem/git/ref/tags/1.20.1)→`a934411756c8862cb0f54da514a9b7cc1c000a2b`，[package.json](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/package.json) 同版／最低 6000.0；不重标前文 1.19 文档与 1.20.2 样例，也不要求升级。[LICENSE](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/LICENSE.md) 为 Unity-dependent Companion，只借机制。
 
 #### Unity：玩家动作、设备与 UI 选择分别落到实例
 
-1. **从所属玩家读取。** [一手] [1.20.1 PlayerInput/UI 文档](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/use-player-input-component-ui.html)要求使用对应 `PlayerInput.actions`，直接读 `InputSystem.actions` 会绕开其设备分配；UI module 与 PlayerInput 需配置同一 action asset，再由 PlayerInput 传递玩家配置。固定 [PlayerInput.cs L1389–1407](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L1389-L1407)核到共享资源复制和 UI module 重定向，[L1708–1710](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L1708-L1710)将 actions 关联到 InputUser。**限制：** [L294–302](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L294-L302)说明第一位可用原资源，后续才复制；不能写成所有实例每次必定 Clone，选择依据是所属实例而非资源名称。[研究]
-2. **最近设备不等于玩家。** [一手] [Gamepad.cs L613–627](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Devices/Gamepad.cs#L613-L627)规定新增手柄成为 `current`，之后非 noisy control 的输入变化可使该设备再次成为 current，并明确不建议并发多手柄依赖此属性，指向 PlayerInput／InputUser。[研究] 即使设备从未掉线，全局近期设备也无法表达“这段角色代码属于谁”；不要仅把两个角色都改读同一个 current。
-3. **多个设备不能在一个 module 中自动变成多个导航焦点。** [一手] [导航契约](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/Documentation~/supported-ui-input-types-navigation.md)说明单个 UI module 每帧处理一份 move／submit／cancel，虽可绑定多个设备，却没有多个并发导航实例。[多人 UI 文档](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/Documentation~/introduction-multiplayer-ui-input.md)采用每人各自 InputModule、MultiplayerEventSystem 和 actions，再用 playerRoot 指定目标树。[研究] 独立菜单因此同时需要正确输入来源和目标范围；复制 Canvas 或只配好角色设备均不充分。
-4. **playerRoot 的目标检查不覆盖全部输入路径。** [一手] 固定 [InputSystemUIInputModule.cs L506–515](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L506-L515)、[L634–639](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L634-L639)核到内置点击路径对当前 raycast 目标的检查，[L905–941](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L905-L941)核到 Selectable 导航目标检查。**不能扩成所有指针事件的隔离承诺：** [L475–489](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L475-L489)先处理移动，再处理按钮与滚轮；[L598–603](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L598-L603)先将当前目标赋给 pointerEnter，之后才在 hover 进入循环检查 root；[L787–796](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L787-L796)的 ProcessPointerScroll 从 pointerEnter 查找 IScrollHandler 并 ExecuteHierarchy，没有同样的 root 检查。[研究] 因此滚轮需单独验收跨区目标；这里只确认静态调用链，未复现越界行为，不推荐未验证 workaround。[一手] 另有 [L876–901](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L876-L901)将 submit／cancel 发给 currentSelectedGameObject。[研究] 初始／返回选择设错或直接调用业务函数不能靠 playerRoot 兜底；这些 GameObject／Selectable 结论只覆盖 uGUI 路线，不外推 UI Toolkit 的全部配置。
+1. **按所属玩家读。** [一手] [1.20.1 PlayerInput/UI 文档](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/use-player-input-component-ui.html) 要用 PlayerInput.actions，全局 InputSystem.actions 绕设备分配；module 与 PlayerInput 配同 asset 后由后者传玩家配置。[PlayerInput.cs L1389–1407](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L1389-L1407) 核复制／重定向，[L1708–1710](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L1708-L1710) 关联 InputUser；[L294–302](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L294-L302) 说明第一位可用原资源、后续复制，非每次全 Clone。[研究]
+2. **current 非玩家身份。** [一手] [Gamepad.cs L613–627](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Devices/Gamepad.cs#L613-L627)：新增手柄及非 noisy 输入变化可改 current，不建议并发多手柄依赖，改用 PlayerInput/InputUser；未掉线也不能以近期设备归属角色。[研究]
+3. **单 module 不给多焦点。** [一手] [导航契约](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/Documentation~/supported-ui-input-types-navigation.md) 每帧一份 move/submit/cancel；[多人 UI 文档](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/Documentation~/introduction-multiplayer-ui-input.md) 让每人独立 InputModule、MultiplayerEventSystem、actions，playerRoot 定目标树。[研究] 来源与目标都需隔离，复制 Canvas 不够。
+4. **playerRoot 非全路径隔离。** [一手] [InputSystemUIInputModule.cs L506–515](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L506-L515)、[L634–639](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L634-L639) 查点击 raycast，[L905–941](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L905-L941) 查导航；[L475–489](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L475-L489) 先移再按钮／滚轮，[L598–603](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L598-L603) 先写 pointerEnter 再在 hover 查 root，[L787–796](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L787-L796) 从 pointerEnter 找 IScrollHandler 并 ExecuteHierarchy，无同样 root 检查。[L876–901](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs#L876-L901) 将 submit/cancel 发 currentSelectedGameObject。[研究] 滚轮须单独验，初始／返回选择错误不能兜底；仅 uGUI 静态链，未复现越界，不荐 workaround。
 
-**真实报告与当前边界。** [一手] [Unity issue 1306361](https://issuetracker.unity3d.com/issues/input-system-ui-input-module-lets-the-player-navigate-across-other-canvases)记录 2021-01-15 用户工程中摇杆可导航到两个 Canvas 的按钮，列出复现版本并标 1.3.0 修复。[研究] 它支持把“跨玩家导航”加入验收，不证明 1.20.1 仍有该缺陷；当前树已有上述目标检查，不抄旧版本 CanvasGroup workaround，也不因历史缺陷改造整套 UI。
+**历史报告。** [一手] [Unity issue 1306361](https://issuetracker.unity3d.com/issues/input-system-ui-input-module-lets-the-player-navigate-across-other-canvases) 于 2021-01-15 报摇杆跨 Canvas 导航，标 1.3.0 修复。[研究] 保留跨玩家验收，当前树已有目标检查，不称 1.20.1 仍坏或照抄旧 CanvasGroup 绕路。
 
 #### Unreal：输入映射、UI 所有者、焦点和显示范围分别确认
 
-[一手] UE 5.8 [Enhanced Input](https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine)将 mapping contexts 加到特定 LocalPlayer 的 EnhancedInputLocalPlayerSubsystem；示例从该 LocalPlayer 取 subsystem，再 AddMappingContext。[研究] 可共享 IMC 定义，但生效实例须来自目标控制器对应的 LocalPlayer，不把某个全局／首玩家引用复制给所有角色；这里不声称该 subsystem 本身完成硬件设备配对。
+[一手] UE 5.8 [Enhanced Input](https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine) 将 contexts 加到特定 LocalPlayer 的 subsystem。[研究] IMC 定义可共享，生效实例取所属 PlayerController/LocalPlayer；此契约不等于硬件配对。
 
-[一手] [Set Owning Player](https://dev.epicgames.com/documentation/unreal-engine/BlueprintAPI/Player/SetOwningPlayer?lang=en-US)通过 PlayerController 指定 UI 的概念所有者；[Set User Focus](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Widget/SetUserFocus)为指定用户设置焦点，owning user 可用 SetFocus；[AddToPlayerScreen](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/UMG/UUserWidget/AddToPlayerScreen)将 widget 放入该玩家视口区域。[研究] 三者分别回答所属用户、当前交互目标和显示位置，不能拿其中任一 API 当作设备配对或其他玩家输入已被隔离的证明，也不强造与 Unity playerRoot 的对应关系。已有 [CommonUI 技术说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)同样要求排查事件是否属于正确 user，并说明导航沿用 UMG；不为本地多人而强制新增 CommonUI。[一手／研究]
+[一手] [Set Owning Player](https://dev.epicgames.com/documentation/unreal-engine/BlueprintAPI/Player/SetOwningPlayer?lang=en-US) 指 UI 所属 PlayerController，[Set User Focus](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Widget/SetUserFocus) 设用户焦点（owning user 可 SetFocus），[AddToPlayerScreen](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/UMG/UUserWidget/AddToPlayerScreen) 放所属视口。[研究] 所有者、目标与显示位置分别核，任一均非输入隔离证明。[CommonUI 技术说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine) 亦要求正确 user、沿用 UMG 导航，不为多人强加 CommonUI。
 
-**采用、撤回与二改。** [研究] ✅ 单玩家保留现有原生路径；多人共享菜单先定谁可以操作，只有同时独立操作才各设输入／选择实例。按玩家来源分开后仍越界，先查 module 关联、导航目标和脚本选择，不继续复制全局管理器。预注册第二次修改：给第二位玩家增加独立菜单，同时导航／确认；一人关闭菜单时另一人继续移动或操作自己的菜单，检查双方动作、选择和返回目标。随后调整菜单布局，复查跨区导航；支持滚轮时将指针移到另一玩家的滚动区域，单独检查滚动归属，不能用点击通过代替。共享菜单按其约定验收，不以“所有 UI 必须独立”为目标。AI 可追引用与调用范围，人决定共享控制政策；未执行引擎、设备或玩家测试，不能据源码承诺运行可靠性或维护净收益。
+**采用、撤回与二改。** [研究] 单玩家保留原路径；共享菜单先定操作者，并发独立菜单才分输入／选择实例。仍越界先查 module、导航与脚本选择。二改加第二玩家菜单，同时导航／确认，一人退出时另一人继续；重排布局复查跨区导航，滚轮另验另一玩家区域的归属。共享菜单按约定，不强求独立。
 
 ### 模拟输入补研：轻推幅度与处理链不能丢
 
-核实：2026-10-16 UTC+8。主线 3；改变 04 的输入建议：轻推即满幅或微调困难时，先核连续幅度与原生处理链，再改灵敏度，不先加通用校准框架。新证据是 Unity 1.19 固定处理器、UE 5.8 分层契约及 SuperTuxKart 的可选降敏与历史触摸修复；与暂停权限、输入缓冲和坐标变换是不同问题。[研究]
+核实：2026-10-16 UTC+8；主线三。轻推即满幅时先核连续幅度与处理链，再调灵敏度；依据 Unity 1.19、UE 5.8 与 STK 降敏／历史触摸修复。[研究]
 
-1. **Unity：死区重映射不等于单位向量。** [一手] `InputSystem` 的 `1.19.0` tag 经 GitHub API 核为 `ca8d898356596a91bda6505e506cc1a4bb3a9fa6`，[package.json](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/package.json)亦标 1.19.0。[Gamepad.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Devices/Gamepad.cs#L138-L149)给左右 stick 附加 `stickDeadzone`；[StickDeadzoneProcessor.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Controls/Processors/StickDeadzoneProcessor.cs#L32-L57)取默认阈值、重映射幅度，再按新旧幅度比缩放向量。它保留区间内的连续幅度，并非每个非零输入都变成长度 1；其中 `min=0` 会取全局默认，不能随手作为关闭死区的配方。[1.19 绑定文档](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/ActionBindings.html)明确：给完整 Gamepad stick binding 再加该 processor，会与 control 上的死区叠加。
-2. **数字合成与模拟值分开。** [一手] 同版 [Vector2Composite.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Actions/Composites/Vector2Composite.cs#L126-L154)在 Analog 路径读 float，数字路径读按钮状态；文档列默认 `DigitalNormalized`。因此先直接绑定整个 stick；确需重组方向部件才选 Analog，并重新核其处理链。[研究] 不用“防键盘斜走加速”作为对所有模拟输入调用 `.normalized` 的理由；玩法本来只接受方向或离散步进时则可有意舍弃幅度。
-3. **UE：核两层 modifiers，不猜模板默认值。** [一手] UE 5.8 [FEnhancedActionKeyMapping](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/FEnhancedActionKeyMapping)的 modifiers 处理 raw key value；[UInputAction](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/UInputAction)的 modifiers 处理 final action value。[Enhanced Input](https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine)说明 modifier 输出传给后续 modifier／trigger；[DeadZone](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/UInputModifierDeadZone)将 lower–upper 区间映射到 0–1、外部截断。[研究] 用 Axis1D／Axis2D 保留所需连续值，按动作选单轴或联合轴处理，检查两层是否重复变换；这些契约不证明所有模板、设备或遗留输入设置采用同一默认阈值、形状与次序。
-4. **赛车的相反取舍与真实二改。** [一手] 固定 `supertuxkart/stk-code@0334c6cd7432de391b7981b153df32b7bf6d83ea` 的 [gamepad_device.cpp](https://github.com/supertuxkart/stk-code/blob/0334c6cd7432de391b7981b153df32b7bf6d83ea/src/input/gamepad_device.cpp#L149-L169)区分模拟与数字转向路径，并可选保留符号的平方曲线，减弱中心附近变化；这是“更敏感不总更好”的具体机制，不是通用推荐。[2018 修复 b7856d4](https://github.com/supertuxkart/stk-code/commit/b7856d4991503fc3d13eb567b9dbed2faa8db832)实际修改触摸转向 `getSteeringFactor`，先重映射死区外区间、再独立缩放 sensitivity，替代耦合的分母；这是触摸实现，不能说成手柄修复。源码头部为 GPL-3.0-or-later，本轮只借机制并链接，不复制模块；历史 diff 没有证明目标项目手感改善。
+1. **Unity 死区非单位化。** [一手] 1.19.0 tag→`ca8d898356596a91bda6505e506cc1a4bb3a9fa6`，[package.json](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/package.json) 同版；[Gamepad.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Devices/Gamepad.cs#L138-L149) 给 sticks 加 stickDeadzone，[StickDeadzoneProcessor.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Controls/Processors/StickDeadzoneProcessor.cs#L32-L57) 重映射幅度后按比缩向量，保连续值；min=0 取全局默认，非关闭。[1.19 绑定文档](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/ActionBindings.html)：完整 stick binding 再加会叠 control 死区。
+2. **合成模式分开。** [一手] [Vector2Composite.cs](https://github.com/Unity-Technologies/InputSystem/blob/ca8d898356596a91bda6505e506cc1a4bb3a9fa6/Packages/com.unity.inputsystem/InputSystem/Actions/Composites/Vector2Composite.cs#L126-L154) 的 Analog 读 float、数字模式读按钮，默认 DigitalNormalized。[研究] 先绑定整个 stick，重组才选 Analog；不为防键盘斜走统一 normalized，方向／离散玩法可主动舍幅度。
+3. **UE 两层 modifiers。** [一手] 5.8 [FEnhancedActionKeyMapping](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/FEnhancedActionKeyMapping) 处理 raw key，[UInputAction](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/UInputAction) 处理 final action；[Enhanced Input](https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine) 输出逐级传后续 modifier/trigger，[DeadZone](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/EnhancedInput/UInputModifierDeadZone) 将 lower–upper 映射 0–1、外部截断。[研究] Axis1D/2D 保幅度，按动作选轴形并查重复变换；未证所有模板／设备同默认值与次序。
+4. **STK 的降敏与触摸修复。** [一手] `supertuxkart/stk-code@0334c6cd7432de391b7981b153df32b7bf6d83ea` 的 [gamepad_device.cpp](https://github.com/supertuxkart/stk-code/blob/0334c6cd7432de391b7981b153df32b7bf6d83ea/src/input/gamepad_device.cpp#L149-L169) 分数字／模拟，可选保符号平方降中心敏度；[2018 修复 b7856d4](https://github.com/supertuxkart/stk-code/commit/b7856d4991503fc3d13eb567b9dbed2faa8db832) 改触摸 getSteeringFactor，死区重映射与 sensitivity 缩放分开，非手柄修复。文件 GPL-3.0-or-later，只借机制，不给通用曲线。[研究]
 
-**采用与撤回。** [研究] ✅ 先保住所需幅度，明确每个处理阶段，复用原生处理器；只对仍存在的具体漂移／微调缺口调整。死区过大压缩可用微调范围、过小可能暴露漂移，响应曲线和轴向／径向选择也取决于动作，不给跨设备统一阈值。原生基线已满足就不扩展；方向离散的动作不强求连续幅度。
+**采用与撤回。** [研究] ✅ 保住所需幅度，逐层核原生处理器，仅补漂移／微调缺口。死区过大损微调，过小露漂移；曲线及轴向／径向按动作选，不给统一阈值。方向离散动作可舍弃幅度。
 
-**第二次修改预注册，当前不执行。** [研究] 同一目标玩法先对照原生基线与单项必要调整，记录回中漂移、起动跳变、低幅连续控制、满幅可达及轴向／斜向差异。二改加入另一种手柄，或给瞄准／转向复用移动配置，检查旧动作、已有设置与处理层有无意外耦合；撤销重复死区或错误单位化已能解决时，不升级框架。真实引擎、硬件与玩家手感均未验证，事件／公式检查不代替它们。
+**二改预注册。** [研究] 对照原生与单项调整，记录回中、起动、低幅、满幅及轴向／斜向；加入另一手柄或跨动作复用配置后核耦合。撤销重复死区／单位化已解决就不扩框架。
 
 ### 4. 用第二个菜单判断共享层是否值得
 
-[研究] 在将来获准的真实切片，先用原生做暂停→设置→返回，再新增带滑条、动态隐藏选项和确认弹窗的页面。改一个确认绑定并切换设备，检查四个结果：可见焦点与导航方向一致；提示对应实际可用绑定；关闭弹窗恢复原项或明确后备项；恢复玩法不沿用失效的移动缓存、没有幽灵攻击或重复确认，并按约定处理当前仍按住的移动。让重绑定取消也走完整返回路径。
+[研究] 未来用原生暂停→设置→返回，再加滑条、动态隐藏项和确认层。改确认键并换设备，核焦点／导航、实际绑定提示、返回目标、过期缓存与当前按住政策；重绑定取消也走返回路径。
 
-[研究] 记录新增页面需复制或修改哪些政策，以及旧页面是否回归；先用少量共享的打开／关闭边界，只有重复的激活、返回和设备规则实际难维护才引入框架。原生已经达到目标则不迁移，框架仍需每页补同样规则且无明显减负则收回扩展。AI 可以生成绑定、导航与回归场景，人判断焦点是否容易找到、操作是否费力；输入事件日志和截图须互相印证，状态注入不能替代设备路径。这是未来验证设计，非已证实的框架收益。
+[研究] 记录二改复制的政策与旧页回归；少量共享开关边界仍难维护，才引框架，无减负则撤回。AI 补绑定／导航／回归，人判操作负担；日志与截图互证，状态注入不代验设备路径。
 
 ### 5. 暂停叠加与转场：关闭一层不等于恢复整局
 
-核实：2026-10-14 UTC。主线 3；改变 04 的菜单恢复建议：第二种暂停来源出现后，补持有／释放与加载入口权限，避免把任意关闭动作当全局恢复。新证据为 Thrive 三个已合入补丁及固定实现；仅静态阅读，不是本轮游戏／引擎实测。[研究]
+核实：2026-10-14 UTC；主线三。第二种暂停来源出现后，补持有／释放与加载入口权限；依据 Thrive 三个已合入补丁及固定实现。[研究]
 
-- **暂停状态与清理**：[一手] [#7203 补丁](https://github.com/Revolutionary-Games/Thrive/commit/0deed4285e3d25852707d7bbf639620293c9e1ba)（2026-09-02）将 HUD 的 `Paused = !Paused` 改成传入的 `buttonState`，并在关闭区域灭绝选择框时调用 `EnsureGameIsUnpausedForEditor`，意图避免 HUD 暂停跨到新区域。[PR 原文](https://github.com/Revolutionary-Games/Thrive/pull/7203)明确作者未能触发所报告故障；这是已合入防护，不应写成已复现、已验证消除软锁。未读取其 Discord 报告，也不采用自动生成的 PR 摘要代替作者原文。
-- **不同入口需服从同一阶段**：[一手] [#7290 补丁](https://github.com/Revolutionary-Games/Thrive/commit/1b82f43ac822cf8b149831b1389a0c3686bc498a)（2026-09-17）给 HUD 暂停按钮补 `GameLoading` 判断，原来只检查暂停菜单是否可见。[PR](https://github.com/Revolutionary-Games/Thrive/pull/7290)勾选作者试玩及另一人功能确认；可称维护方确认，不能称本轮验证。
-- **撤回一刀切暂停**：[一手] [#7232 补丁](https://github.com/Revolutionary-Games/Thrive/commit/03b9b8e2b7bbc3a6ecb3159dd38960d69be33d6b)（2026-09-10）在转场发现玩家死亡／消失时补取消入口，并删除取消时无条件重启编辑按钮的代码。[PR 原文](https://github.com/Revolutionary-Games/Thrive/pull/7232)说明此前的修复反而允许死亡后立即点击；按钮应由真实资格条件恢复。开发者最终撤回“转场时暂停游戏”的尝试。[研究] 因而采用取消收尾与资格重判，不推导所有转场都应冻结世界，也不把取消后的所有控件一律启用。
+- **防护未复现原故障。** [一手] [#7203 补丁](https://github.com/Revolutionary-Games/Thrive/commit/0deed4285e3d25852707d7bbf639620293c9e1ba)（2026-09-02）HUD 由翻转改 buttonState，关闭灭绝框调用 EnsureGameIsUnpausedForEditor；[PR 原文](https://github.com/Revolutionary-Games/Thrive/pull/7203) 明说作者未触发故障。已合入防护非软锁复测；未读 Discord，不用自动摘要。
+- **加载入口统一。** [一手] [#7290 补丁](https://github.com/Revolutionary-Games/Thrive/commit/1b82f43ac822cf8b149831b1389a0c3686bc498a)（2026-09-17）在菜单可见判断外补 GameLoading；[PR](https://github.com/Revolutionary-Games/Thrive/pull/7290) 勾选作者试玩＋另一人功能确认，仅维护方验证。
+- **撤回全局暂停。** [一手] [#7232 补丁](https://github.com/Revolutionary-Games/Thrive/commit/03b9b8e2b7bbc3a6ecb3159dd38960d69be33d6b)（2026-09-10）补玩家死亡／消失时取消，删无条件恢复编辑按钮；[PR 原文](https://github.com/Revolutionary-Games/Thrive/pull/7232) 说明旧修复允许死亡后立刻点，最终撤回转场暂停。[研究] 取消收尾后按真实资格恢复，不全启控件或全冻结。
 
 **固定实现与反证。** 以下均实际读取 `Revolutionary-Games/Thrive@1b82f43ac822cf8b149831b1389a0c3686bc498a`：[一手]
 
-1. [PauseManager.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/engine/PauseManager.cs)以 `HashSet<string>` 保存命名暂停原因，`Resume` 仅移除指定原因，集合非空仍暂停。**这不是计数锁**：重复添加同名只报错，不累计；一次释放会移除这个名字，多实例／重入不能仅靠类型名区分。`ForceClear` 注释限定主菜单或直接切换另一局的兜底，并记录剩余锁；不能照搬为普通弹窗关闭动作。
-2. [HUDWithPausing.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/base_stage/HUDWithPausing.cs)的 `EnsureGameIsUnpausedForEditor` 经 `PauseButtonPressed` 释放自己；但菜单可见或 `GameLoading` 时该入口提前返回。因此不能宣称 helper 在任意转场都能撤销 HUD 锁，也不能用方法名证明清理完成。后置日志只报告仍暂停，不会自动解决残留。
-3. [PauseMenu.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/PauseMenu.cs)在 `ReportStageTransition` 将 `GameState` 设为 Invalid，以此表达 `GameLoading`；暂停菜单、鼠标捕获阻止和输入接收注册分别维护。[CreatureStageHUDBase.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/base_stage/CreatureStageHUDBase.cs)的取消入口淡入并清 `MovingToEditor`，不再直接恢复编辑按钮。[研究] 这些具体分工支持把暂停、交互归属和过渡资格分开检查，不证明已有实现覆盖所有交错。
+1. [PauseManager.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/engine/PauseManager.cs) 用 HashSet<string> 记原因，Resume 只删指定项，非空仍停；同名重复只报错不计数，多实例不能只用类型名。ForceClear 限主菜单／另局兜底并记残留，不作普通关闭。
+2. [HUDWithPausing.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/base_stage/HUDWithPausing.cs) 的 helper 经 PauseButtonPressed 释放，但菜单可见／GameLoading 会早退；后日志只报仍停，不能凭函数名保证转场清锁。
+3. [PauseMenu.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/PauseMenu.cs) 转场将 GameState=Invalid 表 GameLoading，暂停／鼠标捕获／输入分别维护；[CreatureStageHUDBase.cs](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/src/general/base_stage/CreatureStageHUDBase.cs) 取消淡入、清 MovingToEditor，不直接启编辑钮。[研究] 分别核资格／归属／暂停，不保证全交错。
 
-**采用／不用。** [研究] ✅ 在已有 Session／菜单边界明确谁持有暂停、何时可释放、各输入入口何时拒绝新暂停；按钮传目标状态时按目标设置。仅有一个暂停入口且行为可靠时不增加锁系统。出现并存来源时，使用能区分实际持有者的窄机制；退出本局清本局持有，普通弹窗不能清所有原因。⛔ 不照搬字符串集合为通用计数／多实例方案，不把上层输入门禁当无条件释放入口，不用全局暂停掩盖转场前提失效。
+**采用／不用。** [研究] ✅ 沿 Session 明确暂停持有者、释放及拒绝入口；按钮按目标状态设置。单入口可靠就不加锁；并存来源要区分实际实例，退出本局才清本局持有。字符串集合不是计数锁，输入门禁不是无条件释放，全局暂停不能补失效前提。
 
-[一手／研究] Unity [6.3 timeScale](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Time-timeScale.html)只约定时间缩放、后续帧生效及零值暂停 FixedUpdate／WaitForSeconds；它不是暂停持有或输入权限管理器。本节机制不依赖双引擎同名 API，不另扩引擎框架比较。Thrive 的[固定许可](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/LICENSE.txt)为 GPL-3.0-or-later 并列有例外条款；这里只借机制，不把整套代码推荐为可随意复制的商用引擎组件。
+[一手／研究] Unity [6.3 timeScale](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Time-timeScale.html) 仅缩放时间、后帧生效，零值停 FixedUpdate/WaitForSeconds，非持有／权限管理器。Thrive [固定许可](https://github.com/Revolutionary-Games/Thrive/blob/1b82f43ac822cf8b149831b1389a0c3686bc498a/LICENSE.txt) 为 GPL-3.0-or-later 并列例外，只借机制。
 
-**第二次修改与验证局限。** [研究] 从单暂停菜单增加一个可在暂停中操作的选择框：交错开关两者、加载期间按 HUD 暂停、淡出期间死亡，再进入新局。检查当前有效暂停原因、输入归属、按钮资格和旧局持有；特别覆盖释放时命中菜单可见／Loading 门禁，以及同名多实例。AI 可补状态日志与回归路径，人决定转场是否仍模拟及何时恢复控制。源码可见和维护方复核不能代替这些路径的实测。
+**二改预注册。** [研究] 单暂停新增选择框，交错开关、加载中按暂停、淡出中死亡再进新局；核持有、输入与按钮资格，重点覆盖释放命中菜单／Loading 门禁及同名多实例。人定转场模拟与恢复时机。
 
 
 ### 6. 背包负担：改交互还是改携带规则
 
-核实：2026-10-15（UTC+8）。[研究] 04 UI 原建议保住可达性与输入正确，这里补“反复整理是交互阻力还是玩法取舍”的选择，不新增库存框架。✅ 已经决定使用什么、却总要重新找时先借稳定快捷引用；🧪 囤积总最划算且挤掉目标玩法时才改携带成本；⛔ 不把所有排列都当冗余操作。
+核实：2026-10-15（UTC+8）。[研究] 已决定用什么却反复寻找，先加稳定快捷引用；囤积挤掉玩法才改携带成本，排列本身有价值则保留。
 
-- **Factorio，减少入口漂移。** [一手：Twinsen／Klonan 历史开发说明] [FFF278（2019-01-18）](https://www.factorio.com/blog/post/fff-278)将快捷栏从第二库存改为主库存引用：耗尽后仍留映射，避免制作物品随机进入快捷栏、补货后换槽；原库存空间另作补偿。[研究] 本文是0.17发布前实现说明，不是发布公告或当前版本验收。借“入口不再拥有第二份物品”，不照搬十页快捷栏；不能仅凭作者描述宣称玩家操作已普遍改善。
-- **Cogmind，便利操作之外重选规则。** [一手：Kyzrati 作者复盘] [2021仓储重设](https://www.gridsagegames.com/blog/2021/04/design-overhaul-1-capping-inventory/)说明仓储叠加鼓励大量备件、挤掉主动功能槽并超出原界面假设。作者起初反对不可叠加的硬限制，实验后采用，同时提高单件容量、增加高端选项；已有交换便利功能仍有价值。[2023发布后回顾](https://www.gridsagegames.com/blog/2023/03/cogmind-beta-11-player-stats/)确认 Beta 11 去掉叠加，作者数据中极端大背包减少、平均容量反而上升。[研究] 这不是简单缩小背包，也不是平均容量上升就证明乐趣／留存收益；版本间玩家记录不是因果对照。只借容量、重量与装备槽的协调取舍，不抄格数或取消所有囤积。
-- **Backpack Hero，排列本身是决策。** [一手：Jasper Cole 采访原答] [2022访谈](https://www.escapistmagazine.com/backpack-hero-interview-jasper-cole-inventory-management-roguelike/)说明项目由强调位置的卡牌原型演变而来，物品位置与放弃物品的后果使整理成为策略。[研究] 因而自动安排可能消掉核心玩法，不能一律以点击更少判好。作者对其他游戏整理负担的评价只是个人看法，不作为那些游戏失败的证据；采访经编辑澄清，也不引用其“前所未有”宣称背书。
+- **Factorio 稳入口。** [一手] Twinsen／Klonan [FFF278（2019-01-18）](https://www.factorio.com/blog/post/fff-278) 为 0.17 发布前说明：快捷栏由库存改引用，耗尽留映射，防制作随机入栏／补货换槽，补偿原容量。[研究] 借引用，不抄十页或声称普遍体验改善。
+- **Cogmind 改规则。** [一手] Kyzrati [2021仓储重设](https://www.gridsagegames.com/blog/2021/04/design-overhaul-1-capping-inventory/)：叠仓囤备件、挤主动槽／超 UI，起初反对硬限、试后采用，同时增单件容量／高端选项。[2023发布后回顾](https://www.gridsagegames.com/blog/2023/03/cogmind-beta-11-player-stats/) 确认 Beta 11 去叠，极大背包少、平均容量反增。[研究] 非简单缩包或因果乐趣证据，借容量／重量／槽位协调，便利交换仍有用。
+- **Backpack Hero 排列即决策。** [一手] Jasper Cole [2022访谈](https://www.escapistmagazine.com/backpack-hero-interview-jasper-cole-inventory-management-roguelike/)（经编辑澄清）称源自重位置卡牌原型，摆放／放弃后果形成策略。[研究] 自动安排可能删玩法，不按点击少判好；不采其对别作的个人批评或“前所未有”背书。
 
-[研究] **复用与补缺：**沿已有物品使用／交换命令、输入导航和库存变更所有者，快捷栏只引用，不另维护库存真相。先定引用物品类型还是具体实例：可互换材料与带耐久／词条的装备不能默认同一政策；耗尽、卖出或替换后是否保留映射、重新选择哪件，由规则明确。Unity／UE 的现有 UI 与数据绑定足以承载入口，本节不提出新 API、跨引擎抽象或自动规划器。
+[研究] **复用与补缺：**沿现有物品命令、导航和库存所有者，快捷栏只引用。类型与具体实例分开：材料和带耐久／词条装备可有不同政策；明确耗尽、卖出、替换后的映射与重选。
 
-[研究] **成本与撤回：**入口改动仍需保住用户排布与手柄焦点；容量改动还牵连掉落、消耗、负重、依赖囤积的构筑和旧档超容量处理。如果稳定入口／交换已解决就不动携带规则；若减容量只增加搬运往返、丢物或破坏有趣构筑，应撤回重选；排列即玩法时保留玩家安排，不默认自动排序。
+[研究] **成本与撤回：**入口改动保用户排布／焦点；容量改动还涉及掉落、消耗、负重、构筑和旧档超额。入口已解决就不改规则；只增加搬运／丢物或毁构筑则撤回，排列即玩法不自动排序。
 
-[研究] **二改仅预注册：**为已有物品增加非同质变体或改变堆叠上限，核耗尽后补货、绑定实例卖出、满包交换、重复命令及旧档；观察玩家是在找已决定的物品，还是作有价值的取舍，不用页面数或点击数单独判胜。三组来源只借公开机制，不复制商业代码／美术；未运行引擎、游戏或玩家实验，不承诺单人零手绘可复现其成品或净省维护工时。
+[研究] **二改预注册：**新增非同质变体或改堆叠上限，核补货、卖出绑定实例、满包交换、重复命令及旧档。人判是在重复寻找还是有价值取舍，不单看点击数。只借机制，不复制商业代码／美术。
 
 ## 存档复用补比：序列化、落盘与玩家恢复分开选
 
-核实：2026-10-14 UTC。[一手] 固定源码、官方接口和商店条款；[研究] 为静态路径推导及采用判断。回应的缺口不是再要求 schema roundtrip，而是**哪些现成部分值得直接采用、哪些恢复责任仍由游戏拥有**。仅公开资料与源码阅读，没有下载资产、安装、运行游戏／引擎或做故障注入。
+核实：2026-10-14 UTC。[一手] 固定源码、官方接口与商店条款；[研究] 比较现成保存能力与游戏自有恢复责任，未做故障注入。
 
 ### 1. Mindustry：实际游戏把格式、内容映射与文件恢复分开
 
-[一手] 固定 `Anuken/Mindustry@17012d61d9e4c3cbd9820d87e81c24495486ac53`，commit API 显示 2026-10-08；[README](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/README.md)给出实际游戏发行入口，不是专门为演示保存 API 写的模板。[GPL-3.0 LICENSE](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/LICENSE)允许商业使用但带分发义务；不把 GPL 当作禁止商用，也不当作闭源项目可随意复制的 MIT。这里不复制代码或美术，代码许可核对不代表资产权利已逐项清理。该 SHA 是研究快照，不等于建议追随开发分支。
+[一手] `Anuken/Mindustry@17012d61d9e4c3cbd9820d87e81c24495486ac53`，commit API 2026-10-08；[README](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/README.md) 有发行入口，[GPL-3.0 LICENSE](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/LICENSE) 允许商用但带分发义务，非 MIT。仅研究快照，不跟开发分支／复制代码美术，资产权利未逐项核。
 
-- [一手] [SaveIO.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveIO.java)：注册 Save1 到 Save13，最新版负责写、按文件版本选择读；未知版本有独立错误。`save` 先把已有主档移为备份，再写主档；捕获写异常时移回备份。`load(Fi, WorldContext)` 在 SaveException 后尝试备份。**版本读取与文件恢复是不同路径。**
-- [一手] `isSaveFileValid` 只调用 `getMeta`；[SaveVersion.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L48-L76)的 metadata 读取不遍历 map／entities 等全部区域。`readContentHeader`（627–654）按保存的名称重建临时内容映射，其中 block 有单独 fallback；它不自动定义所有类型缺失后的玩法政策。
-- [一手] [Saves.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L120-L199)读取 sectorPreset／旧位置，先把待迁移文件移到临时名称，随后集中回填目的地及 sector info，注释明确为允许位置互换。文件目的地、关卡身份和附属进度一起迁移，比“改 ID 映射表”多一个层次。
-- [研究] **采用其职责划分与交换顺序；不采用整个 Java／Arc 世界序列化器作为 Unity／UE 插件。** 依赖和数据模型不同，移植代价高于项目自己的少量迁移函数。内容改名可按类型显式映射；只有真实出现关卡存储位置交换时才做暂存／回填，不默认引入通用迁移图。
-- [一手／研究] 不能把上述保存路径宣传成断电事务：主档先移走，catch 不能在进程被终止后执行；[列表发现](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L65-L78)遍历现存文件并排除名字含 backup 的项。应专门验证“只剩备份时能否从菜单恢复”，不能仅凭内部 load 有 fallback 宣称玩家可达。这里是限定源码路径，不是对发行版本丢档率的测量。
+- [一手] [SaveIO.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveIO.java) 注册 Save1–13、最新版写、按版读，未知版独立报错；先主档移备份再写，catch 移回，load 遇 SaveException 尝试备份。格式与恢复分路。
+- [一手] isSaveFileValid 仅 getMeta；[SaveVersion.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L48-L76) metadata 不读全部 map/entities，readContentHeader（627–654）按保存名映射、block 有 fallback，但未定所有缺内容政策。
+- [一手] [Saves.java](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L120-L199) 按 sectorPreset／旧位置先临时移档，再集中回填目的地／sector info，支持位置交换；迁移含地址、关卡身份及附属进度。
+- [研究] 借职责与交换顺序，不移植 Java／Arc 对象图。按类型映射改名；真实出现存储位置互换时才加暂存／回填。
+- [一手／研究] 主档先移、终止后 catch 不执行，不是断电事务；[列表发现](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L65-L78) 排除含 backup 的名称。仅备份时菜单能否恢复须另验，内部 fallback 不保证可达。
 
 ### 2. Thrive：类名存在，不等于迁移器仍适用于新格式
 
-[一手] 固定 `Revolutionary-Games/Thrive@eceb8011d5e86b19dfa75de9e55eee6815fd1450`，commit API 为 2026-10-14；[README](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/README.md)链接 Steam／itch 游戏。[LICENSE.txt](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/LICENSE.txt)为 GPL-3.0-or-later，带独立 mod 动态加载例外；该例外不是复制整个保存模块进任意闭源游戏的通行证。近期仓库活动不保证每个历史接口已完成改造。
+[一手] `Revolutionary-Games/Thrive@eceb8011d5e86b19dfa75de9e55eee6815fd1450`，commit API 2026-10-14；[README](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/README.md) 有 Steam/itch，[LICENSE.txt](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/LICENSE.txt) 为 GPL-3.0-or-later＋独立 mod 动态加载例外，非整模块闭源复制许可。活动不证明旧接口改造完成。
 
-- [一手] [Save.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/Save.cs)已经把主要世界状态放进 `save.bin`，metadata 保留 JSON；`ReadFromArchive` 按对象 serialization version 读取，版本 2 新增 JukeboxPlaybackState，旧版取 null。因此存在当前格式的版本化读取，不能说全部旧档能力都坏了。
-- [一手] 同文件的 `LoadJSONStructureFromFile` 明确抛 NotSupportedException，`WriteSaveJSONToFile` 抛 NotImplementedException；[ISaveUpgradeStep.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/ISaveUpgradeStep.cs)仍注册一个 `0.8.3.0-rc1 → 0.8.3.0` 的 UpgradeJustVersionNumber，实际 PerformUpgrade 仍调用这两个旧 JSON 入口，注释说明待 archive 改造。
-- [一手] [SaveUpgrader.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/SaveUpgrader.cs)仅在存在到目标版本的 step 路径时报告可升级；[SaveListItem.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/SaveListItem.cs)先区分损坏、已知不兼容、可升级、较新版本等，再发相应 UI 事件。**旧 helper 遗留不证明普通加载或当前 UI 必然触发它。**
-- [研究] **✅ 借鉴面向玩家的失败分类；⛔ 不直接采用其遗留 JSON upgrader。** 玩家需要知道是文件坏、需要新游戏版本，还是内容不兼容；不能所有错误都显示“没有存档”并自动新建。采用前追到真正读写入口和可达条件，而非凭 `SaveUpgrader` 类名或曾经的功能介绍决定。Thrive 的对象图和 Godot／archive 依赖也不值得为简单 checkpoint 存档迁移过来。
+- [一手] [Save.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/Save.cs) 世界存 save.bin、metadata JSON；ReadFromArchive 按对象版读，v2 加 JukeboxPlaybackState、旧版 null。当前格式有兼容读取，不是全坏。
+- [一手] 旧 LoadJSONStructureFromFile 抛 NotSupportedException，WriteSaveJSONToFile 抛 NotImplementedException；[ISaveUpgradeStep.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/ISaveUpgradeStep.cs) 仍注册 0.8.3.0-rc1→0.8.3.0 step，PerformUpgrade 调旧入口，注释待 archive 改造。
+- [一手] [SaveUpgrader.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/SaveUpgrader.cs) 有到目标版 step 才可升级；[SaveListItem.cs](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/saving/SaveListItem.cs) 分损坏、不兼容、可升级、较新版再发 UI 事件。旧 helper 不证明普通加载／UI 必然到达。
+- [研究] ✅ 借失败分类，⛔ 不用遗留 JSON upgrader。区分损坏、版本过新和内容不兼容；追实际入口／可达条件，不凭类名采用，也不为简单 checkpoint 搬来 Godot 对象图。
 
 ### 3. 原生、开源序列化库与商业候选怎么取舍
 
-[研究] 下表的“采用”指建议复用的机制，不代表本轮安装、购买或已测目标平台。已满足需求的项目不为增加候选迁移。
+[研究] 下表为机制选择；现有项目够用就不迁移。
 
 | 候选 | 可直接借用与最低成本 | 不替项目解决什么／本轮判断 |
 |---|---|---|
@@ -564,9 +564,9 @@
 | Mindustry／Thrive 的整套保存模块 | 实际游戏中的版本／恢复／菜单机制可读，研究成本低 [一手：上述固定源码] | ✅ 借设计与反例；⛔ 不作 Unity／UE 通用保存底座。GPL 分发义务、引擎和世界对象图耦合；本轮未独立验证任何一个游戏的玩家恢复成功率 |
 | Easy Save 3 | 🧪 现有 Unity 项目或确有多类型序列化／工具支持缺口时评估；现成缓存、类型适配及备份调用，免去等价自研 [一手：下列官方 API] | 缓存写入、备份轮换、内容兼容仍分开验收；不为几个 DTO 默认购买，更不因付费就承诺恢复更强。资产包未取得，未审内部落盘实现 |
 
-[一手] Easy Save 的 [CreateBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-createbackup/)复制当前文件为 `.bak`，会覆盖已有备份；[RestoreBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-restorebackup/)返回是否找到并恢复备份，不代表新内容下的完整进度有效。[缓存／性能说明](https://docs.moodkie.com/easy-save-3/es3-guides/performance/)允许把多次键操作合并成一次持久写入；自行用线程时要求一次只在一个线程访问且数据线程安全。说明还明确删除重建 reference manager 会使旧引用 ID 的存档失效。[引用文档](https://docs.moodkie.com/easy-save-3/es3-guides/saving-and-loading-references/)把 manager 定义为 scene-specific，不能把它当跨场景内容身份服务。
+[一手] Easy Save [CreateBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-createbackup/) 覆盖 .bak，[RestoreBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-restorebackup/) 返回找到／恢复而非进度有效；[缓存／性能说明](https://docs.moodkie.com/easy-save-3/es3-guides/performance/) 合多键为一次写、线程访问须互斥且数据线程安全，删重建 reference manager 会使旧 ID 失效；[引用文档](https://docs.moodkie.com/easy-save-3/es3-guides/saving-and-loading-references/) 明确 manager 为 scene-specific，非长期内容身份。
 
-[研究] **Easy Save 若已采用，优先借它的缓存与明确的备份 API，再为业务快照和恢复选择加薄层；不要同时自建另一个键值保存框架。** 缓存合并不等于业务一致快照，恢复文件不等于接受进度，场景引用 ID 不等于长期内容 ID。保存升级后立刻覆盖唯一 `.bak` 可能丢失唯一兼容旧版的副本，因此升级保留副本应与普通轮换备份分开。
+[研究] **已用 Easy Save 就复用缓存与备份 API，只补业务快照／恢复薄层。** 合并写入不保证一致快照，恢复文件不代表接受进度，场景引用 ID 不替代内容 ID；迁移前副本与普通轮换分开，避免覆盖唯一旧版兼容档。
 
 | 动态事实 | 核实来源／日期 | 选型影响与重核触发 |
 |---|---|---|
@@ -576,69 +576,69 @@
 
 ### 4. 最小实现边界与后续验收
 
-[研究] 小型独立游戏只保留三个责任：项目 DTO／内容迁移；现成序列化器＋引擎或已采用库的存储能力；游戏自己的恢复选择与提示。它们可以是少量函数，不要求三个新框架。成熟实现显示这三件事有不同失败模式，不能以“写一个通用 SaveManager”代替取舍。
+[研究] 保留窄 DTO／内容迁移、现成序列化／存储、游戏恢复提示三项责任；可仅用少量函数，不另建 SaveManager 框架。
 
-1. **候选验收先于覆盖。** 分别读取主档、上次已验收的副本和迁移前副本；按版本与完整内容判断。候选对象先独立构造，失败不留下半个世界。选中副本后显示恢复的时间／章节，保留故障原档；全部失败时让玩家选择新开槽，不默认覆盖。
-2. **重新保存是第二个风险点。** 读取失败、回退备份后立即 autosave、升级失败再试都可能轮换掉有效旧档。恢复流程完成前暂停对该槽的自动覆盖；只有明确接受新快照后才按保留政策清理，磁盘满时不为腾空间先删唯一有效副本。
-3. **不承诺跨平台统一的 rename 原子性。** 用所选平台／库提供的提交能力；只有现成路径不满足时才补目标平台的暂存、替换和发现逻辑。不要根据有 try/catch 或 `.bak` 就宣布断电安全。
-4. **第二次内容变化要触到实际地址。** V1 两个关卡分别有进度；V2 改名并换存储位置；V3 删除／替换一个道具。验主档缺失而备份存在、metadata 完好但实体区截断、迁移中断再启动、恢复后立即自动保存以及两个关卡位置互换。断言进度未互串、奖励不重复、旧副本仍可找回，而不只断言 JSON 能读。
+1. **先验候选。** 分别按版本／完整内容读取主档、已验副本、迁移前副本；独立构造候选，失败不残留半个世界。显示恢复时间／章节，保留故障档；全失败由玩家选新槽。
+2. **防止覆盖有效旧档。** 读取失败、回退后 autosave、升级重试都需保护。恢复完成前停该槽自动覆盖，接受新快照后按政策清理；磁盘满不先删唯一副本。
+3. **沿平台提交能力。** 现成路径不满足才补暂存／替换／发现；try/catch、`.bak` 或 rename 名称不保证跨平台断电安全。
+4. **二改实际地址。** V1 两关卡→V2 改名换位置→V3 删除／换道具；核仅存备份、metadata 完整但实体截断、迁移中断、恢复后 autosave 和位置互换，断言进度／奖励及副本可达。
 
-[研究] 以上为未来获准的引擎／目标存储验收设计；静态阅读没有证明文件落盘耐久性、UI 实际可达性或商业库净收益。若既有组件通过这些路径且维护更省，就停止自研；若复杂对象图保存只增加引用和迁移负担，回到稳定内容 ID 的窄 DTO，而非继续扩张框架。
+[研究] 以上仅预注册。既有组件可靠且更省维护就停止自研；复杂对象图只增引用／迁移负担时退回稳定 ID 的窄 DTO。
 
 
 ### 5. 续玩不等于撤销失败
 
-核实：2026-10-15（UTC+8）。[研究] 可靠落盘与损坏恢复已有上述方案；这里仅补“玩家还活着却需要离开”的产品选择，不重复05死亡重试或难度辅助。✅ 单局需要跨多次游玩时，先复用既有一致状态边界提供续玩；是否允许撤销早先决定另定，不默认引入任意世界快照。
+核实：2026-10-15 UTC+8。[研究] 单局需要跨多次游玩时，在既有一致状态边界提供续玩；撤销旧决定另定，不默认任意世界快照。
 
-- **发布后补续玩，Enter the Gungeon。** [一手：Dodge Roll 设计师 Dave Crooks] [2017-02-03 更新说明](https://blog.playstation.com/2017/02/03/enter-the-gungeon-supply-drop-update-out-today-on-ps4/)称 Save and Quit 可能是发布后最常被请求的功能，新增每层结束后保存、日后继续。作者用了出口按钮角色与冷冻室，也说明可以用菜单实现。[研究] 借已有转换边界，不复制其美术入口；作者反馈不等于需求排名调查，也不证明层间间隔适合所有玩法。
-- **保留后果仍可退出保存，Don't Starve。** [一手：Klei 官方产品说明] [Why Can't I Save?（2019-06-25）](https://support.klei.com/hc/en-us/articles/360029882191-Why-Can-t-I-Save)说明黎明、黄昏和关闭游戏时自动保存，同时刻意不提供手动保存的安全网。[研究] 反证“保留决定后果就不能中途离开”；这段说明不证明崩溃／断电恢复或任意时刻完整快照。
-- **续玩与回退分别维护，Cogmind。** [一手：Kyzrati 作者复盘] [Quicksaving and Restore Points（2019-09-27）](https://www.gridsagegames.com/blog/2019/09/quicksaving-restore-points/)说明原本已有退出后续玩；后来为 Adventurer／Explorer 加早先恢复点，Rogue 保留永久死亡设计。恢复点与最新续玩档分开、仅对当前局有效；调试存取虽已存在，公开功能仍需死亡界面等配套。2022-03-23 作者评论认为部分玩家因此受益，不是受控结果。[研究] 借职责分离，不照搬四类文件或各模式政策；原文对榜单排除用不确定措辞，不据此确认当前计分规则。
+- **Enter the Gungeon。** [一手] Dave Crooks [2017-02-03 更新说明](https://blog.playstation.com/2017/02/03/enter-the-gungeon-supply-drop-update-out-today-on-ps4/) 称 Save and Quit 或是发布后最常请求，新增层末保存续玩；出口角色／冷冻室也可换菜单。[研究] 借转换边界，非需求排名调查或通用层间间隔。
+- **Don’t Starve。** [一手] Klei [Why Can't I Save?（2019-06-25）](https://support.klei.com/hc/en-us/articles/360029882191-Why-Can-t-I-Save) 说明黎明、黄昏、关闭自动保存，刻意不提供手动安全网。[研究] 保后果仍可离开，但非崩溃／断电恢复或任意快照保证。
+- **Cogmind。** [一手] Kyzrati [Quicksaving and Restore Points（2019-09-27）](https://www.gridsagegames.com/blog/2019/09/quicksaving-restore-points/)：原有续玩之外给 Adventurer/Explorer 加旧恢复点，Rogue 永久死亡；与最新续玩档分开、仅当前局，另补死亡 UI。2022-03-23 评论称部分玩家受益，非受控结果。[研究] 借职责，不抄文件／模式，榜单排除原文不确定。
 
-[研究] **直接复用与需补部分：**沿上述 DTO、现成序列化／存储、备份／迁移，以及05的 Session／Encounter 与一次性结算，只补允许保存的状态边界、退出提示和恢复入口。明确快照在奖励提交之前还是之后、当前局与永久进度各恢复什么；正常续玩交接成功前不删唯一有效副本；死亡／新开局后的恢复资格按玩法失效，保留诊断文件不等于允许复活。只有另需回退玩法才补早先恢复点；正常续玩与故障备份也不混为一个入口。
+[研究] **复用与补缺：**沿 DTO、存储、迁移和 Session／Encounter 一次性结算，只补保存边界、提示与恢复入口。明确奖励提交前后、当前局／永久进度恢复范围；交接前保唯一有效档，死亡／新局后的恢复资格按玩法失效。回退玩法和故障备份各自维护。
 
-[一手] Unity 6.3 [OnApplicationQuit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MonoBehaviour.OnApplicationQuit.html)列出平台限制，例如 iOS 挂起不调用该回调。[研究] 因而不要把产品上的“退出可续玩”实现成只在退出通知中启动保存；沿用项目与平台的既有保存机会和完成反馈，UE 也不能仅凭已有 SaveGame 就假定进程结束前一定写完。本轮未新增 UE 退出 API 推荐，通用政策只维护一份。
+[一手] Unity 6.3 [OnApplicationQuit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MonoBehaviour.OnApplicationQuit.html)：iOS 挂起不调用。[研究] 沿已有检查点／反馈，不仅退出时才启动保存；UE 有 SaveGame 也不保证结束前写完，未新增 UE 退出 API。
 
-[研究] **成本与撤回：**边界间隔变长仍会迫使玩家等待；任意帧快照则可能增加弹体、计时器与执行中动作的恢复负担。先按玩法缩短可保存段落或明确回到段首，不把“层间保存”当普适参数。短时计分挑战若无跨次游玩需求，可不加中段存取。二改延长一个遭遇后，预注册奖励前后退出、保存失败、重入、重复读取与新开局检查；核返回状态、重复发奖和被迫等待的时间；约定永久死亡的模式还须检查死亡后退出重进，不能从续玩档／故障备份复活，不把这条限制套给允许恢复的模式。不以保存次数证明体验更好。以上仅公开文字调查，未运行引擎／游戏或玩家实验；不复制商业代码与资产，不声称零美术、任意帧可靠恢复或留存收益。
+[研究] **成本与二改：**间隔过长仍迫使等待，任意帧快照增加弹体／计时器／动作恢复负担；先缩段或明确回段首，短计分挑战可不加。延长遭遇后核奖励前后退出、失败、重入、重复读档及新局的状态／奖励／等待；永久死亡模式另核不能借备份复活，允许恢复的模式不套此限。
 
 ### 6. 保存响应：把捕获、序列化与写入分开判断
 
-核实：2026-10-16 UTC+8。主线 3／4；改变04“先截取一致快照”的采用边界：保存卡顿时先找成本所在，正常退出须交接本次保存结果。新增证据为双引擎官方线程契约、不同游戏开发者的方案与回归记录；不重复旧档迁移、备份或续玩资格，不把接口／作者经验当本仓帧时间或断电实测。[研究]
+核实：2026-10-16 UTC+8；主线 3／4。保存卡顿先分捕获、序列化和写入成本，正常退出交接保存结果；依据双引擎线程契约、开发者方案与回归记录。[研究]
 
-**原生能力的边界不同。** [一手] Unity [6.3 JSON serialization 的 Performance 节](https://docs.unity3d.com/6000.3/Documentation/Manual/json-serialization.html)允许后台使用 JsonUtility，同时要求另一线程不要访问或改变正在序列化／反序列化的对象。UE [5.8 AsyncSaveGameToSlot](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UGameplayStatics/AsyncSaveGameToSlot)明确序列化在 game thread，平台写入在 worker，成功／失败 delegate 回 game thread；复制到 worker 的 delegate payload 也需线程安全。[保存指南](https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine)允许小格式或菜单／暂停内用同步保存，较大数据或游玩中保存优先 async。指南的减少 hitch 建议不能理解成所有步骤都离开主线程，也没有由此承诺断电后仍持久。
+**原生线程边界。** [一手] Unity [6.3 JSON serialization 的 Performance 节](https://docs.unity3d.com/6000.3/Documentation/Manual/json-serialization.html) 可后台 JsonUtility，但另一线程不得访问／改正在处理对象；UE [5.8 AsyncSaveGameToSlot](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UGameplayStatics/AsyncSaveGameToSlot) 在 game thread 序列化、worker 写、game thread 回调，delegate payload 须线程安全。[保存指南](https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine) 小档／菜单可同步，大档／游玩优先异步；非全离主线程或断电持久保证。
 
-[研究] **✅ 单人小项目保留窄 DTO 与现成序列化／存储，只在需要时移走可独立的工作。** 在游戏自己的完整状态边界取得快照；交给后台的 DTO 及其可变引用不能继续由玩法访问或改写，浅拷贝不自动满足这个条件。捕获本身仍有耗时与内存成本；若它才是瓶颈，先减少不必保存的数据或调整边界。跨帧采集并不天然一致，不能靠换 await 库解决。既有同步路径满足目标设备响应预算时，不为“异步”标签加线程与队列。
+[研究] **✅ 窄 DTO＋现成存储，只移走可独立工作。** 在完整状态边界捕获，后台 DTO 及可变引用不得继续被玩法访问／改写；浅拷贝不足。捕获若是热点，先减数据／调整边界；跨帧采集未必一致。同步路径达预算就不加线程／队列。
 
-**合并请求带来正常退出责任。** [一手：开发者自述] Evil Trout 的 [2026-08-21 保存经验](https://eviltrout.com/blog/2026-08-21-tips-for-saving-game-data-in-godot/)以《The Roottrees are Dead》及后续《The Incident at Galley House》说明：重要状态变化请求保存，保存线程合并短窗口内请求，正常退出时强制最终保存以免队列残留，并提醒跨线程交接需要同步。[研究] 频繁请求确实造成重复写入时才借这种机制；合并窗口按允许损失的近期进度选择，不复制作者的举例时长。应用可控制的正常“保存并退出”须等覆盖所承诺目标状态的保存结果，再结束；合并后的较新快照可以满足该目标，旧请求完成却不能替后来新增进度报成功。等待期间不能阻塞完成回调所需的 game thread，否则可能无法收尾。失败仍需可理解的反馈与恢复选择，不能无限等待。该文给出简化 write_save 代码，但未公开请求合并、快照交接与退出等待实现，不能据此断言其快照一致性或跨平台退出覆盖率；本节不采用其后半备份重写顺序、文件等长校验作为完整有效性证明，也不引用作者的故障下降比例作本项目收益。
+**合并与退出。** [一手：作者自述] Evil Trout [2026-08-21 保存经验](https://eviltrout.com/blog/2026-08-21-tips-for-saving-game-data-in-godot/) 以两部 Roottrees／Galley House 游戏说明重要变化请求、线程短窗合并、正常退出强制最终保存并需同步。[研究] 重复写才合并，窗口按可失进度；退出等覆盖目标状态的结果，较新快照可满足、旧请求不可代报。不得阻塞回调 game thread，失败提供恢复而非无限等待。原文未公开合并／交接／退出实现，不证一致性／跨平台覆盖；备份顺序、等长校验及故障下降比例均未采作有效性／收益证据。
 
-**非阻塞整局并非低成本默认。** [一手：历史开发者原文] Wube [FFF #408（2024-04-26）](https://factorio.com/blog/post/fff-408)说明 Factorio 用 fork 派生子进程保存，玩家侧继续运行；该路径当时限 macOS／Linux，需大量 RAM，并存在尚未解决的冻结问题。[社区：用户原帖；一手：维护者回复] [2.0.33 回归帖](https://forums.factorio.com/viewtopic.php?t=126407)报告非阻塞保存全程冻结、回退2.0.32正常，维护者于2025-01-28回复已为2.0.34修复。[研究] 这支持把平台、内存和升级回归计入成本，不支持给 Unity／UE 小项目推荐 fork 整个进程；历史故障与修复声明也不能当成当前仍有故障或本仓复测成功。
+**fork 非默认。** [一手] [FFF #408（2024-04-26）](https://factorio.com/blog/post/fff-408)：Factorio 子进程保存，当时限 macOS/Linux、大 RAM，仍有冻结；[社区／一手] [2.0.33 回归帖](https://forums.factorio.com/viewtopic.php?t=126407) 报 2.0.33 全程冻结、回退 2.0.32 正常，维护者 2025-01-28 称修于 2.0.34。[研究] 只支持平台／内存／回归成本，不荐 Unity/UE fork 或称当前故障。
 
-**退出与后续验收。** [一手] Unity [6.3 wantsToQuit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-wantsToQuit.html)可取消正常退出，但 Editor 停止 Play 忽略返回值，iOS／iPadOS不能借它阻止终止；上述 OnApplicationQuit 的移动／Web限制仍适用。[研究] 游戏内正常保存退出与系统挂起／强杀分开设计，沿既有检查点减少最后时刻才写入的依赖。未来第二次修改扩大存档或增加保存请求后，分别记录捕获、序列化、平台写入与回调，观察长帧位置和峰值内存；检查保存中再次请求、尚有新进度时退出、写入失败后退出及重开，确认结果对应哪次进度、没有提前成功提示。平台挂起、强杀与断电耐久仍需独立验证。本轮只读公开文档／原帖，没有运行游戏、引擎或保存实验，不宣称已减少卡顿。
+**退出与二改。** [一手] [6.3 wantsToQuit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-wantsToQuit.html) 可取消正常退出，但 Editor Stop 忽略，iOS/iPadOS 不能阻终止；OnApplicationQuit 的移动／Web限制仍在。[研究] 正常退出与挂起／强杀分开。扩档／增请求后分别记捕获、序列化、写入、回调、长帧／内存；验重复请求、新进度退出、失败及重开，不提前报成功。挂起／断电耐久另验。
 
 ## 呈现节奏补研：平均 FPS 与实际看到的动作不是同一个承诺
 
-核实：2026-10-14 UTC。主线 3／4；改变 04 将“高 FPS 仍不顺”主要归于姿态插值或长帧的建议，补上呈现同步、排队和限帧政策。新证据为 Factorio 开发者迁移复盘、osu! 固定等待源码及 2026 年反证讨论、Unity 6.3／UE 5.8 原生契约、Unity 当前版本缺陷记录与 Mir 2 部署案例。本轮仅调查公开资料与静态源码，不运行真实引擎、设备或性能实验。[一手／研究]
+核实：2026-10-14 UTC；主线 3／4。高 FPS 不顺还需查呈现同步、排队与限帧。依据 Factorio 复盘、osu! 固定等待实现与 2026 讨论、Unity 6.3／UE 5.8 契约、缺陷与 Mir 2 部署报告。[一手／研究]
 
 ### 1. 真实游戏：先辨认问题，不因理论最优重写架构
 
-[一手：作者实述] Factorio 开发者 posila 于 2019-03-19 [说明](https://forums.factorio.com/viewtopic.php?p=415072)，迁移 DirectX 11 时发现帧间隔约 14–18 ms，平均仍达 16.67 ms；显示实际为 59.95 Hz 时，生产与显示渐渐错位，出现重复图像或丢帧。他以 VSync 改变默认行为，但明确效果含观察和理论判断，并未给跨设备对照。完全拆开更新与渲染需要改变渲染准备的数据，接近 1.0 时成本不可接受。
+[一手：作者实述] posila [说明](https://forums.factorio.com/viewtopic.php?p=415072)（2019-03-19）：Factorio 迁 DX11 时帧间隔 14–18 ms、均值 16.67，显示 59.95 Hz 导致逐渐错位／重复／丢帧，故改默认 VSync。效果含观察／理论，非跨设备对照；近 1.0 时拆更新／绘制要改准备数据，成本不可接受。
 
-[研究] 可借的是诊断与成本判断：工作量足够小不等于按时显示；成熟游戏也会选择有边界的原生修正，而不为理想架构推翻底座。此为 0.17／当时 Windows 路径，不是今天 Factorio 全平台行为，更不能引用同帖中历史 G-Sync 猜测作为现行配置指南。
+[研究] 工作少不代表按时显示；接近发行可选有界原生修正。本例仅 0.17／当时 Windows 路径，同帖 G-Sync 猜测不作现行配置指南。
 
 ### 2. 原生设置必须按平台读，实际帧率不能从目标推定
 
-[一手] Unity 6.3 LTS [Application.targetFrameRate](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)正文区分：桌面 VSync 非零会忽略该目标，软件限帧存在 microstuttering；Android／iOS 使用 targetFrameRate，忽略 vSyncCount；XR 由 SDK 控制。[研究] 因而“统一锁 60”不是跨平台方案。桌面先建立 VSync 基线，移动端使用持续负荷下可维持的原生 pacing 档位；并非宣布 VSync 在所有竞技、VRR 与设备情境下最优。
+[一手] Unity 6.3 [Application.targetFrameRate](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)：桌面 VSync 非零忽略 target，软件限帧可 microstutter；Android/iOS 反而忽略 vSyncCount，XR 由 SDK 控制。[研究] 桌面建 VSync 基线，移动选可持续 pacing，不作竞技／VRR 普遍最优。
 
-[一手：实际部署案例] Google 的 [Mir 2 案例](https://developer.android.com/stories/games/swappy)，更新于 2025-02-06，报告该 Unity 游戏启用内置 Optimized Frame Pacing 后，20 FPS 门槛的 Slow Session 比例从 40% 降至 10%。[研究] 支持已有集成值得先试；该指标不是平均帧率、毫秒延迟或满意度，更不是“性能提升四倍”。文中没有足够实验控制与样本信息支持独立游戏的收益预测，游戏本身也不是单人独立制作证明。
+[一手：部署报告] [Mir 2 案例](https://developer.android.com/stories/games/swappy)（更新 2025-02-06）：Unity Mir 2 启 Optimized Frame Pacing 后，20 FPS 门槛 Slow Session 由 40%→10%。[研究] 非均 FPS／延迟／满意度或四倍性能；控制／样本不足，亦非单人制作证明。
 
-[一手] [UE 当前移动 Frame Pacing 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/frame-pacing-for-mobile-devices-in-unreal-engine)页面标 5.8：Android 的 Swappy 从 5.2 起默认启用；支持按 Device Profile 设置及查询目标档位是否受支持。[研究] 不照搬 4.25 旧文再造插件或默认补启用开关；维护成本主要是设备档位、版本升级与回归，而不是新增 runtime。
+[一手] [UE 当前移动 Frame Pacing 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/frame-pacing-for-mobile-devices-in-unreal-engine) 标 5.8：Android Swappy 自 5.2 默认，支持 Device Profile 及目标档查询。[研究] 不抄 4.25 再造插件，主要维护档位、升级／回归。
 
-**版本反证**：[Unity UUM-68029](https://issuetracker.unity.com/issues/8340/applicationsettargetframerate-different-results-when-optimized-frame-pacing-is-used)记录 Optimized Frame Pacing 开关两种路径对同一目标帧率采用不同取整策略；本次页面列 6000.7.0a4 Fixed、6.3.X 等 Won't Fix。[一手] 这不能推成整个 pacing 不可靠，也不是建议发行项目迁移 alpha；它改变验收方法：比较开关时同时记录实际帧率与刷新率，否则可能是在比较不同工作档位，而非纯 pacing 效果。[研究]
+**版本反证。** [一手] [Unity UUM-68029](https://issuetracker.unity.com/issues/8340/applicationsettargetframerate-different-results-when-optimized-frame-pacing-is-used)：pacing 开关使用不同取整，6000.7.0a4 Fixed、6.3.X 等 Won’t Fix。[研究] 对照须记实际帧率／刷新率以免换了工作档；不据此禁 pacing 或荐 alpha。
 
 ### 3. 降排队延迟有代价，不能把最低数值当最好
 
-[一手] Epic [Low-Latency Frame Syncing](https://dev.epicgames.com/documentation/en-us/unreal-engine/low-latency-frame-syncing-in-unreal-engine)当前 5.8 页面解释 game thread 与 render thread 同步，不保证它们紧跟最终呈现；提供 `r.GTSyncType` 选择 render／RHI／swap-chain 同步。降低 `rhi.SyncSlackMS` 缩短 pipeline，也更容易因 hitch 错过帧；模式 2 在不支持的平台回退模式 1。
+[一手] UE 5.8 [Low-Latency Frame Syncing](https://dev.epicgames.com/documentation/en-us/unreal-engine/low-latency-frame-syncing-in-unreal-engine)：game/render 同步未必紧随呈现；r.GTSyncType 选 render/RHI/swap-chain。减 rhi.SyncSlackMS 缩排队却更易错过长帧，模式 2 无支持则退 1。
 
-[研究] 🧪 仅当软件链路显示排队是主要问题时评估；保存原配置，对照响应与长帧，不把文档的 30 Hz 示例数值搬成项目目标，也不把面向旧并行渲染背景的说明当作每个当前平台默认状态的实测。没有证据支持全局禁用 `r.OneFrameThreadLag` 或将 slack 一律设零。
+[研究] 🧪 排队确为主要问题才评估，对照响应与长帧并保原配置；30 Hz 示例不作目标，不全局禁用 `r.OneFrameThreadLag` 或将 slack 归零。旧并行渲染背景不证明当前平台默认状态。
 
 ### 4. 开源反证：不要重复修复早已存在的等待实现
 
@@ -646,17 +646,17 @@
 
 - [ThrottledFrameClock.cs](https://github.com/ppy/osu-framework/blob/2140bf7dae73a6389ffea01f81319a39392c8ef1/osu.Framework/Timing/ThrottledFrameClock.cs)选择平台原生等待，测实际睡眠、累计误差，并限制负误差以避免过多追赶帧。
 - [WindowsNativeSleep.cs](https://github.com/ppy/osu-framework/blob/2140bf7dae73a6389ffea01f81319a39392c8ef1/osu.Framework/Platform/Windows/Native/WindowsNativeSleep.cs)先尝试高精度 waitable timer，失败时回退普通 timer，原生等待失败再由调用者回退 Thread.Sleep。
-- 同提交 [LICENCE](https://github.com/ppy/osu-framework/blob/2140bf7dae73a6389ffea01f81319a39392c8ef1/LICENCE)为 MIT；本轮逐文件读 raw 正文，没有安装或运行。它证明已有实现，不能证明目标 Unity／UE 兼容或性能收益。
+- 同 SHA [LICENCE](https://github.com/ppy/osu-framework/blob/2140bf7dae73a6389ffea01f81319a39392c8ef1/LICENCE) 为 MIT；已读 raw，未运行，不证明商用引擎兼容。
 
-[一手：维护者讨论] 2026-03-11/12 的 [#6719](https://github.com/ppy/osu-framework/discussions/6719)中，报告者建议改 timer／busy wait；维护者指出已经实现原生 timer，并试过部分混合方案而不认为收益值得。报告者随后承认未先读完整代码，并把突然长停顿与普通等待误差拆成两个问题。该讨论仍为 Unanswered，不是合入修复或效果证据。
+[一手：维护讨论] [#6719](https://github.com/ppy/osu-framework/discussions/6719)（2026-03-11/12）建议 timer/busy wait，维护者指出已有原生 timer、试过混合而认为不值；报告者承认未完整读码，并分长停顿／普通误差。仍 Unanswered，非合入修复。
 
-[研究] **⛔ 不把此限帧器移植到 Unity／UE，不让 Agent 先写 Sleep／spin loop。** 该框架真正承担自己的循环，商用引擎已有不同同步所有权；叠加等待会增加新的节奏与功耗成本。源码可借“先检查已有实现、识别回退路径”，不能证明忙等一定治好驱动、合成器或显示队列问题。MIT 可复制也不等于值得复制。
+[研究] **⛔ 不移植该限帧器到 Unity／UE。** 商用引擎拥有自己的同步；叠加 Sleep／spin 增加节奏与功耗成本。只借检查原生等待／回退的做法，忙等未必解决驱动与显示队列。
 
 ### 5. 使用已有观测工具，避免再建 FPS 仪表盘
 
-[一手] [PresentMon 官方 README](https://github.com/GameTechDev/PresentMon/blob/main/README.md)提供 Windows ETW 的 CPU／GPU／Display duration 与 latency；[Console 文档](https://github.com/GameTechDev/PresentMon/blob/main/README-ConsoleApplication.md)区分 DisplayLatency 与 DisplayedTime，后者对未显示帧可以为 NA。README 同时指出 OpenGL／Vulkan 的部分 instrumentation 与 HWS GPU 时序存在精度边界，不能把字段中的零直接解释为没有等待。本次读当前 main 文档，未固定发布版或运行采集，不作为跨版本字段保证。
+[一手] [PresentMon 官方 README](https://github.com/GameTechDev/PresentMon/blob/main/README.md) 用 Windows ETW 取 CPU/GPU/Display 时长／延迟；[Console 文档](https://github.com/GameTechDev/PresentMon/blob/main/README-ConsoleApplication.md) 的 DisplayedTime 对未显示可 NA，区别 DisplayLatency。OpenGL/Vulkan instrumentation、HWS 时序有精度边界，零非无等待；仅 main 文档，未锁发行／采集。
 
-[研究] 🧪 后续获准设备验证时，现有引擎 Profiler 定位工作热点，呈现仍异常再补 PresentMon 这一既有工具候选；无需自己写跨平台采集库。先确认权限和字段适用性，不为采集自动修改用户系统设置。软件事件只能描述其观测边界；端到端光学测量另需设备方案。
+[研究] 🧪 后续先用引擎 Profiler，呈现仍异常再评估 PresentMon；先核权限／字段，不自动改系统。端到端光学测量另需设备。
 
 ### 6. 下一次修改的最小验证设计
 
@@ -667,15 +667,15 @@
 3. 在持续负荷、暂停恢复及改变窗口／刷新率后复测；移动端同时看热降频后的持续表现，不只刚启动几十秒。
 4. 人确认轨迹是否均匀、瞄准是否跟手；若改善一项明显损伤另一项，保留原设置并收窄采用范围。
 
-[研究] GitHub commits API 遭遇公开 rate limit，固定 raw 源码已读；未运行 PresentMon 或复现案例收益。
+[研究] commits API 遇公开 rate limit，已读固定 raw；PresentMon 未运行。
 
 ### 7. 帧生成：增加呈现帧，不增加一次业务更新承诺
 
-核实：2026-10-16 UTC+8；主线二／三。改变 04 的选择：只在基础响应合格且呈现密度有缺口时评估帧生成，并先决定 HUD 合成与状态更新责任。新证据是 AMD FSR API、UE 插件 4.1.1 的 UI 模式契约与 NVIDIA Streamline v2.14.1 固定发布标签文档；不重复 VSync、排队或时域 AA 建议。[研究]
+核实：2026-10-16 UTC+8；主线二／三。基础响应合格、呈现密度不足才评估帧生成；依据 FSR API、UE 4.1.1 插件与 Streamline v2.14.1，先定 HUD 合成／更新责任。[研究]
 
-**显示计数不是模拟时间。** [一手] [Streamline v2.14.1 DLSS-G 指南](https://github.com/NVIDIA-RTX/Streamline/blob/v2.14.1/docs/ProgrammingGuideDLSS_G.md)§13 区分 application frame 与 `numFramesActuallyPresented`，插值帧可能丢弃，不能以配置倍率推定实际输出；§8 要求 Streamline Reflex 的 present markers 与 constants 帧号对应。§5.1 的 HUD-less、UI alpha／预乘颜色输入有尺寸、色彩和合成契约，不能把完成一次普通场景渲染当作接入完成。§6.4／12 要求全屏菜单等场景及窗口变化按条件停用，§14 运行状态异常应关闭并修复。[研究] 因而分别记录应用渲染、实际呈现和原有输入／模拟时刻，不用呈现 FPS 反推业务 delta；这不意味着接入前后基础帧耗时必然不变，也不证明响应改善。
+**计数与模拟分开。** [一手] [Streamline v2.14.1 DLSS-G 指南](https://github.com/NVIDIA-RTX/Streamline/blob/v2.14.1/docs/ProgrammingGuideDLSS_G.md) §13 分 application frame／numFramesActuallyPresented，生成帧可丢；§8 要 Reflex marker/constants 同帧号；§5.1 规定 HUD-less、alpha／预乘色尺寸与合成；§6.4/12 菜单／窗口按条件停，§14 异常关闭修复。[研究] 分记应用渲染、呈现和输入／模拟，不由 FPS 算业务 delta，基础耗时也可能变。
 
-**UI 合成有三种不同承诺。** [一手] 当前 [FSR Frame Generation API](https://gpuopen.com/manuals/fsr_sdk/techniques/frame-interpolation-api/)“UI Composition”区分：逐呈现 `presentCallback` 可为真实／生成帧分别绘制；独立 UI surface 合成到两者，但 UI 仍按 render rate 更新；HUDLessColor 是不能采用前两种方式时的兼容路径。独立纹理未启用内部 double buffering 时，Present 返回后仍可能被异步合成读取，不能立即覆盖。Prepare 的 frameID 必须与 Configure 相同、每帧加一，frameTimeDelta 是经过的毫秒时间。[Swapchain 3.1.7](https://gpuopen.com/manuals/fsr_sdk/techniques/frame-interpolation-swap-chain/)补充逐呈现重绘有额外开销，回调只宜记录小工作量。[研究] 静态菜单不必为更高呈现率重写更新循环；动态 UI 若选择重绘，先拆绘制与业务推进，保住纹理寿命。这不是要求 gameplay 在每个生成帧重新模拟。
+**三种 UI 合成。** [一手] [FSR Frame Generation API](https://gpuopen.com/manuals/fsr_sdk/techniques/frame-interpolation-api/)：presentCallback 逐真实／生成帧绘制；独立 surface 合两者但仍 render rate 更新；HUDLessColor 为兼容。未双缓冲时 Present 后纹理仍可能在读；Prepare/Configure frameID 相同逐帧加一，delta 为毫秒。[Swapchain 3.1.7](https://gpuopen.com/manuals/fsr_sdk/techniques/frame-interpolation-swap-chain/) 提醒回调小工作量。[研究] 需重绘才拆绘制／业务，保纹理寿命，不逐生成帧推进玩法。
 
 **UE 的具体副作用与版本边界。** [一手] [AMD FSR UE 指南](https://gpuopen.com/learn/ue-fsr/)正文标 4.1.1、2026-08-27，支持 UE 5.3–5.8：
 
@@ -683,11 +683,11 @@
 - 使用 DX12 swapchain override 的 UI Extraction（UIMode=1）从 UI 前后图像提取界面，不双 tick，但半透明 UI 可能变差；AllowAsyncWorkloads 会自动选此模式。不能只为吞吐打开异步而不重查 HUD。
 - UpdateGlobalFrameTime 可使 GAverageMs／GAverageFPS 使用帧生成统计。当前插件允许帧生成独立于 FSR Upscaling；[旧 3.1.4 插件指南](https://gpuopen.com/learn/ue-fsr3/)则要求该上采样组件，不能混用教程。
 
-[研究] 零 delta 不自动阻止按调用次数累加或发事件的自定义逻辑；应核相应 widget 的副作用，不能从双 UI tick 推成双游戏模拟，也不外推所有平台／控件。当前指南一处称 RHI backend 已移除，CVar 表仍有 RHI fallback 描述；此内部不一致保留，不据此推荐当前 RHI 路径。
+[研究] 零 delta 仍可能触发按次数累加／发事件，须核 widget 副作用；双 UI tick 不等于双模拟。指南称 RHI backend 已移除，CVar 表却仍列 fallback，故不推荐该路径。
 
-**Unity 不借 UE 的支持结论。** [一手] [HDRP 17.3.0 DLSS](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.3/manual/deep-learning-super-sampling-in-hdrp.html)正文明确原生 DLSS 4.5 Super Resolution；[NVIDIA 开发入口](https://developer.nvidia.com/rtx/dlss)的 Unity 栏也只列 Super Resolution，UE 栏则明确列出官方 DLSS 插件的 MFG／Dynamic MFG 支持。[研究] 这些已读入口没有建立 Unity 的帧生成／UI 契约；不表示 Unity 不可能接入，也不拿第三方商店功能宣传代替验证。没有具体接入需求时，不为独立游戏默认加此能力。
+**Unity 支持另核。** [一手] [HDRP 17.3.0 DLSS](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.3/manual/deep-learning-super-sampling-in-hdrp.html) 为 DLSS 4.5 Super Resolution；[NVIDIA 开发入口](https://developer.nvidia.com/rtx/dlss) 的 Unity 仅列 SR，UE 明列 MFG/Dynamic MFG。[研究] 这些入口未建立 Unity 帧生成／UI 契约，非证明不可能；无需求不默认接入。
 
-**采用与撤回。** [一手] [AMD 当前 Frame Generation 页面](https://gpuopen.com/amd-fsr-framegeneration/)仍建议插值前至少 60 fps、避免低于 30 fps；仅是该实现的厂商指导，不是跨算法／玩法硬门槛或本仓实测。[研究] 后续获准验证时固定上采样与画质，分别切帧生成和 UI 合成模式；第二次修改加入动态数值／半透明面板，检查急转、暂停恢复及窗口变化下的可读性、更新次数、首个反馈与实际呈现。关键 HUD 失真、业务副作用重复或响应超预算，先修对应路径，仍不合格就撤回。以上仅官方正文静态核查，未运行 SDK、引擎、游戏或设备实验，未验证收益。
+**采用与撤回。** [一手] [AMD 当前 Frame Generation 页面](https://gpuopen.com/amd-fsr-framegeneration/) 建议插值前 ≥60 fps、避免 <30，限厂商实现。[研究] 未来固定上采样／画质，分切帧生成与 UI；二改加动态数值／半透明，验急转、暂停、改窗下可读性、更新次数及实际反馈／呈现。HUD 失真、重复副作用或超响应预算，修不好即撤回。
 
 ## 本地化补研：新语言与旧名字一起维护
 
@@ -695,96 +695,96 @@
 
 ### 1. 发行游戏的修复指向旧内容与资源寿命
 
-[一手] [Celeste 官方更新记录](https://www.celestegame.com/changelog.html)的 1.3.0 增加韩语、调整日语本地化与命名界面，并改为仅加载正在使用的语言字体；玩家名含当前语言不能显示的字符时，改用 Madeline 代替空白。1.3.1 仍修复意大利语 Journal 换行。这些是作者报告的已发行修改，不是本轮复现或内存收益测量。
+[一手] [Celeste 官方更新记录](https://www.celestegame.com/changelog.html)：1.3.0 加韩语、调日语与命名，仅加载当前语言字体，不支持的名字用 Madeline 代空白；1.3.1 又修意大利 Journal 换行。仅已发行修改报告，无内存测量。
 
-[研究] **✅ 新语言同时检查旧存档名字、语言选择页和旧界面；不只抽查新增译文。** 采用跨语言字体、限制命名字符或明确替代显示，需要游戏自行选择。不能把 Celeste 的角色名替代政策推广到玩家身份、排行榜或聊天，也不能从按语言加载推断应立即释放全部其他字体：混合文字仍可能需要它们。未来第二次修改加入旧字符集没有的名字，再切换语言读取旧名字；成功条件是内容可理解且资源寿命符合预算，不是 JSON 解析成功。
+[研究] **✅ 新语言连带旧名字、语言页与旧界面检查。** 项目自选跨语言字体、命名限制或替代显示；Celeste 政策不外推身份／聊天，混排仍可能需其他字体。二改新增旧字库外名字、切语言读档，核可理解与驻留预算。
 
 ### 2. 官方输入样例可借机制，未交付完整本地化
 
-[一手] 沿用本记录固定的 `Unity-Technologies/InputSystem@05e45ddbaf18a93245b068d787d74b738b90d01c`，本轮通过 GitHub 文件接口读取 [RebindActionUI.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/RebindActionUI.cs) 与 [GamepadIconsExample.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/GamepadIconsExample.cs)。版本和 Unity Companion License 边界沿用前文，不把该提交当已锁定发布包或跨引擎宽松许可。
+[一手] 同 InputSystem `05e45ddbaf18a93245b068d787d74b738b90d01c`，通过文件接口读 [RebindActionUI.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/RebindActionUI.cs)／[GamepadIconsExample.cs](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/GamepadIconsExample.cs)；版本与 Companion 许可沿前文。
 
 - `UpdateBindingDisplay` 按 binding ID 查找并调用 `GetBindingDisplayString`，再向显示事件传递文字、device layout 和 control path；`OnActionChange` 响应 `BoundControlsChanged`，包括键盘布局导致的重解析
 - 文件仍有 localization TODO；`UpdateActionLabel` 直接显示 `action.name`，重绑定等待、复合绑定部件提示和取消倒计时使用硬编码英文及字符串插值
 - 图标样例按 DualShock／Gamepad layout 和 control path 选图，找不到图时回文字；但空 layout/path 分支直接返回，不能从样例推断旧图标一定被清除。它是有限设备演示，不是全部控制器的显示政策
 
-[研究] **✅ 改造样例的绑定刷新机制，把动作展示名、等待、取消和倒计时接已有 String Table／Smart String；⛔ 整包照搬成发布菜单。** 内部 action 名不必因翻译改身份；倒计时按语言处理复数，教程提示复用实际动作绑定。这里不新建本地化／图标框架，也不要求为少数文案引入第三方 UI。现有菜单节已规定的改键、设备切换和重开路径顺带检查这些提示即可。
+[研究] **✅ 借绑定刷新，把展示名、等待、取消／倒计时接 String Table／Smart String。** 保留内部 action 身份，按语言处理复数，教程引用真实绑定；随现有改键／设备／重开回归，不照搬样例为发布菜单。
 
 ### 3. 字体优化随内容更新，不把 ATG 当无成本开关
 
-[一手] Unity 6.3 [ATG 启用说明](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/enable-and-use-atg.html)属于 **UI Toolkit**，默认未启用，需项目设置及元素的文本生成器配置；不支持静态 font asset。它不能作为现有 uGUI／TMP 自动获得同样能力的依据。[静态字体迁移说明](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/migrate-static-font-assets.html)区分两项目标：字体内容减小用子集字体创建动态资产；控制首次字形生成用动态资产预填充所选字符的 atlas。文档也说明采用 SDFAA 时很多项目不再需要预填充，不能无测量地要求所有语言预热。
+[一手] Unity 6.3 [ATG 启用说明](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/enable-and-use-atg.html) 属 UI Toolkit，默认关，需项目及元素配置，不支持静态 font asset，非 uGUI/TMP 能力。[静态字体迁移说明](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/migrate-static-font-assets.html)：减内容用子集创建动态资产，减首次生成用 atlas 预填；SDFAA 下许多项目不需预填，不统一预热。
 
-[研究] **🧪 目标语言确需复杂排版且项目采用 UI Toolkit 时，评估锁定版本 ATG；已稳定的 uGUI 不因此搬迁。** 若使用子集或预填充，批准文本新增／翻译修改后更新覆盖输入，纳入格式化数字、必要符号和允许的用户文字；不能只取第一版译文做永久字库。动态资产能生成其源字体含有的字形，不能恢复源字体已裁掉的字符。区分冷启动首次显示与语言切换后驻留，收益不成立就撤回优化，保留完整合适字体。
+[研究] **🧪 UI Toolkit 确需复杂排版才评估 ATG，稳定 uGUI 不迁移。** 子集／预填充随新增译文更新，含数字、符号及允许用户文字；源字体已删字形不能动态恢复。比较冷显与切语言驻留，无收益退回完整合适字体。
 
-[一手] Unity [font subsetting 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-font-subsetting.html)推荐现成 FontTools，并提醒保留所需 OpenType 布局特性；[FontTools subset 正文](https://fonttools.readthedocs.io/en/stable/subset/)说明 `--ignore-missing-unicodes` 为默认值，`--text`／`--text-file` 间接指定但源字体缺少的字符也可不报错，`--no-ignore-missing-unicodes` 才要求失败。**[研究] 工具退出成功不是覆盖证明。** 按各字体职责核对缺失字符及承接字体；对该字体必须支持的集合使用严格检查，不把计划由另一字体承接的字符误判为整个管线失败。优先现成工具，不写自己的字形裁剪器。实际字体的修改、嵌入和分发权仍需单独核对，本轮未推荐具体字体文件或执行裁剪。
+[一手] [font subsetting 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-font-subsetting.html) 推荐 FontTools 并保 OpenType 特性；[FontTools subset 正文](https://fonttools.readthedocs.io/en/stable/subset/) 默认 ignore-missing-unicodes，text/text-file 间接缺字亦可不报，no-ignore 才失败。[研究] 按字体职责严格核必须字集／承接字体，不以退出成功证覆盖，也不将分工缺字误判全失败。字体修改／嵌入／分发另核，未裁剪或推荐文件。
 
-[一手] UE [Asset Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-localization-in-unreal-engine)只提供必要差异：运行时换 culture 或显示不受限用户文字时，推荐 composite font；按 culture 替换整个字体资产只适合更受限项目，已加载本地化资产切换可能需要重启。[研究] 这不是要求全部字体常驻，也不必为 Unity 的 ATG 逐项造对称替代方案。
+[一手] UE [Asset Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-localization-in-unreal-engine) 推荐 runtime 换 culture／不受限用户文字用 composite font；整资产按 culture 替换限受限场景，已加载切换可需重启。非全部常驻要求。[研究]
 
 ### 4. 保留与否及证据边界
 
-[研究] 正文保留“新语言／名字连带旧内容和字库更新”，并补下节旧报告的消息表示与重译责任；不另写字体百科、翻译后台或通用 UI 框架。AI 可查硬编码与占位符、准备覆盖报告和回归画面，人决定名字政策并判断实际尺寸下的可读性。目标设备的字形、排版、输入提示与内存／首次显示表现仍待授权实测。
+[研究] 保留旧内容／字库更新与消息重译责任；AI 查硬编码、占位符和回归，人定名字政策及可读性，目标设备排版／首次显示／内存待验。
 
-[研究] 本轮不采用两条容易误写的材料：Factorio 简繁字体误选只取得搜索线索、论坛正文未成功读取，不列为一手结论；Unity 6.0 旧翻译页中的 ATG 富文本限制不能直接套到 6.3 新英文页，也不据限制项删除推断所有组合已可靠。
+[研究] 未采纳：Factorio 简繁误选仅有搜索线索；Unity 6.0 翻译页的 ATG 限制不套用 6.3，也不从删限制推定组合可靠。
 
 ### 5. 旧报告重译：保留消息含义，而非只存渲染结果
 
-核实：2026-10-14 UTC；主线三／四。现有字体与名字政策不解决旧任务／系统报告已经被存成某种语言的问题。✅ 对承诺随语言更新的系统消息，保留稳定身份、参数类型及历史值；实时值另从当前状态取得。原样保留的玩家文字、引用及历史记录不套此政策。[研究]
+核实：2026-10-14 UTC；主线三／四。[研究] ✅ 承诺重译的系统消息保留稳定身份、参数类型及历史值；实时值另取。原样保留的玩家文字／引用不套此政策。
 
-**固定游戏路径。** 沿用已核 `Revolutionary-Games/Thrive@eceb8011d5e86b19dfa75de9e55eee6815fd1450`；[维护文档](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/doc/working_with_translations.md)解释延迟翻译以及读档后重译 auto-evo 报告的意图。实际读取以下源码，而非只凭文档断言功能已通过：[一手]
+**固定路径。** [一手] Thrive `eceb8011d5e86b19dfa75de9e55eee6815fd1450`；[维护文档](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/doc/working_with_translations.md) 描述延迟翻译／读档重译 auto-evo，以下据实际源码核路径。
 
-- [LocalizedString.cs L57–77、160–183](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedString.cs#L57-L77)：archive 写读 translationKey 与对象参数数组；ToString 才查译文并按 culture 格式化，捕获 FormatException 后返回译文模板。这避免某类异常，**不保证缺参时仍是可理解的完整句子**。
-- [EditorBase.cs L793–827](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/general/base_stage/EditorBase.cs#L793-L827)：autoEvoExternal 以 LocalizedStringBuilder 写读。[报告组件 L356–365](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditorReportComponent.cs#L356-L365)在 OnTranslationsChanged 重发报告；[MicrobeEditor L568–575](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditor.cs#L568-L575)将保存的 builder 转为当前显示文字，并提供按需生成正文的委托。这里只闭合该路径，不声称每个已打开弹窗都刷新。
-- **反证／复用边界**：[LocalizedStringBuilder.cs L63–108、128–158](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedStringBuilder.cs#L63-L108)的 Append 先写 StringBuilder，FormatString getter 才归并缓冲；WriteToArchive 直接写 formatString 字段。因此“追加后尚未 ToString 就保存”不能凭可序列化接口宣称完整，需核调用顺序。但 [MicrobeEditor.OnEditorReady L397–403](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditor.cs#L397-L403)已有报告显示调用，而 [EditorBase L293–299](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/general/base_stage/EditorBase.cs#L293-L299)把自动保存放在进入编辑器完成之后；不能由类级条件风险推出正常报告存档已丢内容。旧字符串转换也只保留原格式串，不能恢复丢掉的消息身份。[研究：静态推导，未运行]
+- [LocalizedString.cs L57–77、160–183](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedString.cs#L57-L77) 保存 key＋对象参数；ToString 才取译文／culture 格式化，FormatException 回模板，仍可能缺参不可读。
+- [EditorBase.cs L793–827](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/general/base_stage/EditorBase.cs#L793-L827) 用 LocalizedStringBuilder 存 autoEvoExternal；[报告组件 L356–365](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditorReportComponent.cs#L356-L365) 翻译变化重发报告，[MicrobeEditor L568–575](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditor.cs#L568-L575) 把 builder 转当前文字并提供按需正文委托，非所有弹窗刷新证明。
+- **反证：** [LocalizedStringBuilder.cs L63–108、128–158](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/engine/LocalizedStringBuilder.cs#L63-L108) Append 先缓冲，FormatString getter 才归并，WriteToArchive 直接写字段，故立即保存须核顺序；但 [MicrobeEditor.OnEditorReady L397–403](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/microbe_stage/editor/MicrobeEditor.cs#L397-L403) 已调用报告显示，[EditorBase L293–299](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/general/base_stage/EditorBase.cs#L293-L299) 自动保存晚于编辑器进入，不能判正常存档已丢。旧字符串也恢复不了消息身份。[研究：静态]
 
-**引擎合同与采用边界。** Unity 与 UE 均有原生机制，不复制 Thrive 的 GPL 组件；许可沿用本记录此前核查。[研究]
+**引擎合同。** [研究] 用原生机制，不复制 Thrive GPL 组件；许可沿用前述核查。
 
-- [Unity Localization 1.5.13 Arguments](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.Arguments.html)明确参数列表不序列化，可用局部持久变量，或从自己的已保存数据重建。[Persistent Variables](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/Persistent-Variables-Source.html)以 IVariableValueChanged 通知引用者；普通 Arguments 内部值变化可用 [RefreshString](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.RefreshString.html)，加载仍进行时会返回 false。不要把“持久变量”名称当成项目存档已接通，也不要把一次刷新调用当成最终显示已更新。[一手／研究]
-- [UE 5.8 Text Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine)的 FTextHistory 支持 culture-correct rebuilding；转 FString 通常丢失 history。确需交给只接受字符串的底层接口时可转换，但上层仍需保留来源并管理刷新。数字保留数值类型，由本地化格式处理复数；对象名的性别／词形不一定能靠插入一个已翻译名词解决。[一手] 这不意味着 FText 自动追踪任意业务变量；参数改变仍要更新对应格式化结果。[研究]
+- [Unity Localization 1.5.13 Arguments](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.Arguments.html) 不序列化 Arguments，可用局部持久变量或从已存数据重建；[Persistent Variables](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/Persistent-Variables-Source.html) 通过 IVariableValueChanged 通知，普通参数值改用 [RefreshString](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.RefreshString.html)（加载中 false）。名称不证明已接存档，调用不证明显示完成。[一手／研究]
+- [UE 5.8 Text Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine) 的 FTextHistory 可重建 culture，转 FString 通常丢 history；底层需字符串时上层保来源／刷新。数字保类型做复数，名词性别／词形另处理；FText 不自动追任意变量，参数改后须更新。[一手／研究]
 
-**第二次修改的验收选择。** [研究] 在已有任务／报告中改一次参数结构并新增目标语言：历史数量保持当时含义，实时进度反映当前值；对目标语言实际使用的复数类别准备数值样本，而非只测英语 1／2。比较消息产生后立即保存与先显示后保存，再读档切语言；缺 key、缺参和旧格式要显示明确后备结果。只剩旧译文的记录应保留原文或走已定义迁移，不做字符串逆向猜 key。画面仍按实际尺寸检查换行、字形与操作路径，不以格式化成功代替可读性。
+**二改预注册。** [研究] 改参数结构并加语言，区分历史量与实时进度，覆盖目标语言复数类别；对照立即保存／先显示后保存，再读档切语言。缺 key／参／旧格式提供后备；仅有旧译文则保原文或迁移，不逆猜 key。实际字号验换行、字形与操作。
 
-本轮是固定源码／官方正文静态核查，无引擎运行、存档往返或语言审校实测；案例支持表示与更新责任的选择，不证明所有系统消息都应永久保存或引入新框架。[研究]
+[研究] 未做存档往返或语言审校；不据此要求永久保存所有系统消息。
 
 ### 6. 新增语言的显示、编辑和布局不能互相代验
 
-核实：2026-10-15 UTC+8；主线三／四。新增证据为 Unity 6.3 的方向／光标契约、UE 当前 5.8 文档、RTLTMPro 固定源码及历史二改反馈、Mindustry 历史输入报告与另一作者的 poRTL 字幕实现。改变的选择是：已有原生塑形先用原生，现有 TMP 只为具体缺口试现成组件；动态混排不能靠静态倒序与单张截图验收。不重做前述字库优化、消息保存或菜单输入路由。[研究]
+核实：2026-10-15 UTC+8；主线三／四。原生塑形优先，TMP 仅补具体缺口；依据 Unity 6.3／UE 5.8、RTLTMPro 固定源码／二改反馈、Mindustry 报告及 poRTL。动态混排需验显示、编辑与布局。[研究]
 
-**原生能力不等于开一个 RTL 开关。** [一手] Unity 6.3 [language-direction](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/language-direction.html)明确 RTL 属性仅提供基础反转；完整断行、换行与塑形需要 [ATG](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-advanced-text-generator.html)，后者采用 HarfBuzz、ICU 和 FreeType。启用及静态字体迁移条件沿用本节第 3 小节；不把 UI Toolkit 能力扩写成 uGUI／TMP 能力。[光标契约](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/cursor-movement.html)采用 logical movement：英阿混排时按段方向走，跨段可能跳到另一视觉位置。这与 visual movement 是不同政策，不应单凭跳转判错；编辑后实际删改了哪个逻辑字符仍须验证。
+**RTL 属性非完整塑形。** [一手] Unity 6.3 [language-direction](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/language-direction.html) 仅基础反转，[ATG](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-advanced-text-generator.html) 用 HarfBuzz/ICU/FreeType 做完整断行／塑形；仍限 UI Toolkit。[光标契约](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/cursor-movement.html) 是 logical movement，英阿按段走、跨段可能视觉跳转，非必然错误，删改逻辑字符另验。
 
-[一手] UE [UMG Rich Text Block](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-rich-text-blocks-in-unreal-engine)当前显示 5.8，分别提供 shaping、text flow、Force Direction Preference 和 navigation；[ETextShapingMethod](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/SlateCore/ETextShapingMethod?lang=en-US)列 Auto／KerningOnly／FullShaping，FullShaping 用于复杂 RTL／双向字形。采用原生完整塑形与布局方向，不为普通本地化先加外部渲染器；字体资产的文化切换与任意用户文字边界仍按第 3 小节的 composite font 建议。文档没有保证自定义控件和显式导航会随方向全部正确；地图方向、玩法箭头不能仅因语言改变就一概镜像。[研究]
+[一手] UE 5.8 [UMG Rich Text Block](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-rich-text-blocks-in-unreal-engine) 分 shaping/flow/方向偏好/navigation，[ETextShapingMethod](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/SlateCore/ETextShapingMethod?lang=en-US) 的 FullShaping 用复杂 RTL／双向。[研究] 原生优先，composite font 沿前节；自定义控件／显式导航未保证，地图／玩法箭头不因语言全镜像。
 
 **已有 TMP 的窄候选与反证。** [一手] 本次静读 `pnarimani/RTLTMPro@f480419bbbffed1be3c129d68cc0182afcfbcac3`（提交日期 2026-04-29）：
 
-- [README](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/README.md)声明 Arabic／Farsi／Hebrew、输入框和富文本支持，并要求字体含相应字符；同时说明 ForceFix 用于强制处理以英文开头的文本，却会影响多行英文。不能只引用功能列表，漏掉同页限定。
-- [RTLTextMeshPro.cs](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/Assets/RTLTMPro/Scripts/Runtime/RTLTextMeshPro.cs#L106-L131)保留 originalText，按 ForceFix／IsRTLInput 选择原文或处理结果；处理路径调用 FixRTL、Reverse，再赋给 TMP。这里是已有渲染器上的适配组件，不是覆盖任意语言与布局的通用排版引擎；并未运行它的输入框或测试套件。
-- [#70 原帖](https://github.com/pnarimani/RTLTMPro/issues/70)中，2021-06-01 使用者先报告 fork 可用，06-23 缩放文本区域后又报告混合文本换行问题；维护者解释当时插件缺少 TMP 内部自动断行位置。**这是历史“首次成功→布局修改后失败”链，不是当前固定提交仍有同一缺陷的证明。** 当前 README 的多行支持声明与历史混排限制不能互相抹掉，后续须测所用版本与实际内容。[一手／研究]
+- [README](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/README.md) 声明阿拉伯／波斯／希伯来、输入／富文本支持及字体要求；ForceFix 可处理英文开头，却影响多行英文。
+- [RTLTextMeshPro.cs](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/Assets/RTLTMPro/Scripts/Runtime/RTLTextMeshPro.cs#L106-L131) 留 originalText，按 ForceFix/IsRTLInput 选原文或 FixRTL→Reverse→TMP；属适配而非全语言排版，未跑输入框／测试。
+- [#70 原帖](https://github.com/pnarimani/RTLTMPro/issues/70)：2021-06-01 fork 自报可用，06-23 缩区域后混排换行坏，维护者解释缺 TMP 自动断行位置。历史二改反例不证明当前仍坏，当前多行声明与旧限制均保留。[一手／研究]
 
-[研究] 🧪 仅对已有 TMP 且确有目标语言缺口的页面试 RTLTMPro，先核字符串绑定是否写入正确组件、富文本／数字政策和动态布局；🧪 已采用 UI Toolkit 的项目先比较 ATG。两者均不值得仅为宣传的语言数量迁移整套菜单。RTLTMPro 固定 [MIT 许可](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/LICENSE)允许带通知复用软件；实际字体、演示资源及所接 TMP 版本另核，不把仓库许可当字体商用证明。README 指向另一维护者的 UPM 分支，本次没有验证其与固定源码的版本等价，接入时须锁定实际包。
+[研究] 🧪 已有 TMP 具体缺口才试 RTLTMPro，核组件绑定、富文本／数字与布局；UI Toolkit 先试 ATG，不按语言数迁菜单。[MIT 许可](https://github.com/pnarimani/RTLTMPro/blob/f480419bbbffed1be3c129d68cc0182afcfbcac3/LICENSE) 为 MIT，字体／演示／TMP 另核；README 所链其他维护者 UPM 分支未证与固定树等价，接入须锁包。
 
 **不同作者的游戏反例只支持具体机制。**
 
-- [社区：原报告] Mindustry [#2248](https://github.com/Anuken/Mindustry/issues/2248)记录 Linux build 104 将 back 替换为波斯文字后按钮无文字；[#1943](https://github.com/Anuken/Mindustry/issues/1943)记录 Steam/release 104.10 韩文输入组合末字不可见。它们分别提示显示与输入组合的不同失败，不证明当前 Mindustry 仍坏，也不把报告中的原因猜测写成已确认根因。字体存在或菜单译文正常不能代验玩家实际输入。[研究]
-- [一手：作者说明／源码] `sigmagamma/portl@8a9cc38eee4eec3bc763bf101cc5c444d5060db1`（提交日期 2026-09-04）的 [README](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/README.md)描述 Portal 等 Source 游戏的粉丝翻译；Portal 1 右对齐路径限定 Windows 字体映射及已试的 1366×768，未测试其他尺寸。[text_tools.py](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/src/text_tools.py)调用 arabic_reshaper／bidi，并按配置字符数处理行。固定 [MIT](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/LICENSE)仅支持软件许可判断，不开放游戏资产；未安装补丁或复核实际字幕。这个受限旧游戏补救不能外推为新游戏的动态文字／可编辑输入框方案，更不推荐照搬其系统字体改动。[研究]
+- [社区] Mindustry [#2248](https://github.com/Anuken/Mindustry/issues/2248)：Linux build 104 波斯 back 无文字；[#1943](https://github.com/Anuken/Mindustry/issues/1943)：Steam/release 104.10 韩文组合末字不可见。[研究] 分显示与输入失败，不采根因猜测或称当前仍坏，译文正常不代验输入。
+- [一手] `sigmagamma/portl@8a9cc38eee4eec3bc763bf101cc5c444d5060db1`（2026-09-04）[README](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/README.md) 为 Source 粉丝翻译，Portal 1 右对齐限 Windows 字体映射／1366×768；[text_tools.py](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/src/text_tools.py) 用 arabic_reshaper/bidi 按字符数断行，[MIT](https://github.com/sigmagamma/portl/blob/8a9cc38eee4eec3bc763bf101cc5c444d5060db1/LICENSE) 仅软件 MIT、非游戏资产。未装／验字幕，不荐新游戏动态输入或系统字体改动。[研究]
 
-**后续只预注册，收窄到一个会失败的真实页面。** [研究] 在已有设置／名字输入页先用原生：目标语言句子混入拉丁玩家名、数字与富文本，再缩窄窗口和放大文字；观察塑形、换行、标点／省略号、选中删除及输入组合提交，最后按已承诺支持的输入方式进入、确认、返回；承诺手柄支持时才包含手柄路径。第二次修改将短标签变为带变量的长说明，检查实际焦点与点击目标，不以缩小到不可读的字号换取“不溢出”。UI Toolkit 的文字方向不代验整体控件布局；UE 方向偏好也不代验显式导航。
+**二改预注册。** [研究] 原生设置／命名页混入目标语言、拉丁名、数字和富文本，缩窗／放大文字；查塑形、换行、标点、省略、选删及输入组合。再把短标签改长说明，以已承诺输入方式进入／确认／返回，核焦点与点击，不靠缩到不可读来防溢出。文字方向不代验控件布局或显式导航。
 
-[研究] AI 可查配置、准备文本与控件回归，人或目标语言读者判断真实字号下是否可读、编辑是否可理解。原生已满足就停止加库；现成适配仍需大量逐字符串／逐宽度补丁，或关键页面不可读／不可操作，则暂缓该语言而非自建排版框架。保留原始逻辑文字及未改组件以便撤回；不把已塑形、已倒序的显示结果反写到翻译表／玩家名字。以上是静读后的采用条件，无新引擎、母语用户或目标设备实验。
+[研究] AI 备配置／文本回归，人或目标语言读者判可读、可编辑。原生够用就停；适配仍需逐字符串／宽度补丁或关键页不可用时暂缓语言，保留原逻辑文字与组件以便退回，不把塑形／倒序结果写回内容。
 
 ### 7. 完整长文可达性与字体默认值的撤回
 
-核实：2026-10-15 UTC；主线三／四。改变建议：从字库覆盖、伸缩布局与菜单可导航，补到实际字体／字号与已承诺输入方式下能读完决策信息；已有布局可靠才优先保留，字体替换可以撤回默认。以下是公开发布说明、作者机制说明与固定资源静读，不是阅读质量或设备实测。[研究]
+核实：2026-10-15 UTC；主线三／四。补实际字号与已承诺输入下读完整决策信息；可靠布局优先，字体默认可撤回。依据发布说明、作者机制及固定资源。[研究]
 
 **不同作者的机制与反例。**
 
-- [一手] Stardew Valley [1.6.6 官方说明](https://www.stardewvalley.net/stardew-valley-1-6-6-full-patch-notes/)分别记录中文文本回到 1.6.3、默认字体恢复原字体、1.6.4 的 smooth font 留作选项、中文对话增加字号滑条，并保留俄文旧字体选项。它支持撤回新默认、不必撤回语言；不能据此把翻译回退归因于字体，或断言旧字体适合所有玩家。[研究] [官方论坛原帖 #24／#25](https://forums.stardewvalley.net/threads/simplified-chinese-typo-display-text-errors.20921/page-2)区分字体外观与整段阅读的拥挤感，只是具体玩家反馈，不是总体偏好或正式实验。[社区]
-- [一手] Stardew Valley [1.6 官方更新记录](https://www.stardewvalley.net/stardew-valley-1-6-update-full-changelog/)把动物商店中被 tooltip 遮住的价格也放入 tooltip，并改进 perfection tracker 按屏幕大小分页、修复高级建档选项 tooltip 超出屏幕及 resize 时背包／制作菜单错位。这些具体修复说明信息是否可读、可用于决定，不能由字形存在或面板尺寸单独代验。[研究]
-- [一手] Factorio [FFF370](https://www.factorio.com/blog/post/fff-370)为避免重做数百个仍在变化的 GUI，主要沿用布局，以控件及父级的边界／位置等推导手柄导航，并为高频快速栏新增 Quick panel；自定义控件仍需处理。它支持保留可靠布局、局部补交互的选择，不要求其他游戏重写几何导航。[研究] [2.0.44 官方说明](https://forums.factorio.com/viewtopic.php?t=128050)只给固定在屏幕右侧的过高 tooltip 增加滚动，默认 Shift＋滚轮；不证明所有 tooltip 或手柄路径可读。官方 [Controls 表](https://wiki.factorio.com/Controls)的 scroll-tooltip-up/down 控制器默认值为 Not set，但上下滚轮文字有疑似重复，本轮不据此判断当前游戏绝对无法手柄滚动。[一手／研究]
-- [一手] Thrive 沿用固定提交 `eceb8011d5e86b19dfa75de9e55eee6815fd1450`：[style guide L668–679](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/doc/style_guide.md#L668-L679)要求复用 LabelSettings，并提醒按钮覆盖指向合适字体，包括中文 fallback。[Body-Bold-Normal.tres](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/gui_common/fonts/Body-Bold-Normal.tres)引用 Lato-Bold.ttf、字号 20；[导入资源](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/Lato-Bold.ttf.import)再指向 NotoSans-Bold 变体并允许系统 fallback；[变体资源](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/variants/NotoSans-Bold.tres)以 NotoSans-Variable 为 base，包含 Emoji、简繁中文、希伯来与泰文等 fallback，中文项实际为 Regular。因此不能说直接引用 ttf 必然缺 fallback，也不能凭 Bold 文件名推断所有文字同粗。[研究]
+- [一手] Stardew [1.6.6 官方说明](https://www.stardewvalley.net/stardew-valley-1-6-6-full-patch-notes/)：中文回 1.6.3 文本、原默认字体，1.6.4 smooth 留选项，加中文字号滑条并保俄文旧字体。可撤默认不撤语言，非翻译回退归因或人人偏好。[社区] [官方论坛原帖 #24／#25](https://forums.stardewvalley.net/threads/simplified-chinese-typo-display-text-errors.20921/page-2) 分外观与段落拥挤，仅个体反馈。
+- [一手] [1.6 官方更新记录](https://www.stardewvalley.net/stardew-valley-1-6-update-full-changelog/) 将遮住的动物价格加入 tooltip，perfection tracker 按屏分页，修建档 tooltip 出屏及 resize 背包／制作错位。[研究] 字形有、面板够不保证信息可用于决定。
+- [一手] Factorio [FFF370](https://www.factorio.com/blog/post/fff-370) 保数百 GUI 布局，由控件／父级几何推手柄导航，快速栏另加 Quick panel，自定义仍需补。[2.0.44 官方说明](https://forums.factorio.com/viewtopic.php?t=128050) 仅为右侧过高 tooltip 加 Shift＋滚轮；[Controls 表](https://wiki.factorio.com/Controls) 的控制器 scroll-tooltip 默认 Not set，上下滚轮描述疑重复，不能判当前绝对无法手柄滚动。[研究]
+- [一手] Thrive 同 `eceb8011d5e86b19dfa75de9e55eee6815fd1450`：[style guide L668–679](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/doc/style_guide.md#L668-L679) 要复用 LabelSettings 与正确覆盖字体；[Body-Bold-Normal.tres](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/src/gui_common/fonts/Body-Bold-Normal.tres) Lato-Bold／20，经 [导入资源](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/Lato-Bold.ttf.import) 指 NotoSans-Bold 且允系统 fallback；[变体资源](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/variants/NotoSans-Bold.tres) 基于 Variable，含 Emoji、简繁、希伯来／泰文，中文实际 Regular。直接 ttf 未必缺 fallback，Bold 名不保证同粗。[研究]
 
-**采用与撤回。** [研究] ✅ 新页面及局部覆盖复用项目已有完整字体／样式资源链，不让第二页“修字号”复制出缺配置的字体。已有布局可靠时优先保留，短标签合理伸缩，长说明优先现有分页、滚动或详情入口；影响购买／技能选择的条件、数值、代价不能只藏在鼠标 hover 或省略号之后。🧪 完整段落确实更难读时撤回新字体默认，或在维护成本可接受时保留已验证的样式选项；不要求所有游戏新增字体选择器／独立字号滑条。回退仍不可读或不可操作时，上一节暂缓该语言发行的门槛不变。
+**采用与撤回。** [研究] ✅ 新页复用完整字体／样式链；可靠布局保留，短标签伸缩，长说明用现有分页／滚动／详情，关键条件／代价不能只靠 hover／省略号。新字体整段更难读可撤回默认或保留已验证选项，不强制新增选择器；仍不可用才暂缓语言。
 
-**后续只预注册。** [研究] 在既有商店／技能详情页将短说明改为含混合名字和数值的长说明，采用目标语言实际 fallback、既有字号选项与最小支持窗口。逐一使用已承诺输入方式读到最后一项代价，确认对应项后返回；承诺支持手柄才验手柄，不新增双输入要求。仅直接调用回调、键鼠滚动或焦点单项通过都不代验完整路径。混排、选中删除、逻辑光标政策仍按上一节。AI 排查样式引用和准备路径，人或目标语言读者判断整段阅读与操作负担；只有真实路径失败才改行距／布局、回退默认或补分页／详情，不先重写整个导航和字体系统。
+**二改预注册。** [研究] 商店／技能页短说明改混合名字与数值长文；用实际 fallback、字号及最小窗口，以每种已承诺输入读到最后代价、确认并返回。焦点、键鼠滚动或直接回调单项通过均不足。混排／编辑沿上一节；由目标语言读者判断整段阅读，真实路径失败才改行距／布局、回退默认或补详情，不先重写导航／字体系统。
 
-本轮未运行引擎、游戏、字体解析／渲染、手柄或 UI 自动化，未测性能、玩家收益及当前版本全设备行为。Godot 的 LabelSettings 不硬译为 Unity／UE API；可迁移的是配置复用与任务验证选择。字体各自授权仍需另核，本轮只总结公开机制、不复制或推荐发行这些字体文件。Factorio 控制器 mod guide 正文未能读取，不采用搜索摘要为主证。[研究]
+[研究] Godot LabelSettings 不硬译为 Unity／UE API；字体授权仍另核，不推荐分发。Factorio 控制器 mod guide 正文未取得，未采搜索摘要。字体解析／渲染、手柄与 UI 自动化均未运行。
 
 ## 音频并发补研：保住起音不等于保住每次提示
 
@@ -792,43 +792,43 @@
 
 ### 1. 真实游戏的历史改动与依赖链
 
-[一手] [Mindustry v154 发布](https://github.com/Anuken/Mindustry/releases/tag/v154)（2025-12-16，Beta）同时提高 active sound cap 32→100、限制每类约 6 声，并重做多种声音素材，作者称意在避免一种声音淹没其余声音。这是历史生产改动，不是本日新功能；多项改动一起发布，不能把作者报告的改善全部归因于某个限额，更不能照抄数字为独立游戏标准。[研究]
+[一手] [Mindustry v154 发布](https://github.com/Anuken/Mindustry/releases/tag/v154)（2025-12-16，Beta）声部 32→100、每类约 6 并换声音，作者意图防单声淹没。[研究] 多项同改，不单归因限额或照抄数量。
 
 [一手] 发布源码声明的依赖链（非发行二进制溯源）：Mindustry `d1e0307d3906bb350e80d8969a2464ed0b771ffb` 的 [gradle.properties](https://github.com/Anuken/Mindustry/blob/d1e0307d3906bb350e80d8969a2464ed0b771ffb/gradle.properties)锁 `archash=46c0956944`；Arc v154 为 `46c0956944af81db1145625e07108c196d94e260`，其 [build.gradle](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/build.gradle#L69-L72)设置 `SOLOUD_MAX_VOICE_COUNT=100`，[同文件 L144-L146](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/build.gradle#L144-L146)在本地依赖目录不存在时拉取 Anuken/soloud 的 `2025.12.01`，对应 `4b4266fed49b45afc191728b64adf1faca943f5b`。不使用当前 main 解释旧版行为。
 
 ### 2. 三道门控及不能省略的反例
 
-- **入口重触发合并。** [Arc Sound.java L31-L85](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/src/arc/audio/Sound.java#L31-L85)在启用 checkFrame 时按同一 Sound 对象的默认 16ms 间隔拒绝新实例；较大音量请求可更新上一声的音量及 pan，然后返回 -1。注释说“同帧”，实际判断经过毫秒数；这不是按敌人、位置或危急程度判断是否同一事件。新声音甚至尚未进入底层优先级选择。[一手]
-- **同组并发。** [Audio.java](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/src/arc/audio/Audio.java#L9-L15)默认值为 6，Sound 加载时应用；[SoLoud play](https://github.com/Anuken/soloud/blob/4b4266fed49b45afc191728b64adf1faca943f5b/src/core/soloud_core_basicops.cpp#L32-L67)为未显式指定组的 source 分配独立组，不能把默认值叫“按语义分组”。游戏另在 [SoundPriority.java L73-L109](https://github.com/Anuken/Mindustry/blob/d1e0307d3906bb350e80d8969a2464ed0b771ffb/core/src/mindustry/audio/SoundPriority.java#L73-L109)把部分火焰、导弹、arc／pulsar 变体共享组，降低修复／脚步优先级，并设通用最小可打断时间为 `min(0.25s, 声音长度一半)`，部分脚步更长。这里有真实内容取舍，不只有 API。[一手]
-- **全局声部竞争。** [findFreeVoice_internal L309-L391](https://github.com/Anuken/soloud/blob/4b4266fed49b45afc191728b64adf1faca943f5b/src/core/soloud_core_getters.cpp#L309-L391)在全局候选中使用 priority、年龄与 protected 条件，但同组已满分支先找非 protected、达到最小播放时间的最老实例，找不到就拒绝；同组替换条件不比较 priority。源码中“no lower volume candidate”注释与实际分支不符，不据注释声称按音量淘汰。游戏配置的 priority 3 注释虽称绝不打断，实现只是设置数值，不等于底层 PROTECTED flag；同组及其他同／更高优先级路径仍须分别核对。[一手]
+- **入口。** [Arc Sound.java L31-L85](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/src/arc/audio/Sound.java#L31-L85) 启 checkFrame 后按同 Sound 默认 16ms 拒新实例，大音量可改上声音量／pan 再回 -1；实为毫秒非注释“同帧”，未判敌人／位置／危险，尚未进入底层优先级。[一手]
+- **组。** [Audio.java](https://github.com/Anuken/Arc/blob/46c0956944af81db1145625e07108c196d94e260/arc-core/src/arc/audio/Audio.java#L9-L15) 默认 6 在加载应用；[SoLoud play](https://github.com/Anuken/soloud/blob/4b4266fed49b45afc191728b64adf1faca943f5b/src/core/soloud_core_basicops.cpp#L32-L67) 未指定时每 source 独立组，非语义组。[SoundPriority.java L73-L109](https://github.com/Anuken/Mindustry/blob/d1e0307d3906bb350e80d8969a2464ed0b771ffb/core/src/mindustry/audio/SoundPriority.java#L73-L109) 才共享火焰／导弹／arc/pulsar，降修复／脚步优先级；最小可打断 `min(0.25s, 长度一半)`，部分脚步更长。[一手]
+- **全局／组满不同。** [findFreeVoice_internal L309-L391](https://github.com/Anuken/soloud/blob/4b4266fed49b45afc191728b64adf1faca943f5b/src/core/soloud_core_getters.cpp#L309-L391) 全局看 priority、年龄／protected；组满只找可打断且非 protected 最老者，否则拒绝，不比 priority。“no lower volume”注释不符分支；priority 3 非 PROTECTED，仍受同组／同更高优先级路径影响。[一手]
 
-[研究] 因而，“保护起音”会减少连续重启导致的碎裂，也可能使后来的重要事件进不来；后一风险是分支推导，未测实际听感。✅ 借用已有系统的分组、优先级与重触发功能，仅为需要区别的事件补项目配置：普通同类枪声可合并，关键警告不要与普通装饰声共用会提前拒绝它的入口／组；第二个警告到来时由玩法决定保留旧声还是替换，不能统称永不打断。只更换音色／增加随机变体时维持原本的类别限额，避免每个资产各得一份预算。上述是工程推论，不宣称 Mindustry 已实现任意关键警告保障。
+[研究] 保护起音也可能拒绝后续重要事件。✅ 复用分组、优先级、重触发，仅补事件配置：普通同类可合并，关键警告避开提前拒绝它的入口／组；第二警告保旧还是替换由玩法定。换变体仍共享类别额度，不宣称 Mindustry 已保证任意警告。
 
 ### 3. Unity／Unreal 只复用相关机制
 
-[一手] Unity 6000.3 [priority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-priority.html)在 real voices 不足时优先虚拟化低优先级声源，同优先级再按音量，虚拟化仍跟踪播放位置；数值越小优先级越高，不能照抄 Arc 的数值方向。该设置不影响 WebGL。 [isVirtual](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-isVirtual.html)仅在该 AudioSource 的主声及全部 one-shots 都被剔除时为 true，因此 false 不能证明某次关键 PlayOneShot 已被听见。[研究] 保留原生播放与 Mixer，在已有声音事件入口补必要的类别限制；别用一个混杂的 Source 状态当逐事件成功回执。
+[一手] Unity 6000.3 [priority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-priority.html) 优先虚拟化低优先级、同级看音量并留位置，数值越小越高（与 Arc 反），WebGL 不受此设；[isVirtual](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-isVirtual.html) 主声及全部 one-shots 被剔才 true，false 不证指定 one-shot 听见。[研究] 沿原生／Mixer 补类别限制，Source 状态非逐事件回执。
 
-[一手] UE [Sound Concurrency](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-concurrency-reference-guide)已支持跨资产共享组、不同淘汰规则与 Retrigger Time；后者拒绝的声音忽略虚拟化设置，多组规则必须全部满足。[研究] ✅ 先配置原生组，明确警告是否受普通重触发限制；不要再写等价限流器，也不要把虚拟化当作被拒绝提示的待播队列。已有 WP6 对静音生命周期、混音与音乐调度的说明继续适用，本节不重列。
+[一手] UE [Sound Concurrency](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-concurrency-reference-guide) 原生共享组／淘汰／Retrigger Time，多组全满足；重触发拒绝无视虚拟化。[研究] 先配原生、明确警告限制，虚拟化不是被拒提示待播队列；其他责任见 WP6。
 
 ### 4. 最小采用与未来验收
 
-[研究] 保留现有音频系统，不把 Arc／SoLoud 移植进 Unity／UE，不加通用威胁评分、专业中间件或全局队列。AI 可整理事件到资产／类别／重要性的映射并添加拒绝原因采集，人决定能合并哪些反馈、能否打断旧起音。未来获准实测时，在同类连发期间插入警告，再增加第二种变体与第二次警告：分别观察是否提交、被哪层合并／拒绝／抢占或虚拟化，并听验标志性起音、方向和时效；过期警告不应稍后补播成当前危险。记录 voice／CPU 预算，但不能以播放调用次数、有效 handle 或非虚拟状态代替听感验收。
+[研究] 沿现有音频入口，由 AI 查事件／类别／重要性及拒绝原因，人决定合并／打断。未来连发中插警告，再加变体与第二警告，分别核提交、合并／拒绝／抢占、虚拟化及实际起音／方向／时效；过期不补播。记录 voice／CPU，调用成功不代验听见。
 
-[研究] 未引用 SoLoud 通用虚拟声文档替代此 fork 的实现；该部分沿用 WP6，不再扩章。
+[研究] SoLoud 通用文档不替代此 fork；其他音频责任见 WP6。
 
 ### 5. 持续状态声的反例：先校正可听范围与恢复政策
 
-核实：2026-10-15 UTC+8。新增依据限开发者报告、固定数据定义和引擎文档；未试听、运行游戏／引擎或测量辨识收益。此节约束前述短事件并发建议，不撤回合理的限额，也不新增音频管理器。[研究]
+核实：2026-10-15 UTC+8。以下持续声反例收窄短事件限额建议，依据开发者报告、固定配置与引擎文档。[研究]
 
-**强反例与固定配置。** [Factorio FFF-341](https://www.factorio.com/blog/post/fff-341)（2020-04-03）报告：提高环境上限 15→50 缓解雷达声突然切断，却增加混音拥挤；管道无水仍发声片段，作者将其关联到 working_sound 与同类限额的冲突，移除该限额并缩小可听范围后报告改善。这只证明该历史问题，不证明所有循环声都该取消限额。[一手／研究]
+**持续声反证。** [Factorio FFF-341](https://www.factorio.com/blog/post/fff-341)（2020-04-03）环境上限 15→50 缓解雷达断声却更拥挤；管道无水仍有声，作者归于 working_sound／同类限额冲突，去限并缩范围后自报改善，非所有循环应无限。[一手／研究]
 
-[一手] 官方数据仓库的 2.1.21 固定提交 `374934f81f82b09ec9fc459f92a316bd642ddd82` 中，[sounds.pipe](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/prototypes/entity/sounds.lua#L248-L272)使用 persistent、淡入淡出、音量平滑及活动率控制；同文件的 roboport door 短音另设 aggregation，train_wagon_wheels 持续声仍设同类上限。[WorkingSound 当前文档](https://lua-api.factorio.com/latest/types/WorkingSound.html)（本次标注 2.1.21）定义 persistent 合并同 prototype 工作声，并在该模式忽略 max_sounds_per_prototype。[研究] 这支持按声源语义选政策，不支持“一次声限流、循环声不限流”；现代配置也不能冒充 2020 年修复的原始代码。该仓库[用途声明](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/README.md)是公开原型定义供模组作者查阅，不等于游戏引擎开源或音频素材获准再分发。
+[一手] 2.1.21 固定 `374934f81f82b09ec9fc459f92a316bd642ddd82` 的 [sounds.pipe](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/prototypes/entity/sounds.lua#L248-L272) 管道 persistent／渐变／平滑／活动率，门短声 aggregation，车轮持续仍限；[WorkingSound 当前文档](https://lua-api.factorio.com/latest/types/WorkingSound.html)（2.1.21）persistent 合同 prototype 并忽略同类上限。[研究] 按语义选，非短限／长不限，现代配置非 2020 原修复。[用途声明](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/README.md) 供 mod 查定义，不开放引擎／音频。
 
-**实施时会改变选择的引擎差别。** [一手] Unity 6000.3 [maxDistance](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-maxDistance.html)当前契约区分：Linear 在边界归零，Custom 超界保持曲线末值，Logarithmic 忽略该设置并持续随距离衰减。因此减小 maxDistance 不能作为通用静音／回收方法，先核 rolloff 与曲线末值。其 [priority 虚拟化](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-priority.html)保持播放位置和状态，不等同 Stop 后重新 Play。UE 5.8 [attenuation](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine)的 falloff 从内形状边缘起算，音量衰减与 spatialization 分开；[EVirtualizationMode](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/EVirtualizationMode)中 Restart 恢复循环时从头开始，PlayWhenSilent 继续占 voice，SeekRestart 仍标 Experimental。其余并发、混音和生命周期边界沿用 [WP6 引擎对照](2026-10-14-game-wp6-audio.md#105-unityunreal同一质量目标不同原生职责)，不重复实现一套虚拟化。
+**原生差别。** [一手] Unity 6000.3 [maxDistance](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-maxDistance.html)：Linear 边界零、Custom 保末值、Logarithmic 忽略该值继续衰减；缩 maxDistance 非通用回收。[priority 虚拟化](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-priority.html) 虚拟化留位置／状态。UE 5.8 [attenuation](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine) falloff 从内形边缘算，衰减／声像分开；[EVirtualizationMode](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/EVirtualizationMode) Restart 从头、PlayWhenSilent 占 voice、SeekRestart Experimental。其余见 [WP6 引擎对照](2026-10-14-game-wp6-audio.md#105-unityunreal同一质量目标不同原生职责)。
 
-[研究] **采用与代价：** 短事件过期可丢，持续状态需按当前活动状态恢复；先调整现有声源的范围、曲线、淡入淡出与恢复配置，成本是逐类调校及复合场景听验。语义相近且不承担独立定位的环境层才考虑合并，定位重要的危险不能只为省声部缩短可听范围。Mindustry 的入口拒绝机制与 Factorio 的持续声反例是两个不同实现的边界证据，不构成通用参数或听感提升证明。
+[研究] 短事件过期可丢，持续声按当前活动恢复；先调范围、曲线、渐变与恢复，成本为逐类／复合听验。仅不承担独立定位的环境层可合并；危险声不为省 voice 随意缩范围。
 
-[研究] **未来验收预注册：** 保持原动作规则，加入第二种持续技能／机器声；在竞争前后穿越可听边界，同时切换实际活动状态。检查关键警告是否仍可辨、持续声是否错误重启／残留、已经结束的状态是否再次发出起音；再记录 voice／CPU。若范围缩小藏掉预警，或重启制造假事件，就撤回该配置；不能以没有播放错误或声部减少代替听验。本轮只完成资料核对。
+[研究] **二改预注册：**新增持续技能／机器声，在竞争前后跨可听边界并切活动状态；核警告、误重启／残留与结束后假起音，再记 voice／CPU。藏预警或制造假事件则撤回。
 
 ## 运动可读性补研：关键提示不能靠历史积累补成另一个位置
 
@@ -859,7 +859,7 @@
 | 🧪 非时域基线 | 相同分辨率比较 SMAA／FXAA；以几何轮廓为主且路径兼容时比较 MSAA，保住原动作规则 | 高光／纹理闪烁、细小轮廓丢失或预算失败就撤回；不得从“没有历史拖影”推导“所有画面问题解决” |
 | ✅ 收窄内容频率与透明装饰职责 | 危险边界／方向采用足够屏幕尺寸的稳定形状，与余烟分开；风格允许时让关键轮廓由简单 opaque／alpha-clipped 几何承载 | 硬边、覆盖面积或遮挡改变范围理解就撤回；不把全部烟雾改 cutout，不通过任意延长预告时间偷偷改玩法 |
 
-[研究] 后两条与现有 WP5 的信号分层相接，但这里新增的是运动／历史输入约束，不另建效果框架。若最低内部分辨率下关键形状已经难以稳定采样，先考虑简化细节、调整形状／显示尺寸或提高该档输入分辨率，不能要求上采样保证补出所有短暂细节；这些是待目标项目验证的内容决策，不是跨游戏通用像素阈值。
+[研究] 最低内部分辨率难以稳定采样关键形状时，比较简化细节、增显示尺寸或输入分辨率；上采样不保证补出短暂细节，不给通用像素阈值。
 
 ### 4. STP 对照不能只看相机菜单
 
@@ -874,15 +874,15 @@
 
 ### 6. 后续获准验证与二次修改
 
-[研究] 保持同一游戏规则和相机轨迹，分开比较原生分辨率／固定 render scale、时域／非时域路径及内容简化，不让多项同时变化掩盖原因。观察提示出现、急转、遮挡后显露、停止与消失；除单个敌人，还覆盖两个攻击交叠和低帧率。第二次内容修改可将固定 Time 形变改为随技能强度变化，或添加透明余烟，再核运动输入和危险边界是否仍清楚。AI 可查材质／renderer 配置与构造对照，人判断方向、范围、持续伤害是否被误读；帧时间配合观察，静态截图或平均 FPS 不能替代辨识。本轮无识别率、性能或最优参数实测收益。
+[研究] 固定规则／相机，分开比较分辨率／render scale、时域路线及内容简化。验出现、急转、显露、停止／消失、双攻击及低帧率；二改 Time 形变为技能参数驱动或加透明余烟，再核矢量和边界。AI 构造对照，人判误读，连续观察配帧时间。
 
 ## 验证选择深化：状态、输入与体验各自需要什么证据
 
-核实：2026-10-15（UTC+8）。主线一／三；改变 game02 的验证阶梯、第一天全接口和“手感不可计算”建议。新证据为输入测试后端、暂停时钟、截图降噪契约，以及重读作者完整试玩记录；只读公开文档和已有研究，未安装／运行引擎、模型或真实 OS 输入。[研究]
+核实：2026-10-15（UTC+8）；主线一／三。校正 game02 验证阶梯、首日全接口和“手感不可计算”，依据输入后端、暂停时钟、截图契约及作者完整试玩记录。[研究]
 
 ### 1. 采用与撤回
 
-[研究] ✅ 按待证事实选已有入口，不按 L0–L6 建设阶梯。规则可独立调用时保留确定性测试；场景生命周期才进入运行时；绑定／焦点走输入系统；设备／OS 路径用目标设备；连续视听品质与人的体验判断不被状态快照替代。撤回新项目第一天全套接口和“至少两个异常场景”的固定数量，风险决定要保留的动作链。不是少测试，而是不让接口数量代替有效断言。
+[研究] ✅ 按事实选入口：规则用确定性测试，生命周期进运行时，绑定／焦点走输入系统，设备／OS 用目标设备，连续视听与体验由实际观察判断。撤回首日全接口和固定“至少两个异常”，按风险选择动作链。
 
 ### 2. 本次读取的新一手契约
 
@@ -896,40 +896,40 @@
 
 [一手] 重读 [Schomay 原文](https://blog.jeffschomay.com/letting-ai-play-my-game)：作者的文字／回合制游戏采用外层文本状态和合成事件；公开轨迹显示解开笼子后仍不能移动，清除 state.caged 后坐标改变；末尾也说人工又发现 bug 和 feel 问题。[研究] 因而保留作者结果，撤回“这类 bug 单元测试通常发现不了”：关键是断言退出状态后的下一动作，独立规则测试或真实事件回归均可承载。作者未给测试体系能力对照，不能推出某类测试无效。
 
-[研究] 延用上文“可借用的优秀实现，以及不能带走的东西”的 Celeste／Celeste 64／Deepnight 固定源码研究及演示反证，不冒充本轮重新运行。具体采用单位是可复现的动作条件与可切换的反馈。让 Agent 检查时间戳、窗口、状态、帧时间与视听变化，人决定公平、力度、清晰度和长期体验。可测量部分存在，不推出整体乐趣有一个自动合格分。
+[研究] 沿用 Celeste／Celeste64／Deepnight 固定证据及反证，借动作条件和可切换反馈。AI 查时序、窗口、状态与帧时间，人判公平、力度、清晰度及长期体验；整体乐趣无自动合格分。
 
 ### 4. 范围与后续
 
-[研究] game02 用暂停／设置加入原有蓄力动作作为第二次修改例子，先由项目决定暂停和释放政策，再选择规则、输入、运行时和人工观察；不是通用状态机或固定异常数。复现版本、动作序列和预期结果可以沿用现有 fixture，无需新增目录或测试服务。本轮验证仅文档／链接与仓库离线检查；目标设备、真实引擎与玩家收益留到获准实测。
+[研究] game02 二改以暂停／设置加入蓄力为例，先定政策再选验证入口；沿现有 fixture 记录版本、动作与预期，不另建测试服务。
 
-[研究] 本轮完成完整离线 14 阶段（97／26／10／13／14 项，非空无 skip）与 `git diff --check`。独立新上下文评审对本节及 game02 未发现事实或决策级问题；入口残留的阶梯／先改造建议由整合端同步处理后才算完整交付。检查与评审均不替代引擎／设备／玩家验证。
+[研究] 历史验证：完整离线 14 阶段（97／26／10／13／14 项，非空无 skip）及 `git diff --check` 通过；独立审未发现本节／game02 的事实或决策问题。入口旧阶梯须整合端同步，检查不覆盖引擎／设备／玩家。
 
 
 ## 像素网格补研：低速步进不是物理插值失效
 
-核实：2026-10-14 UTC。主线一／三；改变 04 将移动抖动优先归入模拟节奏的建议：像素风先分清世界模拟、低分辨率场景和最终放大画面的取整。新证据是不同作者的原型复盘与固定演示实现、Unity 6.3 URP／Cinemachine 3.1.7 契约；不增客户端模块或渲染框架。[一手／研究]
+核实：2026-10-14 UTC；主线一／三。像素抖动先区分世界、低分辨率场景和最终输出取整；依据两作者原型／演示及 Unity 6.3 URP／Cinemachine 3.1.7。[一手／研究]
 
 ### 1. 两位作者的方案为什么不能互相代替
 
-[一手：作者实述] Slow Rush Games 的 [2024-01-26 复盘](https://www.slowrush.dev/news/pixel-perfect-rendering/)记录：相机吸附改善像素物理纹理与背景之间的相对摇摆，却使其他画面跳动；连对象也吸附仍未整体解决；最终画布的 sub-texel scrolling 改善相机移动，却保留画布内慢速物体的逐 texel 跳动。作者需要摩擦停稳、弧顶和旋转刚体，因此接受像素边缘过滤。该页面仍以矩形代理为主，明确真实精灵尚待接入、性能未 benchmark；关于 Noita／Broforce 的比较仅是该作者转述，本轮未独立核实，不用它证明成熟游戏普遍采用某种过滤。
+[一手：作者实述] Slow Rush [2024-01-26 复盘](https://www.slowrush.dev/news/pixel-perfect-rendering/)：吸附相机改善纹理／背景摇摆却让其他画面跳，对象也吸附仍失败；sub-texel scrolling 只顺画布，内部慢物体仍逐格。为摩擦停稳、弧顶／旋转而接受过滤；仍为矩形代理、真精灵未接、性能未测，Noita/Broforce 比较未独立核。
 
-[一手：固定源码] Daniel Ludwig 的 `code-disaster/gdx-mellow-demo@901d2bcae3819807e54814a4a34d3c72d1236f68`（2016-02-07）提供可读的替代机制。[MellowGame.java L297–368](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/core/src/com/codedisaster/mellow/MellowGame.java#L297-L368)先把 scene camera 按 WORLD_UNIT_SCALE 向下取整，再把剩余位移转换为最终放大画面的 offset；只有 `UpScaleAndBilinearFilterShader` 模式继续拆出小数部分。对应 [fragment shader](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/core/assets/shaders/mellow.fsh)按该小数权重组合四次采样。渲染对象是 tilemap，不能据此宣称独立角色的低速运动已经平滑。
+[一手] Daniel Ludwig `code-disaster/gdx-mellow-demo@901d2bcae3819807e54814a4a34d3c72d1236f68`（2016-02-07）：[MellowGame.java L297–368](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/core/src/com/codedisaster/mellow/MellowGame.java#L297-L368) 按 WORLD_UNIT_SCALE 取整 scene camera，余量给放大输出 offset；UpScaleAndBilinearFilterShader 再拆小数，[fragment shader](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/core/assets/shaders/mellow.fsh) 四采样加权。对象为 tilemap，未证明独立角色慢动平滑。
 
-[研究] 可借“低分辨率画面与最终输出分开处理”的思路，不从一个游戏的过滤选择推出默认方案，也不因相机滚动顺滑就认定物体动画／碰撞更顺滑。该 demo 的分辨率与放大倍率写死、运动循环另有逐帧项，不作新项目底座或帧率无关运动范本。[一手] [LICENSE](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/LICENSE)为 MIT；README 单独署名外部 tileset，本轮仅读代码，不把整个示例的美术许可一并视作已清。原博客入口本轮无法读取，机制结论来自实际下载的固定源码；未构建或运行 demo。
+[研究] 只借低分辨率／输出分工；demo 写死尺寸／倍率、运动含逐帧项，不作底座。[一手] [LICENSE](https://github.com/code-disaster/gdx-mellow-demo/blob/901d2bcae3819807e54814a4a34d3c72d1236f68/LICENSE) MIT，外部 tileset 另署名未清资产权；博客未读到，机制来自下载固定源码，未构建。
 
 ### 2. Unity 原生能力：能对齐像素，不替玩家决定取舍
 
-[一手] Unity 6.3 [URP Pixel Perfect Camera](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/2d-pixelperfect-ref.html)明确内置于 Universal 2D template，不应另装只适用于 Built-In 的同名独立包。`Pixel Snapping` 阻止显示在像素之间，但不改变 Transform；`Upscale Render Texture` 先画到参考分辨率或按视口比例扩大后的临时纹理再放大。`Filter Mode` 中 Point／Retro AA 的取舍限定在 Crop Frame 为 Stretch Fill 时：前者清楚但可能闪烁，后者减少闪烁但边缘更软，不能把此开关当通用的慢速对象修复器。
+[一手] Unity 6.3 [URP Pixel Perfect Camera](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/2d-pixelperfect-ref.html) 已内置 Universal 2D，不另装 Built-In 包；Pixel Snapping 仅渲染、不改 Transform，Upscale Render Texture 画参考或按视口放大的临时纹理。Point/Retro AA 仅 Crop Frame=Stretch Fill，前者清楚可闪、后者软边减闪，非慢对象通用修复。
 
-[一手] [Cinemachine 3.1.7 Pixel Perfect 扩展](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePixelPerfect.html)协调两个系统都修改 orthographic size 的冲突；文档明确 blend 期间暂时非 pixel-perfect，Upscale Render Texture 的可用尺寸更少，可能导致明显构图偏差。该页仍用历史 Framing Transposer 名称描述 Target Group 限制，本轮不把它改写成对当前 Position Composer 的已验证缺陷。
+[一手] [Cinemachine 3.1.7 Pixel Perfect 扩展](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePixelPerfect.html) 协调 orthographic size，blend 中暂非 pixel-perfect；Upscale Render Texture 可用尺寸少、会偏构图。Target Group 限制仍称 Framing Transposer，不当当前 Position Composer 已验缺陷。
 
-[研究] ✅ 有意追求整格视觉时先沿用原生组件，把慢速步进纳入风格验收；🧪 连续慢速／旋转需要更高时，比较呈现分辨率与过滤，不先为此自建渲染器。镜头阻尼／物理插值可以改善上游轨迹，却不会移除最终量化规则；不能为显示上的对齐而无意更改碰撞、平台接触或鼠标命中位置。上述 Unity 设置不映射成 UE 同名等价菜单，本轮没有提出 UE 配置推荐；模拟与呈现分工的判断可跨引擎使用。
+[研究] ✅ 整格风格用原生并接受／验慢速步进；🧪 连续运动更重要才比较分辨率与过滤。阻尼／插值不消除最终量化，不为显示改碰撞或拾取；这些 Unity 配置不映射为 UE 等价菜单。
 
 ### 3. 后续验证与撤回条件
 
-[研究] 同一美术与动作比较严格网格、提高呈现分辨率和有界过滤，分别观察慢速角色、相机跟随、独立平台停稳／旋转，以及视差背景的相对运动。新增第二种窗口尺寸／缩放档后，核边缘闪烁、细小危险提示、mouse-to-world 对齐与切镜取景；不要用单张静止截图或平均 FPS 评分。像素尺寸不一致、过滤使危险边界难辨、增加显著开销或改变预期风格，就收窄／撤回该路线。
+[研究] 同美术／动作比较严格网格、增分辨率与有界过滤，观察慢角色、跟随、平台停转及视差；二改窗口／缩放后核边缘、危险提示、鼠标对齐与构图。尺寸不一、危险模糊、成本显著或风格偏离就收窄／撤回。
 
-本节为资料和固定源码阅读，另未运行 shader。公开源码仅借机制，未来真正采纳前还需按锁定引擎和目标设备验证；共同验证边界见页首。[研究]
+[研究] 本节另未运行 shader。
 
 
 ## 信号取舍补研：呈现设置保住玩法信息，辅助规则另有承诺
@@ -938,17 +938,17 @@
 
 ### 不同类型的一手证据与边界
 
-- **回合策略，Subset Games。** [一手：开发者复盘] Matthew Davis 的 [Into the Breach Design Postmortem，2019](https://media.gdcvault.com/gdc2019/presentations/Into%20the%20Breach%20Postmortem%20Final.pdf)，PDF 页码 14、31–36：玩家回合内确定性与敌人攻击预告是设计约束；UI 要交代目标和攻击类型，因此限制到三类攻击、正交方向及稳定敌人属性，并大幅裁减武器设计。已读 PDF 文字。它证明团队曾让信息表达反向约束内容，不证明即时游戏也要预告所有结果，或照抄三类攻击就会好玩。
-- **即时动作，Dead Cells 29。** [一手：官方历史补丁] [29 系列](https://deadcells.com/patchnotes/29)的 29.1 补齐配色在 HUD／菜单／图标／武器／物品的应用，属性选择不再只写颜色名；29.2 修复重要资产落在背景滤镜后面。29.1 同时明确提供全图揭示辅助选项。这里的失败是呈现与选项承诺不一致，不能推导辅助玩法必须保留标准模式的未知信息或难度。
-- **同一游戏后续内容，Dead Cells 35。** [一手：官方历史补丁] [35 系列](https://dead-cells.com/patchnotes/35)的未单独标小版本修复项包含隐形敌人仍有轮廓；35.7 明确修复部分弹体在开关开启时缺轮廓。页面列有 alpha／beta 和后续版本，不能把各项日期当同一天的正式全平台发行，更不能说这些仍是当前缺陷。这里记录已报告的两种相反失配：多显示与漏显示。
+- **回合策略。** [一手] Matthew Davis [Into the Breach Design Postmortem，2019](https://media.gdcvault.com/gdc2019/presentations/Into%20the%20Breach%20Postmortem%20Final.pdf)，PDF 14、31–36：回合确定性／敌人预告要求 UI 交目标／类型，因而限三类攻击、正交方向、稳定属性并裁武器。仅 PDF 文字；表达可约束设计，非即时全预告或三类必好玩。
+- **Dead Cells 29。** [一手] [29 系列](https://deadcells.com/patchnotes/29)：29.1 配色覆盖 HUD／菜单／图标／武器／物品、属性不只用颜色名，同时有全图揭示；29.2 修重要资产被背景滤镜遮。[研究] 按选项承诺核，不强求辅助保标准未知信息／难度。
+- **Dead Cells 35。** [一手] [35 系列](https://dead-cells.com/patchnotes/35) 未单标小版本项修隐形仍有轮廓，35.7 修弹体漏轮廓；多显示／漏显示均可能。页含 alpha/beta，不作同日全平台发行或当前缺陷。
 
 ### 采用、删减与不能外推的部分
 
-**[研究] ✅ 采用项目内的小范围映射，不新增通用提示系统。** 为现有敌人／技能配置明确这条信号对应的对象、时点、范围或结果；颜色、图标、轮廓、音效引用同一已决定的状态。即时威胁的可行动时间短，先保来源和危险边界；回合策略可以把较低频说明放进选中／悬停详情，但行动预览必须跟着当前局面更新。两例不能建立跨类型、跨玩家的通用信息排序。
+**[研究] ✅ 配置现有信号的对象、时点、范围和结果，共享玩法状态。** 即时威胁先保来源／边界，回合低频说明可按需展开，预览随局面更新；不设跨类型通用信息排序。
 
-**[研究] 🧪 删装饰，必要时减玩法组合。** 降低粒子／震动／重复飘字后仍能判断下一步，才算安全删减；动画或声音若是唯一节奏／方向线索，先补等义提示或明确辅助规则再删，不能机械“全关”。声音转成视觉提示时，不默认增加声源的精确坐标、透墙轮廓或提前预告；允许增加什么由该模式的设计决定。这是推导的实现边界，本轮没有独立游戏声转视觉效果实测，正文不承诺字幕足以替代空间听觉。
+**[研究] 🧪 先减装饰，必要时减规则组合。** 唯一节奏／方向线索先补等义提示或明确辅助规则；声转视觉不默认增加精确坐标、透墙或提前预告。未有独立游戏实测证明字幕足够替代空间听觉。
 
-**[研究] ⛔ 不以全屏滤镜、所有对象描边或图标数量当完成标准。** 现有动作、音频并发和运动画面章节已覆盖信号能否按时出现；本节只补“出现后表达什么、切设置后是否仍表达同一承诺”。纯呈现设置与改变规则的辅助选项可以分组说明，但无需先建完整设置框架。
+**[研究] ⛔ 全屏滤镜／描边／图标数不作完成标准。** 本节只核信号含义与设置承诺；纯呈现与辅助规则可分组，不必先建设置框架。
 
 ### 第二次修改：仅预注册，不运行游戏
 
@@ -957,38 +957,38 @@
 3. 若有隐形／未发现对象，核其显示随规则状态变化；若模式明确承诺全图或提前揭示，按新承诺检验。切回标准模式再核旧状态，不将辅助设计自动定性为泄漏。
 4. 更新第二种颜色／状态后检查场景、HUD、物品说明及旧内容；新招式持续挤占关键提示时，先减少同时出现的组合或重做表达，再决定是否保留该招式。
 
-**验证范围：**一手正文与 PDF 文字阅读；另未做色觉、听觉测试。AI 可查映射覆盖，人仍需判断节奏、可读性和辅助模式承诺；共同验证边界见页首。[研究]
+**验证范围：** 一手正文及 PDF 文字；另未做色觉／听觉测试。AI 查映射，人判节奏、可读性及辅助承诺。[研究]
 
 ## 重复进入补研：不要让编译刷新替你重置验收状态
 
-核实：2026-10-15（UTC+8）。主线 3；改变 game02 的验证入口选择：第二次改动触及初始化、静态订阅／缓存或热更新时，区分编译后首次进入、无源码变化的重复进入与新进程启动。新证据为 Unity 6.3／UE 5.8 契约及 Realm、NGO 已合入维护链；仅公开资料与源码差分阅读。[一手／研究]
+核实：2026-10-15（UTC+8）；主线三。初始化、静态缓存／订阅或热更二改须区分编译后首次、无源码变化的重进与新进程；依据 Unity 6.3／UE 5.8 及 Realm／NGO 已合入链。[一手／研究]
 
 ### 已有覆盖与新增选择
 
-WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI 重复监听、编辑器扩展 Domain Reload 开关重入；WP11 已有 Cinemachine static reset 提前的案例。本节不复述这些生命周期责任。缺口在于 **Agent 每次改脚本后只 Play 一次，可能借编译刷新获得了额外初始化；只在热会话里反复成功，也可能看不到首次进入的不同状态**。因此改变的是同一验收动作的起点，不是另建测试架构。[研究]
+[研究] 既有 WP9／10／11 已覆盖重建与生命周期；本节只补验收起点：每次改脚本只 Play 一次可能借编译刷新初始化，只测热会话则可能漏首次异常。
 
 ### Unity：两个已修历史案例给出相反方向
 
-[一手] Unity 6.3 [关闭域重载](https://docs.unity3d.com/6000.3/Documentation/Manual/domain-reloading.html)说明静态字段和事件订阅跨 Play 保留；脚本变化的 Asset Database refresh 仍会重载域。运行时代码可在 `SubsystemRegistration` 重置，编辑器代码另用其编辑器初始化入口；退出解绑与下次启动重新初始化是不同责任。不要为了让验收通过擅自改变项目的 Reload 设置。[研究]
+[一手] Unity 6.3 [关闭域重载](https://docs.unity3d.com/6000.3/Documentation/Manual/domain-reloading.html)：禁域重载保静态／订阅，但脚本变化 refresh 仍重载；运行时可 SubsystemRegistration 重置，Editor 用自身入口。[研究] 解绑与重初始化分开，不为通过擅改设置。
 
-1. **Realm：第一次正常，第二次缺少初始化。** [#2898](https://github.com/realm/realm-dotnet/issues/2898)报告禁域重载后第二次 Play 的登录挂起。维护者解释退出为避免 native 异步挂起会拆除 native hooks，但重进 Play 不再执行负责接线的静态构造器；用户在 2023-01-05 报告预发布包复测成功。[一手：维护者；社区：使用者报告] [#3145](https://github.com/realm/realm-dotnet/pull/3145)于当日合入 [`2a6d23c`](https://github.com/realm/realm-dotnet/commit/2a6d23cc40bac8bd3c9d841b8f731616f889ddab)。API 返回的补丁显示 [Initializer.cs](https://github.com/realm/realm-dotnet/blob/b30e116cb92c23773f49daedff548afb3265796a/Realm/Realm.UnityUtils/Initializer.cs)新增 `OnSubsystemRegistration` 调 `NativeCommon.Initialize()`；`NativeCommon.CleanupNativeResources` 同时重置初始化标志并限制重复清理。[一手：固定差分] 这说明不能把“解绑都做了”当作重入成功，也不表示当前 Realm 仍有此缺陷。[研究]
-2. **NGO：编译后首次失败，随后可能正常。** [#2892](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/issues/2892)记录 Unity 6000.0.0b13／Netcode 2.0.0-exp2，关闭 Scene Reload 后，域重载使子行为缓存成为空列表而非预期 null，跳过重新发现，场景对象不发 `OnNetworkSpawn`；同时禁域重载后再次进入可恢复。[社区：报告者调试，未由本仓复现] [#2906](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/pull/2906)明确修复 #2892，于 2024-05-08 合入 [`cd6ead3`](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/commit/cd6ead3ac07100f5769d080e46dd4f269e8aea40)。固定 [NetworkObject.cs](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/blob/85c6f39f9ef88edc8295bd0cdbcf39c5d0bb362d/com.unity.netcode.gameobjects/Runtime/Core/NetworkObject.cs)差分在 Awake 添加 `m_ChildNetworkBehaviours = null`；PR 还包含其他 spawn 功能，不能把整个 PR 的收益归于此行，也未证实其中测试覆盖全部 Reload 组合。[一手／研究]
+1. **Realm 重进缺初始化。** [#2898](https://github.com/realm/realm-dotnet/issues/2898) 报禁域重载后第二次登录挂起；维护者称退出拆 native hooks，重进不执行静态构造接线，用户 2023-01-05 自报预发布包正常。[一手／社区] [#3145](https://github.com/realm/realm-dotnet/pull/3145) 同日合 [`2a6d23c`](https://github.com/realm/realm-dotnet/commit/2a6d23cc40bac8bd3c9d841b8f731616f889ddab)，API 差分 [Initializer.cs](https://github.com/realm/realm-dotnet/blob/b30e116cb92c23773f49daedff548afb3265796a/Realm/Realm.UnityUtils/Initializer.cs) 加 OnSubsystemRegistration→NativeCommon.Initialize，清理重置标志／防重复。[研究] 解绑非重入保证，非当前缺陷。
+2. **NGO 首次坏、随后可好。** [社区] [#2892](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/issues/2892)：6000.0.0b13／2.0.0-exp2 关 Scene Reload 后，域重载将子行为缓存变空列表而非 null，跳发现、不发 OnNetworkSpawn；再禁域重载重进可恢复。[#2906](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/pull/2906) 于 2024-05-08 合 [`cd6ead3`](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/commit/cd6ead3ac07100f5769d080e46dd4f269e8aea40)，[NetworkObject.cs](https://github.com/Unity-Technologies/com.unity.netcode.gameobjects/blob/85c6f39f9ef88edc8295bd0cdbcf39c5d0bb362d/com.unity.netcode.gameobjects/Runtime/Core/NetworkObject.cs) 在 Awake 置 m_ChildNetworkBehaviours=null。[一手／研究] PR 含其他 spawn 改动，非整项收益归此行，全部 Reload 测试覆盖未知。
 
-**采用判断。** 保留编译／刷新后的第一次动作结果，再在不编辑脚本、不主动刷新的 Stop→Play 后走同一动作；核当前对象、会话初始状态、回调次数及完成结果，而不是只看日志无红字。若二者不同，先查初始化／缓存和所用包版本，不把其中较好的结果当通过，不默认“第二次一定更糟”。没有禁重载或相关状态风险、既有测试已覆盖的纯逻辑改动不追加这条路径。[研究]
+[研究] 保留编译后首次结果，再不编辑／刷新地 Stop→Play 重走，核对象、初态、回调和结果。不同则查初始化／缓存／版本，不挑好结果；纯逻辑且无相关风险不追加。
 
 ### UE：旧实例、反射对象和工具注册不是一个刷新契约
 
-[一手] [UE 5.8 Live Coding](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-coding-to-recompile-unreal-engine-applications-at-runtime)规定 `.cpp` 构造默认值变化不更新已有实例；Object Reinstancing 则可替换反射对象。持有相关指针的代码需通过 `ReloadReinstancingCompleteDelegate`／`ReloadCompleteDelegate` 更新引用或作废缓存，遗留对象还可能在退出时触发析构冲突。[研究] 因而只按“改了 `.cpp`”选热验收不够：初始化变化须读真实实例值及蓝图／关卡覆盖，并在完整构建后的新进程重走启动；缓存变化须包括退出路径。新进程复核也不能抹掉资产已保存的覆盖值。
+[一手] [UE 5.8 Live Coding](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-coding-to-recompile-unreal-engine-applications-at-runtime)：.cpp 构造默认不更新旧实例，Reinstancing 可替反射对象；以 ReloadReinstancingCompleteDelegate/ReloadCompleteDelegate 更新引用／废缓存，残留对象退出可析构冲突。[研究] 初始化改动核实际值与资产覆盖，完整构建新进程重走；缓存含退出，重启不清已存覆盖。
 
-[一手] [Unreal MCP 官方文档](https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor)又明确限定 C++ 工具新增 `UFUNCTION` 要完整重启；`RefreshTools` 重轮询注册表，客户端可能还需重连以更新 schema。这项工具发现限制不能扩写成所有反射对象一概不支持 Live Coding；一般 Reinstancing 能力也不能反过来推翻新增 MCP 工具的重启要求。[研究] 大项目页保留头文件／反射变更完整编译重启作为保守执行策略，撤回其错误的通用能力归因；不建议因此扩大自动热更范围。
+[一手] [Unreal MCP 官方文档](https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor) 限新增 C++ UFUNCTION 工具须完整重启，RefreshTools 仅重轮询、客户端可需重连 schema。[研究] 不扩成全部反射不支持热更；也不用一般 Reinstancing 推翻此要求。保留头文件／反射改动完整编译重启的保守策略，撤回通用能力误归因。
 
-[一手] [PIE 多玩家选项](https://dev.epicgames.com/documentation/unreal-engine/play-in-editor-multiplayer-options-in-unreal-engine?lang=zh-CN)还区分 Net Mode 的 Play Standalone 与 Run Under One Process；前者不自动证明独立进程。[研究] 仅当改动触及跨实例共享状态／联网启动时才额外核实际进程与实例，不向单机公式改动添加多客户端层，也不把独立进程试玩当已完成 cook／发布验证。
+[一手] [PIE 多玩家选项](https://dev.epicgames.com/documentation/unreal-engine/play-in-editor-multiplayer-options-in-unreal-engine?lang=zh-CN) 的 Play Standalone 与 Run Under One Process 分开。[研究] 跨实例共享／联网启动才核进程，不给纯公式加多客户端；独立进程也非 cook／发布通过。
 
 ### 后续验收范围与停止条件
 
-未来获准运行时，沿用已有最小场景和动作入口，记录代码／包版本、Reload 或 Live Coding／Reinstancing 设置、是否刚编译、进程与实例来源，并分别保留首次、重复进入和按需新进程的结果。已有测试能启动所需真实路径并读出这些结果，就不添加 MCP、HTTP、全局 reset 框架或新的测试层。状态注入／手动清缓存会改变起点；若这是夹具必要步骤，应明确其覆盖的是隔离规则，而非自然启动。[研究]
+[研究] 未来沿最小场景记录版本、Reload／Live Coding／Reinstancing 设置、编译与进程／实例来源，保留首次、重进及按需新进程结果。现有测试够用就不加层；夹具若注入状态／清缓存，标明仅验隔离规则，不冒充自然启动。
 
-本节另未运行上游测试；公开 issue 的复测是他人报告，固定差分只证明维护机制，不断言当前项目存在同样问题。Realm PR 的网页抓取失败后，使用公开 GitHub API 核实合并 SHA／日期与文件补丁；NGO 同时核了公开 PR 与 API 差分。共同验证边界见页首。[研究]
+[研究] 未运行上游测试；Realm 网页失败后以 API 核合入 SHA／日期／补丁，NGO 核 PR 与 API。复测为他人报告，差分只证明维护机制。
 
 ## 粒子预算补研：模拟规模与透明覆盖不能互相代替
 
@@ -996,10 +996,10 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 
 ### 不同作者的机制与反例
 
-- **Factorio，透明烟雾。** [一手：历史开发者调查] [FFF281](https://www.factorio.com/blog/post/fff-281)（2019-02-08）记录烟雾降低更新频率后，到期粒子仍可能被绘制，越透明反而覆盖越大；修复跳过到期绘制，另略去作者判为无贡献的低透明度尾部。[研究] 支持按透明覆盖／寿命追 GPU 浪费，不推广作者透明度阈值或收益到其他材质、背景、分辨率。
-- **Factorio，状态隔离。** [一手：作者方案] [FFF326](https://www.factorio.com/blog/post/fff-326)（2019-12-20）把可运行任意 trigger 的粒子与不改游戏状态的 simple particles 分开，后者可推算轨迹、离屏不创建；仍受单类型、固定发射器和运动范围限制，并处理入屏／读档不重播。[研究] 借用“能否不模拟取决于语义”的因果，不把作者自研 emitter 搬进 Unity／UE，也不把所有屏外效果都判为可停。
-- **Sector’s Edge，视觉接触反例。** [一手：作者历史代码] Mitchell Robinson 的[2020 博文](https://vercidium.com/blog/particle-optimisations/)让碎屑 ray-march 体素地形，碰撞后反弹／减速；文中该更新路径修改粒子自身速度与姿态，未见伤害结算或地形写入。[研究] 因而“有碰撞”不证明它必须作为玩法真相持续模拟；但若保留贴地／反弹观感，随意取消碰撞会改变效果。作者测量来自 Ryzen 5 1600／GTX 960 及特定立方体粒子，不拿数量或速度比作本项目预算，更不能横比 Factorio 烟雾。
-- **同作者源码纠偏。** [一手：固定源码] `Vercidium/particles@31bd44b3d3654498924ee26604884cfedf969e92`（2021-08-25）的 [ParticleManagerUpdate.cs](https://github.com/Vercidium/particles/blob/31bd44b3d3654498924ee26604884cfedf969e92/source/particlemanager/ParticleManagerUpdate.cs)只示例更新位置／旋转／寿命并写入缓冲，已经不含上述体素碰撞；[Particle.cs](https://github.com/Vercidium/particles/blob/31bd44b3d3654498924ee26604884cfedf969e92/source/structs/Particle.cs)也无伤害／地形状态。[README](https://github.com/Vercidium/particles/blob/31bd44b3d3654498924ee26604884cfedf969e92/README.md)说明使用 mock OpenGL bindings，[LICENSE](https://github.com/Vercidium/particles/blob/31bd44b3d3654498924ee26604884cfedf969e92/LICENSE)为 Apache-2.0。[研究] 👀 仅借机制，⛔ 不作为商用引擎即插即用碰撞库；许可允许复用不消除接入线程／渲染后端的成本，未复制代码或资产。
+- **Factorio 烟雾。** [一手] [FFF281](https://www.factorio.com/blog/post/fff-281)（2019-02-08）：降更新后到期仍绘，越透明覆盖反大；修到期绘制并略低透明尾部。[研究] 查寿命／覆盖，不推广阈值或收益。
+- **Factorio 状态隔离。** [一手] [FFF326](https://www.factorio.com/blog/post/fff-326)（2019-12-20）分任意 trigger 与不改状态 simple particles；后者推轨迹、屏外不建、处理入屏／读档不重播，限单类型／固定发射器／范围。[研究] 按语义裁，不普停屏外或移植 emitter。
+- **Sector’s Edge 反例。** [一手] Mitchell Robinson [2020 博文](https://vercidium.com/blog/particle-optimisations/) 用 ray-march 碰体素后反弹／减速，只改粒子速度／姿态，未见伤害／地形写入。[研究] 碰撞未必是玩法真相，但去掉会改视觉接触；Ryzen 5 1600／GTX 960 立方粒子测量不作本项目预算或横比烟雾。
+- **后续源码不同。** [一手] `Vercidium/particles@31bd44b3d3654498924ee26604884cfedf969e92`（2021-08-25）的 [ParticleManagerUpdate.cs](https://github.com/Vercidium/particles/blob/31bd44b3d3654498924ee26604884cfedf969e92/source/particlemanager/ParticleManagerUpdate.cs) 仅位置／旋转／寿命／缓冲，无体素碰撞；[Particle.cs](https://github.com/Vercidium/particles/blob/31bd44b3d3654498924ee26604884cfedf969e92/source/structs/Particle.cs) 无伤害／地形，[README](https://github.com/Vercidium/particles/blob/31bd44b3d3654498924ee26604884cfedf969e92/README.md) 为 mock OpenGL，[LICENSE](https://github.com/Vercidium/particles/blob/31bd44b3d3654498924ee26604884cfedf969e92/LICENSE) Apache-2.0。[研究] 仅借机制，非即插即用库，线程／后端仍有成本。
 
 ### 现成路线怎么选
 
@@ -1010,23 +1010,23 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 | UE 多处小效果／多 emitter 的 CPU 开销 | [一手／研究] ✅ 先用 [Niagara Effect Type](https://dev.epicgames.com/documentation/en-us/unreal-engine/scalability-and-best-practices-for-niagara)缩实例／发射量／renderer，再比较相同逻辑合并；GPU 路线保留 System／Emitter CPU 开销，池也不消除重新激活成本 | 合并降低裁剪粒度；GPU 瓶颈、少粒子或显存紧张的设备仍比较 CPU，不默认迁移 |
 | 高分辨率／近景透明覆盖是热点 | [研究] ✅ 缩装饰烟片面积、重叠、尾部寿命与材质成本，保留接触瞬间及关键预警；必要时减少同时发生的效果／遭遇组合 | 若简化后提示不完整或接触感丢失，重做少量更明确的反馈，而不是仅以帧时间下降验收 |
 
-[一手／研究] Unity 17.3 要求页另外写 URP／mobile 的 VFX 尚未 out of preview；这是该包页面的状态表述，不推导 URP 整条管线不可用，也不作为“所有移动设备禁用 VFX”的依据。UE 页面当前显示 5.8，但正文保留 5.4 Lightweight Emitters 的历史说明，本节未据此推荐该功能或断言其当前成熟度。平台支持与实现版本在实际接入时再核；两个作者的历史方案只证明具体机制，不代表跨游戏画质／性能排行榜。
+[一手／研究] Unity 17.3 要求页称 URP／mobile VFX 尚未 out of preview，不等于整条 URP 或所有移动 VFX 不可用。UE 5.8 页保留 5.4 Lightweight Emitters 历史说明，本节不推荐或断言其成熟度；接入再核版本／平台。
 
 ### 第二次修改只预注册
 
-[研究] 先记录最低设备、分辨率、帧率与可用显存／内存；既有遭遇的整体帧预算不能重复分给每个效果。不设置通用粒子数。后续获准后，在目标构建分别观察：少量大透明片、许多小效果实例、同效果离屏再入屏；看 CPU 更新／实例开销、GPU 绘制时间、关键提示及尾部消失，不用编辑器单效果预览代替整场遭遇。
+[研究] 未来固定最低设备、分辨率、帧率与内存预算；比较大透明片、多小实例、离屏再入屏的 CPU／GPU、关键提示与尾部，不给通用粒子数或重复分配整帧预算。
 
-[研究] 二改新增“可点燃地面的碎片”：让 AI 检查伤害／地形写入是否依赖可被裁剪的视觉回调；规则由玩法层执行，外观从结果产生。在低档／离屏仍应保持相同规则，必要的可见危险边界不能随装饰额度消失。试用前保留原效果与预算配置，便于撤回 GPU 迁移或更激进裁剪；若规则已与表现绑定，先分离这项依赖而非另建特效框架。未运行引擎、性能采样或玩家验证。
+[研究] 二改加点燃地面的碎片：伤害／地形独立于可裁剪视觉回调，低档／屏外规则不变，危险边界不随装饰消失。先分离已有耦合，保留原效果／预算以便撤回 GPU 迁移或裁剪。
 
 
 ## 空间容错补研：动作已开始却卡在边角
 
-核实：2026-10-15 UTC。主线一／三；补 04 的窄选择：输入已经接受，动作仍被视觉上微小的边角打断时，改碰撞表达还是增加局部纠偏。已有时间缓冲、坡阶／平台、像素量化与足锁不替代这一决定；通用判断只在 04 维护，不新增运动框架。[研究]
+核实：2026-10-15 UTC；主线一／三。动作已接受却卡微小边角时，比较碰撞表达与局部纠偏；时间缓冲、坡阶、量化与足锁不代替此选择。[研究]
 
 ### 两种玩法的作者证据：局部补偿不是统一缩小碰撞体
 
-- **俯视建造／探索，Factorio。** [一手：作者历史解释] [FFF346（2020-05-08）](https://www.factorio.com/blog/post/fff-346)说明岸线过渡画面使旧矩形碰撞像无形墙，作者改为按玩家位置与过渡形状处理地形通行，并容许敌人不能通过同样路径。后续加玩家专用参数时，造地后的安全检查仍按整包围盒判断，将合法站位误认为落水而在脚下造地。作者说明同问题曾修过却没有补测试，也提示更早历史的回忆可能不准确。[研究] 需要协调的是各调用对该角色政策的理解，不是让所有实体共用同一通行规则；不把作者自述当当前引擎源码审计。
-- **精确平台，Celeste。** [一手：作者说明] [Celeste & Forgiveness](https://maddymakesgames.com/articles/celeste_and_forgiveness/index.html)分别描述上升顶角侧挪、水平冲刺上缘修正与半实心平台上推；这些定位容错与短期输入缓冲并列。[研究] 只借“按具体动作扩大可接受的微小误差”，不能从单个游戏推出所有动作都应纠偏，或照搬像素距离；没有受控体验收益。
+- **Factorio。** [一手] [FFF346（2020-05-08）](https://www.factorio.com/blog/post/fff-346)：岸线旧矩形像无形墙，改按玩家位置／过渡形状通行，敌人可不同；后加玩家参数，造地安全检查仍整包围盒，误判合法站位落水。作者称旧修缺测试、早期记忆可能不准。[研究] 同角色各调用统一政策，非所有实体同规则，非当前源码审计。
+- **Celeste。** [一手] [Celeste & Forgiveness](https://maddymakesgames.com/articles/celeste_and_forgiveness/index.html) 分上升顶角侧挪、水平冲刺上缘、半实心上推，与时间缓冲并列。[研究] 按动作容小误差，非全动作／统一像素或受控收益。
 
 ### 固定实现与后续修订：没有墙，不等于可安全纠偏
 
@@ -1035,31 +1035,31 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 - [Player.cs L2399–2422](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/Source/Player/Player.cs#L2399-L2422)的水平碰撞纠偏限于 Dash／RedDash 及纯水平速度分支，按有限偏移距离试上下位置，无 Solid 后调用 `MoveVExact`／`MoveHExact`；着地可蹲下分支优先。
 - [L2582–2613](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/Source/Player/Player.cs#L2582-L2613)的上升顶角修正按水平速度符号选择左右，找到无 Solid 点后直接改位置。[研究] 两条应用路径也不同，不能从字段名抽成一个通用“纠偏半径”；本轮只审公开 Player 类，不声称审完商用游戏全部碰撞回调。
 
-[一手：官方历史反证] [V1.4.0.0 changelog](https://www.celestegame.com/changelog.html)明确记录冲刺角与单向平台顶部有刺时不做对应修正、检查改用 hurtbox、禁止向带刺地面下修。固定旧分支不包含这些后来明确补充的条件。[研究] ✅ 借状态限定与有限搜索机制，⛔ 不把旧分支原样当完成方案；按本项目检查危险、经过路径、落点与通行政策。不能将历史修复写成当前仍有缺陷，也不能推断所有顶角修正都遵循完全相同的危险条件。
+[一手] [V1.4.0.0 changelog](https://www.celestegame.com/changelog.html) 后补刺顶冲刺角／单向平台不修、用 hurtbox、禁向刺地下修，固定旧树缺这些条件。[研究] 借有限／状态搜索，勿照搬旧版；核路径、落点、危险／通行，各类顶角不一定同条件。
 
-[一手：许可] 已读同 SHA 的 [README](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/README.md)和 [MIT LICENSE](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/LICENSE)：许可只覆盖仓库代码，不含商业游戏／资产。它是可读学习片段，不是 Unity／UE 即插即用控制器；本节未复制代码。其他作者网页不授予其游戏资产复用权。
+[一手] 同 SHA [README](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/README.md)／[MIT LICENSE](https://github.com/NoelFB/Celeste/blob/1b0ce45c75e05649ae91b44a8bb6b196684e4352/LICENSE) MIT 仅代码，非游戏／资产；只借片段，不作 Unity/UE 即用控制器，作者网页不授权商业资产。
 
 ### 代价与另一个作者的维护反例
 
-[一手：作者历史报告] [FFF344（2020-04-24）](https://www.factorio.com/blog/post/fff-344)记录给 mod 单位启用地形过渡碰撞后，抽象寻路未支持而崩溃，先撤回、后补支持。是否给敌人启用还涉及已有防御策略与额外计算；文中约5%是历史粗测，不预测本项目成本。[研究] 空间补偿不是仅修改每帧碰撞，多种实体与世界修改路径会扩维护面，允许不同规则也须明确调用范围。
+[一手] [FFF344（2020-04-24）](https://www.factorio.com/blog/post/fff-344)：mod 单位启地形过渡后，抽象寻路未支持而崩溃，先退后补；敌人还涉及防御策略与计算，约5%仅历史粗测。[研究] 维护涵盖实体与世界修改调用，不只碰撞循环。
 
-[一手：官方修复] [Mina the Hollower 更新页](https://www.yachtclubgames.com/blog/mina-the-hollower-update-notes/)页头为2026-06-26；其1.0.5记录缩小 Spark 排出检查框以免轻微重叠就排出，并排除箱子、雪球、可移动／可破坏物。1.0.6记录钓竿跳跃落到 speed bump 后卡在墙排出过程，并调整 fishing wall ejection 的位置偏好。各版本没有在该段给出独立发布日期，不把页头日期当所有修复发布日期。
+[一手] [Mina the Hollower 更新页](https://www.yachtclubgames.com/blog/mina-the-hollower-update-notes/) 页头 2026-06-26；1.0.5 缩 Spark 排出框、排除箱／雪球／可动可破坏物；1.0.6 修钓竿跳落 speed bump 卡墙排出并调位置偏好。小版本无各自日期，不共用页头作发布日期。
 
-[研究] Spark 是另一对象，不能冒称前述修复全是玩家控制，也不能把已重叠位置的排出等同 Celeste 的动作容错。此来源只反证通用自动挪位的范围：对象类别、动作与目标偏好仍需维护，不证明哪种算法更好。正文不再堆第三案例。
+[研究] Spark 不是玩家；重叠排出也不同于 Celeste 动作容错。本例只说明对象、动作与位置偏好仍需维护，不作算法排名。
 
 ### 最小采用、撤回与第二次修改
 
-[研究] ✅ 显示轮廓误导时先校准碰撞或关卡边界；🧪 明确要宽容微小定位误差时，沿现有运动所有者补有界、状态限定的纠偏，不另造位置写入者或自动寻路。精确卡位／窄缝本身是挑战时可保留阻挡，只改善表达。若更顺滑来自穿过本应阻挡的路线、误入危险或不断添加逐房豁免，就收窄规则，必要时改空间；不一律扩大搜索或缩小身体。
+[研究] ✅ 轮廓误导先改碰撞／关卡；🧪 有意宽容微小误差才沿运动所有者补有限、状态限定纠偏。精确卡位本是挑战则保留；穿错路线、入险或豁免增多就收窄／改空间，不一律扩大搜索或缩身体。
 
-[研究] 仅预注册项目适用的一种二改：平台游戏加带危险边缘的移动平台，或俯视玩法加可放置地形／障碍。比较原规则、空间表达修正、局部纠偏；在动作接受时间不变时看最终位置、触发分支、危险结果及是否仍沿玩家选择的路线。回查旧普通角、两侧都能通过、单向／动态障碍，以及重开或放置后的合法位置。敌我有意不同时按各自承诺判断，不用“路径完全一致”作为目标。
+[研究] 二改择一：危险移动平台或可放置地形。对照原规则、空间修正、局部纠偏，在相同接受时刻核位置、分支、危险与所选路线；回查旧角、两侧通路、单向／动态障碍、重开／放置位置。敌我按各自政策。
 
-[研究] AI 可追移动、放置／脱困调用与状态分支，准备相同输入回归；人决定哪些近失误应被宽容、哪些路线与风险必须保留。只增加有限查询也不保证比关卡修改更便宜，需在后续阶段记录新增内容的维护成本。
+[研究] AI 追移动／放置／脱困分支并备同输入回归，人定容错和风险；后续记录维护成本，有限查询未必比改关卡省。
 
-**实际验证范围：** 公开作者原文、官方补丁与固定源码／许可静读；另未播放嵌入视频，未测可控性或最佳偏移。结论不依赖引擎专有 API，不给两引擎编造等价配置；共同验证边界见页首。
+**实际范围：** 静读原文／补丁／固定源码与许可；另未看嵌入视频或测最佳偏移，不给双引擎伪等价配置。
 
 ## 听点补比：镜头改变时从哪里听
 
-核实：2026-10-15 UTC。[研究] 本节补运行时世界声的听点选择；既有持续声章节讨论可听范围与恢复，音频资产页讨论音乐选曲／切换，05讨论取景与相机历史，均不能代替这个选择。只补现有音频配置，不新增监听管理框架。
+核实：2026-10-15 UTC。[研究] 补世界声听点选择，与可听范围／恢复、选曲和相机取景分开。
 
 ### 视口与角色附近都有成立的条件
 
@@ -1068,7 +1068,7 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 | [一手] Factorio 作者在 [FFF-332](https://www.factorio.com/blog/post/fff-332)（2020-01-31）说明默认听点移到屏幕中心，便于地图视图，并调整缩放／衰减 | [研究] 管理或远程操作可优先让正在操作的视图有声音，而非固定在角色身体 | 身体附近的声音也可能因此变远；不能把管理游戏经验泛化成近身动作的默认值，也不能由旧博客推断当前全部参数 |
 | [一手] NieR:Automata 开发者在[声学说明 Part 2](https://www.platinumgames.com/official-blog/article/10027)（2019-01-18）说明，多种视角下默认把听点放在角色附近；舞台等场景另改听点，并对交接作插值 | [研究] 镜头经常拉远／换视角而交互仍围绕身体时，可先保持近身声音稳定；远处演出再局部交接 | 这是非独立游戏的相反选择，只反证“听点必随相机”。不推荐单人复制其 Wwise 工程、多套预设或制作规模；远处展示仍可能需要例外 |
 
-[一手] Factorio 官方 [2.1.21 更新](https://forums.factorio.com/viewtopic.php?p=705355)（2026-10-06）又修复了退出 remote view 时过强的多普勒效应。该完整公告证明视图交接确实有后续维护成本，没有公开这里的修复算法，不能声称其做法就是将速度清零；本轮也未核该版本当前处于哪个发行通道。[研究] 切镜／传送不应无意变成听者高速移动，但是否保留有意的运动音高效果仍由玩法决定。
+[一手] [2.1.21 更新](https://forums.factorio.com/viewtopic.php?p=705355)（2026-10-06）修退出 remote view 过强多普勒，未公开算法／未核发行通道，不称速度归零。[研究] 切镜／传送勿意外变听者高速，有意音高仍按玩法。
 
 ### 固定源码：位置、朝向、速度是不同输入
 
@@ -1078,9 +1078,9 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 - [对白镜头](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/dialogue.as#L1180-L1189)取得控制时同样传零听者速度；[自由镜头](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/cam.as#L317)却传入 `vel`，并非所有模式都归零
 - [脚本转发](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Scripting/angelscript/asfuncs.cpp#L1953-L1955)及同文件 L2069 的注册通向[音频接口](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Sound/sound.cpp#L116-L120)，分别设置 listener position、velocity、orientation
 
-[研究] 可借的是按模式明确这三项输入，而非把听者速度自动等同相机位移差。源码没有解释作者全部意图，也没有证明这种听点更好；零听者速度不等于声源速度归零，更不等于所有多普勒均关闭。声像的原点与朝向都重要，“角色位置＋相机朝向”不等于“角色算距离、相机位置算方向”。
+[研究] 按模式明确位置／朝向／速度；源码未说明全部意图。零听者速度不归零声源速度或全关多普勒；“角色位置＋相机朝向”也不等于相机位置算方向。
 
-[一手] 固定 [README](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/README.md)／[LICENSE](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/LICENSE)说明代码除另注外采用 Apache-2.0；游戏美术／关卡不随代码开放，原资产分发需明确书面许可。[研究] 只借机制，不移植自研引擎或商业资产；实际复制代码仍核文件及依赖声明，保留许可、版权与修改说明。
+[一手] [README](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/README.md)／[LICENSE](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/LICENSE)：代码除例外 Apache-2.0，游戏美术／关卡不开放，资产分发需书面许可。[研究] 只借机制；实际复制另核文件／依赖并保通知。
 
 ### 原生入口够先选听点，不保证跨引擎分离声像和衰减
 
@@ -1090,15 +1090,15 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 
 ### 成本、撤回与第二次修改
 
-[研究] 改听点后重新检查已有距离衰减和空间效果；不要把全体声音改 2D 或逐个提高增益当坐标政策的补丁。插值也不是一律更好：跨地点平滑可能经过无关区域，硬切则可能突变，按演出选择 cut／blend，不给通用秒数。近身声音失衡就收回到角色附近；远程交互缺乏声音反馈再局部交接，而不是积累全局特例。
+[研究] 改听点须回查衰减／空间效果，不靠全体 2D 或增益补坐标。blend 可能穿无关区域，cut 可能突变；近身失衡则回角色附近，远程缺反馈才局部交接。
 
-[研究] 只预注册实际二改：原版角色跟随镜头增加远程观察或演出后，在同一近处／远处声源场景中检查拉远、转身、切镜、退出及暂停后返回；记录听点位置／朝向／速度与听到的方向、响度、音高。音高异常先核多普勒路径，响度异常先核坐标与衰减，再决定是否改素材。AI 可追模式切换和参数来源；人判断听觉重点与交接是否自然。原生听点可表达模式且交接符合目标即可收工，没有症状不建完整配置图或音频框架。
+[研究] 二改加远程观察／演出，固定近远声源，验拉远、转身、切镜、退出及暂停恢复，记录位置／朝向／速度和方向／响度／音高。音高先核多普勒，响度先核坐标／衰减；人判交接自然，原生足够就停。
 
-**实际验证范围：** 作者原文、官方更新、引擎文档与固定源码／许可静读，未试听。案例用于选择和反证，不等于本项目听感验证；共同验证边界见页首。
+**实际范围：** 静读作者／官方资料、固定源码与许可，未试听。
 
 ## 拾取坐标补研：显示变换不能靠 DPI 猜回去
 
-核实：2026-10-16（UTC+8）。主线三；改变 04 的自定义拖拽／世界拾取／小地图排错顺序：先核位置生产者与消费 API 的坐标约定，再补必要映射。新证据是 Unity 6.3 与 UE 5.8 的原生契约及公开针对性纠正；不重复 WP11 光标／中心支点选择或已有输入归属政策。[研究]
+核实：2026-10-16（UTC+8）；主线三。拖拽／拾取／小地图先核生产与消费坐标，再补映射；依据 Unity 6.3／UE 5.8 及针对性公开纠正。[研究]
 
 ### 原生路径先行，只有跨空间时才转换
 
@@ -1118,42 +1118,42 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 
 ### 最小采用与二改预注册
 
-[研究] 沿现有事件处理函数，注明输入空间、消费空间、原点／单位及面板／相机身份即可，不建统一坐标框架。二改调整窗口或 UI 缩放，再加入移位、非全屏的小地图／第二视口；检查中心、边缘、显示区外的可见目标与实际拾取。原生转换满足即停止；原生控件也偏移时查版本问题，坐标已对齐但仍漏点时转查遮挡和路由，不继续堆比例补丁。
+[研究] 在现有处理函数注明两端空间、原点／单位、面板／相机。二改缩放／窗口并加移位小地图／视口，核中心、边缘和区外拾取。原生够用就停；普通控件也错查版本，对齐仍漏查遮挡／路由。
 
-**实际验证范围：** 仓库、原帖与官方文档静读，未证明任何通用缩放公式或修复成功率；共同验证边界见页首。
+**实际范围：** 静读原帖／仓库／官方契约，不证明通用缩放公式或修复成功率。
 
 
 ## 动态 UI 补研：重建边界不等于停止绘制
 
-核实：2026-10-16 UTC+8；主线三，GC 客户端模块。改变建议：动态 HUD／菜单出现已测得的重建热点后，先查持续使它失效的原因，再选已有原生边界；不因“静态／动态”标签就普遍拆 Canvas 或套 Retainer。本节补性能取舍，不重复菜单输入路由与拾取坐标；未运行引擎或目标设备测试。[研究]
+核实：2026-10-16 UTC+8；主线三。动态 HUD／菜单已测重建热点后，先查反复失效原因再选原生边界，不按静／动态标签普遍拆 Canvas／套 Retainer。[研究]
 
 ### 先去掉错误变化，再决定是否缓存
 
-[一手／社区] [TokyoWarfareProject 的项目报告与 Unity 工程师诊断](https://discussions.unity.com/t/case-1082192-massive-performance-hit-due-to-ui/715019)发生于 2018-09-16—21：作者对比升级到 2018.3 beta 后的 UI 成本，提供 Player profile；Unity 工程师检查项目发现同一 Canvas 上两个 CanvasScaler 分别写入 1 和 0.47，持续触发尺寸变化通知与几何／布局重建，建议移除重复组件，并说明已加禁止重复组件的标记。作者确认误加组件，但未提供完整修复后 benchmark。因此只支持“检查谁使 UI 反复 dirty”，不引用其 FPS 作为优化收益，也不声称当前版本仍允许同样配置。[研究]
+[一手／社区] [TokyoWarfareProject 的项目报告与 Unity 工程师诊断](https://discussions.unity.com/t/case-1082192-massive-performance-hit-due-to-ui/715019)（2018-09-16—21）：2018.3 beta Player profile 中，同 Canvas 两个 Scaler 写 1／0.47，工程师发现持续尺寸通知／重建，建议删重复并说明已加禁止标记。作者确认误加，无完整修后 benchmark；仅支持查 dirty 来源，不引 FPS 收益或称当前仍可如此配置。[研究]
 
 ### Unity：按现有 UI 路线选择，不互抄边界
 
-- [一手] [uGUI 官方优化指南](https://unity.com/how-to/unity-ui-optimization-tips)说明 Canvas 内元素改变时需重新分析批次；子 Canvas 维护自己的几何与 batching，可按共同更新时机隔离动态区。**这不是“每改一个值便重建全树全部 mesh／layout”的契约。** 独立 Canvas 不能共享同一次批次合并，更多边界可能增加绘制成本；静态区仍需显示，不等于缓存为不再绘制的像素。该指南未标固定引擎版本，本轮把它作为官方机制说明，不写成 Unity 6.3 实测。[研究]
+- [一手] [uGUI 官方优化指南](https://unity.com/how-to/unity-ui-optimization-tips)：Canvas 变化需重析批次，子 Canvas 自管几何／batching，可按更新时机拆；非每值改都重建全树 mesh/layout。独立边界不能合批、可能增 draw，静态仍绘。指南无固定版，非 6.3 实测。[研究]
 - [一手] [Unity 6.3 LTS 移动元素契约](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-use-usage-hints-to-reduce-draw-calls-and-geometry-regeneration.html)（页面构建 2026-10-14）：top／left／width／height／flex 可引起布局重算及传播；style.translate 在 transform 阶段移动，不重算布局；频繁变换可用 DynamicTransform 避免 CPU mesh 更新。**仅视觉移动才走这条路；真实内容重排不能冻结布局来省成本。** 不由此迁移稳定 uGUI 或拆出多个 UIDocument。[研究]
 - [一手] [6.3 平台与网格限制](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-support-for-runtime-ui/uie-performance-consideration-runtime/uie-platform-and-mesh)：尺寸变化会重新生成几何，部分 Android 设备与 Web 不能局部更新 index buffer。官方提示不能替代设备测量；UI Toolkit 的优化选择不保证所有平台都有同样收益。[研究]
 
 ### UE：缓存计算与降频绘制分别决策
 
-[一手] [UE 5.8 Invalidation 契约](https://dev.epicgames.com/documentation/en-us/unreal-engine/invalidation-in-slate-and-umg-for-unreal-engine)区分布局／绘制缓存与 Retainer render target。Global Invalidation 启用后，窗口内局部 Invalidation Box 停用；高频变化小部件可设 Volatile，不缓存其 paint 数据，不能据此把整页都设成 volatile。Retainer 重绘成本与内存高于 Invalidation Box，官方建议先用 invalidation，再为剩余 draw-call 压力考虑 Retainer。[研究] 因而先检查项目已有配置，避免加入无效的嵌套缓存，也不要把降低 CPU 计算与降低 GPU 绘制混为同一收益。
+[一手] UE 5.8 [UE 5.8 Invalidation 契约](https://dev.epicgames.com/documentation/en-us/unreal-engine/invalidation-in-slate-and-umg-for-unreal-engine) 分 Invalidation 布局／paint 缓存和 Retainer 纹理；Global 启用停窗口局部 Box，Volatile 不缓存 paint，只给高频部件。Retainer 重绘／内存更贵，先 invalidation 再处理残余 draw 压力。[研究] 不叠无效缓存或混 CPU/GPU 收益。
 
-[一手] [URetainerBox API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/UMG/URetainerBox)分别定义 RenderOnInvalidation、RenderOnPhase、PhaseCount、RequestRender；[UE 5.5 官方 API 示例](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/RetainerBox?application_version=5.5)明确 PhaseCount=2 时隔帧更新。[研究] 降刷新改变可见反馈的时机，需按实际交互预算验收，不直接宣称固定毫秒输入延迟；每帧强制重绘也不能宣称仍有原先缓存收益。
+[一手] [URetainerBox API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/UMG/URetainerBox) 分 RenderOnInvalidation/Phase、PhaseCount、RequestRender；[UE 5.5 官方 API 示例](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/RetainerBox?application_version=5.5) 的 PhaseCount=2 隔帧。[研究] 降频改变反馈时点，非固定毫秒延迟；每帧强刷不保原缓存收益。
 
-[社区／一手] [2022-04-25 开发者原帖](https://forums.unrealengine.com/t/text-component-not-updating-inside-retainer-box/539340)报告 UE5 的弯曲 HUD 中生命／弹药文本放入 Retainer 后不更新，移出正常，4.27.2 未遇同样问题；后续用户的 RequestRender、phase 与布局强刷绕法效果不一致，不采用为统一修复。[Epic UE-150807](https://issues.unrealengine.com/issue/UE-150807)给出持续 SetText 的复现，影响 5.0.1，状态 Fixed、Target Fix 5.4、Fix Commit 29900904；创建 2022-05-02，解决 2023-11-22，页面更新 2026-08-07。**这是历史已修回归，不能写成 UE 5.8 当前故障；它说明更新调用成功不等于可见值已更新。** [研究]
+[社区／一手] [2022-04-25 开发者原帖](https://forums.unrealengine.com/t/text-component-not-updating-inside-retainer-box/539340) 报 UE5 Retainer 内血／弹文本不更新、移出正常，4.27.2 无此问题；后续强刷／phase 绕法不一致。[Epic UE-150807](https://issues.unrealengine.com/issue/UE-150807) 影响 5.0.1，Fixed／Target 5.4／29900904；创建 2022-05-02、解决 2023-11-22、更新 2026-08-07。[研究] 历史已修，非 5.8 缺陷；SetText 成功不证明可见已更新。
 
 ### 采用、撤回与第二次修改
 
-[研究] ✅ 现有原生 UI 满足预算就保留；出现实际热点，先分布局／几何／批次与 GPU 绘制，去掉重复写入，再只改一个相关边界。拆分后保留必要交互区的 GraphicRaycaster／原生事件路径，不以省更新为由禁用按钮、冻结焦点或显示旧数值。🧪 uGUI 按共同更新时机拆小 Canvas；UI Toolkit 纯视觉移动用 transform；UMG 先检查 invalidation，Retainer 仅在绘制成本仍需改善且反馈预算允许时比较。
+[研究] ✅ 预算够用保留；热点先分布局／几何／批次／GPU，去重复写入，只试一个边界并保交互。uGUI 按更新时机拆；Toolkit 纯视觉用 transform；UMG 先 invalidation，剩 draw 压力且反馈允许才试 Retainer。
 
-[研究] 二改只预注册：在已有静态 HUD 增加持续数值，再加短位移／闪烁动画；同设备、分辨率和内容量比较原生基线与一个局部改动，记录 UI CPU 重建、draw／GPU、缓存内存及数据变化到可见反馈的时间。开关菜单、控件显隐后用实际点击和已承诺导航方式确认数值、焦点反馈与目标一致，不以直接调用回调代验。CPU 改善不足，或 GPU／内存／反馈延迟超预算则撤回；出现停更先核所用版本及失效契约，不默认每帧强刷整树。本轮仅资料研究，尚无目标设备性能收益与运行正确性结论。
+[研究] 二改静 HUD 加持续值再加动画，同设备／分辨率比基线与一局部改动，记 CPU 重建、draw/GPU、缓存内存及可见反馈。菜单／显隐后实际点击与已承诺导航核数值／焦点；无 CPU 收益或 GPU／内存／延迟超预算则撤回，停更先查版本／失效，不全树强刷。
 
 ## 墙门遮挡补比：直达被挡不等于通路消失
 
-核实：2026-10-16 UTC+8。主线二／三，GC 客户端声音质量。[研究] 新增选择是按可听规则区分直接遮挡、固定分区和通路需求；不重复 WP6 的混音／音乐，以及本记录的并发、循环和听点。保持现有音频系统，不以声学真实度或功能数量作为统一质量目标。
+核实：2026-10-16 UTC+8；主线二／三。[研究] 按可听规则区分直达遮挡、分区及通路，保既有系统，不以声学真实度为统一目标。
 
 ### 两种生产机制及不能互换的结论
 
@@ -1167,51 +1167,51 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 - [一手] Unity 6.3 [AudioLowPassFilter](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioLowPassFilter.html)按 cutoff 去掉高频，并提供随开门改变 cutoff 的例子；挂在 AudioSource 或 AudioListener 的作用范围不同。[Physics.Linecast](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Physics.Linecast.html)提供线段碰撞查询及层／trigger 筛选。[研究] 简单门关系先由现有状态驱动相关声源，确需几何遮挡才查询；原语不自动决定声学阻挡层、查询频率、状态所有者与过渡，也不自动找绕行通路
 - [一手] UE 5.8 [Sound Attenuation](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine)原生提供 Occlusion、Trace Channel、低通频率、音量衰减与插值时间。官方指出 simple collision 较便宜但可能误判复杂形体；修改 Visibility 的响应可能影响其他系统，可考虑独立音频 channel。[研究] 先配置这些机制，不另造相同管理器；插值缓和边界变化，却不能纠正错误碰撞或过期门状态，更不补出间接路径
 
-[研究] ✅ 少量直达遮挡满足玩法就停止；房间化关卡需要开门／破洞改变可听关系，先复用既有分区与门状态，代价是内容改动后维护关系。只有更复杂的材质透射／反射等具体需求超出已有方案，才👀评估现成传播工具，并先核目标引擎版本、平台兼容与代码／插件许可；不默认中间件，也不自建声学引擎。运行预算分开看活跃声部、查询与 DSP，不能由 voice 已虚拟化就推定项目自写查询停止；没有目标设备测量，不给统一射线数或更新频率。
+[研究] ✅ 直达够用就停；房间开门／破洞先复用分区与状态，承担内容关系维护。材质透射／反射等明确缺口才评估现成传播，先核引擎／平台／许可。分记 voice／查询／DSP，虚拟化不保证自写查询停，不给通用射线数。
 
 ### 集成反例与第二次修改：只预注册
 
-[一手] [Steam Audio Unity 当前指南](https://valvesoftware.github.io/steam-audio/doc/unity/guide.html)把 Occlusion、Transmission、Reflections 分开配置；几何默认 static，动态门需配置并导出 Dynamic Object，且只传入其整体 Transform 变化，子物体独立 Transform 变化不受支持。[研究] 因此增加铰链子物体动画后不能假设声学几何已随门更新。这里只把它作为内容维护反例，不是插件采用、许可背书或性能比较。
+[一手] [Steam Audio Unity 当前指南](https://valvesoftware.github.io/steam-audio/doc/unity/guide.html) 分 Occlusion/Transmission/Reflections；几何默认 static，动态门需导出 Dynamic Object，只传整体 Transform，不支持子物体独立变化。[研究] 铰链二改须核声学几何，非插件推荐／许可背书。
 
-[研究] 二改增加第二出口或破门，保持同一关键脚步／攻击素材，比较无障碍、隔墙、门开关和隔墙但有绕行通路；沿门边移动，检查开门仍闷、忽强忽弱、应有预警被滤掉及方向误导。再加环境声，分别观察声部、查询和 DSP 成本。AI 查遮挡层、门状态来源、更新频率和几何配置，人判断身份／方向信息、起音和过渡是否符合玩法；几何或状态错误先修对应输入，过滤藏掉关键提示则撤回或缩小适用声源。直接遮挡与区域规则已满足可辨性及预算就收工，不升级为全场景传播项目。
+[研究] 二改加第二出口／破门，固定关键声音，比较无障碍、隔墙、门开关与绕行，沿门边查闷声、突变、漏预警及方向；再加环境声量声部／查询／DSP。输入错误先修，滤掉提示就收窄／撤回；人听验，简单遮挡／区域规则够用就停。
 
-**实际范围：** 作者原文、官方契约、固定源码与许可静读，未试听。没有采用未独立核实的 Wiki 修复描述，也不把开发者动机当已测收益；共同验证边界见页首。
+**实际范围：** 静读原文／契约／源码／许可，未试听；未采用未经独立核实的 Wiki 修复描述。
 
 ## 对白补研：显示完成不等于剧情交付
 
-核实：2026-10-16（UTC+8）。主线一／三；改变 04 的选择是先区分补全文字、结束当前句与退出会话，再按内容决定推进时机。[研究] 不扩展成对话框架选型，也不重复场景取消／ink 旧档迁移。
+核实：2026-10-16（UTC+8）；主线一／三。分别决定补全文字、推进当前句和退出会话，按内容定节奏。[研究]
 
 ### 原生组件已区分的交付动作
 
-[一手] 固定 `YarnSpinnerTool/YarnSpinner-Unity@bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d`，对应 [v3.2.8 提交](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/commit/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d)（2026-08-07）；[LICENSE.md](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/LICENSE.md)为 MIT。只静读实现，不安装、执行或宣称所有目标 Unity 版本通过；许可不包含项目另取的字体、配音等资产。
+[一手] `YarnSpinnerTool/YarnSpinner-Unity@bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d`，[v3.2.8 提交](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/commit/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d)（2026-08-07），[LICENSE.md](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/LICENSE.md) MIT；仅读，字体／配音授权另核。
 
 - [LinePresenter.cs L350–368](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LinePresenter.cs#L350-L368)：打字效果使用 `HurryUpToken`，随后按设置自动等待或等待 `NextContentToken`。补全文字不是立即推进剧情。[一手／研究]
-- [VoiceOverPresenter.cs L156–228](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L156-L228)：等待语音时消费下一内容信号，提前结束会淡出并停止；不消费文字加速信号。**缺配音反例：** [L115–127](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L115-L127)在没有语音资产且 `endLineWhenVoiceoverComplete` 开启、取消请求接收者有效时，同样请求结束该句。[一手] [研究] 新语言只有字幕时须明确阅读回退；不是所有 Yarn 配置都会跳过缺配音句子，也不应据此全面关掉自动推进。
-- [LineAdvancer.cs L450–510](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LineAdvancer.cs#L450-L510)：内部输入路径按呈现状态和 `separateHurryUpAndAdvanceControls` 决定补全或下一句，并忽略内容刚收到的同帧输入；公开 `RequestLineHurryUp()` 路径不同，不能凭名称认定两者等价。[一手] [研究] 已有原生组件可表达的政策先配置，不新增跨引擎控制器。退出会话也不等于撤销已分发的[玩法命令](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs#L689-L746)。
+- [VoiceOverPresenter.cs L156–228](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L156-L228) 消费下一内容、提前结束淡出停止，不消费文字加速；[L115–127](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L115-L127) 缺语音且 endLineWhenVoiceoverComplete 开、接收者有效也请求结束。[一手／研究] 缺配音语言须有阅读回退，非所有配置跳句或应全关自动。
+- [LineAdvancer.cs L450–510](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LineAdvancer.cs#L450-L510) 内部按呈现及 separateHurryUpAndAdvanceControls 补全／推进，忽略收到内容同帧输入；公开 RequestLineHurryUp 路径不同。先配原生，退出不撤已发 [玩法命令](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs#L689-L746)。[一手／研究]
 
-[一手] [Line Advancer 官方文档](https://www.yarnspinner.dev/docs/unity/10-components/02-dialogue-view/03-dialogue-advance-input/)明确区分 hurry、next 与 cancel dialogue，但页面仍标 v3.1；本节具体字段与消费路径以固定 3.2.8 源码为准，不把网页“latest”当已与该实现同步。核心政策不依赖引擎，不强加 UE 对照或推荐迁移至 Yarn。
+[一手] [Line Advancer 官方文档](https://www.yarnspinner.dev/docs/unity/10-components/02-dialogue-view/03-dialogue-advance-input/) 分 hurry/next/cancel，仍标 3.1；具体以固定 3.2.8 为准。政策通用，不强加 UE 对照或迁 Yarn。
 
 ### 不同作者选择不同节奏
 
-1. **Firewatch，特定关键路径保护。** [一手：历史程序员讲稿] [GDC 2017《Do You Copy?》](https://media.gdcvault.com/gdc2017/Presentations/Armstrong_Do_you_copy.pdf)第 50–58 页（PDF 零基 49–57）记录 Julia 对话的打断可能使内部事实与玩家听到的信息脱节，于是形成不能被中止的关键路径会话。[研究] 支持区分可插话段落与必须交付的信息，不支持禁止所有打断。后面第 73–75 页的 Conversation 容器属于 Further Work，不能当已实现方案。
-2. **inkle，短气泡自动推进。** [一手：作者自述] [2026-06-18《Pacing dialogue》](https://medium.com/@inklestudios/pacing-dialogue-5bd5a99bfc20)解释其文本对白独自承担情绪与节奏，采用短句串联，并通常默认自动继续气泡；每十来个词点击一次会带来负担。[研究] 这是撤回“每句必须手动继续”的反例，不是自动播放对所有阅读能力、语言和游戏都更好的证据。
+1. **Firewatch。** [一手] [GDC 2017《Do You Copy?》](https://media.gdcvault.com/gdc2017/Presentations/Armstrong_Do_you_copy.pdf) 页50–58（零基49–57）：Julia 被打断会令内部事实与听见信息脱节，故保护关键会话。[研究] 非全禁打断；73–75 的 Conversation 容器仍 Further Work。
+2. **inkle。** [一手] [2026-06-18《Pacing dialogue》](https://medium.com/@inklestudios/pacing-dialogue-5bd5a99bfc20) 以短句串联承载文本情绪／节奏，常默认气泡自动继续，频点十来词负担大。[研究] 反对每句必手动，非各语言／阅读能力都更好。
 
-**采用判断：** [研究] 先决定哪次输入只改变呈现、哪次推进当前句、哪次离开会话；关键事实按内容交付要求处理。可插话段落保留打断；重要信息可保护、补述或明确重入，但不能靠关掉全部跳过隐藏事实不同步。选择手动或自动推进要同时考虑文字长度、配音和后续选择；没有通用最快／最慢政策。
+**采用判断：** [研究] 分开呈现、推进和退出输入；可插话保留打断，关键事实可保护／补述／重入。自动或手动按长度、配音与后续选择取舍，不能靠禁所有跳过藏同步错误。
 
-**第二次修改只预注册：** [研究] 给原对白加配音及一种缺配音语言，再加可插话分支。分别走补全文字、语音中推进、整段退出、重新进入与自动播放；核可见文字、声音收尾、可选项与关键事实是否符合声明的政策。阅读回退仍来不及或插话造成信息缺失时，撤回相关自动推进／打断范围，不重写整个系统。AI 可生成绑定和路径，人判断阅读、表演与插话自然度。
+**二改预注册：** [研究] 加配音、缺配音语言及插话分支，走补全、语音中推进、退出、重进和自动播放；核文字、声音、选项及事实。阅读来不及或漏信息则收窄自动／打断；人判阅读与表演。
 
-**实际范围：** [研究] 仓库查重、公开文档、固定源码与创作者原文静读；共同验证边界见页首，本节未开展对白体验测试。
+**实际范围：** 公开文档、固定源码及作者原文静读，无对白体验测试。[研究]
 
 ## 高速碰撞补研：线性、旋转与误接触
 
-核实：2026-10-16 UTC。主线三；改变 04 物理行只按“穿透／稳定性”启用 CCD／substep 的粗分：先分线性漏碰、旋转漏碰与误接触，再选原生路径。不新增碰撞框架；以下是公开契约与问题报告，未运行引擎或复现样例。[一手／研究]
+核实：2026-10-16 UTC；主线三。先分线性漏碰、旋转漏碰及误接触再选 CCD／substep；依据公开契约／问题报告。[一手／研究]
 
 - **Unity 6.3 内置 3D 的模式不是无条件升级链。** [一手] [选择表](https://docs.unity3d.com/6000.3/Documentation/Manual/choose-collision-detection-mode.html)建议从 Discrete 开始，漏碰时试 Continuous Speculative，仍漏碰／误碰时按静态或动态刚体对象比较 Continuous／Continuous Dynamic；但同页明确后两者不适合旋转造成的碰撞。[sweep 原理](https://docs.unity3d.com/6000.3/Documentation/Manual/sweep-based-ccd.html)沿当前线速度计算 TOI，碰撞后可重算速度与再扫掠；固定支点的弹球挡板是官方旋转反例。[研究] 因此不能只按“更精确”把旋转物体换到 Continuous Dynamic，也不能把这里的 CCD 内部子步当作全局提高模拟频率。范围不含 Rigidbody2D 或 ECS Unity Physics。
 - **Speculative 的撤回条件不只有漏碰。** [一手] [speculative 原理](https://docs.unity3d.com/6000.3/Documentation/Manual/speculative-ccd.html)按线运动及角运动扩张 AABB；最近点法线可能把细分表面接触误判为斜坡，让高速球无故向上跳。若求解阶段获得额外能量、越出原先扩张范围，仍可能漏碰。[研究] 对需要准确线性接触的物体比较 sweep；有角运动时继续同时核误碰／漏碰，不承诺换模式或提高频率必然修好。官方图例是机制反例，不是本仓库体验／性能实测。
 - **UE 5.8 分别查 Chaos 刚体与 ProjectileMovement。** [一手] [FBodyInstance](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/FBodyInstance)以 bUseCCD 为组件启用 CCD；[UProjectileMovementComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UProjectileMovementComponent)以 bSweepCollision 控制扫掠检查，bForceSubStepping 通过更小步改善轨迹精度；UpdatedComponent 若模拟物理，则初始发射参数后由物理接管。[研究] 先确定谁推进运动，不能给两条路径同时套 Unity 模式，也不据这些 API 宣称 Chaos CCD 保证角运动命中。[物理 substep](https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-sub-stepping-in-unreal-engine)分割帧时间以改善复杂物理资产稳定性，受 Max Substeps 和 Max Physics Delta Time 限制；不能把时间细分当作更换检测算法。多回调已由 [04 物理行](../../domains/game-dev/04-client-modules.md#2-十一个模块的最低交付线)覆盖，不新增另一套结算规则。该文仍含 APEX／mobile 旧措辞，本轮不据页眉推导平台支持现状。
 - **真实报告限定到其版本和配置。** [一手：官方问题记录] [UE-358355](https://issues.unrealengine.com/issue/UE-358355)给出 Vehicle 模板复现步骤：高速 Chaos Vehicle 开 CCD 后碰撞 One Way Interaction 动态物体，出现不应发生的明显减速；开／关 CCD 是报告里的对照。核实时为 Unresolved，列影响 5.5／5.6／5.7，目标修复 6.0；不能推断 5.8 已确认受影响或 6.0 已修复。原因归于 CCD sweep 是 licensee 的猜测，本轮未证实，也不推荐报告中的内部回调绕过。[研究] 它只支持新增 CCD 后还需验响应政策，不能推广为所有 Chaos 接触或 Unity speculative 的同一种故障。
 
-**第二次修改只预注册：** [研究] 保留直线高速球／薄墙基线，再把碰撞机关改为绕支点旋转的杆，并加入细分接触表面；分别记录漏碰、无故偏转与接触后的响应，先比较适用检测方式，再比较步长及成本。UE 分别保留 ProjectileMovement 驱动和 Chaos 模拟路径，核启用物理后的运动接管；仅项目确需 One Way Interaction 时加入该规则对照。若防穿透破坏既定反弹／推动规则，撤回该配置并定位，不为“更精确”全局加档。尚未执行，不能宣称质量或性能收益。
+**二改预注册：** [研究] 直线球／薄墙基线加旋转杆、细分表面；核漏碰、偏转及响应，先比算法再比步长／成本。UE 分别核 ProjectileMovement、Chaos 及物理接管；确需 One Way 才加。防穿透破坏反弹／推动规则则撤回定位，不全局升档。
 
 ## 客户端模块页历史页头
 
@@ -1224,7 +1224,7 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 
 ## 声音响应补研：低延迟与连续播放分别验收
 
-核实：2026-10-16（UTC+8）。主线一／三，GC；改变04对确认声迟到的选择：定位等待后才比较原生缓冲，不以最小参数作为统一质量目标。新证据是不同类型游戏的相反维护选择；WP6已有调度边界不重复当新成果。[研究]
+核实：2026-10-16（UTC+8）；主线一／三。确认声迟到先定位等待再比原生缓冲；不同类型游戏有相反维护选择。[研究]
 
 ### 处理块缩小与扩大都可能合理
 
@@ -1240,11 +1240,11 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 
 二改仅预注册：用已准备好的短确认声区分首次准备与每次起音等待，记录输入接受、播放请求及实际输出；增加背景音乐／空间处理或换已承诺支持的输出设备后，在空闲及高负载下比较原配置和一个低延迟配置，兼查爆音、断续及音频CPU。[VVVVVV原报告](https://github.com/TerryCavanagh/VVVVVV/issues/970#issuecomment-1515043078)中磁盘录音无噪声而扬声器有，故内部录音不替代全部实际输出验收。[社区／研究] 收益不明或连续性退化则恢复基线，迟交事件／首用准备先修对应环节，不改操作判定掩盖声音迟到。
 
-范围：只读官方契约、固定源码与原始讨论；未运行游戏、引擎、后端或设备测试，未证明目标设备延迟、稳定性或体验收益。[研究]
+[研究] 仅静读契约／源码／讨论；未运行后端或设备测试。
 
 ## 转向补研：先分限幅与平滑，再决定是否撤回插值
 
-核实：2026-10-16 UTC；主线一／三，GC。补充04的诊断顺序：快速转向不跟手时，先隔离输入平滑、转向上限与呈现插值，再决定牺牲哪种体验；不把现有分层建议改成统一开关政策。[研究]
+核实：2026-10-16 UTC；主线一／三。快速转向先隔离输入平滑、限幅与呈现插值，再决定取舍。[研究]
 
 ### 同一游戏里的不同选择与局部撤回
 
@@ -1259,13 +1259,13 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 - [L743–780](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/src/actplayer.cpp#L743-L780)另由 `bUseTimerInterpolation` 控制相机状态追踪；[MainMenu.cpp L2476–2505](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/src/ui/MainMenu.cpp#L2476-L2505)仍默认开插值、关 Smooth Mouse，撤限速没有一起撤掉呈现插值
 - **方向边界**：[pitch L676–715](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/src/actplayer.cpp#L676-L715)仍有夹取；所核 flag 对玩家水平 yaw 生效，不能将公告简写扩大成所有方向、所有镜头都已无上限
 
-[研究] **采用判断：** 关闭插值可作为重视即时转向的候选，但低频姿态更新在高刷新显示上可能更明显；保留插值可照顾连续观感，仍须验急转、停鼠与反向修正。已有转向上限不服务玩法时先检查其截断，避免为修限幅问题丢掉有用的呈现；若上限本就是转身承诺，则保留规则并按该规则调反馈。来源只支持分离诊断与有条件选择，不量化延迟，不建议复制自研引擎，也不把三项关闭当统一配方。
+[研究] 即时转向可比较关插值，但高刷新更易显低频跳动；保留时核急转、停鼠、反向。上限无玩法用途则先修截断，有转身承诺则保规则调反馈；不把三项全关作统一配方。
 
 [一手／研究] [固定许可](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/LICENSE.txt)为 BSD-2-Clause，[README](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/README.md)说明游玩仍需购买副本；代码许可不扩大资产许可。本轮仅机制静读与历史反馈核查，不复制代码或资产，未运行游戏、引擎或设备测试；不增加新的实测计划。
 
 ## 插值预算：按观察尺度缩小呈现，不停止仿真
 
-**核实：2026-10-17（UTC+8）。** 改变04的按需插值选择：对象少、没有热点时保留最简单的全体必要对象插值；呈现插值确有成本且近景／总览用途不同，才比较按视口与尺度筛选。不要为纯呈现问题先改全局模拟频率，也不移植自研循环替换够用的引擎原生能力。**[研究：条件选择]**
+**核实：2026-10-17（UTC+8）。** [研究] 无热点保留全体必要对象插值；确有成本、近景／总览用途不同才按视口／尺度筛选，保留原生模拟频率与循环。
 
 **OpenRCT2的已发行取舍。** [#24467](https://github.com/OpenRCT2/OpenRCT2/pull/24467)原先把Guest、Staff、Vehicle全加入插值，改成仅取可见且zoom≤0的视口，实体投影点落在任一视口就保留。[维护者试玩回执](https://github.com/OpenRCT2/OpenRCT2/pull/24467#issuecomment-2902380560)称未见glitches，没有设备、地图、时长或帧时分布；不把赞美评论当第二次复测。改动列入0.4.23，[2026-10-10的0.5.6发行](https://github.com/OpenRCT2/OpenRCT2/releases/tag/v0.5.6)对应[82b30979](https://github.com/OpenRCT2/OpenRCT2/blob/82b309798a83346b7f9fc61a53847f4323deb19d/distribution/changelog.txt)，[固定EntityTweener](https://github.com/OpenRCT2/OpenRCT2/blob/82b309798a83346b7f9fc61a53847f4323deb19d/src/openrct2/entity/EntityTweener.cpp#L22-L116)仍保留策略。作者认为缩小时插值作用较小是设计判断，没有感知实验或该改动的性能测量。**[一手：固定实现与发行；社区：一次试玩自报]**
 
@@ -1273,6 +1273,6 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 
 **不同类型的反例。** VVVVVV [#220](https://github.com/TerryCavanagh/VVVVVV/pull/220)选择保留34ms模拟步，在中间呈现帧插值，避免为视觉帧率重调已有物理／自制关卡；拆开更新与绘制也是维护工作，不是只加lerp。它有[实际试玩](https://github.com/TerryCavanagh/VVVVVV/pull/220#issuecomment-623655566)与[维护者通关及Valgrind开销报告](https://github.com/TerryCavanagh/VVVVVV/pull/220#issuecomment-644247104)，后者不能推成普通发布构建回退。[2.3发行文](https://distractionware.com/blog/2021/08/vvvvvv-2-3-out-now/)确认高帧呈现进入发行，不证明玩家通过率提高。更直接影响筛选范围的是[#517](https://github.com/TerryCavanagh/VVVVVV/pull/517)：为滚动插值补画上方源像素，修屏幕上缘异常。它不是OpenRCT2算法缺陷，但反证“当前屏外数据总可去掉”；当前屏幕矩形之外可能有下一帧取样与运动连续性所需的数据。**[一手／社区：采用、修复与运行自报]**
 
-**代价与撤回。** 范围筛选增加多视口、集合切换与数据保留责任；保留全体插值更简单，保留原低频呈现则牺牲部分连续感。选择性降档后须比较近景、缩小总览、远景主视口加近景小窗、快速出入屏、缩放后立即反向和暂停恢复；二改新增快速入屏对象或附属视口时回看旧状态。方向／危险信号难追踪或交接突跳则扩大范围或撤回该级降档，不能为少处理对象丢失必要信息。仿真、碰撞与空间索引仍按各自契约推进；不统一套用OpenRCT2的zoom阈值。**[研究：采用与停止条件]**
+**代价与撤回。** [研究] 筛选增加多视口、集合切换及数据保留责任；全体更简单，原低频牺牲连续感。二改快速入屏对象／附属视口后核近景、总览、远主＋近窗、出入屏、缩放反向及暂停恢复；危险难追或突跳就扩范围／撤回。模拟、碰撞与索引照原契约，不套 zoom 阈值。
 
-本轮只读公开实现与回执，未运行游戏／引擎、未测筛选成本、帧时分布或实际辨识；0.5.6仍有代码不等于整个版本无回归，历史试玩也不覆盖本项目设备。没有同条件成本／体验数据，不排名全体与选择性插值，不作当前AI收益结论。**[研究：验证范围]**
+[研究] 未测筛选成本、帧时或辨识；0.5.6 留代码不证明全版无回归，历史试玩不覆盖目标设备。不排名全体／选择性插值或推断 AI 收益。

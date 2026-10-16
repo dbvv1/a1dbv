@@ -15,11 +15,11 @@
 
 ## 核心判断
 
-**仓库的研究对象应是人使用 Agent 完成和演化软件的全过程。** Codex/Claude Code 是主线工具，但领域知识、运行环境、可观测性、测试数据、接口、架构和产品试用，都可能比再加一个提示更直接地改变结果。选择它们的依据应是任务中真实存在的障碍，不能因为“工程实践总是有用”就把仓库扩成软件工程百科。**[经验：研究取舍]**
+**研究人使用 Agent 完成和演化软件的全过程**：按真实障碍选择领域知识、环境、反馈、接口或试用，不因工程实践一般有用就扩成百科。**[经验：研究取舍]**
 
-现阶段优先研究两个容易被归入“模型不行”的问题：Agent 不知道当前业务事实；Agent 得不到实际运行反馈。先补哪一个，取决于任务卡在哪里。若知识、工具与反馈基本足够，仍持续选择错误步骤，就应优先比较推理能力、effort 或工作流约束；这不是要求先把环境补完才能比较模型。信息获取本身也依赖模型能否提出正确问题，两者需要沿具体失败一起判断。**[经验：研究假设，非失败频率统计]**
+优先调查业务事实与运行反馈缺口；信息、工具已足够仍选错步骤时，比较模型、effort 或流程约束。模型也影响提问与取证，须沿具体失败判断。**[经验：研究假设，非失败频率统计]**
 
-这不是“环境永远比模型重要”。更强模型可能从残缺信息中推断出答案，某些任务本来就不需要启动系统；反过来，再强的模型也不能凭源码知道未记录的生产任务调度或用户偏好。我们的建议必须区分这些情况，不能给统一的最优配置。
+更强模型可能补足残缺信息，部分任务也无需启动系统；未记录的生产调度或用户偏好则须外部取证，没有统一最优配置。
 
 ## 一、为什么这条方向比继续加工作流更值得优先投入
 
@@ -29,13 +29,13 @@
 2. 本仓库固定 grader 接受“实现正确但候选自身测试失败”的合成例子；记录校验器接受不存在的 evidence ref。都符合其有限契约，却不能证明工作流整体成功。[验收链审计](../collaboration/reviews/2026-10-11-000d14c.md)。**[经验：实际探测]**
 3. 官方 Codex 迁移教程明确需要工程师确认哪些作业实际在生产运行、SLA 和业务上下文；这些不一定能从代码得到。它把同输入下旧系统与新系统的行为比较作为迁移验证，而非只看新代码的测试数。**[一手：S2，教程设计，非独立效果实测]**
 
-三者不能合并成一个成功率结论，但共同提示了研究方法：**先查缺的是事实、访问能力、反馈，还是决策；不要先把所有失败归因于模型或提示。** 下一批案例应把“Agent 当时能得到什么”记录清楚，才能判断新增 Skill 或工具是否真有作用。
+三类证据不合并为成功率；案例须记录 Agent 当时可得的事实、访问和反馈，才能判断新增能力的作用。
 
 ## 二、运行环境是开发能力的一部分，不只是安装步骤
 
-一个服务能启动，不代表 Agent 能完成开发任务。应沿一条实际场景追到：哪个构建在运行、请求使用哪份数据、错误怎样关联到代码、修改后怎样确认运行的是新版本、怎样回到可比较的初始状态。**[经验：采用判断]**
+沿实际场景核对运行构建、请求数据、错误与代码的关联、重启／缓存归属和初始状态恢复。服务启动只是前提。**[经验：采用判断]**
 
-以“保存后刷新丢数据”为假设案例：截图可以发现丢失，网络响应能区分前端未发送与服务端拒绝，重启后的读取才涉及持久化。若 Agent 只拿到组件源码和截图，反复调 CSS 或重写状态管理不一定解决问题。最小增量可能只是测试账号、可隔离的数据、请求日志及准确启动命令，不是安装完整平台。此案例是分析设计，不是本轮运行结果。
+假设“保存后刷新丢数据”：截图见症状，网络区分未发送／被拒绝，重启读取才涉及持久化。优先补测试账号、隔离数据、日志和启动命令，避免只凭组件源码反复改 CSS／状态管理。此为分析设计，未运行。
 
 需要比较的替代方案：
 
@@ -47,25 +47,25 @@
 | 错误只在用户路径出现 | 通过真实输入走关键路径，内部接口用于定位 | 直接改内部状态后截图作为完成证据 |
 | 系统已经可运行、信息充分仍反复做错 | 检查推理、任务分解、工具描述与流程干预 | 继续无目的扩充环境和日志 |
 
-表格是诊断优先级，不是根因已确定的分类器。同一问题可能跨多行；新增接口本身也有维护、权限和失真成本。
+这些是可重叠的诊断优先级；新增接口仍有维护、权限与失真成本。
 
 ### 交互试点转脚本：bare 不是等价加速
 
-**核实：2026-10-14 UTC；改变 15 §5 与 Claude 专题的 `--bare` 简写。** ✅ 已审查的可信项目中，批量迁移依赖项目知识时，保留普通模式，或在 bare 模式中显式提供同一任务所需的信息、约束与工具；仅做已给定材料的机械处理时可采用 bare，不把全部常驻指令复制进去。这是按执行上下文选择的建议，不是新增迁移流程。**[经验：采用判断]**
+**核实：2026-10-14 UTC；改变 15 §5 与 Claude 专题的 `--bare` 简写。** ✅ 已审查的可信项目中，批量迁移依赖项目知识时，保留普通模式，或在 bare 模式中显式提供同一任务所需的信息、约束与工具；仅做已给定材料的机械处理时可采用 bare，不把全部常驻指令复制进去。**[经验：采用判断]**
 
 [当前官方 headless 文档](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode)区分了普通 `claude -p` 和可选 `--bare`：前者加载交互会话同类上下文，后者跳过 `CLAUDE.md`、自动发现的 Skill、Hook、插件等。可用 `--append-system-prompt-file` 等显式提供必要输入。`--add-dir` 中的 `.claude/skills/` 是部分例外，但 bare 不向模型发送可用 Skill 列表提醒，不能仅凭文件存在认定它被发现和使用。**[一手：官方契约]**
 
-[2.1.286 固定发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.286)确认 bare 改为只连接命令行指定的 MCP、不发送系统提醒、不启动后台任务，shell 超时后停止而非转后台；当前文档具体说明也不会提醒已读文件发生磁盘变化。这里的版本下限针对这组运行行为，不能误写成 `--bare` 或跳过 `CLAUDE.md` 首次出现的版本。**[一手：发布说明与当前文档]**
+[2.1.286 固定发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.286)确认 bare 改为只连接命令行指定的 MCP、不发送系统提醒、不启动后台任务，shell 超时后停止而非转后台；当前文档具体说明也不会提醒已读文件发生磁盘变化。该版本只证明这组行为，不是 bare 或跳过指令的首次版本。**[一手：发布说明与当前文档]**
 
-**外来仓库的启动边界是另一个决定。** 2026-10-14 补核[权限矩阵](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)：普通 `-p` 不显示工作区信任或逐服务器批准提示，未信任目录里的 settings Hook 与 `.mcp.json` 服务器仍会运行／连接；项目 `permissions.allow` 被暂缓并发出警告，不等于这些启动动作也被阻止。[Hooks 文档](https://code.claude.com/docs/en/hooks#security-considerations)明确命令 Hook 使用用户完整权限，并按会话类型区分信任：交互会话等待信任，`-p` 对 settings Hook 视目录已信任。故 10 §3 的采用建议是先限制配置来源，不能只把任务写成“只读”或等待提示。**[一手：当前官方契约；经验：采用判断]**
+**外来仓库的启动边界是另一个决定。** 2026-10-14 补核[权限矩阵](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)：普通 `-p` 不显示工作区信任或逐服务器批准提示，未信任目录里的 settings Hook 与 `.mcp.json` 服务器仍会运行／连接；项目 `permissions.allow` 被暂缓并发出警告，不等于这些启动动作也被阻止。[Hooks 文档](https://code.claude.com/docs/en/hooks#security-considerations)明确命令 Hook 使用用户完整权限，并按会话类型区分信任：交互会话等待信任，`-p` 对 settings Hook 视目录已信任。故先限制配置来源，不能只写“只读”或等待提示。**[一手：当前官方契约；经验：采用判断]**
 
 **`--bare` 不是关闭所有项目设置。** 官方权限矩阵明确 bare 仍应用项目 `env` 与 `awsAuthRefresh` 等 helper，`apiKeyHelper` 则只从显式 `--settings` 读取。`--setting-sources user` 排除项目 settings 文件及 `.mcp.json`，但不应解释成关闭所有 Skill／指令自动发现；不需要这些能力时再采用 bare，并仅显式提供审过的配置、插件与工具。若只禁 Hook，可显式传 `--settings '{"disableAllHooks": true}'`；仅写用户 settings 会被项目优先级覆盖。这些是配置选择，不是操作系统沙箱，且不能为随后执行外来代码提供隔离保证。**[一手：官方机制；经验：组合边界，未运行客户端]**
 
 **历史修复与当前契约须分开。** [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)说明 2025 年中至 2026-01 收到三类信任提示前执行漏洞，修复方式是把项目配置解析／执行延后至接受提示；10 的 2026-05 标记为披露月份，不是发生或修复月份。原文未给这些修复的精确版本，也不能把交互信任闸门推及当前 `-p`。上面的 2.1.286 仅为那组 bare 行为的版本证据，不证明普通 `-p` 从哪个版本起跳过信任提示。**[一手：厂商历史自述与当前文档；检查边界]**
 
-**认证与计费前提也不同。** 同一官方文档说明 bare 不读取订阅 OAuth 或系统钥匙串；Anthropic API 路径使用已提供的 API key／`apiKeyHelper`，外部提供商继续使用各自认证方式。切换前须确认该执行与计费方式已经获准且可用；这不是建议新建凭据、开通付费或把所有提供商改为 Anthropic API key。**[一手：官方文档；经验：采用前提]**
+**认证与计费前提也不同。** 同一官方文档说明 bare 不读取订阅 OAuth 或系统钥匙串；Anthropic API 路径使用已提供的 API key／`apiKeyHelper`，外部提供商继续使用各自认证方式。切换前须确认该执行与计费方式已经获准且可用；不授权新凭据或付费，也不要求外部提供商改认证方式。**[一手：官方文档；经验：采用前提]**
 
-**实际选择与局限。** 原命令依赖转后台等待长构建时，不能只加一个 flag 便声称等价。普通 `-p` 不意味着 bare，官方“未来可能成为默认”的说明也不是当前默认已改变。本轮只核对文档与版本说明，未安装或执行客户端、未测开销和正确率；已有[历史实验](2026-10-12-experiment-records.md)的 bare 调用认证失败，不能补作本判断的成功运行证据。**[经验：采用边界；一手：检查范围]**
+**实际选择与局限。** 依赖后台长构建时，bare 不等价。普通 `-p` 不意味着 bare，官方“未来可能成为默认”的说明也不是当前默认已改变。本轮只核对文档与版本说明，未安装或执行客户端、未测开销和正确率；已有[历史实验](2026-10-12-experiment-records.md)的 bare 调用认证失败，不能补作本判断的成功运行证据。**[经验：采用边界；一手：检查范围]**
 
 ### Claude Code 沙箱：开启不等于所有边界已闭合
 
@@ -87,27 +87,27 @@
 
 **历史反证补核。** [Embrace The Red 原帖](https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/#reliability-and-attack-success-rate-asr)是三个迭代变体各 5 次，3/5、3/5、4/5，不能当通用 ASR；[Anthropic SDLC 原文](https://claude.com/resources/articles/how-anthropic-secures-its-ai-native-software-development-lifecycle)分别报告约 80% 合并代码由 Claude 编写、全部代码超半数由内部 Claude Tag 合并，不能改成同一个子集分母。正文保留反例但收窄统计解释。另把多厂商事故合并叙述缩为 [OpenAI 一手复盘](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)可确认的内部研究模型、弱化防护与共享基础设施突破；不把训练／评估条件外推到发布客户端。RubyGems、Medicare 与其他厂商的合并归属未逐项确证，本轮不保留作核心页证据；ZCode／Cursor 两条仅有二手或 HN 标题，撤出事件表，不能据它们作选型。**[社区：作者实验；一手：厂商自述]**
 
-**验证口径。** 当前官方契约、固定源码和未运行的上游测试定义可交叉支持上述条件选择；没有本仓库运行证据，不宣称当前模型改善、原生 OS 已验证或安全认证。独立评审按 LONG-TERM-PLAN §6 覆盖 10 全页与 03／05／08 一致性；处理上述统计、归因与薄证据问题后确认全页达到 L3，无剩余关键阻塞。完整离线入口 14/14 通过、`git diff --check` 通过；这些只验证仓库文档／配置与确定性测试，不是 L4 模型或 OS 实测。
+**验证口径。** 只读契约、固定源码与未运行测试定义，不构成模型／OS 实测或安全认证。历史独立评审覆盖 10 全页与 03／05／08 一致性，处理上述问题后判 L3；14/14 离线与 `git diff --check` 通过，仅验证仓库文档／配置和确定性测试。
 
 ### Codex 脚本入口：信任状态不等于有效权限
 
-**核实：2026-10-14 UTC；改变 10 §3 与 Codex 专题的脚本入口建议。** ✅ 只读自动化须核对有效只读权限：旧沙箱配置可显式选择 `--sandbox read-only`；已有文件排除 profile 时不要叠加该旧开关（2026-10-15 UTC+8 补核，见 [10 的唯一采用建议](../10-security.md#codex-文件排除的采用条件)）。同时分别审查配置、指令、技能与 Hook 引用脚本；不以项目 trust 或 Git 检查代替执行边界。以下实现固定于 [openai/codex `7a08c5f`](https://github.com/openai/codex/commit/7a08c5f6271e818d832eb9061dac935936e2b539)，为当日 main 快照，不是已发行 CLI／桌面版本的行为验证。**[一手：固定源码；经验：采用判断]**
+**核实：2026-10-14 UTC；改变 10 §3 与 Codex 专题的脚本入口建议。** ✅ 只读自动化须核对有效只读权限：旧沙箱配置可显式选择 `--sandbox read-only`；已有文件排除 profile 时不要叠加该旧开关（2026-10-15 UTC+8 补核，见 [10 的唯一采用建议](../10-security.md#codex-文件排除的采用条件)）。另审配置、指令、技能及 Hook 脚本；trust／Git 检查不作执行隔离。实现固定于 [openai/codex `7a08c5f`](https://github.com/openai/codex/commit/7a08c5f6271e818d832eb9061dac935936e2b539)，仅为当日 main，非发行客户端验证。**[一手：固定源码；经验：采用判断]**
 
 **配置和指令的闸门不同。** [当前配置文档](https://learn.chatgpt.com/docs/config-file/config-basic#configuration-precedence)说明项目配置只对 trusted 项目加载，用户／系统配置仍可生效。固定 [loader](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/config/src/loader/mod.rs#L1056-L1132)将未设 trust 与显式 untrusted 都作为项目配置层的禁用状态，但 [AGENTS 加载](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/agents_md.rs#L56-L87)只在显式 untrusted 时提前返回、保留传入的用户指令；未设 trust 不命中该分支。[exec 的 Git 检查](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/exec/src/lib.rs#L1012-L1019)检查是否找到仓库根，不能从其通过推断 trusted。**[一手：官方契约与固定实现]**
 
 **默认说明不替代有效权限。** [官方 non-interactive 文档](https://learn.chatgpt.com/docs/non-interactive-mode#permissions-and-safety)说明 exec 默认 read-only；固定 [exec 配置](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/exec/src/lib.rs#L584-L615)则默认给 headless 设置 `Never` 审批，Auto-review 另有重建分支。传统 sandbox 配置路径在没有显式 sandbox、项目已有 trusted 或 untrusted 决定时会产生 workspace-write 候选，[同一函数](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/config/src/config_toml.rs#L841-L906)仍有平台与 requirement fallback。named profiles、持久权限恢复及[最终约束解析](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/config/mod.rs#L3721-L3838)另参与计算，最后使用[受约束的 effective profile](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/config/mod.rs#L4253-L4312)；不能由这个候选宣称所有 untrusted 运行都可写，也不能据 main 说发布版默认已经改变。**[一手：文档与源码；研究：分层限定]**
 
-**Skills 发现不跟配置禁用完全重合。** 固定 [skills 根目录实现](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots.rs#L73-L196)遍历包含禁用层的配置目录，并另查项目中的 `.agents/skills`；[测试定义](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots_tests.rs#L244-L289)明确保留 disabled project 的 `.codex/skills` 根。[会话调用路径](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/session/turn_context.rs#L1300-L1323)也有跳过 host discovery 的功能／会话分支。这里只证明发现机制，不证明技能一定自动调用、脚本已执行或获得额外权限。**[一手：固定实现与未运行测试定义]**
+**Skills 发现不跟配置禁用完全重合。** 固定 [skills 根目录实现](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots.rs#L73-L196)遍历包含禁用层的配置目录，并另查项目中的 `.agents/skills`；[测试定义](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots_tests.rs#L244-L289)明确保留 disabled project 的 `.codex/skills` 根。[会话调用路径](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/session/turn_context.rs#L1300-L1323)也有跳过 host discovery 的功能／会话分支。这里只证明发现机制，不证明自动调用、执行或提权。**[一手：固定实现与未运行测试定义]**
 
-**Hook 定义信任是另一道门。** [当前官方契约](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks)要求非托管 Hook 信任当前定义后才运行，新增／修改的定义会被跳过；`/hooks` 可检查来源与待审项，插件启用不自动信任它的 Hook。固定实现的 [hook_hash](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/hooks/src/engine/discovery.rs#L768-L794)哈希规范化事件和 handler 配置，并不读取被调用脚本内容。因此审查定义时也审查脚本及其来源，不能把定义未变当作脚本未变；不建议用 bypass 信任参数处理外来仓库。**[一手：官方契约与固定实现；经验：采用判断]**
+**Hook 定义信任是另一道门。** [当前官方契约](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks)要求非托管 Hook 信任当前定义后才运行，新增／修改的定义会被跳过；`/hooks` 可检查来源与待审项，插件启用不自动信任它的 Hook。固定实现的 [hook_hash](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/hooks/src/engine/discovery.rs#L768-L794)哈希规范化事件和 handler 配置，并不读取被调用脚本内容。定义未变不等于脚本未变，须审脚本来源；外来仓库不用 bypass 信任。**[一手：官方契约与固定实现；经验：采用判断]**
 
-**检查范围与不采用。** 本轮仅阅读当前官方页面、上述固定源码和测试定义，未运行 Codex、模型或上游测试，未检查私人配置。未完整审计每种 MCP／shell／插件启动路径，不给“零启动执行”保证，也不把命令沙箱说成整个宿主进程隔离。`--ignore-user-config` 与 `--ignore-rules` 只按官方声明的各自范围理解，不推荐作关闭全部项目能力的通用开关；不增加信任记录修改、凭据迁移或放宽安全的步骤。**[研究：验证范围与撤回边界]**
+**检查范围与不采用。** 仅只读，未运行 Codex／模型／上游测试或检查私人配置。未审全 MCP／shell／插件启动路径，命令沙箱不保证宿主零启动执行。`--ignore-user-config` 与 `--ignore-rules` 只按官方声明的各自范围理解，不推荐作关闭全部项目能力的通用开关；不增加信任记录修改、凭据迁移或放宽安全的步骤。**[研究：验证范围与撤回边界]**
 
 ### Hook 跨宿主迁移：匹配成功不等于协议适配
 
-**核实：2026-10-15（UTC+8）；主线二；改变 06 的迁移选择。** ⛔ 不把本仓 Claude 路径脚本原样作为 Codex 路径策略。模板与模板入口本已限定 `.claude/` 并要求按宿主验证，本轮不是修复脚本 bug，而是给出一个具体不能直接迁移的条件；不新增适配器或权限配置。**[经验：采用判断]**
+**核实：2026-10-15（UTC+8）；主线二；改变 06 的迁移选择。** ⛔ 不把本仓 Claude 路径脚本原样作为 Codex 路径策略。模板本限 `.claude/`、须按宿主验证；本项明确不可直接迁移的条件，未改脚本／适配器／权限。**[经验：采用判断]**
 
-**来源与版本。** 查询 [官方 latest release](https://api.github.com/repos/openai/codex/releases/latest) 得到 [`rust-v0.162.1`](https://github.com/openai/codex/releases/tag/rust-v0.162.1)（2026-10-09 发布）；[annotated tag 对象](https://api.github.com/repos/openai/codex/git/tags/7a078f6bb4ce0dc2a81408b334ce52979d92c603)指向 commit `092d3acd6bec3e3a14bdc7e7a2810ab628ab759d`。下表源码全部固定于该发布提交；[当前 Codex Hooks 文档](https://learn.chatgpt.com/docs/hooks#pretooluse)与 [Claude Hooks 文档](https://code.claude.com/docs/en/hooks)是访问时契约，不能据此推断所有旧版／桌面宿主都已支持。**[一手：版本元数据、官方契约与源码]**
+**来源与版本。** 查询 [官方 latest release](https://api.github.com/repos/openai/codex/releases/latest) 得到 [`rust-v0.162.1`](https://github.com/openai/codex/releases/tag/rust-v0.162.1)（2026-10-09 发布）；[annotated tag 对象](https://api.github.com/repos/openai/codex/git/tags/7a078f6bb4ce0dc2a81408b334ce52979d92c603)指向 commit `092d3acd6bec3e3a14bdc7e7a2810ab628ab759d`。下表均为该发布提交；[当前 Codex Hooks 文档](https://learn.chatgpt.com/docs/hooks#pretooluse)与 [Claude Hooks 文档](https://code.claude.com/docs/en/hooks)仅为访问时契约，不证明旧版／桌面均支持。**[一手：版本元数据、官方契约与源码]**
 
 | 核查点 | 新证据 | 选择与边界 |
 |---|---|---|
@@ -115,7 +115,7 @@
 | 决定与失败 | [`output_parser.rs` L441–470](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/engine/output_parser.rs#L441-L470)判 ask 不支持；[`pre_tool_use.rs` L200–309](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/events/pre_tool_use.rs#L200-L309)将错误记 Failed、保留 should_block=false；[同文件测试定义 L555–585](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/events/pre_tool_use.rs#L555-L585)断言此分支 | 不能把 Claude ask 规则直接作为 Codex 人工确认策略；测试定义已读但未执行 |
 | 异步不是准入检查 | [Codex 当前后台契约](https://learn.chatgpt.com/docs/hooks#run-hooks-in-the-background)；固定 [`command_runner.rs` L116–166](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/engine/command_runner.rs#L116-L166)后台调用同一 runner、过滤控制输出，[L276–318](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/hooks/src/engine/command_runner.rs#L276-L318)执行 timeout；[Claude 当前异步契约](https://code.claude.com/docs/en/hooks#run-hooks-in-the-background)明确普通 async 后台不执行 timeout（asyncRewake 另论） | 两者都不能后台阻断原动作；超时、会话结束取消与结果交付不能当通用协议。Claude 本项未核最低版本或闭源实现 |
 
-**现有脚本合成对照（本轮实际运行）。** 静读 [`protect-paths.sh`](../../templates/generic/.claude/hooks/protect-paths.sh)确认它只解析输入与规则，不执行 tool_input；用临时目录、临时规则 `deny generated/** generated file` / `ask review/** needs review`，显式设置 `CLAUDE_PROJECT_DIR` 与 `PROTECTED_PATHS_FILE`，通过 `bash` 调用原脚本。jq 分支结果如下；不是新增跨宿主回归套件，双解析器既有覆盖仍见 E6。
+**现有脚本合成对照（本轮实际运行）。** 静读 [`protect-paths.sh`](../../templates/generic/.claude/hooks/protect-paths.sh)确认它只解析输入与规则，不执行 tool_input；用临时目录、临时规则 `deny generated/** generated file` / `ask review/** needs review`，显式设置 `CLAUDE_PROJECT_DIR` 与 `PROTECTED_PATHS_FILE`，通过 `bash` 调用原脚本。jq 分支结果如下；双解析器既有覆盖见 E6。
 
 | 合成 stdin 变化（均无秘密） | 实际退出码／stdout |
 |---|---|
@@ -125,19 +125,19 @@
 | `tool_name=Edit; tool_input={}` | 0；空 stdout，无决定 |
 | 无效 JSON `{` | 1；空 stdout，stderr 含解析错误与“无效 Hook 输入” |
 
-运行后确认临时目录未产生补丁目标；临时夹具随测试结束删除。这个对照只证当前脚本如何处理输入，不能证明真实客户端已经触发、已允许写入或确实阻断。未改脚本、未执行补丁、未运行 Codex／Claude／模型／上游 Rust 测试、未修改信任或权限。若目标宿主契约改动，重新核对输入与控制返回；没有真实宿主证据前，06 仍维持 L2，不能把这个窄补核当全页默认权限、事件全景和自动审批材料已核新。**[经验：离线合成检查；研究：限定]**
+临时目录无补丁目标，夹具已删除；只验证脚本输入处理，未改脚本、执行补丁或信任／权限操作，未运行真实客户端及 Rust 测试。宿主契约变化须重核输入和控制返回；06 仍为 L2，本项未核全页权限与事件。**[经验：离线合成检查；研究：限定]**
 
 ### 官方交互浏览器 Skill：值得借什么，不能照搬什么
 
 固定版本的 `playwright-interactive` 复用 REPL 与浏览器句柄；区分 renderer reload 与主进程 relaunch；功能验收要求实际用户输入，`evaluate` 可检查或准备状态，但不能充当验收输入；视觉检查与功能检查独立。普通 CLI Skill 则强调 DOM 明显变化后重新 snapshot，避免沿用失效元素引用。**[一手：S1 指定段落]**
 
-这些机制可以减少两种不同浪费：无意义地反复启动环境，以及在旧页面/旧状态上继续推理。不能据机制描述报提速数字。持久会话也会带来缓存、登录和脏数据污染，首次访问场景仍需要干净上下文；“复用”与“重置”由目标场景决定。
+机制针对重复启动和沿旧状态推理，未测提速；复用会话可携带缓存、登录和脏数据，首次访问仍用干净上下文。
 
-还必须独立判断执行前提：该快照的 interactive Skill 要求关闭沙箱，并给出安装命令。这不应成为知识库的默认环境建议；本轮没有安装、关闭沙箱或测试运行兼容性。可以借鉴观察与动作的设计，优先使用当前已支持的浏览器入口。**[一手：S1；经验：采用范围]**
+该 interactive 快照要求关闭沙箱并给安装命令，本轮均未执行，也未验兼容性；只借观察／动作设计，优先当前受支持入口。**[一手：S1；经验：采用范围]**
 
 ### 交互界面：按缺失观察选择反馈
 
-核实：2026-10-14 UTC。改变 23 §2/§4：选择能区分当前假设的反馈；视觉要求保留截图验收，语义与时序问题先复用已有真实输入测试及状态/事件证据。以下为外部比较与源码阅读，验证范围见表后。**[经验：采用判断]**
+核实：2026-10-14 UTC。改变 23 §2/§4：选择能区分当前假设的反馈；视觉要求保留截图验收，语义与时序问题先复用已有真实输入测试及状态/事件证据。证据范围见表后。**[经验：采用判断]**
 
 | 比较及固定来源 | 实际条件与观察 | 能改变的选择；不能推出什么 |
 |---|---|---|
@@ -145,33 +145,33 @@
 | [Vision-Guided Iterative Refinement v1，§4.1、表1–2](https://arxiv.org/html/2604.05839v1) | 600测试任务；Sonnet 4.5 初稿→三轮的综合 VLM 分数7.584→8.048，报告 tokens 6,446→131,550。judge 对200组非平局人类偏好69.5%一致、22%不一致、8.5%平局 | 视觉＋代码 critique 可改善评分类质量，但未隔离截图贡献或给 Sonnet 做等 token 无视觉对照；不是执行完整用户任务，也不能用模型评分替用户接受体验 |
 | [InteractGUI / VF-Coder v1，§5.3](https://arxiv.org/html/2604.19750v1)与[固定入口](https://github.com/leozhilin/VF_Coder/blob/10bd5e6bebb34ba6c13ee4cf93802a575d9bb701/vf_coder_main_loop.py#L55-L74) | Gemini-3-Flash / PySide6 将 GUI Operator 与错误截图反馈分开开关；[修复者代码](https://github.com/leozhilin/VF_Coder/blob/10bd5e6bebb34ba6c13ee4cf93802a575d9bb701/vf_coder/code_agent/code_agent.py#L507)仅在 visual 模式附加错误截图，目标参考图仍可独立提供 | 发现运行状态与传达视觉错误是不同增量，不能合并成“接入浏览器收益”。论文称984任务，但缺逐例结果/种子/置信区间，表4部分百分比不能按984整数通过数还原；不据此排名或宣称显著收益 |
 
-以上数字与机制为 **[一手：论文报告与固定源码]**；本节未运行模型、浏览器或上游代码，未独立复现。它们不构成同一当前强 Agent、同任务、等预算的 DOM/截图/时间线/真实用户四方对照；表中接入取舍为 **[经验：工程建议]**。
+上表是论文／固定源码证据，未独立运行；缺同一当前强 Agent、同任务等预算的四通道对照，接入取舍为工程判断。**[一手／经验]**
 
 **具体使用边界。** 选中或保存错误若已能由真实浏览器动作与结果断言揭示，不必新增截图循环；裁切、间距、素材与画布问题则必须补足视觉观察。结果最终正确、但早期点击丢失时，补动作时刻与事件顺序。[Playwright hydration 说明](https://playwright.dev/docs/navigations#hydration)明确指出控件启用早于监听器绑定会吞掉输入，建议应用就绪前禁用控件；不能靠延后测试输入制造通过。直接设置 DOM/组件状态不等于测试真实输入。**[一手：官方机制；经验：最小反馈建议]**
 
-用户是否理解入口、能否恢复误操作、是否接受体验仍需具体任务试用；上表的偏好一致性只提示自动 judge 有边界，未测得真实用户参与的净收益。每次修订保留原功能与视觉要求；仅在现有证据不能判断所需结论时补通道，不扩成默认多 Agent 验收框架。**[经验：采用与停止条件]**
+入口理解、误操作恢复与体验接受仍需用户任务试用；保留原功能和视觉要求，仅为缺失判断补通道。上表未测用户参与的净收益。**[经验：采用与停止条件]**
 
 ### 截图稳定化：结束动画不是保留当前状态
 
 核实：2026-10-16（UTC+8）。改变 23 §2：保留终态视觉基线，但不让截图准备推进待验的过渡、暂停或重开状态；局部 `allow` 只在需要保留该状态时采用。以下为官方契约、固定源码／测试定义与历史作者报告，未运行浏览器。**[经验：采用判断；研究：证据范围]**
 
-**两个截图入口的默认值不同。** 当前 [PageAssertions 文档](https://playwright.dev/docs/api/class-pageassertions#page-assertions-to-have-screenshot-1-option-animations)给 `toHaveScreenshot()` 的 `animations` 默认值为 `disabled`，[Page 文档](https://playwright.dev/docs/api/class-page#page-screenshot-option-animations)给 `page.screenshot()` 的默认值为 `allow`；断言可被项目 `expect` 配置或单次参数覆盖，普通截图按其调用参数。[v1.63.0 发行提交 `1b025d7`](https://github.com/microsoft/playwright/commit/1b025d7e20a026371cd5f98ba0cdce48892737c8)的 [matcher L346–363](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright/src/matchers/toMatchSnapshot.ts#L346-L363)与 [screenshotter L201–219](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L201-L219)相互印证；不能把两种调用当作仅有比较图片与否的区别。**[一手：文档与固定源码]**
+**两个截图入口的默认值不同。** 当前 [PageAssertions 文档](https://playwright.dev/docs/api/class-pageassertions#page-assertions-to-have-screenshot-1-option-animations)给 `toHaveScreenshot()` 的 `animations` 默认值为 `disabled`，[Page 文档](https://playwright.dev/docs/api/class-page#page-screenshot-option-animations)给 `page.screenshot()` 的默认值为 `allow`；断言可被项目 `expect` 配置或单次参数覆盖，普通截图按其调用参数。[v1.63.0 发行提交 `1b025d7`](https://github.com/microsoft/playwright/commit/1b025d7e20a026371cd5f98ba0cdce48892737c8)的 [matcher L346–363](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright/src/matchers/toMatchSnapshot.ts#L346-L363)与 [screenshotter L201–219](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L201-L219)相互印证；两入口差异不止图片比较。**[一手：文档与固定源码]**
 
-**稳定化可以触发应用回调。** [固定实现 L109–155](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L109-L155)对有限 `endTime` 调用 `finish()`，对无限动画调用 `cancel()` 并在清理时 `play()`，不保存原播放位置和 `playState`；有限动画没有复原步骤。官方 [回归 L774–835](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L774-L835)要求截图结束过渡、触发 `transitionend`，且第一张图已包含回调新增的 `h1`；[L865–938](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L865-L938)另断言有限动画的结束事件与无限动画的取消事件。因此截图后状态正确，可能是观察动作推进了状态，不能据此证明原输入／恢复路径正确。换成局部 locator 截图也不隔离这项处理：[L224–255](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L224-L255)仍在所有 frames 做截图准备。**[一手：源码与官方测试定义；研究：机制推导]**
+**稳定化可以触发应用回调。** [固定实现 L109–155](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L109-L155)对有限 `endTime` 调用 `finish()`，对无限动画调用 `cancel()` 并在清理时 `play()`，不保存原播放位置和 `playState`；有限动画没有复原步骤。官方 [回归 L774–835](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L774-L835)要求截图结束过渡、触发 `transitionend`，且第一张图已包含回调新增的 `h1`；[L865–938](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L865-L938)另断言有限动画的结束事件与无限动画的取消事件。故截图可能推进状态，不能独证原输入／恢复正确。换成局部 locator 截图也不隔离这项处理：[L224–255](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L224-L255)仍在所有 frames 做截图准备。**[一手：源码与官方测试定义；研究：机制推导]**
 
-**暂停不能一概处理。** 实现跳过的是 `playbackRate === 0`，不是 `playState === 'paused'`；[官方回归 L838–862](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L838-L862)要求速率为 0 的动画保持 `currentTime = 500`。因此仍被 `getAnimations()` 返回、速率非零的暂停动画，没有因 `paused` 自动免于 `finish/cancel` 或恢复原暂停状态的保证。这是有限源码推论，不表示所有应用暂停机制都会失效，也不建议为通过截图而改写产品的暂停实现。**[一手：源码／测试；研究：限定推论]**
+**暂停不能一概处理。** 实现跳过的是 `playbackRate === 0`，不是 `playState === 'paused'`；[官方回归 L838–862](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L838-L862)要求速率为 0 的动画保持 `currentTime = 500`。因此仍被 `getAnimations()` 返回、速率非零的暂停动画，没有因 `paused` 自动免于 `finish/cancel` 或恢复原暂停状态的保证。此源码推论不适用于全部暂停机制，也不授权为截图改产品暂停。**[一手：源码／测试；研究：限定推论]**
 
-**历史回执支持局部改参，不支持全局关闭视觉断言。** [#36899](https://github.com/microsoft/playwright/issues/36899)于 2025-08-01 报告 Playwright 1.54.2 的普通截图有 Ionic sheet modal、视觉断言截图没有。[原作者后续](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145555849)称交换顺序后两张都缺弹层，改为 `toHaveScreenshot({ animations: 'allow' })` 后恢复；[维护者回复](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145780160)确认默认值差异是兼容性选择，仍推荐自动等待的视觉断言。无限动画导致关闭是作者解释，本轮未核其 Ionic 根因、未复现，也不称当前版本普遍存在此缺陷。**[社区：历史作者回执；一手：维护者契约说明]**
+**历史回执支持局部改参，不支持全局关闭视觉断言。** [#36899](https://github.com/microsoft/playwright/issues/36899)于 2025-08-01 报告 Playwright 1.54.2 的普通截图有 Ionic sheet modal、视觉断言截图没有。[原作者后续](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145555849)称交换顺序后两张都缺弹层，改为 `toHaveScreenshot({ animations: 'allow' })` 后恢复；[维护者回复](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145780160)确认默认值差异是兼容性选择，仍推荐自动等待的视觉断言。无限动画归因是作者解释，未核 Ionic 根因或复现，不作当前普遍缺陷。**[社区：历史作者回执；一手：维护者契约说明]**
 
 **最小采用与撤回。** 纯终态布局继续用现有视觉基线；先完成相关真实输入、暂停后恢复或取消后重开的行为断言，再做可能推进动画的视觉比较。所需状态本已稳定却被准备动作改变时，只在该处用 `allow`。若需要观察过渡，复用动作／事件时间线，已有测试能证明命中目标阶段及其结果就不加层。`allow` 不是精确采样：普通截图仍有[字体等待 L251–264](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L251-L264)，视觉断言仍按[匹配／稳定化循环 L719–795](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/page.ts#L719-L795)取图，持续变化时可能超时；该版本首张直接匹配已有基线可返回，也不应概括为每次必拍两张。另据 [actionability](https://playwright.dev/docs/actionability#stable)，`locator.click()` 会等元素 bounding box 连续两帧不变，所以发起调用的时刻不等于输入发生时刻；确认真实动作命中窗口，不统一改用 `force`。**[一手：工具机制；经验：选择边界]**
 
-本轮只读官方文档、发行源码、测试定义和 issue 原评论；未安装或运行 Playwright、上游用例或模型，未验证具体应用的修复收益。**[研究：验证范围]**
+验证范围：只读文档、发行源码、测试定义及原评论；未运行 Playwright、上游用例或模型，未测具体修复收益。**[研究]**
 
 ### Service Worker：响应来源决定保存与故障验收入口
 
 核实：2026-10-15（UTC+8）。改变 23 §3/§4：服务器同步的验收增加独立读取，故障注入增加实际命中确认；本地保存不强加服务端要求。复用现有 API／浏览器测试，不增加平台或框架。**[经验：采用判断]**
 
-**成功页面可能完全来自本地。** Playwright [固定修复提交 `ea75b9f` 的回归 L23–98](https://github.com/microsoft/playwright/blob/ea75b9f32ca4120efdfaf8f5b8cfd292f548f197/tests/library/browsercontext-service-worker-policy.spec.ts#L23-L98)覆盖 literal、Cache Storage、network fallback 和 preload fallback；L79–92 要求当前页和同 context 的新页都返回 200、来自 worker、显示 offline，同时目标服务端请求数为 0。恢复在线后才要求请求数变成 1。它证明响应来源的机制，不是业务保存缺陷的实测。**[一手：官方测试定义]**
+**成功页面可能完全来自本地。** Playwright [固定修复提交 `ea75b9f` 的回归 L23–98](https://github.com/microsoft/playwright/blob/ea75b9f32ca4120efdfaf8f5b8cfd292f548f197/tests/library/browsercontext-service-worker-policy.spec.ts#L23-L98)覆盖 literal、Cache Storage、network fallback 和 preload fallback；L79–92 要求当前页和同 context 的新页都返回 200、来自 worker、显示 offline，同时目标服务端请求数为 0。恢复在线后才要求请求数变成 1。这是响应机制定义，非保存缺陷实测。**[一手：官方测试定义]**
 
 因此若契约是“已同步到服务端”，刷新／重新开标签页不够：可复用 API 测试读取本次记录。固定 [APIRequestContext 实现 L350–389](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/packages/playwright-core/src/server/fetch.ts#L350-L389)使用 Node 的 HTTP/HTTPS 请求，不经过页面 worker；但服务端缓存和数据库耐久性仍是另一层，不能据此宣称落盘保证。若承诺只是本地持久保存，就验证本地重新打开，联网同步另列结果。**[一手：源码；经验：由机制推导的验收选择]**
 
@@ -181,19 +181,19 @@
 
 [真实报告 #42775](https://github.com/microsoft/playwright/issues/42775)在 1.63.0 的 WebKit 上发现：即使 worker 直接生成响应，离线模拟也拒绝导航；停止源站的对照则能返回。它不代表两种故障等价。[修复 #42894](https://github.com/microsoft/playwright/pull/42894)于 2026-10-05 合入上述 `ea75b9f`，在 page target 初始化时显式应用已配置的 offline 状态并补回归。固定测试仍跳过 Electron／旧 WebKit，并对 Firefox 的 network/preload fallback 标 fixme。离线测试失败时应先核工具版本、模拟范围和实际请求，不能直接撤掉产品要求。未核首次正式发布版本；PR 页面仍有失败检查，本轮没有复核其因果或宣称全 CI 通过。**[一手：报告、维护补丁与测试限制；经验：诊断选择]**
 
-本轮通过官方连接器重新读取两组固定测试和 API 请求源码，并核对 issue／PR；未运行浏览器、上游测试或模型，不把测试存在当本仓执行结果，也不证明新模型交付成功率。**[研究：验证范围]**
+只读上述固定测试、API 源码和 issue／PR，未运行浏览器、上游测试或模型。**[研究：验证范围]**
 
 ### React：生产构建故障中的定向日志
 
 ✅ 当状态更新依赖时序，先在实际失败的构建中复现，再记录相关状态随时间的变化；只需现有浏览器和定向日志时，不必增加调试平台。**[经验：23 §4 采用建议，2026-10-13]**
 
-**故障与新增反馈。** Dan Abramov 于 2026-02-18 提交的 [#35821](https://github.com/react/react/issues/35821) 包含[公开复现](https://github.com/gaearon/react-udv-bug)：输入经 server action 返回 JSX，`useDeferredValue` 在开发构建追上输入，在生产构建经常卡在旧值。[3 月 24 日原帖](https://bsky.app/profile/danabra.mov/post/3mhrdue7gds2h)称此前 Claude 未能定位或写出失败测试；[紧接原帖](https://bsky.app/profile/danabra.mov/post/3mhrdwgnhkc2h)说明后来按浏览器复现、阅读人指定的相关源码、给生产 bundle 加日志、修复的顺序完成。这支持“给 Agent 实际状态变化”，不证明源码阅读本身不可能发现问题。**[一手：故障报告与作者自述，非完整模型运行记录]**
+**故障与新增反馈。** Dan Abramov 于 2026-02-18 提交的 [#35821](https://github.com/react/react/issues/35821) 包含[公开复现](https://github.com/gaearon/react-udv-bug)：输入经 server action 返回 JSX，`useDeferredValue` 在开发构建追上输入，在生产构建经常卡在旧值。[3 月 24 日原帖](https://bsky.app/profile/danabra.mov/post/3mhrdue7gds2h)称此前 Claude 未能定位或写出失败测试；[紧接原帖](https://bsky.app/profile/danabra.mov/post/3mhrdwgnhkc2h)说明后来按浏览器复现、阅读人指定的相关源码、给生产 bundle 加日志、修复的顺序完成。这支持“给 Agent 实际状态变化”，不排除源码可定位。**[一手：故障报告与作者自述，非完整模型运行记录]**
 
-**实现决定与回归契约。** [固定合并提交 `c0d218f0f3e02ed581f74096e56baa947213135d`](https://github.com/react/react/commit/c0d218f0f3e02ed581f74096e56baa947213135d) 在 `pingSuspendedRoot` 不能立即重启当前 render 的分支保存 pinged lanes，避免随后被标记为 suspended 而失去重试；没有增加业务层轮询。新增测试让兄弟组件在同一 render 内 resolve 先前挂起的数据，最终必须渲染 updated；另一个既有测试记录新增的重试行为。运行中“何时发生 resolve/ping”由此变成确定的回归条件，而非仅检查页面存在。**[一手：补丁与回归代码；研究：机制归纳]**
+**实现决定与回归契约。** [固定合并提交 `c0d218f0f3e02ed581f74096e56baa947213135d`](https://github.com/react/react/commit/c0d218f0f3e02ed581f74096e56baa947213135d) 在 `pingSuspendedRoot` 不能立即重启当前 render 的分支保存 pinged lanes，避免随后被标记为 suspended 而失去重试；没有增加业务层轮询。新增测试让兄弟组件在同一 render 内 resolve 先前挂起的数据，最终必须渲染 updated；另一个既有测试记录新增的重试行为。回归锁定 resolve/ping 时点。**[一手：补丁与回归代码；研究：机制归纳]**
 
-**结果边界。** [#36134](https://github.com/react/react/pull/36134) 署名由 Claude 编写/调试，获 acdlite 批准，2026-03-24 合入并关闭原 issue；本例固定修复版本是上述提交，未核实首次包含它的正式发布版本，不表示当前仍有该缺陷。PR 页面显示 245 checks passed；其 Test Plan 列出撤掉源修复应令新测试失败、修复 bundle 应解决原 repro，但这不是本轮读到的原始红绿日志或浏览器复验记录。本轮未读原 CI 逐项日志、未独立重跑，也未取得原会话日志。**[一手：署名、合入与平台聚合结果；研究：验证范围]**
+**结果边界。** [#36134](https://github.com/react/react/pull/36134) 署名由 Claude 编写/调试，获 acdlite 批准，2026-03-24 合入并关闭原 issue；本例固定修复版本是上述提交，未核实首次包含它的正式发布版本，不表示当前仍有该缺陷。PR 页面显示 245 checks passed；其 Test Plan 列出撤掉源修复应令新测试失败、修复 bundle 应解决原 repro，但这不是本轮读到的原始红绿日志或浏览器复验记录。未取得逐项 CI／会话原日志或独立重跑。**[一手：署名、合入与平台聚合结果；研究：验证范围]**
 
-**替代解释与最小接入。** review 指出源码已有相关 TODO，作者也给了源码范围与日志建议；专家知识、可靠复现和会话差异都可能有贡献，不能把成功或作者所述耗时单独归因于日志。保留失败构建与输入，只观察能区分假设的状态；把确认的触发条件写入已有回归。临时日志可能改变调度，因此最终需移除诊断输出，再复测原用户路径。这是单个有专家参与的历史修复，不是工具效果对照。**[一手：review 与作者记录；经验：接入与反证要求]**
+**替代解释与最小接入。** review 指出源码已有相关 TODO，作者也给了源码范围与日志建议；专家知识、复现及会话差异均可能贡献，不能独归因日志。保留失败构建与输入，只观察能区分假设的状态；把确认的触发条件写入已有回归。临时日志可能改变调度，因此最终需移除诊断输出，再复测原用户路径。仅为专家参与的历史单例。**[一手：review 与作者记录；经验：接入与反证要求]**
 
 ### 属性测试：搜索反例不等于确认或修好缺陷
 
@@ -279,19 +279,19 @@ weak_oracle mean 1e+20 n 1.0 merged 0.0 reference 2.249999999999999999898750 non
 PASS: local mechanism checks; NOT NumPy/Hypothesis execution or model benefit
 ```
 
-同一小网格在普通参数下两式均无负值，在 mean=1e9 下旧式52次负值、最终式0次；首个反例n=1.235与独立高精度正值对照。另一个极端输入使最终式归零，非负检查仍通过，说明单一属性不能充当数值精度验收。程序只覆盖n>0，不能用Python除零行为推断C实现。**[研究：实际结果与边界]**
+网格结果见原始输出；mean=1e9 的首个反例与独立高精度正值对应。极端输入使最终式归零而非负检查仍过，故非负性不等于数值精度。仅覆盖 n>0，Python 除零不能代表 C。**[研究：实际结果与边界]**
 
 程序 SHA256：`7f7130436211bb82e4eb334afbc5ef56c713c4eaecd5f64168be13ab37194263`；输出 SHA256：`a2c69ab5866f715813a88228a914fafe2fa974f2dbfcfc58d537172fab7caf72`。执行范围见本小节开头；未测交付总成本，没有据此证明额外 Skill 比直接提示更有效。
 
 ### 外部生产者校准错误预期
 
-> 核实：2026-10-13 UTC。15 §6 的窄增量：外部兼容预期应来自生产者，有证据时修正旧断言；不要求增加 reviewer 或重复用例。**[研究：采用判断]**
+> 核实：2026-10-13 UTC。15 §6 的窄增量：外部兼容预期应来自生产者，有证据时修正旧断言；复用已有用例。**[研究：采用判断]**
 
 RTK 的[真实用户报告 #2367](https://github.com/rtk-ai/rtk/issues/2367)是 Windows 默认当前项目发现为零。[旧源码 5d32d073](https://github.com/rtk-ai/rtk/blob/5d32d0736f686b69d1e8b9dc45c007d4eb77a0a2/src/discover/provider.rs#L404-L410)已有 Windows 测试，却与实现、注释共同把合成路径 `C:\Users\foo\bar` 的预期写成 `C:-Users-foo-bar`；真实生产者目录应为双连字符。该基线 [CI](https://github.com/rtk-ai/rtk/actions/runs/29001896511) 的 Linux/macOS/Windows `cargo test --all` 步骤均成功，但原始 Windows 日志已返回 410，未逐例确认该用例的执行结果。**[社区：故障报告；一手：源码与 CI 元数据]**
 
 [已合入 #2952](https://github.com/rtk-ai/rtk/pull/2952)（head `40fccbd8ef11d7cfda951253fa6f63944f1188e4`）同时添加冒号替换、修正文档和旧断言；贡献者报告原机默认命令 0→1，维护者[要求删除重复测试](https://github.com/rtk-ai/rtk/pull/2952#pullrequestreview-4922112994)，最终补丁只修正旧用例。另一贡献者[检查生产者目录后撤回大小写归因并报告 0→30](https://github.com/rtk-ai/rtk/issues/2919#issuecomment-5008576670)，其 #3043 未合入，不能当成 #2952 发布后的独立复测。**[一手：补丁与评审；社区：运行报告]**
 
-反例与边界：改断言不必然是弱化验收，重复同路径测试也不必然更可靠；`--all` 找到历史仅能辅助诊断，不能替代当前项目筛选。上述实跑均属贡献者报告；[有 Claude Code 标记的 #2368](https://github.com/rtk-ai/rtk/pull/2368)是未合入的修正稿，不能据此归因 AI 写出原 bug，也未证明所有版本或大小写场景恢复。
+改错断言不等于弱化验收，重复同路径也不保证更可靠；`--all` 历史仅辅助诊断。实跑属贡献者自报；[有 Claude Code 标记的 #2368](https://github.com/rtk-ai/rtk/pull/2368)未合入，不证明 AI 写出原 bug 或所有版本／大小写已恢复。
 
 标准库局部探测：只用合成路径与临时空文件，按已读源码写出的 **Python 逻辑模型，非 Rust/Windows/RTK 执行**；固定期望目录不调用编码函数生成。旧编码找到 0 个，新编码恰好找到 1 个，无关目录均未命中。**[研究：本轮实际运行，机制范围]**
 
@@ -319,7 +319,7 @@ print("PASS: Python logic model only; NOT Rust, Windows or RTK execution")
 
 ## 三、领域知识比通用规划更可能是持久资产
 
-对存量系统，API 类型只描述部分约束。舍入、时区、历史错误码、哪个任务实际运行、哪些异常被业务接受，经常决定修改是否正确。把这些整理成可追踪的案例、数据说明和短设计理由，可能比再教强模型“先计划后执行”更有增量。**[经验：待案例检验的判断]**
+类型以外的舍入、时区、错误码、生产作业与可接受异常也决定正确性；可追踪案例和理由可能比通用规划提示更有增量。**[经验：待检验判断]**
 
 S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 
@@ -336,15 +336,15 @@ S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
 
 **保留兼容的反例。** [Sapling 官方介绍](https://sapling-scm.com/docs/introduction/)的“Why make a new version control?”说明，其内部抽象将体验与仓库格式分离，使内部扩展方案仍能与 Git 仓库交互。**[一手：官方设计说明，非同负载对照]** 所以采用的是事实归属检查，不是默认删除兼容：外部消费者仍需要旧接口，或新接口不能覆盖语义、权限及可用性要求时，保留适配或缩小迁移范围。**[经验：采用与撤回条件]**
 
-**来源边界。** 本轮读了上述官方原文，未取得 Scion 对应补丁、固定源码版本、原始轨迹或独立复测；日期固定的是复盘发表时间，不保证网页内容不可变。Sapling 为当前官方文档，未固定历史版本。未运行上游软件或模型，不能据此量化维护成本、比较模型能力，或证明增加工作流的净收益。
+**来源边界。** 只读官方原文；Scion 无对应补丁、固定源码、原始轨迹或独立复测，日期仅为发表时间。Sapling 为未固定历史版本的当前文档；未运行软件／模型、未测维护收益。
 
 ## 四、游戏开发用来检验这个方向，而不是扩张引擎百科
 
-游戏把一般软件中的反馈问题放大了：时间推进、输入响应、随机性、资源加载、相机和画面都可能影响观察。主线可以从中学到如何设计让 Agent 理解和操作系统的接口，但不能从一个玩法或引擎外推全部游戏。
+游戏中的时间、输入、随机性、加载和镜头会影响观察；可借其接口设计检验通用方法，不能外推全部游戏。
 
 假设要修“冲刺后偶尔穿墙”：保存初始位置、速度、碰撞体、输入序列与相关种子，配合固定步推进，有助于重复调查；同时还要通过真实输入链与实际帧时序复查。直接设置最终位置或只调用移动函数会跳过输入采样、动画与物理调度，不能证明用户路径修复。固定种子也不自动消除物理引擎、并发和平台差异。**[经验：案例设计，未运行引擎]**
 
-状态接口、截图与人工试玩各有价值：状态能定位机制，截图能发现遮挡和呈现问题，人能判断控制感和目标玩法。不要把它们排成一种永久的“性价比最高”顺序。内部状态断言通过而画面不可玩，是需要解释的分歧；玩家不喜欢一个正确实现的机制，也可能意味着需要改变设计目标，而不是继续修代码。
+状态定位机制、截图看呈现、试玩判断控制感与设计目标；三者不作永久成本排名。状态通过而画面不可玩须解释；玩家不接受机制可能要求改设计。
 
 Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级为一手复核。实际选型应回到对应领域页，不用“L3 性价比最高”或“AI 做不出好玩游戏”替代具体证据。**[研究：来源与适用边界]**
 
@@ -358,17 +358,17 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 **起点与归属。** [#38888](https://github.com/discourse/discourse/pull/38888) 由 markvanlan 提交，2026-04-16 合并；[固定提交](https://github.com/discourse/discourse/commit/8feeaa5d69cd9462cc6aa4f560cb1e953e588e0b) 列 Claude Opus 4.6 及多位人类 coauthor，记录作者声明的 AI 参与，不包含生成过程，不能归因全部代码。[初始 header](https://github.com/discourse/discourse/blob/8feeaa5d69cd9462cc6aa4f560cb1e953e588e0b/frontend/discourse/app/components/nested-view-header.gjs) 直接导入并渲染已有 TopicCategory。**[一手：署名与源码]**
 
-**真正的下一需求。** 8 月 11 日，另一贡献者 nullchristo 的 [#42520](https://github.com/discourse/discourse/pull/42520) 为客户插件在 category/tags 旁增加信息提供扩展点。[合并补丁](https://github.com/discourse/discourse/commit/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e) 只改共享 TopicCategory 的包装 outlet 和 docked header 的 topic 参数；同版本 [nested/header](https://github.com/discourse/discourse/blob/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e/frontend/discourse/app/components/nested/header.gjs) 仍调用它，未另改树加载或复制 nested 专属实现。此人的登录名不同于初始作者与列出的人类 coauthor，但不能断言是首次接触项目。**[一手：需求、补丁与调用链]**
+**真正的下一需求。** 8 月 11 日，另一贡献者 nullchristo 的 [#42520](https://github.com/discourse/discourse/pull/42520) 为客户插件在 category/tags 旁增加信息提供扩展点。[合并补丁](https://github.com/discourse/discourse/commit/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e) 只改共享 TopicCategory 的包装 outlet 和 docked header 的 topic 参数；同版本 [nested/header](https://github.com/discourse/discourse/blob/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e/frontend/discourse/app/components/nested/header.gjs) 仍调用它，未另改树加载或复制 nested 专属实现。作者与初始 coauthor 不同，但未证首次接手。**[一手：需求、补丁与调用链]**
 
-**交付边界。** 后续 PR 获批准并合并。[core frontend 原日志](https://github.com/discourse/discourse/actions/runs/31506849232/job/93830516975) 核实运行版本为 `48d4571d4d747ae4fade0c49fd9e851fb693cd78`，即 head `cd63a1cc4b647701f505131af05bd7368fdf4bc5` 与 base `3908561e29d2187ac622eadd8a59fa3ba54ebac1` 的测试合并；`qunit:test` 汇总 6473 passed、0 skipped/failed。补丁没有新增测试，日志中通用 PluginOutlet 用例不等于新客户插件验收；原需求说将支持该插件，没有客户部署、复测或人力计时。本次只读源码与日志，未复跑。**[一手：CI 原日志；研究：范围限定]**
+**交付边界。** 后续 PR 获批准并合并。[core frontend 原日志](https://github.com/discourse/discourse/actions/runs/31506849232/job/93830516975) 核实运行版本为 `48d4571d4d747ae4fade0c49fd9e851fb693cd78`，即 head `cd63a1cc4b647701f505131af05bd7368fdf4bc5` 与 base `3908561e29d2187ac622eadd8a59fa3ba54ebac1` 的测试合并；`qunit:test` 汇总 6473 passed、0 skipped/failed。补丁没有新增测试，日志中通用 PluginOutlet 用例不等于新客户插件验收；原需求说将支持该插件，无客户部署／复测／工时；只读未复跑。**[一手：CI 原日志；研究：范围限定]**
 
 **反例约束。** [真实管理员报告](https://meta.discourse.org/t/im-struggling-to-recover-deleted-post-how-to-fix/403161/1)显示，已删除 nested topic 的 500 阻断恢复。[#40134](https://github.com/discourse/discourse/pull/40134) 的[固定修复](https://github.com/discourse/discourse/commit/a051d96b6526c7a2ad2b7754863d7364e6401c28)给 OP 查询补接已有 visibility helper，并新增 staff show/context 返回 200 与 placeholder、non-staff 返回 404 的断言。修复作者 xfalcox 也是初始人类 coauthor，属团队维护；手工恢复未勾选，不能写用户已成功恢复。**[社区：用户原帖；一手：补丁]**
 
-因此，UI 复用可以承接下一次扩展，却不能保证后台生命周期完整；让 Agent 同时检查必要的查看、删除、恢复路径。局部补接能满足契约时，无需升级为架构重写。**[研究：采用建议]**
+UI 复用未覆盖后台生命周期；继续核查看、删除和恢复，局部补接够用时不重写架构。**[研究：采用建议]**
 
 ### Pydantic AI：取消契约改变，不代表正常完成也应改变
 
-> 核实：2026-10-14 UTC。主线三；改变 22 §5：把“本次要改变的行为”与“相邻仍须保留的行为”成对验收，再判断修复应落在哪层。✅ 采用；不是新的模型效果实验。**[研究：采用判断]**
+> 核实：2026-10-14 UTC。主线三；改变 22 §5：把“本次要改变的行为”与“相邻仍须保留的行为”成对验收，再判断修复应落在哪层。✅ 采用；未测模型效果。**[研究：采用判断]**
 
 **固定演化链。** 以下源码均只读，未安装或执行 Pydantic AI：
 
@@ -379,19 +379,19 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 | 用户故障与修复判定 | [#5769](https://github.com/pydantic/pydantic-ai/issues/5769)、[#5771](https://github.com/pydantic/pydantic-ai/pull/5771) | 报告涉及 1.92–1.105 的空响应／零 usage；维护者将条件收窄为 handler 正常返回但未消费完流，普通无 handler 路径不受影响 |
 | 窄修复产物 | [最终 `49f62a3`](https://github.com/pydantic/pydantic-ai/commit/49f62a386041abd6e0d960dd629c3b4fe28eac63) | 只改 `agent/abstract.py` 与 `tests/test_streaming.py`：在三处 driver 的 handler 正常返回后排空，异常向外传播时不进入该语句；保留共享节点与公开 API |
 
-源码、补丁为 **[一手]**；故障输出为 **[社区：报告者实跑自述]**，并非本仓复现。#5132 明确披露由 AI coding assistant 与用户协作提出；#5313／#5771 另有 Codex、Devin 自动评审，但不能据通用 AI checklist 推断实现由哪个模型生成。
+源码／补丁 **[一手]**，故障为 **[社区：运行自述，非本仓复现]**。#5132 明确披露由 AI coding assistant 与用户协作提出；#5313／#5771 另有 Codex、Devin 自动评审，但不能据通用 AI checklist 推断实现由哪个模型生成。
 
-**为什么不能恢复旧循环了事。** 正常返回的 handler 可以只观察部分事件，最终响应仍须完整。共享节点的旧循环位于 `yield` 后、`try` 内，向外传播的异常本来就会跳过它；#5771 指出的另一冲突是显式 `stream.cancel()` 后仍可正常退出上下文，旧循环仍会尝试排空。最终由 driver 在 handler 正常返回后补齐流，向外传播的取消／其他异常则跳过；handler 内部只 `break` 再正常返回仍属于应排空的路径。这里分别保留显式取消与正常完成的契约，调整完成策略的职责归属，不是全局架构重写。**[一手：前后控制流、修复说明；研究：决策解释]**
+**为什么不能恢复旧循环了事。** 正常返回的 handler 可以只观察部分事件，最终响应仍须完整。共享节点的旧循环位于 `yield` 后、`try` 内，向外传播的异常本来就会跳过它；#5771 指出的另一冲突是显式 `stream.cancel()` 后仍可正常退出上下文，旧循环仍会尝试排空。最终由 driver 在 handler 正常返回后补齐流，向外传播的取消／其他异常则跳过；handler 内部只 `break` 再正常返回仍属于应排空的路径。职责调整保留显式取消与正常完成两种契约。**[一手：前后控制流、修复说明；研究：决策解释]**
 
-这也不是“内层已有抽象就绝不动外层”。[Devin 指出](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3349919895) `CallToolsNode` 内层自排空不保证 capability wrapper 完成；[作者明确回复](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3353383025)已修正，最终三处分支一致。[Codex 则提出](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3349656443)删除公开 `AgentStream.drain()` 会破坏调用者；[最终 `result.py`](https://github.com/pydantic/pydantic-ai/blob/49f62a386041abd6e0d960dd629c3b4fe28eac63/pydantic_ai_slim/pydantic_ai/result.py#L173-L177)仍保留该方法。前者有作者确认，后者只有评审与最终产物对应，不能宣称某条反馈单独导致全部修订。**[一手：评审、回复、源码]**
+这也不是“内层已有抽象就绝不动外层”。[Devin 指出](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3349919895) `CallToolsNode` 内层自排空不保证 capability wrapper 完成；[作者明确回复](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3353383025)已修正，最终三处分支一致。[Codex 则提出](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3349656443)删除公开 `AgentStream.drain()` 会破坏调用者；[最终 `result.py`](https://github.com/pydantic/pydantic-ai/blob/49f62a386041abd6e0d960dd629c3b4fe28eac63/pydantic_ai_slim/pydantic_ai/result.py#L173-L177)仍保留该方法。前者获作者确认，后者仅产物对应；不独归因某条反馈。**[一手：评审、回复、源码]**
 
-**成对验收与执行边界。** 最终新增四个正常完成测试，分别覆盖 `run`／`run_stream` 的完整文本与工具调用；另一个仅覆盖 `run` 的取消测试使用无限流，handler 抛出 `CancelledError`，要求只发生一次前置 lookahead。它们把“完成结果不丢”与“取消不继续消费”同时写入契约。[先前测试提交](https://github.com/pydantic/pydantic-ai/commit/95d9ff040d327a57423438df060b23bfb3e65d50)报告 `try/finally` 排空变体会失败；[后续提交](https://github.com/pydantic/pydantic-ai/commit/230e6d10ea4ec13198bd80fffc2014b2ac23e13f)将有限 sentinel 改为无限流与计数，以消除不可达的覆盖行。这里确认的是测试定义与作者 mutation-testing 自述，没有取得其原始红绿日志。PR 页面显示 56 checks passed，也不能代替逐测试前后结果。**[一手：测试、提交说明与平台摘要]**
+**成对验收与执行边界。** 最终新增四个正常完成测试，分别覆盖 `run`／`run_stream` 的完整文本与工具调用；另一个仅覆盖 `run` 的取消测试使用无限流，handler 抛出 `CancelledError`，要求只发生一次前置 lookahead。同时验完成与取消。[先前测试提交](https://github.com/pydantic/pydantic-ai/commit/95d9ff040d327a57423438df060b23bfb3e65d50)报告 `try/finally` 排空变体会失败；[后续提交](https://github.com/pydantic/pydantic-ai/commit/230e6d10ea4ec13198bd80fffc2014b2ac23e13f)将有限 sentinel 改为无限流与计数，以消除不可达的覆盖行。仅测试定义／mutation-testing 自述，缺红绿原日志。PR 页面显示 56 checks passed，也不能代替逐测试前后结果。**[一手：测试、提交说明与平台摘要]**
 
-**最强反证。** #5771 明说用户最初贴的非流式例子并不触发该路径；#5769 当前正文已经过修改，不能把它当作原始复现成功记录。修复 PR 正文还残留“CallToolsNode 分支不动”的描述，与最终补丁不同，故以上以固定产物和作者后续回复为准。[第三方历史复演](https://www.startearly.ai/regression-case-files/pydantic-ai-release-replay/)另报告 TestModel 在 1.91 通过、1.92 失败、1.106 通过；它是预先选中已知故障版本的事后试验，本文未重跑，也不用于证明其检测产品普遍有效。**[一手：维护者解释；社区：第三方复演]**
+**最强反证。** #5771 明说用户最初贴的非流式例子并不触发该路径；#5769 当前正文已经过修改，非原始成功复现。修复 PR 正文还残留“CallToolsNode 分支不动”的描述，与最终补丁不同，故以上以固定产物和作者后续回复为准。[第三方历史复演](https://www.startearly.ai/regression-case-files/pydantic-ai-release-replay/)另报告 TestModel 在 1.91 通过、1.92 失败、1.106 通过；这是已知故障的事后复演，未重跑，不背书检测产品。**[一手：维护者解释；社区：第三方复演]**
 
 #### 累计到下一次需求：保存、重放、整轮取消不是同一个契约
 
-> 核实：2026-10-14 UTC。本节接续同一取消／历史链。三项新增要求是**保存中断产物、重新使用这些产物、从外部停止整轮并取回状态**；不把评审轮次或修 bug 数量当作需求次数。**[研究：比较范围]**
+> 核实：2026-10-14 UTC。本节接续同一取消／历史链。三项新增要求是**保存中断产物、重新使用这些产物、从外部停止整轮并取回状态**；需求次数不按评审／修 bug 计。**[研究：比较范围]**
 
 | 阶段与真实要求 | 固定产物、责任与操作变化 | 保留什么，什么有意改变 |
 |---|---|---|
@@ -401,9 +401,9 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 | 4. stop 按钮、线程或工具要停止整轮并拿回状态 | [#5835](https://github.com/pydantic/pydantic-ai/issues/5835) → [#6497／`a19b68a`](https://github.com/pydantic/pydantic-ai/commit/a19b68adeb2d18efd3719bb3c7f738a853d41984)。增加 run-scoped controller、token、外层取消分类与清理完成后的快照；复用 stream/tool teardown，响应级 cancel 保持原义 | 外部 `CancelledError` 继续传播以保留 timeout／TaskGroup 语义，本方取消以 `RunCancelled` 携带状态。新的控制范围要求掌握整轮状态的责任边界，不能只在流末尾补判断 |
 | 5. 新契约的实际反例：首个工具尚未返回就取消 | [用户 #7977](https://github.com/pydantic/pydantic-ai/issues/7977) 在 2.37.0 给出确定性复现；[#7993／`1467456`](https://github.com/pydantic/pydantic-ai/commit/1467456556b9109b5b92eb7c7def8eabb5287775) 去掉旧 `if output_parts` 门槛，保留空 interrupted request | 阶段 2 的“空数据不保存”已不成立：消息还承担“这些工具不会再返回”的恢复信号。错误路径精确消息计数有意改变；修复沿已有 repair 边界完成，无须再次重构整轮控制 |
 
-需求、源码和测试定义为 **[一手]**；用户复现为 **[社区：报告者运行]**。本轮读固定补丁，未运行 Pydantic AI。历史 repair 与 run controller 是不同责任，不能把作用全部归给 #6497。#7993 新增带／不带新 prompt 的恢复、错误退出恢复及多个 dangling calls 覆盖；作者称前三例旧版失败、新版通过，本轮未取得其逐例红绿原日志。
+固定补丁／测试 **[一手]**，复现 **[社区：用户运行]**；本轮未运行。历史 repair 与 run controller 是不同责任，不能把作用全部归给 #6497。#7993 新增带／不带新 prompt 的恢复、错误退出恢复及多个 dangling calls 覆盖；作者称前三例旧版失败、新版通过，本轮未取得其逐例红绿原日志。
 
-**晚期仍可窄修，而非越改越大。** run 级能力已有后，[#7743](https://github.com/pydantic/pydantic-ai/pull/7743)针对用户 #7722 的 adapter 不接收 token，把可选参数经三个入口转发到已有 run API，并补 native／编码流／dispatch 测试。它支持补接线，不支持再造 UI 专属取消控制器；这是已有承诺的接入缺口，不额外计作新需求。**[一手：补丁与需求；研究：选择解释]**
+**晚期仍可窄修，而非越改越大。** run 级能力已有后，[#7743](https://github.com/pydantic/pydantic-ai/pull/7743)针对用户 #7722 的 adapter 不接收 token，把可选参数经三个入口转发到已有 run API，并补 native／编码流／dispatch 测试。属于既有承诺的补接线，非新需求或 UI 专用控制器。**[一手：补丁与需求；研究：选择解释]**
 
 #### 接收者接下来做了什么：删除补偿层，而非恢复旧测试期待
 
@@ -411,42 +411,42 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 **[一手：最终产物]** [#156／`94779e1`](https://github.com/b12consulting/akgentic-llm/commit/94779e16adc47e964e0976c5311a276953fa6ca7)落实了接管选择：
 
-- 原 `HealingCapability` 在错误钩子看到末尾已是空 request 后不再执行，上游下一轮会补工具返回；下游删除该能力、挂载顺序依赖、公开导出及专属常量，保留预算恢复决策 `LimitRecoveryCapability`。删的是已被承担的责任，删文件数量不是工时收益
+- 原 `HealingCapability` 在错误钩子看到末尾已是空 request 后不再执行，上游下一轮会补工具返回；下游删除该能力、挂载顺序依赖、公开导出及专属常量，保留预算恢复决策 `LimitRecoveryCapability`。只删重复责任，未测工时
 - 最初不改依赖下限的决定被[修正](https://github.com/b12consulting/akgentic-llm/issues/155#issuecomment-5619072935)：2.38 前首个工具未返回的失败路径不会留下该恢复标记，删除会破坏原来可恢复的路径。最终要求从 `>=2.32,<3` 改为 `>=2.38,<3`，保留已有主版本上限
-- 删除公开名字而不留无效 shim，外部旧导入会报 `ImportError`；同时接受模型侧失败说明由项目特定文案变成上游通用 interrupted 文案。PR 要求下一 release 说明导出变化，作者把措辞损失留给 ADR owner 记录，不能称无兼容影响或已全部交付
-- 同批 anyio 修复没有使所有 workaround 都删除：下游保留清理整个 per-loop entry 的 `_evict_anyio_run_vars`，改掉“没有本地补偿就必定泄漏”的负对照。上游只修其中 root-task 缓存，是否重复要逐项比较责任，不能按依赖升级一概撤掉本地层
+- 删除公开名字而不留无效 shim，外部旧导入会报 `ImportError`；同时接受模型侧失败说明由项目特定文案变成上游通用 interrupted 文案。PR 要求下一 release 说明导出变化，作者把措辞损失留给 ADR owner 记录，仍有兼容与交付缺口
+- 同批 anyio 修复没有使所有 workaround 都删除：下游保留清理整个 per-loop entry 的 `_evict_anyio_run_vars`，改掉“没有本地补偿就必定泄漏”的负对照。上游只修其中 root-task 缓存，须逐项比责任，不能升级即删本地层
 
 **后期验收比数删改文件更有意义。** [新测试](https://github.com/b12consulting/akgentic-llm/blob/94779e16adc47e964e0976c5311a276953fa6ca7/tests/test_failed_run_history_resumes.py)经真实 `ReactAgent` 图和离线 `FunctionModel`，检查工具崩溃、预算耗尽后的下一轮模型输入有对应 call ID 的 interrupted return；通用失败要求同一异常对象及 traceback。另把失败事件经 `ModelMessagesTypeAdapter` JSON 往返，在新 agent 上 `restore_context` 后继续，验证持久化状态不会丢失恢复含义。**[一手：测试定义]**
 
-[head CI job](https://github.com/b12consulting/akgentic-llm/actions/runs/34483676695/job/102892459538)绑定 `27ba731a2b696e6f57b7b84a5f46889e0ce9e4ed`，运行使用 slim 2.42.0／anyio 4.15.1，原日志为 **866 passed、99.10%**，包括新文件四例；与作者另报的本地 865 pass／98.3% 分开记录。它是历史确定性框架集成测试，不是本仓运行、真实模型服务或 OS 进程重启：恢复例的新工具名是 `kaboom_again`，下一轮直接返回文本，未证明原工具可以重新执行。**[一手：历史 CI 原日志；研究：运行边界]**
+[head CI job](https://github.com/b12consulting/akgentic-llm/actions/runs/34483676695/job/102892459538)绑定 `27ba731a2b696e6f57b7b84a5f46889e0ce9e4ed`，运行使用 slim 2.42.0／anyio 4.15.1，原日志为 **866 passed、99.10%**，包括新文件四例；与作者另报的本地 865 pass／98.3% 分开记录。它仅为历史确定性框架集成测试，非本仓／真实模型／OS 重启：恢复例的新工具名是 `kaboom_again`，下一轮直接返回文本，未证明原工具可以重新执行。**[一手：历史 CI 原日志；研究：运行边界]**
 
-另一维护者 gpiroux 于 9 月 21 日合并，PR 无人工 review 记录，不能据此补写其理解工时。这是上游责任被下游实际采用的证据，不是陌生人首次接手整个项目。**[一手：合并；研究：采用边界]**
+另一维护者 gpiroux 于 9 月 21 日合并，PR 无人工 review 记录，不能据此补写其理解工时。仅证下游采用，非陌生人首次接管。**[一手：合并；研究：采用边界]**
 
 **发行与恢复分开核对（2026-10-16 UTC）。** [v2.3.0](https://github.com/b12consulting/akgentic-llm/releases/tag/v2.3.0)已于9月21日发布并列出#156；[固定发行源码](https://github.com/b12consulting/akgentic-llm/blob/637cb7db9abd8b3e10f95fead05a7f0fee2bebdb/src/akgentic/llm/__init__.py)已删除上述公开导出，[依赖下限](https://github.com/b12consulting/akgentic-llm/blob/637cb7db9abd8b3e10f95fead05a7f0fee2bebdb/pyproject.toml)为`>=2.38,<3`。核实时最新llm发行[v2.4.0](https://github.com/b12consulting/akgentic-llm/releases/tag/v2.4.0)仍用[同一下限](https://github.com/b12consulting/akgentic-llm/blob/e6e3b14e65b4419eac206db3ec8b9e5af5b24ea9/pyproject.toml)。同组织的[framework v2.15.0](https://github.com/b12consulting/akgentic-framework/releases/tag/v2.15.0)和[v2.17.0](https://github.com/b12consulting/akgentic-framework/releases/tag/v2.17.0)分别纳入llm 2.3.0和2.4.0，支持已进入组合发行，不证明服务恢复。llm v2.3.0说明只列删除healing的PR，没有列出两个被删名字的旧导入迁移；[agent #148](https://github.com/b12consulting/akgentic-agent/issues/148)仍open且无评论。最低支持版本的完整验收、ADR-016落地、外部旧导入迁移与真实恢复仍未取得新回执。**[一手：发行页、固定源码与公开状态；研究：交付缺口]**
 
 #### 后续依赖升级：旧观察点过时，不等于消费者结果可以丢
 
-> 核实：2026-10-15 UTC；2026-10-16 UTC补核发行范围。以下#167／#172均在最新llm发行v2.4.0之后：已核[提交比较](https://github.com/b12consulting/akgentic-llm/compare/v2.4.0...45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)，不能当作v2.3.0／v2.4.0已交付的修复。未运行上游或下游代码；不是实际服务恢复回执。**[一手／研究：范围]**
+> 核实：2026-10-15 UTC；2026-10-16 UTC补核发行范围。以下#167／#172均在最新llm发行v2.4.0之后：已核[提交比较](https://github.com/b12consulting/akgentic-llm/compare/v2.4.0...45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)，不属v2.3.0／v2.4.0交付；未运行上下游或取得服务恢复回执。**[一手／研究：范围]**
 
 **先区分观察时点与交付结果。** [#167／`5f18045`](https://github.com/b12consulting/akgentic-llm/commit/5f18045a8c9f3138d083318493bb0e896663fa93)将依赖下限从2.38提高到2.54，并把 limit-recovery 验收拆开：错误钩子看到的持久历史以 dangling response 结束；run 展开收尾后，历史仍须紧跟 interrupted marker。补丁改变钩子时点的断言，保留后续 conclusion 返回 `concluded` 的断言。作者在 [#169](https://github.com/b12consulting/akgentic-llm/issues/169)说明恢复行为未变；这不是恢复成功的新现场证据。[当前固定master](https://github.com/b12consulting/akgentic-llm/blob/28adec6d370b09af790abbd3f46ed281398183c6/pyproject.toml)要求`>=2.54,<3`，已发行的v2.3.0／v2.4.0仍声明`>=2.38,<3`；先核实际采用的版本，不把master下限套到旧发行，也不把发行声明当最低版本完整验收。**[一手：固定依赖、补丁与测试；社区：作者诊断]**
 
-**另一次红测试则仍代表必须修的消费者结果。** 上游 [#9627／`107cac9`](https://github.com/pydantic/pydantic-ai/commit/107cac9ec0bdd05bd25085b202189c3787edb024)让动态 system prompt 重评时替换 run 内的消息副本，不再改调用者持有的历史对象；新增测试同时要求本轮得到新文本、旧历史不变，以及并发轮次互不污染。下游 [#171](https://github.com/b12consulting/akgentic-llm/issues/171)报告2.56使第二轮变更不再产生 `LlmSystemPromptEvent`：记录器仍读旧对象，算出的 hash 不变。这是公开 observer 事件缺失，不能只把“两次不同渲染应有两个事件”改成一个。**[一手：上游补丁与测试定义；社区：下游故障报告]**
+**另一次红测试则仍代表必须修的消费者结果。** 上游 [#9627／`107cac9`](https://github.com/pydantic/pydantic-ai/commit/107cac9ec0bdd05bd25085b202189c3787edb024)让动态 system prompt 重评时替换 run 内的消息副本，不再改调用者持有的历史对象；新增测试同时要求本轮得到新文本、旧历史不变，以及并发轮次互不污染。下游 [#171](https://github.com/b12consulting/akgentic-llm/issues/171)报告2.56使第二轮变更不再产生 `LlmSystemPromptEvent`：记录器仍读旧对象，算出的 hash 不变。observer 契约仍需两个事件，不能改为一个。**[一手：上游补丁与测试定义；社区：下游故障报告]**
 
-下游 [#172／`45b089a`](https://github.com/b12consulting/akgentic-llm/commit/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)把本轮 live history 显式传给 `record_system_prompt`，保留原有去重逻辑和[两轮事件断言](https://github.com/b12consulting/akgentic-llm/blob/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274/tests/test_capabilities.py#L363-L384)，没有恢复上游原地修改，也没有重建已删除的 healing 层。[固定 README](https://github.com/b12consulting/akgentic-llm/blob/1f5b7c7e514c853e09d5feadcad07a77000efa7a/README.md#system-prompt-rendering-events)说明该事件供 traces／frontend 显示每轮实际提示词；这是公开消费者契约，不是已核实某个前端真的恢复显示。可选 `messages` 参数保留旧调用形式，但默认读取旧 context 不能保证后续轮次内容新鲜；接入者仍要传对本轮数据。**[一手：实现、测试定义与公开契约]**
+下游 [#172／`45b089a`](https://github.com/b12consulting/akgentic-llm/commit/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)把本轮 live history 显式传给 `record_system_prompt`，保留原有去重逻辑和[两轮事件断言](https://github.com/b12consulting/akgentic-llm/blob/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274/tests/test_capabilities.py#L363-L384)，没有恢复上游原地修改，也没有重建已删除的 healing 层。[固定 README](https://github.com/b12consulting/akgentic-llm/blob/1f5b7c7e514c853e09d5feadcad07a77000efa7a/README.md#system-prompt-rendering-events)说明该事件供 traces／frontend 显示每轮实际提示词；仅为消费者契约，未证前端恢复显示。可选 `messages` 参数保留旧调用形式，但默认读取旧 context 不能保证后续轮次内容新鲜；接入者仍要传对本轮数据。**[一手：实现、测试定义与公开契约]**
 
-**采用边界。** 上游承担的是调用者历史不被改写，下游仍负责发布每轮有效内容；两者都应保留。依赖升级后，先追到消费者实际需要的值和时点，再决定更新内部断言还是修接线。作者称补丁兼容2.54和2.56，本轮未取得双版本完整原日志；这两项后续补丁尚未进入上述llm发行，旧导入消费者迁移和真实服务恢复也无新回执，仍不宣称交付闭环或维护工时降低。**[社区：兼容自述；研究：选择与限制]**
+**采用边界。** 上游承担的是调用者历史不被改写，下游仍负责发布每轮有效内容；两者都应保留。依赖升级后，先追到消费者实际需要的值和时点，再决定更新内部断言还是修接线。作者称补丁兼容2.54和2.56，本轮未取得双版本完整原日志；未发行且缺旧导入迁移／服务恢复回执，不作交付闭环或工时收益。**[社区：兼容自述；研究：选择与限制]**
 
 #### 累计采用判断：下一需求改变了谁必须知道什么
 
-接到改变生命周期的需求时，先写清触发条件、退出方式与应保留的结果，不把整个旧测试集合统一判为兼容或过时；按以下条件选择修改范围。**[研究：从本链提炼的采用条件，非普遍净收益]**
+生命周期需求先定触发、退出与保留结果，再分辨旧测试应保留还是更新。**[研究：本链采用条件]**
 
-✅ **局部补丁**：契约与责任不变，只是入口未传参或生产者漏发既有标记，沿现有 API／repair 层补齐，并验原调用者；#7743 与 #7993 是后期仍可小修的反例。**[研究：采用判断]**
+✅ **局部补丁**：责任不变时沿既有 API／repair 层补接并验原调用者；#7743、#7993 表明后期也能小修。**[研究]**
 
-✅ **窄扩展点或责任重构**：已有抽象仍能满足不同路径时保留；新需求只是让外层选择已有行为，先暴露窄入口。若改变控制范围、何时算完成、谁能分类退出，则移到掌握该区别的层。共享收尾无法区分两种合法契约时，也只把策略移到拥有该区别的调用层，同时验相邻路径和公开接口；仍无法表达要求时才提出更大重构。#5771 的正常完成 driver 与 #6497 的整轮 controller 各有范围，共用 finally 排空或统一异常类型无法表达两者契约。**[研究：采用判断]**
+✅ **窄扩展点或责任重构**：先保留可用抽象；策略随控制范围、完成时点或退出分类，放到掌握区别的层，并验相邻路径／公开接口。#5771 driver 与 #6497 controller 各有范围，共用 finally 排空或统一异常不能表达两者；窄改仍无法表达才扩大。**[研究]**
 
-✅ **删除过期扩展并交接**：上游现已满足同一用户结果时，先核对最低支持版本并验证持久化恢复路径，再删除重复补偿；交代公开导出、诊断文案、剩余预算策略及跨仓说明归属。下游红测试可能是在期待旧实现，不应为保绿把已移交的责任搬回来；仍承担不同责任的 workaround 则保留。**[研究：采用判断]**
+✅ **删除过期扩展并交接**：上游已承担同一结果时，核最低版本和持久恢复，再删补偿；交代导出、文案、预算策略和跨仓说明。别为旧内部断言恢复重复责任，仍有独立责任的 workaround 保留。**[研究]**
 
-这条链支持条件分界，尚不支持某个模型或架构普遍减少维护工时。下一证据应是下游最低支持版本的完整验收、发布后导入迁移与实际恢复；继续增加相似取消用例不能替代交付结果。
+尚缺最低支持版本完整验收、发行后导入迁移与真实恢复，不能据本链量化模型／架构维护收益。
 
 ### CodeThread：下一次修改失败，先查继承了什么行为
 
@@ -458,11 +458,11 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 **构造源码限定了能说什么。** 固定仓库 [`158f6ab`](https://github.com/shaswatpatel123/CodeThread/tree/158f6abaadcf717f3175a8f402be7da4e8d48c76)的 [`data_gen_problems.py`](https://github.com/shaswatpatel123/CodeThread/blob/158f6abaadcf717f3175a8f402be7da4e8d48c76/dataset/scripts/data_gen_problems.py)把原函数交给模型，生成重建所需的说明，其中明确要求返回结构、异常、边界与操作步骤；人工分支保留原实现，未由人按同一说明重写。[公开数据卡](https://huggingface.co/datasets/shaswat123/CodeThread)列的是 1,377 个 stub／任务输入，不是 1,377 个成功配对运行。因此这是“重建保真度＋后续解题”的比较，P2P 通过不能证明未测输入上的行为等价；不可把全部后续差异归因于代码组织或接管难度。**[一手：固定源码、数据卡；研究：因果边界]**
 
-本轮还只读 [`synthetic_chains.py`](https://github.com/shaswatpatel123/CodeThread/blob/158f6abaadcf717f3175a8f402be7da4e8d48c76/scripts/utils/synthetic_chains.py)的 P2P／F2P 分类与 [`run_swebench.sh`](https://github.com/shaswatpatel123/CodeThread/blob/158f6abaadcf717f3175a8f402be7da4e8d48c76/scripts/run_swebench.sh)的两阶段连接。没有运行这些脚本、安装环境或调用模型；在读取的固定仓库与数据卡中未取得论文逐例配对产物、judge 标签和原始测试日志，故没有重算效果或声称复现。源码能确认构造机制，不能补足原始运行证据。**[一手：检查范围]**
+本轮还只读 [`synthetic_chains.py`](https://github.com/shaswatpatel123/CodeThread/blob/158f6abaadcf717f3175a8f402be7da4e8d48c76/scripts/utils/synthetic_chains.py)的 P2P／F2P 分类与 [`run_swebench.sh`](https://github.com/shaswatpatel123/CodeThread/blob/158f6abaadcf717f3175a8f402be7da4e8d48c76/scripts/run_swebench.sh)的两阶段连接。只读未运行；固定仓库／数据卡未提供所需逐例配对产物、judge 标签及测试原日志，无法重算或复现。**[一手：检查范围]**
 
-**对实际工作的改变。** 续改失败时，先沿新功能的调用链比对预期与继承实现：什么输入会被提前拒绝、缺值如何处理、错误返回还是抛出、调用者靠什么判断失败。该函数没有出现在本次 diff，也不能排除；把查明的一项行为变成最小回归，再决定修旧函数还是改新调用者。若当前需求有意改变旧行为，则更新契约与调用者，不能机械恢复历史实现。已有用例能表达时不额外写交接文档，也不为清理指标重写整片代码。**[经验：从证据提出的可撤回建议，未测净收益]**
+**采用条件。** 沿新功能调用链核继承实现的输入拒绝、缺值及错误契约，不能只看 diff。把查明的偏移写入最小回归；新需求有意改变旧行为时同步契约与调用者，不机械恢复历史代码。**[经验：未测净收益]**
 
-这与前述 Pydantic 连续需求互补：那里有真实需求改变记录用途，这里提示继承产物可能早已悄悄改变行为。下一项有区分力的证据，应固定任务与预算，仅修复已识别的契约偏移后重测，或取得真实接管者的修改与投入；再加一份代码复杂度榜单不能回答该问题。
+与 Pydantic 的有意契约改变互补，本例提示继承行为可能已偏移。下一证据须同任务／预算仅修偏移后重测，或真实接管投入；复杂度榜单不能回答。
 
 ### 生成回归测试：先保留预期，再决定是否新增
 
@@ -470,37 +470,37 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 **跨后续修改的新证据。** [On the Risks of using LLM-Generated Tests for Regression Testing v1](https://arxiv.org/html/2610.11835v1)（2026-10-08，§3–7）使用 Haiku 4.5，在 SciPy／Qiskit／pandas 的 50／50／45 个历史 PR 上注入人工变异。选择未完全覆盖、至多改五个代码文件的 PR，pandas 限 I/O；先去掉原生测试检出的变异，再保留模型能构造区分测试的变异。生成阶段可见 PR 前源码、变异后的源码、两者 diff 与执行上下文，不见未变异的 PR 后参考源码，至多六轮追求通过与覆盖。表 3 的分母是进入分类的变异—测试对（各 3,483／3,355／9,578），包括预算耗尽后保留的失败候选，不只是获接受的通过测试；其中 8.4%–16.9% 在错误版通过、参考版失败。表 4 再跟踪可向后传播的 587／279／1,614 对，后续重施同一变异时，82.8%–90.9% 仍维持该结果。**[研究：预印本受控变异与历史传播，非真实故障发生率]**
 
-**原生测试足够的反例与分母。** 同文表 2 中，原生套件已检出各项目可执行变异的 58.6%／54.0%／16.0%，这部分未进入生成比较；不能用预筛后的漏检样本宣称原生测试普遍不足。传播中，后来原生测试检出故障也没有终止该断言的追踪，所以“错误断言仍存活”不等于“故障无人检出”。对已被可靠用例拦住的同一风险，不应为满足新增测试数量而再生成一份；额外生成和维护没有在这里证明增量价值，论文也未测人的净成本。**[研究：结果及采用边界]**
+**原生测试足够的反例与分母。** 同文表 2 中，原生套件已检出各项目可执行变异的 58.6%／54.0%／16.0%，这部分未进入生成比较；预筛样本不证明普遍不足。传播中，后来原生测试检出故障也没有终止该断言的追踪，所以“错误断言仍存活”不等于“故障无人检出”。已可靠拦住的风险无需重复生成；论文未证额外维护收益或人工净成本。**[研究：结果及采用边界]**
 
 **已有工业机制的对照。** Meta 的 [TestGen-LLM 原论文 §2](https://arxiv.org/html/2402.09171v1)明确丢弃首次不通过的测试，五次重复排除不稳定，再过滤不增加覆盖的候选；它保留原测试并由工程师决定接收。该设计适合补充已认可行为的覆盖，不能把“当前通过”解释成业务预期正确，也不能据新论文把 Meta 的实际部署说成已经锁入同等比例的缺陷。覆盖未增加也不必然意味着测试无价值：同一路径可以有更强断言。**[一手：工业论文；研究：机制比较]**
 
-**读取与未证实部分。** 已读两篇固定版本正文。新研究的 [Figshare 工件地址](https://figshare.com/s/bcdd07ff46760fd254ec)本次读取返回 403，未取得原始记录，不能独立复算；不是认定工件不存在。未执行上游或模型。变异不等于真实 bug，研究也未比较今天原生 Codex／Claude 的完整工作流；它足以支持核对预期来源，不能支持一律隐藏源码、强制测试先行或另加测试 Agent。继续采用的条件是新增测试补到明确行为缺口，若只重复已有检查则不保留。**[研究：局限与可撤回条件]**
+**读取与未证实部分。** 已读两篇固定版本正文。新研究的 [Figshare 工件地址](https://figshare.com/s/bcdd07ff46760fd254ec)本次读取返回 403，未取得原始记录，不能独立复算；不是认定工件不存在。未运行上游／模型；变异非真实 bug，也非当前 Codex／Claude 全流程对照，不支持默认隐藏源码、测试先行或加 Agent。继续采用的条件是新增测试补到明确行为缺口，若只重复已有检查则不保留。**[研究：局限与可撤回条件]**
 
 ### n8n：配置回退与独立导出入口
 
-**核实：2026-10-14 UTC；主线三，兼四；改变 15 §5。** ✅ 回退设计应停止新格式写入，同时保留读取已落盘数据所需的依赖；用混合代次数据分别验服务和实际维护入口。现有 Git MIDX 案例覆盖版本降级，这里补同版本配置撤回及独立导出入口，不追加通用备份流程。**[研究：采用判断]**
+**核实：2026-10-14 UTC；主线三，兼四；改变 15 §5。** ✅ 回退设计应停止新格式写入，同时保留读取已落盘数据所需的依赖；用混合代次数据分别验服务和实际维护入口。相对 Git MIDX 的降级，本例补配置撤回及导出入口。**[研究：采用判断]**
 
 **两步修订解决不同缺口。** [#37416](https://github.com/n8n-io/n8n/pull/37416)／[430bbe53](https://github.com/n8n-io/n8n/commit/430bbe53c3f784c20679c3a93b8da1feb52cab7e)先让模块和 provider 不再随轮换开关一起停用，但 cipher 自身仍检查开关。[#37603](https://github.com/n8n-io/n8n/pull/37603)／[9b10838d](https://github.com/n8n-io/n8n/commit/9b10838d9e1015d2198f3f48b9a6bc042239884a)才在 `packages/core/src/encryption/cipher.ts` 删除 `decryptV2` 的开关条件，按密文前缀查 key；`key-manager.service.ts` 的 `getActiveKey` 仍在关闭时返回旧格式 descriptor。读取已有新格式和继续写新格式因此分开。**[一手：固定补丁]**
 
 #37603 作者报告在分支 `2f51d9d615` 经真实 REST API 与 SQLite 检查 on→off→on：开启时写入的数据在关闭后仍可读，关闭后的新写入恢复旧格式，混合数据可读且读取不改写存储值。但同一报告明确指出一次性导出命令不运行 module init，provider 未注册，仍无法读带 keyId 的数据，并误报密钥不同。原始可重跑 spec 未随报告公开，不能把服务端成功当作导出恢复成功。**[社区：作者运行与故障报告]**
 
-随后 [#37972](https://github.com/n8n-io/n8n/pull/37972)／[93945cce](https://github.com/n8n-io/n8n/commit/93945cce5d97347d3dc3e1ac6249cd104ce5d708)在 `BaseCommand.init()` 数据库准备后调用 bootstrap，使服务、worker、webhook 和一次性命令较早获得 provider；原模块只保留管理 API 与前端设置。cipher 同时删除 provider 未注册时的隐式回退，改为明确失败。[afitzek 审批前一 PR](https://github.com/n8n-io/n8n/pull/37603#pullrequestreview-5100537985)后实际提交这次修复，再由 [sychovSaveliy 审批](https://github.com/n8n-io/n8n/pull/37972#pullrequestreview-5134188188)，是可见接管与修改，不是仅凭合并猜测。两个固定提交均有 Claude 共同署名；这只证明披露的参与，不证明具体代码归属或节省工时。**[一手：补丁、PR 元数据与审查]**
+随后 [#37972](https://github.com/n8n-io/n8n/pull/37972)／[93945cce](https://github.com/n8n-io/n8n/commit/93945cce5d97347d3dc3e1ac6249cd104ce5d708)在 `BaseCommand.init()` 数据库准备后调用 bootstrap，使服务、worker、webhook 和一次性命令较早获得 provider；原模块只保留管理 API 与前端设置。cipher 同时删除 provider 未注册时的隐式回退，改为明确失败。[afitzek 审批前一 PR](https://github.com/n8n-io/n8n/pull/37603#pullrequestreview-5100537985)后实际提交这次修复，再由 [sychovSaveliy 审批](https://github.com/n8n-io/n8n/pull/37972#pullrequestreview-5134188188)，为实际接管修改。两个固定提交均有 Claude 共同署名；只证署名参与，非代码归属／工时。**[一手：补丁、PR 元数据与审查]**
 
 **测试实际覆盖什么。** #37603 的 core 单测覆盖两种格式、未知 key ID 和不合格旧格式 descriptor；[固定 integration 测试](https://github.com/n8n-io/n8n/blob/93945cce5d97347d3dc3e1ac6249cd104ce5d708/packages/cli/src/encryption/__tests__/encryption-bootstrap.service.integration.test.ts)分别检查开启／关闭时的真实 key store 与 cipher 往返，未在同一用例内做完整 on→off→on。后续 [bootstrap 单测](https://github.com/n8n-io/n8n/blob/93945cce5d97347d3dc3e1ac6249cd104ce5d708/packages/cli/src/encryption/__tests__/encryption-bootstrap.service.test.ts)验证禁止 seed 或非 main 时不创建部署级 key、仍注册读取 provider；`commands/__tests__/execute.test.ts` 把 bootstrap mock 为 no-op，不能算实际导出测试。**[一手：测试定义，未执行]**
 
 **回退边界。** 轮换 active key、关闭新格式写入、降级旧程序是三件事：前者仍需保留旧 key 以读旧密文；关闭写入不批量还原已经落盘的数据；同版本回退成功也不保证旧程序兼容。[官方当前说明](https://github.com/n8n-io/n8n-docs/blob/main/docs/deploy/host-n8n/configure-n8n/security/rotate-encryption-keys.md)把安全停用发布边界列为 2.40.3，并保留降级和缺少自动逆向转换的警告。不可将该节点写成首次解除读取门控：[#38910 固定补丁](https://github.com/n8n-io/n8n/commit/a8e0e7c3844510321894bf661cc0610baeae8fc3)实际补的是第三种 legacy DEK 存储形态，而读取门控已在 #37603 解耦。**[一手；研究：边界比较]**
 
-**验证与停止条件。** 本轮只读固定前后补丁、测试定义、作者运行报告与接管链；未运行 n8n、数据库、模型或上游测试，导出路径测试未独立运行，也没有最终 CLI 成功重试的独立用户回执或人工投入记录。建议适用于会留下新持久格式或存在独立维护入口的修改；机械迁移没有这些风险时不套用，已有可靠用例覆盖时不再扩充框架。**[研究：局限与采用范围]**
+**验证与采用范围。** 只读补丁、测试、作者报告与接管链，未运行 n8n／数据库／上游测试；缺最终 CLI 成功重试的独立回执及人工投入。仅对新持久格式或独立维护入口采用，复用已有覆盖。**[研究]**
 
 ### Grafana：回退的恢复时间点与保护性拒绝
 
-**核实：2026-10-14 UTC；主线三／四；改变 15 §5。** ✅ 对已迁移持久数据的回退，除旧程序能否读取，还要查恢复时间点和升级期间新增／修改的处理方式；在隔离数据上验证恢复方案，由负责人明确接受损失后才有条件使用强制回退。不能仅为恢复启动删保护或清表。本例补业务状态的恢复目标，不重复 MIDX 的格式兼容或 n8n 的读写开关。**[研究：采用判断]**
+**核实：2026-10-14 UTC；主线三／四；改变 15 §5。** ✅ 对已迁移持久数据的回退，除旧程序能否读取，还要查恢复时间点和升级期间新增／修改的处理方式；在隔离数据上验证恢复方案，由负责人明确接受损失后才有条件使用强制回退。不能仅为恢复启动删保护或清表。本例补业务恢复目标。**[研究：采用判断]**
 
 **原失败不等于检测到了新增数据。** [Grafana #50421](https://github.com/grafana/grafana/issues/50421)原报告者从 8.5.5 升到 9.0.0-beta3，因 polystat 面板插件不兼容降回 8.5.5，随后启动 panic；他明确说没有新建警报。[维护者说明](https://github.com/grafana/grafana/issues/50421#issuecomment-1152151626)将阻断解释为避免用户不知情地删除新警报系统数据。[PR #50470](https://github.com/grafana/grafana/pull/50470)已合并，固定修订 [30f035ca](https://github.com/grafana/grafana/commit/30f035ca347d9f6ba02bc48c0e1f183c885227c5)只澄清 panic 信息，没有实现无损反向迁移，也没有移除保护。**[社区：原报告与维护者解释；一手：固定补丁]**
 
 **历史发布版的删除契约。** v9.0.0 对应固定 SHA [`b5c56f63`](https://github.com/grafana/grafana/commit/b5c56f63710e09f37b8557ddd8b99ae3fc583169)。其 [ualert.go L52–96](https://github.com/grafana/grafana/blob/b5c56f63710e09f37b8557ddd8b99ae3fc583169/pkg/services/sqlstore/migrations/ualert/ualert.go#L52-L96)按迁移日志和启用状态选择回退，缺少 `ForceMigration` 时阻止；开启后安排删除迁移，并清掉原迁移标记，供将来再迁移。因此阻断不证明实际存在升级后的新增警报；新旧警报都关闭时还有直接返回的分支。[删除实现 L517–570](https://github.com/grafana/grafana/blob/b5c56f63710e09f37b8557ddd8b99ae3fc583169/pkg/services/sqlstore/migrations/ualert/ualert.go#L517-L570)涉及新警报规则、规则版本、配置、实例及 silence 文件，不是单纯换回旧二进制。[同版回退文档](https://github.com/grafana/grafana/blob/b5c56f63710e09f37b8557ddd8b99ae3fc583169/docs/sources/alerting/migrating-alerts/roll-back.md)明确恢复的是升级时的警报状态，新系统中新增警报及修改会被删除。**[一手：固定发布源码与文档]**
 
-**启动恢复与业务恢复是两个结果。** [另一用户的后续报告](https://github.com/grafana/grafana/issues/50421#issuecomment-1150915431)称按讨论中的清表办法恢复启动，但已没有警报。这不是无损恢复，也不是推荐手工删表；它支持先约定损失范围，再检查业务结果，而非只用进程、健康检查或 issue 关闭验收。该回执不是原报告者的修订版复测。**[社区：用户运行报告；研究：采用边界]**
+**启动恢复与业务恢复是两个结果。** [另一用户的后续报告](https://github.com/grafana/grafana/issues/50421#issuecomment-1150915431)称按讨论中的清表办法恢复启动，但已没有警报。这不是无损恢复，也不是推荐手工删表；须约定损失并验业务，不能只验启动／关闭 issue。该回执不是原报告者的修订版复测。**[社区：用户运行报告；研究：采用边界]**
 
 **测试名不是有效断言的证明。** [同版 migration_test.go L24–115](https://github.com/grafana/grafana/blob/b5c56f63710e09f37b8557ddd8b99ae3fc583169/pkg/services/sqlstore/migrations/ualert/migration_test.go#L24-L115)包含名为“force migration is disabled…should panic”的表项，但未设置 `shouldPanic: true`；defer 吞掉 panic，只在该字段为真且没有 panic 时报告失败。对应表项又将删除迁移列为 expected，故不能把用例名称当作“移除拒绝也会被检出”的证据。本轮仅作静态核对，未做变异或上游执行。**[一手：测试定义；研究：断言范围]**
 
@@ -508,9 +508,9 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 ### 能推翻或改变这个优先级的证据
 
-若实际任务已经有清楚知识、可用环境和及时反馈，仍主要受复杂推理限制，就应提高模型/effort 对照优先级。若环境接口维护比人工复现更贵，或只有一次性任务，就不推荐专门改造。若更强模型直接解决了旧框架试图处理的失败，应删除多余流程。若新增状态接口让测试通过却绕过真实故障，应降低它在验收中的权重。
+知识、环境和反馈充分却受复杂推理限制时，提高模型／effort 对照优先级；接口维护贵于人工复现或仅一次性使用时，撤回专门改造。更强模型已解决旧失败则删多余流程；内部状态绕过真实故障则降低其验收权重。
 
-正式案例至少要区分：新增知识、增加工具访问、改变反馈表示、改变工作顺序、换模型。多项同时变化可以作为完整方案案例，但不能把全部改善归给其中一个 Skill。没有耗时、返工与后续记录时，给机制判断，不报收益百分比。
+案例分别记录知识、访问、反馈、顺序和模型变化；多项同改只能评完整方案。缺耗时、返工与后续记录时不报收益百分比。
 
 ## 来源与阅读范围
 
@@ -524,12 +524,12 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 ### 一手修订链与归属
 
-[Issue #20](https://github.com/simonw/sqlite-chronicle/issues/20)由维护者 Simon Willison 报告：把代码和此前讨论交给 Opus 4.6、Gemini 3 Deep Think、GPT-5.2 探索，其中前两者给出候选方案，GPT-5.2 耗尽上下文。这是作者报告，不能比较模型总体能力。[PR #21](https://github.com/simonw/sqlite-chronicle/pull/21)公开了要求先确认失败、采用候选方案、做 red/green 与生成演示的任务文字、Claude Code 会话链接和 claude 提交；本轮只读公开 PR 与代码，没有读取会话全文或运行模型。维护者称已人工审阅，随后合并并发布 0.5；这不证明所有输入已正确。**[社区：作者报告；一手：公开任务与提交]**
+[Issue #20](https://github.com/simonw/sqlite-chronicle/issues/20)由维护者 Simon Willison 报告：把代码和此前讨论交给 Opus 4.6、Gemini 3 Deep Think、GPT-5.2 探索，其中前两者给出候选方案，GPT-5.2 耗尽上下文。仅作者报告，非模型排名。[PR #21](https://github.com/simonw/sqlite-chronicle/pull/21)公开了要求先确认失败、采用候选方案、做 red/green 与生成演示的任务文字、Claude Code 会话链接和 claude 提交；本轮只读公开 PR 与代码，没有读取会话全文或运行模型。人工审阅后合并、发布 0.5，仍非全输入正确保证。**[社区：作者报告；一手：公开任务与提交]**
 
 - 原版 [25370bdd](https://github.com/simonw/sqlite-chronicle/blob/25370bdd9ce4d5c3be93d5035e86b44bd9346476/sqlite_chronicle.py)在 AFTER INSERT 中用 `INSERT OR IGNORE` 写 chronicle；外层 `INSERT OR REPLACE` 的冲突策略会传播进触发器，重建跟踪行并重置 added 时间。`recursive_triggers=ON` 还让隐式 DELETE 触发额外版本增长。SQLite [CREATE TRIGGER 官方契约](https://sqlite.org/lang_createtrigger.html)明确外层语句的冲突处理优先于触发器内部策略。**[一手]**
 - [3510fd21](https://github.com/simonw/sqlite-chronicle/commit/3510fd21b57bf5a06eb16bf5830d44919fc3fe11)改为 BEFORE INSERT 保存旧值快照、INSERT 时判等并清理、用 `WHERE NOT EXISTS` 避免冲突策略传播，并为隐式 DELETE 加 guard。后续 [60f09b98](https://github.com/simonw/sqlite-chronicle/blob/60f09b9833f4bbc44ea52cd89cf9c4e5329a804e/README.md)已有对应生成 SQL，但 `json_array` 直接接收 BLOB 会失败。**[一手：固定补丁与生成 SQL]**
 - [9cd5293f](https://github.com/simonw/sqlite-chronicle/commit/9cd5293f5e89825a8824c1f258231e0592d8579f)改用 `json_array(quote(...))`，新增 BLOB、NULL、混合类型回归。这个改动确实消除本轮 BLOB 失败，但 `quote(TEXT)` 在首个 NUL 截断；不同尾部因此可能得到相同快照。截断是 [SQLite 文档规定](https://sqlite.org/lang_corefunc.html#quote)，不是本仓猜测。**[一手；研究：判等推论]**
-- 核查时 main 固定为 [ee8d2a1d](https://github.com/simonw/sqlite-chronicle/blob/ee8d2a1db5090d14279f0acb56b5d46a5c50e44c/sqlite_chronicle.py)。快照表已改成共享表，仍保留这条 quote 判等路径；本轮也运行了此 SHA 的 [README 生成 SQL](https://github.com/simonw/sqlite-chronicle/blob/ee8d2a1db5090d14279f0acb56b5d46a5c50e44c/README.md)，没有把二月补丁直接当作十月现状。**[一手；经验：固定 SQL 执行]**
+- 核查时 main 固定为 [ee8d2a1d](https://github.com/simonw/sqlite-chronicle/blob/ee8d2a1db5090d14279f0acb56b5d46a5c50e44c/sqlite_chronicle.py)。快照表已改成共享表，仍保留这条 quote 判等路径；本轮也运行了此 SHA 的 [README 生成 SQL](https://github.com/simonw/sqlite-chronicle/blob/ee8d2a1db5090d14279f0acb56b5d46a5c50e44c/README.md)，未用二月补丁代十月现状。**[一手；经验：固定 SQL 执行]**
 
 ### 零依赖复核与反例
 
@@ -548,24 +548,24 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 **输入域与结论边界。** [SQLite 允许 TEXT 包含 NUL](https://sqlite.org/nulinstr.html)，但提醒部分显示和文本函数会截断。项目 README 承诺追踪行更新、相同数据不增长版本，并明示不支持主键更新；本轮未见其排除 NUL 非主键文本，所读实现也未拒绝该值。不过没有真实用户在生产中触发此问题的报告，不能把罕见输入的局部漏报外推为全部同步不可用。若业务明确禁止 NUL，应验证入口拒绝，而非默认判等编码无损；若允许，就需保住区分这些值的语义。**[一手：输入与项目契约；经验：采用边界]**
 
-本轮未运行包 CLI、安装／升级过程、上游测试套件、并发、多表或复合键；固定生成 SQL 与所读实现路径相符，但不等于整库端到端验证。没有提交外部 issue 或补丁，也没有评价模型成功率／工时收益。新增价值是把“补类型测试”具体化为**新编码能接受值，与它能分辨业务上不同的值，是两个验收条件**。**[研究：范围与采用判断]**
+未运行包 CLI、安装／升级、上游套件、并发、多表或复合键；没有外部 issue／补丁。固定 SQL 不是整库验证；本例区分“编码接受新值”和“仍能分辨旧值”，不量化模型收益。**[研究]**
 
 
 ### SWE-Game：游戏移植的 Visual 分不等于体验质量
 
-**核实：2026-10-15（UTC+8）；主线二／四；改变 22 的评分使用建议。** ✅ 借鉴按证据条件拆分游戏验收；👀 整套基准先作为条件评估对象，不凭总分选游戏 Agent 或宣布移植交付。当前 game02／WP10 已区分状态、输入、连续视听与玩家体验，本轮不重复扩建接口；新增价值是识别同名评分项、版本和演示完成的具体边界。**[研究：采用判断]**
+**核实：2026-10-15（UTC+8）；主线二／四；改变 22 的评分使用建议。** ✅ 借鉴按证据条件拆分游戏验收；👀 整套基准先作为条件评估对象，不凭总分选游戏 Agent 或宣布移植交付。当前 game02／WP10 已区分状态、输入、连续视听与玩家体验，本轮不重复扩建接口；重点为评分定义、版本和演示边界。**[研究：采用判断]**
 
-**固定来源。** 阅读 [论文 v3 正文及附录](https://arxiv.org/html/2609.33678v3)，由[作者提交的论文页](https://huggingface.co/papers/2609.33678)核到官方公开仓库；源码固定 `Charly-chan/SWE-Game@157a42b1a8a771a51da41e3df5e29045e246cc6c`。下载源码归档只读检查，未运行上游测试、模型、引擎或下载完整游戏数据。项目自有代码为 Apache-2.0，游戏／资产沿各自许可，不能以根许可证替代素材清权。[版本与数据声明](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/releasing.md)。**[一手；研究：验证边界]**
+**固定来源。** 阅读 [论文 v3 正文及附录](https://arxiv.org/html/2609.33678v3)，由[作者提交的论文页](https://huggingface.co/papers/2609.33678)核到官方公开仓库；源码固定 `Charly-chan/SWE-Game@157a42b1a8a771a51da41e3df5e29045e246cc6c`。下载源码归档只读检查，未运行上游测试、模型、引擎或下载完整游戏数据。项目自有代码为 Apache-2.0，游戏／资产沿各自许可，素材另清权。[版本与数据声明](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/releasing.md)。**[一手；研究：验证边界]**
 
-**先分开论文和发行配置。** 论文 v3 为 247 任务／83 修复；公开清单为 246／82，固定数据 revision 为 `651906f7d922474b8e4754bacd6f7fba38cc0397`。发行默认关闭 Brief Design 和构建类视觉裁判；缺少必要视觉证据时完整合成分留空。README 的结果修订说明指向论文 v1，而 v3 Table 3 仍列 Design 及不同 Brief 总分。因此引用必须写清论文版本／结果集，不能任选一个总数与另一版评分公式拼接；公开记录也明确论文结果不是发行默认设置的新测量。**[一手：上述版本文件、论文 Table 3 与附录 D；研究：比较]**
+**先分开论文和发行配置。** 论文 v3 为 247 任务／83 修复；公开清单为 246／82，固定数据 revision 为 `651906f7d922474b8e4754bacd6f7fba38cc0397`。发行默认关闭 Brief Design 和构建类视觉裁判；缺少必要视觉证据时完整合成分留空。README 的结果修订说明指向论文 v1，而 v3 Table 3 仍列 Design 及不同 Brief 总分。因此引用必须写清论文版本／结果集，不能任选一个总数与另一版评分公式拼接；论文结果非默认发行设置的新测量。**[一手：上述版本文件、论文 Table 3 与附录 D；研究：比较]**
 
-**独立源码核查反证：Visual 的名字不能替代测量定义。** 当前移植 registry `2026-10.mode5-evidence-five-visual1` 不调用 VLM；[评分契约](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/reference/MODE5_SCORING.md)明确为实现对应关系。运行／Editor／静态支持／文件存在的系数为 1／0.8／0.6／0.25；没有运行证据时仍可得到部分分，最终目标则只接受独立运行证据。保留部分工程成果有价值，但不是严格完成率。**[一手：实现契约；研究：解释]**
+**独立源码核查反证：Visual 的名字不能替代测量定义。** 当前移植 registry `2026-10.mode5-evidence-five-visual1` 不调用 VLM；[评分契约](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/reference/MODE5_SCORING.md)明确为实现对应关系。运行／Editor／静态支持／文件存在的系数为 1／0.8／0.6／0.25；没有运行证据时仍可得到部分分，最终目标则只接受独立运行证据。部分分非严格完成率。**[一手：实现契约；研究：解释]**
 
 - [visual_measure.py L67–112、198–243](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L67-L112)使用英文 OCR 与 score／points、health／hp、progress 等数值标签，核显示值与状态及无输入前后变化；不是所有文字、图标式血条或本地化 UI 的可读性度量
-- [L215–221、244–269](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L215-L269)把非静音且变化的 PCM 作为音频证据，动画按局部外观变化与原生状态佐证，布局按语义角色相对顺序；这些判据没有测警告是否听清、动画是否自然或整体风格是否一致
+- [L215–221、244–269](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L215-L269)把非静音且变化的 PCM 作为音频证据，动画按局部外观变化与原生状态佐证，布局按语义角色相对顺序；未测警告清晰、动画自然或风格一致
 - [unity_visual_probe.cs L144–204](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/unity/unity_visual_probe.cs#L144-L204)在探针冻结时间时，依次移除／恢复渲染器与 UI 采图；[漂移检查 L48–64](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L48-L64)拒绝恢复后变化过大的画面。这适合确认像素贡献，不能证明运动顺滑；未见依据可把它描述成关闭 TAA 的实现
 
-以上是逐行只读核查与测量范围推论，不是复现误判率，也未证明论文历史成绩由当前实现产生。**[一手＋研究]**
+以上为静态核查，未复现误判率，也未确认论文历史成绩采用此实现。**[一手＋研究]**
 
 **负对照能补什么，也会漏什么。** 移植模式重放 witness、匹配无输入和隐藏场景，见[移植运行协议](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/reference/MODE5_RELEASE_PROTOCOL.md)。另一个可借鉴、但不属于移植模式的机制是 Godot 三类构建任务的分段功能演示：[任务协议](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/tasks.md#feature-demonstrations)逐片段冷启动，重放输入、等时长无输入与带评测标志的输入；分段功能并集不能靠重复演示加分，严格完成单列，未要求所有功能挤进一条整局录像。针对应由动作引起的奖励／推进，这比只看胜利画面多一条可反驳证据；合法被动计时则须由任务声明 `requires_player_action: false` 与原因，不可统一判为作弊。[声明校验 L128–141](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/content/rubrics.py#L128-L141)、[负对照测试定义 L86–102](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/tests/test_feature_demonstrations.py#L86-L102)。**[一手；研究：借用条件]**
 
@@ -573,7 +573,7 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 **论文支持到哪里。** 41 个参考游戏为 24 个 2D、17 个 3D；功能校准抽样为构建模式的 100 游戏／1200 条断言，不覆盖所有修复／移植判据；200 个片段的 VLM 视觉得分相关性，不是本发行版移植 Visual 的校准或长期乐趣验证。模型与各自框架一起评，不能单独归因模型。参考路线保留时间，适合检查注册目标，但不同运动调参下路线失败不能单凭总分区分机制缺失与时序不匹配；应回读局部状态和候选演示。本轮未找到独立运行复现，保留作者结果的证据等级。**[一手：论文 §3.4、§4.1、§4.5、Limitations；研究：推广边界]**
 
-**采用与停止。** 比较移植方案时，同版本、同任务、同裁判与预算保存严格运行结果和组件证据；若要决定画质／手感是否达到目标，补目标设备上的连续动作和视听对照，不用换一个分数名字代替。现有验收已覆盖这些事实就不接整套 benchmark。当前只有论文与源码调查、仓库离线检查；实际收益须留到获准实验。**[研究：采用建议]**
+**采用条件。** 同版本／任务／裁判／预算比较严格运行结果与组件证据；画质和手感另验目标设备连续视听。已有验收覆盖则不接整套 benchmark；收益留待获准实验。**[研究]**
 
 ## 重复代码迁移：语法规则、类型分析与第二次执行
 
@@ -585,7 +585,7 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 - **第二次核验没有把“已修”视为全部通过。** slax57 在 [5.13.4 复测](https://github.com/TanStack/query/issues/6204#issuecomment-1857715221)中确认 `useQuery` 已处理，指出 `useMutation` 仍遗漏；维护者要求另建 [#6548](https://github.com/TanStack/query/issues/6548)，报告版本为 5.14.0。随后该报告者提交 [#7187](https://github.com/TanStack/query/pull/7187)，维护者批准，2024-04-02 合入 [`798124d`](https://github.com/TanStack/query/commit/798124da1c3e21c8e95b037466905489e19cd029)。补丁将 `useMutation` 纳入匹配并增加带／不带 options 的输入输出夹具。这里只确认固定补丁与维护接收，不把旧版本遗漏当当前缺陷。**[社区：他人复测；一手：修订／夹具]**
 - **解析 TS 语法不是建立完整类型程序。** 本轮固定 [`a8af0e2`](https://github.com/TanStack/query/tree/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads)：[utils](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/utils/index.cjs)沿 AST scope 找变量声明并看是否为数组表达式；[default-import 输出夹具](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/__testfixtures__/default-import.output.tsx)明确保留从另一模块导入的 query key 调用。[测试入口](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/__tests__/remove-overloads.test.cjs)用 `tsx` parser 比较两个输入输出 fixture，不能据此声称跨文件类型推断、全量语义或二次运行已验证。**[一手：源码／测试，只读]**
 
-因此先看目标调用形式是否在迁移器覆盖中，并检查未修改和警告项；退出成功、能解析 `.tsx`、某个相关 issue 关闭，都不是迁移完成的充分条件。混合新旧调用时，分别验证该改、应保留和无法判定的调用。**[经验：采用建议]**
+先核调用覆盖、未改项和警告；成功退出、能解析 `.tsx` 或 issue 关闭均不等于完成。混合调用须分别验该改、保留及待定项。**[经验]**
 
 ### 类型与框架分析值得增加的具体条件
 
@@ -593,7 +593,7 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 固定 [`731ad651`](https://github.com/angular/angular/tree/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration)的 [incompatibility 枚举](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration/src/passes/problematic_patterns/incompatibility.ts)区分继承冲突、写入、accessor、模板 narrowing 等；[golden 输出](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration/test/golden.txt)既有提取局部变量后保持 narrowing 的变换，也有写入或不支持模式的跳过及原因。能在语法之外核对这些约束，是复用框架迁移器的具体理由；保守跳过也是有效结果，不应为提高改动文件数直接强制转换。**[一手：固定源码／期望夹具，未执行]**
 
-**选择边界。** 只涉及已确认来源的统一调用形状，现成语法规则已覆盖时，不必另装完整语义平台；变换取决于导入对象、跨文件引用、继承或类型缩窄时，优先使用能解析本项目的类型／框架迁移器。剩余少量例外交 Agent 逐项读契约、改代码并测试；若大部分都需例外决策，停止扩写通用规则，改为直接补丁。没有证据支持一个通用文件数阈值，也没有本轮同任务 Agent 对照。**[研究／经验：条件判断]**
+**选择边界。** 来源／形状统一且规则覆盖时用语法迁移器；依赖跨文件、继承或 narrowing 时选能解析本项目的类型／框架工具。少量例外交 Agent；例外占多数则退回直接补丁。无通用文件数阈值或同任务 Agent 对照。**[研究／经验]**
 
 ### 批量入口：先选改法，再选执行方式
 
@@ -607,9 +607,9 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 **调用方的次数也需核对。** Renovate [#8220](https://github.com/renovatebot/renovate/issues/8220) 的 marcodejongh 报告：依赖升级从一次调用变为逐依赖调用后，同仓五处依赖使 codemod 执行五次，部分非幂等变换破坏代码。后续 [#8725](https://github.com/renovatebot/renovate/pull/8725)增加 `executionMode: branch`，历史固定 [`6afbcf8`](https://github.com/renovatebot/renovate/commit/6afbcf8d18afd3e63e0d4d253be64c5a21e736c5)的 [index.spec.ts](https://github.com/renovatebot/renovate/blob/6afbcf8d18afd3e63e0d4d253be64c5a21e736c5/lib/workers/branch/index.spec.ts)在两项升级配置下断言命令只调用一次；作者勾选单元测试及真实仓库验证，发布回复标为 24.109.0。该测试约束调度次数，不检验具体 codemod 输出；`branch` 也不承诺后续重新生成分支时永不再执行。**[社区：使用与作者验证报告；一手：补丁／断言，只读]**
 
-**最小验收与停止条件。** 在已有试点里保留旧形状、已迁移形状、跨文件或业务例外；核对受影响调用和跳过原因，再运行相关类型／行为检查。准备重试或复用脚本时，用第一次产物再执行同一变换，确认预期不再变化；若工具明示一次性，则固定起点并从可恢复副本重做，不能盲重跑。并行分片不能重复拥有同一文件。重跑出现额外变换、覆盖范围不清或例外变多时暂停扩量，修正规则／调度或退回局部补丁。**[经验：建议，未运行本轮迁移实验]**
+**验收与停止。** 试点含旧／已迁移形状、跨文件及业务例外，核跳过原因并验类型／行为。重试先在首轮产物上重跑；一次性工具则从可恢复起点重做。分片须文件归属不重叠；额外变换、覆盖不明或例外增多即暂停扩量。**[经验：未运行迁移实验]**
 
-幂等只回答“相同输入状态再跑会不会继续变”；第二次需求若改变映射或接口契约，须更新规则、回归和适用版本，并从上一轮实际交付状态验证新需求及仍有效的旧行为。不能拿重跑零 diff 代替行为正确，也不能把只读夹具检查写成当前模型收益或持续维护成本下降。**[研究：结论边界]**
+幂等不等于行为正确或适应新需求；映射／契约改变后，更新规则、回归与版本，从上次交付状态验新旧行为。只读夹具不证明模型或维护收益。**[研究]**
 
 
 ## 权限模式与第三方 Hook：按实际审批方向选择
@@ -631,11 +631,11 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 ### 反证、收敛与验证范围
 
-原生审批不保证足够、第三方工具也未被证明无用；正确选择依赖实际缺口。原生规则不能满足某种命令结构检查时，解析器可能值得试用；减少批准次数本身不是安全提升。第三方文档是动态主分支自述，只支持角色与采用限制，不支持固定版本安全保证。需要实装时须固定版本并核失败策略；此处不执行安装或外部程序。
+原生能力不足时可试第三方解析器；少批准不等于更安全。动态 README 仅支持角色判断，部署仍需固定版本、核失败策略；本轮未安装。
 
 06 原先把三个攻击变体写为 60–80% 并与不同条件的零成功测评并列，现按 10 安全既有原文核查收敛为 3/5、3/5、4/5，只说明攻击链可行；未新增攻击实验。历史数字的详细解释继续由 10 维护。已有跨宿主、Stop 和路径脚本结论未借本轮放大。
 
-本轮只读公开文档／项目 README 后修改知识库；未运行客户端、审批服务、模型、第三方工具或引擎。整页能否升 L3 另按关键事实、反证、动态日期和入口一致性评审，不能由这一局部修正直接推得；真实客户端实验不是 L3 的前提。
+仅阅读文档／README，未运行客户端、审批服务、模型、第三方工具或引擎；局部修正不证明整页 L3，真实客户端实验也非 L3 必要条件。
 
 
 ## 拒绝诊断：先区分权限、模型与服务故障
@@ -656,7 +656,7 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 ### 验证范围
 
-本单元读取上述官方页面相关段落，核对 17 的速查入口、01 Claude 专题与 10 安全建议的一致性；没有发出真实模型请求、运行客户端／SDK、安装工具或执行权限绕过测试。离线检查与独立评审只能检验本次知识库修订，不能证明拒答误报率、回退成功率或服务连续性收益。整页 L3 仍须另审其余提示建议的原始依据，不因本节改正直接升级。
+只读上述契约并核 17、01 Claude、10 一致性，未运行模型／客户端／SDK 或绕过测试。离线检查不证明误报率、回退收益或整页 L3。
 
 
 ## dot 实际能力诊断：公开网页读取的路径差异
@@ -675,7 +675,7 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 **公开 GET 补测（2026-10-15T03:02:42.528671Z）**：协作执行端在 shell 使用 Python `urllib.request.urlopen('https://x.com/thsottiaux', timeout=15)`，未附加 cookies 或特殊 headers，最多读取 1,000,000 字节；实际为 HTTP 200、141,804 字节，包含已知帖子 ID `2110151780478927344` 和 `2109892247580000595`。这只证明该次传输成功且响应中存在这些 ID，不验证完整正文或全量实时 timeline；内容证据仍来自上面的 Chrome 原帖核对。未经过登录、验证码或限制绕过，也不推断该 GET、先前抓取与浏览器的底层网络同源。**[经验：实际测量]**
 
-上述均为 **[经验：本次环境观察]**，不是官方能力契约、跨环境对照或稳定成功率测量。第三方转录仅用于发现原帖，随后已回到原帖核对；不能以转录替代来源验证。本记录不复述原帖中的产品能力宣称，也不据此给 dot 作全面能力背书。
+上述为 **[经验：本次环境观察]**，非稳定成功率或产品契约；第三方转录仅发现线索，内容已回原帖核对，不据此背书产品能力。
 
 ### 采用与停止边界
 
@@ -705,7 +705,7 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 - [dot #52374](https://github.com/openai/codex/issues/52374)：历史报告中，云任务可读但续接返回 UNKNOWN／NOT_FOUND；不同作者补充定时与手动触发都未创建任务、另一次可读但 send 失败。**10 月 12 日 11:50 UTC 的后续报告已验证该补充案例恢复**：原任务未重建，send 启动新轮次，完成后回读得到精确无害标记；未做项目编辑、构建或部署。此前客户端与独立 CLI 均更新，但未隔离客户端变化与同期后端恢复，不能归因或推广为统一修复。不同任务 ID／API 的 CLI 返回 Invalid task ID，也不证明原任务不存在；这些前后结果支持分别核读取、续接与实际产出。**[社区：主帖、补充故障与恢复报告]**
 - [Nigel999 的社区原帖及支持回复](https://community.openai.com/t/dot-repeatedly-reports-progress-but-fails-to-complete-tasks-or-clearly-disclose-that-work-has-stopped/1402528)：用户报告收到进度说法但未完成，后来确认无活动任务；支持要求核 app／系统版本、Activity、审批和阻塞，并未确认根因或修复。**[社区]** 这是不同作者的状态报告问题，不是 #51610 的独立复现或失败率样本。
 
-以上来源明确指 ChatGPT dot、连接电脑或 Codex 委派任务；不把同名 Dot 产品、OpenClaw 或通用 Agent 项目算作 dot 实现。20 §5 原有结果完成／送达／收集／验证四时刻，本轮补的是输入方向：反复催促本身可能积压未处理要求，不能只增加重试。**[研究：证据选择与建议增量]**
+来源限定 ChatGPT dot／Codex 委派，不混入同名产品或通用 Agent。20 §5 已区分结果完成／送达／收集／验证；本节补输入接受与实际处理的区别。**[研究]**
 
 ### 固定源码旁证与不能外推的边界
 
@@ -718,9 +718,9 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 ### 采用、反证与后续验证
 
-✅ 先用原任务可见执行记录判断是否继续推进；工具尚未返回时，不靠重复发送相同催促制造队列。恢复后核最新目标、取消要求与剩余工作；若已确认全部输入被处理，就转查模型理解、执行阻塞或验收缺口。若客户端已提供可验证的消费状态或替换旧消息入口，优先用原生能力，无须额外建回执文档。**[经验：采用与撤回条件]**
+✅ 先查原任务执行记录；工具未返回时不重复催促。恢复后核最新目标和取消要求；输入已处理则查理解、阻塞或验收。原生消费状态／替换入口够用就不另建回执文档。**[经验：采用与撤回]**
 
-待测而未执行：在另行获准的受控任务中，让只读工具有界延迟，只发一次 steer，分别记录接受、消息可见、首个执行结果与最终验收，并检查取消／恢复后有无重复。这只能检验选定版本与场景；本轮没有创建排程、访问私人任务／日志、运行上游测试、模型或用户电脑。dot 云协调器源码、线上版本绑定与端到端成功率仍缺证，不能给可靠性排名、SLA 或统一根因。**[研究：预注册方向；经验：实际范围]**
+待另行授权：让只读工具有界延迟，发一次 steer，记录接受、可见、首结果、验收及取消／恢复后的重复。未创建排程、访问私人日志／电脑或运行上游／模型；仍缺云协调源码、线上版本绑定及端到端成功率。**[研究：预注册与范围]**
 
 
 ## dot 效率选择：少一层包装，不等于少一项验收
@@ -771,7 +771,7 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 - 🧪 只有实际动态导入是当前选择盲区、且能维护缓存与刷新记录时，试用默认关闭的 `experimental.recordDependencies`；不作为正文 ✅ 的默认开关。已有静态关系已足够时无需启用，本轮没有计时或净成本数据。**[一手：机制；经验：条件试用]**
 - [普通 `related`](https://vitest.dev/guide/cli.html#vitest-related)支持静态可解析导入；非模块读取可按项目需要使用 [watchTriggerPatterns](https://vitest.dev/config/watchtriggerpatterns)，但它是 watch 契约，不能冒充所有 CLI `changed` 的映射。[forceRerunTriggers](https://vitest.dev/config/forcereruntriggers)与 `--changed` 配合时，diff 命中会触发全套；这是有执行成本的特定回退，不是每次修改的默认。**[一手：官方契约；经验：取舍]**
 
-本节沿用已审资料并定点回读官方文档、发布／合并记录和 issue；固定源码与测试定义是阅读证据，不是本仓运行结果。没有安装依赖、运行 Vitest／模型／客户端、触发远端 CI 或测得可靠性提升；报告中的关闭 optimizer 也不升级为普遍推荐。这里补的是已有用例的执行选择，不重复 oracle 质量、外部消费者覆盖或交接流程。**[研究：范围与限制]**
+仅回读文档、版本、issue 与固定源码／测试，未运行 Vitest、模型或远端 CI，未测收益；作者关闭 optimizer 的对照不作普遍推荐。**[研究：范围]**
 
 
 ### 新增选测能力：先比较改动类型与完整运行成本
@@ -789,7 +789,7 @@ remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-stor
 
 **当前机制与历史结果分开。** 本轮 [PyPI 元数据](https://pypi.org/pypi/pytest-testmon/json)仍列 `2.2.0`（2025-12-01 上传）；[官方说明](https://www.testmon.org/)明确依赖已执行代码记录，不跟踪静态文件或外部服务变化。对应 tag 固定为 `dccc58d2ed8edec98096ff1974acb7c07d3e3482`，其[环境判断](https://github.com/tarpas/pytest-testmon/blob/dccc58d2ed8edec98096ff1974acb7c07d3e3482/testmon/db.py#L647)比较包与 Python 身份。这支持计入映射重建条件，不能声称具体遗漏已修复，也不是重新测得当前漏选率。未安装、运行 testmon、上游测试或模型。**[一手：当前元数据／官方契约／固定源码；研究：核验范围]**
 
-✅ 保留已可靠工作的原生选测；新引入时，先比较不减少验证范围的热点修复及项目支持的安全并行。只有剩余瓶颈与常见改动确实适合选择模型，再试映射与补跑的总成本；共享核心经常变动、映射经常重建或消费者超出模型时，可以暂缓。这里改变的是引入额外能力的决定，不是要求所有项目新增选测框架、减少检查或照搬该项目的回退规则。**[经验：采用与撤回条件]**
+✅ 保留可靠原生选测。新增前比较不减覆盖的热点修复与安全并行，再估映射／补跑总成本；核心常变、重建频繁或消费者超出模型时暂缓，不照搬该项目回退规则。**[经验：采用与撤回]**
 
 ## dot 持续责任起步：先校准产物再扩大范围
 
@@ -805,11 +805,11 @@ remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-stor
 - **站点工作完成与持续报告未完成。** [Mark Nguyen 的代理公司记录](https://www.theslidefactory.com/post/openai-dots-review)报告连接浏览器数据与托管 MCP 后，完成两个站点 44 页和 111 页爬取；日更报告只配置、尚未运行或送达，Google API 导入也未接通。作者区分这些状态，没有据此宣称 SEO 改善。**[社区：作者自报，未公开客户数据或独立复测]**
 - **一次送达也不证明持续可靠。** [Diana 的排程记录](https://www.aiagentslibrary.com/blog/openai-dots-review/#test-10-heading)报告一次官方更新监控按时运行并送达手机；明确测试只有两天、仅观察到一次。它比“已保存”多了一层结果证据，仍不能升级为多周可靠性。**[社区：单次自报]**
 
-本轮读到作者原文，网页任务另用云端浏览器回读；没有访问其私有页面、账号或业务数据。Diana 经营培训／Skills，虽披露无 OpenAI 赞助，仍有商业背景；Mark 的记录也不是受控评测。不同任务可互补使用方式，不能合并为成功率、成本收益或工具排名。**[研究：证据边界]**
+只读作者原文，网页任务经云浏览器回读，未访问私有产物／数据。Diana 有培训／Skills 商业背景且披露无 OpenAI 赞助；Mark 也非受控评测。不同任务不合并成成功率或排名。**[研究]**
 
 ### 增量与撤回条件
 
-✅ 对准备扩大持续委派范围的读者，先确认一轮产物的内容、位置和可用性，再增加来源或交付物；若已有相同任务的验收样本，不为了这条建议重做入门演示。这里的增量是**扩大责任之前校准实际产物**，不是增加审批层。**[经验：采用判断]**
+✅ 扩大持续责任前，先验一轮产物内容、位置和可用性；已有同任务合格样本可复用，无需增加审批层。**[经验]**
 
 目标环境中的验收已由既有导出／消费者检查覆盖；完成、送达、收集、验证沿用 [20 §5](../20-codex-long-horizon.md#5-子任务应缩短关键路径不应制造评审树)，不另写 dot 通用检查表。当前材料没有多周持续运行、净节省主动工时或费用的可比记录；若首轮已匹配而扩大仍反复失败，应缩回具体来源／操作诊断，不能仅继续校准措辞。**[研究：不重复与反证范围]**
 
@@ -828,7 +828,7 @@ remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-stor
 
 **运行、恢复与归因边界。** #1747补丁定义真实Ghostscript往返测试，但缺Ghostscript时会跳过；文本抽取断言仅在pdftotext存在时运行，并检查大写字母样例，不能代表连字、全部文字或57本书库。#1744补丁另有逐字符映射与抽取测试，测试定义不等于本轮执行或全部CI已核。维护者提出用固定OCRmyPDF对原扫描件重做OCR来修既有文件，但没有找到原用户全库恢复回执；关闭issue不替代这个结果。本轮只读公开讨论、源码和测试，未安装或运行OCR、PDF工具、模型，不能据Claude协助诊断推断故障代码由AI生成或净收益。**[一手：测试范围；社区：恢复建议；研究：证据限制]**
 
-**采用与撤回。** 当兼容故障只由某类输入触发，先保留其他输入仍需要的能力，选择窄格式修复或有条件绕过；若所有支持输入都无需该能力，才可考虑整体删除。已有项目的消费者验收足够时直接复用，不新增全版本矩阵。新证据若显示分流不能保住必要语义，应撤回该绕过、缩小支持范围或改用已验证的消费者；本例没有证明一种文字处理策略可以推广到任意格式或平台。**[经验：条件建议]**
+**采用与撤回。** 按触发输入保留必要能力，优先窄格式修复／条件绕过；全部支持输入都无需该能力才考虑删除。复用消费者验收；分流破坏语义时撤回、缩范围或换已验证消费者，不推广到任意格式。**[经验]**
 
 
 ## 配置迁移：保留作用阶段与设备边界
@@ -837,7 +837,7 @@ remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-stor
 
 ### Ruff：个人覆盖可合并，但文件替代仍可能失去同步
 
-[讨论15991](https://github.com/astral-sh/ruff/discussions/15991)中，stinodego希望个人编辑器规则不强加给同事；维护者建议独立配置与项目合并，2025-02-25用户报告初试符合需要。另一用户jtchen2k说外部文件生效，却失去编辑器跨设备同步；ilCatania则提出项目成员共用、仅编辑期生效的配置诉求，编辑时保留探索代码、提交时清理。它们分别证明个人范围、同步需要与阶段差异，不能合成一个用户已经无损迁移的闭环。**[社区：实际使用与初试；一手：维护者建议]**
+[讨论15991](https://github.com/astral-sh/ruff/discussions/15991)中，stinodego希望个人编辑器规则不强加给同事；维护者建议独立配置与项目合并，2025-02-25用户报告初试符合需要。另一用户jtchen2k说外部文件生效，却失去编辑器跨设备同步；ilCatania则提出项目成员共用、仅编辑期生效的配置诉求，编辑时保留探索代码、提交时清理。分别支持范围／同步／阶段需求，非同一用户无损迁移闭环。**[社区：实际使用与初试；一手：维护者建议]**
 
 [PR16296](https://github.com/astral-sh/ruff/pull/16296)于2025-02-26合并，固定be03cb04c13cbd74467acdb4a1501b620db16975新增内联配置并保留文件路径形式；[配置合并实现与测试](https://github.com/astral-sh/ruff/blob/be03cb04c13cbd74467acdb4a1501b620db16975/crates/ruff_server/src/session/index/ruff_settings.rs)分别处理两种输入，测试特定编辑器设置相对内联配置的优先级。PR注明VS Code需配套扩展修改[#702](https://github.com/astral-sh/ruff-vscode/pull/702)，服务端合并不证明任意旧客户端支持。**[一手：固定源码与测试定义，未运行]**
 
@@ -855,7 +855,7 @@ remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-stor
 
 [Prettier官方配置说明](https://prettier.io/docs/configuration)明确不支持全局配置，以保持项目换电脑后的格式一致；它从被格式化文件位置查配置，并允许项目内限定覆盖。此设计目的不能算用户收益测量，但足以反对把Ruff个人编辑覆盖推广为所有工具都应个人优先。**[一手：官方设计；研究：反例]**
 
-**证据边界。** 上述用户初试、固定源码与官方设计分别计证据；未运行客户端、同步或上游测试，也没有AI净收益证据。**[经验：采用判断；研究：验证范围]**
+**证据边界。** 用户初试、源码与设计分开计证；未运行客户端／同步／上游测试，未测 AI 收益。**[研究]**
 
 
 ## 原生下拉菜单的截图与语义验收
@@ -884,9 +884,9 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 
 **修过一条入口，不等于所有同名选项已贯通。** 之后的[48ab67f](https://github.com/rclone/rclone/commit/48ab67f090fd630c3ed9cc66d6fe83eca769ce12)才把rc专属`dryRun`参数传给内部`Options.DryRun`；[v1.64.0的cmd.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/cmd.go)和[rc.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/rc.go)已分别包含这两项修复。2026-10-14合并的[#10015](https://github.com/rclone/rclone/pull/10015)又修全局`_config.DryRun`／flat `dry_run`未贯通：将配置应用移到公共`Bisync`入口，并明确全局要求预演时，rc的`dryRun:false`不能取消它。这是该接口的具体取舍，不是所有系统的统一优先级规则。**[一手：固定源码、发布标签与PR]**
 
-最新修订的[固定rc测试](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/cmd/bisync/rc_test.go)经`jobs.NewJob`进入，分别检查专属参数、全局参数及相冲突的布尔值，再观察目标新文件是否存在；这些是本地路径测试，不能推成真实云存储已验。其[合并快照changelog](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/docs/content/bisync.md)列于v1.76，而核实时[最新发布仍为v1.75.2](https://github.com/rclone/rclone/releases/tag/v1.75.2)，不能将这次合并写成已发布到接收者。**[一手：测试源码、合并文档与发布页；研究：交付边界]**
+最新修订的[固定rc测试](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/cmd/bisync/rc_test.go)经`jobs.NewJob`进入，分别检查专属参数、全局参数及相冲突的布尔值，再观察目标新文件是否存在；仅本地路径，非云存储验证。其[合并快照changelog](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/docs/content/bisync.md)列于v1.76，而核实时[最新发布仍为v1.75.2](https://github.com/rclone/rclone/releases/tag/v1.75.2)，不能将这次合并写成已发布到接收者。**[一手：测试源码、合并文档与发布页；研究：交付边界]**
 
-**最小采用与停止条件。** 修改有持久基线的预演功能时，复用现有场景覆盖预演前后及下一次正式调用；换CLI／API／后台入口时，只补实际选项传递与效果检查。纯计算预览没有这类状态就不增加本项，已有连续检查足够也不另造框架。本轮只读公开材料，未运行rclone或模型、未独立核验上游CI通过；没有最终独立用户逐例复测或AI收益证据。**[经验：采用边界；研究：核查范围]**
+**采用范围。** 有持久基线时复用预演前后及下一正式调用的连续检查；换入口只补参数传递和效果。纯计算预览无需本项。未运行 rclone／模型或独立核 CI，缺独立逐例复测及 AI 收益证据。**[经验／研究]**
 
 
 ## 清 lint：保留异步调用契约，还是删除 async
@@ -905,7 +905,7 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 
 **适用性反例，不追加另一套流程。** [RUF055 #27024](https://github.com/astral-sh/ruff/issues/27024)中 bytes 正则搜索 `memoryview` 与改写后的成员判断不等价；[维护者拒绝 #27040](https://github.com/astral-sh/ruff/pull/27040#issuecomment-5050042567)也反对把所有 bytes-pattern 修复一律标不安全，因为 bytes 目标仍有有效情况，问题在目标类型与规则适用范围。核实时 #27024 仍 open，#27040／#27233／#27715 均关闭未合并；不能拿候选 PR 的测试或安全分类当已交付修复。固定 current main [`9e3ea63` 规则源码](https://github.com/astral-sh/ruff/blob/9e3ea63fb43040782a2ff00147cacf8861674615/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs)仍按 pattern、参数数量和真假值使用条件筛选，未核目标类型，修复的 Safe／Unsafe 分类取决于 comments。本轮另用手写 Python 3.12.14 标准库表达式核对：`memoryview(b"abcdef")` 上 `bool(re.search(b"abc", value))` 为 True、`b"abc" in value` 为 False；bytes 对照为 True／True。这只是局部语义见证，没有执行 Ruff 修复或当前发行版，也不是原用户框架复测；不推断全部修复不可信。**[一手／社区；经验：本轮标准库局部核对；研究：修订状态与采用边界]**
 
-**最小采用与停止条件。** 让 Agent 回到真实调用者及运行器，先判断诊断是在提示缺陷，还是遇到未表达的必要契约。有明确依据时保留代码，对具体规则／函数说明窄范围例外，并沿已有测试验收；若没有必要异步契约，则正常重构，不能用本例逃避合理诊断。不为消警告默认加入 `sleep(0)`：它会新增让出执行的时机，是否需要仍由任务决定。除上述手写标准库表达式外，本轮只读公开报告、文档和源码，未运行 Ruff、pytest、模型或上游测试；没有效率或长期维护收益实测。**[经验：采用建议；研究：验证范围]**
+**采用范围。** 核真实调用者／运行器；有必要契约才窄范围豁免并验行为，否则正常重构。不能为消警告默认加 `sleep(0)`，它会改变调度。除上述标准库表达式外仅只读，未运行 Ruff／pytest／上游测试或测长期收益。**[经验／研究]**
 
 
 ## 委派失败被转换为空成功：父任务已经收集也可能误判
@@ -922,7 +922,7 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 
 4. **旧修复不能外推全部结束形态或新架构。** [V2 #52378](https://github.com/anomalyco/opencode/issues/52378)报告 `finish: error`／`MALFORMED_FUNCTION_CALL` 没有 error 对象时仍成为父任务的 completed；[固定旧 runner](https://github.com/anomalyco/opencode/blob/f46fa72a9285a0e8479e25d400f7026bfd8fe5c8/packages/core/src/session/runner/step.ts#L161-L177)只为 unknown 合成失败。核实时 [#54713](https://github.com/anomalyco/opencode/pull/54713)仍 open、未合入：固定 head `4b1fedc63011a3ce58b33f1036e19e99c16bf56a` 将 explicit error 转为失败并保留 rawFinish，[当前测试](https://github.com/anomalyco/opencode/blob/4b1fedc63011a3ce58b33f1036e19e99c16bf56a/packages/core/test/tool-subagent.test.ts#L298-L354)分别检查前台工具失败和后台父通知 error。PR 正文的 empty-stop control 已被后续修订删除，不能照抄为当前覆盖；补丁明确排除 length 截断。未取得原用户最终复测，不将候选补丁或自动评审的运行说法当成已发行／线上全面修复。**[一手：固定源码与修订状态；社区：故障报告]**
 
-因此只对“缺所需产物但返回成功”的委派故障增加这项诊断：先核对错误是否完整跨过消费边界，再决定原任务续接、换实现或重新派发；若已完整传递错误，就回到实际失败原因，不再归咎交接层。已有原生错误传播足够时不增加包装器或评审树；这些材料不能证明弱模型替代收益、长程完成率或普遍可靠性提升。**[经验：采用与撤回条件]**
+只对缺产物却成功的委派，先核错误是否完整跨界再选续接、换实现或重派；错误已传递就查实际原因。原生传播够用则不加包装，材料不证明弱模型替代或长程可靠性收益。**[经验]**
 
 ## 云端协调与本地执行：同机不等于同一Hook契约
 
@@ -947,4 +947,4 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 
 **采用与撤回。** 转云前确认所需文件、当前版本及允许上传范围；启动后在目标会话核提交、必要输入、remote 与授权的成果取回路径，不等长任务做完才发现输入缺失或无法交付。若不允许传出全部可能打包的内容，先停下核清传输路径；若只需从另一设备继续本地工作，官方[Remote Control](https://code.claude.com/docs/en/remote-control#remote-control-vs-cloud-sessions)保留原机器执行，仍要求机器及进程在线。它并非离线云执行的替代，也不等于没有对话数据传输。原生交接已满足输入与取回要求时直接复用，不额外造同步器。**[一手；经验：条件选择]**
 
-本轮只读公开文档、原帖与评论，未上传仓库、运行客户端／模型或核查私人数据；未验证当前账号的分流、传输过滤与成果恢复，也不把历史反例视为当前失败率或整页 L3 依据。**[研究：验证边界]**
+只读文档及原帖，未上传仓库、运行客户端／模型或检查私人数据；未验当前账号分流、过滤与恢复，历史反例不作当前失败率或整页 L3 依据。**[研究]**

@@ -1,7 +1,7 @@
 # OpenAI Codex（CLI / App / Cloud）
 
-> 核实时间：2026-10-17（UTC+8，定点补核会话续接；其余日期见各节）
-> 评级：✅ **采用**（日常开发或交叉评审）；内容成熟度仍为 L2
+> 编辑更新：2026-10-17（UTC+8）
+> 评级：✅ **采用**（日常开发或交叉评审）；内容成熟度 L3
 
 **30 秒选择**：先给任务、现有证据和完成条件，让 Codex 在授权范围内调查、修改、验证；有具体缺口再补工具或 Skill。采用建议来自文档、固定源码和公开案例，不是本仓库的模型效果对照。**[研究：采用判断]**
 
@@ -250,4 +250,4 @@
 - **S1 固定加载实现**：[agents_md.rs](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/agents_md.rs)、[agents_md_tests.rs](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/agents_md_tests.rs)；S1/S2 为只读源码核查，未运行 Rust 测试或审批服务
 - **当前官方入口**：[Models](https://learn.chatgpt.com/docs/models)、[AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Import](https://learn.chatgpt.com/docs/import)、[更新记录](https://learn.chatgpt.com/docs/whats-new)
 
-**仍保留 L2：** 记忆开关的文档／CLI 作用域差异尚未解决，其余机制沿用各节核查范围。文档与固定源码可支持有边界的 L3；本轮只补会话入口，未完成整页关键事实交叉核对。**[研究：成熟度判断]**
+**L3 核查范围（2026-10-17）**：入口、模型、权限与任务选择经全文独立复核，官方记忆作用域冲突已按证据限定。未验证真实客户端行为、账户开通或长期无人监督可靠性；各历史案例仍按原范围理解。**[研究：成熟度判断]**

@@ -1,16 +1,16 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按实际复杂度升级；先明确状态所有者、时钟、退出与输入边界，再调整预览、效果、导航和随机消费。相机、关卡、成长、教学与辅助围绕玩家决策及具体阻碍取舍；物品先定可互换性，任务分历史事实与当前条件；连通、动作完成或规则复用不等于体验、迁移或预测通过，不能用统一参数与扩内容替代诊断
-新证据：[一手／社区] 固定源码、官方契约、修复与评审链及开发者复盘支持正文各项机制与反例；物品含 OpenMW 拆堆修复与 Luanti 合并入口，任务含 Flare 存放规则修改与 Shattered Pixel Dungeon 局部消费链，版本和日期见各节；Overgrowth含1.2组合调整及玩家原帖，修订后单例不代受控前后验证。[研究] 含确定性算术反例；未运行引擎、游戏、模型或玩家对照，不把作者观察写成架构、手感或学习收益的验证
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按真实复杂度升级。先定状态所有者、时钟、退出与输入边界；相机、关卡、成长、教学与辅助按玩家决策取舍。物品区分可互换性，任务区分历史与当前条件；功能通过仍须核体验
+新证据：[一手／社区] 固定源码、官方契约、历史修复／评审及开发者复盘，来源、版本和日期见各节；含OpenMW／Luanti物品路径、Flare／SPD任务链、Overgrowth 1.2及修订后玩家单例。[研究] 另有确定性算术反例，未作游戏、引擎、模型或玩家对照
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
-证据核实：原记录为 2026-10-13—14 UTC；命令预览、效果叠加、导航、关卡组合及学习迁移补研为 2026-10-15（UTC+8），各节保留版本和日期。除明标的确定性算术复核外，仅调查公开资料／源码；未运行引擎、游戏、模型或玩家实验，未安装／购买插件。“AI 失败”为契约风险推导，非出错率统计；固定主干不等于稳定发布包。
+证据核实：原记录2026-10-13—14 UTC，后续日期见各节。除确定性算术复核外，均为公开资料／源码研究，未运行引擎、游戏、模型、玩家实验或上游测试，未安装／购买插件；所有验收计划均未执行。源码与文档检查不证明性能、工时、体验或AI收益；“AI风险”是契约推导，固定主干不等于发行包。各节保留特有缺口与历史验证范围。本文只提炼机制，不复制代码／资产；实际复用仍须分别核代码、素材和引擎许可。
 
 ## 一、研究结论与适用边界
 
-**[研究] ✅ 采用：Unity 的默认底座是现有组件＋少量纯 C# 规则＋显式局部状态机；Unreal 对照是已有 Gameplay Framework＋ActorComponent＋C++ 规则。** 不先自建通用框架、全局消息总线或全 ECS，也不因 Lyra 官方而整套移植。最初先完成玩法实际需要的开始、暂停／局内菜单、结算、重试路径，并清干净上一局；不要求所有游戏都暂停世界。对象多不等于需要 ECS，技能多不等于需要 GAS，敌人有三种行为不等于需要行为树。
+**[研究] ✅ 默认：Unity现有组件＋纯C#窄规则＋局部状态机；UE现有Gameplay Framework＋ActorComponent＋C++规则。** 先完成玩法需要的开始、暂停／局内菜单、结算、重试并清理旧局；世界是否暂停另定。不因对象／技能／行为数量直接采用ECS、GAS或行为树，也不整套移植Lyra。
 
-**[研究] 架构升级用“当前会反复变化的复杂度”决定：** 多层互斥状态与可中断动作→HFSM；多个优先级目标、共享行为子树与动态打断→行为树／StateTree；大量可组合效果、属性、标签、成本、冷却及必要的预测同步→GAS；目标设备上可批处理的同构 CPU 热点→局部 Jobs/Burst 或 ECS。复杂度与维护成本同时估算，不能仅凭“以后能扩展”升级。
+**[研究] 按反复变化的复杂度升级：** 层级互斥与打断→HFSM；多目标优先级、共享子树与动态打断→BT／StateTree；组合效果、属性、标签、成本冷却及必要预测→GAS；目标设备的同构CPU热点→局部Jobs/Burst／ECS。收益须覆盖维护成本。
 
 **[研究] 局限：** 架构取舍仍须由同一玩法切片的第二次修改与目标设备构建检验；源码和官方修复只支持机制判断。
 
@@ -18,7 +18,7 @@
 
 ### 1. 游戏循环：把“一局结束”做成真正的生命周期边界
 
-**[研究] 最低完成度**：Boot／FrontEnd／Loading／Playing／Paused／Results 的清晰归属，按游戏实际需求删减；暂停可以是 Playing 的子状态而非另造全局状态。唯一的 Session 或 Run 所有者负责本局敌人、临时奖励、计时器、订阅与取消。常驻的 Settings／存档服务与本局状态分开。把“开始下一局”定义为新 session，而不是到处将布尔值改回 false。
+**[研究] 最低完成度**：按需保留Boot／FrontEnd／Loading／Playing／Paused／Results，暂停可为Playing子状态。一个Session／Run拥有本局敌人、临时奖励、计时器、订阅与取消；Settings／存档另属常驻域。下一局创建新session，而非分散重置布尔值。
 
 - **Unity 默认**：一个组合入口装配组件，规则接受明确的 delta/tick；沿已有 Update／FixedUpdate，不替换整个 PlayerLoop。需要物理的运动留在正确时序；UI、相机、菜单是否用不受暂停影响的时间各自声明。
 - **UE 对照 [一手]**：GameInstance 跨关卡，GameMode 随关卡而建，Pawn 与控制者分开；不要把世界内 Actor 引用永久塞入 GameInstance 来“保持状态”。[Gameplay Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine)
@@ -28,23 +28,23 @@
 
 ### 2. 状态机、行为树与 StateTree：先问什么会打断什么
 
-**[研究] 最低完成度**：给每个状态写允许入口、出口、结束条件、打断优先级与清理动作。敌人的 Idle／Pursue／Attack／Dead 可用 enum 或小类；状态共享“在地面／空中”“正常／眩晕”等父层规则时再加 HFSM，避免布尔组合爆炸。多目标优先级和复用任务确实改变内容制作时再使用行为树。
+**[研究] 最低完成度**：状态声明入口、出口、结束、打断优先级与清理。简单敌人用enum／小类；共享地空、眩晕等父规则时再用HFSM；多目标优先级与复用任务确实影响制作时再用行为树。
 
 - **✅ 采用／改造**：UnityHFSM 的状态时序机制适合代码优先的单人项目，但由角色持有独立实例，死亡／场景卸载必须能绕过非关键退出等待；不要复制自己的 HFSM 轮子。
-- **🧪 试用**：Unity Behavior 1.0.16 适合确实需要图形化行为资产的 Unity 项目；UE 已用 Blackboard／BT 时沿用原生 Observer Aborts，状态阶段与并发 Task 为主时评估 StateTree。二者不是“新的一定替换旧的”。[UE BT](https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---overview)、[StateTree](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-state-tree-in-unreal-engine)
-- **决定性反例 [一手]**：UnityHFSM 2.2 为“数据完整性”将 needsExitTime 等改 readonly；用户依赖运行时修改而无法升级（[#71](https://github.com/Inspiaaa/UnityHFSM/issues/71)）。2.3 的 [94f316f](https://github.com/Inspiaaa/UnityHFSM/commit/94f316fdae5be5abe964f70355bbb697274d38c0) 恢复可变，并注明 needsExitTime 要到下一次转换求值才生效，isGhostState 到下一次进入才生效。所谓“清理架构”也可能毁掉真实游戏契约，不能机械把可变字段改只读。
+- **🧪 图工作流**：Unity Behavior 1.0.16仅在图资产有收益时试；UE已有Blackboard／BT沿用Observer Aborts，阶段与并发Task为主再评估StateTree，不因新旧替换。[UE BT](https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---overview)、[StateTree](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-state-tree-in-unreal-engine)
+- **真实回退 [一手]**：HFSM 2.2将needsExitTime等改readonly，使依赖运行时修改的用户无法升级（[#71](https://github.com/Inspiaaa/UnityHFSM/issues/71)）；2.3 [94f316f](https://github.com/Inspiaaa/UnityHFSM/commit/94f316fdae5be5abe964f70355bbb697274d38c0)恢复可变，但needsExitTime下次转换求值生效、isGhostState下次进入生效。“清理架构”不得破坏这些契约。
 - **近期机制风险 [一手]**：Unity Behavior [1.0.16 changelog](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/changelog/CHANGELOG.html) 增加 OnSetup／OnTeardown，并修复目标不可达时导航持续 Running、运行中黑板位置改变但目的地未更新、动态子图实例／黑板回调问题。1.0.15 才加入特定节点及结构下的 ObserverAbort；不能把所有 BT 的 abort 语义视为一致。
 - **可省**：三个简单敌人为其搭可视化节点编辑器；同时维护 HFSM、BT、GOAP 三套决策；每一帧全图扫描；为未出现的内容团队先买大型编辑器。
 - **AI 风险 [研究]**：用进入条件冒充持续条件，追击目标消失仍施法；状态退出后异步 MoveTo 继续改速度；等待动画结束永远不退出；共享 Blackboard 上一次目标残留；错误地假定一个 tick 最多一次转换或 StateTree 等所有 Task 完成。
-- **将来验证**：高优先级死亡／眩晕打断低优先级攻击，攻击不可打断窗口之后恰好退出；导航不可达、目标销毁、子图热替换、禁用再启用都必须终止或明确失败。对图资产还要检查版本升级、枚举改名及 Prefab 覆盖后的运行图；有图可见不等于 Agent 看到了实际运行实例。
+- **将来验证**：死亡／眩晕打断、不可打断窗口结束后的退出，以及不可达、目标销毁、子图替换、禁用再启用的终止／失败。图资产另核升级、枚举改名、Prefab覆盖后的实际运行实例。
 
 ### 3. 数据驱动配置：静态定义、活实例、存档不能同一个对象
 
-**[研究] 最低完成度**：定义层保存稳定内容 ID、初始数值与资产引用；实例层保存 HP、冷却剩余、目标、当前阶段；存档层保存可迁移的数据快照与 schemaVersion。配置可由 ScriptableObject／DataAsset、DataTable 或已有 CSV 管线承载，不以格式决定架构。给 ID 唯一性、引用完整性、数值范围和版本迁移建窄校验。
+**[研究] 最低完成度**：定义保存稳定ID、初值和资产引用；实例保存HP、冷却、目标与阶段；存档保存可迁移快照及schemaVersion。沿用SO／DataAsset／DataTable／CSV，校验ID、引用、范围与迁移，不由格式决定架构。
 
-**[一手] Chop Chop 不是“把运行状态全部放到共享 SO”**：固定 [608eac98](https://github.com/UnityTechnologies/open-project-1/tree/608eac98df29cd97821a6115cd52dfb9027345b1) 的 TransitionTableSO.GetInitialState 每个 StateMachine 创建自己的 createdInstances 字典，StateActionSO.GetAction 生成普通运行时 StateAction 并在该图内复用；Damageable 对未配置 HealthSO 的敌人 CreateInstance，让不同敌人不共享血量。其“配置资产复用、运行状态隔离”可借用，不必借整套 SO 编辑器。
+**[一手] Chop Chop [608eac98](https://github.com/UnityTechnologies/open-project-1/tree/608eac98df29cd97821a6115cd52dfb9027345b1)**：TransitionTableSO.GetInitialState为每个StateMachine建createdInstances；StateActionSO.GetAction生成并在图内复用运行StateAction；敌人无HealthSO时CreateInstance。可借配置共享／运行隔离，不必继承SO编辑器。
 
-**[一手] 后续修改反证**：[753c30e](https://github.com/UnityTechnologies/open-project-1/commit/753c30e6fda71c6024c69ee5704b71cfa110e160) 将初始血量写入移进“新建实例”的分支，不再让所有 Awake 都重置已有玩家生命；提交同时处理 UI 血量重置与敌人不应发玩家 UI 事件。相同 Health 类型有不同寿命，统一 Reset 不是正确抽象。
+**[一手] 历史反证 [753c30e](https://github.com/UnityTechnologies/open-project-1/commit/753c30e6fda71c6024c69ee5704b71cfa110e160)**：初始血量移入新建分支，避免Awake重置已有玩家HP；另修UI重置、敌人误发玩家UI事件。同类型寿命不同，不能统一Reset。
 
 - **可省**：“所有整数都 SO”、每项配置热更新、可视化表格后端、通用反射 ORM、自建 mod 语言；没有外部内容作者和热更新需求就用引擎已有序列化。
 - **AI 风险 [研究]**：向共享技能定义写冷却；用数组序号当存档 ID；将字段重命名视为纯代码改动而破坏已序列化资产；敌人复制后同时掉血；把静态 readonly 与领域不变量混为一谈。
@@ -54,62 +54,62 @@
 
 [研究] 本小节 Jobs/Burst、Entities、ECB、enableable、authoring／烘焙的具体机制属于 Unity；UE 仅共用先定位成本再迁移热点的原则，不据此建立跨引擎 API 等价关系。
 
-**[研究] 默认采用**：MonoBehaviour／ActorComponent 负责引擎对象，纯函数／普通类承担能独立验证的规则。对象多而成本在动画、绘制、碰撞或寻路时，先解决该热点，ECS 不会自动修掉 GPU overdraw、复杂蒙皮和错误导航。单个昂贵批处理也可先用 Jobs/Burst，无须把 UI、对话与相机一起迁到 Entities。
+**[研究] 默认采用**：组件接引擎对象，纯函数／普通类承载规则。先定位动画、绘制、碰撞、寻路或CPU成本；ECS不解决GPU overdraw等异类热点，单个批处理也可只用Jobs/Burst。
 
-**[一手] 可借官方小样例，不照抄全游戏底座**：[Entities samples 6786a741](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0) README 指向 Unity 6.2／Entities 1.4 系列；实际 `13. StateChange/SetStateSystem.cs` 比较 VALUE、STRUCTURAL_CHANGE、ENABLEABLE_COMPONENT 三种状态表示，并自带 profiler 入口。README 的链接仍写 14，不宜盲复制其旧路径。
+**[一手] [Entities samples 6786a741](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0)** README指Unity 6.2／Entities 1.4；实际`13. StateChange/SetStateSystem.cs`比较VALUE、STRUCTURAL_CHANGE、ENABLEABLE_COMPONENT并带profiler。README仍链接14，复查应找实际路径；只借热点小样例。
 
-**[一手] 关键代价**：Entities 1.4 文档说明添加／移除组件等结构变更会迁移数据并涉及同步；enableable 不改变 archetype，但相关写作业仍可能使主线程查询等待，且禁用组件在普通查询中视同不存在。[结构变更](https://docs.unity.cn/Packages/com.unity.entities%401.4/manual/optimize-structural-changes.html)、[enableable 1.4.8](https://docs.unity3d.com/Packages/com.unity.entities@1.4/manual/components-enableable-use.html)
+**[一手] Entities 1.4代价**：[结构变更](https://docs.unity.cn/Packages/com.unity.entities%401.4/manual/optimize-structural-changes.html)会迁移数据并涉及同步；[enableable 1.4.8](https://docs.unity3d.com/Packages/com.unity.entities@1.4/manual/components-enableable-use.html)不改archetype，但写作业可阻塞主线程查询，禁用在普通查询中视同不存在。
 
-- **ECS 真值得 [研究]**：玩法确实是大群单位、海量弹体、工厂或模拟，其同构计算可并行且现有架构在目标设备 CPU 帧预算中失败；内容也适合 baking 和数据布局，并能接受调试、混合层及版本适配成本。先迁最热的一块；没有通用“超过 N 个对象就必须 ECS”的数字。
-- **反对一刀切 [一手＋研究]**：V Rising 官方案例确有 ECS 生产采用，但它是多人开放世界团队项目，且案例明确转变范式和建底座需要时间；这是“能用于复杂商业游戏”的证据，不是“单人一开始全 ECS 最省钱”的证据。[Unity 案例](https://unity.com/resources/stunlock-studios-v-rising)
+- **ECS条件 [研究]**：目标设备上同构CPU计算确已超预算，内容适合baking／数据布局，且能承担混合层、调试与版本适配。先迁热点，不设统一对象数门槛。
+- **反证 [一手／研究]**：[Unity 案例](https://unity.com/resources/stunlock-studios-v-rising)证明V Rising生产采用ECS，也说明范式／底座投入；多人开放世界团队成功不证明单人起步全ECS最省。
 - **可省**：全工程 ECS、为少量机关加实体世界、过早锁步／回滚；UE 的 Mass 同样不因“将来大地图”默认加入。
 - **AI 风险 [研究]**：用 Add/Remove tag 表达每帧变化而制造结构变更；读写依赖遗漏；把 ECB 录制完成当已应用；复用销毁的 Entity；忘记禁用组件过滤；authoring 数据修改却没有重烘焙。
-- **将来验证**：同一玩法、资产、设备上比较组件基线、局部 Jobs 与 ECS；固定对象规模和出生／死亡密度，测 CPU P95/P99、同步点、内存、主线程／worker 占用及第二次需求修改工时。样例的强制 Complete 与 timing 是测量设施，不能照搬到生产每帧；其局部计时中结构变更只录制 ECB，实际 playback 在之后，ENABLEABLE 分支也混用 ECB 启用和直接禁用，不能仅凭该段计时排序总成本；对照须纳入 playback 与后续系统；本轮未跑 benchmark，不报加速倍数。
+- **将来验证**：同玩法、资产、设备与出生／死亡密度下比较组件、局部Jobs和ECS，测CPU P95/P99、同步、内存、主线程／worker及二改工时。样例强制Complete只属测量设施；结构变更计时只录ECB、playback在后，ENABLEABLE还混用ECB启用与直接禁用，须连后续系统计总成本，不能据局部计时排名。
 
 ### 5. 事件：用于传播已发生事实，别把一次命令拆成无人负责的广播
 
-**[研究] 最低完成度**：同一对象内直接调用；跨边界必须多个观察者才使用类型化事件。命令要有一个明确处理者及成功／失败结果；DamageApplied、EnemyDied 等事实在状态提交后广播给 UI／音效／任务。声明同步或排队、顺序、重入策略、是否允许丢弃。少量 SO 事件通道只在 Inspector 装配与跨场景连接确有收益时采用。
+**[研究] 最低完成度**：对象内直接调用；跨边界确需多观察者才用类型化事件。命令有唯一处理者和结果，DamageApplied／EnemyDied等事实提交后再通知。声明同步／排队、顺序、重入和丢弃；SO通道仅在Inspector装配／跨场景有收益时用。
 
 **[一手] Unity 官方例子**强调 OnEnable 订阅／OnDisable 退订并说明 SO event channel 是项目级资产；因此“换场景就自动清干净”不是其承诺。[官方事件通道说明](https://unity.com/how-to/scriptableobjects-event-channels-game-code)
 
 - **可省**：无差别全局 EventBus、字符串消息、自建完整 CQRS／事件溯源、每帧健康轮询和每个属性一个广播。
 - **AI 风险 [研究]**：匿名 lambda 退订失败，双重订阅，事件在构造半完成状态发出；伤害／死亡广播造成重入后重复奖励；晚订阅 UI 丢失初始状态；一条事件跨场景带过期对象引用。
-- **将来验证**：同一死亡触发多次，只提交一次事实与奖励；监听者在回调中销毁或退订不会破坏枚举；池对象启用／禁用多轮，每次只收一次；UI 晚加入通过快照建立当前值而非期望历史广播重放。必要时用 sessionId、entityId、operationId 拒绝旧事件，简单局部函数无需全部加 ID。
+- **将来验证**：重复死亡只结算一次；回调内销毁／退订不破坏枚举；池化多轮无重复订阅；晚加入UI从快照取值。跨寿命时按需用sessionId／entityId／operationId拒绝旧事件，局部调用不强制加ID。
 
 ### 6. 战斗与技能：先统一结算权，再谈 GAS
 
-**[研究] 最低完成度**：攻击请求→合法性／资源检查→启动／承诺成本→命中判定→伤害与效果提交→结束或取消。每一步的权威所有者唯一。动画和 VFX 表现结算，不各自再扣血；动画事件可以触发命中窗口，但“取消、死亡、换场景之后的晚事件”需失效。给一次攻击分配足够区分重入／池化复用的操作身份；同目标是否能被同攻击多次命中由规则决定，不是统一去重到永远。
+**[研究] 最低完成度**：请求→合法性／资源检查→启动与承诺→命中→效果提交→结束／取消，每步唯一权威。动画可触发窗口，VFX不重复扣血；晚事件须随取消、死亡、卸载失效。攻击身份应区分重入／池化，同目标多次命中按玩法定。
 
 - **Unity 最佳性价比 [研究]**：先 Health／Combatant／AbilityRunner 小组件＋不可变 AbilityDefinition＋每次施放的 AbilityExecution；已有成熟角色控制器或技能模块覆盖实际玩法时复用并留适配边界，不从零造全能技能编辑器。
-- **UE 默认 [研究]**：少量攻击／冲刺可用 ActorComponent、Montage 和现有输入层；只有重复出现属性计算、叠层效果、标签互斥、费用冷却、目标与必要网络预测时，GAS 的一致模型才可能比多处手写划算。复杂单机 RPG 也可能值得 GAS，不能说“GAS 只为联网”；少技能但规则复杂也可能适用，不按技能数量设死门槛。
+- **UE默认 [研究]**：少量动作先用ActorComponent／Montage／现有输入。重复的属性、叠层、标签、成本冷却、目标或必要预测使统一模型更划算时再用GAS；复杂单机也可适用，不按技能数或联网与否划死门槛。
 - **官方代价 [一手]**：GAS 的 CommitAbility 应用费用与冷却；正常结束要显式 EndAbility，否则可能持续阻挡其他动作；Per-Actor 实例跨施放复用，成员需清理。[Gameplay Abilities](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-abilities-in-unreal-engine)
-- **Lyra 的真实边界 [一手]**：Pawn 初始化依赖 possession、PlayerState、Input 与 Game Feature 就绪；PawnExtension 等条件满足后才授予能力，并在失去 Pawn 时移除关联能力。其 ASC 跨 Pawn 的组织是为具体体验和多人生命周期服务，不能无条件搬到单机。[Abilities in Lyra](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US)
+- **Lyra边界 [一手]**：[Abilities in Lyra](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US)中Pawn依赖possession、PlayerState、Input、Game Feature就绪，PawnExtension满足条件才授能力，失Pawn撤关联能力。跨Pawn ASC服务具体多人生命周期，不默认搬入单机。
 - **可省**：几种固定动作先上完整 GameplayTag 分类、全技能网络预测、通用公式 DSL、可组合效果图；也不在 Unity 里为了名字相同去复刻 UE GAS 全栈。
 - **AI 风险 [研究]**：Check 后仍可能失效却无提交时检查；费用扣两次；取消技能忘移除标签、移动锁、命中盒和订阅；非实例化默认对象写玩家私有状态；Per-Actor 复用残留上次目标；重生重复授予。
 - **将来验证**：施放准备／费用提交／命中／恢复各阶段插入死亡、眩晕、失去目标、场景卸载；断言费用、冷却、效果、伤害和奖励次数；同时攻击与治疗的顺序固定。若有网络再测延迟／丢包／预测回滚；单机切片不替联网通过。
 
-**动作响应与承诺（2026-10-15 UTC+8）。** [研究] ✅ 沿现有技能定义／执行实例和局部状态机，分别决定移动／转向、当前阶段允许的出口与再次攻击资格；不把动画退出等同于退款、重开命中盒或解除冷却。输入已被识别后是否允许改变动作，是这里的增量，不重复输入缓冲或取消清理。
+**动作响应与承诺（2026-10-15 UTC+8）。** [研究] 沿技能定义／执行实例与局部状态机，分别定移动转向、阶段出口和再次攻击资格。动画退出不等于退款、重开命中盒或清冷却；本节只补输入识别后的动作许可。
 
-- **实际调整 [一手]**：[Hades 官方历史补丁](https://www.supergiantgames.com/blog/hades-updates/)在 2020-10-27 调整 Guan Yu 攻击缓冲，使连击之间可 Dash；2020-12-01 同时提高 Heavy Knuckle 攻速并解除攻击时的原地锁定。[研究] 说明可针对某招局部修改控制权，不证明其中一项单独带来收益，也不代表所有武器任意阶段均可取消或 Hades II 当前规则。
-- **可借机制 [一手]**：Overgrowth 固定 `245fe4828631c84c0023d29d1525f5716ccb6106` 的 [playercontrol.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/playercontrol.as#L469-L478)提供移动／跳／蹲／抓／攻击等取消意图；[aschar.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L9600-L9610)还要求动画已设置、`cancel` 状态达门槛，再经延迟条件调用 `EndAttack`。其 [退出路径](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L6260-L6274)清动画回调并按当前状态回到运动。[研究] 借“请求＋阶段许可＋退出”，不搬整份角色脚本；未核完整动画曲线，不推出统一取消帧数或自动退款政策。代码 Apache-2.0，游戏动画／美术不随之授权；仅静态阅读。
-- **撤回反例 [一手]**：[Overgrowth 1.2 公告，2018-03-15](https://www.wolfire.com/blog/2018/03/Overgrowth-1-2---Combat-improvements/)关闭 casual 之外的攻击吸附，并缩短较高难度肩投的允许距离，保留距离挑战。[研究] 自动修位也会改变动作承诺，不能把更多辅助当免费响应。这是第三人称近战与 Hades 俯视动作玩法的比较，不推广到格斗帧表或联网竞技。
+- **历史调整 [一手]**：[Hades 官方历史补丁](https://www.supergiantgames.com/blog/hades-updates/)在2020-10-27改Guan Yu缓冲使连击间可Dash，2020-12-01同时加快Heavy Knuckle并解原地锁。[研究] 支持局部控制权调整，不能拆因果或推出所有武器任意取消、Hades II当前规则。
+- **固定机制 [一手]**：Overgrowth [playercontrol.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/playercontrol.as#L469-L478)提供移动／跳／蹲／抓／攻击取消意图；[aschar.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L9600-L9610)检查动画已设、cancel门槛及延迟再EndAttack；[退出路径](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L6260-L6274)清动画回调并回运动。[研究] 借请求、阶段许可与退出；未核完整曲线，不能推出帧数／退款。代码Apache-2.0，动画美术另属权利人。
+- **撤回反例 [一手]**：[Overgrowth 1.2 公告，2018-03-15](https://www.wolfire.com/blog/2018/03/Overgrowth-1-2---Combat-improvements/)取消casual外攻击吸附，缩短高难度肩投距离。[研究] 自动修位会改承诺；第三人称近战与Hades俯视比较不推广格斗帧表／联网竞技。
 
-[研究] **成本与二改验收（仅预注册）**：先沿现有原生动画层表达阶段，不为此增加 GAS／新执行框架。许可合适的现成动画缺过渡时，缩窄出口或换片段，不暗含手工补动画。给已有攻击增加重武器或攻速增益，在起手、命中、恢复阶段分别请求移动／防御／再攻击，核控制恢复、攻击次数、费用与已提交效果。若退出意外提高攻击频率、破坏可读预警或抹平武器差异，撤回对应出口；退款、冷却和效果政策复用本节结算责任。这些是维护风险推导，未运行游戏／引擎，未测得具体漏洞或手感收益。
+[研究] **二改预注册**：原生动画层增加重武器／攻速增益，在起手、命中、恢复时请求移动、防御、再攻击，核恢复、次数、费用与已提交效果。缺过渡则缩窄出口或换合规片段；出口若破坏频率、预警或武器差异就撤回。退款／冷却沿原结算规则，不加框架。
 
 **动画释放边界补核（2026-10-16 UTC+8）。** 主线3；改变的建议：动画淡出后失去后续操作，先核现成回调与释放时机，不统一添加定时解锁；新证据：Epic 历史维护复现与 UE 5.8 当前选项契约，Unity 6.3 过渡状态机制对照。
 
-- **历史失败与修复 [一手]**：[UE-183351](https://issues.unrealengine.com/issue/UE-183351)给出 Lyra 复现：拉长 Montage 淡出，在淡出开始后移动打断，只监听 Completed／Interrupted 来 EndAbility 的能力可能无法结束，继续阻挡其他能力。报告中的 WaitDelay 是局部 workaround，不是本仓推荐；该问题已标 Fixed、Target Fix 5.3、修复提交 `25328943`，不能写成当前版本仍普遍存在的缺陷。本轮只读公开问题与文档，未下载 Lyra 或访问私有引擎源码。
-- **当前原生选择 [一手]**：[UE 5.8 PlayMontageAndWait](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Ability/Tasks/PlayMontageAndWait)将正常淡出与完全播放完成分开；`Allow Interrupt After Blend Out` 为 true 才允许淡出开始后收到 Interrupted，关闭时该阶段打断既无 Interrupted 也无 Complete。页面不作为默认值证据。`Stop When Ability Ends` 为 true 时，正常结束能力也会中止 Montage；显式取消则总会停止。已有项目先核这两个选项及其出口，不因旧报告另造 watchdog 或升级框架。
-- **不同释放边界 [研究]**：① 必须完整播放才交还控制权：保留完成路径，同时覆盖淡出期间的打断／取消；② 淡出开始即可交还控制权：可在此结束本次规则，但核正常 EndAbility 是否截断仍需保留的表现；③ 还要执行后续 Montage／逻辑：当前片段退出只推进／取消相应阶段，不统一结束整个技能。共享清理可以复用，但正常完成与取消不能因此共用成功结算；三个条件不是同一游戏的实测优劣对照。
-- **Unity 对照与适用边界 [一手／研究]**：[Unity 6.3 StateMachineBehaviour](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.html)允许 current、next、interrupted 状态同时活跃，同步层还可对同一状态多次调用；[OnStateExit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.OnStateExit.html)描述的是状态结束评估，不是技能正常完成回执。由此推导：若 Animator 回调承担动作占用／命中窗口，旧状态退出只释放自己的那份，不能无条件恢复共享布尔值、撤销新动作。局部表现仍可用原生状态回调，无需统一迁移到独立动画调度器；没有复测具体游戏，不把文档机制写成当前 Unity 故障。
+- **已修历史问题 [一手]**：[UE-183351](https://issues.unrealengine.com/issue/UE-183351)的Lyra长淡出中移动打断，监听Completed／Interrupted的EndAbility可能漏触发。WaitDelay仅报告中的workaround；已Fixed、Target Fix 5.3、修复`25328943`，不当当前故障。未下载Lyra／私有引擎源码。
+- **当前选择 [一手]**：[UE 5.8 PlayMontageAndWait](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Ability/Tasks/PlayMontageAndWait)区分淡出与播放完成；Allow Interrupt After Blend Out=true才在淡出后给Interrupted，关闭时该阶段打断无Interrupted／Complete，页面不证默认值。Stop When Ability Ends=true使正常结束也停Montage，显式取消总停止。先核选项，不据旧问题加watchdog。
+- **释放政策 [研究]**：完整播放才还控制→覆盖淡出中的打断；淡出开始即结束规则→核EndAbility是否截断应保留表现；后面还有Montage／逻辑→只推进或取消当前阶段。清理可共享，取消不得提交成功结果。
+- **Unity边界 [一手／研究]**：[Unity 6.3 StateMachineBehaviour](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.html)允许current／next／interrupted同时活跃，同步层可多次回调；[OnStateExit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.OnStateExit.html)只是结束评估。旧出口只释自己的占用／窗口，不能撤新动作；局部表现仍用原生回调，不将机制推成当前故障。
 
-**[研究] 二改验收仅预注册**：拉长原招式恢复段，在淡出前、淡出中、完成后分别打断并立即再出招；沿现有执行身份记录释放与结果。检查本次锁能释放、旧出口不误结束新动作、取消不提交正常完成结果，以及所选政策下剩余动画是否继续；保持费用／冷却／已提交效果规则。原生配置已满足就停止补层；只有锁定版本的实际路径仍有缺口，才考虑局部补偿，并核重入／重开。本轮未运行引擎、游戏或玩家对照，未证明手感或维护净收益。
+**[研究] 二改预注册**：拉长恢复段，在淡出前／中／后打断并立即再出招。按执行身份核锁释放、旧出口不误结束新招、取消无成功结果、剩余动画符合政策；费用／冷却／已提交效果不变。原生配置满足即停止，锁定版本确有缺口才局部补偿并核重入／重开。
 
 ### 7. 相机：先复用成熟运行时，验收的是可读性与控制权
 
-**[研究] 最低完成度**：一个玩家视口的最终相机拥有明确控制权；跟随、瞄准、过场、菜单切换有优先级；传送与重生按意图保留或重置跟随历史，碰撞遮挡不丢关键信息，暂停和相机震动有明确策略。Unity 优先适配目标版本的 Cinemachine，UE 先 CameraComponent／SpringArm／PlayerCameraManager；镜头足够简单可只用固定相机。
+**[研究] 最低完成度**：每视口最终输出唯一，跟随／瞄准／过场／菜单有优先级；传送重生按意图处理历史，遮挡、暂停、震动各有政策。Unity先适配版本的Cinemachine，UE先CameraComponent／SpringArm／PlayerCameraManager；简单玩法保留固定镜头。
 
-**[一手] 固定源码与真实修改链**：Cinemachine [45728f30](https://github.com/Unity-Technologies/com.unity.cinemachine/tree/45728f3030787076f32930101d11d9ca96fe3a0f) 的 Brain 区分 SmartUpdate／FixedUpdate／LateUpdate；2026-02 fast-enter-play 支持后，[2026-08 #1122／69b2051](https://github.com/Unity-Technologies/com.unity.cinemachine/commit/69b205115495a374fbba329547ba608cdcfe7847) 又将 static reset 提前至 SubsystemRegistration，并重新创建 CameraUpdated／Activated 等事件。默认分支 changelog 此项归于 3.1.8-pre.2，不可宣称所有已发布 3.1.x 已修。
+**[一手] Cinemachine修订**：[45728f30](https://github.com/Unity-Technologies/com.unity.cinemachine/tree/45728f3030787076f32930101d11d9ca96fe3a0f) Brain分Smart／Fixed／Late；2026-02 fast-enter-play之后，[2026-08 #1122／69b2051](https://github.com/Unity-Technologies/com.unity.cinemachine/commit/69b205115495a374fbba329547ba608cdcfe7847)把static reset提前至SubsystemRegistration并重建CameraUpdated／Activated事件。changelog归3.1.8-pre.2，未证全部已发3.1.x含修复。
 
 - **可省**：自研完整 Cinemachine、每种技能独立控制 Camera transform、对普通固定视角游戏搭通用镜头语言。
 - **AI 风险 [研究]**：物理目标在 FixedUpdate 移动而镜头拿不一致时序；传送后追着旧位置平滑；切镜完成的回调却在取消后覆盖新镜头；循环进入 PlayMode 静态监听残留；禁用鼠标控制但最后一帧轴值继续生效。
@@ -117,7 +117,7 @@
 
 ### 8. 关卡：先做可重置的遭遇，再做大世界
 
-**[研究] 最低完成度**：关卡定义（稳定 levelId、入口、目标、出生表）与运行状态分开；每个 Encounter 所有者管理产生的敌人、触发器状态和一次性奖励；完成标记由存档域持有，不依赖 Scene 中对象是否还活着。目标、出口、回退位置可查询，重进关卡不会误发奖励。
+**[研究] 最低完成度**：关卡定义含稳定levelId、入口、目标、出生表；Encounter拥有所生敌人、触发与一次奖励；存档保存完成事实。目标、出口、回退位置可查，重进不重发奖励。
 
 - **Unity**：场景承载内容，组合入口注入玩家／服务；Additive／Addressables 的释放细节归 WP10，玩法层必须提供退出／取消钩子。UE 先普通 Level；确实需要流式世界后再上相应分区机制。
 - **可省**：小房间游戏用 World Partition 级系统、无玩法约束的随机铺图、自建通用关卡编辑器；已有模块化房间足够时优先组合，但仍需按路线与遭遇目标筛选，详见文末关卡组合补研。
@@ -136,7 +136,7 @@
 5. 内容 ID 与序列化字段不能随重构漂移；改变需要迁移和旧夹具
 6. 准确包版本与已经知道的本地改造；不要“顺手更新所有依赖／改成最佳实践”
 
-**第二次需求的推荐题 [研究]**：先有单段冲刺攻击，再改为“可蓄力、受击中断、取消后只按已承诺规则扣资源，并能从检查点重开”。这会同时检验配置／执行实例、退出时机、命中幂等、动画晚事件、相机控制和关卡重置，比增加一个同类技能更有区分度。记录改动文件、资产引用、主动工时与回归失败，而不是仅比较生成 token 或代码行数。
+**第二次需求 [研究]**：单段冲刺改成蓄力、受击中断、按承诺扣资源并能检查点重开；同时检验实例、退出、命中幂等、晚动画、相机和关卡。记录改动文件／资产、主动工时与回归失败。
 
 ## 三、分档选择：不要把最高复杂度当最高质量
 
@@ -160,9 +160,9 @@
 
 **[一手] UCL 注意**：[现行 UCL 1.4](https://unity.com/legal/licenses/unity-companion-license) 要求与有效 Unity Engine License 下创作／发行有关，保留通知，第三方组件另循条款；不能因软件免费即忽略引擎条件。
 
-**[一手＋研究] NoAI 不是只看商用开关**：[Epic Content License §5(c)(viii)、§17](https://www.unrealengine.com/eula/content) 对受该协议约束的 NoAI Content 涵盖生成式 AI 数据集、开发和输入。Fab 产品标记不能自行证明每个 Lyra 代码文件都适用同一协议，也不能据此推导所有 UE 开发禁止 AI；本轮只读公开技术文档，不下载／提交样例资源给模型。真正接入前，应保存具体文件授权链；不能用非官方 GitHub 镜像绕过资产条件。
+**[一手／研究] NoAI**：[Epic Content License §5(c)(viii)、§17](https://www.unrealengine.com/eula/content)对适用NoAI Content限制生成式AI数据集、开发与输入。Fab标签未证明每个Lyra代码文件同许可，也不禁止所有UE开发用AI。接入须保存具体授权链，不以非官方镜像绕过。
 
-**[一手＋研究] 商业工具也有第二次修改成本**：Opsive [10-02 EULA](https://opsive.com/solutions/decision-solution/behavior-designer-pro/eula/) 对编辑器操作者与仅使用编译游戏者分开，对营收／融资设订阅门槛，订阅过期要求停止使用和删除源码，仅留已取得版本对象码；[购买页](https://opsive.com/assets/behavior-designer-pro/) 与许可的席位类别、阈值文字需购买前对应具体 SKU。单人项目应把可离线维护、未来融资和源码持续可用性计入成本，而非只比较首次价格。本轮只评估，未接受条款或付款。
+**[一手／研究] Opsive持续成本**：[10-02 EULA](https://opsive.com/solutions/decision-solution/behavior-designer-pro/eula/)区分编辑操作者／编译游戏用户，按收入融资设订阅门槛；到期须停用删源码，只留已取得对象码。[购买页](https://opsive.com/assets/behavior-designer-pro/)与合同的席位／阈值差异见阶段F表；离线维护、融资与源码持续权进入总成本。未接受或付款。
 
 ## 五、两个成熟项目能反证什么，不能反证什么
 
@@ -176,7 +176,7 @@
 
 ### Chop Chop：可借结构，但历史 demo 的特例不能升格为通用规则
 
-**[一手]** Damageable 死亡时立刻重设数值并保留 IsDead，与 Revive 分工是该游戏具体流程；CameraManager 保存场景外的 anchor，角色重新实例化后重绑 Follow／LookAt，并在禁用输入时清轴值。这些都是能读懂的生命周期例子，不应原封不动移植到“死亡尸体仍可查看 HP／多玩家／对象池”新需求。
+**[一手]** Damageable死亡即重设数值但保留IsDead，Revive另处理；CameraManager存场景外anchor，角色重建后重绑Follow／LookAt，禁输入清轴值。属于该游戏流程，不能直接套给可查尸体HP、多玩家或对象池。
 
 **[研究] 采用单位**：定义与实例的区分、订阅成对释放、角色重生通知相机这些机制值得采用；项目版本、整个事件网络、内容资产、UI 与任务框架不用一起继承。没有经过第二次需求修改的“模板已跑起来”，不足以成为发布底座选型结论。
 
@@ -194,7 +194,7 @@
 
 ## 七、后续验证条件
 
-**[研究] 优先实测的一个问题**：同一 Unity 小型战斗切片，用现有组件／小状态机完成第一版，然后做“蓄力可打断＋检查点重开”第二次修改；先不比较十个框架。若状态退出组合已经让小方案难维护，再对照 HFSM；只有规模证据指向 CPU 批处理，才用官方 StateChange 样例的方法比较 ECS。
+**[研究] 优先验证**：同一Unity切片先用组件／小状态机，再做上述蓄力中断＋重开。退出组合难维护才对照HFSM；测得CPU批处理瓶颈才比ECS，不同时比较十个框架。
 
 验收合并为三个跨模块问题：[研究]
 - 正常、取消、死亡、卸载、池回收都清理，实例互不污染；重开无重复技能／镜头／关卡／UI 事件，冷却／资源结算可追踪
@@ -222,11 +222,11 @@
 
 ## 镜头质量补研：从跟得上到看得懂、控得住
 
-核实：2026-10-14 UTC。主线 1／3／4；改变 05 第 8 节只强调所有权与取消的侧重，补充预判、取景、输入连续性与视觉意图。新证据是 Cinemachine 3.1.7 当前文档、Celeste64 固定源码中的体验规则，以及开发者自述与 2026 年可访问性指南；本次仍只有公开理论／源码研究。[研究]
+核实：2026-10-14 UTC；主线1／3／4。05 §8补预判、取景、输入连续性与视觉意图；依据为Cinemachine 3.1.7文档、Celeste64固定实现、开发者自述及2026可访问性指南。[研究]
 
 ### 1. 不把“顺滑”压成一个阻尼数
 
-[研究] 相机至少有四个可能冲突的目标：提供决策信息、遵从玩家输入、建立视觉节奏、避免不必要的运动负担。更大死区能保住稳定参照，也会减少某方向的前方视野；更大阻尼降低突变，也会落后；更大视野装下更多威胁，也会缩小命中提示。应先问某个动作缺少哪种信息，再决定移动、变焦、前瞻或固定镜头，不能把复杂相机系统当质量升级的必经步骤。
+[研究] 相机要兼顾决策信息、输入、节奏与运动负担。死区稳住参照却减少前视，阻尼减突变却增加滞后，大视野容纳威胁却缩小提示。先定位动作缺什么信息，再选固定、移动、变焦或前瞻。
 
 **[一手] 机制资料与证据边界：**
 
@@ -238,50 +238,50 @@
 | [Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html) | 拉近、保持高度或距离三种避遮挡取舍；最短遮挡时间、保持时间和恢复阻尼可减少无谓调整 | 不保证所有窄走廊有可行视点；看见角色不等于看见落点或敌人预告 |
 | [Confiner 2D](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineConfiner2D.html) | 限制的是含视口尺寸／比例的区域；改变镜头需按文档失效相应缓存，形状重算有成本 | 一个边界多边形不能自动解决所有宽高比的构图；频繁重建并非零成本 |
 
-[研究] **采用顺序**：先固定房间／单目标简单跟随；识别漏看的动作；只对该动作加状态规则；最后才加装饰性运动。新增规则如果只是让片段看起来更“电影感”，却增加玩家重找目标的次数或每间房的修补工作，就撤回。当前 Unity 原生组合通常比新引入另一个通用相机框架更好维护；这是匹配单人需求的判断，不是跨插件性能冠军结论。
+[研究] **顺序**：简单跟随／固定镜头→定位漏看的动作→局部规则→装饰运动。只增电影感却让人反复找目标、逐房修补时撤回；优先已有Unity组合，不据此宣称跨插件性能最优。
 
 ### 2. 三种玩法的不同默认，不共享一套“最佳参数”
 
-**[研究] 精确平台跳跃。** 玩家关心的是跳之前的目标、飞行中的高度参照、下落后的安全空间。屏内房间先固定；较大房间用死区和边界，水平前瞻只在高速移动确有漏看时加入。纵轴不用追每一次短跳，可以用着地／超出窗口／下落状态决定何时改变基准。失败条件是过大的窗口让落点来不及出现，或速度前瞻在左右试探时反复翻向。维护责任是关卡作者标出需保留视野的动作区间，程序只实现几种可解释规则；不要让 AI 逐房堆补丁、猜几十个无来源参数。
+**[研究] 平台跳跃**：保起跳前落点、空中高度参照与下落安全空间。屏内房间固定，大房间用死区／边界，高速漏看才加水平前瞻；纵轴按着地、越窗、下落更新。窗口导致落点晚出现或试探时前瞻翻向即调整。关卡标必要视野，程序维护少数规则。
 
-**[研究] 俯视战斗。** 默认固定朝向、较稳定尺度和有限跟随，让预告尺寸与闪避距离容易学习。小竞技场一次看全即可；Boss 体型或双目标需要时才加目标组，限定最低角色／预告可读尺度。若敌人分散导致镜头越拉越远，先缩小目标集合或调整遭遇空间；“都进画面”不是最高目标。退回条件是玩家读不到关键动画、镜头频繁呼吸式缩放，或新增敌人类型需要改大量相机特殊分支。本文未取得已发布俯视游戏采用此具体组件组合的证据，因此这是机制推导，不标成生产采用案例。
+**[研究] 俯视战斗**：固定朝向、稳定尺度、有限跟随；小场一次看全，Boss／双目标才加目标组并设最低可读尺度。分散敌人导致过度缩放时缩目标集或改空间；看不清动画、呼吸式变焦或新增敌人需大量特例就退回。未核生产游戏采用此组件组合。
 
-**[研究] 越肩射击／探索。** 探索允许适度跟随惯性，精确瞄准需要更直接的输入响应；不要把摄像机、角色身体朝向和动画骨骼当同一目标。遮挡处理先选少数确定策略，遮挡物过滤与碰撞半径由镜头和关卡共同拥有。保持距离的自动绕行可能改变瞄准关系，拉近可能牺牲周边信息；若二者都不满足，修改关卡几何或局部遮挡表现，收益往往比再加求解分支更明确。局部透明还会引入材质／渲染维护，不能当免费兜底。
+**[研究] 越肩**：探索可有惯性，瞄准需直接响应；相机、身体、骨骼分开。绕行会改瞄准关系，拉近会损周边信息；有限策略仍无可用视点时改几何／局部显隐，承担材质维护成本。
 
-**遮挡补核（2026-10-14）：区分物理碰撞、可见信息与瞄准控制。** [一手] 指定文档元数据为 Cinemachine **3.1.7**；[Decollider](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDecollider.html)处理相机脱离障碍／地形的定位，明确不维护目标视线。[Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html)依赖障碍 collider／物理查询，Maximum Effort 限制处理的命中数；增加上限可能增加成本，不能补救不存在的视点。Transparent Layers 是遮挡排除层，不是淡出材质控制。两者都不能证明枪口可射击或落点可读。[研究] 因而先保住玩家瞄准意图，在允许的相机位移范围内恢复视线；不能为自动绕开柱子而悄悄改变准星方向，也不要把两个组件全部叠加当默认升级。
+**遮挡补核（2026-10-14，Cinemachine 3.1.7）。** [一手] [Decollider](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDecollider.html)只脱离障碍／地形，不保视线；[Deoccluder](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html)依赖collider／查询，Maximum Effort限命中数，增加成本不能创造视点。Transparent Layers只排除遮挡层，不控材质。[研究] 先保瞄准意图，再在允许位移内恢复视线；两组件不自动保枪口／落点，也不默认叠用。
 
-[研究] **固定朝向下的局部遮挡，🧪 复用材质原语，按玩法选择显隐对象。** [一手] [Shader Graph 17.0.4 Dither](https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Dither-Node.html)文档给出接入 Alpha Clip Threshold 的做法，通过丢弃部分像素模拟透明，同时保留不透明渲染的深度写入等性质；这不是完整遮挡系统。[研究] 程序仍负责可淡出对象集合、遮挡范围、恢复状态；树冠／前景可局部退让，掩体边界、落地表面和攻击预告不能一起消失。显示角色轮廓只能回答“人在哪”，不能回答“往哪落／哪边能躲”；按房间切掉屋顶适合已定义清楚的区域，但新增层高、门窗或穿越状态时也必须回看边界。屏幕空间抖点在实际分辨率和运动中是否干扰提示要另验，本文不宣称它比透明混合更快或更舒服。
+[一手] [Shader Graph 17.0.4 Dither](https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Dither-Node.html)以Alpha Clip Threshold丢像素模拟透明并保深度写入，不是完整遮挡系统。[研究] 固定朝向可借材质原语，但须定对象、范围、恢复，保留掩体边、落地面、预告。轮廓只报角色位置，屋顶分区还需验新增层高／门窗。目标分辨率与运动中另验抖点干扰，未证优于透明混合。
 
-[一手] **实际发布后的维护反证：** The Indie Stone 的 [Project Zomboid 42.21 stable 公告](https://projectzomboid.com/blog/news/2026/09/42-21-stable-released/)明确大树影响驾驶视野，修改 cutaway 以免遮住树下房屋／家具，并称仍需继续改进。[研究] 这支持把“更高树冠＋步行改驾驶／瞄准”的二次修改列为验收，不支持该游戏方案普遍最优，也不证明它使用 Cinemachine／Shader Graph。本文只借开发者公开报告，不取得或推荐复制其代码、地图、shader 或美术资产。
+[一手] **发布后反证**：[Project Zomboid 42.21 stable 公告](https://projectzomboid.com/blog/news/2026/09/42-21-stable-released/)称大树妨碍驾驶，改cutaway以露出树下房屋／家具且仍待改进。[研究] 支持树冠＋步行改驾驶／瞄准的二改验收，不证明采用Cinemachine／Shader Graph或该方案最优。
 
-[研究] **采用边界与成本：** ✅ 已用 Unity 的项目先复用上述原生组件／节点，避免再接一套通用相机框架；若当前材质无法批量承接显隐参数，或每加一种墙／树都要写例外，先改几何和构图。二改记录新增 collider／材质变体／显隐例外数、恢复遗漏与调参工时；在同一新遮挡物下检查角色、落点、预告、准星和真实弹道，而不是只看角色有没有露出来。Cinemachine [3.1 许可页](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/license/LICENSE.html)与 Shader Graph [17.0 许可页](https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/license/LICENSE.html)均标 UCL、限 Unity-dependent 项目，不能当作可跨引擎搬运的 MIT 代码；引擎计划资格另按 WP1 核。这里增加的是接入／维护责任判断，没有购买插件，也没有测得性能或工时数字。
+[研究] **成本**：材质不能批量显隐或墙树例外不断增加时先改几何构图。二改记collider、材质、显隐特例、恢复遗漏及工时，核角色、落点、预告、准星、弹道。[3.1 许可页](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/license/LICENSE.html)与[17.0 许可页](https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/license/LICENSE.html)均为UCL、限Unity-dependent项目；引擎资格另核WP1。
 
 ### 3. 两种真实开发证据：借机制，不复制整套负担
 
-**Mushroom 11：开发者对自己的游戏的说明。** [Itay Keren 的修订文章](https://gamedesignskills.com/game-design/camera-design-2d-side-scroller-games/)源自 GDC 2015，不能把网页重新发表当新算法。其本人说明区域各自有镜头路径与缩放，解谜区域可取多个块的平均，推进区域偏向最前方块；因为游戏没有跳跃，运动预测较自然。[一手] [研究] 这支持“按玩法定义焦点、必要时由关卡指定区域”的方法。它不支持给所有平台游戏默认开启纵轴速度预测，也没有给出单人长期内容维护工时或对照舒适度数字。每关几十个手工区域正是应纳入成本的部分；只有简单跟随确实无法表达谜题意图才增加区域导演。
+**Mushroom 11 [一手]**：[Itay Keren 的修订文章](https://gamedesignskills.com/game-design/camera-design-2d-side-scroller-games/)源自GDC 2015。作者按区域设路径／缩放，解谜看块平均、推进看领先块；无跳跃使预测较自然。[研究] 支持按玩法选焦点／区域，非通用纵向预测。手工区域有维护成本，简单跟随无法表达谜题才增加导演；无工时／舒适对照。
 
-**Celeste64：可发布小作品的局部实现。** 本次通过公开 GitHub API 锁定 `EXOK/Celeste64@6edfe1ebd2a21a6134d7675a28e357891025407e`，该主干提交日期 2026-09-07；不是声称该日重新发布游戏。完整读取 [Player.cs](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs)，核对以下路径：[一手]
+**Celeste64 [一手]**：固定`EXOK/Celeste64@6edfe1ebd2a21a6134d7675a28e357891025407e`，2026-09-07主干提交非发行日；完整读[Player.cs](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs)：
 
 - 443–460：水平跟随角色，垂直目标依据着地、下落与高度窗选择；使用含 delta 的指数趋近，避免把“每帧固定比例”当时间不变的阻尼
 - 544–589：局部固定镜头区域与一般碰撞修正并存；这说明局部设计镜头可以与常规跟随共存，不证明其射线方案覆盖所有近裁剪或窄角落情形
 - 597–617：普通移动使用当前画面方向建立输入基；1474–1487 的攀爬则在横向输入松回阈值内才重算方向符号，保持转角期间持续输入的意图
 - 480–482：速度会影响 FOV；这仅是作者的效果选择，不构成所有高速移动都应改变 FOV、或已验证减轻晕动的证据
 
-[研究] **✅ 改造局部规则，⛔ 不移植工程结构。** 官方 [ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md)说明由原团队在不足两周内制作，按 jam 级项目学习，Player 自称单体类；发布游戏确实比孤立教程更贴近体验，但不能据此推荐长期维持巨型类。特别值得借的是攀爬的“同一按住意图跨视角变化仍连续”，迁入 Unity 时让移动组件拥有该语义，相机只提供最终朝向，不把该规则塞进通用镜头库。
+[研究] **只借局部规则**：[ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md)称原团队不足两周的jam级制作，Player为单体类，不推荐长期架构。攀爬持续输入跨视角的语义归移动组件，相机只给朝向。
 
-**许可分层 [一手]**：Celeste64 [Source/License.txt](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/License.txt)为 MIT；ReadMe 明确 Content 与 Celeste IP 归权利人，非商业同人许可不能扩为商业素材许可，FMOD 另有例外。Cinemachine 固定 [LICENSE.md](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/LICENSE.md)指 Unity-dependent 项目的 Unity Companion License，并非 MIT。本文仅借机制与链接，未搬运图像、音频、角色或整段源代码。
+**许可 [一手]**：[Source/License.txt](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/License.txt)为MIT；ReadMe另保留Content／Celeste IP，非商业同人授权不扩成商用素材，FMOD例外另核。Cinemachine [LICENSE.md](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/LICENSE.md)为Unity-dependent UCL。
 
 ### 4. 瞄准、切镜和舒适度属于玩法质量
 
-[一手] 当前 [Third Person Aim 文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineThirdPersonAim.html)区分相机所看点与角色可能命中点。又读固定源码 [CinemachineThirdPersonAim.cs](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Behaviours/CinemachineThirdPersonAim.cs)：先求看向点，再从 `vcam.Follow.position` 检查遮挡。官方样例 [AimTargetManager.cs](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Samples~/Shared%20Assets/Scripts/AimTargetManager.cs)在 CameraUpdatedEvent 后更新屏幕指示，再从传入 firingOrigin 生成射向目标的方向。
+[一手] [Third Person Aim 文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineThirdPersonAim.html)区分相机看点与角色命中点；固定[CinemachineThirdPersonAim.cs](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Behaviours/CinemachineThirdPersonAim.cs)先找看点再从vcam.Follow.position查遮挡；样例[AimTargetManager.cs](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Samples~/Shared%20Assets/Scripts/AimTargetManager.cs)在CameraUpdatedEvent后更新指示，从传入firingOrigin求方向。
 
-[研究] 因而“用了 Third Person Aim 就保证任何枪口无遮挡”是错误扩大：Follow 原点可能并非枪口，发射物大小、弹道、散布仍属武器系统。后续应让准星清楚区分瞄准目标和受阻点，并测近墙／越肩换边／高低差。装饰噪声可取消以保准星，故意的后坐力则需单独建模，否则反馈与命中挑战会一起被抹掉。
+[研究] Follow未必是枪口；弹体体积、弹道、散布仍归武器。准星区分目标与受阻点，验近墙、换肩和高低差；装饰噪声可与瞄准分离，故意后坐力另定，不能一起抵消。
 
-[一手] [Input Axis Controller](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineInputAxisController.html)区分输入加减速、混合期抑制、非缩放时间与 Cancel Delta Time；鼠标 delta 本身随帧间隔累积，不能按摇杆角速率再积分一次。[研究] 默认不为精确鼠标瞄准添加无需求平滑；瞄准模式混合时是否继续响应必须由玩法决定，不能照抄“混合期禁输入”开关。
+[一手] [Input Axis Controller](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineInputAxisController.html)分加减速、混合期抑制、非缩放时间、Cancel Delta Time。鼠标delta已随时间累积，不按摇杆角速率二次积分。[研究] 精确鼠标无需求不加平滑，混合期间输入政策另定。
 
-[一手] [切换文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/concept-camera-control-transitions.html)说明混合期间两台虚拟相机可同时 live，甚至停用对象也可能仍参与混合。[研究] “唯一输出控制权”是 Brain／最终输出层唯一，不是要求混合时只有一台虚拟相机；传送、复活、谜题揭示、瞄准切换应分别选择 cut、blend 或重置目标，避免为了统一过渡使快速重试和即时瞄准拖沓。
+[一手] [切换文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/concept-camera-control-transitions.html)中两虚拟相机可同时live，停用对象仍可能参与混合。[研究] 唯一输出指Brain层；传送、复活、揭谜、瞄准各自选cut／blend／重置，不统一过渡。
 
-[一手] [Xbox XAG 117](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117)页面标记更新于 2026-03-04，建议可关闭额外镜头运动、调整视野与横纵灵敏度／自动回正；[Game Accessibility Guidelines](https://gameaccessibilityguidelines.com/avoid-or-provide-option-to-disable-any-difference-between-controller-movement-and-camera-movement/)同样强调可退出非输入驱动效果。[研究] 这是可访问性建议及产品实例，不是统一医疗阈值或本项目已测降低不适。关闭震动后仍应从动作、声音和 UI 获得命中信息；固定视角玩法不必为满足一份通用清单另做第一／第三人称双系统。
+[一手] [Xbox XAG 117](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117)（2026-03-04更新）建议关闭额外运动、调FOV／横纵灵敏度／自动回正；[Game Accessibility Guidelines](https://gameaccessibilityguidelines.com/avoid-or-provide-option-to-disable-any-difference-between-controller-movement-and-camera-movement/)也要求可退出非输入效果。[研究] 非医疗阈值或实测收益；关震动后保动作、声音、UI命中信息，固定视角无需因此造双视角系统。
 
 ### 5. 后续体验验收与维护成本
 
@@ -295,7 +295,7 @@
 | 持续按方向经过区域切镜／攀爬转角 | 输入轨迹、最终相机方向、角色运动方向；手柄与键鼠分开 | 同一意图突然逆转或必须松手重找方向，而玩法未告知 |
 | 默认与减弱运动设置完成同一路段 | 主观舒适反馈、是否需要重找目标、关闭效果后命中反馈辨识 | 将“无报错／帧率稳定”当舒适通过；不适参与者不被要求继续 |
 
-[研究] 同时保留原有暂停、低帧率、时钟、传送、重生、过场取消与静态重入检查。第二次修改可只增加“一个下落房间＋一个狭窄掩体角落”，记录新增模式／特殊分支、改动资产数、调参工时；如果小内容修改牵动所有镜头，先简化责任与配置，而非引入更大的导演框架。AI 擅长记录轨迹、实现清楚的模式、暴露参数和维护回归；设计者仍拥有视觉意图、取景节奏、输入承诺和真人舒适验收。
+[研究] 保留暂停、低帧率、时钟、传送、重生、过场取消与静态重入检查。二改加下落房间和窄掩体，记录模式／特例、资产与调参工时；牵动全部镜头时先简化职责。AI实现规则并记录轨迹，人验取景、节奏、输入承诺与舒适度。
 
 ## 战斗质量补研：动作节奏与遭遇可读性一起设计
 
@@ -309,23 +309,23 @@
 | [Mark Foster，Death’s Door 动画访谈，2021-08-27](https://www.gamedeveloper.com/art/animation-feature)；仅其本人描述作为一手 [一手] | 漂亮外包动作不能替代他想控制的动作间连接；小屏幕角色不值得投入不可见的细节 | ✅ 在实际游戏镜头下判断姿态和衔接，把工时花在玩家看得到的动作；⛔ 不从“程序员学会动画”推断本仓库无手工修补基准已经实现 |
 | [Alx Preston，Hyper Light Drifter 公平性访谈，2016-04-08](https://www.gamedeveloper.com/design/how-i-hyper-light-drifter-i-balances-difficulty-with-fairness)；设计者对自己游戏的描述 [一手] | 轮廓和起手传递信息；敌人组合使挑战上升；反弹子弹又格挡近战的敌人难与其他敌人组合而被删 | ✅ 在混合遭遇里评价预告与反制空间；⛔ 不以单挑 AI 更聪明当新敌人质量更高，也不推出所有游戏应降低单体智力 |
 
-[研究] 三者交叉后，单人项目应优先得到“可重复修改的一招＋可解释的敌人组合”。动作不是渲染完才贴到伤害公式上的皮肤；它决定玩家怎样预测和掌握战斗。反过来，某个开发者声称满意或省时，不等于本项目获得了同样收益，三例都不是 AI 或无美术团队对照实验。
+[研究] 共同支持“可反复改的一招＋可解释的敌群”，动作本身参与预测与掌握；三例均有作者判断，不能证明AI／无美术团队获得同样收益。
 
 ### 2. 慢、快与取消各自服务什么
 
-[研究] 前摇表达准备和方向，接触段集中速度／姿态变化，恢复段建立下一决策的节奏。快攻击可把风险放在较短距离、低硬直或后续站位，重攻击可用长承诺换破防、范围或位移；这些是可选设计关系，不是统一平衡公式。敌人前摇需要让人作出相应决定，玩家前摇还要照顾操作回应，两者不必用同一时长。慢攻击在玩家知道何时已经来不及改招、能预先选机会时，同样能有高质量。
+[研究] 前摇传达方向，接触集中速度／姿态变化，恢复建立节奏。快招可承担距离、硬直或站位风险，重招可用承诺换破防／范围／位移，非通用平衡公式。敌人可应对性与玩家输入响应不同，不要求相同时长；慢招也可在承诺清楚时成立。
 
-[研究] 一招至少明确：转向锁定时机、可移动区间、闪避／技能取消入口、连击接续入口、落空是否增加风险。先由玩法所有者准许转换，再让表现衔接，不让动画任意完成时刻偷偷定义规则。允许取消与完整播放都不是默认正确答案；不必要的滑动混合会抹掉清楚的接触姿态，无条件取消也会抹掉故意设计的重武器承诺。
+[研究] 每招明确转向锁定、移动、取消、连击及落空风险；玩法先准许、动画再衔接。过度混合会抹掉接触姿态，无条件取消会抹掉重武器承诺。
 
-[一手] [Dead Cells 官方 Update 33](https://deadcells.com/patchnotes/33)标明 33.1 为 2023-03-10，记录修复误删 Katana cancel technique；33.3 为 2023-03-30，再记录恢复空中 Hattori’s Katana 技巧。页面同时列出新武器与后续音效／表现修复。[研究] 这是真实历史回归证据，足以要求修改后保留既有连段与取消体验；不能据此猜测缺陷根因、精确帧窗口，或声称任何隐藏技巧都应永久保留。若有意改平衡，明确变更旧承诺并重新试玩。
+[一手] [Dead Cells 官方 Update 33](https://deadcells.com/patchnotes/33)：33.1（2023-03-10）修误删Katana cancel technique，33.3（2023-03-30）恢复空中Hattori’s Katana技巧，另有新武器与音效表现修复。[研究] 保留历史连段回归，不猜根因／帧数或要求所有技巧永久保留；有意平衡改动须明示并试玩。
 
 ### 3. 原生编排足够，重点是编辑后仍对得上
 
 - **Unity 6.3**：[一手] [Animator 转场](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)把 Exit Time、Fixed Duration、Transition Duration、Interruption Source／Ordered Interruption 分开；有 Exit Time 时条件在该时点后检查，AnyState 转场先进入中断队列。[研究] ✅ 沿用原生机制，但分别审查玩法准许取消和动画能否进入相应转场。换动画长度／播放速度后重新核接触姿态、窗口及混合，不把一个 normalizedTime 百分比当永远不变的现实时间。
 - **Unreal 当前官方页面**：[一手] [Notifies](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-notifies-in-unreal-engine)支持 Notify State 区间、Sound／Niagara 及 Montage 通知；Branching Point 比 Queued 更精确、同步但成本更高，Link Method 的 Absolute／Relative／Proportional 对片段移动／缩放反应不同。[研究] ✅ 用现有 Montage 编排，只有确需精确次序的玩法分支才加同步通知；编辑动作后检查绑定方式。此默认 URL 本次页面标为 5.8，实际工程必须选对应版本，不借此声称已核旧版全部行为。
-- **两者共同边界**：[研究] 动作事件可提示何时开始挥动、允许检测或播放准备声；确认命中后才选择受击声、格挡声和接触效果。持续拖尾用于解释运动方向，不代表整条可见轨迹始终有伤害。相机和音频的具体设置沿用 04／05 第 8 节；这里优先保护下一敌人的预告，使新武器视觉语言不会遮掉旧敌人的危险信息。
+- **共同边界 [研究]**：动作事件开窗口／准备声，确认命中再选受击、格挡与接触效果；可见拖尾不等于全程伤害。镜头音频沿04／05 §8，新武器仍须保住旧敌人预告。
 
-[研究] 无人工修补的可行起点是许可清楚、姿态已有可读性的现成动作，或适合刚体／简单 2D 的程序化动作，再用参数、分段、重定时和引擎内调整匹配玩法。程序可以修时序，不能保证修好错误轮廓、缺失姿态、穿插与重心；如果需要反复手修才能读懂，先换素材、缩少招式或降低表现复杂度。本轮没有新复制素材或代码；Unity／UE 原生功能仍按各自引擎条款，文章和成品游戏不提供素材再利用许可。
+[研究] 无手修起点是许可清楚且姿态可读的现成动作，或适合刚体／简单2D的程序动作，再分段、重定时和引擎调整。程序能改时序，未必修好轮廓、缺姿态、穿插与重心；需反复手修则换素材、减招式或降表现复杂度。
 
 ### 4. 新武器／新敌人后保住什么
 
@@ -336,7 +336,7 @@
 3. **恢复到下一步**：旧连段、取消和移动恢复仍符合设计；新慢武器的承诺确实换来相应收益，不能把所有不适都通过加速／开放取消消除
 4. **从单体到遭遇**：新旧敌人混合、狭窄空间、边缘位置下仍有可读且可执行的选择；若无解，先调整攻击重叠、敌人组合或空间，不先叠更响的警报
 
-[研究] 自动检查保存阶段窗口、伤害结果与允许转换，真人判断读懂时间、失误原因和重复操作意愿。记录新增特例和调参工时：新武器若要改每个敌人和相机，先检查共同动作语义，不急于加通用框架。设计者定轻重、承诺与公平；AI 维护参数、引用、对照轨迹及回归，不据此宣称能自动判断好玩。
+[研究] 自动核窗口、结算、转换；真人判断辨识、失误原因与再玩意愿。记录特例／工时；新武器牵动所有敌人与镜头时先修共同动作语义。设计者定承诺与公平，AI维护参数、引用、轨迹及回归。
 
 [研究] Dead Cells Update 14 的格挡时序修订仅取得摘要，正文超时，未纳入采用证据。
 
@@ -344,15 +344,15 @@
 
 ## Unreal 相机补研：同一遮挡问题的原生职责与新系统边界
 
-核实：2026-10-14 UTC。主线 1／3；改变 05 第 8 节把 Cinemachine 组件名放进通用玩法表、UE 只列三个名称的缺口。新证据为 Epic 当前标 5.8 的原生相机契约、Top Down Strategy 屋顶示例及仍标 Experimental 的 Gameplay Cameras 页面；以下设计组合标为研究判断，不冒充引擎内置玩法。[研究]
+核实：2026-10-14 UTC；主线1／3。05 §8补UE职责，依据为标5.8的Epic契约、Top Down Strategy屋顶与Experimental Gameplay Cameras；设计组合属推导。[研究]
 
 ### 1. 默认采用什么，谁不能替谁做决定
 
-[一手] [USpringArmComponent](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/USpringArmComponent)公开 API 把 bDoCollisionTest 定义为用 ProbeChannel／ProbeSize 防止 camera clipping；ProbeChannel 默认 ECC_Camera。SocketOffset 在臂端，文档建议用它而非所挂组件的相对偏移以保查询符合预期；bUsePawnControlRotation 决定是否使用 Pawn 的视图／控制朝向。[研究] 这支持默认使用成熟 boom 碰撞机制，但没有提供围绕任意目标搜索可用构图的保证；不能写成 SpringArm 与 Cinemachine Deoccluder 等价。相机不穿墙、目标可见、枪口可射击是三个问题。
+[一手] [USpringArmComponent](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/USpringArmComponent)用ProbeChannel／ProbeSize防穿透，默认ECC_Camera；肩位用臂端SocketOffset以保查询，bUsePawnControlRotation决定控制朝向。[研究] 成熟boom不保证搜索任意可见构图；防穿墙、看见目标与枪口通路分开，非Deoccluder等价物。
 
-[一手] [Cameras](https://dev.epicgames.com/documentation/unreal-engine/cameras-in-unreal-engine)说明 CameraComponent 提供视点参数，ViewTarget 提供候选 POV，PlayerCameraManager 管理最终视图和混合，并通过 GetCameraViewPoint 等公开查询提供结果。[ControlRotation](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/AController/GetControlRotation)则是完整瞄准旋转，可不同于相机与 Pawn 朝向。[研究] 因而沿用 PlayerCameraManager 作为最终视图归属，不要求每个项目新增其子类；控制层拥有输入意图，角色表现可只跟部分轴。碰撞修正不能擅自反写输入，最终视点也不能与角色骨骼朝向混用。
+[一手] [Cameras](https://dev.epicgames.com/documentation/unreal-engine/cameras-in-unreal-engine)：CameraComponent供视点，ViewTarget供候选POV，PlayerCameraManager管最终视图／混合并可查询；[ControlRotation](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/AController/GetControlRotation)是可不同于相机／Pawn的瞄准朝向。[研究] 沿原最终归属，不强制子类；控制层拥输入，碰撞不反写意图，最终视点不混成骨骼朝向。
 
-[一手] [Traces Overview](https://dev.epicgames.com/documentation/unreal-engine/traces-in-unreal-engine---overview?lang=en-US)区分 channel／object 查询及 line／shape sweep；Multi Trace by Channel 返回 overlap 到第一个 blocking hit 为止，不是所有遮挡物列表。[研究] 因此相机探测、可见性与武器路径要各自明确过滤和阻挡规则，不共用一个命中结果；要收集多层可淡出树冠，也不能假定一次 blocking channel 查询会拿到后面全部对象。
+[一手] [Traces Overview](https://dev.epicgames.com/documentation/unreal-engine/traces-in-unreal-engine---overview?lang=en-US)分channel／object与line／shape sweep，Multi Trace by Channel只返回到首个blocking hit。[研究] 相机、可见性、武器各定过滤，查多层树冠不能假定一次取全。
 
 ### 2. 越肩绕柱：改造射击与显示规则，不再造相机框架
 
@@ -363,21 +363,21 @@
 3. 柱子挡住枪口但没挡镜头时，保留候选目标并清楚标示受阻／实际接触点；按既定规则阻止开火或击中掩体，不能从相机原点发子弹绕过碰撞。伤害提交仍属武器／战斗系统
 4. 需要目标可见性修复时，先限制相机位移和换肩条件，持续输入不应因自动绕柱突然改方向；若取景和掩体公平性无法同时满足，修改柱距／肩位／遭遇，而非叠加一个不可预测的避障导演
 
-[研究] **二改验收**：新增柱子或更长枪身，记录最终 POV、ControlRotation、枪口位置、候选目标、实际阻挡点与伤害结果；左右肩、贴墙、俯仰高低差、连续绕柱、开始／退出瞄准分别检查。能够看见敌人不等于有射线通路，射线畅通不等于有体积弹体可通过。AI 可补轨迹和断言，玩家判断瞄准是否被抢走。
+[研究] **二改预注册**：新增柱／长枪，记录最终POV、ControlRotation、枪口、目标、阻挡与伤害；验双肩、贴墙、高低差、绕柱及进出瞄准。可见、射线通、体积弹体通分别核，人判断控制是否被抢。
 
 ### 3. 固定俯视：借原生 masked 开口，不复制 Unity 材质实现
 
-[一手] [Top Down Template](https://dev.epicgames.com/documentation/unreal-engine/top-down-template-in-unreal-engine)的 Strategy 变体通过 M_Cutout masked material 显露屋顶内空间，以屏幕位置和相机位置计算效果，Material Instance 的 Strength 调开口大小。[研究] **🧪 改造这个局部材质机制**，优先留在已用 UE 材质／实例工作流；它不是完整树冠／落点识别器，也不能证明任意视距、投影或多楼层配置都能直接套用。
+[一手] [Top Down Template](https://dev.epicgames.com/documentation/unreal-engine/top-down-template-in-unreal-engine) Strategy的M_Cutout以屏幕／相机位置开masked屋顶，实例Strength控大小。[研究] 🧪 沿现有材质工作流改造，不是树冠／落点识别器，投影、视距、多层适配待验。
 
-[研究] 项目须定义允许淡出的屋顶／树冠集合和所需可见区域，并保存恢复状态；退出遮挡、换目标、重生或卸载后恢复。只挖掉挡信息的前景：树干、可碰撞掩体边缘、落地平面与攻击预告仍提供空间判断。角色轮廓不提供落点；把整棵树隐藏也可能把仍阻挡子弹／移动的树干藏掉。材质显隐只改变画面，不改碰撞。若每种树都要特殊材质或每个房间都要补例外，先简化遮挡几何／镜头与内容，拒绝默认新建通用可见性框架。
+[研究] 只显隐必要前景，保存对象集合、范围与恢复状态；退出遮挡、换目标、重生、卸载须恢复。保留树干、碰撞掩体边、落地面与预告；显隐不改碰撞，轮廓不提供落点。材质／房间例外过多时先简化几何与镜头。
 
-[研究] 二改用“更宽树冠＋下层落地点”，观察落下之前能否辨出着陆面、敌人预告和逃路，同时记录新增材质变体／例外与恢复遗漏。屏幕开口／透明表现的稳定性与 GPU 成本须在目标设备验证；本轮没有比较 masked、dither、translucent 的性能，不把 Unity Shader Graph 的节点、许可或行为迁给 UE。未取得模板资产或受限源码。
+[研究] 二改加宽树冠和下层落点，验下落前的落地面、预告、逃路，记材质例外与恢复遗漏。目标设备再验稳定性／GPU成本；未比较masked、dither、translucent，未取得模板资产／受限源码，Unity节点与UCL不迁给UE。
 
 ### 4. 新系统何时值得替换基线
 
-[一手] 当前读取的 [Gameplay Cameras 插件索引](https://dev.epicgames.com/documentation/unreal-engine/API/PluginIndex/GameplayCameras?lang=en-US)、[系统概览](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-overview?lang=en-US)及 [Quick Start](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-quick-start)均明确 Experimental，页面标题标 UE 5.8。概览把 rigs、transitions、director 放进可复用 Camera Asset，带 Camera Debugger；Quick Start 的第三人称与俯视 rig 使用 Occlusion Material，且教学流程移除旧 CameraBoom／FollowCamera。
+[一手] [Gameplay Cameras 插件索引](https://dev.epicgames.com/documentation/unreal-engine/API/PluginIndex/GameplayCameras?lang=en-US)、[系统概览](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-overview?lang=en-US)、[Quick Start](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system-quick-start)本次均标UE 5.8 Experimental。系统用Camera Asset复用rig／transition／director及Debugger；教程用Occlusion Material并移除旧CameraBoom／FollowCamera。
 
-[研究] **👀 有条件评估**：多角色共享多套 rig／过渡、图形化导演确有内容编辑收益，并愿承担版本兼容与发布回归时，才在隔离切片比较。**⛔ 不默认迁移**：只为一根柱、一层树冠或“5.8 更新”，现有原生路线仍更小；不同时让旧相机和新系统争最终输出。Occlusion Material 是新系统能力的证据，不保证自动保留掩体边界或解决武器合法性；本轮没读它的受限实现，不猜测其采样范围／还原细节。也不把 API 中列出的节点视为稳定或成品游戏采用证明。
+[研究] **👀 条件评估**：多角色共享rig／过渡、图导演确能减少编写，且能承担版本与发布回归时再比。单个遮挡问题沿原基线，最终输出不争写。Occlusion Material不保证掩体边界／武器合法；未读受限实现，节点清单不代表稳定或生产采用。
 
 [研究] **版本／许可边界**：四个 `application_version=5.8` URL 抓取失败后读取默认页，以实际标题和日期限定判断，不冒充安装包验证。工程须重核本版本的 Experimental 状态；UE 原生／资产条款仍适用，Cinemachine／Shader Graph 的 UCL 不能跨引擎移植。
 
@@ -409,7 +409,7 @@
 
 ### 3. 窄二改题与停止条件
 
-[研究] 给已有跟随增加“保持动量的平移传送”和“清动量的检查点重生”，再在暂停菜单打开时触发后者：复用原有模式入口传递意图，不让每个技能维护独立历史。后续获准的引擎测试比较更新前后目标／相机相对偏移、预测趋势、首个恢复画面与活动混合；另让同一运动在恒定及交替帧间隔下运行，比较屏幕位置和追随滞后。只有设计要立即重取景才断言无旧历史，连续传送则断言历史随真实位移迁移。若小修改必须同时改多个技能、多个 transform 写入者或每个相机扩展，先收拢接口；不用“更多平滑”遮住责任冲突。算术复核不扩大为引擎／舒适度结论，许可沿用前文。
+[研究] **二改预注册**：增加保动量平移传送、清动量重生，并在暂停菜单触发重生。沿统一入口传意图；比较偏移、预测、恢复首帧与活动混合，移动目标另比恒定／交替帧间隔的屏幕位置和滞后。立即取景才要求清历史，连续传送验真实位移迁移。若需改多个技能／写Transform者／扩展，先收拢职责。
 
 ## 失败与重试补研：回到刚才的决策点
 
@@ -417,9 +417,9 @@
 
 ### 1. 不把恢复正确当成重试体验合格
 
-[一手] Edmund McMillen 的 [Why So Hard?（2010-04-21）](https://www.gamedeveloper.com/game-platforms/-i-super-meat-boy-i-s-mcmillen-explains-why-so-hard-)将取消命数后的失败代价分成重开等待与关卡长度，采用短关卡、目标可见和快速复活；结算与转场也服务连续尝试。作者与 Tommy Refenes 的[成品复盘（2011-04-14）](https://www.gamedeveloper.com/audio/postmortem-team-meat-s-i-super-meat-boy-i-)再次说明这些取舍，并将多次失败回放视为完成挑战后的奖励。这是开发者对自身设计的解释，不是独立实验或通用难度公式。
+[一手] Edmund McMillen [Why So Hard?（2010-04-21）](https://www.gamedeveloper.com/game-platforms/-i-super-meat-boy-i-s-mcmillen-explains-why-so-hard-)把无命数后的失败代价分等待和关长，采用短关、可见目标、快复活；与Tommy Refenes的[成品复盘（2011-04-14）](https://www.gamedeveloper.com/audio/postmortem-team-meat-s-i-super-meat-boy-i-)再述该取舍，并把失败回放作为完成奖励。仅作者解释，非独立实验／难度公式。
 
-[研究] ✅ 借“让下一次尝试仍围绕刚才的问题”的设计关系，不照搬回放功能。对于短挑战，分别观察死亡演出、转场／重建、恢复控制、重新走到失败点四段成本；它们可能重叠，不能机械相加，更不能拿一个动画计时常量代替完整耗时。单纯加快复活动画，不能消除重复走已掌握路段的负担；检查点位置要随挑战长度与学习目标调整，而不只按场景文件划分。
+[研究] 短挑战分别观察死亡演出、重建转场、恢复控制、重走路程，重叠段不机械相加，动画常量不代总耗时。检查点随挑战与学习目标，而非场景文件划分；只快复活动画不能减少重复路程。
 
 ### 2. 固定游戏实现：重建世界也可以是简洁起点
 
@@ -429,15 +429,15 @@
 - [Game.cs L173–250](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Game.cs#L173-L250)：退出旧场景、创建并建立新场景；资产重载由另一个选项控制。音乐路径相同且仍在播放时不重新启动音乐。[研究] 可借“重试保留体验连续性”，不能由场景重建推断必然重新加载全部资产，也不能反推其没有重建开销。
 - [Checkpoint.cs L26–60](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Checkpoint.cs#L26-L60)：命名检查点更新当前入口，激活时有声音、模型状态和短形变。[研究] 玩家知道重试起点已改变，也属于恢复体验，而不只是内部字段已更新。
 
-[研究] 这个现成重试实现不以原地回滚／对象池为前提，值得作为较简单的起点；源码本身不证明其重建耗时，更不证明任意规模都足够快。✅ 小项目先复用现有死亡与重开入口，观察重建成本确实妨碍重复尝试时，才考虑缩小重置范围或保留必要资源；不要为此先做任意世界快照。
+[研究] ✅ 小项目先复用死亡／场景重开，实测重建妨碍尝试后才缩小重置范围或驻留资源。该实现无需原地回滚／对象池，耗时与规模边界未测，不先建世界快照。
 
 ### 3. 边界、成本与下一次修改
 
-[研究] 永久死亡、资源损失、整局承诺本身构成玩法时，最近检查点会改变风险收益；不能把这一短挑战建议升格成所有游戏取消惩罚。保留有意设计的代价，同时检查加载、确认菜单和无意义等待是否只是意外负担。真实的紧张感与玩家是否愿意再试仍由人判断。
+[研究] 永久死亡、资源损失与整局承诺有意构成风险时保留；另排查加载、确认菜单与无意义等待的意外成本，不统一改成最近检查点。
 
-[研究] 最小采用成本是既有状态入口、检查点激活反馈，以及出生点安全、敌人／机关重置和保留进度的内容维护；额外驻留也有内存成本，不承诺零成本即时重试。AI 可记录阶段边界、维护入口与回归，人决定重试距离和失败代价。第二次修改只延长一个已有遭遇或移动一个检查点：重新观察回到同一决策点的全过程，检查旧奖励、已收集物、机关和出生安全，不仅断言场景恢复成功。无需新增回放或通用重试框架。
+[研究] 成本包括状态入口、检查点反馈、出生安全、敌人机关与进度维护，驻留另占内存。二改延长遭遇／移动检查点后，观察回到原决策点全过程，核奖励、收集物、机关与出生安全。AI记录和回归，人定失败代价；不加回放框架。
 
-[一手] [Celeste64 ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md#license)区分 Source 的 MIT（注明例外）、Content／Celeste IP 与 FMOD；本文只借机制，不复制美术音频或将短期 jam 项目当成生产底座。开发者文章不授权使用成品资产。[研究] 未测整段重试耗时或实现工时。
+[一手] [Celeste64 ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md#license)将MIT Source（有例外）、Content／IP及FMOD分开；仅借机制，短期jam不作生产底座。重试全程与工时未测。
 
 ## Endless Sky：非平台游戏的动感镜头与默认值取舍
 
@@ -451,17 +451,17 @@
 
 **交付范围与采用判断。** [一手] 发布版 [v0.11.0](https://github.com/endless-sky/endless-sky/blob/v0.11.0/source/Preferences.cpp#L65-L66)（2026-01-31）仍 ON，[v0.11.1](https://github.com/endless-sky/endless-sky/releases/tag/v0.11.1)（2026-04-25，unstable）的 [changelog](https://github.com/endless-sky/endless-sky/blob/v0.11.1/changelog#L263)与源码已 OFF，[v0.11.2](https://github.com/endless-sky/endless-sky/releases/tag/v0.11.2)（2026-06-27，stable）[仍 OFF](https://github.com/endless-sky/endless-sky/blob/v0.11.2/source/Preferences.cpp#L66-L67)。[固定 Camera.cpp](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Camera.cpp#L46-L74)保留三种模式；[设置读取](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Preferences.cpp#L243-L244)仍采用已保存的值，因此升级不等于所有老玩家实际关闭。[研究] ✅ 对已有明确不适反馈、又不承担必要提示的运动效果，考虑稳定缺省＋可发现的可选效果；代价是喜欢动感者可能不主动发现它，同时增加设置说明与各模式回归成本。不要因此删除有正面反馈的效果，也不默认关闭所有视觉反馈。AI 可实现独立开关、保留旧选择与检查菜单路径；人决定目标体验，首玩测试核实际能否找到并理解开关。
 
-[研究] **证据终点**：已有实现选择、修改后实际使用与后续默认值撤回；人群分母、持续使用时长、默认关闭后的舒适度／留存改善均未知。只读公开源码、原帖与发布信息，未运行游戏／引擎／模型，未测性能或工时。代码按文件声明 GPL-3.0-or-later；这里只借设计关系，不作为可直接复制进 Unity／Unreal 的插件。新增收益复测出现前，不再用更多相似镜头投诉填充此链。
+[研究] **证据终点**：实现、使用反馈与默认值撤回已核；人群分母、使用时长、关闭后舒适／留存收益未知。代码GPL-3.0-or-later，不作Unity／UE即插插件；有新收益复测前不再堆同类投诉。
 
 ## 命令预览补研：提示清楚还要规则一致
 
-核实：2026-10-15（UTC+8）。主线 3／1；补 05 §6 从命令结算到提交前反馈的责任。✅ 先复用既有规则查询，明确精确结果与估计的边界；不默认自建完整预演系统。新证据跨工厂建造、运输经营和回合战术，支持各自机制，不代表同一方案在这些玩法中均已验证。[研究]
+核实：2026-10-15（UTC+8）；主线3／1。05 §6补提交前反馈：复用规则查询，区分精确与估计；跨工厂、经营、战术的机制证据不等于同方案均已验证。[研究]
 
 ### 1. Factorio：动作模式改变，预览也必须改变
 
 [一手] Wube 的 [FFF #213（2017-10-20）](https://www.factorio.com/blog/post/fff-213)列出普通建造、ghost 与 shift-blueprint 的不同规则：ghost 可忽略已标记拆除的实体，shift 放蓝图会安排拆树／石并跳过不能放置的部分。作者举例，0.15 按住 shift 后矿机 ghost 实际可放，预览却仍因树石标红，0.16 修正显示。这是开发者报告的历史修改，不是本轮复现，也未提供理解率改善数据。
 
-[研究] 这里不是颜色够不够醒目，而是提示回答了错误的动作问题。预览输入除了位置，还要包含当前模式、修饰键与相关世界状态；整张蓝图的“可提交”也不等于所有元素都能落地。✅ 先改造现有查询入口，不在 UI 复制一套简化的碰撞／费用判断。不能仅据文章推断 Factorio 内部已统一所有查询与执行代码。
+[研究] 预览须含位置、模式、修饰键和相关世界状态；蓝图可提交不等于每项落地。先改现有查询，避免UI另写碰撞／费用规则；文章未证明Factorio全部查询执行已统一。
 
 ### 2. OpenTTD：同一处理器可试算，但不是任意结果保证
 
@@ -471,23 +471,23 @@
 - [command.cpp](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/src/command.cpp)：试算前后切换城镇评价与持久存储的测试模式；分别显示估计费用和已执行费用动画。非 NoTest 命令断言测试／执行费用及失败状态一致，NoTest 则检查实际执行失败
 - [command_type.h](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/src/command_type.h)将 NoTest 明确定义为测试／执行输出可能不同；[landscape_cmd.h](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/src/landscape_cmd.h)的 ClearArea 实际使用该标志，注明多格房屋拆除使城镇评价在两阶段间不同
 
-[研究] **这也是反例：共享代码只能减少规则分叉，不能消除连锁状态变化。** 断言存在不等于本轮跑过断言，更不能证明屏幕上较早的预览在世界变化后仍然有效。借用试算／提交的责任区分，提交时重核；项目需要保留随机或隐藏信息时，显示已知条件或范围，不假装确定。查询不应扣费、改变随机序列或发出结算事件；这些是本项目应验证的责任，不能由上面几份源码推出 OpenTTD 所有命令均无副作用。
+[研究] **共享处理器仍有连锁状态差异**，提交须重核较早预览。随机／隐藏信息显示条件或范围；查询不得扣费、消费玩法随机或发结算事件。这些待验责任不等于已证OpenTTD全部无副作用，亦未运行其断言。
 
 ### 3. 竞争选择：让复杂组合可尝试，不强迫 UI 解释一切
 
 [一手] Tom Francis 的 [Tactical Breach Wizards 原始设计（2018-02-02）](https://www.pentadact.com/2018-02-02-pitch-tactical-breach-wizards/)设想提交前反复试演，但明确原型可能被改掉；[开发商成品页面](https://store.steampowered.com/app/1043810/Tactical_Breach_Wizards/)确认免费 rewind 鼓励玩家实际尝试技能组合。成品页只支持这项功能仍在，不证明早期的同时行动方案全部保留，也不揭示内部预测／回滚实现。
 
-[研究] 因而复杂战术组合不必全靠数字和箭头事前解释；当可撤销尝试符合玩法时，它是可比较的选择。反之，风险承诺、未知信息或反应时间本身构成挑战时，全面预演／rewind 会改变玩法，不能把它当通用易用性补丁。默认仍是窄查询与真实结果反馈；只有项目确需试演，才评估完整状态恢复的内容与工程成本。
+[研究] 可撤销尝试符合玩法时，可替代过重的数字／箭头说明；风险承诺、未知或反应时间构成挑战时，rewind会改玩法。默认窄查询，确需试演才承担完整状态恢复成本。
 
 ### 4. 采用成本、二改与引擎边界
 
-[研究] 查询需隔离资源、事件、随机与持久化副作用；缓存需随相关世界状态和动作模式失效，连锁规则增加后还要重核估计范围。这些都不是零维护。若新增动作迫使 UI 维护第二套模拟，先缩小承诺为合法性／直接效果，而不是再补大量显示例外；只在已有设计需要时采用完整预演。
+[研究] 查询隔离资源、事件、随机、持久化，缓存随世界／模式失效，连锁规则重核估计范围。UI被迫再建模拟时先缩承诺到合法性／直接效果，确需完整预演再扩。
 
-[研究] **二改题（仅预注册）**：给已有放置／目标操作增加替换或范围模式，比较原模式与新模式的提示和实际结果；预览后改变障碍、资源或目标，再提交，观察重新校验与失败反馈。另检查反复查看／取消不扣资源、不改变随机状态、不触发奖励；范围操作只完成部分时显示对应范围，不以整体成功掩盖差异。记录规则分叉、显示例外与维护工时，人判断玩家是否能据提示做决定，AI 可补规则夹具与显示回归。没有执行本计划。
+[研究] **二改预注册**：加替换／范围模式，对照提示与结果；预览后改障碍、资源、目标再提交，核重验与失败反馈。反复查看取消无扣费／随机变化／奖励，部分成功显示范围。记规则分叉、显示例外及工时，人验可决策性。
 
 [研究] **Unity／Unreal 共用这条信息契约**：复用项目已有命令／技能／建造查询，不要求 Unity 加 SO 框架或 UE 迁 GAS；没有提出引擎 API 或性能优劣结论。上述游戏不是 Unity／UE 同任务对照，也不证明单人无美术团队已能复现其整体质量。
 
-[一手] OpenTTD 相关源码文件头及 [COPYING.md](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/COPYING.md)声明 GPL v2；这里只借机制，不推荐整段复制成闭源引擎底座。开发者文章与商店介绍不授予游戏资产／代码复用权。[研究] 本轮只读公开源码和原文，未运行游戏／引擎／模型，未测体验、性能或工时；不以资料核对冒充上述二改验收。
+[一手] OpenTTD文件头及[COPYING.md](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/COPYING.md)为GPL v2；不推荐直接复制进闭源底座。二改用例与体验／性能／工时仍未测。[研究]
 
 
 ## 运行时叙事：开放表达、知识解锁与离线承诺
@@ -512,17 +512,17 @@
 
 [一手：2025-12-21 官方指南] [Story Vault 编辑器](https://steamcommunity.com/gid/103582791472864770/announcements/detail/520859243419534792)让作者指定角色知识、可解锁地点及关键词；角色台词提到对应词可解锁地点；结案问题和正确选项由作者填写。指南还告诫作者不要向角色提供必须保密的信息。[研究] 这是公开设计契约，未读到游戏实现；不声称已复现泄题或绕过，也不笼统禁用关键词玩法。
 
-[研究：采用建议] 将生成关键词当作候选事件，按当前进度、角色权限和前置条件再提交；更早一层按可知范围过滤角色输入，不能只靠提示角色保密。作者仍要设计知识分配、线索与答案，生成台词没有消除内容结构成本。这是从契约推导的保守建议，不是对 Vaudeville 内部实现的审计结论。
+[研究] 关键词先作候选事件，执行侧重核进度、角色权限与前置条件；输入按可知范围过滤，不能只提示保密。作者仍设计知识、线索与答案；这是契约推导，非Vaudeville内部审计。
 
 ### 4. 撤回条件与证据缺口
 
-[研究] 若固定内容与状态组合已满足玩法，撤回运行时生成；若开放表达是挑战本体，固定回复只能作为明确的降级模式，不能宣称体验等价。必须支持断网时，分别决定暂停／恢复、固定内容或独立本地配置，并按目标设备、语言、响应质量验收。等待时长须含识别、排队、生成和播放；本轮没有可横向复用的延迟数字，不设伪通用毫秒门槛。
+[研究] 固定内容足够则撤生成；开放表达是玩法本体时，固定回复只是有损降级。断网需明确暂停恢复、固定内容或独立本地配置，按设备／语言／质量验收；延迟含识别、排队、生成、播放，无横向数据可设统一门槛。
 
-[研究] 核查范围为公开原文、公告日期和固定 ink 文档；Steam 单篇页面通过公开 HTTP 核对标题与内容，网页解析器只成功读取[公告合集](https://steamcommunity.com/app/2240920/announcements/)。没有下载模型、安装、付费调用、游戏试玩、引擎运行或体验／留存实验。后续只有同题玩法对照与全程费用／支持成本证据，才足以把本节的条件试用提升为效果推荐；不以多个同作者公告冒充独立样本。
+[研究] Steam单篇经公开HTTP核正文／日期，解析器只读到[公告合集](https://steamcommunity.com/app/2240920/announcements/)。同作者多公告不算独立样本；同题玩法与全程费用／支持成本对照仍缺，未下载模型或付费调用。
 
 ## 效果叠加补研：来源所有权不等于合并规则
 
-核实：2026-10-15（UTC+8）。[研究] 改变 §7 的二改选择：第二个技能／光环加入时，先决定一个效果由谁维持、重复施加怎么合并，再决定是否升级框架。原有“取消时清理标签”不足以处理其他来源仍有效、或施放已经结束但毒仍应持续的情况；本节不重做命令事件、预览、镜头和输入研究。
+核实：2026-10-15（UTC+8）。[研究] §7补来源与合并规则：其他来源仍有效或施放结束而毒应持续时，“取消就清标签”不足；先定谁维持、重复如何合并。
 
 ### 1. OpenRA：来源退出只撤自己的授予
 
@@ -536,7 +536,7 @@
 | [TS nod-structures.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ts/rules/nod-structures.yaml)、[TS defaults.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ts/rules/defaults.yaml) | 真实隐形发生器以 ProximityExternalCondition 授予 cloakgenerator；消费者 Cloak 的条件为 cloakgenerator 或 crate-cloak，证明多个授权入口确实用于游戏规则，不只是未用样例 |
 | [RA defaults.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/rules/defaults.yaml)、[DamageMultiplier.cs](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Mods.Common/Traits/Multipliers/DamageMultiplier.cs) | Iron Curtain 条件连接覆盖色、计时条和 Modifier=0 的伤害修饰；修饰器禁用时返回 100。这说明效果状态与表现可共享条件，但不证明任意计时 UI 都准确 |
 
-[研究] 可迁移的选择是：当重叠来源必须分别退出时，以活授予推导“仍受保护”，而不是每个技能都写无敌布尔值。引用计数足够表达纯数量；来源句柄还能识别谁有权撤回与重复释放，但不自动处理清理顺序、对象重生或序列化。只用一个稳定所有者、确定不会重叠时，布尔值仍更简单。OpenRA 是 RTS 引擎及经典游戏重实现，不是 Unity／UE 独立游戏质量排名，也不值得为这一个机制移植它的完整 trait／YAML 系统。
+[研究] 重叠来源需分别退出时，从活授予推导状态；数量用计数，撤回权限／重复释放用来源句柄。句柄不解决清理顺序、重生、序列化；单一不重叠所有者仍可用布尔值。不为此移植OpenRA trait／YAML。
 
 [一手] 项目自己的 [Conditions Wiki](https://github.com/OpenRA/OpenRA/wiki/Conditions)列出实际光环、铁幕与 EMP 使用；页面示例明确针对旧 release-20180307。本次采用上述固定现行路径核实，不把旧 Wiki 的 structures.yaml 路径当当前文件布局。
 
@@ -549,7 +549,7 @@
 - [PotionOfHaste.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHaste.java)实际使用 prolong；[FlavourBuff.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FlavourBuff.java)到调度时刻 detach。这是单一可延期效果，不是每瓶药各建一层计时
 - [PoisonDart.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java)调用 affect(Poison).set；[Poison.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java)的 set 取 left 与新 duration 的最大值，另一个 extend 方法才加长；每次伤害由 left/3 的整数部分加一计算。到期或目标死亡 detach，存档保存 left
 
-[研究] 这是“所有 Buff 都改成按施放独立叠层”的反例：即使伤害公式不改，独立层或相加时长也会改变毒镖伤害与重复使用收益。它也反证“只改配置，不会改玩法语义”：将 max 改成 sum 属于平衡规则修改，应由人决定。不会反推所有毒都应合并成一份，也不据此宣称这种公式最公平；回合调度与实时帧时钟不能直接互换。
+[研究] 独立层、max与sum会改变毒镖伤害和重复收益，配置改动也是平衡修改。由人选合并规则，不推广成所有毒都合一；回合调度不可直接换成帧时钟。
 
 ### 3. Unity 与 UE 的采用边界
 
@@ -557,7 +557,7 @@
 
 [一手] UE 当前公开文档页面显示 5.8，GAS 对非 instant 效果的 [StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)将 None 定义为每次独立实例，而不是拒绝重复；AggregateBySource 与 AggregateByTarget 分别按来源、目标聚合。[持续时间策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingDurationP-?lang=en-US)区分刷新、不刷新、增加时长；[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)区分清整栈、减一层后刷新、仅刷新。已打开正确缩短路径的官方正文，不依赖最初失败的长 URL 或第三方教程。
 
-[研究] 已使用 GAS 的项目先利用这些原生选项；来源聚合不等于每次施放独立计时，到期减一层也不等于每个历史施放各自到期。需要取消单次授予时，合并策略与撤销粒度必须一起选择，不能只保存一个“效果类型”然后全删。这里不声称官方枚举足以证明特定版本的预测、网络、驱散与句柄全部正确；未读取受限引擎源码或 Lyra 内容。
+[研究] 已用GAS先核原生策略；按来源聚合不等于逐次计时，到期减层不等于历史施放各自到期。合并键与撤销粒度须一起定；未核受限源码／Lyra，枚举不证明预测、网络、驱散、句柄全部正确。
 
 ### 4. 窄二改题、许可与验证范围
 
@@ -571,17 +571,17 @@
 | 驱散与恢复 | 指定来源、清一层、清整类分别测试；驱散后立即重施、旧回调迟到、目标重生不得删新效果 |
 | 可读性 | 两光环重叠及毒升级前后，让玩家解释图标数量、剩余时间和重复使用收益；图标没消失不自动证明伤害规则正确 |
 
-[一手] 两项目已读相关源码头和根 [OpenRA COPYING](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/COPYING)、[SPD LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)：相关代码为 GPL-3.0-or-later。[研究] 本文只提炼机制并链接，不复制实现；欲直接复用须单独处理 GPL 分发义务及素材权利，不推荐作为闭源商用 Unity／UE 的即插即用模块。
+[一手] 文件头及[OpenRA COPYING](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/COPYING)、[SPD LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)均为GPL-3.0-or-later；直接复用须处理分发义务及素材权利，不作闭源Unity／UE即插模块。
 
-**实际范围**：[研究] 读取官方网页、固定公开源码与许可；未构建／运行 OpenRA、SPD、Unity 或 UE，未测帧时序、真人体验、AI 二改成功率与性能，也未执行上表玩法用例。独立 review、仓库离线检查与差异检查仅核本知识库交付，不能变成游戏行为或净收益实证。
+**范围 [研究]**：上表用例、帧时序、AI二改成功率均未测；独立review与仓库离线检查仅核知识库交付。
 
 ## 导航补研：通路、局部让路与停止位置
 
-核实：2026-10-15（UTC+8）。[研究] 改变 05 §3 及30秒表的采用条件：状态任务能结束、找到路径，不足以说明敌人移动自然；追击堵塞先分问题，默认利用引擎已有导航，不靠升级行为树、提高重寻路频率或默认加人群框架解决。以下仅源码／官方资料，未运行游戏或引擎。
+核实：2026-10-15（UTC+8）。[研究] 05 §3补导航选择：任务结束／有路径不等于移动自然。追击堵塞先分通路、让路、停距，再评估原生能力，不默认升BT、重算频率或人群框架。
 
 ### 1. 先过许可，再借真实游戏的局部机制
 
-[一手] Overgrowth 固定 [245fe482](https://github.com/WolfireGames/overgrowth/tree/245fe4828631c84c0023d29d1525f5716ccb6106)，提交日期2025-03-20；读取根 LICENSE、README 和 enemycontrol.as 文件头，相关代码为 Apache-2.0，可按其条件复用代码，原游戏美术／关卡不因此开放，分发素材需另获许可。README 说明仓库由社区运作，不能把当前源码可取得当成维护承诺。[研究] 本文只提炼机制、不复制实现，不建议将其自研引擎当 Unity／UE 项目底座。Factorio 只读官方复盘，不取得代码或资产授权；引擎组件按项目实际 Unity／UE 条款使用，不称宽松开源，也不复制受限 UE 源码。
+[一手] Overgrowth [245fe482](https://github.com/WolfireGames/overgrowth/tree/245fe4828631c84c0023d29d1525f5716ccb6106)（2025-03-20）根LICENSE／README／enemycontrol.as为Apache-2.0，代码可依条款复用，原美术关卡另核；仓库由社区运行，源码可得不保证维护。[研究] 不移植自研引擎底座，Factorio复盘不授素材源码，原生组件仍循各引擎条款。
 
 **群体防御的反例。** [一手] Factorio [FFF316，2019-10-11](https://www.factorio.com/blog/post/fff-316)解释：群组转入各自攻击后，单位有路径但互相挡住、反复绕转；团队选择取消同类硬碰撞，保留既有 separation，以减少明显堆叠，并承认可能需要平衡调整。[研究] 这表明碰撞政策会改变拥堵，不支持“所有敌人都应穿过同类”；依赖堵路、推挤或身体卡位的玩法必须保留相应规则，不能为顺滑偷偷删掉战术。
 
@@ -603,14 +603,14 @@
 
 ### 4. 后续只预注册一个二改遭遇
 
-[研究] 基线为追击并停在攻击距离；第二次增加一只同队敌人和可移动堵门箱。保留同一房间、动作与目标：目标突然反向→箱子堵住再移开→两敌窄门会车→追击切攻击／眩晕→退出后重启。记录通路状态、目的地更新、期望／实际位移、停止距离与旧移动请求是否残留；逐项定位是哪层失败，不能只看最终抵达。
+[研究] **二改预注册**：追击停距基线增加同队敌人与堵门箱；同房间验目标反向、堵门移开、窄门会车、追击转攻击／眩晕、退出重启。记通路、目的地、期望／实际位移、停距与旧请求。
 
-[研究] 真人再看反复左右摆、贴墙、突然转身、脚滑、攻击前挤叠，以及让路是否破坏身体卡位；性能测查询成本和移动总成本，不能只报寻路次数减少。若原生达到这些要求就不加系统；若让路使单位越界、错过攻击距离或破坏卡位，就收窄／撤回该策略，而非继续叠平滑参数。AI 可补目标生命周期、参数和轨迹记录，人决定停距、碰撞政策及是否自然。本轮未执行这些用例，离线检查只证明知识库交付。
+[研究] 真人核摆动、贴墙、急转、脚滑、挤叠及身体卡位；测查询与移动总成本。原生满足即停；让路导致越界、错停或破坏卡位时收窄／撤回，不继续叠平滑。AI补生命周期与轨迹，人定碰撞、停距和自然度。
 
 
 ## 关卡组合补研：连通之后还要选择什么
 
-**核实：2026-10-15（UTC+8）；主线一／三，GC。** [研究] 改变05 §9“模块化房间＋可达性”的采用边界：✅ 稳定动作空间优先现有房间组合；🧪 地形探索可用受约束程序布局；⛔ 不以生成数量或连通通过率代替体验目标。不是要求自建生成框架，也不是要求人工检查每个 seed。
+**核实：2026-10-15（UTC+8）；主线一／三，GC。** [研究] 05 §9：稳定动作空间先组合现有房间，地形探索可用受约束布局；数量／连通率不代体验，不要求自建框架或逐seed人审。
 
 ### 1. 两类游戏，借不同的小机制
 
@@ -632,23 +632,23 @@
 
 ### 3. 单人采用与二改预注册
 
-[研究] 先用自己已有或许可清楚的房间、遭遇及编辑器；程序员仍负责玩法内容设计，AI 可把规则落成数据与过滤。稳定动作空间优先房间用途／连接条件；地形探索优先少数路线和空间目标。先自动查出口／目标可达、关键资源条件及敌群不兼容，再按预期体验抽看代表性与极端组合：必经路线是否只有连续压力，绕路是否有可理解的机会，玩家是否有应对空间。不把所有空白都判坏，也不要求逐 seed 人审。
+[研究] 沿合规房间、遭遇与编辑器，程序员仍做内容设计。自动查可达、资源条件和敌群不兼容，人抽看代表／极端组合的压力、绕路机会与应对空间；不判所有空白为坏。房间按用途连接，探索布局按空间目标。
 
-[研究] **后续仅预注册**：增加一种敌人或房间后，保留旧规则与一组已知正常／极端种子；记录遭遇违约、必须重走的路段、资源机会位置及新增例外，再由试玩判断选择是否有意义。比较同一内容目标下的房间组合与受约束布局，不以种子数量判胜；若扩组合迫使大量逐房修补，缩小组合范围或替换问题模块。这里未生成地图、运行游戏／引擎或测玩家收益；离线检查只能证明文档交付完整。
+[研究] **二改预注册**：新增敌人／房间，保留旧规则与正常／极端种子，记违约、重复路程、资源位置、例外；同内容目标比较组合与程序布局，以试玩选择而非种子数判断。逐房修补过多则缩组合或换模块。
 
 
-**结束条件与奖励增量（核实：2026-10-15，UTC+8）。** [研究] 上述布局规则回答“能否绕路、哪里有资源”，还不能回答“跳过清理会不会使下一关成长不足”。若目标是风险取舍，先调整已有目标与收益，再扩大房间资产量；若清场、刷宝或完成收集就是核心乐趣，不引入这个改动。
+**结束条件与奖励（2026-10-15，UTC+8）。** [研究] 布局之外还核跳过清理是否缺下一关成长。风险取舍玩法先改目标／收益再加房间；清场刷宝本身有趣则保留。
 
 - **Rogue Legacy，动作平台。** [一手：Teddy／Kenny Lee 作者复盘] [GDC2014 讲稿](https://media.gdcvault.com/GDC2014/Presentations/Lee_Teddy_Rogue_Legacy_Design.pdf)PDF 第16–17页说明，逐层成长使跳过清理的玩家被后续敌人数值甩开；团队移除城堡内的角色成长，把 RPG 提升放在死亡后、再次进城前。第27–33页另述为避免平均加点而采用升级一项、其他项也涨价的经济补丁；作者承认它惩罚随意升级者，坏处明显而原因不清，仍因实现便宜而接受。[研究] 借“成长安排改变是否敢离开”的机制，不推成所有游戏都应局外成长，也不误写为没有局内金币／装备收益；低实现成本不等于低体验代价。
 - **Into the Breach，回合策略。** [一手：Matthew Davis 作者复盘] [GDC2019 幻灯](https://media.gdcvault.com/gdc2019/presentations/Into%20the%20Breach%20Postmortem%20Final.pdf)PDF 第20–22页把防守、操纵敌人与限回合结束联系起来，为非致命武器留下价值；第39–43页记录战略层未遵循战斗约束、研究系统不佳，最后削减并从明确奖励重新构建。[研究] 借“结束条件支持想要的动作”，不照搬回合数或删研究树；这是已有可读性引用之外的设计证据，不能证明所有清场战斗无趣。
 
-[研究] **采用与撤回：**复用05已有 Encounter 的目标状态、一次性结算与存档职责，不新增目标／经济框架，也不为此迁移引擎。只改开门条件而保留必须刷满的成长门槛，会留下同一个问题；取消交战收益又可能令有趣战斗不值得做。保护目标、出口与时限仍需可读表达，后续改动会牵连掉落、购买能力、挑战尺度与旧档，不能承诺省去美术或总工时。限时可能挤压观察，防守可能变成等待；出现这些结果时回到目标、敌人压力与奖励一起重选。
+[研究] 沿Encounter目标、一次结算与存档改：只改开门却仍须刷满成长，问题仍在；取消交战收益也会削弱战斗动机。核目标／时限表达、掉落、购买力、挑战与旧档；限时挤压观察、防守变等待时连敌人压力和奖励重选。
 
-[研究] **二改仅预注册：**保留同一套敌人与动作，为一组“全清开门”遭遇比较“目标完成可走”的路径；核玩家为何停留／离开、下一遭遇资源是否支持该选择，以及重复完成、离开重返与读档是否重复发奖。AI 可记录路线、收益与完成后的停留，人判断是否仍有值得做的决定，不把时长缩短当质量提高。两份资料仅引用设计说明，不复制商业代码或资产；作者项目有美术参与，不证明单人零手绘可复现。未运行游戏／引擎或玩家实验，无留存、乐趣或生产工时实测。
+[研究] **二改预注册**：同敌人动作比较全清与目标完成可走；观察停留／离开理由、下一场资源，验重复完成、重返、读档不重发奖。AI记路线收益，人判断选择，时长缩短不等于更好；作者团队含美术，不能据此证明零手绘可复现。
 
 ## 受限动作补研：开放意图不等于更强战斗 AI
 
-核实：2026-10-15（UTC+8）。主线二／三。[研究] 改变03 §2原先笼统的“同题收益决定”：先区分可用规则表达的战术／需求，与玩家开放意图到有限动作的语义缺口；动作名合法不代表对象、时机与世界结果正确。05既有状态／任务执行契约不变，不重做叙事案例，不增加框架。
+核实：2026-10-15（UTC+8）；主线二／三。[研究] 03 §2区分规则战术与开放意图的语义缺口；动作名合法不代表对象、时机、结果正确，执行寿命沿05。
 
 ### 1. 三个作者体系分别支持什么
 
@@ -666,26 +666,26 @@
 
 [一手] 作者 [#441](https://github.com/art-from-the-machine/Mantella/issues/441)还记录过多人会话把 `Npcname: Follow:` 当台词念出来；2025-12-11注明由 [Spell #128](https://github.com/art-from-the-machine/Mantella-Spell/pull/128)修复并关闭。[研究] 不把历史问题报成当前未修，也不据关闭推定所有模型／多角色动作都已可靠；上述参数缺失路径是另一次固定源码核查。
 
-**采用判断。** [研究] 只借接口分层，不移植整套模组。执行侧必须重核允许动作、精确对象、当前前置条件及请求是否仍属于活任务；缺字段、无合法对象、超时／取消后回包应拒绝或保持原状态，不能静默改为所有角色执行。说服阈值、哪些角色可以拒绝与错误是否属于游戏乐趣仍由设计决定；“模型输出是有效JSON”既不是权限验证，也不是跟随已成功。
+**采用 [研究]**：执行侧重核允许动作、精确对象、前置条件和活任务；缺字段、无对象、超时／取消后回包拒绝或保持状态，不能扩大到全体。说服阈值、拒绝权与错误的玩法作用由设计定；有效JSON不等于授权或执行成功。
 
 ### 3. 后续窄对照与撤回，不在本轮运行
 
-[研究] 只预注册一个“说服指定角色同行”的同题切片：菜单／现有规则基线对比 LLM 解释开放措辞，共用角色状态、地图、跟随执行器与取消行为。先确定开放理由是否真的让玩家形成不同策略；若只是不同措辞触发同一个按钮，基线足够。若没有开放语义需求，觅食／撤退／目标排序沿原规则或效用评分，任务生命周期沿05状态机／行为树，不默认增加 LLM。
+[研究] **预注册**：指定角色同行，同状态／地图／执行器／取消下比菜单规则与LLM开放措辞。只有额外策略才有采用理由；同义改写按钮则保留规则。觅食、撤退、排序无开放语义缺口时沿规则／评分及05生命周期。
 
 - 正常：指定 A 同行，检查 A 实际进入跟随且 B 不变；拒绝、撤销与再次邀请分别保留明确结果
 - 失败：缺 source、未知角色、角色离场、回复到达前取消／死亡、重复回包；不得扩大目标或让旧请求重启跟随
 - 玩法：玩家是否能解释为何同意／拒绝、是否获得菜单无法表达的有效策略；不能只问“像不像真人”，也不以动作有效率／战斗胜率代替体验
 - 成本：记录从请求到世界响应的等待、超时、每段游玩调用与费用，以及新增一种角色限制后的修改成本；阈值按本玩法节奏和发行预算预先决定，不发明统一毫秒或价格门槛
 
-[研究] 无额外玩家选择则保留基线；错误对象、虚假交付或迟到动作破坏状态则撤掉动作接口直到修复；等待／费用超过预设预算则缩小频率与角色范围，仍不满足就撤回。若开放交涉是核心玩法，菜单回退会改变游戏本身，应承认玩法需要重做，不能称无损降级。
+[研究] 无额外选择保留基线；错对象、虚假交付、迟到动作则撤接口待修；超等待／费用预算先缩频率角色，仍不够则撤。核心开放交涉退成菜单会改玩法，须承认重做成本。
 
-[一手] 已读两端固定根许可：[Mantella LICENSE](https://github.com/art-from-the-machine/Mantella/blob/c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac/LICENSE)为 AGPLv3 文本；[Mantella-Spell LICENSE](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/LICENSE)为 MIT。本文不复制代码，不推荐把 AGPL 服务端当闭源商用即插用模块；Skyrim内容、模型、TTS与服务许可另查。Factorio／GoodAI文章不授予游戏资产或源码使用权。
+[一手] [Mantella LICENSE](https://github.com/art-from-the-machine/Mantella/blob/c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac/LICENSE)为AGPLv3，[Mantella-Spell LICENSE](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/LICENSE)为MIT；不作闭源即插模组，Skyrim内容、模型、TTS、服务另核。Factorio／GoodAI文章不授游戏复用权。
 
-**实际验证范围：** [研究] 公开网页与固定源码只读；未运行模型、模组、游戏、Unity／UE或上表用例，未测体验净收益。通用决策不据 Skyrim 路径推定 Unity／UE 插件具备同样实现。本单元独立审查范围内通过；`python3 scripts/check_offline.py` 14阶段通过（非空、无skip），`git diff --check`通过；这些只验证知识库交付，不算动作效果实证。
+**历史验证 [研究]**：本单元独立审查及14阶段离线（非空无skip）、diff检查通过，仅核文档；Skyrim固定路径不证明Unity／UE插件同实现。
 
 ## 学习迁移补研：按提示完成之后会不会主动使用
 
-核实：2026-10-15 UTC。主线一／三／四；补 05 §9 的具体选择：教学步骤能运行之后，是否应增加强制步骤、改为按需帮助或提供可选练习。现有控制／菜单可用性、规则预览和重试验收不能代替学习迁移。本节比较开发者已经采用的设计路线，不推荐新教程框架，也不要求所有机制都做教学。[研究]
+核实：2026-10-15 UTC；主线一／三／四。[研究] 05 §9比较强制步骤、按需帮助、可选练习；控制可用／步骤完成不代学习迁移，不默认每机制做教程。
 
 ### 1. 两条竞争路线：帮助时机与自主选择
 
@@ -701,9 +701,9 @@
 - [ghost-rail-planner L1685–1732](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/prototypes/tips-and-tricks.lua#L1685-L1732)组合玩法条件与已有操作，并依赖 `ghost-building`、`rail-building`
 - [官方 TipsAndTricksItem 契约](https://lua-api.factorio.com/latest/prototypes/TipsAndTricksItem.html)本次页面显示 2.1.21：`skip_trigger` 取消通知但保留列表入口；`dependencies` 依赖前项标记已读。版本化 URL 本轮未取得正文，不把 latest 链接声称为永久固定版本
 
-[研究] 这些实现支持“在需要时提醒、已做过则减少打扰”，不证明玩家理解了目的，更不证明迁移到新场景。不能照搬5次／3次阈值；读过、做过、学会三个状态不应被 Agent 合并。固定公开数据也不包含本轮可审计的完整引擎教学运行时。
+[研究] 行为计数可减少打扰，不证理解／迁移；不照搬5／3阈值，已读、做过、学会分开。公开数据不含完整可审计的教学引擎运行时。
 
-[一手／研究：许可] [固定 README](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/README.md)说明公开原型定义用于帮助 mod 作者、查看版本变化和链接讨论；本轮未核到可跨游戏复制的通用开源许可。公开可读不等于任意复制代码／资产或输入 AI 的授权；本节只引用机制与短字段，不把它列为 Unity／UE 可直接移植底座。Mobius 文章同样不授予游戏资产使用权。
+[一手／研究] [固定 README](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/README.md)将公开原型用于mod、版本查看与讨论；未核跨游戏通用开源／AI输入许可，只引机制和短字段，不作Unity／UE底座。
 
 ### 3. 反例：少指导与完成率都不能单独作为目标
 
@@ -717,37 +717,37 @@
 
 ### 4. 窄二改预注册与撤回条件
 
-[研究] 只选一个已能正确执行、但玩家不会主动使用的工具或组合操作，准备“按需短提示／回查”与“可选小练习”两个局部方案。未来获准试玩时分开记录：是否能按指令完成动作、能否解释或选择适用情境、在无逐步指令的变形情境中能否主动使用；不能压成一个教程通过率。
+[研究] **预注册**：选玩家能执行却不主动用的一项工具，比短提示／回查与可选练习。分记按指令完成、解释适用情境、无指令变形情境主动使用，不合成教程通过率。
 
-[研究] 二改增加工具一种用途或改变一种操作，检查旧说明、实际绑定、触发、前置知识与示例是否仍对应规则。频繁漏掉硬前置时保留短而明确的必要教学；强制流程让玩家等待任务而正式玩法要求探索时，减少步骤并提供可回查能力说明；若观察不到真实误解，保留物件旁说明，不扩教学系统。AI 可比较方案、实现局部触发与采集，人决定目标体验和哪些发现不能提前告知。
+[研究] 二改用途／操作后核说明、绑定、触发、前置与示例。漏硬前置就明确教；正式玩法要探索却只等任务，就减强制步骤、补回查；无真实误解保留物件说明。AI做局部触发与采集，人定必须教什么、留下什么发现。
 
-**实际验证范围：** [研究] 仓库与公开原文／固定源码只读调查；未运行游戏、引擎、模型或玩家实验，未测学习收益、留存、AI 成功率或维护工时。两种设计跨游戏比较不能替代同一玩法对照；结论不依赖 Unity／UE 特性，不拆引擎版本，不引入联网前提。
+**特有缺口 [研究]**：跨游戏设计比较不代同玩法对照；无学习／留存收益实测。建议与Unity／UE及联网无关。
 
 
 ## 辅助取舍补研：局部调整、整局预设与切回规则
 
-核实：2026-10-15（UTC+8）。主线一／三／四；改变 05 §9 的选择：按实际阻碍与游玩目标选局部辅助或协调后的整局预设，明确当局／下一局生效与关闭恢复。新证据为 Dead Cells 29 历史补丁及 Cogmind 作者的设计与发布后回顾；不重复 WP10 的信号映射、输入缓冲或前节的重试／教学迁移，不新增辅助框架。[研究]
+核实：2026-10-15（UTC+8）；主线一／三／四。[研究] 05 §9按阻碍选局部辅助或整局预设，声明生效／关闭政策；依据为Dead Cells 29历史补丁及Cogmind设计、发布后回顾。
 
 ### 竞争选择与一手反例
 
 - **即时动作的局部选择。** [一手：官方历史补丁] [Dead Cells 29 系列](https://deadcells.com/patchnotes/29)将按住跳跃／翻滚、盾牌切换及输入自定义与 Assist 选项分列；后者包含敌人伤害／血量、陷阱伤害、格挡窗口与陷阱速度等调整。29.2 修复关闭 Assist 后子选项仍生效；29.3 修复 Multiple Lives 下特定死亡软锁。它们说明菜单开关与实际规则、失败路径必须一起维护，不代表当前版本仍坏。该页另有读档后敌人／Boss 血量复满的修复，但未说明由 Assist 引起，不作因果归属，也不据此声称每种选项都可安全即时切换。[研究]
 - **回合策略的整局选择。** [一手：作者设计说明] Kyzrati 的 [Adjustable Difficulty（2017-02-16）](https://www.gridsagegames.com/blog/2017/02/adjustable-difficulty/)为计分一致性限定难度下一局生效，榜单分模式；调整包括警戒压力、遭遇和出口信息，而非只有伤害倍率。作者区分仍希望练习标准玩法与主要希望探索内容的玩家，也提出低压力可能不迫使玩家学到标准模式所需应对。这是设计取舍与风险判断，不是学习实验或当前版本全部参数的核验。[研究]
 - **可发现性有发布后反证。** [一手：作者观察] [Rebranding Difficulty Modes（2019-09-17）](https://www.gridsagegames.com/blog/2019/09/rebranding-difficulty-modes/)说明此前手册、选项菜单及死亡提示仍常被漏看，于是增加首次启动的显式选择，并改用 Explorer／Adventurer／Rogue 名称。[2022-05-08 回顾](https://www.gridsagegames.com/blog/2022/05/kyzratis-game-design-philosophy/)报告菜单加入后较易模式使用增加、仍为少数。这不证明单一命名改动的效果或留存收益。[研究]
-- **信息可达不等于新增情报。** [一手：同上 2022 回顾] 作者说明标出已警觉敌人位置的功能最初面向所有人，后来因对标准玩法优势过大，从 Rogue 模式撤出。[研究] 将既有危险信号换成能读到的表达，与揭露原本未知的敌人位置必须分别决定；这不意味着标准模式可省掉必要提示，也不意味着所有轮廓都是越权情报。
+- **信息边界。** [一手：同上2022回顾] 已警觉敌人位置曾向全体显示，因标准玩法优势过大从Rogue撤出。[研究] 既有信号可达与揭露未知位置分开，不由此取消标准模式必要提示或判所有轮廓越权。
 
 ### 最小采用与撤回边界
 
-[研究] ✅ 沿已有设置／规则配置实现。玩家只被重复按键或一种时机要求挡住时，先提供针对性操作或窗口选项；若多种资源、遭遇和探索规则需要协调，采用少量有明确目标的预设。全局降速也是可选的有意设计，是否保留取决于它对核心节奏、其他时钟和操作的实际影响，不能因局部选项存在就判其劣质。无需把所有参数都暴露给玩家。
+[研究] ✅ 沿设置／规则配置：单项按键／时机负担用局部选项；资源、遭遇、探索需协调时用少量明确预设。全局降速可有意保留，核节奏、其他时钟与操作；不必暴露所有参数。
 
-[研究] 当局可调能减少被卡住后重开的成本；下一局生效能保住整局规则与计分归属。没有跨游戏唯一答案。选择前说明何时生效、关闭恢复什么、哪些设置随存档或新局保留、进度与计分如何处理；“可关闭”不是抹除已经获得的进度，也不意味着恢复未知情报。上述是实现与产品政策建议，不主张统一锁成就、清档或惩罚辅助玩家。
+[研究] 当局调减少重开，下一局生效保持规则／计分归属。说明生效点、关闭恢复、跨档／新局保留、进度计分；关闭不会抹掉已得进度／已知情报，不统一锁成就或惩罚辅助玩家。
 
-[研究] 不把探索模式强制设计成标准模式的训练阶段。若明确承诺练习某种应对，应让关键动作／决策仍有使用机会，再由目标玩家试玩判断；若目的是看内容，可以有意改变更多规则。较易模式的成功不能代验标准模式的掌握，亦不支持所有区域难度等比例下降。
+[研究] 探索模式不必是标准模式训练。承诺练习则保留相应决策机会，目标是内容可多改规则；较易模式成功不证明标准掌握或各区域等比例变易。
 
 ### 第二次修改：只预注册，不运行
 
-[研究] 在已有玩法增加一种敌人或一个辅助参数，检查支持的设置组合即可，不穷举全部滑杆：启用后实际生效；关闭或进入下一局时按承诺恢复；死亡、重试、读档后仍使用正确的规则与遭遇状态。对新增情报检查切回后的显示政策，对计分核模式归属，对已获进度核是否按既定政策保留。AI 可追配置消费、恢复路径与回归样例，人决定辅助目标并判断核心玩法是否仍可进入；现有系统足够就停止扩建。
+[研究] **二改预注册**：新增敌人／辅助，验支持组合的启用、关闭／新局、死亡重试读档；核情报切回、计分归属和进度保留。不穷举滑杆；AI追消费恢复，人验目标体验。
 
-**实际验证范围：** [研究] 已读两位／组作者、即时动作与回合策略的一手网页正文及本仓相关章节；未运行游戏、引擎、模型或玩家实验，未验证成就解锁政策、当前存档兼容性或学习／留存收益。历史补丁证明维护风险曾发生，作者回顾证明其设计和观察，不作为本项目效果保证。
+**特有缺口 [研究]**：未核成就解锁政策、当前存档兼容或学习／留存收益；历史补丁与作者观察仅支持各自维护风险和取舍。
 
 ## 屏外威胁补研：补信息还是改攻击
 
@@ -766,25 +766,25 @@
 - [Eye.java L91–148](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Eye.java#L91-L148)：`canAttack` 用 Eye 自身的 `fieldOfView` 与弹道判断；蓄力后条件不再满足时仍可返回 `beamCharged`。`doAttack` 首先蓄力并消耗时间；释放时用玩家 `heroFOV` 判定是否播放 zap，只有本体位置与射线碰撞位置均不在 `heroFOV` 时，才走直接调用 `deathGaze()` 的分支。
 - [EyeSprite.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/EyeSprite.java)：有 zap 动画时在完成回调调用同一 `deathGaze()`；蓄力声音另受 sprite 的 `visible` 条件限制。
 
-[研究] 该链只证明“行动资格、玩家视野和表现分支不是同一条件”，不证明此敌人在所有情境中公平，也不把 `heroFOV` 冒称屏幕矩形。不能把所有蓄力说成锁定最初目标：目标仍满足条件时 `canAttack` 会更新弹道与目标位置。代码头声明 GPL-3.0-or-later；这里借鉴责任划分，不推荐复制进闭源游戏。三个开发者网页均不授予游戏资产或代码复用权。
+[研究] 此链分开行动资格、角色视野与表现；heroFOV不是屏幕矩形，目标仍合条件时canAttack会更新弹道／位置，不是所有蓄力锁最初目标。未证所有情境公平；源码GPL-3.0-or-later。
 
 ### 最小采用与下一次内容修改
 
-[研究] ✅ 沿用技能状态与现有提示层，先指定：玩家此时应知道什么、从注意到执行反制有何机会、进入／离开画面是否有意改变起手或已承诺攻击；表现裁剪不能意外改变结算，有意的可见性规则则明确维护。无需新增“战斗导演”。若提示可见仍无可行躲避，改方向、节奏或布局；若仅因放大漏看当前规则仍允许获知的对象，补查看路径，不能永久跟踪曾经发现而今已失去的信息；若允许威胁隐藏或突袭，按其玩法承诺设计，不以全知为统一目标。
+[研究] ✅ 沿技能与提示层声明玩家可知信息、察觉到反制的机会及出入画面对攻击的影响。表现裁剪不能意外改结算；可见仍躲不开就改方向／节奏／空间，放大漏掉可知对象才补查看。失去的信息不永久追踪，允许未知／突袭的玩法另定。
 
-[研究] 后续只预注册同一混合遭遇，增加一种远程攻击，比较正常与缩小可视范围（项目支持的缩放／屏幕比例），包括起手后转开视角、重新看向敌人、失去角色视野、静音／减特效。分别检查能否察觉并作出实际反制，以及已承诺攻击是否按规则继续、取消或重新瞄准。若标记遮住近处目标、自动查看抢走瞄准、或限制出手变成转头冻结敌人的非预期玩法，撤回对应方案。AI 可追状态与表现路径、形成同遭遇替代配置；人决定允许的未知和风险，不用提示数代替质量。
+[研究] **二改预注册**：同混合遭遇加远程攻击，比正常／缩小视域，验起手后转开、回看、失去角色视野、静音减特效。核察觉反制及已承诺攻击继续／取消／重瞄；标记遮近敌、查看抢瞄准或转头意外冻结敌人时撤回。AI追路径，人定未知风险。
 
-**实际验证范围：** 证据来自仓库既有内容与公开网页／固定源码阅读；读到作者的图示说明和实现，不声称本轮实际播放视频、操作游戏或进行玩家识别测验。未运行引擎、模型或实验；没有体验收益、最佳时长或 AI 净效率结论。本判断不依赖 Unity／UE 特性，只维护一份通用建议。
+**特有范围**：仅读作者图示说明与实现，未实际播放视频、操作游戏或测识别；建议不依赖Unity／UE特性。
 
 ## 建造镜头补研：旋转缩放支点与输入入口
 
-核实：2026-10-16（UTC+8）。主线一／三；改变 05 §8 对无角色跟随目标的建造视图的选择：先定义旋转／缩放支点与输入入口，不把偏离目标都归为平滑问题。新证据是不同作者的三维自由建造设计调整与二维等距经营游戏缺陷修复；不扩相机框架，不重复 04 的模拟／呈现分层。[研究]
+核实：2026-10-16（UTC+8）；主线一／三。[研究] 05 §8建造视图先定支点／入口；对照三维自由建造设计与二维等距修复，不把偏离都归于平滑。
 
 ### 1. Tiny Glade：按设备改变支点政策，不是修正坐标计算
 
 [一手] [Patch 1.11.2 公告](https://steamcommunity.com/games/2198150/announcements/detail/543346166601876516)（2025-01-15）保留 PC 的 Cursor point：绕光标下方点旋转，向该点缩放；Steam Deck 默认改为 Center region，仍可切回。作者在旋转说明中解释，单一 Center point 虽精确、易理解，屏幕中心刚好在高塔旁时却可能选中背景；Center region 从中心附近方形区域寻找候选支点。公告把体验改善写成预期，没有提供玩家对照或区域选点算法。
 
-[研究] 🧪 无有效直接指向、或单点经常选错背景时，比较明确中心与有限区域选择；保留光标模式则能直接指定关注点。区域方案增加意图推断，不能保证永远猜对，也不能由此推导所有掌机或建造游戏都应改默认。若新政策让玩家更难预测围绕哪里转，撤回到明确支点；不要用更大阻尼掩盖选错目标。
+[研究] 🧪 缺直接指向或单点常选背景时，比明确中心与有限区域；光标保直接指定。区域会推断意图，若更难预测就退明确支点，不统一改掌机默认或靠阻尼掩盖误选。
 
 [一手：取得范围] 普通网页解析只返回标题，本轮通过 [Steam 官方 GetNewsForApp API](https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2198150&count=100&maxlength=0&enddate=1737072000&feeds=steam_community_announcements)取得完整正文：appid `2198150`、gid `1788945554756976`、author `anopara`、timestamp `1736947659`，feed 为官方 community announcements。未以转载补足一手正文，也未运行游戏或播放公告动图。2024 年鼠标读取异常的修复不是本次支点设计调整，不合并因果。
 
@@ -792,7 +792,7 @@
 
 [一手] [#12831](https://github.com/OpenRCT2/OpenRCT2/issues/12831)报告 v0.3 在竖直地形面 zoom-to-cursor 时偏移，可用 Extreme Heights 地图边缘或抬高的 4×4 地形复现。[#25042](https://github.com/OpenRCT2/OpenRCT2/pull/25042)于 2025-08-27 合入，固定提交 [85a0f70ae166cb5d240844c4dffad7c1c9fbbd76](https://github.com/OpenRCT2/OpenRCT2/commit/85a0f70ae166cb5d240844c4dffad7c1c9fbbd76)。`src/openrct2/interface/Window.cpp` 旧路径把鼠标位置转地图坐标、查询高度，再围绕 tile 校正；新路径删除两个辅助函数，仅在 `ZoomToCursor && atCursor` 时按鼠标相对当前 viewport 的位置和前后缩放级别附加补偿 `savedViewPos`，随后同步 `viewPos`。作者明确目标仍是保持光标下的点，并未把默认改成中心。
 
-[一手／研究] 这是二维等距缩放的实现简化，不是更精确的 3D 射线选点。只需保持屏幕指向时，优先用现有投影／视口变换表达；不要推导透视相机绕建筑旋转也不需要世界支点。PR 中的作者测试及他人主／额外视口反馈支持该修复链，不是本仓库复测或普遍舒适度结论。
+[一手／研究] 这是二维等距视口补偿，不是3D射线算法；仅保屏幕指向时可省拾取，透视旋转仍须按需找世界支点。作者及他人的主／额外视口测试只支持该修复链。
 
 [一手] 同日 [#25046](https://github.com/OpenRCT2/OpenRCT2/pull/25046)的固定提交 [e4f36840bff585b4a3f5581cd2b4714f887b2c02](https://github.com/OpenRCT2/OpenRCT2/commit/e4f36840bff585b4a3f5581cd2b4714f887b2c02)另修额外视口按钮：`src/openrct2-ui/windows/Viewport.cpp` 从直接增减 `viewport->zoom` 改为 `WindowZoomIn/Out(*this, false)`，接回完整中心缩放路径。[测试反馈](https://github.com/OpenRCT2/OpenRCT2/pull/25046#issuecomment-3228516256)称按钮改善而滚轮仍异常，作者指向 #25042；不能把任一入口成功当整个缩放功能通过。两个修复均进入 2025-09-06 发布的 [v0.4.26 官方发行说明](https://openrct2.io/blog/2025/09/openrct2-v0.4.26-released)，不是只引用开发分支。
 
@@ -800,13 +800,13 @@
 
 [研究] ✅ 在已有相机／视口入口声明支点政策：直接指向、视口中心或有限区域候选；统一坐标归属与完整变换路径，不统一所有入口的支点。Tiny Glade 的可切回是设置选择，不是射线未命中时自动回退的证据；本节不据此新增自动回退机制。
 
-[研究] 二改增加高塔／陡崖，再新增独立视口按钮或另一种输入入口。分别核对象中心、对象边缘、背景与视口边界，检查滚轮和按钮、主视口和额外视口的结果。关闭平滑后仍跳错位置，先修选点／坐标／命令路径；结果正确但过渡突兀，再比较平滑及其延迟。AI 可追坐标转换、补入口和记录轨迹；人决定操作意图是否容易预测。没有具体误选或入口缺陷就保留现有方案，不为新增配置而造通用镜头系统。
+[研究] **二改预注册**：高塔／陡崖＋另一输入／视口按钮，核中心、边缘、背景、视口边界及滚轮／按钮两路径。关平滑仍错位先修选点、坐标、命令；正确但突兀才调过渡。无具体缺陷保留原方案，AI追变换，人验意图。
 
-**边界与实际验证：** [一手／研究] OpenRCT2 代码标 GPLv3，本轮只提炼机制、不复制代码；实际复用须遵守对应许可证。Tiny Glade 公告不授予代码／资产复用权。只读公开官方 API、网页、固定提交与讨论，未运行游戏／引擎／模型、未安装软件；无舒适度、操作速度或 AI 效率测量。这是通用控制政策，不新增 Unity／Unreal 等价配置。
+**边界 [一手／研究]**：OpenRCT2代码GPLv3；Tiny Glade公告不授复用权。本节只核公开API、网页、提交与讨论，非Unity／UE等价配置或游戏实测。
 
 ## 随机所有权补研：装饰二改是否改变玩法序列
 
-核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变05 §6的选择：需要复现玩法序列时，新增纯表现随机先分清状态所有者，沿现有实例／流隔离消费。已有“预览不得改变随机状态”只规定查询副作用；本节回答合法的颜色／音效变体应该消耗哪条流，不重复 seed 与生成器版本存档建议。
+核实：2026-10-16（UTC+8）；主线三，GC。[研究] 05 §6补合法表现随机的消费域：需复现玩法时按所有者隔离，区别于预览禁副作用及seed／生成器版本存档。
 
 ### 1. OpenRA：视口相关闪光的评审修正
 
@@ -824,15 +824,15 @@
 - [一手] [Unity 6.0 Random.state](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Random-state.html)区分保存／恢复完整状态和 InitState 重新初始化；官方示例中前者续接保存点，后者回到序列开头。[研究] 这不使全局 Random 自动成为多条流；不要在每次表现回调里重设全局 seed 来“隔离”。
 - [一手] [UE 5.8 Random Streams](https://dev.epicgames.com/documentation/en-us/unreal-engine/random-streams-in-unreal-engine)提供 Blueprint RandomStream 结构变量和 From Stream 节点；[FRandomStream](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Core/FRandomStream)分别列 InitialSeed、当前 Seed 与 Reset，Reset 回到初始 seed。[研究] 沿现有所有者保留流状态并选对输入，别每次抽取都重建／重置；这里不承诺任意序列化或跨版本兼容。
 
-[研究] ✅ 需要 seed 挑战、回放或可复查规则结果，且表现二改可能改变采样次数时，先隔离玩法与纯表现的随机消费。无此需求且现有实现没有耦合问题时保留简单方案；同一玩法域内部的规则改动仍可能改变后续序列，分流不使一切修改稳定。视觉对象若参与碰撞、命中或资源规则，按玩法处理，不能仅凭外观归入 cosmetic。
+[研究] ✅ seed挑战、回放或可复查结果会受表现采样影响时，隔离玩法／纯表现流；无需求耦合则保简单实现。玩法域规则改动仍可改变序列；参与碰撞、命中、资源的视觉对象仍属玩法。
 
-[研究] **二改预注册，未执行：** 固定版本、初始玩法状态与玩法输入轨迹，只增加闪光／音效变体，或改变视口、关闭表现；对照掉落、伤害及目标选择等所需玩法结果，并检查表现路径未抽取玩法流。若恢复中途继续，另核续接的是当前流状态而非重播起点。AI 可追消费者与补回归夹具，人决定哪些结果需复现。不新增锁步／回滚系统；通过也只支持本配置下的随机隔离，不证明跨平台、物理或完整网络确定性。
+[研究] **二改预注册**：固定版本、初始状态、输入，仅改闪光／音效、视口或关闭表现；对照掉落伤害选敌，核表现未抽玩法流，中途恢复续接当前状态而非起点。只验证此配置随机隔离，不外推跨平台、物理、联网确定性。
 
-**许可与验证边界：** BrogueCE 对应源码标 AGPL-3.0-or-later，OpenRA 对应源码标 GPL-3.0-or-later；本节只借机制、不复制代码／资产，实际源码复用须遵守许可证。核对公开评审、固定文件与原生 API，未安装、运行引擎／游戏／模型、执行玩法测试或测量收益。
+**许可**：BrogueCE为AGPL-3.0-or-later，OpenRA为GPL-3.0-or-later；只核评审、固定文件和原生API，未执行隔离用例。
 
 ## 感知补研：角色知道什么与导演调度什么
 
-核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变05 §3的具体选择：躲避／误导属于玩法时，保留目标身份不等于允许搜索任务读取实时位置。已有状态退出、导航让路和玩家屏外威胁分别处理执行寿命、移动与玩家信息；本节只补角色决策的信息来源，不扩写那些机制。
+核实：2026-10-16（UTC+8）；主线三，GC。[研究] 05 §3补信息来源：躲避／误导有效时，保目标身份不授权搜索实时位置；执行、移动、玩家提示仍各沿原机制。
 
 ### 跨类型证据与反例
 
@@ -848,11 +848,11 @@
 
 ### 采用、撤回与二改预注册
 
-[研究] ✅ 只在隐蔽、误导或有限情报改变玩家选择时，沿现有角色状态保留目标身份、已知位置和当前感知；线索需要按时间失效才保存年龄／时间。明确哪些线索可覆盖旧位置、何时搜索、返回或继续追踪，不默认建设通用知识库。导演若需要向角色投递提示，声明提示来源与精度；导演能读真值不自动授权普通搜索读同一真值。直接追踪本来就是玩法，或现有规则已满足要求时，保留简单方案。
+[研究] ✅ 有限情报改变选择才保存身份、已知位置、感知与按需线索年龄；声明覆盖、搜索、返回／追踪规则。导演提示有来源精度，读真值不授权角色搜索读真值。直接追踪是玩法或现有机制够用则不加记忆库。
 
-[研究] **二改预注册，未执行：** 同一追逐场景新增绕角隐蔽路线或一种诱饵声音，记录当前线索来源、已知位置和实际移动目标；分别核失去视线后继续移动、别处声响、队友报告、重新出现，以及导演继续调节压力时的结果。允许持续追踪的角色另按其规则对照，不统一要求停追。AI 可追实时位置读取路径、补调试显示和回归用例，人判断躲避是否有效、搜索是否可理解、压力是否合适；若只是降低响应却没有创造所需选择，缩小或撤回记忆机制，不以等待时间更长当质量提高。
+[研究] **二改预注册**：追逐加拐角／诱饵，记来源、已知位置、移动目标，验失视后移动、别处声音、队友报告、重现及导演继续调压。允许追踪者不强制停追；记忆只降低响应却没产生所需选择就收窄／撤回。AI追读路径，人验躲避、搜索与压力。
 
-**许可与实际验证：** [一手／研究] Shattered Pixel Dungeon 固定文件头标 GPL-3.0-or-later，根 [LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)为 GPLv3；本节只提炼机制，不复制代码或资产，不列作闭源项目即插用底座。创作者网页／Valve讲义不授予游戏内容复用权。只读仓库、公开网页、PDF文本、固定源码与官方契约，未运行游戏／引擎／模型或玩家实验，未测体验、效率或最佳遗忘时长；共同决策维护一份，仅原生接口分引擎说明。
+**边界 [一手／研究]**：SPD文件头GPL-3.0-or-later，根[LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)为GPLv3。公开网页／Valve讲义及选定链路不证明完整感知实现，最佳遗忘时长未知；共同政策只维护一份。
 
 ## 选敌补研：候选、保持与主动切换
 
@@ -867,11 +867,11 @@
 
 ### 最小采用、撤回与二改预注册
 
-[研究] ✅ 需要保持玩家意图时，在已有输入／武器状态中分别指定候选、保持、失效和主动改选；目标可为对象或位置。因自动候选过滤而无法表达玩法允许的攻击时，补直接选择路径；自动攻击本来就要求不断重选，或精确手动瞄准就是挑战时，保留原方案。不要求所有游戏都有手动／辅助两套模式，不预设固定角度、时间或评分公式。
+[研究] ✅ 需保持意图时，沿输入／武器分定候选、保持、失效与主动改选，对象／位置均可。自动过滤挡住合法攻击时补直接选择；持续重选／精确瞄准本是玩法则保留，不强制双模式或统一评分阈值。
 
-[研究] **预注册，未执行：** 同一遭遇新增更近的干扰对象或可攻击召唤物，检查继续攻击旧目标、主动改选、目标死亡／离开有效范围、按规则选择自动候选之外的对象；允许指定空地时也保留该输入。支持手动／辅助切换才检查切回。记录输入、候选、当前目标及改变原因，区分选错对象与瞄准／命中本身失败。AI 可追选择路径与补回归，人判断能否理解并纠正选择；若保持阻碍主动改选，缩小或撤回保持政策，而不是只加更强吸附。通过也只支持本遭遇与设备配置，不证明某种辅助普遍更舒适或更公平。
+[研究] **二改预注册**：加更近干扰物／可攻击召唤物，验保持、改选、死亡／失效、候选外合法对象及允许的空地；支持模式切换才验切回。记输入、候选、目标、原因，区分选错与命中失败；保持妨碍改选时收窄，不能只加强吸附。
 
-**许可与实际验证：** [一手／研究] OpenRA 对应文件头标 GPL-3.0-or-later；仅概念借鉴，不复制源码或资产，实际复用须遵守许可证。开发者手册、公告和商店说明不授予游戏内容复用权。本轮只读仓库、官方网页／手册与固定公开源码；未安装、运行游戏／引擎／模型或做玩家实验，未测操作、体验或 AI 效率收益。该建议与引擎无关，仅维护一份通用玩法政策。
+**边界 [一手／研究]**：OpenRA文件GPL-3.0-or-later；仅机制借鉴。官方手册、公告、商店与固定源码不证明体验／效率，政策与引擎无关。
 
 ## 意图预告补研：确定结果、条件变化与有意未知
 
@@ -885,13 +885,13 @@
 - **只呈现当前选择需要的信息。** [一手：作者原始视频转写] Slay the Spire 两位创始人的 [2019-05-02 访谈](https://arstechnica.com/video/watch/war-stories-slay-the-spire-war-stories/?c=series)说明：随机行动不预告使攻防难选，逐敌长文本又太繁重，后来改为意图图标；部分敌人会根据玩家行为改变意图。[研究] 支持决策粒度与条件变化，不证明所有敌人每张牌后即时重算，也不要求复制图标体系。
 - **有意未知是另一种体验政策。** [一手：作者复盘] Thomas Grip 的 [2019-10-15 文章 Lesson 7](https://frictionalgames.com/2019-10-9-years-9-lessons-on-horror/)回顾 Amnesia 理智系统从较直白改得更含糊，以保留想象与紧张。[研究] 这是理智系统而非敌方下一招 UI，只用于反驳“规则越透明普遍越好”；作者观察不能证明隐藏攻击提高恐怖体验，更不能授权错误的确定性提示。
 
-[研究] 三种政策不要求三套系统：已确定且玩家需要据此计划的行动，作明确预告；可被玩家后续行动改变的结果，说明当前条件并在变化时更新或撤销；观察和试探本身有价值的部分，可不公开。沿现有行动状态定义哪些部分已锁定、哪些仍可变化，不让表现自行许诺玩法没有锁定的结果。若只需要攻防类别，就不增加完整行为表；若未知只迫使玩家反复盲试且不是所需体验，再补必要信息。
+[研究] 沿行动状态选信息政策：确定且供计划的明确显示；可变结果标当前条件并更新／撤销；有价值的试探可隐藏。只需攻防类别不列完整行为表，未知仅造成无意义盲试时才补信息，表现不能许诺规则未锁定结果。
 
 ### 已发布修订：可以删显示，也可以改规则
 
 [一手：开发者公告] Matthew 的 [2023-01-23 补丁帖](https://steamcommunity.com/app/590380/discussions/0/3765606580168752432/)明确标记 developer：移除 Earth Mover／Mine Bots 的 Attack Order 显示，因为它们没有排队攻击；调整 Wind Torrent 的推移次序，使结果与效果预览更一致。标题写 v1.2.88，正文写 1.2.87 Changelog，本节保留冲突，以日期公告指认，不自行断定精确补丁归属。
 
-[研究] 第一项支持撤掉不存在的顺序承诺，第二项支持修改互动次序来维护可预测性，而非只修 UI。公告未披露实现根因，不能断言预览与执行必用不同代码，也不能据此要求统一模拟框架。历史修订不证明当前全部预览正确，更不证明胜率、留存或单人维护收益。
+[研究] 前者撤虚假顺序，后者改互动规则保预测，不只修UI；未披露根因，不能断定代码分叉或要求统一模拟框架。未证当前全部预览正确。
 
 ### 第二次修改：仅预注册，未执行
 
@@ -904,11 +904,11 @@
 
 [研究] 记录显示所依据的状态、条件变化与最终执行；AI 可追条件消费和补回归，人决定哪些未知值得保留、预告能否支持所需决定。失真时先修条件同步、缩小显示承诺或简化规则；若信息堆积使当前选择更难读，退回必要粒度，不用更多字段充当质量提高。
 
-**许可与实际验证：** [研究] 仅读仓库和公开开发者访谈／公告，未读取商业反编译代码、复制游戏代码或提取资产；网页不授予游戏内容复用权。未安装、运行游戏／引擎／模型或进行玩家实验。来源支持具体设计取向、作者观察与历史维护，不支持通用体验排名或 AI 效率承诺；机制与引擎无关，只维护一份共同建议。
+**范围 [研究]**：公开访谈／公告，未读商业反编译代码；只支持设计、作者观察与历史维护，无通用体验排名。建议与引擎无关。
 
 ## 物品补研：数量栈、单件状态与转移身份
 
-核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变 05 §4 的选择：增加耐久／强化，先核可互换性与实际拆分、转移路径，不自动将全部物品改成独立实体。比较开放世界 RPG 运行时 OpenMW 与沙盒游戏 Minetest Game／Luanti；后两者属于同一生态，不算两个独立案例。固定主干不等于稳定发行，本节不扩写 UI 或存档。
+核实：2026-10-16（UTC+8）；主线三，GC。[研究] 05 §4增耐久／强化先核可互换性及拆分转移，不全改实体。比较OpenMW与Minetest Game／Luanti，后两者算同一生态；快照非稳定发行。
 
 **OpenMW：保留状态不等于复制身份。** [一手] 固定 `9ec458174fa5a459b7910cd6990c1acc830b0b8a` 的实际消费者如下：
 
@@ -922,9 +922,9 @@
 
 [一手／研究] **跨路径反例必须保留：** [stacksWith](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L401-L481)比较 name／wear／metadata，但同文件实际 addItem／itemFits 只比较 name 与 metadata；[掉落物合并](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item_entity.lua#L103-L138)才另比较 wear。耐久工具靠单件限制隔离，不能把函数名推成所有路径支持任意可堆叠耐久装备。[6057原报告](https://github.com/luanti-org/luanti/issues/6057)还指出空元数据使表面相同物品无法合并；[85d7b18修复](https://github.com/luanti-org/luanti/commit/85d7b18d851504e6d9f637c4373cf896b1ce8e4c)避免无内容时生成空键值。[已有单测](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/unittest/test_inventory.cpp#L39-L83)检查 tool 解析为 count=1 并保留 wear；本轮仅读定义，未运行，不能当全路径验收。
 
-[研究] **采用与二改，仅预注册：** 已有背包能承载单件／每栈状态、限制数量或定制合并，并返回余量／存活目标，就先复用。用三把同型剑增加耐久或强化，只改其中一把，再转移、拾回、与另两把合并：核数量守恒、状态不重置不串件；若设计允许恢复为可互换状态后回堆，核旧引用失效或改指存活目标。仅当玩法要跨位置／操作持续引用“这一件”时补身份，不以显示耐久条代替数据契约。AI 可追消费者和补回归，人决定何时仍可互换；组件无法表达所需区别才局部扩展，不迁移整套框架。
+[研究] **二改预注册**：先复用支持每件／栈状态、数量／合并限制、余量／存活目标返回的背包。三把同型剑只改一把，转移拾回合并，核数量、状态及允许回堆后的旧引用。跨位置持续引用“这一件”才加身份，无法表达区别才局部扩展；AI追消费者，人定可互换政策。
 
-**许可与实际验证：** [一手／研究] [OpenMW README](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/README.md#L4-L9)标 GPLv3，运行 Morrowind 需自有游戏；[Luanti引擎](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/LICENSE.txt#L114-L132)为 LGPL-2.1-or-later；实际借鉴的 [farming模块](https://github.com/luanti-org/minetest_game/blob/c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f/mods/farming/license.txt)源码单独 MIT，媒体另有许可，不能把仓库根许可套给每个组件。这里只提炼机制，不复制源码或资产，不把两套引擎推荐为闭源 Unity／Unreal 项目的即插用底座。未运行游戏、引擎、模型或上游用例；未证明性能、维护工时或特定引擎集成收益。
+**边界 [一手／研究]**：[OpenMW README](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/README.md#L4-L9)标GPLv3，运行Morrowind须自有游戏；[Luanti引擎](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/LICENSE.txt#L114-L132)为LGPL-2.1-or-later，[farming模块](https://github.com/luanti-org/minetest_game/blob/c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f/mods/farming/license.txt)源码单独MIT、媒体另有许可，不能以根许可代组件核查。未验上游用例／引擎集成，不作闭源即插底座。
 
 ## 任务推进补研：历史事实与当前条件
 
@@ -944,9 +944,9 @@
 
 [一手／研究] 反过来，[Quest.active](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L378-L447)还查询当前房间、诅咒或怪物；这里核实的[PrisonLevel消费者](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/PrisonLevel.java#L73-L80)选择紧张音乐，不能把active当成已接受／已完成任务的统一判断。两个项目分别支持各自机制，不推出所有游戏都需同一种任务状态表。
 
-[研究] **采用与二改，仅预注册：** 沿现有交互与存档区分已接受／已交付等历史事实、当前条件与推进入口。把“先接再取”改成允许先取物，再验接取、暂存后回来、交付消耗、离开保存与恢复：当前可交付提示对应允许的物品范围，完成与永久解锁不因物品已消耗而回退。设计若改为持续携物／占领才开放，就保留可逆规则；不能把所有世界条件锁存。AI追读写路径并补回归，人决定哪些事实永久、哪些条件允许失效；已有组件能表达就不加通用任务图或事件溯源。
+[研究] **二改预注册**：沿交互／存档分历史、当前条件、推进入口。允许先取物后，验接取、暂存、交付消耗、离开保存恢复；提示匹配物品查询范围，永久完成不因消耗回退。持续携物／占领设计保可逆，不一律锁存；AI追路径，人定永久性。
 
-**许可与实际验证：** [一手／研究] [Flare引擎](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#L28-L38)源码GPL-3.0-or-later；[Empyrean Campaign](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/README.md#L17-L25)数据／美术CC-BY-SA 3.0并允许后续版本，不能套用引擎许可。Shattered相关源码文件头标GPL-3.0-or-later。这里只提炼机制，不复制代码、剧情或资产，不推荐为闭源Unity／Unreal即插用底座；共同建议与引擎无关。仅读固定源码、原问题与补丁，未运行游戏、引擎、模型或上游用例，未证明全部分支、保存故障恢复、玩家体验或AI效率收益。
+**边界 [一手／研究]**：[Flare引擎](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#L28-L38)代码GPL-3.0-or-later；[Empyrean Campaign](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/README.md#L17-L25)数据／美术CC-BY-SA 3.0或后续，非引擎许可。SPD代码GPL-3.0-or-later；未验全部分支／保存故障恢复，政策与引擎无关。
 
 ## 效果时钟补研：调度时间、行动次数与到期显示
 
@@ -978,9 +978,9 @@
 
 [研究] ✅ 沿既有行动队列、模拟更新与效果实例确定推进单位、首末跳、移除和显示，保留每种玩法自己的暂停政策。不为效果种类增加而统一 N 秒、所有输入减一或搬入另一游戏调度器；本节不改变既有多来源合并与撤销建议，也不重复数值组合与命中连锁。
 
-[研究] **二改预注册，未执行：** 同一毒效果新增一种移动加速，检查快慢动作、等待、临界到期时的跳伤及实际行动机会；承诺按次数消费才核对应有效行动。即时版本在下一跳前、到期前分别打开普通菜单、正式暂停与切后台，再恢复，按各自政策核继续或冻结，冻结路径不得补出一串积压跳伤。记录实际状态、计时／次数与 UI 更新边界；AI 可追消费者和补回归，人决定时间压力与可读性。没有具体语义冲突时保留现有简单实现，不以显示更平滑代替结算正确。
+[研究] **二改预注册**：毒增加移动加速，验快慢动作、等待、临界跳伤及行动机会；按次数承诺才按有效行动扣。即时版本在跳伤／到期前开普通菜单、暂停、切后台恢复，各依政策继续／冻结，冻结不补积压跳伤。记状态、时间／次数、UI边界，不以显示平滑代结算。
 
-**许可与实际验证：** [一手／研究] SPD 对应源码文件头标 GPL-3.0-or-later；Flare 引擎 [README许可节](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#license)说明代码 GPLv3-or-later，游戏内容根 [LICENSE.txt](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/LICENSE.txt)为 CC-BY-SA 3.0。只读固定源码、配置、提交与公开讨论，不复制代码／资产，不列作闭源 Unity／Unreal 项目可直接接入的默认底座。未安装、运行游戏／引擎／模型或做玩家实验，未验证快照组合兼容、跨设备恢复或净收益；通用时间／行动语义维护一份，不新增双引擎重复实现。
+**边界 [一手／研究]**：SPD文件头GPL-3.0-or-later；Flare [README许可节](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#license)为GPLv3-or-later，内容[LICENSE.txt](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/LICENSE.txt)为CC-BY-SA 3.0。未核快照组合兼容或跨设备恢复；时间／行动政策只写一份。
 
 ## 效果读取时点：持续代价与一次承诺
 
@@ -994,7 +994,7 @@
 
 **保留快照也要让刷新可判断。** [2026-03-22玩家原帖](https://us.forums.blizzard.com/en/wow/t/feral-feedback-snapshotting-is-hard-with-current-cooldown-manager/2278000)要求图标表达旧流血实际保留的强化，而不只显示当前增益与剩余时长。[社区] 这里只支持该玩家遇到的信息需求，不据其描述确认职业的全部现行规则，也不当作2014修订的前后对照或普遍体验结论。[研究]
 
-**采用与撤回。** 沿现有效果实例区分已承诺值与动态依赖，刷新时长和替换强度分别规定；需要玩家比较新旧效果才呈现该差异。快照若主要变成战前换装仪式或规避持续代价，缩小到明确承诺字段；动态读取若毁掉一次已强化攻击的延迟部分，恢复该部分快照，不回滚全部效果。已有合并、时钟与重算建议不变，不因增加一种效果引入通用框架。[研究] 本轮只读公开历史规则、作者理由与反馈，未取得到期复用残留快照的独立修复链，未运行游戏／引擎／模型；不声称当前实现正确、性能或维护净收益，不复制商业游戏代码／资产，不新增实测计划。
+**采用与撤回 [研究]**：沿实例按字段分已承诺值／动态依赖，刷新时长与强度分别定，需要比较才显示差异。快照造成换装仪式／规避持续代价就缩范围；动态读取毁掉强化攻击的延迟部分就恢复局部快照，不全回滚。未取得到期复用残留快照的独立修复链；不新增实测计划。
 
 ## 属性修饰补研：计算顺序与重算
 
@@ -1008,9 +1008,9 @@
 
 OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实际等级规则](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/mods/ra/rules/defaults.yaml#L60-L83)影响伤害；[发射侧／装甲处理](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Warheads/DamageWarhead.cs#L73-L90)和[承伤侧处理](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/Health.cs#L158-L189)分阶段，存在整数转换；禁用[DamageMultiplier](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/Multipliers/DamageMultiplier.cs#L32-L35)返回100%。[历史乘算评审](https://github.com/OpenRA/OpenRA/pull/6079#discussion_r15618105)关于200%与50%回到100%的讨论起点是装填间隔，不伪称伤害bug；这里只支持计算语义须明确，不能推广为整个管线只取整一次。[一手／研究]
 
-**二改仅预注册。** 在已有修饰A上加入B，比较首次与重建、删除无关修饰、A先到期只剩B，以及期间永久成长后移除临时效果；顺序有玩法含义就保留，不机械要求所有输入顺序等价。另核小伤害、护甲抵消、取整、上限降低与当前HP，避免重算重复治疗／扣血。现有函数可表达就复用，不以效果数量增加为由引入DSL。[研究]
+**二改预注册 [研究]**：A加入B，核首次／重建、删无关项、A到期、期间永久成长后撤临时效果；有意义的顺序保留。核小伤害、护甲、取整、降上限与当前HP，避免重算重复治疗／扣血，现有函数够用不加DSL。
 
-**许可与验证。** Wesnoth相关文件为GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later；只提炼机制与公开链接，不将其作为闭源Unity／UE可直接复制的底座。固定源码、历史修复与消费者阅读，不等于本仓重现缺陷或当前版本全部正确；未运行游戏、引擎、模型或上游测试，不证明维护成本、手感或AI收益。[一手／研究]
+**边界 [一手／研究]**：Wesnoth相关文件GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later。只核固定消费者与历史修复，不代表复现或当前全路径正确。
 
 
 ## 事件连锁补研：排队不代替防重入与操作边界
@@ -1025,7 +1025,7 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 
 OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L144-L182)有Delay=5，[ATMine](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L193-L209)不设Delay且排除Mine；[消费者](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/GameRules/WeaponInfo.cs#L234-L265)分别直接执行或走延时，[DelayedImpact](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/Effects/DelayedImpact.cs#L19-L40)单位为tick不是秒。[一手] 游戏规则的延迟与为保护操作完整性而延后是不同目的，不统一换成一种调度器。[研究]
 
-**采用与后续验证。** 只为会重入的动作登记资格／来源；登记不代替合法性检查，取消或失败的返还由原规则决定。二改添加反射或连锁爆炸后，预注册检查重入次数、多目标未完成时死亡、同次多个连锁和原有即时规则；必要时才延后到完整操作边界，不新建通用EventBus。[研究] DCSS源码GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later；只提炼机制，不作闭源引擎可直接复制模块。所读只是选定调用链与历史补丁，未运行游戏、引擎、模型或上游测试，不证明全部路径正确或体验改善。
+**采用与预注册 [研究]**：会重入的动作登记资格／来源，但仍重核合法性，取消失败按原规则返还。加反射／爆炸后验重入、多目标未完时死亡、多个连锁与即时规则；必要时才延至完整操作边界。DCSS为GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later；仅选定链路，未证全路径。
 
 
 ## 组合取舍：先修辅助、规则还是动作出口
@@ -1042,7 +1042,7 @@ OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://gi
 
 **场地反证。** [同帖开头](https://steamcommunity.com/app/25000/discussions/0/2650805212054304885/)的Arrar起初称半速仍难读剑招；[03-21的#12](https://steamcommunity.com/app/25000/discussions/0/2650805212054304885/#c1697168437856609499)继续游玩后认为，狭窄场地及落水风险可能加重此前挫败，开阔关卡更可玩。这里只是同一玩家修正诊断，没有固定构建或遭遇对照，不把它算作1.2修复效果；但足以提醒先核预定的站位／闪避是否有空间，不见“难躲”就统一加长起手。**[社区／研究]**
 
-**采用与撤回。** 前三例不构成同条件排名；Overgrowth补了实际使用报告，仍缺受控前后行为、主动调试投入和完整二改结果。[研究] 若一种攻击挤占其他攻防选择，先核命中、对手应对与脱离风险，再决定局部辅助或规则调整，不只改伤害数值。若原遭遇已清晰、辅助仍支持目标人群且未破坏改选，就保留；若打中仍挨打源于有意承诺，优先让玩家理解并选择躲避，而非抹除风险。**[研究]**
+**采用与撤回 [研究]**：前三例非同条件排名；Overgrowth仍缺受控前后、主动投入和完整二改。一招挤占其他选择时先查命中、对手应对与脱离风险，再局部改辅助／规则；原方案清楚、支持目标人群且不妨碍主动改选时就保留。有意承诺导致挨打时先让玩家理解躲避，不抹风险。
 
 后续获准才以一个既有双敌遭遇加护甲或穿身位移，分别验抢断A与避开A攻击B；观察目标、朝向、敌招是否继续及下一动作资格，不新建全局管理器。本轮没有运行游戏、引擎或模型，不新增实验授权。**[研究：未执行的验证范围]**
 
@@ -1056,6 +1056,6 @@ OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://gi
 
 **不要给所有运动再套总滤波。** 不同类型的 Veloren [固定代码](https://github.com/veloren/veloren/blob/2dbddc2ffa36db9a5c69cc831b65a7336ceab6a3/voxygen/src/scene/camera.rs#L580-L637)将位置、距离、FOV 与可选旋转平滑分开；只证明可以独立选择，不证明系数可迁移。Phantom Camera [#522](https://github.com/ramokz/phantom-camera/issues/522)中，对最终 Transform 统一插值的提案被[维护者指出](https://github.com/ramokz/phantom-camera/issues/522#issuecomment-2848644530)会延迟直接旋转；[提议者承认](https://github.com/ramokz/phantom-camera/issues/522#issuecomment-2848660970)只是示意，不是完成方案。该讨论未闭环，不作已交付改进。**[一手／社区]**
 
-**采用与撤回。** 同一对象短暂借出视图、返回要连续时，比较后台维护必要历史与返回重初始化；旧跟随状态失效（如重生或换目标后已不适用）时按新目标重建，是否硬切／混合另定。不要让所有闲置镜头无条件持续碰撞查询；状态失效、维护成本不值或硬切已符合玩法时撤回后台更新。联网应用另核重演时钟与呈现历史，不能只加阻尼遮住污染。后续验“回看期间转弯→松开”，记录目标、后台历史和最终输出；响应只在一个通路变差时只改那个通路。**[研究：待目标项目验证]**
+**采用与撤回 [研究]**：同目标短暂借出、需连续返回时，比后台维护必要历史与回切重建；重生换目标使历史失效则重建，cut／blend另定。不让闲置镜头全做碰撞；无益或硬切够用即撤后台更新。联网另核重演污染；预注册回看时转弯再松开，记目标、历史、输出，只修变差通路。
 
-许可与范围：STK 代码 GPL-3.0-or-later，Veloren 为 GPLv3；这里仅提炼机制，不复制到闭源工程。已读固定代码、问题及修订记录；未运行游戏／引擎，未做完整视频体验评估，也未测手感、性能或维护投入。
+许可与范围：STK代码GPL-3.0-or-later，Veloren为GPLv3；固定代码和修订链静读，未做完整视频体验评估，效果／成本仍待验证。
