@@ -1230,3 +1230,24 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 二改仅预注册：用已准备好的短确认声区分首次准备与每次起音等待，记录输入接受、播放请求及实际输出；增加背景音乐／空间处理或换已承诺支持的输出设备后，在空闲及高负载下比较原配置和一个低延迟配置，兼查爆音、断续及音频CPU。[VVVVVV原报告](https://github.com/TerryCavanagh/VVVVVV/issues/970#issuecomment-1515043078)中磁盘录音无噪声而扬声器有，故内部录音不替代全部实际输出验收。[社区／研究] 收益不明或连续性退化则恢复基线，迟交事件／首用准备先修对应环节，不改操作判定掩盖声音迟到。
 
 范围：只读官方契约、固定源码与原始讨论；未运行游戏、引擎、后端或设备测试，未证明目标设备延迟、稳定性或体验收益。[研究]
+
+## 转向补研：先分限幅与平滑，再决定是否撤回插值
+
+核实：2026-10-16 UTC；主线一／三，GC。补充04的诊断顺序：快速转向不跟手时，先隔离输入平滑、转向上限与呈现插值，再决定牺牲哪种体验；不把现有分层建议改成统一开关政策。[研究]
+
+### 同一游戏里的不同选择与局部撤回
+
+[社区] Barony Quality of Death 测试期的[原帖](https://steamcommunity.com/app/371970/discussions/3/3727324132820504963/)中，Ninjaboi8175 于2023-02-03报告关闭 Camera Interpolation 有效；FLy1n RabBit 于03-21说关闭后问题仍在，高刷新显示下的观感也难接受。开发者 WALL OF JUSTICE 于04-04建议另关 Mouse Rotation Limit；04-09同一位 FLy1n RabBit 明确回报改善，并选择保留插值，同时仍感觉停鼠后的数帧余动。[研究] 这是同人前后反馈，但没有完整设备配置和精确构建号，不证明余动来自哪一层，也不能把个人满意写成所有玩家的问题已解决。
+
+[一手] [591ebab3](https://github.com/TurningWheel/Barony/commit/591ebab3eedd9e67b7142daf60794de575814172)（2023-04-28 UTC）将 `disablemouserotationlimit` 默认及设置应用路径置为 true，停用限速的菜单与序列化入口；[官方 V3.9.1 公告归档](https://store.steampowered.com/news/posts/?appids=371970&enddate=1686762095&feed=steam_community_announcements)（2023-05-14，Misc. Tweaks and Fixes）列出撤去 Rotation Speed Limit。[研究] 补丁、发布和反馈的时间接续可核，不证明此帖单独促成修改。[2020-01-07的旧补丁](https://github.com/TurningWheel/Barony/commit/4fd68a0864f4532607392540c09c5c69afa4216e)已加入关闭水平限速的选项，因此不是QoD新引入限速后才撤回。
+
+### 三种机制分别负责什么
+
+[一手] 同一固定 `591ebab3eedd9e67b7142daf60794de575814172` 树中，限速与平滑不是同一个算法：
+- [actplayer.cpp L574–603](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/src/actplayer.cpp#L574-L603)按 `smoothmouse` 分支累积／衰减水平输入或直接赋值，`disablemouserotationlimit` 则单独控制 ±0.35 的夹取；这是转向上限，不等于输入加速曲线
+- [L743–780](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/src/actplayer.cpp#L743-L780)另由 `bUseTimerInterpolation` 控制相机状态追踪；[MainMenu.cpp L2476–2505](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/src/ui/MainMenu.cpp#L2476-L2505)仍默认开插值、关 Smooth Mouse，撤限速没有一起撤掉呈现插值
+- **方向边界**：[pitch L676–715](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/src/actplayer.cpp#L676-L715)仍有夹取；所核 flag 对玩家水平 yaw 生效，不能将公告简写扩大成所有方向、所有镜头都已无上限
+
+[研究] **采用判断：** 关闭插值可作为重视即时转向的候选，但低频姿态更新在高刷新显示上可能更明显；保留插值可照顾连续观感，仍须验急转、停鼠与反向修正。已有转向上限不服务玩法时先检查其截断，避免为修限幅问题丢掉有用的呈现；若上限本就是转身承诺，则保留规则并按该规则调反馈。来源只支持分离诊断与有条件选择，不量化延迟，不建议复制自研引擎，也不把三项关闭当统一配方。
+
+[一手／研究] [固定许可](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/LICENSE.txt)为 BSD-2-Clause，[README](https://github.com/TurningWheel/Barony/blob/591ebab3eedd9e67b7142daf60794de575814172/README.md)说明游玩仍需购买副本；代码许可不扩大资产许可。本轮仅机制静读与历史反馈核查，不复制代码或资产，未运行游戏、引擎或设备测试；不增加新的实测计划。
