@@ -1,6 +1,6 @@
 主线：三，兼二
-改变的建议：恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流。[经验]
-证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验；10-16（UTC+8）补续接前分支／HEAD检查的单仓观察与离线Git正反例。[一手／社区／研究／经验]
+改变的建议：请求超时与整项任务截止时间分别核实；恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流。[经验]
+证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验；10-16（UTC+8）补续接前分支／HEAD检查的单仓观察与离线Git正反例，以及已发布 OpenAI Python SDK／HTTPX2 的超时、重试与流读取边界；Go 整次请求超时作对照。[一手／社区／研究／经验]
 
 # 长程任务：来源、反例与实验边界
 
@@ -70,6 +70,23 @@
 | Auto Memory | [S3](2026-10-10-audit.md#s3--gemini-cli) | 源码文档标记实验性、默认关闭，patch/Skill 草稿进入 inbox 后由用户审阅；不能将 main 文档的全部功能归入某一安装版本。**[一手]** |
 
 本仓库[独立 spec 与运行报告模板](../../templates/long-task/README.md)及[校验器](../../scripts/validate_task.py)只检查记录一致性：不执行检查、不打开证据、不证明证据真实、不阻止同时篡改 spec 与报告，也不是完整 agent harness。模板自己的“信任边界与坑”保留具体限制；其合成测试不是模型驱动恢复实验。**[经验：实现范围]**
+
+## 请求超时、重试与整项任务截止时间
+
+核实：2026-10-16（UTC+8）；对应 [16 §4.5](../16-building-agents.md#45-安全与成本)，20 §7 仅交叉引用。改变的选择是：需要总耗时上限时，先核现有执行环境的总时限／取消覆盖范围，而不是仅缩短 SDK 请求超时或增加重试。**[研究：采用判断]**
+
+**版本先于字段名。** [官方 Python SDK 文档](https://developers.openai.com/api/reference/python)当前使用 `httpx2.Timeout`；[v3.31.0 发布](https://github.com/openai/openai-python/releases/tag/v3.31.0)为 2026-10-14，固定提交 `86cae50785fb7b7bf2a5d2383370b214b304acd2`。[依赖文件](https://github.com/openai/openai-python/blob/86cae50785fb7b7bf2a5d2383370b214b304acd2/pyproject.toml)要求 `httpx2>=2.12.0,<3`；[默认值](https://github.com/openai/openai-python/blob/86cae50785fb7b7bf2a5d2383370b214b304acd2/src/openai/_constants.py)为 `Timeout(600, connect=5)`、`max_retries=2`。本轮另读 HTTPX2 [v2.13.1](https://github.com/pydantic/httpx2/releases/tag/v2.13.1)，固定提交 `d91c9f4236523eb5978ca800944fa0078f17409f`：它是满足该依赖范围的一份具体传输实现，不证明所有安装都使用它，也不能用旧 HTTPX 文档冒充当前 SDK 依赖。**[一手：发布、依赖与固定源码]**
+
+| 范围 | 已核契约与实现 | 读者不能据此推定什么 |
+|---|---|---|
+| 单次阶段等待 | [HTTPX2 超时文档](https://pydantic.dev/docs/httpx2/advanced/timeouts/)区分连接、读取、写入及连接池等待；read 限制等待下一块数据。[Timeout 实现](https://github.com/pydantic/httpx2/blob/d91c9f4236523eb5978ca800944fa0078f17409f/src/httpx2/httpx2/_config.py)把单个数值赋给各阶段；[同步 HTTP/1.1](https://github.com/pydantic/httpx2/blob/d91c9f4236523eb5978ca800944fa0078f17409f/src/httpcore2/httpcore2/_sync/http11.py)读循环重复传入 read timeout，[socket 后端](https://github.com/pydantic/httpx2/blob/d91c9f4236523eb5978ca800944fa0078f17409f/src/httpcore2/httpcore2/_backends/sync.py)逐次设置超时后读取 | 持续收到数据时，总时长可以超过 read timeout；网络数据到达也不等于任务有有效进展。**[一手；研究：推论]** |
+| SDK 请求重试 | [固定请求实现](https://github.com/openai/openai-python/blob/86cae50785fb7b7bf2a5d2383370b214b304acd2/src/openai/_base_client.py)在 `max_retries+1` 次尝试内重新复制选项、构建请求；超时且请求体可重放才继续。退避在发送之外等待，本地指数退避带 jitter、上限 8 秒；支持的服务端 Retry-After 可到 120 秒 | 重试次数不是总时限；不能用 `timeout×3` 算硬上限，也不能把请求体可重放当业务幂等保证。**[一手；研究：边界]** |
+| 流迭代 | 成功响应离开请求重试循环后才交给响应处理；[固定 Stream／AsyncStream 实现](https://github.com/openai/openai-python/blob/86cae50785fb7b7bf2a5d2383370b214b304acd2/src/openai/_streaming.py)把迭代读取的超时／连接错误归一为 SDK 异常，没有重新进入上述请求重试循环 | “默认超时重试两次”不保证流中途断开后自动续流或重放，更不保证整轮业务工具操作重试。**[一手：实现范围]** |
+| 整次 HTTP 请求的对照 | [Go net/http Client.Timeout](https://pkg.go.dev/net/http#Client)包含连接、重定向和响应体读取，`Do` 返回后仍可中断 Body 读取 | 不能把所有名为 timeout 的设置都说成 inactivity；该契约仍不自动覆盖应用后来发起的请求和工具步骤。**[一手；研究：对照]** |
+
+已回读 OpenAI Python main 为 [`9998c1a3806afda55cb3923de1f7f49adcff5a7f`](https://github.com/openai/openai-python/commit/9998c1a3806afda55cb3923de1f7f49adcff5a7f)（2026-10-15），相关请求重试与流异常处理边界仍可见；正文依据以上已发布版本，不把 main 的其他能力当发行能力。**[一手：版本核对]**
+
+采用边界：检查现有总时限是否覆盖重试等待、流消费和工具步骤；已覆盖就复用，不为此另写计时框架。总时限触发后的结果核对仍沿用 [20 §9](../20-codex-long-horizon.md#9-超时后动作究竟发生了吗)。本轮仅阅读文档与源码，未安装或运行 SDK／真实客户端，未调用模型、测量延迟或费用；这些来源不能说明 Codex／dot 的实际产品停止行为，也不能解释本仓执行服务异常的原因。**[研究：采用与验证边界]**
 
 ## 待运行实验矩阵
 
