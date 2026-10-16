@@ -126,15 +126,14 @@
 
 ### 9. AI 第二次修改：交付“契约切片”，不强制再搭一层工具
 
-**[研究] 最低必要上下文**：现有相关实现＋版本＋依赖资产／节点引用＋一页以内的状态与生命周期说明＋已存在的回归夹具。让 AI 先追明一个需求跨哪几处，再改这些位置；不是要求所有人新建一套文档平台。
+**[研究] Agent 上下文**：提供相关实现、准确包版本与本地改造、资产／节点引用和既有回归夹具。用一页以内的契约交代：
 
-**建议给 Agent 的具体契约 [研究]**：
-1. 定义不可保存当前 HP／目标／冷却；运行实例由谁创建、复用、退出时谁清理
-2. 每个字段的寿命：项目、存档、session、场景、角色、一次施放；每个计时器的时钟
-3. 哪个函数提交伤害／奖励／库存变化，谁只观察；同步或排队事件的顺序
-4. 在正常结束、取消、死亡、卸载、池回收五条路径上，哪些句柄、标签、任务和订阅必须归零
-5. 内容 ID 与序列化字段不能随重构漂移；改变需要迁移和旧夹具
-6. 准确包版本与已经知道的本地改造；不要“顺手更新所有依赖／改成最佳实践”
+- 定义不保存当前 HP、目标、冷却；谁创建、复用和清理运行实例
+- 字段分别属于项目、存档、session、场景、角色还是一次施放；计时器使用什么时钟
+- 谁提交伤害、奖励与库存变化，谁只观察；同步或排队事件按什么顺序处理
+- 正常结束、取消、死亡、卸载、池回收各清哪些句柄、标签、任务和订阅；内容 ID 与序列化字段改变时如何迁移、用哪些旧夹具验证
+
+先追清需求涉及的位置再改，不顺手升级依赖或另搭文档平台。
 
 **第二次需求 [研究]**：单段冲刺改成蓄力、受击中断、按承诺扣资源并能检查点重开；同时检验实例、退出、命中幂等、晚动画、相机和关卡。记录改动文件／资产、主动工时与回归失败。
 
@@ -194,7 +193,7 @@
 
 ## 七、后续验证条件
 
-**[研究] 优先验证**：同一Unity切片先用组件／小状态机，再做上述蓄力中断＋重开。退出组合难维护才对照HFSM；测得CPU批处理瓶颈才比ECS，不同时比较十个框架。
+**[研究] 优先验证**：同一 Unity 组件／小状态机切片做第 2.9 节蓄力中断＋重开。退出组合难维护才比 HFSM，测得 CPU 批处理瓶颈才比 ECS；按下列跨模块验收收口，不同时比较十个框架。
 
 验收合并为三个跨模块问题：[研究]
 - 正常、取消、死亡、卸载、池回收都清理，实例互不污染；重开无重复技能／镜头／关卡／UI 事件，冷却／资源结算可追踪
@@ -443,13 +442,13 @@
 
 核实：2026-10-14 UTC。主线 1；补 05 §8 从“效果能关闭”到分别决定效果、默认值与首玩可发现性。比较的是俯视太空贸易／战斗中的居中跟随与加速度偏移，不重做输入研究，也不声称两种方案通过了全部玩法回归。[研究]
 
-**两个可运行选择及代价。** [一手] [#9638](https://github.com/endless-sky/endless-sky/pull/9638)于 2024-05-19 合并（`ae5c7f1fb6e791a5742cab23a9332f72913893d9`）；[固定 Engine.cpp](https://github.com/endless-sky/endless-sky/blob/cbca555b1cdca081b57ee7473f3db07a31181d96/source/Engine.cpp)的 OFF 返回飞船中心／速度，ON 对相机速度与位置插值，REVERSED 反向偏移。同一飞行与战斗可以保留稳定参照，也可以用偏移强调加速感；偏移会改变前后方可见空间，增加重新定位目标的负担，具体收益属于玩法判断。[研究] [#8446 的讨论](https://github.com/endless-sky/endless-sky/pull/8446#issuecomment-1441120912)明确提出希望高速前进时看见更多前方空间；另一位[反馈者](https://github.com/endless-sky/endless-sky/pull/8446#issuecomment-1441124904)认可动感却担心目标辨识与长时间舒适度。这些是方案反馈，不是计时或晕动测试。[社区]
+**居中或加速度偏移。** [一手] [#9638](https://github.com/endless-sky/endless-sky/pull/9638)于 2024-05-19 合并（`ae5c7f1fb6e791a5742cab23a9332f72913893d9`）；[固定 Engine.cpp](https://github.com/endless-sky/endless-sky/blob/cbca555b1cdca081b57ee7473f3db07a31181d96/source/Engine.cpp)的 OFF 返回飞船中心／速度，ON 插值相机速度与位置，REVERSED 反向偏移。[研究] 稳定参照与加速感各有代价：偏移改变前后视野，可能增加重找目标负担。[#8446 的讨论](https://github.com/endless-sky/endless-sky/pull/8446#issuecomment-1441120912)希望高速时多看前方，[反馈者](https://github.com/endless-sky/endless-sky/pull/8446#issuecomment-1441124904)认可动感却担心目标辨识及长时间舒适度；均为方案反馈，非计时／晕动测试。[社区]
 
-**改得更顺，不等于所有人都应开启。** [一手／社区] 较早的 [#7347](https://github.com/endless-sky/endless-sky/pull/7347)按推力状态更新偏移；Koranir 在[2023-12-30 比较](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872451536)中认为其起止突兀，并给出替代视频。原方案修订后，alexrovw [实际使用并表示会保留](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872582712)，随后[复测确认](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872604442)复杂转向／停车／倒车下轮廓对齐和反向模式故障已修，但仍指出武器后坐力边例。该 PR 未合并，作者关闭它让位于 #9638；不能把前者的测试移作后者全面通过。#9638 获原方案作者[正面体验评价](https://github.com/endless-sky/endless-sky/pull/9638#pullrequestreview-1807800878)，Koranir 又在[2024-05-18](https://github.com/endless-sky/endless-sky/pull/9638#issuecomment-2119032487)报告用 Marauder Leviathan 试玩后认为效果轻微且增加动感，支持默认开启；最终默认为 ON。没有同一批玩家的受控 A/B，不能宣布后一算法普遍更优。
+**修订与正面反馈。** [一手／社区] 较早[#7347](https://github.com/endless-sky/endless-sky/pull/7347)按推力状态偏移；Koranir 在[2023-12-30 比较](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872451536)认为起止突兀并给替代视频。修订后 alexrovw[实际使用并表示会保留](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872582712)，[复测确认](https://github.com/endless-sky/endless-sky/pull/7347#issuecomment-1872604442)复杂转向、停车与倒车下的轮廓对齐及反向模式故障已修，仍有武器后坐力边例。作者关闭未合并的#7347 让位于#9638，前者测试不转作后者通过。#9638 获原作者[正面体验评价](https://github.com/endless-sky/endless-sky/pull/9638#pullrequestreview-1807800878)；Koranir 在[2024-05-18](https://github.com/endless-sky/endless-sky/pull/9638#issuecomment-2119032487)用 Marauder Leviathan 试玩后认为效果轻微、有动感，支持 ON 默认并被采用。没有同一批玩家的受控 A/B，不能判定后一算法普遍更优。
 
-**后续反馈改变的是默认值。** [一手] [#12252](https://github.com/endless-sky/endless-sky/pull/12252)于 2026-02-12 合并，仅改 Preferences.cpp：将加速度镜头缺省索引从 1 改 0，并去掉 Landing zoom／Show hyperspace flash 的默认开启；[之前](https://github.com/endless-sky/endless-sky/blob/f57851bc0cfe715c6e276a3e1402c131fe368a4c/source/Preferences.cpp#L65-L66)与[之后](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Preferences.cpp#L65-L66)可核。作者认为长设置列表使新人未必找到关闭入口，甚至可能直接退出，但明确写 Testing Done: None；这是维护者的可接近性判断，不是玩家流失数据。[社区] 合并后 Koranir [质疑是否收到实际投诉](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3889579433)；warp-core [说明自己也抱怨](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3897596643)，Amazinite [第一人称表示镜头效果更令人恶心而非有趣](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3898047376)。后者未分离加速度与着陆缩放的贡献，也未给安装版本，不能转写为独立玩家群体共识或精确算法因果。
+**撤回默认开启，保留效果。** [一手] [#12252](https://github.com/endless-sky/endless-sky/pull/12252)于 2026-02-12 合并，仅改 Preferences.cpp：加速度镜头缺省索引 1→0，并取消 Landing zoom／Show hyperspace flash 默认开启（[之前](https://github.com/endless-sky/endless-sky/blob/f57851bc0cfe715c6e276a3e1402c131fe368a4c/source/Preferences.cpp#L65-L66)／[之后](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Preferences.cpp#L65-L66)）。作者担心新人难从长设置列表找到关闭项而退出，注明 Testing Done: None，故只属可接近性判断，不是玩家流失数据。[社区] 合并后 Koranir[质疑是否收到实际投诉](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3889579433)，warp-core[说明自己也抱怨](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3897596643)，Amazinite[第一人称表示镜头效果更令人恶心而非有趣](https://github.com/endless-sky/endless-sky/pull/12252#issuecomment-3898047376)；后者未分离加速度与着陆缩放贡献、未给安装版本，不能推成玩家共识或算法因果。
 
-**交付范围与采用判断。** [一手] 发布版 [v0.11.0](https://github.com/endless-sky/endless-sky/blob/v0.11.0/source/Preferences.cpp#L65-L66)（2026-01-31）仍 ON，[v0.11.1](https://github.com/endless-sky/endless-sky/releases/tag/v0.11.1)（2026-04-25，unstable）的 [changelog](https://github.com/endless-sky/endless-sky/blob/v0.11.1/changelog#L263)与源码已 OFF，[v0.11.2](https://github.com/endless-sky/endless-sky/releases/tag/v0.11.2)（2026-06-27，stable）[仍 OFF](https://github.com/endless-sky/endless-sky/blob/v0.11.2/source/Preferences.cpp#L66-L67)。[固定 Camera.cpp](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Camera.cpp#L46-L74)保留三种模式；[设置读取](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Preferences.cpp#L243-L244)仍采用已保存的值，因此升级不等于所有老玩家实际关闭。[研究] ✅ 对已有明确不适反馈、又不承担必要提示的运动效果，考虑稳定缺省＋可发现的可选效果；代价是喜欢动感者可能不主动发现它，同时增加设置说明与各模式回归成本。不要因此删除有正面反馈的效果，也不默认关闭所有视觉反馈。AI 可实现独立开关、保留旧选择与检查菜单路径；人决定目标体验，首玩测试核实际能否找到并理解开关。
+**发行与采用。** [一手] [v0.11.0](https://github.com/endless-sky/endless-sky/blob/v0.11.0/source/Preferences.cpp#L65-L66)（2026-01-31）仍 ON；[v0.11.1](https://github.com/endless-sky/endless-sky/releases/tag/v0.11.1)（2026-04-25，unstable）的[changelog](https://github.com/endless-sky/endless-sky/blob/v0.11.1/changelog#L263)与源码已 OFF；[v0.11.2](https://github.com/endless-sky/endless-sky/releases/tag/v0.11.2)（2026-06-27，stable）[仍 OFF](https://github.com/endless-sky/endless-sky/blob/v0.11.2/source/Preferences.cpp#L66-L67)。[固定 Camera.cpp](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Camera.cpp#L46-L74)保留三模式，[设置读取](https://github.com/endless-sky/endless-sky/blob/f1dba50fe4cd22bd5ed51dc601203c9f62cd9164/source/Preferences.cpp#L243-L244)沿用保存值，升级不等于老玩家全关闭。[研究] ✅ 有明确不适反馈且不承担必要提示时，考虑稳定缺省＋易发现的可选效果，保留喜欢动感效果的玩家选择。代价是喜欢动感的玩家可能漏看选项，设置说明和多模式回归也增加维护成本；不默认关掉所有反馈。AI 维护开关、旧选择、菜单路径，由人决定体验，首玩测试检查能否找到并理解开关。
 
 [研究] **证据终点**：实现、使用反馈与默认值撤回已核；人群分母、使用时长、关闭后舒适／留存收益未知。代码GPL-3.0-or-later，不作Unity／UE即插插件；有新收益复测前不再堆同类投诉。
 
@@ -465,7 +464,7 @@
 
 ### 2. OpenTTD：同一处理器可试算，但不是任意结果保证
 
-[一手] 固定 `OpenTTD/OpenTTD@daa6e1ca1c357eb9e6ae3d69af134205e1be8517`（提交日 2026-10-12），读取完整相关文件；固定主干不等于稳定发行版本。
+[一手] OpenTTD 固定主干`daa6e1ca1c357eb9e6ae3d69af134205e1be8517`（2026-10-12），已读取完整相关文件：
 
 - [command_func.h](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/src/command_func.h)：`CommandHelper::Execute` 先以测试 flags 调用同一个 `CommandTraits<Tcmd>::proc`，通过检查后再带 Execute 标志调用；估算可在测试阶段后退出。`Do` 也区分测试和执行
 - [command.cpp](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/src/command.cpp)：试算前后切换城镇评价与持久存储的测试模式；分别显示估计费用和已执行费用动画。非 NoTest 命令断言测试／执行费用及失败状态一致，NoTest 则检查实际执行失败
@@ -475,7 +474,7 @@
 
 ### 3. 竞争选择：让复杂组合可尝试，不强迫 UI 解释一切
 
-[一手] Tom Francis 的 [Tactical Breach Wizards 原始设计（2018-02-02）](https://www.pentadact.com/2018-02-02-pitch-tactical-breach-wizards/)设想提交前反复试演，但明确原型可能被改掉；[开发商成品页面](https://store.steampowered.com/app/1043810/Tactical_Breach_Wizards/)确认免费 rewind 鼓励玩家实际尝试技能组合。成品页只支持这项功能仍在，不证明早期的同时行动方案全部保留，也不揭示内部预测／回滚实现。
+[一手] Tom Francis 的[Tactical Breach Wizards 原始设计（2018-02-02）](https://www.pentadact.com/2018-02-02-pitch-tactical-breach-wizards/)提出提交前反复试演，也注明原型可改；[开发商成品页面](https://store.steampowered.com/app/1043810/Tactical_Breach_Wizards/)确认成品保留免费 rewind、鼓励尝试技能组合。仅此功能得到后续确认，早期同时行动方案与内部预测／回滚实现未核。
 
 [研究] 可撤销尝试符合玩法时，可替代过重的数字／箭头说明；风险承诺、未知或反应时间构成挑战时，rewind会改玩法。默认窄查询，确需试演才承担完整状态恢复成本。
 
@@ -485,7 +484,7 @@
 
 [研究] **二改预注册**：加替换／范围模式，对照提示与结果；预览后改障碍、资源、目标再提交，核重验与失败反馈。反复查看取消无扣费／随机变化／奖励，部分成功显示范围。记规则分叉、显示例外及工时，人验可决策性。
 
-[研究] **Unity／Unreal 共用这条信息契约**：复用项目已有命令／技能／建造查询，不要求 Unity 加 SO 框架或 UE 迁 GAS；没有提出引擎 API 或性能优劣结论。上述游戏不是 Unity／UE 同任务对照，也不证明单人无美术团队已能复现其整体质量。
+[研究] Unity／UE 均复用已有命令／技能／建造查询，无须为此加 SO 框架或迁 GAS；跨游戏证据不构成引擎 API、性能或单人无美术团队的质量对照。
 
 [一手] OpenTTD文件头及[COPYING.md](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/COPYING.md)为GPL v2；不推荐直接复制进闭源底座。二改用例与体验／性能／工时仍未测。[研究]
 
@@ -496,21 +495,21 @@
 
 ### 1. 先比较玩法需要，而非台词是否无限
 
-[一手] [Suck Up! 开发者商店页](https://store.steampowered.com/app/2726370/Suck_Up?l=english)标注 2025-10-01 发行，玩法是玩家用声音、措辞和伪装骗取邀请进入住宅；页面披露第三方生成服务，并列联网要求。它提供的采用理由是开放说服本身成为挑战，而非 NPC 多说几句就让任何游戏更好。商店页证明公开的玩法／依赖声明，不证明留存、净收益、响应速度或节省写作；不采用页面宣传评价与未经复核的 token 价格。[研究]
+[一手] [Suck Up! 开发者商店页](https://store.steampowered.com/app/2726370/Suck_Up?l=english)标 2025-10-01 发行：用声音、措辞、伪装骗取进住宅的邀请，并披露第三方生成服务和联网要求。[研究] 采用理由是开放说服成为挑战；商店声明不能证明留存、净收益、响应速度或写作节省，宣传评价及未复核 token 价格不计证据。
 
-[一手] 独立对照来自 [inkle 的 2021-02-22 发布说明](https://www.inklestudios.com/2021/02/22/ink-version-1)：ink 已用于 Heaven’s Vault（2019）和 Pendragon（2020），支持状态化内容与并行共享状态的 story flows。[研究] 因而“记住历史、按状态响应”本身不是采用 LLM 的充分理由；这些已发行游戏也不是与 Suck Up! 同题的优劣实验，更不证明手写内容免费。
+[一手] [inkle 的 2021-02-22 发布说明](https://www.inklestudios.com/2021/02/22/ink-version-1)确认 ink 用于 Heaven’s Vault（2019）、Pendragon（2020），支持状态化内容及并行共享状态的 story flows。[研究] 因此记忆历史／按状态响应不足以单独支持 LLM；这也不是与 Suck Up!的同题比较，手写内容仍有成本。
 
-[一手：固定文档与实现入口] 本轮读取 `inkle/ink@35c63e52f1d36060930dc7ed3cfba38ea224b528`（2026-05-05）的 [RunningYourInk L14–85](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/Documentation/RunningYourInk.md#L14-L85)：故事编译成 JSON，运行时 Continue／ChooseChoiceIndex 返回台词和接受选项，state.ToJson／LoadJson 保存加载状态；[L242–249](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/Documentation/RunningYourInk.md#L242-L249)提供变量观察者。[WritingWithInk L824–828](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/Documentation/WritingWithInk.md#L824-L828)说明用随机种子复现内容。[研究] 这些证明可选的本地数据驱动机制，不证明两款游戏使用这一 2026 快照，也不保证任意故事零延迟、无错误或跨版存档兼容。代码许可与存档边界沿用 WP10 已有 ink 研究，不新增框架推荐。
+[一手] `inkle/ink@35c63e52f1d36060930dc7ed3cfba38ea224b528`（2026-05-05）：[RunningYourInk L14–85](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/Documentation/RunningYourInk.md#L14-L85)将故事编译为 JSON 后运行，Continue／ChooseChoiceIndex 输出台词、接收选择，state.ToJson／LoadJson 保存加载；[L242–249](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/Documentation/RunningYourInk.md#L242-L249)有变量观察者，[WritingWithInk L824–828](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/Documentation/WritingWithInk.md#L824-L828)用种子复现内容。[研究] 可选本地数据驱动机制，不代表前述游戏采用该 2026 快照，也不保证零延迟、无错或跨版存档。许可／存档边界沿 WP10，不增框架推荐。
 
 ### 2. Vaudeville：保留生成玩法，也撤回一部分供应方式
 
 [一手：开发者自述，历史事实] [2024-01-31 pre-mortem](https://steamcommunity.com/gid/103582791472864770/announcements/detail/3973931474188161576)报告上线流量触及服务容量上限，并曾因费用不可持续退回旧语音服务；不能把当年的供应价格或容量当作当前通用成本。[2024-10-03 offline beta](https://steamcommunity.com/gid/103582791472864770/announcements/detail/4657375543606995004)转向本地对话／语音模型，同时承认 GPU 负担、加载与崩溃限制。
 
-[一手：后续发行公告] [2025-11-28 正式发行](https://steamcommunity.com/gid/103582791472864770/announcements/detail/520857340524626354)保留在线旧版支持弱设备及其他语言；[2026-01-22 v1.3.0](https://steamcommunity.com/gid/103582791472864770/announcements/detail/535499112589559217)继续修 Steam Deck、非 CUDA 与集显兼容，并保留在线分支。[研究] 新增证据是迁移后的支持负担仍持续，不能把本地生成视为顺手接入的离线 fallback；也不能把这一迁移写成游戏失败、生成路线失败或旧故障仍未修复。没有独立测量端到端延迟、成本、优化幅度或当前兼容覆盖率。
+[一手] [2025-11-28 正式发行](https://steamcommunity.com/gid/103582791472864770/announcements/detail/520857340524626354)保留在线旧版以支持弱设备／其他语言；[2026-01-22 v1.3.0](https://steamcommunity.com/gid/103582791472864770/announcements/detail/535499112589559217)继续修 Steam Deck、非 CUDA、集显兼容并保留在线分支。[研究] 迁移仍有支持成本，本地模型不是随手可接的离线 fallback；不能由此判游戏／生成路线失败或旧故障未修。端到端延迟、成本、优化幅度、当前兼容覆盖率均无独立测量。
 
 ### 3. 生成自由度不免除作者的进度与知识设计
 
-[一手：2025-12-21 官方指南] [Story Vault 编辑器](https://steamcommunity.com/gid/103582791472864770/announcements/detail/520859243419534792)让作者指定角色知识、可解锁地点及关键词；角色台词提到对应词可解锁地点；结案问题和正确选项由作者填写。指南还告诫作者不要向角色提供必须保密的信息。[研究] 这是公开设计契约，未读到游戏实现；不声称已复现泄题或绕过，也不笼统禁用关键词玩法。
+[一手] [Story Vault 编辑器](https://steamcommunity.com/gid/103582791472864770/announcements/detail/520859243419534792)（2025-12-21）由作者设角色知识、地点及关键词，台词提词可解锁地点，结案题及正确项也由作者填写，并告诫勿给角色必须保密的信息。[研究] 仅读契约，未核实现或复现泄题／绕过，不据此禁用所有关键词玩法。
 
 [研究] 关键词先作候选事件，执行侧重核进度、角色权限与前置条件；输入按可知范围过滤，不能只提示保密。作者仍设计知识、线索与答案；这是契约推导，非Vaudeville内部审计。
 
@@ -526,7 +525,7 @@
 
 ### 1. OpenRA：来源退出只撤自己的授予
 
-[一手] 固定官方仓库 `e180e3225f3930272dd451917467631618f8976f`（提交日期 2026-10-11 UTC）；这是读取时主干，不宣称已发布稳定包。读取了如下完整链路，而非只凭框架接口推断真实使用：
+[一手] OpenRA 固定主干`e180e3225f3930272dd451917467631618f8976f`（2026-10-11 UTC）；完整消费者链如下：
 
 | 固定来源 | 实际机制与边界 |
 |---|---|
@@ -542,7 +541,7 @@
 
 ### 2. Shattered Pixel Dungeon：重复施加未必产生独立层
 
-[一手] 不同作者、回合制 roguelike 的官方仓库固定 `57a4e06a4caf162446d1c28caa7983f0493fecf0`（2026-10-06 UTC；提交说明为 v4.0.2 发行更新），核到实际消费而非仅凭命名：
+[一手] 独立作者的回合 roguelike SPD 固定`57a4e06a4caf162446d1c28caa7983f0493fecf0`（2026-10-06 UTC，v4.0.2 发行更新）：
 
 - [Buff.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Buff.java)：append 创建新实例，affect 优先取同类现有实例；prolong 经 affect 后调用 postpone。按类 detach 会遍历该类效果全部撤销，不能当成某一次施放的独立释放
 - [Actor.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java)：spend 增加调度时间，postpone 仅在原时间早于 now＋duration 时向后延。因此 prolong 是保留更晚结束点，不能从名字译成无条件时长相加
@@ -553,9 +552,9 @@
 
 ### 3. Unity 与 UE 的采用边界
 
-[一手] [Unity 6.3 SO 手册](https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html)明确共享数据可由多个对象引用。[研究] Unity 默认沿既有角色组件持有活效果和来源，不把来源／剩余时长写回共享定义；两三个固定规则不需要通用效果编辑器。若本来已有合规的效果模块，先核它的合并键和移除范围，别另造名字相同、语义不同的一层。
+[一手] [Unity 6.3 SO 手册](https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html)支持多对象引用共享数据。[研究] Unity 用角色组件持有活效果／来源，剩余时长不回写定义。少量固定规则无需通用编辑器；已有合规模块先核合并键和移除范围，避免另建同名异义层。
 
-[一手] UE 当前公开文档页面显示 5.8，GAS 对非 instant 效果的 [StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)将 None 定义为每次独立实例，而不是拒绝重复；AggregateBySource 与 AggregateByTarget 分别按来源、目标聚合。[持续时间策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingDurationP-?lang=en-US)区分刷新、不刷新、增加时长；[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)区分清整栈、减一层后刷新、仅刷新。已打开正确缩短路径的官方正文，不依赖最初失败的长 URL 或第三方教程。
+[一手] UE 5.8 公开 GAS 文档：非 instant 效果的[StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)中 None 为每次独立实例，AggregateBySource／AggregateByTarget 分别按来源／目标聚合；[持续时间策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingDurationP-?lang=en-US)分刷新、不刷新、加时长；[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)分清整栈、减层后刷新、只刷新。采用已读的官方缩短路径正文，最初的长 URL 获取失败，未用第三方教程补证。
 
 [研究] 已用GAS先核原生策略；按来源聚合不等于逐次计时，到期减层不等于历史施放各自到期。合并键与撤销粒度须一起定；未核受限源码／Lyra，枚举不证明预测、网络、驱散、句柄全部正确。
 
@@ -583,15 +582,15 @@
 
 [一手] Overgrowth [245fe482](https://github.com/WolfireGames/overgrowth/tree/245fe4828631c84c0023d29d1525f5716ccb6106)（2025-03-20）根LICENSE／README／enemycontrol.as为Apache-2.0，代码可依条款复用，原美术关卡另核；仓库由社区运行，源码可得不保证维护。[研究] 不移植自研引擎底座，Factorio复盘不授素材源码，原生组件仍循各引擎条款。
 
-**群体防御的反例。** [一手] Factorio [FFF316，2019-10-11](https://www.factorio.com/blog/post/fff-316)解释：群组转入各自攻击后，单位有路径但互相挡住、反复绕转；团队选择取消同类硬碰撞，保留既有 separation，以减少明显堆叠，并承认可能需要平衡调整。[研究] 这表明碰撞政策会改变拥堵，不支持“所有敌人都应穿过同类”；依赖堵路、推挤或身体卡位的玩法必须保留相应规则，不能为顺滑偷偷删掉战术。
+**碰撞政策改变拥堵。** [一手] [FFF316，2019-10-11](https://www.factorio.com/blog/post/fff-316)：群组各自攻击后虽有路径却互挡绕转，团队取消同类硬碰撞、保留 separation 减少堆叠，并承认可能需要调整平衡。[研究] 借此诊断拥堵；依赖堵路、推挤、卡位的玩法仍须保留身体规则，不能一律穿同类。
 
-**近身动作的不同选择。** [一手] Overgrowth [enemycontrol.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/enemycontrol.as)的 GetRepulsorForce（3295–3330）只累加同队邻居排斥，并发送 excuse_me；消息分支（1021–1022）设置 move_delay。GetCheckedRepulsorForce（2651–2661）先用 NavRaycast 限制排斥；GetNavMeshMovement（3075–3121）按 target_dist 和 strafe_vel 投射接近／侧移目标，经停距减速后加入受限排斥并限制方向长度。[研究] 这支持把“走到哪”和“在目标周围如何停／让”分开，不证明这些参数适合其他游戏，也不证明物理碰撞已经完全消除。
+**走到哪与如何停／让分开。** [一手] [enemycontrol.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/enemycontrol.as)：GetRepulsorForce（3295–3330）累加同队排斥并发 excuse_me，消息（1021–1022）设置 move_delay；GetCheckedRepulsorForce（2651–2661）用 NavRaycast 限制排斥；GetNavMeshMovement（3075–3121）按 target_dist／strafe_vel 投射接近与侧移目标，停距减速后加受限排斥并限方向长度。[研究] 仅借职责划分，未证明参数适合其他游戏，或物理碰撞已完全消除。
 
 ### 2. 重寻路不能统一加速，也不能统一节流
 
-[一手] Factorio [FFF121，2016-01-15](https://www.factorio.com/blog/post/fff-121)说明直行／局部启发式只用于短距离，会卡在角落；其缓存重用旧路径的中段，并缓存不可达结果，避免重复做昂贵搜索。[研究] 这是该游戏的规模与请求分布下的机制，不是单人项目起步就自建路径缓存的理由；通路改变后的失效责任也不能省略，本文不从复盘推定具体失效实现。
+[一手] [FFF121，2016-01-15](https://www.factorio.com/blog/post/fff-121)：短距离直行／局部启发式会卡角落，另复用路径中段并缓存不可达结果以减少昂贵搜索。[研究] 机制针对该游戏规模与请求分布；未核通路改变后的缓存失效实现，不据此要求小项目自建缓存。
 
-[一手] 相反，Overgrowth 同文件 GetNavMeshMovement（2974–2991）每次进入会调用 GetPath(target_point)，GetPath 包装（2526–2538）重新查询并重置路径点；接近／侧移分支还会重新查询目标。[研究] 不据静读指控它慢，也不以 Factorio 外推所有动作游戏必须低频重算。默认保留原生移动目标跟随能力；测得查询成为热点后，再比较目标变化阈值、时间预算或复用策略，并保留急转响应与障碍更新的正确性。当前没有推荐统一毫秒间隔。
+[一手] Overgrowth 同文件 GetNavMeshMovement（2974–2991）每次进入调用 GetPath(target_point)；GetPath（2526–2538）重新查询、重置路径点，接近／侧移还会重查。[研究] 先沿用原生移动目标跟随；查询实测成热点才比目标变化阈值、时间预算或复用，同时保留急转响应与障碍更新的正确性。静读不能判它慢，Factorio 也不支持统一低频或毫秒间隔。
 
 [一手] Overgrowth [navmesh.cpp 的 FindPath](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/AI/navmesh.cpp#L874-L957)还区分 partial result 与终点多边形是否真正到达。[研究] 读到非空路径不能自行判“到达目标”；这与已有 Behavior 不可达终止契约相接，不另造任务框架。
 
@@ -614,11 +613,11 @@
 
 ### 1. 两类游戏，借不同的小机制
 
-- **即时横版动作，Sébastien Bénard / Dead Cells。** [一手：作者历史复盘] [The Level Design of Dead Cells](https://deepnight.net/tutorial/the-level-design-of-dead-cells-a-hybrid-approach/)说明先固定世界连接、设计按用途与 biome 分类的房间，再用概念图约束长度、特殊房间和出口间隔；敌人还受空间及同平台组合限制。文章原发 Gamasutra，此处为作者站转载，不把转载日期当新算法。[研究] 借“用途／连接条件→组合→遭遇限制”的次序；不抄其房间资产，不移植整套 Director，作者说当时该系统已剩很少。房间是人设计的，不能声称单人无美术人员或 AI 已省去内容设计成本。
-- **回合制战术探索，Josh Ge / Cogmind。** [一手：作者历史复盘] [2019 程序布局](https://www.gridsagegames.com/blog/2019/03/roguelike-level-design-addendum-procedural-layouts/)从出口的恢复／逃生价值推导入口出口位置，再约束回环、开阔空间和房间尺度；部分或全部程序布局都存在，自动剔除不满足参数的图。[研究] 这是“所有游戏都该拼预制房”的反例；只借与玩法相关的少数空间目标，不搬整个生成器。作者也提醒俯视全图的观感不代表探索体验。
-- **内容分配是另一层。** [一手] [Cogmind 2015 Map Composition](https://www.gridsagegames.com/blog/2015/05/map-composition/)给洞穴和主区域不同的内容分配方式，并区分气氛、免费收益、风险收益与危险遭遇，显示分布供调整。[研究] 可把既有遭遇按用途分类后检查路线，不需要每个房间有战斗，也不把奖励平均撒满地图。
+- **Dead Cells，横版动作。** [一手：Sébastien Bénard 历史复盘] [The Level Design of Dead Cells](https://deepnight.net/tutorial/the-level-design-of-dead-cells-a-hybrid-approach/)按世界连接、用途／biome 房间、概念图组织长度、特殊房间和出口间隔，敌人另受空间及同平台组合限制。原文 Gamasutra、此为作者转载，非新算法。[研究] 借用途与连接条件→组合→遭遇限制的次序；房间仍由人设计，作者称当时 Director 已所剩很少，不移植整套或提取资产，也不据此声称 AI 省掉内容设计。
+- **Cogmind，回合探索。** [一手：Josh Ge 历史复盘] [2019 程序布局](https://www.gridsagegames.com/blog/2019/03/roguelike-level-design-addendum-procedural-layouts/)从出口恢复／逃生价值定出入口，再约束回环、开阔空间、房间尺度，支持部分／全部程序布局并剔除不合参数的图。[研究] 反证并非所有游戏都该拼房；借玩法空间目标，不移植整个生成器，俯视全图观感不代探索体验。
+- **内容分配另定。** [一手] [Cogmind 2015 Map Composition](https://www.gridsagegames.com/blog/2015/05/map-composition/)对洞穴／主区域分开分配气氛、免费收益、风险收益与危险遭遇，显示分布供调整。[研究] 既有遭遇按用途核路线，不要求每房战斗或均撒奖励。
 
-**反证必须保留。** [一手] [Dungeon Metrics](https://www.gridsagegames.com/blog/2014/07/dungeon-metrics/)2014 正文提出偏僻程度与奖励的关系，但作者在2015-11-06的评论明确说物品分配并未直接这样实现。[研究] 所以不写成“Cogmind 已实现越偏僻奖励越好”；最短路只是辅助指标，也不是未知地图中玩家真实的行走路线。回环、喘息和绕路奖励是否适合本玩法均须判断，不统一设阈值。
+**设计意图不等于落地。** [一手] [Dungeon Metrics](https://www.gridsagegames.com/blog/2014/07/dungeon-metrics/)的 2014 正文提出偏僻程度与奖励关系，但作者 2015-11-06 评论明确物品未直接这样分配。[研究] 不能声称 Cogmind 实现“越偏僻奖励越好”；最短路只作辅助，不代未知地图真实路线。回环、喘息、绕路奖励按玩法选，不设统一阈值。
 
 ### 2. 固定开源调用链：规则确实被消费，但不推荐整套接入
 
@@ -628,7 +627,7 @@
 2. [RegularBuilder.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/fdb10fc77914000af0907ac63f561ff21279115b/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/builders/RegularBuilder.java#L89-L130)的 `setupRooms` 按入口／出口、商店与 `maxConnections` 分组，消费 `pathLength`、扰动权重及房间尺寸来挑主路房间；这些不是只声明未使用的标签
 3. [LoopBuilder.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/fdb10fc77914000af0907ac63f561ff21279115b/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/builders/LoopBuilder.java#L73-L173)把入口置首、出口插入主路序列中段，布置并接回入口，然后追加分支和可能的相邻连接；放置失败可返回 `null`。这证明拓扑意图在生成前／中被实施，**不证明**每条玩家路线等长、资源充足或生成耗时有上界
 
-[研究] ✅ 借鉴这条分层顺序与少数规则；⛔ 不把整个 Java／LibGDX 游戏作为 Unity／UE 即插用生成插件。固定[源码许可](https://github.com/00-Evan/shattered-pixel-dungeon/blob/fdb10fc77914000af0907ac63f561ff21279115b/LICENSE.txt)为 GPLv3 文本，所读 Java 文件头允许 v3 或后续版本，不能当宽松许可代码直接拷入闭源工程；本轮未复制代码，未核整套美术／关卡资产的独立授权，不推荐提取这些资产。Dead Cells 与 Cogmind 只引用公开设计说明，未取得其代码或内容复用许可。
+[研究] ✅ 借分层顺序和少数规则；⛔ 不将 Java／LibGDX 整游戏当 Unity／UE 插件。[一手] [源码许可](https://github.com/00-Evan/shattered-pixel-dungeon/blob/fdb10fc77914000af0907ac63f561ff21279115b/LICENSE.txt)为 GPLv3，所读 Java 头允许 v3 或后续，不能直接作为闭源宽松许可底座；未复制代码、未核美术／关卡独立授权。Dead Cells／Cogmind 仅公开设计说明，无代码／内容复用许可。
 
 ### 3. 单人采用与二改预注册
 
@@ -652,19 +651,19 @@
 
 ### 1. 三个作者体系分别支持什么
 
-- **Factorio：规则服务玩家策略。** [一手：作者历史复盘] StrangePan／Earendel 的 [FFF425（2024-08-23）](https://www.factorio.com/blog/post/fff-425)说明，跨墙敌人若能攻击整个工厂，会逼玩家到处布防；于是用 Gleba 的孢子排放让敌人集中某些设施。它支持“已知规则能产生所需战术就保持规则”，不是效用／行为树之间的性能比较，更不是与 LLM 的实测胜负。正文中的脚本、评分、行为树分工是[研究]建议，不冒称 Factorio 使用了这三套系统。
-- **Mantella：实际模组中的语义到动作接口。** [一手：固定源码] Python端固定 `c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac`（2026-07-16）；Skyrim端固定 `0c5f8513aff61cda1f32c81a962eee36ba74fdb7`（2026-07-11）。[Follow定义](https://github.com/art-from-the-machine/Mantella/blob/c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac/data/actions/follow.json)将被说服同行的角色列入 source，范围为 conversation，并明确标实验性、可能破坏 NPC AI packages。[研究] 借用“自由说服→指定角色同行”作为窄候选，不把其自然语言回复算行动结果，不声称这是完整原创商业游戏或已证实留存收益。
-- **GoodAI：有物理动作仍不等于有好玩的挑战。** [一手：作者历史说明] [2024-04-29 FAQ](https://www.goodai.com/ai-people-announcing-the-next-evolution-of-gaming-ai-npcs/)说明环境／人物／记忆进入模型，动作由游戏执行，失败回传纠正；也承认角色会声称给了物品但世界没有发生。[2024-09-19 Alpha说明](https://www.goodai.com/ai-people-alpha-officially-released/)将其定位为技术概念验证，挑战有限、最初没有场景终局目标。[2025-04-30公告](https://www.goodai.com/ai-people-entered-the-closed-phase/)宣布无限期关闭当前版本并重新思考参与感；本次读取[现行入口](https://www.goodai.com/ai-in-games/)仍写封闭开发。[研究] 这些是作者自述和产品状态，不是证明“LLM导致关闭”的因果研究；不能以宣传中的新颖行为代替玩家价值，也不将该游戏列作现在可直接试玩的候选。
+- **Factorio：规则服务策略。** [一手：StrangePan／Earendel 历史复盘] [FFF425（2024-08-23）](https://www.factorio.com/blog/post/fff-425)说明跨墙敌人若攻击全厂会逼玩家处处布防，故用 Gleba 孢子排放集中攻击设施。[研究] 规则已能产生所需战术就保留；没有效用、行为树或 LLM 的性能对照，脚本、评分、BT 分工仅本文建议。
+- **Mantella：语义到动作。** [一手] Python 固定`c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac`（2026-07-16），Skyrim 端`0c5f8513aff61cda1f32c81a962eee36ba74fdb7`（2026-07-11）。[Follow定义](https://github.com/art-from-the-machine/Mantella/blob/c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac/data/actions/follow.json)把被说服同行角色列入 source、范围 conversation，标实验性且可能破坏 NPC AI packages。[研究] 仅作“自由说服→指定同行”窄候选，回复不等于行动；非完整原创商业游戏或留存证据。
+- **GoodAI：有动作不保证有挑战。** [一手：历史作者说明] [2024-04-29 FAQ](https://www.goodai.com/ai-people-announcing-the-next-evolution-of-gaming-ai-npcs/)称环境／人物／记忆进模型、游戏执行动作并回传失败，也承认会声称交物而世界未发生；[2024-09-19 Alpha说明](https://www.goodai.com/ai-people-alpha-officially-released/)定位技术概念验证、挑战有限且起初无终局目标；[2025-04-30公告](https://www.goodai.com/ai-people-entered-the-closed-phase/)无限期关闭当前版本、重新考虑玩家参与感，[现行入口](https://www.goodai.com/ai-in-games/)仍为封闭开发。[研究] 产品状态与作者解释不能证明 LLM 导致关闭，新颖行为不代玩家价值，也非当前可直接试玩候选。
 
 ### 2. 固定调用链：required 与兼容回退为什么还不够
 
-[一手：源码静读] 两个仓库分别固定，不假设当前主干组合是经过发布配对验证的版本。读取以下消费链，不只看 JSON 名称：
+[一手：源码静读] 上述两个快照未核发行配对，实际消费链如下：
 
 1. Python [function_manager.py](https://github.com/art-from-the-machine/Mantella/blob/c0c1ae6db01f3c2a14dbab8ec5c3e6419e4f6bac/src/actions/function_manager.py)的工具定义构造会传出 `required`，但 `_validate_arguments_against_schema` 只筛掉未知参数名，没有在这里验证必填齐全或类型。`parse_function_calls` 遇畸形 JSON 将参数置为空字典；空字典仍可生成只含 identifier 的工具结果。有效参数存在时则另有角色范围过滤。不能将函数名里的 validate 理解为完整契约验证。
 2. Skyrim [MantellaConversation.psc](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/Scripts/Source/MantellaConversation.psc#L660-L708)按是否有 arguments 字典选择 advanced 或 legacy 事件。advanced [Follow处理器](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/Scripts/Source/MantellaAdvancedAction_Follow.psc)按 source 名称解析会话 Actor，再设置 WaitingForPlayer、faction，重启 follower quest、EvaluatePackage；真正的移动交给原有游戏系统。
 3. 同版 [legacy处理器](https://github.com/art-from-the-machine/Mantella-Spell/blob/0c5f8513aff61cda1f32c81a962eee36ba74fdb7/Scripts/Source/MantellaAction_OffendForgiveFollow.psc)在会话可取得时遍历参与者，使符合条件的非玩家 NPC 跟随；只有会话不可取得才退到 speaker。它与路由处“缺参数回到 speaker-only”的注释并不等价。[研究] 这是静读可见的作用域扩大路径，未运行重现，不能声称玩家必然遇到；但足以拒绝“有白名单／JSON required就可安全执行”的采用理由。
 
-[一手] 作者 [#441](https://github.com/art-from-the-machine/Mantella/issues/441)还记录过多人会话把 `Npcname: Follow:` 当台词念出来；2025-12-11注明由 [Spell #128](https://github.com/art-from-the-machine/Mantella-Spell/pull/128)修复并关闭。[研究] 不把历史问题报成当前未修，也不据关闭推定所有模型／多角色动作都已可靠；上述参数缺失路径是另一次固定源码核查。
+[一手] [#441](https://github.com/art-from-the-machine/Mantella/issues/441)记录多人会话将`Npcname: Follow:`念作台词，2025-12-11 标由[Spell #128](https://github.com/art-from-the-machine/Mantella-Spell/pull/128)修复关闭。[研究] 这是已修历史问题，与上述缺参数路径分开；关单不能证明所有模型／多角色动作可靠。
 
 **采用 [研究]**：执行侧重核允许动作、精确对象、前置条件和活任务；缺字段、无对象、超时／取消后回包拒绝或保持状态，不能扩大到全体。说服阈值、拒绝权与错误的玩法作用由设计定；有效JSON不等于授权或执行成功。
 
@@ -689,12 +688,12 @@
 
 ### 1. 两条竞争路线：帮助时机与自主选择
 
-- **组合操作与长期经营：按需帮助。** [一手：历史作者解释] Wube 的 [FFF361（2020-10-09）](https://www.factorio.com/blog/post/fff-361)展示逐页提示改成索引、搜索、按条件推荐，并统一微教程入口；基础物件说明仍优先在 tooltip 解释，tips 留给难解释的组合与真实误解。作者还指出静态截图会随更新过期，改用真实模拟演示。[研究] 借帮助的分工与回查机制，不要求独立开发者先造嵌入式模拟器；已有场景中的短演示能讲清就够。代价是持续维护触发、内容与示例，且通知可能被忽略。
-- **自主探索：可选练习与能力提示。** [一手：开发中作者复盘] Mobius 的 [Filling Out The Toolbox（2016-05-27）](https://www.mobiusdigitalgames.com/news/filling-out-the-toolbox)描述 Outer Wilds 从强制工具操作链改为沿途可选练习：旧流程让玩家照做，进入开放世界却不知道下一步；作者于是强调可做什么，而非继续指定该做什么。同文明确承认可选教学会被跳过，多用途探测器尤其难教，补场景用途示意也只是设计意图。[研究] 适合寻找目标本身有价值的玩法，代价是漏学与练习空间的内容成本；这是作者观察，没有受控玩家结果，不能宣布自由教学普遍更好。
+- **Factorio：按需帮助。** [一手：历史作者解释] [FFF361（2020-10-09）](https://www.factorio.com/blog/post/fff-361)把逐页提示改为索引、搜索、条件推荐并统一微教程；基础说明用 tooltip，tips 处理组合与误解，易过时截图换成真实模拟演示。[研究] 借分工／回查，已有场景短演示够用就不另造嵌入式模拟器；触发、内容、示例需维护，通知也会被忽略。
+- **Outer Wilds：可选练习。** [一手：开发中作者复盘] [Filling Out The Toolbox（2016-05-27）](https://www.mobiusdigitalgames.com/news/filling-out-the-toolbox)将强制工具链改为沿途练习：原流程让玩家照做，进开放世界却不知下一步，遂强调可做什么。作者承认可选教学会被跳过、多用途探测器难教，用场景示意工具用途仍只是设计意图。[研究] 寻找目标有价值时可试；代价为漏学及练习内容成本，无受控结果支持其普遍更好。
 
 ### 2. 固定实现：触发与已读不代表掌握
 
-[一手：源码阅读] `wube/factorio-data@374934f81f82b09ec9fc459f92a316bd642ddd82`，提交日期 2026-10-06。已读以下消费链，不只引用字段名：
+[一手] `wube/factorio-data@374934f81f82b09ec9fc459f92a316bd642ddd82`（2026-10-06）的实际消费链：
 
 - [base/data.lua L50](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/data.lua#L50)加载 `prototypes.tips-and-tricks`
 - [bulk-crafting L208–229](https://github.com/wube/factorio-data/blob/374934f81f82b09ec9fc459f92a316bd642ddd82/base/prototypes/tips-and-tricks.lua#L208-L229)以连续单件下单5次触发提示，连续批量下单3次满足 `skip_trigger`，绑定相应 simulation
@@ -713,7 +712,7 @@
 
 [一手] [Outer Wilds 路线复盘（2016-08-18）](https://www.mobiusdigitalgames.com/news/the-intentionality-of-wandering)说明自由选择仍需线索，作者希望玩家有意识地选路，同时讨论怎样保留惊喜。[研究] 操作能力、值得调查的方向、谜题答案分开决定提示范围；自动提示若提前交出本应发现的用途，可能损害核心体验。该边界是设计推导，不是本轮测得的剧透影响。
 
-[一手：历史受控研究] Andersen 等 [The Impact of Tutorials on Games of Varying Complexity（CHI 2012，pp.59–68）](https://grail.cs.washington.edu/projects/game-abtesting/chi2012/chi2012.pdf)在 Refraction、Hello Worlds、Foldit 内随机分配新玩家的教程条件，比较情境提示、提前手册、锁定操作及按需帮助；跨游戏的复杂度没有随机操纵，操作范式与下载门槛不同，玩家经验及自选择人群也可能不同。帮助按钮的跨条件汇总未提供一致的收益证据，且 Hello Worlds 返回率的方向在 Table 3 与正文间不一致，不能据此为已有教学再叠加帮助入口；主要指标是时长、完成关卡与返回行为，不证明无指令情境中的主动使用或知识迁移。[研究] 因此把目标玩家经验与真实误解作为选型条件，不从复杂度或“可选”标签单独推导教学收益。这是 Flash 解谜／平台游戏与蛋白质折叠游戏时代的机制证据，不代表当前 AI 收益。
+[一手：历史受控研究] Andersen 等[The Impact of Tutorials on Games of Varying Complexity（CHI 2012，pp.59–68）](https://grail.cs.washington.edu/projects/game-abtesting/chi2012/chi2012.pdf)在 Refraction、Hello Worlds、Foldit 随机分配情境提示、提前手册、锁操作、按需帮助。复杂度未跨游戏随机操纵，操作范式、下载门槛、经验及自选择人群可能不同；帮助按钮跨条件汇总无一致收益，Hello Worlds 返回率在 Table 3 与正文方向冲突。时长、完成关卡、返回行为也不能证明无指令主动使用／迁移。[研究] 选型看目标玩家经验和真实误解，不能仅按复杂度／“可选”再叠帮助入口；这是 Flash 解谜／平台及蛋白质折叠游戏时代证据，非当前 AI 收益。
 
 ### 4. 窄二改预注册与撤回条件
 
@@ -730,10 +729,10 @@
 
 ### 竞争选择与一手反例
 
-- **即时动作的局部选择。** [一手：官方历史补丁] [Dead Cells 29 系列](https://deadcells.com/patchnotes/29)将按住跳跃／翻滚、盾牌切换及输入自定义与 Assist 选项分列；后者包含敌人伤害／血量、陷阱伤害、格挡窗口与陷阱速度等调整。29.2 修复关闭 Assist 后子选项仍生效；29.3 修复 Multiple Lives 下特定死亡软锁。它们说明菜单开关与实际规则、失败路径必须一起维护，不代表当前版本仍坏。该页另有读档后敌人／Boss 血量复满的修复，但未说明由 Assist 引起，不作因果归属，也不据此声称每种选项都可安全即时切换。[研究]
-- **回合策略的整局选择。** [一手：作者设计说明] Kyzrati 的 [Adjustable Difficulty（2017-02-16）](https://www.gridsagegames.com/blog/2017/02/adjustable-difficulty/)为计分一致性限定难度下一局生效，榜单分模式；调整包括警戒压力、遭遇和出口信息，而非只有伤害倍率。作者区分仍希望练习标准玩法与主要希望探索内容的玩家，也提出低压力可能不迫使玩家学到标准模式所需应对。这是设计取舍与风险判断，不是学习实验或当前版本全部参数的核验。[研究]
-- **可发现性有发布后反证。** [一手：作者观察] [Rebranding Difficulty Modes（2019-09-17）](https://www.gridsagegames.com/blog/2019/09/rebranding-difficulty-modes/)说明此前手册、选项菜单及死亡提示仍常被漏看，于是增加首次启动的显式选择，并改用 Explorer／Adventurer／Rogue 名称。[2022-05-08 回顾](https://www.gridsagegames.com/blog/2022/05/kyzratis-game-design-philosophy/)报告菜单加入后较易模式使用增加、仍为少数。这不证明单一命名改动的效果或留存收益。[研究]
-- **信息边界。** [一手：同上2022回顾] 已警觉敌人位置曾向全体显示，因标准玩法优势过大从Rogue撤出。[研究] 既有信号可达与揭露未知位置分开，不由此取消标准模式必要提示或判所有轮廓越权。
+- **Dead Cells 局部选项。** [一手：历史补丁] [Dead Cells 29 系列](https://deadcells.com/patchnotes/29)将按住跳／滚、盾牌切换、输入自定义与 Assist 分列；Assist 含敌人伤害／血量、陷阱伤害／速度、格挡窗口。29.2 修关闭后子项仍生效，29.3 修 Multiple Lives 特定死亡软锁，说明菜单与规则／失败路径须同维护，非当前仍坏。另有读档敌人／Boss 复满血修复但未归因 Assist，也未证所有项安全即时切换。[研究]
+- **Cogmind 整局预设。** [一手：作者设计] [Adjustable Difficulty（2017-02-16）](https://www.gridsagegames.com/blog/2017/02/adjustable-difficulty/)为计分一致将难度限下局生效、榜单分模式，调警戒压力、遭遇、出口信息而非仅伤害。作者区分练标准与探内容的人，认为低压可能不教标准所需应对；属取舍风险，非学习实验或现版全参数核验。[研究]
+- **发现入口。** [一手：作者观察] [Rebranding Difficulty Modes（2019-09-17）](https://www.gridsagegames.com/blog/2019/09/rebranding-difficulty-modes/)称手册、菜单、死亡提示仍被漏看，改首次启动显式选择及 Explorer／Adventurer／Rogue 命名；[2022-05-08 回顾](https://www.gridsagegames.com/blog/2022/05/kyzratis-game-design-philosophy/)报告较易模式使用增加但仍少数，未隔离命名贡献或证留存。[研究]
+- **信息权限。** [一手：同上 2022 回顾] 已警觉敌人位置曾全体可见，标准玩法优势过大后从 Rogue 撤出。[研究] 提高信号可达与揭露未知分开，不删标准必要提示或判所有轮廓越权。
 
 ### 最小采用与撤回边界
 
@@ -755,9 +754,9 @@
 
 ### 三种选择及代价
 
-- **当前可获知信息超出视口，补查看路径。** [一手：作者开发记录，2024-02-11] [Cogmind 放大视图 QoL](https://www.gridsagegames.com/blog/2024/02/adventures-in-map-zooming-part-5-qol/)展示放大后边缘标记、标记避开已显示机器人、按键聚焦敌群并返回。普通可见对象与传感器信息采用不同表现；标记范围以未放大窗口为基准，目的在于补回放大损失的信息。[研究] 适用于能在行动前查看局面的玩法，不证明实时战斗中频繁转移视图也安全；不把“在画面外”当作原本未知而自动揭示，也不建议复制全部 UI。
-- **动作空间本身让玩家在看不到处受击，先改布局。** [一手：作者复盘，页面标注2020-01-21] [Specter of Torment 房间设计](https://www.yachtclubgames.com/blog/specter-of-torment-level-design-deep-dive-2-5/)用进房间过渡期间触手伸入画面、醒目颜色与运动介绍 Grapps；附近天花板阻止玩家从画面上方绕过而遭受屏外命中。作者还反对把伸出动作随意放慢：那会错误暗示能抢跑通过。[研究] 缺的是正确空间理解时，限制不合适的路线可比再加警报有效；但这种结构约束会缩小自由度，不能推广为所有游戏都应封路。
-- **受限视野仍是核心玩法，改攻击的可应对性。** [一手：开发中团队访谈，2023-06-30] [Luna Abyss 设计者／程序员](https://www.unrealengine.com/developer-interviews/how-unreal-engine-empowered-a-small-team-to-build-luna-abyss-beautiful-bullet-hell-prison)说明第一人称弹幕须在玩家面向攻击者时从前方来；玩家可能背对攻击者，因此以慢弹或长预告留出转向观察时间，加上声音提示，并因身体边界不可见扩大弹幕间隙。[研究] 它与 Grapps 不能合并成“都放慢”：一个保住扫视与躲避时间，另一个需要快速明确地封住道路。文中“避免不可见伤害”为团队自述，未独立复测；不照搬具体速度或间距。
+- **可知信息超视口：补查看。** [一手：2024-02-11 作者记录] [Cogmind 放大视图 QoL](https://www.gridsagegames.com/blog/2024/02/adventures-in-map-zooming-part-5-qol/)用边缘标记补放大损失、避开已显示机器人，支持聚焦敌群再返回；普通可见／传感器信息表现不同，范围参照未放大窗口。[研究] 可在行动前查看才适用，非实时转移视图安全证据；屏外不自动等于未知或可揭示，不复制整套 UI。
+- **路线造成屏外受击：先改布局。** [一手：2020-01-21 作者复盘] [Specter of Torment 房间设计](https://www.yachtclubgames.com/blog/specter-of-torment-level-design-deep-dive-2-5/)在进房过渡以触手入镜、颜色、运动介绍 Grapps，并以天花板防从画面上方绕过后屏外中招。作者反对放慢伸出，免误示可抢跑。[研究] 空间理解不足时，封不当路线可比警报有效，但会减自由度。
+- **受限视野是本体：改攻击应对。** [一手：2023-06-30 开发中访谈] [Luna Abyss 设计者／程序员](https://www.unrealengine.com/developer-interviews/how-unreal-engine-empowered-a-small-team-to-build-luna-abyss-beautiful-bullet-hell-prison)称第一人称弹幕要在面向攻击者时从前方来，背对时靠慢弹／长预告及声音留转头时间，身体边界不可见则加宽弹隙。[研究] 团队“避免不可见伤害”未独立复测；它保扫视躲避时间，Grapps 需迅速封路，不能统一“都放慢”或迁移速度／间距。
 
 ### 固定实现反例：不显示演出，不等于不结算
 
@@ -786,15 +785,15 @@
 
 [研究] 🧪 缺直接指向或单点常选背景时，比明确中心与有限区域；光标保直接指定。区域会推断意图，若更难预测就退明确支点，不统一改掌机默认或靠阻尼掩盖误选。
 
-[一手：取得范围] 普通网页解析只返回标题，本轮通过 [Steam 官方 GetNewsForApp API](https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2198150&count=100&maxlength=0&enddate=1737072000&feeds=steam_community_announcements)取得完整正文：appid `2198150`、gid `1788945554756976`、author `anopara`、timestamp `1736947659`，feed 为官方 community announcements。未以转载补足一手正文，也未运行游戏或播放公告动图。2024 年鼠标读取异常的修复不是本次支点设计调整，不合并因果。
+[一手：取得范围] 网页解析只得标题，[Steam 官方 GetNewsForApp API](https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2198150&count=100&maxlength=0&enddate=1737072000&feeds=steam_community_announcements)提供完整正文：appid `2198150`、gid `1788945554756976`、author `anopara`、timestamp `1736947659`，官方 community announcements。未借转载或播放动图；2024 鼠标读取异常修复与本次支点设计不同因。
 
 ### 2. OpenRCT2：同一支点契约下删除多余拾取，按钮另修
 
-[一手] [#12831](https://github.com/OpenRCT2/OpenRCT2/issues/12831)报告 v0.3 在竖直地形面 zoom-to-cursor 时偏移，可用 Extreme Heights 地图边缘或抬高的 4×4 地形复现。[#25042](https://github.com/OpenRCT2/OpenRCT2/pull/25042)于 2025-08-27 合入，固定提交 [85a0f70ae166cb5d240844c4dffad7c1c9fbbd76](https://github.com/OpenRCT2/OpenRCT2/commit/85a0f70ae166cb5d240844c4dffad7c1c9fbbd76)。`src/openrct2/interface/Window.cpp` 旧路径把鼠标位置转地图坐标、查询高度，再围绕 tile 校正；新路径删除两个辅助函数，仅在 `ZoomToCursor && atCursor` 时按鼠标相对当前 viewport 的位置和前后缩放级别附加补偿 `savedViewPos`，随后同步 `viewPos`。作者明确目标仍是保持光标下的点，并未把默认改成中心。
+[一手] [#12831](https://github.com/OpenRCT2/OpenRCT2/issues/12831)报告 v0.3 竖直地形面 zoom-to-cursor 偏移，复现为 Extreme Heights 边缘或抬高 4×4 地形。[#25042](https://github.com/OpenRCT2/OpenRCT2/pull/25042)于 2025-08-27 合入[85a0f70ae166cb5d240844c4dffad7c1c9fbbd76](https://github.com/OpenRCT2/OpenRCT2/commit/85a0f70ae166cb5d240844c4dffad7c1c9fbbd76)：`src/openrct2/interface/Window.cpp` 的旧路径取地图坐标、高度再按 tile 校正；新路径删两个辅助函数，仅`ZoomToCursor && atCursor`时依鼠标相对 viewport 位置与前后缩放级别补偿`savedViewPos`，再同步`viewPos`。目标仍保光标下的点，未改中心默认。
 
 [一手／研究] 这是二维等距视口补偿，不是3D射线算法；仅保屏幕指向时可省拾取，透视旋转仍须按需找世界支点。作者及他人的主／额外视口测试只支持该修复链。
 
-[一手] 同日 [#25046](https://github.com/OpenRCT2/OpenRCT2/pull/25046)的固定提交 [e4f36840bff585b4a3f5581cd2b4714f887b2c02](https://github.com/OpenRCT2/OpenRCT2/commit/e4f36840bff585b4a3f5581cd2b4714f887b2c02)另修额外视口按钮：`src/openrct2-ui/windows/Viewport.cpp` 从直接增减 `viewport->zoom` 改为 `WindowZoomIn/Out(*this, false)`，接回完整中心缩放路径。[测试反馈](https://github.com/OpenRCT2/OpenRCT2/pull/25046#issuecomment-3228516256)称按钮改善而滚轮仍异常，作者指向 #25042；不能把任一入口成功当整个缩放功能通过。两个修复均进入 2025-09-06 发布的 [v0.4.26 官方发行说明](https://openrct2.io/blog/2025/09/openrct2-v0.4.26-released)，不是只引用开发分支。
+[一手] 同日[#25046](https://github.com/OpenRCT2/OpenRCT2/pull/25046)（[e4f36840bff585b4a3f5581cd2b4714f887b2c02](https://github.com/OpenRCT2/OpenRCT2/commit/e4f36840bff585b4a3f5581cd2b4714f887b2c02)）另将`src/openrct2-ui/windows/Viewport.cpp` 的额外视口按钮从直接改`viewport->zoom`接回`WindowZoomIn/Out(*this, false)`完整中心缩放。[测试反馈](https://github.com/OpenRCT2/OpenRCT2/pull/25046#issuecomment-3228516256)称按钮改善、滚轮仍异常，作者指向#25042；单入口通过不代整体。两修复均进 2025-09-06 的[v0.4.26 官方发行说明](https://openrct2.io/blog/2025/09/openrct2-v0.4.26-released)。
 
 ### 3. 最小采用与二改验收
 
@@ -810,13 +809,13 @@
 
 ### 1. OpenRA：视口相关闪光的评审修正
 
-[一手：维护者评审／合并源码] [PR #18711](https://github.com/OpenRA/OpenRA/pull/18711)新增宝石闪光。维护者在[具体评审](https://github.com/OpenRA/OpenRA/pull/18711#discussion_r711581362)指出：按客户端 `Viewport.AllVisibleCells` 调用 SharedRandom 会导致多人失同步，应改用 LocalRandom；[作者回复](https://github.com/OpenRA/OpenRA/pull/18711#discussion_r711729049)确认已处理。这是评审发现并纠正的风险，不能写成已发行故障统计或本轮复现。
+[一手：评审／合并源码] [PR #18711](https://github.com/OpenRA/OpenRA/pull/18711)新增宝石闪光；[具体评审](https://github.com/OpenRA/OpenRA/pull/18711#discussion_r711581362)指出按客户端`Viewport.AllVisibleCells`抽 SharedRandom 会多人失同步，要求 LocalRandom，[作者回复](https://github.com/OpenRA/OpenRA/pull/18711#discussion_r711729049)确认修改。属评审纠正风险，非发行故障统计。
 
-[一手：固定源码] 2021-10-02 合并提交 `a13d04630469fcb994bbbc25e644b4e6b471017c` 的 [WithResourceAnimation L62–103](https://github.com/OpenRA/OpenRA/blob/a13d04630469fcb994bbbc25e644b4e6b471017c/OpenRA.Mods.Cnc/Traits/World/WithResourceAnimation.cs#L62-L103)把间隔、可见格筛选后的洗牌、比例与动画选择接到 LocalRandom；同提交 [Util L201–209](https://github.com/OpenRA/OpenRA/blob/a13d04630469fcb994bbbc25e644b4e6b471017c/OpenRA.Mods.Common/Util.cs#L201-L209)让范围采样显式接收生成器，不再在帮助函数中固定取世界 SharedRandom。[研究] 可借的是调用者明确传入所拥有的流，而不是搬运整个 RTS 架构。不能把全部声音／动画相关代码一律改为局部随机：是否影响权威状态及调用时机才是边界。
+[一手] 2021-10-02 合并`a13d04630469fcb994bbbc25e644b4e6b471017c`：[WithResourceAnimation L62–103](https://github.com/OpenRA/OpenRA/blob/a13d04630469fcb994bbbc25e644b4e6b471017c/OpenRA.Mods.Cnc/Traits/World/WithResourceAnimation.cs#L62-L103)的间隔、可见格洗牌、比例、动画选择用 LocalRandom；[Util L201–209](https://github.com/OpenRA/OpenRA/blob/a13d04630469fcb994bbbc25e644b4e6b471017c/OpenRA.Mods.Common/Util.cs#L201-L209)的范围采样改为显式接收生成器，不固定取 SharedRandom。[研究] 借调用者传所拥有的流，不移植整套 RTS 架构；按是否影响权威状态／调用时机划域，不能把全部声音动画都改局部随机。
 
 ### 2. BrogueCE：单人显示与玩法也有不同消费域
 
-[一手：固定源码] `tmewett/BrogueCE@104a20fedbe7d9360d2dfc8ff665571694212ad8`（2026-09-27 主干快照，非本轮确认的发行包）的 [Rogue.h L401–405](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/Rogue.h#L401-L405)区分 substantive／cosmetic；[Math.c L90–133](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/Math.c#L90-L133)保存两份状态并按当前域采样；[IO.c L1768–1805](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/IO.c#L1768-L1805)在颜色随机化前选 cosmetic，完成后恢复原域。[研究] 这为独立单人 roguelike 提供另一种隔离实现；本轮只确认该调用链，不证明所有路径均正确，也不建议在新项目照搬可变全局选择器。
+[一手] BrogueCE 主干`104a20fedbe7d9360d2dfc8ff665571694212ad8`（2026-09-27，非已核发行包）：[Rogue.h L401–405](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/Rogue.h#L401-L405)分 substantive／cosmetic；[Math.c L90–133](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/Math.c#L90-L133)存两状态、按域采样；[IO.c L1768–1805](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/IO.c#L1768-L1805)颜色随机前选 cosmetic、完成后恢复。[研究] 单人 roguelike 也可隔离，仅读该链不能证明全路径，也不推荐照搬可变全局选择器。
 
 ### 3. 复用原生能力，别把重置当续接
 
@@ -836,15 +835,15 @@
 
 ### 跨类型证据与反例
 
-- **Homebody，恐怖探索。** [一手：创作者自述] 主要系统／玩法程序员及技术设计者 Alex Belzer 的[项目页](https://www.alexbelzer.com/work/homebody)说明，他实现了远离玩家时加快巡逻的机制，并用盲角布局让玩家甩脱追逐或遇见敌人。[研究] 它支持通过巡逻与空间设计调节遭遇，未公开足以证明完整感知记忆的数据结构。页面对 Alien: Isolation、Resident Evil 2 的比较及公平性感受属于作者解释，不当作那两部游戏的原始实现证据，也不把他的 GOAP 选择升格为默认方案。
-- **Shattered Pixel Dungeon，回合 roguelike。** [一手：固定源码] `57a4e06a4caf162446d1c28caa7983f0493fecf0` 的 [Mob.Hunting L1284–1324](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L1284-L1324)分开 enemy 对象与 target 格，在 enemyInFOV 时更新目标格，再向该格移动；[后续分支 L1345–1411](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L1345-L1411)在无法继续靠近且失去视野时转游荡，逃跑也可继续使用旧位置。[研究] 只借这些基类分支，不宣称所有怪物、子类或目标选择路径都不读取真值。
-- **同项目的允许共享反例。** [一手] [processSwarmIntel L298–323](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L298-L323)在群体智能挑战、正在追猎并感知目标等条件满足时，把目标位置传给范围内未追猎的同阵营怪物。[研究] 因而不能把“不是亲眼看到”一律判错；队友报告可以是明确允许的信息来源，不要求各角色彼此隔绝。
-- **Left 4 Dead，合作动作射击的全局调度反例。** [一手：Mike Booth／Valve，2009讲义] [The AI Systems of Left 4 Dead](https://cdn.akamai.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf)PDF 第69页按队伍不可见区域与敌人类型选择生成位置，第79–82页估算队伍压力、调节威胁数量，Relax 期间既存特殊感染者仍可攻击。[研究] 导演读取世界状态以组织遭遇，不等于每个角色都应取得持续精确定位；这也反对把全局位置访问一概定性为坏设计。材料不证明每只感染者的感知实现，不推荐单人项目搬整套导演，也不把历史团队经验算成本仓库实测。
+- **Homebody 恐怖探索。** [一手：Alex Belzer 创作者自述] 系统／玩法程序员及技术设计者的[项目页](https://www.alexbelzer.com/work/homebody)称远离玩家时加快巡逻，并用盲角支持甩脱和遭遇。[研究] 支持巡逻＋空间调压，未公开足以核实完整感知记忆的数据结构；对 Alien: Isolation／Resident Evil 2 及公平性的比较仅属作者解释，不是两作实现证据，GOAP 也不升默认。
+- **SPD 回合 roguelike。** [一手] 固定`57a4e06a4caf162446d1c28caa7983f0493fecf0`的[Mob.Hunting L1284–1324](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L1284-L1324)分 enemy 对象与 target 格，enemyInFOV 时更新位置后移动；[后续分支 L1345–1411](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L1345-L1411)在无法靠近且失视时转游荡，逃跑也可用旧位置。[研究] 仅这些基类分支，不能证明所有怪物／子类／选敌都不读真值。
+- **共享信息的反例。** [一手] 同版本[processSwarmIntel L298–323](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L298-L323)在群体智能挑战、追猎并感知目标等条件下，传位置给范围内未追猎同阵营怪物。[研究] 队友报告可合法，不要求人人只信亲见。
+- **Left 4 Dead 全局调度。** [一手：Mike Booth／Valve 2009 讲义] [The AI Systems of Left 4 Dead](https://cdn.akamai.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf)第 69 页按队伍不可见区域及敌种选生成点，第 79–82 页估压力、调数量；Relax 时既有特殊感染者仍攻击。[研究] 导演读真值可合理，不等于角色持续精确定位；未揭示每只感染者的感知实现，不推荐整套移植或计作本仓实测。
 
 ### 原生入口：位置输入、感知状态与遗忘不是同一开关
 
-- **Unity Behavior 1.0 文档渠道，本轮读取的节点契约。** [一手] [节点清单](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/node-types.html)将 Navigate To Location 的指定位置与 Navigate To Target 的目标 GameObject 分开；两者使用 NavMeshAgent，缺少时可回退 Transform。[研究] 搜索沿既有位置变量，不由实时对象坐标隐式覆盖；这里只核输入类型，不宣称具体目标刷新频率、内置感知记忆或所有 Unity 版本等价，也不把1.0渠道称为最新发行版。
-- **UE 5.8 当前官方文档。** [一手] [AI Perception](https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine)分别列 Get Currently Perceived Actors 与 Get Known Perceived Actors，刺激携带 Age、Expiration Age、Stimulus Location、Successfully Sensed；Forget Stale Actors 配合 Max Age 管理遗忘，0表示不遗忘。[Move To 任务](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-behavior-tree-node-reference-tasks)的 Track Moving Goal 会随着目标 Actor 移动更新路径。[研究] 搜索可切换到位置键，并核旧任务是否仍跟对象；不能认为感知丢失会自动清除自定义黑板或停止已有追踪。视线丢失也不代表听觉、队友报告或其他允许的线索同时失效。
+- **Unity Behavior 1.0 文档渠道。** [一手] [节点清单](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/node-types.html)分 Navigate To Location 位置与 Navigate To Target 对象，均用 NavMeshAgent，缺少时可退 Transform。[研究] 搜索用位置变量，勿被实时对象坐标覆盖；未核实目标刷新频率、内置感知记忆或各版本等价性，1.0 渠道不称最新发行。
+- **UE 5.8 文档。** [一手] [AI Perception](https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine)分 Currently／Known Perceived Actors，刺激含 Age、Expiration Age、Stimulus Location、Successfully Sensed；Forget Stale Actors 配 Max Age 遗忘，0 为不遗忘。[Move To 任务](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-behavior-tree-node-reference-tasks)的 Track Moving Goal 随 Actor 更新路径。[研究] 搜索时可切换位置键，并检查旧任务是否仍追踪对象；感知丢失不自动清理自定义黑板或停止追踪，失去视野也不使听觉、队友报告等允许的线索失效。
 
 ### 采用、撤回与二改预注册
 
@@ -860,10 +859,10 @@
 
 ### 跨类型机制与反例
 
-- **Cogmind，回合 roguelike。** [一手：开发者手册] 本轮读取的[官方文本](https://www.gridsagegames.com/cogmind/manual.txt)页头为 Beta 17.1，Targeting Behavior 节说明：按 `f` 进入开火模式时恢复最近目标，可以是机器人或空地；此前引导武器的路径点仍在视野内时一并恢复。没有旧目标或旧目标不再有效才选最近目标。前后循环按近到远，通常仅含有武装的敌对对象；没有此类可见对象时才循环所有非盟友对象。查看模式始终包括有／无武装的非盟友对象，可先在那里选中无武装目标再转开火。[研究] 这支持把自动候选和玩家可指定对象分开，并保留例外选择路径；不证明实时锁定算法、所有旧目标失效条件或通用保持阈值。搜索所得 booklet PDF 为 Beta 7，本节以重新读取的当前文本为准。
-- **Hades，俯视动作，原作历史补丁。** [一手] [Early Access Patch 039，2020-01-28](https://www.supergiantgames.com/blog/hades-long-winter-update-patch-notes/)扩大 Adamant Rail 使用手柄时的 autolock radius；[Early Access Patch 044，2020-06-23](https://www.supergiantgames.com/blog/hades-the-blood-price-update-patch-notes/)让 Companion Rib 召唤出的 Skelly 不再被 Aim Assist 自动锁定。后一网页页眉写 March 1st，本节采用正文补丁节明确标注的 June 23，而非页眉日期。[研究] 两次分别修改范围与候选，反证辅助不能沿一个“越强越好”的方向调。这里只说该召唤物，不泛化所有友方／练习对象，不推断仍能手动攻击它，也不把原作历史规则写成 Hades II 或当前全武器规则；开发者未提供这两项调整的对照体验测量。
-- **Brotato，生存动作。** [一手：官方商店描述] [Features](https://store.steampowered.com/app/1942280/Brotato/)分别写默认自动开火和手动瞄准选项。[研究] 可借的是开火自动化与瞄准控制分开选择；该描述不公开候选排序、目标保持或各平台设置细节，也不证明手动瞄准会关闭自动开火。
-- **OpenRA，RTS 的距离反例。** [一手：固定发行源码] GitHub 标签 API 将 `release-20250330` 解析到提交 `b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`。[AutoTarget.ChooseTarget L349–451](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/AutoTarget.cs#L349-L451)先筛关系、类型、可见性与武器资格；不允许移动时核射程，不允许转向时核射界，最后先比较优先级，同级才比较距离。[研究] 这是自动选敌并非总选最近的具体实现，不证明所有显式命令永不被自动目标覆盖，也不是动作游戏锁定手感的证据；不搬整个 RTS 调度体系。
+- **Cogmind 回合 roguelike。** [一手：Beta 17.1 手册] [官方文本](https://www.gridsagegames.com/cogmind/manual.txt)的 Targeting Behavior：按`f`恢复最近机器人／空地目标，仍可见的引导武器路径点也恢复；无旧目标或已失效才取最近。前后循环按距离，通常只含有武装敌对对象，无此类可见对象才含全部非盟友。查看模式含有／无武装非盟友，可在那里选无武装目标再开火。[研究] 自动候选与直接指定分开；未核实时锁定、全部失效条件或保持阈值。搜索 booklet 为 Beta 7，以新读文本为准。
+- **Hades 原作俯视动作。** [一手：历史补丁] [Early Access Patch 039，2020-01-28](https://www.supergiantgames.com/blog/hades-long-winter-update-patch-notes/)扩大手柄 Adamant Rail autolock radius；[Early Access Patch 044，2020-06-23](https://www.supergiantgames.com/blog/hades-the-blood-price-update-patch-notes/)排除 Companion Rib 召唤的 Skelly。后一页页眉 March 1st 与正文不同，本节按 June 23 补丁节。[研究] 范围／候选各自取舍，非“辅助越强越好”；不泛化全部友方、推断可手动攻击 Skelly，或视作 Hades II／现版全武器规则。两修订无对照体验测量。
+- **Brotato 生存动作。** [一手：官方商店] [Features](https://store.steampowered.com/app/1942280/Brotato/)分别列默认自动开火与手动瞄准。[研究] 开火与瞄准可分选；未公开排序、保持、平台细节，也未证手瞄关闭自动开火。
+- **OpenRA RTS 距离反例。** [一手：固定发行源码] 标签 API 将`release-20250330`解析为`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`。[AutoTarget.ChooseTarget L349–451](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/AutoTarget.cs#L349-L451)先筛关系、类型、可见性、武器资格；禁移动核射程、禁转向核射界，优先级相同才比距离。[研究] 自动选敌非总最近；不能证明显式命令永不被覆盖或动作锁定手感，不移植整套 RTS 调度体系。
 
 ### 最小采用、撤回与二改预注册
 
@@ -881,9 +880,9 @@
 
 ### 决策信息不等于完整行为表
 
-- **确定结果服务局面求解。** [一手：设计者访谈] Justin Ma 在 [2018-02-23 访谈](https://www.gamedeveloper.com/game-platforms/road-to-the-igf-subset-games-i-into-the-breach-i-)把 Into the Breach 的敌方预告与减少随机性、解谜取向相连；保护建筑、牺牲机甲和推移提供不同解法。这是首发前的设计说明，不是发行后的受控评价。[研究] 当玩家要分配有限行动、改变已知攻击后果时，明确预告可作为候选；不推出所有类型都应采用，也不把局内攻击可预测说成整局没有随机性。
-- **只呈现当前选择需要的信息。** [一手：作者原始视频转写] Slay the Spire 两位创始人的 [2019-05-02 访谈](https://arstechnica.com/video/watch/war-stories-slay-the-spire-war-stories/?c=series)说明：随机行动不预告使攻防难选，逐敌长文本又太繁重，后来改为意图图标；部分敌人会根据玩家行为改变意图。[研究] 支持决策粒度与条件变化，不证明所有敌人每张牌后即时重算，也不要求复制图标体系。
-- **有意未知是另一种体验政策。** [一手：作者复盘] Thomas Grip 的 [2019-10-15 文章 Lesson 7](https://frictionalgames.com/2019-10-9-years-9-lessons-on-horror/)回顾 Amnesia 理智系统从较直白改得更含糊，以保留想象与紧张。[研究] 这是理智系统而非敌方下一招 UI，只用于反驳“规则越透明普遍越好”；作者观察不能证明隐藏攻击提高恐怖体验，更不能授权错误的确定性提示。
+- **Into the Breach：确定结果供求解。** [一手：Justin Ma 首发前设计访谈] [2018-02-23 访谈](https://www.gamedeveloper.com/game-platforms/road-to-the-igf-subset-games-i-into-the-breach-i-)将预告、少随机与解谜连接，保护建筑、牺牲机甲、推移形成解法。[研究] 分配有限行动、改变已知攻击后果时可试；非发行后受控评价，也不指整局无随机。
+- **Slay the Spire：显示决策所需。** [一手：两位创始人视频转写] [2019-05-02 访谈](https://arstechnica.com/video/watch/war-stories-slay-the-spire-war-stories/?c=series)称随机行动无预告难选攻防、逐敌长文本又繁重，遂用意图图标；部分敌人随玩家行为改意图。[研究] 借粒度／条件变化，不能证明每敌每牌后重算或要求同图标体系。
+- **Amnesia：有意未知。** [一手：Thomas Grip 复盘] [2019-10-15 文章 Lesson 7](https://frictionalgames.com/2019-10-9-years-9-lessons-on-horror/)将理智系统从直白改含糊以留想象紧张。[研究] 是理智而非下一招 UI，只反证透明并非普遍更好；不能证明隐藏攻击的收益，更不允许虚假确定提示。
 
 [研究] 沿行动状态选信息政策：确定且供计划的明确显示；可变结果标当前条件并更新／撤销；有价值的试探可隐藏。只需攻防类别不列完整行为表，未知仅造成无意义盲试时才补信息，表现不能许诺规则未锁定结果。
 
@@ -902,7 +901,7 @@
 3. 没有排队动作的对象不出现虚假排序；有意隐藏的部分也不得因调试／新 UI 意外公开
 4. 已有预演／撤销才核预演退出后状态、资源和下一行动；不为做这些检查而新增模拟器
 
-[研究] 记录显示所依据的状态、条件变化与最终执行；AI 可追条件消费和补回归，人决定哪些未知值得保留、预告能否支持所需决定。失真时先修条件同步、缩小显示承诺或简化规则；若信息堆积使当前选择更难读，退回必要粒度，不用更多字段充当质量提高。
+[研究] 记录提示依据、条件变化和最终执行；AI 追消费者／回归，由人决定保留哪些未知、提示是否足以支持选择。失真时先修条件同步、缩小显示承诺或简化规则，信息过多就退必要粒度。
 
 **范围 [研究]**：公开访谈／公告，未读商业反编译代码；只支持设计、作者观察与历史维护，无通用体验排名。建议与引擎无关。
 
@@ -916,11 +915,11 @@
 - [ContainerStore.unstack／restack／stacks](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/containerstore.cpp#L315-L400)拆分时保留原栈指定数量，为余量另发 RefNum；合并时原项归零并返回存活栈。同定义只是必要条件：还核灵魂、剩余使用时间与传统物品脚本；有耐久者须都满耐久，有附魔充能者须都满充能。[研究] 因此两个都剩50%耐久也不能合并，是该项目政策，不是通用相等规则
 - [装备入口](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/inventorystore.cpp#L162-L195)按类别拆一件，[弹药与投掷物](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwclass/weapon.cpp#L84-L105)允许装备时保持栈，不能写成所有装备都拆。普通装备在装备期间另受[合并限制](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/inventorystore.cpp#L547-L565)；[修理](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwmechanics/repair.cpp#L59-L70)恢复后尝试重合并。[灵魂捕获](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwmechanics/actors.cpp#L209-L214)实际采用拆一件、写灵魂、按同灵魂重合并，也反证新增状态不必永久禁堆叠
 
-[一手] 维护证据不是假想风险：[2023拆堆另发身份](https://github.com/OpenMW/openmw/commit/0f608f388ef84db438eda67c06409dcd58056a1e)后，[2024-05-28修复](https://github.com/OpenMW/openmw/commit/ae4bf04798b3ad25a8490d448f8d53b06347e567)仍需处理跨容器拆堆丢灵魂：旧路径只凭定义 RefId 重造，新路径从实例模板复制。当前 [InventoryItemModel.copyItem](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwgui/inventoryitemmodel.cpp#L50-L65)与 [ManualRef](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/manualref.cpp#L101-L109)保留实例数据后清 RefNum／Lua脚本。[研究] 借的是“状态保留、身份不重复分别核”；清脚本是此项目的复制规则，不要求其他游戏拆分时丢弃脚本。GitLab原问题6148／MR2995本轮未取得正文，不据搜索摘要宣称原报告者复测。
+[一手] [2023拆堆另发身份](https://github.com/OpenMW/openmw/commit/0f608f388ef84db438eda67c06409dcd58056a1e)后，[2024-05-28修复](https://github.com/OpenMW/openmw/commit/ae4bf04798b3ad25a8490d448f8d53b06347e567)仍修跨容器拆堆丢灵魂：从仅按定义 RefId 重造改为复制实例模板。当前[InventoryItemModel.copyItem](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwgui/inventoryitemmodel.cpp#L50-L65)及[ManualRef](https://github.com/OpenMW/openmw/blob/9ec458174fa5a459b7910cd6990c1acc830b0b8a/apps/openmw/mwworld/manualref.cpp#L101-L109)保实例数据后清 RefNum／Lua 脚本。[研究] 状态保留与身份不重复分别核；清脚本仅此项目政策。GitLab 问题 6148／MR2995 正文未取得，无原报告者复测证据。
 
-**Minetest Game／Luanti：单件工具可用值式状态。** [一手] 游戏固定 `c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f`，[farming实际消费者](https://github.com/luanti-org/minetest_game/blob/c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f/mods/farming/api.lua#L59-L104)将锄头注册为 tool，使用后改 wear 并返回 ItemStack。Luanti 固定 `0e1414682e4be3ffb84d067d0621e98d6bf5cd76` 的 [ItemStack字段](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.h#L146-L154)为 name、count、wear、metadata，没有内置逐件 ID；[tool构造](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L30-L40)限数量1，[默认stack_max](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L721-L738)也是1。[拾取](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L383-L399)返回未收入背包的余量，[地面实体](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item_entity.lua#L325-L348)据此更新或删除；[拆分](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L484-L501)复制状态值后分数量，[跨槽／列表转移](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L826-L891)将余量放回来源；[持用工具](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L515-L538)读取、损耗后写回当前 ItemStack，而非沿用地面实体身份。
+**Minetest Game／Luanti：值式单件状态。** [一手] 游戏`c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f`的[farming实际消费者](https://github.com/luanti-org/minetest_game/blob/c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f/mods/farming/api.lua#L59-L104)注册锄头为 tool、使用后改 wear 并返回 ItemStack。引擎`0e1414682e4be3ffb84d067d0621e98d6bf5cd76`的[ItemStack字段](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.h#L146-L154)含 name／count／wear／metadata，没有内置逐件 ID；[tool构造](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L30-L40)和[默认stack_max](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L721-L738)均限 1。[拾取](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L383-L399)返回未收入余量，[地面实体](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item_entity.lua#L325-L348)据此更新／删除；[拆分](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L484-L501)复制状态再分数量，[跨槽／列表转移](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L826-L891)把余量退来源；[持用工具](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item.lua#L515-L538)读取、损耗、写回当前 ItemStack，不沿地面实体身份。
 
-[一手／研究] **跨路径反例必须保留：** [stacksWith](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L401-L481)比较 name／wear／metadata，但同文件实际 addItem／itemFits 只比较 name 与 metadata；[掉落物合并](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item_entity.lua#L103-L138)才另比较 wear。耐久工具靠单件限制隔离，不能把函数名推成所有路径支持任意可堆叠耐久装备。[6057原报告](https://github.com/luanti-org/luanti/issues/6057)还指出空元数据使表面相同物品无法合并；[85d7b18修复](https://github.com/luanti-org/luanti/commit/85d7b18d851504e6d9f637c4373cf896b1ce8e4c)避免无内容时生成空键值。[已有单测](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/unittest/test_inventory.cpp#L39-L83)检查 tool 解析为 count=1 并保留 wear；本轮仅读定义，未运行，不能当全路径验收。
+[一手／研究] **合并路径有差异：** [stacksWith](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/inventory.cpp#L401-L481)比较 name／wear／metadata，同文件 addItem／itemFits 却只比 name／metadata，[掉落物合并](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/builtin/game/item_entity.lua#L103-L138)才另比 wear。耐久工具靠单件限制，不能推广为任意堆叠耐久装备。[6057原报告](https://github.com/luanti-org/luanti/issues/6057)报告空元数据使表面相同物品不合并，[85d7b18修复](https://github.com/luanti-org/luanti/commit/85d7b18d851504e6d9f637c4373cf896b1ce8e4c)避免无内容空键值。[已有单测](https://github.com/luanti-org/luanti/blob/0e1414682e4be3ffb84d067d0621e98d6bf5cd76/src/unittest/test_inventory.cpp#L39-L83)核 tool count=1 且保 wear；仅读未运行，非全路径验收。
 
 [研究] **二改预注册**：先复用支持每件／栈状态、数量／合并限制、余量／存活目标返回的背包。三把同型剑只改一把，转移拾回合并，核数量、状态及允许回堆后的旧引用。跨位置持续引用“这一件”才加身份，无法表达区别才局部扩展；AI追消费者，人定可互换政策。
 
@@ -930,19 +929,19 @@
 
 核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变05 §9的选择：先区分曾经获得、当前可交付与已经完成，再扩任务内容；不把新拾取事件当作唯一进度来源。本节只处理推进条件与消费者，不重做库存事务、叙事存档或遭遇奖励。
 
-**Flare：允许存放物品，会改变原有推进条件。** [一手] 动作RPG Empyrean Campaign 的[作者问题827](https://github.com/flareteam/flare-game/issues/827)指出：任务物品可入仓后，原来以 `requires_status` 代替携物检查的地方需要改用 `requires_item`，对话／任务文字也须对应当前持有。[2020-12-10提交](https://github.com/flareteam/flare-game/commit/d058433aa3759a54148c622913a02ac204196b72)开放主线物品的私人仓库存放，同时为祭坛补当前携刀、为书本补当前羽毛笔、为Florin制墨补花朵／血瓶检查及缺材料对话。[研究] 历史标记可以继续保留，但不能再单独授权需要现物的操作；该变更不是原报告者全面复测证据。
+**Flare：存放物品改变推进条件。** [一手] Empyrean Campaign [作者问题827](https://github.com/flareteam/flare-game/issues/827)指出任务物可入仓后，携物检查须从 requires_status 改 requires_item，文字也随当前持有。[2020-12-10提交](https://github.com/flareteam/flare-game/commit/d058433aa3759a54148c622913a02ac204196b72)开放主线物品入私人仓库，并补祭坛携刀、书本羽毛笔、Florin 制墨花朵／血瓶及缺料对话。[研究] 保留历史标记，但需现物的操作不能只靠历史授权；非原报告者全面复测。
 
-[一手] 游戏固定 `af6eee6d339ac98011864bfe89da837fe7769c28`，引擎固定 `1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f`；固定主干不等于稳定发行。实际消费链如下：
+[一手] Flare 游戏`af6eee6d339ac98011864bfe89da837fe7769c28`、引擎`1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f`的主干消费者：
 
-- **已有物品也能满足条件。** Alchemy材料进入[普通一级掉落表](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/loot/level_1.txt#L1-L7)；[Florin对话](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/npcs/florin.txt#L91-L134)接取写 `emp_alchemy_init`，交付要求已接、未完成与当前三种材料，随后只消耗水晶／蘑菇、保留芦荟并写 `emp_alchemy_finish`。条件不要求接取后再拾一次；这是源码路径判断，未跑先取物路线
-- **显示不负责交付。** [日志定义](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/quests/0011_alchemy.txt)按当前材料显示可返回提示，按独立完成状态显示完成；[QuestLog](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/QuestLog.cpp#L163-L200)重算显示。[NPC对话动作](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/NPC.cpp#L917-L933)交给EventManager执行，再由[状态动作](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/EventManager.cpp#L977-L984)推进CampaignManager；不是日志看见材料就自行完成
-- **已解锁不从剩余物品倒推。** [Book交互](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/maps/book_of_the_dead.txt#L340-L355)消耗羽毛笔／墨水并写 `emp_main_underworld`；另一地图的[传送与on_load外观](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/maps/wizards_tower_2.txt#L549-L567)读该状态。[SaveLoad](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/SaveLoad.cpp#L139-L202)分别保存装备／背包与campaign；同文件L510恢复campaign后，日志与地图再消费恢复的数据
+- **已有物品可交。** Alchemy 材料进[普通一级掉落表](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/loot/level_1.txt#L1-L7)；[Florin对话](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/npcs/florin.txt#L91-L134)接取写 emp_alchemy_init，交付须已接、未完成、现有三材料，消耗水晶／蘑菇、留芦荟并写 emp_alchemy_finish，不要求接取后再拾（静读，未跑先取物路线）
+- **显示不交付。** [日志定义](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/quests/0011_alchemy.txt)按材料提示返回、按独立状态显示完成，[QuestLog](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/QuestLog.cpp#L163-L200)重算；[NPC对话动作](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/NPC.cpp#L917-L933)交 EventManager，再由[状态动作](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/EventManager.cpp#L977-L984)推 CampaignManager，非日志自行完成
+- **解锁不倒推剩余物品。** [Book交互](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/maps/book_of_the_dead.txt#L340-L355)耗羽毛笔／墨水并写 emp_main_underworld，[传送与on_load外观](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/maps/wizards_tower_2.txt#L549-L567)读该状态；[SaveLoad](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/SaveLoad.cpp#L139-L202)分存装备／背包与 campaign，同文件 L510 恢复 campaign，再供日志／地图消费
 
-[一手] 查询范围也不能靠名字猜：[当前checkItem](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/CampaignManager.cpp#L143-L147)相加背包与装备，不计仓库。[2026-09-29修复](https://github.com/flareteam/flare-engine/commit/d3d5688a59057e6318421d8e959e26287eefd6c1)才把“任一处数量足够”改为两处合计，防止各放一把刀却不能满足两把要求；QuestLog旧注释的“not equipped”不能盖过实际消费者。[研究] 这些资料支持条件和持久状态分工，不证明交付与存档原子性、任意并发安全或所有旧档兼容。
+[一手] [当前checkItem](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/CampaignManager.cpp#L143-L147)合计背包＋装备，不计仓库。[2026-09-29修复](https://github.com/flareteam/flare-engine/commit/d3d5688a59057e6318421d8e959e26287eefd6c1)才将“任一处足够”改为两处合计，修各放一把刀却不满足两把；QuestLog 旧注释“not equipped”不代消费者。[研究] 支持条件／持久状态分工，未证交付存档原子性、任意并发或全部旧档兼容。
 
-**Shattered Pixel Dungeon：局部状态足够，函数名也有边界。** [一手] 独立作者的回合roguelike固定 `57a4e06a4caf162446d1c28caa7983f0493fecf0`。[墓室生成](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/quest/MassGraveRoom.java#L101-L123)已放CorpseDust；[Wandmaker](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L111-L214)首次介绍写given，后续交互查当前物品，因此已取得物品也可满足，但不表示首次对话自动跳过介绍完成。[确认奖励入口](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndWandmaker.java#L108-L130)消耗任务物品、移除NPC并调用complete；后者把奖励引用清空。任务[保存／恢复](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L249-L293)包含given与奖励状态，[Dungeon实际存档入口](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java#L661-L666)确实调用，不需要从空背包重新推断完成。
+**SPD：局部任务状态。** [一手] 独立作者回合 roguelike 固定`57a4e06a4caf162446d1c28caa7983f0493fecf0`：[墓室生成](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/quest/MassGraveRoom.java#L101-L123)先放 CorpseDust，[Wandmaker](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L111-L214)首介写 given、后续查现物，允许先取物但不表示首对话跳介绍即完成。[确认奖励入口](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndWandmaker.java#L108-L130)耗任务物、移 NPC、调用 complete 清奖励引用；[保存／恢复](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L249-L293)存 given／奖励，[Dungeon实际存档入口](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java#L661-L666)实际调用，无需从空背包倒推任务已完成。
 
-[一手／研究] 反过来，[Quest.active](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L378-L447)还查询当前房间、诅咒或怪物；这里核实的[PrisonLevel消费者](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/PrisonLevel.java#L73-L80)选择紧张音乐，不能把active当成已接受／已完成任务的统一判断。两个项目分别支持各自机制，不推出所有游戏都需同一种任务状态表。
+[一手／研究] [Quest.active](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java#L378-L447)还查房间、诅咒、怪物，所核[PrisonLevel消费者](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/PrisonLevel.java#L73-L80)用它选紧张音乐，不能当已接／已完成的统一判断。两项目只支持各自机制，不要求所有游戏同表。
 
 [研究] **二改预注册**：沿交互／存档分历史、当前条件、推进入口。允许先取物后，验接取、暂存、交付消耗、离开保存恢复；提示匹配物品查询范围，永久完成不因消耗回退。持续携物／占领设计保可逆，不一律锁存；AI追路径，人定永久性。
 
@@ -956,25 +955,25 @@
 
 ### 回合玩法：调度时间不等于输入次数
 
-[一手：固定源码] Shattered Pixel Dungeon 沿用快照 `57a4e06a4caf162446d1c28caa7983f0493fecf0`。[Actor L39–56](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L39-L56)定义 TICK 与同时间优先级，[调度 L250–325](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L250-L325)选择累计时间最早的 Actor，再按优先级打破平局；[Hero L868–887](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L868-L887)在无待执行动作、未休息时进入 ready 并返回等待。因此这条等待玩家输入的路径不随现实秒数扣效果时间，不能推广成所有回合游戏都如此。
+[一手] SPD 固定`57a4e06a4caf162446d1c28caa7983f0493fecf0`：[Actor L39–56](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L39-L56)定 TICK／同时间优先级，[调度 L250–325](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java#L250-L325)选累计时间最早者、优先级破平局；[Hero L868–887](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L868-L887)无动作且未休息时 ready 后等待。因此该输入等待路径不按现实秒扣效果，不推广全部回合游戏。
 
-[一手] [Char.speed L770–782](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L770-L782)读取 Haste，[Hero移动 L1873–1906](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L1873-L1906)按移动耗时除以速度消费调度时间；[Poison.act](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java)自行跳伤、消费 TICK，再减少剩余量并判断移除。[研究] 同一段毒的调度时间内，加速可以改变移动机会，不能改成“每次走一步扣一跳”，也不能从移动加速推出所有攻击和效果都加速。
+[一手] [Char.speed L770–782](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L770-L782)读 Haste，[Hero移动 L1873–1906](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java#L1873-L1906)以移动耗时／速度消费调度时间；[Poison.act](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java)自行跳伤、耗 TICK、减剩余后判断移除。[研究] 同一毒时段加速可增加移动机会，不改成一步一跳，也不推出所有攻击／效果加速。
 
-[一手] [FlavourBuff L26–47](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FlavourBuff.java#L26-L47)在被调度时移除；[Buff.visualcooldown L135–143](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Buff.java#L135-L143)为显示采用 cooldown+1，注释解释普通 Buff 晚于英雄行动。[研究] 借的是按行动边界解释剩余值，不照搬加一；若玩法承诺“接下来几次有效攻击”，应直接按对应行动消费，而非用调度时间近似次数。这是条件建议，不声称 SPD 所有效果采用同一规则。
+[一手] [FlavourBuff L26–47](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FlavourBuff.java#L26-L47)被调度时移除；[Buff.visualcooldown L135–143](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Buff.java#L135-L143)显示 cooldown+1，注释称普通 Buff 晚于英雄行动。[研究] 剩余值按行动边界解释，不照搬加一；承诺“接下来几次有效攻击”就按该行动消费，不以调度时间近似，亦非 SPD 全效果规则。
 
 ### 即时玩法：模拟秒、菜单与恢复各有边界
 
-[一手：固定源码与实际配置] 本轮读取 `flareteam/flare-engine@1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f`（2026-10-05）与 `flareteam/flare-game@af6eee6d339ac98011864bfe89da837fe7769c28`（2026-08-08）两个主干快照，不冒称已验证发行组合。Empyrean Campaign 的 [Ranger L25–66](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/categories/ranger.txt#L25-L66)实际给 Haste 的移动与攻击效果分别配置秒数；[毒云配置](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/base/ranger/poison_shot_aoe_1.txt)授予 poison，[effects定义](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/effects.txt)将其映射到 damage。这是实际游戏内容消费者，不是只有框架功能清单。
+[一手] Flare 引擎`1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f`（2026-10-05）、游戏`af6eee6d339ac98011864bfe89da837fe7769c28`（2026-08-08），未核发行配对。[Ranger L25–66](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/categories/ranger.txt#L25-L66)分别设 Haste 移动／攻击秒数；[毒云配置](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/base/ranger/poison_shot_aoe_1.txt)授 poison，[effects定义](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/mods/empyrean_campaign/powers/effects.txt)映射 damage，均为实际消费者。
 
-[一手] [Timer L188–244](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/Utils.cpp#L188-L244)按逻辑步递减，以配置步频判整秒；[EffectManager L390–497](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/EffectManager.cpp#L390-L497)先移除已到期效果，再检查本步周期效果，最后推进计时器。周期判断取剩余时间的整秒边界，不足一秒另有初始触发条件。[研究] 只写“持续 N 秒”不能决定首跳、末跳与跳数；该实现也不等于“一定等满一秒才第一跳”。这里只提炼需要明确的边界，不把 Flare 条件推广为默认周期算法。
+[一手] [Timer L188–244](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/Utils.cpp#L188-L244)随逻辑步递减、依配置步频判整秒；[EffectManager L390–497](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/EffectManager.cpp#L390-L497)先移除到期效果，再检查本步周期效果，最后推进计时。周期检查取剩余时间的整秒边界，不足一秒另有初始触发条件。[研究] N 秒不足以定义首末跳／跳数，也不意味着首跳必等满一秒；不把 Flare 算法设通用默认。
 
-[一手] [GameStatePlay L857–900](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/GameStatePlay.cpp#L857-L900)仅在未暂停时执行正常角色更新，角色经 [Avatar L490](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/Avatar.cpp#L490)进入 [StatBlock L1096–1097](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/StatBlock.cpp#L1096-L1097)推进效果。[MenuManager L917–919](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/MenuManager.cpp#L917-L919)另按 menus_pause 决定普通菜单是否暂停，退出菜单等另有强制条件；[main L195–235](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/main.cpp#L195-L235)在最小化恢复时重置逻辑时间基准，暂停时也避免累积补帧。[研究] 只有设计要求冻结的间隔才不消费、也不在恢复时追补；菜单中时间继续是另一种合法政策。这里只核正常更新与恢复路径，不宣称暂停屏蔽全部状态修改。
+[一手] [GameStatePlay L857–900](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/GameStatePlay.cpp#L857-L900)未暂停才正常更新角色，经[Avatar L490](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/Avatar.cpp#L490)、[StatBlock L1096–1097](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/StatBlock.cpp#L1096-L1097)推进效果；[MenuManager L917–919](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/MenuManager.cpp#L917-L919)按 menus_pause 决定普通菜单暂停，退出菜单等另有强制条件；[main L195–235](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/src/main.cpp#L195-L235)最小化恢复时重置逻辑时间，暂停时也不累积补帧。[研究] 要冻结的间隔才不消费时间，也不在恢复时追补；菜单继续计时也合法。只核正常更新／恢复，非暂停屏蔽全部状态修改。
 
 ### 显示修订与二改预注册
 
-- [一手：历史用户报告、维护者诊断与补丁] SPD [#1707](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1707)报告加速下时间冻结显示 -0；[维护者解释](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1707#issuecomment-2115939937)称逻辑容忍微小负数以免少给一次行动，显示未同步处理。[c9c6380](https://github.com/00-Evan/shattered-pixel-dungeon/commit/c9c63803492878a7fab35c2be3b74219440de9d2)修正相关图标取整与描述下限。未取得原用户修复后复测；不能从关单推当前全部到期显示正确
-- [一手：历史维护者解释的反例] SPD [#1843](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1843)报告 Salt Cube 下剩余回合显示17、17、15；[维护者2024-09-18回复](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1843#issuecomment-2359484764)解释 Buff 速度变化，但数值只在其行动时更新，并选择保留。[研究] 显示跳变不自动证明结算错误，也不证明玩家必然能理解；该历史反馈不当作当前复现
-- [一手：近期源码修订] Flare [58f0e5b，2026-07-06](https://github.com/flareteam/flare-engine/commit/58f0e5b1242680d6575e5035c960f3a5f025aaf7)把护盾剩余强度与计时字段分开，使有期限护盾的图标 tooltip 也能显示剩余时间。它支持分别表达资源量与期限，不证明毒／加速有过同一缺陷；没有独立用户复测或体验收益测量
+- [一手：历史报告／维护] SPD [#1707](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1707)报告加速下冻结时间显示-0；[维护者解释](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1707#issuecomment-2115939937)称逻辑容忍微小负数以免少给一次行动、显示未同步；[c9c6380](https://github.com/00-Evan/shattered-pixel-dungeon/commit/c9c63803492878a7fab35c2be3b74219440de9d2)修正图标取整与描述下限。未取得原用户的修复后复测，关单不能证明全到期显示正确
+- [一手：历史反例] [#1843](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1843)报告 Salt Cube 剩余 17、17、15；[维护者2024-09-18回复](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1843#issuecomment-2359484764)解释 Buff 的速度变化，但数值只在其行动时更新，选择保留。[研究] 跳变不等于结算错或玩家能理解，非当前复现
+- [一手：近期修订] [58f0e5b，2026-07-06](https://github.com/flareteam/flare-engine/commit/58f0e5b1242680d6575e5035c960f3a5f025aaf7)分护盾强度／计时，使限时护盾 tooltip 显示期限。[研究] 支持量／期限分别显示，非毒／加速同病证据，无独立复测或体验测量
 
 [研究] ✅ 沿既有行动队列、模拟更新与效果实例确定推进单位、首末跳、移除和显示，保留每种玩法自己的暂停政策。不为效果种类增加而统一 N 秒、所有输入减一或搬入另一游戏调度器；本节不改变既有多来源合并与撤销建议，也不重复数值组合与命中连锁。
 
@@ -988,11 +987,11 @@
 改变05 §7：二改加入临时增伤／换装时，按字段选择施加快照或动态读取，不让实例复用决定规则。[研究]
 新证据：PoE 1.2.0、WoW 6.0.2的历史正式修订及2026单玩家显示反馈；不新增效果框架。[一手／社区]
 
-**持续装备收益：代价应一起持续。** PoE [1.2.0正式补丁的General Balance Changes](https://www.pathofexile.com/forum/view-thread/998489)明确装备／支持宝石改变后，持续技能效果随之更新。[开发者说明](https://www.pathofexile.com/forum/view-thread/951414)（2014-06-18发布，10-10修订）指出：Mon’tregul’s Grasp本要在少量强僵尸与大量普通僵尸间取舍，快照换装却能保留强化而绕过代价，也使后续装备设计受限。作者承认修改会降低部分构筑强度，因此安排在赛季间；这是维护者的设计理由，不是玩家收益测量。[一手] 同文并非每个字段同步：既定生成等级需新召唤／进入新实例才更新；Righteous Fire拔掉技能仍持续，并分别处理装备、被动与支持宝石变化。不能从补丁中的“修复快照”推导所有持续效果都在每跳读取全部字段。[一手／研究]
+**持续收益与代价一起持续。** [一手] PoE [1.2.0正式补丁的General Balance Changes](https://www.pathofexile.com/forum/view-thread/998489)规定装备／支持宝石变动后持续技能更新；[开发者说明](https://www.pathofexile.com/forum/view-thread/951414)（2014-06-18 发布、10-10 修订）以 Mon’tregul’s Grasp 为例：快照换装保强僵尸又绕过少数量代价，限制后续装备设计。作者承认会削弱构筑，安排赛季间改，属设计理由非收益测量。字段仍不同步：生成等级须重召／新实例更新，Righteous Fire 拔技能仍持续，装备、被动、支持宝石分别处理。[研究] “修快照”不等于每跳重读全部字段。
 
-**一次承诺：快照未必该撤。** WoW [2014年正式6.0.2公告的Periodic Effects](https://worldofwarcraft.blizzard.com/en-us/news/15682579/the-iron-tide-602-patch-notes)把普通周期效果改为逐跳重算，解释快照虽奖励择时，也造成插件依赖与平衡压力；但保留按上一击伤害比例延迟兑现、以及专门强化下一次技能的效果。动态读取保留增益期间的收益，却取消将短增益延长到整段DoT的收益，两种规则不是同一种技巧。[一手／研究] 同文另改刷新宽限至基础时长最后30%、重施最多延至130%；这只证明时长规则也需明确，不证明所有例外刷新时都保留旧强度。该公告仅支持历史修订与设计理由，不声称2026机制仍全部相同。[一手／研究]
+**一次承诺可保快照。** [一手／研究] WoW [2014年正式6.0.2公告的Periodic Effects](https://worldofwarcraft.blizzard.com/en-us/news/15682579/the-iron-tide-602-patch-notes)将普通周期效果改逐跳重算，理由是择时收益伴随插件依赖／平衡压力；按上一击比例延迟兑现、专门强化下一技能的效果保留。动态只保增益期间收益，快照可延长至整段 DoT，技巧不同。同文刷新宽限为基础时长末 30%、重施最多延至基础时长 130%，不能证明所有例外刷新保旧强度；仅 2014 修订／理由，非 2026 全规则。
 
-**保留快照也要让刷新可判断。** [2026-03-22玩家原帖](https://us.forums.blizzard.com/en/wow/t/feral-feedback-snapshotting-is-hard-with-current-cooldown-manager/2278000)要求图标表达旧流血实际保留的强化，而不只显示当前增益与剩余时长。[社区] 这里只支持该玩家遇到的信息需求，不据其描述确认职业的全部现行规则，也不当作2014修订的前后对照或普遍体验结论。[研究]
+**快照刷新要可判断。** [社区] [2026-03-22玩家原帖](https://us.forums.blizzard.com/en/wow/t/feral-feedback-snapshotting-is-hard-with-current-cooldown-manager/2278000)要求图标显示旧流血实际保留的强化，而非仅当前增益／剩时。[研究] 单玩家信息需求，不核全部职业现规则、普遍体验或 2014 前后对照。
 
 **采用与撤回 [研究]**：沿实例按字段分已承诺值／动态依赖，刷新时长与强度分别定，需要比较才显示差异。快照造成换装仪式／规避持续代价就缩范围；动态读取毁掉强化攻击的延迟部分就恢复局部快照，不全回滚。未取得到期复用残留快照的独立修复链；不新增实测计划。
 
@@ -1000,11 +999,11 @@
 
 核实：2026-10-16（UTC+8），主线三／GC。改变05第7节：效果所有权与层数不足以定义计算；首次和重建采用同一顺序，区分派生上限与已发生的资源变化。[研究]
 
-**真实二改失败。** Wesnoth [#4419维护者例子](https://github.com/wesnoth/wesnoth/issues/4419#issuecomment-537258606)是先设最大HP为100，再增加100，得到200；重建按修改类型重排后却变100。[报告者补充](https://github.com/wesnoth/wesnoth/issues/4419#issuecomment-537261328)指出移除无关修改也可触发这种重建。[2020-08-20合入的#5085](https://github.com/wesnoth/wesnoth/pull/5085)改为沿修改记录顺序重放，不是把讨论中的每种候选都实现。[一手：公开维护链]
+**重建曾改变结果。** [一手：维护链] Wesnoth [#4419维护者例子](https://github.com/wesnoth/wesnoth/issues/4419#issuecomment-537258606)：先设最大 HP=100 再加 100 得 200，重建按类型重排却成 100；[报告者补充](https://github.com/wesnoth/wesnoth/issues/4419#issuecomment-537261328)称删无关修改也触发。[2020-08-20合入的#5085](https://github.com/wesnoth/wesnoth/pull/5085)采用记录顺序重放，不是讨论候选全实现。
 
 **固定消费者。** 1.18.5对应`7a60ccb925afadc8ae7d4f47891f5ab329786da8`，不称最新版本。[到期删除](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/unit.cpp#L1237-L1267)会进入重建，[恢复基础与应用修改](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/unit.cpp#L984-L1026)及[记录顺序](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/unit.cpp#L2583-L2594)吻合该政策。[当前HP等状态](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/unit.cpp#L186-L207)另保留并受新上限约束，不自动满血。实际[Strong特质](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/data/core/macros/traits.cfg#L128-L146)修改近战，[攻击字段处理](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/units/attack_type.cpp#L431-L445)后仍经[战斗计算](https://github.com/wesnoth/wesnoth/blob/7a60ccb925afadc8ae7d4f47891f5ab329786da8/src/actions/attack.cpp#L182-L207)等后续规则，不能将基础字段当最终扣血。[一手：固定源码]
 
-**没有通用倍率袋。** SPD 4.0.2固定`57a4e06a4caf162446d1c28caa7983f0493fecf0`，[萨满](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Shaman.java#L153-L170)实际授予虚弱／易伤；[攻击链](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L479-L512)先对攻击者虚弱乘0.67、经过取整与防御处理、扣护甲，再对目标易伤乘1.33，之后仍有攻击钩子、damage与护盾，不能称中间值为最终HP差。[治疗药](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java#L76-L84)移除效果，下次攻击重查，不反算上一击。[一手／研究]
+**倍率有阶段。** [一手／研究] SPD 4.0.2 `57a4e06a4caf162446d1c28caa7983f0493fecf0`的[萨满](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Shaman.java#L153-L170)授虚弱／易伤；[攻击链](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L479-L512)先攻击者虚弱×0.67，经取整、防御、扣护甲，再目标易伤×1.33，后续还有钩子、damage、护盾，中间值非最终 HP 差。[治疗药](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java#L76-L84)移效果后下一击重查，不反算上一击。
 
 OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实际等级规则](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/mods/ra/rules/defaults.yaml#L60-L83)影响伤害；[发射侧／装甲处理](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Warheads/DamageWarhead.cs#L73-L90)和[承伤侧处理](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/Health.cs#L158-L189)分阶段，存在整数转换；禁用[DamageMultiplier](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/Multipliers/DamageMultiplier.cs#L32-L35)返回100%。[历史乘算评审](https://github.com/OpenRA/OpenRA/pull/6079#discussion_r15618105)关于200%与50%回到100%的讨论起点是装填间隔，不伪称伤害bug；这里只支持计算语义须明确，不能推广为整个管线只取整一次。[一手／研究]
 
@@ -1017,11 +1016,11 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 
 核实：2026-10-16（UTC+8）。主线三／GC；改变05§6的同步／排队选择：来源、防重入资格和完整操作边界分别决定，不因“解耦”统一延迟。新证据复用已完成的固定源码调查，再对照当前章节缺口；不是新增效果框架或游戏实测。[研究]
 
-**DCSS：延后有具体边界。** 固定2952e12c52c2a66210f6c5488db987d0962a67ca的[反伤执行](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/fineff.cc#L1081-L1107)允许原防御者已死，但重核承受反伤者仍活着；[伤害入口](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/monster.cc#L4393-L4402)排除对派生反伤再次镜像。[2014修复](https://github.com/crawl/crawl/commit/4f3d0c6879f2baefcf3eb2749133ae3340dcbdca)针对来回反弹；[2024修复](https://github.com/crawl/crawl/commit/f4a7df68b9800669d3a70ac8d7dc9cc4f2eeb94b)把血箭冷却移到发射前，防反射重新触发齐射，该提交另有beam复用修复，不把全部崩溃归给重入。[一手]
+**DCSS：资格与延后边界。** [一手] 固定`2952e12c52c2a66210f6c5488db987d0962a67ca`的[反伤执行](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/fineff.cc#L1081-L1107)允许原防御者已经死亡、重新检查承受反伤者仍活着；[伤害入口](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/monster.cc#L4393-L4402)排除派生反伤再次镜像。[2014修复](https://github.com/crawl/crawl/commit/4f3d0c6879f2baefcf3eb2749133ae3340dcbdca)修来回反弹；[2024修复](https://github.com/crawl/crawl/commit/f4a7df68b9800669d3a70ac8d7dc9cc4f2eeb94b)将血箭冷却前置以防止反射重新触发齐射，同时另修 beam 复用，不能把全部崩溃归重入。
 
-[2020修复](https://github.com/crawl/crawl/commit/3dd439832fe0f5fe295caad1a2fe3e479a757cda)延后死亡爆炸以避免多目标攻击处理中攻击者被杀；[2021修复](https://github.com/crawl/crawl/commit/4e304d196c1d5a90fd7939a3cf94c2339bed27f0)又撤销每束beam后处理，因为多束法术尚未整体结束。[现行消费者](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/fineff.cc#L2133-L2147)从vector尾取出再执行，后进先出且继续处理新增效果，不能误称FIFO，更不能认为入待办便自动截断循环。[一手／研究]
+[一手／研究] [2020修复](https://github.com/crawl/crawl/commit/3dd439832fe0f5fe295caad1a2fe3e479a757cda)延后死亡爆炸，避免多目标攻击未完就杀攻击者；[2021修复](https://github.com/crawl/crawl/commit/4e304d196c1d5a90fd7939a3cf94c2339bed27f0)撤每束 beam 后处理，因多束法术未整体结束。[现行消费者](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/fineff.cc#L2133-L2147)从 vector 尾取再执行，为 LIFO 且继续处理新加入的效果，不是 FIFO；排队本身不中断循环。
 
-**直接处理的反例。** SPD v4.0.2固定57a4e06的[LifeLink](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L830-L864)用派生来源类型避免再次分摊，[Skeleton](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Skeleton.java#L70-L141)直接处理死亡邻格伤害。[攻击链](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L483-L512)中的attackProc早于普通damage，因此规则钩子不能冒充HP已提交的事实通知；不改变正文DamageApplied在提交后通知的约定。[一手／研究]
+**直接处理也可成立。** [一手／研究] SPD v4.0.2 `57a4e06`的[LifeLink](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L830-L864)用派生来源免再次分摊，[Skeleton](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Skeleton.java#L70-L141)直接做死亡邻格伤害。[攻击链](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L483-L512)的 attackProc 在普通 damage 之前，是规则钩子、非 HP 提交事实；正文 DamageApplied 仍在提交后。
 
 OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L144-L182)有Delay=5，[ATMine](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L193-L209)不设Delay且排除Mine；[消费者](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/GameRules/WeaponInfo.cs#L234-L265)分别直接执行或走延时，[DelayedImpact](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/Effects/DelayedImpact.cs#L19-L40)单位为tick不是秒。[一手] 游戏规则的延迟与为保护操作完整性而延后是不同目的，不统一换成一种调度器。[研究]
 

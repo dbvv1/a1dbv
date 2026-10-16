@@ -51,29 +51,29 @@
 
 ### 交互试点转脚本：bare 不是等价加速
 
-**核实：2026-10-14 UTC；改变 15 §5 与 Claude 专题的 `--bare` 简写。** ✅ 已审查的可信项目中，批量迁移依赖项目知识时，保留普通模式，或在 bare 模式中显式提供同一任务所需的信息、约束与工具；仅做已给定材料的机械处理时可采用 bare，不把全部常驻指令复制进去。**[经验：采用判断]**
+**核实：2026-10-14 UTC；改变 15 §5 与 Claude 专题的 `--bare` 建议。** ✅ 已审查的可信项目中，批量迁移若依赖项目知识，保留普通模式，或为 bare 显式补充必要信息、约束与工具；只对给定材料做机械处理时可用 bare，无须复制全部常驻指令。**[经验：采用判断]**
 
-[当前官方 headless 文档](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode)区分了普通 `claude -p` 和可选 `--bare`：前者加载交互会话同类上下文，后者跳过 `CLAUDE.md`、自动发现的 Skill、Hook、插件等。可用 `--append-system-prompt-file` 等显式提供必要输入。`--add-dir` 中的 `.claude/skills/` 是部分例外，但 bare 不向模型发送可用 Skill 列表提醒，不能仅凭文件存在认定它被发现和使用。**[一手：官方契约]**
+[当前官方 headless 文档](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode)区分普通 `claude -p` 与 `--bare`：前者加载交互会话同类上下文，后者跳过 `CLAUDE.md`、自动发现的 Skill、Hook 和插件等；必要输入可用 `--append-system-prompt-file` 提供。`--add-dir` 内的 `.claude/skills/` 是部分例外，但 bare 不发送可用 Skill 列表提醒，文件存在不代表已发现或使用。**[一手：官方契约]**
 
-[2.1.286 固定发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.286)确认 bare 改为只连接命令行指定的 MCP、不发送系统提醒、不启动后台任务，shell 超时后停止而非转后台；当前文档具体说明也不会提醒已读文件发生磁盘变化。该版本只证明这组行为，不是 bare 或跳过指令的首次版本。**[一手：发布说明与当前文档]**
+[2.1.286 固定发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.286)确认 bare 只连接命令行指定的 MCP，不发送系统提醒、不启动后台任务，shell 超时后停止；当前文档还明确不提醒已读文件的磁盘变化。这只证明该版本的行为，未确定 bare 或跳过指令的首次版本。**[一手：发布说明与当前文档]**
 
-**外来仓库的启动边界是另一个决定。** 2026-10-14 补核[权限矩阵](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)：普通 `-p` 不显示工作区信任或逐服务器批准提示，未信任目录里的 settings Hook 与 `.mcp.json` 服务器仍会运行／连接；项目 `permissions.allow` 被暂缓并发出警告，不等于这些启动动作也被阻止。[Hooks 文档](https://code.claude.com/docs/en/hooks#security-considerations)明确命令 Hook 使用用户完整权限，并按会话类型区分信任：交互会话等待信任，`-p` 对 settings Hook 视目录已信任。故先限制配置来源，不能只写“只读”或等待提示。**[一手：当前官方契约；经验：采用判断]**
+**外来仓库须另查启动边界。** 2026-10-14 补核[权限矩阵](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)：普通 `-p` 不显示工作区信任或逐服务器批准提示，未信任目录的 settings Hook 与 `.mcp.json` 仍会运行或连接；暂缓项目 `permissions.allow` 并发警告，不会阻止这些启动动作。[Hooks 文档](https://code.claude.com/docs/en/hooks#security-considerations)说明命令 Hook 使用用户完整权限：交互会话等待信任，`-p` 则把 settings Hook 所在目录视为已信任。因此须先限制配置来源，不能只声明“只读”或等待提示。**[一手：官方契约；经验：采用判断]**
 
-**`--bare` 不是关闭所有项目设置。** 官方权限矩阵明确 bare 仍应用项目 `env` 与 `awsAuthRefresh` 等 helper，`apiKeyHelper` 则只从显式 `--settings` 读取。`--setting-sources user` 排除项目 settings 文件及 `.mcp.json`，但不应解释成关闭所有 Skill／指令自动发现；不需要这些能力时再采用 bare，并仅显式提供审过的配置、插件与工具。若只禁 Hook，可显式传 `--settings '{"disableAllHooks": true}'`；仅写用户 settings 会被项目优先级覆盖。这些是配置选择，不是操作系统沙箱，且不能为随后执行外来代码提供隔离保证。**[一手：官方机制；经验：组合边界，未运行客户端]**
+**bare 仍应用部分项目设置。** 官方权限矩阵列出项目 `env`、`awsAuthRefresh` 等仍会生效，`apiKeyHelper` 只读显式 `--settings`。`--setting-sources user` 排除项目 settings 与 `.mcp.json`，不保证关闭全部 Skill 或指令发现；不需要这些能力时才用 bare，并仅提供审过的配置、插件与工具。只禁 Hook 可显式传 `--settings '{"disableAllHooks": true}'`，仅写用户 settings 会被项目优先级覆盖。这些配置不能替代操作系统沙箱或保证外来代码隔离。**[一手：机制；经验：边界，未运行客户端]**
 
-**历史修复与当前契约须分开。** [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)说明 2025 年中至 2026-01 收到三类信任提示前执行漏洞，修复方式是把项目配置解析／执行延后至接受提示；10 的 2026-05 标记为披露月份，不是发生或修复月份。原文未给这些修复的精确版本，也不能把交互信任闸门推及当前 `-p`。上面的 2.1.286 仅为那组 bare 行为的版本证据，不证明普通 `-p` 从哪个版本起跳过信任提示。**[一手：厂商历史自述与当前文档；检查边界]**
+[How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)记载 2025 年中至 2026-01 收到三类信任提示前执行漏洞，修复是接受提示后才解析或执行项目配置；10 的 2026-05 是披露月份，非发生或修复月份。原文未给精确修复版本，交互信任闸门也不能外推到当前 `-p`。2.1.286 仅证明上述 bare 行为，不能确定普通 `-p` 从哪个版本开始跳过信任提示。**[一手：厂商历史自述与当前文档；检查边界]**
 
-**认证与计费前提也不同。** 同一官方文档说明 bare 不读取订阅 OAuth 或系统钥匙串；Anthropic API 路径使用已提供的 API key／`apiKeyHelper`，外部提供商继续使用各自认证方式。切换前须确认该执行与计费方式已经获准且可用；不授权新凭据或付费，也不要求外部提供商改认证方式。**[一手：官方文档；经验：采用前提]**
+同一文档说明 bare 不读取订阅 OAuth 或系统钥匙串；Anthropic API 使用已有 API key／`apiKeyHelper`，外部提供商保留各自认证。切换前须核实执行与计费方式已获准且可用；这不授权新凭据或付费，也不要求外部提供商更换认证。**[一手：官方文档；经验：采用前提]**
 
-**实际选择与局限。** 依赖后台长构建时，bare 不等价。普通 `-p` 不意味着 bare，官方“未来可能成为默认”的说明也不是当前默认已改变。本轮只核对文档与版本说明，未安装或执行客户端、未测开销和正确率；已有[历史实验](2026-10-12-experiment-records.md)的 bare 调用认证失败，不能补作本判断的成功运行证据。**[经验：采用边界；一手：检查范围]**
+依赖后台长构建时，bare 不等价。普通 `-p` 不代表 bare，“未来可能成为默认”也不是当前默认已变。本轮仅核文档与版本，未安装或执行客户端、未测开销和正确率；[历史实验](2026-10-12-experiment-records.md)中的 bare 认证失败，不能作为成功运行证据。**[经验：采用边界；一手：检查范围]**
 
 ### Claude Code 沙箱：开启不等于所有边界已闭合
 
 核实：2026-10-15（UTC+8，读取于 10-14 UTC）。改变 [10 §3.2](../10-security.md#32-claude-code-沙箱操作手册)：保留最小隔离配置，撤回“strict + failIfUnavailable 足以证明封闭运行”和“mask 总能透明认证”的简写；不建议为跑通依赖开放解释器、全部 socket 或真实凭证。**[经验：采用判断]**
 
-**当前契约与历史版本分开。** [官方 strict 说明](https://code.claude.com/docs/en/sandboxing#turn-off-the-retry-with-strict-sandbox-mode)指出 `allowUnsandboxedCommands: false` 只关模型的逃生重试，`excludedCommands` 仍可在外运行；用户级 false 在 v2.1.285 前可能被项目 true 覆盖。当前用户级 false 不会被该 true 覆盖，但并不令整个沙箱 admin-required。托管／显式 `--settings` 中的 false 才触发该强制条件，项目的放宽项被忽略。[固定 v2.1.285 发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.285)另确认项目不得放宽 admin-required、扩 strict allowlist 或重开托管 read-deny。版本事实只支持这组修正，不宣称整个客户端此后无逃逸漏洞。**[一手：官方契约、版本记录]**
+[官方 strict 说明](https://code.claude.com/docs/en/sandboxing#turn-off-the-retry-with-strict-sandbox-mode)指出 `allowUnsandboxedCommands: false` 只关闭逃生重试，`excludedCommands` 仍可在沙箱外运行。v2.1.285 前用户级 false 可能被项目 true 覆盖；当前不会，但也不自动触发 admin-required。托管或显式 `--settings` 中的 false 才强制忽略项目放宽项。[固定 v2.1.285 发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.285)另确认项目不得放宽 admin-required、扩 strict allowlist 或重开托管 read-deny；这些修正不保证此后客户端没有逃逸漏洞。**[一手：官方契约与版本记录]**
 
-**固定公开实现。** 本轮读取 `anthropics/sandbox-runtime` [9a277e5e04af1ab1b04feea4400a6ed8a5b72039](https://github.com/anthropics/sandbox-runtime/tree/9a277e5e04af1ab1b04feea4400a6ed8a5b72039)，为研究时的 main 快照；没有将它冒充任一 Claude Code 发布包实际捆绑的版本。API 路线返回 GitHub 403、`x-ratelimit-remaining: 0`（公开 API 配额耗尽）；公开 git 只读下载成功。未安装依赖、未执行上游测试或沙箱命令。**[一手：源码阅读与取得范围]**
+只读的 `anthropics/sandbox-runtime` [9a277e5e04af1ab1b04feea4400a6ed8a5b72039](https://github.com/anthropics/sandbox-runtime/tree/9a277e5e04af1ab1b04feea4400a6ed8a5b72039)是当时 main 快照，不能代表 Claude Code 发布包的捆绑版本。GitHub API 返回 403、`x-ratelimit-remaining: 0`，公开配额耗尽；公开 git 下载成功。未安装依赖或执行上游测试、沙箱命令。**[一手：源码与取得范围]**
 
 | 会误导选择的简写 | 固定证据与边界 | 采用／撤回 |
 |---|---|---|
@@ -81,7 +81,7 @@
 | mask 没写目标也只给原服务 | [env L97–103](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/credential-mask-env.ts#L97-L103)和 [file L228–234](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/credential-mask-files.ts#L228-L234)默认把 `injectHosts` 取为 `allowedDomains`；[测试定义 L766–842](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/test/sandbox/credential-mask.test.ts#L766-L842)明确覆盖省略该字段时的跨允许域替换 | 仅在启用 mask 时成立；不是默认自动发送所有凭证，也不是主动广播。代理在请求包含对应占位值时替换；确需认证才审目标范围 **[一手：实现、未运行测试定义]** |
 | 提取失败一定拒绝 | [env L189–224](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/credential-mask-env.ts#L189-L224)、[file L315–347](https://github.com/anthropics/sandbox-runtime/blob/9a277e5e04af1ab1b04feea4400a6ed8a5b72039/src/sandbox/credential-mask-files.ts#L315-L347)：仅在可选 mask 的提取未匹配时，省略 `onExtractNoMatch` 得到 warn，跳过该条保护并保留原文；deny 分支移除变量／拒读，error 分支抛错 | 不把这条可选配置失败写成 `mode: deny` 的默认漏洞；不需要认证时保持 deny，有提取规则才须决定不匹配行为 **[一手]** |
 
-**平台反例与范围。** [官方文件 mask 契约](https://code.claude.com/docs/en/sandboxing#mask-credential-files)要求 v2.1.221+，macOS 按拒读，Linux／WSL2 可给占位副本；macOS 文件隔离开启时先按 deny，不能把上述 Linux 路径的 no-match 原文保留泛化到它。[代理认证前提](https://code.claude.com/docs/en/sandboxing#mask-credentials)另要求 TLS termination；缺此前提认证失败不等于秘密明文已发出。这里说明功能边界，不指导上传或配置真实凭证，也没有在用户电脑试读。**[一手：官方契约；研究：限制外推]**
+[官方文件 mask 契约](https://code.claude.com/docs/en/sandboxing#mask-credential-files)要求 v2.1.221+：macOS 按拒读处理，Linux／WSL2 可给占位副本。macOS 开启文件隔离时先按 deny，不能套用 Linux 的 no-match 原文保留路径。[代理认证前提](https://code.claude.com/docs/en/sandboxing#mask-credentials)另需 TLS termination；缺此前提导致认证失败，不证明秘密已明文发出。本轮未上传或配置真实凭据，也未在用户电脑试读。**[一手：官方契约；研究：平台边界]**
 
 **正文其他纠偏。** `filesystem.disabled` 会关闭受保护路径的文件隔离；`strictAllowlist` 管有效域列表，而列表会合并适用的 `WebFetch` 规则。CLI 沙箱和工具审批、Hook／MCP 进程的区别沿用 [05](../05-skills-and-plugins.md) 与本记录前节，不重复建立防护框架。CI 段同时删去“固定 formatter 命令即可安全”的暗示：[Action 官方安全说明](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md)建议 PR 文件放子目录以避免默认配置加载，却不能证明之后执行 PR 构建代码已隔离；子目录和 `--add-dir` 不是安全容器。[GitHub 的事件说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_run)指出 workflow_run 即使前序任务不具特权，后续也可访问秘密／写 token；pull_request_target 在基础仓库上下文运行。是否实际注入秘密仍取决于 workflow，不写成每次运行都自动获得全部凭据。Action 的 allowed-tools 建议另按[CLI 字段契约](https://code.claude.com/docs/en/cli-reference)限定为免询问规则：`--tools` 才限制内置工具集合，MCP 不受该字段影响，二者均不能替代 token 权限。Nx 案例中恶意脚本明确传 bypass 参数，因此删掉 shell 别名不是断链；外层安装进程也不受 Agent 内层凭证规则保护。**[一手：机制与文档；经验：采用边界]**
 
@@ -91,17 +91,17 @@
 
 ### Codex 脚本入口：信任状态不等于有效权限
 
-**核实：2026-10-14 UTC；改变 10 §3 与 Codex 专题的脚本入口建议。** ✅ 只读自动化须核对有效只读权限：旧沙箱配置可显式选择 `--sandbox read-only`；已有文件排除 profile 时不要叠加该旧开关（2026-10-15 UTC+8 补核，见 [10 的唯一采用建议](../10-security.md#codex-文件排除的采用条件)）。另审配置、指令、技能及 Hook 脚本；trust／Git 检查不作执行隔离。实现固定于 [openai/codex `7a08c5f`](https://github.com/openai/codex/commit/7a08c5f6271e818d832eb9061dac935936e2b539)，仅为当日 main，非发行客户端验证。**[一手：固定源码；经验：采用判断]**
+**核实：2026-10-14 UTC；改变 10 §3 与 Codex 的脚本入口建议。** ✅ 只读自动化须核有效权限：旧配置可显式用 `--sandbox read-only`，已有文件排除 profile 时不叠加旧开关（2026-10-15 UTC+8 补核，见[10 的唯一采用建议](../10-security.md#codex-文件排除的采用条件)）。另审配置、指令、技能和 Hook 脚本；trust／Git 检查不能隔离执行。固定[openai/codex `7a08c5f`](https://github.com/openai/codex/commit/7a08c5f6271e818d832eb9061dac935936e2b539)仅为当日 main，非发行客户端验证。**[一手：源码；经验：采用判断]**
 
-**配置和指令的闸门不同。** [当前配置文档](https://learn.chatgpt.com/docs/config-file/config-basic#configuration-precedence)说明项目配置只对 trusted 项目加载，用户／系统配置仍可生效。固定 [loader](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/config/src/loader/mod.rs#L1056-L1132)将未设 trust 与显式 untrusted 都作为项目配置层的禁用状态，但 [AGENTS 加载](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/agents_md.rs#L56-L87)只在显式 untrusted 时提前返回、保留传入的用户指令；未设 trust 不命中该分支。[exec 的 Git 检查](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/exec/src/lib.rs#L1012-L1019)检查是否找到仓库根，不能从其通过推断 trusted。**[一手：官方契约与固定实现]**
+[当前配置文档](https://learn.chatgpt.com/docs/config-file/config-basic#configuration-precedence)规定项目配置只对 trusted 项目加载，用户与系统配置仍可生效。[loader](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/config/src/loader/mod.rs#L1056-L1132)禁用未设 trust 和显式 untrusted 的项目配置；[AGENTS 加载](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/agents_md.rs#L56-L87)却只在显式 untrusted 时提前返回，并保留传入的用户指令。[exec 的 Git 检查](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/exec/src/lib.rs#L1012-L1019)只检查仓库根，通过不代表 trusted。**[一手：官方契约与固定实现]**
 
 **默认说明不替代有效权限。** [官方 non-interactive 文档](https://learn.chatgpt.com/docs/non-interactive-mode#permissions-and-safety)说明 exec 默认 read-only；固定 [exec 配置](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/exec/src/lib.rs#L584-L615)则默认给 headless 设置 `Never` 审批，Auto-review 另有重建分支。传统 sandbox 配置路径在没有显式 sandbox、项目已有 trusted 或 untrusted 决定时会产生 workspace-write 候选，[同一函数](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/config/src/config_toml.rs#L841-L906)仍有平台与 requirement fallback。named profiles、持久权限恢复及[最终约束解析](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/config/mod.rs#L3721-L3838)另参与计算，最后使用[受约束的 effective profile](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/config/mod.rs#L4253-L4312)；不能由这个候选宣称所有 untrusted 运行都可写，也不能据 main 说发布版默认已经改变。**[一手：文档与源码；研究：分层限定]**
 
-**Skills 发现不跟配置禁用完全重合。** 固定 [skills 根目录实现](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots.rs#L73-L196)遍历包含禁用层的配置目录，并另查项目中的 `.agents/skills`；[测试定义](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots_tests.rs#L244-L289)明确保留 disabled project 的 `.codex/skills` 根。[会话调用路径](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/session/turn_context.rs#L1300-L1323)也有跳过 host discovery 的功能／会话分支。这里只证明发现机制，不证明自动调用、执行或提权。**[一手：固定实现与未运行测试定义]**
+[skills 根目录实现](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots.rs#L73-L196)遍历含禁用层的配置目录，并查项目 `.agents/skills`；[测试定义](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/ext/skills/src/host_roots_tests.rs#L244-L289)保留 disabled project 的 `.codex/skills` 根。[会话调用路径](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/core/src/session/turn_context.rs#L1300-L1323)另有跳过 host discovery 的功能或会话分支。这些只证明发现机制，不证明自动调用、执行或提权。**[一手：固定实现与未运行测试定义]**
 
-**Hook 定义信任是另一道门。** [当前官方契约](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks)要求非托管 Hook 信任当前定义后才运行，新增／修改的定义会被跳过；`/hooks` 可检查来源与待审项，插件启用不自动信任它的 Hook。固定实现的 [hook_hash](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/hooks/src/engine/discovery.rs#L768-L794)哈希规范化事件和 handler 配置，并不读取被调用脚本内容。定义未变不等于脚本未变，须审脚本来源；外来仓库不用 bypass 信任。**[一手：官方契约与固定实现；经验：采用判断]**
+[当前官方契约](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks)要求非托管 Hook 先信任当前定义，新增或修改的定义会被跳过；`/hooks` 可查来源和待审项，启用插件不自动信任它的 Hook。[hook_hash](https://github.com/openai/codex/blob/7a08c5f6271e818d832eb9061dac935936e2b539/codex-rs/hooks/src/engine/discovery.rs#L768-L794)只哈希规范化事件与 handler 配置，不读脚本内容。因此定义未变仍须审脚本来源，不能对外来仓库绕过信任。**[一手：契约与固定实现；经验：采用判断]**
 
-**检查范围与不采用。** 仅只读，未运行 Codex／模型／上游测试或检查私人配置。未审全 MCP／shell／插件启动路径，命令沙箱不保证宿主零启动执行。`--ignore-user-config` 与 `--ignore-rules` 只按官方声明的各自范围理解，不推荐作关闭全部项目能力的通用开关；不增加信任记录修改、凭据迁移或放宽安全的步骤。**[研究：验证范围与撤回边界]**
+仅只读，未运行 Codex、模型、上游测试或检查私人配置。未审完整 MCP、shell 和插件启动路径，命令沙箱不保证宿主零启动执行。`--ignore-user-config` 与 `--ignore-rules` 各按声明范围理解，不作为关闭全部项目能力的开关；不增加信任修改、凭据迁移或放宽安全的步骤。**[研究：验证范围与撤回边界]**
 
 ### Hook 跨宿主迁移：匹配成功不等于协议适配
 
@@ -155,13 +155,13 @@
 
 核实：2026-10-16（UTC+8）。改变 23 §2：保留终态视觉基线，但不让截图准备推进待验的过渡、暂停或重开状态；局部 `allow` 只在需要保留该状态时采用。以下为官方契约、固定源码／测试定义与历史作者报告，未运行浏览器。**[经验：采用判断；研究：证据范围]**
 
-**两个截图入口的默认值不同。** 当前 [PageAssertions 文档](https://playwright.dev/docs/api/class-pageassertions#page-assertions-to-have-screenshot-1-option-animations)给 `toHaveScreenshot()` 的 `animations` 默认值为 `disabled`，[Page 文档](https://playwright.dev/docs/api/class-page#page-screenshot-option-animations)给 `page.screenshot()` 的默认值为 `allow`；断言可被项目 `expect` 配置或单次参数覆盖，普通截图按其调用参数。[v1.63.0 发行提交 `1b025d7`](https://github.com/microsoft/playwright/commit/1b025d7e20a026371cd5f98ba0cdce48892737c8)的 [matcher L346–363](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright/src/matchers/toMatchSnapshot.ts#L346-L363)与 [screenshotter L201–219](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L201-L219)相互印证；两入口差异不止图片比较。**[一手：文档与固定源码]**
+[PageAssertions 文档](https://playwright.dev/docs/api/class-pageassertions#page-assertions-to-have-screenshot-1-option-animations)规定 `toHaveScreenshot()` 默认 `animations: disabled`，可被项目 `expect` 或单次参数覆盖；[Page 文档](https://playwright.dev/docs/api/class-page#page-screenshot-option-animations)规定 `page.screenshot()` 默认 `allow`，按调用参数生效。[v1.63.0 发行提交 `1b025d7`](https://github.com/microsoft/playwright/commit/1b025d7e20a026371cd5f98ba0cdce48892737c8)的[matcher L346–363](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright/src/matchers/toMatchSnapshot.ts#L346-L363)与[screenshotter L201–219](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L201-L219)印证这一差异，两个入口不只相差图片比较。**[一手：文档与固定源码]**
 
-**稳定化可以触发应用回调。** [固定实现 L109–155](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L109-L155)对有限 `endTime` 调用 `finish()`，对无限动画调用 `cancel()` 并在清理时 `play()`，不保存原播放位置和 `playState`；有限动画没有复原步骤。官方 [回归 L774–835](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L774-L835)要求截图结束过渡、触发 `transitionend`，且第一张图已包含回调新增的 `h1`；[L865–938](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L865-L938)另断言有限动画的结束事件与无限动画的取消事件。故截图可能推进状态，不能独证原输入／恢复正确。换成局部 locator 截图也不隔离这项处理：[L224–255](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L224-L255)仍在所有 frames 做截图准备。**[一手：源码与官方测试定义；研究：机制推导]**
+[固定实现 L109–155](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L109-L155)对有限 `endTime` 调用 `finish()`，没有复原步骤；无限动画先 `cancel()`、清理时 `play()`，不保存原位置和 `playState`。[回归 L774–835](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L774-L835)要求结束过渡、触发 `transitionend`，首图已含回调新增的 `h1`；[L865–938](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L865-L938)另验有限动画结束与无限动画取消事件。因此截图可能推进状态，不能独证原输入或恢复正确；局部 locator 截图也由[L224–255](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L224-L255)在所有 frames 准备。**[一手：源码与测试定义；研究：机制推导]**
 
-**暂停不能一概处理。** 实现跳过的是 `playbackRate === 0`，不是 `playState === 'paused'`；[官方回归 L838–862](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L838-L862)要求速率为 0 的动画保持 `currentTime = 500`。因此仍被 `getAnimations()` 返回、速率非零的暂停动画，没有因 `paused` 自动免于 `finish/cancel` 或恢复原暂停状态的保证。此源码推论不适用于全部暂停机制，也不授权为截图改产品暂停。**[一手：源码／测试；研究：限定推论]**
+实现跳过 `playbackRate === 0`，并非 `playState === 'paused'`；[官方回归 L838–862](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L838-L862)要求速率为 0 时保持 `currentTime = 500`。仍被 `getAnimations()` 返回、速率非零的暂停动画，不能保证免于 `finish/cancel` 或恢复暂停状态。此推论不覆盖所有暂停机制，也不授权为截图改变产品暂停。**[一手：源码与测试；研究：限定推论]**
 
-**历史回执支持局部改参，不支持全局关闭视觉断言。** [#36899](https://github.com/microsoft/playwright/issues/36899)于 2025-08-01 报告 Playwright 1.54.2 的普通截图有 Ionic sheet modal、视觉断言截图没有。[原作者后续](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145555849)称交换顺序后两张都缺弹层，改为 `toHaveScreenshot({ animations: 'allow' })` 后恢复；[维护者回复](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145780160)确认默认值差异是兼容性选择，仍推荐自动等待的视觉断言。无限动画归因是作者解释，未核 Ionic 根因或复现，不作当前普遍缺陷。**[社区：历史作者回执；一手：维护者契约说明]**
+[#36899](https://github.com/microsoft/playwright/issues/36899)于 2025-08-01 报告 Playwright 1.54.2 普通截图有 Ionic sheet modal，视觉断言却没有。[原作者后续](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145555849)称换序后两张都缺，改为 `toHaveScreenshot({ animations: 'allow' })` 后恢复；[维护者回复](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145780160)确认默认值差异出于兼容，仍推荐自动等待的视觉断言。无限动画只是作者归因，未核 Ionic 根因或复现；它支持局部改参，不支持全局关闭或认定当前普遍缺陷。**[社区：历史回执；一手：维护者说明]**
 
 **最小采用与撤回。** 纯终态布局继续用现有视觉基线；先完成相关真实输入、暂停后恢复或取消后重开的行为断言，再做可能推进动画的视觉比较。所需状态本已稳定却被准备动作改变时，只在该处用 `allow`。若需要观察过渡，复用动作／事件时间线，已有测试能证明命中目标阶段及其结果就不加层。`allow` 不是精确采样：普通截图仍有[字体等待 L251–264](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L251-L264)，视觉断言仍按[匹配／稳定化循环 L719–795](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/page.ts#L719-L795)取图，持续变化时可能超时；该版本首张直接匹配已有基线可返回，也不应概括为每次必拍两张。另据 [actionability](https://playwright.dev/docs/actionability#stable)，`locator.click()` 会等元素 bounding box 连续两帧不变，所以发起调用的时刻不等于输入发生时刻；确认真实动作命中窗口，不统一改用 `force`。**[一手：工具机制；经验：选择边界]**
 
@@ -171,13 +171,13 @@
 
 核实：2026-10-15（UTC+8）。改变 23 §3/§4：服务器同步的验收增加独立读取，故障注入增加实际命中确认；本地保存不强加服务端要求。复用现有 API／浏览器测试，不增加平台或框架。**[经验：采用判断]**
 
-**成功页面可能完全来自本地。** Playwright [固定修复提交 `ea75b9f` 的回归 L23–98](https://github.com/microsoft/playwright/blob/ea75b9f32ca4120efdfaf8f5b8cfd292f548f197/tests/library/browsercontext-service-worker-policy.spec.ts#L23-L98)覆盖 literal、Cache Storage、network fallback 和 preload fallback；L79–92 要求当前页和同 context 的新页都返回 200、来自 worker、显示 offline，同时目标服务端请求数为 0。恢复在线后才要求请求数变成 1。这是响应机制定义，非保存缺陷实测。**[一手：官方测试定义]**
+Playwright [固定修复提交 `ea75b9f` 的回归 L23–98](https://github.com/microsoft/playwright/blob/ea75b9f32ca4120efdfaf8f5b8cfd292f548f197/tests/library/browsercontext-service-worker-policy.spec.ts#L23-L98)覆盖 literal、Cache Storage、network fallback 和 preload fallback；L79–92 要求当前页及同 context 新页均返回 200、来自 worker、显示 offline，而服务端请求为 0，恢复在线才变为 1。这是响应机制的测试定义，非保存缺陷实测。**[一手]**
 
-因此若契约是“已同步到服务端”，刷新／重新开标签页不够：可复用 API 测试读取本次记录。固定 [APIRequestContext 实现 L350–389](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/packages/playwright-core/src/server/fetch.ts#L350-L389)使用 Node 的 HTTP/HTTPS 请求，不经过页面 worker；但服务端缓存和数据库耐久性仍是另一层，不能据此宣称落盘保证。若承诺只是本地持久保存，就验证本地重新打开，联网同步另列结果。**[一手：源码；经验：由机制推导的验收选择]**
+承诺服务端同步时，刷新或新标签页不够，可用 API 读取本次记录：[APIRequestContext 实现 L350–389](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/packages/playwright-core/src/server/fetch.ts#L350-L389)用 Node HTTP/HTTPS，不经页面 worker。但服务端缓存与数据库耐久性仍须另验，不能据此保证落盘。只承诺本地保存时验本地重开，联网同步单列结果。**[一手：源码；经验：验收选择]**
 
-**有请求事件，不等于故障规则命中。** 固定 [Chromium 回归 L373–434](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/tests/library/chromium/chromium.spec.ts#L373-L434)同时收集 `page.on('request')`／context 事件与 route 命中：透明 worker 的 `/data.json` 网络请求可由 context 路由处理，页面侧同名请求虽产生事件，却不可路由。[后续回归 L436–538](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/tests/library/chromium/chromium.spec.ts#L436-L538)还区分缓存命中、`/foo` 改写为 `/bar`、合成 200 和透传。因此对页面 URL 注册失败规则，不能直接算故障已注入；检查处理器实际命中及对应响应；在 Chromium 支持范围内，必要时改到 worker 所有的网络请求。**[一手：官方测试；经验：覆盖判断]**
+[Chromium 回归 L373–434](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/tests/library/chromium/chromium.spec.ts#L373-L434)同时收集 `page.on('request')`、context 事件与 route 命中：透明 worker 的 `/data.json` 可由 context 路由，页面同名请求虽有事件却不可路由。[后续回归 L436–538](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/tests/library/chromium/chromium.spec.ts#L436-L538)另区分缓存、`/foo` 改写为 `/bar`、合成 200 和透传。注册页面 URL 失败规则不代表注入成功，须查实际命中与响应；必要时在 Chromium 支持范围内改到 worker 持有的网络请求。**[一手：测试定义；经验：覆盖判断]**
 
-**反证与工具边界。** 透明 worker 也会返回 `fromServiceWorker() === true`，不能把它等同于缓存命中，或要求该字段一律为 false；HTTP cache 与 worker 的 Cache Storage／合成响应也不同。[官方说明](https://playwright.dev/docs/service-workers)把这类 worker 观测／路由能力限定于 Chromium，并明确 worker 主脚本的更新请求仍不能路由；context 路由不是 Firefox／WebKit 的通用补救，也不覆盖所有 worker 请求。同页提醒禁用 worker 会改变实际页面行为，所以普通 API mock 可选择 block，验产品离线能力则不能借此绕过。**[一手；经验：采用边界]**
+透明 worker 也返回 `fromServiceWorker() === true`，不能等同缓存命中或要求一律为 false；HTTP cache 也不同于 Cache Storage、合成响应。[官方说明](https://playwright.dev/docs/service-workers)把这些观测和路由能力限于 Chromium，主脚本更新仍不可路由，不能补救全部 worker 请求或 Firefox／WebKit。禁用 worker 会改变产品行为：普通 API mock 可 block，离线验收不能借此绕过。**[一手；经验：采用边界]**
 
 [真实报告 #42775](https://github.com/microsoft/playwright/issues/42775)在 1.63.0 的 WebKit 上发现：即使 worker 直接生成响应，离线模拟也拒绝导航；停止源站的对照则能返回。它不代表两种故障等价。[修复 #42894](https://github.com/microsoft/playwright/pull/42894)于 2026-10-05 合入上述 `ea75b9f`，在 page target 初始化时显式应用已配置的 offline 状态并补回归。固定测试仍跳过 Electron／旧 WebKit，并对 Firefox 的 network/preload fallback 标 fixme。离线测试失败时应先核工具版本、模拟范围和实际请求，不能直接撤掉产品要求。未核首次正式发布版本；PR 页面仍有失败检查，本轮没有复核其因果或宣称全 CI 通过。**[一手：报告、维护补丁与测试限制；经验：诊断选择]**
 
@@ -187,13 +187,13 @@
 
 ✅ 当状态更新依赖时序，先在实际失败的构建中复现，再记录相关状态随时间的变化；只需现有浏览器和定向日志时，不必增加调试平台。**[经验：23 §4 采用建议，2026-10-13]**
 
-**故障与新增反馈。** Dan Abramov 于 2026-02-18 提交的 [#35821](https://github.com/react/react/issues/35821) 包含[公开复现](https://github.com/gaearon/react-udv-bug)：输入经 server action 返回 JSX，`useDeferredValue` 在开发构建追上输入，在生产构建经常卡在旧值。[3 月 24 日原帖](https://bsky.app/profile/danabra.mov/post/3mhrdue7gds2h)称此前 Claude 未能定位或写出失败测试；[紧接原帖](https://bsky.app/profile/danabra.mov/post/3mhrdwgnhkc2h)说明后来按浏览器复现、阅读人指定的相关源码、给生产 bundle 加日志、修复的顺序完成。这支持“给 Agent 实际状态变化”，不排除源码可定位。**[一手：故障报告与作者自述，非完整模型运行记录]**
+Dan Abramov 于 2026-02-18 的[#35821](https://github.com/react/react/issues/35821)含[公开复现](https://github.com/gaearon/react-udv-bug)：server action 返回 JSX 后，`useDeferredValue` 在开发版追上输入，生产版常卡旧值。[3 月 24 日原帖](https://bsky.app/profile/danabra.mov/post/3mhrdue7gds2h)称 Claude 此前未定位或写出失败测试；[紧接原帖](https://bsky.app/profile/danabra.mov/post/3mhrdwgnhkc2h)记后来依次浏览器复现、读人指定源码、给生产 bundle 加日志、修复。它支持提供实际状态变化，不排除源码可定位。**[一手：报告与作者自述，非完整模型轨迹]**
 
-**实现决定与回归契约。** [固定合并提交 `c0d218f0f3e02ed581f74096e56baa947213135d`](https://github.com/react/react/commit/c0d218f0f3e02ed581f74096e56baa947213135d) 在 `pingSuspendedRoot` 不能立即重启当前 render 的分支保存 pinged lanes，避免随后被标记为 suspended 而失去重试；没有增加业务层轮询。新增测试让兄弟组件在同一 render 内 resolve 先前挂起的数据，最终必须渲染 updated；另一个既有测试记录新增的重试行为。回归锁定 resolve/ping 时点。**[一手：补丁与回归代码；研究：机制归纳]**
+[固定合并提交 `c0d218f0f3e02ed581f74096e56baa947213135d`](https://github.com/react/react/commit/c0d218f0f3e02ed581f74096e56baa947213135d)在 `pingSuspendedRoot` 无法立即重启当前 render 时保存 pinged lanes，避免随后标为 suspended 而失去重试，未加业务轮询。新测试让兄弟组件在同一 render 内 resolve 挂起数据，最终须渲染 updated；既有测试另记新增重试行为。回归锁定 resolve/ping 时点。**[一手：补丁与测试；研究：机制归纳]**
 
-**结果边界。** [#36134](https://github.com/react/react/pull/36134) 署名由 Claude 编写/调试，获 acdlite 批准，2026-03-24 合入并关闭原 issue；本例固定修复版本是上述提交，未核实首次包含它的正式发布版本，不表示当前仍有该缺陷。PR 页面显示 245 checks passed；其 Test Plan 列出撤掉源修复应令新测试失败、修复 bundle 应解决原 repro，但这不是本轮读到的原始红绿日志或浏览器复验记录。未取得逐项 CI／会话原日志或独立重跑。**[一手：署名、合入与平台聚合结果；研究：验证范围]**
+[#36134](https://github.com/react/react/pull/36134)署名 Claude 编写／调试，获 acdlite 批准，2026-03-24 合入并关闭 issue。固定修复为上述提交，首次正式发布未核，不能当作当前缺陷。页面显示 245 checks passed；Test Plan 要求撤修复使新测失败、修复 bundle 解决 repro，但缺逐项 CI、会话、红绿或浏览器原日志，也未独立重跑。**[一手：署名、合入与聚合结果；研究：边界]**
 
-**替代解释与最小接入。** review 指出源码已有相关 TODO，作者也给了源码范围与日志建议；专家知识、复现及会话差异均可能贡献，不能独归因日志。保留失败构建与输入，只观察能区分假设的状态；把确认的触发条件写入已有回归。临时日志可能改变调度，因此最终需移除诊断输出，再复测原用户路径。仅为专家参与的历史单例。**[一手：review 与作者记录；经验：接入与反证要求]**
+review 指出源码已有 TODO，作者给出源码范围和日志建议；专家、复现及会话差异都可能贡献，不能独归日志。保留失败构建与输入，只观察区分假设的状态，把触发条件放入已有回归。日志可能扰动调度，须移除后复测用户路径。本例仍是专家参与的历史单例。**[一手：review 与自述；经验：接入要求]**
 
 ### 属性测试：搜索反例不等于确认或修好缺陷
 
@@ -661,9 +661,9 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 ## dot 实际能力诊断：公开网页读取的路径差异
 
-17 页头的核查沿革移至此处：原基础核实为 2026-10-08，成本／缓存于 10-13 补核，上下文恢复、停止机制、拒绝诊断与全文核心建议／模板入口于 10-15（UTC+8）审阅，模型提示范围随之修正；这些文档核查未运行当前模型或 Agent 客户端。下述公开读取观察单独计证，不回填为其他建议的实测。**[经验：维护范围]**
+17 的核查沿革：基础核实为 2026-10-08，成本／缓存于 10-13 补核；上下文恢复、停止、拒绝及全文核心建议／模板入口于 10-15（UTC+8）审阅，并修正模型提示范围。这些仅为文档核查，未运行当前模型或客户端；下列读取观察单独计证。**[经验：维护范围]**
 
-> 主线二，兼三／四；改变 17 的建议：不要由单条读取路径失败判定整体能力不可用。新证据为 2026-10-15 02:42–02:44 UTC 的现场观察及同日 03:02 UTC 的公开 GET 测量；本节汇入本次协作执行的公开页面观察，未由本次文档编辑另行独立复测。**[经验：实际观察与诊断建议]**
+> 主线二，兼三／四；改变 17：单条读取路径失败不代表整体不可用。以下汇入协作执行中 2026-10-15 02:42–02:44 UTC 的现场观察及同日 03:02 UTC 的公开 GET 测量，本次编辑未独立复测。**[经验：实际观察与诊断建议]**
 
 ### 观察与复现范围
 
@@ -673,15 +673,15 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 | 同一组公开 URL，dot 云端 Chrome 正常打开 | 可读；原帖刷新复测成功；没有登录、验证码或绕过限制 | 当时已有浏览器路径足以读取原始来源，无须据此申请更大权限或安装新工具 |
 | 同期 OpenAI 公开文档与公共 GitHub 的抓取 | 正常 | 不支持“本次环境完全不能联网”；也不能解释 X 的差异根因 |
 
-**公开 GET 补测（2026-10-15T03:02:42.528671Z）**：协作执行端在 shell 使用 Python `urllib.request.urlopen('https://x.com/thsottiaux', timeout=15)`，未附加 cookies 或特殊 headers，最多读取 1,000,000 字节；实际为 HTTP 200、141,804 字节，包含已知帖子 ID `2110151780478927344` 和 `2109892247580000595`。这只证明该次传输成功且响应中存在这些 ID，不验证完整正文或全量实时 timeline；内容证据仍来自上面的 Chrome 原帖核对。未经过登录、验证码或限制绕过，也不推断该 GET、先前抓取与浏览器的底层网络同源。**[经验：实际测量]**
+**公开 GET（2026-10-15T03:02:42.528671Z）**：协作执行端在 shell 用 Python `urllib.request.urlopen('https://x.com/thsottiaux', timeout=15)`，未附 cookies 或特殊 headers，最多读 1,000,000 字节；得到 HTTP 200、141,804 字节，含已知 ID `2110151780478927344` 和 `2109892247580000595`。这只证传输成功及 ID 存在，未验完整正文或实时 timeline；内容仍据 Chrome 原帖。无需登录、验证码或绕过限制，GET、抓取与浏览器的底层网络是否同源未知。**[经验：实际测量]**
 
 上述为 **[经验：本次环境观察]**，非稳定成功率或产品契约；第三方转录仅发现线索，内容已回原帖核对，不据此背书产品能力。
 
 ### 采用与停止边界
 
-- **先分类再补能力**：当前入口未暴露、操作执行失败、目标页返回错误是不同问题。公开内容可正常读取时，用受支持的原有路径核原文；两条路径结果不同就分别记结果，不把其中一个扩大成全平台结论。**[经验：采用判断]**
-- **不能确定根因**：没有响应头或网络追踪，不能断言是 X 反爬、代理故障或其他特定原因；观察窗口不是帖子发布时间。页面 DOM 未提供可核实的 datetime／时区，不将显示时间猜成 UTC+8。**[经验：证据限制]**
-- **不把恢复写成绕过**：若有明确访问禁令、登录要求、验证码或授权拒绝，按相应边界停下或完成获准步骤；本例无需这些步骤，不支持改身份、换代理或扩大权限。**[经验：适用边界]**
+- **先分类**：入口未暴露、执行失败和目标页报错是不同问题。公开内容可读时，用受支持的原路径核原文；路径结果不同就分别记录，不外推全平台。**[经验：采用判断]**
+- **根因未知**：缺响应头或网络追踪，不能归因 X 反爬、代理或其他原因。观察时间非发布时间；DOM 无可核实 datetime／时区，不猜成 UTC+8。**[经验：证据限制]**
+- **遵守访问边界**：遇禁令、登录、验证码或授权拒绝，须停止或完成获准步骤。本例无需这些步骤，不支持改身份、代理或权限。**[经验：适用边界]**
 - **副作用与续接另有规则**：[20 §4／§5／§9](../20-codex-long-horizon.md)已维护状态恢复、子任务结果收集与未知外部操作对账。本例只读，不证明重新发起写入安全。**[经验：范围]**
 
 ### 下一问题与验证状态
@@ -697,13 +697,13 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 ### 官方契约与实际报告分别证明什么
 
-[Tasks and memory](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)允许 dot 在对话间继续工作，自行暂停与唤醒；固定重复工作另需保存排程。新任务有独立上下文，运行完成后仍须检查输出与错误，不能直接当目标完成或送达。本地任务需要原电脑在线，已配置 Codex 云环境的任务可在用户电脑离线时工作；切换所选电脑不会迁移旧任务。**[一手：当前产品文档]** 该页未给最大阻塞时间、恰好一次投递或崩溃恢复 SLA。
+[Tasks and memory](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)允许 dot 在对话间工作、自行暂停与唤醒；固定重复工作须另存排程。新任务上下文独立，完成后仍须查输出和错误，不等于目标完成或送达。本地任务需原电脑在线，已配置 Codex 云环境可在用户电脑离线时工作；切电脑不迁移旧任务。该页未给最大阻塞时间、恰好一次投递或崩溃恢复 SLA。**[一手：当前产品文档]**
 
-[Control your dot](https://learn.chatgpt.com/docs/dots/controls#stop-work)明确 Pause、Activity 中停止委派任务、Scheduled 中禁用排程是不同控制。**[一手]** 因此不能把其中一处成功扩大成所有层已停；停止后的副作用对账继续按 20 §9，不另设规则。
+[Control your dot](https://learn.chatgpt.com/docs/dots/controls#stop-work)分别控制 Pause、Activity 委派停止和 Scheduled 禁用排程；一处成功不代表所有层已停，副作用仍按 20 §9 对账。**[一手；研究：采用范围]**
 
-- [dot #51610](https://github.com/openai/codex/issues/51610)：作者报告 10 月 7 日 macOS 本地任务的 browser bundle 阻塞约 52 分钟，多次 follow-up 返回 `steered`，恢复后集中收到。报告明确是 dot 反复发送，不是系统自行复制；未证明丢失、重复投递或旧指令实际执行，版本与根因未知。任务最终恢复也反驳“这种等待必定永久失败”，但不支持固定等待时长。**[社区：作者观察摘要，无确定性复现]**
-- [dot #52374](https://github.com/openai/codex/issues/52374)：历史报告中，云任务可读但续接返回 UNKNOWN／NOT_FOUND；不同作者补充定时与手动触发都未创建任务、另一次可读但 send 失败。**10 月 12 日 11:50 UTC 的后续报告已验证该补充案例恢复**：原任务未重建，send 启动新轮次，完成后回读得到精确无害标记；未做项目编辑、构建或部署。此前客户端与独立 CLI 均更新，但未隔离客户端变化与同期后端恢复，不能归因或推广为统一修复。不同任务 ID／API 的 CLI 返回 Invalid task ID，也不证明原任务不存在；这些前后结果支持分别核读取、续接与实际产出。**[社区：主帖、补充故障与恢复报告]**
-- [Nigel999 的社区原帖及支持回复](https://community.openai.com/t/dot-repeatedly-reports-progress-but-fails-to-complete-tasks-or-clearly-disclose-that-work-has-stopped/1402528)：用户报告收到进度说法但未完成，后来确认无活动任务；支持要求核 app／系统版本、Activity、审批和阻塞，并未确认根因或修复。**[社区]** 这是不同作者的状态报告问题，不是 #51610 的独立复现或失败率样本。
+- [dot #51610](https://github.com/openai/codex/issues/51610)：10 月 7 日 macOS 本地 browser bundle 阻塞约 52 分钟，dot 多次 follow-up 返回 `steered`，恢复后集中收到。是 dot 反复发送，非系统复制；未证丢失、重复投递或旧指令执行，版本与根因未知。最终恢复反驳永久失败判断，却不给固定等待时长。**[社区：观察摘要，无确定性复现]**
+- [dot #52374](https://github.com/openai/codex/issues/52374)：云任务可读，续接却报 UNKNOWN／NOT_FOUND；不同作者另报定时、手动均未创建，或可读但 send 失败。**10 月 12 日 11:50 UTC 的补充案例已恢复**：原任务未重建，send 开新轮，完成后回读精确无害标记，未编辑、构建或部署项目。客户端与独立 CLI 此前均更新，未隔离同期后端变化，不能统一归因。不同 ID／API 的 CLI 报 Invalid task ID，也不证明原任务不存在；读取、续接、产出须分别核实。**[社区：故障与恢复报告]**
+- [Nigel999 的社区原帖及支持回复](https://community.openai.com/t/dot-repeatedly-reports-progress-but-fails-to-complete-tasks-or-clearly-disclose-that-work-has-stopped/1402528)：用户收到进度但未完成，后确认无活动任务；支持要求核 app／系统版本、Activity、审批和阻塞，未确认根因或修复。这是另一作者的状态问题，非 #51610 独立复现或失败率样本。**[社区]**
 
 来源限定 ChatGPT dot／Codex 委派，不混入同名产品或通用 Agent。20 §5 已区分结果完成／送达／收集／验证；本节补输入接受与实际处理的区别。**[研究]**
 
@@ -711,10 +711,10 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 公开 GitHub API 本轮返回 main SHA `160b2b1ef62114eeb41e41e5e3be0000d944b713`；按该提交文件树核对以下内容，未由旧路径或搜索摘要推断。
 
-- [turn_input.rs L1–13](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/core/src/session/turn_input.rs#L1-L13)注释明确：reply 在 start／steer／reject 决策后，不等 hooks、模型上下文更新、rollout 持久化或 sampling。[L799–890](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/core/src/session/turn_input.rs#L799-L890)核活动轮次与 expected ID，将输入交给 pending queue，再返回活动／根轮次 ID。**[一手：固定源码]** 未核队列全部持久化路径，不据此宣称所有输入必定丢失或纯内存。
-- [协议 turn.rs L317–352](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/app-server-protocol/src/protocol/v2/turn.rs#L317-L352)响应仅 turn ID；[测试 L294–358](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/app-server/tests/suite/v2/turn_steer.rs#L294-L358)先断言回执，再等对应 client ID 的 UserMessage item，最后等 turn/completed。**[一手：测试定义，未运行]** 与[公开 App Server 契约](https://learn.chatgpt.com/docs/app-server#steer-an-active-turn)一致：接受回执与后续事件分开；这不是 dot 云协调器的公开实现或版本绑定证据。
+- [turn_input.rs L1–13](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/core/src/session/turn_input.rs#L1-L13)说明 reply 只等 start／steer／reject 决策，不等 hooks、模型上下文、rollout 持久化或 sampling；[L799–890](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/core/src/session/turn_input.rs#L799-L890)检查活动轮次及 expected ID，输入入 pending queue 后返回活动／根轮次 ID。未核全部持久化路径，不能据此断言输入必丢或队列纯内存。**[一手：固定源码]**
+- [协议 turn.rs L317–352](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/app-server-protocol/src/protocol/v2/turn.rs#L317-L352)仅返回 turn ID；[测试 L294–358](https://github.com/openai/codex/blob/160b2b1ef62114eeb41e41e5e3be0000d944b713/codex-rs/app-server/tests/suite/v2/turn_steer.rs#L294-L358)先验回执，再等对应 client ID 的 UserMessage，最后等 turn/completed，与[公开 App Server 契约](https://learn.chatgpt.com/docs/app-server#steer-an-active-turn)一致。接受回执和后续事件分开，但这不是 dot 云协调器的实现或版本绑定证据。**[一手：测试定义，未运行]**
 
-历史旁证 [#40805](https://github.com/openai/codex/issues/40805)记录旧版 sampling 持续时 steer 接受与消息生命周期延迟，另一作者以 OpenClaw 复现并贴个人 fork 修补和测试结果。**[社区：历史报告]** 仅保留为 Codex 机制证据，不能称官方已发布修复，更不能当作 dot 恢复验证；本轮未核该 fork 与当前产品的合入关系，不推荐“升级即可修复”。
+[#40805](https://github.com/openai/codex/issues/40805)记录旧版 sampling 持续时 steer 接受与消息生命周期延迟，另一作者用 OpenClaw 复现并贴个人 fork 修补、测试结果。仅为 Codex 历史机制旁证；未核 fork 与当前产品的合入关系，不能当官方发布修复、dot 恢复验证或推荐“升级即修复”。**[社区]**
 
 ### 采用、反证与后续验证
 
@@ -731,24 +731,24 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 ### 查询与接续：保留有作用的中间层
 
-[电脑与应用](https://learn.chatgpt.com/docs/dots/computers-and-apps)说明插件提供服务信息与工具，访问取决于连接账号、权限与环境；[10 月 9 日更新](https://learn.chatgpt.com/docs/whats-new/dots-october-9-2026)包含已有 Codex thread 的使用与接续改进；[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)说明新任务上下文与原执行环境边界。**[一手]** 由此采用“能力已经足够时不重复包装”，不是取消必要委派或保证插件更快；宿主规定的环境路线仍须遵守。
+[电脑与应用](https://learn.chatgpt.com/docs/dots/computers-and-apps)将插件访问限定于账号、权限和环境；[10 月 9 日更新](https://learn.chatgpt.com/docs/whats-new/dots-october-9-2026)包含已有 Codex thread 的使用、续接改进；[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)规定新任务上下文与原环境边界。因此能力足够时不重复包装，但仍保留必要委派、遵守宿主路线，也不保证插件更快。**[一手；经验：采用判断]**
 
-[#51797](https://github.com/openai/codex/issues/51797)作者报告插件已经足够时仍创建包装任务。这只是 open 状态的用户报告，无已修复或效率对照证据。反例 [#49729](https://github.com/openai/codex/issues/49729)已核正文及全部 56 条评论，失败与恢复须一起读：**[社区：原帖与评论]**
+[#51797](https://github.com/openai/codex/issues/51797)称插件足够仍创建包装任务，核实时 open，无修复或效率对照。反例[#49729](https://github.com/openai/codex/issues/49729)已读正文和全部 56 条评论，须合看失败与恢复：**[社区]**
 
 - [10 月 9 日修复说法](https://github.com/openai/codex/issues/49729#issuecomment-6080124963)与[Ubuntu 版本补充](https://github.com/openai/codex/issues/49729#issuecomment-6081558731)只覆盖作者报告，不能外推跨平台恢复
 - [10 月 12 日 macOS](https://github.com/openai/codex/issues/49729#issuecomment-6127397704)与[Windows](https://github.com/openai/codex/issues/49729#issuecomment-6130573116)报告父路线失败而 helper 提供了读取／续接能力；后者包含目标回应与回读，说明中间任务有时确有必要
 - [10 月 13 日 Windows 恢复](https://github.com/openai/codex/issues/49729#issuecomment-6148306271)在原始直读失败后，用已有执行器读取同一目标成功，无需替代任务或改权限；它不证明父路线修复或发送成功
 - [另一 Windows 报告](https://github.com/openai/codex/issues/49729#issuecomment-6153744906)只有发送接受、未见所需回应，不能记为成功接续
 
-✅ 同目标先核原任务和已有授权执行器能否接续；不盲目加中转，也不把读失败等同任务丢失。需要独立判断时保留新上下文评审。插件漏字段、分页不全、版本不明或原任务不支持接续时，应撤回“当前入口已足够”的判断。**[经验：采用与撤回条件]** 未测耗时、token、费用或正确率，不据这些帖子承诺效率提升；未访问用户私人任务验证路线。
+✅ 先核原任务和已有授权执行器能否续接，不由读取失败推断任务丢失；需要独立判断时保留新上下文评审。插件漏字段、分页不全、版本不明或不能续接，就撤回“入口足够”的判断。未测耗时、token、费用或正确率，也未访问私人任务，不能承诺效率提升。**[经验：采用与撤回条件]**
 
 ### 发布：一般建议与本仓观察分开
 
-[GitHub tree 契约](https://docs.github.com/en/rest/git/trees#create-a-tree)允许在 `base_tree` 上提交多条变更；不传基树会使未列文件在新提交中消失。创建 tree 后仍需 commit 和 ref；[非强制 ref 更新](https://docs.github.com/en/rest/git/refs#update-a-reference)检查 fast-forward。**[一手：2026-10-15 核对]** 读树的递归返回限制不是写树的文件数上限，不据此规定“每批 20 个文件”。
+[GitHub tree 契约](https://docs.github.com/en/rest/git/trees#create-a-tree)允许基于 `base_tree` 写多项变更；未传基树会让未列文件从新提交消失。随后仍需 commit 与 ref，[非强制 ref 更新](https://docs.github.com/en/rest/git/refs#update-a-reference)检查 fast-forward。读树递归限制不是写树文件上限，不能据此规定每批 20 文件。**[一手：2026-10-15 核对]**
 
-本仓当次环境中，GitHub 连接器可用而 shell Git dry-run 缺少用户名认证；因此不将连接器授权视作 shell 凭据。已发布 [276babc](https://github.com/dbvv1/a1dbv/commit/276babc) 的路径复用了 64 个最终 blob，经过四次建树、四个 commit 和最终非强制 ref 更新，最终树逐文件核验、14 阶段离线检查通过。**[经验：本次操作记录]** 这是一次路径可行性观察，不证明上述次数最优，也不是模型效率实验。
+本仓当时连接器可用，shell Git dry-run 却缺用户名认证，不能把连接器授权当 shell 凭据。[276babc](https://github.com/dbvv1/a1dbv/commit/276babc)复用 64 个最终 blob，经过四次建树、四个 commit 和最终非强制 ref 更新；逐文件核最终树、14 阶段离线通过。仅证明路径可行，不证明次数最优或模型效率。**[经验：操作记录]**
 
-✅ 一般建议是优先 commit 后 push；连接器 fallback 只传相对最新 main 的差异，允许时一次写入，遇上限或失败才拆分；结果未知先核回执与远端状态，再继续尚未完成步骤。若基线变化则重算并核冲突。**[经验：工程建议]** 不以省调用为由跳过验收、授权、分支保护或发布后核对。本轮只核文档与既有操作证据，没有为此新增发布、认证、模型或客户端实验。
+✅ 优先 commit 后 push；连接器 fallback 只传相对最新 main 的差异，允许时一批，遇上限或失败再拆。结果未知先对账远端与回执，再续未完成步骤；基线变化则重算冲突。不为省调用跳过验收、授权、分支保护或发布后核对。本轮仅文档及既有操作，未新增发布、认证、模型或客户端实验。**[经验：工程建议与范围]**
 
 
 ## 增量验证：已有回归测试是否真的被选中
@@ -759,11 +759,11 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 ### 原生能力与反证
 
-[Vitest 5.0.4](https://github.com/vitest-dev/vitest/releases/tag/v5.0.4)发布于 2026-10-12；增加执行依赖记录的 [#11515](https://github.com/vitest-dev/vitest/pull/11515)于 10-08 合并，两者不是同一日期。**[一手：发布与合并记录]** [官方契约](https://vitest.dev/config/experimental.html#experimental-recorddependencies)说明 `experimental.recordDependencies` 默认关闭，按上次实际执行的记录为 `--changed`／`related` 选择测试；动态导入只有执行过才入记录，普通 `fs` 读取和 externalized 模块内部导入不记录。新增 import 后若先提交而未重新运行，后续只改新依赖可能漏选。**[一手：当前文档]**
+[Vitest 5.0.4](https://github.com/vitest-dev/vitest/releases/tag/v5.0.4)发布于 2026-10-12，[#11515](https://github.com/vitest-dev/vitest/pull/11515)合并于 10-08。[官方契约](https://vitest.dev/config/experimental.html#experimental-recorddependencies)规定 `experimental.recordDependencies` 默认关闭，按上次执行记录为 `--changed`／`related` 选测；动态导入须执行过，普通 `fs` 读取和 externalized 模块内部导入不记录。新增 import 若先提交未重跑，后续只改新依赖可能漏选。**[一手：发布、合并与当前契约]**
 
-固定合并提交的[测试定义](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/test/e2e/test/recorded-deps.test.ts)覆盖动态导入、无记录测试与部分运行等边界；[选择实现](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/packages/vitest/src/node/recorded-modules.ts)在没有依赖记录时回退全选，有记录时按变化模块匹配。**部分运行（如 `-t`／`.only`）不创建新记录，只合并到已有记录**，所以刷新导入关系时应完整运行相关测试文件。无记录的测试会运行，不能把“无记录”一概写成漏选。缓存关闭时记录功能不生效。**[一手：固定源码、测试定义与文档；未运行]**
+[测试定义](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/test/e2e/test/recorded-deps.test.ts)覆盖动态导入、无记录与部分运行；[选择实现](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/packages/vitest/src/node/recorded-modules.ts)在无记录时回退全选，有记录则匹配变化模块。**`-t`／`.only` 等部分运行只合并已有记录，不创建新记录**，刷新导入关系须完整跑相关测试文件。无记录的测试仍会运行；缓存关闭则记录功能不生效。**[一手：源码、测试与文档，未运行]**
 
-[#11585](https://github.com/vitest-dev/vitest/issues/11585)于 2026-10-14 创建，核实时仍 open、无评论，是**单一作者报告，未经维护者确认或本仓复测**。作者对 linked workspace helper 的改动保留了应失败的已有断言：关闭 optimizer 时 `changed`／`related` 选中并失败，开启后零选中、退出码 0；报告含 5.0.4 与 4.1.10 对照，并称 5.0.4 的记录模式仍漏选。**[社区：作者复现报告]** 固定[受影响模块实现](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L240-L251)过滤 `node_modules` 路径，[后续遍历](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L345-L349)只沿通过过滤的导入继续，支持作者提出的预打包路径机制；源码阅读不等于完整复现，也不证明所有 optimizer 项目均失败。**[一手：固定源码；研究：证据边界]**
+[#11585](https://github.com/vitest-dev/vitest/issues/11585)创建于 2026-10-14，核实时 open、无评论，**未经维护者确认或本仓复测**。作者修改 linked workspace helper，保留已有失败断言：关闭 optimizer 时 `changed`／`related` 选中并失败，开启后零选中、退出 0；含 5.0.4／4.1.10 对照，称 5.0.4 记录模式仍漏选。[受影响模块实现](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L240-L251)过滤 `node_modules`，[后续遍历](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L345-L349)仅沿过滤后的导入遍历，支持作者机制解释，非完整复现或所有 optimizer 项目失败。**[社区：单作者报告；一手：源码；研究：边界]**
 
 ### 采用范围与退回条件
 
@@ -778,16 +778,16 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 > 2026-10-16 UTC 补核；主线三，改变 15 §6 新增选择器的采用条件，不改变本仓检查入口。沿用已有增量验证主题，不再列工具排名或重复 Vitest 边界。
 
-remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/research/research-bk-403-testmon-poc.md)在测试已是明显成本时，仍决定暂不引入 pytest-testmon。报告称实验工作树为 `12f8043`、testmon 为 `2.2.0`；本轮实际读取的是文档与 driver 的固定快照 `45132599a2818fe1e02eb15c9e2016bada5a0103`，没有证明它就是当时运行的 driver 版本，也未取得完整原始 JSONL／JUnit 工件。以下数值均为使用方报告，非本仓复测。**[一手：使用方报告；研究：身份边界]**
+remote-store [2026-10-03 研究报告](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/research/research-bk-403-testmon-poc.md)在测试昂贵时仍暂缓 pytest-testmon。作者报告工作树 `12f8043`、testmon `2.2.0`；本轮读文档与 driver 快照 `45132599a2818fe1e02eb15c9e2016bada5a0103`，未证它就是原运行版本，亦缺完整 JSONL／JUnit 工件。以下数值均为使用方报告，非本仓复测。**[一手；研究：身份边界]**
 
-- **有收益，但取决于改动。** 串行全套墙钟 `551.3 s`，叶函数种子选测 `4.8 s`，核心模块种子 `296.3 s`；报告中的 `0.9%`／`53.7%` 是时间占比，不是选中测试的比例。另有并行全套 `204.0 s`、并行建立映射 `218.0 s`，不能只拿最慢串行对照宣传收益；这也不是完整安装、维护和长期补跑成本。每项计时仅一次，13 个刻意选择的种子不是日常改动频率样本。**[一手：使用方报告；研究：比较边界]**
-- **运行了其他测试，也可能漏掉目标。** `_azure.py` 追加类的种子仍运行 825 个用例，但读取源码文本的检查未选中；源码作为数据被读取，不等于其 Python 代码被执行。报告也给出非 Python 夹具数据漏选。这补充了已有非模块读取边界，不证明所有 fixture 或模块级改动均漏选。**[一手：使用方报告；研究：机制解释]**
+- **收益取决于改动。** 串行全套墙钟 `551.3 s`，叶函数种子 `4.8 s`、核心模块 `296.3 s`；`0.9%`／`53.7%` 是时间占比，非测试比例。并行全套 `204.0 s`、建映射 `218.0 s`，不能只比最慢串行，也未计完整安装、维护和长期补跑。每项仅计时一次，13 个刻意种子不是日常改动频率样本。**[一手：使用方报告；研究：比较边界]**
+- **运行其他测试仍可能漏目标。** `_azure.py` 追加类的种子跑了 825 例，却漏掉读取源码文本的检查；读取代码文本不等于执行代码。另有非 Python 夹具漏选，但不能外推全部 fixture 或模块变更。**[一手：使用方报告；研究：机制]**
 
-[固定 driver](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/research/bk-403-testmon-poc/driver.py)定义每个种子的修改与目标测试：先关闭 testmon，要求退出码为 1 且匹配的 JUnit case 失败，再复制原映射执行选测。代码分别记录 `known_selected` 与 `known_failed_in_selected`；报告表格中的选中列不能替代后者。driver 把结果写入未随报告提供的临时 JSONL，源码只支持方法可检查，不证明本轮读到了这些运行结果；报告所称 13 项确认失败仍按作者自述处理。**[一手：固定源码／使用方报告；研究：证据边界]**
+[固定 driver](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/research/bk-403-testmon-poc/driver.py)为各种子定义修改和目标：关闭 testmon，要求退出 1 且对应 JUnit case 失败，再复制原映射选测。它分别记录 `known_selected` 与 `known_failed_in_selected`，选中列不能替代失败列。临时 JSONL 未公开，源码只证方法可查；13 项确认失败仍是作者自述。**[一手：源码与报告；研究：边界]**
 
-**暂缓理由包含更便宜的完整检查。** 同项目[固定成本审计 L1／L2](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/audits/audit-022-gate-speed-strategies.md)报告：隐私扫描中一个正则在长 base64 文本上重复起匹配，占 `157 worker-seconds`；窄修匹配起点后，在 478 份 cassette 和三个探针上保持判定。另一次覆盖率运行，默认 tracer／sysmon 墙钟为 `310 s`／`250 s`。前者不是墙钟节省，后者是另一次实验，不能相加；保持判定是作者这些样本的结果，不授权删除 PII 检查或放宽规则。报告还指出该 testmon 路径与 sysmon 不兼容，不能机械组合两项优化。**[一手：使用方审计报告；研究：成本与安全边界]**
+**完整检查还有更便宜的优化。** [固定成本审计 L1／L2](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/audits/audit-022-gate-speed-strategies.md)报告隐私扫描正则在长 base64 上重复起匹配，占 `157 worker-seconds`；窄改起点后，478 份 cassette 和三个探针判定不变。另次覆盖率的默认 tracer／sysmon 墙钟为 `310 s`／`250 s`；前者非墙钟，异实验不可相加。样本判定不变不授权删 PII 检查或放宽规则；该 testmon 路径还不兼容 sysmon，不能直接组合。**[一手：使用方审计；研究：成本与安全边界]**
 
-**当前机制与历史结果分开。** 本轮 [PyPI 元数据](https://pypi.org/pypi/pytest-testmon/json)仍列 `2.2.0`（2025-12-01 上传）；[官方说明](https://www.testmon.org/)明确依赖已执行代码记录，不跟踪静态文件或外部服务变化。对应 tag 固定为 `dccc58d2ed8edec98096ff1974acb7c07d3e3482`，其[环境判断](https://github.com/tarpas/pytest-testmon/blob/dccc58d2ed8edec98096ff1974acb7c07d3e3482/testmon/db.py#L647)比较包与 Python 身份。这支持计入映射重建条件，不能声称具体遗漏已修复，也不是重新测得当前漏选率。未安装、运行 testmon、上游测试或模型。**[一手：当前元数据／官方契约／固定源码；研究：核验范围]**
+[PyPI 元数据](https://pypi.org/pypi/pytest-testmon/json)仍列 `2.2.0`（2025-12-01 上传）；[官方说明](https://www.testmon.org/)说明只跟踪已执行代码，不跟踪静态文件或外部服务。tag `dccc58d2ed8edec98096ff1974acb7c07d3e3482` 的[环境判断](https://github.com/tarpas/pytest-testmon/blob/dccc58d2ed8edec98096ff1974acb7c07d3e3482/testmon/db.py#L647)比较包与 Python 身份，支持计入映射重建条件，不证明遗漏已修或当前漏选率。未安装、运行 testmon、上游测试或模型。**[一手：元数据、契约与源码；研究：范围]**
 
 ✅ 保留可靠原生选测。新增前比较不减覆盖的热点修复与安全并行，再估映射／补跑总成本；核心常变、重建频繁或消费者超出模型时暂缓，不照搬该项目回退规则。**[经验：采用与撤回]**
 
@@ -799,11 +799,11 @@ remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-stor
 
 ### 官方推荐与实际工作分开看
 
-[官方使用指南](https://learn.chatgpt.com/docs/dots#work-with-your-dot)建议从经常检查或更新的责任开始，提供材料，审阅首轮并纠正缺失细节后再扩大；软件反馈、发布材料与研究更新是示例，不是独立成功率证据。[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory#recurring-tasks)另要求固定排程明确时区、适用的结束日期、通知条件和目的地，并确认保存；连接来源本身不建立监听。**[一手：当前文档]**
+[官方使用指南](https://learn.chatgpt.com/docs/dots#work-with-your-dot)建议从常查或更新的责任开始，给材料、审首轮、纠正细节后再扩大；软件反馈、发布材料和研究只是示例，非成功率。[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory#recurring-tasks)另要求排程明确时区、适用结束日期、通知条件与目的地，并确认保存；连接来源不建立监听。**[一手：当前文档]**
 
-- **网页交付与目的端反例。** [Diana 的网页任务](https://www.aiagentslibrary.com/blog/openai-dots-review/#test-4-heading)给出移动适配、评测网格、演示标识、发布链接及禁止覆写／付费／编造的边界；作者报告得到 ChatGPT Sites 私有页面，附成果截图，但品牌仍需补充校准，并非已发布到其 WordPress。[同次表格任务](https://www.aiagentslibrary.com/blog/openai-dots-review/#test-9-heading)自报通过 27 项公式检查，导入 Google Sheets 后仍有兼容问题。两者支持先看实际产物再扩大，而非把聊天确认或生成侧检查当验收。**[社区：作者自报；截图与过程公开，未独立运行产物]**
-- **站点工作完成与持续报告未完成。** [Mark Nguyen 的代理公司记录](https://www.theslidefactory.com/post/openai-dots-review)报告连接浏览器数据与托管 MCP 后，完成两个站点 44 页和 111 页爬取；日更报告只配置、尚未运行或送达，Google API 导入也未接通。作者区分这些状态，没有据此宣称 SEO 改善。**[社区：作者自报，未公开客户数据或独立复测]**
-- **一次送达也不证明持续可靠。** [Diana 的排程记录](https://www.aiagentslibrary.com/blog/openai-dots-review/#test-10-heading)报告一次官方更新监控按时运行并送达手机；明确测试只有两天、仅观察到一次。它比“已保存”多了一层结果证据，仍不能升级为多周可靠性。**[社区：单次自报]**
+- **产物与目的端仍有差异。** [Diana 的网页任务](https://www.aiagentslibrary.com/blog/openai-dots-review/#test-4-heading)给移动适配、网格、演示标识、发布链接及禁止覆写／付费／编造的边界；自报获得 Sites 私有页并附截图，品牌仍需校准，未发到其 WordPress。[同次表格任务](https://www.aiagentslibrary.com/blog/openai-dots-review/#test-9-heading)自报 27 项公式通过，导入 Sheets 仍不兼容。两者支持先验实际产物，不能只凭聊天确认或生成侧检查。**[社区：自报及公开截图、过程，未独立运行]**
+- **站点工作完成，持续报告尚未完成。** [Mark Nguyen 的代理公司记录](https://www.theslidefactory.com/post/openai-dots-review)称接浏览器数据与托管 MCP 后爬完两站 44 页、111 页；日更只配置、未运行或送达，Google API 导入未通，也未声称 SEO 改善。**[社区：自报，无客户数据或独立复测]**
+- **一次送达不保证持续可靠。** [Diana 的排程记录](https://www.aiagentslibrary.com/blog/openai-dots-review/#test-10-heading)称官方更新监控按时送到手机，但测试仅两天、只观察一次。它比“已保存”多结果证据，仍非多周可靠性。**[社区：单次自报]**
 
 只读作者原文，网页任务经云浏览器回读，未访问私有产物／数据。Diana 有培训／Skills 商业背景且披露无 OpenAI 赞助；Mark 也非受控评测。不同任务不合并成成功率或排名。**[研究]**
 
@@ -816,44 +816,44 @@ remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-stor
 
 ## OCRmyPDF：兼容修复按输入机制分流
 
-核实：2026-10-15 UTC；主线四，兼三；改变15 §2。**消费者版本的兼容性不必随版本单调改善；某版本解决一种映射问题，仍可能损坏另一种输入。先按实际输入机制决定修生产端、换消费者或有条件绕过能力，不能把一次通过扩成全数据集保证，也不默认全局关闭仍有用途的能力。** 此处补修复范围的选择，不重复最终消费者验收、备份或旧状态恢复规则。**[经验：采用判断]**
+核实：2026-10-15 UTC；主线四，兼三；改变 15 §2。**兼容性未必随版本改善：修一种映射仍可能损坏另一输入。按输入机制选择修生产端、换消费者或条件绕过，保留仍有用途的能力。** 一次通过不保证全数据集；最终消费者、备份和恢复沿用既有规则。**[经验：采用判断]**
 
-**第一条链：实际乱码反馈没有导致整体回退渲染器。** 2026-09-15，olafure 在[OCRmyPDF #1747](https://github.com/ocrmypdf/OCRmyPDF/issues/1747)报告输出外观正常而复制乱码，提出回退默认 fpdf2 renderer；关联[fpdf2 #1952](https://github.com/py-pdf/fpdf2/issues/1952)记录 fpdf2 2.8.8、Ghostscript 10.02.1、Linux/Python 3.13，报告个人书库57本书刊受影响。长分析明确由Claude协助并粘贴其报告；用户明确确认其中两份脚本可以复现，不能把全部分析、影响比例或恢复判断当成独立人工核实。复现里的150个输入字符生成117条映射，而101个输入字符只有96条，故精确触发条件是**单块映射条目超过100**，不能照抄“超过100个字符的文档都坏”。**[社区：原用户报告与复现确认]**
+**乱码未导致整体回退渲染器。** 2026-09-15，olafure 在[OCRmyPDF #1747](https://github.com/ocrmypdf/OCRmyPDF/issues/1747)报告外观正常、复制乱码，提出回退默认 fpdf2 renderer；[fpdf2 #1952](https://github.com/py-pdf/fpdf2/issues/1952)记 fpdf2 2.8.8、Ghostscript 10.02.1、Linux/Python 3.13，个人书库 57 本书刊受影响。分析由 Claude 协助，用户只明确确认两份脚本复现，不是全部分析、影响比例或恢复判断的独立核实。150 个输入字符生成 117 条映射，101 个只有 96 条，因此触发条件是**单块映射超过 100 条**，非文档超过 100 字符。**[社区：原报告与复现确认]**
 
-[维护者回执](https://github.com/ocrmypdf/OCRmyPDF/issues/1747#issuecomment-5691459605)报告用同文件比较四版Ghostscript：9.55保留映射，10.02.1丢弃，10.05保留但警告，10.06保留；据此选择生产端拆块，没有回退默认renderer。固定[7e3007746fe646f561f1fe0eb3a501f6c6136747](https://github.com/ocrmypdf/OCRmyPDF/commit/7e3007746fe646f561f1fe0eb3a501f6c6136747)在fpdf2写出时将CMap条目按最多100分块，涵盖bfchar、bfrange、cidchar、cidrange。它包装私有输出注册方法，`FPDF2_CMAP_BLOCKS_FIXED=None`表示当时尚未设补偿的退出版本，不能据此宣称维护成本已消失。**[社区：维护者运行报告；一手：固定补丁]**
+[维护者回执](https://github.com/ocrmypdf/OCRmyPDF/issues/1747#issuecomment-5691459605)以同文件比较 Ghostscript：9.55 保留映射，10.02.1 丢弃，10.05 保留但警告，10.06 保留，因此选择生产端拆块而非回退 renderer。[7e3007746fe646f561f1fe0eb3a501f6c6136747](https://github.com/ocrmypdf/OCRmyPDF/commit/7e3007746fe646f561f1fe0eb3a501f6c6136747)将 fpdf2 写出的 CMap 按最多 100 条分块，覆盖 bfchar、bfrange、cidchar、cidrange；它包装私有输出注册方法，`FPDF2_CMAP_BLOCKS_FIXED=None` 表示尚未设补偿退出版本，不能宣称维护成本已消失。**[社区：维护者运行报告；一手：固定补丁]**
 
-上游随后合入[fpdf2 #1954](https://github.com/py-pdf/fpdf2/pull/1954)，固定`2082d9c01d17decfab10ddd741de836283eab397`处理两条ToUnicode路径；[后续 #1956](https://github.com/py-pdf/fpdf2/pull/1956)，固定`82981ecd2769ffb3f0f57ac44dd996f2ac138da4`把分块规则扩至Encoding的cidchar。这里核实的是合入代码，未核首次正式发布或下游补偿撤除，不写“升级任意fpdf2就完成修复”。**[一手：跨项目修订]**
+随后合入[fpdf2 #1954](https://github.com/py-pdf/fpdf2/pull/1954)（`2082d9c01d17decfab10ddd741de836283eab397`），处理两条 ToUnicode 路径；[后续 #1956](https://github.com/py-pdf/fpdf2/pull/1956)（`82981ecd2769ffb3f0f57ac44dd996f2ac138da4`）扩至 Encoding 的 cidchar。仅核合入代码，未核首次正式发布或下游补偿撤除，不能泛称升级 fpdf2 已修复。**[一手：跨项目修订]**
 
-**不同报告者的反证：上述10.05／10.06只对超长块问题安全。** 另一用户kmn5在[#1744](https://github.com/ocrmypdf/OCRmyPDF/issues/1744)报告OCRmyPDF 17.11.0与Ghostscript 10.6.0输出的PDF/A丢失fi／ff等连字对应文字，普通PDF和sidecar却正确；日志显示PDF/A-2b成立，仍不能证明文本内容可搜索。固定[ffee83231532f4f67b8c0e756cddec67446570c9](https://github.com/ocrmypdf/OCRmyPDF/commit/ffee83231532f4f67b8c0e756cddec67446570c9)按另一机制处理：10.05–10.06会丢多字符ToUnicode映射，因此不可见拉丁等不需要上下文整形的文字采用逐字符编码，不再形成可选连字；复杂文字仍保留必要整形，并对受影响Ghostscript发出警告，可见调试文字也继续整形。**这支持按用途和输入收窄绕过，不支持为修拉丁文字全局关闭shaping。** 版本范围为该固定补丁的诊断与处理，本轮未独立核Ghostscript上游完整修复链，不据此另列当前版本推荐。**[社区：独立用户故障；一手：固定实现；研究：机制比较]**
+**另一输入的反证。** kmn5 在[#1744](https://github.com/ocrmypdf/OCRmyPDF/issues/1744)报告 OCRmyPDF 17.11.0／Ghostscript 10.6.0 的 PDF/A 丢失 fi／ff 等连字文字，普通 PDF 和 sidecar 正确；PDF/A-2b 合规不保证文本可搜索。[ffee83231532f4f67b8c0e756cddec67446570c9](https://github.com/ocrmypdf/OCRmyPDF/commit/ffee83231532f4f67b8c0e756cddec67446570c9)诊断 10.05–10.06 会丢多字符 ToUnicode 映射：不可见拉丁等无需上下文整形的文字改逐字符编码、去掉可选连字；复杂文字保留必要整形并对受影响 Ghostscript 警告，可见调试文字仍整形。**超长块安全不代表连字安全，绕过须按用途收窄。** 未独立核 Ghostscript 上游完整修复链，不另推荐当前版本。**[社区：独立用户故障；一手：固定实现；研究：机制比较]**
 
-**运行、恢复与归因边界。** #1747补丁定义真实Ghostscript往返测试，但缺Ghostscript时会跳过；文本抽取断言仅在pdftotext存在时运行，并检查大写字母样例，不能代表连字、全部文字或57本书库。#1744补丁另有逐字符映射与抽取测试，测试定义不等于本轮执行或全部CI已核。维护者提出用固定OCRmyPDF对原扫描件重做OCR来修既有文件，但没有找到原用户全库恢复回执；关闭issue不替代这个结果。本轮只读公开讨论、源码和测试，未安装或运行OCR、PDF工具、模型，不能据Claude协助诊断推断故障代码由AI生成或净收益。**[一手：测试范围；社区：恢复建议；研究：证据限制]**
+**运行与恢复边界。** #1747 定义 Ghostscript 往返测试，缺依赖即跳过；抽取断言还需 pdftotext，仅查大写字母样例，不覆盖连字、全部文字或 57 本书库。#1744 另有逐字符映射与抽取测试，均非本轮执行或全部 CI 核验。维护者建议用修订后的 OCRmyPDF 重做原扫描件，但未见原用户全库恢复回执，关闭 issue 不能替代恢复。只读讨论、源码和测试，未安装或运行 OCR、PDF 工具、模型；Claude 协助诊断不证明故障代码由 AI 生成或有净收益。**[一手：测试范围；社区：恢复建议；研究：限制]**
 
 **采用与撤回。** 按触发输入保留必要能力，优先窄格式修复／条件绕过；全部支持输入都无需该能力才考虑删除。复用消费者验收；分流破坏语义时撤回、缩范围或换已验证消费者，不推广到任意格式。**[经验]**
 
 
 ## 配置迁移：保留作用阶段与设备边界
 
-核验日期：2026-10-15（UTC）。团队、仓库、个人分层说明谁持有配置，还不足以决定它应在哪个阶段、哪些设备生效。先复用工具已有分层、优先级与选择性同步；需要相同交付产物时保持共享契约，编辑期的合法差异和机器衍生值则分别处理。不为统一配置另建框架，也不把调查建议当作修改用户安全／同步设置的授权。**[经验：采用判断]**
+核验：2026-10-15（UTC）。配置归属之外，还须区分生效阶段与设备。先复用分层、优先级和选择性同步；共同交付保持一致，编辑期合法差异与机器衍生值分别处理。不为统一配置另建框架，调查也不授权改变用户安全或同步设置。**[经验：采用判断]**
 
 ### Ruff：个人覆盖可合并，但文件替代仍可能失去同步
 
-[讨论15991](https://github.com/astral-sh/ruff/discussions/15991)中，stinodego希望个人编辑器规则不强加给同事；维护者建议独立配置与项目合并，2025-02-25用户报告初试符合需要。另一用户jtchen2k说外部文件生效，却失去编辑器跨设备同步；ilCatania则提出项目成员共用、仅编辑期生效的配置诉求，编辑时保留探索代码、提交时清理。分别支持范围／同步／阶段需求，非同一用户无损迁移闭环。**[社区：实际使用与初试；一手：维护者建议]**
+[讨论15991](https://github.com/astral-sh/ruff/discussions/15991)中，stinodego 希望个人编辑规则不强加同事；维护者建议独立配置合并项目，2025-02-25 用户初试符合需要。jtchen2k 报告外部文件生效却失去跨设备同步；ilCatania 要求团队共用但仅编辑期生效，以保留探索代码、提交时清理。三者分别支持范围、同步和阶段需求，非同一用户的无损迁移闭环。**[社区：使用与初试；一手：维护者建议]**
 
-[PR16296](https://github.com/astral-sh/ruff/pull/16296)于2025-02-26合并，固定be03cb04c13cbd74467acdb4a1501b620db16975新增内联配置并保留文件路径形式；[配置合并实现与测试](https://github.com/astral-sh/ruff/blob/be03cb04c13cbd74467acdb4a1501b620db16975/crates/ruff_server/src/session/index/ruff_settings.rs)分别处理两种输入，测试特定编辑器设置相对内联配置的优先级。PR注明VS Code需配套扩展修改[#702](https://github.com/astral-sh/ruff-vscode/pull/702)，服务端合并不证明任意旧客户端支持。**[一手：固定源码与测试定义，未运行]**
+[PR16296](https://github.com/astral-sh/ruff/pull/16296)于 2025-02-26 合并，固定 be03cb04c13cbd74467acdb4a1501b620db16975 新增内联配置并保留路径形式；[配置合并实现与测试](https://github.com/astral-sh/ruff/blob/be03cb04c13cbd74467acdb4a1501b620db16975/crates/ruff_server/src/session/index/ruff_settings.rs)处理两种输入，测试特定编辑器设置相对内联配置的优先级。VS Code 需配套[#702](https://github.com/astral-sh/ruff-vscode/pull/702)，不保证旧客户端支持。**[一手：固定源码与测试定义，未运行]**
 
-[当前官方设置文档](https://docs.astral.sh/ruff/editors/settings/)保留这两种入口，注明内联自0.9.8引入；未设置编辑器配置时读取项目配置，冲突可选择编辑器优先、文件优先或仅编辑器。成熟能力可承载个人编辑体验，无需把个人偏好改成共享规则或自建同步服务。没有取得jtchen2k对最终内联版本跨设备同步的回访，不能把前一位用户的文件方案初试升级成这项收益。**[一手：文档；研究：采用边界]**
+[当前官方设置文档](https://docs.astral.sh/ruff/editors/settings/)保留两入口，内联自 0.9.8 引入；未设编辑器配置时读项目配置，冲突可选编辑器优先、文件优先或仅编辑器。原生能力可承载个人体验，无需改变共享规则或自建同步。未获 jtchen2k 对最终内联版的跨设备回访，前一用户初试不能证明这项收益。**[一手：文档；研究：边界]**
 
 ### Firefox：依赖本机OS的偏好，收窄到单项停止同步
 
 [Bug1851024](https://bugzilla.mozilla.org/show_bug.cgi?id=1851024)涉及`general.smoothScroll`：默认随各机器OS减少动态效果设置变化，用户报告显式关闭后仍被重新开启，涉及Mac与Windows。[维护者最终取舍](https://bugzilla.mozilla.org/show_bug.cgi?id=1851024#c31)是停止同步这一项。固定[ff976fb221cb17c7bec216b8ca2cfa3d913a19a1](https://github.com/mozilla-firefox/firefox/commit/ff976fb221cb17c7bec216b8ca2cfa3d913a19a1)于2024-08-16仅移除`services.sync.prefs.sync.general.smoothScroll=true`并留下注释，相邻其他同步项保留；记录标Firefox131修复。**[社区：使用反馈；一手：决定与固定补丁]**
 
-原作者和QA曾未能复现，另有不启用偏好同步者报告相似症状；故不把所有“重新开启”都归因Sync。页面没有原作者最终版回访，QA白板也不等于验证通过。补丁改变默认同步集合，不证明能覆盖用户另行指定的自定义同步规则，更不支持停止所有偏好同步。**[研究：反证与结果边界]**
+原作者与 QA 曾无法复现，不启用偏好同步者也报类似症状，不能全部归因 Sync。未见原作者最终版回访，QA 白板非通过回执；补丁只改默认同步集合，不保证覆盖自定义规则，也不支持停止全部同步。**[研究：反证与结果边界]**
 
-更晚的[Bug1928570](https://bugzilla.mozilla.org/show_bug.cgi?id=1928570#c12)报告132版相似表现，维护者排除已停止的Sync，用户后续定位到Resist Fingerprinting，维护者说明属预期设计，并[以 INVALID 关闭该 issue](https://bugzilla.mozilla.org/show_bug.cgi?id=1928570#c16)；不能称为同步补丁复发，也不能说停止同步解决了一切滚动问题。这里只提配置来源差异，不建议读者关闭隐私功能。**[社区：后续定位；一手：维护者解释]**
+[Bug1928570](https://bugzilla.mozilla.org/show_bug.cgi?id=1928570#c12)报告 132 版类似症状，维护者排除 Sync，用户定位到 Resist Fingerprinting；维护者解释为预期设计并[以 INVALID 关闭该 issue](https://bugzilla.mozilla.org/show_bug.cgi?id=1928570#c16)。它不是同步补丁复发，也说明停止同步不能解决一切滚动问题；这里只区分配置来源，不建议关闭隐私功能。**[社区：后续定位；一手：维护者解释]**
 
 ### 反向约束：共同产物仍须一致
 
-[Prettier官方配置说明](https://prettier.io/docs/configuration)明确不支持全局配置，以保持项目换电脑后的格式一致；它从被格式化文件位置查配置，并允许项目内限定覆盖。此设计目的不能算用户收益测量，但足以反对把Ruff个人编辑覆盖推广为所有工具都应个人优先。**[一手：官方设计；研究：反例]**
+[Prettier官方配置说明](https://prettier.io/docs/configuration)不支持全局配置，以保持换电脑后的项目格式一致；从被格式化文件位置查配置，并允许项目内限定覆盖。设计目的不是收益测量，但反对把 Ruff 个人覆盖推广为所有工具都应个人优先。**[一手：官方设计；研究：反例]**
 
 **证据边界。** 用户初试、源码与设计分开计证；未运行客户端／同步／上游测试，未测 AI 收益。**[研究]**
 
@@ -862,11 +862,11 @@ remote-store 的 [2026-10-03 研究报告](https://github.com/haalfi/remote-stor
 
 主线二／四；核实：2026-10-15 UTC。改变23的观测选择：原生 `<select>` 选值与应用结果优先语义验收；只有展开层外观属于要求时，才补目标浏览器／系统实际屏幕，不因网页截图缺失重写控件。**[研究：采用判断]**
 
-Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者报告原生下拉展开后，网页截图在macOS缺少菜单、Ubuntu位置异常、Windows截图挂起；[维护者](https://github.com/microsoft/playwright/issues/38200#issuecomment-3533050490)报告在macOS、Ubuntu及原始CDP／Puppeteer路径复现类似问题。2026-01-07的[关闭说明](https://github.com/microsoft/playwright/issues/38200#issuecomment-3718636129)指出跨平台原生实现不同、无Playwright行动项；随后针对视觉Agent[建议整屏捕获或DOM文本补充](https://github.com/microsoft/playwright/issues/38200#issuecomment-3720341206)。closed及v1.58标签不能当作修复发布证明，也不据历史说明推定所有当前版本／系统都无法截图。**[社区：报告；一手：维护者解释]**
+Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告展开原生下拉后，macOS 截图缺菜单、Ubuntu 位置异常、Windows 挂起；[维护者](https://github.com/microsoft/playwright/issues/38200#issuecomment-3533050490)在 macOS、Ubuntu 及原始 CDP／Puppeteer 路径复现类似问题。2026-01-07 [关闭说明](https://github.com/microsoft/playwright/issues/38200#issuecomment-3718636129)说明跨平台原生实现不同、无 Playwright 行动项，后为视觉 Agent [建议整屏捕获或DOM文本补充](https://github.com/microsoft/playwright/issues/38200#issuecomment-3720341206)。closed／v1.58 标签不证明修复发布，历史限制也不代表所有当前版本或系统。**[社区：报告；一手：维护者解释]**
 
-[固定复现库](https://github.com/kisotechnology/playwright-screenshot-issue/tree/0f1f0177f07c3ce70e49168c60d460f89cbda9ef)的`scripts/capture-dropdown.js`以headed Chromium点击原生select，再取全页截图；已查看其展开菜单与缺菜单配图，但图像尺寸不同，不视为本仓取得的严格同条件对照。报告称1.56.1，`package.json`却使用`^1.41.2`且无锁文件，固定源码不等于固定安装版本。**[一手：源码和产物；社区：运行版本自述]**
+[固定复现库](https://github.com/kisotechnology/playwright-screenshot-issue/tree/0f1f0177f07c3ce70e49168c60d460f89cbda9ef)的 `scripts/capture-dropdown.js` 以 headed Chromium 点击 select，再取全页截图；已查看展开和缺菜单配图，但尺寸不同，不是严格同条件对照。作者报告 1.56.1，`package.json` 却为 `^1.41.2` 且无锁文件，不能固定实际安装版本。**[一手：源码与产物；社区：版本自述]**
 
-[当前selectOption契约](https://playwright.dev/docs/api/class-locator#locator-select-option)是选择选项并触发input／change事件；可据此验应用结果，不证明用户看到的原生展开层外观。这里不扩展到所有浏览器UI，也不默认增加桌面工具；未安装、运行浏览器或复演上游。**[一手：官方契约；经验：采用边界]**
+[当前selectOption契约](https://playwright.dev/docs/api/class-locator#locator-select-option)选择选项并触发 input／change，可验应用结果，不能证明原生展开层外观。不外推全部浏览器 UI 或默认增加桌面工具；未安装、运行浏览器或复演上游。**[一手：契约；经验：边界]**
 
 ## rclone：预演不能替下一轮提交控制状态
 
@@ -874,17 +874,17 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 改变15 §6：预演验收除业务数据外，还须保护下一轮正式执行所依赖的接受状态；允许日志与隔离预演产物，不要求一概零写入。
 新证据：rclone过滤规则hash修复、连续场景预期、贡献者后续使用，以及CLI／rc入口的分次修订。**[研究：采用判断]**
 
-**原需求与失败机制。** [2023-04-16原报告](https://forum.rclone.org/t/bisync-bugs-and-feature-requests/37636)描述：定时bisync使用`--filters-file`，用户修改规则后先运行`--resync --dry-run`，尚未决定正式采用，下一次定时普通运行却没有拒绝新规则。原因是预演写了规则文件的`.md5`，相当于更新了下次接受规则的基线。原报告讨论潜在数据损失，并未提供这条预演路径实际删除业务文件的回执；不能写成已发生删除事故。**[社区：原报告；研究：归因边界]**
+[2023-04-16原报告](https://forum.rclone.org/t/bisync-bugs-and-feature-requests/37636)中，定时 bisync 使用 `--filters-file`；改规则后先跑 `--resync --dry-run`、尚未正式采用，下一次普通运行却未拒绝新规则。预演写入 `.md5`，更新了接受基线。报告只讨论潜在损失，没有这一路径实际删除业务文件的回执。**[社区：原报告；研究：边界]**
 
-**修复的是会被下一轮消费的状态。** [固定提交f4dd862](https://github.com/rclone/rclone/commit/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56)在`applyFilters`内只对非DryRun的resync保存hash；原有普通运行在hash缺失或不符时拒绝的条件保留。它仍生成独立的`-dry`列表文件，因此不能提炼成“dry-run不得写任何文件”。关键是隔离预演产物，不让它替代正式运行的接受基线。**[一手：固定补丁；研究：机制推论]**
+[固定提交f4dd862](https://github.com/rclone/rclone/commit/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56)在 `applyFilters` 中仅为非 DryRun 的 resync 保存 hash；普通运行仍拒绝 hash 缺失或不符。它保留独立 `-dry` 列表文件，因此要求是隔离预演产物与正式接受基线，不是一概零写入。**[一手：补丁；研究：机制]**
 
-[固定scenario](https://github.com/rclone/rclone/blob/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56/cmd/bisync/testdata/test_filtersfile_checks/scenario.txt)先真实resync建立hash、确认普通运行可用，再替换过滤文件并预期普通运行拒绝；新增两步为预演resync成功、随后普通运行仍拒绝。[golden日志](https://github.com/rclone/rclone/blob/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56/cmd/bisync/testdata/test_filtersfile_checks/golden/test.log)表达同一预期。这是已有基线上的连续验收设计，不是本轮运行结果；scenario本身也注明不测试过滤规则的实际效果。**[一手：历史测试产物；研究：验证范围]**
+[固定scenario](https://github.com/rclone/rclone/blob/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56/cmd/bisync/testdata/test_filtersfile_checks/scenario.txt)先 resync 建 hash、确认普通运行成功，再换过滤文件并预期拒绝；新增预演 resync 成功、下一普通运行仍拒绝两步。[golden日志](https://github.com/rclone/rclone/blob/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56/cmd/bisync/testdata/test_filtersfile_checks/golden/test.log)表达相同预期。这是历史连续验收设计，未本轮执行，且 scenario 注明不测过滤的实际效果。**[一手：历史测试产物；研究：范围]**
 
-**真实重试有记录，但不冒充独立接收者验收。** 原报告者也是修复贡献者：他[补回漏交的golden日志后报告GitHub测试通过](https://github.com/rclone/rclone/pull/6971#issuecomment-1520596549)，随后按审阅意见[把相关代码、文档和测试重新组织到各提交](https://github.com/rclone/rclone/pull/6971#issuecomment-1632281021)，并在[数周真实使用后再补一处问题](https://github.com/rclone/rclone/pull/6971#issuecomment-1666839385)。这些支持持续修改与使用，不能当作另一接收者对filter-hash场景的最终复测，也不证明单项修复节省工时。**[社区：贡献者报告；一手：公开修订过程]**
+原报告者也是修复贡献者：[补回漏交的golden日志后报告GitHub测试通过](https://github.com/rclone/rclone/pull/6971#issuecomment-1520596549)，按评审[把相关代码、文档和测试重新组织到各提交](https://github.com/rclone/rclone/pull/6971#issuecomment-1632281021)，又在[数周真实使用后再补一处问题](https://github.com/rclone/rclone/pull/6971#issuecomment-1666839385)。这支持持续使用与修改，不是独立接收者对 filter-hash 的最终复测，也不证明单项工时收益。**[社区：贡献者报告；一手：修订过程]**
 
-**修过一条入口，不等于所有同名选项已贯通。** 之后的[48ab67f](https://github.com/rclone/rclone/commit/48ab67f090fd630c3ed9cc66d6fe83eca769ce12)才把rc专属`dryRun`参数传给内部`Options.DryRun`；[v1.64.0的cmd.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/cmd.go)和[rc.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/rc.go)已分别包含这两项修复。2026-10-14合并的[#10015](https://github.com/rclone/rclone/pull/10015)又修全局`_config.DryRun`／flat `dry_run`未贯通：将配置应用移到公共`Bisync`入口，并明确全局要求预演时，rc的`dryRun:false`不能取消它。这是该接口的具体取舍，不是所有系统的统一优先级规则。**[一手：固定源码、发布标签与PR]**
+**各入口分次修复。** [48ab67f](https://github.com/rclone/rclone/commit/48ab67f090fd630c3ed9cc66d6fe83eca769ce12)才把 rc 专属 `dryRun` 传入 `Options.DryRun`；[v1.64.0的cmd.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/cmd.go)与[rc.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/rc.go)分别含两项修复。2026-10-14 合入[#10015](https://github.com/rclone/rclone/pull/10015)，再补全局 `_config.DryRun`／flat `dry_run`：配置应用移到公共 `Bisync` 入口，全局预演不能被 rc 的 `dryRun:false` 取消。这是本接口取舍，不是通用优先级。**[一手：源码、标签与 PR]**
 
-最新修订的[固定rc测试](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/cmd/bisync/rc_test.go)经`jobs.NewJob`进入，分别检查专属参数、全局参数及相冲突的布尔值，再观察目标新文件是否存在；仅本地路径，非云存储验证。其[合并快照changelog](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/docs/content/bisync.md)列于v1.76，而核实时[最新发布仍为v1.75.2](https://github.com/rclone/rclone/releases/tag/v1.75.2)，不能将这次合并写成已发布到接收者。**[一手：测试源码、合并文档与发布页；研究：交付边界]**
+[固定rc测试](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/cmd/bisync/rc_test.go)经 `jobs.NewJob` 检查专属、全局及冲突参数，再观察目标新文件；仅本地路径，非云存储。[合并快照changelog](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/docs/content/bisync.md)列 v1.76，核实时[最新发布仍为v1.75.2](https://github.com/rclone/rclone/releases/tag/v1.75.2)，因此本次合并尚未发行给接收者。**[一手：测试、changelog 与发行；研究：边界]**
 
 **采用范围。** 有持久基线时复用预演前后及下一正式调用的连续检查；换入口只补参数传递和效果。纯计算预览无需本项。未运行 rclone／模型或独立核 CI，缺独立逐例复测及 AI 收益证据。**[经验／研究]**
 
@@ -895,13 +895,13 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 改变的建议：先核执行上下文及调用者契约；有意的异步边界可窄范围豁免，不机械删除或添加无业务需要的等待；确实无异步契约时仍可重构。
 新证据：Ruff 原用户报告、合入的文档修订与固定规则／运行器源码；ESLint 对 Promise 拒绝处理的独立反例。核实：2026-10-16（UTC+8）。**[一手／社区；经验：采用判断]**
 
-**原问题不是 Ruff 自动删了 async。** [Ruff #23196](https://github.com/astral-sh/ruff/issues/23196)作者在 FastAPI 项目中用 pytest-asyncio 测试 `ContextVar` helper，报告同步测试与异步测试的行为不同；最小复现每次用 `asyncio.run` 执行 coroutine 时输出 `1/1/1`，删除 `async`、直接在外层调用后输出 `1/2/3`。已给版本为 Python 3.11.11、Ruff 0.15.0，未给 pytest-asyncio 版本、配置或完整项目。维护者指出变化来自函数实际执行的时机与上下文；RUF029 只报告函数没有异步语法，不提供 autofix。因此不能写成工具自动破坏了 FastAPI 路由，也不能把用户的缩减复现当完整框架复测。**[社区：原用户与维护者讨论]**
+[Ruff #23196](https://github.com/astral-sh/ruff/issues/23196)作者在 FastAPI 中用 pytest-asyncio 测 `ContextVar` helper：缩减复现用 `asyncio.run` 执行 coroutine 得 `1/1/1`，删 `async` 直接外层调用得 `1/2/3`。版本为 Python 3.11.11、Ruff 0.15.0，缺 pytest-asyncio 版本、配置及完整项目。维护者归因执行时机和上下文；RUF029 只报缺异步语法，无 autofix。因此不是 Ruff 自动破坏路由，也不是完整框架复测。**[社区：用户与维护者讨论]**
 
-**维护者选择补适用边界，而非要求一律改同步。** [#26641](https://github.com/astral-sh/ruff/pull/26641)于 2026-07-09 合入 [`04d831a`](https://github.com/astral-sh/ruff/commit/04d831a7202b1274a1e1973c4d8443d754a51faa)，仅修改文档注释，说明无 `await` 的测试／callback 也可能有意依赖 async execution context；可以按需要添加真正的 await，或对特定函数禁用规则。[同提交规则源码](https://github.com/astral-sh/ruff/blob/04d831a7202b1274a1e1973c4d8443d754a51faa/crates/ruff_linter/src/rules/ruff/rules/unused_async.rs)只调用 `report_diagnostic`，并已有 class methods、stubs、识别到的 FastAPI routes、`asynccontextmanager` 豁免；[fixture](https://github.com/astral-sh/ruff/blob/04d831a7202b1274a1e1973c4d8443d754a51faa/crates/ruff_linter/resources/test/fixtures/ruff/RUF029.py)表达相应预期。合入文档不等于新增行为修复，PR Test Plan 不当本轮测试回执，未取得原用户后续复测。**[一手：固定补丁与测试源码；研究：证据边界]**
+[#26641](https://github.com/astral-sh/ruff/pull/26641)于 2026-07-09 合入[`04d831a`](https://github.com/astral-sh/ruff/commit/04d831a7202b1274a1e1973c4d8443d754a51faa)，只补文档：无 `await` 的测试或 callback 也可依赖 async context，按需加真实 await 或局部禁规则。[同提交规则源码](https://github.com/astral-sh/ruff/blob/04d831a7202b1274a1e1973c4d8443d754a51faa/crates/ruff_linter/src/rules/ruff/rules/unused_async.rs)仅调用 `report_diagnostic`，已有 class methods、stubs、识别的 FastAPI routes、`asynccontextmanager` 豁免，[fixture](https://github.com/astral-sh/ruff/blob/04d831a7202b1274a1e1973c4d8443d754a51faa/crates/ruff_linter/resources/test/fixtures/ruff/RUF029.py)表达预期。这不是新增行为修复；Test Plan 非本轮回执，未获原用户复测。**[一手：补丁与测试定义；研究：边界]**
 
-**隔离来自运行方式，不来自 async 关键词本身。** 当前 pytest-asyncio 固定 [`f287e5e` 的测试入口](https://github.com/pytest-dev/pytest-asyncio/blob/f287e5e0f5425380b24c32b64037dfb2ed3cb937/pytest_asyncio/plugin.py#L561-L571)对 async test 复制 context，再由[包装器](https://github.com/pytest-dev/pytest-asyncio/blob/f287e5e0f5425380b24c32b64037dfb2ed3cb937/pytest_asyncio/plugin.py#L891-L908)显式传给 `runner.run`；同文件的 async fixture 另有传播 context 变化及恢复的处理，不能混为所有状态互不影响。[Python Task 契约](https://docs.python.org/3/library/asyncio-task.html#asyncio.Task)也允许显式指定 context，默认才复制当前 context。这些只核实可成立的机制，不证明上述历史项目用了当前实现；直接在同一任务内 await 一个函数也不能据此声称获得独立上下文。**[一手：当前固定源码与官方契约；研究：范围限定]**
+**隔离取决于运行方式。** pytest-asyncio [`f287e5e` 的测试入口](https://github.com/pytest-dev/pytest-asyncio/blob/f287e5e0f5425380b24c32b64037dfb2ed3cb937/pytest_asyncio/plugin.py#L561-L571)复制 async test context，经[包装器](https://github.com/pytest-dev/pytest-asyncio/blob/f287e5e0f5425380b24c32b64037dfb2ed3cb937/pytest_asyncio/plugin.py#L891-L908)传给 `runner.run`；async fixture 另有传播和恢复，不能统称状态隔离。[Python Task 契约](https://docs.python.org/3/library/asyncio-task.html#asyncio.Task)允许显式 context，默认才复制。只证当前机制，未证历史项目用了此实现；同一任务内 await 函数也不保证独立上下文。**[一手：源码与契约；研究：边界]**
 
-**不同语言的同类取舍。** [ESLint `require-await` 的 When Not To Use It](https://eslint.org/docs/latest/rules/require-await#when-not-to-use-it)给出无 await、直接抛异常的 async 函数：调用者依赖返回 Promise 的 `.catch()` 处理拒绝，改同步会转成直接抛异常，需要改变调用者。官方明确允许为这一用途禁用规则。它与 Python 的上下文例子机制不同，共同支持先保住既定调用契约，不证明所有无 await 函数都应保留。**[一手：官方反例；研究：跨机制比较]**
+[ESLint `require-await` 的 When Not To Use It](https://eslint.org/docs/latest/rules/require-await#when-not-to-use-it)给出无 await 而直接抛异常的 async 反例：调用者用 Promise 的 `.catch()`，改同步会直接抛出，须改变调用者，因此可以禁用规则。机制不同于 Python context，但都要求保住调用契约，不是保留所有无 await 函数。**[一手：官方反例；研究：比较]**
 
 **适用性反例，不追加另一套流程。** [RUF055 #27024](https://github.com/astral-sh/ruff/issues/27024)中 bytes 正则搜索 `memoryview` 与改写后的成员判断不等价；[维护者拒绝 #27040](https://github.com/astral-sh/ruff/pull/27040#issuecomment-5050042567)也反对把所有 bytes-pattern 修复一律标不安全，因为 bytes 目标仍有有效情况，问题在目标类型与规则适用范围。核实时 #27024 仍 open，#27040／#27233／#27715 均关闭未合并；不能拿候选 PR 的测试或安全分类当已交付修复。固定 current main [`9e3ea63` 规则源码](https://github.com/astral-sh/ruff/blob/9e3ea63fb43040782a2ff00147cacf8861674615/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs)仍按 pattern、参数数量和真假值使用条件筛选，未核目标类型，修复的 Safe／Unsafe 分类取决于 comments。本轮另用手写 Python 3.12.14 标准库表达式核对：`memoryview(b"abcdef")` 上 `bool(re.search(b"abc", value))` 为 True、`b"abc" in value` 为 False；bytes 对照为 True／True。这只是局部语义见证，没有执行 Ruff 修复或当前发行版，也不是原用户框架复测；不推断全部修复不可信。**[一手／社区；经验：本轮标准库局部核对；研究：修订状态与采用边界]**
 
@@ -914,13 +914,13 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 改变的建议：空成功结果出现时，先查宿主是否丢失错误与结束原因；确认缺陷后修交接层、保留原来的子任务身份，不靠换 worker、重复派发或放宽消费者验收掩盖它。
 新证据：OpenCode 公开故障、已发行的窄修复、下游控制复核及 V2 未合入补丁。核实：2026-10-16 UTC；只读源码与公开报告，未运行模型、客户端或上游测试。**[一手／社区；经验：采用判断]**
 
-1. **父任务收到的成功状态可能已经失真。** [OpenCode #42725](https://github.com/anomalyco/opencode/issues/42725)报告 1.18.18 的子任务已在 assistant 消息记录 `info.error`，但 `TaskTool.runTask` 仅取最后的 text、缺失时返回空串；父任务因而收到 `completed` 空结果。它支持排查子消息到父结果的转换，不证明所有空结果都来自同一错误，更不能据此评价某个 worker 模型的能力。**[社区：原报告；研究：归因范围]**
+1. **成功状态可能失真。** [OpenCode #42725](https://github.com/anomalyco/opencode/issues/42725)报告 1.18.18 的 assistant 子消息已有 `info.error`，`TaskTool.runTask` 却只取末尾 text、缺失返空串，父任务收到 `completed` 空结果。应查转换层，不能归因所有空结果或评价 worker 模型能力。**[社区：原报告；研究：范围]**
 
-2. **窄修复保留错误和原任务身份，已进入 V1 发行版。** [#43657](https://github.com/anomalyco/opencode/pull/43657)于 2026-08-21 合入 `c313504c824cf2103a4e703d994d1914d84fc8b7`；[固定实现](https://github.com/anomalyco/opencode/blob/c313504c824cf2103a4e703d994d1914d84fc8b7/packages/opencode/src/tool/task.ts#L200-L224)先检查 assistant error，再返回包含原错误和可续接 `task_id` 的失败；[固定回归](https://github.com/anomalyco/opencode/blob/c313504c824cf2103a4e703d994d1914d84fc8b7/packages/opencode/test/tool/task.test.ts#L266-L307)用空文本加模拟 APIError，断言失败及 child ID。[v1.18.20](https://github.com/anomalyco/opencode/releases/tag/v1.18.20)列出该修复，已另核该 tag 的 `task.ts` 包含相应分支。正常路径仍允许无文本，故不能改成“空文本必是 provider 错误”；本轮读到的是源码／测试定义和发行范围，不是独立运行回执。**[一手：固定补丁、测试与发布]**
+2. **V1 已发行窄修复。** [#43657](https://github.com/anomalyco/opencode/pull/43657)于 2026-08-21 合入 `c313504c824cf2103a4e703d994d1914d84fc8b7`；[固定实现](https://github.com/anomalyco/opencode/blob/c313504c824cf2103a4e703d994d1914d84fc8b7/packages/opencode/src/tool/task.ts#L200-L224)先查 assistant error，返回含原错误及可续接 `task_id` 的失败；[固定回归](https://github.com/anomalyco/opencode/blob/c313504c824cf2103a4e703d994d1914d84fc8b7/packages/opencode/test/tool/task.test.ts#L266-L307)用空文本与模拟 APIError 断言失败及 child ID。[v1.18.20](https://github.com/anomalyco/opencode/releases/tag/v1.18.20)列修复，已核 tag 的 `task.ts` 分支。正常路径仍可无文本，不能一律判为 provider 错误；这里只核源码、测试定义与发行，未独立运行。**[一手]**
 
-3. **下游拒绝推进有作用，却无法找回已丢失的错误。** [Gentle AI #3318 的控制复核](https://github.com/Gentleman-Programming/gentle-ai/issues/3318#issuecomment-5647411885)使用 OpenCode 1.18.18、真实 host 和临时 localhost provider：有效文本被接受，格式错误被识别；合法无文本与 HTTP 400 却在插件边界同为 empty。消费者要求 SDD 结果契约，因此拒绝空结果合理，但放宽其阻塞条件无法修复宿主信息丢失。这个历史消费者后来因 [SDD 被移除](https://github.com/Gentleman-Programming/gentle-ai/issues/3318#issuecomment-5836427200)而关闭 issue，不能写成已修复或推荐现行 SDD 流程。控制复核不是原用户采用 v1.18.20 后的真实模型复测，也不能证明该 issue 所有原始发生均有同一根因。**[社区：消费者报告与维护状态；研究：边界]**
+3. **下游拦截无法找回丢失错误。** [Gentle AI #3318 的控制复核](https://github.com/Gentleman-Programming/gentle-ai/issues/3318#issuecomment-5647411885)以 OpenCode 1.18.18、真实 host 和临时 localhost provider 复核：有效文本通过、格式错误被识别，合法无文本与 HTTP 400 在插件边界却同为 empty。SDD 消费者拒绝空结果合理，放宽验收修不好宿主。后因[SDD 被移除](https://github.com/Gentleman-Programming/gentle-ai/issues/3318#issuecomment-5836427200)关闭 issue，不是修复回执或现行 SDD 推荐；也非原用户 v1.18.20 真实模型复测，不能统一全部原始故障根因。**[社区：消费者报告与状态；研究：边界]**
 
-4. **旧修复不能外推全部结束形态或新架构。** [V2 #52378](https://github.com/anomalyco/opencode/issues/52378)报告 `finish: error`／`MALFORMED_FUNCTION_CALL` 没有 error 对象时仍成为父任务的 completed；[固定旧 runner](https://github.com/anomalyco/opencode/blob/f46fa72a9285a0e8479e25d400f7026bfd8fe5c8/packages/core/src/session/runner/step.ts#L161-L177)只为 unknown 合成失败。核实时 [#54713](https://github.com/anomalyco/opencode/pull/54713)仍 open、未合入：固定 head `4b1fedc63011a3ce58b33f1036e19e99c16bf56a` 将 explicit error 转为失败并保留 rawFinish，[当前测试](https://github.com/anomalyco/opencode/blob/4b1fedc63011a3ce58b33f1036e19e99c16bf56a/packages/core/test/tool-subagent.test.ts#L298-L354)分别检查前台工具失败和后台父通知 error。PR 正文的 empty-stop control 已被后续修订删除，不能照抄为当前覆盖；补丁明确排除 length 截断。未取得原用户最终复测，不将候选补丁或自动评审的运行说法当成已发行／线上全面修复。**[一手：固定源码与修订状态；社区：故障报告]**
+4. **旧修复不覆盖全部结束形态或新架构。** [V2 #52378](https://github.com/anomalyco/opencode/issues/52378)报告 `finish: error`／`MALFORMED_FUNCTION_CALL` 缺 error 对象时仍成为 completed；[固定旧 runner](https://github.com/anomalyco/opencode/blob/f46fa72a9285a0e8479e25d400f7026bfd8fe5c8/packages/core/src/session/runner/step.ts#L161-L177)只为 unknown 合成失败。[#54713](https://github.com/anomalyco/opencode/pull/54713)核实时 open、未合入，head `4b1fedc63011a3ce58b33f1036e19e99c16bf56a` 将 explicit error 转为失败并保留 rawFinish，[当前测试](https://github.com/anomalyco/opencode/blob/4b1fedc63011a3ce58b33f1036e19e99c16bf56a/packages/core/test/tool-subagent.test.ts#L298-L354)检查前台工具失败与后台父通知 error。empty-stop control 已被后续修订删除，length 截断明确排除。缺原用户最终复测，候选补丁或自动评审运行说法不能当作已发行、线上全面恢复。**[一手：源码与修订状态；社区：报告]**
 
 只对缺产物却成功的委派，先核错误是否完整跨界再选续接、换实现或重派；错误已传递就查实际原因。原生传播够用则不加包装，材料不证明弱模型替代或长程可靠性收益。**[经验]**
 
@@ -928,11 +928,11 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 
 核实：2026-10-16（UTC+8）。M4；改变Codex页长时运行入口：先核协调与执行，再决定能否沿用本地Hook；不以Cloud标签直接推断工具在云容器。[研究]
 
-[一手] 官方[dot电脑与应用](https://learn.chatgpt.com/docs/dots/computers-and-apps#connect-your-computer)明确任务可由云端管理并使用已连接电脑的文件／工具；连接与电脑在线仍是必要前提。[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory)分别列新建本地 Work／Codex 任务、续接现有本地 Codex 任务、使用已配置云环境，且更换选中电脑不会迁移已有任务。这是产品契约，不保证某个具体会话在任意入口都可读取；不能从一次接口未找到目标，推论整台电脑无权访问或任务不存在。
+[一手] [dot电脑与应用](https://learn.chatgpt.com/docs/dots/computers-and-apps#connect-your-computer)允许云端管理任务并使用已连接电脑的文件、工具，仍需连接且电脑在线。[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory)区分新建本地 Work／Codex、续接本地 Codex 和使用已配置云环境；切电脑不迁移旧任务。契约不保证任意入口读取具体会话，一次未找到目标不证明电脑无权访问或任务不存在。
 
-[一手] [Work Cloud与dots本地访问说明](https://learn.chatgpt.com/docs/enterprise/cloud-local-access#check-hooks-and-network-compatibility)区分云协调／本地执行和local-only，并明确前者不支持command／shell、prompt、agent处理器及本地配置／插件／目录Hook；local-only保留既有受支持Hook。企业远程MCP Hook另需托管设置，不向个人账户提供。由此不能用“文件在同一电脑”推配置等价，也不能把Work模式的切换规则泛化到所有Codex任务。详细支持范围仍以该页为准，不在这里复制企业配置清单。
+[一手] [Work Cloud与dots本地访问说明](https://learn.chatgpt.com/docs/enterprise/cloud-local-access#check-hooks-and-network-compatibility)区分云协调／本地执行与 local-only：前者不支持 command／shell、prompt、agent 处理器及本地配置、插件、目录 Hook，后者保留既有支持。企业远程 MCP Hook 需托管设置，个人账户不可用。同机不代表配置等价，Work 切换规则也不外推全部 Codex 任务；完整支持范围见源页。
 
-[研究] 可采用动作是核目标环境、任务类型及所依赖Hook的支持面，再用最小允许动作验证；已有本地流程满足时先复用。若不依赖上述Hook，不能据此要求全部任务切Local。仅阅读公开官方文档，无私人会话／设备日志或个案路径，不复现客户端、Hook或网络故障，不证明所有账户／版本的路由、续接或运行效果。
+[研究] 核实环境、任务类型和所需 Hook 的支持范围，再用最小允许动作验证；够用的本地流程先复用，不依赖这些 Hook 就不必全部切 Local。只读官方文档，无私人会话、设备日志或个案路径；未复现客户端、Hook、网络故障，不证明所有账户和版本的路由、续接或运行效果。
 
 
 ## Claude 转云输入：创建成功不等于输入齐全或成果可取回
@@ -941,10 +941,10 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 改变的建议：CLI 转云先核实际输入来源、允许上传范围与成果取回路径，不凭任务链接判定交接完成。
 新证据：当前官方传输契约与 2.1.228、2.1.282–284 等历史公开反例；没有当前客户端实测或固定客户端实现证明。**[一手／社区；研究]**
 
-**当前契约。** 官方[云任务说明](https://code.claude.com/docs/en/claude-code-on-the-web#move-tasks-between-terminal-and-cloud)区分 CLI 新建云任务和既有会话续接：`--cloud` 带任务描述不迁移当前终端对话；其[本地仓库打包说明](https://code.claude.com/docs/en/claude-code-on-the-web#send-local-repositories-without-github)明确无 remote 或相应 GitHub App 未安装时会上传本地 bundle，完成 `/web-setup` 也不排除这一路径。完整克隆可带所有分支历史及已跟踪文件的未提交修改，不含未跟踪文件；过大仓库可能退为当前分支或压平快照。macOS／Linux／WSL 对部分敏感文件名与 Git filter 管理文件排除的是未提交修改，原生 Windows 不做同样排除；不能由此推定已提交历史已脱敏。上传前须审允许范围，不为补输入而默认暂存全部文件。**[一手；研究：操作边界]**
+**当前契约。** [云任务说明](https://code.claude.com/docs/en/claude-code-on-the-web#move-tasks-between-terminal-and-cloud)区分新建与续接：`--cloud` 任务描述不迁移终端对话。[本地仓库打包说明](https://code.claude.com/docs/en/claude-code-on-the-web#send-local-repositories-without-github)说明无 remote 或相应 GitHub App 未安装时上传本地 bundle，`/web-setup` 不排除此路径。完整克隆可带所有分支历史和已跟踪脏修改，不含未跟踪文件；过大时可退为当前分支或压平快照。macOS／Linux／WSL 仅排除部分敏感文件名与 Git filter 文件的未提交修改，原生 Windows 无同样排除，已提交历史不因此脱敏。先审上传范围，不默认暂存全部文件补输入。**[一手；研究：操作边界]**
 
-**历史反例与未解决范围。** [#86268](https://github.com/anthropics/claude-code/issues/86268)的 2.1.228/macOS 报告称本地领先提交、已跟踪脏修改进入云端，新未跟踪文件缺失；该 issue 因无活动关闭，不是修复回执。[#81776](https://github.com/anthropics/claude-code/issues/81776)后续报告包括 2.1.282–284 的 GitHub 网页入口可用而 CLI 打包、云端无 remote／推送失败，以及 teleport 未取回提交；另有用户报告不同预检结果和不同绕行结果。它们说明“连接正常”不足以证明实际走远端克隆，不证明当前所有版本仍有同样缺陷，亦不能将评论中的开关当受支持解决方案。**[社区：原帖与评论；研究：范围]**
+**历史反例。** [#86268](https://github.com/anthropics/claude-code/issues/86268)的 2.1.228/macOS 报告本地领先提交、已跟踪脏修改进入云端，未跟踪文件缺失；因无活动关闭，非修复回执。[#81776](https://github.com/anthropics/claude-code/issues/81776)后续含 2.1.282–284 网页 GitHub 入口可用而 CLI 打包、云端无 remote／推送失败、teleport 未取回提交，以及不同预检和绕行结果。连接正常不证明远端克隆；历史报告不代表全部当前版本，评论开关也非受支持方案。**[社区：原帖与评论；研究：范围]**
 
-**采用与撤回。** 转云前确认所需文件、当前版本及允许上传范围；启动后在目标会话核提交、必要输入、remote 与授权的成果取回路径，不等长任务做完才发现输入缺失或无法交付。若不允许传出全部可能打包的内容，先停下核清传输路径；若只需从另一设备继续本地工作，官方[Remote Control](https://code.claude.com/docs/en/remote-control#remote-control-vs-cloud-sessions)保留原机器执行，仍要求机器及进程在线。它并非离线云执行的替代，也不等于没有对话数据传输。原生交接已满足输入与取回要求时直接复用，不额外造同步器。**[一手；经验：条件选择]**
+**采用与撤回。** 转云前核所需文件、版本和允许上传范围，启动后即在目标核提交、输入、remote 及授权取回路径。可能打包内容未全获准时，先停下查清路径。只需跨设备继续本地工作可用[Remote Control](https://code.claude.com/docs/en/remote-control#remote-control-vs-cloud-sessions)，但原机器和进程仍须在线；它不替代离线云执行，也不代表零对话数据传输。原生交接够用时不另造同步器。**[一手；经验：选择]**
 
 只读文档及原帖，未上传仓库、运行客户端／模型或检查私人数据；未验当前账号分流、过滤与恢复，历史反例不作当前失败率或整页 L3 依据。**[研究]**
