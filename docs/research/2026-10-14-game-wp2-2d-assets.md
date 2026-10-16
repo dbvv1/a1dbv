@@ -1,10 +1,10 @@
 主线：二／三；G1 2D 资产选型与第二次修改
-改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分输入／混合约定错配与内容缺陷
-新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执；此前模型／服务调查保留，均未运行模型／引擎
+改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分输入／混合约定错配与内容缺陷；规则几何固定视角小道具反复生成失败时，可比较代码母版
+新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎
 
 # WP2：2D资产的前沿方法与零手修边界
 
-核实时间：2026-10-14（UTC+8）。本轮只有来源调查与比较，成本为官方标价或作者报告，未测生成通过率、主动工时或目标设备。完整商用门槛随新增方案回填[WP1](2026-10-14-game-wp1-licensing.md)。
+核实时间：2026-10-14（UTC+8）；规则几何小道具于2026-10-16补核，原模型／标价日期不变。本轮只有来源调查与比较，成本为官方标价或作者报告，未测生成通过率、主动工时或目标设备。完整商用门槛随新增方案回填[WP1](2026-10-14-game-wp1-licensing.md)。
 
 ## 1. 第二次修改为什么优先改结构
 
@@ -278,3 +278,37 @@ Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blo
 [研究] 保留合格源图和上次正确的导出／导入／材质组合，先在相同尺寸与深浅背景定位异常从哪一步出现。若明确是约定错配，恢复匹配组合；下一次换装重导出、换材质或升级导入器时，重查这条链，不能只比较PNG或alpha通道。约定一致后仍有边缘问题，再分别查透明像素RGB、滤波／mipmap、图集相邻采样与§12压缩；源内容本身的缺肢、漏洞、错误轮廓仍回到原有淘汰／换源条件。不要为保柔边改成硬alpha，也不要把所有halo归因于混合。
 
 **验证与许可边界：** [研究] 仅阅读版本化引擎文档、生产者文档与公开问题回执，未运行shader、引擎、模型或图像处理，未证明目标设备视觉效果及工时收益。Spine仅为真实生产者／消费者案例，不要求购买、安装或接入其runtime；未复制代码或资产，不新增依赖。
+
+## 15. 规则几何小道具：从重生成换到代码母版
+
+核实：2026-10-16（UTC+8）。**[研究] 改变的选择：合法现成资产仍优先；固定视角、轮廓可由简单几何表达的小道具，生成反复画错结构时可比较代码绘制母版，不默认继续重抽。** 只增加这条条件选项，不给整套工具／资产商业采用评级，也不把代码绘图扩成通用美术方案。
+
+### 一条有拒绝样本与实际消费者的制作链
+
+本节固定 `johnmwhitman/solreign@d3628c68351a18e566b1f9f81672e35bbe112692`。[README](https://github.com/johnmwhitman/solreign/blob/d3628c68351a18e566b1f9f81672e35bbe112692/README.md)将公开内容说明为来自2026-08-15源版本的历史内容包快照，不含完整原始开发历史，也不是部署操作。[一手] 以下制作记录、源码和产物来自同一项目，不能算独立第二案例；当前线上是否仍用这些文件未核。[研究]
+
+1. **先生成，技术通过后仍撤回。** [Wave 3a记录](https://github.com/johnmwhitman/solreign/blob/d3628c68351a18e566b1f9f81672e35bbe112692/docs/receipts/wave3a/LICENSE-REGEN-WAVE3A-2026-07-15.md)注明 MiniMax `image-01` 生成主体、代码派生持握图；后补审查撤回 powersink，理由是机柜被画成不同物体。文件规格、状态名、linter及地图加载通过不能证明物体语义正确，所述测试结果仅为作者报告。[一手／研究]
+2. **更换母版来源。** [Wave 6记录](https://github.com/johnmwhitman/solreign/blob/d3628c68351a18e566b1f9f81672e35bbe112692/docs/receipts/wave6/LICENSE-REGEN-WAVE6-2026-07-16.md)与[绘图源码](https://github.com/johnmwhitman/solreign/blob/d3628c68351a18e566b1f9f81672e35bbe112692/docs/receipts/wave6/draw_powersink.py)报告跨两条工作线三次拒绝后，改用 Pillow／ImageDraw 从空画布绘制正面机柜。源码用矩形、线段、点和重复线圈形成主体，再调用既有持握排列；没有把失败生成图修成母版。这是源码静态核对，未执行绘图／派生脚本。[一手／研究]
+3. **有产物进入消费者。** [PowerSink原型](https://github.com/johnmwhitman/solreign/blob/d3628c68351a18e566b1f9f81672e35bbe112692/Resources/Prototypes/Entities/Objects/Power/powersink.yml)的 Sprite 指向 `Objects/Power/powersink.rsi`、state为`powersink`；对应[sidecar](https://github.com/johnmwhitman/solreign/blob/d3628c68351a18e566b1f9f81672e35bbe112692/Resources/Textures/Objects/Power/powersink.rsi/meta.json)另声明左右手各4方向。本轮读取制作目录与实际Resources目录三对PNG的原始字节，各对的长度、尺寸与SHA-256一致；不是只根据作者“完成”字样推采用。[一手／研究]
+
+### 独立核对到哪一步
+
+[研究] 在同一固定树，比较 `docs/receipts/wave6/powersink-proc/` 与 `Resources/Textures/Objects/Power/powersink.rsi/` 的同名文件；Python标准库只读取PNG头、字节长度与SHA-256，没有调用上游代码：
+
+| 文件 | 两份文件共同的尺寸／字节数 | 两份文件共同的SHA-256 |
+|---|---|---|
+| `powersink.png` | 32×32／569 | `d36cf55bce9329a00dd54b069d8344d53cecaa7a570af0a145ea8976ff96cc2d` |
+| `inhand-left.png` | 64×64／763 | `21e765f225fc96a0374d4a75728d40658ce83dd3e71ae40b79af86ba48720acb` |
+| `inhand-right.png` | 64×64／805 | `6d455b0465959818d64a578c366b6401b1a04776ce458042a298f66e325e4912` |
+
+本轮还确认[保留候选目录](https://github.com/johnmwhitman/solreign/tree/d3628c68351a18e566b1f9f81672e35bbe112692/docs/receipts/wave3a/wave3a-gen/powersink)中三个`*_32.png`确为32×32且字节不同，并查看[前后／持握联系表](https://github.com/johnmwhitman/solreign/blob/d3628c68351a18e566b1f9f81672e35bbe112692/docs/receipts/wave6/CONTACT-powersink.png)。三张保留候选不等于所有失败尝试，也不能与作者所述跨工作线“三次拒绝”直接一一对应；联系表展示不替代游戏内实际尺寸、背景、遮挡和持握验收。[研究]
+
+### 采用条件、处理负担与许可
+
+**[经验] 只在已有风格容得下这种表示时试。** 正面机柜的部件、对称与重复能直接写成几何；代码仍硬编码了该物体的坐标、配色和比例，不能把这部分创作劳动记成零。第二次改线圈数、屏幕尺寸或配色时可先修改母版源，再重查主体与派生图；这是待验证用例，公开材料未给出两轮新需求对照。若变成复杂有机轮廓、新视角或需人工绘补，换资源来源／缩需求，不无限增加绘图规则。
+
+[研究] **成本与版本不闭合。** 未取得可比主动工时、完整返工总成本或同题通过率，不能推导代码路线更便宜／更快；旧记录的`image-01`不是当前模型能力证明，实际服务修订和Pillow精确版本未核。来源切换后的样本存在，只支持有此生产选择，不证明全部工作均满足无人工美术修补或商业发行质量。
+
+[一手／研究] **特定sidecar与整包许可分开。** 上述powersink的`meta.json`声明CC0-1.0，绘图脚本称从代码新建；这不等于本仓独立认定完整权利链。公开快照的[许可表](https://github.com/johnmwhitman/solreign/blob/d3628c68351a18e566b1f9f81672e35bbe112692/LICENSES.md)明确仍含上游NC资源，部分原创资产在没有更宽sidecar时默认CC-BY-NC-SA 4.0，不能把项目清理宣传或代码MIT当作整包可商用。本文只提炼机制及引用来源，不复制资产／代码，不新增依赖，也不推荐复用该资源包。
+
+**实际范围：** [研究] 公开作者记录、固定源码、PNG字节与联系表阅读；没有运行模型、绘图脚本、游戏或引擎，未安装／付费，未验证当前部署、设备表现或成本收益。
