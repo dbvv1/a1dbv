@@ -1209,3 +1209,24 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 ```text
 > 核实：2026-10-14 UTC；空间容错及保存响应补核：2026-10-15 UTC；动态 UI 与模拟输入补核：2026-10-16 UTC+8。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
 ```
+
+
+## 声音响应补研：低延迟与连续播放分别验收
+
+核实：2026-10-16（UTC+8）。主线一／三，GC；改变04对确认声迟到的选择：定位等待后才比较原生缓冲，不以最小参数作为统一质量目标。新证据是不同类型游戏的相反维护选择；WP6已有调度边界不重复当新成果。[研究]
+
+### 处理块缩小与扩大都可能合理
+
+- **OpenTTD 的缩小。** [#12227](https://github.com/OpenTTD/OpenTTD/pull/12227)于2024-03-07合入，[25aeb1c](https://github.com/OpenTTD/OpenTTD/commit/25aeb1c5a536219d07bf1e7a75fcacccd0f35249)将 win32／XAudio2 默认块从8192改1024。作者按44100Hz给出每块约186／23ms，这不是端到端测量，也不能称实际节省163ms。[补充说明](https://github.com/OpenTTD/OpenTTD/pull/12227#issuecomment-1984711843)指出该 mixer 在块起点启动声音，大块会将不同游戏 tick 的声音挤到同一起点，修改只是缓和；Cocoa 用系统块大小，不在此修改内。[一手／研究] 支持核实际消费粒度，不支持照搬1024。
+- **VVVVVV 的扩大。** 2026-04-30 [0d69dd3](https://github.com/TerryCavanagh/VVVVVV/commit/0d69dd3820189937cc623b9ed30fffc60c5f787e)在[初始化](https://github.com/TerryCavanagh/VVVVVV/blob/0d69dd3820189937cc623b9ed30fffc60c5f787e/desktop_version/src/Music.cpp#L746-L759)加 FAUDIO_1024_QUANTUM，调用处无平台条件，mastering voice 仍44100Hz；目的仅是缓和部分端口的爆音／变慢，不能称各平台修复。[#970](https://github.com/TerryCavanagh/VVVVVV/issues/970)仍 open，Linux原报告未获该提交回归确认。[FAudio作者](https://github.com/TerryCavanagh/VVVVVV/issues/970#issuecomment-4352893115)说明该 flag 表示约21.33ms时间窗口，不能按名字当所有采样率固定1024样本，更不能与OpenTTD横比。[一手／研究]
+- **节奏游戏的历史撤回。** osu-framework [#3832](https://github.com/ppy/osu-framework/pull/3832)、[654e9db](https://github.com/ppy/osu-framework/commit/654e9dbe972972c70a925d742776f419a73d052c)于2020-08-17撤掉强制 DevicePeriod=1，保留其他缓冲设置；维护者报告部分 PulseAudio 环境爆音，增大另一 buffer length 不能解决同一问题。[一手：历史维护] 周期、块长度与排队不是可互换旋钮，不据此称当前版本有该问题。[研究]
+
+许可仅作机制借鉴边界：[OpenTTD固定许可](https://github.com/OpenTTD/OpenTTD/blob/25aeb1c5a536219d07bf1e7a75fcacccd0f35249/COPYING.md)为GPL v2并列第三方例外；[VVVVVV自定义许可](https://github.com/TerryCavanagh/VVVVVV/blob/0d69dd3820189937cc623b9ed30fffc60c5f787e/LICENSE.md)限制商业性修改／分发，图像和音乐另有权利。本节不复制实现或资产，不推荐把VVVVVV作为商用移植底座。[一手／研究]
+
+### 原生取舍及第二次修改
+
+Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioManager.html)与[GetDSPBufferSize](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSettings.GetDSPBufferSize.html)区分响应、每块样本及块数，较小粒度增加CPU开销。UE [平台音频设置](https://dev.epicgames.com/documentation/en-us/unreal-engine/platform-audio-settings-in-unreal-engine)分别控制 Callback Buffer Size 和 Number of Buffers to Enqueue：减少前者可减等待但增加CPU工作，增加后者会增加延迟并缓和部分线程供给波动。[一手] 先用已有配置，只改变与瓶颈相关的一层；不要为此换中间件或自建后端。[研究]
+
+二改仅预注册：用已准备好的短确认声区分首次准备与每次起音等待，记录输入接受、播放请求及实际输出；增加背景音乐／空间处理或换已承诺支持的输出设备后，在空闲及高负载下比较原配置和一个低延迟配置，兼查爆音、断续及音频CPU。[VVVVVV原报告](https://github.com/TerryCavanagh/VVVVVV/issues/970#issuecomment-1515043078)中磁盘录音无噪声而扬声器有，故内部录音不替代全部实际输出验收。[社区／研究] 收益不明或连续性退化则恢复基线，迟交事件／首用准备先修对应环节，不改操作判定掩盖声音迟到。
+
+范围：只读官方契约、固定源码与原始讨论；未运行游戏、引擎、后端或设备测试，未证明目标设备延迟、稳定性或体验收益。[研究]
