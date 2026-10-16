@@ -988,3 +988,18 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 **二改仅预注册。** 在已有修饰A上加入B，比较首次与重建、删除无关修饰、A先到期只剩B，以及期间永久成长后移除临时效果；顺序有玩法含义就保留，不机械要求所有输入顺序等价。另核小伤害、护甲抵消、取整、上限降低与当前HP，避免重算重复治疗／扣血。现有函数可表达就复用，不以效果数量增加为由引入DSL。[研究]
 
 **许可与验证。** Wesnoth相关文件为GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later；只提炼机制与公开链接，不将其作为闭源Unity／UE可直接复制的底座。固定源码、历史修复与消费者阅读，不等于本仓重现缺陷或当前版本全部正确；未运行游戏、引擎、模型或上游测试，不证明维护成本、手感或AI收益。[一手／研究]
+
+
+## 事件连锁补研：排队不代替防重入与操作边界
+
+核实：2026-10-16（UTC+8）。主线三／GC；改变05§6的同步／排队选择：来源、防重入资格和完整操作边界分别决定，不因“解耦”统一延迟。新证据复用已完成的固定源码调查，再对照当前章节缺口；不是新增效果框架或游戏实测。[研究]
+
+**DCSS：延后有具体边界。** 固定2952e12c52c2a66210f6c5488db987d0962a67ca的[反伤执行](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/fineff.cc#L1081-L1107)允许原防御者已死，但重核承受反伤者仍活着；[伤害入口](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/monster.cc#L4393-L4402)排除对派生反伤再次镜像。[2014修复](https://github.com/crawl/crawl/commit/4f3d0c6879f2baefcf3eb2749133ae3340dcbdca)针对来回反弹；[2024修复](https://github.com/crawl/crawl/commit/f4a7df68b9800669d3a70ac8d7dc9cc4f2eeb94b)把血箭冷却移到发射前，防反射重新触发齐射，该提交另有beam复用修复，不把全部崩溃归给重入。[一手]
+
+[2020修复](https://github.com/crawl/crawl/commit/3dd439832fe0f5fe295caad1a2fe3e479a757cda)延后死亡爆炸以避免多目标攻击处理中攻击者被杀；[2021修复](https://github.com/crawl/crawl/commit/4e304d196c1d5a90fd7939a3cf94c2339bed27f0)又撤销每束beam后处理，因为多束法术尚未整体结束。[现行消费者](https://github.com/crawl/crawl/blob/2952e12c52c2a66210f6c5488db987d0962a67ca/crawl-ref/source/fineff.cc#L2133-L2147)从vector尾取出再执行，后进先出且继续处理新增效果，不能误称FIFO，更不能认为入待办便自动截断循环。[一手／研究]
+
+**直接处理的反例。** SPD v4.0.2固定57a4e06的[LifeLink](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L830-L864)用派生来源类型避免再次分摊，[Skeleton](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Skeleton.java#L70-L141)直接处理死亡邻格伤害。[攻击链](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L483-L512)中的attackProc早于普通damage，因此规则钩子不能冒充HP已提交的事实通知；不改变正文DamageApplied在提交后通知的约定。[一手／研究]
+
+OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L144-L182)有Delay=5，[ATMine](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/weapons/explosions.yaml#L193-L209)不设Delay且排除Mine；[消费者](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/GameRules/WeaponInfo.cs#L234-L265)分别直接执行或走延时，[DelayedImpact](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/Effects/DelayedImpact.cs#L19-L40)单位为tick不是秒。[一手] 游戏规则的延迟与为保护操作完整性而延后是不同目的，不统一换成一种调度器。[研究]
+
+**采用与后续验证。** 只为会重入的动作登记资格／来源；登记不代替合法性检查，取消或失败的返还由原规则决定。二改添加反射或连锁爆炸后，预注册检查重入次数、多目标未完成时死亡、同次多个连锁和原有即时规则；必要时才延后到完整操作边界，不新建通用EventBus。[研究] DCSS源码GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later；只提炼机制，不作闭源引擎可直接复制模块。所读只是选定调用链与历史补丁，未运行游戏、引擎、模型或上游测试，不证明全部路径正确或体验改善。
