@@ -578,3 +578,16 @@ GitHub 连接器读取 `anthropics/skills` 的 `main`，返回 `dbd4588f9e1033ef
 [原工作流 L263–294](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/pdf/forms.md#L263-L294)已说明混合路径统一坐标，并要求填充后转图检查位置。因此不能写成整个 Skill 没有视觉验收，也不能声称错配必然绕过最终检查。高度检查本身不充分证明字形、换行或裁切正确；没有安装依赖、执行下载脚本、运行 PDF／Office 应用或模型，未测真实渲染和 Skill 净收益。**[一手：工作流；研究：边界]**
 
 XLSX 线索不另扩写正文：[#2013](https://github.com/anthropics/skills/issues/2013)的直接／别名／局部／普通公式夹具只报告转换前保护漏检，作者明确未运行 LibreOffice；[当前保护源码](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/xlsx/scripts/recalc.py#L74-L111)支持该机制，但不证明工作簿已损坏。[#1517](https://github.com/anthropics/skills/pull/1517)当时仍未合并，只补大小写及相应检测用例，不覆盖作用域或别名。成功状态的检查范围与最终产物正确性仍按 22 既有建议区分，不再添加一般性案例。**[社区：夹具报告；一手：源码与 PR；研究：收敛判断]**
+
+
+## 搜索赢家接管后：保内核还是扩大分派
+
+核实：2026-10-16（UTC+8）。主线二／四；改变15 §7：性能候选进入目标库后，用接收方的类型、比较器和真实规模决定快路径范围；后续共享分派变化需与搜索内核分开归因。不是新框架推荐，也不重做轻量搜索机制比较。**[研究：采用判断]**
+
+**选择与接收。** [AlphaDev原论文（2023-06-07）](https://www.nature.com/articles/s41586-023-06004-9)说明，将汇编结果转换为C++时，sort5选用43指令候选，因为转换后更高效；这里是RL搜索与人工转写，不是当前LLM编码。[D118029审阅](https://reviews.llvm.org/D118029)继续限制采用：`optional<int>`作者测试在Skylake近似无益、ARM变慢；算术类型也可能使用昂贵比较器，因此只给简单比较器启用。最终[194d1965（2022-04-08）](https://github.com/llvm/llvm-project/commit/194d1965d2c841fa81e107d19e27fae1467e7f11)的快路径限制连续迭代器、类型大小、算术类型和简单比较器，其他情况保留原算法；审阅还补非连续deque、pair及比较器复制检查。**[一手：论文、补丁；社区：作者测量与审阅]**
+
+**接管不是永久不变。** 原接收维护者的[2024年重构#104902](https://github.com/llvm/llvm-project/pull/104902)整理traits与包装入口。随后[生产使用方报告](https://github.com/llvm/llvm-project/pull/104902#issuecomment-2359494998)小输入依平台退化5–25%，虽大输入更快，却不符合其实际负载；另一接收者称内部发布因此阻塞。维护者在09-20[回滚ef44e465](https://github.com/llvm/llvm-project/commit/ef44e4659878f256a46476efcf0398f3dd510f54)，并要求拆分相互独立的修改，不能用“正确性没坏”结束性能验收。**[社区：接收者反馈；一手：回滚]**
+
+**撤回也不是算法无价值。** [维护者10-22解释](https://github.com/llvm/llvm-project/pull/104902#issuecomment-2428958718)：重构恢复了此前因比较器引用类型识别而意外关闭的bitset partition分派。它是更大排序路径，不能把回退直接归给AlphaDev的sort3／4／5内核。[#114023](https://github.com/llvm/llvm-project/pull/114023)于10-30以[0fb76bae](https://github.com/llvm/llvm-project/commit/0fb76bae6b2abfe5e0a34557f365a586be989364)重投，明确接受小输入代价以恢复大输入旧退化；固定代码仍保留sort5比较／交换顺序。这不等于小输入也已变快，也不证明所有接收方都应接受同一权衡。**[一手：固定修订；社区：归因与取舍]**
+
+**范围与缺口。** 上述生产反馈不是本仓复测，后续重构包含共享路径变化，不能从其总差分出搜索内核的单独效果；原报告的完整搜索尝试账本、主动维护工时、当前LLM同条件净收益仍缺。#114023作者称CI失败与补丁无关，不当作CI全绿。本轮只读原文、固定代码及公开接收回执，没有运行算法、模型或基准。PerfAgent／Shinka的选中补丁到真实后续接管仍未闭合，因此只收窄交付选择，不声称该缺口已经解决。**[研究：验证边界]**
