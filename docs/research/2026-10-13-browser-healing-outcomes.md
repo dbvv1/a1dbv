@@ -81,3 +81,16 @@ echo "$?"  # 0
 ## 本轮边界
 
 已有官方固定源码、具体回归、issue→PR 工具修正链、相反社区产物及零安装 runner 实测；未调用模型、运行真实网站或完整 MCP 回归。当前强模型对业务变更的诊断正确率、相比普通 coding agent 的净增益，以及真实模型失败→补丁→业务复验链仍未知。R09 本轮有可采用的结果语义增量，不等于长期效果问题已完成。
+
+
+## 点击补研：目标、遮挡与命中检查误报分流
+
+核实：2026-10-16（UTC+8）。主线三／M4；改变23点击失败的处理：先核用户操作目标与工具版本，不统一延长等待、加force或改应用。新证据是工具误报修复、真实项目helper修订和官方遮挡反例；没有证据将其归因为某个Agent故意求绿。[研究]
+
+**工具层也会误报。** [Playwright43118](https://github.com/microsoft/playwright/issues/43118)报告1.63.0及main66096ef／WebKit r2370在多层shadow root内input普通点击被outer-host拦截，同一复现force可聚焦；报告者对照两种命中API定位误报。[社区] [43127](https://github.com/microsoft/playwright/pull/43127)于2026-10-05合入c0a167b7795715c9fa93c48864dd968441c73560，扩展WebKit处理而非删除应用遮罩。[v1.64.0](https://github.com/microsoft/playwright/releases/tag/v1.64.0)的固定[606ecd8实现](https://github.com/microsoft/playwright/blob/606ecd8b34bac100db32561b6278ffd76e5eb3cd/packages/injected/src/injectedScript.ts#L1057-L1069)及[open／closed shadow回归](https://github.com/microsoft/playwright/blob/606ecd8b34bac100db32561b6278ffd76e5eb3cd/tests/library/hit-target.spec.ts#L468-L514)已包含修复；回归用非force点击后检查目标监听器。closed路径仅用evaluateHandle取引用，实际仍click，不能写成以内部事件代验。[一手：固定定义，未运行]
+
+**force不是向指定DOM穿透投递。** 同版[dom.ts](https://github.com/microsoft/playwright/blob/606ecd8b34bac100db32561b6278ffd76e5eb3cd/packages/playwright-core/src/server/dom.ts#L429-L477)跳过visible／enabled／stable等待及命中检查，仍滚动与计算点击点，最终[调用鼠标输入](https://github.com/microsoft/playwright/blob/606ecd8b34bac100db32561b6278ffd76e5eb3cd/packages/playwright-core/src/server/dom.ts#L548-L554)。官方[遮挡反例](https://github.com/microsoft/playwright/blob/606ecd8b34bac100db32561b6278ffd76e5eb3cd/tests/page/page-click.spec.ts#L636-L651)让force正常返回，却断言原按钮仍未被点击。[一手：源码和测试定义] 所以不能写成只跳过一种遮挡检查，或把无异常等同目标动作恢复；直接dispatchEvent是另一机制，原23已有边界不重复扩写。[研究]
+
+**纠正测试目标可以是合法修复。** [Keycloak53660](https://github.com/keycloak/keycloak/issues/53660)的nightly报告中，helper对样式label覆盖的input做force点击，帮助菜单动画期间可能未切换，原toBeHidden断言失败。[53663](https://github.com/keycloak/keycloak/pull/53663)于2026-10-07合入[83f6e2a helper](https://github.com/keycloak/keycloak/blob/83f6e2a2fb410468b80b34e98b1c2234f1832398/js/apps/admin-ui/test/masthead/main.ts#L53-L57)，改普通点击关联label；[原开关语义断言](https://github.com/keycloak/keycloak/blob/83f6e2a2fb410468b80b34e98b1c2234f1832398/js/apps/admin-ui/test/masthead/main.spec.ts#L51-L60)继续保留可见→隐藏→可见。[社区／一手] 这不是应用补丁，也不能据nightly失败断言用户功能同样故障；本轮未跑前后版本或取得该精确提交CI的通过证据。[研究]
+
+**采用与撤回。** 先确认目标与真实用户路径；实际存在的遮挡按产品预期处理，匹配已知误报则先核所用工具版本和原条件。force仅作有依据的局部诊断，目标响应仍未发生就不计通过，也不永久推广到所有点击。没有上述证据时保留未定位，不盲加sleep。[研究] 本轮只读原帖、固定源码及回归定义，未运行浏览器、模型或项目测试；不能宣称降低flaky比例。Lexxy1198的内部命令改真实按钮主要重复已有原则，未纳入新结论。
