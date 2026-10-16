@@ -1,17 +1,17 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界；清 lint 先核异步调用契约，允许有依据的窄范围豁免。[经验／研究]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口，稳定截图不介入待验动画状态；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界；清 lint 先核异步调用契约，允许有依据的窄范围豁免。[经验／研究]
 证据摘要：按下列入口区分证据，具体来源、核实日期、固定版本与验证范围留在各节；这些材料支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
 
 - **本仓局部运行**：[Hook 五类合成输入](#hook-跨宿主迁移匹配成功不等于协议适配)（未执行补丁）、[标准库公式](#本轮零成本公式对照)、[路径逻辑模型](#外部生产者校准错误预期)、[32 场景固定 SQL](#写入路径扩展与序列化判等sqlite-chronicle)。各自只验证所列机制
 - **现场观察与操作记录**：[公开网页不同读取路径](#dot-实际能力诊断公开网页读取的路径差异)分别记录抓取 403、Chrome 原帖读取／刷新、GET 200／已知 ID；[发布路径](#发布一般建议与本仓观察分开)另记本仓已完成操作。现场观察不当作独立复测或效率收益
 - **历史运行、维护与反例**：[React 定向日志](#react生产构建故障中的定向日志)、[Pydantic AI 连续演化](#pydantic-ai取消契约改变不代表正常完成也应改变)等案例分别标明作者自报、历史 CI、固定补丁及尚未闭环的恢复／交付；合入代码不补作用户成功回执
-- **只读契约、源码与论文**：[bare](#交互试点转脚本bare-不是等价加速)、[sandbox](#claude-code-沙箱开启不等于所有边界已闭合)、[拒绝／fallback](#拒绝诊断先区分权限模型与服务故障)、[SWE-Game](#swe-game游戏移植的-visual-分不等于体验质量)等按版本与测量定义解释；[冲刺案例](#四游戏开发用来检验这个方向而不是扩张引擎百科)仍是未运行引擎的分析设计
+- **只读契约、源码与论文**：[bare](#交互试点转脚本bare-不是等价加速)、[sandbox](#claude-code-沙箱开启不等于所有边界已闭合)、[拒绝／fallback](#拒绝诊断先区分权限模型与服务故障)、[截图稳定化](#截图稳定化结束动画不是保留当前状态)、[SWE-Game](#swe-game游戏移植的-visual-分不等于体验质量)等按版本与测量定义解释；[冲刺案例](#四游戏开发用来检验这个方向而不是扩张引擎百科)仍是未运行引擎的分析设计
 
 关键边界：普通 headless、bare、trust 与 sandbox 不等价；strict 不排除已配置的沙箱外命令，socket 过滤和可选 mask 的目标／失败默认值须单独核对；原生能力已够就不叠加。历史 CI、作者自报、源码与局部探测分别计证据，游戏例子仍是设计。[一手／研究]
 
 # 方向研究：改善 AI Coding，要研究模型之外的哪些条件
 
-> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，2026-10-14 UTC 补核 §五 Pydantic AI 演化链，2026-10-15（UTC+8）补核 §二 Service Worker 响应来源，同日补末节重复代码迁移的三项目维护链与固定源码，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
+> 核实：2026-10-12；2026-10-13（UTC+8）补核 §五 Discourse 后续演化案例、§二 React 定向日志及属性测试案例，2026-10-14 UTC 补核 §五 Pydantic AI 演化链，2026-10-15（UTC+8）补核 §二 Service Worker 响应来源，同日补末节重复代码迁移的三项目维护链与固定源码，2026-10-16（UTC+8）补核 §二截图稳定化与动画状态，其他外部事实未重核。评级：🧪 按实际瓶颈试用最小改进，不默认改造整个项目。范围：已有仓库材料、官方 Skills 的指定段落、官方 Codex 迁移教程与本仓库审计。属于有依据的方向判断，不是新模型效果实验。
 
 ## 核心判断
 
@@ -150,6 +150,22 @@
 **具体使用边界。** 选中或保存错误若已能由真实浏览器动作与结果断言揭示，不必新增截图循环；裁切、间距、素材与画布问题则必须补足视觉观察。结果最终正确、但早期点击丢失时，补动作时刻与事件顺序。[Playwright hydration 说明](https://playwright.dev/docs/navigations#hydration)明确指出控件启用早于监听器绑定会吞掉输入，建议应用就绪前禁用控件；不能靠延后测试输入制造通过。直接设置 DOM/组件状态不等于测试真实输入。**[一手：官方机制；经验：最小反馈建议]**
 
 用户是否理解入口、能否恢复误操作、是否接受体验仍需具体任务试用；上表的偏好一致性只提示自动 judge 有边界，未测得真实用户参与的净收益。每次修订保留原功能与视觉要求；仅在现有证据不能判断所需结论时补通道，不扩成默认多 Agent 验收框架。**[经验：采用与停止条件]**
+
+### 截图稳定化：结束动画不是保留当前状态
+
+核实：2026-10-16（UTC+8）。改变 23 §2：保留终态视觉基线，但不让截图准备推进待验的过渡、暂停或重开状态；局部 `allow` 只在需要保留该状态时采用。以下为官方契约、固定源码／测试定义与历史作者报告，未运行浏览器。**[经验：采用判断；研究：证据范围]**
+
+**两个截图入口的默认值不同。** 当前 [PageAssertions 文档](https://playwright.dev/docs/api/class-pageassertions#page-assertions-to-have-screenshot-1-option-animations)给 `toHaveScreenshot()` 的 `animations` 默认值为 `disabled`，[Page 文档](https://playwright.dev/docs/api/class-page#page-screenshot-option-animations)给 `page.screenshot()` 的默认值为 `allow`；断言可被项目 `expect` 配置或单次参数覆盖，普通截图按其调用参数。[v1.63.0 发行提交 `1b025d7`](https://github.com/microsoft/playwright/commit/1b025d7e20a026371cd5f98ba0cdce48892737c8)的 [matcher L346–363](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright/src/matchers/toMatchSnapshot.ts#L346-L363)与 [screenshotter L201–219](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L201-L219)相互印证；不能把两种调用当作仅有比较图片与否的区别。**[一手：文档与固定源码]**
+
+**稳定化可以触发应用回调。** [固定实现 L109–155](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L109-L155)对有限 `endTime` 调用 `finish()`，对无限动画调用 `cancel()` 并在清理时 `play()`，不保存原播放位置和 `playState`；有限动画没有复原步骤。官方 [回归 L774–835](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L774-L835)要求截图结束过渡、触发 `transitionend`，且第一张图已包含回调新增的 `h1`；[L865–938](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L865-L938)另断言有限动画的结束事件与无限动画的取消事件。因此截图后状态正确，可能是观察动作推进了状态，不能据此证明原输入／恢复路径正确。换成局部 locator 截图也不隔离这项处理：[L224–255](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L224-L255)仍在所有 frames 做截图准备。**[一手：源码与官方测试定义；研究：机制推导]**
+
+**暂停不能一概处理。** 实现跳过的是 `playbackRate === 0`，不是 `playState === 'paused'`；[官方回归 L838–862](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L838-L862)要求速率为 0 的动画保持 `currentTime = 500`。因此仍被 `getAnimations()` 返回、速率非零的暂停动画，没有因 `paused` 自动免于 `finish/cancel` 或恢复原暂停状态的保证。这是有限源码推论，不表示所有应用暂停机制都会失效，也不建议为通过截图而改写产品的暂停实现。**[一手：源码／测试；研究：限定推论]**
+
+**历史回执支持局部改参，不支持全局关闭视觉断言。** [#36899](https://github.com/microsoft/playwright/issues/36899)于 2025-08-01 报告 Playwright 1.54.2 的普通截图有 Ionic sheet modal、视觉断言截图没有。[原作者后续](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145555849)称交换顺序后两张都缺弹层，改为 `toHaveScreenshot({ animations: 'allow' })` 后恢复；[维护者回复](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145780160)确认默认值差异是兼容性选择，仍推荐自动等待的视觉断言。无限动画导致关闭是作者解释，本轮未核其 Ionic 根因、未复现，也不称当前版本普遍存在此缺陷。**[社区：历史作者回执；一手：维护者契约说明]**
+
+**最小采用与撤回。** 纯终态布局继续用现有视觉基线；先完成相关真实输入、暂停后恢复或取消后重开的行为断言，再做可能推进动画的视觉比较。所需状态本已稳定却被准备动作改变时，只在该处用 `allow`。若需要观察过渡，复用动作／事件时间线，已有测试能证明命中目标阶段及其结果就不加层。`allow` 不是精确采样：普通截图仍有[字体等待 L251–264](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L251-L264)，视觉断言仍按[匹配／稳定化循环 L719–795](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/page.ts#L719-L795)取图，持续变化时可能超时；该版本首张直接匹配已有基线可返回，也不应概括为每次必拍两张。另据 [actionability](https://playwright.dev/docs/actionability#stable)，`locator.click()` 会等元素 bounding box 连续两帧不变，所以发起调用的时刻不等于输入发生时刻；确认真实动作命中窗口，不统一改用 `force`。**[一手：工具机制；经验：选择边界]**
+
+本轮只读官方文档、发行源码、测试定义和 issue 原评论；未安装或运行 Playwright、上游用例或模型，未验证具体应用的修复收益。**[研究：验证范围]**
 
 ### Service Worker：响应来源决定保存与故障验收入口
 
