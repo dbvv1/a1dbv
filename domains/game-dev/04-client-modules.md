@@ -59,6 +59,10 @@
 - **Android**：✅ 先用引擎集成的 pacing：Unity Optimized Frame Pacing，UE 5.2 起默认 Swappy；选设备可持续维持的档位，设置值不当作实测结果。[一手／研究：[Unity 游戏案例](https://developer.android.com/stories/games/swappy)、[UE 原生路径](https://dev.epicgames.com/documentation/en-us/unreal-engine/frame-pacing-for-mobile-devices-in-unreal-engine)]
 - **UE 排队延迟**：🧪 证据指向 game／render／RHI 与显示排队时才评估原生 low-latency frame syncing；缩短 pipeline 会牺牲应对长帧的余量，不照抄一组 CVar。[一手／研究：[同步取舍](https://dev.epicgames.com/documentation/en-us/unreal-engine/low-latency-frame-syncing-in-unreal-engine)]
 
+**[研究] 🧪 基础渲染与操作响应已达目标、仍需提高运动呈现密度时，再评估帧生成；不拿含生成帧的 FPS 替代模拟／输入预算。** 先核目标设备、引擎版本与接入路径，并把应用渲染帧、实际呈现帧分开记录。HUD 也要单独选合成方式：独立 UI 纹理不自动提高 UI 更新频率，逐呈现重绘则不能顺手重复推进业务状态。[一手／研究：[FSR API](https://gpuopen.com/manuals/fsr_sdk/techniques/frame-interpolation-api/)、[Streamline v2.14.1](https://github.com/NVIDIA-RTX/Streamline/blob/v2.14.1/docs/ProgrammingGuideDLSS_G.md)]
+
+AMD UE 插件 4.1.1 的 Slate Redraw 会重复调用 NativeTick（第二次默认 delta 为零）；异步工作采用的 UI Extraction 避免双 tick，却可能损伤半透明 UI。关键 HUD 失真或更新副作用无法修好时撤回，不以显示帧数验收。[一手／研究：[该版本模式契约](https://gpuopen.com/learn/ue-fsr/)] Unity 所核官方入口仅建立上采样支持，不据此套用这份帧生成契约；版本差异、限制与后续对照见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#7-帧生成增加呈现帧不增加一次业务更新承诺)。
+
 **局限：这些是诊断与选型依据，不能预测目标设备收益；软件呈现事件也不等于屏幕发光的完整端到端测量。** 固定源码、版本反证与后续验证见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#呈现节奏补研平均-fps-与实际看到的动作不是同一个承诺)。[研究]
 
 ### 运动中的清晰度：关键提示不能只在截图里看得清

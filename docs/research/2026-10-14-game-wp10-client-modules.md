@@ -619,6 +619,26 @@
 
 [研究] GitHub commits API 遭遇公开 rate limit，固定 raw 源码已读；未运行 PresentMon 或复现案例收益。
 
+### 7. 帧生成：增加呈现帧，不增加一次业务更新承诺
+
+核实：2026-10-16 UTC+8；主线二／三。改变 04 的选择：只在基础响应合格且呈现密度有缺口时评估帧生成，并先决定 HUD 合成与状态更新责任。新证据是 AMD FSR API、UE 插件 4.1.1 的 UI 模式契约与 NVIDIA Streamline v2.14.1 固定发布标签文档；不重复 VSync、排队或时域 AA 建议。[研究]
+
+**显示计数不是模拟时间。** [一手] [Streamline v2.14.1 DLSS-G 指南](https://github.com/NVIDIA-RTX/Streamline/blob/v2.14.1/docs/ProgrammingGuideDLSS_G.md)§13 区分 application frame 与 `numFramesActuallyPresented`，插值帧可能丢弃，不能以配置倍率推定实际输出；§8 要求 Streamline Reflex 的 present markers 与 constants 帧号对应。§5.1 的 HUD-less、UI alpha／预乘颜色输入有尺寸、色彩和合成契约，不能把完成一次普通场景渲染当作接入完成。§6.4／12 要求全屏菜单等场景及窗口变化按条件停用，§14 运行状态异常应关闭并修复。[研究] 因而分别记录应用渲染、实际呈现和原有输入／模拟时刻，不用呈现 FPS 反推业务 delta；这不意味着接入前后基础帧耗时必然不变，也不证明响应改善。
+
+**UI 合成有三种不同承诺。** [一手] 当前 [FSR Frame Generation API](https://gpuopen.com/manuals/fsr_sdk/techniques/frame-interpolation-api/)“UI Composition”区分：逐呈现 `presentCallback` 可为真实／生成帧分别绘制；独立 UI surface 合成到两者，但 UI 仍按 render rate 更新；HUDLessColor 是不能采用前两种方式时的兼容路径。独立纹理未启用内部 double buffering 时，Present 返回后仍可能被异步合成读取，不能立即覆盖。Prepare 的 frameID 必须与 Configure 相同、每帧加一，frameTimeDelta 是经过的毫秒时间。[Swapchain 3.1.7](https://gpuopen.com/manuals/fsr_sdk/techniques/frame-interpolation-swap-chain/)补充逐呈现重绘有额外开销，回调只宜记录小工作量。[研究] 静态菜单不必为更高呈现率重写更新循环；动态 UI 若选择重绘，先拆绘制与业务推进，保住纹理寿命。这不是要求 gameplay 在每个生成帧重新模拟。
+
+**UE 的具体副作用与版本边界。** [一手] [AMD FSR UE 指南](https://gpuopen.com/learn/ue-fsr/)正文标 4.1.1、2026-08-27，支持 UE 5.3–5.8：
+
+- Slate Redraw（UIMode=0）为正常／生成帧重绘，文档说会两次调用 NativeTick；第二次 delta-time 默认是零，禁用 ModifySlateDeltaTime 才改变这项处理。
+- 使用 DX12 swapchain override 的 UI Extraction（UIMode=1）从 UI 前后图像提取界面，不双 tick，但半透明 UI 可能变差；AllowAsyncWorkloads 会自动选此模式。不能只为吞吐打开异步而不重查 HUD。
+- UpdateGlobalFrameTime 可使 GAverageMs／GAverageFPS 使用帧生成统计。当前插件允许帧生成独立于 FSR Upscaling；[旧 3.1.4 插件指南](https://gpuopen.com/learn/ue-fsr3/)则要求该上采样组件，不能混用教程。
+
+[研究] 零 delta 不自动阻止按调用次数累加或发事件的自定义逻辑；应核相应 widget 的副作用，不能从双 UI tick 推成双游戏模拟，也不外推所有平台／控件。当前指南一处称 RHI backend 已移除，CVar 表仍有 RHI fallback 描述；此内部不一致保留，不据此推荐当前 RHI 路径。
+
+**Unity 不借 UE 的支持结论。** [一手] [HDRP 17.3.0 DLSS](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.3/manual/deep-learning-super-sampling-in-hdrp.html)正文明确原生 DLSS 4.5 Super Resolution；[NVIDIA 开发入口](https://developer.nvidia.com/rtx/dlss)的 Unity 栏也只列 Super Resolution，UE 栏则明确列出官方 DLSS 插件的 MFG／Dynamic MFG 支持。[研究] 这些已读入口没有建立 Unity 的帧生成／UI 契约；不表示 Unity 不可能接入，也不拿第三方商店功能宣传代替验证。没有具体接入需求时，不为独立游戏默认加此能力。
+
+**采用与撤回。** [一手] [AMD 当前 Frame Generation 页面](https://gpuopen.com/amd-fsr-framegeneration/)仍建议插值前至少 60 fps、避免低于 30 fps；仅是该实现的厂商指导，不是跨算法／玩法硬门槛或本仓实测。[研究] 后续获准验证时固定上采样与画质，分别切帧生成和 UI 合成模式；第二次修改加入动态数值／半透明面板，检查急转、暂停恢复及窗口变化下的可读性、更新次数、首个反馈与实际呈现。关键 HUD 失真、业务副作用重复或响应超预算，先修对应路径，仍不合格就撤回。以上仅官方正文静态核查，未运行 SDK、引擎、游戏或设备实验，未验证收益。
+
 ## 本地化补研：新语言与旧名字一起维护
 
 核实：2026-10-14 UTC。主线 3／4；补 04 稳定 key、fallback 与长文之外的内容更新风险：字体覆盖、旧名字及样例文案再次失效。[研究]
