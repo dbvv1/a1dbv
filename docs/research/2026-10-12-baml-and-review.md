@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加；三，连续修改仍然可靠
-改变的建议：按不可猜的契约与可观察偏好选择短规格、测试或样品；只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回；先确认真实入口、计费和成功报告，再考虑 CI 门槛。[研究]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约、SO 调查分母、模型客户引言、Cursor 当前计费、GitClear 公开图页的指标口径，以及 Intercom 原文、第三方集成固定来源与配置诊断／插件评估范围补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
+改变的建议：按不可猜的契约与可观察偏好选择短规格、测试或样品；只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回；先确认真实入口、计费和成功报告，再考虑 CI 门槛；跨仓修复须核实际依赖版本，不能只按本 PR head 判断复审覆盖。[研究]
+新证据：10-16新增 ComfyUI 目录 PR 的人工／机器人发现、作者确认、固定补丁与复审跳过／完成链；以下为既有证据汇总（日期见各节，非本次新增）：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约、SO 调查分母、模型客户引言、Cursor 当前计费、GitClear 公开图页的指标口径，以及 Intercom 原文、第三方集成固定来源与配置诊断／插件评估范围补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
 
 # 实现决策与评审：让原需求和运行反馈纠正计划
 
@@ -204,6 +204,19 @@ HumanLayer 的《Getting AI to Work in Complex Codebases》报告：作者尝试
 **排重与排除。** 既有 CRBugBench／Tufano／RevMate 不重复取样。[cuda-python #2137](https://github.com/NVIDIA/cuda-python/issues/2137)有历史关停的作者自述，但本轮所见重启仍是提议；[CCCL #8930](https://github.com/NVIDIA/cccl/pull/8930)确有启用自动评审的合并记录，却没有正确修复与人的投入对照，均不作为净收益证据。Crossplane #6794/#6795 的搜索网页旧缓存显示 open，本轮通过 GitHub 连接器重新取得两者 `merged: true`、合并 SHA、diff 与评论，未沿用缓存状态。**[一手：公开元数据；研究：排除判断]**
 
 **后续门槛。** 保持额外评审按风险试用；若要进一步提高采用评级，需要同类任务中新发现的真缺陷、接受后的正确修复，以及作者／审核者主动投入和等待的可比记录。单个项目的配置取舍不能替代这些测量。**[研究：采用边界]**
+
+
+## 跨仓修复：本 PR 未变不等于评审对象未变
+
+主线二／三；核实：2026-10-16 UTC。改变09的复审条件：上游修复在另一仓库时，同时核固定修复与实际分发版本，不把本 PR head 对应的完成报告当作整个依赖链已验证。新增证据为公开意见、作者确认、固定补丁和复审回执；未运行模型、上游程序或测试。**[研究：范围]**
+
+**发现与处理分开归属。** [ComfyUI-Manager #3295](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295)只新增一个 JSON 目录条目，引用外部节点管理器。维护者 ltdrdata [先要求补访问控制](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295#issuecomment-5777249417)，作者随后发布0.3.0。CodeRabbit [9月23日新增意见](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295#discussion_r4088352548)指出该版本的 token 入口仍缺 Host 校验，并要求覆盖 token、安装和重启的回归测试。最初访问控制问题不能归给机器人；新增意见也不是对目录 JSON 语法的检查。**[一手：公开评审链；社区：参与者判断]**
+
+**确认落到固定补丁，但验证不完整。** [作者9月25日回复](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295#issuecomment-5833035126)明确确认问题，并报告正常请求成功、非本地域名请求被拒绝；这是作者复测自述，不是本仓运行回执。0.3.0 对应 `e6dd8330b510ac5f8b0b7da2d9f41fe907b35182`，修复提交 [`3fe7cd8cb041ab96cb83158dea9e4133d5ece567`](https://github.com/Raykosan/ComfyUI-Custom-Node-Manager/commit/3fe7cd8cb041ab96cb83158dea9e4133d5ece567)领先一提交，CHANGELOG 明确注明由 CodeRabbit 报告；[security.py](https://github.com/Raykosan/ComfyUI-Custom-Node-Manager/blob/3fe7cd8cb041ab96cb83158dea9e4133d5ece567/security.py#L85-L133)在原 loopback peer 检查之外加入 Host 校验，[消费者入口](https://github.com/Raykosan/ComfyUI-Custom-Node-Manager/blob/3fe7cd8cb041ab96cb83158dea9e4133d5ece567/CustomNode.py#L564-L567)确实使用该检查。完整补丁只有 CHANGELOG.md、pyproject.toml、security.py，没有随此提交新增机器人要求的回归测试；不能据作者的 token 请求检查宣称完整安装／重启链已复测，也不能据补丁未加测试断言作者从未运行测试。**[一手：固定源码与比较；社区：作者复测；研究：边界]**
+
+**后续复审不能只看请求或 head。** 作者10月3日[称0.4.0已修复并请求普通 review](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295#discussion_r4174822484)，机器人[明确未执行](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295#issuecomment-5973405140)：最后提交已经评审。作者随后[请求 full review](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295#discussion_r4174934324)，收到[完成回执](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295#issuecomment-5973643270)，所以不能写成所有复审都跳过。但[更新后的摘要](https://github.com/Comfy-Org/ComfyUI-Manager/pull/3295#issuecomment-5730509824)虽无新增 actionable comments，仍说明实际发布版本及其控制尚未确定、建议固定修订。连接器核实目录 PR 仍 `open`、`merged: false`，head 为 `62b57af030c69444d17d72eb3fac42d31fac872c`；目录增量只含未固定版本的仓库 URL。本文未继续验证0.4.0，不把该回复代替已核的0.3.1固定补丁，也不声称已进入目录或上线。**[一手：PR 元数据、diff与回执；研究：覆盖范围]**
+
+**采用与成本。** 这条独立项目链支持定向评审可能补上已有修复的具体遗漏；真正新增的选择是：相关对象在另一仓库变化时，重新取得实际版本和所需行为证据，不能只对未变的本 PR 重复调用增量评审。已经有可靠验证时不机械追加全量评审；报告未覆盖目标产物时保留人工核查。可见处理包括作者核实、修补、复测说明及重新触发评审，但没有主动工时、费用、完整误报或漏报分母，时间戳不能换算为处理工时。故不提高工具评级、不推荐默认叠加 reviewer，也不声称已证明净收益。**[研究：采用判断与限制]**
 
 
 ## Faros：公开指标的口径补核
