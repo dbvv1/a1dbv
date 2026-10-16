@@ -69,4 +69,4 @@
 | 保留 IDE 工作流或选择其他集成 | [ide-and-others.md](ide-and-others.md) |
 | 嵌入产品或自动化流水线，选择程序化调用方式 | [16 自建 Agent](../16-building-agents.md) |
 
-来源与分项日期见各深度页及[选型证据记录](../research/2026-10-12-community-source-records.md)；近期改变建议的更新见 [13 前沿雷达](../13-frontier-radar.md)。本页尚未完成全部客户端能力的交叉核查，也没有本仓真实任务的跨入口效果对照。
+来源与分项日期见各深度页及[选型证据记录](../research/2026-10-12-community-source-records.md)；近期改变建议的更新见 [13 前沿雷达](../13-frontier-radar.md)。本页核心选路建议已独立复核；各客户端深页保留各自核查范围，未验证目标部署隔离或真实任务跨入口效果。

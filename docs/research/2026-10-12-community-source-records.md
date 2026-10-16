@@ -230,9 +230,7 @@ Simon Willison 的 [research PR #10](https://github.com/simonw/research/pull/10)
 
 ### 11 §3 已撤回的旧主张（不作为事实引用）
 
-旧正文把下列内容连成迁移理由：定价抱怨很多；2026-08 用量页和 CSV 移除费用；2026-06 SpaceX 以 600 亿美元收购 Cursor；2026-08 OpenAI 停止模型供应；转售 API 无法竞争官方补贴订阅，很多人因此转向 Claude Code／Codex。**这些仅记录此前撤回对象，不可整体当事实引用；收购完成与供模计划现已由下文一手资料补核，其他断言未因此恢复。**
-
-旧来源只有 [Cursor 论坛总帖](https://forum.cursor.com/t/pricing-megathread-and-q-a/116395)，未逐项连接官方交易／供应声明、具体产品通知与可核对迁移者。此前未重做商业新闻调查，也未据缺证据判断真伪；先从正文撤回强断言，避免历史未核内容担当采用依据。以下补核替代其中已取得证据的缺口，仍不能依靠旧段整套推论决定迁移。**[研究：撤回原因与范围]**
+撤回对象：旧正文仅引 [Cursor 论坛总帖](https://forum.cursor.com/t/pricing-megathread-and-q-a/116395)，却将定价抱怨、2026-08 用量页／CSV移除费用、2026-06 SpaceX以600亿美元收购、8月停止供模、转售API难敌官方补贴订阅及大量用户迁移连成因果链。下节官方公告已闭合收购完成，供模则纠正为终止计划；金额、费用展示和普遍迁移等断言仍未恢复，不能引用旧链决定迁移。**[研究：撤回对象与纠正范围]**
 
 
 ### Cursor 供模计划与实际入口：2026-10-15 补核
@@ -397,7 +395,7 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 
 ## IDE 页历史页头
 
-历史原文转存：2026-10-16（UTC+8），来自 `docs/01-agents/ide-and-others.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准。
+2026-10-16（UTC+8）转存 `docs/01-agents/ide-and-others.md` 原页头；保留原日期／范围，相对链接仍以原页面为基准，不表示重新核实。
 
 ```text
 > 核实时间：CodeBuddy客户端／权限范围、国内工具订阅边界与Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
@@ -432,7 +430,7 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 
 ## 21 页历史页头
 
-历史原文转存：2026-10-16（UTC+8），来自 `docs/21-agent-patterns.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准，不表示本次重新核实。
+2026-10-16（UTC+8）转存 `docs/21-agent-patterns.md` 原页头；保留原日期／范围，相对链接仍以原页面为基准，不表示重新核实。
 
 ```text
 > 核实时间：2026-10-11（UTC+8；原有条目检索截至 2026-10-10 UTC；验证回执小节于 2026-10-11 UTC 补核，Windows 维护链于 2026-10-16 UTC+8 复核）。
@@ -443,7 +441,7 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 
 ## Gemini 页历史页头
 
-历史原文转存：2026-10-16（UTC+8），来自 `docs/01-agents/gemini-cli.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准，不表示本次重新核实。
+2026-10-16（UTC+8）转存 `docs/01-agents/gemini-cli.md` 原页头；保留原日期／范围，相对链接仍以原页面为基准，不表示重新核实。
 
 ```text
 > 核实时间：接入、迁移与沙箱边界于 2026-10-16（UTC+8）补核；恢复范围为 2026-10-15，其余为 2026-10-08。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
@@ -473,3 +471,5 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 **可采用路径仍有条件。** [MCP管理页](https://docs.github.com/en/copilot/concepts/enterprise/mcp-management)推荐托管设置而非仅registry名称匹配；[托管设置参考](https://docs.github.com/en/copilot/reference/enterprise-administrators/enterprise-managed-settings#allowedmcpservers)及[固定支持表](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/enterprise-administrators/enterprise-managed-settings.md)列CLI和VS Code均支持`allowedMcpServers`／`deniedMcpServers`，但空allowlist不禁止内建默认服务器，第一方内建服务器也豁免deny；因此这两个键不能承诺“禁止所有MCP”。[VS Code官方策略页](https://code.visualstudio.com/docs/enterprise/policies)另有`ChatMCP`、allow/deny及registry配置，它们属于VS Code入口，不能直接移植为CLI保证。**[一手；研究：采用边界]**
 
 **当前建议与重开条件。** 个人先按任务选择Free／已具资格的GitHub认证／获准的本地BYOK，不为CLI接入预设付费，也不忽略免登录损失的GitHub能力。团队先确认目标客户端版本、设备与账号策略、必需MCP服务器及内建例外；严格准入要求无法证实时保留既有合规入口。升级客户端、改变认证／组织／任务所需GitHub功能或官方解决上述冲突时重核，准备企业部署前提前复核。不更新其他功能快照，不据此把01页升为L3。**[研究：选择与撤回]**
+
+**2026-10-17 选型入口核心复核。** 以已发布`f6be22ca`的01全文为基线，独立核对环境、权限、恢复、语义工具与多服务商的选择和相关深页，首选／换路／撤回条件已闭合。补读[Google消费者弃用](https://developers.google.com/gemini-code-assist/docs/deprecations/code-assist-individuals)、[JetBrains ACP](https://www.jetbrains.com/help/ai-assistant/acp.html)、[OpenCode工具](https://opencode.ai/docs/tools/)及[服务商配置](https://opencode.ai/docs/config/#enabled-providers)、[Claude Projects](https://code.claude.com/docs/en/claude-projects)与[Remote Control](https://code.claude.com/docs/en/remote-control)，与入口判断一致。支持选型入口L3，不连带升级深页，也不认证全部客户端能力、目标部署隔离、恢复实测或跨入口效果；历史来源保留原日期和范围。[一手：本轮官方阅读；研究：范围内成熟度]
