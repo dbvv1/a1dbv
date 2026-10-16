@@ -855,3 +855,11 @@ extension-coverage | e2f4edf3074576570ab6bc10f65bf794bdd76407 | 22:42 | 22:46:54
 决定：保留完整串行入口，不将不同覆盖的CLI、Python/jq后端或优化模式回归当重复而删除。跨阶段并行会改变“失败后不运行后续阶段”的契约；同阶段并行还需处理全局mock、隔离、超时及进程清理，暂无收益对照支持增加复杂度。此前40–60秒的粗略收尾观察未在原命令中复现，不能把固定等待/收集间隔归为测试执行时间。[源码核对；本仓判断]
 
 协调侧改为依据现有进程完成回执接续，而非用固定45–50秒睡眠估计完成；检查本身及成功标准不变。尚未完成协调方式前后对照，不宣称端到端提效。完整四信号和之前成功样本的范围仍按原记录，不用这3次命令运行补作无人值守分母。[执行调整；未量化效果]
+
+===== 2026-10-17 00:24（UTC+8）：M3 原型缩减后续回访 =====
+
+按BACKLOG的既有Jules链追迁移后的必要能力、权限与结果持久化。公开main [9f1727f](https://github.com/jonathanmalkin/jules/commit/9f1727f85b433b29804ae93489cdee6ed630f01b)（2026-05-18）仍修改wrap-up与调度预检；[4月7日655cc90](https://github.com/jonathanmalkin/jules/commit/655cc90b5a4bec8c33299ec60eb85fe64f4cf1e0)删除overnight-batch提示/辅助脚本、调整数据接入并在共享settings重新加入defaultMode: plan；同版本[保留指南](https://github.com/jonathanmalkin/jules/blob/9f1727f85b433b29804ae93489cdee6ed630f01b/docs/overnight-batch.md#L188-L194)警告该模式阻塞无人值守。这只证明公开参考配置与指南的前提不一致，不能推断作者的私有运行实际失败。[一手：固定产物；研究：范围]
+
+指南的Git持久化、邮件交付、分支推送及失败后保留本地提交仍是设计要求；公开Briefing是模板，Field-Notes/Logs仅占位文件，没有可绑定迁移的作业结果。[issue #2](https://github.com/jonathanmalkin/jules/issues/2)只讨论借用wrap-up/retro，发生在3月替换前，不能充当替换后的接收回执。作者[4月6日复盘](https://builtwithjon.com/articles/best-ai-infrastructure-is-temporary/)自报简化后更干净、冲突更少，也承认并非完美一对一替代；没有配对作业或维护投入数据。[一手／社区：公开产物与自述]
+
+结果：不扩写15／18，不新增案例，不量化净收益；保留原采用条件。再开须取得绑定版本和必要任务的实际产物／接收反馈，尤其结果时效、离线访问、持久化失败恢复与权限保留。仅新README、更多预检或另一系统的输出解释问题不补作迁移效果。本轮仅只读公开资料，无上游运行、私人部署访问或模型实验；没有认定全网不存在其他证据。[研究：收敛与再开条件]
