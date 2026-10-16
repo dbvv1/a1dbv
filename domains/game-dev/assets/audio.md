@@ -27,6 +27,8 @@
 
 1. **先辨识，再丰富。** 保留关键提示的标志性起音；脚步、碰撞等高频声音在同一语义内做有限变体，别把“随机更多”当成质量。Overwatch 开发者公开材料将角色／威胁辨识与较少的关键声音变化联系起来；这是作者实践，不是本项目反应时间测试。[一手／研究]
 2. **先按当前玩法给重要声音留位置，再加响度。** 已播放却难辨时，先减重复／装饰层，再让音乐／环境按状态让位：密集战斗保敌我动作与危险，攀爬可能更需持续呼吸／接触声，不按响度固定排序。出现明显忽强忽弱、遮掉另一威胁或损失轻重区别就减弱／撤回；确属频段冲突才试局部处理，不默认逐角色动态 EQ。世界声源仍须表达方向和距离，UI／自身确认按玩法选稳定位置。[HARDCORE MECHA 与 Cairn 作者案例](../../../docs/research/2026-10-14-game-wp6-audio.md#混音焦点补研已播放却难辨时让谁退后)支持这些取舍，未证明本项目听感收益。[一手／研究]
+   **增加声源或改地图后才混乱，先改场景参数，不急着重做资源。** 单件已合格时，比较传播范围、衰减与实例增益；单件语义错误，或场景调参后仍掩盖必要信号，再比较替换资源与混音。[Cogmind 的密度二改](../../../docs/research/2026-10-14-game-wp6-audio.md#声源密度二改先改传播还是重做音频)通过配置调整避免重采样，不能照搬其衰减曲线。**局限：原始制作含人工音频编辑，此例不证明零手修管线或 AI 收益。** [一手／研究]
+
 3. **Unity 6.3 LTS 先用原生机制。** [Audio Random Container](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioRandomContainer-UI.html)已有 Shuffle、避免最近重复及音高／音量变化；[AudioMixer](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioMixerInspectors.html)有 Send／Duck Volume。先调这些，再决定是否写额外选择器。玩家音量和状态混音分开控制，避免脚本写入的 exposed 参数锁住快照变化。[一手／研究]
 4. **Unreal 先分清声源、混音和调度。** 普通播放沿用 Sound Wave／Sound Cue；需要程序化变化时🧪用 MetaSound Source，把共用逻辑放 Patch、同图不同参数做 Preset。Sound Class／Mix 管分类与状态，Submix 管汇总效果，Sound Concurrency 管叠加淘汰；MetaSounds 不包办这些职责。短音必须结束，静音组件仍可能占并发预算；不要为“不断音乐”给全部声源打开 PlayWhenSilent。当前按 UE 5.8 文档核对；MetaSounds 已在 5.4 正式转为 Production Ready，试用评级针对是否值得增加制作复杂度，非认定它仍为 Beta。文档冲突与边界详见 [WP6 引擎对照](../../../docs/research/2026-10-14-game-wp6-audio.md#105-unityunreal同一质量目标不同原生职责)。[一手／研究]
 5. **让音乐承接情绪，不随状态抖动。** 探索／战斗转换按已设计的乐句安排，瞬间进出战斗先平滑状态；胜负短曲可有明确插入规则。少量循环能成立就不加分层，只有反复修改转场、分层与参数曲线成为主要工作，才🧪比较 FMOD 的可视化制作和实时调音收益。[研究]
