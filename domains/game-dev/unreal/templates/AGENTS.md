@@ -82,7 +82,7 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 - 重导入目标与 pipeline：TODO（已有对象路径、源身份、要覆盖/保留的属性）。重生成应更新已有资产，不以新增 `_1` 或相同名字代替；Interchange 覆盖策略须明确，回读材质槽、Blueprint 使用点与软引用/Primary Asset ID，语义对应不唯一时停止自动替换。
 - 加载所有者及退出入口：TODO。按目标版本区分 FStreamableHandle 的 CancelHandle 与 ReleaseHandle；回调核当前请求、对象寿命及结果资产是否齐全，业务结果至多接收一次；HasLoadCompleted/加载计数包含失败项，不能当作成功。测同帧完成/交叉取消；不能只凭 CancelHandle 已返回就接受迟到结果。
 - 定义与实例：TODO（DataAsset/DataTable、Session/角色/施放实例的类型）。共享定义/CDO 不存当前 HP、冷却或目标；正常结束、取消、死亡、卸载和池回收清理计时器、委托、任务与命中窗口。计时器的暂停时钟：TODO。
-- 伤害/奖励唯一提交入口：TODO；Montage 晚事件不能重复结算。已用 GAS 时明确 CommitAbility 的费用/冷却、取消退款政策与 EndAbility 路径，Per-Actor 实例下次激活不能带上次目标。
+- 伤害/奖励唯一提交入口：TODO；Montage 晚事件不能重复结算。已用 GAS 时明确 CommitAbility 的费用/冷却、取消退款政策与 EndAbility 路径，Per-Actor 实例下次激活不能带上次目标。沿用 PlayMontageAndWait 时，按完整播放、淡出即释放或继续后续阶段选择出口，核目标版本的 Allow Interrupt After Blend Out 与 Stop When Ability Ends；不把淡出、完成、打断统一当成功结束。
 - SaveGame 类型、旧档夹具与兼容政策：TODO。保存稳定内容 ID、schemaVersion/contentVersion 和一致快照；内容改名需迁移，不把 UObject 引用或数组序号当持久身份；写入失败保留原档，旧档恢复后进度和奖励须正确。
 
 ## 提交约定
