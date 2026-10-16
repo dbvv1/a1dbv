@@ -1,14 +1,14 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
-改变的建议：[经验] 同风格现成／参数化资产优先；自定义刚体首试原生低模，场景和变形角色另判；复用 bpy／gltfpack 前核目标导入器扩展支持，之后仍验最终预算、身份与元数据
-新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加 CC0 门 GLB 轨道复算、关节导出反例及重贴图 UV／对象身份调用链，未运行模型／引擎
+改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体首试原生低模，场景和变形角色另判；复用 bpy／gltfpack 前核目标导入器扩展支持，之后仍验最终预算、身份与元数据
+新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加 CC0 门 GLB 轨道复算、关节导出反例、重贴图调用链及程序化风格扩展／模块供给边界，未运行模型／引擎
 
 # WP3：3D资产路线、原生低模与第二次修改
 
-核实时间：2026-10-14（UTC+8）。正文见[3D资产专题](../../domains/game-dev/assets/3d.md)。以下“首试”是理论选型优先级，不是已测质量冠军。来源标签：[一手]官方文本/源码；[研究]论文或作者测量（须再分）；[经验]本报告决策。
+核实时间：2026-10-14（UTC+8）；TaoFlowForge 许可与装载链补核：2026-10-16（UTC+8，§10.2）；程序化形状／风格范围补核：2026-10-16（UTC+8，§13）。正文见[3D资产专题](../../domains/game-dev/assets/3d.md)。以下“首试”是理论选型优先级，不是已测质量冠军。来源标签：[一手]官方文本/源码；[研究]论文或作者测量（须再分）；[经验]本报告决策。
 
 ## 1. 采用判断与分档依据
 
-**✅ 采用：先按玩法把对象拆成静态刚体、模块场景、变形角色，再选资源来源。** 同风格授权现成包可满足时不重新生成；重复尺寸、模块接缝、门窗和可动零件优先参数化，新增外观才用生成。静态道具把原生低模生成列为首试，而非默认百万面生成后强减面；高细节源资产保留在确实需要近景轮廓/烘焙细节的分支。变形角色优先现成骨架/拓扑与服装体系；自动绑定成功和quad输出都不是关节变形通过。场景优先模块拼装，生成世界仅作受限背景候选。**局限：本轮未建立零手修、第二次修改后的真实引擎通过率，不能承诺完整无人美术发售管线。** [经验；依据见下]
+**✅ 采用：先按玩法把对象拆成静态刚体、模块场景、变形角色，再选资源来源。** 同风格授权现成包可满足时不重新生成；重复尺寸、模块接缝、门窗和可动零件优先复用已有配方；新增形状／风格先核源模块与规则是否覆盖（§13），不能把补配方算成调参数。静态道具把原生低模生成列为首试，而非默认百万面生成后强减面；高细节源资产保留在确实需要近景轮廓/烘焙细节的分支。变形角色优先现成骨架/拓扑与服装体系；自动绑定成功和quad输出都不是关节变形通过。场景优先模块拼装，生成世界仅作受限背景候选。**局限：本轮未建立零手修、第二次修改后的真实引擎通过率，不能承诺完整无人美术发售管线。** [经验；依据见下]
 
 ### 三类资源、三档首试
 
@@ -28,7 +28,7 @@
 - **Meshy 7.1（2026-09-18）**：标准高细节路线，`latest`已指它，7被弃用但仍工作。`geometry_resolution=4k`是几何采样规格，不是贴图4K；多图不支持该4k选项。[一手：[changelog](https://docs.meshy.ai/en/api/changelog)] 推荐显式锁版本，不把同seed+latest当重复生成契约。[经验]
 - **Tripo P1-20260311与P2-20260801**：P1是稳定低模路径；P2在当前生产域v3文档标Preview，新增quad，最多50,000三角面或25,000四边面；纹理模型另锁`v3.5-20260815`，不是几何升级就自动启用新版纹理。[一手：[P系列](https://developers.tripo3d.ai/en/docs/generation-text-to-model/p)] 本轮先采用P1稳定性作候选，P2不凭quad宣传升为角色首选。[经验]
 - **LATO.2（2026-07-12论文，代码8月）**：分顶点与连通性，可调整顶点后重建拓扑；作者明确几何错不能靠连通性阶段补救，尚缺UV/纹理/材质。[研究：[论文限制](https://arxiv.org/html/2607.10623v1)] 不支持“新拓扑模型已经解决完整游戏角色”。[经验]
-- **TaoFlowForge（2026-09-29论文，9月30代码发布）**：原生顶点+连通性三阶段；公开推理CLI、阶段恢复、raw与补洞后网格都有，读源码可区分生成错误与后处理错误；不是只有官网旋转视频。[一手：[固定README](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/README.md)、[pipeline](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/taoflowforge/pipeline.py)] 但权重许可未核清，不列商用本地推荐。[研究]
+- **TaoFlowForge（2026-09-29论文，9月30代码发布）**：原生顶点+连通性三阶段；公开推理CLI、阶段恢复、raw与补洞后网格都有，读源码可区分生成错误与后处理错误；不是只有官网旋转视频。[一手：[固定README](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/README.md)、[pipeline](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/taoflowforge/pipeline.py)] 权重仓现已核到 Apache-2.0 声明，但必需 DINO 的实际来源／版本及适用许可链未闭合，不列无条件商用本地推荐（见 §10.2）。[研究]
 
 **替代关系**：简单刚体道具，原生低模值得替代“先密网格再不计损失地强制减到预算”；不是取消密网格，近景雕塑/复杂表面仍可生成高密度源，再用成熟LOD/烘焙。若原生低模无法保持重要孔洞、细件、接口或预算反复失守，撤回到同风格现成资产/参数化建模；不能把试验失败转嫁为程序员手工雕刻。[经验]
 
@@ -126,7 +126,7 @@ PBR贴图存在不证明物理一致；需区分base color与烘焙阴影、roug
 4. meshoptimizer b233043、xatlas f700c7、CoACD131010：主代码MIT，无权重；输出依输入资产权利，不自动清除输入许可。[一手；研究]
 5. Infinigen a0d1a0：主BSD3+标注CC0代码；目前只研究借鉴，不以主许可包办外部包/所有素材。[一手；研究]
 6. LATO.2 fbb1f5a5755e6db8700cf6922fd506830b7cdccd：主MIT；HF `0x4c48/LATO.2@a91090e8077b9318ab87ac08fd9eb905903d4515`卡MIT，七个pt；[setup.sh](https://github.com/LoHhhha/LATO.2/blob/fbb1f5a5755e6db8700cf6922fd506830b7cdccd/setup.sh)固定nvdiffrast v0.4.0并称o_voxel导入必需，同一[nvdiffrast v0.4.0许可§3.3](https://github.com/NVlabs/nvdiffrast/blob/v0.4.0/LICENSE.txt)限制普通使用者为非商业研究／评估；**不能忽略该商业生产依赖门槛**。首轮商用默认暂缓。[一手；研究]
-7. TaoFlowForge/Taobao3D f236914：根Apache2；checkpoint指ModelScope但权重页面未成功读到许可，且DINOv3可能嵌入/外载需另核。仅研究。[一手；研究]
+7. TaoFlowForge/Taobao3D f236914：根 Apache-2.0；2026-10-16 已另读 ModelScope 固定权重卡的 Apache-2.0 声明。三个阶段均需 DINOv3-L/16，内嵌／外载不消除独立许可；实际组件来源／版本仍待核，不列无条件商用默认，见 §10.2。[一手；研究]
 8. Meshy 7.1/T2、Tripo P1/P2、Rodin Gen2.5沿WP1对应服务权利；**Tripo本地SG≠付费Tripo服务许可**，SG默认自动下载BRIA RMBG1.4未清商用，不引入为“MIT全套”。[一手：[TripoSG固定README](https://github.com/VAST-AI-Research/TripoSG/blob/fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c/README.md)；研究]
 9. Marble：阶段 F 已补读当前合同和导出页，Pro 可作受限背景候选；免费生成不追溯升级，Standard 的商用口径需实际订单澄清，见 §10。[一手／研究]
 
@@ -134,7 +134,7 @@ PBR贴图存在不证明物理一致；需区分base color与烘焙阴影、roug
 
 [研究] 已读一手商业契约、固定源码／许可及论文方法和限制；固定提交／目录已核，未安装、下载权重、付费生成或运行引擎。
 
-足以改变建议的新增证据：原生低模商业入口与退役旧参数；同样“成功”的朝向错误；低模作者产物与费用记录的证据限制；LATO.2依赖重现许可阻塞；TaoFlowForge真实开源推理但权重授权不明；最新UV论文仍明确人工精修范围；碰撞、UV、LOD可直接借成熟库而非自建。[研究]
+足以改变建议的新增证据：原生低模商业入口与退役旧参数；同样“成功”的朝向错误；低模作者产物与费用记录的证据限制；LATO.2依赖重现许可阻塞；TaoFlowForge 真实开源推理，权重仓许可声明已补核但 DINO 适用链仍缺；最新UV论文仍明确人工精修范围；碰撞、UV、LOD可直接借成熟库而非自建。[研究]
 
 后续只需窄实验（待用户授权，当前不执行）：同一个带孔刚体需求，用同风格现成/参数化基线、T2、7.1或Rodin各一条；保所有淘汰件并做一次“改尺寸且保挂点/颜色”的修改。角色实验另立样本，不能与刚体合算。授权不满足的路线先排除。停止条件是目标视距轮廓/材质/碰撞通过且第二次修改成功，或确认需手修而撤回；不扩成新的管线框架。[经验]
 
@@ -199,7 +199,7 @@ Shards Asset Toolkit 固定 **94bd478782d9629586d5d1138d2172f0337a7745**，最�
 | TRELLIS.2-4B／默认依赖 | [当前权重卡](https://huggingface.co/microsoft/TRELLIS.2-4B) MIT；代码最新仍 75fbf018（2026-06-05），[setup](https://github.com/microsoft/TRELLIS.2/blob/75fbf0183001ed9876c8dbb35de6b68552ee08bd/setup.sh)锁 nvdiffrast v0.4.0；[该依赖 §3.3](https://github.com/NVlabs/nvdiffrast/blob/v0.4.0/LICENSE.txt)限非商业研究／评估 | [一手] 卡、默认安装说明与许可重读；主模型候选，默认商业生产组合排除，替代依赖未测不放行；无订阅价不等于零算力成本 | 换权重／依赖前或2026-11-14 |
 | LATO.2／默认依赖 | [当前权重卡](https://huggingface.co/0x4c48/LATO.2) MIT；最新代码仍 fbb1f5a（2026-08-15）；[setup](https://github.com/LoHhhha/LATO.2/blob/fbb1f5a5755e6db8700cf6922fd506830b7cdccd/setup.sh)仍锁同一受限 nvdiffrast，并写明 o_voxel import 必需 | [一手] 重读后未改变门槛；默认组合不作免费商业生产，不把删除下载语句当合法可运行替代 | 换权重／依赖前或2026-11-14 |
 | Hunyuan3D-2.1 | 最新代码仍 82920d64（2025-10-17），[固定许可](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/blob/82920d643c0dc2f7bfd7255f45f62d386edfe60c/LICENSE)与[当前权重许可](https://huggingface.co/tencent/Hunyuan3D-2.1/blob/main/LICENSE) §5(c)将 EU／UK／韩国排除延伸到 Output；§4为发行时前月 MAU >100万另许 | [一手] 两份重读；排除全球默认发行，不是收入低就豁免；不外推新版本／托管合同 | 采用前／2026-11-14 |
-| TaoFlowForge 权重／依赖 | 最新仍 f2369145（2026-10-09），根 Apache-2.0；[README](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/README.md)指向[ModelScope权重](https://www.modelscope.cn/models/Taobao3D/TaoFlowForge/files)，说明 DINOv3 可内嵌／外载；该权重页本轮再次失访，搜索未找到其可核许可 | [一手／研究] 真实尝试但未获授权正文；仍排除商业默认，不用代码 Apache 代替权重／DINO 授权 | 获许可后采用前／2026-11-14 |
+| TaoFlowForge 权重／依赖 | 2026-10-16 补核：代码固定 f2369145，根 Apache-2.0；ModelScope 权重仓 e15065c2 的模型卡独立声明 Apache-2.0；三个阶段均需 DINOv3-L/16，Meta 独立许可已读，精确来源见 §10.2 | [一手／研究] 撤回“权重许可未查得”；实际 DINO 来源／版本及适用许可链未闭合，仍不列无条件商用默认，不判定为非商用专用或已违规 | 来源／适用链补齐后采用前／2026-11-14 |
 | Infinigen 维护／代码许可 | GitHub API 最新仍 a0d1a0dd，2026-10-08 的 2.0.0a3 rooms；[LICENSE](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/LICENSE) BSD-3-Clause | [一手] 重核；只借单资产配方，alpha 发布与许可不证明整场景游戏交付，导出限制沿 §4 固定实现 | 升级／采用前或2026-11-14 |
 | xatlas 维护／许可 | GitHub API 最新仍 f700c779，2022-07-25；[LICENSE](https://github.com/jpcy/xatlas/blob/f700c7790aaa030e794b52ba7791a05c085faf0c/LICENSE) MIT | [一手] 重核；成熟 UV 工具候选，不标近期活跃；新 UV 不保旧贴图 | 升级／采用前或2026-11-14 |
 | CoACD 维护／许可 | GitHub API 最新仍 131010c4，2026-09-23；[LICENSE](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/LICENSE) MIT | [一手] 重核；复杂凹碰撞才评估，CuACD 新闻提交不等于本轮 GPU 性能验证 | 升级／采用前或2026-11-14 |
@@ -210,11 +210,22 @@ Shards Asset Toolkit 固定 **94bd478782d9629586d5d1138d2172f0337a7745**，最�
 
 - **价格冲突**：Rodin 端点与产品页费用不一致，产品页和条款对月付／最低订阅承诺也需实际订单确认；保留高细节对照，不提供未经核实的最低美元成本或自动下单配置。Tripo 已找到生产域价格入口，旧 v2 all-in 文案不再作为新配置依据。[一手／研究]
 - **合同口径**：Marble 合同付费定义含 Standard，导出说明却将商用列 Pro；使用 Pro 作为有条件候选，Standard 和免费旧资产不默认商业发行。Tripo 终止条款保 ownership，但旧免费生成追溯授权未查得，排除此用法；Rodin 不再误套 ChatAvatar 的条件。[一手／研究]
-- **许可失访／明确限制**：TaoFlowForge 权重页真实访问失败，继续不默认商用；TRELLIS.2／LATO.2 默认依赖和 Hunyuan3D-2.1 全球输出已有明确排除依据，不为补齐表格而改成可用。[一手／研究]
+- **许可待核／明确限制**：TaoFlowForge 已补得权重仓 Apache-2.0 声明，剩余缺口是实际 DINO 来源／版本及适用链（§10.2），继续不列无条件商用默认；TRELLIS.2／LATO.2 默认依赖和 Hunyuan3D-2.1 全球输出已有明确排除依据，不为补齐表格而改成可用。[一手／研究]
 - **实际账户与运行缺口**：未登录核实际订单、地域可用性、生成记录和结算税费；未下载权重、测试替代依赖或测生产成本。推荐只覆盖表内精确版本与限定用途，任何升级／第三方托管／新增依赖需重新核。[研究]
 
 [研究] 历史阶段 F 增量：`check_repo.py` 177 文件无错误、两文件 `git diff --check` 通过；该轮未重跑完整离线入口。
 
+### 10.2 TaoFlowForge：补得权重声明，仍核实际 DINO 适用链
+
+核实：2026-10-16（UTC+8）。改变的判断：不再将“权重许可失访”列为未知；不将新发现的模型卡声明扩大为整套依赖清权。[研究]
+
+- **权重仓声明**：[官方元数据 API](https://www.modelscope.cn/api/v1/models/Taobao3D/TaoFlowForge) 的 `License` 与[固定模型卡](https://www.modelscope.cn/models/Taobao3D/TaoFlowForge/resolve/e15065c267a8e3aecf0b922016a7970e72730396/README.md)均写 `Apache License 2.0`。[文件清单 API](https://www.modelscope.cn/api/v1/models/Taobao3D/TaoFlowForge/repo/files?Revision=master&Recursive=true)所列末提交为 `e15065c267a8e3aecf0b922016a7970e72730396`（2026-10-08 09:13:55 UTC）；README 自身修订为 `242a476675854bae148663860bd45a9d13aa5fdd`（2026-10-02）。固定版与 master 模型卡 SHA-256 均为 `4e726e23b548e1b19f089ab6ba6a15da524c02c68104b8967ed093ac87ca19f5`，与文件清单一致。清单为三个 stage 权重及配置、README、Git 属性文件，未列独立 LICENSE／NOTICE；这不证明权重内部没有通知。模型卡正文为默认介绍，没有说明内嵌 DINO 来源。[一手]
+- **装载链已确定**：代码固定 `f2369145382e07551fb633a589f69771b40adf32`；[dino.py](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/taoflowforge/models/dino.py)构造 DINOv3-L/16；[stage0 L359–381](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/taoflowforge/models/stage0.py#L359-L381)、[stage1 L423–455](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/taoflowforge/models/stage1.py#L423-L455)、[stage2 L321–353](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/taoflowforge/models/stage2.py#L321-L353)均在完全缺少内嵌 DINO 时才从指定路径外载，未提供路径则报错，最终严格核键／形状。外载参数不是覆盖已有内嵌权重的开关；架构匹配也不能证明实际 checkpoint 的来源或版本。[一手／研究]
+- **独立许可已读**：Meta [DINOv3 License](https://github.com/facebookresearch/dinov3/blob/ffb4bb89c6558ca3244655c25a3955d01788b732/LICENSE.md)更新于 2025-08-19，适用对象含代码、训练权重等 DINO Materials。§1(a)授予有限、全球、免许可费的使用／复制／分发／修改权，未写一般非商业限定或营收阈值；§1(b)(i)要求分发材料及衍生物时沿用协议并附副本，另有研究署名、法律／贸易控制和用途条件。权重仓的 Apache 标签不覆盖这份独立许可，也不能据此断言已违规。[一手／研究]
+
+**采用门槛**：先补实际发布权重中的 DINO 来源、版本及适用许可链，再评估具体商业用法；当前不列无条件商用默认，不改成“只能非商业研究”。这是资料选型结论，不是法律保证。[研究]
+
+**验证边界**：本次以普通公开 GET 成功取得 ModelScope API／固定 README，未登录、下载权重或运行模型；网页抓取失败不再作为许可不存在的依据。独立复核对保存响应的解析／哈希核对，与重新从服务取得同一响应是两种证据，不将前者称为第二次独立获取；也未审计完整依赖树或验证实际发行包内容。[研究]
 
 ### Tripo 版本选择补核（2026-10-15 UTC+8）
 
@@ -356,3 +367,33 @@ Meshy 端点当前 `latest` 标 Meshy 7，不能借几何生成页的 7.1 推断
 - [Epic glTF 支持文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/gltf-file-format-support-in-unreal-engine)说明不支持必需扩展时不能加载；其中导出扩展表不能反推导入支持。未取得具体项目导入器能力时，保持原文件并关闭未确认的优化或采用已有支持的路径，不新造未经验证的跨引擎兼容矩阵。[一手／研究]
 
 建议只约束采用前提：这不是各引擎当前完整支持清单，也不是实际加载测试；最终文件仍须经过目标项目的导入和二改验收。
+
+
+## 13. 程序化二改：复用已有配方，还是补新形状与规则
+
+核实：2026-10-16（UTC+8）。**改变的选择：** 保留同包资产与已有程序配方优先，但把支持范围内的参数修改，与新增模块／风格／连接规则分开。后者先确认合格源件和规则的供给；只能靠人工美术补齐时，换完整资源体系或缩需求，不默认自建通用生成器。[研究／经验]
+
+### 13.1 优秀成品的风格扩展仍有制作成本
+
+[一手：作者发布记录] Tiny Glade 的 [Wood, Flowers, Workshop & more](https://steamcommunity.com/games/2198150/announcements/detail/692021394394841188)于 2026-09-23 发布。木墙经过多轮处理木板开窗、木／砖窗框位置、石基高度和音效组合；木墙完成后又增加木楼梯，避免旧砖楼梯与新风格不协调。另一方面，已实现的风格可由 style clone 工具在建筑、墙、楼梯、栅栏和窗之间复用。Workshop 支持新增 clutter 与资产替换，但该版明确不能新增绘制工具或金属墙。
+
+本轮直接读取官方 HTML 内的 `data-partnereventstore`：event `692021394394841187`，announcement `692021394394841188`；`rtime32_start_time=1790162220` 对应 2026-09-23 11:17 UTC，`posttime=1790162268`。网页正文提取器只返回图片时，以这份官方完整公告数据核实，不把聚合站摘要当一手。[一手／研究]
+
+[研究] 该例支持“已有风格内复用”和“扩展风格家族”分别估算，不证明所有生成器都难扩展，也不提供单人节省工时的数字。作者在 [2024 访谈](https://80.lv/articles/exclusive-tiny-glade-developers-discuss-bevy-proceduralism-publishers-cozy-games)说明规则由两人逐条设计，Opara 已有近十年程序美术经验；漂亮的程序输出不等于无需前置美术与规则制作。这里只借机制，不提取游戏资产，也不将购买游戏或 Workshop 支持当作资产商用许可。[一手／研究]
+
+### 13.2 独立实现：模块由谁提供，规则改后重建什么
+
+Marian Kleineberg 的 [2019 作者复盘](https://marian42.de/article/wfc/)说明其 WFC 城市约 100 个块由自己在 Blender 制作；连接号及方向条件用于推导邻接，另加排除规则避免几何可接但视觉不好看的组合。它证明的是用既有模块生成布局，并非自动制作新模块。[一手]
+
+固定源码 `8750c537e6c8f95806ba709e2ae5d940fd51bff3`，本轮逐文件读取，未执行：
+- [ModulePrototype.cs](https://github.com/marian42/wavefunctioncollapse/blob/8750c537e6c8f95806ba709e2ae5d940fd51bff3/Assets/Code/WaveFunctionCollapse/ModulePrototype.cs)：`GetMesh` 取既有 `MeshFilter.sharedMesh`，缺失时可返回空 mesh；六面分别保存连接、可通行与排除邻居等信息。
+- [ModuleData.cs](https://github.com/marian42/wavefunctioncollapse/blob/8750c537e6c8f95806ba709e2ae5d940fd51bff3/Assets/Code/WaveFunctionCollapse/ModuleData.cs)：`CreateModules` 从原型产生旋转变体，再按 `Fits`、双向排除及可通行条件重建邻接表。
+- [Module.cs](https://github.com/marian42/wavefunctioncollapse/blob/8750c537e6c8f95806ba709e2ae5d940fd51bff3/Assets/Code/WaveFunctionCollapse/Module.cs)：`Fits` 比较连接号、对称／翻转与旋转条件，不检验真实几何接缝。[一手]
+
+[研究] 因而在这个实现中，新轮廓先要有源网格；改连接标签后还要重建规则数据。标签匹配不能代替网格接缝与通行验收。这是可借的机制，不是推荐读者直接采用整个旧 Unity 项目，也不把其行为外推到所有程序生成器。
+
+**许可分别读实际范围。** Marian 项目的固定 [LICENSE](https://github.com/marian42/wavefunctioncollapse/blob/8750c537e6c8f95806ba709e2ae5d940fd51bff3/LICENSE)为 MIT；本节只引用机制，不作附带资产包的完整清权结论，缺少单独资产许可文件也不能反推根许可不覆盖资产。另一作者 mxgmn 的 [固定 LICENSE](https://github.com/mxgmn/WaveFunctionCollapse/blob/de7d22e705e816b62b4d613199d0463820fcaef3/LICENSE)则明确将提供的样例图与 tiles 排除在软件之外；这是不能仅凭生成器 MIT 标签放行样例资源的具体反例，不套用到 Marian 项目。[一手／研究]
+
+**二改仅预注册：** 同一候选先改已支持的尺寸／布局，再要求一个当前未覆盖的屋顶轮廓或墙体风格；事先列出实际所需源件、许可及新增／受影响连接规则。记录哪些已有配方可完成、哪些必须补网格，之后再验新旧组合接缝与通行。缺少合格源件而必须手工建模时撤回该扩展路线；不能只改颜色或 seed 就算跨形状／风格通过。[经验]
+
+范围：本轮核官方公告、作者复盘、固定源码与许可，没有运行生成器／引擎或取得两轮新产物，未验证零手修成功率；已有程序配方在支持范围内的复用价值保留。[研究]

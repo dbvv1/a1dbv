@@ -123,6 +123,8 @@ Mega Crit 的历史选型重视授权信任、平台与现成引擎服务；Road
 
 **✅ 先复用引擎导入器，Agent 入口只负责发起与回读。** Unity 6+ 缺运行中 Editor 连接时再选官方 CLI/Pipeline；AI Assistant 包内旧 MCP 已被[官方弃用](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)，`unity mcp` 继续支持。批量规格先用 Unity Presets/AssetPostprocessor，或 Unreal Editor Python 与适配格式的 Interchange pipeline；不用新建导入服务，也不必为了批处理强升到支持 MCP 的引擎版本。**[一手＋经验]**
 
+**Unity 批量写入与消费新资产分两段。** [Unity 6.3 批量契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.StartAssetEditing.html)要求 scope 内只做不依赖完整导入结果的操作；用 `AssetEditingScope`／`using` 或 `try/finally` 配对释放，最外层暂停结束且相关导入完成后，再加载新资产并更新下游引用。批量控制未承诺原子回滚；异常或单项失败后，先核各项返回值、日志与实际资产，不因 scope 已退出就宣称整批成功或已恢复。证据与回调边界见 [WP9 §12](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#12-批量写入与消费新资产分两段)。**[一手；经验：采用顺序与失败处理，未运行引擎]**
+
 | 第二次修改 | 最小采用规格 | 失败时停止什么 |
 |---|---|---|
 | 原位替换像素／网格 | 记录已有 GUID/对象路径、语义名称、单位与 pivot 坐标约定；保留已有目标 | 出现额外 `_1` 资产或旧使用点仍指旧内容，不能宣告替换完成 |
@@ -131,6 +133,8 @@ Mega Crit 的历史选型重视授权信任、平台与现成引擎服务；Road
 | 更新下游使用 | 回读 Prefab/Blueprint、动画、挂点及运行时加载键 | 无 Missing 但换错动作或锚点移位，仍算失败 |
 
 依据是官方 Sprite Smart 的空间匹配、Prefab 名称匹配与 Interchange 显式覆盖策略；具体采用／改造／不用、固定源码及反例见 [WP9 研究](../../docs/research/2026-10-14-game-wp9-engine-handoff.md)。**[一手；经验：最小规格]**
+
+**UnityGLTF 跨资产材质 remap 还要验冷导入。** 后续获准实测时，在保留源文件与 `.meta` 的干净工程副本中全量导入，核对旧 Renderer 各材质槽实际指向的资产／子资产；Inspector 映射正确、暖缓存下单文件重导入成功都不足以放行。回落到内部同名材质仍算失败，不以删除工作工程 `Library` 作为修复步骤。该历史故障已由 UnityGLTF 2.22.0 纳入修复，固定版本与证据见 [WP9 §3.4](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#34-unitygltf材质映射设置正确不代表冷导入结果正确)。**[社区／一手；研究：二改验收增量，未运行引擎]**
 
 **关键局限**：GUID/路径存在或接口返回成功都不证明语义正确，仍须在目标版本引擎检验第二次修改后的真实引用与行为。**[经验；本轮未运行引擎]**
 

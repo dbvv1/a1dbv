@@ -1,6 +1,6 @@
 # IDE 类工具与其他
 
-> 核实时间：JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
+> 编辑更新：2026-10-16（UTC+8）。按必要能力、接入条件与费用选择 IDE 入口；来源分级与核查日期见[研究记录](../research/2026-10-12-community-source-records.md#ide-页历史页头)。
 
 ## Cursor
 
@@ -37,15 +37,23 @@ Codex 集成可用 JetBrains AI 订阅、ChatGPT 登录或 OpenAI API key；仅 
 | 模型 | Claude Opus 5.5、Sonnet 5.5、Haiku 5.5，GPT-6 Sol / Luna、GPT-6.1 Sol，Grok 4.7 都已接入 |
 | 治理 | 企业托管设置的校验器、用量指标 API（含 PR 评审阶段、CLI 定制）、影响力仪表盘、预算提额申请、OpenTelemetry |
 
-评级：✅ **采用**（VS Code 作为承载各家 Agent 的编辑器）；Copilot 本身 🧪 **试用**，重度 GitHub 用户和需要强企业治理的团队尤其值得看。
+评级：✅ **采用**（VS Code 作为承载各家 Agent 的编辑器）；Copilot 本身 🧪 **条件试用**，按所需 GitHub 能力和实际治理覆盖选择入口。
+
+### Copilot：接入与治理边界
+
+**CLI 不必先付费订阅。** 当前官方套餐包含 Free；本地 BYOK 在组织策略允许时可免 GitHub 账号／登录；未登录时没有 GitHub MCP、Code Search 和 `/delegate`。需要这些能力时另核认证与服务资格；企业托管 BYOK 仍需 Copilot 许可和联网，受管设备的强制组织登录也可能拒绝本地 BYOK。不能把“自带模型”当作完整 GitHub 工作流或组织准入的替代。**[一手；研究：2026-10-16接入选择]**
+
+**团队先核具体客户端、策略和有效设置，再决定采用。** CLI 的 MCP 组织策略在官方概览与参考文档中仍有冲突，不能据品牌或 VS Code 支持就认定 CLI 同样受控，也不能概括为 CLI 没有治理。托管 MCP allow/deny 有明确内建服务器例外；若任务要求全部 MCP 禁用或严格准入，须确认目标版本实际覆盖，不满足就保留已符合要求的入口。原文、固定文档与范围见[接入核查](../research/2026-10-12-community-source-records.md#copilot-cli接入与治理范围)。未运行客户端或验证账户、组织策略。**[一手；研究：采用与撤回边界]**
 
 **观察**：本地沙箱、动态工作流、多模型编排这三项，Claude Code、Codex 和 Copilot 在两个月内都做了类似的东西，**功能趋同还在继续**（见 [00](../00-state-of-ai-coding.md)）。
 
 ## Kiro（AWS）
 
-- Spec 驱动 IDE：把需求写成 EARS 格式的 `requirements.md`，再生成 `design.md` 和任务清单 **[二手]**。
-- 批评：任务拆得过细（12 个以上任务，每个再拆 4 个以上子任务）；**规格漂移**（实现中发现的约束不会自动回写到需求和设计文档）**[社区]**。
-- 评级：👀 **评估**。适合学习 SDD 思路，详见 [07 工作流](../07-workflows.md#5-spec-驱动开发sdd)。
+🧪 **条件试用**：需要在实现前审阅、跨步骤保留需求与设计决定时，可试原生规格流程；已有任务与测试足够，就不额外生成三份文档。若文档只是重复已有信息、审阅没有补上实际缺口，退回短说明与现有验证。**[经验：采用与撤回条件]**
+
+官方支持需求先行／设计先行，产出 `requirements.md`、`design.md`、`tasks.md`；修订时需手改或要求 Agent 更新相关文件，再在任务页触发 **Sync Files**。实现发现新约束后仍要确认需求／设计变化并核对受影响任务、代码和验证结果；同步入口及自动勾选不保证语义正确或验收通过。**[一手：官方契约；研究：边界]**
+
+历史小 bug 试用确有文档过重的反例，但不能据此断言当前没有修订能力或仅适合学习 SDD。原文范围、实际维护中的人工澄清案例与未验证项见[规格修订核查](../research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界)；通用选择见 [07](../07-workflows.md#5-spec-驱动开发sdd)。**[社区；研究：条件试用并非已测收益]**
 
 ## Zed
 
@@ -53,13 +61,15 @@ ACP 的发起方，原生支持外部 Agent 接入，适合追求编辑器性能
 
 ## 国内工具（面向中文开发者）
 
-| 工具 | 厂商 | 要点 **[二手]** |
+🧪 **先按地区、账号和必要功能核资格，再比较续费价与额度。** 免费额度、试用和首期优惠不代表持续工作成本；不满足目标功能或额度需求时，撤回仅凭低标价的选择。以下只补核已有条目的订阅边界，未实测客户端收益；[来源与未决范围](../research/2026-10-12-community-source-records.md#国内工具订阅入口与持续成本)另列。**[研究：选择，2026-10-16]**
+
+| 工具 | 厂商 | 要点与采用边界 |
 |---|---|---|
-| Trae | 字节跳动 | 国内版核心功能免费；国际版每月 3 美元起 |
-| Qoder | 阿里巴巴 | 国际版 Pro 每月 20 美元起，国内个人专业版每月 59 元起 |
-| 通义灵码 | 阿里巴巴 | 与阿里云生态整合 |
-| CodeBuddy | 腾讯 | Craft / Ask / Plan 三种模式；可选 GLM、Kimi、DeepSeek、混元模型 |
-| Kimi Code | 月之暗面 | 2026-01 发布；订阅档每月 49 元 / 99 元 |
+| Trae | 字节跳动 | 国内免费用户受积分约束；[CN计费](https://docs.trae.cn/ide_plans-and-billing)的Lite单月¥49，连续包月每31天¥45，付费新用户首期优惠¥39。国际版按[实际定价入口](https://www.trae.ai/pricing)核套餐与续费；本次可读页与索引中的$3档口径不同，不能据此确认统一最低价 **[一手；研究：入口未决]** |
+| Qoder | 阿里巴巴 | [国际版Pro](https://docs.qoder.com/zh/account/pricing)$20/月自动续费；[CN全家桶个人Pro](https://docs.qoder.cn/product-overview/account-and-subscription)¥59/月、需阿里云主账号，RAM子账号不能使用个人付费功能。两者各列2,000 Credits/月，不能按数值相同推断跨区共享或相同工作量 **[一手；研究：范围]** |
+| 通义灵码 | 阿里巴巴 | 存量订单须区分CN全家桶、CN原灵码和通义灵码存量；按[官方计费页对应产品线](https://docs.qoder.cn/product-overview/billing-description)核权益，不只凭旧名称购买 **[一手；研究：入口]** |
+| CodeBuddy | 腾讯 | 🧪 **按地区与客户端选入口**：CN IDE 用 Ask 问答，需要先审方案时才用 Plan；CN 插件的 Plan 是 Craft 设置，CLI 的 `plan` 不保证只读。先核目标入口的模型与权限，现有路径够用就保留；必要能力或权限条件不满足时撤回该入口选择，不按跨端通用模型名单迁移。[官方契约与范围](../research/2026-10-12-community-source-records.md#codebuddy入口与计划权限) **[一手；研究：条件选择，未实测]** |
+| Kimi Code | 月之暗面 | 中国区新套餐Plus ¥99/月起含Code，Go ¥49/月不含；存量资格与用途限制统一见[02 §4](../02-models-and-cost.md#4-国内-coding-plan)，不要按低价会员档推断Code权限 **[一手；研究：入口同步]** |
 | Qwen Code | 阿里通义 | 开源，见 [open-source-agents](open-source-agents.md) |
 
 > 国内另一条常见路线是：**Claude Code / OpenCode 这类 harness + 国产模型的 Coding Plan**（GLM、Kimi、MiniMax 等提供与 Anthropic 兼容的接口）。见 [02 模型与成本](../02-models-and-cost.md#4-国内-coding-plan)。
@@ -69,5 +79,6 @@ ACP 的发起方，原生支持外部 Agent 接入，适合追求编辑器性能
 - [Meet the new Cursor（Cursor 3）](https://cursor.com/blog/cursor-3)、[Cursor changelog](https://cursor.com/changelog)、HN：[SpaceX 收购 Cursor](https://news.ycombinator.com/item?id=48553224)、[OpenAI 对 Cursor 的决定](https://news.ycombinator.com/item?id=49486172)、[Cursor Origin](https://news.ycombinator.com/item?id=49334209)、[Updates to Bugbot（2026-05）](https://cursor.com/blog/may-2026-bugbot-changes)、[论坛：Bugbot 按量计费的讨论](https://forum.cursor.com/t/the-new-usage-based-bugbot-pricing-punishes-iterative-workflows-and-power-users/161134)、[论坛：成本上涨的讨论](https://forum.cursor.com/t/cursor-costs-are-climbing-without-a-clear-reason/157233)
 - GitHub Changelog：[本地沙箱 GA](https://github.blog/changelog/2026-10-07-local-sandboxing-for-github-copilot-now-generally-available)、[Dynamic workflows](https://github.blog/changelog/2026-10-01-dynamic-workflows-in-copilot-cli-and-the-copilot-app)、[Computer use](https://github.blog/changelog/2026-10-01-github-copilot-can-now-interact-with-desktop-apps)、[HydraFusion](https://github.blog/changelog/2026-09-30-hydrafusion-in-vs-code-and-the-github-copilot-app)
 - [What's New in Rider 2026.1](https://www.jetbrains.com/rider/whatsnew/2026-1/)、[Junie 结束 Beta](https://blog.jetbrains.com/junie/2026/06/junie-coding-agent-out-of-beta/)
-- [Martin Fowler：Understanding SDD（Kiro、spec-kit、Tessl）](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
+- [Kiro Feature Specs](https://kiro.dev/docs/specs/feature-specs/)、[修订与 Sync Files](https://kiro.dev/docs/specs/best-practices/)
+- [Birgitta Böckeler：Understanding SDD（Martin Fowler 网站）](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
 - 国内工具：[CSDN：2026 年 7 月国内 Coding Plan 对比](https://blog.csdn.net/zhangay1998/article/details/162555439)、[CSDN：TRAE / Kimi Code / Qoder 实测](https://www.csdn.net/article/2026-08-24/164033550)、[codingplan.org](https://codingplan.org/en)

@@ -1,6 +1,6 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，先明确所有者、时钟和退出；实际复杂度再升级 HFSM／行为树／GAS／ECS，相机与重试围绕玩家决策，命令预览复用规则但不承诺任意结果精确；多来源效果区分授予所有权与合并语义；导航先分通路、让路、停距与位移权，不统一增加或降低重算频率；关卡组合以路线／遭遇意图约束，连通不等于体验通过；重复清理先查结束条件与成长激励，再扩内容；03受限动作仅在开放意图有玩法价值时列候选，缺参数不得放大作用对象；教学区分动作完成、使用时机与正式关卡迁移，不默认加长强制教程；辅助按阻碍与目标选局部调整或整局预设，明确生效时机与切回规则；屏外威胁区分当前可获知信息、应对机会与已承诺攻击
-新证据：[一手／社区] 固定项目源码、修复链、作者复盘及镜头默认值争议；新增 Dead Cells／Cogmind 关卡设计与 Shattered Pixel Dungeon 固定生成链，以及 Rogue Legacy／Into the Breach 的成长与胜利条件取舍；保留 Factorio 堵塞复盘、Overgrowth 固定运动源码、Unity／UE 原生导航边界；保留 OpenRA 条件授予／撤销、Shattered Pixel Dungeon 毒镖／计时源码与 GAS 聚合契约；保留预览及 rewind 对照；[研究] 含确定性算术反例，无引擎／玩家对照，不能证明架构或手感收益；新增 Factorio 目标规则、Mantella 固定动作到引擎脚本链及 GoodAI 动作失配／封闭重做原文；新增 Factorio 提示改版／教学依赖、固定原型消费链及 Outer Wilds 开发中教学复盘，作者观察不作受控学习结果；新增 Dead Cells 29 辅助历史修复及 Cogmind 2017／2019／2022 难度设计与发布后回顾；新增 Cogmind 放大视图、Specter of Torment 房间设计、Luna Abyss 开发访谈及 Shattered Pixel Dungeon 固定蓄力／结算链
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按实际复杂度升级；先明确状态所有者、时钟、退出与输入边界，再调整预览、效果、导航和随机消费。相机、关卡、成长、教学与辅助围绕玩家决策及具体阻碍取舍；连通、动作完成或规则复用不等于体验、迁移或预测通过，不能用统一参数与扩内容替代诊断
+新证据：[一手／社区] 固定源码、官方契约、修复与评审链及开发者复盘支持正文各项机制与反例，版本和日期见对应章节。[研究] 含确定性算术反例；未运行引擎、游戏、模型或玩家对照，不把作者观察写成架构、手感或学习收益的验证
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
@@ -766,3 +766,133 @@
 [研究] 后续只预注册同一混合遭遇，增加一种远程攻击，比较正常与缩小可视范围（项目支持的缩放／屏幕比例），包括起手后转开视角、重新看向敌人、失去角色视野、静音／减特效。分别检查能否察觉并作出实际反制，以及已承诺攻击是否按规则继续、取消或重新瞄准。若标记遮住近处目标、自动查看抢走瞄准、或限制出手变成转头冻结敌人的非预期玩法，撤回对应方案。AI 可追状态与表现路径、形成同遭遇替代配置；人决定允许的未知和风险，不用提示数代替质量。
 
 **实际验证范围：** 证据来自仓库既有内容与公开网页／固定源码阅读；读到作者的图示说明和实现，不声称本轮实际播放视频、操作游戏或进行玩家识别测验。未运行引擎、模型或实验；没有体验收益、最佳时长或 AI 净效率结论。本判断不依赖 Unity／UE 特性，只维护一份通用建议。
+
+## 建造镜头补研：旋转缩放支点与输入入口
+
+核实：2026-10-16（UTC+8）。主线一／三；改变 05 §8 对无角色跟随目标的建造视图的选择：先定义旋转／缩放支点与输入入口，不把偏离目标都归为平滑问题。新证据是不同作者的三维自由建造设计调整与二维等距经营游戏缺陷修复；不扩相机框架，不重复 04 的模拟／呈现分层。[研究]
+
+### 1. Tiny Glade：按设备改变支点政策，不是修正坐标计算
+
+[一手] [Patch 1.11.2 公告](https://steamcommunity.com/games/2198150/announcements/detail/543346166601876516)（2025-01-15）保留 PC 的 Cursor point：绕光标下方点旋转，向该点缩放；Steam Deck 默认改为 Center region，仍可切回。作者在旋转说明中解释，单一 Center point 虽精确、易理解，屏幕中心刚好在高塔旁时却可能选中背景；Center region 从中心附近方形区域寻找候选支点。公告把体验改善写成预期，没有提供玩家对照或区域选点算法。
+
+[研究] 🧪 无有效直接指向、或单点经常选错背景时，比较明确中心与有限区域选择；保留光标模式则能直接指定关注点。区域方案增加意图推断，不能保证永远猜对，也不能由此推导所有掌机或建造游戏都应改默认。若新政策让玩家更难预测围绕哪里转，撤回到明确支点；不要用更大阻尼掩盖选错目标。
+
+[一手：取得范围] 普通网页解析只返回标题，本轮通过 [Steam 官方 GetNewsForApp API](https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2198150&count=100&maxlength=0&enddate=1737072000&feeds=steam_community_announcements)取得完整正文：appid `2198150`、gid `1788945554756976`、author `anopara`、timestamp `1736947659`，feed 为官方 community announcements。未以转载补足一手正文，也未运行游戏或播放公告动图。2024 年鼠标读取异常的修复不是本次支点设计调整，不合并因果。
+
+### 2. OpenRCT2：同一支点契约下删除多余拾取，按钮另修
+
+[一手] [#12831](https://github.com/OpenRCT2/OpenRCT2/issues/12831)报告 v0.3 在竖直地形面 zoom-to-cursor 时偏移，可用 Extreme Heights 地图边缘或抬高的 4×4 地形复现。[#25042](https://github.com/OpenRCT2/OpenRCT2/pull/25042)于 2025-08-27 合入，固定提交 [85a0f70ae166cb5d240844c4dffad7c1c9fbbd76](https://github.com/OpenRCT2/OpenRCT2/commit/85a0f70ae166cb5d240844c4dffad7c1c9fbbd76)。`src/openrct2/interface/Window.cpp` 旧路径把鼠标位置转地图坐标、查询高度，再围绕 tile 校正；新路径删除两个辅助函数，仅在 `ZoomToCursor && atCursor` 时按鼠标相对当前 viewport 的位置和前后缩放级别附加补偿 `savedViewPos`，随后同步 `viewPos`。作者明确目标仍是保持光标下的点，并未把默认改成中心。
+
+[一手／研究] 这是二维等距缩放的实现简化，不是更精确的 3D 射线选点。只需保持屏幕指向时，优先用现有投影／视口变换表达；不要推导透视相机绕建筑旋转也不需要世界支点。PR 中的作者测试及他人主／额外视口反馈支持该修复链，不是本仓库复测或普遍舒适度结论。
+
+[一手] 同日 [#25046](https://github.com/OpenRCT2/OpenRCT2/pull/25046)的固定提交 [e4f36840bff585b4a3f5581cd2b4714f887b2c02](https://github.com/OpenRCT2/OpenRCT2/commit/e4f36840bff585b4a3f5581cd2b4714f887b2c02)另修额外视口按钮：`src/openrct2-ui/windows/Viewport.cpp` 从直接增减 `viewport->zoom` 改为 `WindowZoomIn/Out(*this, false)`，接回完整中心缩放路径。[测试反馈](https://github.com/OpenRCT2/OpenRCT2/pull/25046#issuecomment-3228516256)称按钮改善而滚轮仍异常，作者指向 #25042；不能把任一入口成功当整个缩放功能通过。两个修复均进入 2025-09-06 发布的 [v0.4.26 官方发行说明](https://openrct2.io/blog/2025/09/openrct2-v0.4.26-released)，不是只引用开发分支。
+
+### 3. 最小采用与二改验收
+
+[研究] ✅ 在已有相机／视口入口声明支点政策：直接指向、视口中心或有限区域候选；统一坐标归属与完整变换路径，不统一所有入口的支点。Tiny Glade 的可切回是设置选择，不是射线未命中时自动回退的证据；本节不据此新增自动回退机制。
+
+[研究] 二改增加高塔／陡崖，再新增独立视口按钮或另一种输入入口。分别核对象中心、对象边缘、背景与视口边界，检查滚轮和按钮、主视口和额外视口的结果。关闭平滑后仍跳错位置，先修选点／坐标／命令路径；结果正确但过渡突兀，再比较平滑及其延迟。AI 可追坐标转换、补入口和记录轨迹；人决定操作意图是否容易预测。没有具体误选或入口缺陷就保留现有方案，不为新增配置而造通用镜头系统。
+
+**边界与实际验证：** [一手／研究] OpenRCT2 代码标 GPLv3，本轮只提炼机制、不复制代码；实际复用须遵守对应许可证。Tiny Glade 公告不授予代码／资产复用权。只读公开官方 API、网页、固定提交与讨论，未运行游戏／引擎／模型、未安装软件；无舒适度、操作速度或 AI 效率测量。这是通用控制政策，不新增 Unity／Unreal 等价配置。
+
+## 随机所有权补研：装饰二改是否改变玩法序列
+
+核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变05 §6的选择：需要复现玩法序列时，新增纯表现随机先分清状态所有者，沿现有实例／流隔离消费。已有“预览不得改变随机状态”只规定查询副作用；本节回答合法的颜色／音效变体应该消耗哪条流，不重复 seed 与生成器版本存档建议。
+
+### 1. OpenRA：视口相关闪光的评审修正
+
+[一手：维护者评审／合并源码] [PR #18711](https://github.com/OpenRA/OpenRA/pull/18711)新增宝石闪光。维护者在[具体评审](https://github.com/OpenRA/OpenRA/pull/18711#discussion_r711581362)指出：按客户端 `Viewport.AllVisibleCells` 调用 SharedRandom 会导致多人失同步，应改用 LocalRandom；[作者回复](https://github.com/OpenRA/OpenRA/pull/18711#discussion_r711729049)确认已处理。这是评审发现并纠正的风险，不能写成已发行故障统计或本轮复现。
+
+[一手：固定源码] 2021-10-02 合并提交 `a13d04630469fcb994bbbc25e644b4e6b471017c` 的 [WithResourceAnimation L62–103](https://github.com/OpenRA/OpenRA/blob/a13d04630469fcb994bbbc25e644b4e6b471017c/OpenRA.Mods.Cnc/Traits/World/WithResourceAnimation.cs#L62-L103)把间隔、可见格筛选后的洗牌、比例与动画选择接到 LocalRandom；同提交 [Util L201–209](https://github.com/OpenRA/OpenRA/blob/a13d04630469fcb994bbbc25e644b4e6b471017c/OpenRA.Mods.Common/Util.cs#L201-L209)让范围采样显式接收生成器，不再在帮助函数中固定取世界 SharedRandom。[研究] 可借的是调用者明确传入所拥有的流，而不是搬运整个 RTS 架构。不能把全部声音／动画相关代码一律改为局部随机：是否影响权威状态及调用时机才是边界。
+
+### 2. BrogueCE：单人显示与玩法也有不同消费域
+
+[一手：固定源码] `tmewett/BrogueCE@104a20fedbe7d9360d2dfc8ff665571694212ad8`（2026-09-27 主干快照，非本轮确认的发行包）的 [Rogue.h L401–405](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/Rogue.h#L401-L405)区分 substantive／cosmetic；[Math.c L90–133](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/Math.c#L90-L133)保存两份状态并按当前域采样；[IO.c L1768–1805](https://github.com/tmewett/BrogueCE/blob/104a20fedbe7d9360d2dfc8ff665571694212ad8/src/brogue/IO.c#L1768-L1805)在颜色随机化前选 cosmetic，完成后恢复原域。[研究] 这为独立单人 roguelike 提供另一种隔离实现；本轮只确认该调用链，不证明所有路径均正确，也不建议在新项目照搬可变全局选择器。
+
+### 3. 复用原生能力，别把重置当续接
+
+- [一手] [Unity 6.0 Random](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Random.html)明确 UnityEngine.Random 是全局共享的静态状态，需要独立生成器时可管理 System.Random 实例。[研究] 小项目可由玩法与表现模块分别持有已有实例并传入采样函数，不要求新增库或每个实体单独播种。
+- [一手] [Unity 6.0 Random.state](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Random-state.html)区分保存／恢复完整状态和 InitState 重新初始化；官方示例中前者续接保存点，后者回到序列开头。[研究] 这不使全局 Random 自动成为多条流；不要在每次表现回调里重设全局 seed 来“隔离”。
+- [一手] [UE 5.8 Random Streams](https://dev.epicgames.com/documentation/en-us/unreal-engine/random-streams-in-unreal-engine)提供 Blueprint RandomStream 结构变量和 From Stream 节点；[FRandomStream](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Core/FRandomStream)分别列 InitialSeed、当前 Seed 与 Reset，Reset 回到初始 seed。[研究] 沿现有所有者保留流状态并选对输入，别每次抽取都重建／重置；这里不承诺任意序列化或跨版本兼容。
+
+[研究] ✅ 需要 seed 挑战、回放或可复查规则结果，且表现二改可能改变采样次数时，先隔离玩法与纯表现的随机消费。无此需求且现有实现没有耦合问题时保留简单方案；同一玩法域内部的规则改动仍可能改变后续序列，分流不使一切修改稳定。视觉对象若参与碰撞、命中或资源规则，按玩法处理，不能仅凭外观归入 cosmetic。
+
+[研究] **二改预注册，未执行：** 固定版本、初始玩法状态与玩法输入轨迹，只增加闪光／音效变体，或改变视口、关闭表现；对照掉落、伤害及目标选择等所需玩法结果，并检查表现路径未抽取玩法流。若恢复中途继续，另核续接的是当前流状态而非重播起点。AI 可追消费者与补回归夹具，人决定哪些结果需复现。不新增锁步／回滚系统；通过也只支持本配置下的随机隔离，不证明跨平台、物理或完整网络确定性。
+
+**许可与验证边界：** BrogueCE 对应源码标 AGPL-3.0-or-later，OpenRA 对应源码标 GPL-3.0-or-later；本节只借机制、不复制代码／资产，实际源码复用须遵守许可证。核对公开评审、固定文件与原生 API，未安装、运行引擎／游戏／模型、执行玩法测试或测量收益。
+
+## 感知补研：角色知道什么与导演调度什么
+
+核实：2026-10-16（UTC+8）。主线三，GC。[研究] 改变05 §3的具体选择：躲避／误导属于玩法时，保留目标身份不等于允许搜索任务读取实时位置。已有状态退出、导航让路和玩家屏外威胁分别处理执行寿命、移动与玩家信息；本节只补角色决策的信息来源，不扩写那些机制。
+
+### 跨类型证据与反例
+
+- **Homebody，恐怖探索。** [一手：创作者自述] 主要系统／玩法程序员及技术设计者 Alex Belzer 的[项目页](https://www.alexbelzer.com/work/homebody)说明，他实现了远离玩家时加快巡逻的机制，并用盲角布局让玩家甩脱追逐或遇见敌人。[研究] 它支持通过巡逻与空间设计调节遭遇，未公开足以证明完整感知记忆的数据结构。页面对 Alien: Isolation、Resident Evil 2 的比较及公平性感受属于作者解释，不当作那两部游戏的原始实现证据，也不把他的 GOAP 选择升格为默认方案。
+- **Shattered Pixel Dungeon，回合 roguelike。** [一手：固定源码] `57a4e06a4caf162446d1c28caa7983f0493fecf0` 的 [Mob.Hunting L1284–1324](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L1284-L1324)分开 enemy 对象与 target 格，在 enemyInFOV 时更新目标格，再向该格移动；[后续分支 L1345–1411](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L1345-L1411)在无法继续靠近且失去视野时转游荡，逃跑也可继续使用旧位置。[研究] 只借这些基类分支，不宣称所有怪物、子类或目标选择路径都不读取真值。
+- **同项目的允许共享反例。** [一手] [processSwarmIntel L298–323](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java#L298-L323)在群体智能挑战、正在追猎并感知目标等条件满足时，把目标位置传给范围内未追猎的同阵营怪物。[研究] 因而不能把“不是亲眼看到”一律判错；队友报告可以是明确允许的信息来源，不要求各角色彼此隔绝。
+- **Left 4 Dead，合作动作射击的全局调度反例。** [一手：Mike Booth／Valve，2009讲义] [The AI Systems of Left 4 Dead](https://cdn.akamai.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf)PDF 第69页按队伍不可见区域与敌人类型选择生成位置，第79–82页估算队伍压力、调节威胁数量，Relax 期间既存特殊感染者仍可攻击。[研究] 导演读取世界状态以组织遭遇，不等于每个角色都应取得持续精确定位；这也反对把全局位置访问一概定性为坏设计。材料不证明每只感染者的感知实现，不推荐单人项目搬整套导演，也不把历史团队经验算成本仓库实测。
+
+### 原生入口：位置输入、感知状态与遗忘不是同一开关
+
+- **Unity Behavior 1.0 文档渠道，本轮读取的节点契约。** [一手] [节点清单](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/node-types.html)将 Navigate To Location 的指定位置与 Navigate To Target 的目标 GameObject 分开；两者使用 NavMeshAgent，缺少时可回退 Transform。[研究] 搜索沿既有位置变量，不由实时对象坐标隐式覆盖；这里只核输入类型，不宣称具体目标刷新频率、内置感知记忆或所有 Unity 版本等价，也不把1.0渠道称为最新发行版。
+- **UE 5.8 当前官方文档。** [一手] [AI Perception](https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine)分别列 Get Currently Perceived Actors 与 Get Known Perceived Actors，刺激携带 Age、Expiration Age、Stimulus Location、Successfully Sensed；Forget Stale Actors 配合 Max Age 管理遗忘，0表示不遗忘。[Move To 任务](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-behavior-tree-node-reference-tasks)的 Track Moving Goal 会随着目标 Actor 移动更新路径。[研究] 搜索可切换到位置键，并核旧任务是否仍跟对象；不能认为感知丢失会自动清除自定义黑板或停止已有追踪。视线丢失也不代表听觉、队友报告或其他允许的线索同时失效。
+
+### 采用、撤回与二改预注册
+
+[研究] ✅ 只在隐蔽、误导或有限情报改变玩家选择时，沿现有角色状态保留目标身份、已知位置和当前感知；线索需要按时间失效才保存年龄／时间。明确哪些线索可覆盖旧位置、何时搜索、返回或继续追踪，不默认建设通用知识库。导演若需要向角色投递提示，声明提示来源与精度；导演能读真值不自动授权普通搜索读同一真值。直接追踪本来就是玩法，或现有规则已满足要求时，保留简单方案。
+
+[研究] **二改预注册，未执行：** 同一追逐场景新增绕角隐蔽路线或一种诱饵声音，记录当前线索来源、已知位置和实际移动目标；分别核失去视线后继续移动、别处声响、队友报告、重新出现，以及导演继续调节压力时的结果。允许持续追踪的角色另按其规则对照，不统一要求停追。AI 可追实时位置读取路径、补调试显示和回归用例，人判断躲避是否有效、搜索是否可理解、压力是否合适；若只是降低响应却没有创造所需选择，缩小或撤回记忆机制，不以等待时间更长当质量提高。
+
+**许可与实际验证：** [一手／研究] Shattered Pixel Dungeon 固定文件头标 GPL-3.0-or-later，根 [LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)为 GPLv3；本节只提炼机制，不复制代码或资产，不列作闭源项目即插用底座。创作者网页／Valve讲义不授予游戏内容复用权。只读仓库、公开网页、PDF文本、固定源码与官方契约，未运行游戏／引擎／模型或玩家实验，未测体验、效率或最佳遗忘时长；共同决策维护一份，仅原生接口分引擎说明。
+
+## 选敌补研：候选、保持与主动切换
+
+核实：2026-10-16（UTC+8）。主线一／三，GC。[研究] 改变 05 §7 的选择：需要保持攻击意图时，先定义候选资格、旧目标与主动切换，不直接扩大辅助范围或每帧选最近。这里只处理玩家选敌；不重复 NPC 感知、输入死区与枪口遮挡，也不新增通用目标管理框架。
+
+### 跨类型机制与反例
+
+- **Cogmind，回合 roguelike。** [一手：开发者手册] 本轮读取的[官方文本](https://www.gridsagegames.com/cogmind/manual.txt)页头为 Beta 17.1，Targeting Behavior 节说明：按 `f` 进入开火模式时恢复最近目标，可以是机器人或空地；此前引导武器的路径点仍在视野内时一并恢复。没有旧目标或旧目标不再有效才选最近目标。前后循环按近到远，通常仅含有武装的敌对对象；没有此类可见对象时才循环所有非盟友对象。查看模式始终包括有／无武装的非盟友对象，可先在那里选中无武装目标再转开火。[研究] 这支持把自动候选和玩家可指定对象分开，并保留例外选择路径；不证明实时锁定算法、所有旧目标失效条件或通用保持阈值。搜索所得 booklet PDF 为 Beta 7，本节以重新读取的当前文本为准。
+- **Hades，俯视动作，原作历史补丁。** [一手] [Early Access Patch 039，2020-01-28](https://www.supergiantgames.com/blog/hades-long-winter-update-patch-notes/)扩大 Adamant Rail 使用手柄时的 autolock radius；[Early Access Patch 044，2020-06-23](https://www.supergiantgames.com/blog/hades-the-blood-price-update-patch-notes/)让 Companion Rib 召唤出的 Skelly 不再被 Aim Assist 自动锁定。后一网页页眉写 March 1st，本节采用正文补丁节明确标注的 June 23，而非页眉日期。[研究] 两次分别修改范围与候选，反证辅助不能沿一个“越强越好”的方向调。这里只说该召唤物，不泛化所有友方／练习对象，不推断仍能手动攻击它，也不把原作历史规则写成 Hades II 或当前全武器规则；开发者未提供这两项调整的对照体验测量。
+- **Brotato，生存动作。** [一手：官方商店描述] [Features](https://store.steampowered.com/app/1942280/Brotato/)分别写默认自动开火和手动瞄准选项。[研究] 可借的是开火自动化与瞄准控制分开选择；该描述不公开候选排序、目标保持或各平台设置细节，也不证明手动瞄准会关闭自动开火。
+- **OpenRA，RTS 的距离反例。** [一手：固定发行源码] GitHub 标签 API 将 `release-20250330` 解析到提交 `b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`。[AutoTarget.ChooseTarget L349–451](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/AutoTarget.cs#L349-L451)先筛关系、类型、可见性与武器资格；不允许移动时核射程，不允许转向时核射界，最后先比较优先级，同级才比较距离。[研究] 这是自动选敌并非总选最近的具体实现，不证明所有显式命令永不被自动目标覆盖，也不是动作游戏锁定手感的证据；不搬整个 RTS 调度体系。
+
+### 最小采用、撤回与二改预注册
+
+[研究] ✅ 需要保持玩家意图时，在已有输入／武器状态中分别指定候选、保持、失效和主动改选；目标可为对象或位置。因自动候选过滤而无法表达玩法允许的攻击时，补直接选择路径；自动攻击本来就要求不断重选，或精确手动瞄准就是挑战时，保留原方案。不要求所有游戏都有手动／辅助两套模式，不预设固定角度、时间或评分公式。
+
+[研究] **预注册，未执行：** 同一遭遇新增更近的干扰对象或可攻击召唤物，检查继续攻击旧目标、主动改选、目标死亡／离开有效范围、按规则选择自动候选之外的对象；允许指定空地时也保留该输入。支持手动／辅助切换才检查切回。记录输入、候选、当前目标及改变原因，区分选错对象与瞄准／命中本身失败。AI 可追选择路径与补回归，人判断能否理解并纠正选择；若保持阻碍主动改选，缩小或撤回保持政策，而不是只加更强吸附。通过也只支持本遭遇与设备配置，不证明某种辅助普遍更舒适或更公平。
+
+**许可与实际验证：** [一手／研究] OpenRA 对应文件头标 GPL-3.0-or-later；仅概念借鉴，不复制源码或资产，实际复用须遵守许可证。开发者手册、公告和商店说明不授予游戏内容复用权。本轮只读仓库、官方网页／手册与固定公开源码；未安装、运行游戏／引擎／模型或做玩家实验，未测操作、体验或 AI 效率收益。该建议与引擎无关，仅维护一份通用玩法政策。
+
+## 意图预告补研：确定结果、条件变化与有意未知
+
+主线一／三，GC；核实：2026-10-16（UTC+8）。
+改变建议：05 §7 从看清起手进一步区分预告精度与有效条件，不把全知 UI 当默认质量升级。
+新证据：Into the Breach 作者取向及预览／规则修订、Slay the Spire 意图设计、Amnesia 信息政策反例。[研究]
+
+### 决策信息不等于完整行为表
+
+- **确定结果服务局面求解。** [一手：设计者访谈] Justin Ma 在 [2018-02-23 访谈](https://www.gamedeveloper.com/game-platforms/road-to-the-igf-subset-games-i-into-the-breach-i-)把 Into the Breach 的敌方预告与减少随机性、解谜取向相连；保护建筑、牺牲机甲和推移提供不同解法。这是首发前的设计说明，不是发行后的受控评价。[研究] 当玩家要分配有限行动、改变已知攻击后果时，明确预告可作为候选；不推出所有类型都应采用，也不把局内攻击可预测说成整局没有随机性。
+- **只呈现当前选择需要的信息。** [一手：作者原始视频转写] Slay the Spire 两位创始人的 [2019-05-02 访谈](https://arstechnica.com/video/watch/war-stories-slay-the-spire-war-stories/?c=series)说明：随机行动不预告使攻防难选，逐敌长文本又太繁重，后来改为意图图标；部分敌人会根据玩家行为改变意图。[研究] 支持决策粒度与条件变化，不证明所有敌人每张牌后即时重算，也不要求复制图标体系。
+- **有意未知是另一种体验政策。** [一手：作者复盘] Thomas Grip 的 [2019-10-15 文章 Lesson 7](https://frictionalgames.com/2019-10-9-years-9-lessons-on-horror/)回顾 Amnesia 理智系统从较直白改得更含糊，以保留想象与紧张。[研究] 这是理智系统而非敌方下一招 UI，只用于反驳“规则越透明普遍越好”；作者观察不能证明隐藏攻击提高恐怖体验，更不能授权错误的确定性提示。
+
+[研究] 三种政策不要求三套系统：已确定且玩家需要据此计划的行动，作明确预告；可被玩家后续行动改变的结果，说明当前条件并在变化时更新或撤销；观察和试探本身有价值的部分，可不公开。沿现有行动状态定义哪些部分已锁定、哪些仍可变化，不让表现自行许诺玩法没有锁定的结果。若只需要攻防类别，就不增加完整行为表；若未知只迫使玩家反复盲试且不是所需体验，再补必要信息。
+
+### 已发布修订：可以删显示，也可以改规则
+
+[一手：开发者公告] Matthew 的 [2023-01-23 补丁帖](https://steamcommunity.com/app/590380/discussions/0/3765606580168752432/)明确标记 developer：移除 Earth Mover／Mine Bots 的 Attack Order 显示，因为它们没有排队攻击；调整 Wind Torrent 的推移次序，使结果与效果预览更一致。标题写 v1.2.88，正文写 1.2.87 Changelog，本节保留冲突，以日期公告指认，不自行断定精确补丁归属。
+
+[研究] 第一项支持撤掉不存在的顺序承诺，第二项支持修改互动次序来维护可预测性，而非只修 UI。公告未披露实现根因，不能断言预览与执行必用不同代码，也不能据此要求统一模拟框架。历史修订不证明当前全部预览正确，更不证明胜率、留存或单人维护收益。
+
+### 第二次修改：仅预注册，未执行
+
+[研究] 在已有攻击上改变一个会影响选择的条件，如推移顺序、护盾或目标死亡，保留同一局面对照：
+
+1. 条件不变时，核预告的动作、对象、数值和次序与执行一致；只核设计承诺显示的部分
+2. 玩家动作改变条件时，核已锁定部分仍守承诺，可变部分按规则更新或撤销；不把旧提示继续留着当不确定性
+3. 没有排队动作的对象不出现虚假排序；有意隐藏的部分也不得因调试／新 UI 意外公开
+4. 已有预演／撤销才核预演退出后状态、资源和下一行动；不为做这些检查而新增模拟器
+
+[研究] 记录显示所依据的状态、条件变化与最终执行；AI 可追条件消费和补回归，人决定哪些未知值得保留、预告能否支持所需决定。失真时先修条件同步、缩小显示承诺或简化规则；若信息堆积使当前选择更难读，退回必要粒度，不用更多字段充当质量提高。
+
+**许可与实际验证：** [研究] 仅读仓库和公开开发者访谈／公告，未读取商业反编译代码、复制游戏代码或提取资产；网页不授予游戏内容复用权。未安装、运行游戏／引擎／模型或进行玩家实验。来源支持具体设计取向、作者观察与历史维护，不支持通用体验排名或 AI 效率承诺；机制与引擎无关，只维护一份共同建议。

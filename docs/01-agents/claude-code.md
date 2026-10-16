@@ -31,7 +31,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | **AGENTS.md** | v2.1.277 起支持，但默认发现受父目录及 `CLAUDE.md`／`CLAUDE.local.md` 等条件影响；共享约定是否需显式导入、额外目录及加载观察边界见 [03 条件说明](../03-context-engineering.md)。配置模式不等于所有路径都自动加载 |
 | `.claude/rules/*.md` | 用 `paths:` glob 让规则只在处理匹配文件时加载 |
 | 子目录 CLAUDE.md | 按文件访问路径按需加载；2.1.288/293 分别修复 Write/Edit 和部分单文件 Bash 读取遗漏，见下文；`claudeMdExcludes` 可排除不相关的 |
-| Auto memory | Claude 自己记录的经验（按仓库存储，worktree 间共享），每次加载前 200 行或 25KB |
+| Auto memory | 默认机器本地，同仓库 worktree 共享；启动只加载索引前 200 行或 25KB（先到为准），主题按需读取。跨环境／委派所需事实仍须交接，见 [03 的记忆范围](../03-context-engineering.md#4-跨会话记忆) |
 
 ### 3.2 扩展
 | 机制 | 何时用 | 上下文成本 |
@@ -42,7 +42,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 | MCP | 连接外部系统 | 通常只预载工具名与服务器说明，schema 按需加载；自定义 API 网关等路径先核 tool search，见下文 |
 | LSP 插件 | 当前会话支持且有诊断／语义导航缺口时，见 [05 的采用条件](../05-skills-and-plugins.md#3-插件与市场) | 取决于诊断与查询返回量，净收益需按任务验证 |
 | 插件 | 打包分发以上所有东西 | 取决于内容 |
-| Output style | 全局改变语气、长度、格式 | 每次请求都有 |
+| Output style | 只需短回答先用偏好或内置 Concise；自定义 style 还会改变编程指令，见 [05 的保留条件](../05-skills-and-plugins.md#4-skillmcpsubagenthookclaudemd-怎么选) | 主会话每次请求都有；普通子 Agent 不继承 |
 | Mods（v2.1.287） | 用 TypeScript 改界面（面板、按钮）和更深层的行为 | — |
 
 ### 3.3 并行与自动化（5 种并行方式）

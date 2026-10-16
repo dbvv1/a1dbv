@@ -1,10 +1,12 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：§11 新增官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 新增官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；新增不同作者的迁移代价与官方观测入口对照（§9）；官方迁移与资产身份契约、固定源码；2026-10-14 补核 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：2026-10-16 UTC 补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
-## 当前结论摘要（2026-10-14 UTC）
+## 当前结论摘要（2026-10-16 UTC）
+
+- **✅ Unity 批量写入后再消费新资产**；scope 内不依赖完整导入结果，最外层释放后核相关资产；逐项失败与异常分别检查，不把批量控制当原子回滚，见 §12。[一手／经验]
 
 - **✅ 安装／配置／执行／验收分开**；先核已有入口，按缺口补组件，UnrealClaude 不外推 UE 5.5／5.6，脚本审批不代表宿主全局审批，见 §11。[一手／研究]
 
@@ -111,6 +113,17 @@ pivot、outline、remap 和状态机只有明确归 source/pipeline 管理时才
 
 已有远端分发需求时，[官方更新构建流程](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/content-update-builds-overview.html)要求保留每个平台、每个发布基线的 addressables_content_state.bin；使用内容限制检查和 Update a Previous Build。源文件重导入与对旧 Player 发布内容更新是两回事；小项目不为重生成强加 CDN。[一手＋经验]
 
+### 3.4 UnityGLTF：材质映射设置正确，不代表冷导入结果正确
+
+2026-10-15 UTC 核实。**✅ UnityGLTF 跨资产材质 remap 的二改验收增加干净副本全量导入，检查 Renderer 实际材质，而非只检查映射设置。** 本案例是相同源文件重建导入产物时失败；把它纳入第二次源替换的验收属于研究推论，不是已完成源替换实验。[研究／经验]
+
+- **失败与恢复条件不同。** [#914 原始报告](https://github.com/KhronosGroup/UnityGLTF/issues/914)使用 Unity 6000.0、URP 17.3.0、UnityGLTF 2.18.5、Windows：`Settlement.glb` 将材质 remap 到 `Materials.glb` 的共享材质。初次导入正常；清除导入缓存后全量重导入，Inspector 映射仍正确，Renderer 却使用自身 GLB 的内部同名材质，贴图消失；随后仅重导入 `Settlement.glb` 又正常。因此暖缓存单文件复验不能覆盖冷导入依赖问题。这是报告者的复现记录，本轮未复现。[社区]
+- **修复的是导入产物依赖。** [PR #915](https://github.com/KhronosGroup/UnityGLTF/pull/915)于 2026-09-30 合并；固定 [`41cb963` 的 GLTFImporter.cs L270–286](https://github.com/KhronosGroup/UnityGLTF/blob/41cb963dec3e76615b11db63bab9633f23496b0e/Editor/Scripts/GLTFImporter.cs#L270-L286)从 external-object remap 取得目标资产路径，排除空路径／自身后调用 `DependsOnArtifact`；[L633–651](https://github.com/KhronosGroup/UnityGLTF/blob/41cb963dec3e76615b11db63bab9633f23496b0e/Editor/Scripts/GLTFImporter.cs#L633-L651)另将映射应用到 Renderer 的 `sharedMaterials`。设置表与实际使用点是两层状态。[一手：固定源码；研究：机制归纳]
+- **官方契约与采用回执。** [Unity 6.0 DependsOnArtifact](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AssetImporters.AssetImportContext.DependsOnArtifact.html)规定依赖另一资产的导入结果；该资产改变后，依赖方在它导入后重新导入；尚未导入的依赖也会登记。[维护者审阅](https://github.com/KhronosGroup/UnityGLTF/pull/915#issuecomment-5857066989)要求不用手读 `.meta` 的初稿，改用资产数据库；[报告者回执](https://github.com/KhronosGroup/UnityGLTF/pull/915#issuecomment-5858947741)确认修改解决问题。PR 正文附修复后全量重导入截图，但只改一个生产源码文件、未附自动回归测试，不写成测试套件已通过。[一手／社区]
+- **不是当前版本仍坏。** [`release/2.22.0` 对应 `8b793b8` 的 changelog](https://github.com/KhronosGroup/UnityGLTF/blob/8b793b883f8ae1dfd0f6f09bcf13e1842c000060/CHANGELOG.md#L7-L29)已将 #915 列为修复，记录日期 2026-10-02；[发布标签对象](https://api.github.com/repos/KhronosGroup/UnityGLTF/git/tags/64a3e4056a980cbdca58e569c0bed546b469692e)于 2026-10-05 创建并指向该提交。本轮也核对该版本源码包含修复；这不代表目标工程验证通过，不据此要求无条件升级。固定代码为 [MIT](https://github.com/KhronosGroup/UnityGLTF/blob/41cb963dec3e76615b11db63bab9633f23496b0e/LICENSE)，不推及 issue 示例资产的复用许可。[一手／研究]
+
+**最小验收与停止线。** 后续获得引擎实测授权后，在保留源文件与 `.meta` 的干净副本中比较暖缓存单资产导入与全量导入的“Renderer → 材质槽 → 外部材质资产／子资产”对应；映射表看似正确但实际回落到内部材质仍失败。不要删除工作工程 `Library` 来掩盖问题，也不自建通用依赖框架；优先沿用包含修复的兼容导入器，再验目标工程。本轮仅只读证据核查，未安装、运行引擎或上游测试；不外推为所有导入器、节点重排或任意用户编辑都能保全，也不构造 Unreal 等价 API。[研究／经验]
+
 ## 4. Unreal：显式覆盖策略，不强依赖 MCP
 
 ### 4.1 MCP 与 Python 的分工
@@ -127,7 +140,7 @@ Epic 技能仓库 [LICENSE](https://github.com/EpicGames/unreal-engine-skills-fo
 
 ### 4.2 Interchange 已有的契约比 replace=true 更细
 
-[5.8 UAssetImportTask](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Editor/UnrealEd/UAssetImportTask)分别提供 bReplaceExisting 与 bReplaceExistingSettings；DestinationName 在走 Interchange 时应由 pipeline 指定，该 task 字段被忽略。异步必须等 IsAsyncImportComplete，再读 GetObjects／ImportedObjectPaths，不能把“没有对话框”当导入完成。[一手]
+[5.8 UAssetImportTask](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Editor/UnrealEd/UAssetImportTask)分别提供 bReplaceExisting 与 bReplaceExistingSettings；DestinationName 在走 Interchange 时应由 pipeline 指定，该 task 字段被忽略。异步可先查 IsAsyncImportComplete，结果就绪后再读 GetObjects／ImportedObjectPaths；不能把“没有对话框”当导入完成。另核 [Python 5.6 AssetImportTask](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/AssetImportTask?application_version=5.6)：直接 `get_objects()` 会阻塞到异步结果就绪，`is_async_import_complete()` 提供非阻塞查询，故不要求所有调用都先轮询；这条阻塞行为仅按所读 5.6 契约记录。[一手；2026-10-16 补核]
 
 [5.8 FImportAssetParameters](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/InterchangeEngine/FImportAssetParameters)另有 ReimportAsset、ReimportSourceIndex、OverridePipelines、bFollowRedirectors 和完成回调。不要把不同类型的同名字段混成一份通用参数表；它自身也有 DestinationName，不应从 UAssetImportTask 的限制推论这个类型也忽略它。[一手＋研究]
 
@@ -344,3 +357,27 @@ UnrealClaude 的 [UnrealClaudeSettings.h](https://github.com/Natfii/UnrealClaude
 Unreal 的[官方 MCP 契约](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)允许运行时托管，但须 `AddTool` 显式注册，服务器没有认证，不应暴露本机之外。打包版只有缺必要观察／动作入口时才评估开发或测试版窄工具，不将其写成所有项目的验证前置；注册成功也不证明真实输入与体验。编辑器内容试错不能替代版本控制历史与恢复点。**[一手；研究：采用边界]**
 
 仅公开文档及跨页一致性核查，未安装、运行引擎、测试帧字段或验证网络安全。
+
+## 12. 批量写入与消费新资产分两段
+
+2026-10-16 UTC 核实；改变 01 §5 的批处理顺序与失败处理，不新增管线或 Agent 桥。[研究]
+
+### 12.1 暂停导入期间，不消费尚未完整导入的新资产
+
+[Unity 6.3 StartAssetEditing](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.StartAssetEditing.html)明确：暂停期间新建资产尚未在数据库中完整建立，部分 API 不会按预期工作；批内只做不依赖完整导入结果的操作。Start／Stop 采用嵌套计数，调用数量配平才恢复导入。因此把复制／移动／导入与随后加载、赋引用分开；内层 helper 返回或调用一次 Stop，不足以保证外层暂停已结束。[一手／经验]
+
+[AssetEditingScope](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.AssetEditingScope.html)用 `using` 自动 Dispose；直接配对调用则用 `try/finally` 保证释放。既有固定 [UnityCsReference 6000.0.84f1，`0c7f0bf` 的 AssetDatabase.bindings.cs L192–242](https://github.com/Unity-Technologies/UnityCsReference/blob/0c7f0bfc4f9b21d3d84fffc9ee9001ad82f0fbc4/Modules/AssetDatabase/Editor/ScriptBindings/AssetDatabase.bindings.cs#L192-L242)显示：构造调用 Start，显式 Dispose 调用 Stop；终结器仅告警，不从终结器线程调用 Stop。不能以等待垃圾回收代替释放。该源码是所标 6.0 快照的托管包装，不冒充 6.3 native 实现。[一手：版本文档／固定源码；经验：采用方式]
+
+### 12.2 释放不是整批成功，也未承诺原子回滚
+
+[6.3 CopyAsset](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.CopyAsset.html)在部分过程失败时返回 false，并将错误／警告写入日志；[MoveAsset](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.MoveAsset.html)成功返回空字符串，否则返回错误消息。因此只捕获异常会漏掉这些单项失败；应核每项返回，再于相关导入完成后回读实际资产。[一手／经验]
+
+本次所读批量 API 契约未承诺原子回滚。固定托管 scope 仅包装 Start／Stop，底层是 native extern；这不证明任意失败时底层必定保留或撤销哪些写入。异常后先核已发生的变化，再依项目恢复点处理，不能把 `finally`／Dispose 执行成功写成“整批已恢复”。恢复范围仍需目标项目实测，不新造事务服务。[研究：证据范围；经验：失败处理]
+
+### 12.3 回调可回读，但首次回调不代表预期集合全部完成
+
+[6.3 OnPostprocessAllAssets](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetPostprocessor.OnPostprocessAllAssets.html)在导入完成后调用，允许加载等资产操作；但对多个独立资产的 bulk 操作可能逐资产调用，回调中触发新导入还会再次调用。已有回调入口应按本次预期资产集合核结果，不把第一次回调当整批完成，也不无条件再次导入。这里只收窄已有回读方式，不要求所有批处理新建回调系统。[一手／经验]
+
+Unreal 沿用 §4.2 的任务结果接口，补明已核 Python 5.6 的非阻塞查询与阻塞回读两条路径，不将 Unity 的 scope／计数规则映射过去。公开契约不足以确定两端任意部分失败的写入保留与回滚范围，本轮不作保证。[研究]
+
+验证范围：只读官方版本文档、固定参考源码与现有正文；未运行 Unity／Unreal、故障注入或性能测试，不声称吞吐、成功率或恢复效果提升。[研究]

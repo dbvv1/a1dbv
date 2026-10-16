@@ -1,17 +1,17 @@
 # 开源 Coding Agent
 
-> 核实时间：2026-10-08；2026-10-15 补核 Pi／Aider，其余未全量重核。依据各项目仓库 README、最近提交时间 **[一手]**，以及 HN 原帖 **[社区]**。
+> 核实时间：2026-10-16（UTC+8）。依据项目文档与源码 **[一手]**，以及 HN 原帖 **[社区]**。
 
 ## 总览
 
 | 项目 | 形态 | 亮点 | 最近提交 | 评级 |
 |---|---|---|---|---|
-| [OpenCode](https://github.com/anomalyco/opencode)（原 sst/opencode） | TUI + 桌面 App（Beta） | 模型无关；内置 `build`（全权限）和 `plan`（只读）两个 Agent，Tab 切换；`@general` 子 Agent；安装渠道多 | 2026-10 | 🧪 试用 |
-| [Cline](https://github.com/cline/cline) | VS Code / JetBrains / CLI / 桌面 App | 每步人工审批；CLI 支持无头模式，可用于 CI；桌面版能定时运行 | 2026-10 | 🧪 试用 |
+| [OpenCode](https://github.com/anomalyco/opencode)（原 sst/opencode） | TUI + 桌面 App（Beta） | 模型无关；内置 `build`（全权限）和 `plan`（规划，权限边界见下）两个 Agent，Tab 切换；`@general` 子 Agent；安装渠道多 | 2026-10 | 🧪 试用 |
+| [Cline](https://github.com/cline/cline) | VS Code / JetBrains / CLI / 桌面 App | IDE 可按工具类别配置审批；CLI 支持无头模式，但审批默认值须单独核对，见下；桌面版能定时运行 | 2026-10 | 🧪 试用 |
 | [Kilo Code](https://github.com/Kilo-Org/kilocode) | VS Code / JetBrains / CLI | 开源，多种安装方式 | 2026-10 | 👀 评估 |
-| [Goose](https://github.com/aaif-goose/goose) | 桌面 / CLI / API（Rust） | 通用 Agent（不限于编码）；15+ 服务商；可通过 ACP 使用 Claude/ChatGPT/Gemini 订阅；**已加入 Linux 基金会旗下 AAIF** | 2026-10 | 🧪 试用 |
-| [Qwen Code](https://github.com/QwenLM/qwen-code) | 终端 / IDE / 桌面 / Web / 聊天软件 | 自带 auto memory、auto skills、子 Agent、Agent Teams；支持 OpenAI / Anthropic / Gemini / Qwen 协议，可接本地模型；集成钉钉、飞书、微信 | 2026-10 | 🧪 试用（国内团队友好） |
-| [GitHub Copilot CLI](https://github.com/github/copilot-cli) | 终端 | 默认带 GitHub MCP；与 Issue / PR 深度集成；需要 Copilot 订阅 | 2026-10 | 🧪 试用（重度 GitHub 用户） |
+| [Goose](https://github.com/aaif-goose/goose) | 桌面 / CLI / API（Rust） | 通用 Agent；Claude／Codex ACP 先核适配器、认证及资格；Gemini 旧订阅入口已弃用，改核 API key／Vertex AI（[接入条件](../research/2026-10-12-community-source-records.md#goose订阅接入先核适配器身份与资格)）**[一手；研究]**；已加入 AAIF | 2026-10 | 🧪 试用 |
+| [Qwen Code](https://github.com/QwenLM/qwen-code) | 终端 / IDE / 桌面 / Web / 聊天软件 | 内置 auto memory、子 Agent；auto skills 与实验性 Agent Teams 需启用；聊天渠道需配置机器人／账号（[采用前提](../research/2026-10-12-community-source-records.md#qwen-code内置不等于默认启用)）；支持多模型协议与本地模型 | 2026-10 | 🧪 试用（国内团队友好） |
+| [GitHub Copilot CLI](https://github.com/github/copilot-cli) | 终端 | Copilot Free 也含 CLI；本地 BYOK 可免 GitHub 登录，未登录时缺 GitHub MCP／云端委派等能力，受管设备另核组织限制，见[接入与治理边界](ide-and-others.md#copilot接入与治理边界) | 2026-10-16 定点核查 | 🧪 试用（重度 GitHub 用户先核所需认证与能力） |
 | [Pi](https://pi.dev)（Earendil Works） | 终端 / SDK / RPC | 默认启用 4 个工具，可扩展 MCP／codemode；不内置子 Agent/plan mode；按进程权限运行，工具少不证明净成本低 | 2026-10-15 读取固定 main | 🧪 适合愿意定制并维护隔离的人；见 [固定来源与边界](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界) |
 | [DeepSeek Harness](https://www.deepseek.com/en/harness/) | 桌面 App（macOS、Windows）+ Web UI | 2026-10-02 公开预览并开源；基于 Cordis 的“一切皆插件”架构，可以在“Creator 模式”里让它自己写插件；实验性功能包括 Agent Teams、自动审批评审、定时任务 | 2026-10 | 👀 评估：**桌面版默认开启遥测**（HN 用户给出了关闭方法），数据合规需要自行评估 **[一手：官网；社区：HN]** |
 | [Aider](https://github.com/Aider-AI/aider) | 终端 | 老牌、git 友好、repo map | **2026-05-22** | ⛔ 依赖持续模型／接口适配的新项目暂缓；已有稳定工作流不据此迁移 |
@@ -22,9 +22,21 @@
 
 - **想要 Claude Code 的体验，但希望换模型或接本地模型** → OpenCode。
 - **团队在国内，需要接国产模型或用 Coding Plan** → Qwen Code / OpenCode（见 [02 模型与成本](../02-models-and-cost.md#4-国内-coding-plan)）。
-- **主要在 IDE 里工作，希望每一步都审批** → Cline / Kilo Code。
+- **主要在 IDE 里工作，希望保留操作前审批** → Cline 可列入候选，先关闭需人工确认类别的自动批准并核对有效设置；不能把产品名当成“每步必审”的保证，见下。
 - **想要“一切皆插件”、让 Agent 自己扩展界面和工具** → DeepSeek Harness（先评估数据合规）。
 - **想自己搭 harness，且愿意维护扩展与运行隔离** → 🧪 Pi；仅为省 token 不足以支持迁移。理解原理可配合阅读 [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code)（拆解 Coding Agent 的组成部分）。
+
+## Cline：先选宿主，再核有效审批
+
+🧪 **希望在 IDE 中审查文件修改与命令时，可以试用 Cline，但先检查 Auto Approve。** 它支持按工具类别自动批准，不能笼统称为“每步人工审批”。普通 CLI 的当前文档及固定源码以工具自动批准为内置默认；显式参数、已保存设置和 ACP 接入另有优先级或例外，不能直接套用 IDE 的设置。关闭 CLI 的自动批准也不等于所有入口、所有工具都逐次询问。**[一手：官方文档与固定源码]**
+
+**需要审批才继续的任务，先核实际版本、启动方式及有效设置；无人值守则先隔离环境。** 自动批准开关控制是否询问，不证明目录、凭证或出网已受操作系统限制；仍采用 [10 的最小权限与隔离建议](../10-security.md#30-秒结论)。当前 IDE 文档的旧命令分类与固定 main 实现有差异，不把旧菜单说明当成现行保证；[固定来源与宿主边界](../research/2026-10-12-community-source-records.md#cline审批按宿主与有效设置判断)记录差异。未运行客户端、验证实际安装默认值或比较安全效果。**[研究：采用边界]**
+
+## OpenCode：规划与撤回边界
+
+🧪 **需要在终端撤回一轮编辑时，OpenCode 仍可列入候选。** TUI 的 `/undo` 撤回最近用户消息及后续回复，并恢复相关文件；`/redo` 可重做被撤回的消息及相关文件变更。文件恢复依赖 Git 项目及可用快照；只恢复会话记录关联的文件，不等于撤销外部操作。若同一文件后来又有人修改，先保留这些改动，再核对恢复后的 diff，不能把它当自动合并。**[一手：官方文档与固定源码；研究：采用判断]**
+
+**只做规划时选 Plan，但不要把模式名当成绝对禁止写入。** 固定 v2.0.30 的内置 Plan 插件默认禁止常规文件编辑，却允许专用计划目录，并通过提示约束只在用户要求时写计划。官方 Agents 页仍把编辑／bash 描述成默认 `ask`，与该实现不同；依赖严格只读时，核对实际版本、有效权限及扩展工具，不照搬该默认值。详见[固定来源与差异](../research/2026-10-12-community-source-records.md#opencode规划权限与文件恢复分开选择)。未运行客户端或验证跨平台恢复。**[一手；研究：采用边界]**
 
 ## 开源 Agent 的采用理由与成本边界
 

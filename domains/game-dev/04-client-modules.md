@@ -1,6 +1,6 @@
 # 客户端核心模块：让操作有回应，让体验连续
 
-> 核实：2026-10-14 UTC；空间容错补核：2026-10-15 UTC。Unity 主线、Unreal 对照；面向单人程序，无人工美术与音频修补。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)。固定源码、反证、许可与验证范围见 [WP10 研究记录](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
+> 编辑更新：2026-10-16（UTC+8）。面向单人程序、无人工美术与音频修补，按体验缺口选择客户端模块；Unity 主线、Unreal 对照。资产导入见 [01](01-engine-integration.md)，生成供给见 [03](03-generative-ai-in-games.md)，来源与核查范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#客户端模块页历史页头)。
 
 ## 30 秒结论：先把核心动作做舒服
 
@@ -45,6 +45,12 @@
 
 **[研究] 较易维护的起点是保留可退回的手感基线。** 保存一组已选动作参数，让 AI 每次只改“起步更利落”“重击接触更清楚”等具体目标，说明同时改变了哪些规则；对照移动、命中、连续攻击和重开后的完整动作。采样计划同时记录输入／动作／反馈时刻、帧时间分布与长帧发生位置，人试玩确认是否更可控、更易读、更有力度。不要把特效数、动画帧数或平均 FPS 当质量评分。
 
+### 刚移动就查询：先确认物理状态已更新
+
+**[研究] ✅ 对象刚移动／放置，射线或重叠检查却仍像在旧位置，先查写入与查询的顺序，不先提高物理频率。** Unity 6.3 的 **3D** 物理默认延后同步 Transform：直接改带 Collider／Rigidbody 的 Transform 后，若查询必须看到新位置，先完成这批修改，再在依赖它们的查询前调用 `Physics.SyncTransforms`；随后又改位置，就重新安排同步点，而不是每条查询前都调用。[一手：[6.3 同步契约](https://docs.unity.com/en-us/engine/6000.3/manual/physics-section/physics-overview/physics-optimization/cpu/transform-sync)]
+
+**[研究] 同步不推进模拟，也不替代原生刚体运动。** 连续运动／瞬移仍由选定的 Rigidbody 接口负责，呈现插值也不保证可见 Transform 等于当前物理姿态；不要用同步调用把 `MovePosition` 当成已完成的运动。⛔ 不把全局 auto-sync 开关当修复配方：6.3 已弃用该属性，隐式同步也有成本。UE 仅在查询需要**当帧已完成的模拟结果**时采用 `TG_PostPhysics`；同组内依赖具体对象的更新则用 tick prerequisite，不把所有查询统一延后，也不编造等价同步开关。[一手／研究：[UE 5.8 tick 契约](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-ticking-in-unreal-engine)] 版本证据、原生运动边界和针对移动障碍的后续验证见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#物理查询补研刚改位置不等于物理查询已看到新位置)；本结论不外推 2D，未做引擎或性能实测。
+
 ### 呈现节奏：动作已执行，画面仍不顺
 
 **[研究] ✅ 先借原生同步能力，比较实际呈现间隔与操作响应，不先自写限帧器。** Factorio 0.17 开发者曾记录平均约 60 FPS，帧间隔却在 14–18 ms 波动，并与 59.95 Hz 显示节奏漂移；无明显工作尖峰也不能证明画面均匀到达。[一手：[历史开发者调查](https://forums.factorio.com/viewtopic.php?p=415072)] 保留同一段移动／瞄准／攻击作基线，核对实际刷新率、实际帧率与已有同步设置，避免叠加多个等待器；若减少排队后更易掉帧，或顺滑来自额外等待而操作发黏，就撤回并重新取舍。
@@ -52,6 +58,10 @@
 - **Unity 桌面**：✅ 以原生 VSync 建立顺滑基线；6.3 的 `targetFrameRate` 是可能微卡顿的软件限帧，VSync 非零时会被忽略。更低延迟需求再比较模式。[一手／研究：[6.3 契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Application-targetFrameRate.html)]
 - **Android**：✅ 先用引擎集成的 pacing：Unity Optimized Frame Pacing，UE 5.2 起默认 Swappy；选设备可持续维持的档位，设置值不当作实测结果。[一手／研究：[Unity 游戏案例](https://developer.android.com/stories/games/swappy)、[UE 原生路径](https://dev.epicgames.com/documentation/en-us/unreal-engine/frame-pacing-for-mobile-devices-in-unreal-engine)]
 - **UE 排队延迟**：🧪 证据指向 game／render／RHI 与显示排队时才评估原生 low-latency frame syncing；缩短 pipeline 会牺牲应对长帧的余量，不照抄一组 CVar。[一手／研究：[同步取舍](https://dev.epicgames.com/documentation/en-us/unreal-engine/low-latency-frame-syncing-in-unreal-engine)]
+
+**[研究] 🧪 基础渲染与操作响应已达目标、仍需提高运动呈现密度时，再评估帧生成；不拿含生成帧的 FPS 替代模拟／输入预算。** 先核目标设备、引擎版本与接入路径，并把应用渲染帧、实际呈现帧分开记录。HUD 也要单独选合成方式：独立 UI 纹理不自动提高 UI 更新频率，逐呈现重绘则不能顺手重复推进业务状态。[一手／研究：[FSR API](https://gpuopen.com/manuals/fsr_sdk/techniques/frame-interpolation-api/)、[Streamline v2.14.1](https://github.com/NVIDIA-RTX/Streamline/blob/v2.14.1/docs/ProgrammingGuideDLSS_G.md)]
+
+AMD UE 插件 4.1.1 的 Slate Redraw 会重复调用 NativeTick（第二次默认 delta 为零）；异步工作采用的 UI Extraction 避免双 tick，却可能损伤半透明 UI。关键 HUD 失真或更新副作用无法修好时撤回，不以显示帧数验收。[一手／研究：[该版本模式契约](https://gpuopen.com/learn/ue-fsr/)] Unity 所核官方入口仅建立上采样支持，不据此套用这份帧生成契约；版本差异、限制与后续对照见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#7-帧生成增加呈现帧不增加一次业务更新承诺)。
 
 **局限：这些是诊断与选型依据，不能预测目标设备收益；软件呈现事件也不等于屏幕发光的完整端到端测量。** 固定源码、版本反证与后续验证见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#呈现节奏补研平均-fps-与实际看到的动作不是同一个承诺)。[研究]
 
@@ -90,8 +100,8 @@
 |---|---|---|---|---|
 | 渲染与性能 | 固定最低设备、分辨率和帧时间；有阴影、透明叠加、纹理／网格和同时可见对象预算。可以没有实时 GI、动态天气、自研 SRP | 性价比／本地：✅ 采用 Unity [URP](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/urp-introduction.html) 及对应平台预设。质量上限：🧪 只在光照／材质需求和设备都支持时评估更重管线；Unreal 使用原生渲染与 scalability，不能因有 Nanite／Lumen 就豁免预算。⛔ 不为生成模型的高面数输出自建渲染器 | AI 批量查导入规格、shader 变体和材质引用，按 profiler 热点改动；防止只看平均 FPS、用降低画质掩盖错误、每帧分配、无条件开昂贵特性 | Unity [目标设备 Profiler](https://docs.unity.com/en-us/engine/6000.5/manual/analysis/profiler/profiling-applications/profiling-target-device)／Frame Debugger；UE [Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine)。冷启动、首次技能、满屏战斗与切关卡分别测 CPU/GPU、尖峰和内存；发布构建复核 |
 | 资源加载与内存 | 每次获取有明确释放者，旧场景不接受迟到结果，失败能回到可操作状态。可以没有 CDN、热更新、全局缓存框架 | 性价比／本地：✅ 小型常驻内容用直接引用；出现明确分组驻留、内容分发需求时改造为 [Addressables](https://docs.unity3d.com/Packages/com.unity.addressables@2.7/manual/AddressableAssetsAsyncOperationHandle.html)。质量上限也是有预算的 Addressables，不是另一套加载器。UE 按需用 Asset Manager／StreamableHandle；常驻小资源不必一律软引用。UniTask 为可选异步适配层，不能代替资源所有权 | AI 能建立句柄清单、加载状态日志和错误恢复；防止取消 await 就忘记 release、双重释放、Object.Destroy 当成 Release、旧回调给新对象赋值、同步等待卡死 | 预取消、加载中取消、同帧完成、失败、共享依赖、连续 A→B→A；检查句柄计数、实际驻留及峰值三者，不只观察任务成功 |
-| 动画系统 | 正确骨架、root motion 归属、动作打断、暂停恢复、死亡／重开后复位。可以没有 motion matching、全身 IK、自定义动画图 | 性价比／本地：✅ Unity [Animator／Clip／Blend Tree](https://docs.unity3d.com/6000.3/Documentation/Manual/AnimationOverview.html)；简单刚体／2D 反馈可用少量参数动画。质量上限：🧪 明确接触／表演需求才增加 IK／Playables；UE Animation Blueprint／Montage／[Root Motion](https://dev.epicgames.com/documentation/en-us/unreal-engine/root-motion-in-unreal-engine)。不把大型多人样例全套搬入小型单机 | AI 连参数、生成转场表、检查动画资源名与事件；防止脚本位移与 root motion 同时驱动、动画事件成为唯一伤害／奖励真相、池对象保留旧 trigger | 低帧率、任意转场点打断、暂停、死亡复活、斜坡／台阶、碰撞体与网格一致；视觉检查脚滑／穿插，Profiler 检查动画线程开销 |
-| 物理与碰撞 | 碰撞层明确，触发器／实体碰撞分清，快速物体与低帧率仍满足玩法。可以没有破坏、布料、全场景刚体、网络确定性 | 性价比／本地／通常的质量路线：✅ Unity 原生 [2D／3D 物理](https://docs.unity3d.com/6000.3/Documentation/Manual/PhysicsSection.html)，按玩法选择其一；UE 原生 Chaos。🧪 CCD、substep 只为具体穿透／稳定性问题启用，⛔ 不用提高全局迭代数代替定位 | AI 配置层矩阵、测试代理碰撞体、写幂等命中结算；防止高精网格直接作所有动态碰撞、Transform 与 Rigidbody 争用、把一次物理回调等同一次伤害 | 快速弹体／薄墙／斜坡／多接触／低帧率；按攻击 ID 去重。UE [substep 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-sub-stepping-in-unreal-engine)明确同次接触可能在同帧产生多个回调，须测结算规则 |
+| 动画系统 | 正确骨架、root motion 归属、动作打断、暂停恢复、死亡／重开后复位。可以没有 motion matching、全身 IK、自定义动画图 | 性价比／本地：✅ Unity [Animator／Clip／Blend Tree](https://docs.unity3d.com/6000.3/Documentation/Manual/AnimationOverview.html)；简单刚体／2D 反馈可用少量参数动画。质量上限：🧪 明确接触／表演需求才增加 IK／Playables；UE Animation Blueprint／Montage／[Root Motion](https://dev.epicgames.com/documentation/en-us/unreal-engine/root-motion-in-unreal-engine)。不把大型多人样例全套搬入小型单机 | AI 连参数、生成转场表、检查动画资源名与事件；防止脚本位移与 root motion 同时驱动、动画事件成为唯一伤害／奖励真相、池对象保留旧 trigger | 低帧率、任意转场点打断、暂停、死亡复活、斜坡／台阶、碰撞体与网格一致；视觉检查脚滑／穿插；换动作／装备后按[范围与屏外更新](assets/animation.md#换动作后消失或突跳先分包围范围与屏外更新)核边缘消失、返回突跳及玩法消费者；Profiler 检查动画线程开销 |
+| 物理与碰撞 | 碰撞层明确，触发器／实体碰撞分清，快速物体与低帧率仍满足玩法。可以没有破坏、布料、全场景刚体、网络确定性 | 性价比／本地／通常的质量路线：✅ Unity 原生 [2D／3D 物理](https://docs.unity3d.com/6000.3/Documentation/Manual/PhysicsSection.html)，按玩法选择其一；UE 原生 Chaos。🧪 CCD、substep 只为具体穿透／稳定性问题启用；[先分线性漏碰、旋转漏碰与误接触](#高速碰撞先分运动与错误再选检测方式)，⛔ 不用提高全局迭代数代替定位 | AI 配置层矩阵、测试代理碰撞体、写幂等命中结算；防止高精网格直接作所有动态碰撞、Transform 与 Rigidbody 争用、把一次物理回调等同一次伤害 | 快速弹体／薄墙／斜坡／多接触／低帧率；按攻击 ID 去重。UE [substep 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-sub-stepping-in-unreal-engine)明确同次接触可能在同帧产生多个回调，须测结算规则 |
 | 输入 | 可重绑定的逻辑动作、玩法／菜单模式、失焦和设备断连恢复。可以没有所有控制器／本地多人／复杂手势 | 性价比／本地／质量：✅ [Unity Input System](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/UISupport.html) 已发布兼容包及其 UI vs Game Input 样例；UE Enhanced Input。需要跨设备菜单栈再🧪 CommonUI。⛔ 不为基本输入另造事件总线 | AI 配 action map、持久化 bindings、生成输入路径测试；防止 UI 和开火同时处理同一键，Disable 内同步 canceled 回调重入，恢复时误用失效的蓄力状态／移动缓存 | 按住移动失焦、蓄力中开菜单、重绑定取消、拔插控制器、菜单返回同帧；动作事件日志配合实际设备 |
 | UI | 玩法实际提供的主菜单、开始、设置、暂停／局内菜单、退出路径均可达；焦点、尺寸变化、错误和加载状态可见。可省通用窗口框架与复杂动画。背包负担先分流：已定选择难操作→稳定快捷入口；囤积挤掉目标玩法→再评估携带取舍；排列即玩法→不自动替玩家决定。[研究；依据与反例见 WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-背包负担改交互还是改携带规则) | 性价比：✅ 现有 uGUI 不迁移；新多分辨率菜单可🧪 UI Toolkit。质量／本地：仍由需求决定两者，见 [6.3 功能表](https://docs.unity3d.com/6000.3/Documentation/Manual/UI-system-compare.html)。原生 UE UMG；多层交互用 [CommonUI 路由](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)。⛔ 不并列维护两套 UI 除非有具体缺口 | AI 能生成布局、数据绑定、焦点规则和截图用例；防止单张截图正确却键盘／手柄不可达、重复监听、隐藏面板仍吃输入、依赖 UI 类型名字判断运行态 | 键鼠／控制器全流程、宽高比、安全区、长文和字体缩放、点击穿透、反复打开关闭。UI Toolkit 新功能仍需在锁定版本上实测 |
 | 音频 | 音量分组、静音、优先级和并发上限；音乐循环／切换与暂停语义清楚。可以没有专业中间件、实时模型推理、复杂声学 | 性价比／本地：✅ Unity AudioSource／AudioMixer／[DSP 调度](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html)；UE Audio／[MetaSounds 原生模板](https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-in-unreal-engine)。质量上限：🧪 只有交互音乐／音频制作工作量证明有收益才评估 FMOD；其商业许可另核，免费档有营收／项目预算条件 | AI 建声音事件表、分组和并发政策，自动测长度／峰值；防止 Update 时间调度节拍、长音乐全部解压常驻、无限 PlayOneShot、把 Time.timeScale 当音频暂停 | 听验接缝、声道、瞬态与重复疲劳；并发高峰、低帧率、暂停和失焦。测 audio CPU、流读取与解压内存 |
@@ -107,9 +117,25 @@
 | 症状 | 默认先做 | 关键取舍、撤回与依据 |
 |---|---|---|
 | 密集战斗漏短音／警告 | ✅ 先区分重触发合并、同类并发拒绝／抢占和全局声部竞争，再调上限；普通声与警告分政策，新增变体核共享限额 | Mindustry 保护旧起音也可能拒绝新声，单抬 priority 不绕过同组限制。[一手] 旧起音与新警告时效需取舍，分组不证明可听；见 [WP10 短音取舍](../../docs/research/2026-10-14-game-wp10-client-modules.md#音频并发补研保住起音不等于保住每次提示) |
+| 声音在播放，关键信息仍被盖住 | ✅ 先减重复／装饰，再按当前玩法状态让位 | 并发优先级不能代替混音；另一危险被压掉或声音明显忽强忽弱就撤回，见[音频质量选择](assets/audio.md#先让声音成为好玩的反馈再增加素材数量) [研究] |
 | 持续技能／机器声断片、恢复不对 | ✅ 先核活动状态、可听范围和淡入淡出，再选续播或重启；不照搬短音丢弃政策 | Factorio 管道改范围与同类限额，增总上限却使混音更杂。[一手] 缩范围可能藏危险，重播起音可能误报；Unity maxDistance 不保证归零、UE 静音续播仍可能占 voice，见 [WP10 循环声](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-持续状态声的反例先校正可听范围与恢复政策) |
 | 拉远／切镜后声音失衡 | ✅ 先选听点：远程管理可随视图，近身互动可在角色附近；分别定位置、朝向、速度，切镜不应无意成为高速运动 | Factorio 与 NieR 采用不同默认。[一手] Unity AudioListener／UE listener override 可先表达选择；换听点须重核距离及空间效果，不能笼统保证“角色距离＋相机声像”。核转身、切镜与返回，见 [WP10 听点](../../docs/research/2026-10-14-game-wp10-client-modules.md#听点补比镜头改变时从哪里听) |
 | 音乐被频繁打断 | ✅ 先选跟随角色处境还是关注区域，再选立即混层、等状态稳定或等乐句 | 单加长淡化不解决选择与时点；见[音频页](assets/audio.md#音乐循环和状态切换先于完整成曲) |
+
+### 墙门后的声音：先选可听规则，再选遮挡
+
+**[研究] ✅ 只需区分直达／被挡时，先用原生低通与音量过渡；应能隔墙经开门听见时，不能把直线被挡等同声音到不了。** 优先复用关卡已有房间与门状态，少量固定场景不必逐声源寻路。Homebody 作者用分区减少逐声源查询，Barotrauma 的受限公开源码则以房间连接的近似路径决定是否闷声；这是两种机制证据，不是性能排名，也不证明声像会沿通路转向。[一手]
+
+- **Unity 6.3**：沿用 AudioSource／Mixer；[AudioLowPassFilter](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioLowPassFilter.html)可随开门改 cutoff，需要几何查询时再用 Physics.Linecast。门状态、遮挡层、更新与平滑仍由项目负责；Listener 上的滤波会影响所有到达声音，不能拿来只处理一处墙后声源
+- **UE 5.8**：先配置 [Sound Attenuation 原生 Occlusion](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine)的 trace channel、低通／音量与插值；先核 simple collision 是否误挡，再决定是否用更贵的 complex，不重建同款遮挡管理器
+
+**[研究] 门边跳变、开门仍闷或关键起音被滤掉时，先查几何、状态和过渡，必要时撤回过滤；只有明确需要更复杂的传播效果，才评估现成方案。** 二改增加出口／破门后，再听验墙后提示、开关门与绕行，并分别量声部、查询和 DSP 成本；插值只平滑变化，不能补出缺失通路。作者依据、许可边界与仅预注册的验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#墙门遮挡补比直达被挡不等于通路消失)；本轮未试听或运行引擎。
+
+### 高速碰撞：先分运动与错误，再选检测方式
+
+**[研究] ✅ 先保留原生物理，按漏碰或误接触选检测方式，不能把 CCD 模式当统一精度升级阶梯。** Unity 6.3 **内置 3D** 中，直线高速物体用 Continuous Speculative 后仍漏碰或无故偏转，可🧪比较 sweep-based Continuous（静态碰撞对象）／Continuous Dynamic（动态刚体对象）；旋转杆／弹球挡板的接触则不能靠这两种线性 sweep 补齐，可试覆盖角运动的 Continuous Speculative，同时检查误碰。后者可能把细分表面接触误当斜坡，令球跳起，也仍可能漏碰。[一手：[选择表](https://docs.unity3d.com/6000.3/Documentation/Manual/choose-collision-detection-mode.html)、[机制与反例](https://docs.unity3d.com/6000.3/Documentation/Manual/speculative-ccd.html)] 不把这组模式用于 Unity 2D。
+
+**[一手／研究] UE 另分运动路径。** Chaos 模拟刚体的 Use CCD，与 ProjectileMovement 的 bSweepCollision／bForceSubStepping 不是同一组设置；后者分别控制扫掠检查和轨迹细分，UpdatedComponent 开启物理模拟后由物理接管。全局物理 substep 改变模拟步长，不替代检测算法，也不承诺消除误接触或覆盖任意旋转。沿用上表的命中去重要求；原生契约、反例与未执行的二改验收见 [WP10 高速碰撞](../../docs/research/2026-10-14-game-wp10-client-modules.md#高速碰撞补研线性旋转与误接触)。
 
 ### 3D 角色运动：先选想要的控制，再选碰撞求解方式
 
@@ -177,9 +203,17 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 
 **[研究] ✅ 小型 Unity 存档保留显式 DTO＋JsonUtility；确需字典／JSON 树迁移时采用项目兼容的 [Newtonsoft 包](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.2/manual/index.html)，不另写序列化器。UE 保留 SaveGame 的槽位与平台存储接口。** 内容迁移、落盘提交、玩家恢复是三个不同责任；无须为它们建立通用对象图框架。已有 Easy Save 项目可复用其缓存写入和备份 API，但其 [CreateBackup](https://docs.moodkie.com/easy-save-3/es3-api/es3-methods/es3-createbackup/)会覆盖旧备份，不能把“每次保存后备份一次”当作已保住上一份可用进度。[一手]
 
+**[研究] ✅ 保存卡顿先分清捕获、序列化与平台写入，不默认把整个过程塞进后台。** 小存档在菜单／暂停边界满足响应预算时可保持同步；活跃游玩中需要减少写入阻塞时再异步。Unity 6.3 的 [JsonUtility](https://docs.unity3d.com/6000.3/Documentation/Manual/json-serialization.html)允许后台使用，但交接的 DTO 及其引用数据不能同时被玩法访问或修改；UE 5.8 的 [AsyncSaveGameToSlot](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UGameplayStatics/AsyncSaveGameToSlot)仍在 game thread 序列化，只把平台写入交给 worker。[一手] [研究] 捕获或序列化太重时先缩小需保存的状态、调整保存边界，不把分帧遍历仍在变化的世界当一致快照。应用可控制的正常“保存并退出”要等覆盖本次目标状态的保存结果，失败则提示并保留恢复选择；排队成功、旧一次完成或后台线程启动都不代表本次保存完成，更不承诺断电耐久。开发者经验、适用成本与待测项见 [WP10 保存响应](../../docs/research/2026-10-14-game-wp10-client-modules.md#6-保存响应把捕获序列化与写入分开判断)。
+
 **[研究] 先保住已验证可用的旧档，再允许重试、迁移后自动保存或清理旧槽。** 恢复候选分别经过完整读取与内容校验，失败不把默认新游戏写回原槽；让玩家知道恢复到了哪个时间／章节，并可保留原文件。真实游戏 [Mindustry 的 SaveIO](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveIO.java)有写入前移备份、读取失败后退备份，但存档列表的有效性检查只读 metadata；因此“列表看得到”不能作为完整恢复成功的证据。[一手]
 
 **[研究] 第二次改关卡位置时，除了内容 ID，还检查存储地址和附属进度是否一起变化。** Mindustry 的 [sector remap](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/game/Saves.java#L120-L199)先暂存再回填，允许两个关卡交换位置；可借这个迁移顺序，不能把其 Java／Arc 世界保存模块直接移植成 Unity 底座。只补项目需要的迁移和恢复政策；源码、商业候选许可及中断验收见 [WP10 补比](../../docs/research/2026-10-14-game-wp10-client-modules.md#存档复用补比序列化落盘与玩家恢复分开选)。上述机制未在本轮真实引擎／断电环境验证。
+
+### 模拟输入：保留轻推幅度，再调死区与响应
+
+**[研究] ✅ 慢走、瞄准微调和模拟转向先保留输入幅度，沿原生处理链核对死区与响应曲线；不要把所有非零向量变成满幅，也不要无意重复处理死区。** Unity Input System 1.19 的 Gamepad stick 默认已带死区，给 binding 再加同类 processor 会叠加；优先直接绑定完整 stick，键盘的默认 DigitalNormalized 合成不要原样套给摇杆。[一手：[绑定契约](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/ActionBindings.html)] UE 5.8 沿 Enhanced Input 的连续轴值与原生 modifiers，分别检查 mapping 的原始键值处理和 action 的最终值处理，按作用范围安排处理，并检查两层是否重复变换。[一手／研究]
+
+**[研究] 响应更敏感不一定更好。** SuperTuxKart 的[可选降敏曲线](https://github.com/supertuxkart/stk-code/blob/0334c6cd7432de391b7981b153df32b7bf6d83ea/src/input/gamepad_device.cpp#L161-L169)减弱中心附近的转向变化；可借这种取舍，不照搬曲线或阈值。先验原生基线，只有目标设备与动作仍有缺口才调整，暂不搭通用校准框架。**局限：死区过大损失微调，过小可能暴露漂移；赛车、瞄准和方向离散的动作不能共用一份手感结论。** 第二次换手柄或给瞄准复用移动配置时，复查回中、低幅连续控制、满幅及斜向，检查旧动作是否回归；仅预注册，契约、历史触摸修复与待测项见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#模拟输入补研轻推幅度与处理链不能丢)。
 
 ### 输入与暂停：先定动作权限，再切输入
 
@@ -238,6 +272,22 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 
 **[研究] 第二次修改加一个带滑条、确认弹窗的设置页，再改键并换设备走回来。** 同时检查导航顺序、可见焦点、当前按键提示、返回目标和角色状态；不能用直接调用按钮回调代替真实输入路径。AI 可生成规则、绑定与回归路径，人判断焦点／反馈是否清楚、操作是否费力；本轮资料比较不能证明目标设备上的完整可用性。
 
+### 动态 UI 变贵：先找谁使它反复重建
+
+**[研究] ✅ 计数器或菜单动画出现已测得的 UI 热点后，先区分布局／几何与批次重建、GPU 绘制成本，再查谁持续写入变化。** 保留已有原生 UI，不先迁移框架或给每个控件加缓存。Unity 开发者的[历史项目诊断](https://discussions.unity.com/t/case-1082192-massive-performance-hit-due-to-ui/715019)发现两个 CanvasScaler 反复写不同缩放值，导致布局与几何重建；这是先去掉重复写入的反例，不是拆 Canvas 的收益证明。[一手／社区]
+
+**[研究] 🧪 原因确实是动态区牵连静态内容时，只改变相关原生边界。** uGUI 按共同更新时机拆小 Canvas，隔离的是批次分析范围，代价是各 Canvas 独立 batching；不把它说成每次重做全树所有 mesh／layout。已有 UI Toolkit 的纯视觉位移先用 Unity 6.3 的 [translate／DynamicTransform](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-use-usage-hints-to-reduce-draw-calls-and-geometry-regeneration.html)，真实内容重排仍走布局。UE 先核既有 [Invalidation](https://dev.epicgames.com/documentation/en-us/unreal-engine/invalidation-in-slate-and-umg-for-unreal-engine)：全局启用后局部 Box 不再叠加；仍有 draw-call 压力才评估 Retainer，其 render target、重绘和降刷新都有代价。原生契约与版本反例见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#动态-ui-补研重建边界不等于停止绘制)。[一手／研究]
+
+**[研究] 第二次修改只预注册：在同一 HUD 加持续变化数值，再加短动画，比较原生基线与一个局部改动。** 同设备／分辨率记录 UI CPU 重建、draw／GPU、缓存内存和变化到可见反馈的时间，开关菜单及控件显隐后用真实输入确认值、焦点反馈和点击目标一致。CPU 改善不足，或 GPU／内存／反馈延迟超预算就撤回边界；不以每帧强刷整树掩盖失效。**局限：历史 Retainer 文本停更已列为 5.4 修复，不证明 UE 5.8 仍有该缺陷；本轮资料未代替引擎与设备验证。**
+
+### 显示正确但拾取偏移：先核位置来自哪里
+
+**[研究] ✅ 自定义拖拽、世界拾取或小地图在改布局／缩放后偏移，先核生产者与消费 API 的坐标空间、原点、单位及目标面板／相机。** 优先使用原生事件位置与转换，不先手除 DPI、挪美术或扩大点击区；普通按钮继续走原生事件路径。Unity 6.3 UI Toolkit 的 `position` 已是 panel 坐标，`localPosition` 属于当前接收元素，外部屏幕位置才按[官方入口](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)转换；uGUI 用对应 RectTransform 与事件相机转换，命中矩形平面不等于位于矩形内；世界射线则区分屏幕像素与相机归一化视口。[一手／研究]
+
+**[研究] 仅为额外的显示变换补映射。** 渲染纹理经控件／网格移位、缩放或裁剪后，拾取应沿实际显示区域和纹理映射回到对应面板／相机，不能直接复用全窗口位置。Unity 6.3 原生 World Space UI 先用自身输入配置；确实自定义重显示纹理时，才评估 `SetScreenToPanelSpaceFunction` 等入口。UE 5.8 的 `Local to Viewport` 也区分供射线使用的 Pixel Position 与供其他 widget 使用的 Viewport Position，不能共用一套 DPI 公式。[一手] **局限：坐标对齐不证明遮挡、事件路由或引擎版本无缺陷；**历史论坛答复只是针对性改法，不是已确认修复。原生契约与边界见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#拾取坐标补研显示变换不能靠-dpi-猜回去)。
+
+**[研究] 二改只预注册：** 调整窗口／UI 缩放，再加入移位、非全屏的小地图或第二视口；核中心、边缘及显示区外的拾取结果，区外不得误触。原生路径满足就收工；原生控件本身仍偏移时，先查锁定版本问题，不叠加坐标补丁。本轮未运行引擎或设备测试。
+
 ### 新语言也会改变旧内容的显示
 
 **[研究] ✅ 新增语言或角色名时，同时更新字库覆盖，并检查旧存档中的自定义名字。** Celeste [1.3 更新](https://www.celestegame.com/changelog.html)增加韩语时改为按使用语言加载字体，也为切语言后无法显示的玩家名增加替代显示；这不是所有游戏都应替换名字的理由，而是要求明确混合文字的显示政策。字体子集／预填充若只覆盖第一版文本，后续内容也须更新；官方 [Rebinding UI 源码](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/RebindingUI/RebindActionUI.cs)仍直接显示 `action.name`、硬编码等待与倒计时，复用绑定刷新机制后应接入既有本地化表，不另建框架。[一手] Unity 6.3 的 ATG 仅在 UI Toolkit 路线评估，其[静态字体迁移](https://docs.unity3d.com/6000.3/Documentation/Manual/ui-systems/migrate-static-font-assets.html)要按减内存或降低首次字形生成分别选择；不据此迁移稳定 uGUI。新增名字／语言后，回看旧名字、冷启动首次显示及切换后的字体驻留；源码与文档不能证明目标设备已通过，细节见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#本地化补研新语言与旧名字一起维护)。
@@ -257,6 +307,14 @@ Unity 官方支持[目标设备采样](https://docs.unity.com/en-us/engine/6000.
 **[研究] ✅ 新语言、换字体或放大字号后，要按承诺支持的输入方式读完影响决定的长说明。** 已有布局可靠时优先复用；短标签合理伸缩，长内容先用原生分页、滚动或详情入口，别持续缩字或把条件、代价藏在 hover／省略号后。Stardew Valley [1.6](https://www.stardewvalley.net/stardew-valley-1-6-update-full-changelog/)曾把被 tooltip 遮住的价格纳入提示；Factorio [2.0.44](https://forums.factorio.com/viewtopic.php?t=128050)只为右侧固定长 tooltip 增加滚动。[一手] 若承诺支持手柄，还需能打开、读到末尾并返回原项，不能用键鼠滚动代验。
 
 **[研究] ✅ 复用完整字体／样式配置；完整段落更难读时，可以撤回新默认。** Thrive 的[字体配置链](https://github.com/Revolutionary-Games/Thrive/blob/eceb8011d5e86b19dfa75de9e55eee6815fd1450/assets/fonts/Lato-Bold.ttf.import)把样式连接到既有 fallback，新增页面与局部覆盖也应保住这条引用；Stardew Valley [1.6.6](https://www.stardewvalley.net/stardew-valley-1-6-6-full-patch-notes/)恢复中文旧默认字体，把新字体留作选项。[一手] 不要求所有游戏新增字体选择器；回退后仍不可读或不可操作，仍暂缓该语言发行。**局限：配置与更新说明不能证明目标设备的阅读质量；**比较与后续验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#7-完整长文可达性与字体默认值的撤回)。
+
+### 对白拖沓：补全文字、推进语音与退出会话分开
+
+**[研究] ✅ 先明确这次输入是补全当前文字、提前结束当前句，还是退出整段会话，再选手动或自动推进。** 沿用已有对话组件；Unity 项目已用 Yarn Spinner 时，其 [LinePresenter](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LinePresenter.cs#L350-L368)分别等待补全与下一句信号，[VoiceOverPresenter](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L156-L197)则在下一句请求后收尾语音。[一手] 不把停止字幕／声音当作已交付剧情，也不假定退出会话会撤销已发出的玩法命令。
+
+**[研究] 按内容节奏决定何时继续，不统一要求逐句点击或全程不可打断。** Firewatch 的[程序员复盘](https://media.gdcvault.com/gdc2017/Presentations/Armstrong_Do_you_copy.pdf)记录打断使角色知道玩家尚未听到的信息，因此保护特定关键路径会话；inkle 的[近期写作复盘](https://medium.com/@inklestudios/pacing-dialogue-5bd5a99bfc20)则说明短气泡通常默认自动推进，避免每小句都要点击。[一手] [研究] 需要插话的对白保留插话，影响后续选择的信息明确保护、补述或重入方式；这些是不同作品的取舍，不是统一播放速度。
+
+**[研究] 新增配音／语言后，同时核没有语音的句子。** Yarn 3.2.8 的语音组件在缺资产且 `endLineWhenVoiceoverComplete` 开启时也会[请求结束该句](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs#L115-L127)，应按项目决定保留阅读等待等回退，不能只验字幕存在。二改加入可插话分支，分别检查补全、推进、退出与重入后的可选项／关键事实；AI 可接已有组件并生成路径，人判断能否读清、听懂和自然插话。**局限：源码契约不证明体验效果；**固定版本、文档差异与待做验收见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#对白补研显示完成不等于剧情交付)。
 
 ## 4. 借用的授权边界与升级条件
 

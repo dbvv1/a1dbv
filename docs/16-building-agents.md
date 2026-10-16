@@ -1,11 +1,7 @@
 # 16 · 自建 Agent：什么时候值得、用什么搭
 
-> 核实时间：2026-10-15（UTC+8）局部复核 SDK／托管选型、配置、缓存、预算与程序化工具调用；方案概览基线为 2026-10-08。2026-10-15 完成全文核心建议独立审阅，补 outcomes 终止条件并归一模型价表入口；不代表真实 SDK 或模型效果已验证。
-> 依据 **[一手]**：
-> - Anthropic：Claude API 官方 Skill（随 Claude Code 2.1.294 分发）中的方案比较、Agent 设计和 Managed Agents 文档；克隆查看了 [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)；
-> - OpenAI：developers.openai.com 的 [Agents](https://developers.openai.com/api/docs/guides/agents) 和 [Decisions](https://developers.openai.com/api/docs/guides/decisions) 指南，learn.chatgpt.com 的 [Codex SDK](https://learn.chatgpt.com/docs/codex-sdk)、[app-server](https://learn.chatgpt.com/docs/app-server)、[codex exec](https://learn.chatgpt.com/docs/non-interactive-mode)（Markdown 版）；
-> - Google ADK、AWS Strands、OpenAI Agents SDK 的仓库（只确认了活跃度，2026-10 都有提交）。
->
+> 编辑更新：2026-10-16（UTC+8）。自建、SDK 与托管的选择；[来源与核查范围](research/2026-10-12-long-task-evidence.md#16-页历史页头)。未实测 SDK 或模型效果。
+
 > 前面的章节讲“怎么用现成的 Coding Agent”。这一篇讲**什么时候该自己搭**，以及各家的搭建方式。
 
 ## 1. 先问：真的需要自建吗？
@@ -115,6 +111,7 @@ Anthropic 的 Agent 设计指南 **[一手]**：Bash 能做几乎所有事，但
 - 这正是 [14 规律一](14-synthesis.md#1-规律一验证覆盖与自主权分开判断) 的落地：能锐化的验证器就锐化，干活的和评判的分开。
 
 ### 4.5 安全与成本
+- **请求超时不等于整项任务截止时间**：先核实际 SDK／传输版本的 `timeout` 限制连接、读写等待还是整次请求，再核 SDK 与应用各自的重试、退避及流读取范围。需要限制整项任务耗时时，优先用现有执行环境的总时限与取消机制，确认覆盖重试等待和工具步骤；仅调小 `timeout` 或设置 `max_retries` 不足以保证按时停止。OpenAI Python SDK 的 HTTPX2 读超时与 Go 的整次请求超时提供不同契约，见[固定证据](research/2026-10-12-long-task-evidence.md#请求超时重试与整项任务截止时间)。**[一手；研究：采用判断]** 局限：这些普通 API SDK／HTTP 客户端契约不代表 Codex／dot 的停止行为；动作结果未知仍按 [20 §9](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)对账。
 - **凭证不进沙箱**：Managed Agents 的 vault 把密钥存在服务端，在出口处替换，沙箱里看不到 **[一手]**；
 - **先选预算范围**：Claude CLI／Agent SDK 的运行预算按客户端 API 费用估算，恢复历史费用不纳入本次上限；Managed Agents 则按会话累计公开标价，达到后暂停新增模型请求并保留历史与沙箱。托管仍允许执行中的请求及其工具完成并超额，不能当作总账绝不超支。跨任务额度需应用另行累计。**[一手：[CLI reference](https://code.claude.com/docs/en/cli-reference)、[Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets)；研究：选择]**；
 - **内网工具不必等于自建循环**：Managed Agents 可自托管沙箱，让执行、文件和网络出口留在己方；但工具输入输出仍发送到 Anthropic 控制面。若要求这些内容也不得出网，这条路径不合适，换 SDK 也不自动改变云模型的数据边界。**[一手：[Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes)；研究：撤回条件]**；

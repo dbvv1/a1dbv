@@ -45,6 +45,8 @@
 
 **评审子 Agent 的提示要点**：给 diff 和能追到原需求或已确认验收的判据，不灌入实现过程中的推理；明确要求“**只报告影响正确性或违背需求的问题，不报告风格偏好**”。遇权限、解析或接口变化，沿具体风险查未改的消费者，必要时用能区分假设的输入核验；计划合规与用户目标成立分别判断。复用已有判据，不要求所有任务另写 spec 或增加 reviewer。固定源码与反证见[输入交接记录](research/2026-10-12-baml-and-review.md#后续任务相同-brief-与过期接口)。**[研究：采用判断]**
 
+**依赖升级后，先追消费者要的值与时点，再改红测试。** 上游不再原地改历史时，下游记录器仍读旧对象，会漏掉第二轮的公开提示词事件；应改为读取本轮副本，保留“两次不同渲染产生两个事件”的要求。若只是错误钩子提前，才调整该时点断言，并保留收尾后的持久结果。不要为保绿统一改预期，也不要恢复上游有意去掉的副作用。见[同一下游的两种修订](research/2026-10-12-development-conditions.md#后续依赖升级旧观察点过时不等于消费者结果可以丢)。**[一手：固定补丁与测试定义；研究：采用判断，2026-10-15 UTC]** 局限：未运行这些测试，公开事件契约不等于真实服务已恢复。
+
 **模型与 effort 不按客户引言直接选**：Opus 5.5 发布页的低 effort 优势来自 Deloitte 客户转述，未公开其缺陷集、样本量与误报判定。可作为候选线索，不能据此默认低 effort 足够或替代本仓配对评估。[原始归属与边界](research/2026-10-12-baml-and-review.md#调查模型转述与第三方服务的采用边界)。**[一手：厂商刊载客户自述；研究：采用判断]**
 
 本地入口依据：[Claude 评审文档](https://code.claude.com/docs/en/code-review#review-a-diff-locally)、[Ultrareview 比较](https://code.claude.com/docs/en/ultrareview#how-ultrareview-compares-to-code-review)、[Codex CLI](https://learn.chatgpt.com/docs/codex/cli)。**[一手：2026-10-14 UTC]**

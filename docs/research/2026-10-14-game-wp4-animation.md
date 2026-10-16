@@ -1,6 +1,6 @@
 主线：二／三／四；G1 动画、绑定、第二次修改与授权
-改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法
-新证据：[一手／研究] 近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
+改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法；程序步态分基础姿态与身体规则，新运动结构另计实现；二改后的消失／突跳先分范围与屏外求值
+新证据：[一手／研究] Overgrowth 演讲、生产修订与固定源码，Rain World 开发者访谈补程序步态内容／维护边界；Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
 
 # WP4：动画、绑定与第二次修改
 
@@ -8,13 +8,13 @@
 
 ## 1. 采用判断与分档依据
 
-**✅ 采用：固定角色骨架与完整玩法动作组，再决定是否生成。** 已正确绑定的角色、许可动作组、引擎重定向与有限 IK，是人形动作的默认基线。机械、悬浮、铰链及规则分节角色先用曲线／程序步态；缺少自然表演时再比较视频或文本。**🧪 改造：** SkinTokens 保骨架补蒙皮、数值控制的 Locomotion、明确输入限制下的单人动捕。**⛔ 不用作默认：** 任意生成角色自动绑定后直接发售、文本要求精确接触、清零 root 即循环、用非商业依赖免费生产商业游戏。[经验]
+**✅ 采用：固定角色骨架与完整玩法动作组，再决定是否生成。** 已正确绑定的角色、许可动作组、引擎重定向与有限 IK，是人形动作的默认基线。机械、悬浮、铰链及规则分节角色先用明确曲线／步态；有机生物可探索专用身体／支撑规则，依赖基础姿态的路线仍须先取得许可资产。缺少自然表演时再比较视频或文本。**🧪 改造：** SkinTokens 保骨架补蒙皮、数值控制的 Locomotion、明确输入限制下的单人动捕。**⛔ 不用作默认：** 任意生成角色自动绑定后直接发售、文本要求精确接触、清零 root 即循环、用非商业依赖免费生产商业游戏。[经验]
 
 |任务|质量优先|性价比优先|本地／免费|
 |---|---|---|---|
 |人形角色与动作|✅ 已验收骨架＋完整现成动作组；缺短表演才🧪Uthana Text3.0／Video2.1 等商业候选|✅ 地区可用时 Mixamo；需要数值移动控制再🧪Uthana Locomotion；较多自录视频对照 Rokoko Vision3.0|✅ 已有许可动作＋引擎 IK；🧪SkinTokens 补绑定；不强凑本地生成冠军|
 |2D 骨骼与逐帧|✅ 完整现成角色包；Spine 按资产、编辑器、runtime 分别清权|✅ 已有分层／骨架＋Unity 2D Animation 的换装及参数复用|✅ 自有或许可逐帧包、刚体部件曲线；生成图不自动具备可绑定层|
-|非人形／接触密集|✅ 专用完整资产组；覆盖不到则修改角色或玩法|🧪 已有分节结构、程序步态与有限 IK|👀 SkinTokens／MoCapAnything 研究路径，先闭合依赖和特定目标骨架|
+|非人形／接触密集|✅ 专用完整资产组；覆盖不到则修改角色或玩法|🧪 明确身体／支撑规则；基础姿态与新运动代码分别计入成本|👀 SkinTokens／MoCapAnything 研究路径，先闭合依赖和特定目标骨架|
 
 质量优先是提高零手修交付可靠性的选择，不表示现成资源总比生成更美。Uthana 有当前版本、显式控制和输出示例，故可入专项首试；没有独立同题盲测证明它胜过其他服务。Move One 仅作未闭合完整输出许可的对照；Cascadeur 仍可能需要人工摆姿，非本基准必需工具。[研究／经验]
 
@@ -318,3 +318,55 @@ Daniel Holden 的 [2026-07-30 原文](https://theorangeduck.com/page/inverse-kin
 [研究] **✅ 保留原生路线：** 同类循环相位兼容则混合；同一动作的局部接触偏移则有限 IK／重定向；姿态与支撑顺序正确、整体位置改变则分段对位。**🧪 改造：** 统一动作进度，给交互目标定义可支持的高度／朝向／净空／运动范围。**⛔ 撤回这一动作组合：** 对位只能靠提前离地、删掉必要蓄力、持续悬浮或穿过障碍时，换兼容片段；没有许可片段且不能程序重建可信运动时，收窄可交互范围。缩范围的代价是自由度降低，分动作的代价是内容分支增加，程序方案的代价是主动设计运动与调参；都比把几何误差为零直接算作质量合格诚实。
 
 本轮只读公开官方合同、开发者文章、发行记录和固定源码；没有下载动画包、复制上游实现、运行引擎／模型或测通过率。后续获准实测时，用同一动作改变身材比例、局部／全局时长和目标位置，观察预备承重、抓握后漂移、退出姿态及限制范围外的拒绝行为；与已有比例章节合并验收，不新设实验模块。[研究]
+
+## 剔除补研：范围、更新与动作内容分开
+
+核实：2026-10-16（UTC+8）。主线二／三；改变的选择是：新动作或装备造成边缘消失／离屏后突跳时，先查运行时交接，不能直接归咎生成／重定向，更不把全关剔除当最终方案。既有接触、进度、位移权威建议不变。[研究]
+
+### A. Unity：范围和 Animator 是两份合同
+
+- [Unity 6.3 可见性排查](https://docs.unity3d.com/6000.3/Documentation/Manual/troubleshooting-skinned-mesh-renderer-visibility.html)明确：导入时按当时动画估计范围；后来 additive、脚本骨骼位移、顶点 shader 与 ragdoll 可能超出。能预估时修改最大覆盖范围，不能预估时可逐帧重算。[一手] [研究] 这支持先修覆盖范围；不支持一个任意放大的全项目数值，也不证明 CPU 重算能自动理解任意 shader 位移。
+- [组件参考](https://docs.unity3d.com/6000.3/Documentation/Manual/class-SkinnedMeshRenderer.html)区分 renderer 停止 skinning 和恢复，以及 `Update When Offscreen` 逐帧覆盖 bounds；root bone 决定其跟随变换。[Renderer.localBounds](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Renderer-localBounds.html)同时说明自定义运行时覆盖不会保存进 scene／prefab，要由脚本设置。[一手] [研究] 换装、重建或池复用须重新核正确覆盖是否存在；不能把调试时曾设置过当作发布构建已持久化。这里说的是运行时 API 覆盖，不笼统否定 Inspector 序列化配置。
+- [AnimatorCullingMode 6.3](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AnimatorCullingMode.html)中，`CullUpdateTransforms` 停 retarget／IK／Transform 写入，`CullCompletely` 停动画，`AlwaysAnimate` 保留屏外动画。[一手] 这不是 renderer 的同名性能开关；范围正确也不能自动补回被政策停掉的骨骼结果。[研究]
+
+**固定参考源码交叉核对。** `UnityCsReference` 标签 `6000.3.0f1` 经 `git ls-remote` 固定到 `cfcd94f14a5cd69f9a5d2b148d4fe626e7fc46ae`。[SkinnedMeshRendererEditor.cs L180–216](https://github.com/Unity-Technologies/UnityCsReference/blob/cfcd94f14a5cd69f9a5d2b148d4fe626e7fc46ae/Editor/Mono/Inspector/SkinnedMeshRendererEditor.cs#L180-L216)在动态更新分支画 world bounds，另一分支用 actual root bone 矩阵编辑 localBounds；[Animator.bindings.cs](https://github.com/Unity-Technologies/UnityCsReference/blob/cfcd94f14a5cd69f9a5d2b148d4fe626e7fc46ae/Modules/Animation/ScriptBindings/Animator.bindings.cs)的枚举注释与 API 合同一致。[一手：固定源码] 这只是托管绑定与 Inspector 佐证，不是读取原生剔除实现或完成运行验证。文件头为 Unity Reference Only License；本轮仅阅读、链接，不复制实现或把它当可移植 MIT 代码。
+
+**真实历史复现与处理。** [UUM-35020](https://issuetracker.unity.com/issues/11868/skinned-mesh-renderer-bounds-are-not-updated-when-moving-bones)列出 2020.3.47f1 至 2023.2.0a14 多版本复现：旋转腿骨后 bounds 未动，只看见腿而看不见 bounds 的相机角度会让腿消失。Unity 标记 **As Designed**，给出开启屏外更新以按姿态重算的处理，不是发布了一个修复版本。[一手：官方复现／处理记录] 它与 6.3 合同共同支持机制诊断；不证明所有消失都是同一原因，也没有本仓复测或性能测量。[研究]
+
+### B. Unreal：tick、骨骼刷新和 bounds 来源分别核
+
+[UE5.8 EVisibilityBasedAnimTickOption](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/EVisibilityBasedAnimTickOption?lang=en-US)明确 `AlwaysTickPose` 未渲染时不刷新 BoneTransforms；`AlwaysTickPoseAndRefreshBones` 保留两者；`OnlyTickPoseWhenRendered` 只在渲染时执行。另有仅保留 Montage 的不同选项，不能当全部 AnimGraph／骨骼求值。[一手] [研究] 因此先找具体消费者需要动作推进、root motion 还是当前骨骼结果，不能仅根据“角色不可见”或枚举里的 Always 决定。
+
+[UE5.8 USkinnedMeshComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/USkinnedMeshComponent)公开：PhysicsAsset 范围更新可只包含标记的 BodySetups，或通过 `bConsiderAllBodiesForBounds` 纳入全部；`bUseBoundsFromLeaderPoseComponent` 直接沿用 leader 的 bounds。`bIncludeComponentLocationIntoBounds` 的说明专门提到角色离开根部、配合仅渲染时 tick 的情况。[一手] [研究] 换大装备须核范围提供者和参与体，不把身体的旧范围视作所有 follower 的正确范围；包含原点也不等于覆盖所有姿态。
+
+[UE4.27 Out of Bounds Pixels](https://dev.epicgames.com/documentation/unreal-engine/out-of-bounds-pixels?application_version=4.27)是历史机制说明：越出 bounds 的几何可能在转相机时消失，父级范围过小、Physics Asset 与 shader 位移是不同原因；扩大投影物范围有代价。[UE5.8 视口显示选项](https://dev.epicgames.com/documentation/en-us/unreal-engine/viewport-show-flags-in-unreal-engine)仍提供 Bounds／Out of Bounds Pixels 诊断。[一手] [研究] 不用旧页“创建默认 physics asset 即可”的措辞保证新装备必定正确，也不把碰撞 capsule 当 renderer 的范围。本文未读取受限 UE 引擎源码，当前语义来自公开 API。
+
+**架构反例，不伪装成成功修复。** [ALS-Community #106](https://github.com/PanicPetal/ALS-Community/issues/106)（2021-01—02）报告 dedicated server 下改成 `AlwaysTickPose` 后原地转身同步出错，原因分析涉及动画后求值曲线与旋转逻辑耦合；维护者确认需要较大结构修改并以 wontfix 关闭。[一手：项目维护者回应；复现细节为报告者记录] 发帖人提出的 Notify 重构没有在该串获得落地验证，关闭也不等于已修好。只借这个历史反例说明“省掉骨骼刷新”可能同时改玩法消费者，不能推广为 UE5.8 全部角色都要全量更新或量化服务器成本。[研究]
+
+### C. 采用与撤回边界
+
+[研究] ✅ 对动作／装备支持范围可界定的角色，先修正确且有限的范围；范围难以预估再比较动态更新。屏外仍运行的玩法保留其必要数据生产者，纯装饰对象可按需求停止或降频。任何方案若只靠巨大 bounds 或全量更新掩盖错误来源，就先回查 root、继承关系、更新模式与真实变形；这些开关既不修权重也不补动作内容。
+
+未来获准实测时，在同一角色上新增大幅动作和长装备，比较持续可见、掠过边缘、完全离屏期间触发动作、返回首帧，以及池复用／换装后的范围。分别记录 bounds、状态进度、所需骨骼／挂点与玩法结果，再按目标设备测动画／skinning／剔除成本；不以仅在编辑器看起来正常或某个开关治好一次现象结束验收。本轮仅公开合同、历史报告与参考源码静态核查，无引擎／模型／设备运行，无资产下载或收益实测。[研究]
+
+
+## 程序步态补研：姿态来源与运动结构
+
+核实：2026-10-16（UTC+8）。主线二／三。改变的选择：不按机械／有机外形排除程序路线，而按「基础姿态＋程序层」或「身体规则生成运动」决定输入和维护成本；同结构调参与新运动结构分开。以下是不同时间的设计、生产修订和静态源码，不拼成一次运行结果。[研究]
+
+**许可先过门。** 官方 `WolfireGames/overgrowth` 本次以 `git ls-remote` 固定 HEAD 为 `245fe4828631c84c0023d29d1525f5716ccb6106`，提交日期 2025-03-20。[固定 README](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/README.md)与[LICENSE](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/LICENSE)说明默认代码 Apache-2.0，例外另核；游戏数据与商业资产不随代码开放，分发原资产需书面许可。所读 `aschar.as` 文件头同为 Apache-2.0。本轮仅借机制，不复制实现或游戏资产；Rain World 未取得可复用代码／资产许可，不读反编译镜像，也不将商业素材列为可采用资源。[一手／研究]
+
+**Overgrowth：少量姿态可以扩大覆盖，但不等于没有内容工作。** David Rosen 的 [GDC 2014 原始幻灯片](https://media.gdcvault.com/GDC2014/Presentations/Rosen_David_Animation_Bootcamp_An.pdf)第11／13页讲 Pass/Reach、stride wheel 与同步混合；第25页写移动系统13个关键帧，图示包括 idle、moving、roll、jump、flip；第49页强调动画与代码协作、关键帧负责表演。本次抽取全文并渲染核第25页，不凭视频猜实现。[一手：历史作者设计] 这个数字只对应演讲中的移动系统，不是正式版全游戏动作总量，更不证明免人工摆姿。[研究]
+
+后续 [2017-06 开发记录](https://www.wolfire.com/blog/2017/06/Overgrowth-Progress-Late-June-2017/)明确改进持剑／刀的走跑、添加聆听／园艺／擦剑等动作，并因实现耗时撤回 flying leg choke 的脚本实验；[2017-08 记录](https://www.wolfire.com/blog/2017/08/Previous-Week-in-Overgrowth---Mid-August/)新增鼠专用绞杀动画。[2017-10-16 正式发行公告](https://www.wolfire.com/blog/2017/10/Overgrowth-1-0/)仍调整狼掌击时机、将自动 ragdoll 恢复限制在地面。[一手：开发者修订／发行记录] 这些是持续内容与控制维护的真实反例；没有细分工时或失败根因，不能据此量化程序路线比成套动作更贵，也不把撤回新招式解释为整个系统不可用。[研究]
+
+固定源码交叉核对（只读）：
+
+- [`aschar.as` L11726–11830](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L11726-L11830)的站姿迈步维护落点、交替释放、进度、抬脚高度和脚步事件；方向仍取原动画左右腿 IK 位置。[L11978–12012](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L11978-L12012)普通移动播放 `movement`，混合量用速度除角色尺度；站姿移动另调上述函数并保留 pose／idle。不是一个程序步态代替全部动作。[一手／研究]
+- [L12021–12045](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L12021-L12045)按鼠／兔等组合选择专用绞杀片段；[L15439–15447](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L15439-L15447)改尺度时重建 rigged object、重置次级动画与层并刷新骨架缓存。可借派生状态的重建边界，不推广其常数或二足数组为通用多足实现。[一手／研究]
+
+该脚本在此固定版本的[公开提交历史](https://api.github.com/repos/WolfireGames/overgrowth/commits?sha=245fe4828631c84c0023d29d1525f5716ccb6106&path=Data%2FScripts%2Faschar.as&per_page=100)仅见2022初始导入；没有把2017修订定位到对应 commit，也未运行当前代码确认旧版视觉效果。代码属于自研引擎项目，只取可移植的职责分工，不建议迁移引擎。[研究]
+
+**Rain World：有机运动可由程序构造，新物种仍需独有实现。** [2025-09-25 Unity 对 Videocult／Akupara 开发者的采访](https://unity.com/blog/exploring-procedural-design-rain-world)中，Joar 说明早期混合传统与程序动画，后来更偏程序；文中描述 slugcat 为固定距离连接的两个球形身体块，肢体和尾巴是响应输入的视觉层。Benjamin 明确短腿、长蜘蛛腿、鳍、喷射、触手和翼各需独有身体／运动代码；共享基础脚本不改变多数生物按新项目实现的工作量。sprites 仍由图形脚本定位／着色，不是全游戏美术自动生成。[一手：采访中的开发者陈述；身体结构描述为采访说明，未复测] 它是不同作者的商业生产参照，不证明每种生物都由同一个通用求解器生成，也不证明单程序员不需美术工作。[研究]
+
+**采用／撤回。** 🧪 基础姿态已有许可且覆盖动作意图时，比较稀疏姿态加程序层；风格允许、身体和支撑规则可明确设计时，比较直接程序运动。相同结构的速度／尺度调整先看参数及缓存重建；新增肢体、支撑方式或玩法能力，应另计运动代码／专用动作及旧行为回归，不能只报少了多少 clip。仍需手工摆姿或补画才能合格且不符合本基准时，换许可资源、保留局部程序层或收窄能力。本轮无零手修通过率、主动工时、性能或 Unity／UE 运行结果，不提高到 L4，不重复接触求解检查清单。[研究]

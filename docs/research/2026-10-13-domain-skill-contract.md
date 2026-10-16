@@ -1,6 +1,6 @@
-主线：二，兼三
-改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选。[经验]
-证据摘要：Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。[一手／研究]
+主线：二，兼三、四
+改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；几何验收按消费者实际使用的坐标与单位判定。[经验]
+证据摘要：Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。[一手／研究]
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
@@ -524,3 +524,57 @@ SWE CSV 有100题、98题正确；按正确且专家速度比至少0.95筛得75�
 - 包内根为 `perfagent_icse/`；候选见 `artifacts/trajectories/gso/<instance_id>/traj.json`，发布预测见 `artifacts/predictions/perfagent/gso.jsonl` 及 `swefficiency.jsonl`
 - 报告见 `artifacts/reports/gso_report.json`、`swefficiency.csv`、`gso_hack_detection.json`、`swefficiency_hack_detection.json`
 - 实现见 `src/perfagent/agent.py`、`cli.py`、`pytest_cmd.py` 和 `assets/{gso,swefficiency}/profiler/profile_prob_script.py`；源码静态阅读不等于该版本真实运行通过
+
+### 竞争实现：先比较轻量搜索，并为复评留预算
+
+**核实：2026-10-16（UTC+8）。** 新增选择不是“保留中间版”，而是决定是否值得扩大搜索：先比较现有工具上的轻量候选搜索，核全尝试成本，并为竞争候选的独立复评留预算；有稳定收益证据才增加复杂调度。下列材料没有完成生产软件的单线续改对照。**[研究：采用判断]**
+
+#### 同任务比较支持什么
+
+Gideoni 等人的[论文v2（2026-10-12）§4、表1及附录C](https://arxiv.org/html/2602.16805v2#S4)报告：按作者的20美元API预算，IID随机采样和SCS分别在九个数学任务中的四个、六个达到或超过ShinkaEvolve；圆打包仍是ShinkaEvolve更好。比较使用相同的低领域知识提示与Gemini 2.5家族，但Shinka混用Pro／Flash／Flash Lite，基线只用Pro；Shinka配置经过部分调优，每题只运行一次。不能写成同一模型、同一初始程序的纯搜索策略消融，更不能当生产软件成功率。**[一手：作者研究，非本仓复跑]**
+
+SCS每代从上代成功执行的程序随机抽取三个作为生成参考，并非只续改当前最优；[固定实现](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/baselines/archive_utils.py#L17-L66)还把这些程序的分数放入提示。因此“不按适应度选父代”也不等于“没有反馈”。本例支持先比较轻量候选搜索，不能替代单线与多候选的直接对照。**[一手：源码；研究：边界]**
+
+#### 保存候选的账，不一定是全部尝试的账
+
+作者仓库固定于`93435c5afb15217c4e3f38da3d432e1018156fa7`。以下是该公开版本的静态路径，不是论文历史账单的复算：
+
+- [生成器L133–146](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/baselines/gemini_utils.py#L133-L146)只在响应可抽出代码时保存usage；随后[汇总L189–227](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/baselines/solve_prob.py#L189-L227)累计这些结果的费用。生成后执行失败的候选也会计入，但未形成代码的响应不在这条累计路径中。**[一手：源码]**
+- [SCS全失败重试L118–133](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/baselines/solve_prob_sequential.py#L118-L133)会备份失败代并重试，而代统计只追加最后成功尝试；连续五次全失败时追加零费用／零时长占位；核完整尝试需同时核备份，不能只读最后汇总。**[一手：源码；研究：核算边界]**
+- AIME的[执行评估费用](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/baselines/problems/long/aime_scaffolding/evaluator.py#L44-L68)另存在`metrics.total_cost`，外层`cost_usd`累计的是Gemini生成费用。生成、运行评估和最终复评不是同一个费用字段。**[一手：源码]**
+
+据此，比较搜索方案时应核未成候选、失败重试、评估和复评是否进入同一预算，不能拿候选数或一个费用字段代替总投入。**未取得对应历史运行记录，不能断言论文少算了费用，也不能据此推翻其比较结果。** **[研究：采用判断与限制]**
+
+#### 重复测量与留出验收是两层
+
+论文v2的[§5与附录K／L](https://arxiv.org/html/2602.16805v2#S5)报告AIME候选经更多重复评估后排序判断改变，并以分级复评减少一次低样本高分误选。公开[搜索配置](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/baselines/problems/long/aime_scaffolding/config.json)是2024题目、每题三次；[重评脚本L216–255](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/baselines/misc_analysis/aime_scaffolding/eval_agent.py#L216-L255)设2025题目、每题十次，并保存代码／参数hash和回答。重复同一题可估计随机波动，不等于增加未见输入；复评参与了选优，就仍是选择环节，之后另验未参与选择的输入。**[一手：作者研究及源码；研究：采用边界]**
+
+这里尚未独立闭合运行链：[cascade脚本](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/baselines/misc_analysis/aime_scaffolding/eval_cascade.py#L35-L65)只存十组精度数组，没有候选hash、年份和原始回答映射；[notebook](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/eval_cascade_demo.ipynb)明确是高斯分布演示。不能用这些材料认证论文的完整候选选择链，或确认留出结果未被再次用于选择；也没有证据据此指控数据泄漏。**[一手：源码／演示；研究：证据边界]**
+
+[固定README](https://github.com/YonatanGideoni/code_evo_simple_baselines/blob/93435c5afb15217c4e3f38da3d432e1018156fa7/README.md)说明ShinkaEvolve、ADAS与MLE-Bench配置将在后续发布；本轮读取的固定源码包有基线、题目与判定器、部分AIME评估代码，但未含完整历史候选、逐题回答和费用记录。这限定了本轮能核的范围，不等于整篇不可复现。没有安装依赖、执行上游程序或运行模型；维护接手成本、生产软件收益与完整同轮成本仍未知。**[一手／研究]**
+
+
+## PDF 表单：验收按消费者的坐标与单位判定
+
+**核实：2026-10-16（UTC+8）。** 改变的是 [22](../22-agent-evaluation.md) 的验收选择：涉及缩放或单位转换时，先按实际消费者的转换核对断言，再信任其成功结果。不是再重复“退出码不等于完成”，也不据此推荐或否定整套 Skill。**[研究：采用判断]**
+
+### 固定版本与完整路径
+
+GitHub 连接器读取 `anthropics/skills` 的 `main`，返回 `dbd4588f9e1033efb41dad4bef2f7947c8993d44`；[该提交](https://github.com/anthropics/skills/commit/dbd4588f9e1033efb41dad4bef2f7947c8993d44)修改的是 claude-api 内容，并非下列缺陷的修复。[Releases 页面](https://github.com/anthropics/skills/releases)当时没有发行记录，不能把当前源码称为已发布修复。PDF Skill 的[许可](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/pdf/LICENSE.txt)保留权利；这里仅链接并描述机制，不复制脚本或分发实现。**[一手：版本与许可]**
+
+- [原报告 #1770](https://github.com/anthropics/skills/issues/1770)的第 5 项及作者更正说明：不能直接以最初的 200 DPI 换算，因为图像还会缩小；作者已撤回原先的固定比例建议。它是公开缺陷报告，本仓另读下列固定源码核对。**[社区：原报告]**
+- [图像转换 L9–21](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/pdf/scripts/convert_pdf_to_images.py#L9-L21)先以 200 DPI 渲染，再将超过 1000 像素的最长边缩至 1000，宽高分别取整数。不同页尺寸不保证相同的最终像素／点比例。**[一手：源码]**
+- [输入约定与检查入口 L224–252](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/pdf/forms.md#L224-L252)让视觉定位路径记录实际图像宽高及像素框；[检查器 L43–55](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/pdf/scripts/check_bounding_boxes.py#L43-L55)直接把框的原始高度与字号比较，没有使用页尺寸换算。**[一手：文档与源码]**
+- [填充器 L10–20、43–85](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/pdf/scripts/fill_pdf_form_with_annotations.py#L10-L85)实际读取 PDF 页的 MediaBox，按该页 PDF 宽高除以图像宽高分别转换坐标；字号则以点传入 FreeText。PDF 坐标路径不做像素缩放。**[一手：实际调用路径]**
+
+### 源码推导的示例，不是渲染复现
+
+取一张高 792 点的 Letter 页：200 DPI 下高 2200 像素，按上述默认最长边规则缩为 1000 像素。设一个与标签及其他框不相交的输入框高 14 像素、字号 14 点，则检查器的高度条件接受 `14 >= 14`；填充器使用的框高却是 `14 × 792 / 1000 = 11.088` 点，小于 14 点。这里核实的是同一条“框高至少为字号”标准在两个表示下判定不同，**不是证明真实文字已经裁切、不可读或有交付损失**。本轮只用自行编写的算术表达式核对这些数字，没有构造或运行上游夹具。**[研究：源码推导；经验：示例算术核对]**
+
+因此按每页实际尺寸换算后检查高度；比较水平方向时用实际宽度比，不能因理论等比缩放就忽略取整后的宽高差异。不要用固定 200/72，也不要把 Letter 的最终比例推广到所有页面。像素坐标有其用途，不要求所有工作流改用 PDF 点；只要求校验和消费者对同一尺寸作一致解释。**[研究：采用判断]**
+
+### 保留反证与范围
+
+[原工作流 L263–294](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/pdf/forms.md#L263-L294)已说明混合路径统一坐标，并要求填充后转图检查位置。因此不能写成整个 Skill 没有视觉验收，也不能声称错配必然绕过最终检查。高度检查本身不充分证明字形、换行或裁切正确；没有安装依赖、执行下载脚本、运行 PDF／Office 应用或模型，未测真实渲染和 Skill 净收益。**[一手：工作流；研究：边界]**
+
+XLSX 线索不另扩写正文：[#2013](https://github.com/anthropics/skills/issues/2013)的直接／别名／局部／普通公式夹具只报告转换前保护漏检，作者明确未运行 LibreOffice；[当前保护源码](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/xlsx/scripts/recalc.py#L74-L111)支持该机制，但不证明工作簿已损坏。[#1517](https://github.com/anthropics/skills/pull/1517)当时仍未合并，只补大小写及相应检测用例，不覆盖作用域或别名。成功状态的检查范围与最终产物正确性仍按 22 既有建议区分，不再添加一般性案例。**[社区：夹具报告；一手：源码与 PR；研究：收敛判断]**

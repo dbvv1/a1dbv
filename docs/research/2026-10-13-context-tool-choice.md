@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加
-改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现；异步工具先复用兼容 SDK，再分开任务终态、工具错误与业务结果。[经验]；服务接入分清工具面、底层凭证和输入信任，插件仅按实际组件采用；共享指令按宿主发现／导入入口选择，不将个人配置、额外目录权限或 Hook 日志误作加载证明；会话动作按问题和宿主选择，不以固定摘要大小替代交付需求；语义查询先保定位、按需补详情，不能把预算省略当资料不存在。
-证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；另核 Tasks 新旧错误语义、两 SDK 解包实现与官方回归定义；未运行模型或上游客户端。[一手／社区／研究] 新增 GitHub／Supabase 固定权限链、已修 HTTP 多用户漏洞与 Tenet 原研究；未把历史披露当当前复现；新增 Claude／Codex 指令文档、固定 Claude 发布记录与 Hook 契约交叉核对，未运行客户端；另核 Claude／Codex 会话动作、fork 与侧问答文档；新增 Serena 大型项目反馈、无效优化复测、已合并预算机制与未合并提示修订，以及启动依赖的独立复测自报。
+改变的建议：先用原生查询定位问题，再按语义与版本缺口补工具；map 可能是旧快照，LSP 依赖会话和缓冲状态，文档近邻版本不保证兼容。全量验收读命令侧完整报告；设计输入按结构／组件契约缺口补充，映射漂移时撤回；跨会话检索不替代当前任务记录，按来源、身份与事实失效语义选记忆实现；异步工具先复用兼容 SDK，再分开任务终态、工具错误与业务结果。[经验]；服务接入分清工具面、底层凭证和输入信任，插件仅按实际组件采用；共享指令按宿主发现／导入入口选择，不将个人配置、额外目录权限或 Hook 日志误作加载证明；会话动作按问题和宿主选择，不以固定摘要大小替代交付需求；语义查询先保定位、按需补详情，不能把预算省略当资料不存在；源码存在但符号查询为空时，先核项目导入配置与依赖解析，再恢复跨文件语义操作。
+证据摘要：固定索引／客户端／采集源码及测试定义、社区刷新案例、onlycodes 历史数据复算和标准库演示。减少工具或账面成本未必缩短等待，显示预算不能补回采集丢失；另核两种记忆实现的追加、冲突与删除链；另核 Tasks 新旧错误语义、两 SDK 解包实现与官方回归定义；未运行模型或上游客户端。[一手／社区／研究] 新增 GitHub／Supabase 固定权限链、已修 HTTP 多用户漏洞与 Tenet 原研究；未把历史披露当当前复现；新增 Claude／Codex 指令文档、固定 Claude 发布记录与 Hook 契约交叉核对，未运行客户端；另核 Claude／Codex 会话动作、fork 与侧问答文档；新增 Serena 大型项目反馈、无效优化复测、已合并预算机制与未合并提示修订，以及启动依赖的独立复测自报；新增 Java 多模块检索原调用、报告者的导入配置恢复、已发布 workspace 修复及其失效范围，缺少修复后原任务编辑验收。
 
 # 上下文获取：问题、版本与状态边界
 
@@ -438,3 +438,28 @@ print('4 assertions passed')
 [#2013](https://github.com/oraios/serena/pull/2013)由另一作者提交，2026-09-16 合并 [`16322651bb8a18c7a4d43a539dac308bbed02c50`](https://github.com/oraios/serena/commit/16322651bb8a18c7a4d43a539dac308bbed02c50)：类型导入移入 TYPE_CHECKING，真正选择该计数器才加载 SDK。维护者虽讨论删除计数器，实际合并的是惰性导入，不是删除功能。[第三位参与者的固定版本复测](https://github.com/oraios/serena/pull/2013#pullrequestreview-5191963066)比较 `403ad0a` 与 `8f121d51`，在 clean container 确认模块不再提前加载并报告四项测试通过；属于独立自报，不是本仓执行，也不是 API 计数或全客户端发现率验证。**[一手：补丁；社区：独立复测自报]**
 
 这个对照只支持先找具体成本来源：无关启动依赖可以延迟加载；附加详情降级则留下需要补查的信息。两者不能合并成“少工具／少信息必然更好”，不另扩正文启动诊断。**[经验：适用边界]**
+
+
+## Serena：语义检索为空时先核项目导入
+
+> 核实时间：2026-10-16（UTC+8；读取于 10-15 UTC）。只读公开原帖、固定源码、测试定义和发布记录；未安装或运行 Serena／JDTLS，未执行上游测试或模型任务。**[社区：原帖；一手：固定实现与发布；经验：采用判断]**
+
+**改变选择**：源码明确存在而符号查询为空时，先用原生文件／文本搜索定位，核对语言服务器的项目导入配置与依赖解析。修正导入后，以已知定义和调用点核验，再恢复跨文件语义操作；不靠扩大查询、增加上下文或无差别清缓存解决。这里新增的是“构建／导入上下文没有成立，或旧 workspace 掩盖了错误配置”，不是又一个源码内容缓存例子。**关键局限**：有真实多模块搜索失败与修复机制，但没有修复后原任务的编辑产物／验收，不能声称 Agent 成功率提高。**[经验：选择与证据边界]**
+
+### 实际调用与报告者恢复：不要把空结果当目标不存在
+
+- [Serena #1174](https://github.com/oraios/serena/issues/1174) 的 2026-03-16 日志来自 Windows Java/Maven 项目，Serena 日志版本为 0.1.4、后端为 LSP。`serena project index` 报告索引 2,400 个 Java 文件；随后 `find_symbol` 查 `MultilingualConfigGenerationService`，以及该类的 `generate`，均返回空数组。两次调用都未限定 `relative_path`，`include_body=False`、`include_info=False`，不是附加详情预算导致的缺省。3 月 18 日报告者确认符号存在、普通搜索可用，符号工具仍失败；对已定位 Java 文件的健康检查也返回空。维护者最初判断为慢启动，后重新打开，最终因无法复现关闭，不能把首次关闭当成修复。**[社区：原调用日志及作者复述，未复现]**
+- 同一报告者在 2026-06-03 的 [#1541](https://github.com/oraios/serena/issues/1541) 补充：Windows 11、JDTLS 1.58.0-SNAPSHOT、23 个 Maven 模块，父 POM 依赖非默认配置指向的仓库；其称在 `project.local.yml` 补上 Maven 配置路径后可工作。更有辨别力的复现是：正确配置下健康检查通过，移除该配置仍通过；清掉对应 JDTLS workspace 后，才暴露父 POM 无法解析及空符号结果。该帖的 Serena 版本只写 latest，不能补成精确版本。**这是修复前的配置恢复自述，不是后来补丁发布后的用户重试。** **[社区：报告者环境／复现自述，未复现]**
+
+因此，索引文件数只说明扫描范围，旧 workspace 下的成功也不能单独验证当前导入配置。文本搜索可先确认文件和定义存在；是否解析出正确跨模块引用，仍需在正确构建上下文里核验。**[经验：从该单例推导的诊断选择]**
+
+### 固定修复与发布：自动失效覆盖哪些变化
+
+[PR #1576](https://github.com/oraios/serena/pull/1576) 于 2026-06-28 合并，merge SHA 为 `88fe650f357aa47fcb851a068424f9fbbb14c332`：
+
+- [workspace hash 实现](https://github.com/oraios/serena/blob/88fe650f357aa47fcb851a068424f9fbbb14c332/src/solidlsp/language_servers/eclipse_jdtls.py#L777-L813) 在项目根与 launcher 路径之外，纳入七项显式配置值：`maven_user_settings`、`gradle_user_home`、`gradle_wrapper_enabled`、`gradle_java_home`、`java_home`、`use_system_java_home`、`maven_offline`。legacy INITIAL 默认配置仍保留原 hash；设置受跟踪项后才退出该兼容路径。**[一手：固定源码]**
+- [新增测试 L458–478](https://github.com/oraios/serena/blob/88fe650f357aa47fcb851a068424f9fbbb14c332/test/solidlsp/java/test_jdtls_path_resolution.py#L458-L478) 检查 Maven 配置路径变化会改变 hash，以及 legacy 配置增加显式 Gradle 路径会改变 hash。这是测试定义阅读，未运行；这些断言也没有启动真实多模块导入或验证 Agent 编辑。**[一手：测试源码，未运行]**
+- 修复已进入 2026-07-16 发布的 [v1.6.0](https://github.com/oraios/serena/releases/tag/v1.6.0)，固定 tag SHA `93b9544ea9def8e93cb6a90f8ea67befe3c8fee4` 的 [changelog](https://github.com/oraios/serena/blob/93b9544ea9def8e93cb6a90f8ea67befe3c8fee4/CHANGELOG.md) 明列 #1576，[源码 L752 起](https://github.com/oraios/serena/blob/93b9544ea9def8e93cb6a90f8ea67befe3c8fee4/src/solidlsp/language_servers/eclipse_jdtls.py#L752-L800) 包含此机制，不能把历史缺陷写成当前版本仍普遍存在。**[一手：发布与固定源码]**
+- 2026-10-13 发布的 v2.0.0，固定 SHA `4c4268f9c0adf8743a75e6dda2ef1fa635f34cc3` 的 [实现 L691 起](https://github.com/oraios/serena/blob/4c4268f9c0adf8743a75e6dda2ef1fa635f34cc3/src/solidlsp/language_servers/eclipse_jdtls.py#L691-L750) 仍保留该机制，另纳入 `runtimes`、Maven／Gradle 导入开关、build configuration、autobuild 和 custom JRE 等配置。hash 取配置值，不读取同一路径下 Maven 配置文件的内容，也不纳入 branch／HEAD；**这只限定这一层的自动失效范围，不能据此断言其他机制不会刷新或重新导入。** **[一手：固定源码；经验：边界解释]**
+
+本链支持针对性检查导入环境，不支持“清空所有缓存”、无条件更换后端或升级就能完成原任务的建议。没有发现原报告者在 #1576 后的重试验收，也没有最终跨模块修改 diff／测试产物；保持为机制与诊断选择证据。**[经验：采用边界]**

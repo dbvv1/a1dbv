@@ -1,6 +1,6 @@
 # 02 · 模型与成本
 
-> 更新：2026-10-15
+> 更新：2026-10-16
 
 ## 1. 原则：按任务分档，而不是追榜单
 
@@ -11,7 +11,7 @@
 | 架构设计、跨模块重构、疑难 bug 中，现有方案出现推理或验证缺口 | 🧪 尝试更强能力 | Claude Opus 5.5 / Fable 5.1、GPT-6 Astra / 6.1 Sol；effort 按下文调整。Gemini 4 Argon 见下方试用条件 |
 | 范围清楚的日常功能开发、写测试 | ✅ 保留已够用的方案 | 新选型可从 Claude Sonnet 5.5 / Opus 5.5、GPT-6.1 Sol 的客户端默认 effort 起步 |
 | 目标明确、结果容易检查的检索型子 Agent、批量小改、格式化 | 🧪 尝试轻量模型 | Claude Haiku 5.5、GPT-6 Luna；复杂调查不因交给子 Agent 就自动降档 |
-| 路由、分类、“从有限选项中选一个” | 决策模型（新类别） | Jev、Cloudflare Clef、Strands Decider 2B、OpenAI Decisions API（见第 2.1 节） |
+| 反复出现的有限选项语义判断 | 🧪 有具体缺口才试决策接口 | 规则或当前模型在质量、等待、成本上不足时再比较；分数、回退与授权见第 2.1 节 |
 | 离线 / 保密 | 本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B（见第 5 节） |
 
 **effort 起点按模型与客户端区分**：Claude Code 当前建议 Opus 5.5／Sonnet 5.5 的日常、范围明确开发从 `medium` 开始；`low` 更适合逐次查看结果的小修改或快速草稿。Sonnet 5.5 在 Claude API 的默认值仍是 `high`，不能照搬客户端默认。Codex 的 GPT-6.1 Sol 从客户端默认 effort 起步，Astra 从 Light（配置值 `low`）起步，再按规划、分析与检查需要调整。同名 effort 不代表跨型号、跨代等强度。以上是厂商使用建议，不能据此认定本项目中的效果等价；表中决策模型与本地候选仍按各自小节的核查范围理解。**[一手：[Claude Code](https://code.claude.com/docs/en/model-config#choose-an-effort-level)、[Claude API](https://platform.claude.com/docs/en/build-with-claude/effort#recommended-effort-levels-for-claude-sonnet-5-5)、[Codex](https://learn.chatgpt.com/docs/models#choosing-a-model)，2026-10-15]**
@@ -19,6 +19,8 @@
 **Gemini 4 Argon：从等待开放改为按任务试用。** `gemini-4-argon` 于 2026-10-13 在 Gemini API／AI Studio 正式可用；Free tier 和 Google AI Pro 计划不包含它。已有 Gemini API 工作流迁移时，先移除显式缓存调用，核对 thinking 与输出共享的 token 上限；不要只换模型 ID。🧪 适合需要比较复杂编码或长输出的任务，现有模型已满足要求则不必迁移；是否保留取决于本项目质量、延迟和总费用，GA 不证明收益。**[一手：[发布记录](https://ai.google.dev/gemini-api/docs/changelog)、[迁移指南](https://ai.google.dev/gemini-api/docs/latest-model)；研究：采用判断，2026-10-15，未实测]**
 
 **快速子 Agent 还要匹配接口**：GPT-6 Luna 若同时需要推理与工具调用，使用 Responses API；Chat Completions 的 function calling 仅支持 `reasoning_effort=none`，不要只按低单价替换现有推理工具链。**[一手：[模型页](https://developers.openai.com/api/docs/models/gpt-6-luna)；研究：选型条件，2026-10-15]**
+
+**Haiku 5.5 的 computer-use API 迁移须按提供方选择**：从 Haiku 4.5 的旧工具迁移，不能只换模型 ID。Claude API／Google Cloud 要用 `computer_toolset_20260801`，并同步改调用分派与结果回传；Amazon Bedrock 则用 `computer_20251124` 及对应 beta header。现有宿主未适配时，先保留可用路径，不因基准分数直接替换。这是自建 API 集成条件，不代表 Claude Code 或桌面 App 的功能变化。**[一手：[迁移指南](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide#move-computer-use-to-the-toolset)、[兼容性契约](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#compatibility)；研究：选择，2026-10-16（UTC+8），未实测]**
 
 **在 Claude Code 里落地**：主会话用适合任务的模型；需要子 Agent 时，可在 frontmatter 写 `model: haiku` / `sonnet`，或用 `CLAUDE_CODE_SUBAGENT_MODEL` 统一指定。尽量减少没有任务理由的模型和 effort 切换；缓存影响按下文 [Prompt cache 的厂商与配置边界](#2-价格快照api-美元百万-token)判断，不为保缓存而拒绝必要的模型调整。**[一手：配置接口；经验：使用建议]**
 
@@ -53,7 +55,7 @@
 - Gemini 4 Argon 仅支持隐式缓存，命中后按输入价的 **5%** 计费（优惠 95%，不是“九五折”）；显式 `cachedContents`／`caches.create` 不支持。上表为 Standard，Batch／Flex／Priority 另计，搜索等工具费不在 token 单价内。长期预算按 2026-12-01 起的费率估算。**[一手：上列价表与迁移指南；研究：预算建议，2026-10-15]**
 
 - **Claude Haiku 5.5**（2026-10-07）**[一手：Anthropic 公告]**：
-  - 按 Standard 输入/输出单价，Haiku 4.5 的 $1/$5 对比 Haiku 5.5 ≤100K 档 $0.10/$0.50，下降 **90%**；>100K 档 $0.50/$2.50 则下降 **50%**，不是统一 75%。这是单价算术，不是任务总成本降幅 **[一手价表 + 算术]**；原公告还报告 1M 上下文、OSWorld 72.4%，并推荐子 Agent 用途（能力项本轮未复核）；
+  - 按 Standard 输入/输出单价，Haiku 4.5 的 $1/$5 对比 Haiku 5.5 ≤100K 档 $0.10/$0.50，下降 **90%**；>100K 档 $0.50/$2.50 则下降 **50%**，不是统一 75%。这是单价算术，不是任务总成本降幅 **[一手价表 + 算术]**；[官方模型页](https://platform.claude.com/docs/en/models/haiku-5-5/overview)确认 1M 上下文；[系统卡 §8.9.3](https://www-cdn.anthropic.com/e1080d6bf5ae2018ea3c2f414064be03232f5be5/Claude%20Haiku%205.5%20System%20Card.pdf#page=128)将 OSWorld 2.1 离线子集的 72.4% 定义为检查点部分得分，全部检查点通过的严格成功率为 37.1%；两者均为厂商报告，不能直接当作本项目桌面任务成功率。若据此评估自建 computer-use Agent，先核第 1 节的接口迁移条件；细节见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[一手；研究：采用边界，2026-10-16（UTC+8），未实测]**；
   - 同日 Sonnet 5.5 的缓存读取价格减半；
   - 订阅用户开始**每月附带 API 额度**：Max 5x 100 美元、Max 20x 200 美元、Team 最多 500 美元（团队共享）；须领取且只覆盖合资格运行入口，不能抵所有 Code 用量，见 [18 成本治理](18-team-adoption.md#5-成本治理)（2026-10-15 补核）。
 - **Mistral Large 4**（2026-10-06，公开预览）**[一手：Mistral 博客和文档]**：1.05T 总参数、52B 激活的 MoE，原生多模态，1M 上下文；**月底发布权重**；在欧洲自有数据中心训练。官方称在开源权重模型中达到领先、在视觉定位上超过闭源前沿模型。HN 上 Simon Willison 实测认为这是“Mistral 至今最好的模型”，也有人认为进步慢于中美实验室 **[社区]**。
@@ -61,12 +63,15 @@
 - **Prompt cache 是最大的杠杆**：缓存读取约为输入价的十分之一甚至更低。缓存规则须按厂商、模型与配置区分：[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)说明，更改顶层 `output_config.effort` 会使消息缓存失效，对工具/系统缓存的影响依模型而异；显式写出原默认值不算变化，支持逐消息 effort 的模型也有保留前缀的路径。模型切换、前缀改动和 TTL 是排查因素，不能一概断言每次修改都会清空全部缓存。当前 [Claude Code 成本文档](https://code.claude.com/docs/en/costs)将缓存统计放在 `/usage` 的 Session 区；它覆盖主会话，不能当作全部子 Agent 的合计 **[一手]**。
 - **Harness 本身也有成本**：Systima 在 2026-07、Claude Code 2.1.207／OpenCode 1.17.18 的隔离代理实验中测得首轮约 33k／7k 输入；一份 72KB 的指令文件让每次请求多约 2 万 token（详见 [13](13-frontier-radar.md#23-harness-的隐性成本被量化了)）**[社区：原文]**。本仓库在云端环境复现：默认约 31.6k，用 `--tools=` 收窄工具后降到 3–6k；72KB 的指令文件让每次请求多约 2.6 万 token（[19](19-experiments.md#3-e1固定开销)）**[经验：历史实测]**。这些是含缓存的原始输入量，不是按普通输入价计费的 token，也不能直接推算订阅消耗或作为当前客户端成本排名。选择须比较实际完整任务的质量、返工与含缓存的总成本；历史配置及当前诊断入口见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)，本仓库原逐次数据缺失的限制见 [19](19-experiments.md)。
 
-### 2.1 新类别：决策模型（2026-09 起）👀
+<a id="21-新类别决策模型2026-09-起"></a>
 
-- **是什么**：从**预先定义的选项**中给出结果及概率的模型，不生成自由文本；概率输出不代表已经在目标任务上校准。由 TypeSafe AI 的 **Jev**（2026-09-15 发布）带起，几周内出现了 Cloudflare Clef（开源，基于冻结的 Qwen 骨干 + 选项打分头）、Strands Decider 2B、OpenAI Decisions API（基于 GPT-6 Luna），以及大量 0.8B 级别的社区复现；Ollama 0.35 起支持 **[一手：Cloudflare、Strands 博客；二手：Forkast 关于 Jev]**。 2026-10-15 局部复核：[Clef 官方模型卡](https://huggingface.co/Cloudflare/clef)只说明 logits 经 softmax 得到选项概率；自动路由前仍须检查本任务误判与阈值表现，阈值不能替代实际授权，见 [14 的采用边界](14-synthesis.md#新的分层趋势)。本次不重新认证其余产品条目。**[一手；研究：边界]**
-- **号称的优势**：Jev 自称比前沿 LLM 快约 190 倍、便宜约 440 倍；独立测试（Every）在一个抽取任务上测得快约 25 倍。注意 Jev 的准确率是**和前沿模型的一致率**，不是对照真实标准答案 **[二手]**。
-- **在 AI coding 里的位置**：Agent 流程中大量的路由、分类、“下一步做什么”的判断，目前都交给通用 LLM 来做；决策模型把这部分拆出来，**用置信度决定是自动执行还是交给人**。
-- **判断**：方向值得关注（模型在按角色分层，见 [14 规律五](14-synthesis.md#5-规律五模型在商品化可迁移的工程资产在增值)），但独立评测很少，大量复现出现在几周内，说明门槛不高、格局未定。**现在适合做原型，不建议押注某一家。**
+### 2.1 决策模型：有限选项不等于可以放心执行 🧪
+
+**何时值得加**：已有反复出现的分类、候选路由或检查项预筛，选项含义清楚、需要理解自然语言，而规则或当前模型有具体质量、等待或成本缺口时，再比较决策接口；现有方案够用就保留。不把开放式规划整体改成一次选项打分。是否保留，看本任务误判、复核量及包含失败与升级的总成本；节省被漏报或复核抵消就撤回。**[研究：采用边界，未实测；依据与原测试见 [S1d](research/2026-10-10-audit.md#s1d--2026-10-16-决策接口的评分与执行边界)]**
+
+**先辨分数，再定阈值**：[Clef 模型卡](https://huggingface.co/Cloudflare/clef#model)说明选项 logits 经 softmax 得到概率；[Jev 的 Choice confidence](https://docs.typesafe.ai/confidence)则是从分布计算的集中程度，不能直接读成正确率，也不把其公式套给其他接口或 Score 题型。用本项目有可靠标签的样本检查误报、漏报及阈值下的覆盖率，按错误代价定路由／复核条件；训练时做过校准、输出合法或与强模型一致，都不证明目标任务正确。[OpenAI 指南](https://developers.openai.com/api/docs/guides/decisions#interpret-the-answers)也要求按应用标签与误报／漏报代价设阈值。**[一手：字段与指南；研究：采用判断，2026-10-16（UTC+8）]**
+
+**回退和授权由程序守住**：类别不全时留 `other`／“以上皆非”；缺证据、低于已验证阈值或接口拒绝时，补信息、升级或交人复核，不把这些状态算执行成功。[OpenAI API](https://developers.openai.com/api/reference/resources/decisions/methods/create)可逐题返回 `refusal`，同请求其他题仍可能正常作答，应逐项处理。动作还须通过当前状态、参数和权限检查；高分不会新增授权，也不能跳过原本必需的确认。**[一手：接口与回退指南；研究：执行边界]**
 
 ## 3. 订阅、额度与成本控制
 
@@ -86,7 +91,7 @@
 API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅内可做任务数。Codex credits 无独立缓存写入收费，API 的缓存写入规则不能移植到 credits。Work 与 Codex 共享用量，任务上下文、推理、工具和缓存都会影响消耗；这里没有读取任何用户账户额度。
 
 **2026 下半年的变化**：
-- 当前 Pro 提供 $100/$200/$500 月费档；$500 档包含 **Ultrafast 访问资格**，不等于无限 Ultrafast 用量（[一手](https://learn.chatgpt.com/docs/pricing)）。此前记录的“$200 Pro 从 Plus 20 倍降至 10 倍”与“10 月 3 日后体感六折”没有附精确日期和可复核社区原帖，本轮标为**未核实历史说法，不作为当前套餐合同**。
+- 当前 Pro 提供 $100/$200/$500 月费档；$500 档包含 **Ultrafast 访问资格**，不等于无限 Ultrafast 用量（[一手](https://learn.chatgpt.com/docs/pricing)）。此前“$200 Pro 从 Plus 20 倍降至 10 倍”仍缺精确日期和可复核依据，保留为未核实历史说法；“体感六折”已有 V2EX 第 7 条回复自述，但缺可复算的任务与前后基线，第 8–9 条还有相反体验。原帖与反证统一见 [11 额度自述](11-community-pulse.md#7-中文社区额度与交付自述)，两者均**不能作为当前套餐合同或统一降额的依据**。**[社区：六折原帖；研究：证据边界]**
 - **GPT-5.5 于 2026-10-14 19:00 UTC 起在以 ChatGPT 登录的 Codex 中退役**；OpenAI API 和 API-key 登录的 Codex 不受该次退役影响。受影响的配置按当前可用模型与任务需要替换，不统一指定继任型号，见 [Codex 选择](01-agents/codex.md#2-模型按任务与实际用量选择)。**[一手：当前模型文档，2026-10-15 补核]**
 - Claude 订阅耗尽速度有[具体历史报告](https://github.com/anthropics/claude-code/issues/26271)，但版本、任务与套餐不同，不能从个案或点赞推定当前普遍可用天数；范围见 [Claude](01-agents/claude-code.md#6-已知问题与社区反馈)。**[社区：原帖；研究：边界，2026-10-15 补核]**。
 - 企业侧：Meta、微软、Uber 都经历了从鼓励“tokenmaxxing”到限制 AI 开销的转变；有工程负责人反映每人每月 token 花费在 200–500 美元，个别超过 2000 美元 **[社区]**。
@@ -97,7 +102,7 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 2. 无关任务之间 `/clear`；同任务需要腾空间时再 `/compact` 并指定保留重点，不把离开键盘当必做触发器，见 [03 会话动作选择](03-context-engineering.md)。缓存有效时压缩可能更便宜，不等于额外压缩一定省钱 **[一手；研究：采用判断，2026-10-15]**；
 3. **按任务选择子 Agent**：只拆可独立验收或需隔离冗长输出的支线；共享背景多、频繁往返的小任务留主会话，见 [08](08-multi-agent.md)。历史小任务的输入量倍率不能当当前费用或额度倍率 **[一手；社区：历史报告；研究：采用判断，2026-10-15]**；
 4. 让嘈杂的命令安静输出（加 quiet 参数），或者放到子 Agent 里跑；
-5. 把 I/O 密集的杂活交给便宜模型（Spotify Portal 的做法）👀；
+5. **👀 大量读取或照已有模式生成时，才评估轻量模型分流**：问题明确、结果可检查且现有方案确有负担时再试；调试、架构判断或安全关键代码不能仅因读写量大就降档。Spotify 原作者报告过漏掉线程安全缺陷，其约 90% 只指主模型侧读取上下文节省；把 worker、重读、验收和返工一起比较，无净收益就撤回。见 [原方法与反例](research/2026-10-10-audit.md#s1e--2026-10-16-轻量模型分流与主模型侧节省)。**[一手：作者报告；研究：采用边界，未实测]**；
 6. **给按量计费设预算与停用边界**：有开通权限的 Agent 可能产生额外费用；AWS 新体验项目和 GCP 合资格服务已有 spend limit / spend cap，但适用范围和超额计费不同，不能视为所有云服务通用的硬性封顶（见 [18 第 5 节](18-team-adoption.md#5-成本治理)）。**[一手：AWS、Google Cloud；研究：采用建议]**
 
 ### 3.1 查异常消耗：ccusage 只补历史诊断

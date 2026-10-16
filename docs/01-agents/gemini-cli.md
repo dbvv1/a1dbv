@@ -1,17 +1,24 @@
 # Gemini CLI 与 Antigravity
 
-> 核实时间：2026-10-08（恢复范围于 2026-10-15 补核，其余保留原核实范围）。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
-> 评级：🧪 **试用**（预算敏感、多模态、Google 生态）
+> 编辑更新：2026-10-16（UTC+8）。按接入资格、迁移与隔离需求选择客户端；[来源与核查范围](../research/2026-10-12-community-source-records.md#gemini-页历史页头)。
+> 评级：🧪 **有条件试用**（已有可用 API／企业合同路径）；个人新接入另评估 Antigravity CLI
 
 ## 1. 基本情况
 
 - 开源（Apache-2.0），`npm install -g @google/gemini-cli`；最新稳定版 **v0.63.0（2026-10-06）**，基本每周一个版本。
-- **免费额度**：个人 Google 账号每分钟 60 次、每天 1000 次请求；Gemini 3 系列模型，1M 上下文。
+**先核认证与合同，再选客户端；不再为旧个人免费额度新采用 Gemini CLI。** **[研究：采用判断]**
+
+- **消费者路径已停**：Code Assist individuals、Google AI Pro／Ultra 经 Google 账号登录 Gemini CLI 的服务自 2026-06-18 停止；这不是全部 Google 登录、CLI 或 API 路径停用。[官方弃用说明](https://developers.google.com/gemini-code-assist/docs/deprecations/code-assist-individuals) **[一手]**
+- **API 与企业分别核**：[迁移公告](https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/)明确保留付费 Gemini／Enterprise Agent Platform API key 接入；免费 API key 不据旧额度页保证，Vertex AI 按所用项目的资格、额度与计费核对。Standard／Enterprise 自 2026-10-09 停止新购，已有订阅按合同继续支持，续订／加席另有截止日期，见[企业弃用说明](https://docs.cloud.google.com/gemini/docs/codeassist/sunset)。**[一手；研究：边界]**
 - 文档站：[geminicli.com/docs](https://geminicli.com/docs/)。
 
 ## 2. 功能面（`docs/cli/` 目录）
 
-ACP 模式、auto memory（带“收件箱”审阅流程）、checkpointing 与 rewind、Skills（含编写指南与最佳实践）、自定义命令、`GEMINI.md`、`.geminiignore`、git worktrees、无头模式、模型路由（model routing）、Plan 模式、沙箱（macOS Seatbelt / Docker）、受信任目录、token 缓存、Hooks、Extensions、语音模式。
+ACP 模式、auto memory（带“收件箱”审阅流程）、checkpointing 与 rewind、Skills（含编写指南与最佳实践）、自定义命令、`GEMINI.md`、`.geminiignore`、git worktrees、无头模式、模型路由（model routing）、Plan 模式、[沙箱](#沙箱启用与隔离范围)、受信任目录、token 缓存、Hooks、Extensions、语音模式。
+
+### 沙箱启用与隔离范围
+
+**🧪 需要保护主机资源时，先核实际生效的沙箱配置及读、写、网络范围，再选择后端。** 固定发行版 v0.63.0 默认未启用完整进程沙箱或工具级沙箱；前者的环境变量还能覆盖 `-s`，不能只看启动参数。启用 macOS Seatbelt 后，默认 `permissive-open` 仍允许广泛文件读取和网络访问，另有明确拒绝项；自动审批也不等于 OS 隔离。完整进程与工具级隔离须分开核查，其他版本以对应实现和实际边界为准。见[固定版本、文档冲突与反例](../research/2026-10-12-community-source-records.md#gemini沙箱启用与有效边界)；本仓库未运行客户端或验证隔离效果。**[一手；研究：采用边界]**
 
 ### 恢复范围
 
@@ -33,17 +40,17 @@ ACP 模式、auto memory（带“收件箱”审阅流程）、checkpointing 与
 
 ## 4. Antigravity
 
-Google 的“Agent 优先”开发环境，与 Gemini 3 深度绑定，能异步编排多个 Agent，也提供托管 Agent（`antigravity-preview-05-2026`，公开预览）**[二手]**。Superpowers 等插件已支持用 `agy plugin install` 安装 **[一手]**。
+👀 **评估 Antigravity CLI 作为个人入口或必要迁移候选，先核当前资格、费用与必需功能。** 官方已给出从 Gemini CLI 转换配置与插件的路径，但只承诺部分兼容；旧免费额度不作为新入口预算，导入成功也不代表原工作流已接续。**[一手；研究：采用判断]**
 
-评级：👀 **评估**。可以关注，但本仓库未能直接核实其文档。
+[迁移文档](https://antigravity.google/docs/cli/gcli-migration)支持选择导入扩展及全局配置；项目 Skills 需从 `.gemini/skills/` 调整到 `.agents/skills/`，MCP 改用独立配置，部分远程地址字段需转换。认证也须单独核：[API key 路径](https://antigravity.google/docs/cli/install/#using-a-gemini-api-key)要求显式设置 `modelProvider`，仅保留原环境变量不够。先检查实际加载、必要工具与授权，再决定是否替换旧入口；本仓库未运行迁移。**[一手；研究：采用边界]**
 
 ## 5. 适用场景
 
-- 需要**截图、图片等多模态输入**的任务。
-- 预算有限，或想用免费额度做批量、低风险的任务。
-- 已在 Google Cloud 生态中。
+- 已有可用 Gemini CLI API／企业合同路径，且覆盖任务需要时可保留，不因消费者入口变更一律迁移。
+- 个人用户需要 Google 编码入口时，先评估 Antigravity CLI 的资格和配置适配；只因预算有限，不直接选用旧免费路径。
+- 多模态任务先核实际模型、输入支持与额度，不以旧“1M 上下文”代替客户端可用性。**[研究：条件选择]**
 
 ## 来源
 
 - [gemini-cli README](https://github.com/google-gemini/gemini-cli)、[docs/changelogs](https://github.com/google-gemini/gemini-cli/tree/main/docs/changelogs)
-- [Google Antigravity（Wikipedia）](https://en.wikipedia.org/wiki/Google_Antigravity)（二手）
+- [接入变更与迁移证据](../research/2026-10-12-community-source-records.md#gemini接入资格与-antigravity-迁移)（含旧页面冲突与未验证范围）

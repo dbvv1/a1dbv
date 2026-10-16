@@ -1,6 +1,6 @@
 主线：三，兼二
-改变的建议：恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流。[经验]
-证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验。[一手／社区／研究]
+改变的建议：请求超时与整项任务截止时间分别核实；恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流。[经验]
+证据摘要：官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验；10-16（UTC+8）补续接前分支／HEAD检查的单仓观察与离线Git正反例，以及已发布 OpenAI Python SDK／HTTPX2 的超时、重试与流读取边界；Go 整次请求超时作对照。[一手／社区／研究／经验]
 
 # 长程任务：来源、反例与实验边界
 
@@ -70,6 +70,23 @@
 | Auto Memory | [S3](2026-10-10-audit.md#s3--gemini-cli) | 源码文档标记实验性、默认关闭，patch/Skill 草稿进入 inbox 后由用户审阅；不能将 main 文档的全部功能归入某一安装版本。**[一手]** |
 
 本仓库[独立 spec 与运行报告模板](../../templates/long-task/README.md)及[校验器](../../scripts/validate_task.py)只检查记录一致性：不执行检查、不打开证据、不证明证据真实、不阻止同时篡改 spec 与报告，也不是完整 agent harness。模板自己的“信任边界与坑”保留具体限制；其合成测试不是模型驱动恢复实验。**[经验：实现范围]**
+
+## 请求超时、重试与整项任务截止时间
+
+核实：2026-10-16（UTC+8）；对应 [16 §4.5](../16-building-agents.md#45-安全与成本)，20 §7 仅交叉引用。改变的选择是：需要总耗时上限时，先核现有执行环境的总时限／取消覆盖范围，而不是仅缩短 SDK 请求超时或增加重试。**[研究：采用判断]**
+
+**版本先于字段名。** [官方 Python SDK 文档](https://developers.openai.com/api/reference/python)当前使用 `httpx2.Timeout`；[v3.31.0 发布](https://github.com/openai/openai-python/releases/tag/v3.31.0)为 2026-10-14，固定提交 `86cae50785fb7b7bf2a5d2383370b214b304acd2`。[依赖文件](https://github.com/openai/openai-python/blob/86cae50785fb7b7bf2a5d2383370b214b304acd2/pyproject.toml)要求 `httpx2>=2.12.0,<3`；[默认值](https://github.com/openai/openai-python/blob/86cae50785fb7b7bf2a5d2383370b214b304acd2/src/openai/_constants.py)为 `Timeout(600, connect=5)`、`max_retries=2`。本轮另读 HTTPX2 [v2.13.1](https://github.com/pydantic/httpx2/releases/tag/v2.13.1)，固定提交 `d91c9f4236523eb5978ca800944fa0078f17409f`：它是满足该依赖范围的一份具体传输实现，不证明所有安装都使用它，也不能用旧 HTTPX 文档冒充当前 SDK 依赖。**[一手：发布、依赖与固定源码]**
+
+| 范围 | 已核契约与实现 | 读者不能据此推定什么 |
+|---|---|---|
+| 单次阶段等待 | [HTTPX2 超时文档](https://pydantic.dev/docs/httpx2/advanced/timeouts/)区分连接、读取、写入及连接池等待；read 限制等待下一块数据。[Timeout 实现](https://github.com/pydantic/httpx2/blob/d91c9f4236523eb5978ca800944fa0078f17409f/src/httpx2/httpx2/_config.py)把单个数值赋给各阶段；[同步 HTTP/1.1](https://github.com/pydantic/httpx2/blob/d91c9f4236523eb5978ca800944fa0078f17409f/src/httpcore2/httpcore2/_sync/http11.py)读循环重复传入 read timeout，[socket 后端](https://github.com/pydantic/httpx2/blob/d91c9f4236523eb5978ca800944fa0078f17409f/src/httpcore2/httpcore2/_backends/sync.py)逐次设置超时后读取 | 持续收到数据时，总时长可以超过 read timeout；网络数据到达也不等于任务有有效进展。**[一手；研究：推论]** |
+| SDK 请求重试 | [固定请求实现](https://github.com/openai/openai-python/blob/86cae50785fb7b7bf2a5d2383370b214b304acd2/src/openai/_base_client.py)在 `max_retries+1` 次尝试内重新复制选项、构建请求；超时且请求体可重放才继续。退避在发送之外等待，本地指数退避带 jitter、上限 8 秒；支持的服务端 Retry-After 可到 120 秒 | 重试次数不是总时限；不能用 `timeout×3` 算硬上限，也不能把请求体可重放当业务幂等保证。**[一手；研究：边界]** |
+| 流迭代 | 成功响应离开请求重试循环后才交给响应处理；[固定 Stream／AsyncStream 实现](https://github.com/openai/openai-python/blob/86cae50785fb7b7bf2a5d2383370b214b304acd2/src/openai/_streaming.py)把迭代读取的超时／连接错误归一为 SDK 异常，没有重新进入上述请求重试循环 | “默认超时重试两次”不保证流中途断开后自动续流或重放，更不保证整轮业务工具操作重试。**[一手：实现范围]** |
+| 整次 HTTP 请求的对照 | [Go net/http Client.Timeout](https://pkg.go.dev/net/http#Client)包含连接、重定向和响应体读取，`Do` 返回后仍可中断 Body 读取 | 不能把所有名为 timeout 的设置都说成 inactivity；该契约仍不自动覆盖应用后来发起的请求和工具步骤。**[一手；研究：对照]** |
+
+已回读 OpenAI Python main 为 [`9998c1a3806afda55cb3923de1f7f49adcff5a7f`](https://github.com/openai/openai-python/commit/9998c1a3806afda55cb3923de1f7f49adcff5a7f)（2026-10-15），相关请求重试与流异常处理边界仍可见；正文依据以上已发布版本，不把 main 的其他能力当发行能力。**[一手：版本核对]**
+
+采用边界：检查现有总时限是否覆盖重试等待、流消费和工具步骤；已覆盖就复用，不为此另写计时框架。总时限触发后的结果核对仍沿用 [20 §9](../20-codex-long-horizon.md#9-超时后动作究竟发生了吗)。本轮仅阅读文档与源码，未安装或运行 SDK／真实客户端，未调用模型、测量延迟或费用；这些来源不能说明 Codex／dot 的实际产品停止行为，也不能解释本仓执行服务异常的原因。**[研究：采用与验证边界]**
 
 ## 待运行实验矩阵
 
@@ -176,3 +193,88 @@
 - 模型／任务变化：一次移除一个可选环节，保留风险所需的中间契约与检查；只有现实缺口消失才撤回，不预设固定轮数
 
 以上为 **[经验：条件建议]**，不是新的模型效果实验。后续若获准对照，应固定目标质量与范围，分别比较普通会话、同会话续接和新进程循环，纳入未完成行为、误报完成、返工及人工审阅成本；当前不执行。
+
+
+## 续接提交前检查分支与本地基线
+
+> 核实：2026-10-16（UTC+8）。对应20 §9与运行手册 §4.5；只补本地续接的前置条件，不新增检查框架。**[经验：采用范围]**
+
+**观察与发布状态分开**：公开提交 [`a8f70dc`](https://github.com/dbvv1/a1dbv/commit/a8f70dc) 与本地原提交 `d93ca2a` 同父，tree 均为 `44f3fd1b762f507a2fe0f1868f981b7b12181361`。本地续接又产生 `2d4598b`，其父为 `d93ca2a`，只新增 TASKS 的一个空行和同义状态段；这个重复提交未发布。核对远端已发布内容后，保留原本地分支并从远端成果继续，没有改写已发布历史。可用 `git show -s --format='%h %p %T %s'` 与 `git diff <commit>^ <commit>` 核对对象和增量；本地未发布对象不保证在公开克隆中可取得。以上只证明该次内容与提交关系，不推断续接原因或用户取消。**[经验：单仓Git对象与发布核对]**
+
+**改变的选择**：仅靠发布时远端CAS，不能阻止本地先做出重复提交。开始操作时保存预期分支与HEAD，恢复及暂存／提交前对照；不同或缺失先对账，不能在异常后重新采当前值让旧操作通过。原成果已发布且没有实质增量则不重做；需要新工作时，先确认新范围再建立新基线。下例只检查普通单父提交；整合提交须按整合计划核对父集合。**[经验：条件建议]**
+
+以下在独立临时仓库、已安装Git下离线运行；没有访问原会话、凭据，也没有运行模型或引擎。代码仅构造Git状态，不重放原执行过程：
+
+```sh
+set -eu
+repo=$(mktemp -d)
+git -C "$repo" init -q -b task
+git -C "$repo" config user.name offline-check
+git -C "$repo" config user.email offline@example.invalid
+printf 'base\n' > "$repo/content"
+git -C "$repo" add content
+git -C "$repo" commit -qm base
+expected_branch=$(git -C "$repo" symbolic-ref HEAD)
+expected_head=$(git -C "$repo" rev-parse HEAD)
+check_base() {
+  test -n "$expected_branch" && test -n "$expected_head" &&
+  test "$(git -C "$repo" symbolic-ref -q HEAD)" = "$expected_branch" &&
+  test "$(git -C "$repo" rev-parse HEAD)" = "$expected_head"
+}
+git -C "$repo" switch -qc other
+if check_base; then exit 1; fi
+test "$(git -C "$repo" rev-parse HEAD)" = "$expected_head"
+echo 'same-HEAD/wrong-branch: rejected'
+git -C "$repo" switch -q task
+printf 'work\n' >> "$repo/content"
+check_base
+git -C "$repo" add content
+checked_tree=$(git -C "$repo" write-tree)
+check_base
+git -C "$repo" commit -qm work
+test "$(git -C "$repo" rev-parse HEAD^)" = "$expected_head"
+test "$(git -C "$repo" rev-parse HEAD^{tree})" = "$checked_tree"
+echo 'normal-path: passed; parent/tree: matched'
+original=$(git -C "$repo" rev-parse HEAD)
+printf 'redundant status\n' > "$repo/status"
+if check_base; then exit 1; fi
+test "$(git -C "$repo" rev-parse HEAD)" = "$original"
+test -z "$(git -C "$repo" diff --cached --name-only)"
+test -f "$repo/status"
+echo 'advanced-HEAD: rejected; HEAD/index unchanged; work preserved'
+published=$(printf 'counterpart\n' | git -C "$repo" commit-tree "$checked_tree" -p "$expected_head")
+test "$published" != "$original"
+test "$(git -C "$repo" rev-parse "$published^{tree}")" = "$checked_tree"
+echo 'different-commit/same-tree: confirmed'
+expected_head=''
+if check_base; then exit 1; fi
+echo 'missing-expected-HEAD: rejected'
+```
+
+实际输出（退出码0）：
+
+```text
+same-HEAD/wrong-branch: rejected
+normal-path: passed; parent/tree: matched
+advanced-HEAD: rejected; HEAD/index unchanged; work preserved
+different-commit/same-tree: confirmed
+missing-expected-HEAD: rejected
+```
+
+**边界**：相等检查不是原子锁，检查后仍可能发生并发checkout／commit；因此不替代串行整合、受检树核对、发布前的父提交核对或远端CAS。同HEAD下的语义重复也可能通过；提交不同而tree相同只说明快照相同，须结合原操作和发布回执判断是否已交付。未测真实客户端恢复、失败率或节省时间，不声称机制已防住所有重复。**[经验：确定性检查及局限]**
+
+
+## 16 页历史页头
+
+历史原文转存：2026-10-16（UTC+8），来自 `docs/16-building-agents.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准，不表示本次重新核实。
+
+```text
+> 核实时间：2026-10-16（UTC+8）补请求超时范围；2026-10-15（UTC+8）局部复核 SDK／托管选型、配置、缓存、预算与程序化工具调用；方案概览基线为 2026-10-08。2026-10-15 完成全文核心建议独立审阅，补 outcomes 终止条件并归一模型价表入口；不代表真实 SDK 或模型效果已验证。
+> 依据 **[一手]**：
+> - Anthropic：Claude API 官方 Skill（随 Claude Code 2.1.294 分发）中的方案比较、Agent 设计和 Managed Agents 文档；克隆查看了 [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)；
+> - OpenAI：developers.openai.com 的 [Agents](https://developers.openai.com/api/docs/guides/agents) 和 [Decisions](https://developers.openai.com/api/docs/guides/decisions) 指南，learn.chatgpt.com 的 [Codex SDK](https://learn.chatgpt.com/docs/codex-sdk)、[app-server](https://learn.chatgpt.com/docs/app-server)、[codex exec](https://learn.chatgpt.com/docs/non-interactive-mode)（Markdown 版）；
+> - Google ADK、AWS Strands、OpenAI Agents SDK 的仓库（只确认了活跃度，2026-10 都有提交）。
+>
+> 前面的章节讲“怎么用现成的 Coding Agent”。这一篇讲**什么时候该自己搭**，以及各家的搭建方式。
+
+```

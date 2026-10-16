@@ -7,7 +7,7 @@
 这是一个 **AI Coding 知识库 + 配置模板**仓库：收集、验证、分析 AI 辅助编程的工具、方法和配置。
 主干是通用 AI coding（`docs/`）；具体领域（如 Unity 游戏开发）放在 `domains/` 下作为分支。目前没有可构建的程序。
 
-研究方向以 `AGENTS.md` 的“方向锚点”为准（由用户维护）。
+研究方向以 `AGENTS.md` 的“方向锚点”为准（由用户维护）。参与维护时，开工只需读三份文件：`AGENTS.md` 方向锚点、`docs/collaboration/LONG-TERM-PLAN.md`（运行手册）、`docs/collaboration/TASKS.md`。
 
 ## 目录
 

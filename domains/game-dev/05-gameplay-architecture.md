@@ -1,6 +1,6 @@
 # Gameplay 架构：让第二次修改仍然可靠
 
-> 更新：2026-10-15
+> 更新：2026-10-16（UTC+8）
 
 适用：单人程序开发独立游戏，Unity 为主、Unreal 作对照。
 
@@ -63,6 +63,15 @@
 
 [一手] Unity Behavior [1.0.16](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/changelog/CHANGELOG.html) 新增 OnSetup／OnTeardown，并修复不可达导航持续 Running 等问题。UE [BT](https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---overview) 有事件驱动的观察／打断；[StateTree](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-state-tree-in-unreal-engine) 以转换触发选状态，同状态任务并发，完成转换不应被理解为自动等待全部任务。[研究] 选择已有体系并锁定版本，不能把所有图工具的 abort、重入和完成语义视为相同。
 
+### 感知与搜索：持有目标不等于知道当前位置
+
+**[研究] ✅ 躲避／误导敌人属于玩法时，分开目标身份、最近获知的位置与当前感知状态。** 沿现有状态机／黑板保存已知位置，由允许的视听、队友报告或特殊追踪规则更新；搜索阶段不要因仍持有玩家对象，就持续读取其当前位置。Shattered Pixel Dungeon 的普通追猎区分目标对象与目标格，群体智能模式又明确允许传递位置。[一手] 不必新增记忆框架，也不要求失去视线立即忘记目标。
+
+- **Unity**：[Behavior 1.0 节点](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/node-types.html)区分 Navigate To Location 与 Navigate To Target。[一手／研究] 搜索已知位置时用位置输入，并查上游是否仍每帧从玩家 Transform 刷新；节点选择本身不替玩法实现感知
+- **UE**：[AI Perception](https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine)区分当前感知、已知目标及刺激位置／年龄；[Move To](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-behavior-tree-node-reference-tasks)的 Track Moving Goal 会随目标 Actor 移动更新路径。[一手／研究] 失去感知后检查移动任务是否仍跟踪对象，搜索可切到位置键；需要自动遗忘才配置 Forget Stale Actors 与 Max Age，不能只改一个感知标志就当作停止追踪
+
+**[研究] 局限：全局调度与角色感知承担不同职责，没有通用“所有敌人都必须忘记玩家”的规则。** Left 4 Dead 的导演按队伍位置与压力组织遭遇；有意提供追踪或队友线索可以保留，但要明确何种信息允许进入角色决策。二改增加隐蔽路线／诱饵后，核实际移动目标、线索来源与重新发现；直接追踪本来就是玩法时，保留简单跟随。固定源码、创作者对照、遗忘配置与未运行的验收见 [WP11 感知补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#感知补研角色知道什么与导演调度什么)。
+
 ### 追击与让路：有路径不等于走得自然
 
 **[研究] ✅ 先复用原生导航，分清通路、局部避让、停止位置和最终位移所有者。** 近邻临时挡路先用已有避让；门／箱子改变可通行区域时更新导航表示；近身战另定停距、侧移与是否允许身体卡位，不让所有敌人挤向目标中心。目标更新沿用当前组件的跟随契约，只有测得重复查询成本后才节流／缓存，不能统一降低频率而损失转向响应。
@@ -111,7 +120,11 @@
 
 **[研究] ✅ 预览先复用命令的规则查询，不在 UI 另写一份近似规则。** 建造落点、目标与费用提示应对应当前动作模式、修饰键及世界状态，提交时仍重新校验。Factorio 曾修正“按住 shift 实际可放 ghost，预览却仍标红”；OpenTTD 则沿同一命令处理器区分试算与执行。[一手] 新增替换／范围动作时，同时检查预览与实际结果，并确认查看预览不扣资源或改变世界。**局限：共享代码不保证连锁效果可精确预测，估计应标明；**先缩小提示承诺，不默认增加整局模拟／回滚框架。来源、反例与可撤销试验的竞争选择见 [WP11 预览补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#命令预览补研提示清楚还要规则一致)。
 
+**[研究] ✅ 需要复现玩法序列时，让纯表现随机有自己的状态所有者。** 新增颜色、闪光或音效变体，不应消耗掉落／战斗正在使用的随机流；沿现有生成器实例或引擎 RandomStream 分开传入，不自建 PRNG 框架或默认每对象一条流。OpenRA 的宝石闪光评审曾发现按客户端视口消耗 SharedRandom 的失同步风险，随后改用 LocalRandom；BrogueCE 则把显示颜色与实质玩法随机状态分开。[一手] 二改增加表现变体或关闭特效后，在固定版本与相同玩法输入下对照玩法结果。**局限：分流只隔离随机消费，不能保证跨版本、跨平台、物理或网络确定性；**会改变命中或障碍的“装饰”仍归玩法。原生入口、状态／重置区别与许可见 [WP11 随机所有权补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#随机所有权补研装饰二改是否改变玩法序列)。
+
 ## 7. 战斗与技能：先统一结算，再决定 GAS
+
+[研究] 借用现成效果时，同时核对取得条件、消耗与目标限制；需要保留行动取舍时别只复制奖励，需要稳定被动能力也不必照搬前置动作，见 [构筑差异与规则取舍](../../docs/research/2026-10-14-game-wp12-indie-roadmap.md#构筑补研同一效果的触发代价)。
 
 [研究] **做到哪**：请求→合法性／资源检查→启动及承诺成本→命中→伤害／效果提交→结束或取消。每步只有一个结算所有者；动画事件可开命中窗口，但迟到的事件在取消、死亡、换场景后失效。Unity 小项目先用技能定义＋执行实例＋少量组件；已有许可清楚且适配玩法的模块优先复用，只补缺失契约。
 
@@ -136,6 +149,14 @@
 
 **[研究] Unity 继续用定义＋角色自己的活效果集合；UE 已采用 GAS 时沿用它的聚合配置。** [一手] Unity [SO 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html)支持多对象共享数据，因此剩余时间与来源仍放实例；GAS 的 [StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)区分独立实例、按来源、按目标聚合，[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)又区分清整栈与减一层后刷新。[研究] 不把 GAS 的 None 读成“同类效果只留一个”，也不为两种状态迁移整套系统。**局限：句柄与计数只能表达所有权，不能替玩法决定合并、强弱和到期规则。** 二改先验两来源交错结束、重复清理、短效果覆盖长效果和驱散后重施；完整来源、反证与预注册见 [WP11 效果叠加补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#效果叠加补研来源所有权不等于合并规则)。
 
+### 选敌：先保意图，再调辅助
+
+**[研究] ✅ 需要持续攻击玩家所选对象时，先定义候选、保持与切换，别用每帧最近目标代替意图。** 沿现有武器／输入状态说明哪些对象进入自动候选、旧目标何时保留或失效、玩家怎样改选；手动目标也可以是位置。自动候选可比手动可选范围窄，但须保留玩法需要的直接选择路径。最近目标、持续自动重选或精确手动瞄准本来就是玩法时，保留简单方案，不默认增加锁定管理器。
+
+[一手／研究] Cogmind 的[官方手册](https://www.gridsagegames.com/cogmind/manual.txt)描述进入开火模式时优先恢复旧目标，无有效旧目标才选最近者，并提供过滤后的循环与查看模式转入开火的例外路径。Hades 曾[扩大特定武器的手柄锁定范围](https://www.supergiantgames.com/blog/hades-long-winter-update-patch-notes/)，又[排除召唤出的 Skelly](https://www.supergiantgames.com/blog/hades-the-blood-price-update-patch-notes/)；Brotato [官方说明](https://store.steampowered.com/app/1942280/Brotato/)则同时列出默认自动开火与手动瞄准选项。**局限：候选资格、保持目标、辅助范围与自动开火不是同一个强度开关，没有通用最强辅助。** 误选增加时先修候选或保持规则，不继续扩大吸附。
+
+[研究] **二改先加一个更近的干扰对象或可攻击召唤物**，核继续原目标、主动换敌、旧目标失效及按设计选择自动候选之外的对象；支持手动／辅助切换时再核切回。记录输入、当前目标和换目标原因，AI 追路径与补回归，人判断能否预测并纠正选择；保持反而阻碍主动改选时，缩小或撤回该规则。版本、固定源码与未执行的预注册见 [WP11 选敌依据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#选敌补研候选保持与主动切换)。
+
 ### 战斗质量：让玩家读懂承诺、接触与下一步
 
 **[研究] ✅ 先做好一招的节奏，再增加招式。** 前摇让玩家看出动作与方向，接触段让力量集中且命中范围可信，恢复段让下一次移动、闪避或连击的机会可预测。重武器可以慢且不能随时取消，只要风险、收益与敌人的反击机会相配；轻武器可以快且允许衔接，但不能靠每击加长停顿假装沉重。分别调整这三段，别把整段动画统一加速当手感修复。
@@ -145,6 +166,10 @@
 - **承诺可学习**：[研究] 每招说明何时可转向、移动、闪避、接下一击，落空和命中是否相同；动画还没收完但允许移动不一定是 bug。保留有意的取消技巧，避免 AI 为“完整播放”删掉它。Dead Cells [33.1／33.3 官方修复](https://deadcells.com/patchnotes/33)曾恢复误删的 Katana 取消及空中技巧。[一手]
 - **预告能变成决定**：[研究] 起手轮廓／方向告诉玩家要避什么，音效帮助及时注意，攻击轨迹与实际危险区域一致；接触效果结束后仍看得到下一威胁。镜头、声音和 VFX 服务同一次决策，不各自争抢注意。Hyper Light Drifter 的[设计者访谈](https://www.gamedeveloper.com/design/how-i-hyper-light-drifter-i-balances-difficulty-with-fairness)说明，单体容易的敌人组合后已足够复杂，一种同时反弹子弹、格挡近战的敌人因组合困难被放弃。[一手] 因而新敌人先验证与旧敌人的围攻、距离和逃路，再决定增加聪明程度。
 - **用原生机制保住节奏**：[研究] Unity 先用已有 Animator、动作配置与事件；[转场文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)里的 Exit Time、混合时长和中断顺序分别控制不同事情，混合更长不一定更自然，可能淹没接触姿态。UE 用 Montage／[Notify State](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-notifies-in-unreal-engine)编排区间，精确分支才评估 Branching Point；特效与挥动声可跟动作，命中声与受击效果仍跟已确认结果，不为此另造通用战斗编辑器。
+
+**[研究] 敌方意图预告到哪一步，先看玩家要做什么决定。** ✅ 计算当前局面、分配攻防时，显示足够支持判断的下一步；Into the Breach 的[作者访谈](https://www.gamedeveloper.com/game-platforms/road-to-the-igf-subset-games-i-into-the-breach-i-)将明确预告与解谜取向相连。[一手／研究] **行动已确定才作确定预告；会随玩家动作改变的，显示当前条件下的结果，并按规则更新或撤销旧提示。** 不默认公开完整行为表；观察、试探和未知本身构成体验时，可保留不确定性，但不能把显示错误当悬念。Amnesia 的[作者复盘](https://frictionalgames.com/2019-10-9-years-9-lessons-on-horror/)只提供信息政策反例，不证明隐藏敌人下一招更好。
+
+[研究] **二改攻击、推移或护盾规则时，同时核预告的对象、数值与次序。** Into the Breach 的[2023-01-23 公告](https://steamcommunity.com/app/590380/discussions/0/3765606580168752432/)既移除了没有排队攻击的对象的误导排序，也调整推移顺序以匹配预览。[一手] 因而预告失真时可收窄显示承诺或简化行动规则，不只补 UI 特例；没有对应玩家决定就不加完整模拟器。**局限：透明程度是玩法取舍，作者观察与补丁不证明普遍体验提升。** 来源边界、条件预告与未执行验收见 [WP11 意图预告依据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#意图预告补研确定结果条件变化与有意未知)。
 
 **[研究] 屏外威胁先分“规则允许获知但没在画面内”与“来不及应对”，别直接给所有敌人加箭头或停攻击。** 回合策略因放大画面漏掉当前仍可获知的敌人时，✅ 补边缘标记与按需查看，并让标记避开画面内目标；即时动作若看见提示仍来不及转向、定位和躲避，先改入场位置、攻击方向、预告或弹体速度。Cogmind 的[放大视图改造](https://www.gridsagegames.com/blog/2024/02/adventures-in-map-zooming-part-5-qol/)与 Specter of Torment 的[房间布局复盘](https://www.yachtclubgames.com/blog/specter-of-torment-level-design-deep-dive-2-5/)体现这两条不同路线。[一手] [研究] 若玩法要求看见起手才能反制，可考虑限制屏外起手；已发出的攻击是否继续由技能规则决定；不能让表现裁剪意外改变结算，有意随可见性取消则明确写进规则。**局限：合理方案取决于可获得的信息和应对时间，不存在通用“屏外不能攻击”规则。** 固定源码反例与后续对照见 [WP11 屏外威胁补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#屏外威胁补研补信息还是改攻击)。
 
@@ -165,6 +190,12 @@
 [一手／研究] 前瞻会放大动画噪声，预测平滑又增加滞后；先改善取景与输入响应，再加阻尼。版本按项目核：本次核实的 Unity 6.0 渠道发布版为 **3.1.7**，不能把主干 **3.1.8-pre.2** 的静态重入修复算进稳定版。机制、修复与许可详见 [WP11 镜头补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#镜头质量补研从跟得上到看得懂控得住)及 [WP11 相机基线](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#7-相机先复用成熟运行时验收的是可读性与控制权)。
 
 **Unity 遮挡：先分“不穿墙”和“看得见”。** [一手／研究] Decollider 修正相机碰撞位置，Deoccluder 才尝试恢复目标视线；Transparent Layers 只排除遮挡判断，不会让材质透明。✅ 保住瞄准意图后仍有可用视点，才用有限拉近／移位；固定朝向只被可退让的树冠／前景挡住时，🧪 用 Shader Graph Dither＋Alpha Clip 做局部显隐。保留碰撞、掩体边界、落地面和攻击预告，定义显隐对象与退出恢复；轮廓只回答“人在哪”。若无可行视点，或每种墙／树都要补材质例外，先改几何与遭遇布局。Project Zomboid 发布后仍修改树冠 cutaway，反证显隐不是免费兜底；实现、案例与 UCL 的 Unity-dependent 限制见 [WP11 遮挡依据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#2-三种玩法的不同默认不共享一套最佳参数)。
+
+### 建造／策略视图：先选支点，再调平滑
+
+**[研究] ✅ 旋转／缩放突然偏离正在看的建筑，先查支点与输入入口。** 鼠标直接指向时可保留光标锚点；按钮可先用当前视口中心，另有选中对象等意图时单独声明，不把全窗口鼠标位置套给所有入口。Tiny Glade [1.11.2](https://steamcommunity.com/games/2198150/announcements/detail/543346166601876516)保留 PC 光标支点，却为 Steam Deck 改用中心区域；旋转时单一中心点落在高塔旁会选中背景，增加阻尼并不改变这个目标。[一手／研究] 中心区域会推断玩家意图，只在单点经常误选时评估，不要求所有游戏增加模式选择器。
+
+**[研究] ✅ 简单缩放优先复用现有视口变换，不额外引入不需要的地形拾取。** OpenRCT2 的[等距缩放修复](https://github.com/OpenRCT2/OpenRCT2/commit/85a0f70ae166cb5d240844c4dffad7c1c9fbbd76)删除高度拾取，用视口内坐标补偿；[按钮修复](https://github.com/OpenRCT2/OpenRCT2/commit/e4f36840bff585b4a3f5581cd2b4714f887b2c02)另接完整缩放路径，说明滚轮通过不能代验按钮。[一手] 二改增加高塔／陡崖、额外视口或另一输入入口，分别核对象边缘、背景与视口中心；**局限：二维等距修复不是 3D 旋转算法，发布说明也不证明目标设备的舒适度收益。** 设计选择与缺陷修复、固定版本及待验范围见 [WP11 支点补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#建造镜头补研旋转缩放支点与输入入口)。
 
 ### Unreal：同样的可读性目标，不同的职责边界
 

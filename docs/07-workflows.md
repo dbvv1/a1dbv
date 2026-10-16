@@ -1,6 +1,6 @@
 # 07 · 工作流方法论
 
-> 核实时间：2026-10-08；Hook 与迁移建议于 10-11 复核，HumanLayer 效果说法于 10-12 核对；10-13 收窄 Plan 和新会话的默认要求，10-14 补充第二次需求修改的验收建议；10-15（UTC+8）按契约与反馈收窄 Spec／TDD 首选，并复核 Ralph／长时 harness 的采用与撤回、`/goal` 的证据／成本边界及纠错后的流程选择；2026-10-15（UTC+8）独立审阅全文核心建议与相关入口，收敛工具与计划入口冲突；不代表所有外链或当前模型效果已重新验证。
+> 编辑更新：2026-10-16（UTC+8）。按任务的不确定性选择实现、规格、测试或样品；来源与核查范围见[研究记录](research/2026-10-12-baml-and-review.md#工作流页历史页头)。
 
 ## 30 秒：先解决哪一种不确定性
 
@@ -34,12 +34,16 @@
 
 ## 2. 标准节奏：探索 → 计划 → 实现 → 提交 ✅
 
-1. **探索**（Plan 模式，只读）：“阅读 src/auth，理解 session 和登录是怎么处理的。”
+以 Claude Code 的只读代码调查为例：
+
+1. **探索**（Claude Code Plan 模式）：“阅读 src/auth，理解 session 和登录是怎么处理的。”
 2. **计划**：“我要加 Google OAuth，需要改哪些文件？写个计划。”可以按 `Ctrl+G` 在编辑器里直接改计划。
 3. **实现**：退出 Plan 模式，“按计划实现，给回调写测试，跑测试并修复失败”。
 4. **提交**：让它写提交信息并开 PR。
 
 **按未知和决策分流**：上面是需要先审方案的示例，不是所有任务的四个关卡。目标、兼容要求和授权清楚时，Agent 可在执行中规划并连续完成；多文件本身不要求 Plan 或人工批准。存在会改变实现的关键歧义时，再先调查或讨论。**[经验：采用判断，2026-10-13]**
+
+**模式名不构成通用安全边界**：CodeBuddy CLI 官方契约中，`plan` 期间普通文件编辑与命令仍委托进入前的权限模式，另受规则与目标保护约束；不能照搬上例认定只读，更不等于沙箱。客户端范围见[入口核查](research/2026-10-12-community-source-records.md#codebuddy入口与计划权限)，环境隔离原则见[10 §3](10-security.md#3-防护原则)。**[一手；研究：范围，未执行验证]**
 
 ## 3. 大功能：访谈式 Spec ✅
 
@@ -124,18 +128,18 @@
 |---|---|---|
 | [GitHub Spec Kit](https://github.com/github/spec-kit) | 功能流程含 Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge；当前另有 bug/想法评估入口 | 🧪 按任务规模选择 |
 | [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 轻量，偏增量变更（`/opsx:propose`），支持 30+ 工具 | 🧪 |
-| [Kiro](https://kiro.dev) | IDE 形态，EARS 格式需求 | 👀 |
+| [Kiro](https://kiro.dev) | 原生需求／设计／任务与显式修订，见[采用边界](research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界) | 🧪 按审阅与维护需要试用 |
 | [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | 模拟敏捷团队的多个角色，产出物很多 | 👀 |
 
-**批评（[社区]：Martin Fowler、HN《SDD: The Waterfall Strikes Back》）**
+**历史批评（[社区]：Birgitta Böckeler、François Zaninotto 与 HN 讨论）**
 
-下面是历史使用体验，不代表当前版本只有完整 SDD 一条路径；2026-10-10 源码已提供独立 bug 流程，见 [21 的版本与原帖](21-agent-patterns.md)。
+下面是历史使用体验，不代表当前版本只有完整 SDD 一条路径；Spec Kit 的2026-10-10源码已提供独立 bug 流程，见 [21 的版本与原帖](21-agent-patterns.md)。
 - Spec Kit 给一个简单的日期显示功能生成了 **1300 行 Markdown**；审阅大量生成的 Markdown 可能比审代码还累；
-- Kiro 把任务拆得过细，而且**规格会漂移**：实现中发现的约束不会回写到文档；
+- Böckeler 在2025-09用 Kiro 修一个小 bug，却得到四个 user stories、十六条验收标准，认为过重；这支持按任务收窄规格，不证明当前没有修订通路；
 - 有人报告写规格占了项目一半的时间；用完整 SDD 修 bug 显然是大材小用。
 - 支持者的反驳：瀑布模型的问题在于反馈周期长达数月，而 SDD 的周期是几分钟。
 
-**本仓库的判断 [经验：条件采用]**：规格的价值是固定容易猜错或丢失的约束，不是先写齐文档。中大型功能不自动需要完整 SDD；小修若涉及有歧义的行为，也先用一两个例子说清预期。探索／原型期避免长 Spec，先用能回答当前问题的样品；已确认的边界可以写短说明。已有任务与测试足以表达时直接做，只有跨步骤决策需要保存时再选轻量 Spec 或增量工具。实现发现约束冲突时更新规格，不能为服从旧计划继续做错。上面的历史成本反例仍成立；新增依据与适用范围见[契约与可观察偏好](research/2026-10-12-baml-and-review.md#工作流首选契约与可观察偏好)。
+**本仓库的判断 [经验：条件采用]**：规格的价值是固定容易猜错或丢失的约束，不是先写齐文档。中大型功能不自动需要完整 SDD；小修若涉及有歧义的行为，也先用一两个例子说清预期。探索／原型期避免长 Spec，先用能回答当前问题的样品；已确认的边界可以写短说明。已有任务与测试足以表达时直接做，只有跨步骤决策需要保存时再选轻量 Spec 或增量工具。实现发现约束冲突时更新规格，不能为服从旧计划继续做错。Kiro已有显式修订与任务同步入口，但仍需人确认新约束、核对受影响任务与实现；不把同步或任务勾选当验收通过。若额外文档没有补上真实缺口，就收窄或撤回规格流程，见[原文与修订边界](research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界)。上面的历史成本反例仍成立；新增依据与适用范围见[契约与可观察偏好](research/2026-10-12-baml-and-review.md#工作流首选契约与可观察偏好)。
 
 ## 6. Ralph 循环 🧪
 
@@ -187,7 +191,7 @@ Anthropic 的两篇历史工程报告应连着读：2025-11 的方案逐功能�
 - [Simon Willison：Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/)、[Reducing the cognitive load of AI changes](https://amoffat.github.io/blog/cognitive-load.html)
 - Anthropic：[Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)、[Building a C compiler](https://www.anthropic.com/engineering/building-c-compiler)
 - [Ralph Loop 插件](https://github.com/anthropics/claude-plugins-official/tree/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/ralph-loop)
-- [Martin Fowler：Understanding SDD](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)、HN：[SDD: The Waterfall Strikes Back](https://news.ycombinator.com/item?id=45935763)（摘要）
+- [Birgitta Böckeler：Understanding SDD（Martin Fowler 网站）](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)、[François Zaninotto：SDD: The Waterfall Strikes Back](https://marmelab.com/blog/2025/11/12/spec-driven-development-waterfall-strikes-back.html)、[HN 讨论](https://news.ycombinator.com/item?id=45935763)（Kiro 相关归因已核，其他概括沿用历史记录）
 
 ## 官方示例也要匹配协作方式
 

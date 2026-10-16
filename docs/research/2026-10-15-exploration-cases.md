@@ -105,6 +105,22 @@
 
 **证据与权利边界**：两篇设计说明均来自参与设计者，存在展示自身成果的利益；原始使用反馈提供不同视角，但经济关系未核实。实际看图不等于当前交互、响应式、键盘或用户实测；不据此判两产品高下。只链接来源、提炼关系，未向仓库复制图片、标识、字体、源码或资产；公开可看不等于许可复用。**[研究]**
 
+### 真实迁移补核：GOV.UK 状态标签为什么不照搬参照
+
+2026-10-15 核读。此处是**他人的真实设计任务与历史交付**，不是上述假设后台的实测，也不把2017年原型研究与2023年改版拼成同一批用户的前后对照。
+
+**原任务与参照来源**：[2017年设计者复盘](https://designnotes.blog.gov.uk/2017/04/04/weve-published-the-task-list-pattern/)说明，要让申请者理解全部任务、顺序与完成状态；团队比较了包括 Digital Marketplace 在内的既有服务，并向原设计团队询问需求，而非只收集好看的截图。34名使用者、5轮原型研究中，勾号含义不清，状态文字和分组随反馈调整。这个来源支持同任务参照的筛选方法，不证明任何标签样式普适。**[一手：设计者研究报告]**
+
+**2023年的具体失败与竞争选择**：[参与者复盘](https://designnotes.blog.gov.uk/2023/12/15/working-as-a-community-to-iterate-the-task-list-pattern/)汇总多个服务团队观察到的现象：使用者把状态标签当按钮点击。[PR #3502](https://github.com/alphagov/govuk-frontend/pull/3502)因而以可读、区别于按钮为目标。4月21日讨论明确提出[NHS边框标签、ONS色点加文字等参照](https://github.com/alphagov/govuk-frontend/pull/3502#issuecomment-1517615078)，不是只有一个预定方案。它们是候选来源，讨论没有证明其原系统设计有缺陷。**[一手：参与者汇总与原讨论]**
+
+**参照怎样受目标任务约束**：扩大留白虽让标签显得更完整，[放回任务列表与phase banner后](https://github.com/alphagov/govuk-frontend/pull/3502#issuecomment-1517516904)，作者认为横幅中过于突出、列表中又更像按钮；提议者[缩小了第二版的留白](https://github.com/alphagov/govuk-frontend/pull/3502#issuecomment-1517781775)。5月3日维护者[选定第二版](https://github.com/alphagov/govuk-frontend/pull/3502#issuecomment-1533214816)，作者[确认应用](https://github.com/alphagov/govuk-frontend/pull/3502#issuecomment-1533345077)，PR于5月23日合入。这是明确的维护者取舍与改稿回执，不是第二版的用户效果实验。**[一手：评审与修改链]**
+
+**产物与尚未证明的结果**：[2023-12-08的v5.0.0发布记录](https://github.com/alphagov/govuk-frontend/releases/tag/v5.0.0)包含标签更新和整行可点的任务列表。固定版本[标签样式](https://github.com/alphagov/govuk-frontend/blob/87d7633848e14183a655bb06006cbc3f99b466d2/packages/govuk-frontend/src/govuk/components/tag/_index.scss)可核浅背景／深文字、留白与抵消容器增高的负margin；[列表样式](https://github.com/alphagov/govuk-frontend/blob/87d7633848e14183a655bb06006cbc3f99b466d2/packages/govuk-frontend/src/govuk/components/task-list/_index.scss)把链接覆盖到状态和提示所在区域。2023复盘另说明已完成项用无底色文字，让待办更突出。这些证明修订交付，不证明误点率下降；数值只描述历史产物，不作为新项目默认。**[一手：发布与固定源码；研究：边界]**
+
+**对探索交接的净增量**：选到可信设计系统后，仍须说明参照元素在原处与目标处分别代表什么，以及会和哪些现有元素混淆。交给Agent的约束应是“状态与操作可辨；待处理项比已完成项突出；放入所有已知复用位置后不抢主任务注意力”，而非“采用某系统的标签”。同一候选至少放回本任务已知的关键使用位置，用真实文案检查；若为了增强组件存在感而重新造成按钮误认、横幅抢焦点，就调整或放弃该外观。拟议验收是请使用者指出下一步并操作，分别核其解释和实际点击目标；尚未执行。**[经验：由此案例提炼，不是通用最优样式]**
+
+**来源质量与局限**：政府设计团队公开研究问题、竞争方案、评审及版本产物，适合作为非广告的可追溯机制参照；同一项目的博客、PR与源码不是三份独立用户验证。本文未复刻界面、复制图片或运行组件，也未取得改版后同群体效果对照；无AI参与或净收益证据。此例只加强任务型界面的参照转化，不覆盖品牌展示的审美选择。**[研究]**
+
 ## C · 游戏机制借鉴：动作游戏“不听输入”该补什么
 
 ### 1. 定义

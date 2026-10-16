@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、落地补丁和最终说明对齐；18补测接管投入、陌生模块学习、原条件恢复、空库/已有库交付、原生产物兼容及接替/并存的身份取舍
-新证据：Immich审查、接管/学习实验；10-14补CBM原条件升级复测、PocketBase迁移快照源码与接收者成功回执；10-15补Rollup原生加载故障、工具链修复与产物兼容CI；补Syncthing与Tailscale接替/并存回执及固定机制；不补足Immich实机/支持工时
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、接替/并存身份取舍及恢复后的逻辑数据集核对
+新证据：Immich审查、接管/学习实验；CBM原条件恢复及10-16补MSIX/终端对照与升级回执；PocketBase迁移、Rollup原生加载、Syncthing/Tailscale接替链；另补Immich恢复后错连库名的原用户重试；未补足实机/支持工时
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -85,6 +85,16 @@
 **验证与反证。** [固定测试 L615–669](https://github.com/DeusData/codebase-memory-mcp/blob/8eabe191d2b45d6a58738392a03235c240af6996/tests/test_activation_transaction.c#L615-L669)分别检查组可写叶目录拒绝时包含目录／模式／规则，以及组可写祖先下可暂存候选；只读测试，不是本次运行。GitHub compare 确认 8eabe191 为 v0.10.2 祖先（ahead_by=5、behind_by=0）。相邻 [#1526](https://github.com/DeusData/codebase-memory-mcp/discussions/1526)另有安装后客户端配置错误，后续 0.10.3 还修订守护进程的同类检查，因此不能把 #1535 的成功外推为所有集成已恢复。本轮还筛过 #472 的构建后安装报告与 #1722 的符号链接安装报告，未取得同样完整的发布后原用户重试链，不采用。全程只读公开材料，未安装或运行 CBM／模型，未核验上游全套 CI，未测长期维护投入。**[一手：源码与提交关系；社区：相邻故障；研究：验证范围]**
 
 
+### 接收入口增量：同机终端成功仍未验收桌面宿主
+
+核实：2026-10-16（UTC+8）。**改变18 §7的最小验收入口：接收者通过桌面宿主使用时，记录宿主包装与权限上下文，并从该入口重试；终端成功不能替代集成成功。** 这是同一CBM项目的另一接收链，不把原WSL2安装恢复外推到Windows。**[研究：采用判断]**
+
+[cillvius于8月13日报告](https://github.com/DeusData/codebase-memory-mcp/issues/1582#issuecomment-5286217664)：Windows 11 26200、Claude Desktop MSIX、CBM 0.10.3、普通用户；同一exe／同一用户从终端可创建端点并响应`initialize`，宿主启动的五次记录则在创建命名管道前退出。他报告未见相关Win32 `ACCESS_DENIED`，将差异定位到应用对宿主上下文的安全检查。[同一人8月17日回执](https://github.com/DeusData/codebase-memory-mcp/issues/1582#issuecomment-5318894375)称升级0.10.6后Claude Desktop正常连接。这里采用其对照与恢复自报；没有逐字终端启动命令，评论链接的脱敏Procmon gist本轮抓取失败，不能声称独立审核原始轨迹。**[社区：同一接收者前后报告；研究：核查边界]**
+
+相关[固定补丁9a53074c3956a05e8695159f8bdded62d3e725f3](https://github.com/DeusData/codebase-memory-mcp/commit/9a53074c3956a05e8695159f8bdded62d3e725f3)在`src/daemon/ipc.c`仅当`ancestor=true`时容忍AppContainer package／capability SID，最终runtime目录仍传`false`。这是维护者对特定祖先身份的信任调整，不是建议接收者删掉宿主ACL，也不证明调整后安全等价。同补丁的`tests/test_windows_bundle_contract.sh`检查源码中保留这两条边界；它是源码契约检查，不是Windows／MSIX运行测试，本轮亦未执行。[提交比较](https://github.com/DeusData/codebase-memory-mcp/compare/9a53074c3956a05e8695159f8bdded62d3e725f3...v0.10.6)返回`ahead_by=92`、`behind_by=0`，证明补丁在该版本祖先链中；其间多项变更，不能把接收者的恢复单独归因于此补丁。**[一手：固定源码、测试与提交关系；研究：因果和安全边界]**
+
+上文PR #1139的公开AI交接只说明相关项目开发背景，不证明本次故障或补丁由AI生成。最小交付增量是实际宿主入口及其已验范围，不增加全平台矩阵；本轮未安装或运行CBM、Windows或模型，未测主动工时、长期可靠性或AI净收益。**[研究：归属与验证范围]**
+
 ## 补充证据：结构快照不能代替已有数据的升级交接
 
 核实：2026-10-15（UTC+8）。**改变18 §7：压缩迁移或交接数据库项目时，分别验证空库初始化与已有库升级；交代初始化数据、实例配置和迁移执行身份，不能把结构快照及一个成功的 `down` 当作完整恢复。** 这是有持久状态项目的条件建议，不要求无数据库项目增加备份流程；与[既有 n8n／Grafana 回退研究](2026-10-12-development-conditions.md#n8n配置回退与独立导出入口)的增量是“同一交付物在新旧接收环境执行什么”。**[研究：采用判断]**
@@ -142,6 +152,18 @@
 [固定a2ca723](https://github.com/tailscale/tailscale/commit/a2ca72393352606e75ed73121551a4a8575a3303)早于该issue：镜像改以containerboot为PID1，向tailscaled转发终止信号、回收子进程，仍支持持久状态，并增加按需认证。旧run.sh也有信号trap，不能说旧版完全不处理退出。代码没有跨pod锁；维护者只说降低出现概率，不能证明强杀、分区或一般故障切换安全。该回执是改回受支持入口及配置后的结果，不能归因于单独信号处理。本次无集群运行或CI通过声明。**[一手：固定源码；研究：因果边界]**
 
 **最小采用边界。** 凭据、实例身份、同步索引／业务进度是不同对象，即使同处一份备份，也须分别决定保留范围；接替旧服务与保留两实例有不同需求。公共讨论不构成生成／重置身份、重新认证、配对或共享授权。Agent可据公开机制提出选择，但实际变更须按授权办理。这些历史案例不证明所有软件都有唯一设备身份，也不测量AI收益或维护工时。**[研究：跨案判断；经验：实施边界]**
+
+## 补充证据：恢复成功但应用连接了另一数据库
+
+核实：2026-10-16（UTC+8）。**改变18 §7：恢复后的连接／登录成功不等于接收了预期数据集；再次导入或清空前先区分容器、逻辑数据库与持久目录，验一条已知旧记录及关联文件。** 这不同于前述同步设备身份取舍，也不同于空库初始化／已有库升级；这里是同一服务内应用究竟读了哪个库。**[研究：采用判断]**
+
+**原任务与两次重试。** [Immich #19977](https://github.com/immich-app/immich/discussions/19977)的 StRinke 于2025-07-16报告升级到v1.135.3后曾可用，随后另一电脑登录失败；求助ChatGPT并修改compose、创建`.env`、重启后，自述数据库空了而照片文件仍在。协助者[先要求核旧数据库目录和前后配置](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13783147)，没有把“空了”视作已证实删除。[首轮恢复](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13786400)因命令尾部多出`>`出现shell语法错误；[纠正该符号](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13786493)后，用户[报告导入无报错、可登录但照片不显示](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13786671)。最终他将`DB_DATABASE_NAME`从`immich_postgres`改为`immich`并重启，[同日确认数据回来了](https://github.com/immich-app/immich/discussions/19977#discussioncomment-13790108)。语法纠正与应用连接目标纠正是两个不同步骤；前者成功不能替后者验收。**[社区：原用户及协助者逐次回执]**
+
+**固定发布源码的三个对象。** v1.135.3对应[`6563fa608a5a4414f40264b847e60928916fb986`](https://github.com/immich-app/immich/commit/6563fa608a5a4414f40264b847e60928916fb986)。该版[`docker-compose.yml`](https://github.com/immich-app/immich/blob/6563fa608a5a4414f40264b847e60928916fb986/docker/docker-compose.yml)把容器命名为`immich_postgres`，数据库初始化名称另由`POSTGRES_DB: ${DB_DATABASE_NAME}`传入，磁盘来源则是`${DB_DATA_LOCATION}`挂载；[`example.env`](https://github.com/immich-app/immich/blob/6563fa608a5a4414f40264b847e60928916fb986/docker/example.env)默认逻辑库名为`immich`。服务端[`config.repository.ts`](https://github.com/immich-app/immich/blob/6563fa608a5a4414f40264b847e60928916fb986/server/src/repositories/config.repository.ts)在没有`DB_URL`覆盖时将`DB_DATABASE_NAME`用于数据库连接。源码支持这些名称不能互换；不证明用户当时所有实际环境值，尤其不能忽略URL覆盖。**[一手：固定发布源码；研究：机制边界]**
+
+**当前恢复约束与反证。** 2026-10-16回读[官方恢复说明](https://docs.immich.app/administration/backup-and-restore/)明确：v2.5.0变更备份／恢复流程，更早备份须用版本选择器查看对应手工恢复说明；当前优先推荐Web恢复，恢复会替换现有数据库。文档亦说明数据库保存文件路径及元数据，数据库备份不含照片／视频，文件须另备。因此不把2025年帖中的命令复制成现行教程，也不将任何“文件仍在”推成数据库可省略。真正数据缺失仍可能需要恢复；核对目标是选择恢复动作之前的诊断，不是永远不恢复。**[一手：当前产品文档；经验：采用边界]**
+
+**归因与停止边界。** 原帖没有可靠的原始`.env`、数据库清单、备份内容核对或完整操作日志；协助者关于目录已被清空的说法也是猜测。因此无法判定数据此前被删除、仍留在原卷，还是最终由备份重建；不能宣称这次恢复本来不必要，或量化避免数据损失的收益。ChatGPT参与仅由用户自报，不能将具体错误库名归因到未公开的模型输出。本轮只读公开原帖、含折叠回复的完整讨论、固定源码与当前文档，未运行Immich、数据库或模型。若接收方已有旧记录／文件校验，直接复用；无持久数据项目不增加本项。**[社区／研究：证据边界]**
 
 ## 18 专题历史核查范围
 

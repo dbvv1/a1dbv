@@ -360,3 +360,11 @@ Anthropic 的 [Finding your unknowns](https://claude.com/resources/articles/a-fi
 作者公开的同一Django任务两条轨迹中，[直接要求修复](https://www.sri.inf.ethz.ch/assets/blog/fixedcode/django__django-11239-fix.traj.html)仍改写已有证书参数传递；[允许不改](https://www.sri.inf.ethz.ch/assets/blog/fixedcode/django__django-11239-fix-or-abstain.traj.html)以mock捕获传给子进程的参数，确认已有实现后留下空补丁。它们只展示有限行为机制，不等于真实TLS连接验证。**[一手：公开轨迹]**
 
 本轮未取得完整运行manifest或部分修复原始产物；论文Best／Worst同时改变Git历史与依赖准备，不能拆成环境收益。允许无补丁交付仍需核当前行为，不能依据历史commit自动停止。未运行上游代码或模型。**[研究：边界]**
+
+## 工作流页历史页头
+
+历史原文转存：2026-10-16（UTC+8），来自 `docs/07-workflows.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准。
+
+```text
+> 核实时间：2026-10-08；Hook 与迁移建议于 10-11 复核，HumanLayer 效果说法于 10-12 核对；10-13 收窄 Plan 和新会话的默认要求，10-14 补充第二次需求修改的验收建议；10-15（UTC+8）按契约与反馈收窄 Spec／TDD 首选，并复核 Ralph／长时 harness 的采用与撤回、`/goal` 的证据／成本边界及纠错后的流程选择；2026-10-15（UTC+8）独立审阅全文核心建议与相关入口，收敛工具与计划入口冲突；10-16（UTC+8）核Kiro显式修订能力与历史批评范围，并限定Plan示例的客户端／权限范围；不代表所有外链或当前模型效果已重新验证。
+```

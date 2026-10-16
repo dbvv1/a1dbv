@@ -1,6 +1,6 @@
 主线：二为主，兼四
-改变的建议：文件排除须确认有效 profile 与实际入口，不能据关闭状态放行；原生能力足够时保持轻量；普通文档先自审，只为具体遗漏按次保留独立检查；h3o 交付仍须验目标环境与范围。[经验]；历史口碑不支持默认双工具采用，撤下未核商业消息迁移理由。[研究]；社区体验不支持统一降档、手写必需或低迁移成本，额度六折只保留作者自述。[研究]；Pi 只对愿维护扩展与隔离者试用，Aider 暂缓限依赖持续适配的新项目。[研究]
-证据摘要：Codex 文件排除的固定实现、发布祖先关系、历史入口反例及当前配置优先级；固定 Skill 配置及 Superpowers 撤回文档评审循环的补丁、维护者成本自述；h3o 产物与作者本机反馈。配置不证明净收益，h3o 的宽兼容声明超过验证范围；未新跑模型。[一手／社区] 两串 HN 完整原帖显示任务范围不同、跨工具检查无可追查修复与对照；只支持撤回泛化，不裁定当前工具优劣。[社区／研究] 本轮读取 HN 相关任务反例及 V2EX 完整回复，撤回未控制档位、任务和窗口的额度推广。[社区／研究] 2026-10-15 补核 Pi 固定默认工具／权限边界，以及 Aider 停更日期与 main 较新模型配置；均未运行。[一手]
+改变的建议：[经验／研究] 原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
+新证据：[一手／社区] Copilot CLI Free／本地BYOK接入与组织限制、MCP治理官方口径冲突，gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
 # 社区工作流：固定来源与案例资料
 
@@ -94,6 +94,25 @@ Pi README 还明确它没有内置的文件/进程/网络/凭证权限限制系�
 **OpenHands 当前主仓库的 Agent Canvas**：支持本地/远端后端、不同 Agent、定时和 webhook 自动化；自托管文档明确能访问 agent server 的人可以借它操作机器。因此“常驻”带来的是触发、运维和权限管理责任，不能只看长时间自动运行的演示。**[一手：C6]**
 
 **Spec Kit 当前文档**：新功能 SDD、bug 修复、想法评估是独立入口；修 bug 不必先走整个 SDD，最终区分 `verified`、`partial`、`failed`。这比把任何小改动都塞进完整规格流程更值得学习。**[一手：C7]**
+
+### Kiro：规格修订能力与采用边界
+
+核实：2026-10-16（UTC+8）。主线二／三；改变 IDE 工具页与07的Kiro建议：需要保存和审阅跨步骤决定时条件试用，撤回“只适合学习SDD”的依据；额外文档未补实际缺口时收窄流程。以下是官方契约与作者原文核查，没有当前客户端、模型或效率对照实测。**[研究：采用边界]**
+
+**官方修订契约。** [Feature Specs](https://kiro.dev/docs/specs/feature-specs/)（页更新2026-08-04）提供需求先行／设计先行，两者均产出需求、设计、任务文件；EARS是需求表示法，不保证内容完整正确。[Best practices](https://kiro.dev/docs/specs/best-practices/)（页更新2026-09-25）说明：
+- 需求先行：手改或要求修改 `requirements.md` → 在spec会话要求更新 `design.md` → 在 `tasks.md` 选择 **Sync Files**，生成映射新需求的任务
+- 设计先行：手改或要求修改设计 → 要求验证并重新生成需求 → **Sync Files** 更新任务
+- 对别的会话已实现的任务，可用Sync Files或要求扫描代码来标记完成
+
+这些是显式触发路径，不是实现发现约束后必然自动反向同步，也不是测试验收。[Quick Spec](https://kiro.dev/docs/specs/quick-spec/)省去三份产物间的审批；需要迭代需求／设计时仍可保留标准流程。本文只用它反驳“当前只有固定重流程”，不据官方收益措辞宣称更快、更可靠。**[一手：官方文档；研究：能力不等于效果]**
+
+**历史反例归属。** [Understanding SDD](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)作者为 **Birgitta Böckeler**，发布于2025-10-15，记录2025-09试用；文章托管于Martin Fowler网站，不应署名为Martin Fowler。Kiro具体案例是小bug产生四个user stories、十六条验收标准，作者认为负担过重，并提示工具演进快、真实长期维护证据不足。这支持匹配任务，而非当前普遍故障。**[社区：作者试用]**
+
+旧文“12个以上任务、各4个以上子任务”及“实现约束不会自动回写”未能在上述文章、[Zaninotto的2025-11-12原文](https://marmelab.com/blog/2025/11/12/spec-driven-development-waterfall-strikes-back.html)或[指定HN讨论](https://news.ycombinator.com/item?id=45935763)中定位。本轮通过Algolia读取该讨论全部189节点，核对Kiro相关评论；这里只记录原引用未支持，不断言全网不存在。旧两项保留为**未验证的历史措辞**，不再用于当前采用评级。**[研究：归因核查与撤回]**
+
+**实际维护中的人工澄清。** [Chad Kluck的2026-02-12逐字稿](https://chadkluck.net/cdx/dev-with-me/2026-02-12-updating-cache-data-using-kiro-part-2/)记录Cache-Data 1.3.8更新：既有API行为不得改变；26:51章节中，他发现分页默认值与maxRetries是否含首次尝试未说明，提问后Kiro更新设计。这是不同作者在已有项目中识别并保留具体约束的使用报告，不是厂商功能复述。页面自称AWS未赞助，不据此推定独立认证或推荐可靠性。**[社区：作者逐字稿]**
+
+该报告仍把分页／重试故障测试列为后续工作。本轮未看完整视频、固定实现提交或复跑，不能声称最终实现通过；没有普通会话基线或工时对照，不能声称净收益。试用时应看人工审阅是否补上真实遗漏、第二次修改是否同步到相关任务与验证；若文档只重复已有内容或持续漏掉已确认约束，退回短说明与现有检查。**[研究：未验范围；经验：撤回条件]**
 
 ## 7. 真实人类仍在承担的工作
 
@@ -271,3 +290,186 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 - **调用者检查的边界**：[CLI restoreCommand](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/cli/src/ui/commands/restoreCommand.ts)仅在启用checkpointing时注册，检查文件名在目录列表中及JSON/schema后调用[performRestore](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/core/src/commands/restore.ts)。后者先交付历史恢复，再检查Git服务并恢复文件；已读CLI→core→GitService链未见人工修改备份、dry-run或冲突预检。[ACP](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/cli/src/acp/commands/restore.ts)与[A2A](https://github.com/google-gemini/gemini-cli/blob/06d329873703ddabe8a842d962342ac4ad779e83/packages/a2a-server/src/commands/restore.ts)也调用同一核心，但各有入口检查；本轮不据此宣称所有客户端外层均无安全机制。**[一手：静态调用链；研究：审查范围]**
 
 历史[#11243](https://github.com/google-gemini/gemini-cli/issues/11243)是Windows／0.8.1用户报告对话似已恢复、文件却未恢复，后来以stale／not planned关闭，本轮未取得最终恢复回执；只作历史失败反例，不证明当前版本仍坏。上述来源足以区分恢复机制，不证明当前跨平台成功率、混改保留率或相对其他客户端的净收益。**[社区：原始自报；研究：不可外推范围]**
+
+
+## 实践者倍率：分清作者与收益口径
+
+核实：2026-10-15 UTC。对应11 §4及13 §4；直接读取[文章原文](https://obryant.dev/p/2x-not-10x/)与[HN完整嵌套JSON](https://hn.algolia.com/api/v1/items/49047839)，实际阅读下列相关评论及回复，未逐条审计全串。未运行模型或取得完整工时记录。**[研究：范围]**
+
+- **文章作者，2026-07-25。** 《2x, not 10x》试探性地说可能有约2倍改善，未提供测量，描述生成初稿后仍需大量结构迭代；没有“评审需手写2–3倍时间”或“真正增量来自原本不会做的项目”这两项结论。原文可读，不是历史材料失联。**[社区：作者原文]**
+- **评审负担，2026-07-31。** [Xcelerate](https://news.ycombinator.com/item?id=49118572)自报Claude生成较快，但认真评审耗时是自己手写全部代码所需时间的2–3倍；这是另一位作者，未提供可复算任务与工时。[taberiand](https://news.ycombinator.com/item?id=49118606)则说自己的评审投入接近审初级程序员代码；[devinparadise](https://news.ycombinator.com/item?id=49126785)提出另一Agent评审。这些回复既不支持统一倍率，也未证明额外评审的净收益。**[社区：不同作者自述与建议]**
+- **新增任务，2026-07-30。** [5555watch](https://news.ycombinator.com/item?id=49116268)描述过去不会尝试的论文复现，也抱怨生成代码冗长；[andy99](https://news.ycombinator.com/item?id=49116562)描述新增前端任务，同时报告部分任务浪费时间后改回手写。任务集合变化是可保留的自述，不等于这些产物已验收、长期有用或创造统一价值倍数。**[社区／研究：范围]**
+
+**修订与采用。** 撤回把三种口径归到同一篇文章的写法，保留各自出处；既有任务比较完整交付成本，新任务先验证用途，不按单人倍率要求手写或免审，评审条件仍回09。13同步回链11，并修正团队交付行遗留的“回复普遍认为”，沿用[既有V2EX证据](#社区体验额度与迁移不能代替采用证据)，不另扩调查。GitClear完整PDF仍沿用09的未取得边界。本轮不据局部补核升级整页L3。**[研究：收敛与验证边界]**
+
+
+## 11 社区脉搏的核实范围
+
+承接正文原页首范围，迁移于2026-10-15 UTC，不表示整页重新核实。2026-10-15（UTC+8）的既有核查包括：第1节文件排除证据链；第2节两串HN原帖及默认双工具／固定强项的撤回；第3节供模计划与接入范围；第6–7节预算、编程体验、迁移与额度原帖，以及由情绪推出的采用结论的撤回。2026-10-15 UTC另核第4节实践者归因，范围见上节。其余历史内容沿用2026-10-08记录，未因此重新核实。**[研究：日期与覆盖范围]**
+
+历史资料来源包括GitHub issue、HN（经Algolia读取原帖及评论）、Lobsters、V2EX、METR原始报告及GitClear公开摘要／报告图示；GitClear完整PDF仍未取得，方法范围见09及其研究记录。旧页首记录当时Reddit和linux.do因机房IP访问受限而未覆盖，这是历史访问记录，本轮未重试，不代表当前全站不可用。**[研究：来源与访问边界]**
+
+
+### 全页采用边界复核：2026-10-16（UTC+8）
+
+本轮通读11并对照主专题：§1–3、§6–7及§4实践者归因复用上列精确来源和反证，不重复认定为新读原帖；§4重新读取[METR 2025 RCT](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)、[2026-02实验更新](https://metr.org/blog/2026-02-24-uplift-update/)、[2026-05问卷](https://metr.org/blog/2026-05-11-ai-usage-survey/)及[GitClear公开页](https://www.gitclear.com/the_ai_code_quality_maintainability_gap)，支持现有数字、历史范围与自报／因果限制。完整GitClear PDF仍未取得，但当前仅用公开代理信号提示抽检，不据其设阈值或计算维护成本，故该缺口不阻止这条窄建议；扩大定量或因果主张时须重新核方法。**[研究：覆盖与边界]**
+
+§5对照03／04／07／08／09／10／14／18：SDD和并行原来只有争论标签，现回链07／08的具体条件；软件工厂入口同步13 §2.8，区分Dex的团队自报、训练假设与流程倡议，采用结论只在14维护。既有[原文复核](2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)已限制“无法训练”“评审抬不高上限”和“稳定快2–3倍”；初次网页请求未取得内容，随后独立复核已通过GitHub读取固定[`wsff.md@1a9b65e`](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/1a9b65e53bcf2052b7ef1778fbcfe2af65858a1e/wsff.md)，确认这些属于作者假设／倡议，且作者自己也按任务缩减流程：小任务直接做或少量反馈，中等合并设计，大变更才用完整步骤，不把作者的任务占比推广给读者。Weng、Larson及HN对照观点保留历史来源范围，未重新认证。**[研究：入口一致性与读取范围]**
+
+原“模型性格／社区写提示词纠正”没有明确作者、产物或效果来源，移出正文，只留作历史待核线索，不生成新的提示词方案。上述复核没有运行模型、客户端或迁移实验，也不代表所有外链和动态事实重新认证；页级成熟度另经独立审阅决定。**[研究：撤回与验证范围]**
+
+
+## Gemini：接入资格与 Antigravity 迁移
+
+核实：2026-10-16（UTC+8）。对应01入口与Gemini深页；主线二。撤回“个人免费额度→预算敏感或批量任务首试Gemini CLI”，改按消费者、API及已有企业合同区分；Antigravity仅作需核配置与费用的迁移候选。新证据为官方消费者／企业弃用说明、迁移公告及当前迁移／认证文档；只读，无安装、登录、API调用或客户端迁移实验。**[一手；研究：采用范围]**
+
+| 来源与日期 | 已读事实 | 对选择的影响 |
+|---|---|---|
+| [消费者弃用页](https://developers.google.com/gemini-code-assist/docs/deprecations/code-assist-individuals)，页面更新2026-10-09 | 6月18日起，individuals、Google AI Pro／Ultra的Code Assist IDE与Gemini CLI停止服务，该消费者路径不能继续Login with Google | 旧个人免费额度不再作为新采用理由；仅针对所列消费者服务路径；公告未限定版本或地区，不外推其他认证与API路径停用 |
+| [5月19日迁移公告](https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/) | 同样明确消费者6月18日截止；另保留付费Gemini／Enterprise Agent Platform API key；当时企业入口不变；Antigravity初期非1:1功能对等 | 消费者停用与API分别判断；不由付费API可用推出免费API key仍有旧额度；5月企业说明不能覆盖后来的弃用规则 |
+| [企业弃用页](https://docs.cloud.google.com/gemini/docs/codeassist/sunset)，页面更新2026-10-13 | 10月9日起不再新购Standard／Enterprise；旧合同继续支持；加席和年度续订截止2027-01-31，月度续订截止2027-12-31 | 新团队不能按旧订阅表选购；已有团队按自己的合同安排转换，不一律立即迁移 |
+| [Cloud quotas](https://docs.cloud.google.com/gemini/docs/quotas)，页面更新2026-10-13 | 仍列Standard／Enterprise的CLI额度，IDE agent mode与CLI合并计量；一次提示可能产生多次请求 | 额度表不是新订阅资格，不能按请求数计算可完成任务数 |
+| [Antigravity迁移](https://antigravity.google/docs/cli/gcli-migration) | 首次启动可选导入扩展／全局配置及迁移会话token到系统keyring；部分兼容；workspace skills改到`.agents/skills/`；MCP独立配置，部分远程URI字段改为`serverUrl` | 不把安装、导入或同名功能当作认证、权限、全部配置与行为已恢复；没有证据证明自动转换覆盖所有路径 |
+| [Antigravity安装与认证](https://antigravity.google/docs/cli/install/#using-a-gemini-api-key) | API key路径要求`modelProvider`设为`gemini`并提供`GEMINI_API_KEY`；单独环境变量无效；启动只检查非空，实际模型权限可能首次请求才失败 | 迁移要核实际provider与认证；此处不提供凭据、不运行验证，不承诺原免费权益继承 |
+
+**旧页面冲突保留。** [Gemini CLI quota页](https://geminicli.com/docs/resources/quota-and-pricing/)仍列个人1000/day、免费API key 250/day，页尾为2026-06-18；[terms页](https://geminicli.com/docs/resources/tos-privacy/)仍列消费者Google登录及不同API服务分类，其个人隐私链接实际重定向到上述弃用页。后者与5月公告交叉支持特定消费者路径已停，不能用旧表继续承诺60/min、1000/day或免费API替代。Vertex的Express／付费模式仍需按所用项目资格与计费核对，不从消费者变更推导其免费可用或全部关闭。此为公开文档之间的范围与时序核对，不是账号实测。**[一手；研究：冲突取舍]**
+
+**历史读取范围与未覆盖。** 原Gemini深页“未能直接核实Antigravity文档”属于2026-10-08的记录；本轮已直接读取迁移与认证页，撤下该当前化说法及未支撑首步选择的旧二手产品描述。未重核所有Gemini功能矩阵、当前稳定版、模型输入／上下文、Antigravity额度和价格；恢复机制沿用本页既有固定源码，EDK／Auto Memory沿用audit S3的原范围。01仍为L2，不把局部接入补核升级为整页认证。采用前若合同、认证或必要操作变化，回到对应官方契约复核；真实迁移是否成功仍待授权实验。**[研究：边界]**
+
+## OpenCode：规划权限与文件恢复分开选择
+
+核实：2026-10-15；主线二，改变01矩阵对OpenCode“无回滚”的排除及深页“Plan绝对只读”的读法。固定来源为版本同步提交 [`f40dc433cb52eeb3ff5ec7a755f0ba0162216a51`](https://github.com/anomalyco/opencode/commit/f40dc433cb52eeb3ff5ec7a755f0ba0162216a51)（v2.0.30）；本轮只读官方文档／源码，未安装或运行客户端。开源Agent深页本轮补核限OpenCode规划与撤回，Pi／Aider沿用2026-10-15专项核查，其余项目沿用2026-10-08范围，未全量重核。**[一手；研究：采用判断]**
+
+- **撤回可以作为采用条件，但先核Git与快照。** 同提交的[TUI文档](https://github.com/anomalyco/opencode/blob/f40dc433cb52eeb3ff5ec7a755f0ba0162216a51/packages/web/src/content/docs/tui.mdx)列出`/undo`和`/redo`及Git项目要求；[snapshot.ts](https://github.com/anomalyco/opencode/blob/f40dc433cb52eeb3ff5ec7a755f0ba0162216a51/packages/core/src/snapshot.ts)的`capture`在快照停用、不支持或捕获失败时可返回undefined，恢复按文件映射取快照内容，映射外文件保持不动。[revert.ts](https://github.com/anomalyco/opencode/blob/f40dc433cb52eeb3ff5ec7a755f0ba0162216a51/packages/core/src/session/revert.ts)从目标消息后的assistant消息收集`snapshot.files`和起点，不能据“撤回”推定外部服务副作用也被撤销。按文件恢复不做后续人工修改的语义合并；保留混改再检查diff是采用建议，不是已复现的数据丢失案例。**[一手：固定实现；研究：边界]**
+- **Plan权限以实际版本核查，不能抄文档默认值。** 同提交[agents.mdx](https://github.com/anomalyco/opencode/blob/f40dc433cb52eeb3ff5ec7a755f0ba0162216a51/packages/web/src/content/docs/agents.mdx)写编辑和bash默认`ask`，但[plugin/plan.ts](https://github.com/anomalyco/opencode/blob/f40dc433cb52eeb3ff5ec7a755f0ba0162216a51/packages/core/src/plugin/plan.ts)注册`edit`全局deny、专用计划目录allow；提示要求只在用户明确请求时写计划，其他文件不得修改。该局部实现与模式标签均不证明全部shell、子Agent或扩展路径的写隔离；正文因此只推荐用其做规划，并要求严格只读需求核查有效权限，不宣称已验证绕过或全面隔离。**[一手：文档与实现差异；研究：适用范围]**
+
+## Cline：审批按宿主与有效设置判断
+
+核实：2026-10-16（UTC+8）。主线二；只修正01开源Agent页“每步人工审批”的选择依据，保留🧪试用及06／10既有最小权限、环境隔离建议。固定main为[`3834735da26b70503aa5c0aa377949612a2816ad`](https://github.com/cline/cline/commit/3834735da26b70503aa5c0aa377949612a2816ad)，其中[`apps/vscode/package.json`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/vscode/package.json)标4.1.24、[`apps/cli/package.json`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/cli/package.json)标3.0.71；这些是源码包版本，不证明已发布或用户已安装。未安装或运行客户端、模型、真实审批及隔离实验；不改变Kilo等未复核项目的评级。**[一手；研究：范围]**
+
+- **IDE可配置，不是每步必审。** [官方Auto Approve页](https://docs.cline.bot/features/auto-approve)确认按工具调用类别决定是否询问，也介绍YOLO。固定VS Code路径的[`AutoApprovalSettings.ts`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/vscode/src/shared/AutoApprovalSettings.ts)中内置值为read/edit/web/MCP开启、commands关闭；[`state-keys.ts`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/vscode/src/shared/storage/state-keys.ts#L263-L267)将其登记为默认设置。[`SdkController`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/vscode/src/sdk/SdkController.ts#L415-L424)逐次读取当前全局设置，交给[`sdk-tool-policies`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/vscode/src/sdk/sdk-tool-policies.ts)按类别判断；[`sdk-interaction-coordinator`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/vscode/src/sdk/sdk-interaction-coordinator.ts#L118-L132)命中后直接批准，否则进入人工审批。该路径不以legacy `enabled`字段作额外总开关；但已有设置／宿主适配仍须另核，不能据内置常量断言所有已安装IDE实例都自动编辑。**[一手：固定实现]**
+- **旧菜单说明不能当当前命令边界。** 官方IDE页仍讲工作区内外子开关，以及模型的`requires_approval`标记；固定源码将外部文件与`executeAllCommands`字段标为legacy，[当前菜单](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/vscode/webview-ui/src/components/chat/auto-approve-menu/constants.ts)只列五个类别，上述SDK判断按命令类别开关而非该模型标记批准。这里只记录文档与该路径差异，不断言所有版本／宿主的实现相同，也不把命令类别或字符串规则当OS沙箱。**[一手；研究：边界]**
+- **普通CLI、ACP和交互开关分开。** [官方CLI概览](https://docs.cline.bot/usage/cli-overview)列`--auto-approve`默认true。[固定main](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/cli/src/main.ts#L881-L895)把有效值传入全局工具策略；[`startup-settings.ts`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/cli/src/utils/startup-settings.ts#L21-L31)优先级是显式参数、已保存`toolAutoApprove`、内置true。普通单次任务的[`run-agent.ts`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/cli/src/runtime/run-agent.ts#L165-L180)传递该策略；ACP则[只认显式true](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/cli/src/main.ts#L802-L819)，不能推广普通CLI默认。交互路径[`tool-policies.ts`](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/cli/src/runtime/tool-policies.ts)关闭自动批准时仍保留部分读／搜索等工具自动批准（可有显式单工具例外）；因此也不写“false保证每步必审”。普通终端审批回调在无TTY时[返回拒绝](https://github.com/cline/cline/blob/3834735da26b70503aa5c0aa377949612a2816ad/apps/cli/src/utils/approval.ts#L69-L77)，桌面IPC另走分支；无头运行不意味着可以弹出人工审批，也不等于自动获得环境隔离。**[一手：契约与固定实现；研究：采用边界]**
+
+## Goose：订阅接入先核适配器、身份与资格
+
+核实：2026-10-16（UTC+8）。主线二；只修正01开源Agent表的订阅接入判断，不改变多服务商候选评级。新证据为Goose当前文档、固定main [`0df818175bc854229746c81f01ea154b1c6c5e9e`](https://github.com/aaif-goose/goose/commit/0df818175bc854229746c81f01ea154b1c6c5e9e)及服务商认证说明；固定main不代表已发行／已安装版本。**[一手；研究：范围]**
+
+- **先核外部适配器与身份。** [ACP专页](https://goose-docs.ai/docs/guides/acp-providers/)要求Node.js/npm、对应适配器可被找到、底层CLI已认证可用且未超额度；Claude用`@agentclientprotocol/claude-agent-acp`，Codex用`@agentclientprotocol/codex-acp`，后者可复用兼容的Codex登录。固定[`claude_acp.rs`](https://github.com/aaif-goose/goose/blob/0df818175bc854229746c81f01ea154b1c6c5e9e/crates/goose/src/providers/claude_acp.rs#L22-L104)与[`codex_acp.rs`](https://github.com/aaif-goose/goose/blob/0df818175bc854229746c81f01ea154b1c6c5e9e/crates/goose/src/providers/codex_acp.rs#L21-L95)解析外部二进制并连接ACP，不由协议本身授予模型访问。Goose将Codex的ChatGPT Plus/Pro与API credits列为不同路径；[OpenAI认证文档](https://developers.openai.com/codex/auth)也区分订阅登录与按量API认证，不能把API key调用当作订阅额度。**[一手；研究：采用前提]**
+- **Claude订阅不能仅靠客户端自述保证。** Goose专页宣传可复用Claude Code订阅，但其链接的[固定适配器源码](https://github.com/agentclientprotocol/claude-agent-acp/blob/872e93f11fde8abc528822d29cebcc542b05e9e8/src/acp-agent.ts#L11013)选择Claude可执行文件，经SDK的[`query()`](https://github.com/agentclientprotocol/claude-agent-acp/blob/872e93f11fde8abc528822d29cebcc542b05e9e8/src/acp-agent.ts#L11148-L11156)启动CLI，属于SDK封装CLI路径；[Anthropic当前SDK说明](https://code.claude.com/docs/en/agent-sdk/overview#get-started)规定第三方开发者未经事先批准，不得在其产品中提供claude.ai登录／额度。本轮未取得该具体集成获批证据，因此只能确认Goose提供接入机制，不把客户端自述升级为无条件订阅保证；该条款针对第三方开发者，不等于每位本地用户都须另行申请批准，也不据此断言Goose未获批或所有ACP集成被禁止。**[一手：双方文档；研究：证据缺口]**
+- **Gemini不再按旧订阅入口推荐。** [当前CLI provider说明](https://goose-docs.ai/docs/guides/cli-providers/)将`gemini-cli`与`gemini_oauth`列为弃用，推荐Google provider的Gemini API key或Vertex AI；固定[`gemini_oauth.rs`](https://github.com/aaif-goose/goose/blob/0df818175bc854229746c81f01ea154b1c6c5e9e/crates/goose/src/providers/gemini_oauth.rs#L931-L947)也在元数据中标明替代路径。[注册代码](https://github.com/aaif-goose/goose/blob/0df818175bc854229746c81f01ea154b1c6c5e9e/crates/goose/src/providers/init.rs#L112-L120)仍保留旧provider，不能把弃用写成代码已删除。此前README笼统宣传三家订阅经ACP接入，不覆盖这些当前限制；消费者6月18日停止旧Login with Google路径的事实及API／企业区别，沿用[本页Gemini核对](#gemini接入资格与-antigravity-迁移)，不扩成Gemini API停用或所有自定义ACP方案不可用。**[一手；研究：撤回范围]**
+
+读者应先选择明确支持自己的认证／计费路径，再决定是否试用Goose；仅有订阅或看到“支持ACP”不足以完成选型。未访问账户、检查凭据、安装适配器、运行客户端／模型，也没有迁移成功或成本收益实测。**[研究：验证边界]**
+
+## Qwen Code：内置不等于默认启用
+
+核实：2026-10-16（UTC+8），主线二。保留内置能力与试用评级，只区分采用前的启用／接入步骤，不把固定 main 当已发行版本或客户端实测。**[一手；研究：范围]**
+
+固定 `c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617` 的 [settingsSchema](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/settingsSchema.ts#L2442-L2480)列 auto memory 默认开启、Auto Skill 默认关闭及保存确认；[CLI 配置](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/config.ts#L2701)与 [Auto Skill 传递](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/cli/src/config/config.ts#L2832-L2839)分别保留 Agent Team／Auto Skill 默认关闭。[core Team 开关](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/core/src/config/config.ts#L10170-L10175)另接受环境变量启用，[Auto Skill getter](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/packages/core/src/config/config.ts#L11047-L11054)还区分受限运行模式。[官方协作说明](https://qwenlm.github.io/qwen-code-docs/en/users/features/multi-agent-coordination/)将 Agent Team 标为实验性；未启用时的普通子 Agent 调查不等于团队协作。**[一手：固定实现与文档]**
+
+[官方 Channels](https://qwenlm.github.io/qwen-code-docs/en/users/features/channels/overview/)及[固定文档](https://github.com/QwenLM/qwen-code/blob/c24e99e9cb74ce616e0b3ff0e0e5b582dbf4b617/docs/users/features/channels/overview.md)说明适配器内置，仍需机器人／账号认证、渠道配置与启动。因此期待自动积累技能、协作团队或聊天接入的读者，应先核相应开关与外部身份，不把安装完成当接入完成。未安装、登录、验证权限或运行客户端；配置存在不证明团队收益，02 的套餐资格与 endpoint 边界仍适用。**[一手；研究：采用边界]**
+
+
+## 国内工具：订阅入口与持续成本
+
+核实：2026-10-16（UTC+8）；主线二。只纠正01已有国内工具行的购买依据，不扩工具名单；02的Kimi资格已核正确，本轮仅同步入口。公开网页正文读取不等于账号资格、结算页或客户端实测。**[一手；研究：范围]**
+
+- **TRAE CN免费不等于无额度约束。** 直接读取[套餐与计费](https://docs.trae.cn/ide_plans-and-billing)：内置模型调用消耗积分，免费用户通过登录、签到和活动获取有限积分；自定义模型不消耗TRAE积分，不等于模型服务商免费。Lite单月¥49；连续包月¥45，付费新用户首期¥39、第二期恢复¥45；自动续费按31天周期。因此撤回“国内核心免费”这一笼统成本依据，比较持续使用时区分单月与连续订阅。**[一手；研究：选择]**
+- **TRAE国际版保留入口差异。** 直接读取[无参数定价页](https://www.trae.ai/pricing)，本次显示Free限Auto mode及有限用量、Pro $20/月自动续费；[计费文档](https://docs.trae.ai/ide/new-plans-and-billing)未返回可读正文。搜索索引另有带产品／跳转参数的官方定价页显示Lite $3/月；未取得可比的当前正文与适用范围，不保存含用户标识的索引URL。该差异不能证明$3全部是首月优惠、已经失效，也不能证明$20是所有地区／入口的最低价。正文撤回无条件“$3起”，引导按实际入口核套餐、免费范围和续费；索引只作待核线索。**[一手：无参数页；二手：索引；研究：未决]**
+- **Qoder现价可保留，资格须写清。** 直接读取[国际版价格](https://docs.qoder.com/zh/account/pricing)与[CN全家桶账号和订阅](https://docs.qoder.cn/product-overview/account-and-subscription)：Pro分别为$20/月与¥59/月，各含2,000 Credits/月。国际版按月自动续费；CN个人订阅需阿里云主账号，RAM子账号不能用个人付费功能，CN全家桶共享额度；CN新购所选月付／年付决定自动续费周期。上述月价未标首期促销，不能把跨区同名套餐或Credits数字等同为可互通权益或相同任务成本。干净的中外定价首页未返回完整价表，最终采用直接读到的官方文档正文，不将搜索索引的¥59当正文验证。**[一手；研究：范围]**
+- **灵码按订单产品线识别。** 直接读取[CN计费说明](https://docs.qoder.cn/product-overview/billing-description)，分CN全家桶、CN原灵码、通义灵码存量页签；这支持修正旧名字的购买入口，不把所有存量订单视为已自动迁移。**[一手；研究：入口]**
+- **Kimi沿用单一主专题。** 直接复核[中国区套餐表](https://www.kimi.com/en/help/membership/membership-overview)：新Go ¥49不含Code，Plus ¥99起含Code，旧Andante等保留原资格；与02 §4一致，仅删除01的¥49／99笼统Code订阅说法。CodeBuddy模型和模式在本次订阅核查中未覆盖，后续范围见下节。**[一手；研究：同步与边界]**
+
+未登录、购买、检查个人账户、安装或运行客户端；未验证所有地区可购性、税费、结算优惠、当前模型质量或完成任务成本。仅当上述资格和必要功能满足时条件试用，不据低标价推荐迁移。**[研究：验证边界]**
+
+
+## CodeBuddy：入口与计划权限
+
+核实：2026-10-16（UTC+8）；主线二。把01的统一三模式／模型名单收窄到实际客户端与地区，07的只读调查示例限定为Claude Code；只读公开文档，未登录、安装、运行客户端或模型。**[研究：范围]**
+
+- **先区分地区与形态。** [官方产品概述](https://www.codebuddy.cn/docs/plugin/产品简介/产品概述)区分插件、IDE和CodeBuddy Code CLI，IDE另列国内／国际入口；[国际站CLI快速开始](https://www.codebuddy.ai/docs/cli/quickstart)区分国内站、国际站、企业域及iOA认证，国内／国际站对应不同模型供给。此处只确认契约分类，不保证所有账号、地区或客户端拥有同一模型清单。国际IDE概览本轮正文抓取超时，索引摘要不作为已核正文。**[一手；研究：接入范围与未决]**
+- **CN IDE按实际审阅需要选模式。** [IDE概览](https://www.codebuddy.cn/docs/ide/User-guide/Overview)写明Ask不直接改代码、Craft生成与修改、Plan先给任务清单并经确认执行；[Plan专页](https://www.codebuddy.cn/docs/ide/Features/Plan-Mode)提供方案编辑、开始执行、执行中暂停／调整及计划保存机制。需要先对齐会影响实现的取舍时才试Plan，目标清楚的局部修改不因此增加必经阶段；计划存在、任务勾选或厂商效率描述不证明验收通过或净收益。**[一手：工作流契约；研究：采用边界]**
+- **CN插件不能套用IDE的三入口描述。** [Craft使用](https://www.codebuddy.cn/docs/plugin/操作指南/Craft%20智能体/Craft%20的使用)列VS Code、JetBrains IDEs与微信开发者工具，入口为Ask／Craft；生成计划（Plan模式）、自动运行与自动修改文件是分开的设置。该页称三项默认开启，只作这些插件的文档契约，不外推其他客户端。**[一手]**
+- **模型名单只在来源范围内成立。** [CN插件模型配置](https://www.codebuddy.cn/docs/plugin/操作指南/模型配置)列混元、DeepSeek、智谱及Kimi-K2-Thinking／K2.5；Craft使用页仅列混元与DeepSeek，说明不同页面的型号粒度并不一致。专门模型页可支持CN插件有这些模型家族，不能推出所有端的完整当前型号、账号资格或国际版供给；因此撤回正文的跨端名单，采用前核目标入口。IDE自定义模型的[models.json契约](https://www.codebuddy.cn/docs/ide/Features/models)也不代表订阅内置模型权益。**[一手；研究：取舍与限制]**
+- **CLI的plan不构成只读隔离。** [权限模式](https://www.codebuddy.cn/docs/cli/permission-modes)明确：plan期间Read／Bash委托前置权限模式，Edit只对当前session计划文件额外放行，其他目标委托前置模式；从default进入时普通Edit／Bash仍询问，从acceptEdits进入时非计划文件Edit仍按该基线自动放行。页面另行描述退出时恢复前置模式，故此处不是把恢复后的行为误读为计划期间行为。权限模式只是求值的一层，deny／allow／ask规则及受保护目标仍须核对，不能写成任何文件都可直接改；也不能据CLI契约断言IDE底层行为相同。**[一手：文档契约，未执行验证]**
+
+**最小选择与撤回。** 保留能完成必要任务的现有入口；只有需要先审方案时才采用相应Plan流程。必要模型、工具或实际权限边界不满足，就撤回该入口选择，而非因同名模式或模型宣传迁移。需要只读或隔离时，核实际权限与环境，沿用[10的环境边界原则](../10-security.md#3-防护原则)；02既有资格／用途／endpoint规则不变。上述证据不证明当前模型质量、迁移成功或节省成本，不新增工具排名。**[研究：采用与验证边界]**
+
+## IDE 页历史页头
+
+历史原文转存：2026-10-16（UTC+8），来自 `docs/01-agents/ide-and-others.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准。
+
+```text
+> 核实时间：CodeBuddy客户端／权限范围、国内工具订阅边界与Kiro规格采用边界于2026-10-16（UTC+8）补核，JetBrains 接入条件于2026-10-15补核，Cursor迁移入口同步11；其余沿用2026-10-08。Cursor 和 GitHub Copilot 部分直接读取了官方 changelog；其余未标注的为 **[二手]**。
+```
+
+
+## Gemini：沙箱启用与有效边界
+
+核实：2026-10-16（UTC+8），主线二，对应01矩阵与Gemini深页。🧪 需要隔离时，先核有效配置、隔离对象与读／写／网络范围；不能仅凭“支持沙箱”、`-s`或自动审批作选择。本轮只读公开文档和固定发行版源码；无安装、客户端／模型运行、实际隔离或安全配置修改。**[研究：范围]**
+
+**发行关系与默认值。** [v0.63.0发布页](https://github.com/google-gemini/gemini-cli/releases/tag/v0.63.0)指向固定提交[`573846625af9e93b3b968e0e0b86bb093a4c9b16`](https://github.com/google-gemini/gemini-cli/commit/573846625af9e93b3b968e0e0b86bb093a4c9b16)，不是用main实现推定已经发布。[设置定义](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/settingsSchema.ts#L1557-L1569)将`tools.sandbox`标作完整进程沙箱，默认undefined；同文件[工具级设置](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/settingsSchema.ts#L1835-L1843)的`security.toolSandboxing`默认false。[未配置用例](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/sandboxConfig.test.ts#L67-L85)明确预期不返回完整进程沙箱配置；[启动路径](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/gemini.tsx#L684-L735)据该配置决定是否进入`start_sandbox`。这是发行源码与上游测试的阅读，未运行这些测试，也不保证其他版本或受管配置的默认行为。**[一手；研究：版本边界]**
+
+**现行文档与发行实现有冲突。** [当前官方沙箱页](https://geminicli.com/docs/cli/sandbox/#configuration)写命令行flag优先于环境变量，再到settings；固定[解析代码](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/sandboxConfig.ts#L43-L59)却用非空`GEMINI_SANDBOX`覆盖传入选项，再把`false`／`0`解析为关闭。[同版测试](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/sandboxConfig.test.ts#L453-L467)也要求环境变量优先于CLI与settings。具体反例：已有`GEMINI_SANDBOX=false`时，只增加`-s`，按该版本解析仍不启用完整进程沙箱；这不排除另行启用的工具级隔离或外部容器。当前文档的“如何关闭工具沙箱”措辞也不能代替该发行版默认值。采用时检查对应版本与实际有效边界，不照搬文档优先级，也不把此冲突外推成所有当前客户端均如此。**[一手；研究：静态反例，非实测]**
+
+**默认Seatbelt不是项目外读取或网络隔离保证。** 固定[启动实现](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/utils/sandbox.ts#L123-L138)选`permissive-open`；该[profile](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/utils/sandbox-macos-permissive-open.sb)允许广泛文件读取与出站网络，写入允许项还包括临时、缓存及额外目录，另明确拒绝部分敏感文件、配置和容器通道。[官方说明](https://geminicli.com/docs/cli/sandbox/#1-macos-seatbelt-macos-only)同样提示广泛读取及联网。若需求是阻止读取项目外普通私人文件或阻断联网，仅开启这个默认profile不足；也不能反过来说所有文件都可读。审批解决是否准许某次动作，不替代上述OS边界。**[一手；研究：采用反例]**
+
+**后端存在不等于同范围可用。** 固定[配置解析](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/sandboxConfig.ts)还接纳Podman、runsc、LXC及windows-native；runsc需Linux与Docker并显式选择，LXC需用户已有运行容器，当前官方页将其标为实验性。版本中另有[Linux工具级实现](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/sandbox/linux/LinuxSandboxManager.ts)与[Windows实现](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/sandbox/windows/WindowsSandboxManager.ts)。这里不将后端名、解析接纳或类存在写成端到端保证；未完整核每个平台的调用链、工具覆盖与宿主依赖，不据此给所有平台统一启用方案。**[一手；研究：未覆盖范围]**
+
+**LSP本轮不扩写。** 固定发行版[内置工具名](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/tools/tool-names.ts)与[工具注册](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/config/config.ts)未核到原生定义跳转、引用查找或语义重命名工具；[IDE集成说明](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/docs/ide-integration/index.md#L7-L48)列出近期文件、光标、选择文本与diff，以及另一路ACP集成，不能据此改为CLI原生LSP支持。矩阵“—”继续表示本轮未核到该原生能力，不表示MCP扩展或其他宿主永远不能提供。未出现改变该项选择的新证据。**[一手；研究：负面证据范围]**
+
+
+## gstack：Windows指纹修复与实际调用入口
+
+核实：2026-10-16（UTC+8）。支持[21验证回执](../21-agent-patterns.md#验证回执能复用什么)的条件采用：撤回“盘符路径仍未修”，保留从实际消费者入口验收的要求；不因此引入整套框架。仅阅读公开源码、原帖与CI记录，未安装或运行gstack、Windows、模型或POSIX模拟。**[研究：范围]**
+
+- **原失败与原用户的局部恢复。** [#3101](https://github.com/garrytan/gstack/issues/3101)的dmfrede报告Git for Windows／Git Bash、1.91.68.0（`20eb6202`），linked worktree中`--git-path index/objects`返回盘符绝对路径，被仅识别`/`的分支重复加上根目录，导致指纹为空及review-start失败。原帖自述本地改两个分支后，start／finish及完整`/ship`成功；这是手动补丁后的Windows使用自报，不是后来上游版本的重试。截至核查issue已closed、0评论，未取得发布后接收者回执。**[社区：原帖及范围]**
+- **不是仅关闭issue。** [合并提交e6edff026519da3e06dce1e91d83932c43527a8d](https://github.com/garrytan/gstack/commit/e6edff026519da3e06dce1e91d83932c43527a8d)于10月11日经[#3140](https://github.com/garrytan/gstack/pull/3140)进入main；[wtree L57–63](https://github.com/garrytan/gstack/blob/e6edff026519da3e06dce1e91d83932c43527a8d/bin/gstack-wtree#L57-L63)对index及objects共用[absolute helper](https://github.com/garrytan/gstack/blob/e6edff026519da3e06dce1e91d83932c43527a8d/bin/gstack-path-spelling.sh#L70-L73)，接纳斜杠根路径和盘符后接正／反斜杠，真正相对路径才补根目录。[#3108采纳说明](https://github.com/garrytan/gstack/pull/3108#issuecomment-6111347983)确认测试与Windows筛选条目一并进入。VERSION及CHANGELOG标1.91.89.0；本轮查询`v1.91.89.0`与`1.91.89.0` Git refs及前者release API均404，因此只称标号提交，不补称已核tag或GitHub Release。**[一手：固定源码、合并与版本文件；研究：发布证据边界]**
+- **测试分平台，不合并成一份Windows证明。** [固定测试L51–88](https://github.com/garrytan/gstack/blob/e6edff026519da3e06dce1e91d83932c43527a8d/test/gstack-wtree-windows-paths.test.ts#L51-L88)第一例建真实linked worktree／私有对象目录，通过显式`bash`启动并核对`HEAD^{tree}`；第二例仅在非Windows用git shim合成盘符路径，Windows跳过。[PR #3108](https://github.com/garrytan/gstack/pull/3108)作者的失败→通过及mutation均为Linux记录，并明确只撤掉index修复时测试仍绿：HEAD回退能生成相同哈希，故该用例不单独证明index快路径。上游[Windows Free Tests运行38156016750](https://github.com/garrytan/gstack/actions/runs/38156016750)成功，运行元数据关联PR head `f16fbc6e4dd6247eca6069ff94103049dc643fa4`，实际checkout日志为合成合并提交`42ca1cb`；六分片job日志标Windows Server 2025；固定curation强制纳入此测试，但可读job日志未给出该例逐条结果，不能写成本轮逐例核验或完整`/ship`复测。**[一手：测试、CI元数据与日志；社区：作者本地测试报告]**
+- **后续失败发生在脚本启动前。** [10月15日#3197](https://github.com/garrytan/gstack/issues/3197)的exGeni报告Windows 11／Bun1.4.2、1.91.101.0（`47d639abffa882b8cbb641d7d1dedf08ecada9ec`）：Git Bash手动运行脚本返回tree id，同一脚本被Bun直接spawn则找不到可执行文件；显式bash的独立探针成功。pregate与restamp是实际失败，gate-diff记录`+nowtree`；evidence路径仅源码阅读、未运行。[固定regen调用](https://github.com/garrytan/gstack/blob/47d639abffa882b8cbb641d7d1dedf08ecada9ec/lib/regen.ts#L131-L136)及[evidence调用](https://github.com/garrytan/gstack/blob/47d639abffa882b8cbb641d7d1dedf08ecada9ec/bin/gstack-evidence#L198-L206)确实直接spawn脚本并在失败时丢失指纹。不能把evidence也写成用户已复现，更不能把此故障当盘符修复回退；显式bash的路径回归没有覆盖Bun直接调用。**[社区：单一环境及探针；一手：调用源码；研究：机制区分]**
+- **待修与采用边界。** #3197无评论；其[#3204修复层](https://github.com/garrytan/gstack/pull/3204)及[#3209整合层](https://github.com/garrytan/gstack/pull/3209)本次均open、未合并，不记作已发布恢复。下一次值得改结论的证据是实际消费者入口上的修复与复验，尤其回执确有指纹且被后续检查使用；更多脚本存在、模拟绿灯或版本标题不足以升级平台保证。**[一手：PR状态；研究：复访条件]**
+
+
+## 21 页历史页头
+
+历史原文转存：2026-10-16（UTC+8），来自 `docs/21-agent-patterns.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准，不表示本次重新核实。
+
+```text
+> 核实时间：2026-10-11（UTC+8；原有条目检索截至 2026-10-10 UTC；验证回执小节于 2026-10-11 UTC 补核，Windows 维护链于 2026-10-16 UTC+8 复核）。
+> 评级针对机制的采用范围，不是项目排名。本轮没有安装这些框架，没有跑生产力对照；星数、市场收录和厂商效果宣称都不等于已证明适合本仓库。
+
+```
+
+
+## Gemini 页历史页头
+
+历史原文转存：2026-10-16（UTC+8），来自 `docs/01-agents/gemini-cli.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准，不表示本次重新核实。
+
+```text
+> 核实时间：接入、迁移与沙箱边界于 2026-10-16（UTC+8）补核；恢复范围为 2026-10-15，其余为 2026-10-08。依据 [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) 仓库的 README、`docs/` 与 `docs/changelogs/`（v0.38–v0.63）**[一手]**。
+> 评级：🧪 **有条件试用**（已有可用 API／企业合同路径）；个人新接入另评估 Antigravity CLI
+
+```
+
+
+## Copilot CLI：接入与治理范围
+
+核实：2026-10-16（UTC+8）；主线二兼四。改变01深页“需要订阅”的笼统接入门槛，以及跨CLI／IDE推荐“强企业治理”的读法。仅阅读官方当前契约与固定文档，未安装、运行CLI、登录账户或配置组织策略；不以文档仓库证明发行二进制实现或所有版本已上线。**[研究：范围]**
+
+### 接入资格与任务能力分开
+
+- **Free明确包含CLI。** [官方CLI产品页](https://github.com/features/copilot/cli/)的访问FAQ明确列Free；[套餐页](https://docs.github.com/en/copilot/get-started/plans)概览也将CLI列为全部套餐共有功能。Free仍有能力和模型选择限制，不由“可接入”推成无限使用。固定[`github/copilot-cli@c01c66377d25426dda70c21750e1956e4dd25657/README.md`](https://github.com/github/copilot-cli/blob/c01c66377d25426dda70c21750e1956e4dd25657/README.md)仍写“An active Copilot subscription”；该提交日期为2026-10-14、对应changelog 1.0.98，只固定README原说法，不用它否定当前明确的Free资格，也不把subscription自行解释为仅付费。**[一手：当前资格与固定README]**
+- **本地BYOK免登录不等于GitHub任务完整。** [认证页](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/authenticate-copilot-cli#unauthenticated-use)说明可直接连接provider而无需GitHub账号／token；此时`/delegate`、GitHub MCP及Code Search不可用。[应用卡](https://docs.github.com/en/copilot/responsible-use/agents)同时确认此范围。选择用于Issue／PR流程前须核实际所需认证和服务资格，不凭BYOK可启动推定云端委派可用。`COPILOT_OFFLINE=true`关闭GitHub联络及遥测，但只有provider也在本地／隔离环境才是隔离运行；普通免登录BYOK仍可发遥测，不能由免登录推定不外发。**[一手；研究：任务边界]**
+- **组织限制仍适用。** [BYOK说明](https://docs.github.com/en/copilot/concepts/models/bring-your-own-key)区分本地配置与服务器侧Enterprise BYOK，后者仍需Copilot许可和联网。[CLI配置参考](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#mdm-managed-settings)的`forceLoginOrgs`可将设备登录锁到指定组织，并拒绝BYOK/API-key认证；应走获准入口，不把本地BYOK推荐为组织限制的替代路径。该配置页已读取固定[文档源码](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md)。**[一手；研究：准入前提]**
+
+### MCP治理不能只看品牌或单页概览
+
+本轮固定官方文档仓库`github/docs@cb051611377a0d2904411e6157154e9b4953d870`（2026-10-15T23:30:02Z）。这是文档快照，不是CLI源码或运行结果；同一快照内部存在以下冲突：
+
+1. [CLI概览](https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-cli#known-mcp-server-policy-limitations)称CLI不支持组织级“MCP servers in Copilot”和“MCP Registry URL”；[固定原文](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/concepts/copilot-surfaces/copilot-cli.md)也保留此说法。
+2. [策略支持表](https://docs.github.com/en/copilot/reference/supported-surfaces-for-policies)的[固定Markdown](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/supported-surfaces-for-policies.md)却将CLI的“MCP servers in Copilot”和“Restrict MCP access to registry servers”标Supported。网页文本提取会漏掉勾叉，本轮读取源码确认，不从空单元格猜测支持状态。
+3. [CLI命令参考的Enterprise MCP allowlist](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#enterprise-mcp-allowlist)及[固定文档](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/copilot-cli-reference/cli-command-reference.md)明确描述：检测企业registry策略或实验开关后，对非默认服务器计算命令／参数／URL指纹，向企业端点评估，错误时阻止连接；内建默认服务器豁免。不能把这段描述当所有已安装版本的实测保证，也不能用概览作“CLI没有此能力”的定论。**[一手：同版本文档冲突；研究：未决范围]**
+
+**可采用路径仍有条件。** [MCP管理页](https://docs.github.com/en/copilot/concepts/enterprise/mcp-management)推荐托管设置而非仅registry名称匹配；[托管设置参考](https://docs.github.com/en/copilot/reference/enterprise-administrators/enterprise-managed-settings#allowedmcpservers)及[固定支持表](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/enterprise-administrators/enterprise-managed-settings.md)列CLI和VS Code均支持`allowedMcpServers`／`deniedMcpServers`，但空allowlist不禁止内建默认服务器，第一方内建服务器也豁免deny；因此这两个键不能承诺“禁止所有MCP”。[VS Code官方策略页](https://code.visualstudio.com/docs/enterprise/policies)另有`ChatMCP`、allow/deny及registry配置，它们属于VS Code入口，不能直接移植为CLI保证。**[一手；研究：采用边界]**
+
+**当前建议与重开条件。** 个人先按任务选择Free／已具资格的GitHub认证／获准的本地BYOK，不为CLI接入预设付费，也不忽略免登录损失的GitHub能力。团队先确认目标客户端版本、设备与账号策略、必需MCP服务器及内建例外；严格准入要求无法证实时保留既有合规入口。升级客户端、改变认证／组织／任务所需GitHub功能或官方解决上述冲突时重核，准备企业部署前提前复核。不更新其他功能快照，不据此把01页升为L3。**[研究：选择与撤回]**

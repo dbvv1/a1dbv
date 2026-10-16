@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件
-改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复，往返导航保留任务位置但不在后台更新时抢焦点；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性。[经验]
-证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍、Joplin 位置同步复测与 Discourse 焦点恢复的撤回／重新采用。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
+改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复，往返导航保留任务位置但不在后台更新时抢焦点，连续筛选与确认按操作范围选择延迟，区分一次性恢复与记住的工作流选择，分清防丢失、稳定检查点与可放弃的试改，以及再次表达意图、重投与重新入队；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性，默认采用现成能力与退休旧实现分开决定。[经验]
+证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍、Joplin 位置同步复测与 Discourse 焦点恢复的撤回／重新采用，以及 KeePassXC 原用户构建后的连续键入反馈、GIMP 原使用者找到持久选项后的恢复与重开回执。新增 n8n 保存／执行的连续修订及原任务仍未满足的反例；VS Code 搜索替换后有兼容路径退休、用户先肯定再收窄成功范围的链。Karakeep 重存补丁后，既有使用者对归档状态与自动同步排序给出负面回执，API opt-in 尚只有提议认可。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -451,3 +451,86 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 回读[官方搜索API](https://www.meilisearch.com/docs/reference/api/search/search-with-post)：all不放宽，last从末词逐步放宽，frequency按频率丢词；结果是否可因删词入选，不能由排名规则等价代替。可直接借用这些成熟机制，按入口决定宁可少结果还是接受放宽，同时保留所需纠错；不是统一推荐某个策略。**[一手：官方语义；经验：采用判断]**
 
 **证据与停止条件。** fzf有同一用户的版本后确认；Meilisearch只有使用需求、实现与后续相反偏好，两链不拼成同等收益证明。没有长期使用测量、检索评估集或AI净收益证据。现成机制已满足任务就无需改引擎；仍不满足时，先区分准入、排序与输入顺序究竟哪一项缺失。**[研究：验证边界；经验：采用判断]**
+
+
+## KeePassXC：连续筛选后确认的是哪个对象
+
+核实：2026-10-16（UTC+8）。改变15 §10.3：本地候选过滤与整库检索分别选择响应延迟，不能仅验静止后的结果正确。只读公开原帖、PR和固定源码；未构建、运行客户端或进行AI实验。**[经验：采用判断与核验范围]**
+
+**原任务是连续动作，不是看见搜索结果就算完成。** pauschuu在2022-03-22的[#7596](https://github.com/keepassxreboot/keepassxc/issues/7596)报告：过去按Auto-Type快捷键、键入一个字母筛选、立即Enter即可选择常用条目；2.7.0出现延迟，过快确认会选择错误条目。环境为Arch Linux／X11、Qt5.15.3、版本revision `d7a9ef4`。他另报等待后有时还需方向键才能选中；维护者未复现此附带现象，不能当所有用户的必现故障。**[社区：原用户报告]**
+
+**选择依据是工作范围，不是统一取消等待。** [维护者回应](https://github.com/keepassxreboot/keepassxc/issues/7596#issuecomment-1075621046)解释300ms延迟对于整库搜索有意义，但已有匹配列表过滤不需要同样等待。[PR #7598](https://github.com/keepassxreboot/keepassxc/pull/7598)的[固定前版](https://github.com/keepassxreboot/keepassxc/blob/7dc2d236dfba345002962c9e6d0f1f0b6a7d0289/src/autotype/AutoTypeSelectDialog.cpp)将文本变化接到300ms单次计时器，Enter直接激活当前选择；[固定后版](https://github.com/keepassxreboot/keepassxc/blob/2fee61a0a1a0cbd8bb0298f9cd2d9bc2bebadfcb/src/autotype/AutoTypeSelectDialog.cpp)以`setDelayedSearch`区分0ms与150ms。未勾选整库搜索时只过滤已有`m_matches`；勾选时遍历已打开数据库检索。这里没有数据库规模或耗时测量，150ms只是该补丁的选择，0ms仍是Qt计时器而非同步执行或无竞争保证。**[一手：固定源码与维护者理由；研究：边界]**
+
+**真实复试成立，但不覆盖后来的全部修订。** 原请求者于03-22 21:08 UTC在[PR审阅](https://github.com/keepassxreboot/keepassxc/pull/7598#pullrequestreview-917887109)明确说亲自构建、测试后可用，并在[原issue](https://github.com/keepassxreboot/keepassxc/issues/7596#issuecomment-1075643503)确认附带未选中问题不再出现。03-23审查随后[发现初始化路径](https://github.com/keepassxreboot/keepassxc/pull/7598#discussion_r832912510)临时阻断checkbox信号，不能只在toggled回调设置延迟；最终代码在`setMatches`也调用`setDelayedSearch(noMatches)`。PR于03-23合入，merge为`4178e72fe04eb97d0787c006b03993c87baa26c3`。因此回执支持用户试用了当时修订，未绑定最终head，不能写成最终发布版已由原人完整验收。**[社区：原人运行报告；一手：审查与后续补丁]**
+
+**采用边界。** 对已有候选的快速选择，先检查输入更新、选择更新与确认动作是否一致，再比较缩短局部延迟、提示尚未就绪或保护提交；不为了共享搜索组件而让轻量路径承担整库检索的等待，也不由此要求所有搜索零延迟。仍需按实际范围验证快速输入后确认及范围切换，不能让测试先等结果稳定再确认、从而漏掉用户原动作；验证顺序沿[23](../23-browser-verification.md#4-一次完整验证的顺序)。后两种处理只是待选方案，本例没有对照其效果；没有长期使用、整库快输复测、全平台结果、投入工时或AI净收益证据。**[经验：产品选择；研究：未验证范围]**
+
+
+## GIMP：一次性合并与记住工作流选择
+
+核实：2026-10-16（UTC+8）。改变15 §10.3：能用一次性操作恢复任务，不等于原工作流已无重复负担；先核可发现的持久选择及其范围，再决定回滚。以下是历史实现与后来配置复试，不是为该用户新写补丁后的恢复，也无AI实现归属证据。**[经验：采用判断；研究：边界]**
+
+**前后方案各保留什么。** [2.99.18发布说明](https://www.gimp.org/news/2024/02/21/gimp-2-99-18-released/)介绍将滤镜保留为可编辑效果，之后可调整、移除或合并；[3.0 RC1说明](https://www.gimp.org/news/2024/11/06/gimp-3-0-RC1-released/)明确说早期使用者要求原破坏性工作流，因此增加应用时的“Merge Filters”选项。它保留了非破坏性默认，不是整项撤回；当时层组不支持直接合并。**[一手：官方变更与理由]**
+
+**固定产物不是只有一个按钮。** [cdd5174](https://github.com/GNOME/gimp/commit/cdd5174055d6887ddbb215a1e20222de679b7dfd)于2024-08-10提交，新增默认false的`merge-filter`配置，提交新滤镜时据此决定立即合并，并调整滤镜栈位置；作者日期2024-02-02不当作提交日期。用户所报3.2.4的tag解析到`6987b3853c10517eb581deeb20572fb5f99a7086`；[对应源码](https://github.com/GNOME/gimp/blob/6987b3853c10517eb581deeb20572fb5f99a7086/app/tools/gimpfiltertool.c#L414-L480)将复选框绑定工具选项并限制显示对象，[提交分支](https://github.com/GNOME/gimp/blob/6987b3853c10517eb581deeb20572fb5f99a7086/app/tools/gimpfiltertool.c#L574-L580)读取该选择。固定源码说明机制，不替代用户运行或持久化实测。**[一手：固定补丁与版本源码]**
+
+**功能恢复后，重复负担仍在。** [2026-08-26至27日原帖](https://www.gimp-forum.net/Thread-adding-color-after-using-threshold)中，Linux／3.2.4使用者makeitwork101要先阈值化再上色。#3确认“Merge all active filters down”后能继续，但每次多一步；#5／#7的尝试仍混淆一次性合并与持久选项，并出现连续填色异常。其他人进一步指出应在Threshold对话框勾选“Merge filter”，而不是反复执行层上的合并命令。**[社区：原任务、实际尝试与纠正]**
+
+**配置复试成功，默认值争论没有因此结束。** [08-28的原用户#12](https://www.gimp-forum.net/Thread-adding-color-after-using-threshold?pid=47684#pid47684)确认找到正确复选框后恢复所需行为，关闭再打开GIMP仍记住选择。它没有逐项记录成功后的全套连续操作，不能把先前新图失败尝试拼成最终新图验收。用户主张新功能默认关闭；[维护者后续回应](https://www.gimp-forum.net/Thread-adding-color-after-using-threshold?page=2)指出不同人需求相反；[第一页#10的解释](https://www.gimp-forum.net/Thread-adding-color-after-using-threshold)则明确普通Filter菜单与部分Color工具的设置作用域不同。拟议全局设置和界面改版不是已交付产物；回执不证明跨工具统一保存。**[社区：原用户复试；一手：维护者解释；研究：范围]**
+
+**显示故障与取舍分开。** 同帖另报的[#16718](https://gitlab.gnome.org/GNOME/gimp/-/work_items/16718)给出3.2.4 aarch64 AppImage／Raspbian Debian13／X11复现：未合并滤镜下bucket fill的画布与缩略图更新不一致，切换可见性可刷新。该故障不等于非破坏性设计必然禁止后续绘画；本轮只核正文，未核修复状态或运行复现，不能声称配置选择修好了该bug。**[一手：原始故障报告；研究：未验证范围]**
+
+**采用与停止条件。** 让Agent先分清一次性恢复、记住的工具偏好和全局默认；已有选择能保住所需路径时，优先改善发现与说明，不为恢复旧习惯整项回滚。建议验新对象、连续操作及重开后的实际效果，另核是否应跨工具共享；这些是据案例提出的验收范围，不全是该用户已完成的测试。只读公开材料，未运行GIMP、模型或测试，未测操作工时、长期收益或全平台结果；不能由单例要求所有产品记住所有设置。**[经验：采用建议；研究：验证边界]**
+
+
+## n8n：自动保存、稳定检查点与可放弃的试改
+
+核实：2026-10-16（UTC+8）。改变15 §10.3：防丢失、识别稳定中间状态、运行后放弃试改是不同需求；恢复正确执行不等于恢复原试用方式。只读公开讨论、固定补丁及官方文档，未运行 n8n、测试或模型。**[经验：采用判断；研究：范围]**
+
+**生产版本隔离后，编辑任务仍可能不顺。** [2026-01的官方公告及原用户反馈](https://community.n8n.io/t/announcing-autosave/246161)说明保存与发布已经分开。01-30，Dr_Trann描述协助同事排查工作流，尝试不成立时希望离页放弃；jb8n描述连续修改节点、运行后想回到稳定中间状态，且该状态未必是已发布版本。这些是编辑与恢复负担，不能改写为自动保存必然部署到生产。**[一手：产品语义；社区：实际任务]**
+
+**已有替代只能满足部分目标。** [04-22维护者归纳及后续反馈](https://community.n8n.io/t/disable-autosave-got-created/263825/17)将可放心试改、找回有效版本分别列出；另一使用者提出保留自动恢复、突出手动里程碑。当前[官方文档](https://docs.n8n.io/build/manage-workflows/view-change-history.md)已提供命名版本且不自动清理，限 Cloud Pro／Enterprise、self-hosted Business／Enterprise；不能把02月的规划继续写成尚未交付。命名检查点有助于辨认状态，却不是“不保存即可试运行”的等价实现；未见上述原使用者采用后的回执。**[一手／社区；研究：机制区别与边界]**
+
+**开关恢复后，Execute又改变了保存语义。** [#25144](https://github.com/n8n-io/n8n/pull/25144)于05-04合入关闭自动保存的环境选项；[#30347](https://github.com/n8n-io/n8n/pull/30347)随后指出 Execute 仍会保存，破坏显式控制。[固定补丁10e79d9](https://github.com/n8n-io/n8n/commit/10e79d91bd7d61e6529cc5647cc6545d1ae03fa8)把执行前保存收窄为新工作流，或自动保存开启且有未保存修改；其中测试只断言是否调用保存，不能证明执行的是当前画布。该PR于05-13合入，merge为`ad6c470f8f9667c9455d1c85dbd3e553f6d99f4e`。**[一手：需求、固定补丁与测试定义]**
+
+**实际反例：没有保存，却运行旧定义。** NeoGrAIph于06-03在[#31615](https://github.com/n8n-io/n8n/issues/31615)报告 self-hosted 2.22.x、自动保存关闭时，修改现有工作流后手动运行使用数据库旧定义；要求有编辑权限者能运行未保存草稿。#30347作者06-11也报告遇到并确认回归。这里是当前工作流的手动运行，不是调用子工作流选错版本，更不是所有 Execute 路径都过时。**[社区：版本后负面回执；研究：范围]**
+
+**最终选择保留安全边界，没有满足原任务全部条件。** [#32513的维护者审查](https://github.com/n8n-io/n8n/pull/32513#pullrequestreview-4523382955)要求撤回传入画布定义的方案，改为保存后运行或取消。06-18合并产物`2124c08c050ac0c4adf996c9e7f128debd3dc2e1`的[前端](https://github.com/n8n-io/n8n/blob/2124c08c050ac0c4adf996c9e7f128debd3dc2e1/packages/frontend/editor-ui/src/app/composables/useRunWorkflow.ts)仅在已有工作流、有未保存修改且自动保存关闭时提示；取消或保存失败则不运行，新工作流和自动保存开启另走原分支。[后端](https://github.com/n8n-io/n8n/blob/2124c08c050ac0c4adf996c9e7f128debd3dc2e1/packages/cli/src/workflows/workflows.controller.ts)的`runManually`仍按URL中的工作流ID读取数据库定义交给执行器。不能把已撤回的草稿覆盖方案写成最终能力。**[一手：审查、固定前后产物]**
+
+[固定前端测试](https://github.com/n8n-io/n8n/blob/2124c08c050ac0c4adf996c9e7f128debd3dc2e1/packages/frontend/editor-ui/src/app/composables/useRunWorkflow.test.ts)断言确认会调用保存、取消不保存也不运行；不是一次完整运行后再放弃修改的验收。本轮未运行测试或核CI。原issue最后只有贡献者表示将试用，没有最终版满意回执。由实现可知，该修订避免静默采用旧定义，却仍须先持久化才能试运行；这是有意取舍，不等于原需求消失。**[一手：测试定义；研究：未闭环边界]**
+
+**采用判断。** 先问使用者需要防丢失、找回稳定检查点，还是临时试改后整体放弃，再比较现成恢复／命名机制与单独试改空间；不要把增加保存开关当作完整答案，也不因用户抱怨就取消防丢失。当前[保存与发布文档](https://docs.n8n.io/build/understand-workflows/save-and-publish-workflows.md)区分持久化草稿与生产版本，另注明工作流设置更新可自动重新发布，因此不推广成所有设置均隔离。选择临时试改方案还须核执行权限及外部副作用，未保存不等于运行无副作用。本例没有长期效率、最终用户重新采用或AI净收益证据；提交署名不支持AI因果归属。**[一手：现行边界；经验：采用与停止条件]**
+
+
+## VS Code：默认采用与退休旧实现分开
+
+核实：2026-10-16（UTC）；历史事件下列日期为UTC。改变15 §10.4：默认选用现成组件，不自动授权退休仍承担必要能力的旧实现；兼容开关与局部成功须核实际路径。只读公开发布说明、固定源码及用户原帖，未运行客户端、测试或模型。这是成熟软件的历史迁移反例，不是AI原型成功案例。**[经验：采用条件；研究：范围]**
+
+**先采用新组件，保留另一条实现。** [1.11发布说明](https://code.visualstudio.com/updates/v1_11)宣布搜索使用ripgrep，理由是更快，并提供`search.useRipgrep=false`回退。[首次接入62ec995](https://github.com/microsoft/vscode/commit/62ec995019e86074c5aa24003d2f960bd9282d90)将原Node搜索引擎／worker调用替换成RipgrepEngine并增加外部进程适配；[随后3ebdc67](https://github.com/microsoft/vscode/commit/3ebdc67d1f27207e5c06d13e307eeb85d1aba3da)恢复原实现、以开关选择。发布说明的速度主张不是本轮测速，也没有维护工时对照。**[一手：发布说明与固定补丁；研究：边界]**
+
+**新组件的能力并不覆盖编辑器支持的全部输入。** [2017年#24229](https://github.com/microsoft/vscode/issues/24229)报告maccenteuro编码可以编辑，却无法多文件搜索；[维护者解释](https://github.com/microsoft/vscode/issues/24229#issuecomment-292573812)编辑器的iconv-lite支持它，搜索组件不支持，建议退回旧搜索。不能推广成所有非UTF-8编码都不支持，也不能把编辑正常当作搜索已覆盖。**[社区：实际使用；一手：维护者解释]**
+
+**同名开关后来不再选择旧实现。** [2018-10-20的b59fd51](https://github.com/microsoft/vscode/commit/b59fd519a0148f20e1ad0b860461a7c40b286df8)将`search.useRipgrep=false`改为选择PCRE2正则能力，并另设`disableRipgrep`控制旧路径；当时旧实现尚未删除，不能把这一步写成已经彻底取消兜底。正则能力与输入解码是不同责任，原先用于恢复编码支持的配置不能因名称保留就当作仍有效。**[一手：固定补丁；研究：机制区别]**
+
+**之后确实删除旧实现，而非只隐藏入口。** [#65337](https://github.com/microsoft/vscode/issues/65337)提出不再保留旧搜索，[维护者说明](https://github.com/microsoft/vscode/issues/65337#issuecomment-449104898)指可由`search.useLegacySearch`开启的Node实现。[2019-01-24的cc4217c](https://github.com/microsoft/vscode/commit/cc4217ccbfc1d99b821fd65bc787c2cea820acb4)删除legacy实现、开关及相关双实现测试，将`rawSearchService`固定接到ripgrep；删掉的配置说明原本明示旧实现支持新组件不支持的部分编码。其父提交`adf0b1966a49306e76ac87083ade69ae1ac9fb55`的[旧worker](https://github.com/microsoft/vscode/blob/adf0b1966a49306e76ac87083ade69ae1ac9fb55/src/vs/workbench/services/search/node/legacy/worker/searchWorker.ts#L174-L179)按文件编码调用解码，再逐行搜索。删除代码和测试只能证明责任变化，不能证明维护净成本下降。**[一手：固定前后产物与开发者原意；研究：边界]**
+
+**接收者仍需要被删路径承担的任务。** [#68237](https://github.com/microsoft/vscode/issues/68237)报告1.31.0下cp437工作区搜索失败，过去关闭ripgrep有效，现在改选PCRE无效；[维护者确认该编码搜索不再支持](https://github.com/microsoft/vscode/issues/68237#issuecomment-462475384)。[Trucoto的实际约束](https://github.com/microsoft/vscode/issues/68237#issuecomment-474838319)是字符串需面向旧串口打印机／显示设备，转换整个项目还需增加适配，不是免费替代。它支持把接收者的外部依赖纳入必要能力判断，不要求项目永久覆盖所有旧格式。**[社区：使用任务与代价自述；一手：维护者回应]**
+
+**一次正面回执不足以证明替代完整。** 同一用户JSchiffmacher于2019-06-19 10:01在[配置后回报可用](https://github.com/microsoft/vscode/issues/68237#issuecomment-503494535)，13:41又[收窄成功范围](https://github.com/microsoft/vscode/issues/68237#issuecomment-503565574)：带重音字符搜索仍漏文件，预期超过1000项而只见4项。这是其自报，未独立核对文件集合。维护者此前[解释](https://github.com/microsoft/vscode/issues/68237#issuecomment-464826826)已打开文件走编辑器缓冲区搜索，不能代表整工作区搜索成立；这里不是全部入口都被新引擎替换。因而应核成功结果来自哪条路径，尤其避免先打开样本后只验交互结果、漏掉新组件实际承担的后台／批量入口。**[社区：同人复试与修正；一手：维护者解释；经验：验收建议]**
+
+**采用与停止条件。** 比较“默认换用新组件”和“删除旧实现”的条件：前者可为常见任务提供收益，后者还须覆盖约定保留的必要任务，或由负责人明确接受缩小支持范围；仍有缺口时比较窄适配与必要兜底，而非无限维护两套实现。上述反例相对Mealie增加的是路径归属、回退开关语义变化和用户成功判断被后续操作推翻，不重复把一张样本当整批验收。本例没有AI效果、支持工时、长期维护成本或净收益证据；未据issue仍开放推断2026年发行版的故障状态，也不将主干“原型改用现成方案后的维护净收益”缺口标为完成。**[经验：采用判断；研究：验证边界]**
+
+
+## Karakeep：重复对象不等于重复意图
+
+核实：2026-10-16（UTC）；事件日期以下均为UTC。改变15 §10.3：去重保住对象身份，不等于重复操作应当保留或重置相同状态；按真实目的比较重存与重投，不由调用来源替使用者决定。只读公开讨论和固定补丁，未运行应用、测试或模型。**[经验：采用判断；研究：范围]**
+
+**原使用者要重新入队，不只是保存成功。** Garrett-R在2026-02-22的[#2502](https://github.com/karakeep-app/karakeep/issues/2502)报告：Firefox扩展保存YouTube视频、在Karakeep归档、再保存同一页，界面显示成功但主页未出现；[补充说明](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-3941927859)称数周来误以为保存不稳定，希望解除归档并移到前面。维护者[最初考虑改善已存在提示](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-3940548275)，也指出只解除归档仍会因日期较旧而难找；[02-23同意改行为](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-3943157419)。原用户当天的赞许早于实现，不是修改后验收。**[社区：重复使用任务；一手：开发者选择]**
+
+**固定产物改变了操作语义，未删除原创建时刻。** 07-26合入的[#2962／f2f6431](https://github.com/karakeep-app/karakeep/commit/f2f6431db2da20d45469415574a0b4b6f8086070)，其[父版本a698724](https://github.com/karakeep-app/karakeep/blob/a698724705d44898f01f88fabc516c0dd27be2a1/packages/trpc/routers/bookmarks.ts#L261-L272)命中已有URL直接返回；[修改后router](https://github.com/karakeep-app/karakeep/blob/f2f6431db2da20d45469415574a0b4b6f8086070/packages/trpc/routers/bookmarks.ts)默认解除归档、更新排序日期与modifiedAt，并触发索引和edited webhook，显式提供的部分元数据另可覆盖。[schema](https://github.com/karakeep-app/karakeep/blob/f2f6431db2da20d45469415574a0b4b6f8086070/packages/db/schema.ts#L208-L225)保留数据库createdAt，新增lastSavedAt；旧API字段createdAt却改指lastSavedAt，原创建时刻另以firstCreatedAt暴露。不能照用户报告把API字段变化写成底层原始日期已丢失。**[一手：固定前后产物；研究：语义边界]**
+
+**同一归档状态承担另一人的完成标记。** [07-29的lrnd1回执](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-5114172612)说明自己收藏链接、整理进笔记应用后再归档；新行为无提示地恢复条目，让他混淆已完成的整理工作，询问能否停止。[07-30补充](https://github.com/karakeep-app/karakeep/issues/2502#issuecomment-5125800099)表示确认、设置或标明从归档返回均可接受。这是既有使用者的实际反对，不是原请求者复测，也不等于要求整项回滚。**[社区：修改后使用及可接受的候选]**
+
+**已豁免RSS来源，不等于外部RSS同步也无副作用。** [08-06的#2986](https://github.com/karakeep-app/karakeep/issues/2986)中，pluusla报告v0.33.1经n8n每20分钟同步FreshRSS收藏，同URL仍为同ID，但两天前条目的API createdAt变为12分钟前，扰乱日期排序。固定router虽豁免source为rss/import，[REST入口](https://github.com/karakeep-app/karakeep/blob/f2f6431db2da20d45469415574a0b4b6f8086070/packages/api/routes/bookmarks.ts#L54-L63)无source时却设为api；来源标签不完整表达“自动重投”意图。[开发者提出API opt-in](https://github.com/karakeep-app/karakeep/issues/2986#issuecomment-5201910207)，[该用户认可并细化提议](https://github.com/karakeep-app/karakeep/issues/2986#issuecomment-5201946303)，但未取得后续交付与运行复测回执。**[社区：实际负面回执；一手：入口和开发者回应；研究：未闭环边界]**
+
+**采用与停止条件。** 让使用者说明再次提交是要确认已存、重试同步，还是明确把旧对象重新排进任务；分别核对象身份、完成状态与排序含义，再比较保留现状、显式重存或提示确认。不要把每个入口都加开关作为默认答案，也不由单例要求所有产品保留更多状态。[补丁测试定义](https://github.com/karakeep-app/karakeep/blob/f2f6431db2da20d45469415574a0b4b6f8086070/packages/trpc/routers/bookmarks.test.ts)检查普通重存、提供的元数据及rss豁免，不能替代外部调用者的重复任务验收；本轮未运行测试或核CI。没有原请求者明确运行成功、长期收益、维护成本或AI效果证据；不以issue状态或当前未固定分支推断后续版本已修好或仍有故障。**[经验：采用判断；研究：验证边界]**
