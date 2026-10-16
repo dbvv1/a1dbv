@@ -4,7 +4,7 @@
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
-证据核实：2026-10-13—15 UTC；动态 UI、模拟输入、本地多人及手柄反馈补核为 2026-10-16 UTC+8，各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。全文共同范围：未安装付费插件，未开展游戏、引擎、模型、设备或玩家实测；不据资料研究证明本项目的性能、体验或 AI 净收益。已执行的仓库离线检查及明确标注的算术核对仍按原记录区分，不属于上述实测；各节另保留特殊验证限制。源码与作者数据不等于本项目复现。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
+证据核实：2026-10-13—15 UTC；动态 UI、模拟输入、本地多人及手柄反馈补核为 2026-10-16 UTC+8，混用边界补核为 2026-10-17 UTC+8；各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。全文共同范围：未安装付费插件，未开展游戏、引擎、模型、设备或玩家实测；不据资料研究证明本项目的性能、体验或 AI 净收益。已执行的仓库离线检查及明确标注的算术核对仍按原记录区分，不属于上述实测；各节另保留特殊验证限制。源码与作者数据不等于本项目复现。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
 
 **[研究] ✅ 默认复用成熟组件；仅补项目缺少的所有权、迁移和模式切换规则。** 先验场景取消、释放、旧档、暂停与设备峰值，再决定是否加框架；无同任务实测，不作质量／性能排名。
 
@@ -401,7 +401,18 @@
 
 - [一手] `SetUIEngaged`（304–327 行）在 UI 模式启用 UI map、停用玩法动作，并恢复上次导航选择；退出时保存选择、清空当前选择并恢复玩法。`SetPlayerActionsEnabled`（331–345 行）特意保留 UIEngage 动作，避免把退出入口一同禁用。主菜单入口另在 `Update` 先置 `InMenu` 再停用 gameplay input 和选择首按钮，`OnContinueClicked` 恢复游戏。
 - [一手／研究] 可复用边界同样可见：恢复选择只检查 null，未在该路径验证目标是否仍激活／可交互；`OnControlsChanged` 注释明确不支持 mixed models，状态机只有一个 `InMenu`，没有嵌套弹窗栈。由此不能把整个样例当作完整改键、设备热切换和多层菜单底座；这些是静态覆盖范围，不是本轮复现的游戏故障。
-- [研究] **✅ 优先改造样例中的模式归属与选择保存机制，⛔ 从零写等价事件总线或整包照搬。** 简单 uGUI 项目从所锁定已发布包携带的样例出发，保持其必要输入配置，再按真实缺口补有效目标后备和嵌套返回；已有 UI Toolkit 不为复用这个 uGUI 样例迁移，只借切换边界。第二个菜单若只需补这两项，不引新框架。该样例值得作窄机制参考；官方身份和源码可见都不足以证明其是已发行高品质菜单的完整实现。
+- [研究] **✅ 优先借用样例中的显式 UI 交接与选择保存机制，⛔ 从零写等价事件总线或整包照搬。** 简单 uGUI 项目从所锁定已发布包携带的样例出发，保持其必要输入配置，再按真实缺口补有效目标后备和嵌套返回；已有 UI Toolkit 不为复用这个 uGUI 样例迁移，只借切换边界。第二个菜单若只需补这两项，不引新框架。该样例值得作窄机制参考；官方身份和源码可见都不足以证明其是已发行高品质菜单的完整实现。
+
+#### 混用补核：提示变化不等于退出 UI
+
+核实：2026-10-17 UTC+8；主线三。改变 04 对上述样例的采用边界：项目已承诺混用时，分别判断提示、交互方式与焦点，不把设备通知直接当成退出 UI 的意图；不扩展设备模块或校准方案。[研究]
+
+- **Unity 样例的具体前提。** [一手] 同一固定树的 [场景配置](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInput.unity)将 `m_ControlsChangedEvent` 连到 `OnControlsChanged`；[PlayerInput 契约与实现](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/PlayerInput.cs#L574-L595)说明通知包括所用设备集合、control scheme、绑定及键盘布局变化，不只是玩家换了物理设备。[handler 80–106行](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Assets/Samples/UIvsGameInput/UIvsGameInputHandler.cs#L80-L106)按已分配设备判断 `ControlStyle`，注释明确此方式不支持 mixed models；结果为 GamepadJoystick 就调用 `SetUIEngaged(false)`。该方法保存后清空导航选择、停用 UI map、启用 Player map 中除 UIEngage 外的动作；它操作的是样例的 UI engagement，不会直接关闭主菜单对象或将 `m_State` 改为 InGame。[研究] 因此可借显式交接与选择保存，不把整段回调照搬为提示刷新；这不是 Unity 整体不支持混用，也不是对样例运行故障的复现。
+- **同一手柄也可改变交互语义。** [一手] DevilutionX [#4242 原报告](https://github.com/diasurgical/DevilutionX/issues/4242)描述背包光标缺失、发暗或卡住，仅推测窗口模式、屏外起始位置相关。[2022-04-03 固定修复](https://github.com/diasurgical/DevilutionX/commit/79c7eee10aee93d7fa3429decdcb5921a1522bd5)将 `ControlDevice` 与 `ControlMode` 分开：手柄模拟鼠标时保留手柄设备身份，模拟点击可使用指针交互语义；硬件光标显示／定位不再仅由交互模式判断。补丁还含光标调色板等修改，不能将全部故障归给单一变量；本轮未取得修复后独立玩家复测。这里只借设备与交互语义不可等同的机制，不推荐新增一套全局变量，更不把它称作漂移修复。
+- **真实混用可以只给提示另一个选择。** [社区／一手] Deadlock [2024-09 原帖](https://forums.playdeadlock.com/threads/game-hitches-when-using-analog-input.27479/)报告持续摇杆移动、鼠标观察／点击时提示交替并卡顿；开发者随后讨论图标锁定与 Steam Input actions 补齐。[2024-11-07 官方更新](https://forums.playdeadlock.com/threads/11-07-2024-update.44786/)发布混用 glyph swapping 改进及 Automatic／Keyboard & Mouse Only／Game Pad Only 三种提示锁定，同时更新动作、配置并提示部分用户需重绑摇杆／陀螺仪。原帖 aeodyn0 于11-08自报启用 Overlay、重做配置后正常。[研究] 这是多项同时改变后的反馈，不证明提示锁定单独消除了卡顿，也不能仅据提示交替断定性能根因；它支持为合法混用提供独立的提示策略，而非要求把模拟移动改成 WASD 或禁用手柄。
+- **UE 合成事件的对照。** [一手] [CommonUI Input Technical Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)说明手柄 Accept 可以生成合成鼠标点击；导航则先解析方向、找有效目标、设置 user focus，下一 tick 才将合成光标移到目标。[研究] 所以收到鼠标事件不必然意味着玩家改用物理鼠标；应核实际导航与合成路径，不因事件类型直接重建选择。这只核原生语义，不证明 CommonUI 自动解决混用或值得为此迁移。
+
+**采用与撤回。** [研究] ✅ 对已经承诺的混用，若只是提示样式变化，保留当前菜单、有效焦点与仍获准的输入；实际开始导航、指针操作或明确进出 UI 时，再按项目政策交接。若项目本来采用互斥设备模式，可保留明确、可用的交接，不推广为禁止所有设备驱动切换。出现切换振荡先区分真实混用、合成事件和噪声；本文不增加统一阈值，沿用已有按动作核处理链的建议。提示锁定不能掩盖确认／返回不可达；仅改提示已满足就不扩路由，新增政策破坏合法混用则撤回。上述资料与固定补丁未代替目标设备的菜单、焦点和帧时间验证，本轮无游戏／引擎运行。
 
 #### 输入交接补比：消费按下不等于等待松键
 
