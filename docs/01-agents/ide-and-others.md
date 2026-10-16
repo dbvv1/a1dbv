@@ -37,7 +37,13 @@ Codex 集成可用 JetBrains AI 订阅、ChatGPT 登录或 OpenAI API key；仅 
 | 模型 | Claude Opus 5.5、Sonnet 5.5、Haiku 5.5，GPT-6 Sol / Luna、GPT-6.1 Sol，Grok 4.7 都已接入 |
 | 治理 | 企业托管设置的校验器、用量指标 API（含 PR 评审阶段、CLI 定制）、影响力仪表盘、预算提额申请、OpenTelemetry |
 
-评级：✅ **采用**（VS Code 作为承载各家 Agent 的编辑器）；Copilot 本身 🧪 **试用**，重度 GitHub 用户和需要强企业治理的团队尤其值得看。
+评级：✅ **采用**（VS Code 作为承载各家 Agent 的编辑器）；Copilot 本身 🧪 **条件试用**，按所需 GitHub 能力和实际治理覆盖选择入口。
+
+### Copilot：接入与治理边界
+
+**CLI 不必先付费订阅。** 当前官方套餐包含 Free；本地 BYOK 在组织策略允许时可免 GitHub 账号／登录；未登录时没有 GitHub MCP、Code Search 和 `/delegate`。需要这些能力时另核认证与服务资格；企业托管 BYOK 仍需 Copilot 许可和联网，受管设备的强制组织登录也可能拒绝本地 BYOK。不能把“自带模型”当作完整 GitHub 工作流或组织准入的替代。**[一手；研究：2026-10-16接入选择]**
+
+**团队先核具体客户端、策略和有效设置，再决定采用。** CLI 的 MCP 组织策略在官方概览与参考文档中仍有冲突，不能据品牌或 VS Code 支持就认定 CLI 同样受控，也不能概括为 CLI 没有治理。托管 MCP allow/deny 有明确内建服务器例外；若任务要求全部 MCP 禁用或严格准入，须确认目标版本实际覆盖，不满足就保留已符合要求的入口。原文、固定文档与范围见[接入核查](../research/2026-10-12-community-source-records.md#copilot-cli接入与治理范围)。未运行客户端或验证账户、组织策略。**[一手；研究：采用与撤回边界]**
 
 **观察**：本地沙箱、动态工作流、多模型编排这三项，Claude Code、Codex 和 Copilot 在两个月内都做了类似的东西，**功能趋同还在继续**（见 [00](../00-state-of-ai-coding.md)）。
 

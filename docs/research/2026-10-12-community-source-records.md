@@ -1,6 +1,6 @@
 主线：二为主，兼四
 改变的建议：[经验／研究] 原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
-新证据：[一手／社区] gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
+新证据：[一手／社区] Copilot CLI Free／本地BYOK接入与组织限制、MCP治理官方口径冲突，gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
 # 社区工作流：固定来源与案例资料
 
@@ -450,3 +450,26 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 > 评级：🧪 **有条件试用**（已有可用 API／企业合同路径）；个人新接入另评估 Antigravity CLI
 
 ```
+
+
+## Copilot CLI：接入与治理范围
+
+核实：2026-10-16（UTC+8）；主线二兼四。改变01深页“需要订阅”的笼统接入门槛，以及跨CLI／IDE推荐“强企业治理”的读法。仅阅读官方当前契约与固定文档，未安装、运行CLI、登录账户或配置组织策略；不以文档仓库证明发行二进制实现或所有版本已上线。**[研究：范围]**
+
+### 接入资格与任务能力分开
+
+- **Free明确包含CLI。** [官方CLI产品页](https://github.com/features/copilot/cli/)的访问FAQ明确列Free；[套餐页](https://docs.github.com/en/copilot/get-started/plans)概览也将CLI列为全部套餐共有功能。Free仍有能力和模型选择限制，不由“可接入”推成无限使用。固定[`github/copilot-cli@c01c66377d25426dda70c21750e1956e4dd25657/README.md`](https://github.com/github/copilot-cli/blob/c01c66377d25426dda70c21750e1956e4dd25657/README.md)仍写“An active Copilot subscription”；该提交日期为2026-10-14、对应changelog 1.0.98，只固定README原说法，不用它否定当前明确的Free资格，也不把subscription自行解释为仅付费。**[一手：当前资格与固定README]**
+- **本地BYOK免登录不等于GitHub任务完整。** [认证页](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/authenticate-copilot-cli#unauthenticated-use)说明可直接连接provider而无需GitHub账号／token；此时`/delegate`、GitHub MCP及Code Search不可用。[应用卡](https://docs.github.com/en/copilot/responsible-use/agents)同时确认此范围。选择用于Issue／PR流程前须核实际所需认证和服务资格，不凭BYOK可启动推定云端委派可用。`COPILOT_OFFLINE=true`关闭GitHub联络及遥测，但只有provider也在本地／隔离环境才是隔离运行；普通免登录BYOK仍可发遥测，不能由免登录推定不外发。**[一手；研究：任务边界]**
+- **组织限制仍适用。** [BYOK说明](https://docs.github.com/en/copilot/concepts/models/bring-your-own-key)区分本地配置与服务器侧Enterprise BYOK，后者仍需Copilot许可和联网。[CLI配置参考](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#mdm-managed-settings)的`forceLoginOrgs`可将设备登录锁到指定组织，并拒绝BYOK/API-key认证；应走获准入口，不把本地BYOK推荐为组织限制的替代路径。该配置页已读取固定[文档源码](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md)。**[一手；研究：准入前提]**
+
+### MCP治理不能只看品牌或单页概览
+
+本轮固定官方文档仓库`github/docs@cb051611377a0d2904411e6157154e9b4953d870`（2026-10-15T23:30:02Z）。这是文档快照，不是CLI源码或运行结果；同一快照内部存在以下冲突：
+
+1. [CLI概览](https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-cli#known-mcp-server-policy-limitations)称CLI不支持组织级“MCP servers in Copilot”和“MCP Registry URL”；[固定原文](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/concepts/copilot-surfaces/copilot-cli.md)也保留此说法。
+2. [策略支持表](https://docs.github.com/en/copilot/reference/supported-surfaces-for-policies)的[固定Markdown](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/supported-surfaces-for-policies.md)却将CLI的“MCP servers in Copilot”和“Restrict MCP access to registry servers”标Supported。网页文本提取会漏掉勾叉，本轮读取源码确认，不从空单元格猜测支持状态。
+3. [CLI命令参考的Enterprise MCP allowlist](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#enterprise-mcp-allowlist)及[固定文档](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/copilot-cli-reference/cli-command-reference.md)明确描述：检测企业registry策略或实验开关后，对非默认服务器计算命令／参数／URL指纹，向企业端点评估，错误时阻止连接；内建默认服务器豁免。不能把这段描述当所有已安装版本的实测保证，也不能用概览作“CLI没有此能力”的定论。**[一手：同版本文档冲突；研究：未决范围]**
+
+**可采用路径仍有条件。** [MCP管理页](https://docs.github.com/en/copilot/concepts/enterprise/mcp-management)推荐托管设置而非仅registry名称匹配；[托管设置参考](https://docs.github.com/en/copilot/reference/enterprise-administrators/enterprise-managed-settings#allowedmcpservers)及[固定支持表](https://github.com/github/docs/blob/cb051611377a0d2904411e6157154e9b4953d870/content/copilot/reference/enterprise-administrators/enterprise-managed-settings.md)列CLI和VS Code均支持`allowedMcpServers`／`deniedMcpServers`，但空allowlist不禁止内建默认服务器，第一方内建服务器也豁免deny；因此这两个键不能承诺“禁止所有MCP”。[VS Code官方策略页](https://code.visualstudio.com/docs/enterprise/policies)另有`ChatMCP`、allow/deny及registry配置，它们属于VS Code入口，不能直接移植为CLI保证。**[一手；研究：采用边界]**
+
+**当前建议与重开条件。** 个人先按任务选择Free／已具资格的GitHub认证／获准的本地BYOK，不为CLI接入预设付费，也不忽略免登录损失的GitHub能力。团队先确认目标客户端版本、设备与账号策略、必需MCP服务器及内建例外；严格准入要求无法证实时保留既有合规入口。升级客户端、改变认证／组织／任务所需GitHub功能或官方解决上述冲突时重核，准备企业部署前提前复核。不更新其他功能快照，不据此把01页升为L3。**[研究：选择与撤回]**
