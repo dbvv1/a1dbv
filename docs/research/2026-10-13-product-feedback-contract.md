@@ -566,3 +566,16 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 **后来补兼容，仍不等于原有实例能直接切换。** [#6785／固定`56b0643`](https://github.com/immich-app/immich/commit/56b06438906a8eff4113f58fd5922ac22bde38bd)加入pgvector支持；[v1.95.0说明与后续回帖](https://github.com/immich-app/immich/discussions/7252)明确当时只支持新实例或未经历向量迁移的旧实例作此选择。同帖另一使用者SISheogorath于2024-02-29报告升级失败、考虑停用，03-05又报告自行迁到pgvector后可用，称仍需重新索引人脸，并报告数据库故障转移测试通过。维护者认可其流复制需求，同时保留默认扩展的功能取舍理由。该用户未提供受测SHA及完整迁移产物，不能把自报写成官方支持流程、长期稳定，或补记btajuddin成功。**[一手：固定修订与发布边界；社区：同人后续使用；研究：归属与局限]**
 
 **采用与停止条件。** 让Agent比较减少的同步责任与新增的基础运行约束；只有目标任务确实要求不开某功能也能运行时，才把该路径的安装、启动和升级列为保留条件，再选择合并、隔离或明确缩小支持范围。不要求所有功能都可关闭，也不默认重建双实现。当前[官方文档](https://docs.immich.app/administration/postgres-standalone/)已说明3.0移除pgvecto.rs支持、迁向VectorChord，因此上述配置只能作历史证据。本链没有净维护收益或AI效果数据；已足以区分依赖边界，不继续扩写扩展安装和迁移步骤。**[经验：采用与停止条件；一手：当前文档；研究：未验证范围]**
+
+
+## Open WebUI：少一个服务之后谁维护协议适配
+
+2026-10-16（UTC+8）补核，归 M3 复用与接管。**改变的建议**：15 §10 分开目录变化与协议语义变化；动态发现不能代替后续请求兼容维护。**[经验：条件判断]**
+
+**同一接收者的窄替代。** [原需求 #3288](https://github.com/open-webui/open-webui/issues/3288)是集中使用 Anthropic 并保留聊天记录。moodler [2024-07-05 报告](https://github.com/open-webui/open-webui/issues/3288#issuecomment-2210919315)独立 Pipelines 曾工作，随后连接及模型读取失败；没有确认根因。[07-10 回执](https://github.com/open-webui/open-webui/issues/3288#issuecomment-2219524566)确认应用内 Function 满足原需求，不再需要额外 Pipelines 容器。它支持选择较窄运行路径，不证明全部输入、长期使用或总成本。**[社区：原请求者前后自报]**
+
+**首次接通以后还有两类更新。** 后续其他用户报告模型目录缺项；[2025-08-27 自修](https://github.com/open-webui/open-webui/issues/3288#issuecomment-3229545761)还需调整请求参数，不能只增加模型名。[接收者要求](https://github.com/open-webui/open-webui/issues/3288#issuecomment-3497710690)是安全更新，不是每次让管理员手改 Function。这些不是 moodler 的长期回访，不能拼成同人成功后失败的轨迹。**[社区]**
+
+**2026 接手产物把两种维护具体分开。** atnjqt 的 [1d1a87d 镜像](https://github.com/atnjqt/anthropic-owui/commit/1d1a87dad9d7ab440dbdd7eb5462418605ca3067)标注来自原 Function、版本 0.2.5，不是上述 2024 运行的确切快照。[83870a5](https://github.com/atnjqt/anthropic-owui/commit/83870a5673310a3bcf53a78adf76dedf970ae804)于 2026-02-18 增加模型目录 API，失败仍回静态表，同时调整采样参数选择；[459dbde](https://github.com/atnjqt/anthropic-owui/commit/459dbde683846bdb820fabab8f3451bf1bbdfcdb)于 05-28 继续按模型分支省略特定参数。可见自动发现条目与构造合法请求是不同责任；后一个补丁只证明实现变化，未核其接收者复测。文件头声明 MIT，本仓只分析机制、不复制部署脚本。**[一手：固定前后代码]**
+
+**取舍与停止。** 单一稳定需求且有人维护时，保留窄适配；只有目录缺项就先改目录来源。协议不断变化、接收者无法持续承担修订时，比较受维护的原生连接、共享适配层或减少支持范围；这里没有证明集中网关必然更省。历史 Pipelines 对照不构成今天新增该服务的安装建议。未测模型、服务、维护工时及总成本，也不确认 AI 生成归属；取得同任务升级后使用回执，才继续评价长期收益。**[经验：采用边界]**
