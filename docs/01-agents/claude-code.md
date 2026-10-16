@@ -1,6 +1,6 @@
 # Claude Code
 
-> 更新：2026-10-15
+> 编辑更新：2026-10-17（UTC+8）
 > 评级：✅ **采用**（日常开发 Agent 选项之一）
 
 ## 1. 定位
@@ -18,7 +18,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 
 - `/model` 切换模型，`/effort` 调推理强度（low → max），`maxEffortLevel` 可设上限。
 - 订阅用户（Pro/Max）受 5 小时与每周额度限制，是否够用应按实际任务与账户用量判断，社区个案不能代表普遍可用时长（见 [11](../11-community-pulse.md)）。
-- `/cost` 能看到 prompt cache 命中率和缓存未命中的可能原因（v2.1.260）；`promptCacheTtl` 可设为 1 小时。
+- 用 [`/usage` 的 Session 区](https://code.claude.com/docs/en/costs#prompt-cache-statistics)查主会话缓存命中与重建原因（原因提示需 v2.1.260+），不代表子 Agent 合计；更多诊断见 §6。**[一手：2026-10-17 补核]**
 - **子 Agent 可以单独指定 effort**（v2.1.292，Agent 工具的 `effort` 参数）：配合 Haiku 5.5，可以让检索类子 Agent 用便宜模型、低 effort，主会话用 Opus 5.5。
 - Max 和 Team 订阅开始每月附带 API 额度（Max 5x 100 美元、Max 20x 200 美元、Team 最多 500 美元）；须领取并按运行入口核资格，不能抵所有 Code 用量，见 [18 成本治理](../18-team-adoption.md#5-成本治理)。**[一手：Anthropic 公告及资格说明，2026-10-15 补核]**。
 
@@ -62,9 +62,9 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 
 **短轮询和独立定时分开选**：当前会话短轮询用 `/loop`；需要电脑关闭后仍运行，选云端 Routines（定时间隔至少一小时）；定时任务必须访问本地文件／工具时，可选 Desktop scheduled tasks，但电脑仍须开机。`/loop` 后台化可脱离终端，不能脱离运行机器；恢复会话会还原部分未过期的 `CronCreate` 任务，但已错过的一次性任务和 self-paced loop 不恢复，不能把“可恢复”当作退出后仍在执行。[调度比较与恢复例外](https://code.claude.com/docs/en/scheduled-tasks#limitations)、[Routines 间隔](https://code.claude.com/docs/en/routines#add-a-schedule-trigger)。**[一手：2026-10-15 UTC；研究：采用判断]**
 
-**✅ 无人值守先限定停止与重试边界**：`claude -p` 可设 `--max-budget-usd` 和 `--max-turns`，但前者按客户端 API 费用估算停止，含子 Agent、可能超额，恢复进来的历史费用不计入本次上限；后者在 `--input-format stream-json` 中不阻止已排队消息开启各有上限的新一轮。因此它们不能代替跨运行预算或服务商账单上限。**[一手：[CLI reference](https://code.claude.com/docs/en/cli-reference)；研究：采用判断]**
+**✅ 无人值守续接先选权限与审批出口**：把已停止的交互任务交给 `claude -p --resume <session-id>` 续做时，显式选择本次权限模式，补回任务依赖的临时配置与目录；恢复历史不等于恢复原来的执行条件。原会话处于 plan 也不足以让非交互续接保持 plan，须有可用的审批出口等条件。无人能审批时，可用 `--permission-prompts none` 拒绝需要新批准的动作，不靠放宽权限跑通；该参数要求 2.1.259+。仍在运行的后台会话应按 attach 处理。**[一手：[恢复契约](https://code.claude.com/docs/en/sessions#permission-mode-on-resume)、[CLI reference](https://code.claude.com/docs/en/cli-reference)；研究：采用判断，2026-10-16 UTC，未运行客户端]**
 
-2.1.299 修复了自发续写 mod 越过停止条件，以及重启／MCP 重连时的特定重复执行路径。恢复发布、提交或外部写入前，先查目标端是否已经完成，再决定重试；可控接口使用幂等键。涉及这些路径的旧运行器先评估升级，再做中断／恢复验收，别用多写一句“不要重复”替代运行器修复。修复记录不证明全部路径已具备 exactly-once 保证；本轮依据和未测范围见 [S1a](../research/2026-10-10-audit.md#s1a--2026-10-14-无人值守的停止与重试边界)。**[一手：固定 changelog；研究：采用判断]**
+**预算与重试分开控制**：`--max-budget-usd` 是本次运行的 API 费用估算，含子 Agent、可能超额且不计恢复历史；`--max-turns` 也不能阻止 stream-json 队列消息另起一轮限额。两者不代替累计预算或账单上限。恢复发布、提交等外部写入前，先查目标端是否已经完成，再决定重试；可控接口使用幂等键。2.1.299 修复特定停止条件和重复执行路径，旧运行器须核版本，但修复不代表 exactly-once 保证。依据及续接例外见 [S1a](../research/2026-10-10-audit.md#s1a--2026-10-14-无人值守的停止与重试边界)。**[一手：CLI 契约与固定 changelog；研究：采用判断]**
 
 ### 3.4 评审与安全
 - `/code-review`（默认后台评审，终端 fork 继承当前历史；独立窗口不等于独立输入，见 [09](../09-review-and-quality.md#2-评审手段)；`--max-findings` 控制数量）、`/code-review ultra` 和 `claude ultrareview`（云端多 Agent 深度评审，可在 CI 里跑）、`/security-review`、`/simplify`。
@@ -109,7 +109,7 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 
 | 变化 | 说明 | 证据 |
 |---|---|---|
-| **Opus 5.5 / Sonnet 5.5** | Opus 5.5“在大多数工作上达到 Fable 5.1 水平”，价格比 Opus 5 便宜；写作更清楚，长任务更稳；有测试者在不到一天内完成了 68 万行的代码迁移 | [一手：Anthropic] |
+| **Opus 5.5 的长任务用法** | 官方报告多步骤工作改善，但也说明长任务可能停在进度总结；先给完整目标、完成标准与停止条件，再按实际改动和检查结果验收，不用迁移行数估算工期。来源与单例限制见[核查记录](../research/2026-10-10-audit.md#s1--claude-code-2129521296) | [一手：官方指南；研究：采用判断，2026-10-17 补核] |
 | **auto mode 成为默认**（2026-08） | 交互终端与 VS Code 的内建默认，受配置和可用性影响；不覆盖所有客户端或非交互任务 | [一手] |
 | **Claude Projects**（2026-09 公测） | 在 Web、桌面与手机 App 中协调长期工作；云端线程可在电脑关闭后继续，需要本地资源时可指定 Remote Control 线程，但电脑须保持唤醒与连接 | [一手] |
 | **Mods**（v2.1.287） | 用 TypeScript 修改界面和更深层的行为，社区已经做出了在 Claude Code 里跑的俄罗斯方块 | [一手] |
@@ -138,9 +138,9 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 - **历史 Harness 开销案例**：Systima 在 2026-07、Claude Code 2.1.207／OpenCode 1.17.18 的隔离代理实验中测得首轮约 33k／7k 输入，并观察到缓存重写；不能据此判断当前默认开销或选择更省的客户端。先用 `/context` 与 `/usage` 检查实际工具负担、主会话缓存及重建原因，再删无用配置或在 headless／CI 中用 `--tools=` 收窄工具。自定义非第一方 API 网关默认关闭 tool search，兼容时可显式启用，但开关不能绕过服务端拒绝；不能把基础实验的差值归因于 MCP。原报告范围、当前诊断契约及代理例外见 [S1c](../research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)，本仓库历史产物缺口见 [19](../19-experiments.md)。**[社区：历史实验；一手：当前契约；研究：采用边界，2026-10-15 补核]**
 - **透明度争议** **[社区：原文]**：v2.1.196 被逆向发现会根据 API 地址和时区，悄悄改变系统提示里日期字符串的写法（疑似为了识别蒸馏），HN 2445 票。阿里以“后门风险”为由禁止员工使用 Claude Code **[二手]**。
 - **auto mode 被绕过** **[社区：原文]**：Embrace The Red 用“总结网页 → 让 Claude 自己写解码脚本并在攻击者目录里运行 → 被同名 `struct.py` 劫持”的链条，作者迭代载荷后的三个变体各测 5 次，分别成功 3、3、4 次；只证明该攻击链可行，不代表生产绕过率。**auto mode 不能代替隔离。**
-- **Opus 5.5“太独立”**：有用户反馈它在 auto mode 下越权，授权在一个区域执行的操作被它扩展到了另外 5 个区域 **[社区]**。
-- **质量波动**：“2 月更新后无法胜任复杂工程任务”（583 个赞）；附和用户、口头禅等问题 **[社区]**。
-- **checkpoint 不跟踪 Bash 造成的文件改动**，它不能代替 git **[一手]**。
+- **长任务仍需检查执行范围**：[10 月 3 日的用户原报](https://news.ycombinator.com/item?id=49948034)称单区域操作被扩到其他区域，但没有复现材料。它提示核对实际外部改动是否超出授权，不能据此断言 Opus 5.5 普遍越权；权限选择见 §3.4。**[社区：单例；研究：采用判断，2026-10-17 补核]**
+- **遇到质量退化先核任务与配置**：[4 月历史报告](https://github.com/anthropics/claude-code/issues/42796)涉及复杂并行工程；[维护者回应](https://github.com/anthropics/claude-code/issues/42796#issuecomment-4194007103)区分了推理显示与实际推理，并说明当时默认配置变化。先核实际模型与 effort，保留失败输入、diff 和检查结果，按 [22](../22-agent-evaluation.md)比较；热帖票数与思考文本长短不能代替任务质量证据。**[社区／一手；研究：采用判断，2026-10-17 补核]**
+- **撤回并行修改先核实际 diff**：当前会话捕获的编辑可用 `/rewind`；Bash、子 Agent 或其他会话共同改过的工作，按 Git diff／提交确认撤回范围，不能假定主会话 rewind 覆盖整项任务。前台 fork skill 等例外见[官方范围](https://code.claude.com/docs/en/checkpointing#subagent-edits-not-restored)，它不能代替 Git。**[一手；研究：采用判断，2026-10-16 UTC，未运行客户端]**。
 
 ## 7. 推荐起步：先原生，扩展按需选择
 
