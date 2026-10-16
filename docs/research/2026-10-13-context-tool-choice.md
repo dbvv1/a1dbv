@@ -5,34 +5,34 @@
 # 上下文获取：问题、版本与状态边界
 
 ## 源码检索：map、语义引用与当前状态
-> 核实时间：2026-10-13（UTC+8）。本次读取固定源码、测试和原帖，未运行 Aider、clangd 或模型；测试内容阅读不能冒充执行通过。**[一手：固定源码与测试；社区：失败报告；研究：采用判断]**
+> 核实时间：2026-10-13（UTC+8）。只读固定源码、测试和原帖，未运行 Aider、clangd、测试或模型。**[一手：固定源码与测试；社区：失败报告；研究：采用判断]**
 
 ### 源码检索：map、语义引用与当前状态 · 1. 最具体的新反例：文件已经保存，map 仍可按设计返回旧内容
 
 Aider API 当时 main 固定为 `5dc9490bb35f9729ef2c95d00a19ccd30c26339c`（2026-05-22）：
 
-- [get_ranked_tags_map，L585–625](https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/aider/repomap.py#L585-L625)：map 缓存键含文件集合、预算，auto 另含提及的文件／标识符，但不含内容或 mtime；若此前生成耗时大于 1 秒，auto 可直接命中 map_cache，根本不到下层按 mtime 更新 tags 的路径。
-- [test_repo_map_refresh_auto，L106–158](https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/tests/basic/test_repomap.py#L106-L158)：官方测试先让生成耗时 1.1 秒，向磁盘文件追加 functionNEW，随后断言普通获取与旧 map 相等；force_refresh 后才断言出现新函数。files 模式测试也断言内容变更而文件集合不变时 map 不变（L49–100）。**这是测试内容阅读，未执行测试。**
+- [get_ranked_tags_map，L585–625](https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/aider/repomap.py#L585-L625)：map 缓存键含文件集合、预算，auto 另含提及的文件／标识符，不含内容或 mtime。此前生成耗时大于 1 秒时，auto 可命中 map_cache，跳过下层按 mtime 更新 tags。
+- [test_repo_map_refresh_auto，L106–158](https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/tests/basic/test_repomap.py#L106-L158)：官方测试先让生成耗时 1.1 秒，向磁盘文件追加 functionNEW，随后断言普通获取与旧 map 相等；force_refresh 后才断言出现新函数。files 模式测试也断言内容变更而文件集合不变时 map 不变（L49–100）。
 - [cmd_map_refresh，L1426 起](https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/aider/commands.py#L1426-L1431) 已调用 force_refresh=True，不需另建索引系统。
 
-**改变选择**：外部工具刚改过源码、map 中找不到新符号时，先刷新或直接读／搜当前文件，不通过增大 map 预算解决旧快照。不能由这个单独方法测试断言所有 Aider 交互轮次都会旧，因为调用者也可能主动强刷。**[一手：固定源码／测试；经验：建议]**
+**改变选择**：外部工具改过源码而 map 缺新符号时，先刷新或读／搜当前文件；不以增大 map 预算作为旧快照的修复方案。调用者可能主动强刷，方法测试不能代表所有交互轮次。**[一手：固定源码／测试；经验：建议]**
 
 ### 源码检索：map、语义引用与当前状态 · 2. repo map 给的是启发式入口，不能据此认定跨模块调用者
 
 [同一 SHA 的 repomap.py L451–514](https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/aider/repomap.py#L451-L514) 用 tag.name 聚合 definitions/references，并对同名 referencer × definer 连边；同名定义超过五个会降权，并没有借此变成类型／作用域解析。
 
-真实失败原帖 [Aider #2341](https://github.com/Aider-AI/aider/issues/2341)：jbellis 在编辑 Cassandra 时报告 getName 同名碰撞令不相关 FilterPipelineTask 定义排前。当前源码仍可解释“名称图不是精确符号图”这一机制，但已有降权启发式，所以不应把 2024 年的具体排名失败写成当前版已复现。该 issue 关闭且标 stale，也不能当成已修复证据。**[社区：原帖；一手：当前机制]**
+真实失败原帖 [Aider #2341](https://github.com/Aider-AI/aider/issues/2341)：jbellis 在编辑 Cassandra 时报告 getName 同名碰撞令不相关 FilterPipelineTask 定义排前。当前源码仍是名称图，但已有降权启发式；本轮未复现 2024 年排名失败在当前版的表现，issue 关闭且标 stale 也不证明已修复。**[社区：原帖；一手：当前机制]**
 
 **改变选择**：同名方法多、要确认某一个对象类型的调用关系时，map 仅缩小入口，转到能解析该项目的语言服务器／类型系统，而不是扩大排名上下文。
 
 ### 源码检索：map、语义引用与当前状态 · 3. LSP 能区分语义身份，但它返回的是特定状态下的结果
 
-[clangd 官方索引设计](https://clangd.llvm.org/design/indexing)：引用按 SymbolID 查询；动态 FileIndex 覆盖正在编辑的文件；后台索引依赖编译数据库，逐源文件排队构建。这解释了相较名称图的用途，并不保证每次返回完整。
+[clangd 官方索引设计](https://clangd.llvm.org/design/indexing)：引用按 SymbolID 查询；动态 FileIndex 覆盖正在编辑的文件；后台索引依赖编译数据库，逐源文件排队构建。这是语义身份的增量，不保证结果完整。
 
 LLVM 当时 main 固定为 `f1136210323eb4cf169ea544c48fa650275a8c79`（2026-10-13）：
 
 - [Merge.cpp L125–155](https://github.com/llvm/llvm-project/blob/f1136210323eb4cf169ea544c48fa650275a8c79/clang-tools-extra/clangd/index/Merge.cpp#L125-L155) 对动态层已覆盖的文件丢弃静态层引用；[IndexTests.cpp L448–515](https://github.com/llvm/llvm-project/blob/f1136210323eb4cf169ea544c48fa650275a8c79/clang-tools-extra/clangd/unittests/IndexTests.cpp#L448-L515) 专门构造旧引用，断言动态版本优先、动态删除后旧引用不复活。不能声称 clangd 普遍“没有更新机制”。
-- 但 [clangd #2548](https://github.com/clangd/clangd/issues/2548) 的 Chromium 用户报告：插入空行、保存并等索引后，旧位置仍和新位置一起出现，重启才消失。报告版本为 Windows clangd 22.0.0git，配置先跳过后台索引再选择部分目录构建；作者随后明确最小项目无法复现；截至本次可见页面仍 open。故只用作真实异常提醒，不判定当前 SHA 根因或已验证修复。**[社区：原帖，未复现]**
+- 但 [clangd #2548](https://github.com/clangd/clangd/issues/2548) 的 Chromium 用户报告：插入空行、保存并等索引后，旧位置仍和新位置一起出现，重启才消失。报告版本为 Windows clangd 22.0.0git，配置先跳过后台索引再选择部分目录构建；作者随后明确最小项目无法复现；截至本次可见页面仍 open。它只提示真实异常，未确定当前 SHA 的根因或修复。**[社区：原帖，未复现]**
 
 **改变选择**：位置明显对不上当前文本，先读目标位置、核查日志／编译范围／刷新，不继续沿旧引用自动修改；反过来，文本同名命中也不是语义引用确认。
 
@@ -54,11 +54,9 @@ Aider 自身就有具体例子：[commands.py L276–296](https://github.com/Aid
 
 **改变选择**：撤回 05 的“强类型项目必装”及 Claude 起步配置中的无条件安装。日常修错先复用已有类型检查；确有语义引用或编辑后诊断缺口时，再核对当前会话、服务器启动及项目解析。Claude 的导航工具只读，不因后端是 LSP 就假定该入口能执行重命名。安装后仍不可用时先区分会话不支持与服务器／项目配置问题，不反复增装插件。**[一手：官方工具边界；经验：采用判断]**
 
-本轮只读取官方正文，未安装或运行客户端，未测模型正确性、上下文成本或人的总投入；不形成效率收益结论。
-
 ### 源码检索：map、语义引用与当前状态 · 范围与后续价值
 
-已取得两个原始失败报告、固定当前源码和官方测试，足以撤回无条件替代建议；无需再造模板或评估框架。下一轮若值得做，应在实际跨模块修改中验证“漏掉的是动态使用、旧状态还是配置范围”，不按 token 数推测收益。本轮未安装、未执行第三方代码、未模型付费，未验证当前 Aider／clangd 的端到端表现。
+两个原始失败报告、固定源码与测试定义支持撤回无条件替代建议。后续应在跨模块修改中区分动态使用、旧状态与配置范围。本轮未安装或执行第三方代码、客户端，未模型付费；端到端表现、模型正确性、上下文成本与人的总投入均未验证。
 
 ## 文档检索：版本选择与生成内容刷新
 > 核实时间：2026-10-13（UTC+8）。本次只读公开源码、测试及原帖，未运行客户端、真实查询或模型。**[一手：固定源码与测试；社区：原帖；经验：采用判断]**
@@ -71,11 +69,11 @@ GitHub API 在本轮返回 master 为 [`33414e6e3fc157c936348ca8ddba25e50dacaeee
 
 ### 文档检索：版本选择与生成内容刷新 · 从输入到返回的实际边界
 
-1. **resolve 不解析项目依赖。** [MCP 工具 schema/说明](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/mcp/src/index.ts#L220-L287) 接收 `libraryName` 和用于相关性排序的 `query`，提示 Agent 从 Versions 中选择 `/org/project/version`。该查询链没有 lockfile 输入、读取项目版本或比较 semver 的步骤。把版本写在自然语言 query 中只是检索信息，不是独立的版本约束字段。**[一手：源码；推断限于所读公开查询链]**
+1. **resolve 不解析项目依赖。** [MCP 工具 schema/说明](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/mcp/src/index.ts#L220-L287) 接收 `libraryName` 和用于相关性排序的 `query`，提示 Agent 从 Versions 中选择 `/org/project/version`。查询链不读 lockfile、项目版本或比较 semver；自然语言 query 中的版本只是检索信息，不是约束字段。**[一手：源码；推断限于所读公开查询链]**
 
 2. **query-docs 的版本选择在 libraryId 字符串中。** [ContextRequest](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/mcp/src/lib/types.ts) 只有 `query`、`libraryId`、可选 `language`；[API 实现 L185–225](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/mcp/src/lib/api.ts#L185-L225) 把它们发给 `/v2/context`，不核实 ID 所指版本等于项目版本。`language` 是例子排序提示，不是版本选择器。**[一手：源码]**
 
-3. **Skill 的宽松退路正是项目级使用需要覆盖的地方。** [find-docs L51、L90–104](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/skills/find-docs/SKILL.md#L90-L104) 要求查 ID，并建议选择用户所需版本的 closest match；3 次查询仍不满足则用手头 best result。其配额错误段要求披露失败后可用训练知识作答。这是对 Agent 的指令，不是客户端保证；源码没有自动选择最近 semver 的算法，也没有验证“最近”是否兼容。**[一手：Skill/源码；经验：不接受其作为版本承诺]**
+3. **Skill 的宽松退路正是项目级使用需要覆盖的地方。** [find-docs L51、L90–104](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/skills/find-docs/SKILL.md#L90-L104) 要求查 ID，并建议选择用户所需版本的 closest match；3 次查询仍不满足则用手头 best result。其配额错误段要求披露失败后可用训练知识作答。这是 Agent 指令；客户端没有最近 semver 选择算法或兼容验证。**[一手：Skill/源码；经验：不接受其作为版本承诺]**
 
 4. **客户端不会自动把缺失版本降级成最新版。** 所读 MCP 实现遇非 2xx 返回 error，空字符串返回 not_found，非空文本返回 success；没有去掉版本段重试的代码。MCP 工具层只在 `outcome === "error"` 时设置 `isError: true`，not_found 不属于协议错误，所以 `isError=false` 不表示找到有效文档，更不表示版本正确。[工具返回](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/mcp/src/index.ts#L365-L390)。后端未开源，不能从这个结论外推后端永不重定向或回退。**[一手：公开客户端实现]**
 
@@ -83,7 +81,7 @@ GitHub API 在本轮返回 master 为 [`33414e6e3fc157c936348ca8ddba25e50dacaeee
 
 ### 文档检索：版本选择与生成内容刷新 · 测试究竟证明什么
 
-- [library-id.test.ts](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/cli/src/__tests__/library-id.test.ts) 明确测试 `/vercel/next.js/v15.1.8` 不被改写、Windows 路径恢复保留版本段，能证明设计意图是保留字符串；不能证明服务器存在该索引或该版本片段正确。**[一手：测试源码，未运行]**
+- [library-id.test.ts](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/cli/src/__tests__/library-id.test.ts) 明确测试 `/vercel/next.js/v15.1.8` 不被改写、Windows 路径恢复保留版本段，仅证明字符串保留的设计，未验证服务端索引存在或版本片段正确。**[一手：测试源码，未运行]**
 - [MCP integration.test.ts L150–159、L520–551](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/mcp/test/integration.test.ts#L520-L551) 使用本地 stub API；断言转发 `/vercel/next.js` 和 query，并原样得到 `STUB_DOCS`，错误场景返回 `isError=true`。测试名含 end to end 不等于真实文档后端或特定版本正确性验证。**[一手：测试源码，未运行]**
 - [find-docs-skill-alignment.test.ts](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/cli/src/__tests__/find-docs-skill-alignment.test.ts) 检查调用风格、库名与安装建议顺序；没有验证 closest match 的兼容性。**[一手：测试源码，未运行]**
 - [SDK GetContextCommand](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/sdk/src/commands/get-context/index.ts) 及其 [测试](https://github.com/upstash/context7/blob/33414e6e3fc157c936348ca8ddba25e50dacaeee/packages/sdk/src/commands/get-context/index.test.ts) 将返回 code/info snippets 映射成文档，或原样返回文本；测试用 fixture。其公开片段类型没有强制 resolvedVersion 字段，不可据此宣称所有后端响应都没有版本信息。**[一手：源码/类型与测试，未运行]**
@@ -96,7 +94,7 @@ GitHub API 在本轮返回 master 为 [`33414e6e3fc157c936348ca8ddba25e50dacaeee
 
 [Context7 维护者 10月6日回复](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572) 纠正了报告者的一点前提：那不是仓库中被删除的文件，而是 Context7 生成的文档页，生成于默认值变化前几分钟；这种页当时按月重建，因此普通 Refresh 没更新。回复说已从 main 重建，现已正确显示默认关闭，issue 当日以 completed 关闭。**[社区：维护者解释与处理结果]**
 
-可采用结论：看到 SOURCE 样式链接或刷新时间，不足以确认片段来自当前真实仓库文件/目标版本；关键默认值仍应看真实版本源码。不可采用结论：所有 Context7 文档都按月刷新；Context7 当前仍返回这个错片段；固定版本 ID 一定能消除生成文档风险。**[经验：证据边界]**
+关键默认值须查目标版本源码；SOURCE 样式链接、刷新时间或固定版本 ID 均不足以排除生成文档风险。该已解决单例不代表所有文档按月刷新，也不代表当前仍返回错片段。**[经验：证据边界]**
 
 #### 文档检索：版本选择与生成内容刷新 · #2772：Versions 列表与最新内容不能混为一谈
 
@@ -110,7 +108,7 @@ GitHub API 在本轮返回 master 为 [`33414e6e3fc157c936348ca8ddba25e50dacaeee
 
 ### 文档检索：版本选择与生成内容刷新 · 验证范围
 
-本次已读固定查询链、相关测试和三帖回复，未安装或运行客户端、真实查询、目标库编译或模型。不能据源码阅读声称后端当前响应已复现。上述证据支持收紧采用行为，不支持断言全部内容不可靠，也不能把已修复历史问题当成当前故障。
+本节证据限于固定查询链、测试定义与三帖回复，支持收紧采用条件；未运行目标库编译或复现当前后端响应，不能将历史问题泛化为全部内容不可靠。其余未执行范围见节首。
 
 ## 工具接口：先缩小原生查询，再判断是否补接口
 
@@ -174,16 +172,16 @@ Sphinx 摘录中三次原生读取与一次脚本读取也不是逐字相同的�
 
 ## 工具输出：显示裁剪与采集丢失
 
-> 核实时间：2026-10-14（UTC）。新证据为官方固定修复、回归源码与自写 Python 标准库演示；未运行上游 Rust 测试、Codex 客户端或模型，不推断当前发行版行为。**[一手；经验：局部演示]**
+> 核实时间：2026-10-14（UTC）。证据为官方固定修复、回归源码与自写 Python 标准库演示；未运行上游 Rust 测试、Codex 客户端或模型，结论限于所读历史源码。**[一手；经验：局部演示]**
 
 **改变 04 的建议**：定位符号时，原生查询缩小范围通常已足够；需要判断全部记录或验收结果时，则在命令执行侧保存完整报告、保留原退出码，再用原生解析器提取字段。返回给模型的首尾不是完整报告，提高显示预算不能恢复采集阶段已丢内容。若没有完整报告且重跑会重复写入、发布或扣费，先查任务的权威状态和已有产物，不为补日志自动重跑；不因此推荐额外 Skill 或 MCP。**[研究：采用判断]**
 
 ### 固定来源与修复范围
 
 - **已合并的 unified exec 修复**：[PR #32150](https://github.com/openai/codex/pull/32150) 于 2026-07-10 合并，固定 SHA `6138909d6ec58b2fbe635ef973e02caecad5a5aa`。它将多次 drain 的收集器改为有界 head/tail 缓冲，并传递遗漏数量；修的是无界累积及遗漏信息丢失，不是让所有输出无损。修复没有给 legacy shell 同步更换采集器。**[一手：补丁]**
-- [buffer 回归 L47–63](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/src/unified_exec/head_tail_buffer_tests.rs#L47-L63)断言 12 字节仅保留 10 字节，drain 后仍有 `omitted=2`、`total=12`；[collector 回归 L238–324](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/src/unified_exec/process_manager_tests.rs#L238-L324)覆盖反复 drain 仍有界、已有遗漏元数据不丢。它们定义修复应保留的性质，阅读断言不等于本轮执行通过。**[一手：测试源码]**
-- [输出回归 L2883–2981](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/tests/suite/unified_exec.rs#L2883-L2981)使用 mock 模型响应及进程输出夹具，断言 `HEAD`、`TAIL`、遗漏标记和观察总大小；它明确含 Windows、无网络、沙箱跳过条件。本轮未运行，也未核实该测试在 CI 的实际结果，不能把 PR 已合并写成各平台已验证。**[一手：测试源码；研究：证据边界]**
-- **另一条历史 legacy shell 路径**：固定 SHA `a6645b6b8a656360fa16fb7e1c6721d0697d3d6a` 的 [append_capped L835–843](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/exec.rs#L835-L843)只留前缀；[read_output L1141–1153](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/exec.rs#L1141-L1153)继续读到 EOF，但不把超出上限的字节加进返回缓冲；[formatter L77–101](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/tools/mod.rs#L77-L101)再裁剪已采集内容。因此该路径的显示尾部可能只是采集前缀的末尾，而非进程真实 EOF。此结论只对应固定历史源码，不据此声称十月发行版或当前会话仍有同一缺陷。**[一手：固定源码；研究：机制推论]**
+- [buffer 回归 L47–63](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/src/unified_exec/head_tail_buffer_tests.rs#L47-L63)断言 12 字节仅保留 10 字节，drain 后仍有 `omitted=2`、`total=12`；[collector 回归 L238–324](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/src/unified_exec/process_manager_tests.rs#L238-L324)覆盖反复 drain 仍有界、已有遗漏元数据不丢。这些是回归定义，未执行。**[一手：测试源码]**
+- [输出回归 L2883–2981](https://github.com/openai/codex/blob/6138909d6ec58b2fbe635ef973e02caecad5a5aa/codex-rs/core/tests/suite/unified_exec.rs#L2883-L2981)使用 mock 模型响应及进程输出夹具，断言 `HEAD`、`TAIL`、遗漏标记和观察总大小；它明确含 Windows、无网络、沙箱跳过条件。未核实 CI 结果，合并不证明各平台通过。**[一手：测试源码；研究：证据边界]**
+- **另一条历史 legacy shell 路径**：固定 SHA `a6645b6b8a656360fa16fb7e1c6721d0697d3d6a` 的 [append_capped L835–843](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/exec.rs#L835-L843)只留前缀；[read_output L1141–1153](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/exec.rs#L1141-L1153)继续读到 EOF，但不把超出上限的字节加进返回缓冲；[formatter L77–101](https://github.com/openai/codex/blob/a6645b6b8a656360fa16fb7e1c6721d0697d3d6a/codex-rs/core/src/tools/mod.rs#L77-L101)再裁剪已采集内容。因此该路径的显示尾部可能只是采集前缀的末尾，而非进程真实 EOF。未核实十月发行版或当前会话是否仍有此缺陷。**[一手：固定源码；研究：机制推论]**
 
 ### 标准库最小演示与反证
 
@@ -245,18 +243,18 @@ print('4 assertions passed')
 
 ### 基线与真正需要新增的能力
 
-续接基线沿用 [20 §4](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)。本节只比较跨任务事实检索、更新与撤销机制；已知位置的当前记录不构成新增检索服务的缺口。**[经验：采用边界]**
+续接基线沿用 [20 §4](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)。已知位置的当前记录不需要新增检索服务；这里只比较跨任务事实检索、更新与撤销。**[经验：采用边界]**
 
 ### M1：官方 reference memory 是追加图，不是当前决定寄存器
 
 固定 `modelcontextprotocol/servers` SHA `bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c`：
 
-- [数据结构 L89–104](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L89-L104)只有实体 name／entityType／observations 与关系端点／类型；没有结构化来源、项目范围、有效期或替代版本字段。可以人为编码进文字或命名，但不能据 schema 声称已自动维护。**[一手：固定源码]**
-- [创建与追加 L517–585](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L517-L585)：createEntities 以 name 跳过既有实体；addObservations 对现有字符串作 includes 去重后 push。具体反例是同一实体先存“使用 A”、后存“改用 B”：两条不同字符串均保留，不产生 supersedes 关系；以相同 name 为另一个项目创建对象也被跳过。此为源码机制推论，不是实际模型失败率。**[一手；研究：反例推导]**
+- [数据结构 L89–104](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L89-L104)只有实体 name／entityType／observations 与关系端点／类型；没有结构化来源、项目范围、有效期或替代版本字段。这些信息可手动编码，但 schema 不自动维护。**[一手：固定源码]**
+- [创建与追加 L517–585](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L517-L585)：createEntities 以 name 跳过既有实体；addObservations 对现有字符串作 includes 去重后 push。具体反例是同一实体先存“使用 A”、后存“改用 B”：两条不同字符串均保留，不产生 supersedes 关系；以相同 name 为另一个项目创建对象也被跳过。这是源码推论，未测模型失败率。**[一手；研究：反例推导]**
 - [删除 L587–646](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L587-L646)按完整 observation 字符串删除，删实体同时删相连关系；[查询 L655–684](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L655-L684)是 name／类型／观察的小写子串匹配，返回匹配实体，未筛选当前有效观察。不能把它描述为语义召回或自动清理矛盾事实。**[一手：固定源码]**
 - 反证：[每次变更的锁及保存链](https://github.com/modelcontextprotocol/servers/blob/bbb701e7ac1e57f3edd1c2836b94c5457eaf7b9c/src/memory/index.ts#L436-L529)有锁和临时文件替换，不能沿用旧版印象声称当前实现“完全没有并发／落盘保护”；存储保护仍不等于语义冲突裁决。**[一手；研究：限定]**
 
-该实现提供实体／关系存储，当前决定、名称范围和来源仍须维护；上述机制不支持自动长期记忆保证。**[经验：选择]**
+该实现存储实体／关系；当前决定、名称范围和来源仍须另行维护。**[经验：选择]**
 
 ### M2：Graphiti 增加时间与来源，但冲突和删除仍有契约边界
 
@@ -264,8 +262,8 @@ print('4 assertions passed')
 
 - [MCP 文档](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/README.md#available-tools)提供 group_id、episode 来源追溯、valid_at／invalid_at 筛选和 episode 删除；FalkorDB 按 group 分图，读取／删除需使用原 group。分组可用于范围区分，不能直接当成认证授权隔离保证。README 明标实验性，列出图数据库、LLM 和 embedding 提供方；这些运行与维护成本应纳入选择，不因本地部署就假定无需模型／索引资源。**[一手：文档]**
 - [写入 L403–533](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/src/graphiti_mcp_server.py#L403-L533)将 add_memory 送队列，返回 queued；reference_time 表示事件发生时间，省略时用当前时间。排队成功不代表事实已提取或可检索；晚录入旧决定时须保留原发生时间，不以到达次序冒充事实新旧。**[一手；经验：采用判断]**
-- [冲突解析 L940–1035](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/utils/maintenance/edge_operations.py#L940-L1035)以完全相同端点和规范化事实文本作快速去重，否则向模型请求重复／矛盾候选；[时态处理 L715–783](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/utils/maintenance/edge_operations.py#L715-L783)再按有效时间裁决失效。它比 M1 多了事实演化机制，但候选识别、实体解析和时间输入都可能影响结果；不能声称自动判定真相。**[一手；研究：机制边界]**
-- **删除反例来自文档与实现差异**：[MCP delete_episode L729–755](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/src/graphiti_mcp_server.py#L729-L755)说明保留其他 episode 支持的事实，调用客户端 remove_episode；同一提交的 [core remove_episode L2164–2192](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/graphiti.py#L2164-L2192)却以 edge.episodes[0] 等于被删 episode 作为删边条件，没有要求只剩一个 episode；上述去重路径又会给同一边追加后续 episode UUID。因此“第一条来源 + 后续重复支持”的边，按此源码删除第一来源时仍会被选中删除。节点另按提及次数判断，不能把节点条件套到边。此为同仓库静态契约差异；[MCP 依赖声明](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/pyproject.toml)使用 `graphiti-core[falkordb]>=0.30.2`，不固定为这份源码，因此尚不能确认任一已安装 MCP 的实际行为。未运行数据库验证，不作为已复现生产故障或所有版本／托管服务结论。**[一手；研究：反例推导]**
+- [冲突解析 L940–1035](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/utils/maintenance/edge_operations.py#L940-L1035)以完全相同端点和规范化事实文本作快速去重，否则向模型请求重复／矛盾候选；[时态处理 L715–783](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/utils/maintenance/edge_operations.py#L715-L783)再按有效时间裁决失效。相较 M1，它支持事实演化，但结果仍依赖候选识别、实体解析与时间输入。**[一手；研究：机制边界]**
+- **删除反例来自文档与实现差异**：[MCP delete_episode L729–755](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/src/graphiti_mcp_server.py#L729-L755)说明保留其他 episode 支持的事实，调用客户端 remove_episode；同一提交的 [core remove_episode L2164–2192](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/graphiti_core/graphiti.py#L2164-L2192)却以 edge.episodes[0] 等于被删 episode 作为删边条件，没有要求只剩一个 episode；去重路径会追加后续 episode UUID，因此删除第一来源时，即使仍有重复支持，该边也会被选中删除。节点另按提及次数判断，不能把节点条件套到边。此为同仓库静态契约差异；[MCP 依赖声明](https://github.com/getzep/graphiti/blob/5126eae0c7659ef521a043b04084506018c9cfcc/mcp_server/pyproject.toml)使用 `graphiti-core[falkordb]>=0.30.2`，不固定为这份源码，实际行为须按安装依赖核验。未运行数据库，不能据此宣称生产故障已复现或推广到其他版本／托管服务。**[一手；研究：反例推导]**
 
 因此，多来源撤销须核目标依赖版本的共享事实删除与衍生摘要语义；字段存在不证明所需语义成立。**[经验：选择]**
 
@@ -280,7 +278,7 @@ print('4 assertions passed')
 
 ### 具体缺口与采用判断
 
-本节补足版本核对之外的反例：`completed` 或 SDK 正常返回仍可包含工具错误，工具成功又可能仅代表入队。接入判断见 [04 异步工具](../04-mcp.md#异步工具完成的是哪一层)；以下固定版本区分这三层。**[研究：失败链推导]**
+`completed` 或 SDK 正常返回仍可包含工具错误；工具成功又可能仅代表入队。接入判断见 [04 异步工具](../04-mcp.md#异步工具完成的是哪一层)；以下固定版本区分这三层。**[研究：失败链推导]**
 
 ### 固定来源与实现链
 
@@ -298,13 +296,13 @@ print('4 assertions passed')
 ### 反例、选择与未证事项
 
 - **不是 SDK 吞错。** SDK 按协议保留工具结果，宿主必须读它；将 completed 一律判成功才是本例的错误接法。正常直接返回也要检查同一工具结果，不能只修异步分支。**[研究：实现推论]**
-- **不是工具无错误就证明外部任务完成。** 前文 Graphiti 固定实现的 add_memory 返回 queued，已说明工具可能只负责提交；即使外层没有 isError，事实提取和检索可见性仍是另一层。该案例为已有证据交叉引用，本轮新增证据是 Tasks 和 SDK 的终态解包路径。**[一手；研究：边界]**
+- **不是工具无错误就证明外部任务完成。** 前文 Graphiti 固定实现的 add_memory 返回 queued，已说明工具可能只负责提交；即使外层没有 isError，事实提取和检索可见性仍是另一层。此处复用该例，新增证据仅为 Tasks 和 SDK 的终态解包路径。**[一手；研究：边界]**
 - **回执缺少最终结果查询路径时，不能承诺无人值守完成。** 重试沿用 [20 对账原则](../20-codex-long-horizon.md#9-超时后动作究竟发生了吗)，工具错误本身不授权重试。**[经验]**
-- 本轮没有 Agent 误报的真实运行轨迹，也没有测量 SDK 的净收益、服务持久性或业务幂等性；失败链是固定代码可见的条件推导，不能报告为已复现线上事故。**[研究：验证范围]**
+- 失败链来自固定代码推导，缺少 Agent 误报轨迹；SDK 净收益、服务持久性与业务幂等性均未验证。**[研究：验证范围]**
 
 ## 服务接入：工具面、凭证与外部内容
 
-> 核实：2026-10-15（UTC+8；读取于 10-14 UTC）。主线二；04 删除不影响选择的下载量／口碑风向，撤回“小模型、浏览器、高风险环境就用 MCP”的无条件建议，改为已有能力基线、服务权限与退出条件。新增证据为官方权限契约、固定服务实现、已修安全公告和原始研究报告；不重复成本、Figma、记忆或 Tasks 调查。**[一手；经验：选择]**
+> 核实：2026-10-15（UTC+8；读取于 10-14 UTC）。主线二；04 撤回“小模型、浏览器、高风险环境就用 MCP”，改按已有能力、服务权限与退出条件选择。证据为官方权限契约、固定服务实现、已修安全公告与原研究；不重复前述成本、Figma、记忆和 Tasks。**[一手；经验：选择]**
 
 ### 接口与装配不是执行边界
 
@@ -320,7 +318,7 @@ print('4 assertions passed')
 - [filters.go L24–54](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/inventory/filters.go#L24-L54)先检查工具自身 Enabled，再按 readOnly／IsReadOnly 过滤，之后处理工具组与显式工具。它选择可用工具，不重签或缩小 GitHub token。[README](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/README.md#lockdown-mode)明确 lockdown 是 best-effort 内容过滤，私有仓库不受同样过滤；不改变底层凭证的读写权限，同一内容可能仍能经其他工具／API 获取。**[一手：固定实现与文档]**
 - [remote-server.md](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/docs/remote-server.md)定义 `/readonly`、单工具组路径和 `X-MCP-Toolsets`／`X-MCP-Readonly`。这证明已有窄接口可复用，不需要为 PR 排障自建新服务器；本轮未登录托管端点，也未确认其部署 SHA。**[一手；经验：选择]**
 - **实际故障与修复边界**：[官方 GHSA-pjp5-fpmr-3349](https://github.com/github/github-mcp-server/security/advisories/GHSA-pjp5-fpmr-3349)列受影响版本 `>=0.22.0, <1.1.2`、修复版 `1.1.2`。条件是 HTTP + lockdown，多用户请求曾复用首个用户的 GraphQL client，使内容信任判断跨身份混淆；不是单用户 stdio 的同等故障，也不是“读到了所有其他用户私有数据”的证明。**[一手：维护者安全公告，未复现]**
-- **当前实现反证**：[dependencies.go L463–487](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/github/dependencies.go#L463-L487)按请求取客户端并带 identity，新建 RepoAccessCache；[lockdown.go L102–113](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/lockdown/lockdown.go#L102-L113)绑定传入客户端。[官方测试 L134–158](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/lockdown/lockdown_test.go#L134-L158)分别创建 attacker／victim 缓存并断言作者信任判断不同；另有 identity scoped keys 测试。阅读不等于执行，但足以拒绝“当前仍使用该 singleton”的描述。**[一手：固定源码／回归定义，未运行]**
+- **当前实现反证**：[dependencies.go L463–487](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/github/dependencies.go#L463-L487)按请求取客户端并带 identity，新建 RepoAccessCache；[lockdown.go L102–113](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/lockdown/lockdown.go#L102-L113)绑定传入客户端。[官方测试 L134–158](https://github.com/github/github-mcp-server/blob/c59e8c199efbf14467211861de44afaeeb6873e3/pkg/lockdown/lockdown_test.go#L134-L158)分别创建 attacker／victim 缓存并断言作者信任判断不同；另有 identity scoped keys 测试。这些未运行的回归定义与源码反驳了“当前仍使用该 singleton”。**[一手：固定源码／回归定义，未运行]**
 
 **选择**：已有 `gh` 足够时不加层；确需受限远程工具时，按任务选工具面，按目标仓库限底层凭证，按输入来源处理内容。自托管多人 HTTP + lockdown 的旧部署须先升级到至少公告修复版；版本门槛只针对该已知漏洞，不保证所有安全问题消失，也不要求已修部署重新搭建。**[经验：采用边界]**
 
@@ -340,11 +338,11 @@ print('4 assertions passed')
 
 直接读取 [Tenet 原文](https://tenetsecurity.ai/blog/agentjacking-coding-agents-with-fake-sentry-errors/)（页面更新 2026-06-17），替换此前只有 CSA 二手转述的依据。研究者报告经公开 DSN 注入伪造错误，Agent 经 Sentry MCP 读取后执行验证包；文中把它称为受控真实环境验证，并给脱敏捕获。该报告的成功率与组织数未由本仓库复算；不能写成当前所有客户端必然中招、所有沙箱无效或已确认恶意攻击规模。**[一手：原研究作者报告，非独立复现]**
 
-本次采用的是“可信服务可以返回外部作者指令，而读取后还存在执行边界”这一具体反例。对于日志／工单中推荐的修复包，先回源码与官方来源核查，再依据用户批准执行；CLI 读取同样内容也不自动免疫。没有必要因这一受控研究一律停用观测工具，也不能只加一句提示词就承诺自动修复安全。**[经验：选择与反证]**
+此例说明可信服务可返回外部作者指令，读取后仍有执行边界。对于日志／工单中推荐的修复包，先回源码与官方来源核查，再依据用户批准执行；CLI 读取同样内容也不自动免疫。没有必要因这一受控研究一律停用观测工具，也不能只加一句提示词就承诺自动修复安全。**[经验：选择与反证]**
 
 ### 验证范围与收敛
 
-只读公开官方文档、固定源码／测试及安全报告；未安装软件、执行上游服务／利用代码、接私人账户或调用付费模型。本文没有新模型质量、成本或安全防御成功率数据。保留 Tasks 原段与固定证据；删除规模、厂商口碑、未给条件的推荐及无固定版本的安装例子，以免它们压过可直接采用的任务判断。完整离线与独立审阅结果随本工作单元交付，不据源码阅读宣称产品实测。
+本节只读公开文档、固定源码／测试与安全报告，未安装软件、执行服务／利用代码、访问私人账户或调用付费模型；没有模型质量、成本或防御成功率数据。删去规模、口碑与无条件安装例子后，接入判断以任务、权限和输入来源为准。
 
 ## 共享指令：发现、导入与加载证据
 
@@ -352,7 +350,7 @@ print('4 assertions passed')
 
 ### 共享指令：改变的选择与范围
 
-03 原有“只用 AGENTS.md（Claude Code 现在也会读）”省略了会让共享约定消失的实际条件。改为：已确认原生发现可只留 AGENTS；团队有项目内 `CLAUDE.local.md`、混合版本或附加仓库时，先保留明确的导入入口。不是增加另一份约定，也不要求安装同步工具；不重做 05 插件权限研究。**[研究]**
+03 原有“只用 AGENTS.md（Claude Code 现在也会读）”省略了会让共享约定消失的实际条件。改为：已确认原生发现可只留 AGENTS；团队有项目内 `CLAUDE.local.md`、混合版本或附加仓库时，先保留明确的导入入口。公共约定仍保留一份，无需同步工具；插件权限沿用 05。**[研究]**
 
 ### 共享指令：直接来源及反证
 
@@ -371,7 +369,7 @@ print('4 assertions passed')
 
 ### 共享指令：采用、撤回与未验证
 
-公共内容与导入入口的取舍统一见 [03 加载规则](../03-context-engineering.md#21-各工具的加载规则一手)。删除入口前仍须核其 Claude 专属内容、旧会话兼容、外部导入或日志用途。本轮仅核契约与发布版本，无客户端日志、遵循率或成本／质量收益；加载记录与任务行为须分别验，事件日志不能替代后者。**[研究]**
+公共内容与导入入口的取舍统一见 [03 加载规则](../03-context-engineering.md#21-各工具的加载规则一手)。删除入口前仍须核其 Claude 专属内容、旧会话兼容、外部导入或日志用途。未取得客户端日志、遵循率或成本／质量数据；加载与任务行为须分别验。**[研究]**
 
 ## 会话动作：按问题与宿主选择
 
@@ -386,13 +384,13 @@ print('4 assertions passed')
 - [Claude commands](https://code.claude.com/docs/en/commands)区分 `/clear` 的新对话与 `/compact` 的同会话摘要；[上下文处理](https://code.claude.com/docs/en/how-claude-code-works#when-context-fills-up)说明会自动管理空间，也可能丢早期细节。故手动压缩按实际负担选择，不因时间长而强制执行。**[一手；研究：判断]**
 - [Checkpointing](https://code.claude.com/docs/en/checkpointing#guide-a-summary)的摘要不改磁盘文件，原消息仍留在 transcript；两个摘要方向分别处理选中点之前／之后。原消息留存不等于每轮全部进入模型输入，摘要也不是代码回滚。**[一手；研究：边界]**
 - [Claude 侧问答](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw)可见现有会话但无工具，问答不进入主历史。用于解释已有信息；不能靠它读取刚变的源码或查询最新外部事实，后续执行所依赖的结论应明确带回主会话。**[一手；研究：判断]**
-- [Codex CLI 官方命令](https://learn.chatgpt.com/docs/developer-commands?surface=cli)的 compact／new／resume 分别总结、开新聊天、加载保存历史；fork 复制聊天而非上述 Claude 子 Agent。本次没有据命令同名推广继承、压缩或恢复语义。页面是核实日动态文档，不伪装成固定发布版的运行结果。**[一手]**
+- [Codex CLI 官方命令](https://learn.chatgpt.com/docs/developer-commands?surface=cli)的 compact／new／resume 分别总结、开新聊天、加载保存历史；fork 复制聊天而非上述 Claude 子 Agent。同名命令不保证同样语义；此为核实日动态文档，非固定发行版实测。**[一手]**
 
 ### 会话动作：保留的收益与撤回条件
 
 §4.2 已分别记录 AGENTS 缺原文档时的收益、Agent KB 同模型 pass@1 迁移收益，以及 Complexity Trap 在不同模型上的收益／退化；没有新模型数据，不合并这些设置，也不删除正面结果来支持“一律少上下文”。指令加载证据足够但行为失败时，检查任务、内容和执行边界；历史过长才处理历史，当前事实缺失则补事实，跨任务检索反复缺失才评估记忆服务。**[研究：既有证据范围；经验：采用判断]**
 
-本轮还撤回正文中“规则忽略通常因为文件长”、一律排除代码可推知信息，以及以第二次出错作维护触发的表述，它们和已经建立的加载、保留价值及事实变化判据冲突。无新增论文名单、依赖、服务或实测收益；自动记忆与旧研究仍沿各自核实日期。**[经验：全文一致性修订]**
+本轮还撤回正文中“规则忽略通常因为文件长”、一律排除代码可推知信息，以及以第二次出错作维护触发的表述，它们和已经建立的加载、保留价值及事实变化判据冲突。自动记忆与旧研究仍沿各自核实日期，无新增实测收益。**[经验：全文一致性修订]**
 
 **全文复审补核**：[Claude Read and Edit](https://code.claude.com/docs/en/permissions#read-and-edit)明确 deny 规则覆盖内置文件工具、识别的 Bash 文件命令及重定向，但不覆盖隐式递归读取或任意 Python／Node 子进程间接读写；03 因此撤回“不让 Agent 读”的全入口承诺，硬路径边界交回 10。另核 [Commands](https://code.claude.com/docs/en/commands)仍有 `/doctor prompt-audit`（v2.1.283+），未因另有 `/claude-api prompt-audit` 就删除前者。均为文档核查，未执行隔离或命令测试。**[一手；经验：独立审阅后的收窄]**
 
@@ -409,15 +407,15 @@ print('4 assertions passed')
 
 - `find_referencing_symbols` **移除** `include_info` 参数及逐引用 hover，保留引用附近代码；`find_symbol` 的附加详情改为批量查询。不是给所有语义操作统一加一个参数。
 - 最终配置名 `symbol_info_budget`，默认 10 秒，项目可覆盖；0 表示不提前停止。达到预算后不再发下一次 hover，已得详情保留，其余为 None，不取消已开始的请求。
-- [固定测试](https://github.com/oraios/serena/blob/dcbf08520d9b6bccafc9f994284ea2be22458c56/test/serena/test_symbol.py)以模拟时间断言五个符号只查前两个、其余 None，并覆盖预算 0 及项目覆盖。这里是阅读测试，未执行；也未找到原报告者在合并版上的端到端成功复测，不能把早期关闭详情的成功自报算到预算机制上。**[一手：补丁／测试；研究：证据边界]**
+- [固定测试](https://github.com/oraios/serena/blob/dcbf08520d9b6bccafc9f994284ea2be22458c56/test/serena/test_symbol.py)以模拟时间断言五个符号只查前两个、其余 None，并覆盖预算 0 及项目覆盖。未找到原报告者在合并版上的端到端成功复测；早期关闭详情的成功自报不证明预算机制有效。**[一手：补丁／测试；研究：证据边界]**
 
-**采用判断**：批量查询先保符号身份、位置与引用，需要理解具体契约时，再读取少量目标的正文或详情。这比默认附带全部资料、或因附加查询慢就退回纯文本搜索更贴合缺口；不推断所有语言后端同样慢。**[经验]**
+**采用判断**：批量查询先保符号身份、位置与引用，需要理解具体契约时，再读取少量目标的正文或详情。附加查询慢时可保留语义定位，而非一律退回文本搜索；慢查询也未推广到所有语言后端。**[经验]**
 
 ### 后续反证：预算省略不等于本来没有
 
-[另一报告者的 #2006](https://github.com/oraios/serena/issues/2006)在 2026-09-09 引用 `701e7c84` 指出：预算耗尽仅有 DEBUG 留痕，工具缺少 info 的结果与真正无文档相同。该帖主要是代码诊断，未提供模型因此错误修改的轨迹，不能升级成已发生的模型失败。**[社区／一手：诊断范围]**
+[另一报告者的 #2006](https://github.com/oraios/serena/issues/2006)在 2026-09-09 引用 `701e7c84` 指出：预算耗尽仅有 DEBUG 留痕，工具缺少 info 的结果与真正无文档相同。该帖主要作代码诊断，未提供模型错误修改轨迹。**[社区／一手：诊断范围]**
 
-[修订 PR #2010](https://github.com/oraios/serena/pull/2010)本轮核查仍 **open、draft、未合并**。最初拟逐符号加说明，[维护者质疑重复 token](https://github.com/oraios/serena/pull/2010#discussion_r4021141582)后，[作者改为每批一行遗漏计数](https://github.com/oraios/serena/pull/2010#discussion_r4025859992)，head 为 `4d680c856e9b6f8835919bb2db321ab0313287be`。不能照初始 PR 描述写成每符号提示，也不能声称当前已提供计数。作者的测试通过是自报，并未覆盖 MCP 客户端端到端收益。**[社区：评审／自报；一手：未合并补丁]**
+[修订 PR #2010](https://github.com/oraios/serena/pull/2010)本轮核查仍 **open、draft、未合并**。最初拟逐符号加说明，[维护者质疑重复 token](https://github.com/oraios/serena/pull/2010#discussion_r4021141582)后，[作者改为每批一行遗漏计数](https://github.com/oraios/serena/pull/2010#discussion_r4025859992)，head 为 `4d680c856e9b6f8835919bb2db321ab0313287be`。每批计数尚未合并；作者自报测试通过，未验证 MCP 客户端端到端收益。**[社区：评审／自报；一手：未合并补丁]**
 
 当前固定提交 [`0c1091394eda5644887dc3399621e479d9f33aa3`](https://github.com/oraios/serena/commit/0c1091394eda5644887dc3399621e479d9f33aa3)（2026-10-15T08:52:59Z）交叉核对：
 
@@ -440,25 +438,25 @@ print('4 assertions passed')
 
 > 核实时间：2026-10-16（UTC+8；读取于 10-15 UTC）。只读公开原帖、固定源码、测试定义和发布记录；未安装或运行 Serena／JDTLS，未执行上游测试或模型任务。**[社区：原帖；一手：固定实现与发布；经验：采用判断]**
 
-**改变选择**：源码明确存在而符号查询为空时，先用原生文件／文本搜索定位，核对语言服务器的项目导入配置与依赖解析。修正导入后，以已知定义和调用点核验，再恢复跨文件语义操作；不靠扩大查询、增加上下文或无差别清缓存解决。这里新增的是“构建／导入上下文没有成立，或旧 workspace 掩盖了错误配置”，不是又一个源码内容缓存例子。**关键局限**：有真实多模块搜索失败与修复机制，但没有修复后原任务的编辑产物／验收，不能声称 Agent 成功率提高。**[经验：选择与证据边界]**
+**改变选择**：源码明确存在而符号查询为空时，先用原生文件／文本搜索定位，核对语言服务器的项目导入配置与依赖解析。修正导入后，以已知定义和调用点核验，再恢复跨文件语义操作；不靠扩大查询、增加上下文或无差别清缓存解决。问题在于构建／导入上下文未成立，或旧 workspace 掩盖错误配置，有别于源码内容缓存。修后原任务验收缺失，详见本节末尾。**[经验：选择与证据边界]**
 
 ### 实际调用与报告者恢复：不要把空结果当目标不存在
 
 - [Serena #1174](https://github.com/oraios/serena/issues/1174) 的 2026-03-16 日志来自 Windows Java/Maven 项目，Serena 日志版本为 0.1.4、后端为 LSP。`serena project index` 报告索引 2,400 个 Java 文件；随后 `find_symbol` 查 `MultilingualConfigGenerationService`，以及该类的 `generate`，均返回空数组。两次调用都未限定 `relative_path`，`include_body=False`、`include_info=False`，不是附加详情预算导致的缺省。3 月 18 日报告者确认符号存在、普通搜索可用，符号工具仍失败；对已定位 Java 文件的健康检查也返回空。维护者最初判断为慢启动，后重新打开，最终因无法复现关闭，不能把首次关闭当成修复。**[社区：原调用日志及作者复述，未复现]**
 - 同一报告者在 2026-06-03 的 [#1541](https://github.com/oraios/serena/issues/1541) 补充：Windows 11、JDTLS 1.58.0-SNAPSHOT、23 个 Maven 模块，父 POM 依赖非默认配置指向的仓库；其称在 `project.local.yml` 补上 Maven 配置路径后可工作。更有辨别力的复现是：正确配置下健康检查通过，移除该配置仍通过；清掉对应 JDTLS workspace 后，才暴露父 POM 无法解析及空符号结果。该帖的 Serena 版本只写 latest，不能补成精确版本。**这是修复前的配置恢复自述，不是后来补丁发布后的用户重试。** **[社区：报告者环境／复现自述，未复现]**
 
-因此，索引文件数只说明扫描范围，旧 workspace 下的成功也不能单独验证当前导入配置。文本搜索可先确认文件和定义存在；是否解析出正确跨模块引用，仍需在正确构建上下文里核验。**[经验：从该单例推导的诊断选择]**
+索引文件数只说明扫描范围，旧 workspace 下的成功也不能单独验证当前配置。文本搜索确认存在后，跨模块引用仍须在正确构建上下文里核验。**[经验：从该单例推导的诊断选择]**
 
 ### 固定修复与发布：自动失效覆盖哪些变化
 
 [PR #1576](https://github.com/oraios/serena/pull/1576) 于 2026-06-28 合并，merge SHA 为 `88fe650f357aa47fcb851a068424f9fbbb14c332`：
 
 - [workspace hash 实现](https://github.com/oraios/serena/blob/88fe650f357aa47fcb851a068424f9fbbb14c332/src/solidlsp/language_servers/eclipse_jdtls.py#L777-L813) 在项目根与 launcher 路径之外，纳入七项显式配置值：`maven_user_settings`、`gradle_user_home`、`gradle_wrapper_enabled`、`gradle_java_home`、`java_home`、`use_system_java_home`、`maven_offline`。legacy INITIAL 默认配置仍保留原 hash；设置受跟踪项后才退出该兼容路径。**[一手：固定源码]**
-- [新增测试 L458–478](https://github.com/oraios/serena/blob/88fe650f357aa47fcb851a068424f9fbbb14c332/test/solidlsp/java/test_jdtls_path_resolution.py#L458-L478) 检查 Maven 配置路径变化会改变 hash，以及 legacy 配置增加显式 Gradle 路径会改变 hash。这是测试定义阅读，未运行；这些断言也没有启动真实多模块导入或验证 Agent 编辑。**[一手：测试源码，未运行]**
+- [新增测试 L458–478](https://github.com/oraios/serena/blob/88fe650f357aa47fcb851a068424f9fbbb14c332/test/solidlsp/java/test_jdtls_path_resolution.py#L458-L478) 检查 Maven 配置路径变化会改变 hash，以及 legacy 配置增加显式 Gradle 路径会改变 hash。测试定义不涉及真实多模块导入或 Agent 编辑。**[一手：测试源码，未运行]**
 - 修复已进入 2026-07-16 发布的 [v1.6.0](https://github.com/oraios/serena/releases/tag/v1.6.0)，固定 tag SHA `93b9544ea9def8e93cb6a90f8ea67befe3c8fee4` 的 [changelog](https://github.com/oraios/serena/blob/93b9544ea9def8e93cb6a90f8ea67befe3c8fee4/CHANGELOG.md) 明列 #1576，[源码 L752 起](https://github.com/oraios/serena/blob/93b9544ea9def8e93cb6a90f8ea67befe3c8fee4/src/solidlsp/language_servers/eclipse_jdtls.py#L752-L800) 包含此机制，不能把历史缺陷写成当前版本仍普遍存在。**[一手：发布与固定源码]**
 - 2026-10-13 发布的 v2.0.0，固定 SHA `4c4268f9c0adf8743a75e6dda2ef1fa635f34cc3` 的 [实现 L691 起](https://github.com/oraios/serena/blob/4c4268f9c0adf8743a75e6dda2ef1fa635f34cc3/src/solidlsp/language_servers/eclipse_jdtls.py#L691-L750) 仍保留该机制，另纳入 `runtimes`、Maven／Gradle 导入开关、build configuration、autobuild 和 custom JRE 等配置。hash 取配置值，不读取同一路径下 Maven 配置文件的内容，也不纳入 branch／HEAD；**这只限定这一层的自动失效范围，不能据此断言其他机制不会刷新或重新导入。** **[一手：固定源码；经验：边界解释]**
 
-本链支持针对性检查导入环境，不支持“清空所有缓存”、无条件更换后端或升级就能完成原任务的建议。没有发现原报告者在 #1576 后的重试验收，也没有最终跨模块修改 diff／测试产物；保持为机制与诊断选择证据。**[经验：采用边界]**
+未找到原报告者在 #1576 后的重试验收或跨模块修改 diff／测试产物。本链只支持针对性检查导入环境，不能据此无条件清缓存、更换后端或保证升级后完成原任务。**[经验：采用边界]**
 
 ## Serena：原生引用存在但封装过滤漏掉
 
@@ -468,5 +466,5 @@ print('4 assertions passed')
 
 - **真实查询差异**：[Serena #2133](https://github.com/oraios/serena/issues/2133) 的报告者于 2026-10-05 给出 Serena 1.7.0、Claude Code、Windows 11、Gleam 1.17.0 环境与三文件代码：`a.run`、`c.run` 都调用 `b.run`，`find_referencing_symbols` 仅返回前者，而直接 `textDocument/references` 返回两者。报告者声明实际遇到此问题；这证明的是引用查询失败，未提供最终修改产物或编辑验收。**[社区：原始报告，未复现]**
 - **固定修复**：[#2134](https://github.com/oraios/serena/pull/2134) 于 2026-10-06 合并为 [`c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c`](https://github.com/oraios/serena/commit/c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c)。旧实现见到目标声明后，将后续同 name、同 kind 的包含符号当成 import；新增条件要求引用位置还须落在该符号名称的 `selectionRange` 内，函数体内的调用不再仅因同名被过滤。PR 作者以 Gleam 1.19.0 自报修前／修后对照，并说明旧版表现受返回顺序影响；这不是原报告者回执。修复仍依赖语言服务器的 range 表达，作者没有验证所有后端。**[一手：补丁；社区：作者复测自报]**
-- **测试定义与防假绿**：[固定单元测试 L59–85](https://github.com/oraios/serena/blob/c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c/test/solidlsp/test_referencing_symbols.py#L59-L85) 用脚本化 LSP 响应将声明排在两个同名调用者之前，再断言两者均返回，确保触发旧过滤条件；[Gleam 后端测试 L110–126](https://github.com/oraios/serena/blob/c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c/test/solidlsp/gleam/test_gleam_basic.py#L110-L126) 验证相应三模块场景，但旧版是否失败受实际返回顺序影响，不能只以一次旧版通过判定没有缺陷。以上是测试源码阅读，未执行；PR 自报测试通过不升级为本仓验证，也不证明 Agent 编辑成功。**[一手：测试定义；经验：验证边界]**
+- **测试定义与防假绿**：[固定单元测试 L59–85](https://github.com/oraios/serena/blob/c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c/test/solidlsp/test_referencing_symbols.py#L59-L85) 用脚本化 LSP 响应将声明排在两个同名调用者之前，再断言两者均返回，确保触发旧过滤条件；[Gleam 后端测试 L110–126](https://github.com/oraios/serena/blob/c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c/test/solidlsp/gleam/test_gleam_basic.py#L110-L126) 验证相应三模块场景，但旧版是否失败受实际返回顺序影响，不能只以一次旧版通过判定没有缺陷。PR 自报测试通过，未由本仓执行或验证 Agent 编辑。**[一手：测试定义；经验：验证边界]**
 - **已发布边界**：[v2.0.0](https://github.com/oraios/serena/releases/tag/v2.0.0) 发布于 2026-10-13；[固定版本 `4c4268f9` 的实现 L2545–2569](https://github.com/oraios/serena/blob/4c4268f9c0adf8743a75e6dda2ef1fa635f34cc3/src/solidlsp/ls.py#L2545-L2569) 包含该过滤修正。不能把 1.7.0 的报告写成当前版本普遍仍有此故障，或因此无条件更换后端。原 issue 无评论，PR 讨论也未提供原报告者修复后回执；本链满足原报告、固定修复与测试定义，不满足端到端编辑收益。**[一手：发布与源码；研究：证据范围]**

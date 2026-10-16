@@ -20,17 +20,17 @@
 本例只支持“具体试看反馈促成作者报告修改”。没有独立验证修改生效、提醒送达、持续使用收益或生产可靠性；官网静态 PT 文案也不足以验证动态本地时间预览。Codex 辅助的是评论，不能据此断言应用代码由 AI 生成；作者也未说放弃统计或实现了日期与时区选择器的全部建议。
 
 ## CodexIsland：方案、补丁与回滚
-核验日期：2026-10-13（UTC+8）；案例发生于 2026-05，历史事件按原帖时区标注。只读公开 GitHub；未运行 Swift、未安装应用、未播放维护者附带视频。定位：任务一的产品选择证据，非模型生产力对照，非发布后用户收益证明。
+核验：2026-10-13（UTC+8）；案例为 2026-05，事件时间沿用原帖。只读公开 GitHub，未运行 Swift、安装应用或播放视频；仅作产品选择证据，不证明模型生产力或发布后收益。
 
 ### CodexIsland：方案、补丁与回滚 · 结论与建议
 
-该案例比仅有“已修改”回复更进一步：有独立用户的具体使用需求、方案选择说明、视觉 QA 后再次修改的作者记录、逐提交源码和回滚、已合并产物。最值得进入正文的是：先确定反馈要减少什么负担，再利用既有状态、版面与真实数据做最小替代；为可读性改变图表编码时，要明确牺牲了哪一种比较能力，不能用漂亮原型中的占位指标冒充真实结果。
+本例有独立需求、作者报告的方案比较与视觉 QA、固定补丁及回滚。建议先确定要减少的负担，再复用状态、版面与真实数据；改变图表编码须交代比较能力的损失，原型占位值须替换为真实结果。
 
-尚缺：初始代码由哪种 AI 生成的可核实记录；视觉 QA 反馈的独立原文或参与者身份；请求者在发布后再次使用并确认改善的记录。可确认 Claude 参与了该 PR 的代码审阅并促成一处无障碍修正。不能把仓库名称、分支名、CLAUDE.md 或后续 Codex 分支当成本 PR 的生成归属证明。
+尚缺初始生成模型、独立视觉 QA 原文或参与者身份，以及请求者发布后复测。可确认的 AI 作用仅为 Claude 审阅促成无障碍修正；仓库名、分支名、CLAUDE.md 及后续 Codex 分支均不证明本 PR 的生成归属。
 
 ### CodexIsland：方案、补丁与回滚 · 1. 原需求：只用一个供应商，不希望另一个继续占位
 
-2026-05-07，用户 honeybears 在 [issue #3](https://github.com/ericjypark/codex-island/issues/3) 说明自己只使用 Claude；关闭 Codex 后，图标与 expanded 中的数据只是变暗，仍占据屏幕。他要求 compact、peek、expanded 三种状态都完全隐藏被关闭供应商的元素。这是使用情境，不是单纯“再加一个功能”。
+2026-05-07，用户 honeybears 在 [issue #3](https://github.com/ericjypark/codex-island/issues/3) 说明自己只使用 Claude；关闭 Codex 后，图标与 expanded 中的数据只是变暗，仍占据屏幕。他要求 compact、peek、expanded 均完全隐藏被关闭供应商的元素。
 
 维护者 [首次回复](https://github.com/ericjypark/codex-island/issues/3#issuecomment-4394687502) 表示 idle/hovered 容易隐藏，但 expanded 如何保持整洁还需思考。
 
@@ -38,9 +38,9 @@
 
 [PR #16](https://github.com/ericjypark/codex-island/pull/16) 描述四变体中选择 Repurpose：用腾出的半区展示仍启用供应商的模型用量/费用明细。作者给出的弃选理由为 Bloom 仅装饰、Shrink 丢失面板辨识度、Focus 范围更大且需维护两套布局。
 
-这些取舍理由来自作者公开 PR 描述；原型计划链接指向未公开的 notes 文件，不能声称读过四套完整原型或独立比较过视觉效果。
+取舍来自作者 PR 描述；计划链接指向未公开 notes，未读四套完整原型或独立比较视觉效果。
 
-[首实现 6d54a8d](https://github.com/ericjypark/codex-island/commit/6d54a8da8f5b682838fc2a106a76071c280c7d16) 落实：供应商元素完全隐藏；使用既有本地日志的数据来源建立模型明细；删除原型的手写 `burn 18%/h` 数字；删除原型脚手架。应说“复用既有本地数据来源”，不要夸大为整套新聚合与 UI 已经存在。新增代码仍包括明细聚合与视图。
+[首实现 6d54a8d](https://github.com/ericjypark/codex-island/commit/6d54a8da8f5b682838fc2a106a76071c280c7d16) 落实：供应商元素完全隐藏；使用既有本地日志的数据来源建立模型明细；删除原型的手写 `burn 18%/h` 数字；删除原型脚手架。复用的是数据来源，明细聚合与视图仍为新增。
 
 ### CodexIsland：方案、补丁与回滚 · 3. 作者报告视觉 QA 后再次变化；补丁可独立核对
 
@@ -53,34 +53,34 @@
 可以确认的实现：
 - `JoinedModelRow` 按模型将 recent 与 week 数组合并，迭代 week 数组；recent 缺失时按零处理
 - `OverlapBar` 对每一行计算 `weekAbsolute > 0 ? clamp(recentAbsolute / weekAbsolute, 0, 1) : 0`
-- 有周数据时暗条占满该行宽；亮条按上述比例显示，但有最小 2pt 宽度，所以极小非零比例并不是严格按几何比例显示
+- 有周数据时暗条占满行宽；亮条最小 2pt，故极小非零比例并不严格按几何比例显示
 - 尾列显示该模型周绝对量（token 或美元）；最多显示四行；费用指标按周费用降序
-- 逐行归一化意味着条长不能跨行比较模型绝对用量。跨行比较必须读取尾列数值；不是免费提高可读性而保留所有原有含义
+- 逐行归一化后，跨模型绝对量须读尾列，不能再比较条长
 - 本地日志 token 与 API 价格估算不等于供应商官方订阅额度；滚动 5h/7d 的本地汇总不证明与供应商限额窗口或精确账期对齐。未检查任何私有日志
-- `CostStore.summarize` 在同一次事件遍历中，把 recent 累加放在 week 条件内部，且仅累加正的 token/cost；这支持此实现内部 recent 累计不超过相应 week 累计的设计关系。不要外推为所有供应商 API 的 5h/周限额窗口天然包含，或已经核实全部时区、日志完整性、迟到事件与真实采样边界
-- 源码说明包含“5h 是 today 的子集”等概括，不能照抄为普遍数学事实；滚动窗口在午夜附近会跨日。本文只依实际条件分支陈述
+- `CostStore.summarize` 在同一次事件遍历中，把 recent 累加放在 week 条件内部，且仅累加正的 token/cost；这仅支持本实现中 recent 不超过 week；未核全部时区、日志完整性、迟到事件与采样边界，也不证明供应商 API 的 5h/周窗口天然包含
+- 源码所称“5h 是 today 的子集”非普遍事实：滚动窗口可跨午夜；本文依条件分支判断
 
 [baf27cc](https://github.com/ericjypark/codex-island/commit/baf27cc18cfd19deb77d22bf25067b96b670fd12)，14:38 UTC，作者再次报告根据用户反馈把图例 `wk` 改成 `week`。实际文本修改可见，反馈是否来自原 issue 请求者未知。
 
-因此“第二轮反馈引起可见修改”成立于作者报告 + 补丁层；“独立用户第二次使用成功”尚未成立。
+作者报告与补丁可证反馈后修改，尚无独立用户再次使用成功的证据。
 
 ### CodexIsland：方案、补丁与回滚 · 4. 保留与放弃：不是所有尝试都留下
 
 不对称轮廓在 [04abd1e](https://github.com/ericjypark/codex-island/commit/04abd1e548280f5537a7648d8ed6a12a29d9d8cc) 加入，随后由 [d43a637](https://github.com/ericjypark/codex-island/commit/d43a637dcb7cb6735157d2aca00facc1fc10cd04) 撤回。
 
-维护者在 [最终审阅请求](https://github.com/ericjypark/codex-island/pull/16#issuecomment-4415630029) 明确说不对称轮廓已经尝试并撤回，要求不再作为遗漏追补。可直接核验提交序列中的一次回滚；“两次尝试”只是维护者说明，不应写成两次均已独立核查。
+维护者在 [最终审阅请求](https://github.com/ericjypark/codex-island/pull/16#issuecomment-4415630029) 明确说不对称轮廓已经尝试并撤回，要求不再作为遗漏追补。已核一次回滚；“两次尝试”仅为维护者说明。
 
 ### CodexIsland：方案、补丁与回滚 · 5. AI 的可见作用与最后交付
 
 [Claude 首轮审阅](https://github.com/ericjypark/codex-island/pull/16#issuecomment-4415551546) 发现 pill 视觉隐藏条件同时依赖 `pillsVisible` 与供应商可见性，但 VoiceOver 隐藏只依赖后者。
 
-[Claude 最终审阅](https://github.com/ericjypark/codex-island/pull/16#issuecomment-4415630454) 再次要求修正；[db8d80b](https://github.com/ericjypark/codex-island/commit/db8d80bec7b7e82c2f5b86c2f0e4495b360a120f) 将无障碍隐藏条件同步为两者组合。这是可见 AI 审阅→实际修正，不等于证明 AI 生成整套原型，亦不是泛化审阅质量评测。
+[Claude 最终审阅](https://github.com/ericjypark/codex-island/pull/16#issuecomment-4415630454) 再次要求修正；[db8d80b](https://github.com/ericjypark/codex-island/commit/db8d80bec7b7e82c2f5b86c2f0e4495b360a120f) 将无障碍隐藏条件同步为两者组合。可证 AI 审阅促成修正，不能证明原型生成归属或普遍审阅质量。
 
 PR #16 于 2026-05-10 15:24:47 UTC 合并：merge `1a1b4886e9b3fdbc5a38b0a3a2bbb3a0869dfc75`，head `db8d80bec7b7e82c2f5b86c2f0e4495b360a120f`，base `30305197c70ddd52bcd120ef5f06c4095c02d14e`。
 
-PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总；a999467 后成本行已恢复按 dollars 计算的重叠条，最终叙述必须依据对应提交源码。不能把早期 body 的无条形成本行或 footer 当成终态。自动生成摘要还残留后来被撤回的不对称轮廓，亦不能据此宣称已交付。
+PR body 的无条形成本行、5h footer 是早期说明；a999467 已恢复按 dollars 计算的重叠条。自动摘要还残留已撤回的不对称轮廓；终态须依固定源码。
 
-维护者在 [issue #3 回报 Done 并附视频](https://github.com/ericjypark/codex-island/issues/3#issuecomment-4415686274)，issue 后于 5 月 13 日关闭。视频未播放，不能称为本侧视觉验收；未找到请求者确认。PR 的手工视觉 QA 清单仍未勾完；合并不能替代运行证明。
+维护者在 [issue #3 回报 Done 并附视频](https://github.com/ericjypark/codex-island/issues/3#issuecomment-4415686274)，issue 后于 5 月 13 日关闭。未播放视频或取得请求者确认；手工视觉 QA 清单未勾完，合并不证明运行通过。
 
 ### CodexIsland：方案、补丁与回滚 · 6. 研究记录旁证与排除
 
@@ -92,16 +92,16 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 
 ### CodexIsland：方案、补丁与回滚 · 7. 采用边界
 
-本例支持反馈驱动布局／编码取舍、真实数据替换占位值、可见回滚及 AI 审阅后的修正；不支持初始生成归属、效率数字、方案普遍优越或当前版本效果。请求者发布后复测仍缺失，作者 QA 报告不能代替；后文另列修改后使用证据，不将其他项目的成功补到本例。**[研究：采用边界]**
+本例的支持范围见开头结论；仍不支持效率、普遍优越性或当前版本效果。后文其他项目的成功不能补足本例缺失的请求者复测。**[研究：采用边界]**
 
 ## CodexBar：发布后的理解反馈
 > 核实时间：2026-10-13 16:12（UTC+8）。读取公开原帖、PR、固定发布 tag 与补丁；未构建或运行上游，未做模型实验。
 
 ### CodexBar：发布后的理解反馈 · 采用判断
 
-本例支持 [15 §10](../15-task-playbooks.md#10-原型和一次性脚本) 的修改版理解验收：不同使用者在已含颜色改善的发布版仍报告符号误读，促成可选符号惯例；不同于 CodexIsland 的作者视觉反馈。**[研究：采用判断]**
+本例支持 [15 §10](../15-task-playbooks.md#10-原型和一次性脚本) 的理解验收：使用者在含颜色改善的发布版仍报告符号误读，促成可选符号惯例。**[研究：采用判断]**
 
-**关键局限**：该用户未说明是否开启颜色，也未报告实际错误行动；最终符号版没有找到用户复测。因此不是“开启颜色后复测失败”，更不是已证明产品收益。**[社区：报告范围；研究：边界]**
+**关键局限**：用户未说明开启颜色或实际错误行动，最终符号版也缺复测；不能称开启颜色后失败或收益已证。**[社区：报告范围；研究：边界]**
 
 ### CodexBar：发布后的理解反馈 · 1. 原需求不是只有一种正确符号
 
@@ -116,32 +116,32 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 ### CodexBar：发布后的理解反馈 · 2. 修改、发布和另一用户的再次反馈
 
 1. **颜色补丁合并。** [#3429](https://github.com/steipete/CodexBar/pull/3429)于 2026-09-11 合并为 `fe7a45ffab530e6b850800fd4a01ef1972709b0d`。[维护者接受](https://github.com/steipete/CodexBar/pull/3429#issuecomment-5627798767)的是窄的默认关闭选项。已读 diff 用独立数值 delta 选红绿，并修复模板图像剥离颜色的输出路径。作者报告本机、合成 native 场景及测试通过；本轮未复跑或检查图片像素。**[一手：补丁；社区：采用与运行报告]**
-2. **发布版包含颜色逻辑。** `v0.72.0`解析到 [`cfee869f3181379dd074adb9feeb5f19a994356a`](https://github.com/steipete/CodexBar/commit/cfee869f3181379dd074adb9feeb5f19a994356a)。[固定 renderer](https://github.com/steipete/CodexBar/blob/cfee869f3181379dd074adb9feeb5f19a994356a/Sources/CodexBar/MenuBarLayoutRenderer.swift)的 `colorPace` 分支按 delta 正负取绿/红；blob 为 `5c6130c7ab7b600bbe0ee205a307c94f742f5a3c`。[UI 文档](https://github.com/steipete/CodexBar/blob/cfee869f3181379dd074adb9feeb5f19a994356a/docs/ui.md)明确默认关闭；[formatter](https://github.com/steipete/CodexBar/blob/cfee869f3181379dd074adb9feeb5f19a994356a/Sources/CodexBar/MenuBarDisplayText.swift)仍将非负 delta 显示为正数，没有符号设置参数。这是直接读取发布源码，不是按日期推断。**[一手]**
-3. **另一个人实际使用后仍觉得含义相反。** LPFchan 在 2026-10-09 的 [#4386](https://github.com/steipete/CodexBar/issues/4386)注明 **0.72.0、macOS 15.7.4 arm64**：菜单栏 `+23%` 一眼像好消息，popover 却显示 deficit。他明确联系 #3429，认为颜色有所帮助但未改变符号，提出保留旧默认的可选反转。用户未说当时开启颜色、高对比或自己具有色觉障碍，也没说实际多用额度；“很多用户”只属其概括。**[社区；研究：范围限定]**
+2. **发布版包含颜色逻辑。** `v0.72.0`解析到 [`cfee869f3181379dd074adb9feeb5f19a994356a`](https://github.com/steipete/CodexBar/commit/cfee869f3181379dd074adb9feeb5f19a994356a)。[固定 renderer](https://github.com/steipete/CodexBar/blob/cfee869f3181379dd074adb9feeb5f19a994356a/Sources/CodexBar/MenuBarLayoutRenderer.swift)的 `colorPace` 分支按 delta 正负取绿/红；blob 为 `5c6130c7ab7b600bbe0ee205a307c94f742f5a3c`。[UI 文档](https://github.com/steipete/CodexBar/blob/cfee869f3181379dd074adb9feeb5f19a994356a/docs/ui.md)明确默认关闭；[formatter](https://github.com/steipete/CodexBar/blob/cfee869f3181379dd074adb9feeb5f19a994356a/Sources/CodexBar/MenuBarDisplayText.swift)仍将非负 delta 显示为正数，没有符号设置参数。以上直接依据发布源码。**[一手]**
+3. **另一个人实际使用后仍觉得含义相反。** LPFchan 在 2026-10-09 的 [#4386](https://github.com/steipete/CodexBar/issues/4386)注明 **0.72.0、macOS 15.7.4 arm64**：菜单栏 `+23%` 一眼像好消息，popover 却显示 deficit。他明确联系 #3429，认为颜色有所帮助但未改变符号，提出保留旧默认的可选反转。开启颜色/高对比、色觉障碍及实际超用均未报告；“很多用户”仅为其概括。**[社区；研究：范围限定]**
 4. **从颜色改为可选显示语义。** [#4394](https://github.com/steipete/CodexBar/pull/4394)于 2026-10-09 合并；[固定补丁 `22372da3bac3bb0c5ea39095c6d73fb4a525f37c`](https://github.com/steipete/CodexBar/commit/22372da3bac3bb0c5ea39095c6d73fb4a525f37c)新增 `reservePositive: Bool = false`，设置缺省 false，旧惯例保留。选项进入 Session/Weekly/Auto 与 live/sample preview；内部 delta、红绿、已保存条件阈值仍保持原语义。[维护者回复](https://github.com/steipete/CodexBar/issues/4386#issuecomment-6086624183)确认合并及下版发布计划，不是 LPFchan 已升级复测。**[一手：diff；社区：维护者回复]**
 
 ### CodexBar：发布后的理解反馈 · 3. AI 参与可证范围与反例
 
-[#2842 的 Codex 审查](https://github.com/steipete/CodexBar/issues/2842#issuecomment-5240809239)将请求判为已有 signed pace token 的重复，引用源码与测试建议关闭，但同时要求维护者 **“Close after confirming the reporter can select Weekly pace in the current layout editor”**，并在 next step 要求确认已发布 token 满足请求；没有自动关帖授权。问题在于审查结论未保留两种符号方向的差异，不能写成机器人独自关闭了 issue。**[一手：公开审查产物；研究：原意对照]**
+[#2842 的 Codex 审查](https://github.com/steipete/CodexBar/issues/2842#issuecomment-5240809239)将请求判为已有 signed pace token 的重复，引用源码与测试建议关闭，但同时要求维护者 **“Close after confirming the reporter can select Weekly pace in the current layout editor”**，并在 next step 要求确认已发布 token 满足请求；没有自动关帖授权。该审查遗漏两种符号方向的差异，不能据此说机器人独自关闭 issue。**[一手：公开审查产物；研究：原意对照]**
 
 [#3429 的审查历史](https://github.com/steipete/CodexBar/pull/3429#issuecomment-5548428504)保存了 status-item 颜色丢失的 P2 发现，最终补丁与维护者说明对应修复；[#4386 后来的审查](https://github.com/steipete/CodexBar/issues/4386#issuecomment-6074103058)则明确把符号反转视为不同偏好，要求先做产品选择。这能证明 AI 审查参与及具体产物，不能隔离独立贡献或提速。**[一手；研究：归因边界]**
 
-没有找到两次初始实现的具体模型生成披露；审查记录中的 internal/effort 不是公开模型版本。不能从项目作者整体 AI 使用习惯倒推本补丁生成归属，也不能当成当前模型效果对照。**[研究：证据缺口]**
+两次初始实现均缺具体模型生成披露；internal/effort 不是公开模型版本，作者整体 AI 使用习惯也不能补足归属，故无当前模型效果对照。**[研究：证据缺口]**
 
 ### CodexBar：发布后的理解反馈 · 4. 成本、替代方案与停止条件
 
-- 颜色增加了真实输出、stale/high contrast、预览、持久化、翻译及升级兼容工作；符号选项再增加设置与两种显示惯例。可看到维护面，未取得人的工时或模型费用，不由行数/测试数算净成本。**[一手：diff；研究]**
+- 颜色涉及真实输出、stale/high contrast、预览、持久化、翻译及升级兼容；符号选项增加设置与双惯例。缺工时、模型费用，行数/测试数不证明净成本。**[一手：diff；研究]**
 - #2534 已提出直接显示 deficit/reserve 文字；可选反转不是唯一方案，也没有与文字方案的用户比较。默认关闭意味着还可能有发现/启用成本，不据后来的反馈撤销颜色功能。**[社区；研究]**
-- 显示符号可翻、条件阈值不翻，保住既有配置，但留下需要解释的双重语义。源码与文档可证该选择，未查到它已造成用户故障，不能把潜在学习负担写成已发生事故。**[一手；研究]**
+- 显示符号可翻、条件阈值不翻，保住既有配置，但留下需要解释的双重语义。源码与文档可证该选择，尚未查到用户故障；学习负担仅为可能。**[一手；研究]**
 - 符号版仍缺明确版本、设置及解释／操作结果的用户复测；取得后才续接此链。**[研究：继续条件]**
 
 ### CodexBar：发布后的理解反馈 · 5. 验证范围
 
-已读上述 issue/PR 正文、评论、发布 tag 关键文件和合并 diff；GitHub 原帖是社区使用报告，源码是机制证据。没有运行上游、检查图片像素、核验最终 release 使用效果或测模型。#4394 正文保留较早 head 的 queued CI 记录，不能视为合并树的独立验证。知识库本地验收结果见 [TASKS](../collaboration/TASKS.md)。**[一手：所读材料；经验：本轮检查范围]**
+已读原帖、评论、发布 tag 关键文件及合并 diff；未运行上游、检查图片像素、核验最终 release 效果或测模型。#4394 正文保留较早 head 的 queued CI 记录，不能视为合并树的独立验证。知识库本地验收结果见 [TASKS](../collaboration/TASKS.md)。**[一手：所读材料；经验：本轮检查范围]**
 
 ## 需求成立与否：试用也可以导向停止
 
-> 主线一；核实时间：2026-10-13。本轮新增的是此前未入仓的研究证据，不是把2024、2025论文称为最新研究。改变 [15 §10](../15-task-playbooks.md#10-原型和一次性脚本)的「继续改目标」为「继续、改目标或停止」，不据此新增自建/购买通则。
+> 主线一；核实时间：2026-10-13。本轮补录2024、2025年研究，不称其为最新研究。改变 [15 §10](../15-task-playbooks.md#10-原型和一次性脚本)的「继续改目标」为「继续、改目标或停止」，不据此新增自建/购买通则。
 
 ### 新证据：取证方法相同，是否用来检验假设不同
 
@@ -155,11 +155,11 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 
 ### 采用与边界
 
-**✅ 让原型试用能够推翻想法，而不只产生新功能清单。** 两项研究观察的是创业培训组合与后续决策，不是AI编码实验，不能分离某条提示的效果，也没有比较自建、购买与复用。停止不自动代表判断正确；低成本原型仍可用来发现此前说不清的新需求。**[研究：迁移边界；经验：采用判断]**
+**✅ 让原型试用能够推翻想法，而不只产生新功能清单。** 两项研究比较创业培训组合与决策，未测AI编码、单条提示或自建/购买/复用。停止不自动代表判断正确；低成本原型仍可用来发现此前说不清的新需求。**[研究：迁移边界；经验：采用判断]**
 
 若价值来自重复节省时间，可看下一次同类任务是否真的再用；一次性转换则可能完成一次就足够，不设统一需求次数门槛。试用、招募与分析也有成本，本轮未取得可用于AI原型的净成本数据。重大去留由负责人决定，不交给Agent自行撤销。**[经验：试用设计与权限边界]**
 
-已读两篇期刊全文的处理、结局定义、结果表和局限，并核对2024存档PDF；没有取得原始数据重估，没有运行模型或软件。不能以这两篇论文补称已完成自建/复用比较；下节补作者实际替换的产物，仍未取得独立使用结果。**[经验：验证范围与缺口]**
+已读两篇全文的处理、结局、结果与局限，并核对2024存档PDF；未重估原始数据或运行模型、软件。自建/复用比较仍缺，下节作者替换记录也无独立使用结果。**[经验：验证范围与缺口]**
 
 
 ## Jules：从自建常驻服务到现成运行能力
@@ -172,39 +172,39 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 
 替代并不等价：同版 README 虽概括能力相同，却明确 Telegram 交互需笔记本打开，原 Slack daemon 为 24/7；笔记本关闭时仍可用云 Web 会话，不能说所有手机访问都消失。[固定迁移指南](https://github.com/jonathanmalkin/jules/blob/27d671f26e56a1ae8e4a834e4aad9eb0cddc6213/docs/overnight-batch.md)还报告计划模式阻塞无人值守任务，耗费五次以上失败运行和一天排查。补丁支持共享设置被移除，未独立取得失败日志或耗时记录。**[社区：历史报告；一手：配置变化]**
 
-维护减少只是作者概括，不能从删除组件计算收益；同次修改也合并技能、规则与权限，接受较窄可用性可能是简化的另一原因。新路径仍需连接器、凭据配置、结果持久化和失败处理；公开提示的邮件 `--html` 参数与同版脚本的文件路径接口还不一致，未运行，不能据此推断作者私有部署失败。**[一手：接口对照；研究：替代解释]**
+维护减少仅为作者概括；同次还合并技能、规则与权限，较窄可用性也可能解释简化，不能按删除组件算收益。新路径仍需连接器、凭据配置、结果持久化和失败处理；公开提示的邮件 `--html` 参数与同版脚本的文件路径接口还不一致，未运行，不能据此推断作者私有部署失败。**[一手：接口对照；研究：替代解释]**
 
-**✅ 用同一任务的必要能力与运行责任决定复用范围。** 对已有替代的部分减少自建，把精力留给真实缺口；建议先验证下一次结果的时效、可用性和失败可见性，再退休旧路径。这里的验收是迁移建议，不是已观察结果；不照搬上游宽权限配置，也不把代码减少当安全边界改善。**[经验：采用建议]**
+**✅ 按同一任务的必要能力与运行责任决定复用范围。** 有替代的部分减少自建；退休旧路径前，先验下一次结果的时效、可用性和失败可见性。这是迁移建议，非已观察结果；不照搬宽权限配置，代码减少也不证明安全边界改善。**[经验：采用建议]**
 
-本例补的是作者选择、删除产物及迁移成本报告；仍缺独立用户复测、成功作业记录和净成本对照，不能证明模型生产力或长期采用收益。出现真实作业/接收记录时再回访，不继续用配置数量代替使用结果。**[研究：证据边界]**
+仍缺独立复测、成功作业和净成本对照，不能证明模型生产力或长期收益；取得真实作业/接收记录后再回访。**[研究：证据边界]**
 
 ## 模拟用户：可以帮助选测试，不能单独否决需求
 
-核实时间：2026-10-14。新增来源为两篇 2026 年原始预印本，均读取正文方法、结果与局限；不是本仓模型运行，也没有把研究平台上的真人偏好问卷等同于产品采用。
+核实时间：2026-10-14。已读两篇 2026 年预印本的方法、结果与局限；未运行模型。真人偏好问卷不等于产品采用。
 
 ### 真实偏好对照：不要把流畅解释当作需求证据
 
-[Kuric 等，2026-05-18，v1，§4–6](https://arxiv.org/html/2605.18311v1)：29 项 UXtweak 实际研究、2073 名参与者、78 个视觉偏好任务；这是自报选择，不是留存或购买。GPT-4.1 基线首选一致率 53%，GPT-5.2 为 65%，两者不能混写；未检出显著改善不等于证明模型等效。详细 persona 未可靠消除偏差；解释会出现忽略关键差异、泛泛赞美等问题。原始专有数据不公开；三次基线检查后各设置使用单次模拟，不能把 78 个任务或多人批次当作独立模型复跑。**[研究：原文比较结果与方法限制]**
+[Kuric 等，2026-05-18，v1，§4–6](https://arxiv.org/html/2605.18311v1)：29 项 UXtweak 实际研究、2073 名参与者、78 个视觉偏好任务；终点是自报选择，非留存或购买。GPT-4.1 基线首选一致率 53%，GPT-5.2 为 65%；差异未显著不证明等效。详细 persona 未可靠消除偏差；解释会出现忽略关键差异、泛泛赞美等问题。原始专有数据不公开；三次基线检查后各设置使用单次模拟，不能把 78 个任务或多人批次当作独立模型复跑。**[研究：原文比较结果与方法限制]**
 
 ### 行为结果对照：有预测信号，仍不能作为停做门槛
 
 [SimAB，2026-03-01，v1，§4.3–6.4](https://arxiv.org/html/2603.01024v1)：GPT-5-mini-2025-08-07 生成人设，GPT-5-2025-08-07 对截图投票，回测 47 项已有显著结果的历史 A/B 实验，未重跑真人实验。排除两项模拟无结论后，表 1 为 TP=22、FP=9、FN=6、TN=8；高信心子集更准，但作者承认置信度属启发式、同批 persona 不独立。静态截图不涵盖加载性能、动态交互及用户跨会话重复使用。**[研究：历史行为回测]**
 
-本仓 Python 算术复核：正确 30/45=66.7%，全部选 Challenger 则为 28/45=62.2%；若按模拟判负淘汰，则会丢掉这 45 项中 28 个真实 Challenger 胜者的 6 个（21.4%）；这是筛选政策的反事实，不是已观察的团队淘汰行为。预选真人显著案例，不能估计无效改动的误报率；模拟显著不等于产品收益概率。正文未排除公开历史答案污染，也未给出置信阈值的独立留出校准。以上是复算与证据判断，不是作者已做的对照。**[研究：复核与推断]**
+本仓 Python 算术复核：正确 30/45=66.7%，全部选 Challenger 则为 28/45=62.2%；若按模拟判负淘汰，则会丢掉这 45 项中 28 个真实 Challenger 胜者的 6 个（21.4%）；这是筛选政策的反事实，不是已观察的团队淘汰行为。样本预选真人显著案例，不能估计无效改动误报率；模拟显著也不是收益概率。正文未排除历史答案污染或独立校准置信阈值。上述为本仓复算与判断，非作者对照。**[研究：复核与推断]**
 
 ### 改变哪项开发决定
 
 **🧪 用 Agent 扩展候选、提出反例和安排真人验证顺序；⛔ 仅凭模拟投票决定无人需要或停止原型。** 将输出改写成可核查问题：目标用户能否理解结果、能否完成那条实际任务、是否愿意再次使用。能够通过确定性检查发现的坏链接、丢失输入等缺陷，可以先修；“用户不喜欢”仍须真实反馈。**[经验：从两种不同终点迁移的建议]**
 
-只有低代价、可撤回的候选排序，可把模拟结果当作暂时线索；涉及删除必要路径、停止整个产品、面向新群体或新交互的决定，保留真人证据门槛。若希望以后让模拟承担更强筛选，应先在目标领域以未用于调整提示的真人案例校准，包含无差异案例，并检查被否决的真实赢家；这是一项待验证条件，不是已证实的通用流程收益。**[经验：采用边界]**
+只有低代价、可撤回的候选排序，可把模拟结果当作暂时线索；删除必要路径、停止产品或面向新群体/交互，仍须真人证据。若希望以后让模拟承担更强筛选，应先在目标领域以未用于调整提示的真人案例校准，包含无差异案例，并检查被否决的真实赢家；这是一项待验证条件，不是已证实的通用流程收益。**[经验：采用边界]**
 
-本轮只复核公开聚合数字，没有运行模型、取得私有问卷或复现上游全量基准。两项研究不能推出所有未来模型都无法模拟偏好，也不能证明模拟优于产品负责人的判断。后续值得补的是前瞻、同领域、含无效改动且记录误淘汰的真人对照，而非增加人设数量。
+本轮仅复核公开聚合数字，未运行模型、取得私有问卷或复现全量基准。结论不推广到未来模型，也未比较产品负责人判断。续接应补前瞻、同领域、含无效改动和误淘汰记录的真人对照。
 
 ## 原型复访：尚无机会不等于不值得使用
 
 核实：2026-10-14（UTC+8）；主线一，补 15 §10 的复访判据。**[研究：本轮原文阅读，未运行模型或取得私人轨迹]**
 
-[Motif v1，2026-07-12，§5–6.5](https://arxiv.org/html/2607.10531v1)报告 8 人试用浏览器自动化，6 人在 2–4 天后回答问卷，涉及 18 个保留的程序。短期自报区分再次使用、觉得无益与尚无机会；重复已有按钮、干扰原功能或一次捆绑过多动作的程序，被报告为较不愿继续使用。程序正确复现动作，不代表减少了值得减少的负担。**[研究：作者报告的真人观察与自报，非本仓复现]**
+[Motif v1，2026-07-12，§5–6.5](https://arxiv.org/html/2607.10531v1)报告 8 人试用浏览器自动化，6 人在 2–4 天后回答问卷，涉及 18 个保留的程序。短期自报区分再次使用、觉得无益与尚无机会；重复已有按钮、干扰原功能或一次捆绑过多动作的程序，被报告为较不愿继续使用。动作复现正确不等于有用。**[研究：作者报告的真人观察与自报，非本仓复现]**
 
 **建议**：按 15 §10 区分尚无机会、无益与故障；本例仅为复访判据提供短期自报依据。**[经验]**
 
@@ -218,7 +218,7 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 
 **不能归因于改版。** 模型和提示也变了，课程任务随时间变复杂；这是单校自愿使用，不是随机版本对照。每周问卷有成绩激励，应用内评分是再次使用前的必填项（§4）。慢响应是改版前反馈；未取得更新前后延迟、人工工时或费用测量，不能说新标注导致变慢或评分下降。**[研究：设计限制与因果边界]**
 
-**对15的净增量。** “看清哪里要改”与“能完成原任务”分开验收，已并入 15 §10；这不是论文证明的最佳方案，也不据评分否定行级标注或推荐另一模型。**[经验：采用建议]**
+**对15的净增量。** 15 §10 已分开验收“看清修改”与“完成原任务”；这不是最佳方案证明，评分也不足以否定行级标注或推荐另一模型。**[经验：采用建议]**
 
 
 ## OpenWhispr：选项出现后仍须核对实际参数
@@ -242,7 +242,7 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 
 本例为 15 §10 的参数／默认值检查提供机制依据：控件可用仍可能未启用所需能力，不能据此判定模型上限。**[经验：条件建议]**
 
-本侧只读原帖、提交、发布 API 和两个 tag；未运行应用或模型，无准确率、投入和长期采用测量。本轮不推荐某个听写产品；已有任务级复测足够支持窄建议，后续仅在取得精确版本/输入的独立复测或真实采用取舍时再扩展，不能以更多同类问题代替证据。**[研究：验证边界]**
+只读原帖、提交、发布 API 和两个 tag；未运行应用或模型，无准确率、投入或长期采用测量，不作产品推荐。后续须有精确版本/输入的独立复测或真实采用取舍才扩展。**[研究：验证边界]**
 
 
 ## Home Assistant：字段保留与原操作路径是两回事
@@ -275,34 +275,34 @@ PR body 保留了早期说明，例如成本行取消条形、5h footer 汇总�
 
 ### 对 15 的净增量与停止条件
 
-本例为 15 §10 的原路径验收提供上线后负向行为：数据仍可得，操作组合却改变；不同于 CodexBar 的符号理解或 Handy 的未合并局部好用。单个绕行、延迟升级报告不能估算整体留存。**[经验：窄建议与边界]**
+本例支持 15 §10 的原路径验收：数据仍可得，操作组合却改变。单个绕行、延迟升级报告不能估算整体留存。**[经验：窄建议与边界]**
 
-这条历史链不代表 2026-10 的现状。检索已发现后续 [#53920](https://github.com/home-assistant/frontend/pull/53920)继续调整 Related/Details；当前开发分支 `9ca8f2e98be16f823c7c9e6113cc6c7545db7aee` 的[对话框](https://github.com/home-assistant/frontend/blob/9ca8f2e98be16f823c7c9e6113cc6c7545db7aee/src/dialogs/more-info/ha-more-info-dialog.ts)和[Details](https://github.com/home-assistant/frontend/blob/9ca8f2e98be16f823c7c9e6113cc6c7545db7aee/src/dialogs/more-info/ha-more-info-details.ts)也已演化。本轮未验证当前发布版的全部入口或原用户是否恢复使用；只截至上述历史行为形成建议，不将未找到复测写成不存在。下一次只在有对应版本下的真实操作或采用结果时续接，不再用更多界面源码检查替代用户结果。**[一手：当前源码入口；研究：停止边界]**
+这条历史链不代表 2026-10 的现状。检索已发现后续 [#53920](https://github.com/home-assistant/frontend/pull/53920)继续调整 Related/Details；当前开发分支 `9ca8f2e98be16f823c7c9e6113cc6c7545db7aee` 的[对话框](https://github.com/home-assistant/frontend/blob/9ca8f2e98be16f823c7c9e6113cc6c7545db7aee/src/dialogs/more-info/ha-more-info-dialog.ts)和[Details](https://github.com/home-assistant/frontend/blob/9ca8f2e98be16f823c7c9e6113cc6c7545db7aee/src/dialogs/more-info/ha-more-info-details.ts)也已演化。未验证当前发布版全部入口或原用户恢复情况；建议限于上述历史行为。未找到复测不等于不存在，取得对应版本的操作或采用结果后再续接。**[一手：当前源码入口；研究：停止边界]**
 
 ## Zotero：结果预览与原编辑入口如何取舍
 
 > 核实时间：2026-10-15（UTC+8）。这是 **2024 年的历史产品选择机制**，不是近期创新或 AI 效果案例。读取公开原帖、PR 讨论、固定合并补丁与测试源码；未安装、构建或运行 Zotero。**[研究：核验范围]**
 
-本例支撑 15 §10 对辨认、核对与编辑的区分：派生结果可帮助检查，却未必适合辨认或反写数据；多模式只适用于存在这些任务差异的界面。**[经验：采用判断]**
+本例支持 15 §10 区分辨认、核对与编辑；派生结果适合检查，未必适合辨认或反写，多模式须有任务差异。**[经验：采用判断]**
 
 ### 从具体任务到修改版操作
 
 1. **原任务。** migugg 在 [2 月 1 日](https://forums.zotero.org/discussion/comment/454025/#Comment_454025)要求 Info 折叠后仍显示作者、年份和标题；[2 月 7 日](https://forums.zotero.org/discussion/comment/454666/#Comment_454666)说明要逐项检查某作者的标签、关联，同时保留条目身份信息，并建议把显示与编辑分开。[Greg](https://forums.zotero.org/discussion/comment/456504/#Comment_456504)另提出折叠后仍需作者和年份。**[社区：用户原帖]**
 2. **修改与明确归因。** [维护者公告](https://forums.zotero.org/discussion/114422/available-for-beta-testing-customizable-item-pane-header)于 5 月 16 日明确感谢上述反馈，介绍可选标题区并恢复 Info 内的 Title 字段。[PR #3791](https://github.com/zotero/zotero/pull/3791)已于 5 月 10 日合并为 [`59b1d75b98eecd2e910a18a8f77b81b44091dd93`](https://github.com/zotero/zotero/commit/59b1d75b98eecd2e910a18a8f77b81b44091dd93)，父提交 `8278140492f16392eadac3c2062bb372020361cd`；[固定默认值](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/defaults/preferences/zotero.js#L77-L79)仍为 `title`。**[社区：维护者归因；一手：补丁]**
-3. **修改版实际任务。** [migugg 当天报告](https://forums.zotero.org/discussion/comment/463100/#Comment_463100)选择书目模式后，能在 Info 折叠时直接核对书目是否正确、完整。这是原请求者操作修改版的自报，比泛泛称赞具体；但没有 beta SHA、计时、样本数或长期留存。其新报告是核对书目，不能替他补成原先逐项检查标签的任务也已复测成功。**[社区；研究：结果边界]**
+3. **修改版实际任务。** [migugg 当天报告](https://forums.zotero.org/discussion/comment/463100/#Comment_463100)选择书目模式后，能在 Info 折叠时直接核对书目是否正确、完整。这是原请求者核对书目的修改版自报，缺 beta SHA、计时、样本数及长期留存；不能补成原先逐项检查标签也已复测成功。**[社区；研究：结果边界]**
 
 ### 同一呈现的反证与停止扩写
 
-[mjthoraval 的反馈](https://forums.zotero.org/discussion/comment/463196/#Comment_463196)认为紧凑模式易扫读却缺刊物和类型，而书目模式难以快速抽取信息。[维护者](https://forums.zotero.org/discussion/comment/463198/#Comment_463198)提醒它只显示所选样式输出的内容；[另一回复](https://forums.zotero.org/discussion/comment/463102/#Comment_463102)拒绝把书目模式设为所有人的默认。因此能帮助核对输出，不等于最适合辨认对象；也不能将这些自报写成受控比较或总体偏好。**[社区；研究：选择边界]**
+[mjthoraval 的反馈](https://forums.zotero.org/discussion/comment/463196/#Comment_463196)认为紧凑模式易扫读却缺刊物和类型，而书目模式难以快速抽取信息。[维护者](https://forums.zotero.org/discussion/comment/463198/#Comment_463198)提醒它只显示所选样式输出的内容；[另一回复](https://forums.zotero.org/discussion/comment/463102/#Comment_463102)拒绝把书目模式设为所有人的默认。核对输出与辨认对象是不同任务；这些自报不是受控比较或总体偏好。**[社区；研究：选择边界]**
 
 PR 曾考虑让用户编辑格式化书目并反写元数据。[维护者](https://github.com/zotero/zotero/pull/3791#issuecomment-1978795985)指出作者、缺失字段等问题；[实现作者](https://github.com/zotero/zotero/pull/3791#issuecomment-1979040500)补充大小写、破折号和本地化日期的反向映射不清楚，同意仅做预览，不复制 Info 编辑器。[固定实现](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/chrome/content/zotero/elements/paneHeader.js#L187-L310)中，Title 和 Title/Creator/Year 仍可编辑标题，Bibliography Entry 是派生显示；不能概括成全部标题区只读。**[一手：设计讨论与源码]**
 
 ### 维护成本与验证范围
 
-- 预览仍有维护面：[固定实现](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/chrome/content/zotero/elements/paneHeader.js)处理条目修改／删除的缓存失效、样式／语言切换、缺失样式回退和复制语义。省去第二套编辑器不等于零成本，也不能从代码量算节省工时。**[一手；研究]**
-- [固定测试](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/test/tests/itemPaneTest.js#L80-L145)覆盖条目、样式、语言变化及缺失样式回退。本轮只读这些断言，没有执行上游测试；知识库离线检查也不能证明 Zotero 的运行或使用收益。**[一手：测试源码；研究：验证边界]**
-- [PR 作者](https://github.com/zotero/zotero/pull/3791)报告某些样式曾很慢，缓存改善后仍需低资源设备测试。这是作者性能观察，没有标准计时或净成本数据，不写成已验证性能提升。**[社区：作者自报]**
-- 若目标用户主要在辨认对象，或预览挤占任务空间、显示陈旧、修改入口变难，应重新比较紧凑摘要或原路径，而非继续加字段。后续只有对应版本的连续操作、使用结果或性能数据才值得续接；不以新赞美评论补长期采用，更不从此例推断 AI 生产力。**[经验：撤回与续接条件]**
+- 预览仍有维护面：[固定实现](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/chrome/content/zotero/elements/paneHeader.js)处理条目修改／删除的缓存失效、样式／语言切换、缺失样式回退和复制语义。省去第二套编辑器仍有成本，代码量不能换算节省工时。**[一手；研究]**
+- [固定测试](https://github.com/zotero/zotero/blob/59b1d75b98eecd2e910a18a8f77b81b44091dd93/test/tests/itemPaneTest.js#L80-L145)覆盖条目、样式、语言变化及缺失样式回退。仅阅读断言，未执行上游测试；知识库离线检查不证明 Zotero 运行或使用收益。**[一手：测试源码；研究：验证边界]**
+- [PR 作者](https://github.com/zotero/zotero/pull/3791)报告某些样式曾很慢，缓存改善后仍需低资源设备测试。这是作者观察，缺标准计时与净成本数据，性能提升未独立验证。**[社区：作者自报]**
+- 若主要任务是辨认，或预览挤占空间、显示陈旧、妨碍修改，应重新比较紧凑摘要或原路径。续接须有对应版本的连续操作、使用或性能数据；赞美不补长期采用，本例不证明 AI 生产力。**[经验：撤回与续接条件]**
 
 
 ## 替换哪一段工作流：Segment与Tract的范围选择
@@ -317,21 +317,21 @@ Segment 联合创始人 Peter Reinhardt 的[原文](https://rein.pk/finding-prod
 
 ### 保留旧工具，不等于接口没有代价
 
-固定版本的 `track`（L157–163）把事件与复制后的属性分发给启用的 provider；但 Google Analytics 适配（L218–220）只发送固定分类 `All` 和事件名，不转发 `properties`，KISSmetrics（L262–264）则会传递属性。**[一手：静态源码]** 它证明补充层仍需逐目的地核对语义，不能把统一调用误当无损兼容。
+固定版本的 `track`（L157–163）把事件与复制后的属性分发给启用的 provider；但 Google Analytics 适配（L218–220）只发送固定分类 `All` 和事件名，不转发 `properties`，KISSmetrics（L262–264）则会传递属性。**[一手：静态源码]** 统一调用并非无损兼容，仍须逐目的地核语义。
 
-通过 Algolia API 读取 [2012-12-12 首发原帖](https://news.ycombinator.com/item?id=4912076)及回复：Snowplow 的 alexdean [指出这种事件映射不能表达各家完整数据](https://news.ycombinator.com/item?id=4912581)，作者 ianstormtaylor [回应还在设计映射](https://news.ycombinator.com/item?id=4914821)；mguterl [报告自己已在 Rails 后端使用另一包装库 analytical](https://news.ycombinator.com/item?id=4912353)。**[社区：原始技术反馈与实际替代使用自述]** 前者是代码审阅式反例，不是部署复测；后者表明当时已有替代，不证明 analytics.js 更优。没有把点赞、星数、贡献意向或作者兴奋当作价值证据，也未据评论中的计划声称补丁已合入。
+通过 Algolia API 读取 [2012-12-12 首发原帖](https://news.ycombinator.com/item?id=4912076)及回复：Snowplow 的 alexdean [指出这种事件映射不能表达各家完整数据](https://news.ycombinator.com/item?id=4912581)，作者 ianstormtaylor [回应还在设计映射](https://news.ycombinator.com/item?id=4914821)；mguterl [报告自己已在 Rails 后端使用另一包装库 analytical](https://news.ycombinator.com/item?id=4912353)。**[社区：原始技术反馈与实际替代使用自述]** 前者为代码审阅，非部署复测；后者可证已有替代，不证明 analytics.js 更优。点赞、星数与贡献意向不证明价值，评论中的计划不证明合入。
 
 ### Tract：缩到一个文档，也未必形成独立采用边界
 
 Jamie Rumbelow 与 Henry Dashwood 的[2025 年 4 月联合复盘](https://buildwithtract.com/)报告：Tract Source 的访谈对象抱怨现成工具，却仍认为够用；后来 Editor 从通用编辑器缩到 pre-app 文档草稿，设计伙伴给予正面反馈，真正谈承诺时仍要求完整 planning statements 等更多功能。团队最终停止，理由还包括收入、销售周期和融资规模约束。**[社区：当事人交付、反馈与停止报告]**
 
-同一复盘也报告 Scout 有重复使用者；因公司停止不能反推出所有工具无用。文档草稿范围较小，也不证明它能独立完成用户愿意采用的一步。本轮未取得设计伙伴独立回复、编辑器源码或使用日志，不将作者的质量评价、市场判断或关闭决定写成已验证因果，更不把 VC 回报要求套到个人工具和小生意。**[社区；研究：边界判断]**
+同一复盘报告 Scout 有重复使用者，公司停止不代表所有工具无用；文档草稿范围小也不证明可独立采用。本轮未取得设计伙伴独立回复、编辑器源码或使用日志，不将作者的质量评价、市场判断或关闭决定写成已验证因果，更不把 VC 回报要求套到个人工具和小生意。**[社区；研究：边界判断]**
 
 ### 落到 Agent 的任务与撤回条件
 
 范围比较与撤回条件统一见 15 §10。没有迁移仍须区分权限／成本／时机与收益；技术接通不消除原合同、隐私限制，也不证明下一环节实际采用。**[经验]**
 
-实际验证：读两组创始人原文／访谈、首发评论与固定 JS 源码；未运行该库、外部模型或任何用户业务。Segment 的旧《From Show HN to Series D》及维护博文直接访问重定向到 Twilio 分类页，本轮只见检索缓存，不用于证明持续 API 流量或后续修补；GitHub 未认证 issues API 受速率限制，未据此宣称已穷尽早期用户记录。两案例各支持不同机制，不能合成为“局部补充一定更成功”的效果结论。
+实际验证：读两组创始人原文／访谈、首发评论与固定 JS 源码；未运行该库、外部模型或任何用户业务。Segment 的旧《From Show HN to Series D》及维护博文直接访问重定向到 Twilio 分类页，本轮只见检索缓存，不用于证明持续 API 流量或后续修补；GitHub 未认证 issues API 受速率限制，未据此宣称已穷尽早期用户记录。两例机制不同，不证明局部补充一定更成功。
 
 ## LocalSend：省掉完成点击后，为何收窄自动结束
 
@@ -353,9 +353,9 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 ### 采用判断与验证边界
 
-本例支持 15 §10 按成功／失败状态选择结束条件，不支持统一采用倒计时或另建状态框架。**[经验]**
+15 §10 据此按成功／失败状态选择结束条件，不统一推荐倒计时或新状态框架。**[经验]**
 
-实际验证：读取原帖、评论、三份固定补丁及发布 tag 源码；固定版本 [LICENSE](https://github.com/localsend/localsend/blob/caab80f6634905d07e7c006a170e6c02c9c5a0bb/LICENSE)为 Apache-2.0，本记录只概述行为并链接来源，未复制实现。未安装或运行客户端，未测试任何设备／模型。未找到上述用户在最后修订版重新启用、成功重试或主动工时下降的回执；“禁用后修订”成立，“修订后收益已证”不成立。当前维护性另核到 2026-10-10 的主线提交 [14f3a87](https://github.com/localsend/localsend/commit/14f3a87426eedffaa9d87d011132eca5501abeb8)，不把当前维护活动当作历史功能效果证明。
+实际验证：读取原帖、评论、三份固定补丁及发布 tag 源码；固定版本 [LICENSE](https://github.com/localsend/localsend/blob/caab80f6634905d07e7c006a170e6c02c9c5a0bb/LICENSE)为 Apache-2.0，本记录只概述行为并链接来源，未复制实现。未安装或运行客户端，未测试任何设备／模型。未找到最后修订版的重新启用、成功重试或主动工时下降回执，收益仍未证。当前维护性另核到 2026-10-10 的主线提交 [14f3a87](https://github.com/localsend/localsend/commit/14f3a87426eedffaa9d87d011132eca5501abeb8)，不把当前维护活动当作历史功能效果证明。
 
 
 ## Metabase：同屏条件与分步预览的竞争取舍
@@ -380,13 +380,13 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 ### 同一试用者的发布后回执
 
-[AndrewMBaines 的早期试用](https://discourse.metabase.com/t/preview-upcoming-changes-to-the-gui-query-builder-updated/6551/2)已有具体界面意见；[8 月发布后回执](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/1)明确从 0.31.2 升到 0.33，并在开发环境试过 0.32.x。他认为新位置起初陌生，习惯后好用；[9 月补充](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/4)仍要求先用表核查数据，而非让国家字段自动变地图，并[确认一直走 Custom 入口](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/6)。这不是只看截图的赞美，也不是新用户首次学习的实验；它支持“适应后仍可能采用，同时默认结果仍不合任务”。维护者提出记住人工图表选择或另设结果按钮，本轮未验证这些方案实施。**[社区：同一人的前后使用自报；研究：边界]**
+[AndrewMBaines 的早期试用](https://discourse.metabase.com/t/preview-upcoming-changes-to-the-gui-query-builder-updated/6551/2)已有具体界面意见；[8 月发布后回执](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/1)明确从 0.31.2 升到 0.33，并在开发环境试过 0.32.x。他认为新位置起初陌生，习惯后好用；[9 月补充](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/4)仍要求先用表核查数据，而非让国家字段自动变地图，并[确认一直走 Custom 入口](https://discourse.metabase.com/t/experience-of-upgrading-to-0-33/7167/6)。这是既有试用者适应后采用、仍认为默认结果不合任务的自报，不是新用户学习实验。维护者提出记住人工图表选择或另设结果按钮，本轮未验证这些方案实施。**[社区：同一人的前后使用自报；研究：边界]**
 
 ### 与同屏反例一起决定，而非排出布局优劣
 
-既有 [Home Assistant 链](#home-assistant字段保留与原操作路径是两回事)显示恢复状态与属性同页，仍可能未保住原访问路径；Metabase 则显示放弃常驻栏、提供步骤预览和返回入口，也有发布后适应的使用者。两者共同要求从真实任务判断：横向核对需要哪些内容同时可见；阶段依赖在哪；结果是先查数据还是直接看趋势。不能由前者推出所有分步设计较差，也不能由后者要求所有任务双模式。**[研究：竞争解释；经验：采用条件]**
+既有 [Home Assistant 链](#home-assistant字段保留与原操作路径是两回事)显示恢复状态与属性同页，仍可能未保住原访问路径；Metabase 则显示放弃常驻栏、提供步骤预览和返回入口，也有发布后适应的使用者。两例支持按同屏核对、阶段依赖及先查数据/看趋势的任务选择，不能推广为分步设计较差或双模式必需。**[研究：竞争解释；经验：采用条件]**
 
-比较布局只限两条路径共有的过滤、汇总、查看结果任务；多阶段聚合与关联本来就增加能力，不能当等功能对照。复访应区分首次陌生、熟悉后仍反复往返及运行故障；若隐藏条件妨碍核查、局部预览不足或默认结果不适合下一步，就调整呈现与入口。没有任务计时、完整样本或长期留存，不能写成净时间收益。后续只有同任务的连续操作或对应版本使用结果才值得续接，不以更多赞美或当前维护活动填补。**[研究：局限与续接条件]**
+比较布局只限两条路径共有的过滤、汇总、查看结果任务；多阶段聚合与关联本来就增加能力，不能当等功能对照。复访应区分首次陌生、熟悉后仍反复往返及运行故障；若隐藏条件妨碍核查、局部预览不足或默认结果不适合下一步，就调整呈现与入口。缺任务计时、完整样本和长期留存，不能证明净时间收益；续接须有同任务连续操作或对应版本使用结果。**[研究：局限与续接条件]**
 
 ## Mealie：撤掉实现，不等于撤掉需求
 
@@ -396,7 +396,7 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 **需求与退出。** [#660](https://github.com/mealie-recipes/mealie/discussions/660) 中，Plevuus 在2022-12-19报告用过原OCR；2024-02-17，维护者 boc-the-git 明确说无人愿意继续支持、整应用开销高。建议的 iOS AI shortcut 对回复者 rtrnms 的 Android 不适用，维护者也承认自己的平台相同。2024-12-22，Plevuus 又报告升级并试用了新的图片导入，评价积极。这是相同用户名的两次实际使用报告，未绑定完全相同输入、设备或模型，不能称严格前后对照。[社区；一手：维护决定]
 
-**固定退出产物。** [#2838](https://github.com/mealie-recipes/mealie/pull/2838) 于2023-12-15合入，固定提交 [ca9f66ee2448f9786efb866d2d5aa8a33c7780a4](https://github.com/mealie-recipes/mealie/commit/ca9f66ee2448f9786efb866d2d5aa8a33c7780a4)。补丁确实删除 Tesseract 系统依赖、pytesseract 包、OCR路由与相关界面/测试。PR作者称其复杂、多故障、拖累构建和资源；所谓接近使用数据的是 Discord 讨论摘要，不能写成客观零使用。原实现作者 [Miroito 的回复](https://github.com/mealie-recipes/mealie/pull/2838#issuecomment-1861239640)承认自己已无意维护，并认可移除。没有独立测得构建时长、镜像大小或总支持工时变化。[一手：补丁与作者说明]
+**固定退出产物。** [#2838](https://github.com/mealie-recipes/mealie/pull/2838) 于2023-12-15合入，固定提交 [ca9f66ee2448f9786efb866d2d5aa8a33c7780a4](https://github.com/mealie-recipes/mealie/commit/ca9f66ee2448f9786efb866d2d5aa8a33c7780a4)。补丁确实删除 Tesseract 系统依赖、pytesseract 包、OCR路由与相关界面/测试。PR作者称其复杂、多故障、拖累构建和资源；所谓接近使用数据的是 Discord 讨论摘要，不能写成客观零使用。原实现作者 [Miroito 的回复](https://github.com/mealie-recipes/mealie/pull/2838#issuecomment-1861239640)承认自己已无意维护，并认可移除。构建时长、镜像大小及总支持工时变化均未独立测量。[一手：补丁与作者说明]
 
 **换实现重新接入。** [#3974](https://github.com/mealie-recipes/mealie/pull/3974) 于2024-08-17合入，固定提交 [8a15f400e12bb5f5135b543372fbd3b917ff8fbd](https://github.com/mealie-recipes/mealie/commit/8a15f400e12bb5f5135b543372fbd3b917ff8fbd)。[固定API源码](https://github.com/mealie-recipes/mealie/blob/8a15f400e12bb5f5135b543372fbd3b917ff8fbd/mealie/routes/recipe/recipe_crud_routes.py) 的 create_recipe_from_image 接收图片列表，依赖启用 OpenAI 与图片服务开关，返回一个 recipe slug；[固定提示词第9行](https://github.com/mealie-recipes/mealie/blob/8a15f400e12bb5f5135b543372fbd3b917ff8fbd/mealie/services/openai/prompts/recipes/parse-recipe-image.txt#L9)明确一组图片属于一道菜谱。实现是既有Web应用/API里的图片上传，不再依赖 iOS Shortcut；这不等于已经取得 Android 实机复测。合入前 [lindell 实际试用](https://github.com/mealie-recipes/mealie/pull/3974#issuecomment-2278566033)总体肯定，但指出份量混入时间、步骤编号残留，说明图片成功导入仍需核对字段。[一手：固定源码；社区：运行报告]
 
@@ -423,7 +423,7 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 **维护者也需要看懂行为。** #16257的[审查者](https://github.com/discourse/discourse/pull/16257#issuecomment-1075880874)认为代码看似安全，却无法判断预期体验，要求测试或视频；作者补测试后[公开记录取舍](https://github.com/discourse/discourse/pull/16257#issuecomment-1075945631)：测试窗口失焦可能令本地浏览器测试失败，但CI通过且覆盖重要功能，因此保留，必要时再评估。[固定测试](https://github.com/discourse/discourse/blob/eb237e634a440f4b26e6c097e7afb9a135bb3781/app/assets/javascripts/discourse/tests/acceptance/last-visited-topic-focus-test.js)断言`focused`样式，不等于实际读屏结果；上述CI状态只是作者报告，本轮未取日志或重跑。它支持交接解释具体行为及测试前提，不量化接管成本。[一手：审查、决定与测试源码；研究：采用边界]
 
-**采用与停止条件。** 15 §10 已收束位置与触发范围的选择：Joplin补显式跨视图定位与交互模式，Discourse区分自动返回恢复与后台追加。本轮只读公开原帖、PR和固定补丁，未运行软件、读屏器、测试或模型；短时自报不证明长期留存、全平台可靠性或AI收益。[经验：采用判断；研究：验证范围]
+**采用与停止条件。** 15 §10 据此区分跨视图定位、交互模式及返回/追加触发。本轮只读原帖、PR和固定补丁，未运行软件、读屏器、测试或模型；短时自报不证明长期留存、全平台可靠性或AI收益。[经验：采用判断；研究：验证范围]
 
 
 ## 搜索改进：结果准入、排序与输入次序
@@ -448,7 +448,7 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 回读[官方搜索API](https://www.meilisearch.com/docs/reference/api/search/search-with-post)：all不放宽，last从末词逐步放宽，frequency按频率丢词；结果是否可因删词入选，不能由排名规则等价代替。可直接借用这些成熟机制，按入口决定宁可少结果还是接受放宽，同时保留所需纠错；不是统一推荐某个策略。**[一手：官方语义；经验：采用判断]**
 
-**证据与停止条件。** fzf有同一用户的版本后确认；Meilisearch只有使用需求、实现与后续相反偏好，两链不拼成同等收益证明。没有长期使用测量、检索评估集或AI净收益证据。现成机制已满足任务就无需改引擎；仍不满足时，先区分准入、排序与输入顺序究竟哪一项缺失。**[研究：验证边界；经验：采用判断]**
+**证据与停止条件。** fzf有同人版本后确认；Meilisearch尚无同等回执。两链均缺长期测量、检索评估集与AI净收益证据。先按准入、排序、输入顺序定位缺口；现成机制满足时无需改引擎。**[研究：验证边界；经验：采用判断]**
 
 
 ## KeePassXC：连续筛选后确认的是哪个对象
@@ -516,7 +516,7 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 **一次正面回执不足以证明替代完整。** 同一用户JSchiffmacher于2019-06-19 10:01在[配置后回报可用](https://github.com/microsoft/vscode/issues/68237#issuecomment-503494535)，13:41又[收窄成功范围](https://github.com/microsoft/vscode/issues/68237#issuecomment-503565574)：带重音字符搜索仍漏文件，预期超过1000项而只见4项。这是其自报，未独立核对文件集合。维护者此前[解释](https://github.com/microsoft/vscode/issues/68237#issuecomment-464826826)已打开文件走编辑器缓冲区搜索，不能代表整工作区搜索成立；这里不是全部入口都被新引擎替换。因而应核成功结果来自哪条路径，尤其避免先打开样本后只验交互结果、漏掉新组件实际承担的后台／批量入口。**[社区：同人复试与修正；一手：维护者解释；经验：验收建议]**
 
-**采用与停止条件。** 默认采用与退休旧实现的条件见 15 §10。相对Mealie，本例增补路径归属、回退开关语义变化及用户成功判断被后续操作推翻的证据。本例没有AI效果、支持工时、长期维护成本或净收益证据；未据issue仍开放推断2026年发行版的故障状态，也不将主干“原型改用现成方案后的维护净收益”缺口标为完成。**[经验：采用判断；研究：验证边界]**
+**采用与停止条件。** 取舍见 15 §10。本例补路径归属、开关语义变化及成功判断被后续操作推翻的证据；AI效果、支持工时、长期维护成本和净收益仍缺。issue开放不证明2026年发行版故障，原型改用现成方案的维护净收益也仍待核。**[经验：采用判断；研究：验证边界]**
 
 
 ## Karakeep：重复对象不等于重复意图
@@ -546,9 +546,9 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 **关键反例：不记录远端操作，不等于撤销时绝不改变远端值。** 当前[同属性测试](https://github.com/excalidraw/excalidraw/blob/4c37956ba5f04ec342a9d9d5891a38f22c5b7b4e/packages/excalidraw/tests/history.test.tsx#L2204-L2266)中，本地先把背景由红改蓝，远端再改黄；undo回红，同时更新redo历史以便恢复黄。若期间又有远端修改，历史还会随之调整。[分组与点序列测试](https://github.com/excalidraw/excalidraw/blob/4c37956ba5f04ec342a9d9d5891a38f22c5b7b4e/packages/excalidraw/tests/history.test.tsx#L2370-L2463)也明确容许撤销覆盖远端新增部分，再由redo恢复。不能把这些语义写成所有贡献相互隔离，也不能用单个保留案例保证全部组合对象。测试直接引用[Figma作者的机制说明](https://www.figma.com/blog/how-figmas-multiplayer-technology-works/#implementing-undo)：撤销、复制再重做到现在，不应意外改变文档，因此undo与redo会更新彼此的历史。它是不同作者的设计参照，因存在直接借鉴关系，不另计一份独立效果样本。**[一手：当前固定测试与作者原文；研究：反例及证据独立性]**
 
-**后续接收者遇到的是另一项已修故障。** Obsidian集成维护者zsviczian在2025-06-13的[#9653](https://github.com/excalidraw/excalidraw/issues/9653)报告升级后连续移动、撤销会删掉原有图形，随后[定位到只传部分appState的调用](https://github.com/excalidraw/excalidraw/issues/9653#issuecomment-2972473334)。[06-14固定修复`60512f1`](https://github.com/excalidraw/excalidraw/commit/60512f13d51a6440809cf6f9d2ce84a76f74038c)不再把省略的elements替成空数组，并补“不相关appState更新不删除场景或历史基线对象”的回归定义；[原报告者随后确认问题解决](https://github.com/excalidraw/excalidraw/issues/9653#issuecomment-2972612450)，没有贴出受测SHA。当前固定版保留[对应接线](https://github.com/excalidraw/excalidraw/blob/4c37956ba5f04ec342a9d9d5891a38f22c5b7b4e/packages/excalidraw/components/App.tsx#L4957-L4974)与[回归定义](https://github.com/excalidraw/excalidraw/blob/4c37956ba5f04ec342a9d9d5891a38f22c5b7b4e/packages/excalidraw/tests/history.test.tsx#L254-L283)，不能把该历史故障描述成当前未修问题，也不能让它替代多人并发验收。**[社区：接收者失败与修订后回执；一手：固定补丁与当前实现]**
+**后续接收者遇到的是另一项已修故障。** Obsidian集成维护者zsviczian在2025-06-13的[#9653](https://github.com/excalidraw/excalidraw/issues/9653)报告升级后连续移动、撤销会删掉原有图形，随后[定位到只传部分appState的调用](https://github.com/excalidraw/excalidraw/issues/9653#issuecomment-2972473334)。[06-14固定修复`60512f1`](https://github.com/excalidraw/excalidraw/commit/60512f13d51a6440809cf6f9d2ce84a76f74038c)不再把省略的elements替成空数组，并补“不相关appState更新不删除场景或历史基线对象”的回归定义；[原报告者随后确认问题解决](https://github.com/excalidraw/excalidraw/issues/9653#issuecomment-2972612450)，没有贴出受测SHA。当前固定版保留[对应接线](https://github.com/excalidraw/excalidraw/blob/4c37956ba5f04ec342a9d9d5891a38f22c5b7b4e/packages/excalidraw/components/App.tsx#L4957-L4974)与[回归定义](https://github.com/excalidraw/excalidraw/blob/4c37956ba5f04ec342a9d9d5891a38f22c5b7b4e/packages/excalidraw/tests/history.test.tsx#L254-L283)，该历史故障已修，但不能替代多人并发验收。**[社区：接收者失败与修订后回执；一手：固定补丁与当前实现]**
 
-**采用与停止条件。** 15 §10 已区分个人操作撤销与整份文档回退，并列出协作冲突验收；单人需要整体回退时仍可保留快照。本链支持区分任务与更新归属，不支持当前所有协作场景稳定、普遍体验优势、维护工时下降或AI效果。没有新增使用／冲突证据时，不靠继续堆撤销用例扩写。**[经验：采用与停止条件；研究：未验证范围]**
+**采用与停止条件。** 15 §10 已列撤销范围与协作冲突验收；单人整体回退仍可用快照。本链不证明全部协作场景稳定、普遍体验优势、工时下降或AI效果；有新增使用/冲突证据才续接。**[经验：采用与停止条件；研究：未验证范围]**
 
 
 ## Immich：减少同步层，也改变基础运行的依赖
@@ -563,7 +563,7 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 **后来补兼容，仍不等于原有实例能直接切换。** [#6785／固定`56b0643`](https://github.com/immich-app/immich/commit/56b06438906a8eff4113f58fd5922ac22bde38bd)加入pgvector支持；[v1.95.0说明与后续回帖](https://github.com/immich-app/immich/discussions/7252)明确当时只支持新实例或未经历向量迁移的旧实例作此选择。同帖另一使用者SISheogorath于2024-02-29报告升级失败、考虑停用，03-05又报告自行迁到pgvector后可用，称仍需重新索引人脸，并报告数据库故障转移测试通过。维护者认可其流复制需求，同时保留默认扩展的功能取舍理由。该用户未提供受测SHA及完整迁移产物，不能把自报写成官方支持流程、长期稳定，或补记btajuddin成功。**[一手：固定修订与发布边界；社区：同人后续使用；研究：归属与局限]**
 
-**采用与停止条件。** 基础运行约束的取舍见 15 §10；本例不要求所有功能可关闭或重建双实现。当前[官方文档](https://docs.immich.app/administration/postgres-standalone/)已说明3.0移除pgvecto.rs支持、迁向VectorChord，因此上述配置只能作历史证据。本链没有净维护收益或AI效果数据；已足以区分依赖边界，不继续扩写扩展安装和迁移步骤。**[经验：采用与停止条件；一手：当前文档；研究：未验证范围]**
+**采用与停止条件。** 基础运行约束的取舍见 15 §10；本例不要求所有功能可关闭或重建双实现。当前[官方文档](https://docs.immich.app/administration/postgres-standalone/)已说明3.0移除pgvecto.rs支持、迁向VectorChord，因此上述配置只能作历史证据。本链没有净维护收益或AI效果数据；后续不扩写安装和迁移步骤。**[经验：采用与停止条件；一手：当前文档；研究：未验证范围]**
 
 
 ## Open WebUI：少一个服务之后谁维护协议适配
@@ -595,7 +595,7 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 2026-10-16（UTC）核实，归 M3 主线一，改变15 §10的连续输出选择。下列日期按公开记录所示；没有据补丁合入日期推定正式版发布日期。**[研究：范围]**
 
-**同一改版承接了两种真实需要。** [#20888](https://github.com/nvaccess/nvda/issues/20888)的mehgcap于2026-09-24报告：在2026.3 beta2、Windows 11 25H2、cmd本地及SSH中，`git pull`有时只读提示符，`git log`只读末尾而非从最近提交开始；2026.2没有该问题。对他而言，查询后自动听到结果就是原工作流。[另一使用者mdlawler](https://github.com/nvaccess/nvda/pull/20898#issuecomment-5885058596)于09-29反对直接撤回：大量输出时不能及时Ctrl+C比需要手动回看更糟；他仍希望逐行读，但由Control明确停止本轮待播内容，而非马上随新输出恢复播报。这不是“所有用户都接受丢行”，也不是同人配对实验。**[社区：直接使用报告]**
+**同一改版承接了两种真实需要。** [#20888](https://github.com/nvaccess/nvda/issues/20888)的mehgcap于2026-09-24报告：在2026.3 beta2、Windows 11 25H2、cmd本地及SSH中，`git pull`有时只读提示符，`git log`只读末尾而非从最近提交开始；2026.2没有该问题。对他而言，查询后自动听到结果就是原工作流。[另一使用者mdlawler](https://github.com/nvaccess/nvda/pull/20898#issuecomment-5885058596)于09-29反对直接撤回：大量输出时不能及时Ctrl+C比需要手动回看更糟；他仍希望逐行读，但由Control明确停止本轮待播内容，而非马上随新输出恢复播报。这些不同人的自报不代表所有用户接受丢行。**[社区：直接使用报告]**
 
 **固定补丁包含三个不同决定。** [#20177](https://github.com/nvaccess/nvda/pull/20177)于05-26合入[`5344d4bdab360be099b45ba2b21565ebf662fe89`](https://github.com/nvaccess/nvda/commit/5344d4bdab360be099b45ba2b21565ebf662fe89)。`source/NVDAObjects/behaviors.py`把每批限到最近100行、用generator每5行让出执行，并在新批次到来时取消上一批尚未完成的报告；语音取消也会取消generator。让出主线程、截断单批与新批替换旧批不是同一选择，不能只用100行上限解释短命令漏读。作者用终端洪流说明动机，不构成所有输出都以末尾最有用的证据。这里是播报路径的省略，不能写成终端存储内容被删除。**[一手：固定源码与作者说明；研究：机制边界]**
 
@@ -605,11 +605,11 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 
 **选择、代价与撤回。** 如果任务是追当前进度，可以考虑合并已被新状态替代的通知，并保留必要结果和回查入口；代价是用户可能需要主动查历史，跳过提示本身不恢复信息消费。若任务是听取查询或诊断结果，比较保留队列、分批让出执行和用户取消，另验积压、取消的持续范围及后续输出；这只是有需求依据的设计候选，尚未由本链证明可靠实现。不要仅凭文本仍在缓冲区就宣称体验无损，也不要机械保留所有自动播报而牺牲操作控制。短结果后紧跟提示符、大量输出与取消后继续到来的内容应分别验收；普通结果漏读或控制失灵时撤回统一策略，按任务和宿主重选。**[经验：采用与撤回条件，未验证候选]**
 
-本轮仅阅读公开原帖、PR元数据与固定补丁；未运行NVDA、Windows终端或测试，不推荐具体版本，不确认AI生成归属，不量化效率或维护收益。下一步只有取得替代实现及对应使用者的结果／取消复测才重开效果判断。**[研究：证据边界]**
+本轮只读原帖、PR元数据与固定补丁；未运行NVDA、Windows终端或测试，无具体版本推荐、AI归属或量化收益。取得替代实现及对应使用者的结果/取消复测后再判断效果。**[研究：证据边界]**
 
 ## GitHub Desktop：保住工作与保留旧绕路
 
-**核实：2026-10-17（UTC+8）；改变15 §10第4项的回退选择。** [#16442](https://github.com/desktop/desktop/issues/16442)在3.2.0报告分支改名后stash从GUI消失；[#16832](https://github.com/desktop/desktop/issues/16832)又暴露先切到main再改非当前分支时连提醒也没有，维护者[承认漏掉该路径](https://github.com/desktop/desktop/issues/16832#issuecomment-1578915511)，选择使stash随分支改名。这里是界面关联／可达问题，不据“丢失”措辞断言Git对象已被永久删除。**[社区：原始使用报告；一手：维护决定]**
+**核实：2026-10-17（UTC+8）；改变15 §10第4项的回退选择。** [#16442](https://github.com/desktop/desktop/issues/16442)在3.2.0报告分支改名后stash从GUI消失；[#16832](https://github.com/desktop/desktop/issues/16832)又暴露先切到main再改非当前分支时连提醒也没有，维护者[承认漏掉该路径](https://github.com/desktop/desktop/issues/16832#issuecomment-1578915511)，选择使stash随分支改名。此为界面关联/可达问题，未证Git对象永久删除。**[社区：原始使用报告；一手：维护决定]**
 
 [#16512](https://github.com/desktop/desktop/pull/16512)比较先应用再重建、直接改reflog与重建提交消息：先应用可能产生冲突，直接改reflog则要自行处理锁与reflog细节，最终保留tree和parents，按新消息 `commit-tree`→`stash store`→drop旧条目；[固定实现](https://github.com/desktop/desktop/blob/1ba35feea9b78935b51b58a07625cb6593ef01e2/app/src/lib/git/stash.ts#L89-L115)可核此顺序，代价是stash顺序变化，不是原SHA不变。初次合入仍受beta flag控制，[3.3.1发布PR](https://github.com/desktop/desktop/pull/17313)的[固定head开关](https://github.com/desktop/desktop/blob/831a92def4ad94d16189978726c6772902026781/app/src/lib/feature-flag.ts#L96-L98)确认该版本已正式启用，不据此认定首发版本。**[一手：选择理由与固定源码]**
 
