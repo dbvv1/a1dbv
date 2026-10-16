@@ -832,3 +832,23 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)作者�
 [固定复现库](https://github.com/kisotechnology/playwright-screenshot-issue/tree/0f1f0177f07c3ce70e49168c60d460f89cbda9ef)的`scripts/capture-dropdown.js`以headed Chromium点击原生select，再取全页截图；已查看其展开菜单与缺菜单配图，但图像尺寸不同，不视为本仓取得的严格同条件对照。报告称1.56.1，`package.json`却使用`^1.41.2`且无锁文件，固定源码不等于固定安装版本。**[一手：源码和产物；社区：运行版本自述]**
 
 [当前selectOption契约](https://playwright.dev/docs/api/class-locator#locator-select-option)是选择选项并触发input／change事件；可据此验应用结果，不证明用户看到的原生展开层外观。这里不扩展到所有浏览器UI，也不默认增加桌面工具；未安装、运行浏览器或复演上游。**[一手：官方契约；经验：采用边界]**
+
+## rclone：预演不能替下一轮提交控制状态
+
+主线三；核实：2026-10-16（UTC+8）。
+改变15 §6：预演验收除业务数据外，还须保护下一轮正式执行所依赖的接受状态；允许日志与隔离预演产物，不要求一概零写入。
+新证据：rclone过滤规则hash修复、连续场景预期、贡献者后续使用，以及CLI／rc入口的分次修订。**[研究：采用判断]**
+
+**原需求与失败机制。** [2023-04-16原报告](https://forum.rclone.org/t/bisync-bugs-and-feature-requests/37636)描述：定时bisync使用`--filters-file`，用户修改规则后先运行`--resync --dry-run`，尚未决定正式采用，下一次定时普通运行却没有拒绝新规则。原因是预演写了规则文件的`.md5`，相当于更新了下次接受规则的基线。原报告讨论潜在数据损失，并未提供这条预演路径实际删除业务文件的回执；不能写成已发生删除事故。**[社区：原报告；研究：归因边界]**
+
+**修复的是会被下一轮消费的状态。** [固定提交f4dd862](https://github.com/rclone/rclone/commit/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56)在`applyFilters`内只对非DryRun的resync保存hash；原有普通运行在hash缺失或不符时拒绝的条件保留。它仍生成独立的`-dry`列表文件，因此不能提炼成“dry-run不得写任何文件”。关键是隔离预演产物，不让它替代正式运行的接受基线。**[一手：固定补丁；研究：机制推论]**
+
+[固定scenario](https://github.com/rclone/rclone/blob/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56/cmd/bisync/testdata/test_filtersfile_checks/scenario.txt)先真实resync建立hash、确认普通运行可用，再替换过滤文件并预期普通运行拒绝；新增两步为预演resync成功、随后普通运行仍拒绝。[golden日志](https://github.com/rclone/rclone/blob/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56/cmd/bisync/testdata/test_filtersfile_checks/golden/test.log)表达同一预期。这是已有基线上的连续验收设计，不是本轮运行结果；scenario本身也注明不测试过滤规则的实际效果。**[一手：历史测试产物；研究：验证范围]**
+
+**真实重试有记录，但不冒充独立接收者验收。** 原报告者也是修复贡献者：他[补回漏交的golden日志后报告GitHub测试通过](https://github.com/rclone/rclone/pull/6971#issuecomment-1520596549)，随后按审阅意见[把相关代码、文档和测试重新组织到各提交](https://github.com/rclone/rclone/pull/6971#issuecomment-1632281021)，并在[数周真实使用后再补一处问题](https://github.com/rclone/rclone/pull/6971#issuecomment-1666839385)。这些支持持续修改与使用，不能当作另一接收者对filter-hash场景的最终复测，也不证明单项修复节省工时。**[社区：贡献者报告；一手：公开修订过程]**
+
+**修过一条入口，不等于所有同名选项已贯通。** 之后的[48ab67f](https://github.com/rclone/rclone/commit/48ab67f090fd630c3ed9cc66d6fe83eca769ce12)才把rc专属`dryRun`参数传给内部`Options.DryRun`；[v1.64.0的cmd.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/cmd.go)和[rc.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/rc.go)已分别包含这两项修复。2026-10-14合并的[#10015](https://github.com/rclone/rclone/pull/10015)又修全局`_config.DryRun`／flat `dry_run`未贯通：将配置应用移到公共`Bisync`入口，并明确全局要求预演时，rc的`dryRun:false`不能取消它。这是该接口的具体取舍，不是所有系统的统一优先级规则。**[一手：固定源码、发布标签与PR]**
+
+最新修订的[固定rc测试](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/cmd/bisync/rc_test.go)经`jobs.NewJob`进入，分别检查专属参数、全局参数及相冲突的布尔值，再观察目标新文件是否存在；这些是本地路径测试，不能推成真实云存储已验。其[合并快照changelog](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/docs/content/bisync.md)列于v1.76，而核实时[最新发布仍为v1.75.2](https://github.com/rclone/rclone/releases/tag/v1.75.2)，不能将这次合并写成已发布到接收者。**[一手：测试源码、合并文档与发布页；研究：交付边界]**
+
+**最小采用与停止条件。** 修改有持久基线的预演功能时，复用现有场景覆盖预演前后及下一次正式调用；换CLI／API／后台入口时，只补实际选项传递与效果检查。纯计算预览没有这类状态就不增加本项，已有连续检查足够也不另造框架。本轮只读公开材料，未运行rclone或模型、未独立核验上游CI通过；没有最终独立用户逐例复测或AI收益证据。**[经验：采用边界；研究：核查范围]**
