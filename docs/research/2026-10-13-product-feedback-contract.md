@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件；协作编辑兼三，连续修改的可靠性
-改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复，往返导航保留任务位置但不在后台更新时抢焦点，连续筛选与确认按操作范围选择延迟，区分一次性恢复与记住的工作流选择，分清防丢失、稳定检查点与可放弃的试改，以及再次表达意图、重投与重新入队；协作撤销保留不相关贡献，同属性冲突另定；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性，默认采用现成能力与退休旧实现分开决定。[经验]
-证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍、Joplin 位置同步复测与 Discourse 焦点恢复的撤回／重新采用，以及 KeePassXC 原用户构建后的连续键入反馈、GIMP 原使用者找到持久选项后的恢复与重开回执。新增 n8n 保存／执行的连续修订及原任务仍未满足的反例；VS Code 搜索替换后有兼容路径退休、用户先肯定再收窄成功范围的链。Karakeep 重存补丁后，既有使用者对归档状态与自动同步排序给出负面回执，API opt-in 尚只有提议认可。Excalidraw 补本地撤销的使用反馈、同属性冲突反例与集成者修订后回执。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
+改变的建议：让真实任务决定继续、改目标或停止；改界面按任务选择同屏／分步并验原路径、省步保失败恢复，往返导航保留任务位置但不在后台更新时抢焦点，连续筛选与确认按操作范围选择延迟，区分一次性恢复与记住的工作流选择，分清防丢失、稳定检查点与可放弃的试改，以及再次表达意图、重投与重新入队；协作撤销保留不相关贡献，同属性冲突另定；自建／复用比较必要能力和运行责任，先判替换整套系统还是补工作流的一段；区分需求退出、实现退出与替代可达性，默认采用现成能力与退休旧实现分开决定，减少组件时核可选能力是否成为基础运行硬依赖。[经验]
+证据摘要：公开需求→补丁→使用反馈及相关研究；含 Mealie 删除／重新接入与旧使用者回执、Metabase 固定改版与同一试用者发布后回执、LocalSend 实际禁用与按失败状态收窄自动结束、Zotero 预览／编辑取舍、Joplin 位置同步复测与 Discourse 焦点恢复的撤回／重新采用，以及 KeePassXC 原用户构建后的连续键入反馈、GIMP 原使用者找到持久选项后的恢复与重开回执。新增 n8n 保存／执行的连续修订及原任务仍未满足的反例；VS Code 搜索替换后有兼容路径退休、用户先肯定再收窄成功范围的链。Karakeep 重存补丁后，既有使用者对归档状态与自动同步排序给出负面回执，API opt-in 尚只有提议认可。Excalidraw 补本地撤销的使用反馈、同属性冲突反例与集成者修订后回执；Immich补同步层删除、可选原型收窄与基础启动受限的历史链。各链不合并为长期收益、AI 效果或模拟投票否决需求的依据。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -551,3 +551,18 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 **后续接收者遇到的是另一项已修故障。** Obsidian集成维护者zsviczian在2025-06-13的[#9653](https://github.com/excalidraw/excalidraw/issues/9653)报告升级后连续移动、撤销会删掉原有图形，随后[定位到只传部分appState的调用](https://github.com/excalidraw/excalidraw/issues/9653#issuecomment-2972473334)。[06-14固定修复`60512f1`](https://github.com/excalidraw/excalidraw/commit/60512f13d51a6440809cf6f9d2ce84a76f74038c)不再把省略的elements替成空数组，并补“不相关appState更新不删除场景或历史基线对象”的回归定义；[原报告者随后确认问题解决](https://github.com/excalidraw/excalidraw/issues/9653#issuecomment-2972612450)，没有贴出受测SHA。当前固定版保留[对应接线](https://github.com/excalidraw/excalidraw/blob/4c37956ba5f04ec342a9d9d5891a38f22c5b7b4e/packages/excalidraw/components/App.tsx#L4957-L4974)与[回归定义](https://github.com/excalidraw/excalidraw/blob/4c37956ba5f04ec342a9d9d5891a38f22c5b7b4e/packages/excalidraw/tests/history.test.tsx#L254-L283)，不能把该历史故障描述成当前未修问题，也不能让它替代多人并发验收。**[社区：接收者失败与修订后回执；一手：固定补丁与当前实现]**
 
 **采用与停止条件。** 让Agent先确认撤销针对自己的操作还是整份文档旧版本，再复用现成历史入口；协作场景验不相关对象、不同属性及同属性冲突，并走完撤销／重做。既有机制满足目标就不再加操作日志或CRDT框架；单人需要整体回退时可以保留快照。本链支持区分任务与更新归属，不支持当前所有协作场景稳定、普遍体验优势、维护工时下降或AI效果。没有新增使用／冲突证据时，不靠继续堆撤销用例扩写。**[经验：采用与停止条件；研究：未验证范围]**
+
+
+## Immich：减少同步层，也改变基础运行的依赖
+
+核实：2026-10-16（UTC）。改变15 §10.4：复用现成能力并减少组件时，同时决定基础运行还应与哪些可选能力隔离。以下是2023–2024年的维护决策证据，不是AI原型效果或当前部署指南；只读公开源码与原帖，未运行应用、迁移、测试或模型。**[经验：采用判断；研究：范围]**
+
+**删除的是自建同步层。** 原方案已用现成Typesense，并非自制搜索引擎。[v1.91.0说明](https://github.com/immich-app/immich/discussions/5723)把Postgres与Typesense的同步复杂度、资源负担列为替换原因；[2023-12-08固定补丁`1e99ba8`](https://github.com/immich-app/immich/commit/1e99ba816752bbafe7bbe0d3a27750ef6ed46058)删除同步队列、定时flush、索引任务及Typesense容器，转用Postgres的pgvecto.rs扩展。旧版`429ad28`的[搜索开关](https://github.com/immich-app/immich/blob/429ad28810efc31aef6814961fdb7bfb59d328ae/server/src/domain/system-config/system-config.core.ts#L202-L214)可关闭搜索；新版[配置](https://github.com/immich-app/immich/blob/1e99ba816752bbafe7bbe0d3a27750ef6ed46058/server/src/infra/database.config.ts#L15-L28)启用启动迁移，[迁移本身](https://github.com/immich-app/immich/blob/1e99ba816752bbafe7bbe0d3a27750ef6ed46058/server/src/infra/migrations/1700713871511-UsePgVectors.ts#L6-L36)不按功能开关跳过扩展创建和向量列转换。删代码支持职责转移，不证明总体维护成本下降。**[一手：固定前后产物、维护者说明；研究：边界]**
+
+**可选原型曾尝试，未保留为完整支持路径。** [#5954维护者回复](https://github.com/immich-app/immich/discussions/5954)称，初期因维护负担暂未兼容pgvector；也试过关闭ML后不依赖向量扩展。[固定原型`af20c9a`](https://github.com/immich-app/immich/blob/af20c9adbb3c40543f3009be292ff04433078b8d/server/src/infra/database.config.ts)确实把向量迁移拆到另一DataSource，只在发现扩展时执行。维护者报告应用启动可行，但E2E、CLI初始化与实体布局未协调好；这解释了收窄范围的原因，不是本轮复跑，也不能把仅启动成功写成方案已验收。**[一手：原型与作者解释；研究：验证范围]**
+
+**计划受阻与实际失败分开。** #5954的既有使用者btajuddin于2023-12-24表示，新要求阻碍其迁到已有RDS Postgres；这是部署计划被阻，未报告该目标上的失败运行。另一个使用者在[#5911](https://github.com/immich-app/immich/issues/5911)报告v1.91.4连接timescaledb-ha附带的0.1.13扩展时启动失败，错误要求0.1.11；[维护者回应](https://github.com/immich-app/immich/issues/5911#issuecomment-1866629131)指出当时后续补丁版本有不兼容，不能仅放松版本限制。两者支持把基础部署纳入替换取舍，不证明所有环境均不可用。**[社区：接收者报告；一手：维护者说明]**
+
+**后来补兼容，仍不等于原有实例能直接切换。** [#6785／固定`56b0643`](https://github.com/immich-app/immich/commit/56b06438906a8eff4113f58fd5922ac22bde38bd)加入pgvector支持；[v1.95.0说明与后续回帖](https://github.com/immich-app/immich/discussions/7252)明确当时只支持新实例或未经历向量迁移的旧实例作此选择。同帖另一使用者SISheogorath于2024-02-29报告升级失败、考虑停用，03-05又报告自行迁到pgvector后可用，称仍需重新索引人脸，并报告数据库故障转移测试通过。维护者认可其流复制需求，同时保留默认扩展的功能取舍理由。该用户未提供受测SHA及完整迁移产物，不能把自报写成官方支持流程、长期稳定，或补记btajuddin成功。**[一手：固定修订与发布边界；社区：同人后续使用；研究：归属与局限]**
+
+**采用与停止条件。** 让Agent比较减少的同步责任与新增的基础运行约束；只有目标任务确实要求不开某功能也能运行时，才把该路径的安装、启动和升级列为保留条件，再选择合并、隔离或明确缩小支持范围。不要求所有功能都可关闭，也不默认重建双实现。当前[官方文档](https://docs.immich.app/administration/postgres-standalone/)已说明3.0移除pgvecto.rs支持、迁向VectorChord，因此上述配置只能作历史证据。本链没有净维护收益或AI效果数据；已足以区分依赖边界，不继续扩写扩展安装和迁移步骤。**[经验：采用与停止条件；一手：当前文档；研究：未验证范围]**
