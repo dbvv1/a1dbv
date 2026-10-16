@@ -1,6 +1,6 @@
 # 开源 Coding Agent
 
-> 核实时间：2026-10-16（UTC+8）。依据项目文档与源码 **[一手]**，以及 HN 原帖 **[社区]**。
+> 编辑更新：2026-10-16（UTC+8）。分项核实日期与范围：[OpenCode及历史基线](../research/2026-10-12-community-source-records.md#opencode规划权限与文件恢复分开选择)、[Pi](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界)、[Aider](../research/2026-10-12-community-source-records.md#2026-10-15-aider维护节奏与模型兼容分开判断)、[Cline](../research/2026-10-12-community-source-records.md#cline审批按宿主与有效设置判断)、[Goose](../research/2026-10-12-community-source-records.md#goose订阅接入先核适配器身份与资格)、[Qwen Code](../research/2026-10-12-community-source-records.md#qwen-code内置不等于默认启用)、[Copilot CLI](../research/2026-10-12-community-source-records.md#copilot-cli接入与治理范围)；项目文档与源码 **[一手]**，HN 原帖 **[社区]**。
 
 ## 总览
 
