@@ -1016,3 +1016,17 @@ OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://gi
 **采用与撤回。** 三者分别是横版动作、俯视遭遇与Boss决斗，不构成同条件排名。若原遭遇已清晰、辅助未破坏改选，就保留现有实现；若打中仍挨打源于有意承诺，优先让玩家理解并选择躲避，而非抹除风险。只有组合改变玩家实际选择的证据才能主张体验收益，当前仍缺玩家前后行为、主动调试投入和完整二改结果。**[研究]**
 
 后续获准才以一个既有双敌遭遇加护甲或穿身位移，分别验抢断A与避开A攻击B；观察目标、朝向、敌招是否继续及下一动作资格，不新建全局管理器。本轮没有运行游戏、引擎或模型，不新增实验授权。**[研究：未执行的验证范围]**
+
+## 镜头借出控制：持续更新历史与当前视点分开
+
+2026-10-16（UTC+8）补核。归 GC；改变 05 §8 的历史政策：短暂回看后需要连续返回时，除冻结／清空，还可维护原跟随状态但不输出。**[研究：条件建议]**
+
+**失败与中间修订。** SuperTuxKart [#5270](https://github.com/supertuxkart/stk-code/issues/5270)希望保留驾驶平滑，但开赛、重开与回看结束不应追赶过时方向。[6d04543](https://github.com/supertuxkart/stk-code/commit/6d0454383ca7c151ed42e3bede1a518a13d0546b)先在回切／重开时 snap；作者称做过分屏测试，不是完整测量。[后续反馈](https://github.com/supertuxkart/stk-code/issues/5270#issuecomment-2637678754)仍有未解决项。[#5278](https://github.com/supertuxkart/stk-code/issues/5278)报告在线回切突跳；报告者怀疑首修引入但未 bisect。维护者[以地面为参照逐帧观察](https://github.com/supertuxkart/stk-code/issues/5278#issuecomment-2620599733)，认为车连续而镜头跳，并[解释](https://github.com/supertuxkart/stk-code/issues/5278#issuecomment-2621722909)镜头消费 rewind 更新、旧平滑掩盖问题；[ef8bbed](https://github.com/supertuxkart/stk-code/commit/ef8bbedfa1577612947d66f2a04f3f715b9e7b26)加入重演期间提前返回。不能把这个中间补丁直接当最终推荐。**[社区：症状；一手：维护者说明与补丁]**
+
+**最终接受的是另一种历史政策。** [2025-03-08 f9ffcc6／PR #5365](https://github.com/supertuxkart/stk-code/commit/f9ffcc6310d4e632773acfeadcb9fd03bf446371)删除上述回切 snap 和局部 guard，保存 m_last_smooth_mode；当前视图不平滑时，仍调用 moveCamera(dt, false, …) 更新原模式的内部历史，仅 smooth 为真时写相机位置与 target。见[固定实现](https://github.com/supertuxkart/stk-code/blob/f9ffcc6310d4e632773acfeadcb9fd03bf446371/src/graphics/camera/camera_normal.cpp#L118-L165)及[1.5 发布源码](https://github.com/supertuxkart/stk-code/blob/1.5/src/graphics/camera/camera_normal.cpp#L300-L350)。这是被接受的实现，不是本仓玩家复测；也不能据删除 guard 宣称联网问题已由本轮验证解决。**[一手：固定代码]**
+
+**不要给所有运动再套总滤波。** 不同类型的 Veloren [固定代码](https://github.com/veloren/veloren/blob/2dbddc2ffa36db9a5c69cc831b65a7336ceab6a3/voxygen/src/scene/camera.rs#L580-L637)将位置、距离、FOV 与可选旋转平滑分开；只证明可以独立选择，不证明系数可迁移。Phantom Camera [#522](https://github.com/ramokz/phantom-camera/issues/522)中，对最终 Transform 统一插值的提案被[维护者指出](https://github.com/ramokz/phantom-camera/issues/522#issuecomment-2848644530)会延迟直接旋转；[提议者承认](https://github.com/ramokz/phantom-camera/issues/522#issuecomment-2848660970)只是示意，不是完成方案。该讨论未闭环，不作已交付改进。**[一手／社区]**
+
+**采用与撤回。** 同一对象短暂借出视图、返回要连续时，比较后台维护必要历史与返回重初始化；旧跟随状态失效（如重生或换目标后已不适用）时按新目标重建，是否硬切／混合另定。不要让所有闲置镜头无条件持续碰撞查询；状态失效、维护成本不值或硬切已符合玩法时撤回后台更新。联网应用另核重演时钟与呈现历史，不能只加阻尼遮住污染。后续验“回看期间转弯→松开”，记录目标、后台历史和最终输出；响应只在一个通路变差时只改那个通路。**[研究：待目标项目验证]**
+
+许可与范围：STK 代码 GPL-3.0-or-later，Veloren 为 GPLv3；这里仅提炼机制，不复制到闭源工程。已读固定代码、问题及修订记录；未运行游戏／引擎，未做完整视频体验评估，也未测手感、性能或维护投入。
