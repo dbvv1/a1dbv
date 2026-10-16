@@ -234,6 +234,8 @@ Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时�
 
 [配置请求](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/tui/src/config_update.rs#L138-L170)写memories.use_memories／generate_memories并要求重载用户配置；[服务端](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/app-server/src/config_manager_service.rs#L218-L237)将未指定file_path的写入定位到用户配置，[持久化代码](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/app-server/src/config_manager_service.rs#L412-L417)实际写配置文件；[回归](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/tui/src/app/tests.rs#L3205-L3245)读取文件并断言两个值改变。这是固定执行路径依据，不只是UI字符串推断。[一手]
 
+**2026-10-17 补核。** [Developer commands](https://learn.chatgpt.com/docs/developer-commands#configure-memories-with-memories) 对同一 CLI `/memories` 明写设置影响未来会话，Memories 页则明确覆盖 TUI 且称不改全局；两份官方文档自身也未统一作用域，不能只归因于 App／CLI 入口不同。未取得文档与已部署版本映射，采用建议仍是核入口／版本、持久配置与线程状态；本轮只重读官方页面，未重跑客户端或既有源码测试。[一手；研究]
+
 **采用与未解范围。** 只想排除一个聊天时，先核该入口／版本的作用域、持久配置和当前线程状态；部分失败不能当两项均已生效。官方页未给与固定发行的部署映射，保留差异，不宣称源码普遍胜出或所有App都如此。不读取私人记忆、不改设置、不运行客户端／模型／回归；未验证真实会话加载及关闭后的上下文行为，也不把本轮边界检查当记忆收益实验。[研究]
 
 **未采用的扩题。** /goal的[固定runtime](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/ext/goal/src/runtime.rs#L436-L478)依赖live thread与Active状态，但现有正文未承诺停机后仍持续，不再另加同义警告。Skills已有05的宿主／加载／权限边界，本轮未找到新采用错误，不以本轮局部核查授整页L3。[一手／研究]

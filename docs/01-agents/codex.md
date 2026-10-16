@@ -1,92 +1,115 @@
 # OpenAI Codex（CLI / App / Cloud）
 
-> 更新：2026-10-15
-> 评级：✅ **采用**（日常开发或交叉评审）
+> 核实时间：2026-10-17（UTC+8，定点补核会话续接；其余日期见各节）
+> 评级：✅ **采用**（日常开发或交叉评审）；内容成熟度仍为 L2
+
+**30 秒选择**：先给任务、现有证据和完成条件，让 Codex 在授权范围内调查、修改、验证；有具体缺口再补工具或 Skill。采用建议来自文档、固定源码和公开案例，不是本仓库的模型效果对照。**[研究：采用判断]**
+
+| 现在要决定什么 | 直接看 |
+|---|---|
+| 在哪里运行、能访问什么 | [入口](#1-形态与入口) → [权限](#审批沙箱与-auto-review) |
+| 用哪个模型、为何只规划不实施 | [模型](#2-模型按任务与实际用量选择) → [模式与慢任务](#慢保守和反复停下来先辨认是哪一种问题) |
+| 给哪些上下文、何时加能力 | [任务输入](#6-使用建议从实际问题选择方法) → [项目规则](#项目规则先保证会加载再考虑写得多全面) |
+| 继续旧任务、试另一方案或长期运行 | [会话与长任务](#长时运行与-dots按能力缺口增加任务) |
 
 ## 1. 形态与入口
 
-| 形态 | 说明 |
+✅ **先按任务选入口，再核套餐和开通状态。** 本机文件、浏览器登录和 VPN 不会自动进入云环境。**[一手；经验：2026-10-15，[入口证据](../research/2026-10-10-codex-continuity.md#8-客户端入口资格与安全评审边界)]**
+
+| 任务 | 入口与关键条件 |
 |---|---|
-| **Codex CLI** | 开源，用 Rust 编写；`curl -fsSL https://chatgpt.com/codex/install.sh \| sh`、`npm i -g @openai/codex` 或 `brew install --cask codex` |
-| **ChatGPT 桌面 App（Codex / Work）** | 可使用本机文件、浏览器和受支持的桌面工具；Linux 版仍为预览。Work 也可从 web／mobile 继续符合条件的任务，不是桌面 App 的别名 **[一手：入口记录]** |
-| **Codex Cloud** | 云端任务，可复用的云端环境（DevDay 2026） |
-| IDE 扩展与第三方集成 | IDE 内协作或经 GitHub、GitLab（beta）、Slack、Linear 发起工作；各集成的设置和能力分别核对。GitHub PR／GitLab MR 可用 `@codex review`；GitHub 的 `@codex security review` 是另有资格要求的研究预览 **[一手：入口记录]** |
+| 终端改仓库／脚本执行 | 开源 Rust **Codex CLI**：`npm i -g @openai/codex` 或 `brew install --cask codex` |
+| 在编辑器协作 | IDE 扩展；不提供 App／web 的内置浏览器 |
+| 用内置浏览器验页面 | web 或桌面 App；Work 也可从 web／mobile 继续符合条件的任务 |
+| 操作本机 GUI | 核 macOS／Windows Computer Use 插件与系统权限；Linux App 仍是预览，不能推定同等 GUI 能力 |
+| 不依赖本机在线的仓库任务 | **Codex Cloud**，先准备并发布可复用环境 |
+| PR／MR 评审 | GitHub／GitLab（beta）的 `@codex review`；专门安全评审另核资格 |
 
-✅ **先按实际任务选入口，再核套餐和开通状态。** 要用内置浏览器验页面，选 web 或桌面 App，CLI／IDE 不提供该内置入口；要操作本机 GUI，核对 macOS／Windows 的 Computer Use 插件与系统权限，不能从 Linux App 可安装推定同样支持。Codex Cloud 适合用已发布环境独立运行的仓库任务，本机文件、浏览器登录和 VPN 不会自动带入。**[一手；经验：采用判断，2026-10-15，详见[入口记录](../research/2026-10-10-codex-continuity.md#8-客户端入口资格与安全评审边界)]**
+**套餐不只影响额度。** [Pricing](https://learn.chatgpt.com/docs/pricing) 为 Free／Go 列桌面 Luna Standard（受 rollout 限制），Plus 列 web／CLI／IDE／iOS 及云端集成；[GitLab beta](https://learn.chatgpt.com/docs/third-party/gitlab)另明确支持所有 ChatGPT plans，不能把价格表当集成排除清单。**[一手：2026-10-15]**
 
-各档虽包含 Codex，但差异不止额度：当前 [Pricing](https://learn.chatgpt.com/docs/pricing) 给 Free／Go 列的是桌面 App 的 Luna Standard，仍受 rollout 限制；Plus 列出 web／CLI／IDE／iOS 和云端集成。不要把这张套餐表当作所有集成的排除清单，[GitLab beta](https://learn.chatgpt.com/docs/third-party/gitlab)另明确支持所有 ChatGPT plans。专门的 [GitHub Security Review](https://learn.chatgpt.com/docs/security/security-review)限 Pro／Business／Edu／Enterprise，不含 Plus；普通代码评审仍可发现部分安全问题。**[一手：当前文档，2026-10-15]**
+**安全评审单独查资格。** [GitHub Security Review](https://learn.chatgpt.com/docs/security/security-review) 是 Pro／Business／Edu／Enterprise 的研究预览，不含 Plus；普通评审仍可发现部分安全问题。**[一手：2026-10-15]**
 
 ## 2. 模型：按任务与实际用量选择
 
-✅ **按模型与客户端的推荐起点选择 effort，再按任务结果调整；需要并行不必先选 Ultra。** effort 的具体选择统一见 [02 模型与成本](../02-models-and-cost.md)。 下表是官方定位与本仓库采用建议，不是跨模型实测排名。**[一手；经验：2026-10-15，详见[核对记录](../research/2026-10-10-codex-continuity.md#9-模型选择成本口径与历史断言的适用范围)]**
+✅ **从模型与客户端的推荐 effort 起步，按任务结果调整；并行不必先选 Ultra。** effort 细选见 [02](../02-models-and-cost.md)，下表是官方定位与采用判断，不是实测排名。**[一手；经验：2026-10-15，[核对记录](../research/2026-10-10-codex-continuity.md#9-模型选择成本口径与历史断言的适用范围)]**
 
-| 选择 | 何时考虑与边界 |
+| 选择 | 何时考虑 |
 |---|---|
-| **GPT-6.1 Sol** | 官方当前推荐用于复杂编码与反复、长时间工作，称接近 Astra 的能力且成本较低；`codex --model gpt-6.1-sol`。这不是相同任务总成本或质量已验证相当 |
-| **GPT-6 Luna** | 官方定位是目标清楚、可重复的聚焦任务；与较强模型比较实际结果后再用于高频工作 |
-| **GPT-6 Astra** | 官方定位是最困难的跨步骤、跨工具工作；是否值得更高用量取决于该任务的质量要求与结果 |
-| **Max / Ultra** | Max 偏向单任务更深推理；Ultra 用于可有意义拆分的复杂工作。Work web 的 Ultra 还启用最大推理与主动委派，其他 effort 也可显式要求子 Agent；当前 App／CLI／IDE 可通过直接请求或适用的项目／Skill 指令触发并行 |
-| **GPT-5.5 退役** | 2026-10-14 19:00 UTC 起仅影响以 ChatGPT 登录的 Codex，应替换相应配置、Agent、定时任务与脚本中的模型选择；OpenAI API 及 API-key 登录的 Codex 不受该次退役影响 |
+| **GPT-6.1 Sol** | 复杂编码与反复、长时间工作；`codex --model gpt-6.1-sol`。官方称能力接近 Astra、成本较低，未证明同任务总成本或质量相当 |
+| **GPT-6 Luna** | 目标清楚、可重复的聚焦任务；比较实际结果后再用于高频工作 |
+| **GPT-6 Astra** | 最困难的跨步骤、跨工具工作；按目标质量判断额外用量是否值得 |
+| **Max / Ultra** | Max 偏单任务深推理，Ultra 偏可有效拆分的复杂工作；Work web Ultra 启用最大推理与主动委派，其他 effort 也可显式要求子 Agent，App／CLI／IDE 可按请求或适用项目／Skill 指令并行 |
+| **GPT-5.5 退役** | 2026-10-14 19:00 UTC 起，替换 ChatGPT 登录 Codex 的相应模型配置；此次不影响 API 或 API-key 登录 |
 
-不要将“6.1 Sol 是 Astra 五分之一价格”当作任务预算：当前 Standard credits 的非缓存输入／输出单价符合该比例，缓存输入是十分之一；订阅内含用量与 API 另有口径。effort、速度档、上下文和子 Agent 会改变实际消耗。**[一手；研究：选择边界]**
+**预算看任务总消耗。** “Sol 为 Astra 五分之一”仅符合当前 Standard credits 非缓存输入／输出单价，缓存输入为十分之一；订阅与 API 口径另核，effort、速度档、上下文和子 Agent 都影响消耗。**[一手；研究]**
 
-上下文也按模型、客户端与有效配置核对；2026-07 的 372k → 272k 是 GPT-5.6 bundled 元数据变更，不能当作所有 Codex／API 的当前统一窗口，亦不是自动压缩阈值。**[一手：固定源码；研究，见[证据](../research/2026-10-10-codex-continuity.md#9-模型选择成本口径与历史断言的适用范围)]**
+**上下文核模型、客户端与有效配置。** 2026-07 的 372k → 272k 是 GPT-5.6 bundled 元数据变更，不是所有 Codex／API 的当前窗口或自动压缩阈值，见上述核对记录。**[一手：固定源码；研究]**
 
 ## 3. 关键机制
 
 ### AGENTS.md（官方文档 + 源码 `codex-rs/core/src/agents_md.rs`）
-- **全局**：依次检查 `~/.codex/AGENTS.override.md`、`~/.codex/AGENTS.md`，使用首个非空文件；空 override 不阻止回退，见 [03 的加载边界](../03-context-engineering.md)；
-- **项目**：从项目根目录（通常是 git 根）逐级走到当前目录，每一级优先用 `AGENTS.override.md`，否则用 `AGENTS.md`；
-- 按从根到当前目录的顺序拼接，越靠近当前目录的越晚出现、优先级越高；
-- 合计上限 `project_doc_max_bytes`，默认 **32 KiB**；
-- 可以用 `project_doc_fallback_filenames` 将 `CLAUDE.md` 设为候选，但它是 **fallback，不是追加加载**：同目录已有 `AGENTS.md` 时不会再靠 fallback 加载 `CLAUDE.md`。
-- 根目录先消耗项目文档字节预算；过长可能截断后面的子目录规则。“更近的规则优先”不代表它一定被完整加载。源码及对应测试已阅读，本轮未编译运行 Codex 测试。**[一手：S1]**
-- 代码评审的自定义规则也写在 AGENTS.md 里。
+
+✅ **先放真实命令、架构约束和完成条件，再核实际加载范围。** 全局按 `~/.codex/AGENTS.override.md`、`~/.codex/AGENTS.md` 取首个非空文件；项目从根到当前目录逐级取 override，否则取 AGENTS.md，较近规则后拼接。**[一手：S1]**
+
+- 项目文档默认预算 `project_doc_max_bytes = 32768`（32 KiB）；根文件先占预算，子目录规则可能被截断
+- `project_doc_fallback_filenames` 可加入 `CLAUDE.md`，但同目录已有 AGENTS.md 时不会追加它
+- 自定义评审规则也可放入 AGENTS.md；加载与截断详见 [03](../03-context-engineering.md)
+
+以上已读固定源码和测试，未运行真实客户端；规则写得更长或更短都不自动证明效果更好。**[一手：S1；研究：边界]**
 
 ### 审批、沙箱与 Auto-review
-- 审批策略：`on-request` / `never` / 细粒度策略；2026-10-10 的当前配置参考已将显式 `untrusted` 列为不支持（不要与项目 `trust_level = "untrusted"` 混淆），`on-failure` 已弃用。见 [配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)；沙箱模式：`read-only` / `workspace-write` / `danger-full-access`。Linux 默认用 bubblewrap，macOS 用 Seatbelt，Windows 有独立的沙箱实现。
-- **Auto-review**：`approvals_reviewer = "auto_review"` 选择自动审查者；固定源码中的 CLI `--approve-for-me` 同时设置 reviewer、`approval_policy="on-request"` 和 `sandbox_mode="workspace-write"`，不等同于只修改 reviewer 字段。**[一手：S2]**
-  - 官方文档的“交互式审批”指仍产生审批请求的策略，如 `on-request` 或允许相应类别的细粒度策略，不应理解成只能在交互式界面运行。固定源码的 `codex exec` 也处理这个组合开关，并为 Auto-review 调整 headless 的默认审批配置。具体行为须核对所用客户端、版本和有效配置。**[一手：S2/S3；研究：概念区分]**
-  - 单独选择 reviewer 不会自动改写长期可写目录、网络或受保护路径，也不保证请求获准；但获批的提权动作可能在比原沙箱更宽的执行范围内运行。不能把“不改默认配置”写成“获批动作也永远不能越过沙箱”。具体提权仍受禁止规则、托管要求和执行器能力限制。**[一手：S2/S3；研究：适用边界]**
-  - 常规路由之外，固定源码还包含模型要求、强制 reviewer 与 strict review 的判断；不要把一条开源执行路径外推为所有发布客户端的统一行为。当前官方文档另说明，**Computer Use 的 App 级审批仍直接交给用户**，不能列为 Auto-review 必然接管的场景。**[一手：S2/S3]**
-  - 默认策略位于 `codex-rs/prompts/templates/guardian/policy.md`；`[auto_review].policy` 配置本地策略文本，托管的 `guardian_policy_config` 优先。当前配置参考另列 `extra_policy`，不要把二者混为同一个字段。**[一手：S2/S3]** 权限故障应查实际拒绝原因，不用全盘放权处理一般实现偏好上的犹豫。**[经验：采用判断]**
+
+✅ **日常改代码先用受控工作区权限，遇到拒绝再查具体原因。** 沙箱限制可执行范围，审批决定某次动作能否获准；一般实现犹豫不需要全盘放权。**[研究：采用判断]**
+
+| 要核对的项 | 当前契约与选择 |
+|---|---|
+| 审批策略 | `on-request`、`never` 或细粒度策略；当前参考不支持显式 `untrusted`，`on-failure` 已弃用。项目 `trust_level` 是另一项设置 |
+| 沙箱 | `read-only`、`workspace-write`、`danger-full-access`；Linux、macOS、Windows 实现分别核对 |
+| 自动审查 | `approvals_reviewer = "auto_review"` 只选择 reviewer；CLI `--approve-for-me` 还设置 `on-request` 与 `workspace-write` |
+| 自动化脚本 | 固定源码的 `codex exec` 也处理上述组合；文档的“交互式审批”指会产生审批请求，不只指交互界面 |
+| 策略来源 | `[auto_review].policy` 与 `extra_policy` 分开；托管 `guardian_policy_config` 优先于本地策略 |
+
+**获批提权可能超过原沙箱范围。** 选择 reviewer 不改长期目录、网络或受保护路径配置，但也不能据此说单次获批动作永远不越界；禁止规则、托管要求与执行器仍决定上限。**[一手：S2/S3]**
+
+**Computer Use 的 App 级审批仍由用户处理。** 固定源码还存在模型要求、强制 reviewer 和 strict review 路由，不能将单一路径当作所有客户端承诺。以上核实于 2026-10-11，未运行审批服务；详见[审批证据](../research/2026-10-10-codex-continuity.md)及页尾 S2/S3。**[一手；研究]**
 
 ### 子 Agent、Hooks、Skills、插件、记忆
-- **子 Agent 默认开启**；有内置 Agent（如 `default`），可以在 `config.toml` 的 `[agents]` 里设默认值，也可以写自定义 Agent 文件。
 
-**[研究] 机械支线需要模型时，把模型与 effort 一起选；可由脚本确定完成的工作先用脚本。** 对普通新子线程，想固定轻量角色时同时设其 `model` 与该模型支持的 `model_reasoning_effort`；想保留每次临时改选，则用 `[agents]` 的 `default_subagent_model`／`default_subagent_reasoning_effort` 作默认。角色显式值最后覆盖 spawn 参数，角色只换 model 会保留此前 effort，可能仍偏高或不受支持而启动失败。[一手：[官方子Agent配置](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)；研究] **局限：这适用于读取本地配置的 Codex App／CLI／IDE，不能当 Work／dots 的全局开关；模型变小也不代表权限变小。** 固定发行、继承与 fork 边界见[配置记录](../research/2026-10-10-codex-continuity.md#子agent配置补研角色默认与显式覆盖)。
+✅ **机械支线先考虑脚本，需要模型时同时选 model 与 effort。** 子 Agent 默认开启，有 `default` 等内置角色；本地 `[agents]` 默认或自定义角色文件可调整配置。**[一手：[官方子 Agent](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)]**
 
-- Hooks、Rules、Skills、Plugins（2026-03 推出；0.147 起支持可移植的 Agent Plugins 和多个插件目录搜索）、Memories、Goals 都已提供 **[一手：文档目录]**。
-- **从其他 Agent 导入**：桌面 App 的 Settings > Import 支持 Claude Code、Claude Cowork、Cursor，并提供自动更新；CLI `/import` 支持 Claude Code、Cursor，限本地空闲会话，远程会话或连接本地 app-server daemon 时不可用，近期聊天入口限近 30 天最多 50 个。不要把 Desktop 的来源与同步能力直接套给 CLI。**[一手：当前 Import 文档／0.162.1 固定源码；2026-10-15 UTC+8]**
+普通新子线程需固定轻量角色时，同时设 `model` 和受支持的 `model_reasoning_effort`；需保留临时改选时，用 `default_subagent_model`／`default_subagent_reasoning_effort` 作默认。角色显式值最后覆盖 spawn 参数，只换 model 可能保留过高或不兼容的 effort。此规则限读取本地配置的 App／CLI／IDE，不是 Work／dots 全局开关；详见[继承与 fork 边界](../research/2026-10-10-codex-continuity.md#子agent配置补研角色默认与显式覆盖)。**[一手；研究]**
+
+**扩展按实际缺口选。** Hooks、Rules、Skills、Plugins、Memories、Goals 已有文档入口，模型变小不缩小权限。原生配置与插件支持不代表不同宿主采用同一契约。**[一手；研究]**
+
+**导入按客户端选来源。** Desktop Settings > Import 支持 Claude Code、Cowork、Cursor 及自动更新；CLI `/import` 支持 Claude Code、Cursor，仅限本地空闲会话，远程或本地 app-server daemon 连接不可用，近期聊天最多近 30 天 50 个。**[一手：Import 文档／0.162.1 源码；2026-10-15]**
 
 ### 导入先选范围，再决定是否持续同步
 
-✅ **已有配置只差少数内容时，按项导入并检查目标值；需要 Cowork 或持续自动更新时，按桌面入口核对。** 0.162.1 的设置迁移只补缺失键，MCP 只补缺失的 server 名称，重复导入不能当作源配置覆盖目标的同步。官方所列“导入已有项目文件夹”继续使用同一目录，需要隔离试用时应另选工作副本；“不改原 Agent 配置”不代表以后不会修改原项目。**[一手；经验：采用判断，详见[导入证据](../research/2026-10-10-codex-continuity.md#7-导入入口配置合并与自动更新)]**
+✅ **少量迁移按项导入，完成后检查目标值。** 0.162.1 只补缺失设置键与缺失 MCP server 名称，重复导入不是覆盖同步；需要 Cowork 或自动更新时核桌面入口。**[一手：[导入证据](../research/2026-10-10-codex-continuity.md#7-导入入口配置合并与自动更新)]**
 
-🧪 自动更新只在确实需要追随源端时启用，先检查一次导入结果及所选范围；不把关闭自动更新当成撤销已导入内容。Hook、权限和插件的迁移适配分别见 [06](../06-hooks-and-guardrails.md#同名事件不等于可直接迁移claude-code--codex)、[05](../05-skills-and-plugins.md)。**关键局限**：官方契约与发布源码不证明每个桌面构建同步、删除和恢复均可靠，公开失败报告也不代表当前版本普遍失败。**[社区；经验：条件判断]**
+**需要隔离试用就先建工作副本。** “导入已有项目文件夹”继续使用原目录，不修改原 Agent 配置不等于以后不会修改原项目。**[一手；经验]**
+
+🧪 **只有需要追随源端才启用自动更新。** 关闭它不撤销已导入内容；Hook 与插件适配见 [06](../06-hooks-and-guardrails.md#同名事件不等于可直接迁移claude-code--codex)、[05](../05-skills-and-plugins.md)。文档与固定源码未证明每个桌面构建的同步、删除和恢复都可靠，公开失败也不代表当前普遍失败。**[社区；经验]**
 
 ### 外来仓库转脚本
 
-✅ 只读任务需核对有效只读权限：旧沙箱配置可显式使用 `codex exec --sandbox read-only`；已有文件排除 profile 时不要叠加该旧开关，按 [10 的生效条件](../10-security.md#codex-文件排除的采用条件)选择（2026-10-15，UTC+8 补核）；分别检查配置、AGENTS、Skills 与 Hook 来源，不能用 Git 仓库存在或“项目配置未加载”替代这些检查。当前官方要求非托管 Hook 经定义信任后才运行；审查时也看它引用的脚本。本次[固定源码核查](../research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)区分未设 trust 与显式 untrusted，且 Hook 定义哈希不覆盖脚本内容；这是 2026-10-14 main 的实现证据，未验证已发行客户端。**[一手；经验：采用建议]**
+✅ **只读任务核有效权限，再查配置、AGENTS、Skills 和 Hook 来源。** 旧配置可用 `codex exec --sandbox read-only`；已有文件排除 profile 时不要叠加旧开关，按 [10 的生效条件](../10-security.md#codex-文件排除的采用条件)选。Git 仓库存在或项目配置未加载都不能替代检查。**[一手；经验：2026-10-15]**
+
+**Hook 连同引用脚本一起审查。** 官方要求非托管 Hook 经定义信任后才运行；[固定源码](../research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)显示定义哈希不覆盖脚本，并区分未设 trust 与显式 untrusted。这是 2026-10-14 main 的实现证据，未验证发行客户端。**[一手；研究]**
 
 ### 源码里能看到的模块
-`codex-rs/` 下有：`code-mode`、`memories`、`agent-roles`、`agent-message-board`、`hooks`、`skills`、`plugin`、`worktree`、`cloud-tasks`、`external-agent-migration`、`ollama` / `lmstudio`、`windows-sandbox-rs` 等。功能开关里还能看到 `Goals`、`BrowserUse`、`ComputerUse`、`MemoryTool`、`GuardianApproval` 等 **[一手]**。这些名称不构成各客户端的可用入口清单，采用时按上面的公开入口与开通条件判断。**[研究：证据边界]**
+
+**采用时查公开入口与开通条件，不按源码目录名选功能。** 源码可见 memories、hooks、skills、plugin、worktree、cloud-tasks 等模块；模块存在只支持实现调查，不能证明当前账户或客户端可用。**[一手；研究：证据边界]**
 
 ## 3.5 DevDay 2026（2026-09-29）的变化 **[一手：learn.chatgpt.com]**
 
-| 变化 | 说明 |
-|---|---|
-| **GPT-6.1 Sol** | “接近 Astra 的性能、更低的价格”，用于复杂编码；API 里支持 Responses 的多 Agent beta 和欧盟数据驻留 |
-| **Astra Ultrafast** | Codex 和 Work 中更快的 GPT-6 Astra，只对 500 美元/月的 Pro 档和部分企业、教育计划开放 |
-| **可复用的云端环境** | 描述开发环境 → Codex 准备并测试 → 发布；之后的新任务都在用这个文件系统的隔离工作区里启动，电脑休眠时云端任务也能继续 |
-| **Codex Security Cloud**（研究预览） | 扫描已连接的 GitHub 仓库或监控新提交，给出发现、验证证据和补丁，再创建草稿 PR |
-| **Dots**（常驻 Agent） | 由 GPT-6 Astra 驱动，有自己的云端电脑和浏览器；在对话之间持续推进工作，需要判断时再找你；可以连接一台本地电脑；在 Codex 或 Work 里启动的任务照常计入额度；须另核[套餐、地区、年龄及工作区资格](https://learn.chatgpt.com/docs/dots#access)，符合资格仍可能等待逐步开放 |
-| **企业 Agent Security** | 统一管控本地和 Codex Cloud 执行时能用的工具、文件和网络访问 |
-| **MCP Events** | 让 ChatGPT 订阅 MCP 服务器的事件并据此行动（要求 MCP 2.0，基于草案规范的 webhook 投递） |
+**只按当前任务采用云环境、持续 Agent 或安全扫描。** DevDay 的发布背景见[官方记录](https://learn.chatgpt.com/docs/whats-new/devday-2026)；模型按 §2，持续任务按 §6，不把发布清单当配置清单。**[一手；研究：采用判断]**
 
-**安全扫描先核资格，再核费用**：Security Cloud 另需工作区具备[Cloud 扫描访问资格](https://learn.chatgpt.com/docs/security#codex-security-cloud-access-and-prerequisites)、已连接的 GitHub 仓库与兼容云环境，不能由 PR Security Review 的套餐清单推定可用。PR Security Review 消耗所含 Codex 用量或 credits；新建的 Security Cloud 仓库／连续扫描不在套餐所含用量内，按 token 计费，免费扫描额度另有条件。开始扫描前核[Cloud 计费规则](https://learn.chatgpt.com/docs/security/faq#billing)，不要由“套餐含 Codex”推定扫描已包含。**[一手：2026-10-15；适用日期见[入口记录](../research/2026-10-10-codex-continuity.md#8-客户端入口资格与安全评审边界)]**
+- **云环境**：发布后，新任务在其文件系统的隔离工作区启动，适合不依赖本机在线的仓库工作
+- **Dots**：有云端电脑、浏览器，也可连接本地电脑；先核[套餐、地区、年龄和工作区资格](https://learn.chatgpt.com/docs/dots#access)，符合资格仍可能等待 rollout
+- **安全扫描**：先区分 PR Security Review 与 Security Cloud。后者另需[扫描资格](https://learn.chatgpt.com/docs/security#codex-security-cloud-access-and-prerequisites)、GitHub 仓库及兼容云环境
 
-**含义**：OpenAI 在把 Codex 从“你发起的会话”推向“**常驻、云端、有自己环境的 Agent**”，和 Claude Projects 是同一个方向（见 [13](../13-frontier-radar.md#24-云端大脑本地双手会话管理正在被托管)）。
+**扫描前核费用。** PR Security Review 消耗所含 Codex 用量或 credits；新建 Security Cloud 仓库／连续扫描按 token 计费，不在套餐所含用量内，免费扫描另有条件。详见[计费规则](https://learn.chatgpt.com/docs/security/faq#billing)与[入口记录](../research/2026-10-10-codex-continuity.md#8-客户端入口资格与安全评审边界)。**[一手：2026-10-15]**
 
 ## 3.6 从说明到可验证配置（2026-10-11 增补）
 
@@ -94,17 +117,16 @@
 
 ## 4. 优势与短板
 
-**优势**
-- 速度、自主性和指令遵循应按模型、effort、任务及客户端区分；现有材料不足以支持“社区普遍认为更快”。**[研究：证据判断]**
-- 默认开启沙箱，Auto-review 的策略开源可审计。
-- 开源，可以自己编译和审计；可接本地模型。
-- 提供按项导入入口；是否值得迁移取决于目标配置、权限和实际工作能否接续，不由“支持导入”推定低成本。见上文导入边界与 [00](../00-state-of-ai-coding.md)。**[研究：已有结论同步]**
+**适合采用的理由**：有沙箱与可审计的开源实现，支持本地工作、导入和交叉评审；是否值得迁移，要以目标配置和真实任务能否接续为准。速度与自主性随模型、effort 和任务变化，现有材料不支持“社区普遍认为更快”。**[一手；研究：采用判断]**
 
-**短板**
-- **内建 LSP 的需求与收益仍有争论**：[#8745](https://github.com/openai/codex/issues/8745) 本轮页面显示开放，但不能仅凭一个开放功能请求判断所有客户端、扩展的能力。类型检查与语义导航是不同需求，见下文。**[社区：原帖]**
-- **不要把历史回退当作文件恢复**：CLI 的 [#11626](https://github.com/openai/codex/issues/11626) 请求同时恢复会话与代码，2026-10-15 仍开放；不能由此断言所有客户端都无回滚能力。探索前保留可恢复检查点，具体建议见下文。**[社区：原帖；经验]**
-- **用量需按实际工作核对**：有高 effort 下慢、停工与耗额度的[具体报告](https://github.com/openai/codex/issues/51670)，不能据此推出套餐普遍下调或统一降 effort。先核模型、速度档、并行与[当前用量](https://chatgpt.com/codex/settings/usage)，再决定是否换模型或缩小任务。**[社区；经验：采用判断]**
-- **并行任务的可审计性**：[#28058](https://github.com/openai/codex/issues/28058)报告 2026-06 的 MultiAgentV2 加密任务／消息载荷影响人类可读审计记录；这是特定实现的历史报告，不证明当前所有客户端都隐藏子 Agent 提示。需要追踪委派内容时，核所用版本实际可见的任务与结果记录。**[社区；经验]**
+| 采用前要防什么 | 做法与证据边界 |
+|---|---|
+| 缺语义导航 | 日常修错先用编译器／typecheck；大规模重构再评估 LSP。开放请求 [#8745](https://github.com/openai/codex/issues/8745) 不能证明所有客户端都缺此能力 |
+| 误把聊天回退当文件恢复 | 探索前留 Git 检查点；CLI 请求 [#11626](https://github.com/openai/codex/issues/11626) 于 2026-10-15 仍开放，不代表所有客户端都无回滚 |
+| 慢、停工或用量高 | 核模型、速度档、并行和[实际用量](https://chatgpt.com/codex/settings/usage)；[#51670](https://github.com/openai/codex/issues/51670) 是具体反馈，不能推出套餐普遍下调 |
+| 子任务不易审计 | 检查本版本可见的委派内容与结果；[#28058](https://github.com/openai/codex/issues/28058) 是 2026-06 加密载荷报告，不是当前所有客户端结论 |
+
+以上是原帖支持的风险提醒，不是失败率估计；具体应对见 §6。**[社区；经验]**
 
 ## 5. 与 Claude Code 配合使用
 
@@ -114,121 +136,118 @@
 
 ## 6. 使用建议：从实际问题选择方法
 
-> 以下“采用判断”是本仓库分析，不冒充官方最佳实践。另一侧早期官网读取受限；已补读官方 Cookbook 的 GitHub 原文，本次另补核审批/配置页面，其他具体行为引用固定源码。**[研究]**
+以下建议以开发任务的产物与反馈为准；官方契约、源码机制和公开案例的证据范围分别注明。**[研究：采用判断]**
 
 ### 先给什么，遇到什么再增加能力
 
-先从 [15 按任务类型的打法](../15-task-playbooks.md#0-总表)选择当前任务，再用下表补齐输入。**✅ 原生起步，有可定位的能力缺口或有依据的质量目标时，🧪 选择最小有效补充**：默认让 Codex 在授权范围内连续调查、实现和验证；先复用资料、项目约定与已有工具，不必等功能失败，也不默认加 Skill。选择依据见 [05](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)，尚无受控模型对照证明统一最优流程。**[经验：采用判断，2026-10-14]**
+✅ **原生起步，有缺口或明确质量目标时再选最小有效补充。** 先复用项目资料和已有工具；具体流程见 [15](../15-task-playbooks.md#0-总表)，补充能力的选择见 [05](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。尚无受控模型对照证明统一最优流程。**[经验：采用判断]**
 
-| 手上的任务 | 最小有效输入与原生起点 | 何时增加什么 |
+| 任务 | 先给什么、先做什么 | 何时补能力 |
 |---|---|---|
-| 明确 bug | 失败命令／输入、预期与实际、相关版本；定位并修复，验证旧失败 | 修复位置不清时追调用链与同类校验；如 [BAML](../research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)，研究需帮助选择实现位置，而非强制写全仓概览 |
-| 存量功能或优化 | 一个实际使用路径、兼容要求；查现有实现后完成可运行改动 | 真实规模引出分批／缓存／并行时，查它改变的语义；[对端分批运行报告及本侧源码核查](../research/2026-10-12-alchemy-utils-evolution.md#本侧整合复核与运行证据缺口)支持只改批大小就可能改变 NULL／默认值，已有测试全绿不回答该问题 |
-| 跨语言或运行时迁移 | 需要保留与允许改变的外部行为、部署条件；先验证一条完整调用路径 | 跨内存管理边界时加入所有权与释放检查，见 [VibeTunnel](../research/2026-10-12-vibetunnel-maintenance.md)；缺对应工具链时补运行能力，通用评审次数不能替代它 |
-| 探索原型 | 目标使用者、要试的行为、可放弃的范围；先做可体验的产物 | 看到产物后按具体反馈修改；涉及持久化／权限时补对应条件。反馈只说明“不喜欢”时追体验原因，不能用更多计划替代试用；依据和限制见 [15](../15-task-playbooks.md#10-原型和一次性脚本) |
-| 跨会话持续任务 | 当前目标、已改内容、相关证据、尚未解决的问题与决定理由；从实际 Git 状态续接 | 重复找不到状态再改善记录／检索；执行权限或关键决定缺失则明确阻塞，不默认安装记忆服务。见[长程恢复](../20-codex-long-horizon.md) |
+| 明确 bug | 失败命令／输入、预期与实际、版本；复现后定位修复 | 修复位置不清再追调用链和同类校验 |
+| 存量功能或优化 | 实际使用路径、兼容要求；沿现有实现完成改动 | 分批、缓存或并行改变数据语义时补契约测试 |
+| 跨语言或运行时迁移 | 必须保留的外部行为、部署条件；先走通完整调用路径 | 跨内存管理边界时补所有权／释放检查，缺工具链先补运行能力 |
+| 探索原型 | 目标使用者、要试的行为、可放弃范围；先做可体验产物 | 根据试用反馈或领域依据补质量约束 |
+| 跨会话持续任务 | 当前目标、Git 状态、证据、未决问题与决定理由；核实后续接 | 反复丢失状态才改善记录或检索 |
+
+这些选择保留了[实现位置](../research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)、[批处理数据语义](../research/2026-10-12-alchemy-utils-evolution.md#本侧整合复核与运行证据缺口)和[跨运行时迁移](../research/2026-10-12-vibetunnel-maintenance.md)的反例；它们说明该查什么，不能推成每个任务都要加同一流程。**[研究]**
 
 ### 五种情境：先做最小改变
 
-| 观察到的情况 | 最少输入 → 原生起点 | 何时再增加能力 |
+| 情境 | 最小改变 | 何时换路线 |
 |---|---|---|
-| 目标明确，已有失败测试 | 失败命令、预期行为与版本 → 复现、定位、修复并重跑 | 不能稳定复现才补输入与日志；目标冲突才问取舍，不重新开始完整需求访谈。见 [15 调试](../15-task-playbooks.md#2-调试) |
-| 感觉慢，但不知道慢在哪 | 当前阶段、开始时间和可见工具输出 → 先区分模型等待与命令执行 | 首输出迟先核对排队、上下文和推理阶段；测试慢先检查进程、依赖和最小测试集。仅当推理投入确实过高才调整 effort，不让测试慢也得到同一建议 |
-| 原型需求变化，或功能通过后仍有质量目标 | 具体反馈、目标操作、比较标准与必须保留的行为 → 更新目标，复用 brief／设计系统做最小可体验修改 | 选择依据不足时补领域资料或真实使用反馈；需要跨任务复用时再试窄 Skill。分别验目标质量与原有操作，涉及权限／持久化时补运行验证。见 [15 原型](../15-task-playbooks.md#10-原型和一次性脚本) |
-| 换了会话，已有充分状态 | 当前目标、Git 差异、失败命令和未决问题 → 读取现状后继续 | 反复丢失决定理由才改善交接或检索；状态已够用就不安装记忆服务 |
-| 只是不熟悉新框架 API | 锁定版本、调用位置和实际报错 → 查该版本文档/类型/最小例子 | 仍反复误用同一领域契约才补窄 Skill；缺运行入口才加工具，不直接安装完整工作流 |
+| 目标明确且已有失败测试 | 复现、修复、重跑 | 不能稳定复现再补日志；目标冲突才问取舍 |
+| 只知道“慢” | 先分模型等待与命令执行 | 测试慢查进程／依赖；确是推理投入过高才改 effort |
+| 原型变化或已有质量目标 | 更新目标，复用 brief／设计系统，验新旧行为 | 缺选择依据时补领域资料或真实反馈 |
+| 换会话但状态充分 | 核现状后继续，具体入口见长任务节 | 反复找不到决定理由才加检索／记忆 |
+| 不熟悉框架 API | 查锁定版本的文档、类型和最小例子 | 反复误用同一契约再考虑窄 Skill |
 
-这五条是文档情境走读的采用建议；慢的原因仍需依据当前执行信号判断，不能仅凭体感归因。**[经验：情境走读]**
+这是一组文档情境走读，未测量各路线的收益。**[经验]**
 
-**如何看待 Superpowers 等流程包**：若缺少的是版本 API、数据语义或真实运行反馈，先补这些内容；若 Agent 反复不取证就猜修复，再考虑有针对性的调试约束。有明确质量目标时先补会改变选择的领域依据，不因此默认采用完整流程。必要行为不退步，目标质量、费用、串行等待与人工审查／返工分别比较，再保留有用部分。现有材料不能证明 Astra 下它必然负收益，也不能以“规范”代替净收益证据。具体触发和控制要求见[已读 Skill 对照](../research/2026-10-12-community-source-records.md#小型入口的知识与控制成本)。**[研究：条件判断]**
+**Superpowers 等流程包按缺口试用。** 缺版本知识就补文档，反复猜修复才补调试约束；需要跨任务复用时再固化为窄 Skill。比较目标质量、费用、等待和人工返工后保留有效部分；没有 Astra 同任务对照能证明整包必然有益或必然负收益。详见[已读 Skill 对照](../research/2026-10-12-community-source-records.md#小型入口的知识与控制成本)。**[研究：条件建议]**
 
 ### 官方建议怎么用：按协作目标选择示例
 
-已从官方 Cookbook 的 GitHub 原文补读详细计划、持续 Goals、阶段工作流与迭代修复。官方示例并非同一种配置：ExecPlan 要求自主推进下一里程碑，另一份阶段流程要求每阶段等人批准；它们服务于不同任务。对于已授权、可连续推进的任务，✅ 借鉴目标、证据与恢复记录，⛔ 不把逐阶段停顿模板设为全局默认。**[一手；研究：判断，详见来源](../research/2026-10-11-codex-cookbook.md)**
+✅ **已授权连续任务，借鉴目标、证据和恢复记录，不默认每阶段停下。** 官方 ExecPlan 示例要求自主推进下一里程碑，另一阶段示例要求等人批准，应按任务契约选择。已读材料见[Cookbook 记录](../research/2026-10-11-codex-cookbook.md)。**[一手；研究]**
 
-官方迭代修复教程还带 `target_iteration` 教学条件，能在真实执行和 judge 已通过时继续判未通过。本轮离线模拟核实该逻辑；因此教程的三轮“改善”不能直接当成模型收益数据。读官方材料也要追到实际代码，并区分它针对的模型/CLI 版本。**[研究：源码分析与离线逻辑检查]**
+官方迭代教程的 `target_iteration` 教学逻辑可在执行和 judge 通过后继续判失败；本仓离线模拟已核实。因此“三轮改善”不能当模型收益数据，仍要核示例代码与适用版本。**[研究：源码及离线逻辑检查]**
 
 ### 项目规则先保证会加载，再考虑写得多全面
 
-✅ **采用**：在 AGENTS.md 写本项目真实的测试命令、架构约束、完成条件和容易踩的坑；领域细节放相关子目录，避免根文件挤占预算。不要为了“专业”复制一整套模型已经具备的规划、委派、评审流程。源码证明的是加载及截断机制；“更短一定提高正确率”没有本轮实验支持。**[一手：S1；研究：判断]**
+✅ **AGENTS.md 保留项目独有的信息。** 写真实测试命令、架构约束、完成条件和常见坑；领域细节放子目录，并核对根文件没有挤掉它。源码只证明加载及截断机制，不能证明“越短越正确”。**[一手：S1；研究]**
 
-在使用强推理模型处理目标明确的开发任务时，建议先保留原生工作流；补充内容对准可定位的能力缺口或有依据的质量目标，例如遗漏验证、缺版本知识，或需改善信息关系的表达。先复用现有资料，需要跨任务复用时再考虑窄 Skill；复杂需求不清楚时仍应先澄清。尚无 Astra 同任务对照证明这些补充的净收益，不能凭项目热度叠加完整流程，也不能把减少形式步骤变成跳过必要思考。**[研究：任务场景的采用建议；非模型对照结果]**
+强推理模型先保留原生工作流，新增约束对准遗漏验证、版本知识或明确质量目标；复杂需求仍需澄清。尚无 Astra 同任务对照证明叠加完整规划、委派、评审流程的净收益。**[研究：条件建议]**
 
 ### LSP：修复反馈与语义操作不能混为一谈
 
-[#8745](https://github.com/openai/codex/issues/8745) 中，贡献者 `etraut-openai` 表示可让 Codex 执行 lint/typecheck，其团队尝试 LSP 后没有得到最初期待的收益；使用者则提出引用查找、带作用域的重命名、跨模块符号移动等需求。读取的是可见首帖与部分评论，线程有分页，不代表审阅全部讨论。**[社区：原帖，2026-01 的交流，2026-10-10 读取]**
-
-✅ 日常修错先用项目已有编译器和类型检查；🧪 对跨语言或大量同名符号重构，再评估语义工具是否减少漏改和搜索往返。贡献者反馈没有附完整实验数据，不能推出 LSP 无价值；请求者提出的潜在收益同样不是已测结果。安装额外工具前先明确它补的是哪一种能力。**[研究：采用判断]**
+✅ **日常修错先用编译器和类型检查；大量同名符号或跨语言重构，再试语义工具。** [#8745](https://github.com/openai/codex/issues/8745) 中贡献者报告其团队尝试 LSP 未获预期收益，使用者则需要引用查找、作用域重命名和符号移动。已读首帖及部分评论，双方都未提供完整收益对照，不能据此判 LSP 普遍有用或无用。**[社区：2026-10-10 读取；研究：采用判断]**
 
 ### 两种真实迭代方式：看 diff 与看产品
 
-[#9203](https://github.com/openai/codex/issues/9203) 的可见评论里，一位使用者描述“完成任务 → 看代码 → 提交 → 新会话”，另一位描述“观察应用 → 不合意就撤销 → 卡住才读代码”。这是不同使用方式，不是熟练程度或效果排名；该页还有未加载评论。贡献者说明旧 undo 实现曾带来问题，用户也分享自然语言撤销提示，不能把后者当作可靠快照。**[社区：原帖]**
+✅ **视觉／交互修改走用户路径，行为／数据修改核 diff 与验证结果。** 探索前保存 Git 检查点，有他人未提交修改时先分清归属；局部撤销不使用整仓 reset。**[研究：采用判断]**
 
-✅ 根据任务保留两种反馈：视觉/交互修改应亲自走用户路径，行为与数据修改应核对 diff 和验证结果。探索性修改前保存可恢复的 Git 检查点，已有他人未提交修改时先界定归属；不要用整仓 reset 代替局部撤销。新会话适合独立任务，但不是每次小修必须清空上下文。**[研究：采用判断]**
+[#9203](https://github.com/openai/codex/issues/9203) 的可见评论同时描述了“看代码再提交”和“看应用再调整”，也提到旧 undo 的问题。这些自述支持保留两类反馈，不是效果排名；自然语言撤销不等于可靠快照。**[社区：部分评论]**
 
 ### 近期失败经验比“又做了多少代码”更有价值
 
-[Discussion #52835](https://github.com/openai/codex/discussions/52835)（2026-10-10）作者自述为约 25 人开发 KPI 系统，持续三四个月，测试、文档与构建产物很多，仍没有可靠端到端应用，并且无法确信哪个仓库版本是权威版本。一位回复者建议先走通员工创建、主管批准、进度更新和仪表盘读取的一条路径。这是两人的公开自述与建议，没有开放代码可供本轮验证，不能归因为 Codex 模型能力不足。**[社区：首帖和当时 1 条回复]**
+✅ **测试绿但产品坏，先指定运行版本和一个失败用户步骤，沿现有实现修通。** 特别检查部署、持久化与角色权限是否进入测试；加计划文档或换平台不能解决验收对象不清。**[研究：采用判断]**
 
-✅ 借鉴的是定位反馈缺口：给 Codex 一个具体失败步骤、预期/实际结果和运行版本，先沿现有实现修通；测试绿但产品坏时，检查测试是否覆盖部署、持久化与角色权限。直接增加计划文档、再来一轮 reviewer 或全面换平台，并未解决版本不确定和验收对象不清的问题。**[研究：独立分析]**
+[#52835](https://github.com/openai/codex/discussions/52835) 作者自述开发 KPI 系统数月、产物很多却没有可靠端到端应用，且不清楚权威仓库版本。原帖无开放代码，原核查只读首帖与当时一条回复，不能归因为 Codex 模型不足。**[社区：2026-10-10]**
 
 ### 长期记忆应保留理由，也允许用户改主意
 
-[Discussion #52372](https://github.com/openai/codex/discussions/52372)（2026-10-09–10）作者演示两个 Codex 进程通过 MCP 保存、取回被否决方案，明确两步均由提示触发，不能证明自动回忆或生产率改善，并披露帖子由 Codex 起草和发布。回复者举例：最初只想聊天发帖，后来主动要求网页信息流；旧限制若永久生效反而妨碍迭代。双方都不是插件独立效果评估。**[社区：首帖与 2 条回复]**
+✅ **先记录当前决定、理由、适用范围和替代关系；反复跨会话丢失时再试记忆服务。** 旧决定需要随新目标更新。[#52372](https://github.com/openai/codex/discussions/52372) 演示提示触发的 MCP 存取，回复提醒旧偏好可能妨碍新需求；这不是自动回忆或生产率效果评估。**[社区；研究：采用判断]**
 
-✅ 先在项目续接记录中写当前决定、理由、适用范围及替代关系；🧪 只有频繁跨会话找不到这些信息时再考虑记忆服务。需要被召回的不只是“禁止过什么”，还有“后来为什么改了”。这也适用于 Codex/Claude 交替工作，避免旧交接文档压过用户新要求。**[研究：采用判断]**
-
-**试用原生记忆时，分别核读取、贡献与作用域。** 只关闭 `generate_memories` 不等于停止读取已有记忆，不能据此做“无记忆”对照；需要隔离本聊天时，核实际配置和当前线程贡献状态，不只看开关名字。当前[官方文档](https://learn.chatgpt.com/docs/customization/memories#control-local-memories-per-chat)将 `/memories` 描述为聊天级选择，但所核0.163.0 TUI会持久写用户配置，随后另更新当前线程贡献状态，两步也可能部分成功。**局限：这是当前文档与固定CLI路径的范围差异，不能直接推广到App／Work或未来版本。** 详细实现及未解决的对应关系见[记忆控制记录](../research/2026-10-10-codex-continuity.md#记忆控制补研读取贡献与持久设置分别核)。[一手／研究]
+**原生记忆分别核读取、贡献与作用域。** 只关 `generate_memories` 不停止读取已有记忆，不能当作“无记忆”对照。[Memories 页](https://learn.chatgpt.com/docs/customization/memories#control-local-memories-per-chat)称 `/memories` 只改当前聊天，[命令页](https://learn.chatgpt.com/docs/developer-commands#configure-memories-with-memories)却写影响未来会话；0.163.0 TUI 先写持久配置、再改线程贡献状态，可能部分成功。该差异不外推 App／Work；详见[记忆控制记录](../research/2026-10-10-codex-continuity.md#记忆控制补研读取贡献与持久设置分别核)。**[一手；研究]**
 
 ### 可复核的正向实践：把业务歧义变成验收输入
 
-[Catalog Compare](../research/2026-10-10-catalog-compare.md) 是一份公开 Codex 辅助开发案例。本轮重跑其 95 项核心检查和 11 项导出检查，均通过；补充用 Python Decimal 从原 CSV 核对 41 个匹配行与 102 个预期数字字段，也通过。**[社区：开发过程自述；研究：离线复核]**
+✅ **把业务含义写成独立预期，保存输入和可重跑命令。** [Catalog Compare](../research/2026-10-10-catalog-compare.md) 把空值／零、未匹配／删除分开；已有离线复核通过 95 项核心检查、11 项导出检查及 41 行的 102 个数字字段核对。浏览器记录与当前 HTML hash 不同，不能沿用为当前 UI 验证，也没有模型对照。**[社区；研究：离线复核]**
 
-✅ 值得借鉴的是把“空值不等于零、未匹配不等于删除”变成独立预期，以及保存可重跑的输入和命令。它不是 Codex 性能评测：无完整开发轨迹或模型对照；浏览器记录的 HTML hash 与当前检出不同，不能沿用成当前全量 UI 验证。真实使用者还指出界面与 CSV 命名的歧义，说明测试绿之后仍需检查产物怎样被人理解。**[研究：采用判断]**
-
-另一个不同作者/任务的[公开开发过程](../24-community-workflows.md#codex-实际开发需求纠正与本机验证是不同的工作)来自 Simon Willison：明确 wheel 交付，失败后收紧 PR 范围，再本机验证并发现 Python 版本边界。它是 2025 年 Codex Cloud 案例，不是 Astra 实测；值得采用的是人的具体反馈与产物检查，而非追加一套通用流程。**[社区；经验：采用判断]**
+**交付格式与运行环境也要进入验收。** Simon Willison 的[另一公开案例](../24-community-workflows.md#codex-实际开发需求纠正与本机验证是不同的工作)通过明确 wheel、收紧 PR 范围和本机验证发现 Python 版本边界；它是 2025 年 Codex Cloud 过程，不能当当前 Astra 效果数据。**[社区；经验：采用判断]**
 
 ### 长时运行与 Dots：按能力缺口增加任务
 
-✅ 交给 dot 的长任务，先说清目标、验收、允许的操作和停止条件；阶段成果之后继续已授权工作，遇到权限或必要输入缺口再报告阻塞。普通任务的后续不必改成高频排程，固定周期的重复工作才另设计划；恢复与发布见 [20](../20-codex-long-horizon.md)。**[一手：[任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory)；经验：采用判断]**
+✅ **继续同一任务先续接，试替代方案再分支，上下文拥挤再压缩。** 当前 CLI 官方说明给出了明确入口，补核于 2026-10-17（UTC+8）：**[一手：[CLI reference](https://learn.chatgpt.com/docs/cli/reference)、[Developer commands](https://learn.chatgpt.com/docs/developer-commands)]**
 
-- **先校准一轮，再扩大持续责任**：例如只选一个产品更新来源或一份待更新页面，明确资料、交付位置与需要人判断的变化；先检查首轮实际产物，纠正版式、事实和操作边界，再扩大到更多来源或交付物。依据是[官方起步建议与不同作者的网页／站点工作记录](../research/2026-10-12-development-conditions.md#dot-持续责任起步先校准产物再扩大范围)；早期自报支持这种起步方式，未证明长期无人监督可靠性 **[一手／社区；经验：采用判断]**
+| 你要什么 | 选择 |
+|---|---|
+| 继续已保存工作 | `codex resume <SESSION_ID>`；`--last` 默认只找当前目录，跨目录查找加 `--all`；不支持 `--worktree` |
+| 保留旧聊天、试另一方案 | `codex fork <SESSION_ID>`；还需隔离代码时用 `codex fork <SESSION_ID> --worktree`，限本地且必须给明确 ID |
+| 腾出当前上下文 | `/compact`；只想看聊天摘要则用 `/recap`，后者不是释放上下文的入口 |
+| 独立任务或独立评审 | 开新聊天，给必要目标和证据；不继承无关讨论 |
 
-- **持续改仓库时，把发布与验收绑到同一版本**：调查和不同文件的修改可以并行，整合发布由一个执行者串行完成；新文件纳入暂存检查，从固定 tree 验证，再按已检查提交发布并回读远端。主干前进就重新整合，不把混合工作树或旧 `origin/main` 当成发布依据。详见 [20 的受检树边界](../20-codex-long-horizon.md#6-工作树隔离不是权限隔离)与[发布恢复](../20-codex-long-horizon.md#git-发布只传差异失败从已核实的断点继续)。这是本仓库发布与返工的单例经验，不代表 dot 能无限持续运行或跨项目效果已验证 **[经验：2026-10-16]**
+**接续前仍核当前 Git 状态与目标。** fork 保留会话轨迹不等于文件快照，压缩也不替代持久验收记录；上述为文档契约，未运行当前客户端验证。无论是否开新聊天，部署或发布结果未知时先对账。**[研究：采用边界；[20 恢复](../20-codex-long-horizon.md)]**
 
-- **同一电脑执行，不代表同一种任务契约**：dot 的任务可以由云端协调、使用已连接电脑的工具，不能只凭 Cloud 标签判断文件在哪里；先核目标电脑与实际执行结果。若现有流程依赖本地 command／prompt／agent Hook，保留支持它的 local-only 工作流：官方当前明确这些处理器及本地配置／插件目录的 Hook 不受云协调支持，即使工具在本机运行。企业远程 MCP Hook 是另一项有条件能力，不是个人账户的默认替代。详见[协调、执行与Hook范围](../research/2026-10-12-development-conditions.md#云端协调与本地执行同机不等于同一hook契约)。**[一手：2026-10-16 官方契约；经验：采用判断]** 局限：文档支持选择与核验边界，不证明某次连接、工具或现有会话已经可用。
+**交给 dot 时，先说清目标、验收、操作授权和停止条件。** 先校准一个交付物，再扩大持续责任；普通任务后续继续在任务内处理，固定周期重复工作才另排程。依据为[官方任务说明](https://learn.chatgpt.com/docs/dots/tasks-and-memory)及[起步案例](../research/2026-10-12-development-conditions.md#dot-持续责任起步先校准产物再扩大范围)，尚未证明长期无人监督可靠性。**[一手／社区；经验]**
 
-- **查询先用已具备的能力**：连接器已提供完整原文、版本和所需结果，就不为同一查询再启动 shell 或执行任务；需要运行测试、本地改动、专属应用，或宿主规定必须由执行环境承接时，保留必要委派
-- **同一交付物先尝试原任务接续**：确认受支持的读取与续接路线，再补本轮变化、仍有效的验收与关键来源，不默认复制全部历史；读取失败先查具体路线，不直接认定原任务不存在。独立评审仍用新上下文，不以续改代替自审
+**持续改仓库时，发布与验收绑定同一版本。** 调查可并行，整合发布由一人串行完成；主干前进就重新整合、验证并回读远端，详见 [20 的受检树](../20-codex-long-horizon.md#6-工作树隔离不是权限隔离)及[发布恢复](../20-codex-long-horizon.md#git-发布只传差异失败从已核实的断点继续)。这是本仓单例经验，不证明 dot 可无限持续运行。**[经验：2026-10-16]**
 
-依据是官方插件与任务边界、10 月 9 日接续更新，以及公开的冗余包装与接续失败／恢复反例，详见[证据与撤回条件](../research/2026-10-12-development-conditions.md#dot-效率选择少一层包装不等于少一项验收)。**关键局限**：这些材料支持按能力和上下文选择路线，尚未证明节省多少耗时、token 或费用，也不保证所有客户端的原任务都能接续。**[一手；社区；经验：条件建议]**
+**依赖本地 Hook 时，先保留 local-only 工作流。** dot 可由云端协调、在已连接电脑执行，但当前官方不支持云协调任务使用本地 command／prompt／agent Hook 或本地配置／插件目录 Hook；企业远程 MCP Hook 另有资格。详见[协调与 Hook 契约](../research/2026-10-12-development-conditions.md#云端协调与本地执行同机不等于同一hook契约)。文档不能证明某次连接已可用。**[一手：2026-10-16；经验]**
+
+**查询先用已有能力，同一交付物先尝试受支持的原任务接续。** 连接器已返回充分原文就不再套 shell；需要测试、本地改动、专属应用或宿主要求时保留执行委派。读取失败先查路线，独立评审用新上下文。详见[效率选择与反例](../research/2026-10-12-development-conditions.md#dot-效率选择少一层包装不等于少一项验收)，未测得统一的耗时或费用收益。**[一手／社区；经验]**
 
 ### 慢、保守和反复停下来：先辨认是哪一种问题
 
-本轮结合官方源码与近期原帖，形成以下判断；完整来源、版本边界和反例见 [机制与续接记录](../research/2026-10-10-codex-continuity.md)。**[一手 + 社区；建议为研究判断]**
+**先定位卡在哪，再改配置。** 下表据固定源码与原帖，完整版本和反例见[机制与续接记录](../research/2026-10-10-codex-continuity.md)。**[一手／社区；研究：采用判断]**
 
-| 现象 | 已核对的机制 / 反馈 | 当前采用建议 |
+| 现象 | 先做什么 | 关键限制 |
 |---|---|---|
-| 一直规划、不实施 | 原生 Plan 模式禁止实施修改；普通 `update_plan` 清单并非 Plan 模式 | ✅ 目标清楚时用执行模式；规划需要存在，但不必每次切 Plan 或再加规划 Skill |
-| 改了 effort 但行为没有对应变化 | CLI 的 Plan 有单独 effort 覆盖，普通 effort 更新不改活动 Plan mask | ✅ 先检查当前模式及生效设置；不能只看配置文件里一个值 |
-| 长会话首输出慢，工具尚未运行 | #52555 的单对测量在 reasoning token 为零时仍有明显差异；输入规模不同 | 🧪 保存必要状态后比较新会话；不能简单归因于“想太久”或承诺压缩解决 |
-| 说知道未完成，却结束回合 | #52345/#50771 有具体自述；运行时回合续接不是业务验收 | ✅ 阶段汇报后仍推进已授权剩余工作；有已知反例就让它影响下一动作，而非只加结尾免责声明 |
-| 准备全面重写底层提示来提速 | 官方 schema 对 `model_instructions_file` 明确强烈不建议 | ⛔ 不作为默认优化；先删掉重复的项目级流程，保留必要反馈与约束 |
+| 一直规划、不实施 | 目标清楚时切执行模式 | 原生 Plan 禁止实施修改；普通 `update_plan` 清单不是 Plan 模式 |
+| effort 改了，行为没变 | 查当前模式的生效设置 | CLI Plan 有单独覆盖，普通 effort 更新不改活动 Plan mask |
+| 长会话首输出慢，尚未跑工具 | 保存必要状态后比较新会话 | #52555 单对测量输入不同，reasoning token 为零仍有延迟差异；不能承诺压缩会提速 |
+| 知道未完成却结束回合 | 继续已授权剩余工作，让反例改变下一动作 | #52345/#50771 是具体自述；运行时续接不等于业务验收 |
+| 想重写底层提示来提速 | 先删重复项目流程，保留目标反馈 | schema 强烈不建议 `model_instructions_file`，不作为默认优化 |
 
-**轻量不等于失去目标反馈。** 强 Agent 上不默认叠加完整 Superpowers，仍是当前建议；但它的理由是避免没有新增价值的步骤，不是认定模型不会偏离、停工或忽略验证结果。高 effort 抱怨没有同任务对照，不能据此统一推荐降低 Astra effort。**[研究：采用判断]**
+**轻量仍要保留验证与目标反馈。** 不默认叠加完整流程，是为了少做无增益步骤；高 effort 抱怨没有同任务对照，也不足以统一建议降低 Astra effort。**[研究：采用判断]**
 
 ## 来源
 
-- 分项核实日期与适用范围：[Codex 证据记录](../research/2026-10-10-codex-continuity.md)
+- **本轮补核（2026-10-17，UTC+8）**：[CLI reference](https://learn.chatgpt.com/docs/cli/reference)、[Developer commands](https://learn.chatgpt.com/docs/developer-commands)。先检索再读原文，改会话选择建议；未运行客户端
+- **各节完整证据、反例与日期**：[Codex 机制与续接记录](../research/2026-10-10-codex-continuity.md)、[开发条件记录](../research/2026-10-12-development-conditions.md)、[官方 Cookbook 核查](../research/2026-10-11-codex-cookbook.md)
+- **S3 审批契约（2026-10-11）**：[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)、[配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)、[托管配置](https://learn.chatgpt.com/docs/enterprise/managed-configuration)
+- **S2 固定审批实现**：[CLI 组合开关](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/utils/cli/src/shared_options.rs)、[headless exec](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/exec/src/lib.rs#L778-L810)、[默认策略](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/guardian/policy.md)、[审批路由](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/ext/guardian-reviewer/src/routing.rs)、[执行编排](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/tools/orchestrator.rs)、[托管要求](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/guardian/decision.rs)
+- **S1 固定加载实现**：[agents_md.rs](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/agents_md.rs)、[agents_md_tests.rs](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/agents_md_tests.rs)；S1/S2 为只读源码核查，未运行 Rust 测试或审批服务
+- **当前官方入口**：[Models](https://learn.chatgpt.com/docs/models)、[AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Import](https://learn.chatgpt.com/docs/import)、[更新记录](https://learn.chatgpt.com/docs/whats-new)
 
-- **S3 当前审批契约（2026-10-11）**：[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)、[配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)、[托管配置](https://learn.chatgpt.com/docs/enterprise/managed-configuration)。本次独立读取；区分审批策略与 UI、长期配置与单次提权、Computer Use App 审批例外，以及 `policy` / `extra_policy` / 托管优先级。未运行客户端或审批服务。
-
-- **S2 审批实现（2026-10-11，只读核对）**：[CLI 组合开关](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/utils/cli/src/shared_options.rs)、[headless exec 配置](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/exec/src/lib.rs#L778-L810)、[审批路由](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/ext/guardian-reviewer/src/routing.rs)、[执行编排](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/tools/orchestrator.rs)、[托管要求判断](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/guardian/decision.rs)、[默认策略](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/guardian/policy.md)。未运行审批服务，不据此保证各客户端一致。
-
-- **S1 官方实现（固定提交）**：[agents_md.rs](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/agents_md.rs)、[agents_md_tests.rs](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/core/src/agents_md_tests.rs)。关键测试：`total_byte_limit_truncates_later_project_docs`、`agents_md_preferred_over_fallbacks`。只读核对，未运行 Rust 测试。
-
-- [learn.chatgpt.com：What's new](https://learn.chatgpt.com/docs/whats-new)、[DevDay 2026](https://learn.chatgpt.com/docs/whats-new/devday-2026)、[Dots](https://learn.chatgpt.com/docs/dots)（Markdown 版：在 URL 后加 `.md`）
-
-- [openai/codex](https://github.com/openai/codex)、[Releases](https://github.com/openai/codex/releases)、[Issues（按点赞排序）](https://github.com/openai/codex/issues?q=is%3Aissue%20sort%3Areactions-%2B1-desc)
-- 官方文档：[What's new](https://learn.chatgpt.com/docs/whats-new)、[Models](https://learn.chatgpt.com/docs/models)、[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)、[AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Import](https://learn.chatgpt.com/docs/import)
-- HN：[GPT 6.1 Sol](https://news.ycombinator.com/item?id=49896586)、[Codex 上下文缩减](https://news.ycombinator.com/item?id=48965850)、[子 Agent 提示词加密](https://news.ycombinator.com/item?id=48905028)、[A week of using Codex more than Claude](https://news.ycombinator.com/item?id=49393051)
+**仍保留 L2：** 记忆开关的文档／CLI 作用域差异尚未解决，其余机制沿用各节核查范围。文档与固定源码可支持有边界的 L3；本轮只补会话入口，未完成整页关键事实交叉核对。**[研究：成熟度判断]**
