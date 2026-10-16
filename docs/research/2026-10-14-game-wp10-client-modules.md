@@ -1276,3 +1276,9 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 **代价与撤回。** [研究] 筛选增加多视口、集合切换及数据保留责任；全体更简单，原低频牺牲连续感。二改快速入屏对象／附属视口后核近景、总览、远主＋近窗、出入屏、缩放反向及暂停恢复；危险难追或突跳就扩范围／撤回。模拟、碰撞与索引照原契约，不套 zoom 阈值。
 
 [研究] 未测筛选成本、帧时或辨识；0.5.6 留代码不证明全版无回归，历史试玩不覆盖目标设备。不排名全体／选择性插值或推断 AI 收益。
+
+## 改键持久化：既有选型回流
+
+2026-10-17（UTC+8）。[研究] 回流[既有先导](../../experiments/m6-search-pilot-20261017.json)的 arms[2].result、grades[1].report：Unity 6.3 先用 Input System 1.20.1 加应用薄层，不重做选型。原生[override保存／加载](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)配稳定 binding GUID；项目负责冲突、落盘及版本迁移。按索引保存会受重排影响，新增绑定拓扑也不是 override 的保存对象；恢复默认须同步旧设置。[一手／研究]
+
+UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/UEnhancedInputUserSettings)已有映射、重置与保存，默认固定存档槽；[映射参数](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/FMapPlayerKeyArgs)区分 MappingName、slot、设备与 profile，不套 Unity GUID。[研究] 默认沿原生能力，身份／结构变更才补迁移；文档不保证任意动作改版自动恢复。此次是资料支持结论的入口回流与 UE 契约对照，无新增效果、引擎或设备验证。

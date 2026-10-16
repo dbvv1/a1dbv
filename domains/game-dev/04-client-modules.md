@@ -81,7 +81,7 @@ Unity 6.3 URP 内置 Pixel Perfect，先统一 PPU、分辨率与缩放；Pixel 
 | 资源与内存 | 小常驻内容直接引用；指定释放者，拒绝旧结果 | 分组驻留／分发才用 Addressables／Asset Manager；所有权不清先修生命周期 |
 | 动画 | Unity Animator／Clip／Blend Tree；UE Animation Blueprint／Montage，位移归属、打断、复位明确 | 接触缺口才加 IK／Playables，基础问题先修资产；换装备后核[范围与屏外更新](assets/animation.md#换动作后消失或突跳先分包围范围与屏外更新) |
 | 物理与碰撞 | Unity 原生 2D 或 3D／UE Chaos，明确碰撞层与幂等命中结算 | 具体漏碰／稳定性问题才用 CCD／substep；防穿透破坏反弹／推动规则则撤回配置 |
-| 输入 | Unity 已发布兼容 Input System／UE Enhanced Input，逻辑动作、改键、失焦与断连恢复 | 复杂菜单路由再评估共享层；重复输入先修权限，避免堆 debounce |
+| 输入 | 兼容的原生 Input System／Enhanced Input；改键用 override／UserSettings 保存；另做失焦／断连恢复 | 自补冲突规则；保稳定身份，结构变化再迁移旧设置，重复输入先修权限；[改键依据](../../docs/research/2026-10-14-game-wp10-client-modules.md#改键持久化既有选型回流) |
 | UI | 保留稳定 uGUI／UE UMG；新布局密集菜单可试 UI Toolkit | 重复菜单逻辑才抽共享层／试 CommonUI，焦点或返回失效就撤回 |
 | 音频 | Unity AudioSource／AudioMixer／DSP 调度，UE Audio／MetaSounds；分组音量、并发和暂停政策 | 交互音乐／制作成本值得才试 FMOD，集成抵消收益则保留原生 |
 | 存档 | 显式 DTO、已有序列化器、小型迁移函数；UE SaveGame 槽位，保留旧档与失败反馈 | 字典／树迁移再加兼容序列化库；叙事才评估 ink。恢复进度错误时先修内容迁移 |
