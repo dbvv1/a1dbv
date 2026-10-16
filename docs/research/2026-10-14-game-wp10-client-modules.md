@@ -1132,6 +1132,17 @@ WP9 已处理资产更新、依赖重建和引用；WP10 已写加载退出、UI
 
 **实际范围：** [研究] 仓库查重、公开文档、固定源码与创作者原文静读；共同验证边界见页首，本节未开展对白体验测试。
 
+## 高速碰撞补研：线性、旋转与误接触
+
+核实：2026-10-16 UTC。主线三；改变 04 物理行只按“穿透／稳定性”启用 CCD／substep 的粗分：先分线性漏碰、旋转漏碰与误接触，再选原生路径。不新增碰撞框架；以下是公开契约与问题报告，未运行引擎或复现样例。[一手／研究]
+
+- **Unity 6.3 内置 3D 的模式不是无条件升级链。** [一手] [选择表](https://docs.unity3d.com/6000.3/Documentation/Manual/choose-collision-detection-mode.html)建议从 Discrete 开始，漏碰时试 Continuous Speculative，仍漏碰／误碰时按静态或动态刚体对象比较 Continuous／Continuous Dynamic；但同页明确后两者不适合旋转造成的碰撞。[sweep 原理](https://docs.unity3d.com/6000.3/Documentation/Manual/sweep-based-ccd.html)沿当前线速度计算 TOI，碰撞后可重算速度与再扫掠；固定支点的弹球挡板是官方旋转反例。[研究] 因此不能只按“更精确”把旋转物体换到 Continuous Dynamic，也不能把这里的 CCD 内部子步当作全局提高模拟频率。范围不含 Rigidbody2D 或 ECS Unity Physics。
+- **Speculative 的撤回条件不只有漏碰。** [一手] [speculative 原理](https://docs.unity3d.com/6000.3/Documentation/Manual/speculative-ccd.html)按线运动及角运动扩张 AABB；最近点法线可能把细分表面接触误判为斜坡，让高速球无故向上跳。若求解阶段获得额外能量、越出原先扩张范围，仍可能漏碰。[研究] 对需要准确线性接触的物体比较 sweep；有角运动时继续同时核误碰／漏碰，不承诺换模式或提高频率必然修好。官方图例是机制反例，不是本仓库体验／性能实测。
+- **UE 5.8 分别查 Chaos 刚体与 ProjectileMovement。** [一手] [FBodyInstance](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/FBodyInstance)以 bUseCCD 为组件启用 CCD；[UProjectileMovementComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UProjectileMovementComponent)以 bSweepCollision 控制扫掠检查，bForceSubStepping 通过更小步改善轨迹精度；UpdatedComponent 若模拟物理，则初始发射参数后由物理接管。[研究] 先确定谁推进运动，不能给两条路径同时套 Unity 模式，也不据这些 API 宣称 Chaos CCD 保证角运动命中。[物理 substep](https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-sub-stepping-in-unreal-engine)分割帧时间以改善复杂物理资产稳定性，受 Max Substeps 和 Max Physics Delta Time 限制；不能把时间细分当作更换检测算法。多回调已由 [04 物理行](../../domains/game-dev/04-client-modules.md#2-十一个模块的最低交付线)覆盖，不新增另一套结算规则。该文仍含 APEX／mobile 旧措辞，本轮不据页眉推导平台支持现状。
+- **真实报告限定到其版本和配置。** [一手：官方问题记录] [UE-358355](https://issues.unrealengine.com/issue/UE-358355)给出 Vehicle 模板复现步骤：高速 Chaos Vehicle 开 CCD 后碰撞 One Way Interaction 动态物体，出现不应发生的明显减速；开／关 CCD 是报告里的对照。核实时为 Unresolved，列影响 5.5／5.6／5.7，目标修复 6.0；不能推断 5.8 已确认受影响或 6.0 已修复。原因归于 CCD sweep 是 licensee 的猜测，本轮未证实，也不推荐报告中的内部回调绕过。[研究] 它只支持新增 CCD 后还需验响应政策，不能推广为所有 Chaos 接触或 Unity speculative 的同一种故障。
+
+**第二次修改只预注册：** [研究] 保留直线高速球／薄墙基线，再把碰撞机关改为绕支点旋转的杆，并加入细分接触表面；分别记录漏碰、无故偏转与接触后的响应，先比较适用检测方式，再比较步长及成本。UE 分别保留 ProjectileMovement 驱动和 Chaos 模拟路径，核启用物理后的运动接管；仅项目确需 One Way Interaction 时加入该规则对照。若防穿透破坏既定反弹／推动规则，撤回该配置并定位，不为“更精确”全局加档。尚未执行，不能宣称质量或性能收益。
+
 ## 客户端模块页历史页头
 
 历史原文转存：2026-10-16（UTC+8），来自 `domains/game-dev/04-client-modules.md` 的原页头。以下保留当时的核查日期、范围和来源说明；相对链接以原页面路径为基准。
