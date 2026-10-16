@@ -1,10 +1,10 @@
 主线：二／三／四；G1 材质、特效的选型、迭代与发行
-改变的建议：[研究] 共同参数源与可控运行时优先；静态重复表面缺 UV 可先试原生投影，语义图案／变形不沿用；按可读性与二改决定保留
-新证据：[一手／研究] 固定导出／Triplanar 实现、引擎契约与真实作者反例；保留许可及视觉层次证据，未实测资产、性能或工时
+改变的建议：[研究] 共同参数源与可控运行时优先；有限配色共享预设、独立损伤才分对象参数；原生投影与合批迁移按需求及代价保留
+新证据：[一手／研究] 固定导出／Triplanar／溶解实现、Unity 6.3 与 UE 5.8 参数契约、真实作者迁移反证；未实测资产、性能或工时
 
 # WP5 材质与特效：共同参数源、运行时与生成边界
 
-核实时间：2026-10-14（UTC+8）；动态事实复核于同日完成。本轮仅阅读公开文档／源码／论文／开发者记录；没有安装软件、下载权重、运行模型或游戏引擎、购买服务、访问用户电脑。证据中的运行数字均标明来源，不是本轮实测。正文见[材质与特效](../../domains/game-dev/assets/materials.md)，授权汇总见[WP1](2026-10-14-game-wp1-licensing.md)。
+核实时间：2026-10-14（UTC+8）；参数复用补核于 10-16，三平面补核于 10-15，原动态事实表仍为 10-14。本轮仅阅读公开文档／源码／论文／开发者记录；没有安装软件、下载权重、运行模型或游戏引擎、购买服务、访问用户电脑。证据中的运行数字均标明来源，不是本轮实测。正文见[材质与特效](../../domains/game-dev/assets/materials.md)，授权汇总见[WP1](2026-10-14-game-wp1-licensing.md)。
 
 ## 动态事实表：采用前再核，最迟 2026-11-14
 
@@ -226,3 +226,41 @@
 - [经验：后续预注册，未执行] 对同一静态岩壁进行加高、旋转、拼接及改光照；分别看轮廓、纹样尺度、混合带、接块与 normal。把其中一块改成活动机关作为撤回用例。保留原生投影仅需共享参数修改的路线；若须逐面绘补或完整重生，则换现成 UV 资产／收窄需求。若项目使用原点迁移，另加迁移前后对照，不凭静止截图验收。
 
 [研究] 本次只读官方文档、固定公开源码及两篇作者原文；无引擎、shader 编译、资产像素评审、性能或主动工时测量。采用评级为🧪，不新增框架、运行模型或推断已发行质量。独立复核及仓库检查另按最终交付范围记录。
+
+## 重复资产的参数复用不是免费合批
+
+核实：2026-10-16（UTC+8）。[研究] 主线二／三；补全既有“少量主材质、只改颜色／磨损”的运行时选择：✅ 有限预设共享、独立连续状态才分对象参数；🧪 性能路径迁移须改善已定位的热点。不同项目的实现与反证支持这项有条件选择，不支持通用性能排名。
+
+### Unity 6.3：先分材质所有权，再分绘制路径
+
+1. **共享与独占。** [一手] [`sharedMaterial`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Renderer-sharedMaterial.html) 返回的材质被修改时，全部使用者及项目中的材质设置都会受影响；给 renderer 分配另一份已有预设，不等于修改预设。访问 [`material`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Renderer-material.html) 会按需实例化并让该 renderer 独占，此后使用该实例，不是每次 getter 都新建；使用方负责销毁。 [研究] 少量确需独占的对象可显式管理实例，不为每个摆放副本默认复制，也不为局部损伤修改共同源。
+2. **制作继承与运行时数据。** [一手] [`Material.parent`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Material-parent.html) 支持变体继承及逐属性覆盖，但只在 Editor 存在，构建时层次扁平化。[研究] 有限配色预设可借它集中维护共同属性，不据此承诺运行时改父材质会广播给全部子变体，或共享一次绘制。
+3. **MPB 的内存取舍。** [一手] [MaterialPropertyBlock](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MaterialPropertyBlock.html) 支持同材质的少量属性差异，传入 block 会被复制，容器可复用；不支持改变 render state。它不兼容 SRP Batcher。[研究] 省完整材质副本不等于省整帧成本，不能从 Built-in 的用法推断 URP／HDRP 一律应换 MPB。
+4. **SRP Batcher 不等于一次 draw。** [一手] [原生机制](https://docs.unity3d.com/6000.3/Documentation/Manual/SRPBatcher.html) 减少同 shader variant 的准备／状态切换，允许不同材质；持久化材质常量缓冲不等于合并全部 draw calls。[研究] 有限预设且已在该路径的项目，先保留兼容基线，不为少几个材质盲目换路径；反复改材质数据也不能假定更新免费。
+5. **传统 instancing 是另一项有条件选择。** [一手] [6.3 GPU instancing](https://docs.unity3d.com/6000.3/Documentation/Manual/GPUInstancing.html) 与[切换说明](https://docs.unity3d.com/6000.3/Documentation/Manual/SRPBatcher-Incompatible.html) 要求核 mesh／material、shader 支持及 renderer；该 MeshRenderer 路径不支持 SkinnedMeshRenderer，转换前后应测 Profiler。对 Built-in 自定义 shader，[逐实例属性契约](https://docs.unity3d.com/6000.3/Documentation/Manual/gpu-instancing-per-instance-properties.html) 要求属性声明为 instanced，MPB 中放 non-instanced 属性会禁用 instancing。这个 shader 配方不能当成 URP 通用实现。
+6. **GPU Resident Drawer 是反泛化边界。** [一手] 6.3 [GPU Resident Drawer](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/gpu-resident-drawer.html) 使用 BatchRendererGroup 做 GPU instancing，却要求开启 SRP Batcher；另有 Forward+、compute／平台等条件。[对象兼容文档](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/make-object-compatible-gpu-rendering.html) 排除 MPB，要求支持 DOTS instancing 的 shader。[研究] 所以不能写“所有 GPU instancing 与 SRP Batcher 互斥”，也不能把启用多个名称不同的优化当作收益相加；本题不据此建议迁移整个渲染管线。
+
+### Unreal 5.8：实例化材质与实例化绘制不同
+
+- [一手] [Material Instances](https://dev.epicgames.com/documentation/en-us/unreal-engine/instanced-materials-in-unreal-engine) 区分固定外观的 MIC 与运行时可改的 MID；Scalar／Vector 参数不等于 Static Switch，后者的实际组合会产生编译变体。[研究] 少量配色／损伤沿用原生实例即可，不以“少编译 shader”推导“少 draw calls”。
+- [一手] [Mesh Drawing Pipeline](https://dev.epicgames.com/documentation/en-us/unreal-engine/mesh-drawing-pipeline-in-unreal-engine) 的动态合并要求相同 shader bindings；相同 Material Instance 可以共享 material uniform buffer，网格、lightmap 与其它绑定仍要匹配。[研究] 多对象共用同一个 MID 的状态，与每对象新建 MID 不同；不能写“一用 MID 就不能合批”，也不能因父材质相同就假定分别创建的 MID 会合批。共享 MID 的参数同时影响它的使用者，不适合彼此独立的损伤状态。
+- [一手] [CPD](https://dev.epicgames.com/documentation/unreal-engine/storing-custom-data-in-unreal-engine-materials-per-primitive?lang=en-US) 把标量／向量数据放在 primitive，通过索引与材质参数对接；vector 占连续索引，蓝图和材质要保持一致。官方示例有 draw-call 对比，是示例机制证据，不是本项目收益。[研究] 重复几何只差这些值、每对象材质分裂已是热点时才试；纹理资源、渲染状态或 shader variant 的变化不能仅靠几个浮点索引自动统一。
+- [一手] [ISM 文档](https://dev.epicgames.com/documentation/unreal-engine/instanced-static-mesh-component-in-unreal-engine) 区分 Custom Primitive Data 与 Per Instance Custom Data，并说明材质等属性由组件共享。[研究] 已有 ISM／HISM 中，各副本独立变色应核每实例数据入口，不把组件参数误当成每实例参数；不为本题先建完整实例管理器。
+
+### 真实项目：采用机制、修订与收益反证
+
+| 来源 | 实际实现／修改 | 能支持什么；不能支持什么 |
+|---|---|---|
+| [Chop Chop 的 DissolveHelper，固定 `608eac98…`](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Assets/Scripts/Effects/DissolveHelper.cs) | [一手：源码] 延迟创建并复用 MPB，在协程中更新 `_Dissolve`，再写给 MeshRenderer | [研究] 支持局部效果保留共同材质、只改参数。项目为 [2020.3.17f1](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/ProjectSettings/ProjectVersion.txt)／[URP 10.6.0](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Packages/manifest.json)，[README](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/README.md) 声明 2021 年停止开发；这是历史 demo，不是当前 Unity 6 性能或发布质量证明 |
+| [BADLADS，MarkJGx，2021-03-25](https://badlads.chemicalheads.com/blog/the-large-update-part-2) | [一手：开发者历史自述] 帽子、车灯、建造物的动态材质改为 CPD，但称测试场景改善 negligible | [研究] 参数迁移确实用于游戏，同时反证减少材质／draw calls 必然明显加速。前一段帧时间减半归因于 PLOD，不是 CPD；不把其巨大 uber shader 或“零额外 draw call”措辞推广到全部场景 |
+| [Concord：Evan Liaw 的 Gradient Remap 说明](https://evanliaw.artstation.com/projects/YGBRB3) | [一手：作者实作说明] 材质实例层次便于全地图改色；为不同颜色的 draw-call 成本，从色块实例转向 ramp／LUT＋CPD | [研究] 交叉支持编辑便利与运行时数据组织的取舍。原流程仍制作颜色图、gradient mask，个别需修整，并损失部分颜色保真；不把 AAA 美术流程推荐给单人零手修项目，也不把纹理内存收益归因于 CPD |
+
+[一手／研究] Chop Chop 根 [LICENSE](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/LICENSE) 为 Apache-2.0；这里只分析公开机制，未复制代码、shader、图像或游戏资产。项目许可不替代 Unity 包及外部素材许可；BADLADS／Concord 作者文章也不授予其游戏资产复用权。UE 仅核公开文档，没有访问受限引擎源码。
+
+### 二改与撤回：验证状态和预算，不只看材质数
+
+[研究／经验：后续预注册，未执行] 给同一组道具新增阵营色，再让一个副本独立受损／溶解；覆盖取消、池化重用和场景切换。保留同一网格／UV／mask，观察是否串改其它对象、重用后是否残留、材质实例是否随每次使用继续增加。AI 可核参数写入者、资源所有权与实例计数，人确认外观语义和可读性。
+
+[一手／研究] Unity [SetPropertyBlock](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Renderer.SetPropertyBlock.html) 规定 per-material block 优先于 per-renderer block，传 null 可关闭相应 overrides；[GetPropertyBlock](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Renderer.GetPropertyBlock.html) 会完整覆盖传入容器。多个效果写同一 renderer 时核合并／恢复责任，不能让溶解清理顺手删掉阵营色；此为检查点，不据此另造全局参数框架。
+
+[研究] 对照既有路径与候选路径时，固定目标设备、画面和并发，记录实际绘制路径、draw calls／SetPass、shader variants、CPU／GPU 帧时间及驻留内存。只在对应热点和预算改善、状态正确且维护可承受时保留迁移；只有计数器下降而帧时间未改善，或出现更多恢复例外时撤回。这里没有引擎运行、shader 编译、性能／工时实测，源码与开发者报告不替代它们。
