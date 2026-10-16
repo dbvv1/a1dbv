@@ -229,6 +229,14 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 
 [UI 输入](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/UISupport.html#distinguishing-between-ui-and-game-input)不自动阻止 gameplay 接收同一点击；[timeScale=0](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Time-timeScale.html)与 [AudioListener.pause](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-pause.html)管不同时间域。[一手] **[研究] 蓄力开菜单、按住移动失焦、设备断连、菜单声音例外作为联合用例，而非各模块单独“正常”。**
 
+### 本地多人：设备归谁，菜单由谁操作
+
+**[研究] ✅ 仅在项目承诺本地多人时，按玩家实例连接输入；需要同时操作各自菜单时，再隔开 UI 输入来源与目标范围。** Unity Input System 1.20.1 的 `PlayerInput` 路线应读取对应实例的回调或 `actions`，不改读项目级 `InputSystem.actions`；`Gamepad.current` 是全局最近连接／使用的手柄，不能充当某个玩家的身份。[一手：[玩家输入契约](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/use-player-input-component-ui.html)、[current 定义](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.Gamepad.html#UnityEngine_InputSystem_Gamepad_current)]
+
+**[一手／研究] 独立 uGUI 菜单沿用各自的 `InputSystemUIInputModule` 与 `MultiplayerEventSystem`：** 将 UI module 关联到对应 `PlayerInput`，用 `playerRoot` 检查内置点击目标与 Selectable 导航目标，滚轮等其他指针路径另行验收；只复制 Canvas 不会得到独立输入。脚本设置初始／返回选择仍须使用正确实例和目标，`playerRoot` 不是任意脚本的隔离屏障。[1.20.1 配置](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/configure-multiplayer-ui-input.html) UE 5.8 从目标控制器对应的 LocalPlayer 获取 [Enhanced Input subsystem](https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine)，另核 UI 的 owning player、用户焦点和视口区域；[AddToPlayerScreen](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/UMG/UUserWidget/AddToPlayerScreen)只说明显示位置，不能当作设备配对或输入隔离。
+
+**[研究] 单玩家保持现有原生入口；共享菜单先定谁可操作，不强制每人复制 UI，也不为本建议升级包。** 二改增加第二人的独立菜单时，检查同时导航／确认、一人开关菜单而另一人继续操作，动作和选择只影响约定对象。上述具体 Unity 配置限定 uGUI；版本、源码、历史跨 Canvas 报告及未实测范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#本地多人补研设备配对与-ui-目标范围分开核)。
+
 ### 设备预算：量最坏场景，不抄通用面数
 
 **[研究] ✅ 先定最低设备、分辨率、帧率、内存与加载体验，再分配资源预算。** 60 fps 的帧间隔约 16.67 ms，30 fps 约 33.33 ms；这不是每模块各有一份预算，CPU／GPU／同步等待也不能简单混加。
