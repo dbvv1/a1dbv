@@ -20,7 +20,7 @@
 
 Codex 集成可用 JetBrains AI 订阅、ChatGPT 登录或 OpenAI API key；仅 BYOK 路径限定 OpenAI 直接发行的 key。先核目标执行环境、认证及必要命令／插件，满足再替换原路径；原 CLI 已可用而集成缺能力时保留原路径。[官方来源与历史失败](../research/2026-10-12-community-source-records.md#jetbrains同名-agent-不等于原-cli-环境)说明运行时和配置可能不同，未取得当前客户端实测或原用户最终恢复回访。**[一手；社区；研究：采用边界]**
 
-- C# / Unity 开发者的首选 IDE 仍是 Rider（见 [domains/game-dev/unity](../../domains/game-dev/unity/README.md)）。
+- C# / Unity 项目先沿用能满足当前任务的 IDE、编译与验证入口；确有诊断／调试缺口时再评估 Rider 等现成支持，不因选择某个 Agent 就默认迁移 IDE。见 [Unity 的条件起点](../../domains/game-dev/unity/README.md#一页纸推荐2026-10)。**[研究：入口一致性；未作跨 IDE 效果排名]**
 
 ## VS Code + GitHub Copilot（CLI / App / VS Code）
 

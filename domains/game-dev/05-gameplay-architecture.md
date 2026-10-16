@@ -92,6 +92,8 @@
 
 [一手] Chop Chop 的 [TransitionTableSO](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Assets/Scripts/StateMachine/ScriptableObjects/TransitionTableSO.cs) 每个状态机创建运行实例字典，[StateActionSO](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Assets/Scripts/StateMachine/ScriptableObjects/StateActionSO.cs) 从定义生成普通动作实例；不是所有角色共用一份可变 SO。[后续健康管理修改](https://github.com/UnityTechnologies/open-project-1/commit/753c30e6fda71c6024c69ee5704b71cfa110e160) 将初始血量写入限制到新建实例分支，避免 Awake 重置既有玩家状态。[研究] 可借这个区分，不必借整套编辑器。
 
+**[研究] ✅ 物品加耐久／强化，先定哪些仍可互换。** 材料可继续数量栈；会单独变化的装备，优先沿现有背包使用单件状态或使用前拆一件，不能只按定义 ID 合并。OpenMW 的真实修复表明拆分另发身份仍可能丢实例数据；Minetest Game 的单件工具则说明耐久本身不要求逐件 ID。[一手／研究] 二改拿三把同型剑，只损耗／强化一把，再转移、拾回与尝试合并：数量守恒，状态不串件、不重置；需要跨操作追踪“这一件”时再补身份与失效规则，已有组件满足就不另造框架。**源码不证明目标项目的维护收益；**合并路径反例、状态／身份区别及许可见 [WP11 物品补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#物品补研数量栈单件状态与转移身份)。
+
 ## 5. 组件与 ECS：迁移热点，不迁移口号
 
 [研究] 下文 Jobs/Burst、Entities、ECB 与 enableable 的具体路线仅适用于 Unity；UE 只共用“先定位热点、再局部改变结构”的判断，不把这些包名和时序直接映射到 UE。
@@ -117,6 +119,8 @@
 - **验证**：重复死亡只结算一次；监听者回调中退出安全；池对象多次启停每次只收一次；晚加入 UI 先读快照。需要时用 session／操作身份拒绝旧事件，不把所有局部函数都复杂化
 
 [一手] [Unity 官方事件通道例子](https://unity.com/how-to/scriptableobjects-event-channels-game-code) 要求订阅／退订配对，SO 通道是项目级资产。[研究] 换场景不会自动证明旧监听已清除；“解耦”也不意味着无人拥有事务结果。
+
+**[研究] 连锁回调可能重入时，先明确本次资格与派生来源，不把排队当防环。** 完成合法性检查后，在可能重入的调用前登记本次已触发／占用状态，失败如何释放仍按玩法约定；派生伤害明确能否再反射／分摊。DCSS 曾将冷却登记提前以阻止反射重新触发，又将死亡爆炸延后到完整多目标操作结束；SPD 的直接死亡伤害与 OpenRA 的即时／延时配置说明不是所有连锁都需排队。[一手] 只有同步执行会破坏尚未完成的操作时，才复用已有待办并选清处理边界；“每个子步骤末尾”未必等于整次操作结束。**局限：队列本身不防环，也不保证所需顺序；**固定消费者、历史修复与反例见 [WP11](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#事件连锁补研排队不代替防重入与操作边界)。
 
 **[研究] ✅ 预览先复用命令的规则查询，不在 UI 另写一份近似规则。** 建造落点、目标与费用提示应对应当前动作模式、修饰键及世界状态，提交时仍重新校验。Factorio 曾修正“按住 shift 实际可放 ghost，预览却仍标红”；OpenTTD 则沿同一命令处理器区分试算与执行。[一手] 新增替换／范围动作时，同时检查预览与实际结果，并确认查看预览不扣资源或改变世界。**局限：共享代码不保证连锁效果可精确预测，估计应标明；**先缩小提示承诺，不默认增加整局模拟／回滚框架。来源、反例与可撤销试验的竞争选择见 [WP11 预览补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#命令预览补研提示清楚还要规则一致)。
 
@@ -145,9 +149,13 @@
 - **独立来源维持同一能力**：两道保护或两座光环重叠，移除一份后其他份仍有效；有／无可从有效授予集合推导。只要次数且释放严格配对时计数已足够，需要识别重复退出／指定来源时再用句柄
 - **重复命中改变同一效果**：先选择保留较长剩余时间、刷新、延长、叠强度或独立计时，再定上限与到期／驱散范围。它们会改变重复攻击是否有收益，不能统一成“计数加一”；图标、层数和倒计时应表达所选规则
 
+**[研究] ✅ 持续效果先定推进单位，再定首末跳与到期边界。** 等待玩家决策时不推进的玩法，沿既有行动调度；承诺“接下来几次攻击”则消费指定的有效行动；即时玩法用明确的模拟时间，不统一成 N 秒或每次输入减一。Shattered Pixel Dungeon 的移动加速改变行动耗时，毒仍按自己的调度跳伤；Flare 的秒数效果随正常模拟推进，普通菜单是否暂停另有配置。[一手] [研究] 分别规定首次／末次跳伤、到期移除与剩余显示，不能让倒计时误报还能行动的机会。只有设计要求冻结时，暂停才不消费效果时间，恢复也不补算被冻结的间隔；菜单中继续冒险则保留时间推进。先在同一毒效果上新增加速，核快慢动作与临界到期，再按项目政策验暂停／恢复；无需新增调度框架，具体源码、显示修订与边界见 [WP11 效果时钟补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#效果时钟补研调度时间行动次数与到期显示)。
+
 [一手] OpenRA 的固定 [Actor](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Game/Actor.cs) 以 token 集合维护条件，[光环](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Mods.Common/Traits/Conditions/ProximityExternalCondition.cs)退出按来源和 token 撤销；不同作者的 Shattered Pixel Dungeon [毒镖](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java)却复用单个 Poison，其 [set](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java)保留较长剩余时间，extend 才相加。[研究] 借用的是两种不同玩法语义，不是统一 Buff 框架；两项目相关代码为 GPL-3.0-or-later，不作闭源项目可直接复制的默认底座。
 
 **[研究] Unity 继续用定义＋角色自己的活效果集合；UE 已采用 GAS 时沿用它的聚合配置。** [一手] Unity [SO 文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html)支持多对象共享数据，因此剩余时间与来源仍放实例；GAS 的 [StackingType](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingType)区分独立实例、按来源、按目标聚合，[到期策略](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/EGameplayEffectStackingExpiratio-)又区分清整栈与减一层后刷新。[研究] 不把 GAS 的 None 读成“同类效果只留一个”，也不为两种状态迁移整套系统。**局限：句柄与计数只能表达所有权，不能替玩法决定合并、强弱和到期规则。** 二改先验两来源交错结束、重复清理、短效果覆盖长效果和驱散后重施；完整来源、反证与预注册见 [WP11 效果叠加补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#效果叠加补研来源所有权不等于合并规则)。
+
+**[研究] ✅ 第二种增减伤加入时，把计算顺序写清，而不只增加层数。** 明确修饰读取基础值还是上一阶段结果、固定加减／护甲的先后、取整和限幅位置；可撤销属性沿基础值与有效修饰重算，首次计算与重算保持同一政策，不靠反向加减／除法恢复旧值。当前 HP 等已经发生的资源变化另存，最大值变化如何影响它由玩法决定。Wesnoth 曾因重放次序变化让最大 HP 从200变100，SPD 又把虚弱与易伤放在护甲两侧。[一手／研究] 先沿现有属性／伤害函数验“移除无关修饰不改变其余结果”，不造公式语言；**明确规则不代表所有效果可任意组合**，维护证据与二改边界见 [WP11 数值重算](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#属性修饰补研计算顺序与重算)。
 
 ### 选敌：先保意图，再调辅助
 
@@ -229,6 +237,8 @@
 - **AI 可承担**：按既定规则组装房间或生成布局、自动过滤连接／遭遇违约、生成测试场景；人决定节奏、路线与资源可读性
 - **典型失败**：门永等已销毁敌人的事件；检查点保存运行实例；改生成顺序让相同 seed 变布局；重建内容丢 ID
 - **验证**：逐检查点恢复、完成后离开重返、完成事件重复、出生点被占、最后敌人意外离场；核出口、目标与关键资源可达。程序化地图记录生成器版本，不能只保存 seed 就保证升级兼容
+
+**[研究] ✅ 任务推进分开历史事实与当前条件。** 已交付、永久解锁按规则保留，当前携物、位置或目标存在则查询现有状态；允许先探索后接任务时，接取／交付入口要认可已有成果，不能只等接取后的新事件。Flare 开放任务物品入仓后补查当前持有，Shattered Pixel Dungeon 则分开接取状态、背包查询与确认交付。[一手／研究] 沿现有交互与存档指定推进入口，二改检查先取物、暂存、交付消耗、离开读档后仍可继续；**若玩法要求持续携物或占领，就保留可逆条件，不能一律锁成永久完成。** 不新增通用任务框架；源码不证明存档原子性或体验收益，消费链、真实修订和许可见 [WP11 任务推进补研](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#任务推进补研历史事实与当前条件)。
 
 **[研究] ✅ 先选空间组合。** 稳定跳跃／战斗空间优先已有或许可清楚的房间，沿用编辑器，按用途、入口与遭遇条件组装；未知地形、绕行与逃生本身是玩法时，🧪 用受约束程序布局。Dead Cells 与 Cogmind 作者分别提供这两种参照。[一手] [研究] 连通后仍查路线压力／喘息、资源机会与敌群应对空间；AI 筛明确违约，人抽看代表性与极端样本。**模块仍需内容设计，自动通过不证明好玩。**
 

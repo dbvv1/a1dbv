@@ -192,3 +192,44 @@ Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时�
 [#28058](https://github.com/openai/codex/issues/28058)首帖创建于 2026-06-13，指向 6 月 5 日合并的 #26210，限定含该变更且开启 MultiAgentV2 的实现；报告对象是 spawn／send／follow-up 的任务／消息载荷及可读审计副本，不是所有子 Agent 的全部提示词。首帖另有 7 月 22 日状态更新，不能把这个日期写成加密起始日期，也未由其证明 10 月全部客户端仍有相同表现。撤下 HN 票数和笼统起始时间，保留按实际版本检查委派记录的选择。**[社区：首帖；研究：范围判断，未重核当前加密实现]**
 
 正文 §5 的无条件交叉评审与 [09](../09-review-and-quality.md)已有条件选择不一致，按该主专题同步：具体漏审风险值得成本时再试，而非每次互审。未新增模型运行、客户端测试或成本实验；本节只证明文档契约、固定源码字段和公开报告的范围。**[研究：同步与验证边界]**
+
+
+## Windows启动层补研：卷枚举失败不等于命令被拒
+
+核实：2026-10-16 14:53（UTC+8）。主线三／M4；改变17的执行失败排查：先区分启动器、权限判定与目标命令失败，不靠重复提示或扩大权限解决启动故障。证据全部来自公开原帖、固定源码与官方文档；不包含私人设备诊断。[研究]
+
+[公开问题51665](https://github.com/openai/codex/issues/51665)给出MXC launcher枚举卷失败这一类报告；错误发生在哪层应看原始前缀，单凭exit1、无输出或云端／本地标签不能判断。[社区／研究] Microsoft将[Windows错误64](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-)定义为网络名不再可用，与错误65的网络访问拒绝不同；错误号仍不能独自确定根因或授权状态。[一手／研究]
+
+[PR54363](https://github.com/openai/codex/pull/54363)于2026-10-16 01:37（UTC+8）合入[3df96b0](https://github.com/openai/codex/commit/3df96b085c666b33d3775aa4e77219ec1ed828a0)：展开隐式根读取时，过滤无法检查文件系统身份的网络根，保留可检查共享以及包含策略／命令工作目录的根；策略检查与启动使用同一筛选。显式授权不变，根写入与拒绝仍展开到全部执行器卷。[一手：固定补丁] 因而这是特定策略物化路径的修订，不是忽略所有网络盘错误或通用授权绕过。[研究]
+
+截至所核时刻，GitHub latest仍为[rust-v0.163.0](https://github.com/openai/codex/releases/tag/rust-v0.163.0)，其[policy.rs](https://github.com/openai/codex/blob/rust-v0.163.0/codex-rs/mxc-sandbox/src/policy.rs)未含上述过滤；不能因发布时间晚于合并就推定包含修复，也不能承诺升级该版解决。首个包含修复的公开发行版、桌面包与当前执行器的对应需要分别确认；此处未运行任何版本复现。[一手／研究]
+
+**处置选择。** 记录所用执行器身份和非敏感错误类型，按[官方Windows沙箱说明](https://learn.chatgpt.com/docs/windows/windows-sandbox)检查适用条件；有必要且已授权时只做原环境最小无副作用探测，不反复重跑目标写操作。保持既有隔离，等待或采用已确认包含相关修复的受支持版本；仍失败则保留范围，不改驱动／网络安全设置或删除映射来求绿。另一终端成功不能证明原执行器、策略和二进制一致。[研究] 本轮没有运行客户端／沙箱，也未验证该补丁覆盖所有错误64场景或任何具体账号恢复。
+
+
+## 子Agent配置补研：角色、默认与显式覆盖
+
+核实：2026-10-16（UTC+8）。主线二／M3；改变Codex§3的默认值选择：机械支线的轻量模型与effort要核解析来源，仅换模型可能未降低投入或启动失败。固定发行rust-v0.163.0经tag解析为83086188ae0614bd882818ff1aa23f3194962012；不以本会话工具定义代产品契约。[研究]
+
+**普通新子线程的顺序。** [child_config.rs](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/src/agent/child_config.rs#L51-L85)先取父回合有效配置，显式spawn逐字段优先于对应agents默认，再应用角色文件；[role.rs](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/src/agent/role.rs#L182-L201)使角色显式model／effort最终生效。[角色覆盖回归](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/tests/suite/subagent_notifications.rs#L3292-L3332)断言角色覆盖显式spawn。[一手：固定实现／测试定义，未运行] 不把完整历史fork的V1／V2条件推广成所有fork无条件应用角色；上述child_config分支保留例外。[研究]
+
+**两种只换模型不同。** [解析实现](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/src/agent/child_config.rs#L204-L260)中，spawn或agents选了模型、两者都没给effort时，用选定模型默认effort；[独立解析测试](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/tests/suite/subagent_notifications.rs#L2025-L2064)覆盖这一选择。角色文件只换model则保留此前已解析effort；[model-only反例](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/tests/suite/subagent_notifications.rs#L3375-L3444)将Ultra带给不支持的模型并预期报错，不能称自动降级。[一手]
+
+**设置适用到哪里。** 当前[Developer settings](https://learn.chatgpt.com/docs/developer-settings#agent-configuration)说明App的Codex agent与CLI／IDE共享配置，同页明确Work不读取本地Codex配置；[配置层级](https://learn.chatgpt.com/docs/config-file/config-basic#configuration-precedence)另有用户、profile、受信项目和会话覆盖。[一手] 个人文件不是所有云任务的全局开关，也不证明当前会话已重载。权限边界沿08，模型／effort选择不自动缩小权限，角色名也不是隔离依据；[固定角色权限测试](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/src/agent/role_tests.rs#L391-L540)与现有父权限建议一致。[一手／研究]
+
+**采用。** 固定角色同时选有效model和受支持effort；希望临时逐任务覆盖的放在agents默认，不让角色硬值悄悄覆盖临时选择。任务边界、结果核验及返工成本仍决定是否委派，不以小模型标签证明划算。当前仅公开文档、固定源码／测试静读，未运行客户端、模型或这些回归，也未修改任何读者配置；实际加载和目标任务收益需另验。[研究]
+
+
+## 记忆控制补研：读取、贡献与持久设置分别核
+
+核实：2026-10-16（UTC+8）。主线二／M3；改变Codex页原生记忆试用条件：不把关闭生成当关闭读取，也不假定同名菜单在所有入口只影响当前聊天。原“不默认安装记忆服务”建议不变，不据此升级整页成熟度。[研究]
+
+**读取与贡献独立。** 0.163.0固定83086188的[读取入口](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/ext/memories/src/extension.rs#L45-L73)按features.memories及use_memories决定注入，不以generate_memories为读取条件。[测试定义](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/tui/src/app/tests.rs#L3248-L3290)保留use=true、generate=false，断言当前线程贡献模式disabled。[一手：固定源码／测试，未运行] 因而禁用生成不是无记忆基线，也不是删除现有记忆的操作。[研究]
+
+**文档与固定TUI的范围分歧。** 当前[官方Memories页](https://learn.chatgpt.com/docs/customization/memories#control-local-memories-per-chat)明确将desktop及Codex TUI的/memories称为聊天级、不改变全局；本地默认关闭与Work另用ChatGPT控制的既有边界继续保留。[一手] 但该发行的[slash分派](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/tui/src/chatwidget/slash_dispatch.rs#L486-L488)进入设置菜单，[处理器](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/tui/src/app/config_persistence.rs#L929-L1015)先保存两个值，再在生成选项改变时更新当前线程贡献状态；失败路径区分设置已保存但线程更新失败。[一手]
+
+[配置请求](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/tui/src/config_update.rs#L138-L170)写memories.use_memories／generate_memories并要求重载用户配置；[服务端](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/app-server/src/config_manager_service.rs#L218-L237)将未指定file_path的写入定位到用户配置，[持久化代码](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/app-server/src/config_manager_service.rs#L412-L417)实际写配置文件；[回归](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/tui/src/app/tests.rs#L3205-L3245)读取文件并断言两个值改变。这是固定执行路径依据，不只是UI字符串推断。[一手]
+
+**采用与未解范围。** 只想排除一个聊天时，先核该入口／版本的作用域、持久配置和当前线程状态；部分失败不能当两项均已生效。官方页未给与固定发行的部署映射，保留差异，不宣称源码普遍胜出或所有App都如此。不读取私人记忆、不改设置、不运行客户端／模型／回归；未验证真实会话加载及关闭后的上下文行为，也不把本轮边界检查当记忆收益实验。[研究]
+
+**未采用的扩题。** /goal的[固定runtime](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/ext/goal/src/runtime.rs#L436-L478)依赖live thread与Active状态，但现有正文未承诺停机后仍持续，不再另加同义警告。Skills已有05的宿主／加载／权限边界，本轮未找到新采用错误，不以本轮局部核查授整页L3。[一手／研究]

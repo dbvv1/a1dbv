@@ -1,10 +1,10 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
-改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体首试原生低模，场景和变形角色另判；复用 bpy／gltfpack 前核目标导入器扩展支持，之后仍验最终预算、身份与元数据
-新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加 CC0 门 GLB 轨道复算、关节导出反例、重贴图调用链及程序化风格扩展／模块供给边界，未运行模型／引擎
+改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体首试原生低模，场景和变形角色另判；处理器先核目标导入器与实际接口，凸分解的顶点／包数参数不能直接当引擎交付保证
+新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加门 GLB、关节导出、重贴图及程序化范围证据；凸分解另核主分支／Unity 包差异、合并退出与原生引擎契约，未运行模型／引擎
 
 # WP3：3D资产路线、原生低模与第二次修改
 
-核实时间：2026-10-14（UTC+8）；TaoFlowForge 许可与装载链补核：2026-10-16（UTC+8，§10.2）；程序化形状／风格范围补核：2026-10-16（UTC+8，§13）。正文见[3D资产专题](../../domains/game-dev/assets/3d.md)。以下“首试”是理论选型优先级，不是已测质量冠军。来源标签：[一手]官方文本/源码；[研究]论文或作者测量（须再分）；[经验]本报告决策。
+核实时间：2026-10-14（UTC+8）；2026-10-16（UTC+8）补核凸分解接口／预算（§5）、TaoFlowForge 许可与装载链（§10.2）、程序化形状／风格范围（§13）。正文见[3D资产专题](../../domains/game-dev/assets/3d.md)。以下“首试”是理论选型优先级，不是已测质量冠军。来源标签：[一手]官方文本/源码；[研究]论文或作者测量（须再分）；[经验]本报告决策。
 
 ## 1. 采用判断与分档依据
 
@@ -90,7 +90,18 @@ Meshy7.1不输出emission，`remove_lighting`接受却忽略；T2不接受该参
 
 LOD应由目标视距/屏幕误差决定，保轮廓、孔洞、材质接缝和挂点；50%/25%只是候选比率，不是游戏跨类型通用规格。材质/UV断开会增加实际顶点；只看faces会漏预算。骨骼LOD必须另验skin/morph，不能纯几何降采样后假设可用。[经验；meshoptimizer机制支持]
 
-碰撞代理优先box/sphere/capsule或少量compound，独立于可见网格。Unity6.0[MeshCollider](https://docs.unity3d.com/6000.0/Documentation/Manual/class-MeshCollider.html)文档限制convex 255 triangles，动态物体建议优先primitive；因此把生成mesh直接拿来convex并非自动适配。[一手] 确实需要凹结构时👀[CoACD@131010c4](https://github.com/SarahWeiii/CoACD/tree/131010c4f03fec375ea88c5c6263f120046cb7f1)，MIT，现成凸分解/Unity接入；2026-04实单位误差、9月另有CuACD GPU研究。单人规模不因新算法百倍宣传就加CUDA部署。[一手；经验] 孔洞能否穿过、碰撞块数、角色/投射物所需精度由玩法决定，代理可故意不同于画面。[经验]
+碰撞代理优先box/sphere/capsule或少量compound，独立于可见网格。Unity 6.3 [MeshCollider](https://docs.unity3d.com/6000.3/Documentation/Manual/class-MeshCollider.html)文档限制convex 255 triangles，动态物体建议优先primitive；因此把生成mesh直接拿来convex并非自动适配。[一手] 确实需要凹结构时👀[CoACD@131010c4](https://github.com/SarahWeiii/CoACD/tree/131010c4f03fec375ea88c5c6263f120046cb7f1)，MIT，独立库与另版Unity接入的参数能力须分别核实；2026-04实单位误差、9月另有CuACD GPU研究。单人规模不因新算法百倍宣传就加CUDA部署。[一手；经验] 孔洞能否穿过、碰撞块数、角色/投射物所需精度由玩法决定，代理可故意不同于画面。[经验]
+
+#### 凸分解预算：先核实际接口
+
+核实：2026-10-16（UTC+8）。[研究] 改变的是有顶点／包数预算时选哪条调用路径，不撤回简单代理优先，也不另造处理框架。
+
+- **主分支有参数，不等于默认启用。** [一手] 固定 `131010c4f03fec375ea88c5c6263f120046cb7f1` 的 [Python API L81–100](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/python/package/__init__.py#L81-L100)默认 `decimate=false`、`max_ch_vertex=256`、`max_convex_hull=-1`；[README 参数说明](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/README.md#L178-L186)同样要求 CLI 开 `--decimate` 后 `--max-ch-vertex` 才生效。[实际调用 L679–686](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/src/process.cpp#L679-L686)分别以 `merge`／`decimate` 控制合并／减面。只填最大顶点值不能启用约束，默认也没有最大包数限制。
+- **包数与误差可能冲突，目标包数也非无条件保证。** [一手] 同版 [合并 L353–379](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/src/process.cpp#L353-L379)为压低包数可以越过凹度阈值；无可合并对时告警并退出。[#63 作者答复](https://github.com/SarahWeiii/CoACD/issues/63#issuecomment-2843600853)解释只合并相邻凸包、目标过少可能无对可合并。它是历史问题解释；当前固定代码已有退出检查，不把旧崩溃当当前回归。[研究] 需要同时保孔洞和限制块数时，不能只继续降低包数，须允许换简单代理或资产。
+- **Unity 包缺少这组顶点控制。** [一手] README 所指 `unity` 分支本轮固定为 `9dd8431f3b2e7e4654e5a6284e3b8c36b4071c2f`（2024-09-10）。其 [Parameters 与原生调用签名 L47–95](https://github.com/SarahWeiii/CoACD/blob/9dd8431f3b2e7e4654e5a6284e3b8c36b4071c2f/Packages/info.flandre.coacd/Runtime/CoACD.cs#L47-L95)无 `decimate`／`max_ch_vertex`；[#69 协作者于 2025-06-17 的答复](https://github.com/SarahWeiii/CoACD/issues/69#issuecomment-2981661676)也说明稳定 Unity 发行版尚无该功能。[L341–359](https://github.com/SarahWeiii/CoACD/blob/9dd8431f3b2e7e4654e5a6284e3b8c36b4071c2f/Packages/info.flandre.coacd/Runtime/CoACD.cs#L341-L359)把返回网格赋给 convex MeshCollider，方法名 `ValidateColliders` 不代表已验证每包预算或 cooking。[研究] 确需该顶点控制时评估主分支离线处理，不向此 Unity 包照搬 Python 参数；这不证明包在所有网格上不可用。
+- **引擎按各自契约消费。** [一手／研究] 上述 Unity 6.3 文档写的是 triangles，CoACD 参数写的是 vertices；本轮不推导一个顶点阈值保证 cooking 通过。UE 5.8 [原生 Auto Convex API](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/StaticMeshUtilities/SetConvexDecompositionCollisions-)另有 `Hull Count`、`Max Hull Verts`、`Hull Precision` 和成功返回值，可🧪先作原生基线，但调用会移除既有碰撞，先保留原资产／碰撞。[教程](https://dev.epicgames.com/documentation/en-us/unreal-engine/add-a-collision-hull-to-a-static-mesh-using-the-auto-convex-collision-tool-in-unreal-engine)的 32／16／50,000 是示例，不是通用配置或 Chaos 硬限，不能套 Unity 上限。
+
+[研究／经验] 在选定接口实际导出的每个凸包上分别记录顶点、三角面与总包数，再看目标引擎生成的碰撞是否保住所需孔洞／接触轮廓；压预算破坏玩法形状时撤回该配置，不以成功日志放行。本轮只读固定源码、维护者答复和官方契约，未运行处理器／引擎或验证输出，不声称质量、性能、失败率或 cooking 通过率。
 
 ### 材质、透明、风格
 

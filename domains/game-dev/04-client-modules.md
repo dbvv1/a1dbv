@@ -98,7 +98,7 @@ AMD UE 插件 4.1.1 的 Slate Redraw 会重复调用 NativeTick（第二次默�
 
 | 模块 | 独立游戏必须做到；可以不做 | 分档与借用判断 | AI 可以承担／重点防错 | 将来验证 |
 |---|---|---|---|---|
-| 渲染与性能 | 固定最低设备、分辨率和帧时间；有阴影、透明叠加、纹理／网格和同时可见对象预算。可以没有实时 GI、动态天气、自研 SRP | 性价比／本地：✅ 采用 Unity [URP](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/urp-introduction.html) 及对应平台预设。质量上限：🧪 只在光照／材质需求和设备都支持时评估更重管线；Unreal 使用原生渲染与 scalability，不能因有 Nanite／Lumen 就豁免预算。⛔ 不为生成模型的高面数输出自建渲染器 | AI 批量查导入规格、shader 变体和材质引用，按 profiler 热点改动；防止只看平均 FPS、用降低画质掩盖错误、每帧分配、无条件开昂贵特性 | Unity [目标设备 Profiler](https://docs.unity.com/en-us/engine/6000.5/manual/analysis/profiler/profiling-applications/profiling-target-device)／Frame Debugger；UE [Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine)。冷启动、首次技能、满屏战斗与切关卡分别测 CPU/GPU、尖峰和内存；发布构建复核 |
+| 渲染与性能 | 固定最低设备、分辨率和帧时间；有阴影、透明叠加、纹理／网格和同时可见对象预算。可以没有实时 GI、动态天气、自研 SRP | 性价比／本地：✅ 采用 Unity [URP](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/urp-introduction.html) 及对应平台预设。质量上限：🧪 只在光照／材质需求和设备都支持时评估更重管线；Unreal 使用原生渲染与 scalability，不能因有 Nanite／Lumen 就豁免预算。⛔ 不为生成模型的高面数输出自建渲染器；只换色／损伤时见[材质参数复用](assets/materials.md#同资产换色或受损先分共享预设与对象参数) | AI 批量查导入规格、shader 变体和材质引用，按 profiler 热点改动；防止只看平均 FPS、用降低画质掩盖错误、每帧分配、无条件开昂贵特性 | Unity [目标设备 Profiler](https://docs.unity.com/en-us/engine/6000.5/manual/analysis/profiler/profiling-applications/profiling-target-device)／Frame Debugger；UE [Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine)。冷启动、首次技能、满屏战斗与切关卡分别测 CPU/GPU、尖峰和内存；发布构建复核 |
 | 资源加载与内存 | 每次获取有明确释放者，旧场景不接受迟到结果，失败能回到可操作状态。可以没有 CDN、热更新、全局缓存框架 | 性价比／本地：✅ 小型常驻内容用直接引用；出现明确分组驻留、内容分发需求时改造为 [Addressables](https://docs.unity3d.com/Packages/com.unity.addressables@2.7/manual/AddressableAssetsAsyncOperationHandle.html)。质量上限也是有预算的 Addressables，不是另一套加载器。UE 按需用 Asset Manager／StreamableHandle；常驻小资源不必一律软引用。UniTask 为可选异步适配层，不能代替资源所有权 | AI 能建立句柄清单、加载状态日志和错误恢复；防止取消 await 就忘记 release、双重释放、Object.Destroy 当成 Release、旧回调给新对象赋值、同步等待卡死 | 预取消、加载中取消、同帧完成、失败、共享依赖、连续 A→B→A；检查句柄计数、实际驻留及峰值三者，不只观察任务成功 |
 | 动画系统 | 正确骨架、root motion 归属、动作打断、暂停恢复、死亡／重开后复位。可以没有 motion matching、全身 IK、自定义动画图 | 性价比／本地：✅ Unity [Animator／Clip／Blend Tree](https://docs.unity3d.com/6000.3/Documentation/Manual/AnimationOverview.html)；简单刚体／2D 反馈可用少量参数动画。质量上限：🧪 明确接触／表演需求才增加 IK／Playables；UE Animation Blueprint／Montage／[Root Motion](https://dev.epicgames.com/documentation/en-us/unreal-engine/root-motion-in-unreal-engine)。不把大型多人样例全套搬入小型单机 | AI 连参数、生成转场表、检查动画资源名与事件；防止脚本位移与 root motion 同时驱动、动画事件成为唯一伤害／奖励真相、池对象保留旧 trigger | 低帧率、任意转场点打断、暂停、死亡复活、斜坡／台阶、碰撞体与网格一致；视觉检查脚滑／穿插；换动作／装备后按[范围与屏外更新](assets/animation.md#换动作后消失或突跳先分包围范围与屏外更新)核边缘消失、返回突跳及玩法消费者；Profiler 检查动画线程开销 |
 | 物理与碰撞 | 碰撞层明确，触发器／实体碰撞分清，快速物体与低帧率仍满足玩法。可以没有破坏、布料、全场景刚体、网络确定性 | 性价比／本地／通常的质量路线：✅ Unity 原生 [2D／3D 物理](https://docs.unity3d.com/6000.3/Documentation/Manual/PhysicsSection.html)，按玩法选择其一；UE 原生 Chaos。🧪 CCD、substep 只为具体穿透／稳定性问题启用；[先分线性漏碰、旋转漏碰与误接触](#高速碰撞先分运动与错误再选检测方式)，⛔ 不用提高全局迭代数代替定位 | AI 配置层矩阵、测试代理碰撞体、写幂等命中结算；防止高精网格直接作所有动态碰撞、Transform 与 Rigidbody 争用、把一次物理回调等同一次伤害 | 快速弹体／薄墙／斜坡／多接触／低帧率；按攻击 ID 去重。UE [substep 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-sub-stepping-in-unreal-engine)明确同次接触可能在同帧产生多个回调，须测结算规则 |
@@ -116,11 +116,14 @@ AMD UE 插件 4.1.1 的 Slate Redraw 会重复调用 NativeTick（第二次默�
 
 | 症状 | 默认先做 | 关键取舍、撤回与依据 |
 |---|---|---|
+| 操作已响应，确认声却迟到 | ✅ 先查事件提交、素材首用与输出链；缓冲等待确为瓶颈时才比较较低延迟配置 | OpenTTD 曾缩小音频块，VVVVVV 则为部分输出问题增大混音窗口；不统一取最小值，见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#声音响应补研低延迟与连续播放分别验收) [一手／研究] |
 | 密集战斗漏短音／警告 | ✅ 先区分重触发合并、同类并发拒绝／抢占和全局声部竞争，再调上限；普通声与警告分政策，新增变体核共享限额 | Mindustry 保护旧起音也可能拒绝新声，单抬 priority 不绕过同组限制。[一手] 旧起音与新警告时效需取舍，分组不证明可听；见 [WP10 短音取舍](../../docs/research/2026-10-14-game-wp10-client-modules.md#音频并发补研保住起音不等于保住每次提示) |
 | 声音在播放，关键信息仍被盖住 | ✅ 先减重复／装饰，再按当前玩法状态让位 | 并发优先级不能代替混音；另一危险被压掉或声音明显忽强忽弱就撤回，见[音频质量选择](assets/audio.md#先让声音成为好玩的反馈再增加素材数量) [研究] |
 | 持续技能／机器声断片、恢复不对 | ✅ 先核活动状态、可听范围和淡入淡出，再选续播或重启；不照搬短音丢弃政策 | Factorio 管道改范围与同类限额，增总上限却使混音更杂。[一手] 缩范围可能藏危险，重播起音可能误报；Unity maxDistance 不保证归零、UE 静音续播仍可能占 voice，见 [WP10 循环声](../../docs/research/2026-10-14-game-wp10-client-modules.md#5-持续状态声的反例先校正可听范围与恢复政策) |
 | 拉远／切镜后声音失衡 | ✅ 先选听点：远程管理可随视图，近身互动可在角色附近；分别定位置、朝向、速度，切镜不应无意成为高速运动 | Factorio 与 NieR 采用不同默认。[一手] Unity AudioListener／UE listener override 可先表达选择；换听点须重核距离及空间效果，不能笼统保证“角色距离＋相机声像”。核转身、切镜与返回，见 [WP10 听点](../../docs/research/2026-10-14-game-wp10-client-modules.md#听点补比镜头改变时从哪里听) |
 | 音乐被频繁打断 | ✅ 先选跟随角色处境还是关注区域，再选立即混层、等状态稳定或等乐句 | 单加长淡化不解决选择与时点；见[音频页](assets/audio.md#音乐循环和状态切换先于完整成曲) |
+
+**[研究] 确认声迟到，先保留原生基线，再比较一个相关缓冲设置。** Unity 6.3 的 [DSP Buffer Size](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioManager.html)在响应与开销间取舍；UE 的[平台音频设置](https://dev.epicgames.com/documentation/en-us/unreal-engine/platform-audio-settings-in-unreal-engine)分别控制每次计算量与排队块数。[一手] 缩小后出现爆音、断续或高负载退化就撤回；换输出设备或增加混音负载后重核。音乐提前调度见[音频页](assets/audio.md#音乐循环和状态切换先于完整成曲)，不可预知的确认声不为对齐拍点额外等待。**局限：缓冲参数不能代表输入到实际出声的总延迟，也不保证目标设备收益。**
 
 ### 墙门后的声音：先选可听规则，再选遮挡
 
@@ -228,6 +231,18 @@ ink 的 [CallStack 恢复源码](https://github.com/inkle/ink/blob/35c63e52f1d36
 上述竞争选择及 hold／toggle 的固定源码见 [WP10 输入交接](../../docs/research/2026-10-14-game-wp10-client-modules.md#输入交接补比消费按下不等于等待松键)；它们说明采用条件不同，恢复手感仍须目标项目试玩。[研究]
 
 [UI 输入](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/UISupport.html#distinguishing-between-ui-and-game-input)不自动阻止 gameplay 接收同一点击；[timeScale=0](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Time-timeScale.html)与 [AudioListener.pause](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-pause.html)管不同时间域。[一手] **[研究] 蓄力开菜单、按住移动失焦、设备断连、菜单声音例外作为联合用例，而非各模块单独“正常”。**
+
+**[研究] ✅ 提供手柄反馈时，另定它的结束与恢复政策。** 命中短脉冲设有限时长，已失效的旧命中不在从菜单返回游戏后补播；持续状态恢复前重查是否仍成立，有意冻结后继续同一演出的效果可以保留。换设备／退出本局时取消所属玩家的旧反馈工作，旧设备仍可达则发送停止，再按当前配对发送；不要清掉其他仍在游玩者的反馈。
+
+**[一手／研究] Unity Input System 1.20.1 双马达实现的 `PauseHaptics` 保留速度，`ResetHaptics` 清除；一次 Pause 不会屏蔽后续 `SetMotorSpeeds` 写入。** 因此还须约束持续产生反馈的代码；一名玩家的局内菜单也不能照搬全设备暂停。[固定实现](https://github.com/Unity-Technologies/InputSystem/blob/a934411756c8862cb0f54da514a9b7cc1c000a2b/Packages/com.unity.inputsystem/InputSystem/Runtime/Devices/Haptics/DualMotorRumble.cs) UE 5.8 沿目标 PlayerController 使用有限／循环效果、Tag 和 [Play While Paused](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Game/Feedback/ClientPlayForceFeedback)，不强行对应 Unity 接口。原生已能表达这些规则就不加框架；游戏机制、许可与[待测边界见 WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#手柄反馈补研结束暂停与设备交接分开核)。**局限：停止命令不保证硬件即时停下，尚无本轮游戏暂停复测结论。**
+
+### 本地多人：设备归谁，菜单由谁操作
+
+**[研究] ✅ 仅在项目承诺本地多人时，按玩家实例连接输入；需要同时操作各自菜单时，再隔开 UI 输入来源与目标范围。** Unity Input System 1.20.1 的 `PlayerInput` 路线应读取对应实例的回调或 `actions`，不改读项目级 `InputSystem.actions`；`Gamepad.current` 是全局最近连接／使用的手柄，不能充当某个玩家的身份。[一手：[玩家输入契约](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/use-player-input-component-ui.html)、[current 定义](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.Gamepad.html#UnityEngine_InputSystem_Gamepad_current)]
+
+**[一手／研究] 独立 uGUI 菜单沿用各自的 `InputSystemUIInputModule` 与 `MultiplayerEventSystem`：** 将 UI module 关联到对应 `PlayerInput`，用 `playerRoot` 检查内置点击目标与 Selectable 导航目标，滚轮等其他指针路径另行验收；只复制 Canvas 不会得到独立输入。脚本设置初始／返回选择仍须使用正确实例和目标，`playerRoot` 不是任意脚本的隔离屏障。[1.20.1 配置](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/configure-multiplayer-ui-input.html) UE 5.8 从目标控制器对应的 LocalPlayer 获取 [Enhanced Input subsystem](https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine)，另核 UI 的 owning player、用户焦点和视口区域；[AddToPlayerScreen](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/UMG/UUserWidget/AddToPlayerScreen)只说明显示位置，不能当作设备配对或输入隔离。
+
+**[研究] 单玩家保持现有原生入口；共享菜单先定谁可操作，不强制每人复制 UI，也不为本建议升级包。** 二改增加第二人的独立菜单时，检查同时导航／确认、一人开关菜单而另一人继续操作，动作和选择只影响约定对象。上述具体 Unity 配置限定 uGUI；版本、源码、历史跨 Canvas 报告及未实测范围见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#本地多人补研设备配对与-ui-目标范围分开核)。
 
 ### 设备预算：量最坏场景，不抄通用面数
 
