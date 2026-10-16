@@ -140,6 +140,8 @@
 
 [一手] GAS [官方生命周期](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-abilities-in-unreal-engine) 将 CommitAbility、取消和 EndAbility 分开；未正常结束会继续阻挡动作，Per-Actor 实例复用还需清理成员。[研究] 框架没有替玩法定义退款与取消语义。
 
+**[研究] ✅ 动作淡出后仍不能再出招，先核原生回调契约，不统一加定时解锁。** 要等完整播放才释放的技能，应覆盖淡出期间的打断；允许淡出即交还控制权的技能，另核剩余表现是否应继续；还要串接后续阶段的技能，不把一段动画退出当整项技能结束。UE 5.8 [PlayMontageAndWait](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Ability/Tasks/PlayMontageAndWait) 的 `Allow Interrupt After Blend Out` 关闭时，淡出后打断既不发 Interrupted 也不发 Complete，按所选边界配置；`Stop When Ability Ends` 又会影响正常结束能力后的剩余动画。[一手] Unity 6.3 [Animator 可同时评估多个过渡状态](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.html)，旧状态退出只释放自己的占用，不无条件清掉新动作。[一手／研究] 二改拉长恢复段，分别在淡出前、中、完成后打断并再出招；**这些契约不证明目标工程已可靠**，历史修复、条件比较与未运行验收见 [WP11 §6](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#6-战斗与技能先统一结算权再谈-gas)。
+
 [一手] [Lyra 的能力初始化](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US) 处理 Pawn、PlayerState、输入与 Game Feature 的就绪和移除。[研究] 可读公开机制文档；其整套多人生命周期并非单机默认底座，资源的 AI 使用许可另见第 10 节。
 
 ### 多来源效果：先定合并规则，再增加框架

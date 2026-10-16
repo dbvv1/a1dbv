@@ -96,6 +96,15 @@
 
 [研究] **成本与二改验收（仅预注册）**：先沿现有原生动画层表达阶段，不为此增加 GAS／新执行框架。许可合适的现成动画缺过渡时，缩窄出口或换片段，不暗含手工补动画。给已有攻击增加重武器或攻速增益，在起手、命中、恢复阶段分别请求移动／防御／再攻击，核控制恢复、攻击次数、费用与已提交效果。若退出意外提高攻击频率、破坏可读预警或抹平武器差异，撤回对应出口；退款、冷却和效果政策复用本节结算责任。这些是维护风险推导，未运行游戏／引擎，未测得具体漏洞或手感收益。
 
+**动画释放边界补核（2026-10-16 UTC+8）。** 主线3；改变的建议：动画淡出后失去后续操作，先核现成回调与释放时机，不统一添加定时解锁；新证据：Epic 历史维护复现与 UE 5.8 当前选项契约，Unity 6.3 过渡状态机制对照。
+
+- **历史失败与修复 [一手]**：[UE-183351](https://issues.unrealengine.com/issue/UE-183351)给出 Lyra 复现：拉长 Montage 淡出，在淡出开始后移动打断，只监听 Completed／Interrupted 来 EndAbility 的能力可能无法结束，继续阻挡其他能力。报告中的 WaitDelay 是局部 workaround，不是本仓推荐；该问题已标 Fixed、Target Fix 5.3、修复提交 `25328943`，不能写成当前版本仍普遍存在的缺陷。本轮只读公开问题与文档，未下载 Lyra 或访问私有引擎源码。
+- **当前原生选择 [一手]**：[UE 5.8 PlayMontageAndWait](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Ability/Tasks/PlayMontageAndWait)将正常淡出与完全播放完成分开；`Allow Interrupt After Blend Out` 为 true 才允许淡出开始后收到 Interrupted，关闭时该阶段打断既无 Interrupted 也无 Complete。页面不作为默认值证据。`Stop When Ability Ends` 为 true 时，正常结束能力也会中止 Montage；显式取消则总会停止。已有项目先核这两个选项及其出口，不因旧报告另造 watchdog 或升级框架。
+- **不同释放边界 [研究]**：① 必须完整播放才交还控制权：保留完成路径，同时覆盖淡出期间的打断／取消；② 淡出开始即可交还控制权：可在此结束本次规则，但核正常 EndAbility 是否截断仍需保留的表现；③ 还要执行后续 Montage／逻辑：当前片段退出只推进／取消相应阶段，不统一结束整个技能。共享清理可以复用，但正常完成与取消不能因此共用成功结算；三个条件不是同一游戏的实测优劣对照。
+- **Unity 对照与适用边界 [一手／研究]**：[Unity 6.3 StateMachineBehaviour](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.html)允许 current、next、interrupted 状态同时活跃，同步层还可对同一状态多次调用；[OnStateExit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.OnStateExit.html)描述的是状态结束评估，不是技能正常完成回执。由此推导：若 Animator 回调承担动作占用／命中窗口，旧状态退出只释放自己的那份，不能无条件恢复共享布尔值、撤销新动作。局部表现仍可用原生状态回调，无需统一迁移到独立动画调度器；没有复测具体游戏，不把文档机制写成当前 Unity 故障。
+
+**[研究] 二改验收仅预注册**：拉长原招式恢复段，在淡出前、淡出中、完成后分别打断并立即再出招；沿现有执行身份记录释放与结果。检查本次锁能释放、旧出口不误结束新动作、取消不提交正常完成结果，以及所选政策下剩余动画是否继续；保持费用／冷却／已提交效果规则。原生配置已满足就停止补层；只有锁定版本的实际路径仍有缺口，才考虑局部补偿，并核重入／重开。本轮未运行引擎、游戏或玩家对照，未证明手感或维护净收益。
+
 ### 7. 相机：先复用成熟运行时，验收的是可读性与控制权
 
 **[研究] 最低完成度**：一个玩家视口的最终相机拥有明确控制权；跟随、瞄准、过场、菜单切换有优先级；传送与重生按意图保留或重置跟随历史，碰撞遮挡不丢关键信息，暂停和相机震动有明确策略。Unity 优先适配目标版本的 Cinemachine，UE 先 CameraComponent／SpringArm／PlayerCameraManager；镜头足够简单可只用固定相机。
