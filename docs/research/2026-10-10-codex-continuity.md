@@ -205,3 +205,16 @@ Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时�
 截至所核时刻，GitHub latest仍为[rust-v0.163.0](https://github.com/openai/codex/releases/tag/rust-v0.163.0)，其[policy.rs](https://github.com/openai/codex/blob/rust-v0.163.0/codex-rs/mxc-sandbox/src/policy.rs)未含上述过滤；不能因发布时间晚于合并就推定包含修复，也不能承诺升级该版解决。首个包含修复的公开发行版、桌面包与当前执行器的对应需要分别确认；此处未运行任何版本复现。[一手／研究]
 
 **处置选择。** 记录所用执行器身份和非敏感错误类型，按[官方Windows沙箱说明](https://learn.chatgpt.com/docs/windows/windows-sandbox)检查适用条件；有必要且已授权时只做原环境最小无副作用探测，不反复重跑目标写操作。保持既有隔离，等待或采用已确认包含相关修复的受支持版本；仍失败则保留范围，不改驱动／网络安全设置或删除映射来求绿。另一终端成功不能证明原执行器、策略和二进制一致。[研究] 本轮没有运行客户端／沙箱，也未验证该补丁覆盖所有错误64场景或任何具体账号恢复。
+
+
+## 子Agent配置补研：角色、默认与显式覆盖
+
+核实：2026-10-16（UTC+8）。主线二／M3；改变Codex§3的默认值选择：机械支线的轻量模型与effort要核解析来源，仅换模型可能未降低投入或启动失败。固定发行rust-v0.163.0经tag解析为83086188ae0614bd882818ff1aa23f3194962012；不以本会话工具定义代产品契约。[研究]
+
+**普通新子线程的顺序。** [child_config.rs](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/src/agent/child_config.rs#L51-L85)先取父回合有效配置，显式spawn逐字段优先于对应agents默认，再应用角色文件；[role.rs](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/src/agent/role.rs#L182-L201)使角色显式model／effort最终生效。[角色覆盖回归](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/tests/suite/subagent_notifications.rs#L3292-L3332)断言角色覆盖显式spawn。[一手：固定实现／测试定义，未运行] 不把完整历史fork的V1／V2条件推广成所有fork无条件应用角色；上述child_config分支保留例外。[研究]
+
+**两种只换模型不同。** [解析实现](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/src/agent/child_config.rs#L204-L260)中，spawn或agents选了模型、两者都没给effort时，用选定模型默认effort；[独立解析测试](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/tests/suite/subagent_notifications.rs#L2025-L2064)覆盖这一选择。角色文件只换model则保留此前已解析effort；[model-only反例](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/tests/suite/subagent_notifications.rs#L3375-L3444)将Ultra带给不支持的模型并预期报错，不能称自动降级。[一手]
+
+**设置适用到哪里。** 当前[Developer settings](https://learn.chatgpt.com/docs/developer-settings#agent-configuration)说明App的Codex agent与CLI／IDE共享配置，同页明确Work不读取本地Codex配置；[配置层级](https://learn.chatgpt.com/docs/config-file/config-basic#configuration-precedence)另有用户、profile、受信项目和会话覆盖。[一手] 个人文件不是所有云任务的全局开关，也不证明当前会话已重载。权限边界沿08，模型／effort选择不自动缩小权限，角色名也不是隔离依据；[固定角色权限测试](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/core/src/agent/role_tests.rs#L391-L540)与现有父权限建议一致。[一手／研究]
+
+**采用。** 固定角色同时选有效model和受支持effort；希望临时逐任务覆盖的放在agents默认，不让角色硬值悄悄覆盖临时选择。任务边界、结果核验及返工成本仍决定是否委派，不以小模型标签证明划算。当前仅公开文档、固定源码／测试静读，未运行客户端、模型或这些回归，也未修改任何读者配置；实际加载和目标任务收益需另验。[研究]

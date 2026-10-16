@@ -53,6 +53,9 @@
 
 ### 子 Agent、Hooks、Skills、插件、记忆
 - **子 Agent 默认开启**；有内置 Agent（如 `default`），可以在 `config.toml` 的 `[agents]` 里设默认值，也可以写自定义 Agent 文件。
+
+**[研究] 机械支线需要模型时，把模型与 effort 一起选；可由脚本确定完成的工作先用脚本。** 对普通新子线程，想固定轻量角色时同时设其 `model` 与该模型支持的 `model_reasoning_effort`；想保留每次临时改选，则用 `[agents]` 的 `default_subagent_model`／`default_subagent_reasoning_effort` 作默认。角色显式值最后覆盖 spawn 参数，角色只换 model 会保留此前 effort，可能仍偏高或不受支持而启动失败。[一手：[官方子Agent配置](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)；研究] **局限：这适用于读取本地配置的 Codex App／CLI／IDE，不能当 Work／dots 的全局开关；模型变小也不代表权限变小。** 固定发行、继承与 fork 边界见[配置记录](../research/2026-10-10-codex-continuity.md#子agent配置补研角色默认与显式覆盖)。
+
 - Hooks、Rules、Skills、Plugins（2026-03 推出；0.147 起支持可移植的 Agent Plugins 和多个插件目录搜索）、Memories、Goals 都已提供 **[一手：文档目录]**。
 - **从其他 Agent 导入**：桌面 App 的 Settings > Import 支持 Claude Code、Claude Cowork、Cursor，并提供自动更新；CLI `/import` 支持 Claude Code、Cursor，限本地空闲会话，远程会话或连接本地 app-server daemon 时不可用，近期聊天入口限近 30 天最多 50 个。不要把 Desktop 的来源与同步能力直接套给 CLI。**[一手：当前 Import 文档／0.162.1 固定源码；2026-10-15 UTC+8]**
 
