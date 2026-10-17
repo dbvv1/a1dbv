@@ -1,6 +1,6 @@
 # 08 · 多 Agent 与并行
 
-> 核实时间：2026-10-08；任务拆分边界于 2026-10-11（UTC+8）对照官方文档复核；10-13 补充按遗漏风险选用及评审输入交接；10-14 复核并行研究的计时、预算、验收与 worktree 状态边界，10-15（UTC+8）补核子Agent启动、权限、并发与恢复契约及人数配额的适用范围；2026-10-15（UTC+8）独立审阅全文核心建议与入口，定点补核旧论文分母及工具运行形态；不代表全部外链或当前模型效果已复验。
+> 核实时间：2026-10-08；任务拆分边界于 2026-10-11（UTC+8）对照官方文档复核；10-13 补充按遗漏风险选用及评审输入交接；10-14 复核并行研究的计时、预算、验收与 worktree 状态边界，10-15（UTC+8）补核子Agent启动、权限、并发与恢复契约及人数配额的适用范围；2026-10-15（UTC+8）独立审阅全文核心建议与入口，定点补核旧论文分母及工具运行形态；10-18（UTC+8）补核 Cognition 对评审／咨询上下文的修订；不代表全部外链或当前模型效果已复验。
 > 一句话：**把可独立验收的工作并行；是否更快，要算到汇总、整合与验收结束，不能只看生成速度。**
 
 ## 30 秒选择
@@ -20,19 +20,21 @@
 | HN 与 Lobsters 实践者 **[社区]** | 对正确性要求高的工作上，2–3 个专注的 Agent 比 6–8 个互相竞争的更可靠；“瓶颈在**理解**而不在生成，Agent 集群只加快生成”；有人一下开了 7 个子 Agent，还没完成就把额度烧光了 |
 | Anthropic 对 Opus 5.5 的建议 **[一手]** | 审计、迁移、跨大代码库的评审适合拆给子 Agent 并行，**但主 Agent 要逐个检查子 Agent 交回的证据**，最后汇总成一张表 |
 | Anthropic 多 Agent 研究系统（2025-06）**[一手：工程博客]** | Opus 4 主 Agent 加 Sonnet 4 子 Agent，在内部研究评测上比单 Agent 的 Opus 4 **高 90.2%**；BrowseComp 上 95% 的表现差异由三个因素解释，**仅 token 用量就占 80%**；Agent 的 token 消耗约是聊天的 4 倍，多 Agent 约 **15 倍**。早期失败：简单问题也开 50 个子 Agent、子 Agent 之间重复劳动、互相发太多消息 |
-| Cognition《Don't Build Multi-Agents》（2025-06）**[社区：厂商博客原文]** | 两条原则：“共享上下文，而且要共享完整的执行轨迹，而不只是消息”；“行动隐含决策，相互冲突的决策带来坏结果”。例子：做 Flappy Bird，一个子 Agent 画出马里奥风格的背景，另一个做出的鸟风格不搭，主 Agent 拼不起来 |
+| Cognition，2025-06 原文与 [2026-04 修订](https://cognition.com/blog/multi-agents-working) **[一手：厂商实践报告]** | 对并行写入的冲突警告仍保留；已采用单一写入者配合其他 Agent 提供分析。评审不预载编码会话，由 diff 重查依据；咨询则需要当前任务上下文。不能把旧文的完整轨迹共享当统一规则；未公开同任务对照产物，见[核查范围](research/2026-10-12-experiment-records.md#cognition上下文按角色选择) |
 | Claude Code Agent Teams 文档 **[一手]** | 建议起步 3–5 个队员，每人 5–6 个任务；“3 个专注的队员常常胜过 5 个分散的”；token 成本随队员数**线性增长**；新手先从**研究和评审**开始，不要一上来就并行写代码 |
 | 本仓库实测（E2）**[经验：实测]** | 同一个只读调查任务，直接做与拆给 2 个子 Agent 的成本和结果对比，见 [19 实测记录](19-experiments.md#5-e2子-agent-的成本) |
 
 ### 两种立场怎么调和
 
-Anthropic 的“多 Agent 提升 90%”和 Cognition 的“不要做多 Agent”看似矛盾。其实两者说的是**不同性质的任务**：
+Anthropic 的研究系统与 Cognition 的编码实践面对不同任务；Cognition 已在 2026 年明确修订早期立场。先判断子任务是否独立，再决定并行方式：**[一手：两篇厂商报告；经验：选择]**
 
 | | 读为主（研究、调查、评审、审计） | 写为主（实现功能、重构） |
 |---|---|---|
 | 子任务之间 | 可拆成相对独立的问题（需确认） | 每个动作都隐含设计决策，彼此会冲突 |
 | 并行的收益 | 可能扩大覆盖；Anthropic 的 token 用量关联表现方差，不是等预算提速或因果分解 | 风格、接口、假设不一致，合并时要返工 |
 | 推荐 | 并行子 Agent，**每个只交回压缩后的结论和证据** | 单线程 Agent；或者先由一个 Agent（或人）定好接口，再按模块并行 |
+
+**上下文按角色给**：独立评审先给变更与必要验收依据，不默认附上编码者的整段过程；由主 Agent 结合原需求核对发现。需要针对当前难点给建议的咨询 Agent，则带上相关状态、约束与已试路径，缺关键文件先补查。两者都不是空白上下文或全量轨迹的固定配方；沿用 [09 的评审输入](09-review-and-quality.md)。**[一手：Cognition 角色差异；经验：采用判断]**
 
 审计和评审中的独立调查较容易并行；迁移要分开看：调查可读并行，实际修改必须先对齐共享接口、数据契约和依赖顺序，再验证整合结果。**文件不同不代表语义独立**。这与 [Anthropic 研究系统](https://www.anthropic.com/engineering/multi-agent-research-system)及 [Agent Teams](https://code.claude.com/docs/en/agent-teams#when-to-use-agent-teams)对依赖与协调成本的限制一致。**[一手：文档；经验：采用建议]**
 
@@ -180,7 +182,7 @@ Anthropic 研究系统的经验 **[一手]**：**委派写得含糊，子 Agent 
 
 - [Run agents in parallel](https://code.claude.com/docs/en/agents)、[Agent teams](https://code.claude.com/docs/en/agent-teams)、[Dynamic workflows](https://code.claude.com/docs/en/workflows)、[Worktrees](https://code.claude.com/docs/en/worktrees)
 - [Building a C compiler with parallel Claudes](https://www.anthropic.com/engineering/building-c-compiler)
-- [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)（Anthropic，2025-06）、[Don't Build Multi-Agents](https://cognition.com/blog/dont-build-multi-agents)（Cognition，2025-06）
+- [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)（Anthropic，2025-06）、[Don't Build Multi-Agents](https://cognition.com/blog/dont-build-multi-agents)（Cognition，2025-06）及其 [Multi-Agents: What's Actually Working](https://cognition.com/blog/multi-agents-working)（2026-04-22）
 - [Subagents](https://code.claude.com/docs/en/sub-agents)（frontmatter、嵌套与并发上限）
 - HN：[Parallel coding agents with tmux and Markdown specs](https://news.ycombinator.com/item?id=47218318)、[Embracing the parallel coding agent lifestyle](https://news.ycombinator.com/item?id=45489884)、[Multi-agentic software development is a distributed systems problem](https://news.ycombinator.com/item?id=47761625)（摘要）
 - 论文：[arXiv 2607.04697](https://arxiv.org/abs/2607.04697)、[arXiv 2510.18893](https://arxiv.org/abs/2510.18893)、[arXiv 2606.00953](https://arxiv.org/abs/2606.00953)
