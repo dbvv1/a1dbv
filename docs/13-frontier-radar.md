@@ -46,7 +46,7 @@
 当前价表、套餐和缓存口径只在 [02 模型与成本](02-models-and-cost.md#2-价格快照api-美元百万-token)维护。选择时比较同一任务的质量、含失败重试的费用和总耗时；已有方案够用就保留，低单价被返工抵消就撤回迁移。API 单价也不能换算订阅额度，额度自述的原帖与反证见 [11](11-community-pulse.md#7-中文社区额度与交付自述)。**[研究：采用边界，非任务效果实测]**
 
 ### 2.3 Harness 的隐性成本被量化了
-Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小样本隔离配置及自定义 API 代理。下表是该配置的输入量与缓存观察，不能作为当前默认开销或费用排名；选择须比较实际完整任务的质量、返工与含缓存的总成本，范围见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[社区：原文；研究：采用边界]**：
+Systima 2026-07 历史实测使用 Claude Code 2.1.207／OpenCode 1.17.18、小样本隔离配置及自定义 API 代理。下列输入量与缓存观察不是当前默认开销或费用排名；选型须比完整任务的质量、返工与含缓存总成本。配置和网关范围见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[社区：原文；研究：采用边界]**
 
 | 项目 | Claude Code | OpenCode |
 |---|---|---|
@@ -54,8 +54,8 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 | 缓存写入 | 会话中反复重写，最多是 OpenCode 的 **54 倍** | 前缀逐字节不变，只写一次 |
 
 - 同一历史报告中，一份 72KB 的 AGENTS.md / CLAUDE.md 让每次请求多约 2 万 token；另加 5 个普通 MCP 增加 5–7k，完整配置的首请求达到 75–85k。这些配置结果不等于当前默认负担，也不能把无 MCP 基础实验的 33k／7k 差值归因于 MCP。
-- **历史单次案例**（Systima，2026-07-12；10-15 补核）：Claude Code 2.1.207 的同一小任务，直接做与双子 Agent 的累计输入量为 12.1 万／51.3 万，含缓存；不能推导当前费用或额度的固定倍率。配置与网关限制见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。
-- **历史报告**（[19](19-experiments.md)）：默认输入约 31.6k；原 E1 的约 26.7k 是缓存读取，不能当工具定义。2.1.296 的 `/context` 补测给出默认工具定义约 22.9k，不是原 2.1.294 的精确拆分。E1–E3 已补交提示词、精简轨迹、逐次汇总与分项；E1 三份指令文本及逐次 stream 仍缺，完整原始轨迹未齐，不能把记录核对当独立模型复现，见[产物状态](research/2026-10-12-experiment-records.md#产物状态与引用口径)。
+- **历史单次案例**（Systima，2026-07-12；10-15 补核）：Claude Code 2.1.207 的同一小任务，直接做与双子 Agent 的累计输入量为 12.1 万／51.3 万，含缓存；不能推导当前费用或额度的固定倍率。配置与网关限制同上。
+- **历史报告**（[19](19-experiments.md)）：默认输入约 31.6k；E1 的约 26.7k 是缓存读取，不能当工具定义。2.1.296 的 `/context` 补测默认工具定义约 22.9k，不是原 2.1.294 的精确拆分。[产物状态](research/2026-10-12-experiment-records.md#产物状态与引用口径)列明 E1–E3 已补提示词、精简轨迹、逐次汇总与分项；仍缺 E1 三份指令文本及逐次 stream，记录核对不是独立模型复现。
 - 社区把这叫作“**tokenflation**”：有测试显示，“hey”或“commit”这样的简单输入也能触发 30 多次工具调用。
 
 **应对** ✅：
@@ -105,13 +105,9 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 ### 2.8 “Harness engineering”之争：工程能不能替代读代码？
 这里的 **harness engineering** 指调整 Agent 的运行环境，包括工具、上下文、循环与验证器；是否因此减少人工检查，要看具体任务的覆盖与风险，不能由流程名称决定。**[经验：采用边界]**
 
-7 月，HumanLayer 的 Dex 在《Why Software Factories Fail（or: harness engineering is not enough）》中复盘团队经历，并提出自己的解释与做法：
-1. **团队经历是自报。** 作者说团队从 2025-07 起减少读代码，之后遇到难解问题并重写；单个团队的经历不能隔离模型、需求变化、任务选择和过程的影响。**[社区：作者复盘；研究：范围]**
-2. **训练解释是未证实的假设。** 作者认为快速测试型奖励没有充分惩罚坏设计，长期维护反馈又慢，并据此解释当前模型的维护性瓶颈。公开 benchmark 不代表全部训练信号，缺少长期质量证明也不等于无法改善。**[社区：作者假设；研究：边界]**
-3. **评审的收益不能由“上限”论断决定。** 作者认为更多 reviewer 只能抬高下限；不同输入、搜索和检查仍可能发现遗漏，是否保留应按实际新增发现、误报与总成本判断，不能由这篇复盘直接否定。**[社区／研究]**
-4. **流程与倍数是倡议。** 作者建议产品评审、系统架构、程序设计与可运行的垂直切片，但自己也按任务缩减流程：小任务直接做或少量反馈，中等任务合并设计，完整步骤只用于大变更；“稳定快 2–3 倍”在已读材料中没有可复算对照，不能作为采用这套流程的效果承诺。**[社区：作者倡议；研究：证据范围]**
+7 月 HumanLayer 的 Dex 在《Why Software Factories Fail》中自报：团队从 2025-07 起减少读代码，后来遇到难解问题并重写。单例不能隔离模型、需求、任务选择和过程的影响；也不能把后来重写的系统等同于 BAML 外部贡献。其训练解释仍是假设，公开 benchmark 不代表全部训练信号，缺少长期质量证明不等于无法改善。**[社区：作者复盘／假设；研究：范围]**
 
-以上沿用[固定原文与既有复核](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)，不把团队后来重写的系统等同于 BAML 外部贡献。
+作者认为更多 reviewer 只能抬高下限；采用时仍按新增发现、误报与总成本判断，不据此否定评审。产品评审、系统架构、程序设计与垂直切片是倡议，作者也按任务缩减：小任务直接做或少量反馈，中等任务合并设计，大变更才用完整步骤；“稳定快 2–3 倍”没有可复算对照，不作效果承诺。论证与原文见[固定原文与既有复核](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)。**[社区：作者倡议；研究：证据范围]**
 
 对照观点：
 - Lilian Weng《Harness Engineering for Self-Improvement》**[社区：原文]**：harness 优化的对象会沿着“提示词 → 结构化上下文 → 工作流 → harness 代码 → 优化器代码”演进，很多技巧最终会被模型内化；但“说明目标、约束、上下文和评估标准”的需要不会消失。
@@ -127,16 +123,18 @@ Systima 2026-07 的历史实测：Claude Code 2.1.207／OpenCode 1.17.18、小�
 
 ## 3. 新兴实践：值得马上试的
 
+下表前八项均据 [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)，**[一手：厂商建议，10-17 补核]**。
+
 | 做法 | 来源 | 评级 |
 |---|---|---|
-| **一条消息给出完整任务 + 完成标准 + 何时停下来问** | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
-| **删掉“think carefully / 一步步思考”这类话**，改用 effort 设置 | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
-| 在 CLAUDE.md 里写**“停止规则”**：不需要你时继续做；只在无法继续或有破坏性操作时停下 | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
-| 长任务把清单写进 **TASKS.md**（不怕上下文压缩） | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
-| 规定总结格式：**Blocked on me / Changed / Found** | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | 🧪 |
-| 评审提示词：“**只列你会因此拒绝合并的问题**，给出文件、行号、原因，以及怎么证明它是错的” | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
-| 要求标注“**无法确认的内容和查找过的地方**” | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | ✅ |
-| 设计类任务**列出要避开的具体样式**（只说“别太普通”没用） | [Anthropic Opus 5.5 用法指南](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) **[一手：厂商建议，10-17 补核]** | 🧪 |
+| **一条消息给出完整任务 + 完成标准 + 何时停下来问** | 同上指南 | ✅ |
+| **删掉“think carefully / 一步步思考”这类话**，改用 effort 设置 | 同上指南 | ✅ |
+| 在 CLAUDE.md 里写**“停止规则”**：不需要你时继续做；只在无法继续或有破坏性操作时停下 | 同上指南 | ✅ |
+| 长任务把清单写进 **TASKS.md**（不怕上下文压缩） | 同上指南 | ✅ |
+| 规定总结格式：**Blocked on me / Changed / Found** | 同上指南 | 🧪 |
+| 评审提示词：“**只列你会因此拒绝合并的问题**，给出文件、行号、原因，以及怎么证明它是错的” | 同上指南 | ✅ |
+| 要求标注“**无法确认的内容和查找过的地方**” | 同上指南 | ✅ |
+| 设计类任务**列出要避开的具体样式**（只说“别太普通”没用） | 同上指南 | 🧪 |
 | “**First run the tests**”和“**Use red/green TDD**”这类短提示 | Simon Willison《Agentic Engineering Patterns》 | ✅ |
 | **Agent 式手工测试**：让 Agent 用 `python -c`、curl、浏览器自动化实际运行一遍，测试通过不等于能用 | [Willison：Agentic manual testing](https://simonwillison.net/guides/agentic-engineering-patterns/agentic-manual-testing/) **[社区：作者实践，10-17 补核]** | ✅ |
 | **线性走读**：让 Agent 给（vibe 出来的）代码写一份逐段讲解 | [Willison：Linear walkthroughs](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/) **[社区：作者实践，10-17 补核]** | 🧪 |
