@@ -1,5 +1,5 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按真实复杂度升级。先定状态所有者、时钟、退出与输入边界；相机、关卡、成长、教学与辅助按玩家决策取舍。物品区分可互换性，任务区分历史与当前条件；功能通过仍须核体验；群体叠招先分攻击许可、站位与单体冷却
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按真实复杂度升级。先定状态所有者、时钟、退出与输入边界；相机、关卡、成长、教学与辅助按玩家决策取舍。物品区分可互换性，任务区分历史与当前条件；功能通过仍须核体验；群体叠招先分攻击许可、站位与单体冷却；蓄力按输入识别、技能计量与释放选择；回放按影子展示、原因复演与倒带续玩选择记录内容
 新证据：[一手／社区] 固定源码、官方契约、历史修复／评审及开发者复盘，来源、版本和日期见各节；含Factorio撤销二改、Wesnoth受限撤销、OpenMW／Luanti物品路径及Overgrowth玩家单例。[研究] 另有确定性算术反例，未作游戏、引擎、模型或玩家对照
 
 # WP11：单人独立游戏的 gameplay 架构取舍
@@ -1165,3 +1165,57 @@ AD模拟时停普通循环，[普通存档门槛](https://github.com/IvarK/Antim
 以上为[研究]条件选择。Unity 6.3 [avoidancePriority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AI.NavMeshAgent-avoidancePriority.html)决定避让优先级；UE 5.8 [RVO／Detour Crowd](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-avoidance-with-the-navigation-system-in-unreal-engine)处理动态避障。这些原生空间能力不能当作已提供攻击调度；沿既有状态／技能所有者补窄许可即可，不为此迁移行为树或GAS。[一手／研究]
 
 **未执行的二改验收。** 在原双敌遭遇增加第三敌／远程招：记录请求、批准、归还和实际危险重叠；插入持有者死亡、打断、换目标、改招、不可达与重开。检查旧资格未遗留、旧回调不释放新持有者、持续有合法候选时没有意外全体等待；公平轮转并非必需，但饥饿不能被“未超额”掩盖。人数正确仍须核逃路和实际可用反制。若排队明显、空窗无聊或群压价值消失，收窄受限招式／占用区间或移除。未实测，不能声称更公平、省调试或AI生成收益。[研究]
+
+## 蓄力技能补研：按法识别、技能进度与释放
+
+核实：2026-10-18（UTC+8）；主线一／三。改变 05 §7 的蓄力二改选择：原生 Hold 契约满足就保留，游戏规则改变蓄力速率／资源时沿已有技能状态计量，不把满格当释放。[研究]
+
+- **历史设计拆分。** [一手] Hades II [2024-10-16 Olympic Update 官方公告](https://steamcommunity.com/games/1145350/announcements/detail/7057794870234137717?l=english)将 Sorceress 改为 Omega 动作加速，旧效果移至 Silver Wheel；后者在引导 Omega 时减慢周围事物。同页可含相邻更新，本轮按公告 ID `7057794870234137717` 与标题定位正文。[研究] 支持自身动作与周围减速可分别设计，不证明内部时钟、当前平衡或玩家体验改善。
+- **满蓄仍可持有。** [一手] Veloren `21db1de49c7b57013acac7a309983b530a65b848`（2026-10-17）的 [charged_ranged.rs L59–66](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/charged_ranged.rs#L59-L66)按阶段 timer／charge_duration 给进度；[L93–178](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/charged_ranged.rs#L93-L178)在松开或能量不足且未发射时按蓄力比例发弹，满蓄按住仍持有。[utils.rs L1722–1757](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/utils.rs#L1722-L1757)分输入状态与 timer，后者以 dt 乘攻速及阶段倍率，Charge 用 charge_speed_modifier。[研究] 支持技能进度区别于单纯按住时长；未追其暂停链，不外推停顿政策。代码 [GPL-3.0](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/LICENSE)，这里只借机制。
+- **Unity 输入计时不是提交回执。** [一手] [Input System 1.17 InputAction 文档](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.17/api/UnityEngine.InputSystem.InputAction.html#UnityEngine_InputSystem_InputAction_GetTimeoutCompletionPercentage)说明 timeout 完成率可到 1，而超时尚未由输入更新处理、动作未 performed。另核源码 `05e45ddbaf18a93245b068d787d74b738b90d01c` 的 [InputEvent L162–175](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Events/InputEvent.cs#L162-L175)真实时间线与 [StartTimeout L2289–2315](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Actions/InputActionState.cs#L2289-L2315)按输入时间加秒数注册；该 SHA 不宣称等同 1.17 包，暂停中是否处理还取决于更新与启用状态。
+- **UE 可选全局缩放。** [一手] [UE 5.8 UInputTriggerTimedBase](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/UInputTriggerTimedBase?lang=en-US)的 bAffectedByTimeDilation 默认 false，选择是否将全局时间缩放用于 held duration；不据此承诺角色局部倍率、菜单暂停或动画也已同步。[研究] 只需此契约时保留原生触发器，不能因 Unity 路径不同就复刻输入层。
+
+**选择与边界。** [研究] 沿现有执行实例保留资格、取消与唯一提交；UI 表达按法进度还是技能进度由用途定，动画释放沿前述窗口／退出政策，不额外搭状态框架。原生 Hold 满足即停止拆分；满蓄自动释放也合法，Veloren 不是统一规则。沿原蓄力二改加入攻速，再核停顿／暂停中的进度、耗能、松开／取消和释放次数；本轮仅官方契约、历史公告及固定源码阅读，未运行游戏／引擎／模型或验证手感。
+
+
+## 回放用途：先分影子展示、输入复演与状态倒带
+
+核实：2026-10-18（UTC+8）。GC，主线一／三／四。新增读者任务是最佳路线对照、回放诊断或倒带续玩，不把既有随机分流建议扩成确定性保证。选择依据是固定实现与开发者报告；未运行游戏、引擎、上游测试或模型。[研究]
+
+### 先按需要保住的结果选择
+
+| 任务 | 先比较什么 | 代价与撤回条件 |
+|---|---|---|
+| 并排路线影子、观看上次表现 | 带时间的姿态＋必要表现状态／事件，独立回放表现 | 不能据此重算真实碰撞／奖励；转弯、瞬移或事件缺项使画面误导时增加必要采样／标注，或缩小展示范围 |
+| 查同一输入为何造成错误 | 已知初始状态与版本下重演输入／玩法命令，并检查状态分歧 | 输入文件小不等于实现便宜；时钟、数值、随机与外部结果不受控时不能承诺重现，保留失败现场的状态和日志另查 |
+| 任意倒退后继续玩 | 足以恢复允许倒带部分的状态；比较状态历史与输入重演＋检查点 | 状态存储／迁移与重演成本分别计；稀疏姿态没有冷却、对象生命周期等必要状态时，不能直接用于续玩 |
+
+这些是研究判断，不是三种完整框架的推荐名单。纯观看需求不必先重构全游戏为确定性模拟；反过来，画面吻合也不证明错误原因被复现。时间点、缺失字段、地图／规则版本及可执行的副作用要成为记录契约的一部分。[研究]
+
+### SuperTuxKart：姿态之外还要记录想展示的含义
+
+固定源码 [`2997f192e6876047909d909498dbb4810e5dbb8d`](https://github.com/supertuxkart/stk-code/tree/2997f192e6876047909d909498dbb4810e5dbb8d)：[recorder L134–301](https://github.com/supertuxkart/stk-code/blob/2997f192e6876047909d909498dbb4810e5dbb8d/src/replay/replay_recorder.cpp#L134-L301)记录时间、位置、视觉旋转及速度、转向、悬挂、滑行、道具和特效；重要状态改变时提前采样，临近终点提高精度。它不是只存 Transform，也不是把玩家输入重新送回原模拟。[一手：源码阅读]
+
+[GhostKart L90–250](https://github.com/supertuxkart/stk-code/blob/2997f192e6876047909d909498dbb4810e5dbb8d/src/karts/ghost_kart.cpp#L90-L250)避开依赖物理的图形更新路径，插值位置并用 slerp 插值旋转。附件计时与护盾续期并不精确，源码明确把这些误差限定在图形用途；不能将这条简化路线用于权威碰撞或奖励重算。[一手／研究]
+
+**二改反证最重要。** [旧版读取分支 L450–480](https://github.com/supertuxkart/stk-code/blob/2997f192e6876047909d909498dbb4810e5dbb8d/src/replay/replay_play.cpp#L450-L480)为格式3中未保存的滑行状态、nitro 数量、道具和距离等字段补零，但保留原已记录的部分特效。[研究] 这能支持降级播放，不能让新增数据分析把补零当“当年没有使用道具”。新功能依赖旧记录没有的字段时，应标未知／不可用，或只保留不依赖该字段的观看能力，不伪造历史。
+
+[2018-11-17 开发者说明](https://blog.supertuxkart.net/2018/11/supertux-challenges-in-story-mode.html)以预录 ghost 展示路线、滑行和 nitro 使用，作为学习挑战的设计意图；没有给出学习收益测量。此处借的是任务与记录内容的对应关系，不照抄整套竞速架构。[一手／研究]
+
+### Neverball：叫 command 不代表记录了玩家输入
+
+固定 [`82883833043725b21a65fe45416524cb77412e39`](https://github.com/Neverball/neverball/tree/82883833043725b21a65fe45416524cb77412e39) 的 [game_server L210–240](https://github.com/Neverball/neverball/blob/82883833043725b21a65fe45416524cb77412e39/ball/game_server.c#L210-L240)产生球位置／方向和视图状态命令；[game_client L316–330](https://github.com/Neverball/neverball/blob/82883833043725b21a65fe45416524cb77412e39/ball/game_client.c#L316-L330)把它们写入记录后消费，[demo L374–394](https://github.com/Neverball/neverball/blob/82883833043725b21a65fe45416524cb77412e39/ball/demo.c#L374-L394)播放时读回给 client。这条路径记录的是模拟输出协议，不能仅凭“command replay”名称当输入复演模板。[一手／研究]
+
+[地图 major version 检查](https://github.com/Neverball/neverball/blob/82883833043725b21a65fe45416524cb77412e39/ball/game_client.c#L296-L302)及[官方历史变更](https://neverball.org/changes)补上限制：1.5.1／1.5.3 的若干地图修改明确使回放失效，1.5.2 又补过初始视图数据。**记录输出也不自动摆脱场景与格式依赖。** 改图后显示旧轨迹可作历史参考，但不能悄悄当新地图的有效成绩或验证结果。[一手／研究]
+
+### 输入复演与状态倒带，各自省掉什么、增加什么
+
+- [ccleste 固定 README](https://github.com/lemon32767/ccleste/blob/261d96f15af430b8111abc7a5250229246654f52/README.md#tas-playback-and-the-fixed-point-question)给出逐帧输入 bitfield、起始加载帧与固定 seed；作者同时说明 float 与原 PICO-8 的 16.16 定点差异可能影响 TAS。为特定理想 RNG 记录提供的 balloon hack 会固定气球并扩大 hitbox。[研究] 所以“文件播完”必须附模拟配置，不能把改变玩法条件的兼容补丁算成忠实复现。这里只核移植作者文档，未编译／播放。[一手／研究]
+- [Factorio FFF47，2014-08-15](https://www.factorio.com/blog/post/fff-47)描述历史调试模式逐 tick 比 CRC，再保存带可读标签的状态以定位第一次分歧。作者也报告这种密集检查很慢；它支持调试时比较状态，而非只看画面，不是当前性能数字或所有游戏每帧完整落盘的建议。[一手：作者报告；研究]
+- Braid 作者 Jonathan Blow 的[原评论](https://news.ycombinator.com/item?id=9484297)说明主要记录世界状态，world5 的影子动作是事件记录例外；[后续解释](https://news.ycombinator.com/item?id=9484350)说状态历史以更多内存换较少 CPU。输入／事件倒带若要迅速跳转仍需邻近状态起点，因此可能同时维护两套机制。[研究] 这是该项目的历史取舍，不证明状态记录对所有项目更便宜；此处未取得对应源码或独立运行。
+
+### 第二次修改的最小验收与许可边界
+
+增加新道具显示、修改地图，再改变一项运动规则：分别检查旧格式能否解析、旧画面能否诚实显示、旧输入能否在声明的模拟条件下重现。缺字段显式降级；跳转／倒放经过事件时，表现播放不得重复触发真实奖励或提交命令；倒带续玩另验对象生命周期、冷却与继续执行。需要诊断原因时定位首次状态分歧，不能用外观接近当通过。[研究；验收未执行]
+
+只提炼公开机制，不复制代码或游戏资产；STK／Neverball 的开源许可也不将全部素材或其他游戏代码一并授权。没有测试存储量、性能、跨平台确定性、玩家学习或二改工时。上述证据支持用途划分和维护风险，不支持“回放系统已经验证”或强制 Unity／UE 使用相同实现。[研究]
