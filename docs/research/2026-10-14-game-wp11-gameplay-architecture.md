@@ -1,5 +1,5 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按真实复杂度升级。先定状态所有者、时钟、退出与输入边界；相机、关卡、成长、教学与辅助按玩家决策取舍。物品区分可互换性，任务区分历史与当前条件；功能通过仍须核体验
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按真实复杂度升级。先定状态所有者、时钟、退出与输入边界；相机、关卡、成长、教学与辅助按玩家决策取舍。物品区分可互换性，任务区分历史与当前条件；功能通过仍须核体验；群体叠招先分攻击许可、站位与单体冷却
 新证据：[一手／社区] 固定源码、官方契约、历史修复／评审及开发者复盘，来源、版本和日期见各节；含Factorio撤销二改、Wesnoth受限撤销、OpenMW／Luanti物品路径及Overgrowth玩家单例。[研究] 另有确定性算术反例，未作游戏、引擎、模型或玩家对照
 
 # WP11：单人独立游戏的 gameplay 架构取舍
@@ -1129,3 +1129,39 @@ OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://gi
 AD模拟时停普通循环，[普通存档门槛](https://github.com/IvarK/AntimatterDimensionsSourceCode/blob/5409e320cecef96a917cca1dfb68f1f183e499ca/src/core/storage/storage.js#L244-L273)拒绝进度模拟中的普通保存，备份有例外；这不证明崩溃幂等。[一手] 建议收益与已结算区间同存，恢复重入拒绝重复区间，负时差与上限另定政策。[研究]
 
 **未运行验收**：同存档加“自动购买后解锁新产物”，比正常逐步与两种补算的收益、触发次数、恢复等待和最长阻塞；再验后台恢复、重复回调、结算前后崩溃／重载。不以算法存在宣称玩家体验、净性能或重复收益已解决。本轮只读公开实现与修订，不复制代码；复用另核许可。[研究]
+
+
+## 群体攻击协调：资格、站位与冷却分开
+
+核实：2026-10-17（UTC+8）；GC／主线一、三。改变05 §7：把“调整攻击重叠”收窄为减敌、个体错峰与共享许可的条件选择；只读开发者材料、固定源码和引擎文档，未运行游戏、引擎、模型或玩家对照。[研究]
+
+**✅ 先查玩家缺哪种应对，再决定限什么。** 单招已清楚但叠加失去反制，且仍需保留包围、选敌或范围攻击价值时，才给特定攻击类别加小共享许可；敌人数量、空间与预告本就不合适，先改遭遇。仅调独立冷却不能保证不同时到期；随机错峰是概率调整，不是并发上界。此为方案推导，非以下游戏的受控比较。[研究]
+
+### 生产取舍：参战预算不等于攻击帧计数
+
+- **God of War (2018)。** Mihir Sheth 的 [GDC 2019 原讲稿](https://media.gdcvault.com/gdc2019/presentations/Sheth_Mihir_EvolvingCombat.pdf#page=39)第39–43页按资格、类型优先级、玩家目标和相机关系排序，从固定池分配 aggression tokens，不同类型可占不同份额；第55–62页另以区域／间距约束站位。第72页明确演示禁用攻击但保留 aggressiveness，不能把这份预算写成“同时伤害次数”。第50–56页记录加权寻位复杂、频繁失效和聚团，后来转向避免坏位置；这也反驳“加额度即可解决围攻”。这里是作者生产复盘，非本仓复现；不照搬例示数值或整套导演。[一手／研究]
+- **Batman: Arkham City 的相反选择。** [CGW 2012期开发者采访，Combat Choreography](https://www.cgw.com/Publications/CGW/2011/Volume-34-Issue-9-Dec-Jan-2012-/Mean-Streets.aspx)中，David Hego说明相较Asylum增加并攻，同时提供双／三重反击；Tim Hanagan说明更多敌人技术可行却会使玩法混乱。支持“并发与反制共同设计、数量也可减少”，不证明使用某种token算法，也不把多人同步动画当单程序无美术的免费能力。[一手：实名作者陈述；研究：采用边界]
+- **群涌是目标时保留群涌。** Valve [Left 4 Dead 原讲稿](https://cdn.akamai.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf#page=65)第65页描述集体冲锋；第81–82页的休整调节生成数量，现有特殊感染者仍能攻击。遭遇人口节奏和场上逐次攻击许可不同；不能据此推断L4D不存在任何局部攻击限制。[一手／研究]
+
+### 固定实现：共享额度的范围和退出比名字重要
+
+静读 `ValveSoftware/source-sdk-2013@be57e3d01ac7d7aa6a2cacbfef187c0b46616db0`，只支持所列链路，不代表全部发行构建。[一手]
+
+- [ai_squad.h](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/src/game/server/ai_squad.h#L17-L75)与[分配／释放](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/src/game/server/ai_squad.cpp#L579-L650)：同一squad按目标记录strategy slots，已有合适槽可保留，否则找空槽；不是空间坐标，也没有公平等待队列。[一手]
+- [Combine选招](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/src/game/server/hl2/npc_combine.cpp#L1992-L2008)先争取ATTACK1–2，失败仍可取得独立GRENADE1；[建立射线](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/src/game/server/hl2/npc_combine.cpp#L1642-L1658)也可占攻击槽。因此两个主攻击槽既非全局威胁上限，也非仅在伤害帧持有；单体next-attack时间仍另存。[一手／研究]
+- [换目标](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/src/game/server/ai_basenpc.cpp#L10081-L10098)先释放旧目标资格，[切schedule](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/src/game/server/ai_basenpc.cpp#L10515-L10537)与[死亡](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/src/game/server/ai_basenpc.cpp#L515-L524)有释放；[改去装填](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/src/game/server/hl2/npc_combine.cpp#L2194-L2208)也归还。自定义打断是否走到出口须单独核，不能把这一条链称为所有取消已安全。[一手／研究]
+
+[固定许可证](https://github.com/ValveSoftware/source-sdk-2013/blob/be57e3d01ac7d7aa6a2cacbfef187c0b46616db0/LICENSE)为Source 1 SDK专用许可；这里只转述机制，不复制代码／资产，不推荐直接移植到Unity／UE商业项目。三家生产材料不是同任务性能或体验排名。[一手／研究]
+
+### 最小采用与第二次修改
+
+| 症状／目标 | 先采用 | 代价与撤回条件 |
+|---|---|---|
+| 同批起手偶尔同步，允许重叠本身 | 保留个体冷却，必要时错峰 | 无严格上界；仍出现无应对组合，再比较共享许可 |
+| 需保留多敌，但某类重招不能同时逼迫互斥应对 | 只限制该类起手／承诺阶段，定义未获准者行为 | 持有范围含准备还是恢复需明确；限制起手不限制已发弹体／持续伤害 |
+| 同时接近造成堵路、预告互挡 | 沿现有导航补可达站位与间距；容量不够就改场地／减敌 | 站位可达不保证能出招；仅限攻击也不会疏通堵路 |
+| 有意群压、范围清场或多重反制 | 保留可理解的并发；必要时调人口／节奏 | 一律轮流会抹掉原玩法价值，撤回过宽许可 |
+
+以上为[研究]条件选择。Unity 6.3 [avoidancePriority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AI.NavMeshAgent-avoidancePriority.html)决定避让优先级；UE 5.8 [RVO／Detour Crowd](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-avoidance-with-the-navigation-system-in-unreal-engine)处理动态避障。这些原生空间能力不能当作已提供攻击调度；沿既有状态／技能所有者补窄许可即可，不为此迁移行为树或GAS。[一手／研究]
+
+**未执行的二改验收。** 在原双敌遭遇增加第三敌／远程招：记录请求、批准、归还和实际危险重叠；插入持有者死亡、打断、换目标、改招、不可达与重开。检查旧资格未遗留、旧回调不释放新持有者、持续有合法候选时没有意外全体等待；公平轮转并非必需，但饥饿不能被“未超额”掩盖。人数正确仍须核逃路和实际可用反制。若排队明显、空窗无聊或群压价值消失，收窄受限招式／占用区间或移除。未实测，不能声称更公平、省调试或AI生成收益。[研究]
