@@ -1,6 +1,6 @@
 主线：三，兼二
-改变的建议：请求超时与整项任务截止时间分别核实；恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流。[经验]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验；10-16（UTC+8）补续接前分支／HEAD检查的单仓观察与离线Git正反例，以及已发布 OpenAI Python SDK／HTTPX2 的超时、重试与流读取边界；Go 整次请求超时作对照。[一手／社区／研究／经验]
+改变的建议：请求超时与整项任务截止时间分别核实；恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流；可选子任务可显式降级，必需验收换执行者，停不掉共享写入者则暂停相关交付。[经验／研究]
+新证据：原研究证据汇总（日期见各节，非本次编辑新增）；官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验；10-16（UTC+8）补续接前分支／HEAD检查的单仓观察与离线Git正反例，以及已发布 OpenAI Python SDK／HTTPX2 的超时、重试与流读取边界；Go 整次请求超时作对照；10-17（UTC+8）补gstack可选降级／必要接管的固定模板与失败状态后续修复，区分提示约定、测试覆盖和真实恢复。[一手／社区／研究／经验]
 
 # 长程任务：来源、反例与实验边界
 
@@ -291,3 +291,22 @@ missing-expected-HEAD: rejected
 - **合入不等于已发行。** 所核[1.2.15 release](https://github.com/langchain-ai/langgraph/releases/tag/1.2.15)先于补丁，其[08a3456源码](https://github.com/langchain-ai/langgraph/blob/08a345637fb2bd499f69c90056a22c478a468817/libs/langgraph/langgraph/pregel/_loop.py#L352)仍按 checkpoint_id 键存在判断 replay；不能建议升级该版即可解决，也未在本仓运行该版复现。根图某个入口正常不能覆盖显式当前 head ID 等其他入口。[一手／研究]
 
 **采用判断。** 复用现有执行记录与原生恢复机制，先核实际安装版本和续接入口；业务去重仍由真正执行动作的一层承担。只读任务或已有足够验收的未变流程不因此增加框架。此次只读公开源码、原帖、测试定义与发行元数据，未运行模型、LangGraph、外部 API 或上游测试；下一有价值证据是发行后在原触发条件下的接收方复测，不继续堆相同模拟变体。[研究]
+
+
+## 可选子任务可降级，必要验收换执行者
+
+核实：2026-10-17（UTC+8）。主线三／四，M3／M4；改变20 §5的失败处置：不把所有子任务都当阻断条件，也不把失败当通过。沿已有发布工作流借用分支选择，不推荐整套框架，不重复§9的未知写入对账。[研究]
+
+**同一工作流已有不同可行解。** gstack [#2772](https://github.com/garrytan/gstack/pull/2772)于2026-09-01合并为`0d1bd5616c0ef096bb7ccee336f63c60ee408618`，版本文件／变更记录标1.79.0.0；其模板按缺失结果的用途处理：[一手：合并、固定模板]
+
+- **必要检查换执行者。** [覆盖审计L23](https://github.com/garrytan/gstack/blob/0d1bd5616c0ef096bb7ccee336f63c60ee408618/ship/sections/test-coverage.md.tmpl#L23)要求先停仍运行的子任务，再由父任务内联审计；[计划完成审计L17–23](https://github.com/garrytan/gstack/blob/0d1bd5616c0ef096bb7ccee336f63c60ee408618/ship/sections/plan-completion.md.tmpl#L17-L23)沿同一分类逻辑接管，父任务仍失败则须明示选择，默认停止修复。源码允许用户另行选择跳过并记录，不是Agent自行把失败改成通过。[一手；研究：采用边界]
+- **可选补充允许缺席，但不能仍有写入者。** [文档同步L30–39](https://github.com/garrytan/gstack/blob/0d1bd5616c0ef096bb7ccee336f63c60ee408618/ship/sections/pr-body.md.tmpl#L30-L39)允许省略PR的Documentation段并标未完成；恢复前先停止共享工作树的子任务，停不掉则再等一段，仍在运行就停整次ship。已产生提交须检查整个新增序列，只要祖先含非允许文件就不推；未提交内容保留。这里的可选项是该流程的文档同步，不能推广为迁移说明、使用者必需文档或任意验收均可省略。[一手；研究]
+- **仅在父任务分支写“不可用”仍会漏错。** 同版[Greptile L13–24](https://github.com/garrytan/gstack/blob/0d1bd5616c0ef096bb7ccee336f63c60ee408618/ship/sections/greptile.md.tmpl#L13-L24)虽给派发失败设UNAVAILABLE，却让子任务把API错误、无PR与零评论都返回`total:0`，父任务随后静默跳过。因此降级判定必须从子任务结果契约一直到交付记录区分失败与成功空结果。[一手：历史模板反例；研究：不是实际运行复现]
+
+**后续修改已修历史反例，不把旧错当现状。** [#3057](https://github.com/garrytan/gstack/pull/3057)已合并为`28f1385eac65cab592fe267956f07b205271df1b`（2026-10-06，版本标1.91.32.0）。[修订模板L29–46](https://github.com/garrytan/gstack/blob/28f1385eac65cab592fe267956f07b205271df1b/ship/sections/greptile.md.tmpl#L29-L46)分别返回`complete/no_pr/unavailable`，未知／缺失状态按不可用；只在成功抓取后允许报告零评论，并要求确认运行中子任务已停。当前核对的[f47321e6模板](https://github.com/garrytan/gstack/blob/f47321e6158f37d1393d8e58d5725fb161cc8ffa/ship/sections/greptile.md.tmpl)仍保留该区分。[一手：固定源码与PR元数据]
+
+**证据不能升级成超时保证。** #2772自报派发与正常doc-sync E2E通过，但明确列出“仍被后台化后的deadline恢复”“再次push拒绝”“Greptile unavailable”三条未做E2E的分支。其[测试L90–101](https://github.com/garrytan/gstack/blob/0d1bd5616c0ef096bb7ccee336f63c60ee408618/test/run-in-background-guidance.test.ts#L90-L101)只钉住恢复／scope字符串；约10分钟是返回后台launch metadata之后的提示约定，不是可打断前台调用的watchdog。模板要求停止不等于已证实停止后没有遗留进程写入。此次未运行客户端、模型、上游测试或恢复实验，未取得故障注入恢复及接收方完整重试回执。[一手：测试定义；社区：作者测试报告；研究：范围]
+
+**借用分支判断，不照抄宿主字段。** 后续[f67c478f的共享派发规则L222–228](https://github.com/garrytan/gstack/blob/f67c478f05d8e0b39339599ad11c91a3478515ae/scripts/resolvers/constants.ts#L222-L228)已改成参数存在才请求前台，收到launch receipt就等完成通知；[官方当前说明](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)也区分fork模式与非交互入口。无需关闭宿主控制来迁就旧模板。[一手；研究]
+
+**采用与后续。** 先在任务原有验收里判定该结果是否必需：必需则换执行者完成同一检查或暂停；原验收要求独立审阅时仍须独立执行者，不能由被审者自审替代。可选则明示未完成后继续独立交付；有共享写入时先确认终止并核产物，不能以“可选”放过竞态。新调查应追真实失败分支的停止／恢复与最终交付回执，未取得时保留机制结论，不把作者“第三次复发”或合并数量当可靠性统计。[研究]
