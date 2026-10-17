@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M5：引擎测试报告读取与模板禁区对齐 | dot-A（接收／整合：dot-A） | `dot/tmp/20261018-test-report-read-boundary` | domains/game-dev/unity/templates/AGENTS.md、domains/game-dev/unreal/templates/AGENTS.md、TASKS本行 | 2026-10-18 05:54（UTC+8） | 基线 `47af367a`；已认领，待编辑与独审；仅对齐既有测试脚本的必要报告／日志读取，保留生成物禁改、引擎受限路径与项目原权限，不改settings deny，不运行引擎 |
 
 ## 最近交接
 
