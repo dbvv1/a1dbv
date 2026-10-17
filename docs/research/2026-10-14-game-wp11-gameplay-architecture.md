@@ -438,6 +438,16 @@
 
 [一手] [Celeste64 ReadMe](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/ReadMe.md#license)将MIT Source（有例外）、Content／IP及FMOD分开；仅借机制，短期jam不作生产底座。重试全程与工时未测。
 
+### 4. 已获线索难回看：先补材料还是移动检查点
+
+核实：2026-10-17（UTC+8）。只读历史版本公告与玩家回执；补充05重试段“只为回看已获线索而重走，可先保留可回看材料”。[研究]
+
+- **实际修订 [一手]**：Mobius 的 [Outer Wilds／Echoes of the Eye 1.1.13（2022-09-15）](https://www.mobiusdigitalgames.com/news/patch-13-is-now-available)同时修改视觉线索、船载日志和关卡，以“无需 photographic memory”描述其中一项；公告未展开播放条件，不能单靠这句断言全部幻灯片解锁。
+- **后续使用 [社区]**：[2022-10-05讨论](https://www.reddit.com/r/patientgamers/comments/xwfpyw/anyone_else_feel_like_the_outer_wilds_echoes_of/)中，Torchiest描述较早看到的图像当时尚无意义、后来忘记而查攻略；Mossimo5明确称补丁后在船上电脑看幻灯片很有帮助，但仍不喜欢潜行。前者与后者是不同玩家，非同人前后对照，也不证明整个重试体验改善。
+- **显示范围 [社区：模组作者说明]**：[Damián Garro的播放器说明](https://outerwildsmods.com/mods/shiplogslidereelplayerplus/)称原版按日志条目关联的facts显示，存在未覆盖材料；显示未看过全部材料是其模组另设且默认关闭的选项。这里只核说明，未安装模组或反编译游戏，不把模组功能归给原版。
+
+[研究] **两个替代**：移近检查点／加捷径减少再次到达的操作；保留已获材料供回看则减少重复取证，仍让玩家推理。问题仅是忘记已见线索时，可先选后者；实际重复挑战负担仍按前节处理。以记忆为挑战目标时不自动日志化，也不提前开放未发现材料。此例不支持取消循环、统一缩短重试，或给所有谜题补答案。
+
 ## Endless Sky：非平台游戏的动感镜头与默认值取舍
 
 核实：2026-10-14 UTC。主线 1；补 05 §8 从“效果能关闭”到分别决定效果、默认值与首玩可发现性。比较的是俯视太空贸易／战斗中的居中跟随与加速度偏移，不重做输入研究，也不声称两种方案通过了全部玩法回归。[研究]
