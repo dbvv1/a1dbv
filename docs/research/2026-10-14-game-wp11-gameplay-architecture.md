@@ -6,6 +6,8 @@
 
 证据核实：原记录2026-10-13—14 UTC，后续日期见各节。除确定性算术复核外，均为公开资料／源码研究，未运行引擎、游戏、模型、玩家实验或上游测试，未安装／购买插件；所有验收计划均未执行。源码与文档检查不证明性能、工时、体验或AI收益；“AI风险”是契约推导，固定主干不等于发行包。各节保留特有缺口与历史验证范围。本文只提炼机制，不复制代码／资产；实际复用仍须分别核代码、素材和引擎许可。
 
+05 页历史范围原文：核实：2026-10-16；篇幅编辑：2026-10-17（UTC+8）。本次编辑日期不代替各节证据核实日期。
+
 ## 一、研究结论与适用边界
 
 **[研究] ✅ 默认：Unity现有组件＋纯C#窄规则＋局部状态机；UE现有Gameplay Framework＋ActorComponent＋C++规则。** 先完成玩法需要的开始、暂停／局内菜单、结算、重试并清理旧局；世界是否暂停另定。不因对象／技能／行为数量直接采用ECS、GAS或行为树，也不整套移植Lyra。
@@ -508,6 +510,18 @@
 
 [研究] Unity／Unreal均沿项目已有命令、存储和动作边界选择，不要求SO框架／GAS；本节无引擎API或性能优劣结论。上述类型互为取舍证据，不是同任务对照，也未证明单人能复现整体质量。[一手] OpenTTD [COPYING.md](https://github.com/OpenTTD/OpenTTD/blob/daa6e1ca1c357eb9e6ae3d69af134205e1be8517/COPYING.md)为GPL v2，不直接复制进闭源底座。本轮只核公开原源／源码，未运行引擎、游戏或上游测试。
 
+
+## 区域命令补研：持续任务还是固定对象队列
+
+核实：2026-10-17（UTC+8）；主线三。改变 05命令建议：需要响应目标进出时保留持续区域任务，指定对象分派才展开快照队列；追加／替换和筛选失败另定，不把统一手势当语义一致。[研究]
+
+**两种可用任务并不等价。** BAR [#9042讨论](https://github.com/beyond-all-reason/Beyond-All-Reason/issues/9042#issuecomment-5510929781)解释：区域维修转成当时的单位列表后，会追随离区对象、忽略新入区对象；原生区域维修在任务持续期间重选范围内受损对象，区内无人需修时结束，特定 Alt 模式才持续等待。[#8342作者](https://github.com/beyond-all-reason/Beyond-All-Reason/pull/8342)认为拆分在战斗／战场回收有用，对建造单位的维修／回收等任务却通常更差：固定展开还要维护原生区域命令已有的资源满额、复活冲突、目标移动与射程检查。这是作者使用判断，非跨游戏对照收益。[一手]
+
+**统一转换会丢操作含义。** 历史[#5946](https://github.com/beyond-all-reason/Beyond-All-Reason/pull/5946)合并为`33bb76324c916f6ffb2ad3e2c8f01256456b9b90`，统一区域筛选并展开目标命令；作者自述用 LLM 评审代码，尤其运输逻辑，不据此归因正确性或错误。[玩家#9042](https://github.com/beyond-all-reason/Beyond-All-Reason/issues/9042)于 2026-09-02 报告：单位上起拖会丢 Ctrl，导致应跨 Stop 保留的目标被清掉、应取消的排队攻击仍在；地面起拖正常。[另一测试者](https://github.com/beyond-all-reason/Beyond-All-Reason/issues/9042#issuecomment-5510801309)辨明起拖位置后确认结果一致。作者仅怀疑自 #5946 开始，未见定位引入提交；问题仍 open，历史合并不证明当前全部沿同实现。[一手：历史修订；社区：操作自报]
+
+**固定修订后的回执仍有保留。** 已读候选[#8342的02d3474262237453d060f6d44b24b0e55bdf8b1d实现](https://github.com/beyond-all-reason/Beyond-All-Reason/blob/02d3474262237453d060f6d44b24b0e55bdf8b1d/luaui/Widgets/cmd_area_commands_filter.lua#L819-L868)：解析模式／悬停对象、筛能力，但空筛选仍有消费命令的分支。[2026-08-12复测](https://github.com/beyond-all-reason/Beyond-All-Reason/pull/8342#pullrequestreview-4920866636)明确在该修订确认分配崩溃、敌我检查等已有修复，同时报告空筛选吞命令，以及无合适悬停对象时回收队列误派自己／友军；[两建造单位的回执](https://github.com/beyond-all-reason/Beyond-All-Reason/pull/8342#discussion_r3770098055)称错误命令留在队列、下游未拒绝。另一次[游戏内回执](https://github.com/beyond-all-reason/Beyond-All-Reason/pull/8342#discussion_r3701207170)显示取消全部误改为移除单目标后，新目标变成追加，旧目标残留。[一手：固定源码；社区：贡献者游戏内自报]
+
+**采用边界。** [研究] 先选持续区域／固定对象，再验对象进出、混选能力、目标少于单位、空筛选及追加／替换；自动分派若需重造原有任务规则，就保留原生路径。#8342已关闭但未合并；[测试者](https://github.com/beyond-all-reason/Beyond-All-Reason/pull/8342#issuecomment-5284309510)说明未逐项对照 master，不能把所有失败归为新引入或声称候选整体通过。只提炼单款 RTS的机制选择，不复制代码、不推所有引擎实现；本仓库未运行游戏／引擎或测玩家收益。
 
 ## 运行时叙事：开放表达、知识解锁与离线承诺
 
