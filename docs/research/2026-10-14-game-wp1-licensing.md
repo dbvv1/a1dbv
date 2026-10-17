@@ -160,53 +160,70 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 
 ## WP6追加：现行音频型号与声音连续性
 
-核实2026-10-14 UTC+8；精确来源与成本边界见[WP6](2026-10-14-game-wp6-audio.md#七授权总表的增量依据)。
+核实2026-10-14 UTC+8。精确来源、代码／权重／输出与成本边界详载[WP6 §七][w6-1]，以下仅作准入索引。[一手／研究]
 
-- [现行Eleven模型](https://elevenlabs.io/docs/overview/models)含eleven_v4/v4_turbo、eleven_text_to_sound_v2及music_v2_5；前两类沿一般TTS/SFX合同，Music仍适用特别门槛，不能按品牌统一清权。当前入口是否Beta及输入声音授权单独核。[Voice Library](https://elevenlabs.io/docs/eleven-creative/voices/voice-library)没有notice period的音色可立即下架；已导出音频权利不承诺未来同音色补录。
-- [Suno公开定价](https://suno.com/pricing)：本次年付显示Pro/Premier分别20/60首下载每月；生成credit另算。v6/v6-wild/v6-mini版本不改变既有Download及Remix门槛，编辑界面名字不能代替具体功能的法律分类。
-- [ACE XL-turbo官方卡](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo)明确MIT与商用输出；主代码沿固定ca1e85f，实际LM/音频组件与输入权利独立核。作者数据合规声明不当独立审计。
-- [Stable Audio3 Small-SFX卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)：代码MIT，权重Community，T5Gemma另受[Gemma条款](https://ai.google.dev/gemma/terms)。[Community正文](https://stability.ai/community-license-agreement)要求商业注册；本人及关联方合计任何来源年收入超过100万美元，免费许可终止并须另获授权，不能仅计算本游戏收入。输出归属不保证版权/独占；只交付WAV与分发或托管模型分别履约。本轮未注册/下载/接受新协议。
-- Kenney [Interface Sounds](https://kenney.nl/assets/interface-sounds)及[Music Jingles](https://kenney.nl/assets/music-jingles)指定包CC0，可商用；入库保留包内许可，不把该结论外推任意转载或额外动作/素材。
+- [Eleven v4／v4_turbo、SFX v2、Music v2.5][w6-1]：TTS／SFX与Music分合同，Beta／输入授权另核。[Voice Library][w6-2]无notice period音色可立即下架，已导出权利不保证未来补录。
+- [Suno v6／v6-wild／v6-mini][w6-1]：公开年付计划Pro／Premier每月20／60首下载与生成credit分计；版本／编辑菜单不改变既有Download／Remix门槛。
+- [ACE XL-turbo][w6-1]：单核官方卡MIT及商用输出，主代码沿ca1e85f；实际LM／音频组件、输入权利另核，作者数据声明不是独立审计。
+- [Stable Audio3 Small-SFX][w6-1]：代码MIT、权重Community、T5Gemma分别核；注册、本人／关联方所有来源收入门槛、输出与模型交付义务见详表。所链记录另保留2026-10-14 UTC再核的双许可入口反证，不追认为本段较早轮次已核；本轮未注册、下载或接受协议。
+- [Kenney Interface Sounds／Music Jingles][w6-1]：两指定包CC0，入库保留包内许可，不外推转载或额外素材。
 
-声音权利须另核剧本、表演者/数字复制品、媒体/语言/角色/商业范围与后续补录；基础服务可商用不能替代这些授权。**[一手：直接许可／研究：使用边界]**
+剧本、表演者／数字复制品、媒体／语言／角色／商业范围及后续补录均另核，基础服务许可不替代声音授权。[研究]
+
+[w6-1]: 2026-10-14-game-wp6-audio.md#七授权总表的增量依据
+[w6-2]: 2026-10-14-game-wp6-audio.md#33-配音内容改10不能默认全角色重生
 
 ## WP4追加：动作、绑定与2D骨骼
 
-2026-10-14 UTC+8补核。完整逐项代码/权重/输出及直接链接见[WP4 §4](2026-10-14-game-wp4-animation.md#4-授权边界与wp1对应项)，本表不把商用输出等价可公开再分发原始FBX。
+2026-10-14 UTC+8补核。逐项代码／权重／输出详载[WP4 §4][w4-1]；商用嵌入不等于公开再分发原始FBX。以下仅作准入索引。[一手／研究]
 
-- Mixamo：[官方FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html)允许商业游戏、限定账户/地区；[附加条款](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Mixamo-Addl-Terms-en_US-20210623.pdf)限制内容/输出用于AI创建、训练、测试或改进，普通引擎重定向不据此解释为训练。
-- Uthana：[Terms v1.1.0](https://uthana.com/terms)区分付费输出和免费CC BY4.0，默认数据改进与明示no-training不同；Text3.0/Video2.1/Locomotion均须保实际生成版本和合法输入。
-- Rokoko：[v2.0.1](https://www.rokoko.com/terms-of-use)（2026-07-16）区分用户内容、Rokoko Assets与自动访问；§4.4未特许的脚本不放行。DeepMotion[条款](https://www.deepmotion.com/terms-of-use)免费非商用、付费输出可永久商业嵌入，但原素材再分发和未授权机器人/脚本仍限制。
-- Spine：编辑器、runtime及资产包三层独立；[编辑器许可](https://us.esotericsoftware.com/spine-editor-license)的收入/投资融资门槛和[资产包许可](https://en.esotericsoftware.com/spine-asset-pack-license)源文件分发范围不能由买包替代。Unity2D Animation原生方案另沿具体包/引擎许可。
-- AccuRIG仅作软件候选，实际ActorCore/CC Base/自有内容按对应EULA/SKU核；Move One、Cascadeur完整输出权利链本轮未闭合，不列免费商业默认。
-- MoCapAnythingV2代码`c99fb22`和官方epoch60权重卡虽MIT，默认BRIA RMBG1.4免费仅非商业，Truebones等素材另许；先获依赖许可或验证替代，不删除安装步骤就假定合规。
-- Shards `94bd4787`为MIT代码，示例Mixamo/Meshy文件权利并不随代码许可；本轮只读机制，不复制示例素材。
+- [Mixamo][w4-1]：账户／地区条件见详表；内容／输出禁用于AI／ML创建、训练、测试或改进，普通引擎重定向不等于训练。
+- [Uthana Text3.0／Video2.1／Locomotion][w4-1]：Terms v1.1.0分付费／免费输出及数据改进；保生成版本和合法输入。
+- [Rokoko与DeepMotion][w4-1]：分别沿Rokoko v2.0.1（2026-07-16）及DeepMotion服务条款，保内容分类、生成时计划、再分发和自动访问限制；DeepMotion免费非商用。
+- [Spine][w4-1]：编辑器／runtime／资产包三层独立，收入／融资及源文件边界见详表。Unity2D Animation另沿具体包／引擎许可。
+- [AccuRIG／ActorCore与Cascadeur][w4-1]：按实际EULA／SKU清权；[Move One][w4-2]与Cascadeur完整输出链未闭合，不列免费商业默认。
+- [MoCapAnythingV2][w4-3]：固定c99fb22／epoch60及BRIA RMBG1.4／Truebones分别核；默认组合不作免费商业放行，删除安装步骤不证明合规。
+- [Shards 94bd4787][w4-4]：MIT代码不覆盖Mixamo／Meshy示例资产；本轮只读机制、不复制素材。
 
-这些是直接条款/固定源码核对及采用边界，不是法律担保，也未接受新协议、调用或下载模型。**[一手／研究]**
+直接条款／固定源码核对不是法律担保；未接受协议、调用或下载模型。[一手／研究]
+
+[w4-1]: 2026-10-14-game-wp4-animation.md#4-授权边界与wp1对应项
+[w4-2]: 2026-10-14-game-wp4-animation.md#b-商业动作哪种控制对应哪种修改
+[w4-3]: 2026-10-14-game-wp4-animation.md#d-开源动作可运行论文效果商用路径三件事
+[w4-4]: 2026-10-14-game-wp4-animation.md#e-真实游戏反证shards工具可以借鉴不能按readme全信
 
 ## WP5追加：材质、特效与素材复用
 
-核实2026-10-14 UTC+8。代码、权重与输出分别核；完整成本、来源及反证见[WP5 §六](2026-10-14-game-wp5-material-effects.md#六许可核查明细法律结论仅为候选准入)。以下为候选准入，不是法律担保或零手修效果验证。**[一手／研究]**
+核实2026-10-14 UTC+8。代码／权重／输出分别核，完整成本、直接来源及反证详载[WP5 §六][w5-1]。以下仅作准入索引，不是法律担保或零手修效果验证。[一手／研究]
 
-- Material Maker更新为1.7固定`4c6cea67b659e1eb472f91590e06b2b1c5245916`，[MIT](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/LICENSE.md)与[README](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/README.md)不替[社区材料](https://www.materialmaker.org/materials)的CC0/BY/BY-SA及外部节点/贴图清权。无生成权重；保留分发通知，未见专门营收门槛。CLI问题单独评估，不改变软件许可或否定GUI路线。
-- Effekseer运行时/工具沿[固定主MIT](https://github.com/effekseer/Effekseer/blob/82b37081a302b9f9eff0bf14dc6c845fca8c3c54/LICENSE)及第三方通知；推荐版本1.80.7不等于任意master。[官方样例页](https://effekseer.github.io/en/contribute.html)新样例区CC0，可作原runtime和烘焙对照；旧project弾幕GIrls／NITORI BOX／LotusCraft区仅明确随Effekseer播放免费，不推定换runtime或独立售包。无生成权重，实际包留来源与许可。
-- Poly Haven指定纹理沿[资产CC0](https://polyhaven.com/license)，同模型/HDRI，排除网站文字、商标和预览渲染。[2026-07-18 API页](https://polyhaven.com/our-api)明确含商用免费；使用live API的产品需向用户标示来源，每个请求使用独有User-Agent等。该服务义务不把已下载资产改为需署名许可，也不是任意抓站授权。
-- Substance Designer/Sampler为封闭商业席位，不赋予开放权重自托管权；库资产另遵[2025-04-22 Substance 3D Assets条款](https://www.adobe.com/go/substance3dassets)。§2/3允许作为Modified/Larger Work发行并禁止独立提取；§4保留已付费下载资产退订后合规使用；§3.3禁止资产/衍生输出用于直接或间接创建、训练、测试、改进AI/ML。EDU例外不外推商业账户，worldwide资产许可不表示服务在每地可购买。软件自有输入与库存材料不能混同。
-- EmberGen [EULA](https://jangafx.com/legal/end-user-license-agreement)（2025-07-19）允许适用商业许可生产；trial导出购买适用许可后才可商用，教育版不得商业产出，输入权利自负。Indie §3.2核本人/关联方当年或上年合并收入或项目预算低于US$1M，以及商业委托客户门槛。[当前直接永久价](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie)US$300、可选维护US$180/年，未税且维护默认续订可退出；价格FAQ的月租18个月转永久与EULA12个月有冲突，不据此承诺月租转永久期限。
-- MatLat固定代码`a0ce5d359bb58cad503099d109955b1c88dbab05`的[README](https://github.com/KAIST-Visual-AI-Group/MatLat/blob/a0ce5d359bb58cad503099d109955b1c88dbab05/README.md)与[官方权重卡](https://huggingface.co/32V/MatLat)明确checkpoint v1.0.0为CC BY-NC 4.0。代码根LICENSE未核得通用许可，第三方依赖另核；论文CC BY不授权商业运行这些权重，未取得单独商业输出授权，因此仅研究观察、不作商用免费默认。
-- 原生Unity/Unreal材质和粒子沿项目已适用的引擎条款；引擎模板、商店包和第三方flipbook逐个核。VideoMatGen和Scenario VFX只作研究对照，未核清完整部署包/底模授权，不进入商用推荐默认。
+- [Material Maker 1.7][w5-2]：固定4c6cea67b659e1eb472f91590e06b2b1c5245916的MIT／README与社区材料、外部输入分核。CLI故障不改变许可或否定GUI路线。
+- [Effekseer工具／runtime及样例][w5-1]：固定82b3708主MIT／第三方通知、新CC0与旧三区样例分核；推荐1.80.7不等于任意master，旧样例不推定换runtime／独立售包。
+- [Poly Haven指定纹理][w5-1]：资产CC0范围与2026-07-18 live API来源标示／User-Agent义务分开，后者不改变已下载资产许可或授权任意抓站。
+- [Substance商业席位／库资产][w5-1]：2025-04-22专属条款禁止库存资产／衍生输出用于直接或间接创建、训练、测试或改进AI／ML；发行、退订及EDU边界见详表；软件自有输入与库存材料不同，worldwide资产许可不保证各地可购买。
+- [EmberGen][w5-1]：2025-07-19 EULA商业／trial／教育及Indie本人／关联方当年或上年合并收入或项目预算／客户门槛分别核；保留直接永久价和维护条件，月租18／12个月转永久冲突未裁决。
+- [MatLat v1.0.0][w5-3]：固定a0ce5d359bb58cad503099d109955b1c88dbab05的README／官方卡与根LICENSE缺口分别保留；无已核单独商业输出授权，仅研究观察。
+- [原生Unity／Unreal][w5-1]沿项目引擎条款，模板／商店包／第三方flipbook另核；[VideoMatGen／Scenario VFX][w5-3]完整部署包／底模未清权，不进商用默认。
+
+[w5-1]: 2026-10-14-game-wp5-material-effects.md#六许可核查明细法律结论仅为候选准入
+[w5-2]: 2026-10-14-game-wp5-material-effects.md#mmaterial-maker与现成基线
+[w5-3]: 2026-10-14-game-wp5-material-effects.md#g前沿联合pbr研究为什么暂不替代默认
 
 ## WP7追加：视频编辑、正式导出与自动化入口
 
-核实2026-10-14 03:41 UTC+8。完整来源、固定代码及反例见[WP7许可增量](2026-10-14-game-wp7-video.md#七许可增量模型自动化入口与导出分开)；已有Wan/LTX/Runway基础许可行保留，不把新托管型号外推为旧权重许可。[一手／研究]
+核实2026-10-14 03:41 UTC+8。完整来源、固定代码及反例详载[WP7许可增量][w7-1]；已有Wan／LTX／Runway基础行保留，不外推新托管型号。[一手／研究]
 
-- **Google付费Developer API**：`gemini-omni-1.1-flash`、`veo-3.1-generate-preview`/fast/lite都是专有服务，不开放权重；[特别条款](https://ai.google.dev/gemini-api/terms)不主张输出所有权、允许合规专业/商业用途，仍由用户承担输入/输出权利。Paid不用于改进但非零留存；[地区表](https://ai.google.dev/gemini-api/docs/available-regions)未列中国大陆/香港。离线导出成片与向玩家开放API分别核，不以消费者订阅代API合同。
-- **Omni具体模式**：[详细页](https://ai.google.dev/gemini-api/docs/omni)已明确首尾帧插值与片尾延展；EEA/瑞士/英国上传视频编辑/延展受限，自产片多轮接续另有路径。总入口较旧的Veo用途推荐不能证明Omni缺少能力。此为访问与能力条件，不改变输出权利；首尾控制也不是连续性保证。
-- **Runway Aleph2.0 / Gen-4.5**：[当前条款§4.4](https://runway.com/terms-ofuse)不限制合规输出商用，默认允许输入/输出训练；平台内第三方关键帧模型须另核。输出商业权不授权任意网页自动化、抓取或绕过导出限制；[官方Dev API](https://docs.dev.runwayml.com/guides/using-the-api/)是程序化入口，Web订阅与API计价分开。API对玩家开放时的归属标示/终端协议义务沿已有记录。
-- **正式导出**：[Runway API结果链接](https://docs.dev.runwayml.com/assets/outputs/)24–48小时过期，官方要求保存自己的副本；[Veo文档](https://ai.google.dev/gemini-api/docs/veo)保留视频2天。合法输出归属、可取得文件和持续URL可用性是不同问题；保留生成ID、时间/套餐/条款、合法下载与本地master，不把临时URL交作游戏资源。
-- **LTX依赖与披露**：[Gemma条款入口](https://ai.google.dev/gemma/terms)明确Gemma4另用[Apache2](https://ai.google.dev/gemma/apache_2)，不能继续套Gemma3条款；实际LTX适配编码器`gemma4-12b-ltx-v1`及LoRA/升级器仍逐包核，不以原始Apache覆盖LTX社区许可。[固定LICENSE-2_x](https://github.com/Lightricks/LTX-2/blob/be6d6d0a69d11a0a399c462ed92606692e5f8697/LICENSE-2_x)Attachment A(5)另要求明确可理解地披露机器生成，§6要求保留既有溯源/标识；低于营收门槛也不能省略这层义务。
+- [Google付费Developer API][w7-1]：`gemini-omni-1.1-flash`及`veo-3.1-generate-preview`／fast／lite，商用／Paid数据／地区按专有API核，不套消费者订阅或玩家API。
+- [Omni具体模式][w7-2]：首尾／延展、上传片地区限制与自产片另路见该节；旧总入口不反证能力缺失，控制入口不保证连续性或改变输出权利。
+- [Runway Aleph2.0／Gen-4.5][w7-3]：一般条款§4.4及训练条件、第三方关键帧模型、官方Dev API与Web计价分别核；商用输出不授权任意自动化／抓取／绕导出，玩家API义务沿本记录基础行。
+- [正式导出][w7-4]：Runway结果URL24–48小时过期、Veo保留2天；保存生成ID、时间／套餐／条款、合法下载及本地master，不将临时URL交作资源。所有权、可取得文件和URL持续性不同。
+- [LTX依赖与披露][w7-1]：Gemma4原始Apache2、LTX适配`gemma4-12b-ltx-v1`及独立LoRA／升级器分核，不套Gemma3或覆盖LTX社区许可。Attachment A(5)披露与§6溯源／标识保留并行，不因低营收豁免。
 
-这些许可只放行条件评估，不保证可注册版权、全地区销售、平台接收或零手修质量；没有创建账户、接受协议、下载权重或运行服务。[研究]
+仅条件评估，不保证版权、全地区销售、平台接收或零手修质量；未创建账户、接受协议、下载权重或运行服务。[研究]
+
+[w7-1]: 2026-10-14-game-wp7-video.md#七许可增量模型自动化入口与导出分开
+[w7-2]: 2026-10-14-game-wp7-video.md#google当前默认已不是只有-veo
+[w7-3]: 2026-10-14-game-wp7-video.md#自动化访问与正式导出不是同一个许可问题
+[w7-4]: 2026-10-14-game-wp7-video.md#动态事实表
 
 ## 发布渠道不能被生成许可替代
 
