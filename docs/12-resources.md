@@ -1,6 +1,6 @@
 # 12 · 资源索引
 
-> 更新：2026-10-17（UTC+8；同步探索先导与入口，其他来源保留原核查范围）。按要做的决定查找原始资料；采用条件回对应主专题，历史核查范围见第 6 节。
+> 更新：2026-10-18（UTC+8；收敛旧待验证入口，来源保留原核查范围）。按要做的决定查找原始资料；采用条件回对应主专题，历史核查范围见第 6 节。
 
 ## 30 秒结论：从问题进入，不从名单安装
 
@@ -158,6 +158,8 @@
 
 **2026-10-11 第七轮（Codex 与长程任务）**：按当前默认分支 `73905442` 盘点 86 个文件；重点读取 Codex 官方 AGENTS/Skills/Subagents/配置/安全文档及近期社区 issue，阅读 Superpowers、Spec Kit、OpenSpec、GSD Core、OpenHands SDK 的固定版本，见 [20](20-codex-long-horizon.md)、[21](21-agent-patterns.md)。新增可执行验收记录、Codex 模板及离线回归测试；没有安装这些第三方框架，也没有进行真实 Codex/引擎或收费模型对照。本文其余专题的旧核实日期不因此自动更新。
 
+历史访问范围见[社区记录](research/2026-10-12-community-source-records.md#11-社区脉搏的核实范围)；UE MCP 已核资料见[工具链](../domains/game-dev/unreal/01-toolchain.md)，真实引擎验证仍后置。
+
 **新增待验证**：
 - [ ] Codex 模板在目标客户端上的加载、角色权限、技能触发与执行；本轮只做静态检查
 - [ ] 真实引擎报告 schema 与通过/失败/取消状态；模拟引擎回归不能替代
@@ -169,24 +171,18 @@
 - [ ] 当前 Codex 项目的后续交付与维护：[Ra & Apep 与 KPI 案例](research/2026-10-12-codex-delivery-cases.md)已读原帖；前者由对端记录完成六场景本地浏览器对照，本侧未独立复跑，后者没有公开源码/具体故障，均未取得模型成本或长期维护效果，不把新帖当成新模型实验。
 - [ ] HumanLayer/BAML 的长期收益：对端记录已核对原问题、双 PR 同起点补丁、原/回填计划与测试入口，见[案例复核](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)；可支持具体位置选择与计划纠错分析，未运行 BAML、读取完整会话或取得发布后维护数据，不据此给 RPI 或当前模型提效结论。
 - [ ] 项目知识与运行反馈对实际 AI Coding 的影响：官方 Playwright interactive/CLI Skill 与 Codex 迁移教程的指定段落已读，见[方向分析](research/2026-10-12-development-conditions.md)；真实任务收益、游戏原始运行轨迹仍待验证。未安装这些 Skills，未将官网教程当作效果实测。
-- [ ] Reddit（r/ClaudeAI、r/ClaudeCode、r/codex、r/LocalLLaMA）的社区反馈：需要在本地浏览器看
 - [ ] linux.do、知乎上的中文实践经验
-- [ ] Antigravity、Kiro、JetBrains Junie 的官方文档
 - [ ] danluu《What's the best programming language for coding agents?》（当前网络策略拦截）
-- [ ] Terminal-Bench 4.0 的具体排名（页面由 JS 渲染）
 - [ ] 实测：Claude Projects、Codex Ultra 模式、Agent Teams 的成本和收益
 - [ ] 实测：Superpowers 在中型项目中的效果与开销
 - [ ] 实测：GLM-5.3 / Qwen 3.8 27B 配合 OpenCode 或 Pi 做日常开发
 - [x] ~~实测：Claude Code 的 harness 开销（复现 Systima 的测量）~~：已在云端环境复现，见 [19](19-experiments.md)
 - [ ] 实测：在本地机器（非云端会话）上重测 E1，区分云端额外工具带来的开销；`--bare` 模式下的最小开销
 - [ ] 实测：E2、E3 扩大样本（更多任务、更多仓库、Opus），以及“更难的 bug”下指令文件的作用
-- [ ] Gemini 4 Argon 开放后的评测
 - [ ] Godot 基金会博客原文（本轮只读到 PC Gamer 的转述）
 - [ ] GDC 2026 完整报告 PDF（本轮只读了官方摘要）；Faros 完整报告（只读了公开摘要）
 - [ ] TypeSafe Jev 的官方技术说明和独立评测（本轮只有二手报道）
 - [x] ~~OpenAI Dots 的官方说明~~：已通过 learn.chatgpt.com 的 Markdown 版读到（在 URL 后加 `.md`）；openai.com 新闻页仍返回 403
-- [ ] GPT-6 全量开放和 Intelligent UI 的官方说明
-- [ ] Unreal 5.8 MCP 的官方发布说明（本轮只确认了插件位于 Experimental 目录）
 - [ ] 实测：在 Unity 项目中做“Agent 可试玩”改造（状态导出 + 输入注入 + 场景加载）的成本和效果
 - [ ] 实测：用决策模型（Clef / Strands Decider）做 NPC 决策原型，和行为树对比
 - [ ] llmskirmish（Agent 可以玩的 RTS）、nunu ai（像素级游戏测试）的原文
