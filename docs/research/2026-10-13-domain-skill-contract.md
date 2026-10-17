@@ -1,6 +1,6 @@
 主线：二，兼三、四
 改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；几何验收按消费者实际使用的坐标与单位判定；比较扫描结果前锁工具、数据库和判定身份；依赖／配置会互相替换时，将短冲突契约放在各操作入口，完整配方仍按需读取。[经验]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；未重跑，不归因 Skill 效果。[一手／研究] 同日补Triton关键字恢复修复、PyTorch接收与2026半输出反例；只读补丁和官方契约，不复跑GPU。 2026-10-17 UTC+8补YugabyteDB两项Skill的互斥依赖入口修订：只读原始反馈、自动评审、作者回应与固定补丁，无安装、模型运行或用户复测。
+新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；同日补读 pivot 三份独立轨迹，核实际 xlsx 配方与原生对象／静态表的差异，不把 with 标签当实际读取；未重跑，不归因 Skill 效果。[一手／研究] 同日补Triton关键字恢复修复、PyTorch接收与2026半输出反例；只读补丁和官方契约，不复跑GPU。 2026-10-17 UTC+8补YugabyteDB两项Skill的互斥依赖入口修订：只读原始反馈、自动评审、作者回应与固定补丁，无安装、模型运行或用户复测。
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
@@ -147,7 +147,23 @@ openpyxl 官方文档以保留、修改已有 pivot 为支持方向，明确不�
 
 固定 XLSX Skill 为 7,845 字节；文件大小不是 token、等待或人的投入。真正需比较的是读取、对象构造返工与版本/客户端验证成本。本轮没有任务级净耗时/净美元证据，不承诺“更快/更便宜”；确定性探测只用已有库与自造数据，没有安装、付费模型或外部服务。[一手：P3；研究：成本边界]
 
-### 本轮可复核的结构探测
+### 2026-10-17 补读：提供了 Skill，不等于读到了对象配方
+
+本次只读固定 HF revision `f104580363a9642563593c475620196ecd36687d` 的三份独立 ACP 记录及对应 config／result；不补跑模型或轨迹命令。它们均记录 OpenHands、MiniMax-M3、Daytona、900 秒限时，首条任务文本完全一致，SHA-256 为 `08452c053e39b717cf522fa13cc71ed2db98d33a008e462be0633d79e81fce97`。原始 PDF／XLSX 仅核得相同大小，没有文件哈希，不能断言完整输入相同。**[一手：公开记录；研究：身份范围]**
+
+| 固定轨迹 | 实际读取与实现 | 可见验收 |
+|---|---|---|
+| [无 Skill `2cdd6086`](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-no-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/sales-pivot-analysis__2cdd6086/trajectory/acp_trajectory.jsonl) | 第 15 行完整构造脚本用 pandas 分组／pivot_table，再写静态单元格；没有原生 pivot 构造 | 第 16、18 行回读汇总值与源数据；[result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-no-skills__minimax-MiniMax-M3/2026-06-06__04-55-41-maxeffort/sales-pivot-analysis__2cdd6086/result.json) reward=0 |
+| [有 Skill `9debf63d`](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__14-22-20-maxeffort/sales-pivot-analysis__9debf63d/trajectory/acp_trajectory.jsonl) | 第 18 行回显 xlsx 配方，第 22 行用 CacheDefinition 与 TableDefinition 构造四个原生 pivot；此前也读取 PDF Skill | 第 25 行回读四个 pivot 的字段／聚合，第 28 行回显对应 XML 部件；[result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__14-22-20-maxeffort/sales-pivot-analysis__9debf63d/result.json) reward=1 |
+| [有 Skill `0bbaf52f`](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-05__02-15-03-maxeffort/sales-pivot-analysis__0bbaf52f/trajectory/acp_trajectory.jsonl) | 仅第 5 行读取 PDF Skill；查 openpyxl 源码并尝试安装 xlsxwriter 后，第 38 行仍构造普通 Excel Table | 第 43 行完整 ZIP 列表没有 pivot 部件，表格与数值检查通过；[result](https://huggingface.co/datasets/benchflow/skillsbench-leaderboard/blob/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-05__02-15-03-maxeffort/sales-pivot-analysis__0bbaf52f/result.json) reward=0 |
+
+**增量是实际实现选择，不是整包效果。** 成功记录的 xlsx 正文与 P3 固定源码去掉 frontmatter 后的正文完全一致；任务正文与 P1 去掉元数据、首尾空白后也一致。这只闭合已显示的输入，不能据此绑定当次完整镜像、harness 版本或 verifier 哈希。失败 with 记录没有读 xlsx 配方，不能解释成同样读取后仍失败，更不能把“with 组”直接当实际领域知识输入。**[一手／研究]**
+
+成功记录第 27 行找不到 LibreOffice／soffice；四个 pivot 页的已存单元格范围均为 A1:A1，回读对象不证明打开、刷新和字段重排成功。公开运行目录仅有 config、result、timing 与 trajectory，没有独立 XLSX 或逐断言 verifier 日志；奖励与结构差异相容，但不能确定全部失败原因。原有 Other Territories 争议与客户端验收缺口保留。**[一手：运行回显与目录；研究：边界]**
+
+另一个[选中目录 `676d6e53`](https://huggingface.co/api/datasets/benchflow/skillsbench-leaderboard/tree/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-05__22-55-01-maxeffort/sales-pivot-analysis__676d6e53)与[`9debf63d`](https://huggingface.co/api/datasets/benchflow/skillsbench-leaderboard/tree/f104580363a9642563593c475620196ecd36687d/submissions/skillsbench/v1.1/openhands-with-skills__minimax-MiniMax-M3/2026-06-06__14-22-20-maxeffort/sales-pivot-analysis__9debf63d)的 config／result／timing Git OID 及 ACP／LLM LFS 哈希分别相同，且前者 result 内部 rollout_name 为后者；本节只计一份成功记录，不计独立重复。ACP SHA-256 为 `daf07961c84c6c0cf8412c0e95106570bb8bf76e34a451194a691b010127598e`，本次下载核对一致；重复原因未知。不改 05／15 推荐：仍缺短资料入口对照、完整成本与目标客户端行为，不能外推整包净收益或模型胜负。**[一手：固定目录元数据；研究：采用范围]**
+
+### 原 2026-10-13 结构探测（未在本次重跑）
 
 以下为本轮自行编写的完整程序，调用已安装 openpyxl 3.1.5，以三条自造数据在内存中操作；没有执行下载的上游脚本或 oracle。协调方独立重跑，JSON 输出一致。这里只检查 ZIP 部件、库对象与重新读取，不进行 OOXML schema 验证或 Excel/LibreOffice 操作。[研究：本轮实际执行]
 
@@ -202,7 +218,7 @@ print(json.dumps({'openpyxl':openpyxl.__version__,'results':out,'boundary':'In-m
 - **P2**：[Dockerfile](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/Dockerfile)。
 - **P3**：[XLSX Skill](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/skills/xlsx/SKILL.md)、[PDF Skill](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/environment/skills/pdf/SKILL.md)。
 - **P4**：[openpyxl 官方 Pivot Tables 文档](https://openpyxl.readthedocs.io/en/stable/pivot.html)。读取页标题为 3.1.3，本轮运行库为 3.1.5。
-- **P5**：[SkillsBench 论文 v1](https://arxiv.org/html/2602.12670v1)，§3.2、I.5 与 I.7 的 sales-pivot-analysis 案例。2026-10-13 本节未读取该任务完整逐次轨迹或重算成本；下文 2026-10-17 的运行复核另属 software-dependency-audit，不补齐 pivot 历史运行。
+- **P5**：[SkillsBench 论文 v1](https://arxiv.org/html/2602.12670v1)，§3.2、I.5 与 I.7 的 sales-pivot-analysis 案例。2026-10-13 本节未读取该任务完整逐次轨迹或重算成本；上方 2026-10-17 补读的是六月 MiniMax-M3 三份独立记录，不补齐二月论文原始运行或全部尝试。
 - **P6**：[verifier](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/verifier/test_outputs.py)、[oracle](https://github.com/benchflow-ai/skillsbench/blob/27738384b1df694ea2ae466e416f476e94d8fab9/tasks/sales-pivot-analysis/oracle/solve.sh)。仅源码阅读，未执行。
 - **P7**：[join 语义争议 #996](https://github.com/benchflow-ai/skillsbench/issues/996)。2026-07-12 原报告，2026-10-13 读取仍 open；没有独立复现其 MAX 运行。
 
