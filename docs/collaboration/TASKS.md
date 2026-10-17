@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M4：UI迁移后的实际路径与本次记录验收 | dot-A（接收／整合：dot-A） | `dot/tmp/20261018-ui-migration-business-oracle` | docs/23-browser-verification.md、docs/research/2026-10-13-browser-healing-outcomes.md、TASKS本行 | 2026-10-18 06:20（UTC+8） | 基线 `b0a0b25f`；已认领，核公开固定补丁与有限回执，避免用旧路径绿色或旧统计替代新路径及本次记录验收；保留后续fixme限制；未改正文，未运行模型／浏览器／上游 |
 
 ## 最近交接
 
