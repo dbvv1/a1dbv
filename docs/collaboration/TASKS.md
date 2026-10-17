@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M5：领域角色触发条件与模型默认值一致性 | dot-A | `dot/tmp/20261018-game-role-defaults` | `domains/game-dev/unity/templates/.claude/agents/unity-code-reviewer.md`、`domains/game-dev/unity/templates/.claude/agents/unity-perf-auditor.md`、`domains/game-dev/unreal/templates/.claude/agents/ue-code-reviewer.md` | 2026-10-18 02:43（UTC+8） | 基线 `4877119f`；核对 description 条件采用与 model 默认 inherit，待修订、自审和离线检查；未修改模板；接收／整合者 dot-A |
 
 ## 最近交接
 
