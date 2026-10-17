@@ -969,13 +969,22 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 
 ## 信号取舍补研：呈现设置保住玩法信息，辅助规则另有承诺
 
-核实：2026-10-14 UTC。主线一／三；改变 04 的选择：并发信息读不懂时先减规则／效果，设置与新内容共享玩法含义；不另建无障碍框架。[研究]
+核实：2026-10-14 UTC；采用判断于 2026-10-17（UTC+8）修订，新增依据见下。主线一／三；改变 04 的选择：先减装饰、改表达，仍读不懂关键组合才减规则；设置与新内容共享玩法含义，不另建无障碍框架。[研究]
 
 ### 不同类型的一手证据与边界
 
 - **回合策略。** [一手] Matthew Davis [Into the Breach Design Postmortem，2019](https://media.gdcvault.com/gdc2019/presentations/Into%20the%20Breach%20Postmortem%20Final.pdf)，PDF 14、31–36：回合确定性／敌人预告要求 UI 交目标／类型，因而限三类攻击、正交方向、稳定属性并裁武器。仅 PDF 文字；表达可约束设计，非即时全预告或三类必好玩。
 - **Dead Cells 29。** [一手] [29 系列](https://deadcells.com/patchnotes/29)：29.1 配色覆盖 HUD／菜单／图标／武器／物品、属性不只用颜色名，同时有全图揭示；29.2 修重要资产被背景滤镜遮。[研究] 按选项承诺核，不强求辅助保标准未知信息／难度。
 - **Dead Cells 35。** [一手] [35 系列](https://dead-cells.com/patchnotes/35) 未单标小版本项修隐形仍有轮廓，35.7 修弹体漏轮廓；多显示／漏显示均可能。页含 alpha/beta，不作同日全平台发行或当前缺陷。
+
+### 常显与按需查询：补回正文遗漏的条件
+
+2026-10-17（UTC+8）补核。原研究已有“回合低频说明可按需展开”，正文压缩却只留缩规则；本轮修复一致性，以下历史证据细化布局取舍，不称新理论或本项目收益。[研究]
+
+- **低频查询保入口。** Cogmind [2022 作者实作](https://www.gridsagegames.com/blog/2022/03/special-commands-menu-design/)把低频命令集中到 Space 菜单，保留快捷键；地图尺可从该菜单开启，Space 可关闭，作者未增加常驻按钮以免占位。[Beta 11 官方发布](https://store.steampowered.com/news/posts/?appids=722730&enddate=1650631665&feed=steam_community_announcements)确认新菜单可用。[一手] 只支持这类规划／低频操作，不把即时威胁藏进菜单。[研究]
+- **高频操作也可能需要并列。** Factorio [FFF363](https://www.factorio.com/blog/post/fff-363)作者因制作分类的嵌套切页打断操作，将已有平铺选项改默认；[1.1.0 发布](https://forums.factorio.com/91657)确认默认变更。[一手] 但[发行后玩家原帖](https://forums.factorio.com/viewtopic.php?start=100&t=91657#p522402)中 KatherineOfSky 称物流设置极少用，平铺反把常用库存／制作隔开，因而关闭；Serenity 同页认同。[社区] 作者与玩家使用频率不同，不能推出平铺普遍更好。[研究]
+
+[研究] 沿实际操作比较常显与可发现的临时查询：需要频繁来回看／操作的放近，低频项按需展开；仍无法辨识必要组合才缩规则。以上无受控玩家测量、固定源码或本仓实测，不给通用点击数阈值，也不以菜单已发布证明体验提升。后续获准时，在新增一种状态后复查查找、切回和常用信息位置。
 
 ### 采用、删减与不能外推的部分
 
