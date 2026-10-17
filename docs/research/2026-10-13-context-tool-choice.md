@@ -1,5 +1,5 @@
 主线：二，额外能力何时值得加
-改变的建议：先缩小原生查询，再按缺口补能力：旧快照查刷新，语义为空查导入与依赖，原生有而封装漏查过滤与版本；定位与附加详情分开，预算省略不等于不存在，全量验收读命令侧完整报告。文档核目标版本，设计核结构／组件契约，记忆核来源／身份／事实失效；异步工具分任务终态、工具错误与业务结果，优先复用兼容 SDK。接入分工具面、凭证与输入信任；共享指令核宿主发现／导入，会话动作按问题选择，不以配置、日志或固定摘要大小替代加载与交付验收。[经验／研究]
+改变的建议：先缩小原生查询，再按缺口补能力：旧快照查刷新，跨配置先核目标构建范围，语义为空查导入与依赖，原生有而封装漏查过滤与版本；定位与附加详情分开，预算省略不等于不存在，全量验收读命令侧完整报告。文档核目标版本，设计核结构／组件契约，记忆核来源／身份／事实失效；异步工具分任务终态、工具错误与业务结果，优先复用兼容 SDK。接入分工具面、凭证与输入信任；共享指令核宿主发现／导入，会话动作按问题选择，不以配置、日志或固定摘要大小替代加载与交付验收。[经验／研究]
 新证据：汇总既有固定源码、官方契约、发布与测试定义[一手]，原帖及复测自报[社区]，历史数据复算[研究]与标准库局部演示[经验]；日期与反证见各节。未运行模型、上游客户端／服务或上游测试；源码及测试定义不等于执行，已修历史问题不作当前故障，语义检索链缺修后原任务验收，不推端到端收益。
 
 # 上下文获取：问题、版本与状态边界
@@ -468,3 +468,16 @@ print('4 assertions passed')
 - **固定修复**：[#2134](https://github.com/oraios/serena/pull/2134) 于 2026-10-06 合并为 [`c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c`](https://github.com/oraios/serena/commit/c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c)。旧实现见到目标声明后，将后续同 name、同 kind 的包含符号当成 import；新增条件要求引用位置还须落在该符号名称的 `selectionRange` 内，函数体内的调用不再仅因同名被过滤。PR 作者以 Gleam 1.19.0 自报修前／修后对照，并说明旧版表现受返回顺序影响；这不是原报告者回执。修复仍依赖语言服务器的 range 表达，作者没有验证所有后端。**[一手：补丁；社区：作者复测自报]**
 - **测试定义与防假绿**：[固定单元测试 L59–85](https://github.com/oraios/serena/blob/c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c/test/solidlsp/test_referencing_symbols.py#L59-L85) 用脚本化 LSP 响应将声明排在两个同名调用者之前，再断言两者均返回，确保触发旧过滤条件；[Gleam 后端测试 L110–126](https://github.com/oraios/serena/blob/c4a2fd425cbe0fb59db62f39e9db735d33a2dd4c/test/solidlsp/gleam/test_gleam_basic.py#L110-L126) 验证相应三模块场景，但旧版是否失败受实际返回顺序影响，不能只以一次旧版通过判定没有缺陷。PR 自报测试通过，未由本仓执行或验证 Agent 编辑。**[一手：测试定义；经验：验证边界]**
 - **已发布边界**：[v2.0.0](https://github.com/oraios/serena/releases/tag/v2.0.0) 发布于 2026-10-13；[固定版本 `4c4268f9` 的实现 L2545–2569](https://github.com/oraios/serena/blob/4c4268f9c0adf8743a75e6dda2ef1fa635f34cc3/src/solidlsp/ls.py#L2545-L2569) 包含该过滤修正。不能把 1.7.0 的报告写成当前版本普遍仍有此故障，或因此无条件更换后端。原 issue 无评论，PR 讨论也未提供原报告者修复后回执；本链满足原报告、固定修复与测试定义，不满足端到端编辑收益。**[一手：发布与源码；研究：证据范围]**
+
+
+## 跨配置修改：原生引用也有构建范围
+
+> 核实时间：2026-10-17（UTC+8）。主线二；收窄 03 §2.5 的“对照 IDE、确认覆盖”：相同后端与构建可能共同遗漏其他配置。只读版本化官方文档、固定实现与原帖；未运行 gopls、上游代码／测试或模型。**[一手／社区；经验：采用判断]**
+
+**改变选择**：任务涉及多个平台或 build tags 时，先从目标配置核对相关文件与必要调用点；语义结果未覆盖的候选可用局部文件／文本搜索找出，再在对应配置中确认身份。仅修改当前构建时不追加全仓扫描。此处补的是查询范围，保留原生语义工具，不因这类遗漏增加封装或检索框架。**[经验]**
+
+- **版本化契约**：已核 [gopls/v0.23.0](https://github.com/golang/tools/tree/gopls/v0.23.0) 对应提交 `014f87ff5c01915bc90f4f11a6bb8aea3e0edbd7`。[workspace.md L53–76](https://github.com/golang/tools/blob/014f87ff5c01915bc90f4f11a6bb8aea3e0edbd7/gopls/doc/workspace.md#L53-L76) 明确 References／Implementations 只查询所选文件的默认 build，不合并所有可能构建；自动匹配其他 GOOS/GOARCH 文件不等于跨构建引用合并，也不能自动推断任意用户自定义 tags。[navigation.md L73–77](https://github.com/golang/tools/blob/014f87ff5c01915bc90f4f11a6bb8aea3e0edbd7/gopls/doc/features/navigation.md#L73-L77) 再次明确 Windows 文件发起的查询不含 Linux 文件。当前[官方 workspace 文档](https://go.dev/gopls/workspace)仍保留该范围，不能把它写成已经修复的历史问题。**[一手：固定版本／动态契约]**
+- **实现交叉核对**：[References 入口 L28–37](https://github.com/golang/tools/blob/014f87ff5c01915bc90f4f11a6bb8aea3e0edbd7/gopls/internal/server/references.go#L28-L37) 用 `FileOf` 取一个 snapshot，传给 Go 引用查询；[FileOf 与 view 选择 L447–498](https://github.com/golang/tools/blob/014f87ff5c01915bc90f4f11a6bb8aea3e0edbd7/gopls/internal/cache/session.go#L447-L498) 沿 `SnapshotOf` 和匹配 view 取得文件上下文。这里没有遍历所有 view 合并引用的入口逻辑；这只佐证该版本的文档范围，不外推其他 LSP。**[一手：固定源码，未执行]**
+- **真实需求及未闭合边界**：[meling 的 #65089](https://github.com/golang/go/issues/65089) 把教学模板、解答与测试放在同一目录，用 `!solution`／`solution` 区分；报告者自述命令行两种配置分别失败／通过，但编辑器需手动切换 tag 才能使用字段或类型重命名。它证明实际多配置维护需求与操作阻碍，未给出漏改后交付产物，版本也未指定。核查时仍 open；[唯一评论](https://github.com/golang/go/issues/65089#issuecomment-2184197333)讨论显式配置或提示，不是原报告者修复验收。[#65755](https://github.com/golang/go/issues/65755) 的跨 view 合并仍是 open 提案，性能与客户端部分结果支持是讨论中的取舍，不能当成可用功能。**[社区：原报告；一手：维护者设计讨论]**
+
+官方[手动配置段](https://github.com/golang/tools/blob/014f87ff5c01915bc90f4f11a6bb8aea3e0edbd7/gopls/doc/workspace.md#L115-L135)给出 `build.env` 的 GOOS／GOARCH 与 `build.buildFlags` 的 tags 路径。采用时按任务所需配置核验，不要求枚举全部可能组合；文本搜索仅找候选，同名命中仍需语义判断。未取得配置核查前后的人力、耗时或模型正确率数据。**[一手；经验：适用范围]**
