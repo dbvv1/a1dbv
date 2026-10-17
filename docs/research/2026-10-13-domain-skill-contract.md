@@ -648,3 +648,18 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 同一仓库可分发两项 Skill，不意味着客户端必定加载两者；风险成立的条件是任务实际采用了冲突的两条建议。审阅中将 `SKILL.md` 称为“always-loaded”也不能推广为所有宿主的加载契约，本节只比较激活后正文与按需参考的可见位置。当前固定树 [`a85399256b87efce8bc650449a3e79dae17f8507`](https://github.com/yugabyte/yugabytedb-skills/tree/a85399256b87efce8bc650449a3e79dae17f8507) 保留两边先查环境、保护既有工作环境的要求。**[一手：固定文本；研究：适用范围]**
 
 没有取得原用户修后重试、两种文档布局的同条件运行或人工处理成本；PR中的测试说明也不是本仓复测。暂不据此推荐整包安装、添加自动化步骤或宣称更少返工。源码与文档仓库采用 Apache-2.0；本节仅链接固定来源与概述机制，未复制配方。
+
+
+## 消除复制前核对下游布局契约
+
+核实：2026-10-17（UTC+8）。主线三／四；收窄15 §7“先消除转换／复制”：复制可能承担下游布局要求，只在实际消费路径接受新布局时消除，否则保留物化或限制优化路径。只读公开源码、PR与Actions元数据，未运行模型、GPU或候选。**[研究：采用判断与范围]**
+
+**现代LLM辅助优化被接收，也可能需要恢复部分复制。** SGLang [#21734](https://github.com/sgl-project/sglang/pull/21734)于2026-04-14由ispobock合入；[固定6da3aba6](https://github.com/sgl-project/sglang/commit/6da3aba6a5d62f9b9b976553c46b5d45b88b3b13)含Claude Opus 4.6署名，将共享QK归一化的四处二维reshape换成多维view，保留stride以便Inductor融合，另改FP8量化路径。作者H200嵌入吞吐“+24%”比较的是补丁FP8与main非FP8，不能拆成该补丁的独立收益；GPU profile也是作者报告。**[一手：固定补丁；社区：测量及范围]**
+
+**回滚依据来自接收方的不同平台。** bingxche的[#23159](https://github.com/sgl-project/sglang/pull/23159)报告AMD内存访问故障，影响共享入口的14个模型文件，包含bf16；HaiShaw明确因AMD CI故障批准，04-20合入[ab936ce6](https://github.com/sgl-project/sglang/commit/ab936ce6946df053239f370d41e973100a980a4b)。原PR自身[run24262716047](https://github.com/sgl-project/sglang/actions/runs/24262716047)的SHA为`2362060a540009c99486c8b3f26832a5a0732235`、结果failure；报告指出该故障早于aiter版本更新，不能直接归于后续依赖升级。回滚验证[run24596337420](https://github.com/sgl-project/sglang/actions/runs/24596337420)在`17d791ddfd21171ea97b3b265cc1e4a923d127a2`的第二次attempt为success；同SHA的[更宽run24599716745](https://github.com/sgl-project/sglang/actions/runs/24599716745)整体failure，目标故障消失仅据报告，不能称全矩阵通过。以上SHA与总状态另经Actions API核对。**[一手／社区：接收、运行元数据与回执]**
+
+**第一次“修复”仍保留了不适合消费者的布局。** [#23227](https://github.com/sgl-project/sglang/pull/23227)初稿称多维reshape可安全处理非连续输入；后续[bd9ea0de](https://github.com/sgl-project/sglang/commit/bd9ea0de7da034e284a1c3046b915f0ab4cc36a2)记录AMD同类故障重现，并修正其父提交`bd32cc243f62bb18bc61646c6c4269a5c30947fe`：形状与stride兼容时reshape仍返回view。最终helper仅在CUDA＋Inductor保留多维view，其他路径恢复原二维reshape；ch-wan于04-27批准并合入[bead2e34](https://github.com/sgl-project/sglang/commit/bead2e347077f52378f1a0d95296bf435c3e71d6)，含Claude Opus 4.7署名。这是修订中的诊断与实际分支，不把初稿“view给错stride、reshape安全”的解释当最终根因。**[一手：前后补丁；社区：重现与接收]**
+
+**限制来自具体消费路径，不是所有ROCm算子。** 原优化版本的[layernorm.py](https://github.com/sgl-project/sglang/blob/6da3aba6a5d62f9b9b976553c46b5d45b88b3b13/python/sglang/srt/layers/layernorm.py)中，普通`forward_hip`已有连续化；启用AITER则构造器改派`forward_aiter`，直接交给`rmsnorm2d_fwd`，没有同样整理。CUDA路径也另有高rank输入连续化为二维的处理。源码支持必须核实际后端入口，不能单从平台名或张量值相同推断兼容。[PyTorch reshape契约](https://docs.pytorch.org/docs/2.14/generated/torch.reshape.html)说明兼容stride可返回view，不应依赖其复制行为；最终补丁恢复的是该QKV-split布局上的旧路径，不是“二维reshape对任意非连续输入都保证复制”。**[一手：固定消费侧源码与API契约；研究：推断范围]**
+
+**接收不等于全面验证。** 修复`bd9ea0de7da034e284a1c3046b915f0ab4cc36a2`的[AMD run24847301653](https://github.com/sgl-project/sglang/actions/runs/24847301653)第14次attempt仍整体failure；jobs元数据中14个`1-gpu-small`普通分片为success，MI35x小测试及一个8GPU分片为failure。具体job日志现返回HTTP410，未独立确认失败类别，不说它们无关，也不说重投全CI绿。AI署名仅证明辅助归属；长期需求修改、修复后同条件性能、完整尝试费用与接手工时均未闭合，不能宣称长期净收益或平台升级后全面保留成功。**[一手：运行元数据；研究：缺口]**
