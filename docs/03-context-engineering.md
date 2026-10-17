@@ -21,7 +21,7 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 
 ## 2. 指令文件：CLAUDE.md / AGENTS.md / 规则文件
 
-**保留能减少定位或集成错误的信息，不按“是否能从代码推知”一刀切删除。** Cloudflare Workers SDK 的根指令用任务到目录的短表导航，将版本交回 `package.json` 查证，要求跨工具开发功能检查 Miniflare、Wrangler、Vite 和 Vitest 的影响，并先运行最小相关测试。可借鉴这种“定位入口 + 行为边界”，不复制整棵目录树或重复配置值；固定源码对照见[本轮审计](collaboration/reviews/2026-10-13-331e093.md#新增来源怎样改变模板建议)。这是已采用的项目写法，不是已证明的模型收益。**[一手：项目指令；经验：采用判断，2026-10-13]**
+**保留能减少定位或集成错误的信息，不按“代码可推知”一刀切删除。** Cloudflare Workers SDK 用短表导航任务目录，将版本交回 `package.json`，跨工具功能需检查 Miniflare、Wrangler、Vite、Vitest，并先跑最小相关测试。可借鉴“定位入口 + 行为边界”，不复制目录树与配置值；[固定源码对照](collaboration/reviews/2026-10-13-331e093.md#新增来源怎样改变模板建议)只证明项目已采用，不证明模型收益。**[一手；经验：采用判断，2026-10-13]**
 
 ### 2.1 各工具的加载规则（[一手]）
 
@@ -42,26 +42,24 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 
 ### 2.2 指令文件到底有没有用？（研究证据）
 
-> 2026-10-05 读了原文后修正：上一版根据搜索摘要写的“人写的比 LLM 生成的好，并且对除 Claude Code 外都有提升”，只说对了一部分，下面以原文为准。
-
-| 研究 | 设置 | 发现 |
-|---|---|---|
-| **Evaluating AGENTS.md**（ETH Zurich 等，arXiv 2602.11988，v3 2026-09） | Claude Code（Sonnet 4.5）、Codex（GPT-5.2 / 5.1 mini）、Qwen Code；SWE-bench Lite 300 题 + 新建的 CTXbench（138 题，来自 12 个**自带开发者手写指令文件**的仓库） | **LLM 生成的文件**：成功率 −0.5% / −2%（不显著），**成本 +20–23%**（显著）。**开发者手写的文件**：平均 +2.4%（p=0.21，不显著），但**显著优于 LLM 生成的**（p=0.038），对 Claude Code 以外的 Agent 都有提升，成本最多 +19%。指令会被遵守（更多测试、更广的探索、更多推理 token），但在该研究设置中**没有观察到仓库概览的可靠收益**（Sonnet 生成的文件 100% 都写了概览）。文件长度没有显著影响。**局限：只测了 Python**，在训练数据较少的语言和工具链上效果可能不同 **[研究：原文]** |
-| **Do Context Files Help Coding Agents?**（arXiv 2607.27250，2026-07） | Sonnet 4.6 / GPT-5.5，3 个 Python 仓库，15／17 任务；公开分析过滤后 288 条记录 | 样本中未检测出正确率收益；10–15pp 是作者限定的描述性等价区间，不能外推为普遍无效。两仓检索语料不匹配、注入渠道不同；[全文及公开数据复核](research/2026-10-13-context-study-reassessment.md#context-files失败解释与分析参数)还发现任务提示、功效参数与失败归因需分开解释。**[研究：全文；经验：公开数据与源码复核]** |
-| **On the Impact of AGENTS.md Files on Efficiency**（arXiv 2601.20404v2，2026-03） | GPT-5.2-Codex；10 仓库、124 个候选小 PR，附录有 113 对有效运行 | 运行时间／输出 token 中位数分别低约 28.6%／16.6%（按两组中位数计算）；50 题人工合理性检查不是正确率或测试通过率对照，不能解释为同等正确性下的提效保证；[附录复算](research/2026-10-13-context-study-reassessment.md#agents-效率耗时与正确性的边界)另限定有效分母、CLI 配对版本与 total 口径。**[研究：全文；经验：公开数据复算]** |
-| **Configuration Smells in AGENTS.md Files**（arXiv 2606.15828，2026-07） | 灰色文献综述 + 100 个热门仓库 | 6 种“配置坏味道”，见 2.3 节；**Lint 泄漏 62%、上下文膨胀 42%、Skill 泄漏 35%** **[研究：原文]** |
-| **A Few Pages of Markdown**（arXiv 2608.25241v2，2026-09） | 441 个企业仓库用于开发 RAMP；另分析 509 个开源处理仓库，核心 agent-first 分层为 214 个无配置对 182 个有配置 | agent-first 指观察期未检出 AI IDE 配置痕迹，不是 Agent 贡献占多数。认知复杂度的 +52.7%／+26.7% 是作者对 `log(Y+1)` 系数作 `expm1` 的换算，不是原量均值直接涨幅或总复杂度之比。配置按观察终点分组且多数后于或同期于 Agent 采用，不能解释为预先写文件的因果收益；[方法边界](research/2026-10-13-context-study-reassessment.md#a-few-pages分组时间与维护)另说明维护未被效果评估。**[研究：全文；一手：公开分析代码；经验：分组／换算复核]** |
-| **Agent READMEs**（arXiv 2511.12884v2，2026-08） | 1,925 个仓库、2,303 个三类指令文件；内容分类另抽样 332 个英文文件 | 约 59%–67%的文件有多次提交；相邻提交间隔不代表全部文件的维护周期。安全（14.8%）、性能（14.5%）是抽样文件中主题出现率，不是指令效果，也不能判定项目缺少其他治理；[维护与内容口径](research/2026-10-13-context-study-reassessment.md#agent-readmes维护与内容口径)另限定静默期和两仓格式案例。**[研究：v2 全文；一手：公开源码]** |
+| 研究 | 主要依据与选择边界 |
+|---|---|
+| **[Evaluating AGENTS.md v3](https://arxiv.org/html/2602.11988v3)**（2026-09） | Claude Code（Sonnet 4.5）、Codex（GPT-5.2／5.1 mini）及 Qwen Code 的 Python issue 修复中，生成文件增加成本，成功率未显著改善；手写文件平均收益不显著，但显著优于生成文件，除 Claude Code 外均有提升，成本也增加。指令改变了测试和探索行为；仓库概览未显示可靠收益，长度影响也不显著。不能外推到其他语言和当前模型 **[研究：原文]** |
+| **Do Context Files Help Coding Agents?**（2026-07） | Sonnet 4.6／GPT-5.5、三个 Python 仓库的小样本未检测出正确率收益；语料与注入渠道不同，描述性等价区间不证明普遍无效。[全文及公开数据复核](research/2026-10-13-context-study-reassessment.md#context-files失败解释与分析参数) **[研究；经验：数据与源码复核]** |
+| **On the Impact of AGENTS.md Files on Efficiency v2**（2026-03） | GPT-5.2-Codex 在十仓小 PR 任务中，运行时间和输出 token 中位数下降；人工合理性检查不能证明同等正确性下提效。[有效样本、配对版本与复算](research/2026-10-13-context-study-reassessment.md#agents-效率耗时与正确性的边界) **[研究；经验：数据复算]** |
+| **[Configuration Smells in AGENTS.md Files](https://arxiv.org/abs/2606.15828)**（2026-07） | 灰色文献与 100 个热门仓库归纳六种配置坏味道，见 §2.3；出现率不是删减后的效果证据 **[研究：原文]** |
+| **A Few Pages of Markdown v2**（2026-09） | 企业仓库用于开发 RAMP；开源仓库的 agent-first 分层中，有配置组的认知复杂度增幅较小，但配置按观察终点分组，多数后于或同期于 Agent 采用，不能推出预先写文件的因果收益。agent-first 仅指未检出 AI IDE 配置痕迹。[分组、换算与维护边界](research/2026-10-13-context-study-reassessment.md#a-few-pages分组时间与维护) **[研究／一手；经验：复核]** |
+| **Agent READMEs v2**（2026-08） | 文件历史与内容抽样说明指令会被维护，但相邻提交间隔不是全部文件的维护周期；安全、性能主题出现率不衡量效果，也不能判定项目缺少其他治理。[维护与内容口径](research/2026-10-13-context-study-reassessment.md#agent-readmes维护与内容口径) **[研究；一手：公开源码]** |
 
 **综合结论**：
-1. 指令文件值得评估的价值包括**效率**（少走弯路、省 token）、**行为约束**（命令、禁区、非标准约定）和**长期质量**（相关性证据）；速度与输出量必须和正确性、返工一起比较，不能据这些样本承诺等质量提效，也不能排除其他任务的收益。
-2. **不要让 AI 生成后原样提交**：上述研究在其 Python 仓库、模型和任务样本中观察到 LLM 生成文件增加成本而未显著提高成功率，不能外推到所有仓库和最新模型。把 `/init` 产出当草稿，保留可验证改变行为的项目特有信息，再做有无配置的对照。
-3. **不要自动复制完整概览、目录树和逐文件说明**。只在它们提供难以从代码发现的信息、并有任务价值时保留；上述研究不构成对所有架构地图的否定。
-4. 越是小众的语言或工具链（比如 Unity 特有的编辑器和序列化约定），越值得写进去，因为模型的先验知识更少。
-5. **按任务补充安全和性能约束，不按类别补齐文件**：只写入本任务确实需要、又难以从代码或已有验证中获得的项目特有边界与验证方式。调查中的主题出现率不能说明外部文档、CI 或其他治理不存在，也不能证明补一句“注意安全／性能”就有收益。**[研究：全文；经验：建议]**
-6. **🧪 从短配置试用，按事实变化维护**：写入项目特有的命令、禁区与约定；命令、权限或架构变化，以及失败反例出现时，同步修订并验证。比较正确性、返工与成本，不以文件数量或编辑频率作目标；观察到配置很少修改，不能证明无需维护。**[经验：建议]**
+1. 评估**效率、行为约束与长期质量**，同时比较正确性、返工和成本。已有正面线索及相关性证据，不足以承诺等质量提效，也不能排除其他任务的收益。
+2. **把 `/init` 当草稿，不原样提交**：保留可验证改变行为的项目特有信息，再做有无配置的对照；生成文件增加成本的结论限于上述 Python、模型和任务样本。
+3. **不自动复制完整概览、目录树和逐文件说明**；有任务价值、难以发现的信息仍应保留，研究并未否定所有架构地图。
+4. 小众语言或工具链（如 Unity 编辑器和序列化约定）更值得补充项目知识，因为模型先验可能较少。**[经验：建议]**
+5. **安全和性能按任务需要补充**：写具体边界与验证方式，不按类别凑齐，也不以一句“注意安全／性能”代替已有文档或 CI。**[研究；经验：建议]**
+6. **🧪 从短配置试用，按事实变化维护**：命令、权限、架构变化或出现失败反例时修订并验证；不以文件数量或编辑频率作目标，少修改也不证明无需维护。**[经验：建议]**
 
-**本仓库历史实验报告（原始产物待补齐，本轮未复现）**（[19 第 4 节](19-experiments.md#4-e3指令文件长短)，n 很小）**[经验：实测]**：同一个 bug 修复任务，27 次运行**全部成功**，有没有指令文件不影响成败，这和上面的研究一致。但两行的短文件让回归测试从 2/9 提高到 9/9，并让 Agent 用了项目自己的测试命令，成本只多约 6%。LLM 生成的 526 行长文件也改变了行为，过程差异与其中测试约定一致，成本是无文件时的 1.6–2.7 倍；没有独立消融，不能断言只有那段起作用。
+**本仓历史实验**：同一 bug 任务各组均成功；短指令改善了回归测试与项目命令使用，长指令也改变行为但成本更高。样本很小、原始产物待补齐，本轮未复现；无独立消融，不能把收益只归给某段指令。统计与设置见 [19 §4](19-experiments.md#4-e3指令文件长短)。**[经验：历史实测]**
 
 ### 2.3 写什么、不写什么（官方最佳实践 [一手]）
 
@@ -75,11 +73,11 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 | 开发环境的坑（必需的环境变量等） | 文件逐个说明 |
 | 常见陷阱、反直觉的行为 | “写干净的代码”这类空话 |
 
-- **检验标准**：保留能改善任务定位、行为正确性或明确质量目标的信息；删除重复、失效或无可解释作用的内容。功能不报错不等于领域依据没有价值，增量采用条件见 [05](05-skills-and-plugins.md)。
-- **规则被忽略** → 先按 §2.1 核对加载与冲突，再看表述、相关性和实际行为；不把文件长直接当根因，也不靠加粗或大写代替执行边界。**[经验：诊断建议]**
-- **何时该加一行**：出现可定位的重复错误，或发现能改变当前选择的领域依据；不必等到错误累计两次，也不因有资料就全部常驻。
+- **检验标准**：保留能改善定位、行为或质量目标的信息，删除重复、失效内容；功能不报错仍可补领域依据，增量条件见 [05](05-skills-and-plugins.md)。
+- **规则被忽略**：先按 §2.1 查加载与冲突，再查表述、相关性和行为；不能直接归因于长度，也不靠加粗代替执行边界。**[经验]**
+- **何时加一行**：发现可定位错误或改变当前选择的领域依据时；不设错误次数门槛，也不把所有资料常驻。
 - 可机械检查的规则可以接入 Hook，但要验证匹配、错误和替代路径；硬权限由沙箱等运行时边界执行，见 [06](06-hooks-and-guardrails.md)。
-- 定期运行 `/doctor prompt-audit`，它会找出“为旧模型写的”提示写法 **[一手]**。典型例子是过度强调和全大写警告：新模型指令遵循更强，这类强调反而容易让它反应过度 **[经验]**。
+- 用 `/doctor prompt-audit` 排查旧提示写法 **[一手]**；过度强调、全大写警告可能让较强的指令遵循反应过度 **[经验]**。
 
 推荐延伸阅读：[Writing a good CLAUDE.md（HumanLayer）](https://www.humanlayer.dev/blog/writing-a-good-claude-md)，讨论了“指令预算”和渐进式披露。
 
@@ -88,7 +86,7 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 | 坏味道 | 表现 | 怎么改 |
 |---|---|---|
 | **Lint 泄漏**（62%） | 命名、格式、import 顺序、行宽这类 linter 和 formatter 能检查的规则 | 先确认现有检查的触发与覆盖，再删除重复规则；保留运行入口、必要原因和例外说明 |
-| **上下文膨胀**（42%） | 文件过长、塞满低优先级细节 | 200 行建议与 598→149 行个案仅作排查线索；按任务价值删除重复／失效内容，必要资料按需读取，不设通用行数门槛 |
+| **上下文膨胀**（42%） | 文件过长、塞满低优先级细节 | 行数建议和缩短个案只作线索；按任务价值删除重复／失效内容，必要资料按需读，不设通用门槛 |
 | **Skill 泄漏**（35%） | 只在特定场景用的流程写进了常驻指令 | 先用按需参考资料；确需复用配方时再按 [05](05-skills-and-plugins.md) 选择窄 Skill |
 | **盲引用** | 只写“见 docs/xxx.md”，不说明用途 | 写清楚**为什么、什么时候**去读，否则“Claude 经常会忽略” |
 | **初始化化石** | `/init` 生成后从没改过 | 事实改变、评审发现缺失约束或出现可定位失败时修订；不以错误次数定门槛 |
@@ -112,15 +110,15 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 
 ### 2.5 跨文件符号检索：何时补 Serena
 
-**🧪 跨文件引用/重命名难定位，原生搜索、IDE 或现有 LSP 不够时再试 [Serena](https://github.com/oraios/serena/blob/main/README.md)。** 增量是符号检索与编辑；先只读对照 IDE 的引用结果，核对目标配置与已知必要调用点后，限定编辑并编译测试，维护耗时超过收益就退回原生。**关键局限**：语言后端和版本决定能力，[Windows 初始化反例](https://github.com/oraios/serena/issues/2069)不能靠关闭防护解决；main 能力与 [v1.7/v2 许可](https://github.com/oraios/serena/blob/main/LICENSE)不可混用，本地索引返回的代码仍进入模型上下文。**[一手；社区：单例；经验：采用判断，2026-10-12，未安装]**
+**🧪 原生搜索、IDE 或现有 LSP 不足以定位跨文件引用／重命名时，再试 [Serena](https://github.com/oraios/serena/blob/main/README.md)。** 先只读对照 IDE 引用、目标配置与已知调用点，再限定编辑并编译测试；维护耗时超过收益就退回原生。**关键局限**：语言后端和版本决定能力，[Windows 初始化反例](https://github.com/oraios/serena/issues/2069)不能靠关闭防护解决；main 能力与 [v1.7/v2 许可](https://github.com/oraios/serena/blob/main/LICENSE)不可混用，本地索引返回的代码仍进入模型上下文。**[一手／社区；经验：选择，2026-10-12，未安装]**
 
 **跨平台或构建配置修改，先补目标配置的核查。** 同一后端、同一构建下与 IDE 结果一致，仍可能共同漏掉其他配置。gopls 的引用查询只查所选文件的默认构建；这类任务先据目标配置核对相关文件清单，必要时补局部文本搜索，再在对应配置中核验调用点。[固定版本契约与真实需求](research/2026-10-13-context-tool-choice.md#跨配置修改原生引用也有构建范围) **[一手；社区；经验：选择，2026-10-17（UTC+8）]** **局限**：文本同名不证明语义身份；配置范围缺口本身不构成新增检索框架的理由。
 
-**语义查询慢时，先分定位和补详情。** 批量找引用先取身份、位置及附近代码，只对选中的目标读正文或请求文档／签名，不必立即弃用语义工具。Serena 的大型 C++ 反馈促成移除引用工具的附加详情、为符号详情设预算；具体参数须按工具版本选择，不能照抄历史调用。预算跳过的详情可能与本来没有文档同样缺省，需要确认契约时缩小到目标再查。[反馈、固定修订与后续反证](research/2026-10-13-context-tool-choice.md#serena定位与附加详情的成本取舍) **[社区／一手；经验：选择]** **局限**：该预算只限制后续附加请求，不是整次调用的硬时限，也未证明模型净收益。
+**语义查询慢时，先定位再补详情。** 批量引用先取身份、位置及附近代码，再为选中目标请求正文、文档或签名。Serena 的 C++ 反馈促成减少附加请求及详情预算，参数须按版本选择；预算跳过与无文档可能同样缺省，查契约时应缩小目标。[反馈、修订与反证](research/2026-10-13-context-tool-choice.md#serena定位与附加详情的成本取舍) **[社区／一手；经验：选择]** **局限**：预算只限后续附加请求，不是调用硬时限，也未证明模型净收益。
 
-**已知源码存在、语义查询却为空时，先查项目导入。** 用原生文件／文本搜索确认目标，再核对语言服务器实际使用的构建配置和依赖解析；索引过文件、旧 workspace 的健康检查通过，都不能证明当前配置正确。Serena 的 Java 多模块报告中，非默认 Maven 配置影响父 POM 解析，旧 workspace 又掩盖了配置移除；修正导入后，先核验已知定义和调用点，再恢复跨文件语义操作，不靠扩大查询或无差别清缓存处理。[原调用、配置恢复与已发布修复](research/2026-10-13-context-tool-choice.md#serena语义检索为空时先核项目导入) **[社区：报告者自述；一手：固定实现；经验：选择，2026-10-16（UTC+8）]** **局限**：修复已进入 v1.6.0，但没有原任务的修复后编辑验收；文本命中也不证明语义引用完整。
+**源码存在、语义查询为空时，先查项目导入。** 用文件／文本搜索确认目标，再核构建配置和依赖解析；索引过文件、旧 workspace 健康检查通过，不证明当前导入正确。Serena 的 Java 多模块报告涉及 Maven 配置与父 POM 解析；修正导入后先核已知定义和调用点，不靠扩大查询或无差别清缓存。[报告与修复](research/2026-10-13-context-tool-choice.md#serena语义检索为空时先核项目导入) **[社区／一手；经验：选择，2026-10-16（UTC+8）]** **局限**：修复进入 v1.6.0，但缺原任务修复后编辑验收；文本命中不证明语义引用完整。
 
-**原生语义查询有、封装工具却漏掉时，先查过滤层。** 同一文件状态和项目配置下，对照具体调用点；若原生 LSP 已找到调用者，先核封装版本与过滤规则，临时沿用已核验的原生结果，不扩大上下文或盲目重建索引。Serena 曾把同名调用者误当导入过滤，修复已进入 v2.0.0。[原报告、固定修复与回归定义](research/2026-10-13-context-tool-choice.md#serena原生引用存在但封装过滤漏掉) **[社区／一手；经验：选择，2026-10-16（UTC+8）]** **局限**：这是一个 Gleam 报告及相应回归机制，没有原任务修复后的编辑验收，也不证明所有后端过滤都正确。
+**原生查询有、封装工具却漏掉时，先查过滤层。** 在相同文件状态和配置下对照调用点；原生 LSP 已找到时，核封装版本与过滤规则，临时沿用已核验的原生结果，不盲目扩上下文或重建索引。Serena 曾误过滤同名调用者，修复进入 v2.0.0。[Gleam 报告与回归机制](research/2026-10-13-context-tool-choice.md#serena原生引用存在但封装过滤漏掉) **[社区／一手；经验：选择，2026-10-16（UTC+8）]** **局限**：缺原任务修复后编辑验收，不能推广为所有后端正确。
 
 ## 3. 会话层面的上下文管理
 
@@ -148,18 +146,11 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 | Gemini CLI 的 memory 收件箱 | 记忆要经人审阅后才生效 | 🧪 |
 | 第三方记忆 MCP | 按跨会话检索缺口评估，见 [04 的采用与撤回条件](04-mcp.md#跨会话记忆先区分检索与当前状态) | 👀 |
 
-**Claude 的共享范围要另查**：启动只加载 `MEMORY.md` 索引前 200 行或 25KB（先到为准），主题文件按需读取；普通子 Agent 不加载主会话 auto memory，继承全历史的 conversation fork 例外。子 Agent 的 `memory` 字段使用独立目录，其中 `project` 范围可通过版本控制共享。切换机器／云环境或委派任务时，沿用已有恢复记录，显式交接本任务必要的事实与来源，不为续接同步全部私人记忆。目录可以配置，不能把默认本地存储说成所有记忆都无法共享。[官方契约与开关边界](research/2026-10-10-audit.md#s2c--2026-10-16-auto-memory-的共享与交接边界)核实于 2026-10-16（UTC+8），未运行客户端。**[一手；经验：采用判断]**
+**Claude 的共享范围要另查**：启动只加载 `MEMORY.md` 前 200 行或 25KB（先到为准），主题文件按需读；普通子 Agent 不加载主会话 auto memory，继承全历史的 conversation fork 例外。子 Agent `memory` 使用独立目录，`project` 范围可随版本控制共享；目录可配置，默认本地不等于无法共享。跨机器／云环境或委派时，沿用恢复记录，交接必要事实与来源，不为续接同步全部私人记忆。[官方契约与开关边界](research/2026-10-10-audit.md#s2c--2026-10-16-auto-memory-的共享与交接边界)核实于 2026-10-16（UTC+8），未运行客户端。**[一手；经验：采用判断]**
 
-**记忆还是文档？** Kevin Liao 的 [文章](https://liao.gg/blog/agents-dont-need-memory)（2026-10-03，10-05 更新）描述自己的 Operator Memory 和人工整理经验，属于 **[社区：作者实践/产品观点]**，不是独立比较试验；热度不证明效果：
-- 观点：记忆插件本质上是“**RAG 抽奖**”，存进去的东西什么时候被召回、召回得对不对都不可控；Agent 真正需要的是**写在仓库里、人也能读的文档**。
-- HN 评论的补充：
-  - “代码本身就是文档”：好的命名和结构比任何记忆都可靠；
-  - 把约定写成 **lint 规则，并附上解释性错误信息**，Agent 犯错的那一刻就能得到原因（比指令文件更及时、更确定）；
-  - 用**架构决策记录（ADR）**记下“为什么这样设计”，例如 mattpocock/skills 里的做法。
-- **本仓库的判断**：
-  - 优先把会话中学到的东西沉淀成**文档、测试或 lint 规则**，它们可评审、可 diff、可回滚，对人也有用；
-  - 自动记忆也可以保存有来源、范围和失效条件的工程经验；先做对照，不把一次成功升格为永久规则。Markdown 和数据库都可能陈旧或可审计，取决于实现。
-  - 分析见 [14 规律二](14-synthesis.md#2-规律二按任务选择预先提供与按需获取)。
+**优先把工程经验沉淀成可评审的文档、测试或 lint 规则。** Kevin Liao 的 [文章](https://liao.gg/blog/agents-dont-need-memory)及 [HN 讨论](https://news.ycombinator.com/item?id=49945933)强调文档、解释性 lint 错误与 ADR；这是作者实践和社区观点，不是独立比较试验。**[社区]**
+
+自动记忆也可保存有来源、范围和失效条件的经验，先做对照，不把一次成功升格为永久规则。Markdown 和数据库都可能陈旧，也都可以被审计，取决于实现；采用判断见 [14 规律二](14-synthesis.md#2-规律二按任务选择预先提供与按需获取)。**[经验]**
 
 ### 4.1 先区分三种干预
 
@@ -176,8 +167,8 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 | 来源与版本 | 本轮读到的关键结果 | 采用边界 |
 |---|---|---|
 | [Evaluating AGENTS.md v3](https://arxiv.org/html/2602.11988v3)，2026-09-29，附录 B | 在生成上下文后人为移除原有文档，自动生成的上下文反而改善平均成功率 | 信息是否重复影响边际收益；不是建议删真实文档，也不代表当前仓库收益已证明 |
-| [The Complexity Trap v3](https://arxiv.org/html/2508.21433v3)，2025-10-27 | SWE-bench Verified 上，Qwen3-Coder 480B 遮蔽旧观察：53.4%→54.8%（+1.4 个百分点，不显著），每题 $1.29→$0.61；Gemini 2.5 Flash thinking 的遮蔽/摘要分别显著下降 4/9 个百分点 | 遮蔽不是普遍无损；窗口和混合策略依模型/harness 调参，统计完整成本而非只数 token |
-| [Agent KB v5](https://arxiv.org/html/2507.06229v5)，2025-10-27 | SWE-bench Lite、同为 pass@1、最多 50 次迭代时，GPT-4.1/OpenHands 24.3%→28.3%，SWE-agent 24.3%→31.7% | 有正面工程经验迁移证据；更大的 pass@1→pass@3 headline 不是公平的记忆单变量比较，离线知识构建也有成本 |
+| [The Complexity Trap v3](https://arxiv.org/html/2508.21433v3)，2025-10-27 | SWE-bench Verified 上，Qwen3-Coder 480B 遮蔽旧观察后成本约减半，成功率略升但不显著；Gemini 2.5 Flash thinking 的遮蔽／摘要均显著降低成功率 | 遮蔽不是普遍无损；窗口和混合策略依模型/harness 调参，统计完整成本而非只数 token |
+| [Agent KB v5](https://arxiv.org/html/2507.06229v5)，2025-10-27 | SWE-bench Lite、同为 pass@1 且最多 50 次迭代时，GPT-4.1 在 OpenHands 与 SWE-agent 中均有成功率提升 | 支持工程经验迁移；pass@1→pass@3 的 headline 不隔离记忆收益，离线构建也有成本 |
 | [ContextWeaver v1](https://arxiv.org/html/2604.23069v1)，2026-04-24 | SWE-bench Verified 的同模型构图/执行条件下，Sonnet 4 有提升，GPT-5 与 Gemini 3 Flash 略降；多次运行子集均值差较小 | 图更复杂不等于更好；计入控制器成本，本轮未核实对应开源实现 |
 | [Compaction Cliff v1](https://arxiv.org/html/2608.22752v1)，2026-08-24 | 分类保留约束可改善某些下游表现，但依赖分类召回，且部分比较未匹配保留 token 量 | 主要是医疗/零售/航空代理，不是 coding 收益证据；约束仍须真实执行边界 |
 
@@ -185,13 +176,13 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 
 ### 4.3 实际运行中的反例
 
-[OpenHands SDK #4544](https://github.com/OpenHands/software-agent-sdk/issues/4544) 报告（1.42.1，2026-08-19）：规则的“已激活”状态保留，但承载规则的事件被压缩删除，阻止后续再注入。issue 9 月因不活跃自动关闭，不等于已修复。**[社区：单例，有最小探针；本轮未复测]**
+**验收要检查规则实际可见、可重载，以及最新取消仍生效。** [OpenHands SDK #4544](https://github.com/OpenHands/software-agent-sdk/issues/4544)（1.42.1）报告：规则激活标记保留，承载正文的事件却被压缩删除，因会话去重无法再次注入。issue 因不活跃关闭不等于修复。**[社区：单例，未复测]**
 
-截至观察版本 [`c4b93299`](https://github.com/OpenHands/software-agent-sdk/commit/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9)，源码仍保留该故障链：路径规则正文挂在事件 `extended_content`，激活标记按会话去重；压缩删除承载事件却未同步重置标记。更细的差异是 [observation 的字符串转换](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/event/llm_convertible/observation.py#L68-L86)不带该扩展正文，而 [condenser](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/context/condenser/llm_summarizing_condenser.py#L247-L251)使用字符串摘要。日志表示不一定等于模型实际输入。**[一手：2026-10-10 UTC 源码复核；未独立运行当前 SDK]**
+截至观察版本 [`c4b93299`](https://github.com/OpenHands/software-agent-sdk/commit/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9)，故障链仍在：路径规则在事件 `extended_content` 中，[observation 字符串转换](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/event/llm_convertible/observation.py#L68-L86)不带正文，[condenser](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/context/condenser/llm_summarizing_condenser.py#L247-L251)却用字符串摘要，移出事件也未重置激活标记。日志表示不一定等于模型输入。**[一手：2026-10-10 UTC 源码复核，未运行当前 SDK]**
 
-[PR #4565](https://github.com/OpenHands/software-agent-sdk/pull/4565) 截至核实时仍未合并，提供历史真实模型失败报告及 [固定版本的回归测试](https://github.com/OpenHands/software-agent-sdk/tree/86e067dadd0a2398f6140c9f16220790be38af35/tests/integration/tests)。作者的 Opus 5 运行针对旧 commit，不是本仓复测当前 main；不能把 open PR 当已发布修复。测试的两个重要防假绿条件是：先证明承载事件确实被压缩移出，再区分注入通道中保留或重新出现的标记与摘要偶然回显；标记检查本身不等于完整正文校验。场景没有建立应标无效，不能算复现或通过。**[社区：作者历史实测；一手：未合并测试源码]**
+[PR #4565](https://github.com/OpenHands/software-agent-sdk/pull/4565)核实时未合并；作者真实模型失败报告针对旧 commit，不能当当前 main 复测或已发布修复。[固定回归测试](https://github.com/OpenHands/software-agent-sdk/tree/86e067dadd0a2398f6140c9f16220790be38af35/tests/integration/tests)要求先证明承载事件确实移出，再区分注入通道的标记与摘要偶然回显。**场景未建立应判无效；标记保留不等于完整正文保留。** **[社区：历史实测；一手：未合并测试]**
 
-测试不能只问“恢复包存在吗”，还要问当前规则是否实际可见、可重载，最新取消是否仍生效。真实验收应核对实际模型输入或权威来源重载；上游测试只检查特定注入通道的方式不应直接成为所有 harness 的标准。现有恢复清单足够，不为此增加规则登记框架或另一套合成探针。**[经验：采用与不采用判断]**
+真实验收核对实际模型输入或权威来源重载，不直接把特定注入通道的测试套给所有 harness。复用现有恢复清单，不另加规则登记框架或合成探针。**[经验：采用判断]**
 
 [PMPA](https://arxiv.org/html/2609.13889v1) 与 [SkillJack v2](https://arxiv.org/html/2608.03509v2) 分别展示了跨会话恶意规则持久化及由污染轨迹产生技能后删除源仍留衍生物的故障方式。**[研究：原文，限定 harness/模型/合成任务]** PMPA 使用替代后端模型和模拟工作区；SkillJack 主要统计路由层面的策略违规代理指标，不是实际外部服务被攻破。不可把这些数字外推为默认 Codex/Claude 产品事故率；但这些故障方式支持将来源信任、授权和记忆召回分开处理。
 
@@ -215,7 +206,7 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 - [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - 官方文档：[Best practices](https://code.claude.com/docs/en/best-practices)、[Memory](https://code.claude.com/docs/en/memory)、[Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Codex `codex-rs/core/src/agents_md.rs`、`codex-rs/config/src/config_toml.rs`
-- 论文：[arXiv 2602.11988](https://arxiv.org/abs/2602.11988)（读了正文）、[arXiv 2606.15828](https://arxiv.org/abs/2606.15828)（读了正文）、[arXiv 2607.27250](https://arxiv.org/abs/2607.27250)（10-13 读全文并核公开源码／数据）、[arXiv 2601.20404](https://arxiv.org/abs/2601.20404)（10-13 读 v2 全文）、[arXiv 2608.25241v2](https://arxiv.org/html/2608.25241v2)（10-14 读全文；10-15 只读核公开包分组／换算／日期编码，未重估 DiD）、[arXiv 2511.12884v2](https://arxiv.org/html/2511.12884v2)（10-14 读全文及固定采集／分析源码）
+- 指令研究：表 §2.2 的原文与[复核记录](research/2026-10-13-context-study-reassessment.md)；记忆与压缩研究：表 §4.2 的固定论文版本
 - [liao.gg：Agents don't need memory, they need documentation](https://liao.gg/blog/agents-dont-need-memory)（[HN](https://news.ycombinator.com/item?id=49945933)）
 - Harness 开销实测：[Systima](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)（72KB 指令文件让每次请求多约 2 万 token）
 
