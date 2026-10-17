@@ -167,7 +167,7 @@
 
 ## 补充证据：修复导出器不等于修复已存备份
 
-核实：2026-10-16（UTC+8）。**改变18 §7：若已确认导出产物中的关联文件被覆盖，应保留现有备份，从完好来源生成独立新产物并核对归属；不把升级工具或重压旧目录当作旧产物已修复。** 这是基于下列源码的采用判断，区别于上一节接收端连错数据库；不要求所有备份重做，也不提供生产恢复命令。**[研究：条件建议]**
+核实：2026-10-16；2026-10-17 补核发布树与原 issue／PR 回执（UTC+8）。**改变18 §7：若已确认导出产物中的关联文件被覆盖，应保留现有备份，从完好来源生成独立新产物并核对归属；不把升级工具或重压旧目录当作旧产物已修复。** 这是基于下列源码的采用判断，区别于上一节接收端连错数据库；不要求所有备份重做，也不提供生产恢复命令。**[研究：条件建议]**
 
 **原接收者实际导入后发现串档。** [Paperless-ngx #14428](https://github.com/paperless-ngx/paperless-ngx/issues/14428)的lausser于2026-10-12报告：官方Docker 3.2.1／OpenSUSE MicroOS中，两份日期与标题相同、原文件扩展名不同的文档，原件导出名各异，缩略图和归档PDF却共用名称。三文档最小复现含一份无关对照；用户报告导入后第一份文档的派生文件变成第二份内容，原件与对照正确。ZIP有重复entry警告，目录导出则覆盖且无同类警告。公开证据是命令、manifest摘录和校验结果自报，未提供完整导出包；不据此估计所有用户受影响比例。**[社区：原用户运行报告]**
 
@@ -179,7 +179,9 @@
 
 **反证：原件完好且允许重建时，不必恢复每份派生文件的原字节。** [固定文档L338–351](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/docs/administration.md#L338-L351)允许省略缩略图／归档，再用已有工具重建；算法变化可能使内容和checksum改变。这是由交付要求决定的替代路线，不等于所有归档都可丢弃，也不证明仅剩坏备份时均能恢复。可复用已有sanity checker：[归档检查](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/sanity_checker.py#L240-L279)比较checksum，[缩略图检查](https://github.com/paperless-ngx/paperless-ngx/blob/6e717817c6cf09b4f3570db5cd4272e15ed0d7c4/src/documents/sanity_checker.py#L196-L212)只核存在与可读；整体检查通过不补作所有缩略图归属正确的证据。**[一手：固定文档与源码；研究：选择边界]**
 
-**发布、复测与AI归属。** 2026-10-16查询[公开release列表](https://github.com/paperless-ngx/paperless-ngx/releases)最新为[v3.3.1](https://github.com/paperless-ngx/paperless-ngx/releases/tag/v3.3.1)，其发布时间早于修复合并；PR归入3.3.2里程碑，不能写“升级最新版已修”。截至本次读取，issue／PR没有原用户修订后重导出与恢复回执；合并、测试定义与机器人质量报告不补这个缺口。Claude仅由报告者披露用于整理观察报告，不能归因维护者补丁或推断AI提效。本轮只读公开报告与固定源码，未运行Paperless、ZIP导出／恢复、模型或上游测试，未核全套CI、主动工时及长期收益。下一条有价值证据是固定修订版的新导出与原触发条件恢复结果；只有发布通知或继续增加检查项时不扩写。**[一手：发布／PR元数据；社区：使用披露；研究：证据边界]**
+**发布状态更新（2026-10-17核实）。** [v3.3.2](https://github.com/paperless-ngx/paperless-ngx/releases/tag/v3.3.2)于2026-10-16 14:14:32（UTC+8）正式发布，列出#14429，替代此前只核到v3.3.1的状态。[tag对象](https://api.github.com/repos/paperless-ngx/paperless-ngx/git/tags/9468a2eeb3210cf5ec1a754fd031582835ae1623)指向commit `04a927c25f116facd1821a3bec30e5c58780f7c0`，[其tree](https://api.github.com/repos/paperless-ngx/paperless-ngx/git/commits/04a927c25f116facd1821a3bec30e5c58780f7c0)为`56847a4b54d7f40a93eab581bdd61c91900f03dc`。[发布树导出器L503–524](https://github.com/paperless-ngx/paperless-ngx/blob/04a927c25f116facd1821a3bec30e5c58780f7c0/src/documents/management/commands/document_exporter.py#L503-L524)已按去扩展名的路径判重，确认可以选用该稳定版从完好来源生成独立新产物，保留原备份直至验收；这不修复旧产物已覆盖的内容。**[一手：发布元数据与固定源码；研究：采用判断]**
+
+**复测与AI归属仍有边界。** [发布树测试L1472–1539](https://github.com/paperless-ngx/paperless-ngx/blob/04a927c25f116facd1821a3bec30e5c58780f7c0/src/documents/tests/test_management_exporter.py#L1472-L1539)仍只定义两文档目录导出的名称与内容检查，未覆盖ZIP导出、导入或旧备份恢复。截至2026-10-17读取，[原issue](https://github.com/paperless-ngx/paperless-ngx/issues/14428)及[PR评论](https://github.com/paperless-ngx/paperless-ngx/pull/14429#issuecomment-6133609311)仍无原用户修订后重导出与恢复回执，维护者说明仍是前述重新打包建议。Claude仅由报告者披露用于整理观察报告，不能归因维护者补丁或推断AI提效。本轮只读公开报告与固定源码，未运行Paperless、ZIP导出／恢复、模型或上游测试，未核全套CI、主动工时及长期收益。后续仅在出现原触发条件下的新导出与恢复结果时继续核验，不重复扩写发布通知。**[一手：测试定义；社区：报告与回执范围；研究：证据边界]**
 
 ## 18 专题历史核查范围
 
