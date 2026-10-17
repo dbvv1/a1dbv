@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件；协作编辑兼三，连续修改的可靠性
 改变的建议：按真实任务选界面、状态与复用边界；同仓新增命令先比较完整命令与底层逻辑的组合成本，分步交付仍验最终结果。连续输出分开追最新状态与按序消费，真实反对不自动要求恢复旧故障。[经验]
-新证据：公开需求、固定补丁与再次使用的正反反馈；2026-10-17新增Restic对完整命令复用的弃选、绑定提交的清理回执与来源映射修订。NVDA／GitHub Desktop等链保留相反反馈与未闭合处；合并不等于采用成功、长期收益或AI效果。[一手／社区／研究]
+新证据：公开需求、固定补丁与再次使用的正反反馈；2026-10-17新增Restic对完整命令复用的弃选、绑定提交的清理回执与来源映射修订，以及shadcn弹层局部修复／组件替换回执。NVDA／GitHub Desktop等链保留相反反馈与未闭合处；合并不等于采用成功、长期收益或AI效果。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -632,3 +632,18 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 **分步处理留下另一条未完成路径。** [#4055](https://github.com/restic/restic/issues/4055)提出推迟移除或漏用`--forget`后，难批量识别对应原件；给旧快照加标签会改变ID，也可能影响按标签分组。[#4079](https://github.com/restic/restic/pull/4079)于2022-12-13（UTC）合入`7bdb985dde115c5779138037b19b853c2fdecf42`，改为每次记录直接来源ID；[v0.15.0源码](https://github.com/restic/restic/blob/v0.15.0/cmd/restic/cmd_rewrite.go)含该修订。但2024年[另一使用者](https://github.com/restic/restic/issues/4055#issuecomment-1919125299)仍因解析`Original`困难，删除新快照后重跑；版本未给，不能说他已用了该补丁或补丁失效。该issue仍开放；字段补齐不证明迟到确认已易用，更不授权默认删原件。**[一手：修订与状态；社区：后续负担]**
 
 **采用边界。** 同仓新命令应比较复用完整命令、已有规则／操作及保留手工步骤的总负担；接口契约合适时成熟CLI仍可用，外部调用者不据此依赖私有API。拆成多步时验候选与原件可对应、最终结果可完成；需要补窄的收尾入口时，也先保留明确的删除选择。仅只读公开源码与报告，未运行Restic／测试或接触备份数据，无AI效果、普遍性能或维护成本结论。**[经验：选择；研究：局限]**
+
+
+## shadcn：弹层组合先保所需模态行为再选局部修复
+
+核实：2026-10-17（UTC+8）；历史事件日期为UTC。改变23的交互修复选择：组合后的现成组件失效时，比较局部容器适配与兼容组件替换；目标仍需模态隔离时，撤掉模态不是同等修复。以下是历史组件维护与用户回执，不是AI生成效果；只读公开资料与固定源码，未运行应用、浏览器或测试。**[经验：采用判断；研究：范围]**
+
+**原任务是弹窗内完成选择。** [#9712](https://github.com/shadcn-ui/ui/issues/9712)于02-22报告列表可见但点击无效，并提供公开v0复现入口；“键盘可能仍工作”是报告者的保留说法，不是通过记录。另一作者的[#9770](https://github.com/shadcn-ui/ui/issues/9770)在Firefox／Chrome报告同样的Dialog内点击问题，设`modal={false}`后可选。v0地址只证明复现入口，不能据此认定原应用由AI生成。**[社区：原任务与跨作者报告]**
+
+**一个窄补丁保留两种现成组件。** [#9747](https://github.com/shadcn-ui/ui/pull/9747)的提交[`e166942`](https://github.com/shadcn-ui/ui/commit/e166942884a926cfc71709fe79cd5118abeb7c75)真实父为`fbdf6c02c1172662408cb9d70173737ccef6814f`；[父版Combobox](https://github.com/shadcn-ui/ui/blob/fbdf6c02c1172662408cb9d70173737ccef6814f/apps/v4/registry/new-york-v4/ui/combobox.tsx)从`@base-ui/react`导入，Portal未接收容器，[同版Dialog](https://github.com/shadcn-ui/ui/blob/fbdf6c02c1172662408cb9d70173737ccef6814f/apps/v4/registry/new-york-v4/ui/dialog.tsx)从`radix-ui`导入。[修后Combobox](https://github.com/shadcn-ui/ui/blob/e166942884a926cfc71709fe79cd5118abeb7c75/apps/v4/registry/new-york-v4/ui/combobox.tsx)只增加可选`container`并传给Portal，调用方仍须提供正确的挂载目标。[lukas-cc](https://github.com/shadcn-ui/ui/pull/9747#issuecomment-4035229529)说已手动做同样修改；[monkir](https://github.com/shadcn-ui/ui/issues/9712#issuecomment-4363128243)于05-02提供同机制代码并自报可用。两者没有绑定完整复测环境，后者还将问题概括为定位错误，不能拼成该PR的独立端到端验收。PR截至核实仍open，未合并；示例中的ref／ref.current挂载时序也未经本轮验证，不作为可直接复制的配方。**[一手：固定前后源码；社区：独立使用回执；研究：边界]**
+
+**另一条路是换兼容的Dialog，而不是继续补自己的模态实现。** [nshaikhinurov于02-24](https://github.com/shadcn-ui/ui/issues/9712#issuecomment-3950152166)报告把Radix Dialog换成Base UI版本后可用，同时明确不确定是否破坏其他行为。[quocanlikebanana于04-09](https://github.com/shadcn-ui/ui/issues/9712#issuecomment-4215070166)先报告`modal={false}`使背景blur消失，随后[回报替换Dialog解决](https://github.com/shadcn-ui/ui/issues/9712#issuecomment-4215084271)。这支持按现有需求比较局部适配与替换，不支持宣布替换已全面无障碍通过；背景效果变化也不等于已观察到焦点安全失败。**[社区：实际取舍与复试]**
+
+**源码把鼠标隔离与焦点约束分开。** PR把原因统称为focus trap，但[Radix固定提交`22473d1`的Dialog](https://github.com/radix-ui/primitives/blob/22473d16404bfd446305db5b6c9308aece99fdec/packages/react/dialog/src/dialog.tsx#L259-L297)分别设置`trapFocus`和`disableOutsidePointerEvents`，并以`aria-hidden`对辅助技术隐藏其他内容；[DismissableLayer](https://github.com/radix-ui/primitives/blob/22473d16404bfd446305db5b6c9308aece99fdec/packages/react/dismissable-layer/src/dismissable-layer.tsx#L112-L163)另管理body的pointer-events和允许交互的层。非模态分支关闭前两项约束，Overlay也仅在模态分支渲染。这是报告时点之前的机制对照，未确定报告者安装的确切Radix版本，不能据此声称复现了所有根因。[官方Dialog契约](https://www.radix-ui.com/primitives/docs/components/dialog)区分两种模式，并说明模态焦点约束和Esc关闭后的焦点返回。**[一手：固定源码与契约；研究：归因范围]**
+
+**最小采用与停止。** 仍需模态的任务先保留隔离要求，试局部Portal接入或已兼容的组件组合，再按实际页面检查选值、滚动、Tab／Shift+Tab、Esc关闭与焦点返回；已有测试覆盖则复用。若容器适配造成裁切或焦点／恢复路径不成立，撤回该适配并比较组件替换，不堆补丁直到一次点击成功。需求允许背景交互时，可明确选非模态。此处完整路径是工程验收建议，公开回执只支持有限交互成功；没有维护净成本、完整恢复或AI收益结论。**[经验：交付取舍；研究：未覆盖范围]**
