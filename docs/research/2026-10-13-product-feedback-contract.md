@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件；协作编辑兼三，连续修改的可靠性
-改变的建议：先让用户试已有任务入口，再决定扩功能或改善入口；按真实任务选界面、状态与复用边界；同仓新增命令先比较完整命令与底层逻辑的组合成本，分步交付仍验最终结果。连续输出分开追最新状态与按序消费，真实反对不自动要求恢复旧故障。[经验]
-新证据：公开需求、固定补丁与再次使用的正反反馈；Clink先采用已有入口、后改默认，并保留后续可发现性反证；2026-10-17新增Restic对完整命令复用的弃选、绑定提交的清理回执与来源映射修订，以及shadcn弹层局部修复／组件替换回执。NVDA／GitHub Desktop等链保留相反反馈与未闭合处；合并不等于采用成功、长期收益或AI效果。[一手／社区／研究]
+改变的建议：先让用户试已有任务入口，再决定扩功能或改善入口；按真实任务选界面、状态与复用边界；同仓新增命令先比较完整命令与底层逻辑的组合成本，分步交付仍验最终结果。自动采集噪声先比较采集准入与重复规则；连续输出分开追最新状态与按序消费，真实反对不自动要求恢复旧故障。[经验]
+新证据：公开需求、固定补丁与再次使用的正反反馈；Buffer的AI辅助首版、原用户适配使用与后续合入；Clink先采用已有入口、后改默认，并保留后续可发现性反证；2026-10-17新增Restic对完整命令复用的弃选、绑定提交的清理回执与来源映射修订，以及shadcn弹层局部修复／组件替换回执。NVDA／GitHub Desktop等链保留相反反馈与未闭合处；合并不等于采用成功、长期收益或AI效果。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -656,3 +656,23 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 - **先试已有路径，回执改变方案。** 维护者引导尝试 Ctrl-Alt-Up 的历史弹窗及 F4 搜索／过滤切换。[用户先确认能完整列历史并过滤](https://github.com/chrisant996/clink/issues/831#issuecomment-3751967277)，[1 月 19 日进一步描述实际操作](https://github.com/chrisant996/clink/issues/831#issuecomment-3770199738)：先输入 `pyth` 再开弹窗筛前缀，在弹窗内输入参数进一步做包含过滤；继续保留 F2 做补全。他此前多次读文档仍没认出两个历史入口的差别。**[社区：同一用户采用回执，非计时实验]**
 - **保留短列表，改善通往已有能力的入口。** [维护者解释](https://github.com/chrisant996/clink/issues/831#issuecomment-3752308423)短列表面向每次输入后的建议，更多历史交给按需弹窗；其提到的 25ms 历史收集预算只是实现理由，不是扩大列表必然变慢的实测。[拒绝上下分流](https://github.com/chrisant996/clink/issues/831#issuecomment-3769575333)还因为会破坏顺序遍历、环绕与熟悉的操作方式。1 月 24 日[固定补丁 `b1c3e51`](https://github.com/chrisant996/clink/commit/b1c3e516d5ba17c1941afa3e154bbda4876f7bf8)只把 F7 默认从 `win-history-list` 换成 `clink-popup-history`；[文档补丁 `cdc3617`](https://github.com/chrisant996/clink/commit/cdc36173687beabfbdf12c39909a33835e38a94a)在入门和建议列表处明确 F7／Ctrl-Alt-Up、按已输入内容筛选和弹窗内继续过滤。旧命令保留、默认键解绑；没有把短列表扩成完整历史。**[社区：取舍理由；一手：固定补丁]**
 - **反证与验收边界。** 采用回执早于 1 月 24 日默认／文档改动，不能记为改后复测。7 月另一用户 ganego 在 [#888](https://github.com/chrisant996/clink/issues/888)仍报告不知道 F7 弹窗可以直接键入搜索，现有提示只让其看到删除／执行；[维护者回应](https://github.com/chrisant996/clink/issues/888#issuecomment-5025175323)权衡提示可发现性、终端宽度与视觉负担，未据此补齐所有提示。这支持分别验“已有入口能否完成任务”和“用户能否发现入口与动作”，不支持仅改默认或补文档就宣称解决。没有当前版本全面可用性、长期采用或 AI 净收益数据。**[社区：独立后续反馈；研究：边界]**
+
+## Buffer：自动采集的噪声先改入库还是继续加功能
+
+核验：2026-10-17（UTC+8）。只读公开产品介绍、issue、PR 与固定源码；未安装应用、运行 Swift 或读取剪贴板数据。事件日期沿用来源。
+
+**选择：自动收集工具的有用内容被杂项淹没时，先比较采集准入与重复规则，不只继续增加检索／整理功能。** 这是针对下列采用阻塞的工程推论，不是已经完成的功能对照实验；最短长度不能识别真实意图，默认值须另判。**[经验]**
+
+### 从采用阻塞到第二次适配
+
+[Buffer](https://github.com/samirpatil2000/Buffer) 是 macOS 剪贴板历史工具。[#4](https://github.com/samirpatil2000/Buffer/issues/4) 的提出者 CrCs2O4 报告：其 Vim／Emacs 工作流会把删除产生的短片段及重复内容送入系统剪贴板，被自动收集后埋掉有用条目；这不代表这些编辑器所有默认配置。用户要求可配置的最短长度与去重，后来[明确追问](https://github.com/samirpatil2000/Buffer/issues/4#issuecomment-4769150916)：其它改进已陆续交付，但这些缺失仍阻塞自己使用。这里的采用依据是具体任务与阻塞自报，不是 star 或下载量。**[社区]**
+
+首版 [#6](https://github.com/samirpatil2000/Buffer/pull/6)于 2026-03-31 提出，正文明确自述由 Claude Code 生成；固定 head 为 `c6b4d8d8f6c0f2013d19605f5e4c24fa48c902ad`，截至核验仍 open、未合入。用户[指出 v1.7.0 没有该功能](https://github.com/samirpatil2000/Buffer/issues/4#issuecomment-4313086785)，作者[承认因合并冲突漏掉并重开 issue](https://github.com/samirpatil2000/Buffer/issues/4#issuecomment-4313164038)。有实现或关闭 issue 均不等于用户已得到功能。**[一手／社区]**
+
+2026-09-15，原提出者[报告把旧补丁适配到 v2.6.0 并在 Apple Silicon 本地构建运行](https://github.com/samirpatil2000/Buffer/pull/6#issuecomment-5674650226)：短文本被过滤，重复 inline 文本移到顶部，两个设置重启后保留，原历史仍可用；另有[同人 issue 回执](https://github.com/samirpatil2000/Buffer/issues/4#issuecomment-5674673776)。原适配分支带本地构建与禁用官方 updater 的改动，用户明确不应原样合入，随后提交干净的 [#65](https://github.com/samirpatil2000/Buffer/pull/65)，于 09-16 合入 [`dd0787ec`](https://github.com/samirpatil2000/Buffer/commit/dd0787ec206fd3345aaceb30307baf009198f973)。这是**原用户自编译适配版的回执早于正式合入**，不能称发布后验收或长期留存。#6 的 AI 归属也不自动覆盖 #65。**[一手／社区]**
+
+### 固定源码与反证边界
+
+- [采集器](https://github.com/samirpatil2000/Buffer/blob/dd0787ec206fd3345aaceb30307baf009198f973/Services/ClipboardWatcher.swift)在入库前按 `String.count` 检查最短长度；[设置](https://github.com/samirpatil2000/Buffer/blob/dd0787ec206fd3345aaceb30307baf009198f973/Services/SettingsManager.swift)默认长度仍为 1、去重关闭，UI 可选 1–20。原请求提到默认 3，落地没有照搬；短输入也可能有意，不能把该用户的过滤阈值推为全局默认。**[一手；经验]**
+- [存储层](https://github.com/samirpatil2000/Buffer/blob/dd0787ec206fd3345aaceb30307baf009198f973/Services/ClipboardStore.swift)启用去重时匹配相同 inline 文本并移动已有对象，保留原对象；不对图片或 file-backed 大文本做这种跨历史匹配。采集器原有连续 hash 去重仍在，不能说此前完全不去重；新功能也不清洗已有历史。噪声过滤不能当作敏感窗口排除或隐私保证。**[一手]**
+- #65 新增长度边界与 inline 重复查找测试；作者只报告 focused harness 与 `git diff --check` 通过；测试定义只覆盖 helper，不是 GUI 或重启的完整回归。因只有 Command Line Tools、无 Xcode 而未运行完整 `xcodebuild test`。没有本仓库复测、正式发行后的原用户复验或与新增搜索／标签的收益对照。适用判断止于“该工作流优先修核心采集规则”，不推广为一律少加功能。**[一手／社区；经验]**
