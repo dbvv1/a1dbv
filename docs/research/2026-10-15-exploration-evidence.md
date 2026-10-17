@@ -312,6 +312,18 @@ Onyx 的 [DRB id=68 完整问题、六项研究任务与报告](https://github.c
 验证范围：已读完整公开产物、固定发行源码与提供方配置，并核任务／答案身份；没有运行模型、Kubernetes、benchmark或比较人工工时。本例只支持“核对决定性的能力排除依据”，不支持穷尽检索或方法性能结论。
 
 
+## 真实迁移报告补核：协议可用与服务身份分开判断
+
+2026-10-17（UTC+8）核读。SpotOn 的真实迁移链补强现有硬约束门槛，不新增方法或改 25 推荐：PKCE 可以解决旧认证失败，但“取得 token”“自有配额”“旧调用仍兼容”是不同条件。**[研究：公开产物与反馈核查；经验：适用判断]**
+
+**需求、报告与采用**：[用户#91](https://github.com/stiefenm/spoton/issues/91)报告 Keymaster 403 导致库浏览失败；[维护者 7 月 3 日 14:59:56 UTC 回复](https://github.com/stiefenm/spoton/issues/91#issuecomment-4877480922)链接研究报告，宣布采用 PKCE＋Direct API，并称其使用 SpotOn 身份取得自有配额。[完整报告固定修订](https://gist.github.com/stiefenm/1f8c1231462ec6c41e29832e758f338d/6d2fd05386cec555e3538482d70ed0e46f5f45b9)将 D 列为唯一满足全部要求的方案，同时承认吞吐未测、grandfathering 条件未公开。报告自述 100 agents／三票核验，未公开原始 prompt 或调用轨迹；API 返回正文未截断，最终修订为当日 15:20:18 UTC，晚于维护者引用，不能把最终全文逐字当作当时已采用版本。可确定的是维护者回复本身宣布的选择。**[一手：产物与维护者回执；研究：身份边界]**
+
+**决定性前提仍缺证据**：[6 月 5 日固定提交](https://github.com/stiefenm/spoton/commit/d7948c4a196fe7333a6726b7b89133897be84762)已将 bundled 身份切到 ncspot；[报告发布前固定实现](https://github.com/stiefenm/spoton/blob/4e7239724a89ca13de2da03880420731f5f3c4ad/Plugins/SpotOn/API/Client.pm#L28-L31)仍沿用它。[Spotify 限流契约](https://developer.spotify.com/documentation/web-api/concepts/rate-limits)按 app 计算请求，Development 与 Extended 模式不同。因此，bundled 可用不能独自证明 SpotOn 拥有独立配额；本轮未核到另一个由 SpotOn 控制的 Extended 注册，也不能证明它绝不存在。选择应保留 PKCE，但将“已满足自有配额”降为待核，分别核借用身份与自有 Dev App 的条件。[2026 年 2 月官方变更](https://developer.spotify.com/blog/2026-02-06-update-on-developer-access-and-platform-security)对新 Dev App 限定端点，3 月又推迟既有集成的端点变化；不同身份不能仅凭同用 PKCE 互换保证。**[一手：固定实现、提供方契约；经验：条件判断]**
+
+**实际迁移需要适配，原故障最终解决**：[#118](https://github.com/stiefenm/spoton/issues/118)中用户证明有效 PKCE token 的小分页直接请求成功，应用 Search 仍 400；[维护者定位分页限制](https://github.com/stiefenm/spoton/issues/118#issuecomment-5002946504)后，[用户确认 Search 恢复但另有端点失败](https://github.com/stiefenm/spoton/issues/118#issuecomment-5003246835)。维护者随后宣称动态限额已覆盖，[用户复测仍指出 Artist Albums 路径遗漏](https://github.com/stiefenm/spoton/issues/118#issuecomment-5010756553)，最终[v3.1 回执确认 Artist→Albums→Tracks 可用](https://github.com/stiefenm/spoton/issues/118#issuecomment-5012103275)。[原#91 也确认 PKCE 解决 403 并恢复播放](https://github.com/stiefenm/spoton/issues/91#issuecomment-5012132890)。这些支持按实际身份与必需调用路径交接，不能倒推报告导致缺陷，或把 PKCE 迁移判为失败；用户回执仅覆盖其环境。**[社区：原用户复测；一手：维护者修订；研究：因果边界]**
+
+**未扩大结论**：报告的“localhost callback”未给完整 URI；[官方 2025 年迁移公告](https://developer.spotify.com/blog/2025-10-14-reminder-oauth-migration-27-nov-2025)早已禁止 localhost 别名、仍允许 loopback IP，但不能据简称断定其计划必然不符合回调契约。此链不证明全部引用正确、陌生候选发现增益或多 Agent 收益；只补“真实探索产物被采用后，仍须核服务身份与目标调用条件”的证据。未运行候选、模型或认证流程；不改变 25 已有门槛。**[研究]**
+
 ## 探索增益验证：选题与判定契约
 
 2026-10-16（UTC+8）。**[经验：设计修订，未运行对照]** 本节把已有留出／盲评原则落到可判定对象，改变首轮选题和验收，不新增方法有效的事实结论。依据为本记录既有评价方法及其局限，没有新增运行结果。
