@@ -1,6 +1,6 @@
 主线：三，连续修改仍然可靠；兼二
-改变的建议：区分首输出慢、工具等待、权限阻塞和回合停工；重置后先核外部结果，历史读取先核原生修复，入口、子 Agent 与记忆按实际客户端和有效配置选择。[研究]
-新证据：2026-10-10 起原研究的固定控制流、恢复补丁、配置实现与测试定义，以及社区失败和同一历史样本的升级恢复报告；各次补核日期见正文，未运行客户端或模型，不将修复合并当作目标续接已通过。[一手／社区／研究]
+改变的建议：区分首输出慢、工具等待、权限阻塞和回合停工；重置后先核外部结果，历史读取先核原生修复；后续写入恢复时仍保留历史丢失的反馈回退，入口、子 Agent 与记忆按实际客户端和有效配置选择。[研究]
+新证据：2026-10-10 起原研究的固定控制流、恢复补丁、配置实现与测试定义，以及社区失败和同一历史样本的升级恢复报告；2026-10-18（UTC+8）补日志恢复后仍保留丢失标记的固定实现、测试定义与公开复现；各次补核日期见正文，未运行客户端或模型，不将修复合并当作目标续接已通过。[一手／社区／研究]
 
 # Codex：慢、停止与上下文续接的证据核对
 
@@ -241,3 +241,13 @@ Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时�
 **未采用的扩题。** /goal的[固定runtime](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/ext/goal/src/runtime.rs#L436-L478)依赖live thread与Active状态，但现有正文未承诺停机后仍持续，不再另加同义警告。Skills已有05的宿主／加载／权限边界，本轮未找到新采用错误，不以本轮局部核查授整页L3。[一手／研究]
 
 **2026-10-17 核心选择独立复核。** 通读已发布 `4b1cf7e` 的 Codex 全文及相关入口，对照当前官方[Models](https://learn.chatgpt.com/docs/models)、[Pricing](https://learn.chatgpt.com/docs/pricing)、[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)、[配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)、[Browser](https://learn.chatgpt.com/docs/browser)、[Cloud](https://learn.chatgpt.com/docs/cloud)、[Import](https://learn.chatgpt.com/docs/import)、[安全评审](https://learn.chatgpt.com/docs/security/security-review)与[扫描计费](https://learn.chatgpt.com/docs/security/faq#billing)。入口／资格、模型投入、有效权限、原生起步与续接选择可独立指导决定，和01／02／03／06／10／15／20及模板的相关建议无核心冲突，支持正文L3。官方记忆文档差异保留并限制采用，未因此承诺部署行为；未全量重核历史链接、运行客户端／审批／恢复实验、核任何账户rollout或证明模型净收益，不是L4。[一手：本轮官方阅读；研究：范围内成熟度]
+
+## 恢复后告警：当前可写与历史完整性
+
+**核实：2026-10-18（UTC+8）；改变 17 §2.8。** 日志写入已经恢复时，修掉持续告警与清除历史丢失标记是两项决定。先复用已有反馈回退；需要显示当前健康时，可另设状态或调整提示，保留尚未补回的丢失事实。只有该标记本来仅表示当前故障，或所需历史已确认补齐时，才有清除依据；不是要求所有错误状态永久保留。**[研究：采用判断]**
+
+**已合并实现为什么保留标记。** Codex [PR #47886](https://github.com/openai/codex/pull/47886)于 2026-09-24 合并为 [`a285066737c28399b83a0e6b0884c777059fb701`](https://github.com/openai/codex/commit/a285066737c28399b83a0e6b0884c777059fb701)：SQLite 写失败后用历史丢批标记选择内存反馈，并在收集之后刷新日志快照。报告对应的历史发行版 `rust-v0.160.1` 固定源码 [`d27764b8`](https://github.com/openai/codex/blob/d27764b82f7118f674371e6d6e76271d9d606edb/codex-rs/state/src/log_db.rs#L195-L219)将标记定义为该 writer 丢过日志、SQLite 对反馈不完整；[失败处理](https://github.com/openai/codex/blob/d27764b82f7118f674371e6d6e76271d9d606edb/codex-rs/state/src/log_db.rs#L529-L562)消费失败批次，不会因后续成功自动补回。[恢复测试](https://github.com/openai/codex/blob/d27764b82f7118f674371e6d6e76271d9d606edb/codex-rs/state/src/log_db_failure_tests.rs#L64-L83)同时断言新日志可写、标记仍真；[反馈消费者](https://github.com/openai/codex/blob/d27764b82f7118f674371e6d6e76271d9d606edb/codex-rs/app-server/src/request_processors/feedback_processor.rs#L484-L532)据此弃用 SQLite 结果。直接清零会改变反馈来源，不只是消除界面提示。**[一手：固定补丁、源码与测试定义，未运行]**
+
+**真实报告与诊断边界。** [#52727](https://github.com/openai/codex/issues/52727)的 macOS／0.160.1 用户报告，在新建临时 home 中保持日志库写锁触发警告，释放后成功写入 116 条记录，完整性检查也通过；这是报告者的隔离复现，非本仓测试或跨平台验证。其原使用现场的失败原因未恢复，不能由复现推定原故障来自锁竞争。[同版 doctor](https://github.com/openai/codex/blob/d27764b82f7118f674371e6d6e76271d9d606edb/codex-rs/cli/src/doctor/output.rs#L720-L735)的健康摘要依据数据库完整性结果，不回答历史日志是否齐全。原报告已要求分开保存历史丢失和当前健康；[社区回复](https://github.com/openai/codex/issues/52727#issuecomment-6092816338)也主张保留历史语义，不能写成维护者驳回清零补丁或已采纳新提示。**[社区：使用与复现自报；一手：固定诊断实现；研究：归属边界]**
+
+**回退的代价与撤回条件。** 原合并补丁的[集成测试](https://github.com/openai/codex/blob/a285066737c28399b83a0e6b0884c777059fb701/codex-rs/app-server/tests/suite/v2/feedback.rs#L250-L270)要求故障附件含错误分类、不含原始敏感错误，并明确不含仅存在 SQLite 的旧历史；内存回退不能称为完整恢复。若业务必须保留全部历史，就不能照搬这项取舍，需另外选择补写、合并来源或持久队列并验证；本链未证明这些替代的效果。当前仅支持保留历史语义、按目标选择修改层；没有新提示方案的接收结果，没有客户端／上游测试运行，也无 AI 参与或维护收益归因。**[一手：测试定义；研究：采用限制]**
