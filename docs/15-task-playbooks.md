@@ -138,6 +138,8 @@
 
 **批处理优化先确认：只改批大小，结果是否应相同？** [alchemy-utils](research/2026-10-12-alchemy-utils-evolution.md) 出现随批大小改变的 NULL／默认值差异。先定缺失与显式 NULL 契约，再验跨批回滚、schema 推断、默认值与旧文档；全局推断和立即流式写入冲突时，由人选预扫、缓冲或接口变化。无须为优化安装完整流程。[程序与输出](../experiments/alchemy-batch-semantics/README.md)已核对，运行仅据对端报告，非本侧 API／性能复测。**[经验：报告；一手：源码；研究]**
 
+**🧪 已有 React 界面的热点主要是重复渲染时，可局部比较编译器自动 memoization，不批量删除已有手工 memo。** 核实际编译与发布入口，用原业务交互验收；不兼容处临时退出并跟踪根因。开发编译的等待／内存与生产交互收益分开量，必要时保生产、收窄开发启用，但仍验编译后的产物。见 [Sanity 局部退出与 Onyx 分阶段启用](research/2026-10-13-domain-skill-contract.md#前端自动优化按交互和构建阶段采用)；历史采用不证明当前版本全面更快。**[一手／社区；研究：采用边界]**
+
 ## 8. 代码评审
 
 **✅ 用独立上下文审 diff，只报会阻止合并的具体问题。** 给评判标准，不灌入实现过程中的推理；每条包括文件、行号、失败条件及证明方式。工具可选 `/code-review`（`--max-findings`）、`/ultrareview`、Codex Security Cloud 或 CodeRabbit，见 [09](09-review-and-quality.md)。**[一手：官方用法；经验]**
