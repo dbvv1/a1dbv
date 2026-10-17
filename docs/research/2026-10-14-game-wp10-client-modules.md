@@ -1,5 +1,5 @@
 主线：一／二／三／四；客户端体验、第二次修改与交付
-改变的建议：[研究] 先复用原生组件，再按具体症状补输入、运动、呈现和资源责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据。
+改变的建议：[研究] 先复用原生组件，再按具体症状补输入、运动、呈现和资源责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。
 新证据：[一手／社区] 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
@@ -1326,3 +1326,35 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 2026-10-17（UTC+8）。[研究] 回流[既有先导](../../experiments/m6-search-pilot-20261017.json)的 arms[2].result、grades[1].report：Unity 6.3 先用 Input System 1.20.1 加应用薄层，不重做选型。原生[override保存／加载](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)配稳定 binding GUID；项目负责冲突、落盘及版本迁移。按索引保存会受重排影响，新增绑定拓扑也不是 override 的保存对象；恢复默认须同步旧设置。[一手／研究]
 
 UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/UEnhancedInputUserSettings)已有映射、重置与保存，默认固定存档槽；[映射参数](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/FMapPlayerKeyArgs)区分 MappingName、slot、设备与 profile，不套 Unity GUID。[研究] 默认沿原生能力，身份／结构变更才补迁移；文档不保证任意动作改版自动恢复。此次是资料支持结论的入口回流与 UE 契约对照，无新增效果、引擎或设备验证。
+
+
+## 分辨率预算：固定档、动态档与内容取舍
+
+核实：2026-10-17（UTC+8）；GC／主线一、三。改变04设备预算中的降档选择：先核像素减少能否降低当前成本，再决定动态调节，而非“勾选DRS就保帧”。只读官方契约、开发者生产说明与经验，未运行引擎、游戏、模型或目标设备。[研究]
+
+**✅ 固定低档先做基线，动态档只管理可伸缩的波动成本。** 同场景降低内部render scale后，GPU时间无明显改善就定位真实热点；已到危险轮廓可辨下限就改内容／效果，不继续压画面。稳定负载用固定质量档可少一层调度；忙闲变化明显且仍有画质余量时，才试有上下限与预算的原生DRS。此为研究选择，不是跨引擎或同游戏受控实验。[研究]
+
+### 两种生产选择，不是统一最佳比例
+
+- **保忙时响应，也用闲时余量。** Respawn 的 Drew McCoy 在 [Titanfall 2 Xbox One X 访谈（2017-10-30）](https://news.xbox.com/en-us/2017/10/30/inside-xbox-one-x-enhanced-titanfall-2/amp/)说明固定4K输出、按GPU负载改变内部渲染分辨率，有余量还可superscale。它证明该游戏采用动态内部比例，不证明任意硬件、玩法或当前版本都能零掉帧；不把宣传中的流畅承诺当本仓测量。[一手：开发者陈述；研究：范围]
+- **降像素不够，就换昂贵效果路线。** Epic工程师 Daniel Wright／Krzysztof Narkowicz 的 [Fortnite Chapter 4复盘（2023-01-26）](https://www.unrealengine.com/tech-blog/lumen-brings-real-time-global-illumination-to-fortnite-battle-royale-chapter-4?lang=en-US)说明Series S较低内部分辨率仍不足，最后关闭Lumen Reflections，保留Lumen GI的粗糙反射，以SSR处理镜面反射。这是保核心视觉、替换部分效果的生产取舍；其毫秒预算和比例不作独立游戏通用阈值，也不推断当前Fortnite沿用完全相同配置。[一手／研究]
+- **成本不会按像素数等比例下降。** Martin Fuller [2023实现经验](https://martinfullerblog.wordpress.com/2023/10/11/dynamic-resolution-scaling-drs-implementation-best-practice/)指出阴影图、粒子更新、裁剪、加速结构构建等并不一般随输出分辨率缩放，降到一定程度还可能成为顶点瓶颈。因此“GPU慢”还不足以选DRS；它可能帮助部分成本，不替代热点分解。[一手：作者经验；研究：边界]
+
+### 原生能力按管线区分，接口不等于策略
+
+| 环境／来源 | 已核契约 | 采用边界 |
+|---|---|---|
+| Unity 6.3 URP [Asset参考](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/universalrp-asset.html) | Render Scale改渲染目标，不改设备输出；文档说明UI保持设备原生分辨率 | [研究] 不由HUD清楚推断场内轮廓／攻击预告仍清楚；固定档先核正确相机、比例和上采样路径 |
+| Unity 6.3 [DRS介绍](https://docs.unity3d.com/6000.3/Documentation/Manual/DynamicResolution-introduction.html)／[控制示例](https://docs.unity3d.com/6000.3/Documentation/Manual/DynamicResolution-control.html) | 目标按完整分辨率分配后缩使用区域，不重分配；通用路径支持列表中的Windows为DX12，Android为Vulkan。示例按点击／触摸调用ResizeBuffers，采集timing并未构成自动预算器 | [研究] 不把动态缩放当降低该目标分配内存的办法；已有控制器先复用，只有API时仍需补策略；勾选Allow不是自动保帧 |
+| HDRP 17.3 [Dynamic Resolution](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.3/manual/Dynamic-Resolution.html) | Asset／Camera启用后可加HD Dynamic Resolution组件；也允许自定义SetDynamicResScaler，硬件／软件路径另有支持条件 | [研究] 优先现成组件，不能把URP示例限制外推HDRP；STP动态缩放要求硬件支持，无该支持只用固定scale。无需为DRS迁管线 |
+| UE 5.8 [Dynamic Resolution](https://dev.epicgames.com/documentation/en-us/unreal-engine/dynamic-resolution-in-unreal-engine) | 有前帧GPU历史heuristic、FrameTimeBudget、上下限与panic；支持表列PC/Win64 DX12／Vulkan | [研究] 用原生能力并核实际DynRes与timing；同页末尾FAQ仍写旧“仅主机”，不据文档冲突承诺所有编辑器／PIE路径可用，目标版本和构建实测仍缺 |
+
+表中契约为[一手]，边界为[研究]。UE页面说明突发效果／切镜头无法预知，GPU回读与panic有延迟，不能保证首帧不过预算；示例33.3ms不是60fps配方。CPU-bound也不简单写成“降分辨率绝无作用”：共享内存带宽平台可用CPUBoundScreenPercentage减带宽压力，但这不证明会减少玩法CPU工作。[一手／研究]
+
+既有URP TAA／STP与动态分辨率组合限制沿[运动可读性记录](#运动可读性补研关键提示不能靠历史积累补成另一个位置)核对；本单元不重做拖影调查。当前资料未给同项目固定档与动态档的净维护投入或玩家可辨下限，不宣称已得到最佳比例。[研究]
+
+### 二改预注册与撤回
+
+后续获准才在同设备、视角和规则下比较原档、一个固定低档、有上下限的DRS；记录CPU／GPU时间、实际scale、触底时长与突发帧，不只平均FPS。新增大面积效果和更多活动单位，分别检查像素与非像素成本；在最低档、下降和恢复途中核危险方向、关键轮廓、场内提示与HUD。[研究；未执行]
+
+固定低档已稳定且可读就不强加DRS；动态收益明确但反复泵动、掉到不可辨或首发尖峰仍在，先收窄范围／修实际热点。最低可辨档仍超预算时，比较更便宜的效果、减少负载或另定目标档位，不能让自动缩放掩盖不可达预算；内存峰值沿原有驻留分析处理。[研究]
