@@ -1,6 +1,6 @@
 主线：二，兼三
-改变的建议：23 §6：修复通过与缺陷隔离分开；改断言要回原业务契约，不能由退出0推完成
-新证据：官方 healer定义、fixture调试修复链、相反社区产物、已有runner 1.57的failed→fixme/skipped实测；非模型自修复效果
+改变的建议：23 §6：修复与隔离分开；页面迁移先核实际分支与本次记录，改断言仍回原业务契约
+新证据：官方定义、runner隔离实测与合成修复产物；新增真实Forms迁移的固定补丁、AI辅助评审及有限修后回执
 
 # Playwright Healer：修复通过与缺陷隔离
 
@@ -138,6 +138,20 @@ echo "$?"  # 0
 [作者事后审计](https://github.com/voidmatcha/e2e-skills/blob/93ca589464973401be45f6c17476376dda19d28a/benchmarks/healer-perturbation-v1/README.md#revision-12-result)还披露冻结校验未重新计算部分产物／依赖摘要、遗漏共享helper及只在进程启动时校验，汇总信任已有标签；本轮不据此推广该runner或整体REJECT门槛。原始补丁与报告仍支持上述窄观察。此前revision 10因模型侧未继承故障环境而作废，不能混入当前分母。[一手：作者审计]
 
 **采用与撤回**：改的是过时地址／定位器且保留所需状态时，接受修复；改掉任务要求的登录、数据或故障条件时，恢复条件后复验。需求本就允许更换该条件时照需求更新，不额外加审批框架。已有配对故障足够时复用它，不要求为每次小改另建全套变异测试。该单页合成夹具不能证明真实业务整体保全，也不能升级无人值守自修复评级。[经验：采用判断]
+
+## 真实页面迁移：先核实际分支与本次记录
+
+2026-10-18（UTC+8），M4／主线三。**改变23 §6的选择**：界面迁移时，先核测试实际走新旧哪条路径，再适配定位及本次数据的结果检查；不靠选择器可用或汇总计数认定恢复。以下为真实产品的公开维护记录与固定源码，本轮未运行模型、浏览器或上游测试。[一手／研究]
+
+**原失败与迁移前提。** [wp-calypso #113202](https://github.com/Automattic/wp-calypso/pull/113202)记录Forms提交测试在Atomic部署检查中失败：旧后台按Inbox／Spam标签计数找响应，新Central Form Management（CFM）改为筛选控件。作者核查发现同样的测试环境标签在不同站点实际启用了不同后台，普通PR检查仍走旧路径；因此旧路径通过不能证明新版恢复。该PR的[合并提交1cccad0](https://github.com/Automattic/wp-calypso/commit/1cccad0307a24d7f069029c178507fe974800f46)保留Claude共同作者声明，支持AI辅助参与，不等于公开完整模型运行记录。[一手：作者记录与提交]
+
+**改定位还不够，原来的计数未必代表本次响应。** 初稿已报数次通过，但[维护者提交的AI辅助评审](https://github.com/Automattic/wp-calypso/pull/113202#pullrequestreview-4867425580)指出：等待条件同时匹配列表与计数请求，不能保证筛选计数已刷新；共享列表的旧Inbox计数可把本在Spam的响应判错。最终[固定helper L185–300](https://github.com/Automattic/wp-calypso/blob/1cccad0307a24d7f069029c178507fe974800f46/packages/calypso-e2e/src/lib/pages/feedback-inbox-page.ts#L185-L300)等待目标文件夹的列表响应、排除计数请求；切换会丢失搜索条件，因此重新搜索，再等待本次email对应的行。重试先清空输入，避免重填同值却未发出请求。[一手：评审与固定补丁]
+
+**保留的是具体业务路径。** [修后spec](https://github.com/Automattic/wp-calypso/blob/1cccad0307a24d7f069029c178507fe974800f46/test/e2e/specs/published-content/forms__submissions.spec.ts#L108-L429)仍通过浏览器提交两份表单、以站点所有者查验各字段，并把同一响应移入Spam、移回Inbox、移入Trash及恢复后核对；API用于准备文章和清理本轮数据，没有替代提交与后台操作。清理限定本次记录，没有清空共享站点来换前提。已有CFM“标记已读”分支因打开时自动已读而直接返回，本次未新增该分支，也未独立补验自动已读语义；因此不能概括成所有业务均已保全。[一手：固定测试；研究：覆盖核对]
+
+**修后范围与再次变化。** [作者回执](https://github.com/Automattic/wp-calypso/pull/113202#issuecomment-5221354369)最终编辑确认采用建议后工作正常；多浏览器和重复次数位于其明确标为OUTDATED的旧段，不计为最终版本复验矩阵。另一个历史维护记录[Jetpack issue #50712](https://github.com/Automattic/jetpack/issues/50712)随后记载独立响应页上线又令测试被`fixme`；[后续移植说明](https://github.com/Automattic/wp-calypso/pull/113637#issuecomment-5347823749)还发现旧`fixme`残留，使新增代码未在CI执行。这些是后续退化记录，不代表当前版本仍失败，也不能拼成#113202的统一验收结果。[一手：作者回执与历史维护记录]
+
+**采用边界。** 确认实际页面分支后，复用原测试检查同一业务记录；列表、搜索或动作语义改变时修对应等待和结果检查，仍保留所需状态。既有测试已明确新版与本次记录时无需再加框架。单项目有限回执不提升无人值守自修复评级。[经验：工程选择]
 
 ### 23页核实历史（从正文迁入）
 
