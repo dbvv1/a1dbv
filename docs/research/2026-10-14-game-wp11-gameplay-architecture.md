@@ -52,6 +52,22 @@
 - **AI 风险 [研究]**：向共享技能定义写冷却；用数组序号当存档 ID；将字段重命名视为纯代码改动而破坏已序列化资产；敌人复制后同时掉血；把静态 readonly 与领域不变量混为一谈。
 - **将来验证**：同一定义生成两个角色、只伤害其中一个；先运行再新开局确认定义未污染；固定 v1 存档在 v2 增删／改名内容后加载，必须迁移或可理解地拒绝。对配置修改分开记录“既有实例即时生效、下次生成生效、仅新局生效”，不能由 Agent 猜。
 
+#### 定义二改：能加载不代表旧实例仍匹配
+
+核实：2026-10-17（UTC+8）。
+
+**[研究] 改配方输入或触发方式时，把定义与已保存的实例结构／待执行工作一起核。** 原有 ID、字段、范围校验和生效时点仍需保留；但新定义合法，不代表旧实例能按新规则运行。以下分别是经济生产和延迟效果的历史修订，不证明所有游戏都应统一迁移或清空队列。
+
+**Widelands：选择迁移旧建筑，而非只改配方。** [维护者调查](https://github.com/widelands/widelands/pull/6505#issuecomment-2288505206)指出，旧建筑可以加载，但保留旧输入队列、执行新生产程序，因缺新输入而无法生产；尝试同时接受丝／布又被定义检查拒绝。[最终配方 5fa703b](https://github.com/widelands/widelands/commit/5fa703b75f24fb7d26df0477331b795281298fdb)把工具房的布输入及捕鱼网／弓消耗改为丝；先合入的兼容提交 [1e181e0](https://github.com/widelands/widelands/blob/1e181e07f280bf3fc3848e0b689e132e76a5c26a/src/map_io/map_buildingdata_packet.cc#L820-L930)逐项对照当前输入定义，补空队列、调整容量，并删除废队列／超额货物，向玩家列明损失、提示检查生产程序和设置。两提交均为 2024-12-03 的实际修订；GitHub 的 Codeberg 镜像 PR 状态不代替提交证据。[一手]
+
+**保货不是无代价的默认。** [方案 A／B／C／D](https://github.com/widelands/widelands/pull/6531#issuecomment-2336636672)比较保旧队列、逐步排出、加强排出机制和直接删除；[维护者试过 A／B](https://github.com/widelands/widelands/pull/6531#issuecomment-2346148619)后认为保留已无用途的队列令人困惑，选择 D，货物重要时建议用旧版完成游戏，或先清队列再保存。最终 [#6570 审阅](https://github.com/widelands/widelands/pull/6570#pullrequestreview-2473857742)在 `dda0b74a` 报告测试可用，正文仅称通过最小联机测试；[作者早期测试](https://github.com/widelands/widelands/pull/6505#issuecomment-2299899224)的 `666288c` 则属于保货实验方案，不能当最终 D 的完整回归。官方讨论镜像不计独立来源；兼容提交还收窄了消息包版本范围，不能宣称所有旧档兼容。[一手] **[研究]** 已删除货物不会因退回配方自动恢复，这是代码推论；该项目的游戏内取舍不是一般数据丢弃建议。
+
+**CDDA：保留 ID 也会改变旧工作的含义。** [#77664](https://github.com/CleverRaven/Cataclysm-DDA/pull/77664)（合入 `09d648e4`）把同一 `EOC_Nunez_Travel` 从周期检查改为显式延迟调用，删除旧条件；[旧档玩家](https://github.com/CleverRaven/Cataclysm-DDA/issues/77877)未达前置任务却生成车辆／NPC，[作者确认](https://github.com/CleverRaven/Cataclysm-DDA/issues/77877#issuecomment-2478519116)旧调用仍在队列。修订 [#77879](https://github.com/CleverRaven/Cataclysm-DDA/pull/77879)（`0461e7df`）给新逻辑新 ID，旧 ID 留空定义。后续同类 [e4ea40d](https://github.com/CleverRaven/Cataclysm-DDA/commit/e4ea40d224dcfdaef2d5fc480f921f9ab77f8e80)修订下的[源码](https://github.com/CleverRaven/Cataclysm-DDA/blob/e4ea40d224dcfdaef2d5fc480f921f9ab77f8e80/src/effect_on_condition.cpp#L77-L90)将无周期的定义默认为 ACTIVATION；加载更新保留有效 ID 的队列，到期执行后[消费非周期项](https://github.com/CleverRaven/Cataclysm-DDA/blob/e4ea40d224dcfdaef2d5fc480f921f9ab77f8e80/src/effect_on_condition.cpp#L164-L264)。因此是隔离旧副作用、到期消费，不是加载时清空。[一手／研究]
+
+[#78141](https://github.com/CleverRaven/Cataclysm-DDA/issues/78141)还指出：按新定义没有周期就清除队列，会误删合法一次性延迟调用；新加来源标记只能保护以后保存的记录，不能补回旧档缺失信息。该问题被标 stale 关闭，不是通用修复完成；前述退役也可能取消旧 ID 下合法的待执行动作。#77879 作者测试针对简化效果的地图旋转，未找到玩家修后回执，不写完整迁移回归通过。[一手／研究]
+
+**[研究] 二改验收预注册**：用已有资源队列／待执行动作的旧档，加载后继续生产／执行，再保存重载；核新旧实例输入与副作用一致、合法延迟动作未被误删、迁移未重复执行。若无法可靠辨识旧记录来源，比较保留旧解释、定向迁移、明确退役或限制升级；先说明损失及恢复所需旧档／旧版，不默认新增兼容框架。本仓仅核公开源码与回执，未运行这些游戏或上游测试。
+
 ### 4. 组件、Jobs/Burst、ECS：先用数据规模和预算选，不用对象数口号选
 
 [研究] 本小节 Jobs/Burst、Entities、ECB、enableable、authoring／烘焙的具体机制属于 Unity；UE 仅共用先定位成本再迁移热点的原则，不据此建立跨引擎 API 等价关系。
