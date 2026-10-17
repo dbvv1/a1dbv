@@ -1,6 +1,6 @@
 主线：二，兼三、四
-改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；几何验收按消费者实际使用的坐标与单位判定；比较扫描结果前锁工具、数据库和判定身份；依赖／配置会互相替换时，将短冲突契约放在各操作入口，完整配方仍按需读取。[经验]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；同日补读 pivot 三份独立轨迹，核实际 xlsx 配方与原生对象／静态表的差异，不把 with 标签当实际读取；未重跑，不归因 Skill 效果。[一手／研究] 同日补Triton关键字恢复修复、PyTorch接收与2026半输出反例；只读补丁和官方契约，不复跑GPU。 2026-10-17 UTC+8补YugabyteDB两项Skill的互斥依赖入口修订：只读原始反馈、自动评审、作者回应与固定补丁，无安装、模型运行或用户复测。
+改变的建议：先复用原生文档、模板和生成器，只为缺失的平台契约、对象配方、生产缺省规则或明确质量目标补窄参考；实际入口已够用就撤回额外 Skill；性能分析显示转换／复制开销明显时，先查能否消除这些工作；续改按新热点与预算，交付选择满足必要行为和目标负载的候选；扩大搜索前先比较轻量候选、全尝试成本和独立复评；接管性能候选时可借成熟内核替换生成内核、保留优化方向；几何验收按消费者实际使用的坐标与单位判定；比较扫描结果前锁工具、数据库和判定身份；依赖／配置会互相替换时，将短冲突契约放在各操作入口，完整配方仍按需读取。[经验]
+新证据：原研究证据汇总（日期见各节，非本次编辑新增）；Cloudflare 历史迁移、pivot／Seedkit 产物、Next.js 固定三臂定义及设计 Skill；局部表达式／文件结构／AST 探测可复查，但没有完整应用或新模型对照。原生方案也能正确、整包干预混杂，不能宣称 Skill 净收益。2026-10-15 补 pandas 历史性能补丁与 SWE-fficiency 2026 年比较，支持实现机制，不把不同测量拼成同条件对照；同日补 PerfAgent 公开候选及反例，区分论文、保存轨迹和包内源码，未复跑模型。2026-10-16补轻量搜索论文v2及固定记账／复评实现，完整历史成本与选择链仍未取得；同日补 PDF 检查／填充的单位错配，只核源码与示例算术，未渲染。2026-10-17（UTC+8）读取 SkillsBench 指定同题运行，确认 DB 更新、工具版本差异及重复内容；同日补读 pivot 三份独立轨迹，核实际 xlsx 配方与原生对象／静态表的差异，不把 with 标签当实际读取；未重跑，不归因 Skill 效果。[一手／研究] 同日补Triton关键字恢复修复、PyTorch接收与2026半输出反例；只读补丁和官方契约，不复跑GPU。 2026-10-17 UTC+8补YugabyteDB两项Skill的互斥依赖入口修订：只读原始反馈、自动评审、作者回应与固定补丁，无安装、模型运行或用户复测。 同日补 Roaring 生成候选被维护者替换及后续复用，保留密度反例与完整投入缺口。
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
@@ -679,3 +679,16 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 **限制来自具体消费路径，不是所有ROCm算子。** 原优化版本的[layernorm.py](https://github.com/sgl-project/sglang/blob/6da3aba6a5d62f9b9b976553c46b5d45b88b3b13/python/sglang/srt/layers/layernorm.py)中，普通`forward_hip`已有连续化；启用AITER则构造器改派`forward_aiter`，直接交给`rmsnorm2d_fwd`，没有同样整理。CUDA路径也另有高rank输入连续化为二维的处理。源码支持必须核实际后端入口，不能单从平台名或张量值相同推断兼容。[PyTorch reshape契约](https://docs.pytorch.org/docs/2.14/generated/torch.reshape.html)说明兼容stride可返回view，不应依赖其复制行为；最终补丁恢复的是该QKV-split布局上的旧路径，不是“二维reshape对任意非连续输入都保证复制”。**[一手：固定消费侧源码与API契约；研究：推断范围]**
 
 **接收不等于全面验证。** 修复`bd9ea0de7da034e284a1c3046b915f0ab4cc36a2`的[AMD run24847301653](https://github.com/sgl-project/sglang/actions/runs/24847301653)第14次attempt仍整体failure；jobs元数据中14个`1-gpu-small`普通分片为success，MI35x小测试及一个8GPU分片为failure。具体job日志现返回HTTP410，未独立确认失败类别，不说它们无关，也不说重投全CI绿。AI署名仅证明辅助归属；长期需求修改、修复后同条件性能、完整尝试费用与接手工时均未闭合，不能宣称长期净收益或平台升级后全面保留成功。**[一手：运行元数据；研究：缺口]**
+
+
+## 性能候选接管可保方向换内核
+
+核实：2026-10-17（UTC+8）。主线二／三／四；15 §7 补一个选择：已有成熟内核可适配同一热点时，比较替换生成内核、保留优化方向，按接收负载重定门槛。以下是现代 AI 参与的公开接收链，未闭合完整搜索投入或长期净收益。**[研究：采用判断]**
+
+**原候选更快仍可被替换。** Roaring [#556](https://github.com/RoaringBitmap/roaring/pull/556)由 Perfloop 生成，公开末版[74b708af](https://github.com/RoaringBitmap/roaring/commit/74b708afddae58314cd3172b237a7d68908cf3b6)以四个 dense containers 为基准，报告 ToArray 耗时 207344→94559 ns；固定代码以 16384 个值（25%密度）为门槛。接收维护者 Lemire [另提 #557](https://github.com/RoaringBitmap/roaring/pull/556#issuecomment-5431372056)，Perfloop 随后[承认陈旧自动回复未回应关切并关闭原 PR](https://github.com/RoaringBitmap/roaring/pull/556#issuecomment-5431501561)。这是未合入候选被替代，不是生产回滚。**[一手：源码、PR；社区：测量及回应]**
+
+**换的是内核及适配，不只放宽门槛。** [#557](https://github.com/RoaringBitmap/roaring/pull/557)公开注明 Claude 参与，2026-08-27 合入[f2e068c9](https://github.com/RoaringBitmap/roaring/commit/f2e068c9358c9aaafaa5f174e677149898a19208)，并列入[v2.26.0](https://github.com/RoaringBitmap/roaring/releases/tag/v2.26.0)。它借用 simdjson 的 compress-then-widen 思路，但 ToArray 恰好按 cardinality 分配，不能照搬依赖额外 padding 的整块写入，因此改 masked stores。CPU 须支持 VBMI2，改用既有 x/sys 检测及运行时关闭入口；少于 4096 值、非支持 CPU／平台仍走标量。维护者在 Xeon Gold 6548N、Go 1.26.3、固定核心下用真实语料比较：weather 从 master 16.19 ms、#556 11.58 ms 降到 7.83 ms；其 561 个 bitmap containers 里 349 个低于原 25%门槛，census 则从 8.48／5.06 ms 到 4.60 ms。其余十份语料没有 bitmap containers，均无影响；87.5%密度下原内核 0.097 ns/bit 仍略优于替代版 0.103，75%近似。该语料测量取 5×20 次中的 best，不是分布统计或本仓复测；表中 #556 未注明被测 SHA，不能与其末版基准拼接。固定测试检查 4095／4096／4097 门槛、高位 mask、输出位置及两侧哨兵；无 VBMI2 时会 skip，不能把任意机器的测试成功当快路径已跑。**[一手：固定实现、测试及发布；社区：维护者测量]**
+
+**后续复用仍按新调用契约选择。** 同维护者[#560](https://github.com/RoaringBitmap/roaring/pull/560)把内核用于 NextMany，保留未消费完的字与小 buffer 标量路径，以非 64 倍数 buffer 验两路交替；明确暂不扩 nextMany64，因为 uint64 输出需要另一内核与测量。#560 与[#561](https://github.com/RoaringBitmap/roaring/pull/561)先合入 vbmi2-toarray 分支，到 09-21 才以[142f2902](https://github.com/RoaringBitmap/roaring/commit/142f2902c210a2a5ee25b69adb8af792ce5f7517)进入 master；后者另报告极稀疏双输入内核约 9%退化，所测整容器操作未见同样损失，不写成所有路径全面更快。固定后续树仍保留 ToArray 的 4096 门槛及 VBMI2 回退。**[一手：后续源码与合入；社区：取舍及测量]**
+
+**边界。** 该链支持“借成熟内核改写候选”的新增选择，不能证明 Perfloop 完整搜索胜过直接人工／LLM 优化：原服务测量详情本轮不可读，候选全部尝试、模型版本、维护主动工时及独立生产使用者后续回执仍缺；Lemire 同时是 Perfloop 顾问（[本人披露](https://lemire.me/blog/2026/09/22/a-summer-of-ai-optimization/)），其接收测量也不是独立于项目的验证。AI 归属只据公开 PR 明示，未访问其中会话链接；本轮只读公开材料，未编译、运行候选／模型或基准。**[一手／研究：范围]**
