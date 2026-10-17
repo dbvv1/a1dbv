@@ -1,6 +1,6 @@
 主线：二，兼三／四
 改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口，稳定截图不介入待验动画状态；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界；清 lint 先核异步调用契约，允许有依据的窄范围豁免。[经验／研究]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；按下列入口区分证据，具体来源、核实日期、固定版本与验证范围留在各节；这些材料支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
+新证据：2026-10-17 UTC+8 补核 Airflow 依赖解析的两次修订、固定元数据和上下游答复（末节）；其他原研究证据汇总（日期见各节，非本次新增）；按下列入口区分证据，具体来源、核实日期、固定版本与验证范围留在各节；这些材料支持条件选择，未证明模型或 Skill 净收益。[一手／社区／研究／经验]
 
 - **本仓局部运行**：[Hook 五类合成输入](#hook-跨宿主迁移匹配成功不等于协议适配)（未执行补丁）、[标准库公式](#本轮零成本公式对照)、[路径逻辑模型](#外部生产者校准错误预期)、[32 场景固定 SQL](#写入路径扩展与序列化判等sqlite-chronicle)。各自只验证所列机制
 - **现场观察与操作记录**：[公开网页不同读取路径](#dot-实际能力诊断公开网页读取的路径差异)分别记录抓取 403、Chrome 原帖读取／刷新、GET 200／已知 ID；[发布路径](#发布一般建议与本仓观察分开)另记本仓已完成操作。现场观察不当作独立复测或效率收益
@@ -973,3 +973,18 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 **采用与撤回。** 转云前核所需文件、版本和允许上传范围，启动后即在目标核提交、输入、remote 及授权取回路径。可能打包内容未全获准时，先停下查清路径。只需跨设备继续本地工作可用[Remote Control](https://code.claude.com/docs/en/remote-control#remote-control-vs-cloud-sessions)，但原机器和进程仍须在线；它不替代离线云执行，也不代表零对话数据传输。原生交接够用时不另造同步器。**[一手；经验：选择]**
 
 只读文档及原帖，未上传仓库、运行客户端／模型或检查私人数据；未验当前账号分流、过滤与恢复，历史反例不作当前失败率或整页 L3 依据。**[研究]**
+
+
+## 依赖解析修复：排除坏组合，同时保留支持面
+
+2026-10-17 UTC+8 核实；主线三／四，改变15 §5依赖升级的选择。**✅ 先分清错误组合由旧元数据、实际二进制还是业务兼容门槛造成，再选临时限版、抬直接依赖下限或继续迁移。** 以下是2024年历史维护链，不是当前安装版本建议或AI收益证据。**[研究／经验]**
+
+**失败落在消费路径，不是安装声明。** [NumPy #26710](https://github.com/numpy/numpy/issues/26710)中，Airflow维护者报告Python 3.12 eager-upgrade将NumPy 1.26.4升至2.0.0，同时将pandas 2.1.4降至2.1.1；`pip check`通过，Google provider经aiplatform／bigquery导入pandas时却出现dtype尺寸不符。原帖给解析diff、栈和[失败job链接](https://github.com/apache/airflow/actions/runs/9537986684/job/26286749479)，本轮未取回job日志。这里的“仅3.12”是当时该轮解析结果，不是ABI故障仅可能发生于3.12。**[社区：下游原始报告]**
+
+**修过新版本，不会使旧可选项自动安全。** 固定[pandas 2.1.1元数据](https://github.com/pandas-dev/pandas/blob/e86ed377639948c64c429059127bcf5b359ab6be/pyproject.toml#L30-L38)未给NumPy上限；[2.1.2元数据](https://github.com/pandas-dev/pandas/blob/a60ad39b4a9febdea9a59d602dad44b1538b0ea5/pyproject.toml#L30-L38)对三个Python分支均加`<2`，但要求Python≥3.9。[NumPy维护者答复](https://github.com/numpy/numpy/issues/26710#issuecomment-2172373298)认可排除坏旧版，并指出该历史发布的元数据无法事后修正；本节不据此概括所有包平台。**[一手：固定声明与维护者解释]**
+
+**真正二改是支持范围，而非把所有下限一起抬高。** [Airflow #40272](https://github.com/apache/airflow/pull/40272)先针对3.12；随后作者报告[lowest-direct也暴露问题](https://github.com/apache/airflow/pull/40272#issuecomment-2171883989)，尝试统一下限，又因[Python 3.8不支持pandas 2.1.2](https://github.com/apache/airflow/pull/40272#issuecomment-2171886409)改为分段。最终[合并补丁81c331e](https://github.com/apache/airflow/commit/81c331e29a0e112380b634966c69342fa69bdd55)更新13个provider声明与生成依赖表：在当时支持的Python范围内，≥3.9使用`pandas>=2.1.2,<2.2`，<3.9保留`>=1.5.3,<2.2`。上限仍服务于既有SQLAlchemy／FAB兼容要求，见固定[common-sql说明](https://github.com/apache/airflow/blob/81c331e29a0e112380b634966c69342fa69bdd55/airflow/providers/common/sql/provider.yaml#L61-L70)。**[一手：固定补丁；社区：作者修订记录]**
+
+**竞争方案与停止线。** 临时`numpy<2`可以阻止已知坏组合，不是错误方案；Airflow选择利用pandas已修元数据收窄直接依赖，同时保住解释器支持面。[pandas 2.2.2发布说明](https://pandas.pydata.org/docs/whatsnew/v2.2.2.html#pandas-2-2-2-is-now-compatible-with-numpy-2-0)明确其wheel兼容NumPy 1／2，但当时直接升级会越过Airflow的`pandas<2.2`门槛。已有兼容版本无法满足必要业务时继续限版，只有相关消费者都通过后才放开组合；若自己产出C扩展，另按[NumPy 2.0构建契约](https://numpy.org/doc/2.0/dev/depending_on_numpy.html#numpy-2-0-specific-advice)处理构建／运行依赖与wheel验证，不能只修声明。**[一手；经验：选择与边界]**
+
+**交付证据仍有限。** [作者后续](https://github.com/numpy/numpy/issues/26710#issuecomment-2173315601)称分段限制解决Airflow问题，并提醒用户用项目推荐的constraints安装；[接收者询问发行](https://github.com/apache/airflow/pull/40272#issuecomment-2183125147)后，维护者在6月21日答复尚未发行，可在安装时加相应pandas范围。这不是接收者修后成功回执。最终PR head为`a3d23597f2542f5d20369bbf7eba8bc7e6b277be`；本轮该head的status／PR workflow查询返回空，未取得可核对的修后全矩阵结果，不能据合并补作CI全绿或业务恢复。仅只读源码、元数据、原帖与文档，未安装依赖、运行上游测试／模型；主动维护投入和长期净收益未知。**[社区／一手：声明；研究：验证范围]**
