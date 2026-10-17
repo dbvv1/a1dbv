@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M3／M4：操作恢复后告警还在，当前健康与历史完整性是否应分开 | dot-A | `dot/tmp/20261018-recovery-alert-semantics` | `docs/17-troubleshooting.md`、`docs/research/2026-10-10-codex-continuity.md` | 2026-10-18 03:47（UTC+8） | 基线 `1f5c3c6d`；核对 Codex 固定日志丢失标记、恢复测试与反馈消费路径，待独审；不运行上游／模型；接收／整合者 dot-A |
 
 ## 最近交接
 
