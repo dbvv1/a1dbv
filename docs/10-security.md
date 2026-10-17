@@ -1,6 +1,6 @@
 # 10 · 安全
 
-> 核实时间：2026-10-08；2026-10-14 补核外来仓库的脚本启动与配置来源边界；2026-10-15（UTC+8）补核 Codex 文件排除的生效条件及 Claude Code 沙箱的版本、socket 与凭证默认边界。
+> 编辑日期：2026-10-17（UTC+8）。来源与分项核实范围见[研究记录](research/2026-10-12-development-conditions.md)。
 
 ## 30 秒结论
 
@@ -63,7 +63,7 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
   - **CI**：不在 `pull_request_target` 里拼接不可信输入；发布改用 trusted publishing（Nx 事后的做法）；
   - **本机**：恶意安装脚本直接调用 CLI 并传 bypass 参数，不依赖 shell 别名；应在无秘密的受限环境运行不可信安装脚本；
   - **凭证**：秘密应留在不可信安装环境外；`sandbox.credentials` 只保护被沙箱覆盖的命令，拦不住外层恶意安装进程直接读取主机凭证；
-  - **依赖**：安装依赖时跳过安装脚本（`npm ci --ignore-scripts`），或者在容器里装。
+  - **依赖**：陌生依赖先审 `package.json` 与锁文件变更，在无秘密、限制挂载与出网的独立环境中用 `npm ci --ignore-scripts` 安装，后续测试／构建也留在该环境。该选项跳过安装脚本，但显式 `npm test`／`npm run` 仍执行目标脚本；见 [npm 契约与锁文件边界](research/2026-10-12-development-conditions.md#陌生依赖安装后仍须隔离测试)。**[一手；经验：采用建议]**
 
 ### 案例三：Amazon Q VS Code 扩展 1.84.0（2025-07，CVE-2025-8217）[一手：AWS 安全公告]
 
@@ -256,7 +256,7 @@ Anthropic 安全负责人 Jason Clinton 在 2026-07 公开了内部的做法 **[
 ### 个人开发者
 - [ ] 开启 Claude Code 沙箱并核对版本、有效配置、`excludedCommands` 与平台依赖（见 [3.2](#32-claude-code-沙箱操作手册)）；不能维持边界的任务转无秘密、受限挂载／网络的独立环境
 - [ ] 不可信安装脚本在无秘密的受限环境运行；删 bypass 别名挡不住脚本直接调用已登录的 Agent（案例二）
-- [ ] 安装不熟悉的依赖时跳过安装脚本（`npm ci --ignore-scripts`），或在容器里装
+- [ ] 陌生依赖的安装、测试与构建都留在无秘密、受限挂载／网络的独立环境；`npm ci --ignore-scripts` 只减少安装阶段的执行入口（案例二）
 - [ ] 读外部 issue 或网页的会话只给单仓库、只读的 token（案例一）
 - [ ] 内置工具配置 `Read(...)` deny，同时按 §3.2 限制子进程读取；规则覆盖范围不能代替完整路径隔离（见 [03](03-context-engineering.md#24-大仓库--monorepoclaude-code-配置及检索选择)）
 - [ ] 不在主力机上使用 `bypassPermissions`

@@ -89,6 +89,18 @@
 
 **验证口径。** 只读契约、固定源码与未运行测试定义，不构成模型／OS 实测或安全认证。历史独立评审覆盖 10 全页与 03／05／08 一致性，处理上述问题后判 L3；14/14 离线与 `git diff --check` 通过，仅验证仓库文档／配置和确定性测试。
 
+### 陌生依赖：安装后仍须隔离测试
+
+此前页头的历史核实范围保留如下：核实时间：2026-10-08；2026-10-14 补核外来仓库的脚本启动与配置来源边界；2026-10-15（UTC+8）补核 Codex 文件排除的生效条件及 Claude Code 沙箱的版本、socket 与凭证默认边界。
+
+核实：2026-10-17（UTC+8）。收窄 [10 案例二及个人清单](../10-security.md)的“跳过安装脚本，或者在容器里装”：陌生 PR／Agent 新引入的未审依赖，其安装、测试与构建都留在无秘密、受限挂载及网络的独立环境。容器限定与前节既有结论一致；新增证据是安装选项不能阻止后续显式运行脚本。不要求已可信项目另建平台。**[研究：采用判断与查重范围]**
+
+**安装成功不是执行授权。** [npm v11 `ignore-scripts`](https://docs.npmjs.com/cli/v11/commands/npm-ci/#ignore-scripts)页面标为 11.21.0（Legacy）；[v12 同段](https://docs.npmjs.com/cli/v12/commands/npm-ci/#ignore-scripts)标为 12.2.0（Latest）。两者都明确：该选项生效时，显式 `npm test`／`npm run` 仍执行目标脚本，只跳过其 pre／post 脚本。一次 `npm ci --ignore-scripts` 也不会替后续独立命令持久设置此选项。[`npm run`](https://docs.npmjs.com/cli/v11/commands/npm-run/#description)会将 `node_modules/.bin` 加入 PATH；测试／构建仍可执行依赖代码。v12 的安装脚本准入默认与 v11 有别，但都不能把安装期准入当作后续执行隔离。**[一手：版本化官方契约；研究：执行边界]**
+
+**锁定内容仍要判断来源。** `npm ci` 按已有锁文件安装，manifest 与锁文件不符时失败，不替你更新二者；[锁文件](https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/)记录依赖树、来源与完整性值。这支持重现和内容一致性，不能证明锁定代码可信，陌生变更须连同锁文件一起审。[Node.js 官方安全指南](https://nodejs.org/learn/getting-started/security-best-practices#malicious-third-party-modules-cwe-1357)说明运行期恶意依赖仍是风险；[Docker 官方边界](https://docs.docker.com/engine/security/#docker-daemon-attack-surface)说明宿主挂载与 daemon 控制权限可暴露宿主，故“用了容器”不足以确认隔离。若功能确需被跳过的安装脚本，先审所需脚本，再在原隔离环境中允许；不为跑通撤掉边界。**[一手：机制；经验：采用／撤回]**
+
+仅阅读公开文档，未安装依赖、运行 npm／容器／测试或攻击载荷，未检查私人配置；不构成运行时安全认证。**[研究：验证范围]**
+
 ### Codex 脚本入口：信任状态不等于有效权限
 
 **核实：2026-10-14 UTC；改变 10 §3 与 Codex 的脚本入口建议。** ✅ 只读自动化须核有效权限：旧配置可显式用 `--sandbox read-only`，已有文件排除 profile 时不叠加旧开关（2026-10-15 UTC+8 补核，见[10 的唯一采用建议](../10-security.md#codex-文件排除的采用条件)）。另审配置、指令、技能和 Hook 脚本；trust／Git 检查不能隔离执行。固定[openai/codex `7a08c5f`](https://github.com/openai/codex/commit/7a08c5f6271e818d832eb9061dac935936e2b539)仅为当日 main，非发行客户端验证。**[一手：源码；经验：采用判断]**
