@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件；协作编辑兼三，连续修改的可靠性
-改变的建议：按真实任务选界面、状态与复用边界，验修改版的连续操作和恢复；连续输出分开追最新状态与按序消费，不能以可回看替代原自动阅读路径。修复被真实使用者反对时，分开必要结果与旧绕路，不自动恢复原故障。[经验]
-新证据：各节保留公开需求、固定补丁与再次使用的正反反馈；本轮新增 NVDA 的漏读报告、相反使用取舍与实际回滚，保留不能复现和宿主差异。合并、配置与候选设计不等于采用成功、长期收益或 AI 效果。[一手／社区／研究] 2026-10-17补GitHub Desktop改名／stash的固定修复、负反馈后保留决定与多stash候选的连续创建缺口，未运行客户端。
+改变的建议：按真实任务选界面、状态与复用边界；同仓新增命令先比较完整命令与底层逻辑的组合成本，分步交付仍验最终结果。连续输出分开追最新状态与按序消费，真实反对不自动要求恢复旧故障。[经验]
+新证据：公开需求、固定补丁与再次使用的正反反馈；2026-10-17新增Restic对完整命令复用的弃选、绑定提交的清理回执与来源映射修订。NVDA／GitHub Desktop等链保留相反反馈与未闭合处；合并不等于采用成功、长期收益或AI效果。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -618,3 +618,17 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 后来的多stash GUI候选也不是现成答案。[#20845](https://github.com/desktop/desktop/pull/20845)于2025-08-26关闭未合并；[作者一周自测](https://github.com/desktop/desktop/pull/20845#issuecomment-3191193566)之后，[非作者仍报第二次创建要覆盖](https://github.com/desktop/desktop/pull/20845#issuecomment-3192268486)。其[固定head创建流程](https://github.com/desktop/desktop/blob/c0d134c9460b36d2607ddb10a26b763e9f37faf7/app/src/lib/stores/app-store.ts#L7016-L7038)保留创建后drop旧stash；源码支持连续路径仍须核对，但报告未绑定此SHA，不能据此宣布唯一根因。维护者[拒收说明](https://github.com/desktop/desktop/pull/20845#issuecomment-3223530152)还要求考虑单文件、外部stash与既有流程，不等于判所有代码不可用。另一用户[继续用CLI的自报](https://github.com/desktop/desktop/pull/20845#issuecomment-3223541615)是替代使用线索，不能补成原用户迁移成功；每份用不同本地分支也只是具体提议，不是已测低负担方案。**[一手：固定候选与接收决定；社区：失败与替代自报]**
 
 **采用与撤回。** 先定义必要结果及哪些旧动作只是其中一条路径，再比较回退、修复加取回入口或明确缩小支持；保存与恢复验收没覆盖，不能以修复主任务为理由忽略旧工作。回退会重引已确认的不可达问题时，不仅凭一次真实反对就整体回退；新路径造成更大风险、必要工作仍无法取回或替代负担不可接受时，也应重新选择，不能一味维护新实现。临时提交、CLI或多分支都增加操作；没有同一使用者完整前后对照、工时／失误率或净收益。本轮未运行GitHub Desktop／候选，也没有AI因果样本，不作为当前工具推荐。**[研究：条件选择与边界]**
+
+## Restic：复用命令还是底层操作
+
+核实：2026-10-17（UTC+8）。改变15 §10的同仓复用选择；历史版本与使用自报，不是当前备份操作指南。**[研究：范围]**
+
+**原任务与有损替代。** [#14](https://github.com/restic/restic/issues/14)要求从旧快照排除误备份文件，保留其余历史。维护者[收窄为移除文件](https://github.com/restic/restic/issues/14#issuecomment-359188505)，重命名等用途另议。后来[使用者的挂载再备份脚本](https://github.com/restic/restic/issues/14#issuecomment-1208281468)自报可用，但明确损失时间精度、标签和原路径；不能因能拼现成命令，就认定它与原任务等价。**[社区：实际替代自报；一手：范围决定]**
+
+**复用哪一层确实改变了实现。** [#2731评审](https://github.com/restic/restic/pull/2731#discussion_r452781709)建议直接调用已有`runForget`，集中删除逻辑并接上`prune`。接手维护者却认为[错误处理与日志协调](https://github.com/restic/restic/pull/2731#discussion_r967624340)更复杂，[中途升级锁](https://github.com/restic/restic/pull/2731#discussion_r967624385)没有成功保证，且[全部prune参数](https://github.com/restic/restic/pull/2731#discussion_r967623957)会挤满新入口。最终[固定实现72196e5](https://github.com/restic/restic/blob/72196e54c0e71d4d2ae26314173f57914b09ba28/cmd/restic/cmd_rewrite.go)复用排除规则收集与仓库操作，默认保留旧快照；指定`--forget`时预先取独占锁，先保存新快照成功再移除旧快照，`prune`另行执行。并非拒绝复用，也不是证明直接删除普遍更安全。**[一手：评审取舍与源码]**
+
+**接收者完成了清理，而非只看到新副本。** 非作者NovacomExperts[首次测试及后续65GB清理](https://github.com/restic/restic/issues/14#issuecomment-624683401)认可保留原件的默认，不赞成默认危险操作；2022-11又[明确绑定72196e54](https://github.com/restic/restic/pull/2731#issuecomment-1312202488)，在三主机、版本1仓库选择特定主机的较旧快照，执行`rewrite --forget`后再`prune`，自报830GB降至319GB、包括read-data的检查和恢复测试通过，仍保留原仓库备份。其筛选用了`--keep-last 30`，不能照其“30天”措辞推成按日筛选。这是特定任务完成的自报，不能归因为复用层级单项收益。**[社区：绑定提交的使用回执]**
+
+**分步处理留下另一条未完成路径。** [#4055](https://github.com/restic/restic/issues/4055)提出推迟移除或漏用`--forget`后，难批量识别对应原件；给旧快照加标签会改变ID，也可能影响按标签分组。[#4079](https://github.com/restic/restic/pull/4079)于2022-12-13（UTC）合入`7bdb985dde115c5779138037b19b853c2fdecf42`，改为每次记录直接来源ID；[v0.15.0源码](https://github.com/restic/restic/blob/v0.15.0/cmd/restic/cmd_rewrite.go)含该修订。但2024年[另一使用者](https://github.com/restic/restic/issues/4055#issuecomment-1919125299)仍因解析`Original`困难，删除新快照后重跑；版本未给，不能说他已用了该补丁或补丁失效。该issue仍开放；字段补齐不证明迟到确认已易用，更不授权默认删原件。**[一手：修订与状态；社区：后续负担]**
+
+**采用边界。** 同仓新命令应比较复用完整命令、已有规则／操作及保留手工步骤的总负担；接口契约合适时成熟CLI仍可用，外部调用者不据此依赖私有API。拆成多步时验候选与原件可对应、最终结果可完成；需要补窄的收尾入口时，也先保留明确的删除选择。仅只读公开源码与报告，未运行Restic／测试或接触备份数据，无AI效果、普遍性能或维护成本结论。**[经验：选择；研究：局限]**
