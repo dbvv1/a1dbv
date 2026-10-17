@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M3：恢复新实例是否仍携带源归档写权限 | dot-A | `dot/tmp/20261018-recovery-credential-boundary` | `docs/18-team-adoption.md`、`docs/research/2026-10-13-immich-handover.md`、`docs/README.md`的18行 | 2026-10-18 03:14（UTC+8） | 基线 `55ad86df`；核对 Railway 官方恢复凭据修订与采用条件，待独审；不接触账号／凭据，不运行恢复或模型；接收／整合者 dot-A |
 
 ## 最近交接
 
