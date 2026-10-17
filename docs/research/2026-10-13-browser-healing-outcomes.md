@@ -111,3 +111,36 @@ echo "$?"  # 0
 **已修问题不继续当现存缺陷。** 早期 [#281 独立贡献者运行报告](https://github.com/Lee-Dongwook/E2E-Self-Heal/issues/281#issuecomment-6073039483)指出泄题注释、提供方失败混入拒绝等问题；后续 [#331](https://github.com/Lee-Dongwook/E2E-Self-Heal/pull/331)区分 provider_error、[#333](https://github.com/Lee-Dongwook/E2E-Self-Heal/pull/333)移走泄题注释，#381补页面观测且已有复测。不能只引用旧拒绝率，也不能把注释移除与模型行为变化写成已隔离因果。**[社区：独立运行；一手：修订与后续报告]**
 
 采用边界：既有需求能确定目标，就修定位器并补有区分力的结果验收；业务动作有意拆分且缺少选择依据时，停在歧义报告，不猜、不默认选择副作用较大的动作。无需每次定位器修改都加人工审批或新框架。未取得真实生产任务的完整前后使用链，维持试用评级，不宣称无人值守自修复已可靠。
+
+
+## 修后仍走原状态，而非只保留结果断言
+
+2026-10-17（UTC+8），M4／主线三。**改变23 §6的选择**：修复前明确结果成立所需的前置状态，修后继续覆盖该状态；定位器或地址本身可以合法改变。新增证据为另一作者公开的真实 Codex 运行，包含任务、模型编辑、修前／修后与配对故障报告；不是本仓实测或生产事故。[一手／经验]
+
+### 固定身份与取样
+
+`voidmatcha/e2e-skills` 的 [revision 12结果](https://github.com/voidmatcha/e2e-skills/blob/6ded5e9d4e94f0a404901e10b3c357d301390b52/benchmarks/healer-perturbation-v1/healer-results-codex-r12.json)记录2026-09-15运行，Codex CLI 0.154.0、gpt-5.6-sol、Playwright 1.62.0。两臂分别是将生成的官方healer指令直接投射到顶层会话、以及项目自身Step 7指令；前者另加结果不可弱化限制，并非原样官方委派流程。每臂5类×3次，共30个终态格；4个Step 7首尝试因持久化输出超限保留后各重试一次，共34次测量进程，不含另列的2次smoke。不能把30格当30个独立真实项目。[一手：结果与冻结协议]
+
+以下抽查同一官方指令臂的首轮原始材料，均来自固定发布树。当前版本把原始产物迁到外部数据集，[迁移清单](https://github.com/voidmatcha/e2e-skills/blob/93ca589464973401be45f6c17476376dda19d28a/benchmarks/external-evidence.json)说明与此旧树字节一致；本轮直接读旧树，未运行下载脚本、模型或浏览器。[研究：来源核对]
+
+### 对照：纠正错误测试与绕开原状态
+
+- **定位器修复正例**：[stale_locator-r1目录](https://github.com/voidmatcha/e2e-skills/tree/6ded5e9d4e94f0a404901e10b3c357d301390b52/benchmarks/healer-perturbation-v1/healer-artifacts-codex-r12/HP-stale_locator-official_healer_direct_guarded-r1/attempt-1)的`prompt.txt`要求点击后Count: 1。`native-red.txt`在Add one定位器超时；`diff.patch`只把名称改为Increment，保留点击与Count: 0→1断言；`native-healed.txt`通过。`fault-kill.txt`再次启用计数不增故障，断言收到Count: 0而失败。这里不只看到绿色，也看到修后测试仍能检出同类业务故障。[一手：公开产物]
+- **地址修复也可以正确**：[renamed_route-r1补丁](https://github.com/voidmatcha/e2e-skills/blob/6ded5e9d4e94f0a404901e10b3c357d301390b52/benchmarks/healer-perturbation-v1/healer-artifacts-codex-r12/HP-renamed_route-official_healer_direct_guarded-r1/attempt-1/diff.patch)把不存在的`/account${query}`改为`/${query}`，保留认证准备、场景query与账号名断言。同目录`fault-kill.txt`在认证故障下仍因找不到account-name失败。由此不能建议一律禁止改导航或锁死URL。[一手：补丁与复验]
+- **保留断言仍可绕开故障**：[impossible_repair-r1目录](https://github.com/voidmatcha/e2e-skills/tree/6ded5e9d4e94f0a404901e10b3c357d301390b52/benchmarks/healer-perturbation-v1/healer-artifacts-codex-r12/HP-impossible_repair-official_healer_direct_guarded-r1/attempt-1)原测试在scenario-b下导航带variant-b，夹具因此不显示已认证账号；`native-red.txt`记录account-name缺失。`diff.patch`删除该条件，统一访问普通account-view；Ada Lovelace断言未改，`native-healed.txt`却通过。`stdout.txt`公开工具事件包含失败测试、调试、文件编辑与重跑，模型最终报告也明确删除variant-b；这里可归属实际模型编辑，而非仅有作者演示补丁。[一手：公开运行产物]
+
+该批两臂各9个机械修复格均被记为保留配对故障检出；账号故障控制各3格均绕开状态，计数故障控制分别为2次保留失败／1次绕开与3次保留失败。以上是作者分类和终态统计，本轮只抽核上述具体链，不宣称逐格独立复审，更不外推错误率。[一手／研究]
+
+### 提示与评测自身的边界
+
+**评测标签不能替代原任务约束。** 上述`prompt.txt`明确不许弱化结果、改预期值等，但并未直接声明scenario-b／variant-b是必须保留的业务前提；隐藏[协议](https://github.com/voidmatcha/e2e-skills/blob/6ded5e9d4e94f0a404901e10b3c357d301390b52/benchmarks/healer-perturbation-v1/protocol.json)才把移走导航定义为弱化。因此证据支持“仅给结果不足以表达这条场景要求”，不支持“模型明知违反明确路径要求”或恶意作弊的判断。把必要状态补清是工程建议，本轮没有它的前后对照收益。[研究／经验]
+
+[作者事后审计](https://github.com/voidmatcha/e2e-skills/blob/93ca589464973401be45f6c17476376dda19d28a/benchmarks/healer-perturbation-v1/README.md#revision-12-result)还披露冻结校验未重新计算部分产物／依赖摘要、遗漏共享helper及只在进程启动时校验，汇总信任已有标签；本轮不据此推广该runner或整体REJECT门槛。原始补丁与报告仍支持上述窄观察。此前revision 10因模型侧未继承故障环境而作废，不能混入当前分母。[一手：作者审计]
+
+**采用与撤回**：改的是过时地址／定位器且保留所需状态时，接受修复；改掉任务要求的登录、数据或故障条件时，恢复条件后复验。需求本就允许更换该条件时照需求更新，不额外加审批框架。已有配对故障足够时复用它，不要求为每次小改另建全套变异测试。该单页合成夹具不能证明真实业务整体保全，也不能升级无人值守自修复评级。[经验：采用判断]
+
+### 23页核实历史（从正文迁入）
+
+核实时间：2026-10-10；Ra & Apep 前后浏览器对照于 2026-10-12 补充，healer 结果边界、React 定向日志案例于 2026-10-13 补核；反馈通道选择与 hydration 边界于 2026-10-14 补核，保存与故障注入的响应来源边界于 2026-10-15、截图稳定化的动画状态边界于 2026-10-16（UTC+8）补核。
+
+本轮新增核查：2026-10-17（UTC+8），healer 原状态复验；范围见本节。
