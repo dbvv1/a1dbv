@@ -6,7 +6,7 @@
 #   使用 UnrealEditor-Cmd -ExecCmds="Automation RunTest <过滤>;Quit" -ReportExportPath=<目录>，并解析 index.json。
 #   编辑器开着时也可以运行（会另起一个无界面进程），但会更慢；改了 C++ 后先用 ue-build 编译。
 #
-# 退出码：0 全部通过；1 有测试失败；2 环境问题（找不到引擎、没有生成报告、没有匹配的测试、报告无效或测试未完成）
+# 退出码：0 本次选中的测试全部通过；1 有测试失败；2 环境问题（找不到引擎、没有生成报告、没有匹配的测试、报告无效或测试未完成）
 # 环境变量：UE_PROJECT（.uproject 路径）、UE_ENGINE_ROOT（引擎根目录）、UE_EDITOR（直接指定编辑器可执行文件）、
 #           UE_TEST_EXTRA_ARGS（附加参数）
 

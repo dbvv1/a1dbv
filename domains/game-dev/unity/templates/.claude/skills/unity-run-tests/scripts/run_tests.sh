@@ -5,7 +5,7 @@
 #   有 Unity CLI（unity）时使用 `unity test`，否则使用编辑器 batchmode（-runTests）。
 #   编辑器必须未打开该项目（否则请通过 Unity CLI/MCP 在编辑器内运行 Test Runner）。
 #
-# 退出码：0 全部通过；1 有测试失败；2 环境问题（找不到 Unity、项目被锁、编译错误、报告无效或测试未完成）
+# 退出码：0 本次选中的测试全部通过；1 有测试失败；2 环境问题（找不到 Unity、项目被锁、编译错误、报告无效或测试未完成）
 # 环境变量：UNITY_PROJECT（默认当前目录）、UNITY_EDITOR（无 Unity CLI 时的编辑器路径）
 
 set -uo pipefail
