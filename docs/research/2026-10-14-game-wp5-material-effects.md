@@ -1,6 +1,6 @@
 主线：二／三／四；G1 材质、特效的选型、迭代与发行
-改变的建议：[研究] 共同参数源与可控运行时优先；有限配色共享预设、独立损伤才分对象参数；原生投影与合批迁移按需求及代价保留；映射错误与周期重复分开，随机采样只作有条件适配
-新证据：[一手／研究] Deliot／Heitz、Burley、Mikkelsen及Wronski原论文与固定实现补大面积重复、法线与过滤取舍；固定导出／Triplanar／溶解实现、Unity 6.3 与 UE 5.8 参数契约、真实作者迁移反证；未实测资产、性能或工时
+改变的建议：[研究] 共同参数源与可控运行时优先；有限配色共享预设、独立损伤才分对象参数；原生投影与合批迁移按需求及代价保留；映射错误与周期重复分开，随机采样只作有条件适配；特效慢放先比较普通混帧，运动图有条件追加
+新证据：[一手／研究] 烘焙／混帧官方契约与作者慢放反例；Deliot／Heitz、Burley、Mikkelsen及Wronski原论文与固定实现补大面积重复、法线与过滤取舍；固定导出／Triplanar／溶解实现、Unity 6.3 与 UE 5.8 参数契约、真实作者迁移反证；未实测资产、性能或工时
 
 # WP5 材质与特效：共同参数源、运行时与生成边界
 
@@ -305,3 +305,43 @@
 先保许可来源和原材质，再扩大地表、换一张颜色／粗糙度图、改变尺度或旋转政策：联合检查近远距离、斜视、运动及光照下的图案、通道对应和法线；使用预处理路线时核派生数据确由新源生成。只在获准的目标引擎／设备阶段测采样、驻留和重建成本；不能用一张近景截图或论文速度替代。需要固定布局／标识时保结构化资产；变体已够用则不增加运行时算法。[研究；验收未执行]
 
 本次仅公开论文、作者说明、固定源码和许可核对，未安装、生成资产、运行 shader／GPU／引擎／模型或试听／玩家实验；无零手修通过率、性能或工时结论。详细机制留本节，正文只保条件选择，不新增材质框架或实验队列。[研究]
+
+## 特效慢放补研：普通混帧、运动图与重烘焙
+
+核实：2026-10-18（UTC+8）；主线二／三，GA／GB。改变既有固定视点 flipbook 的二改选择：保留源并调时长还不够，放慢后内部动画可能需要不同帧间表达。这里只处理装饰内部运动；命中、取消与阶段仍由运行时控制。[研究]
+
+### 先按缺口选择，而不是给每段特效补图
+
+| 当前结果 | 首先比较 | 撤回／代价 |
+|---|---|---|
+| 短暂呈现或原动画已合格 | 保原播放；有跳变才试现有线性混帧 | 不为功能更高级增加派生纹理 |
+| 慢放跳变，普通混合仍双影明显 | 匹配帧列的运动图驱动帧间扭曲，再混合 | 轮廓外溢、显隐错误或预算不合就退回 |
+| 相邻帧变化太大或数据不可靠 | 已有合格源增加时间采样重烘焙；否则换源／缩短慢放 | 同尺寸图集加格数会减少单帧像素；保持像素则增加存储需求 |
+
+以上是条件推导，不是三个方案的同题实测排名。运动图估计中间画面，不补回新视角、隐藏几何或正确命中时间；循环与消失阶段也要单独核。[研究]
+
+[Klemen Lozar 2015 原作者教程](https://www.klemenlozar.com/frame-blending-with-motion-vectors/)认为普通动画／crossfade 足以承担多数短暂 gameplay 特效，慢镜头和长时间大效果才更需要运动插值；代价含 shader 与纹理内存。其旧流程包含合成、遮罩、模糊及调试，不能作为零手修成功案例；页面新增 TFlow 入口也不等于本轮核完其许可或生产质量。[一手／研究]
+
+[Shadowist／cEssex 亲历讨论](https://realtimevfx.com/t/motion-vectors-for-animated-textures-how-do-you-generate-them/575?page=2)记录不同来源的尺度／边界处理问题，帧间变化大或扭曲过强仍出错。[社区／研究] 它提供失败方向，不提供通用阈值；本轮未重现，不把某套历史流程的压缩／尺度要求泛化到所有格式。
+
+### 先有合格来源，再核图与消费者的契约
+
+[EmberGen 节点文档](https://docs.jangafx.com/embergen/pages/references/node_list.html)列出 Motion Vector 通道及导出帧数、stride、行列和分辨率；边界覆盖与细节另有 blur 参数。已有合格模拟源可以成套导出，但导出成功不证明目标特效或慢放合格。[一手／研究]
+
+[SideFX Labs Flipbook Textures](https://www.sidefx.com/docs/houdini/nodes/out/labs--flipbook_textures-1.0.html)区分普通8位、Labs编码和16位运动数据，解码、过滤与内存要求不同，并有边界 padding、速度尺度参数。[研究] 因此不能只按文件名接入任意消费者，也不默认最高精度最划算。本节只借契约，不新增软件采购／安装建议。[一手]
+
+只有图像也不是绝对无路：[IlluGen 已发布记录](https://www.jangafx.com/roadmap/illugen/past-releases)含从相邻输入估计的 Optical Flow 与消费 flowmap 的混合功能。[一手] 这支持“图像估计可作候选”，不证明运动准确或零手修；未核完商业准入，不列入产品推荐，不采用厂商的相对精度宣传作横评。[研究]
+
+### Unity 与 Unreal 分别核，不靠同名功能类推
+
+- **Unity VFX Graph 17.3.0**：[输出设置](https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/Context-OutputSharedSettings.html)区分 Flipbook、线性 FlipbookBlend 和另需 Motion Vector Map／Scale 的 FlipbookMotionBlend；Generate Motion Vectors 则为 TAA／motion blur 等输出渲染运动数据，不能当帧间图生成器。[一手]
+- [Flipbook Player 17.3](https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/Block-FlipbookPlayer.html)更新 texIndex；Shader Graph 输出需在 shader 内建立采样，没有同样的 UV Mode 配置。末首混合可受 Clamp Blending 控制，是否循环仍由内容决定。[一手／研究]
+- **UE 5.8**：[SubUV_Function 文档](https://dev.epicgames.com/documentation/unreal-engine/texturing-material-functions-in-unreal-engine?lang=en-US)的小数 Frame 做相邻子图混合，证明普通混帧基线，不证明运动估计。历史 UE4 自定义扭曲教程不是当前 Niagara 自动接入保证；采用运动图路线仍核实际材质／外部编码配套。[一手／研究]
+
+### 二改时保住什么
+
+仅改变同一帧列的播放速度，不自动要求重算图；先验最慢速度、循环边界与结束／取消。改形状、采样 stride、帧序、裁切或图集布局后，重新核／导出颜色与运动数据对应及尺度；不能沿用旧图却只看引用未丢。[研究；验收设计]
+
+目标尺寸下比较双影、轮廓外溢、新露出区域和循环跳变，再计附加采样、纹理驻留及重建成本。数据与参数调节仍不足、必须逐帧绘补时，按当前基准撤回，选择更合适的源或收窄慢放。没有此处的产品遮挡修复实测，也不声称参数调整已能解决全部显隐错误。[研究]
+
+本次只读公开文档、作者流程与亲历报告；未安装、模拟、生成资源、运行 shader／模型／Unity／Unreal 或 hosted CI。视觉、设备性能、玩家收益、零手修通过率和主动工时仍未验证。不新增实验队列。[研究]
