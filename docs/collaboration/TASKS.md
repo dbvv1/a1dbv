@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M3：前端自动优化的覆盖、局部退出与阶段成本 | dot-A（接收：dot-A） | `dot/tmp/20261018-react-compiler-adoption`（基线 `fcaa1381`） | 15、既有domain-skill-contract、TASKS本行 | 2026-10-18 07:43（UTC+8） | 核Sanity／Onyx固定回执与React契约；未运行模型／构建 |
 
 ## 最近交接
 
