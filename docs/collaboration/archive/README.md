@@ -5,3 +5,5 @@
 需要可点击的历史链接时，查看[归档前原位置](https://github.com/dbvv1/a1dbv/blob/2f8e6d40275de0e39b00caca527fb9083ffa415b/docs/collaboration/TASKS.md)。当前状态只看[任务表](../TASKS.md)，历史的“待审／未发布”不代表今天的状态。
 
 [截至 2026-10-16 的状态表](completed-through-2026-10-16.txt)在控制面重构时从 TASKS 整体搬移，可点击版本见[搬移前原位置](https://github.com/dbvv1/a1dbv/blob/5d76c47/docs/collaboration/TASKS.md)。
+
+[2026-10-17 续存交接](completed-through-2026-10-17.txt)仅含本次起新移出的原文；此前历史仍在上列旧档，文件名不代表全量快照。
