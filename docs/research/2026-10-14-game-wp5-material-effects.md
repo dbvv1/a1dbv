@@ -1,6 +1,6 @@
 主线：二／三／四；G1 材质、特效的选型、迭代与发行
-改变的建议：[研究] 共同参数源与可控运行时优先；有限配色共享预设、独立损伤才分对象参数；原生投影与合批迁移按需求及代价保留
-新证据：[一手／研究] 固定导出／Triplanar／溶解实现、Unity 6.3 与 UE 5.8 参数契约、真实作者迁移反证；未实测资产、性能或工时
+改变的建议：[研究] 共同参数源与可控运行时优先；有限配色共享预设、独立损伤才分对象参数；原生投影与合批迁移按需求及代价保留；映射错误与周期重复分开，随机采样只作有条件适配
+新证据：[一手／研究] Deliot／Heitz、Burley、Mikkelsen及Wronski原论文与固定实现补大面积重复、法线与过滤取舍；固定导出／Triplanar／溶解实现、Unity 6.3 与 UE 5.8 参数契约、真实作者迁移反证；未实测资产、性能或工时
 
 # WP5 材质与特效：共同参数源、运行时与生成边界
 
@@ -264,3 +264,44 @@
 [一手／研究] Unity [SetPropertyBlock](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Renderer.SetPropertyBlock.html) 规定 per-material block 优先于 per-renderer block，传 null 可关闭相应 overrides；[GetPropertyBlock](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Renderer.GetPropertyBlock.html) 会完整覆盖传入容器。多个效果写同一 renderer 时核合并／恢复责任，不能让溶解清理顺手删掉阵营色；此为检查点，不据此另造全局参数框架。
 
 [研究] 对照既有路径与候选路径时，固定目标设备、画面和并发，记录实际绘制路径、draw calls／SetPass、shader variants、CPU／GPU 帧时间及驻留内存。只在对应热点和预算改善、状态正确且维护可承受时保留迁移；只有计数器下降而帧时间未改善，或出现更多恢复例外时撤回。这里没有引擎运行、shader 编译、性能／工时实测，源码与开发者报告不替代它们。
+
+
+## 重复纹样补研：坐标失败与采样重复分开
+
+核实：2026-10-18（UTC+8）。GA／GB，主线二／三。改变材质页的回退选择：三平面或 UV 映射已经合适、源材质本身可用而大面积周期明显时，先比较素材变体、更多非重复内容和随机分块混合，不把所有重复缺陷都归成需要重新展开 UV 或生成整套资产。[研究]
+
+### 三条可比较路线，不是默认升级 shader
+
+| 现有需求 | 首先比较 | 必须承担的代价／退出条件 |
+|---|---|---|
+| 少量变化已足够，或砖排／木纹走向需要连续 | 同源参数变体、成套许可素材及明确区域分配 | 变体与驻留管理；关键结构仍需正确源内容与映射，不交给随机拼贴猜 |
+| 必须有较大连续、非重复区域 | 真正含更多独特内容的纹理／资产 | 内容生产和内存；只提高分辨率或放大同一纹样不等于增加独特内容 |
+| 随机／近随机自然表面，主要缺陷是周期 | 🧪 随机偏移分块、按需旋转及混合的适配候选 | 额外采样／过滤、可能的预处理与移植；重影、色偏、方向接缝或预算不合格则退回前两路 |
+
+这是机制与任务条件的比较，不是质量／成本实测排名。随机采样不创造正确几何或指定语义位置，正确 UV 也不会自动打破源图案的周期；两类失败分别处理。[研究]
+
+### 原方案：减少重复，不保证保住指定结构
+
+[Deliot／Heitz 原作者说明](https://eheitzresearch.wordpress.com/738-2/)介绍 histogram-preserving 混合的简化、mip 级色偏修复及压缩处理。[2019 Unity 作者原文](https://unity.com/blog/engine-platform/procedural-stochastic-texturing-in-unity)将更大纹理、额外遮挡物与随机材质方案并列，但适用范围是随机／近随机自然表面，且明确是非活跃维护的研究原型。[一手]
+
+[Burley 2019，Disney 原论文](https://www.jcgt.org/published/0008/04/02/paper-lowres.pdf)§1解释生产中独特高分辨率纹理的内存／创作负担，以及简单叠加的重影和对比损失；§5与§7展示结构与色彩反例。保持颜色统计不等于保持花、砖排等语义，调整混合权重也不能作为保真承诺。论文的生产背景含手工创作，不证明本基准零手修；其图像生成计时不是当前游戏 GPU 成本。[一手／研究]
+
+**旧 Unity 包只作源码参照。** 固定 [`a77263f`](https://github.com/UnityLabs/procedural-stochastic-texturing/tree/a77263f336611c3b7acf021d5942207ee7223602) 的 README围绕 Unity 2019.2、Shader Graph／LWRP／HDRP 6.7.1，package.json 却写 6.7.0；仓库已归档。不能把替换整套旧 Shader Graph 的说明抄成 Unity 6 安装配方。源码可读不等于当前管线已兼容；本文没有核实 Unity 6 或 Unreal 可直接采用的维护中集成。[一手／研究]
+
+### 同一布局不等于所有通道使用同一公式
+
+旧 Unity [采样节点 L136–208](https://github.com/UnityLabs/procedural-stochastic-texturing/blob/a77263f336611c3b7acf021d5942207ee7223602/Editor/ProceduralTexture2D/SampleProceduralTexture2DNode.cs#L136-L208)由 UV 得到格点与平移偏移，用原 UV 梯度采样并查 mip 相关 LUT，Normal 路径另解包；该实现没有随机旋转。[研究] 同一表面的 albedo、roughness、normal 应保持源点与布局对应，不能各自随机化；但类型相关的值变换和混合仍须分别验，不能因共用 UV 就宣称整套 PBR 语义已通过。[一手／研究]
+
+[Mikkelsen 2022 原论文](https://jcgt.org/published/0011/03/05/paper-lowres.pdf)提出直接采样源纹理、免去 histogram 预处理的适配，代价包括颜色结果取舍；法线方向数据与普通颜色不同。[固定作者实现 L58–101](https://github.com/mmikk/hextile-demo/blob/43c3ed7e18e1e4539fa9323f72d5e2a65147ebb3/hextile-demo/hextiling.h#L58-L101)随分块变换采样梯度，混合前还变换恢复的导数，不能只旋转 UV。它是不同方案，不是给前述 histogram 路径随便加旋转就能等价。[一手／研究]
+
+作者[固定 README](https://github.com/mmikk/hextile-demo/blob/43c3ed7e18e1e4539fa9323f72d5e2a65147ebb3/README.md)还指出：可平铺 normal 不一定对应可平铺 height，平均法线偏斜会被随机旋转明显暴露。该[代码许可为 MIT](https://github.com/mmikk/hextile-demo/blob/43c3ed7e18e1e4539fa9323f72d5e2a65147ebb3/LICENSE)，可以作为另核输入资产许可后的适配起点，不代表素材随代码清权或目标引擎接通。本轮不按 README 安装修图工具；不满足输入条件时先缩小到合适材质／取消旋转／换源，再验证，不能默认为程序已经修好。[一手／研究]
+
+### 较新的混合方法仍有预算和伪影边界
+
+[Wronski 2025 原论文](https://jcgt.org/published/0014/01/02/paper.pdf)§7–8把 Laplacian 混合用于材质层与 hex tiling：省去专门预计算，但增加低 mip 采样与算术；多通道、多层可能使纹理单元饱和。论文还列出 halo／overshoot 和动态混合 aliasing 的可能性。[研究] 它支持按实际内容选择质量／成本，不是“最新方法免费消除重复”的证据；历史桌面硬件结果不外推移动端或当前 Unity／UE。
+
+### 第二改与本次验证边界
+
+先保许可来源和原材质，再扩大地表、换一张颜色／粗糙度图、改变尺度或旋转政策：联合检查近远距离、斜视、运动及光照下的图案、通道对应和法线；使用预处理路线时核派生数据确由新源生成。只在获准的目标引擎／设备阶段测采样、驻留和重建成本；不能用一张近景截图或论文速度替代。需要固定布局／标识时保结构化资产；变体已够用则不增加运行时算法。[研究；验收未执行]
+
+本次仅公开论文、作者说明、固定源码和许可核对，未安装、生成资产、运行 shader／GPU／引擎／模型或试听／玩家实验；无零手修通过率、性能或工时结论。详细机制留本节，正文只保条件选择，不新增材质框架或实验队列。[研究]
