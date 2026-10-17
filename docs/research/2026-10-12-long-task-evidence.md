@@ -1,6 +1,6 @@
 主线：三，兼二
-改变的建议：请求超时与整项任务截止时间分别核实；恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流；可选子任务可显式降级，必需验收换执行者，停不掉共享写入者则暂停相关交付。[经验／研究]
-新证据：原研究证据汇总（日期见各节，非本次编辑新增）；官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验；10-16（UTC+8）补续接前分支／HEAD检查的单仓观察与离线Git正反例，以及已发布 OpenAI Python SDK／HTTPX2 的超时、重试与流读取边界；Go 整次请求超时作对照；10-17（UTC+8）补gstack可选降级／必要接管的固定模板与失败状态后续修复，区分提示约定、测试覆盖和真实恢复。[一手／社区／研究／经验]
+改变的建议：请求超时与整项任务截止时间分别核实；恢复最新目标、约束、执行事实与活跃资源；旧绿灯、存在的文件及部分压缩摘要均不能代替当前验收。跨执行者派发前核对回执丢失后仍可查询的任务身份；失败后先查原结果和外部状态，再决定恢复或重试；07 按真实续接／反馈缺口采用循环，撤回固定重置和逐功能工作流；可选子任务可显式降级，必需验收换执行者，停不掉共享写入者则暂停相关交付。[经验／研究]
+新证据：原研究证据汇总（日期见各节，非本次编辑新增）；官方设计、固定恢复实现／测试定义及社区单例；10-14 核对失败压缩修复与发布 tag，当时已读 tag 仍含旧分支。响应完成也不保证持久化成功；10-15（UTC+8）补核 Claude Code thrashing 与 StopFailure，区分缩小输入、清空与停止控制；另补 Ralph 固定控制实现／未合并回归及不同作者产物链，纠正历史 harness 的模型条件；未运行新模型恢复实验；10-16（UTC+8）补续接前分支／HEAD检查的单仓观察与离线Git正反例，以及已发布 OpenAI Python SDK／HTTPX2 的超时、重试与流读取边界；Go 整次请求超时作对照；10-17（UTC+8）补gstack可选降级／必要接管的固定模板与失败状态后续修复，区分提示约定、测试覆盖和真实恢复；同日补 CAO 固定结果保存／身份发现缺口及 Symphony 既有 issue 恢复契约，未做真实恢复实测。[一手／社区／研究／经验]
 
 # 长程任务：来源、反例与实验边界
 
@@ -310,3 +310,18 @@ missing-expected-HEAD: rejected
 **借用分支判断，不照抄宿主字段。** 后续[f67c478f的共享派发规则L222–228](https://github.com/garrytan/gstack/blob/f67c478f05d8e0b39339599ad11c91a3478515ae/scripts/resolvers/constants.ts#L222-L228)已改成参数存在才请求前台，收到launch receipt就等完成通知；[官方当前说明](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)也区分fork模式与非交互入口。无需关闭宿主控制来迁就旧模板。[一手；研究]
 
 **采用与后续。** 按[20 §5](../20-codex-long-horizon.md#5-子任务应缩短关键路径不应制造评审树)分流；原验收要求独立审阅时，父任务内联接管不能替代独立执行者。后续追真实失败分支的停止／恢复及最终交付回执；作者“第三次复发”或合并数量不作可靠性统计。[研究]
+
+
+## 跨执行者派发：先保证任务身份可重新发现
+
+核实：2026-10-17（UTC+8）；主线三／四，M4。改变 20 首表及 §5 的派发选择：发送前核对回执丢失后能否用双方已知的身份找到同一任务；§9 已有“结果未知先查再重试”，本节补的是能够查询的前提，不新增状态机或模板。[研究]
+
+**实际故障与合并范围。** [CAO #447](https://github.com/awslabs/cli-agent-orchestrator/issues/447)报告 Codex 的 600 秒 MCP 截止早于 900 秒 handoff 等待，worker 可能继续；重复派发有重复工作的风险。[#453](https://github.com/awslabs/cli-agent-orchestrator/pull/453)于 2026-09-19 合入 `9233416d22e52027a4a129c11a6a3aa1b2bc7cac`，增加结果保存与查询，但明确保留早期 ID 交付缺口；issue 关闭不能作为完整恢复回执。[社区：原始故障；一手：PR 及固定实现]
+
+- [固定 `orchestration.py` L932–964](https://github.com/awslabs/cli-agent-orchestrator/blob/9233416d22e52027a4a129c11a6a3aa1b2bc7cac/src/cli_agent_orchestrator/utils/orchestration.py#L932-L964)：[L1244](https://github.com/awslabs/cli-agent-orchestrator/blob/9233416d22e52027a4a129c11a6a3aa1b2bc7cac/src/cli_agent_orchestrator/utils/orchestration.py#L1244) 在内部生成随机 `job_id`，HTTP 等待为 `timeout + 180` 秒；该超时分支等待内部 HTTP 截止后才返回 `pending` 及 ID。provider 先断开时，持久化结果可能存在，调用方却没有查询身份。源码注释明确把此缺口留给 #715。[一手：固定源码]
+- [固定 `agent_step.py`](https://github.com/awslabs/cli-agent-orchestrator/blob/9233416d22e52027a4a129c11a6a3aa1b2bc7cac/src/cli_agent_orchestrator/services/agent_step.py)在提取结果后、清理 terminal 前尝试保存；[测试 L594–668](https://github.com/awslabs/cli-agent-orchestrator/blob/9233416d22e52027a4a129c11a6a3aa1b2bc7cac/test/services/test_agent_step.py#L594-L668)既断言保存先于删除，也明确规定保存失败仍清理并返回成功。因此该提交是 best-effort 保存，不能称 crash-safe 交接；未确认首个发行版本或当前部署行为。[一手：实现与测试定义；研究：范围]
+- [#715](https://github.com/awslabs/cli-agent-orchestrator/issues/715)于本次读取仍 open：记录 key 对应 terminal 不等于记录是否已提交；跳过发送可能丢任务，重发可能重复。相关 PR 撤掉对外 `--idempotency-key` 选项，缺少的 run record 仍待实现。这里引用维护者记录的缺口，不把建议状态机当成已提供功能。[社区／一手：公开维护记录]
+
+**已有载体是可选起点。** 独立项目 Symphony 固定于 `be10a1b79df723d6d7612b5651c8522704dafb2e` 的[WORKFLOW L82–87、L142–147](https://github.com/openai/symphony/blob/be10a1b79df723d6d7612b5651c8522704dafb2e/elixir/WORKFLOW.md#L82-L147)从已知 issue 读取并复用单一 workpad comment，保存 comment ID，后续在[同一记录留下 commit 与验证摘要](https://github.com/openai/symphony/blob/be10a1b79df723d6d7612b5651c8522704dafb2e/elixir/WORKFLOW.md#L221-L227)；PR 关联放 issue 字段。它示范复用现有任务系统，不证明必须安装 Symphony 或 Git 优于其他存储。[SPEC §14.3](https://github.com/openai/symphony/blob/be10a1b79df723d6d7612b5651c8522704dafb2e/SPEC.md#L1690-L1705)将重启恢复限定为 tracker 与保留 workspace 重新发现工作，不恢复原 retry timers 或假定运行会话可恢复；[调度认领由单一权威串行更新](https://github.com/openai/symphony/blob/be10a1b79df723d6d7612b5651c8522704dafb2e/SPEC.md#L725-L731)，不能把可读的认领文件当互斥锁。[一手：固定工作流与设计契约]
+
+**采用边界。** 派发身份应能关联基线、交付版本与接收方处理结果；已有 issue／PR 或共享任务记录能做到就保留，确有发现／事件处理缺口再评估补充。通知与结果查询仍分开，失联后先核原工作，未确认是否投递就不自动重派。未运行上游测试、真实客户端、故障注入或模型；不主张上述实现具备完整确认回执、跨主机恢复、恰好一次执行或效率优势。[研究：采用判断与未验证范围]
