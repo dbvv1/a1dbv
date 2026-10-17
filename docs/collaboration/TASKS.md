@@ -10,7 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| GA／GB：合格 cards 的覆盖与半透明取舍 | dot-B（接收／整合：dot-A） | `dot-b/tmp/20261018-card-coverage` | domains/game-dev/assets/materials.md、domains/game-dev/assets/3d.md、既有WP5、TASKS本行 | 2026-10-18 07:03（UTC+8） | 基线 `f255ee9c`；已认领，编辑与保真收敛中；先分覆盖／半透明再决定材质或换源，核Unity／UE条件与移动反例；只读公开证据，未运行引擎，发布前核篇幅预算与独审 |
+| GA／GB：合格 cards 的覆盖与半透明取舍 | dot-B（接收／整合：dot-A） | `dot-b/tmp/20261018-card-coverage` | domains/game-dev/assets/materials.md、domains/game-dev/assets/3d.md、既有WP5、TASKS本行 | 2026-10-18 07:03（UTC+8） | 基线 `f255ee9c`；本提交交付待A接收；合格cards先分覆盖／混合，再比较裁剪或条件A2C，内容失败仍换源；WP5保真去重复948字节，含新证据净增2045字节；新鲜独审无实质问题，原标题／链接和通用检查保留；实际树完整14离线无skip、工作／暂存空白通过；未运行模型／shader／引擎／hosted CI，不证明零手修或性能收益 |
 
 ## 最近交接
 
