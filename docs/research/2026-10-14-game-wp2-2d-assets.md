@@ -1,6 +1,6 @@
 主线：二／三；G1 2D 资产选型与第二次修改
-改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分输入／混合约定错配与内容缺陷；规则几何固定视角小道具反复生成失败时，可比较代码母版；自制换装预览缺必要身体部件时先修观察工具，不据不完整图返工美术
-新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎；2026-10-17补SOLREIGN撤回换装判断与Human/Vox元数据、Godot预览过滤反例，修后图像／工具未复现
+改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分混合错配、缩小后裁切覆盖／图集失真与内容缺陷；规则几何固定视角小道具反复生成失败时，可比较代码母版；自制换装预览缺必要身体部件时先修观察工具，不据不完整图返工美术
+新证据：[一手] §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执，2026-10-17补保覆盖阈值、图集回归与保比例不保轮廓反例；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎；2026-10-17补SOLREIGN撤回换装判断与Human/Vox元数据、Godot预览过滤反例，修后图像／工具未复现
 
 # WP2：2D资产的前沿方法与零手修边界
 
@@ -283,11 +283,24 @@ Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blo
 - **Unity导入与颜色空间。** [6.0 Sprite导入参考](https://docs.unity3d.com/6000.0/Documentation/Manual/texture-type-sprite.html)把sRGB、Alpha Source与RGB dilation列为不同选项；[alphaIsTransparency API](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/TextureImporter-alphaIsTransparency.html)明确该选项改变全透明区域的颜色数据。[一手] [Spine导出／导入指南](https://esotericsoftware.com/spine-unity-assets)给出成套配置，且其在Gamma空间预乘的导出纹理不支持该runtime的Linear工作流，须用straight路径。[一手] 这是具体生产者／runtime限制，不可写成所有线性渲染都不能预乘；也不能为修一件素材擅自切换全项目颜色空间。优先沿现有项目选择兼容导出及材质输入配置，不把Spine专用勾选推广成所有Unity纹理默认值。[研究]
 - **Unreal 5.6。** [官方Blend Modes](https://dev.epicgames.com/documentation/en-us/unreal-engine/material-blend-modes-in-unreal-engine?application_version=5.6)分别列`Translucent`为源颜色乘Opacity后叠背景，`AlphaComposite`为源颜色直接叠加背景乘一减Opacity。[一手] 对普通半透明图像，这要求核材质输出的颜色是否已按预期预乘；仅换Blend Mode、不核材质图内部转换，并不能保证正确。[研究] [同版Texture Asset Editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/texture-asset-editor-in-unreal-engine?application_version=5.6)另列sRGB及Source Color Settings，包含源编码与颜色空间。[一手] 因而须连同源编码核对，不把Unity／Spine的sRGB或扩边配置照搬到UE，也不把Masked的二值裁切当柔边修复。[研究]
 
+### 缩小后变稀或串色：先选处理位置
+
+补核：2026-10-17（UTC+8）。[研究] 近看合格、缩小才失真时，先定位实际消费方式，避免重新生成同样会被导入破坏的图。
+
+- **二值裁切先比较原生保覆盖 mip。** [Unity 6.3 Default 纹理](https://docs.unity3d.com/6000.3/Documentation/Manual/texture-type-default.html)在 Generate Mipmap 下提供 Preserve Coverage／Alpha Cutoff；[alphaTestReferenceValue](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/TextureImporter-alphaTestReferenceValue.html)明确要求参考值与实际 alpha test 的 cutoff 匹配。[UE 5.8 Texture Asset Editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/texture-asset-editor-in-unreal-engine?application_version=5.8)须开启 Do Scale Mips for Alpha Coverage 才采用阈值，阈值按 RGBA 通道指定，0 禁用该通道。[一手] 由实际 mask 通道与材质裁切约定决定参数；不把文档示例范围当通用阈值，也不把其余数据通道一起缩放。[研究]
+- **源纹理设置不等于图集产物。** [Unity 6.3 Sprite Atlas](https://docs.unity3d.com/6000.3/Documentation/Manual/sprite/atlas/sprite-atlas-reference.html)另有 Generate Mip Maps、Alpha Dilation、Padding 和最终平台格式。[一手] 上述 Default 导入契约不证明 Sprite Atlas 自动保留源图的 coverage 处理；走图集时核打包后的 mip 与材质，不只验源图勾选。[研究]
+- **串色先查打包，再按缩放范围调整。** [Mikola Lysenko 的实现与演示](https://0fps.net/2013/07/09/texture-atlases-wrapping-and-mip-mapping/)区分整 atlas 生成 mip 的邻块污染与重复 UV 的 LOD 选择错误，并展示逐 tile 生成 mip 的处理。[一手：历史实现] 基础级间距也随 mip 缩小，固定 padding 不是任意远距保证；先比较重打包／按使用尺度分组，已有成熟逐块 mip 消费链才采用，不为此默认自建渲染器。[研究] 该文的旧平台限制不作当前设备能力依据。
+- **先排工具回归。** [Unity UUM-130958](https://issuetracker.unity.com/issues/11900/artifacts-appear-on-sprites-when-generating-a-sprite-atlas-with-padding-set-to-2)记录 Padding=2 的伪影，复现于 6000.3.2f1、6000.4.0a1／b2、6000.5.0a3，未复现于 6000.0.64f1、6000.3.0a6；修复版本列 6000.3.13f1、6000.4.0f1、6000.5.0a6。回退后仍须重新生成图集才能清除该产物。[一手：缺陷记录] 仅测 macOS 26.1／M1 Pro，其他 padding 不复现；这是核版本与重打包的依据，不是统一改变 padding 的建议。[研究]
+
+**反例：比例保住，形状仍可能不合格。** [Castaño 的保覆盖方法](https://www.ludicon.com/castano/blog/articles/computing-alpha-mipmaps/)以通过裁切的像素比例为目标；[Lisyarus 2025-01-05 开发记录](https://lisyarus.github.io/blog/posts/exploring-ways-to-mipmap-alpha-tested-textures.html)给出自有实现和三种纹理的逐 mip 对照，发现保比例会填洞却牺牲细结构，不适合其强调外轮廓的风格。[一手：作者实现／图例] 这不是 Unity／UE 原生功能的失败实测；它说明验收还要看关键轮廓。目标尺寸下仍无法识别，就比较程序化简化后的轮廓、另一来源或缩小表现需求，不无限提高 alpha。[研究]
+
+**软透明、UI 与像素风另选。** [Unity 6.3 mipmap 说明](https://docs.unity3d.com/6000.3/Documentation/Manual/texture-mipmaps-introduction.html)指出原分辨率且不缩放的 UI 不获益，mip 增加约 33% 容量。[一手] 这类 UI 可不生成 mip；需远近缩放或斜视的世界资产不能照搬。像素风名称本身不决定开关，按最终像素尺度与相机范围选择；柔边透明仍检查混合、透明区 RGB 和过滤，不采用二值裁切的保覆盖作为通用修复。[研究]
+
 ### 采用、撤回与第二次修改
 
-[研究] 保留合格源图和上次正确的导出／导入／材质组合，先在相同尺寸与深浅背景定位异常从哪一步出现。若明确是约定错配，恢复匹配组合；下一次换装重导出、换材质或升级导入器时，重查这条链，不能只比较PNG或alpha通道。约定一致后仍有边缘问题，再分别查透明像素RGB、滤波／mipmap、图集相邻采样与§12压缩；源内容本身的缺肢、漏洞、错误轮廓仍回到原有淘汰／换源条件。不要为保柔边改成硬alpha，也不要把所有halo归因于混合。
+[研究] 保留合格源图和上次正确的导出／导入／材质组合，先在相同尺寸与深浅背景定位异常从哪一步出现。若明确是约定错配，恢复匹配组合；下一次换装重导出、换材质或升级导入器时，重查这条链，不能只比较PNG或alpha通道。约定一致后，按上面的缩放与消费分支检查最终产物，并复核透明像素RGB与§12压缩；源内容本身的缺肢、漏洞、错误轮廓仍回到原有淘汰／换源条件。不要为保柔边改成硬alpha，也不要把所有halo归因于混合。
 
-**验证与许可边界：** [研究] 仅阅读版本化引擎文档、生产者文档与公开问题回执，未运行shader、引擎、模型或图像处理，未证明目标设备视觉效果及工时收益。Spine仅为真实生产者／消费者案例，不要求购买、安装或接入其runtime；未复制代码或资产，不新增依赖。
+**验证与许可边界：** [研究] 仅阅读版本化引擎文档、生产者文档、开发者原文中的实现说明／实验报告与公开问题回执，未运行shader、引擎、模型或图像处理，未证明目标设备视觉效果及工时收益。Spine仅为真实生产者／消费者案例，不要求购买、安装或接入其runtime；未复制代码或资产，不新增依赖。
 
 ## 15. 规则几何小道具：从重生成换到代码母版
 
