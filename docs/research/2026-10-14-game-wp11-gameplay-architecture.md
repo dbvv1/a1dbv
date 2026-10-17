@@ -1,5 +1,5 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
-改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按真实复杂度升级。先定状态所有者、时钟、退出与输入边界；相机、关卡、成长、教学与辅助按玩家决策取舍。物品区分可互换性，任务区分历史与当前条件；功能通过仍须核体验；群体叠招先分攻击许可、站位与单体冷却
+改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按真实复杂度升级。先定状态所有者、时钟、退出与输入边界；相机、关卡、成长、教学与辅助按玩家决策取舍。物品区分可互换性，任务区分历史与当前条件；功能通过仍须核体验；群体叠招先分攻击许可、站位与单体冷却；蓄力按输入识别、技能计量与释放选择
 新证据：[一手／社区] 固定源码、官方契约、历史修复／评审及开发者复盘，来源、版本和日期见各节；含Factorio撤销二改、Wesnoth受限撤销、OpenMW／Luanti物品路径及Overgrowth玩家单例。[研究] 另有确定性算术反例，未作游戏、引擎、模型或玩家对照
 
 # WP11：单人独立游戏的 gameplay 架构取舍
@@ -1165,3 +1165,14 @@ AD模拟时停普通循环，[普通存档门槛](https://github.com/IvarK/Antim
 以上为[研究]条件选择。Unity 6.3 [avoidancePriority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AI.NavMeshAgent-avoidancePriority.html)决定避让优先级；UE 5.8 [RVO／Detour Crowd](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-avoidance-with-the-navigation-system-in-unreal-engine)处理动态避障。这些原生空间能力不能当作已提供攻击调度；沿既有状态／技能所有者补窄许可即可，不为此迁移行为树或GAS。[一手／研究]
 
 **未执行的二改验收。** 在原双敌遭遇增加第三敌／远程招：记录请求、批准、归还和实际危险重叠；插入持有者死亡、打断、换目标、改招、不可达与重开。检查旧资格未遗留、旧回调不释放新持有者、持续有合法候选时没有意外全体等待；公平轮转并非必需，但饥饿不能被“未超额”掩盖。人数正确仍须核逃路和实际可用反制。若排队明显、空窗无聊或群压价值消失，收窄受限招式／占用区间或移除。未实测，不能声称更公平、省调试或AI生成收益。[研究]
+
+## 蓄力技能补研：按法识别、技能进度与释放
+
+核实：2026-10-18（UTC+8）；主线一／三。改变 05 §7 的蓄力二改选择：原生 Hold 契约满足就保留，游戏规则改变蓄力速率／资源时沿已有技能状态计量，不把满格当释放。[研究]
+
+- **历史设计拆分。** [一手] Hades II [2024-10-16 Olympic Update 官方公告](https://steamcommunity.com/games/1145350/announcements/detail/7057794870234137717?l=english)将 Sorceress 改为 Omega 动作加速，旧效果移至 Silver Wheel；后者在引导 Omega 时减慢周围事物。同页可含相邻更新，本轮按公告 ID `7057794870234137717` 与标题定位正文。[研究] 支持自身动作与周围减速可分别设计，不证明内部时钟、当前平衡或玩家体验改善。
+- **满蓄仍可持有。** [一手] Veloren `21db1de49c7b57013acac7a309983b530a65b848`（2026-10-17）的 [charged_ranged.rs L59–66](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/charged_ranged.rs#L59-L66)按阶段 timer／charge_duration 给进度；[L93–178](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/charged_ranged.rs#L93-L178)在松开或能量不足且未发射时按蓄力比例发弹，满蓄按住仍持有。[utils.rs L1722–1757](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/utils.rs#L1722-L1757)分输入状态与 timer，后者以 dt 乘攻速及阶段倍率，Charge 用 charge_speed_modifier。[研究] 支持技能进度区别于单纯按住时长；未追其暂停链，不外推停顿政策。代码 [GPL-3.0](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/LICENSE)，这里只借机制。
+- **Unity 输入计时不是提交回执。** [一手] [Input System 1.17 InputAction 文档](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.17/api/UnityEngine.InputSystem.InputAction.html#UnityEngine_InputSystem_InputAction_GetTimeoutCompletionPercentage)说明 timeout 完成率可到 1，而超时尚未由输入更新处理、动作未 performed。另核源码 `05e45ddbaf18a93245b068d787d74b738b90d01c` 的 [InputEvent L162–175](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Events/InputEvent.cs#L162-L175)真实时间线与 [StartTimeout L2289–2315](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Actions/InputActionState.cs#L2289-L2315)按输入时间加秒数注册；该 SHA 不宣称等同 1.17 包，暂停中是否处理还取决于更新与启用状态。
+- **UE 可选全局缩放。** [一手] [UE 5.8 UInputTriggerTimedBase](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/UInputTriggerTimedBase?lang=en-US)的 bAffectedByTimeDilation 默认 false，选择是否将全局时间缩放用于 held duration；不据此承诺角色局部倍率、菜单暂停或动画也已同步。[研究] 只需此契约时保留原生触发器，不能因 Unity 路径不同就复刻输入层。
+
+**选择与边界。** [研究] 沿现有执行实例保留资格、取消与唯一提交；UI 表达按法进度还是技能进度由用途定，动画释放沿前述窗口／退出政策，不额外搭状态框架。原生 Hold 满足即停止拆分；满蓄自动释放也合法，Veloren 不是统一规则。沿原蓄力二改加入攻速，再核停顿／暂停中的进度、耗能、松开／取消和释放次数；本轮仅官方契约、历史公告及固定源码阅读，未运行游戏／引擎／模型或验证手感。
