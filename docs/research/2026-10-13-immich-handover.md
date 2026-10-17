@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开；持久化绕过前核原故障阶段与实际参数
-新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑；10-17（UTC+8）补PSScriptAnalyzer的独立接收者复测与两项续改合入fork
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开；持久化绕过前核原故障阶段与实际参数；恢复入口失败先比较窄恢复操作与入口修复
+新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑；10-17（UTC+8）补PSScriptAnalyzer的独立接收者复测与两项续改合入fork；10-17（UTC+8）补Home Assistant同一接收者CLI／界面重试与固定URL补丁
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -250,3 +250,20 @@
 接收者的[续改回执](https://github.com/PowerShell/PSScriptAnalyzer/pull/2206#issuecomment-6060529367)报告#15组合比较改善部分暖格式化、首调用仍混合；#16的作用域缺口也见于已发行1.25，不是该候选新引入。其82测试、两项既有跳过及运行探针为作者报告，本轮未运行。独立优化[#2224关闭说明](https://github.com/PowerShell/PSScriptAnalyzer/pull/2224#issuecomment-6189217369)表示实现已并入#2206，并非被拒；连接器核#2206仍open、未合并，head为`89bc5e112aa7845f13fda2f251817fb9d95c7a9e`。**[一手／社区]**
 
 **边界与停止。** 这条链补足“另一位实际使用者读懂并继续改”的观察证据；不证明全面采用、长期维护等价或AI净收益，未取得完整人工／模型成本。本例保留实现并补窄修改，不推广为必选方案；停止同义追查。**[研究]**
+
+## 补充证据：恢复入口失败先保住所需恢复范围
+
+核实：2026-10-17（UTC+8）；下述历史日期为UTC。改变18§7：先区分入口／参数失败与归档内容／兼容失败；有覆盖必要组件的受支持窄通道时，不先重做全量。**[研究：采用判断]**
+
+**操作重试。** [Supervisor #5637](https://github.com/home-assistant/supervisor/issues/5637)中，bcutter在HAOS 14.2／Supervisor 2025.02.1／Core 2024.4.4迁移后无法继续恢复partial备份，[改做全量成功](https://github.com/home-assistant/supervisor/issues/5637#issuecomment-2661580199)。维护者随后给出[查归档内容并显式选择组件的CLI](https://github.com/home-assistant/supervisor/issues/5637#issuecomment-2666512627)。原用户[2月18日重试](https://github.com/home-assistant/supervisor/issues/5637#issuecomment-2666832831)时界面仍失败，指定AirCast插件的CLI却完成恢复。他明确插件未使用、无业务数据；自报此前全量重做有4至5小时投入、停机与历史损失，这不是窄恢复节省时间的对照测量。**[社区：同人回执；一手：维护者操作说明]**
+
+**修入口后复查。** 2月19日的[固定补丁`71b65f2`](https://github.com/home-assistant/frontend/commit/71b65f208ff919253db601870b7799dad3c49bb3)（父版本`ab4efb7412d3e1d6f7ad83d3656938128fbbd917`）仅改`src/data/hassio/backup.ts`两行：把`useSnapshotUrl`改为`useBackupUrl`并翻转`backups`／`snapshots`路径选择，恢复类型与组件请求体不变，没有新增测试。原用户[2月27日回执](https://github.com/home-assistant/supervisor/issues/5637#issuecomment-2688887732)附AirCast配置／数据恢复完成日志，表示Supervisor侧正常，界面却仍有类似全量恢复的误导提示。**[一手：固定前后源码；社区：非补丁作者复查]**
+
+**发布关联与反证。** 维护者[通知stable 2025.02.4](https://github.com/home-assistant/supervisor/issues/5637#issuecomment-2688478566)，后[澄清Frontend更新已在2025.02.3 beta](https://github.com/home-assistant/supervisor/issues/5637#issuecomment-2689289653)，该版因其他问题未到stable。本轮只按维护者说明关联发布，未核镜像digest；另一Core 2025.2.5用户的失败被[明确区分](https://github.com/home-assistant/supervisor/issues/5637#issuecomment-2688479917)，不能并成同一修复的失败回执。**[一手：维护者说明；研究：关联边界]**
+
+**两条可行路线。** **[研究：条件选择，成本未量化]**
+- **补窄恢复操作**：受支持CLI保住所需组件的局部恢复，代价是辨认组件与防漏选；必要组件不覆盖、CLI也失败或接收者不能安全执行时，撤回临时路线。
+- **修入口并升级交付**：主要面向图形界面用户时修入口，代价是发布等待及支持版本组合复查；仍未验收则保留窄通道、缩小界面支持承诺。
+- 全量重做有成功回执，但局部需求已有成功路径；只在内容、兼容性或必要组件证据表明窄通道不足时，再比较全量恢复与缩小范围。
+
+**边界。** 两次窄恢复回执只支持无业务数据的AirCast插件，不证明完整旧业务数据恢复、跨人源码接管、AI参与或长期维护收益。本轮只读公开资料，未运行Home Assistant、恢复数据或上游测试；本链已能改变路线选择，停止同义扩例。
