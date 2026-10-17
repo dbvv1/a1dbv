@@ -1,10 +1,12 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
-改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；撤回旧 Unity AI MCP 并列推荐
-新证据：2026-10-17（UTC+8） 补核 Spine 用户材质删除、固定修复与同用户回执，区分保护用户资产与自动同步（§3.6）；2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；源层级联动与引擎组件保留分别选，解耦后显式同步；撤回旧 Unity AI MCP 并列推荐
+新证据：2026-10-17（UTC+8） 补 Unity 官方同源 FBX 前后对照／6.3 解包合同与 UE5.8 FBX Scene 层级重建边界（§3.2／4.2）；补核 Spine 用户材质删除、固定修复与同用户回执，区分保护用户资产与自动同步（§3.6）；2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
 ## 当前结论摘要（2026-10-17（UTC+8））
+
+- **✅ 源结构仍是权威时保留联动；引擎组件结构是权威时接受显式迁移成本**。稳定外层不代表内部不再跟随源层级；解耦也不代表新网格／节点自动接好。Unity／UE 的具体选择见 §3.2／4.2。[一手／研究]
 
 - **✅ 用户材质被删，先恢复并查 importer 的清理责任**；重绑引用不能恢复实体，保护自定义列表可能要求手动同步 atlas 页，见 §3.6。[一手／社区／经验]
 
@@ -111,6 +113,12 @@ pivot、outline、remap 和状态机只有明确归 source/pipeline 管理时才
 
 采用：加载并局部更新已有 Prefab；把 gameplay 脚本、碰撞代理、握持点／脚底锚点放在稳定外层，生成 mesh/sprite 为可换的子资源。需要整体重建时保证唯一语义名称并检查外部子对象引用，不能只保住 Prefab 顶层 GUID。[经验]
 
+**源层级的二改，另选联动或解耦。** [Unity 官方 2024-07-15 对照](https://unity.com/blog/author-scenes-and-prefabs-with-verson-control)的“FBX and prefabs”用同一模型的删除、重命名、材质和父级变更比较两条路线：Model Prefab 跟随源结构；完全解包后创建的普通 Prefab 保留自己的对象／组件，却可能留下 missing mesh、旧材质和旧父子关系。保住组件与接入新视觉是两个结果；这是作者的历史演示，不是本仓库的当前版本运行结果。[一手]
+
+[Unity 6.3 解包合同](https://docs.unity3d.com/6000.3/Documentation/Manual/UnpackingPrefabInstances.html)进一步区分：Unpack 保留嵌套 Prefab 实例，variant 还可能成为 base Prefab 的实例；Unpack Completely 才把这些关系一并解除。这里只说明操作边界，不建议为省事把整个 gameplay 外层与所有嵌套资源全部解包。[一手／研究]
+
+**采用／撤回：** 源驱动装饰或需要持续接收源节点增删的视觉层，先保留 Model Prefab 联动，把玩法职责留在稳定外层。引擎内复杂组件必须保留、视觉结构由程序维护时，可针对该视觉实例选择解耦并另建普通 Prefab；随后按源身份显式更新网格、材质和新节点。新源结构应自动进入游戏时，一律解包反而新增同步负担；对应关系不清或组件无法迁移时先保留旧版本，不能以“对象没消失”放行。本文补的是原稳定外层建议内部尚未确定的结构权威，不替代已有引用验收，也不承诺解包保住所有外部引用。[研究]
+
 ### 3.3 Addressables 管加载，不负责识别“同一个动作”
 
 [Addressables 2.9.1 AssetReference 契约](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/api/UnityEngine.AddressableAssets.AssetReference.html)同时有 AssetGUID、SubObjectName、SubObjectGUID（适用 SpriteAtlas）。编辑器主资产可加载，不等于运行时子资产正确。[一手]
@@ -179,6 +187,12 @@ Epic 技能仓库 [LICENSE](https://github.com/EpicGames/unreal-engine-skills-fo
 采用建议：纯机器拥有的参数用 pipeline 权威；程序员在引擎里调整过的资产先采用保留 editor-changed 的策略并回读。**该枚举不是任意材质／骨架变更无损合并保证**，也不能代替特定 importer 对源节点／名称的匹配。[一手＋经验]
 
 [Interchange 当前导入说明](https://dev.epicgames.com/documentation/unreal-engine/importing-assets-using-interchange-in-unreal-engine?lang=en-US)提供现成 pipeline stack、Python 示例和材料／骨架冲突预览。优先改已有 pipeline 参数；只补项目缺失的窄步骤。该页仍把 FBX 支持标 Experimental，不能因 UE 版本较新就宣称所有格式同样生产就绪。[一手]
+
+**FBX Scene Import 的层级重建不是上述属性枚举。** [UE5.8 FBX Scene Import](https://dev.epicgames.com/documentation/unreal-engine/fbx-scene-import-in-unreal-engine?lang=en-US)针对 Import Into Level：完整场景重导入要求输出为单个 Blueprint；该模式开启 Reimport Hierarchy 会覆盖 Blueprint Components 列表里的编辑，但保留 node graph 编辑。该页同时说明不会覆盖项目里已有的 Materials。保留图表、材料与组件层级是不同承诺，不能统一概括为“自定义修改保留”。[一手]
+
+**条件选择：** 已有组件层级需保留时，不为更新网格而默认重建层级；需要接受新源结构时，先列出待迁移的组件修改，并验证图表仍引用正确组件。另一条选择是不重建源层级、按预期差异显式同步，代价是自己承担新增／删除节点的映射。此判断严格限该 FBX Scene 路径，不扩展为 Interchange／Datasmith 或所有 Blueprint 的行为，也不把关闭一个选项当任意引用无损保证。[研究]
+
+**共同第二改验收：** 分别核结构、组件配置、资源引用和玩法使用点；纯网格更新与源节点改名／增删分开。Unity 官方对照支持同步与保留的代价，UE 文档提供另一管线的明确覆盖边界；本次未运行引擎、未测真实生产返工／工时，不据此宣称自动化质量提高。[研究]
 
 ### 4.3 修复链与反例，不能抹平到“最新版已好”
 
