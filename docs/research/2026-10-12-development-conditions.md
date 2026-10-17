@@ -774,6 +774,19 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 仅回读文档、版本、issue 与固定源码／测试，未运行 Vitest、模型或远端 CI，未测收益；作者关闭 optimizer 的对照不作普遍推荐。**[研究：范围]**
 
 
+### 原生失效判断：撤掉在选择器之前重放旧结果的缓存
+
+2026-10-17（UTC+8）补核；改变 15 §6：原生选测已能判断环境变化时，先撤掉绕过它的外层短路，配置失效走已有扩大路径；07 只回链。**[研究：采用判断]**
+
+Polylogue [#1059](https://github.com/Sinity/polylogue/issues/1059)采用 testmon 替换自制文件／导入路由。[初版 `8a2c0332`](https://github.com/Sinity/polylogue/commit/8a2c0332961228dd1135d069c7d21326f7e96575)后，[修订 `09b84c37`](https://github.com/Sinity/polylogue/commit/09b84c37e22a159d293dcb0bc6b7be95ea0d445e)删除外层结果缓存：旧指纹含 HEAD、工作区差异、未跟踪文件与 testmon 数据库，却不含当前 Python／安装包；匹配后在构造和运行检查之前直接返回旧退出码。testmon 自己的[固定环境判断](https://github.com/tarpas/pytest-testmon/blob/dccc58d2ed8edec98096ff1974acb7c07d3e3482/testmon/db.py#L647-L711)会比较 Python 与包身份，因此外层命中可使它根本没有机会判断。**[一手：固定补丁／源码；研究：机制推导，不是漏测率]**
+
+[#1066](https://github.com/Sinity/polylogue/pull/1066)已合入 `da72933`。其[实现](https://github.com/Sinity/polylogue/blob/da72933da8fe385d400647fc064a0111cfb0b535/devtools/verify.py#L370-L403)从 seed 到 HEAD、工作区及未跟踪文件按清单检查配置、锁文件与部分共享测试设施；命中或 Git 查询失败时取消 testmon 选测，成功后刷新 seed。[命令构造](https://github.com/Sinity/polylogue/blob/da72933da8fe385d400647fc064a0111cfb0b535/devtools/verify.py#L265-L283)仍排除 integration，指定 `--skip-slow` 时仍过滤 slow；这只是该配置范围扩大，不能称整个项目全套。[测试定义](https://github.com/Sinity/polylogue/blob/da72933da8fe385d400647fc064a0111cfb0b535/tests/unit/devtools/test_verify.py#L89-L117)核命令与失效路径分类，不是所有环境变更的端到端证明。**[一手：合入实现与测试定义]**
+
+**扩大清单本身仍有缺口。** 该版前缀匹配不命中 `tests/unit/core/conftest.py`；[原 P1 评审](https://github.com/Sinity/polylogue/pull/1066#discussion_r3250832660)指出嵌套夹具风险；清单未触发不等于原生依赖记录必然漏选。作者 [9 月跟进](https://github.com/Sinity/polylogue/pull/1066#issuecomment-5918980468)以 `5ebcfe59` 历史快照复核，仍不宣称修复：新增 autouse fixture 没有先前执行关系。应用时先确认扩大入口覆盖本次夹具，缺口未闭合就显式运行相关消费者或更宽套件；这不否定外层缓存撤除，也不把旧快照当当前 master 状态。**[一手：固定源码；社区：评审与作者历史复核；经验：采用边界]**
+
+作者报告扩大运行 6,449 例、pytest 149.90 秒，紧接增量运行零选中、3.24 秒；它说明作者观察到回到增量，不能算长期节省或证明零选中总是正确。未取得原始运行日志，未执行上游测试、模型或 CI。采用这条修订机制仍须保留项目原有验收范围与非空要求。**[一手：作者报告；研究：验证边界]**
+
+
 ### 新增选测能力：先比较改动类型与完整运行成本
 
 > 2026-10-16 UTC 补核；主线三，改变 15 §6 新增选择器的采用条件，不改变本仓检查入口。沿用已有增量验证主题，不再列工具排名或重复 Vitest 边界。
