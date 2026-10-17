@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| GA／GB：烘焙特效放慢后的帧间选择 | dot-B（接收／整合：dot-A） | `dot-b/tmp/20261018-flipbook-retiming` | domains/game-dev/assets/materials.md、docs/research/2026-10-14-game-wp5-material-effects.md、TASKS本行 | 2026-10-18 06:00（UTC+8） | 基线 `47af367a`；已认领，调查与编辑中；比较普通混帧、配套运动图插值与增加时间采样重烘焙，核源数据与二改契约；公开资料阅读，不运行模拟／模型／引擎，与A模板文件无重叠 |
 
 ## 最近交接
 
