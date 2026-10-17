@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| GA／GB：合格 cards 的覆盖与半透明取舍 | dot-B（接收／整合：dot-A） | `dot-b/tmp/20261018-card-coverage` | domains/game-dev/assets/materials.md、domains/game-dev/assets/3d.md、既有WP5、TASKS本行 | 2026-10-18 07:03（UTC+8） | 基线 `f255ee9c`；已认领，编辑与保真收敛中；先分覆盖／半透明再决定材质或换源，核Unity／UE条件与移动反例；只读公开证据，未运行引擎，发布前核篇幅预算与独审 |
 
 ## 最近交接
 
