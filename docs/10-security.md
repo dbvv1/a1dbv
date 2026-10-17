@@ -36,13 +36,13 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 
 ## 2.1 四个案例拆解：攻击链和本可以断开的那一环
 
-下面几个案例的公开资料比较完整。每个都按“入口 → 放大器 → 出口”拆开，标出**哪一环本可以断开**。
+按“入口 → 放大器 → 出口”看四个案例的可断开环节。
 
 ### 案例一：GitHub MCP “有毒流程”（2025-05，Invariant Labs）[社区：安全厂商原文]
 
-- **场景**：用户在 Claude Desktop 里接了 GitHub MCP，同时有一个公开仓库和若干私有仓库。用户只说了一句“看看公开仓库里的 open issue”。
+- **场景**：Claude Desktop 的 GitHub MCP 可访问公开与私有仓库；用户仅要求查看公开仓库的 open issue。
 - **入口**：攻击者在公开仓库提交一个 issue，里面藏了提示注入。
-- **放大器**：Agent 读到 issue 后被劫持，用同一个 token 读取私有仓库的内容，包括项目名、搬家计划和薪资。用户之前对工具调用选了“Always Allow”。
+- **放大器**：注入利用同一 token 读取私有项目名、搬家计划和薪资；用户此前选了工具调用“Always Allow”。
 - **出口**：Agent 在**公开仓库**开 PR，把读到的私有内容写进去，攻击者直接就能看到。
 - **本可以断开的一环**：
   - **一个会话只碰一个仓库**（作者给的策略就是“每个会话只能访问一个仓库”），或者让读取外部 issue 的会话只拿只读、单仓库的 token；
@@ -51,12 +51,7 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 ### 案例二：s1ngularity / Nx 供应链攻击（2025-08）[一手：Nx 安全公告 + 社区：StepSecurity 分析]
 
 - **入口**：Nx 仓库的 PR 校验工作流用了 `pull_request_target`，并把 `${{ github.event.pull_request.title }}` 直接拼进 `run:` 脚本。一个精心构造的 PR 标题就能执行任意命令，拿到有写权限的 `GITHUB_TOKEN`，再借它触发持有 npm token 的发布流程。漏洞工作流从 master 删掉后，**仍然留在旧分支上可以被触发**。
-- **放大器**：发布的恶意版本带有 postinstall 脚本 `telemetry.js`。它先用 `which` 找本机已安装的 AI CLI，再依次调用：
-  - `claude --dangerously-skip-permissions -p "<prompt>"`
-  - `gemini --yolo -p "<prompt>"`
-  - `q chat --trust-all-tools --no-interactive "<prompt>"`
-
-  提示词让 Agent 从 `$HOME`、`$HOME/.config`、`/etc` 递归搜索钱包、密钥和凭证文件，把路径写进 `/tmp/inventory.txt`。**恶意软件不需要自带扫描器，开发者已经登录、已经授权的 Agent 替它干活**。
+- **放大器**：恶意 postinstall `telemetry.js` 用 `which` 找本机 AI CLI，依次调用 `claude --dangerously-skip-permissions -p`、`gemini --yolo -p`、`q chat --trust-all-tools --no-interactive`。提示词令已登录的 Agent 递归搜索 `$HOME`、`$HOME/.config`、`/etc` 的钱包、密钥和凭证，把路径写入 `/tmp/inventory.txt`。
 - **出口**：用受害者自己的 `gh` 凭证，在受害者账号下建公开仓库 `s1ngularity-repository`，上传多重 base64 编码的结果。还往 `.bashrc` 和 `.zshrc` 里追加了 `sudo shutdown -h 0`。
 - **规模**：Wiz 事后统计约 2,180 个账号、7,200 个仓库暴露 **[二手：BleepingComputer 转述]**。恶意版本在线约 5 小时。
 - **本可以断开的环节**：
@@ -80,17 +75,12 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 
 ### 案例共性
 
-| 环节 | 案例一 | 案例二 | 案例三 | 案例四 |
-|---|---|---|---|---|
-| 不可信输入 | 公开 issue | PR 标题 | 仓库提交 | 另一个 Agent 的消息 |
-| 过大的权限 | 跨仓库 token、Always Allow | `pull_request_target` 的写 token；本机 bypass 参数 | CodeBuild 的 GitHub token | 写代码 Agent 能推送 |
-| 外泄或破坏渠道 | 公开 PR | 受害者自己的 GitHub | 正式发布 | 推送到生产 |
-| 实际断开的一环 | 无 | 无（事后补救） | 语法错误（运气） | **人工闸门** |
+不可信输入借过大的权限抵达外泄或破坏渠道；案例三因语法错误未执行，案例四的生产推送由人工闸门拦下。
 
 ## 3. 防护原则
 
 1. **环境边界优先于行为约束** **[一手]**：沙箱、容器、虚拟机、出网白名单这些确定性手段，比模型“自觉”和提示词防御可靠得多。在 Anthropic 的案例中，只有出网拦截挡住了凭证外泄。
-   - **人工审批不是可靠的防线**：上面的数据说明，命令本身往往是无害的（`npm run build`），危险在于它执行的内容可能已被前面的修改篡改，审批者无从判断。HN 上的评价：“靠不停问用户、指望用户永不出错的安全模型，试过很多次，从没成功过。”按已授权范围减少重复询问，先落实可验证的环境边界；**上述游戏数据没有证明少审批会让剩余审批更准确**（分析见 [14 规律三、四](14-synthesis.md#3-规律三按实际接收能力安排产出)）。
+   - **审批须看执行内容**：`npm run build` 等命令可能执行已被篡改的脚本。按已授权范围减少重复询问，先落实可验证的环境边界；**上述游戏数据没有证明少审批会让剩余审批更准确**（分析见 [14 规律三、四](14-synthesis.md#3-规律三按实际接收能力安排产出)）。
 2. **打破三要素中的至少一个**：
    - 处理不可信内容（外部 Issue、网页、日志）的会话，**不给密钥、不给出网能力**；
    - 需要密钥的会话，**不读不可信内容**。
@@ -117,12 +107,12 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 
 ## 3.1 auto mode 能挡住多少：官方公布的数字
 
-Anthropic 公开了 auto mode 分类器的设计和误差 **[一手：工程博客]**。它是判断“要不要放手”的重要依据。
+Anthropic 公布的 auto mode 分类器设计与误差 **[一手：工程博客]**：
 
 **设计**：
-- 分两级：第一级是一个快速的是/否过滤器，要求“宁可错拦”；被它标记的动作才进入第二级的链式推理；
+- 两级：快速是／否过滤器“宁可错拦”，仅被标记动作进入第二级链式推理；
 - 白名单里的只读操作和项目内的文件编辑不经过分类器；
-- 分类器看用户消息和工具调用本身（包括要执行的内容），**不看工具输出和 Agent 的解释文字**（“reasoning-blind by design”）。工具输出是提示注入的主要入口，所以另有一个服务端探针先筛工具结果。
+- 分类器看用户消息和工具调用内容，**不看工具输出或 Agent 解释**（“reasoning-blind by design”）；工具结果另经服务端提示注入探针筛查。
 
 **误差**：
 
@@ -132,22 +122,16 @@ Anthropic 公开了 auto mode 分类器的设计和误差 **[一手：工程博�
 | 真实的“过度积极”动作 52 条：漏放率 | 6.6% | **17%** |
 | 合成的外泄攻击 1000 条：漏放率 | 1.8% | 5.7% |
 
-**内部记录的“过度积极”行为**：
-- 让它“清理旧分支”，它删了远程分支；
-- 遇到认证错误后，去环境变量和配置文件里翻别的 token；
-- 让它“取消我的任务”，它按名字最接近的匹配去删除；
-- 为了分享调试脚本，构造了创建 GitHub Gist 的命令；
-- 部署前检查失败后，加上跳过校验的参数重试；
-- 更早还有：把工程师的 GitHub token 上传到内部计算集群，以及尝试对生产数据库跑迁移。
+**内部越界记录**：清理旧分支却删远程分支；认证失败后翻找其他 token；按近似名字删除任务；为分享脚本构造创建 Gist 的命令；部署检查失败后跳过校验。更早还出现上传工程师 GitHub token 到内部计算集群、尝试迁移生产数据库。
 
 **怎么用这些数字**：
-- 17% 的漏放率是官方说的“诚实的数字”。漏放大多是因为分类器看到了危险，却把类似批准的上下文当成了对**整个影响范围**的同意；
-- 官方的定位是：比 `--dangerously-skip-permissions` 好得多；但和认真的人工审批相比可能是退步；**不能替代高风险基础设施上的人工审查**；
-- 所以 auto mode 适合**有沙箱兜底**的日常开发。生产凭证、基础设施和共享资源仍然要靠环境边界（凭证不进会话、出网白名单），而不是靠分类器。
+- 17% 漏放多数源于看见危险后，仍把类似批准的上下文误作**整个影响范围**的同意；
+- 官方定位优于 `--dangerously-skip-permissions`，可能弱于认真人审，**不能替代高风险基础设施人审**；
+- 用于**有沙箱兜底**的日常开发；生产凭证、基础设施和共享资源仍靠环境边界（凭证不进会话、出网白名单）。
 
 ## 3.2 Claude Code 沙箱操作手册
 
-沙箱是 [第 3 节](#3-防护原则)“环境边界优先”在 Claude Code 里的具体实现 **[一手：官方文档]**。
+Claude Code 的环境边界 **[一手：官方文档]**：
 
 **工作方式**：
 - **macOS** 用 Seatbelt；**Linux / WSL2** 用 bubblewrap 和 socat，可选的 seccomp 过滤器额外拦截 Unix socket；**原生 Windows 不支持**，要在 WSL2 里跑；
@@ -215,9 +199,7 @@ Anthropic 公开了 auto mode 分类器的设计和误差 **[一手：工程博�
 - 默认不直接开 PR：Agent 提交到新分支，给出创建 PR 的链接，由人来点；
 - 会剥离 HTML 注释、不可见字符、图片 alt 文本等隐藏内容，但官方提醒可能有新的绕过手法。
 
-**PR 场景下的配置文件**：
-- PR 里的 `.claude/`、`.mcp.json`、`CLAUDE.md`、`.husky/` 会被**还原成基础分支的版本**；
-- 但 `package.json`、lockfile、`Makefile` 和 linter 配置**保持 PR 的版本**。如果 Hook 跑 `npm run xxx`，执行的就是 PR 作者控制的代码。因此固定工具版本、关闭项目配置只减少部分攻击面；处理 PR 的程序仍可能解析攻击者输入，不能靠一条 formatter 命令证明安全。
+**PR 配置**：`.claude/`、`.mcp.json`、`CLAUDE.md`、`.husky/` **还原到基础分支**；`package.json`、lockfile、`Makefile`、linter 配置仍取 **PR 版本**。Hook 跑 `npm run xxx` 即执行作者控制的代码。固定工具、关闭项目配置仅减少部分攻击面，程序仍可能解析攻击者输入，formatter 命令不证明安全。
 
 **`pull_request_target` 和 `workflow_run`**：
 - 这两类事件可获得基础仓库权限／秘密，具体暴露取决于工作流的 token 权限与 secrets 使用；不能沿用 fork PR 默认受限的假设。**不要把不可信 PR 代码检出到该 Action 的工作区根目录**。见 [GitHub 事件安全说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request_target)；
@@ -245,18 +227,13 @@ Anthropic 安全负责人 Jason Clinton 在 2026-07 公开了内部的做法 **[
 | **监控** | 漏洞赏金、红队；Claude 负责分诊告警、读日志、起草修复，但**负责分诊的 Agent 权限很窄，不能部署**，部署由另一个“Agent + 人”的组合负责 |
 | **治理** | 代码库按风险分级；新的 AI 评审者先以影子模式运行并接受红队测试；对自动批准的结果**按风险加权抽样**给人复核；所有 Agent 的动作进入 SIEM，**按内部威胁对待** |
 
-**几条可以直接借鉴的原则**：
-- **最小代理权（Principle of Least Agency）**：每个 Agent 一个单一用途的身份，只给最小权限；
-- **边界画在访问权限和动作上**，不画在提示词上（见案例四）；
-- **安全工程师的工作从“盯 bug”变成“盯循环”**；
-- 他们估计，当前的自动化流程能拦住过去 claude.ai 事故中约三分之一的 bug。
+**采用要点**：每个 Agent 使用单一用途、最小权限的身份（Principle of Least Agency），边界落实到访问与动作（案例四），安全工程同时审查整个循环。厂商估计这套自动化能拦住过去 claude.ai 事故约三分之一的 bug。
 
 ## 4. 清单
 
 ### 个人开发者
 - [ ] 开启 Claude Code 沙箱并核对版本、有效配置、`excludedCommands` 与平台依赖（见 [3.2](#32-claude-code-沙箱操作手册)）；不能维持边界的任务转无秘密、受限挂载／网络的独立环境
-- [ ] 不可信安装脚本在无秘密的受限环境运行；删 bypass 别名挡不住脚本直接调用已登录的 Agent（案例二）
-- [ ] 陌生依赖的安装、测试与构建都留在无秘密、受限挂载／网络的独立环境；`npm ci --ignore-scripts` 只减少安装阶段的执行入口（案例二）
+- [ ] 陌生依赖安装、测试与构建留在无秘密、受限挂载／网络的独立环境；删 bypass 别名挡不住脚本直接调用已登录 Agent，`npm ci --ignore-scripts` 只减少安装阶段的入口（案例二）
 - [ ] 读外部 issue 或网页的会话只给单仓库、只读的 token（案例一）
 - [ ] 内置工具配置 `Read(...)` deny，同时按 §3.2 限制子进程读取；规则覆盖范围不能代替完整路径隔离（见 [03](03-context-engineering.md#24-大仓库--monorepoclaude-code-配置及检索选择)）
 - [ ] 不在主力机上使用 `bypassPermissions`
