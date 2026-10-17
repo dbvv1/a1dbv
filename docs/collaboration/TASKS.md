@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M3：上游接管后，本地退出补偿门槛误判时如何保留／撤除 | dot-A | `dot/tmp/20261018-workaround-exit-boundary` | `docs/18-team-adoption.md`、`docs/research/2026-10-12-development-conditions.md` | 2026-10-18 03:33（UTC+8） | 基线 `153ef0e6`；核对 aiohttp 固定修复、发行及退出门槛，待独审；拟离线计算固定布尔条件，不运行上游／模型；接收／整合者 dot-A |
 
 ## 最近交接
 
