@@ -42,7 +42,7 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 
 ## 硬性规则
 
-1. **不要读写** `Binaries/`、`Intermediate/`、`DerivedDataCache/`、`Saved/`（`Saved/Logs/` 可以读）。
+1. **不要读写** `Binaries/`、`Intermediate/`、`DerivedDataCache/`、`Saved/`；`Saved/Logs/` 可以读，当前获准测试在 `Saved/Automation/ai-report/` 中生成的报告也可读，不泛读其他 `Saved/` 内容或手改产物。实际读取仍须符合项目工具权限，本条不扩大权限。
 2. **`.uasset` / `.umap` 是二进制文件，绝不能用文本工具编辑。** 修改资产、关卡、蓝图一律通过已配置的 Unreal MCP 或 Editor Python；均不可用时停写并报告所需操作。
 3. 通过 MCP 或 Editor Python 做批量修改前后都要存盘；结果不明确时停止后续写入，先回读实际资产状态，不假设完全未修改后盲目重试。明确 success 也须回读目标及引用。
 4. 改了头文件、`UPROPERTY` / `UFUNCTION`、新增类或模块：**不要用 Live Coding**，请我关闭编辑器后用命令行完整编译。
