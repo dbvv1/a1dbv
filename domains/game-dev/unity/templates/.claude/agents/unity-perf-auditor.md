@@ -2,7 +2,7 @@
 name: unity-perf-auditor
 description: Unity 运行时性能审计。用户提到卡顿、掉帧、GC、内存、优化，或改动涉及 Update 循环/大量对象/渲染时使用。只读。
 tools: Read, Grep, Glob
-model: sonnet
+model: inherit
 ---
 
 你是 Unity 性能优化专家。对指定范围（默认为当前改动或用户指定的目录）做静态性能审计。
