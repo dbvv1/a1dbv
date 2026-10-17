@@ -226,6 +226,29 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 
 [研究] 未来获准切片选一个高频动作：2D 跳跃／短连击，3D 转身／近战。固定规则后切纯呈现，缓冲／顿帧窗口另作玩法变量；记录首反馈、长帧和误操作，由人判断可控／可读。二改再核是否只需动作参数和少量绑定。
 
+### 联网反馈补研：先分动作预反馈与确认结果
+
+核实：2026-10-17（UTC+8）。只在玩法确需联网时讨论；下列是公开文档／源码静读，不是本仓网络、引擎或玩家实测。物理插值和帧生成不提供输入预测／权威确认。[研究]
+
+**[研究] ✅ 先按反馈含义选择，不把所有声音都等服务器，也不把本地预测写成已命中。**
+
+| 选择 | 何时值得；代价与撤回 |
+|---|---|
+| 等确认结果 | 命中、击杀、奖励等误报代价高的事实提示先由确认结果驱动；接受等待成本，但按下／抬手等动作预反馈可立即发生 |
+| 只预呈现可纠正部分 | 等待已损伤操作感且玩法能承受预报误差时，先试姿态、局部视觉或明确的预测态，确认只收敛、不再演一次；已播放的短音不能“取消听见”，预反馈勿冒充确认提示。误报或回弹比等待更坏就缩范围 |
+| 借现有预测／重演机制 | 连续运动等确需本地模拟时，优先所用框架已支持的路径；仍要处理预测、重演、确认、拒绝与效果交接。维护成本抵消响应收益就降回前两种，勿只为一声提示自建全套 rollback |
+
+**不同作者的机制与反例。** [一手] Factorio [FFF412 后半](https://www.factorio.com/blog/post/fff-412)（2024-05-24，Lou）把声音／粒子记为跨 latency state 与 game state 的一次性效果；严格比对仍会因微小预测差异重复。它报告普通驾驶可隐藏延迟，却列敌人／其他移动车辆等难以准确或低成本预测，并提战斗停用 latency hiding；不支持全战斗默认预测。[研究] 同源同 tick 可能有多个真实粒子，不能用全局 cooldown 吞掉合法连续事件。
+
+[一手：固定源码] Valve Source SDK 的 [PlayStepSound](https://github.com/ValveSoftware/source-sdk-2013/blob/0759e2e8e179d5352d81d0d4aaded72c1704b7a9/src/game/shared/baseplayer_shared.cpp#L673-L677) 在客户端预测重演时跳过足音；[预测运行](https://github.com/ValveSoftware/source-sdk-2013/blob/0759e2e8e179d5352d81d0d4aaded72c1704b7a9/src/game/client/prediction.cpp#L1204-L1280)按是否首次预测抑制事件、运行后复位。[研究] 射击游戏代码与工厂驾驶的不同实现共同支持“重算状态不等于再发一次效果”；这不保证拒绝后已播放的声音可回收，也不证明该门控涵盖任意自写特效。其 [SOURCE 1 SDK LICENSE](https://github.com/ValveSoftware/source-sdk-2013/blob/0759e2e8e179d5352d81d0d4aaded72c1704b7a9/LICENSE)不是通用宽松商用许可；仅借机制，不复制 SDK 代码／资源。
+
+**引擎契约分别使用。**
+
+- [一手] [Unity NGO 2.7.0 Client anticipation](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/advanced-topics/client-anticipation.html)分 anticipated 与 authoritative 值，提供修正／Smooth；明确没有完整 rollback-and-replay。Ignore 旧数据仍更新 authoritative 值并触发对应回调；OnReanticipate 是扩展入口，不是已替项目做完回放。[研究] 换色／局部呈现可先试，不能由回调次数直接推断一次动作确认或自动声音去重；也不概括全部 Unity 联网方案。
+- [一手] [UE 5.8 FPredictionKey](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/FPredictionKey)说明 GAS 用 key 关联预测副作用；复制效果与本地 key 匹配时不重做 OnApplied／GameplayCue，待复制追上再撤本地预测效果。独立 GameplayCue 执行也考虑 key；原 key 只限一次逻辑作用域，定时／外部事件续段可能需新预测窗口。[研究] 已用 GAS 才沿该契约接入，不为去重一声引入 GAS，也不等同 Unity anticipation 或任意 RPC 的保证；原页仍列依赖与属性预测限制。
+
+**[研究] 二改预注册。** 增连续射击或多目标反馈后，分别验同一次动作的预测→确认不重播、拒绝不留下成功提示，以及两次真实动作不互相吞掉；再覆盖延迟变化、重演、切角色／退出和观察者客户端。记录动作关联、效果种类、确认／拒绝和实际播放次数；人判误导与响应，修不好则回退关键结果等确认。
+
 ## 3D 运动补研：控制精度、接触连续性与物理重量的取舍
 
 核实：2026-10-14 UTC。以下按官方契约和固定源码深化 04 的运动选择；输入缓冲与显示插值见前节。[一手／研究]
