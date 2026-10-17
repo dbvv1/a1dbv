@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M3：退役实现选择器而保留入口禁用能力 | dot-A（接收：dot-A） | `dot/tmp/20261018-feature-gate-retirement`（基线 `442b2577`） | 15-task-playbooks、既有development-conditions、TASKS本行 | 2026-10-18 07:28（UTC+8） | 核Jetpack固定源码与公开回执；未运行上游／模型 |
 
 ## 最近交接
 
