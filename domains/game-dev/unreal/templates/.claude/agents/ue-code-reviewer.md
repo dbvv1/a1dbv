@@ -17,7 +17,7 @@ model: inherit
 ## 检查清单
 
 **正确性**
-- 指向 `UObject` 的成员没有 `UPROPERTY()`：会被 GC 回收，留下悬空指针。
+- 需要强持有的 `UObject` 成员未被 GC 正确追踪，或非持有引用缺少失效检查：沿实际持有链判断悬空风险。`TWeakObjectPtr` 观察引用不因缺少 `UPROPERTY()` 就判错；软引用不保证加载后驻留，需核持有与释放责任。
 - 用 `new` 创建 `UObject`；构造函数里访问 World 或调用游戏逻辑；在 CDO 上产生副作用。
 - 判空用 `!= nullptr` 而不是 `IsValid()`，对可能 Pending Kill 的对象不安全。
 - 委托绑定后没有解绑，或者绑定了可能先销毁的对象（应该用 `AddUObject` / `AddWeakLambda`）。

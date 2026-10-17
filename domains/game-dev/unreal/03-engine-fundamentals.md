@@ -69,15 +69,15 @@ public:
 
 | 写法 | 含义 |
 |---|---|
-| `UPROPERTY() TObjectPtr<UFoo> Foo;` | **强引用**，GC 知道它，对象不会被回收（UE5 推荐的成员指针写法） |
+| `UPROPERTY() TObjectPtr<UFoo> Foo;` | **强引用**；持有者可达且该属性被 GC 遍历时保活目标，不能阻止显式销毁 |
 | 裸指针 `UFoo* Foo;`（没有 `UPROPERTY`） | GC 不知道，对象可能被回收，留下悬空指针 |
 | `TWeakObjectPtr<UFoo>` | 弱引用，不阻止回收，用之前检查 |
-| `TSoftObjectPtr` / `TSoftClassPtr` | 软引用（资产路径），需要时再加载 |
+| `TSoftObjectPtr` / `TSoftClassPtr` | 软引用（资产路径），需要时再加载；本身不保证加载后驻留，另核持有／释放责任 |
 | `NewObject<T>()`、`CreateDefaultSubobject<T>()` | 创建 UObject 的正确方式；**不要 `new`** |
 | `IsValid(Obj)` | 判断对象非空且未被标记销毁 |
-| `F` 开头的结构体（`USTRUCT`） | 值类型，不受 GC 管理；里面的 UObject 指针仍需 `UPROPERTY` |
+| `F` 开头的结构体（`USTRUCT`） | 值类型；内部强持有的 UObject 引用需可被 GC 遍历，通常使用 `UPROPERTY`，且结构体自身须处在可追踪的持有链中；弱引用不要求改成强引用 |
 
-**AI 要点**：**“UObject 成员指针缺少 `UPROPERTY`”是 Agent 写 UE 代码最危险的错误**：编译能过、平时能跑，直到某次 GC 后随机崩溃。必须写进 AGENTS.md，并作为评审子 Agent 的首要检查项（模板 [`ue-code-reviewer`](templates/.claude/agents/ue-code-reviewer.md) 已包含）。
+**AI 要点**：先区分强持有、弱观察和延迟加载，再检查实际生命周期。需要持有却无法被 GC 追踪的指针，可能编译通过却在回收后悬空；合法的弱观察引用不应为了消除这一警报被改成强持有。把持有链与失效检查写进 AGENTS.md，评审时按具体风险核查（模板 [`ue-code-reviewer`](templates/.claude/agents/ue-code-reviewer.md) 已包含）。
 
 ## 5. 模块、插件与构建
 

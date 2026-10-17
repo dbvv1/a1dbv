@@ -89,7 +89,8 @@ class VerifyCatalogCompareTests(unittest.TestCase):
   def test_tampered_report_in_all_modes(self):
     original = copy.deepcopy(self.row)
     mutations = [('beforeNumber', '999'), ('afterNumber', '999'), ('delta', '999'),
-                 ('status', 'unchanged'), ('before', [{'record': 2}, {'record': 2}]),
+                 ('status', 'unchanged'), ('status', 'added'), ('status', 'removed'),
+                 ('status', 'unknown'), ('before', [{'record': 2}, {'record': 2}]),
                  ('after', [{'record': 2}, {'record': 2}])]
     for field, value in mutations:
       self.row.clear()
@@ -97,17 +98,87 @@ class VerifyCatalogCompareTests(unittest.TestCase):
       self.row[field] = value
       self.save()
       for mode in MODES:
-        with self.subTest(field=field, mode=mode):
+        with self.subTest(field=field, value=value, mode=mode):
           self.check_rejected(mode)
 
   def test_missing_or_duplicate_expected_match_in_all_modes(self):
-    # Duplicate keys use a skipped status to reach the expected-match check.
-    for rows in ([], [dict(self.row, status='added'), dict(self.row, status='added')]):
+    for rows in ([], [self.row, copy.deepcopy(self.row)],
+                 [dict(self.row, status='added'), dict(self.row, status='added')]):
       self.rows = rows
       self.save()
       for mode in MODES:
         with self.subTest(row_count=len(rows), mode=mode):
           self.check_rejected(mode)
+
+  def test_invalid_source_references_in_all_modes(self):
+    for side in ('before', 'after'):
+      original = self.row[side]
+      for value in ([], None, {'record': 2}, [None], [{}],
+                    *([{'record': record}] for record in (0, -1, 1, 3, True, 2.0, '2'))):
+        self.row[side] = value
+        self.save()
+        for mode in MODES:
+          with self.subTest(side=side, value=value, mode=mode):
+            self.check_rejected(mode)
+      self.row[side] = original
+
+  def test_additional_matched_rows_are_checked_against_csv_in_all_modes(self):
+    for side, value in (('before', self.before), ('after', self.after)):
+      with (self.fixtures / f'{side}.csv').open('a', encoding='utf-8') as handle:
+        handle.write('ADDITIONAL;' + value.replace('.', ',') + '\n')
+    self.rows.append(dict(self.row, key='ADDITIONAL',
+                          before=[{'record': 3}], after=[{'record': 3}]))
+    self.save()
+    for mode in MODES:
+      with self.subTest(problem='partial authored expectations', mode=mode):
+        result = self.run_verifier(mode)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        output = json.loads(result.stdout)
+        self.assertEqual(output['matched_rows_checked_against_source_csv'], 2)
+        self.assertEqual(output['authored_matched_numeric_fields_checked'], 3)
+    self.rows[1]['delta'] = '999'
+    self.save()
+    for mode in MODES:
+      with self.subTest(problem='additional matched row tampered', mode=mode):
+        self.check_rejected(mode)
+
+  def test_valid_unchanged_and_unmatched_rows_in_all_modes(self):
+    # Unmatched rows do not promise normalized Number fields.
+    self.case['expected']['rows'][0].update(status='unchanged',
+                                          after_numeric=self.before, delta='0')
+    self.row.update(status='unchanged', afterNumber=self.before, delta='0')
+    (self.fixtures / 'after.csv').write_bytes((self.fixtures / 'before.csv').read_bytes())
+    for status in ('added', 'removed'):
+      self.case['expected']['rows'].append({'sku': status.upper(), 'status': status})
+      self.rows.append({'key': status.upper(), 'status': status})
+    self.save()
+    for mode in MODES:
+      with self.subTest(mode=mode):
+        result = self.run_verifier(mode)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        output = json.loads(result.stdout)
+        self.assertEqual(output['matched_rows_checked_against_source_csv'], 1)
+        self.assertEqual(output['authored_matched_numeric_fields_checked'], 3)
+
+  def test_self_consistent_numbers_cannot_override_expected_status_in_all_modes(self):
+    self.row.update(status='unchanged', afterNumber=self.before, delta='0')
+    (self.fixtures / 'after.csv').write_bytes((self.fixtures / 'before.csv').read_bytes())
+    self.case['expected']['rows'][0].update(after_numeric=self.before, delta='0')
+    self.save()
+    for mode in MODES:
+      with self.subTest(mode=mode):
+        self.check_rejected(mode)
+
+  def test_nonfinite_or_invalid_numbers_in_all_modes(self):
+    for value in ('Infinity', '-Infinity', 'NaN', 'sNaN', 'not a number'):
+      for field in ('beforeNumber', 'afterNumber', 'delta'):
+        original = self.row[field]
+        self.row[field] = value
+        self.save()
+        for mode in MODES:
+          with self.subTest(value=value, field=field, mode=mode):
+            self.check_rejected(mode)
+        self.row[field] = original
 
   def test_authored_numeric_mismatch_in_all_modes(self):
     expected = self.case['expected']['rows'][0]

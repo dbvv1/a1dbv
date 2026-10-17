@@ -1,7 +1,9 @@
 # AGENTS.md
 
 <!--
-跨工具的项目指令（Codex、Cursor、Copilot、Gemini CLI、OpenCode 都读；Claude Code 在没有 CLAUDE.md 时直接读它，有的话通过导入读取）。
+共享项目指令；加载入口、发现范围和刷新规则按目标客户端确认，见 a1dbv/docs/03-context-engineering.md §2.1。
+Codex 按启动目录建立 AGENTS 指令链；不要假定 Cursor、Copilot、Gemini CLI、OpenCode 的默认发现规则相同。
+Claude Code 的 AGENTS 原生入口受版本和项目路径中的 CLAUDE.md、.claude/CLAUDE.md、CLAUDE.local.md 影响；需要兼容时在同目录 CLAUDE.md 显式写 @AGENTS.md 导入，并确认实际加载。
 写作原则（依据官方文档和 2026 年的研究，见 a1dbv/docs/03-context-engineering.md）：
 - 优先写会改变行动的信息：项目命令、非标准约定、重要边界和容易定位错的入口。
 - 不复制整棵目录树；需要导航时，写任务到入口的短映射。现有研究不能证明所有仓库概览无效，约 20% 的费用差也不是目录树的独立效应。

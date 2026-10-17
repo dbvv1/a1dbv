@@ -4,6 +4,8 @@
 
 > 验证边界：历史“经过测试”指模拟输入，不代表真实引擎、所有操作系统或所有绕过路径均已验证。`protect-paths.sh` 只覆盖所注册的编辑工具，不能限制 Bash 写入，也不构成安全沙箱。评审角色中的“只读”若仅写在提示词中，也不是操作系统级只读权限；允许 Bash 的验证过程可能产生构建或临时文件。
 
+`settings.json` 不预授权宽泛的 Git 命令模式：例如 `git diff --output=路径` 可以写文件。Git 命令沿用宿主的有效权限；路径隔离仍需运行环境落实，模板中的 `Read(...)` 拒绝规则和编辑 Hook 不覆盖任意 Bash 子进程。
+
 路径 Hook 已补充双解析器回归及三份副本一致性检查。无效输入返回状态 1 只是错误报告，默认失败策略不保证阻止操作；盘符与 UNC 仅做合成字符串测试，符号链接和真实客户端仍需目标环境验证。复测见 [E6](../docs/19-experiments.md#10-e6路径-hook-的确定性回归)。
 
 | 目录 | 用途 | 拷贝到 |
@@ -24,7 +26,7 @@ generic/
 ├── REVIEW.md                      # 给 AI 评审者的规则：严重度、证据门槛、Nit 上限、复审收敛
 ├── .mcp.json.example              # 项目级 MCP 示例（Context7、Playwright）
 └── .claude/
-    ├── settings.json              # 权限（只读 git 命令放行；push 需确认；不读密钥和生成物）+ Hook 注册
+    ├── settings.json              # 权限（push 需确认；受覆盖入口拒读密钥和生成物）+ 编辑 Hook 注册
     ├── protected-paths.txt        # 受保护路径规则：deny / ask + glob + 原因
     ├── hooks/protect-paths.sh     # PreToolUse Hook：按规则拦截编辑（依赖 jq 或 python3）
     ├── agents/
@@ -62,12 +64,11 @@ generic/
 
 ## 本仓库验证
 
-Python 3.11+（`tomllib`）和 Bash；不需要调用模型或安装游戏引擎：
+完整离线入口需要 Python 3.11+、POSIX、`/bin/bash`、jq 和常用 shell 工具；入口先预检依赖，不自动安装，也不调用模型或游戏引擎：
 
 ```bash
-python3 scripts/check_repo.py
-python3 -m unittest discover -s tests -v
+python3 scripts/check_offline.py
 git diff --check
 ```
 
-这些检查覆盖本地链接目标、部分文件语法、记录校验及模拟引擎/安装流程；不覆盖外链可达性、全部 Markdown 锚点、真实客户端技能加载或真实引擎运行。
+这些检查覆盖文档/config、基础测试、Python/jq Hook、三个实验套件及 shell 语法，补丁空白由 `git diff --check` 检查；不覆盖外链可达性、全部 Markdown 锚点、真实客户端技能加载或真实引擎运行。任一套件零测试、skip、失败或超时均不能完整通过。

@@ -51,7 +51,7 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 
 ## 代码约定（只写 UHT 和编译器不会替你检查的）
 
-- 指向 `UObject` 的成员一律加 `UPROPERTY()`（配合 `TObjectPtr`），否则会被 GC 回收。
+- 按引用责任选择 `UObject` 成员类型：需要强持有时使用 GC 可追踪的 `UPROPERTY() TObjectPtr`；只观察对象可用 `TWeakObjectPtr`，使用前检查有效性；延迟加载资产可用软引用，另行明确加载后的持有与释放责任。不要把弱观察引用统一改成强持有。
 - `UObject` 用 `NewObject` / `CreateDefaultSubobject` 创建；构造函数里不访问 World、不调用会触发游戏逻辑的函数。
 - 判空用 `IsValid()`。
 - 新 Actor 和 Component 默认关闭 Tick（`PrimaryActorTick.bCanEverTick = false`），确实需要时再打开。

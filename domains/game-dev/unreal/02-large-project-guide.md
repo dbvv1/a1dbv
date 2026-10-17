@@ -104,7 +104,7 @@ UnrealEditor-Cmd.exe MyGame.uproject \
 
 - UE 的命名前缀（`A`、`U`、`F`、`E`、`I`、`T`）和反射宏由 UHT 强制检查，**不需要写进 AGENTS.md**（避免“Lint 泄漏”）；
 - **需要写进去、或交给评审子 Agent 检查的**是 UE 特有的正确性问题：
-  - 指向 `UObject` 的成员必须有 `UPROPERTY`（或 `TObjectPtr` 加 `UPROPERTY`），否则会被 GC 回收，留下悬空指针；
+  - `UObject` 成员按持有责任选型：强持有使用 GC 可追踪的 `UPROPERTY() TObjectPtr`，观察引用可用 `TWeakObjectPtr` 并检查有效性，软引用用于延迟加载且须另核加载后的持有／释放；不要把全部引用改成强持有；
   - `UObject` 用 `NewObject` / `CreateDefaultSubobject` 创建，不要 `new`；构造函数里不要访问 World；
   - 判空用 `IsValid()`；
   - 网络同步：`Replicated` 属性要在 `GetLifetimeReplicatedProps` 里注册，RPC 要做服务端校验；
@@ -124,13 +124,15 @@ UnrealEditor-Cmd.exe MyGame.uproject \
 
 ## 10. 推荐的单次任务流程
 
+以下是需要探索与计划的较复杂任务示例；小改动按已有上下文直接推进，不要求重新开会话或重复审批。
+
 ```
-1. /clear，开新会话
+1. 先复用相关上下文；切换无关任务时再考虑 /clear 或开新会话
 2. “阅读 Source/MyGame/Combat，说明数据流和涉及的蓝图类，不要改代码”   ← 探索
 3. Plan 模式：说明需求、验收标准、要改哪些头文件                       ← 计划
-4. 审阅计划；涉及头文件或反射宏 → 计划中要包含“关编辑器 + 完整编译”     ← 人工把关
+4. 核对已有授权；涉及头文件或反射宏 → 计划包含“关编辑器 + 完整编译”；缺少决定或授权时请人确认
 5. 实现：只改 .cpp → MCP Live Coding；改了头文件 → /ue-build            ← 实现
 6. /ue-run-tests MyGame.Combat                                           ← 验证
 7. PIE 或打包版试玩（测试工具集 + 人工试玩手感）                         ← 验收
-8. ue-code-reviewer 子 Agent 评审 → 提交                                  ← 评审
+8. 用户要求或具体生命周期／资产／接口风险需要时，用 ue-code-reviewer 独立评审；完成适用验证后提交
 ```

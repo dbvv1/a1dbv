@@ -34,7 +34,7 @@
 
 ## 2. 标准节奏：探索 → 计划 → 实现 → 提交 ✅
 
-以 Claude Code 的只读代码调查为例：
+以 Claude Code 中先调查、审方案再实施的任务为例；Plan 是规划工作流，需真正只读时另设工具与执行环境限制，见 [06 权限模式](06-hooks-and-guardrails.md#3-权限模式)：
 
 1. **探索**（Claude Code Plan 模式）：“阅读 src/auth，理解 session 和登录是怎么处理的。”
 2. **计划**：“我要加 Google OAuth，需要改哪些文件？写个计划。”可以按 `Ctrl+G` 在编辑器里直接改计划。

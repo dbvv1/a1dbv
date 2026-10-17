@@ -124,12 +124,12 @@ Anthropic 的研究系统与 Cognition 的编码实践面对不同任务；Cogni
 
 | 字段 | 用途 | 建议 |
 |---|---|---|
-| `tools` / `disallowedTools` | 工具白名单 / 黑名单 | 只读调查类的去掉 `Write`、`Edit`；不需要再委派的去掉 `Agent` |
-| `model` | `haiku`、`sonnet`、`opus` 或 `inherit` | **读得多、判断少**的交给 `haiku`；评审和验证用和主 Agent 同级或更强的模型 |
+| `tools` / `disallowedTools` | 工具白名单 / 黑名单 | 按任务只给必要工具；只读调查须同时限制编辑、Bash／MCP 等写入路径；不需要再委派的去掉 `Agent` |
+| `model` | `haiku`、`sonnet`、`opus` 或 `inherit` | 可从 `inherit` 起步；目标明确、结果易检查且有成本或等待负担时试轻量模型，复杂评审保留足够判断能力，见 [02](02-models-and-cost.md#1-原则按任务分档而不是追榜单) |
 | `maxTurns` | 最多轮数 | 防止子 Agent “找不存在的东西”一直找下去（Anthropic 研究系统的失败模式之一） |
 | `isolation: worktree` | 在临时 worktree 里运行 | 会改文件的子 Agent 用它，避免和主会话互相覆盖 |
-| `effort` | 推理强度 | 机械性任务用 `low` |
-| `permissionMode` | 权限模式 | 只读子 Agent 可以用 `plan` |
+| `effort` | 推理强度 | 从适用模型／客户端的推荐值起步；等待或预算受限时试降档，质量变差或返工抵消节省就撤回，见 [02](02-models-and-cost.md#1-原则按任务分档而不是追榜单) |
+| `permissionMode` | 权限模式 | 规划可用 `plan`；真正只读另靠工具权限与执行环境限制，见 [06](06-hooks-and-guardrails.md#3-权限模式) |
 | `skills` / `mcpServers` | 预加载 Skill、只给这个子 Agent 的 MCP | 把重型 MCP 限定在需要它的子 Agent 上，主会话就不必加载它的工具定义 |
 
 **会话控制（2026-10-15 UTC+8 文档复核）**：
