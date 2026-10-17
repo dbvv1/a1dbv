@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| GC：群体攻击节奏，攻击名额／空间槽位与个体冷却怎样取舍 | B | `dot-b/tmp/20261017-combat-coordination` | `domains/game-dev/05-gameplay-architecture.md`、`docs/research/2026-10-14-game-wp11-gameplay-architecture.md`；本表仅本行 | 2026-10-17（UTC+8） | 已认领，公开资料调查；基线 `21adcb47a7bccb1adf4749ce83e50f7e635705dc`。A 串行整合，B 不写 main；未运行引擎／模型 |
 
 ## 最近交接
 
