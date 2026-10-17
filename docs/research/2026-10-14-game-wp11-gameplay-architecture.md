@@ -1068,3 +1068,24 @@ OpenRA固定e180e3225f3930272dd451917467631618f8976f中，[桶伤害](https://gi
 **采用与撤回 [研究]**：同目标短暂借出、需连续返回时，比后台维护必要历史与回切重建；重生换目标使历史失效则重建，cut／blend另定。不让闲置镜头全做碰撞；无益或硬切够用即撤后台更新。联网另核重演污染；预注册回看时转弯再松开，记目标、历史、输出，只修变差通路。
 
 许可与范围：STK代码GPL-3.0-or-later，Veloren为GPLv3；固定代码和修订链静读，未做完整视频体验评估，效果／成本仍待验证。
+
+## 离线收益补研：等待、精度与结算边界
+
+主线：三／四；GC，2026-10-17（UTC+8）核实。
+改变建议：05 §2只为承诺离线收益的玩法比较分批逐步、粗步与聚合结算；普通暂停不据此补收益。
+新证据：两款不同作者的增量游戏固定源码，以及AD休眠路径、KG离线漏产修订；不能推广为所有游戏要求。[一手／研究]
+
+**步数减少会改变自动化。** Antimatter Dimensions [固定说明](https://github.com/IvarK/AntimatterDimensionsSourceCode/blob/5409e320cecef96a917cca1dfb68f1f183e499ca/src/core/secret-formula/h2p.js#L126-L176)解释：1000步补1小时，每步3.6秒，自动购买每步仅触发一次，影响随阶段变化。[实现](https://github.com/IvarK/AntimatterDimensionsSourceCode/blob/5409e320cecef96a917cca1dfb68f1f183e499ca/src/game.js#L895-L1055)按剩余时间／剩余步数分摊，异步分批，并允许减步加速。分批让出执行时间与减步牺牲精度是两种选择，不可混称无损提速。[一手／研究]
+
+**聚合有另一套规则成本。** Kittens Game [资源路径](https://github.com/nuclear-unicorn/kittensgame/blob/781e379f79f1e7512d168849cba21ed111502644/js/resources.js#L843-L870)以缓存速率乘时长，暂放容量限制供后续消费，再限回容量；[时间路径](https://github.com/nuclear-unicorn/kittensgame/blob/781e379f79f1e7512d168849cba21ed111502644/js/time.js#L191-L312)批量推进各子系统，QUEUE_REDSHIFT分支按队列ETA分段／购买，但向整游戏年取整。它是有意聚合，非精确解析或在线等价证明。[一手]
+
+**修订反证。** AD [changelog](https://github.com/IvarK/AntimatterDimensionsSourceCode/blob/5409e320cecef96a917cca1dfb68f1f183e499ca/src/core/secret-formula/changelog.js)记载2023-05-25将休眠的单大步改为离线模拟，07-18仍修真实时间资源漏发及未遵循离线设置。KG [1.4.8.1](https://github.com/nuclear-unicorn/kittensgame/blob/781e379f79f1e7512d168849cba21ed111502644/changelog.txt#L207-L224)修Temporal Paradox期间离线漏产。补算接通不代表所有规则接通；历史修复不代表当前仍有故障。[一手／研究]
+
+**✅ 条件选择 [研究]**：
+- 购买、解锁、消费顺序重要：复用逐步规则，分批保响应；仍须测恢复等待，不能无限追赶。
+- 容许收益误差：粗步设上限并说明精度代价；不同阶段核收益及自动化次数，误差破坏承诺就撤回。
+- 稳定区间或另定离线规则：聚合结算；跨容量、耗尽、购买／解锁边界需分段重算或明确不同规则。边界过密、难维护时退回逐步，不先造通用解析器。
+
+AD模拟时停普通循环，[普通存档门槛](https://github.com/IvarK/AntimatterDimensionsSourceCode/blob/5409e320cecef96a917cca1dfb68f1f183e499ca/src/core/storage/storage.js#L244-L273)拒绝进度模拟中的普通保存，备份有例外；这不证明崩溃幂等。[一手] 建议收益与已结算区间同存，恢复重入拒绝重复区间，负时差与上限另定政策。[研究]
+
+**未运行验收**：同存档加“自动购买后解锁新产物”，比正常逐步与两种补算的收益、触发次数、恢复等待和最长阻塞；再验后台恢复、重复回调、结算前后崩溃／重载。不以算法存在宣称玩家体验、净性能或重复收益已解决。本轮只读公开实现与修订，不复制代码；复用另核许可。[研究]
