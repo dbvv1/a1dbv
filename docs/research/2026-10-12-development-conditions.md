@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口，稳定截图不介入待验动画状态；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界；清 lint 先核异步调用契约，允许有依据的窄范围豁免。[经验／研究] 生成测试先选保护未来或查当前差异；撤补偿时另核本地退出条件是否误判修复范围。
-新证据：2026-10-18（UTC+8）补核 aiohttp 退出门槛纠正、CPython 回移与固定发行，并离线复核六组版本表达式；2026-10-17 UTC 补核 TestGen-LLM／ACH／JiTTest 原论文的生成目标、接收反馈与部署边界；Airflow 等既有材料的日期及范围见各节。材料支持条件选择，未证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
+改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口，稳定截图不介入待验动画状态；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界；清 lint 先核异步调用契约，允许有依据的窄范围豁免。[经验／研究] 生成测试先选保护未来或查当前差异；撤补偿时另核本地退出条件是否误判修复范围；原生替换核选项、错误分类与消费者收尾。
+新证据：2026-10-18（UTC+8）补核 GP2040-CE 的 Axios→fetch 迁移、取消失效与窄修；同日补核 aiohttp 退出门槛纠正、CPython 回移与固定发行，并离线复核六组版本表达式；2026-10-17 UTC 补核 TestGen-LLM／ACH／JiTTest 原论文的生成目标、接收反馈与部署边界；Airflow 等既有材料的日期及范围见各节。材料支持条件选择，未证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
 
 - **本仓局部运行**：[Hook 五类合成输入](#hook-跨宿主迁移匹配成功不等于协议适配)（未执行补丁）、[标准库公式](#本轮零成本公式对照)、[路径逻辑模型](#外部生产者校准错误预期)、[32 场景固定 SQL](#写入路径扩展与序列化判等sqlite-chronicle)。各自只验证所列机制
 - **现场观察与操作记录**：[公开网页不同读取路径](#dot-实际能力诊断公开网页读取的路径差异)分别记录抓取 403、Chrome 原帖读取／刷新、GET 200／已知 ID；[发布路径](#发布一般建议与本仓观察分开)另记本仓已完成操作。现场观察不当作独立复测或效率收益
@@ -1021,3 +1021,15 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 **竞争方案与停止线。** 临时`numpy<2`可以阻止已知坏组合，不是错误方案；Airflow选择利用pandas已修元数据收窄直接依赖，同时保住解释器支持面。[pandas 2.2.2发布说明](https://pandas.pydata.org/docs/whatsnew/v2.2.2.html#pandas-2-2-2-is-now-compatible-with-numpy-2-0)明确其wheel兼容NumPy 1／2，但当时直接升级会越过Airflow的`pandas<2.2`门槛。已有兼容版本无法满足必要业务时继续限版，只有相关消费者都通过后才放开组合；若自己产出C扩展，另按[NumPy 2.0构建契约](https://numpy.org/doc/2.0/dev/depending_on_numpy.html#numpy-2-0-specific-advice)处理构建／运行依赖与wheel验证，不能只修声明。**[一手；经验：选择与边界]**
 
 **交付证据仍有限。** [作者后续](https://github.com/numpy/numpy/issues/26710#issuecomment-2173315601)称分段限制解决Airflow问题，并提醒用户用项目推荐的constraints安装；[接收者询问发行](https://github.com/apache/airflow/pull/40272#issuecomment-2183125147)后，维护者在6月21日答复尚未发行，可在安装时加相应pandas范围。这不是接收者修后成功回执。最终PR head为`a3d23597f2542f5d20369bbf7eba8bc7e6b277be`；本轮该head的status／PR workflow查询返回空，未取得可核对的修后全矩阵结果，不能据合并补作CI全绿或业务恢复。仅只读源码、元数据、原帖与文档，未安装依赖、运行上游测试／模型；主动维护投入和长期净收益未知。**[社区／一手：声明；研究：验证范围]**
+
+## 原生替换：请求取消之后消费者能否继续
+
+核实：2026-10-18（UTC+8）；事件为2024年。改变15 §5：用原生接口替换成熟依赖时，比较窄适配与保留依赖，验已有消费者的选项、错误识别及后续业务动作。无AI实现归属；只读公开PR、评论与固定源码，未运行固件、浏览器或测试。**[经验：选择；研究：范围]**
+
+**收益存在，普通请求通过仍漏旧契约。** GP2040-CE [#988](https://github.com/OpenStickCommunity/GP2040-CE/pull/988)于05-03合入，以自写Http包装原生fetch替换Axios。作者报告debug board的GET／POST可用，构建输出的gzip JS减少11.31kB，并[解释这是固件内压缩体积](https://github.com/OpenStickCommunity/GP2040-CE/pull/988#issuecomment-2081180149)，不是运行性能或维护净收益。[固定head的Http](https://github.com/OpenStickCommunity/GP2040-CE/blob/3b4ffabeb942b7584f63c2791bd6174261c5c80b/www/src/Services/Http.ts)把get第二参数当headers展开；[同版WebApi](https://github.com/OpenStickCommunity/GP2040-CE/blob/3b4ffabeb942b7584f63c2791bd6174261c5c80b/www/src/Services/WebApi.js)却仍传`{signal: abortSignal}`。返回仍是`{data: ...}`，选项语义已不同。**[一手：固定源码；社区：作者构建／试用自报]**
+
+**修完连接还须修消费者。** 非原迁移作者asturur在[#1001](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001)报告：0.7.8能用的引脚映射skip、cancel和关闭按钮在当时master失效，并展示错误的signal header；不能写成已发行故障。首补丁[`0c4ef7f`](https://github.com/OpenStickCommunity/GP2040-CE/commit/0c4ef7f79ce31dc06023fbb131b649ad9d74bb81)分开headers和signal、把signal传给fetch，作者[随后说连接能中止但功能未恢复](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#issuecomment-2094922235)。原因还包括WebApi仍按Axios的`ERR_CANCELED`代码返回`{canceled:true}`。中间补丁[`00f3eb5`](https://github.com/OpenStickCommunity/GP2040-CE/commit/00f3eb504602a05a4f6372f9b6d52a85ef5e7678)暂造同名Error并改按message识别。**[社区：实际操作与修复自报；一手：补丁]**
+
+**保留迁移，撤掉仿造错误。** 评审者[建议直接识别原生AbortError](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#discussion_r1590436695)，[指出应读name而非message](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#pullrequestreview-2039825476)。最终05-07合入[`cdce584`](https://github.com/OpenStickCommunity/GP2040-CE/commit/cdce584b9b5bdb796f0ee0b9da441feb2402e4f6)，保留fetch与signal转发，去掉自造错误，WebApi用`error?.name === 'AbortError'`继续给UI返回业务结果`{canceled:true}`。[固定CaptureButton](https://github.com/OpenStickCommunity/GP2040-CE/blob/cdce584b9b5bdb796f0ee0b9da441feb2402e4f6/www/src/Components/CaptureButton.tsx)在此结果下另调设备端`abortGetHeldPins`，随后按stop／是否还有下一项选择关闭重置或继续捕获。这里保住的是自有消费者行为，不是旧库每个错误字段；也不代表任意取消原因都应这样分类。**[一手：评审与固定消费者；研究：解释范围]**
+
+**采用与证据边界。** 有明确体积目标且必要行为能窄适配时，可保留原生替换；接不上业务收尾或适配负担不合算时保留成熟依赖，是本例支持的条件推论，并非项目实际回退Axios。作者评论后补的“fixed”属于中间修改回执，未绑定最终合入版本；最终接收与源码不能补作独立端到端复验。没有长期维护、跨浏览器完整通过或AI收益数据，也没有流式、重试或cookie故障证据。**[经验：取舍；研究：局限]**
