@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| GC：掉帧时固定降分辨率、动态分辨率与减效果怎样取舍 | B | `dot-b/tmp/20261017-render-scale-choice` | `domains/game-dev/04-client-modules.md`、`docs/research/2026-10-14-game-wp10-client-modules.md`；本表仅本行 | 2026-10-17（UTC+8） | 已认领，公开资料比较；基线 `21adcb47a7bccb1adf4749ce83e50f7e635705dc`。与 PR #2 的05／WP11独立；A串行整合，B不写main；未运行引擎／模型 |
 
 ## 最近交接
 
