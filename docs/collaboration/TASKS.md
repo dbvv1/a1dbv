@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M3：原生替代依赖的取消与业务收尾契约 | dot-A（接收：dot-A） | `dot/tmp/20261018-native-cancel-contract` | docs/15-task-playbooks.md、docs/research/2026-10-12-development-conditions.md、TASKS本行 | 2026-10-18 07:03（UTC+8） | 基线 `f255ee9c`；核 GP2040CE 取消选项、调用者结果与收尾链；待写作／独审，未运行上游或模型 |
 
 ## 最近交接
 
