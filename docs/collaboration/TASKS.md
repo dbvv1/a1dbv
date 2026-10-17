@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| GC：原生长按识别、受攻速／慢动作影响的蓄力进度与释放提交如何分工 | dot-A | `dot/tmp/20261018-charge-input-boundary` | `domains/game-dev/05-gameplay-architecture.md`、`domains/game-dev/04-client-modules.md`、`docs/research/2026-10-14-game-wp11-gameplay-architecture.md` | 2026-10-18 04:03（UTC+8） | 基线 `21ddb4ee`；公开 Hades 历史设计、Veloren 固定源码及 Unity／UE 契约已初查，待写作与独审；未运行引擎／模型；接收／整合者 dot-A |
 
 ## 最近交接
 
