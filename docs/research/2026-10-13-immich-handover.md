@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开；持久化绕过前核原故障阶段与实际参数；恢复入口失败先比较窄恢复操作与入口修复
-新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑；10-17（UTC+8）补PSScriptAnalyzer的独立接收者复测与两项续改合入fork；10-17（UTC+8）补Home Assistant同一接收者CLI／界面重试与固定URL补丁
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开；持久化绕过前核原故障阶段与实际参数；恢复入口失败先比较窄恢复操作与入口修复；修复交付补上失败状态重入
+新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑；10-17（UTC+8）补PSScriptAnalyzer的独立接收者复测与两项续改合入fork；10-17（UTC+8）补Home Assistant同一接收者CLI／界面重试与固定URL补丁；Nextcloud AIO导入补丁、失败守卫及同用户重迁回执
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -267,3 +267,16 @@
 - 全量重做有成功回执，但局部需求已有成功路径；只在内容、兼容性或必要组件证据表明窄通道不足时，再比较全量恢复与缩小范围。
 
 **边界。** 两次窄恢复回执只支持无业务数据的AirCast插件，不证明完整旧业务数据恢复、跨人源码接管、AI参与或长期维护收益。本轮只读公开资料，未运行Home Assistant、恢复数据或上游测试；本链已能改变路线选择，停止同义扩例。
+
+
+## 补充证据：修复逻辑前的持久失败守卫
+
+核实：2026-10-17（UTC+8）。主线四／M3，改变 18的交付选择：修复原错误后，还要确认失败现场能否重新进入新逻辑；已有安全守卫时，补交受支持的恢复操作，不能默认绕过它。[研究]
+
+**补丁与原接收者复测。** captaindyson 在[报告3166](https://github.com/nextcloud/all-in-one/issues/3166)中按迁移指南迁入 AIO 6.4.0（Unraid 6.12.3）：数据库导入读取 dump 的 owner 时，grep 把文件视为二进制，空 owner 导致创建用户失败。[PR3174](https://github.com/nextcloud/all-in-one/pull/3174)于2023-08-17合入，固定[c153fed](https://github.com/nextcloud/all-in-one/commit/c153fed44db170864dddd861fbaa295258187c8c)只给两处 grep 加文本处理参数。维护者[通知7.1.0 Beta可测](https://github.com/nextcloud/all-in-one/issues/3166#issuecomment-1700941039)后，同一用户[报告仍失败](https://github.com/nextcloud/all-in-one/issues/3166#issuecomment-1704407202)，但只重复导入失败提示，不再有原详细错误。维护者[要求正式reset后重走迁移](https://github.com/nextcloud/all-in-one/issues/3166#issuecomment-1704910495)，用户随后[确认问题解决](https://github.com/nextcloud/all-in-one/issues/3166#issuecomment-1709096621)。成功回执未重新给镜像摘要、逐项迁移步骤或旧记录／文件验收，不能写成完整数据恢复验证。[一手：补丁与版本通知；社区：同一接收者回执]
+
+**为什么升级未必触发重试。** [修订前守卫L23–28](https://github.com/nextcloud/all-in-one/blob/1771a72c0e5a37d43356c4d3e6c657dc5d4a0990/Containers/postgresql/start.sh#L23-L28)与[修订后同处](https://github.com/nextcloud/all-in-one/blob/c153fed44db170864dddd861fbaa295258187c8c/Containers/postgresql/start.sh#L23-L28)相同：检测到持久 import.failed 标记即打印上述提示并退出。真正导入时才[开启日志、创建标记L65–76](https://github.com/nextcloud/all-in-one/blob/c153fed44db170864dddd861fbaa295258187c8c/Containers/postgresql/start.sh#L65-L76)，随后经过修复的 grep；仅走完导入才[删除标记L139–140](https://github.com/nextcloud/all-in-one/blob/c153fed44db170864dddd861fbaa295258187c8c/Containers/postgresql/start.sh#L139-L140)。因此该固定补丁不会自动解除既有失败状态。它与用户的新日志吻合，但没有用户目录检查来直接证实标记残留，不能把机制推断写成现场实测。[一手：固定源码；研究：日志与机制对照]
+
+**保留安全守卫，不复制重置配方。** 同固定版本的[reset 说明L319–336](https://github.com/nextcloud/all-in-one/blob/c153fed44db170864dddd861fbaa295258187c8c/readme.md#L319-L336)仅针对初始安装异常，明确警告已有运行数据时不要照做：会删除 AIO 关联数据。其步骤涉及停止容器、删除网络、清理 dangling 卷和自定义数据目录，通用清理命令还可能影响其他已停止容器／无引用卷。本案例只支持“确认失败后的重入方式并交付说明”，不支持给既有实例统一重置，也没有证明单删标记能安全恢复半完成导入。[一手：固定官方说明；研究：采用限制]
+
+本轮仅阅读历史公开报告、固定补丁与文档；未安装、迁移或恢复 Nextcloud，未运行上游测试。无可核 AI 参与、主动工时或长期收益证据。[研究：验证范围]
