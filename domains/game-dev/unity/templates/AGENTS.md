@@ -64,7 +64,7 @@ TODO：列出主要模块（asmdef）及依赖方向，例如 `Core ← Gameplay
 
 ## 硬性规则
 
-1. **不要读写** `Library/`、`Temp/`、`obj/`、`Logs/`、`UserSettings/`。
+1. **不要读写** `Library/`、`Temp/`、`obj/`、`UserSettings/`；`Logs/` 不手改，只按当前获准的构建／测试任务读取对应脚本生成的日志和测试报告，不泛读整个目录。实际读取仍须符合项目工具权限，本条不扩大权限。
 2. **不要删除或手写 `.meta`**；移动/重命名资源时 `.meta` 必须一起移动（`git mv`）。新建 C# 文件让 Unity 生成 `.meta`。
 3. `.unity` / `.prefab` / `.asset` 默认经已配置的编辑器 API（Unity CLI、Unity MCP、编辑器脚本）修改。文本例外必须属于项目已批准且验证过的受限路径，保留 GUID／fileID，并在目标引擎核引用与相关行为；简单数值或说明风险本身不够。接口缺失不授权绕过保护或扩大例外。
 4. 修改 `ProjectSettings/`、`Packages/manifest.json`、`Assets/Plugins/` 前先征求同意。
