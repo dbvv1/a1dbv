@@ -1,6 +1,6 @@
 主线：三、四
-改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开；持久化绕过前核原故障阶段与实际参数；恢复入口失败先比较窄恢复操作与入口修复；修复交付补上失败状态重入
-新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑；10-17（UTC+8）补PSScriptAnalyzer的独立接收者复测与两项续改合入fork；10-17（UTC+8）补Home Assistant同一接收者CLI／界面重试与固定URL补丁；Nextcloud AIO导入补丁、失败守卫及同用户重迁回执
+改变的建议：18/24：接收意见、补丁与最终说明对齐；18补接管投入、学习、原条件及实际宿主验收、新旧库交付、原生产物兼容、身份与逻辑数据集核对；导出器修复与重做受影响旧产物、接管发行与源码维护分开；持久化绕过前核原故障阶段与实际参数；恢复入口失败先比较窄恢复操作与入口修复；修复交付补上失败状态重入；双向同步恢复与重建基线分开
+新证据：Immich审查/恢复、接管/学习实验、CBM宿主/原条件回执、PocketBase迁移、Rollup加载、Syncthing/Tailscale接替；10-16补Paperless导出串档修复、MinIO发行接管；Anaconda解释与补丁对齐且smoke成功，仍因原故障证据不支持而撤回，AI归属仅为怀疑；10-17（UTC+8）补PSScriptAnalyzer的独立接收者复测与两项续改合入fork；10-17（UTC+8）补Home Assistant同一接收者CLI／界面重试与固定URL补丁；Nextcloud AIO导入补丁、失败守卫及同用户重迁回执；rclone恢复／重建固定实现、并发列表修复及两位用户不同范围回执
 
 # AI 辅助代码的接收与后续修改：Immich 与接管实验
 
@@ -282,3 +282,25 @@
 **保留安全守卫，不复制重置配方。** 同固定版本的[reset 说明L319–336](https://github.com/nextcloud/all-in-one/blob/c153fed44db170864dddd861fbaa295258187c8c/readme.md#L319-L336)仅针对初始安装异常，明确警告已有运行数据时不要照做：会删除 AIO 关联数据。其步骤涉及停止容器、删除网络、清理 dangling 卷和自定义数据目录，通用清理命令还可能影响其他已停止容器／无引用卷。本案例只支持“确认失败后的重入方式并交付说明”，不支持给既有实例统一重置，也没有证明单删标记能安全恢复半完成导入。[一手：固定官方说明；研究：采用限制]
 
 本轮仅阅读历史公开报告、固定补丁与文档；未安装、迁移或恢复 Nextcloud，未运行上游测试。无可核 AI 参与、主动工时或长期收益证据。[研究：验证范围]
+
+## 补充证据：双向同步中断后恢复还是重建基线
+
+核实：2026-10-17（UTC+8）；历史事件为 2023–2026 年。**选择：交付双向同步任务时，优先保留同步历史并按工具的恢复能力续跑；首次初始化或历史不可用才另定重建方案。** 重建双方当前文件的并集会忘记先前的删除，不能作为通用自动重试。此处是同步消费状态，不是从备份恢复业务数据；不推荐更换现有同步工具。**[研究：采用判断]**
+
+### 三种路径与固定实现
+
+- **重建基线**：[原用户#7042](https://github.com/rclone/rclone/issues/7042)每次带 `--resync`，报告本地删除后文件从 OneDrive 回来；维护者指出该模式复制双方独有文件，不传播删除，原帖没有修后回执。[v1.69.1 固定文档](https://github.com/rclone/rclone/blob/4e77a4ff73645f45873188de2683067d6756038e/docs/content/bisync.md#--resync)及[实现](https://github.com/rclone/rclone/blob/4e77a4ff73645f45873188de2683067d6756038e/cmd/bisync/resync.go)确认默认偏向 Path1，同名时可能覆盖 Path2 更新版本；改名可能变成旧、新名并存。需要重建时先确定保留哪侧版本、预览差异，再验删除与修改结果；`--dry-run` 不等于恢复已完成。**[社区：故障；一手：实现]**
+- **从保留历史恢复**：[需求#7470](https://github.com/rclone/rclone/issues/7470)要求掉电／关闭机器后不必重建；[PR#7501](https://github.com/rclone/rclone/pull/7501)合入恢复与锁续期机制。[v1.66.0 发行记录](https://github.com/rclone/rclone/blob/b6013a5e689ff4ff8a869aa262c9d04d454f5a71/docs/content/changelog.md)已列 `--recover`；[v1.69.1 operations.go](https://github.com/rclone/rclone/blob/4e77a4ff73645f45873188de2683067d6756038e/cmd/bisync/operations.go#L268-L303)要求双方 `-old` 列表存在，默认先校验，再退回历史比较当前状态。它不是重放全部旧队列，也不能凭普通文本日志重建缺失列表。`--resilient` 允许特定失败重试，与外部中断恢复职责不同。一次后来中断的运行已同步某文件，而它在下次恢复前又变更时，可能额外判冲突，不能承诺无损自动收尾。**[一手：发行、固定实现与契约]**
+- **初始化尚未成功**：[2026 年原用户](https://forum.rclone.org/t/bisync-needs-resync-even-with-resilient/53674/1)从 v1.72.1 升级后仍遇 WebDAV 列目录 401；[维护者](https://forum.rclone.org/t/bisync-needs-resync-even-with-resilient/53674/5)明确须先有一次成功初始化。[后续回执](https://forum.rclone.org/t/bisync-needs-resync-even-with-resilient/53674/6)在 v1.73.4 仍失败，日志声称可无 resync 重试却缺成功基线。应先修列目录／初始化阻塞，不能把已有文件副本或“可重试”文字当作恢复前提已成立；本轮未找到该用户最终成功。**[社区：原日志及维护解释]**
+
+锁也必须交接：固定 v1.69.1 文档要求 `--max-lock` 在留下锁的进程上配置，事后添加不改旧锁到期时间；不可默认删锁绕过仍在运行的进程。优雅退出是尽力清理；`--inplace` 可能留下半写文件，不适合作为这条恢复路线的默认组合。这些是 rclone 版本契约，其他工具须另核。**[一手：[固定文档](https://github.com/rclone/rclone/blob/4e77a4ff73645f45873188de2683067d6756038e/docs/content/bisync.md#--max-lock)]**
+
+### 反证：正常运行的冲突不能一律归于恢复策略
+
+[同一用户维护帖](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/9)最初报告后续定时运行自行成功；后来[撤掉 recover 仍有错误，再加回以减少手动 resync](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/26)。维护者要求先隔离单机、无中断、无 recover 的情况，而不是直接设本地永远获胜。[试验版 2341934d8](https://github.com/rclone/rclone/commit/2341934d8ee396649745b266050f48b725a100de)随后获得[原用户改善回执](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/40)。**[社区：前后使用；一手：候选补丁]**
+
+正式[PR#8366](https://github.com/rclone/rclone/pull/8366)解释具体故障：只有 2→1 传输且文件在列举后、传输前再变，另一侧列表仍保留旧状态。固定 head `940b18a26762dab5d81e9ad306d13968abcd0224` 的[修改](https://github.com/rclone/rclone/blob/940b18a26762dab5d81e9ad306d13968abcd0224/cmd/bisync/operations.go)让有变更时两侧都更新列表；[测试场景](https://github.com/rclone/rclone/blob/940b18a26762dab5d81e9ad306d13968abcd0224/cmd/bisync/testdata/test_concurrent/scenario.txt)及测试钩子在同步期间再次替换文件，golden 记录后一次运行无变更。[v1.69.1 发行记录](https://github.com/rclone/rclone/blob/4e77a4ff73645f45873188de2683067d6756038e/docs/content/changelog.md)列出该修复；这里只核源码和预期输出，未运行上游测试。**[一手]**
+
+另一个[#8359 用户回执](https://github.com/rclone/rclone/issues/8359#issuecomment-2640067746)在换 S3/MinIO 后先重现，再以旧 Termux 节点发起修改、试验版 Linux 节点接收正确 mtime；重新加入旧接收节点后错误 mtime 又传播。它支持接收节点版本影响状态，但不是同平台单变量试验，试验版也不是正式合入 head。两位用户不能拼成一次对照。**[社区；研究：范围]**
+
+**采用边界**：若正常成功运行后仍连续冲突，先核状态记录与具体修复，不靠固定偏向某侧掩盖错误。原维护帖后来还有[校验变慢](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/42)：[维护者已解释](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/43) cryptcheck 须读取未加密侧文件并现场加密／散列，给出保留强校验、降低比较精度或加 hasher 的取舍，仍缺最终同条件验收；此后[新文件意外删除报告](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/44)，未见闭合原因，不能宣称全流程可靠或 recover 造成这些后续问题。未运行同步、接触用户文件、测 AI 或量化维护工时；本链只改变交付脚本的恢复选择与验收范围。**[社区；研究]**
