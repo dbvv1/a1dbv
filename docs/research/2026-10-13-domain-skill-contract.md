@@ -1,6 +1,6 @@
 主线：二，兼三、四
-改变的建议：原生文档、模板和生成器够用就不加或撤回额外 Skill；仅为缺失的平台／生产契约、对象配方或质量目标补窄参考，互斥依赖的短契约放各操作入口。性能优化先查转换／复制开销，按新热点、必要行为和目标负载选候选；扩大搜索前核轻量方案、全尝试成本与独立复评，接管时可保方向换成熟内核。验收按消费者坐标／单位，扫描锁工具／数据库／判定身份，前端自动优化按交互与构建阶段局部采用。[经验]
-新证据：汇总既有研究，日期与反证见各节，非本次新增。本仓局部表达式／文件结构／AST 探测，与 Cloudflare 迁移、pivot／Seedkit 历史产物、Next.js 三臂定义及设计 Skill 分开计证；原生也能正确，整包干预不能归因 Skill 净收益。性能部分汇总 pandas、SWE-fficiency、PerfAgent、轻量搜索及 Triton／PyTorch／Roaring 的论文、轨迹与源码；不同测量不拼同条件对照，轻量搜索的完整历史成本／选择链仍缺。PDF 仅核源码与算术，未渲染；SkillsBench／pivot 补读核实际身份与配方读取，不把标签当使用；YugabyteDB 仅核反馈与入口补丁。上述补读未重跑模型、GPU或应用。2026-10-18（UTC+8）补 Sanity 局部退出复验、Onyx 分阶段启用及官方契约，历史收益不作当前横评。[一手／研究]
+改变的建议：原生文档、模板和生成器够用就不加或撤回额外 Skill；仅为缺失的平台／生产契约、对象配方或质量目标补窄参考，互斥依赖的短契约放各操作入口。性能优化先查转换／复制开销，反复修补的缓存与退役／局部实现比较，按新热点、必要行为和目标负载选候选；扩大搜索前核轻量方案、全尝试成本与独立复评，接管时可保方向换成熟内核。验收按消费者坐标／单位，扫描锁工具／数据库／判定身份，前端自动优化按交互与构建阶段局部采用。[经验]
+新证据：汇总研究，日期与反证见各节。本仓局部表达式／文件结构／AST 探测，与 Cloudflare 迁移、pivot／Seedkit 历史产物、Next.js 三臂定义及设计 Skill 分开计证；原生也能正确，整包干预不能归因 Skill 净收益。性能部分汇总 pandas、SWE-fficiency、PerfAgent、轻量搜索及 Triton／PyTorch／Roaring 的论文、轨迹与源码；不同测量不拼同条件对照，轻量搜索的完整历史成本／选择链仍缺。PDF 仅核源码与算术，未渲染；SkillsBench／pivot 补读核实际身份与配方读取，不把标签当使用；YugabyteDB 仅核反馈与入口补丁。上述补读未重跑模型、GPU 或应用。2026-10-18（UTC+8）补 Sanity 局部退出、Onyx 分阶段启用及官方契约，并补 CPython 缓存退役的历史人工优化链；不作当前横评。[一手／研究]
 
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
@@ -446,46 +446,30 @@ D1 同目录固定 [LICENSE.txt](https://github.com/anthropics/skills/blob/dbd45
 
 ## 性能质量：先消除表示转换与重复复制
 
-> 核实：2026-10-15（UTC）。只读公开 PR、固定补丁、官方 API 文档和论文 v3；未运行 pandas、Arrow、基准或模型。新证据是 2026 年公开的历史模型比较，原生产补丁发生于 2023 年。采用建议只落 [15 §7](../15-task-playbooks.md#7-性能优化)。
+> 核实：2026-10-15（UTC）。只读公开 PR、固定补丁、官方 API 与论文 v3；未运行 pandas、Arrow、基准或模型。建议见 [15 §7](../15-task-playbooks.md#7-性能优化)。
 
-### 改变的选择
+**✅ 转换／复制占主成本时，先查能否复用已有后端消除工作，再考虑缓存／快路径；算法或 I/O 占主导则先处理它们。** **[研究／经验]**
 
-**✅ 已有 profiler／调用链显示对象化、转换、分配或复制开销明显时，优先检查能否复用已有后端消除工作，再决定是否需要缓存或特殊快路径。** 更高层的算法或 I/O 是主要瓶颈时应先处理那里；两项 pandas 案例不构成所有性能任务的固定优化次序。 这类领域依据提供的是实现选择：同样输出可以经由不同存储表示和调用边界产生。若 Agent 已选对路径，不必增加指令；本例不推荐安装 Skill，也不要求每个任务重构。[研究：机制；经验：采用判断]
+**缺失掩码必须保留。** 2023-01 的 [pandas #50524](https://github.com/pandas-dev/pandas/pull/50524) 针对 ArrowExtensionArray 比较：一百万随机浮点、首项 NaN、`float64[pyarrow]` 的 `arr > 0`，作者报告 80.5 ms ± 619 µs → 4.05 ms ± 11.4 µs；均为七次运行均值／标准差，但每次分别 10／100 loops，获维护者批准合入。[固定 `d555c1d`](https://github.com/pandas-dev/pandas/commit/d555c1d83b3ff1459e17d6940b594a5f1bbce8c3) 用 `fill_null(result, False)` 取值、原结果取掩码，直接构造 BooleanArray，绕过含空值时的 object 中转；无空值用全 False 掩码。它增加值／掩码分支，没有新依赖或跨调用缓存。False 只是缺失位置的占位，mask=True 表示缺失，不能删掩码。读取时 pandas 3.0.6 的 [BooleanArray 契约](https://pandas.pydata.org/docs/reference/api/pandas.arrays.BooleanArray.html) 与 Arrow 25.0.1 的 [fill_null](https://arrow.apache.org/docs/python/generated/pyarrow.compute.fill_null.html) 用于解释表示及三值逻辑，不是 2023 版本回执；有／无／全缺失及不同规模仍是待验建议。**[一手：补丁、文档；社区：作者计时；经验：验收]**
 
-### 含 NULL 的比较：保留掩码，避免 object 中转
+**历史模型比较只支持机制差异。** [SWE-fficiency v3，2026-06-27 Fig.8／9、Appendix M](https://arxiv.org/html/2511.06090v3) 报告该任务专家 20.5×、Claude 3.7 Sonnet／OpenHands 2.3×，后者有空值路径仍做 `to_numpy().astype(bool)`；反例 Series.to_dict 上 GPT-5 Mini 为 1.98×、专家 1.38×。论文与 PR 缺逐项相同环境、随机输入、计时和原始输出，不能拼接倍数；模型产物逐项正确性、费用及主动工时未闭合。论文无短领域依据／完整 Skill 消融，原库也非已证实的原生 Agent 产物，不能据此推断当前模型缺知识或 Skill 净收益。**[一手：作者历史实验；研究：边界]**
 
-2023-01 的 pandas #50524 优化 ArrowExtensionArray 比较。原实现将 Arrow 结果转为 NumPy，再交给 BooleanArray 的通用序列构造；作者明确将开销归于含空值时的 object 数组转换。其公开负载为一百万个随机浮点数、首元素 NaN，构造 `float64[pyarrow]` 后测 `arr > 0`；原版 80.5ms ±619µs，补丁版 4.05ms ±11.4µs，均为七次运行的均值／标准差，但每次分别10与100 loops。维护者批准后合并。[一手：P1，作者测量而非本仓复测]
+**转换已分配时，才省前一次复制。** 2023-03 的 [pandas #52054](https://github.com/pandas-dev/pandas/pull/52054) 优化 `DataFrame(arr, dtype="int32", copy=True)`，作者报告 6.01 ms ± 37.9 µs → 3.54 ms ± 25.4 µs，七次运行均值／标准差、每次 100 loops，获批准合入。[已合并差分](https://github.com/pandas-dev/pandas/pull/52054/files) 中 `construction.py` 的 `_copy`／`astype_is_view` 条件：未指定 dtype 或转换可能返回视图时仍复制；确定转换另分配才省前次复制。这里只核 PR 差分，未取得可打开的完整提交页。反例是同 dtype／共享存储转换，直接删复制会破坏输入与结果隔离；双向修改验收是条件推导，未复现，不支持所有转换零拷贝。**[一手：补丁；社区：计时；研究：反例]**
 
-固定补丁 `d555c1d83b3ff1459e17d6940b594a5f1bbce8c3` 在有空值时先用 Arrow 的 `fill_null(result, False)` 得到值数组，另从原结果提取缺失掩码，直接构造 BooleanArray；无空值时使用全 False 掩码。代价是显式维护值／掩码及分支，未新增依赖或跨调用缓存。[一手：P2]
+两例未测所有规模、峰值内存或维护工时；分支增加不证明更易维护。**[研究：边界]**
 
-**False 只是被掩码遮住的存储占位，不能删除掩码、把缺失结果改成 False。** 当前官方文档确认 BooleanArray 用值与缺失掩码两组数组表示，mask=True 表示缺失，逻辑运算保留三值语义；这用于解释契约，不冒充 2023 年版本回执。后续若验证自己的改动，应覆盖有／无／全缺失与不同规模，而不是只重复一个 NaN 的速度负载；这些是待执行验收建议，不是本轮已通过用例。[一手：P3；经验：验收建议]
 
-### 近期 Agent 比较说明什么
+## 跨调用缓存：反复修补时比较退役与局部实现
 
-2026-06-27 的 SWE-fficiency v3 Fig.8 / Appendix M 公开该任务的专家与 Claude 3.7 Sonnet／OpenHands 补丁，报告20.5×与2.3×。模型补丁仍在有空值路径做 `to_numpy().astype(bool)`，没有消除同一表示转换。论文 Fig.9 同时给出反例：Series.to_dict 上 GPT-5 Mini 的方案达到1.98×，高于专家1.38×，说明专家补丁并非该负载上性能收益的上限。[一手：P4，作者历史实验]
+核实：2026-10-18（UTC+8）。主线三；以下是 CPython 历史人工优化，只读固定提交与原帖，未编译、运行 Python／基准或模型。**[研究：范围]**
 
-**不能把 P1 的80.5／4.05ms与 P4 的倍数拼成同条件横向测量。** 前者是 PR 作者的 `%timeit` 报告；后者是论文评估。本文未取得足以逐项绑定两者环境、随机输入、计时设置与原始输出的记录，也未核到该模型产物逐项正确性回执、费用与主动工时。论文比较没有给同一 Agent 增补短领域依据或完整 Skill 的消融；原库实现也不是证明由原生 Agent 首次生成的产物。因此只据可见补丁说明候选机制，不推断当前 Codex／Claude 缺少这项知识或 Skill 能取得对应差额。[研究：证据边界]
+**跨调用缓存可重新比较是否保留。** [2015-04-30 `c4e335b6`](https://github.com/python/cpython/commit/c4e335b67a5469e621fa4771454be99cc5aae791) 为 property getter 复用一个跨调用参数 tuple；[05-24 `a7a0ad6f`](https://github.com/python/cpython/commit/a7a0ad6f73bbff0d3a30fca42be8ee36b90dc944) 补引用计数与缓存检查，处理重入／保存 args；[2016-05-04 `fcce462e`](https://github.com/python/cpython/commit/fcce462e9c1dacbfb71a10dbcd1d859c7a1adcaa) 再调整 GC 跟踪，避免 `gc.get_objects()` 暴露含 NULL 的 tuple。随后 debug 观察仍可发现缓存对象，[2018-10-01 `e972c136`](https://github.com/python/cpython/commit/e972c13624c32d0efdceb08ff83917fb6b488525) 删除缓存，改用既有 `_PyObject_FastCall`；提交报告 namedtuple 的 `p.x` 微基准由 32.8 ± 0.8 ns 变为 40.4 ± 1.3 ns，慢 23%。**[一手：固定补丁；社区：作者微基准]**
 
-### 复制边界：转换已分配时，别再复制一次
+**有反例，不能写成“缓存必须删”。** [未合入的 PR #1272](https://github.com/python/cpython/pull/1272) 提供另一修补，作者 [2017-04-24 报告](https://github.com/python/cpython/issues/74342#issuecomment-1093746469) 同一 `p.x` 负载 128 ± 7 ns → 121 ± 7 ns、未退化；不是退役方案的同条件比较。[调用约定讨论](https://github.com/python/cpython/issues/74342#issuecomment-1093746471) 及 [固定 call.c](https://github.com/python/cpython/blob/e972c13624c32d0efdceb08ff83917fb6b488525/Objects/call.c) 也表明 FastCall 的通用路径仍会构造临时 tuple，移除跨调用状态不等于消除全部分配。[当时不回移 3.6／3.7 的决定](https://github.com/python/cpython/issues/74342#issuecomment-1093746487) 只基于已知两份 PYTHONDUMPREFS 报告，不能推广为稳定分支不修缺陷。**[一手／社区：替代方案、源码与历史取舍]**
 
-2023-03 的 pandas #52054 优化 `DataFrame(arr, dtype="int32", copy=True)`；作者报告6.01ms ±37.9µs→3.54ms ±25.4µs，均为七次运行、每次100 loops，维护者批准并合并。[一手：P5，作者测量]
+**还可把优化留在实际热点。** [2018-12-30 `3f5fc70c`](https://github.com/python/cpython/commit/3f5fc70c6213008243e7d605f7d8a2d8f94cf919) 给 namedtuple 独立 C descriptor，直接取 tuple 元素，不恢复通用 property 参数缓存；每个字段创建 descriptor，新增测试保证不同 namedtuple 的字段 `__doc__` 可独立修改。提交称相对 3.7 属性访问 1.6×，与退役补丁的 23% 不是同轮测量，不能相乘成净收益。**[一手：实现、测试与提交说明，非本仓复测]**
 
-补丁在构造器的类型转换前依据 `astype_is_view` 决定是否保留原复制请求：目标 dtype 未指定或转换可能返回视图时仍复制；转换不共享原存储时，跳过前面多余的复制。领域判断在于跨步骤辨认“后续转换已经承担分配”，不是无条件把 `copy=True` 改为 False。[一手：P6；研究：实现解释]
-
-**反例是同 dtype／可能共享存储的转换：直接去掉复制可能让输入与结果别名相连，后续修改不再隔离。** 自己采用类似优化时，应核查修改输入或结果后的隔离契约；这是从补丁条件推出的验收要求，不是本轮已复现的回归。该例支持沿调用链减少重复工作，不足以泛化为“所有转换都应零拷贝”。[研究：反例推导]
-
-### 取舍与停止
-
-两例都让现有后端和表示知识进入实现选择，收益不依赖增加自评轮数。但未测新方案在所有规模上的收益、峰值内存或维护工时；可见分支增加也不自动等于维护成本降低。本轮停在机制与窄建议，不复刻模型榜单，不把2023年补丁包装成近期生产成果，也不为补齐归因启动实验。[研究：采用边界]
-
-### 来源
-
-- P1：[pandas #50524，原始负载、计时与合并](https://github.com/pandas-dev/pandas/pull/50524)。
-- P2：[固定合并补丁 d555c1d](https://github.com/pandas-dev/pandas/commit/d555c1d83b3ff1459e17d6940b594a5f1bbce8c3)，重点为 `pandas/core/arrays/arrow/array.py`。
-- P3：[BooleanArray 官方 API](https://pandas.pydata.org/docs/reference/api/pandas.arrays.BooleanArray.html)、[Arrow fill_null 官方 API](https://arrow.apache.org/docs/python/generated/pyarrow.compute.fill_null.html)；读取时分别为 pandas 3.0.6、Arrow 25.0.1。
-- P4：[SWE-fficiency v3](https://arxiv.org/html/2511.06090v3)，2026-06-27，Fig.8/9 与 Appendix M；不同于持续变化的项目首页。
-- P5：[pandas #52054，原始计时与合并](https://github.com/pandas-dev/pandas/pull/52054)。
-- P6：[#52054 已合并差分](https://github.com/pandas-dev/pandas/pull/52054/files)，`pandas/core/internals/construction.py` 的 `_copy` 与 `astype_is_view` 条件；本轮读取合并 PR 差分，未取得可打开的完整提交页，不将短 SHA 当固定源码核验。
+据此，反复修补的跨调用缓存，应与退役后复用现成调用机制、局部热点实现比较；按目标负载决定退化是否可接受，保留重入、引用寿命及可变元数据契约。本链无维护工时或当前 LLM 搜索收益证据。**[研究：采用边界]**
 
 
 ## 性能续改：观测层与候选选择
