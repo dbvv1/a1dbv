@@ -1,6 +1,6 @@
 主线：二／三／四；音频选型、可修改性与交付
-改变的建议：[研究] 现成／参数化优先，按事件、音乐结构和台词 ID 离线生产；运行时复用混音／调度，先保可读反馈与声音供应连续性；风格化状态先比较固定声源变体，随机变化不代替状态含义
-新证据：[一手／研究] Pixel Wheels 许可轮胎循环、冰面固定变调提交及发行祖先链补状态变体选择；近期型号／许可、固定音频编辑路径及上下文契约；Factorio 改速设计、2.0.36 配置与 GUI 误播修复补事件调度边界，制作工时未知；未试听或运行模型／引擎
+改变的建议：[研究] 现成／参数化优先，按事件、音乐结构和台词 ID 离线生产；运行时复用混音／调度，先保可读反馈与声音供应连续性；风格化状态先比较固定声源变体，随机变化不代替状态含义；定位核心与环境宽度分开选源
+新证据：[一手／研究] 空间音频契约、下混反例与RoboRaid作者分层；Pixel Wheels 许可轮胎循环、冰面固定变调提交及发行祖先链补状态变体选择；近期型号／许可、固定音频编辑路径及上下文契约；Factorio 改速设计、2.0.36 配置与 GUI 误播修复补事件调度边界，制作工时未知；未试听或运行模型／引擎
 
 # WP6：音频资源路线、可修改性与授权边界
 
@@ -93,9 +93,9 @@
 
 ### 3.3 配音：内容改10%，不能默认全角色重生
 
-台词键保持稳定，保存文本 hash、角色 voice_id、模型 ID、语言、上下文、发音表、生成参数及最终音频 hash。以改动句及确有上下文受影响的邻句起步，连续表演必要时扩大到最短完整段（见 §3.4），旧音频保留；ASR 回读可查漏字/错字，不能判定讽刺、恐惧、角色关系和情感弧线是否到位。[研究]
+台词键保持稳定，保存文本 hash、角色 voice_id、模型 ID、语言、上下文、发音表、生成参数及最终音频 hash。修改粒度见 §3.4，旧音频保留；ASR 回读可查漏字/错字，不能判定讽刺、恐惧、角色关系和情感弧线是否到位。[研究]
 
-更重要的新反证是[Voice Library 官方说明](https://elevenlabs.io/docs/eleven-creative/voices/voice-library)：无 notice period 音色可立即下架；有 notice 最长两年；某些音色 live moderation 还引入额外延迟。**已导出音频可以继续使用**和**未来补一句还能调用同音色**不是一个承诺。角色选音应优先明确通知期和连续性安排；下架风险不可由缓存解决全部未来 DLC。进一步核 [Voice Library Addendum §8](https://elevenlabs.io/vla)，平台仍保留随时移除音色、可不通知的权利。通知期针对声音所有者停止分享，不是平台持续供应 SLA；产品页“用过即可保存通知期”与附加条款“撤下前加入账户”的措辞也不完全一致，长期角色应保存账户资格和实际通知期证据，必要时取得书面连续性约定。[一手／研究][一手/研究]
+更重要的新反证是[Voice Library 官方说明](https://elevenlabs.io/docs/eleven-creative/voices/voice-library)：无 notice period 音色可立即下架；有 notice 最长两年；某些音色 live moderation 还引入额外延迟。**已导出音频可以继续使用**和**未来补一句还能调用同音色**不是一个承诺。角色选音应优先明确通知期和连续性安排；下架风险不可由缓存解决全部未来 DLC。进一步核 [Voice Library Addendum §8](https://elevenlabs.io/vla)，平台仍保留随时移除音色、可不通知的权利。通知期针对声音所有者停止分享，不是平台持续供应 SLA；产品页“用过即可保存通知期”与附加条款“撤下前加入账户”的措辞也不完全一致，长期角色应保存账户资格和实际通知期证据，必要时取得书面连续性约定。[一手／研究]
 
 ### 3.4 改一句的最小单位不一定是一句
 
@@ -241,7 +241,7 @@ Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/communi
 
 [Unity 6.3 Audio Random Container](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioRandomContainer-UI.html)有 Shuffle、Avoid Repeating Last、音高／音量范围，Manual 可随实际事件触发；Automatic 的时间播放不替代脚底接触或命中判定。[一手／研究] 本节仅确认 6000.3 文档能力，不外推旧版本或所有平台已验证。
 
-[AudioMixer Inspector](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioMixerInspectors.html)确认 Send 驱动 Duck Volume，同时说明脚本设置 exposed 参数后，该参数不再随 snapshot 改变。[一手] 因此玩家偏好音量与情境衰减应有独立控制层；这是为了让玩家设置和情绪混音共存，不要求建立复杂总线树。[研究]
+[AudioMixer Inspector](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioMixerInspectors.html)说明脚本设置 exposed 参数后，该参数不再随 snapshot 改变。[一手] 因此玩家偏好音量与情境衰减应有独立控制层；这是为了让玩家设置和情绪混音共存，不要求建立复杂总线树。[研究]
 
 [AudioSource.priority](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-priority.html)用于超过 real voices 上限后的虚拟化，同优先级再比较音量；WebGL 不受该设置控制。[一手] 这与“已播放的声音互相掩蔽”不同：优先级不能代替清晰混音，项目还需针对高频事件限制重触发／叠加。关键警告、对话、环境谁让位由玩法决定，不能仅按距离或统一优先级数字推断。[研究]
 
@@ -387,3 +387,15 @@ Cogmind 作者[2020 制作复盘](https://www.gridsagegames.com/blog/2020/06/bui
 [作者 2023 复盘](https://agateau.com/2023/opening-another-pandora-box/)报告发动机声曾花很多时间搜样、混合和调整，并另做不同速度下的试音工具；SFXR-Qt 覆盖其他效果，但不含发动机与轮胎声。它反驳“同源变体足以解决全部车辆连续声音”，未给可比较的主动工时。已有本记录第十节 Overwatch 原始讲稿又支持关键声音保持较少变化；这次不另建案例表或扩大变体数量要求。[一手／研究]
 
 二改验收针对新增状态、普通状态保留与转换边界：核相同声源／参数对应、切换时不残留旧状态、关键提示不混淆；对不适用的真实材料保留替换方案。上述均为后续验收目标，未试听、运行游戏／模型／Unity／Unreal或测性能；通用声源与语义选择不硬写成双引擎教程。[研究]
+
+## 声源补研：定位与宽度分开
+
+核实：2026-10-18（UTC+8）。[研究] 定位声先比较干净单声道核心，既有stereo可下混则不必重生；环境宽度可保留或另层。下混丢信息、烘入空间感不合就换源，不能靠归一化承诺修复。
+
+- Unity6.3 [Force To Mono](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioClip.html)为导入下混；[spread](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource-spread.html)是3D多声道的扬声器角度，非素材转mono。[一手]
+- UE5.8 [衰减契约](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine)的Stereo Spread是世界距离；Normalize降低6dB以防求和削波。Binaural还须核所选插件输入。[一手]
+- [Resonance Audio](https://resonance-audio.github.io/resonance-audio/develop/design-tips.html)点声源要求dry mono，另有声场；仅其契约，不推荐新插件。[研究] 下混不是去混响。
+- [Steam Audio](https://valvesoftware.github.io/steam-audio/doc/capi/audio-buffers.html)下混为通道求和／通道数。[研究] 因而L=-R会抵消为零，电平归一化不能复原；不是Unity公式或实际素材试听结论。
+- [RoboRaid作者](https://learn.microsoft.com/en-us/windows/mixed-reality/design/case-study-using-spatial-sound-in-roboraid)以mono空间核心叠2D stereo层扩爆炸规模，后者过多削弱方向。[一手] HoloLens制作经验，非零手修证明，不强制双层。
+
+[研究；未执行] 二改换源后核起音、转头／移动、远近、宽度与下混；必要内容变弱或方向混淆就退回。只读文档与作者报告，未试听、生成或运行音频／引擎；不证明定位、听感或工时收益。
