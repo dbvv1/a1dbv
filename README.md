@@ -34,7 +34,7 @@
 |---|---|
 | 需要向外找方案、参照，判断复用还是自建 | [25 AI 探索任务](docs/25-ai-exploration.md) → [12 来源与待验证](docs/12-resources.md) |
 | 已有失败，判断先补资料、工具还是流程 | [15 调试](docs/15-task-playbooks.md#2-调试) → [05 最小补充](docs/05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) |
-| 功能正常，希望改善信息表达、响应或可维护性 | [15 真实任务与质量目标](docs/15-task-playbooks.md#10-原型和一次性脚本) → [22 比较与撤回](docs/22-agent-evaluation.md#7-何时推广何时停止) |
+| 功能正常，希望改善信息表达、响应或可维护性 | [15 已有产品改进](docs/15-task-playbooks.md#102-已有产品按问题选择改进) → [22 比较与撤回](docs/22-agent-evaluation.md#7-何时推广何时停止) |
 | 使用 Codex 或 Claude Code | [Codex](docs/01-agents/codex.md) → [Claude Code](docs/01-agents/claude-code.md) |
 | 看真实开发者怎样使用 Skills 和 Agent | [24 社区工作流与失败案例](docs/24-community-workflows.md) |
 | 判断工作流是否对强模型仍有价值 | [24 的独立分析](docs/24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) |
