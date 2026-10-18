@@ -239,6 +239,8 @@ Unity 小型反馈保留 Particle System，大规模呈现才试 VFX Graph；核
 
 ### 修改界面与拾取交互
 
+**[研究] 远端界面先分监看、局部命令与连续编辑。** 只查是否介入，先用保当前操作的摘要／预览；目标明确可在概览下令，需辨认细节或连续配置再进入操作视图。移镜、选中、下令的输入含义分清；概览误选就收窄，反复切换才扩大。Factorio／Zero-K 的[生产与实现依据](../../docs/research/2026-10-14-game-wp10-client-modules.md#远端界面监看局部命令与连续编辑)支持条件选择，未测收益。[一手／研究]
+
 #### 动态 UI 变贵：先找谁使它反复重建
 
 **[研究] ✅ 先修重复写入，再分重建与绘制热点。** 确为动态牵连静态区才拆 uGUI Canvas，代价是独立 batching；UI Toolkit 纯视觉移动用 translate／DynamicTransform，真实重排仍走布局。UE 先核 Invalidation，全局启用后局部 Box 不叠加；draw-call 仍紧张才试 Retainer。[一手／研究]
