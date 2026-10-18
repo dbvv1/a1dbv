@@ -1,6 +1,6 @@
 主线：二，兼三／四
-改变的建议：先区分缺事实、运行反馈、访问能力还是决策，再补最小条件；续改成对验“有意改变／仍须保留”的行为，迁移另验持久状态、旧读取者与真实维护入口；浏览器保存与故障注入按响应来源选验收入口，稳定截图不介入待验动画状态；游戏移植分数按证据条件解读；重复迁移按语法／类型覆盖与重跑边界选择工具；增量验证先核已有消费者测试是否被选中；兼容修复按输入机制收窄，不默认升级或全局关闭；配置迁移保留编辑／交付阶段及设备边界；清 lint 先核异步调用契约，允许有依据的窄范围豁免。[经验／研究] 生成测试先选保护未来或查当前差异；撤补偿时另核本地退出条件是否误判修复范围；原生替换核选项、错误分类与消费者收尾；退役实现选择器保留独立禁用能力。
-新证据：2026-10-18（UTC+8）补核 Jetpack 开关退役的最终补丁与有限回执；同日补核 GP2040-CE 的 Axios→fetch 迁移、取消失效与窄修；同日补核 aiohttp 退出门槛纠正、CPython 回移与固定发行，并离线复核六组版本表达式；2026-10-17 UTC 补核 TestGen-LLM／ACH／JiTTest 原论文的生成目标、接收反馈与部署边界；Airflow 等既有材料的日期及范围见各节。材料支持条件选择，未证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
+改变的建议：按事实、反馈、访问或决策缺口补最小条件；续改分验有意改变与必须保留的行为，迁移核持久状态、消费者和真实运行入口。工具采用按任务、输入与失败边界收窄；测试先定保护或查错目标，再核实际观测与断言。数据库默认值另分写列保护与值来源，不凭新进程通过推定旧缓存安全。[研究／经验]
+新证据：2026-10-18（UTC+8）补核 GitLab 默认值保护实现与预热旧缓存的固定测试定义，未执行上游。既有案例、核实日期、证据类型及各自运行／未验证范围见下列索引与对应小节；源码、历史回执和本仓局部运行分别计证据，不证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
 
 - **本仓局部运行**：[Hook 五类合成输入](#hook-跨宿主迁移匹配成功不等于协议适配)（未执行补丁）、[标准库公式](#本轮零成本公式对照)、[路径逻辑模型](#外部生产者校准错误预期)、[32 场景固定 SQL](#写入路径扩展与序列化判等sqlite-chronicle)。各自只验证所列机制
 - **现场观察与操作记录**：[公开网页不同读取路径](#dot-实际能力诊断公开网页读取的路径差异)分别记录抓取 403、Chrome 原帖读取／刷新、GET 200／已知 ID；[发布路径](#发布一般建议与本仓观察分开)另记本仓已完成操作。现场观察不当作独立复测或效率收益
@@ -1045,3 +1045,13 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 **保留迁移，撤掉仿造错误。** 评审者[建议直接识别原生AbortError](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#discussion_r1590436695)，[指出应读name而非message](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#pullrequestreview-2039825476)。最终05-07合入[`cdce584`](https://github.com/OpenStickCommunity/GP2040-CE/commit/cdce584b9b5bdb796f0ee0b9da441feb2402e4f6)，保留fetch与signal转发，去掉自造错误，WebApi用`error?.name === 'AbortError'`继续给UI返回业务结果`{canceled:true}`。[固定CaptureButton](https://github.com/OpenStickCommunity/GP2040-CE/blob/cdce584b9b5bdb796f0ee0b9da441feb2402e4f6/www/src/Components/CaptureButton.tsx)在此结果下另调设备端`abortGetHeldPins`，随后按stop／是否还有下一项选择关闭重置或继续捕获。这里保住的是自有消费者行为，不是旧库每个错误字段；也不代表任意取消原因都应这样分类。**[一手：评审与固定消费者；研究：解释范围]**
 
 **采用与证据边界。** 有明确体积目标且必要行为能窄适配时，可保留原生替换；接不上业务收尾或适配负担不合算时保留成熟依赖，是本例支持的条件推论，并非项目实际回退Axios。作者评论后补的“fixed”属于中间修改回执，未绑定最终合入版本；最终接收与源码不能补作独立端到端复验。没有长期维护、跨浏览器完整通过或AI收益数据，也没有流式、重试或cookie故障证据。**[经验：取舍；研究：局限]**
+
+## 数据库默认值：写出字段不等于写对值
+
+2026-10-18（UTC+8）核实；主线三／四，改变15 §5的迁移顺序与验收。**常驻进程持旧schema缓存且ORM省略默认值字段时，先保护相关写入者，再改数据库；新进程测试不足以覆盖此窗口。** [研究]
+
+[官方步骤](https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/#changing-column-defaults)先部署显式写列与赋值，再post-deployment迁移，下次minor清理保护；两minor是GitLab发行约束，不照搬。常量可用代码默认值；依记录计算时区分未提供与显式输入，`||=`可能保留缓存旧值；显式nil不被attribute默认值覆盖，只有业务禁止nil时才另行处理。[一手：文档；研究：范围]
+
+固定镜像`fa6a63c43dd8050dd297c4eae1bdbf9e0cfd7ff1`的[concern](https://github.com/gitlabhq/gitlabhq/blob/fa6a63c43dd8050dd297c4eae1bdbf9e0cfd7ff1/app/models/concerns/safely_change_column_default.rb#L40-L51)在before_create把声明列纳入INSERT；[测试](https://github.com/gitlabhq/gitlabhq/blob/fa6a63c43dd8050dd297c4eae1bdbf9e0cfd7ff1/spec/models/concerns/safely_change_column_default_spec.rb#L16-L132)先加载保护并预热缓存，再改DB默认值。显式写1仍落盘1；未提供值也写缓存的1，不自动采用DB新值2。故写列保护不决定业务正确值。另有代码默认值／移除DB默认值测试，未覆盖上述依记录赋值或显式nil。[一手：源码与测试定义]
+
+采用前确认保护已覆盖相关写入者，包括绕过模型回调的路径；否则延后迁移或选获准停写窗口。复用测试保留旧缓存，按业务分验未提供、显式旧值与NULL的落盘结果，兼容窗口结束再撤临时逻辑；无该省略机制不强加流程。测试只覆盖有保护代码的旧缓存，不保证无保护旧二进制安全；只读未执行，无生产恢复、AI收益或工时结论。[研究：选择与局限]
