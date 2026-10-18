@@ -1358,3 +1358,18 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 后续获准才在同设备、视角和规则下比较原档、一个固定低档、有上下限的DRS；记录CPU／GPU时间、实际scale、触底时长与突发帧，不只平均FPS。新增大面积效果和更多活动单位，分别检查像素与非像素成本；在最低档、下降和恢复途中核危险方向、关键轮廓、场内提示与HUD。[研究；未执行]
 
 固定低档已稳定且可读就不强加DRS；动态收益明确但反复泵动、掉到不可辨或首发尖峰仍在，先收窄范围／修实际热点。最低可辨档仍超预算时，比较更便宜的效果、减少负载或另定目标档位，不能让自动缩放掩盖不可达预算；内存峰值沿原有驻留分析处理。[研究]
+
+
+## 闲时预算：少画几帧不等于整个应用一起慢
+
+核实：2026-10-18（UTC+8）；GC／主线三、四。改变 04 设备预算：静止菜单与回合等待仍耗用时，区分整应用限帧和只降呈现；不凭 API 承诺省电或输入无损。[研究]
+
+**🧪 渲染确占主要成本才试原生降频。** Unity 6.3 [OnDemandRendering](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Rendering.OnDemandRendering.html)允许独立控制渲染；renderFrameInterval 是每 N 个应用帧绘制，不是自动检测变化或零帧待机。跳过帧不执行渲染专属事件，包括 GUI／End-of-frame；不能把这些回调里的工作也当成照常更新。间隔过大仍可无响应。[一手／研究]
+
+[Unity 优化指南](https://docs.unity3d.com/6000.3/Documentation/Manual/OptimizingGraphicsPerformance.html)区分单帧成本与绘制频率，建议菜单、暂停与等输入回合场景，并要求输入时恢复绘制。[研究] 需要继续及时更新时，先比较这条路，别顺带降低整应用更新频率；这不表示整应用限帧会按比例减慢游戏时间或固定步模拟。持续动画／异步结果也可能需要新画面；仅停止 UI 重建并不停止绘制，CPU 模拟重而渲染轻时不指望此法解决热点。
+
+**真实采用只支持相应场景。** Unciv [#1612](https://github.com/yairm210/Unciv/pull/1612)于 2020-01-04 合入：关闭 libGDX 连续渲染，同时移除迫使持续绘制的旋转选择圈；这是回合游戏，不是实时战斗的等价证明。[#1464](https://github.com/yairm210/Unciv/issues/1464)有 Android 用户短测 CPU 下降及约 200 回合后闲时 CPU 显示零的自报，没有 GPU 功耗／续航受控测量，不写成节电幅度。[一手／社区]
+
+固定源码[LoadingImage](https://github.com/yairm210/Unciv/blob/58b2844068866a04525eecfbc45e57c693714294/core/src/com/unciv/ui/components/widgets/LoadingImage.kt)关闭连续渲染时仍显示忙碌图标，只取消淡化和旋转；[动画盘点](https://github.com/yairm210/Unciv/issues/11986#issuecomment-2262249912)区分装饰开关与仍触发绘制的移动／攻击 Actions。[研究] 借鉴的是保留状态反馈、减少持续装饰，不是把所有动画或玩法冻结。[同 SHA 许可](https://github.com/yairm210/Unciv/blob/58b2844068866a04525eecfbc45e57c693714294/LICENSE)为 MPL-2.0；仅提炼机制，不移植代码／资产。[一手]
+
+**反例收窄采用。** [Unity 解谜游戏作者原帖](https://discussions.unity.com/t/new-input-system-and-ondemandrendering-input-lag/899418)报告换 Input System 后触摸恢复延迟；2024 年跟帖称 Unity 6 Android 按低渲染频率处理触摸、Editor 却正常。缺完整版本与官方修复闭环，不能声称 6.3 仍必现；足以要求发布构建分开核输入接受和首个可见反馈。[社区／研究] 用现有预算验证同时看实际更新／呈现频率与耗用，覆盖静止、首操作、动画／异步变化及恢复；无收益或反馈变迟就撤回。未运行引擎、游戏、设备或模型，不由 API 或 CPU 自报推断 GPU 省电。[研究]
