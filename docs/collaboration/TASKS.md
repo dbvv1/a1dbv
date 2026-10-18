@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M1：三份研究长索引摘要归组 | dot-A（接收：dot-A） | `dot/tmp/20261018-research-abstract-concision`（基线 `ecf515e7`） | domain-skill-contract、long-task-evidence、context-tool-choice头3行；TASKS本行 | 2026-10-18 08:19（UTC+8） | 待编辑；保第四行后原字节及证据／日期范围 |
 
 ## 最近交接
 
