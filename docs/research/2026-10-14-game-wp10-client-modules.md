@@ -319,11 +319,19 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 
 [一手] [Character Controller 1.4.5](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/index.html) 是 ECS；[SimulateDynamicBody](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/dynamic-body-interaction.html) 让 kinematic 模拟质量比例与推／被推，反驳无物理互动；[moving platforms](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/moving-platforms.html) 区分 TrackedTransform 跟随与 PhysicsVelocity 推力信息。[研究] 非 ECS 不因官方身份迁移；与 GameObject CC／PhysX 分列。
 
+**肢体操纵：保留身体反应，局部改控制与可达路线。** 核实：2026-10-18（UTC+8）。下列为两个独立开发团队的历史生产取舍，只限物理肢体／抓取玩法，不改变普通直立角色的默认路线。[一手／研究]
+
+Octodad 的 [2012-10-17 作者说明](https://younghorsesgames.com/allundercontrol/)记录：旧版上楼梯时越用力越难前进，改将输入力用于向上辅助；低顶时停止强行撑直身体，同时保留笨拙操纵。[2015-03-30 技术复盘](https://www.gamedeveloper.com/programming/octodad-dadliest-catch-post-mortem-pt-4-tech)的 Octobody 节说明，软体有穿透、观感和 CPU 问题，后作改详细胶囊 ragdoll；升级 PhysX 3 后原软体也不再可用。受控脚减重、腾空撤撑起力、悬挂另调手臂，都是为特定状态改物理响应；新增约束又吃掉去软体的性能收益，需提供低细节身体。可借“局部受控端＋其余身体反应”，代价是专用状态与约束预算，不是当前 PhysX 选型或通用参数。[一手／研究]
+
+Human Fall Flat 开发者在 [2017-10-27 回复 #9](https://steamcommunity.com/app/477160/discussions/0/3182216552780030265/)说明：为拾物、按钮和抓边等重写抓取后，墙爬也更容易；选择保留新抓取、另削弱墙爬，避免初玩绕过谜题。作者认可重玩／多人探索的不同用途，[10-31 回复 #19](https://steamcommunity.com/app/477160/discussions/0/3182216552780030265/?ctp=2)确认独立入口。同帖玩家对限制有异议，这只支持当时的玩法取舍，不证明削弱更好或现版各平台仍有该入口。[一手／社区／研究]
+
+因此，物理肢体操纵本身是玩法时先局部修受控端／状态；接触更可靠后，再检查可达路线是否符合目标，按具体影响保留、收窄或撤回。物理响应并非目标且持续妨碍预定运动时，才沿原建议比较显式控制。以上未运行游戏、引擎或前后实现，未测维护工时与体验收益。[研究]
+
 ### 4. 升级、撤回与未来验收：以玩家感到的差别为准
 
 - [研究] **保留原生 CC**：简单接触够用就不升级；平台少也可能规则复杂，贴地／旋转／动量组合先比较现成 motor。
 - [研究] **保留速度驱动 Rigidbody**：接触与步态已达标，外力统一进入 momentum。新增持续质量交互、任意冲量或堆叠时，再评估力驱动／混合政策。
-- [研究] **撤回过度物理化**：不停抵消摩擦／碰撞速度时，可把重量留给参数与动画；反之每次碰撞都需 kinematic 特例，也应重选。
+- [研究] **撤回过度物理化**：物理响应并非玩法目标且不停抵消摩擦／碰撞速度时，可把重量留给参数与动画；反之每次碰撞都需 kinematic 特例，也应重选。
 - [研究] **升级验收**：比较坡速、坡顶腾空、窄台阶、旋转平台站位／起跳、侧挤／低顶受击及 root-motion 撞墙。人判可控与重量，不设通用坡角／snap／恢复时长。
 - [研究] **二改**：旋转升降平台边缘受击；核平台、自移和击退各应用一次，起跳解除吸附，落地／重生清旧附着。牵动大量技能／相机脚本时先收拢所有权；人决定动量与恢复手感。
 
