@@ -1,6 +1,6 @@
 主线：一，发现值得做的软件；协作编辑兼三，连续修改的可靠性
-改变的建议：先让用户试已有任务入口，再决定扩功能或改善入口；按真实任务选界面、状态与复用边界；同仓新增命令先比较完整命令与底层逻辑的组合成本，分步交付仍验最终结果。自动采集噪声先比较采集准入与重复规则；连续输出分开追最新状态与按序消费，真实反对不自动要求恢复旧故障。[经验]
-新证据：公开需求、固定补丁与再次使用的正反反馈；Buffer的AI辅助首版、原用户适配使用与后续合入；Clink先采用已有入口、后改默认，并保留后续可发现性反证；2026-10-17新增Restic对完整命令复用的弃选、绑定提交的清理回执与来源映射修订，以及shadcn弹层局部修复／组件替换回执。NVDA／GitHub Desktop等链保留相反反馈与未闭合处；合并不等于采用成功、长期收益或AI效果。[一手／社区／研究]
+改变的建议：按真实任务选择已有入口、界面与状态行为、复用范围及默认值；先核必要结果，再决定扩功能、改实现或撤回。连续控制分开停靠、临时越界与自由操作。[经验]
+新证据：公开需求、固定前后产物与再次使用的正反反馈，含AI参与披露；各链分别保留版本、接收范围和未闭合处。源码、合并与局部回执不替代长期收益或AI效果。[一手／社区／研究]
 
 # 产品反馈：从看懂核心结果到修改版的再次验证
 
@@ -676,3 +676,17 @@ caab80f 在进度页同时修改接收会话和发送会话的状态集合判断
 - [采集器](https://github.com/samirpatil2000/Buffer/blob/dd0787ec206fd3345aaceb30307baf009198f973/Services/ClipboardWatcher.swift)在入库前按 `String.count` 检查最短长度；[设置](https://github.com/samirpatil2000/Buffer/blob/dd0787ec206fd3345aaceb30307baf009198f973/Services/SettingsManager.swift)默认长度仍为 1、去重关闭，UI 可选 1–20。原请求提到默认 3，落地没有照搬；短输入也可能有意，不能把该用户的过滤阈值推为全局默认。**[一手；经验]**
 - [存储层](https://github.com/samirpatil2000/Buffer/blob/dd0787ec206fd3345aaceb30307baf009198f973/Services/ClipboardStore.swift)启用去重时匹配相同 inline 文本并移动已有对象，保留原对象；不对图片或 file-backed 大文本做这种跨历史匹配。采集器原有连续 hash 去重仍在，不能说此前完全不去重；新功能也不清洗已有历史。噪声过滤不能当作敏感窗口排除或隐私保证。**[一手]**
 - #65 新增长度边界与 inline 重复查找测试；作者只报告 focused harness 与 `git diff --check` 通过；测试定义只覆盖 helper，不是 GUI 或重启的完整回归。因只有 Command Line Tools、无 Xcode 而未运行完整 `xcodebuild test`。没有本仓库复测、正式发行后的原用户复验或与新增搜索／标签的收益对照。适用判断止于“该工作流优先修核心采集规则”，不推广为一律少加功能。**[一手／社区；经验]**
+
+## darktable：连续缩放的停靠与自由越界
+
+核实：2026-10-18（UTC+8）；历史事件均在 2026 年，日期为 UTC。补 15 §10.2：连续定位任务中，分别选择软停靠、临时越界与自由缩放；修卡住不必连同任务所需的停止点一起撤掉。只读公开原帖与固定源码，未运行应用或模型。**[经验：建议；研究：范围]**
+
+**两种都能缩放，仍有不同任务。** [#20810 的非作者试用者](https://github.com/darktable-org/darktable/pull/20810#issuecomment-4324683837)确认 pinch 与 Ctrl 缩放均能到 1600%，但日常放大定位需要固定停靠；另一任务是 [#20750 的遮罩／修补](https://github.com/darktable-org/darktable/issues/20750)，需要 200%–400%。这不是两方案的成功率对照。**[社区：任务与使用自报]**
+
+**解除停靠也可能误改产品选择。** 声明与 Claude 共同完成的 [#21011](https://github.com/darktable-org/darktable/pull/21011)，固定 head 为 `3ce679e08e7359ae421feece0171ef30df9892d6`、base 为 `318b9a30a705c55d58368807f9dca0395bfb541a`，把软界判断的 `>` 改为 `>=`，使恰在停止点时下一次滚动可越过。原使用者在 [#21027](https://github.com/darktable-org/darktable/issues/21027)绑定合入 `b04e36e` 及自编译版本，拒绝这种自由越界，并[说明放大定位、调整、退回的工作流](https://github.com/darktable-org/darktable/issues/21027#issuecomment-4451720070)。但补丁作者[确有 macOS 触控板反复弹回、无法继续缩放的自报](https://github.com/darktable-org/darktable/issues/21027#issuecomment-4469690804)；不能把真实卡住都解释成不理解设计。**[一手：产物与 AI 参与披露；社区：不同任务反馈]**
+
+**修订保软停靠，也保明确越界。** 同样披露 Claude 参与的 [#21031](https://github.com/darktable-org/darktable/pull/21031)，首个硬锁方案在[100%→按 Ctrl 超过→松键继续](https://github.com/darktable-org/darktable/pull/21031#issuecomment-4466927807)时弹回 100%，作者因此重写。05-22 合入 `9402c65275bebebc4649c6dc91d3798d4bd63a0f`；[固定实现](https://github.com/darktable-org/darktable/blob/9402c65275bebebc4649c6dc91d3798d4bd63a0f/src/develop/develop.c#L2852-L2944)按图像尺寸及当前倍率计算软界，供滚轮与 pinch 共用；[调用方](https://github.com/darktable-org/darktable/blob/9402c65275bebebc4649c6dc91d3798d4bd63a0f/src/views/darkroom.c#L4194-L4198)将默认开启的 `constrain_zoom` 与 Ctrl 临时越界分开。已越界及小图另有分支，不能把 PR 标题概括为任何情况都锁 100%。**[一手：固定源码；社区：失败与重写报告]**
+
+**接收回执有范围。** 原使用者[05-18 确认候选可用](https://github.com/darktable-org/darktable/pull/21031#issuecomment-4475810373)，同时提出设置过多与生效提示问题；[05-23 再报 latest master 及自己的鼠标可用](https://github.com/darktable-org/darktable/issues/21027#issuecomment-4524384845)。回执未绑定 SHA，前者也早于最终合入，不能作为固定最终树完整验收。另一接收者[检出候选反复缩放未卡住](https://github.com/darktable-org/darktable/issues/21027#issuecomment-4470334125)；原卡住报告者[确认改善但指出第二窗口不一致](https://github.com/darktable-org/darktable/issues/21027#issuecomment-4470508850)。[Magic Mouse 使用者](https://github.com/darktable-org/darktable/issues/21027#issuecomment-4470504492)又报告缺少 pinch、Ctrl 滚动同时解除停靠，自己的触控板则正常；一种设备成功不能覆盖其他设备。**[社区：修改版复测与反证]**
+
+额外偏好增加发现、生效与维护负担；本例支持按任务选择停靠与越界，不证明停靠普遍更好。无计时、失误率、长期采用或 AI 净收益对照。**[经验：选择边界；研究：缺口]**
