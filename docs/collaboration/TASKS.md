@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M3：机械检查 Hook 的替代启用与退役 | dot-A（接收：dot-A） | `dot/tmp/20261018-hook-replacement-retirement`（基线 `6f158e2e`） | 06-hooks-and-guardrails、既有development-conditions；TASKS本行 | 2026-10-18 08:42（UTC+8） | 公开源调查与写作待开展；不运行上游／引擎 |
 
 ## 最近交接
 
