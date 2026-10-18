@@ -10,7 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| GC：04客户端入口按实际任务组织 | B；接收 A | `dot-b/tmp/20261018-client-task-navigation` | `domains/game-dev/04-client-modules.md`；本表 | 2026-10-18 19:58（UTC+8） | 执行中；基线 `b9bddf336c8a030729b79fed6302ea15b51222ac`；§3按任务分组并保留原文／锚点，不扩研究；与模板 PR35 文件独立 |
+| GC：04客户端入口按实际任务组织 | B；接收 A | `dot-b/tmp/20261018-client-task-navigation` | `domains/game-dev/04-client-modules.md`；本表 | 2026-10-18 19:58（UTC+8） | 待 A 接收；基线 `b9bddf336c8a030729b79fed6302ea15b51222ac`；本提交§3按任务分组，16原段／来源／旧锚点保留；新鲜独审通过；最终14离线／空白随交付核；纯编辑、未测导航效率，与模板 PR35 独立 |
 
 ## 最近交接
 
