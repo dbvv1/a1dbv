@@ -143,4 +143,6 @@ Toolset Registry ← AllToolsets（或只启用需要的工具集插件）
 - [FImportAssetParameters](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/InterchangeEngine/FImportAssetParameters)可指定 ReimportAsset、来源索引和 OverridePipelines；不要把不同参数类型的同名字段当同一契约。**[一手]**
 - [重导入策略](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/InterchangeCore/EReimportStrategyFlags)可选择只换源数据、重应用 pipeline 属性，或保留上次导入以来编辑器修改过的属性。程序员在引擎内调整过的材料、碰撞或挂点应明确归属，再回读真实结果。**[一手＋经验]**
 
+- **旧骨骼FBX跨导入器二改失败，先比较路由与补丁。** 命中UE-325794的旧版本可用 `Interchange.FeatureFlags.Import.FBX false` 仅回退FBX，无须禁整个插件；官方目标修复为5.7。5.7的legacy路径另有UE-349466，列入5.7.2热修，故不长期锁旧入口或自动删除重建骨架。先保旧资产，验实际层级和动画引用；具体回执与局限见[WP9 §4.3](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md#43-修复链与反例不能抹平到最新版已好)。[一手／研究；2026-10-20，未运行引擎]
+
 **关键局限**：这些策略不保证材料槽、骨架或动画改名后的语义合并，官方当前指南仍把 FBX Interchange 标为实验性；引擎／importer 迁移须与普通替换分开，历史反例及版本边界见 [WP9 研究](../../../docs/research/2026-10-14-game-wp9-engine-handoff.md)。**[一手＋经验；本轮未运行引擎]**
