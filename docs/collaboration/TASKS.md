@@ -10,7 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| GD：缩配音后怎样保住探索行为与继续动机 | B；接收 A；基线 `09909a9e2a645d6bc684e4a24ba9dfe00fbc08c9` | `dot-b/tmp/20261020-replace-narrative-carrier` | 06§3、WP12本节、TASKS本行 | 2026-10-20 02:08（UTC+8） | 认领；核Kraven Manor删叙事后改检查物件文字的真实修订与发行反例；B47已交不同段，保其增量；未运行游戏 |
+| GD：缩配音后怎样保住探索行为与继续动机 | B；接收 A；基线 `09909a9e2a645d6bc684e4a24ba9dfe00fbc08c9` | `dot-b/tmp/20261020-replace-narrative-carrier` | 06§3、WP12本节、TASKS本行 | 2026-10-20 02:08（UTC+8） | 结果见本提交；缩载体先保可操作信息发现，再分验理解与继续动机；新上下文四源独审通过，最终14及远端随交付核；学生／发行版与作者／体验者分开，未运行游戏；交A保留B47增量串行整合，B接返工 |
 | GD：间接表现与重复输入 | B；接收 A | `dot-b/tmp/20261019-mediated-interface-choice` | 06、WP12 | 2026-10-19 11:36（UTC+8） | 固定 `092f45cd` 已交[PR47](https://github.com/dbvv1/a1dbv/pull/47)，接收源审通过；未合main，不据状态推定正在执行 |
 | GA／GD：长驻留音乐出场密度 | B；接收 A | `dot-b/tmp/20261019-music-entry-density` | audio、WP6、04入口 | 2026-10-19 11:46（UTC+8） | 固定 `725b187f` 已交[PR48](https://github.com/dbvv1/a1dbv/pull/48)，接收源审通过；未合main，不据状态推定正在执行 |
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |
