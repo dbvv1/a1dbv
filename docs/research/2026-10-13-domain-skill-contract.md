@@ -691,3 +691,12 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 **Onyx：开发成本可与生产启用分开。** [#6060](https://github.com/onyx-dot-app/onyx/pull/6060)于2025-11-05合入`587cca4b1385104cb893b000aae24797347c7b23`，以输入卡顿为目标，但同时升级Next／React及多项依赖，不能将改善单独归因编译器。后续[#11592](https://github.com/onyx-dot-app/onyx/pull/11592)作者在冷缓存24核机器上报告关闭开发阶段编译器后，dev峰值RSS约4.9→2.8GB，首个/app编译约27→17秒；这是开发等待／内存，不是终端用户性能。2026-06-02合入的[052e4a49](https://github.com/onyx-dot-app/onyx/commit/052e4a4972cc2566fe6f2fdb6f2c27c184765059)按Next阶段配置：dev默认关闭，build保留，环境变量可恢复本地编译验证。PR的生产构建验证框仍未勾选，不能说该项已通过；也不将作者“dev无运行收益”的表述推广为通用事实。**[一手：固定实现；社区：作者测量；研究：归因边界]**
 
 **采用边界。** 比较局部自动优化、保留手工memo和不优化，以原交互及目标负载决定；收益成立才扩大。若开发阶段关闭，验收仍须覆盖实际编译的产物。上述材料没有同条件、长期维护净收益对照，不支持批删已有memo；局部退出也不替代根因修复。**[研究：采用判断]**
+
+
+## 交互画布：先呈现可见区域，再补屏外预绘
+
+核实：2026-10-19（UTC+8）。主线三；补15 §7的交互质量选择：缩放后仍模糊，先区分可见区域尚未算完，还是已就绪却等待屏外预绘。只读公开来源与源码，未运行候选、浏览器、模型或基准。**[研究：范围与判断]**
+
+**可见结果先于预绘完成。** Penpot [#11313](https://github.com/penpot/penpot/pull/11313)说明旧路径可见 tiles 已完成，却仍等 interest ring，使缩放后的清晰视口晚出现；[2026-08-25 固定补丁](https://github.com/penpot/penpot/commit/57c0e8161604c1e0e1e2dacffc28744ed77e593c)改为先呈现 ViewportReady，再继续周边预绘，并限制 HiDPI 绘制到 atlas 槽大小，避免画完又缩小丢弃。当前固定[tiles 调度](https://github.com/penpot/penpot/blob/8787937b7cd7cf8c7c1ab3a09f79b431de190b04/render-wasm/src/tiles.rs)仍分离可见与 deferred interest；[消费端](https://github.com/penpot/penpot/blob/8787937b7cd7cf8c7c1ab3a09f79b431de190b04/render-wasm/src/render.rs#L4450-L4482)在提升待绘周边后允许让出执行，以便先呈现视口。这里仅指允许让出的异步交互路径；同步路径 `allow_stop=false` 仍在同一调用处理周边，不将提前呈现推广到同步／导出。源码支持调整呈现／预绘顺序，不证明总绘制时间下降。**[一手：作者动因与固定实现；研究：效果边界]**
+
+**不由此默认换绘图库。** 原生 SVG／缩略图能满足目标交互时仍可保留；Penpot 维护者[明确已有缩略图且做过替代路线 PoC](https://community.penpot.app/t/its-time-for-penpot-to-almost-move-away-from-the-dom/6437/20)，才继续 canvas＋WASM。另有 [#12274](https://github.com/penpot/penpot/issues/12274)要求高倍像素检查禁用插值，属于不同质量目标，不能把提前呈现当作它的修复。案例没有该补丁的独立延迟测量、接收者复测或维护工时；未建立该补丁与正式发行版本的映射，也不将整个新渲染器的反馈归因本补丁。它支持窄调度选择，不证明 Skia、WASM 或额外 Agent 能力普遍更快。**[一手；研究：采用边界]**
