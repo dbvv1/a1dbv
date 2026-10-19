@@ -658,9 +658,15 @@
 - **Unity 位移权**：[MixingComponents](https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/MixingComponents.html)要求信息单向流动，Agent 与非运动学刚体、Root Motion 争写会冲突；Agent 与 Obstacle 同时启用会自我避让，carving 更可能使其不断映射到洞边。动画跟随速度的简单方案仍可能脚滑。[一手] [研究] 因此声明一个最终位移所有者，不能把行为节点成功当成动画与运动一致；不在此重复动画专题
 - **UE，公开文档显示5.8**：[Using Avoidance](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-avoidance-with-the-navigation-system-in-unreal-engine)区分 CharacterMovement 的 RVO 与 Detour Crowd，要求二者独立择一使用。RVO 不使用 NavMesh 约束，可能走出边界；Detour Crowd 结合走廊可见性／拓扑优化，最大 Agent 数量由设置限定。[一手] [研究] 已满足需求的方案保留；需要走廊约束／更可配群体行为时再评估 Detour Crowd，核半径和数量，不叠开，不把 Unity carving 的时序映射成 UE 承诺。这里未证实任何 UE 特定项目的运行时障碍更新配置
 
+**门还涉及角色能力与动作（2026-10-20，UTC+8核实）。** [一手] Unity AI Navigation 2.0.16 的 [Areas and Costs](https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/AreasAndCosts.html)用人类能过门、僵尸不能过门解释 AreaMask；区域也可赋给 NavMeshLink，路径成本只表示偏好。Unity 6.3 [CompleteOffMeshLink](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AI.NavMeshAgent.CompleteOffMeshLink.html)说明关闭自动通过后 Agent 停在链接上等待完成调用，Agent 在链接上时该调用会移到另一端有效 NavMesh 位置，并非动画完成通知。[研究] 先用原生过滤／链接表达适合的通路，已有状态负责开门、等待与通行，完成前或被打断时勿提前调用完成。AreaMask 按区域类别过滤；单门动态状态、个体钥匙／权限仍需项目同步，不能为一个无钥匙角色全局禁用链接而误挡有钥匙者。自由通行门可保留原表示，不要求每门建链接，也不把 Unity 时序外推到 UE。
+
+[一手] OpenMW 已合并 [PR2510](https://github.com/OpenMW/openmw/pull/2510)，固定 [6861d9d5](https://github.com/OpenMW/openmw/commit/6861d9d5e52fada169b44ebe202ce8ba2f9d52c6)：openDoors 排除空路径／游荡，检查近门是否在角色到下一路径点之间，并保留非传送门、无陷阱、未锁定等条件。[合并前评审](https://github.com/OpenMW/openmw/pull/2510#issuecomment-554765044)认为本修订可用，另记录跟随者走向锁门而舍弃附近未锁门，注明与本 PR 不直接相关。[研究] 这是历史并存的选路反例，支持把动作与路径资格分别处理，不表明修订引入该缺陷或最新版本仍有缺陷。只借机制；[固定版 LICENSE](https://github.com/OpenMW/openmw/blob/6861d9d5e52fada169b44ebe202ce8ba2f9d52c6/LICENSE)为 GPL 文本，不把引擎代码当闭源即插模块。
+
+[一手] [PR2494 作者自测](https://github.com/OpenMW/openmw/pull/2494#issuecomment-522138065)在五个地点反复战斗／关门，旧路径检测374次、均值约13.4μs，近门查询2999次、均值约2.5μs；前者单次较贵、累计反而较少。2510作者称改用较便宜的包围盒相交检查；未附新旧同条件对照。2494回滚是[误点合并](https://github.com/OpenMW/openmw/pull/2494#issuecomment-525438103)，不是运行失败后的撤回。[研究] 这些旧测量不证明2510收益或目标项目预算；增加检查与权限同步是可见实现成本，工时和净收益未知。已有原生能力满足时保留，仅在具体门规则表达不足时补局部交互，不借此升级导航框架。
+
 ### 4. 后续只预注册一个二改遭遇
 
-[研究] **二改预注册**：追击停距基线增加同队敌人与堵门箱；同房间验目标反向、堵门移开、窄门会车、追击转攻击／眩晕、退出重启。记通路、目的地、期望／实际位移、停距与旧请求。
+[研究] **二改预注册**：追击停距基线增加同队敌人与堵门箱；同房间验目标反向、堵门移开、窄门会车、追击转攻击／眩晕、退出重启。另核同门不同角色能力、锁门旁有未锁门、开门途中打断；记通路、目的地、期望／实际位移、停距与旧请求。
 
 [研究] 真人核摆动、贴墙、急转、脚滑、挤叠及身体卡位；测查询与移动总成本。原生满足即停；让路导致越界、错停或破坏卡位时收窄／撤回，不继续叠平滑。AI补生命周期与轨迹，人定碰撞、停距和自然度。
 

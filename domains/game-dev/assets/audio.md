@@ -85,6 +85,8 @@ SFX v2 接口当前允许 0.5–30 秒及 loop 参数；能力页与接口的最
 
 **[研究] ✅ 先定音乐跟随什么，再选切换时机。** 战斗强度需及时变化且已有对齐版本，可借 [FTL 作曲者所述](https://www.kgou.org/2013-10-06/composing-game-soundtracks-that-move-faster-than-light)的同步播放、交叉淡化；无兼容层则保留完整片段与明确转场。[一手／研究] 远程查看或区域边缘频繁往返时，按玩法选择角色处境或当前关注区域，再考虑等状态稳定／合适乐句才切。Factorio 的[历史选项及使用者回执](https://forums.factorio.com/119140)说明即时跟随视图也可能打断音乐，不支持一律跟随角色坐标。[一手／研究] **局限：对齐不保证音乐相容，延后切换也可能让音乐落后当前处境；**取消过期请求、暂停恢复与二改验收见 [WP6 音乐切换补研](../../../docs/research/2026-10-14-game-wp6-audio.md#音乐切换补研精确播放之前先选状态与时机)。
 
+**🧪 声音要把模拟事件组织成音乐时，先选“只跟随玩法”还是“允许共同调度”。** 不缺曲目却缺整体节律，继续补循环未必解决：Mini Metro 曾为此改乘客生成、上下车时序，音频参数也会改变模拟。只有这种相互约束确属目标体验、且允许改规则与重验平衡时才考虑；否则保持玩法时序，音乐按状态／密度响应，不强求每件事都落拍。代价包括事件队列、改速与暂停、性能和关卡平衡，不只是合成音色；关键命中／危险反馈仍不得为音乐延迟。作者后来在 Mini Motorways 收紧了这类耦合，不能把“更同步”当普遍更好。[同作品改造、公开参数及撤回依据](../../../docs/research/2026-10-14-game-wp6-audio.md#音乐与模拟补研共同调度不是免费音效层)。[一手／研究；未实测]
+
 Unity 的[PlayScheduled](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html)基于 dspTime 安排开播、支持预缓冲；[TransitionToSnapshots](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Audio.AudioMixer.TransitionToSnapshots.html)做混音状态过渡。Unreal 对应先用 [Quartz](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-quartz-in-unreal-engine) 的 Clock／Play Quantized 提前安排拍点。两者都不会替你找正确乐句；Update／Tick 中提前提交调度可以，等到拍点才发普通 Play 不等价，混音淡变也不自动对齐节拍。采样级音频调度不使游戏线程回调、输入判定或设备输出变成零延迟。[一手／研究]
 
 导入前保留母版与精确循环采样点；首尾波形检查只能筛 click，仍要听乐句是否完整、尾音是否被切、重复是否突兀。第二版“战斗更密、16 小节改 8 小节”优先改已有层与段落；生成缺口才用 Music inpainting 或 ACE repaint。ACE turbo 有局部 repaint，但 extract/lego/complete 在固定版本只列于 base，不能用“ACE 支持”笼统推给 turbo。局限：局部编辑入口不证明未改区间位级不变，也不证明听感衔接成功。[一手／研究]
