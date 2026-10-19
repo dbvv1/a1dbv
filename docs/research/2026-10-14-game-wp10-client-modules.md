@@ -1,6 +1,6 @@
 主线：一／二／三／四；客户端体验、第二次修改与交付
-改变的建议：[研究] 先复用原生组件，再按具体症状补输入、运动、呈现和资源责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。
-新证据：[一手／社区] 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。
+改变的建议：[研究] 先复用原生组件，再按具体症状补输入、运动、呈现和资源责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。 重复内容按机械转换、项目参数与专门作者语义分流，不因重复次数自建整套工具。
+新证据：[一手／社区] 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -1378,3 +1378,19 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 固定源码[LoadingImage](https://github.com/yairm210/Unciv/blob/58b2844068866a04525eecfbc45e57c693714294/core/src/com/unciv/ui/components/widgets/LoadingImage.kt)关闭连续渲染时仍显示忙碌图标，只取消淡化和旋转；[动画盘点](https://github.com/yairm210/Unciv/issues/11986#issuecomment-2262249912)区分装饰开关与仍触发绘制的移动／攻击 Actions。[研究] 借鉴的是保留状态反馈、减少持续装饰，不是把所有动画或玩法冻结。[同 SHA 许可](https://github.com/yairm210/Unciv/blob/58b2844068866a04525eecfbc45e57c693714294/LICENSE)为 MPL-2.0；仅提炼机制，不移植代码／资产。[一手]
 
 **反例收窄采用。** [Unity 解谜游戏作者原帖](https://discussions.unity.com/t/new-input-system-and-ondemandrendering-input-lag/899418)报告换 Input System 后触摸恢复延迟；2024 年跟帖称 Unity 6 Android 按低渲染频率处理触摸、Editor 却正常。缺完整版本与官方修复闭环，不能声称 6.3 仍必现；足以要求发布构建分开核输入接受和首个可见反馈。[社区／研究] 用现有预算验证同时看实际更新／呈现频率与耗用，覆盖静止、首操作、动画／异步变化及恢复；无收益或反馈变迟就撤回。未运行引擎、游戏、设备或模型，不由 API 或 CPU 自报推断 GPU 省电。[研究]
+
+## 重复内容：先分机械转换与作者判断
+
+2026-10-19核实。改变04编辑器扩展选择：重复次数本身不决定是否开发工具；机械转换留脚本，项目独有参数先沿已有Inspector，分支与语义作者任务先比较成熟环境。机械批处理继续核预览、重复执行与恢复；引用不稳或重跑结果异常先修原规则，沿01既有契约，不承诺所有操作可Undo。[研究]
+
+**同游戏制作链。** [NITW开发者Jon Manning复盘](https://www.gamedeveloper.com/programming/deep-dive-yarn-spinner)述最初逐行解释对白／命令，嵌套条件后来促使转正式语法与编译器；同游戏日文本地化实际用控制流生成台词覆盖游玩路线，检查器禁循环。语言版本迁移还可通过AST重写。原文未说初版只为一次导入，不能包装成“一次脚本升级工具”的完整实验。[一手：历史作者自述]
+
+[团队2017制作原文](https://secretlab.games/blog/2017/11/14/how-night-in-the-woods-uses-yarn-spinner)展示对白、字节码与表演对应：通用层发出台词、选项、命令，项目实现人物定位、表情、气泡与走位。价值在可反复改稿和控制演出，不只是导入成功；作品有艺术与写作人员，不能证明单人零手修全流程。[一手／研究]
+
+**当前工具维护是另一条链。** [Yarn 3.2发布说明](https://yarnspinner.dev/blog/yarn-spinner-3-2-release/)记录旧编辑器发现YSLS失败、Roslyn回退漏包内命令及参数信息，改由引擎产声明并撤静默回退；同期发布的VSCode扩展提供跨文件图与对白预览，这些能力不能由Unity包3.2.8单独认证。[7月反证](https://yarnspinner.dev/blog/monthly_jul_26/)仍修声明未写盘；无游戏的自定义函数预览当时需用户提供返回值且属预发布，不是实际世界状态。不能推成NITW持续升级或已证明提效。[一手／研究]
+
+固定[Unity v3.2.8](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/releases/tag/v3.2.8)，SHA `bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d`：[设置](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Editor/Editors/YarnSpinnerProjectSettings.cs#L25-L34)默认生成；[生成器](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Editor/Analysis/ActionsRegistrationGenerator~/ActionsGenerator.cs#L293-L354)仍有缺设置、缺项目路径及写失败分支。改命令参数后要核声明与反馈，不能只看开关。[许可MIT](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/LICENSE.md)，[包声明](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/package.json)Unity2022.3；不代替目标版本实测或额外资产授权。[一手：静态]
+
+**采用与责任。** Unity先沿用已有Inspector；需要字段组织、条件显隐等项目反馈时，才按[自定义Inspector教程](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-HowTo-CreateCustomInspector.html)补窄UI。专门作者工具则承接内容语义，项目维护动作消费与表演。已有[Inky](https://www.inklestudios.com/ink/)可自动重放修改后的选择，无依据要求稳定项目迁Yarn。UE[Editor Utility Widgets](https://dev.epicgames.com/documentation/unreal-engine/editor-utility-widgets-in-unreal-engine?lang=en-US)为UMG编辑器tab且标Beta，不搬Unity契约。[一手／研究]
+
+关键作者任务无法表达／验证，或学习、补接与维护成本不值时，转窄工具或其他环境。预览没覆盖游戏状态／完整演出本是职责边界，不单独构成撤回理由。单人程序可承担这些代码与参数工作，但整套内容质量仍待验证；安装、学习、主动工时、费用和二改净收益未知。未运行候选、引擎或游戏；3.3重写与UE版本不作为本段采用依据。[研究]
