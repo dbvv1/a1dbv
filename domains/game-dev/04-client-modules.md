@@ -1,6 +1,6 @@
 # 客户端核心模块：让操作有回应，让体验连续
 
-> 编辑更新：2026-10-18（UTC+8）；资料核实时间及版本见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md)。单人程序、无人工美术／音频修补；Unity 主线、Unreal 对照。资产导入见 [01](01-engine-integration.md)，资源供给见 [03](03-generative-ai-in-games.md)。本轮仅资料编辑，未运行引擎。
+> 编辑更新：2026-10-19（UTC+8）；资料核实时间及版本见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md)。单人程序、无人工美术／音频修补；Unity 主线、Unreal 对照。资产导入见 [01](01-engine-integration.md)，资源供给见 [03](03-generative-ai-in-games.md)。本轮仅资料编辑，未运行引擎。
 
 ## 30 秒结论：先把核心动作做舒服
 
@@ -88,7 +88,9 @@ Unity 6.3 URP 内置 Pixel Perfect，先统一 PPU、分辨率与缩放；Pixel 
 | 存档 | 显式 DTO、已有序列化器、小型迁移函数；UE SaveGame 槽位，保留旧档与失败反馈 | 字典／树迁移再加兼容序列化库；叙事才评估 ink。恢复进度错误时先修内容迁移 |
 | 本地化 | Unity Localization 表与伪本地化／UE FText，稳定 key、变量、复数及字体 fallback | 按目标语言增加塑形与编辑支持；关键文字不可读／不可操作就暂缓该语言 |
 | 平台发布 | Unity Build Profiles／UE build、cook、stage、package，干净目标机能启动和恢复 | 重复构建才做 CI；Play／Cook 成功不代验目标构建 |
-| 编辑器扩展 | Unity AssetPostprocessor／Inspector／UI Toolkit；UE Editor Python／Utilities，批处理可预览、幂等、可撤回 | 重复操作才写工具，引用不稳或重复执行有差异就先修 |
+| 编辑器扩展 | 机械转换保留脚本／原生导入；反复调项目参数先沿用Inspector；分支对白等专门内容先比较成熟作者环境 | 机械批处理验预览、重复执行与恢复，见[01](01-engine-integration.md)；项目负责玩法命令与呈现；关键作者任务无法表达／验证，或学习、补接与维护成本不值时，转窄工具或其他环境 |
+
+**先分清重复的是操作，还是内容判断。** 固定规则的批量转换沿用脚本；需反复看场景调参数，先用已有Inspector，不够再补小型工具。对白需要嵌套条件、分支预览与反复改稿时，先比较Yarn Spinner等现成作者环境，项目仍负责命令执行、世界状态与表演。NITW从逐行解释升级正式语法，并用于后续本地化检查，支持复用内容语义而非自建整套语言。简单线性对白不因此必加框架；作者预览与游戏内演出分别核验。见[内容作者工具](../../docs/research/2026-10-14-game-wp10-client-modules.md#重复内容先分机械转换与作者判断)。[一手／研究；未测本项目工时或质量收益]
 
 **[研究] 音频先按症状修原生配置：** 确认声迟到查提交／首用／输出，再改一个缓冲设置；爆音、断续就退回。密集漏声先分重触发、同组限额和全局声部；保护旧起音可能拒绝新警告，priority 不绕过组限额。播放却听不清先减装饰并改混音。
 
