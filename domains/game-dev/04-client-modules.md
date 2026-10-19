@@ -85,7 +85,7 @@ Unity 6.3 URP 内置 Pixel Perfect，先统一 PPU、分辨率与缩放；Pixel 
 | 输入 | 兼容的原生 Input System／Enhanced Input；改键用 override／UserSettings 保存；另做失焦／断连恢复 | 自补冲突规则；保稳定身份，结构变化再迁移旧设置，重复输入先修权限；[改键依据](../../docs/research/2026-10-14-game-wp10-client-modules.md#改键持久化既有选型回流) |
 | UI | 保留稳定 uGUI／UE UMG；新布局密集菜单可试 UI Toolkit | 重复菜单逻辑才抽共享层／试 CommonUI，焦点或返回失效就撤回 |
 | 音频 | Unity AudioSource／AudioMixer／DSP 调度，UE Audio／MetaSounds；分组音量、并发和暂停政策 | 交互音乐／制作成本值得才试 FMOD，集成抵消收益则保留原生 |
-| 存档 | 显式 DTO、已有序列化器、小型迁移函数；UE SaveGame 槽位，保留旧档与失败反馈 | 字典／树迁移再加兼容序列化库；叙事才评估 ink。恢复进度错误时先修内容迁移 |
+| 存档 | 显式 DTO、已有序列化器、小型迁移函数；UE SaveGame 槽位，保留旧档与失败反馈 | 字典／树迁移再加兼容序列化库；叙事才评估 ink。恢复进度错误先分内容迁移、同步文件与旧运行状态 |
 | 本地化 | Unity Localization 表与伪本地化／UE FText，稳定 key、变量、复数及字体 fallback | 按目标语言增加塑形与编辑支持；关键文字不可读／不可操作就暂缓该语言 |
 | 平台发布 | Unity Build Profiles／UE build、cook、stage、package，干净目标机能启动和恢复 | Steam 随版本更新先用平台，代价异常再查[下载与重写](#发布更新下载量与安装重写分开看)；重复构建才做 CI；Play／Cook 成功不代验目标构建 |
 | 编辑器扩展 | 机械转换保留脚本／原生导入；反复调项目参数先沿用Inspector；分支对白等专门内容先比较成熟作者环境 | 机械批处理验预览、重复执行与恢复，见[01](01-engine-integration.md)；项目负责玩法命令与呈现；关键作者任务无法表达／验证，或学习、补接与维护成本不值时，转窄工具或其他环境 |
@@ -164,6 +164,12 @@ UE LoadPrimaryAssets 保持到显式卸载，不要求保留返回句柄；Prelo
 Unity 保留 DTO＋JsonUtility，字典／树迁移才加兼容 Newtonsoft；UE 保留 SaveGame。Easy Save 的 CreateBackup 会覆盖旧备份，Mindustry 列表只查 metadata：恢复须完整读取与内容校验，失败不回写默认新游戏。[一手／研究]
 
 **[研究] 卡顿先分捕获、序列化和写入。** Unity 后台 JsonUtility 的 DTO 不得并发访问／修改；UE 异步保存仍在 game thread 序列化。保存退出要等本次目标状态的结果，失败保留恢复选择。改关卡时连存储地址与附属进度迁移，来源及断电待测范围见 [存档复用](../../docs/research/2026-10-14-game-wp10-client-modules.md#存档复用补比序列化落盘与玩家恢复分开选)。[一手]
+
+#### 跨设备续玩：同步文件之后，还要恢复正确状态
+
+**[研究] ✅ Steam 固定存档文件先比较 Auto-Cloud，需程序选择同步文件才评估 API。** 保留现有序列化；按账号隔离路径，设备画质配置不随进度同步。跨设备不自动要求自建云服务。
+
+**挂起后换设备续玩另验 Dynamic Cloud Sync。** 它也支持 Auto-Cloud，但恢复时磁盘可能已更新，旧进程须处理变更并按游戏规则重新载入／提示，不能继续用旧内存覆盖新进度。未接好恢复处理就保普通同步，不只勾开关；多文件写入提示也不等于原子事务。Dreadhunter 的采用公告、平台成本及二改验收见 [跨设备存档](../../docs/research/2026-10-14-game-wp10-client-modules.md#跨设备存档补研文件同步与运行状态恢复分开选)。[一手／研究；未实测]
 
 #### 旧档升级：版本可读之外还要进度正确
 
