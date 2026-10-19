@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 编辑更新：2026-10-18（UTC+8）；[研究记录与核实范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
+> 编辑更新：2026-10-19（UTC+8）；[研究记录与核实范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
 > 一句话：**先区分需求、环境、模型能力、上下文和验证器问题；上下文应提供必要信息，而非尽可能堆满。**
 
 ## 1. 原理与使用边界
@@ -151,6 +151,8 @@ Anthropic《Effective context engineering》（2025-09）提供设计思路，�
 **Claude 的共享范围要另查**：启动只加载 `MEMORY.md` 前 200 行或 25KB（先到为准），主题文件按需读；普通子 Agent 不加载主会话 auto memory，继承全历史的 conversation fork 例外。子 Agent `memory` 使用独立目录，`project` 范围可随版本控制共享；目录可配置，默认本地不等于无法共享。跨机器／云环境或委派时，沿用恢复记录，交接必要事实与来源，不为续接同步全部私人记忆。[官方契约与开关边界](research/2026-10-10-audit.md#s2c--2026-10-16-auto-memory-的共享与交接边界)核实于 2026-10-16（UTC+8），未运行客户端。**[一手；经验：采用判断]**
 
 **优先把工程经验沉淀成可评审的文档、测试或 lint 规则。** Kevin Liao 的 [文章](https://liao.gg/blog/agents-dont-need-memory)及 [HN 讨论](https://news.ycombinator.com/item?id=49945933)强调文档、解释性 lint 错误与 ADR；这是作者实践和社区观点，不是独立比较试验。**[社区]**
+
+导入纠错先分判据：静态包名／导入名限制可复用 `no-restricted-imports`，目录依赖则核解析器与 `import/no-restricted-paths`；后者未解析出目标会跳过该次检查，零报告不能当依赖合规。见[固定配置与选择边界](research/2026-10-13-context-tool-choice.md#导入纠错先选已有规则能判断的对象)。**[一手；经验]**
 
 自动记忆也可保存有来源、范围和失效条件的经验，先做对照，不把一次成功升格为永久规则。Markdown 和数据库都可能陈旧，也都可以被审计，取决于实现；采用判断见 [14 规律二](14-synthesis.md#2-规律二按任务选择预先提供与按需获取)。**[经验]**
 
