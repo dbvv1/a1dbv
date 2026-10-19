@@ -12,6 +12,8 @@
 |---|---|---|---|---|---|
 | GD：少直接表现后保留何种操作阻力，二改要补哪些输入能力 | B；接收 A；基线 `bad7c98fdcc9e7c6ffe30c0d5b793fd3e4dc9e08` | `dot-b/tmp/20261019-mediated-interface-choice` | 06、WP12、TASKS本行 | 2026-10-19 11:36（UTC+8） | 认领；核Duskers鼠标转命令行、声音取舍与别名二改，区分体验目标和重复输入负担；不占A当前文件，未运行实验 |
 
+| M3：Python 多索引解析先限定包来源 | dot-A；接收 dot-A；基线 `71c8a78c79bd9899e65dc6864ac483ad941bb4dd` | `dot-a/local/20261019-python-index-source` | 10、既有 development-conditions、TASKS 本行 | 2026-10-19 19:53（UTC+8） | 仅本地认领；官方源审通过，待实际差异独审与离线检查；未发布，未安装或运行包 |
+
 ## 最近交接
 
 | 线／SHA | 改进 | 验证范围 |
