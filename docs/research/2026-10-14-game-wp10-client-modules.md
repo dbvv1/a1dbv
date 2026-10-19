@@ -1,5 +1,5 @@
 主线：一／二／三／四；客户端体验、第二次修改与交付
-改变的建议：[研究] 先复用原生组件，再按具体症状补输入、运动、呈现和资源责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。
+改变的建议：[研究] 先复用原生组件，再按具体症状补输入、运动、呈现和资源／平台更新责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。
 新证据：[一手／社区] 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
@@ -1378,3 +1378,15 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 固定源码[LoadingImage](https://github.com/yairm210/Unciv/blob/58b2844068866a04525eecfbc45e57c693714294/core/src/com/unciv/ui/components/widgets/LoadingImage.kt)关闭连续渲染时仍显示忙碌图标，只取消淡化和旋转；[动画盘点](https://github.com/yairm210/Unciv/issues/11986#issuecomment-2262249912)区分装饰开关与仍触发绘制的移动／攻击 Actions。[研究] 借鉴的是保留状态反馈、减少持续装饰，不是把所有动画或玩法冻结。[同 SHA 许可](https://github.com/yairm210/Unciv/blob/58b2844068866a04525eecfbc45e57c693714294/LICENSE)为 MPL-2.0；仅提炼机制，不移植代码／资产。[一手]
 
 **反例收窄采用。** [Unity 解谜游戏作者原帖](https://discussions.unity.com/t/new-input-system-and-ondemandrendering-input-lag/899418)报告换 Input System 后触摸恢复延迟；2024 年跟帖称 Unity 6 Android 按低渲染频率处理触摸、Editor 却正常。缺完整版本与官方修复闭环，不能声称 6.3 仍必现；足以要求发布构建分开核输入接受和首个可见反馈。[社区／研究] 用现有预算验证同时看实际更新／呈现频率与耗用，覆盖静止、首操作、动画／异步变化及恢复；无收益或反馈变迟就撤回。未运行引擎、游戏、设备或模型，不由 API 或 CPU 自报推断 GPU 省电。[研究]
+
+## 更新交付：平台差分与独立内容发布分开选
+
+核实：2026-10-19（UTC+8）。改变 04 平台发布选择：随应用版本发布的小补丁，先比较平台差分与打包布局，不因下载／安装代价异常就增加运行时远程分发。WP9 已覆盖[内容更新基线维护](2026-10-14-game-wp9-engine-handoff.md#33-addressables-管加载不负责识别同一个动作)，本节新增的是下载量、客户端重写和布局迁移的区别。[研究]
+
+**平台机制。** Valve [SteamPipe 文档](https://partner.steamgames.com/doc/sdk/uploading?language=english)说明，约 1 MB 块可复用，但更新大包仍要在旧文件旁生成完整新包；少量下载也可能伴随大量本地复制。官方建议限制包范围、按关卡／功能分组、减少无关重排及跨资产压缩扩散；为加载效率重排资产则可能扩大本次下载。其 1–2 GB 建议不是通用阈值。先核真正改变的字节和客户端重写，不能由补丁下载量直接推安装速度；本轮没有实测。[一手／研究]
+
+**引擎能力与交付分开。** Unity [Addressables 2.9.1](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/content-update-builds-overview.html)（另核 [2.7.6](https://docs.unity3d.com/Packages/com.unity.addressables@2.7/manual/content-update-builds-overview.html)／[3.0.0](https://docs.unity3d.com/Packages/com.unity.addressables@3.0/manual/content-update-builds-overview.html)）要求平台自带 patch 或不支持远程内容分发时不用 content-update builds，每次应用发布做新 content build；这不取消本地 Addressables 加载与资源管理。确需内容独立更新，再承担远程 catalog／托管及各平台原始发行 content_state 维护；AssetBundles 不含代码变更。[一手／研究]
+
+Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/documentation/unreal-engine/how-to-create-a-patch-in-unreal-engine)以 package（如 .uasset）为最小纳入单位，保留已发行 cooked content、挂载新旧 PAK；长期保旧文件会增加存储，补丁怎样送达仍由分发平台决定。该页保留 Windows／Xbox One 使用范围说明，不代验所有 IoStore／平台组合。Steam 文档的旧 UE padding 示例未核目标 5.8 实现，因此不照抄参数。[一手／研究]
+
+**迁移代价与改判。** Dead by Daylight [2022 年 3 月开发者更新](https://forums.bhvr.com/dead-by-daylight/discussion/315701/developer-update-march-2022)称内容增长使分组扩大，因而重排／重平衡；[5.7.0 发行通知](https://forums.bhvr.com/dead-by-daylight/discussion/320530/release-information-5-7-0)确认文件结构变更需一次近乎全量重下。这是进入发行的迁移代价，未独立验证宣传速度，也不代表单人项目收益。布局调整后若局部更新仍牵连大量无关数据，或迁移成本不值，先缩改动范围／保原布局，再比较交付路线；下载、安装、临时磁盘与既有加载表现分别验收。没有运行引擎、打包器、游戏或模型，维护工时与本项目净收益未知。[一手／研究]

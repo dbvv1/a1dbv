@@ -1,6 +1,6 @@
 # 客户端核心模块：让操作有回应，让体验连续
 
-> 编辑更新：2026-10-18（UTC+8）；资料核实时间及版本见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md)。单人程序、无人工美术／音频修补；Unity 主线、Unreal 对照。资产导入见 [01](01-engine-integration.md)，资源供给见 [03](03-generative-ai-in-games.md)。本轮仅资料编辑，未运行引擎。
+> 编辑更新：2026-10-19（UTC+8）；资料核实时间及版本见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md)。单人程序、无人工美术／音频修补；Unity 主线、Unreal 对照。资产导入见 [01](01-engine-integration.md)，资源供给见 [03](03-generative-ai-in-games.md)。本轮仅资料编辑，未运行引擎。
 
 ## 30 秒结论：先把核心动作做舒服
 
@@ -87,7 +87,7 @@ Unity 6.3 URP 内置 Pixel Perfect，先统一 PPU、分辨率与缩放；Pixel 
 | 音频 | Unity AudioSource／AudioMixer／DSP 调度，UE Audio／MetaSounds；分组音量、并发和暂停政策 | 交互音乐／制作成本值得才试 FMOD，集成抵消收益则保留原生 |
 | 存档 | 显式 DTO、已有序列化器、小型迁移函数；UE SaveGame 槽位，保留旧档与失败反馈 | 字典／树迁移再加兼容序列化库；叙事才评估 ink。恢复进度错误时先修内容迁移 |
 | 本地化 | Unity Localization 表与伪本地化／UE FText，稳定 key、变量、复数及字体 fallback | 按目标语言增加塑形与编辑支持；关键文字不可读／不可操作就暂缓该语言 |
-| 平台发布 | Unity Build Profiles／UE build、cook、stage、package，干净目标机能启动和恢复 | 重复构建才做 CI；Play／Cook 成功不代验目标构建 |
+| 平台发布 | Unity Build Profiles／UE build、cook、stage、package，干净目标机能启动和恢复 | Steam 随版本更新先用平台，代价异常再查[下载与重写](#发布更新下载量与安装重写分开看)；重复构建才做 CI；Play／Cook 成功不代验目标构建 |
 | 编辑器扩展 | Unity AssetPostprocessor／Inspector／UI Toolkit；UE Editor Python／Utilities，批处理可预览、幂等、可撤回 | 重复操作才写工具，引用不稳或重复执行有差异就先修 |
 
 **[研究] 音频先按症状修原生配置：** 确认声迟到查提交／首用／输出，再改一个缓冲设置；爆音、断续就退回。密集漏声先分重触发、同组限额和全局声部；保护旧起音可能拒绝新警告，priority 不绕过组限额。播放却听不清先减装饰并改混音。
@@ -274,6 +274,12 @@ CPU 改善不足，或 GPU、内存、反馈延迟变差就撤回；加数值／
 **[研究] ✅ 先分补全文字、结束句子、退出会话，沿已有组件配置。** Yarn 的文字／语音信号不同，退出不撤销已发出的玩法命令。[一手]
 
 Firewatch 保护特定关键会话，inkle 短气泡通常自动继续；按内容选择打断、保护／补述和重入。Yarn 3.2.8 开启 endLineWhenVoiceoverComplete 后缺配音也可能结束句子，须有阅读回退。加语言／分支后核事实与选项，阅读不及或信息丢失则撤回相关推进／打断范围；见 [对白研究](../../docs/research/2026-10-14-game-wp10-client-modules.md#对白补研显示完成不等于剧情交付)。[一手／研究]
+
+### 发布更新：下载量与安装重写分开看
+
+**[研究] ✅ 随版本发布的 Steam 更新先用平台差分。** 小下载仍可能重写大包；更新代价异常，先查包范围、资产重排与压缩扩散，确有无关牵连再比较按关卡／功能分包。现有交付已满足目标就保留；改布局要连同一次性大下载比较。
+
+Unity 的本地 Addressables 仍可保留；需要内容脱离 Player 独立发布时，再评估远程内容维护。UE 的 PAK 补丁按 package 纳入变化，送达用户仍须另定分发方式。见[更新取舍](../../docs/research/2026-10-14-game-wp10-client-modules.md#更新交付平台差分与独立内容发布分开选)；未打包实测，不承诺安装时间或带宽收益。[一手／研究]
 
 ## 4. 借用的授权边界与升级条件
 
