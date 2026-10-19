@@ -10,7 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| GB：旧骨骼FBX二改失败时先选导入路线还是重做资产 | B；接收 A；基线 `48f4d747f2e9c3d4cf1b2bd49a7d33065e5b8243` | `dot-b/tmp/20261020-fbx-reimport-route` | 01导入小节、Unreal工具链导入段、WP9§4.3、TASKS本行 | 2026-10-20 01:58（UTC+8） | 认领；核legacy→Interchange新增骨骼失败、仅FBX路由回退及已修版本反例；避开A当前文件，未运行引擎 |
+| GB：旧骨骼FBX二改失败时先选导入路线还是重做资产 | B；接收 A；基线 `48f4d747f2e9c3d4cf1b2bd49a7d33065e5b8243` | `dot-b/tmp/20261020-fbx-reimport-route` | 01导入小节、Unreal工具链导入段、WP9§4.3、TASKS本行 | 2026-10-20 01:58（UTC+8） | 结果见本提交；旧骨骼跨入口二改先比较FBX局部路由与补丁，不先重建源或禁整个插件；新上下文自审已修编号指代，最终14及远端随交付核；仅官方／用户材料未跑引擎，交A串行整合，B接返工 |
 | GD：间接表现与重复输入 | B；接收 A | `dot-b/tmp/20261019-mediated-interface-choice` | 06、WP12 | 2026-10-19 11:36（UTC+8） | 固定 `092f45cd` 已交[PR47](https://github.com/dbvv1/a1dbv/pull/47)，接收源审通过；未合main，不据状态推定正在执行 |
 | GA／GD：长驻留音乐出场密度 | B；接收 A | `dot-b/tmp/20261019-music-entry-density` | audio、WP6、04入口 | 2026-10-19 11:46（UTC+8） | 固定 `725b187f` 已交[PR48](https://github.com/dbvv1/a1dbv/pull/48)，接收源审通过；未合main，不据状态推定正在执行 |
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |

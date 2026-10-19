@@ -1,6 +1,6 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；源层级联动与引擎组件保留分别选，解耦后显式同步；撤回旧 Unity AI MCP 并列推荐
-新证据：2026-10-17（UTC+8） 补 Unity 官方同源 FBX 前后对照／6.3 解包合同与 UE5.8 FBX Scene 层级重建边界（§3.2／4.2）；补核 Spine 用户材质删除、固定修复与同用户回执，区分保护用户资产与自动同步（§3.6）；2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：2026-10-20（UTC+8）补旧骨骼FBX跨导入器二改的路由回退、原用户有限回执及5.7旧入口反例（§4.3）；2026-10-17（UTC+8） 补 Unity 官方同源 FBX 前后对照／6.3 解包合同与 UE5.8 FBX Scene 层级重建边界（§3.2／4.2）；补核 Spine 用户材质删除、固定修复与同用户回执，区分保护用户资产与自动同步（§3.6）；2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
@@ -199,7 +199,19 @@ Epic 技能仓库 [LICENSE](https://github.com/EpicGames/unreal-engine-skills-fo
 1. [UE-253996](https://issues.unrealengine.com/issue/UE-253996)报告 5.5 自动 import 转 reimport 后旧材料参数保留，即使调用侧设置 ApplyPipelineProperties 等也未按预期更新。状态是 **By Design**，页面另写 Target Fix 5.6；不能据“Target Fix”称已修复，更不能把报告者强行跳过 reimport 的 workaround 推荐给所有资产。[一手：官方问题记录，含用户报告]
 2. [5.8 release notes](https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-release-notes)仍列 reimport 时误删已有纹理、USD reimport 后旧资产仍被引用、骨骼 LOD 绑定更新等修复；这只证明维护方修复声明。本轮未读 Epic 授权引擎完整源码、未跑对应回归。[一手]
 
-Importer 切换／引擎升级与普通替换分开；核对旧名称、骨架、材质槽后再决定沿用 legacy 或迁到 Interchange。[经验]
+**旧骨骼二改失败：先比较导入路线，再决定是否改源资产。** 核实2026-10-20（UTC+8）；本节补的不是新Importer名单，而是避免把跨入口故障误判为美术必须重做，也避免为单一FBX绕行停掉整个Interchange插件。[研究]
+
+- **同源二改与失败。** [UE-325794](https://issues.unrealengine.com/issue/UE-325794)复现旧入口首导骨骼资产，切Interchange后用新增骨骼的FBX重导，出现Failed to merge bones；Yes／No均未得到legacy路径的同样层级。该记录影响5.5、状态Fixed、Target Fix 5.7、修复编号46318776。它支持排查这一路径，不证明任意骨骼报错都是引擎缺陷，也不证明5.8仍有该错。[一手：官方复现／状态，非本仓运行]
+- **原绕行与更小替代。** [对应原帖](https://forums.unrealengine.com/t/fbx-reimport-issue-with-interchange-framework/2665455)的5.4→5.5报告者原先禁用插件、重导、再启用，称增加迭代时间。维护方建议把 `Interchange.FeatureFlags.Import.FBX` 设false即可选legacy，不必禁整个插件；原报告者随后谨慎表示认为解决了问题。这是较窄绕行的有限使用回执，没有精确工时、完整动画复测或5.7修复版复测，不扩大成普遍成功率。[一手／用户报告]
+- **回退也有失败版本。** [UE-349466](https://issues.unrealengine.com/issue/UE-349466)记录5.7中因Interchange问题而用legacy，重导同层级259骨骼FBX仍可能错乱；其临时删建Skeleton、替换引用办法也并非每次有效，不推荐照抄。状态Fixed、目标5.7.2、修复编号48869729；[2026-01-21官方5.7.2热修公告](https://forums.unrealengine.com/t/5-7-2-hotfix-released/2693914)明确列入UE-349466。说明旧入口并非永久安全基线，不能把一个历史workaround设成所有新项目默认。[一手：官方记录／发布声明]
+
+| 当前条件 | 先选的动作 | 代价与撤回 |
+|---|---|---|
+| 仍受325794影响，旧资产需继续二改 | 保留资产／引用，局部回退FBX路径；先用同源修改核旧层级及新增骨骼 | 多维护一条导入路线；旧入口也失败时停止批量重导，不反复确认弹窗或破坏性重建 |
+| 项目可用对应修复版本或需要Interchange能力 | 优先验证修复后的同源重导，再迁一组代表资产 | 官方Fixed不是项目验收；层级、动画／挂点、材料与调用侧引用不符时保留旧产物，继续定位 |
+| 两路都不满足，或源层级本就有意改变 | 回到源结构／内容兼容需求，明确迁移范围 | 此时才决定改源、映射或缩范围；不能以路由切换替代必要美术或动画修订 |
+
+以上是普通Skeletal Mesh FBX重导选择，不套到Import Into Level的Blueprint层级规则，不要求Unity有同名开关。原有材料／骨架冲突预览、异步完成回读、真实引用和玩法使用点验收仍全部适用。未下载附带复现资产、未读需授权的Epic引擎修复源码、未运行UE；修复编号是公开记录而非源码审查。现有证据足以选择较小绕行和补丁比较，不足以承诺新版本、legacy或Interchange之一无损。[研究：范围／验证边界]
 
 [Redirectors](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-redirectors-in-unreal-engine)可帮助资产移动后的引用，不能修复原路径变成另一语义资产。既有 .uasset 保持路径与对象身份，改名必须用 Editor API 并检查引用；不要把 Unity .meta GUID 规则原样套给 Unreal。[一手＋经验]
 
