@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M3：AI 辅助重构后的跨贡献者续改 | dot-A；接收 dot-A；基线 `71c8a78c` | `dot-a/local/20261019-ghostty-contributor-handoff` | community-source-records、TASKS本行 | 2026-10-19 17:03（UTC+8） | 仅本地认领；Ghostty 已合重构后的跨人新交互续改，源审通过；待实际稿独审与离线，未发布 |
 | GD：少直接表现后保留何种操作阻力，二改要补哪些输入能力 | B；接收 A；基线 `bad7c98fdcc9e7c6ffe30c0d5b793fd3e4dc9e08` | `dot-b/tmp/20261019-mediated-interface-choice` | 06、WP12、TASKS本行 | 2026-10-19 11:36（UTC+8） | 认领；核Duskers鼠标转命令行、声音取舍与别名二改，区分体验目标和重复输入负担；不占A当前文件，未运行实验 |
 
 ## 最近交接
