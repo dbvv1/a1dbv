@@ -1,5 +1,5 @@
 主线：二，兼三／四
-改变的建议：按事实、反馈、访问或决策缺口补最小条件；续改分验有意改变与必须保留的行为，迁移核持久状态、消费者和真实运行入口。工具采用按任务、输入与失败边界收窄；测试先定保护或查错目标，再核实际观测与断言。数据库默认值另分写列保护与值来源，不凭新进程通过推定旧缓存安全。[研究／经验]
+改变的建议：按事实、反馈、访问或决策缺口补最小条件；续改分验有意改变与必须保留的行为，迁移核持久状态、消费者和真实运行入口。依赖解析先限定包来源；工具采用按任务、输入与失败边界收窄；测试先定保护或查错目标，再核实际观测与断言。数据库默认值另分写列保护与值来源，不凭新进程通过推定旧缓存安全。[研究／经验]
 新证据：2026-10-18（UTC+8）补核重复 Hook 分阶段撤回与替代激活链及 GitLab 默认值保护实现与预热旧缓存的固定测试定义，未执行上游。既有案例、核实日期、证据类型及各自运行／未验证范围见下列索引与对应小节；源码、历史回执和本仓局部运行分别计证据，不证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
 
 - **本仓局部运行**：[Hook 五类合成输入](#hook-跨宿主迁移匹配成功不等于协议适配)（未执行补丁）、[标准库公式](#本轮零成本公式对照)、[路径逻辑模型](#外部生产者校准错误预期)、[32 场景固定 SQL](#写入路径扩展与序列化判等sqlite-chronicle)。各自只验证所列机制
@@ -100,6 +100,20 @@
 **锁定内容仍要判断来源。** `npm ci` 按已有锁文件安装，manifest 与锁文件不符时失败，不替你更新二者；[锁文件](https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/)记录依赖树、来源与完整性值。这支持重现和内容一致性，不能证明锁定代码可信，陌生变更须连同锁文件一起审。[Node.js 官方安全指南](https://nodejs.org/learn/getting-started/security-best-practices#malicious-third-party-modules-cwe-1357)说明运行期恶意依赖仍是风险；[Docker 官方边界](https://docs.docker.com/engine/security/#docker-daemon-attack-surface)说明宿主挂载与 daemon 控制权限可暴露宿主，故“用了容器”不足以确认隔离。若功能确需被跳过的安装脚本，先审所需脚本，再在原隔离环境中允许；不为跑通撤掉边界。**[一手：机制；经验：采用／撤回]**
 
 仅阅读公开文档，未安装依赖、运行 npm／容器／测试或攻击载荷，未检查私人配置；不构成运行时安全认证。**[研究：验证范围]**
+
+### Python 多索引：先固定包来源再解析
+
+核实：2026-10-19（UTC+8）；补充 10 §3 在 Agent 新增索引或放宽解析策略时的选择。既有 npm 段管安装后执行，本节管解析时选中哪个来源；两者都须保留。**[研究：范围]**
+
+**pip 不按索引位置设优先级。** [26.2.1 固定文档](https://github.com/pypa/pip/blob/634a6ec1a5d9dcc2433571cdb2f4c58a4bb29caf/docs/html/cli/pip_install.rst#finding-packages)说明，主索引、`extra-index-url`、`find-links` 等位置的候选共同参与选择；同名同版本也不认证来源。已有受控单索引或已审离线 wheel 集合够用时保留 pip；文档支持 `no-index` 配合 `find-links`，但代理自身如何处理同名包仍要核，不能把“只有一个 URL”当安全证明。**[一手；经验：采用边界]**
+
+**uv 的先后顺序不是“第一个兼容版本”。** 固定 [`063712bc` 索引契约](https://github.com/astral-sh/uv/blob/063712bc3a1390ddec8079bf3b0add6978d792d6/docs/concepts/indexes.md#searching-across-multiple-indexes)与[兼容性说明](https://github.com/astral-sh/uv/blob/063712bc3a1390ddec8079bf3b0add6978d792d6/docs/pip/compatibility.md#packages-that-exist-on-multiple-indexes)：默认 `first-index` 把候选限制在首个含该包的索引；该处缺兼容版本也不跨源找，前索引根本无包则仍可继续，因此内部包名不能只靠排序防回落。`unsafe-first-match` 改为找首个兼容版本，`unsafe-best-match` 合并候选；不为消除解析报错就改用它们。**[一手；经验：撤回边界]**
+
+**包绑定与索引准入方向不同。** 已有 uv 项目工作流可用 [`tool.uv.sources`](https://github.com/astral-sh/uv/blob/063712bc3a1390ddec8079bf3b0add6978d792d6/docs/concepts/indexes.md#pinning-a-package-to-an-index)将特定包绑定具名索引；该名字须在项目 `pyproject.toml` 定义。`explicit = true` 另限制其他未绑定包不能从该索引取得，不会自行把内部包绑定过去。来源绑定的命令入口须保持一致，不能把这份项目配置外推到任意 pip 兼容调用；切换命令或忽略 sources 的选项须重新核对。**[一手；经验：采用范围]**
+
+**可信哈希仍有用，首次选择另审。** pip 的[固定哈希契约](https://github.com/pypa/pip/blob/634a6ec1a5d9dcc2433571cdb2f4c58a4bb29caf/docs/html/topics/secure-installs.md#hash-checking-mode)用本地可信哈希保护选定工件，要求依赖完整覆盖；索引随下载给出的摘要不能替代这份可信值。锁入错误来源后，内容一致也不使其可信。历史 [PyTorch 公告](https://pytorch.org/blog/compromised-nightly-dependency/)限定 2022-12-25 至 30 的 Linux／pip nightly 同名 `torchtriton`，stable 不受影响；恶意程序在导入 triton 时执行。公告“PyPI 优先”的历史简写不覆盖上述当前 pip 契约，也不是当前 Agent 事故。**[一手；研究：历史范围与采用判断]**
+
+✅ 先明确包的获准来源；指定来源缺兼容版本时修发布或约束，确认后再更新锁与可信哈希。该机制不替代执行隔离，也不要求迁移现有包管理器。本轮只读官方文档和历史公告，未访问私有索引或凭据，未安装、运行包、解析器、攻击测试或模型；没有安全效果或维护成本测量。**[经验；研究：验证边界]**
 
 ### Codex 脚本入口：信任状态不等于有效权限
 

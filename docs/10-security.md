@@ -1,6 +1,6 @@
 # 10 · 安全
 
-> 编辑日期：2026-10-17（UTC+8）。来源与分项核实范围见[研究记录](research/2026-10-12-development-conditions.md)。
+> 编辑日期：2026-10-19（UTC+8）。来源与分项核实范围见[研究记录](research/2026-10-12-development-conditions.md)。
 
 ## 30 秒结论
 
@@ -91,6 +91,8 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
 7. **审查 Agent 引入的依赖和服务**：Agent 会替你选数据库、SaaS 和库，已经有公司专门做“影响 Agent 选型”的生意；包仓库里也出现过 AI 实验室 Agent 上传的包。
 8. **预算与停用边界**：限制 Agent 开通付费服务的权限；配置适用的 spend limit / spend cap，并核对覆盖范围、计费延迟和停用后果，不能只设告警，也不能假设所有账户和服务都支持硬性封顶（见 [18 第 5 节](18-team-adoption.md#5-成本治理)）。**[研究：采用建议]**
 9. **不在不可信目录里执行代码**：Python 等语言会优先导入当前目录里的同名模块，auto mode 攻击就利用了这一点。
+
+**Python 多索引先固定包来源。** `pip --extra-index-url` 不保证私有源优先；受控单索引或已审离线包集合够用时保留现有工具。已有 uv 项目可按包绑定索引；缺兼容版本先修正确来源的发布／依赖条件，不为解析通过放宽跨源搜索。可信哈希锁继续保护已选工件，更新锁时仍须审来源，后续执行仍须隔离。见[索引选择与哈希边界](research/2026-10-12-development-conditions.md#python-多索引先固定包来源再解析)。**[一手：官方契约；研究：采用判断]**
 
 **外来仓库转脚本前，先限制配置来源。** 普通 `claude -p` 不显示工作区信任或逐服务器批准提示，未信任目录中的项目 Hook 与 `.mcp.json` 仍会运行／连接。先用 `--setting-sources user` 排除项目 settings 与 `.mcp.json`；不需要自动发现能力时，再用 `--bare`，仅显式加入审过的输入与工具。`--bare` 单独使用仍会应用项目 `env` 与部分认证 helper，不能替代整个进程的隔离。见[官方权限矩阵](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)与[具体边界、认证前提](research/2026-10-12-development-conditions.md#交互试点转脚本bare-不是等价加速)。**[一手：官方契约；经验：采用建议]**
 
