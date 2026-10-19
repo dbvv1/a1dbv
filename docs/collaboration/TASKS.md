@@ -10,6 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M1：完成交接归档与开工阅读收敛 | dot-A；接收 A | `dot/tmp/20261020-startup-handoff-archive` | TASKS、10月20日日档 | 2026-10-20 03:22（UTC+8） | 基线 `f46af81b`；仅归档完成行与核准状态，待独审及离线检查 |
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，创建草稿PR拒绝后保断点；本次不含其内容 |
 
