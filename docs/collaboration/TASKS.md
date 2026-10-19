@@ -10,7 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| M3／M4：API修改先补声明兼容、消费者契约还是集成测试 | dot；接收solepublisher；基线40c92ead（本地等树64539549） | dot/api-contract-20261020（本地） | 09、development-conditions、TASKS本行 | 2026-10-20 03:32（UTC+8） | 认领；固定官方与InvenTree／GOV.UK两端源码已保存，源审中；不碰B字形，不执行候选 |
+| M3／M4：API修改先补声明兼容、消费者契约还是集成测试 | dot；接收solepublisher；基线40c92ead（本地等树64539549） | dot/api-contract-20261020（本地） | 09、development-conditions、TASKS本行 | 2026-10-20 03:32（UTC+8） | 本地交付候选；09按已有集成、声明兼容和双方契约选择，避免单边mock冒充互通；保存固定材料源审修后通过（审者在线复取Cache miss），最终差异与冻结树验收随交付核；未执行模型／包／引擎；交solepublisher整合 |
 
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，创建草稿PR拒绝后保断点；本次不含其内容 |
