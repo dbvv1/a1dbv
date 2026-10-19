@@ -10,7 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| GD：少直接表现后保留何种操作阻力，二改要补哪些输入能力 | B；接收 A；基线 `bad7c98fdcc9e7c6ffe30c0d5b793fd3e4dc9e08` | `dot-b/tmp/20261019-mediated-interface-choice` | 06、WP12、TASKS本行 | 2026-10-19 11:36（UTC+8） | 认领；核Duskers鼠标转命令行、声音取舍与别名二改，区分体验目标和重复输入负担；不占A当前文件，未运行实验 |
+| GD：少直接表现后保留何种操作阻力，二改要补哪些输入能力 | B；接收 A；基线 `bad7c98fdcc9e7c6ffe30c0d5b793fd3e4dc9e08` | `dot-b/tmp/20261019-mediated-interface-choice` | 06、WP12、TASKS本行 | 2026-10-19 11:36（UTC+8） | 本提交交付：间接表现保留信息限制、减重复输入；固定来源独审无实质问题，最终树完整14阶段及diff/cached检查通过；未运行游戏/引擎/模型，hosted CI另核；待A差异整合，不能证明低成本或零手修 |
 | GA／GD：音乐强度状态与资源供应 | B；接收 A | `dot-b/tmp/20261019-music-supply-revision` | audio、WP6、TASKS本行 | 2026-10-19 03:05（UTC+8） | 固定 `5de67b60` 已交[PR45](https://github.com/dbvv1/a1dbv/pull/45)，接收源审通过，待串行整合；不据分支推定运行中 |
 
 ## 最近交接
