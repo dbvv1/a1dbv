@@ -16,6 +16,8 @@
 
 
 
+| GA／GB：有字却选错地域字形时是否继续追加fallback | B；接收 A；基线 `f46af81be7f911f85c63a3f8da832ae838b60839` | `dot-b/tmp/20261020-language-glyph-priority` | 04本地化入口、WP10本单元、TASKS本行 | 2026-10-20 03:24（UTC+8） | 已开始：核Mindustry同版缺字回退与日文字形覆盖两种修复；未交付，未运行字体／游戏 |
+
 ## 最近交接
 
 | 线／SHA | 改进 | 验证范围 |
