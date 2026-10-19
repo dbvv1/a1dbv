@@ -1,6 +1,6 @@
 主线：二／三／四；音频选型、可修改性与交付
-改变的建议：[研究] 现成／参数化优先，按事件、音乐结构和台词 ID 离线生产；运行时复用混音／调度，先保可读反馈与声音供应连续性；风格化状态先比较固定声源变体，随机变化不代替状态含义；定位核心与环境宽度分开选源
-新证据：[一手／研究] 空间音频契约、下混反例与RoboRaid作者分层；Pixel Wheels 许可轮胎循环、冰面固定变调提交及发行祖先链补状态变体选择；近期型号／许可、固定音频编辑路径及上下文契约；Factorio 改速设计、2.0.36 配置与 GUI 误播修复补事件调度边界，制作工时未知；未试听或运行模型／引擎
+改变的建议：[研究] 现成／参数化优先，按事件、音乐结构和台词 ID 离线生产；运行时复用混音／调度，先保可读反馈与声音供应连续性；风格化状态先比较固定声源变体，随机变化不代替状态含义；定位核心与环境宽度分开选源；新增音乐状态先核配套版本供给
+新证据：[一手／研究] SuperTuxKart同曲普通／快版许可、循环点修订及变调回退撤除，创作动因与工时仍缺；空间音频契约、下混反例与RoboRaid作者分层；Pixel Wheels 许可轮胎循环、冰面固定变调提交及发行祖先链补状态变体选择；近期型号／许可、固定音频编辑路径及上下文契约；Factorio 改速设计、2.0.36 配置与 GUI 误播修复补事件调度边界，制作工时未知；未试听或运行模型／引擎
 
 # WP6：音频资源路线、可修改性与授权边界
 
@@ -399,3 +399,17 @@ Cogmind 作者[2020 制作复盘](https://www.gridsagegames.com/blog/2020/06/bui
 - [RoboRaid作者](https://learn.microsoft.com/en-us/windows/mixed-reality/design/case-study-using-spatial-sound-in-roboraid)以mono空间核心叠2D stereo层扩爆炸规模，后者过多削弱方向。[一手] HoloLens制作经验，非零手修证明，不强制双层。
 
 [研究；未执行] 二改换源后核起音、转头／移动、远近、宽度与下混；必要内容变弱或方向混淆就退回。只读文档与作者报告，未试听、生成或运行音频／引擎；不证明定位、听感或工时收益。
+
+## 成套配乐二改：普通曲不自动供应强度版本
+
+核实：2026-10-19（UTC+8）。[研究] 新增赛末／高强度状态时，先比较保留原曲、采用已有成对版本、另补相容曲目；不把整曲变速当免费供给。以下只连 SuperTuxKart 同一作品的资源接入与维护，尚未证明明确新需求驱动的零手修二次创作。
+
+**从单曲到实际成对采用。** 官方 SVN [r18012赛道](https://svn.code.sf.net/p/supertuxkart/code/!svn/bc/18012/stk-assets/tracks/ravenbridge_mansion/track.xml)引用的 [Demon Hill配置](https://svn.code.sf.net/p/supertuxkart/code/!svn/bc/18012/stk-assets/music/demonhill.music)只有普通曲；[r18013](https://svn.code.sf.net/p/supertuxkart/code/!svn/bc/18013/stk-assets/music/ravenbridge_mansion.music) 改供 Ravenbridge Mansion 普通／fast 两文件，[r18014赛道](https://svn.code.sf.net/p/supertuxkart/code/!svn/bc/18014/stk-assets/tracks/ravenbridge_mansion/track.xml)引用新曲。后续 [r18107](https://svn.code.sf.net/p/supertuxkart/code/!svn/bc/18107/stk-assets/music/ravenbridge_mansion.music)分别加入3.429／3.200秒循环起点；不能把普通版循环点直接套给快版。[一手：配置／修订] 旧曲被替换的制作动因、风格得失及候选淘汰未核到，不由文件更名补故事。
+
+**现成供给的可复用边界。** 固定 r18626 [游戏许可清单](https://svn.code.sf.net/p/supertuxkart/code/!svn/bc/18626/stk-assets/music/licenses.txt)逐文件列两份 OGG 为 CC-BY-SA 3.0；[FLAC许可清单](https://svn.code.sf.net/p/supertuxkart/code/!svn/bc/18626/media/trunk/music/flacs/licenses.txt)同样列两份 FLAC，署名0zone0ne／Krobonil。[一手] 本轮只读文本与目录，未下载试听；这里只确认两份FLAC音频及许可，未找到可重编配工程／分轨，不据格式推定源工程齐全。复用仍按具体文件许可履行条件，不能把代码GPL或曲库名称当整包许可。
+
+**程序回退不是现有供给保证。** [2008提交](https://github.com/supertuxkart/stk-code/commit/39eae930da0d3b6f03f11f14c4c87d63f2d05828)曾为缺快版提高播放pitch；[2024-12-22修订](https://github.com/supertuxkart/stk-code/commit/4a479ed6f507dd06e2a995df19f4aaf8debe5d5b)删除该路径，作者称未使用且认为会烦扰，不是已做同条件听感试验。[一手] [1.5固定源码](https://github.com/supertuxkart/stk-code/blob/1fb491f507216c5d181ccd85f29ff08eca003827/src/audio/music_information.cpp)只在有fast对象时切换；[官网指南](https://supertuxkart.net/Music_and_SFX_Guidelines)仍写自动提速，不能代替发布实现。作者[明确部分赛道没有快曲](https://github.com/supertuxkart/stk-code/issues/5204#issuecomment-2558231756)，无证据把这种保留单曲归因于预算不足。
+
+**跨阶段代价：多一个版本也多一条运行路径。** [issue5204](https://github.com/supertuxkart/stk-code/issues/5204#issuecomment-2558228206)将单曲与双曲转场分开定位，后续[确认赛末前打开暂停菜单会触发缺陷](https://github.com/supertuxkart/stk-code/issues/5204#issuecomment-2560989307)；[1.5正式发布](https://blog.supertuxkart.net/2025/10/supertuxkart-15-release.html)确认修复末圈音乐缺失。[一手：作者／发布报告] 这支持把暂停恢复、切换音量和无快版回退纳入接入验收，不证明所有播放条件已过或制作工时下降。
+
+**改变的选择与撤回。** [研究] 状态差异只是提示、原曲仍符合体验时，保留原曲与独立提示即可；音乐强度本身重要时，优先核已有相容普通／强度版本及各自循环点，再计额外存储、调度与二改维护。缺配套版本且必须人工重编配才能成立，就换完整许可资源或收窄音乐状态，不因接口可变速就承诺风格相容。目标是增加强度表达而保音色／乐句，不是追更多曲目。仍缺同作品创作需求、制作前后试听、淘汰及主动工时，也缺单人零手修创作实证；本轮无音频、引擎或模型运行，不把接入修订称完整生产闭环。
