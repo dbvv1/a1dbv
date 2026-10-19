@@ -316,3 +316,14 @@
 另一个[#8359 用户回执](https://github.com/rclone/rclone/issues/8359#issuecomment-2640067746)在换 S3/MinIO 后先重现，再以旧 Termux 节点发起修改、试验版 Linux 节点接收正确 mtime；重新加入旧接收节点后错误 mtime 又传播。它支持接收节点版本影响状态，但不是同平台单变量试验，试验版也不是正式合入 head。两位用户不能拼成一次对照。**[社区；研究：范围]**
 
 **采用边界**：若正常成功运行后仍连续冲突，先核状态记录与具体修复，不靠固定偏向某侧掩盖错误。原维护帖后来还有[校验变慢](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/42)：[维护者已解释](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/43) cryptcheck 须读取未加密侧文件并现场加密／散列，给出保留强校验、降低比较精度或加 hasher 的取舍，仍缺最终同条件验收；此后[新文件意外删除报告](https://forum.rclone.org/t/avoiding-bisync-times-are-equal-conflicts-with-newer/46636/44)，未见闭合原因，不能宣称全流程可靠或 recover 造成这些后续问题。未运行同步、接触用户文件、测 AI 或量化维护工时；本链只改变交付脚本的恢复选择与验收范围。**[社区；研究]**
+
+## 补充证据：派生入口重建依赖恢复后的对象清单
+
+核实：2026-10-19（UTC+8）。**改变 18 的选择：补清原生重建入口的依赖与顺序，而非默认新增修复脚本或全量重导。** 仅适用于重建依赖已恢复对象清单的机制，不把所有恢复失败归于执行顺序。**[研究：采用判断]**
+
+- **迁移后继续写旧对象。** [Gitea #18243](https://github.com/go-gitea/gitea/issues/18243)的 MPeti1 报告 v1.15.5、MySQL、ARMv7，从 rootful 迁到 rootless 后，旧仓库不能新增 Wiki 页，hooks 仍含旧执行路径；原想手改路径、补 doctor 脚本。[维护者](https://github.com/go-gitea/gitea/issues/18243#issuecomment-1010280359)指出已有后台 hooks 重同步功能，同日[原人确认解决](https://github.com/go-gitea/gitea/issues/18243#issuecomment-1010341217)。回执对应 Wiki 写入阻塞，不是全部数据验收。**[社区：原问题与同人回执]**
+- **固定机制。** v1.15.5 的[固定实现](https://github.com/go-gitea/gitea/blob/3aecea2e6ee3c7886cc7fb6f83f6f790b233f77a/modules/repository/hooks.go#L209-L241)从数据库枚举仓库并处理已有 Wiki；[生成内容](https://github.com/go-gitea/gitea/blob/3aecea2e6ee3c7886cc7fb6f83f6f790b233f77a/modules/repository/hooks.go#L74-L76)取当前二进制与配置路径。这支持复用原生入口，不证明新增脚本一定更贵。**[一手：固定源码；研究：选择依据]**
+- **另一人的 SQL 恢复顺序。** [#31190 中 Openuser87 于 2025-08-02 的回执](https://github.com/go-gitea/gitea/issues/31190#issuecomment-3146716324)称 standard→rootless 恢复数据库后 push 报错；hooks 命令已在 SQL 恢复前执行，移到恢复后重跑才解决。其具体版本未披露，不能套用 issue 作者的 1.22；这是该跟帖者自己的前后过程，不能与 MPeti1 拼成同一验收。v1.22.0 的 [CLI](https://github.com/go-gitea/gitea/blob/803b0c9ab43f809e47f42fad951e7f5fb6652e42/cmd/admin_regenerate.go)及[重建实现](https://github.com/go-gitea/gitea/blob/803b0c9ab43f809e47f42fad951e7f5fb6652e42/services/repository/hooks.go#L20-L52)仍先连接数据库再枚举，提供机制解释，不认证其运行版本。**[社区／一手]**
+- **反例与现行入口。** 同帖 [Kinsue](https://github.com/go-gitea/gitea/issues/31190#issuecomment-2428453808)照他人复制配置仍失败，不能把路径复制当通用解法。本日读取的[官方恢复文档](https://docs.gitea.com/administration/backup-and-restore/)仍要求安装方式或路径变化时重建 hooks；具体用户、配置路径和版本另核，不一律手工重建。**[社区／一手]**
+
+两例没有完整数据清单、长期维护或主动工时，亦无 AI 生成归属；只支持窄修复选择。现有原生功能的成功回执足以避免先造同职能脚本，不证明 AI 净收益或节省比例。本轮未运行 Gitea、恢复数据或上游测试。**[研究：证据边界]**
