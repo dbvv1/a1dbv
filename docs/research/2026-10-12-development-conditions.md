@@ -1113,3 +1113,15 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 **不用Pact的条件与保留检查。** [官方适用范围](https://github.com/pact-foundation/docs.pact.io/blob/76d06a6f246693e92a417c01d0c6a511887dfc1c/website/docs/getting_started/what_is_pact_good_for.md)把消费者可识别、双方可协作、provider状态可控列为适用条件；对方不参与、未知公共消费者、状态不可控不宜强接。它验证通信契约，不覆盖provider完整功能；透传API若总回200，契约匹配不能证明下游消息或持久副作用正确。[官方比较](https://github.com/pact-foundation/docs.pact.io/blob/76d06a6f246693e92a417c01d0c6a511887dfc1c/website/docs/faq/convinceme.md)也保留已有有效集成测试，若引入Pact只重复既有覆盖、增加难维护状态或对方无法验证，就保留原检查。未取得两种方案同任务成本或AI净收益，不报速度或缺陷下降。**[一手：官方范围；经验：撤回条件]**
 
 本轮仅公开文档与固定源码阅读，未执行候选、模型、服务或其测试；配置定义不作运行通过、实际部署兼容或AI净收益。**[研究：验证范围]**
+
+### 无障碍反馈：扫描当前状态与保留必要检查
+
+**改变的选择：23 §2在已有浏览器回归中按缺口补自动扫描，保留用户路径；不因组件存在已知违规而排除整个交互区域。** 核实2026-10-20（UTC+8），只读固定官方材料与成熟项目测试设计，未运行浏览器、axe或模型。原有语义、键盘及目标状态检查足够时继续复用，不另加MCP或审计框架。**[一手；经验：采用判断]**
+
+**现成工具：定位、扫描、实际操作回答不同问题。** Playwright固定`cdcef0bc`的[locator文档](https://github.com/microsoft/playwright/blob/cdcef0bc92d35ae5a50fafd433fb5dcb633742dd/docs/src/locators.md)明确role定位只给早期ARIA反馈，不替代审计与符合性测试。[扫描指南](https://github.com/microsoft/playwright/blob/cdcef0bc92d35ae5a50fafd433fb5dcb633742dd/docs/src/accessibility-testing-js.md)允许把axe扫描并入已有测试；`analyze()`看调用时状态，菜单示例先点击、等展开内容可见，再扫描。axe-core固定`f01bf5ce`的[API说明](https://github.com/dequelabs/axe-core/blob/f01bf5ce56ffcf1411d14d14ed75d1fb86f8023c/doc/API.md)同样要求激活未渲染的菜单／模态后重扫；已渲染的visually-hidden内容仍可被检查，不能把它与未激活区域混同。完整结果还分`violations`、`passes`、`incomplete`与`inapplicable`；只断言违规为空不能把未决项目记作通过。标签或对比度是自动检查入口，焦点流、可理解性与辅助技术实际操作仍按需求验证，不由一次初态扫描推整站可用。**[一手：固定官方文档；经验：范围判断]**
+
+**实际采用：GOV.UK组件扫描与状态回归分别保留。** govuk-frontend固定`3d28aa52`的[password-input扫描测试](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/password-input/accessibility.puppeteer.test.mjs)遍历组件examples，渲染后调用axe并断言无违规；[另一组交互测试](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/password-input/password-input.puppeteer.test.js)按点击1／2／3次检查密码显隐、状态文本、按钮名称等，提交时还检查恢复password类型。这是同项目实际采用的分工；后者主要用点击和DOM属性断言，不证明键盘路径已测或屏幕阅读器实际播报。其[贡献验收说明](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/docs/contributing/test-components-using-accessibility-acceptance-criteria.md)另要求真实页面中的键盘、辅助技术组合和残障用户测试；文档要求也不当成该版本全部执行的回执。**[一手：固定测试设计与项目要求]**
+
+**已有违规：先修；确需暂留，按覆盖代价选最窄例外。** Playwright扫描指南说明`exclude()`会跳过目标及全部后代的所有规则；若想继续捕捉同区域的新违规，可保存规则ID与目标元素的fingerprint，而非带整段HTML的全结果快照。代价是基线维护与一定脆弱性，变化后应核差异，不能让Agent直接接受新快照来变绿；旧违规仍是待修问题。`disableRules()`则关闭整条规则，只有其范围符合本次验收或明确接受该盲区时采用。反例是GOV.UK的[Accordion扫描配置](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/accordion/accessibility.puppeteer.test.mjs)：注释明确关闭AAA的`color-contrast-enhanced`，不是关闭AA对比检查。这支持按目标级别选规则，不支持把任何关闭都称为作弊，也不证明该组件符合全部AA要求。**[一手：官方配置范围与项目反例；经验：选择与撤回条件]**
+
+以上支持检查的覆盖分工和范围取舍，未取得同任务的人力、缺陷或Agent效果对照，不推导自动化替代人工的比例或净收益。**[研究：证据边界]**

@@ -10,7 +10,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| M3／M4：无障碍反馈按状态与验收范围选择 | dot-A；接收 solepublisher | `dot/accessibility-feedback-20261020` | 23、development-conditions；基线 `3f32bb4e` | 2026-10-20 03:49（UTC+8） | 固定官方与 GOV.UK 材料源审中；仅本地准备 |
+| M3／M4：无障碍反馈按状态与验收范围选择 | dot-A；接收 solepublisher | `dot/accessibility-feedback-20261020` | 23、development-conditions；基线 `3f32bb4e` | 2026-10-20 03:49（UTC+8） | 本提交：按状态补axe，已知违规用窄基线，按目标保必要检查；源审／最终diff独审及14离线通过，7份固定源在线复取一致；仅本地交付，未运行浏览器／候选 |
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，创建草稿PR拒绝后保断点；本次不含其内容 |
 
