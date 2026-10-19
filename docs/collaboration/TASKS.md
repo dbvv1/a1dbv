@@ -1,17 +1,19 @@
 # 任务状态
 
-> 2026-10-20 03:54（UTC+8）。按[运行手册阶段校正](LONG-TERM-PLAN.md#2-长期目标)执行；更早交接原样见[旧档](archive/completed-through-2026-10-16.txt)及[前日日档](archive/completed-through-2026-10-17.txt)及[10月18日日档](archive/completed-through-2026-10-18.txt)及[10月19日日档](archive/completed-through-2026-10-19.txt)及[当日日档](archive/completed-through-2026-10-20.txt)。发布/Git细节按[运行细则](operations.md)。已发布项hosted CI未运行。 研究46文件共2,660,474字节。篇幅按运行手册。
+> 2026-10-20 05:13（UTC+8）。按[运行手册阶段校正](LONG-TERM-PLAN.md#2-长期目标)执行；更早交接原样见[旧档](archive/completed-through-2026-10-16.txt)及[前日日档](archive/completed-through-2026-10-17.txt)及[10月18日日档](archive/completed-through-2026-10-18.txt)及[10月19日日档](archive/completed-through-2026-10-19.txt)及[当日日档](archive/completed-through-2026-10-20.txt)。发布/Git细节按[运行细则](operations.md)。已发布项hosted CI未运行。 研究46文件共2,662,977字节。篇幅按运行手册。
 
 ## 需要用户决定
 
 - PR49 的 ready、图标草稿 PR 创建保留原拒绝断点，未重试；不把两项拒绝扩大到其他独立交付
 - [PR58](https://github.com/dbvv1/a1dbv/pull/58) 的 ready 首次被拒；固定 `a5d16da5` 整合审／14离线已过，尚未合入；其他独立内容继续
 
+- [PR59](https://github.com/dbvv1/a1dbv/pull/59) 的 ready 首次被拒；固定 `cbaab20c` 已独立整合审／14离线，未合入，不夹带58
+- 重试诊断 [`17571c81`](https://github.com/dbvv1/a1dbv/commit/17571c8136f5597491bb16f2511c3c8d4a177349) 与 Loom [`825a1165`](https://github.com/dbvv1/a1dbv/commit/825a11650308d68e9fc5176e5d112816a8073d58) 已在各自任务分支，更新 main 各首次被拒；保断点，本次不含其内容
+
 ## 进行中
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| M3／M4：凭证代理的保证与隔离边界 | dot-A；接收 solepublisher | `dot/credential-boundary-20261020` | 10、18、development-conditions；基线 `0564a415` | 2026-10-20 05:08（UTC+8） | 固定机制源审、全新差异独审通过；收窄绝对保证、保留原生隔离与按需代理；最终树离线结果随交付核对，仅本地交发布者，未运行候选／访问凭据 |
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，创建草稿PR拒绝后保断点；本次不含其内容 |
 
@@ -25,4 +27,5 @@
 | GA／GB／`f46af81b`（接收[PR57](https://github.com/dbvv1/a1dbv/pull/57)） | 声音组织模拟事件先选单向跟随或共同调度，保必要反馈与规则平衡 | B固定`723d7152`源审、整合审及最终14通过；远端父树字节及PR已合已核；保PR48出场密度与按需循环，未运行／试听或证明制作收益 |
 | M1／`40c92ead` | 六条完成交接原样归档，开工三份37,159→34,955B | 独审及14离线通过；仅编辑，无新研究 |
 | M3／M4／`3f32bb4e` | API 修改先复用足够的集成，分验声明兼容与实现；双边可维护才加消费者契约 | 固定材料源审／最终整合独审及14离线；源审在线复取未成功，未运行服务或证明提效 |
-| M3／M4／本提交 | 无障碍反馈先复用语义／键盘回归，按状态补自动扫描，旧违规限规则与目标 | 7份固定源在线核对、独立整合审及14离线；未运行浏览器或axe，不作合规／提效认证 |
+| M3／M4／`0564a415` | 无障碍反馈先复用语义／键盘回归，按状态补自动扫描，旧违规限规则与目标 | 7份固定源在线核对、独立整合审及14离线；未运行浏览器或axe，不作合规／提效认证 |
+| M3／M4／本提交 | 撤回凭证代理绝对保密保证，先核无秘密环境与原生隔离，必要认证再比代理 | 6份固定源独立复取、整合独审及14离线；未访问凭据接口或验证安全效果 |
