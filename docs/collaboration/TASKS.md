@@ -1,6 +1,6 @@
 # 任务状态
 
-> 2026-10-20 03:14（UTC+8）。按[运行手册阶段校正](LONG-TERM-PLAN.md#2-长期目标)执行；更早交接原样见[旧档](archive/completed-through-2026-10-16.txt)及[前日日档](archive/completed-through-2026-10-17.txt)及[10月18日日档](archive/completed-through-2026-10-18.txt)及[10月19日日档](archive/completed-through-2026-10-19.txt)及[当日日档](archive/completed-through-2026-10-20.txt)。发布/Git细节按[运行细则](operations.md)。已发布项hosted CI未运行。 研究46文件共2,651,612字节。篇幅原则已批准：正文约30KB，研究按证据价值收敛，不以约2MB作硬总量上限；手册已同步，正文与每周净增预算保持不变。
+> 2026-10-20 03:24（UTC+8）。按[运行手册阶段校正](LONG-TERM-PLAN.md#2-长期目标)执行；更早交接原样见[旧档](archive/completed-through-2026-10-16.txt)及[前日日档](archive/completed-through-2026-10-17.txt)及[10月18日日档](archive/completed-through-2026-10-18.txt)及[10月19日日档](archive/completed-through-2026-10-19.txt)及[当日日档](archive/completed-through-2026-10-20.txt)。发布/Git细节按[运行细则](operations.md)。已发布项hosted CI未运行。 研究46文件共2,651,612字节。篇幅按运行手册。
 
 ## 需要用户决定
 
@@ -13,10 +13,7 @@
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，创建草稿PR拒绝后保断点；本次不含其内容 |
 
-
-
-
-| GA／GB：有字却选错地域字形时是否继续追加fallback | B；接收 A；基线 `f46af81be7f911f85c63a3f8da832ae838b60839` | `dot-b/tmp/20261020-language-glyph-priority` | 04本地化入口、WP10本单元、TASKS本行 | 2026-10-20 03:24（UTC+8） | 已开始：核Mindustry同版缺字回退与日文字形覆盖两种修复；未交付，未运行字体／游戏 |
+| GA／GB：有字却选错地域字形时是否继续追加fallback | B；接收 A；基线 `f46af81be7f911f85c63a3f8da832ae838b60839` | `dot-b/tmp/20261020-language-glyph-priority` | 04本地化入口、WP10本单元、TASKS本行 | 2026-10-20 03:24（UTC+8） | 本提交交付：缺字回退与地域字形优先分开，保完整样式与通用检查；全新上下文自审通过。已整合 `40c92ead`；最终树离线／远端／CI回执见本分支PR；固定源码／发布／Unicode文档，未运行字体／游戏／引擎。字体独立许可未闭合，不推荐复制；待A核固定版串行整合并重验 |
 
 ## 最近交接
 
@@ -25,10 +22,5 @@
 | M3／无提交 | 评审叠加／替换比较候选暂存 | 只读论文与公开评分，未跑模型 |
 | GA／无提交 | Marble Standard未闭合，沿用原条件 | 官方公开源复核，无新增推荐 |
 | M4／`17982758`（精度修正见 `7003b338`） | 周交接窗口2026-10-12 00:00至10-18 09:02（UTC+8，未满周）：按公开分钟级认领与[PR25](https://github.com/dbvv1/a1dbv/pull/25)／[26](https://github.com/dbvv1/a1dbv/pull/26)／[27](https://github.com/dbvv1/a1dbv/pull/27)／[28](https://github.com/dbvv1/a1dbv/pull/28)的merged_at估计，四项约8–20分钟，中位约10–12分钟（n=4）；[起止来源](reviews/2026-10-18-increment-b20bb98.md#唯一待补项计时来源精度)。相邻异质样本，不含认领前调查 | 执行者自报四次结果main更新0失败／4尝试、无重试，公开合入记录不独立证明尝试总数；全周发布失败率、实质退回比例、无人值守中断数因完整分母缺失均未知，未证明提效 |
-| M4／`b9bddf33` | [核心方向与逐线深度复盘](reviews/2026-10-18-direction-depth.md)：保留四主线、M1–M6与GA–GF；逐资源／客户端模块给出深化建议；GE两份模板固定异常数量冲突交dot修订，15／18／04入口待整理 | 基线37609f8；主干／游戏只读复核、独立交付审通过；最终树14阶段离线与空白检查通过；未重新认证全部外源、未跑模型／引擎或hosted CI |
-| M1／`71363094` | [系统审计](reviews/2026-10-19-systematic-value-audit.md)已以 `0d6d2e92` 保史合入；18限定 METR 历史样本，关闭 P2-01；P2-02已在 `bad7c98f` 修复 | 既有11／18范围对齐；独立复核、最终14及远端父树／字节已核；无新研究或收益实测 |
-| GA／GC／`6dcfb602`（接收[PR53](https://github.com/dbvv1/a1dbv/pull/53)） | 图中文字二改先比较生产表示：逐语言图片、共享布局再烘焙或运行时文字 | B固定`21e57677`源审、整合审及最终14通过；远端父树字节及PR已合已核；保导出维护、人工特殊图与许可边界，未运行工具／游戏或证明零手修 |
-| GA／`d7d3262f`（接收[PR54](https://github.com/dbvv1/a1dbv/pull/54)） | 完整供给与高规格覆盖分开选，界面倍率不强迫全场景重做；目标版本新功能可触发换供应 | B固定`3f9d150c`源审、整合审及最终14通过；远端父树字节及PR已合已核；保03音乐与类别兼容增量，未运行构建／游戏或证明零手修 |
-| GB／`be4a186b`（接收[PR55](https://github.com/dbvv1/a1dbv/pull/55)） | 旧骨骼FBX跨入口二改失败先比较格式范围回退与补丁，不先重做资产或禁整个插件 | B固定`e287f2fe`源审、整合审及最终14通过；远端父树字节及PR已合已核；保旧入口失败反例与原回执局限，未读受限源码或运行引擎 |
-| GD／`a3fdab57`（接收[PR56](https://github.com/dbvv1/a1dbv/pull/56)） | 缩配音／演出后比较换载体，分验信息发现与继续动机，保留原撤回条件 | B固定`0b524ffd`源审、整合审及最终14通过；远端父树字节及PR已合已核；保PR47信息限制与重复输入选择，未运行游戏或证明同构建收益／工时 |
-| GA／GB／本提交（接收[PR57](https://github.com/dbvv1/a1dbv/pull/57)） | 声音组织模拟事件先选单向跟随或共同调度，保必要反馈与规则平衡 | B固定`723d7152`源审通过；本轮整合树／远端另核；保PR48出场密度与按需循环，未运行／试听或证明制作收益 |
+| GA／GB／`f46af81b`（接收[PR57](https://github.com/dbvv1/a1dbv/pull/57)） | 声音组织模拟事件先选单向跟随或共同调度，保必要反馈与规则平衡 | B固定`723d7152`源审、整合审及最终14通过；远端父树字节及PR已合已核；保PR48出场密度与按需循环，未运行／试听或证明制作收益 |
+| M1／本提交 | 六条完成交接原样归档，开工三份37,159→34,955B | 独审及14离线通过；仅编辑，无新研究 |

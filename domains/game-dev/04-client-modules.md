@@ -86,7 +86,7 @@ Unity 6.3 URP 内置 Pixel Perfect，先统一 PPU、分辨率与缩放；Pixel 
 | UI | 保留稳定 uGUI／UE UMG；新布局密集菜单可试 UI Toolkit | 重复菜单逻辑才抽共享层／试 CommonUI，焦点或返回失效就撤回 |
 | 音频 | Unity AudioSource／AudioMixer／DSP 调度，UE Audio／MetaSounds；分组音量、并发和暂停政策 | 交互音乐／制作成本值得才试 FMOD，集成抵消收益则保留原生 |
 | 存档 | 显式 DTO、已有序列化器、小型迁移函数；UE SaveGame 槽位，保留旧档与失败反馈 | 字典／树迁移再加兼容序列化库；叙事才评估 ink。恢复进度错误时先修内容迁移 |
-| 本地化 | Unity Localization 表与伪本地化／UE FText，稳定 key、变量、复数及字体 fallback | 按目标语言增加塑形与编辑支持；关键文字不可读／不可操作就暂缓该语言 |
+| 本地化 | Unity Localization 表与伪本地化／UE FText，稳定 key、变量、复数；字体区分缺字回退与语言优先 | 按目标语言增加塑形与编辑支持；关键文字不可读／不可操作就暂缓该语言 |
 | 平台发布 | Unity Build Profiles／UE build、cook、stage、package，干净目标机能启动和恢复 | Steam 随版本更新先用平台，代价异常再查[下载与重写](#发布更新下载量与安装重写分开看)；重复构建才做 CI；Play／Cook 成功不代验目标构建 |
 | 编辑器扩展 | 机械转换保留脚本／原生导入；反复调项目参数先沿用Inspector；分支对白等专门内容先比较成熟作者环境 | 机械批处理验预览、重复执行与恢复，见[01](01-engine-integration.md)；项目负责玩法命令与呈现；关键作者任务无法表达／验证，或学习、补接与维护成本不值时，转窄工具或其他环境 |
 
@@ -274,6 +274,8 @@ Papers, Please 的[本地化与打包器后续](../../docs/research/2026-10-14-g
 #### 新语言可读之后，还要能编辑和操作
 
 **[研究] ✅ 分别验字库、塑形、布局和编辑。** Toolkit 6.3 基础 RTL 不足以换行／塑形，复杂文本评估 ATG；稳定 uGUI／TMP 有缺口才试 RTLTMPro。UE 保留 UMG 塑形／方向与 composite font，Kerning Only 不适合阿拉伯语等复杂文本。[一手]
+
+**缺字才补fallback；有字却地域字形不合，按语言优先选合格字体／字形，正文与描边一起换。** 保留缺字回退并重验混排、样式和预算，不先改编码或手修。Mindustry发布修订及[字形选择依据](../../docs/research/2026-10-14-game-wp10-client-modules.md#字体选择补研缺字回退与地域字形优先分开)支持该分工，不证明热切或全部语言效果。[一手／研究]
 
 混合名字／数字后核断行、删除与返回；ATG 逻辑光标未必视觉向左。长文先用分页／滚动／详情，手柄须能读完并返回，地图不一概镜像。[一手／研究]
 
