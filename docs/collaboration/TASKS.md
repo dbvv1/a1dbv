@@ -11,7 +11,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| M3／M4：凭证代理的保证与隔离边界 | dot-A；接收 solepublisher | `dot/credential-boundary-20261020` | 10、18、development-conditions；基线 `0564a415` | 2026-10-20 05:08（UTC+8） | 固定机制源审通过；收窄绝对保证、保留原生隔离与按需代理；仅本地准备 |
+| M3／M4：凭证代理的保证与隔离边界 | dot-A；接收 solepublisher | `dot/credential-boundary-20261020` | 10、18、development-conditions；基线 `0564a415` | 2026-10-20 05:08（UTC+8） | 固定机制源审、全新差异独审通过；收窄绝对保证、保留原生隔离与按需代理；最终树离线结果随交付核对，仅本地交发布者，未运行候选／访问凭据 |
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，创建草稿PR拒绝后保断点；本次不含其内容 |
 

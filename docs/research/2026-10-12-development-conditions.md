@@ -87,6 +87,17 @@
 
 **历史反证补核。** [Embrace The Red 原帖](https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/#reliability-and-attack-success-rate-asr)是三个迭代变体各 5 次，3/5、3/5、4/5，不能当通用 ASR；[Anthropic SDLC 原文](https://claude.com/resources/articles/how-anthropic-secures-its-ai-native-software-development-lifecycle)分别报告约 80% 合并代码由 Claude 编写、全部代码超半数由内部 Claude Tag 合并，不能改成同一个子集分母。正文保留反例但收窄统计解释。另把多厂商事故合并叙述缩为 [OpenAI 一手复盘](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)可确认的内部研究模型、弱化防护与共享基础设施突破；不把训练／评估条件外推到发布客户端。RubyGems、Medicare 与其他厂商的合并归属未逐项确证，本轮不保留作核心页证据；ZCode／Cursor 两条仅有二手或 HN 标题，撤出事件表，不能据它们作选型。**[社区：作者实验；一手：厂商自述]**
 
+#### 凭证代理：减少直接持有不等于永远不可读取
+
+核实2026-10-20（UTC+8）。收窄10防护原则中“凭证网关让Agent永远看不到密钥”的保证，并同步18准入入口。不需认证时优先无秘密环境；已有宿主拒读／凭证移除覆盖实际入口就不另加网关，需认证且能维护注入目标与信任边界时才评估代理。既有沙箱的工具／子进程、Hook／MCP限制仍适用。**[经验：采用判断]**
+
+Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/blob/0d756011a6fecebd28b8a7e0d91d9a3d711f1991/docs/site/security/threat-model.mdx)把本机用户账户及该账户进程列为可信，并明确不是沙箱。[代理启动实现](https://github.com/agentrhq/authsome/blob/0d756011a6fecebd28b8a7e0d91d9a3d711f1991/src/authsome/cli/proxy_runner.py)复制父环境，再设置代理与提供方占位变量；这支持减少所管凭证直接进入子进程环境，不支持自动清除所有原有秘密或隔离整个Agent。**[一手：固定文档／实现]**
+
+产品还保留[凭证导出路由](https://github.com/agentrhq/authsome/blob/0d756011a6fecebd28b8a7e0d91d9a3d711f1991/src/authsome/server/routes/connections.py#L244-L259)，由[认证依赖](https://github.com/agentrhq/authsome/blob/0d756011a6fecebd28b8a7e0d91d9a3d711f1991/src/authsome/server/routes/_deps.py#L121-L179)校验PoP身份与归属；[导出实现](https://github.com/agentrhq/authsome/blob/0d756011a6fecebd28b8a7e0d91d9a3d711f1991/src/authsome/server/credential_service.py#L1009-L1082)可返回真实凭证的env／shell／JSON表示。这是获认证能力的静态机制，不是无认证泄露漏洞或本轮导出结果；也不据旧文档推当前CLI子命令可用。选择代理时须核调用方实际拥有的能力，不能只凭README口号判永不接触。**[一手：固定源码；研究：范围限定]**
+
+[Claude Code当前权限文档](https://code.claude.com/docs/en/permissions#read-and-edit)说明Read／Edit规则覆盖内置文件工具、可识别的shell文件命令及重定向，但不覆盖任意Python／Node等子进程间接读写；OS级约束需沙箱，工具和进程入口仍分别核对。因此18不再把单个Read deny模式写成秘密永不进上下文的充分条件，现成控制范围见本节上文。只读公开文档与源码，未运行候选、访问凭据接口、导出真实秘密或验证安全效果。**[一手：官方契约；经验：替代与边界]**
+
+
 **验证口径。** 只读契约、固定源码与未运行测试定义，不构成模型／OS 实测或安全认证。历史独立评审覆盖 10 全页与 03／05／08 一致性，处理上述问题后判 L3；14/14 离线与 `git diff --check` 通过，仅验证仓库文档／配置和确定性测试。
 
 ### 陌生依赖：安装后仍须隔离测试
