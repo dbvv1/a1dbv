@@ -388,6 +388,20 @@ Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级�
 
 UI 复用未覆盖后台生命周期；继续核查看、删除和恢复，局部补接够用时不重写架构。**[研究：采用建议]**
 
+### SGLang Omni：共享编解码，保留模型条件
+
+核实：2026-10-19（UTC+8）；主线三，补充 15 §3 共享哪一层的选择。以下只读公开维护链、固定源码和测试定义，未运行模型、引擎或上游测试。**[研究]**
+
+**1. 收窄共享层。** [#1050](https://github.com/sgl-project/sglang-omni/pull/1050) 将六组手写状态转换迁入声明式基类。[关键评审](https://github.com/sgl-project/sglang-omni/pull/1050#discussion_r3599981561)指出，当时只有 Higgs 的采样率随音频输出这一种字段耦合，不足以支撑共享字段计划、递归依赖图和环检测。2026-07-17（UTC） 合入的 [`e795c35286cf37321e19d35cb6e8c56f6765eae1`](https://github.com/sgl-project/sglang-omni/blob/e795c35286cf37321e19d35cb6e8c56f6765eae1/sglang_omni/scheduling/pipeline_state.py#L204-L283) 直接遍历 dataclass 字段，保留共用编解码；[Higgs 本地](https://github.com/sgl-project/sglang-omni/blob/e795c35286cf37321e19d35cb6e8c56f6765eae1/sglang_omni/models/higgs_tts/payload_types.py#L54-L58) 决定无音频时不输出采样率。取舍依据是规则归属，不是已证明依赖图错误。**[一手]**
+
+**2. 新表示扩共享转换，字段含义仍在模型内。** [#1103](https://github.com/sgl-project/sglang-omni/pull/1103) 于 2026-07-21（UTC） 合入 [`24d7fb573576359687bcbebbd25e998ec68d436d`](https://github.com/sgl-project/sglang-omni/blob/24d7fb573576359687bcbebbd25e998ec68d436d/sglang_omni/models/ming_tts/payload_types.py#L43-L69)。Ming 本地声明给说话人向量与潜变量选择 `typed_tensor`，[共享转换](https://github.com/sgl-project/sglang-omni/blob/24d7fb573576359687bcbebbd25e998ec68d436d/sglang_omni/scheduling/typed_tensor.py#L21-L78) 增加浮点表示，消费者直接处理 tensor。本次还删除未使用的 transport version 字段并含其他清理，不能说整个 PR 的 wire 输出逐字节不变。**[一手；研究：范围]**
+
+**3. 同一维护者在后续模型中实际采用。** [#1112](https://github.com/sgl-project/sglang-omni/pull/1112) 于 2026-07-24（UTC） 合入 [`6ef910be36c68de565f2fed76639fa0d4772eecc`](https://github.com/sgl-project/sglang-omni/blob/6ef910be36c68de565f2fed76639fa0d4772eecc/sglang_omni/models/zonos2/payload_types.py#L21-L53)。1050、1103 与 1112 均由 luojiaxuan 提交；1112 接续 GaokaiZhang 的既有 Zonos2 工作，不证明另一维护者接管了共享层。Zonos2 状态使用同一基类，tensor 字段却选择 `tensor_cpu`；[stage 实际路径](https://github.com/sgl-project/sglang-omni/blob/6ef910be36c68de565f2fed76639fa0d4772eecc/sglang_omni/models/zonos2/stages.py#L60-L104) 调用 `store_state` 与 `from_dict`，模型计算仍留在模型中。三个固定合入点已核处于同一祖先链，不是连续直接父提交；后续采用支持这套划分可承接不同模型，不能把整个模型工作归因于共享层。**[一手；研究：范围]**
+
+**验证没有补成运行事实。** 1112 的[辅助断言](https://github.com/sgl-project/sglang-omni/blob/6ef910be36c68de565f2fed76639fa0d4772eecc/tests/unit_test/scheduling/test_pipeline_state.py#L150-L179) 逐字段比较还原结果；[用例](https://github.com/sgl-project/sglang-omni/blob/6ef910be36c68de565f2fed76639fa0d4772eecc/tests/unit_test/scheduling/test_pipeline_state.py#L371-L448) 覆盖 Zonos2 夹具及整数／浮点转换，[另有断言](https://github.com/sgl-project/sglang-omni/blob/6ef910be36c68de565f2fed76639fa0d4772eecc/tests/unit_test/scheduling/test_pipeline_state.py#L535-L546) 拒绝字段依赖规则、保留 Higgs 条件。这些只是测试定义，不保证所有字段组合。Ming 原贡献者的[运行报告](https://github.com/sgl-project/sglang-omni/pull/1103#issuecomment-5029920216) 比较 `417096ee` 与 PR head `e10c7723`，报告 400 请求无服务错误，但一项 reference-ZH 质量异常触发严格门槛；不是全部验收通过，也不是本轮对合入版本的独立复验。**[一手：源码；社区：运行自报；研究：限制]**
+
+**采用边界。** 对类似模型状态转换，可先让维护者在模型声明与消费者中找字段含义，在共享转换中找表示规则；单个模型条件不默认扩成全局规则。以后出现共同依赖需求再重评。本例未补独立维护者接管缺口，也没有两种结构同条件下的接管实验、长期工时或 AI 净收益数据；源码减少与后续采用均不等于省工。**[经验；研究]**
+
 ### Pydantic AI：取消契约改变，不代表正常完成也应改变
 
 > 核实：2026-10-14 UTC。主线三；改变 22 §5：把“本次要改变的行为”与“相邻仍须保留的行为”成对验收，再判断修复应落在哪层。✅ 采用；未测模型效果。**[研究：采用判断]**
