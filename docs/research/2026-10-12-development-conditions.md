@@ -99,6 +99,26 @@
 
 **锁定内容仍要判断来源。** `npm ci` 按已有锁文件安装，manifest 与锁文件不符时失败，不替你更新二者；[锁文件](https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/)记录依赖树、来源与完整性值。这支持重现和内容一致性，不能证明锁定代码可信，陌生变更须连同锁文件一起审。[Node.js 官方安全指南](https://nodejs.org/learn/getting-started/security-best-practices#malicious-third-party-modules-cwe-1357)说明运行期恶意依赖仍是风险；[Docker 官方边界](https://docs.docker.com/engine/security/#docker-daemon-attack-surface)说明宿主挂载与 daemon 控制权限可暴露宿主，故“用了容器”不足以确认隔离。若功能确需被跳过的安装脚本，先审所需脚本，再在原隔离环境中允许；不为跑通撤掉边界。**[一手：机制；经验：采用／撤回]**
 
+**必要构建的窄恢复入口（2026-10-19 UTC）。** 全禁用已能满足任务时继续使用，不新增工具。npm 12.2.0 的依赖安装脚本默认按 `allowScripts` 准入；未覆盖项被跳过并汇报，默认不因此失败。`install-scripts ls` 只列未审项；`approve <pkg>` 默认把匹配的已安装版本写成版本固定项，裸包名可匹配多个已安装版本，不能当成仅批准其中一个。只批准所需版本可传明确包版本。名称级永久允许会覆盖后续版本，因此不作为审过一次的同义写法。批准实现仅加载已安装树并保存策略，没有调用构建。需要恢复已跳过产物时，在原受限环境对目标包重建并验证使用路径；`npm rebuild` 支持按名称／版本限定。若已有 false 拒绝项，approve 不会覆盖；复核后须先调整相冲突的拒绝策略，再批准所需版本并核对有效策略，不能因显示了批准结果就认定运行已放行。只审过某个版本也不证明其代码安全。**[一手：固定实现；经验：选择]**
+
+`strict-allow-scripts` 在 12.2.0 默认 false；开启后未审依赖使安装失败，显式 false 仍跳过，`ignore-scripts` 或 `dangerously-allow-all-scripts` 会覆盖这一设置。严格模式证明不了已拒绝包不影响产品，也不是安全审查。`ci.js` 中根项目生命周期脚本仍在未设 ignoreScripts 时执行；因此 dependency allowlist 不能替代隔离。有效策略来源也要审：根 package.json 的 allowScripts 整层覆盖低优先级 .npmrc，不是合并，不能相信陌生仓库自己带来的允许表。**[一手：固定配置与源码；经验：边界]**
+
+已有 pnpm 项目则保留包管理器：当前官方 `allowBuilds` 用 true／false 记录决定，未审项在 strictDepBuilds=true 时失败；pnpm 11 移除了旧 onlyBuiltDependencies 等字段。当前文档另规定 pnpm 12.11+ 的 `permissions.<包>.build` 优先于 allowBuilds，因此须核实际版本与有效策略，不能只看到 false 就认定禁止。npm 与 pnpm 的全开开关语义不同，不相互照搬。n8n 固定仓库 packageManager 为 pnpm@12.4.2，strictDepBuilds=true；allowBuilds 允许 sqlite3、isolated-vm、@vscode/ripgrep、@confluentinc/kafka-javascript，同时拒绝 esbuild、puppeteer 等。这是成熟公开项目选择性采用的配置证据，不能复制它的包名单到别的项目，也不证明这些被拒绝包普遍无须构建。n8n 为公开源码项目，此处不作 OSI 开源许可断言；未核此次构建结果、性能或安全收益。**[一手：公开配置；研究：适用限定]**
+
+**固定来源。**
+
+- npm v12.2.0 tag 指向 c276cadf785c1018d82dd287fe7742567055efb9
+- https://github.com/npm/cli/blob/c276cadf785c1018d82dd287fe7742567055efb9/docs/lib/content/commands/npm-install-scripts.md
+- https://github.com/npm/cli/blob/c276cadf785c1018d82dd287fe7742567055efb9/lib/utils/allow-scripts-cmd.js （runMode、findNodesForArgs、writePolicyChanges）
+- https://github.com/npm/cli/blob/c276cadf785c1018d82dd287fe7742567055efb9/workspaces/config/lib/definitions/definitions.js （strict-allow-scripts）
+- https://github.com/npm/cli/blob/c276cadf785c1018d82dd287fe7742567055efb9/lib/commands/ci.js （根生命周期脚本）
+- https://github.com/npm/cli/blob/c276cadf785c1018d82dd287fe7742567055efb9/docs/lib/content/commands/npm-rebuild.md
+- https://github.com/pnpm/pnpm.io/blob/e5b39ba571ca59b6e7b492082e8d5b81a05217c0/docs/settings/build.md
+- https://github.com/n8n-io/n8n/blob/791c7bc418bf789a9686859f10592b3980571b50/pnpm-workspace.yaml
+- https://github.com/n8n-io/n8n/blob/791c7bc418bf789a9686859f10592b3980571b50/package.json
+- [定向重建实现](https://github.com/npm/cli/blob/c276cadf785c1018d82dd287fe7742567055efb9/lib/commands/rebuild.js)
+- [有效策略整层选择](https://github.com/npm/cli/blob/c276cadf785c1018d82dd287fe7742567055efb9/lib/utils/resolve-allow-scripts.js)
+
 仅阅读公开文档，未安装依赖、运行 npm／容器／测试或攻击载荷，未检查私人配置；不构成运行时安全认证。**[研究：验证范围]**
 
 ### Python 多索引：先固定包来源再解析

@@ -1,6 +1,6 @@
 # 10 · 安全
 
-> 编辑日期：2026-10-19（UTC+8）。来源与分项核实范围见[研究记录](research/2026-10-12-development-conditions.md)。
+> 编辑日期：2026-10-20（UTC+8）；本次仅补必要依赖构建的准入选择。来源与分项核实范围见[研究记录](research/2026-10-12-development-conditions.md)。
 
 ## 30 秒结论
 
@@ -59,6 +59,8 @@ Simon Willison（2025-06）提出的 **lethal trifecta**：只要一个 Agent �
   - **本机**：恶意安装脚本直接调用 CLI 并传 bypass 参数，不依赖 shell 别名；应在无秘密的受限环境运行不可信安装脚本；
   - **凭证**：秘密应留在不可信安装环境外；`sandbox.credentials` 只保护被沙箱覆盖的命令，拦不住外层恶意安装进程直接读取主机凭证；
   - **依赖**：陌生依赖先审 `package.json` 与锁文件变更，在无秘密、限制挂载与出网的独立环境中用 `npm ci --ignore-scripts` 安装，后续测试／构建也留在该环境。该选项跳过安装脚本，但显式 `npm test`／`npm run` 仍执行目标脚本；见 [npm 契约与锁文件边界](research/2026-10-12-development-conditions.md#陌生依赖安装后仍须隔离测试)。**[一手；经验：采用建议]**
+
+**确需被跳过的原生构建时，按包恢复，不必全开脚本或更换包管理器。** npm 12.2.0 已默认阻止未准入的依赖安装脚本，但通常只警告；先用 `npm install-scripts ls` 找出未审项，审过必要包后用 `npm install-scripts approve <包>` 记录默认的已安装版本准入，核对其实际生效后，在原隔离环境中定向重建并验证功能。已有明确拒绝项时 approve 不会覆盖；批准只写策略，不会补跑构建。CI 可加 `--strict-allow-scripts` 让新出现的未审脚本失败，不与 `--ignore-scripts` 混用来期待此检查。已有 pnpm 项目复用其 `allowBuilds`／`strictDepBuilds`，无需为此迁移。**局限：准入不验证脚本安全，也不隔离项目脚本或运行期代码；安装通过仍可能缺少被明确拒绝的必要产物。** 见[版本、实际采用与配置优先级](research/2026-10-12-development-conditions.md#陌生依赖安装后仍须隔离测试)。**[一手：官方契约及固定源码；经验：采用判断]**
 
 ### 案例三：Amazon Q VS Code 扩展 1.84.0（2025-07，CVE-2025-8217）[一手：AWS 安全公告]
 
