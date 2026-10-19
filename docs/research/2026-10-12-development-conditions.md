@@ -1125,3 +1125,17 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 **已有违规：先修；确需暂留，按覆盖代价选最窄例外。** Playwright扫描指南说明`exclude()`会跳过目标及全部后代的所有规则；若想继续捕捉同区域的新违规，可保存规则ID与目标元素的fingerprint，而非带整段HTML的全结果快照。代价是基线维护与一定脆弱性，变化后应核差异，不能让Agent直接接受新快照来变绿；旧违规仍是待修问题。`disableRules()`则关闭整条规则，只有其范围符合本次验收或明确接受该盲区时采用。反例是GOV.UK的[Accordion扫描配置](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/accordion/accessibility.puppeteer.test.mjs)：注释明确关闭AAA的`color-contrast-enhanced`，不是关闭AA对比检查。这支持按目标级别选规则，不支持把任何关闭都称为作弊，也不证明该组件符合全部AA要求。**[一手：官方配置范围与项目反例；经验：选择与撤回条件]**
 
 以上支持检查的覆盖分工和范围取舍，未取得同任务的人力、缺陷或Agent效果对照，不推导自动化替代人工的比例或净收益。**[研究：证据边界]**
+
+### 并发修改：输入搜索与调度探索的取舍
+
+**改变的选择：22为Rust同步内部改动补现成调度探索，而不是再增压力循环或模型评审。** 核实2026-10-20（UTC+8）。[既有属性测试](#属性测试搜索反例不等于确认或修好缺陷)侧重输入搜索与断言；Loom让同一小测试经历不同同步执行安排。已有示例／属性／集成检查足以覆盖当前业务目标时继续复用；共享状态、原子顺序或唤醒逻辑的关键交错尚缺反馈时，先复用项目已有Loom接入，再评估窄适配。它不自动发现正确业务断言，也不是所有async代码都需接入。**[一手：以下机制；经验：采用判断]**
+
+**适用范围与接入成本。** Loom固定`948c8cc7`的[包声明](https://github.com/tokio-rs/loom/blob/948c8cc78b178ede6eeff3afc7d97f2f4ea08559/Cargo.toml)为0.7.2、MIT、Rust最低声明1.73；[库文档](https://github.com/tokio-rs/loom/blob/948c8cc78b178ede6eeff3afc7d97f2f4ea08559/src/lib.rs)要求测试确定性，相关同步类型、线程操作等使用Loom替代实现；随机数和系统调用等不能直接建模，应另控制。未接入的依赖内部同步对Loom不可见，普通集成测试通过与Loom通过各有覆盖。用条件编译保留正常实现，新增成本是类型适配、依赖可观测性与维护小模型，而非只多运行一次现有测试。线程与操作增多会扩大搜索；模型无法收窄、关键依赖无法观察时，保留原检查并如实记录缺口，不自建调度器补齐。**[一手：固定契约；经验：适用／撤回条件]**
+
+**成熟项目的实际采用与预算。** Tokio固定`66d34e45`的[Notify测试](https://github.com/tokio-rs/tokio/blob/66d34e45c9c850ed72bc61f2ad107368217f040d/tokio/src/sync/tests/loom_notify.rs)覆盖通知、等待者及drop等小模型，[CI](https://github.com/tokio-rs/tokio/blob/66d34e45c9c850ed72bc61f2ad107368217f040d/.github/workflows/loom.yml)显式设最大抢占2、分支10000，并按模块／PR标签选择运行。Crossbeam固定`099d0469`的[epoch测试](https://github.com/crossbeam-rs/crossbeam/blob/099d0469efcfacb32527bd9451a4fb62586ae537/crossbeam-epoch/tests/loom.rs)另有pin／延迟回收和Treiber栈模型；[CI调用的脚本](https://github.com/crossbeam-rs/crossbeam/blob/099d0469efcfacb32527bd9451a4fb62586ae537/ci/crossbeam-epoch-loom.sh)也设抢占2。脚本注释称当时约11分钟，调到3会数倍增长、对CI过贵；这是源码中的历史维护者估计，不是本轮计时或当前硬件预算。两项目证明采用与覆盖设计，不证明同条件检错收益或此次CI通过；不能把它们的上限直接复制为通用预算。**[一手：固定源码／配置与作者注释]**
+
+**适配可能改变被检查的内存行为。** Crossbeam的[替代类型模块](https://github.com/crossbeam-rs/crossbeam/blob/099d0469efcfacb32527bd9451a4fb62586ae537/crossbeam-epoch/src/lib.rs)在Loom分支用较强的`fence`代替尚不支持的`compiler_fence`，注释明确可能漏掉竞争。这不是判定原实现有缺陷，而是提醒先核模型和实际实现的差异。Loom[README限制](https://github.com/tokio-rs/loom/blob/948c8cc78b178ede6eeff3afc7d97f2f4ea08559/README.md)还说明：`SeqCst`访问按`AcqRel`处理，可能报出真实内存约束不允许的失败；`fence(SeqCst)`另有支持。load-buffering的一些合法执行未被探索，可能漏报，[对应litmus用例](https://github.com/tokio-rs/loom/blob/948c8cc78b178ede6eeff3afc7d97f2f4ea08559/tests/litmus.rs)仍标ignore。因此反例须确认模型有效性，无失败也不代表完整C11／Rust并发证明。**[一手：明确限制与固定实现；研究：判定范围]**
+
+**预算结束与探索完成分开。** [Builder实现](https://github.com/tokio-rs/loom/blob/948c8cc78b178ede6eeff3afc7d97f2f4ea08559/src/model.rs)提供抢占、排列数与时间限制；排列数／时间上限在checkpoint间隔才检查并直接返回，不能把正常返回都当成穷尽，也不能当硬墙钟中断。报告固定版本、相关输入／断言、接入同步范围与实际上限；保存失败执行路径再定位，仍保真实环境的必要集成与压力检查。checkpoint需对应feature，位置跟踪被实现注释标为昂贵，宜隔离失败排列后再开。**[一手：源码；经验：证据与成本边界]**
+
+本轮仅公开固定文档／源码核对，未运行Loom、Cargo、Tokio、Crossbeam、模型或引擎；未证明新增小模型减少维护工时或Agent错误。**[研究：验证范围]**
