@@ -118,6 +118,10 @@ Pi README 还明确它没有内置的文件/进程/网络/凭证权限限制系�
 
 Ghostty 的 [PR #8289](https://github.com/ghostty-org/ghostty/pull/8289) 中，维护者 Mitchell Hashimoto 一边说明自己使用 AI，一边要求贡献者披露 AI 使用，强调贡献者应能审查生成代码，尊重接收方的评审与维护时间。该 PR 页面显示已合并。**[社区：维护者原帖；一手：PR 状态；C9]**
 
+**Ghostty：已采用重构上的跨人新交互。** 2026-10-19（UTC+8）补核。[#7523](https://github.com/ghostty-org/ghostty/pull/7523) 作者 mitchellh 明确大量重构代码由 AI 起草、逐行人工审阅并手改；2025-06-05 合入 [`efc1ceab`](https://github.com/ghostty-org/ghostty/commit/efc1ceab5d8fd853a0279249df66fb7f11993832)。2025-11-09，不同贡献者 seankit 的 [#9524](https://github.com/ghostty-org/ghostty/pull/9524) 合入 [`84082c2b`](https://github.com/ghostty-org/ghostty/commit/84082c2b965aa59a8f376edcb8d40b41960db96b)：沿原视图层加入 `onEqualize`，取被点击节点的 `leftmostLeaf().surface`，调用已有均分动作；作者自述 Claude Code Plan 模式帮助理解结构，代码自己编写。该链确认已采用的 AI 辅助重构获跨人功能续改及上游接收；接续者的正式维护者身份未核实。**[一手：固定补丁与合入；社区：AI 范围；研究：增量]**
+
+**替代方案与采用限度。** 未合入的 [#8364](https://github.com/ghostty-org/ghostty/pull/8364) 先局部设置 `split = 0.5`，审阅指出三栏应均分；改用既有动作后，又被指出 [focusedSurface 未必属于点击视图](https://github.com/ghostty-org/ghostty/pull/8364#discussion_r2317315808)。#9524 改从节点取 surface，经 bo2themax 审阅批准。当前固定 `765ea37a` 的 [SplitView](https://github.com/ghostty-org/ghostty/blob/765ea37ad64f7e3a48f6ac27a70ad7fb6f31b9bb/macos/Sources/Features/Splits/SplitView.swift#L24-L25) 与 [TerminalSplitTreeView](https://github.com/ghostty-org/ghostty/blob/765ea37ad64f7e3a48f6ac27a70ad7fb6f31b9bb/macos/Sources/Features/Splits/TerminalSplitTreeView.swift#L81-L84) 仍保留双击入口与节点 surface 路径，不代表整个接口未变。[接收说明](https://github.com/ghostty-org/ghostty/issues/8357#issuecomment-3533391178)仅称已实现，未见原报告者修后复测；限定检索未找到撤回，不证明没有回归。这里只确认既有业务动作上的窄扩展可被接收；没有理解／返工工时，未运行 Ghostty、macOS、模型或测试，不证明 AI 净收益、架构优势或 SGLang codec 的跨人验证。**[一手：当前固定源码；社区：审阅与接收；研究：边界]**
+
 ### 本仓库判断：强 Agent 的默认基线应更轻
 
 本节只保存判断所依赖的入口配置与反证；任务选择表和净收益建议统一维护在 [24 正文](../24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻)。
