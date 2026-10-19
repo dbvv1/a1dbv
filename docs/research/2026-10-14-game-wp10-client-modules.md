@@ -1,5 +1,5 @@
 主线：一／二／三／四；客户端体验、第二次修改与交付
-改变的建议：[研究] 先复用原生组件，再按具体症状补输入、运动、呈现和资源责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。
+改变的建议：[研究] 图中文字二改先比较生产表示与导出维护，再扩语言； 先复用原生组件，再按具体症状补输入、运动、呈现和资源责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。
 新证据：[一手／社区] 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
@@ -1378,3 +1378,21 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 固定源码[LoadingImage](https://github.com/yairm210/Unciv/blob/58b2844068866a04525eecfbc45e57c693714294/core/src/com/unciv/ui/components/widgets/LoadingImage.kt)关闭连续渲染时仍显示忙碌图标，只取消淡化和旋转；[动画盘点](https://github.com/yairm210/Unciv/issues/11986#issuecomment-2262249912)区分装饰开关与仍触发绘制的移动／攻击 Actions。[研究] 借鉴的是保留状态反馈、减少持续装饰，不是把所有动画或玩法冻结。[同 SHA 许可](https://github.com/yairm210/Unciv/blob/58b2844068866a04525eecfbc45e57c693714294/LICENSE)为 MPL-2.0；仅提炼机制，不移植代码／资产。[一手]
 
 **反例收窄采用。** [Unity 解谜游戏作者原帖](https://discussions.unity.com/t/new-input-system-and-ondemandrendering-input-lag/899418)报告换 Input System 后触摸恢复延迟；2024 年跟帖称 Unity 6 Android 按低渲染频率处理触摸、Editor 却正常。缺完整版本与官方修复闭环，不能声称 6.3 仍必现；足以要求发布构建分开核输入接受和首个可见反馈。[社区／研究] 用现有预算验证同时看实际更新／呈现频率与耗用，覆盖静止、首操作、动画／异步变化及恢复；无收益或反馈变迟就撤回。未运行引擎、游戏、设备或模型，不由 API 或 CPU 自报推断 GPU 省电。[研究]
+
+## 图中文字二改：先换生产表示再扩语言
+
+核实：2026-10-19（UTC+8）。主线3／4；改变04本地化的资产生产选择，不重复字库覆盖或要求自建本地化平台。未下载图片／字体，未安装、运行工具、游戏或引擎。[研究]
+
+**采用判断。** 已有完整合法语言图片且修改少，可保留；成套图反复修改时，先比较背景、文字、布局分离后批量重生，或移为运行时文字。前者保留可控栅格外观，新增导出链；后者减少语言图片，却把布局／塑形交给运行时。两者须按目标效果验收，不能因源码公开就直接搬历史工具。这里的运行时替代是研究比较项，不称作者已实测淘汰。[研究]
+
+**同作需求与原方案。** [Pope 2014复盘一](https://dukope.com/devlogs/papers-please/localizing-1/)记录：英文首发后，多语言迫使原来手排文字的证件图改生产方式。逐语言人工修图难保统一，自写Flash／C#排版和昂贵专业工具也未选；最后共用HTML/CSS布局，译文变化后再烘焙。它保留精细文档外观，但浏览器导出与像素字平滑成为新成本；特殊图与部分字形仍靠人工，不能作为零手修成功链。[一手：作者自述]
+
+**发行不是效果对照。** [复盘二](https://dukope.com/devlogs/papers-please/localizing-2/)报告候选版由约百人测试后于2014-02-12发行；[GOG当日1.1.60回执](https://www.gog.com/forum/papers_please/papers_please_has_been_updated_to_version_1160_pc_mac/page1)列七种新增语言。作者同时负责翻译团队协调与工具修订；发行证明实际采用，不证明比逐图修改更省工，也不是本仓玩家验收。[一手]
+
+**后续维护改变工具，不撤掉生产目标。** 固定工具仓 `1fba12973b37b847ec0867076e8b4eb471ece600`（2022-09-17快照，非新打包器首发日）的 [packer说明](https://github.com/PapersPleaseLoc/PapersPleaseLoc.github.io/blob/1fba12973b37b847ec0867076e8b4eb471ece600/packer/README.md)明确：旧Chrome扩展跨Windows／Mac维护困难，后来改Node／Playwright／headless WebKit；新方案也有负担，作者标明不提供支持、仅短暂测试。它把生成的图片与数据打成语言ZIP供游戏读取，不是只有在线预览。[一手：作者说明]
+
+固定 [ext/main.js](https://github.com/PapersPleaseLoc/PapersPleaseLoc.github.io/blob/1fba12973b37b847ec0867076e8b4eb471ece600/ext/main.js#L1524-L1567)从CSV与捕获元素形成图片／数据清单；[packer/index.js](https://github.com/PapersPleaseLoc/PapersPleaseLoc.github.io/blob/1fba12973b37b847ec0867076e8b4eb471ece600/packer/index.js#L359-L435)依清单输出数据、逐元素截图并后处理。源码支持生产机制，不证明2026浏览器兼容，也没有把2022打包器追认为2014发行所用工具。[一手：源码阅读]
+
+**代价、撤回与缺口。** 程序员能维护布局与生成脚本，不代表能补画特殊字形。先用目标语言的一组代表文档核共享布局能否覆盖；导出平台升级、特殊图或合法字库缺口抵消收益时，换已支持的生产路线、简化图中文字或收窄语言，不继续扩手工例外。此为后续验收设计，未执行；保留04已有字体、塑形、显示和操作检查。实际可读性、完整零手修与可分离主动工时仍未知。[研究]
+
+权利仅核到 [packer/package.json](https://github.com/PapersPleaseLoc/PapersPleaseLoc.github.io/blob/1fba12973b37b847ec0867076e8b4eb471ece600/packer/package.json)声明ISC；不据此覆盖整库CSS、字体、游戏图片或译文。此处借生产机制，不分发资产或推荐整库直接商用。[一手／研究]
