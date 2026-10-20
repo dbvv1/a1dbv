@@ -497,7 +497,7 @@ PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UT
 
 合成T0＝2026-10-20 09:00Z，User10/20存在；时间同日：[研究：输入]
 
-| id | title/content | author | published | views | created/updated |
+| id | title/content | authorId | published | viewCount | createdAt/updatedAt |
 |---|---|---|---|---|---|
 | 101 | A/正文A | 10 | true | 9 | 08:00/08:30 |
 | 102 | B/null | 10 | false | 0 | 08:05/08:35 |
@@ -520,7 +520,7 @@ PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UT
 
 - S1无并发映射后feed={101,104}、user10非公开={102}；101/104 Published、102/103 Draft。非状态字段逐值不变，null仍null；总数不代替内容／排序验收。
 - S2独立于S1：signup新增105须Draft/false。S3：C1写102 Draft/false后W0只写true，W0退出后的协调须得Published/true。S4：回填读103=false,v0后C1写Published/true,v1，旧条件必须失败并重读，不得回写Draft。
-- S5从S1：102提审→InReview/false；同requestId重放同结果，旧version异请求conflict。S6接S5：审核发布102、撤回104、101计数+1、删103；终点feed={101,102}、存活={101,102,104}、101.views=10。102/104更新时间随业务变化；**第二轮继承此终点，不还原T0**。
+- S5从S1：102提审→InReview/false；同requestId重放同结果，旧version异请求conflict。S6接S5：审核发布102、撤回104、101计数+1、删103；终点feed={101,102}、存活={101,102,104}、101.viewCount=10。102/104更新时间随业务变化；**第二轮继承此终点，不还原T0**。
 - S7坏候选：全表默认Draft丢公开集合、按false重跑把InReview降草稿、自动updatedAt洗牌、重放toggle反向切换，任一阻止切读／收缩。S8中断：只有数据库确认rollback才称仍T0；结果不明先对账，批模式保已提交批、不前移失败批。
 - S9权威负例：C1残留时开放审核必须被门拒绝；完成交接后102进入InReview，旧C1连接／重启须在写前被拒，不能复原Draft或绕审核发布。一次CAS碰巧失败不证明门成立。
 - S10迟到回填：102已InReview，旧代际job按false写Draft须拒且状态不变；若job已在受保护事务内，开放门等待其结束／撤销，不能同时开放审核。
@@ -535,8 +535,8 @@ T1＝同日10:00Z；S6上另创建106/107并提审InReview。A2加Scheduled／�
 |---|---|
 | Q1 | 批准106于11:00、107于12:00；feed仍{101,102}。104草稿直接定时conflict |
 | Q2接Q1 | 10:59:59.999不得发106；11:00及以后首worker提交，重复匹配0；feed={101,102,106} |
-| Q3接Q2 | 11:30取消107成功→Draft、时间null、version增；12:00旧worker匹配0。主轨终点101/102/106公开，104/107草稿，103已删，101.views=10 |
-| Q4从Q3分叉 | 11:40重提审并定13:00；旧12:00 job须匹配0，13:00新任务才可发；只验id＋Scheduled会提前发 |
+| Q3接Q2 | 11:30取消107成功→Draft、时间null、version增；12:00旧worker匹配0。主轨终点101/102/106公开，104/107草稿，103已删，101.viewCount=10 |
+| Q4分叉 | 从Q3的11:30取消提交后、12:00观测前分叉；11:40重提审并定13:00；旧12:00 job须匹配0，13:00新任务才可发；只验id＋Scheduled会提前发 |
 | Q5从Q2分叉 | 106提交后丢响应，重试不二次转移；如新增通知须另补事务outbox及消费者幂等，本包无外部exactly-once承诺 |
 | Q6从Q1分叉 | 调度故障至11:05才恢复，106在提交前仍Scheduled；按到期状态扫描补发，不能只靠内存timer；5分钟是否可接受由人定 |
 | Q7从Q1独立分叉 | **不执行Q3**；12:00及以后107到期，worker先提交后旧version取消只能conflict，保持Published，须明确撤回；不保证取消胜，不许早发 |
