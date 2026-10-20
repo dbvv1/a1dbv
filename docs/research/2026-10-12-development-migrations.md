@@ -217,7 +217,22 @@ ARTICLE调用第2页会先以after=null重读第1页；仅S1b再以`p23:250`读�
 
 故障替身返回`{data:null,errors:[{message:"fixture unavailable",extensions:{code:"INTERNAL_SERVER_ERROR"}}]}`，核原assertStorefrontOk抛错、不得写空成功结果；恢复同阶段再收敛。未识别operation须显式失败，不回通用空data，更不能漏到真实商店。布局的其他请求需补各自真实shape的测试响应，当前表仅闭合博客／sitemap数据通路，不是可直接启动的全站mock。[研究]
 
-**运行前门仍未闭合。** 先在独立候选副本把package.json的Next16.4.0升级到该轮修复版16.4.1（运行时再核后续公告），获准安装后由pnpm12.8.2／Node24解析并生成真实pnpm-lock.yaml，审依赖差异；三路线从同一安全基线分叉。此处没有生成lock、增设测试依赖或执行build/typecheck；这些命令会调用Next，不能包装成静态验证。还须实现上述替身与测试入口、补全站mock、真实API/count契合、缓存后端及退回实测。[研究]
+**运行前门仍未闭合。** 先在独立候选副本把package.json的Next16.4.0升级到该轮修复版16.4.1（运行时再核后续公告），获准安装后由pnpm12.8.2／Node24解析并生成真实pnpm-lock.yaml，审依赖差异；三路线从同一安全基线分叉。此处没有生成lock、增设测试依赖或执行build/typecheck；这些命令会调用Next，不能包装成静态验证。合成源已实现如下；还须接入应用测试入口、补全站mock、真实API/count契合、缓存后端及退回实测。[研究]
+
+#### 可复用的合成源（2026-10-21）
+
+**✅ 让Agent复用[合成源](../../scripts/research/p23_source_fixture.py)，不要为每个页面重造一份“期望结果”。** `Scenario`从S0顺序应用e1→e4，五种响应共享同一源；[回归](../../tests/test_p23_source_fixture.py)用独立字面预期核删除C后保B、250+1游标、独立count及长正文hash。人仍需检查未来适配器是否真正接到`storefront.request`，而非绕过转换层直接喂页面。[研究：本仓合成输入的离线验证]
+
+从仓库根目录复现：
+
+```sh
+python3 -B -m unittest discover -s tests -p 'test_p23_source_fixture.py' -v
+python3 -B scripts/research/p23_source_fixture.py --state S1b --operation getArticleSitemapPage --variables '{"first":250,"after":"p23:250"}'
+```
+
+第二条只导出B；把S1b改成S1应返空nodes、endCursor=null。成功JSON省略errors，对应JavaScript读取缺失属性为undefined；`--unavailable`返回既定源故障。未知operation／变量／游标与错序事件明确失败，不回退真实商店；返回副本，消费者改SEO等嵌套值不会污染后续输入。[研究]
+
+**⛔ 不把CLI逐次重放当连续缓存验证。** CLI每次从S0重建，仅供准备输入；未来连续测试须保同一`Scenario`、应用模块和缓存，依次调用`apply('e1')`到`apply('e4')`。夹具只证合成源契约，未运行Next、真实转换／消费者或Shopify，也不是含其他布局请求的全站mock；真实API契约不符时先修输入，不能据此调整迁移评级。[研究]
 
 #### R2：继承S1，不为命中补丁改应用
 
