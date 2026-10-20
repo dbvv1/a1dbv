@@ -1,10 +1,10 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
-改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体首试原生低模，场景和变形角色另判；处理器先核目标导入器与实际接口，凸分解的顶点／包数参数不能直接当引擎交付保证；旧精灵母版转实时先重验源，不默认只需批转
-新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加门 GLB、关节导出、重贴图及程序化范围证据；凸分解另核主分支／Unity 包差异、合并退出与原生引擎契约，未运行模型／引擎；2026-10-19补Naev旧源补做、转换脚本边界及正式发行
+改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体新需求首试T2.5原生低模、旧合格T2配方不迁移，场景和变形角色另判；处理器先核目标导入器与实际接口，凸分解的顶点／包数参数不能直接当引擎交付保证；旧精灵母版转实时先重验源，不默认只需批转
+新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加门 GLB、关节导出、重贴图及程序化范围证据；凸分解另核主分支／Unity 包差异、合并退出与原生引擎契约，未运行模型／引擎；2026-10-20补T2.5默认／预算与Tripo入口差异；2026-10-19补Naev旧源补做、转换脚本边界及正式发行
 
 # WP3：3D资产路线、原生低模与第二次修改
 
-核实时间：2026-10-14（UTC+8）；2026-10-16（UTC+8）补核凸分解接口／预算（§5）、TaoFlowForge 许可与装载链（§10.2）、程序化形状／风格范围（§13）。正文见[3D资产专题](../../domains/game-dev/assets/3d.md)。以下“首试”是理论选型优先级，不是已测质量冠军。来源标签：[一手]官方文本/源码；[研究]论文或作者测量（须再分）；[经验]本报告决策。
+核实时间：2026-10-14（UTC+8）；2026-10-16（UTC+8）补核凸分解接口／预算（§5）、TaoFlowForge 许可与装载链（§10.2）、程序化形状／风格范围（§13）。2026-10-20（UTC+8）补核T2.5、Tripo入口及窗口扫描（§2.1、§10）。正文见[3D资产专题](../../domains/game-dev/assets/3d.md)。以下“首试”是理论选型优先级，不是已测质量冠军。来源标签：[一手]官方文本/源码；[研究]论文或作者测量（须再分）；[经验]本报告决策。
 
 ## 1. 采用判断与分档依据
 
@@ -14,7 +14,7 @@
 
 |用途|质量优先|性价比优先|本地/免费|
 |---|---|---|---|
-|静态刚体道具|✅ 采用与画风一致的成熟完整资产；缺少独特近景物件时🧪先试Meshy 7.1，Rodin Gen-2.5作为高细节/多图对照。二者无独立同题盲测，不排序为绝对最佳|✅ 同包复用；确需新形状时🧪Meshy T2原生低模，先灰模验轮廓再贴图；Tripo P1是替代候选，P2 Preview仅对照|✅ Kenney Nature Kit/简单参数化几何。写实可👀Poly Haven单资产，仍核预算；不强凑“免费本地生成冠军”|
+|静态刚体道具|✅ 采用与画风一致的成熟完整资产；缺少独特近景物件时🧪先试Meshy 7.1，Rodin Gen-2.5作为高细节/多图对照。二者无独立同题盲测，不排序为绝对最佳|✅ 同包复用；确需新形状时🧪Meshy T2.5原生低模，显式预算、先灰模；旧合格T2配方保留；Tripo P1作替代，API P2 Preview仅对照|✅ Kenney Nature Kit/简单参数化几何。写实可👀Poly Haven单资产，仍核预算；不强凑“免费本地生成冠军”|
 |场景|✅ 同套模块/材质拼装，近景标志物单独补生成；👀Marble Pro只用于交互弱、可接受烘焙观感的环境候选|✅ Kenney/Quaternius同包模块+脚本布局，不把整个关卡作为一个mesh重生|✅ 同包现成模块/引擎基本体；👀Infinigen只借资产/程序配方，不默认整套世界生成输出直接进游戏|
 |变形角色|✅ 同一现成角色生态、已知拓扑/骨架的完整资产；👀自定义生成仅当玩法允许退回刚体分件或替换角色|✅ Quaternius Universal Base Characters+同体系服装/动作；复用比重生后反复绑定更可控|✅ 指定CC0角色包的免费可下载部分；⛔不把TRELLIS/LATO.2默认安装或Hunyuan作为全球商用无条件路径|
 
@@ -24,9 +24,9 @@
 
 ### 2.1 原生低模已经是可调用路线，不只是“减面新包装”
 
-- **Meshy T2（论文2026-07-28；API当前`meshy-t2`）**：显式连通性、紧凑网格，控制面数；服务`model_type=smart-topology`，triangle-only，100–15,000面目标，忽略remesh开关。旧`lowpoly`将于2026-10-30退役；不要继续复制旧参数。[一手：[API](https://docs.meshy.ai/en/api/image-to-3d)、[论文](https://arxiv.org/html/2607.28675v1)]
+- **Meshy T2.5（API 2026-10-15）**：Smart Topology省略型号已默认T2.5，triangle-only，目标100–30,000／默认15,000；T2仍100–15,000／默认4,000。均不支持多图、忽略remesh开关，目标非硬上限。旧`lowpoly`于10-30退役。[一手：[API](https://docs.meshy.ai/en/api/image-to-3d)、[changelog](https://docs.meshy.ai/en/api/changelog)] 新需求先试同价、规格更宽的T2.5，但显式锁型号与玩法预算；不以“更锐利”宣传替同预算验收，旧合格T2配方不迁移。孔洞／挂点不合格则回退，不通过加面数宣称升级成功。[经验]
 - **Meshy 7.1（2026-09-18）**：标准高细节路线，`latest`已指它，7被弃用但仍工作。`geometry_resolution=4k`是几何采样规格，不是贴图4K；多图不支持该4k选项。[一手：[changelog](https://docs.meshy.ai/en/api/changelog)] 推荐显式锁版本，不把同seed+latest当重复生成契约。[经验]
-- **Tripo P1-20260311与P2-20260801**：P1是稳定低模路径；P2在当前生产域v3文档标Preview，新增quad，最多50,000三角面或25,000四边面；纹理模型另锁`v3.5-20260815`，不是几何升级就自动启用新版纹理。[一手：[P系列](https://developers.tripo3d.ai/en/docs/generation-text-to-model/p)] 本轮先采用P1稳定性作候选，P2不凭quad宣传升为角色首选。[经验]
+- **Tripo P1-20260311与P2-20260801**：P1是稳定低模路径；P2在当前生产域v3文档标Preview，新增quad，最多50,000三角面或25,000四边面；纹理模型另锁`v3.5-20260815`，不是几何升级就自动启用新版纹理。[一手：[P系列](https://developers.tripo3d.ai/en/docs/generation-text-to-model/p)] [Studio九月更新](https://www.tripo3d.ai/zh/blog/tripo-september-update)已宣布P2.0 Official及局部Mesh Edit，但不改变上述API标记。[一手] 保留P1自动化候选，不凭Studio发布／quad宣传升为角色首选。[经验]
 - **LATO.2（2026-07-12论文，代码8月）**：分顶点与连通性，可调整顶点后重建拓扑；作者明确几何错不能靠连通性阶段补救，尚缺UV/纹理/材质。[研究：[论文限制](https://arxiv.org/html/2607.10623v1)] 不支持“新拓扑模型已经解决完整游戏角色”。[经验]
 - **TaoFlowForge（2026-09-29论文，9月30代码发布）**：原生顶点+连通性三阶段；公开推理CLI、阶段恢复、raw与补洞后网格都有，读源码可区分生成错误与后处理错误；不是只有官网旋转视频。[一手：[固定README](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/README.md)、[pipeline](https://github.com/alibaba/Taobao3D/blob/f2369145382e07551fb633a589f69771b40adf32/TaoFlowForge/taoflowforge/pipeline.py)] 权重仓现已核到 Apache-2.0 声明，但必需 DINO 的实际来源／版本及适用许可链未闭合，不列无条件商用本地推荐（见 §10.2）。[研究]
 
@@ -127,7 +127,7 @@ PBR贴图存在不证明物理一致；需区分base color与烘焙阴影、roug
 
 [研究] **二改只预注册**：常见组合复用后改门宽／墙材质，另留一个特殊入口，核共享修改、局部例外、连接与碰撞，比较重复摆放／修正工时。若多数实例都要拆改就缩组合，不预造所有排列。本文仅静态资料核对，未导入资产或运行引擎；作者生产成本不可外推，公开复盘不授予商业资产许可。
 
-成本记“获得一个被采用且经历第二次修改的资产”所有淘汰、贴图、remesh、导出、主动工时，不记一次成功API费。当前[Meshy定价](https://docs.meshy.ai/en/api/pricing)：T2灰模5、2K/4K贴图总15，7.1灰模20/纹理总30，remesh另5；均是单次API credits，不是美元，也不覆盖订阅/图片输入生成/失败重试。[一手] Rodin营销页与API计费表口径不一致，首试前以实际方案报价确认，不横向编造净成本排名。[研究]
+成本记“获得一个被采用且经历第二次修改的资产”所有淘汰、贴图、remesh、导出、主动工时，不记一次成功API费。当前[Meshy定价](https://docs.meshy.ai/en/api/pricing)：T2／T2.5灰模5、2K/4K贴图总15，7.1灰模20/纹理总30，remesh另5；均是单次API credits，不是美元，也不覆盖订阅/图片输入生成/失败重试。[一手] Rodin营销页与API计费表口径不一致，首试前以实际方案报价确认，不横向编造净成本排名。[研究]
 
 ## 7. 精确许可范围与采用门槛
 
@@ -138,7 +138,7 @@ PBR贴图存在不证明物理一致；需区分base color与烘焙阴影、roug
 5. Infinigen a0d1a0：主BSD3+标注CC0代码；目前只研究借鉴，不以主许可包办外部包/所有素材。[一手；研究]
 6. LATO.2 fbb1f5a5755e6db8700cf6922fd506830b7cdccd：主MIT；HF `0x4c48/LATO.2@a91090e8077b9318ab87ac08fd9eb905903d4515`卡MIT，七个pt；[setup.sh](https://github.com/LoHhhha/LATO.2/blob/fbb1f5a5755e6db8700cf6922fd506830b7cdccd/setup.sh)固定nvdiffrast v0.4.0并称o_voxel导入必需，同一[nvdiffrast v0.4.0许可§3.3](https://github.com/NVlabs/nvdiffrast/blob/v0.4.0/LICENSE.txt)限制普通使用者为非商业研究／评估；**不能忽略该商业生产依赖门槛**。首轮商用默认暂缓。[一手；研究]
 7. TaoFlowForge/Taobao3D f236914：根 Apache-2.0；2026-10-16 已另读 ModelScope 固定权重卡的 Apache-2.0 声明。三个阶段均需 DINOv3-L/16，内嵌／外载不消除独立许可；实际组件来源／版本仍待核，不列无条件商用默认，见 §10.2。[一手；研究]
-8. Meshy 7.1/T2、Tripo P1/P2、Rodin Gen2.5沿WP1对应服务权利；**Tripo本地SG≠付费Tripo服务许可**，SG默认自动下载BRIA RMBG1.4未清商用，不引入为“MIT全套”。[一手：[TripoSG固定README](https://github.com/VAST-AI-Research/TripoSG/blob/fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c/README.md)；研究]
+8. Meshy 7.1/T2/T2.5、Tripo P1/P2、Rodin Gen2.5沿WP1对应服务权利；**Tripo本地SG≠付费Tripo服务许可**，SG默认自动下载BRIA RMBG1.4未清商用，不引入为“MIT全套”。[一手：[TripoSG固定README](https://github.com/VAST-AI-Research/TripoSG/blob/fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c/README.md)；研究]
 9. Marble：阶段 F 已补读当前合同和导出页，Pro 可作受限背景候选；免费生成不追溯升级，Standard 的商用口径需实际订单澄清，见 §10。[一手／研究]
 
 ## 8. 新证据与停止点
@@ -147,7 +147,7 @@ PBR贴图存在不证明物理一致；需区分base color与烘焙阴影、roug
 
 足以改变建议的新增证据：原生低模商业入口与退役旧参数；同样“成功”的朝向错误；低模作者产物与费用记录的证据限制；LATO.2依赖重现许可阻塞；TaoFlowForge 真实开源推理，权重仓许可声明已补核但 DINO 适用链仍缺；最新UV论文仍明确人工精修范围；碰撞、UV、LOD可直接借成熟库而非自建。[研究]
 
-后续只需窄实验（待用户授权，当前不执行）：同一个带孔刚体需求，用同风格现成/参数化基线、T2、7.1或Rodin各一条；保所有淘汰件并做一次“改尺寸且保挂点/颜色”的修改。角色实验另立样本，不能与刚体合算。授权不满足的路线先排除。停止条件是目标视距轮廓/材质/碰撞通过且第二次修改成功，或确认需手修而撤回；不扩成新的管线框架。[经验]
+后续只需窄实验（待用户授权，当前不执行）：同一个带孔刚体需求，用同风格现成/参数化基线、T2.5（旧T2配方作回退）、7.1或Rodin各一条；保所有淘汰件并做一次“改尺寸且保挂点/颜色”的修改。角色实验另立样本，不能与刚体合算。授权不满足的路线先排除。停止条件是目标视距轮廓/材质/碰撞通过且第二次修改成功，或确认需手修而撤回；不扩成新的管线框架。[经验]
 
 [研究] 历史交付检查：`check_repo.py`、完整离线 14 阶段（非空无 skip）、70 处标题引用与 `git diff --check` 通过；独立复核据固定源码区分 Infinigen 文档 USDC 和实现 usda/usdc 分支。仅仓库检查，非外链事实、引擎或 hosted CI 验证。
 
@@ -188,14 +188,14 @@ Shards Asset Toolkit 固定 **94bd478782d9629586d5d1138d2172f0337a7745**，最�
 
 ## 10. 动态事实表：限定补核
 
-本表覆盖本专题已采用／候选路线的主要型号、价目、许可与维护决策；未能闭合的字段标明真实尝试和安全降级，**不把缺失条款当已获授权，也不声称全依赖树审计完成**。核实日统一为 **2026-10-14**；常规下次复核为 **采用前或 2026-11-14，以较早者为准**。表内提前退役节点优先，不是已创建定时任务。[研究]
+本表覆盖本专题已采用／候选路线的主要型号、价目、许可与维护决策；未能闭合的字段标明真实尝试和安全降级，**不把缺失条款当已获授权，也不声称全依赖树审计完成**。未单列日期的核实日为 **2026-10-14**；常规下次复核为 **采用前或 2026-11-14，以较早者为准**。表内提前退役节点优先，不是已创建定时任务。[研究]
 
 | 对象／字段 | 当前事实与来源 | 本轮状态／采用结论 | 下次复核 |
 |---|---|---|---|
-| Meshy 型号／参数 | [Image API](https://docs.meshy.ai/en/api/image-to-3d)：`meshy-7.1` 为 standard 的 latest；T2 用 smart-topology，triangle-only；目标 100–15,000，实际可偏离；旧 lowpoly 2026-10-30 退役 | [一手] 直接复核；T2 静态灰模候选，锁显式型号 | 采用前／2026-10-29 |
-| Meshy API 费用 | [价格](https://docs.meshy.ai/en/api/pricing)：T2 灰模 5、2K／4K 总 15、8K 总 20 credits；7.1 灰模 20、2K／4K 总 30、8K 总 35；Ultra 加 5，remesh 另 5 | [一手] 直接复核；仅每次 API credits，不是美元／合格件成本 | 采用前／2026-11-14 |
+| Meshy 型号／参数 | [Image API](https://docs.meshy.ai/en/api/image-to-3d)：`meshy-7.1` 为 standard 的 latest；smart-topology默认T2.5，目标100–30,000／默认15,000；T2为100–15,000／默认4,000，均triangle-only且无多图；旧lowpoly于10-30退役 | [一手] 2026-10-20复核；新需求T2.5候选，旧合格T2锁版；均锁预算 | 采用前／2026-10-29 |
+| Meshy API 费用 | [价格](https://docs.meshy.ai/en/api/pricing)：T2／T2.5 灰模 5、2K／4K 总 15、8K 总 20 credits；7.1 灰模 20、2K／4K 总 30、8K 总 35；Ultra 加 5，remesh 另 5 | [一手] 2026-10-20复核；同价非同质量，仅每次API credits | 采用前／2026-11-14 |
 | Meshy 输出商用／标识 | [Terms](https://www.meshy.ai/terms-of-use)更新 2026-09-19：§3.2 免费 CC BY 4.0，付费在法律允许范围归客户；§3.3 公开 Customer Output 为 CC0，其余 Community 内容 CC BY-NC；§2.4 禁删 AI 标识 | [一手] 直接复核；输入权利、生成时套餐与元数据一起验，不能只核模型 | 采用前／2026-11-14 |
-| Tripo 型号／规格 | [P 系列](https://developers.tripo3d.ai/en/docs/generation-text-to-model/p)：P1-20260311；P2-20260801 仍 Preview，quad 仅 P2；纹理需另锁 v3.5-20260815，P 系列默认纹理仍 v3.0-20250812 | [一手] 直接复核；P1 作对照，P2 不因 quad 升为角色默认 | 采用前／2026-11-14 |
+| Tripo 型号／规格 | [P 系列](https://developers.tripo3d.ai/en/docs/generation-text-to-model/p)：P1-20260311；API P2-20260801仍Preview，Studio P2.0已正式发布（§2.1）；quad仅P2；纹理需另锁 v3.5-20260815，P 系列默认纹理仍 v3.0-20250812 | [一手] 2026-10-20复核；保留P1，Studio局部编辑不证明身份无损 | 采用前／2026-11-14 |
 | Tripo 价格 | [生产域 P1 页](https://developers.tripo3d.ai/en/models/p1)：文本灰模／标准／详细 30／40／50，图片或多图 40／50／60 credits；[v3 changelog](https://developers.tripo3d.ai/en/docs/changelog)：P2 灰模 100，标准／详细／极致 110／120／130；[价目](https://developers.tripo3d.ai/en/pricing) 1 credit=US$0.01 | [一手] 换正确入口后直接复核，不能用 API 示例当价格；不照旧 v2 文档的 P1 all-in 口径推算新纹理选项 | 采用前／2026-11-14 |
 | Tripo 商用／终止 | [Terms §5.2、§10.4–5](https://www.tripo3d.ai/terms)：付费权利与免费不同；退订停止续费，ownership 条款按性质存续；账户输出可能删除 | [一手／研究] 有依据保留付费期间取得的所有权，先备份；未找到旧免费资产追溯变商用授权，因此该路径排除，改在明确付费条件下重新生成 | 采用前／2026-11-14 |
 | Rodin 2.5 型号／价格冲突 | [端点文档](https://docs.hyper3d.ai/en/api-specification/rodin-gen2-5)基本 0.5 credits、Extreme-High tier 加 0.5、extreme-high texture 加 2.0；[API 产品页](https://hyper3d.ai/features/api)却写 Gen-2.5 从 1 credit 起；tier 必须明确 | [一手／研究] 两页均直接读取；不选择较低数字冒充当前统一报价。采用前确认实际配置报价，不据此算单件美元价 | 采用前／2026-11-14 |
@@ -214,6 +214,12 @@ Shards Asset Toolkit 固定 **94bd478782d9629586d5d1138d2172f0337a7745**，最�
 | Infinigen 维护／代码许可 | GitHub API 最新仍 a0d1a0dd，2026-10-08 的 2.0.0a3 rooms；[LICENSE](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/LICENSE) BSD-3-Clause | [一手] 重核；只借单资产配方，alpha 发布与许可不证明整场景游戏交付，导出限制沿 §4 固定实现 | 升级／采用前或2026-11-14 |
 | xatlas 维护／许可 | GitHub API 最新仍 f700c779，2022-07-25；[LICENSE](https://github.com/jpcy/xatlas/blob/f700c7790aaa030e794b52ba7791a05c085faf0c/LICENSE) MIT | [一手] 重核；成熟 UV 工具候选，不标近期活跃；新 UV 不保旧贴图 | 升级／采用前或2026-11-14 |
 | CoACD 维护／许可 | GitHub API 最新仍 131010c4，2026-09-23；[LICENSE](https://github.com/SarahWeiii/CoACD/blob/131010c4f03fec375ea88c5c6263f120046cb7f1/LICENSE) MIT | [一手] 重核；复杂凹碰撞才评估，CuACD 新闻提交不等于本轮 GPU 性能验证 | 升级／采用前或2026-11-14 |
+
+**2026-10-20窗口扫描（2026-08-20至10-20）**：质量优先仍保现成完整资产，场景／变形角色不换档；[Rodin九月Agentic](https://docs.hyper3d.ai/en/api-specification/rodin-agentic)明确Beta、自动选模式有不确定性，不能替代固定配置的质量／二改证据。GitHub API复核TRELLIS.2、LATO.2、Hunyuan3D-2.1与Taobao3D的HEAD均仍为表中SHA，既有许可门槛不因近期包装改变。[一手／研究]
+
+新增本地覆盖：[Pixal3D 9月1日多视图代码](https://github.com/TencentARC/Pixal3D/blob/f7cf38429b0bd264f1995f0f8743a88b1c728b94/README.md)需相机参数与对应视图，并明确先按TRELLIS.2安装；根MIT不替受限依赖放行。本地免费默认不换；未测依赖替代、生成或引擎，许可只覆盖已读条款，不替特定项目清权。[一手／研究]
+
+窄处理候选：[Tripo Smart UV](https://developers.tripo3d.ai/en/docs/mesh-uv)与[十月更新](https://developers.tripo3d.ai/en/docs/changelog)承诺重展后重映射现有纹理／rig／动画，[正式价目](https://developers.tripo3d.ai/en/pricing)为20 credits、上限80,000等效三角面。仅在确需重展且愿重验身份时试用；旧UV／像素mask仍要复用则不选，接口承诺不等于实测无损。Retopology v3.0可附带smart_uv，默认仍v2.0，旧版传该参数报错；不替换现有bpy／gltfpack默认。[一手／经验]
 
 ### 10.1 剩余条件的安全降级
 
@@ -247,7 +253,7 @@ Shards Asset Toolkit 固定 **94bd478782d9629586d5d1138d2172f0337a7745**，最�
 - 独立 `POST /v3/models/texture` 的纹理版本字段改为 `model`，默认仍为 `v3.0-20250812`；不能把生成端点的 `texture_version` 原样搬来。根据既有 task ID 重贴图时，官方建议再次提供参考图。
 - [研究] 留存原始请求（几何／纹理版本、seed、质量、PBR、delight）、创建返回的 `data.task_id`、终态结果与采用文件；文档示例没有返回已解析的双版本证明，不能从 `success` 或文件名补造它们。去光照能力不等于实际表面可重新打光，仍验最终材质。
 
-[研究：变化与范围] 这修复正文只选 P1 而未定义纹理的采用缺口；不改 P2 Preview 的候选地位，不将新版纹理宣传当同题质量胜出。没有调用生成／重贴图 API、下载模型或运行引擎。
+[研究：变化与范围] 这修复正文只选 P1 而未定义纹理的采用缺口；不改 API P2 Preview 的候选地位，不将新版纹理宣传当同题质量胜出。没有调用生成／重贴图 API、下载模型或运行引擎。
 
 
 ## 11. 装饰改成交互：分件不是运动结构

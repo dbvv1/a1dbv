@@ -2,6 +2,8 @@
 改变的建议：原生文档、模板和生成器够用就不加或撤回额外 Skill；仅为缺失的平台／生产契约、对象配方或质量目标补窄参考，互斥依赖的短契约放各操作入口。性能优化先查转换／复制开销，反复修补的缓存与退役／局部实现比较，按新热点、必要行为和目标负载选候选；扩大搜索前核轻量方案、全尝试成本与独立复评，接管时可保方向换成熟内核。验收按消费者坐标／单位，扫描锁工具／数据库／判定身份，前端自动优化按交互与构建阶段局部采用。[经验]
 新证据：汇总研究，日期与反证见各节。本仓局部表达式／文件结构／AST 探测，与 Cloudflare 迁移、pivot／Seedkit 历史产物、Next.js 三臂定义及设计 Skill 分开计证；原生也能正确，整包干预不能归因 Skill 净收益。性能部分汇总 pandas、SWE-fficiency、PerfAgent、轻量搜索及 Triton／PyTorch／Roaring 的论文、轨迹与源码；不同测量不拼同条件对照，轻量搜索的完整历史成本／选择链仍缺。PDF 仅核源码与算术，未渲染；SkillsBench／pivot 补读核实际身份与配方读取，不把标签当使用；YugabyteDB 仅核反馈与入口补丁。上述补读未重跑模型、GPU 或应用。2026-10-18（UTC+8）补 Sanity 局部退出、Onyx 分阶段启用及官方契约，并补 CPython 缓存退役的历史人工优化链；不作当前横评。[一手／研究]
 
+2026-10-20另列[既有设计系统连续改版提议](#已有设计系统ui连续改版项目提议2026-10-20)，仅立项，未认证Skill或视觉收益。[研究]
+
 # 窄领域 Skill：平台契约、原生对象与生产配置
 
 > 核实：2026-10-13。长期任务二。第 1–5 节为 Cloudflare 调查（UTC+8）；第 6 节同日追加原生 pivot 调查（UTC）；第 7 节于 2026-10-14（UTC）补核生产缺省契约与历史生成产物。第 8 节同日追加 Next.js 固定源码比较及累计取舍；末节同日追加设计质量目标与历史操作反例。分别执行自行编写的表达式、文件结构与 AST 探测，未部署 Cloudflare、运行 Office/Django 应用或新模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
@@ -700,3 +702,17 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 **可见结果先于预绘完成。** Penpot [#11313](https://github.com/penpot/penpot/pull/11313)说明旧路径可见 tiles 已完成，却仍等 interest ring，使缩放后的清晰视口晚出现；[2026-08-25 固定补丁](https://github.com/penpot/penpot/commit/57c0e8161604c1e0e1e2dacffc28744ed77e593c)改为先呈现 ViewportReady，再继续周边预绘，并限制 HiDPI 绘制到 atlas 槽大小，避免画完又缩小丢弃。当前固定[tiles 调度](https://github.com/penpot/penpot/blob/8787937b7cd7cf8c7c1ab3a09f79b431de190b04/render-wasm/src/tiles.rs)仍分离可见与 deferred interest；[消费端](https://github.com/penpot/penpot/blob/8787937b7cd7cf8c7c1ab3a09f79b431de190b04/render-wasm/src/render.rs#L4450-L4482)在提升待绘周边后允许让出执行，以便先呈现视口。这里仅指允许让出的异步交互路径；同步路径 `allow_stop=false` 仍在同一调用处理周边，不将提前呈现推广到同步／导出。源码支持调整呈现／预绘顺序，不证明总绘制时间下降。**[一手：作者动因与固定实现；研究：效果边界]**
 
 **不由此默认换绘图库。** 原生 SVG／缩略图能满足目标交互时仍可保留；Penpot 维护者[明确已有缩略图且做过替代路线 PoC](https://community.penpot.app/t/its-time-for-penpot-to-almost-move-away-from-the-dom/6437/20)，才继续 canvas＋WASM。另有 [#12274](https://github.com/penpot/penpot/issues/12274)要求高倍像素检查禁用插值，属于不同质量目标，不能把提前呈现当作它的修复。案例没有该补丁的独立延迟测量、接收者复测或维护工时；未建立该补丁与正式发行版本的映射，也不将整个新渲染器的反馈归因本补丁。它支持窄调度选择，不证明 Skia、WASM 或额外 Agent 能力普遍更快。**[一手；研究：采用边界]**
+
+## 已有设计系统UI连续改版：项目提议（2026-10-20）
+
+**P24拟改变15的主题／密度迁移建议：先保既有primitive、接口与业务行为，再选择原命令／局部补丁或窄Skill。** 视觉反馈是所有路线的验收层，不是与Skill互斥的工具选择。预算1.5–2.5天，当前仅立项；未证明审美或Skill净收益。[研究]
+
+[shadcn #9914](https://github.com/shadcn-ui/ui/issues/9914)有真实Claude使用与用户退回：只想改preset／密度，Agent却把Base UI换成Radix，typecheck仍通过；维护者首次称修好后用户又报错。[#9923](https://github.com/shadcn-ui/ui/pull/9923)合入`cd7743cbc192df213870bd6fa05d9cd744591fba`，仅修订Skill／CLI文档，要求临时项目携带既有base，preset不编码base。没有修订后用户成功／新组件回执，不称效果闭环。[一手／社区]
+
+[固定Skill ba1503c6](https://github.com/shadcn-ui/ui/blob/ba1503c64472b82256d9de95e2e62c5901a38e8b/skills/shadcn/SKILL.md)区分主题／字体局部应用与逐组件合并；新建设计系统入口不能直接套用已有应用，theme/font局部应用也不能冒充密度变更；项目开工另固定CLI版本／源码契约。公开MIT的Equinor [#5157](https://github.com/equinor/design-system/pull/5157)有语义token→主题／密度→下载Dialog的后续修改，以及Claude参与review但一次复审未完成、人要求重审的记录；不归因为Agent生成，拆PR也不证明质量提升。源码许可不推及品牌／字体／私有设计资产。[一手，2026-10-20核；研究]
+
+**拟交完整两轮包**：先固定一个公开管理／编辑界面，含列表、表单、弹层、base、tokens、局部修复与用户路径。首轮改指定主题与两种密度，交文件级变更和继承断言，明确不得顺带替换primitive；第二轮在同一产物新增批量编辑Dialog，继承主题、密度及取消／确认语义。比较现有Dialog＋表单／局部变体与新增base的差异和退出成本，不只写“保token”。[研究：验收设计]
+
+Agent追组件来源、token作用域和上游差异，提出窄改动；人定信息层级、密度、状态反馈及可接受的交互变化。源码／行为核接口与数据流，视觉观察核暗色、溢出、层级与状态，不能只凭像素相似或typecheck放行。分记上下文、人审、返工、运行等待及后续维护，未知不补数；完整Skill无增量时可撤回。[研究]
+
+主建议归15§3，05／23仅必要回链，证据沿本记录。必须有同一应用两轮继承包和至少一条公开Agent失败／人工修订改变选择；找不到基线、只剩一句保base、需要非公开资料或新运行权限才可推进则撤项，不安装Skill或运行应用。shadcn与Equinor不是同一Agent实验，拟第二轮不是既成历史。立项审通过不等于内容项目完成。[研究]
