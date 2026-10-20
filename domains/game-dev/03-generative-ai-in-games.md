@@ -240,9 +240,9 @@ MatLat 的已核免费权重为非商业许可，不作商用生产默认。Unit
 
 | 事实 | 来源 |
 |---|---|
-| GDC 2026：36% 的从业者在工作中用生成式 AI（程序相关用途中“代码辅助”占 47%）；但 **52% 认为它对行业有害**（2025 年 30%，2024 年 18%），美术（64%）、策划（63%）、程序（59%）最负面 | GDC 官方摘要 **[一手]** |
-| Steam：原研究样本期内约 1/3 的新游戏声明使用 AI；它们取得小有成功（≥100 条评测）的概率只有非 AI 游戏的约 55%；**只用 AI 出美术的作品失败最集中**，而成功作品更多把 AI 用在本地化、配音等环节 | 该研究的 53,597 款游戏样本 **[社区：原文]** |
-| 2025-12，《光与影：33 号远征队》因早期用过 AI 占位贴图（发售前已替换）被撤销 Indie Game Awards 年度游戏 | HN 讨论 **[社区]** |
+| GDC 2026：36% 的受访从业者在工作中用生成式 AI；但 **52% 认为它对行业有害**，视觉与技术美术（64%）、游戏设计与叙事（63%）、游戏程序开发（59%）组内负面看法比例较高。2026 年扩大受访角色并调整问卷，不把历年结果当同一群体追踪 | GDC 官方摘要 **[一手；2026-10-20 补核]** |
+| Steam：研究称到 2026 年中的新发行游戏约 1/3 带 AI 披露；按相同发行月份比较，披露组达到 ≥100 条评测的比例约为未披露组的 55%。另一组披露文本比较中，失败组更常提及 AI 美术，成功组更常提及配音和本地化；**这是关联，不证明用途导致成败，未披露也不等于未使用 AI** | 作者对 2023-07 至 2026-07 的 53,597 款 Games 类别发行普查；用途比较另取成功组 138 款（≥1,000 评测）与失败组随机 400 款（<50 评测、上市 ≥9 个月） **[社区：原文；2026-10-20 补核]** |
+| 2025-12，当时报道记载《光与影：33号远征队》因开发中使用生成式AI，被撤销 Indie Game Awards 年度游戏与首作奖；Sandfall 在原采访页补充澄清称，相关占位贴图在发售后五天内移除，而非发售前 | [原采访页中的开发方澄清](https://elpais.com/cultura/2025-06-28/la-revolucion-creativa-low-cost-cuando-la-tecnologia-pone-el-arte-al-alcance-de-todos.html) **[一手]**；[当时报道所引撤奖声明](https://www.gamesradar.com/games/rpg/clair-obscur-expedition-33s-controversial-goty-wins-at-the-indie-game-awards-retracted-after-the-rpgs-use-of-generative-ai/) **[二手：媒体转引；2026-10-20补核]** |
 | Godot 于 2026-06-30 公告收紧贡献政策，完整规则 08-26 合并；有限辅助与实质生成分开，Asset Store 另有规则 | [官方政策及执行案例](../../docs/research/2026-10-13-godot-contribution-policy.md) **[一手]** |
 
 **对制作与交付的含义**：
@@ -259,4 +259,4 @@ MatLat 的已核免费权重为非商业许可，不作商用生产默认。Unit
 
 - 资产工具：各工具官网；TRELLIS.2、Hunyuan3D-2.1、blender-mcp 仓库（2026-10-08 查看最近提交）；[Roblox Studio MCP 文档](https://create.roblox.com/docs/en-us/studio/mcp)；[Blender Lab MCP Server](https://www.blender.org/lab/mcp-server/)；[HackerNoon：3D 生成器对比](https://hackernoon.com/how-i-stress-tested-3-ai-3d-generators-on-the-same-inputs-what-the-numbers-actually-show)（二手）
 - 运行时 AI：[Cloudflare：Introducing Clef](https://blog.cloudflare.com/clef-decision-models/)、[Forkast：Jev](https://forkast.news/typesafe-ais-jev-is-not-an-llm-and-that-may-be-the-point/)（二手）、[TechCrunch：Project Genie](https://techcrunch.com/2026/01/29/i-built-marshmallow-castles-in-googles-new-ai-world-generator-project-genie)（二手）、[Data Center Knowledge：AMD 收购 World Labs](https://datacenterknowledge.com/data-center-chips/amd-to-acquire-world-labs-for-8-2b-to-advance-ai-models-and-robotics)（二手）、[Wikipedia：inZOI](https://en.wikipedia.org/wiki/InZOI)
-- 外部约束：[GDC 2026 State of the Game Industry](https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/)、[Sulka Haro：Three years of AI on Steam](https://fragwyz.substack.com/p/three-years-of-ai-on-steam)、[Godot 官方贡献政策](https://contributing.godotengine.org/en/latest/development/contribution_rules.html#ai-assisted-contributions)、[HN：Clair Obscur](https://news.ycombinator.com/item?id=46342902)
+- 外部约束：[GDC 2026 State of the Game Industry](https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/)、[Sulka Haro：Three years of AI on Steam](https://fragwyz.substack.com/p/three-years-of-ai-on-steam)、[Godot 官方贡献政策](https://contributing.godotengine.org/en/latest/development/contribution_rules.html#ai-assisted-contributions)；Clair Obscur 的开发方澄清与撤奖报道见上表
