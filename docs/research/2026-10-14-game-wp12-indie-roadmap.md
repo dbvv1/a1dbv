@@ -279,3 +279,25 @@
 | 核心吸引力仍依赖无法供应的表演 | 比较合法现成完整表现、进一步收窄或换概念 | 替代后仍不成立就撤回，不把上述一次历史修订当低成本保质保证 |
 
 这里借的是程序员可实现的“检查对象＋文字”机制，不取得或推荐复制原作美术。该作品由多人团队制作，有专业场景资产；不能外推整款单人零手修成立。素材供给换成自己的合法资产后，交互、写作、可读性与本地化仍需投入；没有工时、前后体验量化或自动化收益数据。本仓未下载游戏、未运行UDK／Unity／Unreal或模型，亦未逐场景验证；已有第二次修改的引用、状态、旧档、设备与真人试玩检查继续保留。[研究：适用与验证范围]
+
+## 资源供给续项提议（2026-10-20）
+
+本轮按路线图与已有交付去重，只补两个能改变资产选型的项目；已有换装、音效、瓦片、材质覆盖及配乐状态不重开。以下是立项依据，不计项目验收或实际制作结果。[研究]
+
+### P28：面部源件与台词第二次修改
+
+**先选有可用嘴型／面部绑定的角色，再选音频驱动工具。** WP6已有“改配音重算口型”，但尚未回答源件由谁供应、改单句怎样保留其他表演；缺源件时先比较现成角色、简化嘴型或降低特写需求，不以身体骨架和配音生成证明脸部可用。拟用1–2天，修改animation正文与WP4研究，audio仅短引；不运行引擎／模型。[研究：提议dot-B]
+
+[Rhubarb](https://github.com/DanielSWolf/rhubarb-lip-sync#mouth-shapes)要求至少六种现成嘴型，输出时序／形状信息而非角色图；[正式credits](https://thimbleweedpark.com/credits/)确认Thimbleweed Park采用，[制作方记录](https://blog.thimbleweedpark.com/tracking_talkies.html)又显示口型输入需保原始对白，消音发行音轨不能直接替代。此例有专业美术，不证明零手修供给。[一手]
+
+[MetaHuman官方音频驱动](https://dev.epicgames.com/documentation/en-us/metahuman/audio-driven-animation)在UE5.6+提供mouth-region Process Mask，可比较局部口型层与全脸重算；[许可入口](https://www.metahuman.com/license)允许其他引擎使用，但不等于导出链及成本已经验证。具体版本、源件适配、语言和授权在执行时固定。[一手／研究]
+
+**验收：同一角色R1对白链→R2换中间句／语言，给出保留层、重生层、输入／发行音轨和触发事件的继承关系。** 比简化嘴型、配套面部角色与模型驱动三档；AI可做候选时序、映射代码和批量检查，缺失源件、自然表演及跨语言质量是瓶颈，可承担比例未知。至少一条真实采用／二改反例决定换档或撤回；若只重复“重算口型”而不能改变买源件／选风格的默认，则撤项。[研究：验收]
+
+### P29：成套植被的风动源件与二改供给
+
+**树能导出不等于整套植被能改成近景风动。** 先比目标引擎配套资源、保风动数据的程序化源和静态生成；本项补枝干／通道／重导链，不重写已有WP5叶片覆盖与一般LOD。拟用1–2天，修改3d正文与WP3研究，路线图只作短入口。[研究：提议dot-B]
+
+[Fortnite Chapter 4制作报告](https://www.unrealengine.com/tech-blog/bringing-nanite-to-fortnite-battle-royale-in-chapter-4)记录树木表示升级后改用分支层级、枢轴、动画纹理与专用UV；它是已发售生产链反例，不是独立游戏应照搬的性能基准。[Unity6.3风动入口](https://docs.unity.com/en-us/engine/6000.3/manual/creating-environments/script-terrain/terrain-trees/speed-tree/class-speed-tree-importer/speed-tree-importer-wind)依赖Modeler已配置的.st9风动。[TreeIt](https://www.evolved-software.com/treeit/treeit)风动依赖导出的顶点色，需核格式与消费者；[UE5.8 Nanite Foliage](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-foliage)仍标实验性，不能推荐为旧树包自动升级。[一手]
+
+**验收：同一作品树／灌木／草从远景转近景风动，列清参数可调、源件可重导与必须换源。** 比Unity优先与UE对照的源数据、导出格式、许可和维护成本；AI可生成已有格式的映射／批处理并查通道，不能据资料承诺恢复缺失分支／权重或量化节省。需人工修枝／权重、破坏旧通道或实验性依赖不可接受时，改用配套资源或收窄表现；保原覆盖、碰撞、设备与二改引用检查。真实效果／工时未知，当前仅一手契约与作者报告。[研究：验收]
