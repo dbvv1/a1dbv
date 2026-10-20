@@ -499,7 +499,7 @@ PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UT
 
 ### P27：发送中改稿与在途恢复
 
-**当前仅资料／拟判据部分交付；原验收如下。** [研究]
+**当前交付具体合成账本输入与源码反例；实际两轮运行账本尚缺。** [研究]
 
 需求来自listmonk [#2014](https://github.com/knadh/listmonk/issues/2014)，经[#2264](https://github.com/knadh/listmonk/pull/2264)补编辑入口；[#3022](https://github.com/knadh/listmonk/issues/3022)用户自报重启漏发／疑似重复，非已复现因果。[PR2974](https://github.com/knadh/listmonk/pull/2974)生产成功自报被维护者因破坏性问题拒绝，不能据吞吐表采用。源码AGPL-3，仅分析，不复制应用。[一手／社区；2026-10-20核]
 
@@ -524,18 +524,56 @@ PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UT
 
 C1及人身份不变；别名并非数值ID：S10=10、S20=20、S60=30、S70=40、S80=50、S30=60、S40=70、S50=80。V1/V2含正文／主题／模板／altbody／headers／附件；app attempt从newMessage构造／渲染起计，transport按SMTP实际尝试另计；保摘要／证据。[研究]
 
-**受控调度预注册，未运行。** BatchSize=7、Concurrency≥2、MessageRate>0、MaxSendErrors=0；生产者排入60后、70迭代的stopped检查前设屏障，80尚未fetch。一个worker在20通过停止检查后阻塞；另一个已处理10／30／40／50，在取60前阻塞；其余worker停在取队列前。主链pause→解除屏障并drain→edit V2→resume；cancel仅从同一R1快照独立终止分叉，绝不接恢复。R2各故障分支继承此快照，非同时发生或自然稳定复现。[研究]
+**受控调度预注册，未运行。** BatchSize=7、Concurrency≥2、MessageRate>0、MaxSendErrors=0；生产者排入60后、70迭代的stopped检查前设屏障，80尚未fetch。一个worker在20通过停止检查后阻塞；另一个已处理10／30／40／50，在取60前阻塞；其余worker停在取队列前。主链pause→解除屏障并drain→edit V2→resume；cancel从暂停前切面K独立终止分叉，绝不接恢复。各分支继承明确的输入与事件前缀，不把不同故障都说成来自同一份DB快照。[研究]
 
-| 原人／具名判据 | R1暂停与改稿边界 | R2新增事件／唯一判定，不重置R1 |
+| 原人／具名判据 | R1暂停与改稿边界 | R2安全预览／故障判定，非原生发送保证 |
 |---|---|---|
 | S10/10；`V1_ACCEPTED_KEEP、ACCEPT_BEFORE_FLUSH` | a1/V1明确accepted；不因改稿补V2 | 接受未flush即崩溃：既有外部确认仍保accepted；无该证据的恢复进程仅知unknown，转出须外部证据；两视角须合并，不因sent=0归未发 |
-| S20/20；`UNKNOWN_KEEP、STOP_BOUNDARY` | a1/V1已越过worker检查、仍在途 | 低ID20在pause后仍可Push；独立cancel分叉亦然。丢回包保unknown V1，不接cancelled恢复 |
+| S20/20；`UNKNOWN_KEEP、STOP_BOUNDARY` | a1/V1已越过worker检查、尚未Push，transport=0 | 解除屏障才开始Push；仅过停止检查不是unknown。提交结果不可确认才记unknown V1；cancel分叉亦可能继续该Push，但不接恢复 |
 | S30/60；`PENDING_KEEP、PAYLOAD_VERSION` | a1/V1已渲染排队，未过停止检查 | 停止后跳过旧Push、保pending；旧pipe清空后才能a2/V2，不能遗留V1附件／header或漏人 |
 | S40/70；`PENDING_KEEP、PROCESSED_NOT_SENT` | fetched/pending，尚未构造 | 停止后仍待处理；恢复a1/V2若渲染失败，记failed且processed、sent不加，不伪造accepted |
 | S50/80；`PROCESSED_NOT_SENT` | 从未fetch | 恢复前若退订则suppressed；仍合资格才a1/V2，保原集合与当前候选差异，不偷偷扩大受众 |
 | S60/30；`UNKNOWN_KEEP` | a1/V1 Push结果不明 | SMTP接受后DATA回包丢失：即使原生completeSub仍unknown；不默认重试V2或标成功 |
 | S70/40；`DB_UNKNOWN、PROCESSED_NOT_SENT` | a1/V1有明确拒绝证据 | processed仅本pipe不重试；重启若游标受20阻塞仍重选40，越过40且持久才跳过。如批准a2/V2，DB未知时保双attempt、先读回不盲加sent |
 | S80/50；`V1_ACCEPTED_KEEP、LOW_ID_BARRIER` | 高ID a1/V1已accepted，S20未完成 | checkpoint≤19；崩溃可重扫50。保其接受证据，不因改稿补V2，不能以max成功50跳过20 |
+
+**先固定三面切面K，再形成已排空切面D。** K取pause前上述屏障；下表是待构造的合成输入，不是已捕获运行记录。[研究]
+
+| K的面 | 明确输入与证据来源 |
+|---|---|
+| DB持久面 | C1的id／UUID／started_at、V1及模板／名单／附件关系、八人id／UUID与订阅关系。若冻结首次扫描后的计数flush，则拟定sent=0、last_subscriber_id=0、max_subscriber_id=80、status=running；须读回实际值，不能由worker计数猜DB |
+| 易失执行面 | lastFetched=70、pending={20,60,70}、checkpoint=19、p.sent=2；60/a1/V1在队列，20在Push前，生产者在70检查前。用屏障记录；DB没有Go指针／队列／waitgroup，重启不能声称还原这些对象 |
+| 独立sender面 | 10、50的a1/V1已接受证据；30的a1/V1提交未知；40明确拒绝；每次实际payload。测试sender与应用审计分开保留，不能用应用sent代收件证明 |
+
+DB准备须保`subscribers/lists/subscriber_lists/templates/campaign_lists/media/campaign_media`及序列；附件blob另保，media行无附件内容。固定Tracking、UnsubURL、UnsubHeader、messenger／SMTP头及batch/concurrency/rate。原表没有逐人attempt账本；该账本由后置R1补丁新增，不把本节JSON导入当已完成应用改造。[一手：同固定树`schema.sql:97–195`；研究：输入设计]
+
+**账本先保存事件，再生成差异视图。** 行列为`event_id,parent_event,branch,cut,campaign_id/uuid,subscriber_id/uuid,app_attempt,transport_attempt,payload_ref/hash,stage,app_observation,external_evidence_ref,durable_write/readback_ref,provenance`。准备行标`synthetic_expected`；只有实际捕获的事件才标`runtime_observed`，缺证据用空值，不伪造日志地址。[研究]
+
+| 合成事件／父切面 | 新增事实与D的差异 |
+|---|---|
+| E01／K：pause | 请求paused并置stopped，旧attempt全保；请求响应不能代DB读回 |
+| E02／E01：20继续Push | 从dispatch-authorized进入dispatching，新增t1；DATA提交后丢最终回包才成为unknown。仅在Push前被杀不能伪造SMTP在途 |
+| E03／E01：排空旧队列 | 60/a1/V1在停止检查被跳过，transport=0，状态skipped-before-Push；70退出且尚无app attempt |
+| E04／E02+E03：cleanup成功 | 在此前无flush且上述结果成立的分支，拟读回sent=2、last_subscriber_id=19、status=paused；失败分支不得套成功值 |
+| E05／E04：edit V2→D | 保C1身份／started_at及全部V1事件，当前内容改V2；10/50 accepted、20/30 unknown、40 rejected、60 skipped、70无attempt、80 unfetched。退订80须另加事件，不让它凭空消失 |
+| E06／D：原生resume | 若80另已退订，SQL候选仍为{20,30,40,50,60,70}；保实际重选与重复记录。D不是完成R1，还需捕获本轮发送结果再供R2消费 |
+
+**原生重选是反例，不能被安全预期覆盖。** 固定SQL只按游标／max ID／订阅与blocklist筛选，没有逐人accepted／unknown过滤。游标19时，30的未知和50的已接受不会阻止它们再次Push V2。R1只增审计、不改发送策略，就必须忠实记录此结果；上表“不自动补发accepted／unknown”是R2只读恢复预览的目标，不是原生R1已具有的行为。接受未flush崩溃从K或另一个明确切点分叉，不能从cleanup已成功的D伪造该故障。[一手：`queries/campaigns.sql:329–354`、`internal/manager/pipe.go:112–131,220–255`、`manager.go:505–575`；研究：两轮责任]
+
+**固定合成payload，而不假造SMTP邮件。** 下列一行JSON按UTF-8、无末尾换行保存，收件人60是数值ID（别名S30）。共225字节，SHA-256为`5bd4be21aa0011f4d986475ac373181f271d8ed9a470539474bb92913691fce1`：[研究：纯字节计算]
+
+```json
+{"altbody":"V1\n","attachment":{"content_hex":"76310a","name":"note.txt","type":"text/plain"},"body":"<p>V1</p>\n","from":"sender@example.invalid","headers":{"X-P27-Version":"V1"},"subject":"C1 V1","to":"s60@example.invalid"}
+```
+
+V2把全部`V1`改`V2`、`76310a`改`76320a`，仍225字节，SHA-256=`0c06ba5dad2fd1218680445eb9ea3f6813688f76e873486937bf60370b0bd1f2`。其余人只替换地址后逐人重算，不共用hash。实际运行另采源输入、渲染payload（完整有序头值及附件字节）、SMTP wire三类hash；随机Message-ID／Date／MIME边界使wire不能用合成hash代替，语义相同与逐字相同分判。[研究]
+
+**四项独立差异判定。** R2接收实际R1产物后才执行，当前只是明确oracle，不计通过：[研究]
+
+- 身份与前缀：R2输入指纹等于所接R1输出，逐项保C1及八人id／UUID／started_at、原attempt主键与证据摘要；增加活动行、丢旧attempt或重seed均失败。
+- unknown守恒：逐attempt核`U_before − resolved_by_new_evidence = U_after`；a2 accepted不解决a1 unknown，每次解疑须有同活动／人／payload／attempt的新证据。
+- 预览无外发：R2预览前后sender调用日志不变；accepted与unknown不生成自动发送动作。原生sourcebranch的重复必须保作反例，不能混计为安全策略通过。
+- 版本连续：60旧a1/V1与hash不被覆盖，新构造为a2/V2；70首次构造为a1/V2，若渲染失败则transport=0。每次实际Push连接唯一已渲染attempt，不以总数代集合。
 
 Push与落盘非原子；扫描（`internal/manager/manager.go:592–620`）取checkpoint、Swap增量再写DB，失败不塞回以防重复加数，也可能低报。DB错误分已提交／未提交，读回再决策；GREATEST只防游标倒退。[一手；研究：R2判定]
 

@@ -265,7 +265,7 @@ A普通提示，B仅追加：“修改前列出本轮改变的退出路径与相
 
 公开应用：listmonk固定树`88031f3e082648bc3f95f285df74b7b38710b54d`（开发树，非正式版）；入口github.com/knadh/listmonk。冻结源码字节与许可，不混Vue路径。
 
-R1共同前置任务：在指定公开副本新增逐人发送审计记录，保存原活动身份、payload版本（正文／模板／headers／附件）、attempt及观察结果；不改变现有发送策略。用本地假供应商和合成收件人经历V1开始→pause/drain→编辑V2→resume。明确accepted／rejected／unknown／pending／suppressed，旧消息仍属于V1，暂停不宣称撤回。交实际代码、迁移、测试与账本。
+R1共同前置任务：在指定公开副本新增逐人发送审计记录，保存原活动身份、payload版本（正文／模板／headers／附件）、attempt及观察结果；不改变现有发送策略。用本地假供应商和合成收件人经历V1开始→pause/drain→编辑V2→resume。明确accepted／rejected／unknown／pending／suppressed，旧消息仍属于V1，暂停不宣称撤回。沿[P27三面切面与事件账本](../../docs/research/2026-10-12-development-maintenance.md#c1r1账本直接进入r2)记录DB、易失队列与独立sender证据；仅越过停止检查而未Push不记unknown。原生游标恢复可能重选已接受／未知者，R1必须保留此反例，不为通过判据暗改发送策略。交实际代码、迁移、测试与账本；R2只读预览的安全选择另验。
 
 R2新需求：从R1真实产物加入进程重启后的恢复预览，逐人列待处理、已确认、需对账和抑制集合；unknown不得自动归未发或触发补发，已确认不因改稿自动补V2，退订优先。保管理／发送权限；只输出计划，禁外发；非R1修错重试。
 
