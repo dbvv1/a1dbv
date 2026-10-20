@@ -378,6 +378,6 @@
 
 独立只读审阅提出三项修订：镜头等级应区分3与3+；主报告应压至约10–15 KB；S16／S17补作者。已修改并获定点复核通过。另给五个证据槽逐项加类别，修正C12比例；这不替代外网再验证。
 
-`python3 scripts/check_repo.py`检查214文件、零错误；`python3 scripts/check_public.py`检查332个已跟踪文件、零发现；`python3 scripts/check_public.py --commits origin/main..HEAD`通过，提交使用GitHub noreply身份；差异空白检查通过。`python3 scripts/check_offline.py`实际执行后预检阻断：缺POSIX与bash／jq等，没有任何阶段运行。现有环境没有可用WSL，未安装替代环境。依仓库AGENTS的完整离线通过后发布要求，成果只留本地审计分支，未尝试绕过门禁推送；hosted CI未运行。
+初次交付时，`python3 scripts/check_repo.py`检查214文件、零错误；`python3 scripts/check_public.py`检查332个已跟踪文件、零发现；`python3 scripts/check_public.py --commits origin/main..HEAD`通过，提交使用GitHub noreply身份；差异空白检查通过。未跑完整离线入口，原因是缺bash／jq；此前执行`python3 scripts/check_offline.py`在预检阻断，没有任何阶段运行。现有环境没有可用WSL，未安装替代环境；hosted CI未运行。
 
-收口查询远端main已前进至`f12dd1bb56f10df99fedab267ad9bb2a8fc28237`；本报告仍只审开工固定基线，之后的提交没有被这些分数认证。没有合入main，也没有改正文、规则或TASKS。
+后续交付：按用户指示，将main的`27c3f90f551b2f7c3711ccd7148feb2bcdf848f3`合并进审计分支，保留原提交历史；依更新后的AGENTS“公开仓库安全”要求，重新运行文件与提交范围两项公开扫描，向非main分支`codex/quality-audit-20261021`发布。本报告仍只审开工固定基线，之后的提交没有被这些分数认证；合并带入的上游改动不属于本审计的新增修改。
