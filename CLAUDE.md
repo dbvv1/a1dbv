@@ -23,7 +23,7 @@
 - 工具和实践要给出**评级**（✅ 采用 / 🧪 试用 / 👀 评估 / ⛔ 暂缓），并说明适合谁、不适合谁、坑在哪。不要只堆链接。
 - 文档头部写“核实时间”；内容过时就直接修改或删除。
 - 新发现的东西先放进 `docs/12-resources.md` 的“待验证”列表，验证后再写进正文。
-- 优先找一手来源：GitHub 上的源码、changelog、issue（可以 `git clone --depth 1` 后阅读），以及官方文档和工程博客。
+- **找来源先追上限，核实再选合适的来源**：先找当前最高水平的做法（见 `AGENTS.md` 工作原则 0）；核实时 API、价格、权限回官方文档和源码（GitHub 上的源码、changelog、issue，可以 `git clone --depth 1` 后阅读），体验和效果回作者、使用者原文和同题比较。
 - 社区反馈要读原帖，不要只看搜索摘要：HN 用 Algolia API（`hn.algolia.com/api/v1/items/<id>` 可拿到评论），Lobsters 和 V2EX 有 JSON 接口；arXiv 用 `export.arxiv.org/api/query?id_list=` 拿摘要，用 `arxiv.org/html/<id>` 读正文。
 - 近期动态和新做法先写进 `docs/13-frontier-radar.md`，沉淀成共识后再并入对应的专题文档。
 - 修改 `templates/` 或 `domains/**/templates/` 下的脚本后，要用模拟输入实际跑一遍（Hook 用伪造的 JSON stdin；Unity 脚本用伪造的 `unity` CLI 或编辑器可执行文件）。
