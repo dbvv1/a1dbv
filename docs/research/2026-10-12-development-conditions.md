@@ -626,7 +626,7 @@ Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/b
 
 ## 连续业务功能：项目提议（2026-10-20）
 
-以下仅立项，不计内容项目完成。目标是让Agent接续真实应用的已存在状态，交逐文件改动设计与消费者判据；不是复述“后端校验”。不得用资料验收冒称数据库、邮件、签署、移动端或模型通过。[研究：规划]
+P25／P27仍仅立项；P26已交两轮改动设计，真实应用验证未执行。目标是让Agent接续真实应用的已存在状态，交逐文件改动设计与消费者判据；不是复述“后端校验”。不得用资料验收冒称数据库、邮件、签署、移动端或模型通过。[研究：规划]
 
 两固定应用均为AGPLv3，见[Documenso许可](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/LICENSE)与[Immich许可](https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/LICENSE)。本项目分析机制与变更设计、不复制分发应用代码；复用实现另遵许可，不据公开仓库推定任意商用方式。[一手／研究]
 
@@ -644,13 +644,74 @@ Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/b
 
 ### P26：单人标注扩成多人协作
 
-**拟改15§3／18：先分个人覆盖、共享属性与原资源授权，已有人工劳动不默认reset。** Agent追源数据→服务／权限查询→Web和mobile读模型，人定“只改我／影响所有人”和退出后保留；只需局部照片先用现成相册；[partner分享](https://docs.immich.app/features/partner-sharing/)涉及整库范围及元数据、不含人物数据，不能因共同命名就默认扩大照片权限。确需共同整理再比较共用聚类与定向人物共享。共同编辑增加传播／退出／双端读模型责任，重跑还可能耗掉旧人工标注；不预估净节省。[研究：待执行，2–3天范围]
+**✅ Agent先保旧标注与原图权限，再分别设计聚类、定向编辑和双端读取；不默认reset，也不把Only me当永久私人覆盖。** 少量照片用相册；以下仅改动设计，未运行。[研究；核实2026-10-20]
 
-Immich [v3.2](https://github.com/immich-app/immich/discussions/31408)／[PR30739](https://github.com/immich-app/immich/pull/30739)引入cluster group，用户因重跑丢命名拒用；[v3.3](https://github.com/immich-app/immich/discussions/32193)／[PR31620](https://github.com/immich-app/immich/pull/31620)加人物共享。[32196](https://github.com/immich-app/immich/discussions/32196)有保既有合并、双向共享后的个人回执，不推全体收益。执行基线选[v3.3.0](https://github.com/immich-app/immich/tree/e3b165609135365302e40a43d94967fdbb2e6888)，merge c12d5e6只作历史差异，两树不混称。原图访问、聚类池、私人命名不是同一授权。[一手／社区]
+[Partner sharing](https://docs.immich.app/features/partner-sharing/)涉及整库与照片元数据，不含人物识别数据；不为人物页扩原图权限。聚类／共享增加映射、传播与双端维护；永久覆盖需新状态／写优先级。无净省时实测。[一手／研究]
 
-**R1→R2必须保原状态。** R1用虚构三用户／两组、不同照片权限及已有命名合并，交邀请、入组、聚类关联、人物列表与原图访问的逐文件契约；保“不reset”分支。R2继承同一数据加定向共享／Only me，核person服务、person-user及access查询、Web编辑／访问modal、mobile timeline与medium断言。交单／双向共享、只读、离组／撤分享、链式合并、重复提交的属性／照片／统计／私人覆盖预期；不能重seed或仅验mock次数；既有mobile断言仅查去重／排序，传播与同步是须补的新断言缺口。[研究：执行要求]
+**固定最终实现。** S为Immich v3.3.0 `e3b165609135365302e40a43d94967fdbb2e6888`。[PR30739](https://github.com/immich-app/immich/pull/30739)引入聚类组；[PR31620](https://github.com/immich-app/immich/pull/31620)引入人物分享，早期PR非S的跨组拒绝／Only me契约。另核[v3.3.3](https://github.com/immich-app/immich/releases/tag/v3.3.3)update、mergePeople、updateForWritableOwners、reassignCluster方法体相同，非整树证明。[一手：源码核对]
 
-验收需至少一条完整源数据至双端消费者链、两维护节点的最终实现、拒用／采用与替代比较；给出“改错一层但其他层仍绿”的坏候选及退回理由，改变Agent的一项具体默认。若只剩泛权限清单或无法继承R1则撤项；真实SQL、同步／离组任务、Web/mobile与聚类模型均未运行，若取舍依赖实测则仍未完成。不读取真实照片或个人信息。[研究：验收边界]
+[v3.2讨论](https://github.com/immich-app/immich/discussions/31408)解释完整重聚类可能损失命名／生日，有因此拒用反馈，非入组必重置。[v3.3讨论](https://github.com/immich-app/immich/discussions/32193)仅在Web提供管理入口；[32196](https://github.com/immich-app/immich/discussions/32196)中用户报告保留3.2.4的人工合并，升级3.3双向分享后Web与Android数量一致，维护者也明确不必reset。单人自述非无损保证。[一手／社区]
+
+#### R1：继承旧人工劳动，加入已有组
+
+**沿用虚构夹具，不重seed。** 初态G={A}、H={B,C}。A的pA、B独占pB各已命名并人工合并两张脸；B/C共用pBC但各有不同姓名。五资产：A私有a0／相册分享B的a1，B私有b0／相册分享A的b1，C私有c0；五资产均未删且可入timeline，所列faces可见。a0/a1各有pA脸，b0/b1各有pB脸；b0另有pBC脸，c0有pBC脸。照片可见集合固定为A={a0,a1,b1}、B={b0,b1,a1}、C={c0}，不设partner整库授权。[研究：预注册夹具]
+
+**不可只改user.clusterGroupId。** [组服务][p26-cluster]→[person仓储][p26-person]：
+
+| 操作与层 | 源码推导的应有结果／改动约束 |
+|---|---|
+| A邀请B | 待邀请B可读成员但未入组；重复创建保同请求，不代表后续幂等 |
+| B接受 | G={A,B}、H={C}；独占pB移到G且ID保留；共享pBC为B分出新pBnew，只迁B的person行与B自有资产faces，C仍用pBC |
+| 旧劳动 | 姓名／生日与人工face关联保留；pA/pB不自动合并或复制给A；照片集合不扩大 |
+| Web | 刷新用户／组／邀请；people仍要求自己的person行及可见照片 |
+| mobile | PersonV1同步自己的person；AssetFaceV3组内face≠照片授权；DAO连接可见remoteAsset后进入timeline |
+
+消费者见[Web设置][p26-webgroup]、[同步][p26-sync]、[mobile DAO][p26-dao]与[timeline][p26-timeline]。只改成员不迁person/face，可使设置页成功、人物页失联；删可见性连接则误授原图，均退回。[一手：源码；研究：坏候选]
+
+**接受不是外层原子事务。** reassignCluster有事务，服务层重分组→更新user→删邀请却无总事务；成功后重放因请求已删而失败。每步中断须读回person/face/组/邀请，不盲重试。cluster-group medium覆盖移动／拆分与权限，未运行、不证明动态同步。[一手／研究]
+
+#### R2：在R1结果上加定向共享与第二次修改
+
+**先加A→B Write(pA)，不合并旧pB／pBnew。** [person-user表／复合外键][p26-share]以(group,sharedBy,sharedWith)分方向；[插入触发器][p26-functions]为接收者建copy，只填空姓名／生日，保已有非空值。person按(owner,group)存属性，无永久覆盖标志。pA对应a0/a1：B只见a1、统计1，A统计2；b0/b1仍属pB。[一手；研究：继承夹具预期]
+
+**传播给授权调用者写的人。** [PersonService.update][p26-service]未传userId才向“授权调用者Write/Admin的分享者”传播。[Web Only me][p26-only]显式发送自己的userId，只控制本次范围。下表“默认”仅指API省略userId；UI未选Everyone偏好时默认Only me，不能混称。[一手]
+
+| 连续操作 | 应改变的行／保留状态 |
+|---|---|
+| B默认改名N | A/pA与B/pA；A默认改名M则只改A/pA，单向边不自动变双向 |
+| A Only me改P，之后B默认改Q | P先只写A，随后A/B均为Q；不能承诺P永久受保护 |
+| 再建B→A Write | A默认更新才也传播至B；favorite、hidden、color、feature face仍为各人私有，跨人写这些字段拒绝 |
+| A→B降为Read | B只可改自己的copy，不能显式改A |
+| A撤A→B | B copy保留；B→A若在，A仍可改B；原图授权不变 |
+| 重复share／给仍在H的C分享 | 重复边更新role，不抹旧copy；跨组整次拒绝，不偷偷入组 |
+
+**合并success不代表所有owner完成。** mergePeople以首个有权限ID为target；非调用者两边姓名或生日均非空就跳过，值相同也跳过。接受时只补空值、按owner迁face／删source。继续同一夹具，先由B将pB、pBnew分别分享给A，生成A的两行具名copy，再让A按[pA,pB]、[pA,pBnew]两次合并，始终以pA为target；没有这两步时A缺源person行，不能验成成功。逐人保账本：A成功而B保多个具名group是合法分歧。旧source重放不保证成功，未知先读回。[一手：服务源码；研究]
+
+**撤分享和离组不是同一动作。** 沿同一夹具重新建立双向Write、共同p后，B离组将自己的person/自有faces UPDATE到q；分享者外键使B→A移q，A→B留p。person_delete_shares只挂AfterDelete，不清此UPDATE。普通getPerson因缺自己的旧行拒绝，默认传播因p/q分开改变；[PersonAccess][p26-access]及显式userId写却仍按残边判断。非UI正常或漏洞复现证据。要求离组即撤编辑权，须明确撤分享／补清理并验接口与缓存，页消失不是撤权证明。[一手／研究，未运行]
+
+**双端验收必须比同一资产ID集合。** mobile `_personAssetFilter`将可见face与“自己／timeline partner或本地相册”的未删可见资产相交，bucket/list同条件；无可见照片可不列人物。坏候选是服务端全绿、mobile仍只筛owner==自己：旧去重／排序测试可绿，B却缺合法a1；修消费者，不开整库补洞。[一手：timeline、person仓储；研究]
+
+#### 可交给Agent的改动与退出门
+
+**Agent做跨层盘点、映射、断言和窄补丁，人定共享语义。** AI完成比例未知；瓶颈是部分成功、重映射后的授权／同步和冲突取舍。[研究]
+
+已读[服务medium][p26-tests]传播／目标／私有字段／跨组／删指定pair，以及[仓储medium][p26-repotests]保非空copy／删除person清入边；不是离组UPDATE回归。mobile只验去重／排序，缺分享、撤回与动态同步。均未运行。[一手]
+
+下一授权实验不重seed：按两表核连续写／撤／合并／重放；离组后读回p/q边、普通读／显式写、Web已开modal、mobile同步前后ID／bucket／统计，原图ACL不变。关键语义未知就保个人整理／有限相册，不承诺永久覆盖或离组即撤权。本轮无SQL、应用、模型、移动同步或hosted CI；运行结论未知，不以资料验收冒充通过。[研究]
+
+[p26-cluster]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/services/cluster-group.service.ts
+[p26-person]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/repositories/person.repository.ts
+[p26-webgroup]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/web/src/routes/(user)/user-settings/SharingSettings.svelte
+[p26-sync]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/repositories/sync.repository.ts
+[p26-dao]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/mobile/lib/data/db/main/dao/person.dart
+[p26-timeline]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/mobile/lib/infrastructure/repositories/timeline.repository.dart
+[p26-share]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/schema/tables/person-user.table.ts
+[p26-functions]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/schema/functions.ts
+[p26-service]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/services/person.service.ts
+[p26-only]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/web/src/lib/modals/PersonEditModal.svelte
+[p26-access]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/repositories/access.repository.ts
+[p26-tests]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/test/medium/specs/services/person.service.spec.ts
+[p26-repotests]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/test/medium/specs/repositories/person-user.repository.spec.ts
 
 ### P27：发送中改稿与在途恢复
 
