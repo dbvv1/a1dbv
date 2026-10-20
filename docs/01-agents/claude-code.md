@@ -1,6 +1,6 @@
 # Claude Code
 
-> 编辑更新：2026-10-20（UTC+8）；本次补 30 秒默认与首个任务配置，只补核模型／effort 官方说明；§3.3 停止边界及其他分项核实日期不变
+> 编辑更新：2026-10-20（UTC+8）；本次补休眠恢复成本与续接选择；停止边界及其他分项保留各自核实日期
 > 评级：✅ **采用**（日常开发 Agent 选项之一）；核心建议成熟度 L3
 
 ## 30 秒结论：先用什么，何时换
@@ -71,7 +71,9 @@ Anthropic 的 Agent 式编程环境：能读代码、改文件、跑命令、多
 
 **短轮询和独立定时分开选**：当前会话短轮询用 `/loop`；需要电脑关闭后仍运行，选云端 Routines（定时间隔至少一小时）；定时任务必须访问本地文件／工具时，可选 Desktop scheduled tasks，但电脑仍须开机。`/loop` 后台化可脱离终端，不能脱离运行机器；恢复会话会还原部分未过期的 `CronCreate` 任务，但已错过的一次性任务和 self-paced loop 不恢复，不能把“可恢复”当作退出后仍在执行。[调度比较与恢复例外](https://code.claude.com/docs/en/scheduled-tasks#limitations)、[Routines 间隔](https://code.claude.com/docs/en/routines#add-a-schedule-trigger)。**[一手：2026-10-15 UTC；研究：采用判断]**
 
-**✅ 无人值守续接先选权限与审批出口**：把已停止的交互任务交给 `claude -p --resume <session-id>` 续做时，显式选择本次权限模式，补回任务依赖的临时配置与目录；恢复历史不等于恢复原来的执行条件。原会话处于 plan 也不足以让非交互续接保持 plan，须有可用的审批出口等条件。无人能审批时，可用 `--permission-prompts none` 拒绝需要新批准的动作，不靠放宽权限跑通；该参数要求 2.1.259+。仍在运行的后台会话应按 attach 处理。**[一手：[恢复契约](https://code.claude.com/docs/en/sessions#permission-mode-on-resume)、[CLI reference](https://code.claude.com/docs/en/cli-reference)；研究：采用判断，2026-10-16 UTC，未运行客户端]**
+**✅ 同任务默认续接，但先比较休眠恢复费用与重建代价。** 2.1.304 会在 Pro／Max 恢复会明显消耗五小时额度时警告，可继续或新开后引用旧会话。依赖未沉淀决策、失败尝试与细节时保留历史；只需少量背景且恢复成本明显时，再带目标、约束、已完成与未完成验证新开。若漏约束、重复调查或返工抵消节省，就撤回这次精简，不把“更短”当“更省”。Agent 整理交接，人核关键约束与实际文件；本轮未测净节省。**[一手：发布与成本契约；研究：2026-10-20，见[续接证据](../research/2026-10-10-codex-continuity.md#有效配置与续接动作2026-10-20)]**
+
+**无人值守仍须选权限与审批出口。** 已停止会话用 `claude -p --resume <session-id>` 时显式选本次权限模式、补临时配置与目录；旧 plan 历史不保证新运行仍为 plan。无人审批可用 2.1.259+ 的 `--permission-prompts none` 拒绝需新批准的动作，不放宽权限跑通。仍活着的后台 resume 是 attach，不能当冷加载副本。**[一手：[恢复契约](https://code.claude.com/docs/en/sessions)、[CLI](https://code.claude.com/docs/en/cli-reference)；研究：2026-10-20，未运行]**
 
 **预算与重试分开控制**：`--max-budget-usd` 是本次运行的 API 费用估算，含子 Agent、可能超额且不计恢复历史；`--max-turns` 也不能阻止 stream-json 队列消息另起一轮限额。两者不代替累计预算或账单上限。使用会派生／重启子 Agent 的插件做非交互任务时，应先核客户端包含 **2.1.304 的停止修复**：官方报告该路径曾越过轮数上限、Stop 或输入结束继续运行，不能只凭已有 2.1.299 修复就认定覆盖。恢复发布等外部写入前仍先查目标结果，可控接口使用幂等键。版本修复不构成 exactly-once 保证；依据及续接例外见 [S1a](../research/2026-10-10-audit.md#s1a--2026-10-14-无人值守的停止与重试边界)。**[一手：CLI 契约与固定 changelog，2026-10-20；研究：采用判断，未运行客户端]**
 
