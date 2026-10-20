@@ -414,3 +414,5 @@ HF仓库修订`0e3c89024d896064b6851201373f7834784a386b`的[LICENSE][p9-k-licens
 [p9-k-license]: https://huggingface.co/nvidia/Kimodo-SOMA-RP-v1.2/blob/0e3c89024d896064b6851201373f7834784a386b/LICENSE
 [p9-k-limit]: https://research.nvidia.com/labs/sil/projects/kimodo/docs/key_concepts/limitations.html
 [p9-k-install]: https://research.nvidia.com/labs/sil/projects/kimodo/docs/getting_started/installation.html
+
+2026-10-20：2D多人换装的LPC身体／装备／动作覆盖、许可与真实采用链统一见[WP8成套扩装](2026-10-14-game-wp8-style-consistency.md#像素角色扩装先核完整动作交集再换装备)。本地候选只限已覆盖组合，不替代本记录原有循环／接触及二改验收，未运行生成器。[研究]
