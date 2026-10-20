@@ -1,6 +1,6 @@
 主线：二为主，兼四
-改变的建议：[经验／研究] 清理指令保留默认／条件，未决实现与规格冲突先不改写；计划陷入构建与转抄循环时，先保留接口与断言、缩减实现正文；原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
-新证据：[一手／社区] doc-cleanup 语义误缩自报及撤回“代码为准”的固定修订；Superpowers #2333 的计划配方修订、分模型作者重放与无 Skill 反例；Copilot CLI Free／本地BYOK接入与组织限制、MCP治理官方口径冲突，gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
+改变的建议：[经验／研究] 长命观察由接续交付者持有，进程移交须连同投递与恢复核查；清理指令保留默认／条件，未决实现与规格冲突先不改写；计划陷入构建与转抄循环时，先保留接口与断言、缩减实现正文；原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
+新证据：[一手／社区] Hermes 子进程退出清理的故障报告、发布实现与 notify／gateway 反例；doc-cleanup 语义误缩自报及撤回“代码为准”的固定修订；Superpowers #2333 的计划配方修订、分模型作者重放与无 Skill 反例；Copilot CLI Free／本地BYOK接入与组织限制、MCP治理官方口径冲突，gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
 # 社区工作流：固定来源与案例资料
 
@@ -499,3 +499,14 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 **当前建议与重开条件。** 个人先按任务选择Free／已具资格的GitHub认证／获准的本地BYOK，不为CLI接入预设付费，也不忽略免登录损失的GitHub能力。团队先确认目标客户端版本、设备与账号策略、必需MCP服务器及内建例外；严格准入要求无法证实时保留既有合规入口。升级客户端、改变认证／组织／任务所需GitHub功能或官方解决上述冲突时重核，准备企业部署前提前复核。不更新其他功能快照，不据此把01页升为L3。**[研究：选择与撤回]**
 
 **2026-10-17 选型入口核心复核。** 以已发布`f6be22ca`的01全文为基线，独立核对环境、权限、恢复、语义工具与多服务商的选择和相关深页，首选／换路／撤回条件已闭合。补读[Google消费者弃用](https://developers.google.com/gemini-code-assist/docs/deprecations/code-assist-individuals)、[JetBrains ACP](https://www.jetbrains.com/help/ai-assistant/acp.html)、[OpenCode工具](https://opencode.ai/docs/tools/)及[服务商配置](https://opencode.ai/docs/config/#enabled-providers)、[Claude Projects](https://code.claude.com/docs/en/claude-projects)与[Remote Control](https://code.claude.com/docs/en/remote-control)，与入口判断一致。支持选型入口L3，不连带升级深页，也不认证全部客户端能力、目标部署隔离、恢复实测或跨入口效果；历史来源保留原日期和范围。[一手：本轮官方阅读；研究：范围内成熟度]
+
+## 观察者要比实施子任务活得久
+
+核实：2026-10-21（UTC+8）；P34，主线二兼四，对应20§5。改变的是派发内容：CI／远程任务需跨过实施子任务寿命时，默认返回任务身份，由接续交付者使用现有查询入口；不要求新框架、服务或扩大授权。[研究]
+
+- **真实采用与固定发布。** [Hermes #105125](https://github.com/NousResearch/hermes-agent/pull/105125)作者在9月7日PR中报告父任务等待数小时，而child-owned watcher已被退出清理、完成通知被父端过滤。补丁增加显式handoff与遗留／未读结果说明；公开文档仍优先建议child返回PR与SHA、parent自己观察。PR于9月7日合并为`869228cab4a8276d3b4c78da9d9939670c47bd0f`。GitHub比较确认它是同日发布[v0.21.1／`v2026.9.7`](https://github.com/NousResearch/hermes-agent/releases/tag/v2026.9.7)（固定`2237be355906fbe6065ce1815711eee52b2d646e`）的祖先：ahead 47、behind 0、merge base即该提交；不是由关闭状态猜发布。[社区：故障报告；一手：合并与发布关系]
+- **移交实际做什么。** [发行固定源码](https://github.com/NousResearch/hermes-agent/blob/2237be355906fbe6065ce1815711eee52b2d646e/tools/process_registry.py#L1878-L1892)（L1878–1892、2063–2101）只接受活着且属于调用child的进程，在锁内更新owner、task、session key与purpose，每child最多三次；拒绝已退出、外来或非child请求。正文默认来自这种寿命边界，不从“共享终端”推导继承，也不把这个Hermes实现移植为Codex保证。[一手：源码阅读]
+- **验证范围与成本。** #105125报告真实父／子`gpt-5.6-terra`的12场景通过，固定head为`9061c176b8936c3b53bf32c4c6c6ae322174eb0a`，[公开脚本](https://github.com/NousResearch/hermes-agent/blob/9061c176b8936c3b53bf32c4c6c6ae322174eb0a/evals/subagent_process_handoff/stress_handoff_live.py)。它读取运行时归属、遗留与完成事件，不只评分模型文字；含wait后正常返回、移交后父端poll／kill及拒绝越界等反分支。对象是sleep／echo，不是12次真实CI交付；模型报告、假Agent加真实进程测试与源码阅读分别计证。本仓未运行。脚本每场景父模型默认最多12次迭代及420秒观察循环，后者在初始模型调用返回后才起算，不是整项硬预算；没有完整费用／人工工时分母，不能称节省多少。[社区：作者复测；一手：固定测试；研究：局限]
+- **保留失败分支，不默认升级移交承诺。** [#108479](https://github.com/NousResearch/hermes-agent/issues/108479)在9月11日固定main `8226c2f6a283c48fb97c1750a0ec2907739146d0`报告Windows／Python3.13／Git Bash复现：notify-off无完成事件、gateway watcher仍指child、checkpoint保留旧owner；原notify-on CLI用例仍通过。发行实现也未在transfer中更新notify或写checkpoint。[#108483](https://github.com/NousResearch/hermes-agent/pull/108483)拟补三者并明确finite session需主动查询；本轮API仍open、未合并。作者报告六项handoff测试通过，相关大组仍有六项基线失败，不能称全绿或已发布修复。[社区：独立报告与测试自报；一手：状态／补丁]
+
+**当前选择与撤回。** 观察任务仍在原授权范围内时，优先让最终消费结果的主任务持有它；原生前台返回已经够用就不加后台观察。确需接管现有进程，先核实际入口的移交和查询能力；结果未知时查原任务，不重派外部作业补通知。须跨主任务重启继续而现有入口无保证时，记录阻塞与恢复入口，不靠模型承诺常驻。下一条值得升级的证据是notify-off／gateway／恢复后父端实际消费，而非更多同一CLI绿灯。[经验：采用与撤回]
