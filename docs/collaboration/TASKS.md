@@ -1,18 +1,18 @@
 # 任务状态
 
-> 2026-10-20 10:44（UTC+8）。按[运行手册阶段校正](LONG-TERM-PLAN.md#2-长期目标)执行；更早交接原样见[旧档](archive/completed-through-2026-10-16.txt)及[前日日档](archive/completed-through-2026-10-17.txt)及[10月18日日档](archive/completed-through-2026-10-18.txt)及[10月19日日档](archive/completed-through-2026-10-19.txt)及[当日日档](archive/completed-through-2026-10-20.txt)。发布/Git细节按[运行细则](operations.md)。已发布项hosted CI未运行。 研究46文件共2,662,977字节。篇幅按运行手册。
+> 2026-10-20 10:58（UTC+8）。按[运行手册阶段校正](LONG-TERM-PLAN.md#2-长期目标)执行；更早交接原样见[旧档](archive/completed-through-2026-10-16.txt)及[前日日档](archive/completed-through-2026-10-17.txt)及[10月18日日档](archive/completed-through-2026-10-18.txt)及[10月19日日档](archive/completed-through-2026-10-19.txt)及[当日日档](archive/completed-through-2026-10-20.txt)。发布/Git细节按[运行细则](operations.md)。已发布项hosted CI未运行。 研究46文件共2,662,977字节。篇幅按运行手册。
 
 ## 待接续
 
 - 既有发布阻塞已获准恢复；按10-20阶段审计逐项筛选，授权不等于全部正文合入。
-- [PR49](https://github.com/dbvv1/a1dbv/pull/49)、[PR58](https://github.com/dbvv1/a1dbv/pull/58)、[PR59](https://github.com/dbvv1/a1dbv/pull/59)、云存档与空间音频 暂缓正文合入，保留来源与分支；图标 `1a37af24` 先补AI生成后二次修改的选择，再独立整合。
-- 重试诊断 `17571c81` 与 Loom `825a1165` 仅保留为研究记录候选，本次不合正文；调试证据、停止判断、akgentic状态 待各自整合验证。本提交只整合凭证安全纠正。
+- [PR49](https://github.com/dbvv1/a1dbv/pull/49)、[PR58](https://github.com/dbvv1/a1dbv/pull/58)、[PR59](https://github.com/dbvv1/a1dbv/pull/59)、云存档与空间音频 暂缓本批正文合入，保留来源与分支，待结合K2重评；图标 `1a37af24` 先补AI生成后二次修改的选择，再独立整合。
+- 重试诊断 `17571c81` 与 Loom `825a1165` 仅保留为研究记录候选，本次不合正文；停止判断已整合。Action调试证据 `10f6a6db` 发布未获批准，保留断点，取得该项明确批准前不重试；akgentic状态 `e5dc40de` 保留候选，先推进K1，并非发布遭拒。
 
 ## 进行中
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
-| M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，发布操作已获准，按新审计暂缓正文合入；保留PR与来源 |
+| M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，发布操作已获准，暂缓本批正文合入，待结合K2重评；保留PR与来源 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，发布操作已获准；先补AI生成后二次修改判断，再独立整合 |
 
 ## 最近交接
@@ -27,4 +27,5 @@
 | M1／`40c92ead` | 六条完成交接原样归档，开工三份37,159→34,955B | 独审及14离线通过；仅编辑，无新研究 |
 | M3／M4／`3f32bb4e` | API 修改先复用足够的集成，分验声明兼容与实现；双边可维护才加消费者契约 | 固定材料源审／最终整合独审及14离线；源审在线复取未成功，未运行服务或证明提效 |
 | M3／M4／`0564a415` | 无障碍反馈先复用语义／键盘回归，按状态补自动扫描，旧违规限规则与目标 | 7份固定源在线核对、独立整合审及14离线；未运行浏览器或axe，不作合规／提效认证 |
-| M3／M4／本提交 | 撤回凭证代理绝对保密保证，先核无秘密环境与原生隔离，必要认证再比代理 | 源 `6646d7ac` 保留历史；按10-20审计复核AI关联，最终整合独审及14离线；hosted CI未运行，未访问凭据接口或验证安全效果 |
+| M3／M4／`c055c2d0` | 撤回凭证代理绝对保密保证，先核无秘密环境与原生隔离，必要认证再比代理 | 源 `6646d7ac` 保留历史；按10-20审计复核AI关联，最终整合独审及14离线；hosted CI未运行，未访问凭据接口或验证安全效果 |
+| M2／本提交（源 `3b27f665`） | Claude 2.1.304只确认headless插件子Agent退出修复，停止条件仍由调用方验收 | 起点 `30829978`；分支 `dot/stop-reduced-publication-20261020`；01/13、audit及本表；固定源独审、最终整合独审及14离线通过；hosted CI未运行，未运行真实客户端；源历史保留 |
