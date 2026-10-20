@@ -8,7 +8,7 @@
 
 ## 可以改变的建议
 
-- 2026-10-20 新增[桌面连续交付项目提议](#agent桌面原型的连续交付项目提议2026-10-20)：先形成两套完整任务包，尚未据此修改18的默认或宣告原生更新已验收。
+- 2026-10-20 [桌面连续交付两包](#agent桌面原型的连续交付项目提议2026-10-20)：编辑器先修保存结果，托盘后台先核暂停／取消及退出；18默认同身份人工包与延期，原生两轮未测。
 
 交接不仅要解释“改了什么”，还要把接收方的意见、实际采用的补丁和最终行为对齐。优先更新已有 PR 的最终说明，而非增加一套长模板。尤其是审查回复后来被代码推翻时，应写清最后采用的接口和支持边界。
 
@@ -331,39 +331,132 @@
 两例没有完整数据清单、长期维护或主动工时，亦无 AI 生成归属；只支持窄修复选择。现有原生功能的成功回执足以避免先造同职能脚本，不证明 AI 净收益或节省比例。本轮未运行 Gitea、恢复数据或上游测试。**[研究：证据边界]**
 
 
-## Agent桌面原型的连续交付：项目提议（2026-10-20）
+<a id="agent桌面原型的连续交付项目提议2026-10-20"></a>
+## Agent桌面原型的连续交付：两份任务包（2026-10-20）
 
-**拟改变15／18的Agent交付建议，当前只完成立项资料。** 已发旧安装、更新入口和用户工作是任务输入，不只给最新版代码让Agent“打个新包”。完整资料项目预计1.5–3天；不能以新增一段Updater介绍、两页修订或这次规划耗时作完成依据。[研究：提议]
+**✅ 旧入口或恢复未证，选同身份人工包与明确延期。** Agent追保存、停机及下一跳，人定不可丢工作和权限。旧提议锚点保留为别名。[研究]
 
-**默认候选：保原Agent与受支持分发渠道，不先增发布框架。** Agent核已发布版本、安装身份、谁更新文件及未保存工作；人定支持面、不可丢语义、重启和权限。比较现成更新器、渠道代管、显式延期和人工新包；原生环境暂缺时仍能完成源码与验收设计，但保留实测未运行。[研究：待项目执行检验，不是已证明安全更新]
+两旧版本仅作**兼容样本，非2026推荐**；第二／第五轮为预注册需求。维护包未产生；以下为设计，非现有行为／原生或模型实测。[研究]
 
-### 两份任务包，不是同表换名
+### 编辑器：先修保存结果，第五轮仍用人工包
 
-| 情境 | 第二／第五次需求改变什么 | Agent与人分别交什么 |
+**A：MarkText 0.17.1、Windows 11 x64、assisted NSIS当前用户、原目录／profile。** [官方marktext-setup.exe][mt-release]未下载验签；[固定树c8aa33dd][mt-tree]的electron-builder.yml为asInvoker／perMachine=false／oneClick=false，yarn.lock锁Electron15.4.0／builder22.14.13／updater4.6.5。实际scope仍须设备核实。[一手]
+
+**B需求：跨窗口保存全部并退出更新。** W1为dirty a.md，W2未命名；取消／失败／未响应取消整次退出，已保存不回滚，草稿须命名，不承诺hot exit。**C需求：改updater6.8.10并加下载后重启**；结论暂缓自动安装、保人工NSIS，C'验下一跳。代号非发行号。[研究]
+
+**缺口：** 固定树src/main/menu/actions/file.js的handleResponseForSave在Save As取消时resolve undefined、写失败catch吞错；close-window-confirm等Promise.all后无条件发window-close-by-id。windowManager.forceClose不再问保存，editor.close则先阻止退出再问renderer。仅静态关闭链证据，非已复现更新丢数据／Agent归因。[一手／研究]
+
+B返回saved/cancelled/failed，saved附id／revision。save-tabs只报告；save-and-close-tabs原已过滤空id，改筛saved；response-file-save不附退出；close-window-confirm须全saved且revision一致。独立response-file-save-as另核衔接；外层catch修不了吞错。[研究]
+
+主进程唯一协调器OPEN→PREPARING→SEALED→COMMITTED：准备时拒重复，冻结全renderer编辑及新建／打开文档、窗口入口，确认后枚举revision并保存；watcher／IPC变化撤销许可。复核后封闭至退出，旧关闭入口也汇入。任一取消／失败／revision变化／30秒未响应则作废令牌、全部解冻；迟到响应先处理取消，不续旧事务、不强杀。[研究]
+
+**A→B不能借新门闸。** A停止编辑但保持运行，逐窗列dirty，将原始Markdown全文复制到安装目录／userData外独立rescue，并保a.md旧磁盘副本；独立读回核全文／编码／换行。未响应无法取最新全文就停，不关进程。逐份保存a.md、命名draft.md并读回；取消／失败／不符／再修改立即停，更新rescue后才重试，不用旧聚合关闭。全确认后正常关闭，退出失败不安装；确已退出才运行可信同scope B。B重开对照并再编辑保存才通过。[研究]
+
+<a id="两份任务包不是同表换名"></a>
+
+**每用例独立重置虚构夹具：** 旧磁盘`# Note\nstate=old\n`、W1 dirty r1=`# Note\nstate=reviewed\n`、W2 r1=`# Draft\nkeep=this text\n`开始；r2在W1末尾追加`next=keep\n`。全部UTF-8无BOM、LF且尾行有LF，`\n`为单个LF。逐字节及身份匹配。[研究]
+
+| 刺激 | 唯一预期／恢复判据（均未运行） |
+|---|---|
+| 保存成功 | 两文件分别等于r1，只发一次退出许可；新版打开相同字节，再修改保存成功 |
+| W2取消Save As | W1已保存不回滚，W2仍untitled r1可编辑；退出许可0、安装0 |
+| W1不可写 | W1仍dirty r1，明确failed；W2若已保存则保留；退出许可0、安装0 |
+| W2未响应 | 30秒为本夹具参数，超时取消并解冻，不当允许退出；安装0 |
+| r1保存后许可前变r2 | 旧许可失效；重存r2或veto，恢复r1算失败 |
+| 准备中再点两次 | 合并／拒绝重复，不并行Save As；成功也最多触发一次安装 |
+| 新版开了但正文旧／草稿缺失／编码变 | 恢复失败，保rescue，停止下一跳，不清备份 |
+| 安装部分替换后失败 | 不称旧版可继续；保文件／rescue／日志，核实际版本，以可信完整维护包修复后再验两正文，禁盲目降级 |
+
+A首跳的取消／失败／未响应／并发由人工操作卡停止，不要求旧A突然实现B的veto。部分安装失败不记“安装0次”。[研究]
+
+**C/C'人工操作卡：** 从维护者正式发行取包，登记URL／资产／摘要／签名／身份，不符就停且不关闭应用；B保rescue，过全窗门闸、读回、正常退出才双击包。保当前用户及原scope／目录／profile；拒绝／部分替换按表处理。C核版本、正文并再编辑保存；重造两窗dirty重复到C'，下一包不可得即未通过。当前维护包均不存在。[研究]
+
+**拒绝自动C：** 旧renderer/store/autoUpdates.js仅通知／IPC；已读main/index、app/index、help、windowManager、editor，未见autoUpdater调用，非全树穷尽。devDependency／latest.yml／新文档不能证明旧入口。[4.6.5固定f717e0ea][old-tree]与[6.8.10固定5cdf0178][new-tree]的BaseUpdater均先install再quit；异步退出保存挡不住已启动安装器。[一手／研究]
+
+迁移差异：新版checkForUpdates可返回null，检查失败与downloadPromise失败须分开；quitAndInstall仍为两位置布尔参数，旧非silent强制runAfter，新版取autoRunAppAfterInstall；两版autoInstallOnAppQuit默认true，候选必须显式false并在调用前过门闸。[新旧package.json][new-tree]依赖不同；新版开发Electron39.8.5非应用最低版本，不能认证Electron15兼容。未来若采用须进生产dependency、主进程显式导入，并核打包模块及app-update.yml；本轮未选受维护整套依赖，不实施迁移。[一手／研究]
+
+Agent交调用图、结果契约、状态机及判定器；人定全文／身份／编码、草稿、丢弃／冲突和权限。防resolved当saved、旧destroy绕门闸、latest倒装旧入口。**总判据：首跳保护、B→C→C'原安装及全部文本断言同时成立**，均未运行。[研究]
+
+### 托盘后台：保存会话不等于可以中断
+
+**A：[Motrix 1.8.19][mx-release]、Windows 11 x64、assisted NSIS当前用户、普通账户、原userData。** [固定树a0a1fe90][mx-tree]的electron-builder.json及yarn.lock锁builder24.3.0／updater6.1.0；未指定perMachine，实际scope另核。WindowManager.close→hide后窗口仍存在且下载继续，不是零BrowserWindow样本。[一手]
+
+**B2：取消更新则下载继续，用户暂停／取消跨重启保留。** 夹具A运行、B等待（有次序）、C用户暂停、D完成，另测取消A。仅公开不变、可续传／验hash的HTTP(S)静态文件；排除BT／磁链／上传／完成hook／短签URL。**B5：退出不装，下次登录静默装缓存再恢复**；撤回静默默认，选可延期提示。[研究]
+
+**A→B2避开旧200ms更新链。** 默认等旧工作完成，核队列／暂停／取消意图，正常退出并确认主进程／引擎结束，保profile／会话／控制文件／输出再装可信同scope B2。保未完成任务须人先确认具体恢复状态，未知即延期、不强杀。首跳单验版本与原任务。[研究]
+
+**双断点：** src/renderer/store/modules/task.js操作finally不return／await saveSession，该action也不return api.saveSession。B2两层均须return／await并传播reject，先等操作再等保存；undefined不算成功，finally不吞错。Api.js区分pause／unpause／remove，Application启动unpauseAll可能抹掉用户暂停。[一手／研究]
+
+[aria2配置][mx-tree]每10秒存控制文件及会话，[Engine][mx-tree]把会话作save-session并在存在时作input-file；状态列表、控制进度、输出不是一个事务。当前[aria2手册][aria-doc]解释协议，不认证内置exe版本。[UpdateManager][mx-tree]关闭自动下载／退出安装，却emit will-updated后200ms调用quitAndInstall；[Application][mx-tree]的async listener不被emit等待，stopAllSettled后forceShutdown再setImmediate kill不等close，[EngineClient][mx-tree]还吞RPC错误。此链不足以证明安全等待，不推定某用户已丢数据。[一手／研究]
+
+**B2门闸规格：只有ReadyToReplace可调用安装器。** 先冻结新增、用户恢复、等待队列调度，涵盖界面、托盘、协议与已启用RPC入口；任何入口不可控就失败。记录A/B临时暂停、C用户暂停、D完成、取消集合及原队列次序，对全部active/waiting任务确认静止。跨重启保可读取、版本化意图记录，持久失败就拒绝，不能只靠内存或会话猜意图；新写入使许可失效。[研究]
+
+再等待两层保存成功、控制／输出一致性及子进程实际close；RPC接受、close、失败／未知分别返回，不以allSettled／200ms／kill作成功。暂停检查点的一致性本轮仍未证，**实际默认延期，等任务完成并确认退出**，不是仅补saveSession后自动续传。[研究]
+
+| 输入 | 换版决定与任务结果（设计，未运行） |
+|---|---|
+| 隐藏窗口时取消更新 | Deferred；未暂停则A继续、B等待、C暂停、D完成，不取消下载 |
+| pause失败或仍active | QuiesceFailed，不装、不谎报安全暂停；保输出与观测状态 |
+| 保存reject／超时／undefined，或意图记录失败 | CheckpointUnknown，不退出／安装；按下述失败恢复规则处理 |
+| remove A成功但保存失败 | CancellationUncommitted；当前A已移除而旧会话可能复活，阻止自动换版／重启，不自动恢复或删部分输出 |
+| 保存成功但close未知／新入队 | DrainUnknown／重新收敛，不强杀、不装 |
+| 任务完成／明确取消、持久状态确认、引擎已退出且人批准 | ReadyToReplace→Installing，保profile、完成输出与取消凭据 |
+| 想从暂停自动中断但一致性未知 | Deferred，保持暂停或由用户选择继续，不能承诺安全续传 |
+| 安装失败／取消／结果未知 | 核实际版本；部分替换不可启动为损坏安装，保材料走可信支持修复，未知则人工处理，不当普通延期／不自动降级 |
+| 新版启动原profile | RecoveryVerification；A仅原运行意图与无取消均确认才恢复，B按原次序、C仍暂停、D无重复；冲突停相关任务，不再add掩盖 |
+
+失败恢复固定为：引擎未停且无任务取消时，仅撤销本次A/B临时暂停并恢复原次序，C不动、D不重做；逐项失败保暂停并明示。取消未持久化、状态未知或进程已停时不自动恢复，先核意图与材料交用户选择。不能用unpauseAll复活取消任务；删除队列任务不等于授权删除部分输出，默认保留。[研究]
+
+**B5启动分支先决定更新，再启动引擎。** 同一旧安装A→B2→B5，不同时换scope、账户、源或协议。第二实例不得安装或启动第二引擎，交既有实例，首实例未知不杀进程抢占；身份／scope不明拒绝自动更新、不猜profile。无缓存／包不完整进入可用旧版任务模式；缓存有但本会话feed校验失败／离线则延期，不凭文件存在安装。签名／版本／身份不符拒绝且不禁验签。[研究]
+
+包可用但人延期，则进入任务模式，本次不再追杀进程安装；人选现在更新而保存／取消状态未知，回B2失败分支，不能先unpauseAll。只有前次工作状态已确认且引擎未启动、完整门闸成立才安装。安装失败／取消／未知先核实际版本，部分替换按损坏修复，只有确认可用版本才进任务模式。B5成功再按A–D验恢复并标包已应用，下次不重复安装；恢复失败保材料、停冲突任务。[研究]
+
+**总判据：原身份／scope／profile的A→B2→B5及全部任务断言成立。** 覆盖在线／离线、有／无缓存、自启／手动并发；记录身份／URI／输出映射、hash、额外副本与完成动作数。取消A不复活、C不恢复、D不重做；hash相等不证明副作用exactly-once，文件／进度存在不算恢复。[研究]
+
+Agent交清单、错误传播、冻结／意图图及判定器；人定中断粒度、输出保留、权限／维护窗口。防隐藏当空闲、settled当成功、重加URL当恢复。路径／签名／摘要与Windows恢复待验。[研究]
+
+<a id="资料验收与停止条件"></a>
+
+### 现成路线、六类投入与撤回
+
+**默认延期＋可信同身份人工包，仍验工作门闸和双跳。** 旧依赖失去安全支持就停止分发、安排维护窗口或缩功能，不永久保旧／强杀工作。[研究]
+
+[稳定builder26.17.0][stable]／updater6.8.10是后续候选，不自动提供文档或aria2事务；[v27预览#10011][agent-pr]的新对象／枚举API不能倒用于旧锁文件。Electron自带Squirrel/MSIX与旧NSIS不是直接替换；[App Installer][msix]可管理检查、后台更新／激活策略且受IT策略影响，但不定义任务恢复。本样本跨身份profile、签名及入口迁移未核，故不默认换渠道；已有合适渠道则优先复用，避免另造发行框架。[一手／研究]
+
+| 成本 | 当前显式／人工包 | 自动更新／渠道额外职责 |
 |---|---|---|
-| 有窗口的编辑／标注工具 | 第二次改变多窗口或保存入口；第五次改变更新依赖或发行渠道 | Agent追旧安装→新包→下一次升级，以及用户工作→保存／备份／拒绝退出→恢复两条链。人定哪些内容须落盘、哪些可草稿恢复、何时能重启。不能用新装干净profile代旧用户 |
-| 无窗托盘／后台工具 | 第二次改变队列／取消与检查点；第五次改变安装scope或启动更新方式 | Agent查任务中断、恢复、重复结果与OS信号／文件替换权限；人定可中断粒度与提权边界。不能把无窗口当无工作，也不能套用只对窗口有效的退出保护 |
+| 初次接入 | 保存／停机门闸、旧身份 | 生产依赖与入口、缓存／竞态状态；换渠道另做身份迁移 |
+| 每次发行 | 可信包、旧→新→再新与原工作 | metadata／下载失败、自启离线矩阵及渠道策略 |
+| 签名／渠道维护 | 同身份可信分发、源保留 | 包身份、签名／权限迁移、App Installer配置 |
+| 目标OS验证 | 普通用户NSIS、文件占用、退出／恢复 | 并发自启、激活阻断与缓存状态；不能以Linux代Windows |
+| 用户操作 | 命名保存／结束工作、下载并选安装时机 | 操作可能少，但须解释未启动／未恢复并保延期选择 |
+| 故障支持 | 分清保存、安装、恢复，保原材料 | 再定位feed、验签、缓存、调度及渠道归属 |
 
-执行时各情境必须选定一个旧安装基线、目标OS／安装类型和明确的两轮需求，不交付任选清单。“第五次”是预注册迭代情境，不声称已有五轮真实采用。后台情境尚缺固定应用的检查点／恢复链；若补不到，默认明确延期或人工更新，不承诺自动中断安全。[研究：验收约束]
+工时／费用／净收益未知。旧入口未证、身份不符、失败不能veto、恢复错误或下一跳不可达即撤回自动承诺，回延期／人工路径；部分安装须先修可运行版本。[研究]
 
-### 立项依据：Agent补丁、人审和真实采用分层
+<a id="立项依据agent补丁人审和真实采用分层"></a>
 
-**公开Agent链，而非只给工程知识加一句AI。** [electron-builder #10011](https://github.com/electron-userland/electron-builder/pull/10011)正文标Claude Code参与，2026-07-23合入`1798f6b67151777cedce4dab1a3778717c8feab0`；不能据共同署名归因全部代码或量化效率。[人审指出未发布API不应写入迁移说明](https://github.com/electron-userland/electron-builder/pull/10011#discussion_r3625691264)，[后续答复](https://github.com/electron-userland/electron-builder/pull/10011#discussion_r3625752909)核历史后删除。规划者读到原评论；独审复核最终补丁删除，评论逐字复读受限，不上推证据范围。未打开其私人会话链接。[一手：公开PR／修订；研究]
+### 公开Agent、人审与真实回执的边界
 
-**绿job不等于用户工作保全。** 固定末head`b74b767ab4d695db5907e4f6a5da051954d18018`的[公开AppImage job](https://github.com/electron-userland/electron-builder/actions/runs/29869025193/job/88764311466)在规划读取时success，但API steps为空，未独立确认逐用例执行。[黑盒helper](https://github.com/electron-userland/electron-builder/blob/b74b767ab4d695db5907e4f6a5da051954d18018/test/src/updater/blackboxUpdateHelpers.ts#L431-L554)断言排队后仍旧版、重启触发安装并轮询新版；Linux／Windows suites有环境条件及skip。没有草稿／后台任务保全或再升至第三版的断言，不读完整日志来追更强结论。[一手：源码／job元数据；未运行]
+[#10011][agent-pr]标Claude Code参与，2026-07-23合入`1798f6b67151777cedce4dab1a3778717c8feab0`；[人审][agent-review]指出未发布API不应写迁移说明，[答复][agent-reply]核历史后删除。共同署名不归因全部代码，也不量化AI效率；此归属不能转给MarkText／Motrix。[一手／研究]
 
-**不要让Agent按latest示例替稳定依赖写迁移。** 2026-10-20所核稳定[26.17.0](https://github.com/electron-userland/electron-builder/releases/tag/electron-builder%4026.17.0)内updater6.8.10使用位置参数与`autoInstallOnAppQuit`；#10011的新枚举／对象API属于v27预览。Windows无窗口例外仍须单独处理。条件不符时保稳定版＋显式更新，不为新API默认迁alpha。[一手：发布／固定实现；研究：候选选择]
+固定head`b74b767ab4d695db5907e4f6a5da051954d18018`的[黑盒helper][blackbox]验旧版／新版切换，缺草稿、后台任务及第三版断言；未核job逐用例，非本包通过。[研究：源码范围]
 
-**保工作是应用职责，不是下载器附赠能力。** VS Code稳定1.142.0固定`d956e8a6ac5d904486557eea07e1d6bd62a4d36f`的[更新服务](https://github.com/microsoft/vscode/blob/d956e8a6ac5d904486557eea07e1d6bd62a4d36f/src/vs/platform/update/electron-main/abstractUpdateService.ts#L534-L569)先走lifecycle quit，veto后回Ready；[工作副本跟踪](https://github.com/microsoft/vscode/blob/d956e8a6ac5d904486557eea07e1d6bd62a4d36f/src/vs/workbench/services/workingCopy/electron-browser/workingCopyBackupTracker.ts)另处理保存、备份、失败和取消。只借职责拆分，不推荐复制VS Code框架，也不把源码存在作全分支实测。[一手／研究]
+[24.13.3使用者][rollback]试启动更新后因白窗／缓存状态撤回，仅限其版本，不证明稳定6.8.10或v27失败。未找到本两旧安装同人连续升级且全部工作恢复成功链，原生有效性未知。[一手／社区／研究]
 
-**真实撤回与采用只能支持各自范围。** [#7807](https://github.com/electron-userland/electron-builder/issues/7807#issuecomment-5436872943)使用者在24.13.3试启动更新后撤回，白窗／旧缓存问题不证明v27失败；[Joplin #11802](https://github.com/laurent22/joplin/pull/11802)重新允许Windows feature flag，[#14083](https://github.com/laurent22/joplin/pull/14083)修下载／验签异步失败并有作者升级测试自报，非原用户独立复测或草稿恢复证明；[Zed后续回执](https://github.com/zed-industries/zed/issues/13825#issuecomment-2653885744)经Homebrew Cask成功更新，反驳按渠道名一律禁自更新。执行项目时补齐实际包契约，不靠单次重装归因。[一手／社区；研究]
+**三重复候选不立项**：mutation／属性测试重复15§6；连续修改benchmark重复20／22／M6；网页可访问性与P11／P12重叠且缺新Agent取舍，非穷尽负结果。[研究]
 
-### 资料验收与停止条件
-
-两任务包各须有固定输入、Agent可做动作、人决定项、两轮需求、现成替代、产物判据和撤回；至少产生一个明确采用决定。逐项对应已核机制与缺口，不以链接数代替决定。15提供任务入口，18维护唯一选择；本记录存任务包和证据，不新建目录或编号专题。[研究：验收]
-
-成本分初次接入、每次发行、签名／渠道维护、目标OS验证、用户操作、故障支持六类。未知工时／费用保留未知，不估“省几天”。原生安装、签名、设备更新、中断、凭据或费用不在当前执行范围；资料交付可独立验收，原生运行另列未运行，不拿未授权实测阻塞全部资料工作。[研究：范围]
-
-如果最终只能写“保存后再更新”或API能力表，撤掉独立项目；若两情境没有不同Agent选择，也不以预算数字硬撑。一个OS或安装类型有证据就收窄，不扩称全平台。当前未证明安全连续升级、零数据丢失或AI净收益。[研究：停止条件]
-
-**本轮另三题不立项。** mutation／属性测试已有15§6的JiTTest／ACH等覆盖；连续修改benchmark重复20／22／M6；网页可访问性缺新Agent取舍链且与P11／P12重叠。此为针对性查重负结果，非全网穷尽；不为凑项目水位加同义题。[研究：规划记录]
+[mt-release]: https://github.com/marktext/marktext/releases/tag/v0.17.1
+[mx-release]: https://github.com/agalwood/Motrix/releases/tag/v1.8.19
+[aria-doc]: https://aria2.github.io/manual/en/html/aria2c.html#aria2.saveSession
+[stable]: https://github.com/electron-userland/electron-builder/releases/tag/electron-builder%4026.17.0
+[msix]: https://learn.microsoft.com/en-us/windows/msix/app-installer/auto-update-and-repair--overview
+[agent-pr]: https://github.com/electron-userland/electron-builder/pull/10011
+[agent-review]: https://github.com/electron-userland/electron-builder/pull/10011#discussion_r3625691264
+[agent-reply]: https://github.com/electron-userland/electron-builder/pull/10011#discussion_r3625752909
+[blackbox]: https://github.com/electron-userland/electron-builder/blob/b74b767ab4d695db5907e4f6a5da051954d18018/test/src/updater/blackboxUpdateHelpers.ts#L431-L554
+[rollback]: https://github.com/electron-userland/electron-builder/issues/7807#issuecomment-5436872943
+[mt-tree]: https://github.com/marktext/marktext/tree/c8aa33ddcd41184ecac3bd5e67451569b32d8e38
+[mx-tree]: https://github.com/agalwood/Motrix/tree/a0a1fe90f7e9f6d305ed2b512f62c8d36c2fb95a
+[old-tree]: https://github.com/electron-userland/electron-builder/tree/f717e0ea67cec7c5c298889efee7df724838491a
+[new-tree]: https://github.com/electron-userland/electron-builder/tree/5cdf0178759fa9619e47e5a0b3c203e2961b2411
