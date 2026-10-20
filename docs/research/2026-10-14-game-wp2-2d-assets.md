@@ -1,6 +1,6 @@
 主线：二／三；G1 2D 资产选型与第二次修改
-改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分混合错配、缩小后裁切覆盖／图集失真与内容缺陷；规则几何固定视角小道具反复生成失败时，可比较代码母版；自制换装预览缺必要身体部件时先修观察工具，不据不完整图返工美术；换光向先分平面受光与表面体积，不默认由彩色图追补法线；承担稳定操作识别的图标，提高绘画质量时先保视觉身份，必要改版另验
-新证据：[一手] 2026-10-18补像素图法线原论文、厂商完整手修流程与两引擎消费契约； §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执，2026-10-17补保覆盖阈值、图集回归与保比例不保轮廓反例；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎；2026-10-17补SOLREIGN撤回换装判断与Human/Vox元数据、Godot预览过滤反例，修后图像／工具未复现；2026-10-19 补 World of Claudecraft 生成采用、旧技能发布前撤回与两个代表产物核对
+改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分混合错配、缩小后裁切覆盖／图集失真与内容缺陷；玩法组合语法直接定义物料族时先评估同结构派生，有限现成图组够用则不自建；规则几何固定视角小道具反复生成失败时，可比较代码母版；自制换装预览缺必要身体部件时先修观察工具，不据不完整图返工美术；换光向先分平面受光与表面体积，不默认由彩色图追补法线；承担稳定操作识别的图标，提高绘画质量时先保视觉身份，必要改版另验
+新证据：[一手／源码] 2026-10-20 §15 P33补shapez物料族两轮差异、固定消费者与撤回，以及Kenney有限图组反分支；2026-10-18补像素图法线原论文、厂商完整手修流程与两引擎消费契约； §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执，2026-10-17补保覆盖阈值、图集回归与保比例不保轮廓反例；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎；2026-10-17补SOLREIGN撤回换装判断与Human/Vox元数据、Godot预览过滤反例，修后图像／工具未复现；2026-10-19 补 World of Claudecraft 生成采用、旧技能发布前撤回与两个代表产物核对
 
 # WP2：2D资产的前沿方法与零手修边界
 
@@ -66,15 +66,12 @@
 
 ## 5. 当前前沿：原生参考编辑与透明输出，附商用约束
 
-**[一手]** 2026-09-08 [GPT Image 2.5发布](https://openai.com/index/introducing-chatgpt-images-2-5/)与[当前接口](https://developers.openai.com/api/docs/guides/image-generation)提供Flare/Sunburst固定snapshot、透明PNG/WebP与多档质量。Sunburst偏编辑精度，Flare偏速度；接口仍说明mask不是严格像素锁定、角色和布局可能失误。最小总像素655,360，不原生输出32/64像素游戏格；大图缩小后必须重新判断辨识度。**[经验]** 透明静态资产优先评估Sunburst，若Flare同规格通过率相当则换低等待路线；绝不从官方定位推出全行业冠军。
+[研究／经验] 型号、接口、价格与生产资格只在[§9 动态表](#9-阶段-f-b图像动态事实表)维护；这里按交付缺口选择，不用新型号覆盖旧产物证据。
 
-**[一手]** Google [Nano Banana2.1模型页](https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1)（页脚2026-10-06）列stable、最多14参考、1K/2K/4K；输入数量不保证所有主体正确。[图像指南](https://ai.google.dev/gemini-api/docs/image-generation)的Lite并非多轮/多参考默认，本轮未找到原生alpha契约。**[经验]** 对无需alpha的概念、背景、插图，把付费2.1列性价比首试；不能把PNG容器推成原生透明，抠图/淘汰成本可能逆转价格优势。
-
-**[一手]** [FLUX3 Image](https://docs.bfl.ai/flux_3/flux3_image_overview)提供多参考、[边界框](https://docs.bfl.ai/flux_3/flux3_image_bounding_boxes)与不同输出档；默认grounding开启，商业权重仍是洽谈入口。**[经验]** 布局敏感静态图可作补充对照；原创资产没有搜索需求时关grounding，框仍是模型条件而非引擎布局保证。本轮无原生alpha契约及同题游戏效果证据，不夺走透明资产首试位置。
-
-**[一手]** Qwen-Image-2.1 [固定模型卡](https://huggingface.co/Qwen/Qwen-Image-2.1/blob/d26bb61231c349cf6b7896fa83353113880e1ba3/README.md)（2026-09-20）统一生成/编辑、原生RGBA、十参考；7B指视觉生成组件，不能当全管线显存。但[代码许可](https://github.com/QwenLM/Qwen-Image-2.1/blob/bb8e2172e08c6720652a4a23ad1c406e5b6ed1ee/LICENSE)与[权重许可](https://huggingface.co/Qwen/Qwen-Image-2.1/raw/d26bb61231c349cf6b7896fa83353113880e1ba3/LICENSE)同为Qwen Research，§2商业生产需另许，无小团队自动豁免。本轮两许可文本7831字节一致，SHA-256 `8dc973f024ff95966bea25866efa443fd16776dcb1001e681e3d467ea572b28d`。**[经验]** 不把免费本地商用从Apache旧版升到2.1；技术更合适仍须先补商业授权。
-
-**[经验：三档取舍]** 本地优先小批静态用[FLUX.2-klein-4B](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B/blob/e7b7dc27f91deacad38e78976d1f2b499d76a294/README.md)，精细改稿对照[Edit-2511](https://huggingface.co/Qwen/Qwen-Image-Edit-2511/blob/6f3ccc0b56e431dc6a0c2b2039706d7d26f22cb9/README.md)，初图保留2512。此为许可/控制性/部署条件的建议，不是独立质量排名；4B不足不能免费升级9B/dev商用。没有适合硬件时，现成资源或商业API可能更便宜。
+- **透明静态精改：先试 Sunburst，Flare 作速度对照。** 同规格接受率相当才换低等待路线。Mask 不是严格像素锁定，角色／布局仍可能失误；大图缩到游戏格后重验辨识度，不从官方定位推全行业冠军。
+- **无需 alpha 的概念、背景、插图：先试付费 Nano Banana 2.1。** 参考数不是主体正确率，PNG 容器不是原生透明；若抠图／淘汰抵消价格优势，撤回此首试。
+- **布局敏感静态图：FLUX 3 作专项对照。** 原创素材不需搜索时关 grounding；框只是模型条件，不是引擎布局保证。未核原生 alpha 契约与同题游戏效果，不替换透明资产首试。
+- **本地小批静态：klein-4B；精细改稿对照 Edit-2511，初图保留 2512。** 这是许可、控制与部署取舍，不是独立质量排名；硬件不合适时改现成资源或商业 API。4B 不足不能免费升级 9B/dev 商用，Qwen 2.1 即使技术更合适也须先补商业授权。
 
 已另查[Seed官方目录](https://seed.bytedance.com/en/models)、[Microsoft新模型入口](https://microsoft.ai/?post_type=new)、[xAI Image2发布](https://x.ai/news/grok-imagine-image-2)。它们作为尚待具体许可和同任务证据的补充对照，不因未列首选而认定更差，也不以品牌数量充作覆盖质量。**[研究：选型边界]**
 
@@ -90,14 +87,7 @@
 
 ## 7. 成本与真实产物：不从标价推可用资产价
 
-核价2026-10-14（UTC+8），美元、未含税；以下是调用价格而非ChatGPT/Gemini订阅配额。**[一手：官方计价；研究：口径]**
-
-| 方案 | 可核口径 | 不能推导的结论 |
-|---|---|---|
-| [Image2.5 Sunburst](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst) / [Flare](https://developers.openai.com/api/docs/models/gpt-image-2.5-flare) | Standard图像输出$30/M tokens，Batch $15/M；图像输入$8/M、缓存$2/M，文本输入$5/M | 同token单价不等于同单张成本；旧Image2计算器不估2.5消耗，须实际usage，不能抄旧单图表 |
-| [Nano Banana2.1](https://ai.google.dev/gemini-api/docs/pricing#gemini-nano-banana-2.1) | Standard 1024平方输出$0.0336、2048平方$0.0504；输入与思考另计 | 同尺寸不是同质量，抠图/参考输入/淘汰可能使最终成本更高 |
-| [FLUX3](https://docs.bfl.ai/quick_start/pricing) | 当前1K $0.048、2K $0.10，按所选档收费 | 10月8日结束的五折活动价不能继续作为预算；模型未通过目标尺寸不计成功资产 |
-| 本地klein4B/Qwen指定旧版 | 没有许可证按张收费 | GPU、电费、装配、等待、维护及主动筛选成本均非零 |
+[研究] 调用标价与核价日期见[§9](#9-阶段-f-b图像动态事实表)，不是 ChatGPT／Gemini 订阅额度。本地免模型许可费也不免 GPU、电费、装配、等待与维护；以下只讨论接受成本和产物证据。
 
 **[经验]** 总生成/编辑、算力/后处理及主动工时费用，除以实际通过尺寸、成套一致性及修改验收的资产数；拒绝样本必须计入。接受率未知就不填“每角色成本”，也不声称更便宜API必省钱。
 
@@ -117,38 +107,41 @@
 
 ## 9. 阶段 F-b：图像动态事实表
 
-2026-10-14 重新读取下列官方原文。`2026-11-14／选型前`表示建议最迟复核日；换型号、套餐、地区、输入用途或合同版本时提前复核，不表示已有定时监控。价格为美元 API 标价，不能代替账户实际账单或订阅权益。[一手／研究]
+2026-10-14 的原文读取与复取状态如下；本次只收敛维护位置，不刷新核实日。`2026-11-14／选型前`表示建议最迟复核日；换型号、套餐、地区、输入用途或合同版本时提前复核，不表示已有定时监控。价格为美元、未税 API 标价，不能代替账户实际账单或订阅权益。[一手／研究]
 
-**审计两个疑点均已消除。** 官方图像指南在同一小节点名 Sunburst 和 Flare，随后明确两者的透明背景都使用 `background: "transparent"`，输出格式为 PNG 或 WebP；Flare 另有独立型号页和日期快照。单一型号页没有重复透明说明，不构成“不支持”的证据；这次确认的是接口契约，没有调用模型验证边缘质量。[一手／研究]
+[研究] 先在本表核精确型号与生产资格，再按 §5 选能力、§7 核实际产物，最后回到相应制作／消费者段验第二次替换。接口支持不等于边缘质量或成套接受率；单一型号页未重复透明说明，也不构成“不支持”的证据。
 
 | 事实 | 来源 | 核实日 | 复核日或触发 | 对推荐的影响 |
 |---|---|---|---|---|
-| Sunburst 存在；固定 `gpt-image-2.5-sunburst-2026-09-08`；官方定位重编辑精度，可用于 Image API 或 Responses 图像工具 | [Sunburst 型号页](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst) | 2026-10-14 | 2026-11-14／选型前 | 保留透明静态精改首试；定位不等于游戏实测冠军 |
+| Sunburst 存在；固定 `gpt-image-2.5-sunburst-2026-09-08`；官方定位重编辑精度，可用于 Image API 或 Responses 图像工具 | [Sunburst 型号页](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst)、[2.5 发布](https://openai.com/index/introducing-chatgpt-images-2-5/) | 2026-10-14 | 2026-11-14／选型前 | 保留透明静态精改首试；定位不等于游戏实测冠军 |
 | Flare 存在；固定 `gpt-image-2.5-flare-2026-09-08`；官方定位快速日常高质量生成，支持文本／图像输入和上述两 API 入口 | [Flare 型号页](https://developers.openai.com/api/docs/models/gpt-image-2.5-flare) | 2026-10-14 | 2026-11-14／选型前 | 保留速度对照，不把它当不存在或仅消费端功能 |
-| 两者均支持透明 PNG/WebP；质量档包括 low/medium/high/xhigh/max/auto；总像素至少 655,360，边长倍数为 16 | [图像指南：Size and quality options](https://developers.openai.com/api/docs/guides/image-generation#size-and-quality-options) | 2026-10-14 | 2026-11-14／接口变化时 | 保留透明推荐；32/64 像素格须缩小后验收 |
+| 两者均以 `background: "transparent"` 支持透明 PNG/WebP；质量档包括 low/medium/high/xhigh/max/auto；总像素至少 655,360，边长倍数为 16 | [图像指南](https://developers.openai.com/api/docs/guides/image-generation)、[Size and quality options](https://developers.openai.com/api/docs/guides/image-generation#size-and-quality-options) | 2026-10-14 | 2026-11-14／接口变化时 | 保留透明推荐；32/64 像素格须缩小后验收 |
 | 两者 Standard 每百万 token：文本输入 $5、缓存 $1.25，图像输入 $8、缓存 $2、图像输出 $30；Batch 图像输出 $15；旧 Image 2 计算器不能估 2.5 消耗 | [Sunburst](https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst)、[Flare](https://developers.openai.com/api/docs/models/gpt-image-2.5-flare) | 2026-10-14 | 2026-11-14／预算前 | 同费率不证明同单张成本；用实际 usage、接受率与等待成本决定 |
 | OpenAI API 输出在双方之间、法律允许范围归客户；输入清权、输出审查由客户负责；默认不以内容改进服务，除非明确同意 | [Services Agreement §4](https://openai.com/policies/services-agreement/) | 2026-10-14 | 2026-11-14／签约或地区变化 | API 路线有条件保留；不以 ChatGPT 订阅替代 API 合同 |
 | API 服务访问／提供受支持地区清单限制，不能从 API 访问规则推导离线游戏的全球销售禁区 | [官方 API 地区清单](https://help.openai.com/en/articles/5347006-openai-api-supported-countries-and-territories) | 2026-10-14 | 2026-11-14／实际访问前 | 使用者按真实所在地核查，不绕过地区限制 |
 | 旧 `gpt-image-2-2026-04-21` 仍列型号快照；ChatGPT 图像功能另受居住地消费条款管辖，不能当固定 API 快照 | [旧型号页](https://developers.openai.com/api/docs/models/gpt-image-2)、[非欧洲条款](https://openai.com/policies/row-terms-of-use/)、[条款入口](https://openai.com/policies/terms-of-use/) | 2026-10-14 | 2026-11-14／换入口时 | 保留历史产物标识，不将旧演示归为 2.5 实证 |
-| `gemini-nano-banana-2.1` 存在；支持 1K/2K/4K、最多 14 张参考；这些是能力上限，不是主体一致性保证 | [Google 型号页](https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1) | 2026-10-14 | 2026-11-14／选型前 | 保留无 alpha 要求插图的性价比首试 |
+| `gemini-nano-banana-2.1` 存在；页脚 2026-10-06 列 stable、1K/2K/4K、最多 14 张参考；Lite 非多轮／多参考默认，未核原生 alpha 契约 | [Google 型号页](https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1)、[图像指南](https://ai.google.dev/gemini-api/docs/image-generation) | 2026-10-14 | 2026-11-14／选型前 | 保留无 alpha 要求插图的性价比首试 |
 | Nano Banana 2.1 Standard：输入 $1.50/M，文本及思考输出 $7.50/M，图像输出 $30/M；1K $0.0336、2K $0.0504、4K 约 $0.113；Batch 分别 $0.0168/$0.0252/$0.0567 | [Google 定价相应型号段](https://ai.google.dev/gemini-api/docs/pricing#gemini-nano-banana-2.1) | 2026-10-14 | 2026-11-14／预算前 | 原价格确认；计入输入、思考、搜索、拒绝样本，不能当全调用总价 |
 | Google 不主张生成内容所有权且输出可能重复；Paid 不用于改进产品但有有限安全日志；Unpaid 通常允许改进及人工审阅，EEA/瑞士/英国与 active billing 条件另见正文 | [Gemini API 条款](https://ai.google.dev/gemini-api/terms) | 2026-10-14 | 2026-11-14／账户或合同变化 | 商用及保密路线仍须区分 API、AI Studio 和消费者订阅 |
 | Gemini API 访问须在可用地区；面向 EEA/瑞士/英国用户的 API Client 只能用 Paid Services | [条款](https://ai.google.dev/gemini-api/terms)、[地区](https://ai.google.dev/gemini-api/docs/available-regions) | 2026-10-14 | 2026-11-14／实际访问前 | 离线生成与向玩家开放 API 分开评估 |
-| FLUX 3 Image 当前 768sq/1K/2K/4K 每张 $0.041/$0.048/$0.100/$0.607，响应含 cost；计价按 resolution 档 | [BFL 定价](https://docs.bfl.ai/quick_start/pricing) | 2026-10-14 | 2026-11-14／预算前 | 确认原 1K/2K 预算，不套过期促销 |
-| FLUX 3 Image 有多参考及 bounding-box 布局入口；grounding 默认开启，可设 false | [官方功能页](https://docs.bfl.ai/flux_3/flux3_image_overview) | 2026-10-14 | 2026-11-14／选型前 | 保留布局专项对照；原创素材不需搜索时关闭 grounding |
+| FLUX 3 Image 当前 768sq/1K/2K/4K 每张 $0.041/$0.048/$0.100/$0.607，响应含 cost；计价按 resolution 档 | [BFL 定价](https://docs.bfl.ai/quick_start/pricing) | 2026-10-14 | 2026-11-14／预算前 | 确认原 1K/2K 预算，不套 10 月 8 日结束的五折促销 |
+| FLUX 3 Image 有多参考及 bounding-box 布局入口；grounding 默认开启，可设 false | [官方功能页](https://docs.bfl.ai/flux_3/flux3_image_overview)、[边界框](https://docs.bfl.ai/flux_3/flux3_image_bounding_boxes) | 2026-10-14 | 2026-11-14／选型前 | 保留布局专项对照；原创素材不需搜索时关闭 grounding |
 | FLUX API 非 EU 合同允许合规商业输出，保留来源凭证；默认授予服务商改进／训练用输入输出的许可；自托管不是 API 合同所授权 | [Developer Terms §3–6](https://bfl.ai/legal/developer-terms-of-service)、[API Terms §2](https://bfl.ai/legal/flux-api-service-terms) | 2026-10-14 | 2026-11-14／地区或合同变化 | 保密项目先核合同；EU 版不能由本次非 EU 阅读放行 |
-| klein-4B 及 base-4B 各自权重 LICENSE 为 Apache-2.0；独立 flux2 推理代码亦为 Apache-2.0 | [4B 权重](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B/blob/main/LICENSE.md)、[base-4B 权重](https://huggingface.co/black-forest-labs/FLUX.2-klein-base-4B/blob/a3b4f4849157f664bdbc776fd7453c2783562f4d/LICENSE.md)、[固定代码](https://github.com/black-forest-labs/flux2/blob/50fe5162777813d869182b139e83b10743caef15/LICENSE.md) | 2026-10-14 | 2026-11-14／换 checkpoint 时 | 保留本地免模型许可费首试；软件通知、依赖和输入另核 |
+| klein-4B 及 base-4B 各自权重 LICENSE 为 Apache-2.0；独立 flux2 推理代码亦为 Apache-2.0 | [4B 卡](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B/blob/e7b7dc27f91deacad38e78976d1f2b499d76a294/README.md)、[4B 权重](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B/blob/main/LICENSE.md)、[base-4B 权重](https://huggingface.co/black-forest-labs/FLUX.2-klein-base-4B/blob/a3b4f4849157f664bdbc776fd7453c2783562f4d/LICENSE.md)、[固定代码](https://github.com/black-forest-labs/flux2/blob/50fe5162777813d869182b139e83b10743caef15/LICENSE.md) | 2026-10-14 | 2026-11-14／换 checkpoint 时 | 保留本地免模型许可费首试；软件通知、依赖和输入另核 |
 | klein-9B 与 FLUX.2-dev 权重为 Non-Commercial v2.1：模型限非商业／非生产；输出商用条款不反授商业运行 | [9B 许可](https://huggingface.co/black-forest-labs/FLUX.2-klein-9B/blob/main/LICENSE.md)、[dev 许可](https://huggingface.co/black-forest-labs/FLUX.2-dev/blob/main/LICENSE.md) | 2026-10-14 | 2026-11-14／换许可时 | 不免费升级商用；无小团队自动豁免 |
-| BFL 商业自托管按选定模型和付费计划授权，须报告用量；许可到期／终止后停用并删除模型，API 接入另约 | [Self-Hosted Terms §1–8](https://bfl.ai/legal/self-hosted-commercial-license-terms) | 2026-10-14 | 2026-11-14／购买或终止前 | 不把一次下载当永久商用权，也不自行推断旧输出权利 |
-| Qwen-Image-2512、Edit-2511 官方卡为 Apache-2.0；对应 Qwen-Image 代码 Apache-2.0 | [2512](https://huggingface.co/Qwen/Qwen-Image-2512)、[2511](https://huggingface.co/Qwen/Qwen-Image-Edit-2511)、[固定代码](https://github.com/QwenLM/Qwen-Image/blob/6b5e1f5cec987d404be5ac6657db3b9aacb56a89/LICENSE) | 2026-10-14 | 2026-11-14／换 checkpoint 时 | 保留初图与编辑本地对照；模型许可不保证输出独占或清权 |
+| FLUX 3 商业权重仍为洽谈入口；BFL 自托管按选定模型和付费计划授权，须报告用量；许可到期／终止后停用并删除模型，API 接入另约 | [Self-Hosted Terms §1–8](https://bfl.ai/legal/self-hosted-commercial-license-terms) | 2026-10-14 | 2026-11-14／购买或终止前 | 不把一次下载当永久商用权，也不自行推断旧输出权利 |
+| Qwen-Image-2512、Edit-2511 官方卡为 Apache-2.0；对应 Qwen-Image 代码 Apache-2.0 | [2512](https://huggingface.co/Qwen/Qwen-Image-2512)、[2511](https://huggingface.co/Qwen/Qwen-Image-Edit-2511)、[2511 固定卡](https://huggingface.co/Qwen/Qwen-Image-Edit-2511/blob/6f3ccc0b56e431dc6a0c2b2039706d7d26f22cb9/README.md)、[固定代码](https://github.com/QwenLM/Qwen-Image/blob/6b5e1f5cec987d404be5ac6657db3b9aacb56a89/LICENSE) | 2026-10-14 | 2026-11-14／换 checkpoint 时 | 保留初图与编辑本地对照；模型许可不保证输出独占或清权 |
 | Qwen-Image-Layered 官方卡与独立代码 Apache-2.0，可分多 RGBA 层 | [模型卡](https://huggingface.co/Qwen/Qwen-Image-Layered)、[固定代码许可](https://github.com/QwenLM/Qwen-Image-Layered/blob/54c4fe47e76d745775e03fc66ee38457280ed9ea/LICENSE) | 2026-10-14 | 2026-11-14／换版本时 | 保留分层专项候选；不等于恢复被遮挡内容或可绑定源稿 |
-| Qwen-Image-2.1 代码 Research License §2 仅非商业研究／评估；当前官方模型卡也标 Research License。HF 固定 LICENSE 的 raw/blob/resolve 本次提取失败，不能声称此次重算了旧哈希 | [固定代码许可](https://github.com/QwenLM/Qwen-Image-2.1/blob/bb8e2172e08c6720652a4a23ad1c406e5b6ed1ee/LICENSE)、[当前模型卡](https://huggingface.co/Qwen/Qwen-Image-2.1) | 2026-10-14（代码与卡已核；权重原文复取未成） | 2026-11-14／任何商业采用前 | 保留暂缓默认商业；不能以旧 Apache 版本或 RGBA 功能清权 |
+| Qwen-Image-2.1 固定卡（2026-09-20）列生成／编辑、RGBA、十参考；7B 仅视觉组件，非全管线显存 | [固定卡](https://huggingface.co/Qwen/Qwen-Image-2.1/blob/d26bb61231c349cf6b7896fa83353113880e1ba3/README.md) | 2026-10-14 | 2026-11-14／换版本时 | 技术能力不构成商业资格；生产门槛见下一行 |
+| Qwen-Image-2.1 代码／权重为 Qwen Research；§2 商业生产需另许，无小团队自动豁免。后次重读代码与当前卡仍为 Research，HF 固定 LICENSE raw/blob/resolve 复取失败；初次成功记录见表后 | [代码许可](https://github.com/QwenLM/Qwen-Image-2.1/blob/bb8e2172e08c6720652a4a23ad1c406e5b6ed1ee/LICENSE)、[权重许可](https://huggingface.co/Qwen/Qwen-Image-2.1/raw/d26bb61231c349cf6b7896fa83353113880e1ba3/LICENSE)、[当前卡](https://huggingface.co/Qwen/Qwen-Image-2.1) | 2026-10-14（权重原文后次复取未成） | 2026-11-14／任何商业采用前 | ⛔暂缓默认商业；旧 Apache 许可或 RGBA 功能均不能替新版本清权 |
 | Adobe 自有 Firefly Image Model 5 在官方当前列表；非 beta 输出可商用，beta 除产品明禁；FAQ 列中国、俄罗斯、白俄罗斯等不可用 | [型号列表](https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/current-firefly-promotions.html)、[FAQ](https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html) | 2026-10-14 | 2026-11-14／实际生成前 | WP1 条件候选保留；未取得同题接受率，不替换本页三档 |
 | Adobe 输出仍须输入清权、保留水印／来源元数据，禁止用生成输出训练或改进 AI；第三方模型和指定计划赔偿另约 | [2026-04-23 特别条款 §1–3、7–8](https://www.adobe.com/cc-shared/assets/pdf/legal/servicetou/adobe-generative-ai-product-specific-terms-en-us-20260423.pdf) | 2026-10-14 | 2026-11-14／合同或计划变化 | 普通商用不等于成品游戏 IP 赔偿；不能拿 Firefly 输出训练风格 LoRA |
 | Kenney Generic Items 官方页仍为 CC0，提供免费获取；该包许可不替商标／肖像或其他包清权 | [指定资产包](https://kenney.nl/assets/generic-items) | 2026-10-14 | 2026-11-14／换包时 | 保留现成图标优先 |
 | Game-icons 固定版按作者为 CC BY 3.0 或明确标出的 CC0；Lorc/Delapouite 仍需署名，不能整库当 CC0 | [固定许可](https://github.com/game-icons/icons/blob/82d948812bfe3f269ef8f731dcdb07b08160edc4/license.txt) | 2026-10-14 | 2026-11-14／新增作者资产时 | 保留匹配图标，但按作者留许可和改动说明 |
 | ComfyUI 固定编排代码为 GPL-3.0；商用不被禁止，分发须履行 GPL；节点／checkpoint 不由此清权 | [固定 LICENSE 原文](https://raw.githubusercontent.com/Comfy-Org/ComfyUI/8010b48d2c1be986613f8e8c761527d205bd756f/LICENSE) | 2026-10-14 | 2026-11-14／换节点或部署方式 | 保留已有本地工作流，不拿编排器许可包办全链 |
 | Tilemap Extras 4.1.2 官方包 LICENSE 外链 UCL；本次重读 2,129,707 字节包并核得上文同一 SHA-256；第三方通知含 Rule/Rule Override 等 MIT 贡献，整包不是 MIT。UCL 当前 v1.4，需有效 Engine License | [官方包](https://download.packages.unity.com/com.unity.2d.tilemap.extras/-/com.unity.2d.tilemap.extras-4.1.2.tgz)、[当前 UCL](https://unity.com/legal/licenses/unity-companion-license) | 2026-10-14 | 2026-11-14／换 Unity 或包版本 | 保留匹配版本包；未安装执行，不扩大到跨引擎代码许可 |
+
+[一手／研究：Qwen 2.1 许可读取历史] 初次取得代码／权重两份文本，均 7,831 B，SHA-256 同为 `8dc973f024ff95966bea25866efa443fd16776dcb1001e681e3d467ea572b28d`。上表后次权重复取失败，未重算旧哈希；保留初次成功证据，不写成从未核过，也不把此次整理当复核成功。
 
 本表没有把未读取的账号权益、原生 alpha 的缺省值、免费商用追溯、未公开许可或模型成功率写成确定事实。固定版本源码／许可继续以正文 SHA 为复现锚点；动态入口用于检查是否出现影响后续选型的新合同。[研究]
 
@@ -158,18 +151,13 @@
 
 ### 先核许可和数据，再谈动画
 
-- **PixelLab：** [2025-11-23 条款 §1–4](https://www.pixellab.ai/termsofservice)允许合规商业使用／修改／分发输出，不授服务软件或模型权重；禁止未经许可拿输出训练模型，并引用 [Open RAIL-M](https://github.com/CompVis/stable-diffusion/blob/main/LICENSE)的用途条件。程序化使用走官方 API；转售／另建服务应先联系。输入和第三方权利仍由用户负责，合同“own copyrights”不能保证所在法域实际承认 AI 输出版权。[一手／研究]
-- **PixelLab 保密：** FAQ 的“不训练”不能覆盖条款 §3.4 的通知例外；生成前检查 UI／工具说明是否通知训练或保存。套餐页面另列俄罗斯、白俄罗斯、伊朗、委内瑞拉不支持，不能从可读文档推定当地可购买／可使用。[一手]
-- **Retro Diffusion：** 云端浏览器读取 [2026-09-28 新条款 §4–7、11](https://retrodiffusion.ai/terms)。输出在双方之间归生成者，涵盖免费、余额、套餐、API/MCP；不保证独占或版权。用户不可将输出用于 AI 训练、微调、蒸馏或评估，服务商可用输出改进／训练自身模型；免费输出和自愿公开内容可能连同提示、设置公开。自动化须官方 API/MCP/官方应用／扩展，不以网页脚本代 API。MCP 仓库 MIT 不授服务权重。[一手／研究]
-- **Retro 的适用日期：** 新账号从 9 月 28 日起适用新版；此前账号延后 30 天，即 10 月 28 日前仍适用 [2025-08-19 旧版 PDF](https://retrodiffusion.ai/assets/terms-8312c717.pdf)。旧版 §7 保留用户 Designs/Materials 权利，§3/6 的自动化禁令没有新版的明确 API 例外；不能替现有账号提前套新版。PDF 本轮从官方链接读取正文，未登录或接受新协议。[一手／研究]
+[研究] 下方[动态增量表](#像素专项的动态事实增量)集中维护服务许可、账户适用日期、数据用途与接口。先通过这些门槛，再进入动作比较；允许商用输出不授模型权重，也不保证版权独占。没有真实响应时不补造 model ID／版本或请求身份。
 
 ### 控制性：改同一组帧，而不是重新抽一组
 
-PixelLab [当前 API 目录](https://www.pixellab.ai/pixellab-api)有 Pixflux/Bitforge 的低分辨率、参考、强制调色板和透明输出路径；`animate-with-text-v3` 接受起帧及可选末帧，最高 256×256、最多 16 帧。`edit-animation-v2` 和 `transfer-outfit-v2` 分别用于跨帧指令修改、参考换装，适合验证“第二次修改保动作、换装备”。**教程的接口范围已滞后：** [Edit animation](https://www.pixellab.ai/docs/tools/edit-animation-pro)和[Transfer outfit](https://www.pixellab.ai/docs/tools/transfer-outfit-pro)仍写仅 Aseprite/Pixelorama 扩展，但当前 API 目录已明确列出对应端点；保留 API 候选，实际调用前复核 schema，不能因教程措辞就认定 API 不存在。[一手／研究]
+[研究／经验] PixelLab 的跨帧编辑／换装用于比较“保留已有动作，只换装备”；Retro 的低分辨率、参考与结构化导出作静态／起帧动画对照。具体端点、尺寸和教程冲突见下表，不把“game-ready”或“保持角色”宣传当逐帧通过。
 
-按教程尺寸约束，32–64px 的批改最多 16 帧，换装最多 15 帧；81–128px 分别降到 4/3 帧。长动作分组后会新增组间漂移风险。姿态或骨骼输入是生成条件，不证明输出保持同一拓扑或可直接导出可编辑骨架；返回一组可继续编辑的位图，与导出语义图层／rig 是不同交付。[一手／研究]
-
-Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blob/main/README.md)和[MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md)列参考图、透明背景、调色板、图生图、Wang/blob tileset、GIF/sprite-sheet，以及基于起帧的动作生成；RD Pro 最多 9 张参考。采用其低分辨率和结构化导出作为对照，不把“game-ready”或“保持角色”宣传当逐帧验收通过。[一手／研究]
+姿态／骨骼输入只是生成条件，不证明同拓扑或可编辑骨架；可继续编辑的位图不等于语义层／rig。分组编辑长动作新增组间漂移风险。已有帧换装不等于补出新动作；缺动作仍须选源或另验生成，不能从换装接口外推。
 
 **共同撤回条件：** 同规格换装后脚底、武器接触、事件帧或方向身份漂移且只能手画修复；新瓦片不能接旧地形；第二次修改必须反复整组重抽。此时改用现成动画／已有正确分层／更少动作方向。脚本可重排、裁切、统一 palette 和检查坐标，不能修缺肢体或缺遮挡面。[经验]
 
@@ -177,15 +165,16 @@ Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blo
 
 | 事实 | 来源 | 核实日 | 复核日或触发 | 对推荐的影响 |
 |---|---|---|---|---|
-| PixelLab 为专有云服务；条款允许合规商业输出，禁未经许可用输出训练；结合 Open RAIL-M 用途条件 | [条款 §1–4](https://www.pixellab.ai/termsofservice)、[所链 RAIL-M](https://github.com/CompVis/stable-diffusion/blob/main/LICENSE) | 2026-10-14 | 2026-11-14／选型前 | 纳入专项试用；不能拿这些图再训练自有风格模型 |
+| PixelLab 为专有云服务；2025-11-23 条款允许合规商业使用／修改／分发输出，禁未经许可用输出训练；结合 Open RAIL-M 用途条件。程序化使用走官方 API，转售／另建服务先联系；输入／第三方权利由用户负责，合同版权表述不保证法律承认 AI 版权 | [条款 §1–4](https://www.pixellab.ai/termsofservice)、[所链 RAIL-M](https://github.com/CompVis/stable-diffusion/blob/main/LICENSE) | 2026-10-14 | 2026-11-14／选型前 | 纳入专项试用；不能拿这些图再训练自有风格模型 |
+| PixelLab FAQ“不训练”不能覆盖条款 §3.4 通知例外；生成前核 UI／工具是否通知训练或保存 | [条款](https://www.pixellab.ai/termsofservice) | 2026-10-14 | 上传／生成前或 2026-11-14 | 不凭宣传上传保密素材 |
 | PixelLab 月付公开初始价 $12/$24/$50，分别 2000/5000/10000 generations/月；某些工具一次消耗多个 generations，非逐张成品价 | [套餐](https://www.pixellab.ai/#checkout)，云端浏览器选中月付查看 | 2026-10-14 | 2026-11-14／预算前 | 不混用套餐额度和 API 估价；未购买，税／实际账户另核 |
 | PixelLab 免费试用显示 40 次快速、之后每天 5 次慢速最多积累 20；商用输出说明覆盖试用；地区排除 Russia/Belarus/Iran/Venezuela | [套餐及脚注](https://www.pixellab.ai/#checkout) | 2026-10-14 | 2026-11-14／使用前 | 可提出零购买对照，但免费云额度不等于本地免费或全部工具可用 |
 | Pixflux 64×64 非透明 API 估价 $0.00793、透明 $0.0084；Edit animation/Transfer outfit Pro ≤128px 每调用估价 $0.08，≤170px $0.115，≤256px $0.15 | [官方 API 目录对应端点](https://www.pixellab.ai/pixellab-api) | 2026-10-14 | 2026-11-14／预算前 | 静态与跨帧编辑分开计费，估价不当账单或接受成本 |
-| PixelLab 当前 API 已列批量编辑和换装端点，与功能教程“仅扩展”范围不一致；文本动画 v3 支持起／末帧与最多 16 帧 | [API 目录](https://www.pixellab.ai/pixellab-api)、[编辑教程](https://www.pixellab.ai/docs/tools/edit-animation-pro)、[换装教程](https://www.pixellab.ai/docs/tools/transfer-outfit-pro) | 2026-10-14 | 实际调用前核 schema；最迟 2026-11-14 | 保留自动化候选，文档矛盾不是实测失败 |
-| Retro 2026-09-28 新条款只立即覆盖新账号，旧账号于 2026-10-28 起适用；旧版 PDF 仍提供 | [新条款](https://retrodiffusion.ai/terms)、[旧版 PDF](https://retrodiffusion.ai/assets/terms-8312c717.pdf) | 2026-10-14 | 2026-10-28／账号选型前 | 旧账号自动化先核适用合同，不能统一按新条款放行 |
-| Retro 新版输出归生成者且含免费；免费／公开输出可公开展示，平台可用输出训练；用户不能自行用于 AI 训练／评估；服务代码／权重未开放 | [新条款 §4–7、11](https://retrodiffusion.ai/terms) | 2026-10-14 | 2026-10-28／保密素材使用前 | 适合可公开专项样本；保密资产或 LoRA 数据用途不默认 |
+| PixelLab API 的 Pixflux/Bitforge 有低分辨率、参考、强制调色板与透明路径；`animate-with-text-v3` 接受起帧／可选末帧，最高 256×256、16 帧。已列 `edit-animation-v2`／`transfer-outfit-v2`，与教程“仅 Aseprite/Pixelorama 扩展”冲突；教程 32–64px 编辑／换装最多 16/15 帧，81–128px 为 4/3 帧 | [API 目录](https://www.pixellab.ai/pixellab-api)、[编辑教程](https://www.pixellab.ai/docs/tools/edit-animation-pro)、[换装教程](https://www.pixellab.ai/docs/tools/transfer-outfit-pro) | 2026-10-14 | 实际调用前核 schema；最迟 2026-11-14 | 保留自动化候选，文档矛盾不是实测失败 |
+| Retro 2026-09-28 新条款只立即覆盖新账号，旧账号于 2026-10-28 起适用；旧版 2025-08-19 PDF §7 保留 Designs/Materials 权利，§3/6 自动化禁令无新版明确 API 例外；本轮读到 PDF 正文，未登录／接受协议 | [新条款](https://retrodiffusion.ai/terms)、[旧版 PDF](https://retrodiffusion.ai/assets/terms-8312c717.pdf) | 2026-10-14 | 2026-10-28／账号选型前 | 旧账号自动化先核适用合同，不能统一按新条款放行 |
+| Retro 新版输出在双方间归生成者，覆盖免费／余额／套餐／API/MCP；平台可用输出训练；用户不能用于 AI 训练／微调／蒸馏／评估；免费／公开内容可能连提示和设置展示，不保证独占／版权。自动化须官方 API/MCP/应用或扩展，不以网页脚本代 API；MCP 仓库 MIT 不授服务权重 | [新条款 §4–7、11](https://retrodiffusion.ai/terms) | 2026-10-14 | 2026-10-28／保密素材使用前 | 适合可公开专项样本；保密资产或 LoRA 数据用途不默认 |
 | Retro 公开首页 RD Fast $0.03、Plus $0.06、Pro $0.18/图，动画 $0.07/段起；官方 MCP README 仍写 Fast 约 $0.015 起 | [首页](https://retrodiffusion.ai/)、[MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md) | 2026-10-14 | 每次预算先估价；最迟 2026-11-14 | 口径有差异，不选最低宣传价预算；采用官方免费 cost estimate 与真实账单 |
-| Retro API/MCP 提供低分辨率、参考、调色板、GIF/sprite-sheet、瓦片和起帧动画；具体尺寸依 style，Pro 最多 9 参考 | [官方 MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md) | 2026-10-14 | 2026-11-14／style 或接口变化 | 纳入静态性价比／多参考对照；未独立证明动画连续性或零手修 |
+| Retro API/MCP 提供低分辨率、参考、调色板、图生图、GIF/sprite-sheet、Wang/blob tileset 和起帧动画；具体尺寸依 style，Pro 最多 9 参考 | [官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blob/main/README.md)、[官方 MCP 文档](https://github.com/Retro-Diffusion/retro-diffusion-mcp/blob/master/README.md) | 2026-10-14 | 2026-11-14／style 或接口变化 | 纳入静态性价比／多参考对照；未独立证明动画连续性或零手修 |
 
 [研究] Retro 新条款、PixelLab 月付显示和 Retro 价格由公开浏览器正文核得，HTTP 提取空白不等于没有条款；未登录、上传或生成。
 
@@ -336,6 +325,40 @@ Retro 的[官方 API 示例](https://github.com/Retro-Diffusion/api-examples/blo
 
 **实际范围：** [研究] 公开作者记录、固定源码、PNG字节与联系表阅读；没有运行模型、绘图脚本、游戏或引擎，未安装／付费，未验证当前部署、设备表现或成本收益。
 
+### P33：组合语法本身就是物料时，先派生整族表现
+
+**不要先给每种合法组合生成一张图，再反向补玩法语义。** 2026-10-20 补核：若形状、象限、颜色和层次就是玩家加工的对象，可先评估由同一结构派生整族表现；这与上面的“单件机柜反复生成失败后换代码母版”不同。有限现成图组已经覆盖需求时仍先复用，装饰性插画不必强行变成参数系统。[源码／研究]
+
+**本例只覆盖 shapez 的形状物料族，不覆盖整款游戏。** 固定发行树 [1.2.0／366a2a9f](https://github.com/tobspr-games/shapez.io/tree/366a2a9f58c79a1b11a8275a6eae88f101101598) 的 `ShapeDefinition` 用四种几何原语、颜色和层次绘制，不逐件读取形状 PNG；机器、蓝图、UI 等仍使用美术资产。只提炼表示与消费者机制，不采用其自研引擎，也不把历史 GPLv3 实现当可直接复制的资产包；当前原仓 README 说明已不积极维护，生产选型不能只看源码公开。[源码：[定义与绘制](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/shape_definition.js)、[原仓说明](https://github.com/tobspr-games/shapez.io)]
+
+**权威是结构短码，不是截图或文件哈希。** 源码虽命名 `getHash()`，这里得到的是表示形状／颜色／层次的短码；显示、加工与保存不能各自重新猜一个身份。下表是固定树的源码接线，不是执行后的回执。[源码]
+
+| 消费者 | 同一表示怎样到达它；二改应保什么 |
+|---|---|
+| 绘制与复制 | ShapeDefinition 从短码恢复层／象限，再绘制；ShapeItem 的复制码、序列化、相等判断与绘制委托同一 definition；新图像不能替代结构身份 |
+| 加工与缓存 | ShapeDefinitionManager 的 paint4 键含输入短码和四颜色，按结果身份登记；改运算必须核输出、象限映射和缓存，不只是颜色好看 |
+| 交付与升级目标 | HubGoals 按短码累计 storedShapes，目标也由短码解析；升级按所需形状键扣数，不能因视觉相似就视为同物料 |
+| 储存与运输 | Storage 按两个 definition 的短码相等决定能否同仓，storedItem 走 typeItemSingleton；输送带路径保存距离和同一物料序列化，恢复须仍能解析旧码 |
+
+固定消费者：[输送带](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/belt_path.js)、[ShapeItem](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/items/shape_item.js)、[manager](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/shape_definition_manager.js)、[目标](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/hub_goals.js)、[storage](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/components/storage.js)、[resolver](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/item_resolver.js)。[源码]
+
+**第一轮扩加工能力，复用的是形状族，不是所有制作成本。** [2020-05-16 cad6b357](https://github.com/tobspr-games/shapez.io/commit/cad6b357e3080f7fe8aca8ed45cc4037e36bbeae)增加四分切割和四象限涂色，父版本为 bce44188c816582d052590bb74ce42d5d2cb2447。改 definition 运算、manager 缓存、处理器、机器槽位和速度，仍输出 ShapeItem；未为每种结果新增形状图片。但提交同时新增四个机器／蓝图 PNG，并重建图集，不能记成整项功能零美术。[源码：差异及文件元数据，未取图像]
+
+**第二轮改变输入约束，旧表示仍可用，但控制规则不能照旧。** [2020-08-29 PR607](https://github.com/tobspr-games/shapez.io/pull/607)／5487ec981828e143b62b0e2281cf97244009a143 让缺象限不必等涂料，并加入线控禁用／筛选；`colors[q] || item.color`让不涂的象限保原色。作者只报告检查两个基本形状并要求 alpha 广测，不是完整行为验收。[源码／作者报告]
+
+**同轮又改过的规则，不能用祖先关系冒充发行行为。** [bb739c80](https://github.com/tobspr-games/shapez.io/commit/bb739c80fa5b6fc34a9047a50fb7322b044f62dc)将 true 从禁用反转为启用、全禁用不加工，并重做输入接收、状态提示与机器图片；[238b08d4](https://github.com/tobspr-games/shapez.io/commit/238b08d4d1ac9f1d6c759fa0c82a25cfb8be4ec7)再将非布尔物料纳入 truthy。1.2.0 的实际处理器应单独读取，不能把 PR607 原文当最终规格；这些是第二轮内修订，不另算两次独立发行。[源码]
+
+**两轮没有改变短码文法，不能据此声称已经验证过存档迁移。** 新运算与输入规则改变了代码、机器拓扑和提示，通用形状绘制与物料身份仍复用；不是所有文件都未变。真正改原语、短码解释或层次含义时，才须另核旧目标、保存键、复制码、缓存和恢复策略，不能只更新渲染器。[源码／研究]
+
+**“可编码的修复”也可能应撤回。** [PR352](https://github.com/tobspr-games/shapez.io/pull/352)试图保留切割后的空层；讨论者指出已有工厂可能需要调整，作者试用后不认可该行为，随后[撤回 94c59e0e](https://github.com/tobspr-games/shapez.io/commit/94c59e0e339c9b4013ef91d4820bb037c02bc51e)。这是规则取舍与兼容反例，不是本仓复现了坏档或全部工厂故障。AI 不应仅因结构更“正确”就自动改旧玩法。[作者讨论／源码／研究]
+
+**有限符号集合已有合格图组，就不为几何外观自建生成器。** [Kenney Playing Cards Pack](https://kenney.nl/assets/playing-cards-pack)列270件、CC0；[作者发布页](https://opengameart.org/content/playing-cards-pack)提供多尺寸牌面和骰子静态图，作者对新增掷骰动画的请求回复尝试后质量未达收录标准。它不是 shapez 的替代包，而是反向条件：静态覆盖可以现成，新增运动仍可能缺源。未下载核包，不把页面宣称的矢量源视为已验证可编辑，也不据此推出代码动画更好。[一手／研究]
+
+**把二改分三类，再决定是否换来源。** 语法内新实例先检查能否直接派生，不预设要新像素；新运算／输入规则保旧结构，核输出、消耗、暂停、信号及提示；超出原语的物种、表情、材质或动作则重新评估现成源／生成缺口，不无限扩几何规则。沿用本页尺寸、身份、动画、压缩、透明和目标设备检查，适用项不能被结构校验替代。[研究]
+
+**源码中的校验不等于已有行为回归。** 固定树 package 没有 test 脚本，完整目录未找到 test 路径；[CI 定义](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/.github/workflows/ci.yml)运行 lint、tsc 与翻译构建。BeltPath 有开发态完整性检查，[SavegameSerializer](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/savegame/savegame_serializer.js)有 UID／组件校验并保存 hubGoals、entities、beltPaths；它们不能充当形状加工、短码往返或旧工厂兼容测试。后续需实际验证定义→短码→解析→物料→保存恢复，以及缺角／多层、信号门控、目标扣款、异形拒入仓和旧工厂行为；这些是待验收项，不报已通过。[源码／研究]
+
+**AI 能核组合与消费者，不能替人决定可读性、规则和兼容承诺。** 本轮仅阅读历史源码、差异、发布与作者报告；无模型／引擎运行、图像下载或目标设备验证。未取得同条件主动工时、完整返工成本或 AI 贡献比例；本例支持先选择表示，不支持“全部成套资源已经零手修供应”。[研究]
 
 ## 换光向补研：彩色精灵要不要追补表面法线
 

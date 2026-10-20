@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "task_id": "synthetic-relay-1",
+  "task_sha256": "d8b7dae2bd22c81e84c86d3bc6f3b19f1949889adc667579113824170da93e2f",
+  "arm": "baseline",
+  "input_manifest": [
+    {
+      "path": "relay-input.txt",
+      "sha256": "56f2339e79e63cda16f9c1b27105be50da8e4aa4791f8d940583e80818d7e024"
+    }
+  ],
+  "runtime": {
+    "model": {
+      "id": "synthetic-model-not-run",
+      "version": "fixture-v1"
+    },
+    "tools": [
+      {
+        "id": "synthetic-tool-not-run",
+        "version": "fixture-v1"
+      }
+    ]
+  },
+  "output_manifest": [
+    {
+      "path": "relay-input.txt",
+      "sha256": "56f2339e79e63cda16f9c1b27105be50da8e4aa4791f8d940583e80818d7e024"
+    },
+    {
+      "path": "relay-output.txt",
+      "sha256": "c7c0a496da0883f62fa6fd0eed3951373ea1dff21dc69b1c686dd828a14f89e9"
+    }
+  ],
+  "verification": {
+    "task_id": "synthetic-relay-1",
+    "spec_revision": "fixture-v1",
+    "revision": "synthetic-output-v1",
+    "status": "complete",
+    "stop_reason": "completed",
+    "steps_used": 3,
+    "checks": [
+      {
+        "id": "preserve-empty-result",
+        "acceptance_id": "AC-1",
+        "status": "passed",
+        "evidence": {
+          "revision": "synthetic-output-v1",
+          "ref": "relay-output.txt"
+        }
+      }
+    ]
+  },
+  "input_revision": "synthetic-input-v1",
+  "input_sha256": "6769d2039bd2f282dfd1818bd9fc2c3333f478fbec47a162bef8dfbe20b52e50"
+}

@@ -1,8 +1,8 @@
 主线：三，兼二／四
 改变的建议：续改分验有意改变与必须保留的行为；迁移核消费者、持久状态与真实运行入口，撤替代层前确认原生能力承接。[研究／经验]
-新证据：2026-10-20 追加 CPython 双入口对照与 f-string 后续维护链；其余迁移记录保留原核实日期及运行边界，本次没有运行候选。[一手：源码／维护记录]
+新证据：2026-10-20 补P27同一活动改稿／恢复的固定链和逐人判据（未运行）；2026-10-20 追加固定Prisma应用的两轮继承纸面包、GitLab修复链及工具边界；CPython等旧记录保原日期／运行边界，本轮未运行候选。[一手／研究]
 
-2026-10-20另列[连续修改深项目提议](#连续修改深项目提议2026-10-20)，仅立项，尚未据此修正文默认。[研究]
+2026-10-20：[P22](#p22有数据应用的两轮迁移)已交两轮继承纸面包与固定维护链，15§5据此明确迁移默认；[P23](#p23next应用迁出后仍值得保留吗)交固定shop两轮纸面包与发行包边界：博客先保Next并用有限缓存寿命；无文章回调，不承诺即时下架。均不代表运行效果。[研究]
 
 # 开发条件：维护与迁移
 
@@ -467,28 +467,143 @@ PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UT
 
 ## 连续修改深项目提议（2026-10-20）
 
-**仅立项，不是新默认或内容项目验收。** 两项都归主线三／四，拟改15的Agent迁移建议；范围预算2–3天不作完成条件。P18先完成同页交付，候选正文再认领。当前仅公开资料与既有离线范围，不运行候选、数据库或模型，不连接真实账户。[研究]
+**P22与P23均已交纸面资料，实际应用效果未验。** 两项归主线三／四，改变15§5的Agent迁移选择；标题保留旧锚点，预算不作验收条件。本轮仅公开资料／既有离线范围，无数据库、候选、模型运行或真实账户访问。[研究]
 
 ### P22：有数据应用的两轮迁移
 
-**拟改变：先保既有受支持迁移器，再按停写容忍度选一次迁移或分阶段相容路径。** 工具选择与部署窗口不是互斥排行榜。Agent准备数据映射、迁移／应用补丁，人定不可丢语义、业务映射与真正的发布权限；代码回退不等于新增状态可回退。[研究：提议]
+[阅读本节](2026-10-12-development-migrations.md#p22有数据应用的两轮迁移)
 
-立项依据：当前[Prisma数据迁移指南](https://www.prisma.io/docs/guides/database/data-migration)直接提供Agent委派入口，published→status需要承接历史值；[发布状态](https://www.prisma.io/docs/orm/release-status)将8列RC、7继续支持，未锁CLI可能跨版本。10月16日版本表不是本轮注册表查询。Supabase的[diff引擎契约](https://supabase.com/docs/guides/local-development/diff-engines)连CI与AI提示比较入口也不同；不将两套命令拼成配方。[一手，2026-10-20读取]
+#### 固定源码、读写闭包与执行门
 
-[GitLab !123002](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123002)串起首次回填、写入约束、旁路修补与再回填；[!93546](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93546)涉及新对象和旧缓存再处理。只核立项级维护链，固定补丁／回归／发行仍待项目执行；不归因为AI。[一手／研究]
+[阅读本节](2026-10-12-development-migrations.md#固定源码读写闭包与执行门)
 
-**完整产物**：固定同一公开应用、版本、读写者与明确标为合成的旧数据。首轮从布尔发布状态加入审核，第二轮加入定时发布；给全部旧新写入者责任、回填与中断重入、切读／收缩门槛、不能无损退回旧布尔的状态，以及前进修复／恢复选择。两轮继承同一产物，不重置为空库。比较保既有迁移器下的短停写与分阶段路径，分列计算、等待、人审、修补、接管与维护投入，未知不补估值。[研究：验收设计]
+#### 第一轮：布尔发布→审核状态
 
-须核至少一条固定公开维护链及异质反例，落实Agent动作和人的决定；15给可直接采用的首选与撤回，18仅必要回链，证据留本分册。只剩reset警告／默认值单例或找不到连续增量则撤项；需要真库区分才有的缺口另预注册，不自行执行。立项独审通过不认证迁移有效。[研究]
+[阅读本节](2026-10-12-development-migrations.md#第一轮布尔发布审核状态)
+
+#### 第二轮：继承S6，增加定时发布
+
+[阅读本节](2026-10-12-development-migrations.md#第二轮继承s6增加定时发布)
+
+#### 当前工具契约：不混入另一套执行权限
+
+[阅读本节](2026-10-12-development-migrations.md#当前工具契约不混入另一套执行权限)
+
+#### 真实维护链：先封新写入，再重排与收尾
+
+[阅读本节](2026-10-12-development-migrations.md#真实维护链先封新写入再重排与收尾)
 
 ### P23：Next应用迁出后仍值得保留吗
 
-**拟改变：换托管不自动等于换框架实现。** 固定一个公开Next应用，比较保Next、自托管／OpenNext与Vinext；Agent盘点消费者拓扑、缓存及补丁责任，人定兼容范围和退回成本。这不是P11的旧页跨发布或既有Next三臂Skill对照。[研究：提议]
+[阅读本节](2026-10-12-development-migrations.md#p23next应用迁出后仍值得保留吗)
 
-[Vinext固定README](https://github.com/cloudflare/vinext/blob/359b4fba55fa3d9f745d4ddf26692591384b2518/README.md)有迁移入口、可选Skill、兼容缺口与替代路线。[#4004](https://github.com/cloudflare/vinext/pull/4004)和[#3717](https://github.com/cloudflare/vinext/pull/3717)标Claude Code参与、消费者携带补丁：前者补后台再生成的上下文，后者修大内容行处理；[#4001](https://github.com/cloudflare/vinext/pull/4001)补真实pnpm消费者与workspace测试不同的模块拓扑。已核合并／diff／测试定义，作者测量不是本轮运行；不同消费者不能拼成同应用连续历史，合并也不证明指定发行包包含。[一手／社区，2026-10-20核；研究]
+### P27：发送中改稿与在途恢复
 
-**完整产物**：先固定应用、依赖、安装与托管基线，交后台刷新和大内容页两轮继承修改包；必须有实际文件／依赖／行为差异、消费者断言、补丁接管、最低已知修复版、删除本地补丁条件及退回差异。比较继续携带补丁、等稳定发行、退回原实现的质量与维护职责；Agent提出候选，人决定支持面。至少一条Agent参与的消费者失败／修订链要改变采用判断，不能只多写“测缓存”。[研究：验收设计]
+**当前交付具体合成账本输入与源码反例；实际两轮运行账本尚缺。** [研究]
 
-建议归15，必要同步18；固定证据留本分册，不新建专题。找不到可核主应用或只能交通用提醒则撤项；原生／模型／迁移效果与资料设计分列。公开维护者修改记录不冒充明确退回，未知包版本／净工时不猜。[研究]
+需求来自listmonk [#2014](https://github.com/knadh/listmonk/issues/2014)，经[#2264](https://github.com/knadh/listmonk/pull/2264)补编辑入口；[#3022](https://github.com/knadh/listmonk/issues/3022)用户自报重启漏发／疑似重复，非已复现因果。[PR2974](https://github.com/knadh/listmonk/pull/2974)生产成功自报被维护者因破坏性问题拒绝，不能据吞吐表采用。源码AGPL-3，仅分析，不复制应用。[一手／社区；2026-10-20核]
 
-**本轮负结果**：无障碍、性能、叙事／存档和同步初筛与既有材料重叠。持久执行的[Restate #770](https://github.com/restatedev/sdk-typescript/pull/770)关闭未合并及后续读取／deadline提案，不足以判既有应用应加引擎，未核明确拒绝原因；[Showboat #14](https://github.com/simonw/showboat/issues/14)只支持演示采集与验收分开。两者不立深项目，不据此否定工具；不为水位补同义题。[一手／研究：有界负结果]
+**完整验收**：R1交逐文件闭包及C1的V1→V2账本，分未开始／在途／确认／失败／unknown，保至少八条具名判据；R2继承同一快照，交故障分支差异账本／判定器及三路线成本／header接入，逐人比版本／哈希／attempt／结果，不称exactly-once。具体入口、停止边界与坏候选见下文，人定旧稿补发。两轮产物齐全才算资料验收，仅通用重试卡则撤项。DB／邮件／模型未运行，需实测才能决定则未完成；真实外发未获授权，不取真实名单。[研究：验收与边界]
+
+#### 固定链与两轮继承（2026-10-20）
+
+**版本分开。** [#2264原树→最终树](https://github.com/knadh/listmonk/compare/e8fd12bddf032fe7863af427bcf9e59b82dffb1c...0e49a4bb7d415fc0085d8f068334cb653c55b439)修改Vue编辑／Start／Unschedule、API/core参数和SQL：scheduled清send_at才回draft；旧API已允许paused，PR补UI。正式[6.2.0固定树](https://github.com/knadh/listmonk/tree/ef0a75872463f10a4848af6c547d1c057405453a)仍Vue，SQL仍fetch时推进游标。开发[a729修复](https://github.com/knadh/listmonk/commit/a729a4a6d635dabb75fa0ec53df25eec2e6f2285)与本次HEAD [88031f3](https://github.com/knadh/listmonk/tree/88031f3e082648bc3f95f285df74b7b38710b54d)已SSR；后者保检查点机制，新增totalSent统计；均非正式版。[一手：固定源码]
+
+**逐文件闭包。** 下列路径／行号均相对上述固定88031f3树。[一手]
+
+1. SSR编辑器（`static/admin/assets/js/views/campaign.js:128–342`）接`campaign.html`／`partials/campaign-form.html`原id及完整正文／模板／headers／lists／media／send_at。Start先保存再改status；Unschedule保留日期，立即发送须另清。路由（`cmd/handlers.go:207–223`）分manage/send，status另查名单管理范围；测试发送走manage。
+2. API更新（`cmd/campaigns.go:503–581`）读原Campaign再bind，拒绝running／cancelled／finished正文。SQL（`queries/campaigns.sql:370–435`）保身份／started_at／sent／游标，替换名单／附件。省lists失败，带lists但省media删附件；status写DB后StopCampaign，不等清空。
+3. store（`cmd/manager_store.go:38–66`）→选活动／名单SQL（`queries/campaigns.sql:178–237`）：选running／到期scheduled，排除活跃pipe；恢复重读模板／media／合法名单／max ID，受众非冻结，退订／blocklist优先。
+4. pipe（`internal/manager/pipe.go`）编译模板／载附件，批ID先入pending，再由message.render（`internal/manager/message.go`）逐人渲染入队。旧消息持有V1对象／字节；cleanup等wg耗尽、刷检查点并移除pipe，新扫描才载V2。
+5. worker（`internal/manager/manager.go:494–578`）先查stopped再sleep／Push，无第二次检查：暂停非drain／撤回。成功加sent，渲染失败及未停止的Push错误也completeSub。checkpoint卡在最小pending之前；高ID已接受仍可能重扫，重复范围不限单次扫描周期。
+6. email.Push（`internal/messenger/email/email.go:132–226`）同步调用[固定smtppool v2.2.1](https://github.com/knadh/smtppool/blob/v2.2.1/pool.go)的Send。DATA Close丢回包可error却已接受；此路径不自动重试，其他阶段可能重试，故分应用／transport attempt。随机Message-ID非幂等键。postback（`internal/messenger/postback/postback.go`）的200只证明该HTTP调用层成功。
+
+**当前API反例须留下。** core状态switch（`internal/core/campaigns.go:249–302`）拒绝draft→paused／cancelled等，但漏default／finished：finished到SQL，未知值由enum失败报错；读查与写入非条件更新。running若有send_at，SQL存scheduled而响应写running，须GET核验。未做HTTP复现。[一手／研究]
+
+#### C1：R1账本直接进入R2
+
+C1及人身份不变；别名并非数值ID：S10=10、S20=20、S60=30、S70=40、S80=50、S30=60、S40=70、S50=80。V1/V2含正文／主题／模板／altbody／headers／附件；app attempt从newMessage构造／渲染起计，transport按SMTP实际尝试另计；保摘要／证据。[研究]
+
+**受控调度预注册，未运行。** BatchSize=7、Concurrency≥2、MessageRate>0、MaxSendErrors=0；生产者排入60后、70迭代的stopped检查前设屏障，80尚未fetch。一个worker在20通过停止检查后阻塞；另一个已处理10／30／40／50，在取60前阻塞；其余worker停在取队列前。主链pause→解除屏障并drain→edit V2→resume；cancel从暂停前切面K独立终止分叉，绝不接恢复。各分支继承明确的输入与事件前缀，不把不同故障都说成来自同一份DB快照。[研究]
+
+| 原人／具名判据 | R1暂停与改稿边界 | R2安全预览／故障判定，非原生发送保证 |
+|---|---|---|
+| S10/10；`V1_ACCEPTED_KEEP、ACCEPT_BEFORE_FLUSH` | a1/V1明确accepted；不因改稿补V2 | 接受未flush即崩溃：既有外部确认仍保accepted；无该证据的恢复进程仅知unknown，转出须外部证据；两视角须合并，不因sent=0归未发 |
+| S20/20；`UNKNOWN_KEEP、STOP_BOUNDARY` | a1/V1已越过worker检查、尚未Push，transport=0 | 解除屏障才开始Push；仅过停止检查不是unknown。提交结果不可确认才记unknown V1；cancel分叉亦可能继续该Push，但不接恢复 |
+| S30/60；`PENDING_KEEP、PAYLOAD_VERSION` | a1/V1已渲染排队，未过停止检查 | 停止后跳过旧Push、保pending；旧pipe清空后才能a2/V2，不能遗留V1附件／header或漏人 |
+| S40/70；`PENDING_KEEP、PROCESSED_NOT_SENT` | fetched/pending，尚未构造 | 停止后仍待处理；恢复a1/V2若渲染失败，记failed且processed、sent不加，不伪造accepted |
+| S50/80；`PROCESSED_NOT_SENT` | 从未fetch | 恢复前若退订则suppressed；仍合资格才a1/V2，保原集合与当前候选差异，不偷偷扩大受众 |
+| S60/30；`UNKNOWN_KEEP` | a1/V1 Push结果不明 | SMTP接受后DATA回包丢失：即使原生completeSub仍unknown；不默认重试V2或标成功 |
+| S70/40；`DB_UNKNOWN、PROCESSED_NOT_SENT` | a1/V1有明确拒绝证据 | processed仅本pipe不重试；重启若游标受20阻塞仍重选40，越过40且持久才跳过。如批准a2/V2，DB未知时保双attempt、先读回不盲加sent |
+| S80/50；`V1_ACCEPTED_KEEP、LOW_ID_BARRIER` | 高ID a1/V1已accepted，S20未完成 | checkpoint≤19；崩溃可重扫50。保其接受证据，不因改稿补V2，不能以max成功50跳过20 |
+
+**先固定三面切面K，再形成已排空切面D。** K取pause前上述屏障；下表是待构造的合成输入，不是已捕获运行记录。[研究]
+
+| K的面 | 明确输入与证据来源 |
+|---|---|
+| DB持久面 | C1的id／UUID／started_at、V1及模板／名单／附件关系、八人id／UUID与订阅关系。若冻结首次扫描后的计数flush，则拟定sent=0、last_subscriber_id=0、max_subscriber_id=80、status=running；须读回实际值，不能由worker计数猜DB |
+| 易失执行面 | lastFetched=70、pending={20,60,70}、checkpoint=19、p.sent=2；60/a1/V1在队列，20在Push前，生产者在70检查前。用屏障记录；DB没有Go指针／队列／waitgroup，重启不能声称还原这些对象 |
+| 独立sender面 | 10、50的a1/V1已接受证据；30的a1/V1提交未知；40明确拒绝；每次实际payload。测试sender与应用审计分开保留，不能用应用sent代收件证明 |
+
+DB准备须保`subscribers/lists/subscriber_lists/templates/campaign_lists/media/campaign_media`及序列；附件blob另保，media行无附件内容。固定Tracking、UnsubURL、UnsubHeader、messenger／SMTP头及batch/concurrency/rate。原表没有逐人attempt账本；该账本由后置R1补丁新增，不把本节JSON导入当已完成应用改造。[一手：同固定树`schema.sql:97–195`；研究：输入设计]
+
+**账本先保存事件，再生成差异视图。** 行列为`event_id,parent_event,branch,cut,campaign_id/uuid,subscriber_id/uuid,app_attempt,transport_attempt,payload_ref/hash,stage,app_observation,external_evidence_ref,durable_write/readback_ref,provenance`。准备行标`synthetic_expected`；只有实际捕获的事件才标`runtime_observed`，缺证据用空值，不伪造日志地址。[研究]
+
+| 合成事件／父切面 | 新增事实与D的差异 |
+|---|---|
+| E01／K：pause | 请求paused并置stopped，旧attempt全保；请求响应不能代DB读回 |
+| E02／E01：20继续Push | 从dispatch-authorized进入dispatching，新增t1；DATA提交后丢最终回包才成为unknown。仅在Push前被杀不能伪造SMTP在途 |
+| E03／E01：排空旧队列 | 60/a1/V1在停止检查被跳过，transport=0，状态skipped-before-Push；70退出且尚无app attempt |
+| E04／E02+E03：cleanup成功 | 在此前无flush且上述结果成立的分支，拟读回sent=2、last_subscriber_id=19、status=paused；失败分支不得套成功值 |
+| E05／E04：edit V2→D | 保C1身份／started_at及全部V1事件，当前内容改V2；10/50 accepted、20/30 unknown、40 rejected、60 skipped、70无attempt、80 unfetched。退订80须另加事件，不让它凭空消失 |
+| E06／D：原生resume | 若80另已退订，SQL候选仍为{20,30,40,50,60,70}；保实际重选与重复记录。D不是完成R1，还需捕获本轮发送结果再供R2消费 |
+
+**原生重选是反例，不能被安全预期覆盖。** 固定SQL只按游标／max ID／订阅与blocklist筛选，没有逐人accepted／unknown过滤。游标19时，30的未知和50的已接受不会阻止它们再次Push V2。R1只增审计、不改发送策略，就必须忠实记录此结果；上表“不自动补发accepted／unknown”是R2只读恢复预览的目标，不是原生R1已具有的行为。接受未flush崩溃从K或另一个明确切点分叉，不能从cleanup已成功的D伪造该故障。[一手：`queries/campaigns.sql:329–354`、`internal/manager/pipe.go:112–131,220–255`、`manager.go:505–575`；研究：两轮责任]
+
+**固定合成payload，而不假造SMTP邮件。** 下列一行JSON按UTF-8、无末尾换行保存，收件人60是数值ID（别名S30）。共225字节，SHA-256为`5bd4be21aa0011f4d986475ac373181f271d8ed9a470539474bb92913691fce1`：[研究：纯字节计算]
+
+```json
+{"altbody":"V1\n","attachment":{"content_hex":"76310a","name":"note.txt","type":"text/plain"},"body":"<p>V1</p>\n","from":"sender@example.invalid","headers":{"X-P27-Version":"V1"},"subject":"C1 V1","to":"s60@example.invalid"}
+```
+
+V2把全部`V1`改`V2`、`76310a`改`76320a`，仍225字节，SHA-256=`0c06ba5dad2fd1218680445eb9ea3f6813688f76e873486937bf60370b0bd1f2`。其余人只替换地址后逐人重算，不共用hash。实际运行另采源输入、渲染payload（完整有序头值及附件字节）、SMTP wire三类hash；随机Message-ID／Date／MIME边界使wire不能用合成hash代替，语义相同与逐字相同分判。[研究]
+
+**四项独立差异判定。** R2接收实际R1产物后才执行；下述为完整oracle，后面的离线检查器仅覆盖记录一致性子集，不计现场通过：[研究]
+
+- 身份与前缀：R2输入指纹等于所接R1输出，逐项保C1及八人id／UUID／started_at、原attempt主键与证据摘要；增加活动行、丢旧attempt或重seed均失败。
+- unknown守恒：逐attempt核`U_before − resolved_by_new_evidence = U_after`；a2 accepted不解决a1 unknown，每次解疑须有同活动／人／payload／attempt的新证据。
+- 预览无外发：R2预览前后sender调用日志不变；accepted与unknown不生成自动发送动作。原生sourcebranch的重复必须保作反例，不能混计为安全策略通过。
+- 版本连续：60旧a1/V1与hash不被覆盖，新构造为a2/V2；70首次构造为a1/V2，若渲染失败则transport=0。每次实际Push连接唯一已渲染attempt，不以总数代集合。
+
+**窄记录检查器：把可离线判断的部分先执行。** [check-p27-ledger.py](../../scripts/research/check-p27-ledger.py)只读两份独立JSON，精确字段见脚本docstring；[合成回归](../../tests/test_p27_ledger.py)提供可复用输入形状。调用如下，不启动listmonk、数据库或发送端：[经验：本仓实现]
+
+```bash
+python3 scripts/research/check-p27-ledger.py BASELINE.json CANDIDATE.json
+python3 -m unittest discover -s tests -p 'test_p27_ledger.py' -v
+```
+
+baseline为R1的source记录，candidate为R2 preview；保八人和活动身份、旧attempt／hash／事件前缀。unknown可继续保留，只有追加同attempt／hash的新证据引用才可解疑；a2接受不能解决a1未知。预览不得新增实际attempt或sender调用，计划仅放actions，accepted／unknown不能自动send。原生重复可以留在baseline历史，不能借source分支冒充安全preview。60／70连续性检查针对已有R1记录，不要求预览虚构发送。[经验：记录判据]
+
+退出0只表示给定记录满足该子集，1表示不满足，2表示输入无效或超出支持范围。当前每app attempt仅支持0／1次transport，多transport明确拒绝，不判真实恢复成败。evidence_ref仅关联与防复用，不打开、不核独立真实性；哈希只是输入声明，不读取payload字节，合成测试使用占位hash。两份输入一起伪造仍可能通过；runtime_observed也未被认证。脚本不验证真实订阅资格、DB／易失切面是否完整、实际payload／SMTP结果，不能替代四项oracle的现场证据或P27整体验收。[经验：实现边界]
+
+Push与落盘非原子；扫描（`internal/manager/manager.go:592–620`）取checkpoint、Swap增量再写DB，失败不塞回以防重复加数，也可能低报。DB错误分已提交／未提交，读回再决策；GREATEST只防游标倒退。[一手；研究：R2判定]
+
+**具名判据均未运行。** 上表保留原判据名及逐人预期；另核以下共同项。比较(C1,人,版本,attempt,结果)，不以总数替代集合。[研究]
+
+- `ID_KEEP`：两轮id／UUID／started_at不变，活动仍一行；克隆全量重发退回。
+- `UNSCHEDULE`：撤排期保C1，日期需另清；GET核running请求与存储scheduled差异。
+- `ROLE_AND_STATE`：仅manage不得启动／恢复正式活动；非法状态直调API，finished／未知值列现存缺口，测试发送另验权限。
+
+现有生命周期E2E（`tests/specs/campaigns.spec.js:538–591`）有附件／生命周期检查，无逐人版本／乱序／崩溃判据；本次未运行。[一手／研究]
+
+#### 同场景取舍与交付边界
+
+| 路线 | 本场景何时够用 | 增加的责任／撤回条件 |
+|---|---|---|
+| 原生C1继续 | 未开始编辑，或接受原生失败／重选政策、不需精确逐人版本审计 | 核部署版本，不直接切nightly；需证明谁收过V1或不能承担重复则撤回“够用” |
+| Resend窗口幂等 | 已选该供应商，同一请求24小时内重试 | 逐人稳定键、版本／payload、过期／冲突与切换管理；超窗或换稿不能沿用旧保护，换V2键也不能代替补发决定 |
+| durable ledger／outbox | 跨窗口保C1／人／版本历史并对账，愿承担维护 | 迁移、唯一约束、intent／lease、payload保留、attempt／provider证据、隐私删除与恢复演练；本地事务和SMTP仍不原子，unknown仍需处理 |
+
+[官方Resend契约](https://resend.com/docs/dashboard/emails/idempotency-keys)支持HTTP键及SMTP `Resend-Idempotency-Key`、保存24小时。当前源码的HeaderTpls→message.render→worker→email.Headers通用链可传逐人键，但没有专用生命周期：全活动静态同键、每次随机键、同键改payload都是坏候选。postback把Campaign.Headers放JSON而非该HTTP请求头，不能靠换URL声称接入。源码可达不是供应商集成通过。[一手／研究]
+
+**模型对照已后置，尚未启用。** 后续安排见[现有验证模板](../../templates/long-task/README.md#relay-pilot-plan)；本节C1两轮拟行为验收保留，仍未运行。[研究：范围]

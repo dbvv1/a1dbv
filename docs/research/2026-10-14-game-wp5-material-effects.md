@@ -8,25 +8,25 @@
 
 ## 动态事实表：采用前再核，最迟 2026-11-14
 
-[一手／研究] 以下只记录本次可读的一手页面与固定版本，不表示实际安装版本或已通过资产生产验收。复核日期是维护期限，不是许可有效期；采用、上传、购买或升级早于期限时，先做相应复核。引擎合同仍回到 WP1，不在本 WP 重复裁定。
+[一手／研究] 以下只记录本次可读的一手页面与固定版本，不表示实际安装版本或已通过资产生产验收。复核日期是维护期限，不是许可有效期；采用、上传、购买或升级早于期限时，先做相应复核。型号、价格与生产资格在此单点维护；§四保留固定机制／反例，§六区分权利层。引擎合同仍回到 WP1，不在本 WP 重复裁定。本次仅合并旧记录，不刷新核实日。
 
 | 事实／精确范围 | 一手来源 | 核实日期 | 下次复核 | 对建议的影响 |
 |---|---|---|---|---|
-| Material Maker releases 仍标 1.7 为 Latest；固定 SHA `4c6cea6…` | [发布页](https://github.com/RodZill4/material-maker/releases/tag/1.7) | 2026-10-14 | 采用前或 2026-11-14 | 图编辑可采用；不把主分支变化当已发布修复 |
+| Material Maker releases 仍标 2026-07-14 的 1.7 为 Latest；固定 SHA `4c6cea67b659e1eb472f91590e06b2b1c5245916` | [发布页](https://github.com/RodZill4/material-maker/releases/tag/1.7) | 2026-10-14 | 采用前或 2026-11-14 | 图编辑可采用；不把主分支变化当已发布修复 |
 | 1.7 的 `--size` 解析未传给导出；#1506 有跨平台故障自述 | [固定源码](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/parse_args.gd#L98-L165)、[原帖](https://github.com/RodZill4/material-maker/issues/1506) | 2026-10-14 | 批处理采用前或 2026-11-14 | CLI 仍试用；参数接线已核，崩溃／补丁收益未复现 |
-| 编辑器 MIT；社区库有 CC0、BY、BY-SA 分区 | [固定许可](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/LICENSE.md)、[素材库](https://www.materialmaker.org/materials) | 2026-10-14 | 选入每件素材前或 2026-11-14 | 免费工具不覆盖输入素材；保留逐件许可 |
-| Poly Haven 资产 CC0，网页预览／文字等除外；API 另有条件 | [许可](https://polyhaven.com/license)、[API](https://polyhaven.com/our-api) | 2026-10-14 | 采用／API 接入前或 2026-11-14 | 指定纹理仍是免费基线；不扩大为任意抓站许可 |
+| 编辑器默认 MIT；无生成权重层，所读许可无专门营收／地域门槛。社区库有 CC0、BY、BY-SA 分区，输入贴图／外部节点另核；官网／Steam 入口不改变输入许可 | [固定许可](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/LICENSE.md)、[素材库](https://www.materialmaker.org/materials) | 2026-10-14 | 选入每件素材前或 2026-11-14 | 免费工具不覆盖输入素材；保留逐件许可 |
+| Poly Haven 指定资产 CC0，允许商用／修改／分发且无资产营收门槛；logo／网页文字／预览渲染除外。2026-07-18 API 页含商用免费；live API 产品仍须标示来源、独有 User-Agent 等，不授权任意抓站 | [许可](https://polyhaven.com/license)、[API](https://polyhaven.com/our-api) | 2026-10-14 | 采用／API 接入前或 2026-11-14 | 指定纹理仍是免费基线；不扩大为任意抓站许可 |
 | Designer 16、Sampler 6 是 2026 公告所述代际；7 月公告含 Painter 12.1/OpenPBR | [官方公告](https://blog.adobe.com/en/publish/2026/07/21/adobe-substance-3d-unveils-new-innovations-deliver-faster-workflows-openpbr-everywhere-digital-twins-scale) | 2026-10-14 | 锁定实际补丁版前或 2026-11-14 | 保留参数图路线；公告版本不称安装版或最新补丁 |
-| Adobe 当前页面返回日本 Collection 个人 ¥8,180/月、团队 ¥16,280/月/席，含税 | [当前计划](https://www.adobe.com/products/substance3d/plans.html) | 2026-10-14 | 购买前或 2026-11-14 | 旧美元 FAQ 撤出实时预算；必须按账户地区报价 |
-| Substance Assets 当前指向 2025-04-22 条款；限制独立分发及资产／衍生输出用于 AI | [资产专属条款](https://www.adobe.com/go/substance3dassets) | 2026-10-14 | 采用／训练用途改变前或 2026-11-14 | 游戏内合规使用可选；不作训练库默认 |
-| Effekseer 1.80.7（2026-08-22）；Unity 6.5／UE 5.8 支持为变更声明 | [变更记录](https://effekseer.github.io/Helps/18x/Tool/en/ReleaseNotes/18x.html)、[XR 固定提交](https://github.com/effekseer/EffekseerForUnity/commit/ae9bd12596edb12013c98cafc06c71ccf195cc49) | 2026-10-14 | 锁版本／目标后端前或 2026-11-14 | 工具／插件／格式分锁；native renderer 的 XR 不写已验证 |
-| Effekseer 新样例区 CC0，旧样例区仅明确随 Effekseer 播放免费 | [官方样例页](https://effekseer.github.io/en/contribute.html) | 2026-10-14 | 选包／烘焙换 runtime 前或 2026-11-14 | 仅指定新 CC0 包作运行时与烘焙对照 |
-| EmberGen Indie node-locked 永久：首年 US$300，可选维护 US$180/年；未税、默认续维护 | [精确方案页](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie) | 2026-10-14 | 购买前或 2026-11-14 | 纳入维护与税；不将永久理解成终身免费升级 |
-| JangaFX EULA 为 2025-07-19；trial 商用须购许可，Indie 有收入／预算条件；月租永久期与 FAQ 冲突 | [EULA](https://jangafx.com/legal/end-user-license-agreement)、[价格 FAQ](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie) | 2026-10-14 | 采用／购买前或 2026-11-14 | 保留商业模拟候选；不承诺月租 12 或 18 个月自动转永久 |
-| MatLat 权重卡仍是 v1.0.0、CC BY-NC 4.0；论文 v2 不覆盖权重许可 | [权重卡](https://huggingface.co/32V/MatLat)、[论文 v2](https://arxiv.org/html/2512.17302v2) | 2026-10-14 | 商用准入前或 2026-11-14 | 非商用研究观察，不进本地免费发行默认 |
+| Adobe 当前页面返回日本 Collection 个人 ¥8,180/月、团队 ¥16,280/月/席，含税；地区快照非读者所在地报价，购买前另核税、承诺期和应用范围 | [当前计划](https://www.adobe.com/products/substance3d/plans.html)、[2025 调价 FAQ](https://helpx.adobe.com/substance-3d/pricing-change.html) | 2026-10-14 | 购买前或 2026-11-14 | 旧美元 FAQ 撤出实时预算；必须按账户地区报价 |
+| Substance 封闭订阅不授模型自托管权；Assets 2025-04-22 条款 §2/3 只允许 Modified/Larger Work 发行，禁独立提取；§4 付费下载可退订后合规续用；§3.3 禁用资产／衍生输出创建、训练、测试、改进 AI/ML，EDU 例外不能外推。资产 worldwide 授权不等于各地可买，非 Adobe 模型另核 | [资产专属条款](https://www.adobe.com/go/substance3dassets) | 2026-10-14 | 采用／训练用途改变前或 2026-11-14 | 游戏内合规使用可选；不作训练库默认 |
+| Effekseer 1.80.7（2026-08-22）；Unity 6.5／URP RenderGraph 相关工作及 UE 5.8 支持为变更声明 | [变更记录](https://effekseer.github.io/Helps/18x/Tool/en/ReleaseNotes/18x.html)、[XR 固定提交](https://github.com/effekseer/EffekseerForUnity/commit/ae9bd12596edb12013c98cafc06c71ccf195cc49) | 2026-10-14 | 锁版本／目标后端前或 2026-11-14 | 工具／插件／格式分锁；native renderer 的 XR 不写已验证 |
+| Effekseer 工具／runtime 主 MIT，分发须保通知，无权重层及所见营收／地域门槛；新样例区 CC0。旧 project弾幕GIrls／NITORI BOX／LotusCraft 仅确认随 Effekseer 播放免费，不默认烘焙换 runtime／独立售包 | [固定主 MIT](https://github.com/effekseer/Effekseer/blob/82b37081a302b9f9eff0bf14dc6c845fca8c3c54/LICENSE)、[官方样例页](https://effekseer.github.io/en/contribute.html) | 2026-10-14 | 选包／烘焙换 runtime 前或 2026-11-14 | 仅指定新 CC0 包作运行时与烘焙对照 |
+| EmberGen Indie node-locked 永久：首年 US$300，可选维护 US$180/年；未税、维护默认续订但可退出 | [精确方案页](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie) | 2026-10-14 | 购买前或 2026-11-14 | 纳入维护与税；不将永久理解成终身免费升级 |
+| JangaFX 封闭工具 EULA 2025-07-19 §2/3/5：商业 License 允许商业制作，trial 导出购许可后才可商用，教育版不商用，导入权利自负，工具不授额外独占版权；Indie 核当年／前一年合并收入或项目预算 <US$1M 及商业委托客户门槛，营销母公司简写不覆盖 EULA。§2.5/2.7 月租 12 个月转永久与价格 FAQ 18 个月冲突 | [EULA](https://jangafx.com/legal/end-user-license-agreement)、[价格 FAQ](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie) | 2026-10-14 | 采用／购买前或 2026-11-14 | 保留商业模拟候选；不承诺月租 12 或 18 个月自动转永久 |
+| MatLat checkpoint v1.0.0 为 CC BY-NC 4.0；2026-10-08 论文 v2 的 CC BY 4.0 不覆盖权重。固定代码根 LICENSE 读取 404，未取得通用代码授权；未见覆盖商业生产的单独输出授权，另获商业许可才重审 | [权重卡](https://huggingface.co/32V/MatLat)、[论文 v2](https://arxiv.org/html/2512.17302v2) | 2026-10-14 | 商用准入前或 2026-11-14 | 非商用研究观察，不进本地免费发行默认 |
 | VideoMatGen v1 是研究论文；本轮仍未核得完整商用部署包 | [论文及作者项目链接](https://arxiv.org/html/2603.16566v1) | 2026-10-14 | 发现新发布／采用前或 2026-11-14 | 不把论文吞吐量换成本地成本或交付证明 |
 | Scenario VFX Hits 与 alpha 分层是供应商能力声明，无固定底模版本或通过率 | [模型页](https://help.scenario.com/articles/5002595381-scenario-models-custom-trained)、[分层页](https://help.scenario.com/articles/8235214611-image-to-layers-and-video-to-layers-the-essentials) | 2026-10-14 | 试用／锁模型前或 2026-11-14 | 仅隔离对照，不替代可取消的玩法特效 |
-| Scenario 价格页显示 US$15/45/75 月额；免费输出仅个人／评估；自助数据使用以条款核 | [价格](https://www.scenario.com/pricing)、[2026-07-16 条款 §3/4/9](https://www.scenario.com/terms-and-conditions) | 2026-10-14 | 上传／购买／发行前或 2026-11-14 | 不承诺免费商用或不训练；计费切换、具体模型权利需补核 |
+| Scenario Starter/Pro/Max 页显 US$15/45/75 每月与 1,500/5,000/10,000 月额度；文本抽取未锁定月／年付切换，不作可结账报价。账户、训练、迁移及数据资格统一见 WP8 §11 | [价格](https://www.scenario.com/pricing)、[WP8 §11](2026-10-14-game-wp8-style-consistency.md#11-阶段-f-动态资格补核) | 2026-10-14 | 上传／购买／发行前或 2026-11-14 | 价格留本页供 WP8 回引；资格直读 WP8，不以价格或 alpha 能力放行 VFX 底模 |
 
 ## 一、结论先行：三档首试，不是同题实测排名
 
@@ -75,32 +75,32 @@
 
 ### M：Material Maker与现成基线
 
-- **M1 [一手，固定源码]** [Material Maker 1.7](https://github.com/RodZill4/material-maker/releases/tag/1.7)，2026-07-14，SHA `4c6cea67b659e1eb472f91590e06b2b1c5245916`。该版更新包括PBR metallic默认值、subgraph导出及修复；[固定README](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/README.md)说明默认MIT。不是沿用搜索摘要的1.4RC。
+- **M1 [一手，固定源码]** 上表固定 1.7 更新含 PBR metallic 默认值、subgraph 导出及修复；[固定 README](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/README.md)对应该快照，不沿用搜索摘要的 1.4RC。
 - **M2 [一手]** [材质节点/导出说明](https://rodzill4.github.io/material-maker/doc/material_nodes.html)：导出可以是PNG/EXR纹理、模板及buffer。由此采用“保图源＋按引擎烘焙”，不推断所有动态节点或材质模型在每个管线都有等价效果。
 - **M3 [一手：源码；社区：故障复现]** [#1506](https://github.com/RodZill4/material-maker/issues/1506)始于2026-07-16 Linux 1.7批导出崩溃、GUI可导；2026-10-10另有Windows两GPU复现和临时规避自述。核读[固定parse_args.gd](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/parse_args.gd#L98-L168)，`--size`写入`texture_size`，实际传入导出的仍是初始化2048的`image_size`；这是源码可确认的参数接线问题，不需运行才发现。[固定multi_renderer.gd](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/addons/material_maker/engine/multi_renderer.gd#L172-L196)亦有异步初始化路径；崩溃时序及补丁收益本轮未实测，不将评论中的12/12作为自己验证。**改建议：GUI参数图可采用，1.7无人值守CLI先验证修复、输出尺寸、失败退出和缺目录超时；不直接把CLI/MCP封装宣传为稳定资产工厂。**
 - **M4 [一手]** [Poly Haven纹理标准](https://docs.polyhaven.com/technical-standards/textures)2026-05-28，要求成套地图、真实尺寸和photo-based制作；这是零手修现成基线的可检查规格，不是保证任一8K贴图适合目标设备。下载后应按占屏和预算降规格。
-- **M5 [一手]** [Material Maker官网素材库](https://www.materialmaker.org/materials)许可筛选分CC0/CC-BY/CC-BY-SA，不能用编辑器MIT替整库放行。本轮没有核实已发行游戏从Material Maker到发行的全程零手修案例，因此不把star数、作者展示或导出支持当生产验证。
+- **M5 [研究]** 工具与社区材料资格分层见上表；本轮未核实 Material Maker 到已发行游戏的全程零手修案例，不把 star 数、作者展示或导出支持当生产验证。
 
 ### A：商业材质路线不是只列服务名
 
-- **A1 [一手]** [Adobe 2026-07-21更新](https://blog.adobe.com/en/publish/2026/07/21/adobe-substance-3d-unveils-new-innovations-deliver-faster-workflows-openpbr-everywhere-digital-twins-scale)：Designer 16、Sampler及Painter 12.1推进OpenPBR，材料库转换也在进行。采用参数化和明确定义的材质语义；Painter新Skew Map Painting仍是人工绘修功能，不能计为本基准自动过关。公告不是Unity/Unreal一致性测试。
+- **A1 [一手]** 篇首 Adobe 公告支持采用参数化与明确定义的材质语义，非 Unity／Unreal 一致性测试；Painter 的 Skew Map Painting 仍是人工绘修，不能计为本基准自动过关。
 - **A2 [一手]** [Sampler Image to Material](https://experienceleague.adobe.com/en/docs/substance-3d-sampler/using/filters/tools/image-to-material)与[Delight](https://experienceleague.adobe.com/en/docs/substance-3d-sampler/using/filters/tools/delight-ai-powered)，2026-04-07文档：AI路径推断normal/height/roughness并去阴影高光；B2M为程序化估计。保留可试候选，不承诺被遮挡细节可被正确还原。
 - **A3 [一手：产品经理答复]** [UV输入失败案例](https://community.adobe.com/questions-69/material-settings-not-ticked-630115)，2024-01-10：产品方明确I2M不是为UV set贴图而设计。该证据旧于Sampler 6，作为输入风险，不宣称新版本所有UV输入必败；后续若有专门UV保真路径应重审。
-- **A4 [一手，成本]** [当前计划页](https://www.adobe.com/products/substance3d/plans.html)本次返回日本地区 Collection：个人 ¥8,180/月、团队 ¥16,280/月/席，含税。这是地区页面快照，不是读者所在地报价。[2025 调价 FAQ](https://helpx.adobe.com/substance-3d/pricing-change.html)的美元金额仅是历史参考，不再作当前预算默认。购买前核地区、税、承诺期及应用包含范围。成本按整套材料库和修改工时算，不按单张生成价算。
+- **A4 [研究]** 报价及其地区／承诺期边界见篇首表；成本按整套材料库和修改工时算，不按单张生成价算。
 
 ### G：前沿联合PBR研究为什么暂不替代默认
 
 - **G1 [研究：作者论文]** [MatLat v2](https://arxiv.org/html/2512.17302v2)，2026-10-08。在材质潜空间联合学习RGB、roughness、metallic，并用局部性约束改善跨视图投影一致性。它支持“专门联合模型优于任意RGB模型分别猜通道”的研究方向，不能据此称包含完整height/normal或具有商用交付证明。
-- **G2 [一手：许可与源码]** MatLat固定SHA `a0ce5d359bb58cad503099d109955b1c88dbab05`（2026-07-16）。[README](https://github.com/KAIST-Visual-AI-Group/MatLat/blob/a0ce5d359bb58cad503099d109955b1c88dbab05/README.md)与[官方权重卡](https://huggingface.co/32V/MatLat)明确checkpoint v1.0.0为CC BY-NC 4.0。**⛔商用生产不用这些免费权重**；论文的CC BY 4.0不是权重许可。代码根`LICENSE`读取404，不能宣称代码MIT；依赖还包括SD3.5、LPIPS、nvdiffrast、Real-ESRGAN和LaMa，未做完整依赖商用审计。
+- **G2 [一手／研究]** MatLat 固定 SHA `a0ce5d359bb58cad503099d109955b1c88dbab05`（2026-07-16）的[README](https://github.com/KAIST-Visual-AI-Group/MatLat/blob/a0ce5d359bb58cad503099d109955b1c88dbab05/README.md)对应篇首 checkpoint 资格；代码／论文／权重授权不能互代。依赖仍含 SD3.5、LPIPS、nvdiffrast、Real-ESRGAN 和 LaMa，未做完整依赖商用审计。
 - **G3 [研究：作者明确局限]** [VideoMatGen](https://arxiv.org/html/2603.16566v1)，2026-03-17，联合base color/height/roughness/metallicity，论文§5自述8×A100单资产2–3分钟、视角不连贯会鬼影/模糊、烘焙仍是简单投影。**👀研究观察，不作本地省钱默认**；没有核得完整可商用部署包，本轮不推荐安装。
 - **G4 [一手：供应商能力，不是成品证明]** [Scenario VFX Hits 模型说明](https://help.scenario.com/articles/5002595381-scenario-models-custom-trained)介绍的是捕捉爆炸／能量爆发外观的 LoRA；[Video to Layers](https://help.scenario.com/articles/8235214611-image-to-layers-and-video-to-layers-the-essentials)输出带 alpha 的视频层，按时长和分辨率计成本。它们不证明循环、击中帧、烟边或 six-way 材质合格，仍只作探索对照。
-- **G5 [一手：现行价格与条款]** [价格页](https://www.scenario.com/pricing)显示 Starter/Pro/Max 为 US$15/45/75 每月、1,500/5,000/10,000 月额度；文本抽取没有锁定月付／年付切换状态，不当作可结账报价。该页明确付费方案含商用许可、免费输出仅个人／评估；[2026-07-16 v2.1.1 条款](https://www.scenario.com/terms-and-conditions) §3.1 将免费限制指向价格页，§4.3 的输出归属不应覆盖方案限制。免费额度不作为发行资产来源。
-- **G6 [一手／研究：保留反证]** 同一价格页声称不将数据用于训练，但现行条款 §4.6 允许自助账户内容用于改进服务／AI；签署企业 MSA/DPA 才有更强承诺。§9 的第三方模型政策和输入处理还须逐模型核对。**不把“输出归用户／付费可商用”写成“不训练／可自托管／权利无风险”。** 本轮没有获得 VFX Hits 精确底模／LoRA 全链授权，也没有账户内治理页证据；保持隔离候选，上传未公开项目资产前先解决数据使用边界。
+- **G5 [研究]** Scenario 价格仅在篇首表维护；[2026-07-16 v2.1.1 合同](https://www.scenario.com/terms-and-conditions) §3.1 将免费限制指向套餐页，账户输出／训练／迁移资格及自助数据与企业承诺的区别直读[WP8 §11](2026-10-14-game-wp8-style-consistency.md#11-阶段-f-动态资格补核)，不凭付费或输出归属推断不训练、可自托管或无权利风险。
+- **G6 [研究：VFX 未解决项]** 企业更强的数据承诺须以签署的 MSA/DPA 为准，不凭套餐名称放行；同一合同 §9 的第三方模型政策与输入处理仍须逐模型核对。本轮没有 VFX Hits 精确底模／LoRA 全链授权或账户内治理页证据；保持隔离候选，上传未公开资产前先解决 WP8 所列数据边界。alpha 分层不证明循环、击中帧或玩法状态合格。
 
 ### V：运行时、模拟烘焙、生成flipbook三分
 
 - **V1 [一手]** [Unity 6.0粒子选型](https://docs.unity.com/en-us/engine/6000.0/manual/visual-effects/particle-systems/choosing-your-particle-system)：Built-in Particle System提供完整C#粒子读写与物理交互；VFX Graph用GPU并暴露属性/事件。选已有项目的实现，避免只因“百万粒子”换图系统；平台/compute支持与管线按具体版本核。
-- **V2 [一手]** [Effekseer 1.80.7变更](https://effekseer.github.io/Helps/18x/Tool/en/ReleaseNotes/18x.html)（2026-08-22）含Unity6.5/URP RenderGraph相关工作及数据加载加强；此前1.80.5修过vertex-buffer增长/内存泄漏。最新Unity插件[2026-10-06固定提交](https://github.com/effekseer/EffekseerForUnity/commit/ae9bd12596edb12013c98cafc06c71ccf195cc49)只允许Unity renderer在符合条件时走XR raster pass，源码明确native renderer未测XR。**不能从“支持Unity”泛化到全部渲染后端、XR或目标平台；编辑器、插件、效果格式分别锁版本。**
+- **V2 [一手]** 篇首 Effekseer 变更记录含数据加载加强，旧 1.80.5 修过 vertex-buffer 增长／内存泄漏；2026-10-06 固定 Unity 插件提交只允许 Unity renderer 在符合条件时走 XR raster pass，源码明确 native renderer 未测 XR。**编辑器、插件、效果格式分别锁版本；“支持 Unity”不能泛化到全部后端、XR 或平台。**
 - **V3 [一手]** [EmberGen导出节点](https://docs.jangafx.com/embergen/pages/references/node_list.html)说明flipbook尺寸/行列/帧数/stride；[产品页](https://jangafx.com/embergen)宣称确定性模拟与可调参数。采用其“保源重烘焙”机制，不引用营销“几秒”当独立吞吐测量。
 - **V4 [一手]** [Unity six-way说明](https://docs.unity.cn/Packages/com.unity.visualeffectgraph%4017.4/manual/six-way-lighting.html)和[制作/导出说明](https://unity.com/blog/engine-platform/realistic-smoke-with-6-way-lighting-in-vfx-graph)：六方向光图在运行时按灯光混合，发光另处理。它是有源模拟/多方向渲染产生的数据，不是对任意RGB帧做一次滤镜即可正确恢复；Unity还明确其EmberGen旧流程不属官方完整支持，不能漏掉适配检查。
 - **V5 [一手：开发者实验，非发售验证]** [JangaFX 2026-03-02复现Diablo 3方法](https://jangafx.com/insights/diablo-3-vfx-experiments)：少数噪声层配合粒子可形成复杂运动，作者在现代引擎迁移时也遇到混合问题。只借机制；文章包含原游戏画面和第三方教学素材，不能当免费资产包复用，不能把其65小时研究计成独立程序员制作某效果的成本。
@@ -125,17 +125,16 @@
 
 ## 六、许可核查明细（法律结论仅为候选准入）
 
-| 精确范围 | 代码/工具与权重层 | 输出/资产使用及发行边界 | 地域/营收/成本与建议 |
-|---|---|---|---|
-| Material Maker 1.7 `4c6cea6…` | [固定MIT](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/LICENSE.md)，默认文件许可见README；无生成权重层 | 图的输入贴图、外部节点和社区材料另核；库有CC0/BY/BY-SA，不能整库套MIT | 已读MIT无专门营收/地域门槛；本地免费路线，官网/Steam发行入口不改变具体输入素材许可 |
-| Poly Haven指定纹理 | 非模型软件，无权重层 | [官方资产许可CC0](https://polyhaven.com/license)允许商用、修改/分发；logo/网站文字/预览渲染不自动CC0 | 没有资产营收门槛；[API页](https://polyhaven.com/our-api)2026-07-18明确含商用免费，live API产品需向用户标示来源、请求使用独有User-Agent等；这是服务条件，不改变资产CC0，也不授权任意抓站 |
-| Adobe Substance Designer/Sampler商业席位＋Substance 3D Assets | 封闭软件订阅，无开放模型自托管权；库资产按专属许可而非软件输出归属 | [当前2025-04-22专属条款](https://www.adobe.com/go/substance3dassets)§2、§3只允许作为Modified/Larger Work发行，禁独立提取；§4已付费下载资产可在退订后继续合规使用；§3.3禁用资产/衍生输出创建、训练、测试、改进AI/ML；EDU例外不能外推 | 条款资产授权worldwide不等于服务每地可买；按Adobe账户/地区规则。商业库存材料可作游戏候选，不作LoRA训练默认；非Adobe生成模型另核 |
-| Effekseer运行时与工具、指定新CC0样例 | [固定主MIT](https://github.com/effekseer/Effekseer/blob/82b37081a302b9f9eff0bf14dc6c845fca8c3c54/LICENSE)，分发runtime保留通知；无权重 | [样例页](https://effekseer.github.io/en/contribute.html)新样例区CC0；旧区project弾幕GIrls／NITORI BOX／LotusCraft使用旧许可，页面只确认随Effekseer播放免费，不能默认烘焙后换runtime或独立售包 | MIT无所见营收/地域门槛；逐包留许可/来源。选择新CC0包可同时比较原运行时与flipbook |
-| EmberGen商业许可（本轮文档接口，非安装版本验收） | 封闭软件，不开放权重；[EULA](https://jangafx.com/legal/end-user-license-agreement)2025-07-19 §2、§3、§5 | 商业License允许商业制作；trial导出只有买许可后才能商用，教育版不得商业产出；导入内容权利自负，不声称工具转让额外独占版权 | [当前Indie永久价](https://jangafx.com/software/pricing?license=nodelocked&rebill=permanent&type=indie)US$300首年、可选维护US$180/年，未税且维护默认续订可退出。EULA Indie需核当年/前一年合并收入或项目预算<US$1M及商业委托客户门槛；营销FAQ的母公司简化说法不可覆盖EULA |
-| MatLat checkpoint v1.0.0 | 固定代码README与权重卡明确CC BY-NC 4.0；根LICENSE未核得通用代码授权，依赖另核 | 未见可覆盖商业生产的单独输出授权，不能用论文CC BY或开放下载代替 | ⛔非商用研究观察，不放本地免费商用默认；须另取得商业许可才重审 |
-| 原生Unity/Unreal材质与粒子 | 属已选引擎使用范围，无额外生成权重 | 引擎模板/商店包/第三方flipbook仍逐个核，不声称原生功能赋予全部样例商用权 | 沿用项目适用引擎订阅/royalty与平台条款；本WP没有重审引擎全套合同 |
+[研究] 动态许可及明确禁止条件集中在[篇首事实表](#动态事实表采用前再核最迟-2026-11-14)，不在这里再维护一套型号／价格。采用时分开四层，任何一层不明都不能由另一层补齐：
 
-[一手／研究] 需特别保留的冲突：EmberGen当前价格FAQ称Indie月租18个月得永久，所读EULA §2.5/2.7仍写12个月；本建议只列直接永久购买价格，不替读者裁决冲突、不承诺月租转永久时间。服务地区和出口限制未做完整国家列表，不写“全球无条件”。
+| 权利层 | 本页采用时检查什么 |
+|---|---|
+| 工具／代码 | 编辑器或 runtime 的许可与分发通知；封闭工具席位不授自托管权。固定源码只支持所读机制，不证明已安装补丁 |
+| 权重／依赖 | checkpoint 的商业生产资格和依赖链；论文许可、可下载代码、生成输出归属不能覆盖 NC 权重或未取得的代码授权 |
+| 输入／资产／输出 | 逐件核输入贴图、节点、样例、库资产及输出使用范围。免费工具不使整库免费；游戏内使用、烘焙换 runtime、独立售包、AI 训练是不同用途 |
+| 服务／账户 | 地区、营收／预算与客户门槛、套餐及数据使用；服务可访问不等于全球无条件。Scenario 具体资格见[WP8 §11](2026-10-14-game-wp8-style-consistency.md#11-阶段-f-动态资格补核) |
+
+[研究] 原生 Unity／Unreal 功能沿用项目适用引擎订阅／royalty 与平台条款；模板、商店包和第三方 flipbook 逐件核，不由引擎功能赋予全部样例商用权。本 WP 未重审引擎全套合同，也未完成服务地区／出口限制的国家列表。法律资料只作候选准入，不是法律保证。
 
 ## 七、收口、撤回条件与未完成项
 

@@ -1,10 +1,10 @@
 主线：一／二／三；镜头信息、进度决策与第二次修改
 改变的建议：[研究] 镜头先定信息与控制目标；关卡、叙事、教学、重试和辅助按玩家决策取舍。
-新证据：原WP11镜头与进度模块的固定源码、官方契约及开发者复盘原文迁入；本次仅拆分，未新增实测。
+新证据：原WP11镜头与进度模块的固定源码、官方契约及开发者复盘原文迁入；拆分后于2026-10-20补整套关卡二改：Nuclear Blaze／Yacht Club采用与LDtk／Tiled制作链；未新增实测。
 
 # WP11分册：镜头、关卡与进度
 
-核实日期、许可与验证范围沿用[原记录总说明](2026-10-14-game-wp11-gameplay-architecture.md)及各节；本文只移动完整研究块，不改变原结论。
+核实日期、许可与验证范围沿用[原记录总说明](2026-10-14-game-wp11-gameplay-architecture.md)及各节；原分册移动完整研究块；后续新增研究按各节日期与范围标明。
 
 分册：[基础与生命周期](2026-10-14-game-wp11-gameplay-architecture.md) · [战斗与AI](wp11-combat.md) · [镜头与进度](wp11-camera.md)。
 
@@ -80,7 +80,7 @@
 
 [一手] [Input Axis Controller](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineInputAxisController.html)分加减速、混合期抑制、非缩放时间、Cancel Delta Time。鼠标delta已随时间累积，不按摇杆角速率二次积分。[研究] 精确鼠标无需求不加平滑，混合期间输入政策另定。
 
-[一手] [切换文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/concept-camera-control-transitions.html)中两虚拟相机可同时live，停用对象仍可能参与混合。[研究] 唯一输出指Brain层；传送、复活、揭谜、瞄准各自选cut／blend／重置，不统一过渡。
+[一手] [切换文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/concept-camera-control-transitions.html)中两虚拟相机可同时live，停用对象仍可能参与混合。[研究] 唯一输出指Brain层；[历史迁移／清除](#s12-2)与画面cut／blend分开选择，短暂借出控制另核[后台历史与返回](#s37-1)，不统一重置或过渡。
 
 [一手] [Xbox XAG 117](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117)（2026-03-04更新）建议关闭额外运动、调FOV／横纵灵敏度／自动回正；[Game Accessibility Guidelines](https://gameaccessibilityguidelines.com/avoid-or-provide-option-to-disable-any-difference-between-controller-movement-and-camera-movement/)也要求可退出非输入效果。[研究] 非医疗阈值或实测收益；关震动后保动作、声音、UI命中信息，固定视角无需因此造双视角系统。
 
@@ -560,3 +560,47 @@
 原平面场地改为上下层，再让双方靠近／分离、相反方向移动、一人停下或进入局部交互：分别观察角色尺度、前方预告、地面／掩体、旋转与输入归属、合分过渡，以及恢复后显隐。保留固定分屏作为对照；切换造成持续误判就减少自动切换或收窄合并条件，而不是只加阻尼。[研究；验收未执行]
 
 本轮只读作者原文、支持回执与发行修复，没有运行游戏、Unity／Unreal、双控制器或 GPU 实验。未量化渲染成本、阈值、过渡舒适度、玩家表现及单人维护工时，也未认证无人工美术修补的完整流程。通用视图取舍只写一份，不虚构两引擎现成集成配方。[研究]
+
+## 整套关卡二改：可编辑源不替代战役设计
+
+**2026-10-20（UTC+8），P19／GC、GD。[研究] 默认保留已可维护的引擎搭关路径；二维战役反复批改网格、实体和规则时，再试 LDtk／Tiled 语义源＋派生表现。** 这不是全项目迁移建议。少量独特场景或强依赖镜头、物理、演出即时预览，直接在引擎内改更少一层导入维护；布局变化本身是玩法才沿既有受约束生成路线，不把自动铺砖叫作自动设计关卡。
+
+**AI 可接有明确契约的批改与检查，不能据文件可解析宣布整套战役成立。** 可委派受影响关卡清点、实体字段／引用检查、规则候选、模式差异与旧档回归设计。人决定能力取得顺序、教学、压力与喘息、秘密回报、风格和可接受删减。本轮没有模型完成率、净工时或玩家实验，无法给可信自动化百分比；工具契约支持的是委派范围，不是效果认证。[研究]
+
+### 本项目资料验收与尚未闭合部分
+
+**本次资料验收限定为公开采用、返工边界与路线决策，不是整套制作链验证。** 原商业战役→1.5的作者回执、通用工具契约及另一作品复用撤回可以分别成立；尚未取得同作语义源→派生→桥接→旧模式／旧档的固定产物链，不能把它们拼成已验证端到端流程。AI分工仍为契约推导，连续二改效果、工时和自动化比例继续标未知。[研究；2026-10-20接收复审后收窄]
+
+**公开jam源码不能填商业版闭环。** [商业作品页](https://deepnight.itch.io/nuclear-blaze)将源码明确标为48h jam，商业下载另列1.5.0；[对应仓库](https://github.com/deepnight/ld48-NuclearBlaze-48h)也标Ludum Dare 48。它不是商业1.5地图、导入器或迁移实现的证据。对作者公开入口与作品名的本轮有界检索未取得所需成套产物，不断言全网不存在；取得同作固定版本后再接原闭环验收，不用模板或不同游戏替代。[一手／研究]
+
+### 真实采用与二改：工具留下，体验可能重做
+
+**Nuclear Blaze 的二改跨过了地图布局边界。** [作者 presskit](https://deepnight.net/files/presskit/nuclearBlaze/)记原版2021-10-18发行，明确 LDtk 为制作骨干；[1.5 Hold My Beer 补丁](https://deepnight.itch.io/nuclear-blaze/devlog/358693/hold-my-beer-update-15-is-out)将全部关卡加入新区域、斧头／障碍与新威胁，同时调整普通／新模式配置、选关、漏救猫提示与猫计数存储。它支持“全战役新能力需连同进度和信息维护”，不证明 LDtk 自动生成这些内容。商业项目所用精确编辑器版本及节省工时未公开，不能倒套当前版本。[一手／研究]
+
+**关卡可通行仍可能不值得复用。** Yacht Club [官方 FAQ](https://old.yachtclubgames.com/about/)确认自研 C++ 引擎配 Tiled；[2020-01-21 全战役复盘](https://old.yachtclubgames.com/2020/01/specter-of-torment-level-design-deep-dive-15/)称 Specter 新移动能力让旧挑战失效，计划约50:50的新旧内容最后接近95:5。曾做出 King 可通行的 Specter 关卡，最终仍为其重做；作者称这些决策增加开发时间，但不能把两年开发周期全部归因于地图。比例是作者估计，Tiled 精确版本、导入实现及工时拆分未知。[一手／研究]
+
+**新机制还会反过来要求新素材与主题表达。** 同一复盘记每关增加新瓦片主题、敌人和物件，既有素材／编辑器的复用不等于无人工美术修补。对无手工资产修补的目标，应先限制到已有成套资源能表达的变化；表达不清就改范围或换资源，不用“工具已接通”掩盖缺口。[一手／研究]
+
+### 语义源与派生结果：二改须能重新生成
+
+**LDtk 的规则输出与原始定义要一起管理。** [v1.5.3 JSON契约](https://github.com/deepnight/ldtk/blob/v1.5.3/docs/JSON_DOC.md)说明自动铺砖规则在编辑器保存前求解，运行端读结果；[JSON总览](https://ldtk.io/docs/game-dev/json-overview/)区分 defs 与关卡实例。AI 直接改文件时，仅修改 IntGrid 而不重新求派生层，不能视为完成；本轮未运行编辑器，未验证自动化保存路径。[一手／研究]
+
+**跨关批改不能靠显示名称保持身份。** [官方ID说明](https://ldtk.io/docs/game-dev/json-overview/unique-identifiers/)区分可改字符串名称、实例 IID 和定义 UID／defUid，并建议游戏侧尽量依赖 IID；这不自动替项目完成旧存档迁移。[分关文件](https://ldtk.io/docs/game-dev/json-overview/optional-separate-levels/)可把每关内容存为 .ldtkl，但共享定义仍在项目中；拆文件不等于改共享规则只影响一关。[一手／研究]
+
+**Tiled 的局部绘制预览不是整图重建结果的保证。** [官方2026-07-14 Automapping教程](https://www.mapeditor.org/2026/07/14/focus-on-level-design-with-automapping.html)以 Blueprint 源层生成表现层：需要清除旧输出的规则，删除时还须覆盖邻域；局部绘制只重随机化编辑区，整图 AutoMap 会重随机化整片。手改派生层会在重建时丢失，应把例外放在单独人工层或改规则，而非让 AI 只修最终图。[一手／研究]
+
+**规则顺序和范围是维护成本，不是一次搭完永久正确。** 同教程说明后规则可覆盖前输出，依赖前输出的匹配需显式顺序；只看一个示例图不能覆盖所有规则。验收应同时比较增加、删除、局部更新与整图重建，不能只保“第一次生成看起来对”的截图。[一手／研究]
+
+### 引擎桥接：源保存不等于所有关卡已更新
+
+**Unity 应验导入依赖，而非只验 JSON 合法。** [LDtkToUnity 6.12.4（2026-10-10）](https://github.com/Cammin/LDtkToUnity/releases/tag/6.12.4)发行记录修复自定义层排序改变后分关文件未重导，以及不构建无关层时留下空层元素；这是已修历史问题，不称当前版仍失败。[滚动依赖文档](https://cammin.github.io/LDtkToUnity/documentation/Importer/topic_Section_Dependencies.html)另说明关闭 Depend On Dependencies 后，连 prefab 变化也须手动重导。AI 清点源／设置变化与受影响关卡，验导入输出；不能从保存成功推出全战役同步。[一手／研究；发行说明与文档核对，未跑导入器]
+
+**UE 的 Tiled JSON 导入不是完整玩法桥接。** [5.8 官方说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/import-sprites-in-unreal-engine)承诺纹理、Tile Sets 和 Tile Map，不承诺把任务、门引用或规则转成项目逻辑；Unity 桥接证据不能跨引擎套用。原生也能集中修改：[Level Instance](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-instancing-in-unreal-engine)支持原位编辑后传播到副本，但 Packed Level Blueprint 偏静态网格表现，不能拿它代完整交互房间。[一手／研究]
+
+### 采用、撤回与整套二改验收
+
+**先用一组相互依赖的关卡验证制作链，再决定迁移整套。** 语义源适用于反复修改的共同结构；导入后仍要逐关手补大量特例时，先缩小规则覆盖或回到引擎制作，不要求为工具统一而改变原玩法。原生引擎路径也必须清点共享资产、覆盖值、稳定内容身份及进度依赖，不能因少一层导出就免验。[研究]
+
+**验收变化应同时保旧模式并增加新能力。** 提前给一种通行能力，在全战役加入对应可选区域：AI 列出门／能力前置、收集物、选关、教程、镜头区域与存档字段；核重复／悬空引用、模式泄漏、旧档映射及派生输出同步。随后人观察无逐步提示时能否主动使用、早得能力是否破坏后续挑战、回访是否只是多走路。可通关但教学／节奏失效就改布局或能力，不以连通率通过放行。[研究；验收未执行]
+
+**成本按完整二改记录。** 分开记录源图、规则／导入器、资产适配、旧档迁移、试玩和返工，不只计 AI 生成时长。代码、编辑器、瓦片／音效及输入 AI 的权限分别核；开源编辑器不授予商业游戏素材权利。本轮只读公开文档、作者复盘与版本资料；无游戏／资产下载、安装、模型或引擎实验，没有净效率与成套发布效果证明。[研究]
