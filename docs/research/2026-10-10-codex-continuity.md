@@ -288,3 +288,13 @@ Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时�
 - [Unreal10-06](https://unreallabs.ai/blog/long-horizon-agents-at-half-the-cost/)自测同Sol6.1xhigh、20题×8，各69/160；$445.75/$850.52仅推理费，harness不同且无压缩消融；Harbor job仅解析到标题。不能归因全部节省或断言质量等价。[一手：厂商自测，未复现]
 - [Octomind10-16](https://octomind.run/blog/codex-vs-claude-code)实际用7月旧Opus5/Sol5.6，25题23/21；级联是按已知隐藏失败事后算，非执行策略。[Mesmer10-19](https://mesmer.tools/blog/codex-vs-claude-code)当前Sol6.1low/Opus5.5medium、8小题，剔除3次限流／容量终止，AGENTS加载不对称；快慢方向相反。不能据此改medium默认或长任务排名。[社区：作者自测]
 - [SWE-Journey10-08](https://arxiv.org/html/2610.11559)用30合成任务、旧模型、定制mini-swe-agent与模拟用户；用户条件同时改变信息／反馈／终止，成本排除模拟器。只支持检查澄清是否消除歧义、信任是否有正确性证据，不替代当前原生客户端真人维护验证。[研究]
+
+
+<a id="p8-followthrough-20261020"></a>
+### P8资料收口：三线公开追访的负结果（2026-10-20）
+
+**原资料验收已满足，运行效果仍未知。** 本轮沿dam、Nix dotfiles与Codex恢复讨论三条既有线索追访，没有同一实际开发交付、后续修改及人工核查／返工投入闭环。范围有限，不表示作者没有做过；不把后加的效果尺当原前沿扫描的资料阻塞。[研究：独立验收；未运行]
+
+[dam固定配置](https://github.com/dam-agents/dam/blob/55e4f586740e0d66848bd9966cdad5bc74d9b0c7/packages/agents/codex/rootfs/etc/codex/config.toml)与[Nix固定配置](https://github.com/geggo98/dotfiles/blob/f88d6e8d5be31e9812284932d66e0adc7a535b6f/modules/ai-options.nix#L75-L85)仍保禁自启键，只证明配置意图，不证明实际加载或原任务恢复。[dam #5389](https://github.com/dam-agents/dam/pull/5389)虽合并，作者仍标production v0.2.21；[#5400](https://github.com/dam-agents/dam/issues/5400)模型猜换来自开发／升级测试。修复候选[#5402](https://github.com/dam-agents/dam/pull/5402)本轮读取时open、head为`ce6fda605a38f037ea103bdad07571ae47909d87`，本地探针自报不作生产采用。[一手／社区，固定范围]
+
+Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657885)评论未对该次错位尝试daemon update／restart，并非未更新CLI；旧目录恢复与[#53547](https://github.com/openai/codex/issues/53547)症状不足以证明任务续成。保留核实际运行端与模型选择的条件建议，不扩称pin／禁自启净收益。只有新增实际部署、同一产物后续修改、保留／撤回与投入回执，或另获明确实验授权，才重开效果判断；单纯合并和更多测试不够。[研究：负结果与恢复条件]
