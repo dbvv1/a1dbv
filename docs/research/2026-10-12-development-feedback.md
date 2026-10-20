@@ -1,6 +1,6 @@
 主线：二，兼三／四
 改变的建议：先选能观察真实故障的反馈，再按保护未来或查当前差异选择测试；运行结果只覆盖实际入口。[研究／经验]
-新证据：2026-10-20 补跨发布维护链、固定测试判定器与修订回执，改变 Agent 前端更新的验收输入和入口选择；其他迁移章节沿用原核实日期，未新增实验。
+新证据：2026-10-20 补跨发布维护链、固定测试判定器与修订回执，改变 Agent 前端更新的验收输入和入口选择；另记暖缓存诊断候选因需求未证而不立深项目；其他迁移章节沿用原核实日期，未新增实验。
 
 # 开发条件：反馈与验证
 
@@ -491,3 +491,9 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 **已有违规：先修；确需暂留，按覆盖代价选最窄例外。** Playwright扫描指南说明`exclude()`会跳过目标及全部后代的所有规则；若想继续捕捉同区域的新违规，可保存规则ID与目标元素的fingerprint，而非带整段HTML的全结果快照。代价是基线维护与一定脆弱性，变化后应核差异，不能让Agent直接接受新快照来变绿；旧违规仍是待修问题。`disableRules()`则关闭整条规则，只有其范围符合本次验收或明确接受该盲区时采用。反例是GOV.UK的[Accordion扫描配置](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/accordion/accessibility.puppeteer.test.mjs)：注释明确关闭AAA的`color-contrast-enhanced`，不是关闭AA对比检查。这支持按目标级别选规则，不支持把任何关闭都称为作弊，也不证明该组件符合全部AA要求。**[一手：官方配置范围与项目反例；经验：选择与撤回条件]**
 
 以上支持检查的覆盖分工和范围取舍，未取得同任务的人力、缺陷或Agent效果对照，不推导自动化替代人工的比例或净收益。**[研究：证据边界]**
+
+## 暖缓存诊断：未立深项目（2026-10-20）
+
+**动态切档的真实需求未证，不为水位造功能。** 固定[OpenKnowledge probe](https://github.com/inkeep/open-knowledge/blob/401019d768c740009dd76ea3c5a35c2e8ba3d273/packages/app/tests/perf/probes/tiptap-destroy-leak.ts)以self_size类名占比提示fork，但未算retained；仍要求人批准，不会自动fork。MemLab仅检查可加载，hash导航未证明destroy／evict。[一手／研究：静态核查]
+
+[MemLab固定指南](https://github.com/facebook/memlab/blob/c3e15df92d469e78501f7f536e3bed77f51f759e/AI.md)已有根路径与体积语义；既有双可见也不是新增需求。因此只保probe纠错候选，撤下“低内存启动档→动态切档”的深项目，不计水位／完成数。出现真实资源约束或错误采用后再核三层退出责任，不能以自拟功能证明价值。未复制GPL应用代码，未安装或运行诊断器／应用／模型。[研究：独立立项审后的负结果]

@@ -30,6 +30,7 @@ def phases(root):
      (*unit, 'experiments/context-results-audit', 'test*.py'), {}),
     ('Recovery outcome probe (no services)',
      (*unit, 'experiments/recovery-outcome', 'test*.py'), {}),
+    ('Public content scan (credentials, home paths, emails)', (python, 'scripts/check_public.py'), {}),
   ]
   for path in sorted(root.rglob('*.sh')):
     relative = path.relative_to(root)
