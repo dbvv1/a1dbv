@@ -408,6 +408,19 @@ Anthropic 的 [Finding your unknowns](https://claude.com/resources/articles/a-fi
 
 **固定修复不等于已经得到完整回归回执。** [补丁8b0744af5b1b631da5b938ca31c3f9895ad5a321](https://github.com/curl/curl/commit/8b0744af5b1b631da5b938ca31c3f9895ad5a321)只修改lib/multi.c，没有随此提交新增测试文件。本轮只读变更与公告，未执行测试或核指定发行树CI；因此只确认修复进入发行，不能称“新回归已通过”。采用者还应取得覆盖错误处理路径与正常上传的验证定义、环境和结果，避免修复异常路径却破坏正常功能。[一手／研究；回归要求为建议]
 
+
+### 从汇总追到具体接受与降级
+
+**Firefox的一个发现已有修复及维护方验证，不只汇总数字。** [148安全公告](https://www.mozilla.org/en-US/security/advisories/mfsa2026-13/#CVE-2026-2773)将CVE-2026-2773归于Anthropic团队使用Claude；[Bug2014832](https://bugzilla.mozilla.org/show_bug.cgi?id=2014832#c3)记录ASan环境下独立复现。人工评审后的[固定补丁63376b3965e8bd473b578a24573f71d76b1acb3e](https://github.com/mozilla-firefox/firefox/commit/63376b3965e8bd473b578a24573f71d76b1acb3e)在声道变化时重建重采样器，替换前释放旧实例；[148回移2f7c633b0e64e64a70edea4904ee1684f0a87f99](https://github.com/mozilla-firefox/firefox/commit/2f7c633b0e64e64a70edea4904ee1684f0a87f99)与公告提供发行链。[一手：源码／维护记录]
+
+**修复验证与回归长期留存须分开。** [Bugmon评论23](https://bugzilla.mozilla.org/show_bug.cgi?id=2014832#c23)记在20260215214423-7edce67f9460验证修复，这是维护方自动验证，不是本仓复跑或整套测试全绿。[D282787，diff1202218](https://phabricator.services.mozilla.com/D282787)定义音频解码等待结束的崩溃回归并注册列表，没有正常音频输出断言；当前显示Accepted，未取得该回归的落地及运行回执。Bug评论12说明按安全策略延后测试，covered=yes不能充运行证据。[一手／研究]
+
+**报告内部降级与维护者最终驳回不能混算。** [维护者公开的固定报告](https://gist.github.com/bagder/c9b83a19f30e82e41b11f6315465b17a/2c5cf7f8d4afa5e1ce6e4eb81742ee16a5e65c5c)将HAPROXY连接复用项移出安全发现：调用方控制相关handle并选择上游，宜按文档说明或普通bug处理。这是报告自身明确的分类修订，不能算入最终五项confirmed中的驳回数量。[一手／研究]
+
+**同版本API契约可以直接推翻候选的支持范围。** 上述报告F5假定并发线程共享HSTS，而目标树455bebc2c76223a1be26042f6d2393715c0df0cd的[CURLSHOPT_SHARE文档](https://github.com/curl/curl/blob/455bebc2c76223a1be26042f6d2393715c0df0cd/docs/libcurl/opts/CURLSHOPT_SHARE.md#curl_lock_data_hsts)明确不支持该用法。可判其安全论证越出支持契约；维护者原文没有给三项误报的编号映射，故不虚构“维护者逐项驳回F5”的回执。没有CVE也不等于所有相关改进都无价值。[一手／研究]
+
+**补证后仍不把资料闭环写成实验闭环。** 已取得具体发现、人工补丁、发行、维护方修复验证及分类修订依据；Firefox永久回归落地／指定运行回执仍缺，其他模型或项目净收益未知。访问拒绝的2012018／2012608已跳过，不登录或绕过；未执行报告中的命令、扫描、漏洞、模型或测试。本次返工只补公开证据，不新增实验权限。[研究]
+
 ### 采用与撤回
 
 **先交一条有边界的候选，而非批量占用维护者时间。** 固定代码版本、输入与权限假设、文档契约、预期／实际差异及影响；区分源码推理、受控复现、维护者确认、补丁与发行。测试自身也需审，旧问题已修、问题不在目标配置或只属硬化建议时分别记录，不把未证实发现变成待修漏洞清单。[研究]
