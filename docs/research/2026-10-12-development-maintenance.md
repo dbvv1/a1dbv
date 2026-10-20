@@ -568,12 +568,23 @@ DB准备须保`subscribers/lists/subscriber_lists/templates/campaign_lists/media
 
 V2把全部`V1`改`V2`、`76310a`改`76320a`，仍225字节，SHA-256=`0c06ba5dad2fd1218680445eb9ea3f6813688f76e873486937bf60370b0bd1f2`。其余人只替换地址后逐人重算，不共用hash。实际运行另采源输入、渲染payload（完整有序头值及附件字节）、SMTP wire三类hash；随机Message-ID／Date／MIME边界使wire不能用合成hash代替，语义相同与逐字相同分判。[研究]
 
-**四项独立差异判定。** R2接收实际R1产物后才执行，当前只是明确oracle，不计通过：[研究]
+**四项独立差异判定。** R2接收实际R1产物后才执行；下述为完整oracle，后面的离线检查器仅覆盖记录一致性子集，不计现场通过：[研究]
 
 - 身份与前缀：R2输入指纹等于所接R1输出，逐项保C1及八人id／UUID／started_at、原attempt主键与证据摘要；增加活动行、丢旧attempt或重seed均失败。
 - unknown守恒：逐attempt核`U_before − resolved_by_new_evidence = U_after`；a2 accepted不解决a1 unknown，每次解疑须有同活动／人／payload／attempt的新证据。
 - 预览无外发：R2预览前后sender调用日志不变；accepted与unknown不生成自动发送动作。原生sourcebranch的重复必须保作反例，不能混计为安全策略通过。
 - 版本连续：60旧a1/V1与hash不被覆盖，新构造为a2/V2；70首次构造为a1/V2，若渲染失败则transport=0。每次实际Push连接唯一已渲染attempt，不以总数代集合。
+
+**窄记录检查器：把可离线判断的部分先执行。** [check-p27-ledger.py](../../scripts/research/check-p27-ledger.py)只读两份独立JSON，精确字段见脚本docstring；[合成回归](../../tests/test_p27_ledger.py)提供可复用输入形状。调用如下，不启动listmonk、数据库或发送端：[经验：本仓实现]
+
+```bash
+python3 scripts/research/check-p27-ledger.py BASELINE.json CANDIDATE.json
+python3 -m unittest discover -s tests -p 'test_p27_ledger.py' -v
+```
+
+baseline为R1的source记录，candidate为R2 preview；保八人和活动身份、旧attempt／hash／事件前缀。unknown可继续保留，只有追加同attempt／hash的新证据引用才可解疑；a2接受不能解决a1未知。预览不得新增实际attempt或sender调用，计划仅放actions，accepted／unknown不能自动send。原生重复可以留在baseline历史，不能借source分支冒充安全preview。60／70连续性检查针对已有R1记录，不要求预览虚构发送。[经验：记录判据]
+
+退出0只表示给定记录满足该子集，1表示不满足，2表示输入无效或超出支持范围。当前每app attempt仅支持0／1次transport，多transport明确拒绝，不判真实恢复成败。evidence_ref仅关联与防复用，不打开、不核独立真实性；哈希只是输入声明，不读取payload字节，合成测试使用占位hash。两份输入一起伪造仍可能通过；runtime_observed也未被认证。脚本不验证真实订阅资格、DB／易失切面是否完整、实际payload／SMTP结果，不能替代四项oracle的现场证据或P27整体验收。[经验：实现边界]
 
 Push与落盘非原子；扫描（`internal/manager/manager.go:592–620`）取checkpoint、Swap增量再写DB，失败不塞回以防重复加数，也可能低报。DB错误分已提交／未提交，读回再决策；GREATEST只防游标倒退。[一手；研究：R2判定]
 
