@@ -1,6 +1,7 @@
 # G1 资产管线总览：授权门槛、采用条件与外部约束
 
 > 核实时间：2026-10-14 03:47（UTC+8）收束资源入口并接入WP12路线；2026-10-13 的资产处理/静态与动画边界保留；阶段 F 补核和读者入口见动态事实表；行业统计保留历史采样口径，不作为当前比例；Unity 原生生成器准入于 2026-10-14 UTC 补核。运行时叙事与受限动作采用边界于 2026-10-15（UTC+8）补核。
+> 编辑收敛：2026-10-21（UTC+8）；仅删重复入口与未使用历史来源，沿用原事实核实范围。
 > 基准：单人程序员、没有美术和音频人员，不靠人工修图、刷权重或补动画。先按玩法和目标设备定规格，再从许可清晰的现成资源、程序化资源和生成资源中选；资源质量与成本分档见 WP2–8 已有专题；按开发阶段采用时从[独立游戏路线图](06-indie-roadmap.md)进入。
 > 授权总表只回答“能否继续评估”；已完成资源WP的条件首试另列下文，不表示已运行模型或引擎。
 
@@ -37,15 +38,13 @@
 
 **🧪 采用已有的局部判断，暂不排“最佳质量／性价比／本地免费”总榜。** 概念参考、静态可用和连续动画是不同验收目标；[角色回退与静态肖像留用案例](../../docs/research/2026-10-13-game-asset-editing-boundary.md#2d静态可用不推出角色动画可用)支持区分用途，不能证明完整零手修制作已经成功。**[一手：固定补丁；研究：采用条件]**
 
-| 资产任务 | 当前可采取的建议 | 详细判断 |
-|---|---|---|
-| 2D：概念、精灵、图标、UI、瓦片 | 概念图只作参考；静态资产先验收实际尺寸、透明边缘、锚点和成套辨识，再改一次真实需求；UI 文字/布局优先交引擎绘制 | [WP2条件分档](assets/2d.md)；[WP8整套风格](#17-跨资源风格优先共享源资产生成只补缺口) |
-| 3D 与动画 | 保留原始网格，区分静态/刚体和变形角色；先定位代码/UV/生成缺陷，再选程序修正、重生成或现成资源 | [WP3三档与结构](assets/3d.md)、[WP4绑定与动作](assets/animation.md)；分别验拓扑、UV、LOD、碰撞与动作衔接 |
-| 材质与特效 | 共同结构源保持PBR通道对应；玩法时间留在原生运行时，flipbook承担内部细节 | [WP5三档与二次修改](assets/materials.md)；现成/参数化优先，生成只补明确缺口 |
-| 音效、音乐、配音 | 分开查输出权利；短电子提示音可用 jsfxr 作候选基线，音乐与配音另验循环/状态/角色一致性 | [WP6三档与二次修改](assets/audio.md)；Udio 当前不作默认供应，Eleven Music 不套用 TTS 条款 |
-| 视频与过场 | 无必要则删；已有资产优先引擎镜头，有限叙事用静态图＋程序运动；生成只补固定短镜头 | [WP7三档与二次修改](assets/video.md)；字幕/音轨/玩法状态分离，Sora历史服务不作新生产候选 |
+具体首试、三档与二改检查按资源进入：
 
-完整质量／性价比／本地免费建议见各专题，均为条件首试而非同题实测冠军。Blender 程序处理见[3D 专题](assets/3d.md)；Roblox 等未清权方案仍只作调查候选。[研究]
+- [2D](assets/2d.md)：概念只作参考；静态资产验实际尺寸、透明边缘、锚点和成套辨识，UI 文字／布局交引擎，再改一次真实需求
+- [3D](assets/3d.md)与[动画](assets/animation.md)：先定位代码／UV／生成缺陷；分验拓扑、UV、LOD、碰撞与动作衔接，Blender 程序处理也在 3D 专题
+- [材质／特效](assets/materials.md)、[音频](assets/audio.md)、[视频](assets/video.md)：音频另验循环／状态／角色一致性；采用摘要见 §1.6、§1.9–1.10，整套供给见 [§1.7](#17-跨资源风格优先共享源资产生成只补缺口)
+
+以上为条件首试，非实测冠军；供应／许可边界见 §1.3，Roblox 等未清权方案只作调查候选。[研究]
 
 **Unity 原生生成器：🧪 小批原型对照，👀 正式生产逐项准入。** 先核兼容包、Unity Cloud／credits、点击条款与实际供应商；Promote 后重验旧引用。已核版本与采用条件集中在 [01 §6](01-engine-integration.md#6-unity-内生成器少量原型资产的候选入口)及 [WP9](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)，官方内置不等于商业总放行。[一手／研究]
 
@@ -149,13 +148,13 @@ MatLat 的已核免费权重为非商业许可，不作商用生产默认。Unit
 
 **✅ 按首版和下一次扩展一起选成套供应，再承诺风格与内容范围。** 同风格包、参数化材质和同一骨架体系优先；已有3D道具先从同模型渲染图标。换色、文字和角标改参数，新增身份／主题／动作先确认配套来源。[研究]
 
-**能复用形体，就先补语义资源，不必全套重生。** 新机制仍可能需要图标、拾取声音、说明和对象预算；SNKRX同风格扩展沿这条路线，后续也付出了规则与供给上限的返工。[一手／研究]
+**能复用形体，就先补语义资源。** SNKRX 扩展时补图标、拾取声、说明与对象预算，后续仍因规则与供给上限返工。[一手／研究]
 
-**要保持独特风格又扩大内容，就先确认新增供给。** Vampire Survivors从现成包出发，后来靠画师替换与团队制作扩展，并非原包自动补齐。零手修项目若拿不到合格的新来源，应调整扩展范围或表示，而不是承诺以后由AI补完。两条独立制作链及成本边界见[成套供应二改](../../docs/research/2026-10-14-game-wp8-style-consistency.md#成套供应二改先选扩展承诺再选生产路线)。[一手／研究]
+**保持独特风格又增内容，先确认新增供给。** Vampire Survivors 后续靠画师替换与团队扩展，不是原包自动补齐。零手修项目缺合格来源就改范围／表示，不承诺未来由 AI 补完。两条制作链与成本边界见[成套供应二改](../../docs/research/2026-10-14-game-wp8-style-consistency.md#成套供应二改先选扩展承诺再选生产路线)。[一手／研究]
 
 **AI负责列跨资源差异、接入与机械检查，人验新旧组合是否表达同一规则。** 重点防止只新增画面而漏图标、声音或说明；用一次实际扩展同时检查这些消费者，不以文件齐全当作质量通过。[研究]
 
-**✅ 新增职业／体型前，先核旧内容的兼容范围，不只估一个新角色。** 职业若只是规则变化，不必新建外观体系；确需新rig时，先列必须继续支持的旧装备、变身和姿态，再比较在现有类别内扩能力／装备。Wildermyth明确因rig配套成本优先扩既有类别，后续也实际发布装备与变身扩展；但可通用的持物图不必逐rig重做。无法用合法源、参数或程序补齐必要组合时，缩支持范围或撤回新类别，不用手修兜底；不是禁止有核心价值的新类别。见[类别扩展与兼容代价](../../docs/research/2026-10-14-game-wp8-style-consistency.md#类别扩展补研新类别不只增加一件资产)。[一手／研究]
+**✅ 新增职业／体型先核旧内容兼容，不只估新角色。** 规则变化可复用外观；确需新 rig，列旧装备、变身和姿态的必要支持范围，再与既有类别内扩能力／装备比较。Wildermyth 因配套成本选择后者并实际发布扩展，但可复用的持物图无需逐 rig 重做。必要组合无法用合法源、参数或程序补齐，就缩范围／撤回新类别，不用手修兜底；不是禁止有核心价值的新类别。见[类别扩展与兼容代价](../../docs/research/2026-10-14-game-wp8-style-consistency.md#类别扩展补研新类别不只增加一件资产)。[一手／研究]
 
 | 任务目标 | 首选路线 | 何时撤回 |
 |---|---|---|
@@ -163,7 +162,7 @@ MatLat 的已核免费权重为非商业许可，不作商用生产默认。Unit
 | 性价比优先 | 同源颜色、材质、尺寸与布局变体 | 重试、筛选和二改总成本超过复用源 |
 | 快速／本地 | 已有成套资源和程序化表示；硬件适合再用已清权本地模型 | 维护或通过率不合适，改现成资源／API |
 
-**完整包与高规格覆盖分开选，界面放大不必带动全场景重做。** 先选覆盖目标版本玩法的完整基线，再按需要补字体／UI倍率；若近看车辆、建筑才是目标，低清回退不能算高清完成。OpenGFX2把完整Classic与未补齐的High Def分开，Classic仍独立处理多倍率界面；新版玩法缺图又可能迫使换供应。先比较现成完整版、允许混合回退的高规格版和缩小表现目标，不默认全量重生；回退破坏辨识或风格、维护超预算就撤回。[同作品版本、源码与发行反例](../../docs/research/2026-10-14-game-wp8-style-consistency.md#完整供给不等于高规格覆盖opengfx2的二改选择)；只证明既成包采用，不证明任意新内容零手修。[一手／研究]
+**完整供给与高清覆盖分开选。** OpenGFX2 的完整 Classic 可独立扩界面倍率，High Def 尚需低清补缺；但低清回退不满足近看车辆／建筑的高清目标，目标版本新玩法缺图也可能迫使换源。先比完整版＋局部 UI、高规格混合回退、缩表现目标，不默认全量重生；回退破坏辨识／风格，或维护超预算就撤回。见[版本、源码与发行反例](../../docs/research/2026-10-14-game-wp8-style-consistency.md#完整供给不等于高规格覆盖opengfx2的二改选择)；仅支持既成包采用，不证明任意新内容零手修。[一手／研究]
 
 **🧪 反复漂移且训练源清权、成本能摊销时才加 LoRA。** 少量换色源可能覆盖数百件道具；人物、门和 UI 却不能靠一个宝石训练集证明一致。保留未参与训练的类别与旧资产作比较。[经验]
 
@@ -195,7 +194,7 @@ MatLat 的已核免费权重为非商业许可，不作商用生产默认。Unit
 
 资产登记保留：具体模型/snapshot 与下载来源、代码和权重许可证版本、生成日期、当时套餐/商业许可凭据、输入/声音权利、官方许可下载状态、必要署名与披露、程序处理和筛查记录。换版本/提供商、进入新发行地区、跨营收门槛或转为运行时生成时先重查 WP1，未查清只作候选。**[经验：根据 WP1 条款差异制定]**
 
-授权通过只让方案进入 WP2–8 的质量、可控性、成本与引擎可用性比较，不能证明输出可获版权、无侵权风险或平台必然接收。
+准入不等于质量通过；再按 WP2–8 比较可控性、成本与引擎可用性。
 
 ## 2. 游戏运行时的 AI
 
@@ -257,6 +256,4 @@ MatLat 的已核免费权重为非商业许可，不作商用生产默认。Unit
 
 ## 来源
 
-- 资产工具：各工具官网；TRELLIS.2、Hunyuan3D-2.1、blender-mcp 仓库（2026-10-08 查看最近提交）；[Roblox Studio MCP 文档](https://create.roblox.com/docs/en-us/studio/mcp)；[Blender Lab MCP Server](https://www.blender.org/lab/mcp-server/)；[HackerNoon：3D 生成器对比](https://hackernoon.com/how-i-stress-tested-3-ai-3d-generators-on-the-same-inputs-what-the-numbers-actually-show)（二手）
-- 运行时 AI：[Cloudflare：Introducing Clef](https://blog.cloudflare.com/clef-decision-models/)、[Forkast：Jev](https://forkast.news/typesafe-ais-jev-is-not-an-llm-and-that-may-be-the-point/)（二手）、[TechCrunch：Project Genie](https://techcrunch.com/2026/01/29/i-built-marshmallow-castles-in-googles-new-ai-world-generator-project-genie)（二手）、[Data Center Knowledge：AMD 收购 World Labs](https://datacenterknowledge.com/data-center-chips/amd-to-acquire-world-labs-for-8-2b-to-advance-ai-models-and-robotics)（二手）、[Wikipedia：inZOI](https://en.wikipedia.org/wiki/InZOI)
 - 外部约束：[GDC 2026 State of the Game Industry](https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/)、[Sulka Haro：Three years of AI on Steam](https://fragwyz.substack.com/p/three-years-of-ai-on-steam)、[Godot 官方贡献政策](https://contributing.godotengine.org/en/latest/development/contribution_rules.html#ai-assisted-contributions)；Clair Obscur 的开发方澄清与撤奖报道见上表
