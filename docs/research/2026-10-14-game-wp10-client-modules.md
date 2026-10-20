@@ -1,6 +1,6 @@
 主线：一／二／三／四；客户端体验、第二次修改与交付
 改变的建议：[研究] 图中文字二改先比较生产表示与导出维护，再扩语言； 先复用原生组件，再按具体症状补输入、运动、呈现和资源／平台更新责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。 重复内容按机械转换、项目参数与专门作者语义分流，不因重复次数自建整套工具。
-新证据：[一手／社区] 2026-10-20补发行诊断的引擎／SDK边界、Factorio采集与osu配置维护链； 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
+新证据：[一手／社区] 2026-10-20补发行诊断；接收返工前置实际采集检查、追加SentryUE1.25.0差异，保留旧源码与Factorio／osu证据； 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -659,18 +659,20 @@ Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/docu
 
 ## 发行诊断：先保可定位反馈，再选自动报告
 
-核实：2026-10-20（UTC+8）。[研究] **✅ 先保可找到的反馈入口、实际构建标识与按需提供日志的路径。** 能联系到试玩者时，优先取得操作过程；面向无法逐个联系的玩家，或明确需要现场崩溃证据时，再接一条现成诊断链。自动异常／崩溃报告不覆盖无崩溃的软锁、坏档或不好玩。
+核实：2026-10-20（UTC+8，接收返工补核）。[研究] **✅ 先核项目实际采集状态，再决定保留／停用／新增自动链；人工反馈始终保留。** Unity新项目可能已启用诊断，未安装第三方SDK不能当未采集。选仅人工路线先明确关闭相关自动诊断，再验目标发布包；已有合格且授权清楚的诊断链可保留，不为了“人工优先”无差别拆除。自动异常／崩溃报告不覆盖无崩溃的软锁、坏档或不好玩。
 
 ### 选择接收链，不默认自建后台或叠加SDK
 
 | 情况 | 起点 | 改选／撤回条件 |
 |---|---|---|
-| 小范围可联系试玩，主要缺复现步骤 | ✅ 人工反馈＋版本化本地日志；先留发布构建与符号 | 现场崩溃持续没有栈／设备信息，或发布范围不适合逐个追问，再加自动诊断 |
+| 小范围可联系试玩，主要缺复现步骤 | ✅ 人工反馈＋版本化本地日志；仅人工须先核并关闭已有自动诊断；保构建与符号 | 现场崩溃持续没有栈／设备信息，或发布范围不适合逐个追问，再加自动诊断 |
 | 已用Unity 6.2+及支持平台 | 🧪 内置Diagnostics，核实际采集／接收与符号 | 目标平台或必须的逐用户数据控制不满足，换合适接入；不为诊断盲升引擎 |
 | UE桌面发行构建 | 🧪 CRC客户端＋选定接收／符号化服务 | 仅勾Include Crash Reporter不能交付完整链；端点／符号不可维护时保手工材料 |
 | 原生覆盖不足，确需统一分组／跨平台定位 | 👀 比较一个现成SDK，如Sentry；先最小错误事件 | 采集边界、启动／禁用、维护预算不合格就缩窄或撤回，不双开兜底 |
 
 **Unity前提必须落到构建。** [当前前提][diag-unity]列6.2+、连接Unity Cloud及Android／iOS／macOS／Windows（不含UWP）；新项目默认开启，升级项目默认不开。[同意管理][diag-consent]明确Diagnostics不使用UnityConsent、按项目而非逐用户控制，因此AnalyticsIntent不能当诊断关闭证明。需要逐用户选择的项目，先核替代接入与数据依据，不能用别的服务开关代验。[一手／研究]
+
+**仅人工不是“什么都不配置”。** [Editor配置](https://docs.unity.com/en-us/cloud/developer-data/configure-diagnostics-editor)要求按Project Settings→Services→Diagnostics和目标Build Profiles核最终值；profile可覆盖项目默认，复制profile会继承覆盖。关闭Diagnostics只停止该类诊断，不影响其他Unity产品或第三方SDK的数据。还须逐项核它们的启用／发送路径，并在获准验证的目标构建确认实际外传；不能用UnityConsent或一次后台空列表代证。本文没有修改真实项目、关闭服务或测网络流量。[一手／研究]
 
 [迁移说明][diag-migration]已弃用旧Cloud Diagnostics，新服务替代崩溃／异常与符号，User Reporting另包；旧数据仅在原保留期可访问，不承诺全量历史迁移。本轮未闭合新服务现行独立配额；旧服务日报告配额不能套入新服务，采用前确认费用与保留期。[一手／研究]
 
@@ -678,11 +680,19 @@ Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/docu
 
 ### Sentry是对照，不是免费且无副作用的默认
 
-本轮核Unity SDK 4.10.3（`e154bbf1883a610d26ca3f8e83ad8257b15fda1b`）及UE SDK 1.24.0（`e1b4efb44590a412bded437c9dcc657b4d390303`）。两SDK代码MIT，托管服务和依赖另核；[价格](https://sentry.io/pricing/)按errors、logs、attachments等不同单位计，未估读者游戏费用。维护成本包含符号、数据控制、噪声与SDK／架构升级，不给“接入后零维护”的承诺。[一手／研究]
+Unity SDK源码沿固定4.10.3（`e154bbf1883a610d26ca3f8e83ad8257b15fda1b`）；UE 1.24.0（`e1b4efb44590a412bded437c9dcc657b4d390303`）仅保历史基线，当前追加[1.25.0](https://github.com/getsentry/sentry-unreal/releases/tag/1.25.0)（2026-10-19 18:18 UTC发布，固定`bbbb9296447aa34a397949d4687668059d421c28`），不将旧SHA改标签冒充新版本。两SDK代码MIT，托管服务和依赖另核；[价格](https://sentry.io/pricing/)按errors、logs、attachments等不同单位计，未估读者游戏费用。维护成本包含符号、数据控制、噪声与SDK／架构升级，不给“接入后零维护”的承诺。[一手／研究]
+
+**1.25.0改变的是具体配置／生命周期验收，不是全面效果保证。** [native span修复](https://github.com/getsentry/sentry-unreal/commit/c1c6b763d56e9c1524bf02ea1a4a9349f34990fc)处理重复finish及并发使用导致崩溃；这主要影响使用tracing的路径，不推为所有仅错误上报都会崩溃。[一手／研究]
+
+[Apple回调修复](https://github.com/getsentry/sentry-unreal/commit/6b7d844fbf8af845dcd82deffdd49f34b9f2d908)让transaction不再进入错误事件BeforeSend，回调不因此成为全部数据的过滤门。[一手：发布／差异阅读]
+
+[ANR修复](https://github.com/getsentry/sentry-unreal/commit/0b203342bb21f4f616b0ed9775b218e553f7df8a)补Apple／Android部分app hang分类，不证明所有卡死都捕获。[一手／研究]
+
+[缓存修复](https://github.com/getsentry/sentry-unreal/commit/1d7781989c6a8306546e73c4b2fd70eb644bbb35)在启用离线缓存时把非正CacheMaxItems映为MAX_int32，避免0导致丢事件；0表示取消条数限制，不表示关闭缓存或发送。这也不是Unity的初始化flush时间设置。先在目标平台核实际事件与缓存行为，不给升级必然无副作用的承诺。[一手／研究]
 
 [UE官方集成](https://docs.sentry.io/platforms/unreal/)说明Windows UE5.2+的Sentry native handler与引擎CRC互斥；应选一条接收链，而非两套同时开。Unity的[初始化检查][diag-unity-init]对未启用／空白配置有跳过分支，但[缓存选项](https://docs.sentry.io/platforms/unity/configuration/options/#InitCacheFlushTimeout)默认初始化flush最多1秒，且为阻塞发送。源码分支不证明所有平台断网／缺依赖时启动无影响。[一手／研究]
 
-**PII开关不是匿名或完整过滤保证。** [UE数据说明][diag-data]明确crashpad／breakpad的线程栈随minidump发送，处理后丢弃不等于没有外传；[附件说明][diag-attachments]又明确附件不做数据清洗。UE固定[已知限制][diag-hooks]中的fast-fail也不会调用`HandleBeforeSend`钩子。先限定必要错误／构建字段；截图、完整日志、source context及dump留存分别决定，不能把一个回调当所有崩溃的脱敏出口。[一手／研究]
+**PII开关不是匿名或完整过滤保证。** [UE数据说明][diag-data]明确crashpad／breakpad的线程栈随minidump发送，处理后丢弃不等于没有外传；[附件说明][diag-attachments]又明确附件不做数据清洗。UE 1.24历史[限制][diag-hooks]在[1.25固定README](https://github.com/getsentry/sentry-unreal/blob/bbbb9296447aa34a397949d4687668059d421c28/README.md#known-limitations)仍保留：fast-fail跳过`HandleBeforeSend`；新版本回调修复不能覆盖这条路径。先限定必要错误／构建字段；截图、完整日志、source context及dump留存分别决定，不能把一个回调当所有崩溃的脱敏出口。[一手／研究]
 
 ### 两条真实修订链：可见性、可控性和启动分别成立
 
@@ -696,7 +706,7 @@ osu!从[关闭采集请求](https://github.com/ppy/osu/discussions/31832)到[合
 
 [Unity符号说明](https://docs.unity.com/en-us/cloud/developer-data/debugging-symbols-intro)要求UUID／GUID匹配；[Sentry符号上传](https://docs.sentry.io/platforms/unity/data-management/debug-files/upload/)也不把事后补符号等同重处理旧事件。版本字符串正确仍可能配错符号，保存实际构建、符号及目标架构。后台有session不足以证明异常链路：Unity曾有[已复现并指向修复的6.2异常上报问题](https://discussions.unity.com/t/exceptions-not-shown-in-the-new-diagnostics/1681235)，后来报告仍按具体版本查，不能写所有当前版本都坏或全部已解决。[一手／研究]
 
-后续获准才验证同一目标发行包的启用／禁用、缺配置、断网／端点不可达、缓存不可写；分别核托管异常、原生崩溃与用户反馈，确认去向、构建／符号、实际外传内容、启动预算与仍可游玩／恢复旧档。新增诊断不能定位、不能可靠关闭，或投入不抵新增价值，就撤回自动外传，保人工反馈；不要让诊断成为游戏启动前提。[研究：待批准预注册]
+后续获准才验证同一目标发行包的启用／禁用、缺配置、断网／端点不可达、缓存不可写；选仅人工时还核项目默认、profile覆盖及其他SDK无意外外传。使用UE1.25对应路径时补重复／并发span结束、Apple transaction回调分流、ANR分类及0／正缓存上限；分别核托管异常、原生崩溃与用户反馈，确认去向、构建／符号、实际外传内容、启动预算与仍可游玩／恢复旧档。新增诊断不能定位、不能可靠关闭，或投入不抵新增价值，就撤回自动外传，保人工反馈；不要让诊断成为游戏启动前提。[研究：待批准预注册]
 
 AI可归并经授权的问题、对齐构建、拟复现／回归；人决定数据范围、严重性和修复是否恢复必要路径。日志内指令仍是外部数据，沿[既有注入边界](2026-10-13-context-tool-choice.md#s1agentjacking-原研究证明哪条失败链)核查，不自动执行其修复包。本轮只读公开文档、源码和作者／使用者记录，未采集私人日志、创建服务、上传符号、安装SDK或运行引擎；净费用、主动工时、故障率改善与真实启动影响均未知。[研究]
 
