@@ -570,7 +570,13 @@ S1的ID／角色／order：101/Signer/0、102/Assistant/1、103/Approver/2、104
 
 **主轨只部分更新106。** `POST /api/v2-beta/envelope/recipient/update-many`，body=`{envelopeId:E1实际ID,data:[{id:R106实际ID,signingOrder:4}]}`。已静态核：认证／team可见→SES PENDING可变→completedAt空→逐人可改→事务更新；S2仅order 5→4及对应updated audit变化，无新增通知任务。[一手：源码；研究：预期]
 
-**UI全量保存是独立反例。** `set-document-recipients.ts` 会把仍可修改的R102置NOT_SENT；代填103／104不锁R102自身。`update-envelope-recipients.ts`也会重设提交者的通知／签署状态，所以主轨只提交原NOT_SENT／NOT_SIGNED的106。whole-set漏ID删除保护另待验证；不能由编辑器前缀锁推出全入口保状态。[一手：静态差异，未运行]
+**✅ 本轨只提交106的局部更新，不让Agent用whole-set重建名单。** `set-document-recipients.ts` 会把仍可修改的R102置NOT_SENT；代填103／104不锁R102自身。`update-envelope-recipients.ts`也重设提交者的通知／签署状态，所以主轨只提交原NOT_SENT／NOT_SIGNED的106。[一手：静态差异]
+
+**遗漏已锁ID和修改已锁ID不是同一道检查。** 固定树的whole-set只对保留在请求中的人调用`canRecipientBeModified`；遗漏者进入独立删除事务，未调用该保护。会话认证与team可见性仍生效；限定有权编辑E1、SES／PENDING／completedAt空，遗漏101或已填的103／104走此删除路径；schema把关联Field／Signature设为级联删除。正常单删`deleteEnvelopeRecipient`则先拒已签／有inserted字段者。编辑器删除按钮也有锁，但请求schema没有“须保留全部锁定ID”的校验，不能把UI保护当服务端全集保护。[一手：同[固定树][p25-r2]，`packages/lib/server-only/recipient/set-document-recipients.ts:118–140,257–283`、`delete-envelope-recipient.ts:89–94`；`packages/trpc/server/envelope-router/set-envelope-recipients{,.types}.ts`；`packages/prisma/schema.prisma:690–723`。源码推演，未复现数据库删除，不称当前线上漏洞]
+
+**whole-set报错也不等于整次未保存。** upsert事务先提交，删除与删除审计另开事务，移除邮件任务在两者之后。第二段失败不能回滚首段已提交的106改组；邮件任务失败也不能据报错还原已删数据。Agent遇未知响应先读回原ID、字段和审计，人确认残留状态后再处置，不重试全量重建。[一手：同service:144–318；研究：失败分支推演，未注入故障]
+
+补充待执行反例：从同一S1分别遗漏101、103或104的whole-set，验收应要求拒绝且旧recipient／Field／Signature不变；与正常单删对照，不能只测修改保留行。另在106更新提交后令删除段失败，检查已发生的局部变化；这不是新的模型实验，也不计上述坏候选已被成功拦截。[研究：验收设计]
 
 动作：R102/T102完成自身；R103/T103批准并沿用F203；R104填F204后以T104完成。105／106均激活，首人完成时107仍NOT_SENT、签署请求任务0，另一人不重复获邀；末人完成才通知107，正反序都验。107填F207并完成才可seal。独立分支合组103／104须拒且旧状态不变。[研究：待执行]
 
