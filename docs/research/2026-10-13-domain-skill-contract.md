@@ -707,17 +707,17 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 
 ### 当前最高水平卡：已有设计系统的两轮修改
 
-问题：既有React界面改主题／密度，再加有状态批量Dialog，怎样同时提高视觉质量、改对目标并保住其余行为？补核2026-10-21（UTC+8），来源是研究与官方契约，未在本仓复跑论文或应用。
+问题：既有React界面改主题／密度，再加有状态批量Dialog，怎样同时提高视觉质量、改对目标并保住其余行为？补核2026-10-21（UTC+8），来源是研究与官方契约，未复跑所引论文基准；本应用的实际范围见两轮包。
 
 | 层级 | 当前判断与出处 |
 |---|---|
 | 当前最高水平 | **未知：本轮尚未找到覆盖本题primitive、本地定制、状态与视觉的同题最优比较。** 近期前沿参照为Qiming Li等的[MT-Web2Code，2026-08-04](https://arxiv.org/html/2608.03474v1)：多轮修改分别衡量目标区域保真和未改内容保留；HTML/CSS缺陷注入任务不证明React状态或审美最优，论文仍称代码／数据待发布。[研究：作者测量] |
 | 主流做法 | 全行业采用率未知。shadcn生态[官方支持CSS变量换肤](https://ui.shadcn.com/docs/theming)，但官方支持不是多数人采用或最高质量证明。Jingyu Xiao等（港中文／新加坡管理大学）的[DesignBench v2，2026-02-24](https://arxiv.org/html/2506.06251v2)纳入React编辑／修复，指出定位与组件复用仍是障碍。[一手／研究] |
 | 可行做法 | 局部token／密度＋现有组件；或[CLI部分theme/font应用](https://ui.shadcn.com/docs/cli#apply)后另改密度。全量preset／primitive迁移扩大回归面，只为明确能力缺口采用。固定CLI、真实失败与本地约束见下文，不能以接口存在证明最终质量。[一手／研究] |
-| 本仓推荐及差距 | **推荐有针对性依据的可行路线，不称已证最高水平。** 默认窄差异、显式Portal opt-in、复用Dialog／Form；借MT-Web2Code分验“目标改对／范围外未坏”，再借Zehai He等（清华／智谱）[Vision2Web，2026-03-27](https://arxiv.org/html/2603.26648v1)将视觉与交互分开验。当前仍缺本应用B1/B2实现、真人视觉判断与同条件工具对照；不能把未知质量上限当作满足于typecheck的理由。[研究：本仓选择] |
+| 本仓推荐及差距 | **推荐有针对性依据的可行路线，不称已证最高水平。** 默认窄差异、显式Portal opt-in、复用Dialog／Form；借MT-Web2Code分验“目标改对／范围外未坏”，再借Zehai He等（清华／智谱）[Vision2Web，2026-03-27](https://arxiv.org/html/2603.26648v1)将视觉与交互分开验。本应用已交B1/B2源码补丁与六项纯状态运行，仍缺浏览器集成、真人视觉判断与同条件工具对照；不能把未知质量上限当作满足于typecheck的理由。[研究：本仓选择] |
 
 
-**P24资料选择：既有界面优先局部token／密度修改，再复用原Dialog与Form。** [两轮继承包](../collaboration/reviews/2026-10-20-p24-ui-continuity.md)固定shadcn-admin e16c87f2的Users演示界面，列主题＋两种密度、随后批量编辑的文件／接口差异和合成判定数据。没有应用补丁或运行UI，不冒称生产写回、视觉质量或Skill收益。[研究：2026-10-20]
+**P24资料选择：既有界面优先局部token／密度修改，再复用原Dialog与Form。** [两轮继承包](../collaboration/reviews/2026-10-20-p24-ui-continuity.md)固定shadcn-admin e16c87f2的Users演示界面，列主题＋两种密度、随后批量编辑的文件／接口差异和合成判定数据。2026-10-21续交可应用B1/B2补丁，类型／lint／构建及六项纯状态检查通过；浏览器测试零执行，不冒称生产写回、视觉质量或Skill收益。[研究：2026-10-20]
 
 **实际Agent失败要求保留primitive与本地契约。** [shadcn #9914](https://github.com/shadcn-ui/ui/issues/9914)中Claude把用户未要求的Base UI换为Radix，typecheck仍过；[#9923](https://github.com/shadcn-ui/ui/pull/9923)合入cd7743cbc192df213870bd6fa05d9cd744591fba，只修Skill／CLI文档。用户末条致谢不证明修订后全路径通过。本轮固定4.22.1／daaf156ee00ed91cc7e6bdd937c1b4973152d141的apply保既有base，部分应用仅theme/font，不能充密度改版。[一手／研究]
 
