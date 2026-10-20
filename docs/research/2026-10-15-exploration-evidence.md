@@ -1,6 +1,6 @@
 主线：M6／主线 1、2，外部探索怎样支持可采用的选择。
 改变的建议：借现成检索综合与评测量规，只补决定性证据、失败状态和生成交接，不先自建研究框架。
-新证据：2026-10-15 核读托管研究说明、三个固定开源实现、评测论文与评分源码；补核 Steam 公告同源正文读取及限长对照，区分抽取失败、来源身份与权限边界；重读 OpenCode 同提交文档／实现及 Unity 6.3 弃用／保留绑定，补来源冲突的处置。
+新证据：2026-10-20 补本仓深链检查的前向需求、候选固定源码与真实采用成本，维持原法而未产生可直接采用的陌生增量；2026-10-15 核读托管研究说明、三个固定开源实现、评测论文与评分源码；补核 Steam 公告同源正文读取及限长对照，区分抽取失败、来源身份与权限边界；重读 OpenCode 同提交文档／实现及 Unity 6.3 弃用／保留绑定，补来源冲突的处置。
 
 # AI 探索：系统与评测证据
 
@@ -356,3 +356,48 @@ Onyx 的 [DRB id=68 完整问题、六项研究任务与报告](https://github.c
 ### 保留或撤回
 
 按任务报告成对结果及胜／平／负的具体理由，不把链接数当独立样本，不用任意加权总分掩盖错误采用。没有新增有用候选或纠错，只有更长报告和更多核查负担时沿用基线；收益只出现在某种题型时仅保留该范围。小规模试跑不足以宣称普遍提效。后续实际接入验收另取执行授权与未泄漏验收输入，不与纸面正确性合并。
+
+## 真实未决选择：本仓深链检查先复用还是扩写
+
+核实：2026-10-20（UTC+8）。**当前保留路径检查＋改动范围专项深链核验，暂不接入候选，也不把正则扩成 Markdown 解析器。** 新发现改变了两个候选的采用资格；没有新增已可直接采用的路径，不据此声称陌生发现能力或方法提效。[研究：本次决定]
+
+### 需求先于候选
+
+P3 拆分暴露的真实需求是：文件仍在但标题变了，链接也应能报错。[固定入口](https://github.com/dbvv1/a1dbv/blob/d16a9322cba5e9054100dae52719968985e1dc47/scripts/check_repo.py#L54-L69)明确只验路径，原测试允许缺失片段通过；这是既定范围，不是实现违反契约。本轮原计划是继续路径检查和专项核验，或复用现成深链检查，尚未决定扩写。[一手：本仓固定源码]
+
+11:38:25（UTC+8）由未参与搜索者先冻结需求；11:39 补核固定 `d16a9322`，随后开始检索。实际输入包含中文重复标题、HTML 旧 id、围栏、同页／跨文件链接，以及 [WP1 的 reference links](https://github.com/dbvv1/a1dbv/blob/d16a9322cba5e9054100dae52719968985e1dc47/docs/research/2026-10-14-game-wp1-licensing.md#L163-L193)。门槛是离线只读、无需账号，能解析这些输入并明确报告缺失／未核；越界拒绝和原 JSON／TOML 检查仍须保留。新增运行时只是成本候选，本轮不安装、运行或新增对照。[本仓：前向需求与公开输入；研究]
+
+预先保留的反例包括合法旧 id、自然编号与重复标题碰撞、百分号编码片段、reference 目标越界，以及缺输入／未支持却显示成功。核心解析重写不算薄适配；文件枚举、结果转译和利用已有解析结果加策略层才可能属于有界接入。[研究：冻结判据]
+
+### 现成方案能借什么，为什么还不能直接用
+
+| 路线 | 已核可复用部分 | 阻止本轮直接采用的事实 |
+|---|---|---|
+| lychee 稳定版 0.24.2 | 结构化 Markdown／HTML 解析，reference、id/name、跨文件片段、来源位置及离线文件检查 | 已发布版尚不含 GitHub Unicode 修复；标题编号碰撞仍有静态反例；root-dir 不拒绝仓库外目标 |
+| lychee 开发提交 `ad0ce3d` | GitHub Unicode 规则已改进，不能借给稳定版宣传 | 反向编号碰撞仍未闭合；追开发提交增加维护责任，不因此升为可采用 |
+| remark-validate-links 13.1.0 | AST、reference、github-slugger；CLI/fileset 可核跨文件，单文件 API 不等价 | 原始 HTML id 不自动进入其 data 属性；片段编码处理另有缺口；需 Node 工具链和桥接，不是零依赖脚本 |
+| 扩写现有脚本 | 无新运行时，可保当前输出契约 | reference、HTML、围栏、slug 状态和诊断都需承担维护，不把一批正则叫小补丁 |
+
+[一手：固定源码；研究：范围判断，未运行候选] 单页 fragment lint 未解决拆文件后的目标，不能与路径检查拼成“跨文件深链已全验”；没有据此否定它们在单页任务中的价值。
+
+**lychee 版本与修复分开。** [最新稳定发布](https://github.com/lycheeverse/lychee/releases/tag/lychee-v0.24.2)为 2026-05-01 的 0.24.2，固定 `2bba271`；[GitHub fragment 修复 #2153](https://github.com/lycheeverse/lychee/pull/2153)于 2026-07-05 才合并，解决中文混 emoji 等差异。稳定版不能因当前文档或开发源码较新就获放行。[一手]
+
+**编号碰撞不是“再升级就好”。** 稳定版[生成器](https://github.com/lycheeverse/lychee/blob/2bba271688c1abb1503097a064e6c3bc1d1b6a9b/lychee-lib/src/extract/markdown.rs#L325-L334)只记录基础 slug 的计数；开发版[消歧](https://github.com/lycheeverse/lychee/blob/ad0ce3d33e71c3650c8eac167dbf6ba4846c4c84/lychee-lib/src/extract/fragments.rs#L109-L129)仅在基础 id 已有记录时调用占用检查。按这两段代码逐步推导，标题依次 A、A、A-1 均可产生 a、a-1、a-1，不满足 [GitHub 的唯一编号规则](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#section-links)。这是未执行的静态反例，不是已证明本仓存在的坏链。[一手／研究]
+
+**root-dir 是路径解释，不是读取边界。** 稳定版 [request 测试](https://github.com/lycheeverse/lychee/blob/2bba271688c1abb1503097a064e6c3bc1d1b6a9b/lychee-lib/src/utils/request.rs)明确允许解析至 `file:///parent`。采用前要在读取前检查所有解析后本地目标的归属；只保旧脚本不能覆盖 reference 或 HTML 目标。非 Markdown 片段的未核范围也须单列，而不是用总成功代替逐类核验。[一手／研究]
+
+**remark 的 AST 不等于已识别原始 HTML。** 固定 [13.1.0 实现](https://github.com/remarkjs/remark-validate-links/blob/22799a03c5412aab5dd24e70158b1b71ff6ac971/lib/index.js#L302-L350)读取节点的 data 属性，没有将原始 HTML value 自动解析成 id；[normalize](https://github.com/remarkjs/remark-validate-links/blob/22799a03c5412aab5dd24e70158b1b71ff6ac971/lib/index.js#L758-L794)解码路径但只把 hash 小写。加入 HTML 桥接不自动解决编码片段。CLI 的跨文件能力、警告失败开关和只读使用也需分别配置。[一手：源码；研究：未运行的适配判断]
+
+### 真实采用与总投入
+
+[Apache Airflow #66356](https://github.com/apache/airflow/pull/66356)提供了反对“现成方案都不可用”的证据：评审者发现初版离线配置漏开 fragment，补开后作者报告找到三个真实断锚，并修链接／补显式 id。[已合配置](https://github.com/apache/airflow/blob/5936cf8b71a6c131baf7886abc992e93ffa67556/.pre-commit-config.yaml#L403-L431)使用离线 fragment 检查；同一 PR 因二进制与 Ubuntu 22.04 的 glibc 不兼容改用 Docker。这里能借的是已采用的解析与检查方式，不能把离线写成无需安装，也未独立核到具体 lychee job 的成功日志。[一手：配置；社区：作者／评审运行报告]
+
+lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不必必然安装 Rust；自改核心则增加构建与维护责任。remark 为 MIT，但需 Node、插件和依赖树。版本、平台兼容、补丁与误报处理都是采用成本；本轮没有费用或人工工时对照，不报告净收益。[一手／研究]
+
+### 采用决定与后续边界
+
+✅ 保留现法，遇到标题／结构修改仍专项核验受影响深链。若继续研究复用，优先补齐 lychee 的唯一编号、方言、越界和未核状态，再决定是否值得新增依赖；它是较近的研究基座，不是已通过的接入方案。[研究]
+
+⛔ 不直接升级浮动开发版，也不批量改合法旧 id 来迁就检查器。若核心差异需要持续自建解析器，或安装／平台成本超过专项核验价值，就撤回接入；只有后续固定版本和必要回归能闭合缺口，才重开采用。[研究]
+
+本轮完成真实需求、候选、排除理由与保留现法决定的资料交付，但不计 P4 陌生发现的完整验收。专项核验沿用临时脚本、独立 Agent 与定点浏览器检查，不代表用户投入人工，也不将临时核验器升级为通用解析器。没有新增已可直接采用的陌生候选；使用者是否陌生／愿用、实际接入、第二次修改收益均未知。未运行候选、模型或引擎；唯一浏览器观察是读取本仓固定 GitHub 文档的已渲染标题，不是候选测试或 hosted CI。既有 25 已覆盖版本对齐和现成／薄层的区分，因此不为这个案例再加同义正文。[研究：负结果与交付价值]
