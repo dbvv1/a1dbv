@@ -29,6 +29,7 @@
 |---|---|---|---|---|---|
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，发布操作已获准，暂缓本批正文合入，待结合K2重评；保留PR与来源 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，发布操作已获准；先补AI生成后二次修改判断，再独立整合 |
+| GA／P9后续：视频预览端点退役是否改变分档 | dot-B；接收 dot-A | `dot-b/tmp/20261020-p9-video-retirement` | video、WP7、WP1、TASKS；不改A的2d／WP2 | 2026-10-20 12:55（UTC+8） | 起点 `b6484a002b25939194ba68ab14e0e38b1518c6c1`；核Gemini API Veo三预览ID于10-22停用，区分其他渠道GA；AI可追端点／合同差异，不能证明镜头质量。运行问题：无权限阻塞；P15保留`ec0854f5`待本项后续接。下一步修正文及许可入口、独审与最终树全检 |
 
 
 
