@@ -1,6 +1,6 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
-改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体新需求首试T2.5原生低模、旧合格T2配方不迁移，场景和变形角色另判；处理器先核目标导入器与实际接口，凸分解的顶点／包数参数不能直接当引擎交付保证；旧精灵母版转实时先重验源，不默认只需批转；角色扩装先选配套着装身体／头部，跨体型另验源关系
-新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加门 GLB、关节导出、重贴图及程序化范围证据；凸分解另核主分支／Unity 包差异、合并退出与原生引擎契约，未运行模型／引擎；2026-10-20补T2.5默认／预算与Tripo入口差异；2026-10-19补Naev旧源补做、转换脚本边界及正式发行
+改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体新需求首试T2.5原生低模、旧合格T2配方不迁移，场景和变形角色另判；处理器先核目标导入器与实际接口，凸分解的顶点／包数参数不能直接当引擎交付保证；旧精灵母版转实时先重验源，不默认只需批转；植被先选同风格且风动源兼容的资源族，区分调风与重做枝条数据；角色扩装先选配套着装身体／头部，跨体型另验源关系
+新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加门 GLB、关节导出、重贴图及程序化范围证据；凸分解另核主分支／Unity 包差异、合并退出与原生引擎契约，未运行模型／引擎；2026-10-20补T2.5默认／预算与Tripo入口差异；2026-10-19补Naev旧源补做、转换脚本边界及正式发行；2026-10-20补Unity 6.3／UE 5.8风动契约、TreeIt导出限制及Firewatch／Fortnite历史制作反例
 
 # WP3：3D资产路线、原生低模与第二次修改
 
@@ -470,3 +470,45 @@ Marian Kleineberg 的 [2019 作者复盘](https://marian42.de/article/wfc/)说�
 **三种决定。** 同体系现成款式已满足：保匹配版本并只开放已验组合；需要受限身体参数：评估已有MHCLO源与refit；跨体系体型或全新衣形：先找完整合法配套，不默认继续自动绑定。必须手工雕衣、刷权重、补面才过关，就换身体／整套着装角色、减少槽位／体型或撤回自由换装承诺。[研究]
 
 AI可盘点实际清单／版本、做装配与导出脚本、查缺引用和回归旧组合；瓶颈是运动穿插、身体露出、轮廓／风格、接触与设备预算。后续获准后先同身体换衣，再改体型，复查旧组合恢复、重载、动作类别和LOD转换；既有WP4接触、剔除与WP9身份检查继续保留。未建立组合通过率、净工时或AI承担百分比，不把脚本成功与数值为零当美术验收。[研究]
+
+## 15. 植被资源族：近景、风向与密度二改
+
+核实：2026-10-20（UTC+8）；P29，主线二／三，GA／GB。**默认采用同风格且风动源匹配目标消费者的树／灌木／草资源族；不是把静态生成树统一接风力参数。** 目标是同作品从远景改近景、指定风向及增加密度时，仍能保风格与玩法，不要求程序员手工补枝条权重。[研究]
+
+### 15.1 现成方案先比源数据，不按功能多少排序
+
+**Unity：能调响应不代表能补结构。** Unity 6.3 的[`.st9` Wind 页](https://docs.unity.com/en-us/engine/6000.3/manual/creating-environments/script-terrain/terrain-trees/speed-tree/class-speed-tree-importer/speed-tree-importer-wind)列强度响应、方向响应及随机性，但启用以 SpeedTree Modeler 已配置风动为前提；其他格式不能直接照搬此页。[Wind Zone 页](https://docs.unity.com/en-us/engine/6000.3/manual/creating-environments/script-terrain/terrain-trees/wind-zones/class-wind-zone)明确 Terrain 草不受它控制。树、草需分别确认消费者，不能承诺一套风场自动覆盖整包。[一手]
+
+**需要改变枝条运动时，先保可重导出的源。** [Modeler 10 Games Wind](https://docs.unity3d.com/speedtree-modeler/manual/wind-games.html)由 Fan 和各 generator 配置风动；Wind Wizard 分析已有模型结构，不是从任意静态成品恢复结构。🧪 有合格源、授权与目标导入器时再评估此路线；缺源不把导入器参数当替代。[一手／研究]
+
+**免费替代 TreeIt 可列候选，但不是现成通用风动格式。** [官方说明](https://www.evolved-software.com/treeit/treeit)提供 LOD 与多种网格导出，风动信息用顶点色并随 DBO／FBX 导出；不能将 OBJ 等其他格式一并算作携带风动。FBX 为 ASCII，仍核消费者。作者允许出售自己的树作品，但不代替第三方纹理清权；维护不是作者主要工作，新增适配要计入成本。本轮未找到稳定官方 RGBA 语义定义，自动通道转换停在此处。[一手／研究]
+
+**顶点色不是跨工具协议。** Crytek 作者的 [GPU Gems 3](https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-16-vegetation-procedural-animation-and-shading-crysis)中，R／G／B／A 分别用于叶缘刚度、叶片相位、整体叶片刚度与环境遮蔽；下文 Firewatch 则用于三种运动。TreeIt 引用该技术也不证明其导出通道逐项相同，不能猜映射后宣称完成兼容。[一手／研究]
+
+**UE 先保已合格路线，不因 Nanite 名称强制迁移。** [UE 5.8 Nanite Foliage](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-foliage)及 Dynamic Wind 标为 Experimental；其风动需 skeleton／simulation groups、JSON 导入的 Dynamic Wind Skeletal Data 和 Instanced Skinned Mesh Transform Provider。当前仅全局风向、不含玩家或物体互动，这是该风动系统的范围，不是 UE 通用碰撞失效。Voxel shading 会覆写顶点色 alpha，旧数据若使用它须重新安排，不能默认为所有 TreeIt 输出都受此影响。[一手]
+
+**简单摆动有独立位置，但不能冒充定向风。** [SimpleGrassWind](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-position-offset-material-functions-in-unreal-engine)是非定向摆动，可调权重、强度与速度。草／低关注灌木只需轻摆时可🧪作为低复杂度候选；二改要求指定风向时，须换支持该输入的消费者并验源，不是调一个不存在的方向参数。[一手／研究]
+
+### 15.2 实际采用说明维护代价，不证明零手修
+
+**Firewatch 支持“小资源族反复用”，不支持“AI 已能造整片森林”。** Jane Ng 的 [GDC 2016 复盘](https://media.gdcvault.com/gdc2016/Presentations/Ng_Jane_MakingTheWorld.pdf)（PDF 第41–48页）说明定制23棵树，其中14棵广泛复用、9棵局部使用；Maya 顶点色 R／G／B 分别控制竖向摇摆、枝条拍动、叶片颤动。少量精做资源降低后续 LOD／维护负担，但这是专业美术制作。项目开始于 Unity 4.5，作者明确没有评估 SpeedTree，不能写成试用后失败，也不推出 Unity 6.3 的能力结论。[一手：作者复盘／研究]
+
+**Fortnite 的迁移是重建数据管线，不是勾选 Nanite。** Epic [2023-01-26 的 Chapter 4 复盘](https://www.unrealengine.com/tech-blog/bringing-nanite-to-fortnite-battle-royale-in-chapter-4)针对 UE 5.1：高密树上原复杂逐顶点 WPO 代价大，改用枝条枢轴、方向及父子结构，借 Houdini Vellum 将模拟烘成纹理，再用网格自定义 UV 索引运动；枝条按刚体移动，草仍走简单数学 WPO。它证明已发行项目承担过源结构／UV／动画重做，不是当前 5.8 Dynamic Wind 的说明，更不证明任意生成树可自动恢复层级。[一手：作者报告／研究]
+
+### 15.3 同一作品第二次修改：保留什么、重建什么
+
+**R1 先保存一套可追溯供给，不凑互不兼容的单件。** 预注册同风格树、灌木、草各一组，远景下接受后保留源工程、实际许可、导出版本、通道说明、引擎消费者及资产 ID。资源库存在不等于该家族覆盖三类需求；源缺一类时，先比较补兼容资源与缩小环境风格。[研究／经验；未实测]
+
+| R2 同时提出的新需求 | 可以保留 | 需要重验／重建，或撤回的条件 |
+|---|---|---|
+| 走近观察树冠与运动 | 合格源、稳定引用与独立碰撞 | 近景轮廓／枝叶运动不够时，从可编辑源重导出；枝条改变后重核权重、分组或纹理／UV索引。只有成品且需人工补做则换源 |
+| 明确风向及响应 | 已匹配消费者的风动结构 | `.st9` 已有响应可调，但不能新增缺失枝条风动；草单独核消费者，SimpleGrassWind 非定向时换路线。通道未知不自动转换 |
+| 增密，同时保可读性与通行 | 只是增加摆放数量时保资产结构 | 先重验覆盖、阴影、预算与通行；若“增密”是改树冠／分枝，须重导出并重核绑定，不能当同一摆放参数 |
+
+**重导出不覆盖已接受的整套资源。** 保原资产作对照，先核 ID／场景引用、比例、材质与透明覆盖，再核 LOD、阴影、独立碰撞和目标设备预算；风动通过不豁免这些总入口检查。迁移要计源工程维护、格式转换、shader 适配及整套回归，不拿历史 AAA 帧率作单人项目收益。[研究／经验]
+
+**商业门槛先于质量排序。** [SpeedTree 条款](https://unity.com/legal/professional-artistry-additional-terms)（2026-09-10，§2.3–2.7）区分 Games 与 Cinema；互动游戏用 Games，另核§2.2档位资格与 Total Finances 口径；评估资产不得导出／分发。付费附加内容可能另需覆盖；终止后的新增生产发布／平台限制按 Offering Identification 例外核，不概括成所有旧资产失效或永久无限使用。第三方兼容包仍按自己的授权与是否要使用 Modeler 判断，不一律要求买 Modeler。[一手／研究]
+
+**AI 承担已知格式的清单、映射脚本与一致性检查；瓶颈是源结构与近景表现。** 缺失枝条层级、权重或未说明通道不能由 Agent 猜出后当成已验证。人决定是否保留近景／定向风／互动要求，或接受换源、收窄风格与玩法；没有真实两轮产物，不给承担比例或效率数字。[研究／经验]
+
+验证范围：官方文档、条款与作者历史制作报告；没有运行 TreeIt／Modeler、模型、Unity／UE，没有下载树或纹理，也无同题零手修成功率、完整资源族成本与真实场景通过证据。若候选要求人工美术补结构，本基准下撤回；不是把失败记成程序员常规调参。[研究]
