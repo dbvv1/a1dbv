@@ -88,9 +88,9 @@ Playwright MCP 通过结构化的 accessibility snapshot 暴露页面，常规�
 
 Playwright MCP 支持持久化 profile，也支持 `--isolated` 在内存中保留 profile；`--storage-state` 可为隔离会话提供初始存储状态。**[一手：S7]**
 
-**[经验：工程建议]**：新页面不等于干净会话。记录登录状态、cookies、local storage、service worker 和测试数据来源；不要使用带真实个人登录的 profile 进行无人值守试验。storage-state 可能包含会话凭证，应存于受控位置，不提交到公开仓库。
+**[经验：工程建议]**：给 Agent 明确的会话输入：首次访问用干净会话，已有用户用指定测试状态；新页面不等于干净会话。记录登录、cookies、local storage、service worker 及测试数据来源。无人值守试验不用真实个人 profile；可能含凭证的 storage-state 须受控保存，不提交公开仓库。
 
-需要复现“首次访问”时使用干净会话；需要复现“已有用户”时使用明确的测试状态。两者要分别测试，而不是让缓存偶然决定结果。
+**已有用户的前端更新，验收输入还要包含发布前的旧页。** 按[18的任务分流](18-team-adoption.md#agent-更新前端先给旧用户的验收输入)，让 Agent 准备“旧页开始任务→发布新版→继续操作→新旧标签并存→安全换版”的回归，分别核原始响应版本、真实路由和草稿／写入结果，补保护到期及未覆盖请求。人确认哪些状态不可丢；只开新版页通过不足以交付。见[纸面设计与未测边界](research/2026-10-12-development-feedback.md#跨发布回归设计未运行)。[研究：验收建议]
 
 ## 6. 自修复测试的边界
 
