@@ -492,10 +492,8 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 以上支持检查的覆盖分工和范围取舍，未取得同任务的人力、缺陷或Agent效果对照，不推导自动化替代人工的比例或净收益。**[研究：证据边界]**
 
-## 暖缓存诊断：候选保留，未立深项目（2026-10-20）
+## 暖缓存诊断：未立深项目（2026-10-20）
 
-**不把技术上可设计的动态切档，写成已证实的读者需求。** OpenKnowledge的probe有值得纠错的静态线索，但“低内存启动档→运行中切档”两轮需求尚未取得实际使用者或维护者依据；原拟议深项目撤下，不计项目水位或完成数。已有双可见也不能包装成新增功能。[研究：独立立项审后的负结果]
+**动态切档的真实需求未证，不为水位造功能。** 固定[OpenKnowledge probe](https://github.com/inkeep/open-knowledge/blob/401019d768c740009dd76ea3c5a35c2e8ba3d273/packages/app/tests/perf/probes/tiptap-destroy-leak.ts)以self_size类名占比提示fork，但未算retained；仍要求人批准，不会自动fork。MemLab仅检查可加载，hash导航未证明destroy／evict。[一手／研究：静态核查]
 
-固定[401019d的probe](https://github.com/inkeep/open-knowledge/blob/401019d768c740009dd76ea3c5a35c2e8ba3d273/packages/app/tests/perf/probes/tiptap-destroy-leak.ts)按self_size分桶，未算retained，却据类名占比提示fork；仍要求人批准，没有自动fork。MemLab仅检查可加载，hash导航未证destroy／evict。[Chrome指南](https://developer.chrome.com/docs/devtools/agents/memory)、[React Activity](https://react.dev/reference/react/Activity)及[MemLab固定指南](https://github.com/facebook/memlab/blob/c3e15df92d469e78501f7f536e3bed77f51f759e/AI.md)已提供有意保温／根路径分析。后续只有取得具体Agent错误采用或真实资源约束，再核三层退出闭包，决定保留、缩容或拒绝fork；不新造产品需求凑两轮。[一手：10-20核；研究]
-
-[10月17日补丁](https://github.com/inkeep/open-knowledge/commit/1f318c5b2dd91eab4e1620071171833c7d770fbb)撤回visibility deferral、采用派生缓存；拒绝理由、Agent归属及实际收益未知。[既有维护记录](https://github.com/inkeep/open-knowledge/commit/7bd0874b69396a761f371bd380168fb3104a7ec5)将诊断浏览器约600MB下载改为按需，说明现成诊断仍有环境成本。此处仅分析GPL-3.0-or-later公开实现，不复制代码，未安装／运行应用、诊断器或模型。[一手／研究]
+[MemLab固定指南](https://github.com/facebook/memlab/blob/c3e15df92d469e78501f7f536e3bed77f51f759e/AI.md)已有根路径与体积语义；既有双可见也不是新增需求。因此只保probe纠错候选，撤下“低内存启动档→动态切档”的深项目，不计水位／完成数。出现真实资源约束或错误采用后再核三层退出责任，不能以自拟功能证明价值。未复制GPL应用代码，未安装或运行诊断器／应用／模型。[研究：独立立项审后的负结果]

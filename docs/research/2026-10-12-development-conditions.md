@@ -1,8 +1,8 @@
 主线：二，兼三／四
 改变的建议：按事实、反馈、访问或决策缺口补最小条件；续改分验有意改变与必须保留的行为，迁移核持久状态、消费者和真实运行入口。依赖解析先限定包来源；工具采用按任务、输入与失败边界收窄；测试先定保护或查错目标，再核实际观测与断言。数据库默认值另分写列保护与值来源，不凭新进程通过推定旧缓存安全。[研究／经验]
-新证据：2026-10-20新增P25／P26连续业务功能提议，仅立项、未执行；2026-10-18（UTC+8）补核重复 Hook 分阶段撤回与替代激活链及 GitLab 默认值保护实现与预热旧缓存的固定测试定义，未执行上游。既有案例、核实日期、证据类型及各自运行／未验证范围见下列索引与对应小节；源码、历史回执和本仓局部运行分别计证据，不证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
+新证据：2026-10-20新增P25／P26／P27连续业务功能提议，仅立项、未执行；2026-10-18（UTC+8）补核重复 Hook 分阶段撤回与替代激活链及 GitLab 默认值保护实现与预热旧缓存的固定测试定义，未执行上游。既有案例、核实日期、证据类型及各自运行／未验证范围见下列索引与对应小节；源码、历史回执和本仓局部运行分别计证据，不证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
 
-**规划入口**：[P25代填到并行审批](#p25代填角色到并行审批组)、[P26个人标注到共同维护](#p26单人标注扩成多人协作)，须先执行其完整验收，不算已完成成果。
+**规划入口**：[P25代填到并行审批](#p25代填角色到并行审批组)、[P26个人标注到共同维护](#p26单人标注扩成多人协作)、[P27发送中改稿与恢复](#p27发送中改稿与在途恢复)，须先执行其完整验收，不算已完成成果。
 
 **按问题阅读**：本页保留运行环境、权限与长程执行；[反馈与验证](2026-10-12-development-feedback.md)集中浏览器、测试和观测；[维护与迁移](2026-10-12-development-maintenance.md)集中第二次修改、兼容与退出条件。原章节标题保留为深链入口，事实核实日期与证据等级不因拆分更新。
 
@@ -628,7 +628,7 @@ Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/b
 
 以下仅立项，不计内容项目完成。目标是让Agent接续真实应用的已存在状态，交逐文件改动设计与消费者判据；不是复述“后端校验”。不得用资料验收冒称数据库、邮件、签署、移动端或模型通过。[研究：规划]
 
-两固定应用均为AGPLv3，见[Documenso许可](https://github.com/documenso/documenso/blob/573c928/LICENSE)与[Immich许可](https://github.com/immich-app/immich/blob/v3.3.0/LICENSE)。本项目分析机制与变更设计、不复制分发应用代码；复用实现另遵许可，不据公开仓库推定任意商用方式。[一手／研究]
+两固定应用均为AGPLv3，见[Documenso许可](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/LICENSE)与[Immich许可](https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/LICENSE)。本项目分析机制与变更设计、不复制分发应用代码；复用实现另遵许可，不据公开仓库推定任意商用方式。[一手／研究]
 
 ### P25：代填角色到并行审批组
 
@@ -646,8 +646,22 @@ Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/b
 
 **拟改15§3／18：先分个人覆盖、共享属性与原资源授权，已有人工劳动不默认reset。** Agent追源数据→服务／权限查询→Web和mobile读模型，人定“只改我／影响所有人”和退出后保留；只需局部照片先用现成相册；[partner分享](https://docs.immich.app/features/partner-sharing/)涉及整库范围及元数据、不含人物数据，不能因共同命名就默认扩大照片权限。确需共同整理再比较共用聚类与定向人物共享。共同编辑增加传播／退出／双端读模型责任，重跑还可能耗掉旧人工标注；不预估净节省。[研究：待执行，2–3天范围]
 
-Immich [v3.2](https://github.com/immich-app/immich/discussions/31408)／[PR30739](https://github.com/immich-app/immich/pull/30739)引入cluster group，用户因重跑丢命名拒用；[v3.3](https://github.com/immich-app/immich/discussions/32193)／[PR31620](https://github.com/immich-app/immich/pull/31620)加人物共享。[32196](https://github.com/immich-app/immich/discussions/32196)有保既有合并、双向共享后的个人回执，不推全体收益。执行基线选[v3.3.0](https://github.com/immich-app/immich/tree/v3.3.0)，merge c12d5e6只作历史差异，两树不混称。原图访问、聚类池、私人命名不是同一授权。[一手／社区]
+Immich [v3.2](https://github.com/immich-app/immich/discussions/31408)／[PR30739](https://github.com/immich-app/immich/pull/30739)引入cluster group，用户因重跑丢命名拒用；[v3.3](https://github.com/immich-app/immich/discussions/32193)／[PR31620](https://github.com/immich-app/immich/pull/31620)加人物共享。[32196](https://github.com/immich-app/immich/discussions/32196)有保既有合并、双向共享后的个人回执，不推全体收益。执行基线选[v3.3.0](https://github.com/immich-app/immich/tree/e3b165609135365302e40a43d94967fdbb2e6888)，merge c12d5e6只作历史差异，两树不混称。原图访问、聚类池、私人命名不是同一授权。[一手／社区]
 
 **R1→R2必须保原状态。** R1用虚构三用户／两组、不同照片权限及已有命名合并，交邀请、入组、聚类关联、人物列表与原图访问的逐文件契约；保“不reset”分支。R2继承同一数据加定向共享／Only me，核person服务、person-user及access查询、Web编辑／访问modal、mobile timeline与medium断言。交单／双向共享、只读、离组／撤分享、链式合并、重复提交的属性／照片／统计／私人覆盖预期；不能重seed或仅验mock次数；既有mobile断言仅查去重／排序，传播与同步是须补的新断言缺口。[研究：执行要求]
 
 验收需至少一条完整源数据至双端消费者链、两维护节点的最终实现、拒用／采用与替代比较；给出“改错一层但其他层仍绿”的坏候选及退回理由，改变Agent的一项具体默认。若只剩泛权限清单或无法继承R1则撤项；真实SQL、同步／离组任务、Web/mobile与聚类模型均未运行，若取舍依赖实测则仍未完成。不读取真实照片或个人信息。[研究：验收边界]
+
+### P27：发送中改稿与在途恢复
+
+**拟改15§3／18：Agent先继承原活动、内容版本和收件人集合，不克隆整场重发；未知结果先对账。** 人决定已收旧稿者是否补发、失败／重复代价；只改未开始活动就用原生编辑，不引入在途系统。[研究：提议dot-A，1–3天范围，未执行]
+
+listmonk [#2014真实需求](https://github.com/knadh/listmonk/issues/2014)→[#2264暂停后可编辑](https://github.com/knadh/listmonk/pull/2264)，后有[#3022重启漏发／疑似重复回执](https://github.com/knadh/listmonk/issues/3022)及[10月16日检查点修复](https://github.com/knadh/listmonk/commit/a729a4a6d635dabb75fa0ec53df25eec2e6f2285)。[PR2974](https://github.com/knadh/listmonk/pull/2974)作者自报生产成功却被维护者因破坏性问题拒绝，不能据吞吐报告采用。稳定v6.2.0早于该修复；固定开发树不是生产推荐或已发行保证。源码为AGPL-3，仅分析不复制应用。[一手／社区；10-20核]
+
+**R1产物**：固定历史与开发树，交UI/API→状态→预渲染→队列→发送的逐文件变更图和同一活动C1、V1→V2账本；逐人分未开始、在途、供应商确认、失败、unknown。暂停不是撤回已发，改稿不能把unknown偷偷归未发；至少八条具名断言保身份、pending、非法状态、停止边界、内容／附件和撤排期。当前UI已迁SSR，不能套历史Vue路径。[研究：验收要求]
+
+**R2继承R1账本**，交低ID慢／高ID快、Push成功未落盘、回执丢失、DB结果未知、限速中取消及编辑后重启的差异账本／判定器。核manager／pipe／store与campaigns SQL，逐人比内容哈希、attempt和结果，不以sent=N验收。修复里的processed可包括发送／渲染失败；周期落盘与外部Push非原子，不称“只推进成功发送”或exactly-once。现有生命周期E2E只验status，新增集合断言必须实际设计。[一手／研究]
+
+比较原生继续、[Resend有24小时窗口的幂等](https://resend.com/docs/dashboard/emails/idempotency-keys)和自建durable ledger：后两者增加身份／窗口、迁移／保留与对账责任，均不自动决定旧稿该不该补发。另核原生header接入，不能凭供应商功能说已集成。[官方权限](https://listmonk.app/docs/roles-and-permissions/)将send与manage分开，保仅编辑者不能发信的断言。[一手／研究]
+
+两轮文件／账本／坏候选和同场景取舍实际交出才算资料验收；只剩通用重试卡则撤项。没有DB／邮件／模型运行，不承诺无漏发；若必须实测才能决定，保未完成。隔离运行与真实外发均不在本项目现行授权内，不取真实名单或邮箱。[研究：范围与撤回]
