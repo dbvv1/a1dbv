@@ -1,6 +1,6 @@
 主线：三，兼四
 改变的建议：数据迁移先保受支持工具与写入权威；换托管先保应用消费者，再判断是否要换框架实现。[研究]
-新证据：2026-10-20从维护记录按主题拆出P22／P23，原核实日期与证据等级保留；拆分不代表新实测。P22已交纸面包，P23仍在执行，未运行应用或模型。
+新证据：2026-10-20保P22原纸面包，P23固定shop源码与两轮合成输入，核Shopify无文章回调、有限寿命路线与Vinext实际包；均未运行应用或模型。
 
 # 开发条件：数据与框架迁移
 
@@ -102,12 +102,99 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 ### P23：Next应用迁出后仍值得保留吗
 
-**拟改变：换托管不自动等于换框架实现。** 固定一个公开Next应用，比较保Next、自托管／OpenNext与Vinext；Agent盘点消费者拓扑、缓存及补丁责任，人定兼容范围和退回成本。这不是P11的旧页跨发布或既有Next三臂Skill对照。[研究：提议]
+**✅ 博客刷新／长文先保原Next及部署；明确迁出Vercel且选Node，才自托管Next。** Workers硬约束先评估OpenNext；⛔ Vinext1.2.1非本应用无损默认。Agent保两轮内容／消费者，人定平台、旧内容窗口及补丁责任。[研究；2026-10-20核]
 
-[Vinext固定README](https://github.com/cloudflare/vinext/blob/359b4fba55fa3d9f745d4ddf26692591384b2518/README.md)有迁移入口、可选Skill、兼容缺口与替代路线。[#4004](https://github.com/cloudflare/vinext/pull/4004)和[#3717](https://github.com/cloudflare/vinext/pull/3717)标Claude Code参与、消费者携带补丁：前者补后台再生成的上下文，后者修大内容行处理；[#4001](https://github.com/cloudflare/vinext/pull/4001)补真实pnpm消费者与workspace测试不同的模块拓扑。已核合并／diff／测试定义，作者测量不是本轮运行；不同消费者不能拼成同应用连续历史，合并也不证明指定发行包包含。[一手／社区，2026-10-20核；研究]
+**以下是可重建纸面包，未安装／运行应用或模型、连接商店、部署。**[研究]
 
-**完整产物**：先固定应用、依赖、安装与托管基线，交后台刷新和大内容页两轮继承修改包；必须有实际文件／依赖／行为差异、消费者断言、补丁接管、最低已知修复版、删除本地补丁条件及退回差异。比较继续携带补丁、等稳定发行、退回原实现的质量与维护职责；Agent提出候选，人决定支持面。至少一条Agent参与的消费者失败／修订链要改变采用判断，不能只多写“测缓存”。[研究：验收设计]
+#### 固定应用与路线选择
 
-建议归15，必要同步18；固定证据留本分册，不新建专题。找不到可核主应用或只能交通用提醒则撤项；原生／模型／迁移效果与资料设计分列。公开维护者修改记录不冒充明确退回，未知包版本／净工时不猜。[研究]
+固定MIT应用[vercel/shop@f4c2d467](https://github.com/vercel/shop/tree/f4c2d467e02abd2c859aedf4b709ec93552e7049)。版本：Next16.4.0、React19.3.0、pnpm12.8.2、Node24。`next.config.ts`开启cacheComponents、partialPrefetching、React Compiler及Tailwind Turbopack loader。[一手]
 
-**本轮负结果**：无障碍、性能、叙事／存档和同步初筛与既有材料重叠。持久执行的[Restate #770](https://github.com/restatedev/sdk-typescript/pull/770)关闭未合并及后续读取／deadline提案，不足以判既有应用应加引擎，未核明确拒绝原因；[Showboat #14](https://github.com/simonw/showboat/issues/14)只支持演示采集与验收分开。两者不立深项目，不据此否定工具；不为水位补同义题。[一手／研究：有界负结果]
+**16.4.0只作历史基线，不推荐原样上线。** [10月14日安全公告](https://nextjs.org/blog/nextjs-security-update-october-14-2026)列16.4.1为该轮修复版，先单列共同安全升级／lock再比迁移，未升级不计收益。MIT不授权店铺内容。[一手／研究]
+
+| 选择 | 采用成本与未过门 | 退回责任 |
+|---|---|---|
+| 明确选Node才自托管Next | 保next build/start；承接代理流式、后台排空、共享缓存／tag协调。须选`cacheHandlers.remote`，单数ISR `cacheHandler`不能替代 | 保原配置／产物、缓存隔离与切流方案；未验双部署 |
+| 👀 Workers硬约束先OpenNext1.20.12 | 保Next构建，加adapter／Wrangler及缓存绑定；预览用workerd。支持Next16.4，已注册default／remote到composable handler；本应用partialPrefetch／持久化／tag传播未验 | 撤平台绑定、重建Next产物；缓存格式与外部源不能视为可直接搬回 |
+| 🧪 有明确Vite需求才试Vinext1.2.1 | Vite重实现RSC/SSR/client。React peer ^19.3.1，原19.3.0不满足；optional peers按功能定。Turbopack CSS／Compiler需替代，Cache Components/PPR有缺口 | 恢复Next配置／lock／构建，撤专有shim；保R1业务补丁和S2内容，隔离旧缓存 |
+
+来源：[Next自托管](https://nextjs.org/docs/app/guides/self-hosting)、[cacheHandlers](https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheHandlers)（未配default/remote为内存LRU）；[OpenNext1.20.12发行](https://github.com/opennextjs/opennextjs-cloudflare/releases/tag/%40opennextjs%2Fcloudflare%401.20.12)、[固定handler注册](https://github.com/opennextjs/opennextjs-cloudflare/blob/%40opennextjs%2Fcloudflare%401.20.12/packages/cloudflare/src/cli/build/patches/plugins/next-server.ts)；[Vinext固定README](https://github.com/cloudflare/vinext/blob/359b4fba55fa3d9f745d4ddf26692591384b2518/README.md)及[1.2.1 package](https://github.com/cloudflare/vinext/blob/6554076e6e864926324069e0910fcfc33b28ee07/packages/vinext/package.json)。无本应用费用／工时／性能比较。[一手／研究]
+
+
+#### 消费者闭包与两轮文件差异
+
+以下路径相对固定shop树，改动待实现。[一手：源码；研究：改动设计]
+
+- R1改`lib/blog/server.ts`的getBlog／getBlogArticle独立remote作用域：max换有限cacheLife。`lib/seo/server.ts`的getShopifySitemapPagesCount(type)／getShopifySitemapPage(type,page)在ARTICLE/BLOG分支用同配置，其他类型保max；每次仅一次cacheLife。保原articles／blogs及资源标签；这两文件无外层缓存，调用路由无use cache。
+- `app/api/webhooks/shopify/route.ts`的产品／集合／metaobjects分支与HMAC保持不动，不能补虚构文章事件。
+- `app/blogs/[blogHandle]/[articleHandle]/page.tsx`的metadata和正文读同详情，缺记录notFound；构建可退placeholder，不能据此算验过文章。`components/blog/article-page.tsx`／`components/ui/prose.tsx`为服务端正文，R2默认无必改业务代码，只更新同篇内容并加验收。
+- `lib/shopify/operations/blogs/server.ts`默认50条、PUBLISHED_AT倒序；`lib/shopify/fragments/blogs/index.ts`仅摘要／240字fallback，不传全文。`lib/shopify/operations/sitemap/server.ts`ARTICLE按UPDATED_AT、250项游标扫描，但取publishedAt映射updatedAt再输出lastmod。**编辑A不改变lastmod。** 页数来自独立sitemap.pagesCount，不能拿本地除法替代。
+
+保购物车／搜索／proxy.ts及关闭的可选模块。无现成测试；缓存策略单测和连续消费者E2E均待实现。[一手／研究]
+
+#### 可由Git重建的输入与精确预期
+
+全为合成输入，非Shopify快照。域为`https://shop.example.test`，locale=en-US、country=US、language=EN，日期断言固定UTC。所有记录同blogHandle=`guides`、blogTitle=`Fixture Guides`、image=null、无author。body对应contentHtml，列表仅摘要shape；sourceRevision/sourceUpdatedAt仅测试账本字段。[研究]
+
+定义记录R(h,t,p,b)：handle=h、title=t、publishedAt=sourceUpdatedAt=p、body=b、excerpt=t+` excerpt`、seo.title=t+` | Fixture Shop`、seo.description=t+` summary`、sourceRevision=1，加上述公共字段。全部字符串UTF-8，无额外换行。[研究]
+
+- F001…F248：h=`archive-001`…`archive-248`，t=`Archive 001`…；p为2026-01-01T00:00:00Z加编号分钟（至04:08:00Z，ISO秒精度）；b=`<p>Archive record 001.</p>`等。
+- A1=R(`care-guide`,`Care guide v1`,`2026-01-02T00:00:00Z`,`<h2>Care</h2><p>Wash cold.</p>`)。
+- C=R(`retired-guide`,`Retired guide`,`2026-01-03T00:00:00Z`,`<p>Retired instructions.</p>`)。
+- A2继承A1，仅title=`Care guide v2`、sourceRevision=2、sourceUpdatedAt=`2026-10-20T10:00:00Z`、body=`<h2>Care</h2><p>Wash cold. Air dry.</p>`、excerpt=`Cold wash and air dry.`、SEO=`Care guide v2 | Fixture Shop`／`Wash cold and air dry.`。
+- B=R(`size-guide`,`Size guide`,`2026-10-20T10:01:00Z`,`<h2 id="measure">Size</h2><p>Measure before choosing.</p>`)。
+- A3继承A2，仅title=`Care guide v3`、sourceRevision=3、sourceUpdatedAt=`2026-10-20T11:00:00Z`、excerpt=`Long-form care guide; cold wash, air dry.`、SEO=`Care guide v3 | Fixture Shop`／`A detailed care guide. Wash cold and air dry.`；body按下式生成。
+
+```python
+body = '<h2 id="care">Care guide v3</h2>'+''.join(f'<p data-section="{i:05}">第{i:05}节：冷水清洗，阴凉晾干。Café naïve — 日本語と絵文字 🧵🧼。Read <a href="/blogs/guides/size-guide#measure">size advice</a>; do not tumble dry.</p>' for i in range(1,8193))+'<h2 id="end">End</h2><p>完整结束。END-08192</p>'
+```
+
+原body为1,679,444 UTF-8字节，SHA-256=`1df175722789cacbed2f17d84258a4f00445b9c3b0226a06dea881c27b8d66c0`，含两个h2、8193个p。SSR实体序列化可不同，验规范化DOM节点／属性／文本，不要求整页或SSR字节等于原contentHtml。[研究：静态计算]
+
+| 状态／逻辑源变更 | 权威内容源 | 50项列表顺序 | ARTICLE sitemap页（按sourceUpdatedAt升序）／独立count |
+|---|---|---|---|
+| S0先暖读 | F001…F248+A1+C，250条 | C,A,F248…F201 | p1=F001…F248,A,C；count=1 |
+| R1 e1，10:00 update → S1a | 仅A1→A2 | C,A,F248…F201 | p1=F001…F248,C,A；count=1 |
+| e2，10:01 create → S1b | 加B，251条 | B,C,A,F248…F202 | p1=F001…F248,C,A；p2=B；count=2 |
+| e3，10:02 delete → S1 | 删C，250条 | B,A,F248…F201 | p1=F001…F248,A,B；count=1 |
+| R2 e4，11:00 update → S2 | 从S1仅A2→A3 | B,A,F248…F201 | p1=F001…F248,B,A；count=1 |
+
+每阶段详情／h1／metadata／excerpt取该状态记录，B保measure锚点。S1起C正文不可见，出现not-found UI及noindex。固定详情在Suspense内等待数据后notFound；[官方说明](https://nextjs.org/docs/app/api-reference/file-conventions/not-found)未开流为404、已开流可200，须分别记录基线状态，不把200误判复活；硬需HTTP404是尚未满足的设计。每个sitemap URL=域+`/blogs/guides/`+handle，lastmod=该记录publishedAt；A一直1月2日，B一直10:01，Fn和C也不漂移。p2只在S1b含B，其余阶段items为空；取第二页必须从第一页endCursor续取。BLOG固定mock：guides／Fixture Guides，SEO=`Fixture Guides | Fixture Shop`／`Synthetic guides.`，resource.updatedAt=`2026-01-01T00:00:00Z`，count=1；各阶段分片只含域+`/blogs/guides`及该lastmod（非ARTICLE分支直接取updatedAt）。其余类型count=0、policies空；index仅S1b为static,blogs-1,articles-1,articles-2，其余少articles-2。**count序列1→1→2→1→1是独立mock响应，不证明真实API计数与游标一致。**[研究]
+
+#### R1：没有文章回调，就按真实缓存寿命刷新
+
+**不补articles/blogs回调。** Shopify2026-10[订阅枚举](https://shopify.dev/docs/api/admin-graphql/latest/enums/WebhookSubscriptionTopic)与[完整topic列表](https://shopify.dev/docs/api/webhooks/latest)均无这类事件。A/B/C仅源变更，不是待注册回调；⛔ 不承诺15秒或即时下架。[一手／研究]
+
+✅ 普通博客可容忍延迟时，max换有限cacheLife。测试起点minutes：stale=300、revalidate=60、expire=3600秒，人定最终值；这是请求驱动SWR，不是定时任务或编辑后的SLA。[研究]
+
+[官方cacheLife](https://nextjs.org/docs/app/api-reference/functions/cacheLife)规定客户端stale、revalidate后请求触发后台刷新、expire后请求等待新值，expire>revalidate。expire<5分钟或stale<5分钟会影响预渲染／壳资格，不能改seconds或关缓存冒充同质量。[一手]
+
+10:00等是源时间，非测试排程。变更前暖HTML／RSC／metadata／列表／count／分片，记各自生成点；各过revalidate后请求、等后台完成，再读全体终态后续下一阶段。S1b须暖p2。另测无请求跨expire后首请求阻塞取新值；软导航／预取另过客户端stale，不能假定会发请求。[研究：待实现的测试时序]
+
+源故障不得写空正文／空成功列表；恢复后须收敛，再续行。重复读取不增B，不改publishedAt；只缩详情寿命却让列表/count/p2留max判失败。S1终态按上述not-found语义且集合不含C，无固定删除秒数；并发旧再生复写、浏览器已有页与CDN仍须另验。**要求严格下架截止的应用不接受此默认**：需要已有受控发布通知或另行撤回方案；本基线没有，不能偷偷新建来算完成。[研究]
+
+[Next #97457](https://github.com/vercel/next.js/issues/97457)报16.3.0／16.3.1／16.3.1-canary.21用expire:0后丢内容壳；[作者纠正](https://github.com/vercel/next.js/issues/97457#issuecomment-5317277426)确认max误入expire:0，真正max保壳。它只约束未来即时失效试验，不推断16.4仍有／已修，也不混入当前SWR主轨。[社区／研究]
+
+两轮均比未删文章首壳、H1／首正文位置和时间；原有内容壳不得永久退化，原本骨架先到不误报回归。另测即时方案时才核实际max/expire:0，未知mode拒绝；不以最终DOM正确、revalidatePath或保壳为删除可靠性的证明。[研究]
+
+#### R2：继承S1，不为命中补丁改应用
+
+A3仅扩同篇正文，B仍在、C仍删、Fn逐字段不变；不重seed或清全缓存掩盖继承失败。HTML初访、软导航RSC和预取后导航均保全文、末尾标记、Unicode及链接；收敛前可A2，不可复活A1/C。列表仍50项摘要，sitemap仍用原publishedAt。原正文在server，不能为凑大client props把全文搬入客户端，也不强加目录功能。[研究]
+
+实际记录Flight行类型、分块、内联payload和首可用内容，才决定下面3717是否命中。长HTML不自动等于巨大client-props行；不触发就明确记不触发，仍验应用正确性与人定性能预算。真实图片／设备／无障碍及源API上限不由本合成无图长文证明。[研究]
+
+#### Agent补丁维护链：实际包到消费者还有一道门
+
+三报告是不同消费者，未公开完整应用／lock，不拼成shop历史。Agent须核实际包与失败路径、保后续修订，再选携补丁／等发行／退原实现。[研究]
+
+| 维护链 | 已核发行边界 | 删除本地补丁前必须证明 |
+|---|---|---|
+| [3717](https://github.com/cloudflare/vinext/pull/3717)：Claude Code参与的大Flight普通行优化，初版逐块UTF-8解码使非ASCII退base64膨胀，后补残尾处理 | 最终UTF-8修订6444ff5d；实际npm1.2.0／1.2.1均含utf8CompleteEnd、inPlainRow及入口接线；1.2.0是本轮最低已核包 | 普通行原字节／分块保留；HL跨块仍改写；同chunk普通行结束后仍处理hint；日文／emoji跨字节不膨胀。仅携初版patch不够；作者速度不外推shop |
+| [4001](https://github.com/cloudflare/vinext/pull/4001)：真实pnpm dev预打包的两份headers shim共享状态却各用Symbol，workspace fixture漏测 | 1.2.0仍旧Symbol；1.2.1实际dist已Symbol.for。生产bundle单实例，不能称生产双模块缺陷 | 固定lock及node_modules安装拓扑，分dev/prebundle、prod、workspace验证Server Action／draftMode；仓库fixture绿不能替代安装态 |
+| [4004](https://github.com/cloudflare/vinext/pull/4004)：独立生产locale应用自1.0.1携补丁，后台再生漏rootParams，首屏SSR正常仍失败 | 合并05231262晚于1.2.1；实际1.2.0／1.2.1后台上下文创建与调用均缺参数，最低已发行修复版未确认 | STALE→后台→新内容仍保locale；先核目标包该调用链，再核消费者。不能仅看到别处rootParams或升级1.2.1就撤补丁 |
+
+包证据为[官方npm1.2.0](https://registry.npmjs.org/vinext/1.2.0)／[1.2.1](https://registry.npmjs.org/vinext/1.2.1)tarball只读核SHA-512与SHA-1吻合registry，静态检查dist及入口；未安装／跑测试／验证provenance。包内有代码不等于固定消费者行为通过。[一手／研究]
+
+携补丁须锁patch／lock并管后续回归；等发行只延后迁移；无人接管或语义不保就保／退Next。shop单locale无root-params，4004非其已知bug。[研究]
+
+仍缺合法内容、真实API/count契合、共同安全lock、安装／后端和退回实测。退回保S2与R1，只撤平台差异；原路线责任不可接受且替代路线保住上述门，才撤保Next默认。[研究]
