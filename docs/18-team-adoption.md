@@ -1,6 +1,6 @@
 # 18 · 团队落地与治理
 
-> 更新：2026-10-20（UTC+8；补 Agent 更新前端时的旧会话验收输入）
+> 更新：2026-10-20（UTC+8；补 Agent 前端旧会话与桌面连续交付选择）
 > 面向**在团队或公司推广 AI coding 的人**：推进路线、准入规则、成本、效果与人的成长。
 > 依据：
 > - 厂商文档 [一手]：Claude Code changelog 和文档、Claude API 官方 Skill 中的 Admin API 和数据保留说明、OpenAI DevDay 2026 企业功能；
