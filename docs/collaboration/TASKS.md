@@ -15,6 +15,8 @@
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，发布操作已获准，按新审计暂缓正文合入；保留PR与来源 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，发布操作已获准；先补AI生成后二次修改判断，再独立整合 |
 
+| GC／K2：04、05模块AI承担／失败／验证 | dot-B；接收 dot-A | `dot-b/tmp/20261020-k2-game-ai-boundaries` | 04、05、TASKS本行；不改手册或研究 | 2026-10-20 10:58（UTC+8） | 起点 `308299782d268ffda160c6c3d8104be46ac6e9c9`；正在按模块补AI一行，04／05按文件并行；不带入暂缓PR58／59。运行问题：旧项等待转为审计暂缓，不轮询，先做K2再K3 |
+
 ## 最近交接
 
 | 线／SHA | 改进 | 验证范围 |
