@@ -1,20 +1,35 @@
 # 02 · 模型与成本
 
-> 编辑更新：2026-10-17（UTC+8）
+> 编辑更新：2026-10-20（UTC+8）；本次只补核模型与 effort 起点，价格及其他动态事实保留各自核实日期。
 
-## 1. 原则：按任务分档，而不是追榜单
+## 30 秒结论
 
-已有方案能稳定完成任务，就继续用。出现漏约束、推理浅或验证不足时，🧪 尝试更强模型或提高 effort；等待或预算成为问题时，再试较低 effort 或更轻量模型。是否保留调整，看完成同一项任务的质量、总耗时与费用，包括返工；质量变差或返工抵消节省，就撤回。长时间无人值守本身不等于需要顶档，价格和单轮耗时也不能代替能力判断。**[研究：采用边界，未实测；依据见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)]**
+**✅ 当前默认：已有模型配置能稳定达到目标，就保留；新开始、范围清楚的日常编码，Codex 选 GPT-6.1 Sol + `medium`，Claude Code 选 Sonnet 5.5 + `medium`。** 这是本仓库给新读者的明确起点，不是所有客户端的出厂默认，也不是两者效果相同的实测结论。型号须在当前账号、客户端与服务商中可用。**[研究：采用判断；一手依据见第 1 节，2026-10-20，未实测]**
 
-| 任务条件 | 选择 | 候选起点（非本仓库效果排名） |
+**何时撤回**：漏约束、推理或验证不足时，先核任务信息与工具是否齐全，再提高 effort 或换更强模型；有依据的质量目标、困难的跨模块任务，也可以一开始就选更强配置，不必先失败。等待或预算成为瓶颈时，再试降档。是否保留，看目标质量、整项任务的耗时与费用，包括人工检查和返工；收益消失就退回原配置。**[研究：选择与撤回条件]**
+
+**⛔ 不推荐仅凭最低单价选主模型，也不默认全程 Ultra、最高 effort 或 Fast／Ultrafast。** 前者只在可检查的工作上证明质量与总投入合算后采用；后者用于明确的推理、并行或等待瓶颈，能改善整项任务才保留。速度档、effort 与模型能力是不同选择，付费提速不能补推理缺口。**[研究：采用边界；计费口径见第 3 节]**
+
+**Agent 做实现、调查与检查，人核对目标和检查覆盖。** 它可能漏读约束、漏测边界或自报完成；更强模型与更高 effort 也不替代实际验收。**[研究：风险与把关，见 [09](09-review-and-quality.md)]**
+
+<a id="1-原则按任务分档而不是追榜单"></a>
+
+## 1. 从默认起步，按缺口调整
+
+| 任务条件 | 当前选择 | 起点与撤回条件（非本仓库效果排名） |
 |---|---|---|
-| 架构设计、跨模块重构、疑难 bug 中，现有方案出现推理或验证缺口 | 🧪 尝试更强能力 | Claude Opus 5.5 / Fable 5.1、GPT-6 Astra / 6.1 Sol；effort 按下文调整。Gemini 4 Argon 见下方试用条件 |
-| 范围清楚的日常功能开发、写测试 | ✅ 保留已够用的方案 | 新选型可从 Claude Sonnet 5.5 / Opus 5.5、GPT-6.1 Sol 的客户端默认 effort 起步 |
-| 目标明确、结果容易检查的检索型子 Agent、批量小改、格式化 | 🧪 尝试轻量模型 | Claude Haiku 5.5、GPT-6 Luna；复杂调查不因交给子 Agent 就自动降档 |
+| 范围清楚的日常功能开发、写测试，尚无稳定配置 | ✅ 采用日常起点 | Codex：GPT-6.1 Sol + `medium`；Claude Code：Sonnet 5.5 + `medium`。已有配置稳定达标则不必换 |
+| 上下文与工具齐全，但漏读、漏测、检查不充分 | 🧪 先提高 effort | 同模型由 `medium` 试 `high`；没有改善覆盖或返工，就撤回，继续查任务与验证设计 |
+| 困难的跨模块重构、架构或疑难 bug；已有推理缺口或明确更高质量目标 | 🧪 直接选更强能力 | Codex：GPT-6 Astra + Light（`low`）；Claude Code：Opus 5.5 + `medium`，验证要求高可从 `high` 起步。仍需更强能力时再评 Fable 5.1；不能达到目标或新增投入不值得就撤回 |
+| 目标明确、结果容易检查的检索型子 Agent、批量小改、格式化 | 🧪 尝试轻量模型 | Claude Haiku 5.5、GPT-6 Luna；复杂调查不因交给子 Agent 就自动降档，返工抵消节省就撤回 |
 | 反复出现的有限选项语义判断 | 🧪 有具体缺口才试决策接口 | 规则或当前模型在质量、等待、成本上不足时再比较；分数、回退与授权见第 2.1 节 |
-| 离线 / 保密 | 本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B（见第 5 节） |
+| 离线 / 保密 | 🧪 评估本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B；硬件、质量与数据路径条件见第 5 节 |
 
-**effort 起点按模型与客户端区分**：Claude Code 当前建议 Opus 5.5／Sonnet 5.5 的日常、范围明确开发从 `medium` 开始；`low` 更适合逐次查看结果的小修改或快速草稿。Sonnet 5.5 在 Claude API 的默认值仍是 `high`，不能照搬客户端默认。Codex 的 GPT-6.1 Sol 从客户端默认 effort 起步，Astra 从 Light（配置值 `low`）起步，再按规划、分析与检查需要调整。同名 effort 不代表跨型号、跨代等强度。以上是厂商使用建议，不能据此认定本项目中的效果等价；表中决策模型与本地候选仍按各自小节的核查范围理解。**[一手：[Claude Code](https://code.claude.com/docs/en/model-config#choose-an-effort-level)、[Claude API](https://platform.claude.com/docs/en/build-with-claude/effort#recommended-effort-levels-for-claude-sonnet-5-5)、[Codex](https://learn.chatgpt.com/docs/models#choosing-a-model)，2026-10-15]**
+**为何给这两个日常起点**：[Codex 官方模型指南](https://learn.chatgpt.com/docs/models#choosing-a-model)推荐 GPT-6.1 Sol 用于编码工作，但要求从客户端默认 effort 起步；同页把 `medium` 定位为兼顾速度与规划深度。本页据此为没有已验证配置的新读者明确选 `medium`，不把它说成官方统一默认。[Claude Code 模型配置](https://code.claude.com/docs/en/model-config#choose-an-effort-level)将 Sonnet 用于日常编码，Sonnet 5.5 的 `medium` 用于范围明确的工程任务、`high` 用于更重验证的工作。以上支持起点选择，不证明本项目上的相对效果或总成本。**[一手：厂商指南；研究：采用判断，2026-10-20]**
+
+**effort 不跨接口照搬**：Claude Code 的 Sonnet 5.5 默认 `medium`，[Claude API](https://platform.claude.com/docs/en/build-with-claude/effort#recommended-effort-levels-for-claude-sonnet-5-5)默认仍是 `high`（2026-10-15 核实）；Codex 的 Sol 默认依客户端而异，Astra 官方建议从 Light（配置值 `low`）开始。同名 effort 不代表跨型号、跨代等强度。**[一手：上述文档；Codex／Claude Code 2026-10-20 补核]**
+
+**先分清缺口**：[Anthropic 选型指南](https://claude.com/resources/articles/claude-model-and-effort-level-in-claude-code)建议先补上下文与工具，再区分“没充分检查”和“充分尝试后仍解决不了”。本页将前者作为提高 effort、后者作为换更强模型的起点，不把这条启发式当诊断保证；其示意曲线不是实测。**[一手：厂商建议；研究：采用边界，2026-10-20]**
 
 **Gemini 4 Argon：从等待开放改为按任务试用。** `gemini-4-argon` 于 2026-10-13 在 Gemini API／AI Studio 正式可用；Free tier 和 Google AI Pro 计划不包含它。已有 Gemini API 工作流迁移时，先移除显式缓存调用，核对 thinking 与输出共享的 token 上限；不要只换模型 ID。🧪 适合需要比较复杂编码或长输出的任务，现有模型已满足要求则不必迁移；是否保留取决于本项目质量、延迟和总费用，GA 不证明收益。**[一手：[发布记录](https://ai.google.dev/gemini-api/docs/changelog)、[迁移指南](https://ai.google.dev/gemini-api/docs/latest-model)；研究：采用判断，2026-10-15，未实测]**
 
