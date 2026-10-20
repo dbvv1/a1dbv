@@ -11,6 +11,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| M2：插件子任务与非交互停止条件 | dot-A | `dot/stop-304-20261020` | Claude Code、13、audit；基线 `0564a415` | 2026-10-20 09:16（UTC+8） | 对照2.1.304固定发布与CLI契约；不运行客户端，保留已有待批项 |
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，ready拒绝后保断点；本次不含其内容 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，创建草稿PR拒绝后保断点；本次不含其内容 |
 
