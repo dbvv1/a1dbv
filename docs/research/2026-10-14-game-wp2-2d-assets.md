@@ -1,6 +1,6 @@
 主线：二／三；G1 2D 资产选型与第二次修改
-改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分混合错配、缩小后裁切覆盖／图集失真与内容缺陷；规则几何固定视角小道具反复生成失败时，可比较代码母版；自制换装预览缺必要身体部件时先修观察工具，不据不完整图返工美术；换光向先分平面受光与表面体积，不默认由彩色图追补法线；承担稳定操作识别的图标，提高绘画质量时先保视觉身份，必要改版另验
-新证据：[一手] 2026-10-18补像素图法线原论文、厂商完整手修流程与两引擎消费契约； §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执，2026-10-17补保覆盖阈值、图集回归与保比例不保轮廓反例；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎；2026-10-17补SOLREIGN撤回换装判断与Human/Vox元数据、Godot预览过滤反例，修后图像／工具未复现；2026-10-19 补 World of Claudecraft 生成采用、旧技能发布前撤回与两个代表产物核对
+改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分混合错配、缩小后裁切覆盖／图集失真与内容缺陷；玩法组合语法直接定义物料族时先评估同结构派生，有限现成图组够用则不自建；规则几何固定视角小道具反复生成失败时，可比较代码母版；自制换装预览缺必要身体部件时先修观察工具，不据不完整图返工美术；换光向先分平面受光与表面体积，不默认由彩色图追补法线；承担稳定操作识别的图标，提高绘画质量时先保视觉身份，必要改版另验
+新证据：[一手／源码] 2026-10-20 §15 P33补shapez物料族两轮差异、固定消费者与撤回，以及Kenney有限图组反分支；2026-10-18补像素图法线原论文、厂商完整手修流程与两引擎消费契约； §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执，2026-10-17补保覆盖阈值、图集回归与保比例不保轮廓反例；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎；2026-10-17补SOLREIGN撤回换装判断与Human/Vox元数据、Godot预览过滤反例，修后图像／工具未复现；2026-10-19 补 World of Claudecraft 生成采用、旧技能发布前撤回与两个代表产物核对
 
 # WP2：2D资产的前沿方法与零手修边界
 
@@ -325,6 +325,40 @@
 
 **实际范围：** [研究] 公开作者记录、固定源码、PNG字节与联系表阅读；没有运行模型、绘图脚本、游戏或引擎，未安装／付费，未验证当前部署、设备表现或成本收益。
 
+### P33：组合语法本身就是物料时，先派生整族表现
+
+**不要先给每种合法组合生成一张图，再反向补玩法语义。** 2026-10-20 补核：若形状、象限、颜色和层次就是玩家加工的对象，可先评估由同一结构派生整族表现；这与上面的“单件机柜反复生成失败后换代码母版”不同。有限现成图组已经覆盖需求时仍先复用，装饰性插画不必强行变成参数系统。[源码／研究]
+
+**本例只覆盖 shapez 的形状物料族，不覆盖整款游戏。** 固定发行树 [1.2.0／366a2a9f](https://github.com/tobspr-games/shapez.io/tree/366a2a9f58c79a1b11a8275a6eae88f101101598) 的 `ShapeDefinition` 用四种几何原语、颜色和层次绘制，不逐件读取形状 PNG；机器、蓝图、UI 等仍使用美术资产。只提炼表示与消费者机制，不采用其自研引擎，也不把历史 GPLv3 实现当可直接复制的资产包；当前原仓 README 说明已不积极维护，生产选型不能只看源码公开。[源码：[定义与绘制](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/shape_definition.js)、[原仓说明](https://github.com/tobspr-games/shapez.io)]
+
+**权威是结构短码，不是截图或文件哈希。** 源码虽命名 `getHash()`，这里得到的是表示形状／颜色／层次的短码；显示、加工与保存不能各自重新猜一个身份。下表是固定树的源码接线，不是执行后的回执。[源码]
+
+| 消费者 | 同一表示怎样到达它；二改应保什么 |
+|---|---|
+| 绘制与复制 | ShapeDefinition 从短码恢复层／象限，再绘制；ShapeItem 的复制码、序列化、相等判断与绘制委托同一 definition；新图像不能替代结构身份 |
+| 加工与缓存 | ShapeDefinitionManager 的 paint4 键含输入短码和四颜色，按结果身份登记；改运算必须核输出、象限映射和缓存，不只是颜色好看 |
+| 交付与升级目标 | HubGoals 按短码累计 storedShapes，目标也由短码解析；升级按所需形状键扣数，不能因视觉相似就视为同物料 |
+| 储存与运输 | Storage 按两个 definition 的短码相等决定能否同仓，storedItem 走 typeItemSingleton；输送带路径保存距离和同一物料序列化，恢复须仍能解析旧码 |
+
+固定消费者：[输送带](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/belt_path.js)、[ShapeItem](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/items/shape_item.js)、[manager](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/shape_definition_manager.js)、[目标](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/hub_goals.js)、[storage](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/components/storage.js)、[resolver](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/game/item_resolver.js)。[源码]
+
+**第一轮扩加工能力，复用的是形状族，不是所有制作成本。** [2020-05-16 cad6b357](https://github.com/tobspr-games/shapez.io/commit/cad6b357e3080f7fe8aca8ed45cc4037e36bbeae)增加四分切割和四象限涂色，父版本为 bce44188c816582d052590bb74ce42d5d2cb2447。改 definition 运算、manager 缓存、处理器、机器槽位和速度，仍输出 ShapeItem；未为每种结果新增形状图片。但提交同时新增四个机器／蓝图 PNG，并重建图集，不能记成整项功能零美术。[源码：差异及文件元数据，未取图像]
+
+**第二轮改变输入约束，旧表示仍可用，但控制规则不能照旧。** [2020-08-29 PR607](https://github.com/tobspr-games/shapez.io/pull/607)／5487ec981828e143b62b0e2281cf97244009a143 让缺象限不必等涂料，并加入线控禁用／筛选；`colors[q] || item.color`让不涂的象限保原色。作者只报告检查两个基本形状并要求 alpha 广测，不是完整行为验收。[源码／作者报告]
+
+**同轮又改过的规则，不能用祖先关系冒充发行行为。** [bb739c80](https://github.com/tobspr-games/shapez.io/commit/bb739c80fa5b6fc34a9047a50fb7322b044f62dc)将 true 从禁用反转为启用、全禁用不加工，并重做输入接收、状态提示与机器图片；[238b08d4](https://github.com/tobspr-games/shapez.io/commit/238b08d4d1ac9f1d6c759fa0c82a25cfb8be4ec7)再将非布尔物料纳入 truthy。1.2.0 的实际处理器应单独读取，不能把 PR607 原文当最终规格；这些是第二轮内修订，不另算两次独立发行。[源码]
+
+**两轮没有改变短码文法，不能据此声称已经验证过存档迁移。** 新运算与输入规则改变了代码、机器拓扑和提示，通用形状绘制与物料身份仍复用；不是所有文件都未变。真正改原语、短码解释或层次含义时，才须另核旧目标、保存键、复制码、缓存和恢复策略，不能只更新渲染器。[源码／研究]
+
+**“可编码的修复”也可能应撤回。** [PR352](https://github.com/tobspr-games/shapez.io/pull/352)试图保留切割后的空层；讨论者指出已有工厂可能需要调整，作者试用后不认可该行为，随后[撤回 94c59e0e](https://github.com/tobspr-games/shapez.io/commit/94c59e0e339c9b4013ef91d4820bb037c02bc51e)。这是规则取舍与兼容反例，不是本仓复现了坏档或全部工厂故障。AI 不应仅因结构更“正确”就自动改旧玩法。[作者讨论／源码／研究]
+
+**有限符号集合已有合格图组，就不为几何外观自建生成器。** [Kenney Playing Cards Pack](https://kenney.nl/assets/playing-cards-pack)列270件、CC0；[作者发布页](https://opengameart.org/content/playing-cards-pack)提供多尺寸牌面和骰子静态图，作者对新增掷骰动画的请求回复尝试后质量未达收录标准。它不是 shapez 的替代包，而是反向条件：静态覆盖可以现成，新增运动仍可能缺源。未下载核包，不把页面宣称的矢量源视为已验证可编辑，也不据此推出代码动画更好。[一手／研究]
+
+**把二改分三类，再决定是否换来源。** 语法内新实例先检查能否直接派生，不预设要新像素；新运算／输入规则保旧结构，核输出、消耗、暂停、信号及提示；超出原语的物种、表情、材质或动作则重新评估现成源／生成缺口，不无限扩几何规则。沿用本页尺寸、身份、动画、压缩、透明和目标设备检查，适用项不能被结构校验替代。[研究]
+
+**源码中的校验不等于已有行为回归。** 固定树 package 没有 test 脚本，完整目录未找到 test 路径；[CI 定义](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/.github/workflows/ci.yml)运行 lint、tsc 与翻译构建。BeltPath 有开发态完整性检查，[SavegameSerializer](https://github.com/tobspr-games/shapez.io/blob/366a2a9f58c79a1b11a8275a6eae88f101101598/src/js/savegame/savegame_serializer.js)有 UID／组件校验并保存 hubGoals、entities、beltPaths；它们不能充当形状加工、短码往返或旧工厂兼容测试。后续需实际验证定义→短码→解析→物料→保存恢复，以及缺角／多层、信号门控、目标扣款、异形拒入仓和旧工厂行为；这些是待验收项，不报已通过。[源码／研究]
+
+**AI 能核组合与消费者，不能替人决定可读性、规则和兼容承诺。** 本轮仅阅读历史源码、差异、发布与作者报告；无模型／引擎运行、图像下载或目标设备验证。未取得同条件主动工时、完整返工成本或 AI 贡献比例；本例支持先选择表示，不支持“全部成套资源已经零手修供应”。[研究]
 
 ## 换光向补研：彩色精灵要不要追补表面法线
 
