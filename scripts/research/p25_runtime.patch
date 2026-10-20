@@ -1,0 +1,209 @@
+diff --git a/packages/app-tests/e2e/api/p25-runtime.spec.ts b/packages/app-tests/e2e/api/p25-runtime.spec.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/e2e/api/p25-runtime.spec.ts
+@@ -0,0 +1,67 @@
++import { test, expect } from '@playwright/test';
++import { apiCreateTestContext, apiSeedPendingDocument } from '../fixtures/api-seeds';
++import { prisma } from '@documenso/prisma';
++import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
++import { createHash } from 'node:crypto';
++import { writeFileSync, appendFileSync, readFileSync } from 'node:fs';
++import { execFileSync } from 'node:child_process';
++const ROOT=process.env.P25_ARTIFACT_DIR!;
++const hash=(x:unknown)=>createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)?x:JSON.stringify(x)).digest('hex');
++const record=(x:unknown)=>appendFileSync(`${ROOT}/runtime-checkpoints.jsonl`,JSON.stringify(x)+'\n');
++test('P25 one S1 → local recipient update → sequential group consumption without reseed',async({request})=>{
++ const ctx=await apiCreateTestContext('p25-synthetic-only');
++ writeFileSync(`${ROOT}/private-context.json`,JSON.stringify(ctx),{mode:0o600});
++ record({stage:'test-context-created',syntheticOnly:true});
++ const roles=['SIGNER','ASSISTANT','APPROVER','SIGNER','APPROVER','APPROVER','SIGNER'] as const;
++ const field=(type:string,positionY:number)=>({type,page:1,positionX:10,positionY,width:25,height:5,fieldMeta:{type:type.toLowerCase(),required:true,readOnly:false}});
++ const {envelope,distributeResult}=await apiSeedPendingDocument(request,{context:ctx,title:'P25 Synthetic Continuous State',globalAccessAuth:[],globalActionAuth:[],meta:{signingOrder:'SEQUENTIAL',typedSignatureEnabled:true,envelopeExpirationPeriod:{disabled:true},reminderSettings:{sendAfter:{disabled:true},repeatEvery:{disabled:true}}},recipients:roles.map((role,i)=>({email:`p25-r${101+i}@example.com`,name:`P25 Person ${101+i}`,role,signingOrder:i,accessAuth:[],actionAuth:[]})),fieldsPerRecipient:[[field('SIGNATURE',10)],[],[field('TEXT',25)],[field('SIGNATURE',40),field('TEXT',55)],[],[],[field('SIGNATURE',70)]]});
++ const E=envelope.id;
++ writeFileSync(`${ROOT}/private-envelope.json`,JSON.stringify({envelope,distributeResult}),{mode:0o600});
++ const R=Array.from({length:7},(_,i)=>{const r=distributeResult.recipients.find(r=>r.email===`p25-r${101+i}@example.com`);if(!r)throw Error('Missing mapped recipient');return r;});
++ const fields=await prisma.field.findMany({where:{envelopeId:E},orderBy:{positionY:'asc'}});
++ expect(fields.length).toBe(5);
++ const sign=async(i:number,j:number,type:string,value:string)=>{const res=await request.post('http://127.0.0.1:3250/api/trpc/envelope.field.sign',{data:{json:{token:R[i].token,fieldId:fields[j].id,fieldValue:{type,value}}}});expect(res.status(),`sign field ${j} status`).toBe(200);};
++ const complete=async(i:number)=>completeDocumentWithToken({token:R[i].token,id:{type:'envelopeId',id:E}});
++ const waitJobs=async()=>{await expect.poll(async()=>prisma.backgroundJob.count({where:{status:{in:['PENDING','PROCESSING'] as any}}}),{timeout:60000}).toBe(0);};
++ const snap=async(stage:string)=>{
++  const recipients=await prisma.recipient.findMany({where:{envelopeId:E},orderBy:{id:'asc'}});
++  const fs=await prisma.field.findMany({where:{envelopeId:E},orderBy:{id:'asc'}});
++  const signatures=await prisma.signature.findMany({where:{fieldId:{in:fs.map(f=>f.id)}}});
++  const audit=await prisma.documentAuditLog.findMany({where:{envelopeId:E},orderBy:{id:'asc'}});
++  const jobs=await prisma.backgroundJob.findMany({where:{jobId:'send.signing.requested.email'}});
++  const vector=R.map(r=>jobs.filter(j=>(j.payload as any)?.recipientId===r.id).length);
++  const out={stage,envelopeId:E,recipients:recipients.map(({token,...r})=>({...r,tokenHash:hash(token)})),fields:fs,signatures:signatures.map(s=>({id:s.id,fieldId:s.fieldId,recipientId:s.recipientId,typedSignature:s.typedSignature,imageNull:s.signatureImageAsBase64===null})),auditIds:audit.map(a=>a.id),auditTypes:audit.map(a=>a.type),invitationVector:vector};
++  writeFileSync(`${ROOT}/${stage}.json`,JSON.stringify(out,null,2),{mode:0o600});record({stage,recipients:recipients.length,fields:fs.length,signatures:signatures.length,audits:audit.length,invitationVector:vector});return out;
++ };
++ await waitJobs();await sign(0,0,'SIGNATURE','P25 Signer 101');await complete(0);await waitJobs();
++ await sign(1,1,'TEXT','approved budget draft');await sign(1,3,'TEXT','customer alias');
++ const s1=await snap('S1');
++ const originalItem=await prisma.envelopeItem.findFirstOrThrow({where:{envelopeId:E},include:{documentData:true}});
++ expect(['BYTES','BYTES_64']).toContain(originalItem.documentData.type);
++ const decode=(d:any,initial=false)=>Buffer.from(initial?d.initialData:d.data,d.type==='BYTES_64'?'base64':'utf8');
++ const initialHash=hash(decode(originalItem.documentData,true));
++ expect(s1.invitationVector).toEqual([1,1,0,0,0,0,0]);
++ expect(s1.signatures.length).toBe(1);expect(s1.signatures[0].typedSignature).toBe('P25 Signer 101');
++ expect(s1.fields.filter(f=>f.inserted).length).toBe(3);
++ execFileSync('pg_dump',['--format=custom','--file',`${ROOT}/S1.dump`,'postgresql://p25@127.0.0.1:55425/p25']);
++ record({stage:'S1-dump-created',hash:hash(readFileSync(`${ROOT}/S1.dump`))});
++ const update=await request.post('http://127.0.0.1:3250/api/v2-beta/envelope/recipient/update-many',{headers:{Authorization:`Bearer ${ctx.token}`},data:{envelopeId:E,data:[{id:R[5].id,signingOrder:4}]}});expect(update.status()).toBe(200);
++ const s2=await snap('S2');expect(s2.fields).toEqual(s1.fields);expect(s2.signatures).toEqual(s1.signatures);expect(s2.invitationVector).toEqual(s1.invitationVector);expect(s1.auditIds.every(id=>s2.auditIds.includes(id))).toBe(true);
++ for(let i=0;i<7;i++){const before=s1.recipients.find(r=>r.id===R[i].id)!;const after=s2.recipients.find(r=>r.id===R[i].id)!;expect(after.tokenHash).toBe(before.tokenHash);expect(after.role).toBe(before.role);expect(after.signingOrder).toBe(i===5?4:before.signingOrder);expect(after.signingStatus).toBe(before.signingStatus);expect(after.sendStatus).toBe(before.sendStatus);}
++ await complete(1);await waitJobs();expect((await snap('after102')).invitationVector).toEqual([1,1,1,0,0,0,0]);
++ await complete(2);await waitJobs();expect((await snap('after103')).invitationVector).toEqual([1,1,1,1,0,0,0]);
++ await sign(3,2,'SIGNATURE','P25 Signer 104');await complete(3);await waitJobs();expect((await snap('after104')).invitationVector).toEqual([1,1,1,1,1,1,0]);
++ await complete(4);await waitJobs();expect((await snap('after105')).invitationVector).toEqual([1,1,1,1,1,1,0]);
++ await complete(5);await waitJobs();expect((await snap('after106')).invitationVector).toEqual([1,1,1,1,1,1,1]);
++ await sign(6,4,'SIGNATURE','P25 Signer 107');await complete(6);
++ await expect.poll(async()=>(await prisma.envelope.findUniqueOrThrow({where:{id:E}})).status,{timeout:60000}).toBe('COMPLETED');await waitJobs();
++ const sealed=await snap('sealed');expect(sealed.fields.filter(f=>f.inserted).length).toBe(5);expect(sealed.auditTypes).toContain('DOCUMENT_COMPLETED');
++ const finalItem=await prisma.envelopeItem.findUniqueOrThrow({where:{id:originalItem.id},include:{documentData:true}});expect(hash(decode(finalItem.documentData,true))).toBe(initialHash);
++ const finalPdf=decode(finalItem.documentData);writeFileSync(`${ROOT}/synthetic-final.pdf`,finalPdf,{mode:0o600});
++ const pending=await request.get(`http://127.0.0.1:3250/api/v2-beta/envelope/item/${originalItem.id}/download?version=pending`,{headers:{Authorization:`Bearer ${ctx.token}`}});expect(pending.status()).toBe(400);expect((await pending.json()).code).toBe('ENVELOPE_COMPLETED');
++ const signed=await request.get(`http://127.0.0.1:3250/api/v2-beta/envelope/item/${originalItem.id}/download?version=signed`,{headers:{Authorization:`Bearer ${ctx.token}`}});expect(signed.status()).toBe(200);
++ const mailIndex=readFileSync(`${ROOT}/mail-capture/index.jsonl`,'utf8').trim().split('\n').map(x=>JSON.parse(x));
++ const mailEvidence=R.map(r=>{const matches=mailIndex.filter(m=>m.to.includes(r.email));const bodies=matches.map(m=>readFileSync(`${ROOT}/mail-capture/message-${m.index}.eml`,'utf8'));return {recipientId:r.id,messages:matches.length,originalTokenInMessage:bodies.some(body=>body.includes(r.token))};});
++ expect(mailEvidence.every(m=>m.messages>0&&m.originalTokenInMessage)).toBe(true);
++ record({stage:'complete',initialPdfHash:initialHash,finalPdfHash:hash(finalPdf),smtp:mailEvidence,completedAtNonNull:(await prisma.envelope.findUniqueOrThrow({where:{id:E}})).completedAt!==null});
++});
+diff --git a/packages/app-tests/e2e/api/p25-reverse.spec.ts b/packages/app-tests/e2e/api/p25-reverse.spec.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/e2e/api/p25-reverse.spec.ts
+@@ -0,0 +1,67 @@
++import { test, expect } from '@playwright/test';
++import { apiCreateTestContext, apiSeedPendingDocument } from '../fixtures/api-seeds';
++import { prisma } from '@documenso/prisma';
++import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
++import { createHash } from 'node:crypto';
++import { writeFileSync, appendFileSync, readFileSync } from 'node:fs';
++import { execFileSync } from 'node:child_process';
++const ROOT=process.env.P25_ARTIFACT_DIR!;
++const hash=(x:unknown)=>createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)?x:JSON.stringify(x)).digest('hex');
++const record=(x:unknown)=>appendFileSync(`${ROOT}/reverse-checkpoints.jsonl`,JSON.stringify(x)+'\n');
++test('P25 restore same S1 into separate DB then reverse group completion',async({request})=>{
++ const ctx=JSON.parse(readFileSync(`${ROOT}/private-context.json`,'utf8'));
++
++ record({stage:'restored-context-reused',syntheticOnly:true});
++ const roles=['SIGNER','ASSISTANT','APPROVER','SIGNER','APPROVER','APPROVER','SIGNER'] as const;
++ const field=(type:string,positionY:number)=>({type,page:1,positionX:10,positionY,width:25,height:5,fieldMeta:{type:type.toLowerCase(),required:true,readOnly:false}});
++ const {envelope,distributeResult}=JSON.parse(readFileSync(`${ROOT}/private-envelope.json`,'utf8'));
++ const E=envelope.id;
++ const R=Array.from({length:7},(_,i)=>{const r=distributeResult.recipients.find(r=>r.email===`p25-r${101+i}@example.com`);if(!r)throw Error('Missing mapped recipient');return r;});
++ const fields=await prisma.field.findMany({where:{envelopeId:E},orderBy:{positionY:'asc'}});
++ expect(fields.length).toBe(5);
++ const sign=async(i:number,j:number,type:string,value:string)=>{const res=await request.post('http://127.0.0.1:3250/api/trpc/envelope.field.sign',{data:{json:{token:R[i].token,fieldId:fields[j].id,fieldValue:{type,value}}}});expect(res.status(),`sign field ${j} status`).toBe(200);};
++ const complete=async(i:number)=>completeDocumentWithToken({token:R[i].token,id:{type:'envelopeId',id:E}});
++ const waitJobs=async()=>{await expect.poll(async()=>prisma.backgroundJob.count({where:{status:{in:['PENDING','PROCESSING'] as any}}}),{timeout:60000}).toBe(0);};
++ const snap=async(stage:string)=>{
++  const recipients=await prisma.recipient.findMany({where:{envelopeId:E},orderBy:{id:'asc'}});
++  const fs=await prisma.field.findMany({where:{envelopeId:E},orderBy:{id:'asc'}});
++  const signatures=await prisma.signature.findMany({where:{fieldId:{in:fs.map(f=>f.id)}}});
++  const audit=await prisma.documentAuditLog.findMany({where:{envelopeId:E},orderBy:{id:'asc'}});
++  const jobs=await prisma.backgroundJob.findMany({where:{jobId:'send.signing.requested.email'}});
++  const vector=R.map(r=>jobs.filter(j=>(j.payload as any)?.recipientId===r.id).length);
++  const out={stage,envelopeId:E,recipients:recipients.map(({token,...r})=>({...r,tokenHash:hash(token)})),fields:fs,signatures:signatures.map(s=>({id:s.id,fieldId:s.fieldId,recipientId:s.recipientId,typedSignature:s.typedSignature,imageNull:s.signatureImageAsBase64===null})),auditIds:audit.map(a=>a.id),auditTypes:audit.map(a=>a.type),invitationVector:vector};
++  writeFileSync(`${ROOT}/reverse-${stage}.json`,JSON.stringify(out,null,2),{mode:0o600});record({stage,recipients:recipients.length,fields:fs.length,signatures:signatures.length,audits:audit.length,invitationVector:vector});return out;
++ };
++ await waitJobs();
++ const s1=await snap('S1');
++ const original=JSON.parse(readFileSync(`${ROOT}/S1.json`,'utf8'));
++ expect(s1.recipients.map(r=>[r.id,r.tokenHash,r.role,r.signingOrder,r.signingStatus,r.sendStatus])).toEqual(original.recipients.map((r:any)=>[r.id,r.tokenHash,r.role,r.signingOrder,r.signingStatus,r.sendStatus]));
++ expect(s1.auditIds).toEqual(original.auditIds);
++ expect(s1.fields.map(f=>[f.id,f.secondaryId,f.recipientId,f.inserted,f.customText])).toEqual(original.fields.map((f:any)=>[f.id,f.secondaryId,f.recipientId,f.inserted,f.customText]));
++ const originalItem=await prisma.envelopeItem.findFirstOrThrow({where:{envelopeId:E},include:{documentData:true}});
++ expect(['BYTES','BYTES_64']).toContain(originalItem.documentData.type);
++ const decode=(d:any,initial=false)=>Buffer.from(initial?d.initialData:d.data,d.type==='BYTES_64'?'base64':'utf8');
++ const initialHash=hash(decode(originalItem.documentData,true));
++ expect(s1.invitationVector).toEqual([1,1,0,0,0,0,0]);
++ expect(s1.signatures.length).toBe(1);expect(s1.signatures[0].typedSignature).toBe('P25 Signer 101');
++ expect(s1.fields.filter(f=>f.inserted).length).toBe(3);
++ const update=await request.post('http://127.0.0.1:3250/api/v2-beta/envelope/recipient/update-many',{headers:{Authorization:`Bearer ${ctx.token}`},data:{envelopeId:E,data:[{id:R[5].id,signingOrder:4}]}});expect(update.status()).toBe(200);
++ const s2=await snap('S2');expect(s2.fields).toEqual(s1.fields);expect(s2.signatures).toEqual(s1.signatures);expect(s2.invitationVector).toEqual(s1.invitationVector);expect(s1.auditIds.every(id=>s2.auditIds.includes(id))).toBe(true);
++ for(let i=0;i<7;i++){const before=s1.recipients.find(r=>r.id===R[i].id)!;const after=s2.recipients.find(r=>r.id===R[i].id)!;expect(after.tokenHash).toBe(before.tokenHash);expect(after.role).toBe(before.role);expect(after.signingOrder).toBe(i===5?4:before.signingOrder);expect(after.signingStatus).toBe(before.signingStatus);expect(after.sendStatus).toBe(before.sendStatus);}
++ await complete(1);await waitJobs();expect((await snap('after102')).invitationVector).toEqual([1,1,1,0,0,0,0]);
++ await complete(2);await waitJobs();expect((await snap('after103')).invitationVector).toEqual([1,1,1,1,0,0,0]);
++ await sign(3,2,'SIGNATURE','P25 Signer 104');await complete(3);await waitJobs();expect((await snap('after104')).invitationVector).toEqual([1,1,1,1,1,1,0]);
++ await complete(5);await waitJobs();expect((await snap('after106-first')).invitationVector).toEqual([1,1,1,1,1,1,0]);
++ await complete(4);await waitJobs();expect((await snap('after105-last')).invitationVector).toEqual([1,1,1,1,1,1,1]);
++ await sign(6,4,'SIGNATURE','P25 Signer 107');await complete(6);
++ await expect.poll(async()=>(await prisma.envelope.findUniqueOrThrow({where:{id:E}})).status,{timeout:60000}).toBe('COMPLETED');await waitJobs();
++ const sealed=await snap('sealed');expect(sealed.fields.filter(f=>f.inserted).length).toBe(5);expect(sealed.auditTypes).toContain('DOCUMENT_COMPLETED');
++ const finalItem=await prisma.envelopeItem.findUniqueOrThrow({where:{id:originalItem.id},include:{documentData:true}});expect(hash(decode(finalItem.documentData,true))).toBe(initialHash);
++ const finalPdf=decode(finalItem.documentData);writeFileSync(`${ROOT}/reverse-final.pdf`,finalPdf,{mode:0o600});
++ const pending=await request.get(`http://127.0.0.1:3250/api/v2-beta/envelope/item/${originalItem.id}/download?version=pending`,{headers:{Authorization:`Bearer ${ctx.token}`}});expect(pending.status()).toBe(400);expect((await pending.json()).code).toBe('ENVELOPE_COMPLETED');
++ const signed=await request.get(`http://127.0.0.1:3250/api/v2-beta/envelope/item/${originalItem.id}/download?version=signed`,{headers:{Authorization:`Bearer ${ctx.token}`}});expect(signed.status()).toBe(200);
++ const mailIndex=readFileSync(`${ROOT}/reverse-mail-capture/index.jsonl`,'utf8').trim().split('\n').map(x=>JSON.parse(x));
++ const mailEvidence=R.map(r=>{const matches=mailIndex.filter(m=>m.to.includes(r.email));const bodies=matches.map(m=>readFileSync(`${ROOT}/reverse-mail-capture/message-${m.index}.eml`,'utf8'));return {recipientId:r.id,messages:matches.length,originalTokenInMessage:bodies.some(body=>body.includes(r.token))};});
++ expect(mailEvidence.every(m=>m.messages>0&&m.originalTokenInMessage)).toBe(true);
++ record({stage:'complete',initialPdfHash:initialHash,finalPdfHash:hash(finalPdf),smtp:mailEvidence,completedAtNonNull:(await prisma.envelope.findUniqueOrThrow({where:{id:E}})).completedAt!==null});
++});
+diff --git a/packages/app-tests/e2e/api/p25-download-followup.spec.ts b/packages/app-tests/e2e/api/p25-download-followup.spec.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/e2e/api/p25-download-followup.spec.ts
+@@ -0,0 +1,19 @@
++import {test,expect} from '@playwright/test';
++import {readFileSync,writeFileSync} from 'node:fs';
++import {createHash} from 'node:crypto';
++import {prisma} from '@documenso/prisma';
++const ROOT=process.env.P25_ARTIFACT_DIR!;
++const hash=(b:Buffer)=>createHash('sha256').update(b).digest('hex');
++test('Post-run independently compare download to sealed stored bytes',async({request})=>{
++ const ctx=JSON.parse(readFileSync(`${ROOT}/private-context.json`,'utf8'));
++ const {envelope}=JSON.parse(readFileSync(`${ROOT}/private-envelope.json`,'utf8'));
++ const e=await prisma.envelope.findUniqueOrThrow({where:{id:envelope.id}});
++ expect(e.completedAt!==null).toBe(true);expect(e.status).toBe('COMPLETED');
++ const item=await prisma.envelopeItem.findFirstOrThrow({where:{envelopeId:e.id},include:{documentData:true}});
++ expect(['BYTES','BYTES_64']).toContain(item.documentData.type);
++ const stored=Buffer.from(item.documentData.data,item.documentData.type==='BYTES_64'?'base64':'utf8');
++ const res=await request.get(`http://127.0.0.1:3250/api/v2-beta/envelope/item/${item.id}/download?version=signed`,{headers:{Authorization:`Bearer ${ctx.token}`}});
++ expect(res.status()).toBe(200);const bytes=await res.body();
++ expect(bytes.subarray(0,5).toString()).toBe('%PDF-');expect(hash(bytes)).toBe(hash(stored));expect(hash(bytes)).toBe(hash(readFileSync(`${ROOT}/synthetic-final.pdf`)));
++ writeFileSync(`${ROOT}/public-supplement/download-followup.json`,JSON.stringify({kind:'Post-run additional assertions, not original main-track assertions',completedAtNonNull:e.completedAt!==null,status:e.status,httpStatus:res.status(),pdfMagic:true,downloadHash:hash(bytes),storedPdfHash:hash(stored),frozenArtifactHash:hash(readFileSync(`${ROOT}/synthetic-final.pdf`)),bytes:bytes.length},null,2)+'\n');
++});
+diff --git a/packages/app-tests/p25-runtime.config.ts b/packages/app-tests/p25-runtime.config.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/p25-runtime.config.ts
+@@ -0,0 +1,2 @@
++import { defineConfig } from '@playwright/test';
++export default defineConfig({testDir:'./e2e/api',testMatch:'p25-runtime.spec.ts',workers:1,retries:0,timeout:180000,reporter:'list',use:{baseURL:'http://127.0.0.1:3250'}});
+diff --git a/packages/app-tests/p25-reverse.config.ts b/packages/app-tests/p25-reverse.config.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/p25-reverse.config.ts
+@@ -0,0 +1,2 @@
++import { defineConfig } from '@playwright/test';
++export default defineConfig({testDir:'./e2e/api',testMatch:'p25-reverse.spec.ts',workers:1,retries:0,timeout:180000,reporter:'list',use:{baseURL:'http://127.0.0.1:3250'}});
+diff --git a/packages/app-tests/p25-download-followup.config.ts b/packages/app-tests/p25-download-followup.config.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/p25-download-followup.config.ts
+@@ -0,0 +1,2 @@
++import { defineConfig } from '@playwright/test';
++export default defineConfig({testDir:'./e2e/api',testMatch:'p25-download-followup.spec.ts',workers:1,retries:0,timeout:180000,reporter:'list',use:{baseURL:'http://127.0.0.1:3250'}});
+diff --git a/packages/app-tests/p25-smtp.cjs b/packages/app-tests/p25-smtp.cjs
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/p25-smtp.cjs
+@@ -0,0 +1,5 @@
++const {SMTPServer}=require(process.env.P25_ARTIFACT_DIR + '/node_modules/smtp-server');
++const fs=require('node:fs');
++let count=fs.existsSync('mail-capture/index.jsonl')?fs.readFileSync('mail-capture/index.jsonl','utf8').trim().split('\n').filter(Boolean).length:0;
++const server=new SMTPServer({authOptional:true,disabledCommands:['AUTH','STARTTLS'],onData(stream,session,callback){const chunks=[];stream.on('data',c=>chunks.push(c));stream.on('end',()=>{count++;fs.writeFileSync(`mail-capture/message-${count}.eml`,Buffer.concat(chunks),{mode:0o600});fs.appendFileSync('mail-capture/index.jsonl',JSON.stringify({index:count,to:session.envelope.rcptTo.map(x=>x.address),bytes:Buffer.concat(chunks).length})+'\n');callback();});}});
++server.listen(25250,'127.0.0.1',()=>console.log('Synthetic SMTP sink bound loopback 25250; never relays.'));
+diff --git a/packages/app-tests/p25-smtp-reverse.cjs b/packages/app-tests/p25-smtp-reverse.cjs
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/p25-smtp-reverse.cjs
+@@ -0,0 +1,5 @@
++const {SMTPServer}=require(process.env.P25_ARTIFACT_DIR + '/node_modules/smtp-server');
++const fs=require('node:fs');
++let count=fs.existsSync('reverse-mail-capture/index.jsonl')?fs.readFileSync('reverse-mail-capture/index.jsonl','utf8').trim().split('\n').filter(Boolean).length:0;
++const server=new SMTPServer({authOptional:true,disabledCommands:['AUTH','STARTTLS'],onData(stream,session,callback){const chunks=[];stream.on('data',c=>chunks.push(c));stream.on('end',()=>{count++;fs.writeFileSync(`reverse-mail-capture/message-${count}.eml`,Buffer.concat(chunks),{mode:0o600});fs.appendFileSync('reverse-mail-capture/index.jsonl',JSON.stringify({index:count,to:session.envelope.rcptTo.map(x=>x.address),bytes:Buffer.concat(chunks).length})+'\n');callback();});}});
++server.listen(25250,'127.0.0.1',()=>console.log('Synthetic SMTP sink bound loopback 25250; never relays.'));

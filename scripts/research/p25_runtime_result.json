@@ -1,0 +1,497 @@
+{
+  "kind": "historical runtime evidence; portable packaging has not been runtime rerun",
+  "verified_utc": "2026-10-20",
+  "source": {
+    "repository": "https://github.com/documenso/documenso",
+    "commit": "573c928a0e647efc8c41e3e12909c918c2104430",
+    "version": "2.19.0",
+    "license": "Root AGPL-3.0; path-specific licenses remain applicable",
+    "lock_sha256": "cde359c5b4716aee7a6e80cd509d053cb8bfe1919785d232c9461da440cf6c18"
+  },
+  "runtime": {
+    "node": "24.19.0",
+    "npm": "11.19.1",
+    "prisma": "6.19.3",
+    "vitest": "4.1.11",
+    "playwright": "1.56.1",
+    "postgresql": "15.19",
+    "smtp_server": "3.17.0"
+  },
+  "frozen_evidence_manifest_sha256": "060dfc4a1a03e9c862bd16b117b982a81dd49be47f3198a08d2c45e7ef6e77ba",
+  "packaged_patch_sha256": "b115e4a15ae14cd39f72dbab6d12cdd646b1333eb762c2ba9a4831ee83bc6d9a",
+  "packaged_files_sha256": {
+    "packages/app-tests/e2e/api/p25-runtime.spec.ts": "a53eb742de98dd792bb73218fe83528805edb3fa2c5aeb4aac028e9406c10dfd",
+    "packages/app-tests/e2e/api/p25-reverse.spec.ts": "bf8e18cbd52a1bb6b71e7c61acd3774f7c2f69bd453dd6f522f4e2a4e5e91d6c",
+    "packages/app-tests/e2e/api/p25-download-followup.spec.ts": "e21ea014f3544f766e683d7eb16659bfda585397f55960c25f920b3651cc708c",
+    "packages/app-tests/p25-runtime.config.ts": "cba4da703676bcc51a583cdfdf412cebb2019dac530622fb8ff459d22c50d587",
+    "packages/app-tests/p25-reverse.config.ts": "7b32fc2575625cecba81cffdc22cc34d78d7d2f6a410e37f13e80f1d651132ac",
+    "packages/app-tests/p25-download-followup.config.ts": "c0e943cda7b0fdca06cf2791463b73d08e8daf095a122a9616f8bc9abd32e472",
+    "packages/app-tests/p25-smtp.cjs": "1a3bd400c9d3ad97f73ed774b3f77722807be38f7511223e951359b84c8e1492",
+    "packages/app-tests/p25-smtp-reverse.cjs": "0a2d2e46b4c98ca7e0638538afe60c9e7d39a981db1f797648e0f7754e1b5e79"
+  },
+  "upstream_unit_tests": {
+    "files": 5,
+    "passed": 85,
+    "scope": "recipient queries, recipients, recipient groups, omitted recipient orders, compatible recipient grouping"
+  },
+  "main": {
+    "passed_tests": 1,
+    "test_seconds": 18.0,
+    "total_seconds": 22.9,
+    "checkpoints": [
+      {
+        "stage": "test-context-created",
+        "syntheticOnly": true
+      },
+      {
+        "stage": "S1",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 1,
+        "audits": 21,
+        "invitationVector": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "stage": "S1-dump-created",
+        "hash": "98f12c24868733852d876cf87106a83c6b4cb6fd3491fbb6b626b574e65cf30f"
+      },
+      {
+        "stage": "S2",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 1,
+        "audits": 21,
+        "invitationVector": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "stage": "after102",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 1,
+        "audits": 23,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "stage": "after103",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 1,
+        "audits": 25,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "stage": "after104",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 2,
+        "audits": 29,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "stage": "after105",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 2,
+        "audits": 30,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "stage": "after106",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 2,
+        "audits": 32,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "stage": "sealed",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 3,
+        "audits": 43,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "stage": "complete",
+        "initialPdfHash": "658baa2b54b318d0617fbba42a1ba7185b45e3b066538466a40f5502f6019f52",
+        "finalPdfHash": "f34757d96afa3de96063056850024c891414805d15d57bad3d23d05d8df4d66d",
+        "smtp": [
+          {
+            "recipientId": 1,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 2,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 3,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 4,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 5,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 6,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 7,
+            "messages": 2,
+            "originalTokenInMessage": true
+          }
+        ],
+        "completedAtNonNull": true
+      }
+    ]
+  },
+  "reverse": {
+    "passed_tests": 1,
+    "test_seconds": 25.9,
+    "total_seconds": 30.5,
+    "restore": "pg_restore to separate p25_reverse DB; author execution receipt, not reviewer rerun",
+    "checkpoints": [
+      {
+        "stage": "restored-context-reused",
+        "syntheticOnly": true
+      },
+      {
+        "stage": "S1",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 1,
+        "audits": 21,
+        "invitationVector": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "stage": "S2",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 1,
+        "audits": 21,
+        "invitationVector": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "stage": "after102",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 1,
+        "audits": 23,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "stage": "after103",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 1,
+        "audits": 25,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "stage": "after104",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 2,
+        "audits": 29,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "stage": "after106-first",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 2,
+        "audits": 30,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "stage": "after105-last",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 2,
+        "audits": 32,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "stage": "sealed",
+        "recipients": 7,
+        "fields": 5,
+        "signatures": 3,
+        "audits": 43,
+        "invitationVector": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "stage": "complete",
+        "initialPdfHash": "658baa2b54b318d0617fbba42a1ba7185b45e3b066538466a40f5502f6019f52",
+        "finalPdfHash": "aa3d0b7d6ee0e313e4eac3a6c3f7102663ccfae53570929bd639ce5c051c74bd",
+        "smtp": [
+          {
+            "recipientId": 1,
+            "messages": 1,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 2,
+            "messages": 2,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 3,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 4,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 5,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 6,
+            "messages": 3,
+            "originalTokenInMessage": true
+          },
+          {
+            "recipientId": 7,
+            "messages": 2,
+            "originalTokenInMessage": true
+          }
+        ],
+        "completedAtNonNull": true
+      }
+    ]
+  },
+  "postrun_download_test": {
+    "kind": "Post-run additional assertions, not original main-track assertions",
+    "completedAtNonNull": true,
+    "status": "COMPLETED",
+    "httpStatus": 200,
+    "pdfMagic": true,
+    "downloadHash": "f34757d96afa3de96063056850024c891414805d15d57bad3d23d05d8df4d66d",
+    "storedPdfHash": "f34757d96afa3de96063056850024c891414805d15d57bad3d23d05d8df4d66d",
+    "frozenArtifactHash": "f34757d96afa3de96063056850024c891414805d15d57bad3d23d05d8df4d66d",
+    "bytes": 399718
+  },
+  "postrun_saved_rows_comparison": {
+    "recipientFullSavedColumnDiffs": [
+      {
+        "recipientId": 1,
+        "changedKeys": []
+      },
+      {
+        "recipientId": 2,
+        "changedKeys": []
+      },
+      {
+        "recipientId": 3,
+        "changedKeys": []
+      },
+      {
+        "recipientId": 4,
+        "changedKeys": []
+      },
+      {
+        "recipientId": 5,
+        "changedKeys": []
+      },
+      {
+        "recipientId": 6,
+        "changedKeys": [
+          "signingOrder"
+        ]
+      },
+      {
+        "recipientId": 7,
+        "changedKeys": []
+      }
+    ],
+    "fieldsAllSavedColumnsEqual": true,
+    "signaturesSavedProjectionEqual": true,
+    "oldAuditIdsEqual": true,
+    "note": "Post-run comparison of complete saved recipient rows (token replaced by SHA256), full field rows, signature projection. No S1/S2 envelope/meta complete row snapshots exist."
+  },
+  "audit_expectation": {
+    "paper": "Order-only update adds recipient updated audit",
+    "actual": "S1 and S2 both retain identical 21 audit IDs; no new audit",
+    "cause": "diffRecipientChanges compares auth/email/role/name, not signingOrder",
+    "original_script": "Preserves old audit IDs; never asserts a new audit. No pre-run hash; no-posthoc assertion is author attestation only.",
+    "verdict": "Paper predicate falsified; not established upstream contract defect; not all preregistration passed"
+  },
+  "pdf": {
+    "original_fixture_sha256": "658baa2b54b318d0617fbba42a1ba7185b45e3b066538466a40f5502f6019f52",
+    "public_certificate_fixture": "apps/remix/example/cert.p12",
+    "public_certificate_sha256": "3fb0e9597d84f3a1cdb4056e9b8159e2c4946ec783a8b80e174c22431434386f",
+    "main_final_sha256": "f34757d96afa3de96063056850024c891414805d15d57bad3d23d05d8df4d66d",
+    "bytes": 399718,
+    "pages": 3,
+    "independent_review": "Rendered five fields visible; fixed positions overlap fixture text. pdfsig Signature Valid, Total document signed, issuer unknown; NSS bad database warning retained. No identity trust/legal effect/layout quality claim."
+  },
+  "attempts": [
+    "npm mismatch resolved by local 11.19.1; npm ci ignore scripts succeeded",
+    "Prisma PATH error resolved using local .bin",
+    "Playwright collection exports error resolved with upstream NODE_OPTIONS=--import tsx",
+    "Postgres Unix socket not permitted; used loopback TCP only",
+    "pgcrypto missing, then OpenSSL symbol failure, then stale object duplicate symbols; clean official OpenSSL build and contrib installation recovered",
+    "pg_trgm missing; installed official contrib; migrate resolve only failed migrations and deploy, no reset",
+    "Cross-call loopback unreachable; cause unverified; same-script services/test progressed",
+    "HTTP readiness loop interrupted before test context creation; next PG startup did WAL recovery, DB retained",
+    "Official skia download denied under stale restriction; confirmed no binary/session, same source retried once after explicit install authorization and succeeded",
+    "Main paper new-audit predicate contradicted; not silently accepted as whole preregistration pass"
+  ],
+  "packaging_changes": [
+    "ROOT supplied by P25_ARTIFACT_DIR rather than author path",
+    "pg_dump resolved through PATH; fixed synthetic database URI/ports retained",
+    "sink npm dependency located in P25_ARTIFACT_DIR/node_modules; run sink from that artifact directory",
+    "No runtime rerun of these path-only packaging changes"
+  ],
+  "not_verified": [
+    "Cross-version migration or two model code-edit rounds",
+    "Current model benefit or leading-route comparison",
+    "Envelope and Meta full S1/S2 rows",
+    "Audit actors, per-role invitation text, real mail delivery",
+    "Browser signing UI, concurrent or repeated completion",
+    "Whole-set locked-ID omission, interruption/retry recovery"
+  ]
+}
