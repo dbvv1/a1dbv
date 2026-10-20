@@ -1,6 +1,6 @@
 主线：一／二／三／四；输入、UI、存档与内容制作
-改变的建议：[研究] 保留 WP10 既有取舍：输入模式、保存恢复与内容身份分别维护；先借原生能力和作者工具，再补项目缺口。
-新证据：本次仅按模块拆分，无新增证据；原日期、固定源码、许可、反证与未实测边界随各节保留。
+改变的建议：[研究] 缺字向后回退，已有字形不合地域则改变语言选择优先级；保留 WP10 既有取舍：输入模式、保存恢复与内容身份分别维护；先借原生能力和作者工具，再补项目缺口。
+新证据：2026-10-20 补 Mindustry 字形修复／发行链与 Unicode 地域字形机制；原日期、固定源码、许可、反证与未实测边界随各节保留。
 
 # WP10：输入、UI 与内容
 
@@ -557,3 +557,19 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 **代价、撤回与缺口。** 程序员能维护布局与生成脚本，不代表能补画特殊字形。先用目标语言的一组代表文档核共享布局能否覆盖；导出平台升级、特殊图或合法字库缺口抵消收益时，换已支持的生产路线、简化图中文字或收窄语言，不继续扩手工例外。此为后续验收设计，未执行；保留04已有字体、塑形、显示和操作检查。实际可读性、完整零手修与可分离主动工时仍未知。[研究]
 
 权利仅核到 [packer/package.json](https://github.com/PapersPleaseLoc/PapersPleaseLoc.github.io/blob/1fba12973b37b847ec0867076e8b4eb471ece600/packer/package.json)声明ISC；不据此覆盖整库CSS、字体、游戏图片或译文。此处借生产机制，不分发资产或推荐整库直接商用。[一手／研究]
+
+## 字体选择补研：缺字回退与地域字形优先分开
+
+核实：2026-10-20（UTC+8），GA／GB，主线二／三。[研究] 本单元改变04本地化入口：新增语言后，同一字体能查到码位不等于选对地域字形；先判断是缺字还是选择顺序错误，再决定补资源或改变选择。不是改编码或逐字人工修图的默认理由。
+
+**同一游戏的两种修订。** Mindustry 于2026-03-05先[为monospace加入默认字体回退](https://github.com/Anuken/Mindustry/commit/0215cabda88f77b8d3d9faf694e82195338c2eb8)，同日又[修日文字形显示](https://github.com/Anuken/Mindustry/commit/65e4a22c84f60414bccaaf5fc92acaa4ea14e326)：新增font_jp.woff，按locale给默认和描边字体设置override，注释说明要覆盖原来已有字符。[一手：固定diff] 二者不能写成“fallback试验失败后全面弃用”；它们修不同问题。[v156 Beta发布](https://github.com/Anuken/Mindustry/releases/tag/v156)（2026-03-23）分别列日文字体错误与monospace无法显示中文等语言的修复，证明进入发布，不是本仓渲染或母语阅读测试。[一手：发布声明]
+
+**发布实现怎么选。** v156固定 [1773a4d的Fonts.java](https://github.com/Anuken/Mindustry/blob/1773a4d0bc0c11b8896cbed481ce82de049c95c2/core/src/mindustry/ui/Fonts.java)已将monospace回退改为加载参数 `fallback.add(() -> Fonts.def)`，不是逐字沿用首补丁；JP的def／outline两套覆盖保留。其[Vars.java](https://github.com/Anuken/Mindustry/blob/1773a4d0bc0c11b8896cbed481ce82de049c95c2/core/src/mindustry/Vars.java)在常规bundle加载路径按设置locale选默认或显式语言并设置Java默认locale，之后安排额外字体加载，不能简化为只看操作系统，也不能据此保证运行中热切成功。[一手：源码阅读]
+
+[gradle锁定](https://github.com/Anuken/Mindustry/blob/1773a4d0bc0c11b8896cbed481ce82de049c95c2/gradle.properties)的Arc为 [f9072fcc02b4801caf80a116081a666ae0b5fa1d](https://github.com/Anuken/Arc/commit/f9072fcc02b4801caf80a116081a666ae0b5fa1d)；其[FreeTypeFontGenerator.java](https://github.com/Anuken/Arc/blob/f9072fcc02b4801caf80a116081a666ae0b5fa1d/extensions/freetype/src/arc/freetype/FreeTypeFontGenerator.java)的FreeTypeFontData先查询override，原字体生成缺失时才遍历fallback。因此把JP字体仅追加在已有CJK字体之后，不能解决已命中另一地域字形的问题。[一手／研究] 这是特定FreeType实现，不能将同名接口视为所有位图字体／引擎都有效。
+
+**现成替代与反例。** [Unicode官方FAQ](https://www.unicode.org/faq/han_cjk.html)区分字符编码与地域字形，建议日文使用面向日文的字体，也说明已有每码位提供多地域字形的Pan-CJK字体。[一手] 因此比较合法地域字体优先选择，或当前文本栈已支持的同字体地域选择；不要求每种语言都换独立字体，也不从单个汉字可靠猜语言。现有字体已经合适则保留；只缺少罕见字符仍可fallback，不全量替换。
+
+[研究] 对程序员可执行的改动是语言到字体／字形的选择和共享样式引用，不是人工重画。目标质量是符合目标语言阅读习惯而非覆盖率数字；额外代价包括字体分发与驻留、正文／描边等样式配套、混排及语言切换的验证。改变优先级后破坏其他语言、符号、行距或预算，就收窄覆盖范围／换已清权且合格的字体，保留缺字回退；不能撤掉原有塑形、编辑、长文可达性、旧名字和目标输入检查。
+
+本轮只读公开diff、发布与固定源码；未下载字体、渲染、运行游戏／引擎或测量内存／质量。font_jp.woff具体上游与独立许可未闭合，故不推荐复制该文件，也不以游戏代码许可代替字体许可。不同语言地域选择的实际支持、热切、母语读者效果仍待对应验证，不承诺一张配置表完成全部本地化。[研究]
