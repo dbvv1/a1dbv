@@ -6,6 +6,19 @@
 
 核实时间：2026-10-14（UTC+8）；2026-10-16（UTC+8）补核凸分解接口／预算（§5）、TaoFlowForge 许可与装载链（§10.2）、程序化形状／风格范围（§13）。2026-10-20（UTC+8）补核T2.5、Tripo入口及窗口扫描（§2.1、§10）。正文见[3D资产专题](../../domains/game-dev/assets/3d.md)。以下“首试”是理论选型优先级，不是已测质量冠军。来源标签：[一手]官方文本/源码；[研究]论文或作者测量（须再分）；[经验]本报告决策。
 
+## 当前最高水平卡：资源族的编辑母版与优化交付
+
+沿用质量审计[最高水平卡A02](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#a02--3d)，以下补充已在进行的局部二改验证，不重复其生成质量调查。前沿比较状态：**仅候选，差距2**；未做领先生成与现成／程序化的同题视觉比较。
+
+核实：2026-10-21（UTC+8）。本卡只判断同一带骨骼资源族连续改色／改动作的保留能力，不重排生成模型的美术质量榜。[研究]
+
+| 层次 | 做法、出处与本仓判断 |
+|---|---|
+| 近期前沿候选 | Andrii Yaroshevych等（MacPaw，2026 ECCV OpenSUN3D）[GenRA](https://research.macpaw.com/publications/genra/GenRA__End_to_end_Framework_for_LLM_Driven_Animation_of_Rigged_3D_Models__ECCV_OpenSUN3D.pdf)在原USD资产上修改动作，保几何、蒙皮和骨架；Jakob Buhmann等（Disney Research，2026-07-16）[Generative Motion Rig](https://studios.disneyresearch.com/2026/07/16/a-generative-motion-rig-for-artist-driven-motion-authoring/)让艺术家操控姿态／时间窗口等。前者不证明glTF资源族全链，后者不是零人工美术案例；完整两改、零手修、引擎交付的最高水平未知。[作者报告／研究] |
+| 工程参照与主流 | Mike Festa的[Khronos Guidelines 2.0介绍，2025-08-07](https://www.khronos.org/blog/introducing-asset-creation-guidelines-2.0-siggraph-2025)区分OpenUSD创作／交换与glTF传输；这给出职责划分，不证明所有工程必须使用USD，也没有多数采用率证据。[一手／研究] |
+| 可行路线 | 已认可的源图＋成员修改配方，派生后再优化；若只有优化产物，显式复制将修改的共享数据再编辑。glTF-Transform与Validator负责读写／结构检查，不替代原DCC源或目标引擎。[研究] |
+| 本仓推荐层次 | **限定样本支持的可行推荐。** 名称保留不等于可独立改；默认保源与配方，受限编辑可用完整引用路径的按需复制。下方两条正确实现均通过，未证明重建在质量、工时或成功率上普遍胜出；生成模型、视觉与玩家质量仍未知。[本仓运行／研究] |
+
 ## 1. 采用判断与分档依据
 
 **✅ 采用：先按玩法把对象拆成静态刚体、模块场景、变形角色，再选资源来源。** 同风格授权现成包可满足时不重新生成；重复尺寸、模块接缝、门窗和可动零件优先复用已有配方；新增形状／风格先核源模块与规则是否覆盖（§13），不能把补配方算成调参数。静态道具把原生低模生成列为首试，而非默认百万面生成后强减面；高细节源资产保留在确实需要近景轮廓/烘焙细节的分支。变形角色优先现成骨架/拓扑与服装体系；自动绑定成功和quad输出都不是关节变形通过。场景优先模块拼装，生成世界仅作受限背景候选。**局限：本轮未建立零手修、第二次修改后的真实引擎通过率，不能承诺完整无人美术发售管线。** [经验；依据见下]
@@ -519,3 +532,38 @@ AI可盘点实际清单／版本、做装配与导出脚本、查缺引用和回
 **AI 承担已知格式的清单、映射脚本与一致性检查；瓶颈是源结构与近景表现。** 缺失枝条层级、权重或未说明通道不能由 Agent 猜出后当成已验证。人决定是否保留近景／定向风／互动要求，或接受换源、收窄风格与玩法；没有真实两轮产物，不给承担比例或效率数字。[研究／经验]
 
 验证范围：官方文档、条款与作者历史制作报告；没有运行 TreeIt／Modeler、模型、Unity／UE，没有下载树或纹理，也无同题零手修成功率、完整资源族成本与真实场景通过证据。若候选要求人工美术补结构，本基准下撤回；不是把失败记成程序员常规调参。[研究]
+
+## 16. P37前置二改判据：名称与共享数据
+
+**保名不保证下一轮只改一个成员。** 本轮固定glTF-Transform 4.5.1，将公开Fox构造成Hero、Companion、Control三成员实验族；R1只改Hero材质色，R2保R1并把Hero的Run时长改为0.8倍（即1.25倍播放速度）。这不是上游提供的成套游戏资源，也不是运行生成模型所得作品。[本仓运行]
+
+固定输入为[Khronos Fox@15cd02d3](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/15cd02d304e54cb42a4db4eefe719f76190f4b68/Models/Fox)，GLB 162,852B，SHA256 `d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7`。源模型由PixelMannen提供，CC0；tomkranis的绑定／动画、AsoboStudio与scurest的glTF转换均为CC-BY-4.0，不能把全包写成CC0。下载和派生分发须保[原署名与逐项许可](https://github.com/KhronosGroup/glTF-Sample-Assets/blob/15cd02d304e54cb42a4db4eefe719f76190f4b68/Models/Fox/README.md)并注明修改；本仓只交脚本与记录，不分发模型二进制。[一手／本仓运行]
+
+### 两条正确路线与两个负对照
+
+实验源是从Fox独立复制三份、命名与标注成员后组合的GLB图，不是原始DCC创作文件。每份有同源骨架、贴图和Survey／Walk／Run。默认dedup将三材质／三mesh／213 accessors变为一材质／一mesh／73 accessors，三成员共享Run时间数据。[本仓运行]
+
+| 路线 | R1只改主角颜色 | R2只缩主角Run时间 | 结论 |
+|---|---|---|---|
+| 优化后朴素原地改 | 三成员都变色 | 三成员Run都缩短 | 故意错误的调用者负对照，不是优化器缺陷 |
+| dedup保独有名称后原地改 | 本夹具隔离正确 | 仍连带改伙伴／对照Run | 保名不能充当整个可编辑引用图隔离 |
+| 优化后按需复制共享数据 | 正确 | 正确且保R1 | 先复制mesh→primitive→material，另按目标Run复制时间accessor，不能只复制mesh外壳 |
+| 每轮从源＋累计配方派生再优化 | 正确 | 正确且保R1 | R2所查语义与正确复制路线相同；不据此宣布源重建必然更好 |
+
+[固定dedup源码](https://github.com/donmccurdy/glTF-Transform/blob/41156dfa2324ac6c44ddf0a40ec0da194c4731d6/packages/functions/src/dedup.ts)对accessor去重不传`keepUniqueNames`，材质／mesh才使用该选项；[clone契约](https://github.com/donmccurdy/glTF-Transform/blob/41156dfa2324ac6c44ddf0a40ec0da194c4731d6/packages/core/src/properties/property.ts)仍保子属性引用。修改者必须跟到实际会写的数据。本轮未跑gltfpack，不能把此SDK选项结论直接套给其`-kn/-km/-ke`。[一手／本仓运行]
+
+### 运行证据与边界
+
+13个序列化后回读的GLB均获Validator 2.0.0-dev.3.10零error／warning，包括两条故意错误路线；结构通过与修改范围正确分开判。正确复制R2为195,816B，源重建R2为195,832B；源族503,692B，默认dedup基线195,276B。这只是去重及引用复制，不是含量化／LOD／纹理压缩的性能比较。[本仓运行]
+
+SDK检查成员颜色、几何／UV／骨骼权重数组、joint映射、inverse bind matrices、层级与动画目标；另一个仅用Node内置模块的GLB解码器核时间键与输出、局部LINEAR／四元数slerp曲线、其他clip、材质非颜色属性与内嵌贴图。本次5,040个局部向量采样最大分量误差2.31e-6，时间键最大误差2.38e-8秒；两轮都另核非目标数据。有限采样不是完整蒙皮运动或足部接触证明；Fox每成员只有一个primitive／材质、一个基础色贴图路径，不推广到任意材质扩展、sparse／压缩accessor或CUBICSPLINE。[本仓运行]
+
+身份缺失、歧义或跨成员目标须拒绝，不猜名称；缺输入须失败。负对照必须失败预定的隔离项，正确路线和结构检查必须满足预定结果，意外结果返回非零，不能只生成JSON后把exit0当验收。最终重跑与复核记录随脚本交付；从同一锁重装、复用缓存后，13个输出文件逐字节hash一致。[研究／本仓运行]
+
+### 接手与仍待验证
+
+可复跑包：[probe](../../scripts/research/p37-probe.mjs)、[selectors](../../scripts/research/p37-selectors.mjs)、[acceptance](../../scripts/research/p37-acceptance.mjs)、[verify](../../scripts/research/p37-verify.mjs)、[failures](../../scripts/research/p37-failures.mjs)，以及[package](../../scripts/research/p37-package.json)／[lock](../../scripts/research/p37-package-lock.json)和[固定输入、脚本hash、结果及失败记录](../../scripts/research/p37-asset-family-result.json)。五个mjs与两个package文件复制到隔离目录后去掉`p37-`前缀，按原模块相对路径运行；[compact-results.py](../../scripts/research/p37-compact-results.py)同样去前缀，用于去掉大快照并保其规范化hash。不装入仓库默认离线入口，也不自动下载资产或运行引擎。按结果记录的固定URL取得Fox并核SHA，保存为`Fox.glb`，保署名与修改说明；安装使用`npm ci --ignore-scripts --no-audit --no-fund`，再分别运行probe、verify和failures。依赖为core/functions 4.5.1与上述Validator，Node24.19.0／npm11.9.0；从相同锁重装但复用缓存，不能称冷缓存或跨平台复现。[本仓运行]
+
+**默认保源与累计配方；已有优化产物也不一律推倒重做。** 先解析目标与所有共享消费者，完整复制将变的数据，再对源基线与上轮结果核保留条件；路径不清或无法覆盖保留项时，退回源重新派生。Agent能推进定向修改、引用审查与数值回归，人定颜色／动作语义、目标相机辨识、节奏与是否接收；没有人工美术修补不等于视觉已合格。[研究]
+
+本单元收口审计项目板更新前已进行的资源族二改验证，只作为P37比较所需的保留判据，不计静态图／刚体／短音三题完成，不重排首试。它只补数据／曲线继承，未独立验证Fox到实验源的转换、真实蒙皮变形、原DCC导出、引擎导入、游戏消费者或生成质量；不据此关闭资产质量首选缺同题比较的审计缺口。目标引擎的扩展、引用、LOD、碰撞、动作事件和设备检查沿用§9／WP9，不因本例只改颜色与时长而删去。主动工时、完整制作成本与收益未知。[研究]
