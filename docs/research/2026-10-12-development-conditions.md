@@ -2,6 +2,8 @@
 改变的建议：按事实、反馈、访问或决策缺口补最小条件；续改分验有意改变与必须保留的行为，迁移核持久状态、消费者和真实运行入口。依赖解析先限定包来源；工具采用按任务、输入与失败边界收窄；测试先定保护或查错目标，再核实际观测与断言。数据库默认值另分写列保护与值来源，不凭新进程通过推定旧缓存安全。[研究／经验]
 新证据：2026-10-18（UTC+8）补核重复 Hook 分阶段撤回与替代激活链及 GitLab 默认值保护实现与预热旧缓存的固定测试定义，未执行上游。既有案例、核实日期、证据类型及各自运行／未验证范围见下列索引与对应小节；源码、历史回执和本仓局部运行分别计证据，不证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
 
+**按问题阅读**：本页保留运行环境、权限与长程执行；[反馈与验证](2026-10-12-development-feedback.md)集中浏览器、测试和观测；[维护与迁移](2026-10-12-development-maintenance.md)集中第二次修改、兼容与退出条件。原章节标题保留为深链入口，事实核实日期与证据等级不因拆分更新。
+
 - **本仓局部运行**：[Hook 五类合成输入](#hook-跨宿主迁移匹配成功不等于协议适配)（未执行补丁）、[标准库公式](#本轮零成本公式对照)、[路径逻辑模型](#外部生产者校准错误预期)、[32 场景固定 SQL](#写入路径扩展与序列化判等sqlite-chronicle)。各自只验证所列机制
 - **现场观察与操作记录**：[公开网页不同读取路径](#dot-实际能力诊断公开网页读取的路径差异)分别记录抓取 403、Chrome 原帖读取／刷新、GET 200／已知 ID；[发布路径](#发布一般建议与本仓观察分开)另记本仓已完成操作。现场观察不当作独立复测或效率收益
 - **历史运行、维护与反例**：[React 定向日志](#react生产构建故障中的定向日志)、[Pydantic AI 连续演化](#pydantic-ai取消契约改变不代表正常完成也应改变)等案例分别标明作者自报、历史 CI、固定补丁及尚未闭环的恢复／交付；合入代码不补作用户成功回执
@@ -196,421 +198,107 @@ Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/b
 
 ### 官方交互浏览器 Skill：值得借什么，不能照搬什么
 
-固定版本的 `playwright-interactive` 复用 REPL 与浏览器句柄；区分 renderer reload 与主进程 relaunch；功能验收要求实际用户输入，`evaluate` 可检查或准备状态，但不能充当验收输入；视觉检查与功能检查独立。普通 CLI Skill 则强调 DOM 明显变化后重新 snapshot，避免沿用失效元素引用。**[一手：S1 指定段落]**
-
-机制针对重复启动和沿旧状态推理，未测提速；复用会话可携带缓存、登录和脏数据，首次访问仍用干净上下文。
-
-该 interactive 快照要求关闭沙箱并给安装命令，本轮均未执行，也未验兼容性；只借观察／动作设计，优先当前受支持入口。**[一手：S1；经验：采用范围]**
+[阅读本节](2026-10-12-development-feedback.md#s197)
 
 ### 交互界面：按缺失观察选择反馈
 
-核实：2026-10-14 UTC。改变 23 §2/§4：选择能区分当前假设的反馈；视觉要求保留截图验收，语义与时序问题先复用已有真实输入测试及状态/事件证据。证据范围见表后。**[经验：采用判断]**
-
-| 比较及固定来源 | 实际条件与观察 | 能改变的选择；不能推出什么 |
-|---|---|---|
-| [Design2Code v2，§3.1、表3](https://arxiv.org/html/2403.03163v2) | HARD 为80页；self-revision 接收 text-augmented 初稿代码、初稿渲染图和目标图。GPT-4o 的 Block/Position 为67.7/77.5→72.1/81.1；Claude 3.5 Sonnet 为75.1/83.4→71.9/82.6 | 截图反馈有机会修视觉偏差，但不能假定修订必升；保留前版比较。这是静态复现、旧模型与非等成本对照，不是当前交互应用成功率 |
-| [Vision-Guided Iterative Refinement v1，§4.1、表1–2](https://arxiv.org/html/2604.05839v1) | 600测试任务；Sonnet 4.5 初稿→三轮的综合 VLM 分数7.584→8.048，报告 tokens 6,446→131,550。judge 对200组非平局人类偏好69.5%一致、22%不一致、8.5%平局 | 视觉＋代码 critique 可改善评分类质量，但未隔离截图贡献或给 Sonnet 做等 token 无视觉对照；不是执行完整用户任务，也不能用模型评分替用户接受体验 |
-| [InteractGUI / VF-Coder v1，§5.3](https://arxiv.org/html/2604.19750v1)与[固定入口](https://github.com/leozhilin/VF_Coder/blob/10bd5e6bebb34ba6c13ee4cf93802a575d9bb701/vf_coder_main_loop.py#L55-L74) | Gemini-3-Flash / PySide6 将 GUI Operator 与错误截图反馈分开开关；[修复者代码](https://github.com/leozhilin/VF_Coder/blob/10bd5e6bebb34ba6c13ee4cf93802a575d9bb701/vf_coder/code_agent/code_agent.py#L507)仅在 visual 模式附加错误截图，目标参考图仍可独立提供 | 发现运行状态与传达视觉错误是不同增量，不能合并成“接入浏览器收益”。论文称984任务，但缺逐例结果/种子/置信区间，表4部分百分比不能按984整数通过数还原；不据此排名或宣称显著收益 |
-
-上表是论文／固定源码证据，未独立运行；缺同一当前强 Agent、同任务等预算的四通道对照，接入取舍为工程判断。**[一手／经验]**
-
-**具体使用边界。** 选中或保存错误若已能由真实浏览器动作与结果断言揭示，不必新增截图循环；裁切、间距、素材与画布问题则必须补足视觉观察。结果最终正确、但早期点击丢失时，补动作时刻与事件顺序。[Playwright hydration 说明](https://playwright.dev/docs/navigations#hydration)明确指出控件启用早于监听器绑定会吞掉输入，建议应用就绪前禁用控件；不能靠延后测试输入制造通过。直接设置 DOM/组件状态不等于测试真实输入。**[一手：官方机制；经验：最小反馈建议]**
-
-入口理解、误操作恢复与体验接受仍需用户任务试用；保留原功能和视觉要求，仅为缺失判断补通道。上表未测用户参与的净收益。**[经验：采用与停止条件]**
+[阅读本节](2026-10-12-development-feedback.md#s205)
 
 ### 截图稳定化：结束动画不是保留当前状态
 
-核实：2026-10-16（UTC+8）。改变 23 §2：保留终态视觉基线，但不让截图准备推进待验的过渡、暂停或重开状态；局部 `allow` 只在需要保留该状态时采用。以下为官方契约、固定源码／测试定义与历史作者报告，未运行浏览器。**[经验：采用判断；研究：证据范围]**
-
-[PageAssertions 文档](https://playwright.dev/docs/api/class-pageassertions#page-assertions-to-have-screenshot-1-option-animations)规定 `toHaveScreenshot()` 默认 `animations: disabled`，可被项目 `expect` 或单次参数覆盖；[Page 文档](https://playwright.dev/docs/api/class-page#page-screenshot-option-animations)规定 `page.screenshot()` 默认 `allow`，按调用参数生效。[v1.63.0 发行提交 `1b025d7`](https://github.com/microsoft/playwright/commit/1b025d7e20a026371cd5f98ba0cdce48892737c8)的[matcher L346–363](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright/src/matchers/toMatchSnapshot.ts#L346-L363)与[screenshotter L201–219](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L201-L219)印证这一差异，两个入口不只相差图片比较。**[一手：文档与固定源码]**
-
-[固定实现 L109–155](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L109-L155)对有限 `endTime` 调用 `finish()`，没有复原步骤；无限动画先 `cancel()`、清理时 `play()`，不保存原位置和 `playState`。[回归 L774–835](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L774-L835)要求结束过渡、触发 `transitionend`，首图已含回调新增的 `h1`；[L865–938](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L865-L938)另验有限动画结束与无限动画取消事件。因此截图可能推进状态，不能独证原输入或恢复正确；局部 locator 截图也由[L224–255](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L224-L255)在所有 frames 准备。**[一手：源码与测试定义；研究：机制推导]**
-
-实现跳过 `playbackRate === 0`，并非 `playState === 'paused'`；[官方回归 L838–862](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/tests/page/page-screenshot.spec.ts#L838-L862)要求速率为 0 时保持 `currentTime = 500`。仍被 `getAnimations()` 返回、速率非零的暂停动画，不能保证免于 `finish/cancel` 或恢复暂停状态。此推论不覆盖所有暂停机制，也不授权为截图改变产品暂停。**[一手：源码与测试；研究：限定推论]**
-
-[#36899](https://github.com/microsoft/playwright/issues/36899)于 2025-08-01 报告 Playwright 1.54.2 普通截图有 Ionic sheet modal，视觉断言却没有。[原作者后续](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145555849)称换序后两张都缺，改为 `toHaveScreenshot({ animations: 'allow' })` 后恢复；[维护者回复](https://github.com/microsoft/playwright/issues/36899#issuecomment-3145780160)确认默认值差异出于兼容，仍推荐自动等待的视觉断言。无限动画只是作者归因，未核 Ionic 根因或复现；它支持局部改参，不支持全局关闭或认定当前普遍缺陷。**[社区：历史回执；一手：维护者说明]**
-
-**最小采用与撤回。** 纯终态布局继续用现有视觉基线；先完成相关真实输入、暂停后恢复或取消后重开的行为断言，再做可能推进动画的视觉比较。所需状态本已稳定却被准备动作改变时，只在该处用 `allow`。若需要观察过渡，复用动作／事件时间线，已有测试能证明命中目标阶段及其结果就不加层。`allow` 不是精确采样：普通截图仍有[字体等待 L251–264](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/screenshotter.ts#L251-L264)，视觉断言仍按[匹配／稳定化循环 L719–795](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/src/server/page.ts#L719-L795)取图，持续变化时可能超时；该版本首张直接匹配已有基线可返回，也不应概括为每次必拍两张。另据 [actionability](https://playwright.dev/docs/actionability#stable)，`locator.click()` 会等元素 bounding box 连续两帧不变，所以发起调用的时刻不等于输入发生时刻；确认真实动作命中窗口，不统一改用 `force`。**[一手：工具机制；经验：选择边界]**
-
-验证范围：只读文档、发行源码、测试定义及原评论；未运行 Playwright、上游用例或模型，未测具体修复收益。**[研究]**
+[阅读本节](2026-10-12-development-feedback.md#s221)
 
 ### Service Worker：响应来源决定保存与故障验收入口
 
-核实：2026-10-15（UTC+8）。改变 23 §3/§4：服务器同步的验收增加独立读取，故障注入增加实际命中确认；本地保存不强加服务端要求。复用现有 API／浏览器测试，不增加平台或框架。**[经验：采用判断]**
-
-Playwright [固定修复提交 `ea75b9f` 的回归 L23–98](https://github.com/microsoft/playwright/blob/ea75b9f32ca4120efdfaf8f5b8cfd292f548f197/tests/library/browsercontext-service-worker-policy.spec.ts#L23-L98)覆盖 literal、Cache Storage、network fallback 和 preload fallback；L79–92 要求当前页及同 context 新页均返回 200、来自 worker、显示 offline，而服务端请求为 0，恢复在线才变为 1。这是响应机制的测试定义，非保存缺陷实测。**[一手]**
-
-承诺服务端同步时，刷新或新标签页不够，可用 API 读取本次记录：[APIRequestContext 实现 L350–389](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/packages/playwright-core/src/server/fetch.ts#L350-L389)用 Node HTTP/HTTPS，不经页面 worker。但服务端缓存与数据库耐久性仍须另验，不能据此保证落盘。只承诺本地保存时验本地重开，联网同步单列结果。**[一手：源码；经验：验收选择]**
-
-[Chromium 回归 L373–434](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/tests/library/chromium/chromium.spec.ts#L373-L434)同时收集 `page.on('request')`、context 事件与 route 命中：透明 worker 的 `/data.json` 可由 context 路由，页面同名请求虽有事件却不可路由。[后续回归 L436–538](https://github.com/microsoft/playwright/blob/a3401cfe0dcf317101572d025fa46248d0779b42/tests/library/chromium/chromium.spec.ts#L436-L538)另区分缓存、`/foo` 改写为 `/bar`、合成 200 和透传。注册页面 URL 失败规则不代表注入成功，须查实际命中与响应；必要时在 Chromium 支持范围内改到 worker 持有的网络请求。**[一手：测试定义；经验：覆盖判断]**
-
-透明 worker 也返回 `fromServiceWorker() === true`，不能等同缓存命中或要求一律为 false；HTTP cache 也不同于 Cache Storage、合成响应。[官方说明](https://playwright.dev/docs/service-workers)把这些观测和路由能力限于 Chromium，主脚本更新仍不可路由，不能补救全部 worker 请求或 Firefox／WebKit。禁用 worker 会改变产品行为：普通 API mock 可 block，离线验收不能借此绕过。**[一手；经验：采用边界]**
-
-[真实报告 #42775](https://github.com/microsoft/playwright/issues/42775)在 1.63.0 的 WebKit 上发现：即使 worker 直接生成响应，离线模拟也拒绝导航；停止源站的对照则能返回。它不代表两种故障等价。[修复 #42894](https://github.com/microsoft/playwright/pull/42894)于 2026-10-05 合入上述 `ea75b9f`，在 page target 初始化时显式应用已配置的 offline 状态并补回归。固定测试仍跳过 Electron／旧 WebKit，并对 Firefox 的 network/preload fallback 标 fixme。离线测试失败时应先核工具版本、模拟范围和实际请求，不能直接撤掉产品要求。未核首次正式发布版本；PR 页面仍有失败检查，本轮没有复核其因果或宣称全 CI 通过。**[一手：报告、维护补丁与测试限制；经验：诊断选择]**
-
-只读上述固定测试、API 源码和 issue／PR，未运行浏览器、上游测试或模型。**[研究：验证范围]**
+[阅读本节](2026-10-12-development-feedback.md#s237)
 
 ### React：生产构建故障中的定向日志
 
-✅ 当状态更新依赖时序，先在实际失败的构建中复现，再记录相关状态随时间的变化；只需现有浏览器和定向日志时，不必增加调试平台。**[经验：23 §4 采用建议，2026-10-13]**
-
-Dan Abramov 于 2026-02-18 的[#35821](https://github.com/react/react/issues/35821)含[公开复现](https://github.com/gaearon/react-udv-bug)：server action 返回 JSX 后，`useDeferredValue` 在开发版追上输入，生产版常卡旧值。[3 月 24 日原帖](https://bsky.app/profile/danabra.mov/post/3mhrdue7gds2h)称 Claude 此前未定位或写出失败测试；[紧接原帖](https://bsky.app/profile/danabra.mov/post/3mhrdwgnhkc2h)记后来依次浏览器复现、读人指定源码、给生产 bundle 加日志、修复。它支持提供实际状态变化，不排除源码可定位。**[一手：报告与作者自述，非完整模型轨迹]**
-
-[固定合并提交 `c0d218f0f3e02ed581f74096e56baa947213135d`](https://github.com/react/react/commit/c0d218f0f3e02ed581f74096e56baa947213135d)在 `pingSuspendedRoot` 无法立即重启当前 render 时保存 pinged lanes，避免随后标为 suspended 而失去重试，未加业务轮询。新测试让兄弟组件在同一 render 内 resolve 挂起数据，最终须渲染 updated；既有测试另记新增重试行为。回归锁定 resolve/ping 时点。**[一手：补丁与测试；研究：机制归纳]**
-
-[#36134](https://github.com/react/react/pull/36134)署名 Claude 编写／调试，获 acdlite 批准，2026-03-24 合入并关闭 issue。固定修复为上述提交，首次正式发布未核，不能当作当前缺陷。页面显示 245 checks passed；Test Plan 要求撤修复使新测失败、修复 bundle 解决 repro，但缺逐项 CI、会话、红绿或浏览器原日志，也未独立重跑。**[一手：署名、合入与聚合结果；研究：边界]**
-
-review 指出源码已有 TODO，作者给出源码范围和日志建议；专家、复现及会话差异都可能贡献，不能独归日志。保留失败构建与输入，只观察区分假设的状态，把触发条件放入已有回归。日志可能扰动调度，须移除后复测用户路径。本例仍是专家参与的历史单例。**[一手：review 与自述；经验：接入要求]**
+[阅读本节](2026-10-12-development-feedback.md#s253)
 
 ### 属性测试：搜索反例不等于确认或修好缺陷
 
-核实：2026-10-13。主线二；改变 15 §6：输入组合多、有明确契约且执行便宜时，试用小范围属性搜索，不默认加测试 Skill 或全仓扫描。**[经验：采用判断]**
-
-
-1. [NumPy PR #29609](https://github.com/numpy/numpy/pull/29609)：Agent 提议并执行 Wald 样本非负属性；作者称自己花了数小时验证、定位并亲自编写修复。Agent 发现不等于 Agent 修好。[维护者独立复验](https://github.com/numpy/numpy/pull/29609#issuecomment-3210974565)表明初始 mean=1e8 在他的构建不失败，改1e9才得到3个负样本；作者确认同样结果。**[一手：原始PR与回复]**
-2. [最终合并补丁](https://github.com/numpy/numpy/commit/0ce0ef0bae095e44770a20b64177f07f11758715)不是 PR 初稿公式；最终为 `d=1+sqrt(1+4*scale/Y)`、`X=mean*(1-2/d)`，新增固定seed、mean=1e9、scale=2.25、1000样本的回归。[2.3.4发布](https://github.com/numpy/numpy/releases/tag/v2.3.4)列入backport #29926；[2.3.4固定Generator实现](https://github.com/numpy/numpy/blob/1458b9e79d1a5755eae9adcb346758f449b6b430/numpy/random/src/distributions/distributions.c#L846-L861)已改变，[同版本legacy_wald](https://github.com/numpy/numpy/blob/1458b9e79d1a5755eae9adcb346758f449b6b430/numpy/random/src/legacy/legacy-distributions.c#L147-L163)仍是旧式。不要概括为所有numpy.random.wald入口都已修复，也不把正文早期残余失败自动归给最终版。**[一手：固定源码与发布]**
-3. 属性根据：[NumPy 2.3官方API](https://numpy.org/doc/2.3/reference/random/generated/numpy.random.Generator.wald.html)规定正mean/scale，输出Wald分布；非负性得到维护者确认。它不是复制实现中间值作为预期。**[一手：API与维护者]**
-4. [dateutil #1437维护者回复](https://github.com/dateutil/dateutil/issues/1437#issuecomment-3225141158)：method=1返回Julian名义年月日，但Python date按Gregorian算weekday，2015-03-30因此显示非周日；method=2才转Gregorian为2015-04-12。原报告被判预期行为。以“Easter必须周日”跨日历强加断言会制造误报。[官方方法契约](https://dateutil.readthedocs.io/en/stable/easter.html)也分三种算法。**[一手：原始判定与API]**
+[阅读本节](2026-10-12-development-feedback.md#s265)
 
 #### 成本与限制
 
-- 采用已有测试环境；仅当组合输入确实难枚举才加小范围属性测试。生成器需要维护有效域，过窄丢掉边界，太宽会测无效输入。语义不清、UI感受、慢且有真实外部副作用的路径不应先用大规模随机执行。**[经验：采用/撤回条件]**
-- [Hypothesis官方运行次数说明](https://hypothesis.readthedocs.io/en/latest/explanation/test-case-count.html)指出过滤重试、失败收缩、解释与重放会使实际执行次数超出max_examples；因此该字段不是调用/耗时硬预算，昂贵路径要单列隔离与总时限。[重放API](https://hypothesis.readthedocs.io/en/latest/reference/api.html#hypothesis.reproduce_failure)的blob不保证跨Hypothesis版本，永久回归优先保留显式输入。**[一手：当前文档，2026-10-13]**
-- [研究全文v1](https://arxiv.org/html/2510.09907v1)使用Opus4.1扫描933模块，API总成本$5474.20，不含本例人工修复工时；最初50份人工复核来自初筛分数前80%，不能把56%合法率当984份完整普查。本轮未取得当前强Agent“无PBT/有PBT”同任务净收益对照，本轮也没跑模型。**[一手：论文；研究：适用边界]**
+[阅读本节](2026-10-12-development-feedback.md#s275)
 
 #### 本轮零成本公式对照
 
-以下是本轮自己编写、实际运行的 Python 标准库程序；不执行 NumPy、Hypothesis、上游仓库代码或模型。固定三组 mean、scale=2.25，枚举 n=i/1000（i=1..9999），只对照抽样公式的中间 X；80 位 Decimal 采用独立的无抵消有理化式。不是随机分布、跨平台 NumPy 或 Hypothesis 生成/收缩性能验证。**[研究：局部机制实测]**
-
-```python
-"""Own standard-library numerical probe, not a NumPy or model run.
-Formula provenance: NumPy 0ce0ef0bae095e44770a20b64177f07f11758715.
-Only n > 0 is covered; Python division-by-zero differs from NumPy's C path.
-"""
-import math
-import platform
-from decimal import Decimal, localcontext
-
-
-def old_x(mean, scale, n):
-    y = mean * n * n
-    return mean + mean / (2 * scale) * (y - math.sqrt(4 * scale * y + y * y))
-
-
-def merged_x(mean, scale, n):
-    y = mean * n * n
-    d = 1 + math.sqrt(1 + 4 * scale / y)
-    return mean * (1 - 2 / d)
-
-
-def reference_x(mean, scale, n):
-    # Independent rationalization, with no subtraction of near-equal terms.
-    with localcontext() as ctx:
-        ctx.prec = 80
-        mu, lam, z = map(lambda v: Decimal(str(v)), (mean, scale, n))
-        y = mu * z * z
-        return mu / (1 + y / (2 * lam) + (y * (4 * lam + y)).sqrt() / (2 * lam))
-
-
-print('python', platform.python_version(), 'mantissa_bits', __import__('sys').float_info.mant_dig)
-for mean in (1.0, 1000.0, 1e9):
-    cases = [(i, i / 1000) for i in range(1, 10000)]
-    failures = [(i, n, old_x(mean, 2.25, n)) for i, n in cases if old_x(mean, 2.25, n) < 0]
-    after = sum(merged_x(mean, 2.25, n) < 0 for _, n in cases)
-    print('grid', 'mean', mean, 'scale', 2.25, 'n=0.001..9.999', 'cases', len(cases), 'old_negative', len(failures), 'merged_negative', after)
-    if failures:
-        i, n, old = failures[0]
-        ref = reference_x(mean, 2.25, n)
-        new = merged_x(mean, 2.25, n)
-        print('first_in_grid', 'i', i, 'n', n, 'old', repr(old), 'merged', repr(new), 'reference', format(ref, '.25g'))
-        assert old < 0 < new and ref > 0
-        assert abs(Decimal(str(new)) / ref - 1) < Decimal('1e-6')
-        assert after == 0
-# A counterexample to treating non-negativity alone as numerical accuracy.
-mean, scale, n = 1e20, 2.25, 1.0
-new, ref = merged_x(mean, scale, n), reference_x(mean, scale, n)
-print('weak_oracle', 'mean', mean, 'n', n, 'merged', new, 'reference', format(ref, '.25g'), 'nonnegative_pass', new >= 0)
-assert new == 0 and ref > 2
-print('PASS: local mechanism checks; NOT NumPy/Hypothesis execution or model benefit')
-```
-
-原始输出：
-
-```text
-python 3.12.14 mantissa_bits 53
-grid mean 1.0 scale 2.25 n=0.001..9.999 cases 9999 old_negative 0 merged_negative 0
-grid mean 1000.0 scale 2.25 n=0.001..9.999 cases 9999 old_negative 0 merged_negative 0
-grid mean 1000000000.0 scale 2.25 n=0.001..9.999 cases 9999 old_negative 52 merged_negative 0
-first_in_grid i 1235 n 1.235 old -52.98190641403198 merged 1.4751921906253074 reference 1.475192180407241681105309
-weak_oracle mean 1e+20 n 1.0 merged 0.0 reference 2.249999999999999999898750 nonnegative_pass True
-PASS: local mechanism checks; NOT NumPy/Hypothesis execution or model benefit
-```
-
-网格结果见原始输出；mean=1e9 的首个反例与独立高精度正值对应。极端输入使最终式归零而非负检查仍过，故非负性不等于数值精度。仅覆盖 n>0，Python 除零不能代表 C。**[研究：实际结果与边界]**
-
-程序 SHA256：`7f7130436211bb82e4eb334afbc5ef56c713c4eaecd5f64168be13ab37194263`；输出 SHA256：`a2c69ab5866f715813a88228a914fafe2fa974f2dbfcfc58d537172fab7caf72`。执行范围见本小节开头；未测交付总成本，没有据此证明额外 Skill 比直接提示更有效。
+[阅读本节](2026-10-12-development-feedback.md#s281)
 
 ### 外部生产者校准错误预期
 
-> 核实：2026-10-13 UTC。15 §6 的窄增量：外部兼容预期应来自生产者，有证据时修正旧断言；复用已有用例。**[研究：采用判断]**
-
-RTK 的[真实用户报告 #2367](https://github.com/rtk-ai/rtk/issues/2367)是 Windows 默认当前项目发现为零。[旧源码 5d32d073](https://github.com/rtk-ai/rtk/blob/5d32d0736f686b69d1e8b9dc45c007d4eb77a0a2/src/discover/provider.rs#L404-L410)已有 Windows 测试，却与实现、注释共同把合成路径 `C:\Users\foo\bar` 的预期写成 `C:-Users-foo-bar`；真实生产者目录应为双连字符。该基线 [CI](https://github.com/rtk-ai/rtk/actions/runs/29001896511) 的 Linux/macOS/Windows `cargo test --all` 步骤均成功，但原始 Windows 日志已返回 410，未逐例确认该用例的执行结果。**[社区：故障报告；一手：源码与 CI 元数据]**
-
-[已合入 #2952](https://github.com/rtk-ai/rtk/pull/2952)（head `40fccbd8ef11d7cfda951253fa6f63944f1188e4`）同时添加冒号替换、修正文档和旧断言；贡献者报告原机默认命令 0→1，维护者[要求删除重复测试](https://github.com/rtk-ai/rtk/pull/2952#pullrequestreview-4922112994)，最终补丁只修正旧用例。另一贡献者[检查生产者目录后撤回大小写归因并报告 0→30](https://github.com/rtk-ai/rtk/issues/2919#issuecomment-5008576670)，其 #3043 未合入，不能当成 #2952 发布后的独立复测。**[一手：补丁与评审；社区：运行报告]**
-
-改错断言不等于弱化验收，重复同路径也不保证更可靠；`--all` 历史仅辅助诊断。实跑属贡献者自报；[有 Claude Code 标记的 #2368](https://github.com/rtk-ai/rtk/pull/2368)未合入，不证明 AI 写出原 bug 或所有版本／大小写已恢复。
-
-标准库局部探测：只用合成路径与临时空文件，按已读源码写出的 **Python 逻辑模型，非 Rust/Windows/RTK 执行**；固定期望目录不调用编码函数生成。旧编码找到 0 个，新编码恰好找到 1 个，无关目录均未命中。**[研究：本轮实际运行，机制范围]**
-
-```python
-from pathlib import Path
-from tempfile import TemporaryDirectory
-
-cwd = r"C:\Users\foo\bar"
-with TemporaryDirectory() as tmp:
-    root = Path(tmp)
-    for slug in ("C--Users-foo-bar", "C--Users-other-project"):
-        (root / slug).mkdir()
-        (root / slug / "session.jsonl").touch()
-    for label, chars, count in (("old", "/._\\ []", 0), ("new", "/._\\ []:", 1)):
-        encoded = "".join("-" if not c.isascii() or c in chars else c for c in cwd)
-        hits = sorted(p.parent.name for d in root.iterdir()
-                      if encoded in d.name for p in d.glob("*.jsonl"))
-        assert len(hits) == count
-        assert "C--Users-other-project" not in hits
-        print(label, encoded, hits)
-print("PASS: Python logic model only; NOT Rust, Windows or RTK execution")
-```
-
-输出：`old C:-Users-foo-bar []`；`new C--Users-foo-bar ['C--Users-foo-bar']`；`PASS: Python logic model only; NOT Rust, Windows or RTK execution`。它只验证已选映射与过滤逻辑的区别，不验证生产者完整算法或真实 CLI。
+[阅读本节](2026-10-12-development-feedback.md#s353)
 
 ## 三、领域知识比通用规划更可能是持久资产
 
-类型以外的舍入、时区、错误码、生产作业与可接受异常也决定正确性；可追踪案例和理由可能比通用规划提示更有增量。**[经验：待检验判断]**
-
-S2 的迁移教程用 COBOL/JCL 数据流说明这点，但不能整套照搬：
-
-- 它安排多份 overview/design/validation 文档，适合复杂迁移，不是每个小功能都需要四份文件。
-- 第 3 阶段明确允许测试占位，之后才接入旧/新系统；因此“测试文件已生成”不是兼容性已验证。试点时应尽早确认旧系统是否真能运行，否则可能写出大量无法验证的迁移计划。
-- 旧系统是行为基线，不是所有行为都正确。应分清必须兼容、明确要改变、仍有争议的行为；否则 Agent 会复制旧 bug，或擅自修正实际上必须兼容的细节。
-- 教程出现 `.agent/AGENTS.md` 的规划例子。按已核对的 Codex 指令发现机制，不能由文件存在推断它在仓库根任务自动加载；要有适用目录或明确引用。这再次说明官方教程也需结合客户端机制阅读。
+[阅读本节](2026-10-12-development-maintenance.md#s387)
 
 ### 迁移后的事实归属与旧调用方式
 
-> 核实：2026-10-14 UTC。改变 15 §5 的试点范围：职责迁移后，输出相同仍不足以证明查询走在正确系统上。**[研究：采用判断]**
-
-[Anthropic 源码管理团队复盘](https://www.anthropic.com/engineering/redesigning-source-control)发表于 2026-10-13；“What we learned building Scion”报告，多个系统让 Agent 线性读取提交日志来推算变更何时合入 main，而工程师要求改向代码评审工具查询。这里缺的不是更多逐文件验证，而是确定谁负责提供这项事实。**[一手：工程团队自述；研究：原因与建议提炼]** 因此在跨系统迁移试点中，检查查询来源及已退役的调用方式；不能仅因新旧输出相等就接受原有扫描或状态重建路径。
-
-**保留兼容的反例。** [Sapling 官方介绍](https://sapling-scm.com/docs/introduction/)的“Why make a new version control?”说明，其内部抽象将体验与仓库格式分离，使内部扩展方案仍能与 Git 仓库交互。**[一手：官方设计说明，非同负载对照]** 所以采用的是事实归属检查，不是默认删除兼容：外部消费者仍需要旧接口，或新接口不能覆盖语义、权限及可用性要求时，保留适配或缩小迁移范围。**[经验：采用与撤回条件]**
-
-**来源边界。** 只读官方原文；Scion 无对应补丁、固定源码、原始轨迹或独立复测，日期仅为发表时间。Sapling 为未固定历史版本的当前文档；未运行软件／模型、未测维护收益。
+[阅读本节](2026-10-12-development-maintenance.md#s398)
 
 ## 四、游戏开发用来检验这个方向，而不是扩张引擎百科
 
-游戏中的时间、输入、随机性、加载和镜头会影响观察；可借其接口设计检验通用方法，不能外推全部游戏。
-
-假设要修“冲刺后偶尔穿墙”：保存初始位置、速度、碰撞体、输入序列与相关种子，配合固定步推进，有助于重复调查；同时还要通过真实输入链与实际帧时序复查。直接设置最终位置或只调用移动函数会跳过输入采样、动画与物理调度，不能证明用户路径修复。固定种子也不自动消除物理引擎、并发和平台差异。**[经验：案例设计，未运行引擎]**
-
-状态定位机制、截图看呈现、试玩判断控制感与设计目标；三者不作永久成本排名。状态通过而画面不可玩须解释；玩家不接受机制可能要求改设计。
-
-Jeff Schomay 原博客在原调查中访问受限，没有把旧文转述升级为一手复核。实际选型应回到对应领域页，不用“L3 性价比最高”或“AI 做不出好玩游戏”替代具体证据。**[研究：来源与适用边界]**
+[阅读本节](2026-10-12-development-maintenance.md#s408)
 
 ## 五、我们应怎样安排研究，而不是怎样继续加任务
 
-下列案例把项目知识、反馈与架构判断落实到真实后续修改。选择干预时须指出任务缺口、替代方案与额外成本；模型能力仍可能是瓶颈，撤回条件见本节末尾，不再沿早期 D4／D6 分工重复扩任务。**[经验：选材原则]**
+[阅读本节](2026-10-12-development-maintenance.md#s418)
 
 ### Discourse：共享组件承接后续需求
 
-✅ 对语义相同的新视图，先复用现有组件；真实需求出现时，再检查能否只扩展共享边界，不提前建立通用框架。**[研究：采用判断，2026-10-13]**
-
-**起点与归属。** [#38888](https://github.com/discourse/discourse/pull/38888) 由 markvanlan 提交，2026-04-16 合并；[固定提交](https://github.com/discourse/discourse/commit/8feeaa5d69cd9462cc6aa4f560cb1e953e588e0b) 列 Claude Opus 4.6 及多位人类 coauthor，记录作者声明的 AI 参与，不包含生成过程，不能归因全部代码。[初始 header](https://github.com/discourse/discourse/blob/8feeaa5d69cd9462cc6aa4f560cb1e953e588e0b/frontend/discourse/app/components/nested-view-header.gjs) 直接导入并渲染已有 TopicCategory。**[一手：署名与源码]**
-
-**真正的下一需求。** 8 月 11 日，另一贡献者 nullchristo 的 [#42520](https://github.com/discourse/discourse/pull/42520) 为客户插件在 category/tags 旁增加信息提供扩展点。[合并补丁](https://github.com/discourse/discourse/commit/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e) 只改共享 TopicCategory 的包装 outlet 和 docked header 的 topic 参数；同版本 [nested/header](https://github.com/discourse/discourse/blob/e4f8b88ea34f1fe23474a62ddb1afb01b65f7b8e/frontend/discourse/app/components/nested/header.gjs) 仍调用它，未另改树加载或复制 nested 专属实现。作者与初始 coauthor 不同，但未证首次接手。**[一手：需求、补丁与调用链]**
-
-**交付边界。** 后续 PR 获批准并合并。[core frontend 原日志](https://github.com/discourse/discourse/actions/runs/31506849232/job/93830516975) 核实运行版本为 `48d4571d4d747ae4fade0c49fd9e851fb693cd78`，即 head `cd63a1cc4b647701f505131af05bd7368fdf4bc5` 与 base `3908561e29d2187ac622eadd8a59fa3ba54ebac1` 的测试合并；`qunit:test` 汇总 6473 passed、0 skipped/failed。补丁没有新增测试，日志中通用 PluginOutlet 用例不等于新客户插件验收；原需求说将支持该插件，无客户部署／复测／工时；只读未复跑。**[一手：CI 原日志；研究：范围限定]**
-
-**反例约束。** [真实管理员报告](https://meta.discourse.org/t/im-struggling-to-recover-deleted-post-how-to-fix/403161/1)显示，已删除 nested topic 的 500 阻断恢复。[#40134](https://github.com/discourse/discourse/pull/40134) 的[固定修复](https://github.com/discourse/discourse/commit/a051d96b6526c7a2ad2b7754863d7364e6401c28)给 OP 查询补接已有 visibility helper，并新增 staff show/context 返回 200 与 placeholder、non-staff 返回 404 的断言。修复作者 xfalcox 也是初始人类 coauthor，属团队维护；手工恢复未勾选，不能写用户已成功恢复。**[社区：用户原帖；一手：补丁]**
-
-UI 复用未覆盖后台生命周期；继续核查看、删除和恢复，局部补接够用时不重写架构。**[研究：采用建议]**
+[阅读本节](2026-10-12-development-maintenance.md#s422)
 
 ### Pydantic AI：取消契约改变，不代表正常完成也应改变
 
-> 核实：2026-10-14 UTC。主线三；改变 22 §5：把“本次要改变的行为”与“相邻仍须保留的行为”成对验收，再判断修复应落在哪层。✅ 采用；未测模型效果。**[研究：采用判断]**
-
-**固定演化链。** 以下源码均只读，未安装或执行 Pydantic AI：
-
-| 阶段 | 固定来源／真实需求 | 能确认什么 |
-|---|---|---|
-| 初始产物 | [v1.91.0 的 `_agent_graph.py`](https://github.com/pydantic/pydantic-ai/blob/b83abdf23d2cfe9940a83b51b1ce7abe0fc9b807/pydantic_ai_slim/pydantic_ai/_agent_graph.py#L668-L677) | 共享节点在消费者返回后继续排空，注释说明用于完整 usage 统计；是行为基线，不是这条路径的历史通过日志 |
-| 后续真实需求 | [#5132](https://github.com/pydantic/pydantic-ai/issues/5132)；[变更 `93a6104`](https://github.com/pydantic/pydantic-ai/commit/93a61042943d3887c737ba753b908f258e8ea162) | 报告者在 1.81.0 的取消复现中记录清理未完成、仍有 4 个任务；#5313 引入托管流的确定性清理，并移除共享节点的排空循环 |
-| 用户故障与修复判定 | [#5769](https://github.com/pydantic/pydantic-ai/issues/5769)、[#5771](https://github.com/pydantic/pydantic-ai/pull/5771) | 报告涉及 1.92–1.105 的空响应／零 usage；维护者将条件收窄为 handler 正常返回但未消费完流，普通无 handler 路径不受影响 |
-| 窄修复产物 | [最终 `49f62a3`](https://github.com/pydantic/pydantic-ai/commit/49f62a386041abd6e0d960dd629c3b4fe28eac63) | 只改 `agent/abstract.py` 与 `tests/test_streaming.py`：在三处 driver 的 handler 正常返回后排空，异常向外传播时不进入该语句；保留共享节点与公开 API |
-
-源码／补丁 **[一手]**，故障为 **[社区：运行自述，非本仓复现]**。#5132 明确披露由 AI coding assistant 与用户协作提出；#5313／#5771 另有 Codex、Devin 自动评审，但不能据通用 AI checklist 推断实现由哪个模型生成。
-
-**为什么不能恢复旧循环了事。** 正常返回的 handler 可以只观察部分事件，最终响应仍须完整。共享节点的旧循环位于 `yield` 后、`try` 内，向外传播的异常本来就会跳过它；#5771 指出的另一冲突是显式 `stream.cancel()` 后仍可正常退出上下文，旧循环仍会尝试排空。最终由 driver 在 handler 正常返回后补齐流，向外传播的取消／其他异常则跳过；handler 内部只 `break` 再正常返回仍属于应排空的路径。职责调整保留显式取消与正常完成两种契约。**[一手：前后控制流、修复说明；研究：决策解释]**
-
-这也不是“内层已有抽象就绝不动外层”。[Devin 指出](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3349919895) `CallToolsNode` 内层自排空不保证 capability wrapper 完成；[作者明确回复](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3353383025)已修正，最终三处分支一致。[Codex 则提出](https://github.com/pydantic/pydantic-ai/pull/5771#discussion_r3349656443)删除公开 `AgentStream.drain()` 会破坏调用者；[最终 `result.py`](https://github.com/pydantic/pydantic-ai/blob/49f62a386041abd6e0d960dd629c3b4fe28eac63/pydantic_ai_slim/pydantic_ai/result.py#L173-L177)仍保留该方法。前者获作者确认，后者仅产物对应；不独归因某条反馈。**[一手：评审、回复、源码]**
-
-**成对验收与执行边界。** 最终新增四个正常完成测试，分别覆盖 `run`／`run_stream` 的完整文本与工具调用；另一个仅覆盖 `run` 的取消测试使用无限流，handler 抛出 `CancelledError`，要求只发生一次前置 lookahead。同时验完成与取消。[先前测试提交](https://github.com/pydantic/pydantic-ai/commit/95d9ff040d327a57423438df060b23bfb3e65d50)报告 `try/finally` 排空变体会失败；[后续提交](https://github.com/pydantic/pydantic-ai/commit/230e6d10ea4ec13198bd80fffc2014b2ac23e13f)将有限 sentinel 改为无限流与计数，以消除不可达的覆盖行。仅测试定义／mutation-testing 自述，缺红绿原日志。PR 页面显示 56 checks passed，也不能代替逐测试前后结果。**[一手：测试、提交说明与平台摘要]**
-
-**最强反证。** #5771 明说用户最初贴的非流式例子并不触发该路径；#5769 当前正文已经过修改，非原始成功复现。修复 PR 正文还残留“CallToolsNode 分支不动”的描述，与最终补丁不同，故以上以固定产物和作者后续回复为准。[第三方历史复演](https://www.startearly.ai/regression-case-files/pydantic-ai-release-replay/)另报告 TestModel 在 1.91 通过、1.92 失败、1.106 通过；这是已知故障的事后复演，未重跑，不背书检测产品。**[一手：维护者解释；社区：第三方复演]**
+[阅读本节](2026-10-12-development-maintenance.md#s436)
 
 #### 累计到下一次需求：保存、重放、整轮取消不是同一个契约
 
-> 核实：2026-10-14 UTC。本节接续同一取消／历史链。三项新增要求是**保存中断产物、重新使用这些产物、从外部停止整轮并取回状态**；需求次数不按评审／修 bug 计。**[研究：比较范围]**
-
-| 阶段与真实要求 | 固定产物、责任与操作变化 | 保留什么，什么有意改变 |
-|---|---|---|
-| 1. 取消返回前完成清理；正常返回仍交付完整结果 | 上文 `93a6104` 将事件流清理交给托管迭代器；`49f62a3` 把正常完成排空放到 handler driver，而非恢复共享节点旧循环 | 取消不继续消费与正常完成不丢结果同时成立；先分清退出策略，不统一所有路径 |
-| 2. 前端已显示的中断输出也要保存 | [#3219](https://github.com/pydantic/pydantic-ai/issues/3219) → [#5364／`35fb827`](https://github.com/pydantic/pydantic-ai/commit/35fb8271688f438844e43cb0020d371a34cdc47a)。图节点在异常路径记录部分 response／tool returns，消息增加 interrupted 状态；工具返回非空才追加 request | 从“完成产物”增加到“可辨识的部分产物”；尚未承诺所有捕获历史都可再次发给模型 |
-| 3. 将中断历史用于下一轮，而非仅供观察 | [#5836](https://github.com/pydantic/pydantic-ai/issues/5836) → [#6319／`8602986`](https://github.com/pydantic/pydantic-ai/commit/86029861bb86b210c29b3d3f3f3d5660fefd8c57)。共享历史清理层修复未配对工具调用、处理孤立结果，UI adapter 往返保存 outcome；测试包括不应自动修复的 deferred frontier | 尚待处理的工具与已经中断的工具必须区分；原始记录与发送给 provider 的整理分层，不把修复散到所有调用者 |
-| 4. stop 按钮、线程或工具要停止整轮并拿回状态 | [#5835](https://github.com/pydantic/pydantic-ai/issues/5835) → [#6497／`a19b68a`](https://github.com/pydantic/pydantic-ai/commit/a19b68adeb2d18efd3719bb3c7f738a853d41984)。增加 run-scoped controller、token、外层取消分类与清理完成后的快照；复用 stream/tool teardown，响应级 cancel 保持原义 | 外部 `CancelledError` 继续传播以保留 timeout／TaskGroup 语义，本方取消以 `RunCancelled` 携带状态。新的控制范围要求掌握整轮状态的责任边界，不能只在流末尾补判断 |
-| 5. 新契约的实际反例：首个工具尚未返回就取消 | [用户 #7977](https://github.com/pydantic/pydantic-ai/issues/7977) 在 2.37.0 给出确定性复现；[#7993／`1467456`](https://github.com/pydantic/pydantic-ai/commit/1467456556b9109b5b92eb7c7def8eabb5287775) 去掉旧 `if output_parts` 门槛，保留空 interrupted request | 阶段 2 的“空数据不保存”已不成立：消息还承担“这些工具不会再返回”的恢复信号。错误路径精确消息计数有意改变；修复沿已有 repair 边界完成，无须再次重构整轮控制 |
-
-固定补丁／测试 **[一手]**，复现 **[社区：用户运行]**；本轮未运行。历史 repair 与 run controller 是不同责任，不能把作用全部归给 #6497。#7993 新增带／不带新 prompt 的恢复、错误退出恢复及多个 dangling calls 覆盖；作者称前三例旧版失败、新版通过，本轮未取得其逐例红绿原日志。
-
-**晚期仍可窄修，而非越改越大。** run 级能力已有后，[#7743](https://github.com/pydantic/pydantic-ai/pull/7743)针对用户 #7722 的 adapter 不接收 token，把可选参数经三个入口转发到已有 run API，并补 native／编码流／dispatch 测试。属于既有承诺的补接线，非新需求或 UI 专用控制器。**[一手：补丁与需求；研究：选择解释]**
+[阅读本节](2026-10-12-development-maintenance.md#s459)
 
 #### 接收者接下来做了什么：删除补偿层，而非恢复旧测试期待
 
-**[一手：历史 CI；社区：接收者隔离报告]** [akgentic-llm #155](https://github.com/b12consulting/akgentic-llm/issues/155) 的 jltournay 调查了下游 healing／恢复测试失效。独立复核取得同一 `db899ae0e2ba32d9da3cdbf3465025f8dbb4afe5` 的[9 月 2 日 job](https://github.com/b12consulting/akgentic-llm/actions/runs/33616228928/job/100202578437) 885 passed，以及[9 月 3 日 job](https://github.com/b12consulting/akgentic-llm/actions/runs/33759029604/job/100660445431) 9 failed、876 passed。代码相同，环境不同：slim／graph、anyio、ast-serialize、prices、genai 等依赖均变化，不能把这组 CI 当作只改变 Pydantic AI 的对照。作者另报告隔离依赖后将八项定位到 2.37→2.38、另一项定位到 anyio；该因果定位仍归作者报告。
-
-**[一手：最终产物]** [#156／`94779e1`](https://github.com/b12consulting/akgentic-llm/commit/94779e16adc47e964e0976c5311a276953fa6ca7)落实了接管选择：
-
-- 原 `HealingCapability` 在错误钩子看到末尾已是空 request 后不再执行，上游下一轮会补工具返回；下游删除该能力、挂载顺序依赖、公开导出及专属常量，保留预算恢复决策 `LimitRecoveryCapability`。只删重复责任，未测工时
-- 最初不改依赖下限的决定被[修正](https://github.com/b12consulting/akgentic-llm/issues/155#issuecomment-5619072935)：2.38 前首个工具未返回的失败路径不会留下该恢复标记，删除会破坏原来可恢复的路径。最终要求从 `>=2.32,<3` 改为 `>=2.38,<3`，保留已有主版本上限
-- 删除公开名字而不留无效 shim，外部旧导入会报 `ImportError`；同时接受模型侧失败说明由项目特定文案变成上游通用 interrupted 文案。PR 要求下一 release 说明导出变化，作者把措辞损失留给 ADR owner 记录，仍有兼容与交付缺口
-- 同批 anyio 修复没有使所有 workaround 都删除：下游保留清理整个 per-loop entry 的 `_evict_anyio_run_vars`，改掉“没有本地补偿就必定泄漏”的负对照。上游只修其中 root-task 缓存，须逐项比责任，不能升级即删本地层
-
-**后期验收比数删改文件更有意义。** [新测试](https://github.com/b12consulting/akgentic-llm/blob/94779e16adc47e964e0976c5311a276953fa6ca7/tests/test_failed_run_history_resumes.py)经真实 `ReactAgent` 图和离线 `FunctionModel`，检查工具崩溃、预算耗尽后的下一轮模型输入有对应 call ID 的 interrupted return；通用失败要求同一异常对象及 traceback。另把失败事件经 `ModelMessagesTypeAdapter` JSON 往返，在新 agent 上 `restore_context` 后继续，验证持久化状态不会丢失恢复含义。**[一手：测试定义]**
-
-[head CI job](https://github.com/b12consulting/akgentic-llm/actions/runs/34483676695/job/102892459538)绑定 `27ba731a2b696e6f57b7b84a5f46889e0ce9e4ed`，运行使用 slim 2.42.0／anyio 4.15.1，原日志为 **866 passed、99.10%**，包括新文件四例；与作者另报的本地 865 pass／98.3% 分开记录。它仅为历史确定性框架集成测试，非本仓／真实模型／OS 重启：恢复例的新工具名是 `kaboom_again`，下一轮直接返回文本，未证明原工具可以重新执行。**[一手：历史 CI 原日志；研究：运行边界]**
-
-另一维护者 gpiroux 于 9 月 21 日合并，PR 无人工 review 记录，不能据此补写其理解工时。仅证下游采用，非陌生人首次接管。**[一手：合并；研究：采用边界]**
-
-**发行与恢复分开核对（2026-10-16 UTC）。** [v2.3.0](https://github.com/b12consulting/akgentic-llm/releases/tag/v2.3.0)已于9月21日发布并列出#156；[固定发行源码](https://github.com/b12consulting/akgentic-llm/blob/637cb7db9abd8b3e10f95fead05a7f0fee2bebdb/src/akgentic/llm/__init__.py)已删除上述公开导出，[依赖下限](https://github.com/b12consulting/akgentic-llm/blob/637cb7db9abd8b3e10f95fead05a7f0fee2bebdb/pyproject.toml)为`>=2.38,<3`。核实时最新llm发行[v2.4.0](https://github.com/b12consulting/akgentic-llm/releases/tag/v2.4.0)仍用[同一下限](https://github.com/b12consulting/akgentic-llm/blob/e6e3b14e65b4419eac206db3ec8b9e5af5b24ea9/pyproject.toml)。同组织的[framework v2.15.0](https://github.com/b12consulting/akgentic-framework/releases/tag/v2.15.0)和[v2.17.0](https://github.com/b12consulting/akgentic-framework/releases/tag/v2.17.0)分别纳入llm 2.3.0和2.4.0，支持已进入组合发行，不证明服务恢复。llm v2.3.0说明只列删除healing的PR，没有列出两个被删名字的旧导入迁移；[agent #148](https://github.com/b12consulting/akgentic-agent/issues/148)仍open且无评论。最低支持版本的完整验收、ADR-016落地、外部旧导入迁移与真实恢复仍未取得新回执。**[一手：发行页、固定源码与公开状态；研究：交付缺口]**
+[阅读本节](2026-10-12-development-maintenance.md#s475)
 
 #### 后续依赖升级：旧观察点过时，不等于消费者结果可以丢
 
-> 核实：2026-10-15 UTC；2026-10-16 UTC补核发行范围。以下#167／#172均在最新llm发行v2.4.0之后：已核[提交比较](https://github.com/b12consulting/akgentic-llm/compare/v2.4.0...45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)，不属v2.3.0／v2.4.0交付；未运行上下游或取得服务恢复回执。**[一手／研究：范围]**
-
-**先区分观察时点与交付结果。** [#167／`5f18045`](https://github.com/b12consulting/akgentic-llm/commit/5f18045a8c9f3138d083318493bb0e896663fa93)将依赖下限从2.38提高到2.54，并把 limit-recovery 验收拆开：错误钩子看到的持久历史以 dangling response 结束；run 展开收尾后，历史仍须紧跟 interrupted marker。补丁改变钩子时点的断言，保留后续 conclusion 返回 `concluded` 的断言。作者在 [#169](https://github.com/b12consulting/akgentic-llm/issues/169)说明恢复行为未变；这不是恢复成功的新现场证据。[当前固定master](https://github.com/b12consulting/akgentic-llm/blob/28adec6d370b09af790abbd3f46ed281398183c6/pyproject.toml)要求`>=2.54,<3`，已发行的v2.3.0／v2.4.0仍声明`>=2.38,<3`；先核实际采用的版本，不把master下限套到旧发行，也不把发行声明当最低版本完整验收。**[一手：固定依赖、补丁与测试；社区：作者诊断]**
-
-**另一次红测试则仍代表必须修的消费者结果。** 上游 [#9627／`107cac9`](https://github.com/pydantic/pydantic-ai/commit/107cac9ec0bdd05bd25085b202189c3787edb024)让动态 system prompt 重评时替换 run 内的消息副本，不再改调用者持有的历史对象；新增测试同时要求本轮得到新文本、旧历史不变，以及并发轮次互不污染。下游 [#171](https://github.com/b12consulting/akgentic-llm/issues/171)报告2.56使第二轮变更不再产生 `LlmSystemPromptEvent`：记录器仍读旧对象，算出的 hash 不变。observer 契约仍需两个事件，不能改为一个。**[一手：上游补丁与测试定义；社区：下游故障报告]**
-
-下游 [#172／`45b089a`](https://github.com/b12consulting/akgentic-llm/commit/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274)把本轮 live history 显式传给 `record_system_prompt`，保留原有去重逻辑和[两轮事件断言](https://github.com/b12consulting/akgentic-llm/blob/45b089aba1d56a1cc9a18e2d4d05fe7ff9c79274/tests/test_capabilities.py#L363-L384)，没有恢复上游原地修改，也没有重建已删除的 healing 层。[固定 README](https://github.com/b12consulting/akgentic-llm/blob/1f5b7c7e514c853e09d5feadcad07a77000efa7a/README.md#system-prompt-rendering-events)说明该事件供 traces／frontend 显示每轮实际提示词；仅为消费者契约，未证前端恢复显示。可选 `messages` 参数保留旧调用形式，但默认读取旧 context 不能保证后续轮次内容新鲜；接入者仍要传对本轮数据。**[一手：实现、测试定义与公开契约]**
-
-**采用边界。** 上游承担的是调用者历史不被改写，下游仍负责发布每轮有效内容；两者都应保留。依赖升级后，先追到消费者实际需要的值和时点，再决定更新内部断言还是修接线。作者称补丁兼容2.54和2.56，本轮未取得双版本完整原日志；未发行且缺旧导入迁移／服务恢复回执，不作交付闭环或工时收益。**[社区：兼容自述；研究：选择与限制]**
+[阅读本节](2026-10-12-development-maintenance.md#s494)
 
 #### 累计采用判断：下一需求改变了谁必须知道什么
 
-生命周期需求先定触发、退出与保留结果，再分辨旧测试应保留还是更新。**[研究：本链采用条件]**
-
-✅ **局部补丁**：责任不变时沿既有 API／repair 层补接并验原调用者；#7743、#7993 表明后期也能小修。**[研究]**
-
-✅ **窄扩展点或责任重构**：先保留可用抽象；策略随控制范围、完成时点或退出分类，放到掌握区别的层，并验相邻路径／公开接口。#5771 driver 与 #6497 controller 各有范围，共用 finally 排空或统一异常不能表达两者；窄改仍无法表达才扩大。**[研究]**
-
-✅ **删除过期扩展并交接**：上游已承担同一结果时，核最低版本和持久恢复，再删补偿；交代导出、文案、预算策略和跨仓说明。别为旧内部断言恢复重复责任，仍有独立责任的 workaround 保留。**[研究]**
-
-尚缺最低支持版本完整验收、发行后导入迁移与真实恢复，不能据本链量化模型／架构维护收益。
+[阅读本节](2026-10-12-development-maintenance.md#s506)
 
 ### 上游接管后的退出条件：aiohttp 误判修复版本
 
-核实：2026-10-18（UTC+8）；主线三，改变 18 的旧实现退出选择。**上游已接管同一责任，本地却过早关闭补偿时，先修退出判定、保留受影响环境的补偿，不默认重建整层。** 以下为历史维护机制，非 AI 生成故障或服务恢复证明。**[研究／经验]**
-
-**接管成立，发行门槛仍可能错。** [CPython #118960](https://github.com/python/cpython/pull/118960)让 SSL 外层 transport 的 `is_closing()` 反映内部关闭状态，使 `drain()` 能让出执行、传播 `connection_lost`；[固定补丁](https://github.com/python/cpython/commit/3f24bde0b6689b8f05872a8118a97908b5a94659)新增忙写遇 `BrokenPipeError` 后第二次写入须抛 `ConnectionResetError` 的测试。[3.12 回移](https://github.com/python/cpython/pull/125932)于 2024-10-26 合入；[3.12.7 源码](https://github.com/python/cpython/blob/v3.12.7/Lib/asyncio/sslproto.py)仍只返回 `self._closed`，[3.12.8 固定源码](https://github.com/python/cpython/blob/2dc476bcb9142cd25d7e1d52392b73a3dcdf1756/Lib/asyncio/sslproto.py)才含内部状态判定。**[一手：补丁、测试定义与发行源码]**
-
-[aiohttp #9726 的固定补丁](https://github.com/aio-libs/aiohttp/commit/c3a9c3e67b6ad39e28095fd478e86053b34a7e45)据此退出 SSL 清理补偿，却把门槛写成 3.12.7：在被判为已修的环境，不仅发警告，还将用户传入的 `enable_cleanup_closed=True` 改为 False。[noop 测试](https://github.com/aio-libs/aiohttp/blob/c3a9c3e67b6ad39e28095fd478e86053b34a7e45/tests/test_connector.py#L1924-L1931)直接 mock `NEEDS_CLEANUP_CLOSED=False`，[旧清理 fixture](https://github.com/aio-libs/aiohttp/blob/c3a9c3e67b6ad39e28095fd478e86053b34a7e45/tests/conftest.py#L244-L252)则强制 True；它们验分支，不验真实版本归类，不能据此证明退出门槛正确。**[一手：固定实现与测试；研究：覆盖边界]**
-
-[2026-01 的纠正 #11972](https://github.com/aio-libs/aiohttp/commit/4a51c4ba30b886b5d1505e4aed790df0cc7cd8d2)把 3.12 门槛改为 3.12.8；[v3.13.4 发行](https://github.com/aio-libs/aiohttp/releases/tag/v3.13.4)已列该修复，[固定发行实现](https://github.com/aio-libs/aiohttp/blob/9f7c7ab6f2924824e4a61a3b5c5c36475f4e25c6/aiohttp/connector.py#L91-L99)可核。发行说明只称纠正误报警告，源码同时改变是否启用补偿；这是历史交付证据，不是当前版本推荐。**[一手；研究：范围]**
-
-**本轮纯离线核对。** 从上述旧／新实现摘出表达式 `(3,13,0) <= v < (3,13,1) or v < floor`，旧 `floor=(3,12,7)`、新 `floor=(3,12,8)`，用 Python 逐个代入版本元组，True 表示需要补偿：
-
-| Python 版本 | 旧判定 | 新判定 |
-|---|---|---|
-| 3.12.6 | True | True |
-| 3.12.7 | False | True |
-| 3.12.8 | False | False |
-| 3.13.0 | True | True |
-| 3.13.1 | False | False |
-| 3.14.0 | False | False |
-
-仅验证表达式在六个输入的结果；未运行 aiohttp、上游测试、网络连接或模型，未取得真实服务恢复回执。原 akgentic 链的最低支持版本完整验收、旧导入迁移与真实恢复缺口仍在；本例只补“同责任已接管，但本地误判退出范围”的修法，不替代最低版本行为验收。**[经验：局部复核；研究：限制]**
+[阅读本节](2026-10-12-development-maintenance.md#s518)
 
 ### CodeThread：下一次修改失败，先查继承了什么行为
 
-> 核实：2026-10-14 UTC。主线三，关联四；改变 20 §4 的续改诊断：检查新功能依赖的旧函数行为，不只审最新 diff 或先降低复杂度。✅ 采用此诊断顺序；不新增指标门禁、Hook 或模型评判器。**[研究：采用判断]**
-
-**新证据与选择条件。** [CodeThread v2](https://arxiv.org/html/2606.21804v2)发表于 2026-09-29（v1 为 6-19）。四模型在同一后续问题上继承历史人工实现或 Agent 重建实现；第一步须通过 P2P、仍失败于全部 F2P，每条件单次运行。四模型共有交集的 16 组比较中有四组持平或反向；该交集内最大下降 13.1 个百分点不是普遍损失，也不是各模型完整样本的最大值（附录 B 的 GLM／Multilingual 为下降 13.8 个百分点）。405 个结果不同且特征完整的样本中，输入／错误契约偏移的 OR 为 1.83（95% CI 1.15–2.92），本回归中圈复杂度／认知复杂度未显示显著关联。**[研究：论文 §3–5；非本仓运行]**
-
-**反证。** v2 增加第二个 judge 与 50 例非盲人工核查，但没有“只移除偏移”的干预；262 个选定人工基线胜出的样本中，judge 仅将 54 例关联到保留的偏移。研究没有人类接管试验或第五次修改，不能证明普遍维护成本、更不能证明降低复杂度无用。**[研究：论文附录 D；解释边界]**
-
-**构造源码限定了能说什么。** 固定仓库 [`158f6ab`](https://github.com/shaswatpatel123/CodeThread/tree/158f6abaadcf717f3175a8f402be7da4e8d48c76)的 [`data_gen_problems.py`](https://github.com/shaswatpatel123/CodeThread/blob/158f6abaadcf717f3175a8f402be7da4e8d48c76/dataset/scripts/data_gen_problems.py)把原函数交给模型，生成重建所需的说明，其中明确要求返回结构、异常、边界与操作步骤；人工分支保留原实现，未由人按同一说明重写。[公开数据卡](https://huggingface.co/datasets/shaswat123/CodeThread)列的是 1,377 个 stub／任务输入，不是 1,377 个成功配对运行。因此这是“重建保真度＋后续解题”的比较，P2P 通过不能证明未测输入上的行为等价；不可把全部后续差异归因于代码组织或接管难度。**[一手：固定源码、数据卡；研究：因果边界]**
-
-本轮还只读 [`synthetic_chains.py`](https://github.com/shaswatpatel123/CodeThread/blob/158f6abaadcf717f3175a8f402be7da4e8d48c76/scripts/utils/synthetic_chains.py)的 P2P／F2P 分类与 [`run_swebench.sh`](https://github.com/shaswatpatel123/CodeThread/blob/158f6abaadcf717f3175a8f402be7da4e8d48c76/scripts/run_swebench.sh)的两阶段连接。只读未运行；固定仓库／数据卡未提供所需逐例配对产物、judge 标签及测试原日志，无法重算或复现。**[一手：检查范围]**
-
-**采用条件。** 沿新功能调用链核继承实现的输入拒绝、缺值及错误契约，不能只看 diff。把查明的偏移写入最小回归；新需求有意改变旧行为时同步契约与调用者，不机械恢复历史代码。**[经验：未测净收益]**
-
-与 Pydantic 的有意契约改变互补，本例提示继承行为可能已偏移。下一证据须同任务／预算仅修偏移后重测，或真实接管投入；复杂度榜单不能回答。
+[阅读本节](2026-10-12-development-maintenance.md#s541)
 
 ### 生成回归测试：先保留预期，再决定是否新增
 
-**核实：2026-10-14 UTC；改变 22 §4。** 红绿结果要有独立的预期依据；测试的来源是 AI 或人工，均不能替代这一步。已有用例能区分目标缺陷时复用；新增断言失败后，先查需求与实现，不自动把预期改到当前代码能通过。**[经验：采用建议]**
-
-**跨后续修改的新证据。** [On the Risks of using LLM-Generated Tests for Regression Testing v1](https://arxiv.org/html/2610.11835v1)（2026-10-08，§3–7）使用 Haiku 4.5，在 SciPy／Qiskit／pandas 的 50／50／45 个历史 PR 上注入人工变异。选择未完全覆盖、至多改五个代码文件的 PR，pandas 限 I/O；先去掉原生测试检出的变异，再保留模型能构造区分测试的变异。生成阶段可见 PR 前源码、变异后的源码、两者 diff 与执行上下文，不见未变异的 PR 后参考源码，至多六轮追求通过与覆盖。表 3 的分母是进入分类的变异—测试对（各 3,483／3,355／9,578），包括预算耗尽后保留的失败候选，不只是获接受的通过测试；其中 8.4%–16.9% 在错误版通过、参考版失败。表 4 再跟踪可向后传播的 587／279／1,614 对，后续重施同一变异时，82.8%–90.9% 仍维持该结果。**[研究：预印本受控变异与历史传播，非真实故障发生率]**
-
-**原生测试足够的反例与分母。** 同文表 2 中，原生套件已检出各项目可执行变异的 58.6%／54.0%／16.0%，这部分未进入生成比较；预筛样本不证明普遍不足。传播中，后来原生测试检出故障也没有终止该断言的追踪，所以“错误断言仍存活”不等于“故障无人检出”。已可靠拦住的风险无需重复生成；论文未证额外维护收益或人工净成本。**[研究：结果及采用边界]**
-
-**已有工业机制的对照。** Meta 的 [TestGen-LLM 原论文 §2](https://arxiv.org/html/2402.09171v1)明确丢弃首次不通过的测试，五次重复排除不稳定，再过滤不增加覆盖的候选；它保留原测试并由工程师决定接收。该设计适合补充已认可行为的覆盖，不能把“当前通过”解释成业务预期正确，也不能据新论文把 Meta 的实际部署说成已经锁入同等比例的缺陷。覆盖未增加也不必然意味着测试无价值：同一路径可以有更强断言。**[一手：工业论文；研究：机制比较]**
-
-**读取与未证实部分。** 已读两篇固定版本正文。新研究的 [Figshare 工件地址](https://figshare.com/s/bcdd07ff46760fd254ec)本次读取返回 403，未取得原始记录，不能独立复算；不是认定工件不存在。未运行上游／模型；变异非真实 bug，也非当前 Codex／Claude 全流程对照，不支持默认隐藏源码、测试先行或加 Agent。继续采用的条件是新增测试补到明确行为缺口，若只重复已有检查则不保留。**[研究：局限与可撤回条件]**
+[阅读本节](2026-10-12-development-feedback.md#s557)
 
 ### 生成测试：先选保护未来还是查当前差异
 
-> 核实：2026-10-17 UTC；主线二／三，改变 15 §6 及总表。🧪 当前高风险差异尚无已知失败时，可先针对改动意图生成前后对照候选；保护已认可行为则补永久回归。确认行为变化是否预期后再处理，已有检查覆盖风险时不扩生成。**[研究：采用判断，未运行]**
-
-**两种可工作目标。** [TestGen-LLM v1 §2–3](https://arxiv.org/html/2402.09171v1)以构建、稳定通过及新增覆盖筛选永久加固测试，已有工程师接收记录。[ACH v1 §4、§6](https://arxiv.org/html/2501.12862v1)改用未被现有测试检出的故障变体驱动生成：接收者也认可零覆盖增量的棘手边界，拒绝平凡或过时 API 用例；先导反馈促使后续报告增加覆盖信息。这支持按保护价值选择测试，不是自动保留所有生成物。两篇同属 Meta 部署自述。**[一手：工业论文]**
-
-**查当前差异会改变生成输入。** [JiTTest v1 §2–6](https://arxiv.org/html/2601.22832v1)比较加固、直接把 diff 当故障变体及先推断意图／风险三条路线。表 1 的主要比较同处 2025 年 11 月 14–24 日，但每条路线产生测试的 diff 分母不同；度量是旧版通过、新版失败的候选，不是确认 bug、同预算收益或检出率。作者部署中撤掉了从偶然失败捞候选的路线，并报告接收者确认后修复或放弃改动。其 §5.1 先问具体行为变化是否预期，再进入测试代码核查；这比直接交红测试要求修复更贴合本建议。**[一手：作者部署报告；研究：采用判断]**
-
-**反证与范围。** 该系统筛选高风险改动、利用夜间空闲算力，仍有人审核候选；源码／原始逐项轨迹及完整费用未公开于所读材料。§5 存在确认问题数 7／8 及严重占比文字矛盾，表 1 覆盖筛选行含估算，均不用于推荐量化收益。现有业务意图、运行设施与跨版本接口也可能使前后差异合理；保留 CI／人审，仅把经需求确认且值得长期保护的用例并入套件。未核当前 Codex／Claude 同任务效果，不推荐安装内部系统、复制多裁判或普遍替换永久测试。**[研究：限制与撤回条件]**
+[阅读本节](2026-10-12-development-feedback.md#s569)
 
 ### n8n：配置回退与独立导出入口
 
-**核实：2026-10-14 UTC；主线三，兼四；改变 15 §5。** ✅ 回退设计应停止新格式写入，同时保留读取已落盘数据所需的依赖；用混合代次数据分别验服务和实际维护入口。相对 Git MIDX 的降级，本例补配置撤回及导出入口。**[研究：采用判断]**
-
-**两步修订解决不同缺口。** [#37416](https://github.com/n8n-io/n8n/pull/37416)／[430bbe53](https://github.com/n8n-io/n8n/commit/430bbe53c3f784c20679c3a93b8da1feb52cab7e)先让模块和 provider 不再随轮换开关一起停用，但 cipher 自身仍检查开关。[#37603](https://github.com/n8n-io/n8n/pull/37603)／[9b10838d](https://github.com/n8n-io/n8n/commit/9b10838d9e1015d2198f3f48b9a6bc042239884a)才在 `packages/core/src/encryption/cipher.ts` 删除 `decryptV2` 的开关条件，按密文前缀查 key；`key-manager.service.ts` 的 `getActiveKey` 仍在关闭时返回旧格式 descriptor。读取已有新格式和继续写新格式因此分开。**[一手：固定补丁]**
-
-#37603 作者报告在分支 `2f51d9d615` 经真实 REST API 与 SQLite 检查 on→off→on：开启时写入的数据在关闭后仍可读，关闭后的新写入恢复旧格式，混合数据可读且读取不改写存储值。但同一报告明确指出一次性导出命令不运行 module init，provider 未注册，仍无法读带 keyId 的数据，并误报密钥不同。原始可重跑 spec 未随报告公开，不能把服务端成功当作导出恢复成功。**[社区：作者运行与故障报告]**
-
-随后 [#37972](https://github.com/n8n-io/n8n/pull/37972)／[93945cce](https://github.com/n8n-io/n8n/commit/93945cce5d97347d3dc3e1ac6249cd104ce5d708)在 `BaseCommand.init()` 数据库准备后调用 bootstrap，使服务、worker、webhook 和一次性命令较早获得 provider；原模块只保留管理 API 与前端设置。cipher 同时删除 provider 未注册时的隐式回退，改为明确失败。[afitzek 审批前一 PR](https://github.com/n8n-io/n8n/pull/37603#pullrequestreview-5100537985)后实际提交这次修复，再由 [sychovSaveliy 审批](https://github.com/n8n-io/n8n/pull/37972#pullrequestreview-5134188188)，为实际接管修改。两个固定提交均有 Claude 共同署名；只证署名参与，非代码归属／工时。**[一手：补丁、PR 元数据与审查]**
-
-**测试实际覆盖什么。** #37603 的 core 单测覆盖两种格式、未知 key ID 和不合格旧格式 descriptor；[固定 integration 测试](https://github.com/n8n-io/n8n/blob/93945cce5d97347d3dc3e1ac6249cd104ce5d708/packages/cli/src/encryption/__tests__/encryption-bootstrap.service.integration.test.ts)分别检查开启／关闭时的真实 key store 与 cipher 往返，未在同一用例内做完整 on→off→on。后续 [bootstrap 单测](https://github.com/n8n-io/n8n/blob/93945cce5d97347d3dc3e1ac6249cd104ce5d708/packages/cli/src/encryption/__tests__/encryption-bootstrap.service.test.ts)验证禁止 seed 或非 main 时不创建部署级 key、仍注册读取 provider；`commands/__tests__/execute.test.ts` 把 bootstrap mock 为 no-op，不能算实际导出测试。**[一手：测试定义，未执行]**
-
-**回退边界。** 轮换 active key、关闭新格式写入、降级旧程序是三件事：前者仍需保留旧 key 以读旧密文；关闭写入不批量还原已经落盘的数据；同版本回退成功也不保证旧程序兼容。[官方当前说明](https://github.com/n8n-io/n8n-docs/blob/main/docs/deploy/host-n8n/configure-n8n/security/rotate-encryption-keys.md)把安全停用发布边界列为 2.40.3，并保留降级和缺少自动逆向转换的警告。不可将该节点写成首次解除读取门控：[#38910 固定补丁](https://github.com/n8n-io/n8n/commit/a8e0e7c3844510321894bf661cc0610baeae8fc3)实际补的是第三种 legacy DEK 存储形态，而读取门控已在 #37603 解耦。**[一手；研究：边界比较]**
-
-**验证与采用范围。** 只读补丁、测试、作者报告与接管链，未运行 n8n／数据库／上游测试；缺最终 CLI 成功重试的独立回执及人工投入。仅对新持久格式或独立维护入口采用，复用已有覆盖。**[研究]**
+[阅读本节](2026-10-12-development-maintenance.md#s579)
 
 ### Grafana：回退的恢复时间点与保护性拒绝
 
-**核实：2026-10-14 UTC；主线三／四；改变 15 §5。** ✅ 对已迁移持久数据的回退，除旧程序能否读取，还要查恢复时间点和升级期间新增／修改的处理方式；在隔离数据上验证恢复方案，由负责人明确接受损失后才有条件使用强制回退。不能仅为恢复启动删保护或清表。本例补业务恢复目标。**[研究：采用判断]**
-
-**原失败不等于检测到了新增数据。** [Grafana #50421](https://github.com/grafana/grafana/issues/50421)原报告者从 8.5.5 升到 9.0.0-beta3，因 polystat 面板插件不兼容降回 8.5.5，随后启动 panic；他明确说没有新建警报。[维护者说明](https://github.com/grafana/grafana/issues/50421#issuecomment-1152151626)将阻断解释为避免用户不知情地删除新警报系统数据。[PR #50470](https://github.com/grafana/grafana/pull/50470)已合并，固定修订 [30f035ca](https://github.com/grafana/grafana/commit/30f035ca347d9f6ba02bc48c0e1f183c885227c5)只澄清 panic 信息，没有实现无损反向迁移，也没有移除保护。**[社区：原报告与维护者解释；一手：固定补丁]**
-
-**历史发布版的删除契约。** v9.0.0 对应固定 SHA [`b5c56f63`](https://github.com/grafana/grafana/commit/b5c56f63710e09f37b8557ddd8b99ae3fc583169)。其 [ualert.go L52–96](https://github.com/grafana/grafana/blob/b5c56f63710e09f37b8557ddd8b99ae3fc583169/pkg/services/sqlstore/migrations/ualert/ualert.go#L52-L96)按迁移日志和启用状态选择回退，缺少 `ForceMigration` 时阻止；开启后安排删除迁移，并清掉原迁移标记，供将来再迁移。因此阻断不证明实际存在升级后的新增警报；新旧警报都关闭时还有直接返回的分支。[删除实现 L517–570](https://github.com/grafana/grafana/blob/b5c56f63710e09f37b8557ddd8b99ae3fc583169/pkg/services/sqlstore/migrations/ualert/ualert.go#L517-L570)涉及新警报规则、规则版本、配置、实例及 silence 文件，不是单纯换回旧二进制。[同版回退文档](https://github.com/grafana/grafana/blob/b5c56f63710e09f37b8557ddd8b99ae3fc583169/docs/sources/alerting/migrating-alerts/roll-back.md)明确恢复的是升级时的警报状态，新系统中新增警报及修改会被删除。**[一手：固定发布源码与文档]**
-
-**启动恢复与业务恢复是两个结果。** [另一用户的后续报告](https://github.com/grafana/grafana/issues/50421#issuecomment-1150915431)称按讨论中的清表办法恢复启动，但已没有警报。这不是无损恢复，也不是推荐手工删表；须约定损失并验业务，不能只验启动／关闭 issue。该回执不是原报告者的修订版复测。**[社区：用户运行报告；研究：采用边界]**
-
-**测试名不是有效断言的证明。** [同版 migration_test.go L24–115](https://github.com/grafana/grafana/blob/b5c56f63710e09f37b8557ddd8b99ae3fc583169/pkg/services/sqlstore/migrations/ualert/migration_test.go#L24-L115)包含名为“force migration is disabled…should panic”的表项，但未设置 `shouldPanic: true`；defer 吞掉 panic，只在该字段为真且没有 panic 时报告失败。对应表项又将删除迁移列为 expected，故不能把用例名称当作“移除拒绝也会被检出”的证据。本轮仅作静态核对，未做变异或上游执行。**[一手：测试定义；研究：断言范围]**
-
-**反证、归属与验证范围。** 不推断所有降级都会丢数据，不将这项历史错误解释修订说成当前 Grafana 的操作指南；支持的是针对具体迁移契约选择恢复目标。GitHub compare 显示 PR merge SHA 与 v9.0.0 为 diverged（ahead_by=261、behind_by=367），不可宣称该 merge commit 为发布版祖先；发布版包含澄清信息是直接读上述固定源码确认的。未取得本例的 AI 参与证据，未安装或运行 Grafana、模型及上游测试，未核验 CI，也没有原报告者的最终无损回退回执或维护收益测量。**[一手：提交关系与源码；研究：边界]**
+[阅读本节](2026-10-12-development-maintenance.md#s595)
 
 ### 能推翻或改变这个优先级的证据
 
-知识、环境和反馈充分却受复杂推理限制时，提高模型／effort 对照优先级；接口维护贵于人工复现或仅一次性使用时，撤回专门改造。更强模型已解决旧失败则删多余流程；内部状态绕过真实故障则降低其验收权重。
-
-案例分别记录知识、访问、反馈、顺序和模型变化；多项同改只能评完整方案。缺耗时、返工与后续记录时不报收益百分比。
+[阅读本节](2026-10-12-development-maintenance.md#s609)
 
 ## 来源与阅读范围
 
@@ -620,97 +308,39 @@ UI 复用未覆盖后台生命周期；继续核查看、删除和恢复，局�
 
 ## 写入路径扩展与序列化判等：sqlite-chronicle
 
-核实：2026-10-14 UTC。**✅ 给 Agent 扩展写入路径时，把业务行与派生版本／审计状态一起验；为支持新类型而改变判等编码，还须验证旧类型中需要区分的值。** 本节改变 15 §6 的窄建议，不新增工具或默认评审阶段。**[经验：采用判断]**
+[阅读本节](2026-10-12-development-feedback.md#s621)
 
 ### 一手修订链与归属
 
-[Issue #20](https://github.com/simonw/sqlite-chronicle/issues/20)由维护者 Simon Willison 报告：把代码和此前讨论交给 Opus 4.6、Gemini 3 Deep Think、GPT-5.2 探索，其中前两者给出候选方案，GPT-5.2 耗尽上下文。仅作者报告，非模型排名。[PR #21](https://github.com/simonw/sqlite-chronicle/pull/21)公开了要求先确认失败、采用候选方案、做 red/green 与生成演示的任务文字、Claude Code 会话链接和 claude 提交；本轮只读公开 PR 与代码，没有读取会话全文或运行模型。人工审阅后合并、发布 0.5，仍非全输入正确保证。**[社区：作者报告；一手：公开任务与提交]**
-
-- 原版 [25370bdd](https://github.com/simonw/sqlite-chronicle/blob/25370bdd9ce4d5c3be93d5035e86b44bd9346476/sqlite_chronicle.py)在 AFTER INSERT 中用 `INSERT OR IGNORE` 写 chronicle；外层 `INSERT OR REPLACE` 的冲突策略会传播进触发器，重建跟踪行并重置 added 时间。`recursive_triggers=ON` 还让隐式 DELETE 触发额外版本增长。SQLite [CREATE TRIGGER 官方契约](https://sqlite.org/lang_createtrigger.html)明确外层语句的冲突处理优先于触发器内部策略。**[一手]**
-- [3510fd21](https://github.com/simonw/sqlite-chronicle/commit/3510fd21b57bf5a06eb16bf5830d44919fc3fe11)改为 BEFORE INSERT 保存旧值快照、INSERT 时判等并清理、用 `WHERE NOT EXISTS` 避免冲突策略传播，并为隐式 DELETE 加 guard。后续 [60f09b98](https://github.com/simonw/sqlite-chronicle/blob/60f09b9833f4bbc44ea52cd89cf9c4e5329a804e/README.md)已有对应生成 SQL，但 `json_array` 直接接收 BLOB 会失败。**[一手：固定补丁与生成 SQL]**
-- [9cd5293f](https://github.com/simonw/sqlite-chronicle/commit/9cd5293f5e89825a8824c1f258231e0592d8579f)改用 `json_array(quote(...))`，新增 BLOB、NULL、混合类型回归。这个改动确实消除本轮 BLOB 失败，但 `quote(TEXT)` 在首个 NUL 截断；不同尾部因此可能得到相同快照。截断是 [SQLite 文档规定](https://sqlite.org/lang_corefunc.html#quote)，不是本仓猜测。**[一手；研究：判等推论]**
-- 核查时 main 固定为 [ee8d2a1d](https://github.com/simonw/sqlite-chronicle/blob/ee8d2a1db5090d14279f0acb56b5d46a5c50e44c/sqlite_chronicle.py)。快照表已改成共享表，仍保留这条 quote 判等路径；本轮也运行了此 SHA 的 [README 生成 SQL](https://github.com/simonw/sqlite-chronicle/blob/ee8d2a1db5090d14279f0acb56b5d46a5c50e44c/README.md)，未用二月补丁代十月现状。**[一手；经验：固定 SQL 执行]**
+[阅读本节](2026-10-12-development-feedback.md#s625)
 
 ### 零依赖复核与反例
 
-运行 `python3 experiments/sqlite-chronicle-replace-check.py`。完整[离线脚本](../../experiments/sqlite-chronicle-replace-check.py)、[原始输出](../../experiments/sqlite-chronicle-replace-results.txt)与[上游许可](../../experiments/sqlite-chronicle-LICENSE.txt)随仓保存。SQL fixture 是四个固定 README 的完整 dogs schema，未替换触发器或重写算法；脚本不导入／执行上游 Python，不联网、不安装，数据库均为 `:memory:`。Python 3.12.14 / SQLite 3.53.1，四版 × 两个 recursive_triggers 设置 × 文本、BLOB、NUL 文本、NULL 四种输入，共 32 个场景。脚本退出 0 表示**复现了预期现象，包括已知失败**，不是库质量通过。**[经验：本轮实际运行]**
-
-每场景先插入一行，再将其改为目标值、重复写目标值。观察真实业务数据、版本、删除标记、added 保留与快照清理；added 用 123 作确定性测试标记，未改原触发器。结果如下：
-
-| 固定 SQL | 普通文本改动→重复 | BLOB 改动→重复 | NUL 文本改动→重复 | NULL→NULL |
-|---|---|---|---|---|
-| 原版 25370bdd | 版本 2→3（recursive=1 时 3→5） | 同左 | 同左 | 同左；错误增长 |
-| 首轮方案后 60f09b98 | 2→2 | 首次 REPLACE 抛 `JSON cannot hold BLOB values`；旧行与版本仍保留 | 2→2 | 1→1 |
-| BLOB 修订 9cd5293f | 2→2 | 2→2 | **1→1，漏报真实变化** | 1→1 |
-| 当前固定 ee8d2a1d | 2→2 | 2→2 | **1→1，漏报真实变化** | 1→1 |
-
-后三版上述结果在 recursive_triggers=0/1 一致；原版重置 added，其余保留。NUL 反例为参数绑定的 `a\0x`→`a\0y`：业务值确实变为后者，字节 hex 从 `610078` 变成 `610079`，但最后两版的 `__version` 仍为 1，按 `__version > 1` 查询为空。随后经普通 UPDATE 改成 `a\0z`，版本增为 2；这是同一输入域的写入路径对照。**[经验：完整固定 schema 的执行结果]**
-
-**输入域与结论边界。** [SQLite 允许 TEXT 包含 NUL](https://sqlite.org/nulinstr.html)，但提醒部分显示和文本函数会截断。项目 README 承诺追踪行更新、相同数据不增长版本，并明示不支持主键更新；本轮未见其排除 NUL 非主键文本，所读实现也未拒绝该值。不过没有真实用户在生产中触发此问题的报告，不能把罕见输入的局部漏报外推为全部同步不可用。若业务明确禁止 NUL，应验证入口拒绝，而非默认判等编码无损；若允许，就需保住区分这些值的语义。**[一手：输入与项目契约；经验：采用边界]**
-
-未运行包 CLI、安装／升级、上游套件、并发、多表或复合键；没有外部 issue／补丁。固定 SQL 不是整库验证；本例区分“编码接受新值”和“仍能分辨旧值”，不量化模型收益。**[研究]**
-
+[阅读本节](2026-10-12-development-feedback.md#s634)
 
 ### SWE-Game：游戏移植的 Visual 分不等于体验质量
 
-**核实：2026-10-15（UTC+8）；主线二／四；改变 22 的评分使用建议。** ✅ 借鉴按证据条件拆分游戏验收；👀 整套基准先作为条件评估对象，不凭总分选游戏 Agent 或宣布移植交付。当前 game02／WP10 已区分状态、输入、连续视听与玩家体验，本轮不重复扩建接口；重点为评分定义、版本和演示边界。**[研究：采用判断]**
-
-**固定来源。** 阅读 [论文 v3 正文及附录](https://arxiv.org/html/2609.33678v3)，由[作者提交的论文页](https://huggingface.co/papers/2609.33678)核到官方公开仓库；源码固定 `Charly-chan/SWE-Game@157a42b1a8a771a51da41e3df5e29045e246cc6c`。下载源码归档只读检查，未运行上游测试、模型、引擎或下载完整游戏数据。项目自有代码为 Apache-2.0，游戏／资产沿各自许可，素材另清权。[版本与数据声明](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/releasing.md)。**[一手；研究：验证边界]**
-
-**先分开论文和发行配置。** 论文 v3 为 247 任务／83 修复；公开清单为 246／82，固定数据 revision 为 `651906f7d922474b8e4754bacd6f7fba38cc0397`。发行默认关闭 Brief Design 和构建类视觉裁判；缺少必要视觉证据时完整合成分留空。README 的结果修订说明指向论文 v1，而 v3 Table 3 仍列 Design 及不同 Brief 总分。因此引用必须写清论文版本／结果集，不能任选一个总数与另一版评分公式拼接；论文结果非默认发行设置的新测量。**[一手：上述版本文件、论文 Table 3 与附录 D；研究：比较]**
-
-**独立源码核查反证：Visual 的名字不能替代测量定义。** 当前移植 registry `2026-10.mode5-evidence-five-visual1` 不调用 VLM；[评分契约](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/reference/MODE5_SCORING.md)明确为实现对应关系。运行／Editor／静态支持／文件存在的系数为 1／0.8／0.6／0.25；没有运行证据时仍可得到部分分，最终目标则只接受独立运行证据。部分分非严格完成率。**[一手：实现契约；研究：解释]**
-
-- [visual_measure.py L67–112、198–243](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L67-L112)使用英文 OCR 与 score／points、health／hp、progress 等数值标签，核显示值与状态及无输入前后变化；不是所有文字、图标式血条或本地化 UI 的可读性度量
-- [L215–221、244–269](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L215-L269)把非静音且变化的 PCM 作为音频证据，动画按局部外观变化与原生状态佐证，布局按语义角色相对顺序；未测警告清晰、动画自然或风格一致
-- [unity_visual_probe.cs L144–204](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/unity/unity_visual_probe.cs#L144-L204)在探针冻结时间时，依次移除／恢复渲染器与 UI 采图；[漂移检查 L48–64](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/mode5/visual_measure.py#L48-L64)拒绝恢复后变化过大的画面。这适合确认像素贡献，不能证明运动顺滑；未见依据可把它描述成关闭 TAA 的实现
-
-以上为静态核查，未复现误判率，也未确认论文历史成绩采用此实现。**[一手＋研究]**
-
-**负对照能补什么，也会漏什么。** 移植模式重放 witness、匹配无输入和隐藏场景，见[移植运行协议](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/reference/MODE5_RELEASE_PROTOCOL.md)。另一个可借鉴、但不属于移植模式的机制是 Godot 三类构建任务的分段功能演示：[任务协议](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/docs/tasks.md#feature-demonstrations)逐片段冷启动，重放输入、等时长无输入与带评测标志的输入；分段功能并集不能靠重复演示加分，严格完成单列，未要求所有功能挤进一条整局录像。针对应由动作引起的奖励／推进，这比只看胜利画面多一条可反驳证据；合法被动计时则须由任务声明 `requires_player_action: false` 与原因，不可统一判为作弊。[声明校验 L128–141](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/content/rubrics.py#L128-L141)、[负对照测试定义 L86–102](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/tests/test_feature_demonstrations.py#L86-L102)。**[一手；研究：借用条件]**
-
-公开任务仅把 visible 材料交给 Agent，hidden 和裁判留在评估侧；这是访问隔离契约，不能证明训练污染不存在。[Godot 防绕过模块的 LIMITS](https://github.com/Charly-chan/SWE-Game/blob/157a42b1a8a771a51da41e3df5e29045e246cc6c/eval/evalsys/evalsys/taskgen/antigrant.py#L41-L61)直接列出计算标志名的静态扫描盲区，以及 idle／mash 动态探测的 1100 帧预算限制；不能反过来声称完整动态评估一定被这些方式攻破。固定时长无输入只反驳相同窗口内的被动成功，不足以证明所有输入都正确或没有评测特判。**[一手；研究：威胁范围]**
-
-**论文支持到哪里。** 41 个参考游戏为 24 个 2D、17 个 3D；功能校准抽样为构建模式的 100 游戏／1200 条断言，不覆盖所有修复／移植判据；200 个片段的 VLM 视觉得分相关性，不是本发行版移植 Visual 的校准或长期乐趣验证。模型与各自框架一起评，不能单独归因模型。参考路线保留时间，适合检查注册目标，但不同运动调参下路线失败不能单凭总分区分机制缺失与时序不匹配；应回读局部状态和候选演示。本轮未找到独立运行复现，保留作者结果的证据等级。**[一手：论文 §3.4、§4.1、§4.5、Limitations；研究：推广边界]**
-
-**采用条件。** 同版本／任务／裁判／预算比较严格运行结果与组件证据；画质和手感另验目标设备连续视听。已有验收覆盖则不接整套 benchmark；收益留待获准实验。**[研究]**
+[阅读本节](2026-10-12-development-feedback.md#s654)
 
 ## 重复代码迁移：语法规则、类型分析与第二次执行
 
-**主线二／三；改变 15 §4–5。** 核实时间：2026-10-15（UTC+8）。✅ 同一规则覆盖多处、已有适用迁移器时，先复用；少量异质调用或业务语义需逐项决定时，直接让 Agent 补丁并验证。前者的收益是复用明确的匹配与变换规则，不能由此推出当前强 Agent 的净收益。以下来自三个不同项目的历史迁移、维护回复与固定源码，没有安装或运行它们。**[研究：采用判断；一手／社区：下述证据]**
+[阅读本节](2026-10-12-development-maintenance.md#s678)
 
 ### 语法匹配能省重复劳动，但不等于完成迁移
 
-- **正面使用与遗漏同时存在。** TanStack Query [#6204](https://github.com/TanStack/query/issues/6204) 的 gillkyle 报告，v5.0.0 codemod 成功处理多处 `invalidateQueries`／`refetchQueries`，且[明确说节省了时间](https://github.com/TanStack/query/issues/6204#issuecomment-1772989068)；但其最小复现输出 `0 errors / 1 unmodified / 0 ok`，仍留下自定义 hook 的两种旧调用。约 30 分钟是作者整次升级自报，不是 codemod 对照耗时。**[社区：真实迁移单例]**
-- **第二次核验没有把“已修”视为全部通过。** slax57 在 [5.13.4 复测](https://github.com/TanStack/query/issues/6204#issuecomment-1857715221)中确认 `useQuery` 已处理，指出 `useMutation` 仍遗漏；维护者要求另建 [#6548](https://github.com/TanStack/query/issues/6548)，报告版本为 5.14.0。随后该报告者提交 [#7187](https://github.com/TanStack/query/pull/7187)，维护者批准，2024-04-02 合入 [`798124d`](https://github.com/TanStack/query/commit/798124da1c3e21c8e95b037466905489e19cd029)。补丁将 `useMutation` 纳入匹配并增加带／不带 options 的输入输出夹具。这里只确认固定补丁与维护接收，不把旧版本遗漏当当前缺陷。**[社区：他人复测；一手：修订／夹具]**
-- **解析 TS 语法不是建立完整类型程序。** 本轮固定 [`a8af0e2`](https://github.com/TanStack/query/tree/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads)：[utils](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/utils/index.cjs)沿 AST scope 找变量声明并看是否为数组表达式；[default-import 输出夹具](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/__testfixtures__/default-import.output.tsx)明确保留从另一模块导入的 query key 调用。[测试入口](https://github.com/TanStack/query/blob/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads/__tests__/remove-overloads.test.cjs)用 `tsx` parser 比较两个输入输出 fixture，不能据此声称跨文件类型推断、全量语义或二次运行已验证。**[一手：源码／测试，只读]**
-
-先核调用覆盖、未改项和警告；成功退出、能解析 `.tsx` 或 issue 关闭均不等于完成。混合调用须分别验该改、保留及待定项。**[经验]**
+[阅读本节](2026-10-12-development-maintenance.md#s682)
 
 ### 类型与框架分析值得增加的具体条件
 
-Angular signal input 的迁移不只是给名字加 `()`，还会改模板、host binding 与 TS 引用。[官方说明](https://angular.dev/reference/migrations/signal-inputs)默认跳过不安全的 input；`--best-effort-mode` 可造成构建破坏，`--analysis-dir` 会静默漏过目录外引用，而 `--path` 限定修改范围不等于限定分析范围。**[一手：文档，2026-10-15 核实]**
-
-固定 [`731ad651`](https://github.com/angular/angular/tree/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration)的 [incompatibility 枚举](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration/src/passes/problematic_patterns/incompatibility.ts)区分继承冲突、写入、accessor、模板 narrowing 等；[golden 输出](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/migrations/signal-migration/test/golden.txt)既有提取局部变量后保持 narrowing 的变换，也有写入或不支持模式的跳过及原因。能在语法之外核对这些约束，是复用框架迁移器的具体理由；保守跳过也是有效结果，不应为提高改动文件数直接强制转换。**[一手：固定源码／期望夹具，未执行]**
-
-**选择边界。** 来源／形状统一且规则覆盖时用语法迁移器；依赖跨文件、继承或 narrowing 时选能解析本项目的类型／框架工具。少量例外交 Agent；例外占多数则退回直接补丁。无通用文件数阈值或同任务 Agent 对照。**[研究／经验]**
+[阅读本节](2026-10-12-development-maintenance.md#s690)
 
 ### 批量入口：先选改法，再选执行方式
 
-2026-10-15 UTC回读：[Claude官方fan-out配方](https://code.claude.com/docs/en/best-practices#fan-out-across-files)仍建议前2–3个文件调提示，再全量执行；[commands的/batch条目](https://code.claude.com/docs/en/commands)仍描述5–30个独立单元、计划批准后各在worktree执行。数字本身没有过时，但不是迁移覆盖或操作授权的通用门槛。[Angular当前文档](https://angular.dev/reference/migrations/signal-inputs#configuration-options)则明确：`--path`限修改范围，默认仍分析全workspace；缩小`--analysis-dir`会静默遗漏外部引用。只按文件分片可能破坏现成分析的前提。**[一手：当前官方契约，只读]**
-
-[Anthropic迁移复盘](https://claude.com/resources/articles/ai-code-migration)（2026-07-16）的依赖图与Step 2还区分保结构移植和重设计：三文件逐行比较适用前者，后者改为设计审阅与可丢弃的端到端试跑。这是厂商经验，不证明所有迁移都需相同评审层或扔掉首产。结合本节TanStack再使用反馈及Angular固定机制，15总表／§5与Claude入口统一为“先选改法、按差异试点、再按依赖和风险扩量”，不再把少量文件通过或有测试等同于全量迁移可高自主执行。工具功能表保留真实5–30描述；没有新增模型实验或净收益测量。**[一手：作者复盘；经验：入口收敛]**
+[阅读本节](2026-10-12-development-maintenance.md#s698)
 
 ### 重复执行与第二次需求不是同一项保证
 
-**同一次批处理也可能重复修改同一文件。** Angular 用户 Wandang 的 [#61611](https://github.com/angular/angular/issues/61611)（Angular 19.2.12）报告模板出现 `title()()` 与重复 TODO。维护者[指向已修复的 #61421](https://github.com/angular/angular/issues/61611#issuecomment-2901248608)，其根因是多个 tsconfig 的源文件重叠。固定 [run_in_devkit.ts](https://github.com/angular/angular/blob/731ad651bee44bd51af9d27d20a3c07260e17bb8/packages/core/schematics/utils/tsurge/helpers/angular_devkit/run_in_devkit.ts)用文件到编译单元的归属表，避免同一源文件在不同单元重复分析／生成替换；这不是证明所有变换均幂等。维护者通过 [#61612](https://github.com/angular/angular/pull/61612)回移到 19.2.x（落地提交 [`2ae69f7`](https://github.com/angular/angular/commit/2ae69f77e7ef9a6431303cfad54cabb068435d6f)）；本轮只读核对 19.2.13 与 20.0.0 标签的同路径均已包含归属去重，未独立运行或取得该用户修复版复测。**[社区：故障报告；一手：维护回复与源码]**
-
-**调用方的次数也需核对。** Renovate [#8220](https://github.com/renovatebot/renovate/issues/8220) 的 marcodejongh 报告：依赖升级从一次调用变为逐依赖调用后，同仓五处依赖使 codemod 执行五次，部分非幂等变换破坏代码。后续 [#8725](https://github.com/renovatebot/renovate/pull/8725)增加 `executionMode: branch`，历史固定 [`6afbcf8`](https://github.com/renovatebot/renovate/commit/6afbcf8d18afd3e63e0d4d253be64c5a21e736c5)的 [index.spec.ts](https://github.com/renovatebot/renovate/blob/6afbcf8d18afd3e63e0d4d253be64c5a21e736c5/lib/workers/branch/index.spec.ts)在两项升级配置下断言命令只调用一次；作者勾选单元测试及真实仓库验证，发布回复标为 24.109.0。该测试约束调度次数，不检验具体 codemod 输出；`branch` 也不承诺后续重新生成分支时永不再执行。**[社区：使用与作者验证报告；一手：补丁／断言，只读]**
-
-**验收与停止。** 试点含旧／已迁移形状、跨文件及业务例外，核跳过原因并验类型／行为。重试先在首轮产物上重跑；一次性工具则从可恢复起点重做。分片须文件归属不重叠；额外变换、覆盖不明或例外增多即暂停扩量。**[经验：未运行迁移实验]**
-
-幂等不等于行为正确或适应新需求；映射／契约改变后，更新规则、回归与版本，从上次交付状态验新旧行为。只读夹具不证明模型或维护收益。**[研究]**
-
+[阅读本节](2026-10-12-development-maintenance.md#s704)
 
 ## 权限模式与第三方 Hook：按实际审批方向选择
 
@@ -853,56 +483,23 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 
 ## 增量验证：已有回归测试是否真的被选中
 
-主线：三；区分测试断言有效与本次验证确实执行了它。
-改变的建议：15 §6 在依赖、预打包配置或非模块夹具变更后显式运行已有消费者，09 只回链；普通增量运行足够时不加评审层。
-新证据：Vitest 原生执行依赖记录的发布、固定实现与测试定义，另有同周预打包漏选报告；2026-10-15 UTC 核实，验证范围见本节末尾。**[一手／社区／研究]**
+[阅读本节](2026-10-12-development-feedback.md#s854)
 
 ### 原生能力与反证
 
-[Vitest 5.0.4](https://github.com/vitest-dev/vitest/releases/tag/v5.0.4)发布于 2026-10-12，[#11515](https://github.com/vitest-dev/vitest/pull/11515)合并于 10-08。[官方契约](https://vitest.dev/config/experimental.html#experimental-recorddependencies)规定 `experimental.recordDependencies` 默认关闭，按上次执行记录为 `--changed`／`related` 选测；动态导入须执行过，普通 `fs` 读取和 externalized 模块内部导入不记录。新增 import 若先提交未重跑，后续只改新依赖可能漏选。**[一手：发布、合并与当前契约]**
-
-[测试定义](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/test/e2e/test/recorded-deps.test.ts)覆盖动态导入、无记录与部分运行；[选择实现](https://github.com/vitest-dev/vitest/blob/c06012ac8419ca4ea14a8808aedc8b0120111f81/packages/vitest/src/node/recorded-modules.ts)在无记录时回退全选，有记录则匹配变化模块。**`-t`／`.only` 等部分运行只合并已有记录，不创建新记录**，刷新导入关系须完整跑相关测试文件。无记录的测试仍会运行；缓存关闭则记录功能不生效。**[一手：源码、测试与文档，未运行]**
-
-[#11585](https://github.com/vitest-dev/vitest/issues/11585)创建于 2026-10-14，核实时 open、无评论，**未经维护者确认或本仓复测**。作者修改 linked workspace helper，保留已有失败断言：关闭 optimizer 时 `changed`／`related` 选中并失败，开启后零选中、退出 0；含 5.0.4／4.1.10 对照，称 5.0.4 记录模式仍漏选。[受影响模块实现](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L240-L251)过滤 `node_modules`，[后续遍历](https://github.com/vitest-dev/vitest/blob/28dc1edfb6ba5a181fe208576989063795aeadb3/packages/vitest/src/node/affected-modules.ts#L345-L349)仅沿过滤后的导入遍历，支持作者机制解释，非完整复现或所有 optimizer 项目失败。**[社区：单作者报告；一手：源码；研究：边界]**
+[阅读本节](2026-10-12-development-feedback.md#s860)
 
 ### 采用范围与退回条件
 
-- ✅ 先保留项目已有增量测试；依赖关系、optimizer 或非模块夹具改变，显式运行已知消费者，或用项目已有且适用于当前入口的映射。已知相关用例却零选中时，先直接运行该测试，再修触发配置或按风险暂用更宽套件；无需为此添 reviewer 或自建依赖图。**[经验：采用判断]**
-- 🧪 只有实际动态导入是当前选择盲区、且能维护缓存与刷新记录时，试用默认关闭的 `experimental.recordDependencies`；不作为正文 ✅ 的默认开关。已有静态关系已足够时无需启用，本轮没有计时或净成本数据。**[一手：机制；经验：条件试用]**
-- [普通 `related`](https://vitest.dev/guide/cli.html#vitest-related)支持静态可解析导入；非模块读取可按项目需要使用 [watchTriggerPatterns](https://vitest.dev/config/watchtriggerpatterns)，但它是 watch 契约，不能冒充所有 CLI `changed` 的映射。[forceRerunTriggers](https://vitest.dev/config/forcereruntriggers)与 `--changed` 配合时，diff 命中会触发全套；这是有执行成本的特定回退，不是每次修改的默认。**[一手：官方契约；经验：取舍]**
-
-仅回读文档、版本、issue 与固定源码／测试，未运行 Vitest、模型或远端 CI，未测收益；作者关闭 optimizer 的对照不作普遍推荐。**[研究：范围]**
-
+[阅读本节](2026-10-12-development-feedback.md#s868)
 
 ### 原生失效判断：撤掉在选择器之前重放旧结果的缓存
 
-2026-10-17（UTC+8）补核；改变 15 §6：原生选测已能判断环境变化时，先撤掉绕过它的外层短路，配置失效走已有扩大路径；07 只回链。**[研究：采用判断]**
-
-Polylogue [#1059](https://github.com/Sinity/polylogue/issues/1059)采用 testmon 替换自制文件／导入路由。[初版 `8a2c0332`](https://github.com/Sinity/polylogue/commit/8a2c0332961228dd1135d069c7d21326f7e96575)后，[修订 `09b84c37`](https://github.com/Sinity/polylogue/commit/09b84c37e22a159d293dcb0bc6b7be95ea0d445e)删除外层结果缓存：旧指纹含 HEAD、工作区差异、未跟踪文件与 testmon 数据库，却不含当前 Python／安装包；匹配后在构造和运行检查之前直接返回旧退出码。testmon 自己的[固定环境判断](https://github.com/tarpas/pytest-testmon/blob/dccc58d2ed8edec98096ff1974acb7c07d3e3482/testmon/db.py#L647-L711)会比较 Python 与包身份，因此外层命中可使它根本没有机会判断。**[一手：固定补丁／源码；研究：机制推导，不是漏测率]**
-
-[#1066](https://github.com/Sinity/polylogue/pull/1066)已合入 `da72933`。其[实现](https://github.com/Sinity/polylogue/blob/da72933da8fe385d400647fc064a0111cfb0b535/devtools/verify.py#L370-L403)从 seed 到 HEAD、工作区及未跟踪文件按清单检查配置、锁文件与部分共享测试设施；命中或 Git 查询失败时取消 testmon 选测，成功后刷新 seed。[命令构造](https://github.com/Sinity/polylogue/blob/da72933da8fe385d400647fc064a0111cfb0b535/devtools/verify.py#L265-L283)仍排除 integration，指定 `--skip-slow` 时仍过滤 slow；这只是该配置范围扩大，不能称整个项目全套。[测试定义](https://github.com/Sinity/polylogue/blob/da72933da8fe385d400647fc064a0111cfb0b535/tests/unit/devtools/test_verify.py#L89-L117)核命令与失效路径分类，不是所有环境变更的端到端证明。**[一手：合入实现与测试定义]**
-
-**扩大清单本身仍有缺口。** 该版前缀匹配不命中 `tests/unit/core/conftest.py`；[原 P1 评审](https://github.com/Sinity/polylogue/pull/1066#discussion_r3250832660)指出嵌套夹具风险；清单未触发不等于原生依赖记录必然漏选。作者 [9 月跟进](https://github.com/Sinity/polylogue/pull/1066#issuecomment-5918980468)以 `5ebcfe59` 历史快照复核，仍不宣称修复：新增 autouse fixture 没有先前执行关系。应用时先确认扩大入口覆盖本次夹具，缺口未闭合就显式运行相关消费者或更宽套件；这不否定外层缓存撤除，也不把旧快照当当前 master 状态。**[一手：固定源码；社区：评审与作者历史复核；经验：采用边界]**
-
-作者报告扩大运行 6,449 例、pytest 149.90 秒，紧接增量运行零选中、3.24 秒；它说明作者观察到回到增量，不能算长期节省或证明零选中总是正确。未取得原始运行日志，未执行上游测试、模型或 CI。采用这条修订机制仍须保留项目原有验收范围与非空要求。**[一手：作者报告；研究：验证边界]**
-
+[阅读本节](2026-10-12-development-feedback.md#s877)
 
 ### 新增选测能力：先比较改动类型与完整运行成本
 
-> 2026-10-16 UTC 补核；主线三，改变 15 §6 新增选择器的采用条件，不改变本仓检查入口。沿用已有增量验证主题，不再列工具排名或重复 Vitest 边界。
-
-remote-store [2026-10-03 研究报告](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/research/research-bk-403-testmon-poc.md)在测试昂贵时仍暂缓 pytest-testmon。作者报告工作树 `12f8043`、testmon `2.2.0`；本轮读文档与 driver 快照 `45132599a2818fe1e02eb15c9e2016bada5a0103`，未证它就是原运行版本，亦缺完整 JSONL／JUnit 工件。以下数值均为使用方报告，非本仓复测。**[一手；研究：身份边界]**
-
-- **收益取决于改动。** 串行全套墙钟 `551.3 s`，叶函数种子 `4.8 s`、核心模块 `296.3 s`；`0.9%`／`53.7%` 是时间占比，非测试比例。并行全套 `204.0 s`、建映射 `218.0 s`，不能只比最慢串行，也未计完整安装、维护和长期补跑。每项仅计时一次，13 个刻意种子不是日常改动频率样本。**[一手：使用方报告；研究：比较边界]**
-- **运行其他测试仍可能漏目标。** `_azure.py` 追加类的种子跑了 825 例，却漏掉读取源码文本的检查；读取代码文本不等于执行代码。另有非 Python 夹具漏选，但不能外推全部 fixture 或模块变更。**[一手：使用方报告；研究：机制]**
-
-[固定 driver](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/research/bk-403-testmon-poc/driver.py)为各种子定义修改和目标：关闭 testmon，要求退出 1 且对应 JUnit case 失败，再复制原映射选测。它分别记录 `known_selected` 与 `known_failed_in_selected`，选中列不能替代失败列。临时 JSONL 未公开，源码只证方法可查；13 项确认失败仍是作者自述。**[一手：源码与报告；研究：边界]**
-
-**完整检查还有更便宜的优化。** [固定成本审计 L1／L2](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/audits/audit-022-gate-speed-strategies.md)报告隐私扫描正则在长 base64 上重复起匹配，占 `157 worker-seconds`；窄改起点后，478 份 cassette 和三个探针判定不变。另次覆盖率的默认 tracer／sysmon 墙钟为 `310 s`／`250 s`；前者非墙钟，异实验不可相加。样本判定不变不授权删 PII 检查或放宽规则；该 testmon 路径还不兼容 sysmon，不能直接组合。**[一手：使用方审计；研究：成本与安全边界]**
-
-[PyPI 元数据](https://pypi.org/pypi/pytest-testmon/json)仍列 `2.2.0`（2025-12-01 上传）；[官方说明](https://www.testmon.org/)说明只跟踪已执行代码，不跟踪静态文件或外部服务。tag `dccc58d2ed8edec98096ff1974acb7c07d3e3482` 的[环境判断](https://github.com/tarpas/pytest-testmon/blob/dccc58d2ed8edec98096ff1974acb7c07d3e3482/testmon/db.py#L647)比较包与 Python 身份，支持计入映射重建条件，不证明遗漏已修或当前漏选率。未安装、运行 testmon、上游测试或模型。**[一手：元数据、契约与源码；研究：范围]**
-
-✅ 保留可靠原生选测。新增前比较不减覆盖的热点修复与安全并行，再估映射／补跑总成本；核心常变、重建频繁或消费者超出模型时暂缓，不照搬该项目回退规则。**[经验：采用与撤回]**
+[阅读本节](2026-10-12-development-feedback.md#s890)
 
 ## dot 持续责任起步：先校准产物再扩大范围
 
@@ -929,109 +526,39 @@ remote-store [2026-10-03 研究报告](https://github.com/haalfi/remote-store/bl
 
 ## OCRmyPDF：兼容修复按输入机制分流
 
-核实：2026-10-15 UTC；主线四，兼三；改变 15 §2。**兼容性未必随版本改善：修一种映射仍可能损坏另一输入。按输入机制选择修生产端、换消费者或条件绕过，保留仍有用途的能力。** 一次通过不保证全数据集；最终消费者、备份和恢复沿用既有规则。**[经验：采用判断]**
-
-**乱码未导致整体回退渲染器。** 2026-09-15，olafure 在[OCRmyPDF #1747](https://github.com/ocrmypdf/OCRmyPDF/issues/1747)报告外观正常、复制乱码，提出回退默认 fpdf2 renderer；[fpdf2 #1952](https://github.com/py-pdf/fpdf2/issues/1952)记 fpdf2 2.8.8、Ghostscript 10.02.1、Linux/Python 3.13，个人书库 57 本书刊受影响。分析由 Claude 协助，用户只明确确认两份脚本复现，不是全部分析、影响比例或恢复判断的独立核实。150 个输入字符生成 117 条映射，101 个只有 96 条，因此触发条件是**单块映射超过 100 条**，非文档超过 100 字符。**[社区：原报告与复现确认]**
-
-[维护者回执](https://github.com/ocrmypdf/OCRmyPDF/issues/1747#issuecomment-5691459605)以同文件比较 Ghostscript：9.55 保留映射，10.02.1 丢弃，10.05 保留但警告，10.06 保留，因此选择生产端拆块而非回退 renderer。[7e3007746fe646f561f1fe0eb3a501f6c6136747](https://github.com/ocrmypdf/OCRmyPDF/commit/7e3007746fe646f561f1fe0eb3a501f6c6136747)将 fpdf2 写出的 CMap 按最多 100 条分块，覆盖 bfchar、bfrange、cidchar、cidrange；它包装私有输出注册方法，`FPDF2_CMAP_BLOCKS_FIXED=None` 表示尚未设补偿退出版本，不能宣称维护成本已消失。**[社区：维护者运行报告；一手：固定补丁]**
-
-随后合入[fpdf2 #1954](https://github.com/py-pdf/fpdf2/pull/1954)（`2082d9c01d17decfab10ddd741de836283eab397`），处理两条 ToUnicode 路径；[后续 #1956](https://github.com/py-pdf/fpdf2/pull/1956)（`82981ecd2769ffb3f0f57ac44dd996f2ac138da4`）扩至 Encoding 的 cidchar。仅核合入代码，未核首次正式发布或下游补偿撤除，不能泛称升级 fpdf2 已修复。**[一手：跨项目修订]**
-
-**另一输入的反证。** kmn5 在[#1744](https://github.com/ocrmypdf/OCRmyPDF/issues/1744)报告 OCRmyPDF 17.11.0／Ghostscript 10.6.0 的 PDF/A 丢失 fi／ff 等连字文字，普通 PDF 和 sidecar 正确；PDF/A-2b 合规不保证文本可搜索。[ffee83231532f4f67b8c0e756cddec67446570c9](https://github.com/ocrmypdf/OCRmyPDF/commit/ffee83231532f4f67b8c0e756cddec67446570c9)诊断 10.05–10.06 会丢多字符 ToUnicode 映射：不可见拉丁等无需上下文整形的文字改逐字符编码、去掉可选连字；复杂文字保留必要整形并对受影响 Ghostscript 警告，可见调试文字仍整形。**超长块安全不代表连字安全，绕过须按用途收窄。** 未独立核 Ghostscript 上游完整修复链，不另推荐当前版本。**[社区：独立用户故障；一手：固定实现；研究：机制比较]**
-
-**运行与恢复边界。** #1747 定义 Ghostscript 往返测试，缺依赖即跳过；抽取断言还需 pdftotext，仅查大写字母样例，不覆盖连字、全部文字或 57 本书库。#1744 另有逐字符映射与抽取测试，均非本轮执行或全部 CI 核验。维护者建议用修订后的 OCRmyPDF 重做原扫描件，但未见原用户全库恢复回执，关闭 issue 不能替代恢复。只读讨论、源码和测试，未安装或运行 OCR、PDF 工具、模型；Claude 协助诊断不证明故障代码由 AI 生成或有净收益。**[一手：测试范围；社区：恢复建议；研究：限制]**
-
-**采用与撤回。** 按触发输入保留必要能力，优先窄格式修复／条件绕过；全部支持输入都无需该能力才考虑删除。复用消费者验收；分流破坏语义时撤回、缩范围或换已验证消费者，不推广到任意格式。**[经验]**
-
+[阅读本节](2026-10-12-development-maintenance.md#s930)
 
 ## 退役实现选择器：保留独立禁用能力
 
-核实：2026-10-18（UTC+8）；改变15 §5。已有配置迁移的阶段／设备边界、上游接管的版本退出条件，不能代替此处的行为分类。以下只读固定补丁与公开回执，未运行上游、浏览器或模型。**[研究：范围]**
-
-**早稿删两种开关，最终只退役选择器。** Jetpack [#51395最终补丁`d46d387`](https://github.com/Automattic/jetpack/commit/d46d387ba5f095852bb1c8cf2da80fda5b047e95)于2026-09-09合入：删除`jetpack_forms_alpha`六处读取，却保留`jetpack_forms_dashboard_enable`原过滤调用及默认true。后者控制是否调用`Dashboard::init()`，不是切换新旧UI，也不关闭全部Forms功能；新增测试同时断言默认接线和false不接线。[作者回执](https://github.com/Automattic/jetpack/pull/51395#issuecomment-5360285177)报告通过及变异检查，不是本轮复测。合并消息包含被撤回的“两个都删”方案，事实以最终diff为准。**[一手：固定实现／测试；社区：报告]**
-
-**兼容不能只保函数名。** 旧alpha回调不再执行，false不能选回旧实现，因此用通知而非继续应用返回值。通知最终在`admin_notices`发出；[局部对照回执](https://github.com/Automattic/jetpack/pull/51395#issuecomment-5357904764)确认提前输出曾破坏重定向、污染ajax响应，修订后恢复。这不证明所有扩展兼容。旧slug也仍有Creative Mail与My Jetpack等当前消费者；后续[#52296固定删除](https://github.com/Automattic/jetpack/commit/80123dc707743cd8162f1bd9f4db12e6b61c4bb1)保留向前重定向，而非随旧树删除。**[一手：补丁；社区：局部运行报告]**
-
-**联动配置先解除，部署另验。** [#51397固定补丁`d0c3311`](https://github.com/Automattic/jetpack/commit/d0c33114f5ee2bea6aa028dc9714d5630fb81761)先撤同一sticker对仪表盘选择器和编辑器标志的两条接线；只撤前者，会让新Forms页面列出尚未注册的`jetpack_form`类型。两包随Jetpack及wpcomsh／mu-wpcom-plugin不同路径交付，先合入不保证先到全部环境。[公开计划](https://github.com/Automattic/jetpack/issues/50712)明确当时仅合入、未核部署；2026-08-24零sticker是历史枚举自报，不是当前全站状态。本轮确认两项合入及后续删树，未取得全环境到达顺序回执。**[一手／社区；研究：边界]**
-
-**选择与撤回。** 只需禁用入口时保独立总开关；仍有旧URL消费者就保窄适配。受支持扩展仍需旧行为，或前置配置修订未到达且混装会破坏功能时，先迁移消费者、补混装兼容或推迟删除，不用保留符号／发通知冒充行为兼容。此例支持机制选择，不证明AI维护收益或所有旧链接参数无损。**[经验／研究]**
+[阅读本节](2026-10-12-development-maintenance.md#s947)
 
 ## 配置迁移：保留作用阶段与设备边界
 
-核验：2026-10-15（UTC）。配置归属之外，还须区分生效阶段与设备。先复用分层、优先级和选择性同步；共同交付保持一致，编辑期合法差异与机器衍生值分别处理。不为统一配置另建框架，调查也不授权改变用户安全或同步设置。**[经验：采用判断]**
+[阅读本节](2026-10-12-development-maintenance.md#s959)
 
 ### Ruff：个人覆盖可合并，但文件替代仍可能失去同步
 
-[讨论15991](https://github.com/astral-sh/ruff/discussions/15991)中，stinodego 希望个人编辑规则不强加同事；维护者建议独立配置合并项目，2025-02-25 用户初试符合需要。jtchen2k 报告外部文件生效却失去跨设备同步；ilCatania 要求团队共用但仅编辑期生效，以保留探索代码、提交时清理。三者分别支持范围、同步和阶段需求，非同一用户的无损迁移闭环。**[社区：使用与初试；一手：维护者建议]**
-
-[PR16296](https://github.com/astral-sh/ruff/pull/16296)于 2025-02-26 合并，固定 be03cb04c13cbd74467acdb4a1501b620db16975 新增内联配置并保留路径形式；[配置合并实现与测试](https://github.com/astral-sh/ruff/blob/be03cb04c13cbd74467acdb4a1501b620db16975/crates/ruff_server/src/session/index/ruff_settings.rs)处理两种输入，测试特定编辑器设置相对内联配置的优先级。VS Code 需配套[#702](https://github.com/astral-sh/ruff-vscode/pull/702)，不保证旧客户端支持。**[一手：固定源码与测试定义，未运行]**
-
-[当前官方设置文档](https://docs.astral.sh/ruff/editors/settings/)保留两入口，内联自 0.9.8 引入；未设编辑器配置时读项目配置，冲突可选编辑器优先、文件优先或仅编辑器。原生能力可承载个人体验，无需改变共享规则或自建同步。未获 jtchen2k 对最终内联版的跨设备回访，前一用户初试不能证明这项收益。**[一手：文档；研究：边界]**
+[阅读本节](2026-10-12-development-maintenance.md#s963)
 
 ### Firefox：依赖本机OS的偏好，收窄到单项停止同步
 
-[Bug1851024](https://bugzilla.mozilla.org/show_bug.cgi?id=1851024)涉及`general.smoothScroll`：默认随各机器OS减少动态效果设置变化，用户报告显式关闭后仍被重新开启，涉及Mac与Windows。[维护者最终取舍](https://bugzilla.mozilla.org/show_bug.cgi?id=1851024#c31)是停止同步这一项。固定[ff976fb221cb17c7bec216b8ca2cfa3d913a19a1](https://github.com/mozilla-firefox/firefox/commit/ff976fb221cb17c7bec216b8ca2cfa3d913a19a1)于2024-08-16仅移除`services.sync.prefs.sync.general.smoothScroll=true`并留下注释，相邻其他同步项保留；记录标Firefox131修复。**[社区：使用反馈；一手：决定与固定补丁]**
-
-原作者与 QA 曾无法复现，不启用偏好同步者也报类似症状，不能全部归因 Sync。未见原作者最终版回访，QA 白板非通过回执；补丁只改默认同步集合，不保证覆盖自定义规则，也不支持停止全部同步。**[研究：反证与结果边界]**
-
-[Bug1928570](https://bugzilla.mozilla.org/show_bug.cgi?id=1928570#c12)报告 132 版类似症状，维护者排除 Sync，用户定位到 Resist Fingerprinting；维护者解释为预期设计并[以 INVALID 关闭该 issue](https://bugzilla.mozilla.org/show_bug.cgi?id=1928570#c16)。它不是同步补丁复发，也说明停止同步不能解决一切滚动问题；这里只区分配置来源，不建议关闭隐私功能。**[社区：后续定位；一手：维护者解释]**
+[阅读本节](2026-10-12-development-maintenance.md#s971)
 
 ### 反向约束：共同产物仍须一致
 
-[Prettier官方配置说明](https://prettier.io/docs/configuration)不支持全局配置，以保持换电脑后的项目格式一致；从被格式化文件位置查配置，并允许项目内限定覆盖。设计目的不是收益测量，但反对把 Ruff 个人覆盖推广为所有工具都应个人优先。**[一手：官方设计；研究：反例]**
-
-**证据边界。** 用户初试、源码与设计分开计证；未运行客户端／同步／上游测试，未测 AI 收益。**[研究]**
-
+[阅读本节](2026-10-12-development-maintenance.md#s979)
 
 ## 原生下拉菜单的截图与语义验收
 
-主线二／四；核实：2026-10-15 UTC。改变23的观测选择：原生 `<select>` 选值与应用结果优先语义验收；只有展开层外观属于要求时，才补目标浏览器／系统实际屏幕，不因网页截图缺失重写控件。**[研究：采用判断]**
-
-Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告展开原生下拉后，macOS 截图缺菜单、Ubuntu 位置异常、Windows 挂起；[维护者](https://github.com/microsoft/playwright/issues/38200#issuecomment-3533050490)在 macOS、Ubuntu 及原始 CDP／Puppeteer 路径复现类似问题。2026-01-07 [关闭说明](https://github.com/microsoft/playwright/issues/38200#issuecomment-3718636129)说明跨平台原生实现不同、无 Playwright 行动项，后为视觉 Agent [建议整屏捕获或DOM文本补充](https://github.com/microsoft/playwright/issues/38200#issuecomment-3720341206)。closed／v1.58 标签不证明修复发布，历史限制也不代表所有当前版本或系统。**[社区：报告；一手：维护者解释]**
-
-[固定复现库](https://github.com/kisotechnology/playwright-screenshot-issue/tree/0f1f0177f07c3ce70e49168c60d460f89cbda9ef)的 `scripts/capture-dropdown.js` 以 headed Chromium 点击 select，再取全页截图；已查看展开和缺菜单配图，但尺寸不同，不是严格同条件对照。作者报告 1.56.1，`package.json` 却为 `^1.41.2` 且无锁文件，不能固定实际安装版本。**[一手：源码与产物；社区：版本自述]**
-
-[当前selectOption契约](https://playwright.dev/docs/api/class-locator#locator-select-option)选择选项并触发 input／change，可验应用结果，不能证明原生展开层外观。不外推全部浏览器 UI 或默认增加桌面工具；未安装、运行浏览器或复演上游。**[一手：契约；经验：边界]**
+[阅读本节](2026-10-12-development-feedback.md#s986)
 
 ## rclone：预演不能替下一轮提交控制状态
 
-主线三；核实：2026-10-16（UTC+8）。
-改变15 §6：预演验收除业务数据外，还须保护下一轮正式执行所依赖的接受状态；允许日志与隔离预演产物，不要求一概零写入。
-新证据：rclone过滤规则hash修复、连续场景预期、贡献者后续使用，以及CLI／rc入口的分次修订。**[研究：采用判断]**
-
-[2023-04-16原报告](https://forum.rclone.org/t/bisync-bugs-and-feature-requests/37636)中，定时 bisync 使用 `--filters-file`；改规则后先跑 `--resync --dry-run`、尚未正式采用，下一次普通运行却未拒绝新规则。预演写入 `.md5`，更新了接受基线。报告只讨论潜在损失，没有这一路径实际删除业务文件的回执。**[社区：原报告；研究：边界]**
-
-[固定提交f4dd862](https://github.com/rclone/rclone/commit/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56)在 `applyFilters` 中仅为非 DryRun 的 resync 保存 hash；普通运行仍拒绝 hash 缺失或不符。它保留独立 `-dry` 列表文件，因此要求是隔离预演产物与正式接受基线，不是一概零写入。**[一手：补丁；研究：机制]**
-
-[固定scenario](https://github.com/rclone/rclone/blob/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56/cmd/bisync/testdata/test_filtersfile_checks/scenario.txt)先 resync 建 hash、确认普通运行成功，再换过滤文件并预期拒绝；新增预演 resync 成功、下一普通运行仍拒绝两步。[golden日志](https://github.com/rclone/rclone/blob/f4dd86238d5b5993a5f104c58b2f34c2d6fdad56/cmd/bisync/testdata/test_filtersfile_checks/golden/test.log)表达相同预期。这是历史连续验收设计，未本轮执行，且 scenario 注明不测过滤的实际效果。**[一手：历史测试产物；研究：范围]**
-
-原报告者也是修复贡献者：[补回漏交的golden日志后报告GitHub测试通过](https://github.com/rclone/rclone/pull/6971#issuecomment-1520596549)，按评审[把相关代码、文档和测试重新组织到各提交](https://github.com/rclone/rclone/pull/6971#issuecomment-1632281021)，又在[数周真实使用后再补一处问题](https://github.com/rclone/rclone/pull/6971#issuecomment-1666839385)。这支持持续使用与修改，不是独立接收者对 filter-hash 的最终复测，也不证明单项工时收益。**[社区：贡献者报告；一手：修订过程]**
-
-**各入口分次修复。** [48ab67f](https://github.com/rclone/rclone/commit/48ab67f090fd630c3ed9cc66d6fe83eca769ce12)才把 rc 专属 `dryRun` 传入 `Options.DryRun`；[v1.64.0的cmd.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/cmd.go)与[rc.go](https://github.com/rclone/rclone/blob/v1.64.0/cmd/bisync/rc.go)分别含两项修复。2026-10-14 合入[#10015](https://github.com/rclone/rclone/pull/10015)，再补全局 `_config.DryRun`／flat `dry_run`：配置应用移到公共 `Bisync` 入口，全局预演不能被 rc 的 `dryRun:false` 取消。这是本接口取舍，不是通用优先级。**[一手：源码、标签与 PR]**
-
-[固定rc测试](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/cmd/bisync/rc_test.go)经 `jobs.NewJob` 检查专属、全局及冲突参数，再观察目标新文件；仅本地路径，非云存储。[合并快照changelog](https://github.com/rclone/rclone/blob/be46eaa1f0fe8df62f522bf4fab22c30d0d92d1d/docs/content/bisync.md)列 v1.76，核实时[最新发布仍为v1.75.2](https://github.com/rclone/rclone/releases/tag/v1.75.2)，因此本次合并尚未发行给接收者。**[一手：测试、changelog 与发行；研究：边界]**
-
-**采用范围。** 有持久基线时复用预演前后及下一正式调用的连续检查；换入口只补参数传递和效果。纯计算预览无需本项。未运行 rclone／模型或独立核 CI，缺独立逐例复测及 AI 收益证据。**[经验／研究]**
-
+[阅读本节](2026-10-12-development-maintenance.md#s996)
 
 ## 清 lint：保留异步调用契约，还是删除 async
 
-主线：三，兼二；改变 15 §4 清理诊断时的选择。
-改变的建议：先核执行上下文及调用者契约；有意的异步边界可窄范围豁免，不机械删除或添加无业务需要的等待；确实无异步契约时仍可重构。
-新证据：Ruff 原用户报告、合入的文档修订与固定规则／运行器源码；ESLint 对 Promise 拒绝处理的独立反例。核实：2026-10-16（UTC+8）。**[一手／社区；经验：采用判断]**
-
-[Ruff #23196](https://github.com/astral-sh/ruff/issues/23196)作者在 FastAPI 中用 pytest-asyncio 测 `ContextVar` helper：缩减复现用 `asyncio.run` 执行 coroutine 得 `1/1/1`，删 `async` 直接外层调用得 `1/2/3`。版本为 Python 3.11.11、Ruff 0.15.0，缺 pytest-asyncio 版本、配置及完整项目。维护者归因执行时机和上下文；RUF029 只报缺异步语法，无 autofix。因此不是 Ruff 自动破坏路由，也不是完整框架复测。**[社区：用户与维护者讨论]**
-
-[#26641](https://github.com/astral-sh/ruff/pull/26641)于 2026-07-09 合入[`04d831a`](https://github.com/astral-sh/ruff/commit/04d831a7202b1274a1e1973c4d8443d754a51faa)，只补文档：无 `await` 的测试或 callback 也可依赖 async context，按需加真实 await 或局部禁规则。[同提交规则源码](https://github.com/astral-sh/ruff/blob/04d831a7202b1274a1e1973c4d8443d754a51faa/crates/ruff_linter/src/rules/ruff/rules/unused_async.rs)仅调用 `report_diagnostic`，已有 class methods、stubs、识别的 FastAPI routes、`asynccontextmanager` 豁免，[fixture](https://github.com/astral-sh/ruff/blob/04d831a7202b1274a1e1973c4d8443d754a51faa/crates/ruff_linter/resources/test/fixtures/ruff/RUF029.py)表达预期。这不是新增行为修复；Test Plan 非本轮回执，未获原用户复测。**[一手：补丁与测试定义；研究：边界]**
-
-**隔离取决于运行方式。** pytest-asyncio [`f287e5e` 的测试入口](https://github.com/pytest-dev/pytest-asyncio/blob/f287e5e0f5425380b24c32b64037dfb2ed3cb937/pytest_asyncio/plugin.py#L561-L571)复制 async test context，经[包装器](https://github.com/pytest-dev/pytest-asyncio/blob/f287e5e0f5425380b24c32b64037dfb2ed3cb937/pytest_asyncio/plugin.py#L891-L908)传给 `runner.run`；async fixture 另有传播和恢复，不能统称状态隔离。[Python Task 契约](https://docs.python.org/3/library/asyncio-task.html#asyncio.Task)允许显式 context，默认才复制。只证当前机制，未证历史项目用了此实现；同一任务内 await 函数也不保证独立上下文。**[一手：源码与契约；研究：边界]**
-
-[ESLint `require-await` 的 When Not To Use It](https://eslint.org/docs/latest/rules/require-await#when-not-to-use-it)给出无 await 而直接抛异常的 async 反例：调用者用 Promise 的 `.catch()`，改同步会直接抛出，须改变调用者，因此可以禁用规则。机制不同于 Python context，但都要求保住调用契约，不是保留所有无 await 函数。**[一手：官方反例；研究：比较]**
-
-**适用性反例，不追加另一套流程。** [RUF055 #27024](https://github.com/astral-sh/ruff/issues/27024)中 bytes 正则搜索 `memoryview` 与改写后的成员判断不等价；[维护者拒绝 #27040](https://github.com/astral-sh/ruff/pull/27040#issuecomment-5050042567)也反对把所有 bytes-pattern 修复一律标不安全，因为 bytes 目标仍有有效情况，问题在目标类型与规则适用范围。核实时 #27024 仍 open，#27040／#27233／#27715 均关闭未合并；不能拿候选 PR 的测试或安全分类当已交付修复。固定 current main [`9e3ea63` 规则源码](https://github.com/astral-sh/ruff/blob/9e3ea63fb43040782a2ff00147cacf8861674615/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs)仍按 pattern、参数数量和真假值使用条件筛选，未核目标类型，修复的 Safe／Unsafe 分类取决于 comments。本轮另用手写 Python 3.12.14 标准库表达式核对：`memoryview(b"abcdef")` 上 `bool(re.search(b"abc", value))` 为 True、`b"abc" in value` 为 False；bytes 对照为 True／True。这只是局部语义见证，没有执行 Ruff 修复或当前发行版，也不是原用户框架复测；不推断全部修复不可信。**[一手／社区；经验：本轮标准库局部核对；研究：修订状态与采用边界]**
-
-**采用范围。** 核真实调用者／运行器；有必要契约才窄范围豁免并验行为，否则正常重构。不能为消警告默认加 `sleep(0)`，它会改变调度。除上述标准库表达式外仅只读，未运行 Ruff／pytest／上游测试或测长期收益。**[经验／研究]**
-
+[阅读本节](2026-10-12-development-maintenance.md#s1017)
 
 ## 委派失败被转换为空成功：父任务已经收集也可能误判
 
@@ -1077,62 +604,20 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 ## 依赖解析修复：排除坏组合，同时保留支持面
 
-2026-10-17 UTC+8 核实；主线三／四，改变15 §5依赖升级的选择。**✅ 先分清错误组合由旧元数据、实际二进制还是业务兼容门槛造成，再选临时限版、抬直接依赖下限或继续迁移。** 以下是2024年历史维护链，不是当前安装版本建议或AI收益证据。**[研究／经验]**
-
-**失败落在消费路径，不是安装声明。** [NumPy #26710](https://github.com/numpy/numpy/issues/26710)中，Airflow维护者报告Python 3.12 eager-upgrade将NumPy 1.26.4升至2.0.0，同时将pandas 2.1.4降至2.1.1；`pip check`通过，Google provider经aiplatform／bigquery导入pandas时却出现dtype尺寸不符。原帖给解析diff、栈和[失败job链接](https://github.com/apache/airflow/actions/runs/9537986684/job/26286749479)，本轮未取回job日志。这里的“仅3.12”是当时该轮解析结果，不是ABI故障仅可能发生于3.12。**[社区：下游原始报告]**
-
-**修过新版本，不会使旧可选项自动安全。** 固定[pandas 2.1.1元数据](https://github.com/pandas-dev/pandas/blob/e86ed377639948c64c429059127bcf5b359ab6be/pyproject.toml#L30-L38)未给NumPy上限；[2.1.2元数据](https://github.com/pandas-dev/pandas/blob/a60ad39b4a9febdea9a59d602dad44b1538b0ea5/pyproject.toml#L30-L38)对三个Python分支均加`<2`，但要求Python≥3.9。[NumPy维护者答复](https://github.com/numpy/numpy/issues/26710#issuecomment-2172373298)认可排除坏旧版，并指出该历史发布的元数据无法事后修正；本节不据此概括所有包平台。**[一手：固定声明与维护者解释]**
-
-**真正二改是支持范围，而非把所有下限一起抬高。** [Airflow #40272](https://github.com/apache/airflow/pull/40272)先针对3.12；随后作者报告[lowest-direct也暴露问题](https://github.com/apache/airflow/pull/40272#issuecomment-2171883989)，尝试统一下限，又因[Python 3.8不支持pandas 2.1.2](https://github.com/apache/airflow/pull/40272#issuecomment-2171886409)改为分段。最终[合并补丁81c331e](https://github.com/apache/airflow/commit/81c331e29a0e112380b634966c69342fa69bdd55)更新13个provider声明与生成依赖表：在当时支持的Python范围内，≥3.9使用`pandas>=2.1.2,<2.2`，<3.9保留`>=1.5.3,<2.2`。上限仍服务于既有SQLAlchemy／FAB兼容要求，见固定[common-sql说明](https://github.com/apache/airflow/blob/81c331e29a0e112380b634966c69342fa69bdd55/airflow/providers/common/sql/provider.yaml#L61-L70)。**[一手：固定补丁；社区：作者修订记录]**
-
-**竞争方案与停止线。** 临时`numpy<2`可以阻止已知坏组合，不是错误方案；Airflow选择利用pandas已修元数据收窄直接依赖，同时保住解释器支持面。[pandas 2.2.2发布说明](https://pandas.pydata.org/docs/whatsnew/v2.2.2.html#pandas-2-2-2-is-now-compatible-with-numpy-2-0)明确其wheel兼容NumPy 1／2，但当时直接升级会越过Airflow的`pandas<2.2`门槛。已有兼容版本无法满足必要业务时继续限版，只有相关消费者都通过后才放开组合；若自己产出C扩展，另按[NumPy 2.0构建契约](https://numpy.org/doc/2.0/dev/depending_on_numpy.html#numpy-2-0-specific-advice)处理构建／运行依赖与wheel验证，不能只修声明。**[一手；经验：选择与边界]**
-
-**交付证据仍有限。** [作者后续](https://github.com/numpy/numpy/issues/26710#issuecomment-2173315601)称分段限制解决Airflow问题，并提醒用户用项目推荐的constraints安装；[接收者询问发行](https://github.com/apache/airflow/pull/40272#issuecomment-2183125147)后，维护者在6月21日答复尚未发行，可在安装时加相应pandas范围。这不是接收者修后成功回执。最终PR head为`a3d23597f2542f5d20369bbf7eba8bc7e6b277be`；本轮该head的status／PR workflow查询返回空，未取得可核对的修后全矩阵结果，不能据合并补作CI全绿或业务恢复。仅只读源码、元数据、原帖与文档，未安装依赖、运行上游测试／模型；主动维护投入和长期净收益未知。**[社区／一手：声明；研究：验证范围]**
+[阅读本节](2026-10-12-development-maintenance.md#s1078)
 
 ## 原生替换：请求取消之后消费者能否继续
 
-核实：2026-10-18（UTC+8）；事件为2024年。改变15 §5：用原生接口替换成熟依赖时，比较窄适配与保留依赖，验已有消费者的选项、错误识别及后续业务动作。无AI实现归属；只读公开PR、评论与固定源码，未运行固件、浏览器或测试。**[经验：选择；研究：范围]**
-
-**收益存在，普通请求通过仍漏旧契约。** GP2040-CE [#988](https://github.com/OpenStickCommunity/GP2040-CE/pull/988)于05-03合入，以自写Http包装原生fetch替换Axios。作者报告debug board的GET／POST可用，构建输出的gzip JS减少11.31kB，并[解释这是固件内压缩体积](https://github.com/OpenStickCommunity/GP2040-CE/pull/988#issuecomment-2081180149)，不是运行性能或维护净收益。[固定head的Http](https://github.com/OpenStickCommunity/GP2040-CE/blob/3b4ffabeb942b7584f63c2791bd6174261c5c80b/www/src/Services/Http.ts)把get第二参数当headers展开；[同版WebApi](https://github.com/OpenStickCommunity/GP2040-CE/blob/3b4ffabeb942b7584f63c2791bd6174261c5c80b/www/src/Services/WebApi.js)却仍传`{signal: abortSignal}`。返回仍是`{data: ...}`，选项语义已不同。**[一手：固定源码；社区：作者构建／试用自报]**
-
-**修完连接还须修消费者。** 非原迁移作者asturur在[#1001](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001)报告：0.7.8能用的引脚映射skip、cancel和关闭按钮在当时master失效，并展示错误的signal header；不能写成已发行故障。首补丁[`0c4ef7f`](https://github.com/OpenStickCommunity/GP2040-CE/commit/0c4ef7f79ce31dc06023fbb131b649ad9d74bb81)分开headers和signal、把signal传给fetch，作者[随后说连接能中止但功能未恢复](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#issuecomment-2094922235)。原因还包括WebApi仍按Axios的`ERR_CANCELED`代码返回`{canceled:true}`。中间补丁[`00f3eb5`](https://github.com/OpenStickCommunity/GP2040-CE/commit/00f3eb504602a05a4f6372f9b6d52a85ef5e7678)暂造同名Error并改按message识别。**[社区：实际操作与修复自报；一手：补丁]**
-
-**保留迁移，撤掉仿造错误。** 评审者[建议直接识别原生AbortError](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#discussion_r1590436695)，[指出应读name而非message](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#pullrequestreview-2039825476)。最终05-07合入[`cdce584`](https://github.com/OpenStickCommunity/GP2040-CE/commit/cdce584b9b5bdb796f0ee0b9da441feb2402e4f6)，保留fetch与signal转发，去掉自造错误，WebApi用`error?.name === 'AbortError'`继续给UI返回业务结果`{canceled:true}`。[固定CaptureButton](https://github.com/OpenStickCommunity/GP2040-CE/blob/cdce584b9b5bdb796f0ee0b9da441feb2402e4f6/www/src/Components/CaptureButton.tsx)在此结果下另调设备端`abortGetHeldPins`，随后按stop／是否还有下一项选择关闭重置或继续捕获。这里保住的是自有消费者行为，不是旧库每个错误字段；也不代表任意取消原因都应这样分类。**[一手：评审与固定消费者；研究：解释范围]**
-
-**采用与证据边界。** 有明确体积目标且必要行为能窄适配时，可保留原生替换；接不上业务收尾或适配负担不合算时保留成熟依赖，是本例支持的条件推论，并非项目实际回退Axios。作者评论后补的“fixed”属于中间修改回执，未绑定最终合入版本；最终接收与源码不能补作独立端到端复验。没有长期维护、跨浏览器完整通过或AI收益数据，也没有流式、重试或cookie故障证据。**[经验：取舍；研究：局限]**
+[阅读本节](2026-10-12-development-maintenance.md#s1092)
 
 ## 数据库默认值：写出字段不等于写对值
 
-2026-10-18（UTC+8）核实；主线三／四，改变15 §5的迁移顺序与验收。**常驻进程持旧schema缓存且ORM省略默认值字段时，先保护相关写入者，再改数据库；新进程测试不足以覆盖此窗口。** [研究]
-
-[官方步骤](https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/#changing-column-defaults)先部署显式写列与赋值，再post-deployment迁移，下次minor清理保护；两minor是GitLab发行约束，不照搬。常量可用代码默认值；依记录计算时区分未提供与显式输入，`||=`可能保留缓存旧值；显式nil不被attribute默认值覆盖，只有业务禁止nil时才另行处理。[一手：文档；研究：范围]
-
-固定镜像`fa6a63c43dd8050dd297c4eae1bdbf9e0cfd7ff1`的[concern](https://github.com/gitlabhq/gitlabhq/blob/fa6a63c43dd8050dd297c4eae1bdbf9e0cfd7ff1/app/models/concerns/safely_change_column_default.rb#L40-L51)在before_create把声明列纳入INSERT；[测试](https://github.com/gitlabhq/gitlabhq/blob/fa6a63c43dd8050dd297c4eae1bdbf9e0cfd7ff1/spec/models/concerns/safely_change_column_default_spec.rb#L16-L132)先加载保护并预热缓存，再改DB默认值。显式写1仍落盘1；未提供值也写缓存的1，不自动采用DB新值2。故写列保护不决定业务正确值。另有代码默认值／移除DB默认值测试，未覆盖上述依记录赋值或显式nil。[一手：源码与测试定义]
-
-采用前确认保护已覆盖相关写入者，包括绕过模型回调的路径；否则延后迁移或选获准停写窗口。复用测试保留旧缓存，按业务分验未提供、显式旧值与NULL的落盘结果，兼容窗口结束再撤临时逻辑；无该省略机制不强加流程。测试只覆盖有保护代码的旧缓存，不保证无保护旧二进制安全；只读未执行，无生产恢复、AI收益或工时结论。[研究：选择与局限]
+[阅读本节](2026-10-12-development-feedback.md#s1104)
 
 ### API修改：声明差异、消费者契约与真实集成
 
-核实：2026-10-19 UTC。改变09“先确定性检查”的API修改分支：已有可靠且投入可接受的真实集成优先复用；只缺公开契约变更反馈时先补schema兼容检查，只有消费者/提供方独立演进且双方可维护验证时才评估Pact。不是三层全部必装，不据源码宣称提效。**[研究：采用判断]**
-
-**声明兼容与实现符合不同。** [oasdiff固定说明](https://github.com/oasdiff/oasdiff/blob/be6ad7a7103e667bc4dbe61ffcf8af3e3f01d5c7/docs/BREAKING-CHANGES.md)按OpenAPI声明判断旧请求/响应契约，不以某台服务端恰好宽松接收为准；例如新增必填请求属性即使带default仍破坏旧契约。`breaking`用于判破坏，`diff`输出一般差异，门槛须明确`--fail-on`；生成了客户端或定义没变不能独自证明实际服务符合定义。已有自动检查若覆盖实现符合、消费者需要及目标版本组合，不必只为“契约测试”换框架。**[一手：工具/Pact官方契约；经验：选型]**
-
-**现成采用一：InvenTree保留schema与客户端集成两条检查。** [固定workflow](https://github.com/InvenTree/InvenTree/blob/879d52041f9a2656d1e9dc3e80abe3e296c683fe/.github/workflows/qc_checks.yaml)的schema job从当前后端导出schema，下载已发布API版本定义，用oasdiff的`diff`动作生成HTML；它不是`breaking`动作。API版本文件未变时另用普通diff要求定义一致，改版本则跳过该一致检查；因此不能描述成“任何破坏都阻止合并”。同文件的python job另启动实际InvenTree服务，用inventree-python测试调用。该客户端是浅克隆当时默认分支，不是证明所有旧发布客户端兼容。源码仅证明配置采用与覆盖分工，未读取运行日志或测效果。**[一手：固定workflow]**
-
-**现成采用二：GOV.UK One Login明确做两端，而非给mock换名。** authentication-api的[IpvUserIdentityTest](https://github.com/govuk-one-login/authentication-api/blob/71d7e101eed17a10c7cf9d353e705f1e9727421d/ipv-api/src/test/java/uk/gov/di/authentication/ipv/contract/IpvUserIdentityTest.java)通过真实IPVTokenService向Pact MockServer发请求，声明GET /user-identity及200结构／403交互，再验证解析或异常；provider名称为IpvCoreBackUserIdentityProvider。ipv-core-back[同名provider测试](https://github.com/govuk-one-login/ipv-core-back/blob/06661368619b9ffe7b6a4032b265734dfe62c74b/lambdas/build-user-identity/src/test/java/uk/gov/di/ipv/core/builduseridentity/pact/BuildUserIdentityHandlerTest.java)把真实BuildUserIdentityHandler接到本地HTTP server，以mock数据存储等依赖准备有效／无效token状态，再verifyInteraction。它的消费者选择器为mainBranch，不能据此宣称覆盖生产所有已部署版本。两个仓库另有[消费者端工作流](https://github.com/govuk-one-login/authentication-api/blob/71d7e101eed17a10c7cf9d353e705f1e9727421d/.github/workflows/contract-tests.yml)与[提供方工作流](https://github.com/govuk-one-login/ipv-core-back/blob/06661368619b9ffe7b6a4032b265734dfe62c74b/.github/workflows/contract-tests.yaml)；provider工作流为Broker接入还显式等待30秒，且Dependabot路径不执行Broker相关步骤。配置存在不证明本次执行成功，Broker与状态维护也是采用成本。其[README](https://github.com/govuk-one-login/ipv-core-back/blob/06661368619b9ffe7b6a4032b265734dfe62c74b/README.md)仍分别列API集成与E2E用户路径。**[一手：配对固定源码及配置]**
-
-**不用Pact的条件与保留检查。** [官方适用范围](https://github.com/pact-foundation/docs.pact.io/blob/76d06a6f246693e92a417c01d0c6a511887dfc1c/website/docs/getting_started/what_is_pact_good_for.md)把消费者可识别、双方可协作、provider状态可控列为适用条件；对方不参与、未知公共消费者、状态不可控不宜强接。它验证通信契约，不覆盖provider完整功能；透传API若总回200，契约匹配不能证明下游消息或持久副作用正确。[官方比较](https://github.com/pact-foundation/docs.pact.io/blob/76d06a6f246693e92a417c01d0c6a511887dfc1c/website/docs/faq/convinceme.md)也保留已有有效集成测试，若引入Pact只重复既有覆盖、增加难维护状态或对方无法验证，就保留原检查。未取得两种方案同任务成本或AI净收益，不报速度或缺陷下降。**[一手：官方范围；经验：撤回条件]**
-
-本轮仅公开文档与固定源码阅读，未执行候选、模型、服务或其测试；配置定义不作运行通过、实际部署兼容或AI净收益。**[研究：验证范围]**
+[阅读本节](2026-10-12-development-feedback.md#s1114)
 
 ### 无障碍反馈：扫描当前状态与保留必要检查
 
-**改变的选择：23 §2在已有浏览器回归中按缺口补自动扫描，保留用户路径；不因组件存在已知违规而排除整个交互区域。** 核实2026-10-20（UTC+8），只读固定官方材料与成熟项目测试设计，未运行浏览器、axe或模型。原有语义、键盘及目标状态检查足够时继续复用，不另加MCP或审计框架。**[一手；经验：采用判断]**
-
-**现成工具：定位、扫描、实际操作回答不同问题。** Playwright固定`cdcef0bc`的[locator文档](https://github.com/microsoft/playwright/blob/cdcef0bc92d35ae5a50fafd433fb5dcb633742dd/docs/src/locators.md)明确role定位只给早期ARIA反馈，不替代审计与符合性测试。[扫描指南](https://github.com/microsoft/playwright/blob/cdcef0bc92d35ae5a50fafd433fb5dcb633742dd/docs/src/accessibility-testing-js.md)允许把axe扫描并入已有测试；`analyze()`看调用时状态，菜单示例先点击、等展开内容可见，再扫描。axe-core固定`f01bf5ce`的[API说明](https://github.com/dequelabs/axe-core/blob/f01bf5ce56ffcf1411d14d14ed75d1fb86f8023c/doc/API.md)同样要求激活未渲染的菜单／模态后重扫；已渲染的visually-hidden内容仍可被检查，不能把它与未激活区域混同。完整结果还分`violations`、`passes`、`incomplete`与`inapplicable`；只断言违规为空不能把未决项目记作通过。标签或对比度是自动检查入口，焦点流、可理解性与辅助技术实际操作仍按需求验证，不由一次初态扫描推整站可用。**[一手：固定官方文档；经验：范围判断]**
-
-**实际采用：GOV.UK组件扫描与状态回归分别保留。** govuk-frontend固定`3d28aa52`的[password-input扫描测试](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/password-input/accessibility.puppeteer.test.mjs)遍历组件examples，渲染后调用axe并断言无违规；[另一组交互测试](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/password-input/password-input.puppeteer.test.js)按点击1／2／3次检查密码显隐、状态文本、按钮名称等，提交时还检查恢复password类型。这是同项目实际采用的分工；后者主要用点击和DOM属性断言，不证明键盘路径已测或屏幕阅读器实际播报。其[贡献验收说明](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/docs/contributing/test-components-using-accessibility-acceptance-criteria.md)另要求真实页面中的键盘、辅助技术组合和残障用户测试；文档要求也不当成该版本全部执行的回执。**[一手：固定测试设计与项目要求]**
-
-**已有违规：先修；确需暂留，按覆盖代价选最窄例外。** Playwright扫描指南说明`exclude()`会跳过目标及全部后代的所有规则；若想继续捕捉同区域的新违规，可保存规则ID与目标元素的fingerprint，而非带整段HTML的全结果快照。代价是基线维护与一定脆弱性，变化后应核差异，不能让Agent直接接受新快照来变绿；旧违规仍是待修问题。`disableRules()`则关闭整条规则，只有其范围符合本次验收或明确接受该盲区时采用。反例是GOV.UK的[Accordion扫描配置](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/accordion/accessibility.puppeteer.test.mjs)：注释明确关闭AAA的`color-contrast-enhanced`，不是关闭AA对比检查。这支持按目标级别选规则，不支持把任何关闭都称为作弊，也不证明该组件符合全部AA要求。**[一手：官方配置范围与项目反例；经验：选择与撤回条件]**
-
-以上支持检查的覆盖分工和范围取舍，未取得同任务的人力、缺陷或Agent效果对照，不推导自动化替代人工的比例或净收益。**[研究：证据边界]**
+[阅读本节](2026-10-12-development-feedback.md#s1128)

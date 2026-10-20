@@ -4,7 +4,7 @@
 
 # WP1：授权与商用门槛
 
-核实时间：2026-10-14（UTC+8）。仅调查；不接受协议、不代表读者签约，不替代具体发行地区的法律审查。正文总表见[03](../../domains/game-dev/03-generative-ai-in-games.md)。下列交付检查均为历史记录，现行协作按长期计划。
+核实时间：2026-10-14（UTC+8）；FLUX 3 Image Klein增量核至2026-10-20。仅调查；不接受协议、不代表读者签约，不替代具体发行地区的法律审查。正文总表见[03](../../domains/game-dev/03-generative-ai-in-games.md)。下列交付检查均为历史记录，现行协作按长期计划。
 
 ## 口径与更新条件
 
@@ -21,7 +21,7 @@
 
 ## 图像与视频：精确版本、服务入口和输出分开
 
-本节均核查于2026-10-14（UTC+8）。**[一手]** 表示已读取官方文本；**[研究]** 判断仅为商用候选准入，不是版权独占、无侵权、质量或法律保证。“无门槛”仅指已读许可没有特设营收／地域限制，不豁免适用法律；本地模型结论不覆盖同品牌云服务、额外LoRA、编码器或第三方节点。
+本节基础核查于2026-10-14（UTC+8）；B7增量为2026-10-20。**[一手]** 表示已读取官方文本；**[研究]** 判断仅为商用候选准入，不是版权独占、无侵权、质量或法律保证。“无门槛”仅指已读许可没有特设营收／地域限制，不豁免适用法律；本地模型结论不覆盖同品牌云服务、额外LoRA、编码器或第三方节点。
 
 | 精确方案 | 代码层：修改／分发 | 权重层：商业运行 | 输出层：商业使用／修改／发行 | 地域、营收、订阅与采用判断 |
 |---|---|---|---|---|
@@ -33,6 +33,7 @@
 | Qwen-Image-Layered | 独立Layered固定代码Apache-2.0 | 此版本官方卡明确Apache-2.0 | 分层不会清除原图权利；无单独输出专属权利承诺 | 无许可内地域／营收门槛，本地无订阅条件。**可作商用候选**。[一手／研究：Q3、Q4] |
 | FLUX.2-klein-4B | 固定flux2推理代码Apache-2.0 | 此checkpoint的LICENSE为Apache-2.0，可商业修改分发 | 未见单独输出归属条款；没有图片非商用门槛，仍须清除输入及第三方权利 | 无许可内地域／营收门槛，无须另买商业自托管许可。**可作商用候选**。[一手／研究：B0、B1] |
 | FLUX.2-klein-base-4B | 同上 | Base具体checkpoint的LICENSE为Apache-2.0 | 同上；训练素材、外部适配器另核 | 同上；不能外推到9B Base。**可作商用候选**。[一手／研究：B0、B2] |
+| FLUX 3 Image Klein（distilled，10-20增量） | 独立推理代码Apache-2.0；不覆盖权重 | FLUX Kommunity v1.0；合资格用户可在生产中运行模型／衍生模型，限为生成获准商业输出 | §2不主张输出所有权；须过滤或审阅违法／侵权内容，并依法作AI标识；§4禁用模型或输出改进同类AI | §1(e)用户及关联方合计年化总营收须严格低于US$5M；不是商业训练／模型分发的普遍豁免。**👀 有条件本地多参考编辑候选，不替换4B的Apache默认**。[一手／研究：B7] |
 | FLUX.2-klein-9B | 独立发布的推理代码Apache-2.0不被权重许可撤回 | FLUX Non-Commercial License v2.1，仅非商用／非生产修改及附条件分发；商业需另许可 | §2(d)不主张输出所有权并允许商业用途，但受协议限制；禁用输出训练竞争模型，须过滤或审阅及依法标识 | worldwide非商业授权，不存在小团队低营收自动商业免费豁免。**须条件核查，免费自托管不作默认**。[一手／研究：B0、B3、B5] |
 | FLUX.2-dev | 独立推理代码Apache-2.0 | 本次HF许可证正文为v2.1，免费仅非商用／非生产 | 输出商业用途条款不能倒推模型商业生产获准，§4另有广泛用途限制 | 付费自托管须核模型、席位、用量、域名／客户及生成时有效许可；终止需停用删除模型和衍生物，旧输出存续按所签合同核查。**须条件核查**。[一手／研究：B0、B4–B6] |
 | Adobe Firefly Image Model 5（Adobe自有模型） | 封闭服务，不授模型代码修改分发权 | 无开放权重许可 | 输出属于用户Content；FAQ允许商业项目，beta除产品另禁；不能删输出水印／Content Credentials，禁用于AI/ML训练改进 | FAQ明确China、Russia、Belarus不可用，另有制裁地区；无所见营收门槛。普通输出商用不等于指定套餐的IP赔偿保障。**须地域及生成时功能条件核查**。[一手／研究：A1–A4] |
@@ -58,6 +59,7 @@
 - **B1–B2**：[klein-4B许可证](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B/blob/main/LICENSE.md)（revision `e7b7dc27f91deacad38e78976d1f2b499d76a294`）；[base-4B固定许可证](https://huggingface.co/black-forest-labs/FLUX.2-klein-base-4B/blob/a3b4f4849157f664bdbc776fd7453c2783562f4d/LICENSE.md)。
 - **B3**：[klein-9B许可证](https://huggingface.co/black-forest-labs/FLUX.2-klein-9B/blob/main/LICENSE.md)，v2.1；revision `92196c8e11f7b6cf2b7493e037d8c5345c559216`。§1(c)、§2、§3、§4分开核查。
 - **B4**：[FLUX.2-dev许可证](https://huggingface.co/black-forest-labs/FLUX.2-dev/blob/main/LICENSE.md)，本次正文v2.1；revision `26afe3a78bb242c0a8bb181dcc8937bb16e5c66c`。[网站法律总页](https://bfl.ai/legal/non-commercial-license-terms)仍显示2025-11-25 v2.0，不代替checkpoint所附版本；未接受gated仓库访问条件。
+- **B7**：2026-10-20读取[distilled权重许可](https://huggingface.co/black-forest-labs/flux-3-image-klein/blob/main/LICENSE.md)§1(e)、§2(a/e)、§4(b)；[代码许可](https://github.com/black-forest-labs/flux-3-image-klein/blob/main/LICENSE)独立Apache-2.0。[官方模型卡](https://huggingface.co/black-forest-labs/flux-3-image-klein)说明bbox只引导位置／尺度，编辑可改动框外，不能当硬mask；[参考实现](https://github.com/black-forest-labs/flux-3-image-klein#memory)在B200、1024²、关闭提示扩写时distilled峰值31／26／25GB（BF16／FP8／NVFP4），不是完整默认管线最低显存。低显存ComfyUI路径另核，不从5.6B推总成本。满足授权后，仍须同题检查局部二改串改、目标尺寸与维护成本；不合格回旧4B或已清权来源，不因新版本默认迁移。未运行模型，质量和二改可用率未知。**[一手：厂商契约／自报；研究：选型]**
 - **B5–B6**：[商业许可说明](https://help.bfl.ai/articles/9272590838-self-serve-dev-license-overview-pricing)（2026-06-12）；[自托管商业条款](https://bfl.ai/legal/self-hosted-commercial-license-terms)（2026-08-04），EU另有适用条款；核§5持续付费／移除、§6用量报告、§7终止删除。
 - **A1、A4**：[Firefly FAQ](https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html)核商业用途与地区；[官方当前计划页面](https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/current-firefly-promotions.html)列Image Model 5，仅用于型号存在性，未登录核账户实际beta标识。
 - **A2–A3**：[2026-04-23生成AI特别条款PDF](https://www.adobe.com/cc-shared/assets/pdf/legal/servicetou/adobe-generative-ai-product-specific-terms-en-us-20260423.pdf)核§1、§3、§7、§8；[General Terms](https://www.adobe.com/legal/terms.html)核§4.2及§12。未见普通输出权利要求持续订阅，不承诺退订后赔偿保障继续。
@@ -69,7 +71,7 @@
 - **L2**：[LTX-2.5官方卡](https://huggingface.co/Lightricks/LTX-2.5)，revision `49b093a39c19169a8a81721dcc541e07e945232f`。卡片“Over $10M”不能覆盖法律文本“at least”边界。依赖含Gemma 4编码器，部署前另核；未点击分享联系信息／接收营销的访问确认。
 - **R1–R3**：[Runway Terms](https://runway.com/terms-ofuse)（2026-09-15）核§1、§2.5、§4.4、§18.12；[商用帮助页](https://help.runwayml.com/hc/en-us/articles/21668707517587-Can-I-use-the-content-I-made-in-Runway-for-commercial-purposes)；[Gen-4.5使用条件](https://help.runwayml.com/hc/en-us/articles/46974685288467-Creating-with-Gen-4-5)。
 
-**当前性与未核实边界 [一手／研究]**：已存在[FLUX 3 Image官方页面](https://bfl.ai/models/flux-3-image)，指向商业权重洽谈，因此不把FLUX.2宣称为品牌最新型号，也不把未审合同视为开放许可。未核Qwen-Image 2.0／3.0开放权重、全部第三方依赖或任何具体资产权利；后续选新版本、托管商或适配器时必须补行。没有真实游戏生产、质量或成本实测。
+**当前性与未核实边界 [一手／研究]**：已存在[FLUX 3 Image官方页面](https://bfl.ai/models/flux-3-image)，指向商业权重洽谈；上表另列10月15日发布的Klein条件许可，不能外推其他FLUX 3型号或旧9B／dev。因此不把FLUX.2宣称为品牌最新型号，也不把未审合同视为开放许可。未核Qwen-Image 2.0／3.0开放权重、全部第三方依赖或任何具体资产权利；后续选新版本、托管商或适配器时必须补行。没有真实游戏生产、质量或成本实测。
 
 ## 3D、绑定与动作：主模型许可不是整条管线许可
 
