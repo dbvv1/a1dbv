@@ -1,8 +1,8 @@
 主线：三，兼二／四
 改变的建议：续改分验有意改变与必须保留的行为；迁移核消费者、持久状态与真实运行入口，撤替代层前确认原生能力承接。[研究／经验]
-新证据：2026-10-20 追加 CPython 双入口对照与 f-string 后续维护链；其余迁移记录保留原核实日期及运行边界，本次没有运行候选。[一手：源码／维护记录]
+新证据：2026-10-20 追加固定Prisma应用的两轮继承纸面包、GitLab修复链及工具边界；CPython等旧记录保原日期／运行边界，本轮未运行候选。[一手／研究]
 
-2026-10-20另列[连续修改深项目提议](#连续修改深项目提议2026-10-20)，仅立项，尚未据此修正文默认。[研究]
+2026-10-20：[P22](#p22有数据应用的两轮迁移)已交两轮继承纸面包与固定维护链，15§5据此明确迁移默认；[P23](#p23next应用迁出后仍值得保留吗)仍仅提议、未执行。均不代表运行效果。[研究]
 
 # 开发条件：维护与迁移
 
@@ -467,19 +467,101 @@ PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UT
 
 ## 连续修改深项目提议（2026-10-20）
 
-**仅立项，不是新默认或内容项目验收。** 两项都归主线三／四，拟改15的Agent迁移建议；范围预算2–3天不作完成条件。P18先完成同页交付，候选正文再认领。当前仅公开资料与既有离线范围，不运行候选、数据库或模型，不连接真实账户。[研究]
+**P22交资料包，P23保留提议。** 两项归主线三／四；标题保留旧锚点。P22改变15§5的Agent迁移选择，P23未执行；预算不作验收条件。本轮仅公开资料／既有离线范围，无数据库、候选、模型运行或真实账户访问。[研究]
 
 ### P22：有数据应用的两轮迁移
 
-**拟改变：先保既有受支持迁移器，再按停写容忍度选一次迁移或分阶段相容路径。** 工具选择与部署窗口不是互斥排行榜。Agent准备数据映射、迁移／应用补丁，人定不可丢语义、业务映射与真正的发布权限；代码回退不等于新增状态可回退。[研究：提议]
+**✅ 保既有受支持迁移器；小应用能全体停写且迁移／验收落在批准窗口内，先短停写，否则桥接。** 工具轴与停写轴分开。Agent交映射／路径／判据，人定语义与权限。以下新增状态、数据与版本代号是两轮继承纸面设计，非生产验证。[研究；2026-10-20核]
 
-立项依据：当前[Prisma数据迁移指南](https://www.prisma.io/docs/guides/database/data-migration)直接提供Agent委派入口，published→status需要承接历史值；[发布状态](https://www.prisma.io/docs/orm/release-status)将8列RC、7继续支持，未锁CLI可能跨版本。10月16日版本表不是本轮注册表查询。Supabase的[diff引擎契约](https://supabase.com/docs/guides/local-development/diff-engines)连CI与AI提示比较入口也不同；不将两套命令拼成配方。[一手，2026-10-20读取]
+#### 固定源码、读写闭包与执行门
 
-[GitLab !123002](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123002)串起首次回填、写入约束、旁路修补与再回填；[!93546](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93546)涉及新对象和旧缓存再处理。只核立项级维护链，固定补丁／回归／发行仍待项目执行；不归因为AI。[一手／研究]
+基线是[官方Express应用](https://github.com/prisma/prisma-examples/tree/51b3202cae5418b54314a2bb53f70b27c6558573/orm/express)：Prisma CLI/client/PG adapter声明7.0.0，只作旧源码样本。根`.gitignore`忽略lockfiles及orm迁移目录，固定树无该应用lock／migration.sql；config目录名不证明历史。未安装，无真实库／账本。[一手：固定树]
 
-**完整产物**：固定同一公开应用、版本、读写者与明确标为合成的旧数据。首轮从布尔发布状态加入审核，第二轮加入定时发布；给全部旧新写入者责任、回填与中断重入、切读／收缩门槛、不能无损退回旧布尔的状态，以及前进修复／恢复选择。两轮继承同一产物，不重置为空库。比较保既有迁移器下的短停写与分阶段路径，分列计算、等待、人审、修补、接管与维护投入，未知不补估值。[研究：验收设计]
+`src/index.ts`闭包与新责任：[一手／研究]
 
-须核至少一条固定公开维护链及异质反例，落实Agent动作和人的决定；15给可直接采用的首选与撤回，18仅必要回链，证据留本分册。只剩reset警告／默认值单例或找不到连续增量则撤项；需要真库区分才有的缺口另预注册，不自行执行。立项独审通过不认证迁移有效。[研究]
+| 旧路径 | 继承责任 |
+|---|---|
+| POST /signup、POST /post | 嵌套／关联建帖都显式Draft |
+| PUT /publish/:id | 非原子／非幂等toggle改明确转移，禁绕审核／定时 |
+| PUT /post/:id/views、DELETE /post/:id | 保计数／删除，禁覆盖／复活；整行改DTO |
+| GET /feed | 保公开集合、作者、搜索、分页／updatedAt排序 |
+| GET /user/:id/drafts | 全部非公开项，区分InReview／Scheduled |
+| GET /post/:id、GET /users | 详情无过滤，仅按内部编辑API设计；users不含posts，保留 |
+| seed、管理／导入脚本、旧客户端 | seed清Posts／Users禁迁移；Studio／Console等旁路待核 |
+
+[现成测试](https://github.com/prisma/prisma-examples/blob/51b3202cae5418b54314a2bb53f70b27c6558573/tests/fixtures.ts)只建空库、安装、generate／db push／seed，无express构建、路由、存量／恢复断言；CI非冻结安装。根[LICENSE](https://github.com/prisma/prisma-examples/blob/51b3202cae5418b54314a2bb53f70b27c6558573/LICENSE)Apache-2.0与package MIT声明有差异；不复制代码。[一手]
+
+**基线门**：核实际schema、账本、发行物、PG版本与写者；有历史先恢复核对，确认无管理历史才按[官方baseline](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/baselining)准备相符历史，在另获准副本验空库／存量差异；旧库仅核对后记账，不重建。纸面假定单PG主库、无未知旁路且能阻断旧进程／连接／job重启，均待部署方核实。[一手／研究]
+
+#### 第一轮：布尔发布→审核状态
+
+合成T0＝2026-10-20 09:00Z，User10/20存在；时间同日：[研究：输入]
+
+| id | title/content | author | published | views | created/updated |
+|---|---|---|---|---|---|
+| 101 | A/正文A | 10 | true | 9 | 08:00/08:30 |
+| 102 | B/null | 10 | false | 0 | 08:05/08:35 |
+| 103 | C/正文C | null | false | 4 | 08:10/08:40 |
+| 104 | D/正文D | 20 | true | 2 | 08:15/08:45 |
+
+人定true→Published、false→Draft；旧公开保祖父条款，不伪造审核。A1允许Draft→InReview→Published、InReview→Draft、Published→Draft，非法／不存在返回conflict／not-found不写。账本主体＋requestId唯一，同输入重放结果、异输入拒绝；CAS与成功结果同事务提交。**鉴权／账本／version均待实现。**[研究]
+
+短停写：停全体写者并排空；已审可事务化DDL与显式事务内增字段／映射／验收，失败撤销。Prisma7不自动合并独立TS回填与schema事务；核新版后恢复写入，收缩可延后。超窗口则撤回。[研究]
+
+需要并存时，按以下权威顺序交接，不能省略C1a：[研究：部署设计]
+
+1. 保published，加可空status（null＝未接管）及stateVersion=0。旧版W0与C1并存时，C1按published读，创建／发布原子双写Draft/Published并增version，计数不增；status仅影子，审核关。
+2. W0退出／请求排空／旁路隔离后，回填全部不一致影子，非仅null。按观察id＋published＋version条件写status，并发改变则重读。批提交后才前移checkpoint；一致行不改，删除不重建。只写status，禁ORM自动updatedAt及旧时间覆盖并发更新。
+3. 无null／矛盾且逐字段验收通过，部署C1a：status权威，按A1转移、同事务增version；published仅Published投影。查询／DTO切换，但审核仍关，仅Draft/Published。
+4. **真正开放门**：排空全部C1进程、请求、连接以及步骤2回填；撤销调度并禁止旧版本／job重新获得写入资格。短暂停写核清单与一致性，切写入准入代际，仅放C1a/A1。回填的阶段／代际检查与更新必须在同一受保护事务；已进入者须结束或撤销后才开审核。不能只在job启动时看开关，CAS也挡不住C1取得新version后把false解释成Draft。
+5. 门通过才开InReview，旧回填永久退出；旧读／整行响应／投影依赖全退出且回退包理解状态后才删published。
+
+**判据**（分支各从指定起点）：[研究：纸面断言]
+
+- S1无并发映射后feed={101,104}、user10非公开={102}；101/104 Published、102/103 Draft。非状态字段逐值不变，null仍null；总数不代替内容／排序验收。
+- S2独立于S1：signup新增105须Draft/false。S3：C1写102 Draft/false后W0只写true，W0退出后的协调须得Published/true。S4：回填读103=false,v0后C1写Published/true,v1，旧条件必须失败并重读，不得回写Draft。
+- S5从S1：102提审→InReview/false；同requestId重放同结果，旧version异请求conflict。S6接S5：审核发布102、撤回104、101计数+1、删103；终点feed={101,102}、存活={101,102,104}、101.views=10。102/104更新时间随业务变化；**第二轮继承此终点，不还原T0**。
+- S7坏候选：全表默认Draft丢公开集合、按false重跑把InReview降草稿、自动updatedAt洗牌、重放toggle反向切换，任一阻止切读／收缩。S8中断：只有数据库确认rollback才称仍T0；结果不明先对账，批模式保已提交批、不前移失败批。
+- S9权威负例：C1残留时开放审核必须被门拒绝；完成交接后102进入InReview，旧C1连接／重启须在写前被拒，不能复原Draft或绕审核发布。一次CAS碰巧失败不证明门成立。
+- S10迟到回填：102已InReview，旧代际job按false写Draft须拒且状态不变；若job已在受保护事务内，开放门等待其结束／撤销，不能同时开放审核。
+
+#### 第二轮：继承S6，增加定时发布
+
+T1＝同日10:00Z；S6上另创建106/107并提审InReview。A2加Scheduled／可空UTC publishAt，继承账本／version。人定审核可立即／定时发布；设置时间≤数据库now拒绝；取消→Draft且审核失效，重排须重审。许晚不许早，延迟上限／权限待人定。仅Scheduled时间非空；feed仅Published，不凭到期直接公开，不伪造历史发布时间。[研究]
+
+先扩字段／枚举，保旧值；PG原生enum新增值须提交后才能使用（[PG18限制](https://www.postgresql.org/docs/18/sql-altertype.html#SQL-ALTERTYPE-NOTES)，实际版本待核）。C2先理解Scheduled、取消／重调及全部消费者，功能关；A1及旧回填全退出后才启A2和worker。审批原子写InReview→Scheduled、未来时间、version+1；worker仅凭id＋Scheduled＋观察version＋publishAt＋数据库now≥publishAt条件发布、清时间、增version。重复者匹配0重读；投影若尚在须同事务维护。候选扫描不是发布权，worker不能自作审核。[一手／研究]
+
+| 判据 | 唯一结果／分叉 |
+|---|---|
+| Q1 | 批准106于11:00、107于12:00；feed仍{101,102}。104草稿直接定时conflict |
+| Q2接Q1 | 10:59:59.999不得发106；11:00及以后首worker提交，重复匹配0；feed={101,102,106} |
+| Q3接Q2 | 11:30取消107成功→Draft、时间null、version增；12:00旧worker匹配0。主轨终点101/102/106公开，104/107草稿，103已删，101.views=10 |
+| Q4从Q3分叉 | 11:40重提审并定13:00；旧12:00 job须匹配0，13:00新任务才可发；只验id＋Scheduled会提前发 |
+| Q5从Q2分叉 | 106提交后丢响应，重试不二次转移；如新增通知须另补事务outbox及消费者幂等，本包无外部exactly-once承诺 |
+| Q6从Q1分叉 | 调度故障至11:05才恢复，106在提交前仍Scheduled；按到期状态扫描补发，不能只靠内存timer；5分钟是否可接受由人定 |
+| Q7从Q1独立分叉 | **不执行Q3**；12:00及以后107到期，worker先提交后旧version取消只能conflict，保持Published，须明确撤回；不保证取消胜，不许早发 |
+
+分叉不叠加；保非状态数据，计数／删除差异按事件解释。只清无消费者兼容层，核未来计划／失败job／回退包，不凑收缩。[研究]
+
+**文件与退出**：schema加状态／版本／时间，migration.sql接真实历史，index.ts覆盖闭包／DTO／转移；回填、账本、worker及断言待实现，seed禁升级，lock／Client另获准构建。审核前投影一致可排空退兼容读但保新数据；InReview后false逆映射不唯一，Scheduled后A1未必可读。停问题写入、保状态前进修复；停worker不撤计划，备份恢复须另批期间新写／删除／已公开行为处理。[研究]
+
+#### 当前工具契约：不混入另一套执行权限
+
+[Prisma支持页](https://www.prisma.io/docs/orm/release-status)仍列8RC，7维护18个月**从8正式GA起算**；另核受支持7.x与lock。[v7教程](https://www.prisma.io/docs/guides/v7/database/data-migration)为SQL＋独立TS回填、false→Unknown；[通用8教程](https://www.prisma.io/docs/guides/database/data-migration)改contract/dataTransform，其事务承诺不适用7，Agent提示不授执行权。[一手／研究]
+
+create-only接触开发／shadow库；deploy应用，resolve仅记账。10月19日[7.10.1发行](https://github.com/prisma/orm/releases/tag/7.10.1)含[shadow防护](https://github.com/prisma/prisma-engines/commit/4c4662e4219f3ab90712e0ba4d243b7e0f4665df)仅限定diff路径URL比较，非别名／代理物理同库证明；[测试](https://github.com/prisma/prisma-engines/commit/7a245d5c51c7256c8d95491a5be5776cb094429f)只验拒绝与precious_data表存在，非业务完整；diff非无副作用，主／shadow身份与恢复须另核。[一手／研究；未运行]
+
+Supabase非默认替代：[CLI v2.121.0](https://github.com/supabase/cli/releases/tag/v2.121.0)固定pg-delta alpha.59；[引擎](https://supabase.com/docs/guides/local-development/diff-engines)区分live/shadow diff与schemas/history sync。[声明式入口](https://supabase.com/docs/guides/local-development/declarative-database-schemas)generate不建baseline、diff不捕DML，no-apply生成／apply应用；[固定AI提示](https://github.com/supabase/supabase/blob/1ddb9ac787cbdf8bdeb41fffe6b300951289c34e/examples/prompts/declarative-database-schema.md)默认即应用，须收窄权限。[branching](https://supabase.com/docs/guides/local-development/overview)逐迁移包事务、不尊重transaction=false，db push成功不证明分段可部署。[一手]
+
+#### 真实维护链：先封新写入，再重排与收尾
+
+GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NULL后仍有[表单旁路](https://gitlab.com/gitlab-org/gitlab/-/issues/413289)。[固定修订](https://gitlab.com/gitlab-org/gitlab/-/tree/91b7733a5b939580e680bc71af525e3c6c55b733)（!121370）改创建服务默认／模型校验，数据库validate:false约束先阻新违规，历史验证另做。[!123002重排](https://gitlab.com/gitlab-org/gitlab/-/blob/d822f89e26e6282563c0a66054ca86a78225627b/db/post_migrate/20230608071301_requeue_cleanup_personal_access_tokens_with_nil_expires_at.rb)先删旧job再排，旧排队up/down变no-op；down不恢复NULL。排队spec仅验参数，首次三行job测试不含中断／并发；作者历史生产NULL归零回执非本轮验证。[一手／研究]
+
+半年后[!139178 finalize](https://gitlab.com/gitlab-org/gitlab/-/blob/637cee025f4acad008d72c9fbdf553e9e4e0e5d0/db/post_migrate/20231207221119_finalize_cleanup_personal_access_tokens_with_nil_expires_at.rb)按job/table/column/args收尾并保required stop。**完成≠finalize≠可收缩**；未核最终validate／全部自托管执行。[一手／研究]
+
+!89865→[!93546修复](https://gitlab.com/gitlab-org/gitlab/-/blob/7fd599fdc3446970c2dd92e8f93d502bd3a4704a/ee/lib/ee/gitlab/background_migration/backfill_project_statistics_container_repository_size.rb)撤仅size=0过滤：零值取API，旧非零保留但仍清根cache、按root_ancestor排聚合。主表已非零仍验派生消费者，非一律重算。spec仅mock调用数、不验根聚合结果，部分负断言在perform后，不当可靠历史调用断言。已核16.1重排树`4961ad113f`、15.3派生修复树`b189ba0705`包含对应文件，非最早修复版。反例：[小表路径](https://docs.gitlab.com/development/database/not_null_constraints/)无需后台迁移，不照搬队列。[一手／研究]
+
+**证据终点**：短停写少跨版本责任，桥接多部署／协调／排空／接管；升8RC或换平台增加API／历史／CI维护，缺必要收益故不选。计算、等待、人审、修补、接管、维护无时长／净收益估值。已交源码／历史链／连续纸面包；依赖解析、真实baseline、SQL／锁／并发／恢复、部署及Agent效果未测。[研究]
 
 ### P23：Next应用迁出后仍值得保留吗
 
