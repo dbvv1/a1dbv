@@ -508,11 +508,13 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 #### 先保角色和阶段，再谈分组
 
-**角色不等于阶段。** 维护者在[#2973][p25-intent]保留 `Signer₁ → Assistant → Signer₂`。Assistant只能代填允许对象的非签名字段，完成只将自己置SIGNED；旧界面允许提醒仍有他人未填字段后继续。[一手：维护者意图、源码]
+**角色不等于阶段。** 维护者在[#2973][p25-intent]保留 `Signer₁ → Assistant → Signer₂`。对SIGNATURE类型，Assistant不得代他人签署；其余动作按入口契约核查。完成只将自己置SIGNED；旧界面允许提醒仍有他人未填字段后继续。[一手：维护者意图、源码]
 
 **最终代填取严格后续。** 同数值order含0可成组，Assistant不能代填同组peer。数字Assistant可代填后续数字及null；null Assistant仅可代填更大ID的null人。相同null按ID逐人处理；AES/QES历史重复order按ID顺签，新显式重复则拒绝。[一手：固定树 `recipient-queries.ts`、`recipient-groups.ts`]
 
 **读写、撤填不能混为同一权限。** V2 `sign-envelope-field.ts`直接拒readOnly并查actor/target过期；legacy `sign-field-with-token.ts`对readOnly的非自动类型校验默认值一致，NAME/INITIALS/EMAIL/DATE豁免此项；legacy remove无独立readOnly／SIGNATURE拒绝，legacy两路只查actor过期。这是静态差异，未验证可达性，不称当前漏洞。[一手]
+
+**旧式签名类型另核入口。** 固定[官方字段契约](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/apps/docs/content/docs/developers/api/fields.mdx)不建议新集成使用FREE_SIGNATURE；[V2写入schema](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/trpc/server/envelope-router/sign-envelope-field.types.ts)排除该类型，而[legacy service](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/lib/server-only/field/sign-field-with-token.ts)仍有对应签名对象分支，读过滤也仅排SIGNATURE。端到端可达性未验，不据此称漏洞。[一手：固定源码／文档]
 
 下表路径相对上述固定树；旧树没有后来的V2 envelope入口。当前写schema约束order为整数≥0，响应schema仍容忍旧数据，二者不可互换。[一手]
 
@@ -520,7 +522,7 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 |---|---|
 | `packages/api/v1/schema.ts`；最终 `envelope-recipients/create-envelope-recipients.types.ts` | 旧role枚举／order nullish没有Assistant阶段refinement；当前共享order schema拒负数、小数。create/update及meta切PARALLEL须分别核，旧[#3291][p25-api]不是当前复现 |
 | `packages/lib/utils/recipient-queries.ts` → `get-fields-for-token.ts`、`get-recipients-for-assistant.ts` | 旧gte→本人＋严格后续；跨envelope、peer、目标SIGNED拒代理。null较小ID→较大ID允许，反向拒；target expired/readOnly按上述动作差异另验 |
-| `sign-field-with-token.ts`／`remove-signed-field-with-token.ts`／`sign-envelope-field.ts` | 同一目标集合不等动作全等；V1/V2 sign拒替他人签名；remove须单验。读清单不等于可写／可完成 |
+| `sign-field-with-token.ts`／`remove-signed-field-with-token.ts`／`sign-envelope-field.ts` | 同一目标集合不等动作全等；V1/V2 sign显式拒代他人写SIGNATURE，V2输入另排除FREE_SIGNATURE；remove须单验。读清单不等于可写／可完成 |
 | `create-document-from-template.ts`／`create-document-from-direct-template.ts`；签署页／RecipientProvider | 模板创建新实例可换ID并映射fields；活动文档不可重seed。token持有人与target分开，返回他人对象时token隐藏 |
 | `send-document.ts` → `complete-document-with-token.ts` | 首发取活动步骤全体；完成先验本人的必填字段，只完成本人；全体SIGNED或CC才触发seal。Assistant不必填完所有他人字段 |
 
@@ -565,7 +567,7 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 | 固定树具名测试 | 原文断言与缺口 |
 |---|---|
-| `assistant-signing-groups`／`assistant-null-order` | peer写／删拒绝且值保留，读排peer与他人签名；null按ID正反例。各例独立seed，未验S1继承 |
+| `assistant-signing-groups`／`assistant-null-order` | peer写／删拒绝且值保留，读排peer与他人SIGNATURE字段；null按ID正反例。各例独立seed，未验S1继承 |
 | `envelope-recipient-locked-steps`／`envelope-recipient-id-stability` | 已签组禁拖／拆、打开编辑器order不变；多次autosave保ID/token。锁步fixtures无fields，未直接验代填inserted锁；稳定性未验回执丢失 |
 | `grouped-next-recipient-dictation` | 当前peer未完或下一组多人不改身份；最后成员面对后续单人可改，检查updated audit和SENT |
 | `signing-group-advancement` | 用后台job表断言首组各1任务、中途不放后组、最后成员才推进；是串行服务调用，非实际邮件投递 |
