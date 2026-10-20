@@ -207,3 +207,57 @@ new file mode 100644
 +let count=fs.existsSync('reverse-mail-capture/index.jsonl')?fs.readFileSync('reverse-mail-capture/index.jsonl','utf8').trim().split('\n').filter(Boolean).length:0;
 +const server=new SMTPServer({authOptional:true,disabledCommands:['AUTH','STARTTLS'],onData(stream,session,callback){const chunks=[];stream.on('data',c=>chunks.push(c));stream.on('end',()=>{count++;fs.writeFileSync(`reverse-mail-capture/message-${count}.eml`,Buffer.concat(chunks),{mode:0o600});fs.appendFileSync('reverse-mail-capture/index.jsonl',JSON.stringify({index:count,to:session.envelope.rcptTo.map(x=>x.address),bytes:Buffer.concat(chunks).length})+'\n');callback();});}});
 +server.listen(25250,'127.0.0.1',()=>console.log('Synthetic SMTP sink bound loopback 25250; never relays.'));
+diff --git a/packages/app-tests/e2e/api/p25-stateverify.spec.ts b/packages/app-tests/e2e/api/p25-stateverify.spec.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/e2e/api/p25-stateverify.spec.ts
+@@ -0,0 +1,42 @@
++import {test,expect} from '@playwright/test';
++import {prisma} from '@documenso/prisma';
++import {PrismaClient} from '@prisma/client';
++import {readFileSync,writeFileSync} from 'node:fs';
++import {createHash} from 'node:crypto';
++const root = process.env.P25_ARTIFACT_DIR!; // Only this local root assignment differs from executed source.
++const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
++const save=(name:string,v:unknown)=>writeFileSync(`${root}/${name}`,JSON.stringify(v,null,2),{mode:0o600});
++test('independent restored S1 complete scalar comparison',async({request})=>{
++ const ctx=JSON.parse(readFileSync(`${root}/private-context.json`,'utf8'));
++ const old=JSON.parse(readFileSync(`${root}/S1.json`,'utf8')); const E=old.envelopeId;
++ const snapshot=async()=>{
++  const envelope=await prisma.envelope.findUniqueOrThrow({where:{id:E}});
++  const fields=await prisma.field.findMany({where:{envelopeId:E},orderBy:{id:'asc'}});
++  return JSON.parse(JSON.stringify({Envelope:[envelope],DocumentMeta:[await prisma.documentMeta.findUniqueOrThrow({where:{id:envelope.documentMetaId}})],Recipient:await prisma.recipient.findMany({where:{envelopeId:E},orderBy:{id:'asc'}}),Field:fields,Signature:await prisma.signature.findMany({where:{fieldId:{in:fields.map(f=>f.id)}},orderBy:{id:'asc'}}),DocumentAuditLog:await prisma.documentAuditLog.findMany({where:{envelopeId:E},orderBy:{id:'asc'}})}));
++ };
++ const a=await snapshot();save('stateverify-S1.private.json',a);
++ expect(a.Recipient.map(({token,...r}:any)=>({...r,tokenHash:createHash('sha256').update(token).digest('hex')}))).toEqual(old.recipients);
++ expect(a.Field).toEqual(old.fields);expect(a.DocumentAuditLog.map((r:any)=>r.id)).toEqual(old.auditIds);
++ expect(a.Signature.map((s:any)=>({id:s.id,fieldId:s.fieldId,recipientId:s.recipientId,typedSignature:s.typedSignature,imageNull:s.signatureImageAsBase64===null}))).toEqual(old.signatures);
++ const r=a.Recipient.find((r:any)=>r.email==='p25-r106@example.com'); expect(r.signingOrder).toBe(5);
++ const res=await request.post('http://127.0.0.1:3250/api/v2-beta/envelope/recipient/update-many',{headers:{Authorization:`Bearer ${ctx.token}`},data:{envelopeId:E,data:[{id:r.id,signingOrder:4}]}});
++ expect(res.status()).toBe(200); const b=await snapshot();save('stateverify-S2.private.json',b);
++ const tables:any[]=[]; const changes:any[]=[];
++ for(const table of Object.keys(a)){
++  const rowsBefore=a[table], rowsAfter=b[table];
++  expect(rowsAfter.map((x:any)=>x.id)).toEqual(rowsBefore.map((x:any)=>x.id));
++  const cols=Object.keys(rowsBefore[0]).sort();
++  for(let i=0;i<rowsBefore.length;i++) for(const col of cols){
++   if(JSON.stringify(rowsBefore[i][col])!==JSON.stringify(rowsAfter[i][col])){
++    const allowed=(table==='Recipient'&&rowsBefore[i].id===r.id&&col==='signingOrder'&&rowsBefore[i][col]===5&&rowsAfter[i][col]===4)||(table==='Envelope'&&col==='updatedAt'&&Date.parse(rowsAfter[i][col])>=Date.parse(rowsBefore[i][col]));
++    changes.push({table,rowIndex:i,column:col,allowed,beforeHash:hash(rowsBefore[i][col]),afterHash:hash(rowsAfter[i][col]),...(col==='signingOrder'?{before:5,after:4}:{})});
++   }
++  }
++  tables.push({table,rows:rowsBefore.length,columns:cols,beforeHash:hash(rowsBefore),afterHash:hash(rowsAfter)});
++ }
++ save('stateverify-comparison.json',{httpStatus:res.status(),restoredProjectionMatchesOriginalS1:true,tables,changes});
++ expect(changes.every(c=>c.allowed)).toBe(true);expect(changes.filter(c=>c.column==='signingOrder')).toHaveLength(1);
++ const mainUrl=new URL(process.env.NEXT_PRIVATE_DATABASE_URL!);mainUrl.pathname='/p25';
++ const original=new PrismaClient({datasourceUrl:mainUrl.toString()});
++ try { save('stateverify-original-mail-audit.private.json',await original.documentAuditLog.findMany({where:{envelopeId:E,type:'EMAIL_SENT'},orderBy:{id:'asc'}})); } finally {await original.$disconnect();}
++});
+diff --git a/packages/app-tests/p25-stateverify.config.ts b/packages/app-tests/p25-stateverify.config.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/app-tests/p25-stateverify.config.ts
+@@ -0,0 +1,2 @@
++import { defineConfig } from '@playwright/test';
++export default defineConfig({testDir:'./e2e/api',testMatch:'p25-stateverify.spec.ts',workers:1,retries:0,timeout:180000,reporter:'list',use:{baseURL:'http://127.0.0.1:3250'}});

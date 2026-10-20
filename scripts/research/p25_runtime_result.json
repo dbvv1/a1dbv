@@ -18,7 +18,7 @@
     "smtp_server": "3.17.0"
   },
   "frozen_evidence_manifest_sha256": "060dfc4a1a03e9c862bd16b117b982a81dd49be47f3198a08d2c45e7ef6e77ba",
-  "packaged_patch_sha256": "b115e4a15ae14cd39f72dbab6d12cdd646b1333eb762c2ba9a4831ee83bc6d9a",
+  "packaged_patch_sha256": "0ce092da5c9196f59e72371c2e516c4f401bab348ace3f36e3ef50a5c255f739",
   "packaged_files_sha256": {
     "packages/app-tests/e2e/api/p25-runtime.spec.ts": "a53eb742de98dd792bb73218fe83528805edb3fa2c5aeb4aac028e9406c10dfd",
     "packages/app-tests/e2e/api/p25-reverse.spec.ts": "bf8e18cbd52a1bb6b71e7c61acd3774f7c2f69bd453dd6f522f4e2a4e5e91d6c",
@@ -27,7 +27,9 @@
     "packages/app-tests/p25-reverse.config.ts": "7b32fc2575625cecba81cffdc22cc34d78d7d2f6a410e37f13e80f1d651132ac",
     "packages/app-tests/p25-download-followup.config.ts": "c0e943cda7b0fdca06cf2791463b73d08e8daf095a122a9616f8bc9abd32e472",
     "packages/app-tests/p25-smtp.cjs": "1a3bd400c9d3ad97f73ed774b3f77722807be38f7511223e951359b84c8e1492",
-    "packages/app-tests/p25-smtp-reverse.cjs": "0a2d2e46b4c98ca7e0638538afe60c9e7d39a981db1f797648e0f7754e1b5e79"
+    "packages/app-tests/p25-smtp-reverse.cjs": "0a2d2e46b4c98ca7e0638538afe60c9e7d39a981db1f797648e0f7754e1b5e79",
+    "packages/app-tests/e2e/api/p25-stateverify.spec.ts": "9026ab5c97091a5104716c3e7a95babea38e87e7c2b1c802c7619dacf919b01f",
+    "packages/app-tests/p25-stateverify.config.ts": "17e8307f3597e6f3e88e2d96c0d21fdb010c26730e1e7ecaa6c86645a255af81"
   },
   "upstream_unit_tests": {
     "files": 5,
@@ -484,14 +486,469 @@
     "ROOT supplied by P25_ARTIFACT_DIR rather than author path",
     "pg_dump resolved through PATH; fixed synthetic database URI/ports retained",
     "sink npm dependency located in P25_ARTIFACT_DIR/node_modules; run sink from that artifact directory",
-    "No runtime rerun of these path-only packaging changes"
+    "No runtime rerun of these path-only packaging changes",
+    "Added restored-state spec and single-worker config; no additional application runtime rerun of portable paths",
+    "Added identical v3 UTF-8 standard-library mail/matrix modules, with synthetic-only entrypoints; matrix real-input CLI is historical-artifact-bound"
   ],
   "not_verified": [
     "Cross-version migration or two model code-edit rounds",
     "Current model benefit or leading-route comparison",
-    "Envelope and Meta full S1/S2 rows",
-    "Audit actors, per-role invitation text, real mail delivery",
+    "Original main-track Envelope/Meta full snapshots; new restored-branch supplement is separate",
+    "Audit actor correctness and real mail delivery; seven captured role CTAs checked only in separate supplement",
     "Browser signing UI, concurrent or repeated completion",
     "Whole-set locked-ID omission, interruption/retry recovery"
-  ]
+  ],
+  "independent_state_supplement": {
+    "kind": "New restored branch state test; not retroactive original-main snapshots; old captured-mail offline recheck",
+    "source_commit": "573c928a0e647efc8c41e3e12909c918c2104430",
+    "passed_tests": 1,
+    "test_seconds": 24.6,
+    "total_seconds": 29.4,
+    "tables": {
+      "Envelope": {
+        "rows": 1,
+        "columns": 26
+      },
+      "DocumentMeta": {
+        "rows": 1,
+        "columns": 18
+      },
+      "Recipient": {
+        "rows": 7,
+        "columns": 21
+      },
+      "Field": {
+        "rows": 5,
+        "columns": 14
+      },
+      "Signature": {
+        "rows": 1,
+        "columns": 6
+      },
+      "DocumentAuditLog": {
+        "rows": 21,
+        "columns": 10
+      }
+    },
+    "rows": 36,
+    "scalar_cells": 477,
+    "changed_cells": [
+      {
+        "table": "Recipient",
+        "synthetic_label": 106,
+        "column": "signingOrder",
+        "before": 5,
+        "after": 4
+      }
+    ],
+    "unchanged_cells": 476,
+    "envelope_updated_at_changed": false,
+    "new_recipient_updated_audit": false,
+    "mail": {
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "recipientLabel": 101,
+          "role": "SIGNER",
+          "expectedEmailType": "SIGNING_REQUEST",
+          "identityRoleMatch": true,
+          "invitationCount": 1,
+          "auditMatch": true,
+          "links": [
+            {
+              "captureFile": "message-1.eml",
+              "rawSha256": "c33d463285c1d0d379478a839a6a139f55f74719ed5dc820702612422c1d62e7",
+              "subjectActionMatch": true,
+              "htmlActionHrefExact": true,
+              "plainActionURLExact": true,
+              "nonemptyParts": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "recipientLabel": 102,
+          "role": "ASSISTANT",
+          "expectedEmailType": "ASSISTING_REQUEST",
+          "identityRoleMatch": true,
+          "invitationCount": 1,
+          "auditMatch": true,
+          "links": [
+            {
+              "captureFile": "message-3.eml",
+              "rawSha256": "dc2a68de2c339204a7d3660990d07664d445f4f2243ff8432477fcc4e029b362",
+              "subjectActionMatch": true,
+              "htmlActionHrefExact": true,
+              "plainActionURLExact": true,
+              "nonemptyParts": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "recipientLabel": 103,
+          "role": "APPROVER",
+          "expectedEmailType": "APPROVE_REQUEST",
+          "identityRoleMatch": true,
+          "invitationCount": 1,
+          "auditMatch": true,
+          "links": [
+            {
+              "captureFile": "message-7.eml",
+              "rawSha256": "9eea21f892a0c4a0998cc8f5152c8d70a3bf85a6e619d63dc94524c586063f7d",
+              "subjectActionMatch": true,
+              "htmlActionHrefExact": true,
+              "plainActionURLExact": true,
+              "nonemptyParts": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "recipientLabel": 104,
+          "role": "SIGNER",
+          "expectedEmailType": "SIGNING_REQUEST",
+          "identityRoleMatch": true,
+          "invitationCount": 1,
+          "auditMatch": true,
+          "links": [
+            {
+              "captureFile": "message-10.eml",
+              "rawSha256": "0f2b6aa4a8d0965c25957759a3de12ee75156b88124863455616318fd49a2035",
+              "subjectActionMatch": true,
+              "htmlActionHrefExact": true,
+              "plainActionURLExact": true,
+              "nonemptyParts": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "recipientLabel": 105,
+          "role": "APPROVER",
+          "expectedEmailType": "APPROVE_REQUEST",
+          "identityRoleMatch": true,
+          "invitationCount": 1,
+          "auditMatch": true,
+          "links": [
+            {
+              "captureFile": "message-14.eml",
+              "rawSha256": "05f9822a125f0ac10dc3be247825917e404bd9825a73cd550b607afba98acfbf",
+              "subjectActionMatch": true,
+              "htmlActionHrefExact": true,
+              "plainActionURLExact": true,
+              "nonemptyParts": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "recipientLabel": 106,
+          "role": "APPROVER",
+          "expectedEmailType": "APPROVE_REQUEST",
+          "identityRoleMatch": true,
+          "invitationCount": 1,
+          "auditMatch": true,
+          "links": [
+            {
+              "captureFile": "message-13.eml",
+              "rawSha256": "b32b040b5da16dfdb5fb8f55fa5d76f9ad94db705883825bb9dccefab21b0506",
+              "subjectActionMatch": true,
+              "htmlActionHrefExact": true,
+              "plainActionURLExact": true,
+              "nonemptyParts": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "recipientLabel": 107,
+          "role": "SIGNER",
+          "expectedEmailType": "SIGNING_REQUEST",
+          "identityRoleMatch": true,
+          "invitationCount": 1,
+          "auditMatch": true,
+          "links": [
+            {
+              "captureFile": "message-19.eml",
+              "rawSha256": "79b22916c978281f96eb8610f741e17801c3b43d2c3c19004235061cb4c4a7fb",
+              "subjectActionMatch": true,
+              "htmlActionHrefExact": true,
+              "plainActionURLExact": true,
+              "nonemptyParts": true
+            }
+          ],
+          "passed": true
+        }
+      ],
+      "syntheticRegressions": {
+        "positive": {
+          "expectedPass": true,
+          "actualPass": true
+        },
+        "empty_recipients": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "missing_recipient": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "duplicate_recipient": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "extra_recipient": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "wrong_role": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "wrong_email_type": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "empty_plain": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "empty_html": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "plain_report_path": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "plain_wrong_token": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "plain_untrusted_origin": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "plain_token_suffix": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "plain_wrong_action": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "html_report_path": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "html_wrong_token": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "html_untrusted_origin": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "html_token_suffix": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "html_wrong_action": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "token_only_in_body": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "missing_invitation": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "duplicate_invitation": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "wrong_subject_role": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "extra_unrecognized_invitation": {
+          "expectedPass": false,
+          "actualPass": false
+        },
+        "unrecognized_subject": {
+          "expectedPass": false,
+          "actualPass": false
+        }
+      },
+      "totalCaptured": 28,
+      "method": "Exact trusted-origin /sign/<original-token> binding on role-specific action CTA in decoded plain text and HTML href; original S1 identity reference; seven fixed roles."
+    },
+    "schema_and_script_provenance": {
+      "actualScriptSha256": "0ca1f1d52ce5ad072215121a100c6f9a9c50b80d812d9f8e3966afe87eebbc39",
+      "reviewScriptSha256": "9026ab5c97091a5104716c3e7a95babea38e87e7c2b1c802c7619dacf919b01f",
+      "normalizedActualSha256": "9026ab5c97091a5104716c3e7a95babea38e87e7c2b1c802c7619dacf919b01f",
+      "normalization": "Replace only the one const root assignment line with the review const root assignment; all other bytes identical.",
+      "exactlyOneLineReplacement": true,
+      "actualMatchesStoredPrerunHash": true,
+      "historicalLimit": "Current byte equivalence and stored pre-run hash consistency are reproducible. These alone do not establish a trusted external timestamp or independently prove which script ran. Original execution remains tool-history/author-attested.",
+      "schemaSha256": "0a8a957d47c50c4b5f33df8c032cadeb54b8a1184dcc9a61ebf53cc9563a6931",
+      "dumpSha256": "98f12c24868733852d876cf87106a83c6b4cb6fd3491fbb6b626b574e65cf30f",
+      "generatedPrismaScalarAndEnumCoverage": [
+        {
+          "model": "Envelope",
+          "columns": [
+            "authOptions",
+            "completedAt",
+            "createdAt",
+            "deletedAt",
+            "documentMetaId",
+            "externalId",
+            "folderId",
+            "formValues",
+            "id",
+            "internalVersion",
+            "publicDescription",
+            "publicTitle",
+            "qrToken",
+            "secondaryId",
+            "signatureLevel",
+            "source",
+            "status",
+            "teamId",
+            "templateId",
+            "templateType",
+            "title",
+            "type",
+            "updatedAt",
+            "useLegacyFieldInsertion",
+            "userId",
+            "visibility"
+          ],
+          "everyS1S2RowColumnSetMatches": true
+        },
+        {
+          "model": "DocumentAuditLog",
+          "columns": [
+            "createdAt",
+            "data",
+            "email",
+            "envelopeId",
+            "id",
+            "ipAddress",
+            "name",
+            "type",
+            "userAgent",
+            "userId"
+          ],
+          "everyS1S2RowColumnSetMatches": true
+        },
+        {
+          "model": "DocumentMeta",
+          "columns": [
+            "allowDictateNextSigner",
+            "dateFormat",
+            "distributionMethod",
+            "drawSignatureEnabled",
+            "emailId",
+            "emailReplyTo",
+            "emailSettings",
+            "envelopeExpirationPeriod",
+            "id",
+            "language",
+            "message",
+            "redirectUrl",
+            "reminderSettings",
+            "signingOrder",
+            "subject",
+            "timezone",
+            "typedSignatureEnabled",
+            "uploadSignatureEnabled"
+          ],
+          "everyS1S2RowColumnSetMatches": true
+        },
+        {
+          "model": "Recipient",
+          "columns": [
+            "authOptions",
+            "documentDeletedAt",
+            "email",
+            "envelopeId",
+            "expirationNotifiedAt",
+            "expired",
+            "expiresAt",
+            "id",
+            "lastReminderSentAt",
+            "name",
+            "nextReminderAt",
+            "readStatus",
+            "rejectionReason",
+            "reminderCount",
+            "role",
+            "sendStatus",
+            "sentAt",
+            "signedAt",
+            "signingOrder",
+            "signingStatus",
+            "token"
+          ],
+          "everyS1S2RowColumnSetMatches": true
+        },
+        {
+          "model": "Field",
+          "columns": [
+            "customText",
+            "envelopeId",
+            "envelopeItemId",
+            "fieldMeta",
+            "height",
+            "id",
+            "inserted",
+            "page",
+            "positionX",
+            "positionY",
+            "recipientId",
+            "secondaryId",
+            "type",
+            "width"
+          ],
+          "everyS1S2RowColumnSetMatches": true
+        },
+        {
+          "model": "Signature",
+          "columns": [
+            "created",
+            "fieldId",
+            "id",
+            "recipientId",
+            "signatureImageAsBase64",
+            "typedSignature"
+          ],
+          "everyS1S2RowColumnSetMatches": true
+        }
+      ],
+      "matrixReproducedFromPrivateSnapshots": true
+    },
+    "frozen_v3_manifest_sha256": "6dc9e6107e5822889647a6bcd0634f7eaf5ce92a3c81caa8734c08ef4351d54e",
+    "matrix_sha256": "19ad0e976de64691cbf80559a82b6b1492c3f177faf23ec4958cfb806c66b74a",
+    "standalone_module_sha256": {
+      "p25_mail_check.py": "802e7b9806e06308715cd07397703ed7d6ca50c18045e1c63f06e42be5257880",
+      "p25_state_matrix.py": "cce0bb443d9dc180e59b1631610ecb9d50245ceb72df1b7a26af7b4c592669d5"
+    },
+    "validation_scope": "Seven known invitation CTAs; role suffix, not entire subject equality. Other mail formats not proven absent. Matrix CLI pins original private artifacts; synthetic-only needs no private input. Original restore exit inferred from set-e shell 0; current distinct DB result is author runtime evidence. Public script differs by one root assignment, not rerun as portable package.",
+    "rework": [
+      "v1 substring token and empty-recipient false positives rejected by independent review; v1/v2 retained",
+      "v2 matrix Python True==1 equal flag fixed by strict serialization in v3; original 477 cells unaffected",
+      "ApiToken full-row equality failed: only lastUsedAt differs; credential values not exported",
+      "Frozen package integrity first ran from wrong directory; preserved failure, correct directory 26/26 passed"
+    ],
+    "not_proved": [
+      "Two model code-edit rounds or P38/P44 effectiveness",
+      "Concurrent completion, UI, interruption recovery, real mail delivery",
+      "Tamper-proof execution history or original-main complete Envelope/Meta snapshots"
+    ]
+  }
 }

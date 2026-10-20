@@ -547,6 +547,16 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 主轨18.0秒、反序25.9秒、后续下载20.5秒各1测试，分别记账，不合成成功率。并发/重复完成、whole-set遗漏锁定ID、中断恢复、签署UI及模型对照仍未验。[本仓运行／研究]
 
+#### 独立恢复补证：完整状态与行动邀请
+
+**局部改组继续采用，但验收不能只看旧ID与邮件里出现token。** 本次从原S1恢复到独立测试DB，只发106顺序更新。完整六表36行477个标量单元只有该order由5变4，其余476项相同，包括Envelope.updatedAt与21条完整审计；没有将新支线快照倒填旧主轨。**[本仓运行，2026-10-21]**
+
+六表是目标envelope关联的Envelope、DocumentMeta、Recipient、Field、Signature、DocumentAuditLog，不是全库。Prisma全标量字段与SQL列清单逐一匹配；ApiToken不在这六表内，额外只读核对发现lastUsedAt变化，首次“凭据整行相同”断言失败已保留，凭据值未导出。**[本仓运行／研究：范围]**
+
+**邀请判据也要有反例。** 初版“正文含token”会接受没有正确行动链接的邮件，空收件人集合和多余未知标题邀请也能误过，独审拒收后重写窄判据。针对固定七人／角色，从HTML行动href与纯文本CTA检查可信origin、精确`/sign/<原token>`路径，以及EMAIL_SENT角色／类型；未知形式不能默认为非邀请。新版只认已核七封行动邀请，subject按角色动作后缀而非整标题逐字相等，不据此排除一切其他形式重复。**[研究：判据返工，离线补验]**
+
+这次更新测试24.6秒／整段29.4秒，1测试通过；没有新seed、新凭据或发信。恢复没有逐命令独立退出码，“恢复成功”来自set-e整段0与后续状态的推断；当前独立DB身份、运行前脚本hash及公开副本字节对应补强可追溯性，不构成不可篡改历史证明。原新审计谓词仍未成立，模型收益、并发／恢复、UI和互联网送达仍未验证。**[本仓运行／研究]**
+
 #### 可Git接手的最小运行件
 
 [应用补丁](../../scripts/research/p25_runtime.patch)只向固定上游添加原执行spec/config及测试SMTP sink；[脱敏结果清单](../../scripts/research/p25_runtime_result.json)保版本、hash、失败尝试与实际边界。原PDF未在仓库分发，凭清单中的SHA256指认已独审字节，不提供虚构下载地址。[本仓运行]
@@ -590,6 +600,10 @@ mkdir -p "$RUN/mail-capture" "$RUN/reverse-mail-capture" "$RUN/public-supplement
 ```
 
 主轨自动生成私有context、envelope映射和S1.dump，后两测试不依赖执行者留下的私有文件。若主轨失败先读回已有状态，禁止直接重跑seed。反序先停主轨app/sink，保留主库；只允许`createdb -h 127.0.0.1 -p 55425 -U p25 p25_reverse && pg_restore --exit-on-error --no-owner --dbname=postgresql://p25@127.0.0.1:55425/p25_reverse "$RUN/S1.dump"`，新库创建失败立即停止，绝不向已有库restore或drop覆盖。仅将app/test两个数据库URL都切到新库，换`p25-smtp-reverse.cjs`及`p25-reverse.config.ts`，其余启动方式与120秒就绪门槛不变；使用同一RUN但独立空反序收件箱。结束停止自己的服务。DB、dump、context、邮件和raw app日志可能含测试凭据，全部留在隔离输出目录，不能提交。[研究：复现顺序]
+
+补证运行件：同一补丁另含`p25-stateverify.spec.ts`与单worker配置。先停止主轨app，保主库；仅从原`S1.dump`恢复到一个**不存在的新测试DB**，创建失败即停，绝不向已有库restore。app/test的数据库URL均明确指向该新库，P25_ARTIFACT_DIR仍指向原主轨产物；正常启动并通过同一就绪门后，执行`(cd "$APP/packages/app-tests" && NODE_OPTIONS='--import tsx' ../../node_modules/.bin/playwright test -c p25-stateverify.config.ts)`。它复用原身份，不调用seed或生成凭据；路径参数化包装未再次运行应用，不能宣称此包装字节已实测。**[研究：复现顺序]**
+
+[邮件校验器](../../scripts/research/p25_mail_check.py)与[状态矩阵](../../scripts/research/p25_state_matrix.py)可用`--synthetic-only`直接跑37个合成正反例，无私有输入；仓库4项回归另验两个CLI缺输入失败。邮件只适用本次固定七人角色／模板，不是通用邮件分类器。矩阵真实输入CLI锁原六表／477格和原矩阵hash，只能重验本次历史输入；新副本的随机ID／token不同，应由新运行生成独立证据，不能换掉旧参考hash后冒称重现。它按严格JSON序列化表示比较，修正Python `True == 1`的假相等；不是通用JSON语义等价检查。**[本仓离线；研究：复用边界]**
 
 #### 先保角色和阶段，再谈分组
 
