@@ -1,6 +1,6 @@
 主线：二，兼三／四
 改变的建议：先选能观察真实故障的反馈，再按保护未来或查当前差异选择测试；运行结果只覆盖实际入口。[研究／经验]
-新证据：2026-10-20 补跨发布维护链、固定测试判定器与修订回执，改变 Agent 前端更新的验收输入和入口选择；其他迁移章节沿用原核实日期，未新增实验。
+新证据：2026-10-20 补跨发布维护链、固定测试判定器与修订回执，改变 Agent 前端更新的验收输入和入口选择；另补组合输入与业务提交分验；其他迁移章节沿用原核实日期，未新增实验。
 
 # 开发条件：反馈与验证
 
@@ -491,3 +491,21 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 **已有违规：先修；确需暂留，按覆盖代价选最窄例外。** Playwright扫描指南说明`exclude()`会跳过目标及全部后代的所有规则；若想继续捕捉同区域的新违规，可保存规则ID与目标元素的fingerprint，而非带整段HTML的全结果快照。代价是基线维护与一定脆弱性，变化后应核差异，不能让Agent直接接受新快照来变绿；旧违规仍是待修问题。`disableRules()`则关闭整条规则，只有其范围符合本次验收或明确接受该盲区时采用。反例是GOV.UK的[Accordion扫描配置](https://github.com/alphagov/govuk-frontend/blob/3d28aa52ec5407e3114374297d679993c1b3b863/packages/govuk-frontend/src/govuk/components/accordion/accessibility.puppeteer.test.mjs)：注释明确关闭AAA的`color-contrast-enhanced`，不是关闭AA对比检查。这支持按目标级别选规则，不支持把任何关闭都称为作弊，也不证明该组件符合全部AA要求。**[一手：官方配置范围与项目反例；经验：选择与撤回条件]**
 
 以上支持检查的覆盖分工和范围取舍，未取得同任务的人力、缺陷或Agent效果对照，不推导自动化替代人工的比例或净收益。**[研究：证据边界]**
+
+## 输入控件修改后先分开组合输入与业务提交（2026-10-20）
+
+**当前选择：沿用现成编辑器与事件回归，另把目标 IME 的提交意图列入验收。** Agent 可以读事件处理、生成状态竞争回归和定位版本；人确定候选确认、取消、发送与草稿保留各自含义。没有目标设备记录时，交付只能标机制检查完成、真实组合输入未验，不能把中文字符串出现当作整条输入路径通过。[研究／经验]
+
+**Playwright 的文本注入适合验证值和业务分支，不覆盖操作系统候选选择。** [Keyboard 官方接口](https://playwright.dev/docs/api/class-keyboard)说明 `insertText` 触发 `input`，不触发 `keydown`／`keyup`／`keypress`；`type` 输入非美国键盘字符也只发 `input`。因此，已有自动化无需推倒，但需要清楚标注它输入的是文本、合成事件还是实际 IME。此结论限于这些接口的事件契约，不声称任何自动化工具都不能接入原生输入。
+
+**Hermes 的修复说明：防止误发之后，还要验真正发送的内容。** [#37483](https://github.com/NousResearch/hermes-agent/issues/37483)报告 v0.15.1 macOS 日文候选确认 Enter 误发；[#39025](https://github.com/NousResearch/hermes-agent/issues/39025)报告 Windows 中文已显示但提交状态滞后。这两份用户报告并非同一设备连续复测。随后 [PR39639](https://github.com/NousResearch/hermes-agent/pull/39639)于 2026-06-10 合入 `8b84d82227a3b637a26ba5f4f41bb08281e2ab84`，提交时从实时 DOM 取正文，避免依赖上一轮渲染的草稿状态；改变的是发送／入队判定的数据来源，而非统一取消组合输入保护。
+
+**固定回归能检出状态竞争，但仍不是原生 IME 实验。** Hermes [测试提交10db965](https://github.com/NousResearch/hermes-agent/commit/10db96503654d4f4b9496ce7c42c6154ccbd42ca)在 Harness 中复制 Enter 接线，直接改 `textContent` 而不发 input，再合成 keyDown；断言实时正文发送、忙时入队及空正文分支。它没有操作候选窗，也不是完整生产组件的端到端测试。PR 的手工测试计划未勾选，不能转述为已完成；计划文字与测试对忙时空 Enter 的描述也不同，迁移时必须依据自己的产品约定，而不是照抄空键策略。
+
+**Lexical 的反例要求同时验文档内容与恢复操作。** [#8596](https://github.com/facebook/lexical/issues/8596)报告 Lexical 0.45／main `fd2e1856c` 在 macOS Safari（报告标 26.3.1）中输入 `foo → Tab → 韩文` 后冻结，同一 IME 在 Chromium 未复现。此前选择区域的修复没有覆盖 Safari MutationObserver 把组合文本写入 TabNode 的路径。用户报告只支持该环境和序列，不能据此扩成全部中日韩输入失败。
+
+**采用修复版本仍要保住 Tab 和新文字。** [PR8598](https://github.com/facebook/lexical/pull/8598)的固定合入 [150bf8a](https://github.com/facebook/lexical/commit/150bf8a8e7a67ffe5883044a1ec34a6f28ea6b6c)移除该处抛错，继续把 TabNode 规范为制表符；单测直接调用 `setTextContent`，不运行 IME。作者在审查追问后报告 Safari 本地构建／预览、Chromium 对照，以及最终相邻 TextNode 保留韩文，并复查 Backspace、Enter 等操作。这是作者复测，本轮未独立运行。[v0.46.0 发布说明](https://github.com/facebook/lexical/releases/tag/v0.46.0)包含该修复；升级采用还须核项目兼容性，发布条目本身不证明应用已通过。
+
+**验收按实际受影响入口收窄，而不是给每个表单添加庞大矩阵。** 修改聊天发送、富文本节点或输入状态同步时，记录 OS、浏览器／宿主、输入法、构建和语言，选用户真实序列：候选确认不提前发送，另一次明确提交携带完整正文；候选取消后草稿符合约定；含 Tab／格式节点时保住文档结构与文字。产品承诺持久草稿时再验重开后的内容，并保留原有保存、权限、重复提交和视觉检查。这些是根据两条修复链提出的验收建议；取消、重开和全部环境组合未由上述案例完整验证。
+
+**成本与撤回条件：先补窄回归，不默认换编辑器或叠加延迟。** 合成事件测试便于持续维护，真实输入复测需要目标 OS／输入法及人工检查，升级现成组件还涉及兼容性回归。若改动使确认、取消或草稿保留退步，撤回该候选或缩小支持范围；不要靠测试等待绕过用户操作窗口。尚无本项目 AI 独立完成比例、净工时或运行效果证据，资料验收仅覆盖这次入口选择及其来源；本轮没有运行客户端、模型、上游测试或原生 IME。
