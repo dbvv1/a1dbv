@@ -1,6 +1,6 @@
-主线：二／三／四；G1 动画、绑定、第二次修改与授权
-改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，同骨架先直接复用，所需功能或结构差异再引入转换；现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法；程序步态分基础姿态与身体规则，新运动结构另计实现；二改后的消失／突跳先分范围与屏外求值
-新证据：[一手／研究] 2026-10-15 Kimodo v1.2 修正测试泄漏，补本地可控短动作候选而非质量冠军； Unity 6.3 导入／IK／根运动合同与历史 UUM-27271、UE5.8 兼容骨架条件补同骨架复用选择；Overgrowth 演讲、生产修订与固定源码，Rain World 开发者访谈补程序步态内容／维护边界；Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
+主线：二／三／四；G1 动画、绑定、面部供给、第二次修改与授权
+改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，同骨架先直接复用，所需功能或结构差异再引入转换；现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法；程序步态分基础姿态与身体规则，新运动结构另计实现；二改后的消失／突跳先分范围与屏外求值；对白先有嘴形／面部绑定，再选求解器，改句按音频与口型配对接收
+新证据：[一手／研究] Rhubarb 固定源码与成品采用、MetaHuman 口部掩码、Audio2Face 既有 rig／GPU 与分组件许可补对白二改边界；2026-10-15 Kimodo v1.2 修正测试泄漏，补本地可控短动作候选而非质量冠军； Unity 6.3 导入／IK／根运动合同与历史 UUM-27271、UE5.8 兼容骨架条件补同骨架复用选择；Overgrowth 演讲、生产修订与固定源码，Rain World 开发者访谈补程序步态内容／维护边界；Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
 
 # WP4：动画、绑定与第二次修改
 
@@ -414,3 +414,69 @@ HF仓库修订`0e3c89024d896064b6851201373f7834784a386b`的[LICENSE][p9-k-licens
 [p9-k-license]: https://huggingface.co/nvidia/Kimodo-SOMA-RP-v1.2/blob/0e3c89024d896064b6851201373f7834784a386b/LICENSE
 [p9-k-limit]: https://research.nvidia.com/labs/sil/projects/kimodo/docs/key_concepts/limitations.html
 [p9-k-install]: https://research.nvidia.com/labs/sil/projects/kimodo/docs/getting_started/installation.html
+
+## P28补核：先解决面部供给，再做对白二改
+
+**结论：默认从许可清晰、嘴形／面部绑定完整的角色出发，求解器只补动作。** 2026-10-20（UTC+8）补核；缺合格脸部资源就换完整来源。[研究]
+
+### 1. 三条路线的能力与成本边界
+
+**已有六嘴形 2D 角色时，先试 Rhubarb 的离线时序输出。** [v1.14.0 发布页][p28-r-release]与固定 [README][p28-r-readme]列出必需 A–F、可选 G/H/X；C/E 也承担过渡。程序员可配置嘴形映射，但把同一图片复制成六个 ID 不满足资源条件。它输出嘴形选择和时间，不提供脸部绘制或眼神／头部表演。[一手／研究]
+
+**第二语言需要新录音和新时序。** 默认 PocketSphinx 面向英语，非英语走 phonetic；作者说明后者一般精度更低。dialogFile 是识别提示，不是把不匹配的文本强制对齐声音的保证。实际语言、角色风格与无手修可接受率仍未知。[一手／研究]
+
+**Rhubarb 是本地低接入成本候选，不是整套素材授权。** [MIT 许可][p28-r-license]与作者对生成数据的说明覆盖工具／口型数据；角色图、录音和声音权利仍单独确认。只交付离线结果与随游戏分发工具、依赖是两种成本。[一手／研究]
+
+**已有兼容 MetaHuman 时，mouth-region 是改句而不重做全脸的候选入口。** [官方音频驱动文档][p28-m-audio]要求 UE 5.6 起的相应插件、SoundWave 与面部目标；离线可生成全脸、头动和眨眼，Process Mask 可限定口部。该能力尚未在本仓角色上验证。[一手]
+
+**保留眼神与头部层是有条件的合成选择。** 新句的情绪、停顿或长度改变时，旧反应可能已不合适；程序员可调层与时间，掩码不补缺失表演。Performance 里的 Realtime Audio Solver 选项仍是离线生成，不能等同于实时客户端管线。[一手／研究]
+
+**跨引擎可用的许可，不等于跨引擎交付已经就绪。** [MetaHuman 许可页][p28-m-license]允许其他引擎；Unity 路线仍要确认曲线／骨骼映射、材质毛发、LOD 与烘焙后的二改入口。Creator 的联网自动绑定／纹理组装见 [AI 信息页][p28-m-ai]，不能把它当任意离线脸部生成器。[一手／研究]
+
+**Audio2Face 优先留给已有可驱动 rig 的项目。** 固定 [SDK 文档][p28-a-doc]和 [blendshape 接口][p28-a-header]要求 neutralPose、deltaPoses、poseNames 等既有目标；模型几何输出再拟合到这些形变，不能直接补不存在的角色美术。[一手／研究]
+
+**本地 CPU 不应据此成为默认推荐。** [SDK README][p28-a-readme]仍要求 NVIDIA GPU、CUDA 与 TensorRT；CPU 选项属于后段 blendshape 求解。已有头／眼层时，还须明确哪些输出通道可写，不能把强度旋钮当作保持原层的保证。[一手／研究]
+
+**NVIDIA 组件须分别过授权门。** 固定 [总仓说明][p28-a-hub]区分 SDK 的 MIT、模型的 NVIDIA Open Model License、限定用于 Audio2Face 的 Audio2Emotion、仅供评估的 Claire 数据，以及另有协议的 NIM。整套链不能统称 MIT；分发前按实际选中组件逐项检查。[一手／研究]
+
+### 2. 成品采用说明了什么
+
+**Thimbleweed Park 证明的是一条已用过的制作链。** [官方 credits][p28-t-credit]列出 Rhubarb；Ron Gilbert 的 [2017-03-11 制作记录][p28-t-blog]说明角色与台词 ID 一起定位录音，高质量源 WAV 继续派生发布音频与口型。同一文本由不同角色说出，也不能只按文本 ID 覆盖资源。[一手]
+
+**分析录音与玩家听到的音频有时不是同一文件。** 该游戏 Ransome 的消音版本保留对应原始台词供口型分析，改句要同时维护两者的时间关系；不能拿消音段当正常语音重新识别。这是具体生产反例，不是所有对白都要双份音轨的规则。[一手／研究]
+
+### 3. 第二次修改：候选配对，而非覆盖一个文件
+
+**预注册用同一角色的三句对白暴露局部改动成本。** R1 保存角色、台词、语言、嘴形映射版本、源录音与发布音频的对应关系，以及嘴部／眼神／头部层和字幕、剧情事件位置。仅有工具版本不足以恢复对白。[研究]
+
+**R2a 只替换中间句，先检查局部能否成立。** 重做该句音频与口型，连前后句验收；第一、三句的资源保持原版，但第二句变长会移动后续场景时间。眼神和头动仅在语义、时间仍成立时保留，否则明确调整或换可用来源。[研究]
+
+**R2b 用第二语言复验。** 保留角色／台词身份，重做该语言音频、字幕与口型，记录返工与观感。[研究]
+
+**Rhubarb 的输出文件存在不等于本次成功。** 固定 [main.cpp][p28-r-main]先做动画计算，再打开输出写入；没有候选文件的原子替换。识别失败可能留下旧文件，写出失败可能留下不完整文件；必须把成功退出与新候选内容检查一起作为接收条件。[一手／研究]
+
+**格式检查也要区分时间点与区间。** [TSV exporter][p28-r-tsv]末尾收口项是结束标记；[JSON exporter][p28-r-json]用 start/end 区间，元数据含音源路径和时长，却不提供完整角色／语言／剧情层身份。接入方需自持这些关联；公开日志不复制本机音源路径。[一手／研究]
+
+**接收时一起切换已核对的音频与口型，失败则保留原完整配对。** 先验证候选格式、嘴形全部可映射、时间落在新音频内、语言与源录音对应，再替换；静音、跳句、切语言和失败重试还要确认无残留状态。这里是接入设计，不是已执行的回归测试。[研究]
+
+### 4. AI承担范围与撤回条件
+
+**AI 可给候选曲线，Agent 可批量映射和筛错误，程序员负责最终选择与合成验收。** 本轮确认了接口能力与部分实际采用；“无需手修能承担多少”和净节省工时仍未知。验收须分别记录缺素材、错口型、层间表演不合、二改牵连四类失败，避免把美术瓶颈记成模型推理失败。[研究]
+
+**撤回时说明功能代价。** 文本、有限嘴形或远景会改变风格与表演；近景对白不可据此默认删需求。本轮只核资料／源码／作者报告，未运行工具、模型、引擎或客户端。[研究]
+
+[p28-r-release]: https://github.com/DanielSWolf/rhubarb-lip-sync/releases/tag/v1.14.0
+[p28-r-readme]: https://github.com/DanielSWolf/rhubarb-lip-sync/blob/9b9573cd21b253c9ba58739bbd1aa0b50b991bff/README.adoc
+[p28-r-license]: https://github.com/DanielSWolf/rhubarb-lip-sync/blob/9b9573cd21b253c9ba58739bbd1aa0b50b991bff/LICENSE.md
+[p28-r-main]: https://github.com/DanielSWolf/rhubarb-lip-sync/blob/9b9573cd21b253c9ba58739bbd1aa0b50b991bff/rhubarb/src/rhubarb/main.cpp
+[p28-r-tsv]: https://github.com/DanielSWolf/rhubarb-lip-sync/blob/9b9573cd21b253c9ba58739bbd1aa0b50b991bff/rhubarb/src/exporters/TsvExporter.cpp
+[p28-r-json]: https://github.com/DanielSWolf/rhubarb-lip-sync/blob/9b9573cd21b253c9ba58739bbd1aa0b50b991bff/rhubarb/src/exporters/JsonExporter.cpp
+[p28-m-audio]: https://dev.epicgames.com/documentation/en-us/metahuman/audio-driven-animation
+[p28-m-license]: https://www.metahuman.com/license
+[p28-m-ai]: https://www.metahuman.com/ai-info
+[p28-a-doc]: https://github.com/NVIDIA/Audio2Face-3D-SDK/blob/1ca0f02535ed774f5dbcd724a31cd486368dc783/docs/README.md
+[p28-a-header]: https://github.com/NVIDIA/Audio2Face-3D-SDK/blob/1ca0f02535ed774f5dbcd724a31cd486368dc783/audio2face-sdk/include/audio2face/blendshape_solver.h
+[p28-a-readme]: https://github.com/NVIDIA/Audio2Face-3D-SDK/blob/1ca0f02535ed774f5dbcd724a31cd486368dc783/README.md
+[p28-a-hub]: https://github.com/NVIDIA/Audio2Face-3D/blob/4d61b6b81ad7b5108512ea0eab10d8712ea4a236/README.md
+[p28-t-credit]: https://thimbleweedpark.com/credits/
+[p28-t-blog]: https://blog.thimbleweedpark.com/tracking_talkies.html
