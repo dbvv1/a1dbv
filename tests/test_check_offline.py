@@ -80,13 +80,14 @@ class OfflineChecksTests(unittest.TestCase):
       (root / '.git/ignored.sh').touch()
       (root / 'with spaces.sh').touch()
       checks = runner.phases(root)
-    self.assertEqual(len(checks), 7)
+    self.assertEqual(len(checks), 8)
     self.assertEqual(checks[1][2], {'TEST_PARSER': 'python3'})
     self.assertEqual(checks[2][2], {'TEST_PARSER': 'jq'})
     self.assertIn('experiments/workflow-ablation/evaluator', checks[3][1])
     self.assertEqual(checks[3][1][-1], 'selftest.py')
     self.assertIn('experiments/context-results-audit', checks[4][1])
     self.assertIn('experiments/recovery-outcome', checks[5][1])
+    self.assertEqual(checks[6][1][-1], 'scripts/check_public.py')
     self.assertEqual(checks[-1][1], ('bash', '-n', 'with spaces.sh'))
 
   def test_process_output_is_inherited_and_timeout_kills_group(self):
