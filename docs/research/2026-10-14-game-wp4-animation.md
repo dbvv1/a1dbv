@@ -1,10 +1,12 @@
 主线：二／三／四；G1 动画、绑定、面部供给、第二次修改与授权
-改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，同骨架先直接复用，所需功能或结构差异再引入转换；现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法；程序步态分基础姿态与身体规则，新运动结构另计实现；二改后的消失／突跳先分范围与屏外求值；对白先有嘴形／面部绑定，再选求解器，改句按音频与口型配对接收
-新证据：[一手／研究] VRoid／VRM现成来源与Unity消费替代；Rhubarb 固定源码与成品采用、MetaHuman 口部掩码、Audio2Face 既有 rig／GPU 与分组件许可补对白二改边界；2026-10-15 Kimodo v1.2 修正测试泄漏，补本地可控短动作候选而非质量冠军； Unity 6.3 导入／IK／根运动合同与历史 UUM-27271、UE5.8 兼容骨架条件补同骨架复用选择；Overgrowth 演讲、生产修订与固定源码，Rain World 开发者访谈补程序步态内容／维护边界；Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
+改变的建议：[经验] 完整许可动作组、固定骨架与接触契约优先；生成只补内容缺口。先核生产资格与实际返回身份，再替换旧动作；体型、装备、程序步态、屏外求值和对白分别验收。
+新证据：[一手／研究] Uthana 显式模型／job／motion 契约；固定源码与生产反例限定重定向、程序步态及二改能力；Kimodo v1.2 撤回旧评测横比；Rhubarb、VRoid／VRM、MetaHuman、Audio2Face 区分面部供给与求解。各节保留原核实日期，未证零手修通过率或二改成本。
 
 # WP4：动画、绑定与第二次修改
 
 核实时间：2026-10-14（UTC+8）。正文见[动画专题](../../domains/game-dev/assets/animation.md)。本轮只读官方资料、论文、GitHub 源码与开发者记录；未安装、下载权重、运行模型或引擎。来源标记：[一手]官方文本／源码／作者报告；[研究]论文或机制推导，具体段落区分；[经验]条件化采用建议。分档为首试顺序，不是同题实测冠军。
+
+**阅读路径：§2 选控制能力 → §4 分四层权利 → [§8](#8-动态事实表2026-10-14-补核)核生产资格与实际返回 → §6 验收后替换旧动作。** 后续专题段分别处理骨架、装备、交互、屏外求值与对白，服务升级不代替这些二改验收。[研究]
 
 ## 1. 采用判断与分档依据
 
@@ -24,29 +26,30 @@
 
 ### A. 近期变化：必须撤回旧攻略的部分
 
-1. **Rokoko 于 2026-07-16 合并到 Create，2026-08-16 结束旧双机位与在线 webcam**：[官方迁移公告](https://support.rokoko.com/hc/en-us/articles/48823033216017-Rokoko-Vision-and-Rokoko-Create-What-you-need-to-know)。应采用离线录制后上传的当前流程，不能再以“双摄增强”给当前 Vision 选型。[一手]
-2. **Vision 3.0 当前套餐与能力**：[官方产品页](https://www.rokoko.com/products/vision)。免费 30 秒/月；Basic 月付 US$12、年付折合 US$10/月，含 600 秒处理、100 个文本 clip 导入；没有手指追踪，遮挡/复杂运动仍有局限。其 10 倍速度/价值是厂商对比，未当成本轮对照实测。[一手／研究]
-3. **Uthana 于 2026-08 停止新订阅，按量共用 API/web 余额**：[官方价格](https://uthana.com/pricing)、[FAQ](https://uthana.com/faq)。Text V3 US$0.10/秒、Video V2/V2.1 US$0.05/秒、Locomotion US$0.02/秒、拼接/循环 US$0.01/秒、auto-rig US$0.15/次。不是旧“无限订阅”。购买积分不过期，自动充值为可选，不能默认打开。[一手]
-4. **Cascadeur 2026.2**：[官方发布说明](https://cascadeur.com/blog/view/cascadeur-2026-2-animation-layers-easing-new-languages)。增加 Alpha 加法动画层、easing 与 Python 工作流；新版工具有助局部修改，但定位仍是辅助创作/编辑，不能把需要摆姿与修关键帧的过程计为零人工美术。免费只能`.casc`且非商用；Indie 的年营收或融资须低于 US$100k，Pro 才有该页所列无限商业使用及重定向。上一轮页面返回 PLN；本次美元 FAQ 已核 Indie US$19／月或 US$96／年，Pro US$49／月或 US$396／年，实际税与结账仍另核。[官方价格](https://cascadeur.com/plans)。[一手／研究]
-5. **2026-09-19 MixiMotion**：[论文](https://arxiv.org/abs/2609.23010)。作者给出单步蒸馏速度与语义指标，教师为 HY-Motion Lite；本轮未找到可闭合的作者代码/权重及发行许可。加速不证明 loop、接触或商业授权问题已解，列前沿观察，不替代推荐。[研究]
+1. **Rokoko 当前工作流改为离线录制后上传。** 旧双机位／在线 webcam 已停，不能再以“双摄增强”选型；Vision 3.0 没有手指追踪，遮挡／复杂运动仍有限制。迁移日期、额度和[官方来源统一见 §8](#8-动态事实表2026-10-14-补核)，厂商“10 倍速度／价值”不是本轮实测。[一手／研究]
+2. **Uthana 按量服务不再按旧无限订阅比较。** 计费、充值与账户资格集中在 [§8](#8-动态事实表2026-10-14-补核)；版本名称还不足以识别真正拿到的动作，须接着核[返回契约](#uthana-模型与返回契约补核2026-10-15-utc8)。[一手／研究]
+3. **Cascadeur 2026.2 改善局部编辑，未消除人工动画工作。** [发布说明](https://cascadeur.com/blog/view/cascadeur-2026-2-animation-layers-easing-new-languages)增加 Alpha 加法动画层、easing 与 Python 工作流；摆姿／修关键帧不能计为零人工美术，免费导出、商用门槛和价格见 [§8](#8-动态事实表2026-10-14-补核)。[一手／研究]
+4. **2026-09-19 MixiMotion**：[论文](https://arxiv.org/abs/2609.23010)。作者给出单步蒸馏速度与语义指标，教师为 HY-Motion Lite；本轮未找到可闭合的作者代码/权重及发行许可。加速不证明 loop、接触或商业授权问题已解，列前沿观察，不替代推荐。[研究]
 
 ### B. 商业动作：哪种控制对应哪种修改
+
+**能力按下列机制选择，生产资格查 [§8](#8-动态事实表2026-10-14-补核)。** Uthana 接着核[显式 2.1、refined IDs、重传 job 与 Text3.0 接口](#uthana-模型与返回契约补核2026-10-15-utc8)，不能只按商品名接收。[研究]
 
 **Uthana Locomotion**：[官方说明](https://uthana.com/models/locomotion)给方向、0.25—8m/s、1—5 步对、风格枚举；导出 FBX/GLB/BVH 与 24/30/60fps，区分 root motion/in-place。它生成 clip，不提供寻路、碰撞或动态平衡控制器。结论：移动需求优先显式控制，胜过每次提示词“快一点/向左一点”的不可测改变；未证明生成片在所有骨架无脚滑。[一手／研究]
 
 **Uthana Text-to-Motion 3.0**：[官方示例/限制](https://uthana.com/models/text-to-motion)展示标注“原样生成”的动作，支持短行为序列和 API；仍不保证接触场景或精确末姿，不生成道具/第二个人。适合表演方向，不能作为精确游戏事件执行器；质量优先是此场景的候选顺序，不是胜过所有服务的结论。[一手／研究]
 
-**Uthana Video-to-Motion 2.1**：[官方动捕页](https://uthana.com/models/video-to-motion)有源视频与交互结果链接；V2.0 是当前 API 默认，2.1 有模型原生后处理，必须显式保存版本。要求单人、2—60 秒、全身可见、稳定摄像机，优选无遮挡、无运动模糊。其结果是估计，不是测量真值；页内演示不是已发售游戏零修证据。[一手／研究]
+**Uthana Video-to-Motion 2.1**：[官方动捕页](https://uthana.com/models/video-to-motion)有源视频与交互结果链接；2.1 的模型后处理与默认版本差异按[返回契约](#uthana-模型与返回契约补核2026-10-15-utc8)接收。要求单人、2—60 秒、全身可见、稳定摄像机，优选无遮挡、无运动模糊。其结果是估计，不是测量真值；页内演示不是已发售游戏零修证据。[一手／研究]
 
-**Rokoko 文本**：[当前 Create 页](https://www.rokoko.com/products/studio/rokoko-create)允许商用，建议简单 idle/locomotion；[旧 Preview 帮助](https://support.rokoko.com/hc/en-us/articles/40245637949329-Text-to-Motion-in-Rokoko-Studio-Preview)保留“smoothing 在 loop 文本 clip 可能产生伪影”的警告。但旧文 Plus/Pro 前提与当前 Create 免费 5 次导入不同，不能拿旧文套餐覆盖新页；它仅是“平滑可能损伤动作”的官方反例。[一手／研究]
+**Rokoko 文本**：[当前 Create 页](https://www.rokoko.com/products/studio/rokoko-create)建议简单 idle／locomotion；[旧 Preview 帮助](https://support.rokoko.com/hc/en-us/articles/40245637949329-Text-to-Motion-in-Rokoko-Studio-Preview)警告 smoothing 在 loop 文本 clip 可能产生伪影。保留这个平滑反例，但套餐资格按 [§8](#8-动态事实表2026-10-14-补核)新页，不沿用旧文。[一手／研究]
 
-**DeepMotion**：[服务条款](https://www.deepmotion.com/terms-of-use)免费非商用、付费时生成的输出获永久全球商业使用许可，但输出知识产权归平台，禁止独立/类素材库再分发，游戏按二进制嵌入。[定价页](https://www.deepmotion.com/pricing-animate3d)的 Rotoscope 纠错返积分需要逐帧修关节，不应计为本基准免费成本。SayMotion 价格正文未完整返回，未引用不可靠单价；服务可作另一商业对照，未选为已证最佳。[一手／研究]
+**DeepMotion 的纠错机制不符合零手修成本口径。** Rotoscope 返积分需逐帧修关节；服务仅作另一商业对照，非已证最佳。输出归属／分发见 [§4](#4-授权边界与wp1对应项)，价格及免费／付费资格见 [§8](#8-动态事实表2026-10-14-补核)。[一手／研究]
 
-**Move One**：[官方价格帮助](https://docs.move.ai/knowledge/move-one-pricing)Starter US$18/月+VAT，60credits，Gen1 每人每秒 1credit，Gen2 为 2credits，超额会计费。故 Starter 的“60”不是 Gen2 的 60 秒；免费 30credits 是一次性而非月赠。该轮未完整审定 EULA 输出权利，因此仅留比较候选，不把试用可导出等同商用放行。[一手／研究]
+**Move One 只留比较候选。** 本轮未完整审定输出 EULA，试用可导出不是商用放行；Gen1／Gen2 的 credits 换算与官方价格帮助集中在 [§8](#8-动态事实表2026-10-14-补核)。[一手／研究]
 
 ### C. 自动绑定：保骨架比每次重新猜更利于第二改
 
-**Mixamo**：[Adobe 官方 FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html)明确免费商业游戏可用，仅二足人形，严重异形、大附肢/道具、非中性姿势、游离部件与脏网格可失败；中国国家码账户与 Enterprise/Federated ID 不可用。采用对象必须先过这些条件。[一手]
+**Mixamo**：[Adobe 官方 FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html)限定二足人形；严重异形、大附肢／道具、非中性姿势、游离部件与脏网格可失败。账户与商用资格见 [§8](#8-动态事实表2026-10-14-补核)，可登录不代表输入合格。[一手]
 
 **AccuRIG**：[官方功能比较](https://www.reallusion.com/auto-rig/accurig/)支持人形和一些夸张比例/手指设置，但是 guided rigging；免费与 CC 高级版不同，免费不含编辑蒙皮/减骨等全部功能。[2026 问题库](https://kb.reallusion.com/ExportPDF53079.aspx)说明关节放到网格外可导致计算问题/崩溃。因此“免费工具”≠零判断或必定成功，若需逐点修关节或刷权重才能过关，不满足此项目基准。可保留按参数/自动模式一次通过的路线。[一手／研究]
 
@@ -54,7 +57,7 @@
 
 ### D. 开源动作：可运行、论文效果、商用路径三件事
 
-- **HY-Motion-1.0/Lite**：[固定 README](https://github.com/Tencent-Hunyuan/HY-Motion-1.0/blob/4e426f5a1021cbcf7f375458c37b840ee7225229/README.md)明确不支持非人形、多人、环境/对象、seamless loop 或 in-place。标准/Lite 列最低 26/24GB，另有缩短时长等建议，不能当普适峰值显存。WP1 已核 EU/UK/韩国输出地域排除及 MAU 条件。因此不默认全球商用，更不以文本“loop”承诺补齐缺项。[一手／研究]
+- **HY-Motion-1.0/Lite**：[固定 README](https://github.com/Tencent-Hunyuan/HY-Motion-1.0/blob/4e426f5a1021cbcf7f375458c37b840ee7225229/README.md)明确不支持非人形、多人、环境/对象、seamless loop 或 in-place。标准/Lite 列最低 26/24GB，另有缩短时长等建议，不能当普适峰值显存。生产资格见 [§8](#8-动态事实表2026-10-14-补核)；不以文本“loop”承诺补齐缺项。[一手／研究]
 - **GVHMR**：沿用 WP1 固定`ee960bb6e2ea2d381aa97f08e9b71ef320b624b1`[许可证](https://github.com/zju3dv/GVHMR/blob/ee960bb6e2ea2d381aa97f08e9b71ef320b624b1/LICENSE)商业使用受限；“仅导出动作、不发代码”不解决商业运行限制。没有把论文观感纳入商用免费档。[一手／研究]
 - **MoCapAnything V2（重要新增）**：2026-07 发权重，2026-09-04 补训练分割/复现资料。固定[README](https://github.com/phongdaot/MocapAnything/blob/c99fb22c2f6001958c73c197065322b98ca0b93b/README.md)明确为重实现，非论文实验原代码；[RUN.md](https://github.com/phongdaot/MocapAnything/blob/c99fb22c2f6001958c73c197065322b98ca0b93b/RUN.md)说明公开 Setting A 与论文分割/指标不一致。能以视频＋参考骨架输出旋转/BVH，值得非人形专项评估，但不能照搬论文分数。[一手]
 - MoCapAnything 主代码[MIT＋第三方 NOTICE](https://github.com/phongdaot/MocapAnything/blob/c99fb22c2f6001958c73c197065322b98ca0b93b/LICENSE)、[固定权重卡](https://huggingface.co/kehong/MoCapAnythingV2-weights/blob/4b8c28e69aea9e39610264818d83153d59219bd6/README.md)也标 MIT；卡明确 RMBG-1.4/DINOv2 会运行时拉取。RMBG-1.4[官方卡](https://huggingface.co/briaai/RMBG-1.4)免费仅非商业，训练示例的 Truebones 素材另许。结论：主模型可评估，默认组合不可直接写免费商用；先获依赖授权或验证替代路径，不能仅删除下载语句就算清权。输出也不自动继承第三方视频/角色/动作数据权利。[一手／研究]
@@ -82,23 +85,25 @@
 - [Unreal 5.8 IK Retargeter](https://dev.epicgames.com/documentation/en-us/unreal-engine/ik-rig-animation-retargeting-in-unreal-engine)：链映射、Retarget Pose、Auto Align、root 与地面相关设置表明“同为人形”也需姿态配置；自动对齐是候选起点，不保证手握道具或武器轨迹。其结果可导出供动画系统使用，不自动补缺失动作。[一手／研究]
 - [Epic Game Animation Sample](https://www.unrealengine.com/blog/game-animation-sample?lang=en-au)：官方成套 locomotion 与 Blueprint 是比单片动作更完整的基线；[UE5.7 更新](https://www.unrealengine.com/tech-blog/explore-the-updates-to-the-game-animation-sample-project-in-ue-5-7?lang=zh-CN)提醒固定 sample/引擎版本。这里没有逐项核 Fab 取得时许可，不将它当已放行 Unity 通用动作包。[一手／研究]
 - [Unity 2D Animation 10.2.4 流程](https://docs.unity3d.com/Packages/com.unity.2d.animation@10.2/manual/CharacterRig.html)：自动几何和 Auto Weights 仍配合编辑、权重调整与 Preview Pose；前文零手修边界由此得到，而非认定这些功能无用。[一手／研究]
-- [Spine 资产包](https://en.esotericsoftware.com/spine-asset-packs)：Hitman/Gunman 各 US$10，带 rig/动作和 Unity 工程。旧 Unity5 工程不能冒称直接适配当前 Unity；可评估资产，工程需迁移。[Spine 署名案例](https://us.esotericsoftware.com/spine-showcase-all)有 Return to Monkey Island 与 Cult of the Lamb 美术负责人，证明专业团队真实采用，不证明 AI 零手修。[一手／研究]
+- [Spine 资产包](https://en.esotericsoftware.com/spine-asset-packs)：Hitman／Gunman 带 rig／动作和 Unity 工程，价格见 [§8](#8-动态事实表2026-10-14-补核)。旧 Unity5 工程不能冒称直接适配当前 Unity；可评估资产，工程需迁移。[Spine 署名案例](https://us.esotericsoftware.com/spine-showcase-all)有 Return to Monkey Island 与 Cult of the Lamb 美术负责人，证明专业团队真实采用，不证明 AI 零手修。[一手／研究]
 
 ## 4. 授权边界与WP1对应项
 
-| 精确方案 | 代码/服务 | 权重 | 输出/商用与限制 | 建议 |
-|---|---|---|---|---|
-| Mixamo auto-rig 和动作库 | 专有在线服务，Adobe ID；FAQ 列中国国家码及企业/联合 ID 不可用 | 不开放 | FAQ 允许商用游戏，原始素材不可当素材包再分发；[2021 附加条款](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Mixamo-Addl-Terms-en_US-20210623.pdf)禁止以内容/输出直接间接创建、训练、测试或改进 AI/ML | 👀地区可用、有权输入时候选；不要把它拿去训动作模型，也不把普通引擎重定向误说成训练 |
-| Uthana paid Text3.0/Video2.1/Locomotion/rig | 专有服务，GraphQL 可用 | 不授权底层模型 | [Terms v1.1.0](https://uthana.com/terms)§8 付费输出在双方间归用户，必要嵌入 IP 全球永久许可；免费输出 CC BY4.0 需署名；默认可用于模型改进，no-training 须明示；未见特别营收/地域阈值，仍受法律/账户要求 | 👀按量付费可评估；不是所有免费旧资产升级即无署名 |
-| Rokoko Create/Vision3.0/Studio | 专有，按账户计划 | 不开放 | [2026-07-16 v2.0.1 条款](https://www.rokoko.com/terms-of-use)覆盖 Studio/Preview/Create；用户保有 User Content，另有平台改进许可；Rokoko Assets 素材库与自己生成内容区分；§4.4 禁止未特许脚本/自动化访问 | 👀普通生成/导出候选；不得擅建抓取/批处理机器人，素材库与输出混用另查 |
-| DeepMotion Animate3D/SayMotion | 专有服务 | 不开放 | 平台拥有 Products；免费非商用，付费期间生成获永久全球商用；二进制作品嵌入，禁止独立素材分发/高度近似衍生资产销售 | 👀付费合规用途候选；不可直接把动作 FBX 公开到开源游戏仓库；条款禁止未授权机器人/脚本，批量接入另核官方 API |
-| Spine 编辑器＋Runtimes＋资产包 | 编辑器专有；runtime 源码可读但专用协议，不是 MIT | 无生成权重 | [编辑器协议](https://us.esotericsoftware.com/spine-editor-license)Essential/Pro 过去 12 月收入＋投资/融资合计<$500k；超限 Enterprise。Trial 无 runtime 权；Education 非商用。[资产包协议](https://en.esotericsoftware.com/spine-asset-pack-license)只作为软件嵌入，禁源码形式分发包内源代码；各组件许可仍独立 | 👀完整许可路径候选；买骨骼数据不自动免 runtime 许可；不要求玩家各买许可证，应按编辑器协议§2 正确许可集成 |
-| Cascadeur 2026.2 | 专有编辑/辅助动画 | 不授自托管权重 | Free 非商用且无 FBX/DAE 导出；Indie 年营收或融资 <US$100k，Pro 商业门槛不同。完整 EULA 输出/旧免费历史未在本轮闭合 | 👀付费比较，不能作免费发布管线默认；不是本基准必需工具 |
-| AccuRIG / ActorCore 动作 | 专有软件，AccuRIG 免费不代表商店动作免费 | 不开放 | [2026-05-25 软件 EULA](https://www.reallusion.com/Content/EULA/AP/EULA_AP.htm)与[内容 EULA](https://www.reallusion.com/Content/EULA/EULA.htm)分开；自有网格、ActorCore 或 CC Base 有不同边界，Editorial/Trial 不能混同 | 👀软件候选；发行前按实际角色/动作 SKU 与来源清权，不以免费按钮全盘放行 |
-| MoCapAnything V2 指定 code/checkpoint | 固定代码 MIT，BRIA 文件例外 | 固定 epoch60.pt 卡 MIT；RMBG 另许 | 未见主权重独立输出 NC 限制，但默认 BRIA 依赖非商业，Truebones 数据另许；本轮没验证去依赖路径 | 👀主模型、⛔默认免费商业整套；不存在“小团队自然豁免” |
-| Shards Asset Toolkit 94bd4787 | MIT 代码 | 调外部服务，无自有模型许可替代 | 示例 Meshy/Mixamo 资产的再分发不由 MIT 自动覆盖 | 🧪借鉴代码，不默认复制示例资产 |
+**代码可用、权重可用、输出可发行、依赖可商用须分别成立。** 下表保留权利边界；套餐、地区、营收／融资门槛和免费资格统一查 [§8](#8-动态事实表2026-10-14-补核)，不以一项通过替整条生产链放行。[研究]
 
-注：Rokoko 已从 Vision 产品页直接点条款复核：`/terms-of-use-update`重定向至`https://www.rokoko.com/terms-of-use`，生效 2026-07-16，版本 2.0.1；不是把一般网站条款当软件输出许可。
+| 精确方案 | 代码／服务 | 权重 | 输出权利 | 依赖／采用边界 |
+|---|---|---|---|---|
+| Mixamo | 专有服务、Adobe ID | 不开放 | 允许商业游戏使用，原始素材不可当素材包再分发；[2021 附加条款](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Mixamo-Addl-Terms-en_US-20210623.pdf)禁以内容／输出直接或间接创建、训练、测试或改进 AI/ML | 有权输入且账户可用时采用；普通引擎重定向不等同训练 |
+| Uthana Text／Video／Locomotion／rig | 专有、GraphQL 可用 | 不授权底层模型 | [Terms v1.1.0 §8](https://uthana.com/terms)：付费输出在双方间归用户，必要嵌入 IP 全球永久许可；免费输出 CC BY4.0、须署名 | 默认可用于模型改进，no-training 须明示；输入另核，升级不自动免除旧免费资产署名 |
+| Rokoko Create／Vision／Studio | 专有、按账户计划；§4.4 禁未特许脚本／自动访问 | 不开放 | [2026-07-16 v2.0.1 条款](https://www.rokoko.com/terms-of-use)：用户保有 User Content，另有平台改进许可 | 自录生成与 Rokoko Assets 分开清权；不擅建抓取机器人 |
+| DeepMotion Animate3D／SayMotion | 专有；禁未授权机器人／脚本，批量接入另核官方 API | 不开放 | 平台拥有 Products；合格付费输出获永久全球商用，限二进制嵌入，禁独立／类素材库再分发及高度近似衍生资产销售 | 不把动作 FBX 公开到开源游戏仓库；生成资格见 §8 的条款来源 |
+| Spine 编辑器＋Runtimes＋资产包 | 专有编辑器；runtime 源码可读但非 MIT | 无生成权重 | [资产包协议](https://en.esotericsoftware.com/spine-asset-pack-license)：仅嵌入软件，禁源码形式分发包内源代码 | [编辑器协议 §2](https://us.esotericsoftware.com/spine-editor-license)另核集成；买数据不免 runtime 许可，也非要求玩家各买许可证 |
+| Cascadeur 2026.2 | 专有编辑／辅助动画 | 不授自托管权重 | 完整 EULA 输出／旧免费历史未闭合 | 套餐资格不代替输出审定；非本基准必需工具 |
+| AccuRIG／ActorCore | 专有；免费软件不等于商店动作免费 | 不开放 | [软件 EULA](https://www.reallusion.com/Content/EULA/AP/EULA_AP.htm)（2026-05-25）与[内容 EULA](https://www.reallusion.com/Content/EULA/EULA.htm)分开 | 自有网格、ActorCore、CC Base 分别核；Editorial／Trial 不能混同，按实际 SKU 清权 |
+| MoCapAnything V2 固定版本 | MIT，BRIA 文件例外，固定来源见 §2.D | epoch60.pt 卡 MIT；RMBG 另许 | 未见主权重独立输出 NC 限制；不赋予输入视频／角色／动作数据权利 | 默认 BRIA 依赖非商业，Truebones 另许；主模型可评估，默认整套不可免费商用，无小团队自动豁免 |
+| Shards 94bd4787 | MIT | 外部服务，无自有权重授权 | 示例 Meshy／Mixamo 再分发不由 MIT 覆盖 | 只借代码，示例资产另核 |
+
+Rokoko 条款由 Vision 产品页直接进入，`/terms-of-use-update`重定向至上述 v2.0.1；不是以一般网站条款替软件输出许可。[一手]
 
 ## 5. 只靠程序能补与不能承诺补的分界
 
@@ -117,6 +122,8 @@
 
 ## 6. 第二次修改的最小后续验收（本轮不执行）
 
+**先配对请求、job 与最终 motion 身份，再验收和替换；失败保留旧动作。** Uthana 的字段路径与重传去重按 [§8 返回契约](#uthana-模型与返回契约补核2026-10-15-utc8)，下列为后续验收设计，未实测。[研究]
+
 1. 保存同一 rig/模型 hash、clip 命名与单位/fps、模型/服务版本、source 运动/seed、root 策略、Avatar/retarget pose、事件/contacts，以及原始与处理后文件；不依赖服务历史保存。[经验]
 2. 第一版用最小完整玩法动作组进入引擎，先通过目标设备占屏尺寸下的实际剪影、接触、地面与动作事件要求，别只看 DCC 正面。[经验]
 3. 第二版做两类改动：保持骨架换同规格外观/装备；将攻击命中提前且恢复不变，或提高移动速度并保持脚落点。再加一个确实需要新语义的动作，区分参数可复用与内容缺口。[研究]
@@ -126,7 +133,7 @@
 
 ### 成本例（只算术，不是实测）
 
-Uthana 8 秒 Text V3 一次 US$0.80，十次候选 US$8；Video 2.1 十条各 8 秒按价格页输出口径为 US$4；循环另计。Rokoko Basic 月付 US$12 含 600 秒，但只用 80 秒时不能报“每分钟 US$1”，年付折算也不等于月付账单；双方淘汰率、录制时间与质量未知。Move Gen2 按 2credit/人秒，Starter60credit 对应 30 秒，不与其他服务 600 秒额度直接当效果性价比。[一手价格／研究算术]
+按生成价、套餐利用率与 credits 换算的算术例集中见 [§8 成本换算](#成本换算沿用已核价格)，不把候选生成秒数当合格交付秒数。[研究]
 
 ## 7. 本轮实际验证与剩余问题
 
@@ -136,40 +143,53 @@ Uthana 8 秒 Text V3 一次 US$0.80，十次候选 US$8；Video 2.1 十条各 8 
 
 ## 评审后修订：授权表格呈现（2026-10-14 11:15 UTC+8）
 
-[研究：实际离线复现] 对云端评审 F2 独立核验：Rodin 后空行切断 GFM 表格，随后七条动作授权只呈现为段落。使用环境已有 pandoc 的 `--from=gfm --to=html` 分别转换修订前后正文，以标准库 HTMLParser 检查生成 HTML：修订前七项均不在表格行；删除该空行后七项全部为表格行且各五列。仅修呈现，不改变许可判断；这是本地 GFM 转换结果，非 GitHub 页面视觉/真实引擎/模型效果验证。完整离线和差异检查随本结果提交执行。
+[研究：历史呈现验证] Rodin 后空行曾切断 GFM 表格；删除后，已有 pandoc（`--from=gfm --to=html`）与 HTMLParser 确认七条动作授权均进入五列表格。只验证本地呈现，不改变许可，也非 GitHub 视觉或模型／引擎验证。
 
 ## 8. 动态事实表（2026-10-14 补核）
 
-[研究：范围] 覆盖动画正文及本记录的动态型号、价格、许可和服务条件；日期是本次读取，不是不可变网页快照。每行在“实际采用前”与 2026-11-14 中较早者复核；未登录账户或购买，不用公开价页替账户 SKU、实际输出或发行许可。代码、权重、训练来源、第三方依赖及输出分别判断，许可可读不等于版权安全全过。
+[研究：范围] 覆盖动画正文及本记录的动态型号、价格、许可和服务条件；日期是本次读取，不是不可变网页快照。**表内均于 2026-10-14 核实，在实际采用前或 2026-11-14（取较早者）复核；未闭合项不因列入表格而放行。** 未登录账户或购买，不用公开价页替账户 SKU、实际输出或发行许可。代码、权重、训练来源、第三方依赖及输出分别判断，许可可读不等于版权安全全过。
 
-| 事实／精确范围 | 官方来源与本次状态 | 核实日期 | 下次复核 | 对采用的影响 |
-|---|---|---|---|---|
-| Uthana Text 3.0／Video 2.0、2.1／Locomotion 1.0 分开计价：US$0.10／0.05／0.02 每输出秒；循环 US$0.01／秒、绑定 US$0.15／次 | [官方价格](https://uthana.com/pricing)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不是旧无限订阅；循环、淘汰和录制时间另算 |
-| Text 3.0 是生成式表演；Video API 默认 2.0，2.1 才带模型后处理 | [Text](https://uthana.com/models/text-to-motion)、[Video](https://uthana.com/models/video-to-motion)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 显式保存版本；提示词与指部输出都不保证精确接触 |
-| Locomotion 有方向、速度 0.25–8 m/s、1–5 步对和 root／in-place 导出 | [官方说明](https://uthana.com/models/locomotion)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 参数可修改不等于寻路／碰撞控制器 |
-| Uthana 付费输出归属、免费 CC BY 4.0、默认模型改进、专门 no-training 例外 | [Terms v1.1.0 §8](https://uthana.com/terms)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 付费不自动禁止训练；上传前核输入授权及保密要求 |
-| Rokoko 2026-07-16 并入 Create，8 月 16 日结束旧双机位／webcam | [迁移公告](https://support.rokoko.com/hc/en-us/articles/48823033216017-Rokoko-Vision-and-Rokoko-Create-What-you-need-to-know)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不按旧双摄工作流选型 |
-| Vision 3.0 免费 30 秒／月；Basic US$12 月付或年付折合 US$10／月，600 秒；无手指追踪 | [Vision 页](https://www.rokoko.com/products/vision)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 额度与最终通过动作秒数不同，不默认解决手部接触 |
-| Rokoko 用户内容／平台素材分开；§4.4 未特许不得脚本／自动访问 | [2026-07-16 v2.0.1 条款](https://www.rokoko.com/terms-of-use)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不搭无人值守网页批处理；自录输出与 Motion Library 另核 |
-| DeepMotion 免费非商用；付费期间生成有永久非独占商用许可；原始动作不得独立再分发 | [Terms：Products、Commercial License、Prohibited Activities](https://www.deepmotion.com/terms-of-use)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 游戏二进制嵌入与公开 FBX 不同；自动化另核官方 API 授权 |
-| DeepMotion Rotoscope 返积分需人工纠错；SayMotion 单价仍未取得可靠正文 | [Animate3D 定价](https://www.deepmotion.com/pricing-animate3d)、[SayMotion 定价](https://www.deepmotion.com/pricing-saymotion)，本次重读，后者仅返回页面框架 [一手／研究] | 2026-10-14（单价未闭合） | 采用前或 2026-11-14 | 不把手工纠错计作零手修免费生产；不补猜单价 |
-| Move One Starter US$18／月＋VAT，60 credits；Gen1／Gen2 每人秒 1／2 credits，免费 30 一次性 | [官方价格帮助](https://docs.move.ai/knowledge/move-one-pricing)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | Gen2 仅对应 30 秒；完整输出 EULA 仍未闭合，保持条件候选 |
-| Mixamo 免费商业游戏、人形输入；中国国家码及企业／联合 ID 不可用 | [Adobe FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 先核账户／输入，再比较；不能把 FAQ 更新日期当今天才发布 |
-| Mixamo 内容／输出不得用于 AI 创建、训练、测试、改进；源素材分发另受限制 | [2021 附加条款](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Mixamo-Addl-Terms-en_US-20210623.pdf)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 普通引擎重定向不据此解释为模型训练 |
-| AccuRIG 免费是 guided rigging，功能有高级版边界；软件／ActorCore 内容许可分开 | [功能页](https://www.reallusion.com/auto-rig/accurig/)、[软件 EULA](https://www.reallusion.com/Content/EULA/AP/EULA_AP.htm)、[内容 EULA](https://www.reallusion.com/Content/EULA/EULA.htm)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 未核实际动作 SKU；免费工具不为购买／Editorial 资产清权 |
-| SkinTokens／TokenRig 代码和指定 `grpo_1400.ckpt`＋`last.ckpt` 卡 MIT；最低 14 GB NVIDIA 显存是作者要求 | [代码](https://github.com/VAST-AI-Research/SkinTokens)、[官方双 checkpoint 卡](https://huggingface.co/VAST-AI/SkinTokens)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 保骨架补 skin 可评估；训练源不因模型 MIT 全变 MIT，依赖／输入仍核 |
-| HY-Motion-1.0／Lite 无 seamless loop、in-place、多人与非人形；社区许可限制输出地域及百万 MAU 条件 | [仓库](https://github.com/Tencent-Hunyuan/HY-Motion-1.0)、[代码 License.txt](https://github.com/Tencent-Hunyuan/HY-Motion-1.0/blob/master/License.txt)、[权重许可](https://huggingface.co/tencent/HY-Motion-1.0/blob/main/LICENSE.txt)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 保留 WP1 全球商用暂缓；境内生成不绕过输出地域限制 |
-| GVHMR 仅教育／研究／非营利用途，商用须另许 | [官方 LICENSE](https://github.com/zju3dv/GVHMR/blob/main/LICENSE)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不用“仅导出动作”规避商业运行限制；checkpoint／人体模型另核 |
-| MoCapAnything V2 主 checkpoint 卡 MIT，运行时自动取 RMBG-1.4／DINOv2；RMBG 免费非商业 | [权重卡](https://huggingface.co/kehong/MoCapAnythingV2-weights)、[BRIA 卡](https://huggingface.co/briaai/RMBG-1.4)，本次重读；固定主代码／NOTICE 沿用 §2.D [一手／研究] | 2026-10-14 | 采用前或 2026-11-14 | 保留默认组合不可免费商用；替换路径尚未运行验证 |
-| Cascadeur 2026.2 动画层 Alpha；Free 非商用且仅 CASC，Indie 门槛含营收或融资 | [发布说明](https://cascadeur.com/blog/view/cascadeur-2026-2-animation-layers-easing-new-languages)、[计划 FAQ](https://cascadeur.com/plans)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | **修正只写年收入的漏项**；页面不代替完整 EULA ／历史免费权益审定 |
-| Cascadeur 当前美元公开价：Indie US$19 月付／US$96 年付，Pro US$49 月付／US$396 年付 | [计划 FAQ](https://cascadeur.com/plans)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 替换上一轮 PLN 返回说明；实际税、地域／结账另核，不用年付折算冒充月账单 |
-| Spine 编辑器 Essential／Pro：过去 12 月营收、投资与融资合计 <US$500k；runtime 另有集成许可 | [编辑器协议 §1–2](https://us.esotericsoftware.com/spine-editor-license)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不是只按游戏收入；源码可读不等于 MIT，不要求玩家各买编辑器 |
-| Spine Hitman／Gunman 各 US$10；资产包仅嵌入软件、源文件再分发受限 | [包页](https://en.esotericsoftware.com/spine-asset-packs)、[包协议](https://en.esotericsoftware.com/spine-asset-pack-license)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 购买包不免 runtime 许可，旧 Unity 示例不保证直接可用 |
-| ReMoMask CC BY-NC-SA 4.0；MixiMotion／SAM 3D Body 不提升到已清权时序动作默认 | [ReMoMask](https://github.com/AIGeeksGroup/ReMoMask)、[MixiMotion 论文](https://arxiv.org/abs/2609.23010)、[SAM 仓库](https://github.com/facebookresearch/sam-3d-body)，本次重读，后两条的完整交付／许可链未闭合 [一手／研究] | 2026-10-14（部分未闭合） | 采用前或 2026-11-14 | 只留观察；不以论文速度、单图重建或封装名字代替游戏动作资格 |
+| 动态事实／生产资格 | 官方来源与读取状态 | 对采用的影响 |
+|---|---|---|
+| Uthana 2026-08 停新订阅，API／web 共用按量余额；Text3.0／Video2.0、2.1／Locomotion1.0 为 US$0.10／0.05／0.02 每输出秒；拼接／循环 US$0.01／秒，绑定 US$0.15／次 | [官方价格](https://uthana.com/pricing)、[FAQ](https://uthana.com/faq) [一手] | 购买积分不过期，自动充值可选、不默认打开；淘汰／录制另算 |
+| Text 3.0 是生成式表演；Video API 默认 2.0，2.1 才带模型后处理 | [Text](https://uthana.com/models/text-to-motion)、[Video](https://uthana.com/models/video-to-motion) [一手] | 按[返回契约](#uthana-模型与返回契约补核2026-10-15-utc8)核显式模型、refined IDs 与 job；提示词／指部不保证接触 |
+| Locomotion 有方向、速度 0.25–8 m/s、1–5 步对和 root／in-place 导出 | [官方说明](https://uthana.com/models/locomotion) [一手] | 参数可修改不等于寻路／碰撞控制器 |
+| Uthana 未见特别营收／地域阈值，仍受法律／账户要求 | [Terms v1.1.0 §8](https://uthana.com/terms) [一手] | 付费／免费输出与训练权见 §4；Text3.0 账户口径冲突见下方返回契约 |
+| Rokoko 2026-07-16 并入 Create，8 月 16 日结束旧双机位／webcam | [迁移公告](https://support.rokoko.com/hc/en-us/articles/48823033216017-Rokoko-Vision-and-Rokoko-Create-What-you-need-to-know) [一手] | 不按旧双摄工作流选型 |
+| Vision 3.0 免费 30 秒／月；Basic US$12 月付或年付折合 US$10／月，600 秒、100 个文本 clip 导入；无手指追踪 | [Vision 页](https://www.rokoko.com/products/vision) [一手] | 额度与最终通过动作秒数不同，不默认解决手部接触 |
+| Rokoko Create 文本允许商用、免费 5 次导入，旧 Preview 的 Plus／Pro 前提不适用 | [Create 页](https://www.rokoko.com/products/studio/rokoko-create)与 §4 的 v2.0.1 条款 [一手] | 内容权利与自动访问限制见 §4 |
+| DeepMotion 免费非商用；付费期间生成才取得永久非独占商用许可 | [Terms：Products、Commercial License、Prohibited Activities](https://www.deepmotion.com/terms-of-use) [一手] | 输出归属、嵌入／分发与自动化边界见 §4 |
+| DeepMotion Rotoscope 返积分需人工纠错；SayMotion 单价仍未取得可靠正文 | [Animate3D 定价](https://www.deepmotion.com/pricing-animate3d)、[SayMotion 定价](https://www.deepmotion.com/pricing-saymotion)，本次重读，后者仅返回页面框架 [一手／研究] | 不把手工纠错计作零手修免费生产；不补猜单价 |
+| Move One Starter US$18／月＋VAT，60 credits；Gen1／Gen2 每人秒 1／2 credits，免费 30 一次性 | [官方价格帮助](https://docs.move.ai/knowledge/move-one-pricing) [一手] | Gen2 仅对应 30 秒，超额会计费；完整输出 EULA 未闭合，保持条件候选 |
+| Mixamo 免费商业游戏、人形输入；中国国家码及企业／联合 ID 不可用 | [Adobe FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html) [一手] | 先核账户／输入，再比较；不能把 FAQ 更新日期当今天才发布 |
+| AccuRIG 免费是 guided rigging，功能有高级版边界；软件／ActorCore 内容许可分开 | [功能页](https://www.reallusion.com/auto-rig/accurig/)、[软件 EULA](https://www.reallusion.com/Content/EULA/AP/EULA_AP.htm)、[内容 EULA](https://www.reallusion.com/Content/EULA/EULA.htm) [一手] | 未核实际动作 SKU；免费工具不为购买／Editorial 资产清权 |
+| SkinTokens／TokenRig 代码和指定 `grpo_1400.ckpt`＋`last.ckpt` 卡 MIT；最低 14 GB NVIDIA 显存是作者要求 | [代码](https://github.com/VAST-AI-Research/SkinTokens)、[官方双 checkpoint 卡](https://huggingface.co/VAST-AI/SkinTokens) [一手] | 保骨架补 skin 可评估；训练源不因模型 MIT 全变 MIT，依赖／输入仍核 |
+| HY-Motion-1.0／Lite 无 seamless loop、in-place、多人与非人形；社区许可排除 EU／UK／韩国输出地域，另有百万 MAU 条件 | [仓库](https://github.com/Tencent-Hunyuan/HY-Motion-1.0)、[代码 License.txt](https://github.com/Tencent-Hunyuan/HY-Motion-1.0/blob/master/License.txt)、[权重许可](https://huggingface.co/tencent/HY-Motion-1.0/blob/main/LICENSE.txt) [一手] | 保留 WP1 全球商用暂缓；境内生成不绕过输出地域限制 |
+| GVHMR 仅教育／研究／非营利用途，商用须另许 | [官方 LICENSE](https://github.com/zju3dv/GVHMR/blob/main/LICENSE) [一手] | 不用“仅导出动作”规避商业运行限制；checkpoint／人体模型另核 |
+| MoCapAnything V2 主 checkpoint 卡 MIT，运行时自动取 RMBG-1.4／DINOv2；RMBG 免费非商业 | [权重卡](https://huggingface.co/kehong/MoCapAnythingV2-weights)、[BRIA 卡](https://huggingface.co/briaai/RMBG-1.4)，本次重读；固定主代码／NOTICE 沿用 §2.D [一手／研究] | 保留默认组合不可免费商用；替换路径尚未运行验证 |
+| Cascadeur 2026.2 动画层 Alpha；Free 非商用且仅 CASC、无 FBX／DAE；Indie 年营收或融资 <US$100k，Pro 该页列无限商业使用与重定向 | [发布说明](https://cascadeur.com/blog/view/cascadeur-2026-2-animation-layers-easing-new-languages)、[计划 FAQ](https://cascadeur.com/plans) [一手] | **修正只写年收入的漏项**；页面不代替完整 EULA ／历史免费权益审定 |
+| Cascadeur 当前美元公开价：Indie US$19 月付／US$96 年付，Pro US$49 月付／US$396 年付 | [计划 FAQ](https://cascadeur.com/plans) [一手] | 替换上一轮 PLN 返回说明；实际税、地域／结账另核，不用年付折算冒充月账单 |
+| Spine 编辑器 Essential／Pro：过去 12 月营收、投资与融资合计 <US$500k；runtime 另有集成许可 | [编辑器协议 §1–2](https://us.esotericsoftware.com/spine-editor-license) [一手] | 超限须 Enterprise；Trial 无 runtime 权、Education 非商用；不是只按游戏收入，不要求玩家买编辑器 |
+| Spine Hitman／Gunman 各 US$10；资产包仅嵌入软件、源文件再分发受限 | [包页](https://en.esotericsoftware.com/spine-asset-packs)、[包协议](https://en.esotericsoftware.com/spine-asset-pack-license) [一手] | 购买包不免 runtime 许可，旧 Unity 示例不保证直接可用 |
+| ReMoMask CC BY-NC-SA 4.0；MixiMotion／SAM 3D Body 不提升到已清权时序动作默认 | [ReMoMask](https://github.com/AIGeeksGroup/ReMoMask)、[MixiMotion 论文](https://arxiv.org/abs/2609.23010)、[SAM 仓库](https://github.com/facebookresearch/sam-3d-body)，本次重读，后两条的完整交付／许可链未闭合 [一手／研究] | 只留观察；不以论文速度、单图重建或封装名字代替游戏动作资格 |
 
 [研究：保留的反证] Shards 固定 SHA 的 rest 基底／身高缩放／`--loop` 反证未撤销，历史开发者展示与估算不改称当前实测。固定版本 Unity／Unreal／2D Animation 机制保持原范围，不声称已经逐版本验证；Epic sample 跨引擎许可、Move One 完整输出合同、ActorCore 实际 SKU、MoCapAnything 合法替代路径仍未闭合。
 
 [研究] 历史阶段 F 局部检查：`check_repo.py` 177 文件无错误，四文件 `git diff --check` 和本地锚点通过；已有 pandoc 的 GFM 渲染确认两张决策表、20 条音频／22 条动画动态事实均为五列表格。该轮未重跑完整离线入口。
+
+### Uthana 模型与返回契约补核（2026-10-15 UTC+8）
+
+[一手：当前公开文档，非调用实测] [Video 产品页](https://uthana.com/models/video-to-motion)、[能力文档](https://uthana.com/docs/api/capabilities/video-to-motion)与[GraphQL reference](https://uthana.com/docs/api/graphql#create_video_to_motion)一致：`create_video_to_motion` 的可选 `model` 默认是 `video-to-motion-2.0`，兼容别名 `video-to-motion-v2` 也指向 2.0；选 2.1 必须显式传 `video-to-motion-2.1`。2.0 返回基础 motion，2.1 返回 refined motion IDs。保留原动态表日期，本补核在采用前或 2026-11-15 复核。
+
+- [研究] 接入时保存所请求的完整模型值、视频内容身份、目标 character ID、创建返回的 job ID、终态 `status`／完整 `result` 与最终下载的 motion ID。官方通用教程默认调用和 `result.result.id` 示例不能独立证明 2.1 的精确返回结构；本轮没有取得真实 2.1 返回，不编造字段路径或保证 SDK 已兼容。
+- [一手／研究] 官方说明相同视频正在处理、成功后 24 小时内或失败后 1 小时内重传会返回既有 job。文档未明确跨模型是否共享去重键，因此换 `model` 后也要核 job 身份，不能把同一旧 job 当第二个候选；不为绕过去重主动修改源视频。
+- [一手／研究] 顺查 Text3.0 发现官方页内口径差异：[能力页](https://uthana.com/docs/api/capabilities/text-to-motion#text-to-motion-30)已写 PAYG 账户普遍可用，但 GraphQL reference 的 `create_text_to_motion_job` 仍标 limited release。不能把后一段当当前统一准入结论；实际采用先核账户资格。两者一致要求异步 `create_text_to_motion_job`＋`model="text-to-motion-3.0"`，不是旧同步 `create_text_to_motion` 的默认示例。
+
+[研究：变化与范围] 正文现在把 2.1 的显式选择和结果身份置于推荐旁，避免只记商品名却取到默认 2.0；原有接触、循环和零手修撤回标准不变。本次未登录账户、调用模型或执行引擎验收，不把后处理存在写成质量通过。
+
+### 成本换算（沿用已核价格）
+
+Uthana 8 秒 Text V3 一次 US$0.80，十次候选 US$8；Video 2.1 十条各 8 秒按价格页输出口径为 US$4；循环另计。Rokoko Basic 月付 US$12 含 600 秒，但只用 80 秒时不能报“每分钟 US$1”，年付折算也不等于月付账单；双方淘汰率、录制时间与质量未知。Move Gen2 按 2credit/人秒，Starter60credit 对应 30 秒，不与其他服务 600 秒额度直接当效果性价比。[一手价格／研究算术]
 
 ## 连续性补研与升级边界
 
@@ -278,16 +298,6 @@ Daniel Holden 的 [2026-07-30 原文](https://theorangeduck.com/page/inverse-kin
 
 [研究] 历史比例／装备补研：完整离线 14 阶段（非空无 skip）、两文件 `git diff --check` 与正文锚点通过，仅仓库检查。
 
-
-### Uthana 模型与返回契约补核（2026-10-15 UTC+8）
-
-[一手：当前公开文档，非调用实测] [Video 产品页](https://uthana.com/models/video-to-motion)、[能力文档](https://uthana.com/docs/api/capabilities/video-to-motion)与[GraphQL reference](https://uthana.com/docs/api/graphql#create_video_to_motion)一致：`create_video_to_motion` 的可选 `model` 默认是 `video-to-motion-2.0`，兼容别名 `video-to-motion-v2` 也指向 2.0；选 2.1 必须显式传 `video-to-motion-2.1`。2.0 返回基础 motion，2.1 返回 refined motion IDs。保留原动态表日期，本补核在采用前或 2026-11-15 复核。
-
-- [研究] 接入时保存所请求的完整模型值、视频内容身份、目标 character ID、创建返回的 job ID、终态 `status`／完整 `result` 与最终下载的 motion ID。官方通用教程默认调用和 `result.result.id` 示例不能独立证明 2.1 的精确返回结构；本轮没有取得真实 2.1 返回，不编造字段路径或保证 SDK 已兼容。
-- [一手／研究] 官方说明相同视频正在处理、成功后 24 小时内或失败后 1 小时内重传会返回既有 job。文档未明确跨模型是否共享去重键，因此换 `model` 后也要核 job 身份，不能把同一旧 job 当第二个候选；不为绕过去重主动修改源视频。
-- [一手／研究] 顺查 Text3.0 发现官方页内口径差异：[能力页](https://uthana.com/docs/api/capabilities/text-to-motion#text-to-motion-30)已写 PAYG 账户普遍可用，但 GraphQL reference 的 `create_text_to_motion_job` 仍标 limited release。不能把后一段当当前统一准入结论；实际采用先核账户资格。两者一致要求异步 `create_text_to_motion_job`＋`model="text-to-motion-3.0"`，不是旧同步 `create_text_to_motion` 的默认示例。
-
-[研究：变化与范围] 正文现在把 2.1 的显式选择和结果身份置于推荐旁，避免只记商品名却取到默认 2.0；原有接触、循环和零手修撤回标准不变。本次未登录账户、调用模型或执行引擎验收，不把后处理存在写成质量通过。
 
 ## 交互与时长补研：分段对位和动作进度
 

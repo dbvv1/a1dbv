@@ -526,31 +526,31 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 #### 先保角色和阶段，再谈分组
 
-**角色不等于阶段。** 维护者在[#2973][p25-intent]保留 `Signer₁ → Assistant → Signer₂`。对SIGNATURE类型，Assistant不得代他人签署；其余动作按入口契约核查。完成只将自己置SIGNED；旧界面允许提醒仍有他人未填字段后继续。[一手：维护者意图、源码]
+**角色不等于阶段。** 维护者在[#2973][p25-intent]保留`Signer₁ → Assistant → Signer₂`；旧界面提醒有他人字段未填后仍可继续。SIGNATURE代签与完成条件见下表。[一手：维护者意图、源码]
 
-**最终代填取严格后续。** 同数值order含0可成组，Assistant不能代填同组peer。数字Assistant可代填后续数字及null；null Assistant仅可代填更大ID的null人。相同null按ID逐人处理；AES/QES历史重复order按ID顺签，新显式重复则拒绝。[一手：固定树 `recipient-queries.ts`、`recipient-groups.ts`]
+**代填只取严格后续。** 同数值order（含0）可成组，Assistant不得代填peer；数字Assistant可填后续数字／null，null Assistant仅可填更大ID的null人。同null按ID逐人处理；AES/QES历史重复order按ID顺签，新显式重复拒绝。[一手：`recipient-queries.ts`、`recipient-groups.ts`]
 
-**读写、撤填不能混为同一权限。** V2 `sign-envelope-field.ts`直接拒readOnly并查actor/target过期；legacy `sign-field-with-token.ts`对readOnly的非自动类型校验默认值一致，NAME/INITIALS/EMAIL/DATE豁免此项；legacy remove无独立readOnly／SIGNATURE拒绝，legacy两路只查actor过期。这是静态差异，未验证可达性，不称当前漏洞。[一手]
+**读、写、撤填分别核权限。** V2 `sign-envelope-field.ts`拒readOnly并查actor／target过期；legacy `sign-field-with-token.ts`对readOnly非自动类型验默认值一致，NAME/INITIALS/EMAIL/DATE豁免。legacy remove无独立readOnly／SIGNATURE拒绝；legacy两路只查actor过期。[一手]
 
-**旧式签名类型另核入口。** 固定[官方字段契约](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/apps/docs/content/docs/developers/api/fields.mdx)不建议新集成使用FREE_SIGNATURE；[V2写入schema](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/trpc/server/envelope-router/sign-envelope-field.types.ts)排除该类型，而[legacy service](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/lib/server-only/field/sign-field-with-token.ts)仍有对应签名对象分支，读过滤也仅排SIGNATURE。端到端可达性未验，不据此称漏洞。[一手：固定源码／文档]
+**FREE_SIGNATURE另核入口。** 官方字段契约（`apps/docs/content/docs/developers/api/fields.mdx`）不建议新集成使用；V2写schema（`packages/trpc/server/envelope-router/sign-envelope-field.types.ts`）排除它，legacy service（`packages/lib/server-only/field/sign-field-with-token.ts`）仍有签名对象分支，读过滤也仅排SIGNATURE。以上均为静态差异，端到端可达性未验，不称当前漏洞。[一手：固定源码／文档]
 
-下表路径相对上述固定树；旧树没有后来的V2 envelope入口。当前写schema约束order为整数≥0，响应schema仍容忍旧数据，二者不可互换。[一手]
+本节Documenso路径均相对[573c928][p25-r2]；旧树无V2 envelope入口。当前写order须整数≥0，响应schema仍容忍旧数据。[一手]
 
 | 入口／固定源路径 | 旧规则→最终继承；非法输入预期 |
 |---|---|
-| `packages/api/v1/schema.ts`；最终 `envelope-recipients/create-envelope-recipients.types.ts` | 旧role枚举／order nullish没有Assistant阶段refinement；当前共享order schema拒负数、小数。create/update及meta切PARALLEL须分别核，旧[#3291][p25-api]不是当前复现 |
-| `packages/lib/utils/recipient-queries.ts` → `get-fields-for-token.ts`、`get-recipients-for-assistant.ts` | 旧gte→本人＋严格后续；跨envelope、peer、目标SIGNED拒代理。null较小ID→较大ID允许，反向拒；target expired/readOnly按上述动作差异另验 |
-| `sign-field-with-token.ts`／`remove-signed-field-with-token.ts`／`sign-envelope-field.ts` | 同一目标集合不等动作全等；V1/V2 sign显式拒代他人写SIGNATURE，V2输入另排除FREE_SIGNATURE；remove须单验。读清单不等于可写／可完成 |
+| `packages/api/v1/schema.ts`；最终 `envelope-recipients/create-envelope-recipients.types.ts` | 旧role枚举／order nullish无Assistant阶段refinement；create/update及meta切PARALLEL分别核，旧[#3291][p25-api]非当前复现 |
+| `packages/lib/utils/recipient-queries.ts` → `get-fields-for-token.ts`、`get-recipients-for-assistant.ts` | 旧gte→本人＋严格后续；跨envelope、目标SIGNED拒代理。peer／null／expired／readOnly边界见上 |
+| `sign-field-with-token.ts`／`remove-signed-field-with-token.ts`／`sign-envelope-field.ts` | V1/V2 sign拒代他人写SIGNATURE；remove及FREE_SIGNATURE限制见上。读清单不等于可写／完成 |
 | `create-document-from-template.ts`／`create-document-from-direct-template.ts`；签署页／RecipientProvider | 模板创建新实例可换ID并映射fields；活动文档不可重seed。token持有人与target分开，返回他人对象时token隐藏 |
 | `send-document.ts` → `complete-document-with-token.ts` | 首发取活动步骤全体；完成先验本人的必填字段，只完成本人；全体SIGNED或CC才触发seal。Assistant不必填完所有他人字段 |
 
-服务文件相对 `packages/lib/server-only/` 的对应目录；本稿不是可运行升级脚本。[一手／研究]
+服务文件相对`packages/lib/server-only/`对应目录。[一手]
 
 #### 一份旧状态，只走一次S1→S2
 
-以下为分组固定树语义下的纸面设计，不是跨版本升级脚本。E1取SES、SEQUENTIAL、PENDING、completedAt空；R101–107及T101–107分别为原recipient实际ID／token的符号映射，不公开真实token。默认NOT_SIGNED、NOT_SENT、signedAt／sentAt空；例外为101已SIGNED、signedAt=Q1、SENT／sentAt=N1，102当前活动且SENT／sentAt=N2，Q1<N2。假设身份有效未过期、无额外认证阻塞。[研究：设计参数]
+以下为分组固定树的纸面设计，非跨版本升级脚本。E1取SES／SEQUENTIAL／PENDING、completedAt空；R101–107／T101–107映射原recipient ID／token，不公开真实token。默认NOT_SIGNED／NOT_SENT、signedAt／sentAt空；例外：101为SIGNED、signedAt=Q1、SENT、sentAt=N1；102当前活动且SENT、sentAt=N2，Q1<N2。假设身份有效未过期、无额外认证阻塞。[研究：设计参数]
 
-所有字段required=true、readOnly=false、无预设default；完整字段集合如下，102／105／106无字段，其他字段不存在。[研究：输入]
+字段均required=true、readOnly=false、无预设default；下表为全集，102／105／106无字段。[研究：输入]
 
 | 字段→owner／类型 | S1的inserted／值／signatureId |
 |---|---|
@@ -562,24 +562,17 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 既有完成／代填审计集合为101完成事件A201、102代填F203／F205的A301／A302；既有签署请求任务集合J401只有101／102，无seal任务。部分更新只增106更新审计，不增通知；后续每人完成仅增本人完成审计，签署请求按103→104→{105,106}→107各新增一次，最后才新增seal任务。其他通知种类另列账，不混入该集合。[研究：消费者预期]
 
-真实输入仍缺合法PDF、SIG201及完整旧快照；执行前须取得同一快照绑定ID／token，不重seed。因此只是可审设计，非可重建运行包。[研究：缺口]
+仍缺合法PDF、SIG201及完整旧快照；须用同一快照绑定ID／token，不重seed。当前可审设计，不是可重建运行包。[研究：缺口]
 
-| S1旧对象 | S2唯一预期 |
-|---|---|
-| 101 Signer，order=0 | 全部保留 |
-| 102 Assistant，order=1 | 全部保留 |
-| 103 Approver，order=2 | 全部保留 |
-| 104 Signer，order=3 | 全部保留 |
-| 105／106 Approver，order=4／5 | 仅106改order=4 |
-| 107 Signer，order=6 | 全部保留，等105／106均完成 |
+S1的ID／角色／order：101/Signer/0、102/Assistant/1、103/Approver/2、104/Signer/3、105/Approver/4、106/Approver/5、107/Signer/6。S2只改106的order为4，余者全部保留；107等105／106均完成。[研究：唯一预期]
 
 **字段也会锁步骤。** `canRecipientBeModified` 对非CC的SIGNED或任一inserted字段拒改；编辑器 `getLastLockedStepIndex` 另锁整个前缀。本轨101–104不动；最后锁步为null则顺序冻结。[一手：源码]
 
-**唯一主轨为部分更新，不是编辑器保存。** `POST /api/v2-beta/envelope/recipient/update-many`，body为 `{envelopeId:E1实际ID,data:[{id:R106实际ID,signingOrder:4}]}`。认证／team可见性→SES PENDING可变→completedAt空→逐人可改→事务只更新106，已静态核；S2仅106的order 5→4及对应updated audit变化，无新增通知任务。[一手：源码；研究：预期]
+**主轨只部分更新106。** `POST /api/v2-beta/envelope/recipient/update-many`，body=`{envelopeId:E1实际ID,data:[{id:R106实际ID,signingOrder:4}]}`。已静态核：认证／team可见→SES PENDING可变→completedAt空→逐人可改→事务更新；S2仅order 5→4及对应updated audit变化，无新增通知任务。[一手：源码；研究：预期]
 
 **UI全量保存是独立反例。** `set-document-recipients.ts` 会把仍可修改的R102置NOT_SENT；代填103／104不锁R102自身。`update-envelope-recipients.ts`也会重设提交者的通知／签署状态，所以主轨只提交原NOT_SENT／NOT_SIGNED的106。whole-set漏ID删除保护另待验证；不能由编辑器前缀锁推出全入口保状态。[一手：静态差异，未运行]
 
-动作固定为：R102以T102完成自身；R103以T103确认批准，F203沿用；R104亲填F204再以T104完成。然后105／106均激活；105先完成时107仍NOT_SENT且签署请求任务为0，106不重复获邀；106完成才通知107，反序相同。107亲填F207并完成后才具备封存条件。独立分支尝试合组103／104，预期拒绝且旧状态不变。[研究：待执行]
+动作：R102/T102完成自身；R103/T103批准并沿用F203；R104填F204后以T104完成。105／106均激活，首人完成时107仍NOT_SENT、签署请求任务0，另一人不重复获邀；末人完成才通知107，正反序都验。107填F207并完成才可seal。独立分支合组103／104须拒且旧状态不变。[研究：待执行]
 
 #### 已读断言，哪些还不能算通过
 
@@ -619,9 +612,7 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 两项目核心AGPLv3；Documenso EE另有商业许可，DocuSeal[附加条款][p25-license]要求UI署名；实际复用另核路径与部署义务。[一手]
 
-可退回角色前置、吞0、null并组、清inserted和重seed坏候选；当前部分资料阶段，连续继承闭包未通过。[研究]
-
-未来可用相同模型／输入比较有无“先契约再改”建议；当前未运行，不计优化收益或完整实验完成。实际权限、并发或恢复若决定取舍，P25仍待验证。[研究：范围]
+可退回角色前置、吞0、null并组、清inserted和重seed坏候选。连续继承闭包未通过；同模型／输入的“先契约再改”对照未运行，不计优化收益或完整实验完成。实际权限、并发或恢复决定取舍时仍待验证。[研究：范围]
 
 [p25-r1]: https://github.com/documenso/documenso/tree/332e0657e00b49cb8a32ac43c397c2e4b66f5035
 [p25-r2]: https://github.com/documenso/documenso/tree/573c928a0e647efc8c41e3e12909c918c2104430

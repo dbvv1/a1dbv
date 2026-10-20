@@ -246,15 +246,15 @@ Epic 5.8 Python 单类页读取失败，已读同版本 C++ API；未读完整�
 
 ## 7. F1 复核：把接口选择落实到 Unity 入口
 
-核实：2026-10-14 UTC。独立读取 `e08dcbc` 的 [Unity README](https://github.com/dbvv1/a1dbv/blob/e08dcbc25ec2896a5faa9157e20b715381e47d7b/domains/game-dev/unity/README.md#L16-L27) 后确认：按 Unity 版本叠加官方插件、Pipeline、LSP、全套模板，以及旧版默认社区 MCP 的入口确实与本记录“现有能力够用则沿用”的条件判断不一致。[一手：仓库原文；研究：反证成立]
+**入口按任务缺口选接口，不按Unity版本叠加整栈。** 2026-10-14只读复核发现，固定[e08dcbc的Unity入口](https://github.com/dbvv1/a1dbv/blob/e08dcbc25ec2896a5faa9157e20b715381e47d7b/domains/game-dev/unity/README.md#L16-L27)默认叠加官方插件、Pipeline、LSP、全套模板及旧版社区MCP，与已有能力够用则沿用冲突，因此撤回默认安装建议。[一手／研究]
 
-本次重新读取[官方迁移页](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)，仍区分直接 shell 与 MCP 客户端需求、运行中编辑器的 Unity 6.0 LTS+ 前提及未被弃用的第三方 MCP；它支持按接口能力分支，不能推导所有项目必须安装整栈。[一手＋研究] 因此只将入口改成“代码编译/测试、资产操作、缺编辑器连接、缺语义导航、复用模板”五个任务条件，撤回 LSP/社区 MCP/全部模板的默认安装建议。已有脚本能完成任务时不增加连接；需新增连接时另行按项目授权处理。[经验]
-
-与两端模板的接口前提复核见 [WP13 §4](2026-10-14-game-wp13-agent-config.md#4-f1-复核入口必须按已配置能力分支)。这是新增入口及指令链的只读对照，不重做资产研究、不改变 WP9 的固定源码证据；未运行引擎、Agent 或模型，不据此宣称成本、成功率或工时改善。[研究]
+[官方迁移页](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)区分直接shell与MCP客户端、运行编辑器的Unity 6.0 LTS+前提及未弃用的第三方MCP。入口据此按编译／测试、资产操作、编辑器连接、语义导航、模板复用分支；已有脚本满足就不加连接，新增连接另获授权。模板对应见[WP13 §4](2026-10-14-game-wp13-agent-config.md#4-f1-复核入口必须按已配置能力分支)。未运行引擎／Agent／模型，不证明成本或成功率改善。[一手／研究]
 
 ## 8. Unity 原生生成器补核：原型集成不等于发行管线
 
 核实：2026-10-14 UTC。主线二／三；改变 01 的“生成结果如何接入并再次替换”建议。在既有原型／许可结论上，新增核对 Assistant 2.20.0-pre.2、最低 Editor 前提、Object Picker 与 Promote 区别、逐 generation job 计费；原 Personal 标价并非本轮新涨价。只读官方网页和文档；未登录、接受协议、安装包、生成资产或运行引擎。本节不是为补品牌而新增的工具名单。[一手／研究]
+
+采用前先查[§8.4版本与计费](#84-动态事实表)和[§8.3生产资格](#83-授权输出权利与-beta-使用资格分开)，条件满足后再选[§8.2替换范围](#82-修改后引用有替换入口没有完整身份保证)。AI可核请求、真实产物路径和引用差异；质量、权利与未知点击条款仍由人放行，不从生成成功自动推定。[研究／经验]
 
 ### 8.1 何时值得加入原生流程
 
@@ -297,8 +297,8 @@ Epic 5.8 Python 单类页读取失败，已读同版本 C++ API；未读完整�
 | 生成计量 | image 1–6、SFX 1–5 仅示例；一次多变体按各 generation job 累加。实际用量查 Dashboard；余额为零暂停，月度不结转 | [Credits 文档](https://docs.unity.com/en-us/ai/credits/credits-about) | 2026-11-14；估算／执行批次前 |
 | credits 购买约束 | 一般不退款、到期不结转，追加 credits 亦按适用订阅期；以购买时例外和当地法律为准 | [AI Credits Beta Terms](https://unity.com/legal/unity-ai-credits-terms)（2026-07-28） | 2026-11-14；购买前 |
 | 接入与生成收费分离 | CLI／MCP／官方插件免费，第三方 Agent 经 Gateway 不扣 Unity credits；不能推出资产生成免费 | [FAQ](https://unity.com/features/ai) | 2026-11-14；改变接入方式 |
-| beta 生产资格 | Evaluation＋具体点击条款，须区分 Software／Online Services 与文档例外；未核具体账户点击文本 | [FAQ](https://unity.com/features/ai)／[ToS §13](https://unity.com/legal/terms-of-service) | 2026-11-14；生产使用前 |
-| 供应商／输出范围 | Unity 输出归属声明与供应商／模型限制并存；原则页限定 6.7 及以下，不外推后续 Editor | [原则](https://unity.com/legal/unityai-guiding-principles)／[目录](https://unity.com/legal/third-party-ai-terms)／[Scenario](https://www.scenario.com/terms-and-conditions)／[Layer](https://layer.ai/terms-of-service) | 2026-11-14；改模型／Editor／发行前 |
+| beta 生产资格 | [§8.3](#83-授权输出权利与-beta-使用资格分开)统一维护Evaluation／点击条款及未核账户范围 | 同节FAQ／ToS §13 | 2026-11-14；生产使用前 |
+| 供应商／输出范围 | [§8.3](#83-授权输出权利与-beta-使用资格分开)统一维护Editor范围、供应商限制及输出归属 | 同节原则／目录／供应商合同 | 2026-11-14；改模型／Editor／发行前 |
 
 成本比较需纳入全部重试、淘汰、后处理、credits 和主动工时；当前资料不足以把 credits 示例换算成每件合格资产的美元成本。没有发现足以证明原生生成器在本基准下优于外部 API 的同题两轮发布闭环，本次不更换 WP2／WP6 的默认推荐；开测前固定版本、许可、续费、候选数及导入对照，见 [G2 前置](2026-10-14-game-wp12-indie-roadmap.md#g2-开测前置原生生成器与外部导入)。[研究]
 

@@ -55,6 +55,8 @@
 
 ## 4. 商业工作流：机制有价值，但不能照宣传补足契约
 
+采用顺序：先按本节选原生编辑或训练，再到[§11](#11-阶段-f-动态资格补核)核对应功能与权利，按[§5](#5-comfyui保存配方不把seed当成资产身份)保留源与环境，最后用[§9](#9-几百件的验证与第二次修改利用已有工具即可)验新旧整组。AI可整理来源与版本；风格适配、权利疑点和视觉接收由人决定。[经验]
+
 ### 4.1 原生编辑正在替代旧专用拼装
 
 Scenario[统一服装工作流](https://help.scenario.com/articles/6412500128-generate-highly-consistent-outfits)2026-04-09已建议改用较新的原生编辑模型；[turnaround指南](https://help.scenario.com/articles/1419523552-generate-character-turnarounds)明确区分character model和style model，后者不保证姿态变动后的定义性特征。本文借机制，具体基础模型按WP2更近期版本与WP1许可，不把4月文档型号当10月首选。[一手／经验]
@@ -63,11 +65,9 @@ Scenario[统一服装工作流](https://help.scenario.com/articles/6412500128-ge
 
 ### 4.2 平台式训练的迁移风险必须前置
 
-Scenario[FAQ](https://help.scenario.com/articles/1129045411-frequently-asked-questions-faq)称LoRA可导出、生成可商用；但当前[合同](https://www.scenario.com/terms-and-conditions)§4.4限定Custom Models所有权在平台内行使，禁止提取/下载底层权重；§4.6自助内容可用于改进服务/AI。与此同时[pricing](https://www.scenario.com/pricing)写免费输出仅个人/评估，却声称数据不用于训练。三处说法不足以建立统一保证。[一手：2026-10-13读取]
+**👀 Scenario只列有条件研究候选；先分清输出商用、训练功能、模型迁移和数据使用四件事。** 动态条款与套餐集中在[§11](#11-阶段-f-动态资格补核)。付费能商用不代表能训练，能训练也不代表能带走权重；以迁回本地或未发布素材不训练为采购前提时，先取得具体套餐／模型的书面确认。[研究／经验]
 
-**👀 Scenario只列有条件研究候选**：付费输出一般商用路径、训练源权利与地区需入WP1；若以“训练一次、以后迁到本地”或“未发布素材绝不训练”为理由采购，先取得具体套餐/模型的书面确认。不能把品牌模型导出等同于可带走底模、也不能默认用输出重训竞争模型，合同§5.2另有限制。[研究／经验]
-
-其训练、生成按模型与规格消耗CU，月度额度不滚存；FAQ说明免费账户资料30天后进入删除流程。保存批准输出/源图不应依赖仍有订阅。单人几百件离线资产未必需要购买协作平台，它节省的是编排/筛选管理成本，不是消除重新生成。[一手：[FAQ](https://help.scenario.com/articles/1129045411-frequently-asked-questions-faq)；经验]
+训练源权利与地区仍按WP1核查。单人几百件离线资产未必需要协作平台；它节省编排／筛选管理成本，不消除重生成。保存批准输出与源图，不依赖订阅持续存在。[经验]
 
 ## 5. ComfyUI：保存配方，不把seed当成资产身份
 
@@ -168,14 +168,12 @@ WP2已核的153次精灵动画复盘、To the Abyss作者逐像素修补，表�
 
 |精确候选|代码／权重|输出与生产条件|WP1应如何记录|
 |---|---|---|---|
-|Scenario，2026-10-13读取的自助服务|专有服务；不授底模自托管。FAQ说LoRA可导出，但Terms §4.4限制提取/下载底层权重，迁移权限未解决|Terms §4.3一般允许合规商用；pricing限免费为个人/评估，因此不以免费计划商用。训练源须有权利；自助数据使用不能套Enterprise不训练承诺；受出口管制|👀付费有条件研究候选，⛔免费商业生产与未经确认的可迁移/不训练承诺。不得因品牌持有某模型商业许可而外推任意模型、地区或套餐|
-|DreamStyle3D `ab4161d2bc8101cfd97cfaa2f7ef1de863659ef6`|原创代码及修改CC BY-NC4.0；TRELLIS派生部分MIT；权重及其他依赖未完成全链核查|没有取得商业运行许可；论文/演示不能证明生成物已清权|⛔默认商业生产暂缓；若仅在研究记录说明机制，不必放进正文三档推荐|
-
-直接依据：[Scenario合同§4/5/9/13/16](https://www.scenario.com/terms-and-conditions)、[pricing](https://www.scenario.com/pricing)、[FAQ](https://help.scenario.com/articles/1129045411-frequently-asked-questions-faq)；[DreamStyle3D固定README许可段](https://github.com/HVision-NKU/DreamStyle3D/blob/ab4161d2bc8101cfd97cfaa2f7ef1de863659ef6/README.md)。这是资料核查，不是法律保证。[一手／研究]
+|Scenario自助服务|动态资格与合同冲突统一见[§11](#11-阶段-f-动态资格补核)|付费输出、训练功能、模型迁移、数据使用分别核，不合并放行|👀有条件研究候选；具体模型／地区／套餐不得相互外推|
+|DreamStyle3D|固定许可与机制见[§3.3](#33-最新原生3d风格模型仍不满足免费商用默认)|权重及依赖未完成全链核查，未取得商业运行许可|⛔默认商业生产暂缓；论文许可不能替代代码／产物清权|
 
 其他只研究不推荐：StyleAligned `2faf0af`代码Apache2、旧SDXL适配且已归档；NightTale仓库`2545bfb`未见代码LICENSE，不复制安装，第三方模型权利未核；SafeStyle/Only-Style仅借反证，不采用其完整运行依赖；Comfy API托管为独立合同，不能从ComfyUI的GPL推导。无需为了充实名单强行把这些研究方法列为商用资产供应商。[一手／研究]
 
-当前材料已足以修改建议，不需现在安装或跑模型。后续若获准验证，只需从本游戏选一组语义不同但同风格的2D/刚体样本，包含旧件、新件、跨模态同物品与一次局部修改，对照“复用源+原生参考”及仅当必要的LoRA；保存所有拒绝件和usage/主动工时。动画与变形角色另验，不能与静态合并成一个通过率。[经验]
+当前材料已足以修改建议，不需现在安装或跑模型。后续若获准验证，按[§9](#9-几百件的验证与第二次修改利用已有工具即可)选本游戏的2D／刚体样本，对照“复用源+原生参考”及仅当必要的LoRA；保存所有拒绝件和usage/主动工时。动画与变形角色另验，不能与静态合并成一个通过率。[经验]
 
 ### 本轮实际范围
 
@@ -190,7 +188,12 @@ WP2已核的153次精灵动画复盘、To the Abyss作者逐像素修补，表�
 | 动态事实 | 本次核实与一手来源 | 对采用的影响 |
 |---|---|---|
 | 训练套餐与计量 | [pricing](https://www.scenario.com/pricing)将 custom model training 列在 Pro，将 custom editing model training 列在 Max；Starter 未列训练。[Terms §3.2](https://www.scenario.com/terms-and-conditions)明确训练另消耗 credits | 风格训练先核 Pro 或更高套餐资格，编辑模型训练另核 Max；付费商用资格不等于训练功能。价格沿 WP5，本次未操作月／年付切换，不新增确定月付报价 |
-| 模型迁移与自助数据 | 同一 [Terms §4.4、4.6](https://www.scenario.com/terms-and-conditions)仍限制提取／下载底层权重，并允许自助内容用于改进服务／AI；pricing 的不训练表述不能消除合同冲突 | 保留有条件研究候选；不能按“训练一次带回本地”或“未发布素材绝不训练”采购，具体模型迁移权及数据承诺须书面确认 |
+| 输出与商业生产 | [Terms §4.3](https://www.scenario.com/terms-and-conditions)一般允许合规生成资产商用；[pricing](https://www.scenario.com/pricing)限免费输出为个人／评估，而[FAQ](https://help.scenario.com/articles/1129045411-frequently-asked-questions-faq)笼统称可商用 | 不以免费计划商业生产；训练源权利及出口管制仍逐项核查 |
+| 模型迁移 | FAQ称LoRA可导出；Terms §4.4限定Custom Models所有权在平台内行使，并限制提取／下载底层权重；§5.2另限制用输出重训竞争模型 | 导出品牌模型不等于取得底模；依赖迁回本地时，先取得具体模型的书面确认 |
+| 自助数据 | 同一[Terms §4.6](https://www.scenario.com/terms-and-conditions)允许自助内容用于改进服务／AI；pricing声称数据不用于训练 | 未解决的合同冲突保留，不把Enterprise承诺外推自助套餐；敏感素材不据宣传上传 |
+| 额度与退出 | FAQ说明训练／生成按模型及规格消耗CU，月度不滚存；免费账户资料30天后进入删除流程 | 采购计入重生成，退出前保存已批准输出与源图，不靠继续订阅保存资产 |
+
+上述FAQ／合同／pricing冲突首读于2026-10-13，训练资格及迁移／数据条款于2026-10-14重读；本次只是合并维护位置，没有刷新核实日期。直接合同依据包含[§4/5/9/13/16](https://www.scenario.com/terms-and-conditions)，这是资料核查，不是法律保证。[一手／研究]
 
 本次未登录核账户权益、接受协议、上传训练素材、下载模型、训练或生成。没有用公开套餐表代替实际合同清权。[研究]
 
