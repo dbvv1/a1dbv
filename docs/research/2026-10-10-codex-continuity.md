@@ -285,7 +285,7 @@ Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时�
 ### 反例与总投入边界
 
 - HN [转用OpenCode](https://news.ycombinator.com/item?id=50062392)与[反向减少依赖](https://news.ycombinator.com/item?id=50067023)出自同一故障讨论，非独立抽样或社区共识；前者迁移早于新闻。[另一自报](https://news.ycombinator.com/item?id=50075970)含数小时规格、4–6小时Agent、数日修补与用户反馈，缺模型和产物，不能推删skills的因果收益。用Algolia读取原评论。[社区]
-- [Unreal10-06](https://unreallabs.ai/blog/long-horizon-agents-at-half-the-cost/)自测同Sol6.1xhigh、20题×8，各69/160；$445.75/$850.52仅推理费，harness不同且无压缩消融；Harbor job仅解析到标题。不能归因全部节省或断言质量等价。[一手：厂商自测，未复现]
+- [Unreal10-06](https://unreallabs.ai/blog/long-horizon-agents-at-half-the-cost/)自测同Sol6.1xhigh、20题×8，各69/160；$445.75/$850.52仅推理费，harness不同且无压缩消融；当轮Harbor仅解析到标题；10-21已展开公开字段，见下节P44。不能归因全部节省或断言质量等价。[一手：厂商自测，未复现]
 - [Octomind10-16](https://octomind.run/blog/codex-vs-claude-code)实际用7月旧Opus5/Sol5.6，25题23/21；级联是按已知隐藏失败事后算，非执行策略。[Mesmer10-19](https://mesmer.tools/blog/codex-vs-claude-code)当前Sol6.1low/Opus5.5medium、8小题，剔除3次限流／容量终止，AGENTS加载不对称；快慢方向相反。不能据此改medium默认或长任务排名。[社区：作者自测]
 - [SWE-Journey10-08](https://arxiv.org/html/2610.11559)用30合成任务、旧模型、定制mini-swe-agent与模拟用户；用户条件同时改变信息／反馈／终止，成本排除模拟器。只支持检查澄清是否消除歧义、信任是否有正确性证据，不替代当前原生客户端真人维护验证。[研究]
 
@@ -298,3 +298,36 @@ Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时�
 [dam固定配置](https://github.com/dam-agents/dam/blob/55e4f586740e0d66848bd9966cdad5bc74d9b0c7/packages/agents/codex/rootfs/etc/codex/config.toml)与[Nix固定配置](https://github.com/geggo98/dotfiles/blob/f88d6e8d5be31e9812284932d66e0adc7a535b6f/modules/ai-options.nix#L75-L85)仍保禁自启键，只证明配置意图，不证明实际加载或原任务恢复。[dam #5389](https://github.com/dam-agents/dam/pull/5389)虽合并，作者仍标production v0.2.21；[#5400](https://github.com/dam-agents/dam/issues/5400)模型猜换来自开发／升级测试。修复候选[#5402](https://github.com/dam-agents/dam/pull/5402)本轮读取时open、head为`ce6fda605a38f037ea103bdad07571ae47909d87`，本地探针自报不作生产采用。[一手／社区，固定范围]
 
 Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657885)评论未对该次错位尝试daemon update／restart，并非未更新CLI；旧目录恢复与[#53547](https://github.com/openai/codex/issues/53547)症状不足以证明任务续成。保留核实际运行端与模型选择的条件建议，不扩称pin／禁自启净收益。只有新增实际部署、同一产物后续修改、保留／撤回与投入回执，或另获明确实验授权，才重开效果判断；单纯合并和更多测试不够。[研究：负结果与恢复条件]
+
+
+## P44：公开同模型对照先核指标与实际配置
+
+核实2026-10-21 06:43–06:48（UTC+8），公开页面只读。**当前最优未知**；沿用[C15最高水平卡](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c15--agent-评估)的代表任务、多次尝试、结果校准与总投入标准。主流参照为作者汇总分数，可行起点是原生入口；本仓推荐先对账再窄试，属于可行选择，不把厂商案例当最佳证明。[研究]
+
+[Unreal Labs 10-06原文](https://unreallabs.ai/blog/long-horizon-agents-at-half-the-cost/)报告两臂同Sol6.1 xhigh、20题×8、各69/160；推理费445.75／850.52美元，称节省48%。本轮未复跑，只展开其[Unreal job](https://hub.harborframework.com/jobs/18eab680-0191-4368-963d-0f2c82e61a13?tab=config)及[Codex job](https://hub.harborframework.com/jobs/1f7a26f1-af67-4df6-958f-1de559e3593d?tab=config)的公开Config、Overview、Trials。[一手：作者报告／公开运行字段]
+
+### 同题不等于单因素
+
+两臂均为openai/gpt-6.1-sol、xhigh、attempts8；公开Trials各160个唯一记录，同20题、每题8次。数据集ref同为`sha256:9b351bf9bd305e6fd8bfdba9120e42551d027bf173b81ea790e8df2f21d7a624`。[一手]
+
+| 实际字段 | Unreal | Codex |
+|---|---|---|
+| 并发 | 20 | 10 |
+| trial版本 | 157条`214f96cecb63f34f083a3fd7f67d0b3e2c70d540`；3条`c97370db92d80e6907521b8729b4f48562db1539` | 160条0.159.3 |
+| Overview运行摘要 | 160 completed／0 errors | 158 completed／2 errors |
+| reward可得 | 160／160 | 159／160 |
+| 当前公开推理费 | 缺失 | 823.24美元 |
+
+两版本差异原因未取得；同模型仍混有harness、并发及版本变化，不能把整套差异解释为压缩组件的因果收益。主建议归[22的对账实例](../22-agent-evaluation.md#公开对照先对账再决定是否迁移)。[研究]
+
+### 指标和费用分别保留缺口
+
+**completed不是任务成功。** 两臂默认correctness卡为0.13／0.06，选reward后表均显示0.43；多指标单元格的逐项键与目标值尚未全部核清，不能由四舍五入反推69，也不拿correctness否定原文成绩。表提示异常也可能有reward；Trials的Status均显示Completed，但Codex两行Exception分别为ConflictError、ApiOverloadedError，前者缺评分、后者显示0，费用各22.58／8.31美元。[一手；研究：分母]
+
+**不拼接不同口径算新节省率。** Codex可见两位费用合计823.18，顶部823.24，博客850.52；差异原因未知。Unreal逐条费用全部缺失，不能填0或用token反推。已看见异常行费用，不等于证明所有失败成本完整，也不能指控两条异常被漏计。[一手；研究：成本边界]
+
+[SWE-Marathon v1 §4.3](https://arxiv.org/html/2606.07682v1#S4.SS3)将pass@1定义为通过任务verifier的trial比例，部分产品题需同时过功能与体验验收；该论文原实验为13×20×5，不是10月这组20×8。评分协议给出核对方向，尚不能替本轮缺失的逐条评分键、产物与费用对账。[一手；研究]
+
+**判定为保留原生，候选效果证据不足。** 本轮确认实际配置与可见分母，不改模型或harness评级。未取得全部尝试的精确目标评分、成本版本、人工投入、留出或后续修改；P44整体未完成。未运行应用／模型、登录或访问私人轨迹，公开页面时区未核的Started字段不作UTC换算。[研究]
+
+独立复核：全新上下文核原文、论文及两臂公开配置／Overview，并复算320行快照；限定通过。报告标识`p44-public-reconciliation-independent-review-20261021`，SHA256 `9c9fb78881c01075fb23c7468126057dfa01903fea2aed5e76b4554b509d1450`；最终树离线另验，非模型复测。[研究]
