@@ -25,40 +25,33 @@ P9 补核（2026-10-20 UTC+8）：保持三档型号，新增干声母版／固�
 
 ## 二、近期版本为什么改变选型
 
+[研究] 接入顺序：先在[§9](#九动态事实表2026-10-14-补核)核精确型号、入口、生产资格与费用，再用本节选择请求结构；保存真实产物后按[§3](#三第二次修改本轮有代码接口证据没有假装已实测)验证替换范围。动态事实只在 §9 维护，固定机制与验收留在原节；型号升级不自动要求重生已合格资产。
+
 ### 2.1 Eleven：不能继续只写v3、Music v1或笼统品牌名
 
-- 官方 9 月 28 日发布、10 月 12 日更新的 [Eleven v4 公告](https://elevenlabs.io/blog/eleven-v4)列音频标签、IPA 发音、说话人保持、多说话人上下文和请求拼接改进；有公开样例。其偏好测试与低延迟数值是厂商测试，不是本轮独立比较。[一手]
-- [现行模型表](https://elevenlabs.io/docs/overview/models)列 `eleven_v4`、`eleven_v4_turbo`（90+语言）、`eleven_text_to_sound_v2`、`music_v2_5`；Flash v2.5 仍在，旧 Turbo v2/v2.5 被 Flash 替代。不能把 v4 Turbo 和旧 Turbo v2.5 混为一谈。当前 v4 通过 Text to Dialogue API，v4 Turbo 通过 Text to Dialogue WebSocket；迁移不是仅替换旧 TTS 请求的 model_id。[一手]
-- [Music 能力页](https://elevenlabs.io/docs/overview/capabilities/music)确认 v2.5 可用 composition plans、音频参考和 inpainting，3 秒到 5 分钟；音频参考约 30 秒且为风格引导，不保证跨风格改编。结论是优先保留段落与参考，而不是每次从提示词重做整曲；官方“只改所选段落”承诺仍须以导出波形和听感验收。[一手/研究]
-- [stem separation API](https://elevenlabs.io/docs/api-reference/music/separate-stems)提供 two_stems_v1/six_stems_v1，返回分轨 ZIP 且提示可能高延迟。**分离得到的 stem 不是原生独立录制分轨**；需要检查串音、残响尾音和相位，不能因有六轨接口就保证任意状态组合干净。[一手/研究]
+[研究] 迁移先核 §9 的 REST／WebSocket 路线，不只替换旧请求的 model_id；公开偏好／延迟测试不是游戏实测。音乐优先保存 composition plan 与参考，局部 inpainting 后仍验区间外波形和听感。分离得到的 stem 不是原生独立录制分轨：即使返回分轨 ZIP，也须验串音、残响尾音与相位，不能据轨数保证任意状态组合干净。
 
 ### 2.2 SFX实际接口与宣传有边界差异
 
-[创建 SFX 接口](https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert)只列 `eleven_text_to_sound_v2`，`loop`默认 false，时长 0.5–30 秒，prompt_influence 默认 0.3。[能力页](https://elevenlabs.io/docs/overview/capabilities/sound-effects)则写 0.1–30 秒，并称 MP3 适用于全部效果、48kHz WAV 用于非循环效果。接入时按 API 字段至少 0.5 秒规划，并保存真实返回格式；不把 loop 选项推成“所有编码格式均采样无缝”。[一手/研究]
+[研究] §9 对照接口与能力页的时长／格式差异；按真实请求与返回文件接入，不把 loop 选项推成所有编码格式采样无缝。
 
 推荐单独生成“开门”“金属撞击”“脚步单击”等短事件，再由引擎决定顺序；整段复合音会把交互时间锁死。可程序补：去静音、短淡入淡出、有限 EQ/增益、裁切、轻度 pitch/volume 变体与去重复随机选择。不能补：脚步材质错误、音色里混入背景音乐、应为一次撞击却有两次主瞬态。[研究]
 
 ### 2.3 Suno v6：近期成曲对照，但不默认游戏循环主线
 
-9 月 9 日的[官方 v6 说明](https://help.suno.com/en/articles/13924801)区分 v6、v6-wild、v6-mini；三者最长 8 分钟，前两者 Pro/Premier、mini 全部计划；Extend/Cover/Replace Section 及 Custom Models 已围绕 v6。对固定风格资产，wild 的探索性不构成默认优势；成曲长度也不证明循环或多状态同主题一致。[一手/研究]
-
-[当前公开价格页](https://suno.com/pricing)年付折合 Pro $8/月、Premier $24/月，分别 2500/10000 credits 和每月 20/60 首下载，税结账计算。该页是年付显示，不能当可随时退的同价月付；下载次数与生成额度两本账。[WP1 已核的平台 Remix 限制](2026-10-14-game-wp1-licensing.md#音频具体产品下载与生成时间决定授权)仍适用，界面将工具列入“Remix & Edit”不自动证明每项编辑法律上都等于 Remix，需按实际功能、输入权利与当期合同核定。[一手/研究]
+[研究] 型号、计划、下载与生成额度见 §9。固定风格资产不默认选探索性 wild，成曲长度不证明循环或多状态同主题一致。[WP1 已核的平台 Remix 限制](2026-10-14-game-wp1-licensing.md#音频具体产品下载与生成时间决定授权)仍适用；“Remix & Edit”菜单不证明每项编辑都属于合同定义的 Remix，须按实际功能与输入权利核定。
 
 ### 2.4 本地音乐：ACE 1.5不再只有旧turbo
 
 固定[README SHA ca1e85fe9430179831e6bc6be790c332190a3866](https://github.com/ace-step/ACE-Step-1.5/blob/ca1e85fe9430179831e6bc6be790c332190a3866/README.md)中，turbo 及 XL-turbo 为 8 步，有 repaint/cover，但 extract/lego/complete 只在 base 分支列支持。不能给 turbo 写“全功能多轨生成”。[一手]
 
-[XL-turbo 官方权重卡](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo)标 MIT、4B DiT、8 步；≥12GB 需 CPU offload+INT8，≥20GB 无需 offload，≥24GB 标完整 XL+4B LM。卡内权重体积约 18.8GB 与 README 的 decoder 约 9GB 不是同一口径，不能用其中一个推出整管线下载/内存。官方声明数据来源合规、输出可商用，不等于本轮数据审计或侵权保险。[一手/研究]
+[研究] XL 的硬件、许可及统计口径见 §9；作者数据合规声明不是独立审计或侵权保险。
 
 采用：已有机器预算时比较旧 turbo 与 XL；只有其降低本项目淘汰率或修改回归成本才替换。撤回：显存/时延不合、固定主题重现差、需要 turbo 没有的分轨任务。没有已核的同一游戏新旧版盲听/成本对照，不能称 XL 已证明性价比最高。[研究]
 
 ### 2.5 Stable Audio 3：补上本地SFX，但必须补WP1
 
-5 月 20 日[官方发布](https://stability.ai/news-updates/meet-stable-audio-3-the-model-family-built-for-artistic-experimentation-with-open-weight-models)和[维护中的官方仓库](https://github.com/Stability-AI/stable-audio-3)明确 Small-SFX/Small-Music 为本地小模型、最长 120 秒，Medium380 秒需 GPU，Large 为 API/企业路线。支持 inpainting 和 continuation。8 月[提示指南](https://stability.ai/guides/stable-audio-3-prompt-guide)定位主要器乐，不应以它代替 TTS 或演唱首选。[一手]
-
-[Small-SFX 卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)说明 T5Gemma 文本条件、英语、音频训练集来自 AudioSparx 和 Freesound 多种许可；卡上 0.6B 与仓库 433M 不宜混写成同一统计口径。其“消费硬件/CPU 可运行”是作者兼容声明，不是本轮验证的帧预算或生成速度。[一手/研究]
-
-代码[LICENSE](https://github.com/Stability-AI/stable-audio-3/blob/77e0398c26f7d22d801ec1bb036307e8b231f741/LICENSE) MIT；权重为 Stability Community 并额外包含 T5Gemma 条件，**不是 MIT 模型全栈**。见文末许可补表。在先满足授权时，它取代把 TangoFlux 当作免费商用 SFX 默认的路线；未满足时用现成 SFX/jsfxr，不换个下载镜像绕过许可。[一手/研究]
+[研究] 旧标题保留引用；[WP1 现行音频准入索引](2026-10-14-game-wp1-licensing.md#wp6追加现行音频型号与声音连续性)已包含 Small-SFX，不再是待补项。§9 统一保存型号、硬件与双许可入口；这里保留选用边界：先过注册／收入／T5Gemma 条件，才比较它与现成 SFX／jsfxr，不用下载镜像绕过许可。[提示指南](https://stability.ai/guides/stable-audio-3-prompt-guide)定位主要器乐，不代替 TTS 或演唱首选；inpainting／continuation 不免除第二次修改验收。[一手／研究]
 
 ### 2.6 本地配音的精确能力与新模型观察
 
@@ -68,11 +61,7 @@ P9 补核（2026-10-20 UTC+8）：保持三档型号，新增干声母版／固�
 
 ### 2.7 P9接入选择：效果烘入与固定视频
 
-[一手／研究，2026-10-20 UTC+8] 扫描 8 月 20 日至 10 月 20 日，既有 v4／Music v2.5／Suno v6 不重复列新；以下改变接入而非质量排名，采用前复核。
-
-- **干声优先。** [10 月 12 日更新](https://elevenlabs.io/docs/changelog/2026/10/12)给 TTS／Dialogue 增加 `audio_effects`（滤镜、距离、混响、循环底噪、pan），不加请求费。混响／非零 pan 产生立体声，对 `pcm_*`／`ulaw_*`／`alaw_*` 返回错误。需定位或跨场景台词保留干声，固定广播才比较烘入；补句不合、重复混响或方向弱化则撤回烘入、改用引擎效果，不把效果入口当长期补录保证。
-- **固定视频候选，不替交互事件库。** [10 月 15 日 Instant Soundtracks](https://elevenlabs.io/blog/introducing-instant-soundtracks)按视频生成音乐与同步 SFX；[API](https://elevenlabs.io/docs/api-reference/music/video-to-music)有 `add_sfx`、`separate_tracks`、`use_audio_as_reference`，ZIP 只承诺音乐／SFX 分文件，不保证逐事件干声、循环或状态层。默认仍 `music_v1`，选 v2.5 须显式指定；剪辑改动后重验时序，需人工拆声才成立就退回许可事件资源。
-- **下载与费用另过门。** 该 API 写 192kbps MP3 需 Creator，但 [Music Terms 附表](https://elevenlabs.io/music-terms)高质量下载需 Pro 起；按合同及主体资格核，不以接口覆盖许可。普通 Music 单价不能推出视频分析＋SFX 整包价，本轮组合计费未知；不推算节省工时或可用率。
+[研究] 需定位或跨场景复用的台词先保干声母版，固定广播才比较效果烘入；补句不合、重复混响或方向弱化则退回引擎效果。固定视频的同步配乐不替交互事件库：剪辑改动后重验时序，需要人工拆声才成立就退回许可事件资源。精确字段、默认型号、下载合同冲突与未知组合价统一见[§9 接入补核](#接入补核干声与固定视频2026-10-20)。
 
 ## 三、第二次修改：本轮有代码/接口证据，没有假装已实测
 
@@ -159,7 +148,7 @@ P9 补核（2026-10-20 UTC+8）：保持三档型号，新增干声母版／固�
 
 ## 六、成本：计算可用资产，不计算首次出声
 
-[当前 ElevenAPI 价页](https://elevenlabs.io/pricing/api)显示 v4 $0.08/千字符、v4 Turbo 与 Flash $0.04/千字符、Music $0.15/分钟、SFX $0.12/分钟，未含税。不要沿用已过 10 月 12 日的 v4 发布折扣；API 美元计费与 Creative credits 不可混算。该页 FAQ 又称音乐/SFX 按 generation 计量，能力页仍写 40 credits/秒，故以下只是按挂牌音频量作预算，不保证最小计费/进位/套餐实际账单。[一手/研究]
+[研究] 费率与计量口径统一见[§9](#九动态事实表2026-10-14-补核)。以下按该次挂牌量作预算，不保证最小计费、进位或套餐账单，也不代表实际可用率。
 
 以上商业生产须满足付费方案与对应声音/音乐条款；免费试听额度不是免费商用许可。例：最终 1 万字符配音、每句平均 3 次候选，v4 挂牌变量费约$2.40、Turbo 约$1.20；最终 20 分钟音乐、生成量 3 倍，按$0.15 为$9。这不是整个制作报价：另有套餐门槛、分轨/编辑、废弃、下载配额、试听工时、税和后续修改。SFX 若最小计费未确认，不用“1 秒仅$0.002”作购买承诺。[研究：算术预算]
 
@@ -167,17 +156,7 @@ P9 补核（2026-10-20 UTC+8）：保持三档型号，新增干声母版／固�
 
 ## 七、授权总表的增量依据
 
-| 对象 | 代码/权重/输出分层 | 建议补入 WP1 的准确门槛 |
-|---|---|---|
-| Kenney Interface Sounds、Music Jingles 指定包 | 无运行模型；作者包页分别 100/85 件，CC0 资产许可 | [Interface](https://kenney.nl/assets/interface-sounds)、[Jingles](https://kenney.nl/assets/music-jingles)可作免费商用现成基线；保留下载时包内许可，不能推所有站外转载同许可 |
-| `eleven_v4`、`eleven_v4_turbo`、`eleven_text_to_sound_v2`、`music_v2_5` | 专有服务/无基础权重授权；现有 TTS/SFX 与 Music 合同分别适用 | 在已有行补具体型号和官方模型页；音色授权、notice period、原输出持续权与未来补录可用性分开。v4 发布并不自动豁免 Beta 规则，生产时核具体入口状态 |
-| Suno v6/v6-wild/v6-mini | 专有服务；已有商用/Download/Remix 规则不变 | 公开年付计划当前 20/60 下载/月已核；“之前未登录故未核额度”的缺口可限定更新为公开计划数，实际账户余额仍未核 |
-| ACE-Step/acestep-v15-xl-turbo | 代码仍固定 MIT；[该官方卡](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo)MIT 并明确商用输出 | 增列指定 XL checkpoint，不靠旧 turbo 卡外推；同样核共享组件与实际依赖，硬件门槛不沿用旧版 |
-| Stable Audio 3 Small-SFX | [代码 MIT](https://github.com/Stability-AI/stable-audio-3/blob/77e0398c26f7d22d801ec1bb036307e8b231f741/LICENSE)；[权重卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)Community，T5Gemma 另条款；无全栈 MIT | Community 商业须注册；本人/关联方合计任何来源年收入>$1M 需另许，非单游戏净收入。输出在法律允许范围归用户，非模型衍生物；材料/模型分发与仅交付 WAV 不能混同 |
-
-Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/community-license-agreement)明确注册、>$1M 时终止原许可、输出归属、AUP 和禁用输出改进其他基础生成模型；不是自动获得企业授权，也不是超门槛可继续用旧免费推理。2026-10-14 UTC 再核 Small-SFX 卡：正文的商业说明入口指向 [Stability 许可页](https://stability.ai/license)，后者明确列 Stable Audio 3.0，并链接 Community 正文；但访问门槛的 License Agreement 仍链接 [Stable Audio Open 1.0 的 LICENSE.md](https://huggingface.co/stabilityai/stable-audio-open-1.0/blob/main/LICENSE.md)，不能写成旧链接已完全消失。卡另明示 T5Gemma。两个入口的区别不改变注册、收入和 T5Gemma 三重条件；采用时核对并保存实际包许可证。[一手/研究]
-
-[T5Gemma 所适用 Gemma 条款](https://ai.google.dev/gemma/terms)（2026-04-01）附录含 T5Gemma，允许按条款使用/分发，含用途限制、分发通知；Google 不主张输出权利，输出不是 Model Derivatives。仅生成 WAV 与向玩家分发/托管模型义务不同。未见一般营收或地区名单额外门槛，不等于免除贸易管制和 AUP。此轮没提交注册/同意门槛，没下载模型。[一手/研究]
+[研究] 本节仍是 WP1 的许可回链入口。具体型号／包、代码／权重／输出、注册与收入条件统一见[§9 动态事实表及 Stable 入口说明](#九动态事实表2026-10-14-补核)；WP1 保留准入索引，不再另维护一张同型号表。基础许可通过后，仍须逐资产走以下五层检查。
 
 **声音权利必须独立核查**：基础模型/服务商用许可；剧本及音乐输入权利；本人声音/表演者/数字复制品授权（媒体、语言、角色、商业范围、补录期限、运行时生成边界）；具体音色平台条件；输出是否具有可执行版权/是否涉及第三方。合同写输出归用户是合同双方之间的配置，不保证司法管辖区承认纯 AI 音频版权，也不保证独占、无近似或可注册 Content ID。WP1 已有商用门槛不能简写成“付费即拥有所有声音”。[研究]
 
@@ -199,30 +178,42 @@ Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/communi
 
 ## 九、动态事实表（2026-10-14 补核）
 
-[研究：范围] 本表覆盖本页与音频正文的动态选型事实，区分本次重读、继承限定补核和仍未闭合。核实日期是读取日期，不是网页永久快照；复核列均取“实际采用前”与 2026-11-14 中较早者。价格只记公开显示，未登录账户、结账或验证区域 SKU。版权安全、可执行版权、独占性、全依赖清权均不因本表存在而宣告通过。
+[研究：范围] 本表覆盖本页与音频正文的动态选型事实，区分既有重读、继承限定补核和仍未闭合；表后接入补核另标 2026-10-20，旧标题保留锚点。核实日期是读取日期，不是网页永久快照；复核列均取“实际采用前”与 2026-11-14 中较早者。价格只记公开显示，未登录账户、结账或验证区域 SKU。版权安全、可执行版权、独占性、全依赖清权均不因本表存在而宣告通过。
 
 | 事实／精确范围 | 官方来源与本次状态 | 核实日期 | 下次复核 | 对采用的影响 |
 |---|---|---|---|---|
-| Eleven `eleven_v4`／`eleven_v4_turbo`，90+ 语言；API／WebSocket 入口不同 | [模型表](https://elevenlabs.io/docs/overview/models)、[9 月 28 日发布，10 月 12 日更新](https://elevenlabs.io/blog/eleven-v4)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 保存型号与接口，不把厂商延迟／偏好测试当游戏实测 |
-| v4 US$0.08／千字符，Turbo／Flash US$0.04；音乐 US$0.15／分钟，SFX US$0.12／分钟 | [API 价页](https://elevenlabs.io/pricing/api)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | API 美元与 Creative credits 分账；最低计费、税与废弃率另核 |
-| 非 Beta TTS／SFX：免费非商业，付费有条件；一般帮助保留付费期生成内容商用权 | [non-EEA 条款 §1(c)、§4](https://elevenlabs.io/terms-of-use)、[发布帮助](https://help.elevenlabs.io/hc/en-us/articles/13313564601361-Can-I-publish-the-content-I-generate-on-the-platform)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 地区合同及具体入口状态另核；不套到 Music 特别条款 |
-| SFX v2：接口 0.5–30 秒，能力页 0.1–30 秒；循环／WAV 口径须分开 | [接口](https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert)、[能力页](https://elevenlabs.io/docs/overview/capabilities/sound-effects)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 按接口接入，实际格式／采样接缝仍需验收 |
-| `music_v2_5`：分段、参考与 inpainting；3 秒至 5 分钟 | [Music 能力页](https://elevenlabs.io/docs/overview/capabilities/music)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 支持局部修改入口，不证明听感或区间外波形不变 |
-| Music 分轨：`two_stems_v1`／`six_stems_v1` | [分轨接口](https://elevenlabs.io/docs/api-reference/music/separate-stems)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 分离轨不是原生独立轨，保留串音反证 |
+| Eleven `eleven_v4`／`eleven_v4_turbo`，90+ 语言；v4 用 Text to Dialogue API，v4 Turbo 用 Text to Dialogue WebSocket；Flash v2.5 替代旧 Turbo v2/v2.5，不是 v4 Turbo | [模型表](https://elevenlabs.io/docs/overview/models)、[9 月 28 日发布，10 月 12 日更新](https://elevenlabs.io/blog/eleven-v4)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 公告列音频标签、IPA、说话人保持、多说话人上下文及拼接改进；保存型号与接口，厂商延迟／偏好测试非游戏实测 |
+| v4 US$0.08／千字符，Turbo／Flash US$0.04；音乐 US$0.15／分钟，SFX US$0.12／分钟 | [API 价页](https://elevenlabs.io/pricing/api)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 未含税；不沿用 10-12 已过的 v4 发布折扣。FAQ 按 generation，能力页仍写 40 credits/秒；API 美元与 Creative credits 分账，最低计费／进位另核 |
+| 非 Beta TTS／SFX：免费非商业，付费有条件；一般帮助保留付费期生成内容商用权 | [non-EEA 条款 §1(c)、§4](https://elevenlabs.io/terms-of-use)、[发布帮助](https://help.elevenlabs.io/hc/en-us/articles/13313564601361-Can-I-publish-the-content-I-generate-on-the-platform)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 地区合同与具体入口状态另核；v4 发布不豁免 Beta 规则；不套到 Music 特别条款 |
+| SFX v2：接口 0.5–30 秒、loop 默认 false、prompt_influence 默认 0.3；能力页 0.1–30 秒，MP3 全效果／48kHz WAV 非循环效果 | [接口](https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert)、[能力页](https://elevenlabs.io/docs/overview/capabilities/sound-effects)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 按接口接入，实际格式／采样接缝仍需验收 |
+| `music_v2_5`：composition plans、参考与 inpainting；3 秒至 5 分钟；参考约 30 秒作风格引导，不保证跨风格改编 | [Music 能力页](https://elevenlabs.io/docs/overview/capabilities/music)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 支持局部修改入口，不证明听感或区间外波形不变 |
+| Music 分轨：`two_stems_v1`／`six_stems_v1`，返回 ZIP，可能高延迟 | [分轨接口](https://elevenlabs.io/docs/api-reference/music/separate-stems)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 分离轨不是原生独立轨，保留串音反证 |
 | Eleven Music 游戏范围、主体／收入、下载格式、升级／存量条件 | [Music Terms](https://elevenlabs.io/music-terms)；仅继承 [WP1 当日限定补核](2026-10-14-game-wp1-licensing.md#2026-10-14-补核游戏音乐与meshy输出权利)，本轮不重复审定 [研究] | 2026-10-14（继承） | 采用前或 2026-11-14 | 仅适用 Music；具体主体、账户和合同例外仍需确认 |
-| Suno v6／v6-wild／v6-mini，最长 8 分钟及计划差异 | [v6 官方帮助](https://help.suno.com/en/articles/13924801)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 成曲能力不等于循环／主题层一致 |
-| Suno 年付折合 Pro US$8／月、Premier US$24／月；2500／10000 credits 与 20／60 下载每月分开 | [公开价格](https://suno.com/pricing)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不是同价月付或账户余额；不得按生成次数推下载额度 |
+| Suno v6／v6-wild／v6-mini 均最长 8 分钟；前两者 Pro/Premier、mini 全计划；Extend/Cover/Replace Section、Custom Models 围绕 v6 | [v6 官方帮助](https://help.suno.com/en/articles/13924801)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 成曲能力不等于循环／主题层一致 |
+| Suno 年付折合 Pro US$8／月、Premier US$24／月；2500／10000 credits 与 20／60 下载每月分开 | [公开价格](https://suno.com/pricing)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 税在结账计算；不是可随时退的同价月付或账户余额，生成额度不等于下载额度 |
 | Suno 官方 Download、平台 Remix、免费旧歌追溯边界 | [Terms](https://suno.com/terms)、[追溯帮助](https://help.suno.com/en/articles/2425729)；仅继承上述 WP1 限定补核，不重复核心结论 [研究] | 2026-10-14（继承） | 采用前或 2026-11-14 | 实际编辑功能是否属于合同定义／另行方案，仍须逐资产核查 |
 | Voice Library 所有者撤下：无通知期可即时失去调用；最长通知期 2 年 | [产品文档](https://elevenlabs.io/docs/eleven-creative/voices/voice-library)、[附加条款 §4、§8](https://elevenlabs.io/vla)，本次交叉重读 [一手] | 2026-10-14 | 选音／补录前或 2026-11-14 | **新增反证：平台可随时移除、可不通知；通知期不是 SLA**。旧导出使用与未来补录分开 |
 | ACE-Step 1.5 官方 turbo 包 MIT；turbo 不含 base 的 extract／lego／complete | [官方包卡](https://huggingface.co/ACE-Step/Ace-Step1.5)，本次重读；固定代码许可沿用 §2.4 [一手／研究] | 2026-10-14 | 采用前或 2026-11-14 | 不外推第三方微调／输入音乐权利；训练合规只是作者声明 |
-| ACE `acestep-v15-xl-turbo` 卡 MIT，4B DiT、8 步；≥12 GB 需 offload＋INT8 | [XL 卡](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不复用旧低显存预算；模型总量、权重体积、运行显存不同 |
-| Stable Audio 3 Small-SFX／Small-Music 120 秒、Medium 380 秒；Large API／企业 | [官方仓库](https://github.com/Stability-AI/stable-audio-3)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | CPU／速度是作者兼容与性能声明，非本机或游戏帧预算 |
-| Small-SFX：代码 MIT，权重 Community，T5Gemma 另许；商业注册及关联方收入条件 | [模型卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)、[许可入口](https://stability.ai/license)、[Community](https://stability.ai/community-license-agreement)、[Gemma](https://ai.google.dev/gemma/terms)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 商业说明与访问许可链接分开记录（见 §七）；仍不宣称全栈 MIT 或输出绝无侵权风险 |
+| ACE `acestep-v15-xl-turbo` 卡 MIT 并明确商用输出，4B DiT、8 步；≥12 GB 需 offload＋INT8，≥20 GB 无需 offload，≥24 GB 完整 XL＋4B LM | [XL 卡](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 不复用旧低显存预算；卡权重约 18.8GB 与 README decoder 约 9GB 口径不同，不推整管线下载／内存 |
+| Stable Audio 3 Small-SFX／Small-Music 120 秒、Medium 380 秒；Large API／企业 | [官方发布](https://stability.ai/news-updates/meet-stable-audio-3-the-model-family-built-for-artistic-experimentation-with-open-weight-models)、[官方仓库](https://github.com/Stability-AI/stable-audio-3)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | Medium 需 GPU；支持 inpainting／continuation；CPU／速度仅作者声明，非游戏帧预算 |
+| Small-SFX：代码 MIT，权重 Community，T5Gemma 另许；商业注册及关联方收入条件 | [代码 MIT](https://github.com/Stability-AI/stable-audio-3/blob/77e0398c26f7d22d801ec1bb036307e8b231f741/LICENSE)、[模型卡](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)、[许可入口](https://stability.ai/license)、[Community](https://stability.ai/community-license-agreement)、[Gemma](https://ai.google.dev/gemma/terms)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 商业注册；本人／关联方任何来源年收入 >US$1M 须另许；双入口见表后。英语／T5Gemma；AudioSparx、Freesound 多许可训练声明非审计；卡 0.6B 与仓库 433M 不混口径 |
 | Qwen3-TTS-12Hz-1.7B-CustomVoice＋Tokenizer-12Hz 均 Apache-2.0；9 音色、10 语言，0.6B 不继承全部控制 | [CustomVoice](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice)、[Tokenizer](https://huggingface.co/Qwen/Qwen3-TTS-Tokenizer-12Hz)，本次重读；固定代码沿用 §2.6 [一手／研究] | 2026-10-14 | 采用前或 2026-11-14 | 指定组合可评估；不授真人声音、剧本或其他 checkpoint 权利 |
 | Kenney Interface Sounds 100 件／Music Jingles 85 件，指定包 CC0 | [Interface](https://kenney.nl/assets/interface-sounds)、[Jingles](https://kenney.nl/assets/music-jingles)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 保存实际包内许可，不外推站外转载 |
 | jsfxr Unlicense；Free 可导出 WAV、Free／Pro 均可商用 | [仓库许可](https://github.com/chr15m/jsfxr/blob/master/UNLICENSE)、[官方对照](https://sfxr.me/)，本次重读 [一手] | 2026-10-14 | 采用前或 2026-11-14 | 保留固定源码的随机噪声／参数非线性反证，不承诺位级复现 |
 | StepAudio 3 Gen 仍仅列观察 | [项目页](https://stepaudiollm.github.io/step-audio-3-gen/)，本次可读，但未取得对应商用权重／服务合同 [一手／研究] | 2026-10-14（未闭合） | 采用前或 2026-11-14 | 不作为 Qwen 免费商业替代，不把论文样例等同生产授权 |
 | Unity Assistant 2.20.0-pre.2 Text to Sound：少量 SFX 原型；Loop 仅重复播放 | [声音生成](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-generate-prompt.html)、[编辑](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/Sound/sound-edit.html)；继承 [WP9 §8 的 2.20 文档补核](2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)，本轮未重做原生核查 [研究] | 2026-10-14 UTC（继承） | 采用前或 2026-11-14 | 版本前提与生产授权沿 WP9；维持现成／jsfxr 优先，不把计费品类推成该包已具备音乐／TTS，也不证明无缝循环 |
+
+Stable 补充依据：[2024-07-05 Community 正文](https://stability.ai/community-license-agreement)明确注册、>$1M 时终止原许可、输出在法律允许范围归用户且非模型衍生物、AUP 和禁用输出改进其他基础生成模型；不是自动获得企业授权，也不是超门槛可继续用旧免费推理。2026-10-14 UTC 再核 Small-SFX 卡：正文的商业说明入口指向 [Stability 许可页](https://stability.ai/license)，后者明确列 Stable Audio 3.0，并链接 Community 正文；但访问门槛的 License Agreement 仍链接 [Stable Audio Open 1.0 的 LICENSE.md](https://huggingface.co/stabilityai/stable-audio-open-1.0/blob/main/LICENSE.md)，不能写成旧链接已完全消失。卡另明示 T5Gemma。两个入口的区别不改变注册、收入和 T5Gemma 三重条件；采用时核对并保存实际包许可证。[一手/研究]
+
+[T5Gemma 所适用 Gemma 条款](https://ai.google.dev/gemma/terms)（2026-04-01）附录含 T5Gemma，允许按条款使用/分发，含用途限制、分发通知；Google 不主张输出权利，输出不是 Model Derivatives。仅生成 WAV 与向玩家分发/托管模型义务不同。未见一般营收或地区名单额外门槛，不等于免除贸易管制和 AUP。此轮没提交注册/同意门槛，没下载模型。[一手/研究]
+
+### 接入补核：干声与固定视频（2026-10-20）
+
+[一手／研究，2026-10-20 UTC+8] 扫描 8 月 20 日至 10 月 20 日，既有 v4／Music v2.5／Suno v6 不重复列新；以下改变接入而非质量排名，采用前复核。
+
+- **干声优先。** [10 月 12 日更新](https://elevenlabs.io/docs/changelog/2026/10/12)给 TTS／Dialogue 增加 `audio_effects`（滤镜、距离、混响、循环底噪、pan），不加请求费。混响／非零 pan 产生立体声，对 `pcm_*`／`ulaw_*`／`alaw_*` 返回错误。需定位或跨场景台词保留干声，固定广播才比较烘入；补句不合、重复混响或方向弱化则撤回烘入、改用引擎效果，不把效果入口当长期补录保证。
+- **固定视频候选，不替交互事件库。** [10 月 15 日 Instant Soundtracks](https://elevenlabs.io/blog/introducing-instant-soundtracks)按视频生成音乐与同步 SFX；[API](https://elevenlabs.io/docs/api-reference/music/video-to-music)有 `add_sfx`、`separate_tracks`、`use_audio_as_reference`，ZIP 只承诺音乐／SFX 分文件，不保证逐事件干声、循环或状态层。默认仍 `music_v1`，选 v2.5 须显式指定；剪辑改动后重验时序，需人工拆声才成立就退回许可事件资源。
+- **下载与费用另过门。** 该 API 写 192kbps MP3 需 Creator，但 [Music Terms 附表](https://elevenlabs.io/music-terms)高质量下载需 Pro 起；按合同及主体资格核，不以接口覆盖许可。普通 Music 单价不能推出视频分析＋SFX 整包价，本轮组合计费未知；不推算节省工时或可用率。
 
 [一手／研究：全文采用复核，2026-10-14 UTC] 本次重读 [Music Terms](https://elevenlabs.io/music-terms) §4.7–4.8 与附表，确认 Indie 收入、主体资格及高质量下载门槛，正文补直接选择提示；升级／存量的复杂情形仍沿 WP1 的限定范围。交叉重读 API 价页、SFX 接口／能力页、Suno 条款／价格、ACE 官方 turbo／XL 卡、Qwen 指定模型／Tokenizer 卡、Stable 商业入口与访问许可链接、Kenney／jsfxr 官方页，未发现须反转现成／参数化优先的证据。原生与配音二改沿既有范围，未试听、登录账户、接受协议或运行模型／引擎；资料就绪不等于效果实证。
 
