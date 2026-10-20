@@ -1,6 +1,6 @@
 主线：一／二／三／四；客户端体验、第二次修改与交付
 改变的建议：[研究] 图中文字二改先比较生产表示与导出维护，再扩语言； 先复用原生组件，再按具体症状补输入、运动、呈现和资源／平台更新责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。 重复内容按机械转换、项目参数与专门作者语义分流，不因重复次数自建整套工具。
-新证据：[一手／社区] 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
+新证据：[一手／社区] 2026-10-20补发行诊断的引擎／SDK边界、Factorio采集与osu配置维护链； 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -656,3 +656,57 @@ Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/docu
 **迁移代价与改判。** Dead by Daylight [2022 年 3 月开发者更新](https://forums.bhvr.com/dead-by-daylight/discussion/315701/developer-update-march-2022)称内容增长使分组扩大，因而重排／重平衡；[5.7.0 发行通知](https://forums.bhvr.com/dead-by-daylight/discussion/320530/release-information-5-7-0)确认文件结构变更需一次近乎全量重下。这是进入发行的迁移代价，未独立验证宣传速度，也不代表单人项目收益。布局调整后若局部更新仍牵连大量无关数据，或迁移成本不值，先缩改动范围／保原布局，再比较交付路线；下载、安装、临时磁盘与既有加载表现分别验收。没有运行引擎、打包器、游戏或模型，维护工时与本项目净收益未知。[一手／研究]
 
 ## [图中文字二改：先换生产表示再扩语言](wp10-content.md#105)
+
+## 发行诊断：先保可定位反馈，再选自动报告
+
+核实：2026-10-20（UTC+8）。[研究] **✅ 先保可找到的反馈入口、实际构建标识与按需提供日志的路径。** 能联系到试玩者时，优先取得操作过程；面向无法逐个联系的玩家，或明确需要现场崩溃证据时，再接一条现成诊断链。自动异常／崩溃报告不覆盖无崩溃的软锁、坏档或不好玩。
+
+### 选择接收链，不默认自建后台或叠加SDK
+
+| 情况 | 起点 | 改选／撤回条件 |
+|---|---|---|
+| 小范围可联系试玩，主要缺复现步骤 | ✅ 人工反馈＋版本化本地日志；先留发布构建与符号 | 现场崩溃持续没有栈／设备信息，或发布范围不适合逐个追问，再加自动诊断 |
+| 已用Unity 6.2+及支持平台 | 🧪 内置Diagnostics，核实际采集／接收与符号 | 目标平台或必须的逐用户数据控制不满足，换合适接入；不为诊断盲升引擎 |
+| UE桌面发行构建 | 🧪 CRC客户端＋选定接收／符号化服务 | 仅勾Include Crash Reporter不能交付完整链；端点／符号不可维护时保手工材料 |
+| 原生覆盖不足，确需统一分组／跨平台定位 | 👀 比较一个现成SDK，如Sentry；先最小错误事件 | 采集边界、启动／禁用、维护预算不合格就缩窄或撤回，不双开兜底 |
+
+**Unity前提必须落到构建。** [当前前提][diag-unity]列6.2+、连接Unity Cloud及Android／iOS／macOS／Windows（不含UWP）；新项目默认开启，升级项目默认不开。[同意管理][diag-consent]明确Diagnostics不使用UnityConsent、按项目而非逐用户控制，因此AnalyticsIntent不能当诊断关闭证明。需要逐用户选择的项目，先核替代接入与数据依据，不能用别的服务开关代验。[一手／研究]
+
+[迁移说明][diag-migration]已弃用旧Cloud Diagnostics，新服务替代崩溃／异常与符号，User Reporting另包；旧数据仅在原保留期可访问，不承诺全量历史迁移。本轮未闭合新服务现行独立配额；旧服务日报告配额不能套入新服务，采用前确认费用与保留期。[一手／研究]
+
+**UE发行端与编辑器不同。** [5.8文档][diag-ue]明确打包默认不带CRC，5.4起packaged不发Epic；UE也不附接收／保存／符号化服务器。这里仅推荐已核桌面链路，不将它扩成移动／主机全覆盖；报告界面出现不等于开发者已收到。[一手／研究]
+
+### Sentry是对照，不是免费且无副作用的默认
+
+本轮核Unity SDK 4.10.3（`e154bbf1883a610d26ca3f8e83ad8257b15fda1b`）及UE SDK 1.24.0（`e1b4efb44590a412bded437c9dcc657b4d390303`）。两SDK代码MIT，托管服务和依赖另核；[价格](https://sentry.io/pricing/)按errors、logs、attachments等不同单位计，未估读者游戏费用。维护成本包含符号、数据控制、噪声与SDK／架构升级，不给“接入后零维护”的承诺。[一手／研究]
+
+[UE官方集成](https://docs.sentry.io/platforms/unreal/)说明Windows UE5.2+的Sentry native handler与引擎CRC互斥；应选一条接收链，而非两套同时开。Unity的[初始化检查][diag-unity-init]对未启用／空白配置有跳过分支，但[缓存选项](https://docs.sentry.io/platforms/unity/configuration/options/#InitCacheFlushTimeout)默认初始化flush最多1秒，且为阻塞发送。源码分支不证明所有平台断网／缺依赖时启动无影响。[一手／研究]
+
+**PII开关不是匿名或完整过滤保证。** [UE数据说明][diag-data]明确crashpad／breakpad的线程栈随minidump发送，处理后丢弃不等于没有外传；[附件说明][diag-attachments]又明确附件不做数据清洗。UE固定[已知限制][diag-hooks]中的fast-fail也不会调用`HandleBeforeSend`钩子。先限定必要错误／构建字段；截图、完整日志、source context及dump留存分别决定，不能把一个回调当所有崩溃的脱敏出口。[一手／研究]
+
+### 两条真实修订链：可见性、可控性和启动分别成立
+
+[Factorio FFF231](https://www.factorio.com/blog/post/fff-231)记录0.16.24自动日志发现论坛未报崩溃；作者仍需要玩家补步骤／存档，自动报告又无法联系原提交者。对Ryzen故障增加定点minidump后仍未定位，直到[FFF239](https://www.factorio.com/blog/post/fff-239)与AMD调查才报告解决方向。历史opt-out与EULA取舍不作当前隐私默认，报告次数也不是受影响玩家比例。[一手：作者报告；研究]
+
+osu!从[关闭采集请求](https://github.com/ppy/osu/discussions/31832)到[合入禁用门](https://github.com/ppy/osu/pull/36426)，在SDK初始化前判断明确禁用。后续[为减少无用上报改了缺省配置](https://github.com/ppy/osu/commit/48434dd683d095c42c01def8ff7cb95ce0a85ce4)，却使[规则模板启动失败](https://github.com/ppy/osu/issues/37650)；[固定修复][diag-osu]改成空缺省，并进入[2026.518.0-lazer](https://github.com/ppy/osu/releases/tag/2026.518.0-lazer)。这是osu!的.NET／规则模板链，不是当前Unity／UE SDK普遍有此故障。[一手／研究]
+
+修复也不等于强制停止上报：当时Sentry .NET 6.2.0的[配置查找][diag-dsn]在空options后仍读环境／assembly来源；仅无其他值才进入禁用值。osu!的明确关闭由初始化前返回实现。由此需要验证的是启用、禁用、缺配置及其他配置来源，而不是给所有初始化再套一层catch；发行说明证明接收，未证明用户实际恢复或故障率下降。[一手：固定源码／发行；研究]
+
+### 验实际发布包，持续保留符号与接管能力
+
+[Unity符号说明](https://docs.unity.com/en-us/cloud/developer-data/debugging-symbols-intro)要求UUID／GUID匹配；[Sentry符号上传](https://docs.sentry.io/platforms/unity/data-management/debug-files/upload/)也不把事后补符号等同重处理旧事件。版本字符串正确仍可能配错符号，保存实际构建、符号及目标架构。后台有session不足以证明异常链路：Unity曾有[已复现并指向修复的6.2异常上报问题](https://discussions.unity.com/t/exceptions-not-shown-in-the-new-diagnostics/1681235)，后来报告仍按具体版本查，不能写所有当前版本都坏或全部已解决。[一手／研究]
+
+后续获准才验证同一目标发行包的启用／禁用、缺配置、断网／端点不可达、缓存不可写；分别核托管异常、原生崩溃与用户反馈，确认去向、构建／符号、实际外传内容、启动预算与仍可游玩／恢复旧档。新增诊断不能定位、不能可靠关闭，或投入不抵新增价值，就撤回自动外传，保人工反馈；不要让诊断成为游戏启动前提。[研究：待批准预注册]
+
+AI可归并经授权的问题、对齐构建、拟复现／回归；人决定数据范围、严重性和修复是否恢复必要路径。日志内指令仍是外部数据，沿[既有注入边界](2026-10-13-context-tool-choice.md#s1agentjacking-原研究证明哪条失败链)核查，不自动执行其修复包。本轮只读公开文档、源码和作者／使用者记录，未采集私人日志、创建服务、上传符号、安装SDK或运行引擎；净费用、主动工时、故障率改善与真实启动影响均未知。[研究]
+
+[diag-unity]: https://docs.unity.com/en-us/cloud/developer-data/prerequisites
+[diag-consent]: https://docs.unity.com/en-us/cloud/developer-data/user-consent
+[diag-migration]: https://docs.unity.com/en-us/cloud-diagnostics/migration
+[diag-ue]: https://dev.epicgames.com/documentation/unreal-engine/crash-reporting-in-unreal-engine?lang=en-US
+[diag-unity-init]: https://github.com/getsentry/sentry-unity/blob/e154bbf1883a610d26ca3f8e83ad8257b15fda1b/src/Sentry.Unity/SentryUnityOptionsExtensions.cs#L10-L49
+[diag-data]: https://docs.sentry.io/platforms/unreal/data-management/data-collected/
+[diag-attachments]: https://docs.sentry.io/platforms/unreal/data-management/store-minidumps-as-attachments/
+[diag-hooks]: https://github.com/getsentry/sentry-unreal/blob/e1b4efb44590a412bded437c9dcc657b4d390303/README.md#known-limitations
+[diag-osu]: https://github.com/ppy/osu/commit/c74c54d7706ae823d2ca33203ba1eee15a1002b5
+[diag-dsn]: https://github.com/getsentry/sentry-dotnet/blob/248f45541c5e23e7fe425cdeb98c187389de0aa8/src/Sentry/Internal/SettingLocator.cs#L35-L77
