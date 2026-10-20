@@ -30,7 +30,7 @@
 |---|---|---|---|---|---|
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，发布操作已获准，暂缓本批正文合入，待结合K2重评；保留PR与来源 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，发布操作已获准；先补AI生成后二次修改判断，再独立整合 |
-| GA／GD／P15：整套音效保留补缺还是换源 | dot-B；接收 dot-A | `dot-b/tmp/20261020-p15-sound-pack-supply` | audio、WP6、TASKS；必要03短入口，不改06及A空间音频段 | 2026-10-20 12:49（UTC+8） | 起点 `b6484a002b25939194ba68ab14e0e38b1518c6c1`；公开取证中：核OpenSFX供给／替换／发行链与独立对照，AI来源／映射检查边界；未编辑正文。运行问题：无新增权限阻塞；PR65／66／67待接收不阻止本项。下一步核可保留源与二改映射，给默认、撤回及未知 |
+| GA／GD／P15：整套音效保留补缺还是换源 | dot-B；接收 dot-A | `dot-b/tmp/20261020-p15-sound-pack-supply` | audio、WP6、TASKS；必要03短入口，不改06及A空间音频段 | 2026-10-20 12:49（UTC+8） | 起点 `b6484a002b25939194ba68ab14e0e38b1518c6c1`；已有公开来源起点[OpenSFX PR8](https://github.com/OpenTTD/OpenSFX/pull/8)与[Roguesphere复盘](https://www.renz.is/roguesphere-devlog23/)，未拟稿／交付。运行问题：认领首次误用短blob SHA返回409，核远端未写入后以完整SHA修正；非权限拒绝。按用户最新优先级暂存本项，先修P9视频退役推荐，随后续接 |
 
 
 
