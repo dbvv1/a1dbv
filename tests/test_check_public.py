@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/check_public.py"
@@ -70,20 +71,70 @@ class PublicScanTests(unittest.TestCase):
                             capture_output=True, text=True)
     self.assertEqual(2, result.returncode)
 
+  def scan_identity(self, author, committer):
+    result = subprocess.CompletedProcess([], 0, f"abc123\t{author}\t{committer}\n", "")
+    with mock.patch.object(module.subprocess, "run", return_value=result):
+      return module.scan_commits(Path("."), "HEAD")
+
+  def test_github_commit_identities_pass_for_both_roles(self):
+    for email in ("example@users.noreply.github.com",
+                  "1+example-user@users.noreply.github.com",
+                  "1+example[bot]@users.noreply.github.com",
+                  "1+example_org@users.noreply.github.com", "noreply@github.com"):
+      with self.subTest(email=email):
+        self.assertEqual([], self.scan_identity(email, email))
+
+  def test_other_and_malformed_commit_identities_fail_for_each_role(self):
+    invalid = ("dev@example.com", "noreply@example.com", "dev@invalid.example",
+               "example@users.noreply.github.com.invalid", "noreply@github.com.invalid",
+               "example@" + "notusers.noreply.github.com", "@users.noreply.github.com",
+               "a@@users.noreply.github.com", "a b@users.noreply.github.com",
+               "+example@users.noreply.github.com", "1+@users.noreply.github.com",
+               "example+other@users.noreply.github.com", "-example@users.noreply.github.com",
+               "\u0131@users.noreply.github.com",
+               "", "invalid", " noreply@github.com", "noreply@github.com ")
+    good = "noreply@github.com"
+    for email in invalid:
+      for role in ("author", "committer"):
+        with self.subTest(email=email, role=role):
+          findings = self.scan_identity(email if role == "author" else good,
+                                        email if role == "committer" else good)
+          self.assertEqual([role], [f["role"] for f in findings])
+          self.assertEqual("commit-email", findings[0]["kind"])
+
+  def test_non_email_commit_identity_is_not_disclosed(self):
+    for email in ("", "invalid-identity-example"):
+      with self.subTest(email=email):
+        findings = self.scan_identity(email, email)
+        self.assertEqual(["[non-email]", "[non-email]"], [f["match"] for f in findings])
+        if email:
+          self.assertNotIn(email, str(findings))
+
+  def test_cli_rejects_explicit_empty_commit_range(self):
+    with tempfile.TemporaryDirectory() as directory:
+      command = ["python3", str(SCRIPT), "--root", directory]
+      omitted = subprocess.run(command, capture_output=True, text=True)
+      self.assertEqual(0, omitted.returncode)
+      empty = subprocess.run(command + ["--commits", ""], capture_output=True, text=True)
+      self.assertEqual(2, empty.returncode)
+      self.assertIn("--commits must not be empty", empty.stderr)
+      self.assertEqual("", empty.stdout)
+
   def test_commit_identity(self):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
       subprocess.run(["git", "init", "-q", str(root)], check=True)
-      (root / "a.md").write_text("ok", encoding="utf-8")
-      for email in ("1+bot@users.noreply.github.com", FAKE_EMAIL):
+      for email in ("1+example@users.noreply.github.com", "dev@example.com"):
         subprocess.run(["git", "-C", str(root), "-c", "user.name=t", "-c", f"user.email={email}",
                         "commit", "-q", "--allow-empty", "-m", "x"], check=True)
       findings = module.scan_commits(root, "HEAD")
-      self.assertEqual(2, len(findings))
+      self.assertEqual(["author", "committer"], [f["role"] for f in findings])
       self.assertTrue(all(f["kind"] == "commit-email" for f in findings))
-      self.assertNotIn(FAKE_EMAIL, str(findings))
-      with self.assertRaises(ValueError):
-        module.scan_commits(root, "no-such-ref")
+      self.assertNotIn("dev@example.com", str(findings))
+      self.assertEqual([], module.scan_commits(root, "HEAD..HEAD"))
+      for revisions in ("", "no-such-ref"):
+        with self.subTest(revisions=revisions), self.assertRaises(ValueError):
+          module.scan_commits(root, revisions)
 
 
 if __name__ == "__main__":
