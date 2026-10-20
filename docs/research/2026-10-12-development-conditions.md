@@ -654,14 +654,77 @@ Immich [v3.2](https://github.com/immich-app/immich/discussions/31408)／[PR30739
 
 ### P27：发送中改稿与在途恢复
 
-**拟改15§3／18：Agent先继承原活动、内容版本和收件人集合，不克隆整场重发；未知结果先对账。** 人决定已收旧稿者是否补发、失败／重复代价；只改未开始活动就用原生编辑，不引入在途系统。[研究：提议dot-A，1–3天范围，未执行]
+**当前仅资料／拟判据部分交付；原验收如下。** [研究]
 
-listmonk [#2014真实需求](https://github.com/knadh/listmonk/issues/2014)→[#2264暂停后可编辑](https://github.com/knadh/listmonk/pull/2264)，后有[#3022重启漏发／疑似重复回执](https://github.com/knadh/listmonk/issues/3022)及[10月16日检查点修复](https://github.com/knadh/listmonk/commit/a729a4a6d635dabb75fa0ec53df25eec2e6f2285)。[PR2974](https://github.com/knadh/listmonk/pull/2974)作者自报生产成功却被维护者因破坏性问题拒绝，不能据吞吐报告采用。稳定v6.2.0早于该修复；固定开发树不是生产推荐或已发行保证。源码为AGPL-3，仅分析不复制应用。[一手／社区；10-20核]
+需求来自listmonk [#2014](https://github.com/knadh/listmonk/issues/2014)，经[#2264](https://github.com/knadh/listmonk/pull/2264)补编辑入口；[#3022](https://github.com/knadh/listmonk/issues/3022)用户自报重启漏发／疑似重复，非已复现因果。[PR2974](https://github.com/knadh/listmonk/pull/2974)生产成功自报被维护者因破坏性问题拒绝，不能据吞吐表采用。源码AGPL-3，仅分析，不复制应用。[一手／社区；2026-10-20核]
 
-**R1产物**：固定历史与开发树，交UI/API→状态→预渲染→队列→发送的逐文件变更图和同一活动C1、V1→V2账本；逐人分未开始、在途、供应商确认、失败、unknown。暂停不是撤回已发，改稿不能把unknown偷偷归未发；至少八条具名断言保身份、pending、非法状态、停止边界、内容／附件和撤排期。当前UI已迁SSR，不能套历史Vue路径。[研究：验收要求]
+**R1验收**：固定历史／开发树，交UI/API→状态→预渲染→队列→发送逐文件图及C1的V1→V2账本，分未开始／在途／确认／失败／unknown；至少八条具名断言保身份、pending、非法状态、停止边界、内容／附件、撤排期。暂停非撤回，unknown不归未发，Vue／SSR分树。[研究：验收要求]
 
-**R2继承R1账本**，交低ID慢／高ID快、Push成功未落盘、回执丢失、DB结果未知、限速中取消及编辑后重启的差异账本／判定器。核manager／pipe／store与campaigns SQL，逐人比内容哈希、attempt和结果，不以sent=N验收。修复里的processed可包括发送／渲染失败；周期落盘与外部Push非原子，不称“只推进成功发送”或exactly-once。现有生命周期E2E只验status，新增集合断言必须实际设计。[一手／研究]
+**R2继承R1**：交低ID慢／高ID快、Push未落盘、丢回执、DB未知、限速中取消、编辑后重启的差异账本／判定器；核manager／pipe／store／SQL，逐人比哈希、attempt、结果。processed含失败，Push／落盘非原子；新增集合断言不能用sent=N／生命周期status代替，不称exactly-once。[一手／研究]
 
-比较原生继续、[Resend有24小时窗口的幂等](https://resend.com/docs/dashboard/emails/idempotency-keys)和自建durable ledger：后两者增加身份／窗口、迁移／保留与对账责任，均不自动决定旧稿该不该补发。另核原生header接入，不能凭供应商功能说已集成。[官方权限](https://listmonk.app/docs/roles-and-permissions/)将send与manage分开，保仅编辑者不能发信的断言。[一手／研究]
+验收须比较下文三路线成本／header接入，保仅编辑者不得启动／恢复正式活动、测试权限另验；人定旧稿补发。[研究]
 
-两轮文件／账本／坏候选和同场景取舍实际交出才算资料验收；只剩通用重试卡则撤项。没有DB／邮件／模型运行，不承诺无漏发；若必须实测才能决定，保未完成。隔离运行与真实外发均不在本项目现行授权内，不取真实名单或邮箱。[研究：范围与撤回]
+两轮文件／账本／坏候选／同场景取舍齐全才算资料验收，仅通用重试卡则撤项。DB／邮件／模型未运行，需实测才能决定则未完成；隔离运行／真实外发未获授权，不取真实名单。[研究：范围与撤回]
+
+#### 固定链与两轮继承（2026-10-20）
+
+**版本分开。** [#2264原树→最终树](https://github.com/knadh/listmonk/compare/e8fd12bddf032fe7863af427bcf9e59b82dffb1c...0e49a4bb7d415fc0085d8f068334cb653c55b439)修改Vue编辑／Start／Unschedule、API/core参数和SQL：scheduled清send_at才回draft；旧API已允许paused，PR补UI。正式[6.2.0固定树](https://github.com/knadh/listmonk/tree/ef0a75872463f10a4848af6c547d1c057405453a)仍Vue，SQL仍fetch时推进游标。开发[a729修复](https://github.com/knadh/listmonk/commit/a729a4a6d635dabb75fa0ec53df25eec2e6f2285)与本次HEAD [88031f3](https://github.com/knadh/listmonk/tree/88031f3e082648bc3f95f285df74b7b38710b54d)已SSR；后者保检查点机制，新增totalSent统计；均非正式版。[一手：固定源码]
+
+**逐文件闭包。** 固定88031f3。[一手]
+
+1. [SSR编辑器](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/static/admin/assets/js/views/campaign.js#L128-L342)接`campaign.html`／`partials/campaign-form.html`原id及完整正文／模板／headers／lists／media／send_at。Start先保存再改status；Unschedule保留日期，立即发送须另清。[路由](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/handlers.go#L207-L223)分manage/send，status另查名单管理范围；测试发送走manage。
+2. [API更新](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/campaigns.go#L503-L581)读原Campaign再bind，拒绝running／cancelled／finished正文。[SQL](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/queries/campaigns.sql#L370-L435)保身份／started_at／sent／游标，替换名单／附件。省lists失败，带lists但省media删附件；status写DB后StopCampaign，不等清空。
+3. [store](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/manager_store.go#L38-L66)→[选活动／名单SQL](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/queries/campaigns.sql#L178-L237)：选running／到期scheduled，排除活跃pipe；恢复重读模板／media／合法名单／max ID，受众非冻结，退订／blocklist优先。
+4. [pipe](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/pipe.go)编译模板／载附件，批ID先入pending，再由[message.render](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/message.go)逐人渲染入队。旧消息持有V1对象／字节；cleanup等wg耗尽、刷检查点并移除pipe，新扫描才载V2。
+5. [worker](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/manager.go#L494-L578)先查stopped再sleep／Push，无第二次检查：暂停非drain／撤回。成功加sent，渲染失败及未停止的Push错误也completeSub。checkpoint卡在最小pending之前；高ID已接受仍可能重扫，重复范围不限单次扫描周期。
+6. [email.Push](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/messenger/email/email.go#L132-L226)同步调用[固定smtppool v2.2.1](https://github.com/knadh/smtppool/blob/v2.2.1/pool.go)的Send。DATA Close丢回包可error却已接受；此路径不自动重试，其他阶段可能重试，故分应用／transport attempt。随机Message-ID非幂等键。[postback](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/messenger/postback/postback.go)的200只证明该HTTP调用层成功。
+
+**当前API反例须留下。** [core状态switch](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/core/campaigns.go#L249-L302)拒绝draft→paused／cancelled等，但漏default／finished：finished到SQL，未知值由enum失败报错；读查与写入非条件更新。running若有send_at，SQL存scheduled而响应写running，须GET核验。未做HTTP复现。[一手／研究]
+
+#### C1：R1账本直接进入R2
+
+C1及人身份不变；别名并非数值ID：S10=10、S20=20、S60=30、S70=40、S80=50、S30=60、S40=70、S50=80。V1/V2含正文／主题／模板／altbody／headers／附件；app attempt从newMessage构造／渲染起计，transport按SMTP实际尝试另计；保摘要／证据。[研究]
+
+**受控调度预注册，未运行。** BatchSize=7、Concurrency≥2、MessageRate>0、MaxSendErrors=0；生产者排入60后、70迭代的stopped检查前设屏障，80尚未fetch。一个worker在20通过停止检查后阻塞；另一个已处理10／30／40／50，在取60前阻塞；其余worker停在取队列前。主链pause→解除屏障并drain→edit V2→resume；cancel仅从同一R1快照独立终止分叉，绝不接恢复。R2各故障分支继承此快照，非同时发生或自然稳定复现。[研究]
+
+| 原人 | R1暂停与改稿边界 | R2新增事件／唯一判定，不重置R1 |
+|---|---|---|
+| S10/10 | a1/V1明确accepted；不因改稿补V2 | 接受未flush即崩溃：既有外部确认仍保accepted；无该证据的恢复进程仅知unknown，两视角须合并，不因sent=0归未发 |
+| S20/20 | a1/V1已越过worker检查、仍在途 | 低ID20在pause后仍可Push；独立cancel分叉亦然。丢回包保unknown V1，不接cancelled恢复 |
+| S30/60 | a1/V1已渲染排队，未过停止检查 | 停止后跳过旧Push、保pending；旧pipe清空后才能a2/V2，不能遗留V1附件或漏人 |
+| S40/70 | fetched/pending，尚未构造 | 停止后仍待处理；恢复a1/V2若渲染失败，记failed且processed、sent不加，不伪造accepted |
+| S50/80 | 从未fetch | 恢复前若退订则suppressed；仍合资格才a1/V2，保原集合与当前候选差异，不偷偷扩大受众 |
+| S60/30 | a1/V1 Push结果不明 | SMTP接受后DATA回包丢失：即使原生completeSub仍unknown；不默认重试V2或标成功 |
+| S70/40 | a1/V1有明确拒绝证据 | processed仅本pipe不重试；重启若游标受20阻塞仍重选40，越过40且持久才跳过。如批准a2/V2，DB未知时保双attempt、先读回不盲加sent |
+| S80/50 | 高ID a1/V1已accepted，S20未完成 | checkpoint≤19；崩溃可重扫50。保其接受证据，不能以max成功50跳过20 |
+
+Push与落盘非原子；[扫描](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/manager.go#L592-L620)取checkpoint、Swap增量再写DB，失败不塞回以防重复加数，也可能低报。DB错误分已提交／未提交，读回再决策；GREATEST只防游标倒退。[一手；研究：R2判定]
+
+**具名判据，未运行。** 比较(C1,人,版本,attempt,结果)，不以总数替代集合。[研究]
+
+- `ID_KEEP`：两轮id／UUID／started_at不变，活动仍一行；克隆全量重发退回。
+- `V1_ACCEPTED_KEEP`：S10/10／S80/50保原确认，未经决定不得自动a2/V2；原生frontier未保证此项。
+- `PENDING_KEEP`：S30/60／S40/70仍可处理，fetch不当sent；恢复版本及附件必须一致。
+- `UNKNOWN_KEEP`：S20/20／S60/30保V1 attempt；缺回执不能洗成未发V2，error不一律failed。
+- `STOP_BOUNDARY`：ID20已过检查仍Push不能记未发；主链pause后drain，cancel分叉终止不恢复。
+- `PAYLOAD_VERSION`：旧在途全套V1、新pipe全套V2；正文对了但附件／header旧版仍失败。
+- `UNSCHEDULE`：撤排期保C1，日期需另清；GET核running请求与存储scheduled差异。
+- `ROLE_AND_STATE`：仅manage不得启动／恢复正式活动；非法状态直调API，finished／未知值列现存缺口，测试发送另验权限。
+- `LOW_ID_BARRIER`：S20/20未完须checkpoint≤19；推进到S80/50会漏20，退回。
+- `ACCEPT_BEFORE_FLUSH`：S10/10接受未落盘不得据sent=0重发；unknown需外部证据才能转出。
+- `DB_UNKNOWN`：S70/40/a2先查提交结果，既不盲加sent，也不以聚合数恢复个人确认。
+- `PROCESSED_NOT_SENT`：S40/70渲染失败、S70/40拒绝保历史；40在游标≤19时仍可重选；S50/80退订保持抑制。
+
+[现有生命周期E2E](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/tests/specs/campaigns.spec.js#L538-L591)有附件／生命周期检查，无逐人版本／乱序／崩溃判据；本次未运行。[一手／研究]
+
+#### 同场景取舍与交付边界
+
+| 路线 | 本场景何时够用 | 增加的责任／撤回条件 |
+|---|---|---|
+| 原生C1继续 | 未开始编辑，或接受原生失败／重选政策、不需精确逐人版本审计 | 核部署版本，不直接切nightly；需证明谁收过V1或不能承担重复则撤回“够用” |
+| Resend窗口幂等 | 已选该供应商，同一请求24小时内重试 | 逐人稳定键、版本／payload、过期／冲突与切换管理；超窗或换稿不能沿用旧保护，换V2键也不能代替补发决定 |
+| durable ledger／outbox | 跨窗口保C1／人／版本历史并对账，愿承担维护 | 迁移、唯一约束、intent／lease、payload保留、attempt／provider证据、隐私删除与恢复演练；本地事务和SMTP仍不原子，unknown仍需处理 |
+
+[官方Resend契约](https://resend.com/docs/dashboard/emails/idempotency-keys)支持HTTP键及SMTP `Resend-Idempotency-Key`、保存24小时。当前源码的HeaderTpls→message.render→worker→email.Headers通用链可传逐人键，但没有专用生命周期：全活动静态同键、每次随机键、同键改payload都是坏候选。postback把Campaign.Headers放JSON而非该HTTP请求头，不能靠换URL声称接入。源码可达不是供应商集成通过。[一手／研究]
+
+**后续最小对照，仅预注册。** 固定同一模型版本、预算、代码起点和C1两轮任务；两组获同等事实，仅普通续接提示与逐人版本／unknown继承包的组织方式不同，不给修法。等价匿名账本随机分组、会话隔离，隐藏消费者断言预先封存并对两组同测，防答案泄漏。保留未经dot修写的原始产物、耗时与修订轨迹，盲评关键失败和新回归；dot补修单列，不冒充模型成功。纸面推理、单样本或事实不等不算有效；重复样本改善且无关键回归，仅支持本任务内有效，不外推模型排名或全部开发任务。[研究：待启用，未运行]
