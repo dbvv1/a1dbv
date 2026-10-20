@@ -213,7 +213,7 @@ body = '<h2 id="care">Care guide v3</h2>'+''.join(f'<p data-section="{i:05}">第
 
 ARTICLE调用第2页会先以after=null重读第1页；仅S1b再以`p23:250`读取第2段，其余状态由原operation直接返回items=[]。显式访问旧`/sitemap/articles-2.xml`时是空urlset，不是404；索引移除链接不等于旧分片已刷新。记录operation、variables、状态和返回节点数，不能把p2直返B的mock当游标验证。locale在blog调用options中核US/EN；真实Hydrogen的locale变量注入仍另验。[研究]
 
-**两层测试各守不同门。** 策略单测spy cacheLife/cacheTag并stub storefront.request，逐一调用上述四个缓存函数，核分钟配置／其他类型max、原参数透传、articles/blogs及具体资源标签不丢，列表无body、详情有body、C为undefined；这是配置／转换断言，不证明Next缓存。连续消费者测试则保真实Next cacheLife与remote handler，只在同一请求接缝注入状态替身；依次读`/blogs/guides`、A/B/C详情（B仅存在后）、`/sitemap.xml`、`/sitemap/articles-1.xml`、旧p2及`/sitemap/blogs-1.xml`，同时验metadata、HTML、软导航／预取RSC。上述各key分别暖读并跨自身寿命；构建limit=1预热不能代替列表limit=50。S1b→S1必须见count 2→1、p2非空→空、列表移C且保B，S2继承而不重新初始化模块／缓存。[研究]
+**两层测试各守不同门。** 策略单测spy cacheLife/cacheTag并stub storefront.request，逐一调用上述四个缓存函数，核分钟配置／其他类型max、原参数透传、articles/blogs及具体资源标签不丢，列表body值为undefined（不要求没有该键）、详情body为正文、C为undefined；这是配置／转换断言，不证明Next缓存。连续消费者测试则保真实Next cacheLife与remote handler，只在同一请求接缝注入状态替身；依次读`/blogs/guides`、A/B/C详情（B仅存在后）、`/sitemap.xml`、`/sitemap/articles-1.xml`、旧p2及`/sitemap/blogs-1.xml`，同时验metadata、HTML、软导航／预取RSC。上述各key分别暖读并跨自身寿命；构建limit=1预热不能代替列表limit=50。S1b→S1必须见count 2→1、p2非空→空、列表移C且保B，S2继承而不重新初始化模块／缓存。[研究]
 
 故障替身返回`{data:null,errors:[{message:"fixture unavailable",extensions:{code:"INTERNAL_SERVER_ERROR"}}]}`，核原assertStorefrontOk抛错、不得写空成功结果；恢复同阶段再收敛。未识别operation须显式失败，不回通用空data，更不能漏到真实商店。布局的其他请求需补各自真实shape的测试响应，当前表仅闭合博客／sitemap数据通路，不是可直接启动的全站mock。[研究]
 
