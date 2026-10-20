@@ -1,6 +1,6 @@
 主线：二／三／四；G1 动画、绑定、第二次修改与授权
 改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，同骨架先直接复用，所需功能或结构差异再引入转换；现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法；程序步态分基础姿态与身体规则，新运动结构另计实现；二改后的消失／突跳先分范围与屏外求值
-新证据：[一手／研究] Unity 6.3 导入／IK／根运动合同与历史 UUM-27271、UE5.8 兼容骨架条件补同骨架复用选择；Overgrowth 演讲、生产修订与固定源码，Rain World 开发者访谈补程序步态内容／维护边界；Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
+新证据：[一手／研究] 2026-10-15 Kimodo v1.2 修正测试泄漏，补本地可控短动作候选而非质量冠军； Unity 6.3 导入／IK／根运动合同与历史 UUM-27271、UE5.8 兼容骨架条件补同骨架复用选择；Overgrowth 演讲、生产修订与固定源码，Rain World 开发者访谈补程序步态内容／维护边界；Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
 
 # WP4：动画、绑定与第二次修改
 
@@ -12,7 +12,7 @@
 
 |任务|质量优先|性价比优先|本地／免费|
 |---|---|---|---|
-|人形角色与动作|✅ 已验收骨架＋完整现成动作组；缺短表演才🧪Uthana Text3.0／Video2.1 等商业候选|✅ 地区可用时 Mixamo；需要数值移动控制再🧪Uthana Locomotion；较多自录视频对照 Rokoko Vision3.0|✅ 已有许可动作＋引擎 IK；🧪SkinTokens 补绑定；不强凑本地生成冠军|
+|人形角色与动作|✅ 已验收骨架＋完整现成动作组；缺短表演才🧪Uthana Text3.0／Video2.1 等商业候选|✅ 地区可用时 Mixamo；需要数值移动控制再🧪Uthana Locomotion；较多自录视频对照 Rokoko Vision3.0|✅ 已有许可动作＋引擎 IK；🧪SkinTokens 补绑定；缺可控短人形动作时👀Kimodo-SOMA-RP-v1.2|
 |2D 骨骼与逐帧|✅ 完整现成角色包；Spine 按资产、编辑器、runtime 分别清权|✅ 已有分层／骨架＋Unity 2D Animation 的换装及参数复用|✅ 自有或许可逐帧包、刚体部件曲线；生成图不自动具备可绑定层|
 |非人形／接触密集|✅ 专用完整资产组；覆盖不到则修改角色或玩法|🧪 明确身体／支撑规则；基础姿态与新运动代码分别计入成本|👀 SkinTokens／MoCapAnything 研究路径，先闭合依赖和特定目标骨架|
 
@@ -396,3 +396,23 @@ Daniel Holden 的 [2026-07-30 原文](https://theorangeduck.com/page/inverse-kin
 保留原始许可动作、导入结果和转换后结果的对应关系。第二版只换外观时核骨架身份、层级、比例和功能消费者；比较原动作与目标角色的接触、挂点、根轨迹、事件以及旧片段。只改导入／转换即可恢复的差异，不计为生成服务的内容失败；原片段本来缺动作或接触阶段时，保留现有补许可片段／专项生成／收窄玩法的路线。[研究]
 
 本次仅核公开合同与历史问题记录；上述验收是后续引擎检查目标，未运行 Unity／Unreal、模型或真实角色对照，也未证明换路线能省时间或提高质量。无需新增模型、插件或通用重定向框架。[研究]
+
+
+## P9补核：本地可控短动作
+
+2026-10-20（UTC+8）。**确认质量／性价比档的完整许可动作默认；本地档新增👀Kimodo-SOMA-RP-v1.2，仅补短人形动作缺口。** 不替代绑定工具，也不把公开模型升级成零手修冠军。[研究]
+
+[10月15日变更][p9-k-change]修正 v1.1 混入 BONES-SEED 测试序列及 TF32 评测口径；撤回旧分数直接横比的依据，不把数值变化全算质量提升。[一手] [限制页][p9-k-limit]仍承认脚滑、约束不精确；后处理可帮助但 G1 表现不好，冲突约束可能被忽略，单提示最多10秒。有限程序修正仍不能通过就换许可动作，不无限追加约束。[一手／研究]
+
+[固定README][p9-k-readme]报告全GPU约17GB显存，文本编码移CPU可降至<3GB；不是总RAM、速度或目标机保证，本轮未测这些成本。[安装说明][p9-k-install]要求 gated Llama 3 8B访问资格。另计骨架转换／重定向与回归；[骨架合同][p9-k-skel]明确30关节为模型／核心约束内部，77关节用于可视化与导出，不能据卡中30关节假设导出形状，或把扩展当手指生成。[一手／研究]
+
+HF仓库修订`0e3c89024d896064b6851201373f7834784a386b`的[LICENSE][p9-k-license]为2025-10-24 NVIDIA Open Model License：许商用、不主张输出所有权，但有合规与再分发条件；代码Apache不覆盖权重、Llama、人体资产、输入与依赖，SMPLX分支不随SOMA放行。[一手／研究] 代码固定`e1c219c99b4b94ba48be1fb6a1cbc64ecee4c954`，仅读文档／配置／许可，没有下载权重、安装或运行；未证明零手修通过率、二改工时或GPU／RAM实耗。[研究]
+
+[p9-k-change]: https://github.com/nv-tlabs/kimodo/blob/e1c219c99b4b94ba48be1fb6a1cbc64ecee4c954/CHANGELOG.md
+[p9-k-readme]: https://github.com/nv-tlabs/kimodo/blob/e1c219c99b4b94ba48be1fb6a1cbc64ecee4c954/README.md
+[p9-k-skel]: https://github.com/nv-tlabs/kimodo/blob/e1c219c99b4b94ba48be1fb6a1cbc64ecee4c954/docs/source/key_concepts/skeleton.md
+[p9-k-license]: https://huggingface.co/nvidia/Kimodo-SOMA-RP-v1.2/blob/0e3c89024d896064b6851201373f7834784a386b/LICENSE
+[p9-k-limit]: https://research.nvidia.com/labs/sil/projects/kimodo/docs/key_concepts/limitations.html
+[p9-k-install]: https://research.nvidia.com/labs/sil/projects/kimodo/docs/getting_started/installation.html
+
+2026-10-20：2D多人换装的LPC身体／装备／动作覆盖、许可与真实采用链统一见[WP8成套扩装](2026-10-14-game-wp8-style-consistency.md#像素角色扩装先核完整动作交集再换装备)。本地候选只限已覆盖组合，不替代本记录原有循环／接触及二改验收，未运行生成器。[研究]

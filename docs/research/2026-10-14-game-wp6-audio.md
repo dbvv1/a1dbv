@@ -1,6 +1,7 @@
 主线：二／三／四；音频选型、可修改性与交付
 改变的建议：[研究] 现成／参数化优先，按事件、音乐结构和台词 ID 离线生产；运行时复用混音／调度，先保可读反馈与声音供应连续性；风格化状态先比较固定声源变体，随机变化不代替状态含义；定位核心与环境宽度分开选源；新增音乐状态先核配套版本供给；长时间驻留先选音乐出场密度，不默认更多循环层
 新证据：[一手／研究] C418原始访谈说明低频音乐／留白的采用理由，Minecraft 1.21.6频率选项及1.21.11按处境配置给出后续边界；SuperTuxKart同曲普通／快版许可、循环点修订及变调回退撤除，创作动因与工时仍缺；空间音频契约、下混反例与RoboRaid作者分层；Pixel Wheels 许可轮胎循环、冰面固定变调提交及发行祖先链补状态变体选择；近期型号／许可、固定音频编辑路径及上下文契约；Factorio 改速设计、2.0.36 配置与 GUI 误播修复补事件调度边界，制作工时未知；未试听或运行模型／引擎
+P9 补核（2026-10-20 UTC+8）：保持三档型号，新增干声母版／固定视频接入边界，见 §2.7；仅公开资料，未试听或运行。
 本轮补充（2026-10-20，UTC+8）：声音组织模拟事件时，比较单向跟随与共同调度；Mini Metro 的实际改造和公开参数支持选择，Mini Motorways 作者反例限制推广。
 
 # WP6：音频资源路线、可修改性与授权边界
@@ -63,6 +64,14 @@
 固定[Qwen3-TTS README 022e286b98fbec7e1e916cb940cdf532cd9f488e](https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/README.md)：1.7B CustomVoice 有 9 预设音色、10 语言和指令控制；0.6B CustomVoice 没有同等 instruction-control 标记；Base 用于短音频克隆，VoiceDesign 按描述设计声音。不要为了“本地省钱”静默换 0.6B，却保留 1.7B 情绪控制承诺。[一手]
 
 9 月[StepAudio 3 Gen 项目](https://stepaudiollm.github.io/step-audio-3-gen/)与[技术报告](https://arxiv.org/abs/2609.12945)展示语音、环境、SFX、音乐合成场景；本轮未核到对应可商用下载权重/明确服务合同，不把它当作免费本地 Qwen 替代。完整场景声音并不天然适合可交互事件拆分。继续观察明确交付和许可，不用论文样例替代生产能力。[一手/研究]
+
+### 2.7 P9接入选择：效果烘入与固定视频
+
+[一手／研究，2026-10-20 UTC+8] 扫描 8 月 20 日至 10 月 20 日，既有 v4／Music v2.5／Suno v6 不重复列新；以下改变接入而非质量排名，采用前复核。
+
+- **干声优先。** [10 月 12 日更新](https://elevenlabs.io/docs/changelog/2026/10/12)给 TTS／Dialogue 增加 `audio_effects`（滤镜、距离、混响、循环底噪、pan），不加请求费。混响／非零 pan 产生立体声，对 `pcm_*`／`ulaw_*`／`alaw_*` 返回错误。需定位或跨场景台词保留干声，固定广播才比较烘入；补句不合、重复混响或方向弱化则撤回烘入、改用引擎效果，不把效果入口当长期补录保证。
+- **固定视频候选，不替交互事件库。** [10 月 15 日 Instant Soundtracks](https://elevenlabs.io/blog/introducing-instant-soundtracks)按视频生成音乐与同步 SFX；[API](https://elevenlabs.io/docs/api-reference/music/video-to-music)有 `add_sfx`、`separate_tracks`、`use_audio_as_reference`，ZIP 只承诺音乐／SFX 分文件，不保证逐事件干声、循环或状态层。默认仍 `music_v1`，选 v2.5 须显式指定；剪辑改动后重验时序，需人工拆声才成立就退回许可事件资源。
+- **下载与费用另过门。** 该 API 写 192kbps MP3 需 Creator，但 [Music Terms 附表](https://elevenlabs.io/music-terms)高质量下载需 Pro 起；按合同及主体资格核，不以接口覆盖许可。普通 Music 单价不能推出视频分析＋SFX 整包价，本轮组合计费未知；不推算节省工时或可用率。
 
 ## 三、第二次修改：本轮有代码/接口证据，没有假装已实测
 
