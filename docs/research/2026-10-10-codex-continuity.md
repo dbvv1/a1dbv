@@ -1,5 +1,5 @@
 主线：三，连续修改仍然可靠；兼二
-改变的建议：区分首输出慢、工具等待、权限阻塞和回合停工；重置后先核外部结果，历史读取先核原生修复；后续写入恢复时仍保留历史丢失的反馈回退，入口、子 Agent 与记忆按实际客户端和有效配置选择。[研究]
+改变的建议：核有效运行配置，区分纠偏、中断、重启和续接成本；重置后先核外部结果，历史读取先核原生修复；后续写入恢复时仍保留历史丢失的反馈回退，入口、子 Agent 与记忆按实际客户端和有效配置选择。[研究]
 新证据：2026-10-10 起原研究的固定控制流、恢复补丁、配置实现与测试定义，以及社区失败和同一历史样本的升级恢复报告；2026-10-18（UTC+8）补日志恢复后仍保留丢失标记的固定实现、测试定义与公开复现；各次补核日期见正文，未运行客户端或模型，不将修复合并当作目标续接已通过。[一手／社区／研究]
 
 # Codex：慢、停止与上下文续接的证据核对
@@ -7,7 +7,7 @@
 > 核实时间：2026-10-10；2026-10-14 补 §6 原生历史恢复；2026-10-15（UTC+8）补 §7 导入与同步边界、§8 客户端入口与资格、§9 模型选择与历史断言边界。范围：官方开源实现与公开使用记录；没有重跑模型对照，没有核实用户私人日志。本页保存证据，实际建议并入 [Codex](../01-agents/codex.md)、[上下文](../03-context-engineering.md) 与 [长任务](../20-codex-long-horizon.md)。
 
 当前结论：模型定位不是实测排名，Ultra 不是多 Agent 的唯一入口；历史窗口与单价倍率不当作当前统一任务预算；先按任务核客户端入口、套餐与开通资格，不由源码模块或“包含 Codex”推定能力齐全；导入按客户端与项目范围选择，重复导入不当作覆盖同步，关闭更新不当撤销；先区分首输出慢、工具等待、权限阻塞和回合停工；明确 runtime reset 后先核对外部结果，历史读取故障优先核原生修复与实际版本，不默认清库或加续接循环。[研究]
-证据：官方固定控制流／恢复补丁与测试定义、社区失败及同一历史样本升级恢复报告；未运行客户端或模型。[一手／社区]
+证据：固定控制流／恢复补丁／测试定义、采用与撤回自报；10-20新增运行端固定与Claude恢复费用，未运行客户端或模型。[一手／社区]
 关键边界：回合完成、修复合并与发布部署不是同一事实；历史可见性恢复也不证明模型已正确续接目标。[研究：证据边界]
 
 ## 1. 官方实现能确认什么
@@ -251,3 +251,50 @@ Models 的 GPT-5.5 retirement 明确时点为 2026-10-14 19:00 UTC（北京时�
 **真实报告与诊断边界。** [#52727](https://github.com/openai/codex/issues/52727)的 macOS／0.160.1 用户报告，在新建临时 home 中保持日志库写锁触发警告，释放后成功写入 116 条记录，完整性检查也通过；这是报告者的隔离复现，非本仓测试或跨平台验证。其原使用现场的失败原因未恢复，不能由复现推定原故障来自锁竞争。[同版 doctor](https://github.com/openai/codex/blob/d27764b82f7118f674371e6d6e76271d9d606edb/codex-rs/cli/src/doctor/output.rs#L720-L735)的健康摘要依据数据库完整性结果，不回答历史日志是否齐全。原报告已要求分开保存历史丢失和当前健康；[社区回复](https://github.com/openai/codex/issues/52727#issuecomment-6092816338)也主张保留历史语义，不能写成维护者驳回清零补丁或已采纳新提示。**[社区：使用与复现自报；一手：固定诊断实现；研究：归属边界]**
 
 **回退的代价与撤回条件。** 原合并补丁的[集成测试](https://github.com/openai/codex/blob/a285066737c28399b83a0e6b0884c777059fb701/codex-rs/app-server/tests/suite/v2/feedback.rs#L250-L270)要求故障附件含错误分类、不含原始敏感错误，并明确不含仅存在 SQLite 的旧历史；内存回退不能称为完整恢复。若业务必须保留全部历史，就不能照搬这项取舍，需另外选择补写、合并来源或持久队列并验证；本链未证明这些替代的效果。当前仅支持保留历史语义、按目标选择修改层；没有新提示方案的接收结果，没有客户端／上游测试运行，也无 AI 参与或维护收益归因。**[一手：测试定义；研究：采用限制]**
+
+## 有效配置与续接动作（2026-10-20）
+
+**改变 Codex、Claude、02、13**：保留有效配置，区分续接动作／成本。公开静读，未安装／运行。[研究]
+
+### 运行端和撤回路径
+
+稳定版为 [Codex 0.163.0](https://github.com/openai/codex/releases/tag/rust-v0.163.0)（10-15）。固定 `rust-v0.162.1` 为 `092d3acd6bec3e3a14bdc7e7a2810ab628ab759d`，其 [README L22–74](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/app-server-daemon/README.md#L22-L74)明确：共享 daemon 沿用启动环境，没有每客户端环境隔离；`updater.autoUpdateEnabled=false` 关闭自动更新，restart 应用，显式 update 不受该偏好限制。不能沿用旧评论的“无法关闭更新”。[一手：固定文档]
+
+实现亦有检查：[启动逻辑](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/app-server-daemon/src/lib.rs#L893-L900)与[更新循环](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/app-server-daemon/src/update_loop.rs#L329-L388)检查偏好；[CLI确认文案](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/cli/src/daemon_install.rs#L23-L35)说明 `daemon update --from-cli` 复制当前CLI包并pin，重启可能中断活动／排队工作；普通update回production选择。自启、更新、pin及应用变更分开核。[一手：源码静读，未执行]
+
+| 公开证据 | 能支持的选择与限制 |
+|---|---|
+| [dam 10-13提交](https://github.com/dam-agents/dam/commit/037455493310d9563a69421110ae3b1ea88b041e)关闭daemon自动启动以保持镜像pin | 作者明言未测；0.159.3仅为说明，实际pin codex-acp 2.1.1，未核捆绑运行版本。[一手：提交；作者说明] |
+| [Nix dotfiles 10-13提交](https://github.com/geggo98/dotfiles/commit/f8df704ff7d81823bdba6336d83580fec50d6f6d)为pin／供应链等待期关闭自启 | 作者称配置检查通过；测试覆盖false及撤回键，未证明旧daemon退出／任务恢复。[一手：提交／测试定义；作者测试自述] |
+| [10-09版本错位](https://github.com/openai/codex/issues/46468#issuecomment-6081657885)：CLI0.162、后端0.160 | 作者明确未重试该次update/restart，不能补出恢复结果。[社区] |
+| [09-30部分恢复](https://github.com/openai/codex/issues/46468#issuecomment-5904992767)：重建旧后端后新模型目录可见 | 只证明目录恢复；强杀／清socket不是默认修复。[社区] |
+| [10-13环境报告](https://github.com/openai/codex/issues/53547)，0.162.1新终端仍见启动端哨兵变量 | 复现显式启用daemon，与README一致，不能只看基础关闭配置。[社区；一手：契约] |
+
+两条撤回支持有条件保留原生客户端，不证明普遍最优；配置落盘后仍须核运行端。[研究]
+
+### steer、中断、重启与休眠恢复
+
+0.163.0发布说明支持即时steer；[#51835固定测试 L6001–6153](https://github.com/openai/codex/blob/72c959528ee4ca74abdb8575fbbc4e36960a8c47/codex-rs/core/tests/suite/code_mode.rs#L6001-L6153)预存值、运行后台cell与嵌套工具，中断后断言嵌套工具Aborted、两cell不可再wait、store仍可load。仅mock SSE定义、未运行；不同于runtime reset丢值，也不回滚外部动作。[一手；研究]
+
+[#53173](https://github.com/openai/codex/pull/53173)固定patch [`27065a91`](https://github.com/openai/codex/commit/27065a91ccbf5ba8532844be3777fcf83b77820d) 的重启菜单检查managed身份，告知其他活动／排队工作可能受影响；用于后台仍持旧启动配置的问题，不是模型慢的通用补救。纠偏先steer，停动作再中断，运行配置问题才评重启。[一手：patch；研究，未执行]
+
+[Claude2.1.304](https://github.com/anthropics/claude-code/releases/tag/v2.1.304)（10-19）给Pro/Max新增休眠恢复额度警告，允许继续或新开引用旧会话。[成本页](https://code.claude.com/docs/en/costs#why-usage-climbs-in-a-long-session)说明每轮上下文、缓存过期、子Agent及check-in均影响消耗；compact本身要读历史，clear不发模型请求。[官方工作流](https://code.claude.com/docs/en/common-workflows#resume-previous-conversations)仍推荐同任务resume；[sessions](https://code.claude.com/docs/en/sessions)区分活后台attach与停止后的加载。故“警告即clear”及“新会话即新进程”都不成立。[一手：当前契约，未运行]
+
+未找到新警告的独立净省回执，或pin／关闭更新后同一长任务验收与账单闭合轨迹；恢复费用要和遗漏、重查、返工一起比。[研究：缺口]
+
+### 反例与总投入边界
+
+- HN [转用OpenCode](https://news.ycombinator.com/item?id=50062392)与[反向减少依赖](https://news.ycombinator.com/item?id=50067023)出自同一故障讨论，非独立抽样或社区共识；前者迁移早于新闻。[另一自报](https://news.ycombinator.com/item?id=50075970)含数小时规格、4–6小时Agent、数日修补与用户反馈，缺模型和产物，不能推删skills的因果收益。用Algolia读取原评论。[社区]
+- [Unreal10-06](https://unreallabs.ai/blog/long-horizon-agents-at-half-the-cost/)自测同Sol6.1xhigh、20题×8，各69/160；$445.75/$850.52仅推理费，harness不同且无压缩消融；Harbor job仅解析到标题。不能归因全部节省或断言质量等价。[一手：厂商自测，未复现]
+- [Octomind10-16](https://octomind.run/blog/codex-vs-claude-code)实际用7月旧Opus5/Sol5.6，25题23/21；级联是按已知隐藏失败事后算，非执行策略。[Mesmer10-19](https://mesmer.tools/blog/codex-vs-claude-code)当前Sol6.1low/Opus5.5medium、8小题，剔除3次限流／容量终止，AGENTS加载不对称；快慢方向相反。不能据此改medium默认或长任务排名。[社区：作者自测]
+- [SWE-Journey10-08](https://arxiv.org/html/2610.11559)用30合成任务、旧模型、定制mini-swe-agent与模拟用户；用户条件同时改变信息／反馈／终止，成本排除模拟器。只支持检查澄清是否消除歧义、信任是否有正确性证据，不替代当前原生客户端真人维护验证。[研究]
+
+
+<a id="p8-followthrough-20261020"></a>
+### P8资料收口：三线公开追访的负结果（2026-10-20）
+
+**原资料验收已满足，运行效果仍未知。** 本轮沿dam、Nix dotfiles与Codex恢复讨论三条既有线索追访，没有同一实际开发交付、后续修改及人工核查／返工投入闭环。范围有限，不表示作者没有做过；不把后加的效果尺当原前沿扫描的资料阻塞。[研究：独立验收；未运行]
+
+[dam固定配置](https://github.com/dam-agents/dam/blob/55e4f586740e0d66848bd9966cdad5bc74d9b0c7/packages/agents/codex/rootfs/etc/codex/config.toml)与[Nix固定配置](https://github.com/geggo98/dotfiles/blob/f88d6e8d5be31e9812284932d66e0adc7a535b6f/modules/ai-options.nix#L75-L85)仍保禁自启键，只证明配置意图，不证明实际加载或原任务恢复。[dam #5389](https://github.com/dam-agents/dam/pull/5389)虽合并，作者仍标production v0.2.21；[#5400](https://github.com/dam-agents/dam/issues/5400)模型猜换来自开发／升级测试。修复候选[#5402](https://github.com/dam-agents/dam/pull/5402)本轮读取时open、head为`ce6fda605a38f037ea103bdad07571ae47909d87`，本地探针自报不作生产采用。[一手／社区，固定范围]
+
+Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657885)评论未对该次错位尝试daemon update／restart，并非未更新CLI；旧目录恢复与[#53547](https://github.com/openai/codex/issues/53547)症状不足以证明任务续成。保留核实际运行端与模型选择的条件建议，不扩称pin／禁自启净收益。只有新增实际部署、同一产物后续修改、保留／撤回与投入回执，或另获明确实验授权，才重开效果判断；单纯合并和更多测试不够。[研究：负结果与恢复条件]
