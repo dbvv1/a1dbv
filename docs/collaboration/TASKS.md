@@ -31,7 +31,7 @@
 | 项目 | 分支／起点 | 文件归属与真实状态 |
 |---|---|---|
 | P8 | `dot/p8-frontier-choices-20261020`／b6484a0；12:53起 | 13、02、Codex、Claude及既有研究；只读取证正在执行，尚无正文改动 |
-| P1整改 | `dot/p1-entry-default-revision-20261020`／b6484a0；12:53起 | 01／14独立写作，待独审；不重复P8扫描 |
+| P1整改 | `dot/p1-concrete-entry-defaults-20261020`／b6484a0；12:53起 | 01／14独立写作，待独审；不重复P8扫描 |
 | P7 | `dot/p7-startup-budget-20261020`／b6484a0；12:53起 | 手册非§2、TASKS、reviews、既有归档；本批压缩及状态整改 |
 | P15 | `dot/p15-resource-delivery-closeout-20261020`／cc5f1c6d | 04、2d、WP2、WP10；c8d7d36e已审待最终验证，无后台写作 |
 
