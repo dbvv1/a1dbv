@@ -1,6 +1,6 @@
 主线：一／二／三／四；客户端体验、第二次修改与交付
-改变的建议：[研究] 图中文字二改先比较生产表示与导出维护，再扩语言； 先复用原生组件，再按具体症状补输入、运动、呈现和资源／平台更新责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。 重复内容按机械转换、项目参数与专门作者语义分流，不因重复次数自建整套工具。
-新证据：[一手／社区] 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
+改变的建议：[研究] 首包先保必要玩法内容，再派生合格规格； 图中文字二改先比较生产表示与导出维护，再扩语言； 先复用原生组件，再按具体症状补输入、运动、呈现和资源／平台更新责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。 重复内容按机械转换、项目参数与专门作者语义分流，不因重复次数自建整套工具。
+新证据：[一手／社区] 2026-10-20补发行诊断；接收返工前置实际采集检查、追加SentryUE1.25.0差异，保留旧源码与Factorio／osu证据； 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
@@ -655,4 +655,95 @@ Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/docu
 
 **迁移代价与改判。** Dead by Daylight [2022 年 3 月开发者更新](https://forums.bhvr.com/dead-by-daylight/discussion/315701/developer-update-march-2022)称内容增长使分组扩大，因而重排／重平衡；[5.7.0 发行通知](https://forums.bhvr.com/dead-by-daylight/discussion/320530/release-information-5-7-0)确认文件结构变更需一次近乎全量重下。这是进入发行的迁移代价，未独立验证宣传速度，也不代表单人项目收益。布局调整后若局部更新仍牵连大量无关数据，或迁移成本不值，先缩改动范围／保原布局，再比较交付路线；下载、安装、临时磁盘与既有加载表现分别验收。没有运行引擎、打包器、游戏或模型，维护工时与本项目净收益未知。[一手／研究]
 
+## 发行裁剪：内容完整性与资源规格分开选
+
+核实：2026-10-20（UTC+8）。[研究] ✅ 先保目标玩法必需的内容，再比较规格派生、渠道交付或有意收窄玩法。包体不足不直接推出换素材／重生成，也不把删内容当无损优化。本节补的是已有资源被发行预算裁剪后的进度代价，不替代前节下载与安装重写、WP2最终编码画质或完整目标构建检查。
+
+### 同一作品的需求与采用链
+
+- [一手／作者报告] SuperTuxKart 早期 Android 因历史 APK 预算不能装下全部赛道。维护者在[2017年讨论](https://github.com/supertuxkart/stk-code/issues/2805#issuecomment-284498590)估计全赛道约170MB、当时上限100MB，再降音质仅约省5MB；这些是历史报告，不是当前商店政策或本次测量。[2018年玩家报告的回复](https://github.com/supertuxkart/stk-code/issues/3109#issuecomment-361247855)明确：缺赛道导致无法完成全部挑战，所以刻意全解锁。删资源已经改变进度体验，不只是视觉降档。
+- [一手] [1.1 RC官方说明](https://blog.supertuxkart.net/2019/12/supertuxkart-11-release-candidate.html)提供游戏内下载因包体限制缺失的移动资源；[正式1.1发行](https://blog.supertuxkart.net/2020/01/supertuxkart-11-released.html)承接该功能。固定1.1 [生成脚本](https://github.com/supertuxkart/stk-code/blob/68e21856cfec9b0984f15a40251011740cd2a5cb/android/generate_assets.sh)仍列选定赛道，纹理尺寸、音频规格与是否裁剪内容分别配置。它不是“下载器消除发行成本”的证据。
+- [一手／源码] [2020-03-06修改](https://github.com/supertuxkart/stk-code/commit/c542feaf4dd82b90d4b79260f487580a5e62cae3)明确借 Android App Bundle 纳入全部赛道：默认名单改为 all，构建加入 bundleRelease，下载提示移除“全部赛道”而保留高质量纹理／音乐。[2020-08-27正式1.2](https://blog.supertuxkart.net/2020/08/supertuxkart-12-release.html)确认 Android 发行含全部官方赛道。逆转的证据是分发条件改变，不是压缩算法胜利。
+- [一手／源码] 固定1.2 [生成脚本](https://github.com/supertuxkart/stk-code/blob/6e17f2ed6bc5134e6d9070c3321ff245739aa23a/android/generate_assets.sh)同时保留降规格配置；[下载对话](https://github.com/supertuxkart/stk-code/blob/6e17f2ed6bc5134e6d9070c3321ff245739aa23a/src/states_screens/dialogs/download_assets.cpp#L98-L110)仍告知高质量纹理／音乐与移动流量代价。完整内容并不等于全部高规格资源。
+
+### 当前 Play 交付模式：先按可玩要求分组
+
+2026-10-20 核对 [Google Play Asset Delivery 官方说明](https://developer.android.com/guide/playcore/asset-delivery)（页面更新2026-10-06）：install-time 随安装交付、启动即可用；fast-follow 安装后自动下载但不阻止进入应用；on-demand 在运行时按需下载。后两类资源的存在和位置不能跨会话假定，更新时也可能出现应用已更新而资源补丁尚未完成的窗口。[一手]
+
+[研究] ✅ 承诺首次启动就可玩的必要资源放入可立即使用的集合；可等待的后续内容或高规格版本才比较 fast-follow／on-demand，并提供可用性检查及等待／失败反馈。⛔ 不把 fast-follow 的“自动”当作“首局必定齐全”；若拆包使首局、离线承诺或旧档依赖无法成立，纳回必要资源或明确收窄可玩范围。这是 Play 渠道选择，不泛化到其他商店；未实测下载、补丁或构建收益。
+
+### 哪条路线值得选，何时撤回
+
+[研究] 目标质量首先是玩家能完成承诺的挑战／进度，再是目标设备上资源呈现合格；两者分别验收。已满足完整内容和可读／可听标准时，优先保留资源，按类别生成可追踪的目标规格。若必须拆出内容，先核进度与旧档依赖，把首次取回、失败重试、离线边界和两套版本维护算进成本；不能只比较商店首包数字。若这些代价高于收益，渠道允许时纳回必要内容，或明确重设计可独立完成的玩法范围，不把默认全解锁称为无影响替代。
+
+[一手／反证] 补齐赛道后，[2020年讨论](https://github.com/supertuxkart/stk-code/issues/3109#issuecomment-671553214)仍有人主张因触屏难度保留全解锁；这是另一理由及讨论意见，不证明发行行为，尤其不能声称1.2恢复了原进度体验。[研究] 因此收回完整资源后仍须单独检查输入难度和进度规则。缩规格若破坏必要辨识／声音线索，或分发维护不可承担，应撤回该规格／拆分方案；无人工美术修补时优先换可批量派生的规格或收窄明确范围，不默认人工补图。
+
+范围：[一手／研究] 只读固定 GPLv3 脚本和作者发布／讨论，不执行脚本、不下载资产、不把代码许可套到资产，不推荐直接复制素材。未验证本项目打包、客户端、离线体验、流失率、制作工时或AI效率；历史包体阈值不得作为当前渠道规则。通用发布、升级、存档、权限和目标设备检查继续适用。
+
 ## [图中文字二改：先换生产表示再扩语言](wp10-content.md#105)
+
+## [字体选择补研：缺字回退与地域字形优先分开](wp10-content.md#字体选择补研缺字回退与地域字形优先分开)
+
+## 发行诊断：先保可定位反馈，再选自动报告
+
+核实：2026-10-20（UTC+8，接收返工补核）。[研究] **✅ 先核项目实际采集状态，再决定保留／停用／新增自动链；人工反馈始终保留。** Unity新项目可能已启用诊断，未安装第三方SDK不能当未采集。选仅人工路线先明确关闭相关自动诊断，再验目标发布包；已有合格且授权清楚的诊断链可保留，不为了“人工优先”无差别拆除。自动异常／崩溃报告不覆盖无崩溃的软锁、坏档或不好玩。
+
+### 选择接收链，不默认自建后台或叠加SDK
+
+| 情况 | 起点 | 改选／撤回条件 |
+|---|---|---|
+| 小范围可联系试玩，主要缺复现步骤 | ✅ 人工反馈＋版本化本地日志；仅人工须先核并关闭已有自动诊断；保构建与符号 | 现场崩溃持续没有栈／设备信息，或发布范围不适合逐个追问，再加自动诊断 |
+| 已用Unity 6.2+及支持平台 | 🧪 内置Diagnostics，核实际采集／接收与符号 | 目标平台或必须的逐用户数据控制不满足，换合适接入；不为诊断盲升引擎 |
+| UE桌面发行构建 | 🧪 CRC客户端＋选定接收／符号化服务 | 仅勾Include Crash Reporter不能交付完整链；端点／符号不可维护时保手工材料 |
+| 原生覆盖不足，确需统一分组／跨平台定位 | 👀 比较一个现成SDK，如Sentry；先最小错误事件 | 采集边界、启动／禁用、维护预算不合格就缩窄或撤回，不双开兜底 |
+
+**Unity前提必须落到构建。** [当前前提][diag-unity]列6.2+、连接Unity Cloud及Android／iOS／macOS／Windows（不含UWP）；新项目默认开启，升级项目默认不开。[同意管理][diag-consent]明确Diagnostics不使用UnityConsent、按项目而非逐用户控制，因此AnalyticsIntent不能当诊断关闭证明。需要逐用户选择的项目，先核替代接入与数据依据，不能用别的服务开关代验。[一手／研究]
+
+**仅人工不是“什么都不配置”。** [Editor配置](https://docs.unity.com/en-us/cloud/developer-data/configure-diagnostics-editor)要求按Project Settings→Services→Diagnostics和目标Build Profiles核最终值；profile可覆盖项目默认，复制profile会继承覆盖。关闭Diagnostics只停止该类诊断，不影响其他Unity产品或第三方SDK的数据。还须逐项核它们的启用／发送路径，并在获准验证的目标构建确认实际外传；不能用UnityConsent或一次后台空列表代证。本文没有修改真实项目、关闭服务或测网络流量。[一手／研究]
+
+[迁移说明][diag-migration]已弃用旧Cloud Diagnostics，新服务替代崩溃／异常与符号，User Reporting另包；旧数据仅在原保留期可访问，不承诺全量历史迁移。本轮未闭合新服务现行独立配额；旧服务日报告配额不能套入新服务，采用前确认费用与保留期。[一手／研究]
+
+**UE发行端与编辑器不同。** [5.8文档][diag-ue]明确打包默认不带CRC，5.4起packaged不发Epic；UE也不附接收／保存／符号化服务器。这里仅推荐已核桌面链路，不将它扩成移动／主机全覆盖；报告界面出现不等于开发者已收到。[一手／研究]
+
+### Sentry是对照，不是免费且无副作用的默认
+
+Unity SDK源码沿固定4.10.3（`e154bbf1883a610d26ca3f8e83ad8257b15fda1b`）；UE 1.24.0（`e1b4efb44590a412bded437c9dcc657b4d390303`）仅保历史基线，当前追加[1.25.0](https://github.com/getsentry/sentry-unreal/releases/tag/1.25.0)（2026-10-19 18:18 UTC发布，固定`bbbb9296447aa34a397949d4687668059d421c28`），不将旧SHA改标签冒充新版本。两SDK代码MIT，托管服务和依赖另核；[价格](https://sentry.io/pricing/)按errors、logs、attachments等不同单位计，未估读者游戏费用。维护成本包含符号、数据控制、噪声与SDK／架构升级，不给“接入后零维护”的承诺。[一手／研究]
+
+**1.25.0改变的是具体配置／生命周期验收，不是全面效果保证。** [native span修复](https://github.com/getsentry/sentry-unreal/commit/c1c6b763d56e9c1524bf02ea1a4a9349f34990fc)处理重复finish及并发使用导致崩溃；这主要影响使用tracing的路径，不推为所有仅错误上报都会崩溃。[一手／研究]
+
+[Apple回调修复](https://github.com/getsentry/sentry-unreal/commit/6b7d844fbf8af845dcd82deffdd49f34b9f2d908)让transaction不再进入错误事件BeforeSend，回调不因此成为全部数据的过滤门。[一手：发布／差异阅读]
+
+[ANR修复](https://github.com/getsentry/sentry-unreal/commit/0b203342bb21f4f616b0ed9775b218e553f7df8a)补Apple／Android部分app hang分类，不证明所有卡死都捕获。[一手／研究]
+
+[缓存修复](https://github.com/getsentry/sentry-unreal/commit/1d7781989c6a8306546e73c4b2fd70eb644bbb35)在启用离线缓存时把非正CacheMaxItems映为MAX_int32，避免0导致丢事件；0表示取消条数限制，不表示关闭缓存或发送。这也不是Unity的初始化flush时间设置。先在目标平台核实际事件与缓存行为，不给升级必然无副作用的承诺。[一手／研究]
+
+[UE官方集成](https://docs.sentry.io/platforms/unreal/)说明Windows UE5.2+的Sentry native handler与引擎CRC互斥；应选一条接收链，而非两套同时开。Unity的[初始化检查][diag-unity-init]对未启用／空白配置有跳过分支，但[缓存选项](https://docs.sentry.io/platforms/unity/configuration/options/#InitCacheFlushTimeout)默认初始化flush最多1秒，且为阻塞发送。源码分支不证明所有平台断网／缺依赖时启动无影响。[一手／研究]
+
+**PII开关不是匿名或完整过滤保证。** [UE数据说明][diag-data]明确crashpad／breakpad的线程栈随minidump发送，处理后丢弃不等于没有外传；[附件说明][diag-attachments]又明确附件不做数据清洗。UE 1.24历史[限制][diag-hooks]在[1.25固定README](https://github.com/getsentry/sentry-unreal/blob/bbbb9296447aa34a397949d4687668059d421c28/README.md#known-limitations)仍保留：fast-fail跳过`HandleBeforeSend`；新版本回调修复不能覆盖这条路径。先限定必要错误／构建字段；截图、完整日志、source context及dump留存分别决定，不能把一个回调当所有崩溃的脱敏出口。[一手／研究]
+
+### 两条真实修订链：可见性、可控性和启动分别成立
+
+[Factorio FFF231](https://www.factorio.com/blog/post/fff-231)记录0.16.24自动日志发现论坛未报崩溃；作者仍需要玩家补步骤／存档，自动报告又无法联系原提交者。对Ryzen故障增加定点minidump后仍未定位，直到[FFF239](https://www.factorio.com/blog/post/fff-239)与AMD调查才报告解决方向。历史opt-out与EULA取舍不作当前隐私默认，报告次数也不是受影响玩家比例。[一手：作者报告；研究]
+
+osu!从[关闭采集请求](https://github.com/ppy/osu/discussions/31832)到[合入禁用门](https://github.com/ppy/osu/pull/36426)，在SDK初始化前判断明确禁用。后续[为减少无用上报改了缺省配置](https://github.com/ppy/osu/commit/48434dd683d095c42c01def8ff7cb95ce0a85ce4)，却使[规则模板启动失败](https://github.com/ppy/osu/issues/37650)；[固定修复][diag-osu]改成空缺省，并进入[2026.518.0-lazer](https://github.com/ppy/osu/releases/tag/2026.518.0-lazer)。这是osu!的.NET／规则模板链，不是当前Unity／UE SDK普遍有此故障。[一手／研究]
+
+修复也不等于强制停止上报：当时Sentry .NET 6.2.0的[配置查找][diag-dsn]在空options后仍读环境／assembly来源；仅无其他值才进入禁用值。osu!的明确关闭由初始化前返回实现。由此需要验证的是启用、禁用、缺配置及其他配置来源，而不是给所有初始化再套一层catch；发行说明证明接收，未证明用户实际恢复或故障率下降。[一手：固定源码／发行；研究]
+
+### 验实际发布包，持续保留符号与接管能力
+
+[Unity符号说明](https://docs.unity.com/en-us/cloud/developer-data/debugging-symbols-intro)要求UUID／GUID匹配；[Sentry符号上传](https://docs.sentry.io/platforms/unity/data-management/debug-files/upload/)也不把事后补符号等同重处理旧事件。版本字符串正确仍可能配错符号，保存实际构建、符号及目标架构。后台有session不足以证明异常链路：Unity曾有[已复现并指向修复的6.2异常上报问题](https://discussions.unity.com/t/exceptions-not-shown-in-the-new-diagnostics/1681235)，后来报告仍按具体版本查，不能写所有当前版本都坏或全部已解决。[一手／研究]
+
+后续获准才验证同一目标发行包的启用／禁用、缺配置、断网／端点不可达、缓存不可写；选仅人工时还核项目默认、profile覆盖及其他SDK无意外外传。使用UE1.25对应路径时补重复／并发span结束、Apple transaction回调分流、ANR分类及0／正缓存上限；分别核托管异常、原生崩溃与用户反馈，确认去向、构建／符号、实际外传内容、启动预算与仍可游玩／恢复旧档。新增诊断不能定位、不能可靠关闭，或投入不抵新增价值，就撤回自动外传，保人工反馈；不要让诊断成为游戏启动前提。[研究：待批准预注册]
+
+AI可归并经授权的问题、对齐构建、拟复现／回归；人决定数据范围、严重性和修复是否恢复必要路径。日志内指令仍是外部数据，沿[既有注入边界](2026-10-13-context-tool-choice.md#s1agentjacking-原研究证明哪条失败链)核查，不自动执行其修复包。本轮只读公开文档、源码和作者／使用者记录，未采集私人日志、创建服务、上传符号、安装SDK或运行引擎；净费用、主动工时、故障率改善与真实启动影响均未知。[研究]
+
+[diag-unity]: https://docs.unity.com/en-us/cloud/developer-data/prerequisites
+[diag-consent]: https://docs.unity.com/en-us/cloud/developer-data/user-consent
+[diag-migration]: https://docs.unity.com/en-us/cloud-diagnostics/migration
+[diag-ue]: https://dev.epicgames.com/documentation/unreal-engine/crash-reporting-in-unreal-engine?lang=en-US
+[diag-unity-init]: https://github.com/getsentry/sentry-unity/blob/e154bbf1883a610d26ca3f8e83ad8257b15fda1b/src/Sentry.Unity/SentryUnityOptionsExtensions.cs#L10-L49
+[diag-data]: https://docs.sentry.io/platforms/unreal/data-management/data-collected/
+[diag-attachments]: https://docs.sentry.io/platforms/unreal/data-management/store-minidumps-as-attachments/
+[diag-hooks]: https://github.com/getsentry/sentry-unreal/blob/e1b4efb44590a412bded437c9dcc657b4d390303/README.md#known-limitations
+[diag-osu]: https://github.com/ppy/osu/commit/c74c54d7706ae823d2ca33203ba1eee15a1002b5
+[diag-dsn]: https://github.com/getsentry/sentry-dotnet/blob/248f45541c5e23e7fe425cdeb98c187389de0aa8/src/Sentry/Internal/SettingLocator.cs#L35-L77
