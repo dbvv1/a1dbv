@@ -1,6 +1,6 @@
 主线：二，兼三／四
 改变的建议：先选能观察真实故障的反馈，再按保护未来或查当前差异选择测试；运行结果只覆盖实际入口。[研究／经验]
-新证据：本页按主题迁移原研究记录，2026-10-20 仅整理结构；下列既有核实日期、固定来源与运行边界原样保留，未新增实验或重核外部事实。
+新证据：2026-10-20 补旧会话跨发布的两条维护链与稳定源码，改变 Agent 前端更新的验收输入；其他迁移章节沿用原核实日期，未新增实验。
 
 # 开发条件：反馈与验证
 
@@ -9,6 +9,49 @@
 Agent 负责生成候选改动和检查；人须确认实际用户路径、应保留行为与断言是否相符。
 
 [总览与旧章节索引](2026-10-12-development-conditions.md)；[共同来源与阅读范围](2026-10-12-development-conditions.md#来源与阅读范围)。
+
+## Agent更新前端：旧会话是验收输入
+
+核实：2026-10-20。改变18／23的 **Agent 使用建议**：交付首次前端与更新已有用户应用，不能使用同一套“打开最新版”验收输入。以下是依据框架维护链推导的检查建议，不是观察到 Agent 导致这些缺陷，也未测当前模型漏验率。[研究：采用判断]
+
+**✅ 首次交付无旧用户，沿用新用户路径；已有用户更新，把发布前开始的任务交给 Agent 验收。** 人先说清哪些状态可丢、哪些草稿或进行中写入不可丢。可丢时允许现成恢复／安全刷新胜出；不可丢时让 Agent 盘点真实请求、版本路由和恢复路径，超过保护范围就缩小承诺。**⛔ 不因一次chunk错误默认自建SW，不把开锁版开关当验收完成。**
+
+这一建议防的是任务定义遗漏：Agent拿到的若只有新版截图、页面可打开和新请求成功，即使全部检查通过，也没有观察旧页的资源、版本身份或未提交状态。需要补验收输入，而非一律换模型、堆浏览器工具或增加随机测试次数。[研究：由下述机制推导]
+
+### 两条机制链及后续回执
+
+**A．部署身份的作用域：请求锁到旧部署，不等于每个标签都独立锁版。**
+
+- [SvelteKit #11987](https://github.com/sveltejs/kit/pull/11987) 于2024-03-19合入 `af5a257b4386dceddca472885329e5c8863dfcd5`；作者自报手工测试。当天[adapter-vercel 5.2.0](https://github.com/sveltejs/kit/releases/tag/%40sveltejs%2Fadapter-vercel%405.2.0)正式发布该能力。属历史采用／自报。[一手]
+- [#12592](https://github.com/sveltejs/kit/issues/12592) 的用户2024-08报告动态模块加载失败，2025-01仍报告卡住；2025-10-25维护者试过按客户端跟踪ID的SW后，指出存储、运行负担、Safari失败及既有SW共存未解决，倾向保cookie并改进错误恢复。这是探索后收窄，不是SW修复成功。[社区：使用者；一手：维护者原帖]
+- [试验固定补丁](https://github.com/teemingc/vercel-skew-protection/blob/63aca3546f961db0848e8e6bc1faea2576a9da16/patches/%40sveltejs__adapter-vercel.patch)及同目录Kit补丁包含发ID、缓存客户端映射和拦截fetch；不是生产推荐。[一手：固定源码]
+- 当前稳定[7.0.1发布](https://github.com/sveltejs/kit/releases/tag/%40sveltejs%2Fadapter-vercel%407.0.1)于2026-10-14；固定 `73bf98cabea2ef18e1bfef40be5229a43e79b05c` 的 [index.js L470–505](https://github.com/sveltejs/kit/blob/73bf98cabea2ef18e1bfef40be5229a43e79b05c/packages/adapter-vercel/index.js#L470-L505)仍在document请求响应中写共享 `__vdpl`，并为version.json设特定路径豁免。当前main `c7476484` 的该文件与稳定tag相同。[一手：发布／固定源码]
+- [当前官方说明](https://svelte.dev/docs/kit/adapter-vercel#Skew-protection)仍区分：内置失败恢复会硬刷新并丢客户端状态；Vercel路由原部署；新标签改变cookie时旧标签可退回内置恢复。支持跨标签必验。[一手]
+
+**B．构建身份与部署入口：有ID不等于该ID可路由。**
+
+- [Next #88496](https://github.com/vercel/next.js/pull/88496)为自动deploymentId调整环境变量校验，2026-01-22合入 `7282ce6759ea2373b2060e0720abe8983e1a87ae`；[撤回PR #88942](https://github.com/vercel/next.js/pull/88942)于01-23合入。维护者明确先恢复部署测试再尝试重上。PR内撤回提交 `70bf83b1240035c5e4e065b248eb50905bc8a949` 与API合入SHA `b08e16b21a2d2a634134469977c58c6a628d1f53` 须区分；#88941不是撤回PR。属历史撤回，非现今prebuilt禁用依据。[一手]
+- [#94734](https://github.com/vercel/next.js/issues/94734)是另一机制：2026-06-12用户以16.2.6、Vercel CLI 51.x及prebuilt报告运行时ID覆盖构建自定义ID，旧页Server Action失配，并自报显式关闭runtimeServerDeploymentId后恢复。所附复现需真实平台，未运行。issue仍open；10月评论是另一人的澄清请求，没有维护者修复／兼容性确认。不能把用户转述支持答复当维护者确认，排查历时不等于工时。[社区]
+- 当前稳定[Next 16.4.2](https://github.com/vercel/next.js/releases/tag/v16.4.2)发布于2026-10-15，固定 `2864b1772c37242a9b40ab4d366eb7d368c2a070`。[config.ts L1231–1250](https://github.com/vercel/next.js/blob/2864b1772c37242a9b40ab4d366eb7d368c2a070/packages/next/src/server/config.ts#L1231-L1250)在生产构建、hasNextSupport、NEXT_DEPLOYMENT_ID存在且开关未显式指定时自动开启；同目录ci-info.ts将hasNextSupport取自NOW_BUILDER。[base-server.ts L508–521](https://github.com/vercel/next.js/blob/2864b1772c37242a9b40ab4d366eb7d368c2a070/packages/next/src/server/base-server.ts#L508-L521)在开启时读运行环境ID。分支定义不证明平台注入值或缺陷触发。[一手：固定源码]
+- 同tag的[deployment-id.ts](https://github.com/vercel/next.js/blob/2864b1772c37242a9b40ab4d366eb7d368c2a070/packages/next/src/shared/lib/deployment-id.ts)读取后移除HTML的data-dpl-id；client/components/router-reducer下的reducers/server-action-reducer.ts L127–130传送此ID，fetch-server-response.ts L258–265不匹配时转整页导航。因此应抓原始响应和请求。[一手：固定源码]
+
+### 当前现成方案的范围
+
+- [Next自托管指南](https://nextjs.org/docs/app/guides/self-hosting#version-skew)（2026-10-15更新）以deploymentId检测不匹配后硬导航，组件状态可能丢失；它不是自动路由旧后端。其不可变资产建议适合保留旧chunk，不能据此保证旧API、写入契约或共享数据库仍兼容。[一手；研究：边界]
+- [Vercel当前文档](https://vercel.com/docs/skew-protection)：框架管理的请求可带ID，手写fetch需另处理；默认document导航到新版，长会话可用cookie额外固定并在结束时清除。默认保护年龄从部署创建起一天，受保留期／安全阈值限制，删除后不可达。Pro／Enterprise支持；prebuilt自定义ID要求Next大于16.2.0-canary.15、CLI大于50.3.3。跨源另核允许域。具体参数按目标项目重核。[一手]
+- [Netlify Next说明](https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/#skew-protection)为opt-in，手写fetch不自动带ID；[部署总览](https://docs.netlify.com/deploy/deploy-overview/#skew-protection)另限定production context、旧部署仍可用，并在硬导航时忽略锁版信号。不能将Vercel长会话cookie配方泛化到所有平台。[一手]
+- [Vite preloadError](https://vite.dev/guide/build#load-error-handling)提供刷新示例并要求HTML正确再验证缓存；这是资源失败恢复入口，不替应用决定未保存工作能否丢弃。[一手；研究：采用边界]
+
+### 跨发布回归设计（未运行）
+
+1. **人给任务承诺，Agent列检查对象。** 指定首次交付或已有用户更新；后者给A版本旧页任务、不可丢状态、实际框架／adapter／CLI／构建入口。Agent盘点动态资源、导航／预取、Server Action、手写fetch和外部请求。
+2. **保留旧输入再检查新版。** A页开始任务，再发布B；旧页继续操作、新标签打开B。分别记录原始HTML／资源身份、请求实际到达的部署（可信响应标记或内容）、草稿及业务写入结果。ID出现在请求上不证明路由生效，路由正确也不证明写入语义正确。
+3. **按承诺选择恢复。** 状态可丢时验证受控刷新和失败恢复；不可丢时验证保存／恢复、任务结束后的换版及重试不重复写入。只缺旧chunk可先保不可变资源；涉及旧服务契约才核原生锁版。数据库、外服、后台任务及实时连接不因前端锁版自动固定。
+4. **核退出与反例。** 覆盖软／硬导航、跨标签、实际prebuilt入口、漏锁请求、保护到期及安全撤回。网络失败不能假定刷新可修；检查刷新环与明确恢复路径。设计应在获准的隔离环境执行，不在生产制造破坏性故障。
+
+**人把关**不可丢内容、允许中断与安全更新优先级；**Agent承担**配置／请求盘点和回归准备，报告实际执行范围。保旧资源有存储清理成本，保旧部署有安全修补和期限成本，保草稿有兼容及重试成本；净收益、工时与金额均未知。现成方案足够时不加SW；有必要的逐标签或离线缺口且能承担兼容维护时才另评估。[研究：条件选择]
+
+本轮只读公开资料与固定源码，未部署、运行客户端／候选／模型；以上回归全部未运行。资料支撑“改变验收输入”，不证明应用无中断或 Agent 提效。
 
 <a id="s197"></a>
 
