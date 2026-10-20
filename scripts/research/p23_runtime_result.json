@@ -526,5 +526,133 @@
       "scope": "Three safe execution packets and allowed installed public sources checked; audit-failure counterexample fixed and independently retested; packaged AST equivalence and 15 tests/import smoke passed. Not a fresh application run, full repository suite, or proof of all descendant cleanup.",
       "availability": "local read-only report identity, not a public download URL; research/result preserve public summary"
     }
+  },
+  "observed_full_build_supplement": {
+    "started_utc": "2026-10-20T23:23:04.634793+00:00",
+    "source_commit": "f4c2d467e02abd2c859aedf4b709ec93552e7049",
+    "scope": "One cold full next build with reviewed observation patches; no application start or e1-e4 replay. Does not identify the cause of the earlier 264.514-second failure.",
+    "runtime": {
+      "node": "24.19.0",
+      "next": "16.4.1",
+      "typescript": "7.0.2"
+    },
+    "result": {
+      "command": [
+        "node",
+        "node_modules/next/dist/bin/next",
+        "build"
+      ],
+      "limit_seconds": 600,
+      "build_exit": 1,
+      "timed_out": false,
+      "build_seconds": 477.372,
+      "observation_complete": true,
+      "observation_failure": false,
+      "receipt_errors": [],
+      "cleanup_complete": true,
+      "fixture_final": {
+        "exit_code": 0,
+        "routers_created": 1,
+        "state": "S0",
+        "audit_fatal": null,
+        "optional_collection_products": false
+      },
+      "qualification_passed": false
+    },
+    "compiler_calls": [
+      {
+        "role": "showConfig",
+        "started_utc": "2026-10-20T23:24:55.937Z",
+        "closed_utc": "2026-10-20T23:24:56.140Z",
+        "elapsed_seconds": 0.202368,
+        "raw_code": 0,
+        "raw_signal": null,
+        "direct_native_executable_observed": true,
+        "captured_text": {
+          "stdout": {
+            "raw_bytes": 12994,
+            "raw_sha256": "b080c4396c8c4a0a67fe0e8cf3e6c668a06b305cf6c07caa33dc73cf641ec321",
+            "sanitized_bytes": 12994,
+            "sanitized_sha256": "b080c4396c8c4a0a67fe0e8cf3e6c668a06b305cf6c07caa33dc73cf641ec321"
+          },
+          "stderr": {
+            "raw_bytes": 0,
+            "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sanitized_bytes": 0,
+            "sanitized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "elapsed_basis": "monotonic_ns difference; not wall-clock UTC subtraction",
+        "captureOutput": true
+      },
+      {
+        "role": "checker",
+        "started_utc": "2026-10-20T23:24:56.145Z",
+        "closed_utc": "2026-10-20T23:31:01.990Z",
+        "elapsed_seconds": 365.845171,
+        "raw_code": null,
+        "raw_signal": "SIGKILL",
+        "direct_native_executable_observed": true,
+        "captured_text": {
+          "stdout": {
+            "raw_bytes": 0,
+            "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sanitized_bytes": 0,
+            "sanitized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stderr": {
+            "raw_bytes": 0,
+            "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sanitized_bytes": 0,
+            "sanitized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "elapsed_basis": "monotonic_ns difference; not wall-clock UTC subtraction",
+        "captureOutput": false
+      }
+    ],
+    "cleanup": {
+      "registered_groups": 4,
+      "all_registered_groups_absent": true,
+      "sigkill_sent_by_cleanup": false,
+      "sent_signals": [
+        "SIGTERM to the owned fixture"
+      ],
+      "build_exit_recorded_before_cleanup": true,
+      "scope": "Only registered owned groups; not proof that no unobserved detached descendant existed."
+    },
+    "fixture_requests": {
+      "searchFacets": 1,
+      "origin": "driver readiness",
+      "state": "S0",
+      "four_operation_build_sufficiency": "not reached",
+      "fifth_operation_enabled": false
+    },
+    "identity": {
+      "run_observed_build.py": "a9ce7babe07ab428678c61e74c09a85b53c29cf01dfa74a46e1cf1cd64e5192c",
+      "observer.cjs": "a5a157a4cbdfa856295ce189978184c5d7893f1696276db1f70664a8696334d2",
+      "ts-wrapper-observation.patch": "34d70f6756a6d92b6954b7966adc0409150bb14804e09d5625b62e080cab3ad2",
+      "frozen-preparation.json": "9fd7dfee7ec288db26d95fa4e7f7b234b953df059c374ff79855615a007a71d7",
+      "shop/node_modules/typescript/lib/tsc.js": "a820cc15fcd15d143ec353ee94acaff4fca614de75d8e656b0aa9d521e199977",
+      "shop/node_modules/next/dist/lib/typescript/runTypeScriptCli.js": "6ed41834f6c90c4aeef02f6939808da04a1b8d119c573dd5d78b228e4b898bc9"
+    },
+    "evidence_manifests": {
+      "raw_output_sha256": "41968b2063dbe0c9b8d2e0d9cac231f5ae0c20c40a316fe19d47e70e25c303a4",
+      "sanitized_receipt_sha256": "971fc4dbf003b59cca2e0a4b7380f52157614ca5a8cf2ebbe0107c3816e6d436"
+    },
+    "limits": [
+      "SIGKILL does not identify the sender or prove OOM, a TypeScript code defect, or Turbopack shutdown causation.",
+      "Observation patches add synchronous hashing/logging overhead; timing is not comparable as an unmodified replay.",
+      "Streams are Next-visible decoded UTF-8 text, not guaranteed byte-raw.",
+      "No retry, installation, application service, e1-e4, model or hosted CI run.",
+      "The historical focused production success and earlier full-build failures remain separate evidence.",
+      "Only the result/evidence summary is published here, not the task-specific supervisor, 317-file preparation layout or installed dependency snapshot; this is not a one-command reproducer.",
+      "The TypeScript observation copy also normalized CRLF to LF; postimage hashes identify the actual bytes."
+    ],
+    "independent_result_review": {
+      "report_id": "p23-native-exit-independent-review-20261021",
+      "sha256": "52a33bc30f6ee1b9dd94a1c6b861e025e057b4db9df87fdcfa0222f2a984a068",
+      "conclusion": "Scoped evidence accepted; build remains failed, sender/cause unknown."
+    }
   }
 }

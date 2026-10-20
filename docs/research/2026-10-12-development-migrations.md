@@ -146,6 +146,20 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 本次不改变最高水平卡、前沿比较状态或迁移评级。原生Next全站门尚未闭合，OpenNext／Vinext的同题比较继续保留为缺口。[研究]
 
+#### 完整build补观察：原生检查进程收到SIGKILL（2026-10-21）
+
+**✅ 外层只报类型检查失败时，先核原进程退出，不让Agent直接改类型或跳过构建。** 同一公开shop的全新冷副本只运行一次完整build；07:23:04（UTC+8）起，编译日志111秒，整次477.372秒后exit1，未触及600秒上限。本次保住了原生checker的`code=null、signal=SIGKILL`，其转发stdout／stderr均为空；showConfig原生退出0。这是新运行的终止证据，不补猜旧264.514秒失败的原因。[本仓公开应用运行]
+
+**信号不是原因。** 根进程先取得build exit1，后进入清理；回执中清理只向自有fixture发SIGTERM，没有发SIGKILL。尚无信号发送者、OOM或资源曲线证据，不能认定内存不足、TypeScript源代码错误或Turbopack关闭工作导致失败。Agent应先保退出／信号和对应输出，人决定有新因果证据后检验哪一项；不盲升版、加资源或再跑独立tsc。[研究]
+
+观察器只改独立依赖副本的Next／TS窄记录点，未改版本、原编译参数、声明资源及shutdown顺序。源311项、原依赖32926项及原receipt身份保持；记录有同步hash／日志开销，输出为Next解码的UTF-8文本，不能拿477秒对旧运行计算效率。[本仓执行／源码边界]
+
+**完整构建与四operation资格仍未通过。** fixture保持S0、第五operation关闭，仅收到驱动readiness的searchFacets一次；没有启动app或e1–e4。登记的四个自有进程组最终均不存在，但未观测的瞬时脱离后代不作全系统清空保证。实际字段、每CLI时刻／输出身份及清单见[observed_full_build_supplement](../../scripts/research/p23_runtime_result.json)。[本仓运行；研究]
+
+观察脚本初审曾拦下PID身份收编、清理顺序、重复事件假完整及finally丢回执，修后22项限定合成检查通过才执行；合成不代替本次真实结果独审。既有最高水平卡、迁移评级与原focused两轮结果不变，不因捕获信号就称P23完成。[研究]
+
+本提交只保存结果与证据身份，不打包专用监督器、317项准备布局或已安装依赖，不是一键复现入口。TS观察副本另有CRLF转LF，实际字节以postimage哈希为准。真实结果独审报告标识`p23-native-exit-independent-review-20261021`、SHA256 `52a33bc30f6ee1b9dd94a1c6b861e025e057b4db9df87fdcfa0222f2a984a068`；四文件发布稿独审通过，报告SHA256 `b87ea704e7041bdd7445b1b70fe4422a738595c3954638b7166c61e7a961929f`；最终树完整离线另验。[研究]
+
 #### 已执行的dev两轮及Git接续（2026-10-21）
 
 **历史dev记录（生产补充前的结论，以下缺项仅指当时）：✅ 原消费者通路可跑；暂不升级迁移评级。** Node24.19.0／pnpm12.8.2／Next16.4.1／React19.3.0／sharp0.35.5；只接`storefront.request`到同一合成源，保原布局、GraphQL操作、转换、页面、metadata、正文和sitemap。footer另有明确七字段null policies，未知操作失败，不回退真实商店；并非全站／Hydrogen HTTP／真实Shopify契约。[研究：本仓运行]
