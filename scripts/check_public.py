@@ -29,6 +29,8 @@ SAFE_EMAIL = re.compile(
 GITHUB_NOREPLY = re.compile(
   r"(?:[0-9]+\+)?[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*(?:\[bot\])?@users\.noreply\.github\.com"
   r"|noreply@github\.com", re.I | re.ASCII)
+# Machine identities of agent platforms that commit here; exact match only.
+AGENT_NOREPLY = {"noreply@anthropic.com"}
 # Generic install locations, sandboxes and documentation placeholders, not a person's machine.
 SAFE_HOME_NAMES = {"shared", "user", "username", "runner", "foo", "bar", "example", "you", "me", "name"}
 ALLOW_FILE = "scripts/public-scan-allow.txt"
@@ -97,7 +99,7 @@ def scan_commits(root, revisions):
   for line in result.stdout.splitlines():
     sha, author, committer = line.split("\t")
     for role, email in (("author", author), ("committer", committer)):
-      if not GITHUB_NOREPLY.fullmatch(email):
+      if not GITHUB_NOREPLY.fullmatch(email) and email not in AGENT_NOREPLY:
         findings.append({"kind": "commit-email", "commit": sha, "role": role,
                          "match": (email.split("@")[0][:2] + "…@" + email.split("@")[-1]
                                    if "@" in email else "[non-email]")})

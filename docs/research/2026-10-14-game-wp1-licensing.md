@@ -214,7 +214,7 @@ Tilemap包与旧仓库的许可证没有内嵌v1.4，所链官网当前为1.4，
 
 核实2026-10-14 03:41 UTC+8。完整来源、固定代码及反例详载[WP7许可增量][w7-1]；已有Wan／LTX／Runway基础行保留，不外推新托管型号。[一手／研究]
 
-- [Google付费Developer API][w7-1]：`gemini-omni-1.1-flash`及`veo-3.1-generate-preview`／fast／lite，商用／Paid数据／地区按专有API核，不套消费者订阅或玩家API。
+- [Google付费Developer API][w7-1]：`gemini-omni-1.1-flash`继续条件评估；Veo Standard／fast／lite三个Preview ID将于2026-10-22停用，不新接。其他渠道GA须另核合同／地区／价格，不能套该Developer API或消费者订阅。[官方停用表](https://ai.google.dev/gemini-api/docs/deprecations)，2026-10-20补核。
 - [Omni具体模式][w7-2]：首尾／延展、上传片地区限制与自产片另路见该节；旧总入口不反证能力缺失，控制入口不保证连续性或改变输出权利。
 - [Runway Aleph2.0／Gen-4.5][w7-3]：一般条款§4.4及训练条件、第三方关键帧模型、官方Dev API与Web计价分别核；商用输出不授权任意自动化／抓取／绕导出，玩家API义务沿本记录基础行。
 - [正式导出][w7-4]：Runway结果URL24–48小时过期、Veo保留2天；保存生成ID、时间／套餐／条款、合法下载及本地master，不将临时URL交作资源。所有权、可取得文件和URL持续性不同。
