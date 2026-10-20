@@ -1,0 +1,697 @@
+diff --git a/src/features/users/components/data-table-bulk-actions.tsx b/src/features/users/components/data-table-bulk-actions.tsx
+index 4a8f942..0a40307 100644
+--- a/src/features/users/components/data-table-bulk-actions.tsx
++++ b/src/features/users/components/data-table-bulk-actions.tsx
+@@ -1,6 +1,6 @@
+-import { useState } from 'react'
++import { useRef, useState } from 'react'
+ import { type Table } from '@tanstack/react-table'
+-import { Trash2, UserX, UserCheck, Mail } from 'lucide-react'
++import { Trash2, UserX, UserCheck, Mail, UserPen } from 'lucide-react'
+ import { toast } from 'sonner'
+ import { sleep } from '@/lib/utils'
+ import { Button } from '@/components/ui/button'
+@@ -10,18 +10,30 @@ import {
+   TooltipTrigger,
+ } from '@/components/ui/tooltip'
+ import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
++import {
++  beginBulkEdit,
++  closeBulkEdit,
++  type BulkEditPatch,
++} from '../data/bulk-edit'
+ import { type User } from '../data/schema'
++import { UsersBulkEditDialog } from './users-bulk-edit-dialog'
+ import { UsersMultiDeleteDialog } from './users-multi-delete-dialog'
+
+-type DataTableBulkActionsProps<TData> = {
+-  table: Table<TData>
++type DataTableBulkActionsProps = {
++  table: Table<User>
+   overlayClassName?: string
++  onBulkEdit?: (ids: string[], patch: BulkEditPatch) => void
++  onListFocus?: () => void
+ }
+
+-export function DataTableBulkActions<TData>({
++export function DataTableBulkActions({
+   table,
++  onBulkEdit,
+   overlayClassName,
+-}: DataTableBulkActionsProps<TData>) {
++  onListFocus,
++}: DataTableBulkActionsProps) {
++  const editButtonRef = useRef<HTMLButtonElement>(null)
++  const [editSession, setEditSession] = useState(closeBulkEdit)
+   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+   const selectedRows = table.getFilteredSelectedRowModel().rows
+
+@@ -58,6 +70,29 @@ export function DataTableBulkActions<TData>({
+         entityName='user'
+         tooltipContentClassName={overlayClassName}
+       >
++        {onBulkEdit && (
++          <Tooltip>
++            <TooltipTrigger asChild>
++              <Button
++                ref={editButtonRef}
++                variant='outline'
++                size='icon'
++                className='size-8'
++                aria-label='Edit currently filtered selected users'
++                onClick={() =>
++                  setEditSession(
++                    beginBulkEdit(table.getFilteredSelectedRowModel().rows)
++                  )
++                }
++              >
++                <UserPen />
++              </Button>
++            </TooltipTrigger>
++            <TooltipContent className={overlayClassName}>
++              <p>Edit currently filtered selected users</p>
++            </TooltipContent>
++          </Tooltip>
++        )}
+         <Tooltip>
+           <TooltipTrigger asChild>
+             <Button
+@@ -135,6 +170,23 @@ export function DataTableBulkActions<TData>({
+         </Tooltip>
+       </BulkActionsToolbar>
+
++      {onBulkEdit && (
++        <UsersBulkEditDialog
++          open={editSession.open}
++          selectedIds={editSession.selectedIds}
++          onOpenChange={(open) => {
++            if (!open) setEditSession(closeBulkEdit())
++          }}
++          onConfirm={(ids, patch) => {
++            onBulkEdit(ids, patch)
++            table.resetRowSelection()
++          }}
++          onCloseFocus={() => {
++            if (editButtonRef.current) editButtonRef.current.focus()
++            else onListFocus?.()
++          }}
++        />
++      )}
+       <UsersMultiDeleteDialog
+         table={table}
+         open={showDeleteConfirm}
+diff --git a/src/features/users/components/users-bulk-edit-dialog.test.tsx b/src/features/users/components/users-bulk-edit-dialog.test.tsx
+new file mode 100644
+index 0000000..54a5e5b
+--- /dev/null
++++ b/src/features/users/components/users-bulk-edit-dialog.test.tsx
+@@ -0,0 +1,105 @@
++// Browser-mode regression source. Execution is pending a permitted browser.
++// Keep the dialog component mounted while open changes to exercise real reset.
++import { useRef, useState } from 'react'
++import { describe, expect, it, vi } from 'vitest'
++import { render } from 'vitest-browser-react'
++import { userEvent } from 'vitest/browser'
++import { type BulkEditPatch } from '../data/bulk-edit'
++import { UsersBulkEditDialog } from './users-bulk-edit-dialog'
++
++function Harness({
++  onConfirm,
++}: {
++  onConfirm: (ids: string[], patch: BulkEditPatch) => void
++}) {
++  const [open, setOpen] = useState(true)
++  const reopen = useRef<HTMLButtonElement>(null)
++  return (
++    <>
++      <button ref={reopen} type='button' onClick={() => setOpen(true)}>
++        Reopen
++      </button>
++      <UsersBulkEditDialog
++        open={open}
++        onOpenChange={setOpen}
++        selectedIds={['U1']}
++        onConfirm={onConfirm}
++        onCloseFocus={() => reopen.current?.focus()}
++      />
++    </>
++  )
++}
++
++describe('UsersBulkEditDialog continuously mounted', () => {
++  it('disables empty submit and resets both controlled selects after cancel/reopen', async () => {
++    const confirm = vi.fn()
++    const screen = await render(<Harness onConfirm={confirm} />)
++    const apply = screen.getByRole('button', { name: 'Apply locally' })
++    await expect.element(apply).toBeDisabled()
++    await userEvent.click(screen.getByRole('combobox', { name: 'Role' }))
++    await userEvent.click(
++      screen.getByRole('option', { name: 'Manager', exact: true })
++    )
++    await userEvent.click(screen.getByRole('combobox', { name: 'Status' }))
++    await userEvent.click(
++      screen.getByRole('option', { name: 'active', exact: true })
++    )
++    await expect.element(apply).toBeEnabled()
++    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
++    expect(confirm).not.toHaveBeenCalled()
++    await expect
++      .element(screen.getByRole('button', { name: 'Reopen' }))
++      .toHaveFocus()
++    await userEvent.click(screen.getByRole('button', { name: 'Reopen' }))
++    await expect
++      .element(screen.getByRole('combobox', { name: 'Role' }))
++      .toHaveTextContent('Do not change')
++    await expect
++      .element(screen.getByRole('combobox', { name: 'Status' }))
++      .toHaveTextContent('Do not change')
++    await expect.element(apply).toBeDisabled()
++  })
++
++  it('submits snapshot IDs and only the changed field once', async () => {
++    const confirm = vi.fn()
++    const screen = await render(<Harness onConfirm={confirm} />)
++    await userEvent.click(screen.getByRole('combobox', { name: 'Status' }))
++    await userEvent.click(
++      screen.getByRole('option', { name: 'active', exact: true })
++    )
++    await userEvent.click(screen.getByRole('button', { name: 'Apply locally' }))
++    await vi.waitFor(() =>
++      expect(confirm).toHaveBeenCalledExactlyOnceWith(['U1'], {
++        status: 'active',
++      })
++    )
++    await userEvent.click(screen.getByRole('button', { name: 'Reopen' }))
++    await expect
++      .element(screen.getByRole('button', { name: 'Apply locally' }))
++      .toBeDisabled()
++  })
++
++  it('Escape and close discard without submitting; same instance reopens empty', async () => {
++    const confirm = vi.fn()
++    const screen = await render(<Harness onConfirm={confirm} />)
++    for (const close of ['escape', 'button']) {
++      await userEvent.click(screen.getByRole('combobox', { name: 'Role' }))
++      await userEvent.click(
++        screen.getByRole('option', { name: 'Admin', exact: true })
++      )
++      if (close === 'escape') await userEvent.keyboard('{Escape}')
++      else
++        await userEvent.click(
++          screen.getByRole('button', { name: 'Close', exact: true })
++        )
++      expect(confirm).not.toHaveBeenCalled()
++      await userEvent.click(screen.getByRole('button', { name: 'Reopen' }))
++      await expect
++        .element(screen.getByRole('combobox', { name: 'Role' }))
++        .toHaveTextContent('Do not change')
++      await expect
++        .element(screen.getByRole('button', { name: 'Apply locally' }))
++        .toBeDisabled()
++    }
++  })
++})
+diff --git a/src/features/users/components/users-bulk-edit-dialog.tsx b/src/features/users/components/users-bulk-edit-dialog.tsx
+new file mode 100644
+index 0000000..64fe978
+--- /dev/null
++++ b/src/features/users/components/users-bulk-edit-dialog.tsx
+@@ -0,0 +1,171 @@
++import { useRef } from 'react'
++import { useForm, useWatch } from 'react-hook-form'
++import { zodResolver } from '@hookform/resolvers/zod'
++import { Button } from '@/components/ui/button'
++import {
++  Dialog,
++  DialogContent,
++  DialogDescription,
++  DialogFooter,
++  DialogHeader,
++  DialogTitle,
++} from '@/components/ui/dialog'
++import {
++  Form,
++  FormField,
++  FormItem,
++  FormLabel,
++  FormMessage,
++} from '@/components/ui/form'
++import { SelectDropdown } from '@/components/select-dropdown'
++import {
++  bulkEditDraftSchema,
++  draftToPatch,
++  emptyBulkEditDraft,
++  NO_CHANGE,
++  type BulkEditDraft,
++  type BulkEditPatch,
++} from '../data/bulk-edit'
++import { roles } from '../data/data'
++import { userStatusSchema } from '../data/schema'
++
++type UsersBulkEditDialogProps = {
++  open: boolean
++  onOpenChange: (open: boolean) => void
++  selectedIds: string[]
++  onConfirm: (ids: string[], patch: BulkEditPatch) => void
++  onCloseFocus: () => void
++}
++
++export function UsersBulkEditDialog({
++  open,
++  onOpenChange,
++  selectedIds,
++  onConfirm,
++  onCloseFocus,
++}: UsersBulkEditDialogProps) {
++  const submitting = useRef(false)
++  const form = useForm<BulkEditDraft>({
++    resolver: zodResolver(bulkEditDraftSchema),
++    defaultValues: emptyBulkEditDraft(),
++  })
++  const values = useWatch({ control: form.control })
++  const hasChange = values.role !== NO_CHANGE || values.status !== NO_CHANGE
++
++  const changeOpen = (next: boolean) => {
++    form.reset(emptyBulkEditDraft())
++    submitting.current = false
++    onOpenChange(next)
++  }
++
++  const onSubmit = (draft: BulkEditDraft) => {
++    if (submitting.current || selectedIds.length === 0) return
++    submitting.current = true
++    try {
++      const patch = draftToPatch(draft)
++      onConfirm([...selectedIds], patch)
++      changeOpen(false)
++    } catch {
++      form.setError('root', {
++        message: 'No changes applied. Choose a valid field and try again.',
++      })
++      submitting.current = false
++    }
++  }
++
++  return (
++    <Dialog open={open} onOpenChange={changeOpen}>
++      <DialogContent
++        className='users-theme users-density sm:max-w-lg'
++        onCloseAutoFocus={(event) => {
++          event.preventDefault()
++          onCloseFocus()
++        }}
++      >
++        <DialogHeader className='text-start'>
++          <DialogTitle>Edit {selectedIds.length} selected users</DialogTitle>
++          <DialogDescription>
++            Only users selected under the current filters when this dialog
++            opened will change. Local demo only; refresh resets the data.
++          </DialogDescription>
++        </DialogHeader>
++        <Form {...form}>
++          <form
++            id='users-bulk-edit-form'
++            onSubmit={(event) => void form.handleSubmit(onSubmit)(event)}
++            className='users-edit-form'
++          >
++            <FormField
++              control={form.control}
++              name='role'
++              render={({ field }) => (
++                <FormItem>
++                  <FormLabel>Role</FormLabel>
++                  <SelectDropdown
++                    isControlled
++                    defaultValue={field.value}
++                    onValueChange={field.onChange}
++                    contentClassName='users-theme users-density'
++                    items={[
++                      { label: 'Do not change', value: NO_CHANGE },
++                      ...roles,
++                    ]}
++                  />
++                  <FormMessage />
++                </FormItem>
++              )}
++            />
++            <FormField
++              control={form.control}
++              name='status'
++              render={({ field }) => (
++                <FormItem>
++                  <FormLabel>Status</FormLabel>
++                  <SelectDropdown
++                    isControlled
++                    defaultValue={field.value}
++                    onValueChange={field.onChange}
++                    contentClassName='users-theme users-density'
++                    items={[
++                      { label: 'Do not change', value: NO_CHANGE },
++                      ...userStatusSchema.options.map((status) => ({
++                        label: status.value,
++                        value: status.value,
++                      })),
++                    ]}
++                  />
++                  <FormMessage />
++                </FormItem>
++              )}
++            />
++            {form.formState.errors.root && (
++              <p role='alert' className='text-sm text-destructive'>
++                {form.formState.errors.root.message}
++              </p>
++            )}
++          </form>
++        </Form>
++        <DialogFooter>
++          <Button
++            type='button'
++            variant='outline'
++            onClick={() => changeOpen(false)}
++          >
++            Cancel
++          </Button>
++          <Button
++            type='submit'
++            form='users-bulk-edit-form'
++            disabled={
++              !hasChange ||
++              selectedIds.length === 0 ||
++              form.formState.isSubmitting
++            }
++          >
++            Apply locally
++          </Button>
++        </DialogFooter>
++      </DialogContent>
++    </Dialog>
++  )
++}
+diff --git a/src/features/users/components/users-table.tsx b/src/features/users/components/users-table.tsx
+index fd68f83..2e07f2b 100644
+--- a/src/features/users/components/users-table.tsx
++++ b/src/features/users/components/users-table.tsx
+@@ -1,4 +1,4 @@
+-import { useEffect, useMemo, useState } from 'react'
++import { useEffect, useMemo, useRef, useState } from 'react'
+ import {
+   type SortingState,
+   type VisibilityState,
+@@ -22,6 +22,7 @@ import {
+   TableRow,
+ } from '@/components/ui/table'
+ import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
++import { type BulkEditPatch } from '../data/bulk-edit'
+ import { roles } from '../data/data'
+ import { type User } from '../data/schema'
+ import { DataTableBulkActions } from './data-table-bulk-actions'
+@@ -30,6 +31,7 @@ import { createUsersColumns } from './users-columns'
+ type DataTableProps = {
+   data: User[]
+   overlayClassName?: string
++  onBulkEdit?: (ids: string[], patch: BulkEditPatch) => void
+   search: Record<string, unknown>
+   navigate: NavigateFn
+ }
+@@ -38,12 +40,14 @@ export function UsersTable({
+   data,
+   search,
+   navigate,
++  onBulkEdit,
+   overlayClassName,
+ }: DataTableProps) {
+   const columns = useMemo(
+     () => createUsersColumns(overlayClassName),
+     [overlayClassName]
+   )
++  const listRef = useRef<HTMLDivElement>(null)
+   // Local UI-only states
+   const [rowSelection, setRowSelection] = useState({})
+   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+@@ -77,6 +81,8 @@ export function UsersTable({
+   const table = useReactTable({
+     data,
+     columns,
++    // Stable business IDs for editable demo data; preserve other callers.
++    getRowId: onBulkEdit ? (user) => user.id : undefined,
+     state: {
+       sorting,
+       pagination,
+@@ -104,6 +110,9 @@ export function UsersTable({
+
+   return (
+     <div
++      ref={listRef}
++      tabIndex={onBulkEdit ? -1 : undefined}
++      aria-label={onBulkEdit ? 'Users list' : undefined}
+       className={cn(
+         'max-sm:has-[div[role="toolbar"]]:mb-16', // Add margin bottom to the table on mobile when the toolbar is visible
+         'flex flex-1 flex-col gap-4'
+@@ -203,7 +212,12 @@ export function UsersTable({
+         className='mt-auto'
+         overlayClassName={overlayClassName}
+       />
+-      <DataTableBulkActions table={table} overlayClassName={overlayClassName} />
++      <DataTableBulkActions
++        overlayClassName={overlayClassName}
++        table={table}
++        onBulkEdit={onBulkEdit}
++        onListFocus={() => listRef.current?.focus()}
++      />
+     </div>
+   )
+ }
+diff --git a/src/features/users/data/bulk-edit.ts b/src/features/users/data/bulk-edit.ts
+new file mode 100644
+index 0000000..91933fb
+--- /dev/null
++++ b/src/features/users/data/bulk-edit.ts
+@@ -0,0 +1,66 @@
++import { z } from 'zod'
++import { userRoleSchema, userStatusSchema, type User } from './schema.ts'
++
++export const NO_CHANGE = 'no-change' as const
++export const bulkEditDraftSchema = z.object({
++  role: z.union([z.literal(NO_CHANGE), userRoleSchema]),
++  status: z.union([z.literal(NO_CHANGE), userStatusSchema]),
++})
++export type BulkEditDraft = z.infer<typeof bulkEditDraftSchema>
++
++export const bulkEditPatchSchema = z
++  .object({
++    role: userRoleSchema.optional(),
++    status: userStatusSchema.optional(),
++  })
++  .strict()
++  .refine((patch) => patch.role !== undefined || patch.status !== undefined, {
++    message: 'Choose at least one field to change.',
++  })
++export type BulkEditPatch = z.infer<typeof bulkEditPatchSchema>
++
++export function emptyBulkEditDraft(): BulkEditDraft {
++  return { role: NO_CHANGE, status: NO_CHANGE }
++}
++
++export function draftToPatch(draft: BulkEditDraft): BulkEditPatch {
++  const parsed = bulkEditDraftSchema.parse(draft)
++  return bulkEditPatchSchema.parse({
++    ...(parsed.role === NO_CHANGE ? {} : { role: parsed.role }),
++    ...(parsed.status === NO_CHANGE ? {} : { status: parsed.status }),
++  })
++}
++
++export type BulkEditSession = { open: boolean; selectedIds: string[] }
++
++// Snapshot the filtered selection, not just the current page or hidden rows.
++export function beginBulkEdit(
++  rows: readonly { original: Pick<User, 'id'> }[]
++): BulkEditSession {
++  return {
++    open: true,
++    selectedIds: [...new Set(rows.map((row) => row.original.id))],
++  }
++}
++
++// Closing discards only the dialog session. Data and selection are untouched.
++export function closeBulkEdit(): BulkEditSession {
++  return { open: false, selectedIds: [] }
++}
++
++export function applyBulkEdit(
++  users: User[],
++  ids: readonly string[],
++  patch: BulkEditPatch
++): User[] {
++  const parsed = bulkEditPatchSchema.parse(patch)
++  // Omitted fields, including explicit undefined, must preserve existing data.
++  const changes = {
++    ...(parsed.role === undefined ? {} : { role: parsed.role }),
++    ...(parsed.status === undefined ? {} : { status: parsed.status }),
++  }
++  const targets = new Set(ids)
++  return users.map((user) =>
++    targets.has(user.id) ? { ...user, ...changes } : user
++  )
++}
+diff --git a/src/features/users/data/schema.ts b/src/features/users/data/schema.ts
+index 601a904..62182b1 100644
+--- a/src/features/users/data/schema.ts
++++ b/src/features/users/data/schema.ts
+@@ -1,6 +1,6 @@
+ import { z } from 'zod'
+
+-const userStatusSchema = z.union([
++export const userStatusSchema = z.union([
+   z.literal('active'),
+   z.literal('inactive'),
+   z.literal('invited'),
+@@ -8,7 +8,7 @@ const userStatusSchema = z.union([
+ ])
+ export type UserStatus = z.infer<typeof userStatusSchema>
+
+-const userRoleSchema = z.union([
++export const userRoleSchema = z.union([
+   z.literal('superadmin'),
+   z.literal('admin'),
+   z.literal('cashier'),
+diff --git a/src/features/users/index.tsx b/src/features/users/index.tsx
+index eae9442..43ef263 100644
+--- a/src/features/users/index.tsx
++++ b/src/features/users/index.tsx
+@@ -11,11 +11,13 @@ import { UsersDialogs } from './components/users-dialogs'
+ import { UsersPrimaryButtons } from './components/users-primary-buttons'
+ import { UsersProvider } from './components/users-provider'
+ import { UsersTable } from './components/users-table'
++import { applyBulkEdit } from './data/bulk-edit'
+ import { users } from './data/users'
+
+ const route = getRouteApi('/_authenticated/users/')
+
+ export function Users() {
++  const [demoUsers, setDemoUsers] = useState(users)
+   const search = route.useSearch()
+   const navigate = route.useNavigate()
+   const [density, setDensity] = useState<'comfortable' | 'compact'>(
+@@ -68,11 +70,18 @@ export function Users() {
+               </Button>
+             ))}
+           </div>
++          <p className='text-sm text-muted-foreground'>
++            Batch edits are local demo changes only. Refresh to reset data;
++            other actions remain demonstrations.
++          </p>
+           <UsersTable
+             overlayClassName='users-theme users-density'
+-            data={users}
++            data={demoUsers}
+             search={search}
+             navigate={navigate}
++            onBulkEdit={(ids, patch) =>
++              setDemoUsers((current) => applyBulkEdit(current, ids, patch))
++            }
+           />
+         </div>
+       </Main>
+diff --git a/tests/p24-bulk-edit.node-check.mjs b/tests/p24-bulk-edit.node-check.mjs
+new file mode 100644
+index 0000000..f143770
+--- /dev/null
++++ b/tests/p24-bulk-edit.node-check.mjs
+@@ -0,0 +1,96 @@
++// Pure state checks, not browser, React mounting, focus, ARIA or visual tests.
++// Run: node --test tests/p24-bulk-edit.node-check.mjs (Node 24 strips TS).
++import test from 'node:test'
++import assert from 'node:assert/strict'
++import { createTable, getCoreRowModel, getFilteredRowModel, getPaginationRowModel } from '@tanstack/react-table'
++import { applyBulkEdit, beginBulkEdit, bulkEditPatchSchema, closeBulkEdit, draftToPatch, emptyBulkEditDraft, NO_CHANGE } from '../src/features/users/data/bulk-edit.ts'
++
++const users = Object.freeze([
++  { id: 'U1', firstName: 'One', lastName: 'Example', username: 'one', email: 'one@example.test', phoneNumber: '+12025550101', status: 'inactive', role: 'cashier', createdAt: new Date('2026-01-01'), updatedAt: new Date('2026-01-01') },
++  { id: 'U2', firstName: 'Two', lastName: 'Example', username: 'two', email: 'two@example.test', phoneNumber: '+12025550102', status: 'inactive', role: 'manager', createdAt: new Date('2026-01-01'), updatedAt: new Date('2026-01-01') },
++  { id: 'U3', firstName: 'Three', lastName: 'Example', username: 'three', email: 'three@example.test', phoneNumber: '+12025550103', status: 'active', role: 'admin', createdAt: new Date('2026-01-01'), updatedAt: new Date('2026-01-01') },
++].map(Object.freeze))
++
++function makeTable(selection, filters = []) {
++  return createTable({
++    data: users,
++    columns: [{ accessorKey: 'id' }, { accessorKey: 'status', filterFn: (row, id, value) => value.includes(row.getValue(id)) }],
++    state: { rowSelection: selection, columnFilters: filters, pagination: { pageIndex: 0, pageSize: 1 } },
++    getRowId: (user) => user.id,
++    getCoreRowModel: getCoreRowModel(),
++    getFilteredRowModel: getFilteredRowModel(),
++    getPaginationRowModel: getPaginationRowModel(),
++    onStateChange: () => {},
++    renderFallbackValue: null,
++  })
++}
++
++test('U1/U3 selection then inactive filter snapshots only U1, across stable IDs', () => {
++  const table = makeTable({ U1: true, U3: true }, [{ id: 'status', value: ['inactive'] }])
++  assert.deepEqual(beginBulkEdit(table.getFilteredSelectedRowModel().rows), { open: true, selectedIds: ['U1'] })
++  assert.deepEqual(Object.keys(table.getState().rowSelection), ['U1', 'U3'])
++  assert.equal(table.getCoreRowModel().rowsById.U1.original.id, 'U1')
++})
++
++test('snapshot spans selected pages but excludes hidden selections and stays fixed after filters change', () => {
++  const table = makeTable({ U1: true, U2: true, U3: true }, [{ id: 'status', value: ['inactive'] }])
++  assert.equal(table.getRowModel().rows.length, 1)
++  const session = beginBulkEdit(table.getFilteredSelectedRowModel().rows)
++  assert.deepEqual(session.selectedIds, ['U1', 'U2'])
++  table.setOptions((previous) => ({ ...previous, state: { ...previous.state, columnFilters: [{ id: 'status', value: ['active'] }] } }))
++  assert.deepEqual(beginBulkEdit(table.getFilteredSelectedRowModel().rows).selectedIds, ['U3'])
++  assert.deepEqual(session.selectedIds, ['U1', 'U2'])
++})
++
++test('status patch changes only snapshot IDs and preserves all other fields', () => {
++  const changed = applyBulkEdit(users, ['U1'], draftToPatch({ role: NO_CHANGE, status: 'active' }))
++  assert.deepEqual(changed[0], { ...users[0], status: 'active' })
++  assert.equal(changed[0].createdAt, users[0].createdAt)
++  assert.equal(changed[0].updatedAt, users[0].updatedAt)
++  assert.equal(changed[1], users[1])
++  assert.equal(changed[2], users[2])
++  assert.equal(users[0].status, 'inactive')
++  const table = makeTable({ U1: true, U3: true }, [{ id: 'status', value: ['inactive'] }])
++  table.setOptions((previous) => ({ ...previous, data: changed }))
++  assert.deepEqual(table.getFilteredRowModel().rows.map((row) => row.id), ['U2'])
++  assert.equal(table.getCoreRowModel().rowsById.U1.original.status, 'active')
++})
++
++test('role-only and both-field patches, duplicate and missing IDs stay bounded', () => {
++  const roleOnly = applyBulkEdit(users, ['U1', 'U1', 'missing'], { role: 'admin', status: undefined })
++  assert.deepEqual(roleOnly[0], { ...users[0], role: 'admin' })
++  assert.equal(roleOnly[1], users[1])
++  const both = applyBulkEdit(users, ['U2'], { role: 'cashier', status: 'suspended' })
++  assert.deepEqual(both[1], { ...users[1], role: 'cashier', status: 'suspended' })
++  assert.deepEqual(applyBulkEdit(users, [], { status: 'active' }), users)
++})
++
++test('empty, placeholder, malformed and unknown-field patches cannot write', () => {
++  for (const patch of [{}, { role: undefined }, { role: '' }, { status: '' }, { status: NO_CHANGE }, { role: 'owner' }, { status: 'active', email: 'overwritten@example.test' }, { status: null }]) {
++    assert.equal(bulkEditPatchSchema.safeParse(patch).success, false)
++    assert.throws(() => applyBulkEdit(users, ['U1'], patch))
++  }
++  assert.throws(() => draftToPatch(emptyBulkEditDraft()))
++  assert.throws(() => draftToPatch({ role: '', status: 'active' }))
++  assert.deepEqual(draftToPatch({ role: 'manager', status: NO_CHANGE }), { role: 'manager' })
++})
++
++test('pure cancel/reset discards session and draft without touching data or selection', () => {
++  const selection = Object.freeze({ U1: true, U3: true })
++  const table = makeTable(selection, [{ id: 'status', value: ['inactive'] }])
++  const opened = beginBulkEdit(table.getFilteredSelectedRowModel().rows)
++  let session = opened
++  let draft = { role: 'admin', status: 'active' }
++  const before = structuredClone(users)
++  // Same pure close/reset helpers called by the UI cancellation handlers.
++  session = closeBulkEdit()
++  draft = emptyBulkEditDraft()
++  assert.deepEqual(session, { open: false, selectedIds: [] })
++  assert.deepEqual(draft, { role: NO_CHANGE, status: NO_CHANGE })
++  assert.deepEqual(users, before)
++  assert.equal(table.getState().rowSelection, selection)
++  assert.deepEqual(selection, { U1: true, U3: true })
++  assert.deepEqual(opened.selectedIds, ['U1'])
++  assert.deepEqual(beginBulkEdit(table.getFilteredSelectedRowModel().rows), opened)
++  assert.notEqual(emptyBulkEditDraft(), draft)
++})

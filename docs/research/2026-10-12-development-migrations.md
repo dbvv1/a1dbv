@@ -1,6 +1,6 @@
 主线：三，兼四
 改变的建议：数据迁移先保受支持工具与写入权威；换托管先保应用消费者，再判断是否要换框架实现。[研究]
-新证据：2026-10-20保P22原纸面包，P23固定shop源码与两轮合成输入，核Shopify无文章回调、有限寿命路线与Vinext实际包；均未运行应用或模型。
+新证据：2026-10-21 P23固定shop安全基线的dev HTTP／RSC连续两轮通过；最高水平仍未知，生产迁移、共享缓存、浏览器导航与模型效果未验。P22保原纸面包。
 
 # 开发条件：数据与框架迁移
 
@@ -104,7 +104,40 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 **✅ 博客刷新／长文先保原Next及部署；明确迁出Vercel且选Node，才自托管Next。** Workers硬约束先评估OpenNext；⛔ Vinext1.2.1非本应用无损默认。Agent保两轮内容／消费者，人定平台、旧内容窗口及补丁责任。[研究；2026-10-20核]
 
-**以下是可重建纸面包，未安装／运行应用或模型、连接商店、部署。**[研究]
+#### 当前最高水平卡（2026-10-21）
+
+**最高水平未知；主流采用率亦未知，不以这些案例冒充行业分布。本案是可行性证据，不是“当前最好”。** 未找到同一真实Next应用迁移后两轮修改的受控质量比较。近期强工程参照为[Anthropic Scion（10月13日）](https://www.anthropic.com/research/redesigning-source-control)：生产迁移配隔离模拟、模糊测试与人审意图，但非Next且资源条件特殊；不据此估算本案Agent收益。[一手／研究]
+
+最贴近的前沿候选[Cloudflare Vinext1.0（9月28日）](https://blog.cloudflare.com/vinext-nextjs-on-vite/)报告生产使用与持续兼容测试，**>99%明确排除Cache Components**，不能覆盖本shop的核心依赖。生产退路参照[Wedece OpenNext迁移（7月5日）](https://wedece.com/blog/migrating-a-nextjs-site-to-cloudflare-workers)：双构建／旧部署留作真实回退，稳定数周才撤；近静态站不代表本shop。故仍默认保Next，Workers硬约束先验OpenNext；Agent须保消费者与退路，人决定平台及可接受旧内容窗口。差距是生产目标运行时、缓存／数据契约、浏览器体验和跨部署恢复，而不是再补一个构建速度榜。[一手／研究]
+
+#### 已执行的dev两轮及Git接续（2026-10-21）
+
+**✅ 原消费者通路可跑；暂不升级迁移评级。** Node24.19.0／pnpm12.8.2／Next16.4.1／React19.3.0／sharp0.35.5；只接`storefront.request`到同一合成源，保原布局、GraphQL操作、转换、页面、metadata、正文和sitemap。footer另有明确七字段null policies，未知操作失败，不回退真实商店；并非全站／Hydrogen HTTP／真实Shopify契约。[研究：本仓运行]
+
+第三次尝试在同一source／Next dev进程中暖S0并顺序e1–e4，每次等62实秒后读至收敛，不清缓存或重seed：五阶段均通过50项列表、文章／metadata、250项首分片；S1b为250+1，S1后索引2→1、旧p2为空、保B删C。C返回流式HTTP200＋not-found/noindex，非严格404。S2完整HTML正文57,353个规范化token与预注册源一致（含8,192节／链接及Unicode），五次RSC响应MIME均为`text/x-component`。这是直接HTTP／RSC dev验收，不是实际浏览器软导航。[研究]
+
+**失败尝试仍计入。** 尝试1到e2后明显变慢（列表70秒、索引12.2秒）被中断，只S0／S1a通过；其JSON为事后汇总，不是正常结束回执。尝试2固定睡3秒后未就绪，连接拒绝且尚无变更。尝试3改显式ready检查／总请求90秒门，避免并发重检查后正常结束；旧变慢未复现，原因未知，不能归因为优化。首次过60秒仍读旧值后收敛符合SWR，不是硬刷新SLA。typegen过、完整tsc被环境杀死未过；没有生产build/start、共享remote后端、expire3600、故障恢复／并发、部署退回、其他迁移路线或模型效果证据。[研究]
+
+接手只需[固定补丁](../../scripts/research/p23_shop_runtime.patch)（含安全manifest／真实lock差异）、[标准库桥接与探针](../../scripts/research/p23_runtime_probe.py)、[小型结果／三次尝试记录](../../scripts/research/p23_runtime_result.json)和既有合成源。补丁保MIT出处见固定应用；不收录上游工程／依赖／大HTML。Next自动改写AGENTS及生成next-env为运行副产物，非业务补丁。归档v3经独审及38文件公开扫描，hash记在结果中，仅是身份而非可下载链接；Git中的包装重构只做[离线回归](../../tests/test_p23_runtime_probe.py)，尚未重跑真实应用，不冒充原探针逐字副本。
+
+复现前重新核安全公告；以下固定旧试验版本只复查历史结果，不推荐未来原样上线。使用已有Node24、Python3.12和可写隔离工作目录，不安装全局运行时；`--output`须是空目录。命令下载公开MIT源码与注册表依赖，执行真实dev测试，不能当离线检查：
+
+```sh
+repo="$PWD"; work=$(mktemp -d)
+export HOME="$work/home" TMPDIR="$work/tmp" XDG_RUNTIME_DIR="$work/run"
+export XDG_CACHE_HOME="$work/cache" XDG_DATA_HOME="$work/data"
+mkdir -p "$HOME" "$TMPDIR" "$XDG_RUNTIME_DIR" "$work/output"
+curl -fL https://codeload.github.com/vercel/shop/tar.gz/f4c2d467e02abd2c859aedf4b709ec93552e7049 -o "$work/shop.tgz"
+echo "7619cbb518866b327e6b9e0aebd2c3080bd057802944e924fe2e526186c332ec  $work/shop.tgz" | sha256sum -c -
+tar xzf "$work/shop.tgz" -C "$work"
+app="$work/shop-f4c2d467e02abd2c859aedf4b709ec93552e7049"
+(cd "$app" && git apply --unidiff-zero --whitespace=error-all --check "$repo/scripts/research/p23_shop_runtime.patch" && git apply --unidiff-zero --whitespace=error-all "$repo/scripts/research/p23_shop_runtime.patch")
+npm install --prefix "$work/tools" --cache "$work/npm-cache" --registry=https://registry.npmjs.org --ignore-scripts --no-audit --no-fund pnpm@12.8.2
+(cd "$app" && "$work/tools/node_modules/.bin/pnpm" install --store-dir "$work/store" --registry=https://registry.npmjs.org --ignore-scripts --frozen-lockfile)
+python3 "$repo/scripts/research/p23_runtime_probe.py" --app "$app" --output "$work/output"
+```
+
+**下列保留原预注册与更宽验收，不表示全部已执行。** 未连接真实商店、部署或比较模型；本次只闭合上述dev消费者子集。[研究]
 
 #### 固定应用与路线选择
 
@@ -123,7 +156,7 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 #### 消费者闭包与两轮文件差异
 
-以下路径相对固定shop树；R1可应用替换与响应接线见下节，运行仍未执行。[一手：源码；研究：改动设计]
+以下路径相对固定shop树；R1替换与响应接线见下节；已执行范围及未过门见上节。[一手：源码；研究：改动设计]
 
 - R1只改blog／seo的四个remote缓存作用域，精确替换见下节；调用路由无use cache。
 - `app/api/webhooks/shopify/route.ts`的产品／集合／metaobjects分支与HMAC保持不动，不能补虚构文章事件。
@@ -179,7 +212,7 @@ body = '<h2 id="care">Care guide v3</h2>'+''.join(f'<p data-section="{i:05}">第
 
 #### R1源码补丁与合成响应接线（2026-10-21公开准备）
 
-**🧪 先交四处可应用替换，不改业务查询。** 以下针对固定SHA的[blog缓存](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/blog/server.ts)及[seo缓存](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/seo/server.ts)；本轮重新读取原始文件，与前轮副本逐字一致。摘录依据[MIT许可](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/LICENSE)，Copyright (c) 2025 Vercel, Inc.。补丁未运行。[一手／研究]
+**🧪 先交四处可应用替换，不改业务查询。** 以下针对固定SHA的[blog缓存](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/blog/server.ts)及[seo缓存](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/seo/server.ts)；本轮重新读取原始文件，与前轮副本逐字一致。摘录依据[MIT许可](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/LICENSE)，Copyright (c) 2025 Vercel, Inc.。本节保运行前规格；dev运行见上节。[一手／研究]
 
 - `lib/blog/server.ts`：仅在getBlog、getBlogArticle中，把各自唯一的`cacheLife("max");`替换成：
 
@@ -217,7 +250,7 @@ ARTICLE调用第2页会先以after=null重读第1页；仅S1b再以`p23:250`读�
 
 故障替身返回`{data:null,errors:[{message:"fixture unavailable",extensions:{code:"INTERNAL_SERVER_ERROR"}}]}`，核原assertStorefrontOk抛错、不得写空成功结果；恢复同阶段再收敛。未识别operation须显式失败，不回通用空data，更不能漏到真实商店。布局的其他请求需补各自真实shape的测试响应，当前表仅闭合博客／sitemap数据通路，不是可直接启动的全站mock。[研究]
 
-**运行前门仍未闭合。** 先在独立候选副本把package.json的Next16.4.0升级到该轮修复版16.4.1（运行时再核后续公告），获准安装后由pnpm12.8.2／Node24解析并生成真实pnpm-lock.yaml，审依赖差异；三路线从同一安全基线分叉。此处没有生成lock、增设测试依赖或执行build/typecheck；这些命令会调用Next，不能包装成静态验证。合成源已实现如下；还须接入应用测试入口、补全站mock、真实API/count契合、缓存后端及退回实测。[研究]
+**生产比较前门仍未闭合。** 本次已在独立副本升级16.4.1并生成／保存pnpm12.8.2真实lock，保已有Node24，撤devEngines自动下载；应用dev接入通过，完整typecheck未过。三迁移路线尚未从该安全基线比较；全站mock、真实API/count契合、共享缓存后端与退回仍须实测。[研究]
 
 #### 可复用的合成源（2026-10-21）
 
@@ -232,7 +265,7 @@ python3 -B scripts/research/p23_source_fixture.py --state S1b --operation getArt
 
 第二条只导出B；把S1b改成S1应返空nodes、endCursor=null。成功JSON省略errors，对应JavaScript读取缺失属性为undefined；`--unavailable`返回既定源故障。未知operation／变量／游标与错序事件明确失败，不回退真实商店；返回副本，消费者改SEO等嵌套值不会污染后续输入。[研究]
 
-**⛔ 不把CLI逐次重放当连续缓存验证。** CLI每次从S0重建，仅供准备输入；未来连续测试须保同一`Scenario`、应用模块和缓存，依次调用`apply('e1')`到`apply('e4')`。夹具只证合成源契约，未运行Next、真实转换／消费者或Shopify，也不是含其他布局请求的全站mock；真实API契约不符时先修输入，不能据此调整迁移评级。[研究]
+**⛔ 不把CLI逐次重放当连续缓存验证。** CLI每次从S0重建，仅供准备输入；未来连续测试须保同一`Scenario`、应用模块和缓存，依次调用`apply('e1')`到`apply('e4')`。夹具自身只证合成源契约；上节另运行了真实Next转换／消费者，但仍未验Shopify及全站mock。真实API契约不符时先修输入，不能据此调整迁移评级。[研究]
 
 #### R2：继承S1，不为命中补丁改应用
 
