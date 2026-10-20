@@ -1,0 +1,343 @@
+--- a/lib/blog/server.ts
++++ b/lib/blog/server.ts
+@@ -13 +13 @@
+-  cacheLife("max");
++  cacheLife({ stale: 300, revalidate: 60, expire: 3600 });
+@@ -25 +25 @@
+-  cacheLife("max");
++  cacheLife({ stale: 300, revalidate: 60, expire: 3600 });
+--- a/lib/seo/server.ts
++++ b/lib/seo/server.ts
+@@ -31 +31 @@
+-  cacheLife("max");
++  if (type === "ARTICLE" || type === "BLOG") { cacheLife({ stale: 300, revalidate: 60, expire: 3600 }); } else { cacheLife("max"); }
+@@ -42 +42 @@
+-  cacheLife("max");
++  if (type === "ARTICLE" || type === "BLOG") { cacheLife({ stale: 300, revalidate: 60, expire: 3600 }); } else { cacheLife("max"); }
+--- a/lib/shopify/storefront/server.ts
++++ b/lib/shopify/storefront/server.ts
+@@ -91,0 +92,9 @@
++    const operation = String(doc).match(/\b(?:query|mutation)\s+(\w+)/)?.[1];
++    const response = await fetch("http://127.0.0.1:8766/request", {
++      method: "POST", cache: "no-store",
++      headers: { "Content-Type": "application/json" },
++      body: JSON.stringify({ operation, variables: options?.variables ?? {}, locale: options?.locale }),
++    });
++    if (!response.ok) throw new Error(await response.text());
++    return await response.json();
++    /* Original network path disabled in this public test copy.
+@@ -97 +106 @@
+-    return { data: data as ResultOf<Doc> | null, errors };
++    return { data: data as ResultOf<Doc> | null, errors }; */
+--- a/package.json
++++ b/package.json
+@@ -32 +32 @@
+-    "next": "16.4.0",
++    "next": "16.4.1",
+@@ -44,7 +43,0 @@
+-  "devEngines": {
+-    "runtime": {
+-      "name": "node",
+-      "version": "24.x",
+-      "onFail": "download"
+-    }
+-  },
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -192 +192 @@
+-        version: 2.0.1(next@16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
++        version: 2.0.1(next@16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+@@ -195 +195 @@
+-        version: 2.0.0(next@16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
++        version: 2.0.0(next@16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+@@ -204 +204 @@
+-        version: 1.5.11(next@16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
++        version: 1.5.11(next@16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+@@ -218,2 +218,2 @@
+-        specifier: 16.4.0
+-        version: 16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
++        specifier: 16.4.1
++        version: 16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+@@ -250,4 +249,0 @@
+-    devDependencies:
+-      node:
+-        specifier: runtime:24.x
+-        version: runtime:24.21.0
+@@ -556,5 +552,5 @@
+-  '@next/env@16.4.0':
+-    resolution: {integrity: sha512-pyLlT5oafGlX8X7xjgGNXz5dNIDSxREm+qD6i9VLSZiZFopA/XWl8NM/KPmLx/8EG/++c49iid3gNWSQW1+2dQ==}
+-
+-  '@next/swc-darwin-arm64@16.4.0':
+-    resolution: {integrity: sha512-yyZ+9MgViAKLLb5l1gPBGjRwnq3teNLb5Zx6JEw8LzNSTjlsnp+baUHFxTgl7PpjCmKf48VQfyipG1eBflb48Q==}
++  '@next/env@16.4.1':
++    resolution: {integrity: sha512-5sUUrrSvs/2/2LnLoesybMGx12EtPB46fdZ6RhAw0XDGSPxU2LFyQBB7yuEiOFFJPKmBY6+q2jTr1/AMbnp0/g==}
++
++  '@next/swc-darwin-arm64@16.4.1':
++    resolution: {integrity: sha512-U+hQ5Gj3fpzf4fveTIF3dpUFYhaSW8vHhdAnbiIomzXzg7boreYFgBqprepXFtW4sw+aTttiNmg0gew/iFNhbg==}
+@@ -565,2 +561,2 @@
+-  '@next/swc-darwin-x64@16.4.0':
+-    resolution: {integrity: sha512-RePEEejEj1Auf5s9qEcG0JbcDP3ceNUS/ofNX8AhxzgIjTVlZIHMatlp16YplcSMpsVo/ZMQHJTjbMYJznjGUg==}
++  '@next/swc-darwin-x64@16.4.1':
++    resolution: {integrity: sha512-/hqC3V1XLUjhMASf/WridKdO9FXoEgN3HBWmtKbj00MPgnltutfraWJ3bYTpCRIgEIpbjJyOVLpYgAhh/BkdcQ==}
+@@ -571,2 +567,2 @@
+-  '@next/swc-linux-arm64-gnu@16.4.0':
+-    resolution: {integrity: sha512-HhsyCqd+NpmvDDVY/LqkAN24f+QVvXh3ie+PfcwKinWL2Mu826JymQxJXGjAIfmJ4VlHjp4Pe/nZtXtUoEMAqw==}
++  '@next/swc-linux-arm64-gnu@16.4.1':
++    resolution: {integrity: sha512-GHzncHbcaS9g95kcvTNtKQW3aCLoR+xc3Jm7qrkpk1R+D2BjMHIPyvQGRPKCdMX95BsH/421jBUK06q9tEwzjw==}
+@@ -578,2 +574,2 @@
+-  '@next/swc-linux-arm64-musl@16.4.0':
+-    resolution: {integrity: sha512-sN9Pf+Zh+RpZAOmbR7d8KAA8T61CVhawtbEJ2Bk6QrRzx6Z/6haaF4UiwBzytM96GRRRWZh9/WALIEO3npMamA==}
++  '@next/swc-linux-arm64-musl@16.4.1':
++    resolution: {integrity: sha512-1SuJyDxW/PR9dHJat/ZRgcYLhuSZ+1psP4DlKb2tKIuXbjygqpLrJWRSq+onZQBv8LcmU67EIrmb6c3XTaJLjw==}
+@@ -585,2 +581,2 @@
+-  '@next/swc-linux-x64-gnu@16.4.0':
+-    resolution: {integrity: sha512-D5M5xLWQVd1CvR+L7BickM1weRfmM41x3L1NWcnKY/oyJJqr1qwaCgmu3dMAhLBOMdZwSuDCRV6DJRRpiUkbDQ==}
++  '@next/swc-linux-x64-gnu@16.4.1':
++    resolution: {integrity: sha512-Istng1hMGp9TGO4lUqeKLd70MPN/OOkucVTP2Nmj+gLkwBgmPqUw8CJYBCC7nbl/B/23bBCcjCI5Hsh6hazC1A==}
+@@ -592,2 +588,2 @@
+-  '@next/swc-linux-x64-musl@16.4.0':
+-    resolution: {integrity: sha512-8d5WLS6a9YalqpOgXdlbvonFu+sIgjA+CO6tGzetrpPVcUL56foa7B7664h41rAlbLi5fJwK4vWji3zf4QDy+w==}
++  '@next/swc-linux-x64-musl@16.4.1':
++    resolution: {integrity: sha512-aSC9wMNiZRRFVpPkPWBzRwLQxIGm/CiQcXyFF1XNcgodb+uMxdk7aSSGGpDXCbnvZdf4itjHxpOd5h7i7zaiYw==}
+@@ -599,2 +595,2 @@
+-  '@next/swc-win32-arm64-msvc@16.4.0':
+-    resolution: {integrity: sha512-sQuOIiW3snb48UwrBcDMvFA/u03qtw2LeuSIxFIQ9AJuW9UG/4Ddsfo+eV73PnZwBhyncMtsKVh7PrzMol2/fA==}
++  '@next/swc-win32-arm64-msvc@16.4.1':
++    resolution: {integrity: sha512-t/myvwFDlypMUjRvbBf8qLPyuaB0iXYYdBtwMt6DM6f+60wtGr4bSYholdPqNeV5VUXZhrpMwfza829kmhS3iA==}
+@@ -605,2 +601,2 @@
+-  '@next/swc-win32-x64-msvc@16.4.0':
+-    resolution: {integrity: sha512-6/33lCuxpdHUy27RegyGM/5uTpF7YZd3UR4D0gpkOA/tWY5YR7msbQjqPgCZmSmxrrTLGCXYA4A8vT2H5DPGTQ==}
++  '@next/swc-win32-x64-msvc@16.4.1':
++    resolution: {integrity: sha512-6ICqPo9awCkrtYNPhwkx1uU7rlFWrZRrIboDHS2LU+jv088UBYQtmJ25h6pCp27/+FZjF6BQ4Te4ErugyMeuBg==}
+@@ -1822,2 +1818,2 @@
+-  next@16.4.0:
+-    resolution: {integrity: sha512-N2C+9q89Z/oLrsepSRS4jRMtwmUZAoZuAHU0e9T6+sAB5DdhADmrnOW+zjYijlrYFmVfmQhGVGy9eMFoB7UgKg==}
++  next@16.4.1:
++    resolution: {integrity: sha512-uc657V62E34fOI6W5NtG9IzwsPcms0Z60grz2MJGtglgD+pTFnNt4Yw2PzaU622tfX4vhrDgLZzicE2YlhI20Q==}
+@@ -1851,132 +1846,0 @@
+-  node@runtime:24.21.0:
+-    resolution:
+-      type: variations
+-      variants:
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-rseyRkr7mfB4wZywbSAdVDvTsxHLoHEoK84bF8l+WLs=
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-aix-ppc64.tar.gz
+-          targets:
+-            - cpu: ppc64
+-              os: aix
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-vtfupTJeEQjzLOUijd1qXw8IpJnuQqp0Qq6lg3AvYFc=
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-darwin-arm64.tar.gz
+-          targets:
+-            - cpu: arm64
+-              os: darwin
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-FGLLOzBGuBXPjqQ209pFDsGp8R2sflpGsK2lMF1+gJc=
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-darwin-x64.tar.gz
+-          targets:
+-            - cpu: x64
+-              os: darwin
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-ckKCw7Q67JmKqVJzgEZbRdIp4CG1gDX19PYwleq/5dU=
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-linux-arm64.tar.gz
+-          targets:
+-            - cpu: arm64
+-              os: linux
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-UcXVMGbukpILYXg7A7Buy5nzZhFg97Fcp36EdBFaZ7w=
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-linux-ppc64le.tar.gz
+-          targets:
+-            - cpu: ppc64le
+-              os: linux
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-Xy+jdCLgx13jXBaG/lHXgyTywqj+LMI5pB2cAAop2Tg=
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-linux-s390x.tar.gz
+-          targets:
+-            - cpu: s390x
+-              os: linux
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-PWNAX8ZaDS0pdsHwvC/Se7C9ByEkaecFqsPwOuWrTJw=
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-linux-x64-musl.tar.gz
+-          targets:
+-            - cpu: x64
+-              os: linux
+-              libc: musl
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-bh24fvWLiBnl1UAu/xU2SRsY7djre+5e94l4duiNxf8=
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-linux-x64.tar.gz
+-          targets:
+-            - cpu: x64
+-              os: linux
+-        - resolution:
+-            archive: zip
+-            bin:
+-              node: node.exe
+-            integrity: sha256-h3mxveHTn41CDjtXqmV7OYka9DTT3kSpGQRM7AZ4WSE=
+-            prefix: node-v24.21.0-win-arm64
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-win-arm64.zip
+-          targets:
+-            - cpu: arm64
+-              os: win32
+-        - resolution:
+-            archive: zip
+-            bin:
+-              node: node.exe
+-            integrity: sha256-FY92hbRN5R9sDfHRU1JsvNPhvHOajfxgdyHO913p5UE=
+-            prefix: node-v24.21.0-win-x64
+-            type: binary
+-            url: https://nodejs.org/download/release/v24.21.0/node-v24.21.0-win-x64.zip
+-          targets:
+-            - cpu: x64
+-              os: win32
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-MEiwgR4VjKDYZytZyDmGF2PhREkpgNjSmzad/uRXR+Q=
+-            type: binary
+-            url: https://unofficial-builds.nodejs.org/download/release/v24.21.0/node-v24.21.0-linux-arm64-musl.tar.gz
+-          targets:
+-            - cpu: arm64
+-              os: linux
+-              libc: musl
+-        - resolution:
+-            archive: tarball
+-            bin:
+-              node: bin/node
+-            integrity: sha256-AacT402pjntNKjGR7nyj+T3QOE0aLvI8N5shYe5uEzo=
+-            type: binary
+-            url: https://unofficial-builds.nodejs.org/download/release/v24.21.0/node-v24.21.0-linux-x64-musl.tar.gz
+-          targets:
+-            - cpu: x64
+-              os: linux
+-              libc: musl
+-    version: 24.21.0
+-    hasBin: true
+-
+@@ -2484,24 +2348,24 @@
+-  '@next/env@16.4.0': {}
+-
+-  '@next/swc-darwin-arm64@16.4.0':
+-    optional: true
+-
+-  '@next/swc-darwin-x64@16.4.0':
+-    optional: true
+-
+-  '@next/swc-linux-arm64-gnu@16.4.0':
+-    optional: true
+-
+-  '@next/swc-linux-arm64-musl@16.4.0':
+-    optional: true
+-
+-  '@next/swc-linux-x64-gnu@16.4.0':
+-    optional: true
+-
+-  '@next/swc-linux-x64-musl@16.4.0':
+-    optional: true
+-
+-  '@next/swc-win32-arm64-msvc@16.4.0':
+-    optional: true
+-
+-  '@next/swc-win32-x64-msvc@16.4.0':
++  '@next/env@16.4.1': {}
++
++  '@next/swc-darwin-arm64@16.4.1':
++    optional: true
++
++  '@next/swc-darwin-x64@16.4.1':
++    optional: true
++
++  '@next/swc-linux-arm64-gnu@16.4.1':
++    optional: true
++
++  '@next/swc-linux-arm64-musl@16.4.1':
++    optional: true
++
++  '@next/swc-linux-x64-gnu@16.4.1':
++    optional: true
++
++  '@next/swc-linux-x64-musl@16.4.1':
++    optional: true
++
++  '@next/swc-win32-arm64-msvc@16.4.1':
++    optional: true
++
++  '@next/swc-win32-x64-msvc@16.4.1':
+@@ -2880 +2744 @@
+-  '@vercel/analytics@2.0.1(next@16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
++  '@vercel/analytics@2.0.1(next@16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
+@@ -2882 +2746 @@
+-      next: 16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
++      next: 16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+@@ -2887 +2751 @@
+-  '@vercel/speed-insights@2.0.0(next@16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
++  '@vercel/speed-insights@2.0.0(next@16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
+@@ -2889 +2753 @@
+-      next: 16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
++      next: 16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+@@ -2909 +2773 @@
+-  botid@1.5.11(next@16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0):
++  botid@1.5.11(next@16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0):
+@@ -2911 +2775 @@
+-      next: 16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
++      next: 16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+@@ -3555,3 +3419,3 @@
+-  next@16.4.0(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+-    dependencies:
+-      '@next/env': 16.4.0
++  next@16.4.1(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
++    dependencies:
++      '@next/env': 16.4.1
+@@ -3566,8 +3430,8 @@
+-      '@next/swc-darwin-arm64': 16.4.0
+-      '@next/swc-darwin-x64': 16.4.0
+-      '@next/swc-linux-arm64-gnu': 16.4.0
+-      '@next/swc-linux-arm64-musl': 16.4.0
+-      '@next/swc-linux-x64-gnu': 16.4.0
+-      '@next/swc-linux-x64-musl': 16.4.0
+-      '@next/swc-win32-arm64-msvc': 16.4.0
+-      '@next/swc-win32-x64-msvc': 16.4.0
++      '@next/swc-darwin-arm64': 16.4.1
++      '@next/swc-darwin-x64': 16.4.1
++      '@next/swc-linux-arm64-gnu': 16.4.1
++      '@next/swc-linux-arm64-musl': 16.4.1
++      '@next/swc-linux-x64-gnu': 16.4.1
++      '@next/swc-linux-x64-musl': 16.4.1
++      '@next/swc-win32-arm64-msvc': 16.4.1
++      '@next/swc-win32-x64-msvc': 16.4.1
+@@ -3598,2 +3461,0 @@
+-
+-  node@runtime:24.21.0: {}

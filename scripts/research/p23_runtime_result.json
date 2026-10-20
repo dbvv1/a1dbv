@@ -1,0 +1,192 @@
+{
+  "kind": "historical evidence manifest; not a new run of the portable wrapper",
+  "verified_utc": "2026-10-20",
+  "source": {
+    "repository": "https://github.com/vercel/shop",
+    "commit": "f4c2d467e02abd2c859aedf4b709ec93552e7049",
+    "license": "MIT, Copyright (c) 2025 Vercel, Inc.",
+    "tar_sha256": "7619cbb518866b327e6b9e0aebd2c3080bd057802944e924fe2e526186c332ec",
+    "fixture_sha256": "e7de286caca02e6d0fb5444fb167d12d970010cd1acf755189781d990c593757"
+  },
+  "runtime": {
+    "node": "24.19.0",
+    "npm": "11.9.0",
+    "pnpm": "12.8.2",
+    "python": "3.12.14",
+    "next": "16.4.1",
+    "react": "19.3.0",
+    "sharp": "0.35.5",
+    "mode": "Next dev; built-in in-memory handler"
+  },
+  "setup_provenance": [
+    "Initial cache/lock locations were not writable; used task-local home/cache/data/runtime/temp/store paths.",
+    "Optional Node24.21.0 download was denied and not retried. Removed devEngines.runtime auto-download only; engines.node=24 preserved.",
+    "pnpm install used --ignore-scripts; security patch/lock is preserved in p23_shop_runtime.patch."
+  ],
+  "attempts": [
+    {
+      "id": 1,
+      "status": "interrupted after e2; S0/S1a passed",
+      "provenance": "posthoc executor summary from saved checkpoint logs, not normal-completion JSON",
+      "observed": "e2 list70s/index12.2s; stale first index then source refresh. Cause unestablished.",
+      "terminal": "executor tool reported exit130 after Ctrl-C; later session was closed; not application stderr",
+      "not_reached": [
+        "e3",
+        "e4"
+      ]
+    },
+    {
+      "id": 2,
+      "status": "connection refused before any mutation",
+      "cause": "blind3-second startup sleep did not establish readiness",
+      "owned_cleanup_returncodes": [
+        -15,
+        -15
+      ]
+    },
+    {
+      "id": 3,
+      "status": "normal runner completion",
+      "controls": [
+        "readiness checks under90-second deadline",
+        "same90-second socket limit plus total request alarm",
+        "no concurrent worker tsc; parent aggregate checks paused; no causal attribution"
+      ],
+      "result": {
+        "attempt": 3,
+        "status": "passed_development_HTTP_consumers_only",
+        "mode": "development server, built-in in-memory LRU, HTTP and MIME-verified RSC requests; not browser navigation",
+        "results": [
+          {
+            "state": "S0",
+            "article_status": 200,
+            "retired_status": 200,
+            "list_count": 50,
+            "sitemap_count": 250,
+            "page2_count": 0,
+            "rsc_bytes": 21593,
+            "long_body_sections": null
+          },
+          {
+            "state": "S1a",
+            "article_status": 200,
+            "retired_status": 200,
+            "list_count": 50,
+            "sitemap_count": 250,
+            "page2_count": 0,
+            "rsc_bytes": 21605,
+            "long_body_sections": null
+          },
+          {
+            "state": "S1b",
+            "article_status": 200,
+            "retired_status": 200,
+            "list_count": 50,
+            "sitemap_count": 250,
+            "page2_count": 1,
+            "rsc_bytes": 21605,
+            "long_body_sections": null
+          },
+          {
+            "state": "S1",
+            "article_status": 200,
+            "retired_status": 200,
+            "list_count": 50,
+            "sitemap_count": 250,
+            "page2_count": 0,
+            "rsc_bytes": 21605,
+            "long_body_sections": null
+          },
+          {
+            "state": "S2",
+            "article_status": 200,
+            "retired_status": 200,
+            "list_count": 50,
+            "sitemap_count": 250,
+            "page2_count": 0,
+            "rsc_bytes": 1701095,
+            "long_body_sections": 8192
+          }
+        ]
+      },
+      "owned_cleanup_returncodes": [
+        -15,
+        0
+      ],
+      "executor_exit_code": 0
+    }
+  ],
+  "rendered_body": {
+    "status": "pass",
+    "scope": "saved attempt3 real HTML normalized complete body tokens, not browser DOM",
+    "token_count": 57353,
+    "source_utf8_bytes": 1679444,
+    "source_sha256": "1df175722789cacbed2f17d84258a4f00445b9c3b0226a06dea881c27b8d66c0",
+    "normalized_sha256": "8550d51c1ea3aecf9ce8e97c2344c63112cbaedb9e0e550ae1a761ead7ca2d12"
+  },
+  "additional_checks": {
+    "fixture_regressions": "11 passed",
+    "next_typegen": "passed",
+    "tsc": "killed by execution environment; cause unestablished; incomplete"
+  },
+  "evidence_archives": {
+    "original_sha256": "947558235368b0700cfc9c51f7c07ab2579753f0279db504262dc8a25b3e4b4d",
+    "reviewed_v2_sha256": "a54b564bf6ad8bd0fc3cccaf92c8ab89717c658be8553be10486d014e36b8df6",
+    "final_v3_sha256": "bfabdf641b49697ff15efdc824bfe613908d57c64f161a56af6d2e58f8c1af6d",
+    "availability": "local reviewed archives; hashes are identities, not public download links"
+  },
+  "review": "Independent review validated implemented checkpoints and recomputed all saved HTML tokens; final38 files scanned. Only README differed in final correction; no runtime rerun.",
+  "generated_files": "Next startup updated AGENTS.md; restored before original five-file patch, regenerated in later attempt. next-env.d.ts generated. Neither is a business-code change.",
+  "limits": [
+    "Direct HTTP/HTML and MIME-verified text/x-component; no browser soft navigation/prefetch.",
+    "No production build/start, shared-cache backend, expiry3600 test, source-failure/recovery, concurrency or rollback execution.",
+    "No real Shopify/API-count contract, deployment, migration variants or model-effect comparison.",
+    "Portable wrapper refactors reviewed scripts for CLI/import/offline tests; not yet rerun as a real application.",
+    "Observed result proves this dev consumer chain feasible, not mainstream adoption or current best."
+  ],
+  "attempt3_event_checkpoints": {
+    "events": [
+      {
+        "event": "e1",
+        "utc": "2026-10-20T18:13:41.842585+00:00"
+      },
+      {
+        "event": "e2",
+        "utc": "2026-10-20T18:14:55.941800+00:00"
+      },
+      {
+        "event": "e3",
+        "utc": "2026-10-20T18:16:15.822886+00:00"
+      },
+      {
+        "event": "e4",
+        "utc": "2026-10-20T18:17:36.006546+00:00"
+      }
+    ],
+    "checkpoints": [
+      {
+        "state": "S0",
+        "last_probe_utc": "2026-10-20T18:13:41.773146+00:00"
+      },
+      {
+        "state": "S1a",
+        "last_probe_utc": "2026-10-20T18:14:55.937461+00:00"
+      },
+      {
+        "state": "S1b",
+        "last_probe_utc": "2026-10-20T18:16:15.808394+00:00"
+      },
+      {
+        "state": "S1",
+        "last_probe_utc": "2026-10-20T18:17:35.982371+00:00"
+      },
+      {
+        "state": "S2",
+        "last_probe_utc": "2026-10-20T18:18:51.273763+00:00"
+      }
+    ]
+  },
+  "portable_probe_review_hardening": "Offline review added explicit HTTP200 checks for successful consumers, documented 200/404 deleted article handling, and exact unique sitemap-index locations. Adversarial regressions pass; these stronger assertions were not rerun against the historical application and do not retroactively upgrade attempt3.",
+  "patch_packaging": "Zero-context unified patch regenerated from verified upstream/result bytes; all five applied files byte-identical to reviewed historical patch. Formatting-only change, no runtime rerun. Immutable original archives preserved.",
+  "patch_sha256": "25b59a733c44531ad6d7c4fb0691caf1b525d34e115396080f8fe8d18ab8a505"
+}
