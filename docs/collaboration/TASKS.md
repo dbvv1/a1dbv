@@ -29,6 +29,7 @@
 
 | 工作线：问题 | 执行者 | 分支 | 主要文件 | 开始 | 状态 |
 |---|---|---|---|---|---|
+| P1／M1：Codex默认任务起点 | dot-A | `dot/p1-codex-default-20261020` | Codex；基线 `84d83bf3` | 2026-10-20 11:16（UTC+8） | 本页草稿：Sol medium、原生验收、质量目标与撤回；实际交付树另验 |
 | M3：共享模型编解码与模型条件 | dot-A；接收 A | `dot/tmp/20261019-shared-codec-boundary` | 15、development-conditions | 2026-10-19 11:47（UTC+8） | 固定 `2971e580` 已交[PR49](https://github.com/dbvv1/a1dbv/pull/49)，发布操作已获准，暂缓本批正文合入，待结合K2重评；保留PR与来源 |
 | GA：图标绘画升级与稳定识别 | dot-A；接收 A | `dot/tmp/20261019-icon-identity-boundary` | 2d、WP2 | 2026-10-19 11:55（UTC+8） | 固定 `1a37af24` 已在远端分支，发布操作已获准；先补AI生成后二次修改判断，再独立整合 |
 
