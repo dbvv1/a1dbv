@@ -1,6 +1,6 @@
 主线：三，兼二／四
 改变的建议：续改分验有意改变与必须保留的行为；迁移核消费者、持久状态与真实运行入口，撤替代层前确认原生能力承接。[研究／经验]
-新证据：本页按主题迁移原研究记录，2026-10-20 仅整理结构；下列既有核实日期、固定来源与运行边界原样保留，未新增实验或重核外部事实。
+新证据：2026-10-20 追加 CPython 双入口对照与 f-string 后续维护链；其余迁移记录保留原核实日期及运行边界，本次没有运行候选。[一手：源码／维护记录]
 
 # 开发条件：维护与迁移
 
@@ -434,3 +434,31 @@ Angular signal input 的迁移不只是给名字加 `()`，还会改模板、hos
 **保留迁移，撤掉仿造错误。** 评审者[建议直接识别原生AbortError](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#discussion_r1590436695)，[指出应读name而非message](https://github.com/OpenStickCommunity/GP2040-CE/pull/1001#pullrequestreview-2039825476)。最终05-07合入[`cdce584`](https://github.com/OpenStickCommunity/GP2040-CE/commit/cdce584b9b5bdb796f0ee0b9da441feb2402e4f6)，保留fetch与signal转发，去掉自造错误，WebApi用`error?.name === 'AbortError'`继续给UI返回业务结果`{canceled:true}`。[固定CaptureButton](https://github.com/OpenStickCommunity/GP2040-CE/blob/cdce584b9b5bdb796f0ee0b9da441feb2402e4f6/www/src/Components/CaptureButton.tsx)在此结果下另调设备端`abortGetHeldPins`，随后按stop／是否还有下一项选择关闭重置或继续捕获。这里保住的是自有消费者行为，不是旧库每个错误字段；也不代表任意取消原因都应这样分类。**[一手：评审与固定消费者；研究：解释范围]**
 
 **采用与证据边界。** 有明确体积目标且必要行为能窄适配时，可保留原生替换；接不上业务收尾或适配负担不合算时保留成熟依赖，是本例支持的条件推论，并非项目实际回退Axios。作者评论后补的“fixed”属于中间修改回执，未绑定最终合入版本；最终接收与源码不能补作独立端到端复验。没有长期维护、跨浏览器完整通过或AI收益数据，也没有流式、重试或cookie故障证据。**[经验：取舍；研究：局限]**
+
+## CPython：两种解析路径之后，保留哪条维护路径
+
+核实：2026-10-20（UTC+8）。主线三／P6；改变22的保留选择，15只作入口。以下是历史人工维护的采用链，未运行 CPython、候选、模型或引擎，不是本仓库的 AI 效果实验。
+
+**✅ 先比较下一项已确定修改的落点，再决定保留谁。** 公共路径能承接新需求并保住必要旧行为时优先复用；旧实现同样局部可改、迁移却增加消费者与接管责任时保旧。这里比较的是规则、诊断和消费者之间的修改传播，不把删行数当维护工时。**[研究／经验：采用判断]**
+
+### 旧行为先限定，双入口必须真的不同
+
+[Python 3.9 发布说明](https://docs.python.org/3.9/whatsnew/3.9.html#new-parser)声明新 PEG parser 生成与旧实现相同的 AST，并保留 oldparser 切换。[PR19778](https://github.com/python/cpython/pull/19778)在2020-04-30（UTC+8）修正过“新 parser 与自身对比”的测试；其[固定分派源码](https://github.com/python/cpython/blob/69e802ed812e38cb68a4ab74af64b4f719b6cc78/Modules/_peg_parser.c)按 oldparser 选择旧 PyParser_ASTFromString 或新 PyPegen_ASTFromString。对照输入相同还不够，Agent 要核真实入口。**[一手：官方说明／源码]**
+
+**旧行为通过范围并不完整。** [v3.9.0 固定测试](https://github.com/python/cpython/blob/9cf6752276e6fcfd0c23fdb064ad27f448aaaf75/Lib/test/test_peg_parser.py)对 TEST_SOURCES／EXPRESSIONS_TEST_SOURCES 比较含位置的 AST；GOOD_BUT_FAIL_SOURCES 的三类 f-string 去掉位置后比较，带位置仍为 expectedFailure。FAIL_SOURCES 检查新 parser 拒绝，并非旧新非法输入全域等价。[PEP617验证](https://peps.python.org/pep-0617/#validation)报告标准库及约3800个 PyPI 包对照，也承认非法程序拒绝未充分探索。这里只能称兼容目标及所列旧行为对照，不能称两个实现全域正确。**[一手：测试定义／PEP；研究：证据边界]**
+
+### 采用之后，下一轮需求改变保留理由
+
+PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UTC+8）合入；后续3.10开发线的[PR20768](https://github.com/python/cpython/pull/20768)于06-12移除旧 parser。[3.10固定发布说明](https://github.com/python/cpython/blob/b494f5935c92951e75597bfe1c8b1f3112fec270/Doc/whatsnew/3.10.rst)记录带括号的多 context manager 语法及诊断改进。旧 grammar→CST→AST 的跨层转换与新 grammar／AST 动作有不同修改落点；新语法是后来增加的要求，不证明旧实现未完成原任务。**[一手：合入／发行记录；研究：范围判断]**
+
+**3.12 的 f-string 是后续维护，不是首次 PEG 切换已经解决的事。** [PEP701](https://peps.python.org/pep-0701/)将此前另行手工处理的 f-string 纳入语法，为引号复用、反斜杠、注释及更准确诊断承接新要求；旧输出语义继续保留，调试表达式原始空白也不能丢。[PR102855](https://github.com/python/cpython/pull/102855)于2023-04-20（UTC+8）合入；[固定语法](https://github.com/python/cpython/blob/1ef61cf71a218c71860ff6aecf0fd51edb8b65dc/Grammar/python.gram)增加 replacement_field／format_spec，并复用表达式规则和错误规则。[对应测试](https://github.com/python/cpython/blob/1ef61cf71a218c71860ff6aecf0fd51edb8b65dc/Lib/test/test_fstring.py)保输出／格式行为并改位置、诊断和新增语法验收，不能统称 AST 所有属性不变。**[一手：PEP／固定源码与测试定义]**
+
+**公共路径减少一处专用处理，却把责任带到下游。** PR102855 的 string_parser.c 为 +35／−1054 行，tokenizer.c 为 +483／−6，action_helpers.c 为 +449／−90；这些差异含搬移，不能相减得到收益。随后[PR104323](https://github.com/python/cpython/pull/104323)于2023-05-21（UTC+8）继续改公开 tokenize、inspect、tabnanny 及测试。接手者须理解 token、公共辅助函数和消费者契约，不能只接收主 parser 补丁。**[一手：补丁／合入记录；研究：成本边界]**
+
+**表现改善应单列，而不是只看接收／拒绝。** [3.12固定发行说明](https://github.com/python/cpython/blob/0fb18b02c8ad56299d6a2910be0bab8ad601ef24/Doc/whatsnew/3.12.rst#pep-701-syntactic-formalization-of-f-strings)展示同一非法 f-string 在3.11／3.12均被拒绝，后者能显示完整源行并更准确定位。人应确认此类诊断质量是否是当前目标；没有旧新同条件制作／维护工时，不能据历史采用推算节省幅度。**[一手：发行说明；研究：取舍]**
+
+### 当前现成方案与撤回边界
+
+**默认先复用目标所需的表示，而不是复制 CPython 的选型。** Python 语义分析优先目标版本的[ast](https://docs.python.org/3/library/ast.html)，但 parse 得到 AST 不等于整个编译阶段通过；保注释／空白的修改应看[LibCST的无损表示](https://libcst.readthedocs.io/en/latest/why_libcst.html)，它保留更多结构正是目标所需。自有 DSL 可先比较[pegen固定说明](https://github.com/we-like-parsers/pegen/blob/813cf0879bc5e2dac8f7eca158c96aec3e481d59/README.md)所供 Python 生成器，不能把 CPython 内部 C 生成器当通用 C 工具；编辑器的增量、残缺源码目标则先看[Tree-sitter](https://tree-sitter.github.io/tree-sitter/)。这些是2026-10-20核对的不同目标边界，未运行，也不是同题胜负榜。**[一手：项目文档；研究：现成替代]**
+
+**撤回替换建议的条件**：原实现仍可局部满足下一需求；公共路径无法保住所需行为；或新增 token／接口迁移与接管责任超过已确认收益。Agent 提出两条修改路径和覆盖缺口，人决定必要契约与诊断目标；本链只支持这一选择机制，不支持 PEG 普遍更优或 AI 已降低维护成本。**[经验：取舍；研究：局限]**
