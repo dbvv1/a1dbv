@@ -548,13 +548,13 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 #### 一份旧状态，只走一次S1→S2
 
-以下为分组固定树的纸面设计，非跨版本升级脚本。E1取SES／SEQUENTIAL／PENDING、completedAt空；R101–107／T101–107映射原recipient ID／token，不公开真实token。默认NOT_SIGNED／NOT_SENT、signedAt／sentAt空；例外：101为SIGNED、signedAt=Q1、SENT、sentAt=N1；102当前活动且SENT、sentAt=N2，Q1<N2。假设身份有效未过期、无额外认证阻塞。[研究：设计参数]
+以下为分组固定树的纸面设计，非跨版本升级脚本。E1取SES／SEQUENTIAL／PENDING、completedAt空；R101–107／T101–107映射原recipient ID／token，不公开真实token。默认NOT_SIGNED／NOT_SENT、signedAt／sentAt空；例外：101为SIGNED、signedAt=Q1、SENT、sentAt=N1；102当前活动且SENT、sentAt=N2，Q1≤N2（以调用先后为准，毫秒可同值）。假设身份有效未过期、无额外认证阻塞。[研究：设计参数]
 
-字段均required=true、readOnly=false、无预设default；下表为全集，102／105／106无字段。[研究：输入]
+字段均required=true、readOnly=false、无预设default；下表为全集，102／105／106无字段。SIG201是Signature行别名，不是Field列；关联用Signature.fieldId／recipientId。[研究：输入]
 
 | 字段→owner／类型 | S1的inserted／值／signatureId |
 |---|---|
-| F201→101／SIGNATURE | true／签名对象SIG201／SIG201 |
+| F201→101／SIGNATURE | true／customText为空，typedSignature见下／关联SIG201 |
 | F203→103／TEXT | true／approved budget draft／空 |
 | F204→104／SIGNATURE | false／空／空 |
 | F205→104／TEXT | true／customer alias／空 |
@@ -562,7 +562,15 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 既有完成／代填审计集合为101完成事件A201、102代填F203／F205的A301／A302；既有签署请求任务集合J401只有101／102，无seal任务。部分更新只增106更新审计，不增通知；后续每人完成仅增本人完成审计，签署请求按103→104→{105,106}→107各新增一次，最后才新增seal任务。其他通知种类另列账，不混入该集合。[研究：消费者预期]
 
-仍缺合法PDF、SIG201及完整旧快照；须用同一快照绑定ID／token，不重seed。当前可审设计，不是可重建运行包。[研究：缺口]
+**公开输入准备包（可接续，未运行）**。默认复用上游API fixture生成一次S1，再快照分支；不手写SIGNED／审计冒充履历。以下路径均固定在[573c928][p25-r2]。[研究：执行设计]
+
+1. **PDF已定位。** `assets/example.pdf`，39,842 bytes，SHA-256=`658baa2b54b318d0617fbba42a1ba7185b45e3b066538466a40f5502f6019f52`；本轮只用pdfinfo静态读取：1页、PDF 1.4、未加密、无表单／JavaScript。`packages/app-tests/e2e/fixtures/api-seeds.ts`实际默认读取此件。根LICENSE为AGPLv3，assets下未发现单独LICENSE；仅引用fixture，不把许可推为合同效力或签署授权。上传前核hash，上传后另记规范化PDF的hash，二者不要求相等。[一手：文件、许可、静态元数据]
+2. **环境／身份先齐。** 上游`package.json`要求Node≥24、npm≥11.17；`.env.example`、`docker/development/compose.yml`给Postgres 15、SMTP测试收件箱Inbucket及上传／jobs配置。选`NEXT_PUBLIC_UPLOAD_TRANSPORT=database`、`NEXT_PRIVATE_JOBS_PROVIDER=local`；应用与fixture共用数据库、webapp URL及认证／加密配置；安装、迁移、启动及fixture创建测试API token等准备须由后续启用范围明确覆盖；本文不授权凭据操作。用`apiCreateTestContext()`仅一次，复用返回的user/team/token；其`seedUser()`建已验证owner、组织／成员关系与team，`createApiToken()`建team Bearer凭证。凭证只留执行环境，不能写公开回执；不能把test fixture默认邮箱当真实收件人，通知只进测试SMTP。核组织额度、邮件开关和`globalAccessAuth/globalActionAuth`、各人`accessAuth/actionAuth`为空；meta设`envelopeExpirationPeriod:{disabled:true}`、`reminderSettings:{sendAfter:{disabled:true},repeatEvery:{disabled:true}}`，恢复分支另配。本轨直接DOCUMENT；模板分支仅S1前生成一次并保映射。[一手：api-seeds、seed/users；研究：配置选择]
+3. **一次建草稿并分发。** `apiSeedPendingDocument(request,{context,meta:{signingOrder:'SEQUENTIAL',typedSignatureEnabled:true,envelopeExpirationPeriod:{disabled:true},reminderSettings:{sendAfter:{disabled:true},repeatEvery:{disabled:true}}},recipients,fieldsPerRecipient})`，recipients按下文七人／角色／order，使用七个不同的测试身份。必须显式传七槽fieldsPerRecipient：`[[F201],[],[F203],[F204,F205],[],[],[F207]]`，否则helper会给APPROVER也自动加SIGNATURE。每字段page=1、positionX=10、width=25、height=5，五个positionY依次10/25/40/55/70；fieldMeta分别`{type:'signature'或'text',required:true,readOnly:false}`，不填text默认值。helper依次调用`envelope/create`（multipart payload+PDF）→`recipient/create-many`→`field/create-many`→`envelope/distribute`，再GET。create路由规范化PDF并建internalVersion=2；SES须读回确认。按唯一测试email、字段owner/type及位置映射真实E/R/F ID和secondaryId，不硬塞101等数据库主键；token从distributeResult取，绑定同一实例。[一手：api-seeds、create-envelope及相关schema；研究：具体参数]
+4. **生成SIG201及旧履历。** 复用`assistant-signing-groups.spec.ts`的tRPC封装：POST `/api/trpc/envelope.field.sign`，JSON为`{json:{token:T101,fieldId:F201,fieldValue:{type:'SIGNATURE',value:'P25 Signer 101'}}}`。这是SES typed signature，不是AES/QES证书；`typedSignatureEnabled`必须真。读取Signature：id记SIG201、fieldId=F201、recipientId=R101、typedSignature等于该合成姓名、signatureImageAsBase64=null；Field.inserted=true且customText=''。随后按`signing-group-advancement.spec.ts`调用`completeDocumentWithToken({token:T101,id:{type:'envelopeId',id:E1}})`，不用数字documentId冒充字符串envelopeId。读回101完成、102激活；再以T102对F203、F205各调上述V2入口，fieldValue改为TEXT及表中值，102不完成。由服务产生Q1/N1/N2、完成及PREFILLED审计，勿直接写时间或伪造A201/A301/A302。V1对照可用`field.signFieldWithToken`的value/isBase64=false，但不能把两入口累计到同一基准履历。[一手：上述测试、sign-envelope-field、schema；研究：组合成S1，未执行]
+5. **冻结完整S1，而非API导出充作备份。** 停止写入并等待／停止job执行，在无在途副作用时用Postgres逻辑备份（例如获准后`pg_dump --format=custom --file=S1.dump`，连接从获准的目标测试环境注入）保存整库及序列，再用`pg_restore --exit-on-error --no-owner --dbname=目标空库 S1.dump`恢复；这是待验证运维步骤，未发现上述fixture提供现成S1 dump。整库dump及认证／加密材料只留目标测试环境，不回传或提交公开仓库；回传仅脱敏字段核对、摘要与检查结果。相同运行配置／加密材料在执行环境另保；database上传要核DocumentData.type确为BYTES或BYTES_64，若为S3_PATH还必须保data/initialData所指对象，单库不完整。local队列须连BackgroundJobTask缓存一起恢复；收件箱消息与已发外部副作用不会随DB回滚，分支另记消息基线并禁外发。[一手：schema、local provider；研究：快照方案]
+
+**S1接收清单与消费者。** 快照至少核Envelope（含internalVersion、signatureLevel、user/team、documentMetaId）、DocumentMeta、EnvelopeItem→DocumentData的当前／初始PDF、七Recipient全列、五Field全列与SIG201、全部DocumentAuditLog、BackgroundJob及BackgroundJobTask；整库保组织权限／额度、ApiToken及关系。API GET只是核对视图，不能恢复这些后台状态。主轨基线邀请job按`jobId='send.signing.requested.email'`、payload.recipientId筛选：101／102各1，其余0；其他job／审计保全但分账。将签名／代填／完成审计按type+actor+field secondaryId／recipientId映射，不假定只有三个审计。各反例从同一S1 dump恢复并核ID/token/字段值/PDF hash后，各自执行对应坏候选；合法主轨只改106，S1→S2不恢复、不重seed。继续签署时另外验签署页显示、最终PDF五字段、审计证书、seal job以及Inbucket逐recipient消息内容／链接；SMTP接收不等互联网送达。封存还需独立测试签名证书：见`SIGNING.md`；上游CI仅声明`./example/cert.p12`，不是已提供可用私钥。证书来源、实际恢复、签署、投递及并发账本仍待执行，不能用本准备包判通过。[一手：schema、上述测试、CI；研究：验收与剩余项]
 
 S1的ID／角色／order：101/Signer/0、102/Assistant/1、103/Approver/2、104/Signer/3、105/Approver/4、106/Approver/5、107/Signer/6。S2只改106的order为4，余者全部保留；107等105／106均完成。[研究：唯一预期]
 
