@@ -1,5 +1,10 @@
 """Portable probe regressions only; these tests never start Next or a server."""
 import contextlib
+import fcntl
+import os
+import signal
+import subprocess
+import time
 import importlib.util
 import io
 import json
@@ -7,7 +12,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 DIRECTORY = Path(__file__).resolve().parents[1] / 'scripts/research'
 sys.path.insert(0, str(DIRECTORY))
@@ -36,17 +41,25 @@ def synthetic_http(state):
   tails = {'S0': ['care-guide', 'retired-guide'], 'S1a': ['retired-guide', 'care-guide'],
     'S1b': ['retired-guide', 'care-guide'], 'S1': ['care-guide', 'size-guide'], 'S2': ['size-guide', 'care-guide']}[state]
   def urls(handles):
-    return '<urlset>' + ''.join(f'<url><loc>https://shop.example.test/blogs/guides/{h}</loc><lastmod>2026-01-02T00:00:00Z</lastmod></url>' for h in handles) + '</urlset>'
+    def published(handle):
+      if handle.startswith('archive-'):
+        minutes = int(handle.split('-')[1])
+        hour, minute = divmod(minutes, 60)
+        return f'2026-01-01T{hour:02}:{minute:02}:00Z'
+      return {'care-guide': '2026-01-02T00:00:00Z',
+        'retired-guide': '2026-01-03T00:00:00Z',
+        'size-guide': '2026-10-20T10:01:00Z'}[handle]
+    return '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>https://shop.example.test/blogs/guides/{h}</loc><lastmod>{published(h)}</lastmod></url>' for h in handles) + '</urlset>'
   index_ids = ['static', 'blogs-1', 'articles-1'] + (['articles-2'] if state == 'S1b' else [])
   routes = {
     '/blogs/guides/care-guide': article,
     '/blogs/guides': listing,
     '/blogs/guides/retired-guide': '<meta name="robots" content="noindex">Not found' if state in ('S1', 'S2') else 'Retired guide',
     '/blogs/guides/size-guide': '<h2 id="measure">Size</h2>',
-    '/sitemap.xml': '<sitemapindex>' + ''.join(f'<sitemap><loc>https://shop.example.test/sitemap/{x}.xml</loc></sitemap>' for x in index_ids) + '</sitemapindex>',
+    '/sitemap.xml': '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<sitemap><loc>https://shop.example.test/sitemap/{x}.xml</loc></sitemap>' for x in index_ids) + '</sitemapindex>',
     '/sitemap/articles-1.xml': urls([f'archive-{i:03}' for i in range(1, 249)] + tails),
     '/sitemap/articles-2.xml': urls(['size-guide'] if state == 'S1b' else []),
-    '/sitemap/blogs-1.xml': '<urlset><url><loc>https://shop.example.test/blogs/guides</loc><lastmod>2026-01-01T00:00:00Z</lastmod></url></urlset>',
+    '/sitemap/blogs-1.xml': '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://shop.example.test/blogs/guides</loc><lastmod>2026-01-01T00:00:00Z</lastmod></url></urlset>',
   }
   def request(path, payload=None, rsc=False):
     return 200, (title + (' END-08192' if state == 'S2' else '')) if rsc else routes[path]
@@ -109,7 +122,7 @@ class ProbeTests(unittest.TestCase):
       return (500 if rsc else status), body
     with patch.object(PROBE, 'request', bad_rsc), self.assertRaises(AssertionError):
       PROBE.check('S1')
-    for bad in ('<sitemapindex>' + '<sitemap><loc>https://wrong.example/x</loc></sitemap>' * 3 + '</sitemapindex>',
+    for bad in ('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + '<sitemap><loc>https://wrong.example/x</loc></sitemap>' * 3 + '</sitemapindex>',
                 routes['/sitemap.xml'].replace('articles-1.xml', 'blogs-1.xml'),
                 routes['/sitemap.xml'].replace('articles-1.xml', 'articles-9.xml')):
       routes['/sitemap.xml'] = bad
@@ -170,6 +183,272 @@ class ProbeTests(unittest.TestCase):
       with patch.object(PROBE.subprocess, 'Popen') as spawn, self.assertRaisesRegex(ValueError, 'empty'):
         PROBE.run(app, output)
       spawn.assert_not_called()
+
+  def test_full_sitemap_middle_duplicate_lastmod_missing_and_order_fail(self):
+    routes, request = synthetic_http('S1b')
+    original = routes['/sitemap/articles-1.xml']
+    middle = '<url><loc>https://shop.example.test/blogs/guides/archive-125</loc><lastmod>2026-01-01T02:05:00Z</lastmod></url>'
+    mutations = [original.replace('archive-125', 'wrong-middle'),
+      original.replace('archive-125', 'archive-124'),
+      original.replace('2026-01-01T02:05:00Z', '2026-01-01T02:06:00Z'),
+      original.replace(middle, ''),
+      original.replace('archive-125', 'TEMP').replace('archive-124', 'archive-125').replace('TEMP', 'archive-124')]
+    for bad in mutations:
+      routes['/sitemap/articles-1.xml'] = bad
+      with self.subTest(bad=bad[:60]), patch.object(PROBE, 'request', request), self.assertRaises(AssertionError):
+        PROBE.check('S1b')
+    routes['/sitemap/articles-1.xml'] = original
+    for key in ('articles-2', 'blogs-1'):
+      route = '/sitemap/' + key + '.xml'
+      original_page = routes[route]
+      for bad in (original_page.replace('2026-', '2025-'), '<urlset></urlset>',
+                  original_page.replace('</urlset>', original_page[8:])):
+        routes[route] = bad
+        with patch.object(PROBE, 'request', request), self.assertRaises(AssertionError):
+          PROBE.check('S1b')
+      routes[route] = original_page
+
+  def test_cli_modes_and_missing_production_inputs(self):
+    with patch.object(PROBE, 'run') as run:
+      PROBE.main(['--app', 'app', '--output', 'out'])
+      self.assertEqual(run.call_args.args[-1], 'dev')
+      PROBE.main(['--app', 'app', '--output', 'out', '--mode', 'focused-production'])
+      self.assertEqual(run.call_args.args[-1], 'focused-production')
+    for args in (['--mode', 'focused-production'], ['--app', 'app'],
+                 ['--source', '--mode', 'focused-production'], ['--mode', 'production']):
+      with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+        PROBE.main(args)
+
+  def test_capture_xml_and_deleted_html_preserves_unicode_and_attempts(self):
+    class Response:
+      status = 404
+      headers = {'Content-Type': 'text/html; charset=utf-8'}
+      def read(self):
+        return '日本語 🧵 Café'.encode('utf-8')
+    with tempfile.TemporaryDirectory() as tmp, patch.object(PROBE, 'ROOT', Path(tmp)), \
+        patch.object(PROBE, 'CURRENT_STATE', 'S2'), patch.object(PROBE.signal, 'alarm'), \
+        patch.object(PROBE.urllib.request, 'urlopen', return_value=Response()), \
+        contextlib.redirect_stdout(io.StringIO()):
+      for route in ('/sitemap/articles-1.xml', '/blogs/guides/retired-guide', '/blogs/guides/retired-guide'):
+        self.assertEqual(PROBE.request(route)[0], 404)
+      captures = list((Path(tmp) / 'responses').iterdir())
+      self.assertEqual(len(captures), 3)
+      self.assertTrue(all(p.read_text(encoding='utf-8') == '日本語 🧵 Café' for p in captures))
+
+  def exercise_run(self, mode, build_outcome=0):
+    """Mock every process/socket/wait: no Next, build, source server or real sleep."""
+    with tempfile.TemporaryDirectory() as tmp, contextlib.ExitStack() as stack:
+      output = Path(tmp)
+      spawned = []
+      def spawn(command, **kwargs):
+        process = Mock(pid=1000 + len(spawned), returncode=None)
+        process.poll.return_value = None
+        is_build = 'build' in command
+        waited = False
+        def wait(timeout=None):
+          nonlocal waited
+          if is_build and not waited:
+            waited = True
+            if build_outcome == 'timeout':
+              raise PROBE.subprocess.TimeoutExpired(command, timeout)
+            process.returncode = build_outcome
+          else:
+            process.returncode = 0
+          return process.returncode
+        process.wait.side_effect = wait
+        spawned.append((command, kwargs, process))
+        return process
+      def check(state):
+        if state == 'S2':
+          (output / 'S2-article.html').write_text('日本語 🧵', encoding='utf-8')
+        return {'state': state}
+      for owner, attr, value in ((PROBE, 'validate_app', Mock()),
+          (PROBE.subprocess, 'run', Mock(return_value=Mock(stdout='v24.19.0'))),
+          (PROBE.subprocess, 'Popen', Mock(side_effect=spawn)),
+          (PROBE.socket, 'socket', Mock()), (PROBE, 'wait_ready', Mock()),
+          (PROBE.signal, 'signal', Mock()),
+          (PROBE.os, 'killpg', Mock(side_effect=ProcessLookupError())),
+          (PROBE.time, 'sleep', Mock()), (PROBE, 'check', Mock(side_effect=check)),
+          (PROBE, 'request', Mock(return_value=(200, '{}'))),
+          (PROBE, 'verify_body', Mock(return_value={'status': 'pass'}))):
+        stack.enter_context(patch.object(owner, attr, value))
+      stack.enter_context(patch.dict(PROBE.os.environ, {'HTTPS_PROXY': 'test-proxy-not-logged',
+        'UNRELATED_SECRET': 'not-inherited', 'GOMAXPROCS': '99'}))
+      stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+      if mode == 'focused-production' and build_outcome != 0:
+        with self.assertRaises((RuntimeError, TimeoutError)):
+          PROBE.run(output, output, mode)
+      else:
+        PROBE.run(output, output, mode)
+      record = json.loads((output / 'continuity-result.json').read_text())
+      self.assertEqual(PROBE.processes, [])
+      self.assertIsNone(PROBE.ROOT)
+      self.assertNotIn('test-proxy-not-logged', json.dumps(record))
+      self.assertIn('cleanup_returncodes', record)
+      return record, spawned
+
+  def test_mock_production_build_start_same_source_and_env(self):
+    record, spawned = self.exercise_run('focused-production')
+    self.assertEqual(len(spawned), 3)
+    self.assertIn('--source', spawned[0][0])
+    self.assertEqual(spawned[1][0][2:], ['build',
+      '--debug-build-paths=app/blogs/**/page.tsx,app/sitemap*/**/route.ts'])
+    self.assertEqual(spawned[1][2].wait.call_args_list[0].kwargs, {'timeout': 600})
+    self.assertIn('start', spawned[2][0])
+    for _, kwargs, _ in spawned:
+      self.assertEqual(kwargs['env']['GOMAXPROCS'], '2')
+      self.assertEqual(kwargs['env']['GOMEMLIMIT'], '1024MiB')
+      self.assertEqual(kwargs['env']['HTTPS_PROXY'], 'test-proxy-not-logged')
+      self.assertNotIn('UNRELATED_SECRET', kwargs['env'])
+      self.assertTrue(kwargs['start_new_session'])
+    self.assertEqual(record['status'], 'passed_focused_production_HTTP_consumers_only')
+    self.assertEqual([row['state'] for row in record['results']], ['S0', 'S1a', 'S1b', 'S1', 'S2'])
+
+  def test_mock_build_nonzero_and_timeout_never_start(self):
+    for outcome in (1, 'timeout'):
+      record, spawned = self.exercise_run('focused-production', outcome)
+      self.assertEqual(len(spawned), 2)
+      self.assertFalse(any('start' in command for command, _, _ in spawned))
+      self.assertEqual(record['status'], 'incomplete')
+      self.assertEqual(record['build']['status'], 'timeout' if outcome == 'timeout' else 'failed')
+      self.assertEqual(record['results'], [])
+
+  def test_mock_dev_has_no_build(self):
+    record, spawned = self.exercise_run('dev')
+    self.assertEqual(len(spawned), 2)
+    self.assertIn('dev', spawned[1][0])
+    self.assertNotIn('build', record)
+    self.assertEqual(record['status'], 'passed_development_HTTP_consumers_only')
+
+  def test_occupied_port_closes_reservation_without_starting(self):
+    reservation = Mock()
+    reservation.bind.side_effect = OSError('occupied')
+    with tempfile.TemporaryDirectory() as tmp, patch.object(PROBE, 'validate_app'), \
+        patch.object(PROBE.subprocess, 'run', return_value=Mock(stdout='v24.19.0')), \
+        patch.object(PROBE.socket, 'socket', return_value=reservation), \
+        patch.object(PROBE.subprocess, 'Popen') as spawn:
+      with self.assertRaises(OSError):
+        PROBE.run(Path(tmp), Path(tmp), 'focused-production')
+      spawn.assert_not_called()
+      reservation.close.assert_called_once()
+
+  def test_readiness_exit_and_timeout(self):
+    dead = Mock()
+    dead.poll.return_value = 1
+    with self.assertRaisesRegex(RuntimeError, 'exited'):
+      PROBE.wait_ready([dead], (8766,))
+    live = Mock()
+    live.poll.return_value = None
+    with patch.object(PROBE.socket, 'create_connection', side_effect=OSError()), \
+        patch.object(PROBE.time, 'monotonic', side_effect=[0, 91]), \
+        self.assertRaisesRegex(TimeoutError, '90 seconds'):
+      PROBE.wait_ready([live], (8766,))
+
+  def test_xml_rejects_duplicate_fields_roots_namespaces_and_structure(self):
+    routes, _ = synthetic_http('S0')
+    for route, kind, entry in (('/sitemap.xml', 'sitemapindex', 'sitemap'),
+                              ('/sitemap/articles-1.xml', 'urlset', 'url')):
+      good = routes[route]
+      self.assertTrue(PROBE.xml_items(good, kind))
+      bad_xml = [good.replace(kind, 'not-a-sitemap'),
+        good.replace('http://www.sitemaps.org/schemas/sitemap/0.9', 'urn:wrong'),
+        good.replace(' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"', ''),
+        good.replace('<' + entry + '>', '<wrong>').replace('</' + entry + '>', '</wrong>'),
+        good.replace('<loc>', '<loc xmlns="urn:wrong">'),
+        good.replace('<loc>', '<loc extra="1">'),
+        good.replace('<loc>', '<extra/> <loc>'),
+        good.replace('<loc>', '<loc><nested/></loc><loc>'),
+        good.replace('<loc>', '<loc>wrong</loc><loc>'),
+        good.replace('<loc>', '<loc>https://shop.example.test/sitemap/static.xml</loc><loc>'),
+        good.replace('</loc>', '</loc>unexpected'),
+        good.replace('<' + entry + '>', '<' + entry + ' extra="1">')]
+      if kind == 'urlset':
+        bad_xml += [good.replace('<lastmod>', '<lastmod>wrong</lastmod><lastmod>'),
+          good.replace('<lastmod>', '<lastmod>2026-01-01T00:01:00Z</lastmod><lastmod>')]
+      for bad in bad_xml:
+        with self.subTest(kind=kind, bad=bad[:100]), self.assertRaises(AssertionError):
+          PROBE.xml_items(bad, kind)
+
+  def test_cleanup_kills_surviving_group_after_leader_exit(self):
+    leader = Mock(pid=12345)
+    leader.poll.return_value = 0
+    alive = True
+    def killpg(pgid, sig):
+      nonlocal alive
+      self.assertEqual(pgid, leader.pid)
+      if not alive:
+        raise ProcessLookupError()
+      if sig == PROBE.signal.SIGKILL:
+        alive = False
+    with patch.object(PROBE.os, 'killpg', side_effect=killpg) as signals, \
+        patch.object(PROBE.time, 'monotonic', side_effect=range(0, 200, 11)), \
+        patch.object(PROBE.time, 'sleep'):
+      result = PROBE.cleanup_owned([leader])
+    self.assertTrue(result[0]['kill_sent'])
+    self.assertEqual(result[0]['leader_returncode'], 0)
+    self.assertEqual(result[0]['status'], 'group_absent')
+    self.assertIn((12345, PROBE.signal.SIGKILL), [call.args for call in signals.call_args_list])
+
+  def test_cleanup_does_not_claim_success_for_remaining_group(self):
+    leader = Mock(pid=12345)
+    leader.poll.return_value = 0
+    with patch.object(PROBE.os, 'killpg'), \
+        patch.object(PROBE.time, 'monotonic', side_effect=range(0, 200, 11)), \
+        patch.object(PROBE.time, 'sleep'):
+      result = PROBE.cleanup_owned([leader])
+    self.assertTrue(result[0]['kill_sent'])
+    self.assertTrue(result[0]['group_exists_at_end'])
+    self.assertEqual(result[0]['status'], 'unconfirmed')
+
+  def test_cleanup_real_orphan_ignores_term_after_leader_exit(self):
+    # 仅标准库临时进程，不运行应用；锁释放证明child已死亡（zombie不算运行）。
+    script = """import fcntl, os, signal, sys, time
+if os.fork() == 0:
+  signal.signal(signal.SIGTERM, signal.SIG_IGN)
+  with open(sys.argv[1], 'w') as lock:
+    fcntl.flock(lock, fcntl.LOCK_EX)
+    lock.write('ready')
+    lock.flush()
+    while True:
+      time.sleep(1)
+os._exit(0)
+"""
+    with tempfile.TemporaryDirectory() as tmp:
+      lockpath = Path(tmp) / 'child-lock'
+      leader = subprocess.Popen([sys.executable, '-c', script, str(lockpath)],
+        start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+      try:
+        leader.wait(timeout=5)
+        deadline = time.monotonic() + 5
+        while not lockpath.exists() or lockpath.read_text() != 'ready':
+          if time.monotonic() >= deadline:
+            self.fail('owned test child did not become ready')
+          time.sleep(0.01)
+        with lockpath.open() as lock:
+          with self.assertRaises(BlockingIOError):
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+          result = PROBE.cleanup_owned([leader], term_grace=0.1, kill_grace=0.5)
+          self.assertTrue(result[0]['kill_sent'])
+          self.assertEqual(result[0]['leader_returncode'], 0)
+          fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+          self.assertEqual(result[0]['status'],
+            'unconfirmed' if result[0]['group_exists_at_end'] else 'group_absent')
+      finally:
+        try:
+          os.killpg(leader.pid, signal.SIGKILL)
+        except ProcessLookupError:
+          pass
+        leader.wait(timeout=5)
+
+  def test_cleanup_permission_error_is_unknown_not_clean(self):
+    leader = Mock(pid=12345)
+    leader.poll.return_value = 0
+    with patch.object(PROBE.os, 'killpg', side_effect=PermissionError()), \
+        patch.object(PROBE.time, 'monotonic', side_effect=range(0, 200, 11)):
+      result = PROBE.cleanup_owned([leader])
+    self.assertEqual(result[0]['status'], 'unconfirmed')
+    self.assertIsNone(result[0]['group_exists_at_end'])
+    self.assertEqual(result[0]['probe_error'], 'PermissionError')
 
   def test_import_has_no_server_side_effects(self):
     self.assertEqual(PROBE.processes, [])

@@ -116,7 +116,7 @@
 
 - **有数据应用**：✅ 保既有受支持迁移器；小表能核实全部停写且落在批准窗口内，先短停写，否则桥接。Agent先只读源码／产物审稿，diff／迁移CLI不等于无副作用；人另定映射语义与运行权限。⛔ seed／reset不替迁移。旧写者或回填未排空并封住重启，不开新状态；不可逆时保状态前进修复。见[两轮继承包与撤回门](research/2026-10-12-development-maintenance.md#p22有数据应用的两轮迁移)。[一手／研究；未实测]
 
-- **Next应用换托管**：✅ 只改博客刷新／长文先保原Next及部署，明确迁出并选Node才自托管；Workers硬约束先评估OpenNext。Agent先核真实刷新入口，再继承内容／SEO；人定删文窗口。⛔ 不以启动或新版包替代两轮验收；关键语义不保就退原实现并保新内容。见[固定shop继承包](research/2026-10-12-development-migrations.md#p23next应用迁出后仍值得保留吗)。[一手／本仓Next dev运行；迁移对照未实测]
+- **Next应用换托管**：✅ 只改博客刷新／长文先保原Next及部署，明确迁出并选Node才自托管；Workers硬约束先评估OpenNext。Agent先核真实刷新入口，再继承内容／SEO；人定删文窗口。**交付须验生产消费者及完整构建**：固定shop的focused production两轮已过，全站构建仍失败。⛔ 不以dev或局部生产成功代替上线门；关键语义不保就退原实现并保新内容。见[固定shop继承包](research/2026-10-12-development-migrations.md#p23next应用迁出后仍值得保留吗)。[一手／本仓focused production运行；迁移对照未实测]
 
 - **数据库默认值**：旧 schema 缓存与 ORM 省略 INSERT 字段并存时，先使相关写入者显式赋值／写列生效，否则延后或获准停写。验旧缓存落盘值，兼容窗口结束再清理；写列不决定默认值，也不保护遗漏的旧写入者。见 [GitLab 固定实现与测试](research/2026-10-12-development-conditions.md#数据库默认值写出字段不等于写对值)，未运行测试。[一手／研究]
 

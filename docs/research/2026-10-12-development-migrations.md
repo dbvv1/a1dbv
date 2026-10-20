@@ -1,6 +1,6 @@
 主线：三，兼四
 改变的建议：数据迁移先保受支持工具与写入权威；换托管先保应用消费者，再判断是否要换框架实现。[研究]
-新证据：2026-10-21 P23固定shop安全基线的dev HTTP／RSC连续两轮通过；最高水平仍未知，生产迁移、共享缓存、浏览器导航与模型效果未验。P22保原纸面包。
+新证据：2026-10-20 UTC实测的P23 focused production HTTP／RSC连续两轮通过，完整项目TypeScript过、全站构建仍失败；最高水平未知，迁移与模型评级不变。P22保原纸面包。
 
 # 开发条件：数据与框架迁移
 
@@ -110,9 +110,25 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 最贴近的前沿候选[Cloudflare Vinext1.0（9月28日）](https://blog.cloudflare.com/vinext-nextjs-on-vite/)报告生产使用与持续兼容测试，**>99%明确排除Cache Components**，不能覆盖本shop的核心依赖。生产退路参照[Wedece OpenNext迁移（7月5日）](https://wedece.com/blog/migrating-a-nextjs-site-to-cloudflare-workers)：双构建／旧部署留作真实回退，稳定数周才撤；近静态站不代表本shop。故仍默认保Next，Workers硬约束先验OpenNext；Agent须保消费者与退路，人决定平台及可接受旧内容窗口。差距是生产目标运行时、缓存／数据契约、浏览器体验和跨部署恢复，而不是再补一个构建速度榜。[一手／研究]
 
+#### focused production补充：交付先过生产消费者门（2026-10-21整理；2026-10-20 UTC实测）
+
+**✅ 保Next默认不变；交付前必须实际验生产消费者与完整构建。** 固定shop的博客链已从dev可行推进到focused production可行；这次只选博客页面与sitemap路由构建，完整站点尚未通过，不能据此上线全站。最高水平与主流采用率仍未知，迁移路线／模型效果评级不升级。[研究：实际回执及独审]
+
+最终attempt6在同一Scenario源、一次build和唯一`next start`中顺序完成S0→S1a→S1b→S1→S2；事件间不重seed、清缓存、重启或手工失效。`--debug-build-paths=app/blogs/**/page.tsx,app/sitemap*/**/route.ts`保留完整项目TypeScript检查，build与runner退出0。原缓存stale300/revalidate60/expire3600不变；每事件等62实秒后请求，七次重试后收敛。70.896／65.371／68.457／68.881秒是ack至整套检查完成，非首次新鲜时间或SLA。[研究]
+
+- **运行时断言**：五阶段文章／metadata、50项列表、250项首分片与分页变化通过；S1b为250+1，S1/S2保B删C、旧p2为空。C删除后实际404/noindex，区别于旧dev的流式200。五次RSC-header请求为`text/x-component`，不是浏览器软导航。
+- **独审后补观察**：保存XML的全部loc／lastmod／顺序、跨页去重与删除项消失均通过；运行时check只对index做精确集合去重，文章分片只验数量及部分项，不能把后补全集检查回填成原断言。列表、普通A/B及RSC原响应不在小型证据包，独审依赖脚本与请求日志互证。
+- **完整长正文**：原作者核验后，独审从另行提供的安全S2 HTML独立重算全部57,353个语义token，与1,679,444字节预注册源一致（8,192节／链接）。HTML为5,802,425字节；语义完整一致不等于HTML与源逐字节相等，也不证明浏览器体验。[研究：运行与独立离线复核分列]
+
+**六次build与保存偏差全部保留。** 前三次全站构建分别因字体连接、原因未定的typecheck、窄fixture未知商品／集合操作而失败；第三次完整项目TypeScript已过，另一次独立tsc也过。focused attempt4通过旧较窄check；归档SameFileError后误启的attempt5仅S0/e1后中断，无finally回执，子进程清理未知。attempt4原S0 HTML被覆盖永久缺失，不以后续字节补回。attempt6用与当时已发布版相同check完成，独立于attempt4的source/build/start，但复用任务输出根和编译缓存，非新空目录起跑。六次build共134.962秒，条件／范围变化不能归因提速；不是人工工时或模型效率。[研究]
+
+公开接续见[分离生产supplement](../../scripts/research/p23_runtime_result.json)：保原dev字段与尝试不覆盖，列结果、全部build、身份及局限。安全receipt归档SHA256为`9260ea29c655d952712cb18d8e8d312c972c0c9cf7ddcd8a5081aa0c935087b6`；独审报告`p23-production-independent-review-20261021.md` SHA256为`3d71202476f364d596573972c5bf6f607ac0e6ba4197707315be2387c598e4b1`，为云端只读材料身份，不是公开下载链接；本节与result承担公开小型回执。独审核101文件及归档，正文另由安全补充核验；不是全包安全认证。[研究]
+
+[portable探针](../../scripts/research/p23_runtime_probe.py)新增`--mode focused-production`，但包装未在真实应用复跑，不能替代上述历史driver实测。剩余有价值的门是补齐合法最小fixture后完整构建、再按目标平台验部署／恢复；当前仅单进程内置缓存，真实Shopify、共享缓存、冷expire3600、浏览器导航、故障／并发、跨部署退回和OpenNext／Vinext仍未验。Agent保输入、消费者和失败证据，人定平台、旧内容窗口及上线门槛；无模型对照。[研究]
+
 #### 已执行的dev两轮及Git接续（2026-10-21）
 
-**✅ 原消费者通路可跑；暂不升级迁移评级。** Node24.19.0／pnpm12.8.2／Next16.4.1／React19.3.0／sharp0.35.5；只接`storefront.request`到同一合成源，保原布局、GraphQL操作、转换、页面、metadata、正文和sitemap。footer另有明确七字段null policies，未知操作失败，不回退真实商店；并非全站／Hydrogen HTTP／真实Shopify契约。[研究：本仓运行]
+**历史dev记录（生产补充前的结论，以下缺项仅指当时）：✅ 原消费者通路可跑；暂不升级迁移评级。** Node24.19.0／pnpm12.8.2／Next16.4.1／React19.3.0／sharp0.35.5；只接`storefront.request`到同一合成源，保原布局、GraphQL操作、转换、页面、metadata、正文和sitemap。footer另有明确七字段null policies，未知操作失败，不回退真实商店；并非全站／Hydrogen HTTP／真实Shopify契约。[研究：本仓运行]
 
 第三次尝试在同一source／Next dev进程中暖S0并顺序e1–e4，每次等62实秒后读至收敛，不清缓存或重seed：五阶段均通过50项列表、文章／metadata、250项首分片；S1b为250+1，S1后索引2→1、旧p2为空、保B删C。C返回流式HTTP200＋not-found/noindex，非严格404。S2完整HTML正文57,353个规范化token与预注册源一致（含8,192节／链接及Unicode），五次RSC响应MIME均为`text/x-component`。这是直接HTTP／RSC dev验收，不是实际浏览器软导航。[研究]
 

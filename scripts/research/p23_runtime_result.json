@@ -188,5 +188,227 @@
   },
   "portable_probe_review_hardening": "Offline review added explicit HTTP200 checks for successful consumers, documented 200/404 deleted article handling, and exact unique sitemap-index locations. Adversarial regressions pass; these stronger assertions were not rerun against the historical application and do not retroactively upgrade attempt3.",
   "patch_packaging": "Zero-context unified patch regenerated from verified upstream/result bytes; all five applied files byte-identical to reviewed historical patch. Formatting-only change, no runtime rerun. Immutable original archives preserved.",
-  "patch_sha256": "25b59a733c44531ad6d7c4fb0691caf1b525d34e115396080f8fe8d18ab8a505"
+  "patch_sha256": "25b59a733c44531ad6d7c4fb0691caf1b525d34e115396080f8fe8d18ab8a505",
+  "historical_scope_note": "All preceding fields describe the original development run and its packaging; later production observations are separated below and do not rewrite those limits or attempts.",
+  "focused_production_supplement": {
+    "verified_utc": "2026-10-20",
+    "kind": "historical focused production evidence; not a new run of the portable wrapper",
+    "source": "Same fixed public shop commit and fixture as development source above; original Next consumers and synthetic storefront.request bridge.",
+    "result": {
+      "attempt": 6,
+      "status": "passed_focused_production_HTTP_consumers_only",
+      "mode": "production server, built-in in-memory LRU, HTTP and MIME-verified RSC requests; not browser navigation",
+      "results": [
+        {
+          "state": "S0",
+          "article_status": 200,
+          "retired_status": 200,
+          "list_count": 50,
+          "sitemap_count": 250,
+          "page2_count": 0,
+          "rsc_bytes": 27306,
+          "long_body_sections": null
+        },
+        {
+          "state": "S1a",
+          "article_status": 200,
+          "retired_status": 200,
+          "list_count": 50,
+          "sitemap_count": 250,
+          "page2_count": 0,
+          "rsc_bytes": 27330,
+          "long_body_sections": null
+        },
+        {
+          "state": "S1b",
+          "article_status": 200,
+          "retired_status": 200,
+          "list_count": 50,
+          "sitemap_count": 250,
+          "page2_count": 1,
+          "rsc_bytes": 27330,
+          "long_body_sections": null
+        },
+        {
+          "state": "S1",
+          "article_status": 200,
+          "retired_status": 404,
+          "list_count": 50,
+          "sitemap_count": 250,
+          "page2_count": 0,
+          "rsc_bytes": 27330,
+          "long_body_sections": null
+        },
+        {
+          "state": "S2",
+          "article_status": 200,
+          "retired_status": 404,
+          "list_count": 50,
+          "sitemap_count": 250,
+          "page2_count": 0,
+          "rsc_bytes": 3386326,
+          "long_body_sections": 8192
+        }
+      ]
+    },
+    "build": {
+      "exit_code": 0,
+      "elapsed_seconds": 7.302,
+      "command": "node node_modules/next/dist/bin/next build --debug-build-paths=app/blogs/**/page.tsx,app/sitemap*/**/route.ts"
+    },
+    "build_identity": {
+      "attempt": 6,
+      "build_id": "U_a0EsK00VkTzelF9yB7H",
+      "build_id_file_sha256": "b53755a5caddb03a97c52447b1da170d5f258b575be6be55e8d9096510e252a5",
+      "runner_sha256": "4d635e4c7a738920e7e15079f888d70cbffd4faf6b8aa068b8a23edbf9576293",
+      "fixture_sha256": "e7de286caca02e6d0fb5444fb167d12d970010cd1acf755189781d990c593757",
+      "fixture_server_sha256": "da89e5407b45c4240737d070f3f8d1455e42bebdfe3174c72ab3e5c662f5f196",
+      "next": "16.4.1",
+      "node": "24.19.0",
+      "resource_conditions": {
+        "GOMAXPROCS": "2",
+        "GOMEMLIMIT": "1024MiB"
+      },
+      "scope": "focused production, original routes and full TypeScript check"
+    },
+    "continuity": {
+      "source_instances": 1,
+      "builds_in_successful_attempt": 1,
+      "next_start_instances": 1,
+      "events": [
+        "e1",
+        "e2",
+        "e3",
+        "e4"
+      ],
+      "event_resets_or_manual_invalidations": false,
+      "request_count": 66,
+      "convergence_retries": 7,
+      "cleanup_returncodes": [
+        -15,
+        143
+      ],
+      "basis": "driver, Popen/poll logs, source states and request records; no independent socket-to-PID snapshot"
+    },
+    "cache": {
+      "mode": "single-process built-in cache; no remote cacheHandlers",
+      "stale_seconds": 300,
+      "revalidate_seconds": 60,
+      "expire_seconds": 3600,
+      "wait_before_event_probes_seconds": 62,
+      "ack_to_completed_check_seconds": [
+        70.896,
+        65.371,
+        68.457,
+        68.881
+      ],
+      "timing_scope": "polling and full-check completion, not first freshness, SLA or benchmark; cold expire3600 untested"
+    },
+    "attempts": [
+      {
+        "id": 1,
+        "scope": "full site",
+        "build_seconds": 18.749,
+        "build_exit_code": 1,
+        "outcome": "font connection establishment failed; launcher environment inheritance changed, no established access denial"
+      },
+      {
+        "id": 2,
+        "scope": "full site",
+        "build_seconds": 41.851,
+        "build_exit_code": 1,
+        "outcome": "compiled, then Failed to type check; cause unknown"
+      },
+      {
+        "id": 3,
+        "scope": "full site",
+        "build_seconds": 46.431,
+        "build_exit_code": 1,
+        "outcome": "complete project TypeScript passed; narrow fixture unknown collection/product operations caused /collections prerender failure"
+      },
+      {
+        "id": 4,
+        "scope": "focused production",
+        "build_seconds": 12.12,
+        "build_exit_code": 0,
+        "outcome": "e1-e4 passed older narrower check; original S0 HTML permanently missing after overwrite, hash not replacement bytes"
+      },
+      {
+        "id": 5,
+        "scope": "focused production",
+        "build_seconds": 8.509,
+        "build_exit_code": 0,
+        "outcome": "SameFileError did not stop shell; unintended old driver still labeled attempt4, reached S0/e1 then interrupted; tool exit130, no finally receipt; child cleanup unknown"
+      },
+      {
+        "id": 6,
+        "scope": "focused production",
+        "build_seconds": 7.302,
+        "build_exit_code": 0,
+        "runner_exit_code": 0,
+        "outcome": "e1-e4 passed published check; independent source/build/start from attempt4; output root and compile cache reused, not a fresh empty-output run"
+      }
+    ],
+    "build_cost": {
+      "attempts": 6,
+      "total_build_seconds": 134.962,
+      "independent_tsc": {
+        "exit_code": 0,
+        "seconds": 9.967,
+        "max_rss_kb": 2978888
+      },
+      "limits": "process wall time excludes other waits/checks; changed cache, scope and resource conditions do not establish speedup causality or model efficiency"
+    },
+    "independent_xml_review": {
+      "status": "passed_posthoc_offline",
+      "scope": "saved successful checkpoints: full loc/lastmod/order, p1/p2 cross-page uniqueness, index and blogs; C absent and B retained in S1/S2",
+      "runtime_assertion_boundary": "runtime check fully checked index locations/uniqueness, but article shards only counts and selected items; full article XML coverage was added by independent review, not original assertions"
+    },
+    "rendered_body": {
+      "status": "pass",
+      "scope": "saved focused-production attempt6 HTML normalized complete body tokens, not browser DOM",
+      "token_count": 57353,
+      "source_utf8_bytes": 1679444,
+      "source_sha256": "1df175722789cacbed2f17d84258a4f00445b9c3b0226a06dea881c27b8d66c0",
+      "normalized_sha256": "8550d51c1ea3aecf9ce8e97c2344c63112cbaedb9e0e550ae1a761ead7ca2d12"
+    },
+    "independent_rendered_body": {
+      "status": "passed_all_57353_tokens",
+      "method": "independent HTMLParser and input literal construction, not author verifier import; separately authorized safe S2 supplement",
+      "html_bytes": 5802425,
+      "html_sha256": "1ba10a40a6708c9468bebc7d7cfe1495d11cbd663e710053f32ad84107848107",
+      "normalized_sha256": "8550d51c1ea3aecf9ce8e97c2344c63112cbaedb9e0e550ae1a761ead7ca2d12",
+      "scope": "complete semantic HTML body tokens, not browser DOM or raw HTML equality to source"
+    },
+    "review": {
+      "report": "p23-production-independent-review-20261021.md",
+      "report_sha256": "3d71202476f364d596573972c5bf6f607ac0e6ba4197707315be2387c598e4b1",
+      "receipt_archive_sha256": "9260ea29c655d952712cb18d8e8d312c972c0c9cf7ddcd8a5081aa0c935087b6",
+      "manifest_sha256": "2d7189ef6ea04751cec4ad3a08f3678ab61ed2b1236f94bf652581713dffc217",
+      "files_verified": 101,
+      "availability": "cloud read-only report and local safe receipt identities, not public download links; this manifest and research section are public summaries",
+      "limits": "ordinary A/B, list and RSC original responses absent from small archive; supported by scripts and request logs. S2 HTML reviewed separately. No complete package security certification."
+    },
+    "portable_wrapper": {
+      "option": "--mode focused-production",
+      "real_application_rerun": false,
+      "scope": "new reusable mode is distinct from the historical driver; packaging review is offline only",
+      "packaging_review": {
+        "report": "p23-production-package-independent-review-20261021.md",
+        "sha256": "e4ed38a7ce79d8b90c65794ad352792b6b8551537fc9d35093b56f9ba95b8f04",
+        "scope": "Independent code/document review and 34 offline tests; no application rerun or full repository suite",
+        "fixed_findings": [
+          "Duplicate XML fields and wrong root/namespace rejected",
+          "Owned child process group checked independently of exited leader; uncertain cleanup fails run"
+        ]
+      }
+    },
+    "limits": [
+      "Full-site production build failed; focused routing retained full-project TypeScript checks.",
+      "No real Shopify, deployment, shared cache, browser navigation, cold expiry, source-failure/concurrency, cross-deployment rollback or migration-variant test.",
+      "No model calls or effect comparison; highest level and mainstream adoption unknown; P23 incomplete and migration ratings unchanged.",
+      "Attempt5 cleanup unknown, attempt4 S0 HTML lost, attempt6 output root/cache reused; no retroactive repair of history.",
+      "Hashes identify bytes, not trusted timestamps or independent proof of preregistration."
+    ]
+  }
 }

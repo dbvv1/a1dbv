@@ -1,8 +1,9 @@
-"""P23 已执行 dev 探针的可移植包装；不安装依赖、不运行生产构建。
+"""P23 dev / focused-production 探针的可移植包装；不安装依赖。
 
 python scripts/research/p23_runtime_probe.py --app APP --output EMPTY_OUTPUT
 APP 必须先按研究记录从固定公开 tar + patch 准备。仅绑定 loopback。
-包装重构仅离线验证；历史真实运行结论见 p23_runtime_result.json。
+默认 dev；--mode focused-production 仅构建博客／sitemap，不代表全站通过。
+新包装仅离线验证，并非历史生产 driver 原字节；历史结果另有回执。
 """
 import argparse
 import datetime
@@ -24,6 +25,7 @@ from p23_source_fixture import Scenario, long_body
 
 ROOT = None
 processes = []
+CURRENT_STATE = None
 
 class DOM(HTMLParser):
   def __init__(self, text):
@@ -58,11 +60,64 @@ def request(path, payload=None, rsc=False):
     body=r.read().decode()
     mime=r.headers.get('Content-Type','')
     print(json.dumps({'request':path,'rsc_header':rsc,'status':r.status,'mime':mime,'elapsed_seconds':round(time.monotonic()-started,3),'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'own_processes':own_resources()}),flush=True)
+    if ROOT is not None and (path.startswith('/sitemap') or path.endswith('/retired-guide')):
+      folder = ROOT / 'responses'
+      folder.mkdir(exist_ok=True)
+      name = path.strip('/').replace('/', '_')
+      target = folder / f'{CURRENT_STATE}-{len(list(folder.iterdir())):04d}-{name}.txt'
+      target.write_text(body, encoding='utf-8')
     if rsc:assert 'text/x-component' in mime,('RSC MIME',mime)
     return r.status,body
   finally:signal.alarm(0)
-def xml_items(text):
-  root=ET.fromstring(text);return [{e.tag.rsplit('}',1)[-1]:e.text for e in n} for n in root]
+def xml_items(text, kind='urlset'):
+  """仅接受本实验预注册的 sitemap XML 子集，不能覆盖重复字段。"""
+  namespace = '{http://www.sitemaps.org/schemas/sitemap/0.9}'
+  entry, fields = {'sitemapindex': ('sitemap', {'loc'}),
+                   'urlset': ('url', {'loc', 'lastmod'})}[kind]
+  try:
+    root = ET.fromstring(text)
+  except ET.ParseError as exc:
+    raise AssertionError('invalid sitemap XML') from exc
+  assert root.tag == namespace + kind, 'wrong sitemap root or namespace'
+  assert not root.attrib and not (root.text or '').strip(), 'extra root structure'
+  rows = []
+  for node in root:
+    assert node.tag == namespace + entry, 'wrong sitemap entry or namespace'
+    assert not node.attrib and not (node.text or '').strip(), 'extra entry structure'
+    assert not (node.tail or '').strip(), 'extra entry text'
+    row = {}
+    for field in node:
+      assert field.tag in {namespace + name for name in fields}, 'unknown sitemap field or namespace'
+      name = field.tag[len(namespace):]
+      assert name not in row, 'duplicate sitemap field'
+      assert not field.attrib and len(field) == 0, 'extra field structure'
+      assert not (field.tail or '').strip(), 'extra field text'
+      assert field.text and field.text.strip(), 'empty sitemap field'
+      row[name] = field.text
+    assert row.keys() == fields, 'missing sitemap field'
+    rows.append(row)
+  return rows
+def expected_sitemaps(state):
+  """预注册字面 oracle：不读取实际响应、不调用 Scenario 或应用转换。"""
+  tails = {
+    'S0': ['care-guide', 'retired-guide'],
+    'S1a': ['retired-guide', 'care-guide'],
+    'S1b': ['retired-guide', 'care-guide', 'size-guide'],
+    'S1': ['care-guide', 'size-guide'],
+    'S2': ['size-guide', 'care-guide'],
+  }[state]
+  # 固定源 archive-001…248：1月1日00:01…04:08，publishedAt不随编辑变。
+  articles = [{'loc': f'https://shop.example.test/blogs/guides/archive-{i:03}',
+    'lastmod': f'2026-01-01T{i // 60:02}:{i % 60:02}:00Z'} for i in range(1, 249)]
+  published = {'care-guide': '2026-01-02T00:00:00Z',
+    'retired-guide': '2026-01-03T00:00:00Z', 'size-guide': '2026-10-20T10:01:00Z'}
+  articles += [{'loc': 'https://shop.example.test/blogs/guides/' + handle,
+    'lastmod': published[handle]} for handle in tails]
+  return {'articles-1': articles[:250], 'articles-2': articles[250:],
+    'blogs-1': [{'loc': 'https://shop.example.test/blogs/guides',
+                 'lastmod': '2026-01-01T00:00:00Z'}]}
+
+
 def check(state):
   def ok(path, rsc=False):
     status, body = request(path, rsc=rsc)
@@ -77,17 +132,19 @@ def check(state):
   assert 'Care guide '+version in lt
   assert sum(t=='h2' for t,x in ld.tags)==50,(state,'list length')
   if state!='S0':assert ('Cold wash and air dry.' if state!='S2' else 'Long-form care guide; cold wash, air dry.') in lt
-  _,index=ok('/sitemap.xml'); ids=[x['loc'] for x in xml_items(index)]
+  _,index=ok('/sitemap.xml'); ids=[x['loc'] for x in xml_items(index, 'sitemapindex')]
   expected_ids = ['static', 'blogs-1', 'articles-1'] + (['articles-2'] if state == 'S1b' else [])
   expected_locs = {'https://shop.example.test/sitemap/' + key + '.xml' for key in expected_ids}
   assert len(ids) == len(set(ids)) and set(ids) == expected_locs, (state, ids)
-  _,p1=ok('/sitemap/articles-1.xml');items=xml_items(p1);assert len(items)==250
-  expected_tail={'S0':['care-guide','retired-guide'],'S1a':['retired-guide','care-guide'],'S1b':['retired-guide','care-guide'],'S1':['care-guide','size-guide'],'S2':['size-guide','care-guide']}[state]
-  assert [x['loc'].rsplit('/',1)[-1] for x in items[-2:]]==expected_tail
-  assert next(x['lastmod'] for x in items if x['loc'].endswith('/care-guide'))=='2026-01-02T00:00:00Z'
-  _,p2=ok('/sitemap/articles-2.xml');two=xml_items(p2);assert len(two)==int(state=='S1b')
-  if two:assert two[0]['loc']=='https://shop.example.test/blogs/guides/size-guide'
-  _,blogs=ok('/sitemap/blogs-1.xml');assert xml_items(blogs)==[{'loc':'https://shop.example.test/blogs/guides','lastmod':'2026-01-01T00:00:00Z'}]
+  expected = expected_sitemaps(state)
+  pages = {}
+  for key, wanted in expected.items():
+    _, body = ok('/sitemap/' + key + '.xml')
+    pages[key] = xml_items(body)
+    assert pages[key] == wanted, (state, key, 'full ordered loc/lastmod mismatch')
+    locs = [item['loc'] for item in pages[key]]
+    assert len(locs) == len(set(locs)), (state, key, 'duplicate loc')
+  items, two = pages['articles-1'], pages['articles-2']
   cs,c=request('/blogs/guides/retired-guide');cd=DOM(c)
   assert cs in ((200, 404) if state in ('S1','S2') else (200,)), (state, 'retired status', cs)
   if state in ('S1','S2'):
@@ -103,7 +160,7 @@ def check(state):
     assert sum(t=='a' and x.get('href')=='/blogs/guides/size-guide#measure' for t,x in d.tags)==8192
     assert '完整结束。END-08192' in visible and 'Café naïve — 日本語と絵文字 🧵🧼' in visible
     assert 'END-08192' in rsc
-  (ROOT/f'{state}-article.html').write_text(a)
+  (ROOT/f'{state}-article.html').write_text(a, encoding='utf-8')
   return {'state':state,'article_status':status,'retired_status':cs,'list_count':50,'sitemap_count':len(items),'page2_count':len(two),'rsc_bytes':len(rsc.encode()),'long_body_sections':8192 if state=='S2' else None}
 def request_timeout(signum,frame):
   raise TimeoutError('90-second total request deadline exceeded')
@@ -195,8 +252,67 @@ def validate_app(app):
     raise ValueError('loopback fixture patch is missing')
 
 
-def run(app, output):
-  global ROOT, processes
+def wait_ready(servers, ports):
+  deadline = time.monotonic() + 90
+  while True:
+    if any(p.poll() is not None for p in servers):
+      raise RuntimeError('Owned server exited before readiness')
+    try:
+      for port in ports:
+        with socket.create_connection(('127.0.0.1', port), timeout=1):
+          pass
+      return
+    except OSError:
+      if time.monotonic() > deadline:
+        raise TimeoutError('Server not ready within 90 seconds')
+      time.sleep(1)
+
+
+def cleanup_owned(owned, term_grace=10, kill_grace=2):
+  """只处理本次 start_new_session 创建的组；leader退出不等于组已退出。"""
+  rows = [{'pgid': p.pid, 'term_sent': False, 'kill_sent': False} for p in owned]
+  def exists(row):
+    try:
+      os.killpg(row['pgid'], 0)
+      return True
+    except ProcessLookupError:
+      return False
+    except OSError as exc:
+      row['probe_error'] = type(exc).__name__
+      return None
+  def send(row, sig, key):
+    try:
+      os.killpg(row['pgid'], sig)
+      row[key] = True
+    except ProcessLookupError:
+      pass
+    except OSError as exc:
+      row[key + '_error'] = type(exc).__name__
+  for row in rows:
+    send(row, signal.SIGTERM, 'term_sent')
+  def wait_groups(seconds):
+    deadline = time.monotonic() + seconds
+    while True:
+      for process in owned:
+        process.poll()  # 回收自己的leader；不据此判定子进程组已清理。
+      remaining = [row for row in rows if exists(row) is not False]
+      if not remaining or time.monotonic() >= deadline:
+        return remaining
+      time.sleep(0.1)
+  for row in wait_groups(term_grace):
+    send(row, signal.SIGKILL, 'kill_sent')
+  wait_groups(kill_grace)
+  for process, row in zip(owned, rows):
+    row['leader_returncode'] = process.poll()
+    row['group_exists_at_end'] = exists(row)
+    row['status'] = 'group_absent' if row['group_exists_at_end'] is False else 'unconfirmed'
+  return rows
+
+
+def run(app, output, mode='dev'):
+  global ROOT, processes, CURRENT_STATE
+  if mode not in ('dev', 'focused-production'):
+    raise ValueError('unknown probe mode')
   validate_app(app)
   if not output.is_dir() or any(output.iterdir()):
     raise ValueError('output must be an existing empty directory; never overwrite prior attempts')
@@ -222,34 +338,59 @@ def run(app, output):
     'NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN': 'synthetic-not-a-token',
     'NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN': 'shop.example.test',
     'VERCEL_PROJECT_PRODUCTION_URL': 'shop.example.test', 'TZ': 'UTC'}
-  logs = [open(ROOT / 'continuity-fixture.log', 'w'),
-          open(ROOT / 'continuity-next.log', 'w')]
-  record = {'kind': 'new attempt from S0; not historical attempt 3',
-            'status': 'running', 'results': results}
+  if mode == 'focused-production':
+    # 与历史生产启动器相同的代理／证书继承边界；仅原样继承，不打印其值。
+    inherited = ('PATH', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY',
+      'http_proxy', 'https_proxy', 'all_proxy', 'no_proxy', 'SSL_CERT_FILE',
+      'SSL_CERT_DIR', 'NODE_EXTRA_CA_CERTS')
+    env = {key: value for key, value in env.items() if key in inherited or
+      key in ('NEXT_PUBLIC_SHOPIFY_SHOP_ID', 'NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN',
+        'NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN', 'NEXT_TELEMETRY_DISABLED',
+        'VERCEL_PROJECT_PRODUCTION_URL', 'TZ')}
+    (ROOT / 'home').mkdir()
+    env.update(HOME=str(ROOT / 'home'), CI='1', GOMAXPROCS='2', GOMEMLIMIT='1024MiB')
+  logs = [open(ROOT / 'continuity-fixture.log', 'w', encoding='utf-8'),
+          open(ROOT / 'continuity-next.log', 'w', encoding='utf-8')]
+  record = {'kind': 'new portable-wrapper attempt from S0; not a historical driver replay',
+            'mode': mode, 'status': 'running', 'results': results,
+            'scope': 'direct HTTP/RSC consumers only; not full-site production or browser navigation'}
   def save():
-    (ROOT / 'continuity-result.json').write_text(json.dumps(record, indent=2) + '\n')
+    (ROOT / 'continuity-result.json').write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8')
   try:
     processes.append(subprocess.Popen([sys.executable, str(Path(__file__).resolve()),
       '--source'], stdout=logs[0], stderr=subprocess.STDOUT, env=env, start_new_session=True))
-    processes.append(subprocess.Popen(['node', 'node_modules/next/dist/bin/next',
-      'dev', '--hostname', '127.0.0.1', '--port', '3086'], cwd=app,
-      stdout=logs[1], stderr=subprocess.STDOUT, env=env, start_new_session=True))
     save()
-    ready_deadline = time.monotonic() + 90
-    while True:
-      if any(p.poll() is not None for p in processes):
-        raise RuntimeError('Owned server exited before readiness')
-      try:
-        with socket.create_connection(('127.0.0.1', 3086), timeout=1):
-          pass
-        with socket.create_connection(('127.0.0.1', 8766), timeout=1):
-          pass
-        break
-      except OSError:
-        if time.monotonic() > ready_deadline:
-          raise TimeoutError('Server not ready within 90 seconds')
-        time.sleep(1)
+    wait_ready(processes, (8766,))
+    source = processes[0]
+    if mode == 'focused-production':
+      command = ['node', 'node_modules/next/dist/bin/next', 'build',
+        '--debug-build-paths=app/blogs/**/page.tsx,app/sitemap*/**/route.ts']
+      # 原 build 保留完整项目 typecheck；不传跳过参数，不更改配置。
+      started = time.monotonic()
+      record['build'] = {'command': command, 'timeout_seconds': 600, 'status': 'running'}
+      save()
+      with open(ROOT / 'build.log', 'w', encoding='utf-8') as buildlog:
+        build = subprocess.Popen(command, cwd=app, stdout=buildlog,
+          stderr=subprocess.STDOUT, env=env, start_new_session=True)
+        processes.append(build)
+        try:
+          code = build.wait(timeout=600)
+        except subprocess.TimeoutExpired:
+          record['build']['status'] = 'timeout'
+          raise TimeoutError('Production build exceeded 600 seconds; start prohibited')
+        finally:
+          record['build']['elapsed_seconds'] = round(time.monotonic() - started, 3)
+        record['build'].update(exit_code=code, status='passed' if code == 0 else 'failed')
+        save()
+        if code:
+          raise RuntimeError('Production build failed; start prohibited; inspect build.log')
+    processes.append(subprocess.Popen(['node', 'node_modules/next/dist/bin/next',
+      'start' if mode == 'focused-production' else 'dev',
+      '--hostname', '127.0.0.1', '--port', '3086'], cwd=app,
+      stdout=logs[1], stderr=subprocess.STDOUT, env=env, start_new_session=True))
+    wait_ready([source, processes[-1]], (3086, 8766))
     for state, event in [('S0', None), ('S1a', 'e1'), ('S1b', 'e2'), ('S1', 'e3'), ('S2', 'e4')]:
+      CURRENT_STATE = state
       if event:
         status, response = request('/event', {'event': event})
         assert status == 200, response
@@ -268,8 +409,9 @@ def run(app, output):
       results.append(result)
       print(json.dumps(result), flush=True)
       save()
-    record['rendered_body'] = verify_body((ROOT / 'S2-article.html').read_text())
-    record['status'] = 'passed_development_HTTP_consumers_only'
+    record['rendered_body'] = verify_body((ROOT / 'S2-article.html').read_text(encoding='utf-8'))
+    record['status'] = ('passed_focused_production_HTTP_consumers_only' if mode == 'focused-production'
+      else 'passed_development_HTTP_consumers_only')
     save()
   except BaseException as exc:
     record['status'] = 'incomplete'
@@ -277,39 +419,40 @@ def run(app, output):
     save()
     raise
   finally:
-    for p in processes:
-      try:
-        os.killpg(p.pid, signal.SIGTERM)
-      except ProcessLookupError:
-        pass
-    for p in processes:
-      try:
-        p.wait(timeout=10)
-      except subprocess.TimeoutExpired:
-        os.killpg(p.pid, signal.SIGKILL)
-        p.wait()
-    print(json.dumps({'cleanup_returncodes': [p.returncode for p in processes]}), flush=True)
+    cleanup = cleanup_owned(processes)
+    record['cleanup_groups'] = cleanup
+    record['cleanup_returncodes'] = [row['leader_returncode'] for row in cleanup]
+    cleanup_failed = any(row['status'] != 'group_absent' for row in cleanup)
+    if cleanup_failed:
+      record['status'] = 'incomplete_cleanup'
+    print(json.dumps({'cleanup_groups': cleanup}), flush=True)
+    save()
     for log in logs:
       log.close()
+    ROOT, CURRENT_STATE, processes = None, None, []
+    if cleanup_failed and sys.exc_info()[0] is None:
+      raise RuntimeError('Owned process group cleanup unconfirmed; inspect receipt')
+
 
 
 def main(argv=None):
   parser = argparse.ArgumentParser(description=__doc__)
   parser.add_argument('--app', type=Path)
   parser.add_argument('--output', type=Path)
+  parser.add_argument('--mode', choices=('dev', 'focused-production'), default='dev')
   parser.add_argument('--source', action='store_true', help=argparse.SUPPRESS)
   args = parser.parse_args(argv)
   if not __debug__:
     parser.error('Do not run assertion probes with Python -O')
   if args.source:
-    if args.app or args.output:
+    if args.app or args.output or args.mode != 'dev':
       parser.error('--source cannot be combined with run arguments')
     serve_source()
     return 0
   if args.app is None or args.output is None:
     parser.error('--app and --output are required')
   try:
-    run(args.app.resolve(), args.output.resolve())
+    run(args.app.resolve(), args.output.resolve(), args.mode)
   except (ValueError, FileNotFoundError, KeyError) as exc:
     parser.error(str(exc))
   return 0
