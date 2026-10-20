@@ -302,7 +302,7 @@ Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657
 
 ## P44：公开同模型对照先核指标与实际配置
 
-核实2026-10-21 06:43–06:48（UTC+8），公开页面只读。**当前最优未知**；沿用[C15最高水平卡](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c15--agent-评估)的代表任务、多次尝试、结果校准与总投入标准。主流参照为作者汇总分数，可行起点是原生入口；本仓推荐先对账再窄试，属于可行选择，不把厂商案例当最佳证明。[研究]
+核实2026-10-21 06:43–06:53（UTC+8），公开页面只读。**当前最优未知**；沿用[C15最高水平卡](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c15--agent-评估)的代表任务、多次尝试、结果校准与总投入标准。主流参照为作者汇总分数，可行起点是原生入口；本仓推荐先对账再窄试，属于可行选择，不把厂商案例当最佳证明。[研究]
 
 [Unreal Labs 10-06原文](https://unreallabs.ai/blog/long-horizon-agents-at-half-the-cost/)报告两臂同Sol6.1 xhigh、20题×8、各69/160；推理费445.75／850.52美元，称节省48%。本轮未复跑，只展开其[Unreal job](https://hub.harborframework.com/jobs/18eab680-0191-4368-963d-0f2c82e61a13?tab=config)及[Codex job](https://hub.harborframework.com/jobs/1f7a26f1-af67-4df6-958f-1de559e3593d?tab=config)的公开Config、Overview、Trials。[一手：作者报告／公开运行字段]
 
@@ -324,6 +324,8 @@ Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657
 
 **completed不是任务成功。** 两臂默认correctness卡为0.13／0.06，选reward后表均显示0.43；多指标单元格的逐项键与目标值尚未全部核清，不能由四舍五入反推69，也不拿correctness否定原文成绩。表提示异常也可能有reward；Trials的Status均显示Completed，但Codex两行Exception分别为ConflictError、ApiOverloadedError，前者缺评分、后者显示0，费用各22.58／8.31美元。[一手；研究：分母]
 
+**首显1确实可能对应任务未通过。** Codex的`mastodon-clone__WXjgMp7`列表显示`1.00 +2 more`；同一[公开trial的Verifier](https://hub.harborframework.com/jobs/1f7a26f1-af67-4df6-958f-1de559e3593d/trials/6284d1f2-d7aa-403f-b57e-c785190ca5a8?tab=verifier)内reward.json显示`correctness: 0, reward: 0, ux: 1`，Outcome Reward也为0.00。这足以拒绝“列表首值1就是成功”的读法，不代表全部trial已复算，也不是另一harness胜出的证据。[一手：公开详情，未运行]
+
 **不拼接不同口径算新节省率。** Codex可见两位费用合计823.18，顶部823.24，博客850.52；差异原因未知。Unreal逐条费用全部缺失，不能填0或用token反推。已看见异常行费用，不等于证明所有失败成本完整，也不能指控两条异常被漏计。[一手；研究：成本边界]
 
 [SWE-Marathon v1 §4.3](https://arxiv.org/html/2606.07682v1#S4.SS3)将pass@1定义为通过任务verifier的trial比例，部分产品题需同时过功能与体验验收；该论文原实验为13×20×5，不是10月这组20×8。评分协议给出核对方向，尚不能替本轮缺失的逐条评分键、产物与费用对账。[一手；研究]
@@ -331,3 +333,5 @@ Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657
 **判定为保留原生，候选效果证据不足。** 本轮确认实际配置与可见分母，不改模型或harness评级。未取得全部尝试的精确目标评分、成本版本、人工投入、留出或后续修改；P44整体未完成。未运行应用／模型、登录或访问私人轨迹，公开页面时区未核的Started字段不作UTC换算。[研究]
 
 独立复核：全新上下文核原文、论文及两臂公开配置／Overview，并复算320行快照；限定通过。报告标识`p44-public-reconciliation-independent-review-20261021`，SHA256 `9c9fb78881c01075fb23c7468126057dfa01903fea2aed5e76b4554b509d1450`；最终树离线另验，非模型复测。[研究]
+
+追加单条Verifier反例经独立云浏览器复核；报告标识`p44-trial-detail-independent-review-20261021`，SHA256 `7b05812a888944ae8cb66d9fd02f139bda7a0657890fff0cfd0521f7d612ec87`。前一树完整离线已过，补此证据后实际最终树重新验收，不沿用旧树通过。[研究]
