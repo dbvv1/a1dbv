@@ -656,3 +656,5 @@ Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/docu
 **迁移代价与改判。** Dead by Daylight [2022 年 3 月开发者更新](https://forums.bhvr.com/dead-by-daylight/discussion/315701/developer-update-march-2022)称内容增长使分组扩大，因而重排／重平衡；[5.7.0 发行通知](https://forums.bhvr.com/dead-by-daylight/discussion/320530/release-information-5-7-0)确认文件结构变更需一次近乎全量重下。这是进入发行的迁移代价，未独立验证宣传速度，也不代表单人项目收益。布局调整后若局部更新仍牵连大量无关数据，或迁移成本不值，先缩改动范围／保原布局，再比较交付路线；下载、安装、临时磁盘与既有加载表现分别验收。没有运行引擎、打包器、游戏或模型，维护工时与本项目净收益未知。[一手／研究]
 
 ## [图中文字二改：先换生产表示再扩语言](wp10-content.md#105)
+
+## [字体选择补研：缺字回退与地域字形优先分开](wp10-content.md#字体选择补研缺字回退与地域字形优先分开)
