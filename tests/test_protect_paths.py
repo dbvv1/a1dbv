@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
@@ -30,12 +31,12 @@ class HookTests(unittest.TestCase):
         self.skipTest(f'{name} unavailable')
       (self.bin / name).symlink_to(binary)
     self.env = dict(os.environ, PATH=str(self.bin), CLAUDE_PROJECT_DIR=str(self.root),
-                    PROTECTED_PATHS_FILE=str(self.rules))
+                    PROTECTED_PATHS_FILE=str(self.rules), PYTHONIOENCODING="utf-8")
 
   def run_hook(self, event=None, raw=None):
     if raw is None:
       raw = json.dumps(event)
-    return subprocess.run(['/bin/bash', str(HOOK)], input=raw, text=True,
+    return subprocess.run(['/bin/bash', str(HOOK)], input=raw, text=True, encoding="utf-8",
                           capture_output=True, env=self.env, cwd=self.root, timeout=10)
 
   def event(self, path, **extra):
@@ -48,6 +49,29 @@ class HookTests(unittest.TestCase):
     self.assertEqual(data['hookEventName'], 'PreToolUse')
     self.assertEqual(data['permissionDecision'], expected)
     return data
+
+  def test_utf8_subprocess_protocol_ignores_locale_default(self):
+    # Keep the parent environment untouched and pin only child Python pipes.
+    parent_encoding = os.environ.get("PYTHONIOENCODING")
+    self.assertEqual("utf-8", self.env["PYTHONIOENCODING"])
+    with patch("subprocess._text_encoding", return_value="gbk"):
+      self.rules.write_text("deny dist/* 中文原因\n", encoding="utf-8")
+      raw = json.dumps(self.event("dist/文件.txt"), ensure_ascii=False)
+      result = self.run_hook(raw=raw)
+      self.assertEqual(0, result.returncode, result.stderr)
+      self.assertEqual("中文原因", json.loads(result.stdout)["hookSpecificOutput"]["permissionDecisionReason"])
+      (self.bin / PARSER).unlink()
+      result = self.run_hook(raw=raw)
+      self.assertEqual(1, result.returncode)
+      self.assertEqual("", result.stdout)
+      self.assertIn("需要 jq 或 python3", result.stderr)
+    self.assertEqual(parent_encoding, os.environ.get("PYTHONIOENCODING"))
+
+  def test_missing_bash_is_an_error_not_a_skip(self):
+    with patch("subprocess.Popen", side_effect=FileNotFoundError("/bin/bash unavailable")) as launch:
+      with self.assertRaisesRegex(FileNotFoundError, "/bin/bash unavailable"):
+        self.run_hook(self.event("dist/x"))
+      self.assertEqual("/bin/bash", launch.call_args.args[0][0])
 
   def test_template_copies_identical(self):
     generic = (REPO / 'templates/generic/.claude/hooks/protect-paths.sh').read_bytes()
