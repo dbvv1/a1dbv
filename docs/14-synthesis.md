@@ -10,7 +10,7 @@
 
 ## 0. 30 秒结论：按任务选入口，交付到可继续修改
 
-**✅ 已有稳定工作流保留；新任务默认从本机 Codex CLI 的 GPT-6.1 Sol + `medium`，或已有 Claude Code 入口的 Sonnet 5.5 + `medium` 开始。** Codex 在项目目录启动 `codex --model gpt-6.1-sol` 后用 `/model` 选 effort；Claude Code 用 `claude --model claude-sonnet-5-5 --effort medium`。先核会话显示与型号可用性，不改全局配置来追统一默认。**[一手：[Codex](https://learn.chatgpt.com/docs/models)、[Claude Code](https://code.claude.com/docs/en/model-config)；研究：沿用 [02](02-models-and-cost.md) 的仓库起点，2026-10-20 核，未实测]**
+**✅ 已有稳定工作流保留；新任务默认从本机 Codex CLI 的 GPT-6.1 Sol + `medium`，或已有 Claude Code 入口的 Sonnet 5.5 + `medium` 开始。** Codex 在项目目录启动 `codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`，只覆盖本次启动；Claude Code 用 `claude --model claude-sonnet-5-5 --effort medium`。先核会话显示与型号可用性，不改全局配置来追统一默认。**[一手：[Codex 模型](https://learn.chatgpt.com/docs/models)、[单次 CLI 覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude Code](https://code.claude.com/docs/en/model-config)；研究：沿用 [02](02-models-and-cost.md) 的仓库起点，2026-10-20 核，未实测]**
 
 | 现在的任务 | 怎么推进，什么算好 |
 |---|---|

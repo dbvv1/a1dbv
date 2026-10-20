@@ -8,11 +8,11 @@
 
 | 任务 | 入口与具体配置 | 交给 Agent 的完成目标 |
 |---|---|---|
-| 本机仓库里的日常功能、补测试、小改动 | **Codex CLI**：在项目目录启动 `codex --model gpt-6.1-sol`，用 `/model` 选 `medium`；已有 Claude Code 工作流则用 `claude --model claude-sonnet-5-5 --effort medium`。核会话实际模型／effort，沿用项目权限与检查 | 实现目标、跑相关检查、交回 diff 和真实结果；补一个失败路径或边界用例 |
+| 本机仓库里的日常功能、补测试、小改动 | **Codex CLI**：在项目目录启动 `codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`（只覆盖本次启动）；已有 Claude Code 工作流则用 `claude --model claude-sonnet-5-5 --effort medium`。核会话实际模型／effort，沿用项目权限与检查 | 实现目标、跑相关检查、交回 diff 和真实结果；补一个失败路径或边界用例 |
 | 困难跨模块重构、疑难 bug，或明确要求旧调用方兼容、边界覆盖 | 保留上述本机入口；**Codex 选 GPT-6 Astra + Light（CLI 配置值 `low`）**，或 **Claude Code 选 Opus 5.5 + `medium`**，验证要求高可从 `high` 起。只有检查深度不足时，先试原模型 `medium` → `high` | 复现问题、查受影响调用方、保持旧契约；再做一次代表性的后续修改，检查改动是否仍局部可控 |
 | 不依赖本机资源，希望关机后继续的仓库任务 | **Codex Cloud**：选择已发布环境；没有就先准备仓库、依赖和检查并核结果后发布。模型仍按上两行，不因“长任务”升最高档 | 在云环境实际跑同一验收，再交回可审改动；本机 VPN、浏览器登录或设备是必要条件时，留本机入口 |
 
-**[一手：[Codex 模型／CLI 配置](https://learn.chatgpt.com/docs/models)、[Claude 模型／effort](https://code.claude.com/docs/en/model-config)、[云环境与本机边界](https://learn.chatgpt.com/docs/environments/modes)；研究：任务分流与质量目标，2026-10-20 核，未运行客户端／模型]** 已有 IDE、桌面或 Claude 云端路径能完整验收，就继续用，不为统一入口迁移；其他具体入口见下表。
+**[一手：[Codex 模型](https://learn.chatgpt.com/docs/models)、[单次 CLI 覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude 模型／effort](https://code.claude.com/docs/en/model-config)、[云环境与本机边界](https://learn.chatgpt.com/docs/environments/modes)；研究：任务分流与质量目标，2026-10-20 核，未运行客户端／模型]** 已有 IDE、桌面或 Claude 云端路径能完整验收，就继续用，不为统一入口迁移；其他具体入口见下表。
 
 **人检查目标、兼容行为和验收覆盖，UI／手感亲自体验。** Agent 可能漏调用方、只满足现有测试，或在资源不可达时给出完成自报。必要资源／数据边界不满足就撤回该入口；更强配置未改善质量，或等待、费用与返工抵消收益，就退回原配置。质量目标明确时可预先升档，不必等一次失败。**[研究：风险与撤回；见 [09](../09-review-and-quality.md)、[22](../22-agent-evaluation.md)]**
 
