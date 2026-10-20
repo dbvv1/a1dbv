@@ -1,10 +1,22 @@
 主线：二／三；G1 2D 资产选型与第二次修改
 改变的建议：[研究] 原生可修改对象与匹配成套资产优先；生成区分静态、逐帧和骨骼；已有合格绑定 3D 源与动作、有限视角时先评估离线精灵，PixelLab／Retro 仅作条件首试；最终压缩按动画时间稳定性与资产类别选择；瓦片连接不变时只补中心变体，二改连同派生预览验收；透明边异常先区分混合错配、缩小后裁切覆盖／图集失真与内容缺陷；玩法组合语法直接定义物料族时先评估同结构派生，有限现成图组够用则不自建；规则几何固定视角小道具反复生成失败时，可比较代码母版；自制换装预览缺必要身体部件时先修观察工具，不据不完整图返工美术；换光向先分平面受光与表面体积，不默认由彩色图追补法线；承担稳定操作识别的图标，提高绘画质量时先保视觉身份，必要改版另验
-新证据：[一手／源码] 2026-10-20 §15 P33补shapez物料族两轮差异、固定消费者与撤回，以及Kenney有限图组反分支；2026-10-18补像素图法线原论文、厂商完整手修流程与两引擎消费契约； §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执，2026-10-17补保覆盖阈值、图集回归与保比例不保轮廓反例；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎；2026-10-17补SOLREIGN撤回换装判断与Human/Vox元数据、Godot预览过滤反例，修后图像／工具未复现；2026-10-19 补 World of Claudecraft 生成采用、旧技能发布前撤回与两个代表产物核对
+新证据：[一手／源码／经验] 2026-10-21 P36新增最高水平卡及固定QA／Tiled导出模块的合成契约运行，仍非生成／引擎质量验证；2026-10-20 §15 P33补shapez物料族两轮差异、固定消费者与撤回，以及Kenney有限图组反分支；2026-10-18补像素图法线原论文、厂商完整手修流程与两引擎消费契约； §2 补 Dead Cells 改稿、Project Zomboid 表示迁移与 Factorio 批产仍需手绘的边界；§11 新增裁切坐标消费路径及历史修复；§12新增压缩撤回与两引擎编码契约；§13新增Mindustry固定生成／中心变体修改／小地图修复链及公开Beta采用；§14新增Unity／Unreal混合与导入契约、真实换shader黑边及维护者解决回执，2026-10-17补保覆盖阈值、图集回归与保比例不保轮廓反例；§15新增SOLREIGN拒绝／改用代码母版记录及产物与消费者字节核对；此前模型／服务调查保留，均未运行模型／引擎；2026-10-17补SOLREIGN撤回换装判断与Human/Vox元数据、Godot预览过滤反例，修后图像／工具未复现；2026-10-19 补 World of Claudecraft 生成采用、旧技能发布前撤回与两个代表产物核对
 
 # WP2：2D资产的前沿方法与零手修边界
 
-核实时间：2026-10-14（UTC+8）；规则几何小道具于2026-10-16补核，原模型／标价日期不变。本轮只有来源调查与比较，成本为官方标价或作者报告，未测生成通过率、主动工时或目标设备。完整商用门槛随新增方案回填[WP1](2026-10-14-game-wp1-licensing.md)。
+## 当前最高水平卡：像素资产的自动验收（P36）
+
+问题：Agent生成／加工后，怎样区分机械规格通过、动作与连接正确、整套可发布？2026-10-21（UTC+8）补核；本项目以近期质量目标为参照，固定可行实现只用于窄反例，不作为质量上限。
+
+| 层级 | 依据与本题差距 |
+|---|---|
+| 当前最高水平 | **未知：本轮未找到同时覆盖像素形体、动作／接触、瓦片邻接、风格和二改的可靠自动放行冠军。** 近期前沿参照为Leyi Wu等（HKUST／NTU／Pearl Studio等）的[AnimationBench，2026-04-16](https://arxiv.org/html/2604.15299v1)，分角色保持、动画原则、动作语义并与专业人评比较；Hang Hua等的[MMIG-Bench，NeurIPS 2025](https://papers.nips.cc/paper_files/paper/2025/hash/d3f8714b9f9727b43d64019f2f4043d2-Abstract-Datasets_and_Benchmarks_Track.html)分低层、细粒度语义和审美偏好。它们提高验收目标，不证明像素游戏资产已能自动放行。[研究：作者评估] |
+| 主流做法 | **采用率未知。** Yi-Chun Chen／Arnav Jhala（Yale／NCSU）的[GameTileNet，2025-11-07](https://ojs.aaai.org/index.php/AIIDE/article/view/36805)研究低分辨率资产的语义与连接，不能把研究管线当多数团队实践，也不是生成资产零手修通过率。[研究] |
+| 可行做法 | 用明确规则检查格式、身份和允许邻接，另在目标尺寸连续验动作与新旧混排。[Tiled Terrain](https://docs.mapeditor.org/en/stable/manual/terrain/)支持角／边／混合连接，但标注合法不保证视觉自然；[原生截图比较](https://dev.epicgames.com/documentation/en-us/unreal-engine/screenshot-comparison-tool-in-unreal-engine)只能相对已认可基准查退化。现成检测器先核它实际检查的谓词，不因报告名为QA就赋予放行权。[一手／研究] |
+| 本仓推荐与更高目标 | 固定19dbb4d模块只作**可行层的诊断基线**。本轮测出误放／不检查的条件后，采用逐件输入与引用检查、按任务审动作／邻接；不承诺统一数值阈值。更高目标仍是检出缺肢／错形、错误接触时刻、连接断裂和风格漂移，并由独立人工标注校准误放／误拒；多模态判断须验证后再采用，不能因本轮不跑模型而降低追求。[研究／经验] |
+
+
+核实时间：2026-10-14（UTC+8）；规则几何小道具于2026-10-16补核，原模型／标价日期不变。原调查的成本为官方标价或作者报告；P36另执行固定QA／导出模块的本地合成契约复核，不涉及生成通过率、真人视觉、主动工时或目标设备。完整商用门槛随新增方案回填[WP1](2026-10-14-game-wp1-licensing.md)。
 
 ## 1. 第二次修改为什么优先改结构
 
@@ -53,9 +65,41 @@
 
 [Tiled Terrain原文](https://docs.mapeditor.org/en/stable/manual/terrain/)分corner、edge、mixed与简化blob，所需图块不同。须分开：单图自身周期性、允许的异种邻接/角、引擎采样/图集露缝。规则、内容和采样分别修，不能把一张可重复纹理叫完整地形组。**[一手／经验]**
 
-固定[ai-pixel-art-image-generation@19dbb4d](https://github.com/ianlintner/ai-pixel-art-image-generation/tree/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a)：[QA代码](https://github.com/ianlintner/ai-pixel-art-image-generation/blob/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a/scripts/lib/qa_metrics.py)只测每块对应边像素的RGB欧氏距离均值，再对整套取均值，不测A接B、角和alpha；动画门槛原注释针对walk接触帧，却在通用动画入口按f0/f2剪影IoU及bbox漂移判定；不足三帧则比较首尾。复制静止帧也可能通过，正确大幅攻击反而可能失败，不能将步行假设泛化为所有动作；[通用生成入口](https://github.com/ianlintner/ai-pixel-art-image-generation/blob/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a/scripts/generate_animation.py)虽接收attack仍使用同组验证。[无缝处理](https://github.com/ianlintner/ai-pixel-art-image-generation/blob/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a/scripts/lib/seamless.py)强制RGB边缘平均，不能生成连接语义。**[一手：源码；研究：反例推导，没有执行上游验证器]**
+固定[ai-pixel-art-image-generation@19dbb4d](https://github.com/ianlintner/ai-pixel-art-image-generation/tree/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a)：[QA代码](https://github.com/ianlintner/ai-pixel-art-image-generation/blob/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a/scripts/lib/qa_metrics.py)只测每块对应边像素的RGB欧氏距离均值，再对整套取均值，不测A接B、角和alpha；动画门槛原注释针对walk接触帧，却在通用动画入口按f0/f2剪影IoU及bbox漂移判定；不足三帧则比较首尾。复制静止帧也可能通过，正确大幅攻击反而可能失败，不能将步行假设泛化为所有动作；[通用生成入口](https://github.com/ianlintner/ai-pixel-art-image-generation/blob/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a/scripts/generate_animation.py)虽接收attack仍使用同组验证。[无缝处理](https://github.com/ianlintner/ai-pixel-art-image-generation/blob/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a/scripts/lib/seamless.py)强制RGB边缘平均，不能生成连接语义。**[一手：固定源码；此前为推导，P36下节另实跑模块，未运行完整生成入口]**
 
 **[经验]** 借局部palette/导出处理，拒绝把整包自动QA当发布门槛。帧验收应分别覆盖有运动、运动正确、首尾和状态衔接；瓦片按真实允许邻接关系验。纯数值相似度可能奖励静止，须回到玩法判据。
+
+### P36：原QA与Tiled导出的本地合成契约复核
+
+**✅ 只借用被验证的局部谓词与序列化，不能用整套均值或导出成功自动放行。** 先拒绝空内容／尺寸不符、逐件检查异常，再按实际允许的邻接、动作意图和消费者引用验收。上面的最高水平卡保留语义、接触与人评校准目标；以下只验证固定可行实现的边界。[经验／研究]
+
+2026-10-21（UTC+8），Python 3.12.14、Pillow 12.3.0，运行固定`19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a`的原`qa_metrics.py`与[export_tiled.py](https://github.com/ianlintner/ai-pixel-art-image-generation/blob/19dbb4d5b655f8c4c0c8f979dd89baeb10237b0a/scripts/export_tiled.py)；两文件未改，MIT（Ian Lintner，2026）。只用可再生小型合成PNG，没有模型生成、Tiled应用、引擎或用户资产；结果不代表真实素材接受率或最新上游版本。[经验：本地执行]
+
+| 固定输入／任务判据 | 原模块输出 | Agent应怎样使用 |
+|---|---|---|
+| 黑色单块；左右黑白的单坏块 | 前者seam=0通过；后者约220.836硬失败 | 这是自身边缘RGB检查的正常正反对照，不是邻接语义 |
+| 黑、白各一块；要求它们接壤连续 | 每块seam=0，整套通过；实际跨边RGB距离约441.673 | 模块没有邻接输入；另按允许A→B与角规则验，不能解释为它认可地形语义 |
+| 同RGB、两边alpha分别0／255 | seam=0、alpha_crispness=1，通过 | 它检查alpha是否二值，却不检查alpha接缝；不要误写“没有alpha检查” |
+| 1坏块＋19好块 | 单坏块约220.836仍列info；均值约11.042≤12，整套通过 | 均值会掩盖个体异常，逐件结果须进入任务验收；12不是通用美术阈值 |
+| 复制四帧；刻意将f2加宽 | 前者IoU=1、漂移0通过；后者IoU=.125、x漂移7失败 | 通过不证明有动作，失败不证明动作错；本轮宽矩形不构成“正确攻击”证据。f1也参与bbox漂移，不能说完全漏检 |
+| 透明瓦片／透明动画、tile_count=0或图像不足以裁出声明瓦片 | 这些直接模块输入可通过；frames=0则抛IndexError | 调用方先检查存在、非空、数量与尺寸；这不是完整生成CLI会接受坏输入的证明 |
+| TSX动画frame ID=99、duration=-10；不存在的image source | 原导出器仍生成字段 | 检查动画引用、正时长、文件存在及实尺寸；XML能解析不等于消费者有效 |
+
+原sprite最低不透明行要求至少连续3像素：2像素宽“正常”夹具实际失败，已纠正为预期失败；4像素宽sprite与1像素上下运动bob为正常对照。bbox实际y硬门槛是3而非注释2，RGB欧氏距离也不受单通道255上限约束。坏色板、半透明alpha及缺输入另外覆盖，异常不能记成检查通过。[经验：原函数结果]
+
+**两轮修改由调用方明确继承，不是上游自动迁移。** R0为4个16×16帧、ID0–3、各100ms。R1只追加ID4，图宽64→80，旧像素与旧tile语义保持；R2只将动画中ID1的时长改175ms，其他帧仍100ms，保R1的ID4与图像引用。三轮都实际写回并重读TSX／TMJ，检查相对路径、实尺寸与元数据；只归一化指定duration后，R2的TSX应与R1一致。[经验]
+
+`build_tmj_example`只创建全gid=1的演示地图，不读旧地图。三轮2×2示例均是`[1,1,1,1]`、firstgid=1，因此本次不证明非平凡关卡、碰撞、事件或任意旧引用自动继承。需要更新已有地图时，保原地图并做明确修改，不把示例生成入口当迁移器。XML语义比较忽略无意义缩进，不忽略属性／节点；初次逐字节比较因tail缩进失败，修复的是复核方法，未改上游或放宽字段判据。[一手：固定源码；经验]
+
+本轮已执行包装器标准库回归11项、原模块合成任务断言60项，均无skip；这是两种不同检查范围，不相加成质量通过率。[经验]
+
+**复跑边界。** [窄复核脚本](../../scripts/research/check-pixel-qa-contract.py)在执行前核两份原源码SHA-256，失败就退出；不联网、不自动安装或调用供应商。Python须有Pillow（本轮已存在），原文件从上述固定提交取得。仓库的标准库回归只检查输入／hash／报告等包装逻辑；图像与导出断言另由此命令实际执行，不能拿前者代替后者：
+
+```sh
+python3 scripts/research/check-pixel-qa-contract.py --qa-source qa_metrics.py --export-source export_tiled.py
+```
+
+保留输出里的版本、源码hash和逐项结果；可选产物目录用于检查PNG／TSX／TMJ。下一步质量验证仍须有真实资产、动作／连接意图、独立人工标注及目标消费者；这份诊断包不是替代生产QA框架，也未证实AI净提效。[研究]
 
 ## 4. 程序可修与应收窄的边界
 
