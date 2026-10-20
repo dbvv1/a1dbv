@@ -1,6 +1,6 @@
 主线：二／三／四；G1 动画、绑定、面部供给、第二次修改与授权
 改变的建议：[经验] 固定骨架、完整动作组和位移／接触契约，同骨架先直接复用，所需功能或结构差异再引入转换；现成动作＋有限 IK／程序动画优先；生成补缺，体型／装备不适配时允许分动作或收窄玩法；程序步态分基础姿态与身体规则，新运动结构另计实现；二改后的消失／突跳先分范围与屏外求值；对白先有嘴形／面部绑定，再选求解器，改句按音频与口型配对接收
-新证据：[一手／研究] Rhubarb 固定源码与成品采用、MetaHuman 口部掩码、Audio2Face 既有 rig／GPU 与分组件许可补对白二改边界；2026-10-15 Kimodo v1.2 修正测试泄漏，补本地可控短动作候选而非质量冠军； Unity 6.3 导入／IK／根运动合同与历史 UUM-27271、UE5.8 兼容骨架条件补同骨架复用选择；Overgrowth 演讲、生产修订与固定源码，Rain World 开发者访谈补程序步态内容／维护边界；Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
+新证据：[一手／研究] VRoid／VRM现成来源与Unity消费替代；Rhubarb 固定源码与成品采用、MetaHuman 口部掩码、Audio2Face 既有 rig／GPU 与分组件许可补对白二改边界；2026-10-15 Kimodo v1.2 修正测试泄漏，补本地可控短动作候选而非质量冠军； Unity 6.3 导入／IK／根运动合同与历史 UUM-27271、UE5.8 兼容骨架条件补同骨架复用选择；Overgrowth 演讲、生产修订与固定源码，Rain World 开发者访谈补程序步态内容／维护边界；Unity 6.3 范围／Animator 合同与固定参考源码、UUM-35020 复现及 UE5.8 tick／bounds 合同补屏外诊断；近期工作流、固定重定向／IK 源码及交互对位修订；Unity／UE 窗口合同、UpRoom 开发复盘、ALS 固定源码补动作进度同步；未证实接触质量、零手修通过率或二改成本
 
 # WP4：动画、绑定与第二次修改
 
@@ -419,13 +419,19 @@ HF仓库修订`0e3c89024d896064b6851201373f7834784a386b`的[LICENSE][p9-k-licens
 
 **结论：默认从许可清晰、嘴形／面部绑定完整的角色出发，求解器只补动作。** 2026-10-20（UTC+8）补核；缺合格脸部资源就换完整来源。[研究]
 
-### 1. 三条路线的能力与成本边界
+### 1. 来源与求解路线的能力边界
 
 **已有六嘴形 2D 角色时，先试 Rhubarb 的离线时序输出。** [v1.14.0 发布页][p28-r-release]与固定 [README][p28-r-readme]列出必需 A–F、可选 G/H/X；C/E 也承担过渡。程序员可配置嘴形映射，但把同一图片复制成六个 ID 不满足资源条件。它输出嘴形选择和时间，不提供脸部绘制或眼神／头部表演。[一手／研究]
 
 **第二语言需要新录音和新时序。** 默认 PocketSphinx 面向英语，非英语走 phonetic；作者说明后者一般精度更低。dialogFile 是识别提示，不是把不匹配的文本强制对齐声音的保证。实际语言、角色风格与无手修可接受率仍未知。[一手／研究]
 
 **Rhubarb 是本地低接入成本候选，不是整套素材授权。** [MIT 许可][p28-r-license]与作者对生成数据的说明覆盖工具／口型数据；角色图、录音和声音权利仍单独确认。只交付离线结果与随游戏分发工具、依赖是两种成本。[一手／研究]
+
+**缺面部源但接受动漫人形风格，先评估VRoid预设→VRM1.0。** [官方导出](https://vroid.pixiv.help/hc/en-us/articles/15760756822297-I-want-to-learn-more-about-the-VRM-export-feature)保留已配置表情，须留.vroid源。[许可](https://vroid.com/en/studio/guidelines)允许无特别条款预设商用，非CC0；特殊／第三方素材与角色创建应用另核条件。预设不算AI生成。[一手／研究]
+
+**Unity先比现成消费组件，不从零造映射。** [uLipSync固定VRM1适配](https://github.com/hecomi/uLipSync/blob/060587907655235dba86dc7052d0b395c8ecd840/Assets/uLipSync/Samples/04.%20VRM/Runtime/uLipSyncExpressionVRM.cs)需启用USE_VRM10，以UniVRM写表达式权重；[作者说明](https://github.com/hecomi/uLipSync/tree/060587907655235dba86dc7052d0b395c8ecd840)有校准／预烘焙，代码MIT不清角色权利。换音色或语言仍验校准与新音轨配对，未运行验证。[一手／研究]
+
+**VRM扩展名不保证嘴形完整。** [固定规范](https://github.com/vrm-c/vrm-specification/blob/94e82dd346fa6cf0337c4421728640e5252dd38e/specification/VRMC_vrm-1.0/expressions.md)的aa/ih/ou/ee/oh均可选，与Rhubarb A–F非一一对应；须验真实morph、闭口／辅音及overrideMouth与情绪叠加。指定风格或表演超出预设就撤回，不强迫改风格。[一手／研究]
 
 **已有兼容 MetaHuman 时，mouth-region 是改句而不重做全脸的候选入口。** [官方音频驱动文档][p28-m-audio]要求 UE 5.6 起的相应插件、SoundWave 与面部目标；离线可生成全脸、头动和眨眼，Process Mask 可限定口部。该能力尚未在本仓角色上验证。[一手]
 
