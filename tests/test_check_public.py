@@ -84,6 +84,12 @@ class PublicScanTests(unittest.TestCase):
       with self.subTest(email=email):
         self.assertEqual([], self.scan_identity(email, email))
 
+  def test_agent_platform_noreply_is_exact_match(self):
+    self.assertEqual([], self.scan_identity("noreply@anthropic.com", "noreply@anthropic.com"))
+    for email in ("Noreply@anthropic.com", "noreply@anthropic.com.invalid", "dev" + "@" + "anthropic.com"):
+      with self.subTest(email=email):
+        self.assertEqual(2, len(self.scan_identity(email, email)))
+
   def test_other_and_malformed_commit_identities_fail_for_each_role(self):
     invalid = ("dev@example.com", "noreply@example.com", "dev@invalid.example",
                "example@users.noreply.github.com.invalid", "noreply@github.com.invalid",
