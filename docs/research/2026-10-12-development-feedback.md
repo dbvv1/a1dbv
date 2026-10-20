@@ -588,6 +588,21 @@ S1的ID／角色／order：101/Signer/0、102/Assistant/1、103/Approver/2、104
 
 动作：R102/T102完成自身；R103/T103批准并沿用F203；R104填F204后以T104完成。105／106均激活，首人完成时107仍NOT_SENT、签署请求任务0，另一人不重复获邀；末人完成才通知107，正反序都验。107填F207并完成才可seal。独立分支合组103／104须拒且旧状态不变。[研究：待执行]
 
+#### 连续账本的阶段断言（准备，未运行）
+
+复用上述组推进测试的`expectSigningRequestJobCount`与Prisma读回、Assistant测试的tRPC封装，不新建框架。S1仅建一次；S2局部更新后继续同一实例。新增检查点如下。[研究]
+
+- **更新后**：七recipient的ID/token/role、五Field的ID/secondaryId/owner/位置、旧SIG201及旧审计行保留；除106的order外，原状态和值保持。邀请job累计向量按101–107为`[1,1,0,0,0,0,0]`。
+- **继续完成**：102后向量为`[1,1,1,0,0,0,0]`，103后为`[1,1,1,1,0,0,0]`，104填F204并完成后为`[1,1,1,1,1,1,0]`。105/106首人完成不变，末人完成才全1；每次完成类审计仅增本人一条，保F203/F205文字与SIG201。正反序另用恢复分支，不冒充连续两轮。[研究：待执行预期]
+- **通知**：job、EMAIL_SENT、测试SMTP分账。审计按recipientId及角色emailType过滤：102为ASSISTING_REQUEST，103/105/106为APPROVE_REQUEST，其余为SIGNING_REQUEST（固定树`packages/lib/constants/recipient-roles.ts:124–129`）。[邀请handler][p25-invite-ledger]在本轨有效测试邮箱的发送分支后重写sentAt，且只查询PENDING文档；S1冻结前及每步完成前先等本步邀请并核收件人、角色、原token链接。验sentAt非空，不要求等于激活瞬间；审计不代替捕获邮件，SMTP不证明互联网送达。[一手；研究：消费顺序]
+- **封存后**：107填F207并完成才允许seal；实际封存后验COMPLETED、completedAt及DOCUMENT_COMPLETED审计。[seal handler][p25-seal-ledger]保EnvelopeItem.id，但改指新DocumentData，传入旧initialData；`create-document-data.ts:16–24`保存`initialData || data`。initialData是编码内容或存储定位字符串，不是hash；本轨database配置不变时比较解码后的初始字节hash，签后data另记hash。验五字段内容及已启用的证书/审计页，不要求最终PDF与S1同hash。[一手；研究]
+
+复用[部分签署下载测试][p25-download-ledger]：同item的pending下载在完成后变400/ENVELOPE_COMPLETED，signed下载200且为PDF。该测试只核PDF头、pending页数等，不证明旧文字、签名图像或密码学签名有效。坏候选：要求最终hash不变会错拒合法封存；只验SIGNED、job=1及PDF头会放过漏邀或丢字。上述断言均未运行，不计实际两轮账本。[一手／研究]
+
+[p25-invite-ledger]: https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/lib/jobs/definitions/emails/send-signing-email.handler.ts#L43-L278
+[p25-seal-ledger]: https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/lib/jobs/definitions/internal/seal-document.handler.ts#L292-L510
+[p25-download-ledger]: https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/app-tests/e2e/api/v2/partial-signed-pdf-download.spec.ts#L119-L200
+
 #### 已读断言，哪些还不能算通过
 
 | 固定树具名测试 | 原文断言与缺口 |
