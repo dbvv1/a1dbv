@@ -126,6 +126,26 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 [portable探针](../../scripts/research/p23_runtime_probe.py)新增`--mode focused-production`，但包装未在真实应用复跑，不能替代上述历史driver实测。剩余有价值的门是补齐合法最小fixture后完整构建、再按目标平台验部署／恢复；当前仅单进程内置缓存，真实Shopify、共享缓存、冷expire3600、浏览器导航、故障／并发、跨部署退回和OpenNext／Vinext仍未验。Agent保输入、消费者和失败证据，人定平台、旧内容窗口及上线门槛；无模型对照。[研究]
 
+#### 完整构建前门：独立typecheck通过仍不足交付（2026-10-21）
+
+**✅ 让Agent保留完整build这一道门，而不是用独立typecheck的绿灯替换它。** 新公开副本无旧`.next`缓存，原`next build`编译成功后在TypeScript阶段退出1；随后原项目`next typegen && tsc --noEmit`通过。两次命令并不相同，失败原因仍未知；本次确认的是交付门不能合并，不是Next源码存在类型错误。[研究：真实公开应用，未用模型对照]
+
+新夹具明确输入为`products=[]、collections=[]`，并在原单一Scenario外补四个固定operation：[empty-catalog适配器](../../scripts/research/p23_catalog_fixture.py)。GraphQL中可省略的after／productFilters在实际JSON里确实可能缺席；不能把“没传字段”误判成业务失败，也不能让未知operation统一返回空成功。源码预测的第五个collectionProducts默认关闭，只有显式开启才有受限的空响应。[一手：固定shop源码；研究：窄合成输入]
+
+完整build只运行一次，264.514秒退出1，未达到600秒上限；它没有进入页面数据收集。唯一searchFacets请求来自驱动的readiness，因此四操作是否足够、第五操作是否必需、全部静态路由是否生成，都仍未验。夹具最终S0、audit_fatal=null，自有服务退出0；原已审focused生产两轮结果不被这次失败覆盖。[研究]
+
+原项目独立检查45.385秒退出0；Next内部CLI另带project、declaration、缓存参数，且生产环境不同，不能视作同一失败路径的成功重放。已安装Next会把CLI非零或信号汇总为无细节的CompileError，本次没有捕获失败build的原生退出码／信号，不能归因OOM或某条类型错误。[一手：已安装公开源码；研究：运行]
+
+后续唯一一次源码导向诊断调用已安装Next CLI接口，showConfig与原声明参数检查均返回exitCode=0、signal=null（55.699秒）。它另用空诊断缓存、捕获输出且继承了随后生成的路由类型，仍不能还原原build上下文；至此停止重复诊断，保完整构建为未通过。[研究]
+
+实际驱动只留下服务和build的leader退出码，没有独立证明所有编译器后代／进程组已退出；不事后按裸PID清理或把该缺口改写成已验证。完整回执、命令差异、已声明合成环境和hash见[结果supplement](../../scripts/research/p23_runtime_result.json)。[研究]
+
+**默认只接受可说明的空目录，不拿它证明商品流程。** Agent应核每次请求与失败日志，人决定是否还需要非空商品、真实Shopify、浏览器和托管平台。独审发现初版审计写入失败后仍能继续，现已永久拒绝后续请求并使服务退出2；已推进事件保真实状态，不回滚伪造证据。仓库包装与实测夹具AST相同，15项回归覆盖四操作、原五阶段继承及审计失败；包装本身没有再次运行应用。[研究]
+
+复现准备沿用前述固定shop及安全patch、既有依赖。在独立公开副本与空输出中启动`python3 scripts/research/p23_catalog_fixture.py --mode empty-products-and-collections`（仓库根），再在shop副本按结果supplement的`declared_environment`设置合成环境并运行`node node_modules/next/dist/bin/next build`，记录stdout／stderr及退出码。只继承已有获准的传输配置，不把真实商店凭据带入。本夹具仅监听loopback 8766，先确认无其他任务占用；完整门还须核服务终态和全部请求日志，不能只看build退出码。测试入口为`python3 -B -m unittest discover -s tests -p 'test_p23_catalog_fixture.py' -v`。[研究：可复用输入，不是已成功全站复现]
+
+本次不改变最高水平卡、前沿比较状态或迁移评级。原生Next全站门尚未闭合，OpenNext／Vinext的同题比较继续保留为缺口。[研究]
+
 #### 已执行的dev两轮及Git接续（2026-10-21）
 
 **历史dev记录（生产补充前的结论，以下缺项仅指当时）：✅ 原消费者通路可跑；暂不升级迁移评级。** Node24.19.0／pnpm12.8.2／Next16.4.1／React19.3.0／sharp0.35.5；只接`storefront.request`到同一合成源，保原布局、GraphQL操作、转换、页面、metadata、正文和sitemap。footer另有明确七字段null policies，未知操作失败，不回退真实商店；并非全站／Hydrogen HTTP／真实Shopify契约。[研究：本仓运行]
