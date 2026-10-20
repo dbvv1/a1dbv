@@ -438,120 +438,73 @@ Unreal 沿用 §4.2 的任务结果接口，补明已核 Python 5.6 的非阻塞
 
 ## 13. 整组赛道二改：共享源变了，哪些消费者必须一起验
 
-**✅ 先保已有制作链，交一份覆盖全部消费者的修改包，不先迁移编辑器。** 2026-10-20（UTC+8），P30／GB、GD。已有Tiled源的Unity项目可比较SuperTiled2Unity的窄适配；原生制作已满足时保原生。下面把同一作品的视觉源、派生纹理、共享定义、地图与玩法消费者串起来；不把“图块导入成功”当整组赛道可交付。[研究]
+**✅ 保已有制作链，交源／派生／共享定义／全部消费者的继承包。** 2026-10-20（UTC+8），P30／GB、GD。仅同作静态证据，非两轮实验：仅核公开文本地图，未获取二进制美术源、生成PNG或运行游戏／导入器／模型。AI可清点依赖、拟窄适配与回归；瓶颈是视觉／手感与传播遗漏，承担比例及净工时未知，不填P19产物缺口。[研究]
 
-**本交付是可复查的静态继承合同，不是完成两轮游戏实验。** 已核固定修订、文本地图及运行消费者，并复算引用；未读二进制美术源、生成图像、运行游戏／导入器／模型。AI可接依赖清点、文本差异、窄适配和回归候选；视觉、驾驶手感与路线质量仍需人验，零手修比例和净工时未知。此链不填补P19的Nuclear Blaze商业版产物缺口。[研究]
+### 13.1 两轮修订，不冒充因果实验
 
-### 13.1 同作两轮修订，保留中间历史
+- **R0→R1：** Pixel Wheels [PR487][p30-r1]于2025-06-17合入`2a819cf9a359c0543d7859c0f011ffc46caf1f46`，起点`7bfe5f5953f5e2d560d0c1dfacaa001cb0c1583e`。改`country.ase`、`country.tsx`及country／river／flood三图；作者说明新增水面、树／草垛共享障碍。`.ase`仅核变更元数据。[一手]
+- **迁共享定义须清旧对象：** [fbccb303][p30-r1-diff]改river图块并删Obstacles矩形81／82。R0→R1三图Sections／Waypoints／BonusSpots及country／flood的Obstacles未变；只证源记录保留。[一手／离线]
+- **R2：** [PR526][p30-r2]于2026-04-03合入`df7103abad8e058c94ec426e4284fe40dadfe805`；补丁`b80b0c034c79acc66935f42dea0426a3fcac4a48`基于1.0.1／`de6a692f3b6f2ade9e914982e0aeadb4aa2b1de3`。city的local tile 68／100、country的36／52圆半径0.5→0.6，snow的60／90为0.45→0.6；country 61仍0.5。作者称避免两树间卡车，未验效果。[一手]
+- R1是1.0.0／1.0.1祖先；固定树CHANGELOG将乡村改版列于2025-07-14的1.0.0-rc.1，R2仍unreleased。R1至R2补丁间**94个提交**含country再修及[restitution接入][p30-restitution]，不能归因R1导致卡住或估算收益；两PR无评论／review。[一手／研究]
 
-**R1确实同时改源与多张地图。** Pixel Wheels [PR487][p30-r1]于2025-06-17合入`2a819cf9a359c0543d7859c0f011ffc46caf1f46`；起点`7bfe5f5953f5e2d560d0c1dfacaa001cb0c1583e`。改动清单含`country.ase`、`country.tsx`及country／river／flood三张TMX；作者说明增加水面图块、树／草垛共享障碍和场景内容。`.ase`只核文件变化元数据，不声称看过新增画面。[一手]
+### 13.2 同作源→派生→共享定义→玩法边界
 
-**迁入共享定义也要清旧人工对象。** [fbccb303][p30-r1-diff]同时改river图块并删除Obstacles中81／82两个矩形。R0→R1的XML复核显示country／flood的Obstacles未变，三图Sections／Waypoints／BonusSpots也未变；这只是源记录的保留，不证明新障碍与旧导航仍相容。[一手／离线文本核对]
+路径相对[Pixel Wheels R2固定树][p30-pw]；运行代码根为`core/src/com/agateau/pixelwheels/`。`docs/map-format.md`说明TMX／TSX是作者输入，不是美术图自动生成。[一手]
 
-**R2只改部分共享圆形，不能说全套碰撞都已修复。** [PR526][p30-r2]于2026-04-03合入`df7103abad8e058c94ec426e4284fe40dadfe805`；补丁`b80b0c034c79acc66935f42dea0426a3fcac4a48`直接基于1.0.1／`de6a692f3b6f2ade9e914982e0aeadb4aa2b1de3`。city的local tile 68／100、country的36／52半径0.5→0.6；snow的60／90从0.45→0.6。country另一个圆形61仍为0.5。changelog称目的是避免车辆卡在两树之间，非本轮已验证效果。[一手]
-
-**两轮之间不是空白，也不是同条件实验。** R1是1.0.0与1.0.1的祖先；[固定CHANGELOG][p30-changelog]将乡村改版列在2025-07-14的1.0.0-rc.1。R1到R2补丁相隔94个提交，包含country另一次视觉修正及[静态物体restitution接入][p30-restitution]。R2仍列于unreleased，只核合入而未核正式发行；不说R1导致卡住，也不拿二者估算改版收益。两PR评论／review列表为空，不补造玩家验收。[一手／研究]
-
-### 13.2 可交接的逐文件继承包
-
-**TMX／TSX是直接作者输入，不是从美术图自动生成。** 以R2合入树为消费者基线，路径与职责如下；完整格式见[作者说明][p30-format]。这张表是改动边界，不授权复制整套游戏素材。[一手／研究]
-
-| 文件／层 | R1后保留什么，R2改什么 | 交接必须分开的证据 |
-|---|---|---|
-| `core/assets-src/maps/country.ase` | R1改视觉源；R2不改此源 | 仅核Git元数据，不推定视觉无手修 |
-| `core/assets-src/Makefile`、`tools/pad-map-tiles` | `.ase`经asesplit、指定颜色透明替换、64px瓦片各边填2px，输出`android/assets/maps/country.png` | 这是已读配方，未执行；TSX的margin 2／spacing 4及图像尺寸须匹配 |
-| `android/assets/maps/country.tsx` | 引用生成PNG，存材料与障碍JSON；R2只改36／52圆半径 | 图形、材料、物理定义不是一个字段；未改61须作为保留项 |
-| `country.tmx`／`river.tmx`／`flood.tmx` | R1改布局，river移除两旧障碍；R2从共享TSX取得新定义 | 不是逐图改半径；清重复对象与保局部边界分别做 |
-| `city.tsx`／`snow.tsx` | R2另改各两个圆形；各自有三条正式赛道 | 影响范围按实际引用与实例枚举，不等于提交文件数 |
-| `map/Track.java`与`obstacles/tiled/` | 加载TMX／TSX及纹理，分读材料、起点、层、圈进度与路点；障碍JSON生成物理体 | 数据可解析、导入完成与车辆可驾驶分别验 |
-| `core/assets-src/ui/map-icons/<map-name>.ase` | 独立图标源；不由上述地图改动自动继承 | 有MapScreenshotGenerator不证明已更新所有图标 |
-| `android/assets/championships/0.xml`至`2.xml`、`stats/` | 冠军组／赛道ID和记录结构在这条比较中未改 | 保键不证明旧档加载已测，也不保证改版前后成绩公平可比 |
-
-**生成纹理不在提交中是既有存储约定，不是漏交结论。** [Makefile][p30-make]定义输出；[`.gitignore`][p30-ignore]排除`android/assets/maps/*.png`及`core/assets/`。因此本轮没有实际生成PNG证据，但不能从未跟踪文件直接判制作失败。接手者仍需源、工具版本、配方与生成后的图像检查；不能只拿一个TMX声称可重建画面。[一手／研究]
-
-**运行消费者也有范围。** [TiledObstacleCreator][p30-obstacles]只从第一个tileset建立定义，再遍历所有tile layer；[CircleDef][p30-circle]按单元格、origin、tileSize与UNIT_FOR_PIXEL建圆，不消费cell翻转／旋转。本文只核此实现，不能推广为任意多tileset或变换组合都支持；没有受影响夹具，不把该边界直接报为已复现bug。[一手／研究]
-
-### 13.3 共享二改的实际消费者清单
-
-**只列变更文件会漏掉九条赛道的验收范围。** 对b80固定树逐图解析，下面两列为对应local tile的单元格数，不是运行时有效碰撞体数。`tiny-sur-mer`第二种为0，是有意义的负项，不能把所有图强行判为两种都应变化。[离线文本核对]
-
-| 共享TSX与变化local ID | 正式地图文件（`android/assets/maps/`） | 两种单元格数 |
-|---|---|---|
-| country：36／52 | country.tmx | 36／11 |
-| 同上 | river.tmx | 23／49 |
-| 同上 | flood.tmx | 5／12 |
-| snow：60／90 | race.tmx | 12／5 |
-| 同上 | snow2.tmx | 24／42 |
-| 同上 | snow3.tmx | 68／74 |
-| city：68／100 | be.tmx | 58／15 |
-| 同上 | tiny-sur-mer.tmx | 10／0 |
-| 同上 | city3.tmx | 40／47 |
-
-**复算方法限定于本组文件。** 读取XML的每个tile layer；CSV转整数，base64以zlib解压并按uint32 little-endian读取；GID与`0x0fffffff`按位与去掉Tiled标志，再减各tileset的firstgid映到local ID。本组正式赛道firstgid均1；模板／规则图不混入九条正式地图。`country-rules.tmx`、`country-templates.tmx`和含两套tileset的`city-templates.tmx`仍需作为制作依赖另列，不拿正式地图计数证明它们可由运行消费者通吃。根执行端复跑了同一文本解析并核对结果，无图像／引擎执行。[离线／研究]
-
-**保留的玩法层仍要重新解释。** [LapPositionTableIO][p30-lap]要求Sections名称可转数字且唯一、每条线两点、相邻段构成凸四边形；[WaypointStore][p30-waypoint]要求单一路点折线、点落在圈进度表内且距离递增，救援也用其投影。R1未改这些层不代表新通道已覆盖；新增障碍堵住旧路点时，合法XML仍可能留下不可用路线。[一手／研究；行为未测]
-
-**旧记录是另一消费者。** [GameStatsImpl][p30-stats]按难度＋track ID保存赛道成绩，按难度＋championship ID保存冠军排名；[JsonGameStatsImplIO][p30-statsio]写version 2、旧version 1按HARD读，CPU默认成绩不写回玩家记录。这些文件与三份championship XML在检查点之间未改，故只确认身份／结构保留。是否保旧纪录、重置榜单或标明改版，需要项目决定；不因ID相同就默认新旧赛道具有同一竞争条件。[一手／研究]
-
-### 13.4 借现成Unity／UE路径，不复制整套工具链
-
-**Unity已有Tiled源时，先试窄导入；没有该源就不为Agent迁移。** SuperTiled2Unity固定树`1861abd9ee0f8ec5cd545841a6243135132bfd87`的包仍标2.4.0、最低Unity 2020.3；这是当前源码快照，不冒充2025-07-02发布包或全部Unity 6兼容认证。[导入器代码MIT](https://github.com/Seanba/SuperTiled2Unity/blob/1861abd9ee0f8ec5cd545841a6243135132bfd87/LICENSE)不放行输入素材；维护成本包含源格式、项目语义与版本回归。以下建议只在项目版本与输入契约验证后采用。[一手／研究]
-
-**共享TSX有可追的重导机制。** [TmxAssetImporter][p30-st-tmx]通过RequestDependencyAssetAtPath取得外部tileset，[SuperImporter][p30-st-importer]登记依赖，[SuperAsset][p30-st-asset]同时注册SourceAsset与Artifact依赖；[Unity契约][p30-unity-dep]支持依赖产物改变后重新导入消费者。这证明机制，不证明圈进度、存档和项目自定义JSON已被实现。CustomTmxImporter是补窄项目语义的入口，不能把Pixel Wheels的obstacle字符串当现成标准碰撞格式。[一手／研究]
-
-**共享默认改变时，局部覆盖应当保留。** [属性合并][p30-st-props]先local、再tile、最后object type；同名不区分大小写，已有值不覆盖。因此“所有地图全变成新默认”不是通过标准。全量Reimport另有[Apply Default Settings][p30-st-settings]，会重设各importer的PPU／ellipse参数；不要为同步共享属性顺手抹掉每图配置。[一手／研究]
-
-**资源图变大时，先核TSX元数据一起更新。** [使用者#302][p30-st-302]报告Aseprite图扩尺寸后TSX仍旧，Tiled可摆而Unity缺tile，重开tileset后解决。它支持增加源图→输出图→元数据一致性检查，不证明导入器普遍失败，也不是本轮复现。[社区／研究]
-
-**class默认必须分对象路径。** [#300定位][p30-st-300]及另一使用者修复，与固定[TileLayer路径][p30-st-layer]未传typeName、基础重载传null相符：不能依赖该路径自动带入tile-layer class默认。结论不扩大为所有属性失效；同帖isTrigger指控已因漏配置XML而撤回，不作为bug。项目必须依赖此能力而未验证修复时，保原生或显式支持的数据层，不默默用默认值代替。[一手／社区／研究]
-
-**原生替代也有继承成本。** Unity已有Tilemap可保原生Collider与Rule Override Tile；[后者官方说明][p30-rule]提醒原Rule Tile换sprite可能让override旧引用失配，仍要查。UE [Tiled JSON入口][p30-ue]只承诺纹理、Tile Sets和Tile Map，不承诺本例导航、圈进度、共享JSON或旧记录。已有Actor／组件制作保原路径，大量Tiled源才比较转换的总体维护收益；不跨引擎挪用Unity依赖机制结论。[一手／研究]
-
-### 13.5 接手者的两轮接收与拒收包
-
-**先固定一组消费者，再在同一组上续改。** 对历史Pixel Wheels链按上表九图检查；对Unity迁入方案另选两张共享地图、一张显式覆盖地图、一张不用该tileset的对照地图。后者是拟验证夹具，不把它冒充原作品已有实验。[研究]
-
-| 接收层／坏候选 | 必须交出的结果或拒收理由 |
+| 边界／路径 | 决策证据 |
 |---|---|
-| R1只更新PNG，TSX数量／尺寸仍旧 | 拒收；核64px／padding、margin／spacing、可寻址tile范围与实际输出，不能以编辑器预览代目标导入 |
-| R1迁共享碰撞却保同位置旧人工对象 | 拒收重复责任；river81／82的删除是具体参考，不能自动删全部Obstacles，局部墙／可动物保留 |
-| R2只验改过的三份TSX | 拒收范围不足；按实际引用枚举九图与制作模板，核变／不变tile及独立地图对照 |
-| R2刷新把显式override与每图PPU一起重置 | 拒收越界写；共享默认、局部覆盖、importer配置分别保留／更新，不以全一致充成功 |
-| 图块与碰撞正确，路点／Sections仍按旧布局 | 未通过玩法接收；核可驾驶区、圈序、AI路线、救援及奖励点，静态不变不是行为通过 |
-| 显示正常，但改race ID或重写既有记录 | 拒收无声明迁移；核选关身份和玩家数据，另决定改版后的成绩比较政策 |
-| 实际目标冷导入与增量导入结果不同 | 暂停替换整组；保旧可用产物，定位依赖／生成层差异，不在生成prefab上反复手补 |
+| `core/assets-src/maps/country.ase`→`core/assets-src/Makefile`、`tools/pad-map-tiles`→`android/assets/maps/country.png` | 配方经asesplit、指定色透明替换、64px瓦片各边填2px；未执行。TSX margin 2／spacing 4、图像尺寸须匹配。`.gitignore`排除地图PNG与`core/assets/`，未跟踪不等于漏交，但不能只拿TMX声称重建画面。 |
+| `android/assets/maps/{country,city,snow}.tsx`→各TMX | PNG引用、材料、障碍JSON分层；R2不改视觉源，只改上述六种圆。R1 river清旧障碍不授权删全部局部墙／可动物。 |
+| `map/Track.java`、`obstacles/tiled/{TiledObstacleCreator,CircleDef}.java` | 载入纹理／地图，分读材料、起点、圈进度与路点。障碍只从首个tileset建定义再遍历全部tile layer；圆用cell、origin、tileSize、UNIT_FOR_PIXEL，不消费cell翻转／旋转。不能推广任意多tileset／变换，也未复现该边界bug。 |
+| `map/{LapPositionTableIO,WaypointStore}.java` | Sections名须唯一数字、线两点、相邻段成凸四边形；单一路点折线须在圈进度表内且距离递增，救援用投影。源层未改不证新通道／障碍下可驾驶。 |
+| `core/assets-src/ui/map-icons/<map-name>.ase` | 独立源；有MapScreenshotGenerator不证图标更新。 |
+| `android/assets/championships/{0,1,2}.xml`、`stats/{GameStatsImpl,JsonGameStatsImplIO}.java` | 检查点间未改。成绩键为难度＋track ID，冠军排名键为难度＋championship ID；写version 2，旧version 1按HARD读，CPU默认成绩不写玩家记录。只证身份／结构保留，未测旧档；改版成绩是否保留／重置／标记须另决。 |
 
-**共享修订不能替代独特局部试玩。** 同作[#511][p30-stuck]报告特定Android 1.0.0-rc1附件构建中小车高速卡在Tiny-sur-mer起点缝隙，作者回复已堵洞，[46cf815][p30-localfix]改地图并进入1.0.0说明。它支持保小车／墙缝等局部场景，不证明R2未修复、R1造成故障或当前所有发行包都失败。[作者／使用者报告]
+### 13.3 九图实际影响，不以改动文件数代替
 
-**撤回的对象是多余转换，不是原有验收。** 例外不断增加、需要反复手改生成物、源元数据不能稳定重建或项目语义不受支持时，缩小共享范围／回原生制作；不是放弃旧图、权限、引用、比例、材质、碰撞、预算及目标设备检查。生成图像未验就停在静态交接，不宣称可发布游戏。[研究]
+对b80固定树复算每个tile layer：CSV整数或base64＋zlib／uint32 little-endian，GID与`0x0fffffff`去标志后减firstgid（本组均1）。下列为**对应两种local tile的单元格数，非运行碰撞体数**；发布端复算一致，独审重读地图被拒后未复跑。[离线]
 
-**许可与工作量按实际采用另核。** Pixel Wheels逻辑GPL-3.0-or-later、辅助代码与资产另有许可；[版权说明][p30-license]区分Apache辅助代码和CC-BY-SA资产。本文只提炼机制、列路径与聚合结果，不复制上游代码／地图／图像。历史R1确有视觉源文件修改，未核具体制作方式，不能包装成AI零手修证据；静态合法、合入与发行都不能给出AI净收益。[一手／研究]
+| 共享TSX／local ID | 正式地图：两种计数（均在`android/assets/maps/`） |
+|---|---|
+| country／36、52 | country.tmx：36／11；river.tmx：23／49；flood.tmx：5／12 |
+| snow／60、90 | race.tmx：12／5；snow2.tmx：24／42；snow3.tmx：68／74 |
+| city／68、100 | be.tmx：58／15；tiny-sur-mer.tmx：10／0；city3.tmx：40／47 |
 
+`tiny-sur-mer`第二种为0，不能要求全变。`country-rules.tmx`、`country-templates.tmx`及双tileset的`city-templates.tmx`另属制作依赖，不计入九图，也不由上述计数证明运行支持。[研究]
+
+### 13.4 Unity窄适配与不迁移的条件
+
+固定[SuperTiled2Unity源码][p30-st]为`1861abd9ee0f8ec5cd545841a6243135132bfd87`，包仍标2.4.0、最低Unity 2020.3；不冒充2025-07-02发布包或Unity 6兼容认证。下列路径相对`SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/Editor/`。[一手]
+
+- **依赖可追，不等于项目语义已支持：** `Importers/TmxAssetImporter.cs`的RequestDependencyAssetAtPath取得外部tileset，`Importers/SuperImporter.cs`登记依赖，`AssetTypes/SuperAsset.cs`注册SourceAsset与Artifact；[Unity契约][p30-dep]支持依赖产物变更后重导。CustomTmxImporter可补窄语义，但Pixel Wheels的obstacle JSON、圈进度和存档并非现成标准格式。[一手／研究]
+- **默认变，局部覆盖应保留：** `Importers/TiledAssetImporter.cs`先local→tile→object type，同名不区分大小写且不覆盖已有值。`Settings/ST2USettingsProvider.cs`全量Reimport的Apply Default Settings会重设PPU／ellipse参数；不要为同步默认顺手抹掉每图设置。[一手]
+- **元数据反例：** [#302][p30-302]使用者Aseprite扩图后TSX尺寸仍旧，Tiled可摆而Unity缺tile，重开tileset解决。须查源图→输出图→TSX。[社区]
+- **class范围：** [#300定位／他人修复][p30-300]与`Importers/TmxAssetImporter.TileLayer.cs`未传typeName、基础重载传null相符：不能依赖此tile-layer路径自动带入class默认。不是全部属性失效；同帖isTrigger指控因漏配XML撤回。项目必需且未验修复时，改显式数据层或保原生。[一手／社区]
+- **替代也有代价：** Unity原生Tilemap／Collider、[Rule Override Tile][p30-rule]可保留，但原Rule Tile换sprite可能使旧override引用失配。UE的[Tiled JSON入口][p30-ue]只承诺纹理、Tile Sets／Map，不承诺本例玩法或Unity式依赖机制。已有Actor／组件则保原路径，大量Tiled源才比较转换维护收益。[一手／研究]
+
+### 13.5 接收与拒收，分清静态包和可发布游戏
+
+历史链验九图；Unity另拟两共享图、一覆盖图、一无关对照。[研究]
+
+1. R1交源、工具版本、配方、生成图与TSX尺寸／可寻址范围；只换PNG／凭预览拒收。迁共享障碍时查river81／82式重复责任。
+2. R2枚举所有消费者及制作模板；只验三份TSX拒收。分别验变化tile、不变61、零计数负项、显式override与每图PPU；“全变成默认”是越界写，不是成功。
+3. 路点／Sections、圈序、AI／救援、奖励点和可驾驶区必须行为验；ID与旧记录迁移政策另验。
+4. 目标冷导入与增量结果不同、例外膨胀或反复手补生成物时，保旧可用产物并定位生成／依赖层；缩小共享范围或回原生，仍验比例、材质、碰撞、预算与目标设备。[研究]
+
+**局部回归：** [#511][p30-stuck]报告Android 1.0.0-rc1特定附件构建的小车高速卡Tiny-sur-mer起点缝，作者称已修，[46cf815][p30-localfix]改地图并列入1.0.0说明。保小车／墙缝回归，不归因R1或否定R2。[作者／使用者]
+
+**许可与收益边界：** 固定树README区分Pixel Wheels逻辑GPL-3.0-or-later、Apache辅助代码与CC-BY-SA资产；ST2U代码MIT不放行输入素材。仅列机制／聚合结果，不复制素材。制作方式未核，不证AI零手修、可发布或净收益。[一手／研究]
+
+[p30-pw]: https://github.com/agateau/pixelwheels/tree/df7103abad8e058c94ec426e4284fe40dadfe805
 [p30-r1]: https://github.com/agateau/pixelwheels/pull/487
 [p30-r1-diff]: https://github.com/agateau/pixelwheels/commit/fbccb303727ccc818515eed06ee480fc364ae9c4
 [p30-r2]: https://github.com/agateau/pixelwheels/pull/526
-[p30-changelog]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/CHANGELOG.md
 [p30-restitution]: https://github.com/agateau/pixelwheels/commit/c0a44b998a883f056e61af664675c9558f26a605
-[p30-format]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/docs/map-format.md
-[p30-make]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/core/assets-src/Makefile
-[p30-ignore]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/.gitignore
-[p30-obstacles]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/core/src/com/agateau/pixelwheels/obstacles/tiled/TiledObstacleCreator.java
-[p30-circle]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/core/src/com/agateau/pixelwheels/obstacles/tiled/CircleDef.java
-[p30-lap]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/core/src/com/agateau/pixelwheels/map/LapPositionTableIO.java
-[p30-waypoint]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/core/src/com/agateau/pixelwheels/map/WaypointStore.java
-[p30-stats]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/core/src/com/agateau/pixelwheels/stats/GameStatsImpl.java
-[p30-statsio]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/core/src/com/agateau/pixelwheels/stats/JsonGameStatsImplIO.java
-[p30-st-tmx]: https://github.com/Seanba/SuperTiled2Unity/blob/1861abd9ee0f8ec5cd545841a6243135132bfd87/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/Editor/Importers/TmxAssetImporter.cs
-[p30-st-importer]: https://github.com/Seanba/SuperTiled2Unity/blob/1861abd9ee0f8ec5cd545841a6243135132bfd87/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/Editor/Importers/SuperImporter.cs
-[p30-st-asset]: https://github.com/Seanba/SuperTiled2Unity/blob/1861abd9ee0f8ec5cd545841a6243135132bfd87/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/Editor/AssetTypes/SuperAsset.cs
-[p30-unity-dep]: https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AssetImporters.AssetImportContext.DependsOnArtifact.html
-[p30-st-props]: https://github.com/Seanba/SuperTiled2Unity/blob/1861abd9ee0f8ec5cd545841a6243135132bfd87/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/Editor/Importers/TiledAssetImporter.cs
-[p30-st-settings]: https://github.com/Seanba/SuperTiled2Unity/blob/1861abd9ee0f8ec5cd545841a6243135132bfd87/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/Editor/Settings/ST2USettingsProvider.cs
-[p30-st-302]: https://github.com/Seanba/SuperTiled2Unity/issues/302
-[p30-st-300]: https://github.com/Seanba/SuperTiled2Unity/issues/300#issuecomment-3380805247
-[p30-st-layer]: https://github.com/Seanba/SuperTiled2Unity/blob/1861abd9ee0f8ec5cd545841a6243135132bfd87/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/Editor/Importers/TmxAssetImporter.TileLayer.cs
+[p30-st]: https://github.com/Seanba/SuperTiled2Unity/tree/1861abd9ee0f8ec5cd545841a6243135132bfd87
+[p30-dep]: https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AssetImporters.AssetImportContext.DependsOnArtifact.html
+[p30-302]: https://github.com/Seanba/SuperTiled2Unity/issues/302
+[p30-300]: https://github.com/Seanba/SuperTiled2Unity/issues/300#issuecomment-3380805247
 [p30-rule]: https://docs.unity3d.com/Packages/com.unity.2d.tilemap.extras@4.0/manual/RuleOverrideTile.html
 [p30-ue]: https://dev.epicgames.com/documentation/en-us/unreal-engine/import-sprites-in-unreal-engine
 [p30-stuck]: https://github.com/agateau/pixelwheels/issues/511
 [p30-localfix]: https://github.com/agateau/pixelwheels/commit/46cf8153b6b061f7acc6250f0f5b8ddcc075fb62
-[p30-license]: https://github.com/agateau/pixelwheels/blob/df7103abad8e058c94ec426e4284fe40dadfe805/README.md#license

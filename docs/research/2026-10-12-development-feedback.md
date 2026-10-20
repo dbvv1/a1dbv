@@ -1,6 +1,6 @@
 主线：二，兼三／四
 改变的建议：先选能观察真实故障的反馈，再按保护未来或查当前差异选择测试；运行结果只覆盖实际入口。[研究／经验]
-新证据：2026-10-20 补P25已填状态与局部更新判据（部分资料、未运行），并保跨发布维护链、固定测试判定器与修订回执，改变 Agent 前端更新的验收输入和入口选择；另补组合输入与业务提交分验；另记暖缓存诊断候选因需求未证而不立深项目；其他迁移章节沿用原核实日期，未新增实验。
+新证据：2026-10-20 补P25已填状态、局部更新及通知恢复边界（部分资料、未运行），并保跨发布维护链、固定测试判定器与修订回执，改变 Agent 前端更新的验收输入和入口选择；另补组合输入与业务提交分验；另记暖缓存诊断候选因需求未证而不立深项目；其他迁移章节沿用原核实日期，未新增实验。
 
 # 开发条件：反馈与验证
 
@@ -592,17 +592,24 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 表中测试均未运行；旧#1588 stepper无ASSISTANT用例，不构成代填闭包证据。[一手：测试原文]
 
-**响应未知时先读回，不能重置再完成。** 最终完成链先以CAS改变单个recipient及完成审计，再处理webhook、通知和seal任务；ALREADY_SIGNED有幂等回执含义，却不恢复未完成副作用。SIGNED、任务入队、最终PDF和外部送达必须分报。[一手：源码]
+**响应未知先读回；原生组不能把通知恢复交给完成接口重试。** 单人CAS保SIGNED与完成审计，ALREADY_SIGNED不重放后续副作用。组推进先写107的SENT，再用Promise.allSettled建邀请，未传业务去重id；105／106各完成后都再查组状态的交错可各建一任务。local每次新建job且任务缓存含jobId；BullMQ／Inngest仅透传可选id，换队列不补此调用的去重。[一手：[固定树][p25-r2]；`packages/lib/server-only/document/complete-document-with-token.ts:318–546`、`packages/lib/jobs/client/{local,bullmq,inngest}.ts`；研究：可行交错，未复现]
 
-待补同一E1的以下注入；逐人CAS不能保证组推进只一次，两名成功者可能均看到组已齐，现有串行断言不足以证明exactly-once。
+**SENT或job成功均不是已邀／送达证明。** 邀请handler不以SENT挡重；组织限额断言异常被catch后直接return，发生在sendMail、提醒调度和EMAIL_SENT审计之前。local／BullMQ将正常返回记COMPLETED，不能等待失败重试补发。[一手：[邀请handler](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/lib/jobs/definitions/emails/send-signing-email.handler.ts#L188-L257)；provider同上。发送调用成功仍不等外部送达]
 
-| 注入点 | 读回与唯一允许变化 |
+| 同一E1分支 | 原生能力与人须确认的选择 |
 |---|---|
-| 完成DB已提交、响应丢失 | 原ID下仅一次SIGNED及完成审计；分别读通知／seal任务，缺项记未确认，不reset／重建 |
-| autosave成功、响应丢失 | 先按原ID及服务端关联对账；恢复原行映射，禁止未知新ID下再次whole-set造成删建 |
-| 同人重复／并发；105与106并发完成 | 每人一次完成审计，107仅一次签署请求；若不满足则方案未通过，不能拿ALREADY_SIGNED冒充副作用恢复 |
+| 完成提交后响应丢失／推进前中断 | 读原ID与审计，分别查通知／seal；缺项未确认，不reset已签人 |
+| autosave成功但回执未知 | 先对账原ID及关联，不在未知新ID下whole-set删建 |
+| 107置SENT但未建job，或邀请限额检查return | SENT不能跳过对账；107原nextReminderAt=null时不会被到期提醒扫描选中 |
+| 同人重复／并发；105／106并发均推进 | 每人应仅一次完成审计；单人CAS不保107只邀一次；串行组测试不能证明去重，不能接受重复时撤回原生足够的假设 |
+| 全部签完而未seal | 已配置并运行的seal sweep可有限补偿；每15分钟选最近动作年龄≥15分钟且<6小时的合资格PENDING文档，最多100项，不保证15分钟完成 |
+| 已超seal窗口／仍有中间未签人 | 该sweep不补此缺口；人工处置，不重签或改时间伪造可恢复 |
 
-[研究：待验证]
+**不是没有原生恢复入口，而是入口有条件和副作用。** 首次send只邀当前步骤，不预排未来107；邀请handler正常尾部才设nextReminderAt。提醒扫描只挑已到期者，不能兜底上述null；主动改reminderSettings可重算SENT人的提醒，故不外推为永久不可恢复。[一手：同固定树`send-document.ts:151–157,342–359`、`internal/send-signing-reminders-sweep.handler.ts:11–28`及`update-envelope.ts:357–359`；路径分别位于server-only/document、jobs/definitions、server-only/envelope]
+
+人对账后可用envelope/redistribute定向补原未签ID，但按配置续有效期并重启提醒周期，这些变更可先于邮件禁用／限额拒绝，不能当透明重试。Agent应区分任务、邮件与PDF证据，人决定补发对象与容错；若必须自动可靠推进且不能接受漏邀／重复，不以原生分组或换队列代替可靠推进改造。[一手：[补发](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/lib/server-only/document/resend-document.ts#L122-L200)、[封存扫描](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/lib/jobs/definitions/internal/seal-document-sweep.handler.ts#L24-L99)；研究：采用边界]
+
+固定树`packages/app-tests/e2e/api/v2/`下的`redistribute-send-status.spec.ts`与`organisation-rate-limits.spec.ts`验NOT_SENT→SENT和同步限额，不等同异步邀请丢弃链；本轮检索test/spec未找到上述并发／中断／seal时窗闭包，非断言不存在间接覆盖。全部为2026-10-20静态核查，未运行应用、邮件或模型。[一手／研究]
 
 #### 现成替代与本次实际改变
 
