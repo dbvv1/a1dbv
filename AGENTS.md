@@ -86,7 +86,7 @@
 - 研究文件和任务表本身不新增授权，也不授权新建定时任务。
 - **公开仓库安全（2026-10-20 加强，适用于所有执行者）**：
   - 不提交私人对话、用量日志、公司代码、凭据、内部地址、本机路径或个人身份信息（含个人邮箱）；
-  - 每次推送前跑完整离线入口（含公开内容扫描 `scripts/check_public.py`），并运行 `python3 scripts/check_public.py --commits origin/main..HEAD`，确认提交身份使用 GitHub noreply 邮箱；
+  - 每次推送前跑完整离线入口（含公开内容扫描 `scripts/check_public.py`），并运行 `python3 scripts/check_public.py --commits origin/main..HEAD`，确认提交身份使用 GitHub noreply 邮箱（Agent 平台的固定机器身份，如 `noreply@anthropic.com`，按脚本白名单放行）；
   - 扫描通过不等于安全，推送前仍要读一遍 `git diff`。扫描命中时先删改内容；确认是安全的占位或公开资料，才写进 `scripts/public-scan-allow.txt`，并在交接里说明；
   - 发现已推送的泄露：停止发布，在 TASKS“需要用户决定”写明位置（不复述密钥本身），由用户作废凭据并决定是否改写历史；执行者不自行强推或改写历史。
 
