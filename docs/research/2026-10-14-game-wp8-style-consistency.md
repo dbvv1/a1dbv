@@ -1,6 +1,6 @@
 主线：二／三；G1 跨资源一致性、批量生产与第二次修改
 改变的建议：[研究] 首版与下一次扩展共同决定供应路线：复用形体仍补语义资源，独特内容扩张先确认新增供给；[经验] 复用批准源资产，风格与内容身份分别验收并保存可重建环境；跨类别失配反复出现且训练可摊销时才评估 LoRA；新增外观类别先核旧内容补齐范围，再比较既有类别内扩玩法
-新证据：[一手／研究] OpenGFX2完整基线／高规格回退及新版功能供给；固定 ComfyUI／批量脚本、风格解耦论文与商业合同冲突；未生成或验收资产，没有几百件跨 2D／3D 及二改均零手修完成的全链证据；Wildermyth作者rig范围取舍、图层绑定文档及后续装备/变身发行补新类别兼容代价
+新证据：[一手／研究] 2026-10-20补LPC固定动作覆盖／实际文件差异、Herodom扩装采用与委托链； OpenGFX2完整基线／高规格回退及新版功能供给；固定 ComfyUI／批量脚本、风格解耦论文与商业合同冲突；未生成或验收资产，没有几百件跨 2D／3D 及二改均零手修完成的全链证据；Wildermyth作者rig范围取舍、图层绑定文档及后续装备/变身发行补新类别兼容代价
 
 # WP8：几百件资产怎样持续保持一致
 
@@ -289,3 +289,64 @@ WP2已核的153次精灵动画复盘、To the Abyss作者逐像素修补，表�
 [研究] ⛔ 不能用上述链保证AI补齐任意同风格原创设计。VS的人工供给迁移和SNKRX的混合供给二改分别成立；二者没有共同条件、盲测或总成本对照，不排名，也不拼成“已有全流程零手修”的结论。当前可执行决定是先选扩展承诺与来源，再决定生成缺口；真实模型／引擎验证仍需另行授权。
 
 本轮范围：公开作者记录、发行公告与固定源码阅读；未下载媒体资产、未安装、未运行游戏／引擎／模型。没有观测真实玩家效果、渲染质量或本项目制作收益。未闭合资料保留为后续验收缺口，不以来源数量充完成。
+
+## 像素角色扩装：先核完整动作交集，再换装备
+
+核实：2026-10-20（UTC+8）。[研究] **固定俯视像素角色需要多人换装时，先比较已覆盖玩法的同体系图层，再为真实缺口试生成。** “完整”按身体、装备、方向、必要动作及可接受许可的交集判断；不按菜单件数或某一张预览判断。LPC 是公开成套供给候选，不是任意新增动作的保证。
+
+### 从已有装备换到另一件，不等于增加一种动作
+
+以下固定 Universal LPC 为 `9bf06be193b053db256b2536824af426de046aa2`。读取 definition、对应目录和组合源码，未下载或渲染图像；“有源”仅表示所需路径存在，不代表轮廓、握点或循环已经验收。[一手／研究]
+
+| 同一角色的变化 | 固定源覆盖 | 选择与缺口 |
+|---|---|---|
+| 初版 adult male＋chainmail＋flail，走路／挥砍 | 身体与锁子甲有walk／slash；连枷有walk及`slash_oversize`前后层 | 🧪 可从现成层组合起步，保源、配置与署名；仍验四向遮挡／握点 |
+| 换 flail 为 waraxe，保走路／挥砍 | 战斧同样有walk／hurt／`slash_oversize`；可保身体、衣服与动作框架 | 先换装备选择，不重生整个人；最终图集及消费者仍要重验 |
+| 第二改增加持武器 run | 身体与锁子甲有run，两武器既不声明run，也没有该目录 | 先换已有完整覆盖的装备或取消非核心跑步；不能当仅改配置 |
+
+源分别见[身体][lpc-body]、[锁子甲][lpc-mail]、[连枷][lpc-flail]、[战斧][lpc-axe]及同SHA的`spritesheets`目录。两武器的根目录包含`walk`、`hurt`、`behind`、`attack_slash`；不能把身体能跑当装备也能跑。halberd另有`thrust_oversize`，并不因此补齐run。[一手]
+
+**筛选只帮助找候选，不替整组验收。** [动作筛选][lpc-filter]按“至少命中一个启用动作”通过，勾walk＋run仍会保留仅支持walk的武器；只筛run才排除它们，无元数据也默认兼容。许可筛选同样不是逐实际图层的完整权利审查。[一手／研究]
+
+[渲染路径][lpc-render]将custom层与标准层分开处理，标准动作没有声明就跳过；custom区域提取已有base动作，不生成新动作。静态路径据此预期上述run区域不绘制这两件武器，并非本轮已观测的画面。`slash_oversize`的[布局声明][lpc-custom]为192像素、四方向各六帧，不能让64格消费者直接套用；图集切分、pivot与攻击事件仍需项目适配。[一手／研究]
+
+元数据还可能与文件不同：[腿甲修订][lpc-leg-change]给definition加了run，但新增图在feet路径；该固定版`spritesheets/legs/armour/plate/male`目录11个PNG没有run，尽管definition及CREDITS都有记录。缺源与错层序应分开诊断，不用补元数据假装补画完成。[一手／研究]
+
+### 真实采用链支持复用，不支持无美术投入
+
+Herodom 的[官方资料][herodom-kit]连接角色生成器，并明确与美术合作、委托后回馈社区。[2018生成器原帖][herodom-tool]说明作者为自己游戏补入旧工具未收录的资源；同帖鞋子遮住长袍的层序问题，经配置修复后有报告者确认。这类组合错误可修结构，但不代表缺帧也能靠排序补齐。[一手：作者及使用者报告]
+
+[2019武器原作][herodom-weapons]明确为该游戏委托，作者列三种武器的walk／slash／hurt，只有halberd有thrust；Herodom随后确认纳入生成器。当前固定目录与这个有限范围一致。[游戏开发原帖][herodom-dev]在2020年已发行后计划玩家自定义并追加委托；[发行历史][herodom-store]5.1（2021-03-11）加入wardrobe身体／发型。公开成套供给可复用，但扩大交集曾需要真正的新美术，费用与工时未知。[一手／研究]
+
+### 本样本的商业许可路线与保留成本
+
+**👀 本链可按共同的CC BY-SA路线评估，不按“生成器免费”统一放行。** 指定male身体、锁子甲、两武器的credits均给CC BY-SA 3.0选项；保存实际体型与图层的作者、作品、来源、许可、原有修改说明，并在游戏中可发现地展示或链接。锁子甲notes还记bluecarrot16，不能只抽authors数组。[一手／研究]
+
+按[CC BY-SA 3.0 §4](https://creativecommons.org/licenses/by-sa/3.0/legalcode.en)，组合／改色等改作可采用同元素后续版本，例如CC BY-SA 4.0；保原件许可，改作标明变化，不给相关资产加限制或限制许可权利的技术措施。不能满足发行安排时，换逐件核清的OGA-BY／CC0组合或另取授权。[工具GPL §2](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/LICENSE)与素材许可分开，单纯使用工具不自动把独立游戏代码改成GPL；复制／分发工具代码另核。[一手／研究；具体发行法域与合同仍另审]
+
+武器原作现在还列OGA-BY，而固定生成器的两武器改作仅列SA／GPL，本轮未把原作新增许可外推全部后续贡献。身体不同体型／动物部件也不能共享一份笼统放行。上述共同SA路线避免为本题扩成全库清权；不保证所有LPC资源适用。[一手／研究]
+
+[配置导出][lpc-json]保存选择、显示／动画／许可筛选及layers、credits，但导入只恢复状态；没有上游SHA或图片字节。应把具体源版本与配置一起留存，否则仅有JSON不能保证日后重建相同角色。[一手／研究]
+
+### 生成对照：换装已有帧与补新动作分开
+
+**先选覆盖交集，再限定生成缺口。** [PixelLab换装](https://www.pixellab.ai/docs/tools/transfer-outfit-pro)对已有帧改衣服；32–64像素最多15帧，65–80最多8帧，81–256最多3帧。192格攻击需拆批，跨批风格／接触连续性未知；这个入口不负责补原本不存在的run。既有WP2的许可与API／扩展入口区别继续适用。[一手／研究]
+
+新动作可另比较[文本动画](https://www.pixellab.ai/docs/tools/animate-with-text-new)或[骨架逐帧接口](https://www.pixellab.ai/pixellab-api)，但首帧保留、姿态输入不承诺LPC图层可重组或所有方向／动作一致。先清输入、服务和改作权利，不把商业输出声明当清除SA义务；未核清这份SA源的服务使用条件，就改用权利完整的输入，不默认上传。有限生成仍需人工绘补才合格，退回完整现成源或缩动作，不继续无限补帧。[一手／研究]
+
+AI可核目录、全动作交集、批量配置和署名缺口；易把ANY当ALL、把credits行当素材、忽略大帧布局。人验真实大小的辨识、四向遮挡、握点、攻击事件、循环与换装后身份。本轮只读公开制作链、许可和固定源码／目录；没有运行组合器、游戏、模型或引擎，未证明零手修通过率、产量或成本收益。[研究]
+
+[lpc-body]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/sheet_definitions/body/body.json
+[lpc-mail]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/sheet_definitions/torso/torso_chainmail.json
+[lpc-flail]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/sheet_definitions/weapons/blunt/weapon_blunt_flail.json
+[lpc-axe]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/sheet_definitions/weapons/blunt/weapon_blunt_waraxe.json
+[lpc-filter]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/sources/state/filters.ts#L172-L188
+[lpc-render]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/sources/canvas/renderer.ts#L389-L480
+[lpc-custom]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/sources/custom-animations.ts#L298-L335
+[lpc-leg-change]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/commit/2301397aa4b56bb48bb5ff5074d65a4d42af7b6a
+[lpc-json]: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/9bf06be193b053db256b2536824af426de046aa2/sources/state/json.ts#L143-L157
+[herodom-kit]: https://sanderfrenken.github.io/herodom-presskit/
+[herodom-tool]: https://opengameart.org/forumtopic/lpc-updated-spritesheet-generator
+[herodom-weapons]: https://opengameart.org/node/108102
+[herodom-dev]: https://opengameart.org/forumtopic/herodom
+[herodom-store]: https://apps.apple.com/us/app/herodom/id1371997444

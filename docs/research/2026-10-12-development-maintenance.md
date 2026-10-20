@@ -1,8 +1,8 @@
 主线：三，兼二／四
 改变的建议：续改分验有意改变与必须保留的行为；迁移核消费者、持久状态与真实运行入口，撤替代层前确认原生能力承接。[研究／经验]
-新证据：2026-10-20 追加固定Prisma应用的两轮继承纸面包、GitLab修复链及工具边界；CPython等旧记录保原日期／运行边界，本轮未运行候选。[一手／研究]
+新证据：2026-10-20 补P27同一活动改稿／恢复的固定链和逐人判据（未运行）；2026-10-20 追加固定Prisma应用的两轮继承纸面包、GitLab修复链及工具边界；CPython等旧记录保原日期／运行边界，本轮未运行候选。[一手／研究]
 
-2026-10-20：[P22](#p22有数据应用的两轮迁移)已交两轮继承纸面包与固定维护链，15§5据此明确迁移默认；[P23](#p23next应用迁出后仍值得保留吗)仍仅提议、未执行。均不代表运行效果。[研究]
+2026-10-20：[P22](#p22有数据应用的两轮迁移)已交两轮继承纸面包与固定维护链，15§5据此明确迁移默认；[P23](#p23next应用迁出后仍值得保留吗)交固定shop两轮纸面包与发行包边界：博客先保Next并用有限缓存寿命；无文章回调，不承诺即时下架。均不代表运行效果。[研究]
 
 # 开发条件：维护与迁移
 
@@ -467,110 +467,109 @@ PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UT
 
 ## 连续修改深项目提议（2026-10-20）
 
-**P22交资料包，P23保留提议。** 两项归主线三／四；标题保留旧锚点。P22改变15§5的Agent迁移选择，P23未执行；预算不作验收条件。本轮仅公开资料／既有离线范围，无数据库、候选、模型运行或真实账户访问。[研究]
+**P22与P23均已交纸面资料，实际应用效果未验。** 两项归主线三／四，改变15§5的Agent迁移选择；标题保留旧锚点，预算不作验收条件。本轮仅公开资料／既有离线范围，无数据库、候选、模型运行或真实账户访问。[研究]
 
 ### P22：有数据应用的两轮迁移
 
-**✅ 保既有受支持迁移器；小应用能全体停写且迁移／验收落在批准窗口内，先短停写，否则桥接。** 工具轴与停写轴分开。Agent交映射／路径／判据，人定语义与权限。以下新增状态、数据与版本代号是两轮继承纸面设计，非生产验证。[研究；2026-10-20核]
+[阅读本节](2026-10-12-development-migrations.md#p22有数据应用的两轮迁移)
 
 #### 固定源码、读写闭包与执行门
 
-基线是[官方Express应用](https://github.com/prisma/prisma-examples/tree/51b3202cae5418b54314a2bb53f70b27c6558573/orm/express)：Prisma CLI/client/PG adapter声明7.0.0，只作旧源码样本。根`.gitignore`忽略lockfiles及orm迁移目录，固定树无该应用lock／migration.sql；config目录名不证明历史。未安装，无真实库／账本。[一手：固定树]
-
-`src/index.ts`闭包与新责任：[一手／研究]
-
-| 旧路径 | 继承责任 |
-|---|---|
-| POST /signup、POST /post | 嵌套／关联建帖都显式Draft |
-| PUT /publish/:id | 非原子／非幂等toggle改明确转移，禁绕审核／定时 |
-| PUT /post/:id/views、DELETE /post/:id | 保计数／删除，禁覆盖／复活；整行改DTO |
-| GET /feed | 保公开集合、作者、搜索、分页／updatedAt排序 |
-| GET /user/:id/drafts | 全部非公开项，区分InReview／Scheduled |
-| GET /post/:id、GET /users | 详情无过滤，仅按内部编辑API设计；users不含posts，保留 |
-| seed、管理／导入脚本、旧客户端 | seed清Posts／Users禁迁移；Studio／Console等旁路待核 |
-
-[现成测试](https://github.com/prisma/prisma-examples/blob/51b3202cae5418b54314a2bb53f70b27c6558573/tests/fixtures.ts)只建空库、安装、generate／db push／seed，无express构建、路由、存量／恢复断言；CI非冻结安装。根[LICENSE](https://github.com/prisma/prisma-examples/blob/51b3202cae5418b54314a2bb53f70b27c6558573/LICENSE)Apache-2.0与package MIT声明有差异；不复制代码。[一手]
-
-**基线门**：核实际schema、账本、发行物、PG版本与写者；有历史先恢复核对，确认无管理历史才按[官方baseline](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/baselining)准备相符历史，在另获准副本验空库／存量差异；旧库仅核对后记账，不重建。纸面假定单PG主库、无未知旁路且能阻断旧进程／连接／job重启，均待部署方核实。[一手／研究]
+[阅读本节](2026-10-12-development-migrations.md#固定源码读写闭包与执行门)
 
 #### 第一轮：布尔发布→审核状态
 
-合成T0＝2026-10-20 09:00Z，User10/20存在；时间同日：[研究：输入]
-
-| id | title/content | authorId | published | viewCount | createdAt/updatedAt |
-|---|---|---|---|---|---|
-| 101 | A/正文A | 10 | true | 9 | 08:00/08:30 |
-| 102 | B/null | 10 | false | 0 | 08:05/08:35 |
-| 103 | C/正文C | null | false | 4 | 08:10/08:40 |
-| 104 | D/正文D | 20 | true | 2 | 08:15/08:45 |
-
-人定true→Published、false→Draft；旧公开保祖父条款，不伪造审核。A1允许Draft→InReview→Published、InReview→Draft、Published→Draft，非法／不存在返回conflict／not-found不写。账本主体＋requestId唯一，同输入重放结果、异输入拒绝；CAS与成功结果同事务提交。**鉴权／账本／version均待实现。**[研究]
-
-短停写：停全体写者并排空；已审可事务化DDL与显式事务内增字段／映射／验收，失败撤销。Prisma7不自动合并独立TS回填与schema事务；核新版后恢复写入，收缩可延后。超窗口则撤回。[研究]
-
-需要并存时，按以下权威顺序交接，不能省略C1a：[研究：部署设计]
-
-1. 保published，加可空status（null＝未接管）及stateVersion=0。旧版W0与C1并存时，C1按published读，创建／发布原子双写Draft/Published并增version，计数不增；status仅影子，审核关。
-2. W0退出／请求排空／旁路隔离后，回填全部不一致影子，非仅null。按观察id＋published＋version条件写status，并发改变则重读。批提交后才前移checkpoint；一致行不改，删除不重建。只写status，禁ORM自动updatedAt及旧时间覆盖并发更新。
-3. 无null／矛盾且逐字段验收通过，部署C1a：status权威，按A1转移、同事务增version；published仅Published投影。查询／DTO切换，但审核仍关，仅Draft/Published。
-4. **真正开放门**：排空全部C1进程、请求、连接以及步骤2回填；撤销调度并禁止旧版本／job重新获得写入资格。短暂停写核清单与一致性，切写入准入代际，仅放C1a/A1。回填的阶段／代际检查与更新必须在同一受保护事务；已进入者须结束或撤销后才开审核。不能只在job启动时看开关，CAS也挡不住C1取得新version后把false解释成Draft。
-5. 门通过才开InReview，旧回填永久退出；旧读／整行响应／投影依赖全退出且回退包理解状态后才删published。
-
-**判据**（分支各从指定起点）：[研究：纸面断言]
-
-- S1无并发映射后feed={101,104}、user10非公开={102}；101/104 Published、102/103 Draft。非状态字段逐值不变，null仍null；总数不代替内容／排序验收。
-- S2独立于S1：signup新增105须Draft/false。S3：C1写102 Draft/false后W0只写true，W0退出后的协调须得Published/true。S4：回填读103=false,v0后C1写Published/true,v1，旧条件必须失败并重读，不得回写Draft。
-- S5从S1：102提审→InReview/false；同requestId重放同结果，旧version异请求conflict。S6接S5：审核发布102、撤回104、101计数+1、删103；终点feed={101,102}、存活={101,102,104}、101.viewCount=10。102/104更新时间随业务变化；**第二轮继承此终点，不还原T0**。
-- S7坏候选：全表默认Draft丢公开集合、按false重跑把InReview降草稿、自动updatedAt洗牌、重放toggle反向切换，任一阻止切读／收缩。S8中断：只有数据库确认rollback才称仍T0；结果不明先对账，批模式保已提交批、不前移失败批。
-- S9权威负例：C1残留时开放审核必须被门拒绝；完成交接后102进入InReview，旧C1连接／重启须在写前被拒，不能复原Draft或绕审核发布。一次CAS碰巧失败不证明门成立。
-- S10迟到回填：102已InReview，旧代际job按false写Draft须拒且状态不变；若job已在受保护事务内，开放门等待其结束／撤销，不能同时开放审核。
+[阅读本节](2026-10-12-development-migrations.md#第一轮布尔发布审核状态)
 
 #### 第二轮：继承S6，增加定时发布
 
-T1＝同日10:00Z；S6上另创建106/107并提审InReview。A2加Scheduled／可空UTC publishAt，继承账本／version。人定审核可立即／定时发布；设置时间≤数据库now拒绝；取消→Draft且审核失效，重排须重审。许晚不许早，延迟上限／权限待人定。仅Scheduled时间非空；feed仅Published，不凭到期直接公开，不伪造历史发布时间。[研究]
-
-先扩字段／枚举，保旧值；PG原生enum新增值须提交后才能使用（[PG18限制](https://www.postgresql.org/docs/18/sql-altertype.html#SQL-ALTERTYPE-NOTES)，实际版本待核）。C2先理解Scheduled、取消／重调及全部消费者，功能关；A1及旧回填全退出后才启A2和worker。审批原子写InReview→Scheduled、未来时间、version+1；worker仅凭id＋Scheduled＋观察version＋publishAt＋数据库now≥publishAt条件发布、清时间、增version。重复者匹配0重读；投影若尚在须同事务维护。候选扫描不是发布权，worker不能自作审核。[一手／研究]
-
-| 判据 | 唯一结果／分叉 |
-|---|---|
-| Q1 | 批准106于11:00、107于12:00；feed仍{101,102}。104草稿直接定时conflict |
-| Q2接Q1 | 10:59:59.999不得发106；11:00及以后首worker提交，重复匹配0；feed={101,102,106} |
-| Q3接Q2 | 11:30取消107成功→Draft、时间null、version增；12:00旧worker匹配0。主轨终点101/102/106公开，104/107草稿，103已删，101.viewCount=10 |
-| Q4分叉 | 从Q3的11:30取消提交后、12:00观测前分叉；11:40重提审并定13:00；旧12:00 job须匹配0，13:00新任务才可发；只验id＋Scheduled会提前发 |
-| Q5从Q2分叉 | 106提交后丢响应，重试不二次转移；如新增通知须另补事务outbox及消费者幂等，本包无外部exactly-once承诺 |
-| Q6从Q1分叉 | 调度故障至11:05才恢复，106在提交前仍Scheduled；按到期状态扫描补发，不能只靠内存timer；5分钟是否可接受由人定 |
-| Q7从Q1独立分叉 | **不执行Q3**；12:00及以后107到期，worker先提交后旧version取消只能conflict，保持Published，须明确撤回；不保证取消胜，不许早发 |
-
-分叉不叠加；保非状态数据，计数／删除差异按事件解释。只清无消费者兼容层，核未来计划／失败job／回退包，不凑收缩。[研究]
-
-**文件与退出**：schema加状态／版本／时间，migration.sql接真实历史，index.ts覆盖闭包／DTO／转移；回填、账本、worker及断言待实现，seed禁升级，lock／Client另获准构建。审核前投影一致可排空退兼容读但保新数据；InReview后false逆映射不唯一，Scheduled后A1未必可读。停问题写入、保状态前进修复；停worker不撤计划，备份恢复须另批期间新写／删除／已公开行为处理。[研究]
+[阅读本节](2026-10-12-development-migrations.md#第二轮继承s6增加定时发布)
 
 #### 当前工具契约：不混入另一套执行权限
 
-[Prisma支持页](https://www.prisma.io/docs/orm/release-status)仍列8RC，7维护18个月**从8正式GA起算**；另核受支持7.x与lock。[v7教程](https://www.prisma.io/docs/guides/v7/database/data-migration)为SQL＋独立TS回填、false→Unknown；[通用8教程](https://www.prisma.io/docs/guides/database/data-migration)改contract/dataTransform，其事务承诺不适用7，Agent提示不授执行权。[一手／研究]
-
-create-only接触开发／shadow库；deploy应用，resolve仅记账。10月19日[7.10.1发行](https://github.com/prisma/orm/releases/tag/7.10.1)含[shadow防护](https://github.com/prisma/prisma-engines/commit/4c4662e4219f3ab90712e0ba4d243b7e0f4665df)仅限定diff路径URL比较，非别名／代理物理同库证明；[测试](https://github.com/prisma/prisma-engines/commit/7a245d5c51c7256c8d95491a5be5776cb094429f)只验拒绝与precious_data表存在，非业务完整；diff非无副作用，主／shadow身份与恢复须另核。[一手／研究；未运行]
-
-Supabase非默认替代：[CLI v2.121.0](https://github.com/supabase/cli/releases/tag/v2.121.0)固定pg-delta alpha.59；[引擎](https://supabase.com/docs/guides/local-development/diff-engines)区分live/shadow diff与schemas/history sync。[声明式入口](https://supabase.com/docs/guides/local-development/declarative-database-schemas)generate不建baseline、diff不捕DML，no-apply生成／apply应用；[固定AI提示](https://github.com/supabase/supabase/blob/1ddb9ac787cbdf8bdeb41fffe6b300951289c34e/examples/prompts/declarative-database-schema.md)默认即应用，须收窄权限。[branching](https://supabase.com/docs/guides/local-development/overview)逐迁移包事务、不尊重transaction=false，db push成功不证明分段可部署。[一手]
+[阅读本节](2026-10-12-development-migrations.md#当前工具契约不混入另一套执行权限)
 
 #### 真实维护链：先封新写入，再重排与收尾
 
-GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NULL后仍有[表单旁路](https://gitlab.com/gitlab-org/gitlab/-/issues/413289)。[固定修订](https://gitlab.com/gitlab-org/gitlab/-/tree/91b7733a5b939580e680bc71af525e3c6c55b733)（!121370）改创建服务默认／模型校验，数据库validate:false约束先阻新违规，历史验证另做。[!123002重排](https://gitlab.com/gitlab-org/gitlab/-/blob/d822f89e26e6282563c0a66054ca86a78225627b/db/post_migrate/20230608071301_requeue_cleanup_personal_access_tokens_with_nil_expires_at.rb)先删旧job再排，旧排队up/down变no-op；down不恢复NULL。排队spec仅验参数，首次三行job测试不含中断／并发；作者历史生产NULL归零回执非本轮验证。[一手／研究]
-
-半年后[!139178 finalize](https://gitlab.com/gitlab-org/gitlab/-/blob/637cee025f4acad008d72c9fbdf553e9e4e0e5d0/db/post_migrate/20231207221119_finalize_cleanup_personal_access_tokens_with_nil_expires_at.rb)按job/table/column/args收尾并保required stop。**完成≠finalize≠可收缩**；未核最终validate／全部自托管执行。[一手／研究]
-
-!89865→[!93546修复](https://gitlab.com/gitlab-org/gitlab/-/blob/7fd599fdc3446970c2dd92e8f93d502bd3a4704a/ee/lib/ee/gitlab/background_migration/backfill_project_statistics_container_repository_size.rb)撤仅size=0过滤：零值取API，旧非零保留但仍清根cache、按root_ancestor排聚合。主表已非零仍验派生消费者，非一律重算。spec仅mock调用数、不验根聚合结果，部分负断言在perform后，不当可靠历史调用断言。已核16.1重排树`4961ad113f`、15.3派生修复树`b189ba0705`包含对应文件，非最早修复版。反例：[小表路径](https://docs.gitlab.com/development/database/not_null_constraints/)无需后台迁移，不照搬队列。[一手／研究]
-
-**证据终点**：短停写少跨版本责任，桥接多部署／协调／排空／接管；升8RC或换平台增加API／历史／CI维护，缺必要收益故不选。计算、等待、人审、修补、接管、维护无时长／净收益估值。已交源码／历史链／连续纸面包；依赖解析、真实baseline、SQL／锁／并发／恢复、部署及Agent效果未测。[研究]
+[阅读本节](2026-10-12-development-migrations.md#真实维护链先封新写入再重排与收尾)
 
 ### P23：Next应用迁出后仍值得保留吗
 
-**拟改变：换托管不自动等于换框架实现。** 固定一个公开Next应用，比较保Next、自托管／OpenNext与Vinext；Agent盘点消费者拓扑、缓存及补丁责任，人定兼容范围和退回成本。这不是P11的旧页跨发布或既有Next三臂Skill对照。[研究：提议]
+[阅读本节](2026-10-12-development-migrations.md#p23next应用迁出后仍值得保留吗)
 
-[Vinext固定README](https://github.com/cloudflare/vinext/blob/359b4fba55fa3d9f745d4ddf26692591384b2518/README.md)有迁移入口、可选Skill、兼容缺口与替代路线。[#4004](https://github.com/cloudflare/vinext/pull/4004)和[#3717](https://github.com/cloudflare/vinext/pull/3717)标Claude Code参与、消费者携带补丁：前者补后台再生成的上下文，后者修大内容行处理；[#4001](https://github.com/cloudflare/vinext/pull/4001)补真实pnpm消费者与workspace测试不同的模块拓扑。已核合并／diff／测试定义，作者测量不是本轮运行；不同消费者不能拼成同应用连续历史，合并也不证明指定发行包包含。[一手／社区，2026-10-20核；研究]
+### P27：发送中改稿与在途恢复
 
-**完整产物**：先固定应用、依赖、安装与托管基线，交后台刷新和大内容页两轮继承修改包；必须有实际文件／依赖／行为差异、消费者断言、补丁接管、最低已知修复版、删除本地补丁条件及退回差异。比较继续携带补丁、等稳定发行、退回原实现的质量与维护职责；Agent提出候选，人决定支持面。至少一条Agent参与的消费者失败／修订链要改变采用判断，不能只多写“测缓存”。[研究：验收设计]
+**当前仅资料／拟判据部分交付；原验收如下。** [研究]
 
-建议归15，必要同步18；固定证据留本分册，不新建专题。找不到可核主应用或只能交通用提醒则撤项；原生／模型／迁移效果与资料设计分列。公开维护者修改记录不冒充明确退回，未知包版本／净工时不猜。[研究]
+需求来自listmonk [#2014](https://github.com/knadh/listmonk/issues/2014)，经[#2264](https://github.com/knadh/listmonk/pull/2264)补编辑入口；[#3022](https://github.com/knadh/listmonk/issues/3022)用户自报重启漏发／疑似重复，非已复现因果。[PR2974](https://github.com/knadh/listmonk/pull/2974)生产成功自报被维护者因破坏性问题拒绝，不能据吞吐表采用。源码AGPL-3，仅分析，不复制应用。[一手／社区；2026-10-20核]
 
-**本轮负结果**：无障碍、性能、叙事／存档和同步初筛与既有材料重叠。持久执行的[Restate #770](https://github.com/restatedev/sdk-typescript/pull/770)关闭未合并及后续读取／deadline提案，不足以判既有应用应加引擎，未核明确拒绝原因；[Showboat #14](https://github.com/simonw/showboat/issues/14)只支持演示采集与验收分开。两者不立深项目，不据此否定工具；不为水位补同义题。[一手／研究：有界负结果]
+**R1验收**：固定历史／开发树，交UI/API→状态→预渲染→队列→发送逐文件图及C1的V1→V2账本，分未开始／在途／确认／失败／unknown；至少八条具名断言保身份、pending、非法状态、停止边界、内容／附件、撤排期。暂停非撤回，unknown不归未发，Vue／SSR分树。[研究：验收要求]
+
+**R2继承R1**：交低ID慢／高ID快、Push未落盘、丢回执、DB未知、限速中取消、编辑后重启的差异账本／判定器；核manager／pipe／store／SQL，逐人比哈希、attempt、结果。processed含失败，Push／落盘非原子；新增集合断言不能用sent=N／生命周期status代替，不称exactly-once。[一手／研究]
+
+验收须比较下文三路线成本／header接入，保仅编辑者不得启动／恢复正式活动、测试权限另验；人定旧稿补发。[研究]
+
+两轮文件／账本／坏候选／同场景取舍齐全才算资料验收，仅通用重试卡则撤项。DB／邮件／模型未运行，需实测才能决定则未完成；隔离运行／真实外发未获授权，不取真实名单。[研究：范围与撤回]
+
+#### 固定链与两轮继承（2026-10-20）
+
+**版本分开。** [#2264原树→最终树](https://github.com/knadh/listmonk/compare/e8fd12bddf032fe7863af427bcf9e59b82dffb1c...0e49a4bb7d415fc0085d8f068334cb653c55b439)修改Vue编辑／Start／Unschedule、API/core参数和SQL：scheduled清send_at才回draft；旧API已允许paused，PR补UI。正式[6.2.0固定树](https://github.com/knadh/listmonk/tree/ef0a75872463f10a4848af6c547d1c057405453a)仍Vue，SQL仍fetch时推进游标。开发[a729修复](https://github.com/knadh/listmonk/commit/a729a4a6d635dabb75fa0ec53df25eec2e6f2285)与本次HEAD [88031f3](https://github.com/knadh/listmonk/tree/88031f3e082648bc3f95f285df74b7b38710b54d)已SSR；后者保检查点机制，新增totalSent统计；均非正式版。[一手：固定源码]
+
+**逐文件闭包。** 固定88031f3。[一手]
+
+1. [SSR编辑器](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/static/admin/assets/js/views/campaign.js#L128-L342)接`campaign.html`／`partials/campaign-form.html`原id及完整正文／模板／headers／lists／media／send_at。Start先保存再改status；Unschedule保留日期，立即发送须另清。[路由](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/handlers.go#L207-L223)分manage/send，status另查名单管理范围；测试发送走manage。
+2. [API更新](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/campaigns.go#L503-L581)读原Campaign再bind，拒绝running／cancelled／finished正文。[SQL](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/queries/campaigns.sql#L370-L435)保身份／started_at／sent／游标，替换名单／附件。省lists失败，带lists但省media删附件；status写DB后StopCampaign，不等清空。
+3. [store](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/manager_store.go#L38-L66)→[选活动／名单SQL](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/queries/campaigns.sql#L178-L237)：选running／到期scheduled，排除活跃pipe；恢复重读模板／media／合法名单／max ID，受众非冻结，退订／blocklist优先。
+4. [pipe](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/pipe.go)编译模板／载附件，批ID先入pending，再由[message.render](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/message.go)逐人渲染入队。旧消息持有V1对象／字节；cleanup等wg耗尽、刷检查点并移除pipe，新扫描才载V2。
+5. [worker](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/manager.go#L494-L578)先查stopped再sleep／Push，无第二次检查：暂停非drain／撤回。成功加sent，渲染失败及未停止的Push错误也completeSub。checkpoint卡在最小pending之前；高ID已接受仍可能重扫，重复范围不限单次扫描周期。
+6. [email.Push](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/messenger/email/email.go#L132-L226)同步调用[固定smtppool v2.2.1](https://github.com/knadh/smtppool/blob/v2.2.1/pool.go)的Send。DATA Close丢回包可error却已接受；此路径不自动重试，其他阶段可能重试，故分应用／transport attempt。随机Message-ID非幂等键。[postback](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/messenger/postback/postback.go)的200只证明该HTTP调用层成功。
+
+**当前API反例须留下。** [core状态switch](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/core/campaigns.go#L249-L302)拒绝draft→paused／cancelled等，但漏default／finished：finished到SQL，未知值由enum失败报错；读查与写入非条件更新。running若有send_at，SQL存scheduled而响应写running，须GET核验。未做HTTP复现。[一手／研究]
+
+#### C1：R1账本直接进入R2
+
+C1及人身份不变；别名并非数值ID：S10=10、S20=20、S60=30、S70=40、S80=50、S30=60、S40=70、S50=80。V1/V2含正文／主题／模板／altbody／headers／附件；app attempt从newMessage构造／渲染起计，transport按SMTP实际尝试另计；保摘要／证据。[研究]
+
+**受控调度预注册，未运行。** BatchSize=7、Concurrency≥2、MessageRate>0、MaxSendErrors=0；生产者排入60后、70迭代的stopped检查前设屏障，80尚未fetch。一个worker在20通过停止检查后阻塞；另一个已处理10／30／40／50，在取60前阻塞；其余worker停在取队列前。主链pause→解除屏障并drain→edit V2→resume；cancel仅从同一R1快照独立终止分叉，绝不接恢复。R2各故障分支继承此快照，非同时发生或自然稳定复现。[研究]
+
+| 原人 | R1暂停与改稿边界 | R2新增事件／唯一判定，不重置R1 |
+|---|---|---|
+| S10/10 | a1/V1明确accepted；不因改稿补V2 | 接受未flush即崩溃：既有外部确认仍保accepted；无该证据的恢复进程仅知unknown，两视角须合并，不因sent=0归未发 |
+| S20/20 | a1/V1已越过worker检查、仍在途 | 低ID20在pause后仍可Push；独立cancel分叉亦然。丢回包保unknown V1，不接cancelled恢复 |
+| S30/60 | a1/V1已渲染排队，未过停止检查 | 停止后跳过旧Push、保pending；旧pipe清空后才能a2/V2，不能遗留V1附件或漏人 |
+| S40/70 | fetched/pending，尚未构造 | 停止后仍待处理；恢复a1/V2若渲染失败，记failed且processed、sent不加，不伪造accepted |
+| S50/80 | 从未fetch | 恢复前若退订则suppressed；仍合资格才a1/V2，保原集合与当前候选差异，不偷偷扩大受众 |
+| S60/30 | a1/V1 Push结果不明 | SMTP接受后DATA回包丢失：即使原生completeSub仍unknown；不默认重试V2或标成功 |
+| S70/40 | a1/V1有明确拒绝证据 | processed仅本pipe不重试；重启若游标受20阻塞仍重选40，越过40且持久才跳过。如批准a2/V2，DB未知时保双attempt、先读回不盲加sent |
+| S80/50 | 高ID a1/V1已accepted，S20未完成 | checkpoint≤19；崩溃可重扫50。保其接受证据，不能以max成功50跳过20 |
+
+Push与落盘非原子；[扫描](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/manager.go#L592-L620)取checkpoint、Swap增量再写DB，失败不塞回以防重复加数，也可能低报。DB错误分已提交／未提交，读回再决策；GREATEST只防游标倒退。[一手；研究：R2判定]
+
+**具名判据，未运行。** 比较(C1,人,版本,attempt,结果)，不以总数替代集合。[研究]
+
+- `ID_KEEP`：两轮id／UUID／started_at不变，活动仍一行；克隆全量重发退回。
+- `V1_ACCEPTED_KEEP`：S10/10／S80/50保原确认，未经决定不得自动a2/V2；原生frontier未保证此项。
+- `PENDING_KEEP`：S30/60／S40/70仍可处理，fetch不当sent；恢复版本及附件必须一致。
+- `UNKNOWN_KEEP`：S20/20／S60/30保V1 attempt；缺回执不能洗成未发V2，error不一律failed。
+- `STOP_BOUNDARY`：ID20已过检查仍Push不能记未发；主链pause后drain，cancel分叉终止不恢复。
+- `PAYLOAD_VERSION`：旧在途全套V1、新pipe全套V2；正文对了但附件／header旧版仍失败。
+- `UNSCHEDULE`：撤排期保C1，日期需另清；GET核running请求与存储scheduled差异。
+- `ROLE_AND_STATE`：仅manage不得启动／恢复正式活动；非法状态直调API，finished／未知值列现存缺口，测试发送另验权限。
+- `LOW_ID_BARRIER`：S20/20未完须checkpoint≤19；推进到S80/50会漏20，退回。
+- `ACCEPT_BEFORE_FLUSH`：S10/10接受未落盘不得据sent=0重发；unknown需外部证据才能转出。
+- `DB_UNKNOWN`：S70/40/a2先查提交结果，既不盲加sent，也不以聚合数恢复个人确认。
+- `PROCESSED_NOT_SENT`：S40/70渲染失败、S70/40拒绝保历史；40在游标≤19时仍可重选；S50/80退订保持抑制。
+
+[现有生命周期E2E](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/tests/specs/campaigns.spec.js#L538-L591)有附件／生命周期检查，无逐人版本／乱序／崩溃判据；本次未运行。[一手／研究]
+
+#### 同场景取舍与交付边界
+
+| 路线 | 本场景何时够用 | 增加的责任／撤回条件 |
+|---|---|---|
+| 原生C1继续 | 未开始编辑，或接受原生失败／重选政策、不需精确逐人版本审计 | 核部署版本，不直接切nightly；需证明谁收过V1或不能承担重复则撤回“够用” |
+| Resend窗口幂等 | 已选该供应商，同一请求24小时内重试 | 逐人稳定键、版本／payload、过期／冲突与切换管理；超窗或换稿不能沿用旧保护，换V2键也不能代替补发决定 |
+| durable ledger／outbox | 跨窗口保C1／人／版本历史并对账，愿承担维护 | 迁移、唯一约束、intent／lease、payload保留、attempt／provider证据、隐私删除与恢复演练；本地事务和SMTP仍不原子，unknown仍需处理 |
+
+[官方Resend契约](https://resend.com/docs/dashboard/emails/idempotency-keys)支持HTTP键及SMTP `Resend-Idempotency-Key`、保存24小时。当前源码的HeaderTpls→message.render→worker→email.Headers通用链可传逐人键，但没有专用生命周期：全活动静态同键、每次随机键、同键改payload都是坏候选。postback把Campaign.Headers放JSON而非该HTTP请求头，不能靠换URL声称接入。源码可达不是供应商集成通过。[一手／研究]
+
+**后续最小对照，仅预注册。** 固定同一模型版本、预算、代码起点和C1两轮任务；两组获同等事实，仅普通续接提示与逐人版本／unknown继承包的组织方式不同，不给修法。等价匿名账本随机分组、会话隔离，隐藏消费者断言预先封存并对两组同测，防答案泄漏。保留未经dot修写的原始产物、耗时与修订轨迹，盲评关键失败和新回归；dot补修单列，不冒充模型成功。纸面推理、单样本或事实不等不算有效；重复样本改善且无关键回归，仅支持本任务内有效，不外推模型排名或全部开发任务。[研究：待启用，未运行]

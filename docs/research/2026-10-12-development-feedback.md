@@ -1,6 +1,6 @@
 主线：二，兼三／四
 改变的建议：先选能观察真实故障的反馈，再按保护未来或查当前差异选择测试；运行结果只覆盖实际入口。[研究／经验]
-新证据：2026-10-20 补跨发布维护链、固定测试判定器与修订回执，改变 Agent 前端更新的验收输入和入口选择；另记暖缓存诊断候选因需求未证而不立深项目；其他迁移章节沿用原核实日期，未新增实验。
+新证据：2026-10-20 补P25已填状态与局部更新判据（部分资料、未运行），并保跨发布维护链、固定测试判定器与修订回执，改变 Agent 前端更新的验收输入和入口选择；另补组合输入与业务提交分验；另记暖缓存诊断候选因需求未证而不立深项目；其他迁移章节沿用原核实日期，未新增实验。
 
 # 开发条件：反馈与验证
 
@@ -497,3 +497,128 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 **动态切档的真实需求未证，不为水位造功能。** 固定[OpenKnowledge probe](https://github.com/inkeep/open-knowledge/blob/401019d768c740009dd76ea3c5a35c2e8ba3d273/packages/app/tests/perf/probes/tiptap-destroy-leak.ts)以self_size类名占比提示fork，但未算retained；仍要求人批准，不会自动fork。MemLab仅检查可加载，hash导航未证明destroy／evict。[一手／研究：静态核查]
 
 [MemLab固定指南](https://github.com/facebook/memlab/blob/c3e15df92d469e78501f7f536e3bed77f51f759e/AI.md)已有根路径与体积语义；既有双可见也不是新增需求。因此只保probe纠错候选，撤下“低内存启动档→动态切档”的深项目，不计水位／完成数。出现真实资源约束或错误采用后再核三层退出责任，不能以自拟功能证明价值。未复制GPL应用代码，未安装或运行诊断器／应用／模型。[研究：独立立项审后的负结果]
+
+## 输入控件修改后先分开组合输入与业务提交（2026-10-20）
+
+**当前选择：沿用现成编辑器与事件回归，另把目标 IME 的提交意图列入验收。** Agent 可以读事件处理、生成状态竞争回归和定位版本；人确定候选确认、取消、发送与草稿保留各自含义。没有目标设备记录时，交付只能标机制检查完成、真实组合输入未验，不能把中文字符串出现当作整条输入路径通过。[研究／经验]
+
+**Playwright 的文本注入适合验证值和业务分支，不覆盖操作系统候选选择。** [Keyboard 官方接口](https://playwright.dev/docs/api/class-keyboard)说明 `insertText` 触发 `input`，不触发 `keydown`／`keyup`／`keypress`；`type` 输入非美国键盘字符也只发 `input`。因此，已有自动化无需推倒，但需要清楚标注它输入的是文本、合成事件还是实际 IME。此结论限于这些接口的事件契约，不声称任何自动化工具都不能接入原生输入。
+
+**Hermes 的修复说明：防止误发之后，还要验真正发送的内容。** [#37483](https://github.com/NousResearch/hermes-agent/issues/37483)报告 v0.15.1 macOS 日文候选确认 Enter 误发；[#39025](https://github.com/NousResearch/hermes-agent/issues/39025)报告 Windows 中文已显示但提交状态滞后。这两份用户报告并非同一设备连续复测。随后 [PR39639](https://github.com/NousResearch/hermes-agent/pull/39639)于 2026-06-10 合入 `8b84d82227a3b637a26ba5f4f41bb08281e2ab84`，提交时从实时 DOM 取正文，避免依赖上一轮渲染的草稿状态；改变的是发送／入队判定的数据来源，而非统一取消组合输入保护。
+
+**固定回归能检出状态竞争，但仍不是原生 IME 实验。** Hermes [测试提交10db965](https://github.com/NousResearch/hermes-agent/commit/10db96503654d4f4b9496ce7c42c6154ccbd42ca)在 Harness 中复制 Enter 接线，直接改 `textContent` 而不发 input，再合成 keyDown；断言实时正文发送、忙时入队及空正文分支。它没有操作候选窗，也不是完整生产组件的端到端测试。PR 的手工测试计划未勾选，不能转述为已完成；计划文字与测试对忙时空 Enter 的描述也不同，迁移时必须依据自己的产品约定，而不是照抄空键策略。
+
+**Lexical 的反例要求同时验文档内容与恢复操作。** [#8596](https://github.com/facebook/lexical/issues/8596)报告 Lexical 0.45／main `fd2e1856c` 在 macOS Safari（报告标 26.3.1）中输入 `foo → Tab → 韩文` 后冻结，同一 IME 在 Chromium 未复现。此前选择区域的修复没有覆盖 Safari MutationObserver 把组合文本写入 TabNode 的路径。用户报告只支持该环境和序列，不能据此扩成全部中日韩输入失败。
+
+**采用修复版本仍要保住 Tab 和新文字。** [PR8598](https://github.com/facebook/lexical/pull/8598)的固定合入 [150bf8a](https://github.com/facebook/lexical/commit/150bf8a8e7a67ffe5883044a1ec34a6f28ea6b6c)移除该处抛错，继续把 TabNode 规范为制表符；单测直接调用 `setTextContent`，不运行 IME。作者在审查追问后报告 Safari 本地构建／预览、Chromium 对照，以及最终相邻 TextNode 保留韩文，并复查 Backspace、Enter 等操作。这是作者复测，本轮未独立运行。[v0.46.0 发布说明](https://github.com/facebook/lexical/releases/tag/v0.46.0)包含该修复；升级采用还须核项目兼容性，发布条目本身不证明应用已通过。
+
+**验收按实际受影响入口收窄，而不是给每个表单添加庞大矩阵。** 修改聊天发送、富文本节点或输入状态同步时，记录 OS、浏览器／宿主、输入法、构建和语言，选用户真实序列：候选确认不提前发送，另一次明确提交携带完整正文；候选取消后草稿符合约定；含 Tab／格式节点时保住文档结构与文字。产品承诺持久草稿时再验重开后的内容，并保留原有保存、权限、重复提交和视觉检查。这些是根据两条修复链提出的验收建议；取消、重开和全部环境组合未由上述案例完整验证。
+
+**成本与撤回条件：先补窄回归，不默认换编辑器或叠加延迟。** 合成事件测试便于持续维护，真实输入复测需要目标 OS／输入法及人工检查，升级现成组件还涉及兼容性回归。若改动使确认、取消或草稿保留退步，撤回该候选或缩小支持范围；不要靠测试等待绕过用户操作窗口。尚无本项目 AI 独立完成比例、净工时或运行效果证据，资料验收仅覆盖这次入口选择及其来源；本轮没有运行客户端、模型、上游测试或原生 IME。
+
+### P25：代填角色到并行审批组
+
+**✅ 已有Documenso保旧完成／已填步骤，只扩未填未签尾部原生组。** Agent先交旧身份、值和动作契约，人决定哪些阶段等齐；他人代填的inserted也锁收件人。[研究：采用判断]
+
+**⛔ 必须移动已填／已完成人、将null链或AES/QES变并行，就撤回原生重编组。** 人定保旧流程或另设计迁移，清字段重建不算继承。[研究]
+
+核实：2026-10-20。取证链：Assistant引入#1588[最终树332e065][p25-r1] → 分组#3319[最终树573c928][p25-r2]。只读固定源码／测试；应用、数据库、签署、邮件和模型均未运行。[一手：源码；研究：范围]
+
+#### 先保角色和阶段，再谈分组
+
+**角色不等于阶段。** 维护者在[#2973][p25-intent]保留 `Signer₁ → Assistant → Signer₂`。对SIGNATURE类型，Assistant不得代他人签署；其余动作按入口契约核查。完成只将自己置SIGNED；旧界面允许提醒仍有他人未填字段后继续。[一手：维护者意图、源码]
+
+**最终代填取严格后续。** 同数值order含0可成组，Assistant不能代填同组peer。数字Assistant可代填后续数字及null；null Assistant仅可代填更大ID的null人。相同null按ID逐人处理；AES/QES历史重复order按ID顺签，新显式重复则拒绝。[一手：固定树 `recipient-queries.ts`、`recipient-groups.ts`]
+
+**读写、撤填不能混为同一权限。** V2 `sign-envelope-field.ts`直接拒readOnly并查actor/target过期；legacy `sign-field-with-token.ts`对readOnly的非自动类型校验默认值一致，NAME/INITIALS/EMAIL/DATE豁免此项；legacy remove无独立readOnly／SIGNATURE拒绝，legacy两路只查actor过期。这是静态差异，未验证可达性，不称当前漏洞。[一手]
+
+**旧式签名类型另核入口。** 固定[官方字段契约](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/apps/docs/content/docs/developers/api/fields.mdx)不建议新集成使用FREE_SIGNATURE；[V2写入schema](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/trpc/server/envelope-router/sign-envelope-field.types.ts)排除该类型，而[legacy service](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/packages/lib/server-only/field/sign-field-with-token.ts)仍有对应签名对象分支，读过滤也仅排SIGNATURE。端到端可达性未验，不据此称漏洞。[一手：固定源码／文档]
+
+下表路径相对上述固定树；旧树没有后来的V2 envelope入口。当前写schema约束order为整数≥0，响应schema仍容忍旧数据，二者不可互换。[一手]
+
+| 入口／固定源路径 | 旧规则→最终继承；非法输入预期 |
+|---|---|
+| `packages/api/v1/schema.ts`；最终 `envelope-recipients/create-envelope-recipients.types.ts` | 旧role枚举／order nullish没有Assistant阶段refinement；当前共享order schema拒负数、小数。create/update及meta切PARALLEL须分别核，旧[#3291][p25-api]不是当前复现 |
+| `packages/lib/utils/recipient-queries.ts` → `get-fields-for-token.ts`、`get-recipients-for-assistant.ts` | 旧gte→本人＋严格后续；跨envelope、peer、目标SIGNED拒代理。null较小ID→较大ID允许，反向拒；target expired/readOnly按上述动作差异另验 |
+| `sign-field-with-token.ts`／`remove-signed-field-with-token.ts`／`sign-envelope-field.ts` | 同一目标集合不等动作全等；V1/V2 sign显式拒代他人写SIGNATURE，V2输入另排除FREE_SIGNATURE；remove须单验。读清单不等于可写／可完成 |
+| `create-document-from-template.ts`／`create-document-from-direct-template.ts`；签署页／RecipientProvider | 模板创建新实例可换ID并映射fields；活动文档不可重seed。token持有人与target分开，返回他人对象时token隐藏 |
+| `send-document.ts` → `complete-document-with-token.ts` | 首发取活动步骤全体；完成先验本人的必填字段，只完成本人；全体SIGNED或CC才触发seal。Assistant不必填完所有他人字段 |
+
+服务文件相对 `packages/lib/server-only/` 的对应目录；本稿不是可运行升级脚本。[一手／研究]
+
+#### 一份旧状态，只走一次S1→S2
+
+以下为分组固定树语义下的纸面设计，不是跨版本升级脚本。E1取SES、SEQUENTIAL、PENDING、completedAt空；R101–107及T101–107分别为原recipient实际ID／token的符号映射，不公开真实token。默认NOT_SIGNED、NOT_SENT、signedAt／sentAt空；例外为101已SIGNED、signedAt=Q1、SENT／sentAt=N1，102当前活动且SENT／sentAt=N2，Q1<N2。假设身份有效未过期、无额外认证阻塞。[研究：设计参数]
+
+所有字段required=true、readOnly=false、无预设default；完整字段集合如下，102／105／106无字段，其他字段不存在。[研究：输入]
+
+| 字段→owner／类型 | S1的inserted／值／signatureId |
+|---|---|
+| F201→101／SIGNATURE | true／签名对象SIG201／SIG201 |
+| F203→103／TEXT | true／approved budget draft／空 |
+| F204→104／SIGNATURE | false／空／空 |
+| F205→104／TEXT | true／customer alias／空 |
+| F207→107／SIGNATURE | false／空／空 |
+
+既有完成／代填审计集合为101完成事件A201、102代填F203／F205的A301／A302；既有签署请求任务集合J401只有101／102，无seal任务。部分更新只增106更新审计，不增通知；后续每人完成仅增本人完成审计，签署请求按103→104→{105,106}→107各新增一次，最后才新增seal任务。其他通知种类另列账，不混入该集合。[研究：消费者预期]
+
+真实输入仍缺合法PDF、SIG201及完整旧快照；执行前须取得同一快照绑定ID／token，不重seed。因此只是可审设计，非可重建运行包。[研究：缺口]
+
+| S1旧对象 | S2唯一预期 |
+|---|---|
+| 101 Signer，order=0 | 全部保留 |
+| 102 Assistant，order=1 | 全部保留 |
+| 103 Approver，order=2 | 全部保留 |
+| 104 Signer，order=3 | 全部保留 |
+| 105／106 Approver，order=4／5 | 仅106改order=4 |
+| 107 Signer，order=6 | 全部保留，等105／106均完成 |
+
+**字段也会锁步骤。** `canRecipientBeModified` 对非CC的SIGNED或任一inserted字段拒改；编辑器 `getLastLockedStepIndex` 另锁整个前缀。本轨101–104不动；最后锁步为null则顺序冻结。[一手：源码]
+
+**唯一主轨为部分更新，不是编辑器保存。** `POST /api/v2-beta/envelope/recipient/update-many`，body为 `{envelopeId:E1实际ID,data:[{id:R106实际ID,signingOrder:4}]}`。认证／team可见性→SES PENDING可变→completedAt空→逐人可改→事务只更新106，已静态核；S2仅106的order 5→4及对应updated audit变化，无新增通知任务。[一手：源码；研究：预期]
+
+**UI全量保存是独立反例。** `set-document-recipients.ts` 会把仍可修改的R102置NOT_SENT；代填103／104不锁R102自身。`update-envelope-recipients.ts`也会重设提交者的通知／签署状态，所以主轨只提交原NOT_SENT／NOT_SIGNED的106。whole-set漏ID删除保护另待验证；不能由编辑器前缀锁推出全入口保状态。[一手：静态差异，未运行]
+
+动作固定为：R102以T102完成自身；R103以T103确认批准，F203沿用；R104亲填F204再以T104完成。然后105／106均激活；105先完成时107仍NOT_SENT且签署请求任务为0，106不重复获邀；106完成才通知107，反序相同。107亲填F207并完成后才具备封存条件。独立分支尝试合组103／104，预期拒绝且旧状态不变。[研究：待执行]
+
+#### 已读断言，哪些还不能算通过
+
+| 固定树具名测试 | 原文断言与缺口 |
+|---|---|
+| `assistant-signing-groups`／`assistant-null-order` | peer写／删拒绝且值保留，读排peer与他人SIGNATURE字段；null按ID正反例。各例独立seed，未验S1继承 |
+| `envelope-recipient-locked-steps`／`envelope-recipient-id-stability` | 已签组禁拖／拆、打开编辑器order不变；多次autosave保ID/token。锁步fixtures无fields，未直接验代填inserted锁；稳定性未验回执丢失 |
+| `grouped-next-recipient-dictation` | 当前peer未完或下一组多人不改身份；最后成员面对后续单人可改，检查updated audit和SENT |
+| `signing-group-advancement` | 用后台job表断言首组各1任务、中途不放后组、最后成员才推进；是串行服务调用，非实际邮件投递 |
+
+表中测试均未运行；旧#1588 stepper无ASSISTANT用例，不构成代填闭包证据。[一手：测试原文]
+
+**响应未知时先读回，不能重置再完成。** 最终完成链先以CAS改变单个recipient及完成审计，再处理webhook、通知和seal任务；ALREADY_SIGNED有幂等回执含义，却不恢复未完成副作用。SIGNED、任务入队、最终PDF和外部送达必须分报。[一手：源码]
+
+待补同一E1的以下注入；逐人CAS不能保证组推进只一次，两名成功者可能均看到组已齐，现有串行断言不足以证明exactly-once。
+
+| 注入点 | 读回与唯一允许变化 |
+|---|---|
+| 完成DB已提交、响应丢失 | 原ID下仅一次SIGNED及完成审计；分别读通知／seal任务，缺项记未确认，不reset／重建 |
+| autosave成功、响应丢失 | 先按原ID及服务端关联对账；恢复原行映射，禁止未知新ID下再次whole-set造成删建 |
+| 同人重复／并发；105与106并发完成 | 每人一次完成审计，107仅一次签署请求；若不满足则方案未通过，不能拿ALREADY_SIGNED冒充副作用恢复 |
+
+[研究：待验证]
+
+#### 现成替代与本次实际改变
+
+**👀 新流程可评估DocuSeal，活动文档不作等价迁移。** [API][p25-docuseal-api]有同order分组、preserved顺序通知、random同时通知；固定树 `8f8f69f` 的完成job等当前组非viewer完成再通知后组。[一手]
+
+顺序强制另受[授权入口](https://github.com/docusealco/docuseal/blob/8f8f69f0bc6ac2e59746cd6efac54a852289bec3/lib/submitters/authorized_for_form.rb)的with_order及模板／账号配置约束。其缺省order按数组位置，values／completed不等Assistant授权；迁移须接管ID、字段、链接、审计及产物。[一手：固定源码；研究：取舍]
+
+两项目核心AGPLv3；Documenso EE另有商业许可，DocuSeal[附加条款][p25-license]要求UI署名；实际复用另核路径与部署义务。[一手]
+
+可退回角色前置、吞0、null并组、清inserted和重seed坏候选；当前部分资料阶段，连续继承闭包未通过。[研究]
+
+未来可用相同模型／输入比较有无“先契约再改”建议；当前未运行，不计优化收益或完整实验完成。实际权限、并发或恢复若决定取舍，P25仍待验证。[研究：范围]
+
+[p25-r1]: https://github.com/documenso/documenso/tree/332e0657e00b49cb8a32ac43c397c2e4b66f5035
+[p25-r2]: https://github.com/documenso/documenso/tree/573c928a0e647efc8c41e3e12909c918c2104430
+[p25-intent]: https://github.com/documenso/documenso/issues/2973
+[p25-api]: https://github.com/documenso/documenso/issues/3291
+[p25-docuseal-api]: https://www.docuseal.com/docs/api#create-a-submission
+[p25-license]: https://github.com/docusealco/docuseal/blob/8f8f69f0bc6ac2e59746cd6efac54a852289bec3/LICENSE_ADDITIONAL_TERMS

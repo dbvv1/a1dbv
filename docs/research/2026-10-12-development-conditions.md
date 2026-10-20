@@ -1,8 +1,8 @@
 主线：二，兼三／四
 改变的建议：按事实、反馈、访问或决策缺口补最小条件；续改分验有意改变与必须保留的行为，迁移核持久状态、消费者和真实运行入口。依赖解析先限定包来源；工具采用按任务、输入与失败边界收窄；测试先定保护或查错目标，再核实际观测与断言。数据库默认值另分写列保护与值来源，不凭新进程通过推定旧缓存安全。[研究／经验]
-新证据：2026-10-20新增P25／P26／P27连续业务功能提议，仅立项、未执行；2026-10-18（UTC+8）补核重复 Hook 分阶段撤回与替代激活链及 GitLab 默认值保护实现与预热旧缓存的固定测试定义，未执行上游。既有案例、核实日期、证据类型及各自运行／未验证范围见下列索引与对应小节；源码、历史回执和本仓局部运行分别计证据，不证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
+新证据：2026-10-20 P25部分资料移入反馈册，原完整验收保留；P27部分资料移入维护册，P26两轮设计仍未验真实应用；2026-10-18（UTC+8）补核重复 Hook 分阶段撤回与替代激活链及 GitLab 默认值保护实现与预热旧缓存的固定测试定义，未执行上游。既有案例、核实日期、证据类型及各自运行／未验证范围见下列索引与对应小节；源码、历史回执和本仓局部运行分别计证据，不证明当前模型或 Skill 净收益。[一手／社区／研究／经验]
 
-**规划入口**：[P25代填到并行审批](#p25代填角色到并行审批组)、[P26个人标注到共同维护](#p26单人标注扩成多人协作)、[P27发送中改稿与恢复](#p27发送中改稿与在途恢复)，须先执行其完整验收，不算已完成成果。
+**项目入口**：[P25代填到并行审批](#p25代填角色到并行审批组)、[P26个人标注到共同维护](#p26单人标注扩成多人协作)、[P27发送中改稿与恢复](#p27发送中改稿与在途恢复)；P25／P27部分资料与P26两轮设计已交，完整验收见各节。
 
 **按问题阅读**：本页保留运行环境、权限与长程执行；[反馈与验证](2026-10-12-development-feedback.md)集中浏览器、测试和观测；[维护与迁移](2026-10-12-development-maintenance.md)集中第二次修改、兼容与退出条件。原章节标题保留为深链入口，事实核实日期与证据等级不因拆分更新。
 
@@ -626,105 +626,85 @@ Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/b
 
 ## 连续业务功能：项目提议（2026-10-20）
 
-以下仅立项，不计内容项目完成。目标是让Agent接续真实应用的已存在状态，交逐文件改动设计与消费者判据；不是复述“后端校验”。不得用资料验收冒称数据库、邮件、签署、移动端或模型通过。[研究：规划]
+以下保留完整验收；P25／P27已交部分资料，P26已交两轮改动设计，均未验真实应用。目标是让Agent接续真实应用的已存在状态，交逐文件改动设计与消费者判据；不是复述“后端校验”。不得用资料验收冒称数据库、邮件、签署、移动端或模型通过。[研究：资料状态]
 
 两固定应用均为AGPLv3，见[Documenso许可](https://github.com/documenso/documenso/blob/573c928a0e647efc8c41e3e12909c918c2104430/LICENSE)与[Immich许可](https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/LICENSE)。本项目分析机制与变更设计、不复制分发应用代码；复用实现另遵许可，不据公开仓库推定任意商用方式。[一手／研究]
 
 ### P25：代填角色到并行审批组
 
-**拟改15§3：保既有服务端角色／阶段模型，再扩并行组；不按角色名称推顺序。** Agent盘点UI、API、模板、token与完成／通知入口，人决定代填边界和哪些阶段等齐。比较保持顺序、复用内建分组与自建特殊顺序，没并行需求先保顺序；分组增加组屏障、锁定步骤和多入口维护，自建特殊顺序还要接管兼容，不能只比写代码量。[研究：待执行，2–3天范围]
-
-真实链是Documenso [Assistant引入#1588](https://github.com/documenso/documenso/pull/1588)→[分组#3319](https://github.com/documenso/documenso/pull/3319)，固定332e065→573c928。维护者在[#2973](https://github.com/documenso/documenso/issues/2973)保留后置Assistant，否定“一律先执行”的泛化；[#3291](https://github.com/documenso/documenso/issues/3291)旧版API/UI差异不是当前漏洞结论。最终分组允许order=0；null顺序代填仍有ID次序规则，不能照早期摘要写成一概禁止。[一手／社区]
-
-**验收是连续产物，不是链接表。** R1从真实旧流程交角色×动作契约、非法输入与有效后置场景，落实recipient查询、完成handler、v1/v2 schema、模板／token与通知；R2继承身份、已填值、已完成步骤后加并行组，交同组屏障、重复完成、已锁步骤、旧null顺序与响应不明的唯一预期。固定`assistant-signing-groups`、`assistant-null-order`、`grouped-next-recipient-dictation`及locked-steps／id-stability的E2E断言须读正文、记录实际消费者，不以路径存在算通过。[研究：执行要求]
-
-现成横向参照：[DocuSeal API](https://www.docuseal.com/docs/api#create-a-submission)已有preserved／random及同order分组；不把分组概念当需从零发明，但该入口不证明Assistant代填、已完成锁定和后置规则可直接互换，执行时比语义与接管成本。[一手：10-20核；研究]
-
-至少读核两个维护节点的相关完整差异、当前[角色契约](https://docs.documenso.com/docs/concepts/recipient-roles)和维护者反例，再决定保留哪条实现路线；状态完成、最终产物和外部发送分开。只剩“加guard”或拿不到跨入口闭包则撤项。真实运行若成为取舍必需，保留未完成／待授权，不把原目标降成资料卡；不触真实签署或客户文件。[研究：撤回与范围]
+为控制分册体积，具体采用／撤回、同一旧状态及跨入口判据移至[反馈与验证](2026-10-12-development-feedback.md#p25代填角色到并行审批组)。当前为部分资料阶段，未证明真实优化效果；P26／P27原记录保留。 完整验收仍按[固定原提议](https://github.com/dbvv1/a1dbv/blob/55c910a144530fb9df1efaf9296c74d7659d8bc3/docs/research/2026-10-12-development-conditions.md#p25代填角色到并行审批组)：两维护节点相关完整差异、真实旧流程跨入口及连续状态／完成／通知产物均须交付，部分稿不替代原要求。
 
 ### P26：单人标注扩成多人协作
 
-**拟改15§3／18：先分个人覆盖、共享属性与原资源授权，已有人工劳动不默认reset。** Agent追源数据→服务／权限查询→Web和mobile读模型，人定“只改我／影响所有人”和退出后保留；只需局部照片先用现成相册；[partner分享](https://docs.immich.app/features/partner-sharing/)涉及整库范围及元数据、不含人物数据，不能因共同命名就默认扩大照片权限。确需共同整理再比较共用聚类与定向人物共享。共同编辑增加传播／退出／双端读模型责任，重跑还可能耗掉旧人工标注；不预估净节省。[研究：待执行，2–3天范围]
+**✅ Agent先保旧标注与原图权限，再分别设计聚类、定向编辑和双端读取；不默认reset，也不把Only me当永久私人覆盖。** 少量照片用相册；以下仅改动设计，未运行。[研究；核实2026-10-20]
 
-Immich [v3.2](https://github.com/immich-app/immich/discussions/31408)／[PR30739](https://github.com/immich-app/immich/pull/30739)引入cluster group，用户因重跑丢命名拒用；[v3.3](https://github.com/immich-app/immich/discussions/32193)／[PR31620](https://github.com/immich-app/immich/pull/31620)加人物共享。[32196](https://github.com/immich-app/immich/discussions/32196)有保既有合并、双向共享后的个人回执，不推全体收益。执行基线选[v3.3.0](https://github.com/immich-app/immich/tree/e3b165609135365302e40a43d94967fdbb2e6888)，merge c12d5e6只作历史差异，两树不混称。原图访问、聚类池、私人命名不是同一授权。[一手／社区]
+[Partner sharing](https://docs.immich.app/features/partner-sharing/)涉及整库与照片元数据，不含人物识别数据；不为人物页扩原图权限。聚类／共享增加映射、传播与双端维护；永久覆盖需新状态／写优先级。无净省时实测。[一手／研究]
 
-**R1→R2必须保原状态。** R1用虚构三用户／两组、不同照片权限及已有命名合并，交邀请、入组、聚类关联、人物列表与原图访问的逐文件契约；保“不reset”分支。R2继承同一数据加定向共享／Only me，核person服务、person-user及access查询、Web编辑／访问modal、mobile timeline与medium断言。交单／双向共享、只读、离组／撤分享、链式合并、重复提交的属性／照片／统计／私人覆盖预期；不能重seed或仅验mock次数；既有mobile断言仅查去重／排序，传播与同步是须补的新断言缺口。[研究：执行要求]
+**固定最终实现。** S为Immich v3.3.0 `e3b165609135365302e40a43d94967fdbb2e6888`。[PR30739](https://github.com/immich-app/immich/pull/30739)引入聚类组；[PR31620](https://github.com/immich-app/immich/pull/31620)引入人物分享，早期PR非S的跨组拒绝／Only me契约。另核[v3.3.3](https://github.com/immich-app/immich/releases/tag/v3.3.3)update、mergePeople、updateForWritableOwners、reassignCluster方法体相同，非整树证明。[一手：源码核对]
 
-验收需至少一条完整源数据至双端消费者链、两维护节点的最终实现、拒用／采用与替代比较；给出“改错一层但其他层仍绿”的坏候选及退回理由，改变Agent的一项具体默认。若只剩泛权限清单或无法继承R1则撤项；真实SQL、同步／离组任务、Web/mobile与聚类模型均未运行，若取舍依赖实测则仍未完成。不读取真实照片或个人信息。[研究：验收边界]
+[v3.2讨论](https://github.com/immich-app/immich/discussions/31408)解释完整重聚类可能损失命名／生日，有因此拒用反馈，非入组必重置。[v3.3讨论](https://github.com/immich-app/immich/discussions/32193)仅在Web提供管理入口；[32196](https://github.com/immich-app/immich/discussions/32196)中用户报告保留3.2.4的人工合并，升级3.3双向分享后Web与Android数量一致，维护者也明确不必reset。单人自述非无损保证。[一手／社区]
+
+#### R1：继承旧人工劳动，加入已有组
+
+**沿用虚构夹具，不重seed。** 初态G={A}、H={B,C}。A的pA、B独占pB各已命名并人工合并两张脸；B/C共用pBC但各有不同姓名。五资产：A私有a0／相册分享B的a1，B私有b0／相册分享A的b1，C私有c0；五资产均未删且可入timeline，所列faces可见。a0/a1各有pA脸，b0/b1各有pB脸；b0另有pBC脸，c0有pBC脸。照片可见集合固定为A={a0,a1,b1}、B={b0,b1,a1}、C={c0}，不设partner整库授权。[研究：预注册夹具]
+
+**不可只改user.clusterGroupId。** [组服务][p26-cluster]→[person仓储][p26-person]：
+
+| 操作与层 | 源码推导的应有结果／改动约束 |
+|---|---|
+| A邀请B | 待邀请B可读成员但未入组；重复创建保同请求，不代表后续幂等 |
+| B接受 | G={A,B}、H={C}；独占pB移到G且ID保留；共享pBC为B分出新pBnew，只迁B的person行与B自有资产faces，C仍用pBC |
+| 旧劳动 | 姓名／生日与人工face关联保留；pA/pB不自动合并或复制给A；照片集合不扩大 |
+| Web | 刷新用户／组／邀请；people仍要求自己的person行及可见照片 |
+| mobile | PersonV1同步自己的person；AssetFaceV3组内face≠照片授权；DAO连接可见remoteAsset后进入timeline |
+
+消费者见[Web设置][p26-webgroup]、[同步][p26-sync]、[mobile DAO][p26-dao]与[timeline][p26-timeline]。只改成员不迁person/face，可使设置页成功、人物页失联；删可见性连接则误授原图，均退回。[一手：源码；研究：坏候选]
+
+**接受不是外层原子事务。** reassignCluster有事务，服务层重分组→更新user→删邀请却无总事务；成功后重放因请求已删而失败。每步中断须读回person/face/组/邀请，不盲重试。cluster-group medium覆盖移动／拆分与权限，未运行、不证明动态同步。[一手／研究]
+
+#### R2：在R1结果上加定向共享与第二次修改
+
+**先加A→B Write(pA)，不合并旧pB／pBnew。** [person-user表／复合外键][p26-share]以(group,sharedBy,sharedWith)分方向；[插入触发器][p26-functions]为接收者建copy，只填空姓名／生日，保已有非空值。person按(owner,group)存属性，无永久覆盖标志。pA对应a0/a1：B只见a1、统计1，A统计2；b0/b1仍属pB。[一手；研究：继承夹具预期]
+
+**传播给授权调用者写的人。** [PersonService.update][p26-service]未传userId才向“授权调用者Write/Admin的分享者”传播。[Web Only me][p26-only]显式发送自己的userId，只控制本次范围。下表“默认”仅指API省略userId；UI未选Everyone偏好时默认Only me，不能混称。[一手]
+
+| 连续操作 | 应改变的行／保留状态 |
+|---|---|
+| B默认改名N | A/pA与B/pA；A默认改名M则只改A/pA，单向边不自动变双向 |
+| A Only me改P，之后B默认改Q | P先只写A，随后A/B均为Q；不能承诺P永久受保护 |
+| 再建B→A Write | A默认更新才也传播至B；favorite、hidden、color、feature face仍为各人私有，跨人写这些字段拒绝 |
+| A→B降为Read | B只可改自己的copy，不能显式改A |
+| A撤A→B | B copy保留；B→A若在，A仍可改B；原图授权不变 |
+| 重复share／给仍在H的C分享 | 重复边更新role，不抹旧copy；跨组整次拒绝，不偷偷入组 |
+
+**合并success不代表所有owner完成。** mergePeople以首个有权限ID为target；非调用者两边姓名或生日均非空就跳过，值相同也跳过。接受时只补空值、按owner迁face／删source。继续同一夹具，先由B将pB、pBnew分别分享给A，生成A的两行具名copy，再让A按[pA,pB]、[pA,pBnew]两次合并，始终以pA为target；没有这两步时A缺源person行，不能验成成功。逐人保账本：A成功而B保多个具名group是合法分歧。旧source重放不保证成功，未知先读回。[一手：服务源码；研究]
+
+**撤分享和离组不是同一动作。** 沿同一夹具重新建立双向Write、共同p后，B离组将自己的person/自有faces UPDATE到q；分享者外键使B→A移q，A→B留p。person_delete_shares只挂AfterDelete，不清此UPDATE。普通getPerson因缺自己的旧行拒绝，默认传播因p/q分开改变；[PersonAccess][p26-access]及显式userId写却仍按残边判断。非UI正常或漏洞复现证据。要求离组即撤编辑权，须明确撤分享／补清理并验接口与缓存，页消失不是撤权证明。[一手／研究，未运行]
+
+**双端验收必须比同一资产ID集合。** mobile `_personAssetFilter`将可见face与“自己／timeline partner或本地相册”的未删可见资产相交，bucket/list同条件；无可见照片可不列人物。坏候选是服务端全绿、mobile仍只筛owner==自己：旧去重／排序测试可绿，B却缺合法a1；修消费者，不开整库补洞。[一手：timeline、person仓储；研究]
+
+#### 可交给Agent的改动与退出门
+
+**Agent做跨层盘点、映射、断言和窄补丁，人定共享语义。** AI完成比例未知；瓶颈是部分成功、重映射后的授权／同步和冲突取舍。[研究]
+
+已读[服务medium][p26-tests]传播／目标／私有字段／跨组／删指定pair，以及[仓储medium][p26-repotests]保非空copy／删除person清入边；不是离组UPDATE回归。mobile只验去重／排序，缺分享、撤回与动态同步。均未运行。[一手]
+
+下一授权实验不重seed：按两表核连续写／撤／合并／重放；离组后读回p/q边、普通读／显式写、Web已开modal、mobile同步前后ID／bucket／统计，原图ACL不变。关键语义未知就保个人整理／有限相册，不承诺永久覆盖或离组即撤权。本轮无SQL、应用、模型、移动同步或hosted CI；运行结论未知，不以资料验收冒充通过。[研究]
+
+[p26-cluster]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/services/cluster-group.service.ts
+[p26-person]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/repositories/person.repository.ts
+[p26-webgroup]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/web/src/routes/(user)/user-settings/SharingSettings.svelte
+[p26-sync]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/repositories/sync.repository.ts
+[p26-dao]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/mobile/lib/data/db/main/dao/person.dart
+[p26-timeline]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/mobile/lib/infrastructure/repositories/timeline.repository.dart
+[p26-share]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/schema/tables/person-user.table.ts
+[p26-functions]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/schema/functions.ts
+[p26-service]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/services/person.service.ts
+[p26-only]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/web/src/lib/modals/PersonEditModal.svelte
+[p26-access]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/src/repositories/access.repository.ts
+[p26-tests]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/test/medium/specs/services/person.service.spec.ts
+[p26-repotests]: https://github.com/immich-app/immich/blob/e3b165609135365302e40a43d94967fdbb2e6888/server/test/medium/specs/repositories/person-user.repository.spec.ts
 
 ### P27：发送中改稿与在途恢复
 
-**当前仅资料／拟判据部分交付；原验收如下。** [研究]
-
-需求来自listmonk [#2014](https://github.com/knadh/listmonk/issues/2014)，经[#2264](https://github.com/knadh/listmonk/pull/2264)补编辑入口；[#3022](https://github.com/knadh/listmonk/issues/3022)用户自报重启漏发／疑似重复，非已复现因果。[PR2974](https://github.com/knadh/listmonk/pull/2974)生产成功自报被维护者因破坏性问题拒绝，不能据吞吐表采用。源码AGPL-3，仅分析，不复制应用。[一手／社区；2026-10-20核]
-
-**R1验收**：固定历史／开发树，交UI/API→状态→预渲染→队列→发送逐文件图及C1的V1→V2账本，分未开始／在途／确认／失败／unknown；至少八条具名断言保身份、pending、非法状态、停止边界、内容／附件、撤排期。暂停非撤回，unknown不归未发，Vue／SSR分树。[研究：验收要求]
-
-**R2继承R1**：交低ID慢／高ID快、Push未落盘、丢回执、DB未知、限速中取消、编辑后重启的差异账本／判定器；核manager／pipe／store／SQL，逐人比哈希、attempt、结果。processed含失败，Push／落盘非原子；新增集合断言不能用sent=N／生命周期status代替，不称exactly-once。[一手／研究]
-
-验收须比较下文三路线成本／header接入，保仅编辑者不得启动／恢复正式活动、测试权限另验；人定旧稿补发。[研究]
-
-两轮文件／账本／坏候选／同场景取舍齐全才算资料验收，仅通用重试卡则撤项。DB／邮件／模型未运行，需实测才能决定则未完成；隔离运行／真实外发未获授权，不取真实名单。[研究：范围与撤回]
-
-#### 固定链与两轮继承（2026-10-20）
-
-**版本分开。** [#2264原树→最终树](https://github.com/knadh/listmonk/compare/e8fd12bddf032fe7863af427bcf9e59b82dffb1c...0e49a4bb7d415fc0085d8f068334cb653c55b439)修改Vue编辑／Start／Unschedule、API/core参数和SQL：scheduled清send_at才回draft；旧API已允许paused，PR补UI。正式[6.2.0固定树](https://github.com/knadh/listmonk/tree/ef0a75872463f10a4848af6c547d1c057405453a)仍Vue，SQL仍fetch时推进游标。开发[a729修复](https://github.com/knadh/listmonk/commit/a729a4a6d635dabb75fa0ec53df25eec2e6f2285)与本次HEAD [88031f3](https://github.com/knadh/listmonk/tree/88031f3e082648bc3f95f285df74b7b38710b54d)已SSR；后者保检查点机制，新增totalSent统计；均非正式版。[一手：固定源码]
-
-**逐文件闭包。** 固定88031f3。[一手]
-
-1. [SSR编辑器](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/static/admin/assets/js/views/campaign.js#L128-L342)接`campaign.html`／`partials/campaign-form.html`原id及完整正文／模板／headers／lists／media／send_at。Start先保存再改status；Unschedule保留日期，立即发送须另清。[路由](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/handlers.go#L207-L223)分manage/send，status另查名单管理范围；测试发送走manage。
-2. [API更新](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/campaigns.go#L503-L581)读原Campaign再bind，拒绝running／cancelled／finished正文。[SQL](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/queries/campaigns.sql#L370-L435)保身份／started_at／sent／游标，替换名单／附件。省lists失败，带lists但省media删附件；status写DB后StopCampaign，不等清空。
-3. [store](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/cmd/manager_store.go#L38-L66)→[选活动／名单SQL](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/queries/campaigns.sql#L178-L237)：选running／到期scheduled，排除活跃pipe；恢复重读模板／media／合法名单／max ID，受众非冻结，退订／blocklist优先。
-4. [pipe](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/pipe.go)编译模板／载附件，批ID先入pending，再由[message.render](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/message.go)逐人渲染入队。旧消息持有V1对象／字节；cleanup等wg耗尽、刷检查点并移除pipe，新扫描才载V2。
-5. [worker](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/manager.go#L494-L578)先查stopped再sleep／Push，无第二次检查：暂停非drain／撤回。成功加sent，渲染失败及未停止的Push错误也completeSub。checkpoint卡在最小pending之前；高ID已接受仍可能重扫，重复范围不限单次扫描周期。
-6. [email.Push](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/messenger/email/email.go#L132-L226)同步调用[固定smtppool v2.2.1](https://github.com/knadh/smtppool/blob/v2.2.1/pool.go)的Send。DATA Close丢回包可error却已接受；此路径不自动重试，其他阶段可能重试，故分应用／transport attempt。随机Message-ID非幂等键。[postback](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/messenger/postback/postback.go)的200只证明该HTTP调用层成功。
-
-**当前API反例须留下。** [core状态switch](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/core/campaigns.go#L249-L302)拒绝draft→paused／cancelled等，但漏default／finished：finished到SQL，未知值由enum失败报错；读查与写入非条件更新。running若有send_at，SQL存scheduled而响应写running，须GET核验。未做HTTP复现。[一手／研究]
-
-#### C1：R1账本直接进入R2
-
-C1及人身份不变；别名并非数值ID：S10=10、S20=20、S60=30、S70=40、S80=50、S30=60、S40=70、S50=80。V1/V2含正文／主题／模板／altbody／headers／附件；app attempt从newMessage构造／渲染起计，transport按SMTP实际尝试另计；保摘要／证据。[研究]
-
-**受控调度预注册，未运行。** BatchSize=7、Concurrency≥2、MessageRate>0、MaxSendErrors=0；生产者排入60后、70迭代的stopped检查前设屏障，80尚未fetch。一个worker在20通过停止检查后阻塞；另一个已处理10／30／40／50，在取60前阻塞；其余worker停在取队列前。主链pause→解除屏障并drain→edit V2→resume；cancel仅从同一R1快照独立终止分叉，绝不接恢复。R2各故障分支继承此快照，非同时发生或自然稳定复现。[研究]
-
-| 原人 | R1暂停与改稿边界 | R2新增事件／唯一判定，不重置R1 |
-|---|---|---|
-| S10/10 | a1/V1明确accepted；不因改稿补V2 | 接受未flush即崩溃：既有外部确认仍保accepted；无该证据的恢复进程仅知unknown，两视角须合并，不因sent=0归未发 |
-| S20/20 | a1/V1已越过worker检查、仍在途 | 低ID20在pause后仍可Push；独立cancel分叉亦然。丢回包保unknown V1，不接cancelled恢复 |
-| S30/60 | a1/V1已渲染排队，未过停止检查 | 停止后跳过旧Push、保pending；旧pipe清空后才能a2/V2，不能遗留V1附件或漏人 |
-| S40/70 | fetched/pending，尚未构造 | 停止后仍待处理；恢复a1/V2若渲染失败，记failed且processed、sent不加，不伪造accepted |
-| S50/80 | 从未fetch | 恢复前若退订则suppressed；仍合资格才a1/V2，保原集合与当前候选差异，不偷偷扩大受众 |
-| S60/30 | a1/V1 Push结果不明 | SMTP接受后DATA回包丢失：即使原生completeSub仍unknown；不默认重试V2或标成功 |
-| S70/40 | a1/V1有明确拒绝证据 | processed仅本pipe不重试；重启若游标受20阻塞仍重选40，越过40且持久才跳过。如批准a2/V2，DB未知时保双attempt、先读回不盲加sent |
-| S80/50 | 高ID a1/V1已accepted，S20未完成 | checkpoint≤19；崩溃可重扫50。保其接受证据，不能以max成功50跳过20 |
-
-Push与落盘非原子；[扫描](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/internal/manager/manager.go#L592-L620)取checkpoint、Swap增量再写DB，失败不塞回以防重复加数，也可能低报。DB错误分已提交／未提交，读回再决策；GREATEST只防游标倒退。[一手；研究：R2判定]
-
-**具名判据，未运行。** 比较(C1,人,版本,attempt,结果)，不以总数替代集合。[研究]
-
-- `ID_KEEP`：两轮id／UUID／started_at不变，活动仍一行；克隆全量重发退回。
-- `V1_ACCEPTED_KEEP`：S10/10／S80/50保原确认，未经决定不得自动a2/V2；原生frontier未保证此项。
-- `PENDING_KEEP`：S30/60／S40/70仍可处理，fetch不当sent；恢复版本及附件必须一致。
-- `UNKNOWN_KEEP`：S20/20／S60/30保V1 attempt；缺回执不能洗成未发V2，error不一律failed。
-- `STOP_BOUNDARY`：ID20已过检查仍Push不能记未发；主链pause后drain，cancel分叉终止不恢复。
-- `PAYLOAD_VERSION`：旧在途全套V1、新pipe全套V2；正文对了但附件／header旧版仍失败。
-- `UNSCHEDULE`：撤排期保C1，日期需另清；GET核running请求与存储scheduled差异。
-- `ROLE_AND_STATE`：仅manage不得启动／恢复正式活动；非法状态直调API，finished／未知值列现存缺口，测试发送另验权限。
-- `LOW_ID_BARRIER`：S20/20未完须checkpoint≤19；推进到S80/50会漏20，退回。
-- `ACCEPT_BEFORE_FLUSH`：S10/10接受未落盘不得据sent=0重发；unknown需外部证据才能转出。
-- `DB_UNKNOWN`：S70/40/a2先查提交结果，既不盲加sent，也不以聚合数恢复个人确认。
-- `PROCESSED_NOT_SENT`：S40/70渲染失败、S70/40拒绝保历史；40在游标≤19时仍可重选；S50/80退订保持抑制。
-
-[现有生命周期E2E](https://github.com/knadh/listmonk/blob/88031f3e082648bc3f95f285df74b7b38710b54d/tests/specs/campaigns.spec.js#L538-L591)有附件／生命周期检查，无逐人版本／乱序／崩溃判据；本次未运行。[一手／研究]
-
-#### 同场景取舍与交付边界
-
-| 路线 | 本场景何时够用 | 增加的责任／撤回条件 |
-|---|---|---|
-| 原生C1继续 | 未开始编辑，或接受原生失败／重选政策、不需精确逐人版本审计 | 核部署版本，不直接切nightly；需证明谁收过V1或不能承担重复则撤回“够用” |
-| Resend窗口幂等 | 已选该供应商，同一请求24小时内重试 | 逐人稳定键、版本／payload、过期／冲突与切换管理；超窗或换稿不能沿用旧保护，换V2键也不能代替补发决定 |
-| durable ledger／outbox | 跨窗口保C1／人／版本历史并对账，愿承担维护 | 迁移、唯一约束、intent／lease、payload保留、attempt／provider证据、隐私删除与恢复演练；本地事务和SMTP仍不原子，unknown仍需处理 |
-
-[官方Resend契约](https://resend.com/docs/dashboard/emails/idempotency-keys)支持HTTP键及SMTP `Resend-Idempotency-Key`、保存24小时。当前源码的HeaderTpls→message.render→worker→email.Headers通用链可传逐人键，但没有专用生命周期：全活动静态同键、每次随机键、同键改payload都是坏候选。postback把Campaign.Headers放JSON而非该HTTP请求头，不能靠换URL声称接入。源码可达不是供应商集成通过。[一手／研究]
-
-**后续最小对照，仅预注册。** 固定同一模型版本、预算、代码起点和C1两轮任务；两组获同等事实，仅普通续接提示与逐人版本／unknown继承包的组织方式不同，不给修法。等价匿名账本随机分组、会话隔离，隐藏消费者断言预先封存并对两组同测，防答案泄漏。保留未经dot修写的原始产物、耗时与修订轨迹，盲评关键失败和新回归；dot补修单列，不冒充模型成功。纸面推理、单样本或事实不等不算有效；重复样本改善且无关键回归，仅支持本任务内有效，不外推模型排名或全部开发任务。[研究：待启用，未运行]
+为控制分册体积，同一C1两轮账本、固定链与判据移至[维护记录](2026-10-12-development-maintenance.md#p27发送中改稿与在途恢复)。原完整验收保留，当前仅资料／拟判据部分交付，未证明真实恢复或优化效果。

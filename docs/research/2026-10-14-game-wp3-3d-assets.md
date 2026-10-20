@@ -1,6 +1,6 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
-改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体新需求首试T2.5原生低模、旧合格T2配方不迁移，场景和变形角色另判；处理器先核目标导入器与实际接口，凸分解的顶点／包数参数不能直接当引擎交付保证；旧精灵母版转实时先重验源，不默认只需批转
-新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加门 GLB、关节导出、重贴图及程序化范围证据；凸分解另核主分支／Unity 包差异、合并退出与原生引擎契约，未运行模型／引擎；2026-10-20补T2.5默认／预算与Tripo入口差异；2026-10-19补Naev旧源补做、转换脚本边界及正式发行
+改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；自定义刚体新需求首试T2.5原生低模、旧合格T2配方不迁移，场景和变形角色另判；处理器先核目标导入器与实际接口，凸分解的顶点／包数参数不能直接当引擎交付保证；旧精灵母版转实时先重验源，不默认只需批转；植被先选同风格且风动源兼容的资源族，区分调风与重做枝条数据；角色扩装先选配套着装身体／头部，跨体型另验源关系
+新证据：[一手／研究] 2026 年论文、商业 API、固定处理源码与作者产物；追加门 GLB、关节导出、重贴图及程序化范围证据；凸分解另核主分支／Unity 包差异、合并退出与原生引擎契约，未运行模型／引擎；2026-10-20补T2.5默认／预算与Tripo入口差异；2026-10-19补Naev旧源补做、转换脚本边界及正式发行；2026-10-20补Unity 6.3／UE 5.8风动契约、TreeIt导出限制及Firewatch／Fortnite历史制作反例
 
 # WP3：3D资产路线、原生低模与第二次修改
 
@@ -16,7 +16,7 @@
 |---|---|---|---|
 |静态刚体道具|✅ 采用与画风一致的成熟完整资产；缺少独特近景物件时🧪先试Meshy 7.1，Rodin Gen-2.5作为高细节/多图对照。二者无独立同题盲测，不排序为绝对最佳|✅ 同包复用；确需新形状时🧪Meshy T2.5原生低模，显式预算、先灰模；旧合格T2配方保留；Tripo P1作替代，API P2 Preview仅对照|✅ Kenney Nature Kit/简单参数化几何。写实可👀Poly Haven单资产，仍核预算；不强凑“免费本地生成冠军”|
 |场景|✅ 同套模块/材质拼装，近景标志物单独补生成；👀Marble Pro只用于交互弱、可接受烘焙观感的环境候选|✅ Kenney/Quaternius同包模块+脚本布局，不把整个关卡作为一个mesh重生|✅ 同包现成模块/引擎基本体；👀Infinigen只借资产/程序配方，不默认整套世界生成输出直接进游戏|
-|变形角色|✅ 同一现成角色生态、已知拓扑/骨架的完整资产；👀自定义生成仅当玩法允许退回刚体分件或替换角色|✅ Quaternius Universal Base Characters+同体系服装/动作；复用比重生后反复绑定更可控|✅ 指定CC0角色包的免费可下载部分；⛔不把TRELLIS/LATO.2默认安装或Hunyuan作为全球商用无条件路径|
+|变形角色|✅ 同一现成角色生态、已知拓扑/骨架的完整资产；👀自定义生成仅当玩法允许退回刚体分件或替换角色|✅ Quaternius配套头部＋着装分件，固定身体覆盖／动作版本；不保证任意裸身体跨体型穿衣（§15）|✅ 指定CC0角色包的免费可下载部分；⛔不把TRELLIS/LATO.2默认安装或Hunyuan作为全球商用无条件路径|
 
 零人工修拓扑、UV 和权重是准入条件；质量优先还要比较目标相机下的轮廓、细节与风格，以及追加处理和二改代价，不构成现成／生成的审美排名。[经验] 当前服务费不能跨品牌直接比较credit；尚无保留所有淘汰样本与主动工时的可比成本。[研究]
 
@@ -430,3 +430,85 @@ Marian Kleineberg 的 [2019 作者复盘](https://marian42.de/article/wfc/)说�
 **采用、目标与撤回。** [研究] 固定视角／固定光照仍满足需求时，保现成合格精灵或从合格母版重烘；确需新视点、部件运动或跨窗口同源展示，才比较已合格实时源与重新补齐旧源。目标是新表现下轮廓、材质和运动一致，而非改文件格式。转换增加依赖与验证成本，多消费面减少重复产物也扩大一次修改的回归范围。先核真实新增要求下的源，不以已有.blend或自动成功日志跳过准入；必须人工美术修补时换合法合格源、缩小新表现或撤回迁移。保持既有规格、挂点、身份、许可和设备预算检查。
 
 缺口：未取得同一船旧源→脚本输出→人工补做→发行产物的完整对应、淘汰率及主动工时；没有下载模型／贴图或运行Blender、模型、游戏与引擎。它证明作者实际采用且付出补做责任，不闭合单人零手修的完整生产链，不由两个版本说明推定AI或工具提效。[研究]
+
+## 15. 角色衣橱二改：先选配套着装身体，再决定是否跨体型
+
+**✅ 需要持续换装时，先选固定版本、身体覆盖和动作已配套的组合；不把“同一骨架”解释为任意衣服适配任意身体。** Quaternius适合有限风格化衣橱；需要身体参数变化时，可另比较MPFB已有衣物的源端refit。新衣形状或跨生态人体属于新生产需求，不是换个骨名就能解决。核实2026-10-20；本轮仅公开文档与作者报告，未下载资产、安装、运行模型／引擎或验成图。[研究]
+
+### 配套包具体承诺什么
+
+[Fantasy服装](https://quaternius.itch.io/modular-character-outfits-fantasy)明确兼容基型**头部**。v2.0（2026-01-29）补Peasant_Male手臂，使套装只需配基型头；v2.1（07-05）修Noble／Wizard的glTF夹带其他模型、合并源文件纹理路径。默认应把它当带必要身体表面的着装分件组合，而非完整裸身外任意叠衣。作者只称减少组合穿插，未保证全部混搭。[一手／研究]
+
+**固定一组版本，不逐包追新。** [Library 1](https://quaternius.itch.io/universal-animation-library)的v2.0统一骨名、修UE双root并改导出；v2.1修24／30fps错配；v3.0（06-16）新增Root Motion选项与移动起步修正。[Library 2](https://quaternius.itch.io/universal-animation-library-2)当前v2.2（09-28）修Sword_Light终帧／恢复对应。版本变更可改变动作时基与位移归属，不能只看动画名存在；已有合格组合不因新版出现全部替换。[一手／研究]
+
+**免费份额不是全包清单。** [基型](https://quaternius.com/packs/universalbasecharacters.html)宣传六种人体、20发型，[服装官网](https://quaternius.com/packs/modularcharacteroutfitsfantasy.html)宣传12套／62分件，但Standard仅约60–70%，Source才含完整内容、源文件及引擎集成。服装Source公开标US$20、基型US$19.99；未购买／下载，未核免费具体可用组合，不能用全包数量排零成本制作计划。[一手：产品与下载档说明；非结算报价]
+
+**具体包许可与品牌许可页分开。** 上述指定包页仍标CC0；2026-08-28的[QAL](https://quaternius.com/license.html)仅适用于以该许可发布的资产，允许嵌入产品、限制作为独立资产／模板再分发，且声明后续版本不追溯。没有证据说所有旧CC0资产被撤销或这些指定包全部改QAL。本轮未读取包内许可证；采用时保存实际取得版本／条款，不用品牌名给新资产或公开模板打包放行。[一手／研究]
+
+### 同骨名不能替代身体与绑定合同
+
+[Unity 6.3 bindposes](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Mesh-bindposes.html)按同索引关联骨骼和绑定逆矩阵。名字可帮助映射，但不证明索引、参考姿态、权重、比例或衣物形状匹配。先分“装配接错”与“资产本来不合身”：retarget改动作映射，不会凭空补出衣物适配空间。[一手／研究]
+
+[UE 5.8模块化角色](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-modular-characters-in-unreal-engine)中，Leader Pose要求匹配层级子集；额外／跳过骨骼会落参考姿态。Copy Pose只复制匹配骨骼，另有每组件动画求值与tick代价；Mesh Merge有初始化和内容组织成本，普通morph转移受限。它们是运行时装配选择，不是衣服拟合器。已有配套且不需独立次级动画先比较Leader Pose；确有独立行为或性能证据再升级，不先造合并框架。[一手／研究；未测成本]
+
+### 采用与第二改暴露的缺口
+
+[Cinevva 2026-05-10原型](https://app.cinevva.com/blog/2026-05-10-open-world-browser-part-25-universal-characters)报告四包样本骨架与bind一致，分件重绑共同实例，身体槽隐藏原身体；头发也不是简单刚体附件。自定义上传衣服仍是后续问题。其源码入口本轮仅跳转builder，未核可审代码；文章早于六月／九月动画更新，“262动作免费”等说法不覆盖当前下载档。仅作配套样本装配的作者报告，不作Unity／UE发行或零手修全组合验证。[作者报告／研究]
+
+**买到衣服也不等于省去适配。** Second Chance的[09-21记录](https://www.secondchancegame.com/devlog/2026-09-21-empty-sleeves)报告定制服装尝试未交付进UE，回到已购Fab服装＋Blender适配；Agent将空测量误作依据，渲染才暴露袖子装配问题。作者对具体工具接口的判断只限当时测试，不外推当前产品永久无能力。[作者报告]
+
+同作品[10-01修订](https://secondchancegame.com/devlog/2026-10-01-root-lock)仍需处理不标准体型的衣物翻面、露脚与配饰，人看图后才接收；[09-19记录](https://secondchancegame.com/devlog/2026-09-19-ground-that-isnt-there)还报告衣物与身体LOD不匹配，强制LOD0只是临时退路。因此旧报告的姿态修正不能当衣橱已经闭合。未核公开生产源码、正式发行、全部修复或独立测量，不采用“几次会话”估算本场景工时。[作者报告／研究]
+
+### 参数化替代也要有衣物源关系
+
+**🧪 MPFB只在已有MHCLO衣物与目标身体范围覆盖时比较。** [MHCLO](https://static.makehumancommunity.org/mpfb/docs/assets/concept_clothes_hair_bodyparts.html)除mesh外还有衣物顶点与基体的对应关系，改变身体参数后需[refit](https://static.makehumancommunity.org/mpfb/faq/clothes_do_not_fit.html)，密集mesh自动refit也会增加交互成本。这比“同骨名”多了制作期拟合依据，不等于游戏运行时自动穿任意衣服。[一手／研究]
+
+[Export Copy](https://static.makehumancommunity.org/mpfb/docs/exporting/export_copy.html)保留原角色、另造导出副本；Bake mask会真正删除被遮住的皮肤。以后换露肤服装应回未破坏母版重出匹配产物，不能从删皮肤的旧副本恢复不存在的表面。自定义新衣仍有拓扑、分组、UV／材质工作，不把制作教程当零手修生成服务。[一手／研究]
+
+[许可](https://static.makehumancommunity.org/about/license.html)区分MPFB代码GPL与核心资产CC0，第三方衣物仍逐项核；工具免费不代表兼容衣橱、导出适配与维护免费。保存源配方、衣物版本、refit参数和导出设置，只有最终mesh不够接续二改。[一手／研究]
+
+**三种决定。** 同体系现成款式已满足：保匹配版本并只开放已验组合；需要受限身体参数：评估已有MHCLO源与refit；跨体系体型或全新衣形：先找完整合法配套，不默认继续自动绑定。必须手工雕衣、刷权重、补面才过关，就换身体／整套着装角色、减少槽位／体型或撤回自由换装承诺。[研究]
+
+AI可盘点实际清单／版本、做装配与导出脚本、查缺引用和回归旧组合；瓶颈是运动穿插、身体露出、轮廓／风格、接触与设备预算。后续获准后先同身体换衣，再改体型，复查旧组合恢复、重载、动作类别和LOD转换；既有WP4接触、剔除与WP9身份检查继续保留。未建立组合通过率、净工时或AI承担百分比，不把脚本成功与数值为零当美术验收。[研究]
+
+## 15. 植被资源族：近景、风向与密度二改
+
+核实：2026-10-20（UTC+8）；P29，主线二／三，GA／GB。**默认采用同风格且风动源匹配目标消费者的树／灌木／草资源族；不是把静态生成树统一接风力参数。** 目标是同作品从远景改近景、指定风向及增加密度时，仍能保风格与玩法，不要求程序员手工补枝条权重。[研究]
+
+### 15.1 现成方案先比源数据，不按功能多少排序
+
+**Unity：能调响应不代表能补结构。** Unity 6.3 的[`.st9` Wind 页](https://docs.unity.com/en-us/engine/6000.3/manual/creating-environments/script-terrain/terrain-trees/speed-tree/class-speed-tree-importer/speed-tree-importer-wind)列强度响应、方向响应及随机性，但启用以 SpeedTree Modeler 已配置风动为前提；其他格式不能直接照搬此页。[Wind Zone 页](https://docs.unity.com/en-us/engine/6000.3/manual/creating-environments/script-terrain/terrain-trees/wind-zones/class-wind-zone)明确 Terrain 草不受它控制。树、草需分别确认消费者，不能承诺一套风场自动覆盖整包。[一手]
+
+**需要改变枝条运动时，先保可重导出的源。** [Modeler 10 Games Wind](https://docs.unity3d.com/speedtree-modeler/manual/wind-games.html)由 Fan 和各 generator 配置风动；Wind Wizard 分析已有模型结构，不是从任意静态成品恢复结构。🧪 有合格源、授权与目标导入器时再评估此路线；缺源不把导入器参数当替代。[一手／研究]
+
+**免费替代 TreeIt 可列候选，但不是现成通用风动格式。** [官方说明](https://www.evolved-software.com/treeit/treeit)提供 LOD 与多种网格导出，风动信息用顶点色并随 DBO／FBX 导出；不能将 OBJ 等其他格式一并算作携带风动。FBX 为 ASCII，仍核消费者。作者允许出售自己的树作品，但不代替第三方纹理清权；维护不是作者主要工作，新增适配要计入成本。本轮未找到稳定官方 RGBA 语义定义，自动通道转换停在此处。[一手／研究]
+
+**顶点色不是跨工具协议。** Crytek 作者的 [GPU Gems 3](https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-16-vegetation-procedural-animation-and-shading-crysis)中，R／G／B／A 分别用于叶缘刚度、叶片相位、整体叶片刚度与环境遮蔽；下文 Firewatch 则用于三种运动。TreeIt 引用该技术也不证明其导出通道逐项相同，不能猜映射后宣称完成兼容。[一手／研究]
+
+**UE 先保已合格路线，不因 Nanite 名称强制迁移。** [UE 5.8 Nanite Foliage](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-foliage)及 Dynamic Wind 标为 Experimental；其风动需 skeleton／simulation groups、JSON 导入的 Dynamic Wind Skeletal Data 和 Instanced Skinned Mesh Transform Provider。当前仅全局风向、不含玩家或物体互动，这是该风动系统的范围，不是 UE 通用碰撞失效。Voxel shading 会覆写顶点色 alpha，旧数据若使用它须重新安排，不能默认为所有 TreeIt 输出都受此影响。[一手]
+
+**简单摆动有独立位置，但不能冒充定向风。** [SimpleGrassWind](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-position-offset-material-functions-in-unreal-engine)是非定向摆动，可调权重、强度与速度。草／低关注灌木只需轻摆时可🧪作为低复杂度候选；二改要求指定风向时，须换支持该输入的消费者并验源，不是调一个不存在的方向参数。[一手／研究]
+
+### 15.2 实际采用说明维护代价，不证明零手修
+
+**Firewatch 支持“小资源族反复用”，不支持“AI 已能造整片森林”。** Jane Ng 的 [GDC 2016 复盘](https://media.gdcvault.com/gdc2016/Presentations/Ng_Jane_MakingTheWorld.pdf)（PDF 第41–48页）说明定制23棵树，其中14棵广泛复用、9棵局部使用；Maya 顶点色 R／G／B 分别控制竖向摇摆、枝条拍动、叶片颤动。少量精做资源降低后续 LOD／维护负担，但这是专业美术制作。项目开始于 Unity 4.5，作者明确没有评估 SpeedTree，不能写成试用后失败，也不推出 Unity 6.3 的能力结论。[一手：作者复盘／研究]
+
+**Fortnite 的迁移是重建数据管线，不是勾选 Nanite。** Epic [2023-01-26 的 Chapter 4 复盘](https://www.unrealengine.com/tech-blog/bringing-nanite-to-fortnite-battle-royale-in-chapter-4)针对 UE 5.1：高密树上原复杂逐顶点 WPO 代价大，改用枝条枢轴、方向及父子结构，借 Houdini Vellum 将模拟烘成纹理，再用网格自定义 UV 索引运动；枝条按刚体移动，草仍走简单数学 WPO。它证明已发行项目承担过源结构／UV／动画重做，不是当前 5.8 Dynamic Wind 的说明，更不证明任意生成树可自动恢复层级。[一手：作者报告／研究]
+
+### 15.3 同一作品第二次修改：保留什么、重建什么
+
+**R1 先保存一套可追溯供给，不凑互不兼容的单件。** 预注册同风格树、灌木、草各一组，远景下接受后保留源工程、实际许可、导出版本、通道说明、引擎消费者及资产 ID。资源库存在不等于该家族覆盖三类需求；源缺一类时，先比较补兼容资源与缩小环境风格。[研究／经验；未实测]
+
+| R2 同时提出的新需求 | 可以保留 | 需要重验／重建，或撤回的条件 |
+|---|---|---|
+| 走近观察树冠与运动 | 合格源、稳定引用与独立碰撞 | 近景轮廓／枝叶运动不够时，从可编辑源重导出；枝条改变后重核权重、分组或纹理／UV索引。只有成品且需人工补做则换源 |
+| 明确风向及响应 | 已匹配消费者的风动结构 | `.st9` 已有响应可调，但不能新增缺失枝条风动；草单独核消费者，SimpleGrassWind 非定向时换路线。通道未知不自动转换 |
+| 增密，同时保可读性与通行 | 只是增加摆放数量时保资产结构 | 先重验覆盖、阴影、预算与通行；若“增密”是改树冠／分枝，须重导出并重核绑定，不能当同一摆放参数 |
+
+**重导出不覆盖已接受的整套资源。** 保原资产作对照，先核 ID／场景引用、比例、材质与透明覆盖，再核 LOD、阴影、独立碰撞和目标设备预算；风动通过不豁免这些总入口检查。迁移要计源工程维护、格式转换、shader 适配及整套回归，不拿历史 AAA 帧率作单人项目收益。[研究／经验]
+
+**商业门槛先于质量排序。** [SpeedTree 条款](https://unity.com/legal/professional-artistry-additional-terms)（2026-09-10，§2.3–2.7）区分 Games 与 Cinema；互动游戏用 Games，另核§2.2档位资格与 Total Finances 口径；评估资产不得导出／分发。付费附加内容可能另需覆盖；终止后的新增生产发布／平台限制按 Offering Identification 例外核，不概括成所有旧资产失效或永久无限使用。第三方兼容包仍按自己的授权与是否要使用 Modeler 判断，不一律要求买 Modeler。[一手／研究]
+
+**AI 承担已知格式的清单、映射脚本与一致性检查；瓶颈是源结构与近景表现。** 缺失枝条层级、权重或未说明通道不能由 Agent 猜出后当成已验证。人决定是否保留近景／定向风／互动要求，或接受换源、收窄风格与玩法；没有真实两轮产物，不给承担比例或效率数字。[研究／经验]
+
+验证范围：官方文档、条款与作者历史制作报告；没有运行 TreeIt／Modeler、模型、Unity／UE，没有下载树或纹理，也无同题零手修成功率、完整资源族成本与真实场景通过证据。若候选要求人工美术补结构，本基准下撤回；不是把失败记成程序员常规调参。[研究]
