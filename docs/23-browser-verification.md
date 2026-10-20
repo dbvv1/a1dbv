@@ -84,6 +84,8 @@ Playwright MCP 通过结构化的 accessibility snapshot 暴露页面，常规�
 
 **故障注入要验实际命中。** `page.on('request')` 收到事件，不代表 `page.route()` 回调能拦截该请求；在支持 worker 请求观测／路由的 Chromium 上，可用 context 路由处理 Service Worker 发出的可拦截网络请求，并核对归属、命中及故障响应。普通 API mock 可考虑禁用 worker，但产品承诺离线功能时应保留。只注册 500／断网规则不算覆盖恢复路径。见[官方测试与工具反例](research/2026-10-12-development-conditions.md#service-worker响应来源决定保存与故障验收入口)。**[一手：机制；经验：验收选择]**
 
+**修改输入控件时，把候选确认与业务提交分开验。** Agent 可查事件与写状态竞争回归；人用目标 OS／输入法确认候选不误发、随后提交正文完整，取消后保留约定草稿。文本注入适合查值，却不经过真实候选窗。涉及富文本时同时核文档结构；承诺持久草稿时再验重开。原有保存、权限、重复提交与视觉检查仍适用。见[Hermes／Lexical 的固定修复与验证边界](research/2026-10-12-development-feedback.md#输入控件修改后先分开组合输入与业务提交2026-10-20)。**[一手；经验：验收建议，未做原生 IME 实测]**
+
 ## 5. 浏览器状态也是测试输入
 
 Playwright MCP 支持持久化 profile，也支持 `--isolated` 在内存中保留 profile；`--storage-state` 可为隔离会话提供初始存储状态。**[一手：S7]**
