@@ -1,12 +1,14 @@
 # 02 · 模型与成本
 
-> 编辑更新：2026-10-20（UTC+8）；本次只补核模型与 effort 起点，价格及其他动态事实保留各自核实日期。
+> 编辑更新：2026-10-20（UTC+8）；本次补核有效配置、兼容接口与新模型采用资格；未列价格及历史事实保留各自核实日期。
 
 ## 30 秒结论
 
-**✅ 当前默认：已有模型配置能稳定达到目标，就保留；新开始、范围清楚的日常编码，Codex 选 GPT-6.1 Sol + `medium`，Claude Code 选 Sonnet 5.5 + `medium`。** 这是本仓库给新读者的明确起点，不是所有客户端的出厂默认，也不是两者效果相同的实测结论。型号须在当前账号、客户端与服务商中可用。**[研究：采用判断；一手依据见第 1 节，2026-10-20，未实测]**
+**✅ 当前默认：已有模型的有效配置能稳定达到目标，就保留；新开始、范围清楚的日常编码，Codex 选 GPT-6.1 Sol + `medium`，Claude Code 选 Sonnet 5.5 + `medium`。** 这是本仓库给新读者的明确起点，不是所有客户端的出厂默认，也不是两者效果相同的实测结论。型号须在当前账号、客户端与服务商中可用。**[研究：采用判断；一手依据见第 1 节，2026-10-20，未实测]**
 
-**何时撤回**：漏约束、推理或验证不足时，先核任务信息与工具是否齐全，再提高 effort 或换更强模型；有依据的质量目标、困难的跨模块任务，也可以一开始就选更强配置，不必先失败。等待或预算成为瓶颈时，再试降档。是否保留，看目标质量、整项任务的耗时与费用，包括人工检查和返工；收益消失就退回原配置。**[研究：选择与撤回条件]**
+**首次启动（本次 CLI 参数，不改持久设置）**：Codex 用 `codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`；Claude Code 用 `claude --model claude-sonnet-5-5 --effort medium`。入口说明见 [Codex 单次覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)及 [Claude 起步](01-agents/claude-code.md#7-推荐起步先原生扩展按需选择)。**[一手：配置入口；研究：起点，2026-10-20，未执行]**
+
+**何时撤回**：漏约束、推理或验证不足时，先核任务信息与工具是否齐全，再提高 effort 或换更强模型；有依据的质量目标、困难的跨模块任务，也可以一开始就选更强配置，不必先失败。等待或预算成为瓶颈时，再试降档。是否保留，看目标质量、整项任务的耗时与费用，包括人工检查和返工；收益消失就退回仍可用的已验证配置；旧模型已退役或名称改路由时，不能仅填回旧名当作回退。**[研究：选择与撤回条件]**
 
 **⛔ 不推荐仅凭最低单价选主模型，也不默认全程 Ultra、最高 effort 或 Fast／Ultrafast。** 前者只在可检查的工作上证明质量与总投入合算后采用；后者用于明确的推理、并行或等待瓶颈，能改善整项任务才保留。速度档、effort 与模型能力是不同选择，付费提速不能补推理缺口。**[研究：采用边界；计费口径见第 3 节]**
 
@@ -29,20 +31,17 @@
 
 **effort 不跨接口照搬**：Claude Code 的 Sonnet 5.5 默认 `medium`，[Claude API](https://platform.claude.com/docs/en/build-with-claude/effort#recommended-effort-levels-for-claude-sonnet-5-5)默认仍是 `high`（2026-10-15 核实）；Codex 的 Sol 默认依客户端而异，Astra 官方建议从 Light（配置值 `low`）开始。同名 effort 不代表跨型号、跨代等强度。**[一手：上述文档；Codex／Claude Code 2026-10-20 补核]**
 
-**先分清缺口**：[Anthropic 选型指南](https://claude.com/resources/articles/claude-model-and-effort-level-in-claude-code)建议先补上下文与工具，再区分“没充分检查”和“充分尝试后仍解决不了”。本页将前者作为提高 effort、后者作为换更强模型的起点，不把这条启发式当诊断保证；其示意曲线不是实测。**[一手：厂商建议；研究：采用边界，2026-10-20]**
+**保留的是有效配置，不只是旧名称。** 先核客户端与运行后端、实际模型、effort、工具和历史回传契约，再判断质量缺口。DeepSeek 旧 `deepseek-v4-flash`／`deepseek-v4-flash-vision-exp` 已退役但请求仍接受，转由 V4.1-Flash-1017 服务；Gemini 10-08 将旧 3.7／3.5 Flash 请求路由至 3.8／3.6。已知路由变化后重新核代表任务，不能凭配置文件没改或模型自报身份认定未迁移；可得时记录响应模型版本。缺上下文先补输入，检查不足再升 effort，充分尝试仍失败再换更强模型。**[一手：官方路由与响应契约；研究：采用判断，2026-10-20，见 [S1f](research/2026-10-10-audit.md#s1f--2026-10-20-模型身份与采用资格)]**
 
 **Gemini 4 Argon：从等待开放改为按任务试用。** `gemini-4-argon` 于 2026-10-13 在 Gemini API／AI Studio 正式可用；Free tier 和 Google AI Pro 计划不包含它。已有 Gemini API 工作流迁移时，先移除显式缓存调用，核对 thinking 与输出共享的 token 上限；不要只换模型 ID。🧪 适合需要比较复杂编码或长输出的任务，现有模型已满足要求则不必迁移；是否保留取决于本项目质量、延迟和总费用，GA 不证明收益。**[一手：[发布记录](https://ai.google.dev/gemini-api/docs/changelog)、[迁移指南](https://ai.google.dev/gemini-api/docs/latest-model)；研究：采用判断，2026-10-15，未实测]**
 
-**快速子 Agent 还要匹配接口**：GPT-6 Luna 若同时需要推理与工具调用，使用 Responses API；Chat Completions 的 function calling 仅支持 `reasoning_effort=none`，不要只按低单价替换现有推理工具链。**[一手：[模型页](https://developers.openai.com/api/docs/models/gpt-6-luna)；研究：选型条件，2026-10-15]**
+**兼容接口不等于行为兼容。** GPT-6 Luna 同时需要推理和工具调用时用 Responses API；其 Chat Completions function calling 仅支持 `reasoning_effort=none`。[一手：[模型契约](https://developers.openai.com/api/docs/models/gpt-6-luna)，2026-10-15] 新 MiniMax M3.1-Flash 始终思考、默认 effort 为 max，不能照搬旧 M3 的默认关闭思考；工具轮须保留完整 assistant blocks，其 Anthropic 兼容接口会忽略 `context_management` 等字段。切换前让 Agent 核这些契约，人复核工具可用性、失败输出与完整任务成本，不只换 model ID。**[一手／研究：2026-10-20，未调用，见 [S1f](research/2026-10-10-audit.md#s1f--2026-10-20-模型身份与采用资格)]**
 
 **Haiku 5.5 的 computer-use API 迁移须按提供方选择**：从 Haiku 4.5 的旧工具迁移，不能只换模型 ID。Claude API／Google Cloud 要用 `computer_toolset_20260801`，并同步改调用分派与结果回传；Amazon Bedrock 则用 `computer_20251124` 及对应 beta header。现有宿主未适配时，先保留可用路径，不因基准分数直接替换。这是自建 API 集成条件，不代表 Claude Code 或桌面 App 的功能变化。**[一手：[迁移指南](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide#move-computer-use-to-the-toolset)、[兼容性契约](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#compatibility)；研究：选择，2026-10-16（UTC+8），未实测]**
 
 **在 Claude Code 里落地**：主会话用适合任务的模型；需要子 Agent 时，可在 frontmatter 写 `model: haiku` / `sonnet`，或用 `CLAUDE_CODE_SUBAGENT_MODEL` 统一指定。尽量减少没有任务理由的模型和 effort 切换；缓存影响按下文 [Prompt cache 的厂商与配置边界](#2-价格快照api-美元百万-token)判断，不为保缓存而拒绝必要的模型调整。**[一手：配置接口；经验：使用建议]**
 
-**Fable 级模型的用法** **[一手 + 社区]**：
-- 一条消息给出完整任务、**什么算完成**、什么时候停下来问；
-- 删掉“think carefully / 一步步思考”这类话（模型自己会思考，改用 effort 控制）；
-- 想要快速回答时直接说“Answer directly”。
+**👀 Muse Wonder：先过资格门，再比较长任务。** 普通 Wonder 可走 API／Muse Code，Full 当前只在 Muse Code 指定订阅；API 单价和订阅额度不能混算。官方限制地域含中国大陆、香港、澳门；Code 订阅默认 Contributor，机密代码不得输入，需先确认可用地域与 Standard 数据设置，后改设置不追溯旧输入。资格成立且现有模型有明确缺口时才比较，不能凭不同 harness 的榜单换掉当前默认，也不能当作开放权重。入口、价格与条款依据见 [S1f](research/2026-10-10-audit.md#s1f--2026-10-20-模型身份与采用资格)。**[一手：官方产品及条款；研究：候选边界，2026-10-20，未运行]**
 
 ## 2. 价格快照（API 美元/百万 token）
 
@@ -76,7 +75,7 @@
 - **缓存收益看实际复用**：长且稳定的前缀在有效期内反复命中时，可降低重复输入成本；折扣按模型价表，不统一按十分之一。[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)的 5 分钟／1 小时写入分别按普通输入价的 1.25／2 倍收费；未复用的写入、缓存重建以及输出、工具与返工仍计入整项任务成本。先查实际命中与总费用，不为保缓存拒绝必要的模型调整。**[一手；研究：采用条件，2026-10-17 UTC+8]**
 
 - **失效排查按厂商与配置**：[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)说明，更改顶层 `output_config.effort` 会使消息缓存失效，对工具/系统缓存的影响依模型而异；显式写出原默认值不算变化，支持逐消息 effort 的模型也有保留前缀的路径。模型切换、前缀改动和 TTL 是排查因素，不能一概断言每次修改都会清空全部缓存。当前 [Claude Code 成本文档](https://code.claude.com/docs/en/costs)将缓存统计放在 `/usage` 的 Session 区；它覆盖主会话，不能当作全部子 Agent 的合计 **[一手]**。
-- **Harness 开销看完整任务**：[Systima 历史实验](13-frontier-radar.md#23-harness-的隐性成本被量化了)与[本仓旧实验](19-experiments.md#3-e1固定开销)记录的是含缓存的原始输入量，不能当普通输入账单、订阅消耗或当前客户端成本排名；本仓原逐次数据还存在缺失。先定位实际负担，再比较质量、返工与含缓存总成本，配置范围和当前诊断见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[社区／经验：历史记录；研究：选择]**
+- **Harness 开销看完整任务**：[Systima 历史实验](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)与[本仓旧实验](19-experiments.md#3-e1固定开销)记录的是含缓存的原始输入量，不能当普通输入账单、订阅消耗或当前客户端成本排名；本仓原逐次数据还存在缺失。先定位实际负担，再比较质量、返工与含缓存总成本，配置范围和当前诊断见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[社区／经验：历史记录；研究：选择]**
 
 <a id="21-新类别决策模型2026-09-起"></a>
 
@@ -115,7 +114,7 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 
 **控制成本的做法** ✅：
 1. 先查原生状态和服务商账单；需要历史定位时，按[下节边界](#31-查异常消耗ccusage-只补历史诊断)试用 ccusage，不把估算当结算 **[一手；经验：采用判断]**；
-2. 无关任务之间 `/clear`；同任务需要腾空间时再 `/compact` 并指定保留重点，不把离开键盘当必做触发器，见 [03 会话动作选择](03-context-engineering.md)。缓存有效时压缩可能更便宜，不等于额外压缩一定省钱 **[一手；研究：采用判断，2026-10-15]**；
+2. 无关任务之间 `/clear`；同任务续接比较恢复费用与新开遗漏／返工，Claude 的休眠恢复额度警告不是必须清空历史。腾空间再选 `/compact`，它本身也要读上下文；具体选择见 [Claude](01-agents/claude-code.md#33-并行与自动化5-种并行方式)与 [03](03-context-engineering.md) **[一手；研究：2026-10-20，未实测净省]**；
 3. **按任务选择子 Agent**：只拆可独立验收或需隔离冗长输出的支线；共享背景多、频繁往返的小任务留主会话，见 [08](08-multi-agent.md)。历史小任务的输入量倍率不能当当前费用或额度倍率 **[一手；社区：历史报告；研究：采用判断，2026-10-15]**；
 4. 让嘈杂的命令安静输出（加 quiet 参数），或者放到子 Agent 里跑；
 5. **👀 分流先比较固定分工，再评动态路由**：大量读取／模式化生成有明确负担、结果可检查时，可试轻量 worker；Spotify 约 90% 仅指主模型侧读取上下文节省。重复仓库 issue 可比较“固定便宜模型＋核对过的定位证据”：Scrouting 中该组合与路由版同分且略便宜，但不证明一般等效。路由须相对固定分配有新增收益；把探查、验收与返工计入，无净收益就撤回。见 [原方法、消融与反例](research/2026-10-10-audit.md#s1e--2026-10-16-轻量模型分流与主模型侧节省)。**[一手：作者报告；研究：外部实验与采用判断，2026-10-18，未实测]**；
