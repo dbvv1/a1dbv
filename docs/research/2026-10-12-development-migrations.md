@@ -123,14 +123,14 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 #### 消费者闭包与两轮文件差异
 
-以下路径相对固定shop树，改动待实现。[一手：源码；研究：改动设计]
+以下路径相对固定shop树；R1可应用替换与响应接线见下节，运行仍未执行。[一手：源码；研究：改动设计]
 
-- R1改`lib/blog/server.ts`的getBlog／getBlogArticle独立remote作用域：max换有限cacheLife。`lib/seo/server.ts`的getShopifySitemapPagesCount(type)／getShopifySitemapPage(type,page)在ARTICLE/BLOG分支用同配置，其他类型保max；每次仅一次cacheLife。保原articles／blogs及资源标签；这两文件无外层缓存，调用路由无use cache。
+- R1只改blog／seo的四个remote缓存作用域，精确替换见下节；调用路由无use cache。
 - `app/api/webhooks/shopify/route.ts`的产品／集合／metaobjects分支与HMAC保持不动，不能补虚构文章事件。
 - `app/blogs/[blogHandle]/[articleHandle]/page.tsx`的metadata和正文读同详情，缺记录notFound；构建可退placeholder，不能据此算验过文章。`components/blog/article-page.tsx`／`components/ui/prose.tsx`为服务端正文，R2默认无必改业务代码，只更新同篇内容并加验收。
 - `lib/shopify/operations/blogs/server.ts`默认50条、PUBLISHED_AT倒序；`lib/shopify/fragments/blogs/index.ts`仅摘要／240字fallback，不传全文。`lib/shopify/operations/sitemap/server.ts`ARTICLE按UPDATED_AT、250项游标扫描，但取publishedAt映射updatedAt再输出lastmod。**编辑A不改变lastmod。** 页数来自独立sitemap.pagesCount，不能拿本地除法替代。
 
-保购物车／搜索／proxy.ts及关闭的可选模块。无现成测试；缓存策略单测和连续消费者E2E均待实现。[一手／研究]
+保购物车／搜索／proxy.ts及关闭的可选模块；无现成测试，下面的接线规格仍待实现。[一手／研究]
 
 #### 可由Git重建的输入与精确预期
 
@@ -176,6 +176,48 @@ body = '<h2 id="care">Care guide v3</h2>'+''.join(f'<p data-section="{i:05}">第
 [Next #97457](https://github.com/vercel/next.js/issues/97457)报16.3.0／16.3.1／16.3.1-canary.21用expire:0后丢内容壳；[作者纠正](https://github.com/vercel/next.js/issues/97457#issuecomment-5317277426)确认max误入expire:0，真正max保壳。它只约束未来即时失效试验，不推断16.4仍有／已修，也不混入当前SWR主轨。[社区／研究]
 
 两轮均比未删文章首壳、H1／首正文位置和时间；原有内容壳不得永久退化，原本骨架先到不误报回归。另测即时方案时才核实际max/expire:0，未知mode拒绝；不以最终DOM正确、revalidatePath或保壳为删除可靠性的证明。[研究]
+
+#### R1源码补丁与合成响应接线（2026-10-21公开准备）
+
+**🧪 先交四处可应用替换，不改业务查询。** 以下针对固定SHA的[blog缓存](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/blog/server.ts)及[seo缓存](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/seo/server.ts)；本轮重新读取原始文件，与前轮副本逐字一致。摘录依据[MIT许可](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/LICENSE)，Copyright (c) 2025 Vercel, Inc.。补丁未运行。[一手／研究]
+
+- `lib/blog/server.ts`：仅在getBlog、getBlogArticle中，把各自唯一的`cacheLife("max");`替换成：
+
+```ts
+  cacheLife({ stale: 300, revalidate: 60, expire: 3600 });
+```
+
+- `lib/seo/server.ts`：仅在getShopifySitemapPagesCount、getShopifySitemapPage中，把各自唯一的`cacheLife("max");`替换成同一段：
+
+```ts
+  if (type === "ARTICLE" || type === "BLOG") {
+    cacheLife({ stale: 300, revalidate: 60, expire: 3600 });
+  } else {
+    cacheLife("max");
+  }
+```
+
+每文件两个旧调用；数量不同先核版本，不全仓替换。每条执行路径只调用一次cacheLife；`use cache: remote`、函数参数（含limit／locale／type／page）、原cacheTag及资源追加标签、fetch调用、返回值全部不变。不加外层缓存或合并count/page key；PRODUCT／COLLECTION／PAGE仍max。新旧部署隔离缓存；不靠清缓存验R1。[研究]
+
+**接线选在`storefront.request`，不伪造getBlog等已转换结果。** [blogs operation](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/shopify/operations/blogs/server.ts)与[sitemap operation](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/shopify/operations/sitemap/server.ts)保留；测试替身按GraphQL operation名及options.variables分派，成功统一返回`{ data: 下表对象, errors: undefined }`。测试状态唯一持有S0，逐次应用e1…e4，不按URL另建数据副本；sourceRevision/sourceUpdatedAt不写进GraphQL节点。每个operation取一次快照，阶段收敛后再改源；独立请求非原子。[研究：接线规格，未实施运行]
+
+定义G为上述BLOG的`{handle,title,seo}`。对记录r，摘要N(r)只含`{handle,title,publishedAt,excerpt,image:null,authorV2:null,content:r.excerpt}`；本夹具excerpt始终非null，因此content这个明确合成的短文本不会命中fallback，也不验证真实截断。详情D(r)=N(r)加`{contentHtml:r.body,seo:r.seo}`。经过[transformArticle](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/shopify/transforms/blogs/index.ts)的body／excerpt／SEO映射，列表不能携带contentHtml或详情seo。[一手／研究]
+
+| operation／请求约束 | data响应与断言 |
+|---|---|
+| getBlog，handle=guides，first由调用传入（其他handle回blog:null） | `{blog:{...G,articles:{nodes}}}`；nodes按publishedAt降序取first个N(r)。正常列表first=50；generateStaticParams另用first=1，S0取C、S1b起取B |
+| getBlogArticle，blogHandle=guides、articleHandle | `{blog:{...G,articleByHandle:D(r)}}`；S1起查C必须为`articleByHandle:null`，不存在的blog回`{blog:null}`，不是200错误对象或空正文 |
+| getSitemapPagesCount，type | `{sitemap:{pagesCount:{count}}}`；ARTICLE逐状态为1/1/2/1/1，BLOG=1，其余=0，显式固定而非从items长度计算 |
+| getArticleSitemapPage，first=250，after | `{articles:{nodes,pageInfo:{endCursor,hasNextPage}}}`；按sourceUpdatedAt升序，节点仅`{blog:{handle:"guides"},handle,publishedAt}`。after=null取前250；S1b首段endCursor=`p23:250`且hasNextPage=true，续此cursor只返B并置hasNextPage=false；其余阶段首段hasNextPage=false。endCursor用该段最后位置`p23:N`，空段null；拒未知cursor |
+| getSitemapPage，type=BLOG、page=1 | `{sitemap:{resources:{items:[{handle:"guides",updatedAt:"2026-01-01T00:00:00Z"}]}}}`；其余页／类型items=[]。ARTICLE不得走此operation |
+
+ARTICLE调用第2页会先以after=null重读第1页；仅S1b再以`p23:250`读取第2段，其余状态由原operation直接返回items=[]。显式访问旧`/sitemap/articles-2.xml`时是空urlset，不是404；索引移除链接不等于旧分片已刷新。记录operation、variables、状态和返回节点数，不能把p2直返B的mock当游标验证。locale在blog调用options中核US/EN；真实Hydrogen的locale变量注入仍另验。[研究]
+
+**两层测试各守不同门。** 策略单测spy cacheLife/cacheTag并stub storefront.request，逐一调用上述四个缓存函数，核分钟配置／其他类型max、原参数透传、articles/blogs及具体资源标签不丢，列表无body、详情有body、C为undefined；这是配置／转换断言，不证明Next缓存。连续消费者测试则保真实Next cacheLife与remote handler，只在同一请求接缝注入状态替身；依次读`/blogs/guides`、A/B/C详情（B仅存在后）、`/sitemap.xml`、`/sitemap/articles-1.xml`、旧p2及`/sitemap/blogs-1.xml`，同时验metadata、HTML、软导航／预取RSC。上述各key分别暖读并跨自身寿命；构建limit=1预热不能代替列表limit=50。S1b→S1必须见count 2→1、p2非空→空、列表移C且保B，S2继承而不重新初始化模块／缓存。[研究]
+
+故障替身返回`{data:null,errors:[{message:"fixture unavailable",extensions:{code:"INTERNAL_SERVER_ERROR"}}]}`，核原assertStorefrontOk抛错、不得写空成功结果；恢复同阶段再收敛。未识别operation须显式失败，不回通用空data，更不能漏到真实商店。布局的其他请求需补各自真实shape的测试响应，当前表仅闭合博客／sitemap数据通路，不是可直接启动的全站mock。[研究]
+
+**运行前门仍未闭合。** 先在独立候选副本把package.json的Next16.4.0升级到该轮修复版16.4.1（运行时再核后续公告），获准安装后由pnpm12.8.2／Node24解析并生成真实pnpm-lock.yaml，审依赖差异；三路线从同一安全基线分叉。此处没有生成lock、增设测试依赖或执行build/typecheck；这些命令会调用Next，不能包装成静态验证。还须实现上述替身与测试入口、补全站mock、真实API/count契合、缓存后端及退回实测。[研究]
 
 #### R2：继承S1，不为命中补丁改应用
 
