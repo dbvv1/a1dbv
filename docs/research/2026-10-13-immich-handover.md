@@ -8,6 +8,8 @@
 
 ## 可以改变的建议
 
+- 2026-10-20 新增[桌面连续交付项目提议](#agent桌面原型的连续交付项目提议2026-10-20)：先形成两套完整任务包，尚未据此修改18的默认或宣告原生更新已验收。
+
 交接不仅要解释“改了什么”，还要把接收方的意见、实际采用的补丁和最终行为对齐。优先更新已有 PR 的最终说明，而非增加一套长模板。尤其是审查回复后来被代码推翻时，应写清最后采用的接口和支持边界。
 
 ## 证据链
@@ -327,3 +329,41 @@
 - **反例与现行入口。** 同帖 [Kinsue](https://github.com/go-gitea/gitea/issues/31190#issuecomment-2428453808)照他人复制配置仍失败，不能把路径复制当通用解法。本日读取的[官方恢复文档](https://docs.gitea.com/administration/backup-and-restore/)仍要求安装方式或路径变化时重建 hooks；具体用户、配置路径和版本另核，不一律手工重建。**[社区／一手]**
 
 两例没有完整数据清单、长期维护或主动工时，亦无 AI 生成归属；只支持窄修复选择。现有原生功能的成功回执足以避免先造同职能脚本，不证明 AI 净收益或节省比例。本轮未运行 Gitea、恢复数据或上游测试。**[研究：证据边界]**
+
+
+## Agent桌面原型的连续交付：项目提议（2026-10-20）
+
+**拟改变15／18的Agent交付建议，当前只完成立项资料。** 已发旧安装、更新入口和用户工作是任务输入，不只给最新版代码让Agent“打个新包”。完整资料项目预计1.5–3天；不能以新增一段Updater介绍、两页修订或这次规划耗时作完成依据。[研究：提议]
+
+**默认候选：保原Agent与受支持分发渠道，不先增发布框架。** Agent核已发布版本、安装身份、谁更新文件及未保存工作；人定支持面、不可丢语义、重启和权限。比较现成更新器、渠道代管、显式延期和人工新包；原生环境暂缺时仍能完成源码与验收设计，但保留实测未运行。[研究：待项目执行检验，不是已证明安全更新]
+
+### 两份任务包，不是同表换名
+
+| 情境 | 第二／第五次需求改变什么 | Agent与人分别交什么 |
+|---|---|---|
+| 有窗口的编辑／标注工具 | 第二次改变多窗口或保存入口；第五次改变更新依赖或发行渠道 | Agent追旧安装→新包→下一次升级，以及用户工作→保存／备份／拒绝退出→恢复两条链。人定哪些内容须落盘、哪些可草稿恢复、何时能重启。不能用新装干净profile代旧用户 |
+| 无窗托盘／后台工具 | 第二次改变队列／取消与检查点；第五次改变安装scope或启动更新方式 | Agent查任务中断、恢复、重复结果与OS信号／文件替换权限；人定可中断粒度与提权边界。不能把无窗口当无工作，也不能套用只对窗口有效的退出保护 |
+
+执行时各情境必须选定一个旧安装基线、目标OS／安装类型和明确的两轮需求，不交付任选清单。“第五次”是预注册迭代情境，不声称已有五轮真实采用。后台情境尚缺固定应用的检查点／恢复链；若补不到，默认明确延期或人工更新，不承诺自动中断安全。[研究：验收约束]
+
+### 立项依据：Agent补丁、人审和真实采用分层
+
+**公开Agent链，而非只给工程知识加一句AI。** [electron-builder #10011](https://github.com/electron-userland/electron-builder/pull/10011)正文标Claude Code参与，2026-07-23合入`1798f6b67151777cedce4dab1a3778717c8feab0`；不能据共同署名归因全部代码或量化效率。[人审指出未发布API不应写入迁移说明](https://github.com/electron-userland/electron-builder/pull/10011#discussion_r3625691264)，[后续答复](https://github.com/electron-userland/electron-builder/pull/10011#discussion_r3625752909)核历史后删除。规划者读到原评论；独审复核最终补丁删除，评论逐字复读受限，不上推证据范围。未打开其私人会话链接。[一手：公开PR／修订；研究]
+
+**绿job不等于用户工作保全。** 固定末head`b74b767ab4d695db5907e4f6a5da051954d18018`的[公开AppImage job](https://github.com/electron-userland/electron-builder/actions/runs/29869025193/job/88764311466)在规划读取时success，但API steps为空，未独立确认逐用例执行。[黑盒helper](https://github.com/electron-userland/electron-builder/blob/b74b767ab4d695db5907e4f6a5da051954d18018/test/src/updater/blackboxUpdateHelpers.ts#L431-L554)断言排队后仍旧版、重启触发安装并轮询新版；Linux／Windows suites有环境条件及skip。没有草稿／后台任务保全或再升至第三版的断言，不读完整日志来追更强结论。[一手：源码／job元数据；未运行]
+
+**不要让Agent按latest示例替稳定依赖写迁移。** 2026-10-20所核稳定[26.17.0](https://github.com/electron-userland/electron-builder/releases/tag/electron-builder%4026.17.0)内updater6.8.10使用位置参数与`autoInstallOnAppQuit`；#10011的新枚举／对象API属于v27预览。Windows无窗口例外仍须单独处理。条件不符时保稳定版＋显式更新，不为新API默认迁alpha。[一手：发布／固定实现；研究：候选选择]
+
+**保工作是应用职责，不是下载器附赠能力。** VS Code稳定1.142.0固定`d956e8a6ac5d904486557eea07e1d6bd62a4d36f`的[更新服务](https://github.com/microsoft/vscode/blob/d956e8a6ac5d904486557eea07e1d6bd62a4d36f/src/vs/platform/update/electron-main/abstractUpdateService.ts#L534-L569)先走lifecycle quit，veto后回Ready；[工作副本跟踪](https://github.com/microsoft/vscode/blob/d956e8a6ac5d904486557eea07e1d6bd62a4d36f/src/vs/workbench/services/workingCopy/electron-browser/workingCopyBackupTracker.ts)另处理保存、备份、失败和取消。只借职责拆分，不推荐复制VS Code框架，也不把源码存在作全分支实测。[一手／研究]
+
+**真实撤回与采用只能支持各自范围。** [#7807](https://github.com/electron-userland/electron-builder/issues/7807#issuecomment-5436872943)使用者在24.13.3试启动更新后撤回，白窗／旧缓存问题不证明v27失败；[Joplin #11802](https://github.com/laurent22/joplin/pull/11802)重新允许Windows feature flag，[#14083](https://github.com/laurent22/joplin/pull/14083)修下载／验签异步失败并有作者升级测试自报，非原用户独立复测或草稿恢复证明；[Zed后续回执](https://github.com/zed-industries/zed/issues/13825#issuecomment-2653885744)经Homebrew Cask成功更新，反驳按渠道名一律禁自更新。执行项目时补齐实际包契约，不靠单次重装归因。[一手／社区；研究]
+
+### 资料验收与停止条件
+
+两任务包各须有固定输入、Agent可做动作、人决定项、两轮需求、现成替代、产物判据和撤回；至少产生一个明确采用决定。逐项对应已核机制与缺口，不以链接数代替决定。15提供任务入口，18维护唯一选择；本记录存任务包和证据，不新建目录或编号专题。[研究：验收]
+
+成本分初次接入、每次发行、签名／渠道维护、目标OS验证、用户操作、故障支持六类。未知工时／费用保留未知，不估“省几天”。原生安装、签名、设备更新、中断、凭据或费用不在当前执行范围；资料交付可独立验收，原生运行另列未运行，不拿未授权实测阻塞全部资料工作。[研究：范围]
+
+如果最终只能写“保存后再更新”或API能力表，撤掉独立项目；若两情境没有不同Agent选择，也不以预算数字硬撑。一个OS或安装类型有证据就收窄，不扩称全平台。当前未证明安全连续升级、零数据丢失或AI净收益。[研究：停止条件]
+
+**本轮另三题不立项。** mutation／属性测试已有15§6的JiTTest／ACH等覆盖；连续修改benchmark重复20／22／M6；网页可访问性缺新Agent取舍链且与P11／P12重叠。此为针对性查重负结果，非全网穷尽；不为凑项目水位加同义题。[研究：规划记录]
