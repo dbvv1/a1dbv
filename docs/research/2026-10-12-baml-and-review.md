@@ -593,3 +593,19 @@ Mozilla原文称最小测试帮助工程师复核并在Firefox148前修复；22�
 独立核查者另读issue、PR及compare，确认渠道与回执范围；本轮只读公开正文、评论、源码及元数据，未运行VS Code／模型。PR验证清单是自报，最终[approval正文](https://github.com/microsoft/vscode/pull/337722#pullrequestreview-5311632703)标Written by Copilot，不能称独立人工运行验证；另一空正文approval也不证明测试范围。没有复核该外部提交hosted CI，不把页面绿色状态写成本仓通过。[研究]
 
 **独立内容复核（2026-10-22 UTC+8）**：新上下文审查者完整阅读15及本节实际差异，另读Amp两篇、Imprint、VS Code全部12条公开评论、PR approvals与固定凭证源码；未见阻断问题。确认任务范围、渠道回执、不同根因可能性及授权边界一致；审查覆盖本次两文件交付，不替后续变更或外部运行背书。[研究]
+
+
+## P72审计补强：离线评审怎样进入放量
+
+核实2026-10-22（UTC+8）。S9以外的ReviewBench为校准审计后验带入，不是自主发现。当前整体最优未知；近期领先参照为GitHub／Michelle Zhou、Alejandro Carderera de Diego的10-05工程复盘。常见可行基线仍是原生评审、已有确定性检查和风险人审；本仓借离线筛选→生产窄试→实际修补接收，不新增评估平台。[研究]
+
+[官方原文](https://github.blog/ai-and-ml/reviewbench-an-open-benchmark-for-ai-code-review/)已读Broad ground truth、Metrics、Internally audited、How used相关正文。其人工96.6%一致率针对既有gold重标，不是评审器precision或全PR召回；线上addressed rate为LLM推断的评论后对应修改。lite-tier多模型ensemble的A/B与离线同向，但模型组合、完整样本区间及人工投入未齐，不据此推荐当前Codex／Claude都换多模型。评论量正文与图表数字不一致，本次不用该数值。[一手；研究]
+
+**公开实现可核，不靠名称解释指标。** 正常云浏览器已打开[公开站](https://review-bench.ai/)及methodology，先前web抓取失败仅是该读取路径失败。固定仓库SHA `9fd1c9bb1f3a2e1e6dbbd2a226a47c82b6c90e87`：
+- [scorer](https://github.com/review-bench/ReviewBench/blob/9fd1c9bb1f3a2e1e6dbbd2a226a47c82b6c90e87/scripts/eval/scorer.ts#L155-L179)的grounded recall分母为固定golden TP；augmented把候选新TP同时加到分子分母，不能独自跨候选排名。grounded precision排除未匹配项，不是全部输出的精确率。[一手]
+- [分类prompt](https://github.com/review-bench/ReviewBench/blob/9fd1c9bb1f3a2e1e6dbbd2a226a47c82b6c90e87/scripts/classifier/prompts.ts#L16-L59)3.0.0明确scope不参与TP/FP，既有／diff外问题也可TP，范围另标；不能将网站概述与固定判定器混作同一口径。[一手]
+- [matcher](https://github.com/review-bench/ReviewBench/blob/9fd1c9bb1f3a2e1e6dbbd2a226a47c82b6c90e87/scripts/eval/matcher.ts#L31-L59)让LLM判两个发现是否可由同一修复解决，不负责判发现本身正确。公开manifest和gold入口已确认，未下载数据集或运行评估。[一手]
+
+**采用决定。** 固定任务集、gold、判定器／prompt及聚合口径筛候选，再以真实目标风险进入窄试。新增问题应逐项核实而非丢弃，但只审本次回归时不能将清理既有缺陷算同一效果。生产只多评论、诱发错修或增加总处理负担，就撤回扩量；不凭采纳代理减少必要人审。[研究]
+
+与既有证据分工：Claude事故／干净PR材料支持风险校准，Cloudflare支持采用代理与质量分开，这里补离线至生产的选择和实际判定器范围。GitHub与Microsoft同企业阵营，不算两支独立企业佐证。来源由审计带入；论文／产品效果未复现，09的gap1不变。P51在该子研究外部读取前已读，但本批其它子题为后验重读，不把分片分别计自用项目；无全网漏检率分母。[研究]
