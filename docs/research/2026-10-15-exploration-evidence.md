@@ -477,3 +477,33 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 | 新补、优先 | Cursor 7-30环境复盘 | 未找到URL/anydev；按工具功能搜容易漏团队自用基础设施。直接改变07/20建议。 |
 | 新补、优先 | Claude.dev 10-15评审 | 未找到slug/作者；Engineering列表没有此篇，官方出口分散。加强09/07复审收敛与风险层次。 |
 | 已覆盖，不计新增 | Cursor 9-23 token efficiency；ETH AGENTS.md v3；Willison9-27演讲整理 | community-source-records等已有；仅作为名册和反证，不重报成果。 |
+
+## 后续选题资格：从来源名册到可交付问题
+
+**优先补故障证据和优化后的接受判断，不重开工具名单。** 2026-10-21从覆盖地图与上述名册筛选；以下是项目提议和资格证据，不是项目已经完成。此前PBT、ACH／JiTTest、PerfAgent／Shinka等已有研究被排除，避免换标题重复。最高水平整体优胜均未知。[研究：规划判断]
+
+### P48：优化后的分数是否足以换掉旧Skill描述
+
+近期参照是Lance Martin的[9-28指南](https://claude.dev/blog/automating-eval-design-and-hillclimbing/)，现成对照是[DSPy 3.1.3](https://dspy.ai/3.1.3/learn/optimization/overview/)。本题不再复算P44的既有指标，而问分数怎样参与选择：即使不让优化者读取失败正文，反复用同一分数选优也会改变其证据角色。[一手；研究：问题界定]
+
+**官方已经提供两条路径，先复用。** 固定[Skill指南](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/claude-api/shared/evals/eval-hillclimb.md)（blob `7e16832bef17a195ee87da35a4fd4df1b6fc9264`）默认train／test逐轮选优，另可选train／validation／test，最后只在test比较基线与胜出版本。已核同commit的[lite报告](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/claude-api/shared/evals/report/build-report-lite.mjs)能标train／val／test，胜出轮取显式best.round；[runner骨架](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/claude-api/shared/evals/report/runner-scaffold.mjs#L386-L443)的loadCases仍需编排，分集标签不会自动阻止终评提前运行。因此本项目要比较可正确执行的现成路径，不仅对照指南措辞。文中“约150+”是路径提示，不是统计充分的保证。不能把文章默认流程解释成官方缺少独立终评，也不能据此断言其14题实例已泄漏。[一手；研究：可用能力核查]
+
+项目交付限定为Skill描述优化：同一公开可复查候选账，分别回放逐轮分数选优、validation选优后独立终评、读终评再改配置三条路径；记录每项反馈的去向、全部尝试投入和二次修改后的接受／延后决定。确定性反例只验证选择机制；真实模型优化收益另验。预计1–2天，正文落22，复用现有实验目录，不新造优化框架。[研究：验收设计]
+
+### P49：Agent生成服务交付后，故障信号能否区分原因
+
+近期[可观测代码研究（2026-07-07）](https://arxiv.org/html/2607.05785)将功能可运行与故障特异证据分开；[Cursor Rollouts（9-23）](https://cursor.com/blog/rollouts-and-security-reviewer)从变更制定观察计划。前者在生成时补诊断语义，后者消费已有遥测判断发布，两者不是互相替代。默认复用已有信号，只有不能区分目标故障才补埋点。[一手；研究：同题责任分层]
+
+现成底座为OpenTelemetry Astronomy Shop：[官方故障开关](https://opentelemetry.io/docs/demo/feature-flags/)区分付款调用报错与Checkout使用错误地址导致的Payment不可达。项目只取正常、`paymentFailure`、`paymentUnreachable`三路；交固定源码—信号发出位置—预期证据—可排除原因矩阵，以及接收者实际应查什么。它是源码推导资料包，不拿预期信号冒充运行日志；demo或真实模型执行不作为资料验收的隐藏前提。[一手；研究：验收设计]
+
+预计1.5–3天，落15调试／18接管及既有维护研究。当前公开源码和配置尚未固定为同一版本，不能拼接浮动网页称已证运行。仓库头查询因审批初始化错误未执行，原因不是缺少用户仓库授权；该动作未换路重试。真实部署、引擎和私人遥测不在本项目范围。[研究：资格缺口]
+
+### 待补证候选：修改之前，取得可核而非无限承诺的引用集合
+
+[Unity Insight（2026-09-23）](https://arxiv.org/html/2609.27585)把代码与序列化资产关联交给Agent；论文只测探索成本，索引构建在计时外，不能推导引用正确率或改动安全性。现成对照为[InnoGames Asset Relations Viewer](https://github.com/innogames/asset-relations-viewer)：Reload、Update和完整重建并非一回事，场景对象与Addressables也各有覆盖条件。[一手；研究：采用前提]
+
+候选取RedRunner的固定静态问题：脚本meta→场景／Prefab→字段fileID→被引用对象，和代码中的消费位置对应。GameManager题目前缺序列化消费者正文；论文公开的Chest Big→Animator→Controller→Open.anim只能作校准／回归锚点，不冒充陌生发现。取得同版原件后，再比较正确的手动GUID查找与正确刷新的现成索引，交答案包、刷新成本及必须回编辑器的条件。预计1–2天；不运行引擎，静态无引用不授权删除。[研究：提议，待补资格]
+
+### 未独立立项：任务感知选模
+
+[Cursor 7-22](https://cursor.com/blog/router)与[8-06技术文](https://cursor.com/blog/how-cursor-router-works)补出逐轮分类、换模型缓存成本及用户后续行为代理。02已有相对固定分流核总投入的默认，这些自报还不足以单独改变该选择；先归既有时效维护，不重做Scrouting，不与P47故障回退混为一题。只有补出具体可控路径和可改变的采用决定，才重开立项。[一手；研究：负结果]
