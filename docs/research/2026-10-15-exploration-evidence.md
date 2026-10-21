@@ -402,6 +402,12 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 
 本轮完成真实需求、候选、排除理由与保留现法决定的资料交付，但不计 P4 陌生发现的完整验收。专项核验沿用临时脚本、独立 Agent 与定点浏览器检查，不代表用户投入人工，也不将临时核验器升级为通用解析器。没有新增已可直接采用的陌生候选；使用者是否陌生／愿用、实际接入、第二次修改收益均未知。未运行候选、模型或引擎；唯一浏览器观察是读取本仓固定 GitHub 文档的已渲染标题，不是候选测试或 hosted CI。既有 25 已覆盖版本对齐和现成／薄层的区分，因此不为这个案例再加同义正文。[研究：负结果与交付价值]
 
+## P62：运行升级问题的定向查证负结果
+
+2026-10-21：为P60继续查旧版排空／兼容续接／边界交接哪条总负担最低，未取得匹配的公开比较。新读[AI21 6-24报告合并](https://www.ai21.com/blog/merging-weak-agents-into-a-state-of-the-art-deep-researcher/)与[DRFlow v2](https://arxiv.org/html/2606.18191v2)：前者合并已有报告，后者用合成资料评价步骤／条件／支持度；它们可借的机制已在25，不新增推荐、标记或框架。转载9月日期不能代替AI21原文日期，DRFlow输出token成本代理不是完整研究总投入。[一手；研究：有界负结果]
+
+P60已核维护链没有新增运行结果，本轮不重报发现。没有两路冻结报告或完整相关集，不报召回率、错误引用率，也不声称原生方法胜出。恢复条件是出现同任务升级后的交付接收与累计维护投入，而非新增榜单／长报告；不重做M6旧三题。[研究]
+
 ## P46：按团队追踪来源与漏检校准
 
 **先修可运行、可观察的验证入口，再加流程。** 本轮比较三篇指定自用复盘，并补Cursor环境与Claude Code评审两项遗漏，改变07／20的环境优先级、确认09的收窄默认；25补团队检索步骤。核实：2026-10-21；以下为一手团队自报与本仓研究判断，未运行其产品或测量本仓效果。
@@ -426,6 +432,8 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 产品判断名册补充（P52）：Vercel／John Phamous的[2026-06-25 product-design实践](https://vercel.com/blog/teaching-agents-product-design-at-vercel)，从[官方博客](https://vercel.com/blog)追产品决策与机械检查的分工；文案评估不是整个设计流程胜率。详见[05代际研究](2026-10-13-domain-skill-contract.md#p52技能代际复核)。[一手／研究]
 
 长程名册补充（P47前瞻自用）：沿[Temporal／Moe Abadi的10-08工程文](https://temporal.io/blog/the-immortal-life-of-pi-running-the-pi-coding-agent-on-temporal)与[Earendil Engineering的10-01发布](https://earendil.com/posts/pi-durable/)追耐久执行的当前契约和失败边界；先区分模型请求与工具执行状态，不把实验宿主直接列为生产默认。[一手／研究]
+
+模型取舍名册补充（P65，2026-10-22）：新读[Stet作者的同题维护对照](https://www.stet.sh/blog/gpt-6-1-sol-vs-gpt-6-sol)，核公开提示／补丁／清单并追[Tor固定测试覆盖产物](https://github.com/Tor-Production/sol-coding-benchmark/tree/af860aa8cbbcbbca3dde3b44d48e7dda292b9238)；真实维护与构造题分开，判定器过窄不冒充模型能力差。最高水平卡、排除项及取舍归[P65记录](2026-10-10-audit.md#p65模型换代与effort的实际质量差异)。[一手／社区／研究]
 
 交付接收名册补充（P61，2026-10-21）：新读[Stephen Toub 的 Copilot runtime 生产迁移复盘](https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/)，追[VS Code 同版本接管产物](https://github.com/microsoft/vscode/pull/341861)及[下一版采用](https://github.com/microsoft/vscode/pull/341922)；不把自动修绿视为可以改权限／判定器。固定链与自报／未核范围见[长任务研究](2026-10-12-long-task-evidence.md#p61整轮交付与争议接管)。[一手／研究]
 
