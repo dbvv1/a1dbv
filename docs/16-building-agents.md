@@ -1,27 +1,34 @@
 # 16 · 自建 Agent：什么时候值得、用什么搭
 
-> 编辑更新：2026-10-16（UTC+8）。自建、SDK 与托管的选择；[来源与核查范围](research/2026-10-12-long-task-evidence.md#16-页历史页头)。未实测 SDK 或模型效果。
+> 核实更新：2026-10-21。补原生循环与自建控制层的同题比较；[本轮证据](research/2026-10-12-long-task-evidence.md#p57复用循环与跨次控制的同题比较)、[既有核查范围](research/2026-10-12-long-task-evidence.md#16-页历史页头)。未实测 SDK 或模型效果。
 
 > 前面的章节讲“怎么用现成的 Coding Agent”。这一篇讲**什么时候该自己搭**，以及各家的搭建方式。
 
 ## 1. 先问：真的需要自建吗？
 
-**30 秒结论：多数情况下不需要自建循环。** CI 小任务先用非交互 CLI；需要嵌入应用、结构化事件或回调再用 SDK；愿意把循环和会话状态交给服务商才选托管。只因需要内网工具或缓存优化，不足以推导出必须重写 harness；若工具输入输出也不能出网，则先排除不符合数据边界的托管方案。**[研究：依据下文 §3、§4.2、§4.5]**
+**30 秒结论：✅ 重复代码／CI／依赖维护，先复用现成 Agent 循环；做自己的产品不等于重写循环。** 单次修改从 CLI／编码 SDK 起步，批量任务先用已有原生委派；只有目标枚举、版本、审批或交付状态的缺口，才补薄控制层。有明确质量／时延目标也可直接比较自建，但要把环境、适配和人的接收算进投入。**⛔ 不因任务多或要嵌入产品就重写 harness。** 额外层不能改善所需结果，或下一次修改的维护负担抵消收益，就删减该层，保留验收边界。**[研究：本节比较]**
 
-先按这个顺序排除：
+### 当前最高水平
 
-| 需求 | 先试试 | 原因 |
+<!-- frontier: status=已比较 gap=2 gen=2026-10 checked=2026-10-21 -->
+
+**同题整体最高水平未知。** 领先参照是 Spotify：Max Charas、Marc Bruggmann 的 [Honk 复盘（2025-11-24）](https://engineering.atspotify.com/2025/11/context-engineering-background-coding-agents-part-2)记录了自建循环被 Claude Code 替代；[Niklas Gustavsson 演讲回顾（2026-06-03）](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)确认仍以 Agent SDK 做代码修改，自有平台保留目标、排程和进度。旧撤回有近期持续采用支持，但没有当前同模型、同验收、全投入的对照。**[一手：团队自报]**
+
+**主流采用率未知；可行基线是现成 CLI／SDK。** 本仓推荐是比较后的条件默认：复用动态读改测，自己只补产品责任，不声称成本或质量最佳。Cursor 的 [Josh Ma（2026-06-02）](https://cursor.com/blog/cloud-agent-lessons)也报告撤掉 CI 抓日志等任务硬编码，改用工具让 Agent 判断，仍保留持久执行与运行环境。**[一手；研究：取舍]**
+
+### 同一个维护请求，三种实现怎么接收
+
+固定题目：修复 CI 或升级依赖，审查期间主干又有改动，下一轮仍须保住新代码并交付。三条路线交同样的当前版本修改、全部目标处置和检查结果；不是用单次 CLI 对比整个平台的功能数量。**[研究：比较口径]**
+
+| 路线 | Agent 做什么 | 跨次责任由谁承担／何时采用 |
 |---|---|---|
-| 在 CI 里让 Agent 修测试、写发布说明、做评审 | `claude -p`、`codex exec`、Gemini CLI 非交互模式（v0.63 起可以自主执行计划） | 现成的 harness 已经很强，脚本调用即可 |
-| 团队共享的流程和知识 | Skill、插件、Hook | 不用写 Agent 循环 |
-| 定时任务、长期跟进 | Claude Code 的 `/loop`、Routines；Codex 的云端任务；Dots | 平台已经托管 |
-| 接公司内部系统 | 写一个 MCP 服务器或 CLI，给现成 Agent 用 | 比自建 Agent 省事得多（见 [04](04-mcp.md)） |
+| 现成 CLI／编码 SDK | 找代码、修改、运行检查 | 人与已有 CI／任务系统核当前版本和接收；任务已可完整交付时保留 |
+| 原生委派 | 拆分批量目标，回收子任务结果 | 先核原生接口能否列全目标、报告失败并保留人工接管；已覆盖就不另建调度层 |
+| 编码 SDK＋自有薄控制层 | 同样的读改测，不重写模型推理步骤 | 程序只补缺失的目标清单、版本绑定、审批与交付记录；这些责任确有缺口或有可验收益才加 |
 
-**值得自建的情况**：
-- 要把 Agent **嵌进自己的产品**（给用户用，而不是给开发者自己用）；
-- 需要**自定义的权限边界和审批流程**，现成工具的权限模型不够；
-- 需要**托管在自己的基础设施上**（数据合规、内网）；
-- 任务有固定的结构，适合**工作流**（代码控制流程）而不是开放式 Agent。
+**把准备和再改也算进去。** Spotify 的 [数据迁移复盘（Devon Edwards Joseph，2026-04-22）](https://engineering.atspotify.com/2026/4/background-coding-agents-dataset-migrations-honk-part-4)在当时不能外取 schema／文档的受限入口下，因全量提示难维护而放弃 Scio 分支。若新需求持续膨胀提示／映射，先收窄覆盖或改善接口。Agent 查当前代码并验证，人决定业务语义、风险和接收；继续的 dbt／BigQuery 路线因缺构建时单测，仍由下游团队手测。**[一手；研究：撤回条件]**
+
+内网工具优先接已有 MCP／CLI（见 [04](04-mcp.md)）；若工具输入输出也不得出网，先排除不符合数据边界的路线，细节见 §4.5。
 
 Anthropic 官方 Skill 给出的四条检查标准，任何一条答案为“否”，就应该停在更简单的方案（单次调用或固定工作流）**[一手]**：
 
@@ -37,7 +44,7 @@ Anthropic 的划分方式最清楚：**harness**（Agent 循环、上下文管�
 | 方案 | 你写什么 | harness | 部署 | 自带的工具 | 适用 |
 |---|---|---|---|---|---|
 | **Claude API 手写循环** | `while stop_reason == "tool_use"` 循环 | 自己写 | 自己托管 | 只有你定义的 | 要完全掌控循环 |
-| **Claude API Tool Runner** | 只写工具函数 | SDK 提供循环（有每轮 Hook：审批、拦截、重试、压缩） | 自己托管 | 只有你定义的 | **自定义工具的 Agent，多数情况的首选** |
+| **Claude API Tool Runner** | 只写工具函数 | SDK 提供循环（有每轮 Hook：审批、拦截、重试、压缩） | 自己托管 | 只有你定义的 | 仅调用业务工具、无需编码环境时的起点 |
 | **Claude Agent SDK** | 提示词 + 选项 | **就是 Claude Code 的 harness**（内置读写、编辑、Bash、搜索、子 Agent、Hook、权限、会话） | 自己托管 | 内置文件和 Bash 工具 + MCP | 要在自己的基础设施上跑一个“现成的编码 Agent” |
 | **Claude Managed Agents**（beta） | Agent 配置 + 你的工具结果 | Anthropic 运行循环 | **Anthropic 为每个会话提供容器**（也可以自托管沙箱） | 容器内的 Bash、文件、代码执行 + Skill + MCP | 长时间运行、需要工作区、定时运行、需要按明确 rubric 迭代的任务 |
 
@@ -59,14 +66,11 @@ OpenAI 的对应划分 **[一手：developers.openai.com]**：
 ## 3. 怎么选
 
 ```
-需要嵌入产品，或自定义权限和审批？
-├─ 否 → 用现成 Agent 的非交互模式（claude -p / codex exec）+ Skill / MCP。到此为止。
-└─ 是 → 需要文件系统和 Bash 这类“编码能力”吗？
-         ├─ 是 → 需要自己运行 harness？
-         │        ├─ 是 → Claude Agent SDK / Codex SDK
-         │        └─ 否 → Managed Agents / OpenAI Agents API
-         └─ 否（只调用你自己的业务工具）→ Tool Runner / OpenAI Agents SDK
-                  （模型厂商可能要换？→ 选支持多模型的框架：OpenAI Agents SDK、ADK、Strands）
+先用 CLI／编码 SDK 完成同一维护请求
+├─ 批量目标 → 先核原生委派能否完整接收
+├─ 要嵌入产品 → 编码能力用 Agent SDK／Codex SDK；仅业务工具用 Tool Runner／Agents SDK
+├─ 愿意交出循环与会话运行 → 比较 Managed Agents／Agents API 的部署与数据边界
+└─ 仍缺控制责任 → 只补缺口；重写循环须另证其必要性
 ```
 
 **两个容易混淆的点** **[一手]**：
@@ -132,11 +136,11 @@ Anthropic 的 Agent 设计指南 **[一手]**强调专用工具便于表达操�
 
 | 方案 | 评级 | 说明 |
 |---|---|---|
-| 现成 Agent 的非交互模式（`claude -p`、`codex exec`） | ✅ | 绝大多数自动化需求的起点 |
+| 现成 Agent 的非交互模式（`claude -p`、`codex exec`） | ✅ | 可完整接收的单次代码／CI 维护起点 |
 | Claude API Tool Runner / OpenAI Agents SDK | ✅ | 自定义业务工具的 Agent |
 | Claude Agent SDK / Codex SDK | 🧪 | 在自己的基础设施上跑编码 Agent；注意它们依赖对应 CLI 的版本 |
 | Managed Agents / OpenAI Agents API | 🧪 | 托管运行，长时间、定时、需要工作区的任务；都还是较新的产品 |
-| 从零手写 Agent 循环 | 👀 | 只在需要特殊控制流时才值得 |
+| 从零手写 Agent 循环 | 👀 | 现成循环无法表达所需能力，且同题结果值得承担持续适配时再选；产品控制层可独立建设 |
 
 ## 来源
 

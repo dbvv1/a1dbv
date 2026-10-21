@@ -427,6 +427,8 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 
 长程名册补充（P47前瞻自用）：沿[Temporal／Moe Abadi的10-08工程文](https://temporal.io/blog/the-immortal-life-of-pi-running-the-pi-coding-agent-on-temporal)与[Earendil Engineering的10-01发布](https://earendil.com/posts/pi-durable/)追耐久执行的当前契约和失败边界；先区分模型请求与工具执行状态，不把实验宿主直接列为生产默认。[一手／研究]
 
+维护控制名册补充（P57，2026-10-21）：从[Spotify Engineering](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)的Honk系列追循环采用与迁移撤回；从[Shopify／Erin Son、Kaiyi Li](https://shopify.engineering/river-vulnerability-remediation)追跨次接收及人工接管；从[Cursor／Josh Ma](https://cursor.com/blog/cloud-agent-lessons)追任务编排撤回与运行责任。原文已读，采用条件与缺口统一归[长任务研究](2026-10-12-long-task-evidence.md)，不据厂商产量或估算成本声称净收益。[一手／研究]
+
 跨线个人雷达：[Simon Willison](https://simonwillison.net/)及其[9-27演讲整理](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)。本人经验为一手，转引追原作者；本仓已收录，不计新增。
 
 ### 三篇指定校准卡
