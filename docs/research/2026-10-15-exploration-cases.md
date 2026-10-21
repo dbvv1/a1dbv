@@ -174,109 +174,107 @@
 
 ## P41：真实配置比较先选任务源，再验证判据
 
-**默认先用Datasette的固定历史任务做资格验证，不先搭整套基准框架。** 两路查漏主要改变后备的验收规则与指标判断，没有推翻首选；实际运行资格仍未通过。**[研究：本仓决定]**
+**先用 Datasette 固定历史任务做无模型资格验证。** 两路查漏改变了后备验收规则与质量指标，未推翻首选；安装失败，运行资格尚未通过。**[研究：本仓决定]**
 
 P38 需要修错、跨层修改、可测质量改善三个任务，并能继续修改或用留出回归检查旧行为。输入须公开有许可、可固定版本，不依赖真实账号、邮件、付费服务、大模型下载或游戏引擎。准备目标为半天，实际准备／检查耗时须测量。
 
-沿用[审计 C17 的最高水平卡](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c17--ai-探索)：领先候选是独立搜索、回到原始证据、按决定和产物评估，而非搜索—摘要—引用数量。当前最强研究产品／方法仍未知，本次不是再研究这一方法，也没有证明它优于其他搜索方式。[研究：本仓实践]
+**证据边界**：本节是约束下的任务源选择，不是模型或搜索方法收益验证。三个同源任务只支持局部判断；使用者陌生程度、愿用、训练污染、实际成本及穷尽召回未知。25页保留“仅候选／差距2”，不升级L4。[研究]
 
-任务设计方面，[Gabriel Orlanski等的SlopCodeBench论文v2（2026-05-07）](https://arxiv.org/html/2603.24755v2)提供继承自身产物、隐藏后续规格和测试的前沿参照；参考臂另找到 [SWE-Journey v1（2026-10-08）](https://arxiv.org/abs/2610.11559v1) 的持续容器和演化需求，但其公开任务包、许可和半天准备尚未核实。后者补充了近期参照，没有构成必须换框架的理由。[研究]
+沿用[审计 C17 的最高水平卡](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c17--ai-探索)：领先候选是独立搜索、原文核实、按决定和产物评估，比较基线为搜索—汇总—引用；主流参照为检索、核源码／许可、列候选与排除条件。当前最强研究产品／方法仍未知。[研究：本仓实践]
 
-**当前默认：先采用 Datasette 进入无模型资格验证。** 其固定历史来源覆盖特殊表名修复、权限解释的逻辑—HTTP—模板修改、SQL 权限性能改善，且基础为公开 Python／SQLite 应用资产。参考补丁分别为 [591b909a](https://github.com/simonw/datasette/commit/591b909a4d216ed76d3c775484df52b54e89dc74)、[7f0a8b38](https://github.com/simonw/datasette/commit/7f0a8b38aee771828fe7b3c7e54850249016d753)、[8b7c942d](https://github.com/simonw/datasette/commit/8b7c942d5e5ada887aa89c4d58567af39d5a3e07)。许可与历史依赖定义已核；安装失败，应用验收与行为链尚未完成。[一手；选择为约束下推断]
+任务设计方面，[Gabriel Orlanski等的SlopCodeBench论文v2（2026-05-07）](https://arxiv.org/html/2603.24755v2)提供继承自身产物、隐藏后续规格和测试的前沿参照；参考臂另找到 [SWE-Journey v1（2026-10-08）](https://arxiv.org/abs/2610.11559v1) 的持续容器和演化需求，但其公开任务包、许可和半天准备尚未核实。暂不据此换框架。[研究]
+
+**Datasette 覆盖三类任务**：特殊表名修复、权限解释的逻辑—HTTP—模板修改、SQL 权限性能改善，基于公开 Python／SQLite 应用。参考补丁分别为 [591b909a](https://github.com/simonw/datasette/commit/591b909a4d216ed76d3c775484df52b54e89dc74)、[7f0a8b38](https://github.com/simonw/datasette/commit/7f0a8b38aee771828fe7b3c7e54850249016d753)、[8b7c942d](https://github.com/simonw/datasette/commit/8b7c942d5e5ada887aa89c4d58567af39d5a3e07)。许可与历史依赖定义已核；应用验收与行为链待完成。[一手；选择为约束下推断]
 
 ### 解盲后，哪些遗漏改变了行动？
 
-1. **没有改变首选，但增加一个条件后备。** 搜索臂未深入 [SWE-bench Pro V2](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/README.md)。其任务／参考／隐藏 verifier 包装比直接挖应用提交更完整，但参考臂也未核出 V2 的受支持无账号本地路径；不能借 V1 的说明填空。这个缺口不支持以 Pro V2 取代 Datasette，更不能放宽原约束；后续[资格补核](#v2后备资格公开资产不等于本地同协议可跑2026-10-21)将它收窄为隔离能力与本地验证缺口。[一手；比较判断]
+1. **增加 Pro V2 条件后备。** 搜索臂未深入 [SWE-bench Pro V2](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/README.md)。其任务／参考／隐藏 verifier 包装更完整，但 V2 无账号本地路径未核实，不能借 V1 说明填空；后续[资格补核](#v2后备资格公开资产不等于本地同协议可跑2026-10-21)将它收窄为隔离能力与本地验证缺口。[一手；比较判断]
 
-2. **改变后备的验收规则，而非立即加第三套环境。** [FeatureBench 固定版本](https://github.com/LiberCoders/FeatureBench/blob/8d4e347ec57546685c5a87e8676bf575db022ea6/README.md) 的 V1.1 fast split 是有条件的跨层 feature 来源；其 [harness 参数](https://github.com/LiberCoders/FeatureBench/blob/8d4e347ec57546685c5a87e8676bf575db022ea6/docs/harness_cli_arg.md) 暴露了重要遗漏：默认可能跳过 success=false 的预测，比较时应明确 include-failed，且 gold 目前仅 lv1 可用。若 Datasette 跨层例不合格，再选具体实例并核下载／服务依赖；GPU-free 和上游平均耗时均不是本地轻量保证。[一手]
+2. **FeatureBench 比较须纳入失败预测。** [FeatureBench 固定版本](https://github.com/LiberCoders/FeatureBench/blob/8d4e347ec57546685c5a87e8676bf575db022ea6/README.md) 的 V1.1 fast split 是有条件的跨层 feature 来源；其 [harness 参数](https://github.com/LiberCoders/FeatureBench/blob/8d4e347ec57546685c5a87e8676bf575db022ea6/docs/harness_cli_arg.md) 显示默认可能跳过 success=false，须明确 include-failed；gold 仅 lv1 可用。若 Datasette 跨层例不合格，再选具体实例并核下载／服务依赖；GPU-free 和上游平均耗时均不是本地轻量保证。[一手]
 
-3. **拓宽质量指标选择，但不能把更稳定的数字误作有效指标。** 参考臂提供 Django [assertNumQueries](https://docs.djangoproject.com/en/5.2/topics/testing/tools/#django.test.TransactionTestCase.assertNumQueries)，提示若任务确为重复查询／N+1，查询数可比短时延更稳定；需同时保行为回归。Datasette 当前参考优化主要改变同一 SQL 的内部处理，查询数可能完全不变，不能直接用它替换时延。行动变化是资格阶段先确认指标能区分目标改善；若时延噪声无法控制，可改选确有查询数改善的现成任务，而不是事后换指标让结果好看。[一手；适用性为推断]
+3. **先验证指标能区分目标改善。** 参考臂提供 Django [assertNumQueries](https://docs.djangoproject.com/en/5.2/topics/testing/tools/#django.test.TransactionTestCase.assertNumQueries)：重复查询／N+1 可用更稳定的查询数并保行为回归；Datasette 优化同一 SQL 的内部处理，查询数可能不变。若时延噪声不可控，改选确有查询数改善的任务，而非事后换指标。[一手；适用性为推断]
 
-4. **共同反例增强风险覆盖，不增加独立实验证据数。** 两臂都找到 [Chen 等性能基准审计 v2](https://arxiv.org/abs/2607.01211v2)。这是同一研究，不是两次复现；它要求本机重放参考优化、检查语义和计时分布。两臂也均保留 [SWE-fficiency 固定来源](https://github.com/swefficiency/swefficiency/tree/12d32a2d6800824a7d84bdb6797b5708e7b7957f) 作性能后备。参考臂补出具体实例线索，但数据完整 revision／镜像 digest／本地资格未齐，不因此自动采用。[研究／一手]
+4. **共同反例只计一份证据。** 两臂都找到 [Chen 等性能基准审计 v2](https://arxiv.org/abs/2607.01211v2)。它要求本机重放参考优化、检查语义和计时分布。两臂均保留 [SWE-fficiency 固定来源](https://github.com/swefficiency/swefficiency/tree/12d32a2d6800824a7d84bdb6797b5708e7b7957f) 作性能后备。参考臂补出实例线索；当时数据 revision／镜像 digest／本地资格未齐，补核见下文。[研究／一手]
 
-5. **搜索臂提供了参考臂没有的具体应用候选。** Datasette 固定参考链及新增验收可供复用；SCBench 任务拆仓后的许可核查也显示不能从 runner 许可推定任务许可。但这不证明应用链已经可跑：历史依赖未锁，性能脚本 gist 许可未核，中间提交现已核清，连续继承按下节收窄为 A→C 候选，运行仍待确认。[一手]
+5. **搜索臂补出 Datasette 应用候选。** 固定参考链及新增验收可复用；历史依赖未锁、性能脚本 gist 许可未核，中间提交已核清，连续继承收窄为下节 A→C。SCBench 拆仓核查另提示：任务许可不能由 runner 许可推定。[一手]
 
-因此不计算候选名“召回率”。独立参考不是穷尽宇宙；关键问题是遗漏是否改变选择、排除理由、接受标准或下一动作。本次增量主要发生在**后备资格规则与质量指标判断**，没有形成足以替换首选的证据。
+查漏按选择、排除理由、接受标准或下一动作是否改变来评估，不计算候选名“召回率”；独立参考并非穷尽集合。
 
 ### 源码复核收窄跨层验收
 
-**权限解释题必须验实际交互，不能只验JSON返回。** [原需求2841](https://github.com/simonw/datasette/issues/2841)要求文档与交互demo，固定7f0a8b38的`debug_check.html`通过JavaScript请求`check.json`后填充决定和规则。API测试与模板存在仅覆盖部分路径；完整资格须核文档、实际浏览器交互和JSON规则一致，否则只报API子集，不能占满P38“跨层”验收。**[一手；研究：独立复核纠错]**
+**权限解释题必须验实际交互，不能只验JSON返回。** [原需求2841](https://github.com/simonw/datasette/issues/2841)要求文档与交互demo，固定7f0a8b38的`debug_check.html`通过JavaScript请求`check.json`后填充决定和规则。完整资格须核文档、浏览器交互与JSON规则一致；仅API测试和模板存在只能报子集。**[一手；研究：独立复核纠错]**
 
 ### 连续修改选相邻任务，不用补丁可应用代替继承
 
-**三类任务保留独立资格验证；第一条连续修改候选改选 A→C，不直接拼 B→C。** A 是特殊表名修复，B 是权限解释跨层修改，C 是 SQL 权限性能改善；这些字母是任务标签，不是历史顺序。此前仅确认 C 补丁可应用于 B 参考，不能据此省掉中间变化。[研究：2026-10-21 资格选择]
+**三类任务独立验资格，连续修改先选 A→C。** A＝特殊表名修复，B＝权限解释跨层修改，C＝SQL 权限性能改善，字母不表示历史顺序。此前 C 补丁可应用于 B 参考，仅证明文本兼容。[研究：2026-10-21 资格选择]
 
-固定父链为 B `7f0a8b38` → [目录原子刷新 `9cfc2523`](https://github.com/simonw/datasette/commit/9cfc252394eb21d05f45818dac9c374e2d141a35) → [A `591b909a`](https://github.com/simonw/datasette/commit/591b909a4d216ed76d3c775484df52b54e89dc74) → [C `8b7c942d`](https://github.com/simonw/datasette/commit/8b7c942d5e5ada887aa89c4d58567af39d5a3e07)。目录刷新把元数据与 schema 行替换收进同一个 `execute_write_fn`，先删除依赖行，再替换表行，并向 `populate_schema_tables` 传入 schema_version；这是行为修改，不是无关格式整理。[一手：四个固定提交的父链及差异]
+固定父链为 B `7f0a8b38` → [目录原子刷新 `9cfc2523`](https://github.com/simonw/datasette/commit/9cfc252394eb21d05f45818dac9c374e2d141a35) → [A `591b909a`](https://github.com/simonw/datasette/commit/591b909a4d216ed76d3c775484df52b54e89dc74) → [C `8b7c942d`](https://github.com/simonw/datasette/commit/8b7c942d5e5ada887aa89c4d58567af39d5a3e07)。目录刷新把元数据与 schema 行替换收进同一个 `execute_write_fn`，先删除依赖行，再替换表行，并向 `populate_schema_tables` 传入 schema_version；属于行为修改。[一手：四个固定提交的父链及差异]
 
-**先让 Agent 在 A 的父版本上修表名，再把实际产物和数据交给 C 的性能需求。** 目录原子刷新已在两轮共同基线内；不在轮间补入上游 gold，也不把 B 参考重置成 C 的父版本。人检查两轮输入指纹、特殊表名回归、权限语义和性能判据。若实际 A 产物不能承接 C，保留失败，不用参考实现替补；这一相邻路线仍须通过原有运行资格门。[研究：待执行选择]
+**Agent 从 A 的父版本修表名，再将实际产物和数据交给 C。** 目录刷新已在共同基线内；人核两轮输入指纹、表名回归、权限语义和性能判据。A 无法承接 C 就保留失败，不在轮间补 gold 或将 B 参考重置为 C 的父版本；路线仍须过运行资格门。[研究：待执行选择]
 
 B 继续作为独立跨层任务，从其自身父版本 `10088dfa1dd7ab0075f97e380121dff4f6a5222c` 验证。需要以后把 B 纳入长链时，再显式决定目录刷新由谁完成、如何验收；本次不为补齐历史增加第四个计分任务。
 
 ### 实际采用动作与撤回门
 
-已选择 Datasette，执行者已开始无模型资格准备。这是**进入准备阶段的实际选择**，不是最终可运行采用、用户愿用反馈或配置有效性结果。[研究：执行状态，2026-10-21，UTC+8]
+**Datasette 已进入无模型资格准备，尚未最终采用。** [研究：执行状态，2026-10-21，UTC+8]
 
 资格门包括固定依赖和源码；修错／跨层任务的 base→reference 判别；性能参考的本机稳定改善与语义回归；答案、留出测试、未来提交及缓存隔离；连续修改保留实际上一轮产物和数据，不能重置成历史 gold。若账号／大下载／环境要求不符、半天准备不可控或判据不成立，撤回相应任务并启用条件后备。模型／provider 和预算未冻结前，不启动配置因果比较。
 
-三个同源任务只支持局部判断，不能当三个独立生态样本。真实陌生程度、训练污染和穷尽召回均未知；没有要求使用者评价，执行者采用不能替代人类偏好证据。
-
-**最高水平卡补充**：主流参照为检索、核源码／许可、列候选和排除条件；本仓选择属于约束下可行的应用资产复用。领先方法沿上文C17，当前最优未知。25页前沿状态保留“仅候选／差距2”，没有搜索方法优胜证据，不升级L4。**[研究：层级判断]**
-
 ### 冻结顺序与运行断点
 
-需求于2026-10-21 03:42（UTC+8）固定，基线main a1302ef；两臂03:43分别开始，搜索臂03:46:25截止，两份报告冻结后03:53才解盲。需求SHA256为`c00ca2089c161d45f83160c53988ed97d9c359cd8d079fb292b66abd6b2c4527`，搜索输出`d9a9dc84e134688e833a292331a1bfe6e1f377a139a0439ee2d3c914e4a5bf7c`，参考输出`7d6e974ab73945386fd2504d6add27c0fd44eb2bea305a227206b2cdd188c5b7`。这些是产物身份，不是效果评分。搜索者已有项目先验，未证明训练污染消除。**[研究：执行记录]**
+需求于2026-10-21 03:42（UTC+8）固定，基线main a1302ef；两臂03:43分别开始，搜索臂03:46:25截止，两份报告冻结后03:53才解盲。需求SHA256为`c00ca2089c161d45f83160c53988ed97d9c359cd8d079fb292b66abd6b2c4527`，搜索输出`d9a9dc84e134688e833a292331a1bfe6e1f377a139a0439ee2d3c914e4a5bf7c`，参考输出`7d6e974ab73945386fd2504d6add27c0fd44eb2bea305a227206b2cdd188c5b7`。这些 hash 识别产物；搜索者已有项目先验。**[研究：执行记录]**
 
-资格准备已固定五个源码版本，A／B新增测试应用到原base，C对B参考的补丁文本兼容检查通过。断连恢复后核实：依赖安装在PyPI包索引遭代理403而失败，专用环境仍只有pip，无应用测试通过记录。停止安装，不换源绕过，保留原失败。文本兼容不证明行为连续，三个同源任务不代表三个生态样本。**[研究：截至04:09的准备范围]**
+资格准备已固定五个源码版本，A／B新增测试应用到原base，C对B参考的补丁文本兼容检查通过。断连恢复后核实：依赖安装在PyPI包索引遭代理403而失败，专用环境仍只有pip，无应用测试通过记录。停止安装，未换源绕过。**[研究：截至04:09的准备范围]**
 
-Agent负责检索、锁版本和运行判据，容易把参考答案／基准包装误当有效验收；人应核任务含义、保持条件和真实成本。上游`test_sql_does_filtering_not_python`自己说明仅验API契约，不实际检查SQL；C仍需独立测量性能与正确性。**[一手：固定591b909a的tests/test_actions_sql.py；经验：分工]**
+Agent 检索、锁版本、运行判据，人核任务含义、保持条件和成本；重点防止把参考答案或包装当验收。上游`test_sql_does_filtering_not_python`自己说明仅验API契约，不实际检查SQL；C仍需独立测量性能与正确性。**[一手：固定591b909a的tests/test_actions_sql.py；经验：分工]**
 
 
 ### P38后备资格：冻结具体性能题，不把包装当就绪（2026-10-21）
 
-**✅ 保留 SWE-fficiency 的 pandas-38248 作为具体条件后备，暂不替换已选 Datasette，更不启动模型比较。** 本轮补齐数据／参考与镜像身份，下一步可以直接核执行条件；不是另做一轮候选名单。最高水平参照仍沿上述C17／C15的实际选择、代表任务与独立结果要求；本次是可行性资格，不是研究方法或模型的优胜证据。[研究：决定]
+**✅ 保留 SWE-fficiency pandas-38248 为条件后备。** 数据／参考与镜像身份已补齐，下一步核执行条件；最高水平参照沿 C17／C15 的实际选择、代表任务与独立结果要求。[研究：决定]
 
-**选择的目标是同一行为变快，不是修一个功能错误。** [pandas PR38248](https://github.com/pandas-dev/pandas/pull/38248)已合并，base为`4c8d66ecfe2b13607afd254443979b1ff842b6c1`；数据行内参考补丁修改`datetimelike.py`比较路径，转为双方的整数视图比较。该采用事实只证明上游接收过此优化，不证明当前云端的速度或 Agent 效果。[一手]
+**选择的目标是同一行为变快，不是修一个功能错误。** [pandas PR38248](https://github.com/pandas-dev/pandas/pull/38248)已合并，base为`4c8d66ecfe2b13607afd254443979b1ff842b6c1`；数据行内参考补丁修改`datetimelike.py`比较路径，转为双方的整数视图比较。这是上游采用记录。[一手]
 
 #### 可接手的固定输入
 
-- Harness固定[`12d32a2d`](https://github.com/swefficiency/swefficiency/tree/12d32a2d6800824a7d84bdb6797b5708e7b7957f)，软件Apache-2.0、README对其他项目材料声明CC-BY-4.0；pandas固定base为BSD-3-Clause。保留各组件notice，不将harness许可扩展到整个容器。
-- [数据revision](https://huggingface.co/datasets/swefficiency/swefficiency/tree/7fbfe6c2f1f409afb17acc4c3f737991ec6e1c27)：`7fbfe6c2f1f409afb17acc4c3f737991ec6e1c27`；[官方单行API](https://datasets-server.huggingface.co/rows?dataset=swefficiency%2Fswefficiency&config=default&split=test&offset=0&length=1)完整返回`pandas-dev__pandas-38248`，无截断，响应x-revision相同。该API本身不是永久快照，后续取得输入仍须核revision与hash。
-- 行JSON按UTF-8、键排序、无分隔空格、非ASCII不转义序列化，SHA256为`6082f7fc6f506869aa221c13945c035ab460f2c2894f4808cadc0ef4eb375803`；patch为`8346948b7136136593eee43cdda09ce6326a5fd760c91665073cf80ebd7492b5`，workload为`41af1658e4c9ef17731ae855d75d6bfd832f3f0dcc11421acc3a9d0e36e37449`。本轮核单行，没有下载数据全集或发布上游完整输入。
-- 公开镜像`ghcr.io/swefficiency/swefficiency-images:pandas-dev__pandas-38248`的manifest digest为`sha256:ccae828b8446bd55f2e2323017c2746c36345f508a1ba1601db3f1496f026a59`；匿名manifest读取成功，16层压缩合计2,947,021,784字节（约2.74GiB），未拉取层。展开空间、架构与实际依赖版本仍待核，不能以metadata可读说全部镜像已可用。[一手：只读元数据]
+- Harness固定[`12d32a2d`](https://github.com/swefficiency/swefficiency/tree/12d32a2d6800824a7d84bdb6797b5708e7b7957f)，软件Apache-2.0、README对其他项目材料声明CC-BY-4.0；pandas固定base为BSD-3-Clause。各组件分别保留notice，harness许可不扩展到整个容器。
+- [数据revision](https://huggingface.co/datasets/swefficiency/swefficiency/tree/7fbfe6c2f1f409afb17acc4c3f737991ec6e1c27)：`7fbfe6c2f1f409afb17acc4c3f737991ec6e1c27`；[官方单行API](https://datasets-server.huggingface.co/rows?dataset=swefficiency%2Fswefficiency&config=default&split=test&offset=0&length=1)完整返回`pandas-dev__pandas-38248`，无截断，响应x-revision相同。API非永久快照，接手须重核revision与hash。
+- 行JSON按UTF-8、键排序、无分隔空格、非ASCII不转义序列化，SHA256为`6082f7fc6f506869aa221c13945c035ab460f2c2894f4808cadc0ef4eb375803`；patch为`8346948b7136136593eee43cdda09ce6326a5fd760c91665073cf80ebd7492b5`，workload为`41af1658e4c9ef17731ae855d75d6bfd832f3f0dcc11421acc3a9d0e36e37449`。仅核单行，未下载全集或发布完整输入。
+- 公开镜像`ghcr.io/swefficiency/swefficiency-images:pandas-dev__pandas-38248`的manifest digest为`sha256:ccae828b8446bd55f2e2323017c2746c36345f508a1ba1601db3f1496f026a59`；匿名manifest读取成功，16层压缩合计2,947,021,784字节（约2.74GiB），未拉取层。展开空间、架构和实际依赖版本待核。[一手：只读元数据]
 
 #### 不缩减原验收来制造成功
 
-原workload比较两组各一千万元素的日期数组，使用25次重复、每次10次目标比较；setup不计入目标计时。它输出均值与标准差，若保存全部样本须明确增加测量日志，不能暗改规模或重复数。[一手：固定数据行]
+原workload比较两组各一千万元素的日期数组，使用25次重复、每次10次目标比较；setup不计入目标计时。输出均值与标准差；全样本留存须显式加日志，规模与重复数保持不变。[一手：固定数据行]
 
-原数据列81个guarding文件与43,051个PASS_TO_PASS标识，FAIL_TO_PASS为空；前两者不是可相加的两组通过数。[固定test_spec](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/test_spec.py)依实例构造验证入口，不能只跑工作负载就说原正确性验收通过。当前云端命令查找未见docker／podman，未安装运行；半天准备可否实现、真实资源和耗时都未知。[一手；研究：本轮范围]
+原数据列81个guarding文件与43,051个PASS_TO_PASS标识，FAIL_TO_PASS为空；前两者不是可相加的两组通过数。[固定test_spec](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/test_spec.py)依实例构造正确性入口，工作负载不能替代它。云端命令查找未见docker／podman，未安装运行；资源与半天准备可行性待核。[一手；研究：本轮范围]
 
 #### 先追实际入口，再解释收益字段
 
-**采用默认 CLI 与同量纲工作负载均值，不直接借用另一模块的同名字段。** 固定[`cli.py`](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/cli.py#L95-L123)实际调用`run_validation_main`，其[收益计算](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/run_validation.py#L711-L725)是before/after工作负载均值；[report入口](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/report.py#L80-L98)也从保存的均值重算倍数。这是速度倍数，不是耗时下降百分比。[一手：固定源码]
+**按默认 CLI 路径比较同量纲的工作负载均值。** 固定[`cli.py`](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/cli.py#L95-L123)实际调用`run_validation_main`，其[收益计算](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/run_validation.py#L711-L725)是before/after工作负载均值；[report入口](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/report.py#L80-L98)也从保存的均值重算倍数。该比值是速度倍数。[一手：固定源码]
 
-另一个[`run_evaluation.py`](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/run_evaluation.py#L270-L303)把before工作负载均值与after整次命令墙钟混算后写进report.json。有限代码搜索未找到默认报告消费该错误字段，**不能据此说默认 CLI 或论文数字错误**。本轮据真实调用路径收窄初步判断，没有运行该分支。[一手；研究：纠错范围]
+另一个[`run_evaluation.py`](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/run_evaluation.py#L270-L303)把before工作负载均值与after整次命令墙钟混算后写进report.json。有限搜索未发现默认报告消费此错误字段，故不能据此判定默认 CLI 或论文数字错误；该分支未运行。[一手；研究：纠错范围]
 
 #### 为什么不改选新发现的 PERFOPT T6
 
-[PERFOPT-Bench论文](https://arxiv.org/html/2607.07744v1)提供性能任务比较线索，但本轮没有找到足以改变02默认的等投入证据。普通网页抽取为空后，dot云端浏览器正常读到了[论文所链产物](https://anonymous.4open.science/r/Dataset-D3CC)，页面自称HardOpt-Bench；不能把抽取失败当作没有代码。[一手；研究]
+[PERFOPT-Bench论文](https://arxiv.org/html/2607.07744v1)提供性能比较线索，本轮未找到足以改变02默认的等投入证据。网页抽取为空后，云端浏览器读到[论文所链产物](https://anonymous.4open.science/r/Dataset-D3CC)，页面自称HardOpt-Bench。[一手；研究]
 
-已读[T6说明](https://anonymous.4open.science/r/Dataset-D3CC/Task6/issue.md)当前明确Windows x64／MSVC v143，旧Linux gcc契约被替换；test.sh仍要求build.sh，而公开Code根树只见build.ps1。故它不是当前云端可直接采用的Linux替代，不为此迁移到用户电脑。[一手：页面与文件树观察]
+**T6 不是当前云端的直接 Linux 替代。** [T6说明](https://anonymous.4open.science/r/Dataset-D3CC/Task6/issue.md)当前明确Windows x64／MSVC v143，旧Linux gcc契约被替换；test.sh仍要求build.sh，而公开Code根树只见build.ps1。不为此迁移到用户电脑。[一手：页面与文件树观察]
 
-已读[test.ps1](https://anonymous.4open.science/r/Dataset-D3CC/Task6/test.ps1)比较小规模verify hash，再取内部TOTAL_MS的5次中位数判断10倍门槛；没有在该harness中见到论文所述隐藏验收调用。它不能单独证明全规模语义或整套论文评价器已经交付。源码raw进一步读取被策略拒绝后停止，未换路；没有以局部源码推断实际作弊或已知漏洞。[一手；研究]
+已读[test.ps1](https://anonymous.4open.science/r/Dataset-D3CC/Task6/test.ps1)比较小规模verify hash，再取内部TOTAL_MS的5次中位数判断10倍门槛；未见论文所述隐藏验收调用，故全规模语义与完整评价器交付仍未核实。源码raw读取被策略拒绝后停止、未换路；不据局部源码推断作弊或漏洞。[一手；研究]
 
-入口显示的源日期不是固定SHA，许可仅研究用途声明，未取得完整版本／许可链；本轮也没有源码字节hash。保留此候选的资料线索，不复制完整任务、安装或运行。[研究：资格缺口]
+版本／许可链未齐：入口只有源日期、研究用途声明，没有固定SHA或源码字节hash。仅保留线索，未复制完整任务、安装或运行。[研究：资格缺口]
 
-**执行断点与重开条件**：后续容器隔离探针的NETLINK_ROUTE访问已被平台拒绝；未拉镜像，停止这条执行路线，不放宽隔离或换路重试。只有执行条件获准且准备成本仍满足原约束时，才接校验单行输入、完整重放base/reference守护范围与同量纲时延。当前继续纯资料查漏，保留固定后备，不把镜像元数据可读记为运行就绪。[研究：执行状态，2026-10-21]
+**执行断点**：容器隔离探针NETLINK_ROUTE访问被平台拒绝，未拉镜像，未放宽隔离或换路重试。执行条件获准且成本符合原约束后，才重核单行输入、重放完整base/reference守护范围与同量纲时延；此前只做资料查漏。[研究：执行状态，2026-10-21]
 
 
 ### V2后备资格：公开资产不等于本地同协议可跑（2026-10-21）
 
-**保留SWE-bench Pro V2为条件后备，但不把它当作当前受限环境的立即替代。** 本次接续解盲后的未决项，没有重开留出搜索。决定变化是先核隔离条件，再投入镜像准备；Datasette的既有首选保留，403与未完成验收也保留。[研究：采用判断]
+**V2 保留为条件后备，当前不下载／接入。** 本次接续解盲未决项，先核隔离条件再准备镜像；未重开留出搜索或替换 Datasette。[研究：采用判断]
 
-**最高水平卡**：问题是完整基准包装能否降低同一P38需求的准备与误判代价。领先候选参照为ScaleAI V2的固定任务、gold／nop双门与干净环境复评；最高水平方法及其同题成本优胜仍未知。主流采用情况未知；比较基线沿C17的搜索—汇总—引用；本仓建议仅属约束下可行判断，不因包装完整就升级方法效果评级。[研究：层级判断]
+**最高水平卡**：ScaleAI V2 的固定任务、gold／nop双门与干净环境复评是领先包装参照；它能否降低P38准备与误判代价、主流采用情况均未知。比较基线沿C17。[研究：层级判断]
 
-[V2固定README](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/README.md)明确镜像可匿名取得、架构为linux/amd64；运行示例则使用Modal。[2026-09-22发布门](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/GATE.md)报告Harbor 0.22＋Modal下gold通过642题、nop无题通过。这支持公开资产与上游判别门，尚非无账号本地执行证据：“无registry凭据”不能推出不需要执行服务账号，也不能反过来说V2必须使用Modal。[一手：上游报告，非本仓复现]
+[V2固定README](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/README.md)明确镜像可匿名取得、架构为linux/amd64；运行示例则使用Modal。[2026-09-22发布门](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/GATE.md)报告Harbor 0.22＋Modal下gold通过642题、nop无题通过。这是上游判别门，不证明无账号本地执行，也不证明必须用Modal。[一手：上游报告，非本仓复现]
 
-**只替换运行后端不足以保持原协议。** V2要求Agent阶段断网、模型端点例外，准备和verifier阶段保留网络。[Harbor v0.22.0](https://github.com/harbor-framework/harbor/releases/tag/v0.22.0)对应`4407eb5227a2ff4f0d3f16b2eb48849382fdf276`；已读该发布版本[Docker实现](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/docker/docker.py)的`_requires_egress_control`／`capabilities`，断网、allowlist和动态切换能力依赖egress-control；其[sidecar配置](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/docker/docker-compose-egress-control.yaml)要求NET_ADMIN／NET_RAW。[基础环境](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/base.py)校验策略支持，缺少动态能力时拒绝切换。本轮不运行这些探针，也不据其他容器路线的拒绝冒称V2已实测失败。[一手：发布源码；研究：资格推断]
+**只替换运行后端不足以保持原协议。** V2要求Agent阶段断网、模型端点例外，准备和verifier阶段保留网络。[Harbor v0.22.0](https://github.com/harbor-framework/harbor/releases/tag/v0.22.0)对应`4407eb5227a2ff4f0d3f16b2eb48849382fdf276`；已读该发布版本[Docker实现](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/docker/docker.py)的`_requires_egress_control`／`capabilities`，断网、allowlist和动态切换能力依赖egress-control；其[sidecar配置](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/docker/docker-compose-egress-control.yaml)要求NET_ADMIN／NET_RAW。[基础环境](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/base.py)校验策略支持，缺少动态能力时拒绝切换。这些探针未运行；其他容器路线的拒绝不算V2失败。[一手：发布源码；研究：资格推断]
 
-Agent应把“资产可取得、后端支持所需策略、目标环境允许、实际判别通过”分别记录；人核原任务约束和准备成本。当前已能决定不投入V2下载／接入，不必等待使用者评价；重开需有合规可用且能保持协议的环境，再补具体实例、许可链与本地gold／nop验证。此次仅核公开资料与源码，未安装或运行应用、模型、容器；用户陌生程度、愿用、实际成本及方法净收益仍未知。[研究：范围与撤回门]
+Agent 分开记录资产可取得、后端支持策略、环境允许和实际判别通过，人核约束与成本。重开需有合规且保持协议的环境，再补具体实例、许可链及本地gold／nop验证；本轮仅核资料与源码，未安装或运行应用、模型、容器。[研究：范围与撤回门]
