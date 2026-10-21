@@ -130,6 +130,39 @@
 
 **范围与负结果。** 约12:28–12:38 UTC为执行者研究墙钟，含等待；Pi决定性链8个不同一手URL已读相关部分，大diff不算全文读完。Navan／Helix为本轮新增，Willison10-09旧文及P46环境／复审文章只作复用输入；其公开PR历史增补未进入本次推荐，不另计发现。原始访问总数未完整冻结，故不报整体读取比例或漏检率。未下载或运行复现包、模型、客户端；无新探针／JSON。下一份缺口是同题可接受产物、配置接续与二改的实际人工投入，不继续堆名单。[研究：回执]
 
+## P54续补：缺浏览反馈先补工具，迁移后验实际对象
+
+2026-10-22（UTC+8）；延续同一已有Web仓库修改、原验收和后续改稿的共同决策题。**宿主兼容时，先补所缺观察和工具，不为浏览能力重建完整Agent循环；迁移验收从状态声明推进到实际操作对象。** 本节补入口整页比较，不把浏览基准当代码修改质量。[研究]
+
+### 最高水平卡
+
+**领先参照是让现有强Agent得到需要的真实反馈，同时减少不必要的自建循环；唯一最佳入口未知。** Browser Use CTO Gregor Zunic 9-15回顾撤自建loop、改用现成coding harness和可编程观察；Nous的独立团队采用及10-02维护提交给出接续证据。界面层沿用Zed原CLI／ACP区别与用户撤回；环境层沿用Navan10-16实际迁移；质量目标沿用Google10-13、Anthropic9-23及Shopify9-21。主流比例未知，可行基线是已有能执行原验收的入口；本仓推荐属比较后的可行层，按缺口增补，真正跨层瓶颈才迁移。[一手／社区；研究]
+
+| 决定性来源（均为输入已知后的重读） | 读取与支持 | 限定及选择 |
+|---|---|---|
+| [Gregor Zunic／Browser Use，9-15](https://browser-use.com/posts/bitter-lesson-browser-agents) | 工程正文含行动、观察和复用loop段；曾遭循环压缩，改复用Pi／Codex／OpenCode并暴露可编程观察 | 作者销售浏览服务；支持先补工具，不证明raw CDP一律胜过Playwright，后者也能暴露CDP |
+| [Gregor Zunic，10-20公布、10-14测试](https://browser-use.com/posts/best-mcp-servers-to-control-a-browser) | 方法、结果和限制；同Codex CLI0.144.6／GPT-6 Luna medium，公共浏览任务100／200、每题一次、新云浏览器，统一judge | 厂商自评；未检出质量胜者，模型费用不含浏览／代理／judge，未测代码修改或二改，不外推真实登录Chrome |
+| [teknium1／Nous，#81958，8-10合入](https://github.com/NousResearch/hermes-agent/pull/81958)及[#83402](https://github.com/NousResearch/hermes-agent/pull/83402) | 采用正文、合入状态、默认及fallback契约；同驱动组合不同CDP后端，CLI不可用或Camofox时退回内置 | 独立采用团队，与上游有集成关系；其较早小任务结果不是当前模型完整Web修复对照，不引用增益百分比 |
+| [OutThisLife／Nous，#131623，10-02合入](https://github.com/NousResearch/hermes-agent/pull/131623)，[7200e0f](https://github.com/NousResearch/hermes-agent/commit/7200e0f5ae0c55a4a2e4a3aabc653f5c12b3204f) | PR全部说明和固定3文件diff；记录被驱动daemon并用identity-checked reload清理，下一调用解析新端点；单父b3059921bc02b94e90fb6c0cdfe07bd16005fbba | 源码的fake-daemon回归与作者的两台真实headless Chrome验证分开；本仓未运行。并发不同端点、死端点重连与owner-death另案，不声称全修 |
+| [Zed Terminal Threads](https://zed.dev/docs/ai/terminal-threads)、[#57402](https://github.com/zed-industries/zed/discussions/57402)、[#62788](https://github.com/zed-industries/zed/issues/62788) | 职责契约与已记录的审批撤回／缺卡报告；具体范围见前节 | 独立使用者不是大样本，不把历史版本故障说成当前全部ACP不可靠；保留审批链验收 |
+| [Armin Ronacher，7-04](https://lucumr.pocoo.org/2026/7/4/better-models-worse-tools/)与前节Pi固定补丁链 | 编辑历史暴露工具schema兼容问题，简单单轮提示未复现 | 模型已换代，保留维护机制而不套用旧失败率；对照原生工具与自定义组合，须验完整修改 |
+| [Navan／Rahul Popuri，10-16](https://cursor.com/pt-BR/blog/navan) | 原桌面依赖、迁移、自托管工具和浏览器段 | 客户证言发布在厂商站；不是同任务对照，模型与二改工时未知，不引用工期倍率 |
+| [Talha Naqvi／Shopify Helix，9-21](https://shopify.engineering/helix) | 通用LLM的开箱输出难稳定满足其React Native→Swift／Kotlin迁移质量，按checkpoint强制行为、同状态UI与代码复审；反馈带到后续工作 | 默认人工批准，自主模式可跳过；需要参考应用、架构标准、行为CLI和编排维护，精确模型版本、额外投入及对照分母未知。不是通用Agent品牌比较，也不将Shop的12周发布归给仍在迁移的Shopify app |
+
+### 比较取舍与独立性
+
+**整页的分层选择不靠一个浏览修复过关。** 原生CLI保留模型与工具组合；界面采用契约加实际撤回；工具补充有Browser Use路线变化与Nous采用／后续维护；循环定制有Pi修改和后续兼容反例；执行环境有Navan真实采用。它们共同回答本仓固定Web修改题中的条件选路，不构成外部统一试验。Google／Anthropic的运行反馈由非模型厂商Shopify实践佐证；Nous并非Browser Use自家博客，但集成关系已披露。[研究]
+
+**验收改为实际对象与完整产物。** 首次修改保留旧行为和可体验结果，后续修改核必要指令／审批／工具仍实际生效。浏览连接迁移须读到目标身份与可见状态并确认不再触及旧验收对象；只收到connect成功不够。无法表达观察时换工具接口，真正资源或持久执行条件不满足才换环境。[研究]
+
+**新旧代际证据分层使用。** 10月同模型浏览比较仅用于筛工具；8月Nous采用和7月Pi案例用于维护风险，由10月固定Nous补丁补当前接续。尚无全部入口在当前强模型、同一Web修复与后续修改下的统一净收益；本仓不因此宣称一个通用胜者，也不要求先证明普遍胜出才采用条件选择。[研究]
+
+### P51使用回执
+
+此为P54同项目续补，不另记自用项目。先读P51提示词与既有名册后重读决定性原文；没有新搜索发现，不新增探针或JSON。撰稿复核窗口为2026-10-21 17:26–17:31 UTC，含读取和写稿等待，不作净阅读工时。本轮重读去重原始URL N=12／F=12（相关正文），决定性D=12／FD=12；对应证据表12个URL，全部为输入已知，不另计发现。Google／Anthropic与Pi后续固定链只复用此前已核证据。尚无合格独立漏检分母。未运行客户端、模型、引擎或目标浏览器。[研究]
+
+**独立复核。** 全新上下文评审覆盖01整页及既有P54，不以单一浏览修复降低整页差距；指出Helix默认人批有自主模式、通用LLM开箱不足不是原生客户端败绩、应保复审收敛，并要求单列独立团队来源，均已修正。支持入口页已比较／gap1；剩余缺口是当前模型同一真实修改及二改的跨入口结果与投入，不据此声称性能赢家。最终实际差异仍须完整验证。[研究]
+
 ## P34 最高水平卡
 
 核实：2026-10-21（UTC+8）。问题：强coding Agent的规划、上下文与委派，额外补什么才能改善最终软件，而非只增加流程？本卡先比较近期前沿结果，再定位下文三个修订案例。[研究]
