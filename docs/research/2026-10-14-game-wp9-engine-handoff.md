@@ -1,10 +1,12 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；源层级联动与引擎组件保留分别选，解耦后显式同步；撤回旧 Unity AI MCP 并列推荐
-新证据：2026-10-20补同作赛道源／共享定义／九图消费者与两轮继承包（§13），仅静态核对；2026-10-20（UTC+8）补旧骨骼FBX跨导入器二改的路由回退、原用户有限回执及5.7旧入口反例（§4.3）；2026-10-17（UTC+8） 补 Unity 官方同源 FBX 前后对照／6.3 解包合同与 UE5.8 FBX Scene 层级重建边界（§3.2／4.2）；补核 Spine 用户材质删除、固定修复与同用户回执，区分保护用户资产与自动同步（§3.6）；2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：2026-10-21补代码—资产影响范围同题比较与索引负结果边界（§14），无引擎／模型实测；2026-10-20补同作赛道源／共享定义／九图消费者与两轮继承包（§13），仅静态核对；2026-10-20（UTC+8）补旧骨骼FBX跨导入器二改的路由回退、原用户有限回执及5.7旧入口反例（§4.3）；2026-10-17（UTC+8） 补 Unity 官方同源 FBX 前后对照／6.3 解包合同与 UE5.8 FBX Scene 层级重建边界（§3.2／4.2）；补核 Spine 用户材质删除、固定修复与同用户回执，区分保护用户资产与自动同步（§3.6）；2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
-## 当前结论摘要（2026-10-17（UTC+8））
+## 当前结论摘要（2026-10-21）
+
+- **✅ 改共享资产前用已有查询列消费者，反复追踪才评估索引**；零结果不当未使用，建库、刷新和核漏计入成本。§14比较近期候选，最佳未知，不据资料自动调低差距分。[研究]
 
 - **✅ 整组地图二改交源／派生／共享定义与全部消费者的继承包**；显式覆盖、导航／圈进度及旧记录分验。§13新增固定同作链与九图静态复算，不代表游戏运行通过（2026-10-20补）。[研究]
 
@@ -508,3 +510,44 @@ Unreal 沿用 §4.2 的任务结果接口，补明已核 Python 5.6 的非阻塞
 [p30-ue]: https://dev.epicgames.com/documentation/en-us/unreal-engine/import-sprites-in-unreal-engine
 [p30-stuck]: https://github.com/agateau/pixelwheels/issues/511
 [p30-localfix]: https://github.com/agateau/pixelwheels/commit/46cf8153b6b061f7acc6250f0f5b8ddcc075fb62
+
+
+## 14. P53：改共享资产前先查消费者
+
+2026-10-21 UTC。问题／默认在检索前冻结：普通文件搜索＋已有 Editor API 能否覆盖代码到资产消费者，何时值得增加索引？Unity AI／Insight、Epic 插件、Unity CLI／Pipeline、Roblox MCP、GameXpert／Play2Code／RSIGame、VoidExplorer、CrosswordDungeon、Cronin／Supergiant、Last Pirate／Sanctuary 及本记录旧来源均属输入已知，不算自主发现。[研究]
+
+**最高水平卡：最佳未知。** 领先候选为实时编辑器＋增量代码—资产图；主流参照为原生查询与人审，可行基线为文件搜索＋已有 Editor API。本轮确认基线，修正为先交消费者清单，再评估索引。证据支持机制比较，不支持当前代际质量胜出，也不自动满足差距≤1。[研究]
+
+### 14.1 决定性比较与生产条件
+
+| 来源／读取位置 | 支持与缺口 |
+|---|---|
+| 新读：[NVIDIA Paul Logan，2026-03-10][p53-nv]，团队／企业段；[TomNVIDIA 同日指南][p53-nv-guide]，Scope／§I | 内部部署为 Windows／UE5 C++，代码检索不覆盖 Blueprint／反射元数据；保留调试及人审。团队、模型、代码规模未知，无质量／成本对照；厂商相关建议，不证明最佳。 |
+| 新读：[Hades README][p53-hades]、[comparison][p53-hades-compare]、[LIMITATIONS][p53-hades-limit] | 单维护者称一个大型 Unity 生产项目试用，规模／模型／审查未披露。对照却是 v1.2、Opus4.8 high、CC2.1.169 的小型 arena 单题双臂，工具和指导同时改变；当前v2待重测。v2不发旧置信／健康字段，变体／嵌套与运行时关系可漏；零引用不证明未使用。动态main，发布日期／固定SHA未核。 |
+| 已知重读：[Unity Insight v1，Gu等，2026-09-23][p53-insight]，§2–3 | 静态代码—资产图；两游戏28问每臂一次，型号未披露，只计成本，重建在计时外；无正确率评分。作者称已集成Codely，不证明生产修订成功率。 |
+| 新读：[Epic5.8 Semantic Search][p53-semantic]，支持类型／索引 | 未索引或不支持资产不出现在语义结果，缓存外资产需描述与embedding请求；相似发现不等于引用遍历。 |
+| 新核：[Unity6.3 GetDependencies][p53-dep]；[UE GetReferencers][p53-refs]／[Registry][p53-reg] | Unity返回正向资产依赖而非消费者；UE引用只覆盖磁盘，初始扫描可能未齐。原生也须说明方向／范围／状态，非全集保证。 |
+
+以上相关正文已读，Hades未看录像或运行；官方版本页日期未显示，均以本次核读日标记。补充生产对照：[LoopedInGames，2026-06-19][p53-void]自述单人Unity6 URP2D／Opus（代际未知），173脚本约29k C#行、全人审，通过MCP读场景与组件；无索引对照，且文章由AI协助写作，不验证产量／质量。[一手：作者自报／文档；研究：适用范围]
+
+### 14.2 决定与撤回
+
+先用已有API列直接／继承消费者，Agent清点、人确认动态加载及验收范围；索引只在重复跨资产追踪昂贵时评估。对照基类／变体／嵌套及改名后的结果，计初建、刷新与核漏成本。索引过期、关键漏项或总投入不优于原生时撤回，不凭零结果删资产。未安装、运行引擎／模型或测净收益。[研究]
+
+### 14.3 冻结回执
+
+提示词`2026-10-21-exploration-self-use.md`；基线`cda12a9`；11:32:52–11:35:30 UTC约158秒墙钟，研究／等待净时不可分。按原始页面去重N=13、相关正文F=12（92.3%），D=10、FD=10；已知重读1、新读11。D为上表10页；非D为Void博客、同站[workflow][p53-workflow]和未读到正文的[NVIDIA GTC会话][p53-gtc]。同站页面不是独立团队；旧仓内复用不计F。GitHub元数据web不可访问、公开HTTPS返回403，两个raw镜像Cache miss；不重复计原页面，未绕限制。审计G01已在输入读取，不能当独立盲测；漏检尚无可计算分母。[研究]
+
+[p53-nv]: https://developer.nvidia.com/blog/?p=113547
+[p53-nv-guide]: https://forums.developer.nvidia.com/t/cursors-ai-visual-studio-a-powerful-ue5-c-hybrid-workflow/362681
+[p53-hades]: https://github.com/TheArcForge/Hades
+[p53-hades-compare]: https://github.com/TheArcForge/Hades/blob/main/Documentation/comparison.md
+[p53-hades-limit]: https://github.com/TheArcForge/Hades/blob/main/LIMITATIONS.md
+[p53-insight]: https://arxiv.org/html/2609.27585v1
+[p53-semantic]: https://dev.epicgames.com/documentation/unreal-engine/semantic-search-in-unreal-enigne
+[p53-dep]: https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.GetDependencies.html
+[p53-refs]: https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/AssetRegistry/GetReferencers_Message
+[p53-reg]: https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-registry-in-unreal-engine
+[p53-void]: https://www.loopedin.games/blog/how-i-built-void-balls-using-ai
+[p53-workflow]: https://www.loopedin.games/workflow
+[p53-gtc]: https://www.nvidia.com/gtc/session-catalog/sessions/gtc26-s82356/

@@ -1,6 +1,6 @@
 主线：二／三；G1 引擎接入与 G2 模板接管、第二次修改
 改变的建议：[研究] 默认原生 Agent＋现有工程；按需拆借模板／同 build 验证，不因生成分数整套迁移；原身份、取消、实例与旧档检查保留
-新证据：[源码／作者报告] 2026-10-21最高水平卡与§5.6分开持续试玩、累积需求和旧行为保留；固定OpenGame／GCA／Phaser及原WP9–11契约保留，未运行模型或引擎
+新证据：[源码／作者报告] §6补EA RAID、TITAN与Deckhand的探索／修复验收比较；§5.6及原工程契约保留，未运行模型或引擎
 
 # WP13：把已证实的边界带进现有游戏模板
 
@@ -161,3 +161,24 @@
 **可用性与最高水平分别判断。** GameXpert[固定公开树](https://github.com/Kwen-Chen/GameXpert-Bench/tree/90d41e31d0c97c13981e65c3ba4a76a3c82add53)仍是发布骨架，本文不把论文协议写成可直接运行的工具。GameASG提供可读任务／测试，但其逐次重开协议不是本表的继承链。[一手／研究]
 
 本单元改变的是§5.5的接手验收：新增需求、保留条件、真实路径和缺失观察分开交付。Agent可写／维护回归、整理差异与复现步骤；没有真实二改运行，不能给承担比例或节省工时。总投入超过收益或旧玩法／身份退化时，回到已认可版本并定向修补，不为追逐评分迁移管线。[研究]
+
+## 6. P53：探索发现与修复验收分账
+
+**选择：保现有测试，把已确认发现固化为旧策略／动作回归；撤回“再次探索未报错即可放行”。** 本轮最高水平卡的问题是生产中的发现→人工归因→修复→下一轮验收。工业领先候选为EA RAID，LLM工业参照为较早的TITAN，独立制作可行例为Deckhand；没有同题完整链与成本比较，最高水平仍未知。既有引擎测试、脚本和人工试玩作主流参照，不声称采用率；本仓推荐为可行层。[研究]
+
+### 决定性证据与条件
+
+- **EA／Florian Fuchs等，RAID，2026-07-08 v1**：[§IV-C／V](https://arxiv.org/html/2607.07498v1#S4.SS3)。NHL26旧预发行版，SAC强化学习而非LLM；团队规模／引擎未披露。开发团队判断策略是否属于漏洞；六条匹配人工已知漏洞，不是新发现六个。4090＋Threadripper PRO7975WX上，30轮48小时、10轮14小时。修后重搜或旧policy失效均不足以证明修复，仍由试玩者模仿旧策略核验。公开论文／视频不是可接入工具包；不默认自建RL。[作者报告]
+- **Meeka Interactive／Deckhand，2026-08-08**：[作者复盘](https://itch.io/devlog/1621363/the-harness-came-first-how-this-game-came-to-be.amp)。Godot＋Claude Code，作者裁决及真人试玩；具体模型、团队规模和费用未知。参数错误曾使测试点到(0,0)却报成功，制造假阻塞，后来补测试器validator。作者用同seed／动作校验浏览器与模拟状态，并分别测确定性和批次隔离；发现经裁决转测试或保留决定。秒级浏览器／毫秒级模拟为自报，非总成本。[作品页](https://meeka-interactive.itch.io/deckhand)列HTML5 alpha及deckhand-alpha-dacbd82.zip，未下载运行；无公开源码／逐次回执核验，文件名不是已核SHA。[作者报告／一手页面]
+- **Chengjia Wang／NetEase Fuxi等，TITAN，2025-09-26 v1**：[§3.5／4／6](https://arxiv.org/html/2509.22170v1)。GPT-4o在两款匿名商业MMORPG评估，作者称部署八条QA管线；团队规模、引擎和持续修复回执缺失。30% false alarm主要来自状态抽象适配，报告供人工审阅。它已超近一年窗口约一个月、非当前模型，只保留适配／分诊机制参照，不升级为当前最优或采用率。[作者报告]
+- **Second Chance，2026-08-22**：[复盘](https://secondchancegame.com/devlog/2026-08-22-playtest-with-an-agent-reading-every-frame)。单人UE5.8 Blueprint、Claude Code Opus5、双MCP、RTX5060 8GB；人玩、Agent读帧，三次误诊被引擎回读推翻。该篇明确尚未修复，不能补写回归通过；它支持观察与根因分开，不证明自动试玩闭环。[作者报告]
+
+**采用边界：先校验测试器，再改游戏。** 保存动作／拒绝原因／状态与版本；人确认预期后，Agent可写对应回归。脚本无法保留时序或真实输入，就留运行时／人工复验，不为可重放另造游戏逻辑。算入适配、推理／训练、误报排查及维护，成本超过收益则退回既有回归与真人探索。没有承担比例、净省时或本仓效果实测。[研究]
+
+### P51使用回执与来源冻结
+
+采用[提示词](../collaboration/prompts/2026-10-21-exploration-self-use.md)的cbbb996版本；基线cda12a9。2026-10-21 11:33:08 UTC开始，11:33:37检索前冻结，11:35:08后冻结证据；墙钟约两分钟，等待／独立复核未单独计量。先按Riot／Ubisoft／EA／King找作者材料，再追失败机制；没有发现更完整闭环，不等于这些团队未采用。[研究]
+
+直接查验N=9、相关正文F=7（7/9）；决定性D=5、FD=5（上列RAID、Deckhand复盘与作品页、TITAN、Second Chance）。另两份已读为[SMART v1](https://arxiv.org/html/2512.12706v1)及[Second Chance索引](https://secondchancegame.com/devlog/)：前者模拟增量任务不是发行修复链，后者仅核近期活动。两份读取不足为[Meeka主页](https://meeka-interactive.itch.io/)（薄页面）与[RAID视频](https://www.youtube.com/watch?v=59JllQFV9I0)（仅确认官方出口跳转，未读视频内容）；无访问拒绝。未打开搜索线索不混入直接查验分母。[研究]
+
+本轮来源均为自主新发现；GameXpert／Play2Code／RSIGame、Unity AI／Insight、Epic插件、Roblox MCP、VoidExplorer／Crossword Dungeon、Supergiant／Cronin、Last Pirate与Sanctuary为输入已知，不重计新发现。独立参照尚未冻结，漏检率无可计算分母。未安装、运行引擎或模型；既有G02审计只作选题输入，不能当冻结后的盲测。[研究]

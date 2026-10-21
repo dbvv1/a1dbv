@@ -18,6 +18,32 @@
 
 **[研究] 局限：** 架构取舍仍须由同一玩法切片的第二次修改与目标设备构建检验；源码和官方修复只支持机制判断。
 
+## 近期 coding Agent 二改：缓冲寿命与时钟信任
+
+核实：2026-10-21；P53，主线三。按 P51 提示词先冻结问题：强 Agent 是否足以让单人游戏跳过原生组件、窄规则和小 FSM？本轮只读公开材料，不运行游戏、引擎或模型。[研究]
+
+**最高水平卡。** 当前最优未知；新候选是作者的 Codex 持续开发与公开二改，不是 NPC 决策 Agent。主流参照沿本记录的引擎契约与状态所有权，未新测采用率；本仓推荐属于可行默认。未取得当前代际、同玩法、框架迁移与基线的维护总成本比较，不因生成能力提高就升级 GAS／ECS／HFSM。[研究]
+
+**专业候选：能力模块，而非无限扩张框架。** [Phaser Studio，2026-06-12](https://phaser.io/news/2026/06/how-we-built-the-phaser-game-agent-with-claude-managed-agents-and-superserve)全文已读：AE 用小接口封装碰撞／对象池／输入，Agent 按能力找可配置叶模块并写组合代码。团队自报 Gradius 九个系统复用五个；机械检查通过后，人试玩仍发现地形滚动粗糙，将陷阱回填模块。相比只拆文件，这提供可复用行为与经验的承载点；相比不断给框架加玩法，保住接口规模。文章发布时为 beta、具体模型未知，未给同游戏需求二改或框架迁移成本，故差距仍为2，不推 Unity／UE 换引擎。[一手：厂商自报；研究]
+
+**离线收益：人的试玩改变信任边界。** [rushdygames，2026-08-03](https://community.openai.com/t/from-prototype-to-soft-launch-building-a-deterministic-ai-startup-idle-game-with-codex/1388893)明确原型使用 5.6 Sol／Codex，人决定经济、验收与发布。作者报告经济规则改为纯确定性函数与模拟测试；试玩者打破浏览器时间戳方案后，改服务器锚定与单调计时。属于同项目作者自报，未公开补丁、迁移损失或修复工时；不能称本仓复现。[一手]
+
+[研究] 同题选择是“允许本地改钟，还是承诺可信收益”，不是“要不要玩法框架”。服务器路线增加在线依赖，成本未知；无可信经济要求时保本地。Agent 负责实现，用户决定政策，验恢复、改钟与重复结算；回退时不能默许重复补发已结算区间。
+
+**模拟优化＋撤销：借用缓冲不等于历史。** [SHAN，2026-05-24](https://shan-verse.com/blog/codex-after-the-update/)自述让 Codex 把 falling-sand 单文件拆成规则／网格／模拟／渲染，约束不加重框架，本人审 diff、运行并纠正取舍，具体模型未给。以下九月补丁的 Agent／模型及逐项人审归属未知，不能用五月归因补齐。[一手／研究]
+
+- [守恒修复 ae3c78a，09-09](https://github.com/huiishan99/web-falling-sand/commit/ae3c78aa2883b8c1c9e3c4ff70cbc391b0123209)：旧／新网格混读会复制已移动的水；修目标占用检查并加守恒与多步混合世界测试。[一手：diff]
+- [二改 872d594，同日](https://github.com/huiishan99/web-falling-sand/commit/872d594b05b66072ca7549827bef52157b8fc625)：逐帧分配改为缓冲复用，同时新增撤销。模拟返回对象以后会复用；snapshot 独立复制，测试继续模拟四步后撤销／重做，核历史独立。[一手：diff]
+- [恢复入口](https://github.com/huiishan99/web-falling-sand/blob/872d594b05b66072ca7549827bef52157b8fc625/src/main.js)清 spare、暂停并失效渲染缓存；[作者 DEVLOG](https://github.com/huiishan99/web-falling-sand/blob/872d594b05b66072ca7549827bef52157b8fc625/docs/DEVLOG.md)的局部对照中 occupied bounds 改善稀疏模拟，密集场景基本不变。不是设备 FPS 或 ECS 对照。[一手]
+
+[研究] 同题默认先保既有规则、局部优化；持久快照独立所有，复制与历史内存上限计成本。需要退回分配时保留守恒修复，不能整段回退带回旧缺陷。它是浏览器沙盒，不指定 Unity／UE 实现；新增验收是优化后继续运行，再恢复历史，未在本仓执行。
+
+**差距仍为 2。** 11:38—11:39 UTC 定向补查 Ubisoft／Riot／EA／Supercell 的 coding 工程实践，未取得头部工作室同项目玩法二改比较。[EA AutoWorldModel-Bench](https://github.com/electronicarts/AutoWorldModelBench)的任务定义与指标已读：它评估 coding Agent 改进世界模型的研究能力，非玩法架构维护；[2026-03 客户端生产论文](https://arxiv.org/html/2603.01460v1)的作者、任务与系统部分已读，来自小红书移动 UI，而非游戏。两项均排除，不能拿知名团队补齐同题质量；这轮增加可行证据，未完成最高水平差距收敛。[一手／研究]
+
+**P51 回执。** 提示词 `2026-10-21-exploration-self-use`；起点 `cda12a9`，11:33—11:36 UTC，约3分钟墙钟，等待未单计。输入已知工具／P40案例不计新发现。初轮新查验 N=14／正文 F=13，已知 Anthropic harness 重读另计1／1；决定性 D=6／FD=6（上列作者两文、两个提交、恢复入口、DEVLOG）。镜像去重；Infinite Build 正文超时，不采用。GitHub 历史页 cache miss 后由连接器取得历史；Tetris 页面旧快照不作二改证据。DSCube、Omar、Brutal Derby 已读但缺完整失败修复链，未作决定性依据。补查新增 N=2／F=2，D 不变；合计新查验16／15。无合格独立盲测分母，不报漏检率。[研究]
+
+**冻结后独立参照。** 截止11:44 UTC，独立核查带回3项候选：Unity Insight 为输入已知，Phaser 为新增专业一手，Novaglio 为个人 n=1、非严格上限参照。Phaser 是发现遗漏：它改变“重复能力放哪里”的具体选择；此前按工作室与重构关键词扫描未覆盖引擎团队的 Agent 架构文章。11:45 补读，单列 N=1／F=1／D=1／FD=1，不回写上述冻结统计；三项不是合格同题盲测分母，不报召回率。[研究]
+
 ## 二、九个模块：做到哪、可省什么、AI 会破坏什么、怎么验
 
 ### 1. 游戏循环：把“一局结束”做成真正的生命周期边界
