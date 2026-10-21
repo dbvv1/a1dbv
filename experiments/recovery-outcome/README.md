@@ -33,6 +33,16 @@ python3 experiments/recovery-outcome/outcome_probe.py
 
 `authoritative`、`quiescent`、`authorized_now` 是可信测试夹具提供的假设，程序不验证其真实性；不能让模型自报这些值就放行。只模拟进程退出：JSON 意图/回执未调用 fsync，不保证断电持久性；不覆盖网络分区、多副本一致性、真实服务或模型遵循率。14 项通过不等于任务完成率或生产力提高。**[经验：实现边界]**
 
+## P46：固定发行摘录的回退边界复核
+
+[研究与兼容矩阵](../../docs/research/2026-10-12-long-task-evidence.md#p46模型回退历史兼容不等于工具可重放)；[固定来源／完整MIT许可](p46_sources.json)；[限定结果](p46_results.json)。这是另一个未完项目的首批证据，不重算上面的14项。
+
+`timeout 10s python3 experiments/recovery-outcome/p46_probe.py` 只在已具备anyio／pydantic的解释器运行，绝不安装；本次13项通过。脚本原样加载固定版本的明确函数／类摘录，使用显式伪宿主；未导入SDK、运行提供商、超时实现或业务工具。首跑的0测试错误是宿主dataclasses模块登记问题，不是SDK失败或模型尝试。Python及依赖版本保存在结果文件。
+
+`python3 -m unittest discover -s experiments/recovery-outcome -v` 的新增检查只使用标准库，核commit／blob身份、摘录SHA-256、固定AST指纹、许可及缺失／损坏输入；它们不执行上游摘录。13项probe不在默认unittest发现模式内，不把缺依赖的跳过计为通过。函数AST与文本hash不能替代完整原文件签名、SDK测试或来源信任。[经验：复核范围]
+
+负对照会检出只看自然语言输出而漏掉工具片段，以及误以为JSON仍保存运行时policy。policy丢失是上游明确契约，不称安全漏洞或绕过。本项目B0→B1→B2的旧历史／工具执行账联动仍待验证，13项不是完整交付或模型质量分数。
+
 ## 许可
 
-观察版本的上游 [LICENSE](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/LICENSE) 为 MIT，版权为 2026 OpenHands contributors。本目录探针和测试为原创，未复制上游实质代码或 prompts；若以后复制，应保留对应许可与声明。**[一手：许可；经验：本仓库来源说明]**
+观察版本的上游 [LICENSE](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/LICENSE) 为 MIT，版权为 2026 OpenHands contributors。原outcome_probe.py及test_outcome_probe.py为原创，未复制上游实质代码或 prompts。P46另含三套上游的明确摘录，完整许可及来源随p46_sources.json保留；其加载宿主和回归为本仓原创。**[一手：许可；经验：本仓库来源说明]**
