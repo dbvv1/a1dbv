@@ -1,6 +1,6 @@
 主线：M6／主线 1、2，外部探索怎样支持可采用的选择。
 改变的建议：借现成检索综合与评测量规，只补决定性证据、失败状态和生成交接，不先自建研究框架。
-新证据：2026-10-20 补本仓深链检查的前向需求、候选固定源码与真实采用成本，维持原法而未产生可直接采用的陌生增量；2026-10-15 核读托管研究说明、三个固定开源实现、评测论文与评分源码；补核 Steam 公告同源正文读取及限长对照，区分抽取失败、来源身份与权限边界；重读 OpenCode 同提交文档／实现及 Unity 6.3 弃用／保留绑定，补来源冲突的处置。
+新证据：2026-10-21 补六线团队来源名册、三篇自用条件卡与Cursor环境／Claude Code评审漏检校准；2026-10-20 补本仓深链检查的前向需求、候选固定源码与真实采用成本，维持原法而未产生可直接采用的陌生增量；2026-10-15 核读托管研究说明、三个固定开源实现、评测论文与评分源码；补核 Steam 公告同源正文读取及限长对照，区分抽取失败、来源身份与权限边界；重读 OpenCode 同提交文档／实现及 Unity 6.3 弃用／保留绑定，补来源冲突的处置。
 
 # AI 探索：系统与评测证据
 
@@ -401,3 +401,79 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 ⛔ 不直接升级浮动开发版，也不批量改合法旧 id 来迁就检查器。若核心差异需要持续自建解析器，或安装／平台成本超过专项核验价值，就撤回接入；只有后续固定版本和必要回归能闭合缺口，才重开采用。[研究]
 
 本轮完成真实需求、候选、排除理由与保留现法决定的资料交付，但不计 P4 陌生发现的完整验收。专项核验沿用临时脚本、独立 Agent 与定点浏览器检查，不代表用户投入人工，也不将临时核验器升级为通用解析器。没有新增已可直接采用的陌生候选；使用者是否陌生／愿用、实际接入、第二次修改收益均未知。未运行候选、模型或引擎；唯一浏览器观察是读取本仓固定 GitHub 文档的已渲染标题，不是候选测试或 hosted CI。既有 25 已覆盖版本对齐和现成／薄层的区分，因此不为这个案例再加同义正文。[研究：负结果与交付价值]
+
+## P46：按团队追踪来源与漏检校准
+
+**先修可运行、可观察的验证入口，再加流程。** 本轮比较三篇指定自用复盘，并补Cursor环境与Claude Code评审两项遗漏，改变07／20的环境优先级、确认09的收窄默认；25补团队检索步骤。核实：2026-10-21；以下为一手团队自报与本仓研究判断，未运行其产品或测量本仓效果。
+
+### 最高水平卡
+
+唯一优胜未知。强工程参照是Anthropic 10-13/10-15与Cursor7-30/9-23：让环境可运行、反馈可观察、约束可执行。多个官方来源共有短入口、可运行检查与按风险评审，但行业采用率未知。本仓默认采用可行的定向检索，比较领先机制后只补实际缺口；不复制整套基础设施或预算。发现有用遗漏不证明检索法的净收益。
+
+### 六线来源名册
+
+名册按“谁持续产生证据”维护，不按产品名堆名单。代表作是本轮已核的最近相关作品，不保证作者全部作品中的绝对最新。
+
+| 主线 | 团队／个人与稳定入口 | 最近相关代表作、入选理由与边界 |
+|---|---|---|
+| Agent 工具 | Cursor 工程；Mathew Hogan、Arvind Saripalli；[工程博客](https://cursor.com/blog)、同站 changelog | [7-30 云端环境复盘](https://cursor.com/blog/cloud-agent-environment)：自己产品的 monorepo 实践，区分“补 Skill”与“修难用命令”。可借启动入口和进程管理机制，内部采用率不是质量因果证明。 |
+| 上下文 | Cursor harness；Jediah Katz、Connor O’Keefe、Calvin Yee；同上 | [9-23 token efficiency](https://cursor.com/blog/improved-token-efficiency)：生产 A/B、提示删减、动态工具、缓存和子 Agent 协调代价一起报告。组合成本自报不能归因于某一条规则。 |
+| 长程 | OpenAI／Ryan Lopopolo；[Engineering 原文](https://openai.com/index/harness-engineering/)及文内 Cookbook 链；Anthropic Engineering 与 Claude.dev | OpenAI 2-11 的可观察工作树和版本化知识；Anthropic [10-08 automations](https://claude.dev/blog/building-effective-agent-automations/)给出来源失败不能当静默、游标与回执机制。示例配置不等于真实恢复可靠率。 |
+| 多 Agent | Anthropic／Nicholas Carlini；[Engineering](https://www.anthropic.com/engineering)及作者链接项目 | [2-05 C 编译器](https://www.anthropic.com/research/building-c-compiler)：16 agents、约2000会话、2万美元的极端案例，公开验证器与协调局限；当前成本与模型下的最优分工未知。另以 Cursor 9-23 的撤掉强烈鼓励委派的提示作反证。 |
+| 评审 | Anthropic Claude Code／Addy Osmani、Morgan Westlee Lunt、Qing Wang；[Claude.dev 原文](https://claude.dev/blog/solving-code-review-at-anthropic/)；Anthropic Engineering 的 Scion 团队 | 10-15 评审复盘同时给风险分层、回退、失控复审和噪音指标，胜过仅列“多个 reviewer”的教程。Claude Code 独立仓库和 Scion monorepo 不得混为同一审批制度。 |
+| 评估 | Anthropic／Lance Martin；Claude.dev Playbooks；独立校准看 ETH SRI／Thibaud Gloaguen 等的版本化论文，以及 METR 原始研究 | [9-28 eval/hillclimbing](https://claude.dev/blog/automating-eval-design-and-hillclimbing/)有噪声、grader、成本和过拟合检查；[AGENTS.md v3，9-29](https://arxiv.org/abs/2602.11988v3)为指令收益提供反证（本轮核摘要及版本，正文已由仓内记录覆盖）；[METR 10-06](https://metr.org/blog/2026-10-06-ai-systems-could-cover-up-misbehavior/)提醒呈现层也须独立核查。 |
+
+跨线个人雷达：[Simon Willison](https://simonwillison.net/)及其[9-27演讲整理](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)。本人经验为一手，转引追原作者；本仓已收录，不计新增。
+
+### 三篇指定校准卡
+
+#### A. Anthropic：Redesigning source control
+
+[正式原文](https://www.anthropic.com/research/redesigning-source-control)，2026-10-13发布，10-15补先行项目说明；旧 engineering URL 重定向此页。作者为 Nick G. 与源码管理团队（原文署名 S.G.、R.K.、Dan C.、Garrett H.、Ben L.、Colin M.、Joe P.）。
+
+七人五个月构建 Scion、Antique及相关系统；单仓主线历史近100GB、压缩工作副本25GB、CI每天约2500万checkout，9月日合入逾3万。使用内部 Claude Mythos Preview/Claude Tag；未给可复算总token或费用，作者明确内部预算远高一般企业。每项变更仍由人审意图；迁移中人纠正跨系统权威来源与对抗评审过度防御。可借不变量、隔离模拟和模糊测试；不能推一般仓库应离开Git。
+
+定位：原文“Growing our monorepo”“What we learned building Scion”“Contributing to the wider ecosystem”。正文第130行明确Scion不是通用Git替代。对07/20：确认人管目标与系统边界，修正“再加一次评审就更可靠”的直觉。无独立复测。
+
+#### B. OpenAI：Harness engineering
+
+[正式原文](https://openai.com/index/harness-engineering/)，2026-02-11，Ryan Lopopolo。此前仓内为403缺口；本次该公开正文直接可读，没有绕过访问拒绝。
+
+新建产品内部beta，初始三名工程师后增至七名，五个月约1500PR；初始Codex CLI/GPT-5，后续完整模型组合和算力未知。团队将工作树应用、浏览器、日志与指标直接交给Agent，并将知识设为短入口加版本化文档、结构约束可执行。人可能审PR但非必需，仍负责目标、验收和结果。其少阻塞合入取舍依赖高吞吐及低纠错成本，不能迁移成普通项目默认。
+
+定位：“We started with an empty git repository”“Increasing application legibility”“We made repository knowledge the system of record”“Throughput changes the merge philosophy”。对07/20：从“给检查命令”补到“能启动并观察真实目标”；确认短入口，不导出统一100行上限。工时提效为估计。
+
+#### C. Anthropic：How Anthropic teams use Claude Code
+
+[当前正式原文](https://claude.com/resources/articles/how-anthropic-teams-use-claude-code)，页面日期2025-07-24；旧 anthropic.com/news URL 重定向。机构采访内部多团队，无个人署名、统一样本数、模型版本或预算。
+
+团队用途包括导航、故障诊断、测试与设计原型。安全团队先讨论伪代码再做TDD并间歇检查；设计团队让Agent运行测试循环，最后审核解法。可迁移的是按任务未知选择样品、行为检查或人工判断，不是所有任务必须同一流程。对07确认条件分流，对20仅支持局部工作流可行；不能用它证明2026年长程上限。文中节省时间为访谈自报，不作本仓收益。
+
+定位：“Testing and code review”“Prototyping and feature development”。重要时间边界：该旧卡用于校准演化，不占近三个月新增数量。
+
+### 两项本轮真正改变建议的补漏
+
+#### 1. 先修运行入口，不靠更多 Skill 补脆弱环境
+
+Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.com/blog/cloud-agent-environment)，Mathew Hogan、Arvind Saripalli。原文“A simpler interface for agents”说写构建运行Skills只有边际帮助，命令本身复杂；后来 anydev 统一启动、help和supervisor管理长进程，Agent才可稳定运行并端到端验证。是内部monorepo自报，未披露同题对照、团队人数、模型组合和完整费用。
+
+正文建议：07验证闭环补“先修稳定启动与可观察环境”；20引用它，不重复造框架。人核环境是否代表交付和权限边界。
+
+#### 2. 评审必须收敛，不能按轮数累加安全感
+
+[Claude.dev 10-15原文](https://claude.dev/blog/solving-code-review-at-anthropic/)，上述三位作者。官方关联链：anthropic.com/news/how-anthropic-teams-use-claude-code → claude.com/resources/articles/how-anthropic-teams-use-claude-code → Related articles的“How the Claude Code team does code review”直接指向claude.dev该页。资源页标10-16，正文标10-15，采用正文日期并留差异；不凭域名认官方。
+
+“How we make the reviewer better”自报一次PR过50轮，约59%发现所在代码从首轮就存在；后改限轮、后期差量重审、按bug类别修、去重。“Human approval, scaled by risk”分0/1/2人且限定可信作者，Agent不能顶替所需人工；“Merge queue”仍有合入队列，与Scion不同。
+
+建议07/09确认按风险默认，再加：循环没有收敛时，区分当前改动的新增风险、既存缺陷和重复发现，再停止无增量的往复，回到缺陷类别和方案审查；后续只核变更影响与未关闭风险。不要把作者“三轮”定成通用数值。该文自报吞吐/回滚变化无独立因果比较；审批政策也不是本仓新增授权。
+
+### 近三个月回扫（2026-07-21至10-21）
+
+查重基线：P46编辑树e0ec3d0；全docs按正式URL slug查找，另查作者、anydev、评审失败关键短语。未命中只证明未在受查文档找到，不证明历史从未读过。原因除Scion外均为本轮推断。
+
+| 结果 | 来源 | 重要性／漏检原因与处置 |
+|---|---|---|
+| 历史漏检，已补局部 | Scion 10-13 | 用户先带入，已在development-maintenance与development-migrations，不报成新发现；补三篇校准与适用层级。 |
+| 新补、优先 | Cursor 7-30环境复盘 | 未找到URL/anydev；按工具功能搜容易漏团队自用基础设施。直接改变07/20建议。 |
+| 新补、优先 | Claude.dev 10-15评审 | 未找到slug/作者；Engineering列表没有此篇，官方出口分散。加强09/07复审收敛与风险层次。 |
+| 已覆盖，不计新增 | Cursor 9-23 token efficiency；ETH AGENTS.md v3；Willison9-27演讲整理 | community-source-records等已有；仅作为名册和反证，不重报成果。 |

@@ -4,7 +4,7 @@
 
 | 你的情况 | 建议路径 |
 |---|---|
-| 答案不在代码库里，需要找现成方案或设计参照 | [25 AI 探索任务](25-ai-exploration.md) → [12 来源与待验证](12-resources.md)；先明确决定和硬约束，再选择检索范围 |
+| 答案不在代码库里，需要找现成方案或设计参照 | [25 AI 探索任务](25-ai-exploration.md) → [12 来源与待验证](12-resources.md)；先明确决定和硬约束，再按问题与团队来源名册检索 |
 | 已有失败，想知道先补什么 | [15 调试](15-task-playbooks.md#2-调试) → [05 最小能力补充](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) → [22 保留或撤回](22-agent-evaluation.md#7-何时推广何时停止) |
 | 功能正常，但有明确的质量目标 | [15 已有产品改进](15-task-playbooks.md#102-已有产品按问题选择改进) → [05 领域依据](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) → [22 质量比较](22-agent-evaluation.md#5-如何计分而不自欺)；不必先制造失败 |
 | 想看真实社区做法与失败案例 | [24 社区工作流](24-community-workflows.md) → [15 按任务类型的打法](15-task-playbooks.md) |
