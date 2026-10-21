@@ -1,12 +1,42 @@
 主线：三，兼二
-改变的建议：分清请求超时与任务截止；续接恢复最新目标、约束、执行事实与活跃资源，按当前验收核结果。派发前保留回执丢失后仍可查的任务身份，失败先对账再恢复／重试；循环只补真实续接／反馈缺口，撤回固定重置和逐功能工作流。可选子任务显式降级，必需验收换执行者，停不掉共享写入者则暂停相关交付；依赖子结果先复用宿主前台返回。P57 分开复用编码循环与自建产品控制层，以下一次提交和真实关闭接收维护任务。[经验／研究]
-新证据：汇总既有官方设计、固定实现／测试定义、社区单例及历史产物链，日期与反证见各节，非本次新增。压缩修复须核发布 tag，响应完成不保证持久化；Claude thrashing／StopFailure、Ralph 控制与历史 harness 分开计证。2026-10-16（UTC+8）本仓 Git 正反例只核续接分支／HEAD；SDK／HTTPX2／Go 超时边界来自契约与实现。gstack 降级、CAO 身份缺口及 Symphony 恢复契约按模板／源码／测试定义与公开报告计证，未作本仓真实恢复实测；本页补核未运行新模型恢复实验。2026-10-18（UTC+8）补 Claude 2.1.302 默认前台发行与三种非交互入口的父消费复测自报；显式后台仍有未唤醒报告，Desktop／VS Code 只核发行，不作本仓实测。[一手／社区／研究／经验]
+改变的建议：分清请求超时与任务截止；续接恢复最新目标、约束、执行事实与活跃资源，按当前验收核结果。派发前保留回执丢失后仍可查的任务身份，失败先对账再恢复／重试；循环只补真实续接／反馈缺口，撤回固定重置和逐功能工作流。可选子任务显式降级，必需验收换执行者，停不掉共享写入者则暂停相关交付；依赖子结果先复用宿主前台返回。P57 分开复用编码循环与自建产品控制层，以下一次提交和真实关闭接收维护任务。P60 升级验到首次新写后的冷读与下一轮，确认旧补丁没有遮蔽原生修复。[经验／研究]
+新证据：P60 补迁移丢写、正式修复与补丁退役链。其余汇总既有官方设计、固定实现／测试定义、社区单例及历史产物链，日期与反证见各节。压缩修复须核发布 tag，响应完成不保证持久化；Claude thrashing／StopFailure、Ralph 控制与历史 harness 分开计证。2026-10-16（UTC+8）本仓 Git 正反例只核续接分支／HEAD；SDK／HTTPX2／Go 超时边界来自契约与实现。gstack 降级、CAO 身份缺口及 Symphony 恢复契约按模板／源码／测试定义与公开报告计证，未作本仓真实恢复实测；本页补核未运行新模型恢复实验。2026-10-18（UTC+8）补 Claude 2.1.302 默认前台发行与三种非交互入口的父消费复测自报；显式后台仍有未唤醒报告，Desktop／VS Code 只核发行，不作本仓实测。[一手／社区／研究／经验]
 
 # 长程任务：来源、反例与实验边界
 
 > 资料整理：2026-10-12（UTC）。对应[20 · Codex 长程任务](../20-codex-long-horizon.md)，本页只保存正文省略的来源与细节。正文原有核实时间为 2026-10-11（UTC+8，检索截至 2026-10-10 UTC）；后续补充按所链接研究页的日期定位。本次阅读分层没有重新核实全部外部网页或发布状态。
 
 正文核查沿革补记：2026-10-12 仅调整阅读分层；2026-10-14 补 §4 继承行为诊断、原生历史恢复与失败压缩边界。2026-10-15 补 §5 续接输入接受／处理差异与 §7 dot 停止范围，详细来源见[dot 长任务核对](2026-10-12-development-conditions.md#dot-长任务续接接受处理与停止范围)；其余外部事实仍按各记录日期，不表示本轮全部复核。**[经验：维护范围]**
+
+## P60：任务未完时升级执行逻辑与保存格式
+
+核实：2026-10-21。改变 [20 §4.1](../20-codex-long-horizon.md#41-任务未完执行逻辑却要升级)：不紧急就到可核边界换版，热续接须验证新写与恢复；与 P47 请求回退／工具绑定分开。[研究]
+
+### 最高水平卡
+
+- **问题：** 已交代码、旧测试通过、CI／评审仍在途，如何升级执行逻辑与保存格式，同时保住交付？
+- **当前最高水平整体未知；领先参照已比较。** Cursor／Josh Ma [2026-06-02 生产复盘](https://cursor.com/blog/cloud-agent-lessons)将常驻 workflow 改为单任务后退出的较短 workflow，方便版本升级，并分离执行循环、conversation 与 VM；LangChain／Sydney Runkle [2026-05-12 Delta Channels](https://www.langchain.com/blog/delta-channels-evolving-agent-runtime)提供兼容升级机制，7–9 月维护链检验其失效与修复。前者是头部编码产品实践，后者不是完整编码效果对照。[一手：团队自报；研究]
+- **主流与可行：** 固定版本、兼容续接均有原生机制，行业采用比例未知；沿现有宿主恢复／任务入口是可行基线，不要求读者搭平台。[一手；研究]
+- **本仓层级：比较领先机制后的条件默认。** 三路同题见正文；分别承担保旧部署、保兼容行为、保交接契约的成本，总投入未知。[研究]
+
+### 先核宿主契约，再选路线
+
+**旧版排空必须真的固定执行代码。** Temporal [Worker Versioning](https://docs.temporal.io/production-deployment/worker-deployments/worker-versioning)区分 Pinned 与 Auto-Upgrade；后者仍需手工保持 replay-safe。保留旧 worker 的代价与能否及时结束一起比较，紧急安全／权限停止要求优先于排空。[一手：滚动契约；研究：选择]
+
+**换一个 run 未必换版本。** Temporal [Continue-as-New 升级](https://docs.temporal.io/production-deployment/worker-deployments/worker-versioning/upgrade-on-continue-as-new)是 Public Preview；Pinned 默认跨该边界仍沿用旧版，启用升级也要保持新旧输入兼容。切回流量[不会移动既有 Pinned 任务](https://docs.temporal.io/production-deployment/worker-deployments/recover-pinned-workflows)。不据此要求 Codex 用户迁入 Temporal。[一手；研究]
+
+**热续接须兼容执行位置和业务语义。** LangGraph [兼容文档](https://docs.langchain.com/oss/python/langgraph/backward-compatibility)说明既有线程使用最新 graph：旧节点名、字段与必要的行为分支要保留至不再依赖。Functional API，以及 Graph 节点内的 task／interrupt，还须保住恢复点前的调用位置。保旧行为不保留已撤销权限；这些契约不能推定托管 Codex 的升级能力。[一手；研究]
+
+### 从透明升级到首次新写：可追维护链
+
+1. **机制声明。** 上述 Delta 工程文说明 Deep Agents v0.6／LangGraph 1.2 用旧 plain-value checkpoint 作新 delta 基底；自定义 reducer 须满足分批合并不变性。文章的 coding 工作负载是 mock、InMemorySaver、无模型调用，存储收益不是编码完成率。[一手：作者基准]
+2. **旧读正常仍会丢新写。** Aarkin Karnik [#8384，7-19](https://github.com/langchain-ai/langgraph/issues/8384)在 LangGraph 1.2.9／checkpoint 4.1.1 同一 thread 迁移：旧值 a 后写 b，invoke 返回 a、b，冷 get_state 仅见 a。故障落在首次非 snapshot 写入；全量 snapshot 频率设为 1 会掩盖它。[社区：自含复现与作者输出，未自行运行]
+3. **修复已经发行。** Elior Nataf Lackritz [#8526，8-07](https://github.com/langchain-ai/langgraph/pull/8526)合入 [`a90ab4435853b8a5b6f82b20220b4c76af0e46d1`](https://github.com/langchain-ai/langgraph/commit/a90ab4435853b8a5b6f82b20220b4c76af0e46d1)，删除 InMemorySaver 把 seed 自身 pending writes 当作已合入的判断；[checkpoint 4.2.0 同日发行](https://github.com/langchain-ai/langgraph/releases/tag/checkpoint==4.2.0)。迁移回归覆盖同步／异步冷读、多次新写和消息 ID 保留；SQLite 没有同一丢写 bug。[一手：固定实现、测试定义与发行]
+4. **依赖升级后还须退役旧补丁。** DeerFlow／Vanzeren 提交、Willem Jiang 9-23 合入 [#5734](https://github.com/bytedance/deer-flow/pull/5734)，固定 [`31bfd40f38fc2bf844f754e88e42e7783d8d0d65`](https://github.com/bytedance/deer-flow/commit/31bfd40f38fc2bf844f754e88e42e7783d8d0d65)。旧补丁按核心 langgraph 版本判断退役，而 saver 属于独立 checkpoint 包；升包后仍会遮蔽已修实现。修订删对应补丁、抬 checkpoint≥4.2.0 与 postgres≥3.1.2 下界，保留同线程 full→delta 迁移回归。默认仍 full、核心仍 langgraph 1.2.9，其他兼容补丁没有全删。Postgres 修的是 plain-seed 识别造成的多余回放成本，不是同一丢写。[一手：固定应用修订；作者解释]
+
+**运行结果只按作者报告记账。** DeerFlow 作者自报去补丁后 4.1.1 失败、4.2.0 的 memory／sqlite 通过，并核方法来自原生模块；定点 47 passed／4 skipped，Postgres 未跑。全套曾有失败，最终修订后未整套重跑，不能称全套通过或发行认证。[一手：作者运行自报]
+
+**本仓验收与缺口。** Agent 沿已有回归核“旧状态→首次新写→冷读→下一轮”，再核实际包和实现；人决定新要求的追溯范围，旧测试按其输入／环境／语义复用。此次只核原文、固定补丁与发行，未安装或运行 SDK、模型、宿主或新增探针。20 登记资料机制“已比较、gap 2”；完整三路真实编码效果、外部副作用恰好一次和净人工总投入仍未知，不因来源新而降分。[研究]
 
 ## 官方来源与历史时点
 
