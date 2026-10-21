@@ -431,6 +431,8 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 
 团队接收名册补充（P58，2026-10-21）：沿[Will Larson](https://lethain.com/small-changes/)追窄放行试点的结果与长期调参；[Shopify Quick／Daniel Beauchamp、Alex Pilon](https://shopify.engineering/quick)追受限共享平台的真实维护；[Monzo／Fabien Deshayes、Oli Haley](https://monzo.com/blog/building-agent-chip)追非专家发起、工程师接收与团队归属。相关原文已读，只借用途与接收边界，不采产量或单机价格作为整体收益。[一手／研究]
 
+工作流实验名册补充（P59，2026-10-21）：[Bartłomiej Krupa](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)公开固定案例、轨迹及判定器纠正，可追整包与原生的产物差别；作者另有工具项目，按方法与原始证据核，不当中立裁决。原文及关键轨迹已读，完整范围归[社区研究](2026-10-12-community-source-records.md)。[一手／社区／研究]
+
 跨线个人雷达：[Simon Willison](https://simonwillison.net/)及其[9-27演讲整理](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)。本人经验为一手，转引追原作者；本仓已收录，不计新增。
 
 ### 三篇指定校准卡
