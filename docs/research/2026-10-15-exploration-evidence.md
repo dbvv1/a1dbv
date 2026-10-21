@@ -507,3 +507,52 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 ### 未独立立项：任务感知选模
 
 [Cursor 7-22](https://cursor.com/blog/router)与[8-06技术文](https://cursor.com/blog/how-cursor-router-works)补出逐轮分类、换模型缓存成本及用户后续行为代理。02已有相对固定分流核总投入的默认，这些自报还不足以单独改变该选择；先归既有时效维护，不重做Scrouting，不与P47故障回退混为一题。只有补出具体可控路径和可改变的采用决定，才重开立项。[一手；研究：负结果]
+
+## P51：自用起点与漏检诊断
+
+核实：2026-10-21（UTC+8），基线c4f280f。主线一／二；改变25第二、六步：按失败机制补团队自用出口，按冻结参照识别行动性遗漏。P51只把方法用于本仓内容，不另评研究产品。[研究]
+
+**最高水平卡。** 整体最佳探索方法未知；继承[C17](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c17--ai-探索)的原文核实、行动性遗漏与产物评价。近期强参照是P46的Cursor7-30环境与Claude Code10-15评审复盘：它们确实改变正文先做什么；这不是搜索方法的对照实验。主流采用比例未知；可行基线为已有Agent定向检索。本仓默认先复用名册、把失败机制带入检索，再追原站明确关联的出口，不为每题装框架。[一手／研究；经验：采用层级]
+
+### 首份历史诊断，不是新方法成绩
+
+固定历史对象是P46编辑树e0ec3d0与2026-07-21至10-21回扫；原账见上文“近三个月回扫”。本轮重核遗漏原文，未重新独立发现。单位为去重原始来源，不是URL、转载、页面或审计卡数量。[研究：历史重读]
+
+| 同期参照 | P46当时状态 | 会改变的选择／漏因与处理 |
+|---|---|---|
+| [Cursor7-30环境](https://cursor.com/blog/cloud-agent-environment) | 受查docs未找到URL／anydev，后补 | 命令本身复杂时，Skill说明只有边际帮助；先修可运行接口与长进程管理。按工具功能搜漏团队基础设施是推断，后续用启动／验证失败机制补搜。 |
+| [Claude.dev10-15评审](https://claude.dev/blog/solving-code-review-at-anthropic/) | 未找到slug／作者，后补 | 反复评审应先分新风险、既存缺陷与重复发现，让循环收敛；不是继续加轮。出口分散是推断，沿已核官方Related articles与作者补查，不凭域名自认官方。 |
+| Cursor9-23 token efficiency | 已覆盖 | 保留已有harness减法反证，不计新增。 |
+| ETH AGENTS.md v3 | 已覆盖 | 保留指令收益反证，不计新增。 |
+| Willison9-27演讲整理 | 已覆盖 | 保留跨线个人雷达，不计新增。 |
+
+这份挑选的同期诊断样本为**遗漏2／参照5**，不是总体召回率或“最高水平全集”的漏检率。不能把补录后的0/5当方法提升；P46的完整检索用时、来源总数和原文读取比例未测，不能用本次重读倒填。[研究：分母边界]
+
+[Scion10-13](https://www.anthropic.com/research/redesigning-source-control)另记历史外部带入1项：P46时已局部补录，不能混入上述“当时未覆盖”分母。它用于比较资源、人工审意图与系统边界，不建议一般仓库改换Git。[一手／研究]
+
+审计29张卡不是29次来源遗漏：同源会复用，已读但未比较是转化缺口；审计基线8eb897d与P46也不同。原审计为正文隔离的先验比较，不升级为完全盲测。只读简介／摘要的候选先列读取缺口，待正文支持相关性后再判；外部Onyx漏检案例不混入本仓统计。[研究]
+
+### 新提示词与自用边界
+
+[执行提示词](../collaboration/prompts/2026-10-21-exploration-self-use.md)落实25既有六步，不安装Skill，不增加脚本／JSON／调度。记录实际起止、可核作业与等待、去重来源数／正文读取数；正文比例不是质量分。已知来源、主动发现、外部补入分列，阶段结束后先冻结再对照。[研究：设计]
+
+**当前实际使用0/3。** P46／P49／P50不得追认，本次准备提示词和名册也不拆成三个内容项目。后续在真实内容项目开始研究前使用并留下产物；同一项目多卡只计一次。按既定双周审计汇总已知相关参照的遗漏及原因，无合格分母写未知。P51仍未完成，方法净收益仍归P41／P38。[研究：验收状态]
+
+### G1与客户端核心机制来源名册
+
+按生产环节找持续产出证据的作者，不把这张表当工具榜或最高水平认证。下列“已读”指本轮相关正文；“继承”不计本轮新读。游戏正文仍由对应项目维护，本节只补探索入口。[研究]
+
+| 环节／持续作者入口 | 代表作、读取状态与读者选择 |
+|---|---|
+| 概念／试玩：[Brian G Cronin，GDC作者页](https://schedule.gdconf.com/speaker/cronin-brian/21059)；Supergiant官方博客及作品更新 | [超小团队试玩讲义](https://media.gdcvault.com/gdc2026/Slides/Cronin_Brian_PlaytestingProcessForUltraSmallTeams.pdf)，GDC2026年3月会期，单场日未知，正文已读。定向假设与整段玩家体验都要取证。Supergiant Hades II 2025-07-02／2026-06更新继承WP4／WP11，追修改理由，不把补丁量当收益。 |
+| 2D／补帧：Shahar Bar（SBS Games）；Kenneth Alonso、Gustavo Patow（GILAB） | [SBS9-23](https://sbsgames.dev/blog/ai-sprite-animation)、[补帧论文10-12](https://arxiv.org/html/2610.16423)相关节已读，均已有仓内来源。前者检整段比例／对齐／接缝，后者核RGBA与边缘；作者单次样本、指标不证明完整零手修动作生产胜出。 |
+| 3D／PBR：TiMi L1 Leon Zhang、Zhipeng Tan；Unity Generators团队 | [GDC2026生产管线](https://media.gdcvault.com/gdc2026/Slides/Zhang_Leon_Tan_Zhipeng_TheScalableGameAssetAssistedProductionPipelineOfHonorOfKings.pdf)本轮提取大小受限，继承WP3已核图页；[Unity Sprite4-28](https://unity.com/blog/unity-ai-sprite-generator)与[Material5-14](https://unity.com/blog/unity-ai-material-generator)正文已读。先核原型／成品目标及专业人工投入，再比细节质量，不用编辑器内生成代替生产就绪。 |
+| 材质／VFX／渲染：Natalya Tatarchuk组织的Advances，具体作者如IO Interactive Alexander Mueller | [SIGGRAPH2026课程入口](https://advances.realtimerendering.com/s2026/index.html)，7-21；仅简介，继承审计S20。Smolder／PSSR／VRRT供追讲义，不从简介判算法或动态稳定性，不把Glacier实现当Unity插件。 |
+| 动画／控制：Epic动画团队、Daniel Holden、Videocult开发者 | [GASP5.8，8-12](https://www.unrealengine.com/tech-blog/download-the-latest-game-animation-sample-project-now-updated-for-ue-5-8)、[Holden锁足，7-30](https://theorangeduck.com/page/inverse-kinematics-foot-locking)、[Rain World访谈，2025-09-25](https://unity.com/blog/exploring-procedural-design-rain-world)相关节已读。分状态选择／姿态检索、源动作／接触／锁足；程序动画仍有逐类代码。样例或作者名气不证明二改成本最优。 |
+| 音频：Wube／Albert、Donion及作曲者；Audiokinetic客座生产作者 | [FFF407，2024-04-19](https://factorio.com/blog/post/fff-407)已读，已有WP6；只作历史生产反例，专业作曲未消失。[Endfield](https://www.audiokinetic.com/community/blog/arknights-endfield)／[METAL EDEN](https://www.audiokinetic.com/community/blog/metal-eden-weapons-sound-design)仅发现，正文不可访问、署名未核；不拿摘要填近期音频上限空白。 |
+| 引擎接入／客户端观察：Unity AI、Epic技术博客与版本文档 | [Unity AI5-05入口](https://unity.com/blog/unity-ai-how-to-get-started)已读，继承S12；Unity Insight沿审计S13，非本轮新读。区分文件代码与场景／引用／编辑器状态；原文入口不等于安装、实际修改或恢复已验。 |
+| 测试分发／发行：Valve Steamworks团队 | [Playtest](https://partner.steamgames.com/doc/features/playtest)、[Content Survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey)对应节已读，滚动文档未标发布日，核实10-21。访问分发与反馈获取分开；生成内容可用性不等于平台发行资格，平台规则也不是体验证据。 |
+
+**两项本次定向补漏。** 在c4f280f的docs与domains/game-dev按正式slug、作者、标题片段查重，未命中Cronin讲义及Unity Material正式页；不证明历史从未读过。Cronin的PDF第47–51页（零基46–50）从假设、试玩、归纳到行动，提醒玩家面对整个游戏且不知道开发者假设；支持把程序正确与玩家理解分别找来源。仅凭正文文字，相关页截图未取得，不声称审图。Material正文将工具定位于原型占位、后期换美术成品；这不是商用禁令或所有生成物不可用，只改变候选进入比较前的阶段核查。Sprite相同定位、SIGGRAPH简介已有，不能重报新增。[一手／研究]
+
+**读取记录（执行者自报）。** 研究09:28:17–09:32:46 UTC，历时4分29秒含去重、检索和记录，非纯阅读净工时。限定目标16篇：Cronin、SBS、补帧、TiMi、Unity Sprite／Material、SIGGRAPH、GASP、Holden、Rain World、FFF407、两篇音频、Unity AI、Playtest、Content Survey；其中相关正文已读12，目标读取比例12/16；四项为TiMi获取受限、SIGGRAPH仅简介、两音频不可读。导航页、重复URL与继承卡不计；不是全网召回或提示词效果。本次在新提示准备完成前已开始研究，不计自用项目。名册有全链入口，近期音频原文、VFX完整讲义和同题质量比较仍缺。[研究：范围]
