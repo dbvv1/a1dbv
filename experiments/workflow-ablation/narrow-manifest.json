@@ -1,0 +1,23 @@
+{
+  "experiment_id": "narrow-exit-contract-v1",
+  "base_revision": "e3ec4805fd5b93b929272ffd22015486be19665c",
+  "pair_order": [
+    "AB",
+    "BA",
+    "AB"
+  ],
+  "model_status": "not_run",
+  "sha256": {
+    "agent-input/stream_driver.py": "1bfc3c472507b2241545a8be80664c7b4a3676bd2452b3ed5648173bb9ce9cee",
+    "agent-input/public_tests.py": "b49bd139658d836b07ef90f57ba8fbd6c1e27459d67e459470cc8e17a489ebf1",
+    "agent-input/narrow-r1.md": "529f35fd93d0e977111732fd6b8fec1a51ec5b136a65867028ed1daa0c9e01de",
+    "agent-input/narrow-r2.md": "2a19f8d154b811e9d4b9b6b4353ad75cc9fb53cf82ee1f4e4f409d1fccdd0d0b",
+    "conditions/narrow-a.md": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "conditions/narrow-b.md": "3235503c7c2884b08cdbb0c3264528fc5ad3cedfa0ceda0fbe36828623036341",
+    "evaluator/narrow_checks.py": "6c08fda2df6454b5c2cc80df43bead7ba880dc8087aebe67ac09127a3ac292a3",
+    "evaluator/narrow_grade.py": "59425bead846cc30fbd01af8bc873a2b81e0679865a86c91c858aefe83105d92",
+    "evaluator/narrow_reference.py": "854ac435c9ece80bbeb88065a42fe7355038442aebd55fd32a0686633231e4ac",
+    "evaluator/narrow_selftest.py": "d2963675670995798ce662f82ad7c589ed36d9f276d448e16e0be721ca79fade",
+    "evaluator/checks.py": "19f2bcfece4bc44a914332ed98d2cdee6c7a68beda8ad0120dacbe4f9ef96d97"
+  }
+}
