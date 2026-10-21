@@ -91,15 +91,19 @@ Thomas Daly，[What our experimental self-healing software loop shipped in two w
 
 ### 接收反证：相关单测红，浏览器绿
 
-与最终 head 7630ff05 关联的 [PR Library checks](https://github.com/PostHog/posthog-js/actions/runs/30916571759)单测及 Playwright E2E 步骤成功；工作流实际检出 PR merge ref 的 07102c8a，并非最终 squash 树。合入 [5f2b78af317266502754f91bff0192ab5ef36ba6](https://github.com/PostHog/posthog-js/commit/5f2b78af317266502754f91bff0192ab5ef36ba6) 后，[push Library checks](https://github.com/PostHog/posthog-js/actions/runs/30918100256)失败，Playwright E2E 成功；[Release](https://github.com/PostHog/posthog-js/actions/runs/30918100183)取消。本轮未证此次发布完成。[一手：精确提交运行记录]
+与最终 head 7630ff05 关联的 [PR Library checks](https://github.com/PostHog/posthog-js/actions/runs/30916571759)单测及 Playwright E2E 步骤成功；工作流实际检出 PR merge ref 的 07102c8a，并非最终 squash 树。合入 [5f2b78af317266502754f91bff0192ab5ef36ba6](https://github.com/PostHog/posthog-js/commit/5f2b78af317266502754f91bff0192ab5ef36ba6) 后，[push Library checks](https://github.com/PostHog/posthog-js/actions/runs/30918100256)失败，Playwright E2E 成功；[Release](https://github.com/PostHog/posthog-js/actions/runs/30918100183)取消；但随后补核正式 [1.410.10 release](https://github.com/PostHog/posthog-js/releases/tag/posthog-js%401.410.10) 已列出4412，发行时间为2026-08-04 23:32（UTC+8）。单次发布作业取消不等于补丁未发行。[一手：精确提交运行记录]
 
-已读[失败单测日志](https://github.com/PostHog/posthog-js/actions/runs/30918100256/job/92021293864)：两项 V2 event-trigger／late-rotation 测试期望发送轮转会话的 `$snapshot`，实际调用为0；同套件汇总5220 passed、2 failed、8 skipped。失败发生在本次讨论的暂存释放／发送路径，不是环境安装失败；日志仍不足以确定生产根因或后续是否修好。[一手：公开日志；研究：解释范围]
+已读[失败单测日志](https://github.com/PostHog/posthog-js/actions/runs/30918100256/job/92021293864)：两项 V2 event-trigger／late-rotation 测试期望发送轮转会话的 `$snapshot`，实际调用为0；同套件汇总5220 passed、2 failed、8 skipped。失败发生在本次讨论的暂存释放／发送路径，不是环境安装失败；后继已确认这两项旧同步断言没有适配刻意采用的两秒 batching，不能据此判为生产发送故障。[一手：公开日志；研究：解释范围]
 
-这里不再另设一套“最终树规则”，接收沿用 [15](../15-task-playbooks.md) 的集成与发布边界。新增取舍是：录制修复要同时满足“该发的发出”和“不该发的不扩大”；仅浏览器绿、出现 FullSnapshot 或已合入都无法独自覆盖两者。相关断言未清前，保持已有采集策略，用既有测试／trace 诊断；不是默认关闭所有录制或拒绝一切带红灯的补丁。[经验]
+**发送按产品约定等待正常批次，测试也要用同一时间语义。** [4421的维护者回执](https://github.com/PostHog/posthog-js/pull/4421#issuecomment-5189546151)明确指出修正已由4380吸收；实际合入 [3c40b6ce](https://github.com/PostHog/posthog-js/commit/3c40b6cecd66633d16f3f94ec6614af656445f2e)为两项用例补上 `advanceTimersByTime(RECORDING_BUFFER_TIMEOUT)`，该精确提交的 [Library checks](https://github.com/PostHog/posthog-js/actions/runs/30982029121)及实际单测／E2E步骤通过。这条有明确映射的后继说明应修正测试的旧同步假设，不是为变绿删除验收断言。[一手：维护者说明／补丁／hosted CI]
+
+**采集边界仍需分别接收。** 后续 [4417](https://github.com/PostHog/posthog-js/pull/4417)另补从未可见的后台页面在卸载时产生计费录制的问题，正式 [1.412.2](https://github.com/PostHog/posthog-js/releases/tag/posthog-js%401.412.2)已列出该项；此处只核正文与发行记录，不把它当作完整差异或实际用户回执。4224也已列于 [1.407.2](https://github.com/PostHog/posthog-js/releases/tag/posthog-js%401.407.2)。[一手：发行／维护记录]
+
+这里不再另设一套“最终树规则”，接收沿用 [15](../15-task-playbooks.md) 的集成与发布边界。新增取舍是：录制修复要同时满足“该发的发出”和“不该发的不扩大”；仅浏览器绿、出现 FullSnapshot 或已合入都无法独自覆盖两者。Agent先区分产品契约被破坏，还是测试仍期待旧的同步时序；人的采集约定不变时，可修测试时钟以检查真正应有的批次发送。未经核实就强制同步发送或扩大采集，都不是默认修法。[经验]
 
 ### 证据范围与接续
 
-本次复用P56的最高水平卡与先前原文；新增公开 issue、两份完整补丁、固定源码、精确 SHA 的 CI／步骤及失败日志。只读资料，没有运行应用、模型或上游测试，没有访问私人录制／gist。4224 有 Claude Code 署名，不能因此把4412或全部结果归因于同一模型。还缺原报告者在已发布同版本的复验、生产费用恢复及播放器体验回执，故这是P56内容增量，不是项目整体验收。[研究]
+本次复用P56的最高水平卡与先前原文；新增公开 issue、两份完整补丁、固定源码、精确 SHA 的 CI／步骤、失败日志、明确后继修正与发行记录。只读资料，没有运行应用、模型或上游测试，没有访问私人录制／gist。4224 有 Claude Code 署名，不能因此把4412或全部结果归因于同一模型。已遍历4202的1条评论、4224的5条合并讨论及4412的18条讨论，仍未见原报告者在明确发行版本上的复验；生产费用恢复及播放器体验回执也未补齐，故这是P56内容增量，不是项目整体验收。[研究]
 
 ## 早期 Healer 核查
 
