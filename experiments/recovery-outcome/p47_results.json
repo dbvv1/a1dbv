@@ -1,0 +1,65 @@
+{
+  "scope": "official source excerpts in explicit stub host, not SDK/native/provider/business-tool tests",
+  "python": "3.12.14",
+  "dependencies": {
+    "anyio": "4.14.2",
+    "pydantic": "2.13.4"
+  },
+  "attempts": [
+    {
+      "stage": "initial probe",
+      "tests_run": 0,
+      "exit_code": 5,
+      "reason": "stub host missing sys.modules registration for dataclasses; fixed host only"
+    },
+    {
+      "stage": "bounded excerpt probe",
+      "tests_run": 13,
+      "failures": 0,
+      "errors": 0,
+      "exit_code": 0,
+      "unittest_seconds": 0.574,
+      "outer_timeout_seconds": 10
+    },
+    {
+      "stage": "existing recovery plus source integrity",
+      "tests_run": 18,
+      "failures": 0,
+      "errors": 0,
+      "exit_code": 0,
+      "unittest_seconds": 2.37
+    },
+    {
+      "stage": "cross-Python AST fingerprint preparation",
+      "tests_run": 19,
+      "errors": 4,
+      "reason": "ast.dump differs across Python 3.12/3.13; first canonicalizer also needed explicit Ellipsis handling; no upstream body changed"
+    },
+    {
+      "stage": "final system Python source integrity plus existing recovery",
+      "python": "3.13",
+      "tests_run": 19,
+      "failures": 0,
+      "errors": 0,
+      "exit_code": 0,
+      "unittest_seconds": 2.528,
+      "note": "Existing SQLite recovery tests emitted ResourceWarning for unclosed connections; not hidden or changed"
+    },
+    {
+      "stage": "final bounded excerpt probe",
+      "tests_run": 13,
+      "failures": 0,
+      "errors": 0,
+      "exit_code": 0,
+      "unittest_seconds": 0.046,
+      "outer_timeout_seconds": 10
+    }
+  ],
+  "not_run": [
+    "upstream SDK test suites",
+    "real models or provider requests",
+    "tool business actions",
+    "end-to-end fallback recovery",
+    "deadline implementation"
+  ]
+}

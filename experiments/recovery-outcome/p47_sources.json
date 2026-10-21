@@ -1,0 +1,132 @@
+{
+  "scope": "Exact official-source excerpts in a stub host; not SDK, provider, deadline, or business-tool execution.",
+  "sources": [
+    {
+      "key": "lite",
+      "repo": "BerriAI/litellm",
+      "tag": "v1.106.1",
+      "commit": "978b4d1e4e91cdaaab2e16fbd02d855439e143c1",
+      "path": "litellm/router.py",
+      "blob_sha": "7d1616fc9678d86acdf60b05f296a7c2b52fd718",
+      "url": "https://github.com/BerriAI/litellm/blob/978b4d1e4e91cdaaab2e16fbd02d855439e143c1/litellm/router.py",
+      "excerpts": [
+        {
+          "name": "_stream_chunks_have_generated_content",
+          "start_line": 477,
+          "end_line": 494,
+          "source": "def _stream_chunks_have_generated_content(chunks: Sequence[ModelResponseStream]) -> bool:\n    for chunk in chunks:\n        if not chunk.choices:\n            continue\n        delta = chunk.choices[0].delta\n        if (\n            delta.get(\"content\")\n            or delta.get(\"tool_calls\")\n            or delta.get(\"function_call\")\n            or delta.get(\"reasoning_content\")\n            or delta.get(\"thinking_blocks\")\n            or delta.get(\"reasoning_items\")\n            or delta.get(\"audio\")\n            or delta.get(\"images\")\n            or delta.get(\"annotations\")\n        ):\n            return True\n    return False\n",
+          "sha256": "6b27aefcb43cabf67e9f7e7601b265120c8c98ec64ff719148d3d7d3fb8da749"
+        },
+        {
+          "name": "_anthropic_stream_should_decline_fallback",
+          "start_line": 619,
+          "end_line": 627,
+          "source": "def _anthropic_stream_should_decline_fallback(has_generated_content: bool, error: \"MidStreamFallbackError\") -> bool:\n    \"\"\"\n    A MidStreamFallbackError raised directly by the source iterator (the\n    completion-bridge path's CustomStreamWrapper, e.g. on a transport drop)\n    carries its own pre_first_chunk bookkeeping - gated the same way a\n    detected SSE error event is, so a fallback is never appended after real\n    content already reached the client on either path.\n    \"\"\"\n    return has_generated_content or not error.is_pre_first_chunk\n",
+          "sha256": "a9bda3e7bee571b4b3ca38be9a5386a43fdb6d94286ddc8ff42c0c553e5fb386"
+        }
+      ]
+    },
+    {
+      "key": "pyd",
+      "repo": "pydantic/pydantic-ai",
+      "tag": "v2.58.0",
+      "commit": "b40096c4c91e4db361ee3f23b0e3f6b85569faa2",
+      "path": "pydantic_ai_slim/pydantic_ai/models/fallback.py",
+      "blob_sha": "47d243e3b7dc626f822c921d7dcde010787c1773",
+      "url": "https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/pydantic_ai_slim/pydantic_ai/models/fallback.py",
+      "excerpts": [
+        {
+          "name": "_request_stream_until_first_event",
+          "start_line": 634,
+          "end_line": 661,
+          "source": "@asynccontextmanager\nasync def _request_stream_until_first_event(\n    model: Model,\n    deadline: RequestDeadline | None,\n    messages: list[ModelMessage],\n    model_settings: ModelSettings | None,\n    model_request_parameters: ModelRequestParameters,\n    run_context: RunContext[Any] | None,\n) -> AsyncGenerator[StreamedResponse]:\n    \"\"\"Open `model`'s stream and wait for its first event before handing it over.\n\n    Providers can accept a streamed request and then report a failure before producing any output,\n    like an OpenAI Responses `response.failed` after `response.created`, or a Bedrock throttling\n    error as the first stream event. Waiting for the first event means such an error is raised here,\n    inside the candidate's own stream context, where `FallbackModel` can still move on to the next\n    model. The event is replayed to the consumer, so the stream it gets is unchanged. The stream is opened under\n    `deadline`, so waiting for the first event counts towards it like every event after it.\n    \"\"\"\n    async with stream_under_deadline(\n        deadline, model.request_stream(messages, model_settings, model_request_parameters, run_context)\n    ) as response:\n        events: PeekableAsyncStream[ModelResponseStreamEvent, AsyncIterator[ModelResponseStreamEvent]] = (\n            PeekableAsyncStream(aiter(response))\n        )\n        await events.peek()\n        # `StreamedResponse.__aiter__` hands out the iterator stored here, so the consumer gets the peeked event too.\n        response._event_iterator = events  # pyright: ignore[reportPrivateUsage]\n        yield response\n",
+          "sha256": "2f91f882b3121c38069cf42386f40c23a683c7a67c68f57bc1eba3fa6411fd1a"
+        }
+      ]
+    },
+    {
+      "key": "pydutils",
+      "repo": "pydantic/pydantic-ai",
+      "tag": "v2.58.0",
+      "commit": "b40096c4c91e4db361ee3f23b0e3f6b85569faa2",
+      "path": "pydantic_ai_slim/pydantic_ai/_utils.py",
+      "blob_sha": "54f666713695ed9fb566e7afe03afb9e473b5dcb",
+      "url": "https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/pydantic_ai_slim/pydantic_ai/_utils.py",
+      "excerpts": [
+        {
+          "name": "Unset",
+          "start_line": 365,
+          "end_line": 368,
+          "source": "class Unset:\n    \"\"\"A singleton to represent an unset value.\"\"\"\n\n    pass\n",
+          "sha256": "01a12b149d686f96c233a647b8de8a6a282a6fa4f8716f91d41cfd717fc56a48"
+        },
+        {
+          "name": "PeekableAsyncStream",
+          "start_line": 613,
+          "end_line": 718,
+          "source": "class PeekableAsyncStream(Generic[T, SourceT]):\n    \"\"\"Wraps an async iterable of type T and allows peeking at the *next* item without consuming it.\n\n    We only buffer one item at a time (the next item). Once that item is yielded, it is discarded.\n    This is a single-pass stream.\n    \"\"\"\n\n    def __init__(self, source: SourceT):\n        self.source = source\n        self._source_iter: AsyncIterator[T] | None = None\n        self._buffer: T | Unset = UNSET\n        self._exhausted = False\n        # Serialize access to the underlying source so cancelling an in-flight pull releases the lock before\n        # `aclose()` closes it. A debounced consumer (`group_by_temporal`) prefetches the next item in a background\n        # task, so the source generator can be mid-`anext` when the stream is abandoned; closing it concurrently\n        # would raise `RuntimeError: aclose(): asynchronous generator is already running`.\n        self._source_lock = anyio.Lock()\n        self._pull_scopes: set[anyio.CancelScope] = set()\n\n    async def peek(self) -> T | Unset:\n        \"\"\"Returns the next item that would be yielded without consuming it.\n\n        Returns None if the stream is exhausted.\n        \"\"\"\n        if self._exhausted:\n            return UNSET\n\n        # If we already have a buffered item, just return it.\n        if not isinstance(self._buffer, Unset):\n            return self._buffer\n\n        # Otherwise, we need to fetch the next item from the underlying iterator.\n        if self._source_iter is None:\n            self._source_iter = aiter(self.source)\n\n        with anyio.CancelScope() as scope:\n            self._pull_scopes.add(scope)\n            try:\n                async with self._source_lock:\n                    try:\n                        self._buffer = await anext(self._source_iter)\n                    except StopAsyncIteration:\n                        self._exhausted = True\n                        return UNSET\n                return self._buffer\n            finally:\n                self._pull_scopes.discard(scope)\n\n        # Only reached when `aclose()` cancelled the scope: the stream is closed, so iteration is over.\n        self._exhausted = True\n        return UNSET\n\n    async def is_exhausted(self) -> bool:\n        \"\"\"Returns True if the stream is exhausted, False otherwise.\"\"\"\n        return isinstance(await self.peek(), Unset)\n\n    def __aiter__(self) -> AsyncIterator[T]:\n        # For a single-pass iteration, we can return self as the iterator.\n        return self\n\n    async def __anext__(self) -> T:\n        \"\"\"Yields the buffered item if present, otherwise fetches the next item from the underlying source.\n\n        Raises StopAsyncIteration if the stream is exhausted.\n        \"\"\"\n        if self._exhausted:\n            raise StopAsyncIteration\n\n        # If we have a buffered item, yield it.\n        if not isinstance(self._buffer, Unset):\n            item = self._buffer\n            self._buffer = UNSET\n            return item\n\n        # Otherwise, fetch the next item from the source.\n        if self._source_iter is None:\n            self._source_iter = aiter(self.source)\n\n        with anyio.CancelScope() as scope:\n            self._pull_scopes.add(scope)\n            try:\n                async with self._source_lock:\n                    try:\n                        return await anext(self._source_iter)\n                    except StopAsyncIteration:\n                        self._exhausted = True\n                        raise\n            finally:\n                self._pull_scopes.discard(scope)\n\n        # Only reached when `aclose()` cancelled the scope: the stream is closed, so iteration is over.\n        self._exhausted = True\n        raise StopAsyncIteration\n\n    async def aclose(self) -> None:\n        self._exhausted = True\n        for scope in self._pull_scopes:\n            scope.cancel()\n        value = self._source_iter if self._source_iter is not None else self.source\n        # Wait for the cancelled pull to release the source before closing it, so we don't close a\n        # generator that's still running. Shielded, as this is teardown: it often runs inside an anyio scope that\n        # was cancelled, e.g. at a `request_timeout` deadline, where waiting for the lock would raise again and\n        # leave the source open.\n        with anyio.CancelScope(shield=True):\n            async with self._source_lock:\n                await aclose_if_supported(value)\n",
+          "sha256": "595fa45c9700d64d82b060bbd9ad8e89a01ab8e7a83f17be576133ffb63a0c50"
+        },
+        {
+          "name": "aclose_if_supported",
+          "start_line": 425,
+          "end_line": 429,
+          "source": "async def aclose_if_supported(stream: AsyncIterable[Any]) -> None:\n    \"\"\"Close an async iterable if it exposes an `aclose` method.\"\"\"\n    aclose: Callable[[], Awaitable[None]] | None = getattr(stream, 'aclose', None)\n    if aclose is not None:\n        await aclose()\n",
+          "sha256": "ea87be8e8259213da0f73b754038174c92763c96668689a94d3490f5c10ada1d"
+        }
+      ]
+    },
+    {
+      "key": "oairetry",
+      "repo": "openai/openai-agents-python",
+      "tag": "v0.24.0",
+      "commit": "17d994bd3045dae71acda676a4ef4762ed8ecd94",
+      "path": "src/agents/retry.py",
+      "blob_sha": "5ad40f68ac781608664ae276f652df970d2c5dfd",
+      "url": "https://github.com/openai/openai-agents-python/blob/17d994bd3045dae71acda676a4ef4762ed8ecd94/src/agents/retry.py",
+      "excerpts": [
+        {
+          "name": "ModelRetryBackoffSettings",
+          "start_line": 15,
+          "end_line": 32,
+          "source": "@pydantic_dataclass\nclass ModelRetryBackoffSettings:\n    \"\"\"Backoff configuration for runner-managed model retries.\"\"\"\n\n    initial_delay: float | None = Field(default=None, ge=0)\n    \"\"\"Delay in seconds before the first retry attempt.\"\"\"\n\n    max_delay: float | None = Field(default=None, ge=0)\n    \"\"\"Maximum delay in seconds between retry attempts.\"\"\"\n\n    multiplier: float | None = Field(default=None, ge=0)\n    \"\"\"Multiplier applied after each retry attempt.\"\"\"\n\n    jitter: bool | None = None\n    \"\"\"Whether to apply random jitter to the computed delay.\"\"\"\n\n    def to_json_dict(self) -> dict[str, Any]:\n        return dataclasses.asdict(self)\n",
+          "sha256": "25f5f60df0b44524f2116d3b311871211685db3fb5bea39dd2ddb891b81537d0"
+        },
+        {
+          "name": "_coerce_backoff_settings",
+          "start_line": 38,
+          "end_line": 43,
+          "source": "def _coerce_backoff_settings(\n    value: ModelRetryBackoffInput | None,\n) -> ModelRetryBackoffSettings | None:\n    if value is None or isinstance(value, ModelRetryBackoffSettings):\n        return value\n    return ModelRetryBackoffSettings(**value)\n",
+          "sha256": "4afdb0d66da32d348e64dc925c3b170a821e228ebc48ade808433e3efb04e5a7"
+        },
+        {
+          "name": "ModelRetrySettings",
+          "start_line": 209,
+          "end_line": 230,
+          "source": "@pydantic_dataclass\nclass ModelRetrySettings:\n    \"\"\"Opt-in runner-managed retry settings for model calls.\"\"\"\n\n    max_retries: int | None = None\n    \"\"\"Retries allowed after the initial model request.\"\"\"\n\n    backoff: ModelRetryBackoffInput | None = None\n    \"\"\"Backoff settings applied when the policy retries without an explicit delay.\"\"\"\n\n    policy: Callable[..., Any] | None = Field(default=None, exclude=True, repr=False)\n    \"\"\"Runtime-only retry policy callback. This field is not serialized.\"\"\"\n\n    def __post_init__(self) -> None:\n        self.backoff = _coerce_backoff_settings(self.backoff)\n\n    def to_json_dict(self) -> dict[str, Any]:\n        backoff = _coerce_backoff_settings(self.backoff)\n        return {\n            \"max_retries\": self.max_retries,\n            \"backoff\": backoff.to_json_dict() if backoff is not None else None,\n        }\n",
+          "sha256": "fc889426c27a601f65d8151c699ddf71c40a95bbeddbcceb9d2717220d9330da"
+        }
+      ]
+    }
+  ],
+  "licenses": [
+    {
+      "key": "lite",
+      "text": "Portions of this software are licensed as follows:\n\n* All content that resides under the \"enterprise/\" directory of this repository, if that directory exists, is licensed under the license defined in \"enterprise/LICENSE\".\n* Content outside of the above mentioned directories or restrictions above is available under the MIT license as defined below.\n---\nMIT License\n\nCopyright (c) 2023 Berri AI\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+      "blob_sha": "3bfef5bae9b48c334acf426d5b7f21bc1913aab9",
+      "url": "https://github.com/BerriAI/litellm/blob/978b4d1e4e91cdaaab2e16fbd02d855439e143c1/LICENSE"
+    },
+    {
+      "key": "pyd",
+      "text": "The MIT License (MIT)\n\nCopyright (c) Pydantic Services Inc. 2024 to present\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+      "blob_sha": "1bf1f55e6d1736b499ded961ec6b94bfebb17aec",
+      "url": "https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/LICENSE"
+    },
+    {
+      "key": "oai",
+      "text": "MIT License\n\nCopyright (c) 2025 OpenAI\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+      "blob_sha": "e5ad2c5aa30343f143a5c418004ca1a8d2cfaff4",
+      "url": "https://github.com/openai/openai-agents-python/blob/17d994bd3045dae71acda676a4ef4762ed8ecd94/LICENSE"
+    }
+  ]
+}

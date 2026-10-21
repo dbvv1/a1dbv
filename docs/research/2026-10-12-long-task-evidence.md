@@ -337,3 +337,56 @@ missing-expected-HEAD: rejected
 [#91140 原报告者的修后复测](https://github.com/anthropics/claude-code/issues/91140#issuecomment-6226311364)在 macOS 上固定版本与提示：子任务等待后返回 `C-DONE`；父任务只有在工具结果中收到该标记才写 `INLINE` 并返回 `MGR-INLINE`。省略后台参数的五个旧构建（2.1.280、290、299、300、301）合计 30 次均搁置；2.1.302 在 `-p` 根忙、stream-json 根闲、TypeScript SDK 根闲三个入口合计 9 次均 inline。显式后台调用仍未唤醒中间父任务；这不是后台投递修复。公开提示与回执闭合到标记消费，不等于真实工程集成成功；本仓未运行。[社区：控制复测自报；研究：范围]
 
 **保留反例与退出条件。** [当前官方嵌套契约](https://code.claude.com/docs/en/sub-agents#let-subagents-spawn-their-own-subagents)说明，非交互／SDK 的启动者结束后，嵌套后台结果交给根会话。故依赖结果时优先原生前台；确需异步时明确接收、续接与整合责任，结果未知仍先查原产物，不重派补通知。Desktop／VS Code 这里只核发行说明，不继承 9 次消费回执；不推广所有后台 Agent、恢复旧任务或长期收益。仅只读公开文档、发行与原帖，未复制复测者特殊权限、运行客户端／模型或上游测试。[一手；研究：采用与验证边界]
+
+## P47：模型回退，历史兼容不等于工具可重放
+
+主线：2／3，额外路由能力与第二次配置修改；核实2026-10-21。
+改变建议：20 §9新增编码Agent的回退采用门槛；保留原生恢复，不用删历史或重跑工具掩盖模型调用失败。
+新证据：两套发行实现的流式边界、跨商历史投影测试，以及第三套领先SDK的配置序列化契约；本仓原函数摘录宿主13项通过，不是SDK／模型实测。
+
+### 最高水平卡与具体选择
+
+**问题。** 编码Agent已读文件、发出或执行工具，模型请求断流；增加备用提供商后，又改备用顺序或保存重载配置，能否接着工作而不重做写入？本项目不评模型排名、成本路由收益或新编排框架。
+
+**领先参照。** Anthropic工程团队2026-04-08[Managed Agents](https://www.anthropic.com/research/managed-agents)将持久事件日志、harness与执行环境分离，日志不是易失context。OpenAI Agents[重试安全契约](https://openai.github.io/openai-agents-python/models/#safety-boundaries)区分已开始输出、有状态请求与本地副作用重放。它们提供当前头部工程参照，不证明跨提供商整体最优；本题端到端最高水平与效果赢家未知。[一手；研究]
+
+**主流／可行。** 现成网关重试和Agent原生fallback均已有成熟实现；本轮没有采用率调查，不能称两者代表普遍实践。本仓默认属于有源码与回归定义支持的条件选择：已有Agent先保留原生路径，确有可用性缺口才加回退；候选的能力／历史兼容与执行阶段分别验收，任一不明就暴露可恢复失败。Agent可生成配置、对齐历史并准备故障测试；人确认写入语义、允许的提供商与回退目标，不能把模型自报“未执行”作为去重证据。[研究]
+
+### 固定发行、许可与同题比较
+
+| 对象 | 固定发行与commit | 本题机制与局限 |
+|---|---|---|
+| LiteLLM Router | [v1.106.1](https://github.com/BerriAI/litellm/releases/tag/v1.106.1)，`978b4d1e4e91cdaaab2e16fbd02d855439e143c1` | [router.py L477–494](https://github.com/BerriAI/litellm/blob/978b4d1e4e91cdaaab2e16fbd02d855439e143c1/litellm/router.py#L477-L494)把tool_calls、thinking等也视为已生成内容；模型请求fallback不拥有应用的工具执行账。 |
+| PydanticAI FallbackModel | [v2.58.0](https://github.com/pydantic/pydantic-ai/releases/tag/v2.58.0)，`b40096c4c91e4db361ee3f23b0e3f6b85569faa2` | [fallback.py L634–661](https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/pydantic_ai_slim/pydantic_ai/models/fallback.py#L634-L661)交出流前先窥首个模型事件，再完整交给消费者；后续错误传播，不等于自动重开整个Agent。 |
+| OpenAI Agents：领先参照／配置反例 | [v0.24.0](https://github.com/openai/openai-agents-python/releases/tag/v0.24.0)，`17d994bd3045dae71acda676a4ef4762ed8ecd94` | [retry.py L209–230](https://github.com/openai/openai-agents-python/blob/17d994bd3045dae71acda676a4ef4762ed8ecd94/src/agents/retry.py#L209-L230)的policy是runtime-only，保存次数／backoff不保存回调；必须把重载行为纳入二改验收。 |
+
+两实现不同层，不评总榜赢家。LiteLLM所选文件在非enterprise区域，MIT；PydanticAI、OpenAI Agents所选文件亦MIT。完整许可、commit、文件Git blob SHA、原样摘录范围与SHA-256见[p47_sources.json](../../experiments/recovery-outcome/p47_sources.json)。摘录不是完整依赖闭包。[一手]
+
+**发行与滚动源码不可混用。** 初查LiteLLM滚动main存在`enable_mid_stream_fallback_continuation`及纯文本prefill限制；固定1.106.1的router.py没有该参数。本次推荐与探针只基于1.106.1，不把main功能写成可用发行配置；未来升级须重新核tag及回归。Pydantic所选fallback文件在本次main读取与2.58.0的blob相同，但结论仍固定发行。[一手：本次读取；研究]
+
+### 兼容矩阵：协议可接受只是第一道门
+
+| 输入或故障 | 固定材料回答什么 | 采用验收与尚缺部分 |
+|---|---|---|
+| 普通文本／工具／多模态／结构化输出 | [OpenAI官方混合模型说明](https://openai.github.io/openai-agents-python/models/#mixing-models-across-providers)要求逐提供商核特性；OpenAI-only优先原生Responses路径 | 列任务实际依赖，不默认所有OpenAI-compatible端点等价；本轮未调用提供商核能力。 |
+| 工具动态可见性、旧历史跨商 | Pydantic[固定test_fallback.py L222起](https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/tests/models/test_fallback.py#L222-L282)用模拟客户端核Anthropic→OpenAI及反向的tool-reveal重投影 | 不是所有tool-call/result、签名thinking或服务端response ID都可跨商复用；实际旧历史接收链待验。 |
+| 首输出前故障 | LiteLLM[wire测试L138起](https://github.com/BerriAI/litellm/blob/978b4d1e4e91cdaaab2e16fbd02d855439e143c1/tests/integration/sdk/test_router_sync_stream_fallback_wire.py#L138-L188)核sync／async转备用；Pydantic[首事件前测试](https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/tests/models/test_fallback.py#L1121-L1159)核保事件 | HTTP收到200、生命周期帧与模型首事件不是同一边界；本仓只复核helper，未复跑上游wire／SDK套件。 |
+| 首事件后、部分工具参数后故障 | LiteLLM同一wire文件test_dies_after_first_chunk只打primary；Pydantic[首事件后测试](https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/tests/models/test_fallback.py#L1161-L1184)向消费者报错 | 不因没有自然语言输出就允许重放；本仓伪chunk证明工具片段会命中原分类器，不证明工具已执行。 |
+| 工具提交后回执缺失 | 网关和模型fallback不能据此决定业务动作未发生 | 复用[已有unknown／对账探针](../../experiments/recovery-outcome/README.md)，不重造幂等系统；工具账与跨商旧历史联动仍未闭合。 |
+| 第二次配置保存／加载 | OpenAI[序列化测试L313、367](https://github.com/openai/openai-agents-python/blob/17d994bd3045dae71acda676a4ef4762ed8ecd94/tests/model_settings/test_serialization.py#L313-L385)明确policy不参与JSON round-trip | 按应用需要显式重绑定并验证；丢回调是明确契约，不是漏洞，也不意味着SDK自动越过重放保护。 |
+
+[一手：固定源码与测试定义；研究：采用门槛。上游测试存在不等于本仓运行过。]
+
+### 本仓首批限定执行
+
+命令：`timeout 10s python3 experiments/recovery-outcome/p47_probe.py`。固定摘录加载宿主13项通过，涵盖空／缺失输入、工具片段、首事件前后故障、原事件不丢、空流、两次配置round-trip及两个负对照。负对照之一是只看text的分类器漏掉tool_calls；另一项显式验证“policy保存后还在”的断言会失败。结果与首次0测试失败记录见[p47_results.json](../../experiments/recovery-outcome/p47_results.json)。首次失败为宿主未向dataclasses登记模块；跨Python完整性检查另遇AST空字段表示与Ellipsis归一化问题，修宿主后Python3.13的19项通过，最终13项probe再次通过。修的是宿主，不是上游函数。[经验：限定离线复核]
+
+**宿主范围。** LiteLLM输入是SimpleNamespace伪chunk／error；Pydantic模型与response是伪异步迭代器，使用同版PeekableAsyncStream和已安装anyio，deadline只允许None透传，非None明确拒绝；OpenAI只加载配置dataclass及辅助函数，使用已安装pydantic。没有导入三套SDK、安装依赖、调用模型／HTTP／业务工具；没有执行完整FallbackModel或Router链。原函数体不改，编译宿主只补future annotations、显式依赖名和无deadline适配。原始文件身份加摘录hash用于复查，不是供应链签名或安全沙箱。[经验：执行与限制]
+
+`python3 -m unittest discover -s experiments/recovery-outcome -v`为原14项＋新增标准库源码完整性5项，共19项通过（system Python3.13；旧SQLite用例有未关闭连接的ResourceWarning，未隐藏或改无关代码）。完整离线入口仅纳入这5项完整性检查；13项依赖现有anyio／pydantic的限定probe单独运行，不能因为CI未安装它们而偷偷下载、跳过或冒充执行。[经验]
+
+### 整项目验收：尚未完成
+
+P47为0.5–3天项目，首批是发行比较与摘录反例，不按13项数目认定项目交付。冻结同一编码任务的B0→B1→B2：B0原生单提供商保存工具与历史；B1加兼容备用并注入首事件前后、工具提交回执缺失；B2调整备用配置／重载策略后消费B1旧历史。每步记录请求候选、事件、稳定业务操作ID、工具执行次数和最终文件；不同新动作不误去重，同动作换tool-call ID不变成新许可。[研究：待执行验收]
+
+已有SDK环境时优先复用上述固定上游fake-client／wire测试，补旧历史与执行账联动；现环境未装这两套SDK，完整调用链保持未运行；本项目没有发生过SDK安装尝试或拒绝。若无法在授权环境执行，只能交资料／摘录层结论，不能把原创协议模拟包装成SDK验证。失败要能明确归为能力不兼容、已输出不能重播、业务结果未知或配置回调需重绑；任何一类被删历史／盲重试掩盖都算失败。该验收无模型排名或生产exactly-once声称。[研究：后续范围]
