@@ -180,6 +180,73 @@ class CatalogTests(unittest.TestCase):
     router = Router(mode=MODE, enable_collection_products=True, audit_sink=lambda r: None)
     self.assertEqual(router.handle('/request', {'operation': 'collectionProducts', 'variables': variables}), {'data': {'collection': None}})
 
+  def test_placeholder_collection_exact_opt_in_contract_and_state(self):
+    payload = {'operation': 'getCollection', 'variables': {'handle': '__placeholder__'},
+      'locale': {'country': 'US', 'language': 'EN', 'locale': 'en-US'}}
+    logs = []
+    default = Router(mode=MODE, audit_sink=logs.append)
+    self.assertEqual(http_result(default, '/request', payload)[0], 400)
+    self.assertEqual(logs[-1]['outcome'], 'rejected')
+    router = Router(mode=MODE, enable_placeholder_get_collection=True, audit_sink=logs.append)
+    source, records = router.source, router.source.records
+    self.assertEqual(http_result(router, '/request', payload), (200, {'data': {'collection': None}}))
+    self.assertEqual(logs[-1], {'endpoint': '/request', 'payload': payload,
+      'state_before': 'S0', 'state_after': 'S0', 'outcome': 'success'})
+    self.assertIs(router.source, source)
+    self.assertEqual(router.source.state, 'S0')
+    self.assertEqual(router.source.records, records)
+    result = router.handle('/request', payload, unavailable=True)
+    self.assertIsNone(result['data'])
+    self.assertEqual(result['errors'][0]['extensions']['code'], 'INTERNAL_SERVER_ERROR')
+    self.assertEqual(logs[-1]['outcome'], 'graphql_error')
+    # Sixth alone does not enable the fifth operation.
+    self.assertEqual(http_result(router, '/request', {'operation': 'collectionProducts',
+      'variables': {'handle': '__placeholder__', 'first': 40}})[0], 400)
+
+  def test_placeholder_collection_missing_unknown_and_malformed_rejected(self):
+    payload = {'operation': 'getCollection', 'variables': {'handle': '__placeholder__'},
+      'locale': {'country': 'US', 'language': 'EN', 'locale': 'en-US'}}
+    logs = []
+    router = Router(mode=MODE, enable_placeholder_get_collection=True, audit_sink=logs.append)
+    bad = [{k: v for k, v in payload.items() if k != missing}
+      for missing in ('operation', 'variables', 'locale')]
+    bad += [{**payload, 'variables': v} for v in (None, [], '', False, 1, {},
+      {'handle': 'real'}, {'handle': None}, {'handle': ['__placeholder__']},
+      {'handle': '__placeholder__', 'first': 40}, {'handle': '__placeholder__', 'country': 'US'})]
+    bad += [{**payload, 'locale': v} for v in (None, [], '', False, {},
+      {'country': 'US', 'language': 'EN'}, {**payload['locale'], 'extra': True},
+      {**payload['locale'], 'country': 'CA'}, {**payload['locale'], 'language': 'FR'},
+      {**payload['locale'], 'locale': 'en-GB'})]
+    bad += [{**payload, 'operation': op} for op in ('unknown', 'getProductByHandle', None, [], 1)]
+    bad += [{**payload, 'extra': True}, None, []]
+    for request in bad:
+      for unavailable in (False, True):
+        with self.subTest(payload=request, unavailable=unavailable), self.assertRaises(ValueError):
+          router.handle('/request', request, unavailable=unavailable)
+        self.assertEqual(logs[-1]['outcome'], 'rejected')
+        self.assertEqual(logs[-1]['state_after'], 'S0')
+    for flag in (None, 0, 1, 'true', [], {}):
+      with self.subTest(flag=flag), self.assertRaises(ValueError):
+        Router(mode=MODE, enable_placeholder_get_collection=flag, audit_sink=logs.append)
+      with self.assertRaises(ValueError):
+        empty_catalog_response('getCollection', payload['variables'], mode=MODE,
+          enable_placeholder_get_collection=flag, locale=payload['locale'])
+    with self.assertRaises(ValueError):
+      empty_catalog_response('getCollection', payload['variables'], mode=MODE,
+        enable_placeholder_get_collection=True)
+
+  def test_placeholder_success_audit_loss_is_permanently_fatal(self):
+    from unittest.mock import Mock
+    sink = Mock(side_effect=OSError('simulated sink loss'))
+    router = Router(mode=MODE, enable_placeholder_get_collection=True, audit_sink=sink)
+    payload = {'operation': 'getCollection', 'variables': {'handle': '__placeholder__'},
+      'locale': {'country': 'US', 'language': 'EN', 'locale': 'en-US'}}
+    self.assertEqual(http_result(router, '/request', payload)[0], 503)
+    self.assertEqual(router.audit_fatal['failed_record']['outcome'], 'success')
+    self.assertEqual(http_result(router, '/request', payload)[0], 503)
+    sink.assert_called_once()
+    self.assertEqual(router.source.state, 'S0')
+
   def test_audit_sink_first_unknown_is_permanently_fatal(self):
     delivered = []
     calls = []
@@ -247,6 +314,21 @@ class CatalogTests(unittest.TestCase):
     self.assertEqual(server.calls, 1)
     self.assertTrue(server.closed)
     self.assertEqual(router.source.state, 'S1a')
+
+  def test_catalog_cli_flags_are_explicit_and_independent_without_socket(self):
+    from unittest.mock import Mock, patch
+    import p23_catalog_fixture
+    for fifth, sixth in ((False, False), (True, False), (False, True), (True, True)):
+      flags = (['--enable-collection-products'] if fifth else []) + (['--enable-placeholder-get-collection'] if sixth else [])
+      router = Mock(audit_fatal={'outcome': 'audit_fatal'})
+      with patch('sys.argv', ['p23_catalog_fixture.py', '--mode', MODE] + flags), \
+          patch('p23_catalog_fixture.Router', return_value=router) as factory, \
+          patch('http.server.HTTPServer') as server, patch('sys.stderr'):
+        self.assertEqual(p23_catalog_fixture.main(), 2)
+        self.assertEqual(factory.call_args.kwargs['enable_collection_products'], fifth)
+        self.assertEqual(factory.call_args.kwargs['enable_placeholder_get_collection'], sixth)
+        server.return_value.handle_request.assert_not_called()
+        server.return_value.server_close.assert_called_once()
 
   def test_source_identity_and_policies(self):
     source = (SCRIPT_DIR / 'p23_source_fixture.py').read_bytes()

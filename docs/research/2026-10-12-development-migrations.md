@@ -1,6 +1,6 @@
 主线：三，兼四
 改变的建议：数据迁移先保受支持工具与写入权威；换托管先保应用消费者，再判断是否要换框架实现。[研究]
-新证据：P23显式开启已有第五操作后该请求成功，完整构建仍被refine的getCollection阻断；停止扩夹具。历史focused HTTP／RSC两轮通过，P22保原纸面包。
+新证据：P23已把历史refine占位请求修成显式窄契约并做离线回归；完整应用构建仍未通过。历史focused HTTP／RSC两轮通过，P22保原纸面包。
 
 # 开发条件：数据与框架迁移
 
@@ -184,11 +184,21 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 **✅ 空目录契约要核到嵌套路由；一个占位请求通过，不等于全站输入齐备。** 固定应用、原依赖和既有补丁不变，新冷副本只显式启用已有受限`collectionProducts`并同步审计门；05:20:08.744600至05:21:40.399747（UTC），91.656秒exit1，未触及600秒build上限。日志编译43秒、TypeScript41秒通过，但`/collections/__placeholder__/refine`因未知`getCollection`失败。26条捕获请求中25成功、1拒绝；第五操作成功1次，源始终S0，无事件、应用启动或消费者执行。两个登记组最终absent、未发KILL；未观测的脱离后代仍未知。[本仓公开应用运行]
 
-**本次到此停止，不逐次扩夹具追绿灯。** 失败输入为`getCollection(handle="__placeholder__")`，locale为US／EN／en-US。固定源码的[refine metadata](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/app/collections/%5Bhandle%5D/refine/page.tsx)未像普通集合页那样先排除占位handle，经[metadata助手](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/collections/server.ts)调用[getCollection操作](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/shopify/operations/collections/server.ts)；原操作已有`data.collection=null`转`undefined`处理。这只确定下一静态数据契约，不证明增加响应后全站可过；未新增第六操作或再运行。[一手／研究]
+**本次到此停止，不逐次扩夹具追绿灯。** 失败输入为`getCollection(handle="__placeholder__")`，locale为US／EN／en-US。固定源码的[refine metadata](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/app/collections/%5Bhandle%5D/refine/page.tsx)未像普通集合页那样先排除占位handle，经[metadata助手](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/collections/server.ts)调用[getCollection操作](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/shopify/operations/collections/server.ts)；原操作已有`data.collection=null`转`undefined`处理。这只确定下一静态数据契约，不证明增加响应后全站可过；该次未新增第六操作或再运行。[一手／研究]
 
 **一次有界静态清单（不是新增运行）**：核完固定`app/collections`七个page／layout文件及其集合／搜索助手：集合索引→`getCollectionsWithFeaturedImage`；动态参数→`getCollections`；普通／refine集合metadata与layout→`getCollection`；集合结果→`collectionProducts`；all及all/refine→`searchProducts`＋`searchFacets`。这条集合专属链共六种操作，除`getCollection`外五种均已有空目录契约；all metadata／layout只组装本地虚拟集合，没有新增操作。refine和load-more虽复用同名操作，却可能带非空过滤、不同排序或游标，超出现有夹具；源码清单不证明它们在本次静态阶段全部可达，也不覆盖根布局的账户／购物车或其他路由。[一手：固定[集合路由树](https://github.com/vercel/shop/tree/f4c2d467e02abd2c859aedf4b709ec93552e7049/app/collections)、[搜索助手](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/search/server.ts)与[分页action](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/collections/action.ts)；研究]
 
 Agent下次应先冻结整条集合路由的有限输入、动态分支边界与停止条件，再决定是否值得另开执行窗口，而不是删路由、放过未知操作或启动失败构建残留。第五操作只是已有空目录模式的显式开关，不是商品功能验证；本次仍无完整构建／浏览器／部署通过，不升级迁移或模型收益评级。独立副本与回执身份见[结果补充](../../scripts/research/p23_runtime_result.json)；旧成功和失败全部保留。[研究]
+
+#### 已知失败输入的契约修复（2026-10-22）
+
+**✅ 修复已观察的输入，不伪造业务对象或放宽未知请求。** 本轮依据上节固定源码，把第六操作做成默认关闭的 `--enable-placeholder-get-collection`：只接受 `getCollection`、精确变量 `{"handle":"__placeholder__"}` 和完整 US／EN／en-US locale，返回 `{"data":{"collection":null}}`。原源码会将空集合转成 `undefined`，metadata沿缺集合回退；`data=null`或凭空造一个集合都不是这一合同。未知handle、缺失locale及额外变量继续拒绝。[一手：上节固定源码；研究]
+
+**Agent负责保留输入身份，人核离线修复与真实交付的区别。** 修前用历史精确输入复现400／unknown operation，源保持S0；修后正常、失败和缺失输入回归通过。没有重新运行Next构建、metadata、应用或消费者；本次改进是消除已知夹具拒绝，不是证明全站六种操作之外再无请求。[本仓离线检查／研究]
+
+`existing-production`现可分别显式传入第五、上述第六开关，两者独立且默认关闭，只影响本次源服务，不重建应用。回执记两项布尔输入，并明确它们与既有构建输入的对应关系尚未核验；持有BUILD_ID也不足以证明合同一致。接续时先比对原构建输入与本次源合同，不因开关齐全便接受旧产物。[一手：本仓包装与回归；研究]
+
+独立核查范围为catalog 19、runtime 38、source 11项标准库／mock测试，以及最终树完整离线入口；不新增探针文件或结果JSON。真实接续仍需可验证的固定源码、锁定依赖及有效完整产物，失败构建残留不能代替；完整站点的实际两轮、浏览器、目标部署和模型收益继续未验。最高水平卡与评级沿用本节原比较，不因修复测试夹具升档。[研究]
 
 #### 接续已有构建：不要在验收时换掉被验产物（2026-10-21）
 
@@ -200,9 +210,9 @@ Agent下次应先冻结整条集合路由的有限输入、动态分支边界与
 
 空输出保留每次尝试；缺产物、编号不符或目录外符号链接须在启动服务前失败。[研究]
 
-原 empty-catalog 源保第五操作关闭；源异常退出、拒绝请求或事件链错误不能被消费者的缓存成功掩盖。[研究]
+原 empty-catalog 源默认保第五及占位第六操作关闭；源异常退出、拒绝请求或事件链错误不能被消费者的缓存成功掩盖。[研究]
 
-本入口35项离线合成回归通过；全新上下文独审修正目录外server回链、清理期源退出与被应用吞掉的拒绝请求，三反例复核均拒收。尚未在真实应用执行，不能称完整构建已跑通。审计门只检查本次保存的日志，不证明日志未丢失或未被篡改。[研究]
+前轮本入口35项离线合成回归通过；全新上下文独审修正目录外server回链、清理期源退出与被应用吞掉的拒绝请求，三反例复核均拒收。尚未在真实应用执行，不能称完整构建已跑通。审计门只检查本次保存的日志，不证明日志未丢失或未被篡改。[研究]
 
 恢复 S0 输入可以是新一次实验的起点，必须单列；同次 e1–e4 之间重置数据、重启应用或重建，则不再满足连续两轮条件。真实 Shopify、浏览器、迁移路线和模型收益仍不由这些 HTTP 断言证明。最高水平卡沿用上节，推荐仍属于本案可行性验证，不升级前沿比较或整体项目验收。[研究]
 

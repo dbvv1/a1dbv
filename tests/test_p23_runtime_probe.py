@@ -236,7 +236,7 @@ class ProbeTests(unittest.TestCase):
       self.assertEqual(len(captures), 3)
       self.assertTrue(all(p.read_text(encoding='utf-8') == '日本語 🧵 Café' for p in captures))
 
-  def exercise_run(self, mode, build_outcome=0, wrong_event=False, source_exits=False, late_source_exit=False, audit_failure=False):
+  def exercise_run(self, mode, build_outcome=0, wrong_event=False, source_exits=False, late_source_exit=False, audit_failure=False, **contract):
     """Mock every process/socket/wait: no Next, build, source server or real sleep."""
     with tempfile.TemporaryDirectory() as tmp, contextlib.ExitStack() as stack:
       output = Path(tmp)
@@ -264,12 +264,17 @@ class ProbeTests(unittest.TestCase):
       def audit(entry):
         with (output / 'continuity-fixture.log').open('a', encoding='utf-8') as stream:
           stream.write(json.dumps(entry) + '\n')
-      router = Router(mode=CATALOG_MODE, audit_sink=audit)
+      router = Router(mode=CATALOG_MODE, audit_sink=audit, **contract)
       source_identity = id(router.source)
       def check(state):
         self.assertEqual(router.source.state, state)
         self.assertEqual(id(router.source), source_identity)
         router.handle('/request', {'operation': 'searchFacets', 'variables': {'query': '*'}})
+        if contract.get('enable_placeholder_get_collection'):
+          self.assertEqual(router.handle('/request', {'operation': 'getCollection',
+            'variables': {'handle': '__placeholder__'},
+            'locale': {'country': 'US', 'language': 'EN', 'locale': 'en-US'}}),
+            {'data': {'collection': None}})
         if state == 'S2':
           (output / 'S2-article.html').write_text('日本語 🧵', encoding='utf-8')
         return {'state': state}
@@ -302,18 +307,18 @@ class ProbeTests(unittest.TestCase):
           PROBE.run(output, output, mode)
       elif audit_failure:
         with self.assertRaisesRegex(RuntimeError, 'fixture audit failed'):
-          PROBE.run(output, output, mode, 'synthetic-build')
+          PROBE.run(output, output, mode, 'synthetic-build', **contract)
       elif late_source_exit:
         with self.assertRaisesRegex(RuntimeError, 'during cleanup'):
-          PROBE.run(output, output, mode, 'synthetic-build')
+          PROBE.run(output, output, mode, 'synthetic-build', **contract)
       elif source_exits:
         with self.assertRaisesRegex(RuntimeError, 'fixture exited'):
-          PROBE.run(output, output, mode, 'synthetic-build')
+          PROBE.run(output, output, mode, 'synthetic-build', **contract)
       elif wrong_event:
         with self.assertRaisesRegex(AssertionError, 'event state mismatch'):
-          PROBE.run(output, output, mode, 'synthetic-build')
+          PROBE.run(output, output, mode, 'synthetic-build', **contract)
       else:
-        PROBE.run(output, output, mode, 'synthetic-build' if mode == 'existing-production' else None)
+        PROBE.run(output, output, mode, 'synthetic-build' if mode == 'existing-production' else None, **contract)
         self.assertEqual(events, ['e1', 'e2', 'e3', 'e4'])
       record = json.loads((output / 'continuity-result.json').read_text())
       self.assertEqual(PROBE.processes, [])
@@ -351,6 +356,53 @@ class ProbeTests(unittest.TestCase):
     self.assertFalse(record['existing_artifact']['build_performed'])
     self.assertEqual(record['status'], 'passed_existing_artifact_HTTP_consumers_only')
 
+  def test_existing_optional_contract_flags_forward_independently_without_build(self):
+    for fifth, sixth in ((False, False), (True, False), (False, True), (True, True)):
+      with self.subTest(fifth=fifth, sixth=sixth):
+        record, spawned = self.exercise_run('existing-production',
+          enable_collection_products=fifth, enable_placeholder_get_collection=sixth)
+        self.assertEqual(len(spawned), 2)
+        self.assertEqual(spawned[0][0].count('--enable-collection-products'), int(fifth))
+        self.assertEqual(spawned[0][0].count('--enable-placeholder-get-collection'), int(sixth))
+        self.assertEqual(spawned[1][0][2], 'start')
+        self.assertFalse(any('build' in command for command, _, _ in spawned))
+        self.assertNotIn('build', record)
+        self.assertEqual(record['catalog_contract'], {
+          'mode': 'empty-products-and-collections', 'enable_collection_products': fifth,
+          'enable_placeholder_get_collection': sixth,
+          'scope': 'explicit runtime inputs only; correspondence to existing build inputs unverified'})
+        self.assertEqual(record['status'], 'passed_existing_artifact_HTTP_consumers_only')
+
+  def test_contract_flags_invalid_mode_and_non_boolean_fail_before_spawning(self):
+    with patch.object(PROBE, 'validate_app') as validate, \
+        patch.object(PROBE.subprocess, 'run') as node, patch.object(PROBE.subprocess, 'Popen') as spawn:
+      for flag in ('enable_collection_products', 'enable_placeholder_get_collection'):
+        for mode in ('dev', 'focused-production'):
+          with self.assertRaisesRegex(ValueError, 'only valid'):
+            PROBE.run(Path('unused'), Path('unused'), mode, **{flag: True})
+        for bad in (None, 0, 1, 'true', [], {}):
+          with self.assertRaisesRegex(ValueError, 'boolean'):
+            PROBE.run(Path('unused'), Path('unused'), 'existing-production', 'synthetic-build', **{flag: bad})
+      validate.assert_not_called()
+      node.assert_not_called()
+      spawn.assert_not_called()
+
+  def test_existing_cli_explicit_contract_and_default_flags(self):
+    base = ['--app', 'app', '--output', 'out', '--mode', 'existing-production', '--build-id', 'synthetic-build']
+    for fifth, sixth in ((False, False), (True, False), (False, True), (True, True)):
+      flags = (['--enable-collection-products'] if fifth else []) + (['--enable-placeholder-get-collection'] if sixth else [])
+      with patch.object(PROBE, 'run') as run:
+        PROBE.main(base + flags)
+        self.assertEqual(run.call_args.kwargs, {'enable_collection_products': fifth,
+          'enable_placeholder_get_collection': sixth})
+    with patch.object(PROBE, 'run') as run:
+      for flag in ('--enable-collection-products', '--enable-placeholder-get-collection'):
+        for args in (['--source'], ['--app', 'app', '--output', 'out'],
+            ['--app', 'app', '--output', 'out', '--mode', 'focused-production']):
+          with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            PROBE.main(args + [flag])
+      run.assert_not_called()
+
   def test_existing_late_fixture_fatal_exit_cannot_be_cleaned_into_pass(self):
     record, _ = self.exercise_run('existing-production', late_source_exit=True)
     self.assertEqual(record['status'], 'incomplete')
@@ -369,7 +421,8 @@ class ProbeTests(unittest.TestCase):
     self.assertIn('fixture_failure', record)
 
   def test_existing_fixture_exit_invalidates_cached_consumer_success(self):
-    record, spawned = self.exercise_run('existing-production', source_exits=True)
+    record, spawned = self.exercise_run('existing-production', source_exits=True,
+      enable_collection_products=True, enable_placeholder_get_collection=True)
     self.assertEqual(record['status'], 'incomplete')
     self.assertEqual(record['failure_type'], 'RuntimeError')
     self.assertEqual([row['state'] for row in record['results']], ['S0'])
@@ -402,7 +455,8 @@ class ProbeTests(unittest.TestCase):
           patch.object(PROBE.subprocess, 'run') as node:
         for build_id in (None, '', ' ', 'wrong', ' synthetic-build'):
           with self.subTest(build_id=build_id), self.assertRaises(ValueError):
-            PROBE.run(app, Path(tmp), 'existing-production', build_id)
+            PROBE.run(app, Path(tmp), 'existing-production', build_id,
+              enable_collection_products=True, enable_placeholder_get_collection=True)
         identity.unlink()
         with self.assertRaises(FileNotFoundError):
           PROBE.run(app, Path(tmp), 'existing-production', 'synthetic-build')
@@ -499,7 +553,8 @@ class ProbeTests(unittest.TestCase):
           pass  # Simulate an application swallowing the source HTTP 400.
       return original(router, endpoint, payload, **kwargs)
     with patch.object(Router, 'handle', rejected):
-      record, _ = self.exercise_run('existing-production', audit_failure=True)
+      record, _ = self.exercise_run('existing-production', audit_failure=True,
+        enable_collection_products=True, enable_placeholder_get_collection=True)
     self.assertEqual(record['status'], 'incomplete')
     self.assertEqual(record['fixture_audit']['status'], 'failed')
     self.assertEqual(len(record['results']), 5)
