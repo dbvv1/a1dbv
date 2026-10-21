@@ -427,6 +427,8 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 
 长程名册补充（P47前瞻自用）：沿[Temporal／Moe Abadi的10-08工程文](https://temporal.io/blog/the-immortal-life-of-pi-running-the-pi-coding-agent-on-temporal)与[Earendil Engineering的10-01发布](https://earendil.com/posts/pi-durable/)追耐久执行的当前契约和失败边界；先区分模型请求与工具执行状态，不把实验宿主直接列为生产默认。[一手／研究]
 
+交付接收名册补充（P61，2026-10-21）：新读[Stephen Toub 的 Copilot runtime 生产迁移复盘](https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/)，追[VS Code 同版本接管产物](https://github.com/microsoft/vscode/pull/341861)及[下一版采用](https://github.com/microsoft/vscode/pull/341922)；不把自动修绿视为可以改权限／判定器。固定链与自报／未核范围见[长任务研究](2026-10-12-long-task-evidence.md#p61整轮交付与争议接管)。[一手／研究]
+
 升级维护名册补充（P60，2026-10-21）：从[LangChain／Sydney Runkle的Delta Channels](https://www.langchain.com/blog/delta-channels-evolving-agent-runtime)追存储兼容承诺，再核LangGraph发行与[DeerFlow公开补丁退役](https://github.com/bytedance/deer-flow/pull/5734)。原文与固定修订已读，首次新写冷读及后续轮次的范围归[长任务研究](2026-10-12-long-task-evidence.md)；mock基准、作者运行和本仓验证分列。[一手／研究]
 
 维护控制名册补充（P57，2026-10-21）：从[Spotify Engineering](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)的Honk系列追循环采用与迁移撤回；从[Shopify／Erin Son、Kaiyi Li](https://shopify.engineering/river-vulnerability-remediation)追跨次接收及人工接管；从[Cursor／Josh Ma](https://cursor.com/blog/cloud-agent-lessons)追任务编排撤回与运行责任。原文已读，采用条件与缺口统一归[长任务研究](2026-10-12-long-task-evidence.md)，不据厂商产量或估算成本声称净收益。[一手／研究]

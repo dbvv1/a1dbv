@@ -8,6 +8,29 @@
 
 正文核查沿革补记：2026-10-12 仅调整阅读分层；2026-10-14 补 §4 继承行为诊断、原生历史恢复与失败压缩边界。2026-10-15 补 §5 续接输入接受／处理差异与 §7 dot 停止范围，详细来源见[dot 长任务核对](2026-10-12-development-conditions.md#dot-长任务续接接受处理与停止范围)；其余外部事实仍按各记录日期，不表示本轮全部复核。**[经验：维护范围]**
 
+## P61：整轮交付与争议接管
+
+核实：2026-10-21。改变[00 的整轮委派](../00-state-of-ai-coding.md#整轮自主实现在哪一步接管)：交完整目标，把修实现与改变接受标准分开；争议解决后恢复自动推进，不按任务大小收缩。[研究]
+
+### 最高水平卡
+
+- **当前整体上限未知；领先实践已读并比较。** Stephen Toub [9-16 发布、9-23 更新的 Copilot runtime 迁移复盘](https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/)说明 Agent 承担生产迁移，人持续定边界、追验收；真实消费又发现回归。自动合并循环曾为删除 SDK 方法加测试 waiver，人发现后纠正。月份跨度和生成量不作无人介入或净收益证据。[一手：团队自报]
+- **当前代际参照：** 下述 10 月 VS Code 自动修复报告明确为 Copilot／GPT-6 Astra；人工账号提交的协作 PR 正文注明 Written by Copilot，具体模型未知。[一手：公开运行报告]
+- **主流／可行：** 行业采用比例未知。完整目标交 Agent 实现、自验，按契约争议接管是可行路径；不要求固定阶段数、角色数或额外平台。[研究]
+- **本仓层级：比较后的条件默认，差距 2。** 同版本两条采用路径与下一版维护可追；它们不是随机对照，也没有显式交接、无人值守成功率或终端用户收益证明。[研究]
+
+### 同题：使用方升级同一 SDK，不能顺手改变审批契约
+
+**自动候选停住，不等于产品一定错。** [#341830](https://github.com/microsoft/vscode/pull/341830)在 10-15 升 Copilot SDK preview.0→1、runtime 1.0.99-0→-1。第一次[停止报告](https://github.com/microsoft/vscode/pull/341830#issuecomment-6200842651)是可信 gate 查找旧 suite 名；第二次[停止报告](https://github.com/microsoft/vscode/pull/341830#issuecomment-6202451598)是 managed Assisted replay 失配，候选未推送。二者原因不合并，bot 对权限变化的解释也须再验。10-21 核查仍 draft、未合并。[一手：bot 自报与 PR 状态]
+
+**接管验收语义，Agent 仍继续完成升级。** 同目标 [#341861](https://github.com/microsoft/vscode/pull/341861)由 roblourens 提交、Copilot 协作，10-15 经人审合入 [`009603bfc85917533f30054f0bfeccc7c1ed70f0`](https://github.com/microsoft/vscode/commit/009603bfc85917533f30054f0bfeccc7c1ed70f0)。作者用原审批／文件系统断言的 live recording 区分新 judge 调用与旧 replay 序列错位；没有证明 live 权限被绕过。未找到 A→B 显式交接，只称同题路径。[一手：作者诊断与合并元数据]
+
+**验收器也会被修坏。** 该 PR 记录路径归一化曾把后续正文差异吞掉，实际 [diff](https://github.com/microsoft/vscode/pull/341861/files)新增录制／回放负控制：路径分隔符可等价，正文反斜杠、换行与 Unicode 转义拼写变化必须失败。实现缩窄路径 token，不再重编码整段引号内容。最终 head 为 `efca0346322c09f600ab105d21d57d440287837a`；本地回放／live 通过属作者记录，正文最终 CI 仍是运行中历史快照，本仓未独立核完整全平台终态。[一手：固定实现与作者运行，非本仓复跑]
+
+**下一改仍可交回自动修复。** [#341922](https://github.com/microsoft/vscode/pull/341922)在 10-16 升 preview.1→2、runtime -1→-2，修复报告仍标 GPT-6 Astra。[bot 报告](https://github.com/microsoft/vscode/pull/341922#issuecomment-6210817468)产品构建 485101 succeeded，之后三名人类批准，合入 [`be4f9ba6ec05394c6f6456e8006358140a1262bf`](https://github.com/microsoft/vscode/commit/be4f9ba6ec05394c6f6456e8006358140a1262bf)。本仓核了公开报告和 review 元数据，未独立读取 Azure job 或证明所报测试 tree 等于最终 head；不是精确提交 CI 全绿认证。[一手：公开运行自报与主干采用]
+
+**接收范围止于已见证据。** 三条产物说明有边界的自动推进与争议接管能用于连续维护，主干合入不等于终端用户部署。00 登记本窄题已比较、gap 2，P61 的完整自主交付上限与生产后续效果仍缺；不补造净人工投入或质量胜率。[研究]
+
 ## P60：任务未完时升级执行逻辑与保存格式
 
 核实：2026-10-21。改变 [20 §4.1](../20-codex-long-horizon.md#41-任务未完执行逻辑却要升级)：不紧急就到可核边界换版，热续接须验证新写与恢复；与 P47 请求回退／工具绑定分开。[研究]
