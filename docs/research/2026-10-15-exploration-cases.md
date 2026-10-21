@@ -219,3 +219,41 @@ P38 需要修错、跨层修改、可测质量改善三个任务，并能继续�
 资格准备已固定五个源码版本，A／B新增测试应用到原base，C对B参考的补丁文本兼容检查通过。断连恢复后核实：依赖安装在PyPI包索引遭代理403而失败，专用环境仍只有pip，无应用测试通过记录。停止安装，不换源绕过，保留原失败。文本兼容不证明行为连续，三个同源任务不代表三个生态样本。**[研究：截至04:09的准备范围]**
 
 Agent负责检索、锁版本和运行判据，容易把参考答案／基准包装误当有效验收；人应核任务含义、保持条件和真实成本。上游`test_sql_does_filtering_not_python`自己说明仅验API契约，不实际检查SQL；C仍需独立测量性能与正确性。**[一手：固定591b909a的tests/test_actions_sql.py；经验：分工]**
+
+
+### P38后备资格：冻结具体性能题，不把包装当就绪（2026-10-21）
+
+**✅ 保留 SWE-fficiency 的 pandas-38248 作为具体条件后备，暂不替换已选 Datasette，更不启动模型比较。** 本轮补齐数据／参考与镜像身份，下一步可以直接核执行条件；不是另做一轮候选名单。最高水平参照仍沿上述C17／C15的实际选择、代表任务与独立结果要求；本次是可行性资格，不是研究方法或模型的优胜证据。[研究：决定]
+
+**选择的目标是同一行为变快，不是修一个功能错误。** [pandas PR38248](https://github.com/pandas-dev/pandas/pull/38248)已合并，base为`4c8d66ecfe2b13607afd254443979b1ff842b6c1`；数据行内参考补丁修改`datetimelike.py`比较路径，转为双方的整数视图比较。该采用事实只证明上游接收过此优化，不证明当前云端的速度或 Agent 效果。[一手]
+
+#### 可接手的固定输入
+
+- Harness固定[`12d32a2d`](https://github.com/swefficiency/swefficiency/tree/12d32a2d6800824a7d84bdb6797b5708e7b7957f)，软件Apache-2.0、README对其他项目材料声明CC-BY-4.0；pandas固定base为BSD-3-Clause。保留各组件notice，不将harness许可扩展到整个容器。
+- [数据revision](https://huggingface.co/datasets/swefficiency/swefficiency/tree/7fbfe6c2f1f409afb17acc4c3f737991ec6e1c27)：`7fbfe6c2f1f409afb17acc4c3f737991ec6e1c27`；[官方单行API](https://datasets-server.huggingface.co/rows?dataset=swefficiency%2Fswefficiency&config=default&split=test&offset=0&length=1)完整返回`pandas-dev__pandas-38248`，无截断，响应x-revision相同。该API本身不是永久快照，后续取得输入仍须核revision与hash。
+- 行JSON按UTF-8、键排序、无分隔空格、非ASCII不转义序列化，SHA256为`6082f7fc6f506869aa221c13945c035ab460f2c2894f4808cadc0ef4eb375803`；patch为`8346948b7136136593eee43cdda09ce6326a5fd760c91665073cf80ebd7492b5`，workload为`41af1658e4c9ef17731ae855d75d6bfd832f3f0dcc11421acc3a9d0e36e37449`。本轮核单行，没有下载数据全集或发布上游完整输入。
+- 公开镜像`ghcr.io/swefficiency/swefficiency-images:pandas-dev__pandas-38248`的manifest digest为`sha256:ccae828b8446bd55f2e2323017c2746c36345f508a1ba1601db3f1496f026a59`；匿名manifest读取成功，16层压缩合计2,947,021,784字节（约2.74GiB），未拉取层。展开空间、架构与实际依赖版本仍待核，不能以metadata可读说全部镜像已可用。[一手：只读元数据]
+
+#### 不缩减原验收来制造成功
+
+原workload比较两组各一千万元素的日期数组，使用25次重复、每次10次目标比较；setup不计入目标计时。它输出均值与标准差，若保存全部样本须明确增加测量日志，不能暗改规模或重复数。[一手：固定数据行]
+
+原数据列81个guarding文件与43,051个PASS_TO_PASS标识，FAIL_TO_PASS为空；前两者不是可相加的两组通过数。[固定test_spec](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/test_spec.py)依实例构造验证入口，不能只跑工作负载就说原正确性验收通过。当前云端命令查找未见docker／podman，未安装运行；半天准备可否实现、真实资源和耗时都未知。[一手；研究：本轮范围]
+
+#### 先追实际入口，再解释收益字段
+
+**采用默认 CLI 与同量纲工作负载均值，不直接借用另一模块的同名字段。** 固定[`cli.py`](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/cli.py#L95-L123)实际调用`run_validation_main`，其[收益计算](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/run_validation.py#L711-L725)是before/after工作负载均值；[report入口](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/report.py#L80-L98)也从保存的均值重算倍数。这是速度倍数，不是耗时下降百分比。[一手：固定源码]
+
+另一个[`run_evaluation.py`](https://github.com/swefficiency/swefficiency/blob/12d32a2d6800824a7d84bdb6797b5708e7b7957f/swefficiency/harness/run_evaluation.py#L270-L303)把before工作负载均值与after整次命令墙钟混算后写进report.json。有限代码搜索未找到默认报告消费该错误字段，**不能据此说默认 CLI 或论文数字错误**。本轮据真实调用路径收窄初步判断，没有运行该分支。[一手；研究：纠错范围]
+
+#### 为什么不改选新发现的 PERFOPT T6
+
+[PERFOPT-Bench论文](https://arxiv.org/html/2607.07744v1)提供性能任务比较线索，但本轮没有找到足以改变02默认的等投入证据。普通网页抽取为空后，dot云端浏览器正常读到了[论文所链产物](https://anonymous.4open.science/r/Dataset-D3CC)，页面自称HardOpt-Bench；不能把抽取失败当作没有代码。[一手；研究]
+
+已读[T6说明](https://anonymous.4open.science/r/Dataset-D3CC/Task6/issue.md)当前明确Windows x64／MSVC v143，旧Linux gcc契约被替换；test.sh仍要求build.sh，而公开Code根树只见build.ps1。故它不是当前云端可直接采用的Linux替代，不为此迁移到用户电脑。[一手：页面与文件树观察]
+
+已读[test.ps1](https://anonymous.4open.science/r/Dataset-D3CC/Task6/test.ps1)比较小规模verify hash，再取内部TOTAL_MS的5次中位数判断10倍门槛；没有在该harness中见到论文所述隐藏验收调用。它不能单独证明全规模语义或整套论文评价器已经交付。源码raw进一步读取被策略拒绝后停止，未换路；没有以局部源码推断实际作弊或已知漏洞。[一手；研究]
+
+入口显示的源日期不是固定SHA，许可仅研究用途声明，未取得完整版本／许可链；本轮也没有源码字节hash。保留此候选的资料线索，不复制完整任务、安装或运行。[研究：资格缺口]
+
+**下一具体动作**：先核原固定镜像的执行条件与空间，再取得校验一致的单行输入，完整重放base/reference守护范围和同量纲时延。Agent保存各阶段原始结果，人核语义与实际投入；若环境或准备成本不符就撤回这项任务，不能缩小检查后冒称通过。当前只是固定资料资格，未运行应用、模型、容器或测试，没有新增配置收益结论。[研究]
