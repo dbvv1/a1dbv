@@ -1,6 +1,6 @@
 主线：一（值得玩的原型）、二（按需增加资产能力）、三（第二次修改）、四（发布与维护）
-改变的建议：异步资产用可升级占位，性能复用须随依赖失效重建；资源就绪不等于内容版本。保留原型音频、间接表现、构筑辨识与成长成本取舍
-新证据：2026-10-21（UTC+8）核Sanctuary’s End固定源码的异步资产→缓存回归→修复→公开部署链；未闭合单人零手修发行链。Void／SNKRX既有证据保留
+改变的建议：异步资产用可升级占位，性能复用须随依赖失效重建；资源就绪不等于内容版本；存档／补丁修复不能只把成本转移到恢复与加载
+新证据：2026-10-21（UTC+8）核Sanctuary’s End固定源码的异步资产→缓存回归→修复→公开部署链；补Last Pirate近期修复／撤回自述及商店版本边界；仍未闭合单人零手修发行链
 
 # WP12：从概念到发布的条件路线
 
@@ -38,6 +38,28 @@
 **排除项。** Matteo Prosperi的[Dungeons of Dej](https://github.com/matteo-prosperi/DungeonsOfDejremake)在2026-10-20有v0.1.81预发行二进制，但README说明游戏源码不公开；因此不作为本次源码修订链的同题对照，不能据缺材料判项目失败。[一手／研究]
 
 **验证范围。** 本次读取上述公开源码差异、版本关系、作者说明与托管回执；未试玩公开入口、运行游戏／模型／引擎或重做性能测试。改变的是异步资源与性能修改的默认验收，保留原型声音、旧档／引用、真人质量及平台权利等总入口检查；P40完整成功／同约束反例、全零手修及实际质量仍未闭合。[研究]
+
+### 存档补研：修复不能只把代价搬到下一次进入
+
+核实2026-10-21。同一P40剩余问题：公开部署后，什么存档／补丁失败会改变交给玩家的决定？保留“部署不足以放行”，只补修复取舍，不计新项目。[研究]
+
+**最高水平仍未知。** 近期强候选是Pavel Konstantinov（RetroStyle Games CEO）2026-10-12的[Last Pirate生产报告](https://retrostylegames.com/blog/last-pirate-live-game-case-study/)；有实际商店版本，但非单人零手修全链。主流参照是既有发行阶段的旧档恢复与补丁回退检查，实际采用比例未知；可行基线为保留已验证构建、限制原型承诺。本仓只推荐条件性接受修复，不认定其为最优实现或完整G1方案。[研究]
+
+**故障与撤回分别看。** 作者在“What the agents found behind the ANR rate”报告暂停时存档／云上传造成阻塞，以及后台写入、恢复后上传的修订；在“More that did not work”另记一项未指明实现的ANR修复使加载慢五倍，当天撤回。不能认定后者就是前述存档方案。团队有真机、历史反馈和人工发布判断；文章同时推介其服务，数字属于作者自报，未取得可复算数据或回滚代码。[一手：作者报告；研究]
+
+**产物对应有限。** [Google Play页](https://play.google.com/store/apps/details?id=com.RetrostyleGames.LastPirate.deadthieves)在核实日列v1.14.308，说明修复洞穴访问后房屋／箱子消失；[App Store版本历史](https://apps.apple.com/us/app/last-pirate-island-survival/id1449724605)的1.14.222列存档冻结、物品丢失与意外关闭后奖励保留修复，日期只显示相对天数。它们确认公开修订，不能跨平台绑定成九月ANR修复／回滚的同一构建；精确SHA、构建摘要与迁移契约未取得。[一手／研究]
+
+**选择与代价。** 不直接照搬后台保存或延迟上传：移动系统可能在落盘前终止进程。拟交付持久进度时，比较同一受支持旧档在旧／新构建的保存、终止、冷启动、离线恢复与加载成本；先证明可恢复的持久数据仍在，再接受局部性能改进。未证明时保留已验证构建，或把试玩收窄为明确不承诺进度保留的短原型，不继续扩长期进度承诺；已经承诺的进度不能靠改说明免除。补丁回退仍须兼容已写出的新档／迁移，不能只退代码。AI补回归，人定等待与支持范围；验证及保留兼容构建的成本未量化。[研究：转用，不是作者现成配方]
+
+**较接近单人路线的反证仍不闭合。** benskigomez／Goben Games的[2026-02-16修复记录](https://benskigomez.itch.io/vibe-coded/devlog/1384661/prestige-balance-update-bug-fixes-qol)称已修跨会话坏档，并列网页包；[主页](https://benskigomez.itch.io/vibe-coded)披露AI代码／图形／声音／文字，[支持版记录](https://benskigomez.itch.io/vibe-coded/devlog/1384663/devlog-2-supporter-edition-is-here)承诺兼容免费档。缺源码、精确原因、修复复测与零手修／全权利证据，不能用Released标签放行同约束路线。[一手／研究]
+
+**前瞻使用回执。** 起始33b0cfe；提示[版本cbbb996](https://github.com/dbvv1/a1dbv/blob/cbbb996b59210e9f10328af73ea3edc0c79458ca/docs/collaboration/prompts/2026-10-21-exploration-self-use.md)。研究前冻结10:59:29 UTC，研究冻结11:00:54，窗口85秒含检索／读取／记录，净阅读与等待时间未知；后续为编辑与复核，不改写冻结统计。去重目标14，相关正文已读10（10/14）；其中输入已知2、重读2，新发现12、已读8。局部决定性来源3（生产报告与两商店页），已读3/3；完整同约束链为0，不适用。这不是质量分数／全网召回，尚无可计算漏检分母。[研究：范围]
+
+- 本轮已读10项中的新发现8项：上述Last Pirate文章、两商店页、Vibe Coded三页；另有[Joe Marshall 9-03文章](https://funcall.blogspot.com/2026/09/recursive-descent-vibe-coded-rogue-like.html?m=0)与[Peter Mourfield 7-31文章](https://petermourfield.com/2026/07/31/what-shipping-a-mobile-game-taught-me-about-ai-assisted-software-engineering/)。两者均未核到本题的固定修复发行链，不作主例。
+- 输入已知、本轮重读2项：[Supergiant FAQ](https://www.supergiantgames.com/blog/hades2-faq/)限定跨平台存档范围且为专业团队；[SBS资产实验](https://sbsgames.dev/blog/ai-sprite-animation)不提供发行故障链。只作资格核查，不重报新发现。
+- 其余4项留在分母：[Recursive Descent目录](https://github.com/jrm-code-project/jrm-code-public/tree/main/rdescent)仅目录、未成源码证据；[提交历史](https://github.com/jrm-code-project/jrm-code-public/commits/main/rdescent)、报告的[ANR图](https://images.retrostylegames.com/wp-content/uploads/2026/10/vitals-anr-daily.jpg)与[Crashlytics图](https://images.retrostylegames.com/wp-content/uploads/2026/10/crashlytics-trends.jpg)读取失败。另一次提交搜索参数失败没有返回来源，不增分母。
+
+只读公开文章／页面，未运行或下载游戏、模型、引擎，未验图或复测修复。本轮确认的是局部发布取舍；完整成功链与同约束反例仍缺，不以材料缺失判作品失败。[研究]
 
 ### 完整链候选与约束核查
 
