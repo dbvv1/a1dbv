@@ -1,6 +1,6 @@
 # 14 · 深度分析：AI Coding 的底层规律与决策框架
 
-> 编辑日期：2026-10-20（UTC+8）；本次补核默认入口、配置与任务分流，未新增效果实测。[历史核实范围](research/2026-10-10-audit.md#14-综合页历史核实范围)。
+> 编辑日期：2026-10-21（UTC+8）；本轮以近期原文复核自主范围与任务分流，未新增效果实测；代际状态见 [00](00-state-of-ai-coding.md#30-秒结论)。[历史核实范围](research/2026-10-10-audit.md#14-综合页历史核实范围)。
 > 本篇解释如何判断。按“现象 → 机制 → 推论 → 边界”展开；机制与推论是可反驳的本仓库分析 **[经验]**，出处见各主专题，推翻条件见末节。
 
 ---
@@ -10,19 +10,29 @@
 
 ## 0. 30 秒结论：按任务选入口，交付到可继续修改
 
-**✅ 已有稳定工作流保留；新任务默认从本机 Codex CLI 的 GPT-6.1 Sol + `medium`，或已有 Claude Code 入口的 Sonnet 5.5 + `medium` 开始。** Codex 在项目目录启动 `codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`，只覆盖本次启动；Claude Code 用 `claude --model claude-sonnet-5-5 --effort medium`。先核会话显示与型号可用性，不改全局配置来追统一默认。**[一手：[Codex 模型](https://learn.chatgpt.com/docs/models)、[单次 CLI 覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude Code](https://code.claude.com/docs/en/model-config)；研究：沿用 [02](02-models-and-cost.md) 的仓库起点，2026-10-20 核，未实测]**
+**✅〔10 月保留：Sol 6.1／Sonnet 5.5 起点〕已有稳定工作流保留；新任务默认从本机 Codex CLI 的 GPT-6.1 Sol + `medium`，或已有 Claude Code 入口的 Sonnet 5.5 + `medium` 开始。** Codex 在项目目录启动 `codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`，只覆盖本次启动；Claude Code 用 `claude --model claude-sonnet-5-5 --effort medium`。先核会话显示与型号可用性，不改全局配置来追统一默认。**[一手：[Codex 模型](https://learn.chatgpt.com/docs/models)、[单次 CLI 覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude Code](https://code.claude.com/docs/en/model-config)；研究：沿用 [02](02-models-and-cost.md) 的仓库起点，2026-10-20 核，未实测]**
 
-| 现在的任务 | 怎么推进，什么算好 |
+| 现在的任务／代际复核 | 怎么推进，什么算好 |
 |---|---|
-| 目标与兼容契约明确的功能／修 bug | 用上述配置直接调查、实现、跑检查；要求正常与失败路径、受影响调用方都覆盖，而不只“测试全绿”。困难跨模块任务可直接选 Astra + `low`／Opus 5.5 + `medium`，重验证可选 Opus `high`，不必先失败 |
-| API／数据迁移仍有不能猜的契约 | 在同一工程先调查：Codex 用 `/plan`，Claude Code 启动时加 `--permission-mode plan`；交回旧行为、候选改法与必须由人决定的取舍。依据与决定齐全后退出规划再实现，不能把方案当交付 |
-| 页面布局、交互或游戏手感还需看效果 | 用上述实现入口先做可撤回样品；让 Agent 提供页面截图／交互检查，游戏提供可操作样品。人按目标屏幕可读性、错误反馈或操作响应验收，再决定扩大；文字方案和编译成功都不能替代体验 |
+| 目标与兼容契约明确的功能／修 bug〔跨代保留〕 | 用上述配置直接调查、实现、跑检查；要求正常与失败路径、受影响调用方都覆盖，而不只“测试全绿”。困难跨模块任务可直接选 Astra + `low`／Opus 5.5 + `medium`，重验证可选 Opus `high`，不必先失败 |
+| API／数据迁移仍有不能猜的契约〔跨代保留〕 | 在同一工程先调查：Codex 用 `/plan`，Claude Code 启动时加 `--permission-mode plan`；交回旧行为、候选改法与必须由人决定的取舍。依据与决定齐全后退出规划再实现，不能把方案当交付 |
+| 页面布局、交互或游戏手感还需看效果〔跨代保留〕 | 用上述实现入口先做可撤回样品；让 Agent 提供页面截图／交互检查，游戏提供可操作样品。人按目标屏幕可读性、错误反馈或操作响应验收，再决定扩大；文字方案和编译成功都不能替代体验 |
 
 **[研究：任务与验收设计，见 [07](07-workflows.md)、[09](09-review-and-quality.md)；一手：规划入口见 [Codex 命令](https://learn.chatgpt.com/docs/developer-commands?surface=cli)、[Claude CLI](https://code.claude.com/docs/en/cli-reference)]** Codex 固定源码中的 [Plan 模式](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/collaboration-mode-templates/templates/plan.md)允许不改仓库状态的调查，不执行实现；列一份计划并不自动切换模式。需要关机后继续且依赖可搬到云端时，再按 [01](01-agents/README.md#30-秒结论)选 Cloud 环境。
 
-**Agent 做调查、实现和检查；人核关键契约、漏测的消费者与实际使用效果。** 它可能补猜需求或只满足现有测试。再用一次代表性的需求修改检查能否沿用结构、局部改动；出现兼容破坏或新增维护负担，就缩小改动、修正方案。仅检查深度不足先提高 effort；升档没有改善质量，或总等待／费用／返工不值得，就撤回。**[研究：风险与撤回条件，见 [15](15-task-playbooks.md)、[22](22-agent-evaluation.md)]**
+**〔跨代保留〕Agent 做调查、实现和检查；人核关键契约、漏测的消费者与实际使用效果。** 它可能补猜需求或只满足现有测试。再用一次代表性的需求修改检查能否沿用结构、局部改动；出现兼容破坏或新增维护负担，就缩小改动、修正方案。仅检查深度不足先提高 effort；升档没有改善质量，或总等待／费用／返工不值得，就撤回。**[研究：风险与撤回条件，见 [15](15-task-playbooks.md)、[22](22-agent-evaluation.md)]**
 
-**⛔ 不把完整产品直接交给无人值守任务，也不先装整套流程。** 先明确目标、可运行检查与恢复边界，再扩大自主范围；质量缺口具体到“漏哪类检查、缺哪种观察”后，才加对应工具或评审。**[经验：采用边界，见 [05](05-skills-and-plugins.md)、[§7.1](#71-这个任务该给-agent-多大自主权)]**
+**✅〔10 月修订〕目标可验收、运行反馈可取得、授权与恢复边界清楚，就把端到端结果交给 Agent 自主实现、自验。** 它可以是完整小应用，也可以是已有产品的一轮大改，不必先由人拆成微任务。人决定不可猜的契约与风险，并用实际使用验收。**撤回条件**：检查只覆盖编译、返工不收敛、无法恢复或触及未授权操作时，收紧对应范围；不因此要求每一步人工监工。[研究：条件默认，见下节及 [§7.1](#71-这个任务该给-agent-多大自主权)]
+
+**⛔〔跨代保留〕不先装整套流程，也不把内部全绿当作发布许可。** 质量缺口具体到缺哪种观察后，再补对应能力，见 [05](05-skills-and-plugins.md)。[经验：采用边界]
+
+## 当前最高水平与本页修订
+
+前沿比较：已比较（自主范围资料）；不代表同预算效果胜出。
+
+[Willison 的 Battle Drones（10-20）](https://simonwillison.net/2026/Oct/20/battledrones/)使用 Opus 5.5／Claude Code Web Ultracode，把玩法改进和 Three.js 迁移各交给一轮过夜执行，自己大量试玩并继续改目标；这支持撤回按体量一刀切的禁令。[Claude Code 团队（10-15）](https://claude.dev/blog/solving-code-review-at-anthropic/)则把低风险可信变更的人工批准降到零，保留风险分层、验证与回滚。前者支持整轮实现，后者支持变更审批，不能拼成全生命周期无人负责。[社区：作者实践；一手：团队自报]
+
+同一实践者用 [Astra 实现生产博客功能（10-9）](https://simonwillison.net/2026/Oct/9/built-using-my-voice/)仍人工修订、读 PR 后部署；Battle Drones 的音频不适也靠试玩暴露。因此推荐属于**比较前沿后的条件默认**：扩大自主实现，按真实后果接收；当前跨任务最优与商业发行质量仍未知。详细比较与年初反例见[代际复核](research/2026-10-12-long-task-evidence.md#2026-10-21范式快照与代际复核)。[研究：迁移判断]
 
 ---
 
@@ -215,7 +225,7 @@ Copilot HydraFusion（2026-09 研究预览）让便宜模型先做，再按质�
 5. 本次目标与约束 → 写进任务；不为一次需求新增常驻配置
 
 ### 7.3 要不要并行或多 Agent？
-按 [08](08-multi-agent.md) 选择可独立验收的支线：
+先沿用当前原生委派；需要显式拆分时，按 [08](08-multi-agent.md) 选择有覆盖或关键路径收益、可独立验收的支线：
 - 子任务语义依赖少；共享接口、数据和写入表面先对齐
 - 每项交回适用证据：代码检查实际行为，只读调查给可追溯来源，不要求调查支线另造可执行测试
 - 主 Agent 能核对结果并完成整合验收；需要人判断的部分再匹配实际接收能力，不按人数设固定上限

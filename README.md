@@ -33,7 +33,7 @@ Agent调查、修改并交回实际检查结果，人核目标、旧行为与遗
 2. **上下文按任务提供。** 先定位相关事实，常驻规则只写必要信息；把暂时的搜索过程压缩为可复查的结论。长度、工具数量与推理强度都要通过任务对照决定。→ [03](docs/03-context-engineering.md)、[22](docs/22-agent-evaluation.md)
 3. **原生起步，有可定位的能力缺口或有依据的质量目标时，再选择最小有效补充。** 先复用资料、项目约定与已有工具，不必等功能失败，也不默认增加 Skill；不要同时堆叠几套争夺控制权的完整流程。→ [05](docs/05-skills-and-plugins.md)、[24 社区工作流](docs/24-community-workflows.md)
 4. **模型、工具、流程一起评估。** 必要行为不退步，目标质量、总费用、实际等待与人工审查／返工分别判断；API 账单、另购 credits 与订阅内额度分开记录，首次成功与重试也分开；选型分数与独立终评分开，避免只看排行榜、最佳一次结果或生成行数。→ [22 评估](docs/22-agent-evaluation.md)、[02 计费口径](docs/02-models-and-cost.md)
-5. **并行要有清楚的交付边界。** 任务可分、上下文可交接、结果有人整合时才值得拆分；接口改变后也要更新尚未执行的计划。→ [08](docs/08-multi-agent.md)、[24](docs/24-community-workflows.md)
+5. **原生按需委派，显式拆分要有收益和交付边界。** 能扩大证据覆盖、减少主上下文或缩短关键路径，且结果能整合时再要求并行；接口改变后也要更新尚未执行的计划。→ [08](docs/08-multi-agent.md)、[24](docs/24-community-workflows.md)
 6. **自动运行需要故障恢复。** 进程结束、外部请求超时、旧记忆和日志截断都可能让“继续”变成重复或误判。显式状态、有限重试与写操作对账很重要。→ [20](docs/20-codex-long-horizon.md)
 7. **约束由实际执行边界落实。** 类型 schema、Hook 和模型评审都有适用范围；权限、凭证与副作用不能只靠提示词声明。→ [10 安全](docs/10-security.md)、[06 Hook 边界](docs/06-hooks-and-guardrails.md)
 8. **快速原型用来判断价值，真实交付需要补足证据。** 先比较现成方案、局部补充与完整替代，再打通有用的一步并试用；接入真实用户、数据或收费前检查权限、持久化、故障恢复和维护方式。→ [15 原型](docs/15-task-playbooks.md#10-原型和一次性脚本)、[18 交付与接管](docs/18-team-adoption.md)
@@ -49,6 +49,7 @@ Agent调查、修改并交回实际检查结果，人核目标、旧行为与遗
 | 功能正常，希望改善信息表达、响应或可维护性 | [15 已有产品改进](docs/15-task-playbooks.md#102-已有产品按问题选择改进) → [22 比较与撤回](docs/22-agent-evaluation.md#7-何时推广何时停止) |
 | 使用 Codex 或 Claude Code | [Codex](docs/01-agents/codex.md) → [Claude Code](docs/01-agents/claude-code.md) |
 | 看真实开发者怎样使用 Skills 和 Agent | [24 社区工作流与失败案例](docs/24-community-workflows.md) |
+| 比较年初与现在，判断旧建议是否过时 | [00 五维范式快照](docs/00-state-of-ai-coding.md#1-当前最高水平年初与-10-月到底变了什么) → [14 条件自主默认](docs/14-synthesis.md#0-30-秒结论按任务选入口交付到可继续修改) |
 | 判断工作流是否对强模型仍有价值 | [24 的独立分析](docs/24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) |
 | 解决具体编码任务 | [15 按任务类型的打法](docs/15-task-playbooks.md) |
 | 判断新模型、Skill 或配置是否值得换 | [22 Agent 评估](docs/22-agent-evaluation.md) |
