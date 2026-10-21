@@ -605,6 +605,36 @@ PydanticAI v2.58.0固定`b40096c4c91e4db361ee3f23b0e3f6b85569faa2`，[history L3
 
 **验收状态：** 16／21 已完成以上同题责任机制比较，登记“已比较、gap 2”。没有完整公开初改／二改成功链或同预算全投入对照，不降到 ≤1。本轮未安装框架、运行模型／客户端／引擎，未新增探针；资料比较不计效果验证。**[研究：范围]**
 
+## P57续补：专用入口与领域证明链
+
+核实：2026-10-22（UTC+8）。问题仍是重复维护任务是否需要自建：新增安全维护同题，先比较现成专用入口，再决定领域证明链和资源隔离是否需要薄适配。没有运行模型、应用或安全验证程序。[研究]
+
+### 最高水平卡与当前选择
+
+整体最高水平未知。领先采用参照为Shopify／Zack Deveau 2026-07-29的领域验证与调度；Anthropic／Eugene Yan、Henna Dattani 2026-05-27的方法及8月固定参考实现用于核实际验收语义。两家当前产品文档只证功能。主流采用比例未知，可行基线仍是现成CLI／SDK或已获准的专用入口。本仓推荐为比较后的条件默认：不重写已有扫描生命周期，只补缺失的领域证明与执行隔离。[一手；研究]
+
+| 路线及来源 | 证据与适用选择 | 撤回或保留条件 |
+|---|---|---|
+| [Claude Security当前契约](https://support.claude.com/en/articles/14661296-use-claude-security)；[Codex Security当前契约](https://help.openai.com/en/articles/20001107-codex-security)，本轮读相关全文 | 前者已含持续扫描、修复跟踪、API/MCP等；后者含整仓／提交扫描、可编辑威胁模型及隔离验证。先核现成入口，不能把这些责任默认算自建缺口 | 两者能力与资格不能互借；云端费用和数据条件另核，本轮未启用、连接或核个人资格 |
+| [Shopify Dispatch，7-29](https://shopify.engineering/building-an-agentic-harness-that-outlasts-the-model)，Zack Deveau；全文已读 | 候选发现并行、共享端口／数据库／fixtures的验证顺序执行；有效性通过真实应用入口和产品边界判断。自建价值在领域证明链，不仅是调度 | 模型厂商之外团队，但仍是生产自报；无同预算对照。验证更强模型的候选后曾全部降级、误报或归为加固，候选数不当质量收益 |
+| [Anthropic方法原文，5-27](https://claude.com/resources/articles/using-llms-to-secure-source-code)，Eugene Yan／Henna Dattani；[参考仓](https://github.com/anthropics/defending-code-reference-harness/tree/d3bea6b5793b5f3d59a75ebe69a58efa88383145)，固定d3bea6b5，提交日期8-06 UTC | 静态skills与自主执行demo分开；独立验证不共享发现阶段文件系统／对话。可借隔离与证明角色，不要求所有任务固定串行 | README声明不维护／不收贡献；C/C++ ASAN、Linux／Docker／gVisor专用前提，不是Web验收或原生Pro免费入口 |
+
+以上为[一手：团队自报／产品契约／源码]；没有统一效果排名。Shopify与Anthropic不同团队，可比较可变资源是否共享，不能把两套实现拼成受控实验。
+
+### 固定代码：总passed没有替你定义必需检查
+
+[grade.py](https://github.com/anthropics/defending-code-reference-harness/blob/d3bea6b5793b5f3d59a75ebe69a58efa88383145/harness/grade.py)在同镜像新容器中验证候选，但最终仍解析模型的overall／criterion判断，不是纯确定性发现判定。[patch_grade.py](https://github.com/anthropics/defending-code-reference-harness/blob/d3bea6b5793b5f3d59a75ebe69a58efa88383145/harness/patch_grade.py)在修补阶段核构建退出码、PoC退出0且无ASAN、已配置测试命令；style的模型评分仅作建议。[一手：固定源码]
+
+[artifacts.py](https://github.com/anthropics/defending-code-reference-harness/blob/d3bea6b5793b5f3d59a75ebe69a58efa88383145/harness/artifacts.py)的PatchVerdict.passed对t2_tests_pass与re_attack_clean只要求不是False，None也可通过。没有测试命令或关闭再攻击时，应保留对应缺测状态，再按目标项目的必需验收决定接收；不能直接把总体passed映射为全部检查通过。[一手；研究：消费建议]
+
+**同题取舍：** 原生专用入口已有状态与扫描能力，先复用；仍缺本组织可执行证明时补接口与验收，不因此重写读改测循环。共享可变环境的验证先顺序执行；真正隔离后再比较并发。参考实现已无维护承诺，默认借机制而非接管整套依赖。产品部署条件、权限和有效影响由人核，Agent承担候选、测试与修补。[研究]
+
+### 范围与探索回执
+
+P57原有Spotify／River／Cursor比较保留；本次增加领域验收选择，不结项、不降16／21的gap2。仍缺同模型、同预算的真实初改／二改及完整维护投入，公开源码不补生产收益。
+
+本轮起点f3ed2bca，2026-10-22约03:35起读（UTC+8）；父线程第一次检索先于重读P51提示，不追认完整事前自用项目。子研究者先读既有P51提示再查参考仓。决定性新读原始来源按团队文章、参考代码库、两个产品文档计5项，均读相关正文／代码；同源转录及多个源码文件不另算独立来源。原文读取含等待，净工时未知。2609.20804已在03研究收录，重读未产生新判断，不作发现。无冻结独立漏检参照，不计算漏检率。[研究：读取范围]
+
 ## 2026-10-22：综合判断的交付边界复核
 
 **P71 改变的选择：把完整功能交给 Agent，但宿主、旧数据消费者或使用寿命改变时，更新验收范围，而不是固定拆小或加人工审批。** 14 的最高水平卡比较整轮实现、风险分层接收与只验新功能三条路径；保留可撤回的模型起点，不声称统一最优。当前代际跨任务净收益未知。

@@ -443,6 +443,8 @@ P60已核维护链没有新增运行结果，本轮不重报发现。没有两�
 
 维护控制名册补充（P57，2026-10-21）：从[Spotify Engineering](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)的Honk系列追循环采用与迁移撤回；从[Shopify／Erin Son、Kaiyi Li](https://shopify.engineering/river-vulnerability-remediation)追跨次接收及人工接管；从[Cursor／Josh Ma](https://cursor.com/blog/cloud-agent-lessons)追任务编排撤回与运行责任。原文已读，采用条件与缺口统一归[长任务研究](2026-10-12-long-task-evidence.md)，不据厂商产量或估算成本声称净收益。[一手／研究]
 
+维护控制名册续补（P57，2026-10-22）：新增[Shopify／Zack Deveau的Dispatch实践](https://shopify.engineering/building-an-agentic-harness-that-outlasts-the-model)与[Anthropic／Eugene Yan、Henna Dattani的方法原文](https://claude.com/resources/articles/using-llms-to-secure-source-code)，追领域证明与实际接收边界；后者参考仓已声明不维护，保留作机制来源，不列生产依赖。源码分项与当前专用入口的同题取舍见[P57续补](2026-10-12-long-task-evidence.md#p57续补专用入口与领域证明链)。[一手／研究]
+
 团队接收名册补充（P58，2026-10-21）：沿[Will Larson](https://lethain.com/small-changes/)追窄放行试点的结果与长期调参；[Shopify Quick／Daniel Beauchamp、Alex Pilon](https://shopify.engineering/quick)追受限共享平台的真实维护；[Monzo／Fabien Deshayes、Oli Haley](https://monzo.com/blog/building-agent-chip)追非专家发起、工程师接收与团队归属。相关原文已读，只借用途与接收边界，不采产量或单机价格作为整体收益。[一手／研究]
 
 工作流实验名册补充（P59，2026-10-21）：[Bartłomiej Krupa](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)公开固定案例、轨迹及判定器纠正，可追整包与原生的产物差别；作者另有工具项目，按方法与原始证据核，不当中立裁决。原文及关键轨迹已读，完整范围归[社区研究](2026-10-12-community-source-records.md)。[一手／社区／研究]
