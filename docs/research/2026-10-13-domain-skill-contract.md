@@ -8,6 +8,29 @@
 
 > 核实：2026-10-13。长期任务二。第 1–5 节为 Cloudflare 调查（UTC+8）；第 6 节同日追加原生 pivot 调查（UTC）；第 7 节于 2026-10-14（UTC）补核生产缺省契约与历史生成产物。第 8 节同日追加 Next.js 固定源码比较及累计取舍；末节同日追加设计质量目标与历史操作反例。分别执行自行编写的表达式、文件结构与 AST 探测，未部署 Cloudflare、运行 Office/Django 应用或新模型。正文采用建议见 [05 §2.5](../05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
 
+## P66：共享状态优化，保快路径还是撤完成证明
+
+核实：2026-10-22（UTC+8）。改变[13首表](../13-frontier-radar.md#30-秒选择这些变化值得你改什么)与[15性能优化](../15-task-playbooks.md#7-性能优化)：原生测量／小修仍为默认；共享状态恢复失败，区分快路径与失效的完成判据，不一律撤优化，也不把no-op成功当恢复。[研究]
+
+### 最高水平卡
+
+- **整体最优未知；近期参照已比较。** pnpm维护者Zoltan Kochan于10-06接收两份标注Claude Code／Opus5.5的补丁，第二份纠正第一份“v11必须撤掉原优化”的判断。它们提供当前Agent参与的真实维护取舍，不是完整harness或净收益对照。[一手：产物／作者标注]
+- **新增方案的历史参照：** Shopify／David Cortés[4-15 autoresearch复盘](https://shopify.engineering/autoresearch)称原生宽泛一次优化失败，改为按指标循环，由人丢弃删文件等捷径；原文直接链接pnpm #11073。精确模型、预算及全部尝试不齐，不能把四月案例改写成十月循环胜出。[一手：历史团队自报]
+- **主流／可行／本仓：** 行业采用率未知。已有Agent、基准及维护者接收是可行基线；额外搜索仅在真实缺口下评估。保快路径要满足现有恢复义务，无可用恢复入口则不接收。13登记已比较、gap2，不升级autoresearch推荐。[研究]
+
+### 采用与修订，不只看第一轮数字
+
+**原优化确已采用。** [#11073](https://github.com/pnpm/pnpm/pull/11073)于3-24合入[`615bd240eb695eac8afc4389d44be1436304d01d`](https://github.com/pnpm/pnpm/commit/615bd240eb695eac8afc4389d44be1436304d01d)：GVS暖重装无fetch时跳过内部链接。作者5次小负载报告中内部计时与墙钟降幅不同，不据“35%”称整项任务快35%；没有生成轨迹独立复现或总投入账。[一手：合并及作者测量]
+
+**旧记录不再能担保共享槽。** [现场#16642](https://github.com/pnpm/pnpm/issues/16642)报告另一项目中断安装后共享槽受损，本项目安装成功但运行缺模块。[v12修复#16649](https://github.com/pnpm/pnpm/pull/16649)合入`cd539d732ec0223cd0faceca4a0dc66847d2c0c7`，不再信本项目锁记录，重新检查共享槽；普通no-op早退仍保留。其“v11必须撤原优化”的判断随后被纠正。[一手：报告／固定修订]
+
+**v11保优化，改依赖图判定。** [#16663](https://github.com/pnpm/pnpm/pull/16663)合入[`f4b9616fa95df8c30e0ba14017578826d42c5bc9`](https://github.com/pnpm/pnpm/commit/f4b9616fa95df8c30e0ba14017578826d42c5bc9)。固定head `39ec37401c8259cec84ddd2766ed6b52563cf665`中，共享槽从up-to-date改为reusable而保留入图；added仍只计fetching节点，added为0仍跳内部链接。有fetch的安装才顺便修旧槽，不能推广为每次暖装均恢复。[一手：源码]
+
+**测试的触发条件决定它证明什么。** [固定v11回归](https://github.com/pnpm/pnpm/blob/39ec37401c8259cec84ddd2766ed6b52563cf665/pnpm11/installing/deps-installer/test/install/globalVirtualStore.ts#L64-L88)同时删child link和child slot，迫使fetch后验恢复；不是纯no-op测试。源码对应[入图](https://github.com/pnpm/pnpm/blob/39ec37401c8259cec84ddd2766ed6b52563cf665/pnpm11/deps/graph-builder/src/buildGraphFromPackages.ts#L142-L207)、[added计数](https://github.com/pnpm/pnpm/blob/39ec37401c8259cec84ddd2766ed6b52563cf665/pnpm11/installing/deps-restorer/src/createHeadlessDepGraph.ts#L53-L55)与[跳链接条件](https://github.com/pnpm/pnpm/blob/39ec37401c8259cec84ddd2766ed6b52563cf665/pnpm11/installing/deps-restorer/src/linkIsolatedLayout.ts#L20-L36)。[一手：测试定义，未运行]
+
+**不夸大恢复或收益。** 没有本仓模型／pnpm实测、全场景性能复测、发布版本及现场修后回执；不声称原收益全部保留或用户已获修复。Agent须核完整入口，人确认正常快速路径与强制恢复成本的取舍；若需求必须每次发现共享损坏，当前no-op策略尚不能满足。[研究：接收与撤回]
+
+
 ## 1. 为什么选这个来源
 
 任务不是“哪个插件更强”，而是：**将已有聊天室迁到支持空闲休眠的 WebSocket API 时，哪些额外事实实际迫使开发者改变实现？** Skill 是调查入口；历史补丁独立证明实现差异，不能反过来证明当年开发者使用了后来出现的 Skill。

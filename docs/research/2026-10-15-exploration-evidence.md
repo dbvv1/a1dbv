@@ -433,6 +433,8 @@ P60已核维护链没有新增运行结果，本轮不重报发现。没有两�
 
 长程名册补充（P47前瞻自用）：沿[Temporal／Moe Abadi的10-08工程文](https://temporal.io/blog/the-immortal-life-of-pi-running-the-pi-coding-agent-on-temporal)与[Earendil Engineering的10-01发布](https://earendil.com/posts/pi-durable/)追耐久执行的当前契约和失败边界；先区分模型请求与工具执行状态，不把实验宿主直接列为生产默认。[一手／研究]
 
+性能维护名册补充（P66，2026-10-22）：从[Shopify历史autoresearch复盘](https://shopify.engineering/autoresearch)的直接链接追pnpm优化，再核十月[两版修复的纠正](https://github.com/pnpm/pnpm/pull/16663)。新增的是当前Agent维修的完成判据与恢复入口，不把四月循环写成十月胜例；固定链与未覆盖no-op见[P66记录](2026-10-13-domain-skill-contract.md#p66共享状态优化保快路径还是撤完成证明)。[一手／研究]
+
 模型取舍名册补充（P65，2026-10-22）：新读[Stet作者的同题维护对照](https://www.stet.sh/blog/gpt-6-1-sol-vs-gpt-6-sol)，核公开提示／补丁／清单并追[Tor固定测试覆盖产物](https://github.com/Tor-Production/sol-coding-benchmark/tree/af860aa8cbbcbbca3dde3b44d48e7dda292b9238)；真实维护与构造题分开，判定器过窄不冒充模型能力差。最高水平卡、排除项及取舍归[P65记录](2026-10-10-audit.md#p65模型换代与effort的实际质量差异)。[一手／社区／研究]
 
 交付接收名册补充（P61，2026-10-21）：新读[Stephen Toub 的 Copilot runtime 生产迁移复盘](https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/)，追[VS Code 同版本接管产物](https://github.com/microsoft/vscode/pull/341861)及[下一版采用](https://github.com/microsoft/vscode/pull/341922)；不把自动修绿视为可以改权限／判定器。固定链与自报／未核范围见[长任务研究](2026-10-12-long-task-evidence.md#p61整轮交付与争议接管)。[一手／研究]
