@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加；三，连续修改仍然可靠
 改变的建议：按不可猜的契约与可观察偏好选择短规格、测试或样品；只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回；先确认真实入口、计费和成功报告，再考虑 CI 门槛；跨仓修复须核实际依赖版本，不能只按本 PR head 判断复审覆盖。[研究]
-新证据：10-21 P38补维护审计及保代码续做／摘要辅助独立重试的同题比较；P45补当前维护产物取舍、固定设计配方与贡献要求信息条件对照，未新跑模型；10-20新增存量安全审计的curl／Mozilla接收与降级反例，区分候选、人工补丁、发行及缺失回归回执；10-16新增 ComfyUI 目录 PR 的人工／机器人发现、作者确认、固定补丁与复审跳过／完成链；以下为既有证据汇总（日期见各节，非本次新增）：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约、SO 调查分母、模型客户引言、Cursor 当前计费、GitClear 公开图页的指标口径，以及 Intercom 原文、第三方集成固定来源与配置诊断／插件评估范围补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
+新证据：10-22 P69沿Equinor既有入口追到长内容Dialog二改及分层接收，补07的近期原文与独立来源比较；10-21 P38补维护审计及保代码续做／摘要辅助独立重试的同题比较；P45补当前维护产物取舍、固定设计配方与贡献要求信息条件对照，未新跑模型；10-20新增存量安全审计的curl／Mozilla接收与降级反例，区分候选、人工补丁、发行及缺失回归回执；10-16新增 ComfyUI 目录 PR 的人工／机器人发现、作者确认、固定补丁与复审跳过／完成链；以下为既有证据汇总（日期见各节，非本次新增）：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约、SO 调查分母、模型客户引言、Cursor 当前计费、GitClear 公开图页的指标口径，以及 Intercom 原文、第三方集成固定来源与配置诊断／插件评估范围补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
 
 # 实现决策与评审：让原需求和运行反馈纠正计划
 
@@ -517,3 +517,34 @@ Mozilla原文称最小测试帮助工程师复核并在Firefox148前修复；22�
 这些不是随机流程对照。15总表逐项标代际并增加覆盖账；只有审计授权不改实现或线上配置。缺引用、配置或业务证据就交待判／未覆盖，不把候选全部删除当成功。P23／P25的真实运行缺口不变。[研究]
 
 **回执。** 11:56:56 UTC读提示，11:57:01开始原文，11:57:35冻结来源／决定，11:59:42候选稿局部修正完成。冻结前34秒为墙钟非净阅读；前向输入在冻结后整理，不声称有预注册哈希。N=5/F=5、D=3/FD=3；全部已知重读，两个指南为非决定性背景。Cursor误路径失败与正式名册入口成功属同源尝试，不拆分来源；无独立盲测分母，不新增P51次数。[研究：执行者记录]
+
+
+## P69工作流整页比较与UI二改
+
+核实2026-10-22（UTC+8），基线95e18e4。**结论：保留整轮自主实现；新状态暴露行为缺口时补对应路径，不用设计配方、测试总数或基础层合入替代接收。** 07原审计差距为1；旧P69排队行写成2是登记错误，本次不是2→1。[研究]
+
+**最高水平卡。** 沿用[C08审计卡](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c08--工作流)，问题是直接实现、短规格、样品和额外验证如何切换。近期领先参照为Addy Osmani／Anthropic 9-22的完整任务＋完成标准、Cursor 9-23删掉模型已学会的探索委派提示、John Phamous／Vercel 6-25将产品决定与机械检查分开；主流参照是探索→计划→实现→提交，但未测采用率；可行做法是原生Agent沿现有资料实现、自验，人判断目标和体验。本仓推荐属于领先机制的条件采用，不把跨团队案例拼成整体胜率。[研究]
+
+| 本轮重读的原文及范围 | 对本页选择的贡献 |
+|---|---|
+| [Anthropic／Osmani，9-22](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)，任务、设计与评审段 | Opus5.5完整任务、结束条件及明确设计方向；厂商写自身产品，不能独占评级依据 |
+| [Cursor，9-23](https://cursor.com/blog/improved-token-efficiency)，探索委派提示删减；[Vercel／Phamous，6-25](https://vercel.com/blog/teaching-agents-product-design-at-vercel)，产品决定与检查 | 支持按能力删除旧步骤、按surface与产品决定提供资料；不证明当前所有任务短提示更优，不将shadcn另算独立团队 |
+| [Simon Willison，10-20](https://simonwillison.net/2026/Oct/20/battledrones/)，v1–v10 | 独立作者：v4整轮过夜玩法改动，v8发现步兵／Condor未被充分使用，先讨论新地图再实现。v9固定[地图产物](https://github.com/simonw/battledrones/blob/3ca11d8d7c5754d72a3238ddd9377cc608dd2391/src/sim/maps.ts#L325-L348)保留对应机制。作者试玩自报，不是工作流随机对照 |
+| [Bartłomiej Krupa，9-29](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)，同题产物与成本 | 独立评测作者、Sonnet5.5，使用Claude Code 2.1.284内置claude plugin eval及作者编写的题目／检查；bug小题两臂修复正确，留下回归测试有差异。小样本、作者有自己的轻量方案，不能替窄TDD组件或全部长任务排名；详细固定产物沿用P59 |
+| [Equinor评审，10-06](https://github.com/equinor/design-system/pull/5584#pullrequestreview-5426786670)，实际运行反馈与固定修补 | 独立产品团队；具体失败层覆盖交互、布局和ADR阈值，比“更多reviewer”更精确。非bot账号不单独证明真人身份，运行仅参与者自报 |
+
+以上支持07整页的条件选择，不只有UI局部：整轮与先澄清由Willison反例相互约束，整包与原生由Krupa补产物与投入，检查入口／测试目标／纠正归属由Equinor具体反馈约束。历史Anthropic reset／sprint只作代际反例；当前最优重置频率、外层循环净收益仍未知。[研究]
+
+### 同一产品：短实例修复后，为长内容消费者补检查缺口
+
+已知入口[#5157](https://github.com/equinor/design-system/pull/5157)于10-02关闭、未合入，分拆为5584／5585／5586。贡献者eddiman在[10-01回执](https://github.com/equinor/design-system/pull/5157#issuecomment-5930164389)报告修复重复onClose和拖选到背景导致关闭。10-06[具体评论](https://github.com/equinor/design-system/pull/5584#discussion_r4193983965)仍发现滚动条会关闭窗口：滚动由dialog自身承担，命中该节点被当作backdrop；原SettingsDialog内容短，没有这条路径，后续Theme Builder实例更高。[一手：公开PR]
+
+10-13修复[aad58d728969600be0f01f659cb40752668f79e9](https://github.com/equinor/design-system/commit/aad58d728969600be0f01f659cb40752668f79e9)把滚动移入wrapper并给dialog设置overflow-hidden。[作者回执](https://github.com/equinor/design-system/pull/5584#issuecomment-6146021801)报告修复及Header布局的Chromium多viewport检查；10-14[批准](https://github.com/equinor/design-system/pull/5584#pullrequestreview-5517336519)只有LGTM，没有明确最终手势复测回执。[一手]
+
+基础PR[#5584](https://github.com/equinor/design-system/pull/5584)已合入0ec03096c60022123c0d88edb6de751e0d9fd5a2。固定[Dialog源码](https://github.com/equinor/design-system/blob/0ec03096c60022123c0d88edb6de751e0d9fd5a2/apps/eds-color-palette-generator/src/components/shared/Dialog.tsx)与[测试](https://github.com/equinor/design-system/blob/0ec03096c60022123c0d88edb6de751e0d9fd5a2/apps/eds-color-palette-generator/src/components/shared/Dialog.test.tsx)可核补丁；新增测试只在jsdom断言class结构，没有执行真实滚动条手势。此处不称本仓客户端或浏览器复测。[一手：源码；研究：范围]
+
+同轮评审要求contrast测试直接断言ADR阈值，而不是只重算实现的pass公式；这支持让Agent从需求得到判据。旧Playwright legacy覆盖被移除、组件／逻辑Vitest增加，是具体范围替换，不能按总测试数认定浏览器覆盖等价。[一手：评审与固定树]
+
+**接收层要分开。** 固定根页面仍写下一PR接Theme Builder；截至本轮核查，后续[#5585](https://github.com/equinor/design-system/pull/5585)（a5b8c95f91ff56c954dcebdab12b90177f0df0b9）与[#5586](https://github.com/equinor/design-system/pull/5586)（e8c13b717033836aa03247e6a769e5bea8a44ee4）均开放、未合入。其本地测试数是作者报告，不能覆盖基础合入后的完整应用或线上交付；未查部署。故默认允许基础分拆，却不把基础接受写成全功能完成。[一手／研究]
+
+**验证与探索边界。** 本轮只读公开原文、评审、固定源码和产物，未运行上游应用／模型。P51提示用于既有来源名册续查；新信息是Equinor后续修补与接收链，其余为已知原文重读，无独立盲测分母，不计算漏检率。无新探针或结果JSON。独立审查及仓库离线结果见同批TASKS回执。[研究]

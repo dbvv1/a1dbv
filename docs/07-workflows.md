@@ -1,7 +1,7 @@
 # 07 · 工作流方法论
 
 > P46来源校准：2026-10-21；前沿比较：已比较（团队自用机制与采用边界），同预算效果优胜未知。最高水平卡及条件见[三篇校准](research/2026-10-15-exploration-evidence.md#p46按团队追踪来源与漏检校准)。
-> 编辑更新：2026-10-16（UTC+8）。按任务的不确定性选择实现、规格、测试或样品；来源与核查范围见[研究记录](research/2026-10-12-baml-and-review.md#工作流页历史页头)。
+> 编辑更新：2026-10-22（UTC+8）。按任务的不确定性选择实现、规格、测试或样品；来源与核查范围见[研究记录](research/2026-10-12-baml-and-review.md#工作流页历史页头)。
 
 > 代际复核：2026-10-21，对照 Opus 5.5／当前原生 harness 的公开实践；标签定义见 [00](00-state-of-ai-coding.md#30-秒结论)。
 
@@ -18,9 +18,18 @@
 
 ## 当前最高水平与比较范围
 
-**前沿比较：已比较；当前跨任务最佳流程未知。** 2026-03 的 Anthropic harness 已随 Sonnet 4.5→Opus 4.5／4.6 去掉强制 reset 和 sprint；它是历史代际比较，不再冒充 10 月前沿。9-23 [Cursor](https://cursor.com/blog/improved-token-efficiency)继续删掉模型已学会的探索委派提示；10-20 [Battle Drones](https://simonwillison.net/2026/Oct/20/battledrones/)则展示整轮自主实现与真人试玩交替。本页保留契约、目标反馈，撤回按旧模型能力固定流程长度的理由。人核删步骤后的行为与体验，Agent负责完整执行；对应 [C08卡](collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c08--工作流)及[代际证据](research/2026-10-12-long-task-evidence.md#2026-10-21范式快照与代际复核)。[一手／社区；研究：条件默认]
+<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
 
-§3另补连续升级的同链规格粒度比较，用来选择先补哪种信息，不据此评定整套流程最优。[研究：2026-10-21]
+**当前领先做法是让强 Agent 完成整轮工作，再按缺失的依据补约束、样品或实际路径验证，而不是预先固定流程长度。** 近期参照为 Addy Osmani／Anthropic 的 [Opus 5.5 实践（9-22）](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)、Cursor 的[探索委派删减（9-23）](https://cursor.com/blog/improved-token-efficiency)与 John Phamous／Vercel 的[产品设计方法（6-25）](https://vercel.com/blog/teaching-agents-product-design-at-vercel)。本仓选择这一层的条件做法；跨任务最佳流程仍未知。[一手：团队原文；研究：比较]
+
+| 同一个选择 | 领先路线与本仓取舍 | 独立来源的支持与反例 |
+|---|---|---|
+| 直接实现，还是先规划／写规格 | 目标清楚便整轮执行；未决决定会改变产品时先澄清，不按文件数分级 | [Willison 的 Battle Drones（10-20）](https://simonwillison.net/2026/Oct/20/battledrones/)既有过夜整轮玩法修改，也有第8轮先分析再约定新地图；支持随未知切换，不证明规格因果提效 |
+| 原生流程，还是整包 Skill／外层循环 | 先保原生自主性；具体漏项才加窄反馈，已有反馈足够便撤去额外层 | [Krupa 的同题比较（9-29）](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)把补丁正确性、回归测试与整包投入分开；小题结果不能决定所有长任务或窄 TDD Skill 的价值 |
+| 有了设计配方／测试结果，能否接收 UI 二改 | 设计依据交代方向；新消费者和新状态另核关键交互，机械检查直接对应目标 | Equinor 的 [10月公开评审与修复](https://github.com/equinor/design-system/pull/5584#discussion_r4193983965)发现短对话框遗漏的长内容滚动关闭问题；旧短实例检查没有覆盖新消费者的关键手势 |
+| 把纠正沉淀为全局流程，还是局部依据 | 业务决定放任务／规格，行为回归放测试，真正通用的方法才固化 | 同一 Equinor 评审要求测试对照 ADR 的目标阈值，而非重算实现公式；基础层合入与后续页面可用也分开接收 |
+
+**本仓已比较领先路线并给出条件默认，尚未证明统一最优。** 差距仍在四种路线缺少同一真实维护任务的完整成本对照。来源独立性、固定SHA和验证范围集中见[本轮研究](research/2026-10-12-baml-and-review.md#p69工作流整页比较与ui二改)。[研究：2026-10-22 UTC+8]
 
 ## 1. 核心：验证闭环 ✅
 
@@ -144,7 +153,7 @@
 
 | 工具 | 风格 | 评级 |
 |---|---|---|
-| [GitHub Spec Kit](https://github.com/github/spec-kit) | 功能流程含 Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge；当前另有 bug/想法评估入口 | 🧪 按任务规模选择 |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | 功能流程含 Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge；当前另有 bug/想法评估入口 | 🧪 按未决约束与维护需要试用 |
 | [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 轻量，偏增量变更（`/opsx:propose`），支持 30+ 工具 | 🧪 |
 | [Kiro](https://kiro.dev) | 原生需求／设计／任务与显式修订，见[采用边界](research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界) | 🧪 按审阅与维护需要试用 |
 | [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | 模拟敏捷团队的多个角色，产出物很多 | 👀 |
@@ -164,6 +173,10 @@
 **🧪 先补具体设计参照，再用原生Agent改一轮；不默认加完整评审循环。** 给目标使用者、视觉方向、当前差距与必须保留的行为；既有设计系统优先。Anthropic九月固定配方可按需参考，不能把反模板偏好变成另一套永久禁用清单。[一手：固定配方；经验：采用，见P45记录](research/2026-10-12-baml-and-review.md#p45功能能跑以后先改善哪种质量)
 
 人先核方向和关键操作；行为证据不足再补独立实际路径检查，方向还不清就先比样品。评分上涨但任务更难完成、后续维护更重，就撤回该轮；中间版可能比末版好。现有四条路线的当前同预算最优未知。[一手：历史作者实验；经验：采用边界]
+
+**✅ 二改新增消费者或状态时，沿新路径补检查，不重套整套设计流程。** 例如旧对话框很短，新页面加入长内容：让 Agent 验证滚动、拖选、关闭及旧实例行为，人核目标操作是否顺畅。Equinor 的共享Dialog在长内容状态把滚动条命中误判成背景点击；修复是把滚动移入内容容器，而非再换一份设计提示。[具体评论](https://github.com/equinor/design-system/pull/5584#discussion_r4193983965)与[固定修补](https://github.com/equinor/design-system/commit/aad58d728969600be0f01f659cb40752668f79e9)支持这一故障层的选择。[一手：公开评审／源码]
+
+**基础层合入不等于完整功能交付。** 同链基础PR已接收，Theme Builder及其他页面仍未合入；Agent应分别报告基础修复、行为检查和剩余交付。若关键手势还没有实际回执，就保留该项待验，而不是靠测试总数放行。此链只有参与者运行自报及本仓源码核对，新增jsdom结构断言不证明真实滚动手势已回归通过。[研究：范围及链接见本轮研究]
 
 ## 6. Ralph 循环 🧪
 
