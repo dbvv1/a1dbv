@@ -49,7 +49,7 @@
 | [01 引擎接入](01-engine-integration.md) | Unity、Unreal、Roblox、Godot、Blender 的官方 Agent 接入；三种设计思路；引擎选择对 AI coding 的影响 |
 | [**02 验证与试玩**](02-verification-and-playtesting.md) | 按待证事实选测试、复用已有入口、暂停菜单的第二次修改、工具观察与人的体验取舍 |
 | [03 G1资产管线总览](03-generative-ai-in-games.md) | Agent 驱动的资产管线、游戏运行时的 AI（NPC、决策模型、世界模型）、披露与玩家态度 |
-| [2D资产](assets/2d.md) | 前沿方法与三档首试、原生/现成基线、静态/动画/瓦片和二次修改的采用边界 |
+| [2D资产](assets/2d.md) | 前沿方法与三档首试；原生UI／装饰切片／平面稿结构重建的取舍，静态／动画／瓦片及二改边界 |
 | [3D资产](assets/3d.md) | 原生低模/高密度源、模块场景/变形角色分开；UV、LOD、碰撞和第二次修改 |
 | [动画与绑定](assets/animation.md) | 完整动作基线、自动绑定/动捕、root/loop/接触与第二次修改 |
 | [材质与特效](assets/materials.md) | 共同PBR结构、原生运行时与flipbook三档、预算和二次修改；CLI及素材许可分层 |
