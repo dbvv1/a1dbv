@@ -676,3 +676,5 @@ P53的三页内容与来源交接范围闭合，游戏01／02／05仍保留差�
 ### P72校准参照回流（2026-10-22）
 
 固定审计f3ed2bca带入的6项漏检候选中，dot-A本批转化Code2Skill、NP-Bench、AsynCodeBench与ReviewBench四项；这不是全网漏检率或四个独立团队效果复现。程序知识回05／03，集成依赖回08／22，评审离线筛选与生产窄试回09；决定性原文及版本分别在[Skill研究](2026-10-13-domain-skill-contract.md#p72审计补强程序卡放在能用它的地方)、[并行研究](2026-10-12-experiment-records.md#p72审计补强并行结果按依赖接收)、[评审研究](2026-10-12-baml-and-review.md#p72审计补强离线评审怎样进入放量)。独立源新增到相应问题的名册，不以标题／引用数作为完成。Spec2Game／SPRITE归B的游戏补强，本端不重开；已引用游戏材料的转化缺口另计。[研究]
+
+团队接收名册续补（P58，2026-10-22）：从[Spotify Engineering](https://engineering.atspotify.com/)读到Tyson Singer的[9-16质量复盘](https://engineering.atspotify.com/2026/9/ai-changed-how-spotify-builds-what-we-learned-and-fixed-about-quality-at-higher-velocity)，把生成能力与生产接收容量分开；明确引用的7月事故只补因果边界，不与依赖升级混成同一链。四路比较及未验范围见[P58](2026-10-12-community-source-records.md#p58续接生成与生产放量分开)。[一手／研究]
