@@ -1,8 +1,52 @@
 主线：二为主，兼四
-改变的建议：[经验／研究] 长命观察由接续交付者持有，进程移交须连同投递与恢复核查；清理指令保留默认／条件，未决实现与规格冲突先不改写；计划陷入构建与转抄循环时，先保留接口与断言、缩减实现正文；原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
+改变的建议：[经验／研究] 入口分界面、harness与执行环境；只缺整理时保原CLI，ACP另验配置和审批，生产profile成果不归因于IDE。长命观察由接续交付者持有，进程移交须连同投递与恢复核查；清理指令保留默认／条件，未决实现与规格冲突先不改写；计划陷入构建与转抄循环时，先保留接口与断言、缩减实现正文；原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
 新证据：[一手／社区] 中文／Reddit／实践者的流程包、单项 Skill 与语义检索采用取舍及当前 star 快照；Hermes 子进程退出清理的故障报告、发布实现与 notify／gateway 反例；doc-cleanup 语义误缩自报及撤回“代码为准”的固定修订；Superpowers #2333 的计划配方修订、分模型作者重放与无 Skill 反例；Copilot CLI Free／本地BYOK接入与组织限制、MCP治理官方口径冲突，gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
 # 社区工作流：固定来源与案例资料
+
+## P54：入口选择先分界面、harness与执行环境
+
+核实：2026-10-21（UTC+8），基线c39619bf；主线二。**确认保留可验收入口，修正“想集中管理就迁移整套Agent”：可以只换交互层。** 研究题固定为已有Web仓库的一次用户可见修改、原验收及后续改稿；这是本仓共同决策题，不是外部团队完成的统一实验。[研究]
+
+### 最高水平卡与选择
+
+**当前最佳入口未知。** 领先生产参照是Google内部Argon／Antigravity的profile驱动改稿，以及Anthropic真实客户端反馈；Zed给出原CLI承载与ACP集成的机制对照。它们没有共同任务、模型与人工投入的迁移收益分母，不能拼成产品胜负。[一手：团队复盘／契约；研究]
+
+**主流采用率未知；可行基线是保留已经完成原验收的CLI。** 本仓推荐属于该层：只缺整理先换界面；需要集成审查时试ACP；有质量目标、自选模型或工具循环缺口时比较新harness；脱离本机执行单独核环境。四页均维持gap2，总览／IDE／开源只列候选，Gemini最佳入口未知。[研究]
+
+### 决定性原文与支持范围
+
+| 原文、作者／日期与读取位置 | 改变的判断 | 主要缺口 |
+|---|---|---|
+| [Terminal Threads](https://zed.dev/docs/ai/terminal-threads)，Zed当前文档；已读职责、关闭与远程配置节 | 原CLI管理自己的配置，宿主负责组织；远程环境和恢复需另核 | 契约不是净收益实测 |
+| [External Agents](https://zed.dev/docs/ai/external-agents)，Zed当前文档；已读总述与Claude／Codex／Gemini／OpenCode／Pi节 | ACP也须按实际Agent查认证与配置，不能套宿主原生设置 | 各Agent有例外，如Gemini的key传入路径，不能一刀切 |
+| [#57402](https://github.com/zed-industries/zed/discussions/57402)，danielrdotcom，2026-08-17回复；完整可见讨论 | 因重复审批改回终端的真实撤回线索 | 单用户，无任务产物、模型或人工工时 |
+| [#62788](https://github.com/zed-industries/zed/issues/62788)，Ruiwen41，2026-08-18；报告与状态 | Zed1.15.0／macOS12.3的Claude ACP有通知却无审批卡，迁移需验完整审批链 | 读取时Open且无关联修复；不外推所有当前版本 |
+| [How we made claude.ai faster](https://claude.dev/blog/how-we-made-claude-ai-faster/)，Raymond Wang、Sam Attard、Issac G.，2026-09-23；Brief／Guardrails／Steering | 真实Chrome新标签页反馈补headless盲点，人决定可见取舍 | 厂商内部自报，未比较CLI／IDE |
+| [Gemini 4 Argon](https://www.antigravity.google/blog/gemini-4-argon-in-google-antigravity)，Antigravity Team，2026-10-13；生产应用节 | 借生产profile定位问题，不借整体采用数字证明换入口 | 内部Antigravity，缺公开补丁及同任务入口对照 |
+| [Choosing your surface](https://cloud.google.com/blog/topics/developers-practitioners/choosing-your-surface-antigravity-20-antigravity-cli-antigravity-ide-or-antigravity-sdk)，Alex Astrum、Luke Schlangen，2026-06-10；Four Surfaces／Summary | Antigravity的CLI、IDE、桌面应用是交互分流；共享harness范围不含Gemini CLI | 产品指南不是迁移效果或10月资格证明 |
+
+**团队条件。** Anthropic使用Claude Tag beta及约相当于Opus5.5的内部研究模型，每个改动有人批准，代码库为claude.ai／桌面应用；精确模型build与团队人数未知。Google案例为内部Argon与YouTube生产代码，任务失败分母、参与人数、人工投入与公开二改产物未知。[一手：相关原文；研究：可迁移范围]
+
+### 排除与纠错
+
+**不采用“为省费用必须改终端”。** Ben Brandt的[5-20设计文](https://zed.dev/blog/terminal-threads)支持并存两种路径；其中计费论述被[6-16更新](https://zed.dev/blog/anthropic-subscription-changes)注明尚未生效。这里只借设计理由，没有重新确认今天的完整计费资格。[一手]
+
+**跨harness论文暂不作采用证据。** Vats／Golev（Sentient Labs）的[The Scaffold Effect](https://arxiv.org/html/2607.22585)在50题上比较Qwen3.6Plus／MiniMaxM2.5与Goose／OpenCode／OpenHands-SDK；已读方法、结果、局限与附录A。表2通过率与表4的Sv计数未对齐，附录先判异常再判solved，可能造成口径差异；待原始记录核对，不认定为算术错误，也不引用名次、倍率或胜出结论。[研究：独审提示后复核]
+
+该文另有Goose输入／输出未拆分、40轮与900秒预算不对称及provider默认值可变等局限，也未测当前Astra／Sonnet或人工维护。HTML v1标注2026-06-08，日期与编号月份不同，保留原样；即使数字解释清楚，也须重新判断与当前任务的相关性。[研究]
+
+**下一份有价值证据要补完整迁移链。** 需要实际改稿产物、有效权限／配置、人的干预与后续修改；功能支持列表不足以解除上述缺口。[研究]
+
+### 比较交付与读取回执
+
+**交付的是条件选择与撤回方法。** 保留仓库基线、必要数据／服务和原验收；Agent交补丁、真实检查及可体验页面，人判目标、兼容与失败覆盖。比较初改及后续修改的有效结果、主动工时、等待／费用、返工与配置接续；关键路径失效就退回旧入口，不以关闭审批换成功。[研究：尚未执行的比较]
+
+**P51前向使用。** 两路研究均先读提示（blob `98f326ab4975771d797b1a14348694cbd3b3f744`）：入口路12:10:56–12:14:22 UTC，去重N=18／相关正文F=14，局部决定性D=7／FD=7；Google路12:13:58开始读上下文，12:14:13–12:14:48外查，N=3／F=3、D=2／FD=2。都是当轮新读，旧研究只作输入；各自墙钟含工具等待，净阅读时间未知，不相加为项目工时。[研究：执行者回执]
+
+撰稿复核12:20:33开始，12:25 UTC完成候选稿与局部检查；外部去重N=10／F=10、D=7／FD=7，均读相关正文。九项来自已冻结线索或随后主执行者补入的论文，另沿Zed官方出口补读External Agents；重读不增加发现数。论文报表问题由冻结后的独审补入，已撤掉候选正文，不回写两路原始计数。四页同属P54一个自用项目，尚无独立漏检分母，不报零漏检或方法净收益。[研究]
+
+未安装或运行客户端、模型、引擎及迁移；四页资料交付不代表P54差距≤1目标完成。[研究：范围]
 
 ## P34 最高水平卡
 

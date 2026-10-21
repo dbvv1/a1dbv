@@ -1,7 +1,23 @@
 # Gemini CLI 与 Antigravity
 
-> 编辑更新：2026-10-16（UTC+8）。按接入资格、迁移与隔离需求选择客户端；[来源与核查范围](../research/2026-10-12-community-source-records.md#gemini-页历史页头)。
+> 编辑更新：2026-10-21（UTC+8）；本次补入口比较，认证、迁移与隔离保留 10-16 的[核查范围](../research/2026-10-12-community-source-records.md#gemini-页历史页头)。
 > 评级：🧪 **有条件试用**（已有可用 API／企业合同路径）；个人新接入另评估 Antigravity CLI
+
+## 30 秒结论
+
+**✅ 已有 Gemini CLI 的认证路径有效、且能完成修改和验收，就保留。** 缺运行证据时先补 profile、日志与实际页面；需要人直接调试／逐段改稿才试 IDE，需要脱离本机执行则另核远程环境。消费者路径失效后的必要迁移，按下文资格与配置处理。[研究：2026-10代际条件默认]
+
+**⛔ 不把 Google 的生产采用当成换 IDE 的收益证明。** Agent 负责据证据定位、改稿和跑检查，人核目标、兼容与真实体验；新入口若丢必要工具、数据通路或原验收，就保留旧路或暂停迁移。[研究]
+
+## 当前最高水平
+
+<!-- frontier: status=未知 gap=2 gen=2026-10 checked=2026-10-21 -->
+
+**当前最佳 Google 编码入口未知。** Antigravity 团队[10-13 的生产复盘](https://www.antigravity.google/blog/gemini-4-argon-in-google-antigravity)称，内部 Argon 根据 YouTube 生产 profile 定位冗余 emoji 渲染并改进性能；可借的是运行证据驱动改稿，内部产品结果不能归因于 IDE 相对 CLI 的优势。[一手：厂商自报；研究]
+
+**对照生产实践与入口职责后，仍保留可验收的 CLI。** Google Cloud 的 [6-10 入口指南](https://cloud.google.com/blog/topics/developers-practitioners/choosing-your-surface-antigravity-20-antigravity-cli-antigravity-ide-or-antigravity-sdk)把 CLI、IDE 与多任务桌面应用区分为不同交互面，共享的是 Antigravity harness；这个结论不包括原 Gemini CLI。选择应随缺少的反馈改变，不能仅凭“后台”推定关机后续跑。[一手：产品设计指南；研究：条件选择]
+
+本页默认属于**可行**层，主流采用率未知；尚缺相同仓库任务、有效配置与后续修改的入口对照，故保持差距2。比较与撤回方法见[总览](README.md#当前最高水平先分层再决定迁移)，团队条件和读取范围见[研究记录](../research/2026-10-12-community-source-records.md#p54入口选择先分界面harness与执行环境)。[研究]
 
 ## 1. 基本情况
 

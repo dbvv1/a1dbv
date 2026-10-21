@@ -1,6 +1,22 @@
 # IDE 类工具与其他
 
-> 编辑更新：2026-10-16（UTC+8）。按必要能力、接入条件与费用选择 IDE 入口；来源分级与核查日期见[研究记录](../research/2026-10-12-community-source-records.md#ide-页历史页头)。
+> 编辑更新：2026-10-21（UTC+8）；本次补原 CLI 承载与 ACP 迁移的选择，其他产品保留分项[核查日期](../research/2026-10-12-community-source-records.md#ide-页历史页头)。
+
+## 30 秒结论
+
+**✅ 只想集中管理已可验收的 CLI 会话，先保留 CLI，不连 harness 一起换。** 例如 [Zed 的终端线程](#zed)可以只承担整理层；需要集成式 diff、编辑器上下文或交互调试，再试 ACP／原生 IDE Agent。[一手；研究：2026-10代际条件默认]
+
+**⛔ 不因带浏览器或 Agent 面板就迁移。** Agent 应交回能复现问题的实际运行结果，人核兼容与体验；审批、必要工具或恢复链不通，就回到原可用入口。[研究]
+
+## 当前最高水平
+
+<!-- frontier: status=仅候选 gap=2 gen=2026-10 checked=2026-10-21 -->
+
+**当前最佳 IDE／CLI 组合未知，本页推荐属于可行默认。** Zed 团队的[终端线程设计（5-20）](https://zed.dev/blog/terminal-threads)与当前契约，支持“只换组织界面”的候选；8 月的[ACP 撤回反馈](https://github.com/zed-industries/zed/discussions/57402)提示审批接续也是迁移成本。没有同任务成果与人工投入对照，主流采用率未知。[一手：设计；社区：个案；研究：差距2]
+
+**更近的领先实践把真实体验作为反馈，而非把 IDE 当答案。** Wang、Attard 与 Issac G. 在 Anthropic [9-23 工程复盘](https://claude.dev/blog/how-we-made-claude-ai-faster/)中报告：headless 检查未发现真实 Chrome 新标签页的布局变化，员工录屏才补上缺口。采用时先问现有入口能否取回同样证据，这不是 IDE 优于 CLI 的比较。[一手：内部团队自报；研究]
+
+同题选择与试换方法集中在[总览](README.md#当前最高水平先分层再决定迁移)，详细版本、失败分支与未决范围见[研究记录](../research/2026-10-12-community-source-records.md#p54入口选择先分界面harness与执行环境)。[研究]
 
 ## Cursor
 
@@ -57,7 +73,11 @@ Codex 集成可用 JetBrains AI 订阅、ChatGPT 登录或 OpenAI API key；仅 
 
 ## Zed
 
-ACP 的发起方，原生支持外部 Agent 接入，适合追求编辑器性能的人 **[经验]**。
+**🧪 只缺会话整理时，先试 Terminal Threads；需要集成编辑／审查时，再试 ACP。** 前者在编辑器内运行原 CLI，后者通过协议承载外部 Agent；换面板不代表换模型。[一手：[终端线程](https://zed.dev/docs/ai/terminal-threads)、[外部 Agent](https://zed.dev/docs/ai/external-agents)；研究：选择]
+
+**终端路径保留 CLI 管理认证、模型、工具与指令的职责。** Zed 自身的 Agent 设置不会自动套用，远程项目读的是远端环境；关闭终端线程也不会存入 Zed Thread History。需要会话恢复时另核 CLI 的恢复路径。[一手：终端线程契约]
+
+**ACP 迁移先验审批能完成，再验配置与历史接续。** [#62788](https://github.com/zed-industries/zed/issues/62788)报告 Zed 1.15.0／macOS 12.3 的 Claude ACP 有审批通知却无可操作卡片；单个历史版本故障不能推出当前全线不可用。若必要审批卡住，就退回原路排查，不靠关闭审批获得表面上的成功。[社区：2026-08-18故障原报；研究：撤回条件]
 
 ## 国内工具（面向中文开发者）
 

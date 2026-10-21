@@ -1,6 +1,20 @@
 # 开源 Coding Agent
 
-> 编辑更新：2026-10-16（UTC+8）。分项核实日期与范围：[OpenCode及历史基线](../research/2026-10-12-community-source-records.md#opencode规划权限与文件恢复分开选择)、[Pi](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界)、[Aider](../research/2026-10-12-community-source-records.md#2026-10-15-aider维护节奏与模型兼容分开判断)、[Cline](../research/2026-10-12-community-source-records.md#cline审批按宿主与有效设置判断)、[Goose](../research/2026-10-12-community-source-records.md#goose订阅接入先核适配器身份与资格)、[Qwen Code](../research/2026-10-12-community-source-records.md#qwen-code内置不等于默认启用)、[Copilot CLI](../research/2026-10-12-community-source-records.md#copilot-cli接入与治理范围)；项目文档与源码 **[一手]**，HN 原帖 **[社区]**。
+> 编辑更新：2026-10-21（UTC+8）；本次补模型与 harness 的比较，产品事实保留分项核实日期与范围：[OpenCode及历史基线](../research/2026-10-12-community-source-records.md#opencode规划权限与文件恢复分开选择)、[Pi](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界)、[Aider](../research/2026-10-12-community-source-records.md#2026-10-15-aider维护节奏与模型兼容分开判断)、[Cline](../research/2026-10-12-community-source-records.md#cline审批按宿主与有效设置判断)、[Goose](../research/2026-10-12-community-source-records.md#goose订阅接入先核适配器身份与资格)、[Qwen Code](../research/2026-10-12-community-source-records.md#qwen-code内置不等于默认启用)、[Copilot CLI](../research/2026-10-12-community-source-records.md#copilot-cli接入与治理范围)；项目文档与源码 **[一手]**，HN 原帖 **[社区]**。
+
+## 30 秒结论
+
+**✅ 有明确质量目标或能力缺口时，把开源 harness 列入比较。** 例如自选服务商、私有部署、改工具循环，或希望提高修改质量；先核现有入口能否满足，只缺会话整理可保留 CLI 并换[界面承载](ide-and-others.md#zed)。[研究：2026-10代际条件默认]
+
+**⛔ 开源不自动带来更强模型或更低总成本。** 比较单位是模型、harness 与有效配置的组合：Agent 做同一修改并运行原验收，人核结果、后续修改和维护投入；协议、审批或恢复不兼容就撤回。[研究]
+
+## 当前最高水平
+
+<!-- frontier: status=仅候选 gap=2 gen=2026-10 checked=2026-10-21 -->
+
+**当前面向持续仓库修改的最佳开源组合未知。** [Zed 当前外部 Agent 契约](https://zed.dev/docs/ai/external-agents)将 OpenCode／Pi 的认证、模型选择与宿主界面分开；结合[终端承载](ide-and-others.md#zed)，可确认开源 harness、IDE 和原生 CLI 不是互斥路线。这是接入机制证据，尚非领先维护成果。[一手；研究]
+
+**本页采用“按质量目标或能力缺口试换”的可行默认，差距仍2。** 同题迁移的主流做法与净收益仍未知；本轮查到的跨 harness 论文有报表口径待核，未作为采用依据。候选与排除理由见[研究记录](../research/2026-10-12-community-source-records.md#p54入口选择先分界面harness与执行环境)，比较步骤见[总览](README.md#当前最高水平先分层再决定迁移)。[研究]
 
 ## 总览
 
@@ -20,7 +34,7 @@
 
 ## 怎么选
 
-- **想要 Claude Code 的体验，但希望换模型或接本地模型** → OpenCode。
+- **需要自选服务商或本地模型** → 🧪 OpenCode 可列候选；先核所需模型的工具调用与原验收，不承诺复制 Claude Code 的体验。
 - **团队在国内，需要接国产模型或用 Coding Plan** → Qwen Code / OpenCode（见 [02 模型与成本](../02-models-and-cost.md#4-国内-coding-plan)）。
 - **主要在 IDE 里工作，希望保留操作前审批** → Cline 可列入候选，先关闭需人工确认类别的自动批准并核对有效设置；不能把产品名当成“每步必审”的保证，见下。
 - **想要“一切皆插件”、让 Agent 自己扩展界面和工具** → DeepSeek Harness（先评估数据合规）。
@@ -42,7 +56,7 @@
 
 | 优势 | 证据 |
 |---|---|
-| **可以接任何模型**，包括本地和国产 | HN“有人用本地模型做日常编码吗”（1318 票）的常见组合：Pi 或 OpenCode + llama.cpp / unsloth；Qwen Code 原生支持国产模型和钉钉、飞书 **[社区]** |
+| **可选择支持的模型端点**，包括部分本地与国产模型 | HN“有人用本地模型做日常编码吗”（1318 票）给出 Pi 或 OpenCode + llama.cpp / unsloth 等组合；协议接通后仍须核工具调用和任务质量，不能概括为任何模型都适用 **[社区；研究]** |
 | **能读源码、能改** | 出了问题可以看实现；DeepSeek Harness、Pi 都可以用插件或扩展改造界面和工具 |
 
 **不把旧输入量当当前成本优势**：Systima 在 2026-07、Claude Code 2.1.207／OpenCode 1.17.18 的隔离代理实验中测得首轮约 33k／7k 输入及不同缓存重写行为；这不是当前默认开销排名。是否迁移应比较实际完整任务的质量、返工与含缓存的总成本，先检查当前工具负担和缓存状态，见 [S1c 的范围与诊断入口](../research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。**[社区：历史实验；研究：采用边界]**
