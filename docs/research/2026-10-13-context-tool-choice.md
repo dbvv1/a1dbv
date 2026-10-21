@@ -1,8 +1,45 @@
 主线：二，额外能力何时值得加
-改变的建议：先缩小原生查询，再按缺口加能力；生成物命中须回到持久源并重生成核产物，同名多先核原生消歧、调用与诊断。旧快照查刷新，跨配置查构建范围，语义为空查导入／依赖，封装漏项查过滤／版本；定位与详情分开，省略不作不存在，全量验收读完整报告。导入规则区分源码字符串与解析目标；文档核版本，设计核组件契约，记忆核来源／身份／失效；异步结果分任务、工具与业务层，优先复用兼容 SDK；接入分工具面、凭证与输入信任；共享指令核宿主发现／导入与加载，会话动作按问题选。[经验／研究]
-新证据：10-21补P44直接coding记忆对照与公开发布范围，分信息价值与自动供给，未运行模型；10-18 补 fullsend-ai #861 原评审、固定回源补丁及原评审者重生成回执，缺 Agent 原始检索轨迹，不作工具效果比较；10-17 补 PostHog LSP 五题对照自报、撤回补丁与适配返工，缺原始运行产物，不推质量等价或 Codex 效果。其余按固定源码／官方契约／发布／测试定义[一手]、原帖与复测自报[社区]、历史数据复算[研究]、本仓标准库局部演示[经验]计证，日期与反证见各节。本仓未运行模型、上游客户端／服务或上游测试；源码与测试定义不等于执行，已修旧错不作现状；语义链仍缺修后原任务验收，不推端到端收益。
+改变的建议：P55先分动作表达、发现、接入与授权，认知纠偏可有限、权限不能耗尽放行；先缩小原生查询，再按缺口加能力；生成物命中须回到持久源并重生成核产物，同名多先核原生消歧、调用与诊断。旧快照查刷新，跨配置查构建范围，语义为空查导入／依赖，封装漏项查过滤／版本；定位与详情分开，省略不作不存在，全量验收读完整报告。导入规则区分源码字符串与解析目标；文档核版本，设计核组件契约，记忆核来源／身份／失效；异步结果分任务、工具与业务层，优先复用兼容 SDK；接入分工具面、凭证与输入信任；共享指令核宿主发现／导入与加载，会话动作按问题选。[经验／研究]
+新证据：10-21补P55近期接口比较、Runme状态接入、OCA严格Hook撤回、Laminar分层及OpenAI受控部署，收益与迁移日期边界见首节；同日补P44直接coding记忆对照与公开发布范围，分信息价值与自动供给，未运行模型；10-18 补 fullsend-ai #861 原评审、固定回源补丁及原评审者重生成回执，缺 Agent 原始检索轨迹，不作工具效果比较；10-17 补 PostHog LSP 五题对照自报、撤回补丁与适配返工，缺原始运行产物，不推质量等价或 Codex 效果。其余按固定源码／官方契约／发布／测试定义[一手]、原帖与复测自报[社区]、历史数据复算[研究]、本仓标准库局部演示[经验]计证，日期与反证见各节。本仓未运行模型、上游客户端／服务或上游测试；源码与测试定义不等于执行，已修旧错不作现状；语义链仍缺修后原任务验收，不推端到端收益。
 
 # 上下文获取：问题、版本与状态边界
+
+## P55：能力接入、纠偏与授权边界
+
+主线二；同题比较修复／运维中的能力、反馈与授权。04管接口，06分认知纠偏与授权，10管执行边界。核实2026-10-21，起点3b5ad27；只读公开材料，未安装或运行模型／客户端／引擎。[研究]
+
+### 最高水平卡与选择
+
+- **近期领先参照**：OpenAI 8-25 Runme复盘在应用状态层接入；Ramp 9-09 OCA撤回严格服从证明但保留权限／人审；10-20 Laminar分开发现与授权。作者与原文见下。9月企业任务研究另比较开放shell与固定目录。[一手／研究]
+- **主流参照／可行起点**：已有文件、CLI、typed工具、项目检查及有效权限，不代表有采用率统计。保留有效能力，有明确缺口或质量／总投入收益才试新增，不要求复制平台。[研究]
+- **推荐层级**：同题比较后的领先机制，非全球最优。获准且可隔离的开放执行用shell，固定业务目录保留窄工具。认知提醒按反馈目标收敛，授权不能耗尽放行。Agent取证与实施，人保留资源及高后果动作决定。[研究]
+- **差距**：缺当前Astra／Opus5.5同权限同能力面对照、Hook单因素与真实二改总投入；不报净收益或安全率。三页gap1由独审核实。[研究]
+
+### 决定性证据：支持什么、反例在哪里
+
+1. **动作表达不等于传输协议。** Hazel Mak、Susheel Suresh等，Microsoft／CMU，[Is Bash All You Need?](https://arxiv.org/html/2609.11999v1)，2026-09-10 v1。已读方法、结果、讨论与相关附录；作者有Copilot Studio机构关系。174个TheAgentCompany／480个APEX任务，Opus-4.8／GPT-5.5比较typed、bash、组合、合成工具与PTC；shell臂质量较高，叠工具无可检测pooled增益，PTC省token却不稳定增质量。**APEX的Bash本身经MCP提供；TheAgentCompany的60工具目录未覆盖shell全部endpoint。** 因而不能归因为CLI击败MCP或同权限安全优势。开发期曾发现读取答案／同事文件的捷径，报告试验加入阻断；成本为估计推理费，不含人的总投入。[研究：作者实验，未复现]
+
+2. **已有应用状态优先，不只为endpoint新造后端。** Jeremy Lewi，[Automating repetitive work at OpenAI with Codex](https://developers.openai.com/blog/automating-repetitive-work-at-openai-with-codex)，2026-08-25；已读评估、notebook协作及末段。Runme用notebook保留目标、计划、输出和决定，经浏览器WebMCP操作；对静态客户端，传统MCP endpoint另需后端，改变运维与数据位置。人审核评估系统、新基础设施及配额不足时的已批准替代。团队规模、模型版本、完整耗时／失败率未知，自用“更快”不外推为效果。[一手：作者复盘]
+
+   原文直链的[固定注册文件](https://github.com/runmedev/web/blob/4a74e79efa18d78d63930112818b560bb10a0bb3/app/src/components/WebMcp/WebMcpToolRegistrationHost.tsx)已读147行：先查modelContext入口，注册ExecuteCode，选择sandbox模式、保存输出／失败并在清理时注销；readOnlyHint=false。只确认非只读注册路径，不证明隔离／审批全链或浏览器普遍支持；入口缺失、状态不准或边界不清时退回原入口。[一手：固定源码；研究：撤回]
+
+3. **严格Hook的失败与实际撤回。** Richard Marmorstein、Austin Ray，[How we built OCA](https://builders.ramp.com/post/how-we-built-oca-our-ai-on-call-assistant)，可见发布日期2026-09-09。初版发Slack报告前查日志，要求证明加载指定Skill，出现拒绝与重复撞闸；后改成六个各触发一次的取证／自查detour，最后不要求服从证明便允许报告。生产调查仍广泛只读、写入受限，修复PR由人合入；认知指导的撤回不扩大执行授权。[一手：团队自述]
+
+   团队随模型升级重验旧配置；正文Astra“过去一周”的实际日期未知。没有Hook单因素效果、公开配置、失败日志或原始评分，不用整体人时自报量化Hook收益，不证明全部提醒实际执行或照抄次数。[一手／研究：边界]
+
+4. **反证：不按“强模型”一律删typed工具。** Run-Ze Fan、Zihao Zhang等，[An Empirical Study of Harness Design for Coding Agents](https://arxiv.org/html/2609.20804v1)，2026-09-17 v1；已读实验设置、动作空间与限制。四个开放模型，动作空间仅T4／128k条件消融；Mistral-Medium-3.5-128B在SWE-Bench从全工具68.6%降至bash-only45.4%，Terminal-Bench则37.08%升至43.82%。模型与任务改变结果；不代表Astra／Opus5.5。保留有效工具，撤回后仍验同任务产物。[研究：作者实验，未复现]
+
+5. **发现和授权独立维护。** Sam Kronick，[Building Laminar](https://builders.ramp.com/post/building-laminar)，2026-10-20；Kiryl Liaushun的[Tools](https://builders.ramp.com/post/building-laminar/tools)、Vincent Capol的[Connectors](https://builders.ramp.com/post/building-laminar/connectors)未显示独立日期。工具从100+预装schema改为按需搜索，同时保留常用直供、小集合直接提供；connector集中凭证使用者与操作权限，检测上游变化。工具隐藏只改变可见入口，不撤销底层权限。三页正文已直读；团队取舍不证明搜索普遍更省或connector天然安全。[一手：团队复盘；研究：分层默认]
+
+6. **受控执行与事后核查。** OpenAI，[Running Codex safely](https://openai.com/index/running-codex-safely/)，2026-05-08；主执行者直接读内部部署相关节。组合沙箱、边界审批、受控网络及强制配置，关联请求、审批与结果供安全人员判断。10借此核“获准／实际发生”，不默认存全量对话或秘密。安全率、团队人数、模型版本未知；结合10月实践，不当当前客户端安全认证。[一手：内部部署自述；研究：适用边界]
+
+### P51使用回执与后验补读
+
+本研究线先用提示词blob98f326ab4975771d797b1a14348694cbd3b3f744，12:47:10 UTC读任务，约12:47:30开始外查，12:52:00冻结来源与决定；墙钟约4分30秒含等待，净阅读工时未知。冻结时去重N=12，直接读相关正文F=10；另2项OCA／Laminar取得原站索引连续全文，不能混写成直读。决定性D=5、FD=4：上面企业论文、Runme复盘、固定注册、OCA、harness论文；OCA当时只有索引全文。已知重读1、新读11只表示受查docs未检出，不证明历史从未读过。[研究：执行者自报]
+
+其余7个冻结对象为：[How we contain Claude](https://www.anthropic.com/research/how-we-contain-claude)（5-25，已知重读）、[Seeing like an agent](https://claude.dev/blog/seeing-like-an-agent/)（Thariq Shihipar，4-10，旧工具撤回与新增澄清工具）、[Introducing eve](https://vercel.com/blog/introducing-eve)（6-17）、[mods教程](https://claude.dev/blog/getting-started-with-claude-code-mods/)（Addy Osmani，10-01）、Laminar总述、[Runme README](https://github.com/runmedev/web)、[WebMCP explainer](https://github.com/webmachinelearning/webmcp)。后二者只核实现／设计范围，未复制代码；4月文章只作历史演化，其余不新增推荐。[一手／研究]
+
+主执行者并行于12:48 UTC直读OpenAI部署相关全文，冻结后12:53直读OCA完整可见正文及Laminar三页；后者两深页链接取自原站。项目补入不回填本研究线F／FD或冻结发现数。已知审计背景，非盲测；无独立遗漏分母，不报零遗漏或方法净收益。三页只计一个P55项目。[研究：计数边界]
 
 ## P44：独立记忆层的两类coding比较
 

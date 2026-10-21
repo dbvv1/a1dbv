@@ -1,10 +1,12 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-15（UTC+8；读取于 10-14 UTC）。本页按能力缺口选择接入方式；协议、服务权限与安全反例已核一手来源，固定实现和验证边界见[研究记录](research/2026-10-13-context-tool-choice.md#服务接入工具面凭证与外部内容)。成本、设计、记忆和 Tasks 各节保留各自证据范围；未安装服务或运行模型对照。
+> 核实时间：2026-10-21（UTC+8）。本次比较动作表达、工具发现与接入位置；协议、权限、成本、设计、记忆和 Tasks 保留各节原核实范围。新增证据见[P55统一研究](research/2026-10-13-context-tool-choice.md#p55能力接入纠偏与授权边界)；未安装服务或运行模型对照。
 
 ## 1. 先决定是否需要新增连接
 
-**✅ 已有 CLI、项目测试或可直接读取的资料能完成任务，就不加 MCP。🧪 缺少当前 SaaS 数据、编辑器状态或受限工具接口时，先复用维护中的服务；插件若只是打包同一 MCP，不重复接入。** 插件还可能带 Skills、Hook 或 LSP，采用时看实际增加的组件与权限，不能把包装形式当作额外隔离。依据：[Claude 插件清单](https://code.claude.com/docs/en/plugins-reference#mcpservers)；具体任务见第 3 节。**[一手；经验：采用判断]**
+**✅ 先选所需动作与权限，再选接入方式：已有文件、CLI 或有效的 typed 工具能完成任务，就沿用。** 可隔离且已授权的开放执行任务先用现有 shell；只允许固定业务动作时保留窄接口；有当前数据／应用状态缺口，或有依据预期改善质量与总投入时，再试新增连接。⛔ 不为“强模型只需 Bash”删掉已有效的工具，也不把 MCP 当成沙箱。依据及反例见下节。**[研究：采用判断]**
+
+插件若只是打包同一 MCP，不重复接入；它也可能带 Skills、Hook 或 LSP，按实际组件与权限评审。依据：[Claude 插件清单](https://code.claude.com/docs/en/plugins-reference#mcpservers)；任务选择见第 3 节。**[一手；经验：采用判断]**
 
 2026-07-28 规范会影响新接入，但不构成升级理由本身：
 
@@ -12,24 +14,41 @@
 - HTTP 请求用 `Mcp-Method`／`Mcp-Name` 辅助路由，服务端仍须校验它们与请求体一致；认证、资源权限及注入防护不会由这些头自动提供。**[一手：[传输规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)；经验：边界]**
 - 授权规范面向 HTTP；stdio 通常从环境获取凭证。CIMD 是推荐注册方式，DCR 保留兼容；连接现有服务按双方实际支持选择，不因规范弃用就自行改掉仍需 DCR 的配置。**[一手：[授权规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)]**
 
+## 当前最高水平：先比较能力面，再决定接口
+
+<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-21 -->
+
+**近期领先做法不是统一换成一种协议，而是让接口贴近任务和权威状态。** OpenAI／Jeremy Lewi 的 [8-25 Runme 复盘](https://developers.openai.com/blog/automating-repetitive-work-at-openai-with-codex)直接接已有 notebook；Ramp 的 [10-20 Laminar 系列](https://builders.ramp.com/post/building-laminar)把工具发现与凭证／动作控制分开。与已有文件、CLI 和固定操作目录相比，本仓借这些机制补缺口或改善质量与总投入，不推荐复制整套平台。[一手：团队自述；研究：比较]
+
+Microsoft／CMU 的 [9-10 企业任务研究](https://arxiv.org/html/2609.11999v1)支持在获准的开放任务中保留 shell，但其中 Bash 自身也可由 MCP 提供；[9-17 coding harness 消融](https://arxiv.org/html/2609.20804v1)又显示删工具的结果随模型和任务反转。因此默认是保留有效原生能力，按状态、权限与组合需求补接口，而非按“CLI／MCP”排胜负。[研究：作者实验，未复现]
+
+**差距**：以上是近期领先机制的同题比较；论文模型不能代替当前 Astra／Opus 5.5 实测。主流采用率、真实二改的总投入与全局最优组合仍未知，工具变更后按同任务产物、失败和人工修订决定保留或撤回。[研究]
+
 ## 2. MCP vs CLI：按任务与调用路径选择
 
-| | MCP | CLI（按需补用法说明） |
-|---|---|---|
-| 成本 | 取决于工具描述、调用轮数、返回量、缓存及计价；不能由协议名排序 | 现有 shell 可先缩小查询、合并读取；不保证最低成本 |
-| 可组合性 | 可经代码接口组合调用、筛选结果；取决于客户端与服务端实现 | 管道、jq、tail，可以分块处理 |
-| 参数契约 | schema 可校验形状，不保证参数含义或业务操作正确 | 可用稳定参数、结构化输出与退出码；先核实际 CLI 契约 |
-| 凭证 | 远程服务可代管；本地 stdio 仍可能拿到环境凭证 | 也可用凭证存储或环境；避免把秘密直接拼进命令 |
-| 适用 | 当前能力缺口可由受限接口补上，且客户端兼容 | 已有命令足够、执行环境和权限适合当前任务 |
+**MCP 与 shell 不是互斥选项。** MCP 可以承载 typed 工具，也可以承载代码执行；先分开以下四层，再比较一次任务的质量与总投入。**[研究：上述企业任务论文及 Laminar 实践]**
 
-上述成本与组合性判断只作为选型原则；下面的历史对照改变了“CLI 必然最便宜”的建议。**[研究：本仓库解释]**
+| 要决定的层 | 当前默认与新增条件 |
+|---|---|
+| 动作表达 | 已授权、可隔离的开放执行用现有 shell；业务只准固定操作时用 typed 目录，组合调用过碎才试受目录限制的代码编排（PTC） |
+| 工具发现 | 小工具集与常用工具直接提供；大量低频 schema 确有上下文负担时再按需发现 |
+| 接入位置 | 复用数据／应用当前状态所在层的受控入口，再核 MCP、CLI 或浏览器接口是否兼容；不只为换协议新建后端 |
+| 授权与执行 | 在实际调用端限制身份、资源、动作及凭证；隐藏工具、schema 校验和提示词都不等于撤销权限，见 [10](10-security.md) |
 
-工具描述按需发现、在代码侧过滤结果，都可能减少进入模型的内容；[Anthropic 的 MCP 代码执行方案](https://www.anthropic.com/engineering/code-execution-with-mcp)是实现例子，不是任意任务的成本保证。选择依据是同一任务能否完成及总成本，不能用工具数量、下载量或工具作者的立场替代。**[一手；经验：选择边界]**
+Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools)从预装 100+ 工具 schema 改为按需搜索，同时允许常用工具直供，小集合无需搜索；[Connectors](https://builders.ramp.com/post/building-laminar/connectors)另管凭证使用者、动作权限和上游变化检测。两页属于 10-20 总述系列、未显示独立发布日期；这是团队取舍，不是搜索一定省钱或连接器自动安全的证明。**[一手：团队自述]**
+
+在代码侧过滤结果也可能减少模型输入，[Anthropic 的 MCP 代码执行方案](https://www.anthropic.com/engineering/code-execution-with-mcp)是实现例子。参数 schema 只校验形状；CLI 同样须核参数、结构化输出及退出码。两种入口都避免把秘密拼入命令或返回值。**[一手；经验：选择边界]**
 
 **本仓库的判断**：
 - ✅ 强模型已有 shell、任务也在其授权范围内：先缩小查询、分块返回或合并独立读取；原生能力够用就不追加 Skill。最终验收或全量分析需要区分显示裁剪与采集丢失：命令侧先保存完整报告并保留原退出码，再从报告提取字段；提高显示预算不能保证恢复已丢内容。无完整报告且重跑会产生副作用时，先查权威结果，不为补日志自动重跑。依据见[固定输出链路与回归](research/2026-10-13-context-tool-choice.md#工具输出显示裁剪与采集丢失)。**[一手：源码与测试设计；经验：采用判断]** 局限：历史修复改善遗漏提示与首尾保留，没有消除截断，也不代表当前客户端已复测。
 - 🧪 原生调用仍有可测重复开销时，再试一个批处理或结果过滤接口。同一任务分别比较通过情况、计价成本、总等待与人的投入；不因工具数少就判定更优。**[经验：采用判断]**
-- 🧪 没有合适 CLI、拿不到所需状态，或需要只暴露窄操作时，才试相应 MCP。小模型／本地模型也要验证实际调用；模型大小、浏览器任务或“禁止 shell”都不足以单独证明 MCP 更适合。**关键局限**：MCP 是接口协议，不是沙箱；例如 Claude Code 的本地 MCP 进程在 Bash 沙箱外运行，需要进程级隔离时按[客户端安全边界](01-agents/claude-code.md)选择宿主。**[一手：[官方沙箱范围](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)；经验：采用判断]**
+- 🧪 当前接口拿不到所需状态，或需要只暴露窄操作时，试维护中的兼容接口；已有 typed 工具有效就保留。小模型／本地模型也要验证实际调用；模型大小、浏览器任务或“禁止 shell”都不足以单独证明 MCP 更适合。**关键局限**：MCP 是接口协议，不是沙箱；例如 Claude Code 的本地 MCP 进程在 Bash 沙箱外运行，需要进程级隔离时按[客户端安全边界](01-agents/claude-code.md)选择宿主。**[一手：[官方沙箱范围](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)；经验：采用判断]**
+
+### 应用状态在浏览器里，不必先造后端
+
+**✅ 先接已有状态与执行入口；🧪 当前浏览器／宿主确实支持时，才试浏览器侧接口。** OpenAI 的 Runme 案例用 WebMCP 让 Agent 操作现有 notebook，避免只为传统 MCP endpoint 给静态客户端加后端；人仍审核评估系统、基础设施与已批准资源的选择。固定[注册实现](https://github.com/runmedev/web/blob/4a74e79efa18d78d63930112818b560bb10a0bb3/app/src/components/WebMcp/WebMcpToolRegistrationHost.tsx)会先查宿主入口，并将 ExecuteCode 标为非只读。[一手：作者自述／固定源码]
+
+借用的是贴近状态、复用现成入口，不是指定所有项目采用 WebMCP。入口不存在、状态回读不准或执行边界不清，就保留原应用／CLI 路径；源码中的 sandbox 选项不证明隔离全链成立。Agent 可整理和执行已授权步骤，人保留资源与高后果动作的决定权。[研究：采用与撤回]
 
 ### 成本下降，不等于多获得一种能力
 
@@ -115,6 +134,7 @@ Tenet 的 [2026-06 原始研究](https://tenetsecurity.ai/blog/agentjacking-codi
 
 ## 来源
 
+- [P55：动作表达、状态接入与授权的同题比较](research/2026-10-13-context-tool-choice.md#p55能力接入纠偏与授权边界)
 - [服务权限、注入反例与固定实现](research/2026-10-13-context-tool-choice.md#服务接入工具面凭证与外部内容)
 - [MCP 固定规范](research/2026-10-10-audit.md#s5--mcp-2026-07-28-规范)、[授权规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)
 - Anthropic：[Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)、[Writing tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)

@@ -1,15 +1,31 @@
 # 06 · Hooks、权限与护栏
 
-> 核实时间：2026-10-08；本仓路径 Hook 回归与第 2 节失败 / Stop 边界于 2026-10-11（UTC+8）复核；StopFailure 与 `/goal` 边界于 2026-10-15（UTC+8）补核，跨宿主迁移契约于 2026-10-15（UTC+8）补核；权限模式、自动审批与第三方工具角色于 2026-10-15（UTC+8）补核；质量检查的复用与撤回于 2026-10-18（UTC+8）补核；其余未重验。依据 Claude Code 官方 Hooks 文档、changelog、Anthropic 工程博客及 Codex 官方文档／固定发布源码 **[一手]**。
+> 核实时间：2026-10-21（UTC+8）补近期团队纠偏与授权分工；原机制核实于2026-10-08；本仓路径 Hook 回归与第 2 节失败 / Stop 边界于 2026-10-11（UTC+8）复核；StopFailure 与 `/goal` 边界于 2026-10-15（UTC+8）补核，跨宿主迁移契约于 2026-10-15（UTC+8）补核；权限模式、自动审批与第三方工具角色于 2026-10-15（UTC+8）补核；质量检查的复用与撤回于 2026-10-18（UTC+8）补核；其余未重验。依据 Claude Code 官方 Hooks 文档、changelog、Anthropic 工程博客及 Codex 官方文档／固定发布源码 **[一手]**。
 
 ## 30 秒结论
 
-✅ 质量检查先复用已有项目入口，确需编辑期及时反馈再加窄 Hook；撤掉重复检查前先验替代已生效。先保证原生有效权限；确需编辑事件辅助拦截、且现有机制不足时，再在 Claude Code 试用本仓路径 Hook；⛔ 不把它原样搬到 Codex。两者即使命中同名事件或 `Edit|Write` matcher，输入和决定协议仍不同。需要立即拦截就用同步 Hook；异步结果只作后续反馈。若目标版本未确认触发、输入及失败语义，撤回“已经受保护”的判断。[一手／经验；跨宿主证据见下节]
+✅ 先分三件事：确定性质量检查复用项目入口，有明确认知反馈目标或遗漏时试有限提醒，授权与安全条件由实际执行边界保证。认知 Hook 若让 Agent 反复证明服从却没有新证据，就缩减或撤回；⛔ 授权闸门不能因提醒次数耗尽而放行。[研究：近期团队取舍见下节]
+
+确需编辑期及时反馈再加窄 Hook，撤掉重复检查前先验替代生效。本仓路径 Hook 只是 Claude Code 编辑事件的辅助拦截，不原样搬到 Codex；同名事件／matcher 不代表输入与决定协议相同。需要立即拦截就用经验证的同步路径，异步只作后续反馈；失败语义未确认，撤回“已经受保护”的判断。[一手／经验；跨宿主证据见第 2 节]
+
+## 当前最高水平：让纠偏收敛，让授权独立
+
+<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-21 -->
+
+**领先实践的关键是会撤回不合适的检查。** Richard Marmorstein／Austin Ray 的 [9-09 OCA 复盘](https://builders.ramp.com/post/how-we-built-oca-our-ai-on-call-assistant)撤回了报告前的严格服从证明，改用有限纠偏，同时保留受限写入与人工合入。[一手：团队自述，10-21直读；失败链见研究]
+
+**比较后的默认**：项目检查／CI 管可判定的产物要求，有限 Hook 补特定事件的认知反馈，原生权限／服务端鉴权管能做什么。可行起点仍是现有检查与有效权限；没有明确反馈收益就不加 Hook，质量或时效目标也可支持试用。与只加 Stop 检查或只写提示相比，这保留及时反馈，也不把安全寄托在模型服从上。[研究：同题比较；授权主建议见 [10](10-security.md)]
+
+当前模型的最佳提醒配置、单个 Hook 净收益与跨团队采用率仍未知；升级后重验反馈是否值得保留，不照抄案例次数或宣称效果提升。[一手／研究；详见[P55证据](research/2026-10-13-context-tool-choice.md#p55能力接入纠偏与授权边界)]
 
 ## 1. 为什么需要 Hooks
 
 CLAUDE.md 里的指令可能被模型忽略；命令型 Hook 能把某个事件的检查交给程序，但**只有事件被触发、匹配正确、处理器成功运行且返回值被运行时执行时**才有相应效果。Hook 超时、解析失败、工具匹配遗漏和另一条写入路径都可能使保护失效；prompt / agent 型 Hook 也包含模型判断。
 原则：先复用已有格式化、提交检查和 CI；编辑期及时反馈有明确价值，或现有入口漏掉必要检查时，再加窄 Hook。撤掉重复检查前，用实际工作副本的目标入口验证替代已启用、覆盖所需文件且失败会被处理；目录和配置存在不算生效。见[分阶段撤回与激活修订](research/2026-10-12-development-conditions.md#质量检查先验替代入口再撤重复-hook)。**[一手／社区；经验：采用判断]**
+
+**认知纠偏按实际反馈验收，不按服从次数。** 提醒应服务于补证据、反查假设、及时汇报等明确目标；若连续提醒只增加重复调用，就删减该提醒，检查产物是否仍保住所需信息与不确定性披露。[研究：由OCA失败链提炼的采用与撤回]
+
+**这不适用于授权条件。** 必需的资源审批、生产写权限和安全限制仍由独立受控入口执行；提示失败、次数用尽或 Agent 想结束，都不能转成授权。拿不到批准时停对应动作，报告已完成的调查与阻塞，而不是用更多 Hook 催它绕过。[研究；执行边界见 [10](10-security.md)]
 
 访问控制仍依靠沙箱、文件权限和出网约束。Hook 必须测试失败路径；不要把“配置了 Hook”写成“所有路径都已强制保护”。**[经验：本仓库模板静态审计，2026-10-11]**
 
@@ -73,7 +89,7 @@ PreToolUse 的结构化决定：
 
 **第三方工具先分清方向（2026-10-15）**：👀 [CC Safety Net](https://github.com/kenryu42/cc-safety-net) 面向执行前拦截，作者明确它不是沙箱，损坏配置不会阻止操作；🧪 [Dippy](https://github.com/ldayton/Dippy) 的主要用途是自动批准判为安全的命令，会减少审批，不能当成单向加固。👀 [parry-guard](https://github.com/vaporif/parry-guard) 仍标早期开发，依赖扫描模型，误报和接入契约需单独评估；原 [TDD Guard](https://github.com/nizos/tdd-guard) 已建议新项目转向其后继项目，不在这里保留无条件“强制 TDD”的推荐。默认先用原生权限；只有具体缺口值得引入相应依赖时再试用，失败行为未确认就撤回保护声明。**[一手：项目 README；经验：采用判断，未安装或实测]**
 
-**把纠错变成 Hook**：官方插件 `hookify` 可以分析对话，自动生成“防止再犯”的 Hook。
+**把纠错变成 Hook**：官方插件 `hookify` 可分析对话并生成 Hook；生成后仍按上述三类区分目的，验证触发与失败路径，不把一次纠错自动升级为永久规则。**[一手：插件能力；经验：采用边界]**
 
 ### 同名事件不等于可直接迁移（Claude Code → Codex）
 
@@ -153,6 +169,7 @@ Anthropic《How we contain Claude》（2026-05）的结论 **[一手]**：
 
 ## 来源
 
+- [Ramp OCA 取舍与P55统一证据](research/2026-10-13-context-tool-choice.md#p55能力接入纠偏与授权边界)
 - [Hooks 参考](https://code.claude.com/docs/en/hooks)、[Hooks 指南](https://code.claude.com/docs/en/hooks-guide)
 - [Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode)、[How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)、[Claude Code sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing)
 - [anthropics/claude-code examples/settings](https://github.com/anthropics/claude-code/tree/main/examples/settings)（lax / strict / bash-sandbox 三套示例）

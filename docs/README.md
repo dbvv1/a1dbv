@@ -35,7 +35,7 @@
 | 7. 额外评审须补明确风险或遗漏，用新增有效发现与核查负担决定保留；换模型不自动获得独立证据 | [09 评审与质量](09-review-and-quality.md#按风险选择评审层不默认逐层叠加) | [00](00-state-of-ai-coding.md)、[Agent 选型](01-agents/README.md)、[Claude §4](01-agents/claude-code.md#4-按任务选择的用法要点)、[05](05-skills-and-plugins.md)、[08](08-multi-agent.md)、[14](14-synthesis.md)、[21](21-agent-patterns.md) |
 | 8. 恢复先核最新目标、证据版本和外部结果；未知副作用先对账，不盲目重试 | [20 长程执行](20-codex-long-horizon.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[Codex](01-agents/codex.md)、[Claude](01-agents/claude-code.md)、[03](03-context-engineering.md)、[17](17-troubleshooting.md)、[21](21-agent-patterns.md) |
 | 9. 权限与副作用由实际执行边界落实；Hook、审批模型和预算配置只在各自覆盖范围生效 | [10 安全](10-security.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[06](06-hooks-and-guardrails.md)、[14](14-synthesis.md)、[16](16-building-agents.md)、[18](18-team-adoption.md) |
-| 10. CLI、MCP 与代码接口按访问、隔离和完整调用成本选择，不设通用快慢或费用排名 | [04 MCP](04-mcp.md) | [00](00-state-of-ai-coding.md)、[Claude §4](01-agents/claude-code.md#4-按任务选择的用法要点)、[05](05-skills-and-plugins.md)、[16](16-building-agents.md)、[23](23-browser-verification.md) |
+| 10. 先选动作与权限面，再选 CLI／MCP 等接入；工具发现不代替授权，不设通用快慢或费用排名 | [04 MCP](04-mcp.md) | [00](00-state-of-ai-coding.md)、[Claude §4](01-agents/claude-code.md#4-按任务选择的用法要点)、[05](05-skills-and-plugins.md)、[16](16-building-agents.md)、[23](23-browser-verification.md) |
 | 11. 交付要满足接收渠道的准入、恢复与维护责任；下一位维护者的实际修改比交接文档存在更有说服力 | [18 团队落地](18-team-adoption.md) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[14](14-synthesis.md)、[15](15-task-playbooks.md)、[24](24-community-workflows.md) |
 | 12. 事实、统计与收益结论保留来源、分母和适用范围；社区单例、厂商自报与相关性不升级为普遍因果 | [09 质量证据](09-review-and-quality.md#1-质量数据ai-代码的真实代价) | [首页](../README.md#一页纸怎样把-ai-编程用好)、[00](00-state-of-ai-coding.md)、[11](11-community-pulse.md)、[14](14-synthesis.md)、[19](19-experiments.md)、[游戏资产总览](../domains/game-dev/03-generative-ai-in-games.md) |
 | 13. 游戏资产先定玩法／设备规格，再核代码、权重、输出和发布规则；现成或程序化资源满足时不重生成 | [游戏 03 资产总览](../domains/game-dev/03-generative-ai-in-games.md) | [游戏入口](../domains/game-dev/README.md)、[2D](../domains/game-dev/assets/2d.md)、[3D](../domains/game-dev/assets/3d.md)、[动画](../domains/game-dev/assets/animation.md)、[材质](../domains/game-dev/assets/materials.md)、[音频](../domains/game-dev/assets/audio.md)、[视频](../domains/game-dev/assets/video.md)、[18](18-team-adoption.md) |
@@ -138,13 +138,13 @@
 | [Claude Code](01-agents/claude-code.md) | L3 | 全文核心入口、任务与扩展选择独立审阅，模型成本口径、调度与沙箱边界补核；历史性能与社区报告保留原范围；前沿仅候选／差距1，入口选择复核不证明配置效果 | 维护目标版本与有效配置；未验证真实客户端、账户开通或完整任务净收益，不作全契约安全认证 |
 | [02 模型与成本](02-models-and-cost.md) | L3 | 全文核心采用选择与主要入口经独立复核；前沿已比较（维护审计及当前代投入机制）／差距2，发现数不等于召回，API／订阅口径分清 | 维护初筛保现有起点，覆盖目标高可直接比较更强；本仓三类任务、等待／人工成本仍缺，不当全价表或账户认证 |
 | [03 上下文工程](03-context-engineering.md) | L3 | 指令保留、加载与会话动作已按问题及宿主分流，收益与反例有范围；无本仓跨任务净收益或客户端实测；前沿已比较（9月团队上下文改造及限定coding记忆资料）／差距1，当前配置效果未知 | 维护目标宿主契约；加载观测不等于遵从，压缩与拆分不保证无损或省成本 |
-| [04 MCP](04-mcp.md) | L3 | 能按能力、权限、状态与总成本选择 CLI／MCP／插件；关键服务契约、安全反例及入口已独立核查，未做同任务接入收益实测 | 维护目标宿主和服务版本；既有能力满足时不加连接，变化影响选择时再补核 |
+| [04 MCP](04-mcp.md) | L3 | 前沿比较：动作表达、工具发现与接入位置已比较，差距1；近期论文与团队采用支持分层选择，未做本仓接入效果实测 | 维护目标宿主和服务版本；既有能力满足时不加连接，变化影响选择时再补核 |
 | [05 Skills 与插件](05-skills-and-plugins.md) | L3 | 规范、宿主权限／触发与迁移契约已交叉核对，领域证据有正反例；前沿已比较（近期领域知识／流程取舍）／差距1，无本仓当前模型整套净收益对照 | 维护目标宿主与分发渠道；获准后验证选定 Skill 的实际行为与收益，不预装整套插件 |
-| [06 Hooks 与护栏](06-hooks-and-guardrails.md) | L3 | 全文核心建议与入口独立复核；权限模式、分类器回退、Hook／MCP 与 Shell 沙箱范围分开 | 真实客户端覆盖与故障验收仍待授权；离线脚本和历史攻击样本不代表运行时安全率 |
+| [06 Hooks 与护栏](06-hooks-and-guardrails.md) | L3 | 前沿比较：确定性检查、有限认知纠偏与授权闸门已比较，差距1；OCA实际撤回支持收敛，不把提醒次数变成权限 | 真实客户端覆盖与故障验收仍待授权；离线脚本和历史攻击样本不代表运行时安全率 |
 | [07 工作流](07-workflows.md) | L3 | 全文核心建议与入口独立复核，按未知、反馈与续接缺口选择；前沿已比较（重／轻及代际资料）／差距1，当前模型同预算效果未知 | 维护实际契约和撤回条件，不以规模、循环次数或更多工具替代反馈和验收 |
 | [08 多 Agent](08-multi-agent.md) | L3 | 前沿已比较（显式／原生委派资料）；全文依赖、成本、权限与恢复条件独立审阅，历史论文分母与工具形态已补核；无本仓完整模型任务净收益对照 | 维护实际入口与交付成本，不按历史同厂／异厂比率或工具列表规定编排 |
 | [09 评审与质量](09-review-and-quality.md) | L3 | 全文核心建议、效果研究边界与入口一致性经独立复核；前沿已比较（近期团队校准／复审机制），无本仓当前模型完整任务净收益实证 | 维护目标版本与实际新增发现／人工成本；失败、中性检查和退出成功不能当无问题 |
-| [10 安全](10-security.md) | L3 | 核心权限、平台前提及事故归因已独立交叉复核，含失败默认值与反证；不构成运行时安全认证 | 维护目标版本与有效配置；获准后验证选定环境，静态源码核查不扩成全宿主保证 |
+| [10 安全](10-security.md) | L3 | 前沿比较：工具发现、服务授权、执行边界与事后核查已比较，差距1；近期内部部署与Connector实践支撑，不构成运行时安全认证 | 维护目标版本与有效配置；获准后验证选定环境，静态源码核查不扩成全宿主保证 |
 | [11 社区脉搏](11-community-pulse.md) | L3 | 全页核心采用判断经既有精确来源承接与本轮原文复核，软件工厂等入口已同步；GitClear仅用于公开代理信号，未证模型／工作流净收益 | 按新证据维护具体采用条件与版本边界；历史自述不当当前保证，扩大定量或因果主张前补完整方法 |
 | [12 资源索引](12-resources.md) | L3 | 全文核心分流与主专题一致，先导结果与历史核查范围分开；必要来源与六路结果哈希已独立核对 | 维护任务入口与原始资料的对应；未全量重核历史外链，未证明研究产品效果或整套方法净收益 |
 | [13 前沿雷达](13-frontier-radar.md) | L3 | 三项质量机会与原配置复核分层；前沿已比较（三项资料范围）／差距2，当前最优与配置净收益未知；不表示全量历史新闻重验 | 按运行负担、体验、交付适用要求选择小试；主建议归15／07／18，版本变化仍回唯一主专题 |
