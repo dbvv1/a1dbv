@@ -8,6 +8,12 @@
 
 **阅读路径：§2 选控制能力 → §4 分四层权利 → [§8](#8-动态事实表2026-10-14-补核)核生产资格与实际返回 → §6 验收后替换旧动作。** 后续专题段分别处理骨架、装备、交互、屏外求值与对白，服务升级不代替这些二改验收。[研究]
 
+## 当前最高水平卡：窄道前行与恢复（2026-10-21）
+
+沿用[质量审计A03](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#a03--动画)及S14／S15，不重开宽泛扫描。问题是角色前行遇窄道／迎面角色时，能否自然侧身通过并恢复移动。**当前最高水平未知**；Ponton等2025-10-26的SIGGRAPH Asia／TOG环境感知MM是有同题比较的领先候选，Epic GASP是接入参照。参照为状态／混合与局部修正，可行下限为固定入口触发侧身；普及率及全面胜负未知。[一手／研究]
+
+本仓采用**现成方案优先的可行推荐**：先保完整许可动作与运动权威；允许让路且侧身通过是核心需求时，比较环境感知检索。不证明零手修或完整反馈领先。细节见[窄道补研](#p39窄道补研姿态与路线一起选择)。[研究]
+
 ## 1. 采用判断与分档依据
 
 **✅ 采用：固定角色骨架与完整玩法动作组，再决定是否生成。** 已正确绑定的角色与许可动作组先同骨架复用；确需跨骨架或所需功能时再加重定向与有限 IK。机械、悬浮、铰链及规则分节角色先用明确曲线／步态；有机生物可探索专用身体／支撑规则，依赖基础姿态的路线仍须先取得许可资产。缺少自然表演时再比较视频或文本。**🧪 改造：** SkinTokens 保骨架补蒙皮、数值控制的 Locomotion、明确输入限制下的单人动捕。**⛔ 不用作默认：** 任意生成角色自动绑定后直接发售、文本要求精确接触、清零 root 即循环、用非商业依赖免费生产商业游戏。[经验]
@@ -498,3 +504,49 @@ HF仓库修订`0e3c89024d896064b6851201373f7834784a386b`的[LICENSE][p9-k-licens
 [p28-a-hub]: https://github.com/NVIDIA/Audio2Face-3D/blob/4d61b6b81ad7b5108512ea0eab10d8712ea4a236/README.md
 [p28-t-credit]: https://thimbleweedpark.com/credits/
 [p28-t-blog]: https://blog.thimbleweedpark.com/tracking_talkies.html
+
+## P39窄道补研：姿态与路线一起选择
+
+2026-10-21；GC／GA，主线二／三。正文见[窄道动作](../../domains/game-dev/assets/animation.md#窄道动作先决定能否让路再选环境感知检索)。本轮只读论文、图像与源码，未运行引擎／模型。[研究]
+
+### 同题比较及代价
+
+[S15论文](https://arxiv.org/html/2510.22632)图7比较两人窄道错身：椭圆环境感知MM通过，圆盘版本停滞，普通MM相撞；图12是跑→侧身→复跑演示，非同图A/B。本轮实际查看两张原图，未播放整段视频。[一手]
+
+表1测约90秒密集障碍路线，不是单个窄口。i7-12700K、Unity／Burst、CPU单线程，60Hz应用每10帧检索一次：普通MM／完整方案的检索耗时为0.22±0.05／0.80±0.16ms，轨迹偏差0.09±0.04／0.14±0.07m，每次相交时长0.88±0.64／0.08±0.05s；相交占时约30%／2%。仍有穿透，身体代理不含皮肤且采样离散。[一手]
+
+**比较支持以CPU和路线偏离换环境适应，不支持输入延迟0.8ms或完全无碰撞。** 基线不是完善避障＋普通MM的生产控制器，也没有与GASP直接对照；[研究]
+
+### 一段动作的闭环：以下是待验设计，不是作者效果
+
+|阶段|当前路线／候选都要回答|现有证据和缺口|
+|---|---|---|
+|响应|输入要求精确方向，还是表达继续前行意图；松手／反向是否立即改变目标|检索可让路，端到端首次可见回应未测；检索周期不是延迟测量|
+|接触约束|胶囊、肩臂／装备、脚部支撑分别是否成立|图7证明不同身体表示会改变选择；不证明足部零滑动或贴墙承重|
+|恢复|穿出后恢复朝向／速度；停止、反向、入口封闭时如何退出|图12显示复跑，取消／打断和恢复延迟未知|
+|反馈|姿态／步幅让玩家看懂正在让路，而非操作失灵|未验证音效、震动或相机；附加反馈应取实际事件，不把预计避让当已碰撞|
+
+第二改只收窄通道或加迎面角色，固定原输入／角色／镜头，并回归空旷直行、窄道松手、反向退出、堵死入口和换大体型／装备。记录通过／停住／穿透、实际路线、首个回应与恢复时点、支撑观感和CPU尖峰。阈值从玩法承诺与目标设备推出，不照抄论文均值。[研究]
+
+### 单人无美术修补的接入选择
+
+[固定README][p39-repo]标示测试Unity6000.2.7f2，包含场景所需动画与派生数据，并有不依赖第三方场景资产的EMM_NoDependencies；POLYGON场景另需自备资产。先比已有数据，目标风格覆盖未知。[一手／研究]
+
+[代码MIT][p39-license]与[Zenodo动作数据][p39-data]分别核；网页许可栏未呈现，本轮读取[记录API][p39-api]确认metadata.license.id为cc-by-4.0，保留署名与修改说明。第三方角色／美术、引擎和依赖不据此统称MIT。[一手／研究]
+
+[锁文件][p39-lock]把核心MM解析到95f903c7bc45b983b1984497029ea13c36a8be27；manifest使用未固定Git URL，复用要保实际解析版本。[椭圆提取代码][p39-ellipse]逐骨骼构造平面范围，不读取衣服网格；[搜索代码][p39-search]要求FutureDirection与障碍感知控制器，并按障碍距离调整方向权重。换体型／装备需重新核表达，不是替换一个Animator节点。[一手／研究]
+
+[S14 GASP][p39-gasp]用Chooser过滤数据库、Pose History提供历史，并组合warping／IK；文档还提示Root Offset平移缺碰撞检查、montage释放可能产生异常移动。UE可借分层设计，不声称已集成本论文或被它击败。[一手／研究]
+
+**MM是数据驱动检索，不是生成式AI，无须训练模型。** Agent核覆盖、接入和记录；人定控制权与失败表现，验完整动作及退出。典型误判是把检索耗时当输入延迟、骨架代理当真实碰撞、无穿透当自然；AI承担比例和净省工时未知。[研究]
+
+**撤回：** 数据覆盖要靠大量新动捕／人工修姿、让路破坏精确操作、有限参数／程序处理后接触仍不合格，或设备预算超标。退回明确侧身动作或减少可通行范围，代价是自由度下降。本单元关闭普通MM自动理解环境的误选；完整动作的低延迟、打断和反馈领先比较仍缺证据。[研究]
+
+[p39-repo]: https://github.com/UPC-ViRVIG/Environment-aware-Motion-Matching/blob/273928addc94ddf4a3bd7b8bf1ef17c360b0000e/README.md
+[p39-license]: https://github.com/UPC-ViRVIG/Environment-aware-Motion-Matching/blob/273928addc94ddf4a3bd7b8bf1ef17c360b0000e/LICENSE
+[p39-data]: https://zenodo.org/records/17220516
+[p39-api]: https://zenodo.org/api/records/17220516
+[p39-lock]: https://github.com/UPC-ViRVIG/Environment-aware-Motion-Matching/blob/273928addc94ddf4a3bd7b8bf1ef17c360b0000e/Unity/Packages/packages-lock.json
+[p39-ellipse]: https://github.com/UPC-ViRVIG/Environment-aware-Motion-Matching/blob/273928addc94ddf4a3bd7b8bf1ef17c360b0000e/Unity/Assets/EnvironmentMotionMatching/Scripts/CustomFeatureExtractors/EllipseFeatureExtractor.cs
+[p39-search]: https://github.com/UPC-ViRVIG/Environment-aware-Motion-Matching/blob/273928addc94ddf4a3bd7b8bf1ef17c360b0000e/Unity/Assets/EnvironmentMotionMatching/Scripts/MotionMatchingSearch/EnvironmentMotionMatchingSearch.cs
+[p39-gasp]: https://dev.epicgames.com/documentation/unreal-engine/game-animation-sample-project-in-unreal-engine
