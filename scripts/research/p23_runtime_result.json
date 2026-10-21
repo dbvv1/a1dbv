@@ -1,810 +1,176 @@
 {
-  "kind": "historical evidence manifest; not a new run of the portable wrapper",
-  "verified_utc": "2026-10-20",
+  "kind": "P23 reader summary; attempt histories remain separate",
+  "verified_utc": "2026-10-21",
+  "historical_full_record": "https://github.com/dbvv1/a1dbv/blob/71b8fcc956776af82992a6cfd0ea6dced709bae7/scripts/research/p23_runtime_result.json",
+  "decision": "Paused. Confirm existing optional collectionProducts contract, then choose a later window; no fixture expansion or rerun now.",
   "source": {
     "repository": "https://github.com/vercel/shop",
     "commit": "f4c2d467e02abd2c859aedf4b709ec93552e7049",
-    "license": "MIT, Copyright (c) 2025 Vercel, Inc.",
     "tar_sha256": "7619cbb518866b327e6b9e0aebd2c3080bd057802944e924fe2e526186c332ec",
-    "fixture_sha256": "e7de286caca02e6d0fb5444fb167d12d970010cd1acf755189781d990c593757"
+    "license": "MIT, Copyright (c) 2025 Vercel, Inc."
   },
-  "runtime": {
+  "inputs": {
+    "runtime_patch_sha256": "25b59a733c44531ad6d7c4fb0691caf1b525d34e115396080f8fe8d18ab8a505",
+    "lock_sha256": "4d7cdc9e91ed4076cb9f60b18fd94938d54436441d887a44ef4bd559bb90b987",
     "node": "24.19.0",
-    "npm": "11.9.0",
-    "pnpm": "12.8.2",
-    "python": "3.12.14",
     "next": "16.4.1",
-    "react": "19.3.0",
-    "sharp": "0.35.5",
-    "mode": "Next dev; built-in in-memory handler"
+    "pnpm": "12.8.2",
+    "hydrogen": "2026.10.0",
+    "note": "Experimental baseline. Frozen install ignored scripts; denied optional Node download not retried."
   },
-  "setup_provenance": [
-    "Initial cache/lock locations were not writable; used task-local home/cache/data/runtime/temp/store paths.",
-    "Optional Node24.21.0 download was denied and not retried. Removed devEngines.runtime auto-download only; engines.node=24 preserved.",
-    "pnpm install used --ignore-scripts; security patch/lock is preserved in p23_shop_runtime.patch."
-  ],
-  "attempts": [
+  "scope": "Synthetic source, single-process cache, HTTP/RSC not browser navigation. Real Shopify, shared cache/expiry, failure/concurrency/rollback, deployment, migration variants and model effects untested. Highest level unknown. Hashes are identities, not download links. Changed inputs/scope/cache forbid speedup attribution. The Git portable wrapper was offline-reviewed, not rerun on the real app; it does not retroactively strengthen the historical dev checks.",
+  "development_attempts": [
     {
-      "id": 1,
-      "status": "interrupted after e2; S0/S1a passed",
-      "provenance": "posthoc executor summary from saved checkpoint logs, not normal-completion JSON",
-      "observed": "e2 list70s/index12.2s; stale first index then source refresh. Cause unestablished.",
-      "terminal": "executor tool reported exit130 after Ctrl-C; later session was closed; not application stderr",
-      "not_reached": [
-        "e3",
-        "e4"
-      ]
+      "id": "dev-1",
+      "result": "Interrupted after e2; S0/S1a passed, no e3/e4. Tool exit130/Ctrl-C; cause unknown; posthoc checkpoint summary."
     },
     {
-      "id": 2,
-      "status": "connection refused before any mutation",
-      "cause": "blind3-second startup sleep did not establish readiness",
-      "owned_cleanup_returncodes": [
-        -15,
-        -15
-      ]
+      "id": "dev-2",
+      "result": "Startup connection refused before mutation; no readiness. Leader cleanup -15/-15."
     },
     {
-      "id": 3,
-      "status": "normal runner completion",
-      "controls": [
-        "readiness checks under90-second deadline",
-        "same90-second socket limit plus total request alarm",
-        "no concurrent worker tsc; parent aggregate checks paused; no causal attribution"
-      ],
-      "result": {
-        "attempt": 3,
-        "status": "passed_development_HTTP_consumers_only",
-        "mode": "development server, built-in in-memory LRU, HTTP and MIME-verified RSC requests; not browser navigation",
-        "results": [
-          {
-            "state": "S0",
-            "article_status": 200,
-            "retired_status": 200,
-            "list_count": 50,
-            "sitemap_count": 250,
-            "page2_count": 0,
-            "rsc_bytes": 21593,
-            "long_body_sections": null
-          },
-          {
-            "state": "S1a",
-            "article_status": 200,
-            "retired_status": 200,
-            "list_count": 50,
-            "sitemap_count": 250,
-            "page2_count": 0,
-            "rsc_bytes": 21605,
-            "long_body_sections": null
-          },
-          {
-            "state": "S1b",
-            "article_status": 200,
-            "retired_status": 200,
-            "list_count": 50,
-            "sitemap_count": 250,
-            "page2_count": 1,
-            "rsc_bytes": 21605,
-            "long_body_sections": null
-          },
-          {
-            "state": "S1",
-            "article_status": 200,
-            "retired_status": 200,
-            "list_count": 50,
-            "sitemap_count": 250,
-            "page2_count": 0,
-            "rsc_bytes": 21605,
-            "long_body_sections": null
-          },
-          {
-            "state": "S2",
-            "article_status": 200,
-            "retired_status": 200,
-            "list_count": 50,
-            "sitemap_count": 250,
-            "page2_count": 0,
-            "rsc_bytes": 1701095,
-            "long_body_sections": 8192
-          }
-        ]
-      },
-      "owned_cleanup_returncodes": [
-        -15,
-        0
-      ],
-      "executor_exit_code": 0
+      "id": "dev-3",
+      "result": "Exit0; five-state HTTP/RSC passed. Deleted C: streamed200/noindex. Complete57353 body tokens independently matched.",
+      "archive_sha256": "bfabdf641b49697ff15efdc824bfe613908d57c64f161a56af6d2e58f8c1af6d"
     }
   ],
-  "rendered_body": {
-    "status": "pass",
-    "scope": "saved attempt3 real HTML normalized complete body tokens, not browser DOM",
-    "token_count": 57353,
-    "source_utf8_bytes": 1679444,
-    "source_sha256": "1df175722789cacbed2f17d84258a4f00445b9c3b0226a06dea881c27b8d66c0",
-    "normalized_sha256": "8550d51c1ea3aecf9ce8e97c2344c63112cbaedb9e0e550ae1a761ead7ca2d12"
+  "development_additional_checks": {
+    "fixture_tests": 11,
+    "typegen": "pass",
+    "tsc": "killed, cause unknown"
   },
-  "additional_checks": {
-    "fixture_regressions": "11 passed",
-    "next_typegen": "passed",
-    "tsc": "killed by execution environment; cause unestablished; incomplete"
-  },
-  "evidence_archives": {
-    "original_sha256": "947558235368b0700cfc9c51f7c07ab2579753f0279db504262dc8a25b3e4b4d",
-    "reviewed_v2_sha256": "a54b564bf6ad8bd0fc3cccaf92c8ab89717c658be8553be10486d014e36b8df6",
-    "final_v3_sha256": "bfabdf641b49697ff15efdc824bfe613908d57c64f161a56af6d2e58f8c1af6d",
-    "availability": "local reviewed archives; hashes are identities, not public download links"
-  },
-  "review": "Independent review validated implemented checkpoints and recomputed all saved HTML tokens; final38 files scanned. Only README differed in final correction; no runtime rerun.",
-  "generated_files": "Next startup updated AGENTS.md; restored before original five-file patch, regenerated in later attempt. next-env.d.ts generated. Neither is a business-code change.",
-  "limits": [
-    "Direct HTTP/HTML and MIME-verified text/x-component; no browser soft navigation/prefetch.",
-    "No production build/start, shared-cache backend, expiry3600 test, source-failure/recovery, concurrency or rollback execution.",
-    "No real Shopify/API-count contract, deployment, migration variants or model-effect comparison.",
-    "Portable wrapper refactors reviewed scripts for CLI/import/offline tests; not yet rerun as a real application.",
-    "Observed result proves this dev consumer chain feasible, not mainstream adoption or current best."
-  ],
-  "attempt3_event_checkpoints": {
-    "events": [
-      {
-        "event": "e1",
-        "utc": "2026-10-20T18:13:41.842585+00:00"
-      },
-      {
-        "event": "e2",
-        "utc": "2026-10-20T18:14:55.941800+00:00"
-      },
-      {
-        "event": "e3",
-        "utc": "2026-10-20T18:16:15.822886+00:00"
-      },
-      {
-        "event": "e4",
-        "utc": "2026-10-20T18:17:36.006546+00:00"
-      }
-    ],
-    "checkpoints": [
-      {
-        "state": "S0",
-        "last_probe_utc": "2026-10-20T18:13:41.773146+00:00"
-      },
-      {
-        "state": "S1a",
-        "last_probe_utc": "2026-10-20T18:14:55.937461+00:00"
-      },
-      {
-        "state": "S1b",
-        "last_probe_utc": "2026-10-20T18:16:15.808394+00:00"
-      },
-      {
-        "state": "S1",
-        "last_probe_utc": "2026-10-20T18:17:35.982371+00:00"
-      },
-      {
-        "state": "S2",
-        "last_probe_utc": "2026-10-20T18:18:51.273763+00:00"
-      }
-    ]
-  },
-  "portable_probe_review_hardening": "Offline review added explicit HTTP200 checks for successful consumers, documented 200/404 deleted article handling, and exact unique sitemap-index locations. Adversarial regressions pass; these stronger assertions were not rerun against the historical application and do not retroactively upgrade attempt3.",
-  "patch_packaging": "Zero-context unified patch regenerated from verified upstream/result bytes; all five applied files byte-identical to reviewed historical patch. Formatting-only change, no runtime rerun. Immutable original archives preserved.",
-  "patch_sha256": "25b59a733c44531ad6d7c4fb0691caf1b525d34e115396080f8fe8d18ab8a505",
-  "historical_scope_note": "All preceding fields describe the original development run and its packaging; later production observations are separated below and do not rewrite those limits or attempts.",
   "focused_production_supplement": {
-    "verified_utc": "2026-10-20",
-    "kind": "historical focused production evidence; not a new run of the portable wrapper",
-    "source": "Same fixed public shop commit and fixture as development source above; original Next consumers and synthetic storefront.request bridge.",
-    "result": {
-      "attempt": 6,
-      "status": "passed_focused_production_HTTP_consumers_only",
-      "mode": "production server, built-in in-memory LRU, HTTP and MIME-verified RSC requests; not browser navigation",
-      "results": [
-        {
-          "state": "S0",
-          "article_status": 200,
-          "retired_status": 200,
-          "list_count": 50,
-          "sitemap_count": 250,
-          "page2_count": 0,
-          "rsc_bytes": 27306,
-          "long_body_sections": null
-        },
-        {
-          "state": "S1a",
-          "article_status": 200,
-          "retired_status": 200,
-          "list_count": 50,
-          "sitemap_count": 250,
-          "page2_count": 0,
-          "rsc_bytes": 27330,
-          "long_body_sections": null
-        },
-        {
-          "state": "S1b",
-          "article_status": 200,
-          "retired_status": 200,
-          "list_count": 50,
-          "sitemap_count": 250,
-          "page2_count": 1,
-          "rsc_bytes": 27330,
-          "long_body_sections": null
-        },
-        {
-          "state": "S1",
-          "article_status": 200,
-          "retired_status": 404,
-          "list_count": 50,
-          "sitemap_count": 250,
-          "page2_count": 0,
-          "rsc_bytes": 27330,
-          "long_body_sections": null
-        },
-        {
-          "state": "S2",
-          "article_status": 200,
-          "retired_status": 404,
-          "list_count": 50,
-          "sitemap_count": 250,
-          "page2_count": 0,
-          "rsc_bytes": 3386326,
-          "long_body_sections": 8192
-        }
-      ]
-    },
-    "build": {
-      "exit_code": 0,
-      "elapsed_seconds": 7.302,
-      "command": "node node_modules/next/dist/bin/next build --debug-build-paths=app/blogs/**/page.tsx,app/sitemap*/**/route.ts"
-    },
-    "build_identity": {
-      "attempt": 6,
-      "build_id": "U_a0EsK00VkTzelF9yB7H",
-      "build_id_file_sha256": "b53755a5caddb03a97c52447b1da170d5f258b575be6be55e8d9096510e252a5",
-      "runner_sha256": "4d635e4c7a738920e7e15079f888d70cbffd4faf6b8aa068b8a23edbf9576293",
-      "fixture_sha256": "e7de286caca02e6d0fb5444fb167d12d970010cd1acf755189781d990c593757",
-      "fixture_server_sha256": "da89e5407b45c4240737d070f3f8d1455e42bebdfe3174c72ab3e5c662f5f196",
-      "next": "16.4.1",
-      "node": "24.19.0",
-      "resource_conditions": {
-        "GOMAXPROCS": "2",
-        "GOMEMLIMIT": "1024MiB"
-      },
-      "scope": "focused production, original routes and full TypeScript check"
-    },
-    "continuity": {
-      "source_instances": 1,
-      "builds_in_successful_attempt": 1,
-      "next_start_instances": 1,
-      "events": [
-        "e1",
-        "e2",
-        "e3",
-        "e4"
-      ],
-      "event_resets_or_manual_invalidations": false,
-      "request_count": 66,
-      "convergence_retries": 7,
-      "cleanup_returncodes": [
-        -15,
-        143
-      ],
-      "basis": "driver, Popen/poll logs, source states and request records; no independent socket-to-PID snapshot"
-    },
-    "cache": {
-      "mode": "single-process built-in cache; no remote cacheHandlers",
-      "stale_seconds": 300,
-      "revalidate_seconds": 60,
-      "expire_seconds": 3600,
-      "wait_before_event_probes_seconds": 62,
-      "ack_to_completed_check_seconds": [
-        70.896,
-        65.371,
-        68.457,
-        68.881
-      ],
-      "timing_scope": "polling and full-check completion, not first freshness, SLA or benchmark; cold expire3600 untested"
-    },
     "attempts": [
       {
-        "id": 1,
+        "id": "production-1",
         "scope": "full site",
         "build_seconds": 18.749,
-        "build_exit_code": 1,
-        "outcome": "font connection establishment failed; launcher environment inheritance changed, no established access denial"
+        "build_exit": 1,
+        "result": "Font connection failed."
       },
       {
-        "id": 2,
+        "id": "production-2",
         "scope": "full site",
         "build_seconds": 41.851,
-        "build_exit_code": 1,
-        "outcome": "compiled, then Failed to type check; cause unknown"
+        "build_exit": 1,
+        "result": "Compiled; typecheck failed, cause unknown."
       },
       {
-        "id": 3,
+        "id": "production-3",
         "scope": "full site",
         "build_seconds": 46.431,
-        "build_exit_code": 1,
-        "outcome": "complete project TypeScript passed; narrow fixture unknown collection/product operations caused /collections prerender failure"
+        "build_exit": 1,
+        "result": "Full TypeScript passed; unknown product/collection operations failed prerender."
       },
       {
-        "id": 4,
+        "id": "production-4",
         "scope": "focused production",
         "build_seconds": 12.12,
-        "build_exit_code": 0,
-        "outcome": "e1-e4 passed older narrower check; original S0 HTML permanently missing after overwrite, hash not replacement bytes"
+        "build_exit": 0,
+        "result": "e1-e4 passed older narrower check; overwritten S0 HTML permanently lost."
       },
       {
-        "id": 5,
+        "id": "production-5",
         "scope": "focused production",
         "build_seconds": 8.509,
-        "build_exit_code": 0,
-        "outcome": "SameFileError did not stop shell; unintended old driver still labeled attempt4, reached S0/e1 then interrupted; tool exit130, no finally receipt; child cleanup unknown"
+        "build_exit": 0,
+        "result": "Archive SameFileError did not halt shell; unintended driver reached S0/e1 then exit130. No finally receipt; cleanup unknown."
       },
       {
-        "id": 6,
+        "id": "production-6",
         "scope": "focused production",
         "build_seconds": 7.302,
-        "build_exit_code": 0,
-        "runner_exit_code": 0,
-        "outcome": "e1-e4 passed published check; independent source/build/start from attempt4; output root and compile cache reused, not a fresh empty-output run"
+        "build_exit": 0,
+        "result": "e1-e4/runner exit0; independent source/build/start, but output root/compile cache reused."
       }
     ],
-    "build_cost": {
-      "attempts": 6,
-      "total_build_seconds": 134.962,
-      "independent_tsc": {
-        "exit_code": 0,
-        "seconds": 9.967,
-        "max_rss_kb": 2978888
-      },
-      "limits": "process wall time excludes other waits/checks; changed cache, scope and resource conditions do not establish speedup causality or model efficiency"
-    },
-    "independent_xml_review": {
-      "status": "passed_posthoc_offline",
-      "scope": "saved successful checkpoints: full loc/lastmod/order, p1/p2 cross-page uniqueness, index and blogs; C absent and B retained in S1/S2",
-      "runtime_assertion_boundary": "runtime check fully checked index locations/uniqueness, but article shards only counts and selected items; full article XML coverage was added by independent review, not original assertions"
-    },
-    "rendered_body": {
-      "status": "pass",
-      "scope": "saved focused-production attempt6 HTML normalized complete body tokens, not browser DOM",
-      "token_count": 57353,
-      "source_utf8_bytes": 1679444,
-      "source_sha256": "1df175722789cacbed2f17d84258a4f00445b9c3b0226a06dea881c27b8d66c0",
-      "normalized_sha256": "8550d51c1ea3aecf9ce8e97c2344c63112cbaedb9e0e550ae1a761ead7ca2d12"
-    },
-    "independent_rendered_body": {
-      "status": "passed_all_57353_tokens",
-      "method": "independent HTMLParser and input literal construction, not author verifier import; separately authorized safe S2 supplement",
-      "html_bytes": 5802425,
-      "html_sha256": "1ba10a40a6708c9468bebc7d7cfe1495d11cbd663e710053f32ad84107848107",
-      "normalized_sha256": "8550d51c1ea3aecf9ce8e97c2344c63112cbaedb9e0e550ae1a761ead7ca2d12",
-      "scope": "complete semantic HTML body tokens, not browser DOM or raw HTML equality to source"
-    },
-    "review": {
-      "report": "p23-production-independent-review-20261021.md",
-      "report_sha256": "3d71202476f364d596573972c5bf6f607ac0e6ba4197707315be2387c598e4b1",
-      "receipt_archive_sha256": "9260ea29c655d952712cb18d8e8d312c972c0c9cf7ddcd8a5081aa0c935087b6",
-      "manifest_sha256": "2d7189ef6ea04751cec4ad3a08f3678ab61ed2b1236f94bf652581713dffc217",
-      "files_verified": 101,
-      "availability": "cloud read-only report and local safe receipt identities, not public download links; this manifest and research section are public summaries",
-      "limits": "ordinary A/B, list and RSC original responses absent from small archive; supported by scripts and request logs. S2 HTML reviewed separately. No complete package security certification."
-    },
-    "portable_wrapper": {
-      "option": "--mode focused-production",
-      "real_application_rerun": false,
-      "scope": "new reusable mode is distinct from the historical driver; packaging review is offline only",
-      "packaging_review": {
-        "report": "p23-production-package-independent-review-20261021.md",
-        "sha256": "e4ed38a7ce79d8b90c65794ad352792b6b8551537fc9d35093b56f9ba95b8f04",
-        "scope": "Independent code/document review and 34 offline tests; no application rerun or full repository suite",
-        "fixed_findings": [
-          "Duplicate XML fields and wrong root/namespace rejected",
-          "Owned child process group checked independently of exited leader; uncertain cleanup fails run"
-        ]
-      }
-    },
-    "limits": [
-      "Full-site production build failed; focused routing retained full-project TypeScript checks.",
-      "No real Shopify, deployment, shared cache, browser navigation, cold expiry, source-failure/concurrency, cross-deployment rollback or migration-variant test.",
-      "No model calls or effect comparison; highest level and mainstream adoption unknown; P23 incomplete and migration ratings unchanged.",
-      "Attempt5 cleanup unknown, attempt4 S0 HTML lost, attempt6 output root/cache reused; no retroactive repair of history.",
-      "Hashes identify bytes, not trusted timestamps or independent proof of preregistration."
-    ]
+    "successful_attempt": "production-6: one source/build/start, e1-e4 without resets/invalidation. Focused blogs/sitemaps, full TypeScript retained.",
+    "consumer_results": "Five states: list50/shard1=250; shard2=0/0/1/0/0. S1/S2 retain B/delete C404/noindex. S2:8192 sections,57353 semantic tokens match.",
+    "review_boundary": "Full XML posthoc review is not original runtime coverage. A/B/list/RSC raw responses absent from small archive; S2 HTML reviewed separately.",
+    "cache": "stale300/revalidate60/expire3600;62s waits,7 retries. Check completion not freshness/SLA.",
+    "build_id": "U_a0EsK00VkTzelF9yB7H",
+    "receipt_sha256": "9260ea29c655d952712cb18d8e8d312c972c0c9cf7ddcd8a5081aa0c935087b6",
+    "independent_tsc": "Separate exit0, 9.967s; not a full build replacement."
   },
   "full_build_empty_catalog_supplement": {
-    "verified_utc": "2026-10-20",
-    "source_commit": "f4c2d467e02abd2c859aedf4b709ec93552e7049",
-    "scope": "one cold full-site build with explicit empty products/collections; no start, e1-e4, model or migration comparison",
-    "result": {
-      "started_utc": "2026-10-20T21:33:30.247547+00:00",
-      "build_exit": 1,
-      "timed_out": false,
-      "command": [
-        "node",
-        "node_modules/next/dist/bin/next",
-        "build"
-      ],
-      "fixture_final": {
-        "exit_code": 0,
-        "routers_created": 1,
-        "state": "S0",
-        "audit_fatal": null,
-        "optional_collection_products": false
-      },
-      "readiness": "owned new Scenario S0; one explicit facets probe",
-      "build_seconds": 264.514,
-      "fixture_alive_after_build": true,
-      "build_cleanup_exit": 1,
-      "fixture_cleanup_exit": 0,
-      "audit_records": 1,
-      "operations": [
-        "searchFacets"
-      ],
-      "audit_failures": [],
-      "qualification_passed": false
-    },
-    "inputs": "311 identities: 307 shop files plus 4 execution inputs; no prior .next cache, no new dependency installation",
-    "fixture": {
-      "default_operations": [
-        "getCollections",
-        "getCollectionsWithFeaturedImage",
-        "searchProducts",
-        "searchFacets"
-      ],
-      "optional_collectionProducts": false,
-      "actual_requests": "one driver searchFacets readiness only; build never reached catalog data collection",
-      "source_fixture_sha256": "e7de286caca02e6d0fb5444fb167d12d970010cd1acf755189781d990c593757",
-      "executed_wrapper_sha256": "82996d236ebaa720f8a6229abd5e27264ee88d9021954c1c35db81d330bb560c",
-      "portable_wrapper": "p23_catalog_fixture.py; AST-equivalent packaging, not an application rerun",
-      "offline_tests": 15,
-      "review_fix": "Audit sink failure permanently poisons router; subsequent calls rejected and HTTP service exits 2; already committed events not rolled back or claimed durably logged"
-    },
-    "runtime": {
-      "node": "24.19.0",
-      "next": "16.4.1",
-      "typescript": "7.0.2",
-      "observed_pnpm": "11.25.0; not invoked by build"
-    },
-    "declared_environment": {
-      "CI": "1",
-      "GOMAXPROCS": "2",
-      "GOMEMLIMIT": "1024MiB",
-      "NEXT_TELEMETRY_DISABLED": "1",
-      "NEXT_PUBLIC_SHOPIFY_SHOP_ID": "synthetic",
-      "NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN": "synthetic-not-a-token",
-      "NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN": "shop.example.test",
-      "VERCEL_PROJECT_PRODUCTION_URL": "shop.example.test",
-      "TZ": "UTC"
-    },
-    "original_project_diagnostic": {
-      "command": "next typegen && tsc --noEmit",
-      "exit_code": 0,
-      "timed_out": false,
-      "wall_seconds": 45.385,
-      "rusage_children": {
-        "user_seconds_delta": 74.502757,
-        "system_seconds_delta": 13.570001,
-        "maxrss_kib": 2637608,
-        "minor_faults_delta": 962454,
-        "major_faults_delta": 17
-      },
-      "resource_scope": "OS RUSAGE_CHILDREN for this single-child driver; not per-native-process memory sampling",
-      "tsconfig_unchanged": true
-    },
-    "source_derived_cli_diagnostic": {
-      "seconds": 55.699,
-      "showConfig_exitCode": 0,
-      "showConfig_signal": null,
-      "typecheck_exitCode": 0,
-      "typecheck_signal": null,
-      "check_stdout": "",
-      "check_stderr": "",
-      "differences": [
-        "Isolated empty diagnostic buildinfo path; original failed cache absent",
-        "captureOutput=true instead of forwarding",
-        "Route types regenerated by preceding typegen",
-        "Prior bundling and full internal environment not replayed"
-      ],
-      "scope": "Next installed CLI interface only, not build retry or failure repair"
-    },
-    "evidence_manifests": {
-      "build_sha256": "df8863a25166135a9aafca9de76e1bfad1bf420c6df2bb97aa7f2199098cae84",
-      "project_check_sha256": "8a6f3227f05df7e5dd5822a6d9425fd2e061ab911f71d5232ba919ce00f684fe",
-      "cli_check_sha256": "58f991de56254f01a037727e19fee607b3884086f27f450d75135a57417d86e2",
-      "availability": "local safe artifacts, not public download links"
-    },
-    "limits": [
-      "Full build failed; native failed compiler exit/signal and cause unknown.",
-      "Compiler-interface diagnostics succeeded in different contexts; not evidence of OOM or fixed full build.",
-      "Route generation, four-operation sufficiency and predicted fifth operation untested.",
-      "Cleanup records are leader exit codes only; no independent proof all compiler descendants/groups exited.",
-      "Highest level, adoption, model effectiveness and migration comparison remain unknown."
-    ],
-    "independent_review": {
-      "report": "p23-empty-catalog-independent-review-20261021.md",
-      "sha256": "6301b60b8e4d4897383f3788c904254e4c6771e803db0dfc3a176784aaf33f80",
-      "scope": "Three safe execution packets and allowed installed public sources checked; audit-failure counterexample fixed and independently retested; packaged AST equivalence and 15 tests/import smoke passed. Not a fresh application run, full repository suite, or proof of all descendant cleanup.",
-      "availability": "local read-only report identity, not a public download URL; research/result preserve public summary"
-    }
+    "id": "empty-catalog-full",
+    "started_utc": "2026-10-20T21:33:30.247547+00:00",
+    "build_seconds": 264.514,
+    "exit": 1,
+    "timeout": false,
+    "result": "Cold next build compiled; TypeScript failed, native code/signal/cause unknown. S0/readiness1; no page collection/app.",
+    "diagnostics": "Separate typegen+tsc exit0/45.385s; CLI showConfig/check exit0/no signal/55.699s. Changed cache/output/route types, not failed-build recovery.",
+    "cleanup": "Leader exits only; complete descendant/group cleanup not established.",
+    "receipt_sha256": "df8863a25166135a9aafca9de76e1bfad1bf420c6df2bb97aa7f2199098cae84"
   },
   "observed_full_build_supplement": {
+    "id": "observed-full",
     "started_utc": "2026-10-20T23:23:04.634793+00:00",
-    "source_commit": "f4c2d467e02abd2c859aedf4b709ec93552e7049",
-    "scope": "One cold full next build with reviewed observation patches; no application start or e1-e4 replay. Does not identify the cause of the earlier 264.514-second failure.",
-    "runtime": {
-      "node": "24.19.0",
-      "next": "16.4.1",
-      "typescript": "7.0.2"
-    },
-    "result": {
-      "command": [
-        "node",
-        "node_modules/next/dist/bin/next",
-        "build"
-      ],
-      "limit_seconds": 600,
-      "build_exit": 1,
-      "timed_out": false,
-      "build_seconds": 477.372,
-      "observation_complete": true,
-      "observation_failure": false,
-      "receipt_errors": [],
-      "cleanup_complete": true,
-      "fixture_final": {
-        "exit_code": 0,
-        "routers_created": 1,
-        "state": "S0",
-        "audit_fatal": null,
-        "optional_collection_products": false
-      },
-      "qualification_passed": false
-    },
-    "compiler_calls": [
-      {
-        "role": "showConfig",
-        "started_utc": "2026-10-20T23:24:55.937Z",
-        "closed_utc": "2026-10-20T23:24:56.140Z",
-        "elapsed_seconds": 0.202368,
-        "raw_code": 0,
-        "raw_signal": null,
-        "direct_native_executable_observed": true,
-        "captured_text": {
-          "stdout": {
-            "raw_bytes": 12994,
-            "raw_sha256": "b080c4396c8c4a0a67fe0e8cf3e6c668a06b305cf6c07caa33dc73cf641ec321",
-            "sanitized_bytes": 12994,
-            "sanitized_sha256": "b080c4396c8c4a0a67fe0e8cf3e6c668a06b305cf6c07caa33dc73cf641ec321"
-          },
-          "stderr": {
-            "raw_bytes": 0,
-            "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "sanitized_bytes": 0,
-            "sanitized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-          }
-        },
-        "elapsed_basis": "monotonic_ns difference; not wall-clock UTC subtraction",
-        "captureOutput": true
-      },
-      {
-        "role": "checker",
-        "started_utc": "2026-10-20T23:24:56.145Z",
-        "closed_utc": "2026-10-20T23:31:01.990Z",
-        "elapsed_seconds": 365.845171,
-        "raw_code": null,
-        "raw_signal": "SIGKILL",
-        "direct_native_executable_observed": true,
-        "captured_text": {
-          "stdout": {
-            "raw_bytes": 0,
-            "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "sanitized_bytes": 0,
-            "sanitized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-          },
-          "stderr": {
-            "raw_bytes": 0,
-            "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "sanitized_bytes": 0,
-            "sanitized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-          }
-        },
-        "elapsed_basis": "monotonic_ns difference; not wall-clock UTC subtraction",
-        "captureOutput": false
-      }
-    ],
-    "cleanup": {
-      "registered_groups": 4,
-      "all_registered_groups_absent": true,
-      "sigkill_sent_by_cleanup": false,
-      "sent_signals": [
-        "SIGTERM to the owned fixture"
-      ],
-      "build_exit_recorded_before_cleanup": true,
-      "scope": "Only registered owned groups; not proof that no unobserved detached descendant existed."
-    },
-    "fixture_requests": {
-      "searchFacets": 1,
-      "origin": "driver readiness",
-      "state": "S0",
-      "four_operation_build_sufficiency": "not reached",
-      "fifth_operation_enabled": false
-    },
-    "identity": {
-      "run_observed_build.py": "a9ce7babe07ab428678c61e74c09a85b53c29cf01dfa74a46e1cf1cd64e5192c",
-      "observer.cjs": "a5a157a4cbdfa856295ce189978184c5d7893f1696276db1f70664a8696334d2",
-      "ts-wrapper-observation.patch": "34d70f6756a6d92b6954b7966adc0409150bb14804e09d5625b62e080cab3ad2",
-      "frozen-preparation.json": "9fd7dfee7ec288db26d95fa4e7f7b234b953df059c374ff79855615a007a71d7",
-      "shop/node_modules/typescript/lib/tsc.js": "a820cc15fcd15d143ec353ee94acaff4fca614de75d8e656b0aa9d521e199977",
-      "shop/node_modules/next/dist/lib/typescript/runTypeScriptCli.js": "6ed41834f6c90c4aeef02f6939808da04a1b8d119c573dd5d78b228e4b898bc9"
-    },
-    "evidence_manifests": {
-      "raw_output_sha256": "41968b2063dbe0c9b8d2e0d9cac231f5ae0c20c40a316fe19d47e70e25c303a4",
-      "sanitized_receipt_sha256": "971fc4dbf003b59cca2e0a4b7380f52157614ca5a8cf2ebbe0107c3816e6d436"
-    },
-    "limits": [
-      "SIGKILL does not identify the sender or prove OOM, a TypeScript code defect, or Turbopack shutdown causation.",
-      "Observation patches add synchronous hashing/logging overhead; timing is not comparable as an unmodified replay.",
-      "Streams are Next-visible decoded UTF-8 text, not guaranteed byte-raw.",
-      "No retry, installation, application service, e1-e4, model or hosted CI run.",
-      "The historical focused production success and earlier full-build failures remain separate evidence.",
-      "Only the result/evidence summary is published here, not the task-specific supervisor, 317-file preparation layout or installed dependency snapshot; this is not a one-command reproducer.",
-      "The TypeScript observation copy also normalized CRLF to LF; postimage hashes identify the actual bytes."
-    ],
-    "independent_result_review": {
-      "report_id": "p23-native-exit-independent-review-20261021",
-      "sha256": "52a33bc30f6ee1b9dd94a1c6b861e025e057b4db9df87fdcfa0222f2a984a068",
-      "conclusion": "Scoped evidence accepted; build remains failed, sender/cause unknown."
-    }
+    "build_seconds": 477.372,
+    "exit": 1,
+    "timeout": false,
+    "result": "Observed cold build: showConfig exit0; checker365.845s/code=null/SIGKILL, empty output. Sender/cause unknown, no OOM inference or explanation of earlier failure.",
+    "fixture": "S0, one readiness request; fifth operation disabled; no app/events.",
+    "cleanup": "Four registered groups absent; cleanup sent no KILL; detached descendants unknown.",
+    "receipt_sha256": "971fc4dbf003b59cca2e0a4b7380f52157614ca5a8cf2ebbe0107c3816e6d436",
+    "limit": "Hash/log overhead and line-ending changes; not unmodified timing replay."
   },
   "webpack_build_supplement": {
-    "kind": "new cold full-webpack attempt; not recovery of missing unpublished preparation",
-    "build": {
-      "command": [
-        "node",
-        "node_modules/next/dist/bin/next",
-        "build",
-        "--webpack"
-      ],
-      "timeout_seconds": 600,
-      "status": "exited",
-      "started_utc": "2026-10-21T02:30:08.049097+00:00",
-      "returncode": 1,
-      "ended_utc": "2026-10-21T02:31:40.002839+00:00",
-      "elapsed_seconds": 91.954,
-      "returncode_after_cleanup": 1
+    "id": "webpack-css",
+    "started_utc": "2026-10-21T02:30:08.049097+00:00",
+    "ended_utc": "2026-10-21T02:31:40.002839+00:00",
+    "build_seconds": 91.954,
+    "exit": 1,
+    "timeout": false,
+    "changes": "Cold full --webpack plus globals.css Tailwind pre-loader; not recovered old preparation.",
+    "result": "Compile failed: Geist/Mono SELF_SIGNED_CERT_IN_CHAIN; Hydrogen bare HTTPS import UnhandledSchemeError. Repeated trace of one resource, not CDN fetch failure.",
+    "preparation_difference": "Existing CA variables omitted; presence-only check, causality untested.",
+    "fixture": "S0, one readiness request, fifth operation disabled; no TypeScript success, app or events.",
+    "cleanup": "Two owned groups absent, no KILL; detached descendants unknown.",
+    "receipt_sha256": "4b520186e509089a97a73d83e68edb511549df87a2a53f74f45ea3d8549198b3"
+  },
+  "webpack_upstream_candidate_supplement": {
+    "id": "webpack-ignore-ca",
+    "started_utc": "2026-10-21T02:47:43.991030+00:00",
+    "ended_utc": "2026-10-21T02:49:20.456296+00:00",
+    "build_seconds": 96.465,
+    "exit": 1,
+    "timeout": false,
+    "changes": "Cold source/no.next; independently copied dependencies. Two changes: both Hydrogen dist imports get upstream webpackIgnore; existing CA variables inherited. No version/trust/TLS change or single-factor/speedup claim.",
+    "upstream": {
+      "url": "https://github.com/Shopify/hydrogen/pull/4126",
+      "state": "open",
+      "commit": "db0d2ab2b511f27e86719a86188318ee7ed5aeab",
+      "scope": "Open-PR local transplant, not release. Author reports Next15.5/16.2 Chrome checks, not this consumer; repaired events can newly fire."
     },
-    "status": "failed",
-    "runtime": {
-      "node": "24.19.0",
-      "next": "16.4.1",
-      "pnpm": "12.8.2",
-      "tailwind_loader": "4.3.3",
-      "hydrogen": "2026.10.0"
-    },
-    "changes": [
-      "official --webpack instead of default Turbopack",
-      "globals.css-only pre-loader using existing locked @tailwindcss/turbopack; built-in CSS pipeline retained as candidate"
-    ],
-    "css_patch": "--- a/next.config.ts\n+++ b/next.config.ts\n@@ -7,6 +7,14 @@\n \n const nextConfig: NextConfig = {\n   cacheComponents: true,\n+  webpack(config) {\n+    config.module.rules.push({\n+      test: /[\\\\/]app[\\\\/]globals\\.css$/,\n+      enforce: \"pre\",\n+      use: [\"@tailwindcss/turbopack\"],\n+    });\n+    return config;\n+  },\n   images: {\n     deviceSizes: [1320, 1920],\n     imageSizes: [],\n",
-    "source_changes": [
-      {
-        "path": "lib/blog/server.ts",
-        "before_sha256": "d7c51661ee868fa5aa9436b9b6e4b5b20f49996d57799aa6acff6605087b0b48",
-        "after_sha256": "b2b0f781fb79a44b1ec79bd123eba9f4ac6d9788ae92ff6e59f09fb28268b924"
-      },
-      {
-        "path": "lib/seo/server.ts",
-        "before_sha256": "4bb1af0db098d2181fd9efbd05cc9f68b9102f3e66f38c49c592d51f4da21a4a",
-        "after_sha256": "28d5003d9276e64bea725f7823a849eaab887d35e0e37b9b104a7c2fa7770d40"
-      },
-      {
-        "path": "lib/shopify/storefront/server.ts",
-        "before_sha256": "dffdb2f82e975de1d96800cd61408bb2d812b1276ed7b3b6e3cf58d5265e7a72",
-        "after_sha256": "55a831ab883f3a6c877047a02774dd857b1d16293eedf79385093a69fcb425a1"
-      },
-      {
-        "path": "next.config.ts",
-        "before_sha256": "33c01b5e32e101c3de9ed8473fe28248779a82db1e79cee2a0b932966e46abe4",
-        "after_sha256": "ce9258dd56979854be41123e5135693074c9e8c392ae9c3fccb0701c7986171a"
-      },
-      {
-        "path": "package.json",
-        "before_sha256": "37f52336bd7582f259c202ea52cd71472db23249ed8f01391041137673daccd2",
-        "after_sha256": "beea87048ab6675e65a55102d20eef764088c52128d94b8989b0016e9338fa31"
-      },
-      {
-        "path": "pnpm-lock.yaml",
-        "before_sha256": "f88c5ac750ff5a60cc93196b6583e879baa83a8a91fbe3c31b01093a6c487004",
-        "after_sha256": "4d7cdc9e91ed4076cb9f60b18fd94938d54436441d887a44ef4bd559bb90b987"
-      }
-    ],
-    "failure_classes": [
-      {
-        "kind": "font_transport",
-        "code": "SELF_SIGNED_CERT_IN_CHAIN",
-        "affected": [
-          "Geist",
-          "Geist Mono"
-        ],
-        "known_preparation_difference": "wrapper omitted existing SSL_CERT_FILE and NODE_EXTRA_CA_CERTS; presence only checked after failure, causal retry not performed"
-      },
-      {
-        "kind": "bundler_dependency",
-        "code": "UnhandledSchemeError",
-        "resource": "https://cdn.shopify.com/storefront/standard-events.js",
-        "import_chain": [
-          "@shopify/hydrogen/dist/core/shopify-scripts/page-view.mjs",
-          "@shopify/hydrogen/dist/core/shopify-scripts/initialize.mjs",
-          "@shopify/hydrogen/dist/core/index.mjs"
-        ],
-        "scope": "one resource repeated in multiple import traces, not independent failures or a CDN fetch result"
-      }
-    ],
+    "result": "Build log: compiled51s, TypeScript40s. Static /collections/__placeholder__ failed: collectionProducts disabled; full build unqualified.",
     "fixture": {
-      "status": "passed",
       "state": "S0",
+      "requests": 24,
+      "success": 23,
+      "rejected": 1,
       "events": 0,
-      "requests": 1,
       "fifth_operation_enabled": false,
-      "scope": "captured fixture audit, not proof against undetected log loss"
-    },
-    "cleanup": [
-      {
-        "pgid": 5,
-        "term_sent": true,
-        "kill_sent": false,
-        "leader_returncode": -15,
-        "group_exists_at_end": false,
-        "status": "group_absent"
-      },
-      {
-        "pgid": 6,
-        "term_sent": false,
-        "kill_sent": false,
-        "leader_returncode": 1,
-        "group_exists_at_end": false,
-        "status": "group_absent"
-      }
-    ],
-    "evidence_identities": {
-      "build-attempt-once/result.json": {
-        "bytes": 1622,
-        "sha256": "4b520186e509089a97a73d83e68edb511549df87a2a53f74f45ea3d8549198b3"
-      },
-      "build-attempt-once/build-stdout.log": {
-        "bytes": 301,
-        "sha256": "502afee7f5903d5c07a2497b6c9f6ec8c3c6f3d5e69159c40c3111f4f662309b"
-      },
-      "build-attempt-once/build-stderr.log": {
-        "bytes": 11916,
-        "sha256": "a1c35ca05a9eadb06a09043a52a081bc6fce7cd4a5eb09e04754c17f76c5e561"
-      },
-      "build-attempt-once/fixture-audit.jsonl": {
-        "bytes": 161,
-        "sha256": "b569a655432330a82a820ed7fc1641e1a08e44843d41e5cf8acfe579e636ae6f"
-      },
-      "run_once.py": {
-        "bytes": 11116,
-        "sha256": "150cc801930158eb49f69778c8bb83279058b02da0ee96ca34021d769573150b"
-      },
-      "evidence/run-inputs.json": {
-        "bytes": 35708,
-        "sha256": "0c26a7b42151d048c23dd4b9abba93f804a79726a2b3da242d265f93e6e49f18"
+      "rejected_input": {
+        "operation": "collectionProducts",
+        "variables": {
+          "handle": "__placeholder__",
+          "first": 40,
+          "sortKey": "COLLECTION_DEFAULT",
+          "reverse": false
+        },
+        "locale": {
+          "country": "US",
+          "language": "EN",
+          "locale": "en-US"
+        }
       }
     },
-    "validation_limits": [
-      "compile failed; no successful full build or TypeScript result",
-      "no application start, e1-e4, browser, hosted deployment, or model comparison",
-      "CSS correctness and optional fifth operation necessity remain untested",
-      "only registered process groups confirmed absent; escaped descendants unknown",
-      "raw local logs and runner are not distributed here; hashes identify evidence, not download links"
-    ],
-    "decision": "do not use webpack plus a CSS adapter as an assumed drop-in recovery; preserve original failure and qualify dependency imports before another candidate",
-    "hydrogen_source_sha256": {
-      "dist/core/shopify-scripts/page-view.mjs": "603d15a1963db0d5098faad6005b3b760877f604cd4cc359cb88f9baff1f41fc",
-      "dist/core/shopify-scripts/page-view.mjs.map": "651d1087be8a2a54e96493d9ce994016f578af4c6457631268c85e0948410d9d",
-      "dist/core/shopify-scripts/initialize.mjs": "cebbc9724a3e22d06213798ef5f3eef8d921b92d0c563874edf563fbb39116aa",
-      "dist/core/index.mjs": "5eb77e6bc7bc6ec024983fdd2d231da7df4e94629009568404c10d3d141a7781",
-      "package.json": "b626ac62c6ca95cdf1fe100fc69a2cb7bbe9140c825ea3d71c016cfb4bd96d87"
-    }
+    "cleanup": "Two owned groups absent/no KILL; source TERM/-15. No app/e1-e4/browser/CDN execution; escaped descendants unknown.",
+    "evidence_sha256": {
+      "result.json": "7f58e9212bde2c4453df95ae82722333f97991eb09432565ab1c7a693e3515a1",
+      "fixture-audit.jsonl": "69bb16e21da190c916505ecc4af2c60092b274c500aa7d0cce925c7d89c2403a"
+    },
+    "input_manifest_sha256": "e31abf81a2798d03028ad2244776729caba9bda6033bc9a3183291fec4f60500"
   }
 }

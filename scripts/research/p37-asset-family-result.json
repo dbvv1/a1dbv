@@ -46,249 +46,106 @@
       "source-r0": {
         "bytes": 503692,
         "sha256": "9bdc30c4e880bb54b05ed40a632150b155034a8233dd23af4d709a2e153d471d",
-        "counts": {
-          "materials": 3,
-          "meshes": 3,
-          "accessors": 213,
-          "runInputShared": [
-            0,
-            1,
-            2
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "d5afdbff3deca1a1d2c8ae586709150cffa5dec2de60a621558121b727c1c75c"
+        }
       },
       "naive-r0": {
         "bytes": 195276,
         "sha256": "7e634be1a46f902614438b4525307dc7a45b34606e6dedbb08d8fbc92d8aa05f",
-        "counts": {
-          "materials": 1,
-          "meshes": 1,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "d5afdbff3deca1a1d2c8ae586709150cffa5dec2de60a621558121b727c1c75c"
+        }
       },
       "naive-r1": {
         "bytes": 195312,
         "sha256": "c61ea0c629b91756c6248db7167d86c127b5ab538b41692389e4958fe07ecc6e",
-        "counts": {
-          "materials": 1,
-          "meshes": 1,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "131aa5a3780f346f6509f86ce5bdeab67c14c8aa6960f0156f5ad93d11c55b48"
+        }
       },
       "naive-r2": {
         "bytes": 195312,
         "sha256": "0dfcbc9979a355682a065f616347bbc7c219a8cce365e43db841d1226ee979ec",
-        "counts": {
-          "materials": 1,
-          "meshes": 1,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "4c13b055aae61d7610fed642612848053a170dffa832cb2c8dc1ce6448b35486"
+        }
       },
       "keepUniqueNames-r0": {
         "bytes": 249644,
         "sha256": "1d4a15c40819da90ba8ea2b1559a6e79da2488f967b1c9d7f0a14d1ca5a75840",
-        "counts": {
-          "materials": 3,
-          "meshes": 3,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "d5afdbff3deca1a1d2c8ae586709150cffa5dec2de60a621558121b727c1c75c"
+        }
       },
       "keepUniqueNames-r1": {
         "bytes": 249676,
         "sha256": "440a5448ad586a75ecc693fce6ffd252f26ab8279580456abc9ac9cc1a0d1320",
-        "counts": {
-          "materials": 3,
-          "meshes": 3,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "98a94dd891801662a623f2df79bafe2ca02dc6dd7884222dd61188ba364359dc"
+        }
       },
       "keepUniqueNames-r2": {
         "bytes": 249676,
         "sha256": "726e9547b7da2a86bf8b570f22e5d0455a5ea56ea7e679920495e509615a7dbb",
-        "counts": {
-          "materials": 3,
-          "meshes": 3,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "286954f870ece74281745b1d0f90a3d545f6ca706740c279c3ec45bda02fa1ad"
+        }
       },
       "cow-r0": {
         "bytes": 195276,
         "sha256": "7e634be1a46f902614438b4525307dc7a45b34606e6dedbb08d8fbc92d8aa05f",
-        "counts": {
-          "materials": 1,
-          "meshes": 1,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "d5afdbff3deca1a1d2c8ae586709150cffa5dec2de60a621558121b727c1c75c"
+        }
       },
       "cow-r1": {
         "bytes": 195568,
         "sha256": "18b63104d21eaa4ae1325efef79c4d08ab28ab1cd96ee8b89726d2e4dc48ab3e",
-        "counts": {
-          "materials": 2,
-          "meshes": 2,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "98a94dd891801662a623f2df79bafe2ca02dc6dd7884222dd61188ba364359dc"
+        }
       },
       "cow-r2": {
         "bytes": 195816,
         "sha256": "09bb9faa609a8dc35f30b096a241bcaed6902a6b26c9dfffe82b19be653e312a",
-        "counts": {
-          "materials": 2,
-          "meshes": 2,
-          "accessors": 74,
-          "runInputShared": [
-            0,
-            1,
-            1
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "b388a8a23859bcdf3f5e45b53330d4f64cc4a936c37b392db5514e58404f5284"
+        }
       },
       "rebuild-r0": {
         "bytes": 195276,
         "sha256": "7e634be1a46f902614438b4525307dc7a45b34606e6dedbb08d8fbc92d8aa05f",
-        "counts": {
-          "materials": 1,
-          "meshes": 1,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "d5afdbff3deca1a1d2c8ae586709150cffa5dec2de60a621558121b727c1c75c"
+        }
       },
       "rebuild-r1": {
         "bytes": 195576,
         "sha256": "db4674f7ea60a468171e121ad1203dd72e57dab5e3c22fabf193cc2128e8a58e",
-        "counts": {
-          "materials": 2,
-          "meshes": 2,
-          "accessors": 73,
-          "runInputShared": [
-            0,
-            0,
-            0
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "98a94dd891801662a623f2df79bafe2ca02dc6dd7884222dd61188ba364359dc"
+        }
       },
       "rebuild-r2": {
         "bytes": 195832,
         "sha256": "10cb0565ed98e4ed47921661a7a205b442377514b2aebed4da5e837eaf83ae5f",
-        "counts": {
-          "materials": 2,
-          "meshes": 2,
-          "accessors": 74,
-          "runInputShared": [
-            0,
-            1,
-            1
-          ]
-        },
         "validator": {
           "errors": 0,
           "warnings": 0
-        },
-        "semanticSnapshotSHA256": "b388a8a23859bcdf3f5e45b53330d4f64cc4a936c37b392db5514e58404f5284"
+        }
       }
     },
     "checks": {
@@ -405,6 +262,30 @@
     "semanticAndIndependentChecksIdentical": true,
     "acceptanceAndFailureChecksIdentical": true
   },
-  "command_record": "Runtime: Node v24.19.0, npm 11.9.0.\nRegistry metadata inspection: core/functions 4.5.1; validator 2.0.0-dev.3.10; repositories/licenses/integrities inspected. Publisher signatures recorded, not verified independently.\nGitHub API commit fetch: HTTP 403, reason unknown; no response body or headers retained. Tool invocation contained no explicit approval-denial message. Official git ls-remote returned the recorded public revision. No API retry.\nFixed official Fox README and GLB curl -fsSL downloads: exit 0 each; sizes/SHA256 recorded.\nInitial npm install --ignore-scripts --no-audit --no-fund: exit 1, default cache ENOENT.\nnpm install --cache ./npm-cache --ignore-scripts --no-audit --no-fund: exit 0.\nInitial node probe.mjs: exit 0; diagnostic results correct, acceptance assertions missing, fixed after review.\nInitial node verify.mjs: exit 0.\nInitial node failures.mjs: exit 1, unsupported Node.clone fixture; corrected createNode fixture: exit 0.\nAdded executable acceptance gate and injected result/validator/version/hash failures: intended rejection cases pass; suite exit 0.\nAdded raw R1 geometry checking: first attempt exit 1 on absent indices; non-indexed primitive handling added.\nStricter identity fixture first attempt: exit 1 due creating unidentified node before selecting original; reordered fixture.\nFinal formatting with existing Prettier: exit 0.\nFinal exact scripts: node probe.mjs && node verify.mjs && node failures.mjs: exit 0.\nSeparate fresh node_modules: npm ci --cache ../npm-cache --ignore-scripts --no-audit --no-fund: exit 0.\nClean replay exact scripts: node probe.mjs && node verify.mjs && node failures.mjs: exit 0.\nComparison: all 13 generated GLB SHA256 hashes and results.json/independent-results.json/failure-results.json identical, exit 0.\nFailure tests verify missing input and injected unexpected result/validator warning subprocesses exit 1; these expected failures do not falsely fail the test suite.\nNo browser, renderer, Blender, model inference, engines, credentials, paid API calls, repository edits or external publication.\n",
-  "command_record_scope": "Isolated asset-probe execution only, before knowledge-base packaging; not the parent maintenance task."
+  "historical_detail": {
+    "url": "https://github.com/dbvv1/a1dbv/blob/71b8fcc956776af82992a6cfd0ea6dced709bae7/scripts/research/p37-asset-family-result.json",
+    "sha256": "50317d0e291a6293e815ecfd644cda7b49ab94add8a188d4a36c54504b113a3b",
+    "scope": "original preparation attempts, counts and snapshot identities; historical evidence, not new replay"
+  },
+  "integration_replay": {
+    "checked_utc_date": "2026-10-21",
+    "fixed_branch": "cf62a7307bcef536f6ae925d3ca9e7211ffc8f26",
+    "scripts_and_lock_unchanged": true,
+    "official_fox_hash_matched": true,
+    "npm_ci_ignore_scripts": "passed, isolated configuration and cache",
+    "commands": [
+      "node probe.mjs",
+      "node verify.mjs",
+      "node failures.mjs"
+    ],
+    "exit_codes": [
+      0,
+      0,
+      0
+    ],
+    "matching_glb_hashes": 13,
+    "outcomes_raw_decoder_and_failure_checks_identical": true,
+    "scope": "independent non-engine replay; no model, renderer or visual acceptance",
+    "comparison_baseline": "historical_detail record before this summary removes repeated counts and snapshot identities"
+  }
 }

@@ -1,6 +1,6 @@
 主线：三，兼四
 改变的建议：数据迁移先保受支持工具与写入权威；换托管先保应用消费者，再判断是否要换框架实现。[研究]
-新证据：2026-10-20 UTC实测的P23 focused production HTTP／RSC连续两轮通过，完整项目TypeScript过、全站构建仍失败；最高水平未知，迁移与模型评级不变。P22保原纸面包。
+新证据：P23最新冷构建编译与TypeScript通过，静态生成因关闭的collectionProducts失败；本轮暂停。历史focused HTTP／RSC两轮通过，P22保原纸面包。
 
 # 开发条件：数据与框架迁移
 
@@ -122,7 +122,7 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 **六次build与保存偏差全部保留。** 前三次全站构建分别因字体连接、原因未定的typecheck、窄fixture未知商品／集合操作而失败；第三次完整项目TypeScript已过，另一次独立tsc也过。focused attempt4通过旧较窄check；归档SameFileError后误启的attempt5仅S0/e1后中断，无finally回执，子进程清理未知。attempt4原S0 HTML被覆盖永久缺失，不以后续字节补回。attempt6用与当时已发布版相同check完成，独立于attempt4的source/build/start，但复用任务输出根和编译缓存，非新空目录起跑。六次build共134.962秒，条件／范围变化不能归因提速；不是人工工时或模型效率。[研究]
 
-公开接续见[分离生产supplement](../../scripts/research/p23_runtime_result.json)：保原dev字段与尝试不覆盖，列结果、全部build、身份及局限。安全receipt归档SHA256为`9260ea29c655d952712cb18d8e8d312c972c0c9cf7ddcd8a5081aa0c935087b6`；独审报告`p23-production-independent-review-20261021.md` SHA256为`3d71202476f364d596573972c5bf6f607ac0e6ba4197707315be2387c598e4b1`，为云端只读材料身份，不是公开下载链接；本节与result承担公开小型回执。独审核101文件及归档，正文另由安全补充核验；不是全包安全认证。[研究]
+公开接续见[分离生产supplement](../../scripts/research/p23_runtime_result.json)：保各次dev／生产尝试的结果与必要身份，完整旧字段留在固定历史版本。安全receipt归档SHA256为`9260ea29c655d952712cb18d8e8d312c972c0c9cf7ddcd8a5081aa0c935087b6`；独审报告`p23-production-independent-review-20261021.md` SHA256为`3d71202476f364d596573972c5bf6f607ac0e6ba4197707315be2387c598e4b1`，为云端只读材料身份，不是公开下载链接；本节与result承担公开小型回执。独审核101文件及归档，正文另由安全补充核验；不是全包安全认证。[研究]
 
 [portable探针](../../scripts/research/p23_runtime_probe.py)新增`--mode focused-production`，但包装未在真实应用复跑，不能替代上述历史driver实测。剩余有价值的门是补齐合法最小fixture后完整构建、再按目标平台验部署／恢复；当前仅单进程内置缓存，真实Shopify、共享缓存、冷expire3600、浏览器导航、故障／并发、跨部署退回和OpenNext／Vinext仍未验。Agent保输入、消费者和失败证据，人定平台、旧内容窗口及上线门槛；无模型对照。[研究]
 
@@ -138,7 +138,7 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 后续唯一一次源码导向诊断调用已安装Next CLI接口，showConfig与原声明参数检查均返回exitCode=0、signal=null（55.699秒）。它另用空诊断缓存、捕获输出且继承了随后生成的路由类型，仍不能还原原build上下文；至此停止重复诊断，保完整构建为未通过。[研究]
 
-实际驱动只留下服务和build的leader退出码，没有独立证明所有编译器后代／进程组已退出；不事后按裸PID清理或把该缺口改写成已验证。完整回执、命令差异、已声明合成环境和hash见[结果supplement](../../scripts/research/p23_runtime_result.json)。[研究]
+实际驱动只留下服务和build的leader退出码，没有独立证明所有编译器后代／进程组已退出；不事后按裸PID清理或把该缺口改写成已验证。摘要见[结果supplement](../../scripts/research/p23_runtime_result.json)；完整回执、命令差异与合成环境见[固定历史版本](https://github.com/dbvv1/a1dbv/blob/71b8fcc956776af82992a6cfd0ea6dced709bae7/scripts/research/p23_runtime_result.json)。[研究]
 
 **默认只接受可说明的空目录，不拿它证明商品流程。** Agent应核每次请求与失败日志，人决定是否还需要非空商品、真实Shopify、浏览器和托管平台。独审发现初版审计写入失败后仍能继续，现已永久拒绝后续请求并使服务退出2；已推进事件保真实状态，不回滚伪造证据。仓库包装与实测夹具AST相同，15项回归覆盖四操作、原五阶段继承及审计失败；包装本身没有再次运行应用。[研究]
 
@@ -154,7 +154,7 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 观察器只改独立依赖副本的Next／TS窄记录点，未改版本、原编译参数、声明资源及shutdown顺序。源311项、原依赖32926项及原receipt身份保持；记录有同步hash／日志开销，输出为Next解码的UTF-8文本，不能拿477秒对旧运行计算效率。[本仓执行／源码边界]
 
-**完整构建与四operation资格仍未通过。** fixture保持S0、第五operation关闭，仅收到驱动readiness的searchFacets一次；没有启动app或e1–e4。登记的四个自有进程组最终均不存在，但未观测的瞬时脱离后代不作全系统清空保证。实际字段、每CLI时刻／输出身份及清单见[observed_full_build_supplement](../../scripts/research/p23_runtime_result.json)。[本仓运行；研究]
+**完整构建与四operation资格仍未通过。** fixture保持S0、第五operation关闭，仅收到驱动readiness的searchFacets一次；没有启动app或e1–e4。登记的四个自有进程组最终均不存在，但未观测的瞬时脱离后代不作全系统清空保证。结果与必要证据身份见[observed_full_build_supplement](../../scripts/research/p23_runtime_result.json)。[本仓运行；研究]
 
 观察脚本初审曾拦下PID身份收编、清理顺序、重复事件假完整及finally丢回执，修后22项限定合成检查通过才执行；合成不代替本次真实结果独审。既有最高水平卡、迁移评级与原focused两轮结果不变，不因捕获信号就称P23完成。[研究]
 
@@ -172,7 +172,13 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 两个登记进程组最终不存在，未发 KILL；夹具始终 S0，仅 readiness 请求一次，第五操作关闭。没有启动应用、两轮消费者或模型测试，也没有新的 TypeScript 通过结果。CSS适配只作为本次试验输入，不能称已正确渲染。[本仓运行]
 
-[webpack结果补充](../../scripts/research/p23_runtime_result.json)保存命令、原六文件差异身份、最小CSS补丁及失败分类；旧focused、完整构建和SIGKILL记录不覆盖。最高水平卡与前沿比较状态不变；本次交付的是撤回无依据恢复捷径的反例，不是完成迁移路线比较。[研究]
+**最新候选已过编译／TypeScript，仍未过全站门。** 10月21日02:47:43.991至02:49:20.456（UTC），新冷副本96.465秒exit1；日志记录编译51秒、TypeScript40秒，静态生成`/collections/__placeholder__`因默认关闭的`collectionProducts`失败。24条审计请求中23成功、1拒绝，源始终S0；两个登记组最终absent、未发KILL，没有启动应用或e1–e4。[本仓公开应用运行]
+
+本候选同时移植仍开放的[Hydrogen PR4126](https://github.com/Shopify/hydrogen/pull/4126)的`webpackIgnore`注释，并恢复既有CA变量原样继承；是本地实验补丁，不是已发行修复，也不作单因素或提速归因。PR作者另报Next15.5／16.2的浏览器对照；修复可能让原先未发出的page-view事件开始发出，不能把保留代码意图写成实际行为完全不变。[一手／研究]
+
+**本轮暂停。** 下一具体动作是确认既有第五操作的输入契约与应用实际请求相符，再另选执行窗口；现在不扩大夹具或继续构建。本文P23范围统一为合成输入下的应用／构建证据：最高水平卡和迁移评级不变，浏览器、真实Shopify及目标部署不由此证明。[研究]
+
+[精简结果](../../scripts/research/p23_runtime_result.json)逐次保留成功、失败与范围；完整旧字段、调试表和补丁见[固定历史版本](https://github.com/dbvv1/a1dbv/blob/71b8fcc956776af82992a6cfd0ea6dced709bae7/scripts/research/p23_runtime_result.json)，不覆盖旧focused、SIGKILL或首次webpack失败。[研究]
 
 #### 接续已有构建：不要在验收时换掉被验产物（2026-10-21）
 
