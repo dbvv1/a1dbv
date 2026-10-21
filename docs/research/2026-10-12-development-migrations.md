@@ -1,6 +1,6 @@
 主线：三，兼四
 改变的建议：数据迁移先保受支持工具与写入权威；换托管先保应用消费者，再判断是否要换框架实现。[研究]
-新证据：P23最新冷构建编译与TypeScript通过，静态生成因关闭的collectionProducts失败；本轮暂停。历史focused HTTP／RSC两轮通过，P22保原纸面包。
+新证据：P23显式开启已有第五操作后该请求成功，完整构建仍被refine的getCollection阻断；停止扩夹具。历史focused HTTP／RSC两轮通过，P22保原纸面包。
 
 # 开发条件：数据与框架迁移
 
@@ -172,13 +172,23 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 两个登记进程组最终不存在，未发 KILL；夹具始终 S0，仅 readiness 请求一次，第五操作关闭。没有启动应用、两轮消费者或模型测试，也没有新的 TypeScript 通过结果。CSS适配只作为本次试验输入，不能称已正确渲染。[本仓运行]
 
-**最新候选已过编译／TypeScript，仍未过全站门。** 10月21日02:47:43.991至02:49:20.456（UTC），新冷副本96.465秒exit1；日志记录编译51秒、TypeScript40秒，静态生成`/collections/__placeholder__`因默认关闭的`collectionProducts`失败。24条审计请求中23成功、1拒绝，源始终S0；两个登记组最终absent、未发KILL，没有启动应用或e1–e4。[本仓公开应用运行]
+**上次候选已过编译／TypeScript，仍未过全站门。** 10月21日02:47:43.991至02:49:20.456（UTC），新冷副本96.465秒exit1；日志记录编译51秒、TypeScript40秒，静态生成`/collections/__placeholder__`因默认关闭的`collectionProducts`失败。24条审计请求中23成功、1拒绝，源始终S0；两个登记组最终absent、未发KILL，没有启动应用或e1–e4。[本仓公开应用运行]
 
 本候选同时移植仍开放的[Hydrogen PR4126](https://github.com/Shopify/hydrogen/pull/4126)的`webpackIgnore`注释，并恢复既有CA变量原样继承；是本地实验补丁，不是已发行修复，也不作单因素或提速归因。PR作者另报Next15.5／16.2的浏览器对照；修复可能让原先未发出的page-view事件开始发出，不能把保留代码意图写成实际行为完全不变。[一手／研究]
 
-**本轮暂停。** 下一具体动作是确认既有第五操作的输入契约与应用实际请求相符，再另选执行窗口；现在不扩大夹具或继续构建。本文P23范围统一为合成输入下的应用／构建证据：最高水平卡和迁移评级不变，浏览器、真实Shopify及目标部署不由此证明。[研究]
+**上次暂停点**是确认既有第五操作的输入契约；下节保留随后一次限定尝试，不覆盖本次失败。本文P23范围统一为合成输入下的应用／构建证据：最高水平卡和迁移评级不变，浏览器、真实Shopify及目标部署不由此证明。[研究]
 
 [精简结果](../../scripts/research/p23_runtime_result.json)逐次保留成功、失败与范围；完整旧字段、调试表和补丁见[固定历史版本](https://github.com/dbvv1/a1dbv/blob/71b8fcc956776af82992a6cfd0ea6dced709bae7/scripts/research/p23_runtime_result.json)，不覆盖旧focused、SIGKILL或首次webpack失败。[研究]
+
+#### 第五操作通过，完整构建仍失败（2026-10-21）
+
+**✅ 空目录契约要核到嵌套路由；一个占位请求通过，不等于全站输入齐备。** 固定应用、原依赖和既有补丁不变，新冷副本只显式启用已有受限`collectionProducts`并同步审计门；05:20:08.744600至05:21:40.399747（UTC），91.656秒exit1，未触及600秒build上限。日志编译43秒、TypeScript41秒通过，但`/collections/__placeholder__/refine`因未知`getCollection`失败。26条捕获请求中25成功、1拒绝；第五操作成功1次，源始终S0，无事件、应用启动或消费者执行。两个登记组最终absent、未发KILL；未观测的脱离后代仍未知。[本仓公开应用运行]
+
+**本次到此停止，不逐次扩夹具追绿灯。** 失败输入为`getCollection(handle="__placeholder__")`，locale为US／EN／en-US。固定源码的[refine metadata](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/app/collections/%5Bhandle%5D/refine/page.tsx)未像普通集合页那样先排除占位handle，经[metadata助手](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/collections/server.ts)调用[getCollection操作](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/shopify/operations/collections/server.ts)；原操作已有`data.collection=null`转`undefined`处理。这只确定下一静态数据契约，不证明增加响应后全站可过；未新增第六操作或再运行。[一手／研究]
+
+**一次有界静态清单（不是新增运行）**：核完固定`app/collections`七个page／layout文件及其集合／搜索助手：集合索引→`getCollectionsWithFeaturedImage`；动态参数→`getCollections`；普通／refine集合metadata与layout→`getCollection`；集合结果→`collectionProducts`；all及all/refine→`searchProducts`＋`searchFacets`。这条集合专属链共六种操作，除`getCollection`外五种均已有空目录契约；all metadata／layout只组装本地虚拟集合，没有新增操作。refine和load-more虽复用同名操作，却可能带非空过滤、不同排序或游标，超出现有夹具；源码清单不证明它们在本次静态阶段全部可达，也不覆盖根布局的账户／购物车或其他路由。[一手：固定[集合路由树](https://github.com/vercel/shop/tree/f4c2d467e02abd2c859aedf4b709ec93552e7049/app/collections)、[搜索助手](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/search/server.ts)与[分页action](https://github.com/vercel/shop/blob/f4c2d467e02abd2c859aedf4b709ec93552e7049/lib/collections/action.ts)；研究]
+
+Agent下次应先冻结整条集合路由的有限输入、动态分支边界与停止条件，再决定是否值得另开执行窗口，而不是删路由、放过未知操作或启动失败构建残留。第五操作只是已有空目录模式的显式开关，不是商品功能验证；本次仍无完整构建／浏览器／部署通过，不升级迁移或模型收益评级。独立副本与回执身份见[结果补充](../../scripts/research/p23_runtime_result.json)；旧成功和失败全部保留。[研究]
 
 #### 接续已有构建：不要在验收时换掉被验产物（2026-10-21）
 

@@ -2,7 +2,7 @@
   "kind": "P23 reader summary; attempt histories remain separate",
   "verified_utc": "2026-10-21",
   "historical_full_record": "https://github.com/dbvv1/a1dbv/blob/71b8fcc956776af82992a6cfd0ea6dced709bae7/scripts/research/p23_runtime_result.json",
-  "decision": "Paused. Confirm existing optional collectionProducts contract, then choose a later window; no fixture expansion or rerun now.",
+  "decision": "Paused after one new cold full build. Existing optional collectionProducts succeeded, but nested refine requires unsupported getCollection. No sixth operation, further build or consumers; next decision needs a bounded static input contract, not incremental probe expansion.",
   "source": {
     "repository": "https://github.com/vercel/shop",
     "commit": "f4c2d467e02abd2c859aedf4b709ec93552e7049",
@@ -172,5 +172,61 @@
       "fixture-audit.jsonl": "69bb16e21da190c916505ecc4af2c60092b274c500aa7d0cce925c7d89c2403a"
     },
     "input_manifest_sha256": "e31abf81a2798d03028ad2244776729caba9bda6033bc9a3183291fec4f60500"
+  },
+  "webpack_fifth_contract_supplement": {
+    "id": "webpack-fifth-contract",
+    "started_utc": "2026-10-21T05:20:08.744600+00:00",
+    "ended_utc": "2026-10-21T05:21:40.399747+00:00",
+    "build_seconds": 91.656,
+    "exit": 1,
+    "timeout": false,
+    "build_timeout_seconds": 600,
+    "changes": "New cold independent copy of same frozen app/dependencies/patches. Enable existing placeholder-only collectionProducts option and matching strict audit; no new business operation. No speedup attribution.",
+    "result": "Log compiled43s and TypeScript41s. Static /collections/__placeholder__/refine failed: unknown getCollection. Full build failed; no consumer start.",
+    "fixture": {
+      "state": "S0",
+      "requests": 26,
+      "success": 25,
+      "rejected": 1,
+      "events": 0,
+      "fifth_operation_enabled": true,
+      "collectionProducts_success": 1,
+      "rejected_input": {
+        "operation": "getCollection",
+        "variables": {
+          "handle": "__placeholder__"
+        },
+        "locale": {
+          "country": "US",
+          "language": "EN",
+          "locale": "en-US"
+        }
+      }
+    },
+    "cleanup": "Two registered groups absent; no KILL; source TERM/-15. Group-external descendants unknown.",
+    "next_contract": "Fixed refine metadata calls getCollectionMetadata, then getCollection/fetchCollection. Null collection is handled by original source, but no sixth response implemented or tested. Stop; do not infer full-build success from partial artifacts.",
+    "evidence_sha256": {
+      "result.json": "df10d327d5690ad48e5d918d80c8e13b03668ebdf4a1e79a1e2cb9a34d1e77be",
+      "fixture-audit.jsonl": "7faec936413a57d2dc02444c40997027188df43951c31d6d053a07c876f12a38",
+      "build-stdout.log": "e14349b84bd5b441d279c8b4a2846a7a7ec462eb7e59c8ae30f98dfc59577529",
+      "build-stderr.log": "87b88ee078b67c17fedd2cb40006b53ebe1f54953180c11f65d6af1020a45886"
+    },
+    "input_manifest_sha256": "5eec63ac8fe82fa01d356c74bb2ed8b50bc9d0c9ef7f4d2c1b04ae3fcfddf19a",
+    "runner_sha256": "6990bd173b0846c8c4890bc233321782befb8610b4e104420f5f8e93eae40837",
+    "preparation_validation": "33233 source/dependency files matched prior frozen bytes; no shared original file inodes, no escaped symlinks or copied .next.15 standard-library mock tests passed before build. These do not prove app success.",
+    "static_collection_inventory": {
+      "scope": "Seven app/collections page/layout files and collection/search helpers, fixed original source; not whole-site runtime reachability.",
+      "operations": [
+        "getCollectionsWithFeaturedImage",
+        "getCollections",
+        "getCollection",
+        "collectionProducts",
+        "searchProducts",
+        "searchFacets"
+      ],
+      "missing_from_existing_catalog": "getCollection only within this bounded collection-specific operation inventory.",
+      "dynamic_boundary": "Refine and load-more reuse operations but can introduce unsupported nonempty filters, sort and cursor; actual static reachability unknown. Root layout/account/cart and other routes are not covered.",
+      "decision": "Freeze the entire bounded collection-route input contract before considering another attempt; do not enable successive operations in response to build failures."
+    }
   }
 }
