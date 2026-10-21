@@ -549,7 +549,7 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 | 概念／试玩：[Brian G Cronin，GDC作者页](https://schedule.gdconf.com/speaker/cronin-brian/21059)；Supergiant官方博客及作品更新 | [超小团队试玩讲义](https://media.gdcvault.com/gdc2026/Slides/Cronin_Brian_PlaytestingProcessForUltraSmallTeams.pdf)，GDC2026年3月会期，单场日未知，正文已读。定向假设与整段玩家体验都要取证。Supergiant Hades II 2025-07-02／2026-06更新继承WP4／WP11，追修改理由，不把补丁量当收益。 |
 | 2D／补帧：Shahar Bar（SBS Games）；Kenneth Alonso、Gustavo Patow（GILAB） | [SBS9-23](https://sbsgames.dev/blog/ai-sprite-animation)、[补帧论文10-12](https://arxiv.org/html/2610.16423)相关节已读，均已有仓内来源。前者检整段比例／对齐／接缝，后者核RGBA与边缘；作者单次样本、指标不证明完整零手修动作生产胜出。 |
 | 3D／PBR：TiMi L1 Leon Zhang、Zhipeng Tan；Unity Generators团队 | [GDC2026生产管线](https://media.gdcvault.com/gdc2026/Slides/Zhang_Leon_Tan_Zhipeng_TheScalableGameAssetAssistedProductionPipelineOfHonorOfKings.pdf)本轮提取大小受限，继承WP3已核图页；[Unity Sprite4-28](https://unity.com/blog/unity-ai-sprite-generator)与[Material5-14](https://unity.com/blog/unity-ai-material-generator)正文已读。先核原型／成品目标及专业人工投入，再比细节质量，不用编辑器内生成代替生产就绪。 |
-| 材质／VFX／渲染：Natalya Tatarchuk组织的Advances，具体作者如IO Interactive Alexander Mueller | [SIGGRAPH2026课程入口](https://advances.realtimerendering.com/s2026/index.html)，7-21；仅简介，继承审计S20。Smolder／PSSR／VRRT供追讲义，不从简介判算法或动态稳定性，不把Glacier实现当Unity插件。 |
+| 材质／VFX／渲染：Natalya Tatarchuk组织的Advances；IO Interactive Alexander Mueller | [Smolder讲义](https://advances.realtimerendering.com/s2026/content/AlexanderMueller_Smolder_Siggraph26.pdf)，材料更新2026-08-03；本次补读相关正文及关键图，范围见下节。借降规格后的重建契约与失败验收，不把Glacier实现当Unity插件。PSSR／VRRT仍仅入口候选，当前最高水平未知。 |
 | 动画／控制：Epic动画团队、Daniel Holden、Videocult开发者 | [GASP5.8，8-12](https://www.unrealengine.com/tech-blog/download-the-latest-game-animation-sample-project-now-updated-for-ue-5-8)、[Holden锁足，7-30](https://theorangeduck.com/page/inverse-kinematics-foot-locking)、[Rain World访谈，2025-09-25](https://unity.com/blog/exploring-procedural-design-rain-world)相关节已读。分状态选择／姿态检索、源动作／接触／锁足；程序动画仍有逐类代码。样例或作者名气不证明二改成本最优。 |
 | 音频：Nintendo／Naoto Kubo；Game Audio Insights／Jorge Peirano；Wube及独立开发者afeique | [Bananza访谈，2025-07-15](https://www.nintendo.com/en-gb/News/2025/July/Ask%2Dthe-Developer-Vol-19-Donkey-Kong-Bananza-Chapter-2-2871378.html)与[Speedstorm复盘，2025-05-09](https://gameaudioinsights.com/2025/05/09/the-audio-direction-of-disney-speedstorm/)本次补读：查高频／并发下的取舍，详见下文。FFF407历史参照及[Rainboids多轮生产链](2026-10-14-game-wp6-audio.md#31-jsfxr参数化可局部修改但存参数位级复现是错的)继承已有研究，后者为名册转化缺口，不计新发现。两篇Audiokinetic候选的旧读取缺口保留。 |
 | 引擎接入／客户端观察：Unity AI、Epic技术博客与版本文档 | [Unity AI5-05入口](https://unity.com/blog/unity-ai-how-to-get-started)已读，继承S12；Unity Insight沿审计S13，非本轮新读。区分文件代码与场景／引用／编辑器状态；原文入口不等于安装、实际修改或恢复已验。 |
@@ -595,3 +595,17 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 **补漏归类。** 基线docs与domains按Bananza／Naoto Kubo／文章ID及Speedstorm／作者／域名查重均未命中，记为本次新检索候选，不断言历史从未看过。WP6已有Rainboids生产链却未进入持续作者名册，归转化缺口并补内部链接；不重复计算其来源发现。两篇既有Audiokinetic候选仍未读，本次未重试，原先12/16的历史读取分母不改写。没有冻结的外部完整参照集合，不计算总体漏检率。[研究]
 
 **使用回执（执行者自报）。** 先读33b0cfe所含P51提示词再研究，11:04:20 UTC开始，11:05:51冻结来源与决定，约11:07整理结束。1分31秒为研究墙钟历时，检索、阅读与等待未分离，不能称净工时。限定目标N=3、相关正文已读F=3：新增原文2篇，既有[FFF396](https://factorio.com/blog/post/fff-396)重读1篇；决定性新增来源D=2、FD=2。主执行者随后重读两新增原文不重复计数，提示词自用仍为1/3，P51整体未完成。[研究：局部读取覆盖，非效果指标]
+
+
+### P51讲义补读：Smolder不是通用降规格处方
+
+核实：2026-10-21（UTC+8），基线c7524ec。**保留WP5原生运行时＋合格烘焙细节的默认，不建议单人项目移植Glacier。** 本次补审计S20已知的正文读取缺口，不新增规则或升级材质／特效页评级。[研究]
+
+**最高水平卡补证。** Alexander Mueller／IO Interactive的[Smolder讲义](https://advances.realtimerendering.com/s2026/content/AlexanderMueller_Smolder_Siggraph26.pdf)是近期高端生产机制参照；[课程](https://advances.realtimerendering.com/s2026/index.html)在2026-07-21举行，材料标08-03更新。最佳同约束方案仍未知。主流参照及可行基线沿用审计A04的参数材质、原生粒子和flipbook；本次比较对象是作者自己的失败方案与修正机制，不是跨引擎质量排名。[一手／研究]
+
+- **PDF第93、95、97–100页（从1计）：** 整体半／四分辨率产生重影；改为按透射率共享光照采样后，仍须恢复逐像素蓝噪声插值，并保留逐像素深度及雾等集成。稀薄体积收益较低。[一手：作者讲义]
+- **第91、107页：** 重建器／预设需分别处理，性能表排除了异步阴影成本。不能拿局部毫秒数当完整特效预算。[一手：作者讲义]
+
+**交接选择。** Agent可把这些失败条件加入已有降规格对照记录，人检查目标重建器下的拖影、遮挡和玩法可读性；场景不匹配或要改专有管线时撤回移植候选。WP5已经要求动态与设备验收，因此本次不再给25追加同义步骤，也不把作者静态图视作本仓动态效果验证。[研究]
+
+**范围与回执（执行者自报）。** 113页PDF补读90–102、107–112页讲者注释，核视91、93、95、97、98、99、107页；未逐页审完整讲义或观看动态视频。文件SHA256为`1db757c81568181f812a279d97f42fb2ce691b2018f5111e407ef1cb72316268`。网页工具因文件大小读取失败，同一官方PDF普通获取成功，无访问拒绝或安装；PDF及图片不入库。先用既有P51提示，11:12:36–11:13:43 UTC冻结来源与决定，墙钟1分7秒，净作业／等待未分离。N=1、F=1、D=1、FD=1，入口不另计；同源失败后补读不拆分，旧来源补读1、新发现0。此为名册子任务，自用仍1/3，无合格独立漏检分母。[研究：读取覆盖]
