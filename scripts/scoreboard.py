@@ -8,7 +8,9 @@ Reads one machine marker per core page, placed in its "当前最高水平" secti
 status is 已比较／仅候选／未知, gap is 0-3 (0 = at the current best, 3 = missing
 or outdated), gen is the model/tool generation the advice was checked against.
 A page without a marker counts as unregistered. Also counts coverage-map
-cells by level. Reporting only: it never fails the offline checks.
+cells by level. Pages without a marker fall back to the independent audit
+baseline in docs/collaboration/frontier-baseline.tsv. Reporting only: it never
+fails the offline checks.
 """
 import argparse
 from datetime import date
@@ -27,6 +29,7 @@ STALE_DAYS = {'C1 AI coding 主干': 90, 'C2 游戏 G1': 365}
 MARKER = re.compile(r'<!--\s*frontier:(.*?)-->', re.S)
 PAIR = re.compile(r'(\w+)=(\S+)')
 STATUSES = ('已比较', '仅候选', '未知')
+BASELINE = 'docs/collaboration/frontier-baseline.tsv'
 COVERAGE_ROW = re.compile(r'^\|\s*([^|]+?)\s*\|\s*(\d)')
 
 
@@ -50,7 +53,21 @@ def age_days(checked, today):
     return None
 
 
+def load_baseline(root):
+  path = root / BASELINE
+  if not path.exists():
+    return {}
+  baseline = {}
+  for line in path.read_text(encoding='utf-8').splitlines():
+    parts = line.split('\t')
+    if line.startswith('#') or len(parts) < 2 or not parts[1].isdigit():
+      continue
+    baseline[parts[0]] = int(parts[1])
+  return baseline
+
+
 def scan_pages(root, today):
+  baseline = load_baseline(root)
   rows = []
   for campaign, patterns in CAMPAIGNS.items():
     paths = sorted({p for pattern in patterns for p in root.glob(pattern)})
@@ -60,7 +77,8 @@ def scan_pages(root, today):
       text = path.read_text(encoding='utf-8')
       marker = parse_marker(text)
       row = {'campaign': campaign, 'page': path.relative_to(root).as_posix(),
-             'has_section': '当前最高水平' in text, 'marker': marker}
+             'has_section': '当前最高水平' in text, 'marker': marker,
+             'audit_gap': baseline.get(path.relative_to(root).as_posix())}
       if marker and 'checked' in marker:
         days = age_days(marker['checked'], today)
         row['stale'] = days is None or days > STALE_DAYS[campaign]
@@ -95,6 +113,9 @@ def summarize(rows):
       'stale': sum(bool(r.get('stale')) for r in ok),
       'no_section': sum(not r['has_section'] for r in mine),
       'bad_marker': sum(bool(r['marker'] and 'error' in r['marker']) for r in mine),
+      'audit_gap': {str(g): sum(r['audit_gap'] == g for r in mine)
+                    for g in range(4) if any(r['audit_gap'] == g for r in mine)},
+      'unaudited': sum(r['audit_gap'] is None and not r['marker'] for r in mine),
     }
   return out
 
@@ -102,7 +123,9 @@ def summarize(rows):
 def priority(row):
   marker = row['marker']
   if not marker or 'error' in marker:
-    return (0, row['page'])
+    # Unaudited pages rank with gap 2: unknown is not assumed to be good.
+    gap = 2 if row['audit_gap'] is None else row['audit_gap']
+    return (0, -gap, row['audit_gap'] is not None, row['page'])
   return (1, -marker['gap'], not row.get('stale'), row['page'])
 
 
@@ -123,12 +146,14 @@ def main(argv=None):
     print(f"{campaign}: {s['registered']}/{s['pages']} 已登记，差距≤1 {s['gap_le_1']}，"
           f"已比较 {s['compared']}，过期 {s['stale']}，无最高水平节 {s['no_section']}，"
           f"标记错误 {s['bad_marker']}")
+    print(f"  审计基线差距分布 {s['audit_gap']}，未审计且未登记 {s['unaudited']}")
   for section, counts in report['coverage'].items():
     print(f"覆盖地图 {section}: " + '，'.join(f'{k}级 {v}' for k, v in counts.items()))
   print('\n待推进（未登记优先，其次差距大、已过期）：')
   for row in report['queue'][:15]:
     m = row['marker']
-    state = '未登记' if not m else ('标记错误' if 'error' in m else
+    base = '' if row['audit_gap'] is None else f"（审计差距{row['audit_gap']}）"
+    state = f'未登记{base}' if not m else ('标记错误' if 'error' in m else
              f"{m['status']}／差距{m['gap']}／{m['gen']}／{m['checked']}"
              + ('／过期' if row.get('stale') else ''))
     print(f"  {row['page']}: {state}")

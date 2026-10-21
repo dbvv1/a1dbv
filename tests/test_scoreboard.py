@@ -28,6 +28,8 @@ class ScoreboardTest(unittest.TestCase):
     write(self.root, 'docs/04-mcp.md', '# MCP\n')
     write(self.root, 'docs/05-bad.md', '<!-- frontier: status=最好 gap=9 -->\n')
     write(self.root, 'domains/game-dev/01-engine.md', '## 当前最高水平\n')
+    write(self.root, 'docs/collaboration/frontier-baseline.tsv',
+          '# note\npage\tgap\taudit\ndocs/04-mcp.md\t1\t2026-10-21\ndocs/02-models.md\t2\t2026-10-21\n')
     write(self.root, 'docs/collaboration/coverage-map.md',
           '## 深度等级\n| 0 | 未覆盖 |\n## 二、机制\n| 镜头 | 2–3 |\n| 瞄准 | 1 |\n| 存档 | 2 |\n')
 
@@ -52,9 +54,18 @@ class ScoreboardTest(unittest.TestCase):
 
   def test_queue_puts_unregistered_and_bad_markers_first(self):
     pages = [row['page'] for row in self.run_json()['queue']]
-    self.assertEqual(pages[:3], ['docs/04-mcp.md', 'docs/05-bad.md',
-                                 'domains/game-dev/01-engine.md'])
+    # Unaudited unknowns rank as gap 2, ahead of an audited gap 1.
+    self.assertEqual(pages[:3], ['docs/05-bad.md', 'domains/game-dev/01-engine.md',
+                                 'docs/04-mcp.md'])
     self.assertEqual(pages[3], 'docs/03-context.md')
+
+  def test_page_marker_overrides_audit_baseline(self):
+    summary = self.run_json()['summary']['C1 AI coding 主干']
+    self.assertEqual(summary['audit_gap'], {'1': 1, '2': 1})
+    self.assertEqual(summary['unaudited'], 0)
+    self.assertEqual(self.run_json()['summary']['C2 游戏 G1']['unaudited'], 1)
+    rows = {r['page']: r for r in self.run_json()['queue']}
+    self.assertEqual(rows['docs/02-models.md']['marker']['gap'], 1)
 
   def test_coverage_levels_skip_level_definitions(self):
     coverage = self.run_json()['coverage']
