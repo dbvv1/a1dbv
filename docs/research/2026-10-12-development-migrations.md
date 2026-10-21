@@ -160,6 +160,20 @@ GitLab两链独立，非AI成果。!120213 setter补到期日、!120239回填NUL
 
 本提交只保存结果与证据身份，不打包专用监督器、317项准备布局或已安装依赖，不是一键复现入口。TS观察副本另有CRLF转LF，实际字节以postimage哈希为准。真实结果独审报告标识`p23-native-exit-independent-review-20261021`、SHA256 `52a33bc30f6ee1b9dd94a1c6b861e025e057b4db9df87fdcfa0222f2a984a068`；四文件发布稿独审通过，报告SHA256 `b87ea704e7041bdd7445b1b70fe4422a738595c3954638b7166c61e7a961929f`；最终树完整离线另验。[研究]
 
+#### 换成 webpack 不是只换编译器开关（2026-10-21）
+
+**⛔ 不把 webpack 加 CSS 适配当作本应用完整构建的默认恢复办法。** 同一固定 shop 的新冷副本实际运行 `next build --webpack`，额外只补 `app/globals.css` 的窄 pre-loader，仍在编译阶段失败。Agent 在切换 bundler 前还须核间接依赖的模块处理；人检查改动是否保留原客户端行为，而非删掉报错依赖来过编译。本案继续保原 Next 选择，完整构建缺口未闭合。[本仓公开应用运行／研究]
+
+10:30:08 至10:31:40（UTC+8），本次91.954秒、exit1，非600秒超时。日志有两类错误：Google Fonts 的 Geist／Geist Mono 证书链失败，以及 Hydrogen 2026.10.0 的裸 HTTPS 动态 import 被当前 webpack 配置拒绝。后者是 `UnhandledSchemeError`，不是 Shopify CDN 抓取失败；同一资源出现多个导入 trace，不计成多个独立案例。[本仓运行]
+
+已安装 Hydrogen 的 `page-view.mjs` 裸导入 `https://cdn.shopify.com/storefront/standard-events.js`，经 initialize 与包根进入原商品操作／日志导入链；没有 `webpackIgnore`。随包源码注释以 Vite 的 external 识别为例，不证明当前 webpack 配置也会如此处理。这是固定依赖与配置的兼容缺口，不是所有 webpack 路线都不可行。[一手：锁定包源码／运行 trace]
+
+本次包装只继承代理变量，遗漏现有证书传输变量，是准备差异；失败后仅核变量存在性，未读取证书或放宽 TLS 校验。尚未通过新对照证明它是字体失败的完整原因，而且修好字体也不能消除另一个模块错误。因此不立即重复同一构建，不伪造字体或移除原商品／日志链。[本端执行／研究]
+
+两个登记进程组最终不存在，未发 KILL；夹具始终 S0，仅 readiness 请求一次，第五操作关闭。没有启动应用、两轮消费者或模型测试，也没有新的 TypeScript 通过结果。CSS适配只作为本次试验输入，不能称已正确渲染。[本仓运行]
+
+[webpack结果补充](../../scripts/research/p23_runtime_result.json)保存命令、原六文件差异身份、最小CSS补丁及失败分类；旧focused、完整构建和SIGKILL记录不覆盖。最高水平卡与前沿比较状态不变；本次交付的是撤回无依据恢复捷径的反例，不是完成迁移路线比较。[研究]
+
 #### 接续已有构建：不要在验收时换掉被验产物（2026-10-21）
 
 **✅ 已有待验产物时，先核身份，再启动它；不要调用会重新构建的测试入口。** 现有 `focused-production` 包装必先执行带 `--debug-build-paths` 的局部构建，再运行消费者检查。让 Agent 对完整产物调用这个入口，会把待验对象换成局部构建；之后的通过结果只能说明新产物，不能补齐原完整构建的验收。[一手：本仓固定8244419的探针及回归]

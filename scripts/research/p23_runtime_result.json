@@ -654,5 +654,157 @@
       "sha256": "52a33bc30f6ee1b9dd94a1c6b861e025e057b4db9df87fdcfa0222f2a984a068",
       "conclusion": "Scoped evidence accepted; build remains failed, sender/cause unknown."
     }
+  },
+  "webpack_build_supplement": {
+    "kind": "new cold full-webpack attempt; not recovery of missing unpublished preparation",
+    "build": {
+      "command": [
+        "node",
+        "node_modules/next/dist/bin/next",
+        "build",
+        "--webpack"
+      ],
+      "timeout_seconds": 600,
+      "status": "exited",
+      "started_utc": "2026-10-21T02:30:08.049097+00:00",
+      "returncode": 1,
+      "ended_utc": "2026-10-21T02:31:40.002839+00:00",
+      "elapsed_seconds": 91.954,
+      "returncode_after_cleanup": 1
+    },
+    "status": "failed",
+    "runtime": {
+      "node": "24.19.0",
+      "next": "16.4.1",
+      "pnpm": "12.8.2",
+      "tailwind_loader": "4.3.3",
+      "hydrogen": "2026.10.0"
+    },
+    "changes": [
+      "official --webpack instead of default Turbopack",
+      "globals.css-only pre-loader using existing locked @tailwindcss/turbopack; built-in CSS pipeline retained as candidate"
+    ],
+    "css_patch": "--- a/next.config.ts\n+++ b/next.config.ts\n@@ -7,6 +7,14 @@\n \n const nextConfig: NextConfig = {\n   cacheComponents: true,\n+  webpack(config) {\n+    config.module.rules.push({\n+      test: /[\\\\/]app[\\\\/]globals\\.css$/,\n+      enforce: \"pre\",\n+      use: [\"@tailwindcss/turbopack\"],\n+    });\n+    return config;\n+  },\n   images: {\n     deviceSizes: [1320, 1920],\n     imageSizes: [],\n",
+    "source_changes": [
+      {
+        "path": "lib/blog/server.ts",
+        "before_sha256": "d7c51661ee868fa5aa9436b9b6e4b5b20f49996d57799aa6acff6605087b0b48",
+        "after_sha256": "b2b0f781fb79a44b1ec79bd123eba9f4ac6d9788ae92ff6e59f09fb28268b924"
+      },
+      {
+        "path": "lib/seo/server.ts",
+        "before_sha256": "4bb1af0db098d2181fd9efbd05cc9f68b9102f3e66f38c49c592d51f4da21a4a",
+        "after_sha256": "28d5003d9276e64bea725f7823a849eaab887d35e0e37b9b104a7c2fa7770d40"
+      },
+      {
+        "path": "lib/shopify/storefront/server.ts",
+        "before_sha256": "dffdb2f82e975de1d96800cd61408bb2d812b1276ed7b3b6e3cf58d5265e7a72",
+        "after_sha256": "55a831ab883f3a6c877047a02774dd857b1d16293eedf79385093a69fcb425a1"
+      },
+      {
+        "path": "next.config.ts",
+        "before_sha256": "33c01b5e32e101c3de9ed8473fe28248779a82db1e79cee2a0b932966e46abe4",
+        "after_sha256": "ce9258dd56979854be41123e5135693074c9e8c392ae9c3fccb0701c7986171a"
+      },
+      {
+        "path": "package.json",
+        "before_sha256": "37f52336bd7582f259c202ea52cd71472db23249ed8f01391041137673daccd2",
+        "after_sha256": "beea87048ab6675e65a55102d20eef764088c52128d94b8989b0016e9338fa31"
+      },
+      {
+        "path": "pnpm-lock.yaml",
+        "before_sha256": "f88c5ac750ff5a60cc93196b6583e879baa83a8a91fbe3c31b01093a6c487004",
+        "after_sha256": "4d7cdc9e91ed4076cb9f60b18fd94938d54436441d887a44ef4bd559bb90b987"
+      }
+    ],
+    "failure_classes": [
+      {
+        "kind": "font_transport",
+        "code": "SELF_SIGNED_CERT_IN_CHAIN",
+        "affected": [
+          "Geist",
+          "Geist Mono"
+        ],
+        "known_preparation_difference": "wrapper omitted existing SSL_CERT_FILE and NODE_EXTRA_CA_CERTS; presence only checked after failure, causal retry not performed"
+      },
+      {
+        "kind": "bundler_dependency",
+        "code": "UnhandledSchemeError",
+        "resource": "https://cdn.shopify.com/storefront/standard-events.js",
+        "import_chain": [
+          "@shopify/hydrogen/dist/core/shopify-scripts/page-view.mjs",
+          "@shopify/hydrogen/dist/core/shopify-scripts/initialize.mjs",
+          "@shopify/hydrogen/dist/core/index.mjs"
+        ],
+        "scope": "one resource repeated in multiple import traces, not independent failures or a CDN fetch result"
+      }
+    ],
+    "fixture": {
+      "status": "passed",
+      "state": "S0",
+      "events": 0,
+      "requests": 1,
+      "fifth_operation_enabled": false,
+      "scope": "captured fixture audit, not proof against undetected log loss"
+    },
+    "cleanup": [
+      {
+        "pgid": 5,
+        "term_sent": true,
+        "kill_sent": false,
+        "leader_returncode": -15,
+        "group_exists_at_end": false,
+        "status": "group_absent"
+      },
+      {
+        "pgid": 6,
+        "term_sent": false,
+        "kill_sent": false,
+        "leader_returncode": 1,
+        "group_exists_at_end": false,
+        "status": "group_absent"
+      }
+    ],
+    "evidence_identities": {
+      "build-attempt-once/result.json": {
+        "bytes": 1622,
+        "sha256": "4b520186e509089a97a73d83e68edb511549df87a2a53f74f45ea3d8549198b3"
+      },
+      "build-attempt-once/build-stdout.log": {
+        "bytes": 301,
+        "sha256": "502afee7f5903d5c07a2497b6c9f6ec8c3c6f3d5e69159c40c3111f4f662309b"
+      },
+      "build-attempt-once/build-stderr.log": {
+        "bytes": 11916,
+        "sha256": "a1c35ca05a9eadb06a09043a52a081bc6fce7cd4a5eb09e04754c17f76c5e561"
+      },
+      "build-attempt-once/fixture-audit.jsonl": {
+        "bytes": 161,
+        "sha256": "b569a655432330a82a820ed7fc1641e1a08e44843d41e5cf8acfe579e636ae6f"
+      },
+      "run_once.py": {
+        "bytes": 11116,
+        "sha256": "150cc801930158eb49f69778c8bb83279058b02da0ee96ca34021d769573150b"
+      },
+      "evidence/run-inputs.json": {
+        "bytes": 35708,
+        "sha256": "0c26a7b42151d048c23dd4b9abba93f804a79726a2b3da242d265f93e6e49f18"
+      }
+    },
+    "validation_limits": [
+      "compile failed; no successful full build or TypeScript result",
+      "no application start, e1-e4, browser, hosted deployment, or model comparison",
+      "CSS correctness and optional fifth operation necessity remain untested",
+      "only registered process groups confirmed absent; escaped descendants unknown",
+      "raw local logs and runner are not distributed here; hashes identify evidence, not download links"
+    ],
+    "decision": "do not use webpack plus a CSS adapter as an assumed drop-in recovery; preserve original failure and qualify dependency imports before another candidate",
+    "hydrogen_source_sha256": {
+      "dist/core/shopify-scripts/page-view.mjs": "603d15a1963db0d5098faad6005b3b760877f604cd4cc359cb88f9baff1f41fc",
+      "dist/core/shopify-scripts/page-view.mjs.map": "651d1087be8a2a54e96493d9ce994016f578af4c6457631268c85e0948410d9d",
+      "dist/core/shopify-scripts/initialize.mjs": "cebbc9724a3e22d06213798ef5f3eef8d921b92d0c563874edf563fbb39116aa",
+      "dist/core/index.mjs": "5eb77e6bc7bc6ec024983fdd2d231da7df4e94629009568404c10d3d141a7781",
+      "package.json": "b626ac62c6ca95cdf1fe100fc69a2cb7bbe9140c825ea3d71c016cfb4bd96d87"
+    }
   }
 }

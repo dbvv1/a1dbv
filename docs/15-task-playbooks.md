@@ -120,7 +120,7 @@
 
 - **有数据应用**：✅ 保既有受支持迁移器；小表能核实全部停写且落在批准窗口内，先短停写，否则桥接。Agent先只读源码／产物审稿，diff／迁移CLI不等于无副作用；人另定映射语义与运行权限。⛔ seed／reset不替迁移。旧写者或回填未排空并封住重启，不开新状态；不可逆时保状态前进修复。见[两轮继承包与撤回门](research/2026-10-12-development-maintenance.md#p22有数据应用的两轮迁移)。[一手／研究；未实测]
 
-- **Next应用换托管**：✅ 只改博客刷新／长文先保原Next及部署，明确迁出并选Node才自托管；Workers硬约束先评估OpenNext。Agent先核真实刷新入口，再继承内容／SEO；人定删文窗口。**交付须验生产消费者及完整构建**：固定shop的focused production两轮已过，全站构建仍失败。⛔ 不以dev或局部生产成功代替上线门；关键语义不保就退原实现并保新内容。见[固定shop继承包](research/2026-10-12-development-migrations.md#p23next应用迁出后仍值得保留吗)。[一手／本仓focused production运行；迁移对照未实测]
+- **Next应用换托管**：✅ 只改博客刷新／长文先保原Next及部署，明确迁出并选Node才自托管；Workers硬约束先评估OpenNext。Agent先核真实刷新入口，再继承内容／SEO；人定删文窗口。**交付须验生产消费者及完整构建**：固定shop的focused production两轮已过，全站构建仍失败；换webpack并补CSS适配也在依赖模块编译处失败，不作为默认恢复捷径。⛔ 不以dev或局部生产成功代替上线门；关键语义不保就退原实现并保新内容。见[固定shop继承包](research/2026-10-12-development-migrations.md#p23next应用迁出后仍值得保留吗)。[一手／本仓focused production运行；迁移对照未实测]
   - **只见外层失败，先查原进程。** 一次完整build的原生类型检查实际收到SIGKILL、没有类型诊断；Agent先保存退出／信号，人再判断需查资源还是代码，不能据此直接改类型或关闭检查。[补观察结果与未知原因](research/2026-10-12-development-migrations.md#完整build补观察原生检查进程收到sigkill2026-10-21)。[本仓运行／研究]
 
 
