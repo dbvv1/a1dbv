@@ -551,7 +551,7 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 | 3D／PBR：TiMi L1 Leon Zhang、Zhipeng Tan；Unity Generators团队 | [GDC2026生产管线](https://media.gdcvault.com/gdc2026/Slides/Zhang_Leon_Tan_Zhipeng_TheScalableGameAssetAssistedProductionPipelineOfHonorOfKings.pdf)本轮提取大小受限，继承WP3已核图页；[Unity Sprite4-28](https://unity.com/blog/unity-ai-sprite-generator)与[Material5-14](https://unity.com/blog/unity-ai-material-generator)正文已读。先核原型／成品目标及专业人工投入，再比细节质量，不用编辑器内生成代替生产就绪。 |
 | 材质／VFX／渲染：Natalya Tatarchuk组织的Advances，具体作者如IO Interactive Alexander Mueller | [SIGGRAPH2026课程入口](https://advances.realtimerendering.com/s2026/index.html)，7-21；仅简介，继承审计S20。Smolder／PSSR／VRRT供追讲义，不从简介判算法或动态稳定性，不把Glacier实现当Unity插件。 |
 | 动画／控制：Epic动画团队、Daniel Holden、Videocult开发者 | [GASP5.8，8-12](https://www.unrealengine.com/tech-blog/download-the-latest-game-animation-sample-project-now-updated-for-ue-5-8)、[Holden锁足，7-30](https://theorangeduck.com/page/inverse-kinematics-foot-locking)、[Rain World访谈，2025-09-25](https://unity.com/blog/exploring-procedural-design-rain-world)相关节已读。分状态选择／姿态检索、源动作／接触／锁足；程序动画仍有逐类代码。样例或作者名气不证明二改成本最优。 |
-| 音频：Wube／Albert、Donion及作曲者；Audiokinetic客座生产作者 | [FFF407，2024-04-19](https://factorio.com/blog/post/fff-407)已读，已有WP6；只作历史生产反例，专业作曲未消失。[Endfield](https://www.audiokinetic.com/community/blog/arknights-endfield)／[METAL EDEN](https://www.audiokinetic.com/community/blog/metal-eden-weapons-sound-design)仅发现，正文不可访问、署名未核；不拿摘要填近期音频上限空白。 |
+| 音频：Nintendo／Naoto Kubo；Game Audio Insights／Jorge Peirano；Wube及独立开发者afeique | [Bananza访谈，2025-07-15](https://www.nintendo.com/en-gb/News/2025/July/Ask%2Dthe-Developer-Vol-19-Donkey-Kong-Bananza-Chapter-2-2871378.html)与[Speedstorm复盘，2025-05-09](https://gameaudioinsights.com/2025/05/09/the-audio-direction-of-disney-speedstorm/)本次补读：查高频／并发下的取舍，详见下文。FFF407历史参照及[Rainboids多轮生产链](2026-10-14-game-wp6-audio.md#31-jsfxr参数化可局部修改但存参数位级复现是错的)继承已有研究，后者为名册转化缺口，不计新发现。两篇Audiokinetic候选的旧读取缺口保留。 |
 | 引擎接入／客户端观察：Unity AI、Epic技术博客与版本文档 | [Unity AI5-05入口](https://unity.com/blog/unity-ai-how-to-get-started)已读，继承S12；Unity Insight沿审计S13，非本轮新读。区分文件代码与场景／引用／编辑器状态；原文入口不等于安装、实际修改或恢复已验。 |
 | 测试分发／发行：Valve Steamworks团队 | [Playtest](https://partner.steamgames.com/doc/features/playtest)、[Content Survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey)对应节已读，滚动文档未标发布日，核实10-21。访问分发与反馈获取分开；生成内容可用性不等于平台发行资格，平台规则也不是体验证据。 |
 
@@ -577,3 +577,21 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 **独立参照产生一项补读。** 另一份小卡于09:59:16开始、10:00:27冻结；未读本轮稿，但读过P47基线，故不是对既有内容完全盲测。它的fallback首事件边界和retry policy两项是输入已知；新增PydanticAI历史修复／当前run工具定义的原文未在本次新检索核查，归读取缺口。冻结后补读固定v2.58.0文档，将合成interrupted与真实结果分开。三项断言不是三个独立最高水平来源，不能据此报1/3整体漏检率。[研究：后验查漏]
 
 这次查漏使25增加跨层状态核查：找到耐久执行方案后，仍回原生SDK核请求、执行和历史修复各层的契约；不只沿新框架作者链走。新内容与20二改选择一起交付，记**1个自用内容项目／目标3个**，P47整体B0→B1→B2未验收，P51仍未完成；不把独立卡、固定版本核查或旧研究拆成多次使用。[研究：验收状态]
+
+
+### P51音频补漏：从单次效果到使用密度
+
+核实：2026-10-21（UTC+8），基线33b0cfe；属于P51名册补全，不另算自用项目。**本次改变25的取样选择：先比较实际重复频率、同时事件与使用阶段，再决定是否增加素材或层次。** 不重做已有“原型不能静音判断玩法”的结论。[研究]
+
+**最高水平卡。** 同约束的最佳AI音频生产路线仍未知。近期领先作品机制参照为Nintendo音频总监Naoto Kubo的Bananza访谈与音频总监Jorge Peirano的Speedstorm制作复盘；两者讲人工团队的质量取舍。主流普及率未知；可行基线是保留必要反馈、复用合格素材。本仓采用的是参照检索与取样方法，不把AAA人力或声音资产迁移给单人项目。[一手／研究]
+
+| 原始来源／位置 | 本次已读证据与取舍 |
+|---|---|
+| Nintendo英国页，[Ask the Developer 19第二章](https://www.nintendo.com/en-gb/News/2025/July/Ask%2Dthe-Developer-Vol-19-Donkey-Kong-Bananza-Chapter-2-2871378.html)，2025-07-15；Kubo谈音效的段落 | 常见破坏声会被听到数千次，团队手录材质变体、加入轻微程序随机并调整响度／高频；特殊物件另用更华丽的声效。用于比较重复使用的疲劳风险，而非让每次反馈都更强烈。[一手：团队自报] |
+| Jorge Peirano，[The Audio Direction of Disney Speedstorm](https://gameaudioinsights.com/2025/05/09/the-audio-direction-of-disney-speedstorm/)，2025-05-09，页面另列05-16；Sound Design & Voice Design、Mixing | 同时事件多时删去赛中持续轮胎声／环境铺底，赛前仍保留；发动机、轮胎与nitro按情境让位。说明应搜“删了什么、什么时候保留”，不只搜新增混音功能；不推广为所有赛车都删环境声。[一手：作者自报] |
+
+**反例与采用边界。** 孤立样本出色不能证明密集触发清楚；反过来，赛中删掉的层在赛前可能有用。Agent可把参照拆成高频、并发、状态切换的核查条件，人判断实际听感；现有简单方案已清楚时不为模仿大作增加随机化或复杂混音。本次只读文本，没有试听、模型／引擎运行或收益比较。[研究]
+
+**补漏归类。** 基线docs与domains按Bananza／Naoto Kubo／文章ID及Speedstorm／作者／域名查重均未命中，记为本次新检索候选，不断言历史从未看过。WP6已有Rainboids生产链却未进入持续作者名册，归转化缺口并补内部链接；不重复计算其来源发现。两篇既有Audiokinetic候选仍未读，本次未重试，原先12/16的历史读取分母不改写。没有冻结的外部完整参照集合，不计算总体漏检率。[研究]
+
+**使用回执（执行者自报）。** 先读33b0cfe所含P51提示词再研究，11:04:20 UTC开始，11:05:51冻结来源与决定，约11:07整理结束。1分31秒为研究墙钟历时，检索、阅读与等待未分离，不能称净工时。限定目标N=3、相关正文已读F=3：新增原文2篇，既有[FFF396](https://factorio.com/blog/post/fff-396)重读1篇；决定性新增来源D=2、FD=2。主执行者随后重读两新增原文不重复计数，提示词自用仍为1/3，P51整体未完成。[研究：局部读取覆盖，非效果指标]
