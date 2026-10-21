@@ -429,6 +429,8 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 
 维护控制名册补充（P57，2026-10-21）：从[Spotify Engineering](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)的Honk系列追循环采用与迁移撤回；从[Shopify／Erin Son、Kaiyi Li](https://shopify.engineering/river-vulnerability-remediation)追跨次接收及人工接管；从[Cursor／Josh Ma](https://cursor.com/blog/cloud-agent-lessons)追任务编排撤回与运行责任。原文已读，采用条件与缺口统一归[长任务研究](2026-10-12-long-task-evidence.md)，不据厂商产量或估算成本声称净收益。[一手／研究]
 
+团队接收名册补充（P58，2026-10-21）：沿[Will Larson](https://lethain.com/small-changes/)追窄放行试点的结果与长期调参；[Shopify Quick／Daniel Beauchamp、Alex Pilon](https://shopify.engineering/quick)追受限共享平台的真实维护；[Monzo／Fabien Deshayes、Oli Haley](https://monzo.com/blog/building-agent-chip)追非专家发起、工程师接收与团队归属。相关原文已读，只借用途与接收边界，不采产量或单机价格作为整体收益。[一手／研究]
+
 跨线个人雷达：[Simon Willison](https://simonwillison.net/)及其[9-27演讲整理](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)。本人经验为一手，转引追原作者；本仓已收录，不计新增。
 
 ### 三篇指定校准卡

@@ -1,6 +1,14 @@
 # 11 · 社区脉搏
 
-> 更新：2026-10-15 UTC。[来源与核实范围](research/2026-10-12-community-source-records.md#11-社区脉搏的核实范围)；近期事件与新做法见 [13 前沿雷达](13-frontier-radar.md)。
+> 更新：2026-10-21（UTC+8；补团队接收比较，其余保留原核实日期）。[来源与核实范围](research/2026-10-12-community-source-records.md#11-社区脉搏的核实范围)；近期事件与新做法见 [13 前沿雷达](13-frontier-radar.md)。
+
+## 当前最高水平：从采用热度追到团队接收
+
+<!-- frontier: status=已比较 gap=2 gen=2026-10 checked=2026-10-21 -->
+
+**团队采用的跨场景最优未知。** 2026年的近期领先参照分别是 Shopify 的 [Quick／Beauchamp、Pilon（6-10）](https://shopify.engineering/quick)、Monzo 的 [Agent Chip／Deshayes、Haley（8-13）](https://monzo.com/blog/building-agent-chip)、Imprint 的 [small-change／Will Larson（10-17）](https://lethain.com/small-changes/)：受限共享、非工程师起草后由工程师接收、窄任务快速审批，不能排成一条成熟度阶梯。[一手：团队自报]
+
+**主流采用比例未知；本仓选比较后的可行默认：先让有用产物被接收，再决定扩大承诺。** Agent 可做实现与取证，人判用途并确认故障和下一修改由谁承接；接收或维护积压就收窄。使用人数、任务数与 PR 占比不证明持续收益，small-change 也尚无成熟结果。按 [18 §2](18-team-adoption.md#2-推广路线)行动，完整[最高水平卡与缺口](research/2026-10-12-community-source-records.md#p58团队试用怎样形成持续交付)另列。[研究]
 
 ## 本轮新增：实际工作流与失败案例（2026-10-10）
 
