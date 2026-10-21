@@ -375,12 +375,17 @@ def cleanup_owned(owned, term_grace=10, kill_grace=2):
   return rows
 
 
-def run(app, output, mode='dev', build_id=None):
+def run(app, output, mode='dev', build_id=None, *, enable_collection_products=False,
+    enable_placeholder_get_collection=False):
   global ROOT, processes, CURRENT_STATE
   if mode not in ('dev', 'focused-production', 'existing-production'):
     raise ValueError('unknown probe mode')
   if mode != 'existing-production' and build_id is not None:
     raise ValueError('--build-id is only valid for existing-production')
+  if type(enable_collection_products) is not bool or type(enable_placeholder_get_collection) is not bool:
+    raise ValueError('optional operation flags must be boolean')
+  if mode != 'existing-production' and (enable_collection_products or enable_placeholder_get_collection):
+    raise ValueError('catalog operation flags are only valid for existing-production')
   artifact = validate_existing(app, build_id) if mode == 'existing-production' else None
   validate_app(app)
   if not output.is_dir() or any(output.iterdir()):
@@ -425,12 +430,21 @@ def run(app, output, mode='dev', build_id=None):
             'scope': 'direct HTTP/RSC consumers only; not full-site production or browser navigation'}
   if artifact is not None:
     record['existing_artifact'] = artifact
+    record['catalog_contract'] = {
+      'mode': 'empty-products-and-collections',
+      'enable_collection_products': enable_collection_products,
+      'enable_placeholder_get_collection': enable_placeholder_get_collection,
+      'scope': 'explicit runtime inputs only; correspondence to existing build inputs unverified'}
   def save():
     (ROOT / 'continuity-result.json').write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8')
   try:
     source_command = ([sys.executable, str(Path(__file__).with_name('p23_catalog_fixture.py').resolve()),
       '--mode', 'empty-products-and-collections'] if mode == 'existing-production' else
       [sys.executable, str(Path(__file__).resolve()), '--source'])
+    if enable_collection_products:
+      source_command.append('--enable-collection-products')
+    if enable_placeholder_get_collection:
+      source_command.append('--enable-placeholder-get-collection')
     processes.append(subprocess.Popen(source_command, stdout=logs[0],
       stderr=subprocess.STDOUT, env=env, start_new_session=True))
     save()
@@ -550,10 +564,14 @@ def main(argv=None):
   parser.add_argument('--output', type=Path)
   parser.add_argument('--mode', choices=('dev', 'focused-production', 'existing-production'), default='dev')
   parser.add_argument('--build-id', help='declared existing .next BUILD_ID, not proof of a full build')
+  parser.add_argument('--enable-collection-products', action='store_true')
+  parser.add_argument('--enable-placeholder-get-collection', action='store_true')
   parser.add_argument('--source', action='store_true', help=argparse.SUPPRESS)
   args = parser.parse_args(argv)
   if not __debug__:
     parser.error('Do not run assertion probes with Python -O')
+  if args.mode != 'existing-production' and (args.enable_collection_products or args.enable_placeholder_get_collection):
+    parser.error('catalog operation flags are only valid for existing-production')
   if args.source:
     if args.app or args.output or args.build_id is not None or args.mode != 'dev':
       parser.error('--source cannot be combined with run arguments')
@@ -565,7 +583,9 @@ def main(argv=None):
     parser.error('--build-id is required only with existing-production')
   try:
     if args.mode == 'existing-production':
-      run(args.app.resolve(), args.output.resolve(), args.mode, args.build_id)
+      run(args.app.resolve(), args.output.resolve(), args.mode, args.build_id,
+        enable_collection_products=args.enable_collection_products,
+        enable_placeholder_get_collection=args.enable_placeholder_get_collection)
     else:
       run(args.app.resolve(), args.output.resolve(), args.mode)
   except (ValueError, FileNotFoundError, KeyError) as exc:

@@ -6,6 +6,8 @@ from p23_source_fixture import Scenario
 MODE = 'empty-products-and-collections'
 FOUR = frozenset(('getCollections', 'getCollectionsWithFeaturedImage', 'searchProducts', 'searchFacets'))
 FIFTH = 'collectionProducts'
+PLACEHOLDER_COLLECTION = 'getCollection'
+PLACEHOLDER_LOCALE = {'country': 'US', 'language': 'EN', 'locale': 'en-US'}
 POLICIES = ('contactInformation', 'legalNotice', 'privacyPolicy', 'refundPolicy', 'shippingPolicy', 'termsOfSale', 'termsOfService')
 LOCALES = (None, {'country': 'US', 'language': 'EN'}, {'country': 'US', 'language': 'EN', 'locale': 'en-US'})
 
@@ -14,13 +16,21 @@ def failure():
   return {'data': None, 'errors': [{'message': 'fixture unavailable', 'extensions': {'code': 'INTERNAL_SERVER_ERROR'}}]}
 
 
-def empty_catalog_response(operation, variables, *, mode, enable_collection_products=False, unavailable=False):
+def empty_catalog_response(operation, variables, *, mode, enable_collection_products=False,
+    enable_placeholder_get_collection=False, locale=None, unavailable=False):
   if mode != MODE:
     raise ValueError('explicit empty catalog mode required')
-  if type(enable_collection_products) is not bool:
+  if type(enable_collection_products) is not bool or type(enable_placeholder_get_collection) is not bool:
     raise ValueError('optional operation flag must be boolean')
   if type(operation) is not str:
     raise ValueError('operation must be a string')
+  if operation == PLACEHOLDER_COLLECTION and enable_placeholder_get_collection:
+    # Only the observed static metadata request; never fabricate a collection.
+    if type(variables) is not dict or variables != {'handle': '__placeholder__'}:
+      raise ValueError('unsupported placeholder collection variables')
+    if type(locale) is not dict or locale != PLACEHOLDER_LOCALE:
+      raise ValueError('unsupported placeholder collection locale')
+    return failure() if unavailable else {'data': {'collection': None}}
   if operation not in FOUR and not (enable_collection_products and operation == FIFTH):
     raise ValueError('unknown or disabled operation: ' + str(operation))
   if type(variables) is not dict:
@@ -79,13 +89,15 @@ class Router:
     Audit contains synthetic request payloads only; never headers/environment.
     Use only with this synthetic task. Sink failures propagate (fail closed).
     """
-  def __init__(self, *, mode, enable_collection_products=False, audit_sink):
+  def __init__(self, *, mode, enable_collection_products=False,
+      enable_placeholder_get_collection=False, audit_sink):
     if mode != MODE:
       raise ValueError('explicit empty catalog mode required')
-    if type(enable_collection_products) is not bool:
+    if type(enable_collection_products) is not bool or type(enable_placeholder_get_collection) is not bool:
       raise ValueError('optional operation flag must be boolean')
     self.mode = mode
     self.enable_collection_products = enable_collection_products
+    self.enable_placeholder_get_collection = enable_placeholder_get_collection
     self.source = Scenario()
     self.audit_sink = audit_sink
     self._audit_fatal = None
@@ -132,8 +144,10 @@ class Router:
         variables = payload.get('variables', {})
         if payload.get('locale') not in LOCALES:
           raise ValueError('unsupported locale')
-        if operation in FOUR or operation == FIFTH:
-          result = empty_catalog_response(operation, variables, mode=self.mode, enable_collection_products=self.enable_collection_products, unavailable=unavailable)
+        if operation in FOUR or operation in (FIFTH, PLACEHOLDER_COLLECTION):
+          result = empty_catalog_response(operation, variables, mode=self.mode, enable_collection_products=self.enable_collection_products,
+            enable_placeholder_get_collection=self.enable_placeholder_get_collection,
+            locale=payload.get('locale'), unavailable=unavailable)
         elif operation == 'getShopPolicies':
           if type(variables) is not dict or variables:
             raise ValueError('unsupported policy variables')
@@ -169,9 +183,11 @@ def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--mode', required=True, choices=[MODE])
   parser.add_argument('--enable-collection-products', action='store_true')
+  parser.add_argument('--enable-placeholder-get-collection', action='store_true')
   parser.add_argument('--port', type=int, default=8766)
   args = parser.parse_args()
   router = Router(mode=args.mode, enable_collection_products=args.enable_collection_products,
+          enable_placeholder_get_collection=args.enable_placeholder_get_collection,
           audit_sink=lambda entry: print(json.dumps(entry, ensure_ascii=False), flush=True))
 
   class Handler(BaseHTTPRequestHandler):
