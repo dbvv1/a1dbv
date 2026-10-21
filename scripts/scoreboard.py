@@ -9,8 +9,10 @@ status is 已比较／仅候选／未知, gap is 0-3 (0 = at the current best, 3
 or outdated), gen is the model/tool generation the advice was checked against.
 A page without a marker counts as unregistered. Also counts coverage-map
 cells by level. Pages without a marker fall back to the independent audit
-baseline in docs/collaboration/frontier-baseline.tsv. Reporting only: it never
-fails the offline checks.
+baseline in docs/collaboration/frontier-baseline.tsv. When an audit dated on or
+after a page's own check scores it worse, the page is listed as disputed for
+the executor to resolve; neither score overrides the other. Reporting only: it
+never fails the offline checks.
 """
 import argparse
 from datetime import date
@@ -62,7 +64,7 @@ def load_baseline(root):
     parts = line.split('\t')
     if line.startswith('#') or len(parts) < 2 or not parts[1].isdigit():
       continue
-    baseline[parts[0]] = int(parts[1])
+    baseline[parts[0]] = (int(parts[1]), parts[2] if len(parts) > 2 else '')
   return baseline
 
 
@@ -78,7 +80,12 @@ def scan_pages(root, today):
       marker = parse_marker(text)
       row = {'campaign': campaign, 'page': path.relative_to(root).as_posix(),
              'has_section': '当前最高水平' in text, 'marker': marker,
-             'audit_gap': baseline.get(path.relative_to(root).as_posix())}
+             'audit_gap': None, 'disputed': False}
+      audit = baseline.get(row['page'])
+      if audit:
+        row['audit_gap'], row['audit_date'] = audit
+        row['disputed'] = bool(marker and 'gap' in marker and audit[0] > marker['gap']
+                               and audit[1] >= marker['checked'])
       if marker and 'checked' in marker:
         days = age_days(marker['checked'], today)
         row['stale'] = days is None or days > STALE_DAYS[campaign]
@@ -116,6 +123,7 @@ def summarize(rows):
       'audit_gap': {str(g): sum(r['audit_gap'] == g for r in mine)
                     for g in range(4) if any(r['audit_gap'] == g for r in mine)},
       'unaudited': sum(r['audit_gap'] is None and not r['marker'] for r in mine),
+      'disputed': [r['page'] for r in mine if r['disputed']],
     }
   return out
 
@@ -126,7 +134,9 @@ def priority(row):
     # Unaudited pages rank with gap 2: unknown is not assumed to be good.
     gap = 2 if row['audit_gap'] is None else row['audit_gap']
     return (0, -gap, row['audit_gap'] is not None, row['page'])
-  return (1, -marker['gap'], not row.get('stale'), row['page'])
+  if row['disputed']:
+    return (1, -row['audit_gap'], row['page'])
+  return (2, -marker['gap'], not row.get('stale'), row['page'])
 
 
 def main(argv=None):
@@ -147,15 +157,18 @@ def main(argv=None):
           f"已比较 {s['compared']}，过期 {s['stale']}，无最高水平节 {s['no_section']}，"
           f"标记错误 {s['bad_marker']}")
     print(f"  审计基线差距分布 {s['audit_gap']}，未审计且未登记 {s['unaudited']}")
+    if s['disputed']:
+      print(f"  审计比自评差（待执行者按证据处理）：{'、'.join(s['disputed'])}")
   for section, counts in report['coverage'].items():
     print(f"覆盖地图 {section}: " + '，'.join(f'{k}级 {v}' for k, v in counts.items()))
-  print('\n待推进（未登记优先，其次差距大、已过期）：')
+  print('\n待推进（未登记优先，其次审计分歧、差距大、已过期）：')
   for row in report['queue'][:15]:
     m = row['marker']
     base = '' if row['audit_gap'] is None else f"（审计差距{row['audit_gap']}）"
     state = f'未登记{base}' if not m else ('标记错误' if 'error' in m else
              f"{m['status']}／差距{m['gap']}／{m['gen']}／{m['checked']}"
-             + ('／过期' if row.get('stale') else ''))
+             + ('／过期' if row.get('stale') else '')
+             + (f"／审计{row['audit_gap']}待处理" if row['disputed'] else ''))
     print(f"  {row['page']}: {state}")
   return 0
 

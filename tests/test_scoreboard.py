@@ -57,7 +57,8 @@ class ScoreboardTest(unittest.TestCase):
     # Unaudited unknowns rank as gap 2, ahead of an audited gap 1.
     self.assertEqual(pages[:3], ['docs/05-bad.md', 'domains/game-dev/01-engine.md',
                                  'docs/04-mcp.md'])
-    self.assertEqual(pages[3], 'docs/03-context.md')
+    # The fixture audit (same day, gap 2) disputes 02's self-score of 1.
+    self.assertEqual(pages[3:5], ['docs/02-models.md', 'docs/03-context.md'])
 
   def test_page_marker_overrides_audit_baseline(self):
     summary = self.run_json()['summary']['C1 AI coding 主干']
@@ -66,6 +67,19 @@ class ScoreboardTest(unittest.TestCase):
     self.assertEqual(self.run_json()['summary']['C2 游戏 G1']['unaudited'], 1)
     rows = {r['page']: r for r in self.run_json()['queue']}
     self.assertEqual(rows['docs/02-models.md']['marker']['gap'], 1)
+
+  def test_later_worse_audit_marks_page_disputed(self):
+    write(self.root, 'docs/collaboration/frontier-baseline.tsv',
+          'page\tgap\taudit\ndocs/02-models.md\t2\t2026-10-22\n'
+          'docs/03-context.md\t3\t2026-04-01\n')
+    report = self.run_json()
+    self.assertEqual(report['summary']['C1 AI coding 主干']['disputed'], ['docs/02-models.md'])
+    pages = [row['page'] for row in report['queue']]
+    # Disputed pages follow unregistered ones and precede ordinary gaps.
+    self.assertLess(pages.index('docs/02-models.md'), pages.index('docs/03-context.md'))
+    # An audit older than the page's own check does not dispute it.
+    rows = {r['page']: r for r in report['queue']}
+    self.assertFalse(rows['docs/03-context.md']['disputed'])
 
   def test_coverage_levels_skip_level_definitions(self):
     coverage = self.run_json()['coverage']
