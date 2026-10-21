@@ -1,6 +1,6 @@
 主线：二，额外能力何时值得加；三，连续修改仍然可靠
 改变的建议：按不可猜的契约与可观察偏好选择短规格、测试或样品；只为会改变实现的未知事实定向研究；按原需求验收并允许实现反馈推翻计划。额外评审按具体漏审风险试用，重复意见或处理负担过高时收窄／撤回；先确认真实入口、计费和成功报告，再考虑 CI 门槛；跨仓修复须核实际依赖版本，不能只按本 PR head 判断复审覆盖。[研究]
-新证据：10-22 P69沿Equinor既有入口追到长内容Dialog二改及分层接收，补07的近期原文与独立来源比较；10-21 P38补维护审计及保代码续做／摘要辅助独立重试的同题比较；P45补当前维护产物取舍、固定设计配方与贡献要求信息条件对照，未新跑模型；10-20新增存量安全审计的curl／Mozilla接收与降级反例，区分候选、人工补丁、发行及缺失回归回执；10-16新增 ComfyUI 目录 PR 的人工／机器人发现、作者确认、固定补丁与复审跳过／完成链；以下为既有证据汇总（日期见各节，非本次新增）：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约、SO 调查分母、模型客户引言、Cursor 当前计费、GitClear 公开图页的指标口径，以及 Intercom 原文、第三方集成固定来源与配置诊断／插件评估范围补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
+新证据：10-22补Amp受控接收与VS Code同一问题的合入、渠道发布和相反回执，区分等待交付与重新定位；10-22 P69沿Equinor既有入口追到长内容Dialog二改及分层接收，补07的近期原文与独立来源比较；10-21 P38补维护审计及保代码续做／摘要辅助独立重试的同题比较；P45补当前维护产物取舍、固定设计配方与贡献要求信息条件对照，未新跑模型；10-20新增存量安全审计的curl／Mozilla接收与降级反例，区分候选、人工补丁、发行及缺失回归回执；10-16新增 ComfyUI 目录 PR 的人工／机器人发现、作者确认、固定补丁与复审跳过／完成链；以下为既有证据汇总（日期见各节，非本次新增）：GIF 优化器原任务与固定实现、Anthropic 原型与评价反例、BAML 同起点双 PR、Superpowers 固定交接配置、Crossplane 选择性采纳与降强度记录，另有评审论文、Faros 指标核对及 10-14 官方评审入口／失败契约、SO 调查分母、模型客户引言、Cursor 当前计费、GitClear 公开图页的指标口径，以及 Intercom 原文、第三方集成固定来源与配置诊断／插件评估范围补核。来源分别是固定产物、参与者自报及研究；未证明完整流程或额外 reviewer 的净收益。[一手／社区／研究]
 
 # 实现决策与评审：让原需求和运行反馈纠正计划
 
@@ -548,3 +548,64 @@ Mozilla原文称最小测试帮助工程师复核并在Firefox148前修复；22�
 **接收层要分开。** 固定根页面仍写下一PR接Theme Builder；截至本轮核查，后续[#5585](https://github.com/equinor/design-system/pull/5585)（a5b8c95f91ff56c954dcebdab12b90177f0df0b9）与[#5586](https://github.com/equinor/design-system/pull/5586)（e8c13b717033836aa03247e6a769e5bea8a44ee4）均开放、未合入。其本地测试数是作者报告，不能覆盖基础合入后的完整应用或线上交付；未查部署。故默认允许基础分拆，却不把基础接受写成全功能完成。[一手／研究]
 
 **验证与探索边界。** 本轮只读公开原文、评审、固定源码和产物，未运行上游应用／模型。P51提示用于既有来源名册续查；新信息是Equinor后续修补与接收链，其余为已知原文重读，无独立盲测分母，不计算漏检率。无新探针或结果JSON。独立审查及仓库离线结果见同批TASKS回执。[研究]
+
+
+## 修复合入后：等待交付还是重新定位
+
+核实：2026-10-22（UTC+8）。**任务包含上线／用户恢复时，合入后先核目标渠道与实际路径；尚未收到修订就追交付，相关版本仍失败则重新定位。** 代码／PR任务仍可按其范围交付，不要求无权部署，也不规定维护者必须等所有人复测才关闭issue。本节改变的是“目标用户已恢复”的证据要求，不重复15第2节的故障信号分类。[研究；经验]
+
+### 当前最高水平卡与采用取舍
+
+- **最高水平仍未知，近期领先候选**：Thorsten Ball的[Amp 10-13转录](https://ampcode.com/time-capsules/6)和Quinn Slack／Thorsten Ball的[10-20播客](https://ampcode.com/podcast/season-02/episode-06)，把实际使用、受控启用及反馈纳入接收。两篇是同一团队自报，不能互算独立佐证。[一手]
+- **独立同题反例**：微软VS Code公开GHE修复链，已合入且Insiders一名原复现参与者确认，仍不能据此声称Stable目标用户恢复。补丁与接收回执可核，未证明Amp流程优于替代方案。[一手；研究]
+- **主流比较基线**：测试＋PR／人审后交发布者，采用率未测。它足以支持约定代码交付，不自动支持用户恢复；保留评审，不移植Amp的免PR组织方式。[研究]
+- **可行推荐**：复用现成版本／渠道／开关信息与原问题路径，不为小修搭新平台。只在复杂使用假设或行为过渡需要时追加有限观察，维护成本是跟清并存版本、启用范围与未覆盖配置。[经验]
+- **反例和撤回条件**：Will Larson／Imprint的[10-17 small-change](https://lethain.com/small-changes/)指出高领域复杂度使渐进发布覆盖受限；其试点尚早，不作为成熟收益证明。缺目标环境证据时撤回“已恢复”声称；不能因小范围正常就放行所有配置。[一手；研究]
+
+本仓采用的是领先机制的条件化取舍，维持15既有“已比较／差距1”，不升级为最优或模型效果验证。Shopify三位作者Max Da Silva、Jason Kim、Quique Fagoaga的[9-10 Shop迁移](https://shopify.engineering/shop-app-migration)提供独立的旧登录、通知与下游事件连续性参照，但不是VS Code或Amp的复现；本次复用既有来源，不算新发现。[研究]
+
+### VS Code：同一问题的交付与相反回执
+
+[Issue #337562](https://github.com/microsoft/vscode/issues/337562)讨论GitHub Enterprise反复登录提示。[原复现参与者kvanderkamp](https://github.com/microsoft/vscode/issues/337562#issuecomment-5815475450)报告Stable 1.139与Insiders 1.140都受影响；原issue作者是另一人。下列评论日期取网页显示，时区未核，不换算精确UTC+8时间。[一手]
+
+1. [PR #337722](https://github.com/microsoft/vscode/pull/337722)由Copilot提交、维护者整合，合并于2026-09-24T23:53:34Z，即UTC+8的9月25日07:53:34。固定提交[8d9acb2016f8123b1b0f0c9e2d5c5d4859d5b054](https://github.com/microsoft/vscode/commit/8d9acb2016f8123b1b0f0c9e2d5c5d4859d5b054)调整host-aware客户端认证及会话路径；最终范围排除尚未发布的Microsoft-brokered sign-in的过期GHE凭证处理。
+2. issue合并关闭后先标unreleased，后换insiders-released。维护者9月25日[要求核最新Insiders](https://github.com/microsoft/vscode/issues/337562#issuecomment-5840334403)，同一kvanderkamp9月26日[确认对自己恢复](https://github.com/microsoft/vscode/issues/337562#issuecomment-5844084609)，没有给出固定构建SHA。
+3. 9月29日另一用户[问何时到Stable](https://github.com/microsoft/vscode/issues/337562#issuecomment-5883751576)。这说明不能把Insiders回执替代Stable接收，也不应强迫目标Stable用户改用试验渠道来满足验收。
+4. 10月2日两名参与者分别报告[1.140.0仍频繁弹窗](https://github.com/microsoft/vscode/issues/337562#issuecomment-5947973212)和[1.140才开始出现](https://github.com/microsoft/vscode/issues/337562#issuecomment-5962360692)。同症状不证明同根因，不能由此断言原补丁无效或应回滚。
+5. 10月20日维护者称[近几个版本又补了修复](https://github.com/microsoft/vscode/issues/337562#issuecomment-6297283444)，后一参与者说[1.142近期没再被烦扰、猜测已好](https://github.com/microsoft/vscode/issues/337562#issuecomment-6301326365)。这是有限自报，不是完整回归，不能归因到原合并SHA。
+
+[1.140.0发行标签](https://github.com/microsoft/vscode/releases/tag/1.140.0)固定为07f806f999227108933c2e30515b26eecc1fda74；compare核原合并为祖先（ahead269、behind0，merge-base为8d9acb2），并读回该标签的[凭证源码20–65行](https://github.com/microsoft/vscode/blob/07f806f999227108933c2e30515b26eecc1fda74/src/vs/platform/agentHost/node/copilot/copilotGitHubCredentials.ts#L20-L65)，客户端认证机制仍在。因此不能把所有1.140反馈简单归为“修订未进版本”；源码存在仍不证明报告者二进制运行了相同路径。[一手：源码／元数据；研究]
+
+**下一动作不是一律等发布或一律继续补丁。** 未到目标渠道就追交付；已到相关版本但仍失败就核配置、身份及实际路径；仅有限对象通过就只报告该范围。人决定修复／启用范围与恢复风险，Agent不能用closed／verified标签抹掉相反报告。[经验]
+
+### Amp：用户回归与OOM不是同一个案例
+
+10-13转录10:59描述已上线且所观察的inference errors指标未升高，但有用户可见回归，作者要求撤回。它支持“单项错误指标不足以证明用户结果”，没有公开固定提交、独立部署日志或恢复回执，也没有说明测试全部通过；该段模型未披露。[一手：团队自报]
+
+同篇31:02–34:19是另一个OOM案例，明示Claude Opus 5.5：从候选处理方式、人讨论，到获准部署及只为作者启用开关，再复现并确认停止按钮。不能把该模型身份挪给10:59案例，也不能把作者自用写成原用户全部恢复或OOM自动处理已完成。[一手：团队自报]
+
+10-20播客描述复杂变更先观察实际使用，再分阶段改行为，通知等待真实rollout；bug修复仍由人看后发布。这是方法自述，不是公开了一次“观察推翻原实现目标”的完整因果链。其只读、限时生产访问不构成本仓或读者的部署授权。[一手；研究]
+
+### 读取与验证范围
+
+本轮先读P51提示词（固定blob 98f326ab4975771d797b1a14348694cbd3b3f744），再读外部原文；先前规划输入不冒称本轮前瞻自用。Amp两篇为输入已知，Shop／Imprint为既有来源重读；后续在同一问题中找到VS Code公开链。未冻结漏检真值，不计算召回、净工时或提效。[研究]
+
+独立核查者另读issue、PR及compare，确认渠道与回执范围；本轮只读公开正文、评论、源码及元数据，未运行VS Code／模型。PR验证清单是自报，最终[approval正文](https://github.com/microsoft/vscode/pull/337722#pullrequestreview-5311632703)标Written by Copilot，不能称独立人工运行验证；另一空正文approval也不证明测试范围。没有复核该外部提交hosted CI，不把页面绿色状态写成本仓通过。[研究]
+
+**独立内容复核（2026-10-22 UTC+8）**：新上下文审查者完整阅读15及本节实际差异，另读Amp两篇、Imprint、VS Code全部12条公开评论、PR approvals与固定凭证源码；未见阻断问题。确认任务范围、渠道回执、不同根因可能性及授权边界一致；审查覆盖本次两文件交付，不替后续变更或外部运行背书。[研究]
+
+
+## P72审计补强：离线评审怎样进入放量
+
+核实2026-10-22（UTC+8）。S9以外的ReviewBench为校准审计后验带入，不是自主发现。当前整体最优未知；近期领先参照为GitHub／Michelle Zhou、Alejandro Carderera de Diego的10-05工程复盘。常见可行基线仍是原生评审、已有确定性检查和风险人审；本仓借离线筛选→生产窄试→实际修补接收，不新增评估平台。[研究]
+
+[官方原文](https://github.blog/ai-and-ml/reviewbench-an-open-benchmark-for-ai-code-review/)已读Broad ground truth、Metrics、Internally audited、How used相关正文。其人工96.6%一致率针对既有gold重标，不是评审器precision或全PR召回；线上addressed rate为LLM推断的评论后对应修改。lite-tier多模型ensemble的A/B与离线同向，但模型组合、完整样本区间及人工投入未齐，不据此推荐当前Codex／Claude都换多模型。评论量正文与图表数字不一致，本次不用该数值。[一手；研究]
+
+**公开实现可核，不靠名称解释指标。** 正常云浏览器已打开[公开站](https://review-bench.ai/)及methodology，先前web抓取失败仅是该读取路径失败。固定仓库SHA `9fd1c9bb1f3a2e1e6dbbd2a226a47c82b6c90e87`：
+- [scorer](https://github.com/review-bench/ReviewBench/blob/9fd1c9bb1f3a2e1e6dbbd2a226a47c82b6c90e87/scripts/eval/scorer.ts#L155-L179)的grounded recall分母为固定golden TP；augmented把候选新TP同时加到分子分母，不能独自跨候选排名。grounded precision排除未匹配项，不是全部输出的精确率。[一手]
+- [分类prompt](https://github.com/review-bench/ReviewBench/blob/9fd1c9bb1f3a2e1e6dbbd2a226a47c82b6c90e87/scripts/classifier/prompts.ts#L16-L59)3.0.0明确scope不参与TP/FP，既有／diff外问题也可TP，范围另标；不能将网站概述与固定判定器混作同一口径。[一手]
+- [matcher](https://github.com/review-bench/ReviewBench/blob/9fd1c9bb1f3a2e1e6dbbd2a226a47c82b6c90e87/scripts/eval/matcher.ts#L31-L59)让LLM判两个发现是否可由同一修复解决，不负责判发现本身正确。公开manifest和gold入口已确认，未下载数据集或运行评估。[一手]
+
+**采用决定。** 固定任务集、gold、判定器／prompt及聚合口径筛候选，再以真实目标风险进入窄试。新增问题应逐项核实而非丢弃，但只审本次回归时不能将清理既有缺陷算同一效果。生产只多评论、诱发错修或增加总处理负担，就撤回扩量；不凭采纳代理减少必要人审。[研究]
+
+与既有证据分工：Claude事故／干净PR材料支持风险校准，Cloudflare支持采用代理与质量分开，这里补离线至生产的选择和实际判定器范围。GitHub与Microsoft同企业阵营，不算两支独立企业佐证。来源由审计带入；论文／产品效果未复现，09的gap1不变。P51在该子研究外部读取前已读，但本批其它子题为后验重读，不把分片分别计自用项目；无全网漏检率分母。[研究]

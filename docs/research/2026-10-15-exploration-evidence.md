@@ -443,6 +443,8 @@ P60已核维护链没有新增运行结果，本轮不重报发现。没有两�
 
 维护控制名册补充（P57，2026-10-21）：从[Spotify Engineering](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)的Honk系列追循环采用与迁移撤回；从[Shopify／Erin Son、Kaiyi Li](https://shopify.engineering/river-vulnerability-remediation)追跨次接收及人工接管；从[Cursor／Josh Ma](https://cursor.com/blog/cloud-agent-lessons)追任务编排撤回与运行责任。原文已读，采用条件与缺口统一归[长任务研究](2026-10-12-long-task-evidence.md)，不据厂商产量或估算成本声称净收益。[一手／研究]
 
+维护控制名册续补（P57，2026-10-22）：新增[Shopify／Zack Deveau的Dispatch实践](https://shopify.engineering/building-an-agentic-harness-that-outlasts-the-model)与[Anthropic／Eugene Yan、Henna Dattani的方法原文](https://claude.com/resources/articles/using-llms-to-secure-source-code)，追领域证明与实际接收边界；后者参考仓已声明不维护，保留作机制来源，不列生产依赖。源码分项与当前专用入口的同题取舍见[P57续补](2026-10-12-long-task-evidence.md#p57续补专用入口与领域证明链)。[一手／研究]
+
 团队接收名册补充（P58，2026-10-21）：沿[Will Larson](https://lethain.com/small-changes/)追窄放行试点的结果与长期调参；[Shopify Quick／Daniel Beauchamp、Alex Pilon](https://shopify.engineering/quick)追受限共享平台的真实维护；[Monzo／Fabien Deshayes、Oli Haley](https://monzo.com/blog/building-agent-chip)追非专家发起、工程师接收与团队归属。相关原文已读，只借用途与接收边界，不采产量或单机价格作为整体收益。[一手／研究]
 
 工作流实验名册补充（P59，2026-10-21）：[Bartłomiej Krupa](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)公开固定案例、轨迹及判定器纠正，可追整包与原生的产物差别；作者另有工具项目，按方法与原始证据核，不当中立裁决。原文及关键轨迹已读，完整范围归[社区研究](2026-10-12-community-source-records.md)。[一手／社区／研究]
@@ -577,6 +579,20 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 | 引擎接入／客户端观察：Unity AI、Epic技术博客与版本文档 | [Unity AI5-05入口](https://unity.com/blog/unity-ai-how-to-get-started)已读，继承S12；Unity Insight沿审计S13，非本轮新读。区分文件代码与场景／引用／编辑器状态；原文入口不等于安装、实际修改或恢复已验。 |
 | 测试分发／发行：Valve Steamworks团队 | [Playtest](https://partner.steamgames.com/doc/features/playtest)、[Content Survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey)对应节已读，滚动文档未标发布日，核实10-21。访问分发与反馈获取分开；生成内容可用性不等于平台发行资格，平台规则也不是体验证据。 |
 
+### P53接收：把游戏Agent来源接到具体修改决策
+
+先查消费者再改共享资产；把已确认的试玩发现固化为回归；共享能力升级要单独验证旧游戏。以下接收B在WP9§14、WP13§6与WP11近期二改及固定提交e42ec124中的来源判断，不是本轮新增发现或原文重读；原冻结读取数与漏检分母不变。[研究]
+
+| 持续来源入口／已有研究 | 改变的读者选择与证据资格 |
+|---|---|
+| Unity Insight作者、TheArcForge／Hades、Epic资产查询文档；[WP9§14](2026-10-14-game-wp9-engine-handoff.md#14-p53改共享资产前先查消费者) | 先用已有Editor API交消费者清单，再按重复追踪成本评估增量索引。Insight的两游戏28问未评分正确率，Hades小样本同时改变工具与指导；跨作者不等于独立同题胜出。语义相似与引用遍历不能互代。 |
+| UnityDataTools问题报告者SkowronskiAndrew；[issue121，2026-07-24](https://github.com/Unity-Technologies/UnityDataTools/issues/121)及WP9补查 | 构建“为何被带入”查询不等于编辑器消费者全集；零引用链不能授权删除。v2.1.0行为为未关闭的使用者报告，非Unity确认或本仓复现，也不是GetDependencies的缺陷证明。 |
+| EA／RAID、Meeka／Deckhand、NetEase／TITAN、Second Chance；[WP13§6](2026-10-14-game-wp13-agent-config.md#6-p53探索发现与修复验收分账) | 保既有测试，先校验测试器，再把人确认的发现变为旧策略／动作回归。RAID是强化学习，TITAN是较早GPT-4o参照；独立作者报告补发现与验收的失败机制，没有提供同题完整修复链与总成本优胜证据。 |
+| PhaserStudio、rushdygames、SHAN；[WP11近期二改](2026-10-14-game-wp11-gameplay-architecture.md#近期-coding-agent-二改缓冲寿命与时钟信任) | 复用窄规则／能力叶子，但人验手感、可信时钟与快照寿命。SHAN后续修复有固定代码可追，Agent归属未知；不同项目不是同题架构排名。 |
+| PhaserStudio[9月22日版本发布](https://phaser.io/news/2026/09/opus-5-5-grok-4-7-and-muse-spark-1-3-in-the-phaser-game-agent)与[7月23日引擎说明](https://phaser.io/news/2026/07/no-you-didn-t-miss-a-3d-update)；WP11补查 | 新游戏能力修复不自动回灌旧模型／引擎绑定，旧游戏需选择局部修复或显式迁移并复验。AE不是Phaser4公共API；两篇同厂商材料不算第二个独立团队。 |
+
+P53的三页内容与来源交接范围闭合，游戏01／02／05仍保留差距2／1／2；01查询正确率与05领先架构同题比较缺口未消失。本次仅接收资料证据，不新增模型、客户端或引擎实测。[研究]
+
 **两项本次定向补漏。** 在c4f280f的docs与domains/game-dev按正式slug、作者、标题片段查重，未命中Cronin讲义及Unity Material正式页；不证明历史从未读过。Cronin的PDF第47–51页（零基46–50）从假设、试玩、归纳到行动，提醒玩家面对整个游戏且不知道开发者假设；支持把程序正确与玩家理解分别找来源。仅凭正文文字，相关页截图未取得，不声称审图。Material正文将工具定位于原型占位、后期换美术成品；这不是商用禁令或所有生成物不可用，只改变候选进入比较前的阶段核查。Sprite相同定位、SIGGRAPH简介已有，不能重报新增。[一手／研究]
 
 **读取记录（执行者自报）。** 研究09:28:17–09:32:46 UTC，历时4分29秒含去重、检索和记录，非纯阅读净工时。限定目标16篇：Cronin、SBS、补帧、TiMi、Unity Sprite／Material、SIGGRAPH、GASP、Holden、Rain World、FFF407、两篇音频、Unity AI、Playtest、Content Survey；其中相关正文已读12，目标读取比例12/16；四项为TiMi获取受限、SIGGRAPH仅简介、两音频不可读。导航页、重复URL与继承卡不计；不是全网召回或提示词效果。本次在新提示准备完成前已开始研究，不计自用项目。名册有全链入口，近期音频原文、VFX完整讲义和同题质量比较仍缺。[研究：范围]
@@ -656,3 +672,9 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 **回执为执行者自报。** 主入口链12:10:56–12:14:22 UTC冻结，N=18／F=14、D=7／FD=7；Gemini链12:14:13–12:14:48 UTC冻结，N=3／F=3、D=2／FD=2。前者含4个正文未成功读取目标，后者排除一篇只有企业发布与引用的材料。两个窗口并行，不能相加为净工时。旧P44输入不计新读；主执行者随后补入Scaffold Effect论文，属于冻结后的补充，未回填原两链计数。详见[入口证据](2026-10-12-community-source-records.md)。[研究：读取覆盖]
 
 **本轮尚无可计算漏检分母。** 独审复核决定性断言和推荐范围，不把参与整合后的材料称独立盲测。P51的三项目使用门槛已达到，按既定双周节奏继续核行动性遗漏；C3漏检率下降和P41／P38方法收益仍待证。新增来源入口保Zed工程博客／ACP实际撤回、Google Antigravity内部生产复盘；查的是交互、执行与配置哪层失效，不是增加产品名单。[研究]
+
+### P72校准参照回流（2026-10-22）
+
+固定审计f3ed2bca带入的6项漏检候选中，dot-A本批转化Code2Skill、NP-Bench、AsynCodeBench与ReviewBench四项；这不是全网漏检率或四个独立团队效果复现。程序知识回05／03，集成依赖回08／22，评审离线筛选与生产窄试回09；决定性原文及版本分别在[Skill研究](2026-10-13-domain-skill-contract.md#p72审计补强程序卡放在能用它的地方)、[并行研究](2026-10-12-experiment-records.md#p72审计补强并行结果按依赖接收)、[评审研究](2026-10-12-baml-and-review.md#p72审计补强离线评审怎样进入放量)。独立源新增到相应问题的名册，不以标题／引用数作为完成。Spec2Game／SPRITE归B的游戏补强，本端不重开；已引用游戏材料的转化缺口另计。[研究]
+
+团队接收名册续补（P58，2026-10-22）：从[Spotify Engineering](https://engineering.atspotify.com/)读到Tyson Singer的[9-16质量复盘](https://engineering.atspotify.com/2026/9/ai-changed-how-spotify-builds-what-we-learned-and-fixed-about-quality-at-higher-velocity)，把生成能力与生产接收容量分开；明确引用的7月事故只补因果边界，不与依赖升级混成同一链。四路比较及未验范围见[P58](2026-10-12-community-source-records.md#p58续接生成与生产放量分开)。[一手／研究]
