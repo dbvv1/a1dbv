@@ -1,6 +1,6 @@
 主线：三
 改变的建议：20/22/24：Regression来源分类≠新增退化；22 区分大补丁与连续交付，并按错误所在层选择重算、重评或重新生成；连续代码、会话与验收分开核对；连续升级先给行为约束，不自动堆完整解法规格
-新证据：固定runner/题库与局部探测；SWE-EVO 论文、评估器和48条公开数据；SWE-Milestone 维护修订与固定实现，只读核查，未复算其成绩；EvoWeb／EvoCode 公开连续产物与恢复记录
+新证据：10-21补EvoWeb同一应用十轮验收账、错误判定路径与跨页集合待验反例；固定runner/题库与局部探测；SWE-EVO 论文、评估器和48条公开数据；SWE-Milestone 维护修订与固定实现，只读核查，未复算其成绩；EvoWeb／EvoCode 公开连续产物与恢复记录
 
 # 连续开发评测：SlopCodeBench 测到了什么，哪些结论仍不能下
 
@@ -215,15 +215,56 @@ print(len(set(a['FAIL_TO_PASS']) - set(b['FAIL_TO_PASS']) - set(b['PASS_TO_PASS'
 
 > 核实：2026-10-15。✅ 借用已有产物、恢复记录和验收，分别核对代码、会话及新旧功能接合；不新增评测框架，不按这两项研究推荐模型、架构或记忆系统。只读公开源码／轨迹，以标准库比对快照；未运行模型、应用、浏览器或上游评估器。**[研究：采用与范围]**
 
-### EvoWeb：有可追到第五轮的正链
+### EvoWeb：十轮产物怎样决定先重评、补验还是修代码
 
-[论文 v1](https://arxiv.org/pdf/2610.16402v1)描述持续修改同一应用，并分别检查新功能、跨请求集成和旧行为；隐藏判定不反馈给下一请求。这里没有仅凭论文定义认定连续性，而是读取[固定仓库 `c5e1875`](https://github.com/two-delta/EvoWeb/tree/c5e18758418bf673e25ff4fdc62978a7687928d5)发布的[完整 Fable 5 run1 ZIP](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/examples_artifacts/full_traces/fable-5-run1.zip)：76,909,252 bytes，SHA-256 `27bed1922b55b902e2ecef44a7a21375500780407d4b2199fd25eb74d53d2d07`。**[一手：论文／原始产物；经验：下载校验]**
+**✅ 先校准失败判定，再沿仍有效的旧契约验收最后产物。** 本次接续已有正链，把同一个股票报表应用 `000001` 核到第十轮：唯一的 no 走错了功能入口，最后一轮的 yes 也没有覆盖所有跨轮交互。当前处置是保留产物，重评徽标路径、补验持仓汇总口径，而不是换模型或重生成整站。[研究：P44，2026-10-21]
 
-归档内 `fable-5-run1/000001/` 是同一个股票报表应用。R1 从通用 React/Vite scaffold 实现查询与可定制报表；R2 加筛选、排序和预设，并让筛选结果进入原报表；R5 加评级与雷达图，再把 Health Score 接回已有报表生成／展示组件。`result.json` 的 `turns[].tasks` 保存任务、预期和 verdict：R1–R5 的现有检查均为 yes。R5 的前三项测评级，第四项测评级进入原报表，第五项重测 R2 的行业与股息率筛选；最后一项的任务和预期与 R2 对应项逐字相同。**[一手：保存轨迹／判定；经验：文本对照]**
+**最高水平参照。** 沿用[C15卡](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c15--agent-评估)的结果与裁判校准；同题领先候选为2026-10的[EvoWeb论文](https://arxiv.org/pdf/2610.16402v1)，按连续请求检查新功能、集成及所选旧行为。与每轮只看构建成功相比，后者更接近持续交付；本次核查也表明它不是完整旧契约验收，当前最好仍未知。[研究]
 
-源码在首轮 `generation/workspace/`、后续 `turnN/generation/workspace/`；操作在对应 `summary.json` 的 `calls` 与 `trajectory.jsonl`。比较 R4→R5：23 个文件逐字相同，修改 App、Generate、ReportView，新增 ratings、RadarChart、Ratings，恰对应保存的 Agent 编辑操作。已读链未见人工修复或参考实现替换，但没有独立审计足以证明全程绝无未披露干预；runner 还会安装依赖和改写 Vite 端口，不能将全部文件变化归给 Agent。**[经验：字节比对；一手：操作记录；研究：限度]**
+#### 固定材料与判定口径
 
-这是一条真实的连续代码正链，且所选新功能、集成与旧行为都有作者判定；不是本仓运行通过，也不是完整回归保证。完整 ZIP 不含截图，不能声称视觉复验；仅这一 run 有同等完整代码／会话产物，其他运行的结果文件不等于独立完整复现。**[研究：证据上限；一手：产物说明]**
+仍用[固定仓库 `c5e1875`](https://github.com/two-delta/EvoWeb/tree/c5e18758418bf673e25ff4fdc62978a7687928d5)的[完整 Fable 5 run1 ZIP](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/examples_artifacts/full_traces/fable-5-run1.zip)：76,909,252 bytes，SHA256 `27bed1922b55b902e2ecef44a7a21375500780407d4b2199fd25eb74d53d2d07`。输入采用同提交[000001英文规格](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/data/data_gen/multilingual/parts/000001/en.json)，40,452 bytes、Git blob `d19fba95a085a5dcc057c66c1043e29af6d517cc`。其52项任务／预期与归档 `result.json` 逐字一致；历史请求预览有截断，不称完整模型输入已还原。[一手：公开规格与产物；经验：标准库校验]
+
+范围在读取新结果前固定为该应用全部十轮、全部非yes；此前已知道R1–R5正链，不称盲选。只读归档成员、源码与judge会话并做字节／算术比较，没有执行应用、浏览器、模型或上游评分器。归档不含截图，下面的yes/no均保留为作者判定，不是本仓独立视觉复验。[研究]
+
+#### 完整请求链，而非成功片段
+
+路径相对归档 `fable-5-run1/000001/`；R1在根，后续在 `turnN/`，代码均在 `generation/workspace/src/`。表中是需求族与关键接线，不把每行当一个原子需求或全部功能验收。判定来自 `result.json` 的 `turns[].tasks`。[一手；研究：归类]
+
+| 轮次／新增需求 | 实际代码接线 | 作者本轮与旧行为检查 | 本次核查的接受范围 |
+|---|---|---|---|
+| R1 搜索与定制报告 | `pages/Generate.jsx`保存格式／章节，交`ReportView` | 7 yes：搜索、报告、输入、导航、配色 | 只核代码与保存判定；白底navy是当时要求 |
+| R2 筛选及8股种子 | `Screener.jsx`同时应用过滤，跳`Generate`；`format.js`统一百分比 | 5 yes；末项再查搜索报告 | 旧示例数据被新种子替代；不能要求原股票继续存在 |
+| R3 观察列表、ticker徽标 | `Watchlist.jsx`＋store；共享`TickerBadge` | 5 yes；末项重查R2排序 | 删除入口已实现，但删除后的下游汇总不在本轮检查中 |
+| R4 持仓、权重、默认排序 | `Positions.jsx`先取watchlist代码，再算持仓及权重 | 5 yes；末项重查R3去重 | 记录当前持仓集合来源，供后续汇总继承 |
+| R5 评级与报告接线 | `ratings.js`／`Ratings.jsx`，`Generate`／`ReportView`加入评级 | 5 yes；末项重查R2筛选 | 明确指定的评分排序优先于未指定时的ticker默认序 |
+| R6 警报与历史 | `alertsStore.js`严格比较；`Alerts`接dismiss及rollup | 5 yes；末项重查R4权重 | 代码含等值不触发；未独立运行持久化及UI |
+| R7 财报搜索与报告章节 | `Earnings.jsx`分组、高亮、计数，引用共享徽标 | 4 yes／1 no；末项重查R5排名 | 唯一no误走Stock Search；先重评，见下 |
+| R8 股票对比 | `Compare.jsx`复用评级及百分比，处理并列赢家 | 5 yes；末项重查R6等值警报 | Earnings和徽标源码与R7分别相同；不是徽标修复回执 |
+| R9 主题改稿 | `App.jsx`持久化主题，跨页样式及徽标暗色适配 | 5 yes；末项重查R7搜索计数 | 新主题部分替代旧配色；未重跑R7徽标判定 |
+| R10 四块汇总入口 | `CommandCenter.jsx`读取持仓、警报、评级、观察组 | 5 yes；末项重查R8对比 | 汇总的持仓集合与Positions不同，需补跨轮检查 |
+
+本次完整对账的是十轮已有的52次判定，不是全部自然语言需求的原子验收。52是判定次数，不是52条独立需求。按任务与预期逐字键只有44对；8次完全重复为R3.4←R2.1、R4.4←R3.1、R5.4←R2.0、R6.4←R4.0、R7.4←R5.0、R8.4←R6.2、R9.4←R7.0、R10.4←R8.0（点后为从0起的task_idx）。R2.4虽标来源R1，文字不同，不能硬算同一测量。最后一轮没有重跑全部旧检查；没有复验不等于失败，也不能把历史yes相加当最终完整接受。[经验：逐字对照；研究]
+
+**复核方法**：用Python标准库`hashlib`核归档SHA256，再用`zipfile.ZipFile.read`读取上述成员，不执行其中程序；将`result.json`逐轮的`task`／`expected`与英文规格的`task`／`expected_result`配对，按文本二元组去重。按轮读取Earnings与TickerBadge作字节比较；R7的导航顺序来自`interact_messages.json`的assistant动作，不能由源码替代。末轮反例仅按下列明确代码分支及种子做Decimal求和，未重评judge。[经验：可重复步骤]
+
+#### R7的no：先到正确页面复验，不用代码存在改判yes
+
+`turn7/eval/results/task000001_3/interact_messages.json`显示judge先点[2] **Stock Search**，输入automation后以无股票结果判NO，未尝试[8] **Earnings**。同轮task0却从Earnings搜索并观察到三个股票组、四条匹配；该项验证搜索，不替代徽标视觉验收。[一手：保存会话]
+
+R7的`pages/Earnings.jsx`第101–109行在结果公司名前渲染`TickerBadge`；`components/TickerBadge.jsx`包含navy样式。两文件到R8逐字未变，R9增加暗色样式且保留引用，R10又分别与R9相同。R9重测的是搜索计数，不是徽标。因此撤回“原no已证明产品缺陷”的归因，保留原判及错误路径证据；正确页面复验失败后再修应用，尚不能把原分数改成全通过。[一手：源码；经验：字节差分；研究：处置]
+
+#### R10的yes：补验继承集合，不自行决定删除持仓
+
+规格R4要求为每个watchlisted stock提供Positions输入；R10说Portfolio来自“my positions”，每块tile是其页面的快捷入口，未规定移除watchlist时仓位如何处理。末轮两处同名持仓展示使用不同集合：[一手：原规格与归档源码]
+
+- `pages/Watchlist.jsx`第29–44行：remove只过滤entries并`saveWatchlist`，没有删除positions；
+- `pages/Positions.jsx`第49–51、64–86行：从当前watchlist取代码，生成activeRows再求totalValue；
+- `pages/CommandCenter.jsx`第29–38行：遍历`loadPositions()`的全部条目，不按watchlist筛选。
+
+用`lib/positionsStore.js`及`data/stocks.js`的固定种子做Decimal算术：CMET为3,060、FJRD为3,360、HLXS为2,650.50。若删除watchlist中的HLXS，按上述数据流推导Positions为6,420.00、Command Center仍为9,070.50；原R10五项检查只覆盖改份额、dismiss警报等，没有这个删除→派生→汇总场景。**这是静态推导的待复验反例，不是实际UI失败回执。**[经验：独立算术；研究：覆盖缺口]
+
+这是继承实现之间的口径差异，不能仅凭原需求认定产品缺陷。删除观察项是否应保留仓位，原需求没有说清；不要为通过新测试就让Agent删持仓。人先确认保留／隐藏政策，Agent把两处派生集合对齐并补同路径验收。R9的主题要求也应据新规格更新旧配色检查，而非将授权改稿当回归。由此得到可操作的顺序：**错入口先重评，契约改变先更新预期，跨轮口径冲突先澄清再修；既有yes不替代这些判断。** 本次完成历史产物的接受决策实例，不完成P44当前模型配置收益对照。[研究]
 
 ### 同一代码留下了，不代表会话到达
 
