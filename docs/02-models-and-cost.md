@@ -1,6 +1,6 @@
 # 02 · 模型与成本
 
-> 编辑更新：2026-10-21（UTC+8）；本次补维护审计及失败后续做／独立重试的同题比较；价格、接口及身份契约保留各自核实日期。
+> 编辑更新：2026-10-21（UTC+8）；本次补 API 缓存 TTL 计价与采用边界；价格、接口及身份契约保留各自核实日期。
 
 ## 30 秒结论
 
@@ -74,9 +74,13 @@
 | GPT-6 Astra（Standard ≤272K） | $10 | $1 | $50 | [一手：模型页](https://developers.openai.com/api/docs/models/gpt-6-astra)；2026-10-15 |
 
 **表中未展开的计费维度** **[一手；本轮局部复核]**：
-- `gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。见上方精确模型页。
-- Luna／Astra 的基础缓存写入分别为 $0.125／$12.50；总输入 >272K 时同样对整次请求收取输入／缓存 2 倍、输出 1.5 倍。Grok 4.7 在 >200K 时另计，长上下文预算须查对应地区的价表，不能沿用基础行。**[一手：上列模型页，2026-10-15]**
-- [OpenAI 缓存写入价](https://developers.openai.com/api/docs/guides/prompt-caching)替代该部分普通输入价，**不是两项叠加收费**。每个输入 token 按普通输入、缓存读或缓存写中的适用类别计价。
+- `gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档 **30m** 缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。见上方精确模型页。
+- Luna／Astra 的基础 **30m** 缓存写入分别为 $0.125／$12.50；总输入 >272K 时同样对整次请求收取输入／缓存 2 倍、输出 1.5 倍。Grok 4.7 在 >200K 时另计，长上下文预算须查对应地区的价表，不能沿用基础行。**[一手：上列模型页，2026-10-15]**
+- **OpenAI API 缓存先保留默认 `30m`；稳定前缀需隔数小时复用时，才试 `12h`；复用不足以抵消写入成本就退回 30m。**
+
+  GPT-5.6 及以后模型在 Responses API 用 `prompt_cache_options.ttl` 选择；写入分别按普通输入价的 **1.25／2.5 倍**计，替代而非叠加普通输入价，读取单价不变。Standard ≤272K 的 12h 写入：6.1 Sol $5、Luna $0.25、Astra $25／百万 token。
+
+  最低寿命保障的是缓存读计价资格，**不是每次复用 KV 或更低延迟的保证**；也不外推订阅内 Codex／Work。**[一手：[指南](https://developers.openai.com/api/docs/guides/prompt-caching)、[价表](https://developers.openai.com/api/docs/pricing)，2026-10-21；研究：选择，未实测；[补核](research/2026-10-10-audit.md#s1h--2026-10-21-api-缓存寿命与写入预算)]**
 - Haiku 5.5 的 100K 门槛包含缓存读取与写入，逐请求判断，不是整段会话累计值；缓存写入还区分 TTL。完整规则见 [Claude API 价表](https://platform.claude.com/docs/en/about-claude/pricing)。
 - Gemini 4 Argon 仅支持隐式缓存，命中后按输入价的 **5%** 计费（优惠 95%，不是“九五折”）；显式 `cachedContents`／`caches.create` 不支持。上表为 Standard，Batch／Flex／Priority 另计，搜索等工具费不在 token 单价内。长期预算按 2026-12-01 起的费率估算。**[一手：上列价表与迁移指南；研究：预算建议，2026-10-15]**
 
