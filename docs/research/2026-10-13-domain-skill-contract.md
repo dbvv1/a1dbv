@@ -724,3 +724,14 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 **固定应用有额外约束，不能仅照上游示例。** new-york实际使用Radix，token与本地CSS分文件；RTL、Portal、表单关联及筛选后目标集都要继承。批量删除测试通过卸载后重建查清空，真实调用者持续挂载，不能据该测试声明集成取消已验。任务包据此要求同实例reset与明确本地写回，并保原视觉、键盘及业务检查。[一手：源码；研究：未运行]
 
 原立项旁证[Equinor #5157](https://github.com/equinor/design-system/pull/5157)仍仅用于说明主题／密度之后还有Dialog续改及人工重审；不与本应用拼成同一Agent实验。AI承担来源／差异／判定器，人定信息层级、选择语义与可用性；未知净工时和视觉结果不补估值。细节收在上述单份任务包，避免继续扩本研究长页。[研究]
+
+
+## P52技能代际复核
+
+2026-10-21从f346814续P52，先用P51提示，问题是新模型缺领域判断时应补知识、机械检查还是完整流程。当前跨模型最佳组合未知；本页采用比较后的条件默认，不以装得多或提示短证明胜出。[研究]
+
+**决定与反例。** 对照OpenAI Eric Provencher的[9-11 Astra迁移](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)与Vercel John Phamous的[6-25产品设计实践](https://vercel.com/blog/teaching-agents-product-design-at-vercel)：撤无关流程，保代码中缺失的决策理由；稳定机械规则交已有检查，新产品标准由人接受。Vercel文案评估不是完整设计流程评估，模型、量化收益及总成本未公开。普通资料足够仍不包装Skill；缺陷来自运行能力时先修环境。[一手／研究]
+
+[Vercel 1-27旧评测](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)只作触发反例：分别验没加载和加载后没做好，不能把旧模型胜率当当前最高水平。[9-25生态观察](https://vercel.com/blog/state-of-agent-skills)的安装计数与[7-27结构化建议论文](https://arxiv.org/html/2607.25032)未提供可升级质量判断的同题结果，本次排除为决定性依据。均读取相关方法／结论，论文只读摘要、sources和§1–2，不称全文精读。[一手／研究]
+
+**回执（执行者记录）。** 11:56:29–11:59:03 UTC为检索、阅读与编辑墙钟跨度，净研究／等待未分；约11:59冻结来源与决定，之后整理回执。N=5/F=5、D=3/FD=3；Astra为输入已知重读，另四篇为本轮查验（含历史反例），全仓URL未命中不证明从未读过。Vercel产品设计首次获取失败后同一官方URL成功，按同源计1。C07开工已知，没有独立盲测分母；仍属P52自用，不新增次数。未运行模型、客户端或安装。[研究]

@@ -423,6 +423,8 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 | 评审 | Anthropic Claude Code／Addy Osmani、Morgan Westlee Lunt、Qing Wang；[Claude.dev 原文](https://claude.dev/blog/solving-code-review-at-anthropic/)；Anthropic Engineering 的 Scion 团队 | 10-15 评审复盘同时给风险分层、回退、失控复审和噪音指标，胜过仅列“多个 reviewer”的教程。Claude Code 独立仓库和 Scion monorepo 不得混为同一审批制度。 |
 | 评估 | Anthropic／Lance Martin；Claude.dev Playbooks；独立校准看 ETH SRI／Thibaud Gloaguen 等的版本化论文，以及 METR 原始研究 | [9-28 eval/hillclimbing](https://claude.dev/blog/automating-eval-design-and-hillclimbing/)有噪声、grader、成本和过拟合检查；[AGENTS.md v3，9-29](https://arxiv.org/abs/2602.11988v3)为指令收益提供反证（本轮核摘要及版本，正文已由仓内记录覆盖）；[METR 10-06](https://metr.org/blog/2026-10-06-ai-systems-could-cover-up-misbehavior/)提醒呈现层也须独立核查。 |
 
+产品判断名册补充（P52）：Vercel／John Phamous的[2026-06-25 product-design实践](https://vercel.com/blog/teaching-agents-product-design-at-vercel)，从[官方博客](https://vercel.com/blog)追产品决策与机械检查的分工；文案评估不是整个设计流程胜率。详见[05代际研究](2026-10-13-domain-skill-contract.md#p52技能代际复核)。[一手／研究]
+
 长程名册补充（P47前瞻自用）：沿[Temporal／Moe Abadi的10-08工程文](https://temporal.io/blog/the-immortal-life-of-pi-running-the-pi-coding-agent-on-temporal)与[Earendil Engineering的10-01发布](https://earendil.com/posts/pi-durable/)追耐久执行的当前契约和失败边界；先区分模型请求与工具执行状态，不把实验宿主直接列为生产默认。[一手／研究]
 
 跨线个人雷达：[Simon Willison](https://simonwillison.net/)及其[9-27演讲整理](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)。本人经验为一手，转引追原作者；本仓已收录，不计新增。
@@ -620,3 +622,8 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 **先冻结再对照。** 02于11:31:55、03于11:30:52、09于11:32:05 UTC冻结来源与决定；各页起止和读取表见上述链接，均为墙钟记录，不合计成净工时。页面N/F分别5/5、3/3、7/7，D/FD分别5/5、3/3、5/5；跨页共用Cursor9-23，项目来源去重后N=14/F=14、D=12/FD=12，根重读不另计。GA公告与反方观点为09新读，其余以已有路线重核为主，读取覆盖不等于探索收益。[研究]
 
 独立参照在11:31:50–11:33:19 UTC以旧基线三页及审计卡冻结，未读新稿；这是对新稿独立，不是对旧内容盲测。三项压力点分别是02维护审计的覆盖目标、03模型升级后规则失效、09[同模型评审意见回流](https://cognition.com/blog/multi-agents-working)须核原任务范围。前两项已覆盖；第三项在08及既有研究已有，本批09也已写不为清空意见扩大修改，因此不新增机制或计新发现。根在冻结后读原文、查全仓补证，不回填上述读取分母。没有合格完整外部参照集合，漏检率未知，不报0%。[研究：有限查漏]
+
+
+**P52续接05／15／22（2026-10-21）。** 从f346814按同一提示继续，先核main／活动分支与计分板，剩余三页没有活跃认领。05把领域判断与机械规则／冗余流程分开；15区分请求覆盖和补丁粒度，切片不冒充完成；22区分包级采用与因果归因，修grader后重新对齐基线。三页整批交付，不新增自用项目，P51仍2/3。[研究]
+
+回执分别见[05](2026-10-13-domain-skill-contract.md#p52技能代际复核)、[15](2026-10-12-baml-and-review.md#p52任务打法的覆盖范围与交付终点)、[22](2026-10-12-experiment-records.md#p52评估代际复核)：本批N/F为5/5、5/5、2/2，D/FD为3/3、3/3、2/2，三路原始URL去重后12/12、8/8。这是本批读取覆盖，不与上批14/14相加成项目独立来源数；共享旧来源及根复核不重复记发现。没有新增独立外部盲测分母，不报漏检率下降。[研究]
