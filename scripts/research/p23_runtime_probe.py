@@ -3,6 +3,8 @@
 python scripts/research/p23_runtime_probe.py --app APP --output EMPTY_OUTPUT
 APP 必须先按研究记录从固定公开 tar + patch 准备。仅绑定 loopback。
 默认 dev；--mode focused-production 仅构建博客／sitemap，不代表全站通过。
+--mode existing-production --build-id ID 仅启动已有 .next，不重建。
+ID 来自调用方的产物交接；校验身份和必要文件，不证明完整构建来源。
 新包装仅离线验证，并非历史生产 driver 原字节；历史结果另有回执。
 """
 import argparse
@@ -10,6 +12,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import signal
 import socket
 import subprocess
@@ -252,6 +255,69 @@ def validate_app(app):
     raise ValueError('loopback fixture patch is missing')
 
 
+def validate_existing(app, build_id):
+  """Reject missing/mismatched artifacts, without certifying their build provenance."""
+  if not isinstance(build_id, str) or not build_id.strip() or build_id != build_id.strip():
+    raise ValueError('existing-production requires an explicit nonempty --build-id')
+  build = app / '.next'
+  for relative in ('.next', '.next/server', '.next/BUILD_ID', '.next/server/app-paths-manifest.json',
+      'package.json', 'node_modules/next/package.json', 'node_modules/next/dist/bin/next',
+      'pnpm-lock.yaml', 'lib/shopify/storefront/server.ts'):
+    target = (app / relative).resolve()
+    if not target.is_relative_to(app.resolve()):
+      raise ValueError('existing production inputs must stay inside the application copy')
+  actual = (build / 'BUILD_ID').read_text(encoding='utf-8').strip()
+  if actual != build_id:
+    raise ValueError('existing production BUILD_ID does not match declared identity')
+  manifest_path = build / 'server/app-paths-manifest.json'
+  manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+  if not isinstance(manifest, dict) or not manifest:
+    raise ValueError('missing existing production app routes')
+  for route, relative in manifest.items():
+    if not isinstance(route, str) or not route.startswith('/') or not isinstance(relative, str):
+      raise ValueError('invalid existing production app route')
+    target = (build / 'server' / relative).resolve()
+    if (not target.is_relative_to(app.resolve()) or
+        not target.is_relative_to((build / 'server').resolve()) or not target.is_file()):
+      raise ValueError('missing or unsafe existing production route file')
+  return {'build_id': actual,
+    'app_paths_manifest_sha256': hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+    'provenance': 'caller-declared artifact; full-build origin and source/fixture correspondence unverified',
+    'build_performed': False}
+
+
+def validate_fixture_audit(path):
+  """Check the existing Router log after owned cleanup, not an authenticity proof."""
+  state, events, requests = 'S0', [], 0
+  transitions = [('e1', 'S1a'), ('e2', 'S1b'), ('e3', 'S1'), ('e4', 'S2')]
+  for line in path.read_text(encoding='utf-8').splitlines():
+    if re.fullmatch(r'127\.0\.0\.1 - - \[[^\]]+\] "POST /(request|event) HTTP/1\.[01]" 200 -', line):
+      continue
+    row = json.loads(line)
+    if (not isinstance(row, dict) or row.get('outcome') != 'success' or
+        row.get('state_before') != state or not isinstance(row.get('payload'), dict)):
+      raise ValueError('fixture audit rejected, malformed or discontinuous')
+    payload = row['payload']
+    if row.get('endpoint') == '/event':
+      if len(events) >= len(transitions):
+        raise ValueError('extra fixture audit event')
+      event, following = transitions[len(events)]
+      if payload != {'event': event} or row.get('state_after') != following:
+        raise ValueError('fixture audit event sequence mismatch')
+      events.append(event)
+      state = following
+    elif row.get('endpoint') == '/request':
+      if not isinstance(payload.get('operation'), str) or row.get('state_after') != state:
+        raise ValueError('invalid fixture audit request')
+      requests += 1
+    else:
+      raise ValueError('unknown fixture audit endpoint')
+  if len(events) != 4 or requests == 0:
+    raise ValueError('missing fixture audit requests or complete event chain')
+  return {'status': 'passed', 'events': events, 'requests': requests,
+    'scope': 'captured Router log consistency only; not proof against log loss or tampering'}
+
+
 def wait_ready(servers, ports):
   deadline = time.monotonic() + 90
   while True:
@@ -309,10 +375,13 @@ def cleanup_owned(owned, term_grace=10, kill_grace=2):
   return rows
 
 
-def run(app, output, mode='dev'):
+def run(app, output, mode='dev', build_id=None):
   global ROOT, processes, CURRENT_STATE
-  if mode not in ('dev', 'focused-production'):
+  if mode not in ('dev', 'focused-production', 'existing-production'):
     raise ValueError('unknown probe mode')
+  if mode != 'existing-production' and build_id is not None:
+    raise ValueError('--build-id is only valid for existing-production')
+  artifact = validate_existing(app, build_id) if mode == 'existing-production' else None
   validate_app(app)
   if not output.is_dir() or any(output.iterdir()):
     raise ValueError('output must be an existing empty directory; never overwrite prior attempts')
@@ -338,7 +407,7 @@ def run(app, output, mode='dev'):
     'NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN': 'synthetic-not-a-token',
     'NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN': 'shop.example.test',
     'VERCEL_PROJECT_PRODUCTION_URL': 'shop.example.test', 'TZ': 'UTC'}
-  if mode == 'focused-production':
+  if mode != 'dev':
     # 与历史生产启动器相同的代理／证书继承边界；仅原样继承，不打印其值。
     inherited = ('PATH', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY',
       'http_proxy', 'https_proxy', 'all_proxy', 'no_proxy', 'SSL_CERT_FILE',
@@ -354,14 +423,22 @@ def run(app, output, mode='dev'):
   record = {'kind': 'new portable-wrapper attempt from S0; not a historical driver replay',
             'mode': mode, 'status': 'running', 'results': results,
             'scope': 'direct HTTP/RSC consumers only; not full-site production or browser navigation'}
+  if artifact is not None:
+    record['existing_artifact'] = artifact
   def save():
     (ROOT / 'continuity-result.json').write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8')
   try:
-    processes.append(subprocess.Popen([sys.executable, str(Path(__file__).resolve()),
-      '--source'], stdout=logs[0], stderr=subprocess.STDOUT, env=env, start_new_session=True))
+    source_command = ([sys.executable, str(Path(__file__).with_name('p23_catalog_fixture.py').resolve()),
+      '--mode', 'empty-products-and-collections'] if mode == 'existing-production' else
+      [sys.executable, str(Path(__file__).resolve()), '--source'])
+    processes.append(subprocess.Popen(source_command, stdout=logs[0],
+      stderr=subprocess.STDOUT, env=env, start_new_session=True))
     save()
     wait_ready(processes, (8766,))
     source = processes[0]
+    def require_source_alive():
+      if mode == 'existing-production' and source.poll() is not None:
+        raise RuntimeError('Existing artifact fixture exited; audit/continuity unconfirmed')
     if mode == 'focused-production':
       command = ['node', 'node_modules/next/dist/bin/next', 'build',
         '--debug-build-paths=app/blogs/**/page.tsx,app/sitemap*/**/route.ts']
@@ -385,15 +462,17 @@ def run(app, output, mode='dev'):
         if code:
           raise RuntimeError('Production build failed; start prohibited; inspect build.log')
     processes.append(subprocess.Popen(['node', 'node_modules/next/dist/bin/next',
-      'start' if mode == 'focused-production' else 'dev',
+      'dev' if mode == 'dev' else 'start',
       '--hostname', '127.0.0.1', '--port', '3086'], cwd=app,
       stdout=logs[1], stderr=subprocess.STDOUT, env=env, start_new_session=True))
     wait_ready([source, processes[-1]], (3086, 8766))
     for state, event in [('S0', None), ('S1a', 'e1'), ('S1b', 'e2'), ('S1', 'e3'), ('S2', 'e4')]:
+      require_source_alive()
       CURRENT_STATE = state
       if event:
         status, response = request('/event', {'event': event})
         assert status == 200, response
+        assert json.loads(response) == {'state': state}, 'fixture event state mismatch'
         print(json.dumps({'applied': event, 'waiting_seconds': 62}), flush=True)
         time.sleep(62)
       deadline = time.monotonic() + 90
@@ -406,12 +485,15 @@ def run(app, output, mode='dev'):
             raise
           print(json.dumps({'state': state, 'converging': str(exc)}), flush=True)
           time.sleep(3)
+      require_source_alive()
       results.append(result)
       print(json.dumps(result), flush=True)
       save()
     record['rendered_body'] = verify_body((ROOT / 'S2-article.html').read_text(encoding='utf-8'))
-    record['status'] = ('passed_focused_production_HTTP_consumers_only' if mode == 'focused-production'
-      else 'passed_development_HTTP_consumers_only')
+    require_source_alive()
+    record['status'] = {'focused-production': 'passed_focused_production_HTTP_consumers_only',
+      'existing-production': 'consumers_passed_pending_fixture_audit',
+      'dev': 'passed_development_HTTP_consumers_only'}[mode]
     save()
   except BaseException as exc:
     record['status'] = 'incomplete'
@@ -419,19 +501,46 @@ def run(app, output, mode='dev'):
     save()
     raise
   finally:
+    source_exited_before_cleanup = (mode == 'existing-production' and processes and
+      processes[0].poll() is not None)
     cleanup = cleanup_owned(processes)
     record['cleanup_groups'] = cleanup
     record['cleanup_returncodes'] = [row['leader_returncode'] for row in cleanup]
+    fixture_failed = False
+    if mode == 'existing-production' and cleanup:
+      row = cleanup[0]
+      expected = {-signal.SIGTERM} if row['term_sent'] and not row['kill_sent'] else set()
+      fixture_failed = source_exited_before_cleanup or row['leader_returncode'] not in expected
+      if fixture_failed:
+        record['status'] = 'incomplete'
+        record['fixture_failure'] = 'source exit was not confirmed as owned cleanup termination'
     cleanup_failed = any(row['status'] != 'group_absent' for row in cleanup)
     if cleanup_failed:
       record['status'] = 'incomplete_cleanup'
-    print(json.dumps({'cleanup_groups': cleanup}), flush=True)
-    save()
     for log in logs:
       log.close()
+    audit_failed = False
+    if mode == 'existing-production':
+      try:
+        record['fixture_audit'] = validate_fixture_audit(ROOT / 'continuity-fixture.log')
+      except (OSError, ValueError) as exc:
+        audit_failed = True
+        record['fixture_audit'] = {'status': 'failed', 'error_type': type(exc).__name__,
+          'reason': 'fixture audit unreadable, rejected or incomplete'}
+        if not cleanup_failed:
+          record['status'] = 'incomplete'
+      if record['status'] == 'consumers_passed_pending_fixture_audit':
+        record['status'] = 'passed_existing_artifact_HTTP_consumers_only'
+    print(json.dumps({'cleanup_groups': cleanup}), flush=True)
+    save()
     ROOT, CURRENT_STATE, processes = None, None, []
-    if cleanup_failed and sys.exc_info()[0] is None:
-      raise RuntimeError('Owned process group cleanup unconfirmed; inspect receipt')
+    if sys.exc_info()[0] is None:
+      if cleanup_failed:
+        raise RuntimeError('Owned process group cleanup unconfirmed; inspect receipt')
+      if fixture_failed:
+        raise RuntimeError('Existing artifact fixture exited unexpectedly during cleanup; inspect receipt')
+      if audit_failed:
+        raise RuntimeError('Existing artifact fixture audit failed; inspect receipt')
 
 
 
@@ -439,20 +548,26 @@ def main(argv=None):
   parser = argparse.ArgumentParser(description=__doc__)
   parser.add_argument('--app', type=Path)
   parser.add_argument('--output', type=Path)
-  parser.add_argument('--mode', choices=('dev', 'focused-production'), default='dev')
+  parser.add_argument('--mode', choices=('dev', 'focused-production', 'existing-production'), default='dev')
+  parser.add_argument('--build-id', help='declared existing .next BUILD_ID, not proof of a full build')
   parser.add_argument('--source', action='store_true', help=argparse.SUPPRESS)
   args = parser.parse_args(argv)
   if not __debug__:
     parser.error('Do not run assertion probes with Python -O')
   if args.source:
-    if args.app or args.output or args.mode != 'dev':
+    if args.app or args.output or args.build_id is not None or args.mode != 'dev':
       parser.error('--source cannot be combined with run arguments')
     serve_source()
     return 0
   if args.app is None or args.output is None:
     parser.error('--app and --output are required')
+  if (args.mode == 'existing-production') != (args.build_id is not None):
+    parser.error('--build-id is required only with existing-production')
   try:
-    run(args.app.resolve(), args.output.resolve(), args.mode)
+    if args.mode == 'existing-production':
+      run(args.app.resolve(), args.output.resolve(), args.mode, args.build_id)
+    else:
+      run(args.app.resolve(), args.output.resolve(), args.mode)
   except (ValueError, FileNotFoundError, KeyError) as exc:
     parser.error(str(exc))
   return 0

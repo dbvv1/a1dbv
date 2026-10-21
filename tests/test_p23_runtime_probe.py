@@ -20,6 +20,7 @@ try:
   SPEC = importlib.util.spec_from_file_location('p23_probe', DIRECTORY / 'p23_runtime_probe.py')
   PROBE = importlib.util.module_from_spec(SPEC)
   SPEC.loader.exec_module(PROBE)
+  from p23_catalog_fixture import Router, MODE as CATALOG_MODE
 finally:
   sys.path.pop(0)
 
@@ -235,7 +236,7 @@ class ProbeTests(unittest.TestCase):
       self.assertEqual(len(captures), 3)
       self.assertTrue(all(p.read_text(encoding='utf-8') == '日本語 🧵 Café' for p in captures))
 
-  def exercise_run(self, mode, build_outcome=0):
+  def exercise_run(self, mode, build_outcome=0, wrong_event=False, source_exits=False, late_source_exit=False, audit_failure=False):
     """Mock every process/socket/wait: no Next, build, source server or real sleep."""
     with tempfile.TemporaryDirectory() as tmp, contextlib.ExitStack() as stack:
       output = Path(tmp)
@@ -243,6 +244,8 @@ class ProbeTests(unittest.TestCase):
       def spawn(command, **kwargs):
         process = Mock(pid=1000 + len(spawned), returncode=None)
         process.poll.return_value = None
+        if source_exits and not spawned:
+          process.poll.side_effect = lambda: 2 if router.source.state != 'S0' else None
         is_build = 'build' in command
         waited = False
         def wait(timeout=None):
@@ -258,18 +261,37 @@ class ProbeTests(unittest.TestCase):
         process.wait.side_effect = wait
         spawned.append((command, kwargs, process))
         return process
+      def audit(entry):
+        with (output / 'continuity-fixture.log').open('a', encoding='utf-8') as stream:
+          stream.write(json.dumps(entry) + '\n')
+      router = Router(mode=CATALOG_MODE, audit_sink=audit)
+      source_identity = id(router.source)
       def check(state):
+        self.assertEqual(router.source.state, state)
+        self.assertEqual(id(router.source), source_identity)
+        router.handle('/request', {'operation': 'searchFacets', 'variables': {'query': '*'}})
         if state == 'S2':
           (output / 'S2-article.html').write_text('日本語 🧵', encoding='utf-8')
         return {'state': state}
+      events = []
+      def request(path, payload=None, rsc=False):
+        self.assertEqual(path, '/event')
+        events.append(payload['event'])
+        return 200, json.dumps({'state': 'S0'} if wrong_event else router.handle(path, payload))
+      def killpg(pid, sig):
+        if sig == 0:
+          raise ProcessLookupError()
+        process = next(p for _, _, p in spawned if p.pid == pid)
+        process.poll.return_value = 2 if late_source_exit and process is spawned[0][2] else -sig
       for owner, attr, value in ((PROBE, 'validate_app', Mock()),
+          (PROBE, 'validate_existing', Mock(return_value={'build_id': 'synthetic-build', 'build_performed': False})),
           (PROBE.subprocess, 'run', Mock(return_value=Mock(stdout='v24.19.0'))),
           (PROBE.subprocess, 'Popen', Mock(side_effect=spawn)),
           (PROBE.socket, 'socket', Mock()), (PROBE, 'wait_ready', Mock()),
           (PROBE.signal, 'signal', Mock()),
-          (PROBE.os, 'killpg', Mock(side_effect=ProcessLookupError())),
+          (PROBE.os, 'killpg', Mock(side_effect=killpg)),
           (PROBE.time, 'sleep', Mock()), (PROBE, 'check', Mock(side_effect=check)),
-          (PROBE, 'request', Mock(return_value=(200, '{}'))),
+          (PROBE, 'request', Mock(side_effect=request)),
           (PROBE, 'verify_body', Mock(return_value={'status': 'pass'}))):
         stack.enter_context(patch.object(owner, attr, value))
       stack.enter_context(patch.dict(PROBE.os.environ, {'HTTPS_PROXY': 'test-proxy-not-logged',
@@ -278,8 +300,21 @@ class ProbeTests(unittest.TestCase):
       if mode == 'focused-production' and build_outcome != 0:
         with self.assertRaises((RuntimeError, TimeoutError)):
           PROBE.run(output, output, mode)
+      elif audit_failure:
+        with self.assertRaisesRegex(RuntimeError, 'fixture audit failed'):
+          PROBE.run(output, output, mode, 'synthetic-build')
+      elif late_source_exit:
+        with self.assertRaisesRegex(RuntimeError, 'during cleanup'):
+          PROBE.run(output, output, mode, 'synthetic-build')
+      elif source_exits:
+        with self.assertRaisesRegex(RuntimeError, 'fixture exited'):
+          PROBE.run(output, output, mode, 'synthetic-build')
+      elif wrong_event:
+        with self.assertRaisesRegex(AssertionError, 'event state mismatch'):
+          PROBE.run(output, output, mode, 'synthetic-build')
       else:
-        PROBE.run(output, output, mode)
+        PROBE.run(output, output, mode, 'synthetic-build' if mode == 'existing-production' else None)
+        self.assertEqual(events, ['e1', 'e2', 'e3', 'e4'])
       record = json.loads((output / 'continuity-result.json').read_text())
       self.assertEqual(PROBE.processes, [])
       self.assertIsNone(PROBE.ROOT)
@@ -303,6 +338,190 @@ class ProbeTests(unittest.TestCase):
       self.assertTrue(kwargs['start_new_session'])
     self.assertEqual(record['status'], 'passed_focused_production_HTTP_consumers_only')
     self.assertEqual([row['state'] for row in record['results']], ['S0', 'S1a', 'S1b', 'S1', 'S2'])
+
+  def test_existing_artifact_runs_one_catalog_source_and_start_without_build(self):
+    record, spawned = self.exercise_run('existing-production')
+    self.assertEqual(len(spawned), 2)
+    self.assertTrue(spawned[0][0][1].endswith('p23_catalog_fixture.py'))
+    self.assertEqual(spawned[0][0][2:], ['--mode', 'empty-products-and-collections'])
+    self.assertEqual(spawned[1][0][2:], ['start', '--hostname', '127.0.0.1', '--port', '3086'])
+    self.assertFalse(any('build' in command or '--source' in command for command, _, _ in spawned))
+    self.assertEqual([row['state'] for row in record['results']], ['S0', 'S1a', 'S1b', 'S1', 'S2'])
+    self.assertNotIn('build', record)
+    self.assertFalse(record['existing_artifact']['build_performed'])
+    self.assertEqual(record['status'], 'passed_existing_artifact_HTTP_consumers_only')
+
+  def test_existing_late_fixture_fatal_exit_cannot_be_cleaned_into_pass(self):
+    record, _ = self.exercise_run('existing-production', late_source_exit=True)
+    self.assertEqual(record['status'], 'incomplete')
+    self.assertEqual(record['cleanup_returncodes'], [2, -PROBE.signal.SIGTERM])
+    self.assertTrue(all(row['status'] == 'group_absent' for row in record['cleanup_groups']))
+    self.assertEqual(len(record['results']), 5)
+    self.assertIn('fixture_failure', record)
+
+  def test_existing_forced_kill_is_not_normal_fixture_completion(self):
+    cleanup = [{'pgid': 1000 + index, 'term_sent': True, 'kill_sent': index == 0,
+      'leader_returncode': -PROBE.signal.SIGKILL if index == 0 else -PROBE.signal.SIGTERM,
+      'group_exists_at_end': False, 'status': 'group_absent'} for index in range(2)]
+    with patch.object(PROBE, 'cleanup_owned', return_value=cleanup):
+      record, _ = self.exercise_run('existing-production', late_source_exit=True)
+    self.assertEqual(record['status'], 'incomplete')
+    self.assertIn('fixture_failure', record)
+
+  def test_existing_fixture_exit_invalidates_cached_consumer_success(self):
+    record, spawned = self.exercise_run('existing-production', source_exits=True)
+    self.assertEqual(record['status'], 'incomplete')
+    self.assertEqual(record['failure_type'], 'RuntimeError')
+    self.assertEqual([row['state'] for row in record['results']], ['S0'])
+    self.assertEqual(record['cleanup_returncodes'][0], 2)
+
+  def test_existing_wrong_event_state_stops_chain_and_cleans_up(self):
+    record, spawned = self.exercise_run('existing-production', wrong_event=True)
+    self.assertEqual(len(spawned), 2)
+    self.assertEqual(record['status'], 'incomplete')
+    self.assertEqual(record['failure_type'], 'AssertionError')
+    self.assertEqual([row['state'] for row in record['results']], ['S0'])
+    self.assertEqual(len(record['cleanup_groups']), 2)
+
+  def test_existing_artifact_validation_and_pre_spawn_rejections(self):
+    with tempfile.TemporaryDirectory() as tmp:
+      app = Path(tmp) / 'app'
+      server = app / '.next/server'
+      server.mkdir(parents=True)
+      identity = app / '.next/BUILD_ID'
+      manifest = server / 'app-paths-manifest.json'
+      route = server / 'app/page.js'
+      route.parent.mkdir()
+      route.write_text('// synthetic artifact, never executed')
+      identity.write_text('synthetic-build\n')
+      manifest.write_text(json.dumps({'/page': 'app/page.js'}))
+      result = PROBE.validate_existing(app, 'synthetic-build')
+      self.assertIn('unverified', result['provenance'])
+      self.assertFalse(result['build_performed'])
+      with patch.object(PROBE.subprocess, 'Popen') as spawn, \
+          patch.object(PROBE.subprocess, 'run') as node:
+        for build_id in (None, '', ' ', 'wrong', ' synthetic-build'):
+          with self.subTest(build_id=build_id), self.assertRaises(ValueError):
+            PROBE.run(app, Path(tmp), 'existing-production', build_id)
+        identity.unlink()
+        with self.assertRaises(FileNotFoundError):
+          PROBE.run(app, Path(tmp), 'existing-production', 'synthetic-build')
+        identity.write_text('synthetic-build')
+        for bad in ({}, [], {'/page': '../outside.js'}, {'/page': 'missing.js'}, {'/page': None}):
+          manifest.write_text(json.dumps(bad))
+          with self.subTest(manifest=bad), self.assertRaises(ValueError):
+            PROBE.run(app, Path(tmp), 'existing-production', 'synthetic-build')
+        manifest.write_text('{')
+        with self.assertRaises(ValueError):
+          PROBE.run(app, Path(tmp), 'existing-production', 'synthetic-build')
+        manifest.unlink()
+        with self.assertRaises(FileNotFoundError):
+          PROBE.run(app, Path(tmp), 'existing-production', 'synthetic-build')
+        spawn.assert_not_called()
+        node.assert_not_called()
+
+  def test_existing_artifact_symlinks_outside_copy_are_rejected_before_read(self):
+    with tempfile.TemporaryDirectory() as tmp:
+      app = Path(tmp) / 'app'
+      build = app / '.next'
+      build.mkdir(parents=True)
+      outside = Path(tmp) / 'outside'
+      outside.write_text('synthetic-build')
+      identity = build / 'BUILD_ID'
+      identity.symlink_to(outside)
+      with patch.object(Path, 'read_text', side_effect=AssertionError('must not read')):
+        with self.assertRaisesRegex(ValueError, 'inside'):
+          PROBE.validate_existing(app, 'synthetic-build')
+      identity.unlink()
+      identity.write_text('synthetic-build')
+      server = build / 'server'
+      server.mkdir()
+      (server / 'app-paths-manifest.json').write_text(json.dumps({'/page': 'route.js'}))
+      (server / 'route.js').symlink_to(outside)
+      with self.assertRaisesRegex(ValueError, 'unsafe'):
+        PROBE.validate_existing(app, 'synthetic-build')
+
+  def test_existing_external_server_with_manifest_link_back_is_rejected_before_read(self):
+    with tempfile.TemporaryDirectory() as tmp:
+      app = Path(tmp) / 'app'
+      build = app / '.next'
+      build.mkdir(parents=True)
+      outside = Path(tmp) / 'outside'
+      outside.mkdir()
+      (build / 'BUILD_ID').write_text('synthetic-build')
+      manifest = app / 'manifest.json'
+      manifest.write_text(json.dumps({'/page': 'route.js'}))
+      (outside / 'app-paths-manifest.json').symlink_to(manifest)
+      (outside / 'route.js').write_text('// must not accept external code')
+      (build / 'server').symlink_to(outside, target_is_directory=True)
+      with patch.object(Path, 'read_text', side_effect=AssertionError('must not read')):
+        with self.assertRaisesRegex(ValueError, 'inside'):
+          PROBE.validate_existing(app, 'synthetic-build')
+
+  def test_existing_audit_rejects_swallowed_errors_missing_and_corrupt_logs(self):
+    with tempfile.TemporaryDirectory() as tmp:
+      path = Path(tmp) / 'audit.log'
+      rows = []
+      router = Router(mode=CATALOG_MODE, audit_sink=rows.append)
+      router.handle('/request', {'operation': 'searchFacets', 'variables': {'query': '*'}})
+      for event in ('e1', 'e2', 'e3', 'e4'):
+        router.handle('/event', {'event': event})
+      def write(items):
+        path.write_text('\n'.join(json.dumps(item) for item in items), encoding='utf-8')
+      write(rows)
+      self.assertEqual(PROBE.validate_fixture_audit(path)['events'], ['e1', 'e2', 'e3', 'e4'])
+      for bad in ([], rows[:-1], rows[1:], [rows[0], rows[2], rows[1], *rows[3:]]):
+        write(bad)
+        with self.assertRaises(ValueError):
+          PROBE.validate_fixture_audit(path)
+      with self.assertRaises(ValueError):
+        router.handle('/request', {'operation': 'unknown-operation'})
+      write(rows)
+      with self.assertRaises(ValueError):
+        PROBE.validate_fixture_audit(path)
+      for bad in ('broken', '{}', '[]', 'null', '127.0.0.1 - - [date] "POST /request HTTP/1.1" 400 -'):
+        write(rows[:-1])
+        with path.open('a') as stream:
+          stream.write('\n' + bad)
+        with self.assertRaises(ValueError):
+          PROBE.validate_fixture_audit(path)
+      path.unlink()
+      with self.assertRaises(FileNotFoundError):
+        PROBE.validate_fixture_audit(path)
+
+  def test_existing_swallowed_router_rejection_never_publishes_passed(self):
+    original = Router.handle
+    def rejected(router, endpoint, payload, **kwargs):
+      if endpoint == '/event' and payload['event'] == 'e4':
+        try:
+          original(router, '/request', {'operation': 'unknown-operation'})
+        except ValueError:
+          pass  # Simulate an application swallowing the source HTTP 400.
+      return original(router, endpoint, payload, **kwargs)
+    with patch.object(Router, 'handle', rejected):
+      record, _ = self.exercise_run('existing-production', audit_failure=True)
+    self.assertEqual(record['status'], 'incomplete')
+    self.assertEqual(record['fixture_audit']['status'], 'failed')
+    self.assertEqual(len(record['results']), 5)
+
+  def test_existing_audit_io_error_receipt_does_not_copy_exception_text(self):
+    marker = 'private-path-or-invalid-byte-marker'
+    for error in (OSError(marker), UnicodeError(marker)):
+      with patch.object(PROBE, 'validate_fixture_audit', side_effect=error):
+        record, _ = self.exercise_run('existing-production', audit_failure=True)
+      self.assertNotIn(marker, json.dumps(record))
+      self.assertEqual(record['fixture_audit']['error_type'], type(error).__name__)
+
+  def test_existing_cli_requires_identity_and_rejects_unrelated_modes(self):
+    with patch.object(PROBE, 'run') as run:
+      PROBE.main(['--app', 'app', '--output', 'out', '--mode', 'existing-production',
+        '--build-id', 'synthetic-build'])
+      self.assertEqual(run.call_args.args[-2:], ('existing-production', 'synthetic-build'))
+      for args in (['--app', 'app', '--output', 'out', '--mode', 'existing-production'],
+                   ['--app', 'app', '--output', 'out', '--build-id', 'synthetic-build'],
+                   ['--source', '--build-id', 'synthetic-build']):
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+          PROBE.main(args)
 
   def test_mock_build_nonzero_and_timeout_never_start(self):
     for outcome in (1, 'timeout'):
