@@ -14,7 +14,13 @@
 
 **当前面向持续仓库修改的最佳开源组合未知。** [Zed 当前外部 Agent 契约](https://zed.dev/docs/ai/external-agents)将 OpenCode／Pi 的认证、模型选择与宿主界面分开；结合[终端承载](ide-and-others.md#zed)，可确认开源 harness、IDE 和原生 CLI 不是互斥路线。这是接入机制证据，尚非领先维护成果。[一手；研究]
 
-**本页采用“按质量目标或能力缺口试换”的可行默认，差距仍2。** 同题迁移的主流做法与净收益仍未知；本轮查到的跨 harness 论文有报表口径待核，未作为采用依据。候选与排除理由见[研究记录](../research/2026-10-12-community-source-records.md#p54入口选择先分界面harness与执行环境)，比较步骤见[总览](README.md#当前最高水平先分层再决定迁移)。[研究]
+**本页采用“按质量目标或能力缺口试换”的可行默认，差距仍2。** Pi的[维护链](#迁移验收成功调用还要对上完整修改)提供真实编辑遗漏及适配反例，支持先验完整产物；同题迁移的主流做法与净收益仍未知。候选与排除理由见[研究记录](../research/2026-10-12-community-source-records.md#p54入口选择先分界面harness与执行环境)，比较步骤见[总览](README.md#当前最高水平先分层再决定迁移)。[研究]
+
+### 迁移验收：成功调用还要对上完整修改
+
+**换harness或provider后，用代表性的连续修改核完整补丁，不只看工具成功。** Pi的[#6278](https://github.com/earendil-works/pi/issues/6278)记录宽松参数校验后，首个替换成功但第二个预期替换被丢弃的用户反例；Agent应交出每个预期修改对应的diff与原验收，人核遗漏，不能把报错减少当质量改善。[社区：7-04原报；研究：采用条件]
+
+**保留已验证配置作为撤回路径。** 后续[#7250](https://github.com/earendil-works/pi/issues/7250)报告自定义provider兼容问题，关闭原因为not planned而非修复；不要据issue关闭或PR合并宣称整条迁移已验证。固定补丁与实际范围见[维护链](../research/2026-10-12-community-source-records.md#p54后续从迁移理由到可核结果)。[社区；研究]
 
 ## 总览
 

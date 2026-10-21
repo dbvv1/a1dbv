@@ -30,8 +30,10 @@
 |---|---|---|
 | 只缺会话整理、切换与通知 | 保留原 CLI；可试 [Zed Terminal Threads](ide-and-others.md#zed)，只换交互界面 | 原 CLI 的有效配置、测试与恢复仍可用 |
 | 需要逐段审查、交互调试或编辑器上下文 | 试 IDE 原生或 ACP 集成；ACP 是宿主桥接，不是新模型 | 必需工具、审批可完成，原指令实际加载，后续修改能接续 |
-| 需要自选模型／服务商或改工具循环 | 先核现有 harness 能否满足，再试[开源入口](open-source-agents.md#当前最高水平) | 比较模型与 harness 的组合，计入适配、隔离与升级维护 |
+| 需要自选模型、改工具循环，或把重复质量要求变成可执行反馈 | 先核现有 harness 能否补足，再试[开源入口](open-source-agents.md#当前最高水平) | 比较模型与 harness 的组合，计入适配、隔离与升级维护 |
 | 必须脱离本机继续执行 | 换到确有独立执行环境的路线 | 必要依赖、数据与同一验收能在远端运行；桌面后台不等于云端 |
+
+**换路也可以由新质量目标触发，不必等旧测试失败。** Shopify 的 [Helix（9-21）](https://shopify.engineering/helix)将既有应用的行为和同状态画面变成迁移反馈；若原入口能承载所需检查，先补循环而非换品牌。评审无新增发现时应收敛，不能照搬无限重试。[一手：团队实践；研究：与[复审反例](../09-review-and-quality.md)比较]
 
 **三层可以组合。** IDE 可以承载原 CLI，开源 harness 也能接 IDE 或在远端运行；[Zed 两条路径](https://zed.dev/docs/ai/terminal-threads)与[Google 入口指南（6-10）](https://cloud.google.com/blog/topics/developers-practitioners/choosing-your-surface-antigravity-20-antigravity-cli-antigravity-ide-or-antigravity-sdk)给出这样的职责划分，而不是三种互斥产品类别。[一手；研究]
 
