@@ -1,6 +1,6 @@
 主线：三，兼二／四
 改变的建议：续改分验有意改变与必须保留的行为；迁移核消费者、持久状态与真实运行入口，撤替代层前确认原生能力承接。[研究／经验]
-新证据：2026-10-20 补P27同一活动改稿／恢复的固定链和逐人判据（未运行）；2026-10-20 追加固定Prisma应用的两轮继承纸面包、GitLab修复链及工具边界；CPython等旧记录保原日期／运行边界，本轮未运行候选。[一手／研究]
+新证据：2026-10-21 补[P49故障传播](#p49生成服务的故障证据)固定源码三路，注入异常被呈现为付款拒绝（未运行）；2026-10-20 补P27同一活动改稿／恢复的固定链和逐人判据（未运行）；2026-10-20 追加固定Prisma应用的两轮继承纸面包、GitLab修复链及工具边界；CPython等旧记录保原日期／运行边界，本轮未运行候选。[一手／研究]
 
 2026-10-20：[P22](#p22有数据应用的两轮迁移)已交两轮继承纸面包与固定维护链，15§5据此明确迁移默认；[P23](#p23next应用迁出后仍值得保留吗)交固定shop两轮纸面包与发行包边界：博客先保Next并用有限缓存寿命；无文章回调，不承诺即时下架。均不代表运行效果。[研究]
 
@@ -607,3 +607,58 @@ Push与落盘非原子；扫描（`internal/manager/manager.go:592–620`）取c
 [官方Resend契约](https://resend.com/docs/dashboard/emails/idempotency-keys)支持HTTP键及SMTP `Resend-Idempotency-Key`、保存24小时。当前源码的HeaderTpls→message.render→worker→email.Headers通用链可传逐人键，但没有专用生命周期：全活动静态同键、每次随机键、同键改payload都是坏候选。postback把Campaign.Headers放JSON而非该HTTP请求头，不能靠换URL声称接入。源码可达不是供应商集成通过。[一手／研究]
 
 **模型对照已后置，尚未启用。** 后续安排见[现有验证模板](../../templates/long-task/README.md#relay-pilot-plan)；本节C1两轮拟行为验收保留，仍未运行。[研究：范围]
+
+
+## P49：生成服务的故障证据
+
+核实：2026-10-21（UTC+8）。主线四；改变[15§2](../15-task-playbooks.md#接管生成服务先交能区分原因的证据)：生成 Agent 先交原因判别链，复用现有遥测，缺语义再补；18只保入口。新证据是同版付款故障传播中“主动注入→付款拒绝”语义失真。[一手／研究]
+
+### 当前最高水平卡
+
+- **问题**：生成服务不仅能跑，失败后能否让接收者继续诊断？
+- **近期上限参照**：Tao 等，[2026-07-07论文v1](https://arxiv.org/html/2607.05785v1)分开源码诊断语义与运行故障信号；FSR衡量特定日志证据，不是根因定位正确率，样本为Copilot SDK上的GPT-5.5、Opus 4.8与Gemini 3.5 Flash，不代表2026-10所有工具。[研究]
+- **发布消费侧**：Cursor／Rustam Lalkaka，[2026-09-23 Rollouts](https://cursor.com/blog/rollouts-and-security-reviewer)按diff制定监测计划、识别插桩缺口，发布后比基线并按配置通知／暂停／提出撤回。它消费遥测，不替生成者补齐故障语义；属于厂商自述，非本仓复测。[一手]
+- **主流未知；可行层**：没有同题代表性采样。下述OpenTelemetry官方样例证明手工span、RPC自动插桩及日志可形成判别链，不是Agent生成结果。
+- **本仓默认**：低投入可行层，先复用已有信号；生成Agent追语义与传播，观察Agent消费与比较，人核业务分类和操作权限。未比较同条件方案，整体最高水平未知。[研究]
+
+### 固定源码与三路判别（静态证据）
+
+固定 open-telemetry/opentelemetry-demo 的 `ba1757b3f197916640fff4f7c549b99e54835ab8`，文件头 Apache-2.0。本节均为同SHA源码／测试预期和人工推导；未运行demo、Cypress、模型或故障开关。表中信号以分支实际执行、追踪及导出有效为前提，不把源码里的日志当现场观察。[一手／研究]
+
+共用有效合成订单与正常前置服务；三路 `(paymentFailure, paymentUnreachable)` 为 `(0,false)`、`(1,false)`、`(0,true)`；留当次评估值，不以配置存在代触发。两个开关同时开会先走错误目标，不能作独立对照。[开关配置][p49-flags]、[付款实现][p49-charge]、[checkout实现][p49-checkout]。[一手]
+
+| 路径 | 源头及预期信号 | 传播与能排除的原因 |
+|---|---|---|
+| 正常 | checkout的prepared之后调用Charge；Payment记录Transaction complete、成功计数加1并返回transactionId；checkout记charged及payment went through，后续才shipped／order placed | 同请求charged支持Charge返回成功，不证明真实银行卡扣款。demo的synthetic_request仍返回ID并计数但charged=false；order placed也不证明邮件成功，清购物车错误被忽略。[付款][p49-charge]／[checkout][p49-checkout] |
+| 主动报错 | paymentFailure=1在读取／验证卡信息前抛普通Error，固定message含Payment request failed、Invalid token；charge记录exception、ERROR及error.type=Error；handler记warn并callback(err)，不到成功计数或返回ID | chargeCard加could not charge the card，PlaceOrder再包Internal与failed to charge card；同trace的源头异常与特定message支持注入、排除该次到达Payment前已连接失败；执行顺序排除卡验证触发。Invalid token只是注入文案，不证明外部认证失败。[付款][p49-charge]／[handler][p49-handler]／[checkout][p49-checkout] |
+| 错目标 | paymentUnreachable=true临时将客户端指向badAddress:50051，再发Charge；目标确不可达时应有底层连接／解析失败。checkout仍可有prepared及RecordError，不走charged | 沿同两层包装到外层Internal。请求评估值、实际目标与传输错误合起来支持错目标，不证明Payment实例宕机。未见Payment服务端span只是辅助线索，不能排除采样／导出／查询缺失；具体码、DNS和耗时依环境。[checkout][p49-checkout] |
+
+`RecordError`记录chargeCard错误；RPC自动插桩也影响span状态。`charge`用startSpan而非startActiveSpan，handler当前RPC span与它不能混作一个；日志关联须核实际span_id。[一手：同版checkout／charge／handler]
+
+### 反例：用户提示不是故障分类
+
+[API][p49-api]以`failed to charge card:`为前缀，且嵌套详情不含`code = Unavailable`／`code = Internal`时，返回422／PAYMENT_FAILED并记Checkout payment declined；其余返回500。**同版[Cypress源码][p49-test]把100%注入的预期设为422**，足以否定“422就是真实卡组织拒付”的读法，但不是测试已通过。普通Error具体wire code未在依赖内部复核；错目标若返回其他底层状态，仍按该字符串分支判断，500不是跨环境定理。[一手／研究]
+
+浏览器[Request封装][p49-request]遇非2xx只抛Error(data.error或状态文字)，不把JSON code／HTTP status保为结构化字段。Agent须回查API与源头证据，业务提示可统一，维护接口保留原因和来源。[一手／研究]
+
+### 最小诊断交付包与接收条件
+
+给生成Agent的五项交付要求，非已运行完成的包。[研究：设计]
+
+1. **身份与输入**：SHA、构建／启动方式、配置来源、单一合成请求的关联键／时间窗及当次flag值。静态默认与运行评估分列。
+2. **三路判别表**：源头、最早可判别信号、包装边界、对外错误、可排除项／未知项；明确哪些是源码预期，哪些有实际观察。
+3. **实际取证入口**：接收者能用的服务名、trace_id、时间窗与权限。该版基础[Collector][p49-collector]的trace／log去debug；Jaeger等来自[observability附加配置][p49-observability]，不能默认界面已启用。
+4. **语义保真**：先复用exception、底层状态和目标证据；仅剩Internal／422且无法分因时，才补低敏来源／原因／依赖目标字段。保持emitRawPii关闭，不为诊断收集真实卡号／CVV；trace管线脱敏不能推成所有日志已脱敏。[配置][p49-flags]／[Collector][p49-collector]
+5. **验收与撤回**：先核发出→采样→导出→Collector→后端保留／查询链，再用缺迹辅助判断。正常付款不包办邮件等全部副作用；证据不可访问或相关性未核时保留“原因未定”，撤回自动根因承诺。实际发布须另验接收者可取得证据，不能凭本静态表授权付款重试、重启或回滚。
+
+**验证边界**：完成同SHA调用链、配置与测试预期的静态核对；应用、自动插桩实际字段、SDK内部错误映射、接收端查询、模型诊断率及维护收益均未实测。下列为固定源码定位，非运行回执。
+
+[p49-flags]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/flagd/demo.flagd.json
+[p49-charge]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/payment/charge.js#L27-L115
+[p49-handler]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/payment/index.js#L12-L31
+[p49-checkout]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/checkout/main.go
+[p49-api]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/frontend/pages/api/checkout.ts#L14-L47
+[p49-test]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/frontend/cypress/e2e/CheckoutPaymentFailure.cy.ts#L58-L70
+[p49-request]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/frontend/utils/Request.ts#L27-L42
+[p49-collector]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/otel-collector/otelcol-config.yml#L208-L273
+[p49-observability]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/otel-collector/otelcol-config-observability.yml#L64-L72
