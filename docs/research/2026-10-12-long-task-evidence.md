@@ -444,3 +444,30 @@ P47为0.5–3天项目，首批是发行比较与摘录反例，不按13项数�
 | 20 | 恢复、版本绑定、外部结果对账与授权跨代保留；长任务不再按体量设上限，也不要求固定 reset／sprint | 可靠原生恢复已覆盖时不加重复记录；外部结果未知先查事实，不因模型更强直接重放 |
 
 存在性证据足以撤回绝对禁止，却不足以证明同预算普遍最优；完成仍看真实结果与后续修改。[研究：结论强度]
+
+
+## P47续查：配置改变后旧工具在哪执行
+
+核实：2026-10-21；主线二／三。改变20的B2验收：除历史兼容与retry policy重绑，还要验未决工具的目录／定义绑定。已有unknown对账原则不重算增量，本节不新增探针。[研究]
+
+**最高水平卡。** 同题整体最优未知。Moe Abadi的[Temporal实验（10-08）](https://temporal.io/blog/the-immortal-life-of-pi-running-the-pi-coding-agent-on-temporal)与Earendil Engineering的[Pi Durable（10-01）](https://earendil.com/posts/pi-durable/)是近期恢复机制参照，非生产优胜证据；主流采用率未知。可行基线仍是原宿主可核的恢复入口。只缺模型端可用性，保现成fallback；缺进程恢复才比较耐久宿主，不能把两层职责相加当完成保障。[一手：团队自报；研究：取舍]
+
+### 同一任务的三个绑定层
+
+| 变化／状态 | 已核契约 | 当前取舍 |
+|---|---|---|
+| 下一次模型请求 | Pi Durable请求准备时固定model、prompt与offered tools；后改配置从下一请求生效 | model-only修改与执行环境修改分开，不一概停掉所有热配置。 |
+| 已发出、尚未落定的工具 | 同版文档明确：tool/hook在任务phase解析当前agent，环境按当前cwd构造；extension／cwd变化可到达模型已发出的调用 | 改这些绑定前先落定旧调用，或由宿主明确保留其执行环境／定义。不能从历史call ID尚在推断目标未变；这不是已证漏洞。 |
+| 回放历史中的工具名和缺失结果 | PydanticAI固定文档：reveal记录只保名字，定义来自当前run；provider-valid修复可合成interrupted结果，live frontier无新user_prompt时仍可能执行 | 合成结果不是业务回执；先核实际结果和当前定义。此条来自冻结后的独立参照，不冒充本轮自主发现。 |
+
+Pi契约固定至`6e491cfa95b53e656e31b72f91a0839046a8da1b`：[README L378–439](https://github.com/earendil-works/pi/blob/6e491cfa95b53e656e31b72f91a0839046a8da1b/packages/durable/README.md#L378-L439)，blob `b6c28f99781f979ed5752d5d7db5955c150b714d`；[规范L918–934](https://github.com/earendil-works/pi/blob/6e491cfa95b53e656e31b72f91a0839046a8da1b/packages/durable/docs/spec.md#L918-L934)，blob `3e206cf8e89118443504b6aca25d50fb1af4521a`。规范明确恢复重跑取当时cwd。它存extension/tool名字而非代码，包标Experimental；这里核的是同版文档契约，不是实现运行或某稳定发行认证。[一手]
+
+PydanticAI v2.58.0固定`b40096c4c91e4db361ee3f23b0e3f6b85569faa2`，[history L364–405](https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/docs/message-history.md#L364-L405)，blob `6891ce693dbeac39c3b0f80dea9e679e7ec958f7`。是否能发给provider、工具是否应继续、外部效果是否已提交是不同问题；不能把合成interrupted当未执行，也不能为新prompt随意丢弃仍待回答的调用。[一手／研究]
+
+### 为什么暂不换整套耐久宿主
+
+[pi-temporal固定保证](https://github.com/temporalio/pi-temporal/blob/09d7c82576eeb34656403e692354bedf5e8e1fbd/docs/guarantees.md)（`09d7c82576eeb34656403e692354bedf5e8e1fbd`，blob `994ca67feea114e4c753ec5ca2fff023ec7dadee`）把模型步骤、工具claim、transcript fence和项目树迁移分开。当前fence用顺序而非lease到期，树迁移另有lease；不能把10-08文章的简述当当前全部实现。文档明确跨NFS客户端的transcript恢复无保证、旧writer混用与迁移有缺口、暂无runtime compatibility gate。只有当前宿主确缺相应能力且部署条件可满足时才进入采用比较，不因新文章默认移植。[一手／研究]
+
+**给Agent的B2输入。** B1保留一条已发出未落定工具及其原目标；B2分别只换模型、再改cwd／toolset，核旧call最后使用的环境、定义和业务操作ID。配置保存／读回不能代替这项验收。人决定旧目标能否保留与当前权限；若授权撤销就不再执行，保绑定不等于保旧权限。仍复用既有账，不再做另一个假对象探针。[研究：拟验收]
+
+此次只读公开原文与固定文档，没有安装／运行SDK、模型或耐久宿主。P47完整B0→B1→B2仍未完成；提示词的前瞻自用记录及后验查漏见[P51回执](2026-10-15-exploration-evidence.md#p51第一次前瞻自用p47)。[研究：范围]

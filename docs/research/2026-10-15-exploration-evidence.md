@@ -423,6 +423,8 @@ lychee 为 Apache-2.0 OR MIT，后续可以选择固定的官方二进制，不�
 | 评审 | Anthropic Claude Code／Addy Osmani、Morgan Westlee Lunt、Qing Wang；[Claude.dev 原文](https://claude.dev/blog/solving-code-review-at-anthropic/)；Anthropic Engineering 的 Scion 团队 | 10-15 评审复盘同时给风险分层、回退、失控复审和噪音指标，胜过仅列“多个 reviewer”的教程。Claude Code 独立仓库和 Scion monorepo 不得混为同一审批制度。 |
 | 评估 | Anthropic／Lance Martin；Claude.dev Playbooks；独立校准看 ETH SRI／Thibaud Gloaguen 等的版本化论文，以及 METR 原始研究 | [9-28 eval/hillclimbing](https://claude.dev/blog/automating-eval-design-and-hillclimbing/)有噪声、grader、成本和过拟合检查；[AGENTS.md v3，9-29](https://arxiv.org/abs/2602.11988v3)为指令收益提供反证（本轮核摘要及版本，正文已由仓内记录覆盖）；[METR 10-06](https://metr.org/blog/2026-10-06-ai-systems-could-cover-up-misbehavior/)提醒呈现层也须独立核查。 |
 
+长程名册补充（P47前瞻自用）：沿[Temporal／Moe Abadi的10-08工程文](https://temporal.io/blog/the-immortal-life-of-pi-running-the-pi-coding-agent-on-temporal)与[Earendil Engineering的10-01发布](https://earendil.com/posts/pi-durable/)追耐久执行的当前契约和失败边界；先区分模型请求与工具执行状态，不把实验宿主直接列为生产默认。[一手／研究]
+
 跨线个人雷达：[Simon Willison](https://simonwillison.net/)及其[9-27演讲整理](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)。本人经验为一手，转引追原作者；本仓已收录，不计新增。
 
 ### 三篇指定校准卡
@@ -536,7 +538,7 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 
 [执行提示词](../collaboration/prompts/2026-10-21-exploration-self-use.md)落实25既有六步，不安装Skill，不增加脚本／JSON／调度。记录实际起止、可核作业与等待、去重来源数／正文读取数；正文比例不是质量分。已知来源、主动发现、外部补入分列，阶段结束后先冻结再对照。[研究：设计]
 
-**当前实际使用0/3。** P46／P49／P50不得追认，本次准备提示词和名册也不拆成三个内容项目。后续在真实内容项目开始研究前使用并留下产物；同一项目多卡只计一次。按既定双周审计汇总已知相关参照的遗漏及原因，无合格分母写未知。P51仍未完成，方法净收益仍归P41／P38。[研究：验收状态]
+**首批截止17:38（UTC+8）实际使用0/3。** P46／P49／P50不得追认，本次准备提示词和名册也不拆成三个内容项目。后续在真实内容项目开始研究前使用并留下产物；同一项目多卡只计一次。按既定双周审计汇总已知相关参照的遗漏及原因，无合格分母写未知。P51仍未完成，方法净收益仍归P41／P38。[研究：验收状态]
 
 ### G1与客户端核心机制来源名册
 
@@ -556,3 +558,22 @@ Cursor [2026-07-30，How we set up our cloud agent environment](https://cursor.c
 **两项本次定向补漏。** 在c4f280f的docs与domains/game-dev按正式slug、作者、标题片段查重，未命中Cronin讲义及Unity Material正式页；不证明历史从未读过。Cronin的PDF第47–51页（零基46–50）从假设、试玩、归纳到行动，提醒玩家面对整个游戏且不知道开发者假设；支持把程序正确与玩家理解分别找来源。仅凭正文文字，相关页截图未取得，不声称审图。Material正文将工具定位于原型占位、后期换美术成品；这不是商用禁令或所有生成物不可用，只改变候选进入比较前的阶段核查。Sprite相同定位、SIGGRAPH简介已有，不能重报新增。[一手／研究]
 
 **读取记录（执行者自报）。** 研究09:28:17–09:32:46 UTC，历时4分29秒含去重、检索和记录，非纯阅读净工时。限定目标16篇：Cronin、SBS、补帧、TiMi、Unity Sprite／Material、SIGGRAPH、GASP、Holden、Rain World、FFF407、两篇音频、Unity AI、Playtest、Content Survey；其中相关正文已读12，目标读取比例12/16；四项为TiMi获取受限、SIGGRAPH仅简介、两音频不可读。导航页、重复URL与继承卡不计；不是全网召回或提示词效果。本次在新提示准备完成前已开始研究，不计自用项目。名册有全链入口，近期音频原文、VFX完整讲义和同题质量比较仍缺。[研究：范围]
+
+### P51第一次前瞻自用：P47
+
+本次P47新增读者问题是“第二次配置修改后，旧工具是否仍在原环境／定义下执行”，不是重跑旧13项。研究前已读[提示词](../collaboration/prompts/2026-10-21-exploration-self-use.md)，版本cbbb996，内容SHA-256 `5b7ad180b1eb83c8fb00419b551ba9da7e27ef61108cf6145f3772d8eef7ff08`。首次工作树见本地b39ac5f，提示词与其已发布映射cbbb996逐字一致；之后从远端基线接续。既有fallback发行、unknown对账和策略重绑标输入已知，不当新发现。[研究：前瞻记录]
+
+执行者记录起始2026-10-21 09:58:19 UTC、来源／判断冻结10:00:06，检索阅读及输入复核窗口1分47秒；整理至10:02:00，总窗口3分41秒，纯阅读与等待分量未知。冻结名单如下，同页重复访问／重定向不加次数：[研究：执行者自报]
+
+| 来源（冻结时） | 读取与作用 |
+|---|---|
+| [Temporal10-08团队实验](https://temporal.io/blog/the-immortal-life-of-pi-running-the-pi-coding-agent-on-temporal)、[pi-temporal README](https://github.com/temporalio/pi-temporal)、[guarantees](https://github.com/temporalio/pi-temporal/blob/main/docs/guarantees.md) | 3项相关正文；实验参照与部署反例，非生产效果。 |
+| [Earendil10-01发布](https://earendil.com/posts/pi-durable/)、[Pi Durable README](https://github.com/earendil-works/pi/blob/main/packages/durable/README.md)、[pi-ai README](https://github.com/earendil-works/pi/blob/main/packages/ai/README.md) | 3项相关正文；工具阶段绑定与跨商投影；发布文不是独立复现。 |
+| [Pydantic Temporal文档](https://pydantic.dev/docs/ai/capabilities/durable_execution/temporal/)、[Cloudflare10-02](https://developers.cloudflare.com/changelog/post/2026-10-02-pi-harness/)、[LangGraph持久化](https://docs.langchain.com/oss/python/langgraph/persistence) | 3项相关正文；原生注册／采用／持久化边界，没有据此新排框架榜。 |
+| Pi `packages/ai/src/transform-messages.ts` 猜测raw路径 | 404，未读，不支持实现断言；保留失败来源，不当不存在转换能力。 |
+
+冻结时N=10、F=9；决定性来源D=5（Temporal实验、Pydantic Temporal、Pi Durable、pi-ai、guarantees），FD=5。它们只是限定名单的读取覆盖，不是正确率、全集召回或方法收益。冻结后将Pi与pi-temporal文档固定SHA，并补规范交叉核实，见[P47正文证据](2026-10-12-long-task-evidence.md#p47续查配置改变后旧工具在哪执行)；不回改原名单提高比例。[研究]
+
+**独立参照产生一项补读。** 另一份小卡于09:59:16开始、10:00:27冻结；未读本轮稿，但读过P47基线，故不是对既有内容完全盲测。它的fallback首事件边界和retry policy两项是输入已知；新增PydanticAI历史修复／当前run工具定义的原文未在本次新检索核查，归读取缺口。冻结后补读固定v2.58.0文档，将合成interrupted与真实结果分开。三项断言不是三个独立最高水平来源，不能据此报1/3整体漏检率。[研究：后验查漏]
+
+这次查漏使25增加跨层状态核查：找到耐久执行方案后，仍回原生SDK核请求、执行和历史修复各层的契约；不只沿新框架作者链走。新内容与20二改选择一起交付，记**1个自用内容项目／目标3个**，P47整体B0→B1→B2未验收，P51仍未完成；不把独立卡、固定版本核查或旧研究拆成多次使用。[研究：验收状态]
