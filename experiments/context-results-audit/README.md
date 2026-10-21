@@ -2,7 +2,7 @@
 
 核实时间：2026-10-10 UTC。✅ 可用于学习实验单元、重跑取舍和可复核记录；**不是新模型实验，也不是论文因果结论的复现**。
 
-本目录只有本仓库新写的 Python 标准库分析器和合成单测，不附带第三方 CSV，不联网、不调用模型、不安装依赖。接收外部 CSV 后，把全行、每单元最早、每单元最新三种口径同时输出为 JSON。
+本目录包含本仓库新写的 Python 标准库分析器和合成单测；下方P48另附人工选择账与固定报告器的离线记录，不附带第三方 CSV，不联网、不调用模型、不安装依赖。接收外部 CSV 后，把全行、每单元最早、每单元最新三种口径同时输出为 JSON。
 
 ## 固定来源
 
@@ -77,3 +77,29 @@ cat "$audit_tmp/findings.json"
 ## 许可与公开边界
 
 已读固定 commit 的 [MIT LICENSE](https://github.com/codeprakhar25/context-files-coding-agents/blob/084c40708e7211b0e6a0fe8d74337b2e048a832c/LICENSE)，版权为 2026 Prakhar Khatri；同版本 README 明确把 `data/` 聚合结果置于相同条款。若另行转载 CSV，应保留原许可和归属。这不授权转载未公开日志、凭据或其他目标仓库。本目录只保留来源链接/hash和新写的分析代码；第三方数据不随仓库分发。
+
+
+## P48：分数参与选择后，怎样解释终评
+
+这是人工数据角色回放，不是模型实验或完整优化器复现。使用同一组Skill描述与人工聚合分数，在三个假设历史中解释选型与终评；不是同一次真实运行的三个阶段。采用判断见[22](../../docs/22-agent-evaluation.md#自动优化后先区分选型分数与独立终评)。
+
+```sh
+python3 -m unittest discover -s experiments/context-results-audit -p 'test_p48_selection_replay.py' -v
+python3 experiments/context-results-audit/p48_selection_replay.py
+```
+
+输入[p48-selection-fixture.json](p48-selection-fixture.json)明确标synthetic_not_model_result，固定一种Skill描述、候选顺序、方向与门槛；预注册相等时取较早轮，不声称复制官方指南的全部策略。输出[p48-selection-result.json](p48-selection-result.json)是本次实际脚本回放：
+
+- A使用test选到v2，只能称selection_only；它不运行模型，也没有重现官方的训练改善及噪声检查。
+- B选优函数只接ID／val分数，先冻结v1，再只读基线／v1的test；门槛不满足则reject，不根据v2较高的test重选。
+- C假设v2因旧终评反馈而修改，旧test已为开发证据，fresh_eval缺失则defer。本窄脚本不实现新终评调度，非空fresh_eval须另评而非自动接受。
+
+人工投入总计来自所有候选，含落选者；不是美元、模型成本、人的工时，也不是A/B路径的实际运行费用。投影只说明代码职责，不是进程／权限隔离。输入是人工聚合分数，不能给统计显著性、泛化或真实采用收益结论。
+
+### 官方lite报告器的限定执行记录
+
+[p48-report-contract.json](p48-report-contract.json)保存固定原脚本的源哈希、人工输入、实际起止／退出码、TSV与人工核对的摘要；未将原脚本或生成HTML复制入库。原脚本及许可链接见[研究记录](../../docs/research/2026-10-12-experiment-records.md#p48优化skill描述后如何接受收益)。
+
+复查时先取得记录固定commit的build-report-lite.mjs并核SHA-256，再将某个cases项的inputs逐文件写到全新普通临时目录，运行 `node build-report-lite.mjs FIXTURE_DIR`；预期两例均exit 0、TSV与记录一致。Node本次为v24.19.0，不需SDK。不要使用真实用户轨迹或覆盖已有报告；这项外部原脚本检查不由默认unittest自动下载或运行。
+
+报告只消费已经保存的数据。缺失rep不补零，失败状态与errors sidecar的计数不同；best徽章读显式轮次。记录中的selection故意含未选v2的test以检查消费语义，不能拿它作为合规三分终评日志。结果完整性仍需对照实际执行账和预定样本，不能从HTML标签推断。

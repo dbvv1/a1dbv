@@ -1,0 +1,69 @@
+{
+  "scope": "synthetic_report_consumer_contract_not_model_or_runner_validation",
+  "upstream_commit": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+  "source_path": "skills/claude-api/shared/evals/report/build-report-lite.mjs",
+  "source_git_blob": "ba1c1ba05eadd9b121a1a1cc07cf59443e70754a",
+  "source_sha256": "af79ca5fa5f06747dbcaa1d40017c8c8e81e0aa11cb8e32b848043893cdb03c7",
+  "runtime": "Node.js v24.19.0",
+  "model_calls": 0,
+  "installed_dependencies": false,
+  "cases": [
+    {
+      "name": "selection",
+      "started_utc": "2026-10-21T07:15:06.115001+00:00",
+      "ended_utc": "2026-10-21T07:15:06.226159+00:00",
+      "exit_code": 0,
+      "invocation": "node build-report-lite.mjs FIXTURE_DIR",
+      "inputs": {
+        "_state.json": "{\"train_ids\": [\"t\"], \"val_ids\": [\"v\"], \"test_ids\": [\"h\"], \"metrics\": [{\"id\": \"quality\", \"kind\": \"float\"}], \"best\": {\"round\": 1}}",
+        "baseline/results.jsonl": "{\"prompt_id\": \"t\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.5}}\n{\"prompt_id\": \"v\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.5}}\n{\"prompt_id\": \"h\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.5}}\n",
+        "v1/results.jsonl": "{\"prompt_id\": \"t\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.6}}\n{\"prompt_id\": \"v\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.9}}\n{\"prompt_id\": \"h\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.4}}\n",
+        "v2/results.jsonl": "{\"prompt_id\": \"t\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.6}}\n{\"prompt_id\": \"v\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.7}}\n{\"prompt_id\": \"h\", \"rep\": 0, \"status\": \"ok\", \"grade\": {\"quality\": 0.95}}\n"
+      },
+      "scores_tsv": "id\tsplit\tbaseline\tv1\tv2\nt\ttrain\t0.500\t0.600\t0.600\nv\tval\t0.500\t0.900\t0.700\nh\ttest\t0.500\t0.400\t0.950\n",
+      "scores_sha256": "bcf00bfc5caa11a4b82438df309240c9ab82c90a9cb0649e6ef7a36425928168"
+    },
+    {
+      "name": "incomplete",
+      "started_utc": "2026-10-21T07:15:06.226297+00:00",
+      "ended_utc": "2026-10-21T07:15:06.305663+00:00",
+      "exit_code": 0,
+      "invocation": "node build-report-lite.mjs FIXTURE_DIR",
+      "inputs": {
+        "_state.json": "{\"metrics\": [{\"id\": \"quality\", \"kind\": \"float\"}]}",
+        "baseline/errors.jsonl": "{\"prompt_id\": \"failed_only\", \"rep\": 0, \"failure_class\": \"synthetic_failure\"}\n",
+        "baseline/results.jsonl": "{\"prompt_id\": \"missing_rep\", \"rep\": 0, \"grade\": {\"quality\": 1}, \"status\": \"ok\"}\n{\"prompt_id\": \"mixed_status\", \"rep\": 0, \"grade\": {\"quality\": 1}, \"status\": \"ok\"}\n{\"prompt_id\": \"mixed_status\", \"rep\": 1, \"grade\": {\"quality\": 0}, \"status\": \"unknown\"}\n{\"prompt_id\": \"failed_only\", \"rep\": 0, \"grade\": {\"quality\": 0}, \"status\": \"failed\"}\n{\"prompt_id\": \"unknown_only\", \"rep\": 0, \"grade\": {\"quality\": 0}, \"status\": \"unknown\"}\n{\"prompt_id\": \"truncated_only\", \"rep\": 0, \"grade\": {\"quality\": 0}, \"status\": \"truncated\"}\n{\"prompt_id\": \"omitted_status\", \"rep\": 0, \"grade\": {\"quality\": 0.25}}\n"
+      },
+      "scores_tsv": "id\tsplit\tbaseline\nmissing_rep\tall\t1.000\nmixed_status\tall\t1.000\nfailed_only\tall\t\nunknown_only\tall\t\ntruncated_only\tall\t\nomitted_status\tall\t0.250\n",
+      "scores_sha256": "c3acb7e7ba969c9dd59dc8b91078fc2abd899df1547fc7aa9e26c7f54eb69b50"
+    }
+  ],
+  "limits": [
+    "Synthetic numbers, not model quality or overfitting evidence",
+    "Report labels do not establish invocation isolation",
+    "Expected repeats=2 is an external fixture oracle, not an input configuration",
+    "No SDK, runner scaffold, full report or DSPy execution"
+  ],
+  "observed": {
+    "selection_best": "v1",
+    "selection_test_means": {
+      "baseline": 0.5,
+      "v1": 0.4,
+      "v2": 0.95
+    },
+    "incomplete_case_rows": 6,
+    "incomplete_scored_cases": 3,
+    "incomplete_mean": 0.75,
+    "incomplete_truncated": 1,
+    "incomplete_failed_attempts": 1
+  },
+  "independent_review": {
+    "executed_utc": "2026-10-21T07:16:31Z",
+    "source_rehashed": true,
+    "fresh_fixture_copies": true,
+    "both_exit_zero": true,
+    "tsv_equal": true,
+    "html_equal_except_generated_time": true,
+    "upstream_mapping_independently_refetched": false
+  }
+}

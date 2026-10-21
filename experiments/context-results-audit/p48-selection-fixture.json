@@ -1,0 +1,18 @@
+{
+  "evidence": "synthetic_not_model_result",
+  "changed_factor": "one_skill_description",
+  "skill_id": "synthetic_sql_review_skill",
+  "baseline_id": "baseline",
+  "split_ids": {"train": ["train_01"], "val": ["val_01"], "test": ["test_01"]},
+  "preregistered": {"goal": "maximize", "tie_break": "earliest_round", "minimum_improvement": 0.05},
+  "input_unit": "synthetic_effort_units_not_usd_or_model_cost",
+  "candidates": [
+    {"id": "baseline", "description": "检查 SQL 查询。", "val": 0.5, "test": 0.5,
+     "synthetic_inputs": {"proposal": 0, "evaluation": 3, "human_review": 1}},
+    {"id": "v1", "description": "当用户要求审查 SQL 查询正确性时使用；检查空值与连接条件。", "val": 0.9, "test": 0.4,
+     "synthetic_inputs": {"proposal": 2, "evaluation": 3, "human_review": 2}},
+    {"id": "v2", "description": "当用户要求审查 SQL 查询时使用；检查空值、连接条件和重复行。", "val": 0.7, "test": 0.95,
+     "synthetic_inputs": {"proposal": 3, "evaluation": 3, "human_review": 2}}
+  ],
+  "post_final_revision": {"parent_id": "v1", "candidate_id": "v2", "fresh_eval": null}
+}
