@@ -1,6 +1,6 @@
 主线：M6／主线 1、2。
 改变的建议：探索先确定决策对象，再分别验证机制、适用性和证据，最终交付生成约束而非资源排名。
-新证据：旧纸面案例和候选校准保留；2026-10-21冻结真实任务源需求，两路隔离搜索后查漏，选择进入资格准备。
+新证据：旧纸面案例和候选校准保留；2026-10-21冻结真实需求并查漏，后补V2的公开资产、隔离条件与实际执行资格之别。
 
 # AI 探索：纸面案例与真实需求发现
 
@@ -186,7 +186,7 @@ P38 需要修错、跨层修改、可测质量改善三个任务，并能继续�
 
 ### 解盲后，哪些遗漏改变了行动？
 
-1. **没有改变首选，但增加一个条件后备。** 搜索臂未深入 [SWE-bench Pro V2](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/README.md)。其任务／参考／隐藏 verifier 包装比直接挖应用提交更完整，但参考臂也未核出 V2 的受支持无账号本地路径；不能借 V1 的说明填空。这个缺口不支持以 Pro V2 取代 Datasette，更不能放宽原约束。[一手；比较判断]
+1. **没有改变首选，但增加一个条件后备。** 搜索臂未深入 [SWE-bench Pro V2](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/README.md)。其任务／参考／隐藏 verifier 包装比直接挖应用提交更完整，但参考臂也未核出 V2 的受支持无账号本地路径；不能借 V1 的说明填空。这个缺口不支持以 Pro V2 取代 Datasette，更不能放宽原约束；后续[资格补核](#v2后备资格公开资产不等于本地同协议可跑2026-10-21)将它收窄为隔离能力与本地验证缺口。[一手；比较判断]
 
 2. **改变后备的验收规则，而非立即加第三套环境。** [FeatureBench 固定版本](https://github.com/LiberCoders/FeatureBench/blob/8d4e347ec57546685c5a87e8676bf575db022ea6/README.md) 的 V1.1 fast split 是有条件的跨层 feature 来源；其 [harness 参数](https://github.com/LiberCoders/FeatureBench/blob/8d4e347ec57546685c5a87e8676bf575db022ea6/docs/harness_cli_arg.md) 暴露了重要遗漏：默认可能跳过 success=false 的预测，比较时应明确 include-failed，且 gold 目前仅 lv1 可用。若 Datasette 跨层例不合格，再选具体实例并核下载／服务依赖；GPU-free 和上游平均耗时均不是本地轻量保证。[一手]
 
@@ -256,4 +256,17 @@ Agent负责检索、锁版本和运行判据，容易把参考答案／基准包
 
 入口显示的源日期不是固定SHA，许可仅研究用途声明，未取得完整版本／许可链；本轮也没有源码字节hash。保留此候选的资料线索，不复制完整任务、安装或运行。[研究：资格缺口]
 
-**下一具体动作**：先核原固定镜像的执行条件与空间，再取得校验一致的单行输入，完整重放base/reference守护范围和同量纲时延。Agent保存各阶段原始结果，人核语义与实际投入；若环境或准备成本不符就撤回这项任务，不能缩小检查后冒称通过。当前只是固定资料资格，未运行应用、模型、容器或测试，没有新增配置收益结论。[研究]
+**执行断点与重开条件**：后续容器隔离探针的NETLINK_ROUTE访问已被平台拒绝；未拉镜像，停止这条执行路线，不放宽隔离或换路重试。只有执行条件获准且准备成本仍满足原约束时，才接校验单行输入、完整重放base/reference守护范围与同量纲时延。当前继续纯资料查漏，保留固定后备，不把镜像元数据可读记为运行就绪。[研究：执行状态，2026-10-21]
+
+
+### V2后备资格：公开资产不等于本地同协议可跑（2026-10-21）
+
+**保留SWE-bench Pro V2为条件后备，但不把它当作当前受限环境的立即替代。** 本次接续解盲后的未决项，没有重开留出搜索。决定变化是先核隔离条件，再投入镜像准备；Datasette的既有首选保留，403与未完成验收也保留。[研究：采用判断]
+
+**最高水平卡**：问题是完整基准包装能否降低同一P38需求的准备与误判代价。领先候选参照为ScaleAI V2的固定任务、gold／nop双门与干净环境复评；最高水平方法及其同题成本优胜仍未知。主流采用情况未知；比较基线沿C17的搜索—汇总—引用；本仓建议仅属约束下可行判断，不因包装完整就升级方法效果评级。[研究：层级判断]
+
+[V2固定README](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/README.md)明确镜像可匿名取得、架构为linux/amd64；运行示例则使用Modal。[2026-09-22发布门](https://github.com/scaleapi/SWE-bench_Pro-os/blob/66f92766bba642462d4bbe5479e83f91f9211862/v2/GATE.md)报告Harbor 0.22＋Modal下gold通过642题、nop无题通过。这支持公开资产与上游判别门，尚非无账号本地执行证据：“无registry凭据”不能推出不需要执行服务账号，也不能反过来说V2必须使用Modal。[一手：上游报告，非本仓复现]
+
+**只替换运行后端不足以保持原协议。** V2要求Agent阶段断网、模型端点例外，准备和verifier阶段保留网络。[Harbor v0.22.0](https://github.com/harbor-framework/harbor/releases/tag/v0.22.0)对应`4407eb5227a2ff4f0d3f16b2eb48849382fdf276`；已读该发布版本[Docker实现](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/docker/docker.py)的`_requires_egress_control`／`capabilities`，断网、allowlist和动态切换能力依赖egress-control；其[sidecar配置](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/docker/docker-compose-egress-control.yaml)要求NET_ADMIN／NET_RAW。[基础环境](https://github.com/harbor-framework/harbor/blob/v0.22.0/src/harbor/environments/base.py)校验策略支持，缺少动态能力时拒绝切换。本轮不运行这些探针，也不据其他容器路线的拒绝冒称V2已实测失败。[一手：发布源码；研究：资格推断]
+
+Agent应把“资产可取得、后端支持所需策略、目标环境允许、实际判别通过”分别记录；人核原任务约束和准备成本。当前已能决定不投入V2下载／接入，不必等待使用者评价；重开需有合规可用且能保持协议的环境，再补具体实例、许可链与本地gold／nop验证。此次仅核公开资料与源码，未安装或运行应用、模型、容器；用户陌生程度、愿用、实际成本及方法净收益仍未知。[研究：范围与撤回门]
