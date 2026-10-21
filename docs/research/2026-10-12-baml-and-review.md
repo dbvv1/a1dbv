@@ -483,3 +483,21 @@ Mozilla原文称最小测试帮助工程师复核并在Firefox148前修复；22�
 **按接收结果衡量。** 同一窗口记录可复核、被接受及实际修复的数量，另列重复／驳回数量、核查与返工时间、环境成本及漏检来源。现有链缺同题费用及完整工时，不设收益比例或默认新付费服务。[研究]
 
 本轮未运行模型、扫描、漏洞、客户端或上游测试；离线检查不改变此边界。[研究]
+
+
+## P52评审代际复核
+
+核实：2026-10-21（UTC+8），基线c484b1a；按P51提示检验09是否仍应原生起步，以及何时扩量／减人审。**确认确定性检查与按风险人审，扩量同时考察漏审及有害误改。** 当前整体最优未知；领先参照的审批表不直接移植，本仓采用原生定向评审这一可行基线。[研究]
+
+| 原始来源／本次相关正文 | 比较与决定 |
+|---|---|
+| [Claude Code团队复盘](https://claude.dev/blog/solving-code-review-at-anthropic/)，Addy Osmani／Morgan Westlee Lunt／Qing Wang，10-15；风险、校准及收敛节 | 事故案例与无须修改的PR一起校准，避免评审诱发错误修补；规模／具体评审模型／完整人力成本未披露。借校准机制，不复制其全量托管或人审人数。[一手：团队自报] |
+| [Code Review文档](https://code.claude.com/docs/en/code-review)，滚动页10-21核；[GA公告](https://claude.com/resources/articles/code-review-is-now-generally-available)，10-15 | 官方确认已离开研究预览，Team／Enterprise按仓库选三档。修正09入口状态；GA不升级质量评级，三月数据留作历史。[一手] |
+| [CRBugBench v1](https://arxiv.org/html/2610.13668v1)，Chenyang Yang等／Microsoft，10-09；方法与模型范围 | GPT5.6-Sol、Opus5及copilot-cli1.0.74的单评审／五候选比较，预算不匹配；不能外推GPT6.1或5.5下多Agent无益。原数值沿用既有核查，不伪称本次重算。[一手：论文／研究] |
+| [Bugbot更新](https://cursor.com/blog/bugbot-updates-june-2026)，Jason Smale／Yuri Volkov／Michael Zhao，6-10；重复diff与增量复审 | 确认复审先查新差异、避免重复意见；该代模型与harness自报不是10月当前效果实测。[一手] |
+| [Maintaining software](https://developers.openai.com/blog/maintaining-software-with-the-gpt-6-family)，Rodrigo Roim，10-14；维护清理段 | 更强Agent可自主扩大取证，实际清理仍交相应团队评审；不是评审产品比较。[一手：背景反证] |
+| [The End of Code Review v1](https://arxiv.org/html/2606.13175v1)，Martin Monperrus，6-11；摘要及论证定位 | 人审冗余为观点论证，不是新实证结果，不足以推翻风险准入默认；不把其转引当本轮新实验。[一手：观点原文／研究] |
+
+只读原文、没有运行上述服务或模型。新增层先在单仓比较，评论回到原需求和授权筛选；有害误改或事故增加就收紧，不因轮次减少自动通过。既有2025调查与跨年观察数据仍只指导抽检，不估当前模型缺陷率。[研究]
+
+**P51回执（执行者自报）。** 提示blob为98f326ab4975771d797b1a14348694cbd3b3f744；11:30:02 UTC开始，11:32:05冻结来源／决定，11:32:58完成候选稿；11:33:25补同源署名，未回改冻结计数。冻结前墙钟123秒、撰稿53秒，纯阅读／等待未知。N=7/F=7，D=5/FD=5；已知原文重读5，GA与反方观点新读2。决定性为团队复盘、当前文档、GA公告、CRBugBench、Bugbot五项，OpenAI维护与观点为背景反证；正文读取仅相关节。预先读过C10不构成盲测；尚无完整独立漏检分母。09与02／03合算P52一次自用。[研究]

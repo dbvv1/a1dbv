@@ -1,11 +1,26 @@
 # 09 · 评审与质量
 
-> P46来源校准：2026-10-21；前沿比较：已比较（团队自用机制与采用边界），同预算效果优胜未知。最高水平卡及条件见[三篇校准](research/2026-10-15-exploration-evidence.md#p46按团队追踪来源与漏检校准)。
-> 编辑日期：2026-10-20（UTC+8）；本次补API修改的确定性反馈选择。[历史核实范围](research/2026-10-10-audit.md#09-评审页历史核实范围)。
+> 代际复核：2026-10-21；本轮比较团队当前评审机制，修订扩量验收与托管服务GA状态；不代表旧数据、全部外链或当前模型效果已复验。[历史核实范围](research/2026-10-10-audit.md#09-评审页历史核实范围)。
 
 ## 30 秒结论
 
-✅ 先保留确定性检查和按风险的人审；写代码时需要第二视角，先用原生本地评审。🧪 只有具体漏审风险值得额外核查费用时，再选云端多 Agent 或交叉模型；同名命令、成功退出和空评论都不能证明完成了同一种评审。规则应放到该入口实际读取的位置。额外层只重复发现、制造无效修改或费用失控时，收窄／撤回。**[研究：采用判断]**
+代际范围：2026年10月原生评审入口／GPT-6.1 Sol与Claude 5.5时代；团队托管review的实际模型组合未公开。标签见 [00](00-state-of-ai-coding.md#30-秒结论)。
+
+- **✅〔跨代保留〕保留确定性检查和按风险的人审；需要第二视角，先用原生本地评审。** Agent负责找证据与候选缺陷，人判断需求、风险和接收；更强模型不自动取消项目准入。
+- **🧪〔10月修订〕明确漏审缺口后，再扩云端多Agent或交叉模型。** 用事故样本和确认无须修改的PR一起校准，既看新增有效发现，也看是否诱发有害修改；只多评论、不减总处理负担就收窄。
+- **⛔〔跨代保留〕重复发现、无效修补或费用失控时，不继续堆轮次。** 核实际入口、规则加载和完成状态；成功退出或空评论不是安全验收，复审优先看新差异与未关闭风险。
+
+**[一手／研究：条件采用；当前效果排名未知]**
+
+## 当前最高水平与默认的变化
+
+<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-21 -->
+
+**整体最高水平未知；本页采用的是比较后的可行默认。** [Claude Code团队10-15复盘](https://claude.dev/blog/solving-code-review-at-anthropic/)把自动评审前移并覆盖每个PR，以事故集和干净PR校准、按风险分人审；[Cursor 6-10更新](https://cursor.com/blog/bugbot-updates-june-2026)提供同diff跨入口去重、只复审新增差异。相对测试＋PR人审的常见基线，本页借的是校准与收敛机制，未直接复制全量托管：前者依赖可信作者、可回滚发布和事故跟踪，后者没有证明少轮次就少漏审。两者都是厂商自报，不是同预算优胜比较。**[一手；研究：采用层级]**
+
+**确认原生起步，修正扩量标准。** 先在一个仓库比较现行原生评审与候选层：把真实事故及已修补案例转为漏审检查，也放入确认无须修改的PR，观察评论是否会引出错误修补。人核发现与处理结果，Agent不得为清空意见自行扩大修改；模型、提示或工具升级后重评。缺少回滚与风险准入条件时仍保留人审，事故或误改上升就恢复更严检查。详细证据与反方见[代际研究](research/2026-10-12-baml-and-review.md#p52评审代际复核)。**[研究：采用判断]**
+
+**旧效果不冒充当前代。** [CRBugBench v1](https://arxiv.org/html/2610.13668v1)的单评审／五候选比较用GPT-5.6 Sol、Opus 5及copilot-cli 1.0.74，不是GPT-6.1或Claude 5.5的原生评审测评；支持先试更轻配置，不证明当前多Agent必然不值。§1的2025调查和跨年观察数据只选抽检方向，不估当前代缺陷率。**[研究：代际边界]**
 
 ## 1. 质量数据：AI 代码的真实代价
 
@@ -58,7 +73,7 @@
 | 工具 | 说明 | 评级 |
 |---|---|---|
 | [Claude Code GitHub Action](https://code.claude.com/docs/en/github-actions) | 自有 workflow 内运行 Claude；触发、权限、提示由工作流决定，可用 API key 或订阅 OAuth。不是托管 Code Review 的等价入口 **[一手]** | 🧪 需自管 CI |
-| Claude Code Code Review（托管） | Team／Enterprise 研究预览，需组织启用；单独 usage credits 计费，不能由本地订阅可用推断托管可用 **[一手]** | 🧪 关键 PR |
+| Claude Code Code Review（托管） | Team／Enterprise，10-15已[正式可用](https://claude.com/resources/articles/code-review-is-now-generally-available)，需组织启用；单独计费，按仓库选择Quick／Standard／Deep，不能由本地订阅推断资格 **[一手：10-21核实]** | 🧪 关键 PR，先校准再扩量 |
 | [Cursor Bugbot](https://cursor.com/docs/bugbot#pricing) / [Security Agents](https://cursor.com/docs/security-agents) | Bugbot 按用量计费，旧 seat 方案仍有过渡；先核账户实际方案与预算，不用 5 月平均单次成本作当前报价。Security Reviewer 查 PR，Vulnerability Scanner 查存量代码；部署监控 Rollouts 不能替代评审 **[一手：2026-10-14 UTC 文档；研究：选择边界]** | 👀 已用 Cursor 且有对应缺口时 |
 | [Codex `@codex review` / `@codex security review`](https://learn.chatgpt.com/docs/third-party/github) | 先连接仓库并配置评审；规则写入根／适用子目录的 `AGENTS.md`。安全评审是额外的定向评审，不能把普通评审无发现当安全验收 **[一手]** | 🧪 |
 | **Codex Security Cloud**（研究预览，2026-09 DevDay） | 扫描已连接的 GitHub 仓库或监控新提交，给出发现、**验证证据**和补丁，再生成草稿 PR | 👀 **[一手]** |
@@ -76,7 +91,7 @@
 
 ### 托管多 Agent 评审的实际数据：Claude Code Review
 
-Anthropic 在 2026-03 推出 Code Review 时公布了内部使用的数据 **[一手：厂商自述，内部数据]**：
+Anthropic 在 2026-03 推出 Code Review 时公布了内部使用的数据。以下为**历史预览期口径**，不是10月GA版本的性能或报价；[10-15公告](https://claude.com/resources/articles/code-review-is-now-generally-available)已报告速度变化，当前计费回[官方文档](https://code.claude.com/docs/en/code-review)。**[一手：厂商自述，内部数据]**
 
 | 指标 | 数值 |
 |---|---|
