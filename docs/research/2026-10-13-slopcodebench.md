@@ -248,6 +248,19 @@ print(len(set(a['FAIL_TO_PASS']) - set(b['FAIL_TO_PASS']) - set(b['PASS_TO_PASS'
 
 **复核方法**：用Python标准库`hashlib`核归档SHA256，再用`zipfile.ZipFile.read`读取上述成员，不执行其中程序；将`result.json`逐轮的`task`／`expected`与英文规格的`task`／`expected_result`配对，按文本二元组去重。按轮读取Earnings与TickerBadge作字节比较；R7的导航顺序来自`interact_messages.json`的assistant动作，不能由源码替代。末轮反例仅按下列明确代码分支及种子做Decimal求和，未重评judge。[经验：可重复步骤]
 
+#### 98.1%不是Grade：保留争议判定，再决定是否重评
+
+**不要把根节点accuracy或末轮全yes当作全程Grade。** 固定提交的[`scoring.py`](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/evoweb/scoring.py)按每轮`(yes+0.5×partial)/total`计分，[`metrics.py`](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/evoweb/metrics.py#L89-L153)再对十轮等权汇总及阈值积分；重复检查不去重，功能／集成／回查也没有额外权重。本案R1有7项，后九轮各5项，只有R7为80%，其余100%。保存的根accuracy为`round(51/52×100,1)=98.1`；十轮均值却是98.0%。[一手：固定源码／保存结果；经验：独立算术复核]
+
+| 官方阈值网格 | Q：门控后十轮均值 | S：满足阈值的连续前缀 |
+|---|---|---|
+| 0至80，含端点 | 98% | 10轮 |
+| 81至100，含端点 | 68%：首个失败R7仍计80%，R8–R10归零 | 6轮：不含失败R7 |
+
+网格每隔1个百分点取值，梯形积分给出`Grade=[80×98+(98+68)/2+19×68]/10000=0.9215`；`Survival=[80×10+(10+6)/2+19×6]/100=9.22`。后者是跨阈值积分的连续成功前缀长度，不是实际连续完成9.22轮。无判定／缺轮会在任何阈值触发门控，后续归零；本案没有此情况。这里用自写标准库`Fraction`复核原52次判定，逐轮计数和accuracy均与保存值一致，**没有重跑judge或改判R7**。[经验：精确分数复算]
+
+[`score_run.py`](https://github.com/two-delta/EvoWeb/blob/c5e18758418bf673e25ff4fdc62978a7687928d5/evoweb/score_run.py)明确支持仅含部分应用的运行目录，因此以上是合法的**单案派生值**，不是保存的官方Grade（本案未存该字段），也不是32案整跑或模型排名。实际指标没有抹去R7失败；高Grade与一个未复验旧项并存是其定义，不是算分错误。接受决策仍应先核R7判定路径，不得为提高分数擅自删掉no，也不得凭R10全yes宣布修复。[研究：确认接受顺序]
+
 #### R7的no：先到正确页面复验，不用代码存在改判yes
 
 `turn7/eval/results/task000001_3/interact_messages.json`显示judge先点[2] **Stock Search**，输入automation后以无股票结果判NO，未尝试[8] **Earnings**。同轮task0却从Earnings搜索并观察到三个股票组、四条匹配；该项验证搜索，不替代徽标视觉验收。[一手：保存会话]
