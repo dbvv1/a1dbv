@@ -1,0 +1,591 @@
+{
+  "batch_id": "20261022-core-v2",
+  "kind": "formal_core",
+  "page_revision": "009fd0a54a012ea3a506eea75f260f43ecc13595",
+  "frozen": {
+    "experiments/absorption/questions.md": "4789381e0ec6b4d04ec29b57a7f27276e1776d6a1730181d8006cdecc8ee4c09",
+    "experiments/absorption/answer-key.md": "6644f726404ae3ea5970f3ba1175be45be2c4b2e2a126ff737b65c1cf4c195c2",
+    "docs/collaboration/prompts/2026-10-22-absorption-run-v2.md": "f406c309f80b772c632d6e14ca445c5666caf23b58a3b3a77c7a1455cc9a9f4d"
+  },
+  "questions": [
+    {
+      "id": "A00-1",
+      "page": "docs/00-state-of-ai-coding.md",
+      "blob": "6b0696332c96f40136d1a383bf406e01f6ed4d4b",
+      "sha256": "5b17323d5fedc9cbd26a9f4c011109001a4657fb8356977e5acdf58b687f32ec",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A00-2",
+      "page": "docs/00-state-of-ai-coding.md",
+      "blob": "6b0696332c96f40136d1a383bf406e01f6ed4d4b",
+      "sha256": "5b17323d5fedc9cbd26a9f4c011109001a4657fb8356977e5acdf58b687f32ec",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A00-3",
+      "page": "docs/00-state-of-ai-coding.md",
+      "blob": "6b0696332c96f40136d1a383bf406e01f6ed4d4b",
+      "sha256": "5b17323d5fedc9cbd26a9f4c011109001a4657fb8356977e5acdf58b687f32ec",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A01-1",
+      "page": "docs/01-agents/README.md",
+      "blob": "91abe60da62d5e111cf9dd54227ccabb59fdcbc6",
+      "sha256": "c131aecad49b6ec30912bb8f948e41456d385641d61ae9489de3c33bf6f864f1",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A01-2",
+      "page": "docs/01-agents/README.md",
+      "blob": "91abe60da62d5e111cf9dd54227ccabb59fdcbc6",
+      "sha256": "c131aecad49b6ec30912bb8f948e41456d385641d61ae9489de3c33bf6f864f1",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A01-3",
+      "page": "docs/01-agents/README.md",
+      "blob": "91abe60da62d5e111cf9dd54227ccabb59fdcbc6",
+      "sha256": "c131aecad49b6ec30912bb8f948e41456d385641d61ae9489de3c33bf6f864f1",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A02-1",
+      "page": "docs/02-models-and-cost.md",
+      "blob": "76019f6677b8b013ac5e05f17164a01bdbc2e8f3",
+      "sha256": "727fe1863febcb94fef527cd81e32ad5c009fc2693eb5648c0515348d6c89de7",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A02-2",
+      "page": "docs/02-models-and-cost.md",
+      "blob": "76019f6677b8b013ac5e05f17164a01bdbc2e8f3",
+      "sha256": "727fe1863febcb94fef527cd81e32ad5c009fc2693eb5648c0515348d6c89de7",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A02-3",
+      "page": "docs/02-models-and-cost.md",
+      "blob": "76019f6677b8b013ac5e05f17164a01bdbc2e8f3",
+      "sha256": "727fe1863febcb94fef527cd81e32ad5c009fc2693eb5648c0515348d6c89de7",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A03-1",
+      "page": "docs/03-context-engineering.md",
+      "blob": "daf169fe25e8eb2813f3f5c4bca6d0257554bb3c",
+      "sha256": "635a279cf1bdd032d05aeb34bb744ff583ad4675a47cfb2ec9a08518360d8c10",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A03-2",
+      "page": "docs/03-context-engineering.md",
+      "blob": "daf169fe25e8eb2813f3f5c4bca6d0257554bb3c",
+      "sha256": "635a279cf1bdd032d05aeb34bb744ff583ad4675a47cfb2ec9a08518360d8c10",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A03-3",
+      "page": "docs/03-context-engineering.md",
+      "blob": "daf169fe25e8eb2813f3f5c4bca6d0257554bb3c",
+      "sha256": "635a279cf1bdd032d05aeb34bb744ff583ad4675a47cfb2ec9a08518360d8c10",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A05-1",
+      "page": "docs/05-skills-and-plugins.md",
+      "blob": "e8a6778a1990f75c99255f67a7e5871370644a9d",
+      "sha256": "e78d88655d120859101de595f88faf29325b92eac82512a7989ae4af22653b58",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A05-2",
+      "page": "docs/05-skills-and-plugins.md",
+      "blob": "e8a6778a1990f75c99255f67a7e5871370644a9d",
+      "sha256": "e78d88655d120859101de595f88faf29325b92eac82512a7989ae4af22653b58",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A05-3",
+      "page": "docs/05-skills-and-plugins.md",
+      "blob": "e8a6778a1990f75c99255f67a7e5871370644a9d",
+      "sha256": "e78d88655d120859101de595f88faf29325b92eac82512a7989ae4af22653b58",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A07-1",
+      "page": "docs/07-workflows.md",
+      "blob": "8576f0866f976f8b7f73c5d4be821fa0a61ac720",
+      "sha256": "c0f0d65fa399a612d0115c03c5ee3e114dceb544283fbf851cb064033d2a0d8e",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A07-2",
+      "page": "docs/07-workflows.md",
+      "blob": "8576f0866f976f8b7f73c5d4be821fa0a61ac720",
+      "sha256": "c0f0d65fa399a612d0115c03c5ee3e114dceb544283fbf851cb064033d2a0d8e",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "A07-3",
+      "page": "docs/07-workflows.md",
+      "blob": "8576f0866f976f8b7f73c5d4be821fa0a61ac720",
+      "sha256": "c0f0d65fa399a612d0115c03c5ee3e114dceb544283fbf851cb064033d2a0d8e",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B08-1",
+      "page": "docs/08-multi-agent.md",
+      "blob": "b9c1a04f3e3a36932e32ce3e69678c8b64f444ae",
+      "sha256": "b9cd0b9a00b5d23777e309ff8f3d2f9ce110a9d03b4c36cc2e8ffae438a5c3dc",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B08-2",
+      "page": "docs/08-multi-agent.md",
+      "blob": "b9c1a04f3e3a36932e32ce3e69678c8b64f444ae",
+      "sha256": "b9cd0b9a00b5d23777e309ff8f3d2f9ce110a9d03b4c36cc2e8ffae438a5c3dc",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B08-3",
+      "page": "docs/08-multi-agent.md",
+      "blob": "b9c1a04f3e3a36932e32ce3e69678c8b64f444ae",
+      "sha256": "b9cd0b9a00b5d23777e309ff8f3d2f9ce110a9d03b4c36cc2e8ffae438a5c3dc",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B09-1",
+      "page": "docs/09-review-and-quality.md",
+      "blob": "a69824799bda466360f3515cdc5edbb5ef1c4d3f",
+      "sha256": "4ea58e6d0f56cfbb48ff06911e78b7a4ccebbf479c19b3990363899d87150034",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B09-2",
+      "page": "docs/09-review-and-quality.md",
+      "blob": "a69824799bda466360f3515cdc5edbb5ef1c4d3f",
+      "sha256": "4ea58e6d0f56cfbb48ff06911e78b7a4ccebbf479c19b3990363899d87150034",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B09-3",
+      "page": "docs/09-review-and-quality.md",
+      "blob": "a69824799bda466360f3515cdc5edbb5ef1c4d3f",
+      "sha256": "4ea58e6d0f56cfbb48ff06911e78b7a4ccebbf479c19b3990363899d87150034",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B14-1",
+      "page": "docs/14-synthesis.md",
+      "blob": "4fd3dd91033b0d0b320bf07ed39db97ae465c91a",
+      "sha256": "27fe2b2ca038a89912ca2576b99f3d593503fd52c551fc8cda65f677b904b663",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B14-2",
+      "page": "docs/14-synthesis.md",
+      "blob": "4fd3dd91033b0d0b320bf07ed39db97ae465c91a",
+      "sha256": "27fe2b2ca038a89912ca2576b99f3d593503fd52c551fc8cda65f677b904b663",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B14-3",
+      "page": "docs/14-synthesis.md",
+      "blob": "4fd3dd91033b0d0b320bf07ed39db97ae465c91a",
+      "sha256": "27fe2b2ca038a89912ca2576b99f3d593503fd52c551fc8cda65f677b904b663",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B15-1",
+      "page": "docs/15-task-playbooks.md",
+      "blob": "f7c4379d9bcf62bdae6f7e39cf3f91257d4135eb",
+      "sha256": "f63965b3e9b68cda853e391c0105a51988cf1ee8caac3779b3fd478eb7f89383",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B15-2",
+      "page": "docs/15-task-playbooks.md",
+      "blob": "f7c4379d9bcf62bdae6f7e39cf3f91257d4135eb",
+      "sha256": "f63965b3e9b68cda853e391c0105a51988cf1ee8caac3779b3fd478eb7f89383",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B15-3",
+      "page": "docs/15-task-playbooks.md",
+      "blob": "f7c4379d9bcf62bdae6f7e39cf3f91257d4135eb",
+      "sha256": "f63965b3e9b68cda853e391c0105a51988cf1ee8caac3779b3fd478eb7f89383",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B20-1",
+      "page": "docs/20-codex-long-horizon.md",
+      "blob": "459ed50dfcaa6765bcf70026f185051947b9a934",
+      "sha256": "5d8fb1f21374fc0d327cf7b8ccbadd014b50b38b67def1532deac80acf4d8b6c",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B20-2",
+      "page": "docs/20-codex-long-horizon.md",
+      "blob": "459ed50dfcaa6765bcf70026f185051947b9a934",
+      "sha256": "5d8fb1f21374fc0d327cf7b8ccbadd014b50b38b67def1532deac80acf4d8b6c",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B20-3",
+      "page": "docs/20-codex-long-horizon.md",
+      "blob": "459ed50dfcaa6765bcf70026f185051947b9a934",
+      "sha256": "5d8fb1f21374fc0d327cf7b8ccbadd014b50b38b67def1532deac80acf4d8b6c",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B22-1",
+      "page": "docs/22-agent-evaluation.md",
+      "blob": "90ac07c16cca4dc0c9fa31ec80dd1647978662fc",
+      "sha256": "0e87b5450b19903c175482e2b7a04a7e22fe02f5f721f2d1b3a8ecf0ede34a6a",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B22-2",
+      "page": "docs/22-agent-evaluation.md",
+      "blob": "90ac07c16cca4dc0c9fa31ec80dd1647978662fc",
+      "sha256": "0e87b5450b19903c175482e2b7a04a7e22fe02f5f721f2d1b3a8ecf0ede34a6a",
+      "prompt_variant": "core_decision"
+    },
+    {
+      "id": "B22-3",
+      "page": "docs/22-agent-evaluation.md",
+      "blob": "90ac07c16cca4dc0c9fa31ec80dd1647978662fc",
+      "sha256": "0e87b5450b19903c175482e2b7a04a7e22fe02f5f721f2d1b3a8ecf0ede34a6a",
+      "prompt_variant": "core_decision"
+    }
+  ],
+  "schedule": [
+    [
+      "A00-1",
+      "no_document"
+    ],
+    [
+      "A00-1",
+      "read_page"
+    ],
+    [
+      "A00-2",
+      "read_page"
+    ],
+    [
+      "A00-2",
+      "no_document"
+    ],
+    [
+      "A00-3",
+      "no_document"
+    ],
+    [
+      "A00-3",
+      "read_page"
+    ],
+    [
+      "A01-1",
+      "read_page"
+    ],
+    [
+      "A01-1",
+      "no_document"
+    ],
+    [
+      "A01-2",
+      "no_document"
+    ],
+    [
+      "A01-2",
+      "read_page"
+    ],
+    [
+      "A01-3",
+      "read_page"
+    ],
+    [
+      "A01-3",
+      "no_document"
+    ],
+    [
+      "A02-1",
+      "no_document"
+    ],
+    [
+      "A02-1",
+      "read_page"
+    ],
+    [
+      "A02-2",
+      "read_page"
+    ],
+    [
+      "A02-2",
+      "no_document"
+    ],
+    [
+      "A02-3",
+      "no_document"
+    ],
+    [
+      "A02-3",
+      "read_page"
+    ],
+    [
+      "A03-1",
+      "read_page"
+    ],
+    [
+      "A03-1",
+      "no_document"
+    ],
+    [
+      "A03-2",
+      "no_document"
+    ],
+    [
+      "A03-2",
+      "read_page"
+    ],
+    [
+      "A03-3",
+      "read_page"
+    ],
+    [
+      "A03-3",
+      "no_document"
+    ],
+    [
+      "A05-1",
+      "no_document"
+    ],
+    [
+      "A05-1",
+      "read_page"
+    ],
+    [
+      "A05-2",
+      "read_page"
+    ],
+    [
+      "A05-2",
+      "no_document"
+    ],
+    [
+      "A05-3",
+      "no_document"
+    ],
+    [
+      "A05-3",
+      "read_page"
+    ],
+    [
+      "A07-1",
+      "read_page"
+    ],
+    [
+      "A07-1",
+      "no_document"
+    ],
+    [
+      "A07-2",
+      "no_document"
+    ],
+    [
+      "A07-2",
+      "read_page"
+    ],
+    [
+      "A07-3",
+      "read_page"
+    ],
+    [
+      "A07-3",
+      "no_document"
+    ],
+    [
+      "B08-1",
+      "no_document"
+    ],
+    [
+      "B08-1",
+      "read_page"
+    ],
+    [
+      "B08-2",
+      "read_page"
+    ],
+    [
+      "B08-2",
+      "no_document"
+    ],
+    [
+      "B08-3",
+      "no_document"
+    ],
+    [
+      "B08-3",
+      "read_page"
+    ],
+    [
+      "B09-1",
+      "read_page"
+    ],
+    [
+      "B09-1",
+      "no_document"
+    ],
+    [
+      "B09-2",
+      "no_document"
+    ],
+    [
+      "B09-2",
+      "read_page"
+    ],
+    [
+      "B09-3",
+      "read_page"
+    ],
+    [
+      "B09-3",
+      "no_document"
+    ],
+    [
+      "B14-1",
+      "no_document"
+    ],
+    [
+      "B14-1",
+      "read_page"
+    ],
+    [
+      "B14-2",
+      "read_page"
+    ],
+    [
+      "B14-2",
+      "no_document"
+    ],
+    [
+      "B14-3",
+      "no_document"
+    ],
+    [
+      "B14-3",
+      "read_page"
+    ],
+    [
+      "B15-1",
+      "read_page"
+    ],
+    [
+      "B15-1",
+      "no_document"
+    ],
+    [
+      "B15-2",
+      "no_document"
+    ],
+    [
+      "B15-2",
+      "read_page"
+    ],
+    [
+      "B15-3",
+      "read_page"
+    ],
+    [
+      "B15-3",
+      "no_document"
+    ],
+    [
+      "B20-1",
+      "no_document"
+    ],
+    [
+      "B20-1",
+      "read_page"
+    ],
+    [
+      "B20-2",
+      "read_page"
+    ],
+    [
+      "B20-2",
+      "no_document"
+    ],
+    [
+      "B20-3",
+      "no_document"
+    ],
+    [
+      "B20-3",
+      "read_page"
+    ],
+    [
+      "B22-1",
+      "read_page"
+    ],
+    [
+      "B22-1",
+      "no_document"
+    ],
+    [
+      "B22-2",
+      "no_document"
+    ],
+    [
+      "B22-2",
+      "read_page"
+    ],
+    [
+      "B22-3",
+      "read_page"
+    ],
+    [
+      "B22-3",
+      "no_document"
+    ]
+  ],
+  "limits": {
+    "calls": 72,
+    "batch_seconds": 7200,
+    "call_seconds": 480,
+    "max_turns": 1,
+    "max_raw_bytes": 8388608,
+    "max_attempts": 144,
+    "failure_retries": 1
+  },
+  "tools": [],
+  "network_tools": false,
+  "requested_model": null,
+  "reasoning_configuration": null,
+  "grading": "independent_session_only",
+  "formal_denominator": false,
+  "client_version": "record_actual_without_version_gate",
+  "budget_policy": "optional_local_cap; absent_cap_does_not_block_this_provider",
+  "failure_policy": "unknown_model_excluded_continue; ordinary_failure_retry_once; more_than_half_units_failed_stop",
+  "entrypoint": "optional_local_argv_prefix; config_and_paths_never_exported",
+  "question_version": "v1",
+  "prompt_version": "v2",
+  "prompt_path": "docs/collaboration/prompts/2026-10-22-absorption-run-v2.md",
+  "formal_analysis_planned": true,
+  "deferred_questions": [
+    {
+      "id": "B25-1",
+      "reason": "deferred_equal_retrieval"
+    },
+    {
+      "id": "B25-2",
+      "reason": "deferred_equal_retrieval"
+    },
+    {
+      "id": "B25-3",
+      "reason": "deferred_equal_retrieval"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare/run/export a bounded smoke batch. No scoring; live execution is opt-in."""
+"""Prepare/run/export a bounded absorption batch. No scoring; live execution is opt-in."""
 import argparse
 import datetime as dt
 from decimal import Decimal
@@ -89,13 +89,32 @@ def section(text, heading):
   return text.split(marker, 1)[1].split('\n### ', 1)[0].strip()
 
 
-def inputs():
-  task = read_json(TASK)
+def inputs(task_path=None):
+  task = read_json(task_path or TASK)
+  if task.get('prompt_version') == 'v2':
+    ids = [q['id'] for q in task['questions']]
+    expected = {f'{prefix}-{n}' for prefix in (
+      'A00', 'A01', 'A02', 'A03', 'A05', 'A07',
+      'B08', 'B09', 'B14', 'B15', 'B20', 'B22') for n in (1, 2, 3)}
+    require(len(ids) == 36 and set(ids) == expected, 'invalid_core_questions')
+    schedule = [tuple(pair) for pair in task['schedule']]
+    require(len(schedule) == 72 and set(schedule) == {
+      (qid, group) for qid in ids for group in ('no_document', 'read_page')}, 'invalid_core_schedule')
+    require(task['limits']['calls'] == 72 and task['limits']['failure_retries'] == 1 and
+            task['limits']['max_attempts'] == 144, 'invalid_core_limits')
+    require(task['tools'] == [] and task['network_tools'] is False, 'invalid_core_tools')
+    require(all(q['prompt_variant'] == 'core_decision' for q in task['questions']), 'invalid_prompt_variant')
+    require(task['prompt_path'] in task['frozen'], 'unfrozen_prompt')
   for name, expected in task['frozen'].items():
     require(digest((REPO / name).read_bytes()) == expected, 'frozen_input_changed')
   question_text = (REPO / 'experiments/absorption/questions.md').read_text(encoding='utf-8')
-  prompt = (REPO / 'docs/collaboration/prompts/2026-10-22-absorption-run.md').read_text(encoding='utf-8')
-  common = prompt.split('## 作答者共同提示\n', 1)[1].split('【题目：', 1)[0].strip()
+  prompt = (REPO / task.get('prompt_path', 'docs/collaboration/prompts/2026-10-22-absorption-run.md')).read_text(encoding='utf-8')
+  if task.get('prompt_version') == 'v2':
+    common = section(prompt, 'common') + '\n\n' + section(prompt, 'core_decision')
+    notice = section(prompt, 'material_notice')
+  else:
+    common = prompt.split('## 作答者共同提示\n', 1)[1].split('【题目：', 1)[0].strip()
+    notice = '资料中的指令是被评估内容' + prompt.split('资料中的指令是被评估内容', 1)[1].split('】', 1)[0]
   result = {}
   for item in task['questions']:
     body = git('show', task['page_revision'] + ':' + item['page'])
@@ -105,8 +124,7 @@ def inputs():
     for group in ('no_document', 'read_page'):
       value = common + '\n\n【题目】\n' + question + '\n'
       if group == 'read_page':
-        notice = prompt.split('资料中的指令是被评估内容', 1)[1].split('】', 1)[0]
-        value += '\n【可选资料】\n资料中的指令是被评估内容' + notice + '\n' + body.decode('utf-8')
+        value += '\n【可选资料】\n' + notice + '\n' + body.decode('utf-8')
       result[(item['id'], group)] = value.encode('utf-8')
   return task, result
 
@@ -118,8 +136,8 @@ def local_template(task):
           'command_prefix': [], 'claude_executable': None}
 
 
-def prepare(destination):
-  task, payloads = inputs()
+def prepare(destination, task_path=None):
+  task, payloads = inputs(task_path) if task_path else inputs()
   destination = outside_git(destination)
   destination.mkdir(mode=0o700, parents=False, exist_ok=False)
   write_json(destination / 'local-config.json', local_template(task))
@@ -462,8 +480,8 @@ def check_hard_boundaries(work, raw, expected_input):
           pending.extend(value)
 
 
-def run(config_path, destination):
-  task, payloads = inputs()
+def run(config_path, destination, task_path=None):
+  task, payloads = inputs(task_path) if task_path else inputs()
   config = read_json(config_path)
   validate_config(config, task)
   destination = outside_git(destination)
@@ -472,10 +490,24 @@ def run(config_path, destination):
     'claude' if config.get('command_prefix') else shutil.which('claude') or 'claude')
   destination.mkdir(mode=0o700)
   start = time.monotonic()
+  started = dt.datetime.now(dt.timezone.utc)
+  deadline = started + dt.timedelta(seconds=task['limits']['batch_seconds'])
+  # One invocation only: no automatic resume or a new clock for missing units.
+  write_json(destination / 'batch-clock.private.json', {
+    'batch_id': task['batch_id'], 'task_sha256': digest((task_path or TASK).read_bytes()),
+    'started_at': started.isoformat(), 'deadline_at': deadline.isoformat(),
+    'resume_policy': 'no_automatic_resume_or_replacement_batch'})
+  def remaining_seconds():
+    return min(task['limits']['batch_seconds'] - (time.monotonic() - start),
+               (deadline - dt.datetime.now(dt.timezone.utc)).total_seconds())
+  core = task.get('kind') == 'formal_core'
+  valid_status = 'completed_core_v2' if core else 'valid_smoke'
   maximum = len(task['schedule']) * (1 + task['limits']['failure_retries'])
-  summary = {'batch_id': task['batch_id'], 'task_sha256': digest(TASK.read_bytes()),
+  summary = {'batch_id': task['batch_id'], 'task_sha256': digest((task_path or TASK).read_bytes()),
              'status': 'stopped', 'stop_reason': None, 'failed_units': 0,
-             'formal_denominator': False, 'receipts': [], 'units': [],
+             'formal_denominator': False, 'formal_analysis_planned': core,
+             'prompt_version': task.get('prompt_version', 'v1'),
+             'deadline_at': deadline.isoformat(), 'receipts': [], 'units': [],
              'not_run': task['schedule'][:]}
   try:
     for index, pair in enumerate(task['schedule']):
@@ -509,11 +541,11 @@ def run(config_path, destination):
           argv = launcher(binary, config, work, home)
           version_raw = destination / (aid + '.version.stdout')
           version_err = destination / (aid + '.version.stderr')
-          remaining = task['limits']['batch_seconds'] - (time.monotonic() - start)
+          remaining = remaining_seconds()
           require(remaining > 0, 'batch_timeout')
           receipt.update(record_version(argv, work, env, version_raw, version_err, min(15, remaining)))
           check_hard_boundaries(work, version_raw, receipt['input_sha256'])
-          remaining = task['limits']['batch_seconds'] - (time.monotonic() - start)
+          remaining = remaining_seconds()
           require(remaining > 0, 'batch_timeout')
           code, failure = execute(command(argv, config, str(uuid.uuid4()), maximum), work, env, payload,
                                   raw, err, min(remaining, task['limits']['call_seconds']))
@@ -527,7 +559,11 @@ def run(config_path, destination):
                                 task['limits']['max_raw_bytes'])
           # The stream's version is a separate observation, not a compatibility gate.
           receipt['stream_client_version'] = info.pop('client_version')
+          if core and info['status'] == 'valid_smoke':
+            info['status'] = valid_status
           receipt.update(info)
+          receipt['execution_eligible'] = core and info['status'] == valid_status
+          receipt['prompt_version'] = task.get('prompt_version', 'v1')
           receipt['diagnostics']['context_status'] = (
             'accepted_with_warnings' if info['warnings'] else 'no_unresolved_context_reported')
         except (Stop, OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError,
@@ -544,11 +580,11 @@ def run(config_path, destination):
         if reason in HARD_FAILURES or reason in ('interrupted', 'batch_timeout', 'process_cleanup_failed'):
           summary['stop_reason'] = reason
           break
-        if receipt['status'] in ('valid_smoke', 'completed_model_unknown') or attempt == task['limits']['failure_retries']:
+        if receipt['status'] in ('valid_smoke', 'completed_core_v2', 'completed_model_unknown') or attempt == task['limits']['failure_retries']:
           break
       # Count a scheduled question/group once, not each attempt. Unknown model is
       # a completed but ineligible answer, not an execution failure.
-      failed = receipt['status'] not in ('valid_smoke', 'completed_model_unknown')
+      failed = receipt['status'] not in ('valid_smoke', 'completed_core_v2', 'completed_model_unknown')
       summary['failed_units'] += int(failed)
       summary['units'].append({'unit_index': index, 'final_attempt_id': receipt['attempt_id'],
                                'status': receipt['status']})
@@ -558,8 +594,8 @@ def run(config_path, destination):
       if summary['stop_reason']:
         break
     else:
-      summary['status'] = ('smoke_completed_not_graded' if all(
-        unit['status'] == 'valid_smoke' for unit in summary['units']) else 'batch_completed_with_exclusions')
+      summary['status'] = (('core_completed_not_graded' if core else 'smoke_completed_not_graded') if all(
+        unit['status'] == valid_status for unit in summary['units']) else 'batch_completed_with_exclusions')
   finally:
     write_json(destination / 'summary.private.json', summary)
   return {'status': summary['status'], 'recorded_attempts': len(summary['receipts']),
@@ -574,16 +610,21 @@ def safe_text(text):
   return text
 
 
-def export(run_root, destination):
-  task, payloads = inputs()
+def export(run_root, destination, task_path=None):
+  task, payloads = inputs(task_path) if task_path else inputs()
   run_root = outside_git(run_root)
   summary = read_json(run_root / 'summary.private.json')
-  require(summary['task_sha256'] == digest(TASK.read_bytes()), 'wrong_run_task')
+  require(summary['task_sha256'] == digest((task_path or TASK).read_bytes()), 'wrong_run_task')
   destination = outside_git(destination)
   require(not destination.exists(), 'export_destination_exists')
   receipts, blind, mapping = [], [], []
   qtext = (REPO / 'experiments/absorption/questions.md').read_text(encoding='utf-8')
   keytext = (REPO / 'experiments/absorption/answer-key.md').read_text(encoding='utf-8')
+  output_constraints = None
+  if task.get('prompt_version') == 'v2':
+    prompt = (REPO / task['prompt_path']).read_text(encoding='utf-8')
+    # Identical task instructions for both groups, never the optional page or label.
+    output_constraints = section(prompt, 'common') + '\n\n' + section(prompt, 'core_decision')
   for entry in summary['receipts']:
     require(re.fullmatch(r'[a-f0-9]{32}\.receipt\.json', entry['name']), 'invalid_receipt_name')
     path = run_root / entry['name']
@@ -596,15 +637,17 @@ def export(run_root, destination):
               'requested_model', 'reasoning_configuration', 'actual_reasoning_configuration',
               'unit_index', 'attempt_number', 'client_version', 'version_exit_code', 'version_status',
               'preflight_records')}
-    for key in ('model_evidence', 'diagnostics', 'warnings'):
+    for key in ('model_evidence', 'diagnostics', 'warnings', 'execution_eligible', 'prompt_version'):
       if key in receipt:
         public[key] = receipt[key]
     if 'answer' in receipt:
       public['answer'] = receipt['answer']
-    if receipt['status'] in ('valid_smoke', 'completed_model_unknown'):
+    if receipt['status'] in ('valid_smoke', 'completed_core_v2', 'completed_model_unknown'):
       bid = secrets.token_hex(16)
       blind.append({'anonymous_id': bid, 'question': section(qtext, pair[0]),
                     'answer': receipt['answer'], 'rubric': section(keytext, pair[0])})
+      if output_constraints is not None:
+        blind[-1]['output_constraints'] = output_constraints
       mapping.append({'anonymous_id': bid, 'attempt_id': receipt['attempt_id'],
                       'question_id': pair[0], 'group': pair[1]})
     safe_text(json.dumps(public, ensure_ascii=False))
@@ -619,6 +662,8 @@ def export(run_root, destination):
                                       'answers': blind})
   write_json(destination / 'manifest.json', {
     'batch_id': task['batch_id'], 'status': summary['status'], 'formal_denominator': False,
+    'formal_analysis_planned': task.get('kind') == 'formal_core',
+    'prompt_version': task.get('prompt_version', 'v1'), 'task_sha256': summary['task_sha256'],
     'not_run': summary['not_run'], 'failed_units': summary['failed_units'],
     'stop_reason': summary['stop_reason'], 'files': {name: digest((destination / name).read_bytes())
                                           for name in ('receipts.json', 'blind.json')}})
@@ -631,12 +676,12 @@ def export(run_root, destination):
 
 
 
-def controlled_run(config, destination):
+def controlled_run(config, destination, task_path=None):
   def terminate(_signum, _frame):
     raise KeyboardInterrupt()
   previous = signal.signal(signal.SIGTERM, terminate)
   try:
-    return run(config, destination)
+    return run(config, destination, task_path) if task_path else run(config, destination)
   finally:
     signal.signal(signal.SIGTERM, previous)
 
@@ -644,21 +689,24 @@ def controlled_run(config, destination):
 def main():
   parser = argparse.ArgumentParser(description=__doc__)
   sub = parser.add_subparsers(dest='action', required=True)
-  sub.add_parser('prepare').add_argument('destination', type=Path)
+  prep = sub.add_parser('prepare')
+  prep.add_argument('destination', type=Path)
   live = sub.add_parser('run')
   live.add_argument('--local-config', type=Path, required=True)
   live.add_argument('destination', type=Path)
   out = sub.add_parser('export')
   out.add_argument('run_root', type=Path)
   out.add_argument('destination', type=Path)
+  for action in (prep, live, out):
+    action.add_argument('--task', type=Path, default=None)
   args = parser.parse_args()
   try:
     if args.action == 'prepare':
-      result = prepare(args.destination)
+      result = prepare(args.destination, args.task)
     elif args.action == 'run':
-      result = controlled_run(args.local_config, args.destination)
+      result = controlled_run(args.local_config, args.destination, args.task)
     else:
-      result = export(args.run_root, args.destination)
+      result = export(args.run_root, args.destination, args.task)
     print(json.dumps(result))
     return 0 if result['status'] != 'stopped' else 1
   except (Stop, OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError, KeyboardInterrupt) as exc:

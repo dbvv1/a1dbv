@@ -90,7 +90,7 @@ class AbsorptionBatchTests(unittest.TestCase):
     return 0, None
 
   def invoke(self, fake=None, version='2.1.286 (Claude Code)\n', version_probe=None,
-             provider_env=None, forbid_which=False):
+             provider_env=None, forbid_which=False, task_path=None):
     destination = self.root / 'run'
     with mock.patch.object(batch.shutil, 'which', return_value='synthetic-cli',
                            side_effect=AssertionError('unexpected PATH lookup') if forbid_which else None), \
@@ -101,7 +101,7 @@ class AbsorptionBatchTests(unittest.TestCase):
                           'ANTHROPIC_BASE_URL': 'https://synthetic.invalid',
                           'CLAUDE_CODE_SESSION_ID': 'must-not-inherit'}, clear=True), \
          mock.patch.object(batch, 'execute', side_effect=fake or self.fake_execute):
-      result = batch.run(self.config_path, destination)
+      result = batch.run(self.config_path, destination, task_path) if task_path else batch.run(self.config_path, destination)
     return result, destination
 
   def test_frozen_inputs_exact_and_no_answer_leak(self):
@@ -896,6 +896,178 @@ class AbsorptionBatchTests(unittest.TestCase):
     path.write_text('{"x":1,"x":2}')
     with self.assertRaises(batch.Stop):
       batch.read_json(path)
+
+  def core_inputs(self):
+    path = HERE / 'task-core-v2.json'
+    self.task, self.payloads = batch.inputs(path)
+    return path
+
+  def test_v2_core_inputs_preserve_questions_pages_and_applicable_instructions(self):
+    self.core_inputs()
+    self.assertEqual(len(self.task['questions']), 36)
+    self.assertEqual(len(self.payloads), 72)
+    self.assertEqual(len({q['page'] for q in self.task['questions']}), 12)
+    self.assertEqual(self.task['page_revision'], '009fd0a54a012ea3a506eea75f260f43ecc13595')
+    self.assertEqual([q['id'] for q in self.task['deferred_questions']], ['B25-1', 'B25-2', 'B25-3'])
+    qtext = (ROOT / 'experiments/absorption/questions.md').read_text()
+    for q in self.task['questions']:
+      baseline = self.payloads[q['id'], 'no_document'].decode()
+      read = self.payloads[q['id'], 'read_page'].decode()
+      self.assertEqual(read.split('\n【可选资料】')[0], baseline)
+      self.assertIn(batch.section(qtext, q['id']), baseline)
+      self.assertIn('每题不超过400中文字', baseline)
+      for text in ('00–22', 'B25-3', '800中文字', '6条查询', '初始已知候选', q['id']):
+        self.assertNotIn(text, baseline)
+      body = batch.git('show', self.task['page_revision'] + ':' + q['page'])
+      self.assertTrue(read.endswith(body.decode()))
+      self.assertEqual(batch.digest(body), q['sha256'])
+      self.assertNotIn('25所需公开取证', read.split(body.decode())[0])
+
+  def test_v2_prepare_explicit_task_is_offline_and_defaults_stay_smoke(self):
+    path = self.core_inputs()
+    with mock.patch.object(batch, 'execute', side_effect=AssertionError('live execution')):
+      result = batch.prepare(self.root / 'core-prepared', path)
+    self.assertEqual(result['planned_calls'], 72)
+    self.assertEqual(len(list((self.root / 'core-prepared').glob('input-*.txt'))), 72)
+    old, payloads = batch.inputs()
+    self.assertEqual(old['batch_id'], '20261022-smoke-v1')
+    self.assertEqual(len(payloads), 4)
+    self.assertIn(b'B25-3', next(iter(payloads.values())))
+
+  def test_v2_missing_task_and_invalid_schedule_or_scope_fail_before_execution(self):
+    with self.assertRaises(FileNotFoundError):
+      batch.inputs(self.root / 'missing.json')
+    self.core_inputs()
+    mutations = [lambda t: t['questions'][0].update(id='B25-1'),
+                 lambda t: t['schedule'].__setitem__(0, t['schedule'][1]),
+                 lambda t: t['limits'].update(max_attempts=8),
+                 lambda t: t.update(network_tools=True),
+                 lambda t: t['questions'][0].update(prompt_variant='retrieval')]
+    for change in mutations:
+      task = copy.deepcopy(self.task)
+      change(task)
+      with mock.patch.object(batch, 'read_json', return_value=task):
+        with self.assertRaises(batch.Stop):
+          batch.inputs(HERE / 'task-core-v2.json')
+
+  def test_v2_page_blob_and_content_hash_are_both_checked(self):
+    self.core_inputs()
+    for field in ('blob', 'sha256'):
+      task = copy.deepcopy(self.task)
+      task['questions'][0][field] = '0' * len(task['questions'][0][field])
+      with mock.patch.object(batch, 'read_json', return_value=task):
+        with self.assertRaisesRegex(batch.Stop, 'frozen_page_changed'):
+          batch.inputs(HERE / 'task-core-v2.json')
+
+  def test_v2_72_units_fresh_status_identity_and_export_binding(self):
+    path = self.core_inputs()
+    result, destination = self.invoke(task_path=path)
+    self.assertEqual(result['status'], 'core_completed_not_graded')
+    self.assertEqual(result['recorded_attempts'], 72)
+    self.assertEqual(len({str(c[1]) for c in self.calls}), 72)
+    self.assertEqual(len({c[0][c[0].index('--session-id') + 1] for c in self.calls}), 72)
+    for cmd, work, env, payload, timeout in self.calls:
+      self.assertEqual(cmd[cmd.index('--tools') + 1], '')
+      self.assertEqual(cmd[cmd.index('--disallowedTools') + 1], '*')
+      self.assertNotIn('CLAUDE_CODE_SESSION_ID', env)
+      self.assertEqual(set(p.name for p in work.iterdir()), {'input.txt'})
+      self.assertLessEqual(timeout, 480)
+      self.assertAlmostEqual(float(cmd[cmd.index('--max-budget-usd') + 1]), .01 / 144)
+    for file in destination.glob('*.receipt.json'):
+      receipt = batch.read_json(file)
+      self.assertEqual(receipt['status'], 'completed_core_v2')
+      self.assertTrue(receipt['execution_eligible'])
+      self.assertFalse(receipt['formal_denominator'])
+      self.assertEqual(receipt['actual_model'], 'deepseek-test')
+    with self.assertRaisesRegex(batch.Stop, 'wrong_run_task'):
+      batch.export(destination, self.root / 'wrong-export')
+    exported = self.root / 'core-export'
+    result = batch.export(destination, exported, path)
+    self.assertEqual(result['receipts'], 72)
+    blind = batch.read_json(exported / 'blind.json')['answers']
+    self.assertEqual(len(blind), 72)
+    self.assertTrue(all(set(item) == {'anonymous_id', 'question', 'answer', 'rubric', 'output_constraints'} for item in blind))
+    prompt = (ROOT / self.task['prompt_path']).read_text()
+    shared = batch.section(prompt, 'common') + '\n\n' + batch.section(prompt, 'core_decision')
+    self.assertEqual({item['output_constraints'] for item in blind}, {shared})
+    self.assertIn('每题不超过400中文字', shared)
+    for excluded in ('【可选资料】', 'read_page', 'no_document', 'B25-3', '6条查询', 'deepseek-test'):
+      self.assertNotIn(excluded, shared)
+    self.assertTrue(all(q['id'] not in shared for q in self.task['questions']))
+    manifest = batch.read_json(exported / 'manifest.json')
+    self.assertEqual(manifest['prompt_version'], 'v2')
+    self.assertTrue(manifest['formal_analysis_planned'])
+    self.assertFalse(manifest['formal_denominator'])
+    self.assertEqual(manifest['task_sha256'], batch.digest(path.read_bytes()))
+
+  def test_v2_unknown_model_is_not_failure_or_formal_eligible(self):
+    path = self.core_inputs()
+    def unknown(*args):
+      self.fake_execute(*args)
+      data = events(None)
+      args[4].write_text('\n'.join(json.dumps(e) for e in data) + '\n')
+      return 0, None
+    result, destination = self.invoke(fake=unknown, task_path=path)
+    self.assertEqual(result['recorded_attempts'], 72)
+    self.assertEqual(result['failed_units'], 0)
+    self.assertEqual(result['status'], 'batch_completed_with_exclusions')
+    receipt = batch.read_json(next(destination.glob('*.receipt.json')))
+    self.assertEqual(receipt['status'], 'completed_model_unknown')
+    self.assertFalse(receipt['execution_eligible'])
+
+  def test_v2_half_failed_continues_but_37th_final_failure_stops(self):
+    for failures in (36, 37):
+      with self.subTest(failures=failures):
+        path = self.core_inputs()
+        calls = 0
+        def ordinary(*args):
+          nonlocal calls
+          calls += 1
+          self.fake_execute(*args)
+          return (1, None) if calls <= failures * 2 else (0, None)
+        result, destination = self.invoke(fake=ordinary, task_path=path)
+        self.assertEqual(result['failed_units'], failures)
+        self.assertEqual(result['recorded_attempts'], 108 if failures == 36 else 74)
+        summary = batch.read_json(destination / 'summary.private.json')
+        self.assertEqual(summary['stop_reason'], None if failures == 36 else 'more_than_half_failed')
+        self.assertEqual(result['not_run'], 0 if failures == 36 else 35)
+        import shutil
+        shutil.rmtree(destination)
+        self.calls.clear()
+
+  def test_v2_absolute_deadline_persisted_and_forward_clock_stops_before_probe(self):
+    path = self.core_inputs()
+    real_datetime = batch.dt.datetime
+    initial = real_datetime(2026, 10, 22, tzinfo=batch.dt.timezone.utc)
+    class Clock(real_datetime):
+      calls = 0
+      @classmethod
+      def now(cls, tz=None):
+        cls.calls += 1
+        return initial if cls.calls == 1 else initial + batch.dt.timedelta(seconds=7201)
+    with mock.patch.object(batch.dt, 'datetime', Clock):
+      probe = mock.Mock()
+      result, destination = self.invoke(version_probe=probe, task_path=path)
+    probe.assert_not_called()
+    self.assertEqual(len(self.calls), 0)
+    clock = batch.read_json(destination / 'batch-clock.private.json')
+    self.assertEqual(clock['deadline_at'], (initial + batch.dt.timedelta(seconds=7200)).isoformat())
+    self.assertEqual(clock['task_sha256'], batch.digest(path.read_bytes()))
+    self.assertEqual(batch.read_json(destination / 'summary.private.json')['stop_reason'], 'batch_timeout')
+    with self.assertRaisesRegex(batch.Stop, 'run_destination_exists'):
+      batch.run(self.config_path, destination, path)
+
+  def test_v2_cli_optional_task_reaches_every_subcommand(self):
+    path = HERE / 'task-core-v2.json'
+    for action, argv, target in (
+        ('prepare', ['DEST'], 'prepare'),
+        ('run', ['--local-config', 'CONFIG', 'DEST'], 'controlled_run'),
+        ('export', ['RUN', 'DEST'], 'export')):
+      with mock.patch.object(batch.sys, 'argv', ['runner', action, '--task', str(path), *argv]), \
+           mock.patch.object(batch, target, return_value={'status': 'synthetic'}) as function, \
+           mock.patch('builtins.print'):
+        self.assertEqual(batch.main(), 0)
+        self.assertEqual(function.call_args.args[-1], path)
 
 
 if __name__ == '__main__':
