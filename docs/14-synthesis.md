@@ -1,6 +1,6 @@
 # 14 · 深度分析：AI Coding 的底层规律与决策框架
 
-> 编辑日期：2026-10-22（UTC+8）；本轮比较完整交付与风险分层接收，核公开二改源码；未运行外部应用、模型或客户端；代际状态见 [00](00-state-of-ai-coding.md#30-秒结论)。[历史核实范围](research/2026-10-10-audit.md#14-综合页历史核实范围)。
+> 编辑日期：2026-10-23（UTC+8）；完整交付与风险分层比较保留，补核状态组织的局部修复／迁移与后续修改；未运行外部应用、模型或客户端；代际状态见 [00](00-state-of-ai-coding.md#30-秒结论)。[历史核实范围](research/2026-10-10-audit.md#14-综合页历史核实范围)。
 > 本篇解释如何判断。按“现象 → 机制 → 推论 → 边界”展开；机制与推论是可反驳的本仓库分析 **[经验]**，出处见各主专题，推翻条件见末节。
 
 ---
@@ -210,6 +210,33 @@ Copilot HydraFusion（2026-09 研究预览）让便宜模型先做，再按质�
 
 ### 机制
 生成提速却未改善需求、集成或接收能力，可能形成积压；Agent 也能辅助这些环节。统计与个案只提示测量，未证明“缺完整体系必然积债”。**[研究：条件假设]**
+
+### 交互反复返工：局部修复，还是改状态组织？
+
+**✅ 单点故障先局部修；加载、重试、切换与保存持续牵连时，🧪 让Agent试一个界面的“纯状态决策＋动作数据”，不先换模型或加评审层。** Pocock的实际课程工具先局部修复，再迁移状态组织，二者解决的问题不同；本仓只核公开源码与作者运行回执，未复跑应用。[一手／研究：2026-10-23]
+
+| 你遇到的事 | 先选什么 | 实际参照 |
+|---|---|---|
+| 打开页面就误保存，只有一处受影响 | 保留组件，记录加载快照并只保存差异 | [10-06 #1816](https://github.com/mattpocock/course-video-manager/pull/1816)已修，不能归功于次日重构 |
+| 多种异步事件交错，下一改常破坏旧行为 | 把一个界面的决策集中，副作用声明为数据后交执行器 | [10-07 #1837](https://github.com/mattpocock/course-video-manager/pull/1837)将8个state与3个写状态effect迁移，并新增9条事件序列测试 |
+| 已有状态，只新增一条显示规则 | 保留原事件链，补派生selector与接线验收 | [10-16 #2296](https://github.com/mattpocock/course-video-manager/pull/2296)沿已有格式状态控制角落按钮，不另造状态系统 |
+
+```mermaid
+flowchart LR
+  E[用户操作或异步结果] --> R[纯 reducer 决定下一步]
+  R --> S[新状态交给界面渲染]
+  R --> C[把 I/O 动作声明为数据]
+  C --> X[薄执行器完成请求或编辑器操作]
+  X -->|结果作为新事件| E
+```
+
+这里借的是**把行为变成可回放的事件链**，不是把I/O塞进reducer。[固定测试](https://github.com/mattpocock/course-video-manager/blob/f2d49f22b7006785635ccc149acb3674120471d6/apps/local/app/features/diagrams/diagram-playground-reducer.test.ts)可直接检查“加载失败→重试”“切换后旧结果迟到”“重复点击”，[执行层](https://github.com/mattpocock/course-video-manager/blob/f2d49f22b7006785635ccc149acb3674120471d6/apps/local/app/features/diagrams/use-diagram-playground-reducer.ts)仍负责真实接线；这个项目已有 `use-effect-reducer` 依赖，不是纯React零依赖示范。[一手：固定源码]
+
+**给Agent的最小交付：** 先保住原bug回归，再交上面三类事件链、状态与完整动作序列的断言，以及真实页面的保存／切换检查；人核该保留的旧行为与结果是否确实写回。单元事件链通过不替代浏览器接线验收。[研究：可借用操作]
+
+**撤回点是维护负担，不是“有没有用新架构”。** 简单状态更新沿用 `useState`，需要集中状态但没有副作用编排时先比原生 `useReducer`，这是[React官方比较](https://react.dev/learn/extracting-state-logic-into-a-reducer#comparing-usestate-and-usereducer)也保留的轻路线。上述迁移实际涉及11文件；[后续复杂度盘点](https://github.com/mattpocock/course-video-manager/pull/2302)仍列出复杂reducer，没有净工时对照。事件协议／执行器的维护超过后续修改收益时保局部方案，不照搬全仓迁移或阈值。[一手／研究]
+
+探索回执：核官方React、公开PR及固定测试／实现，并读[V2EX近期过度设计讨论](https://www.v2ex.com/t/1250482)；中文个案缺完整上下文，只作额外结构成本的提醒，不证明reducer或某模型胜负。未取得独立同题复现，不改本页差距，也不新增前端专项。[研究]
 
 ### 推论
 1. **先补交付缺口**：复用目标、测试、反馈与状态；够用就继续交付，不因个案整体迁移工具，见 [18](18-team-adoption.md#1-先看结论)。
