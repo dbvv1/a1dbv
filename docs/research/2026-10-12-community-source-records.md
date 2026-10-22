@@ -1,4 +1,4 @@
-主线：二为主，兼三／四；P59聚焦小修复的回归交付，P58聚焦团队接收与持续维护
+主线：二为主，兼三／四；P59聚焦小修复的回归交付，P58聚焦团队接收与持续维护；P68比较Claude入口整页选择
 改变的建议：[经验／研究] 小修复原生起步也交回归，退出整包不撤验收。团队试用、长期接收、减人审与生产放量分开决定，不按人数升级。入口分界面、harness与执行环境；只缺整理时保原CLI，ACP另验配置和审批，生产profile成果不归因于IDE。长命观察由接续交付者持有，进程移交须连同投递与恢复核查；清理指令保留默认／条件，未决实现与规格冲突先不改写；计划陷入构建与转抄循环时，先保留接口与断言、缩减实现正文；原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
 新证据：[一手／社区] Krupa固定两臂小任务与五轨迹抽核、Huntley确定性反馈自述；中文／Reddit／实践者的流程包、单项 Skill 与语义检索采用取舍及当前 star 快照；Hermes 子进程退出清理的故障报告、发布实现与 notify／gateway 反例；doc-cleanup 语义误缩自报及撤回“代码为准”的固定修订；Superpowers #2333 的计划配方修订、分模型作者重放与无 Skill 反例；Copilot CLI Free／本地BYOK接入与组织限制、MCP治理官方口径冲突，gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
@@ -756,3 +756,26 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 - **保留失败分支，不默认升级移交承诺。** [#108479](https://github.com/NousResearch/hermes-agent/issues/108479)在9月11日固定main `8226c2f6a283c48fb97c1750a0ec2907739146d0`报告Windows／Python3.13／Git Bash复现：notify-off无完成事件、gateway watcher仍指child、checkpoint保留旧owner；原notify-on CLI用例仍通过。发行实现也未在transfer中更新notify或写checkpoint。[#108483](https://github.com/NousResearch/hermes-agent/pull/108483)拟补三者并明确finite session需主动查询；本轮API仍open、未合并。作者报告六项handoff测试通过，相关大组仍有六项基线失败，不能称全绿或已发布修复。[社区：独立报告与测试自报；一手：状态／补丁]
 
 **当前选择与撤回。** 观察任务仍在原授权范围内时，优先让最终消费结果的主任务持有它；原生前台返回已经够用就不加后台观察。确需接管现有进程，先核实际入口的移交和查询能力；结果未知时查原任务，不重派外部作业补通知。须跨主任务重启继续而现有入口无保证时，记录阻塞与恢复入口，不靠模型承诺常驻。下一条值得升级的证据是notify-off／gateway／恢复后父端实际消费，而非更多同一CLI绿灯。[经验：采用与撤回]
+
+
+## P68：Claude Code 整页选择与产品接收
+
+核实2026-10-22（UTC+8）。改变Claude入口：质量审查不机械沿用日常medium；脆弱运行入口先修环境而非堆Skill；恢复、接收与撤回要核当前产品事实。只读研究，无模型／客户端／产品执行。[研究]
+
+**最高水平与来源分工。** [Claude团队10-15评审复盘](https://claude.dev/blog/solving-code-review-at-anthropic/)提供短风险指引、分层检查与收敛；[Opus 5.5／Addy Osmani，9-22](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)支持完整目标及明确停下条件，均是厂商实践，不作独立效果证明。独立[Cloudflare／Ryan Skidmore，10-19](https://blog.cloudflare.com/obsessive-inference-optimization/)支持按角色比较effort，代码质量high与协调器medium不能混成统一档；采用代理与模型裁判边界沿用[02](../02-models-and-cost.md)及[22研究](2026-10-12-experiment-records.md)，不重复计新发现。[一手／研究]
+
+独立[Cursor／Mathew Hogan、Arvind Saripalli，7-30](https://cursor.com/blog/cloud-agent-environment/)比较构建Skills与简化运行接口，支持先修可运行、可观察环境；机制已有[探索记录](2026-10-15-exploration-evidence.md#两项本轮真正改变建议的补漏)。独立[Shopify River，9-02](https://shopify.engineering/river-vulnerability-remediation)核live state、弃rebase前旧CI、保人的接续提交，产品需求澄清后还会撤回自己的加固。它支持恢复／交接与产品判断，不是Claude原生对自建harness消融；既有P58不重复算新来源。[一手：团队自报；研究：适用范围]
+
+### Bun：编译、评审通过与现实产品路径并非同一个判据
+
+[Jarred Sumner，7-08原作](https://bun.com/blog/bun-in-rust)记录Bun在5月借预发布Fable 5和多角色workflow迁移Rust；并非当前Claude默认配置的同题对照。本文仅借其接收问题；Bun与Claude Code同属Anthropic，不能拼成独立团队佐证。[一手／研究]
+
+- **实际接收的根因修复**：[PR30977](https://github.com/oven-sh/bun/pull/30977)5-18合入[31ec206600ccf39f3ee659ebaf6af981ef02039f](https://github.com/oven-sh/bun/commit/31ec206600ccf39f3ee659ebaf6af981ef02039f)。Rust的debug_assert!在release省掉了insert_stale必要副作用；补丁把注册调用移出断言。它没有新增JS回归断言，作者所报静态／既有测试与手工检查不等于本轮独立端到端复测。[一手：补丁与合入；研究：范围]
+- **没有接收的另一候选**：[PR30684](https://github.com/oven-sh/bun/pull/30684)，head b73db1ffd2f8834ef021639c11f04ec13b18ec7d，测试手工剥去bundle的refresh字段，再检查模拟环境启动不崩；不能自动证明真实文件编辑后的热更新与重渲染正确。当前PR正文仍描述早期self-accept方案，不能代替最终补丁和后续讨论。[一手：公开产物；研究：覆盖边界]
+- **实际撤回**：[关闭说明](https://github.com/oven-sh/bun/pull/30684#issuecomment-5274074507)称在release 1.4.0-canary da3851e57与debug main 165dc9fcbf复核，当前生产者不再生成缺refresh的输入，因此关闭guard；若真实缺失再出现可以重审。这是作者复核，不证明全部部署环境无风险。本次GitHub元数据确认8-12关闭、未合并；Web缓存仍显示open，采用连接器读回状态，不据缓存复活候选。[一手：接收状态／作者复核；研究]
+
+**改变的决定。** 默认先用原生与已有检查交付；当构建模式或真实输入暴露缺口，补对应检查而非更多泛化review。恢复先重核当前产物与head，人的产品语义判断不由模型一致意见替代。根因已修且目标路径复核支持时，可撤不再有现实输入依据的兜底；证据不足则待验。guard是产品代码，不是agent harness，该链不证明整包流程该留或该卸。[研究]
+
+**整页覆盖与剩余差距。** Claude页面比较日常／审查分档、计划、上下文、扩展、并行、执行位置／恢复、review／人审、安全／撤回八类选择；安全和接口保留当前官方契约，不声称最优防御。主流采用率、跨任务最优、当前模型三臂长期二改与全人工成本仍未知。登记gap1只针对有近期领先和独立证据的条件比较，不沿用历史审计直接得分，不将本案例当整页效果验收。[研究]
+
+**读取回执。** 复用P59、P58及02／07／09已有研究，本次重读上述六篇原作相关正文；Bun两PR页面、30684连接器元数据与全部issue评论补核状态。5月执行与7月报告区分，不当10月实验；未重跑模型、Bun或上游测试。无完整搜索分母与净检索工时，不报告独立漏检率。[研究]
