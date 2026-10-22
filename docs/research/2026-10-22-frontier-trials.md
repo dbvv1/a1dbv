@@ -59,6 +59,10 @@ def shadow(operation):
 
 首次可选ptrace观测因环境能力被拒，安装器当时未执行；停止该诊断后用既有Node文件访问限制正常运行已授权安装，不提升系统权限。目录外全量观测未完成，不把可选审计能力设成安装前置关。[本仓实测]
 
+![Taste保存试用输出的真实终端截图：旧instructions指针被替换，恢复后回到原指针](../img/2026-10-23-taste-trial.png)
+
+图：原隔离夹具的保存输出，路径仅在显示时替换为合成HOME占位；未重新安装，也未验证模型效果。[既有实试补证]
+
 ## InstaLanding：实际做了衍生页，未完成浏览器接收
 
 [Reddit原帖](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)正文提出用单HTML作为视觉参照。搜索索引的日期、票数和评论与直接页面不一致，未采信；当前关注度和绝对发布日期未知。项目[官方仓库](https://github.com/RayVelez27/instalanding.ai)MIT，数量已更新，不沿用发布时“20页”。[社区／一手]
@@ -148,6 +152,11 @@ Claude几行是实际Python hook输入输出，不是Claude客户端加载或模
 本轮用独立HOME／CODEX_HOME和Codex CLI0.163.0实跑本地marketplace添加、插件安装、重复安装、移除及marketplace撤回；技能文件与固定源码一致，撤回后注册／缓存清空，项目源文件与合成笔记字节不变。11项真实hook边界检查通过；上游40测38过，2项“无Git目录”前提被环境祖先Git标记破坏，未改环境或产品来凑全绿。源码用路径遍历而非Git命令，Git搜索上界设置不能修这个前提。Claude客户端不在环境中，未安装；学习提升、时间／代码质量收益及真实对话中的pause行为均未验。[本仓实测]
 
 探索回执：本次是已有P90候选的定向上手；读固定README、许可、两端manifest、Learn／reset／恢复源码和开发测试说明。GitHub issues只获索引，未据此声称独立用户效果；不新增社区共识或前沿领先结论。[研究]
+
+![VibeWise保存试用输出的真实终端截图：安装撤回、paused不返回上下文、reset重新激活，并保留上游两项失败](../img/2026-10-23-vibewise-trial.png)
+
+图：原脚本状态与安装记录的保存摘录，未重跑候选；两项上游失败及其环境前提按上文保留，不代表客户端加载或学习收益。[既有实试补证]
+
 
 
 ## 当红必看的使用面与成熟做法
@@ -263,6 +272,10 @@ example本来不是精确业务断言，这不是工具缺陷。[默认检查范
 
 探索回执：读官方固定实现／Skill／发行、上述使用者原帖与修复PR；[V2EX](https://www.v2ex.com/t/1248137)及[Reddit](https://www.reddit.com/r/codex/comments/1x9t6o1/does_anyone_even_review_code_anymore/)补评审负担与反方，不充当OCR效果评测。V2EX另一原帖正文不可读、部分GitHub网页失败后读同源固定文件；pair-review／herdr-reviewr未找到足够独立近期采用，不硬加候选。没有完整发现分母，不报全网漏检率或最优。[研究，10-23 UTC+8]
 
+
+![OpenCodeReview保存试用输出的真实终端截图：Git变更有两项而preview漏掉src/a.go，对账记录指出缺项](../img/2026-10-23-ocr-input-coverage.png)
+
+图：原Git清单、preview及对账结果的保存摘录；规则去重只量输入字节，不等于token、费用或评审质量收益，未重跑OCR。[既有实试补证]
 
 <a id="whiteboard-headless-trial"></a>
 ## Whiteboard：无需桌面，也能保存绑定代码的评审说明
