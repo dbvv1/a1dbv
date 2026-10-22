@@ -768,3 +768,17 @@ full报告器未随该固定Skill提供，源码入口404；[build-eval说明](h
 本仓将该机制转为定位步骤：先在适用断言下区分基线、单支与组合，原有失败或缺失另一功能的预期失败不误判为新回归；确认新交互后才调整交接或并行。诊断不删最终验收，也不把构造任务的oracle消息当实际协作收益。冻结P79题集、答案和输入不随本补充改写；没有新增模型运行。[研究：采用与范围]
 
 资源限额候选仅作负结果：[Anthropic设施噪声研究](https://www.anthropic.com/research/infrastructure-noise)属旧代机制，固定策略预算与设施故障应分开，但本页既有环境、失败账和预算分层已覆盖，不据OOM自动剔除试次，也不另开新流程。[研究]
+
+
+## P81：任务依赖按当前承诺重划边界
+
+**增量是先确认本轮消费者需要什么承诺，再决定等待、并行或缩边界，不把调用图直接当任务调度图。** 比较保串行、依赖分支与缩小公共边界三条路线，采用条件分流；没有当前代自动拆分的效果赢家。[经验：2026-10-23 UTC+8]
+
+- **真实未决需求**：[Spec Kit Copilot #16](https://github.com/github/spec-kit-copilot/issues/16)作者8-21报告，稳定贡献ID与artifact JSON两个任务分给不同Copilot会话，后者从main开工而看不到上游在途代码；stack-aware功能仍是提案，不算已落地。原[#4210](https://github.com/github/spec-kit/issues/4210)要跨机器／重装稳定身份，[#4212](https://github.com/github/spec-kit/issues/4212)要公共manifest与lookupId对应，不能只靠分文件满足。[社区：作者报告／一手：原需求]
+- **实际缩边界**：9-11合入的[#4305](https://github.com/github/spec-kit/pull/4305)将来源ID留在artifact包，不承诺它是其他公共API的外键；[bd506704](https://github.com/github/spec-kit/commit/bd506704480f1a2a98a0b162988cc8af0807682d)同步收回共享模块修改与跨接口保证。[固定6390729的parity测试](https://github.com/github/spec-kit/blob/6390729d92fcbb7c0449d5da7f93d9b41c59efa6/tests/test_artifact_command_parity.py)明确断言原resolver返回没有lookupId。人审[mnriem评论](https://github.com/github/spec-kit/pull/4305#issuecomment-5606765918)要求把公共JSON当兼容承诺审查；缩范围说明为Copilot代发，未找到完整人工批准过程，不把合入元数据扩写为该过程。[一手：源码／评审]
+- **二改改变了什么**：9-12合入[#4550](https://github.com/github/spec-kit/pull/4550)，在artifact内提供lookup入口；[评审反例](https://github.com/github/spec-kit/pull/4550#discussion_r3994563718)指出两个安装目录可有同一个manifest ID，[修复回执](https://github.com/github/spec-kit/pull/4550#discussion_r3994640012)改用已安装provider身份以区分实际层。固定[d848fb4测试](https://github.com/github/spec-kit/blob/d848fb4e18f44640ad6b42e60a280551ee90cdce/tests/test_artifact_command.py)覆盖info取ID后lookup、重复manifest的双安装及同名hook分别回到各自声明；仍不把lookupId加入resolver和preset／extension公共接口。[一手：补丁／测试定义，未执行]
+- **保留未完成项**：10-22 UTC核#4210仍open。后续入口解决当前安装贡献的定位，不代表跨公共API、跨机器和重装的原身份契约已完成；把当前安装ID当跨安装稳定键会用错。若这些仍是本次硬条件，缩边界不成立，必须继续处理共享身份语义。[一手／经验：撤回条件]
+
+**同题验收题**：一个分页接口、两个调用方和共享fixture同时修改，结束标志及失败重试语义未定，哪些可立即并行？本次交付应先派不依赖新语义的调用点调查／文档盘点，确定会改变消费行为的语义后再让实现与调用方适配并行；交接标谁提供哪项契约、哪条断言解除等待，共享fixture有明确持有者。最终集成核真实消费；不能删掉原重试要求后宣布独立。此题是教学转化，独立读者效果未验。[经验]
+
+**探索与验证回执**：19:20–19:25 UTC查公开需求、PR、固定代码与评论；根端复核4305／4550正文、原需求、14文件差异及parity断言。两PR所报87通过／1跳过与144通过／4跳过均为作者记录，本仓未安装或运行此项目、模型与客户端。V2EX的[Threadlight](https://www.v2ex.com/t/1233531)／[AnyPal](https://www.v2ex.com/amp/t/1235026)及Reddit的[合并讨论](https://www.reddit.com/r/ClaudeCode/comments/1t9prcp/how_are_you_handling_merge_safety_when_running/)／[Herdsman演示](https://www.reddit.com/r/PiCodingAgent/comments/1x1jrjq/pi_herdsman_update_from_async_subagents_to/)未提供更强拆分产物；后者仅两项文档任务，不作代码集成依据。TRAE原帖和GSD修复页正文未取得；既有NP-Bench、Graphicle与旧GSD失败不计新发现。完整读取分母未可靠登记，不算比例或新漏检率，不改差距1。[研究]
