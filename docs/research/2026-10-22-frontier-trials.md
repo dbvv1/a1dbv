@@ -372,3 +372,18 @@ v1返回偏API描述，没有完整满足嵌套示例要求；v2包含示例。�
 ![真实终端展示Playwright 1.62.0已保存的版本、帮助、Skill核对与socket启动失败，明确页面操作未验证](../img/2026-10-23-playwright-probe.png)
 
 图：只读展示已保存探针，不是成功页面截图。探索复核官方安装／Skill、固定源码、Reddit与linux.do；V2EX未获CLI特定实践，未获得采用率或模型收益比较。[取证回执：2026-10-23 UTC+8]
+
+
+## Grep：公开代码查例子，先核完整调用
+
+**🧪 缺跨仓真实调用点时补Grep，先保留现有项目搜索。** 本次只是按[官方MCP用法](https://vercel.com/blog/grep-a-million-github-repositories-via-mcp)查例子，不是服务快慢／准确率基准；使用受[服务条款](https://grep.app/terms)约束，源码另按各仓许可处理。[一手／本仓功能使用：2026-10-23 UTC+8]
+
+已有Python标准库匿名访问 `https://mcp.grep.app`，列工具后用 `searchGitHub` 查询 `BackgroundTask(r.aclose)`、`language=["Python"]`；一次超时后同查询重试取回结果，无安装、登录、私有代码或模型调用。工具没有commit参数，返回的是分支链接，以下固定SHA来自另一次GitHub回源，不是已知索引版本。[本仓功能使用]
+
+命中的 [supervisely实现](https://github.com/supervisely/supervisely/blob/f4dec91fad9f06b9ac0c79bb2484f9ae16546c7d/supervisely/nn/training/train_app.py#L339-L355)先 `send(..., stream=True)`，再用StreamingResponse并把关闭动作交给BackgroundTask；另一条scale-agentex片段则是 `stream=False` 加普通Response，同样含这个字面模式。后者不因此是错代码，只是不属于本题流式方案。另核[HTTPX固定文档](https://github.com/encode/httpx/blob/0.28.1/docs/async.md#L85-L105)中的手动流式关闭责任，未运行代理或模拟断连，不背书完整代理实现。[源码／文档核查]
+
+![真实终端展示已保存的Grep查询与两个不同响应上下文，并区分检索分支链接和另行固定的源码版本](../img/2026-10-23-grep-code-example.png)
+
+图：保存响应与源文摘录，不是性能比较。选中supervisely的[同版Apache-2.0许可](https://github.com/supervisely/supervisely/blob/f4dec91fad9f06b9ac0c79bb2484f9ae16546c7d/LICENSE)已回原仓核对，不能只信返回的License字段。[本仓取证]
+
+采用线索来自[当前公开配置](https://github.com/marcusrbrown/.dotfiles/blob/811acf3c7eb55306f9d4ea6130cd0d98b66e9003/.config/opencode/opencode.json)、[开源CLI接线](https://github.com/sudosubin/grep-app-cli/blob/14bde89bb256e44304629ace0ff1438aaf94d40a/src/mcp.rs)及[中文历史推荐](https://linux.do/t/topic/1516240)：配置不证明调用频率，客户端开源不等于托管服务开源。查官方／GitHub／linux.do及HN，未得更强近期采用率或模型效果证据，因此保用途候选；反复超时或上下文不匹配时回官方源码／已有搜索，不叠安装层。[一手／社区／探索回执]
