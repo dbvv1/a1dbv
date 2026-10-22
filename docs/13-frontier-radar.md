@@ -54,6 +54,10 @@
 
 **还不知道该读哪个模块？** [DeepWiki只读导览实试](research/2026-10-22-frontier-trials.md#deepwiki先找模块再回固定源码)能先指向相关文件，再回固定源码核语义；它不替代精确版本API查询，暂不计入上表广用项。[本仓工具实试／经验：候选分流]
 
+**想借现成调用方式，而不是再读一份概述？** 本仓搜索不足时，可在已有MCP入口中试[Grep公开代码搜索](https://vercel.com/blog/grep-a-million-github-repositories-via-mcp)：给 `searchGitHub` 代码模式与语言过滤，再回源看完整上下文。本次查 `BackgroundTask(r.aclose)` 同时命中流式与非流式响应，不能复制第一条就算方案选好了。[实际用法与原文核查](research/2026-10-22-frontier-trials.md#grep公开代码查例子先核完整调用)
+
+给Agent的任务应是“找真实调用点，并解释为什么适用于本项目”；已知库契约直接查对应版文档，已知仓库直接读源码，缺跨仓例子才加这一步。Grep与DeepWiki均先作为用途候选，不据单次调用增加上表广用计数。[经验：任务分流]
+
 本节复用既有[工作流比较](24-community-workflows.md)与[上下文选择](03-context-engineering.md#25-跨文件符号检索何时补-serena)，前四项只是把读者入口前移；Context7另补真实查询，不计新的模型收益。[研究]
 
 <a id="值得一试近4周的新项目与做法"></a>
