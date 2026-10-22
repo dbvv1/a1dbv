@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 编辑更新：2026-10-22（UTC+8）；本轮补定点原文与摘要委派的选择，属原文及源码核查，未运行当前模型；[本轮证据范围](research/2026-10-13-context-tool-choice.md#p73定点原文与摘要委派)；[旧页首范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
+> 编辑更新：2026-10-23（UTC+8）；新增终端输出过滤与恢复的源码核查，RTK未试用；此前定点原文与摘要委派仍限资料，未运行当前模型；[此前证据范围](research/2026-10-13-context-tool-choice.md#p73定点原文与摘要委派)；[旧页首范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
 > 一句话：**先区分需求、环境、模型能力、上下文和验证器问题；上下文应提供必要信息，而非尽可能堆满。**
 
 ## 30 秒选择：开始一个具体修改任务
@@ -167,6 +167,22 @@ Anthropic《Effective context engineering》（2025-09）是旧代设计参照�
 **程序卡与文档摘要分工，不互相替代。** 摘要帮定位规则，程序卡保存会改变执行顺序的前提与不变量，两者都要能回查当前依据。已知修改位置仍先读相关原文；跨步骤知识需复用才补卡，不为更短而删失败分支、并发约束或消费者。计划／评审放置见[05 §2.5](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。[经验]
 
 [Code2Skill §5.5](https://arxiv.org/html/2609.05571v1#S5.S5)压缩的是代码Skill，不是文档摘要，也不证明编辑可以只看摘要。若卡导致反复回读、漏约束或额外等待，恢复直接资料路径。[研究／经验]
+
+### 2.7 终端输出：先辨过滤、恢复与重新执行
+
+**✅ 保留项目已有命令；重复日志确实妨碍定位时，再定向试输出过滤，而非全局套一层“省token”插件。** RTK能把测试输出整理成计数与失败摘要，适合评估高噪声回归场景；是否值得保留，要看完成同一任务的质量、回读与总投入。[经验：采用判断；[采用与对照](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)]
+
+**“取回原始输出”不等于恢复原命令会给出的全部诊断。** RTK v1.0.1的[pytest封装](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/cmds/python/pytest_cmd.rs#L21-L74)在没有对应参数时添加`--tb=short`、`-q`、`-rxX`，然后才捕获和过滤；未生成的长traceback无法事后找回。显式`--tb=long`可覆盖短traceback默认，但仍会经过过滤。[一手：固定源码，未运行]
+
+| 已安装RTK后的动作 | 实际得到什么 | 选择时注意 |
+|---|---|---|
+| 复制结果中的`rtk recall HASH` | 读取此前保存的内容，不重跑测试 | 普通成功摘要不保证有恢复记录 |
+| 给recall加`--full` | 返回该记录已保存的全部内容 | 不会补回未生成、未保存或被容量截掉的部分 |
+| 用`rtk bypass`运行原命令 | 发起一次新的未过滤执行 | 不是回放，不为找日志盲目重做有副作用的动作 |
+
+[恢复分支](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/tee.rs#L17-L105)／[recall实现](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/retriever.rs#L637-L727)／[bypass定义](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/lib.rs#L812-L842)。pytest路径仍[返回子进程退出码](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/runner.rs#L284-L367)，不能把摘要变短直接说成失败被掩盖。[一手：源码]
+
+Agent交回实际命令、退出状态和所用恢复记录；人核本题需要的失败细节是否还在。需要完整诊断的下一次运行先选原生输出；反复回读或重试抵消收益，就撤回该命令的过滤。`rtk gain`只是工具侧输出估计，不是整项费用或订阅额度的实测节省。[经验；[同题对照与当前版本边界](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)]
 
 ## 3. 会话层面的上下文管理
 

@@ -387,3 +387,16 @@ v1返回偏API描述，没有完整满足嵌套示例要求；v2包含示例。�
 图：保存响应与源文摘录，不是性能比较。选中supervisely的[同版Apache-2.0许可](https://github.com/supervisely/supervisely/blob/f4dec91fad9f06b9ac0c79bb2484f9ae16546c7d/LICENSE)已回原仓核对，不能只信返回的License字段。[本仓取证]
 
 采用线索来自[当前公开配置](https://github.com/marcusrbrown/.dotfiles/blob/811acf3c7eb55306f9d4ea6130cd0d98b66e9003/.config/opencode/opencode.json)、[开源CLI接线](https://github.com/sudosubin/grep-app-cli/blob/14bde89bb256e44304629ace0ff1438aaf94d40a/src/mcp.rs)及[中文历史推荐](https://linux.do/t/topic/1516240)：配置不证明调用频率，客户端开源不等于托管服务开源。查官方／GitHub／linux.do及HN，未得更强近期采用率或模型效果证据，因此保用途候选；反复超时或上下文不匹配时回官方源码／已有搜索，不叠安装层。[一手／社区／探索回执]
+
+
+## RTK：输出变短与恢复能力分开选
+
+**👀 仅作高噪声命令的定向候选，不默认全局启用；本仓未安装、执行或测模型效果。** 10-23 UTC+8核[1.0.1发行](https://github.com/rtk-ai/rtk/releases/tag/v1.0.1)及固定4ef8730源码；读者动作与决定性代码见[03§2.7](../03-context-engineering.md#27-终端输出先辨过滤恢复与重新执行)。这是终端过滤支路，不评价新增的LLM代理／路由产品。[源码／研究]
+
+采用与撤回并存：[linux.do七月原帖](https://linux.do/t/topic/2581436?tl=en)中Randy_Lee称一直正常使用，Popi因截断后反复换命令读取而卸载；[HN原讨论](https://news.ycombinator.com/item?id=49656471)亦有gh／docker场景保留和重试增多的自报。版本与任务不同，不算采用率或质量排名。[社区]
+
+整任务对照不能和输出计数混用：[Quesma九月实验](https://quesma.com/blog/does-rtk-make-ai-coding-cheaper/)用RTK0.45.0、Fable5.0／DeepSeekV4 Pro0813跑Terminal-Bench2.1共1,740次；任务等权成本变化约+1%（无清晰差异）与+17%，不证明当前1.0.1必然变贵。[JetBrains七月](https://blog.jetbrains.com/ai/2026/07/rtk-claude-code-token-savings/)用0.43.0／Sonnet5，低effort成本中位增7.6%、高effort近持平，完整批每题仅一次；[RTK作者复测](https://www.rtk-ai.app/blog/rtk-on-skillsbench/)的0.45.0开发任务子集报告-4.8%，但p=0.305，亦未建立明确省钱信号。这些是各方自跑的不同试验，不是本仓复现。[一手：实验者报告]
+
+当前恢复源码只支持有条件回取：默认SQLite普通成功不归档，非零退出且捕获至少500字节才走常规保存；显式列表截断另存相应段。记录可能受容量、存储失败及清理影响；`--full`只扩到已存内容，不能补上pytest未输出的traceback。[源码：正文所链实现与同文件测试，仅阅读]
+
+当前[发行组件表](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/README.md#L124-L131)区分Apache-2.0的OSS包和含BUSL-1.1引擎的默认包，不能沿用旧教程的整包单许可说法。探索读官方源码／作者回应、HN、linux.do及两家实验原文；没有为本次调查安装、建夹具、运行候选或读取任何实际账户／会话日志。保留原生输出基线，不以此次资料核查补“当红”数量。[一手／探索回执]
