@@ -344,3 +344,20 @@ v1返回偏API描述，没有完整满足嵌套示例要求；v2包含示例。�
 ![DeepWiki真实终端截图：保存的目录与wiki导航结果，另取固定源码核commit message直接透传](../img/2026-10-23-deepwiki-trial.jpg)
 
 图为保存响应与另取源码的真实终端展示；没有安装、认证、模型对照或速度收益测量。本轮探索读官方、公开采用／失败原帖及中文讨论；近期Reddit候选正文未取得，HN／V2EX未补到改变判断的近期MCP采用证据，不据数量填满名单。[研究／实试范围]
+
+
+## Git worktree：不装编排器，也能隔离写入
+
+**✅ 独立写入任务各有工作树；原生客户端已经能管理时沿用它，否则已有Git即可起步。** 这是一项成熟代表工作流的实际入口，不称新发明、最广用或已测Agent提效。[经验／本仓Git机制试用：2026-10-23]
+
+[Schilling 10-06复盘](https://blog.michaelschilling.com/blog/many-agents-one-clone/)描述共享检出导致串分支与丢未提交改动，改为每会话worktree后仍保并行；[Pant 8-29实际使用](https://utsabpant.com/blog/running-coding-agents-in-parallel)则在三树干净合并后遭遇共享模块约定冲突，保留worktree、收缩耦合写入。只取两人的实际经历，不采用文中未独核的行业比例、固定人数或复制.env脚本。[社区：实践者自报]
+
+[Git原生文档](https://git-scm.com/docs/git-worktree)与[Claude原生入口](https://code.claude.com/docs/en/worktrees)可直接复用；[Worktrunk](https://github.com/max-sixty/worktrunk)补分支寻址、聚合状态与生命周期管理，不是更强隔离。本轮未安装或试用管理器，也没有新增08已解释的端口／数据库隔离规则。[一手／经验：比较]
+
+**实际运行**：10-22 20:24 UTC，已有Git 2.47.3，在新合成仓、临时HOME和空模板中验证三点：A未提交a.txt不出现在B／main；两支独立提交在集成树合入后a.txt=alpha与b.txt=beta共存；A再有未跟踪成果时，普通worktree remove退出128且文件仍在。全部现场保留，未推送、安装或调用模型；不是复杂合并正确性或运行环境隔离测试。[本仓确定性实试]
+
+**读者最小操作**：在已确认的基线检出记录完整SHA，分别建task-a／task-b工作树；在各树完成独立验收并提交，交接提交SHA，在集成树按依赖合入后验共同结果。成果确认已合入、无活跃工作且树干净时才普通remove，遇脏树拒绝先保留检查，不默认force。原生客户端已经建树时不重复再套一层。[经验]
+
+![原生Git试用的真实终端截图：A未提交文件隔离，两支合入后共存，脏树普通删除被拒且文件保留](../img/2026-10-23-worktree-trial.png)
+
+图为完整保存运行日志的真实终端展示，仅将临时绝对路径缩为fixture；没有实际Agent并行、质量或耗时收益对照。源码与旧配置夹具仅作复用，本轮新实证限上述三项Git行为。[本仓验证范围]
