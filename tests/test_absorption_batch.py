@@ -243,6 +243,56 @@ class AbsorptionBatchTests(unittest.TestCase):
         with self.assertRaises(batch.Stop):
           batch.validate_config(dict(self.config, **{field: value}), self.task)
 
+  def test_requested_model_suffix_is_preserved_in_argv_and_receipt(self):
+    alias = 'sample-model[1m]'
+    self.config['requested_model'] = alias
+    self.config_path.write_text(json.dumps(self.config))
+    result, destination = self.invoke()
+    self.assertEqual(result['status'], 'smoke_completed_not_graded')
+    for call in self.calls:
+      self.assertEqual(call[0][call[0].index('--model') + 1], alias)
+    for path in destination.glob('*.receipt.json'):
+      receipt = batch.read_json(path)
+      self.assertEqual(receipt['requested_model'], alias)
+      self.assertEqual(receipt['actual_model'], 'deepseek-test')
+
+  def test_requested_model_missing_and_invalid_are_distinct(self):
+    for value in (None, ''):
+      with self.subTest(value=value), self.assertRaisesRegex(batch.Stop, '^requested_model_missing$'):
+        batch.validate_config(dict(self.config, requested_model=value), self.task)
+    for value in (1, [], ' ', 'a' * 152, 'sample-model[]', 'sample-model[1m',
+                  'sample-model[1m]extra', 'sample-model[1m][2m]', 'sample\x00model',
+                  'sample\nmodel', 'sample\rmodel', 'sample\tmodel', 'sample\x7fmodel',
+                  'sample;command', '--model'):
+      with self.subTest(value=value), self.assertRaisesRegex(batch.Stop, '^requested_model_invalid$'):
+        batch.validate_config(dict(self.config, requested_model=value), self.task)
+    for value in ('sample-model', 'provider/sample.v1:alias', 'sample-model[1m]',
+                  'a' * 151, 'a' * 147 + '[1m]'):
+      with self.subTest(value=value):
+        batch.validate_config(dict(self.config, requested_model=value), self.task)
+
+  def test_requested_alias_and_init_alias_do_not_become_api_evidence(self):
+    alias = 'sample-model[1m]'
+    self.config['requested_model'] = alias
+    self.config_path.write_text(json.dumps(self.config))
+    def no_api_model(*args):
+      self.fake_execute(*args)
+      stream = events()
+      stream[0]['model'] = alias
+      stream[-1]['modelUsage'] = {alias: {}}
+      del stream[1]['event']['message']['model']
+      args[4].write_text('\n'.join(json.dumps(e) for e in stream))
+      return 0, None
+    result, destination = self.invoke(no_api_model)
+    self.assertEqual(len(self.calls), 4)
+    for path in destination.glob('*.receipt.json'):
+      receipt = batch.read_json(path)
+      self.assertEqual(receipt['requested_model'], alias)
+      self.assertEqual(receipt['actual_model'], 'unknown')
+      self.assertEqual(receipt['status'], 'completed_model_unknown')
+    # Accepting a CLI alias does not loosen the distinct raw API model validator.
+    self.assertEqual(self.inspect(events(alias))['actual_model'], 'unknown')
+
   def test_raw_api_metadata_not_requested_or_model_usage(self):
     self.assertEqual(self.inspect(events())['actual_model'], 'deepseek-test')
     stream = events()

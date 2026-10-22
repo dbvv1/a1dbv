@@ -22,6 +22,8 @@ TASK = HERE / 'task.json'
 ENV_KEYS = ('PATH', 'SYSTEMROOT', 'WINDIR', 'COMSPEC', 'PATHEXT',
             'LANG', 'LC_ALL', 'TMP', 'TEMP', 'TMPDIR')
 SAFE_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:/-]{0,150}\Z')
+# CLI request aliases may carry a context suffix; this is not API model evidence.
+REQUESTED_MODEL = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:/-]*(?:\[[A-Za-z0-9._-]+\])?\Z')
 # Deliberately conservative: suspicious answer text is withheld, never rewritten.
 SENSITIVE = re.compile(
   r'(?i)(?:\b(?:api[_ -]?key|access[_ -]?token|authorization|password|secret)\s*[:=]'
@@ -129,7 +131,9 @@ def prepare(destination):
 
 def validate_config(config, task):
   model = config.get('requested_model')
-  require(isinstance(model, str) and SAFE_ID.fullmatch(model), 'requested_model_missing')
+  require(model is not None and model != '', 'requested_model_missing')
+  require(isinstance(model, str) and len(model) <= 151 and REQUESTED_MODEL.fullmatch(model),
+          'requested_model_invalid')
   prefix = config.get('command_prefix', [])
   require(isinstance(prefix, list) and all(isinstance(x, str) and '\0' not in x for x in prefix),
           'invalid_command_prefix')
