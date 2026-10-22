@@ -42,6 +42,8 @@
 
 图：终端展示本次已保存的真实响应摘录，不是模型答题或生成代码效果。[本仓实试]
 
+**还不知道该读哪个模块？** [DeepWiki只读导览实试](research/2026-10-22-frontier-trials.md#deepwiki先找模块再回固定源码)能先指向相关文件，再回固定源码核语义；它不替代精确版本API查询，暂不计入上表广用项。[本仓工具实试／经验：候选分流]
+
 本节复用既有[工作流比较](24-community-workflows.md)与[上下文选择](03-context-engineering.md#25-跨文件符号检索何时补-serena)，前四项只是把读者入口前移；Context7另补真实查询，不计新的模型收益。[研究]
 
 <a id="值得一试近4周的新项目与做法"></a>
@@ -51,7 +53,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
-| [Graphicle](https://github.com/graphicle-ai/graphicle) | 用跨文件图和行号导航陌生仓库 | 339★及[HN 48分／15评](https://news.ycombinator.com/item?id=50088713)为关注快照 | 0.1.4定位、更新与两文件反例已复现 | 🧪 同名错边仍在，不据图删测试 |
+| [Graphicle](https://github.com/graphicle-ai/graphicle) | 用跨文件图和行号导航陌生仓库 | 339★及[HN 48分／15评](https://news.ycombinator.com/item?id=50088713)为关注快照 | 0.1.4定位与两文件反例已有[真实输出截图](research/2026-10-22-frontier-trials.md#graphicle导航有用影响图需要核对) | 🧪 同名错边仍在，不据图删测试 |
 | [GPT with Taste](https://github.com/NB-Corp/gpt-with-taste) | 为嫌输出啰嗦的人提供明确偏好 | [linux.do首帖208 Likes](https://linux.do/t/topic/3016674)为关注快照 | 隔离安装、重复安装与恢复通过 | 🧪 先保旧配置，不自动合并instructions |
 | [InstaLanding的HTML参照法](https://github.com/RayVelez27/instalanding.ai) | 用可运行参照探索UI方向 | [Reddit原帖](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)可读但热度未核 | 三状态衍生页完成，浏览器接收未完成 | 👀 DOM-stub通过不等于视觉通过 |
 | [Coucou](https://github.com/Louis-CFM/coucou) | 为多会话用户集中提示完成与待决定状态 | 6,163★及9-27新建为发现快照 | 包已核hash，但桌面应用未启动 | 👀 通知未试用，接入会涉及hooks配置 |

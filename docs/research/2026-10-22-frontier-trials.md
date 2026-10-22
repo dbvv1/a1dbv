@@ -45,6 +45,10 @@ def shadow(operation):
 
 四文件fixture使用`graphicle graph extract . --code-only`、`graphicle graph explain retry_retry --all`、`graphicle graph affected retry_retry`；修改后`graphicle graph update .`。上面的两文件最小反例节点改为`helper_retry`，使用`graphicle graph explain helper_retry --all`；对照提取为`graphicle graph extract . --code-only --precise --force`。全新隔离目录的18步重放及正反断言通过。完整node ID适合导航；影响范围须与源码、rg和测试交叉核，不据图自动删测试。未测大仓或模型收益。[本仓实测／研究]
 
+![Graphicle保存试用输出的真实终端截图：跨文件导航、局部retry遮蔽及precise错边，与原运行时检查对照](../img/2026-10-23-graphicle-trial.png)
+
+图：10-23在真实终端展示10-22已保存输出的摘录，未重跑Graphicle、不计新发现；EXTRACTED标签本身不保证调用目标正确。[既有实试补证]
+
 ## GPT with Taste：安装保文件，不代表保有效指令
 
 [linux.do原帖](https://linux.do/t/topic/3016674)10-13首帖208 Likes，读1–40楼；少量使用者称冗余减少，也有hook上下文负担及实测不足的质疑。它是兴趣信号，不是质量对照。[社区]
@@ -312,3 +316,18 @@ example本来不是精确业务断言，这不是工具缺陷。[默认检查范
 v1返回偏API描述，没有完整满足嵌套示例要求；v2包含示例。方法名与递归语义已核，未逐字复核全部摘要，也没有执行示例、测客户端自动选版或模型收益；缺失版本回退、长期新鲜度、匿名限额未测。匿名成功只覆盖本次MCP请求，不保证所有REST入口或以后无key都可用。[本仓验证范围]
 
 [真实终端截图](../img/2026-10-23-context7-version-query.png)显示已保存响应的解码摘录，未在截屏时再请求；原始返回及元数据留作复核，公开图不含内部头、身份和本机路径。最小复用是 `resolve-library-id` 的 `libraryName`／`query` → 从返回选完整版本ID → `query-docs` 的 `libraryId`／同题 `query` → 核Source链接与对应官方版本；版本不在结果中时保留缺口，不猜closest match兼容。[一手／本仓实试]
+
+
+## DeepWiki：先找模块，再回固定源码
+
+**🧪 陌生公共仓库可先读wiki目录定位模块，再用源码回答实现问题；已有库的精确版本API查询仍走Context7或官方文档。** 本轮实际读到danger-js的Git DSL与GitHub适配器，不据此评为广用最佳或新增“当红”名额。[本仓工具实试／经验：2026-10-23]
+
+[官方MCP](https://docs.devin.ai/work-with-devin/deepwiki-mcp)公开入口免认证；[官方仓库](https://github.com/CognitionAI/deepwiki)不是服务端实现，不能混用其他同名开源项目的能力。五月[实际研究记录](https://github.com/artyhoo/getff/blob/staging/docs/meta-factory/research-patches/2026-05-16-research-tooling-evaluation.md)用过问答接口，七月[LibreChat接入者](https://github.com/LibreChat-AI/LibreChat/issues/14440)用只读工具作控制；[中文用户](https://linux.do/t/topic/2243015)在Code Wiki对照讨论中表示仍用DeepWiki。这些支持试用线索，不是普及率或质量排名。[一手／社区]
+
+**本轮真正执行**：匿名握手后只读`read_wiki_structure`与`read_wiki_contents`各一次，服务自报2.14.3；未调用问答、生成、建索引或刷新。目录的Git DSL主题把调查带到GitDSL.ts／GitHubGit.ts，再沿import找到Commit.ts；另取[固定37a3605的类型](https://github.com/danger/danger-js/blob/37a360502df74a18cda7bf6a350789d5dd066dfd/source/dsl/Commit.ts#L1-L17)与[适配代码](https://github.com/danger/danger-js/blob/37a360502df74a18cda7bf6a350789d5dd066dfd/source/platforms/github/GitHubGit.ts#L19-L36)，确认`message`在该映射步骤直接透传，不拆正文／trailer；这不是“全仓没有解析”的结论，也没运行应用测试。[本仓远程检索／一手：源码]
+
+实际只读schema仅收repoName，未提供版本、章节或分页参数；该仓一次全文HTTP体874,669字节，取回后才本地选章节，不等同模型token或成本。wiki的部分行号链接为空目标，需回仓库核定位；wiki索引commit未知，37a3605是另取的核对树。[官方仓issue #8](https://github.com/CognitionAI/deepwiki/issues/8)另有指定旧版却混入新API的用户报告，因此旧版兼容问题不据当前wiki裁决。[本仓观察／社区]
+
+![DeepWiki真实终端截图：保存的目录与wiki导航结果，另取固定源码核commit message直接透传](../img/2026-10-23-deepwiki-trial.jpg)
+
+图为保存响应与另取源码的真实终端展示；没有安装、认证、模型对照或速度收益测量。本轮探索读官方、公开采用／失败原帖及中文讨论；近期Reddit候选正文未取得，HN／V2EX未补到改变判断的近期MCP采用证据，不据数量填满名单。[研究／实试范围]
