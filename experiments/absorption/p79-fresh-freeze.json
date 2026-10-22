@@ -1,0 +1,67 @@
+{
+  "version": "p79-fresh-v1",
+  "status": "materials_frozen_not_run",
+  "date": "2026-10-22",
+  "page": {
+    "path": "docs/01-agents/claude-code.md",
+    "git_blob": "b5e9bf10acda28439819a88310ff75c787bf9839",
+    "sha256": "867fa8f6a5788201dbc96dd3948f27e4c12ba70350787362429467b65a55db76",
+    "snapshot": "same tree as first publishing commit of this freeze file"
+  },
+  "files_sha256": {
+    "p79-fresh-challenge-questions.md": "104252c64bbc6a485ddbefe70f9cd8f7471b789d9d3aa1523322cd33f8a305de",
+    "p79-fresh-challenge-sources.md": "16ef7c643bdc855af69e9378e5f4c2b0e607e5ded58d7ce9231af75215a68cbd",
+    "p79-fresh-challenge-answer-key.md": "4b1797a48bb458de2660a15fe3b041130bc8c7c8c25937d54c7fb68cc19122f2",
+    "p79-fresh-challenge-reserve.md": "1fc6bd260fba3500e8b2f211ce94d3b22cb113cd5bbcfb7fda3d8a8536ff78e8",
+    "p79-fresh-challenge-reserve-answer-key.md": "3bb1d562c9be23cc4e0967a4cf1a1803aff34525e6b55a8b14201388cc2d8d7c"
+  },
+  "prereg_sha256": "e537fcc04ec4c740993b50a70b84785470b8b558e383aca516bb9eab2c628d30",
+  "common_prompt": "请就下面的编码工作场景，给团队一个可执行的建议。按“现在决定”“最小核查”“何时改变或撤回”三项回答；说明会改变建议的关键条件，不编造未给出的事实或已完成的验证。可以选择暂不改变或采用不同的合理路线。只使用本次给出的材料与已有知识，不调用工具或查阅链接。\n回答不超过600个非空白Unicode字符，标题、标点、英文和链接也计数。不要复述题面或添加通用流程。\n",
+  "question_extract": "For each ## Fxx heading, body up to next level-2 heading; strip surrounding whitespace and append one LF. UTF-8; no normalization.",
+  "input_join": "common_prompt + \"\\n<参考材料>\\n\" + document_or_empty + \"</参考材料>\\n<场景>\\n\" + question_with_LF + \"</场景>\\n\"",
+  "inputs": [
+    {
+      "question": "F04",
+      "group": "no_doc",
+      "utf8_bytes": 948,
+      "sha256": "eeedf73a0fb98a054653309979138d002d625a7ad7f083d25604ef4575fbb28a"
+    },
+    {
+      "question": "F04",
+      "group": "doc",
+      "utf8_bytes": 41188,
+      "sha256": "a20b7957ccdeb392cb7d8e1ece6429444075f86abdeaef59df908c5c544d7872"
+    },
+    {
+      "question": "F01",
+      "group": "doc",
+      "utf8_bytes": 41264,
+      "sha256": "b64357f56a416031c81fc90158f7ecbfe80a800490a83d7a881c12ed8384b6d4"
+    },
+    {
+      "question": "F01",
+      "group": "no_doc",
+      "utf8_bytes": 1024,
+      "sha256": "83a63621516372068a7cc1a51bec88dfe1c565643829bd13e9f800ec96db8e0a"
+    },
+    {
+      "question": "F06",
+      "group": "no_doc",
+      "utf8_bytes": 1100,
+      "sha256": "ac3510d7e7c58864dad5bb1a242b0cc492abe9be095a4a17b04884b0170535af"
+    },
+    {
+      "question": "F06",
+      "group": "doc",
+      "utf8_bytes": 41340,
+      "sha256": "998a63f125a2b1698f4661646ccb3d8805b6e6f30d6730b06c8e117d15166690"
+    }
+  ],
+  "not_observed": [
+    "model_calls",
+    "actual_api_model",
+    "runtime_isolation",
+    "returned_answers",
+    "blind_scores"
+  ]
+}
