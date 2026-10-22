@@ -4,7 +4,7 @@
 
 ## 30 秒结论
 
-**✅ 保留已能完成任务的入口，缺哪层就补哪层。** 只缺多会话整理，先把原 CLI 放进终端工作台；需要审计划、看 diff 或交互调试，保留有效的 IDE 集成；要离开电脑继续，才选择确有独立执行能力的宿主。[研究：条件默认]
+**✅ 保留已能完成任务的入口，缺哪层就补哪层。** 只缺多会话整理，先把原 CLI 放进终端工作台；需要审计划、看 diff 或交互调试，保留有效的 IDE 集成；只关项目窗口，先核现有宿主能否继续；要关闭本机后仍执行，才考虑另一台持续运行的主机或云端，并确认所需工具不依赖本机客户端。[研究：条件默认]
 
 **⛔ 不因“后台、worktree、自托管、支持 ACP”就整套迁移。** 先核实际执行主机、必要审批、失败恢复与最终验收；其中一项不满足，就保留原路或缩小委派。[研究]
 
@@ -79,7 +79,7 @@ My Machines 的在线和环境健康由使用者维护，Team Pools 还增加镜
 
 **本地命令隔离先看有效状态与覆盖。** [10-14工程说明](https://kiro.dev/blog/local-sandboxing/)提出用 OS 边界减轻审批疲劳；[当前契约](https://kiro.dev/docs/sandbox/)只覆盖 shell 子进程，stdio MCP需另启包装，内建文件工具及远程MCP不在其中。显示 Unavailable 时不能当已隔离。[一手；研究]
 
-**回聊天与回文件是两件事。** [rewind](https://kiro.dev/docs/checkpoints/)只分叉对话；checkpoint回文件与上下文，但不跟踪bash／MCP改动，也可能覆盖已快照文件上的后续人工修改。回退前先核实际 Git diff 和外部状态。[一手；研究]
+**回聊天与回文件是两件事，支持入口也不同。** [能力表](https://kiro.dev/docs/checkpoints/)中，IDE提供checkpoint，CLI提供rewind；CLI checkpoint仅列为v2实验功能，Web／Mobile均不支持两者。rewind只分叉对话，checkpoint回文件与上下文；后者不跟踪bash／MCP改动，并可能覆盖已快照文件上的后续人工修改，回退前先核Git diff和外部状态。[一手：10-22核；研究]
 
 异步改代码还要验失败恢复。作者公开的[Kiro headless实验](https://github.com/nobu-13/article06-kiro-agentic-cicd/tree/0148056517d95cb4dad354e93c26e6e67ab11403)报告误写后连诊断命令也受阻；本仓只核公开配置及汇总，原始轨迹未公开。它支持预演必要恢复路径，不证明增加护栏一定提升成功率。[社区：9月作者实验；研究]
 

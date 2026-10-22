@@ -13,7 +13,7 @@
 | [InstaLanding的HTML参照法](https://github.com/RayVelez27/instalanding.ai) | 把可运行页面的颜色／字体／间距给Agent，比只说“高级感”更具体；适合UI方向探索 | [Reddit原帖](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)正文可读；索引票数／日期与直接页面冲突，未采信 | 已做三状态离线衍生页，15项DOM-stub通过；浏览器渲染未完成 | 源页可能依赖字体／CDN；👀 部分试用，不能把stub当视觉验收 |
 | [Coucou](https://github.com/Louis-CFM/coucou) | 将多个coding会话的完成／待决定状态集中提示，适合经常错过回执的人 | 6,163★；9-27新建，非已证HN热议 | Linux 0.5.1包已下载核hash；桌面链路阻断，应用未启动 | hooks涉及客户端配置；品牌素材不全属MIT；👀 启动与通知未试用 |
 | [Whiteboard](https://github.com/devdotfast/whiteboard) | 用代码关联图和diff辅助解释Agent修改，适合评审陌生多文件改动 | 3,286★；[HN 424分／143评](https://news.ycombinator.com/item?id=49833867)，9-24 | 未试用 | 是补充评审画布，不是完整编辑器；👀 先看能否帮助发现真实错误 |
-| [Oil UI](https://github.com/oil-oil/oil-ui) | 先看三个不同设计方向再做一个，适合避免AI界面同质化 | 2,005★；9-30新建，未取到窗口内HN同名原帖 | 未试用；计划用一页状态列表核桌面／移动端 | 免费范围以新设计为主，不能套用Pro能力；👀 待真实生成与截图验证 |
+| [Oil UI](https://github.com/oil-oil/oil-ui) | 把现状与独立HTML方向稿放进现成比较器，适合已有设计候选的读者 | 2,005★；9-30新建，未取到窗口内HN同名原帖 | 0.23.9隔离安装；现状+两候选打包、保原件与失败不覆盖已验；浏览器受限 | 改源页须重建，选择文字须贴回Agent；🧪 部分试用，视觉／模型效果未验 |
 | [VibeWise](https://github.com/nykooi1/vibe-wise) | 人先讲方案，再让Agent实现和检查理解，适合学陌生技术栈 | 3,853★；9-29新建，未取到窗口内HN同名原帖 | 未试用 | 会增加交互，不适合追求最快无人值守交付；👀 学习场景候选 |
 
 **这轮新知道的东西**：Graphicle的可用导航与错误作用域边可以同时存在；Taste的安装不等于保留旧instructions的有效性。其余候选先保发现价值，未试用不写成推荐默认。用户新链接优先放[收件箱](collaboration/inbox.md)，每条处理结果回到本表；当前收件箱为空，命中率不计算。[研究／本仓实测]
