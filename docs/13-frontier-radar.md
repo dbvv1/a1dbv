@@ -1,6 +1,22 @@
 # 13 · 前沿雷达（2026-10）
 
-> 编辑更新：2026-10-22（UTC+8）；性能采用补共享状态修复链，近期校准压成专题入口；历史条目不整体重核
+> 编辑更新：2026-10-22（UTC+8）；页首先交C5发现与真实试用，以下既有专题入口及历史条目不整体重核
+
+## 值得一试：近4周的新项目与做法
+
+2026-10-22首轮。以下从GitHub、HN及中英文社区回扫中挑选，**是值得尝试的候选，不是效果排行榜**；热度取当日快照，4周star增长未知。先看适合自己的那一项，小任务试用结果与未试用分开。[一手／社区／本仓实测；[取证与复现](research/2026-10-22-frontier-trials.md)]
+
+| 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
+|---|---|---|---|---|
+| [Graphicle](https://github.com/graphicle-ai/graphicle) | 不调用模型也能给跨文件代码图和行号，适合陌生仓库导航 | 339★；[HN 48分／15评](https://news.ycombinator.com/item?id=50088713)，10-14 | Linux 0.1.4约15分钟真运行；定位、更新及两文件反例已复现 | 局部同名函数仍会连错边，precise也未消除；🧪 导航辅助，不单独决定删哪些测试 |
+| [GPT with Taste](https://github.com/NB-Corp/gpt-with-taste) | 给Codex更明确的实现与表达偏好，适合嫌输出啰嗦或过度设计的人 | [linux.do首帖208 Likes](https://linux.do/t/topic/3016674)，10-13 | 隔离配置安装、重复安装、check／restore及12项测试通过；约7分钟，未测模型效果 | 切换instructions指针，不自动合并旧指令；🧪 先保原配置、不开hooks试用 |
+| [InstaLanding的HTML参照法](https://github.com/RayVelez27/instalanding.ai) | 把可运行页面的颜色／字体／间距给Agent，比只说“高级感”更具体；适合UI方向探索 | [Reddit原帖](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)正文可读；索引票数／日期与直接页面冲突，未采信 | 已做三状态离线衍生页，15项DOM-stub通过；浏览器渲染未完成 | 源页可能依赖字体／CDN；👀 部分试用，不能把stub当视觉验收 |
+| [Coucou](https://github.com/Louis-CFM/coucou) | 将多个coding会话的完成／待决定状态集中提示，适合经常错过回执的人 | 6,163★；9-27新建，非已证HN热议 | Linux 0.5.1包已下载核hash；桌面链路阻断，应用未启动 | hooks涉及客户端配置；品牌素材不全属MIT；👀 启动与通知未试用 |
+| [Whiteboard](https://github.com/devdotfast/whiteboard) | 用代码关联图和diff辅助解释Agent修改，适合评审陌生多文件改动 | 3,286★；[HN 424分／143评](https://news.ycombinator.com/item?id=49833867)，9-24 | 未试用 | 是补充评审画布，不是完整编辑器；👀 先看能否帮助发现真实错误 |
+| [Oil UI](https://github.com/oil-oil/oil-ui) | 先看三个不同设计方向再做一个，适合避免AI界面同质化 | 2,005★；9-30新建，未取到窗口内HN同名原帖 | 未试用；计划用一页状态列表核桌面／移动端 | 免费范围以新设计为主，不能套用Pro能力；👀 待真实生成与截图验证 |
+| [VibeWise](https://github.com/nykooi1/vibe-wise) | 人先讲方案，再让Agent实现和检查理解，适合学陌生技术栈 | 3,853★；9-29新建，未取到窗口内HN同名原帖 | 未试用 | 会增加交互，不适合追求最快无人值守交付；👀 学习场景候选 |
+
+**这轮新知道的东西**：Graphicle的可用导航与错误作用域边可以同时存在；Taste的安装不等于保留旧instructions的有效性。其余候选先保发现价值，未试用不写成推荐默认。用户新链接优先放[收件箱](collaboration/inbox.md)，每条处理结果回到本表；当前收件箱为空，命中率不计算。[研究／本仓实测]
 
 <a id="本轮精选哪些变化会影响实际工作2026-10-15-补核"></a>
 ## 30 秒选择：这些变化值得你改什么？

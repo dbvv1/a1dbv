@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="300" viewBox="0 0 960 300" role="img" aria-labelledby="title desc">
+<title id="title">本轮发现与验证范围</title><desc id="desc">Graphicle已运行代码图及反例，Taste已测试安装恢复，HTML参照只通过静态检查，P79冒烟未观察到决策增量。模型效果与视觉验收不能由前两层推定。</desc>
+<rect width="960" height="300" rx="18" fill="#f3f6fb"/>
+<g font-family="sans-serif" fill="#16263d"><text x="30" y="42" font-size="24" font-weight="bold">发现之后，证据走到了哪一步？</text>
+<g font-size="18"><text x="30" y="90">Graphicle</text><text x="230" y="90">代码图真实运行：可导航，也复现同名遮蔽错边</text>
+<text x="30" y="135">GPT with Taste</text><text x="230" y="135">安装 / 恢复通过：尚未测试模型质量收益</text>
+<text x="30" y="180">HTML 参照</text><text x="230" y="180">三状态与静态检查：浏览器渲染未完成</text>
+<text x="30" y="225">P79 冒烟</text><text x="230" y="225">两组语义判据均满足：未观察到读页决策增量</text></g>
+<text x="30" y="275" font-size="16" fill="#52657c">2026-10-22 · 仅总结本轮实际范围，不是效果排行榜。</text></g></svg>

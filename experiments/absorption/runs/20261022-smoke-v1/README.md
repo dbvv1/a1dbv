@@ -1,6 +1,8 @@
 # P79 冒烟准备包：2 题 × 2 组
 
-核实时间：2026-10-22。**这是准备包，没有真实模型结果。** 只确认通路、输入边界和 API 模型回执，不判分、不声称文档增益；本批任何回答均不直接进入正式效果分母。GLM 不在本批。本次按运行细则 §2.2 的“三条硬限制、其余记录”更新，用户最新允许改完跑冒烟；此包尚无实际执行结果，启动由负责人接既有中转。
+核实时间：2026-10-22。**四份冒烟答卷已回收并独立盲判，两题尚未显示答错→答对的文档增量。** 语义判定、输出问题与执行范围见[结果记录](results.md)，不计正式效果样本。
+
+前三个题组回收旧本地修改版的第一次回答，唯一未运行项另补一次。原runner失败回执保留；这不是当前诊断修正版一次完整四单元实跑。GLM不在本批。
 
 ## 固定输入与边界
 
@@ -42,7 +44,7 @@ ANTHROPIC_BASE_URL、ANTHROPIC_API_KEY 仅在存在时复制，回执只记 pres
 
 [一手] [CLI 参数](https://code.claude.com/docs/en/cli-reference)、[非交互和 bare](https://code.claude.com/docs/en/headless)：采用 --bare、--restricted、--disable-slash-commands、--tools 空字符串、--disallowedTools 星号、严格空 MCP 配置和禁用会话保存。本机2.1.281的help已确认disable-slash-commands禁全部Skills；bare单独仍允许显式Skill，tools单独不禁MCP；不传 resume/continue。每次记录实际 --version 输出，旧版／新版／与预期不同均不拦截，版本读取失败记 unknown；缺必要参数让真实命令自行报错，按单元失败规则处理，不自动升级。
 
-旧 bare 的提醒／后台行为可能不同，托管策略也高于普通设置，启动选项不是 OS 沙箱。不以版本字符串或 stub 证明完全隔离。定制配置、不可解释上下文或不完整协议记失败及原因，除已观察到硬边界违规外按单元失败规则继续。真实客户端兼容仍待冒烟。
+旧 bare 的提醒／后台行为可能不同，托管策略也高于普通设置，启动选项不是 OS 沙箱。不以版本字符串或 stub 证明完全隔离。定制配置、不可解释上下文或不完整协议记失败及原因，除已观察到硬边界违规外按单元失败规则继续。旧本地版调用已返回完整 API 流，但当前修正版的真实兼容尚未验证。
 
 [一手] [原始流事件](https://code.claude.com/docs/en/agent-sdk/streaming-output)、[API streaming](https://platform.claude.com/docs/en/build-with-claude/streaming)：用 stream-json、verbose、include-partial-messages 收集 raw API 的 message_start.message.model，逐次回执仍为 JSON。init.model、modelUsage、请求名、自述均不补空。
 
@@ -87,3 +89,19 @@ local-config.json 可设置 command_prefix（argv 字符串数组，默认 []）
 已核接口以`import.meta.url`相对registry定位指定settings，不依赖本题HOME；绑定及凭据只在内存生成child env，最后覆盖本题HOME、配置／缓存／临时目录和PWD，移除旧Windows home路径变量。它不把原HOME交回被测客户端，也不使用会额外追加model／settings／session的普通Workflow。仅定向读取既有profile，不扫描其他设置／历史；依赖失败由调用自然报错，不新增批准门。
 
 执行端2026-10-22回执：在启动Node前HOME/USERPROFILE/cwd均已fresh的条件下，真实2.1.281 `--version`退出0；独立help亦退出0，空参数及星号等16参数保留。无网络父子孙睡眠stub的timeout与模拟控制器中断各以本次PID的taskkill /T /F退出0，三进程均退出。未测真实Ctrl-C传播、父已退出或脱离树、provider认证／模型调用，不能外推。此适配器SHA256为`8116e3fd5d86d26ccc6cdb8ce2630ceb8749f746797f1a43a2a1b38efffa936c`；实际依赖模块指纹只作版本回执，不把hash当安全证明。
+
+## 流诊断与有效性分开
+
+旧本地运行的 6 份 raw 各有一个 message_start，API 字段报告 deepseek-flash；工具／MCP／skills 清单为空，没有观察到实际工具调用、parent_tool_use_id 或明确 hook 事件。init 同时报告两项 source=builtin 插件和 agent 名录，另有尚未解释的状态通知。这些观察不证明隔离违规，也不足以宣布上下文完全清洁；随后只读核实插件名称为 agents-md、telemetry，agent 项为纯名称清单，状态和空 commands 通知具有固定外壳。当前兼容规则以固定 warning 记录这些原生形状，不再要求名录清零；实际 argv 和子进程 HOME 未独立采样，不能把构造代码当作本次运行时实测。
+
+[固定版本官方 agents-md 说明](https://raw.githubusercontent.com/anthropics/claude-code/v2.1.281/mods/agents-md/README.md) 区分内建 mod 与用户配置；不能把非空 plugins／agents 一概叫用户污染。诊断分别记录 builtin_plugins_reported、external_or_unknown_plugin_origin、agent_inventory_reported，不导出插件名字／路径或 agent 名字。仅允许 agents-md／telemetry、source=builtin、对象恰为 name/path/source 且 path 为字符串的已核插件结构，记录固定 warning 而不称 clean；agent 纯字符串名称列表也仅记 inventory warning，不因未识别名字推断执行或会话历史。外部、其他未核插件或额外内容字段仍单独记录 context_inventory_unresolved，不混入有效盲答；不是新的启动审批或版本／预算门槛。
+
+stream_diagnostics 独立提取唯一且合法的原始 API message_start 模型字段。即使随后上下文验收失败，回执仍可记录实际模型及证据来源；请求别名、init alias 和 modelUsage 都不能代替它。诊断包含固定 schema、原 raw 哈希及解析器源码哈希，不是成功标记。原始输出、思考正文、签名、thinking_tokens 数值不导出。只接受已知字段的整数 thinking_tokens 通知，并要求其处于 thinking 块期间；同一消息的分段 thinking／text assistant 仍须通过原始文本与最终 result 的精确绑定。status 的实际枚举未确认，但已知 subtype=status、固定外壳及字符串 status 值只产生未解释状态 warning；不接受嵌套值或额外内容／执行字段。commands_changed 仅接受固定外壳及严格 commands=[]，记 warning；非空命令和额外字段仍拒绝。这里只兼容已核 subtype，不通配未知 system 事件。实际工具的硬停检查保持不变。
+
+既有回执不可重写。若今后对旧 raw 做离线回溯，须另建明确标为回溯诊断的产物，注明原执行版／原 raw 哈希及新解析器版本，不把新解析结果伪装成原运行回执；本节兼容诊断没有创建这类历史替代产物，也未额外调用模型；唯一缺项补跑见[结果记录](results.md)。
+
+固定 warning 不改变答案通过状态，也不替代 API 实际模型：完整绑定成功可为 valid_smoke with warnings；模型元数据缺失仍按既定 completed_model_unknown 口径进入盲包但排除正式分母。新规则不会自动追认旧六次调用，旧回执和空盲包均不改写；后续如获安排只对现有 raw 离线重解析，不能为格式兼容再调用 API。仅三条硬限制；原生名录和通知本身不是工具执行，实际工具／parent_tool_use_id 证据仍硬停。
+
+## 冒烟回收与结果
+
+旧三题组取第一次最终回答，唯一未运行项另补一次；旧失败回执不覆写。四份匿名答案及冻结盲判见[结果记录](results.md)。两题的两组均满足决策语义，但存在共同提示串题及超长，不能据此证明文档增益或整批一键执行已验证。

@@ -32,6 +32,29 @@ def events(model='deepseek-test'):
   ]
 
 
+def thinking_events():
+  base = events()
+  common = {'type': 'stream_event'}
+  def api(kind, **fields):
+    return dict(common, event=dict(type=kind, **fields))
+  return base[:2] + [
+    api('content_block_start', index=0, content_block={'type': 'thinking', 'thinking': ''}),
+    {'type': 'system', 'subtype': 'thinking_tokens', 'session_id': 'synthetic-session',
+     'uuid': 'synthetic-notice', 'estimated_tokens': 7, 'estimated_tokens_delta': 2},
+    api('content_block_delta', index=0, delta={'type': 'thinking_delta', 'thinking': 'synthetic-private-thought'}),
+    api('content_block_delta', index=0, delta={'type': 'signature_delta', 'signature': 'synthetic-signature'}),
+    {'type': 'assistant', 'message': {'id': 'synthetic-message', 'stop_reason': None,
+     'content': [{'type': 'thinking', 'thinking': 'synthetic-private-thought', 'signature': 'synthetic-signature'}]}},
+    api('content_block_stop', index=0),
+    api('content_block_start', index=1, content_block={'type': 'text', 'text': ''}),
+    api('content_block_delta', index=1, delta={'type': 'text_delta', 'text': '合成'}),
+    api('content_block_delta', index=1, delta={'type': 'text_delta', 'text': '回答'}),
+    {'type': 'assistant', 'message': {'id': 'synthetic-message', 'stop_reason': None,
+     'content': [{'type': 'text', 'text': '合成回答'}]}},
+    api('content_block_stop', index=1),
+  ] + base[-3:]
+
+
 class AbsorptionBatchTests(unittest.TestCase):
   def setUp(self):
     self.temp = tempfile.TemporaryDirectory()
@@ -313,10 +336,199 @@ class AbsorptionBatchTests(unittest.TestCase):
       with self.subTest(stream=stream), self.assertRaises(batch.Stop):
         self.inspect(stream)
 
+  def test_full_thinking_and_split_assistant_preserve_answer_binding(self):
+    stream = thinking_events()
+    self.assertEqual(self.inspect(stream)['answer'], '合成回答')
+    for broken in ('id', 'text'):
+      modified = copy.deepcopy(stream)
+      assistant = next(e for e in modified if e['type'] == 'assistant' and
+                       e['message']['content'][0]['type'] == 'text')
+      if broken == 'id':
+        assistant['message']['id'] = 'different-message'
+      else:
+        assistant['message']['content'][0]['text'] = 'different-answer'
+      with self.assertRaises(batch.Stop):
+        self.inspect(modified)
+
+  def test_thinking_notification_has_narrow_structure(self):
+    for change in ({'estimated_tokens': True}, {'extra_context': 'not-a-counter'},
+                   {'session_id': {'nested': 'object'}}, {'session_id': ['array']},
+                   {'uuid': {'nested': 'object'}}, {'uuid': ['array']}):
+      stream = thinking_events()
+      next(e for e in stream if e.get('subtype') == 'thinking_tokens').update(change)
+      with self.assertRaisesRegex(batch.Stop, 'invalid_thinking_notification'):
+        self.inspect(stream)
+
+  def test_plugin_inventory_classified_without_claiming_violation(self):
+    for plugins, label in [
+      ([{'name': 'synthetic-plugin', 'path': '/private/synthetic-plugin', 'source': 'builtin'}],
+       'builtin_plugins_reported'),
+      ([{'name': 'synthetic-plugin', 'source': 'external'}], 'external_or_unknown_plugin_origin'),
+      ([{'name': 'synthetic-plugin'}], 'external_or_unknown_plugin_origin')]:
+      stream = thinking_events()
+      stream[0].update(plugins=plugins, agents=['synthetic-agent'])
+      result = batch.stream_diagnostics(self.stream(stream), 100000)
+      self.assertEqual(result['actual_model'], 'deepseek-test')
+      self.assertEqual(result['diagnostics']['plugin_inventory'], label)
+      self.assertEqual(result['diagnostics']['agent_inventory'], 'agent_inventory_reported')
+      self.assertEqual(result['diagnostics']['context_status'], 'unresolved')
+      self.assertNotIn('synthetic-plugin', json.dumps(result))
+      with self.assertRaisesRegex(batch.Stop, 'context_inventory_unresolved'):
+        self.inspect(stream)
+
+  def test_context_notifications_are_diagnostics_not_clean_answers(self):
+    for event, label, reason in [
+      ({'type': 'system', 'subtype': 'status', 'status': {'unexpected': 'nested'}},
+       'status_notification_reported', 'context_status_unresolved'),
+      ({'type': 'system', 'subtype': 'commands_changed', 'commands': ['unexpected']},
+       'commands_changed_reported', 'context_commands_changed_unresolved'),
+      ({'type': 'system', 'subtype': 'unknown-synthetic'},
+       'unknown_system_notification', 'unexpected_system_context')]:
+      stream = events()
+      stream.insert(1, event)
+      result = batch.stream_diagnostics(self.stream(stream), 100000)
+      self.assertEqual(result['actual_model'], 'deepseek-test')
+      self.assertEqual(result['diagnostics']['notifications'], [label])
+      self.assertEqual(result['diagnostics']['context_status'], 'unresolved')
+      with self.assertRaisesRegex(batch.Stop, reason):
+        self.inspect(stream)
+
+  def test_context_failure_exports_model_diagnostic_but_no_blind_answer(self):
+    def context(*args):
+      self.fake_execute(*args)
+      stream = thinking_events()
+      stream[0].update(plugins=[{'name': 'synthetic-plugin', 'path': '/private/synthetic-plugin',
+                                'source': 'builtin'}], agents=['synthetic-agent'])
+      stream.insert(1, {'type': 'system', 'subtype': 'status', 'status': 'synthetic-unexplained'})
+      args[4].write_text('\n'.join(json.dumps(e) for e in stream))
+      return 0, None
+    result, destination = self.invoke(context)
+    self.assertEqual(len(self.calls), 6)
+    self.assertEqual(result['failed_units'], 3)
+    before = {p.name: p.read_bytes() for p in destination.glob('*.receipt.json')}
+    out = self.root / 'export'
+    batch.export(destination, out)
+    self.assertEqual(batch.read_json(out / 'blind.json')['answers'], [])
+    for receipt in batch.read_json(out / 'receipts.json'):
+      self.assertEqual(receipt['actual_model'], 'deepseek-test')
+      self.assertEqual(receipt['model_evidence'], 'raw_api.message_start.message.model')
+      self.assertEqual(receipt['status'], 'failed')
+      self.assertFalse(receipt['formal_denominator'])
+      self.assertNotIn('answer', receipt)
+      self.assertIn('raw_sha256', receipt['diagnostics'])
+      self.assertIn('parser_sha256', receipt['diagnostics'])
+    public = (out / 'receipts.json').read_text()
+    for forbidden in ('synthetic-private-thought', 'synthetic-signature', 'synthetic-agent',
+                      'synthetic-plugin', 'estimated_tokens', 'synthetic-unexplained'):
+      self.assertNotIn(forbidden, public)
+    self.assertEqual(before, {p.name: p.read_bytes() for p in destination.glob('*.receipt.json')})
+
+  def test_verified_native_inventory_and_notifications_are_warnings(self):
+    def native(*args):
+      self.fake_execute(*args)
+      stream = thinking_events()
+      stream[0].update(plugins=[{'name': name, 'path': '/private/native-plugin', 'source': 'builtin'}
+                                for name in ('agents-md', 'telemetry')],
+                       agents=['synthetic-one', 'synthetic-two', 'synthetic-three',
+                               'synthetic-four', 'synthetic-unknown'])
+      stream.insert(1, {'type': 'system', 'subtype': 'status', 'status': 'uninterpreted-native-value',
+                        'session_id': 'synthetic-session', 'uuid': 'synthetic-status'})
+      stream.insert(2, {'type': 'system', 'subtype': 'commands_changed', 'commands': [],
+                        'session_id': 'synthetic-session', 'uuid': 'synthetic-commands'})
+      args[4].write_text('\n'.join(json.dumps(e) for e in stream))
+      return 0, None
+    result, destination = self.invoke(native)
+    self.assertEqual(len(self.calls), 4)
+    self.assertEqual(result['status'], 'smoke_completed_not_graded')
+    self.assertEqual(result['failed_units'], 0)
+    out = self.root / 'export'
+    batch.export(destination, out)
+    self.assertEqual(len(batch.read_json(out / 'blind.json')['answers']), 4)
+    for receipt in batch.read_json(out / 'receipts.json'):
+      self.assertEqual(receipt['status'], 'valid_smoke')
+      self.assertEqual(receipt['actual_model'], 'deepseek-test')
+      self.assertEqual(receipt['diagnostics']['context_status'], 'accepted_with_warnings')
+      self.assertEqual(set(receipt['warnings']), {'verified_builtin_plugins_reported',
+        'agent_inventory_reported', 'status_value_not_interpreted', 'empty_commands_changed_reported'})
+    exported = (out / 'receipts.json').read_text()
+    for private in ('synthetic-unknown', 'native-plugin', 'uninterpreted-native-value', 'estimated_tokens'):
+      self.assertNotIn(private, exported)
+
+  def test_notifications_do_not_allow_extra_or_nested_content(self):
+    notices = [
+      {'type': 'system', 'subtype': 'status', 'status': 'text', 'content': 'injected'},
+      {'type': 'system', 'subtype': 'status', 'status': {'text': 'nested'}},
+      {'type': 'system', 'subtype': 'status', 'status': 'text', 'tool': 'Read'},
+      {'type': 'system', 'subtype': 'commands_changed', 'commands': [], 'instructions': 'injected'},
+      {'type': 'system', 'subtype': 'commands_changed', 'commands': ['new-command']},
+      {'type': 'system', 'subtype': 'unverified-subtype', 'status': 'text'},
+    ]
+    for notice in notices:
+      stream = thinking_events()
+      stream.insert(1, notice)
+      with self.subTest(notice=notice), self.assertRaises(batch.Stop):
+        self.inspect(stream)
+
+  def test_native_plugin_exception_is_narrow(self):
+    for plugin in [
+      {'name': 'agents-md', 'path': 'synthetic', 'source': 'external'},
+      {'name': 'unverified', 'path': 'synthetic', 'source': 'builtin'},
+      {'name': 'telemetry', 'source': 'builtin'},
+      {'name': 'telemetry', 'path': 'synthetic', 'source': 'builtin', 'instructions': 'extra'},
+    ]:
+      stream = events()
+      stream[0]['plugins'] = [plugin]
+      with self.subTest(plugin=plugin), self.assertRaisesRegex(batch.Stop, 'context_inventory_unresolved'):
+        self.inspect(stream)
+
+  def test_native_inventory_never_exempts_tool_or_text_binding_checks(self):
+    for mode in ('tools', 'parent', 'text'):
+      stream = thinking_events()
+      stream[0].update(plugins=[{'name': 'agents-md', 'path': 'synthetic', 'source': 'builtin'}],
+                       agents=['unknown-native-name'])
+      if mode == 'tools':
+        stream[0]['tools'] = ['Read']
+      elif mode == 'parent':
+        stream[1]['parent_tool_use_id'] = 'synthetic-parent'
+      else:
+        stream[-1]['result'] = 'unbound-text'
+      with self.subTest(mode=mode), self.assertRaises(batch.Stop):
+        self.inspect(stream)
+
+  def test_unknown_model_with_native_warnings_remains_blind_eligible(self):
+    def native_unknown(*args):
+      self.fake_execute(*args)
+      stream = events()
+      stream[0]['agents'] = ['unknown-native-name']
+      del stream[1]['event']['message']['model']
+      args[4].write_text('\n'.join(json.dumps(e) for e in stream))
+      return 0, None
+    result, destination = self.invoke(native_unknown)
+    self.assertEqual(result['failed_units'], 0)
+    out = self.root / 'export'
+    batch.export(destination, out)
+    self.assertEqual(len(batch.read_json(out / 'blind.json')['answers']), 4)
+    for receipt in batch.read_json(out / 'receipts.json'):
+      self.assertEqual(receipt['status'], 'completed_model_unknown')
+      self.assertFalse(receipt['formal_denominator'])
+      self.assertEqual(receipt['warnings'], ['agent_inventory_reported'])
+
+  def test_diagnostic_model_requires_unique_legal_raw_start(self):
+    for mode in ('duplicate', 'missing_model', 'invalid_id'):
+      stream = events()
+      if mode == 'duplicate':
+        stream.insert(2, copy.deepcopy(stream[1]))
+      elif mode == 'missing_model':
+        del stream[1]['event']['message']['model']
+        stream[0]['model'] = 'alias-only'
+      else:
+        stream[1]['event']['message']['id'] = None
+      self.assertEqual(batch.stream_diagnostics(self.stream(stream), 100000)['actual_model'], 'unknown')
+
   def test_schema_valid_contamination_is_rejected(self):
     candidates = []
     for key, value in [('tools', ['Read']), ('mcp_servers', [{}]), ('skills', ['skill']),
-                       ('plugins', ['plugin']), ('agents', ['agent'])]:
+                       ('plugins', ['plugin']), ('agents', [{'unexpected': 'object'}])]:
       stream = events()
       stream[0][key] = value
       candidates.append(stream)

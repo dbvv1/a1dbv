@@ -219,6 +219,88 @@ def execute(cmd, work, env, payload, raw, err, timeout):
     return process.returncode, None
 
 
+def inventory_warnings(init):
+  """Verified native inventories are warnings, not proof of execution/history."""
+  require(not init.get('skills'), 'context_inventory_unresolved')
+  warnings = []
+  plugins = init.get('plugins', [])
+  require(isinstance(plugins, list), 'context_inventory_unresolved')
+  if plugins:
+    require(all(isinstance(p, dict) and set(p) == {'name', 'path', 'source'} and
+                p.get('source') == 'builtin' and p.get('name') in ('agents-md', 'telemetry') and
+                isinstance(p.get('path'), str) for p in plugins), 'context_inventory_unresolved')
+    require(len({p['name'] for p in plugins}) == len(plugins), 'context_inventory_unresolved')
+    warnings.append('verified_builtin_plugins_reported')
+  agents = init.get('agents', [])
+  require(isinstance(agents, list) and all(isinstance(a, str) for a in agents),
+          'context_inventory_unresolved')
+  if agents:
+    warnings.append('agent_inventory_reported')
+  return warnings
+
+
+def fixed_notification_shape(event, field):
+  return (set(event) <= {'type', 'subtype', 'session_id', 'uuid', field} and
+          field in event and all(isinstance(event[k], str) for k in ('session_id', 'uuid') if k in event))
+
+
+def stream_diagnostics(raw, max_bytes):
+  """Safe observations, never a validity decision or a replacement receipt."""
+  diagnostic = {'schema': 'api-context-v1', 'parse_status': 'unavailable',
+                'parser_sha256': digest(Path(__file__).read_bytes()),
+                'plugin_inventory': 'not_reported', 'agent_inventory': 'not_reported',
+                'context_status': 'unresolved', 'notifications': []}
+  result = {'actual_model': 'unknown', 'model_evidence': 'missing', 'diagnostics': diagnostic}
+  try:
+    if raw.stat().st_size > max_bytes:
+      diagnostic['parse_status'] = 'oversize'
+      return result
+    data = raw.read_bytes()
+    diagnostic['raw_sha256'] = digest(data)
+    events = [parse_json(line) for line in data.decode('utf-8').splitlines()]
+    if not events or not all(isinstance(e, dict) for e in events):
+      return result
+  except (OSError, ValueError, Stop, RecursionError):
+    return result
+  diagnostic['parse_status'] = 'parsed'
+  starts = [e.get('event') for e in events if e.get('type') == 'stream_event'
+            and isinstance(e.get('event'), dict) and e['event'].get('type') == 'message_start']
+  diagnostic['api_start_count'] = len(starts)
+  if len(starts) == 1:
+    message = starts[0].get('message')
+    if isinstance(message, dict) and isinstance(message.get('id'), str) and message['id']:
+      model = message.get('model')
+      if isinstance(model, str) and SAFE_ID.fullmatch(model):
+        result.update(actual_model=model, model_evidence='raw_api.message_start.message.model')
+  inits = [e for e in events if e.get('type') == 'system' and e.get('subtype') == 'init']
+  if len(inits) == 1:
+    init = inits[0]
+    plugins = init.get('plugins')
+    if plugins == []:
+      diagnostic['plugin_inventory'] = 'none_reported'
+    elif plugins:
+      diagnostic['plugin_inventory'] = (
+        'builtin_plugins_reported' if isinstance(plugins, list) and all(
+          isinstance(p, dict) and p.get('source') == 'builtin' for p in plugins)
+        else 'external_or_unknown_plugin_origin')
+    agents = init.get('agents')
+    if agents == []:
+      diagnostic['agent_inventory'] = 'none_reported'
+    elif agents:
+      diagnostic['agent_inventory'] = 'agent_inventory_reported'
+  labels = {'status': 'status_notification_reported',
+            'thinking_tokens': 'thinking_tokens_reported',
+            'commands_changed': 'commands_changed_reported'}
+  diagnostic['notifications'] = sorted({labels.get(e.get('subtype'), 'unknown_system_notification') if isinstance(e.get('subtype'), str)
+    else 'unknown_system_notification'
+    for e in events if e.get('type') == 'system' and e.get('subtype') != 'init'})
+  if len(inits) == 1 and not any(inits[0].get(k) for k in ('plugins', 'agents', 'skills')) and all(
+      label == 'thinking_tokens_reported' for label in diagnostic['notifications']):
+    diagnostic['context_status'] = 'no_unresolved_context_reported'
+  # Inventory/notification reports are not proof of either execution or isolation.
+  return result
+
+
 def inspect_stream(raw, expected, max_bytes):
   require(raw.stat().st_size <= max_bytes, 'oversize_output')
   events = []
@@ -231,7 +313,7 @@ def inspect_stream(raw, expected, max_bytes):
   init = inits[0]
   require(not init.get('tools') and not init.get('mcp_servers'), 'tools_or_mcp_enabled')
   require(init.get('tools') == [] and init.get('mcp_servers') == [], 'tool_metadata_missing')
-  require(not init.get('skills') and not init.get('plugins') and not init.get('agents'), 'customization_loaded')
+  warnings = inventory_warnings(init)
   models, started_ids, stopped = set(), set(), 0
   answer_parts, ended = [], False
   phase, block, raw_text = 'before', None, []
@@ -245,7 +327,24 @@ def inspect_stream(raw, expected, max_bytes):
       require(not isinstance(blocks, list) or not any(isinstance(b, dict) and b.get('type') == 'tool_result' for b in blocks), 'tool_result_seen')
     require(kind in ('system', 'assistant', 'stream_event', 'result'), 'unexpected_event')
     if kind == 'system':
-      require(event.get('subtype') == 'init', 'unexpected_system_context')
+      notification = event.get('subtype')
+      if notification == 'thinking_tokens':
+        require(set(event) <= {'type', 'subtype', 'session_id', 'uuid',
+                              'estimated_tokens', 'estimated_tokens_delta'} and
+                type(event.get('estimated_tokens')) is int and
+                type(event.get('estimated_tokens_delta')) is int and
+                all(isinstance(event[k], str) for k in ('session_id', 'uuid') if k in event) and
+                phase == 'content' and block == 'thinking', 'invalid_thinking_notification')
+      elif notification == 'status':
+        require(fixed_notification_shape(event, 'status') and isinstance(event['status'], str),
+                'context_status_unresolved')
+        warnings.append('status_value_not_interpreted')
+      elif notification == 'commands_changed':
+        require(fixed_notification_shape(event, 'commands') and event['commands'] == [],
+                'context_commands_changed_unresolved')
+        warnings.append('empty_commands_changed_reported')
+      else:
+        require(notification == 'init', 'unexpected_system_context')
     if kind == 'assistant':
       require(isinstance(event.get('message'), dict), 'invalid_assistant')
       require(phase == 'content' and event['message'].get('id') in started_ids, 'unbound_assistant_message')
@@ -309,7 +408,7 @@ def inspect_stream(raw, expected, max_bytes):
   actual = next(iter(models))
   status = ('completed_model_unknown' if actual == 'unknown' else
             'model_mismatch' if expected and actual != expected else 'valid_smoke')
-  return {'actual_model': actual, 'status': status,
+  return {'actual_model': actual, 'status': status, 'warnings': sorted(set(warnings)),
           'reason': None if status == 'valid_smoke' else status,
           'model_evidence': 'raw_api.message_start.message.model' if actual != 'unknown' else 'missing',
           'answer': result['result'], 'client_version': init.get('claude_code_version')}
@@ -419,6 +518,7 @@ def run(config_path, destination):
           code, failure = execute(command(argv, config, str(uuid.uuid4()), maximum), work, env, payload,
                                   raw, err, min(remaining, task['limits']['call_seconds']))
           receipt['exit_code'] = code
+          receipt.update(stream_diagnostics(raw, task['limits']['max_raw_bytes']))
           check_hard_boundaries(work, raw, receipt['input_sha256'])
           require(failure is None, failure or 'execution_failed')
           require(code == 0, 'nonzero_exit')
@@ -428,6 +528,8 @@ def run(config_path, destination):
           # The stream's version is a separate observation, not a compatibility gate.
           receipt['stream_client_version'] = info.pop('client_version')
           receipt.update(info)
+          receipt['diagnostics']['context_status'] = (
+            'accepted_with_warnings' if info['warnings'] else 'no_unresolved_context_reported')
         except (Stop, OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError,
                 KeyboardInterrupt, SystemExit) as exc:
           receipt['reason'] = (str(exc) if isinstance(exc, Stop) else
@@ -494,9 +596,11 @@ def export(run_root, destination):
               'requested_model', 'reasoning_configuration', 'actual_reasoning_configuration',
               'unit_index', 'attempt_number', 'client_version', 'version_exit_code', 'version_status',
               'preflight_records')}
+    for key in ('model_evidence', 'diagnostics', 'warnings'):
+      if key in receipt:
+        public[key] = receipt[key]
     if 'answer' in receipt:
       public['answer'] = receipt['answer']
-      public['model_evidence'] = receipt['model_evidence']
     if receipt['status'] in ('valid_smoke', 'completed_model_unknown'):
       bid = secrets.token_hex(16)
       blind.append({'anonymous_id': bid, 'question': section(qtext, pair[0]),
