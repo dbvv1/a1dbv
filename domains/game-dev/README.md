@@ -45,7 +45,7 @@
 
 | 文档 | 内容 |
 |---|---|
-| [**06 独立游戏路线图：读者入口**](06-indie-roadmap.md) | 七阶段质量线、AI与人分工、第二次修改、收窄与停止条件 |
+| [**06 独立游戏路线图：读者入口**](06-indie-roadmap.md) | 阶段按待解决的问题分流：试玩／EA／完整发行、内容冻结与不同经历玩家接收；保AI与人分工、二改及停止条件 |
 | [01 引擎接入](01-engine-integration.md) | Unity、Unreal、Roblox、Godot、Blender 的官方 Agent 接入；三种设计思路；引擎选择对 AI coding 的影响 |
 | [**02 验证与试玩**](02-verification-and-playtesting.md) | 按待证事实选测试、复用已有入口、暂停菜单的第二次修改、工具观察与人的体验取舍 |
 | [03 G1资产管线总览](03-generative-ai-in-games.md) | Agent 驱动的资产管线、游戏运行时的 AI（NPC、决策模型、世界模型）、披露与玩家态度 |
