@@ -1,0 +1,25 @@
+{
+  "batch_id": "20261022-smoke-v1",
+  "kind": "preparation_only",
+  "page_revision": "009fd0a54a012ea3a506eea75f260f43ecc13595",
+  "frozen": {
+    "experiments/absorption/questions.md": "4789381e0ec6b4d04ec29b57a7f27276e1776d6a1730181d8006cdecc8ee4c09",
+    "experiments/absorption/answer-key.md": "6644f726404ae3ea5970f3ba1175be45be2c4b2e2a126ff737b65c1cf4c195c2",
+    "docs/collaboration/prompts/2026-10-22-absorption-run.md": "6be06e09d602e7bc66aceea8d72476cb2b8a2bfe336cb26eccd3ce893f5c450b"
+  },
+  "questions": [
+    {"id": "A00-1", "page": "docs/00-state-of-ai-coding.md", "blob": "6b0696332c96f40136d1a383bf406e01f6ed4d4b", "sha256": "5b17323d5fedc9cbd26a9f4c011109001a4657fb8356977e5acdf58b687f32ec"},
+    {"id": "A02-3", "page": "docs/02-models-and-cost.md", "blob": "76019f6677b8b013ac5e05f17164a01bdbc2e8f3", "sha256": "727fe1863febcb94fef527cd81e32ad5c009fc2693eb5648c0515348d6c89de7"}
+  ],
+  "schedule": [["A00-1", "no_document"], ["A00-1", "read_page"], ["A02-3", "read_page"], ["A02-3", "no_document"]],
+  "limits": {"calls": 4, "retries": 0, "batch_seconds": 7200, "call_seconds": 480, "max_turns": 1, "max_raw_bytes": 8388608},
+  "tools": [],
+  "network_tools": false,
+  "budget_approved": false,
+  "client_version": null,
+  "requested_model": null,
+  "reasoning_configuration": null,
+  "budget_amount": null,
+  "grading": "independent_session_only",
+  "formal_denominator": false
+}
