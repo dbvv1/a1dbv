@@ -59,6 +59,10 @@
 | 自定义评审子 Agent | 已有明确的漏审类型或复杂变更需要独立检查时使用（模板：[code-reviewer](../templates/generic/.claude/agents/code-reviewer.md)） | 🧪 按风险试用 |
 | **另一家的模型交叉评审** | 比较新增有效发现、误报和审查成本；换品牌不自动获得独立证据 | 🧪 不默认每次互审 |
 
+**🧪 规则多、语言混合时，可把规则准备与模型评审拆开。** [OpenCodeReview delegation](https://github.com/alibaba/open-code-review/blob/375f64cd6f67a48a135da83cfcf59c52669a09cb/pages/src/content/docs/en/integrations/delegate.md)用CLI整理文件与分组规则，再交现有Agent判断缺陷、人决定接收，不必另配OCR模型。本仓两个Go文件确实共用一份规则正文；只验证了准备步骤，未测评审质量、token或费用收益。小改动仍先用原生本地评审。[一手／本仓工具实跑，2026-10-23 UTC+8]
+
+**采用这条路线，先用Git全清单对账preview，而非只看它的总数。** 固定v1.13.3实测中，目录否定规则使一个已跟踪Go文件连“排除”列表都没进入；Markdown则是明确不支持，两者不同。范围缺项或重要文件被排除时，把原始Git差异显式交回既有评审，不为工具改项目gitignore。[实际正反例与可运行对账](research/2026-10-22-frontier-trials.md#ocr-delegation-trial)。[本仓工具实跑／研究：条件采用]
+
 **安全插件先选运行层。** `security-guidance` 2.0.13 的模型评审把 diff／相关代码送往配置的 Anthropic、网关或第三方 provider，默认跟随最新 Opus。只需模式提醒可关模型层，但独立的 SessionStart SDK 引导安装仍在；不能接受自动依赖准备就先不装。保留模型评审前核数据路径、预算与完成情况：编辑提醒不证明模型层运行，空结果不证明安全。[固定实现与真实失败反例](research/2026-10-12-baml-and-review.md#安全插件从提醒到自动模型评审)。**[一手；研究：采用判断，2026-10-14 UTC，未运行]**
 
 **独立审阅先核输入。** 终端 `/code-review` 默认 fork 继承历史，适合就地复查；确需排除实现推理时，另起干净会话或非 fork 子 Agent，只传需求、验收与可核查产物，不默认叠加 reviewer。前台例外和版本范围见[证据记录](research/2026-10-12-baml-and-review.md#评审窗口与输入历史的区别)。**[一手：2026-10-15 UTC 官方契约；研究：采用判断]**

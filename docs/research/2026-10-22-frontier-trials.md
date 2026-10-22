@@ -206,3 +206,41 @@ example本来不是精确业务断言，这不是工具缺陷。[默认检查范
 测试以隔离HOME和最小环境正常运行，显式关闭可选遥测；额外网络namespace预检失败；ptrace观测在预设四场景各失败一次后停止，未提权或修改平台限制。没有网络层零外连证明，不称严格断网试验。未登录、调用商业功能或上传许可证；测试服务已停。[本仓：范围]
 
 探索回执：按P51提示词从1de7635开始，复用既有00／01／14与P46材料；新读Jain、Cockroach做事者、HN及中文V2EX原帖、官方CLI/契约文档和开源样例。医院流水线与黑板例子未改变已有默认，不重复交付；linux.do及部分作者目录读取失败。没有合格独立冻结的应发现全集，不报全网漏检率；本例不合并旧M6三题或P79分母。[研究]
+
+
+<a id="ocr-delegation-trial"></a>
+## OpenCodeReview：规则包可复用，覆盖清单须对账
+
+**规则多时，可让确定性工具准备规则包，现有Agent做判断。** 两个Go文件实测共用一份规则正文，不是再加一个review模型。[本仓工具实跑]
+**preview不是独立覆盖分母。** 固定版本会把特定目录否定模式下的已跟踪文件从两份清单同时漏掉，先与同范围Git差异对账。[本仓工具实跑]
+**保原生本地评审默认。** 未调用host Agent或OCR模型，未证明质量、token、费用或人力净收益。[研究：候选采用]
+
+### 为什么值得试
+
+[固定delegation文档](https://github.com/alibaba/open-code-review/blob/375f64cd6f67a48a135da83cfcf59c52669a09cb/pages/src/content/docs/en/integrations/delegate.md)与[Skill](https://github.com/alibaba/open-code-review/blob/375f64cd6f67a48a135da83cfcf59c52669a09cb/skills/open-code-review-delegate/SKILL.md)将文件选择、按路径匹配并合并相同规则放在CLI，评审留给已有Codex／Claude。[DevRev使用者](https://github.com/alibaba/open-code-review/issues/1020#issuecomment-6163982899)自述正在将多个仓从Claude Code PR review迁移，[moltar](https://github.com/alibaba/open-code-review/issues/1020#issuecomment-5991383817)自述纳入多工具、多模型Skill；没有公开同预算净收益，不能将迁移原因全归于delegation。仓库约4.8万star是关注快照，未取得增长序列。[一手：实现／使用者自述]
+
+### 五种输入，区分规则收益与范围缺口
+
+2026-10-23约00:09–00:16（UTC+8），现有Linux环境、临时合成Git仓，固定[官方v1.13.3](https://github.com/alibaba/open-code-review/releases/tag/v1.13.3)／源码375f64cd6f67a48a135da83cfcf59c52669a09cb。Linux二进制SHA-256为`843be0e56fdff0a5ca6f86c5866f942d6a372dff1c0ca19e7893d72495abf45c`，与发行校验文件及API digest一致；没有npm安装或升级Go。[本仓工具实跑]
+
+| 固定Git范围的变化 | preview实际输出 | 采用含义 |
+|---|---|---|
+| 普通src/a.go改动 | 可审a.go，总数1 | 正常对照 |
+| 同改动，另加`/*/`与`!/src/` | Git有2项；仅.gitignore可审，总数1、排除空 | a.go在报告分母之前消失，不能仅对内部计数 |
+| JSON＋Markdown | JSON可审，Markdown显式unsupported_ext | 支持列表边界，不是静默丢失 |
+| 真正空diff | 可审／排除都空，总数0 | 由Git确认no-op，而非由空preview倒推 |
+| 两个Go文件共用规则 | 一组对应两路径，规则正文只出现一次 | 规则准备可去重，评审收益未知 |
+
+同规则正文为10,843 UTF-8字节；两次单文件JSON合计22,218字节，合并调用11,129字节。这里只比较输出字节，不换算模型token或省钱比例。[本仓工具实跑]
+
+[固定git.go](https://github.com/alibaba/open-code-review/blob/375f64cd6f67a48a135da83cfcf59c52669a09cb/internal/diff/git.go)跳过结尾为斜杠的否定模式，随后partitionDiffs又不把此类gitignore排除放入Excluded；实测与[#1793](https://github.com/alibaba/open-code-review/issues/1793)一致。Git自己不认为a.go被忽略，base/head也已固定，不是模型漏看或范围不同。另有[#1779](https://github.com/alibaba/open-code-review/issues/1779)支持列表问题及[#1752](https://github.com/alibaba/open-code-review/issues/1752)Action零评论隐藏warning问题，不能混为同一个bug；本仓未运行Action。[一手：源码／使用者报告；本仓工具实跑]
+
+### 借用什么，何时不用
+
+[最小复现与对账说明](../../experiments/opencode_review_delegation.md)给出已真跑的两份小脚本；路径含空格／换行、rename/delete及坏输入已有回归。helper只核清单，不认证排除理由或实际审完。
+
+固定base/head，按同一merge-base范围比较Git原始路径与preview的reviewable_files＋excluded_files；缺项就以原始Git差异交给既有Agent，规则仅作可选清单。重要的显式排除文件也要由任务接收者安排评审。不要为了适配工具修改项目gitignore，也不要改用会调用模型的ocr review当成这个无模型复现。[研究：条件采用]
+
+仅试了preview/rule准备步骤，隔离HOME与最小环境，没有模型runner、session或host Agent调用；telemetry源码默认关闭，未做网络跟踪，不声称零外连。没有实际审PR、检测缺陷或减轻人审的本仓效果证据。[本仓：验证范围]
+
+探索回执：读官方固定实现／Skill／发行、上述使用者原帖与修复PR；[V2EX](https://www.v2ex.com/t/1248137)及[Reddit](https://www.reddit.com/r/codex/comments/1x9t6o1/does_anyone_even_review_code_anymore/)补评审负担与反方，不充当OCR效果评测。V2EX另一原帖正文不可读、部分GitHub网页失败后读同源固定文件；pair-review／herdr-reviewr未找到足够独立近期采用，不硬加候选。没有完整发现分母，不报全网漏检率或最优。[研究，10-23 UTC+8]
