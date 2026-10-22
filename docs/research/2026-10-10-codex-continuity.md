@@ -370,3 +370,18 @@ Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657
 独立复核：全新上下文核原文、论文及两臂公开配置／Overview，并复算320行快照；限定通过。报告标识`p44-public-reconciliation-independent-review-20261021`，SHA256 `9c9fb78881c01075fb23c7468126057dfa01903fea2aed5e76b4554b509d1450`；最终树离线另验，非模型复测。[研究]
 
 追加单条Verifier反例经独立云浏览器复核；报告标识`p44-trial-detail-independent-review-20261021`，SHA256 `7b05812a888944ae8cb66d9fd02f139bda7a0657890fff0cfd0521f7d612ec87`。前一树完整离线已过，补此证据后实际最终树重新验收，不沿用旧树通过。[研究]
+
+## P81：桌面Work与Codex按视图和执行契约选择
+
+核实：2026-10-22。回应真实读者“同一桌面 App 切换后究竟有何区别”；正文补入口、记忆和 Hook 三个选择，不改模型默认或差距 1。[研究]
+
+- [官方桌面对照](https://learn.chatgpt.com/docs/use-chatgpt#compare-chatgpt-work-and-codex-on-desktop)已读能力、local/cloud及对照段：开发视图与成品呈现不同，能力重叠；不推出同提示词、同工具集或同任务效果。
+- [Memories](https://learn.chatgpt.com/docs/customization/memories)已读导言和本地控制：Work账户／workspace记忆与本地Codex分开。保留本页此前CLI文档／固定实现的控制冲突，不拿概述抹掉版本差异。隔离对照须核实际加载，不读取场外材料来“证明干净”。
+- [Enterprise Work Overview](https://learn.chatgpt.com/docs/enterprise/chatgpt-work-overview)已读执行隔离及 Local computer access 治理段：云编排不承接command hooks及来自本地配置／插件的Hook，即使工具在本机执行；受支持的管理员MCP hooks是另一机制，回调、事件和失败行为仍需验证。此文针对企业／Edu治理，不证明个人账户已开通，也不是全部Hook都不可用。
+- [环境指南](https://learn.chatgpt.com/docs/environments/modes)已读Local／Worktree／Cloud：Codex也能使用已发布云环境，不按产品名推断任务位置。[Models](https://learn.chatgpt.com/docs/models)和[Pricing](https://learn.chatgpt.com/docs/pricing)分别核可用型号／effort与共享用量；共享计费不保证两次消耗相同。
+
+**独立体验只校准问题，不证明内部实现一致。** [Willison 8-30原文](https://simonwillison.net/2026/Aug/30/understanding-chatgpt-work/)后文主要讨论Work Cloud，不能当同桌面严格A/B；[HN原讨论](https://news.ycombinator.com/item?id=49504625)可见切换与本机状态混淆；[Reddit同题](https://www.reddit.com/r/codex/comments/1w6k8tu/whats_the_diff_between_chatgpt_work_and_codex/)评论对审批、沙箱和harness的归纳相互冲突。已读原帖，不采用“只有UI不同”或“Work只能云端”的泛化。[社区／研究]
+
+默认保留可靠入口，按需要的视图选择；必要上下文、工具或质量门未承接时撤回迁移。仅核文档与公开体验，未运行客户端切换或同任务效果比较，不新增探针。[研究]
+
+独立复核（2026-10-22）：实际六文件修复Hook范围、check结论与测试汇总矛盾、P79结果主语后接收；核原文和精确提交元数据，不代表P81十二页完成、差距0或效果实验通过。[研究：审阅范围]

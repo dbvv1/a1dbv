@@ -24,11 +24,21 @@
 
 **自动候选停住，不等于产品一定错。** [#341830](https://github.com/microsoft/vscode/pull/341830)在 10-15 升 Copilot SDK preview.0→1、runtime 1.0.99-0→-1。第一次[停止报告](https://github.com/microsoft/vscode/pull/341830#issuecomment-6200842651)是可信 gate 查找旧 suite 名；第二次[停止报告](https://github.com/microsoft/vscode/pull/341830#issuecomment-6202451598)是 managed Assisted replay 失配，候选未推送。二者原因不合并，bot 对权限变化的解释也须再验。10-21 核查仍 draft、未合并。[一手：bot 自报与 PR 状态]
 
-**接管验收语义，Agent 仍继续完成升级。** 同目标 [#341861](https://github.com/microsoft/vscode/pull/341861)由 roblourens 提交、Copilot 协作，10-15 经人审合入 [`009603bfc85917533f30054f0bfeccc7c1ed70f0`](https://github.com/microsoft/vscode/commit/009603bfc85917533f30054f0bfeccc7c1ed70f0)。作者用原审批／文件系统断言的 live recording 区分新 judge 调用与旧 replay 序列错位；没有证明 live 权限被绕过。未找到 A→B 显式交接，只称同题路径。[一手：作者诊断与合并元数据]
+**接管验收语义，Agent 仍继续完成升级。** 同目标 [#341861](https://github.com/microsoft/vscode/pull/341861)由 roblourens 提交、Copilot 协作，10-16 07:49（UTC+8）经人审合入 [`009603bfc85917533f30054f0bfeccc7c1ed70f0`](https://github.com/microsoft/vscode/commit/009603bfc85917533f30054f0bfeccc7c1ed70f0)。作者用原审批／文件系统断言的 live recording 区分新 judge 调用与旧 replay 序列错位；没有证明 live 权限被绕过。未找到 A→B 显式交接，只称同题路径。[一手：作者诊断与合并元数据]
 
-**验收器也会被修坏。** 该 PR 记录路径归一化曾把后续正文差异吞掉，实际 [diff](https://github.com/microsoft/vscode/pull/341861/files)新增录制／回放负控制：路径分隔符可等价，正文反斜杠、换行与 Unicode 转义拼写变化必须失败。实现缩窄路径 token，不再重编码整段引号内容。最终 head 为 `efca0346322c09f600ab105d21d57d440287837a`；本地回放／live 通过属作者记录，正文最终 CI 仍是运行中历史快照，本仓未独立核完整全平台终态。[一手：固定实现与作者运行，非本仓复跑]
+**验收器也会被修坏。** 该 PR 记录路径归一化曾把后续正文差异吞掉，实际 [diff](https://github.com/microsoft/vscode/pull/341861/files)新增录制／回放负控制：路径分隔符可等价，正文反斜杠、换行与 Unicode 转义拼写变化必须失败。实现缩窄路径 token，不再重编码整段引号内容。最终 head 为 `efca0346322c09f600ab105d21d57d440287837a`；本地回放／live 通过属作者记录，PR正文保留运行中历史快照，10-22另核精确提交的公开checks，见下方；不把作者本地运行当本仓复跑。[一手：固定实现与作者运行，非本仓复跑]
 
-**下一改仍可交回自动修复。** [#341922](https://github.com/microsoft/vscode/pull/341922)在 10-16 升 preview.1→2、runtime -1→-2，修复报告仍标 GPT-6 Astra。[bot 报告](https://github.com/microsoft/vscode/pull/341922#issuecomment-6210817468)产品构建 485101 succeeded，之后三名人类批准，合入 [`be4f9ba6ec05394c6f6456e8006358140a1262bf`](https://github.com/microsoft/vscode/commit/be4f9ba6ec05394c6f6456e8006358140a1262bf)。本仓核了公开报告和 review 元数据，未独立读取 Azure job 或证明所报测试 tree 等于最终 head；不是精确提交 CI 全绿认证。[一手：公开运行自报与主干采用]
+**下一改仍可交回自动修复。** [#341922](https://github.com/microsoft/vscode/pull/341922)在 10-16 升 preview.1→2、runtime -1→-2，修复报告仍标 GPT-6 Astra。[bot 报告](https://github.com/microsoft/vscode/pull/341922#issuecomment-6210817468)产品构建 485101 succeeded，之后三名人类批准，合入 [`be4f9ba6ec05394c6f6456e8006358140a1262bf`](https://github.com/microsoft/vscode/commit/be4f9ba6ec05394c6f6456e8006358140a1262bf)。本仓核了公开报告和review元数据；10-22补核报告所列测试tree与最终head一致，但合并tree不同，checks分开列于下方。未独立读取Azure内部job日志。[一手：公开运行自报与主干采用]
+
+### P81补核：PR通过不能外推合并树
+
+2026-10-22 12:38（UTC+8）通过GitHub公开API重核两个PR、head／merge commit对象及各自check-runs。以下仅是返回列表的终态，不是本仓执行产品测试，也不证明所有可能检查均已配置。[一手：精确提交元数据]
+
+- **#341861**：head `efca0346322c09f600ab105d21d57d440287837a` 的[checks](https://api.github.com/repos/microsoft/vscode/commits/efca0346322c09f600ab105d21d57d440287837a/check-runs?per_page=100)返回63条，check结论均completed／success；但Azure构建484930的同一回报标题注明test failures，内嵌汇总为2失败／362335通过，不能称产品测试全过。该矛盾原因未核；合并提交 `009603bf` 的列表为13条success。两者tree分别为 `b25a7cde`／`e73334ed`，不可互换覆盖范围。
+- **#341922**：head `c847fef7b2abf84882f28f3e3a68bededf6945cd` 的[checks](https://api.github.com/repos/microsoft/vscode/commits/c847fef7b2abf84882f28f3e3a68bededf6945cd/check-runs?per_page=100)返回95条success，产品构建485101回报也绑定此head，测试汇总0失败，但另有2 errors／1040 warnings，日志原因未核；其tree `ce775ce3744bfcbe2a39e700417960a1189a795a` 与bot报告相同。实际合并提交 `be4f9ba6` 的tree是 `c0b836df`，合并于10-17 00:32（UTC+8）。
+- **合并后仍有未解释失败**：`be4f9ba6` 的[checks](https://api.github.com/repos/microsoft/vscode/commits/be4f9ba6ec05394c6f6456e8006358140a1262bf/check-runs?per_page=100)返回11条success、2条failure，分别为[Screenshots & Tests](https://github.com/microsoft/vscode/actions/runs/38932827497/job/117084608739)及[Screenshots](https://github.com/microsoft/vscode/actions/runs/38932827497/job/117080820078)。未核具体失败原因，不归因SDK升级，也不把合并事实说成最终树全绿。
+
+**00回扫的负结果。** 新核[Uber 8-27](https://www.uber.com/us/en/blog/efficient-software-factory/)按交付而非单次调用计成本、[Purdue 10-02](https://arxiv.org/html/2610.03969v1)区分性能PR合入与可量化收益，未改变00已覆盖的条件默认。[9-12论文](https://arxiv.org/html/2609.17598v1)采用2024-12至2025-07旧代数据，不拿近期发表日期当当前模型反证。另回读Shopify、Spotify、Cursor及Toub既有原文，完整自主、争议接管、窄流程和后续维护四类选择未见实质遗漏；保留差距1，不为新来源堆正文或自评0。[一手／研究]
 
 ### 独立采用对照：允许变化，不抹掉关系
 

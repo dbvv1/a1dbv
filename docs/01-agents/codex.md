@@ -48,6 +48,12 @@
 | 不依赖本机在线的仓库任务 | **Codex Cloud**，先准备并发布可复用环境 |
 | PR／MR 评审 | GitHub／GitLab（beta）的 `@codex review`；专门安全评审另核资格 |
 
+**同一桌面 App 先按交付视图分流。** 需要 diff／review、Git／shell 细节或已启用的 PR 面板，选 Codex；主要接收报告、表格、演示文稿等成品，可选 ChatGPT Work。Work 也能运行代码和操作可访问的仓库，已有 Codex 工作流不必为知识工作迁移；两者[共享用量限制](https://learn.chatgpt.com/docs/pricing)，切换界面不增加额度。**[一手：[官方桌面对照](https://learn.chatgpt.com/docs/use-chatgpt#compare-chatgpt-work-and-codex-on-desktop)，2026-10-22；研究：分流判断]**
+
+**依赖旧上下文时，单独核记忆承接。** Work 使用账户／workspace 的 ChatGPT memory，不使用本地 Codex 记忆库或其控制。启用记忆后，新聊天仍可能引用既往工作；切换入口或新建聊天不构成无记忆对照。**[一手：[Memories](https://learn.chatgpt.com/docs/customization/memories)；研究]**
+
+**依赖本地 Hook 时，还要核编排位置。** 企业 Work 文档明确：云编排不支持 command hooks 及来自本地配置／插件的 Hook，即使工具在本机执行；本地-only Work／Codex 则继续使用原支持的 Hook。必要质量门未承接，就保留原入口或先验证受支持替代，不以“能读本机”代替检查。个人套餐可用性另核，见[适用范围与社区反例](../research/2026-10-10-codex-continuity.md#p81桌面work与codex按视图和执行契约选择)。**[一手：[企业 Work 概览](https://learn.chatgpt.com/docs/enterprise/chatgpt-work-overview#enable-and-govern-local-computer-access-with-work-cloud)；研究]**
+
 **套餐不只影响额度。** [Pricing](https://learn.chatgpt.com/docs/pricing) 为 Free／Go 列桌面 Luna Standard（受 rollout 限制），Plus 列 web／CLI／IDE／iOS 及云端集成；[GitLab beta](https://learn.chatgpt.com/docs/third-party/gitlab)另明确支持所有 ChatGPT plans，不能把价格表当集成排除清单。**[一手：2026-10-15]**
 
 **安全评审单独查资格。** [GitHub Security Review](https://learn.chatgpt.com/docs/security/security-review) 是 Pro／Business／Edu／Enterprise 的研究预览，不含 Plus；普通评审仍可发现部分安全问题。**[一手：2026-10-15]**
