@@ -34,6 +34,7 @@ generic/
     │   └── verifier.md            # 尝试推翻“已完成”的独立验证者
     └── skills/
         ├── spec-interview/        # /spec-interview：访谈式整理需求，输出 SPEC.md
+        ├── task-decisions/        # /task-decisions：按当前缺口选择默认与撤回点（显式调用）
         └── handoff/               # /handoff：写 PROGRESS.md，方便清空上下文后继续
 ```
 
@@ -46,6 +47,7 @@ generic/
 | code-reviewer 只报正确性问题 | 官方最佳实践：被要求找问题的评审者会过度报告 |
 | verifier 可选独立核对 | 复杂验收时检查当前目标和独立反例；不强制每项任务增加会话 |
 | spec-interview | 关键需求不清时借鉴访谈；是否换会话取决于上下文与交接需要，见 [07](../docs/07-workflows.md) |
+| task-decisions | 核心12页的条件选择；[最小包](#核心决策最小包)用于按需采用，模型净收益未验证 |
 | handoff | 跨会话交接时保存必要进度；同任务腾空间与跨会话恢复的选择见 [03 会话动作分流](../docs/03-context-engineering.md#3-会话层面的上下文管理) |
 | CLAUDE.md 的停止规则、TASKS.md、Blocked on me / Changed / Found | Anthropic《Getting the most out of Opus 5.5》 |
 | AGENTS.md 不堆重复概览和 lint 规则 | 所引研究在指定样本中未见概览可靠收益；避免复制可由代码获得的信息，不禁止有任务价值的架构地图（[03](../docs/03-context-engineering.md)） |
@@ -61,6 +63,20 @@ generic/
 5. 保留能改善任务的内容，删除重复或无收益配置。独立审查和访谈都是可选组件，不是采用本模板的前提。
 
 > 只用 Codex 可先采用 `AGENTS.md`，再按需读 [Codex 适配说明](codex/README.md)。Skill 核心格式可移植，不代表 `.claude/skills` 发现路径、扩展字段、工具名和权限行为都相同；Hooks 和 settings 也需按运行时验证。
+
+## 核心决策最小包
+
+已有工作流只缺决策建议时，不用复制整个 `generic/`。最小完整包是以下三个文件，无脚本、Hook、MCP 或模型配置依赖：
+
+| 来源 → 目标项目相对路径 | 采用方式 |
+|---|---|
+| `generic/AGENTS.md` → `AGENTS.md` | 空项目填真实命令与边界、删除注释和 TODO；已有项目只合并缺少的条件建议，保留原约束 |
+| `generic/CLAUDE.md` → `CLAUDE.md` | Claude Code 按需合并 `@AGENTS.md` 与专属增量；已有导入不重复添加，其他客户端无需此入口 |
+| `generic/.claude/skills/task-decisions/SKILL.md` → `.claude/skills/task-decisions/SKILL.md` | 保留相对路径以匹配 AGENTS 链接；同名 Skill 已存在时先比差异，不覆盖 |
+
+只用 Codex 可省去 CLAUDE.md：用户需要调整工作方式时显式指定读取 Skill 正文，不假定 Codex 会发现 `.claude/skills`。Claude Code 的 `/task-decisions` 也仅由用户显式调用；普通明确修改直接做。正文自包含，不需要把本知识库一起放入项目。
+
+采用后在目标客户端核实际加载，再用一个原有任务确认检查和权限没有退步；未试运行就标“未验证”。要判断是否比原配置好，另做有／无包成对任务并记录返工，不能拿复制成功或下方离线回归当模型收益。原配置保留可恢复副本，无净收益或必要行为退步就撤回新增内容。
 
 ## 本仓库验证
 
