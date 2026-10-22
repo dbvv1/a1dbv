@@ -244,3 +244,39 @@ example本来不是精确业务断言，这不是工具缺陷。[默认检查范
 仅试了preview/rule准备步骤，隔离HOME与最小环境，没有模型runner、session或host Agent调用；telemetry源码默认关闭，未做网络跟踪，不声称零外连。没有实际审PR、检测缺陷或减轻人审的本仓效果证据。[本仓：验证范围]
 
 探索回执：读官方固定实现／Skill／发行、上述使用者原帖与修复PR；[V2EX](https://www.v2ex.com/t/1248137)及[Reddit](https://www.reddit.com/r/codex/comments/1x9t6o1/does_anyone_even_review_code_anymore/)补评审负担与反方，不充当OCR效果评测。V2EX另一原帖正文不可读、部分GitHub网页失败后读同源固定文件；pair-review／herdr-reviewr未找到足够独立近期采用，不硬加候选。没有完整发现分母，不报全网漏检率或最优。[研究，10-23 UTC+8]
+
+
+<a id="whiteboard-headless-trial"></a>
+## Whiteboard：无需桌面，也能保存绑定代码的评审说明
+
+**需要保留、复读陌生改动解释时，可试固定Git版本的说明容器。** code_peek与call_stack_diff的保存、读回及正常重启在合成仓已跑通。[本仓工具实跑]
+**引用能定位，不代表解释语义成立。** 不存在的文件被拒，附在真实代码上的故意错误说明仍被接受。[本仓人工负例]
+**目前只验后端，不升级图形评审推荐。** 没有运行Desktop、自动关系发现或模型，未测人审收益。[范围]
+
+### 真实入口与采用线索
+
+[官方0.3.4发行](https://github.com/devdotfast/whiteboard/releases/tag/v0.3.4)有Linux remote包，[固定源码说明](https://github.com/devdotfast/whiteboard/blob/f33bd6620742fe65ccc1d5fef416fbe8254dcf79/packages/review/README.md)支持无Desktop的server；独立npm CLI不含画布，不把CLI启动写成图形通过。源码tag已解析为f33bd6620742fe65ccc1d5fef416fbe8254dcf79。[一手]
+
+[HN讨论](https://news.ycombinator.com/item?id=49833867)中，用户指出展示图与代码的等待逻辑不符，作者承认原GIF是设计稿并替换；“期待试试”也不是采用结果。[bare clone/worktree问题](https://github.com/devdotfast/whiteboard/issues/1352)提示复杂仓布局另验。本次取普通checkout，不以期待评论或作者“不幻觉”说法证明有效。[一手：公开讨论／使用者报告]
+
+### 两提交夹具与实际结果
+
+10-23（UTC+8），固定官方whiteboard-remote-0.3.4-linux-x64.tar.xz，57,224,312字节；SHA-256 `073d56eb443574caf2607a58de012fb0087333a63b8c639e4a1a851509ada87a`与官方校验文件一致。只解包已有运行依赖，不全局安装或升级Go／Node。两文件夹具将policy从“仅admin”改成“admin或guest”，entry调用该函数。[本仓工具实跑]
+
+| 检查 | 实际观察 | 能借用的能力 |
+|---|---|---|
+| 创建固定base/head的review | 返回pins与Git一致 | 说明绑定明确代码版本 |
+| code_peek与手写call_stack_diff | 保存和完整读回成功 | 交接可复读的片段与解释 |
+| 读取两侧完整文件 | 与git show逐字一致 | 从引用回到真实代码核对 |
+| 原版diffr结构差异 | start/file/complete，成功1、失败0，包含guest变化 | 可获取真实结构diff，非模型摘要 |
+| 引用不存在的文件 | 明确报unavailable at the pinned commit | 拦截不可定位引用 |
+| 在真代码上写“拒绝所有guest” | 仍被保存 | 说明内容不是语义验收结果 |
+| 正常停止、重启 | 完整快照一致，最终服务关闭 | 本例的持久保存与复读 |
+
+[可运行回放与边界](../../experiments/whiteboard_headless_replay.md)含本次实际运行的小脚本；失败注入后的进程组清理、污染Git／代理环境下的正常回放也已验证。这里只用人工提供的图节点与说明，没有测模型幻觉，也不把接受错说明判为产品缺陷。[本仓工具实跑]
+
+采用时，让Agent提供片段引用、变更说明与关键断言，人从固定diff核对解释；若需要自动发现关系或图形点击能力，先试相应GUI，不从本例升级。本仓不因此要求所有评审另建画布。[研究：条件采用]
+
+最小环境、隔离HOME/XDG/state，DO_NOT_TRACK=1；启动前读取实际resolved config，确认summarize.enabled=false。未用Ask、login、trace、connect、share或模型。遥测／崩溃上传的退出设置不等于已验证零外连；原始状态及服务鉴权不公开。首次跨执行调用ECONNREFUSED，改在同一普通执行调用内启停与请求后成功，具体原因未知，未提权或改sandbox。[本仓：运行范围]
+
+探索回执：读官方发行、headless/API实现、隐私与摘要配置、HN原评论及GitHub使用者问题；中文渠道复用本轮V2EX评审负担讨论，未找到Whiteboard独立中文实用效果对照。未补模型或GUI试验，不按star或图示宣称最佳。[研究]
