@@ -1,5 +1,5 @@
 主线：二／三；C5前沿发现，供读者找到可上手的新工具与做法。
-改变的建议：Graphicle可试作导航而不作为测试删减真值；Taste先保原instructions再试；未试项只列候选。
+改变的建议：客户端之外先选反馈、流程、窄Skill或语义操作的具体缺口；Graphicle只作导航，Taste先保原instructions。
 新证据：近4周社区原帖／GitHub快照，以及云端Graphicle代码图、Taste安装恢复、HTML参照部分试用的真实产物；不声称模型效果领先。
 
 # C5 首轮：关注度与上手结果分开
@@ -66,7 +66,7 @@ def shadow(operation):
 ## 其余候选与未试范围
 
 - **Coucou**：[官方](https://github.com/Louis-CFM/coucou)，6,163★、9-27新建。Linux0.5.1官方AppImage已下载核hash；执行环境无桌面DISPLAY，桌面下载另遇网络及明确浏览器策略阻断，约4分钟后停。没有启动、通知或session路由结果。代码MIT但名称／Mochi／音效另有版权；不默认安装真实客户端hooks。[一手／本仓部分尝试]
-- **Whiteboard**：[官方](https://github.com/devdotfast/whiteboard)，3,286★；[HN](https://news.ycombinator.com/item?id=49833867)9-24有424分／143评。作者澄清它是补充评审画布，不是完整IDE；评论既有看懂Agent修改的体验，也有为何不用Mermaid及大应用扩展性的疑问。MIT，当前安装范围不沿用旧帖平台限制。未试用。[一手／社区]
+- **Whiteboard**：[官方](https://github.com/devdotfast/whiteboard)，3,286★；[HN](https://news.ycombinator.com/item?id=49833867)9-24有424分／143评。作者澄清它是补充评审画布，不是完整IDE；评论既有看懂Agent修改的体验，也有为何不用Mermaid及大应用扩展性的疑问。MIT，当前安装范围不沿用旧帖平台限制；后续已补[后端部分试用](#whiteboard-headless-trial)，GUI仍未试用。[一手／社区]
 - **Oil UI**：2,005★、9-30新建的发现快照不变；本轮已补免费比较器部分试用，见下节，未取得窗口内HN同名原帖。[一手／本仓部分实测]
 - **VibeWise**：[官方](https://github.com/nykooi1/vibe-wise)，3,853★、9-29新建，MIT。官方支持Claude与Codex插件入口；人先表达方案的学习流程会增加交互，不能外推无人值守效率。未取得窗口内HN同名原帖；现已补安装／恢复脚本小试，见下节。[一手／研究]
 
@@ -148,7 +148,7 @@ Claude几行是实际Python hook输入输出，不是Claude客户端加载或模
 
 ## 当红必看的使用面与成熟做法
 
-**核心入口先补Claude Code、Copilot、Codex、Cursor和开源OpenCode，不再只用“近4周新建”筛工具。** 这是使用面支持的阅读优先级，不是全市场五强或净效果排名；OpenCode覆盖开源模型可选路线，不能隐去其他更高使用率工具。成熟做法复用／重读已有Willison、Toub、Cursor及Vinext材料，不计新发现。[研究：2026-10-22]
+**核心入口保留Claude Code、Copilot、Codex、Cursor和开源OpenCode，并补反馈闭环、按需流程、窄Skill与语义MCP。** 这是使用面支持的阅读优先级，不是全市场五强或净效果排名；OpenCode覆盖开源模型可选路线，不能隐去其他更高使用率工具。成熟做法复用／重读已有Willison、Toub、Cursor及Vinext材料，不计新发现。[研究：2026-10-22]
 
 ### 两个调查的题意不能混用
 
@@ -167,6 +167,20 @@ GitHub累计星数、近期提交和HN／V2EX讨论只补关注及活动信号�
 - **OpenCode可选模型执行器**：[Vinext](https://blog.cloudflare.com/vinext/)是较早成熟先例，作者仍用架构判断、测试和浏览器反馈纠错，不作当前最高水平认证。[V2文档](https://opencode.ai/v2/docs/migrate-v1/)说明V1/V2发行轨并行，但安装默认不隔离并存；先核主版本、provider及插件兼容；[V2EX Go讨论](https://s.v2ex.com/t/1250404)中的消耗个案带插件和模型组合，不能归因裸执行器。安装和当前V2连续二改本仓未试。[一手／社区／研究]
 
 探索回执：10-22新核官方调查原图／问卷数据、产品契约、GitHub活动及中文双持／Go原帖；旧做事者复盘和[HN理解代码讨论](https://news.ycombinator.com/item?id=50151036)重读，不冒称新发现。另读[V2EX接管问题](https://www.v2ex.com/t/1248455)可见回复，部分正文缺失；Reddit局部抓取失败，linux.do本轮仅检索、X原帖不可读，不采信其摘要投票或未核事件。没有新客户端或模型运行，不调整核心差距分。[研究]
+
+
+### 代表机制的采用证据与边界
+
+**先补反馈，再按任务选择流程、单项Skill或语义MCP，不要求四层全装。** 此处是10-23（UTC+8）的入口整理：复用既有[P59小修复对照](2026-10-12-community-source-records.md#p59小修复的流程选择与回归交付)与[跨社区采用比较](2026-10-12-community-source-records.md#跨社区采用比较维护任务先选补什么)，重读关键原文，不新增研究计数或模型运行。[研究]
+
+- **反馈闭环**：[Krupa 9-29同模型对照](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)中，Sonnet 5.5／Superpowers 6.4.2的负金额小题两臂都修对，但留下回归测试为整包8/8、原生4/8；“红测”评分曾误计命令失败，详细轨迹与边界沿用P59，而非把全部测试顺序当质量提升。本仓Graphicle作用域反例、OCR清单对账与Whiteboard错误说明证明的是各自工具边界，已有复现与回归可复用，不是新模型对照；读者从真实bug和已有检查开始，让旧错误触发失败后保留该断言。[社区：作者实验；本仓工具实测；研究：采用判断]
+- **按需流程**：[Luca 9-16使用复盘](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)仍保留Superpowers，按Direct／Plan／Full区分任务；[7-14中文讨论](https://v2ex.com/t/1227194)同时有卸载者和认可计划交接者，缺同任务、同版本可比成本，不能算好评率。固定[writing-plans](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/writing-plans/SKILL.md)保存文件、接口、规格值与测试断言，只有无法据此确定的算法等才保实现正文，不能沿用“计划总是抄全套代码”的旧批评；[修订与发布记录](2026-10-12-community-source-records.md#计划变成实现先改变产物)不是本周新功能。可从跨模块未决设计借计划，简单明确的改动不全局强制整包；本仓未安装运行。[社区／一手／研究]
+- **窄Skill**：[Faruk 8-02实际Java CRUD重构](https://blog.faruk.dev.br/articles/agents/matt-pocock-skills-harness-product-crud/)首次跳过架构，重新明确要求访谈后才通过grill-with-docs确认17项决定，随后直接实现，未走to-spec／to-tickets完整链。它证明真实采用及提示依赖，不隔离Skill净收益，也不是本仓模型试验；[固定配置与采用反例](2026-10-12-community-source-records.md#三条条件评级的采用理由)继续保留。读者只补会改变实现的问答，决定已齐就结束访谈；本仓未运行。[社区／研究]
+- **语义MCP**：[Luca](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)自述为声明与调用位置明确指定Serena，否则它可能闲置；[10-16中文短试](https://www.v2ex.com/t/1249379)未感明显差异，语言、规模与版本缺失，无法互比。只在同名符号身份、声明或引用查询有具体缺口时试，原生搜索或已有LSP足够就不加；技术限制沿用[上下文工具记录](2026-10-13-context-tool-choice.md#serena原生引用存在但封装过滤漏掉)。本仓未安装运行，其他项目对LSP集成的取舍不作为Serena效果证据。[社区／研究]
+
+各机制的跨项目采用率、可比满意度及完整净收益仍未知；stars只作发现信号。客户端主专题分别见[Claude](../01-agents/claude-code.md)、[Copilot等入口](../01-agents/README.md)、[Codex](../01-agents/codex.md)、[Cursor工作流](../07-workflows.md)与[OpenCode](../01-agents/open-source-agents.md#opencode规划与撤回边界)，不因入口前移升级推荐等级。[研究]
+
+探索回执：本次按阶段审计复用已有来源，再核Krupa、Luca、Faruk、V2EX两条原帖与Superpowers固定Skill；不是新的全渠道回扫，没有新增安装、模型或GUI试验。[研究：10-23 UTC+8]
 
 
 ## 模型与反馈组合：现成契约能帮到哪一层

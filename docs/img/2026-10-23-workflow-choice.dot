@@ -1,0 +1,22 @@
+digraph workflow {
+  graph [rankdir=TB, bgcolor="#f6f8fc", pad="0.4", nodesep="0.45", ranksep="0.65", fontname="Noto Serif CJK SC", label="先有反馈，再补具体缺口", labelloc=t, fontsize=27, fontcolor="#183153"];
+  node [shape=box, style="rounded,filled", fontname="Noto Serif CJK SC", fontsize=17, color="#b7c7dc", fillcolor="white", fontcolor="#183153", penwidth=1.5, margin="0.22,0.15"];
+  edge [fontname="Noto Serif CJK SC", fontsize=13, color="#55708e", fontcolor="#425b77", penwidth=1.6, arrowsize=0.75];
+  goal [shape=diamond, label="目标与验收\n已经清楚？", fillcolor="#e8f0fc"];
+  ask [label="先问清未决决定\n反复漏问再试访谈 Skill", fillcolor="#fff1d7"];
+  loop [label="实现 → 回归 → 真实操作\n先建立可运行反馈", fillcolor="#dff4ed", color="#5aa58a", penwidth=2.1];
+  gap [shape=diamond, label="当前／下一轮\n还有什么具体缺口？", fillcolor="#e8f0fc"];
+  keep [label="没有新增缺口\n保持原路线", fillcolor="#dff4ed"];
+  plan [label="需要跨会话交接\n计划保存关键决定\n候选：Superpowers", fillcolor="#fff1d7"];
+  symbol [label="原生检索难分符号\n再试语义操作探针\n候选：Serena MCP", fillcolor="#fff1d7"];
+  note [shape=plaintext, fontsize=12, fontcolor="#56697f", label="路线示意，不是依次安装清单；新增 Skill／MCP 的模型收益未测。"];
+  goal -> loop [label="清楚"];
+  goal -> ask [label="不清楚"];
+  ask -> loop [label="形成决定"];
+  loop -> gap;
+  gap -> keep [label="没有"];
+  gap -> plan [label="交接"];
+  gap -> symbol [label="语义定位"];
+  {rank=same; keep; plan; symbol;}
+  keep -> note [style=invis]; plan -> note [style=invis]; symbol -> note [style=invis];
+}

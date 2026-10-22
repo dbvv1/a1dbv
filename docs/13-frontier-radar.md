@@ -1,20 +1,41 @@
 # 13 · 前沿雷达（2026-10）
 
-> 编辑更新：2026-10-23（UTC+8）；先看广用工具的成熟做法，再看新冒头与真实试用；历史条目不整体重核
+> 编辑更新：2026-10-23（UTC+8）；先看广用客户端与代表机制，再看新冒头与真实试用；历史条目不整体重核
 
-## 当红必看：先掌握广用工具的成熟做法
+## 当红必看：工具入口与代表做法
 
-**先把核心工具用在真实交付上，再决定要不要加新工具。** 前段按两项2026调查的使用面，结合做事者复盘与社区问题安排阅读优先级，不限项目新旧；不是全市场前五、满意率或效果榜。下列比例只取JetBrains同一题的“工作中使用”，为自报多选；Stack Overflow另问“过去一年用过”，不混成市场份额。[一手／研究；[题干、分母与选择依据](research/2026-10-22-frontier-trials.md#当红必看的使用面与成熟做法)]
+**已有客户端能交付，就从反馈闭环开始，不必先换工具。** 下列客户端按调查使用面安排阅读，机制按任务采用优先级排列，两张表都不是效果榜。[研究]
 
-| 工具／使用面线索 | 值得先掌握的做法 | 从什么真实任务开始、何时换路 | 主要依据／本仓范围 |
+### 广用客户端：找到你的入口
+
+比例来自JetBrains 2026年同一题“工作中使用”，是自报多选；Stack Overflow的“过去一年用过”只作另一使用面参照。[一手；[题干、分母与局限](research/2026-10-22-frontier-trials.md#两个调查的题意不能混用)]
+
+| 工具／使用面 | 先掌握什么 | 从哪里开始／何时换路 | 依据与本仓范围 |
 |---|---|---|---|
-| **Claude Code：39%** | 交一个完整可体验目标，Agent实现一轮，人用真实体验决定下一轮，不按十行代码切碎 | 选一个能启动和试玩的功能，保必要行为；偏离需求或体验没改善时给具体反馈，不只加更多流程 | [Battle Drones连续改稿](https://simonwillison.net/2026/Oct/20/battledrones/)；[主专题](01-agents/claude-code.md)，原文复盘，非本仓复演 |
-| **GitHub Copilot：21%** | 把迁移拆成可合入块，Agent跟进实现与失败，人保留兼容和通过标准的决定 | 用已有测试接一个修复／迁移块；删API、加豁免才变绿时恢复必要行为，而非接受绿灯 | [生产迁移复盘](https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/)；[入口选择](01-agents/README.md)，同厂工程自报，未复现 |
-| **Codex：16%** | 让多步任务交可运行产物，以实际使用纠正完成宣言或截图遗漏 | 给目标、项目入口、保留行为及接收方式；先走主路径，视觉／行为不合格时明确指出产物缺口 | [同题作品与纠错](https://simonwillison.net/2026/Aug/7/moonlight-mayhem/)；[主专题](01-agents/codex.md)，八月个案不代表十月型号胜负 |
-| **Cursor：12%** | 先把工程变成Agent能自己启动和验证的环境，再增加提示或Skill | 可靠的安装／启动／测试命令，从干净副本跑一轮；真实UI仍起不来时先补环境，不叠指令 | [团队环境复盘](https://cursor.com/blog/cloud-agent-environment)；[工作流](07-workflows.md)，厂商自报，未复现其提效 |
-| **OpenCode：7%** | 需要可选模型和可读执行器时，先固定provider／主版本，再迁一个连续初改＋二改任务 | 保原配置与可接收结果；插件／工具链不兼容时只退相关迁移，不因开源就假设更便宜 | [公开实现](https://github.com/anomalyco/opencode)与[V2迁移](https://opencode.ai/v2/docs/migrate-v1/)；[主专题](01-agents/open-source-agents.md#opencode规划与撤回边界)，未试V2迁移或模型 |
+| **Claude Code：39%** | 交完整可体验目标，以真实体验推动下一轮 | 从可试玩功能开始，偏离需求时给具体反馈 | [连续改稿复盘](https://simonwillison.net/2026/Oct/20/battledrones/)仅作资料参照 |
+| **GitHub Copilot：21%** | 把迁移拆成可合入块，保住兼容标准 | 从已有测试的迁移块开始，靠删API变绿就退回核查 | [生产迁移](https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/)为同厂自报 |
+| **Codex：16%** | 接收可运行产物，而非完成宣言 | 从实际主路径开始，视觉或行为不合格就反馈缺口 | [作品纠错](https://simonwillison.net/2026/Aug/7/moonlight-mayhem/)为八月个案 |
+| **Cursor：12%** | 先让Agent能自己启动和验证工程 | 从干净副本跑通开始，UI起不来就先补环境 | [环境复盘](https://cursor.com/blog/cloud-agent-environment)为厂商自报 |
+| **OpenCode：7%** | 需要可选模型时先固定provider与主版本 | 从连续初改＋二改开始，不兼容就撤回相关迁移 | [实现](https://github.com/anomalyco/opencode)与[V2迁移](https://opencode.ai/v2/docs/migrate-v1/)仅作资料参照 |
 
-五项本轮均为资料复核，不是新客户端试用。OpenCode入选是补充开源执行器路线，不是Stack Overflow第五名；同题效果仍要看版本、任务与完整投入。成熟用法主要复用既有正文，不把重新排入口算五份新研究。[研究]
+五项本仓均未在本轮试用，OpenCode是开源路线补充而非调查第五名；主专题与详细限制见[成熟机制与反例](research/2026-10-22-frontier-trials.md#可借的成熟机制与反例)。[研究]
+
+### 代表机制：按任务采用，不按热度装齐
+
+**先建立反馈，再按缺口选流程、窄Skill或语义MCP，只选当前缺的一层。** 下面都有真实采用或任务对照线索，但总体采用率与净收益未知，顺序不是普及率排名。[社区／研究；[采用证据与边界](research/2026-10-22-frontier-trials.md#代表机制的采用证据与边界)]
+
+| 机制／代表 | 借用的精华 | 从哪里开始／何时不用 | 真实采用或对照 | 本仓范围／评级 |
+|---|---|---|---|---|
+| **反馈闭环：运行＋回归保护** | 将这次发现的错误变成下次会失败的检查 | 从一个真实bug开始，已有检查能检出就复用 | [Krupa同模型小题](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)区分修对与留下测试 | ✅ 借用机制，已有工具反例实测而非模型对照 |
+| **按需流程：Superpowers** | 按任务选择直做、计划或完整流程 | 从跨模块未决设计开始，清楚小改不启整套 | [Luca保留分流](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[V2EX去留](https://v2ex.com/t/1227194)并存 | 🧪 按项目试用，本仓未安装运行 |
+| **窄Skill：Matt Pocock** | 只借grill-with-docs澄清会改变实现的决定 | 从架构问题开始，决定已齐就进入实现 | [Faruk实际重构](https://blog.faruk.dev.br/articles/agents/matt-pocock-skills-harness-product-crud/)未走完整ticket链 | 🧪 按需试用，本仓未运行 |
+| **语义MCP：Serena** | 用符号身份查声明与调用位置 | 从同名符号定位开始，原生搜索或LSP已够就不用 | [Luca使用](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[中文短试无明显差异](https://www.v2ex.com/t/1249379)并存 | 🧪 按语义缺口试用，本仓未安装运行 |
+
+![任务分流图：目标与验收不清先澄清，清楚后实现、回归并实际操作，再按交接或语义定位缺口选计划或Serena，无缺口则保持原路线](img/2026-10-23-workflow-choice.svg)
+
+图：条件分流，不是安装顺序；新增Skill／MCP的模型收益未测（[可复现图源](img/2026-10-23-workflow-choice.dot)）。[研究：路线示意]
+
+本节复用既有[工作流比较](24-community-workflows.md)与[上下文选择](03-context-engineering.md#25-跨文件符号检索何时补-serena)，只是把读者入口前移，不计新研究或新的模型收益。[研究]
 
 <a id="值得一试近4周的新项目与做法"></a>
 ## 新冒头：新项目与有新意的用法
@@ -23,14 +44,16 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
-| [Graphicle](https://github.com/graphicle-ai/graphicle) | 不调用模型也能给跨文件代码图和行号，适合陌生仓库导航 | 339★；[HN 48分／15评](https://news.ycombinator.com/item?id=50088713)，10-14 | Linux 0.1.4约15分钟真运行；定位、更新及两文件反例已复现 | 局部同名函数仍会连错边，precise也未消除；🧪 导航辅助，不单独决定删哪些测试 |
-| [GPT with Taste](https://github.com/NB-Corp/gpt-with-taste) | 给Codex更明确的实现与表达偏好，适合嫌输出啰嗦或过度设计的人 | [linux.do首帖208 Likes](https://linux.do/t/topic/3016674)，10-13 | 隔离配置安装、重复安装、check／restore及12项测试通过；约7分钟，未测模型效果 | 切换instructions指针，不自动合并旧指令；🧪 先保原配置、不开hooks试用 |
-| [InstaLanding的HTML参照法](https://github.com/RayVelez27/instalanding.ai) | 把可运行页面的颜色／字体／间距给Agent，比只说“高级感”更具体；适合UI方向探索 | [Reddit原帖](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)正文可读；索引票数／日期与直接页面冲突，未采信 | 已做三状态离线衍生页，15项DOM-stub通过；浏览器渲染未完成 | 源页可能依赖字体／CDN；👀 部分试用，不能把stub当视觉验收 |
-| [Coucou](https://github.com/Louis-CFM/coucou) | 将多个coding会话的完成／待决定状态集中提示，适合经常错过回执的人 | 6,163★；9-27新建，非已证HN热议 | Linux 0.5.1包已下载核hash；桌面链路阻断，应用未启动 | hooks涉及客户端配置；品牌素材不全属MIT；👀 启动与通知未试用 |
-| [Whiteboard](https://github.com/devdotfast/whiteboard) | 保存绑定代码版本的说明，适合异步接管陌生改动 | 3,286★；[HN 424分／143评](https://news.ycombinator.com/item?id=49833867)，9-24快照 | 10-23实跑0.3.4 headless：代码绑定、结构diff、保存与正常重启；GUI未试 | 错文件引用被拒，附在真代码上的错说明仍会保存；🧪 [后端部分试用](research/2026-10-22-frontier-trials.md#whiteboard-headless-trial)，语义仍人核 |
-| [Oil UI](https://github.com/oil-oil/oil-ui) | 把现状与独立HTML方向稿放进现成比较器，适合已有设计候选的读者 | 2,005★；9-30新建，未取到窗口内HN同名原帖 | 0.23.9隔离安装；现状+两候选打包、保原件与失败不覆盖已验；浏览器受限 | 改源页须重建，选择文字须贴回Agent；🧪 部分试用，视觉／模型效果未验 |
-| [VibeWise](https://github.com/nykooi1/vibe-wise) | 人先讲方案，再让Agent实现和检查理解，适合学陌生技术栈 | 3,853★；9-29新建，未取到窗口内HN同名原帖 | 0.1.44隔离Codex安装／撤回与Claude恢复脚本已试；未测模型 | Claude按项目恢复，Codex每会话手动learn；停教学用pause，不是reset；🧪 学习场景试用 |
-| [OpenCodeReview delegation](https://github.com/alibaba/open-code-review) | CLI整理文件／共用规则，现有Agent评审；适合规则多、语言混合项目 | 约4.8万★；[使用者迁移自述](https://github.com/alibaba/open-code-review/issues/1020#issuecomment-6163982899)，非效果对照 | 10-23固定1.13.3五场景真跑；两个Go文件共用一份规则正文，未跑模型 | preview会静默漏掉特定gitignore否定目录内文件；🧪 [先对账Git全清单](research/2026-10-22-frontier-trials.md#ocr-delegation-trial)，不把空结果当全覆盖 |
+| [Graphicle](https://github.com/graphicle-ai/graphicle) | 用跨文件图和行号导航陌生仓库 | 339★及[HN 48分／15评](https://news.ycombinator.com/item?id=50088713)为关注快照 | 0.1.4定位、更新与两文件反例已复现 | 🧪 同名错边仍在，不据图删测试 |
+| [GPT with Taste](https://github.com/NB-Corp/gpt-with-taste) | 为嫌输出啰嗦的人提供明确偏好 | [linux.do首帖208 Likes](https://linux.do/t/topic/3016674)为关注快照 | 隔离安装、重复安装与恢复通过 | 🧪 先保旧配置，不自动合并instructions |
+| [InstaLanding的HTML参照法](https://github.com/RayVelez27/instalanding.ai) | 用可运行参照探索UI方向 | [Reddit原帖](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)可读但热度未核 | 三状态衍生页完成，浏览器接收未完成 | 👀 DOM-stub通过不等于视觉通过 |
+| [Coucou](https://github.com/Louis-CFM/coucou) | 为多会话用户集中提示完成与待决定状态 | 6,163★及9-27新建为发现快照 | 包已核hash，但桌面应用未启动 | 👀 通知未试用，接入会涉及hooks配置 |
+| [Whiteboard](https://github.com/devdotfast/whiteboard) | 保存绑定代码版本的说明以便异步接管 | 3,286★及[HN 424分／143评](https://news.ycombinator.com/item?id=49833867)为关注快照 | 0.3.4后端保存、结构diff及重启已验 | 🧪 [部分试用](research/2026-10-22-frontier-trials.md#whiteboard-headless-trial)，可定位不等于说明正确 |
+| [Oil UI](https://github.com/oil-oil/oil-ui) | 用现成比较器挑选已有HTML设计候选 | 2,005★及9-30新建为发现快照 | 0.23.9打包与保原件已验，浏览器未验 | 🧪 部分试用，修改源页后须重建 |
+| [VibeWise](https://github.com/nykooi1/vibe-wise) | 学陌生技术栈时先讲方案再让Agent实现 | 3,853★及9-29新建为发现快照 | 0.1.44安装、撤回与恢复脚本已试 | 🧪 教学按需开，暂停用pause而非reset |
+| [OpenCodeReview delegation](https://github.com/alibaba/open-code-review) | 规则多时由CLI备料、现有Agent评审 | 约4.8万★及[迁移自述](https://github.com/alibaba/open-code-review/issues/1020#issuecomment-6163982899)为采用线索 | 1.13.3五场景真跑确认共用规则可去重 | 🧪 [先对账Git清单](research/2026-10-22-frontier-trials.md#ocr-delegation-trial)，preview可能静默漏项 |
+
+版本、耗时、许可及未验范围留在[对应试用记录](research/2026-10-22-frontier-trials.md)，以上均未证明模型质量或完整成本收益。[研究]
 
 **这轮新知道的东西**：Graphicle的可用导航与错误作用域边可以同时存在；Taste的安装不等于保留旧instructions的有效性。其余候选先保发现价值，未试用不写成推荐默认。用户新链接优先放[收件箱](collaboration/inbox.md)，每条处理结果回到本表；当前收件箱为空，命中率不计算。[研究／本仓实测]
 
