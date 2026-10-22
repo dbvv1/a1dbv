@@ -167,3 +167,42 @@ GitHub累计星数、近期提交和HN／V2EX讨论只补关注及活动信号�
 - **OpenCode可选模型执行器**：[Vinext](https://blog.cloudflare.com/vinext/)是较早成熟先例，作者仍用架构判断、测试和浏览器反馈纠错，不作当前最高水平认证。[V2文档](https://opencode.ai/v2/docs/migrate-v1/)说明V1/V2发行轨并行，但安装默认不隔离并存；先核主版本、provider及插件兼容；[V2EX Go讨论](https://s.v2ex.com/t/1250404)中的消耗个案带插件和模型组合，不能归因裸执行器。安装和当前V2连续二改本仓未试。[一手／社区／研究]
 
 探索回执：10-22新核官方调查原图／问卷数据、产品契约、GitHub活动及中文双持／Go原帖；旧做事者复盘和[HN理解代码讨论](https://news.ycombinator.com/item?id=50151036)重读，不冒称新发现。另读[V2EX接管问题](https://www.v2ex.com/t/1248455)可见回复，部分正文缺失；Reddit局部抓取失败，linux.do本轮仅检索、X原帖不可读，不采信其摘要投票或未核事件。没有新客户端或模型运行，不调整核心差距分。[研究]
+
+
+## 模型与反馈组合：现成契约能帮到哪一层
+
+**有现成行为反馈时，把轻量模型与反馈作为组合候选，不只给轻量模型安排格式化。** 没有现成反馈时，不为降低模型单价先重建harness；现有日常起点不变。[研究]
+**本仓真实试到的是契约工具的反馈范围，不是模型收益。** 结构错误会被定位，但另设业务期望仍须独立断言。[本仓工具试用]
+**先保同一接收标准，再算完整投入。** 作者实验的token等值估计不含构建、维护和人工；本仓没有运行模型对照。[研究]
+
+### 当前代际的同题信号
+
+[Naresh Jain 10-13原文](https://www.martinfowler.com/articles/are-harnesses-worth-the-cost.html)及[公开brief](https://www.martinfowler.com/articles/are-harnesses-worth-the-cost/application-brief.html)：单个Java绿地BFF，均low、每格10轮；作者外评178检查。独立核读确认下表口径。[一手：作者实验]
+
+| 模型／条件 | 全部检查通过 | 报告耗时 | 每轮API等值估计 |
+|---|---|---|---|
+| GPT-6 Sol，无harness | 10/10 | 6分51秒 | $0.406 |
+| GPT-6 Sol，有harness | 10/10 | 19分53秒 | $2.679 |
+| GPT-6 Luna，无harness | 3/10 | 15分56秒 | $0.086 |
+| GPT-6 Luna，有harness | 10/10 | 35分 | $0.273 |
+
+harness同时加入指导、契约／故障样例、Skill／MCP、脚手架和测试反馈，并非单独增加传感器。作者是Specmatic创始人；外评独立及内环不见答案为作者的方法声明，本轮未找到40轮生成代码、逐轮日志和外评可执行包。估计费用不含harness建设／维护／人工，也不是同耗时；final-gate-only未测。只能提出组合试用方向，不宣称长期质量等价、关闭过程检查或取代本仓Sol 6.1／medium。[一手／研究]
+
+### Specmatic最小真实试用
+
+固定官方[2.55.3发行](https://github.com/specmatic/specmatic/releases/tag/2.55.3)与现有Java21；jar SHA-256为 `2026a53459794d01e0f11843f24ad55588098d2dfbfd3e9a27b7705e29b5734d`，与发行API digest一致，未验证可复现构建。按[官方CLI入口](https://docs.specmatic.io/getting_started/cli_quick_start)运行单GET合成Pet契约，只访问本地测试目标，不用Docker或模型；23:26–23:34（UTC+8）约8分钟完成。[本仓工具实跑]
+
+| 合成响应 | CLI结果 | 能说明什么 |
+|---|---|---|
+| 正常200与约定字段类型 | exit0，1/1通过 | 这一操作符合契约 |
+| id由数字变成字符串 | exit1，定位RESPONSE.BODY.id | 类型错误可变成可操作反馈 |
+| HTTP200且类型不变，id/name/status违背另设业务期望 | exit0，1/1通过 | schema通过不等于业务期望满足 |
+| body相同但HTTP500 | exit1，定位RESPONSE.STATUS | 状态码不符可被发现 |
+
+可运行的[最小复现说明](../../experiments/specmatic_local_feedback.md)及[脚本](../../experiments/specmatic_local_feedback.py)接收已有固定jar，不自动下载安装；用临时目录、动态loopback端口，包含真实跑过的正反例与mock，成功及失败清理另经回归。同spec的mock实际请求返回200及预期example，证明样例重放可用，不是对业务实现的独立验收。普通Python业务断言另做正反：正常exit0，错误值exit1。该断言只覆盖本例人工设定的期望，不需商业matcher。[本仓工具实跑]
+
+example本来不是精确业务断言，这不是工具缺陷。[默认检查范围](https://docs.specmatic.io/spec_driven_api_development/contract_testing)与[Matchers Commercial](https://docs.specmatic.io/features/matchers)应分清；不把MIT仓库推及全部商业功能。采用时先复用自己的业务测试，别把单operation报告中的100%当产品覆盖，或把这个OSS小例当作者完整HTTP／Kafka反馈的替代。[一手／研究]
+
+测试以隔离HOME和最小环境正常运行，显式关闭可选遥测；额外网络namespace预检失败；ptrace观测在预设四场景各失败一次后停止，未提权或修改平台限制。没有网络层零外连证明，不称严格断网试验。未登录、调用商业功能或上传许可证；测试服务已停。[本仓：范围]
+
+探索回执：按P51提示词从1de7635开始，复用既有00／01／14与P46材料；新读Jain、Cockroach做事者、HN及中文V2EX原帖、官方CLI/契约文档和开源样例。医院流水线与黑板例子未改变已有默认，不重复交付；linux.do及部分作者目录读取失败。没有合格独立冻结的应发现全集，不报全网漏检率；本例不合并旧M6三题或P79分母。[研究]

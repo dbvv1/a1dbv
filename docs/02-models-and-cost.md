@@ -43,6 +43,8 @@
 | 反复出现的有限选项语义判断 | 🧪 有具体缺口才试决策接口 | 规则或当前模型在质量、等待、成本上不足时再比较；分数、回退与授权见第 2.1 节 |
 | 离线 / 保密 | 🧪 评估本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B；硬件、质量与数据路径条件见第 5 节 |
 
+**🧪 有现成反馈的整合任务，也可比较“轻量模型＋既有反馈”。** 已有可运行接口契约、故障样例和行为检查时，轻量模型不必只做检索与格式化：让Agent使用这些反馈，人保持同一业务接收标准，比较漏项、返工、等待和维护投入，节省被抵消就撤回；不为降模型先重建整套harness。近期同题实验与本仓契约工具试用支持把这条路线列为候选，**尚未证明当前任务的模型收益，也不替换上述日常起点**。[作者实验／本仓工具实跑／研究：2026-10-22，见[组合选择与反馈范围](research/2026-10-22-frontier-trials.md#模型与反馈组合现成契约能帮到哪一层)]
+
 **为何给这两个日常起点**：[Codex 官方模型指南](https://learn.chatgpt.com/docs/models#choosing-a-model)推荐 GPT-6.1 Sol 用于编码工作，但要求从客户端默认 effort 起步；同页把 `medium` 定位为兼顾速度与规划深度。本页据此为没有已验证配置的新读者明确选 `medium`，不把它说成官方统一默认。[Claude Code 模型配置](https://code.claude.com/docs/en/model-config#choose-an-effort-level)将 Sonnet 用于日常编码，Sonnet 5.5 的 `medium` 用于范围明确的工程任务、`high` 用于更重验证的工作。以上支持起点选择，不证明本项目上的相对效果或总成本。**[一手：厂商指南；研究：采用判断，2026-10-20]**
 
 **effort 不跨接口照搬**：Claude Code 的 Sonnet 5.5 默认 `medium`，[Claude API](https://platform.claude.com/docs/en/build-with-claude/effort#recommended-effort-levels-for-claude-sonnet-5-5)默认仍是 `high`（2026-10-15 核实）；Codex 的 Sol 默认依客户端而异，Astra 官方建议从 Light（配置值 `low`）开始。同名 effort 不代表跨型号、跨代等强度。**[一手：上述文档；Codex／Claude Code 2026-10-20 补核]**
