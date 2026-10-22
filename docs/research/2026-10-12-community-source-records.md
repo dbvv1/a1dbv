@@ -834,3 +834,67 @@ P82补核[Talking Postgres原逐字稿](https://talkingpostgres.com/episodes/how
 [Classmethod森茂洋1-30](https://dev.classmethod.jp/articles/claude-code-daily-workflow/)自述Graphiti关系查询转加pgvector，仍有跨项目误召回；模型及十月保留状态未知，机构有经销关系，只作历史改造参照。[Tskulbru 9-11](https://tskulbru.dev/posts/beads-local-shadow-for-agent-work/)已有原生知识，缺的是在途依赖，保原知识而另试工作图数日。结合P44，先分知识、任务和恢复，不默认新数据库。[一手／社区／研究]
 
 [当前claude-mem changelog](https://cmem.ai/changelog)15.0.1还自报修“搜索可见、detail因项目alias取不到”；未核该源码或当前服务，不以最新版保证可靠。P82来源由自主检索后查重；P44、Scrouting、ccusage、Ball与Willison首篇为复用／重读，其余本轮新增。完整计数缺口及限定读取回执见[P51记录](../collaboration/prompts/2026-10-21-exploration-self-use.md#p82使用回执2026-10-22)，不报总体漏检率。[研究]
+
+## P85：Gemini入口与迁移接收
+
+核实：2026-10-22。主线二／三／四；改变 `01-agents/gemini-cli` 的入口、上下文和维护接收选择。复用 P54／认证证据，补近四个月维护链与十月安全研究；旧结论保留历史日期。以下是来源研究，不是本仓效果验收或整页差距评级。[研究]
+
+### 主要选择：先保留工作的入口，再接收迁移
+
+**✅ 默认：已有原生入口满足任务就保留；迁移必须验真实宿主闭环，不以配置存在、功能表或源码测试通过代替接收。** 当前一代 Gemini 不同入口谁的综合编码效果最好，本轮证据不足；这里比较的是可观察反馈与维护责任，不给模型胜负排名。[研究]
+
+| 读者要决定什么 | 默认与替代 | 何时撤回／尚不能声称 |
+|---|---|---|
+| 只缺会话整理，是否同时更换 harness | 保原 CLI；只增加确实需要的界面。需要宿主 hooks、MCP 或调度时，逐项接收适配 | 宿主能发现配置但不触发事件，退回已工作的入口；换外壳不证明审批、历史和工具契约沿用 |
+| 工具没有返回文字，是否自动重跑 | 先查真实动作结果和退出状态，再决定恢复；恢复输出与重执行分开 | 空 stdout 不等于未执行。带写入／外部副作用的调用，不默认以重跑补输出 |
+| 是否每轮注入长期记忆 | 稳定背景优先会话开始注入；任务期新信息按需刷新 | 动态内容每轮改变前缀时检查必要性；缓存命中不能取代信息正确性，也不支持默认安装记忆插件 |
+| 是否放宽自动批准来减少打断 | 保留必要批准，权限按任务所需开放；同时检查合法任务是否仍可完成 | 拒绝启动得到的低攻击率不是可用安全性；固定模型的自动审批实验不等于人类审批或当前模型 |
+| 插件修复合并后是否可以交付 | 区分源码、构建分发包、已安装配置；验证升级清旧、保他人配置、可回退 | 只有目标单测或 changelog 不足；实际版本、宿主事件、后续会话读回缺一项，就标待接受 |
+
+以上不是同模型同任务 A/B；AI 可实现适配，人须确定实际安装面和接收结果。[研究]
+
+### claude-mem：迁移确认之后仍有三轮改写
+
+日期按原文／合并时间；固定提交，不把漂移的 `main` 当同一版本。[一手／社区]
+
+| 原文、日期与固定产物 | 发生了什么；证据能到哪里 |
+|---|---|
+| [7-03 迁移记录](https://github.com/thedotmack/claude-mem/blob/main/plans/2026-07-03-antigravity-cli-migration.md) | 核已安装 CLI、文件与二进制，并引用此前工作状态；该次明确未启动 live agy 会话或模型调用。只能支持静态迁移条件，不可写成新环境端到端验证。 |
+| [9-11 故障 #4057](https://github.com/thedotmack/claude-mem/issues/4057) | Windows 11、agy 1.2.1、claude-mem 13.24.22，使用者报告无 observations；安装配置仍沿旧事件／路径，输出及 transcript 解析也不匹配。是具体第三方集成故障，不证明所有 CLI 或模型失效。 |
+| [9-12 合并 #4058](https://github.com/thedotmack/claude-mem/pull/4058)，`b11034b6eb406ac0f27fcaf5a013eeef580bad66` | 改 hooks 路径、事件映射、protojson 和 PLANNER_RESPONSE 解析。作者报 29 项测试通过，但分组 schema 仍 provisional，深入 live 验收延期至 #3611；旧测试只匹配源码字符串，曾把错误假设固定下来。 |
+| [10-01 合并 #4274](https://github.com/thedotmack/claude-mem/pull/4274)，`eb55778741d7e0cb802fad1b72140ac0b07bb769` | 再修静默忽略的 schema：顶层为命名 hook，Pre/PostToolUse 与其他事件的结构不同；timeout 为秒而非毫秒。补配置构造、形状测试、幂等合并、旧配置清理和状态提醒。作者报 37 项目标测试通过，但完整套件仍有失败，未做登录后 live agy 验证。 |
+| [10-19 固定修正，#4912](https://github.com/thedotmack/claude-mem/commit/9e4f313a89236f7fb593a639a77ee02e21e94469) | 撤回 SessionStart 不支持的旧假设；上下文由 PreInvocation 转到 SessionStart，避免每次调用的动态内容破坏稳定前缀。升级清理自有旧事件并保留其他命名 hooks；对应测试覆盖映射和清理，仍不等于本仓实际宿主接收。 |
+
+10-01 修正参照 agy 1.2.13 的规范，不能把 9 月事件表写成十月现行契约。其 PR 未包含生成的插件 bundle，需要后续构建分发；因此“合并”“发布”“用户安装后工作”必须分开。10-19 作者报告缓存改善，但模型、控制条件和独立复现不足，不吸取具体百分比为通用收益。[一手／社区／研究]
+
+可吸取的最小接受链：**宿主实际触发 → 适配正确解析 → observation 写入 → 后续会话能读取**，再查升级是否仅清自己的旧配置。原生上下文足够就不增记忆系统；此链不证明当前插件必然坏或额外记忆提高编码效果。[研究]
+
+### gemini-mcp-tool：兼容方案需有退出条件
+
+第二独立维护团队的 [迁移说明](https://github.com/jamubc/gemini-mcp-tool/blob/main/docs/migration/antigravity-cli.md) 与 [6-18 固定实现 `4657eb95`](https://github.com/jamubc/gemini-mcp-tool/commit/4657eb9515288d8fb1262b25e9d01bfe76502d6c)，对应桥接包 1.1.8：针对早期 agy 1.0.x，包含输出恢复、串行调用及能力探测。历史问题涉及非 TTY／Windows 输出，作者核过 1.0.5；不能外推到十月宿主。[一手／社区]
+
+`--help` 能力探测不等于实际调用验证；进程内队列不保证其他实例也串行。输出恢复可能经过 JSON、文本、可选 POSIX PTY 或 transcript；PTY 路径再次调用 agy，不能把它当无副作用的结果读取。未访问私人会话。动作可能已发生时先回读目标状态；稳定原生输出满足需要时撤临时兼容分支。[一手／研究]
+
+两项目分别修生命周期／存储与传输／输出，均增加待验契约。缺当前宿主复测，不排名产品；旧版模型选择与 sandbox 限制不沿用。[研究]
+
+### 权限对照与来源边界
+
+[HarnessSecurity-Bench v1，10-06](https://arxiv.org/html/2610.07639v1) 的方法与权限实验固定 GLM 5.2、Docker 模拟服务及 LLM 审批条件，比较多个 harness 的攻击与合法行为。可吸取“双看安全和可用性”；自动批准的变化不能直接推广为人审效果，启动被 trust 拒绝也不等于正常任务安全完成。这里未锁定其 Gemini 构建与当前 Argon 的同版本对应关系。[一手／研究]
+
+[项目页](https://tsingpig.github.io/HarnessSecurity-Benchmark/)仍说明部分完整试验材料待发布。它不是当前 CLI 安全认证；维护案例也未补齐当前一代同任务编码净收益比较，“最高水平工具效果”仍未知。[一手／研究]
+
+本轮读取原文、PR、固定提交和公开实现，未安装、运行候选或模型，未复跑作者测试；没有完整去重分母，不报漏检率。资料完整不等于效果；整页差距 1 待独审。当前 release、桌面 MCP 与远程执行另核，不拼作本链已解决。[研究]
+
+### P85：当前发行与接收边界
+
+2026-10-22静态核查：[v0.65.0](https://github.com/google-gemini/gemini-cli/releases/tag/v0.65.0)发布于10-20T21:17:57Z，tag固定`6006c14a4decfe4b891c6263ad6ad5992e404b5b`。对应恢复去重[#29618](https://github.com/google-gemini/gemini-cli/pull/29618)、快速退出保历史[#29584](https://github.com/google-gemini/gemini-cli/pull/29584)、取消落盘[#29728](https://github.com/google-gemini/gemini-cli/pull/29728)、不可信workspace设置[#29583](https://github.com/google-gemini/gemini-cli/pull/29583)的merge均为发行祖先，不把merge日当发布日期。[一手：Git对象／发布]
+
+固定[sessionUtils及测试](https://github.com/google-gemini/gemini-cli/blob/6006c14a4decfe4b891c6263ad6ad5992e404b5b/packages/core/src/utils/sessionUtils.test.ts)覆盖既有／并行／缺失工具响应；[记录测试](https://github.com/google-gemini/gemini-cli/blob/6006c14a4decfe4b891c6263ad6ad5992e404b5b/packages/core/src/services/chatRecordingService.test.ts)覆盖快速退出与初始化竞态。它们支持核历史续接，不保证工具绝不重执行。快速Ctrl-C等待取消有1秒上限，cancelled记录不证明副作用未发生。[一手：源码／测试定义，未运行]
+
+同版[sandboxConfig](https://github.com/google-gemini/gemini-cli/blob/6006c14a4decfe4b891c6263ad6ad5992e404b5b/packages/cli/src/config/sandboxConfig.ts)及Seatbelt默认文件与原0.63证据逐字节相同；rewindFileOps／gitService／两层restore与原`06d3298`证据也相同。重新读取settingsSchema确认checkpointing与toolSandboxing默认false，tools.sandbox未设置；旧隔离／恢复范围仍保留，但这是新版本静态复核，不是新实测。workspace设置拒写、user scope仍可写，不能称全项目只读。[一手／研究]
+
+当前[迁移文档](https://antigravity.google/docs/cli/gcli-migration)说明首次启动会迁移活动token到系统keyring，不止转换配置；还须核项目skills、MCP schema及原验收。权限与认证范围应由用户审定，本轮不读取或操作任何凭据。[一手／研究]
+
+独立[报告953](https://github.com/google-antigravity/antigravity-cli/issues/953)是Windows桌面2.12.2、Gemini3.8 Flash High、WSL stdio上两轮随机标记对照：纯structuredContent不可用，text／both可读；没有独立CLI测试。9-06维护回复仅转交桌面团队，9-22是closed时间，不证明修复。吸取“实际模型看到返回内容”这一接收项，不给CLI新增已证缺陷，也不在本仓重做探针。[一手：公开复现／维护回复；研究]
+
+[Remote Control当前文档](https://antigravity.google/docs/remote-control)把交互连接绑定CLI进程，daemon仍须宿主开机；Windows未做管理员boot安装时要登录后才恢复。跨设备UI不等于云端执行。只采用生命周期判断，不新增本仓服务或修改本机设置。[一手／研究]
