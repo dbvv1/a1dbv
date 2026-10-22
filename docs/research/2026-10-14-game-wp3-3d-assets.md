@@ -1,12 +1,14 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
-改变的建议：[经验] 同风格现成资产／已有配方覆盖的参数化资产优先；已有认可几何仅超预算才保源简化，面组织妨碍编辑才比较形状条件重拓扑；只有图片的自定义刚体新需求首试T2.5原生低模、旧合格T2配方不迁移，场景和变形角色另判；处理器先核目标导入器与实际接口，凸分解的顶点／包数参数不能直接当引擎交付保证；旧精灵母版转实时先重验源，不默认只需批转；植被先选同风格且风动源兼容的资源族，区分调风与重做枝条数据；角色扩装先选配套着装身体／头部，跨体型另验源关系
-新证据：[一手／研究] 2026-10-22补SUPRA-Tex／独立Meshy团队的参考外观比较及发布许可／导出边界（§12.4）；2026-10-22补Meshy T2与独立Alibaba的分输入路线比较，旧T2效果不外推T2.5；2026 年论文、商业 API、固定处理源码与作者产物；追加门 GLB、关节导出、重贴图及程序化范围证据；凸分解另核主分支／Unity 包差异、合并退出与原生引擎契约，未运行模型／引擎；2026-10-20补T2.5默认／预算与Tripo入口差异；2026-10-19补Naev旧源补做、转换脚本边界及正式发行；2026-10-20补Unity 6.3／UE 5.8风动契约、TreeIt导出限制及Firewatch／Fortnite历史制作反例
+改变的建议：[经验] 保合格资源族与可编辑源默认；缺结构时比较PVE源端恢复，角色按联合生成／骨骼对应refit／无共享rig拟合分流，GPU凸分解仅限已有设备且吞吐成为瓶颈。建筑保布局／门窗，刚体分预算简化／面组织重拓扑／缺件生成，外观与几何分别接收；所有路线保身份、许可和目标消费者门槛。
+新证据：[一手／研究] 2026-10-22补PVE／独立GPU树生成、Rigel3D／LoBoFit／LUIVITON、CuACD／独立VisACD的输入、发布与采用边界；复用已核ProxyBuild／ShellMaker、SUPRA-Tex／Meshy、T2／TaoFlowForge及固定处理源码、局部二改证据。未运行新模型／引擎；旧局部验证与动态版本各在原节维护。
 
 # WP3：3D资产路线、原生低模与第二次修改
 
 核实时间：2026-10-14（UTC+8）；2026-10-16（UTC+8）补核凸分解接口／预算（§5）、TaoFlowForge 许可与装载链（§10.2）、程序化形状／风格范围（§13）。2026-10-20（UTC+8）补核T2.5、Tripo入口及窗口扫描（§2.1、§10）。正文见[3D资产专题](../../domains/game-dev/assets/3d.md)。以下“首试”是理论选型优先级，不是已测质量冠军。来源标签：[一手]官方文本/源码；[研究]论文或作者测量（须再分）；[经验]本报告决策。
 
-本轮参考外观的最高水平卡与采用变化见[§12.4](#124-参考外观同网格比较与观测约束)，沿原重贴图问题深化；以下刚体／资源族卡保留各自范围。
+整页选择矩阵见[3D当前最高水平](../../domains/game-dev/assets/3d.md#当前最高水平能定向改不等于只剩最终文件)。本次补齐植被源端恢复、角色联合生成／衣物拟合与GPU凸分解的领先替代；默认属于条件化工程选择，不是完整生产效果排名。各卡的旧局部gap2只记录当时范围，当前整页状态以正文为准。
+
+此前模块建筑的最高水平卡与采用变化见[§4.1](#41-最高水平卡保布局扩建筑外观族)；参考外观见[§12.4](#124-参考外观同网格比较与观测约束)，沿原重贴图问题深化；以下刚体／资源族卡保留各自范围。
 
 ## 当前最高水平卡：刚体生产路线
 
@@ -28,7 +30,7 @@
 
 ## 当前最高水平卡：资源族的编辑母版与优化交付
 
-沿用质量审计[最高水平卡A02](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#a02--3d)，以下保留已运行的局部二改卡；[§17](#17-p37刚体同题头盔补质量证据不等于生产冠军)沿A02引用链补高细节刚体卡及同题作者图证。前沿比较状态：**局部改件已比较，整页差距2**；[§18](#18-p37连续局部改件保旧内容还是整物再生成)新增连续修改比较，仍未做领先生成与现成／程序化的共同生产比较。
+沿用质量审计[最高水平卡A02](../collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#a02--3d)，以下保留已运行的局部二改卡；[§17](#17-p37刚体同题头盔补质量证据不等于生产冠军)沿A02引用链补高细节刚体卡及同题作者图证。该轮前沿比较状态为局部改件已比较、整页差距2；[§18](#18-p37连续局部改件保旧内容还是整物再生成)新增连续修改比较，仍未做领先生成与现成／程序化的共同生产比较。
 
 核实：2026-10-21（UTC+8）。本卡只判断同一带骨骼资源族连续改色／改动作的保留能力，不重排生成模型的美术质量榜。[研究]
 
@@ -48,7 +50,7 @@
 |用途|质量优先|性价比优先|本地/免费|
 |---|---|---|---|
 |静态刚体道具|✅ 采用与画风一致的成熟完整资产；缺少独特近景物件时🧪先试Meshy 7.1，Rodin Gen-2.5作为高细节/多图对照。二者无独立同题盲测，不排序为绝对最佳|✅ 同包复用；确需新形状时🧪Meshy T2.5原生低模，显式预算、先灰模；旧合格T2配方保留；Tripo P1作替代，API P2 Preview仅对照|✅ Kenney Nature Kit/简单参数化几何。写实可👀Poly Haven单资产，仍核预算；不强凑“免费本地生成冠军”|
-|场景|✅ 同套模块/材质拼装，近景标志物单独补生成；👀Marble Pro只用于交互弱、可接受烘焙观感的环境候选|✅ Kenney/Quaternius同包模块+脚本布局，不把整个关卡作为一个mesh重生|✅ 同包现成模块/引擎基本体；👀Infinigen只借资产/程序配方，不默认整套世界生成输出直接进游戏|
+|场景|✅ 同套模块/材质；已有建筑布局只扩外观先保墙／门窗、复用组合，缺件单独补生成；👀Marble Pro只用于交互弱、可接受烘焙观感的环境候选|✅ Kenney/Quaternius同包模块+脚本布局，不把整个关卡作为一个mesh重生|✅ 同包现成模块/引擎基本体；👀Infinigen只借资产/程序配方，不默认整套世界生成输出直接进游戏|
 |变形角色|✅ 同一现成角色生态、已知拓扑/骨架的完整资产；👀自定义生成仅当玩法允许退回刚体分件或替换角色|✅ Quaternius配套头部＋着装分件，固定身体覆盖／动作版本；不保证任意裸身体跨体型穿衣（§15）|✅ 指定CC0角色包的免费可下载部分；⛔不把TRELLIS/LATO.2默认安装或Hunyuan作为全球商用无条件路径|
 
 零人工修拓扑、UV 和权重是准入条件；质量优先还要比较目标相机下的轮廓、细节与风格，以及追加处理和二改代价，不构成现成／生成的审美排名。[经验] 当前服务费不能跨品牌直接比较credit；尚无保留所有淘汰样本与主动工时的可比成本。[研究]
@@ -118,6 +120,33 @@ Poly Haven用于写实单资产，仍可能超游戏预算；[2026-07-18 API说�
 
 何时可以用：固定背景、有限视点、步行探索且对象不需频繁交互的候选。何时撤回：门必须开、墙体要破坏、可拾取物体要替换、动态灯光必须一致或第二次改布局不能隔离影响时，退回模块mesh。[经验]
 
+### 4.1 最高水平卡：保布局扩建筑外观族
+
+核实：2026-10-22（UTC+8）。问题是既有可玩建筑布局如何扩同风格成员、再局部换风格，而非从一张图生成整栋建筑。[研究]
+
+| 层次 | 同题做法与采用变化 |
+|---|---|
+| 当前最高水平 | **完整商用、零手修、含二改总投入的建筑族最优仍未知。** HIT／鹏城实验室Tang等的[ProxyBuild，2026-09-20](https://arxiv.org/html/2609.23386v1)与独立Purdue Xu／Aliaga的[ShellMaker，2026-06-30，ECCV 2026](https://arxiv.org/html/2606.31680v1)提供近期受结构约束的外观补全比较；前者评后者，不是独立复测或相同协议的综合冠军。[作者报告／研究] |
+| 主流／可行参照 | §13的成熟模块／规则体系保留已合格源件与连接；Tiny Glade近期木墙扩展仍有前置制作，旧WFC实现只支持已建模块。这些是工程参照，不是多数采用率或同预算审美排名。[一手／研究] |
+| 本仓推荐层次 | **条件化工程默认**：仅扩外观先冻结占地／墙／门窗，复用库内件、组合及成对材质；缺件才生成可替换候选。尺寸／拓扑也改则回已有布局配方。生成只承担它实际供给的一层，不另建通用建筑框架。[经验] |
+
+**输入与可改范围先于排名。** ProxyBuild §3.1需要已经划分潜在结构槽的多边形壳体，不是任意原始模型；§3.3从离线资产库检索／调参，约束不满足可退回默认程序件。样式／属性修改可重算目标槽及约束邻域，槽位用途／几何／拓扑变化须重跑完整预测。它没有承诺生成库中缺失的新模块。ShellMaker §3从已知墙和门窗语义补屋顶、部件及配对PBR材质；这比“参考图看起来同风格”多了结构输入，但不是任意引擎场景的无损导入。[作者报告／研究]
+
+**比较支持分层，不支持全赢。** ProxyBuild §4的BuildingBlock-Box是同库最近邻后独立缩放的改编基线，非完整原方法；Meshy／Trellis未锁当前版本且不是同壳输入。ShellMaker在其NCR上略高，作者20人×10组评分也不证明游戏交付。ShellMaker自身§4以骨架深度／语义图经Nano Banana给生成基线构造输入；表1/2显示结构较强，Trellis-2的风格指标／裁判风格偏好仍可领先。其100对偏好由同样参与规划的GPT-4.1评判，不是独立人类盲评；CAD占地IoU仅.889，拱窗Opening IoU还须结合中心偏差理解。[作者报告／研究]
+
+**独立反例决定撤回线。** ProxyBuild §5受粗／过密分槽和有限库覆盖限制；ShellMaker §4.7与附录Failure示出畸形部件、密集门窗交叠，当前无严格几何碰撞检查。外观一致不等于接口可接或可通行；若必须手工修网格，换合格源件／缩风格，不用无限重抽抵消结构错误。保原资产身份与碰撞封装是本仓工程建议，并非两篇论文已实现的交付保证。[研究／经验]
+
+**发布物、许可和成本另核。** ShellMaker于2026-09-01发布，固定[README](https://github.com/ruiqixu37/ShellMaker/blob/61ff29fe24d9b744a0d052e342793b6df32342cd/README.md)只列PNG占地图和Holodeck JSON／可选GLB；源码loader仅有Holodeck，不把论文CityGML／CAD能力当现成入口。README的纹理包为298墙／73屋顶，与论文498／81不同。项目代码MIT、纹理另按来源CC0；Holodeck附带资产许可逐件不同，模型与图像服务也须另核，不由根MIT一并放行。[一手：固定README／LICENSE]
+
+固定发布代码不满足直接覆盖原玩法壳的契约，以下是源码核对，不是运行结果：
+- **输入／输出**：[main.py](https://github.com/ruiqixu37/ShellMaker/blob/61ff29fe24d9b744a0d052e342793b6df32342cd/main.py#L366-L398)分PNG与Holodeck。PNG从占地图新排开口；Holodeck[重建原墙](https://github.com/ruiqixu37/ShellMaker/blob/61ff29fe24d9b744a0d052e342793b6df32342cd/visualization_utils/assemble_scene.py#L1881-L2001)，不是保原网格。[一手]
+- **坐标**：[归一函数](https://github.com/ruiqixu37/ShellMaker/blob/61ff29fe24d9b744a0d052e342793b6df32342cd/src/shellmaker/utils/scene_geometry.py#L289-L310)将有效场景居中、最大包围盒边缩至1且不返回变换；组装器[PNG调用](https://github.com/ruiqixu37/ShellMaker/blob/61ff29fe24d9b744a0d052e342793b6df32342cd/visualization_utils/assemble_scene.py#L1616-L1632)和[Holodeck调用](https://github.com/ruiqixu37/ShellMaker/blob/61ff29fe24d9b744a0d052e342793b6df32342cd/visualization_utils/assemble_scene.py#L2062-L2071)都发生在GLB导出前。JSON中保存布局不代表最终GLB保米制、枢轴和世界位置；新饰物改变外边界还可能影响整栋缩放。[一手／研究]
+- **复用**：README说缓存／复用部件可确定性重用，但未承诺完整来源身份。[TRELLIS.2客户端](https://github.com/ruiqixu37/ShellMaker/blob/61ff29fe24d9b744a0d052e342793b6df32342cd/src/shellmaker/parts_generator/trellis2_client.py#L193-L221)按tag文件名和recycle开关跳过生成，不校完整prompt／模型配置；[Holodeck路径](https://github.com/ruiqixu37/ShellMaker/blob/61ff29fe24d9b744a0d052e342793b6df32342cd/src/shellmaker/holodeck_pipeline.py#L29-L201)内存键为category＋assetId，磁盘搜索只按类别／尺寸启发式，未核风格。跨风格共用目录可能复用错件，不能称已交付版本化模块库。[一手／研究]
+
+ShellMaker附录报告500次自动运行均值约9.6分钟，非人工选库／准备、淘汰、连续二改的总成本；低于5%的畸形部件报告也不等于其余均可游戏发行。README列默认约24GB显存及低分辨率分支，图像重生不承诺seed复现。ProxyBuild离线库还含Sketchfab与程序件，准备、逐项授权和总成本未建立；本轮未找到可核的官方发布链接，保研究候选，不称确定未开源。保留全部淘汰、库准备、API／算力、导出与主动工时，不能以局部重算机制声称已经省钱。[一手／作者报告／研究]
+
+本轮仅公开原文与固定源码核对，没有安装或运行模型／引擎，也未产生新建筑族。该轮只覆盖建筑外观族；植被与兼容变形供给由下方整页补核接续，不把本卡单独算作整页完成。[研究]
+
 ## 5. 从几何到游戏资产：借成熟处理，别重造框架
 
 ### 拓扑、UV与贴图
@@ -131,7 +160,7 @@ Poly Haven用于写实单资产，仍可能超游戏预算；[2026-07-18 API说�
 
 LOD应由目标视距/屏幕误差决定，保轮廓、孔洞、材质接缝和挂点；50%/25%只是候选比率，不是游戏跨类型通用规格。材质/UV断开会增加实际顶点；只看faces会漏预算。骨骼LOD必须另验skin/morph，不能纯几何降采样后假设可用。[经验；meshoptimizer机制支持]
 
-碰撞代理优先box/sphere/capsule或少量compound，独立于可见网格。Unity 6.3 [MeshCollider](https://docs.unity3d.com/6000.3/Documentation/Manual/class-MeshCollider.html)文档限制convex 255 triangles，动态物体建议优先primitive；因此把生成mesh直接拿来convex并非自动适配。[一手] 确实需要凹结构时👀[CoACD@131010c4](https://github.com/SarahWeiii/CoACD/tree/131010c4f03fec375ea88c5c6263f120046cb7f1)，MIT，独立库与另版Unity接入的参数能力须分别核实；2026-04实单位误差、9月另有CuACD GPU研究。单人规模不因新算法百倍宣传就加CUDA部署。[一手；经验] 孔洞能否穿过、碰撞块数、角色/投射物所需精度由玩法决定，代理可故意不同于画面。[经验]
+碰撞代理优先box/sphere/capsule或少量compound，独立于可见网格。Unity 6.3 [MeshCollider](https://docs.unity3d.com/6000.3/Documentation/Manual/class-MeshCollider.html)文档限制convex 255 triangles，动态物体建议优先primitive；因此把生成mesh直接拿来convex并非自动适配。[一手] 确实需要凹结构时👀[CoACD@131010c4](https://github.com/SarahWeiii/CoACD/tree/131010c4f03fec375ea88c5c6263f120046cb7f1)，MIT，独立库与另版Unity接入的参数能力须分别核实；2026-04实单位误差、9月另有CuACD GPU研究。小批不因加速宣传就新增GPU部署；近期比较见下。[一手；经验] 孔洞能否穿过、碰撞块数、角色/投射物所需精度由玩法决定，代理可故意不同于画面。[经验]
 
 #### 凸分解预算：先核实际接口
 
@@ -143,6 +172,16 @@ LOD应由目标视距/屏幕误差决定，保轮廓、孔洞、材质接缝和�
 - **引擎按各自契约消费。** [一手／研究] 上述 Unity 6.3 文档写的是 triangles，CoACD 参数写的是 vertices；本轮不推导一个顶点阈值保证 cooking 通过。UE 5.8 [原生 Auto Convex API](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/StaticMeshUtilities/SetConvexDecompositionCollisions-)另有 `Hull Count`、`Max Hull Verts`、`Hull Precision` 和成功返回值，可🧪先作原生基线，但调用会移除既有碰撞，先保留原资产／碰撞。[教程](https://dev.epicgames.com/documentation/en-us/unreal-engine/add-a-collision-hull-to-a-static-mesh-using-the-auto-convex-collision-tool-in-unreal-engine)的 32／16／50,000 是示例，不是通用配置或 Chaos 硬限，不能套 Unity 上限。
 
 [研究／经验] 在选定接口实际导出的每个凸包上分别记录顶点、三角面与总包数，再看目标引擎生成的碰撞是否保住所需孔洞／接触轮廓；压预算破坏玩法形状时撤回该配置，不以成功日志放行。本轮只读固定源码、维护者答复和官方契约，未运行处理器／引擎或验证输出，不声称质量、性能、失败率或 cooking 通过率。
+
+#### 近期碰撞比较：只在吞吐瓶颈时增加GPU路线
+
+核实：2026-10-22。**保留primitive／少量compound；已有NVIDIA GPU且复杂凹网格批量吞吐确成瓶颈时，CuACD升为可比较候选，不替代消费者验收。**[研究／经验]
+
+- [CuACD，Shi等，2026-09-23，§5.2–5.3](https://arxiv.org/html/2609.28731v1#S5.SS2)在同PaMO预处理后比较CoACD／NavACD／VisACD，4090＋i9-12900K下，V-HACD数据集上的CuACD均值0.23秒对CoACD18.03秒；预处理排除，阈值仅按V-HACD平均质量近似匹配，不是逐资产等质量。增强候选池移回CPU也有质量收益，不能全归GPU。它与CoACD共享作者，不算独立复测。[作者报告]
+- 独立SFU团队的[VisACD，Fokin／Savva，2026-04-05，§4–5](https://arxiv.org/html/2604.04244v1#S4)走方向鲁棒／少碎块路线，比较先SDF重网格并关闭双方合并；仍有贪心局部最优与拓扑敏感。这支持另一种同题取舍，不是CuACD独立验证，两文不能拼成速度总榜。[作者报告／研究]
+- 固定[CuACD@13a00e25](https://github.com/eliphatfs/cuacd/tree/13a00e25477f53a3533938b0325e2d575e3fd68b)（2026-09-25）。[README](https://github.com/eliphatfs/cuacd/blob/13a00e25477f53a3533938b0325e2d575e3fd68b/README.md)预编译运行不需CUDA toolkit／PyTorch，仍需NVIDIA GPU／驱动；首进程初始化约1秒，默认池占空闲显存70%，非位级可复现。[API](https://github.com/eliphatfs/cuacd/blob/13a00e25477f53a3533938b0325e2d575e3fd68b/cuacd/__init__.py#L367-L450)未暴露最终包数、每包顶点／三角上限，`max_n_cutting`不是包数预算。CLI自动规范并还原尺度，直接API需调用者规范；两入口默认不全同。源码[许可字段](https://github.com/eliphatfs/cuacd/blob/13a00e25477f53a3533938b0325e2d575e3fd68b/pyproject.toml#L5-L13)为LGPL-2.1-or-later，不是CoACD MIT；离线工具采用与随游戏分发分开清权。[一手]
+
+决定：小批先保成熟CPU／目标引擎原生流程。比较GPU时计冷启动、预处理、显存、导出及实际cooking，逐包预算与玩法孔洞仍按上节验；算法耗时不是游戏物理帧时。未安装或运行处理器／引擎，不报本仓性能。[研究／经验]
 
 ### 材质、透明、风格
 
@@ -434,7 +473,7 @@ Meshy 端点当前 `latest` 标 Meshy 7，不能借几何生成页的 7.1 推断
 
 **采用与停止线。** 原材质能表达的修改不重贴图。新纹样先用同一源与目标相机比较，旧UV有效则显式保UV；参考结构不吻合先重选匹配源／视点，关键字样、隐藏接续或打光反复失败则换合格源／缩需求，不能无限加分辨率或转为人工美术修补。[Meshy端点](https://docs.meshy.ai/en/api/retexture)本次仍列`meshy-7`；1–4视图需显式该型号，`latest`不接受多视图。多视图是补充输入能力，不保证真实隐藏面正确。[一手／经验]
 
-成本包括全部候选、淘汰、补参考、贴图、通道处理、重烘／引用适配与主动检查；无可比总额，不把研究采样速度当本地免费性价比。Agent负责固定输入与差异，人接收风格／文字／材质表现；§12.1–3的UV、槽位、节点、skin及整页许可、LOD、碰撞、导入检查保留。本轮仅公开原文与源码，未运行模型／引擎。整页其他主要选择仍缺近期同题比较，保gap2，不以“没本仓实验”本身扣分。[研究／经验]
+成本包括全部候选、淘汰、补参考、贴图、通道处理、重烘／引用适配与主动检查；无可比总额，不把研究采样速度当本地免费性价比。Agent负责固定输入与差异，人接收风格／文字／材质表现；§12.1–3的UV、槽位、节点、skin及整页许可、LOD、碰撞、导入检查保留。本轮仅公开原文与源码，未运行模型／引擎。该轮仅闭合参考外观局部比较，不独占整页评分；后续整页状态见开头矩阵。[研究／经验]
 
 
 ### 输出兼容：先核消费者再压缩
@@ -521,6 +560,16 @@ Marian Kleineberg 的 [2019 作者复盘](https://marian42.de/article/wfc/)说�
 
 同作品[10-01修订](https://secondchancegame.com/devlog/2026-10-01-root-lock)仍需处理不标准体型的衣物翻面、露脚与配饰，人看图后才接收；[09-19记录](https://secondchancegame.com/devlog/2026-09-19-ground-that-isnt-there)还报告衣物与身体LOD不匹配，强制LOD0只是临时退路。因此旧报告的姿态修正不能当衣橱已经闭合。未核公开生产源码、正式发行、全部修复或独立测量，不采用“几次会话”估算本场景工时。[作者报告／研究]
 
+### 近期角色供给：先区分联合生成与衣物拟合
+
+核实：2026-10-22。**最高水平不是一个通吃生成器，而是按输入保住运动与形体约束。** 同题现成衣橱仍是可行默认；以下近期论文改变候选分流，不证明商用完整赢家。[研究]
+
+- [Rigel3D，Chatzis等，2026-05-13，§5–6](https://arxiv.org/html/2605.13129v1)：图像条件下联合生成形状／骨架／权重，对照相同训练数据下TRELLIS后接Anymate／Puppeteer，另比AniGen；AniGen按作者自设渲染协议重测，骨架／权重指标并非每项全赢，也不保证旧顶点／rig身份。它支持新增联合生成分支，但无长动作监督，仍可能缺关节、错分支或在极端姿势失真。本文未核到可采用的完整发布／权利链，仅作研究标尺。[作者报告／研究]
+- [LoBoFit，Zhang等，2026-05-08，§3、5.1、6.2、7](https://arxiv.org/html/2605.07450v1)：需源着装身体、相近姿势／骨架拓扑及一致骨骼索引；与IFGR比较保形和局部对应，并非任意两个网格互穿衣。残余身体／自穿插、逐帧闪烁及LBS极端变形仍在；所报单件耗时不是整族制作成本。[作者报告／研究] 固定[README@f7383aab](https://github.com/MengZephyr/LoBoFit/blob/f7383aab310e5ac8926a4e4a896937413471a419/README.md)代码BSD-3-Clause，但明确不授专利许可且有中国待审申请；样例衣物／身体权利另核，不由代码许可放行。[一手]
+- 独立团队[LUIVITON，Cao等，2026-05-15 v2，§4.3、4.8](https://arxiv.org/html/2509.05030v2)不需共享rig，改用SMPL中介拟合；输入衣物须A/T休息态，目标须足够人形。100套上衣／裤×4姿势的对照为公平省去身体注册、共用SMPL输入，不能把局部表格胜率外推全部复杂身体，且上衣穿插率不优于后处理DrapeNet。硬甲、断开纽扣／拉链可失败，长衣可能未收敛。[作者报告／研究] [项目页](https://cao-cong0.github.io/LUIVITON-Learned-Universal-Interoperable-VIrtual-Try-ON/)明确输出是初始姿势拟合，不是完整动作衣橱；固定[第三方声明@539cd9ca](https://github.com/Cao-Cong0/LUIVITON-Learned-Universal-Interoperable-VIrtual-Try-ON/blob/539cd9ca9161cbf66236754474115f9ec4ccc059/THIRD_PARTY_NOTICES.md)限定MIT为自有代码，SMPL等单独许可、RVH再分发待确认。[一手]
+
+**决定：保配套衣橱默认，按输入选择专项候选，而非一遇跨体型就继续自动绑定。** 没有完整权利链时不升商用推荐；初始拟合后仍验动作、身体覆盖、绑定、LOD和旧组合。LoBoFit与LUIVITON是独立团队、不同输入路线的比较，不是二者同题复测；没有运行模型／引擎，不报告净工时或通过率。[研究／经验]
+
 ### 参数化替代也要有衣物源关系
 
 **🧪 MPFB只在已有MHCLO衣物与目标身体范围覆盖时比较。** [MHCLO](https://static.makehumancommunity.org/mpfb/docs/assets/concept_clothes_hair_bodyparts.html)除mesh外还有衣物顶点与基体的对应关系，改变身体参数后需[refit](https://static.makehumancommunity.org/mpfb/faq/clothes_do_not_fit.html)，密集mesh自动refit也会增加交互成本。这比“同骨名”多了制作期拟合依据，不等于游戏运行时自动穿任意衣服。[一手／研究]
@@ -550,6 +599,16 @@ AI可盘点实际清单／版本、做装配与导出脚本、查缺引用和回
 **UE 先保已合格路线，不因 Nanite 名称强制迁移。** [UE 5.8 Nanite Foliage](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-foliage)及 Dynamic Wind 标为 Experimental；其风动需 skeleton／simulation groups、JSON 导入的 Dynamic Wind Skeletal Data 和 Instanced Skinned Mesh Transform Provider。当前仅全局风向、不含玩家或物体互动，这是该风动系统的范围，不是 UE 通用碰撞失效。Voxel shading 会覆写顶点色 alpha，旧数据若使用它须重新安排，不能默认为所有 TreeIt 输出都受此影响。[一手]
 
 **简单摆动有独立位置，但不能冒充定向风。** [SimpleGrassWind](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-position-offset-material-functions-in-unreal-engine)是非定向摆动，可调权重、强度与速度。草／低关注灌木只需轻摆时可🧪作为低复杂度候选；二改要求指定风向时，须换支持该输入的消费者并验源，不是调一个不存在的方向参数。[一手／研究]
+
+### 近期植被比较：恢复源结构还是每帧生成
+
+核实：2026-10-22。**保合格风动资源族默认，但补源端恢复／生成分支，不把“只剩静态成品”直接判成无解。**[研究] 本节PVE经官方公开HTML正文与索引摘录交叉核对；GPU论文据作者镜像逐页索引（§3.5–4及限制），未取得整份PDF，不冒称完整验读。
+
+- [UE5.8 PVE官方文档](https://dev.epicgames.com/documentation/unreal-engine/procedural-vegetation-editor-pve-in-unreal-engine?lang=en-US)的Extract From Mesh可提取原生骨架／生长数据；有叶时须树干／叶分材质，不能提取叶片用于重新实例。Recompute Point Scale承认提取半径会错，图像提取可能过平；Export需Mesh Builder输出才可绑定骨架／生成风数据，Grower瞬态不能直接导出。5.7资产不兼容5.8，仍Experimental。**采用源端恢复为候选；需手修才合格就撤回，不以节点存在宣称零手工可用。**[一手／研究]
+- Epic／CDPR的[Witcher 4技术复盘，2025-11-26](https://www.youtube.com/watch?v=EdNkm0ezP0o)与[当前Nanite Foliage](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-foliage)提供比旧历史案例更新的规模参照：Assemblies／Voxels与骨骼处理细节、远景覆盖及风动。技术演示不等于本作品全族采用；目标平台、草／灌木配方与增密预算须另判，实验功能不强制迁移。[一手／研究]
+- 独立Coburg＋AMD的[Kuth等，HPG2025《Real-Time GPU Tree Generation》](https://doi.org/10.2312/hpg.20251168)以Weber–Penn参数／可选样条每帧生成几何；§3.5–3.6支持风向、改形／裁剪，§4展示20类树／灌木和连续LOD。它不是任意照片／mesh恢复器，也不自动消除树自交／树间穿插；51KiB只是持久树参数，测试work graph另有约1.5GiB临时backing，不能当整管线显存。公开[gptree@adf96a5b](https://github.com/Bloodwyn/gptree/blob/adf96a5b989eb01d0881e50dd2003cd2ad22276e/readme.md)为MIT代码的简化实现，依赖／素材另核；需D3D12 Work Graphs 1.1 Mesh Nodes硬件／驱动与配套Playground，不是完整论文系统即用。[作者PDF索引正文摘录／一手源码／研究]
+
+**决定：只有目标设备、可维护源配方和近景／风动收益相符才比较迁移；否则保合格族。** 保图／网格、生成配方与版本，不只保烘焙产物；树冠增密与摆放增密分开验。引擎许可、[Fab资产许可](https://www.fab.com/eula)及具体包权利分开，未清具体资源包；本轮未跑模型／引擎，不能报告同场景两改工时、通行或跨平台赢家。[研究／经验]
 
 ### 15.2 实际采用说明维护代价，不证明零手修
 

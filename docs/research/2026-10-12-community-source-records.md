@@ -1,4 +1,4 @@
-主线：二为主，兼三／四；P59聚焦小修复的回归交付，P58聚焦团队接收与持续维护
+主线：二为主，兼三／四；P82补路由基线、验证封装维护和中文真实交付；P59聚焦小修复的回归交付，P58聚焦团队接收与持续维护；P68比较Claude入口整页选择
 改变的建议：[经验／研究] 小修复原生起步也交回归，退出整包不撤验收。团队试用、长期接收、减人审与生产放量分开决定，不按人数升级。入口分界面、harness与执行环境；只缺整理时保原CLI，ACP另验配置和审批，生产profile成果不归因于IDE。长命观察由接续交付者持有，进程移交须连同投递与恢复核查；清理指令保留默认／条件，未决实现与规格冲突先不改写；计划陷入构建与转抄循环时，先保留接口与断言、缩减实现正文；原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
 新证据：[一手／社区] Krupa固定两臂小任务与五轨迹抽核、Huntley确定性反馈自述；中文／Reddit／实践者的流程包、单项 Skill 与语义检索采用取舍及当前 star 快照；Hermes 子进程退出清理的故障报告、发布实现与 notify／gateway 反例；doc-cleanup 语义误缩自报及撤回“代码为准”的固定修订；Superpowers #2333 的计划配方修订、分模型作者重放与无 Skill 反例；Copilot CLI Free／本地BYOK接入与组织限制、MCP治理官方口径冲突，gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
@@ -223,7 +223,7 @@
 | 用量监控 | 原生状态不能解释历史异常消耗 | ccusage（19093）：🧪 [只补历史诊断](../02-models-and-cost.md#31-查异常消耗ccusage-只补历史诊断) | 不能解释差异就不加；日志估算不是实扣或剩余额度，缺失日志不能补造 |
 | 多 Agent 编排 | 有独立可验收支线，或原生委派不够管理重复任务 | OpenHands（91396）：🧪 有重复任务且能负担部署再试；[08](../08-multi-agent.md#30-秒选择)默认先原生子 Agent | 算到汇总、整合与验收结束；审批送不到或结果归属不清时缩回单层／串行，不以并发数证明收益 |
 | GUI 外壳 | 需要可视化管理多个工作区／任务，而非增加模型能力 | Vibe Kanban（28409）：👀 按维护承受能力评估本地版，暂缓依赖原托管协作；[08 的服务边界](../08-multi-agent.md#3-第三方编排工具) | GUI 与编排有交叉，不作额外独立样本；`archived=false` 不证明维护质量，缺可靠接管就不迁入 |
-| 模型路由 | 固定模型／固定分工在重复任务上已有可测瓶颈 | 动态模型路由的可比开源代表**空白／未评**；邻近的 CC Switch（146774）仅沿用 👀 配置／供应商管理评级，不能填作自动按任务选模型的证据 | [02](../02-models-and-cost.md#3-订阅额度与成本控制)先比较固定分工；CC Switch 4.0 有 Routing／Aggregation 入口，但没有本表所需任务级模型选择收益证据；配置切换与自动模型路由不混为一类 |
+| 模型路由 | 固定模型／固定分工在重复任务上已有可测瓶颈 | 已比较Scrouting／TwinRouterBench与原生Cursor Router，👀 暂不默认另加路由层，见[P82正反证据](#p82动态路由先选对固定基线)；CC Switch（146774）仍仅为配置／供应商管理代表 | [02](../02-models-and-cost.md#3-订阅额度与成本控制)先比较固定分工；CC Switch 4.0 有 Routing／Aggregation 入口，但没有本表所需任务级模型选择收益证据；配置切换与自动模型路由不混为一类 |
 
 星数沿用一份审计快照，不与下文 18:44 UTC 的三项目快照相减算增长。审计获取 Serena／ccusage 带时间的 stargazers 首次分页返回 401 后停止，未取得历史；这是数据缺口，不是零增长。本表扩充的是覆盖与采用入口，未新增客户端／模型运行或八类效果比较。**[研究：取证与验证边界]**
 
@@ -756,3 +756,145 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 - **保留失败分支，不默认升级移交承诺。** [#108479](https://github.com/NousResearch/hermes-agent/issues/108479)在9月11日固定main `8226c2f6a283c48fb97c1750a0ec2907739146d0`报告Windows／Python3.13／Git Bash复现：notify-off无完成事件、gateway watcher仍指child、checkpoint保留旧owner；原notify-on CLI用例仍通过。发行实现也未在transfer中更新notify或写checkpoint。[#108483](https://github.com/NousResearch/hermes-agent/pull/108483)拟补三者并明确finite session需主动查询；本轮API仍open、未合并。作者报告六项handoff测试通过，相关大组仍有六项基线失败，不能称全绿或已发布修复。[社区：独立报告与测试自报；一手：状态／补丁]
 
 **当前选择与撤回。** 观察任务仍在原授权范围内时，优先让最终消费结果的主任务持有它；原生前台返回已经够用就不加后台观察。确需接管现有进程，先核实际入口的移交和查询能力；结果未知时查原任务，不重派外部作业补通知。须跨主任务重启继续而现有入口无保证时，记录阻塞与恢复入口，不靠模型承诺常驻。下一条值得升级的证据是notify-off／gateway／恢复后父端实际消费，而非更多同一CLI绿灯。[经验：采用与撤回]
+
+
+## P68：Claude Code 整页选择与产品接收
+
+核实2026-10-22（UTC+8）。改变Claude入口：质量审查不机械沿用日常medium；脆弱运行入口先修环境而非堆Skill；恢复、接收与撤回要核当前产品事实。只读研究，无模型／客户端／产品执行。[研究]
+
+**最高水平与来源分工。** [Claude团队10-15评审复盘](https://claude.dev/blog/solving-code-review-at-anthropic/)提供短风险指引、分层检查与收敛；[Opus 5.5／Addy Osmani，9-22](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)支持完整目标及明确停下条件，均是厂商实践，不作独立效果证明。独立[Cloudflare／Ryan Skidmore，10-19](https://blog.cloudflare.com/obsessive-inference-optimization/)支持按角色比较effort，代码质量high与协调器medium不能混成统一档；采用代理与模型裁判边界沿用[02](../02-models-and-cost.md)及[22研究](2026-10-12-experiment-records.md)，不重复计新发现。[一手／研究]
+
+独立[Cursor／Mathew Hogan、Arvind Saripalli，7-30](https://cursor.com/blog/cloud-agent-environment/)比较构建Skills与简化运行接口，支持先修可运行、可观察环境；机制已有[探索记录](2026-10-15-exploration-evidence.md#两项本轮真正改变建议的补漏)。独立[Shopify River，9-02](https://shopify.engineering/river-vulnerability-remediation)核live state、弃rebase前旧CI、保人的接续提交，产品需求澄清后还会撤回自己的加固。它支持恢复／交接与产品判断，不是Claude原生对自建harness消融；既有P58不重复算新来源。[一手：团队自报；研究：适用范围]
+
+### Bun：编译、评审通过与现实产品路径并非同一个判据
+
+[Jarred Sumner，7-08原作](https://bun.com/blog/bun-in-rust)记录Bun在5月借预发布Fable 5和多角色workflow迁移Rust；并非当前Claude默认配置的同题对照。本文仅借其接收问题；Bun与Claude Code同属Anthropic，不能拼成独立团队佐证。[一手／研究]
+
+- **实际接收的根因修复**：[PR30977](https://github.com/oven-sh/bun/pull/30977)5-18合入[31ec206600ccf39f3ee659ebaf6af981ef02039f](https://github.com/oven-sh/bun/commit/31ec206600ccf39f3ee659ebaf6af981ef02039f)。Rust的debug_assert!在release省掉了insert_stale必要副作用；补丁把注册调用移出断言。它没有新增JS回归断言，作者所报静态／既有测试与手工检查不等于本轮独立端到端复测。[一手：补丁与合入；研究：范围]
+- **没有接收的另一候选**：[PR30684](https://github.com/oven-sh/bun/pull/30684)，head b73db1ffd2f8834ef021639c11f04ec13b18ec7d，测试手工剥去bundle的refresh字段，再检查模拟环境启动不崩；不能自动证明真实文件编辑后的热更新与重渲染正确。当前PR正文仍描述早期self-accept方案，不能代替最终补丁和后续讨论。[一手：公开产物；研究：覆盖边界]
+- **实际撤回**：[关闭说明](https://github.com/oven-sh/bun/pull/30684#issuecomment-5274074507)称在release 1.4.0-canary da3851e57与debug main 165dc9fcbf复核，当前生产者不再生成缺refresh的输入，因此关闭guard；若真实缺失再出现可以重审。这是作者复核，不证明全部部署环境无风险。本次GitHub元数据确认8-12关闭、未合并；Web缓存仍显示open，采用连接器读回状态，不据缓存复活候选。[一手：接收状态／作者复核；研究]
+
+**改变的决定。** 默认先用原生与已有检查交付；当构建模式或真实输入暴露缺口，补对应检查而非更多泛化review。恢复先重核当前产物与head，人的产品语义判断不由模型一致意见替代。根因已修且目标路径复核支持时，可撤不再有现实输入依据的兜底；证据不足则待验。guard是产品代码，不是agent harness，该链不证明整包流程该留或该卸。[研究]
+
+**整页覆盖与剩余差距。** Claude页面比较日常／审查分档、计划、上下文、扩展、并行、执行位置／恢复、review／人审、安全／撤回八类选择；安全和接口保留当前官方契约，不声称最优防御。主流采用率、跨任务最优、当前模型三臂长期二改与全人工成本仍未知。登记gap1只针对有近期领先和独立证据的条件比较，不沿用历史审计直接得分，不将本案例当整页效果验收。[研究]
+
+**读取回执。** 复用P59、P58及02／07／09已有研究，本次重读上述六篇原作相关正文；Bun两PR页面、30684连接器元数据与全部issue评论补核状态。5月执行与7月报告区分，不当10月实验；未重跑模型、Bun或上游测试。无完整搜索分母与净检索工时，不报告独立漏检率。[研究]
+
+
+## P82：动态路由先选对固定基线
+
+核实：2026-10-22（UTC+8）。成熟仓库先比较已有原生Auto／固定模型与Cursor生产路由参照；完整维护净收益赢家未知，不凭“比最贵便宜”另部署。[研究：本仓选择]
+
+| 原始来源／读取范围 | 支持、反例与采用 |
+|---|---|
+| [Cursor／O’Keefe、Volkov，8-06](https://cursor.com/blog/how-cursor-router-works)，数据、在线评估与切换成本段 | 生产回合和会话状态参与选模，计缓存失效；“用户接着做还是纠正”是质量代理。借生产分布与真实切换账，不把Fable／Opus4.8等池的自报百分比外推当前接收率。已有合规原生Auto是独立层的替代，不必先自建。 |
+| [LLM Gateway，9-26](https://llmgateway.io/blog/smart-routing-benchmark)及[protocol](https://llmgateway.io/benchmarks/smart-routing-2026-09-26-protocol.json)，方法、结果、评分敏感性与局限 | 8192限额主轮路由75/80、费用指数66.82，池外固定中价76/80、18.13，含分类、存储和失败请求。GPT-6单轮文本厂商自测，不是coding；只采用“实际固定基线入场”，不宣称等质量省钱。 |
+| [Scrouting v1，8-05](https://arxiv.org/html/2608.04804v1)，方法／成本；复用[S1e固定证据](2026-10-10-audit.md#s1e--2026-10-16-轻量模型分流与主模型侧节省) | 266项Python任务，路由与固定Kimi＋handoff同159通过、后者略便宜。旧代模型、搜索与交接组合，不把整包收益归路由。此前02已转化，本轮只是八类地图漏回链。 |
+| [TwinRouterBench v4，9-30](https://arxiv.org/html/2605.18859v4)，动态留出和成本定义 | 100题训练版路由75通过／API费用25.66美元，对照Opus4.6为74／54.73；规则路由反而73／172.56。保正面coding反例；旧池、窄任务且榜单另含假想失败罚金，不等同人审费用。初稿5月，本文固定v4。 |
+
+排除[Testronaut浏览器报告](https://testronaut.app/research/jev-optimization-experiments-2026-10/REPORT.md)：mission与token不是搜索摘要暗示的coding费用对照；不补作本题分母。[一手／研究]
+
+## P82：流程减法与下一次修改
+
+**采用：已有有效原生检查先保留；需要封装完成记录时，同时接手其维护责任。** 基线仍见P59，下列维护链不改整包默认。[研究]
+
+[Superpowers #2318](https://github.com/obra/superpowers/pull/2318)的小样本区分重复派发与最终独审；Native仍是插件inline，不是裸原生。[独立配置采用#613](https://github.com/f1sherman/new-machine-bootstrap/pull/613)已合但部署／行为收益未测，不作整包净收益。[一手／社区]
+
+- [#2388](https://github.com/obra/superpowers/pull/2388)已合入`907ad21ac21d0159ac3625c67537634bcb928c24`：测试命令成功而日志为空，grep／pipefail使摘要提取误报失败；修复保留原退出码门禁、给提取加fallback及旧错回归。作者为Claude工作者、型号未知，后续[维护者接收](https://github.com/obra/superpowers/pull/2388#issuecomment-5849249929)披露Opus5.5／CC2.1.283。读了补丁与接收，不在本仓复跑。[一手／社区]
+- [下一改#2348](https://github.com/obra/superpowers/pull/2348)，固定head `916bf0ad4c67749a0dd4d5f203aa6eb46f8ed9cb`，仍open：改同一行解析TAP时保旧fallback。作者的反事实复验中，去掉旧保护仍过新测试、却失败旧回归；这是其测试报告，不是主干已发生回归。[当前版本反例](https://github.com/obra/superpowers/pull/2348#issuecomment-6298384284)还涉及Node24默认reporter和Vitest尾行。不能把exit0或最后一行当完整结果，也不因该补丁存在就认定封装已可靠。[一手／社区／研究]
+
+[Ball 10-13官方录像逐字稿](https://ampcode.com/time-capsules/6)的回滚／领域Skill已收录；Willison首篇及二改已有，后续字幕补丁型号未知、无三臂对照，不另计流程胜负。[研究：具体负结果]
+
+## P82：中文实践与真实交付
+
+**问题：Agent自验证后，产品作者还要核什么？** 当前中文同题最优未知。采用原生实现与自动检查，但按真实使用状态确定接收面；不默认增加第二模型或全套流程。以下中文原文是独立产品的机制对照，不是黑盒与代码评审A/B。[研究]
+
+| 来源、时间与角色 | 原文支持与取舍 |
+|---|---|
+| [宝玉，8-24 BaoCut复盘](https://baoyu.io/blog/2026-08-24/ai-native-dev-workflow)，读完整相关流程 | Fable5／Claude Code，CLI版未知；作者决策远程转录方案和交互，Agent实现、自验证，作者黑盒验收。同文有技术可行但体验差的字幕对齐功能撤回。可借体验先于扩建；“黑盒足够”只属作者判断，且作者推广自己的产品／Skill。 |
+| [Tw93，8-31周刊280](https://weekly.tw93.fun/posts/280)，读维护全文 | Mole Mac1.13自述：旧代码应失败的回归、同类路径、晚回任务及真实更新；源码正确但线上旧文件。人定边界，Agent执行和修复。Mac闭源，未拿公开CLI替代验证。 |
+| [Tw93，9-28周刊284](https://weekly.tw93.fun/posts/284)，读模型与Windows实践段 | 明示Opus5.5 High开发、Astra Medium分析／review；作者披露厂商订阅支持。只标此时点，不倒填8月测试的模型、不采其速度／额度为统一排名。 |
+
+BaoCut同一使用者8-22（UTC+8）的[#37](https://github.com/JimLiu/baocut/issues/37)报告1.1.0本地说话人分离可用、远端预检误拒；[#38](https://github.com/JimLiu/baocut/issues/38)报告启动后新装模型但列表未刷新。这早于博客，未证明bug由Fable产生。作者声称1.1.2修复。[Build49](https://github.com/JimLiu/baocut/releases/tag/baocut-v1.1.2-build.49)于8-24 15:19发布，DMG于15:29完成上传（UTC+8），正文仍写pending；[appcast](https://github.com/JimLiu/baocut/releases/download/baocut-v1.1.2-build.49/appcast.json)与[manifest](https://github.com/JimLiu/baocut/releases/download/baocut-v1.1.2-build.49/release-manifest.json)版本／build／大小／声明哈希一致。当前不能概括为仅CLI；只核元数据，未下载核包、取得对应源码或用户修后复测。[一手／社区／研究]
+
+负结果：Innei所需正文遇登录边界、Phodal超时；X原帖未核，未用转载补齐。未复现的模型根因指控不采，无三臂净收益分母。[研究]
+
+P82补核[Talking Postgres原逐字稿](https://talkingpostgres.com/episodes/how-ai-is-changing-software-development-with-simon-willison/transcript)，8-14，23–39分钟：Willison区分生成优化分支与决定接收维护，未将其未合入的性能数字当收益；不推广主观挑剔为默认整段重写。YC页未取得正文。[社区／研究：播客范围]
+
+## P82：独立层的采用与维护责任
+
+**八类补齐的是“是否增层”的条件参照，不是八个产品都更好。** 监控复用[ccusage两条已合修复与固定回归](2026-10-13-session-usage-metrics.md#用量分项与两条修复链)，不重计新发现；新增三类链如下，均未运行候选。[研究]
+
+| 原文与固定产物 | 采用／撤回与验证范围 |
+|---|---|
+| [PostHog／Maguire 6-23](https://posthog.com/blog/what-is-a-scout)与[63393固定修复](https://github.com/PostHog/posthog/commit/d367441939c0cffbc17768e3adde313ab59bd587) | 业务MCP描述能改刷新周期，schema却漏参，200返回后状态未改。Opus4.8提出修源serializer而非另加工具；人审合入，回归含实际字段更新及非法值。只核公开产物与部署自报，未核线上；借“回读业务状态→修生成源”，不推荐全套Scout。 |
+| [claude-mem #4728](https://github.com/thedotmack/claude-mem/issues/4728)、[#4729](https://github.com/thedotmack/claude-mem/pull/4729)、[固定交付检查](https://github.com/thedotmack/claude-mem/commit/40e1785387037e2fe19bdf984d8f7b687eddd34b)与[13.37.0发行](https://github.com/thedotmack/claude-mem/releases/tag/v13.37.0)，10-13 | 13.36.1 marketplace生成bundle坏而同号npm不受影响，两个使用者报告捕获／MCP停摆及回退。修复先检查提交产物再重建，避免build覆盖坏包后假绿；作者披露Sonnet／Opus5.5，未见用户升级后捕获复测。停独立层不等于原生coding停；核实际分发面，不将历史回退版作为当前推荐。 |
+| [Zed #58962固定修复](https://github.com/zed-industries/zed/commit/620ceaaaca40b346736660f12eefce38e235cb59)，6-10；[1.8.2发布说明](https://zed.dev/releases/stable?page=4) | native-agent侧栏条目存在、内容缺行；退出flush补持久化，回归直接调用flush后读消息。它不是真实OS退出/断电E2E，也不修Terminal Threads。[独立使用与退出原帖](https://www.reddit.com/r/ZedEditor/comments/1u0o6st/is_anyone_using_terminal_threads/)给跨项目整理价值和丢历史反例；原CLI恢复与宿主恢复分别验，不将两条链拼成同一故障已修。 |
+
+[Classmethod森茂洋1-30](https://dev.classmethod.jp/articles/claude-code-daily-workflow/)自述Graphiti关系查询转加pgvector，仍有跨项目误召回；模型及十月保留状态未知，机构有经销关系，只作历史改造参照。[Tskulbru 9-11](https://tskulbru.dev/posts/beads-local-shadow-for-agent-work/)已有原生知识，缺的是在途依赖，保原知识而另试工作图数日。结合P44，先分知识、任务和恢复，不默认新数据库。[一手／社区／研究]
+
+[当前claude-mem changelog](https://cmem.ai/changelog)15.0.1还自报修“搜索可见、detail因项目alias取不到”；未核该源码或当前服务，不以最新版保证可靠。P82来源由自主检索后查重；P44、Scrouting、ccusage、Ball与Willison首篇为复用／重读，其余本轮新增。完整计数缺口及限定读取回执见[P51记录](../collaboration/prompts/2026-10-21-exploration-self-use.md#p82使用回执2026-10-22)，不报总体漏检率。[研究]
+
+## P85：Gemini入口与迁移接收
+
+核实：2026-10-22。主线二／三／四；改变 `01-agents/gemini-cli` 的入口、上下文和维护接收选择。复用 P54／认证证据，补近四个月维护链与十月安全研究；旧结论保留历史日期。以下是来源研究，不是本仓效果验收或整页差距评级。[研究]
+
+### 主要选择：先保留工作的入口，再接收迁移
+
+**✅ 默认：已有原生入口满足任务就保留；迁移必须验真实宿主闭环，不以配置存在、功能表或源码测试通过代替接收。** 当前一代 Gemini 不同入口谁的综合编码效果最好，本轮证据不足；这里比较的是可观察反馈与维护责任，不给模型胜负排名。[研究]
+
+| 读者要决定什么 | 默认与替代 | 何时撤回／尚不能声称 |
+|---|---|---|
+| 只缺会话整理，是否同时更换 harness | 保原 CLI；只增加确实需要的界面。需要宿主 hooks、MCP 或调度时，逐项接收适配 | 宿主能发现配置但不触发事件，退回已工作的入口；换外壳不证明审批、历史和工具契约沿用 |
+| 工具没有返回文字，是否自动重跑 | 先查真实动作结果和退出状态，再决定恢复；恢复输出与重执行分开 | 空 stdout 不等于未执行。带写入／外部副作用的调用，不默认以重跑补输出 |
+| 是否每轮注入长期记忆 | 稳定背景优先会话开始注入；任务期新信息按需刷新 | 动态内容每轮改变前缀时检查必要性；缓存命中不能取代信息正确性，也不支持默认安装记忆插件 |
+| 是否放宽自动批准来减少打断 | 保留必要批准，权限按任务所需开放；同时检查合法任务是否仍可完成 | 拒绝启动得到的低攻击率不是可用安全性；固定模型的自动审批实验不等于人类审批或当前模型 |
+| 插件修复合并后是否可以交付 | 区分源码、构建分发包、已安装配置；验证升级清旧、保他人配置、可回退 | 只有目标单测或 changelog 不足；实际版本、宿主事件、后续会话读回缺一项，就标待接受 |
+
+以上不是同模型同任务 A/B；AI 可实现适配，人须确定实际安装面和接收结果。[研究]
+
+### claude-mem：迁移确认之后仍有三轮改写
+
+日期按原文／合并时间；固定提交，不把漂移的 `main` 当同一版本。[一手／社区]
+
+| 原文、日期与固定产物 | 发生了什么；证据能到哪里 |
+|---|---|
+| [7-03 迁移记录](https://github.com/thedotmack/claude-mem/blob/main/plans/2026-07-03-antigravity-cli-migration.md) | 核已安装 CLI、文件与二进制，并引用此前工作状态；该次明确未启动 live agy 会话或模型调用。只能支持静态迁移条件，不可写成新环境端到端验证。 |
+| [9-11 故障 #4057](https://github.com/thedotmack/claude-mem/issues/4057) | Windows 11、agy 1.2.1、claude-mem 13.24.22，使用者报告无 observations；安装配置仍沿旧事件／路径，输出及 transcript 解析也不匹配。是具体第三方集成故障，不证明所有 CLI 或模型失效。 |
+| [9-12 合并 #4058](https://github.com/thedotmack/claude-mem/pull/4058)，`b11034b6eb406ac0f27fcaf5a013eeef580bad66` | 改 hooks 路径、事件映射、protojson 和 PLANNER_RESPONSE 解析。作者报 29 项测试通过，但分组 schema 仍 provisional，深入 live 验收延期至 #3611；旧测试只匹配源码字符串，曾把错误假设固定下来。 |
+| [10-01 合并 #4274](https://github.com/thedotmack/claude-mem/pull/4274)，`eb55778741d7e0cb802fad1b72140ac0b07bb769` | 再修静默忽略的 schema：顶层为命名 hook，Pre/PostToolUse 与其他事件的结构不同；timeout 为秒而非毫秒。补配置构造、形状测试、幂等合并、旧配置清理和状态提醒。作者报 37 项目标测试通过，但完整套件仍有失败，未做登录后 live agy 验证。 |
+| [10-19 固定修正，#4912](https://github.com/thedotmack/claude-mem/commit/9e4f313a89236f7fb593a639a77ee02e21e94469) | 撤回 SessionStart 不支持的旧假设；上下文由 PreInvocation 转到 SessionStart，避免每次调用的动态内容破坏稳定前缀。升级清理自有旧事件并保留其他命名 hooks；对应测试覆盖映射和清理，仍不等于本仓实际宿主接收。 |
+
+10-01 修正参照 agy 1.2.13 的规范，不能把 9 月事件表写成十月现行契约。其 PR 未包含生成的插件 bundle，需要后续构建分发；因此“合并”“发布”“用户安装后工作”必须分开。10-19 作者报告缓存改善，但模型、控制条件和独立复现不足，不吸取具体百分比为通用收益。[一手／社区／研究]
+
+可吸取的最小接受链：**宿主实际触发 → 适配正确解析 → observation 写入 → 后续会话能读取**，再查升级是否仅清自己的旧配置。原生上下文足够就不增记忆系统；此链不证明当前插件必然坏或额外记忆提高编码效果。[研究]
+
+### gemini-mcp-tool：兼容方案需有退出条件
+
+第二独立维护团队的 [迁移说明](https://github.com/jamubc/gemini-mcp-tool/blob/main/docs/migration/antigravity-cli.md) 与 [6-18 固定实现 `4657eb95`](https://github.com/jamubc/gemini-mcp-tool/commit/4657eb9515288d8fb1262b25e9d01bfe76502d6c)，对应桥接包 1.1.8：针对早期 agy 1.0.x，包含输出恢复、串行调用及能力探测。历史问题涉及非 TTY／Windows 输出，作者核过 1.0.5；不能外推到十月宿主。[一手／社区]
+
+`--help` 能力探测不等于实际调用验证；进程内队列不保证其他实例也串行。输出恢复可能经过 JSON、文本、可选 POSIX PTY 或 transcript；PTY 路径再次调用 agy，不能把它当无副作用的结果读取。未访问私人会话。动作可能已发生时先回读目标状态；稳定原生输出满足需要时撤临时兼容分支。[一手／研究]
+
+两项目分别修生命周期／存储与传输／输出，均增加待验契约。缺当前宿主复测，不排名产品；旧版模型选择与 sandbox 限制不沿用。[研究]
+
+### 权限对照与来源边界
+
+[HarnessSecurity-Bench v1，10-06](https://arxiv.org/html/2610.07639v1) 的方法与权限实验固定 GLM 5.2、Docker 模拟服务及 LLM 审批条件，比较多个 harness 的攻击与合法行为。可吸取“双看安全和可用性”；自动批准的变化不能直接推广为人审效果，启动被 trust 拒绝也不等于正常任务安全完成。这里未锁定其 Gemini 构建与当前 Argon 的同版本对应关系。[一手／研究]
+
+[项目页](https://tsingpig.github.io/HarnessSecurity-Benchmark/)仍说明部分完整试验材料待发布。它不是当前 CLI 安全认证；维护案例也未补齐当前一代同任务编码净收益比较，“最高水平工具效果”仍未知。[一手／研究]
+
+本轮读取原文、PR、固定提交和公开实现，未安装、运行候选或模型，未复跑作者测试；没有完整去重分母，不报漏检率。资料完整不等于效果；整页差距 1 待独审。当前 release、桌面 MCP 与远程执行另核，不拼作本链已解决。[研究]
+
+### P85：当前发行与接收边界
+
+2026-10-22静态核查：[v0.65.0](https://github.com/google-gemini/gemini-cli/releases/tag/v0.65.0)发布于10-20T21:17:57Z，tag固定`6006c14a4decfe4b891c6263ad6ad5992e404b5b`。对应恢复去重[#29618](https://github.com/google-gemini/gemini-cli/pull/29618)、快速退出保历史[#29584](https://github.com/google-gemini/gemini-cli/pull/29584)、取消落盘[#29728](https://github.com/google-gemini/gemini-cli/pull/29728)、不可信workspace设置[#29583](https://github.com/google-gemini/gemini-cli/pull/29583)的merge均为发行祖先，不把merge日当发布日期。[一手：Git对象／发布]
+
+固定[sessionUtils及测试](https://github.com/google-gemini/gemini-cli/blob/6006c14a4decfe4b891c6263ad6ad5992e404b5b/packages/core/src/utils/sessionUtils.test.ts)覆盖既有／并行／缺失工具响应；[记录测试](https://github.com/google-gemini/gemini-cli/blob/6006c14a4decfe4b891c6263ad6ad5992e404b5b/packages/core/src/services/chatRecordingService.test.ts)覆盖快速退出与初始化竞态。它们支持核历史续接，不保证工具绝不重执行。快速Ctrl-C等待取消有1秒上限，cancelled记录不证明副作用未发生。[一手：源码／测试定义，未运行]
+
+同版[sandboxConfig](https://github.com/google-gemini/gemini-cli/blob/6006c14a4decfe4b891c6263ad6ad5992e404b5b/packages/cli/src/config/sandboxConfig.ts)及Seatbelt默认文件与原0.63证据逐字节相同；rewindFileOps／gitService／两层restore与原`06d3298`证据也相同。重新读取settingsSchema确认checkpointing与toolSandboxing默认false，tools.sandbox未设置；旧隔离／恢复范围仍保留，但这是新版本静态复核，不是新实测。workspace设置拒写、user scope仍可写，不能称全项目只读。[一手／研究]
+
+当前[迁移文档](https://antigravity.google/docs/cli/gcli-migration)说明首次启动会迁移活动token到系统keyring，不止转换配置；还须核项目skills、MCP schema及原验收。权限与认证范围应由用户审定，本轮不读取或操作任何凭据。[一手／研究]
+
+独立[报告953](https://github.com/google-antigravity/antigravity-cli/issues/953)是Windows桌面2.12.2、Gemini3.8 Flash High、WSL stdio上两轮随机标记对照：纯structuredContent不可用，text／both可读；没有独立CLI测试。9-06维护回复仅转交桌面团队，9-22是closed时间，不证明修复。吸取“实际模型看到返回内容”这一接收项，不给CLI新增已证缺陷，也不在本仓重做探针。[一手：公开复现／维护回复；研究]
+
+[Remote Control当前文档](https://antigravity.google/docs/remote-control)把交互连接绑定CLI进程，daemon仍须宿主开机；Windows未做管理员boot安装时要登录后才恢复。跨设备UI不等于云端执行。只采用生命周期判断，不新增本仓服务或修改本机设置。[一手／研究]

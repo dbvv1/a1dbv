@@ -1,6 +1,6 @@
 主线：三，兼二
 改变的建议：分清请求超时与任务截止；续接恢复最新目标、约束、执行事实与活跃资源，按当前验收核结果。派发前保留回执丢失后仍可查的任务身份，失败先对账再恢复／重试；循环只补真实续接／反馈缺口，撤回固定重置和逐功能工作流。可选子任务显式降级，必需验收换执行者，停不掉共享写入者则暂停相关交付；依赖子结果先复用宿主前台返回。P57 分开复用编码循环与自建产品控制层，以下一次提交和真实关闭接收维护任务。P60 升级验到首次新写后的冷读与下一轮，确认旧补丁没有遮蔽原生修复。[经验／研究]
-新证据：P60 补迁移丢写、正式修复与补丁退役链。其余汇总既有官方设计、固定实现／测试定义、社区单例及历史产物链，日期与反证见各节。压缩修复须核发布 tag，响应完成不保证持久化；Claude thrashing／StopFailure、Ralph 控制与历史 harness 分开计证。2026-10-16（UTC+8）本仓 Git 正反例只核续接分支／HEAD；SDK／HTTPX2／Go 超时边界来自契约与实现。gstack 降级、CAO 身份缺口及 Symphony 恢复契约按模板／源码／测试定义与公开报告计证，未作本仓真实恢复实测；本页补核未运行新模型恢复实验。2026-10-18（UTC+8）补 Claude 2.1.302 默认前台发行与三种非交互入口的父消费复测自报；显式后台仍有未唤醒报告，Desktop／VS Code 只核发行，不作本仓实测。[一手／社区／研究／经验]
+新证据：10-22 P83补整页循环路线及SDK／托管契约比较，旧官方续接教程已被固定源码反证；具体代际与范围见P83。P60 补迁移丢写、正式修复与补丁退役链。其余汇总既有官方设计、固定实现／测试定义、社区单例及历史产物链，日期与反证见各节。压缩修复须核发布 tag，响应完成不保证持久化；Claude thrashing／StopFailure、Ralph 控制与历史 harness 分开计证。2026-10-16（UTC+8）本仓 Git 正反例只核续接分支／HEAD；SDK／HTTPX2／Go 超时边界来自契约与实现。gstack 降级、CAO 身份缺口及 Symphony 恢复契约按模板／源码／测试定义与公开报告计证，未作本仓真实恢复实测；本页补核未运行新模型恢复实验。2026-10-18（UTC+8）补 Claude 2.1.302 默认前台发行与三种非交互入口的父消费复测自报；显式后台仍有未唤醒报告，Desktop／VS Code 只核发行，不作本仓实测。[一手／社区／研究／经验]
 
 # 长程任务：来源、反例与实验边界
 
@@ -24,11 +24,21 @@
 
 **自动候选停住，不等于产品一定错。** [#341830](https://github.com/microsoft/vscode/pull/341830)在 10-15 升 Copilot SDK preview.0→1、runtime 1.0.99-0→-1。第一次[停止报告](https://github.com/microsoft/vscode/pull/341830#issuecomment-6200842651)是可信 gate 查找旧 suite 名；第二次[停止报告](https://github.com/microsoft/vscode/pull/341830#issuecomment-6202451598)是 managed Assisted replay 失配，候选未推送。二者原因不合并，bot 对权限变化的解释也须再验。10-21 核查仍 draft、未合并。[一手：bot 自报与 PR 状态]
 
-**接管验收语义，Agent 仍继续完成升级。** 同目标 [#341861](https://github.com/microsoft/vscode/pull/341861)由 roblourens 提交、Copilot 协作，10-15 经人审合入 [`009603bfc85917533f30054f0bfeccc7c1ed70f0`](https://github.com/microsoft/vscode/commit/009603bfc85917533f30054f0bfeccc7c1ed70f0)。作者用原审批／文件系统断言的 live recording 区分新 judge 调用与旧 replay 序列错位；没有证明 live 权限被绕过。未找到 A→B 显式交接，只称同题路径。[一手：作者诊断与合并元数据]
+**接管验收语义，Agent 仍继续完成升级。** 同目标 [#341861](https://github.com/microsoft/vscode/pull/341861)由 roblourens 提交、Copilot 协作，10-16 07:49（UTC+8）经人审合入 [`009603bfc85917533f30054f0bfeccc7c1ed70f0`](https://github.com/microsoft/vscode/commit/009603bfc85917533f30054f0bfeccc7c1ed70f0)。作者用原审批／文件系统断言的 live recording 区分新 judge 调用与旧 replay 序列错位；没有证明 live 权限被绕过。未找到 A→B 显式交接，只称同题路径。[一手：作者诊断与合并元数据]
 
-**验收器也会被修坏。** 该 PR 记录路径归一化曾把后续正文差异吞掉，实际 [diff](https://github.com/microsoft/vscode/pull/341861/files)新增录制／回放负控制：路径分隔符可等价，正文反斜杠、换行与 Unicode 转义拼写变化必须失败。实现缩窄路径 token，不再重编码整段引号内容。最终 head 为 `efca0346322c09f600ab105d21d57d440287837a`；本地回放／live 通过属作者记录，正文最终 CI 仍是运行中历史快照，本仓未独立核完整全平台终态。[一手：固定实现与作者运行，非本仓复跑]
+**验收器也会被修坏。** 该 PR 记录路径归一化曾把后续正文差异吞掉，实际 [diff](https://github.com/microsoft/vscode/pull/341861/files)新增录制／回放负控制：路径分隔符可等价，正文反斜杠、换行与 Unicode 转义拼写变化必须失败。实现缩窄路径 token，不再重编码整段引号内容。最终 head 为 `efca0346322c09f600ab105d21d57d440287837a`；本地回放／live 通过属作者记录，PR正文保留运行中历史快照，10-22另核精确提交的公开checks，见下方；不把作者本地运行当本仓复跑。[一手：固定实现与作者运行，非本仓复跑]
 
-**下一改仍可交回自动修复。** [#341922](https://github.com/microsoft/vscode/pull/341922)在 10-16 升 preview.1→2、runtime -1→-2，修复报告仍标 GPT-6 Astra。[bot 报告](https://github.com/microsoft/vscode/pull/341922#issuecomment-6210817468)产品构建 485101 succeeded，之后三名人类批准，合入 [`be4f9ba6ec05394c6f6456e8006358140a1262bf`](https://github.com/microsoft/vscode/commit/be4f9ba6ec05394c6f6456e8006358140a1262bf)。本仓核了公开报告和 review 元数据，未独立读取 Azure job 或证明所报测试 tree 等于最终 head；不是精确提交 CI 全绿认证。[一手：公开运行自报与主干采用]
+**下一改仍可交回自动修复。** [#341922](https://github.com/microsoft/vscode/pull/341922)在 10-16 升 preview.1→2、runtime -1→-2，修复报告仍标 GPT-6 Astra。[bot 报告](https://github.com/microsoft/vscode/pull/341922#issuecomment-6210817468)产品构建 485101 succeeded，之后三名人类批准，合入 [`be4f9ba6ec05394c6f6456e8006358140a1262bf`](https://github.com/microsoft/vscode/commit/be4f9ba6ec05394c6f6456e8006358140a1262bf)。本仓核了公开报告和review元数据；10-22补核报告所列测试tree与最终head一致，但合并tree不同，checks分开列于下方。未独立读取Azure内部job日志。[一手：公开运行自报与主干采用]
+
+### P81补核：PR通过不能外推合并树
+
+2026-10-22 12:38（UTC+8）通过GitHub公开API重核两个PR、head／merge commit对象及各自check-runs。以下仅是返回列表的终态，不是本仓执行产品测试，也不证明所有可能检查均已配置。[一手：精确提交元数据]
+
+- **#341861**：head `efca0346322c09f600ab105d21d57d440287837a` 的[checks](https://api.github.com/repos/microsoft/vscode/commits/efca0346322c09f600ab105d21d57d440287837a/check-runs?per_page=100)返回63条，check结论均completed／success；但Azure构建484930的同一回报标题注明test failures，内嵌汇总为2失败／362335通过，不能称产品测试全过。该矛盾原因未核；合并提交 `009603bf` 的列表为13条success。两者tree分别为 `b25a7cde`／`e73334ed`，不可互换覆盖范围。
+- **#341922**：head `c847fef7b2abf84882f28f3e3a68bededf6945cd` 的[checks](https://api.github.com/repos/microsoft/vscode/commits/c847fef7b2abf84882f28f3e3a68bededf6945cd/check-runs?per_page=100)返回95条success，产品构建485101回报也绑定此head，测试汇总0失败，但另有2 errors／1040 warnings，日志原因未核；其tree `ce775ce3744bfcbe2a39e700417960a1189a795a` 与bot报告相同。实际合并提交 `be4f9ba6` 的tree是 `c0b836df`，合并于10-17 00:32（UTC+8）。
+- **合并后仍有未解释失败**：`be4f9ba6` 的[checks](https://api.github.com/repos/microsoft/vscode/commits/be4f9ba6ec05394c6f6456e8006358140a1262bf/check-runs?per_page=100)返回11条success、2条failure，分别为[Screenshots & Tests](https://github.com/microsoft/vscode/actions/runs/38932827497/job/117084608739)及[Screenshots](https://github.com/microsoft/vscode/actions/runs/38932827497/job/117080820078)。未核具体失败原因，不归因SDK升级，也不把合并事实说成最终树全绿。
+
+**00回扫的负结果。** 新核[Uber 8-27](https://www.uber.com/us/en/blog/efficient-software-factory/)按交付而非单次调用计成本、[Purdue 10-02](https://arxiv.org/html/2610.03969v1)区分性能PR合入与可量化收益，未改变00已覆盖的条件默认。[9-12论文](https://arxiv.org/html/2609.17598v1)采用2024-12至2025-07旧代数据，不拿近期发表日期当当前模型反证。另回读Shopify、Spotify、Cursor及Toub既有原文，完整自主、争议接管、窄流程和后续维护四类选择未见实质遗漏；保留差距1，不为新来源堆正文或自评0。[一手／研究]
 
 ### 独立采用对照：允许变化，不抹掉关系
 
@@ -669,3 +679,50 @@ PR 最终测试 `test_public_promotion_preserves_editorial_fields_and_date` 用�
 本轮基线 `48dc9c617f142f85d473d3dd164818655fb17d5f`；公开原文准备约 2026-10-22 01:02 起，正文整合 01:10 起（UTC+8）。提示词为既有 10-21 版本，但最早原文打开先于提示词读取，**不追认完整事前自用项目**。表内去重来源 N=6、相关正文／代码已读 F=6；决定性 D=6、FD=6。同作者博客／PR／提交分别记录读取对象，独立团队只按作者来源计。原文准备与等待／复核用时没有完整起止账，不造净工时。
 
 没有冻结的合格外部漏检参照，漏检率无可计算分母。旧博客未新增发现；新增公开二改补的是“已知来源未转成后续消费者验收”的转化缺口。没有新增脚本、JSON、安装、模型或引擎运行。
+
+## P83：整页构建Agent的选择
+
+主线二／三；2026-10-22核实。改变16整页的复用、改造和自建选择，并修当前SDK／托管契约；论文与SDK证据为只读，未运行候选、上游测试或模型效果对照。普通本地协作另见[P79](../../experiments/absorption/README.md)。下列新资料与P57/S6a/S6b的固定证据组合，不将旧源算新发现。[研究]
+
+### 最高水平卡
+
+整体最高水平未知。近期领先生产参照为Ramp／Sam Kronick 10-20统一多产品平台，独立对照为Spotify 6-03继续复用编码SDK、Databricks 7-08同模型现成harness比较；主流采用率未知。当前可行基线是既有CLI／SDK／托管控制，明确目标不满足时先比较另一成熟实现，再决定窄改造或自建。原生不是已证冠军，自建也不因“模型中立／要工作区”自动成立。[一手／研究]
+
+本仓采用条件默认：Agent做代码／工具执行和结果收集，人定产品要求、授权和接收；数据硬约束先排除，完整成本包含适配、人审、失败及下一次改动。以下独立研究主要在旧代配置，当前API契约不把它们升级成十月效果结论。[研究]
+
+### 循环路线的同题正反比较
+
+| 原始证据／来路 | 已读范围与采用 | 局限／不采用 |
+|---|---|---|
+| [Ramp 10-20总述](https://builders.ramp.com/post/building-laminar)，P55输入已知 | 主执行者本轮用云端浏览器直读全文；尝试SDK／托管／开源后为统一产品、提供方中立和观测自建，编码Inspect也是使用方；六周v1、五个月后全产品采用 | 团队自报，模型未披露；已有经验工程师审改动并值班，无全人工TCO；不推所有SDK都不满足 |
+| [Databricks 7-08／Vinay Gaba等](https://www.databricks.com/blog/benchmarking-coding-agents-databricks-multi-million-line-codebase)，P81已知重读 | 同模型／thinking effort比较原生与Pi；现成循环可以不选模型厂商版本 | 历史生产任务重做不是补丁上线二改；Opus4.8／Sonnet5／GPT5.4mini等旧配置，harness版与人力未知；作者也提供Omnigent，不作普遍价格排名 |
+| [Arjmandi／evolutionID 9-08 v1](https://arxiv.org/html/2609.11987v1)，新发现 | 方法、修订、结果和附录：80题原生SDK对deepagents，Opus4.8／GPT5.5平均差异未确立优势；22/81超时运行已有正确补丁，因此正确与自主结束分开接收 | 非等效证明；过采样原生组合分歧题，VM内存与预算等仍不同，私有任务；缓存计量修正后部分账单排序仍不定，缺二改与完整维护投入 |
+| [Lewis 8-26 v1](https://arxiv.org/html/2608.26218v1)，新发现 | 方法／表7／资源／局限：Qwen3.6同169题，20,480窗口完整解43→72；262,144窗口102→101。先修明确窗口／停滞缺口 | 对照满窗即停、非当前CLI；组合干预与更多实际模型工作不能解释为等算力效率，单次轨迹，无人评二改；公开工件不含全部原始运行 |
+
+Spotify／Cursor／Shopify P57链保留。复用[Fan等9月独立机制比较](https://arxiv.org/html/2609.20804)：上下文收益依赖容量，读回模块并非始终被调用；不把配置存在当效果。原Scaffold Effect成本／通过率账未对齐仍排除，不复活40倍标题。[研究]
+
+其他查验负结果：[Uber 8-27](https://www.uber.com/us/en/blog/efficient-software-factory/)和[Monzo 8-13](https://monzo.com/blog/building-agent-chip)已知重读，仅确认按合入／回退接收、MVP后仍有人审及平台责任；[Soumil迁移](https://soumilchugh.github.io/deepagents-migration.html)缺具名产物与版本；[个人harness比较](https://github.com/d1-m4ss/harness-benchmark)样本极小且曾用错模型；[zenixos](https://github.com/zenixos/harness-bench)尚无评分结果。均不补当前完整收益分母。[研究]
+
+### 当前接口改变了哪些部署选择
+
+以下为10-22读取的官方契约，不是使用效果。新版能力优先复用；旧补丁是否撤除须在实际所用版本确认。[一手／研究]
+
+| 选择 | 原文与反例 | 转化 |
+|---|---|---|
+| 普通API还是编码SDK | [client/server工具](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview)、[runner](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner)、[SandboxAgent](https://developers.openai.com/api/docs/guides/agents/sandboxes) | runner可传服务端工具；Agents SDK已有应用内工作区路径。不是只有自己定义工具，也不等于自带Claude Code本地读改测 |
+| 谁执行／审批动作 | [Managed权限](https://platform.claude.com/docs/en/managed-agents/permission-policies)、[Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) | 内置默认allow、MCP默认ask，自定义函数由应用执行；auto不是人审。函数看required_actions，按session/turn/call保存结果，未知先对账 |
+| 云／自托管与数据 | [OpenAI概览](https://developers.openai.com/api/docs/guides/agents-api/overview)、[Claude环境比较](https://platform.claude.com/docs/en/managed-agents/choosing-an-environment) | 前者美国驻留且不支持ZDR；两者自托管计算不隐藏控制面对话／工具结果。SDK也不自动解决模型服务的数据限制 |
+| 网络出口 | [web限制](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions)、[secure deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment) | limited云环境allowed_hosts也约束web工具，超域配置创建／更新400；host精确／通配与工具子域规则不同。自托管防火墙不拦服务端web；搜索域名限制不阻止发送查询 |
+| 凭证与远程入口 | [vault](https://platform.claude.com/docs/en/managed-agents/vaults)、[OpenAI sandbox安全](https://developers.openai.com/api/docs/guides/agents-api/environments/security)、[app-server](https://learn.chatgpt.com/docs/app-server) | 创建environment_variable凭证时省略injection_location会启用header及body，适配时优先窄header；本地签名和返回新token另有边界。OpenAI环境key可读但用途窄，不可混入应用key。WebSocket实验性且默认可能无认证，接口不是可直接公开的托管产品 |
+
+**旧官方教程也要按所用版本判断。** [Skill固定dbd4588](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/claude-api/python/claude-api/tool-use.md)10-09仍以Python0.116.0描述pause_turn不续接；[SDK固定9313f1](https://github.com/anthropics/anthropic-sdk-python/tree/9313f13a5a643ceed10fafba6785eab8e04b6e6e)的pyproject为2.1.0，源码映射pause_turn／compaction为resume。[测试定义](https://github.com/anthropics/anthropic-sdk-python/blob/9313f13a5a643ceed10fafba6785eab8e04b6e6e/tests/lib/tools/test_runners.py#L727-L804)覆盖同步／异步两请求续接和达到max_iterations仍返回pause_turn；CHANGELOG把修复列于8-26的1.1.0。只静读，未核实际安装包或执行测试；不能由until_done名字推任务完成。[一手]
+
+审批不能放到动作之后：固定runner的generate_tool_call_response会执行工具；流式eager模式还会提前运行。优先在工具实际执行边界复用已有控制，不因教程写manual loop就认定必须重写；控制不足再换接口。原SDK配置来源、PTC任务形状／适配、outcomes、预算与任务截止语义保留S6a/S6b/P57已核范围。[一手／研究]
+
+### P51本项目使用与接收
+
+基线4d8b094；研究前读既有提示词（SHA-256 `ea2e9869fd5feb33dae8fa1d6b1457bd9fad722647b6df0174aadcd06a37010a`）。06:02 UTC开工，三条支线06:03起外查，主执行者继续读原文、定选择并整合，06:36整页新上下文独审接受gap1，修凭证字段主语；之后记录及最终树检查另计。中途含用户本地协作任务，研究／等待／复核净时长未分离，不以墙钟报研究效率。[研究：自用范围]
+
+去重后的定向原文对象N=36、相关正文／源码F=36：生产5、论文／仓库6、接口及固定源码25；旧源重读14、新检索22。错误网址经官方导航纠正、同对象网页失败后API读取，不多计来源；Ramp由主端云浏览器补直读，不回写先前支线冻结的4/5。这里是实际查验集合，不是搜索结果总量或全网覆盖。新增论证决定性D=21、FD=21：上表4个生产／论文对象、12份部署／接口文档、5份固定源码文件；其余是确认、排除或旧结论复核。旧P57/S6a/S6b复用不混作本轮全部重读。[研究]
+
+本批作为P83一个自用项目，不按支线和卡片拆次数；没有独立冻结查漏分母，不计算漏检率，也不记P51方法收益验收。gap1表示七组主要选择已有近期领先实践与独立参照的条件比较，不要求将未知净收益伪装成冠军；0仍由独立审计判断。

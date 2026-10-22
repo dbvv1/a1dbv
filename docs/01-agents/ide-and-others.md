@@ -83,6 +83,8 @@ Codex 集成可用 JetBrains AI 订阅、ChatGPT 登录或 OpenAI API key；仅 
 
 **终端路径保留 CLI 管理认证、模型、工具与指令的职责。** Zed 自身的 Agent 设置不会自动套用，远程项目读的是远端环境；关闭终端线程也不会存入 Zed Thread History。需要会话恢复时另核 CLI 的恢复路径。[一手：终端线程契约]
 
+**恢复要验实际内容，不只验侧栏条目。** Zed native-agent曾在更新后留下条目却丢内容，修复补退出落盘；这与Terminal Threads由原CLI负责接续是不同路径。Agent可在获准的测试会话核退出／更新后的内容，人确认任务确能接手；[固定修复和独立采用反例](../research/2026-10-12-community-source-records.md#p82独立层的采用与维护责任)不覆盖断电或所有入口。[一手／社区／研究]
+
 **ACP 迁移先验审批能完成，再验配置与历史接续。** [#62788](https://github.com/zed-industries/zed/issues/62788)报告 Zed 1.15.0／macOS 12.3 的 Claude ACP 有审批通知却无可操作卡片；单个历史版本故障不能推出当前全线不可用。若必要审批卡住，就退回原路排查，不靠关闭审批获得表面上的成功。[社区：2026-08-18故障原报；研究：撤回条件]
 
 ## 国内工具（面向中文开发者）

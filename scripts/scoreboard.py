@@ -11,7 +11,9 @@ A page without a marker counts as unregistered. Also counts coverage-map
 cells by level. Pages without a marker fall back to the independent audit
 baseline in docs/collaboration/frontier-baseline.tsv. When an audit dated on or
 after a page's own check scores it worse, the page is listed as disputed for
-the executor to resolve; neither score overrides the other. Reporting only: it
+the executor to resolve; neither score overrides the other. A page that has
+answered an audit adds audit=<that audit's date> to its marker, which clears
+the dispute until a newer audit arrives. Reporting only: it
 never fails the offline checks.
 """
 import argparse
@@ -45,7 +47,7 @@ def parse_marker(text):
   if status not in STATUSES or not gap.isdigit() or int(gap) > 3:
     return {'error': match.group(0).strip()}
   return {'status': status, 'gap': int(gap), 'gen': fields.get('gen', '?'),
-          'checked': fields.get('checked', '?')}
+          'checked': fields.get('checked', '?'), 'answered': fields.get('audit', '')}
 
 
 def age_days(checked, today):
@@ -85,7 +87,8 @@ def scan_pages(root, today):
       if audit:
         row['audit_gap'], row['audit_date'] = audit
         row['disputed'] = bool(marker and 'gap' in marker and audit[0] > marker['gap']
-                               and audit[1] >= marker['checked'])
+                               and audit[1] >= marker['checked']
+                               and audit[1] > marker['answered'])
       if marker and 'checked' in marker:
         days = age_days(marker['checked'], today)
         row['stale'] = days is None or days > STALE_DAYS[campaign]

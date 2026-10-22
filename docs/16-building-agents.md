@@ -1,22 +1,30 @@
 # 16 · 自建 Agent：什么时候值得、用什么搭
 
-> 核实更新：2026-10-22。补专用原生入口与领域验收的同题比较；[本轮证据](research/2026-10-12-long-task-evidence.md#p57复用循环与跨次控制的同题比较)、[既有核查范围](research/2026-10-12-long-task-evidence.md#16-页历史页头)。未实测 SDK 或模型效果。
+> 核实更新：2026-10-22。整页比较复用、改造与自建，修SDK／托管部署契约；[本轮证据](research/2026-10-12-long-task-evidence.md#p83整页构建agent的选择)、[既有核查范围](research/2026-10-12-long-task-evidence.md#16-页历史页头)。未实测 SDK 或模型效果。
 
 > 前面的章节讲“怎么用现成的 Coding Agent”。这一篇讲**什么时候该自己搭**，以及各家的搭建方式。
 
 ## 1. 先问：真的需要自建吗？
 
-**30 秒结论：✅ 重复代码／CI／依赖维护，先复用现成 Agent 循环；做自己的产品不等于重写循环。** 单次修改从 CLI／编码 SDK 起步，批量任务先用已有原生委派；目标枚举、版本、审批、交付状态或领域验收有缺口时，只补对应薄层。有明确质量／时延目标也可直接比较自建，但要把环境、适配和人的接收算进投入。**⛔ 不因任务多或要嵌入产品就重写 harness。** 额外层不能改善所需结果，或下一次修改的维护负担抵消收益，就删减该层，保留验收边界。**[研究：本节比较]**
+**30 秒结论：✅ 重复代码／CI／依赖维护，先复用现成 Agent 循环；做自己的产品不等于重写循环。** 单次修改从 CLI／编码 SDK 起步，批量任务先用已有委派；有质量／成本缺口时，也比较另一成熟 harness，再考虑自己实现。目标枚举、版本、审批、交付状态或领域验收有缺口时，只补对应薄层。有明确质量／时延目标也可直接比较自建，但要把环境、适配和人的接收算进投入。**⛔ 不因任务多或要嵌入产品就重写 harness。** 额外层不能改善所需结果，或下一次修改的维护负担抵消收益，就删减该层，保留验收边界。**[研究：本节比较]**
 
 ### 当前最高水平
 
-<!-- frontier: status=已比较 gap=2 gen=2026-10 checked=2026-10-21 -->
+<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
 
-**同题整体最高水平未知。** 领先参照是 Spotify：Max Charas、Marc Bruggmann 的 [Honk 复盘（2025-11-24）](https://engineering.atspotify.com/2025/11/context-engineering-background-coding-agents-part-2)记录了自建循环被 Claude Code 替代；[Niklas Gustavsson 演讲回顾（2026-06-03）](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)确认仍以 Agent SDK 做代码修改，自有平台保留目标、排程和进度。旧撤回有近期持续采用支持，但没有当前同模型、同验收、全投入的对照。**[一手：团队自报]**
+**整体质量／总投入冠军仍未知；本仓采用比较后的条件默认。** 领先工程参照是 Ramp／Sam Kronick 的[10月20日 Laminar 复盘](https://builders.ramp.com/post/building-laminar)：团队为跨产品控制、模型选择与可观测性自建，仍承担升级、人审和值班。独立于它的 Spotify [6月3日复盘](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)继续复用 Agent SDK；两者证明不同约束下的采用，不是统一成本竞赛。[一手：团队自报；研究]
 
-**主流采用率未知；可行基线是现成 CLI／SDK。** 本仓推荐是比较后的条件默认：复用动态读改测，自己只补产品责任，不声称成本或质量最佳。Cursor 的 [Josh Ma（2026-06-02）](https://cursor.com/blog/cloud-agent-lessons)也报告撤掉 CI 抓日志等任务硬编码，改用工具让 Agent 判断，仍保留持久执行与运行环境。**[一手；研究：取舍]**
+| 主要选择 | 领先替代／反例 | 本仓决定 |
+|---|---|---|
+| 代码维护循环 | 现成原生／通用 harness、自建平台；Databricks同模型比较与9月独立研究并未确立通用冠军 | 先复用；明确质量／成本目标时先比较另一成熟实现，保审批、工具与历史契约 |
+| 产品控制与二改 | Ramp统一平台、Spotify编码SDK、Shopify领域证明链 | 只补缺失的版本、权限、接收或产品行为；现成能力追上就删重复责任 |
+| 业务工具与工作区 | 普通SDK runner＋服务端工具、编码SDK、应用内SandboxAgent | 按需要的工具／工作区选，不因需要文件就从零写循环 |
+| 托管还是自运维 | Managed／Agents API、自托管执行面、应用内SDK | 先核控制面数据和运行责任，再选部署；自托管沙箱不等于数据不出网 |
+| 工具、上下文与批量调用 | 当前工具搜索／压缩／程序化调用；受限窗口改造与宽窗反例 | 先复用已有机制，只有实际失败仍在才改该部分，按任务形状决定是否批处理 |
+| 权限、凭证与外部写入 | 宿主审批／vault与应用执行的自定义函数 | 宿主覆盖的复用；应用保授权、结果记录和未知结果对账，不把隐藏密钥当授权限制 |
+| 验收、结束与成本 | outcomes、测试／人审；正确补丁但运行超时的反例 | 同时报是否达标、是否结束、真实成本与下一次修改；不以循环返回或API成功判完成 |
 
-**专用维护还要比较现成产品，而不只在 CLI 与手写循环之间选。** 本轮新增 Shopify／Zack Deveau 的[7月29日实践](https://shopify.engineering/building-an-agentic-harness-that-outlasts-the-model)，与 Anthropic／Eugene Yan、Henna Dattani 的[5月27日方法及公开参考实现](https://claude.com/resources/articles/using-llms-to-secure-source-code)比较领域证明链；当前两家安全产品文档补功能契约。独立采用者自报、参考代码和产品能力各证不同层次，仍未取得同任务完整效果对照，差距保持2。[一手；研究]
+[研究记录](research/2026-10-12-long-task-evidence.md#p83整页构建agent的选择)区分当前工程取舍、旧代独立实验与当前接口契约。主流采用比例未知；缺完整人工成本和当前最高端模型二改对照，不能把上述条件默认当效果排名。[研究]
 
 ### 同一个维护请求，三种实现怎么接收
 
@@ -27,6 +35,10 @@
 | 现成 CLI／编码 SDK | 找代码、修改、运行检查 | 人与已有 CI／任务系统核当前版本和接收；任务已可完整交付时保留 |
 | 原生委派 | 拆分批量目标，回收子任务结果 | 先核原生接口能否列全目标、报告失败并保留人工接管；已覆盖就不另建调度层 |
 | 编码 SDK＋自有薄控制层 | 同样的读改测，不重写模型推理步骤 | 程序只补缺失的目标清单、版本绑定、审批、交付记录与领域验收；这些责任确有缺口或有可验收益才加 |
+
+**复用不等于绑定模型厂商的原生 harness。** [Databricks生产代码库历史任务比较](https://www.databricks.com/blog/benchmarking-coding-agents-databricks-multi-million-line-codebase)给另一成熟实现留下选择空间；[独立原生／通用框架研究](https://arxiv.org/html/2609.11987)也未确立平均优势。换实现时，Agent运行同类任务并交结果，人核质量、完成行为及维护投入；未保住所需契约就退回原组合。[一手／研究]
+
+**自建的理由应是现成方案仍不能满足的产品要求。** Ramp尝试多种路线后，选择自己控制跨产品交互、模型接入和观测；不是仅因需要一个SDK。有相同缺口且愿承担平台维护才借这种路线，先保留现有循环；无独特收益或现成实现已补齐，就撤掉重复层。[一手：团队自报；研究：采用]
 
 **把准备和再改也算进去。** Spotify 的 [数据迁移复盘（Devon Edwards Joseph，2026-04-22）](https://engineering.atspotify.com/2026/4/background-coding-agents-dataset-migrations-honk-part-4)在当时不能外取 schema／文档的受限入口下，因全量提示难维护而放弃 Scio 分支。若新需求持续膨胀提示／映射，先收窄覆盖或改善接口。Agent 查当前代码并验证，人决定业务语义、风险和接收；继续的 dbt／BigQuery 路线因缺构建时单测，仍由下游团队手测。**[一手；研究：撤回条件]**
 
@@ -53,8 +65,8 @@ Anthropic 的划分方式最清楚：**harness**（Agent 循环、上下文管�
 
 | 方案 | 你写什么 | harness | 部署 | 自带的工具 | 适用 |
 |---|---|---|---|---|---|
-| **Claude API 手写循环** | `while stop_reason == "tool_use"` 循环 | 自己写 | 自己托管 | 只有你定义的 | 要完全掌控循环 |
-| **Claude API Tool Runner** | 只写工具函数 | SDK 提供循环（有每轮 Hook：审批、拦截、重试、压缩） | 自己托管 | 只有你定义的 | 仅调用业务工具、无需编码环境时的起点 |
+| **Claude API 手写循环** | 请求、client-tool执行与续接 | 自己写 | 自己托管 | 自定义 client tools＋可选服务端工具 | 要完全掌控循环 |
+| **Claude API Tool Runner** | 只写工具函数 | SDK 提供循环；应用在迭代／工具执行边界加控制，续接按语言与版本核对 | 自己托管 | 自定义 client tools＋可选服务端工具 | 仅调用业务工具、无需编码环境时的起点 |
 | **Claude Agent SDK** | 提示词 + 选项 | **就是 Claude Code 的 harness**（内置读写、编辑、Bash、搜索、子 Agent、Hook、权限、会话） | 自己托管 | 内置文件和 Bash 工具 + MCP | 要在自己的基础设施上跑一个“现成的编码 Agent” |
 | **Claude Managed Agents**（beta） | Agent 配置 + 你的工具结果 | Anthropic 运行循环 | **Anthropic 为每个会话提供容器**（也可以自托管沙箱） | 容器内的 Bash、文件、代码执行 + Skill + MCP | 长时间运行、需要工作区、定时运行、需要按明确 rubric 迭代的任务 |
 
@@ -63,34 +75,36 @@ OpenAI 的对应划分 **[一手：developers.openai.com]**：
 | 方案 | 说明 | 对应 Anthropic 的 |
 |---|---|---|
 | **Agents API** | OpenAI 托管的 **Codex harness**，自动压缩上下文、多 Agent 编排、程序化工具调用、MCP；沙箱可以是 OpenAI 托管、自托管或不用 | Managed Agents |
-| **Agents SDK** | 在你的应用里运行 Agent 循环和交接（handoff）；开源，支持 100 多种模型 | Tool Runner + 自己的编排 |
+| **Agents SDK** | 在你的应用里运行 Agent 循环和交接（handoff）；开源，可接不同模型；也有应用内 SandboxAgent 工作区路径 | 业务工具循环＋应用自管编排／沙箱 |
 | **Responses API** | 直接调模型，从零搭 | 手写循环 |
 | **Codex SDK**（TypeScript / Python） | 程序化控制**本地的 Codex**（启动、继续、恢复线程），用于 CI 和内部工具 | Claude Agent SDK |
 | **Codex app-server** | Codex 给 VS Code 扩展等富客户端用的接口（认证、会话历史、审批、事件流），开源；`codex mcp-server` 已被移除，迁移到这里 | — |
-
-其他值得知道的 **[一手：仓库]**：
-- Google **ADK**（Agent Development Kit）：开源、代码优先的 Python 框架，覆盖构建、评估、部署；
-- AWS **Strands Agents**：开源 SDK，配有 Strands Decider 决策模型；
-- 极简路线：**Pi**（4 个工具 + TypeScript 扩展）、**DeepSeek Harness**（“一切皆插件”），适合想理解原理或高度定制的人（见 [01 开源 Agent](01-agents/open-source-agents.md)）。
 
 ## 3. 怎么选
 
 ```
 先用 CLI／编码 SDK 完成同一维护请求
 ├─ 批量目标 → 先核原生委派能否完整接收
-├─ 要嵌入产品 → 编码能力用 Agent SDK／Codex SDK；仅业务工具用 Tool Runner／Agents SDK
+├─ 要嵌入产品 → 现成编码能力用编码 SDK；业务工具先 Tool Runner／Agents SDK，工作区也核 SandboxAgent
 ├─ 愿意交出循环与会话运行 → 比较 Managed Agents／Agents API 的部署与数据边界
 └─ 仍缺控制责任 → 只补缺口；重写循环须另证其必要性
 ```
 
 **两个容易混淆的点** **[一手]**：
-- **Tool Runner 不等于 Claude Agent SDK。** 前者是普通 Anthropic SDK 里的一个辅助功能，没有内置工具、没有文件系统；后者是“打包成库的 Claude Code”。**2026-10-10 更正**：Python 版 Agent SDK 的官方发行包已捆绑 Claude Code CLI，默认无需另外安装；可用 `ClaudeAgentOptions(cli_path=...)` 指定其他 CLI。见 [官方 README 固定来源 S6](research/2026-10-10-audit.md) **[一手：安装文档，未运行验证]**。
+- **Tool Runner 不等于 Claude Agent SDK。** 前者不自带 Claude Code 的本地读改测环境，但可接自定义工具和服务端搜索／代码执行；后者提供现成编码 harness。**2026-10-10 更正**：Python 版 Agent SDK 的官方发行包已捆绑 Claude Code CLI，默认无需另外安装；可用 `ClaudeAgentOptions(cli_path=...)` 指定其他 CLI。见 [官方 README 固定来源 S6](research/2026-10-10-audit.md) **[一手：安装文档，未运行验证]**。
 - **Agent Skills 不等于 Managed Agents。** 前者是给模型加载的知识包，后者是托管的运行环境。
+
+**需要自管工作区，先核现成SDK的沙箱接口。** [OpenAI SandboxAgent](https://developers.openai.com/api/docs/guides/agents/sandboxes)把应用内harness与文件／命令执行环境分开；已有编码SDK足够时不换，仅缺计算面的提供方或生命周期控制时先比较这一现成路径。[一手；研究]
+
+**应用仍负责自己执行的业务动作。** [Agents API Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)不会因挂载了environment就自动在其中执行函数。保留授权与执行结果，断线先查pending actions、复用原调用结果；动作结果未知先对账，细节归[20 §9](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)。[一手；研究]
 
 **复用 SDK 时，先固定运行契约，不急着重写循环**（2026-10-15）**[一手；研究：采用判断]**：
 - Claude Python SDK 优先使用捆绑 CLI；显式 `cli_path` 会改用另一套运行时。当前文档和固定源码支持省略 `setting_sources` 时继承文件配置，`[]` 关闭 user／project／local 来源；产品或 CI 应显式选择来源与 `cwd`，但空列表不关闭 managed policy、全局配置及独立的自动记忆。
 - Codex Python SDK 的发行包带固定 CLI runtime，通过本地 app-server 通信；需要自定义客户端的认证、审批和事件交互时选 app-server，普通自动编码仍用 CLI／SDK。
 - CLI／SDK 更新会带来默认模型和环境行为变化。Anthropic 自己的 issue-triage 曾因默认模型改变而失败，维护者用显式模型修正；这支持锁定可用的模型与运行时组合，不支持为了防升级就自建 harness。
+
+- 先核所用版本，再保留教程兼容层。Python Tool Runner当前固定源码已自动续接`pause_turn`，旧官方Skill仍指导另套重启循环；迭代到上限仍可能返回暂停态。Agent交停止原因与结果，人按任务接收，见[版本反例](research/2026-10-12-long-task-evidence.md#p83整页构建agent的选择)。
+- app-server是自定义客户端接口，不是现成公网托管服务；当前WebSocket仍实验性，非loopback默认可能无认证，不能直接暴露。普通自动编码保CLI／SDK，远程产品另核受支持部署与认证，见[当前契约](https://learn.chatgpt.com/docs/app-server)。
 
 固定实现、测试定义及维护者原帖见 [S6a 选型补核](research/2026-10-10-audit.md#s6a--2026-10-15-sdk托管选型补核)；源码和当前文档不证明读者已经安装对应版本。
 
@@ -108,10 +122,14 @@ Anthropic 的 Agent 设计指南 **[一手]**强调专用工具便于表达操�
 
 这和 [10 安全](10-security.md) 的结论一致：**关键动作要有明确的权限和执行边界，不能只审命令字符串**；相关审批案例和样本局限统一在 10 维护。**[研究：采用建议]**
 
+**先复用审批，但核清实际执行者。** Managed Agents内置toolset默认`always_allow`，MCP默认`always_ask`；必须人工把关的动作明确设为`always_ask`，`auto`不是固定人工检查点。应用自定义工具不归该策略管，在实际工具执行前做授权检查，不能把生成工具结果当审批。[一手：[权限契约](https://platform.claude.com/docs/en/managed-agents/permission-policies)；研究]
+
 ### 4.2 上下文：先复用按需加载，再按 API 契约保缓存
 - 多工具先试宿主已有的工具搜索和 Skill，不因“工具多”就手写循环。Anthropic 的 deferred tool search 把定义通过引用加入对话、保持前缀；普通增删顶层 `tools` 不自动享有这个性质，也不能把同一保证套给任意 MCP 元工具。**[一手：[工具搜索](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)；研究：选择]**
 - 需要中途改变业务工具时，先查目标模型／平台支持的追加接口：Claude 支持的模型可追加 system 消息，inline-tools beta 可追加工具定义；不要改写旧前缀，也不要为保缓存拒绝必要的模型或权限调整。顶层工具、系统、消息与 effort 的分层规则统一见 [02 缓存边界](02-models-and-cost.md#2-价格快照api-美元百万-token)。**[一手：[中途变更契约](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages)；研究：选择]**
 - 长任务先用现成 harness 的上下文编辑、压缩与跨会话记录；只有所需状态或控制流无法表达时，才补自己的逻辑。**[研究]**
+
+**出现容量或停滞问题，先改对应机制，不直接换整套循环。** [Lewis的8月同模型对照](https://arxiv.org/html/2608.26218)在紧窗口有效、宽窗不保持同样优势；对照是满窗即停的顺序记录，不是已有压缩的当前CLI。Agent保留原始记录并交接收结果，人核干预是否真的触发、是否改善任务；原缺陷消失就撤重复逻辑。[一手／研究]
 
 这些是特定 API 的契约，不代表 CLI／SDK 已暴露每个 beta 开关；具体反例和适用模型见 [S6a](research/2026-10-10-audit.md#s6a--2026-10-15-sdk托管选型补核)。
 
@@ -126,10 +144,11 @@ Anthropic 的 Agent 设计指南 **[一手]**强调专用工具便于表达操�
 
 ### 4.5 安全与成本
 - **请求超时不等于整项任务截止时间**：先核实际 SDK／传输版本的 `timeout` 限制连接、读写等待还是整次请求，再核 SDK 与应用各自的重试、退避及流读取范围。需要限制整项任务耗时时，优先用现有执行环境的总时限与取消机制，确认覆盖重试等待和工具步骤；仅调小 `timeout` 或设置 `max_retries` 不足以保证按时停止。OpenAI Python SDK 的 HTTPX2 读超时与 Go 的整次请求超时提供不同契约，见[固定证据](research/2026-10-12-long-task-evidence.md#请求超时重试与整项任务截止时间)。**[一手；研究：采用判断]** 局限：这些普通 API SDK／HTTP 客户端契约不代表 Codex／dot 的停止行为；动作结果未知仍按 [20 §9](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)对账。
-- **凭证不进沙箱**：Managed Agents 的 vault 把密钥存在服务端，在出口处替换，沙箱里看不到 **[一手]**；
+- **长期凭证尽量留在执行环境外**：Managed Agents云沙箱vault可在出口替换占位符；限制目标host，支持时优先只在请求header注入。隐藏密钥不等于限制其使用权限；自托管沙箱需自己的凭证处理，见[vault与适配范围](https://platform.claude.com/docs/en/managed-agents/vaults)。**[一手；研究]**
 - **先选预算范围**：Claude CLI／Agent SDK 的运行预算按客户端 API 费用估算，恢复历史费用不纳入本次上限；Managed Agents 则按会话累计公开标价，达到后暂停新增模型请求并保留历史与沙箱。托管仍允许执行中的请求及其工具完成并超额，不能当作总账绝不超支。跨任务额度需应用另行累计。**[一手：[CLI reference](https://code.claude.com/docs/en/cli-reference)、[Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets)；研究：选择]**；
 - **内网工具不必等于自建循环**：Managed Agents 可自托管沙箱，让执行、文件和网络出口留在己方；但工具输入输出仍发送到 Anthropic 控制面。若要求这些内容也不得出网，这条路径不合适，换 SDK 也不自动改变云模型的数据边界。**[一手：[Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes)；研究：撤回条件]**；
-- **网络工具默认关闭**：Managed Agents 的 web_search / web_fetch 不受环境网络设置约束，不需要就关掉，需要就用域名白名单 **[一手]**；
+- **先按数据硬约束排除部署路线**：当前OpenAI Agents API仅支持美国数据驻留、不支持ZDR，自托管沙箱也不改变；不符合要求就不采用该服务，换SDK仍须另核模型服务的数据边界。见[官方限制](https://developers.openai.com/api/docs/guides/agents-api/overview)。**[一手]**
+- **只开启需要的联网工具**：Managed Agents的`limited`云环境`allowed_hosts`也约束`web_search`／`web_fetch`，工具与环境的域名名单须匹配；自托管沙箱的防火墙不限制这类服务端工具，仍需单独约束。见[当前web工具契约](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions)。**[一手；研究]**
 - **有限选项判断有缺口才试决策接口**：反复出现的语义路由、分类或检查项预筛，现有规则／模型在质量、等待或成本上不足时，再比较 OpenAI Decisions API 或开源决策模型；不把开放式规划整体改成选项打分。误报、漏报、复核和升级计入总成本，无净收益就撤回。阈值须按目标任务校准，回退与权限由程序守住，见 [02](02-models-and-cost.md#21-新类别决策模型2026-09-起)及[原始契约与比较范围](research/2026-10-10-audit.md#s1d--2026-10-16-决策接口的评分与执行边界)。**[一手；研究：采用边界]**
 
 ## 5. 成本参考
@@ -147,7 +166,7 @@ Anthropic 的 Agent 设计指南 **[一手]**强调专用工具便于表达操�
 | 方案 | 评级 | 说明 |
 |---|---|---|
 | 现成 Agent 的非交互模式（`claude -p`、`codex exec`） | ✅ | 可完整接收的单次代码／CI 维护起点 |
-| Claude API Tool Runner / OpenAI Agents SDK | ✅ | 自定义业务工具的 Agent |
+| Claude API Tool Runner / OpenAI Agents SDK | ✅ | 业务工具起点；有工作区需求也核现成沙箱能力 |
 | Claude Agent SDK / Codex SDK | 🧪 | 在自己的基础设施上跑编码 Agent；注意它们依赖对应 CLI 的版本 |
 | Managed Agents / OpenAI Agents API | 🧪 | 托管运行，长时间、定时、需要工作区的任务；都还是较新的产品 |
 | 从零手写 Agent 循环 | 👀 | 现成循环无法表达所需能力，且同题结果值得承担持续适配时再选；产品控制层可独立建设 |
