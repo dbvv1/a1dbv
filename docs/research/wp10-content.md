@@ -1,6 +1,6 @@
 主线：一／二／三／四；输入、UI、存档与内容制作
-改变的建议：[研究] 换肤后沿一局结束、重开、再操作核规则与呈现同步，并验透明留白内的有效反馈形状；缺字向后回退，已有字形不合地域则改变语言选择优先级；保留 WP10 既有取舍：输入模式、保存恢复与内容身份分别维护；先借原生能力和作者工具，再补项目缺口。
-新证据：2026-10-22 补 Tytarenko 9月 Unity Agent 美术二改修订报告与 Unity／UE 原生同步边界；仅资料，不代实玩。2026-10-20 补译文追加内容放行与现成修订契约；另补 Mindustry 字形修复／发行链与 Unicode 地域字形机制；原日期、固定源码、许可、反证与未实测边界随各节保留。
+改变的建议：[研究] 全页选型区分新项目按需求直接选成熟底座、已有项目按迁移收益保留；UITK 能力逐引擎版本核对，文档检索返回候选库不等于取得锁定版本。换肤后沿一局结束、重开、再操作核规则与呈现同步，并验透明留白内的有效反馈形状；缺字向后回退，已有字形不合地域则改变语言选择优先级；保留 WP10 既有取舍：输入模式、保存恢复与内容身份分别维护；先借原生能力和作者工具，再补项目缺口。
+新证据：2026-10-23（UTC+8）补 Unity 6.7 当前文档、Timberborn 制作案例、英中社区与两次 Context7 检索回执，未运行引擎。2026-10-22 补 Tytarenko 9月 Unity Agent 美术二改修订报告与 Unity／UE 原生同步边界；仅资料，不代实玩。2026-10-20 补译文追加内容放行与现成修订契约；另补 Mindustry 字形修复／发行链与 Unicode 地域字形机制；原日期、固定源码、许可、反证与未实测边界随各节保留。
 
 # WP10：输入、UI 与内容
 
@@ -615,3 +615,50 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 **二改至少核新增句、否定／条件变化及只改语境。** 确认受影响项回审、旧人工译文保留，实际发行文件没有误混未审新文；格式检查不证明译义正确。延期内容、明确原文回退或缩小语言范围须按玩法与支持承诺决定，不能静默混语；仍保原字库、塑形、布局、编辑和操作检查。[研究；未执行]
 
 **集成维护超过增量收益就撤回TMS或缩小范围。** 译义／术语自动二改闭环、目标语言质量、订阅运维与审校工时均未实测；两案例不足以排名工具／模型。提交云服务前另核文本／译文权利与传输授权；本轮无安装、付费、账号连接、翻译生成或引擎实验。[研究]
+
+
+## 整页选型回流：UI Toolkit 新能力与迁移成本
+
+**[研究] 新项目的数据／布局密集 UI 可以在实现前直接试 UITK；已有可靠 uGUI 不因新功能、手柄或一次换肤自动迁移。** 本节补的是版本和生产成本差异，不用 UI 单项代表整个客户端的最高水平。
+**[一手／研究] 2026-10-22 UTC 读取的 6000.7 手册仍显示 Beta，runtime 总表仍荐 uGUI；功能表已包含 UITK Animation Clips／Timeline。** 保留 6.3 特有边界，不能把旧限制当成 6.7 不支持。
+**[研究] 未安装／运行引擎或 UI 工程；最佳视觉质量、零手修可交付性及本项目工时／性能收益未知。** 现有十一模块决策复用 WP10 与动画、音频等专题的固定证据，不为数量另列工具。
+
+### 版本差异怎样改变默认
+
+| 原文与核实范围 | 决策影响 |
+|---|---|
+| [一手] Unity 官方 [2026-09-16 状态文](https://discussions.unity.com/t/state-of-ui-toolkit-in-unity-6-7/1736756)：6.7 场景内编辑／关键帧动画由实验转受支持，runtime ATG 为默认；Localization 内置、asset provider 替代硬 Addressables 依赖，Smart Strings 独立模块 | [研究] 6.7 项目不照搬“必须另装本地化包／依赖 Addressables”或“动画只能 uGUI”；6.3 项目仍用自己版本契约，不以官方局部性能数字推本项目收益 |
+| [一手] 当前 [6000.7 比较页](https://docs.unity.com/en-us/engine/6000.7/manual/uitoolkits/ui-system-compare) 页头 Beta，runtime uGUI／editor UITK；细表 UITK 支持 world-space、custom shaders、Animation Clips／Timeline，但 serialized events 不支持；“often used”动画仍列 uGUI | [研究] 功能可用、惯用路线和成熟度分别判断。不能据惯用表否认详细能力；按控件引用、交互、已有资产与版本成本选择，不要求统一迁移 |
+| [一手] [6000.7.0b5 历史发布页](https://unity.com/releases/editor/beta/6000.7.0b5) 明标 Beta；[发行归档](https://unity.com/releases/editor/archive)本轮抽取未显示版本列表 | [研究] 当前 Beta 判断取当前手册标签，不用历史 b5 推断今天的完整发布状态；采用前重新核实际稳定发行、目标平台和依赖包，不声称 b5 是最新版本 |
+
+### 做过游戏的人：收益与代价同时存在
+
+- **Timberborn。** [一手，官方托管的作者案例，2025-07-18] [Mechanistry 复盘](https://unity.com/resources/timberborn)：13 人团队，迁移历时数月，先清 UI 架构，再重建控件并重设计资产；作者报告布局迭代与冲突改善，也自建 tooltip、本地化控件等。[研究] 适合支持复杂 UI 的长期生产比较，不能把“小时代替天”全归框架，更非单人／零美术修补保证。
+- **Chess Club Manager 与同帖反例。** [社区，2026-01] [作者原帖及评论](https://www.reddit.com/r/Unity3D/comments/1q97tsd/went_allin_on_ui_toolkit_never_going_back_to_ugui/)在数据密集经营游戏中肯定 binding、层级解耦，作者有 web 背景；其他参与者报告生命周期、查询绑定、本地化辅助层和 Inspector 迭代成本。[研究] 新项目应试一条真实菜单链，而不是把热情标题当共同结论；该帖不证明 6.7 新能力已被作者采用。
+- **中文版本成本。** [社区，2026-01-02] [野生西瓜原文](https://www.cnblogs.com/wildmelon/p/19432812)指出 UITK 随引擎更新、旧 Unity／团结分支不能直接取得新能力，拟先测插件／资产兼容。[社区，2025-06-26] [V2EX 多端小游戏讨论](https://www.v2ex.com/t/1141270)对 Unity／Cocos 取舍有分歧。[研究] 两者支持先核项目分支、分发平台与生态成本；不采信帖内许可法律结论，也不据此换掉本文 Unity 主线或认定某引擎最优。
+
+### 可采用的最小比较
+
+[研究] **新项目：** 在已获授权且支持目标平台的锁定版本上，直接比较合适候选的一条代表菜单（动态列表、弹窗、改键／手柄返回及最长目标语言），无需先做一遍不合适的 uGUI 基线。**已有项目：** 先写明确缺口，再算控件重建、资产重做、绑定／焦点、升级与回归成本；只缺一次新局同步就修现有层。对新旧路线都做“换肤／加语言→重开→再操作”，不是比首屏截图。
+
+[研究] 接受条件是关键操作可达、旧行为保住、维护成本可承受；数据密集可试 UITK，复杂模态 UE 可试 CommonUI，稳定项目保 uGUI／UMG。失去目标机支持、要人工美术修补才能达标、焦点／恢复／性能退步且不能局部修好，就撤回新增层或缩需求。这里是验收设计，未执行引擎比较。
+
+**探索回执：** 截至 2026-10-22 UTC，重读 Unity 官方状态／当前手册／历史发布、Timberborn、Reddit 原帖评论、博客园与 V2EX；开源复用本册固定 InputSystem 样例、Celeste64／Foster、Mindustry 等，另核以下固定 tag。发行归档的动态版本列表本轮未取得；未读付费包、未运行引擎／模型／用户电脑，未把旧试验写成新试用。[经验]
+
+## 文档检索窄试用：先辨版本，再读源码
+
+**[经验] 两次 resolve 成功，但没有取得所需精确版本的文档 ID；所以未调用 query-docs，也未臆造版本后缀。** 这只描述两次输出，不代表 Context7 全局不能版本化。
+
+2026-10-22 20:39 UTC，向公开官方 Context7 MCP 发匿名 `resolve-library-id`，问题明确指定 **InputSystem 1.11.2** 与 **UniTask 2.5.10**；两次 HTTP 200。只提交公开库名、版本与 API 问题，未发送项目内容／凭据。[经验]
+
+| 目标 | 实际候选 ID | 本次结果 |
+|---|---|---|
+| InputSystem 1.11.2 | `/unity-technologies/inputsystem`、`/websites/unity3d_packages_com_unity_inputsystem_1_15`、`/websites/unity3d_manual` | 未给 Versions／所需精确版本 ID；1.15 文档不当 1.11.2 |
+| UniTask 2.5.10 | `/cysharp/unitask`、`/websites/deepwiki_cysharp_unitask` | 未给 Versions／所需精确版本 ID；未进入候选文档查询 |
+
+**固定 tag 回退得到的答案（仅读取，不运行）：**
+
+- [一手] InputSystem **1.11.2**→`c8518694c7fdd2c755755e028e2ec19cdceda19b`：[InputAction.cs 916–935](https://github.com/Unity-Technologies/InputSystem/blob/c8518694c7fdd2c755755e028e2ec19cdceda19b/Packages/com.unity.inputsystem/InputSystem/Actions/InputAction.cs#L916-L935)。进行中动作 Disable 在调用内触发 canceled；已禁用时重复 Disable 无操作。[研究] 先置权限再 Disable，取消不能无条件当松手发射，与本册已有新版本源码结论一致。
+- [一手] UniTask **2.5.10**→`7c0f199fe0d3fc528024488ccd671e6c7b27745b`：[README 339–349](https://github.com/Cysharp/UniTask/blob/7c0f199fe0d3fc528024488ccd671e6c7b27745b/README.md#L339-L349)、[UniTask.Delay.cs 722–746](https://github.com/Cysharp/UniTask/blob/7c0f199fe0d3fc528024488ccd671e6c7b27745b/src/UniTask/Assets/Plugins/UniTask/Runtime/UniTask.Delay.cs#L722-L746)及[791–797](https://github.com/Cysharp/UniTask/blob/7c0f199fe0d3fc528024488ccd671e6c7b27745b/src/UniTask/Assets/Plugins/UniTask/Runtime/UniTask.Delay.cs#L791-L797)。默认在 PlayerLoop 检查取消，既非立即也非必须等延时结束，不能笼统说一定下一帧；预取消 token 直接返回已取消任务，`cancelImmediately` 注册回调代价更重（没有本仓实测数值）。
+
+[研究] **采用：** 检索可帮定位，答案涉及取消时序时仍对齐项目锁定包与一手源码；无精确版本就公开缺口并退回固定来源。两次 HTTP 成功不证明 API 运行正确、Addressables 竞态解决或 AI 净收益；本次不改变 UniTask 高频取消边界，也不作工具口碑排名。
