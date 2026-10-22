@@ -68,7 +68,7 @@ def shadow(operation):
 - **Coucou**：[官方](https://github.com/Louis-CFM/coucou)，6,163★、9-27新建。Linux0.5.1官方AppImage已下载核hash；执行环境无桌面DISPLAY，桌面下载另遇网络及明确浏览器策略阻断，约4分钟后停。没有启动、通知或session路由结果。代码MIT但名称／Mochi／音效另有版权；不默认安装真实客户端hooks。[一手／本仓部分尝试]
 - **Whiteboard**：[官方](https://github.com/devdotfast/whiteboard)，3,286★；[HN](https://news.ycombinator.com/item?id=49833867)9-24有424分／143评。作者澄清它是补充评审画布，不是完整IDE；评论既有看懂Agent修改的体验，也有为何不用Mermaid及大应用扩展性的疑问。MIT，当前安装范围不沿用旧帖平台限制。未试用。[一手／社区]
 - **Oil UI**：2,005★、9-30新建的发现快照不变；本轮已补免费比较器部分试用，见下节，未取得窗口内HN同名原帖。[一手／本仓部分实测]
-- **VibeWise**：[官方](https://github.com/nykooi1/vibe-wise)，3,853★、9-29新建，MIT。官方支持Claude与Codex插件入口；人先表达方案的学习流程会增加交互，不能外推无人值守效率。未取得窗口内HN同名原帖，未试用。[一手／研究]
+- **VibeWise**：[官方](https://github.com/nykooi1/vibe-wise)，3,853★、9-29新建，MIT。官方支持Claude与Codex插件入口；人先表达方案的学习流程会增加交互，不能外推无人值守效率。未取得窗口内HN同名原帖；现已补安装／恢复脚本小试，见下节。[一手／研究]
 
 未入表的代表：Jevgrep需provider及代码外发，不在本轮无模型小试；SPACE依赖较重；MuscleMemory仅少量关注且会下载搜索模型；RipIDE原帖被删且热度不足；Tervia有真实评审需求但平台仍在完善。掘金Trending转载不重复计独立关注，linux.do Aegis活动日期不误当发布日。候选及试用是发现结果，不以条目数证明效率或M6漏检率下降。[研究]
 
@@ -123,3 +123,24 @@ sh run-jiti-stateful-trial.sh
 预期5条SUCCESS和38条PASS，不只看退出0。运行器拒绝覆盖已有world，先保留并移走再重放；每阶段45秒上限。脚本会写一份合成临时文件来验证preview边界。包散列固定本轮字节，不冒充独立签名核验；读source/LICENSE及runtime中的版权说明。本轮源码实际由固定Git blob取回校验，运行时由上述Debian包解压，未做系统安装。[一手／本仓实测]
 
 探索回执：这是核心“按需理解与接管”回扫后的定向新意试验，不是新增全网热榜；前序核心接管问题回扫读过作者、[HN讨论](https://news.ycombinator.com/item?id=50151036)及[中文V2EX](https://www.v2ex.com/t/1248455)可见回复；两帖讨论理解与接管，不是Jiti独立采用证据。核心00／01已有相同选择的材料不重复改写。此次只核固定源码、依赖并跑确定性接口，不声称新增社区共识或当前强Agent净收益。[研究]
+
+
+## VibeWise：学习项目按需开，reset不是关闭
+
+**🧪 在专门学习的项目启用；赶交付时用pause，而不是reset。** 固定[0.1.44源码](https://github.com/nykooi1/vibe-wise/tree/eefb53df406ab89e31444684ff32c1df205221f8)，MIT；10-22（UTC+8）约5分钟隔离安装与状态小试，没有模型对话。机制是技能说明＋项目学习笔记＋Claude恢复hook，不是独立学习评估器。[一手／本仓部分实测]
+
+| 读者状态／入口 | 本轮确认的结果 |
+|---|---|
+| 只安装、项目尚未启用 | 未生成项目笔记；真实SessionStart脚本返回空 |
+| Claude的已激活项目 | startup／resume／clear／compact／fork都会返回恢复上下文；同仓子目录可发现状态，独立嵌套Git仓不继承 |
+| paused项目 | startup和compact均不返回恢复上下文 |
+| Codex 0.1.44插件 | [manifest](https://github.com/nykooi1/vibe-wise/blob/eefb53df406ab89e31444684ff32c1df205221f8/.codex-plugin/plugin.json)没有注册恢复hook，[官方说明](https://github.com/nykooi1/vibe-wise/blob/eefb53df406ab89e31444684ff32c1df205221f8/skills/learn/codex.md)要求每会话手动`$vibe-wise:learn`；安装enabled不等于已加载 |
+| reset暂停中的合成项目 | 官方helper预览后确认重置，保应用文件、备份旧笔记，但状态变成active＋incomplete，再次触发引导 |
+
+Claude几行是实际Python hook输入输出，不是Claude客户端加载或模型依从性测试。源码约定显式learn后普通开发仍走学习回合，不能把它当一次命令的临时格式；hook按项目状态、不按任务语义决定恢复。Learn/reset声明`disable-model-invocation: true`，这不是学习回合在下一条开发请求自动结束的标记；各客户端实际执行仍待验证。没有测任意闲聊的实际行为。[一手／本仓实测]
+
+可照用的选择是：先在可恢复的学习项目用[官方安装入口](https://github.com/nykooi1/vibe-wise/blob/eefb53df406ab89e31444684ff32c1df205221f8/README.md)，明确learn；赶交付要暂停时确认profile实际为paused，再开新会话核恢复状态。reset是重新入门，真实笔记仍须按helper预览后确认；不要为退出而重置。卸载不会删除项目学习笔记，也不证明当前会话已加载的上下文被清除。[研究／一手]
+
+本轮用独立HOME／CODEX_HOME和Codex CLI0.163.0实跑本地marketplace添加、插件安装、重复安装、移除及marketplace撤回；技能文件与固定源码一致，撤回后注册／缓存清空，项目源文件与合成笔记字节不变。11项真实hook边界检查通过；上游40测38过，2项“无Git目录”前提被环境祖先Git标记破坏，未改环境或产品来凑全绿。源码用路径遍历而非Git命令，Git搜索上界设置不能修这个前提。Claude客户端不在环境中，未安装；学习提升、时间／代码质量收益及真实对话中的pause行为均未验。[本仓实测]
+
+探索回执：本次是已有P90候选的定向上手；读固定README、许可、两端manifest、Learn／reset／恢复源码和开发测试说明。GitHub issues只获索引，未据此声称独立用户效果；不新增社区共识或前沿领先结论。[研究]
