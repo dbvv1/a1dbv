@@ -294,3 +294,21 @@ example本来不是精确业务断言，这不是工具缺陷。[默认检查范
 最小环境、隔离HOME/XDG/state，DO_NOT_TRACK=1；启动前读取实际resolved config，确认summarize.enabled=false。未用Ask、login、trace、connect、share或模型。遥测／崩溃上传的退出设置不等于已验证零外连；原始状态及服务鉴权不公开。首次跨执行调用ECONNREFUSED，改在同一普通执行调用内启停与请求后成功，具体原因未知，未提权或改sandbox。[本仓：运行范围]
 
 探索回执：读官方发行、headless/API实现、隐私与摘要配置、HN原评论及GitHub使用者问题；中文渠道复用本轮V2EX评审负担讨论，未找到Whiteboard独立中文实用效果对照。未补模型或GUI试验，不按star或图示宣称最佳。[研究]
+
+
+## Context7：精确版本查询实试
+
+**🧪 需要反复查库版本文档时，先从resolve的实际版本列表选精确ID，再查片段与原文tag。** 本轮把既有源码调查补到真实匿名远程MCP，不是新发现项目，也不宣称最普及或最优。[本仓实试／经验：2026-10-23 UTC+8]
+
+[官方固定d980242](https://github.com/upstash/context7/blob/d980242a5b04be30ae8804124a8be259bcc2a227/README.md)说明MCP与CLI＋Skill两种入口；开源部分是MCP服务端，索引／抓取后端不公开。此前[V2EX工具作者](https://www.v2ex.com/t/1184881)展示过实际接入，这是1月历史采用；10月[库维护者#3309](https://github.com/upstash/context7/issues/3309)报告刷新后仍残留旧默认值片段，不能把“版本文档”当自动准确保证。10-23仓库约6.35万star仅为关注快照，不是使用率。[一手／社区]
+
+**实际跑了什么**：10-22 19:40–19:43 UTC，用已有Python标准库向 `https://mcp.context7.com/mcp` 发公开JSON-RPC；未安装、登录或使用key。initialize、tools/list、resolve-library-id及两次query-docs共5次均HTTP 200，服务自报4.4.3。resolve确实列出下表两个版本；两次问相同的“递归把BaseModel导出字典用哪个方法，并给嵌套示例”。[本仓远程工具实试]
+
+| query-docs的libraryId | 实际返回与独立同版核对 |
+|---|---|
+| `/pydantic/pydantic/v1.10.18` | 返回model.dict，2个不同源链接均属该tag，核[官方导出说明](https://github.com/pydantic/pydantic/blob/v1.10.18/docs/usage/exporting_models.md)一致 |
+| `/pydantic/pydantic/v2.9.2` | 返回model_dump，3个不同源链接均属该tag，核[官方序列化说明](https://github.com/pydantic/pydantic/blob/v2.9.2/docs/concepts/serialization.md)一致 |
+
+v1返回偏API描述，没有完整满足嵌套示例要求；v2包含示例。方法名与递归语义已核，未逐字复核全部摘要，也没有执行示例、测客户端自动选版或模型收益；缺失版本回退、长期新鲜度、匿名限额未测。匿名成功只覆盖本次MCP请求，不保证所有REST入口或以后无key都可用。[本仓验证范围]
+
+[真实终端截图](../img/2026-10-23-context7-version-query.png)显示已保存响应的解码摘录，未在截屏时再请求；原始返回及元数据留作复核，公开图不含内部头、身份和本机路径。最小复用是 `resolve-library-id` 的 `libraryName`／`query` → 从返回选完整版本ID → `query-docs` 的 `libraryId`／同题 `query` → 核Source链接与对应官方版本；版本不在结果中时保留缺口，不猜closest match兼容。[一手／本仓实试]

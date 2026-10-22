@@ -30,12 +30,19 @@
 | **按需流程：Superpowers** | 按任务选择直做、计划或完整流程 | 从跨模块未决设计开始，清楚小改不启整套 | [Luca保留分流](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[V2EX去留](https://v2ex.com/t/1227194)并存 | 🧪 按项目试用，本仓未安装运行 |
 | **窄Skill：Matt Pocock** | 只借grill-with-docs澄清会改变实现的决定 | 从架构问题开始，决定已齐就进入实现 | [Faruk实际重构](https://blog.faruk.dev.br/articles/agents/matt-pocock-skills-harness-product-crud/)未走完整ticket链 | 🧪 按需试用，本仓未运行 |
 | **语义MCP：Serena** | 用符号身份查声明与调用位置 | 从同名符号定位开始，原生搜索或LSP已够就不用 | [Luca使用](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[中文短试无明显差异](https://www.v2ex.com/t/1249379)并存 | 🧪 按语义缺口试用，本仓未安装运行 |
+| **版本文档MCP：Context7** | 从已索引版本取对应API片段，再核原文tag | 已有MCP入口时先resolve再传精确libraryId，缺版本则回官方文档 | [库维护者实际问题](https://github.com/upstash/context7/issues/3309)提示索引刷新仍需核实 | 🧪 [匿名两版查询与截图](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)已试，未测模型效果 |
 
 ![任务分流图：目标与验收不清先澄清，清楚后实现、回归并实际操作，再按交接或语义定位缺口选计划或Serena，无缺口则保持原路线](img/2026-10-23-workflow-choice.svg)
 
 图：条件分流，不是安装顺序；新增Skill／MCP的模型收益未测（[可复现图源](img/2026-10-23-workflow-choice.dot)）。[研究：路线示意]
 
-本节复用既有[工作流比较](24-community-workflows.md)与[上下文选择](03-context-engineering.md#25-跨文件符号检索何时补-serena)，只是把读者入口前移，不计新研究或新的模型收益。[研究]
+**直接试用版本文档检索**：先让 Context7 列出库的实际版本，选择与项目相符的完整 ID；例如本次 `/pydantic/pydantic/v1.10.18` 返回 `model.dict()`，`/pydantic/pydantic/v2.9.2` 返回 `model_dump()`，引用也分别指向同版源码。这里选择历史版本验证分流，不建议读者降级依赖。[本仓远程工具实试]
+
+![Context7真实云端终端：两次匿名精确版本查询返回不同方法，原文链接分别匹配Pydantic v1.10.18与v2.9.2](img/2026-10-23-context7-version-query.png)
+
+图：终端展示本次已保存的真实响应摘录，不是模型答题或生成代码效果。[本仓实试]
+
+本节复用既有[工作流比较](24-community-workflows.md)与[上下文选择](03-context-engineering.md#25-跨文件符号检索何时补-serena)，前四项只是把读者入口前移；Context7另补真实查询，不计新的模型收益。[研究]
 
 <a id="值得一试近4周的新项目与做法"></a>
 ## 新冒头：新项目与有新意的用法
