@@ -30,8 +30,15 @@
 | **按需流程：Superpowers** | 按任务选择直做、计划或完整流程 | 从跨模块未决设计开始，清楚小改不启整套 | [Luca保留分流](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[V2EX去留](https://v2ex.com/t/1227194)并存 | 🧪 按项目试用，本仓未安装运行 |
 | **窄Skill：Matt Pocock** | 只借grill-with-docs澄清会改变实现的决定 | 从架构问题开始，决定已齐就进入实现 | [Faruk实际重构](https://blog.faruk.dev.br/articles/agents/matt-pocock-skills-harness-product-crud/)未走完整ticket链 | 🧪 按需试用，本仓未运行 |
 | **语义MCP：Serena** | 用符号身份查声明与调用位置 | 从同名符号定位开始，原生搜索或LSP已够就不用 | [Luca使用](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[中文短试无明显差异](https://www.v2ex.com/t/1249379)并存 | 🧪 按语义缺口试用，本仓未安装运行 |
-| **版本文档MCP：Context7** | 从已索引版本取对应API片段，再核原文tag | 已有MCP入口时先resolve再传精确libraryId，缺版本则回官方文档 | [库维护者实际问题](https://github.com/upstash/context7/issues/3309)提示索引刷新仍需核实 | 🧪 [匿名两版查询与截图](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)已试，未测模型效果 |
+| **版本文档MCP：Context7** | 从已索引版本取对应API片段，再核原文tag | 已有MCP入口时先resolve再传精确libraryId，缺版本则回官方文档 | [生成文档修复回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)说明普通刷新未必重建生成页 | 🧪 [匿名两版查询与截图](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)已试，未测模型效果 |
 | **并行写入：Git worktree** | 每个独立写入任务保留自己的目录、分支和未提交现场 | 先用原生入口或Git，跨树管理成为瓶颈再评估管理器 | [事故后采用](https://blog.michaelschilling.com/blog/many-agents-one-clone/)与[集成后收缩并发](https://utsabpant.com/blog/running-coding-agents-in-parallel)支持条件使用 | ✅ 借用机制，[隔离／合入／脏树保护与截图](research/2026-10-22-frontier-trials.md#git-worktree不装编排器也能隔离写入)已验 |
+| **网页验收：Playwright CLI＋Skill** | 用短命令观察网页、操作元素并检查结果 | 已有Playwright先复用项目入口，现有浏览器已够用就不另装 | [实践者由MCP转CLI](https://www.reddit.com/r/claude/comments/1v9aa4z/for_claude_code_what_do_you_prefer_mcp_tools/)与[调用后仍漏验收](https://linux.do/t/topic/2560865)支持按目标选用 | 🧪 [预装1.62.0探针与截图](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)已核，浏览器流程未验 |
+
+**想让Agent真正验网页？** 已有项目依赖时，先用 `npx --no-install playwright --version` 确认本地版本，再查 `npx playwright cli --help`，不必先全局安装；CLI提供动作，Skill提供用法，能直接用CLI时也不强求先装Skill。[官方入口](https://playwright.dev/agent-cli/installation)／[Skill说明](https://playwright.dev/agent-cli/skills)
+
+给Agent一条可见结果明确的任务，例如“新增两项待办→完成一项→切到未完成列表只剩另一项→刷新后结果保留”，让它交回每步观察和最终页面截图。若现有原生浏览器已能完成这条流程，沿用它；需要留可维护回归时，再把这次发现固化成测试，而非只保留一串操作命令。[经验；[23网页验收](23-browser-verification.md)]
+
+本仓PATH起初没有CLI，但预装Playwright里已有入口；版本与帮助已运行，浏览器随后因环境socket权限失败，未做到上面的待办流程。别为“找不到命令”先重装，也别把启动探针当成页面验收。[部分实试与真实终端截图](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)
 
 **两项独立修改想同时推进？** 在确认的基线检出中记录 `BASE_SHA=$(git rev-parse HEAD)`，分别用 `git worktree add -b task-a ../task-a "$BASE_SHA"` 和 task-b 的对应命令建树，再在各目录启动现有Agent；交回提交后到集成树验两项共同结果。共享设计尚未确定时先收敛，已有客户端worktree入口可直接沿用。[实试与最小操作](research/2026-10-22-frontier-trials.md#git-worktree不装编排器也能隔离写入)
 

@@ -317,7 +317,7 @@ example本来不是精确业务断言，这不是工具缺陷。[默认检查范
 
 **🧪 需要反复查库版本文档时，先从resolve的实际版本列表选精确ID，再查片段与原文tag。** 本轮把既有源码调查补到真实匿名远程MCP，不是新发现项目，也不宣称最普及或最优。[本仓实试／经验：2026-10-23 UTC+8]
 
-[官方固定d980242](https://github.com/upstash/context7/blob/d980242a5b04be30ae8804124a8be259bcc2a227/README.md)说明MCP与CLI＋Skill两种入口；开源部分是MCP服务端，索引／抓取后端不公开。此前[V2EX工具作者](https://www.v2ex.com/t/1184881)展示过实际接入，这是1月历史采用；10月[库维护者#3309](https://github.com/upstash/context7/issues/3309)报告刷新后仍残留旧默认值片段，不能把“版本文档”当自动准确保证。10-23仓库约6.35万star仅为关注快照，不是使用率。[一手／社区]
+[官方固定d980242](https://github.com/upstash/context7/blob/d980242a5b04be30ae8804124a8be259bcc2a227/README.md)说明MCP与CLI＋Skill两种入口；开源部分是MCP服务端，索引／抓取后端不公开。此前[V2EX工具作者](https://www.v2ex.com/t/1184881)展示过实际接入，这是1月历史采用；10-03[库维护者#3309](https://github.com/upstash/context7/issues/3309)报告旧默认值片段残留；10-06[服务维护者解释并关闭](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)：该页是Context7生成文档，按月重建，普通Refresh不触发，此次已从当前main重建。首次记录漏了这条修复回执，本轮经B互审补核；它说明两种刷新范围不同，不是当前未修复缺陷，修复后效果本仓未复测。10-23仓库约6.35万star仅为关注快照，不是使用率。[一手／社区]
 
 **实际跑了什么**：10-22 19:40–19:43 UTC，用已有Python标准库向 `https://mcp.context7.com/mcp` 发公开JSON-RPC；未安装、登录或使用key。initialize、tools/list、resolve-library-id及两次query-docs共5次均HTTP 200，服务自报4.4.3。resolve确实列出下表两个版本；两次问相同的“递归把BaseModel导出字典用哪个方法，并给嵌套示例”。[本仓远程工具实试]
 
@@ -361,3 +361,14 @@ v1返回偏API描述，没有完整满足嵌套示例要求；v2包含示例。�
 ![原生Git试用的真实终端截图：A未提交文件隔离，两支合入后共存，脏树普通删除被拒且文件保留](../img/2026-10-23-worktree-trial.png)
 
 图为完整保存运行日志的真实终端展示，仅将临时绝对路径缩为fixture；没有实际Agent并行、质量或耗时收益对照。源码与旧配置夹具仅作复用，本轮新实证限上述三项Git行为。[本仓验证范围]
+
+
+## Playwright CLI：已有入口先复用
+
+**🧪 网页验收缺浏览器动作时可试CLI＋Skill，已有原生入口够用则保留。** 读者操作入口见[13](../13-frontier-radar.md#代表机制按任务采用不按热度装齐)。Reddit实践者自述由MCP、自写脚本转CLI以简化工具链；linux.do的7月个案却仍漏掉角色移动验收，不能把工具调用当成功。[社区：正文所链两篇原帖；Reddit仅显示约3个月前，不推定精确日期或所用版本]
+
+本仓预装Python Playwright **1.62.0** 的Node driver包含agent CLI，实际运行版本／帮助并阅读已有Skill，未安装Skill或验证模型加载；[同版源码](https://github.com/microsoft/playwright/blob/e3950d9c140d007bd52853b45813c6274b24e36f/packages/playwright-core/src/cli/program.ts)也将 `cli` 接到CLI程序。19:40 UTC的浏览器启动使用隔离上下文与已装Chromium，保留沙箱，因 `socket() failed: Operation not permitted (1)`、SIGABRT失败；无页面、snapshot、过滤或刷新结果，不推断产品可靠性。[源码／本仓部分实试：2026-10-22；不是新一轮试跑]
+
+![真实终端展示Playwright 1.62.0已保存的版本、帮助、Skill核对与socket启动失败，明确页面操作未验证](../img/2026-10-23-playwright-probe.png)
+
+图：只读展示已保存探针，不是成功页面截图。探索复核官方安装／Skill、固定源码、Reddit与linux.do；V2EX未获CLI特定实践，未获得采用率或模型收益比较。[取证回执：2026-10-23 UTC+8]
