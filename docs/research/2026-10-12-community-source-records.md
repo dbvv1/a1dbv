@@ -898,3 +898,57 @@ P82补核[Talking Postgres原逐字稿](https://talkingpostgres.com/episodes/how
 独立[报告953](https://github.com/google-antigravity/antigravity-cli/issues/953)是Windows桌面2.12.2、Gemini3.8 Flash High、WSL stdio上两轮随机标记对照：纯structuredContent不可用，text／both可读；没有独立CLI测试。9-06维护回复仅转交桌面团队，9-22是closed时间，不证明修复。吸取“实际模型看到返回内容”这一接收项，不给CLI新增已证缺陷，也不在本仓重做探针。[一手：公开复现／维护回复；研究]
 
 [Remote Control当前文档](https://antigravity.google/docs/remote-control)把交互连接绑定CLI进程，daemon仍须宿主开机；Windows未做管理员boot安装时要登录后才恢复。跨设备UI不等于云端执行。只采用生命周期判断，不新增本仓服务或修改本机设置。[一手／研究]
+
+
+## P86：IDE入口从功能清单到执行与接收
+
+主线：额外能力何时值得加，及交付给使用者／下一位维护者。
+改变的建议：把IDE品牌和功能清单改为整理、宿主、工作区、审批、恢复、接收六类选择；只为具体缺口迁移。
+新证据：持久Agent Host、Copilot worktree批准绑定、Kiro云／本地恢复边界、Cursor自托管执行域及独立团队的工作台／接收实践。
+
+### 未决条件与读取范围
+
+2026-10-22（UTC+8），在既有P46来源名册、P54入口分层和P82组织层材料上续查：关窗口是否等于停止、代码副本是否改变批准、恢复是否覆盖实际文件、远端是否可完成原验收。先按这些条件读当前原文，再找采用／撤回；不是为每品牌补一个链接。未安装或运行候选、模型、客户端，未做迁移净收益对照。
+
+正文以同一已有仓库任务为选择基线：能完成原任务就保留；只缺整理补组织层，需要IDE监督补集成，需要离机执行补宿主。Spotify、Monzo、Shopify是相对IDE厂商独立的工程团队，但其自报仍不是独立复现；供应商客户案例另列，不能靠上游重复计数。
+
+### 领先机制及实际边界
+
+| 原文、作者与时间 | 已读位置与决定性支持 | 本仓采用／局限 |
+|---|---|---|
+| [VS Code Agent Host](https://code.visualstudio.com/blogs/2026/08/26/agent-host-architecture)，Rob Lourens／Connor Peet／Brigit Murtaugh，8-26 | Why we built／enables／open protocol：独立host持有session，客户端以状态快照和有序动作重接，保留不同harness循环；文中说明Stable与Insiders可用 | 关项目窗口的需求先比较持久host，不直接迁云；本地仍须应用及机器运行，非独立收益试验 |
+| [Agent Host契约](https://code.visualstudio.com/docs/agents/concepts/agent-host)、[harness](https://code.visualstudio.com/docs/agents/concepts/agent-harnesses)，10-22核 | Session lifetime／client dependencies：workspace操作在host执行，客户端贡献工具仍依贡献客户端；worktree隔离代码，不隔离全部文件和网络 | 区分关窗口、退出应用、断客户端、关主机；不把浏览器当执行位置 |
+| [VS Code approvals](https://code.visualstudio.com/docs/agents/run/approvals)，当前页10-21批准，10-22核 | Permission levels指Copilot harness，原文“Worktree sessions always use Allow all.”；Assisted需Folder且属实验，sandbox独立且不覆盖所有工具 | 需要人工门禁时不能默认worktree组合；不把其它harness套同一规则，不为绕组织策略换入口 |
+| [会话管理](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions)及[Review and revert](https://code.visualstudio.com/docs/agents/run/review-code-edits)，10-22核 | 多聊天可能同一worktree，fork对话不隔离代码；Local的pending／Keep是已落盘修改的评审状态；checkpoint不撤外部效果 | 接实际树、未跟踪文件与当前检查，不接按钮状态；没有崩溃一致性实测 |
+| [Cursor环境复盘](https://cursor.com/blog/cloud-agent-environment)，Mathew Hogan／Arvind Saripalli，7-30 | Matching cloud／simpler interface：先补Mac／Linux环境差异，再用anydev及supervisor简化运行；Skills只部分缓解复杂命令，随后形成浏览验证和演示 | 先让原检查可运行，再评估新交互；不照搬平台、不把PR份额当净收益 |
+| [Cursor运行位置](https://cursor.com/docs/cloud-agent/self-hosted/choose-runtime)，10-22核 | 页首及Quick comparison：自托管只转checkout／工具执行，loop和推理仍在云；My Machines／Team Pools运维责任不同 | 严格不出域不能由自托管名称判满足；只需私网时也先比较已有可用通路，不默认建池 |
+| [Kiro本地隔离](https://kiro.dev/blog/local-sandboxing/)，Mike Landi／Doug Clauson，10-14；[契约](https://kiro.dev/docs/sandbox/) | 工程文章说明OS约束的设计动机；契约限定shell子进程，stdio MCP另包装，内建文件工具与远程MCP不在其中，backend缺失可Unavailable | 看有效状态及覆盖，不把配置存在当安全审计；未做OS实测 |
+| [Kiro云会话](https://kiro.dev/docs/cloud-sessions/)，10-21更新；[checkpoints](https://kiro.dev/docs/checkpoints/)，8-04更新，10-22核 | 云端克隆仓库，客户端断开可续跑；Current limitations无Supervised／per-change approval。rewind只分叉聊天；checkpoint只跟踪内建修改工具，后续人工改动可能被覆盖 | 需要逐修改批准就保留满足要求的本地路径；回退前核Git及外部状态，不据云历史声称所有副作用恢复 |
+| [JetBrains ACP](https://www.jetbrains.com/help/ai-assistant/acp.html)、[Codex](https://www.jetbrains.com/help/ai-assistant/codex-agent.html)、[Claude](https://www.jetbrains.com/help/ai-assistant/claude-agent.html)，10-22核 | ACP仍列WSL限制；两集成自动上下文为当前文件／选区，均不遵循.aiignore；Claude独立Beta插件另分 | 同名不是原CLI透明替换，IDE上下文及排除要求要逐项验；没有客户端实测 |
+| [ACP v1 session setup](https://agentclientprotocol.com/protocol/v1/session-setup)、[tool calls](https://agentclientprotocol.com/protocol/v1/tool-calls)，10-22核 | loadSession需协商，resume与重播不同；许可由agent请求、client按实际设置处理，取消须处理未决请求；导航另有v2 Draft | 不把协议名当工具／配置／历史全对等；只按已核v1范围采用 |
+
+VS Code当前官网及GitHub渲染页已读，raw同路径抓取却返回9-02旧文。本轮取当前原文并标核实日，不称取得不可变源码快照。各产品版本、组织开关和可用组合仍应在目标客户端核验。
+
+### 不同团队的采用与撤回
+
+- **Spotify Xirp**：[Tyson Singer，8-10](https://portal.spotify.com/blog/introducing-xirp)描述跨Claude Code／Gemini CLI／Codex的工作台、每会话worktree及上下文接续。它支持组织层不必绑定单一harness；也是自有Xirp／Portal推广，不是跨IDE效果复现。[Stuart Clark，8-28／9-03更新](https://portal.spotify.com/blog/the-hidden-tax-on-your-ai-agents)的一对同任务有无Portal上下文例子，产物为计划而非完成软件；不能把其费用／时间差归因于换IDE或扩成团队净收益。本轮采用“保留已知工程上下文”机制，不照搬统一工作台或“无需探索”的宣传。
+- **Monzo Chip**：[Fabien Deshayes／Oli Haley，8-13](https://monzo.com/blog/building-agent-chip)把多入口背后的任务环境、代理访问与工程师最终接收连起来。用它检验迁移是否真补资源与责任缺口，不据银行自建平台推一般团队也应自建。原文重读，不算新发现。
+- **Shopify River**：[Kaiyi Li，9-02](https://shopify.engineering/river-vulnerability-remediation)在rebase后弃用旧head绿CI，遇人工已有分支与审查则交回作者，并撤回经需求澄清后不成立的补丁。将可演示结果接到当前树／当前责任人；只借维护接收机制，不称IDE胜CLI。既有原文复用。
+- **Thoughtworks**：[Radar Cursor，4-15](https://www.thoughtworks.com/radar/tools/cursor)报告交付团队保留IDE审计划、检查步骤和回滚的理由。比近6月窗略早，不能单独承担十月前沿；但足以避免将“只缺整理先保CLI”写成所有人应离开IDE。
+- **Zed撤回**：重读[8-17讨论](https://github.com/zed-industries/zed/discussions/57402)，用户明确因重复审批退到终端；[8-18问题62788](https://github.com/zed-industries/zed/issues/62788)截至本轮仍Open且无关联PR，只支持所报版本失败分支。既有native-agent落盘修复不替代Terminal Threads历史，亦不证明当前统一故障率。
+
+### Kiro作者实验：只取恢复可达的窄反例
+
+[nobu-13固定仓](https://github.com/nobu-13/article06-kiro-agentic-cicd/tree/0148056517d95cb4dad354e93c26e6e67ab11403)于9-14更新。本轮读README、v2证据索引、[失败汇总](https://github.com/nobu-13/article06-kiro-agentic-cicd/blob/0148056517d95cb4dad354e93c26e6e67ab11403/experiments/aggregate/v2/failure-analysis-unified.csv)、[共同权限](https://github.com/nobu-13/article06-kiro-agentic-cicd/blob/0148056517d95cb4dad354e93c26e6e67ab11403/kiro-config/COMMON_PERMISSIONS.json)及runner源码，未运行。作者与供应商的关系未核，不计独立头部团队。
+
+作者报告Kiro CLI2.21.4／v3／headless、auto模型的60次运行，Pure S01 run3把模板覆成一行，之后恢复检查受阻；共同allow列表未含git diff／status。这是作者汇总与配置相符，不是本仓独立复现运行轨迹：原始transcript／diff未公开。v1权限不对等已作废，v2统一权限；25/30与27/30的差异不显著（作者p=.7065），不写护栏提升成功率。采用前应验正常修复与获准恢复，不能由“能写文件”推完整无人值守能力。
+
+不沿用其“物理不可见／外网禁止”保证：目录移出与命令匹配并非本轮验过的OS边界，配置允许python -c。这里是恢复可达的窄反例，不是安全方案推荐，也不适用于吸取作答这种明确禁工具的任务。
+
+### 排除项与当前缺口
+
+- [2609.26847v1](https://arxiv.org/html/2609.26847v1)虽然9-22发表，§3.2数据为2024-12至2025-07；[2607.01418v1](https://arxiv.org/html/2607.01418v1)研究1–4月且来自Copilot供应商微软。都不能充十月独立IDE／CLI效果比较。
+- [2610.20618v1](https://arxiv.org/html/2610.20618v1)论坛语料截止2025-11；页面时间／编号又有不协调，未作近期证据。[UVIK规格比较](https://uvik.net/blog/spec-driven-development-benchmark/)的更新时间早于所称运行日，客户端版本及原始CSV入口不足，也不据其排名调评级。
+- 中文入口新搜索未取得更强的原始采用与维护产物；保留既有资格／权限与P82中文交付证据，不以转载和比赛投稿证明入口优越。
+
+本轮改变了窗口退出、工作区／批准绑定、实际上下文和回退接收四类条件；没有建立同模型同任务的完整入口净收益排名。P51作为P86项目内真实研究使用，既有参照复用与新发现分列；没有冻结隔离检索基线，不能称M6方法对照或降低漏检率。已比较主要选择也不自动成为差距0，整页标记由新上下文复核后再定。

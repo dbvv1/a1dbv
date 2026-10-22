@@ -1,112 +1,116 @@
 # IDE 类工具与其他
 
-> 编辑更新：2026-10-21（UTC+8）；本次补原 CLI 承载与 ACP 迁移的选择，其他产品保留分项[核查日期](../research/2026-10-12-community-source-records.md#ide-页历史页头)。
+> 整页比较更新：2026-10-22（UTC+8）；本次核工作区、审批、恢复与接收。既有套餐及接入资格保留分项核查日期，不作客户端效果排名。
 
 ## 30 秒结论
 
-**✅ 只想集中管理已可验收的 CLI 会话，先保留 CLI，不连 harness 一起换。** 例如 [Zed 的终端线程](#zed)可以只承担整理层；需要集成式 diff、编辑器上下文或交互调试，再试 ACP／原生 IDE Agent。[一手；研究：2026-10代际条件默认]
+**✅ 保留已能完成任务的入口，缺哪层就补哪层。** 只缺多会话整理，先把原 CLI 放进终端工作台；需要审计划、看 diff 或交互调试，保留有效的 IDE 集成；要离开电脑继续，才选择确有独立执行能力的宿主。[研究：条件默认]
 
-**⛔ 不因带浏览器或 Agent 面板就迁移。** Agent 应交回能复现问题的实际运行结果，人核兼容与体验；审批、必要工具或恢复链不通，就回到原可用入口。[研究]
+**⛔ 不因“后台、worktree、自托管、支持 ACP”就整套迁移。** 先核实际执行主机、必要审批、失败恢复与最终验收；其中一项不满足，就保留原路或缩小委派。[研究]
+
+Agent负责在目标入口完成同一任务，交回改动、检查和未完成项；人核实际文件状态、必要权限和可体验结果。换面板不能补足缺失的运行环境，也不自动保留原 CLI 的全部能力。[研究]
 
 ## 当前最高水平
 
-<!-- frontier: status=仅候选 gap=2 gen=2026-10 checked=2026-10-21 -->
+<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
 
-**当前最佳 IDE／CLI 组合未知，本页推荐属于可行默认。** Zed 团队的[终端线程设计（5-20）](https://zed.dev/blog/terminal-threads)与当前契约，支持“只换组织界面”的候选；8 月的[ACP 撤回反馈](https://github.com/zed-industries/zed/discussions/57402)提示审批接续也是迁移成本。没有同任务成果与人工投入对照，主流采用率未知。[一手：设计；社区：个案；研究：差距2]
+**近期领先机制是持久宿主、可运行环境和可接收的工作状态，而不是统一赢家。** VS Code [8-26 Agent Host](https://code.visualstudio.com/blogs/2026/08/26/agent-host-architecture)把会话生命周期移出单个窗口；Cursor [7-30 工程复盘](https://cursor.com/blog/cloud-agent-environment)先简化启动和长期进程，再接浏览验证。Spotify [8-10 Xirp](https://portal.spotify.com/blog/introducing-xirp)独立展示跨 harness 整理与上下文接续；其自有产品推广不是效果复现。[一手：不同团队自报；研究]
 
-**更近的领先实践把真实体验作为反馈，而非把 IDE 当答案。** Wang、Attard 与 Issac G. 在 Anthropic [9-23 工程复盘](https://claude.dev/blog/how-we-made-claude-ai-faster/)中报告：headless 检查未发现真实 Chrome 新标签页的布局变化，员工录屏才补上缺口。采用时先问现有入口能否取回同样证据，这不是 IDE 优于 CLI 的比较。[一手：内部团队自报；研究]
+| 主要选择 | 近期领先替代与反例 | 本仓决定 |
+|---|---|---|
+| 原 CLI、IDE 原生还是 ACP | Zed 分离整理层；Spotify 跨 harness 工作台；Thoughtworks 保留 IDE 监督的采用观察 | 只缺整理不换 harness；需要编辑器监督才试集成，逐项验能力对等 |
+| 本地窗口、持久宿主还是云端 | VS Code Agent Host；Cursor 运行环境；独立 Monzo 任务环境 | 先区分关窗口与关主机；必要工具仍依赖客户端时保留该客户端 |
+| 并行副本与权限怎样组合 | VS Code 分聊天、worktree、权限与 sandbox；Copilot worktree 有自动批准边界 | 隔离代码与授权分开验；不能为并行便利丢掉任务要求的人工门禁 |
+| 怎样减少确认而不失控 | Kiro 本地命令隔离与云端限制；作者 headless 修复后恢复受阻的反例 | 先核实际覆盖和正常／恢复路径；不靠全局跳过批准修集成问题 |
+| 接续聊天还是回退实现 | ACP 协商恢复能力；Kiro rewind／checkpoint；Zed 不同历史路径 | 迁移前验内容与文件，不把侧栏条目当完整接续 |
+| 何时接收与合入 | Cursor 可运行演示；Shopify River 当前 head、人工接管及撤回 | 接最终树和原验收；证据过期或已有人接管就停止对应自动动作 |
+| 规格流程与中文入口值不值得换 | Kiro 规格修订；既有跨地区资格与权限核查 | 只为具体需求／能力缺口试用；中文入口同题最优与整体迁移收益仍未覆盖 |
 
-同题选择与试换方法集中在[总览](README.md#当前最高水平先分层再决定迁移)，详细版本、失败分支与未决范围见[研究记录](../research/2026-10-12-community-source-records.md#p54入口选择先分界面harness与执行环境)。[研究]
+资料比较覆盖这些主要选择，**当前最佳完整组合、长期人工净收益仍未知**。Anthropic [9-23 真实 Chrome 复盘](https://claude.dev/blog/how-we-made-claude-ai-faster/)也提醒 headless 检查可能漏掉真实客户端变化；需要这类反馈时先补观察，不据此判 IDE 胜 CLI。详细证据与负结果见[P86研究](../research/2026-10-12-community-source-records.md#p86ide入口从功能清单到执行与接收)。[一手／研究；未运行客户端或模型]
+
+## 迁移前验四件事
+
+1. **执行在哪里**：关闭项目窗口、退出应用、断开客户端和关闭主机分别会怎样；构建、浏览器、私网与设备是否仍可达。
+2. **审批怎样生效**：核目标 harness、工作区和组织策略；既验正常修改，也验出错后的诊断与获准恢复。
+3. **接续什么状态**：聊天内容、代码分支、未提交文件和外部动作分别确认；多个会话是否正在改同一份代码。
+4. **接收什么结果**：看实际 diff、未跟踪文件、当前 head 的检查及真实体验；Agent 的完成自报只作线索。
+
+以上用于同一任务的小范围试换，不要求为每个产品新建测试框架。已有结果可复用；必要能力缺失就退回原路，获准修复后再验。[研究]
 
 ## Cursor
 
-| 项 | 内容 |
-|---|---|
-| 形态 | VS Code 分支。**Cursor 3** 是重新打造的、以 Agent 为中心的界面：多仓库工作区、所有本地和云端 Agent 集中在侧栏（包括从手机、Web、Slack、GitHub、Linear 发起的）、本地和云端之间**快速交接**、云端 Agent 会附上演示和截图供你核验、完整的 LSP、内置浏览器、**插件市场**（MCP、Skills、子 Agent，支持团队私有市场）**[一手]** |
-| 自研模型 | **Composer 2**（官方称“自家的前沿编码模型，额度高”）**[一手]** |
-| 2026-10 新功能 | **Remote Control**：在 Cursor iOS 应用里查看并回复电脑上运行的本地 Agent（Agent 仍在你的电脑上运行；企业版默认关闭）**[一手：changelog 10-06]** |
-| 2026-09 新功能 | **Rollouts** 机器人：为每个 PR 写监控计划，按环境跟踪部署健康度，发现回归后可以开回滚 PR；**Security Review** 机器人；Cursor Projects；自托管机器；`/goal`；云端子 Agent 各自运行在独立机器上 **[一手：changelog]** |
-| 供模与迁移 | 按实际模型入口、目标任务与合同变化判断，供模过渡及替代路径统一见 [11 §3](../11-community-pulse.md#3-cursor按实际接入路径判断是否迁移)；不把收购新闻或旧口碑当迁移收益证据 **[一手；研究：2026-10-15入口同步]** |
-| 评级 | 🧪 **条件试用**：必要路径、费用和数据政策满足时可保留现有工具；有明确质量／能力目标或具体阻塞时比较替代方案，不因旧“已停供／归属不确定”叙述自动迁移 |
-
+**🧪 需要独立执行和运行反馈时再试 Cloud Agents，不为侧栏迁移。** Cursor 的工程复盘先处理 Mac／Linux 开发差异，再以统一启动入口和进程 supervisor 减少复杂命令的维护负担；补 Skills 只改善了部分问题。对已有项目，先让目标环境能跑原验收，再判断浏览演示是否补上真实缺口。[一手：7-30内部复盘；研究：不照搬其平台]
 
 ### 远程执行为什么值得换：Navan的能力缺口
 
-**旧入口要求桌面会话一直打开，确实阻断异步工作时，改变执行方式有明确理由。** [Cursor 10-16 的 Navan 案例](https://cursor.com/pt-BR/blog/navan)记录团队在自托管机器上并行升级8个应用和15个库，并用内部工具与浏览器核验；它支持按执行约束迁移，不证明IDE比CLI好。[一手：供应商客户案例]
+[Navan 10-16 案例](https://cursor.com/pt-BR/blog/navan)描述从依赖开启桌面会话转向自托管执行；这是供应商客户案例。独立的[Monzo Chip 8-13](https://monzo.com/blog/building-agent-chip)也把任务环境、受控访问和工程师接收放在入口背后。两者确认应按执行缺口试换，没有同题 IDE／CLI 净收益对照。[一手：供应商案例／独立团队自报；研究]
 
-**先确认目标环境能完成核心流程，再承担迁移。** 沿用现有可验收入口或补其环境能力也是替代；新入口缺必要依赖、检查或数据通路就撤回。[研究；条件见[证据记录](../research/2026-10-12-community-source-records.md#p54后续从迁移理由到可核结果)]
+**自托管只解决明确的运行位置需求。** 当前[运行位置文档](https://cursor.com/docs/cloud-agent/self-hosted/choose-runtime)把 checkout 和工具执行放到自有硬件，agent loop 与推理仍在 Cursor 云端；要求全部数据不出域时，这不构成满足条件的证明。[一手：10-22契约]
+
+My Machines 的在线和环境健康由使用者维护，Team Pools 还增加镜像、容量与重置责任。托管环境已经满足资源与数据要求，就不先建机器池；特殊系统、硬件或不可达资源确有需求时再承担这层维护。[一手；研究]
 
 ## JetBrains（IntelliJ / Rider / PyCharm…）
 
-🧪 **先用覆盖必要路径的现有 IDE 入口，不把同名 Agent 当原 CLI 的透明替代。** AI Chat 集成、ACP Registry／自定义 agent 与独立 Claude Code 插件须分开；Claude Agent 官方页明确它不同于 Claude Code [Beta] 插件。ACP 无需 JetBrains AI 服务订阅，但当前 ACP 文档列 WSL 不支持，这不代表全部 JetBrains 入口或原 CLI 都不能用。**[一手：2026-10-15官方契约]**
+**🧪 需要 IDE 语义、调试和审查时先保留现有工程入口，分清 AI Chat 集成、ACP 与独立插件。** [Claude Agent](https://www.jetbrains.com/help/ai-assistant/claude-agent.html)与独立 Claude Code Beta 插件不是同一路径；[ACP 当前文档](https://www.jetbrains.com/help/ai-assistant/acp.html)仍列 WSL 不支持，不能外推为所有 JetBrains 入口都不可用。[一手：10-22核]
 
-Codex 集成可用 JetBrains AI 订阅、ChatGPT 登录或 OpenAI API key；仅 BYOK 路径限定 OpenAI 直接发行的 key。先核目标执行环境、认证及必要命令／插件，满足再替换原路径；原 CLI 已可用而集成缺能力时保留原路径。[官方来源与历史失败](../research/2026-10-12-community-source-records.md#jetbrains同名-agent-不等于原-cli-环境)说明运行时和配置可能不同，未取得当前客户端实测或原用户最终恢复回访。**[一手；社区；研究：采用边界]**
+**先检查真正传入的上下文和排除规则。** 当前[Codex](https://www.jetbrains.com/help/ai-assistant/codex-agent.html)／Claude 集成的自动上下文是当前文件与选区，不是所有打开文件；两页均说明不遵循 `.aiignore`。Agent应核目标文件与诊断，人核数据边界；依赖该排除保证时不要直接迁移。[一手；研究]
 
-- C# / Unity 项目先沿用能满足当前任务的 IDE、编译与验证入口；确有诊断／调试缺口时再评估 Rider 等现成支持，不因选择某个 Agent 就默认迁移 IDE。见 [Unity 的条件起点](../../domains/game-dev/unity/README.md#一页纸推荐2026-10)。**[研究：入口一致性；未作跨 IDE 效果排名]**
+认证、运行时与必要命令仍按[既有接入核查](../research/2026-10-12-community-source-records.md#jetbrains同名-agent-不等于原-cli-环境)分路径判断。C#／Unity项目也先沿用能完成编译和验证的 IDE，确有缺口再比较 Rider 等支持，见[Unity条件起点](../../domains/game-dev/unity/README.md#一页纸推荐2026-10)。[研究；未作跨IDE效果排名]
 
 ## VS Code + GitHub Copilot（CLI / App / VS Code）
 
-形态：Copilot 现在有 **Copilot CLI、GitHub Copilot 桌面应用、VS Code、JetBrains** 等多个入口，以及把 Issue 指派给 Copilot 的云端 coding agent；指令文件支持 `.github/copilot-instructions.md` 和 AGENTS.md；VS Code 原生支持 Agent Skills。
+**✅ 已有 VS Code 工作流可先保留；是否用 Copilot、Claude 或 Codex 另核 harness 与有效策略。** 当前[Agent Host](https://code.visualstudio.com/docs/agents/concepts/agent-host)能让会话跨窗口接续，本地模式仍须应用和主机保持运行；客户端贡献的工具也可能随客户端断开而不可用。[一手：10-22契约]
 
-2026-09 到 10 月的重要更新 **[一手：GitHub Changelog]**：
+**并行前同时选代码隔离与批准方式。** 当前[审批文档](https://code.visualstudio.com/docs/agents/run/approvals)明确 Copilot harness 的 Worktree sessions 使用 Allow all。需要人工确认的任务不能默认选这组；先选实际满足门禁的工作区／harness。sandbox 是另一层边界，不覆盖所有工具。[一手；研究]
 
-| 更新 | 说明 |
-|---|---|
-| **本地沙箱正式可用**（10-07） | Copilot CLI、Copilot 应用和 VS Code 中，Agent 执行的命令受限于开发者或组织定义的策略：可读写的目录、网络、Git 和 GitHub CLI 凭证；基于微软的 MXC，在 Windows、macOS、Linux 上转换为系统原生控制；**企业可以强制开启、开发者无法放宽** |
-| **Dynamic workflows**（10-01） | 用代码定义编排：哪些步骤自动执行、哪些交给 Agent、哪些并行，结构化结果在阶段间传递；在 Copilot CLI、Copilot 应用和 Copilot SDK 中可用。和 Claude Code 的 Dynamic Workflows 思路相同 |
-| **Computer use**（10-01，公开预览） | 在 macOS 和 Windows 上操作桌面应用（读取界面、点击、输入），用于没有 API、CLI 或 MCP 的旧软件；每个应用都要先批准，组织可以禁用 |
-| **HydraFusion**（研究预览） | 出现在模型选择器里，但不是单一模型，而是**编排多个模型**：单模型直接做、便宜模型先做再由质量门决定是否升级到强模型、或者由另一家族的模型做只读评审后修改一次 |
-| 模型 | Claude Opus 5.5、Sonnet 5.5、Haiku 5.5，GPT-6 Sol / Luna、GPT-6.1 Sol，Grok 4.7 都已接入 |
-| 治理 | 企业托管设置的校验器、用量指标 API（含 PR 评审阶段、CLI 定制）、影响力仪表盘、预算提额申请、OpenTelemetry |
-
-评级：✅ **采用**（VS Code 作为承载各家 Agent 的编辑器）；Copilot 本身 🧪 **条件试用**，按所需 GitHub 能力和实际治理覆盖选择入口。
+[会话管理](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions)允许同一工作树内多个聊天；fork对话也不自动分离代码。Agent开工先核分支与当前改动，人确认并行任务不会互相覆盖；不能把第二个标签页当隔离副本。[一手；研究]
 
 ### Copilot：接入与治理边界
 
-**CLI 不必先付费订阅。** 当前官方套餐包含 Free；本地 BYOK 在组织策略允许时可免 GitHub 账号／登录；未登录时没有 GitHub MCP、Code Search 和 `/delegate`。需要这些能力时另核认证与服务资格；企业托管 BYOK 仍需 Copilot 许可和联网，受管设备的强制组织登录也可能拒绝本地 BYOK。不能把“自带模型”当作完整 GitHub 工作流或组织准入的替代。**[一手；研究：2026-10-16接入选择]**
+**按目标客户端和组织有效设置采用。** Free、BYOK、企业托管与 GitHub 能力不是同一资格，见[已有接入核查](../research/2026-10-12-community-source-records.md#copilot-cli接入与治理范围)。严格MCP准入还须核CLI的具体覆盖及内建服务器例外，不满足就保留原合格入口。当前 VS Code 托管 Copilot 策略生效时，Claude／Codex harness 可能被禁用，不用另一家同名集成绕过策略。[一手：当前审批文档；研究]
 
-**团队先核具体客户端、策略和有效设置，再决定采用。** CLI 的 MCP 组织策略在官方概览与参考文档中仍有冲突，不能据品牌或 VS Code 支持就认定 CLI 同样受控，也不能概括为 CLI 没有治理。托管 MCP allow/deny 有明确内建服务器例外；若任务要求全部 MCP 禁用或严格准入，须确认目标版本实际覆盖，不满足就保留已符合要求的入口。原文、固定文档与范围见[接入核查](../research/2026-10-12-community-source-records.md#copilot-cli接入与治理范围)。未运行客户端或验证账户、组织策略。**[一手；研究：采用与撤回边界]**
-
-**观察**：本地沙箱、动态工作流、多模型编排这三项，Claude Code、Codex 和 Copilot 在两个月内都做了类似的东西，**功能趋同还在继续**（见 [00](../00-state-of-ai-coding.md)）。
+**评审按钮不是文件写入闸门。** [Review and revert](https://code.visualstudio.com/docs/agents/run/review-code-edits)说明相关入口已直接落盘，Local 的 pending／Keep是评审状态。Agent交回全部修改与未跟踪文件，人对当前树复验；checkpoint也不撤销部署和网络等外部状态。[一手；研究]
 
 ## Kiro（AWS）
 
-🧪 **条件试用**：需要在实现前审阅、跨步骤保留需求与设计决定时，可试原生规格流程；已有任务与测试足够，就不额外生成三份文档。若文档只是重复已有信息、审阅没有补上实际缺口，退回短说明与现有验证。**[经验：采用与撤回条件]**
+**🧪 规格有助于跨步骤保留决定时采用，不把三份文档当目标。** 原生需求／设计／任务及 Sync Files 可保留；实现出现新约束后仍核受影响需求、代码和检查。额外文档不改变决定时，退回短说明；依据见[规格修订核查](../research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界)。[一手／社区／研究]
 
-官方支持需求先行／设计先行，产出 `requirements.md`、`design.md`、`tasks.md`；修订时需手改或要求 Agent 更新相关文件，再在任务页触发 **Sync Files**。实现发现新约束后仍要确认需求／设计变化并核对受影响任务、代码和验证结果；同步入口及自动勾选不保证语义正确或验收通过。**[一手：官方契约；研究：边界]**
+**当前 Kiro 也要按执行位置和门禁选。** [云会话](https://kiro.dev/docs/cloud-sessions/)可跨 IDE／CLI／Web接续，服务端克隆仓库，不上传本地工作副本；现有限制却不提供 Supervised 或逐修改批准。需要这类人工门禁时保留符合要求的本地路径。[一手：10-21更新，10-22核]
 
-历史小 bug 试用确有文档过重的反例，但不能据此断言当前没有修订能力或仅适合学习 SDD。原文范围、实际维护中的人工澄清案例与未验证项见[规格修订核查](../research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界)；通用选择见 [07](../07-workflows.md#5-spec-驱动开发sdd)。**[社区；研究：条件试用并非已测收益]**
+**本地命令隔离先看有效状态与覆盖。** [10-14工程说明](https://kiro.dev/blog/local-sandboxing/)提出用 OS 边界减轻审批疲劳；[当前契约](https://kiro.dev/docs/sandbox/)只覆盖 shell 子进程，stdio MCP需另启包装，内建文件工具及远程MCP不在其中。显示 Unavailable 时不能当已隔离。[一手；研究]
+
+**回聊天与回文件是两件事。** [rewind](https://kiro.dev/docs/checkpoints/)只分叉对话；checkpoint回文件与上下文，但不跟踪bash／MCP改动，也可能覆盖已快照文件上的后续人工修改。回退前先核实际 Git diff 和外部状态。[一手；研究]
+
+异步改代码还要验失败恢复。作者公开的[Kiro headless实验](https://github.com/nobu-13/article06-kiro-agentic-cicd/tree/0148056517d95cb4dad354e93c26e6e67ab11403)报告误写后连诊断命令也受阻；本仓只核公开配置及汇总，原始轨迹未公开。它支持预演必要恢复路径，不证明增加护栏一定提升成功率。[社区：9月作者实验；研究]
 
 ## Zed
 
-**🧪 只缺会话整理时，先试 Terminal Threads；需要集成编辑／审查时，再试 ACP。** 前者在编辑器内运行原 CLI，后者通过协议承载外部 Agent；换面板不代表换模型。[一手：[终端线程](https://zed.dev/docs/ai/terminal-threads)、[外部 Agent](https://zed.dev/docs/ai/external-agents)；研究：选择]
+**🧪 只缺会话整理，先试 Terminal Threads；需要结构化编辑／审查才试 ACP。** [终端线程](https://zed.dev/docs/ai/terminal-threads)由Zed整理，认证、模型、工具和指令由原CLI管理；远程项目用远程环境。关闭线程不进入Zed Thread History，另验CLI恢复。[一手；研究]
 
-**终端路径保留 CLI 管理认证、模型、工具与指令的职责。** Zed 自身的 Agent 设置不会自动套用，远程项目读的是远端环境；关闭终端线程也不会存入 Zed Thread History。需要会话恢复时另核 CLI 的恢复路径。[一手：终端线程契约]
+**ACP先验协商能力，再验真实审批和接续。** [v1规范](https://agentclientprotocol.com/protocol/v1/session-setup)的历史加载是可选能力；[权限流程](https://agentclientprotocol.com/protocol/v1/tool-calls)也依赖客户端实现和设置。Agent应在允许的测试任务完成取消／继续，人核内容和配置；支持协议不等于原CLI完整对等。[一手；研究]
 
-**恢复要验实际内容，不只验侧栏条目。** Zed native-agent曾在更新后留下条目却丢内容，修复补退出落盘；这与Terminal Threads由原CLI负责接续是不同路径。Agent可在获准的测试会话核退出／更新后的内容，人确认任务确能接手；[固定修复和独立采用反例](../research/2026-10-12-community-source-records.md#p82独立层的采用与维护责任)不覆盖断电或所有入口。[一手／社区／研究]
+[#62788](https://github.com/zed-industries/zed/issues/62788)的历史审批卡缺失报告当前仍Open，无关联修复；范围限所报1.15.0／macOS 12.3。必要批准不能完成就退原路排查，不据此判当前全线失败，也不称已修复。[社区：10-22复核]
 
-**ACP 迁移先验审批能完成，再验配置与历史接续。** [#62788](https://github.com/zed-industries/zed/issues/62788)报告 Zed 1.15.0／macOS 12.3 的 Claude ACP 有审批通知却无可操作卡片；单个历史版本故障不能推出当前全线不可用。若必要审批卡住，就退回原路排查，不靠关闭审批获得表面上的成功。[社区：2026-08-18故障原报；研究：撤回条件]
+**接续要看内容，不只看条目。** native-agent的退出落盘修复与Terminal Threads由CLI管理历史是不同路径；[原采用和维护链](../research/2026-10-12-community-source-records.md#p82独立层的采用与维护责任)不合并成统一恢复保证。[一手／社区／研究]
 
 ## 国内工具（面向中文开发者）
 
 🧪 **先按地区、账号和必要功能核资格，再比较续费价与额度。** 免费额度、试用和首期优惠不代表持续工作成本；不满足目标功能或额度需求时，撤回仅凭低标价的选择。以下只补核已有条目的订阅边界，未实测客户端收益；[来源与未决范围](../research/2026-10-12-community-source-records.md#国内工具订阅入口与持续成本)另列。**[研究：选择，2026-10-16]**
 
-| 工具 | 厂商 | 要点与采用边界 |
+| 入口 | 先核什么 | 不满足时怎么办 |
 |---|---|---|
-| Trae | 字节跳动 | 国内免费用户受积分约束；[CN计费](https://docs.trae.cn/ide_plans-and-billing)的Lite单月¥49，连续包月每31天¥45，付费新用户首期优惠¥39。国际版按[实际定价入口](https://www.trae.ai/pricing)核套餐与续费；本次可读页与索引中的$3档口径不同，不能据此确认统一最低价 **[一手；研究：入口未决]** |
-| Qoder | 阿里巴巴 | [国际版Pro](https://docs.qoder.com/zh/account/pricing)$20/月自动续费；[CN全家桶个人Pro](https://docs.qoder.cn/product-overview/account-and-subscription)¥59/月、需阿里云主账号，RAM子账号不能使用个人付费功能。两者各列2,000 Credits/月，不能按数值相同推断跨区共享或相同工作量 **[一手；研究：范围]** |
-| 通义灵码 | 阿里巴巴 | 存量订单须区分CN全家桶、CN原灵码和通义灵码存量；按[官方计费页对应产品线](https://docs.qoder.cn/product-overview/billing-description)核权益，不只凭旧名称购买 **[一手；研究：入口]** |
-| CodeBuddy | 腾讯 | 🧪 **按地区与客户端选入口**：CN IDE 用 Ask 问答，需要先审方案时才用 Plan；CN 插件的 Plan 是 Craft 设置，CLI 的 `plan` 不保证只读。先核目标入口的模型与权限，现有路径够用就保留；必要能力或权限条件不满足时撤回该入口选择，不按跨端通用模型名单迁移。[官方契约与范围](../research/2026-10-12-community-source-records.md#codebuddy入口与计划权限) **[一手；研究：条件选择，未实测]** |
-| Kimi Code | 月之暗面 | 中国区新套餐Plus ¥99/月起含Code，Go ¥49/月不含；存量资格与用途限制统一见[02 §4](../02-models-and-cost.md#4-国内-coding-plan)，不要按低价会员档推断Code权限 **[一手；研究：入口同步]** |
-| Qwen Code | 阿里通义 | 开源，见 [open-source-agents](open-source-agents.md) |
+| Trae、Qoder／通义灵码、Kimi Code | 地区、账号类型、存量／新套餐及实际 Code 权益；资格和续费回[原核查](../research/2026-10-12-community-source-records.md#国内工具订阅入口与持续成本)及[02](../02-models-and-cost.md#4-国内-coding-plan) | 不把同名、相同 Credits 或首月价当跨区等价；先保留已有合格入口 |
+| CodeBuddy | CN IDE 的 Ask／Plan、插件 Craft 和 CLI `plan` 分开核；CLI 计划模式不保证只读 | 需要只读规划时选确实符合边界的模式，见[原契约核查](../research/2026-10-12-community-source-records.md#codebuddy入口与计划权限) |
+| Qwen Code | 自选服务商、工具协议及维护成本 | 回[开源 Agent](open-source-agents.md)比较，不因免费或同模型就换入口 |
 
 > 国内另一条常见路线是：**Claude Code / OpenCode 这类 harness + 国产模型的 Coding Plan**（GLM、Kimi、MiniMax 等提供与 Anthropic 兼容的接口）。见 [02 模型与成本](../02-models-and-cost.md#4-国内-coding-plan)。
 
+## 接收与长期维护
+
+**把“可演示”接到当前代码上。** [Shopify River](https://shopify.engineering/river-vulnerability-remediation)在rebase后弃用旧head的绿CI，遇人工接管交回维护者，并撤回需求不成立的补丁。迁移时借这些接收规则，不照搬它的专用平台。[一手：9-02独立团队自报；研究]
+
+保留原任务的测试、实际使用路径和后续修改要求，比较适配、等待、人工复核与返工。新入口未补足缺口或维护负担抵消收益就撤回；没有同题完整投入数据时，不把更多PR、截图或会话数写成效率优势。[研究]
+
 ## 来源
 
-- [Meet the new Cursor（Cursor 3）](https://cursor.com/blog/cursor-3)、[Cursor changelog](https://cursor.com/changelog)、HN：[SpaceX 收购 Cursor](https://news.ycombinator.com/item?id=48553224)、[OpenAI 对 Cursor 的决定](https://news.ycombinator.com/item?id=49486172)、[Cursor Origin](https://news.ycombinator.com/item?id=49334209)、[Updates to Bugbot（2026-05）](https://cursor.com/blog/may-2026-bugbot-changes)、[论坛：Bugbot 按量计费的讨论](https://forum.cursor.com/t/the-new-usage-based-bugbot-pricing-punishes-iterative-workflows-and-power-users/161134)、[论坛：成本上涨的讨论](https://forum.cursor.com/t/cursor-costs-are-climbing-without-a-clear-reason/157233)
-- GitHub Changelog：[本地沙箱 GA](https://github.blog/changelog/2026-10-07-local-sandboxing-for-github-copilot-now-generally-available)、[Dynamic workflows](https://github.blog/changelog/2026-10-01-dynamic-workflows-in-copilot-cli-and-the-copilot-app)、[Computer use](https://github.blog/changelog/2026-10-01-github-copilot-can-now-interact-with-desktop-apps)、[HydraFusion](https://github.blog/changelog/2026-09-30-hydrafusion-in-vs-code-and-the-github-copilot-app)
-- [What's New in Rider 2026.1](https://www.jetbrains.com/rider/whatsnew/2026-1/)、[Junie 结束 Beta](https://blog.jetbrains.com/junie/2026/06/junie-coding-agent-out-of-beta/)
-- [Kiro Feature Specs](https://kiro.dev/docs/specs/feature-specs/)、[修订与 Sync Files](https://kiro.dev/docs/specs/best-practices/)
-- [Birgitta Böckeler：Understanding SDD（Martin Fowler 网站）](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
-- 国内工具：[CSDN：2026 年 7 月国内 Coding Plan 对比](https://blog.csdn.net/zhangay1998/article/details/162555439)、[CSDN：TRAE / Kimi Code / Qoder 实测](https://www.csdn.net/article/2026-08-24/164033550)、[codingplan.org](https://codingplan.org/en)
+本页决定性原文、作者、时间、读取范围和被排除的评测，集中见[P86证据记录](../research/2026-10-12-community-source-records.md#p86ide入口从功能清单到执行与接收)。套餐、模型与一般工作流分别回[02](../02-models-and-cost.md)、[01总览](README.md)和[20](../20-codex-long-horizon.md)，避免在入口页维护第二份名单。
