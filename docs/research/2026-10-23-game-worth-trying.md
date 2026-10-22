@@ -1,0 +1,65 @@
+**先试需求／检索与小代码切片，已有 IDE 不为热度换栈；资产生成只从局部候选开始。** [研究]
+**旧调查支持选题，新案例支持试法；目前没有足以排出 2026 年 10 月全行业质量冠军的同题证据。** [研究]
+**本端做过精确版本检索和 Battle Drones v4 公开产物短试玩，未试用 AI 制作工具，未复现制作或测得净收益。** [经验]
+
+# 游戏版值得一试：六个任务入口的依据
+
+核实：2026-10-23（UTC+8）；试玩于 10-22 UTC，未指定模型版本不补猜。结论见[游戏 README](../../domains/game-dev/README.md#游戏版值得一试)。[研究]
+
+## 1. “用得多”能回答到哪一步
+
+**本轮可核的广泛调查中，查资料／梳理需求的使用面高于资产生产，不能由此推出某工具生成游戏最好。** [研究] [GDC 2026 原报告](https://investgame.net/wp-content/uploads/2026/01/2026-01-29-dec052f4_d88e_48ce_9f83_a18ce2f2a6e5_541400_GDC26_PDF_SOTI_Report.pdf)为 1 月公布、2,300 多名跨岗位行业参与者调查：36% 工作中使用生成式 AI，在游戏工作室工作的受访者为 30%；在 AI 用户中，多选工具为 ChatGPT 74%、Gemini 37%、Microsoft Copilot 22%，用途为 research／brainstorming 81%、code assistance 47%、prototyping 35%、asset generation 19%、player-facing features 5%。这里的 Copilot 是 **Microsoft Copilot，不是 GitHub Copilot**；工具使用和用途不是质量投票。[一手：调查]
+
+[JetBrains State of GameDev 2025](https://lp.jetbrains.com/the-state-of-gamedev-2025/)补充编码工具的候选面：问题是 **ever used or tried**，AAA／其他组织分别为 ChatGPT 59%／60%、GitHub Copilot 53%／49%、Cursor 23%／31%、Gemini 23%／22%。这是旧厂商招募样本，分组人数未明确，不能称日常采用率，更不能与 GDC 拼成同一排行榜。[一手：调查／研究]
+
+## 2. 新近网页游戏数据：值得加入对照，不够宣布赢家
+
+[Playgama AI Game Index](https://playgama.com/ai-game-index/)页面更新于 2026-10-21，新发布观察窗为 9 月 22 日至 10 月 19 日；“4,000+ games／110 万启动”是沙盒累计规模，**不是这四周的样本量**。同页 all-time 游戏份额表报 Claude Code 50%、Codex 20%；这是站内游戏归属，不是开发者市占率。每日新游戏只计首次发布，工具标签由创作者自报、可修改、未核验，且无模型版本。[一手：平台方法说明]
+
+其效果指标先算每款游戏 **all-time、至少 30 秒的 plays** 的平均时长，再取工具组中位数，门槛为每游戏至少 20 次 plays、每工具至少 15 款游戏。Claude Code 为 4.6 分钟，Codex 与 Cursor 各 4.7 分钟，游戏间分位区间重叠（不是置信区间）；作者能力、题型、投入与流量来源没有被控制。不能写成 Codex／Cursor 胜 Claude Code，也不能把游玩时长当制作效率、稳定性或玩家口碑的完整指标。[一手／研究]
+
+## 3. 需求、编码和 IDE：借步骤，不借营销收益
+
+[游戏团队 Game Tactics 的 2026-10-09 复盘](https://www.gametactics.io/blog/ai-tools-for-game-development-2026)自述使用 Claude Code、Cursor 与 GitHub Copilot 处理 Unity C#、编辑器和迁移；一次输入迁移误改序列化字段，被人工评审抓住。它支持的实用动作是先保护字段与引用、拆小改动并核查第二次修改，不是“能编译就可合入”。文中的 20–40% 等获客数字没有公开任务账本，本记录不采用为验证过的收益；其人工最终美术路线也不移植为本仓零手修兜底。[一手：团队自述／研究]
+
+中文 [Reddit 游戏 mod 原帖](https://www.reddit.com/r/youxi/comments/1wuesjo/)描述 ChatGPT 理需求→Claude **Cowork** 写 C# mod→作者在 Visual Studio 编译并进游戏核验，生成贴图仍需 Photoshop 手改。这是匿名作者自述，发布日期仅见相对时间，本记录只标核查日；不能把 Cowork 改叫 Claude Code，也不采用作者主观工具胜负。可借的是需求、代码、实际游戏接收各有一段，而不是一个提示完成全部工作。[社区／研究]
+
+另一个中文 [linux.do 原帖](https://linux.do/t/topic/1772128)明确发表于 **2026-03-17**，作者用 Codex＋Unity MCP，并提到 FGUI 项目 UI 仍不足；这是旧反例，不装成近四周信号，也不转述其地区政策判断。两帖都不证明所有 AI 工具的当前上限，提醒的是代码助手接上引擎后仍有 UI、资源及人工制作成本。[社区／研究]
+
+**读者首试题。** 选一个项目现有、可独立撤销的任务：需求助手把“暂停时不能继续蓄力攻击”写成状态、反例和来源；编码 Agent 实现后，再追加“恢复时必须重新按下，不能自动发射”。已用 Cursor 可沿其 Agent，其他 IDE 先比兼容的 Copilot；另选资源命名校验，二改提示与筛选范围。对照保持相同基线、需求、依赖版本和验收动作，检查 diff、原测试与实际交互；若只试一个候选，结果只能回答它能否用，不能回答胜过谁。[研究；试验建议，未执行]
+
+原方案是手写／已有补全与直接查原文；新增成本包括整理上下文、审查 diff、纠错重试、重新运行和服务费用。记录到**第二次修改被接收**为止，而非只记生成等待时间；漏改与人工修复也计入。序列化引用受损、越界改目录、旧行为退步且局部修复不划算，就撤补丁回原流程；不为保住新工具再迁移引擎。[研究]
+
+## 4. Battle Drones：确实玩到了什么
+
+[Simon Willison 2026-10-20 原文](https://simonwillison.net/2026/Oct/20/battledrones/)描述主要由 Claude Code 制作的 TypeScript RTS，从 Phaser 到 Three.js，多轮输入与人工试玩迭代；v4 的乐趣改进和 v5 的 3D 移植各经历通宵 Agent 工作。作者感觉“好玩”属于其体验，不证明一句话就设计好，也没有给出可与 Codex 比较的主动工时、人工修复和费用账本。[一手：作者自述／研究]
+
+**本端运行：** 2026-10-22 22:35–22:40 UTC，自身云 Chrome、1180×757 视口，先访问[当前版](https://simonw.github.io/battledrones/)。菜单与帮助可见，启动后空白；控制台为 `THREE.WebGLRenderer` 无法创建 context，`GL_VENDOR`／`GL_RENDERER=Disabled`。这是本端云图形环境故障，当前版核心玩法未观察到，不能据此判定游戏逻辑坏了。[经验]
+
+作者链接的[历史 v4](https://simonw.github.io/battledrones/v4/)可运行：Easy／Proving Grounds／Blitz 玩至游戏内 **1:38**，观察到自动采集、3 辆坦克移动、Airpad 建造与放置、Wasp 排队完成；建筑拟放位置被单位挡住时提示 `Unit in the way`，换到空地后成功。暂停、恢复、退出菜单及重开可用，重开回到 0:00／600 scrap 与开局选择。没有打完一局，不能评价胜负、平衡和长期乐趣。[经验]
+
+![Battle Drones v4 实际试玩，Airpad 建成后正在生产 Wasp，资源与部队可见](../img/2026-10-23-game-battledrones-v4.png)
+
+桌面资源、计时、建造价格、选中圈与进度反馈在此视口可读，建筑分类主要靠图标，需要学习；静音运行，未测手机／触摸、声音、无障碍、帧率、长局或离线。[经验] **截图只证明公开产物在该环境下的这段流程，不证明 Claude Code 制作效果、二改效率或当前 3D 质量。** [研究]
+
+[公开仓库](https://github.com/simonw/battledrones)的 v4 标签指向 `2afb7cb953cb1bafa8dbecceb4c39aa3c9220c5e`；以下是该固定源码核读，网页部署的构建 SHA 未独立核实。[GameScene](https://github.com/simonw/battledrones/blob/2afb7cb953cb1bafa8dbecceb4c39aa3c9220c5e/src/game/GameScene.ts)调用 `tickAi`，其 [commander](https://github.com/simonw/battledrones/blob/2afb7cb953cb1bafa8dbecceb4c39aa3c9220c5e/src/sim/ai/commander.ts)为明确的建造、采集、进攻和骚扰策略，返回命令；[依赖](https://github.com/simonw/battledrones/blob/2afb7cb953cb1bafa8dbecceb4c39aa3c9220c5e/package.json)中运行时为 Phaser。此处查看的内置对手是固定策略，未运行生成模型、多人或麦克风；只读这些文件不构成全仓安全审计。[一手：源码核读／经验]
+
+## 5. Context7：命中库名之后还有版本门
+
+本端已有的真实窄试用见[固定 P98 记录](https://github.com/dbvv1/a1dbv/blob/1ae780868ba4d1bfeb7e322e5b89896f0c994320/docs/research/wp10-content.md#文档检索窄试用先辨版本再读源码)：2026-10-22 20:39 UTC，分别请求 **InputSystem 1.11.2** 与 **UniTask 2.5.10**，两次 `resolve-library-id` 都成功，但输出没有所需精确版本 ID。InputSystem 候选包含 1.15 文档，它不能替代 1.11.2；因此停止 `query-docs`，回固定 tag。只提交公开库名、版本和 API 问题，未发送项目内容或凭据。[经验]
+
+回退到 InputSystem 1.11.2 的 [InputAction.cs](https://github.com/Unity-Technologies/InputSystem/blob/c8518694c7fdd2c755755e028e2ec19cdceda19b/Packages/com.unity.inputsystem/InputSystem/Actions/InputAction.cs#L916-L935)，可确认进行中动作 Disable 会在调用内触发 canceled；UniTask 2.5.10 的 [README](https://github.com/Cysharp/UniTask/blob/7c0f199fe0d3fc528024488ccd671e6c7b27745b/README.md#L339-L349)支持默认在 PlayerLoop 检查取消，不是一定立即或等完整延时结束。[一手：固定源码]
+
+值得借用的是“把检索当入口、版本不明即回原文”的短路径。此次结果不证明 Context7 全库没有这些版本，也不证明取消行为在引擎运行中正确。读者先用一条项目锁定包的问题对照原文，若版本或时序关键字不吻合，就保留原文答案而非继续猜版本后缀。[研究]
+
+## 6. 资产与声音：拆成局部，才能算清制作成本
+
+[Reddit 开发者原帖](https://www.reddit.com/r/aigamedev/comments/1x6ql3o/2_weeks_of_work_now_im_fully_committed_on_the/)自述 Gemini 参考图→Claude 调 Meshy→Blender 脚本处理尺寸、绑定动画→UE，ElevenLabs 主要用于预告片旁白；同时承认约 90% 时间用于视觉、战斗不好且不关心发行，手指／握持／弓手肩部仍有问题。发布日期未独立核实，只标此次核查日；这是匿名作者的链路说明与自评，不是零手修生产证明。[社区]
+
+**Meshy＋Blender 先试三件同族刚体，不从整队角色起步。** 已有合格资源族继续用；缺件才用合法参考生成三件候选，脚本统一尺寸、坐标和命名，再统一二改挂点而保主体轮廓，检查能否仍像同一套。对照是现成同族资源或参数化建模，不是只有不同生成服务互比；轮廓、关键孔洞／挂点或目标预算失败且程序处理修不好，就退回原路线或缩设计，不增加人工刷权重、补动画例外。[研究；未执行]
+
+**ElevenLabs 先试有限文本，不承诺完整配音。** 在声音权利清楚的前提下，用同角色三句测试专名、情绪和衔接，然后只改中间一句并放回原顺序听；对照保留字幕或合法占位音频。补句接不上、台词改稿需要反复全量重生，或目标语言听辨不合格，就停在占位用途，不能用预告片旁白的成功代替游戏持续补句验收。[研究；未执行]
+
+资产成本还须计淘汰、重生成、脚本、导入、接收及二改，声音还含审听；全链成本未知，未声称更便宜。采用前沿 [3D](../../domains/game-dev/assets/3d.md)／[音频](../../domains/game-dev/assets/audio.md)核当时的输入输出权利、计划与发布要求，作者能展示不代表读者可商用。[研究]
+
+**探索回执：** 截至 2026-10-23（UTC+8），综合 GDC／JetBrains 原调查、Playgama 方法页、Game Tactics 与 Simon Willison 制作者原文、Reddit 英中文原帖及 linux.do；开源核到 Battle Drones v4 固定标签与 P98 固定包源码，官方契约复用既有 3D／音频页与版本检索记录。未独立取得两篇 Reddit 的绝对发布日期，未做账号工具制作、付费、安装、模型调用或 Unity／Unreal 运行，未使用用户电脑；没有可比较的全链成本和当前全行业口碑排名。[经验／研究]
