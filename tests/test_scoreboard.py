@@ -81,6 +81,17 @@ class ScoreboardTest(unittest.TestCase):
     rows = {r['page']: r for r in report['queue']}
     self.assertFalse(rows['docs/03-context.md']['disputed'])
 
+  def test_answered_audit_clears_dispute_until_newer_audit(self):
+    write(self.root, 'docs/02-models.md',
+          '<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 audit=2026-10-22 -->\n')
+    write(self.root, 'docs/collaboration/frontier-baseline.tsv',
+          'page\tgap\taudit\ndocs/02-models.md\t2\t2026-10-22\n')
+    self.assertEqual(self.run_json()['summary']['C1 AI coding 主干']['disputed'], [])
+    write(self.root, 'docs/collaboration/frontier-baseline.tsv',
+          'page\tgap\taudit\ndocs/02-models.md\t2\t2026-11-05\n')
+    self.assertEqual(self.run_json()['summary']['C1 AI coding 主干']['disputed'],
+                     ['docs/02-models.md'])
+
   def test_coverage_levels_skip_level_definitions(self):
     coverage = self.run_json()['coverage']
     self.assertEqual(coverage, {'二、机制': {'1': 1, '2': 2}})
