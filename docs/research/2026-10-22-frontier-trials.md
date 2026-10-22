@@ -144,3 +144,26 @@ Claude几行是实际Python hook输入输出，不是Claude客户端加载或模
 本轮用独立HOME／CODEX_HOME和Codex CLI0.163.0实跑本地marketplace添加、插件安装、重复安装、移除及marketplace撤回；技能文件与固定源码一致，撤回后注册／缓存清空，项目源文件与合成笔记字节不变。11项真实hook边界检查通过；上游40测38过，2项“无Git目录”前提被环境祖先Git标记破坏，未改环境或产品来凑全绿。源码用路径遍历而非Git命令，Git搜索上界设置不能修这个前提。Claude客户端不在环境中，未安装；学习提升、时间／代码质量收益及真实对话中的pause行为均未验。[本仓实测]
 
 探索回执：本次是已有P90候选的定向上手；读固定README、许可、两端manifest、Learn／reset／恢复源码和开发测试说明。GitHub issues只获索引，未据此声称独立用户效果；不新增社区共识或前沿领先结论。[研究]
+
+
+## 当红必看的使用面与成熟做法
+
+**核心入口先补Claude Code、Copilot、Codex、Cursor和开源OpenCode，不再只用“近4周新建”筛工具。** 这是使用面支持的阅读优先级，不是全市场五强或净效果排名；OpenCode覆盖开源模型可选路线，不能隐去其他更高使用率工具。成熟做法复用／重读已有Willison、Toub、Cursor及Vinext材料，不计新发现。[研究：2026-10-22]
+
+### 两个调查的题意不能混用
+
+[JetBrains调查](https://blog.jetbrains.com/research/2026/08/ai-coding-agent-adoption-2026/)及[原图](https://blog.jetbrains.com/wp-content/uploads/2026/08/ai_coding_tools_workusage_dynamics.png)问“在工作中的编码及其他开发任务使用哪些AI工具”，可多选、图只展示工具子集。2026年5–7月，N=15,509；Claude Code39%、Copilot21%、Codex16%、Cursor12%、JetBrains AI/Junie9%、OpenCode7%、Antigravity6%。它不是付费、每日活跃或唯一主力，不能把同文另一题的“最常用”混进来。调查以8种语言招募、地区配额，按地区／就业／语言／JetBrains熟悉度重加权；厂商研究和自报偏差仍在，不代表客户端遥测。[一手：调查发布者]
+
+[Stack Overflow数据](https://survey.stackoverflow.co/2026/ai/data/ai-code-agent)、[方法](https://survey.stackoverflow.co/2026/methodology)及[题目源码](https://github.com/StackExchange/Survey/blob/releases/2026/questions/ai/AICodeAgent.yaml)另问“过去一年用过／未来六个月想用”，可选且多选。本轮只看Used回答者子集n=12,255，不是总样本30,903；Claude Code65.5%、Copilot58.7%、Codex29.5%、Cursor25.5%、Antigravity16.0%、Gemini Code Assist14.6%、OpenCode13.6%。6-23至8-05收集、169国，经SO网站／博客／邮件推广，存在自选及社区可达性偏差，不是十月即时份额，不能和上段求平均。数据出处：Stack Exchange Inc., Stack Overflow Developer Survey 2026，[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/)；这里只引用选定题项数字。[一手：调查及问卷源码]
+
+GitHub累计星数、近期提交和HN／V2EX讨论只补关注及活动信号，本轮没有统一的4周增长、去重活跃用户、付费／留存或全渠道讨论分母，因此不按它们伪造“口碑最好”总榜。[研究]
+
+### 可借的成熟机制与反例
+
+- **Claude Code整轮交付**：[Willison 10-20作品复盘](https://simonwillison.net/2026/Oct/20/battledrones/)保留可玩产物和反复试玩，支持少逐行阅读仍能推进的个案；不是当前模型普遍赢。[V2EX双持原帖](https://fast.v2ex.com/t/1249293)既有UI与节奏好评，也有偏离需求的反例，不能概括全部前端表现。[一手／社区]
+- **Copilot渐进迁移**：[Toub生产复盘](https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/)展示Agent实现、跟进评审和失败；也记录删SDK方法后用schema-break-ok豁免让CI通过，再由人要求恢复。借用可合入块与兼容判断，不把同厂自报当独立提效对照。[一手／研究]
+- **Codex产物接收**：[八月同题游戏](https://simonwillison.net/2026/Aug/7/moonlight-mayhem/)中Agent读过截图仍漏掉巨大眼球，直到人指出；可借明确目标、可跑环境及真实反馈，不将八月型号比较升级为十月冠军。[一手／研究]
+- **Cursor环境先行**：[7-30环境复盘](https://cursor.com/blog/cloud-agent-environment)用统一CLI／supervisor处理运行入口，单写Skills改善有限；[9-23成本复盘](https://cursor.com/blog/improved-token-efficiency)是多项harness改变的组合，不能只抄缩短提示就承诺省钱。[一手：自家生产；研究]
+- **OpenCode可选模型执行器**：[Vinext](https://blog.cloudflare.com/vinext/)是较早成熟先例，作者仍用架构判断、测试和浏览器反馈纠错，不作当前最高水平认证。[V2文档](https://opencode.ai/v2/docs/migrate-v1/)说明V1/V2发行轨并行，但安装默认不隔离并存；先核主版本、provider及插件兼容；[V2EX Go讨论](https://s.v2ex.com/t/1250404)中的消耗个案带插件和模型组合，不能归因裸执行器。安装和当前V2连续二改本仓未试。[一手／社区／研究]
+
+探索回执：10-22新核官方调查原图／问卷数据、产品契约、GitHub活动及中文双持／Go原帖；旧做事者复盘和[HN理解代码讨论](https://news.ycombinator.com/item?id=50151036)重读，不冒称新发现。另读[V2EX接管问题](https://www.v2ex.com/t/1248455)可见回复，部分正文缺失；Reddit局部抓取失败，linux.do本轮仅检索、X原帖不可读，不采信其摘要投票或未核事件。没有新客户端或模型运行，不调整核心差距分。[研究]
