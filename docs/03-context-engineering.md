@@ -194,6 +194,8 @@ Anthropic《Effective context engineering》（2025-09）是旧代设计参照�
 | Gemini CLI 的 memory 收件箱 | 记忆要经人审阅后才生效 | 🧪 |
 | 第三方记忆 MCP | 先分信息有用与服务能保住收益，见[直接coding比较](#46-独立记忆层先验信息价值再验自动供给)；接入边界仍见[04](04-mcp.md#跨会话记忆先区分检索与当前状态) | 👀 |
 
+**独立记忆失效时，先回可读记录，不把“未检索到”当“从未发生”。** 升级时核实际安装来源，再验新捕获与后续检索；claude-mem同号marketplace与npm曾有不同产物状态。Agent整理来源与受影响范围，人判断是否停用该层及接收修订；[实际回退、维修与采用对照](research/2026-10-12-community-source-records.md#p82独立层的采用与维护责任)不证明当前所有分发物已可靠。[一手／社区／研究]
+
 **Claude 的共享范围要另查**：启动只加载 `MEMORY.md` 前 200 行或 25KB（先到为准），主题文件按需读；普通子 Agent 不加载主会话 auto memory，继承全历史的 conversation fork 例外。子 Agent `memory` 使用独立目录，`project` 范围可随版本控制共享；目录可配置，默认本地不等于无法共享。跨机器／云环境或委派时，沿用恢复记录，交接必要事实与来源，不为续接同步全部私人记忆。[官方契约与开关边界](research/2026-10-10-audit.md#s2c--2026-10-16-auto-memory-的共享与交接边界)核实于 2026-10-16（UTC+8），未运行客户端。**[一手；经验：采用判断]**
 
 **优先把工程经验沉淀成可评审的文档、测试或 lint 规则。** Kevin Liao 的 [文章](https://liao.gg/blog/agents-dont-need-memory)及 [HN 讨论](https://news.ycombinator.com/item?id=49945933)强调文档、解释性 lint 错误与 ADR；这是作者实践和社区观点，不是独立比较试验。**[社区]**

@@ -166,6 +166,8 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 5. **👀 分流先比较固定分工，再评动态路由**：大量读取／模式化生成有明确负担、结果可检查时，可试轻量 worker；Spotify 约 90% 仅指主模型侧读取上下文节省。重复仓库 issue 可比较“固定便宜模型＋核对过的定位证据”：Scrouting 中该组合与路由版同分且略便宜，但不证明一般等效。路由须相对固定分配有新增收益；把探查、验收与返工计入，无净收益就撤回。见 [原方法、消融与反例](research/2026-10-10-audit.md#s1e--2026-10-16-轻量模型分流与主模型侧节省)。**[一手：作者报告；研究：外部实验与采用判断，2026-10-18，未实测]**；
 6. **给按量计费设预算与停用边界**：有开通权限的 Agent 可能产生额外费用；AWS 新体验项目和 GCP 合资格服务已有 spend limit / spend cap，但适用范围和超额计费不同，不能视为所有云服务通用的硬性封顶（见 [18 第 5 节](18-team-adoption.md#5-成本治理)）。**[一手：AWS、Google Cloud；研究：采用建议]**
 
+**路由对照要包含本来会用的固定模型，即使它不在路由候选池。** 让Agent比较同题质量及含分类、切换缓存、失败重试的总投入；人按实际替代方案决定是否保留。9-26公布的试验中，比最贵模型便宜的路由仍输给固定中价模型；这是单轮文本反例，仓库修改还要另验。见[原生路由、开源正反例与计费范围](research/2026-10-12-community-source-records.md#p82动态路由先选对固定基线)。[一手／研究：2026-10-22核]
+
 ### 3.1 查异常消耗：ccusage 只补历史诊断
 
 **🧪 原生状态无法解释历史异常时，再试 ccusage。** 当前会话先查 Codex [`/status`、`/statusline`](https://learn.chatgpt.com/docs/developer-commands?surface=cli)，实际结算看服务商；[ccusage](https://github.com/ccusage/ccusage/blob/main/docs/guide/codex/index.md)补日/月/会话报告，已知 UUID 可用 `ccusage codex session --id <完整UUID> --json` 定位。只读获准的脱敏日志，能解释差异才保留；本地读取不授权上传。**关键局限**：实验性适配无法补回缺失日志，token、估算成本、实扣与剩余额度不能互换；[计量复核](research/2026-10-13-session-usage-metrics.md)记录缓存分项与修复链，速度另见 [17](17-troubleshooting.md#会话用量与速度不能混算)。**[一手；经验：采用判断，2026-10-13，未运行]**

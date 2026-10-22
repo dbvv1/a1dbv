@@ -89,6 +89,8 @@
 
 旧版封号原因猜测、会话保留天数、国产组合采用率与未核工具指控已撤下，不作为迁移、备份配置或安全选择的依据；对应契约回 [10](10-security.md) 与 [18](18-team-adoption.md)，本轮不扩展账户事件调查。**[研究：撤回范围]**
 
+中文产品作者的近期实践不止额度与工具搭配：宝玉／Tw93把产品取舍、Agent验证及真实用户拿到的版本分别处理，原文与BaoCut独立用户反例已归[24的产品验收](24-community-workflows.md#中文产品实践先定观察面再让-agent-验收)。默认借可检查的完成条件，不据个人偏好推荐固定双持或普遍免审。[一手／社区；研究：2026-10-22核]
+
 ## 来源
 
 - [claude-code issues（按点赞排序）](https://github.com/anthropics/claude-code/issues?q=is%3Aissue%20sort%3Areactions-%2B1-desc)、[codex issues（按点赞排序）](https://github.com/openai/codex/issues?q=is%3Aissue%20sort%3Areactions-%2B1-desc)

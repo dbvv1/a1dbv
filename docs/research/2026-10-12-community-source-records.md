@@ -1,4 +1,4 @@
-主线：二为主，兼三／四；P59聚焦小修复的回归交付，P58聚焦团队接收与持续维护；P68比较Claude入口整页选择
+主线：二为主，兼三／四；P82补路由基线、验证封装维护和中文真实交付；P59聚焦小修复的回归交付，P58聚焦团队接收与持续维护；P68比较Claude入口整页选择
 改变的建议：[经验／研究] 小修复原生起步也交回归，退出整包不撤验收。团队试用、长期接收、减人审与生产放量分开决定，不按人数升级。入口分界面、harness与执行环境；只缺整理时保原CLI，ACP另验配置和审批，生产profile成果不归因于IDE。长命观察由接续交付者持有，进程移交须连同投递与恢复核查；清理指令保留默认／条件，未决实现与规格冲突先不改写；计划陷入构建与转抄循环时，先保留接口与断言、缩减实现正文；原生够用时保持轻量，普通文档先自审，独立检查按具体遗漏保留；工具选择须核有效入口、宿主配置、权限、认证资格与维护负担。社区口碑和单人自述不支持默认双工具、统一降档、必须手写、免审或低迁移成本；评审倍率与新增任务数不代替净收益，兼容与交付声明仍须核目标环境和范围
 新证据：[一手／社区] Krupa固定两臂小任务与五轨迹抽核、Huntley确定性反馈自述；中文／Reddit／实践者的流程包、单项 Skill 与语义检索采用取舍及当前 star 快照；Hermes 子进程退出清理的故障报告、发布实现与 notify／gateway 反例；doc-cleanup 语义误缩自报及撤回“代码为准”的固定修订；Superpowers #2333 的计划配方修订、分模型作者重放与无 Skill 反例；Copilot CLI Free／本地BYOK接入与组织限制、MCP治理官方口径冲突，gstack Windows指纹路径修复与Bun调用入口反例，Gemini v0.63.0 沙箱默认值、环境变量覆盖及 Seatbelt 读／网络边界，CodeBuddy地区／客户端与计划权限契约、国内工具订阅资格／续费与额度契约、Kiro显式规格修订契约、历史小bug试用与维护逐字稿，以及固定配置与源码、发布关系、撤回补丁、官方说明及社区完整原帖支持正文的条件选择与归因修正。[研究] 未核商业消息不作迁移理由，第三方订阅批准仍有待核项；未新跑模型或相关客户端，配置与自述不证明净收益或当前工具优劣
 
@@ -223,7 +223,7 @@
 | 用量监控 | 原生状态不能解释历史异常消耗 | ccusage（19093）：🧪 [只补历史诊断](../02-models-and-cost.md#31-查异常消耗ccusage-只补历史诊断) | 不能解释差异就不加；日志估算不是实扣或剩余额度，缺失日志不能补造 |
 | 多 Agent 编排 | 有独立可验收支线，或原生委派不够管理重复任务 | OpenHands（91396）：🧪 有重复任务且能负担部署再试；[08](../08-multi-agent.md#30-秒选择)默认先原生子 Agent | 算到汇总、整合与验收结束；审批送不到或结果归属不清时缩回单层／串行，不以并发数证明收益 |
 | GUI 外壳 | 需要可视化管理多个工作区／任务，而非增加模型能力 | Vibe Kanban（28409）：👀 按维护承受能力评估本地版，暂缓依赖原托管协作；[08 的服务边界](../08-multi-agent.md#3-第三方编排工具) | GUI 与编排有交叉，不作额外独立样本；`archived=false` 不证明维护质量，缺可靠接管就不迁入 |
-| 模型路由 | 固定模型／固定分工在重复任务上已有可测瓶颈 | 动态模型路由的可比开源代表**空白／未评**；邻近的 CC Switch（146774）仅沿用 👀 配置／供应商管理评级，不能填作自动按任务选模型的证据 | [02](../02-models-and-cost.md#3-订阅额度与成本控制)先比较固定分工；CC Switch 4.0 有 Routing／Aggregation 入口，但没有本表所需任务级模型选择收益证据；配置切换与自动模型路由不混为一类 |
+| 模型路由 | 固定模型／固定分工在重复任务上已有可测瓶颈 | 已比较Scrouting／TwinRouterBench与原生Cursor Router，👀 暂不默认另加路由层，见[P82正反证据](#p82动态路由先选对固定基线)；CC Switch（146774）仍仅为配置／供应商管理代表 | [02](../02-models-and-cost.md#3-订阅额度与成本控制)先比较固定分工；CC Switch 4.0 有 Routing／Aggregation 入口，但没有本表所需任务级模型选择收益证据；配置切换与自动模型路由不混为一类 |
 
 星数沿用一份审计快照，不与下文 18:44 UTC 的三项目快照相减算增长。审计获取 Serena／ccusage 带时间的 stargazers 首次分页返回 401 后停止，未取得历史；这是数据缺口，不是零增长。本表扩充的是覆盖与采用入口，未新增客户端／模型运行或八类效果比较。**[研究：取证与验证边界]**
 
@@ -779,3 +779,58 @@ L2 入口一致性补核：只对照 03 的有限研究样本与记忆采用条�
 **整页覆盖与剩余差距。** Claude页面比较日常／审查分档、计划、上下文、扩展、并行、执行位置／恢复、review／人审、安全／撤回八类选择；安全和接口保留当前官方契约，不声称最优防御。主流采用率、跨任务最优、当前模型三臂长期二改与全人工成本仍未知。登记gap1只针对有近期领先和独立证据的条件比较，不沿用历史审计直接得分，不将本案例当整页效果验收。[研究]
 
 **读取回执。** 复用P59、P58及02／07／09已有研究，本次重读上述六篇原作相关正文；Bun两PR页面、30684连接器元数据与全部issue评论补核状态。5月执行与7月报告区分，不当10月实验；未重跑模型、Bun或上游测试。无完整搜索分母与净检索工时，不报告独立漏检率。[研究]
+
+
+## P82：动态路由先选对固定基线
+
+核实：2026-10-22（UTC+8）。成熟仓库先比较已有原生Auto／固定模型与Cursor生产路由参照；完整维护净收益赢家未知，不凭“比最贵便宜”另部署。[研究：本仓选择]
+
+| 原始来源／读取范围 | 支持、反例与采用 |
+|---|---|
+| [Cursor／O’Keefe、Volkov，8-06](https://cursor.com/blog/how-cursor-router-works)，数据、在线评估与切换成本段 | 生产回合和会话状态参与选模，计缓存失效；“用户接着做还是纠正”是质量代理。借生产分布与真实切换账，不把Fable／Opus4.8等池的自报百分比外推当前接收率。已有合规原生Auto是独立层的替代，不必先自建。 |
+| [LLM Gateway，9-26](https://llmgateway.io/blog/smart-routing-benchmark)及[protocol](https://llmgateway.io/benchmarks/smart-routing-2026-09-26-protocol.json)，方法、结果、评分敏感性与局限 | 8192限额主轮路由75/80、费用指数66.82，池外固定中价76/80、18.13，含分类、存储和失败请求。GPT-6单轮文本厂商自测，不是coding；只采用“实际固定基线入场”，不宣称等质量省钱。 |
+| [Scrouting v1，8-05](https://arxiv.org/html/2608.04804v1)，方法／成本；复用[S1e固定证据](2026-10-10-audit.md#s1e--2026-10-16-轻量模型分流与主模型侧节省) | 266项Python任务，路由与固定Kimi＋handoff同159通过、后者略便宜。旧代模型、搜索与交接组合，不把整包收益归路由。此前02已转化，本轮只是八类地图漏回链。 |
+| [TwinRouterBench v4，9-30](https://arxiv.org/html/2605.18859v4)，动态留出和成本定义 | 100题训练版路由75通过／API费用25.66美元，对照Opus4.6为74／54.73；规则路由反而73／172.56。保正面coding反例；旧池、窄任务且榜单另含假想失败罚金，不等同人审费用。初稿5月，本文固定v4。 |
+
+排除[Testronaut浏览器报告](https://testronaut.app/research/jev-optimization-experiments-2026-10/REPORT.md)：mission与token不是搜索摘要暗示的coding费用对照；不补作本题分母。[一手／研究]
+
+## P82：流程减法与下一次修改
+
+**采用：已有有效原生检查先保留；需要封装完成记录时，同时接手其维护责任。** 基线仍见P59，下列维护链不改整包默认。[研究]
+
+[Superpowers #2318](https://github.com/obra/superpowers/pull/2318)的小样本区分重复派发与最终独审；Native仍是插件inline，不是裸原生。[独立配置采用#613](https://github.com/f1sherman/new-machine-bootstrap/pull/613)已合但部署／行为收益未测，不作整包净收益。[一手／社区]
+
+- [#2388](https://github.com/obra/superpowers/pull/2388)已合入`907ad21ac21d0159ac3625c67537634bcb928c24`：测试命令成功而日志为空，grep／pipefail使摘要提取误报失败；修复保留原退出码门禁、给提取加fallback及旧错回归。作者为Claude工作者、型号未知，后续[维护者接收](https://github.com/obra/superpowers/pull/2388#issuecomment-5849249929)披露Opus5.5／CC2.1.283。读了补丁与接收，不在本仓复跑。[一手／社区]
+- [下一改#2348](https://github.com/obra/superpowers/pull/2348)，固定head `916bf0ad4c67749a0dd4d5f203aa6eb46f8ed9cb`，仍open：改同一行解析TAP时保旧fallback。作者的反事实复验中，去掉旧保护仍过新测试、却失败旧回归；这是其测试报告，不是主干已发生回归。[当前版本反例](https://github.com/obra/superpowers/pull/2348#issuecomment-6298384284)还涉及Node24默认reporter和Vitest尾行。不能把exit0或最后一行当完整结果，也不因该补丁存在就认定封装已可靠。[一手／社区／研究]
+
+[Ball 10-13官方录像逐字稿](https://ampcode.com/time-capsules/6)的回滚／领域Skill已收录；Willison首篇及二改已有，后续字幕补丁型号未知、无三臂对照，不另计流程胜负。[研究：具体负结果]
+
+## P82：中文实践与真实交付
+
+**问题：Agent自验证后，产品作者还要核什么？** 当前中文同题最优未知。采用原生实现与自动检查，但按真实使用状态确定接收面；不默认增加第二模型或全套流程。以下中文原文是独立产品的机制对照，不是黑盒与代码评审A/B。[研究]
+
+| 来源、时间与角色 | 原文支持与取舍 |
+|---|---|
+| [宝玉，8-24 BaoCut复盘](https://baoyu.io/blog/2026-08-24/ai-native-dev-workflow)，读完整相关流程 | Fable5／Claude Code，CLI版未知；作者决策远程转录方案和交互，Agent实现、自验证，作者黑盒验收。同文有技术可行但体验差的字幕对齐功能撤回。可借体验先于扩建；“黑盒足够”只属作者判断，且作者推广自己的产品／Skill。 |
+| [Tw93，8-31周刊280](https://weekly.tw93.fun/posts/280)，读维护全文 | Mole Mac1.13自述：旧代码应失败的回归、同类路径、晚回任务及真实更新；源码正确但线上旧文件。人定边界，Agent执行和修复。Mac闭源，未拿公开CLI替代验证。 |
+| [Tw93，9-28周刊284](https://weekly.tw93.fun/posts/284)，读模型与Windows实践段 | 明示Opus5.5 High开发、Astra Medium分析／review；作者披露厂商订阅支持。只标此时点，不倒填8月测试的模型、不采其速度／额度为统一排名。 |
+
+BaoCut同一使用者8-22（UTC+8）的[#37](https://github.com/JimLiu/baocut/issues/37)报告1.1.0本地说话人分离可用、远端预检误拒；[#38](https://github.com/JimLiu/baocut/issues/38)报告启动后新装模型但列表未刷新。这早于博客，未证明bug由Fable产生。作者声称1.1.2修复。[Build49](https://github.com/JimLiu/baocut/releases/tag/baocut-v1.1.2-build.49)于8-24 15:19发布，DMG于15:29完成上传（UTC+8），正文仍写pending；[appcast](https://github.com/JimLiu/baocut/releases/download/baocut-v1.1.2-build.49/appcast.json)与[manifest](https://github.com/JimLiu/baocut/releases/download/baocut-v1.1.2-build.49/release-manifest.json)版本／build／大小／声明哈希一致。当前不能概括为仅CLI；只核元数据，未下载核包、取得对应源码或用户修后复测。[一手／社区／研究]
+
+负结果：Innei所需正文遇登录边界、Phodal超时；X原帖未核，未用转载补齐。未复现的模型根因指控不采，无三臂净收益分母。[研究]
+
+P82补核[Talking Postgres原逐字稿](https://talkingpostgres.com/episodes/how-ai-is-changing-software-development-with-simon-willison/transcript)，8-14，23–39分钟：Willison区分生成优化分支与决定接收维护，未将其未合入的性能数字当收益；不推广主观挑剔为默认整段重写。YC页未取得正文。[社区／研究：播客范围]
+
+## P82：独立层的采用与维护责任
+
+**八类补齐的是“是否增层”的条件参照，不是八个产品都更好。** 监控复用[ccusage两条已合修复与固定回归](2026-10-13-session-usage-metrics.md#用量分项与两条修复链)，不重计新发现；新增三类链如下，均未运行候选。[研究]
+
+| 原文与固定产物 | 采用／撤回与验证范围 |
+|---|---|
+| [PostHog／Maguire 6-23](https://posthog.com/blog/what-is-a-scout)与[63393固定修复](https://github.com/PostHog/posthog/commit/d367441939c0cffbc17768e3adde313ab59bd587) | 业务MCP描述能改刷新周期，schema却漏参，200返回后状态未改。Opus4.8提出修源serializer而非另加工具；人审合入，回归含实际字段更新及非法值。只核公开产物与部署自报，未核线上；借“回读业务状态→修生成源”，不推荐全套Scout。 |
+| [claude-mem #4728](https://github.com/thedotmack/claude-mem/issues/4728)、[#4729](https://github.com/thedotmack/claude-mem/pull/4729)、[固定交付检查](https://github.com/thedotmack/claude-mem/commit/40e1785387037e2fe19bdf984d8f7b687eddd34b)与[13.37.0发行](https://github.com/thedotmack/claude-mem/releases/tag/v13.37.0)，10-13 | 13.36.1 marketplace生成bundle坏而同号npm不受影响，两个使用者报告捕获／MCP停摆及回退。修复先检查提交产物再重建，避免build覆盖坏包后假绿；作者披露Sonnet／Opus5.5，未见用户升级后捕获复测。停独立层不等于原生coding停；核实际分发面，不将历史回退版作为当前推荐。 |
+| [Zed #58962固定修复](https://github.com/zed-industries/zed/commit/620ceaaaca40b346736660f12eefce38e235cb59)，6-10；[1.8.2发布说明](https://zed.dev/releases/stable?page=4) | native-agent侧栏条目存在、内容缺行；退出flush补持久化，回归直接调用flush后读消息。它不是真实OS退出/断电E2E，也不修Terminal Threads。[独立使用与退出原帖](https://www.reddit.com/r/ZedEditor/comments/1u0o6st/is_anyone_using_terminal_threads/)给跨项目整理价值和丢历史反例；原CLI恢复与宿主恢复分别验，不将两条链拼成同一故障已修。 |
+
+[Classmethod森茂洋1-30](https://dev.classmethod.jp/articles/claude-code-daily-workflow/)自述Graphiti关系查询转加pgvector，仍有跨项目误召回；模型及十月保留状态未知，机构有经销关系，只作历史改造参照。[Tskulbru 9-11](https://tskulbru.dev/posts/beads-local-shadow-for-agent-work/)已有原生知识，缺的是在途依赖，保原知识而另试工作图数日。结合P44，先分知识、任务和恢复，不默认新数据库。[一手／社区／研究]
+
+[当前claude-mem changelog](https://cmem.ai/changelog)15.0.1还自报修“搜索可见、detail因项目alias取不到”；未核该源码或当前服务，不以最新版保证可靠。P82来源由自主检索后查重；P44、Scrouting、ccusage、Ball与Willison首篇为复用／重读，其余本轮新增。完整计数缺口及限定读取回执见[P51记录](../collaboration/prompts/2026-10-21-exploration-self-use.md#p82使用回执2026-10-22)，不报总体漏检率。[研究]
