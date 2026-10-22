@@ -14,6 +14,8 @@
 
 **[一手：[Codex 模型](https://learn.chatgpt.com/docs/models)、[单次 CLI 覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude 模型／effort](https://code.claude.com/docs/en/model-config)、[云环境与本机边界](https://learn.chatgpt.com/docs/environments/modes)；研究：任务分流与质量目标，2026-10-20 核，未运行客户端／模型]** 已有 IDE、桌面或 Claude 云端路径能完整验收，就继续用，不为统一入口迁移；其他具体入口见下表。
 
+**一个目标先在原生入口内完成。** 修复检查中发现的问题并复验，不以交回首版代替完成；多个独立目标的排队、归属和接续成为瓶颈时，再考虑外层派发。缺必要用户决定、授权或资源时暂停依赖动作，不自行放宽边界。见[Codex持续责任](codex.md#长时运行与-dots按能力缺口增加任务)及[Claude Code](claude-code.md)。[研究：P67／P68既有判断回流主入口]
+
 **人检查目标、兼容行为和验收覆盖，UI／手感亲自体验。** Agent 可能漏调用方、只满足现有测试，或在资源不可达时给出完成自报。必要资源／数据边界不满足就撤回该入口；更强配置未改善质量，或等待、费用与返工抵消收益，就退回原配置。质量目标明确时可预先升档，不必等一次失败。**[研究：风险与撤回；见 [09](../09-review-and-quality.md)、[22](../22-agent-evaluation.md)]**
 
 **⛔ 不以更换 Agent、全程 Ultra 或整套插件作为起手式。** 只为具体能力缺口或质量目标加最小补充；例如宿主兼容时，缺浏览反馈先补工具；质量要求须跨步骤强制执行，再定制工作流，而不是只换模型。**[研究：采用边界，见 [05](../05-skills-and-plugins.md)]**
