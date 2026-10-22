@@ -290,3 +290,66 @@ S43作者自述独立完成12分钟动画，混用Seedance2.0／2.5和Kling，48
 - **S43** 制作者原帖：https://www.reddit.com/r/Seedance_AI/comments/1w675bp/i_used_seedance_for_most_of_a_12minute_ai_film_a/ （低清、参考与复杂构图段）；作者自述，版本混用，精确发布日期未可靠提取。
 - **S44** 局部编辑原帖：https://www.reddit.com/r/seedance2pro/comments/1wot21s/seedance_25_and_edit_mode_even_regular_sd_2520/ （原帖及作者回应）；作者自述，无尝试分母。
 - **S45** Veo另渠道：https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate （2026-10-21更新）；Generate／Fast的001为GA，公告退役日期2026-11-17或更晚；Lite001仍Preview。S5／S8与停用表10-22复核仍公告Gemini API三个Preview的关闭日期，未验证端点关闭；迁移准入／合同／费用／效果另核。
+
+## 十二、P95整页选择与前沿纠偏
+
+核实：2026-10-22 UTC（任务登记10-23 03:33）；基线df996804adb8b8d60692f193a02a495ce4bbda94。仅公开资料、原帖和代码页面阅读，未试用、未下载权重、未运行模型／引擎。P91及S1–S45是历史证据，不覆盖或追认其效果。[研究]
+
+### 整页要求与决定
+
+| 主要选择 | 本轮比较及决定 | 未建立的结论 |
+|---|---|---|
+| 删除／静态／动态源镜头／固定成片 | 保留Sandfall、Mixtape与Dispatch的不同目标取舍，选择图先分玩家状态与运动必要性 | 不借团队艺术产能证明单人零手修 |
+| 固定成片的生成／图生／编辑 | S46–S48分任务对照近期服务，撤回Runway单列质量默认的暗示 | 榜单偏好不是二改通过率或发行质量 |
+| 多镜头与剪辑 | 保留CutCraft显式合成与连续性边界，S55旁证运动与细节取舍 | 没有等预算全片胜出证据 |
+| 二改 | S53分轨提示先验目标正确，再验非目标与时序，S44保留事件时序反例 | 旧版本评分不推广为新模型稳定性 |
+| 预览／最终成片 | 保留P91淘汰阈值与误筛、增强破坏条件 | 没有真实节省率 |
+| 本地／托管 | H3作开权重上限参照，Base／完整服务拆开，Wan5B和LTX各保指定用途 | 不把开放权重当完整本地服务或全球发行许可 |
+| 渠道 | S54补中文实际反馈，核参考输入、结果持久化与归档 | 不把聚合站故障写成模型能力缺失 |
+| 配音／字幕／新增语言 | 保留独立时间轴、DubIt长度边界及声音授权 | 未证明长译文自动适配 |
+| 跳过／恢复／设备／发行 | 保留状态独立、幂等出口、媒体回退及设备测试 | 文档阅读不是设备或旧存档验收 |
+
+按校准审计“主要选择已比近期领先机制、允许条件比较”口径，本轮整页独审支持资料差距1；不是自证全流程最好，也不把未试用隐藏在分数后。未知效果不自动降分，但剩余证据必须持续约束推荐。[研究]
+
+### 生成质量与编辑质量不能共享冠军
+
+S46编辑有声v1.1读取值：Wan3为1198±10，Seedance2.5为1155±12、Omni1.1为1148±11，后两者区间重叠；Aleph2为1012±8。只用来改变候选次序，不沿该榜价格制定预算。[一手：独立评测者数据]
+
+S47图生有声v1.1前列H3、FLUX3 Max、Seedance2.5、Omni1.1与Wan3存在重叠区间；S48文生有声v2.1的Wan3位居首行但也非所有对手显著落后。不能把文生、图生、编辑或有声／无声Elo混成一个总榜；没有公开API、将上线或许可未清的高排名服务也不自动适合采用。[一手／研究]
+
+AA方法说明编辑有声使用145源片、无声102源片，近期模型以最高原生分辨率至1080p、不用放大档；拒绝部分题的模型只按完成题计分。AA声明不接受提供商为上榜或有利结果付费。它是独立偏好参照，不是游戏装备、语言、持续修改或零手修专项实验。旧主文“Runway质量优先”因此改为分任务候选，保留其编辑范围计价和导出价值。[一手／研究：S46–S48及S56]
+
+S49的Wan3官方API仍标Preview，编辑通过reference_video＋prompt；模型、端点与Key必须同区域。首尾帧模式不能同时输入音频，要换全模态参考模式，不承诺控制等价。当前不能沿Wan2.2的Apache许可替新服务清权，托管合同和输出发行准入尚未完整核实。[一手／研究]
+
+### 开放Base不等于完整云端质量
+
+H3官方说明开源Base输出768p；Context-IR是托管多阶段预处理，Regenerate-2K不是普通超分而是基于原始上下文重新生成，二者未随Base完整开源。官方README给本地Base和混合API的完整2K路线，不能把后者当纯离线复现。其四GPU示例不是最低硬件证明，本轮没有给出消费卡速度／显存结论。[一手／研究：S50、S51]
+
+S52固定社区许可I.3／I.5定义适用地域，排除EU、英国、韩国、美国；V.4明确涉及Works及Outputs的使用、复制、修改、分发和展示。IV要求超过年收入US$20M的商业产品／服务先获书面授权，商业界面有名称展示要求。VI.4不主张输出权利，不取消V.4限制。这里判断的是该社区许可没有授权排除地域用途，不是所有API合同或当地法律都一律禁止；其他托管渠道须取得适用合同，不能推定有或没有额外许可。[一手／研究]
+
+因此保留Wan指定5B硬件／许可基线与LTX控制专项，但纳入H3作为必须对照的近期上限；如发行地域、合同、完整管线或工时不适配，就不换。S50源仓有推理组件和请求示例；另读Wan3仓仅见README／LICENSE，不凭仓库Apache标签宣布开放权重。[研究]
+
+### 修改先分任务，渠道先验合同
+
+S53 OmniEdit-Bench（2026-08-05 v1）含790实例、五轨、八模型；空间与时序表现差异明显，并用编辑准确性调节保留／自然度／一致性得分。它支持“外观改对不证明事件顺序改对”的验收机制；作者含Wan团队，非完全独立排名，Seedance2.0等缺测轨也不能作全任务等覆盖平均比较。本轮不照搬总分或推广到Wan3、Seedance2.5、Omni。[一手／研究]
+
+S54 V2EX原帖2026-04-03起：#16报告三图参数400、#18站方确认当时仅两图；#45描述参考输入和生成异常，#47站方称修复，#48仍报告刷新后结果不可见。只有该第三方入口历史自述，无本轮复测；采用增量是“核具体渠道的输入组合和结果持久化”，不是声称目前仍坏。S55作者用相同首尾帧与近似提示比较三个模型，披露Adobe合作，报告运动忠实和细节的取舍；没有尝试分母和独立复验，不作费用或冠军证据。[社区／研究]
+
+探索覆盖新增独立AA、官方Wan/H3、H3仓与既有固定LTX源码复读、Reddit及中文V2EX原帖；没有把两个子版当两社区。原P91中文覆盖不足的历史结论保留，本轮补齐的是来源渠道，不是代表性采样或共识。[研究]
+
+### 新来源与未决边界
+
+- **S46** AA编辑有声v1.1：https://artificialanalysis.ai/video/leaderboard/video-editing/ [一手；10-22读取，动态分值只作快照]
+- **S47** AA图生有声v1.1：https://artificialanalysis.ai/video/leaderboard/image-to-video [一手；与无声v1.0分开]
+- **S48** AA文生有声v2.1：https://artificialanalysis.ai/video/leaderboard/text-to-video [一手；不把尚无API候选当可用服务]
+- **S49** Wan3官方API：https://help.aliyun.com/en/model-studio/wan3-video-generation-api-reference [一手；Preview与首尾帧／音频模式边界]
+- **S50** H3官方仓：https://github.com/MiniMax-AI/MiniMax-H3 [一手；动态README的Base／完整2K路线，未运行]
+- **S51** H3官方发布说明：https://www.minimax.io/news/minimax-h3-open-source [一手；2026-08-03，托管Context-IR及模型组成]
+- **S52** 固定H3社区许可：https://huggingface.co/MiniMaxAI/MiniMax-H3/raw/5d9b308a59ab12e67147f191e184baf704185bd1/LICENSE [一手；许可日期2026-08-02，I／IV／V／VI]
+- **S53** OmniEdit-Bench：https://arxiv.org/html/2608.05049v1 ；https://omniedit-bench.github.io/ [一手；§3–4、作者利益关系与缺测范围]
+- **S54** 中文试用原帖：https://global.v2ex.com/t/1203311 [社区；#16／18／45／47／48，不抄用户联系信息]
+- **S55** 同首尾帧比较：https://www.reddit.com/r/generativeAI/comments/1x4sk9e/i_tested_3_ai_video_generators_on_the_same/ [社区；原帖披露Adobe合作，日期提取不稳定，不填精确发布日期]
+- **S56** AA方法：https://artificialanalysis.ai/methodology/video [一手；编辑v1.1、部分题覆盖与独立性声明]
+- **S57** Wan3仓：https://github.com/AlibabaCloud-Official/Wan3.0 [一手；目录仅README／LICENSE，不作权重许可证据]
+
+Wan3／H3托管发行合同、最新模型的游戏二改与非目标保持、长译文、全片零手修成本以及目标设备仍未验；这些是采用和效果边界，不用更强宣传填补。没有付费／API调用。一次尝试非正式AA路径text-to-video-with-audio返回不可访问，正确text-to-video公开页成功；不是权限拒绝，未绕过访问控制。[研究]
