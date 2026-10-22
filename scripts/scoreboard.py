@@ -29,6 +29,13 @@ CAMPAIGNS = {
 }
 # Index and experiment-log pages carry no single reader choice to compare.
 EXCLUDE = {'docs/12-resources.md', 'docs/19-experiments.md'}
+# Pages most readers decide from. Other pages only need gap <= 2 and sink to
+# the bottom of the queue once they reach it (2026-10-22 user decision).
+SECONDARY = {f'docs/{name}.md' for name in (
+  '01-agents/gemini-cli', '01-agents/ide-and-others', '01-agents/open-source-agents',
+  '04-mcp', '06-hooks-and-guardrails', '10-security', '11-community-pulse',
+  '13-frontier-radar', '16-building-agents', '17-troubleshooting', '18-team-adoption',
+  '21-agent-patterns', '23-browser-verification', '24-community-workflows')}
 STALE_DAYS = {'C1 AI coding 主干': 90, 'C2 游戏 G1': 365}
 MARKER = re.compile(r'<!--\s*frontier:(.*?)-->', re.S)
 PAIR = re.compile(r'(\w+)=(\S+)')
@@ -82,7 +89,8 @@ def scan_pages(root, today):
       marker = parse_marker(text)
       row = {'campaign': campaign, 'page': path.relative_to(root).as_posix(),
              'has_section': '当前最高水平' in text, 'marker': marker,
-             'audit_gap': None, 'disputed': False}
+             'audit_gap': None, 'disputed': False,
+             'core': path.relative_to(root).as_posix() not in SECONDARY}
       audit = baseline.get(row['page'])
       if audit:
         row['audit_gap'], row['audit_date'] = audit
@@ -119,6 +127,8 @@ def summarize(rows):
       'pages': len(mine),
       'registered': len(ok),
       'gap_le_1': sum(r['marker']['gap'] <= 1 for r in ok),
+      'core_pages': sum(r['core'] for r in mine),
+      'core_gap_le_1': sum(r['core'] and r['marker']['gap'] <= 1 for r in ok),
       'compared': sum(r['marker']['status'] == '已比较' for r in ok),
       'stale': sum(bool(r.get('stale')) for r in ok),
       'no_section': sum(not r['has_section'] for r in mine),
@@ -139,6 +149,8 @@ def priority(row):
     return (0, -gap, row['audit_gap'] is not None, row['page'])
   if row['disputed']:
     return (1, -row['audit_gap'], row['page'])
+  if not row['core'] and marker['gap'] <= 2 and not row.get('stale'):
+    return (3, -marker['gap'], row['page'])
   return (2, -marker['gap'], not row.get('stale'), row['page'])
 
 
@@ -156,7 +168,8 @@ def main(argv=None):
     print()
     return 0
   for campaign, s in report['summary'].items():
-    print(f"{campaign}: {s['registered']}/{s['pages']} 已登记，差距≤1 {s['gap_le_1']}，"
+    print(f"{campaign}: 核心页差距≤1 {s['core_gap_le_1']}/{s['core_pages']}；"
+          f"全部 {s['registered']}/{s['pages']} 已登记，差距≤1 {s['gap_le_1']}，"
           f"已比较 {s['compared']}，过期 {s['stale']}，无最高水平节 {s['no_section']}，"
           f"标记错误 {s['bad_marker']}")
     print(f"  审计基线差距分布 {s['audit_gap']}，未审计且未登记 {s['unaudited']}")

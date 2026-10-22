@@ -8,18 +8,54 @@
     "docs/collaboration/prompts/2026-10-22-absorption-run.md": "6be06e09d602e7bc66aceea8d72476cb2b8a2bfe336cb26eccd3ce893f5c450b"
   },
   "questions": [
-    {"id": "A00-1", "page": "docs/00-state-of-ai-coding.md", "blob": "6b0696332c96f40136d1a383bf406e01f6ed4d4b", "sha256": "5b17323d5fedc9cbd26a9f4c011109001a4657fb8356977e5acdf58b687f32ec"},
-    {"id": "A02-3", "page": "docs/02-models-and-cost.md", "blob": "76019f6677b8b013ac5e05f17164a01bdbc2e8f3", "sha256": "727fe1863febcb94fef527cd81e32ad5c009fc2693eb5648c0515348d6c89de7"}
+    {
+      "id": "A00-1",
+      "page": "docs/00-state-of-ai-coding.md",
+      "blob": "6b0696332c96f40136d1a383bf406e01f6ed4d4b",
+      "sha256": "5b17323d5fedc9cbd26a9f4c011109001a4657fb8356977e5acdf58b687f32ec"
+    },
+    {
+      "id": "A02-3",
+      "page": "docs/02-models-and-cost.md",
+      "blob": "76019f6677b8b013ac5e05f17164a01bdbc2e8f3",
+      "sha256": "727fe1863febcb94fef527cd81e32ad5c009fc2693eb5648c0515348d6c89de7"
+    }
   ],
-  "schedule": [["A00-1", "no_document"], ["A00-1", "read_page"], ["A02-3", "read_page"], ["A02-3", "no_document"]],
-  "limits": {"calls": 4, "retries": 0, "batch_seconds": 7200, "call_seconds": 480, "max_turns": 1, "max_raw_bytes": 8388608},
+  "schedule": [
+    [
+      "A00-1",
+      "no_document"
+    ],
+    [
+      "A00-1",
+      "read_page"
+    ],
+    [
+      "A02-3",
+      "read_page"
+    ],
+    [
+      "A02-3",
+      "no_document"
+    ]
+  ],
+  "limits": {
+    "calls": 4,
+    "batch_seconds": 7200,
+    "call_seconds": 480,
+    "max_turns": 1,
+    "max_raw_bytes": 8388608,
+    "max_attempts": 8,
+    "failure_retries": 1
+  },
   "tools": [],
   "network_tools": false,
-  "budget_approved": false,
-  "client_version": null,
   "requested_model": null,
   "reasoning_configuration": null,
-  "budget_amount": null,
   "grading": "independent_session_only",
-  "formal_denominator": false
+  "formal_denominator": false,
+  "client_version": "record_actual_without_version_gate",
+  "budget_policy": "optional_local_cap; absent_cap_does_not_block_this_provider",
+  "failure_policy": "unknown_model_excluded_continue; ordinary_failure_retry_once; more_than_half_units_failed_stop",
+  "entrypoint": "optional_local_argv_prefix; config_and_paths_never_exported"
 }

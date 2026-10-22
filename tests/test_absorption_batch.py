@@ -46,11 +46,8 @@ class AbsorptionBatchTests(unittest.TestCase):
     self.addCleanup(patcher.stop)
     self.task, self.payloads = batch.inputs()
     self.config = batch.local_template(self.task)
-    self.config.update(approved_by_user=True, budget_amount_usd=0.01,
-                       provider_hard_limit_confirmed=True, client_version='2.1.286',
-                       requested_model='deepseek-requested', expected_api_model='deepseek-test',
-                       reasoning_configuration='provider_default_fixed',
-                       clean_managed_environment_confirmed=True)
+    self.config.update(standing_budget_usd=0.01, requested_model='deepseek-requested',
+                       expected_api_model='deepseek-test')
     self.config_path = self.root / 'config.json'
     self.config_path.write_text(json.dumps(self.config))
     self.calls = []
@@ -69,14 +66,17 @@ class AbsorptionBatchTests(unittest.TestCase):
     err.write_text('synthetic private diagnostic')
     return 0, None
 
-  def invoke(self, fake=None):
+  def invoke(self, fake=None, version='2.1.286 (Claude Code)\n', version_probe=None,
+             provider_env=None, forbid_which=False):
     destination = self.root / 'run'
-    with mock.patch.object(batch.shutil, 'which', return_value='synthetic-cli'), \
-         mock.patch.object(batch.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, '2.1.286 (Claude Code)\n', '')), \
+    with mock.patch.object(batch.shutil, 'which', return_value='synthetic-cli',
+                           side_effect=AssertionError('unexpected PATH lookup') if forbid_which else None), \
+         mock.patch.object(batch, 'record_version', side_effect=version_probe, return_value={'client_version': version.strip(), 'version_exit_code': 0, 'version_status': 'recorded'}), \
          mock.patch.object(batch, 'inputs', return_value=(self.task, self.payloads)), \
-         mock.patch.dict(batch.os.environ, {'ANTHROPIC_API_KEY': 'synthetic-secret-value',
-                                          'ANTHROPIC_BASE_URL': 'https://synthetic.invalid',
-                                          'CLAUDE_CODE_SESSION_ID': 'must-not-inherit'}), \
+         mock.patch.dict(batch.os.environ, provider_env if provider_env is not None else
+                         {'ANTHROPIC_API_KEY': 'synthetic-secret-value',
+                          'ANTHROPIC_BASE_URL': 'https://synthetic.invalid',
+                          'CLAUDE_CODE_SESSION_ID': 'must-not-inherit'}, clear=True), \
          mock.patch.object(batch, 'execute', side_effect=fake or self.fake_execute):
       result = batch.run(self.config_path, destination)
     return result, destination
@@ -99,34 +99,199 @@ class AbsorptionBatchTests(unittest.TestCase):
     self.assertEqual(result['status'], 'prepared_not_run')
     execute.assert_not_called()
     config = batch.read_json(self.root / 'prepared/local-config.json')
-    self.assertFalse(config['approved_by_user'])
+    self.assertIsNone(config['standing_budget_usd'])
+    self.assertNotIn('approved_by_user', config)
 
-  def test_budget_unapproved_launches_nothing(self):
-    self.config['approved_by_user'] = False
+  def test_missing_local_cap_runs_without_budget_flag(self):
+    self.config['standing_budget_usd'] = None
     self.config_path.write_text(json.dumps(self.config))
-    with mock.patch.object(batch, 'execute') as execute, mock.patch.object(batch.shutil, 'which') as which:
-      with self.assertRaisesRegex(batch.Stop, 'budget_not_approved'):
-        batch.run(self.config_path, self.root / 'run')
-    execute.assert_not_called()
-    which.assert_not_called()
+    result, destination = self.invoke()
+    self.assertEqual(len(self.calls), 4)
+    for call in self.calls:
+      self.assertNotIn('--max-budget-usd', call[0])
+    receipt = batch.read_json(next(destination.glob('*.receipt.json')))
+    self.assertEqual(receipt['preflight_records']['budget'], 'not_required_for_this_provider')
 
-  def test_config_missing_invalid_and_wrong_approval(self):
-    for field in batch.CONFIG_KEYS:
-      with self.subTest(field=field):
-        config = copy.deepcopy(self.config)
-        del config[field]
-        with self.assertRaises(batch.Stop):
-          batch.validate_config(config, self.task)
-    for field, value in [('budget_amount_usd', None), ('budget_amount_usd', float('nan')),
-                         ('budget_amount_usd', True), ('client_version', '2.1.285'),
-                         ('task_sha256', 'wrong'), ('requested_model', 'glm'),
-                         ('provider_hard_limit_confirmed', False),
-                         ('clean_managed_environment_confirmed', False),
-                         ('reasoning_configuration', 'high')]:
+  def test_optional_cap_missing_or_invalid_is_not_a_gate(self):
+    for value in (None, -1, 'not-a-number', float('nan')):
+      config = dict(self.config, standing_budget_usd=value)
+      batch.validate_config(config, self.task)
+      self.assertNotIn('--max-budget-usd', batch.command('synthetic', config, 'session', 8))
+    config = dict(self.config)
+    del config['standing_budget_usd']
+    batch.validate_config(config, self.task)
+    self.assertNotIn('--max-budget-usd', batch.command('synthetic', config, 'session', 8))
+
+  def test_no_per_batch_or_version_approval_gate(self):
+    config = dict(self.config, approved_by_user=False, provider_hard_limit_confirmed=False,
+                  client_version='old-or-different', clean_managed_environment_confirmed=False)
+    batch.validate_config(config, self.task)
+    self.config_path.write_text(json.dumps(config))
+    result, destination = self.invoke()
+    self.assertEqual(len(self.calls), 4)
+    receipt = batch.read_json(next(destination.glob('*.receipt.json')))
+    self.assertEqual(receipt['client_version'], '2.1.286 (Claude Code)')
+
+  def test_prefix_argv_keeps_empty_star_and_only_exact_placeholders(self):
+    prefix = ['node', 'adapter script', '--home', '{home}', '--cwd', '{cwd}',
+              '', '*', '{"literal":"{home}"}', '--']
+    config = dict(self.config, command_prefix=prefix)
+    argv = batch.launcher('explicit cli', config, self.root / 'work', self.root / 'home')
+    self.assertEqual(argv, ['node', 'adapter script', '--home', str(self.root / 'home'),
+                           '--cwd', str(self.root / 'work'), '', '*', '{"literal":"{home}"}',
+                           '--', 'explicit cli'])
+    command = batch.command(argv, config, 'session', 8)
+    self.assertEqual(command[:len(argv)], argv)
+    self.assertEqual(command.count('explicit cli'), 1)
+    self.assertEqual(command[command.index('--tools') + 1], '')
+    self.assertEqual(command[command.index('--disallowedTools') + 1], '*')
+    self.assertEqual(batch.command(batch.launcher('cli', {}, self.root, self.root), config, 's', 8),
+                     batch.command('cli', config, 's', 8))
+
+  def test_prefix_and_explicit_binary_do_not_lookup_path_or_leak(self):
+    self.config.update(command_prefix=['node', 'private-adapter-path', '--home', '{home}',
+                                       '--cwd', '{cwd}', '--'],
+                       claude_executable='private-cli-path')
+    self.config_path.write_text(json.dumps(self.config))
+    versions = []
+    def version(argv, *args):
+      versions.append(argv)
+      return {'client_version': 'synthetic-version', 'version_status': 'recorded', 'version_exit_code': 0}
+    result, destination = self.invoke(version_probe=version, forbid_which=True)
+    self.assertEqual(len(self.calls), 4)
+    for argv, call in zip(versions, self.calls):
+      self.assertEqual(call[0][:len(argv)], argv)
+      self.assertEqual(argv[-1], 'private-cli-path')
+      self.assertIn(str(call[1]), argv)
+      self.assertIn(call[2]['HOME'], argv)
+    out = self.root / 'export'
+    batch.export(destination, out)
+    for path in out.iterdir():
+      self.assertNotIn('private-adapter-path', path.read_text())
+      self.assertNotIn('private-cli-path', path.read_text())
+
+  def test_prefix_without_explicit_binary_avoids_global_which(self):
+    self.config['command_prefix'] = ['synthetic-adapter', '--']
+    self.config_path.write_text(json.dumps(self.config))
+    self.invoke(forbid_which=True)
+    self.assertEqual(self.calls[0][0][:3], ['synthetic-adapter', '--', 'claude'])
+
+  def test_missing_provider_environment_is_recorded_not_hard_stop(self):
+    def no_auth(*args):
+      self.fake_execute(*args)
+      self.assertNotIn('ANTHROPIC_API_KEY', args[2])
+      self.assertNotIn('ANTHROPIC_BASE_URL', args[2])
+      return 1, None
+    result, destination = self.invoke(no_auth, provider_env={})
+    self.assertEqual(len(self.calls), 6)
+    self.assertEqual(result['failed_units'], 3)
+    summary = batch.read_json(destination / 'summary.private.json')
+    self.assertEqual(summary['stop_reason'], 'more_than_half_failed')
+    for path in destination.glob('*.receipt.json'):
+      records = batch.read_json(path)['preflight_records']
+      self.assertEqual(records['provider_key_env'], 'missing')
+      self.assertEqual(records['provider_url_env'], 'missing')
+
+  def test_windows_tree_cleanup_targets_only_owned_pid_before_reap(self):
+    process = mock.Mock(pid=12345)
+    actions = []
+    def kill_tree(argv, **kwargs):
+      actions.append('tree')
+      self.assertEqual(argv[1:], ['/PID', '12345', '/T', '/F'])
+      self.assertTrue(argv[0].endswith('taskkill.exe'))
+      self.assertNotIn('shell', kwargs)
+      process.kill.assert_not_called()
+      process.communicate.assert_not_called()
+      return subprocess.CompletedProcess(argv, 0)
+    process.communicate.side_effect = lambda **kwargs: actions.append('reap')
+    with mock.patch.object(batch.subprocess, 'run', side_effect=kill_tree):
+      batch.terminate_process_tree(process, platform='nt')
+    self.assertEqual(actions, ['tree', 'reap'])
+    process.kill.assert_not_called()
+
+  def test_windows_cleanup_failure_stops_without_retry(self):
+    process = mock.Mock(pid=12345)
+    with mock.patch.object(batch.subprocess, 'run', return_value=subprocess.CompletedProcess([], 1)):
+      with self.assertRaisesRegex(batch.Stop, 'process_cleanup_failed'):
+        batch.terminate_process_tree(process, platform='nt')
+    process.kill.assert_not_called()
+    process.communicate.assert_not_called()
+    def cleanup_failed(*args):
+      self.fake_execute(*args)
+      raise batch.Stop('process_cleanup_failed')
+    result, destination = self.invoke(cleanup_failed)
+    self.assertEqual(len(self.calls), 1)
+    self.assertEqual(batch.read_json(destination / 'summary.private.json')['stop_reason'], 'process_cleanup_failed')
+
+  def test_version_prefix_is_passed_once_as_argv(self):
+    raw = self.root / 'version.stdout'
+    raw.write_text('synthetic-version')
+    argv = ['node', 'adapter', '--', 'cli']
+    with mock.patch.object(batch, 'execute', return_value=(0, None)) as execute:
+      result = batch.record_version(argv, self.root, {}, raw, self.root / 'err')
+    self.assertEqual(execute.call_args.args[0], [*argv, '--version'])
+    self.assertEqual(result['client_version'], 'synthetic-version')
+
+  def test_version_cleanup_failure_not_swallowed(self):
+    with mock.patch.object(batch, 'execute', side_effect=batch.Stop('process_cleanup_failed')):
+      with self.assertRaisesRegex(batch.Stop, 'process_cleanup_failed'):
+        batch.record_version(['adapter', 'cli'], self.root, {}, self.root / 'raw', self.root / 'err')
+
+  def test_config_missing_and_invalid(self):
+    for field, value in [('requested_model', None)]:
       with self.subTest(field=field, value=value):
-        config = dict(self.config, **{field: value})
         with self.assertRaises(batch.Stop):
-          batch.validate_config(config, self.task)
+          batch.validate_config(dict(self.config, **{field: value}), self.task)
+
+  def test_requested_model_suffix_is_preserved_in_argv_and_receipt(self):
+    alias = 'sample-model[1m]'
+    self.config['requested_model'] = alias
+    self.config_path.write_text(json.dumps(self.config))
+    result, destination = self.invoke()
+    self.assertEqual(result['status'], 'smoke_completed_not_graded')
+    for call in self.calls:
+      self.assertEqual(call[0][call[0].index('--model') + 1], alias)
+    for path in destination.glob('*.receipt.json'):
+      receipt = batch.read_json(path)
+      self.assertEqual(receipt['requested_model'], alias)
+      self.assertEqual(receipt['actual_model'], 'deepseek-test')
+
+  def test_requested_model_missing_and_invalid_are_distinct(self):
+    for value in (None, ''):
+      with self.subTest(value=value), self.assertRaisesRegex(batch.Stop, '^requested_model_missing$'):
+        batch.validate_config(dict(self.config, requested_model=value), self.task)
+    for value in (1, [], ' ', 'a' * 152, 'sample-model[]', 'sample-model[1m',
+                  'sample-model[1m]extra', 'sample-model[1m][2m]', 'sample\x00model',
+                  'sample\nmodel', 'sample\rmodel', 'sample\tmodel', 'sample\x7fmodel',
+                  'sample;command', '--model'):
+      with self.subTest(value=value), self.assertRaisesRegex(batch.Stop, '^requested_model_invalid$'):
+        batch.validate_config(dict(self.config, requested_model=value), self.task)
+    for value in ('sample-model', 'provider/sample.v1:alias', 'sample-model[1m]',
+                  'a' * 151, 'a' * 147 + '[1m]'):
+      with self.subTest(value=value):
+        batch.validate_config(dict(self.config, requested_model=value), self.task)
+
+  def test_requested_alias_and_init_alias_do_not_become_api_evidence(self):
+    alias = 'sample-model[1m]'
+    self.config['requested_model'] = alias
+    self.config_path.write_text(json.dumps(self.config))
+    def no_api_model(*args):
+      self.fake_execute(*args)
+      stream = events()
+      stream[0]['model'] = alias
+      stream[-1]['modelUsage'] = {alias: {}}
+      del stream[1]['event']['message']['model']
+      args[4].write_text('\n'.join(json.dumps(e) for e in stream))
+      return 0, None
+    result, destination = self.invoke(no_api_model)
+    self.assertEqual(len(self.calls), 4)
+    for path in destination.glob('*.receipt.json'):
+      receipt = batch.read_json(path)
+      self.assertEqual(receipt['requested_model'], alias)
+      self.assertEqual(receipt['actual_model'], 'unknown')
+      self.assertEqual(receipt['status'], 'completed_model_unknown')
+    # Accepting a CLI alias does not loosen the distinct raw API model validator.
+    self.assertEqual(self.inspect(events(alias))['actual_model'], 'unknown')
 
   def test_raw_api_metadata_not_requested_or_model_usage(self):
     self.assertEqual(self.inspect(events())['actual_model'], 'deepseek-test')
@@ -134,11 +299,12 @@ class AbsorptionBatchTests(unittest.TestCase):
     del stream[1]['event']['message']['model']
     stream[0]['model'] = 'deepseek-test'
     stream[-1]['modelUsage'] = {'deepseek-test': {}}
-    with self.assertRaisesRegex(batch.Stop, 'actual_model_unknown'):
-      self.inspect(stream)
+    self.assertEqual(self.inspect(stream)['actual_model'], 'unknown')
+    self.assertEqual(self.inspect(stream)['status'], 'completed_model_unknown')
 
   def test_metadata_missing_conflicting_or_different(self):
-    candidates = [events('different'), events()[0:1] + events()[2:]]
+    self.assertEqual(self.inspect(events('different'))['status'], 'model_mismatch')
+    candidates = [events()[0:1] + events()[2:]]
     double = events()
     double.insert(2, {'type': 'stream_event', 'event': {'type': 'message_start',
                                                      'message': {'id': 'second', 'model': 'other'}}})
@@ -193,7 +359,8 @@ class AbsorptionBatchTests(unittest.TestCase):
     process.__enter__.return_value = process
     process.communicate.side_effect = [KeyboardInterrupt(), None]
     with mock.patch.object(batch.subprocess, 'Popen', return_value=process), \
-         mock.patch.object(batch.os, 'killpg', create=True) as kill:
+         mock.patch.object(batch.os, 'killpg', create=True) as kill, \
+         mock.patch.object(batch.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0)) as tree:
       result = batch.execute(['synthetic'], self.root, {}, b'input',
                              self.root / 'raw', self.root / 'err', 1)
     self.assertEqual(result, (None, 'interrupted'))
@@ -201,7 +368,8 @@ class AbsorptionBatchTests(unittest.TestCase):
     if batch.os.name == 'posix':
       kill.assert_called_once()
     else:
-      process.kill.assert_called_once()
+      tree.assert_called_once()
+      process.kill.assert_not_called()
 
   def test_failed_empty_truncated_and_duplicate_result(self):
     candidates = []
@@ -225,6 +393,7 @@ class AbsorptionBatchTests(unittest.TestCase):
       self.assertEqual(command[command.index('--tools') + 1], '')
       self.assertIn('--bare', command)
       self.assertIn('--restricted', command)
+      self.assertIn('--disable-slash-commands', command)
       self.assertNotIn('--resume', command)
       self.assertNotIn(payload.decode(), command)
       self.assertEqual((work / 'input.txt').read_bytes(), payload)
@@ -232,7 +401,7 @@ class AbsorptionBatchTests(unittest.TestCase):
       self.assertLessEqual(timeout, 480)
     self.assertTrue((destination / 'summary.private.json').exists())
 
-  def test_first_failure_stops_batch_and_keeps_unknown(self):
+  def test_unknown_model_keeps_answer_and_continues(self):
     def bad(*args):
       self.fake_execute(*args)
       raw = args[4]
@@ -241,10 +410,12 @@ class AbsorptionBatchTests(unittest.TestCase):
       raw.write_text('\n'.join(json.dumps(e) for e in stream))
       return 0, None
     result, destination = self.invoke(bad)
-    self.assertEqual(len(self.calls), 1)
-    self.assertEqual(result['not_run'], 3)
+    self.assertEqual(len(self.calls), 4)
+    self.assertEqual(result['not_run'], 0)
+    self.assertEqual(result['failed_units'], 0)
     receipt = batch.read_json(next(destination.glob('*.receipt.json')))
     self.assertEqual(receipt['actual_model'], 'unknown')
+    self.assertEqual(receipt['answer'], '合成回答')
     self.assertFalse(receipt['formal_denominator'])
 
   def test_interrupt_records_remaining_not_run(self):
@@ -262,13 +433,201 @@ class AbsorptionBatchTests(unittest.TestCase):
     with self.assertRaisesRegex(batch.Stop, 'duplicate_json_key'):
       batch.inspect_stream(path, 'deepseek-test', 10000)
 
-  def test_timeout_stops_without_retry(self):
+  def test_timeout_retries_once_then_next_until_majority_failed(self):
     def timeout(*args):
       self.fake_execute(*args)
       return None, 'timeout'
     result, _ = self.invoke(timeout)
+    self.assertEqual(len(self.calls), 6)
+    self.assertEqual(result['failed_units'], 3)
+    self.assertEqual(result['not_run'], 1)
+    self.assertEqual(result['status'], 'stopped')
+    self.assertEqual(len({c[1] for c in self.calls}), 6)
+    self.assertEqual(len({c[0][c[0].index('--session-id') + 1] for c in self.calls}), 6)
+
+  def test_actual_old_version_runs_without_minimum_gate(self):
+    result, destination = self.invoke(version='1.0.0 unexpected-version\n')
+    self.assertEqual(result['status'], 'smoke_completed_not_graded')
+    self.assertEqual(len(self.calls), 4)
+    for path in destination.glob('*.receipt.json'):
+      self.assertEqual(batch.read_json(path)['client_version'], '1.0.0 unexpected-version')
+
+  def test_two_failed_units_do_not_stop(self):
+    def fail_two(*args):
+      self.fake_execute(*args)
+      return (1, None) if len(self.calls) <= 4 else (0, None)
+    result, _ = self.invoke(fail_two)
+    self.assertEqual(len(self.calls), 6)
+    self.assertEqual(result['failed_units'], 2)
+    self.assertEqual(result['not_run'], 0)
+    self.assertEqual(result['status'], 'batch_completed_with_exclusions')
+
+  def test_third_failed_unit_stops(self):
+    def fail(*args):
+      self.fake_execute(*args)
+      return 1, None
+    result, _ = self.invoke(fail)
+    self.assertEqual(len(self.calls), 6)
+    self.assertEqual(result['failed_units'], 3)
+    self.assertEqual(result['not_run'], 1)
+
+  def test_timeout_retry_success_preserves_eight_receipts_and_cap(self):
+    def alternating(*args):
+      self.fake_execute(*args)
+      return (None, 'timeout') if len(self.calls) % 2 else (0, None)
+    result, destination = self.invoke(alternating)
+    self.assertEqual(result['status'], 'smoke_completed_not_graded')
+    self.assertEqual(result['failed_units'], 0)
+    self.assertEqual(len(self.calls), 8)
+    self.assertEqual(len(list(destination.glob('*.receipt.json'))), 8)
+    self.assertEqual(len({c[1] for c in self.calls}), 8)
+    caps = [batch.Decimal(c[0][c[0].index('--max-budget-usd') + 1]) for c in self.calls]
+    self.assertEqual(sum(caps), batch.Decimal(str(self.config['standing_budget_usd'])))
+    out = self.root / 'export'
+    batch.export(destination, out)
+    self.assertEqual(len(batch.read_json(out / 'receipts.json')), 8)
+    self.assertEqual(len(batch.read_json(out / 'blind.json')['answers']), 4)
+    self.assertNotIn('standing_budget', (out / 'receipts.json').read_text())
+
+  def test_tool_violation_on_timeout_never_retries(self):
+    def tool_timeout(*args):
+      self.fake_execute(*args)
+      args[4].write_text(json.dumps({'type': 'system', 'subtype': 'init', 'tools': ['Read']}))
+      return None, 'timeout'
+    result, _ = self.invoke(tool_timeout)
     self.assertEqual(len(self.calls), 1)
     self.assertEqual(result['status'], 'stopped')
+
+  def test_oversize_output_still_checks_tool_boundary(self):
+    def oversized(*args):
+      self.fake_execute(*args)
+      args[4].write_text(json.dumps({'type': 'system', 'subtype': 'init', 'tools': ['Read']}) + '\n' +
+                         'x' * (self.task['limits']['max_raw_bytes'] + 1))
+      return None, 'timeout'
+    result, destination = self.invoke(oversized)
+    self.assertEqual(len(self.calls), 1)
+    self.assertEqual(batch.read_json(destination / 'summary.private.json')['stop_reason'], 'tools_or_mcp_enabled')
+
+  def test_parent_tool_use_on_timeout_stops_without_retry(self):
+    def subagent(*args):
+      self.fake_execute(*args)
+      args[4].write_text(json.dumps({'type': 'assistant', 'parent_tool_use_id': 'synthetic-parent'}))
+      return None, 'timeout'
+    result, destination = self.invoke(subagent)
+    self.assertEqual(len(self.calls), 1)
+    self.assertEqual(batch.read_json(destination / 'summary.private.json')['stop_reason'], 'subagent_output')
+
+  def test_input_content_change_stops_without_retry(self):
+    def changed(*args):
+      self.fake_execute(*args)
+      (args[1] / 'input.txt').write_bytes(b'changed')
+      return 0, None
+    result, destination = self.invoke(changed)
+    self.assertEqual(len(self.calls), 1)
+    self.assertEqual(batch.read_json(destination / 'summary.private.json')['stop_reason'], 'workspace_changed')
+
+  def test_input_symlink_stops_even_with_same_content(self):
+    def changed(*args):
+      self.fake_execute(*args)
+      target = self.root / 'outside-input'
+      target.write_bytes(args[3])
+      source = args[1] / 'input.txt'
+      source.unlink()
+      source.symlink_to(target)
+      return 0, None
+    result, destination = self.invoke(changed)
+    self.assertEqual(len(self.calls), 1)
+    self.assertEqual(batch.read_json(destination / 'summary.private.json')['stop_reason'], 'workspace_changed')
+
+  @unittest.skipUnless(batch.os.name == 'posix', 'POSIX process-group regression')
+  def test_version_timeout_kills_real_offline_descendant(self):
+    stub = self.root / 'offline-version-stub'
+    child_pid_file = self.root / 'child.pid'
+    parent_pid_file = self.root / 'parent.pid'
+    stub.write_text('#!' + batch.sys.executable + '\n' +
+      'import os, subprocess, sys, time\n' +
+      'from pathlib import Path\n' +
+      'child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(20)"])\n' +
+      f'Path({str(child_pid_file)!r}).write_text(str(child.pid))\n' +
+      f'Path({str(parent_pid_file)!r}).write_text(str(os.getpid()))\n' +
+      'time.sleep(20)\n')
+    stub.chmod(0o700)
+    result = batch.record_version(str(stub), self.root, {'PATH': batch.os.defpath},
+                                  self.root / 'version.raw', self.root / 'version.err', timeout=0.5)
+    self.assertEqual(result['version_status'], 'timeout')
+    self.assertEqual(result['client_version'], 'unknown')
+    parent = int(parent_pid_file.read_text())
+    with self.assertRaises(ProcessLookupError):
+      batch.os.kill(parent, 0)  # Direct child has been reaped, not merely signalled.
+    child = int(child_pid_file.read_text())
+    # Orphan adoption/reaping is OS-owned; a zombie is dead, not a running leak.
+    state = subprocess.run(['ps', '-o', 'stat=', '-p', str(child)], capture_output=True, text=True).stdout.strip()
+    if state and not state.startswith('Z'):
+      batch.os.kill(child, batch.signal.SIGKILL)
+      self.fail('version descendant survived process-group cleanup')
+
+  def test_version_timeout_record_continues_model_attempts(self):
+    def unavailable(*args):
+      return {'client_version': 'unknown', 'version_exit_code': None, 'version_status': 'timeout'}
+    result, destination = self.invoke(version_probe=unavailable)
+    self.assertEqual(len(self.calls), 4)
+    self.assertEqual(result['status'], 'smoke_completed_not_graded')
+    self.assertTrue(all(batch.read_json(p)['version_status'] == 'timeout'
+                        for p in destination.glob('*.receipt.json')))
+
+  def test_version_interrupt_stops_before_model_or_retry(self):
+    with mock.patch.object(batch, 'execute', return_value=(None, 'interrupted')):
+      with self.assertRaisesRegex(batch.Stop, 'interrupted'):
+        batch.record_version('synthetic', self.root, {}, self.root / 'raw', self.root / 'err')
+    def interrupted(*args):
+      raise KeyboardInterrupt()
+    result, destination = self.invoke(version_probe=interrupted)
+    self.assertEqual(len(self.calls), 0)
+    self.assertEqual(result['not_run'], 3)
+    self.assertEqual(batch.read_json(destination / 'summary.private.json')['stop_reason'], 'interrupted')
+
+  def test_expired_batch_does_not_start_version_probe(self):
+    self.task['limits']['batch_seconds'] = 0
+    probe = mock.Mock()
+    result, destination = self.invoke(version_probe=probe)
+    probe.assert_not_called()
+    self.assertEqual(len(self.calls), 0)
+    self.assertEqual(batch.read_json(destination / 'summary.private.json')['stop_reason'], 'batch_timeout')
+
+  def test_model_mismatch_preserves_actual_value_and_counts_failure(self):
+    def mismatch(*args):
+      self.fake_execute(*args)
+      args[4].write_text(args[4].read_text().replace('deepseek-test', 'other-api-model'))
+      return 0, None
+    result, destination = self.invoke(mismatch)
+    self.assertEqual(result['failed_units'], 3)
+    self.assertEqual(len(self.calls), 6)
+    receipt = batch.read_json(next(destination.glob('*.receipt.json')))
+    self.assertEqual(receipt['status'], 'model_mismatch')
+    self.assertEqual(receipt['actual_model'], 'other-api-model')
+    self.assertEqual(receipt['answer'], '合成回答')
+    self.assertFalse(receipt['formal_denominator'])
+
+  def test_public_scan_failure_blocks_export_success(self):
+    _, destination = self.invoke()
+    with mock.patch.object(batch, 'inputs', return_value=(self.task, self.payloads)), \
+         mock.patch.object(batch.subprocess, 'run', return_value=subprocess.CompletedProcess([], 1, b'', b'')) as scan:
+      with self.assertRaisesRegex(batch.Stop, 'export_public_scan_failed'):
+        batch.export(destination, self.root / 'export')
+    self.assertIn('--root', scan.call_args.args[0])
+
+  def test_sensitive_answer_blocks_actual_export(self):
+    def sensitive(*args):
+      self.fake_execute(*args)
+      args[4].write_text(args[4].read_text().replace('合成回答', 'password: synthetic'))
+      # The fixture uses JSON escaping, so substitute escaped text too.
+      args[4].write_text(args[4].read_text().replace('\\u5408\\u6210\\u56de\\u7b54', 'password: synthetic'))
+      return 0, None
+    _, destination = self.invoke(sensitive)
+    out = self.root / 'export'
+    with self.assertRaisesRegex(batch.Stop, 'export_sensitive'):
+      batch.export(destination, out)
+    self.assertFalse(out.exists())
 
   def test_workspace_changed_stops_batch(self):
     def changed(*args):

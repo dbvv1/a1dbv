@@ -92,6 +92,18 @@ class ScoreboardTest(unittest.TestCase):
     self.assertEqual(self.run_json()['summary']['C1 AI coding 主干']['disputed'],
                      ['docs/02-models.md'])
 
+  def test_secondary_pages_sink_once_gap_is_two(self):
+    write(self.root, 'docs/04-mcp.md',
+          '<!-- frontier: status=已比较 gap=2 gen=2026-10 checked=2026-10-21 -->\n')
+    write(self.root, 'docs/07-workflows.md',
+          '<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-21 -->\n')
+    report = self.run_json()
+    pages = [row['page'] for row in report['queue']]
+    self.assertEqual(pages[-1], 'docs/04-mcp.md')
+    summary = report['summary']['C1 AI coding 主干']
+    self.assertEqual(summary['core_pages'], 4)
+    self.assertEqual(summary['core_gap_le_1'], 2)
+
   def test_coverage_levels_skip_level_definitions(self):
     coverage = self.run_json()['coverage']
     self.assertEqual(coverage, {'二、机制': {'1': 1, '2': 2}})
