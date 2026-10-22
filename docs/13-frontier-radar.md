@@ -30,12 +30,21 @@
 | **按需流程：Superpowers** | 按任务选择直做、计划或完整流程 | 从跨模块未决设计开始，清楚小改不启整套 | [Luca保留分流](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[V2EX去留](https://v2ex.com/t/1227194)并存 | 🧪 按项目试用，本仓未安装运行 |
 | **窄Skill：Matt Pocock** | 只借grill-with-docs澄清会改变实现的决定 | 从架构问题开始，决定已齐就进入实现 | [Faruk实际重构](https://blog.faruk.dev.br/articles/agents/matt-pocock-skills-harness-product-crud/)未走完整ticket链 | 🧪 按需试用，本仓未运行 |
 | **语义MCP：Serena** | 用符号身份查声明与调用位置 | 从同名符号定位开始，原生搜索或LSP已够就不用 | [Luca使用](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[中文短试无明显差异](https://www.v2ex.com/t/1249379)并存 | 🧪 按语义缺口试用，本仓未安装运行 |
+| **版本文档MCP：Context7** | 从已索引版本取对应API片段，再核原文tag | 已有MCP入口时先resolve再传精确libraryId，缺版本则回官方文档 | [库维护者实际问题](https://github.com/upstash/context7/issues/3309)提示索引刷新仍需核实 | 🧪 [匿名两版查询与截图](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)已试，未测模型效果 |
 
 ![任务分流图：目标与验收不清先澄清，清楚后实现、回归并实际操作，再按交接或语义定位缺口选计划或Serena，无缺口则保持原路线](img/2026-10-23-workflow-choice.svg)
 
 图：条件分流，不是安装顺序；新增Skill／MCP的模型收益未测（[可复现图源](img/2026-10-23-workflow-choice.dot)）。[研究：路线示意]
 
-本节复用既有[工作流比较](24-community-workflows.md)与[上下文选择](03-context-engineering.md#25-跨文件符号检索何时补-serena)，只是把读者入口前移，不计新研究或新的模型收益。[研究]
+**直接试用版本文档检索**：先让 Context7 列出库的实际版本，选择与项目相符的完整 ID；例如本次 `/pydantic/pydantic/v1.10.18` 返回 `model.dict()`，`/pydantic/pydantic/v2.9.2` 返回 `model_dump()`，引用也分别指向同版源码。这里选择历史版本验证分流，不建议读者降级依赖。[本仓远程工具实试]
+
+![Context7真实云端终端：两次匿名精确版本查询返回不同方法，原文链接分别匹配Pydantic v1.10.18与v2.9.2](img/2026-10-23-context7-version-query.png)
+
+图：终端展示本次已保存的真实响应摘录，不是模型答题或生成代码效果。[本仓实试]
+
+**还不知道该读哪个模块？** [DeepWiki只读导览实试](research/2026-10-22-frontier-trials.md#deepwiki先找模块再回固定源码)能先指向相关文件，再回固定源码核语义；它不替代精确版本API查询，暂不计入上表广用项。[本仓工具实试／经验：候选分流]
+
+本节复用既有[工作流比较](24-community-workflows.md)与[上下文选择](03-context-engineering.md#25-跨文件符号检索何时补-serena)，前四项只是把读者入口前移；Context7另补真实查询，不计新的模型收益。[研究]
 
 <a id="值得一试近4周的新项目与做法"></a>
 ## 新冒头：新项目与有新意的用法
@@ -44,7 +53,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
-| [Graphicle](https://github.com/graphicle-ai/graphicle) | 用跨文件图和行号导航陌生仓库 | 339★及[HN 48分／15评](https://news.ycombinator.com/item?id=50088713)为关注快照 | 0.1.4定位、更新与两文件反例已复现 | 🧪 同名错边仍在，不据图删测试 |
+| [Graphicle](https://github.com/graphicle-ai/graphicle) | 用跨文件图和行号导航陌生仓库 | 339★及[HN 48分／15评](https://news.ycombinator.com/item?id=50088713)为关注快照 | 0.1.4定位与两文件反例已有[真实输出截图](research/2026-10-22-frontier-trials.md#graphicle导航有用影响图需要核对) | 🧪 同名错边仍在，不据图删测试 |
 | [GPT with Taste](https://github.com/NB-Corp/gpt-with-taste) | 为嫌输出啰嗦的人提供明确偏好 | [linux.do首帖208 Likes](https://linux.do/t/topic/3016674)为关注快照 | 隔离安装、重复安装与恢复通过 | 🧪 先保旧配置，不自动合并instructions |
 | [InstaLanding的HTML参照法](https://github.com/RayVelez27/instalanding.ai) | 用可运行参照探索UI方向 | [Reddit原帖](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)可读但热度未核 | 三状态衍生页完成，浏览器接收未完成 | 👀 DOM-stub通过不等于视觉通过 |
 | [Coucou](https://github.com/Louis-CFM/coucou) | 为多会话用户集中提示完成与待决定状态 | 6,163★及9-27新建为发现快照 | 包已核hash，但桌面应用未启动 | 👀 通知未试用，接入会涉及hooks配置 |
