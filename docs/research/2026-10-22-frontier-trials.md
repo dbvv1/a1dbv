@@ -88,3 +88,38 @@ def shadow(operation):
 ```
 
 [比较器说明](https://github.com/oil-oil/oil-ui/blob/7002e1a3b3e3bc19d4159e2a37917456dafd5ad4/references/style-explorer.md)中的“选择”只复制带轮次／编号的文字，需贴回Agent，不自动写回项目；这是文档／源码核对，未实际点击。远程字体／CDN需先本地化并核许可，或改用截图。需要验收真实交互、持久化或服务端数据流时，撤出静态比较器，回已有应用做验收；无法看图时只交打包结果，不判视觉合格。[一手／研究]
+
+
+## Jiti：当前对象可查可改，不只留聊天
+
+**🧪 值得小型Lisp应用试的是“现行函数目录＋源码＋可恢复数据”，而非更长的聊天交接。** [作者10-05原文](https://ghuntley.com/lisp/)及[固定70146a2源码](https://github.com/ghuntley/jiti/tree/70146a2236dcd34696807102028af943cf0be370)提供可运行实现；MIT，本轮只加载image-agent/store，不接模型或终端。10-22（UTC+8）约11分钟小试，真实完成已有函数→组合→二改→重开后继续使用和查看源码。公开维护收益、独立长期采用和最高水平未知。[一手／本仓实测]
+
+| 本轮动作 | 实际结果 |
+|---|---|
+| uppercase与reverse组合 | Hello → OLLEH |
+| 二改：加括号并记录运行次数 | Hello → [OLLEH]，runs=1 |
+| 新进程恢复后继续调用 | World → [DLROW]，runs=2；参数、文档及含新逻辑的源码可查 |
+| 预览／失败／显式回退 | 预览保原计数；非负检查拒绝-1；半途报错abort后恢复；回退保留历史，再重开仍能执行v1 |
+
+五个独立SBCL进程的38条聚焦断言通过；最终相对路径脚本在另一临时目录重放同样通过。这里的“解释”是取得当前参数、开发者文档和真实源码，没有让LLM生成解释，也没测人理解速度；未运行上游完整测试、JSON工具分发、CLI或模型。[本仓实测]
+
+**关键边界：受管对象回滚不是外部世界的沙箱，也不会自动恢复调用方验收契约。** 本轮preview计数恢复而临时文件写入保留；恢复时漏传非负invariant，先前拒绝的-1会被接受，随后已显式回退。另测源码描述超过4096字符会标截断，消费者须补齐再解释；同一SBCL版本恢复、直接命名函数与可读表数据才在本参考适配器范围。需要一般Web应用热更新或跨外部系统回滚时不直接采用。[一手／本仓实测]
+
+可借到其他Agent应用的交接结构是：先查当前功能和实际实现；恢复代码／数据后真正调用验证；目标、检查和受管资源边界由可信调用方另行加载。相较只存摘要，本轮证明当前可执行对象与可查源码能一起恢复，不证明总维护成本更低。[研究]
+
+### 复现确定性链
+
+只在无重要文件的Linux amd64临时目录运行，需libc6≥2.38、libzstd1≥1.5.5及git、curl、dpkg-deb、timeout；不需要模型凭据。复制[测试脚本](../../experiments/jiti-stateful-trial.lisp)和[运行器](../../experiments/run-jiti-stateful-trial.sh)到该目录，保留文件名，再执行：
+
+```sh
+git clone https://github.com/ghuntley/jiti.git source
+git -C source checkout --detach 70146a2236dcd34696807102028af943cf0be370
+curl -fL https://deb.debian.org/debian/pool/main/s/sbcl/sbcl_2.5.2-1_amd64.deb -o sbcl.deb
+printf '%s\n' 'c4153abbe1def77e5e2bd62d2f25295d60df80333ea1a13c44b53209d179ef67  sbcl.deb' | sha256sum -c -
+dpkg-deb -x sbcl.deb runtime
+sh run-jiti-stateful-trial.sh
+```
+
+预期5条SUCCESS和38条PASS，不只看退出0。运行器拒绝覆盖已有world，先保留并移走再重放；每阶段45秒上限。脚本会写一份合成临时文件来验证preview边界。包散列固定本轮字节，不冒充独立签名核验；读source/LICENSE及runtime中的版权说明。本轮源码实际由固定Git blob取回校验，运行时由上述Debian包解压，未做系统安装。[一手／本仓实测]
+
+探索回执：这是核心“按需理解与接管”回扫后的定向新意试验，不是新增全网热榜；前序核心接管问题回扫读过作者、[HN讨论](https://news.ycombinator.com/item?id=50151036)及[中文V2EX](https://www.v2ex.com/t/1248455)可见回复；两帖讨论理解与接管，不是Jiti独立采用证据。核心00／01已有相同选择的材料不重复改写。此次只核固定源码、依赖并跑确定性接口，不声称新增社区共识或当前强Agent净收益。[研究]
