@@ -78,6 +78,12 @@ Penny’s Big Breakaway（GDC 2025）取动量连续，Holden 的 Smooth Walking
 
 **[研究] ✅ 查询旧位置先查写入顺序。** Unity 6.3 内置 **3D** 改 Transform 后，在批量修改结束、依赖查询前才 SyncTransforms；它不推进模拟或完成 MovePosition，全局 auto-sync 不作配方。UE 物理结果用 TG_PostPhysics，更新依赖用 tick prerequisite；[物理查询](../../docs/research/wp10-motion.md#3)，不套 Unity 2D。[一手]
 
+### 街机车辆：先比控制模型，再决定抽离规则
+
+**[研究] ✅ 先比较现成街机车辆，不从“不要逼真轮胎”直接跳自建。** 许可／版本／网络绑定合适就复用；不合才窄取漂移、加速与恢复规则。Netick 样例根 MIT 不覆盖依赖和项目专属资产，轻库无网络绑定也未必更省验收；见[两底座与生产取舍](../../docs/research/wp10-motion.md#arcade-vehicles)。
+
+[研究] AI 可拆读写与补规则，先定按住式／定时式，人验连锁 boost、离地松漂移、擦墙／落地与翻车复位；旧连段受损就撤回改动。均未实测，不推荐整包直接商用。
+
 ### 呈现节奏：动作已执行，画面仍不顺
 
 **[研究] ✅ 原生同步先建立基线，帧间隔和响应一起验。** Unity 6.3 桌面先比较 VSync（非零时忽略 targetFrameRate）；Android 用 Optimized Frame Pacing／UE Swappy（UE 5.2 起默认）。UE 排队确为热点才试 low-latency syncing，缩 pipeline 减少长帧余量；掉帧或发黏就退回。[一手／研究]
