@@ -1,0 +1,74 @@
+{
+  "runtime": "inkjs@2.4.0",
+  "source_tag": "v2.4.0",
+  "source_commit": "edccead8700e9f21be9825d87d8645d8c82a9936",
+  "license": "MIT",
+  "node": "v24.19.0",
+  "checks": [
+    {
+      "name": "pre-collected item requires no second pickup",
+      "passed": true
+    },
+    {
+      "name": "outstanding choices survive restore",
+      "passed": true
+    },
+    {
+      "name": "selection-before-Continue restore commits once",
+      "passed": true
+    },
+    {
+      "name": "completed revisit after restore does not reaward",
+      "passed": true
+    },
+    {
+      "name": "commit rechecks item removed after option display",
+      "passed": true
+    },
+    {
+      "name": "failed delivery can be retried after item returns",
+      "passed": true
+    },
+    {
+      "name": "leave before acceptance does not accept quest",
+      "passed": true
+    },
+    {
+      "name": "missing current item does not complete quest",
+      "passed": true
+    },
+    {
+      "name": "repeated query/revisit leaves world unchanged",
+      "passed": true
+    },
+    {
+      "name": "text-only revision resumes this saved choice",
+      "passed": true
+    },
+    {
+      "name": "missing save input rejects",
+      "passed": true
+    },
+    {
+      "name": "invalid ink fails compilation",
+      "passed": true
+    }
+  ],
+  "negative_controls": [
+    {
+      "name": "once-only choice consumes failed delivery",
+      "observed": true,
+      "authoring_error_not_library_bug": true
+    },
+    {
+      "name": "split snapshot permits same quest commit callback twice",
+      "successful_callbacks": 2,
+      "persistent_external_reward_tested": false
+    },
+    {
+      "name": "renamed node rejects this old save",
+      "error": "StoryException: Failed to find content at path 'deliver_offer.0.13', and no approximation of it was possible."
+    }
+  ],
+  "scope": "Compiler and JS runtime, synthetic world; no engine, player, C# equivalence or disk-crash test"
+}

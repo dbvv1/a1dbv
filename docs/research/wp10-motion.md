@@ -1,6 +1,6 @@
 主线：一／二／三／四；运动、碰撞与视听反馈
-改变的建议：[研究] 确认命中后并列做动作仲裁与反馈编排，按轻重分层；时钟、去重、停止和复位由项目契约管理，不交给反馈插件猜。
-新证据：2026-10-23 补 Wilds／Dead Cells／Warframe 作品修订，Cinemachine／Feel／Tween／UE 生命周期对照与可执行清单（仅资料和源码，未试用）；另记 Star-Rush 本端兼容模式 HUD 代码修正与画面检查。
+改变的建议：[研究] 命中分动作仲裁与反馈编排；镜头分预判、跟随、避障与装饰，先保玩家控制，再逐层调体验。
+新证据：2026-10-23 补打击感及完整镜头模块；新增 Cinemachine 6.6 核心包升级、Impulse 原生合并／次级反应与升级手感反例（仅资料／源码，未试用）；另记 Star-Rush 本端兼容模式 HUD 检查。
 
 # WP10：运动与视听反馈
 
@@ -878,3 +878,69 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 - **固定代码与回归。** [Star-Rush PR #1](https://github.com/dbvv1/Star-Rush-Reborn/pull/1)核至 [6f8e763742eb653331aa85375ac10e9127eb06b1](https://github.com/dbvv1/Star-Rush-Reborn/commit/6f8e763742eb653331aa85375ac10e9127eb06b1)。仅 HUD 源码、测试及原有构建产物改变；HUD、原客户端与 API 回归通过。客户端套件使用 fake DOM，不能当作真实浏览器验证；执行细节见该 PR。[一手／经验]
 - **决定性画面。** 正文两张原截图均为 1188×761：已有入口仅显示版本标识 REBORN01，部署 SHA 未核；训练场白色计时／圈数落在浅天空和樱花上，暂停字形为方框。本端修改后构建的预览在浅背景下，深色底后的模式／赛段／计时／圈数、中文回正／暂停及 SVG 左箭头可辨。两图已目检，但不是同一时刻或路线位置，不能把场景差异当作修改收益。[经验]
 - **二改边界。** 保留真实 DOM 绑定与原状态入口，完整测试后仍须在真实背景检查；本次未验窄屏／字体放大、完整 WebGL、回正功能、真人操控手感、音频或双机。驾驶物理与镜头未改，亮背景 HUD 结论不能替代本节的同弯操作与通用验收。[研究]
+
+<a id="camera-contract"></a>
+## P114：完整镜头——预判、跟随、遮挡与玩家控制
+
+**结论：[研究] 先验玩家能否看见下一决策、保持观察与移动意图，再调顺滑和冲击；不以角色始终入镜作为完成。**
+**新增选择：[研究] Unity 优先已有 Cinemachine；密集冲击先比较原生 `Use Largest`，6.6 升级按 Editor 核包，不把 3.1.7 配方统一外推。**
+**范围：2026-10-23 UTC 公开资料及固定源码静读；未装包、未运行引擎／模型、未购买插件，手感、成本收益及当前最高体验水平未知。**
+
+### 作品与开源：借哪项质量，而不是复制参数
+
+| 来源／证据 | 决定与边界 |
+|---|---|
+| [Daniel Helbig 原帖](https://www.linkedin.com/posts/helbigdaniel_since-we-started-with-the-lonely-mountains-activity-7407445428683653122-7F7h)：Snow Riders 增加第三人称镜头，艺术团队修改全部山地与路线；本轮正文可读，日期只显示相对时间 | [一手／研究] 镜头改变的是路径发现与内容可见面，不只是追随曲线。保留导演构图或换追随须连路线一起判断；不采用作者的差评占比作统计，也不把艺术团队工时视为单人可承担 |
+| [Steam 2025-01-20 原帖与回复](https://steamcommunity.com/app/2545360/discussions/0/744883366278500571/)：提问者抱怨前方看不见／切镜控制反向，支持者重视替代路线及挑战 | [社区／研究] 同题正反说明预判与发现节奏存在取舍，不是第三人称绝对更优；只代表此讨论，未证明控制算法实际反转或玩家整体偏好 |
+| [Celeste64 Player.cs 固定 6edfe1e，L443–460](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L443-L460)与[L1474–1487](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L1474-L1487)：本轮重读原文 | [一手] XY 跟角色，Z 依据着地／下落／高度窗选择；攀爬横向输入回到阈值内才重算相机相关方向符号。[研究] 支持状态化纵向跟随及持续输入契约，不支持把攀爬规则套全部移动；代码 MIT、内容／IP 边界及 jam 架构沿[既有核查](wp11-camera.md#s9-4) |
+| Warframe 2025 后坐修订与玩家反例，沿本册[打击感证据](#hit-feedback)；[Xbox XAG 117](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117)，更新 2026-03-04 | [一手／研究] 游戏修订说明信息可以不依赖镜头位移；指南建议可调 FOV、横纵灵敏度及关闭额外运动。只作设置与验收依据，不给医学阈值，也不要求固定视角项目强做另一整套视角 |
+
+较旧的 Celeste64／[Mushroom 11 区域焦点](wp11-camera.md#s9-4)仍有价值，是因为分别解决持续输入和谜题取景；与近期 Snow Riders 的视角重构、当前原生组件比较后，保留的是窄机制，不据历史名作宣布最高水平。作品表现、作者自述和源码可读是不同证据。[研究]
+
+### Unity 现成职责与不能互换的参数
+
+| 入口／本轮核实 | 直接支持什么；实施选择 |
+|---|---|
+| [Position Composer 3.1.7](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePositionComposer.html) | [一手] 前视依目标运动预测，噪声可被放大，Lookahead Smoothing 同时增加滞后。[研究] 镜头目标优先可靠移动参照，骨骼抖动先处理来源；急弯／落点需要的是玩法信息，不能用无限增大预测秒数代替 |
+| [Brain 3.1.7](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineBrain.html) | [一手] Smart Update 按目标更新方式选择；ManualUpdate 应在目标移动后调用，Blend Update 是另一职责。[研究] 先记录目标、物理呈现和相机阶段；一概改 LateUpdate 或取消插值都不是诊断 |
+| [Input Axis Controller 3.1.7](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineInputAxisController.html) | [一手] 提供加减速、非缩放时间、混合期输入抑制与 Cancel Delta Time。[研究] 鼠标位移与摇杆角速率分配单位；自动回正、混合时输入、暂停政策要由玩法决定，不能因两种设备共用一个 Action 就重复积分 |
+| [Decollider](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDecollider.html)／[Deoccluder 3.1.7](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineDeoccluder.html) | [一手] 前者处理穿入、不保证视线；后者可拉近、保高度或保距离，Maximum Effort 限命中处理。[研究] 原生策略足够先试，不默认同时加两者；看见角色、保近裁剪、看见威胁及武器通路分开验，没有可行视点时改几何／局部显隐 |
+| [Third Person Aim 3.1.7](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineThirdPersonAim.html) | [一手] 分相机看点与角色受阻点，Noise Cancellation 可稳定屏幕目标。[研究] Follow 未必是枪口，弹体体积／弹道仍归武器；有意后坐力与装饰噪声先分类，不全部抵消 |
+| [Confiner 2D 3.1.7](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineConfiner2D.html) | [一手] 内边界考虑视口；多边形点／非均匀缩放变化需更新形状缓存，镜头变化另有缓存入口。[研究] 新宽高比或变焦是二改验收，不只看中心点在地图内；避免每帧重烘焙 |
+
+相机最终朝向可以用于投影，但移动／瞄准意图是否随导演切镜、避障或震动改变要显式约定；不能把装饰后的 Camera transform 当所有玩法的唯一输入参考。连续相机相对移动与“持有直到松开”的攀爬都可成立，选后用持续输入跨转角验证。[研究]
+
+**成本与撤回。** 先定单人能维护的相机模式、区域触发、遮挡材质例外和可选运动通道；内容每增加一个房间就需新特例时，比较简化几何、改取景或减少视角自由度。新增 Deoccluder 查询、Confiner 烘焙及扩展并非零成本，本轮没有设备测量；不写通用射线数／最佳阻尼。可靠窄跟随没有缺口就保留，Cinemachine 的完整功能不构成迁移理由。[研究]
+
+<a id="camera-version"></a>
+### 当前版本：Editor 升级与相机手感回归分开接收
+
+- [一手] [Unity 6.6 升级指南](https://docs.unity.com/en-us/engine/6000.6/manual/upgrade-guides/upgrade-guide-unity66)明确 Cinemachine 成为核心包，依赖它的项目随 Editor 使用对应版本；CM2 自动升级 CM3，API／数据格式不同，保 CM2 需本地副本引用。[6.6.0 changelog](https://docs.unity3d.com/Packages/com.unity.cinemachine@6.6/changelog/CHANGELOG.html)同时记录核心包化及命名空间升级修复。6.3／3.1.7 是本页旧基线，不能说它是所有 Editor 的最新包；也不推断每个已有 CM3 项目必变行为。
+- [一手／社区] [官方 breaking-change 讨论](https://discussions.unity.com/t/planned-breaking-changes-in-unity-6-6/1715134/5)保留 CM2 在 Unity 6.3 LTS 生命周期内支持；[2025-09／10 Orbital Follow 原帖](https://discussions.unity.com/t/cinemachine-orbital-follow-camera-behaving-differently-after-updating-from-3-1-2-to-3-1-3/1685378)中，用户原来喜欢的缓动来自 Deoccluder 旧行为，维护者建议在实际跟随／旋转阻尼里复现。原帖没有成功接收结果，不写“升级后重新调参数即可无损恢复”。
+- [一手] [固定 45728f changelog](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/CHANGELOG.md)的 `3.1.8-pre.2`（2026-08-04）记 MixingCamera 样例直接使用物理速度的抖动修复；`3.1.7`（2026-06-08）列混合完成／取消修复。[研究] 这是读取发行记录，不是重现；既不能把预发布修复算进 3.1.7，也不能据旧版本已修过同类 bug 就跳过新项目回归。
+
+[研究] 因而升级接收保存的是原路线、输入与取景意图，不只是 Inspector 数值。用直行、急反向、绕柱、混合中取消与重生重放，区分 API／序列化迁移通过和体验接收；暂无法还原关键控制时保已验证版本／缩升级范围，不盲贴旧 Deoccluder 实现。既有 warp／CancelDamping 与变帧率边界复用[历史管理](wp11-camera.md#s12-2)，本轮不重复另造算法。
+
+### 震动：已有最大信号选择，但“设为零”仍要验完整通道
+
+[一手] [Impulse Listener 3.1.7 文档](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineImpulseListener.html)明确 `Gain` 是倍数，默认 Additive，可选 `Use Largest` 仅取最大幅度信号；功能在 3.1.4 changelog 已列。**[研究] 密集命中先比较原生最大信号与叠加，再决定项目上限；最大值选择不限制单次超大冲击，也不代事件去重。**
+
+[一手：源码静读] 本轮读取[固定 `45728f` 的 CinemachineImpulseListener.cs](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Impulse/CinemachineImpulseListener.cs)：先按组合模式取信号，`ReactionSettings.GetReaction` 接原信号并按自身 `AmplitudeGain` 算次级反应；主信号乘 `Gain` 后再叠加次级位置／旋转。因此**在该固定实现中，有次级噪声时只把主 Gain 设 0 不足以证明全部运动为零**。这不是对安装版 3.1.7／6.6 的运行结论；接入项目应核实际包，并在冲击刚触发及衰减中切换关闭设置，检查主震、尾震和恢复后的残留。
+
+[社区／一手] 中文[SouthBegonia 实作](https://www.cnblogs.com/SouthBegonia/p/11891117.html)（2019-11-19）有真实案例和代码，但把 Gain 解释成同时信号数量，与本轮官方定义不符。[研究] 可借事件源／监听器分离，不复制旧版本字段解释；AI 上下文要附当前包页／固定源码。避免用全局清除所有冲击去关一个玩家的镜头，停止、禁用监听和清历史也须分开约定。
+
+### Unreal 与付费候选：已有职责够用时不迁移
+
+- [一手] [UE 5.8 SpringArm](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/USpringArmComponent)提供碰撞球探测、位置／旋转 lag 与 substepping；肩位用 SocketOffset 才与臂查询一致。[Camera 职责](https://dev.epicgames.com/documentation/en-us/unreal-engine/cameras-in-unreal-engine)由 PlayerCameraManager 提供最终视图；[Camera Shake](https://dev.epicgames.com/documentation/en-us/unreal-engine/camera-shakes-in-unreal-engine)的 Single Instance 是重启同类，不是跨事件去重或总幅度上限。[研究] ✅ 沿原生职责补视线／控制政策，不把 SpringArm 等同能找到任意可见视点的搜索器。
+- [一手] [Gameplay Camera System 5.8](https://dev.epicgames.com/documentation/unreal-engine/gameplay-camera-system?application_version=5.8)仍明确 Experimental；其创建者在[2026-03-30 开发日记](https://ludovic.chabant.com/blog/2026/03/30/ue5-gameplay-cameras-coda/)表示自己离开后数据驱动编辑工作流的维护未来不明。[研究] 👀 多模式、图编排确需才评估，承担升级与作者工具成本；个人预测不证明插件已弃用，单个社区意见也不能盖过版本文档。未下载 UE 工程，不将引擎可读源码当开放源码许可。
+- [一手] [Pro Camera 2D 作者官网](https://www.procamera2d.com/)列房间、前视、边界、轨道、震动及多目标构图，支持二维平面上的透视相机；页面的最新发行仍显示 2.9.2／2022-04-10。[研究] 👀 若频繁制作房间／触发镜头，可比较其作者工作流；本轮没确认当前 Unity 支持、净工时和购买条款，未购买／试用，不能称其已过时弃用，也不能凭奖项／客户引言推荐替换 Cinemachine。商业许可与二改绑定是新增成本。
+
+Unity 包的 UCL／Unity-dependent 条件、Celeste64 代码与资产分开许可沿[既有来源](wp11-camera.md#s9-4)；对工程中的实际包及插件再核授权，不把公开可读当任意跨引擎复制。[研究]
+
+### AI 接收证据：轨迹解释原因，试玩判断好不好用
+
+[研究] 正文的清单是可执行任务模板，不是已通过记录。最低 trace 包含 `frame / deltaTime / mode / targetId / targetPose / desiredPose / finalPose / focusScreenPoint / occlusionCorrection / inputBasis / shakeLevel / transitionReason`；按项目语义扩字段，不造跨引擎通用框架。日志能定位谁在改画面，但“焦点在屏内”不证明玩家认得出出口／预告，所以同段录屏与真人操作仍必要。
+
+验收刺激按失败来源选择：急反向查前视翻转，台阶／下落查垂直窗，窄门／绕柱查近裁剪和恢复振荡，近墙换肩查准星承诺，持续输入切镜查参考系，暂停／重生查历史和尾震；30／60／120 Hz、长帧与不同宽高比覆盖呈现变化，不当通用性能承诺。第二次需求加窄门和连续多击后，第一版开阔路线仍须接收。[研究]
+
+探索回执：截至 2026-10-23 UTC，读 Unity／Epic／Xbox 官方、Cinemachine／Celeste64 固定源码、作者 LinkedIn／开发日记、Unity Discussions、Steam 与中文博客原文；中文新版本深度实作未找到可作为决定性证据者。Steam 更新公告正文未取得，改用已可读作者原帖支持发布事实；Unity Issue Tracker 重定向不可读，不报告其当前修复状态。未运行引擎、模型或试玩，不据来源齐全宣称最高水平已知。[研究]
