@@ -87,6 +87,17 @@
 
 准备 POSIX、Python 3.12+、Git、网络及已有 pytest／Click／IPython 后，运行 `python3 experiments/replay_dotenv_acceptance.py --python .venv/bin/python`。入口不安装依赖，在新临时目录核固定源码并保留产物；[完整操作、原作者补丁与接收测试](research/2026-10-23-existing-patch-acceptance.md)可复用。它验证源码CLI而非包安装，未比较模型、Skill或代码图收益。[本仓实试／范围]
 
+### 1.3 关联表升级：整批回滚，也要保住子记录
+
+**🧪 用现成 sqlite-utils 升级两张关联表为 STRICT，并交回可重新打开查询的数据库。** 先分清原生 ALTER 能否完成：只改列名不必重建；本例的严格类型转换才走表重建。[本仓实试；[可运行入口与两轮真实演进](research/2026-10-23-sqlite-migration.md)，2026-10-23]
+
+1. **别只验“约束有效”。** 旧实现重建父表会级联删光三条子记录，外键检查仍为空；接收后的库会拒绝这一危险事务内操作，保留原数据和结构。
+2. **按提交目标选路径。** 父表单次升级可让 `transform()` 自己管理事务与外键；必须整批升级时，先在外层事务开始前关外键，在提交前显式校验，再在退出后恢复原设置。
+3. **让失败真的撤回变化。** 本例分别验证内层撤回、外层结构／数据一起撤回，以及人为写入孤儿记录后整批回滚；内层 savepoint 释放不等于外层已经提交。
+4. **接收实际产物。** 关闭后用真实 CLI 重开 JOIN，核两位作者、三本书和列类型／NOT NULL／主键／外键／STRICT，再在副本核后续级联。
+
+准备 Git、Python 3.10+、SQLite 3.37+与[已测依赖](../experiments/sqlite-migration-requirements.txt)，执行 `python3 experiments/replay_sqlite_migration.py --python .venv/bin/python --tests --output ./sqlite-migration-output`，会保留 before／after 数据库、查询 JSON 和检查日志。仅使用新建合成数据；未验证生产并发、崩溃耐久或任意复杂 schema，也不证明模型提效。[本仓实试／范围]
+
 ## 2. 调试
 
 **✅ 已有明确失败就复现、定位、修复、重跑；缺什么证据再补什么。** [经验]

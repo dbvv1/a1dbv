@@ -18,7 +18,7 @@
 | 编号 | 项目与验收 | 负责 | 状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿发现**：按手册来源选成熟强方案与新候选。验收：[13](../13-frontier-radar.md)五问、原帖关注证据、15–30分钟试用或未试用、精华／坑及图；处理收件箱 | dot-A | OpenSpec变更／归档与ast-grep迁移已实试，Superpowers 7.0.1已核源码／加载；入口见13，均未测模型收益。 |
-| P81 | C1核心12页：对照强参照查漏，用真实编码任务深化发现，交可复制入口、关键选择、产物与返工并回流正文 | dot-A | [Oil UI真实修复](../research/2026-10-23-real-coding-demo.md)：补丁、58项非浏览器回归及CLI产物已验；浏览器／Windows、上游接收与检索增益未验。OCR[函数补丁与重放](../../experiments/ocr-matcher-replay.md)已公开，隔离58/64→64/64；完整CLI／非Git遍历未验，此窄题收口；dotenv现成补丁接收见15。 |
+| P81 | C1核心12页：对照强参照查漏，用真实编码任务深化发现，交可复制入口、关键选择、产物与返工并回流正文 | dot-A | [真实编码入口](../15-task-playbooks.md)：Oil UI修复、dotenv补丁接收、SQLite关联表升级可重放；验证范围见正文，模型增益未测。OCR[函数补丁与重放](../../experiments/ocr-matcher-replay.md)已公开，完整CLI／非Git遍历未验，窄题收口。 |
 | P79 | **C1／C3吸取验证**：①核心12页与25各3题取首页／社区真需求，不从正文倒推；题／要点冻结后独审，未参与写作的新会话读页／无文档作答并独立盲判，比较决策、条件、撤回与原生答对率，修低增量页。②templates/generic三文件默认／撤回及脚本回归；③固定任务有／无包比较结果／返工／人工修改；④M6同需求按25／普通检索对照独立参照查漏。验收：①题答／两组结果；②AGENTS／CLAUDE／Skill；③④先冒烟再扩批 | dot-A | [冒烟](../../experiments/absorption/runs/20261022-smoke-v1/results.md)未测得读页决策增益；[三题预注册](../../experiments/absorption/p79-fresh-prereg.md)已审冻结、6答未跑，未知模型不进可比对；旧题库不改，M6另批。原入口平台失败断连，不等预算／版本批准。[三文件包](../../templates/README.md#核心决策最小包)补重复变换分流，加载／收益未验 |
 | 原B-P80 | C2：2D十组选择 | dot-B | 41a47fa经A独审保链接收gap1；整族未试；[消歧／历史][prior-tasks]。 |
 | P78 | C2：3D十项选择 | dot-B | 原B-P75；独审gap1，CuACD／Rigel纠偏见[历史][prior-tasks]；整族未试。 |
