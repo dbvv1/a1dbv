@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 编辑更新：2026-10-24（UTC+8）；补 Serena 符号编辑的采用场景与最短用法、保留官方文档索引选页实试；RTK仅源码核查未试用，未运行当前模型；[此前证据范围](research/2026-10-13-context-tool-choice.md#p73定点原文与摘要委派)；[旧页首范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
+> 编辑更新：2026-10-24（UTC+8）；补 Serena 符号编辑的采用场景与最短用法、保留官方文档索引选页实试；RTK补历史失败输出回放，未测模型收益；[此前证据范围](research/2026-10-13-context-tool-choice.md#p73定点原文与摘要委派)；[旧页首范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
 > 一句话：**先区分需求、环境、模型能力、上下文和验证器问题；上下文应提供必要信息，而非尽可能堆满。**
 
 ## 30 秒选择：开始一个具体修改任务
@@ -189,6 +189,8 @@ Anthropic《Effective context engineering》（2025-09）是旧代设计参照�
 ### 2.7 终端输出：先辨过滤、恢复与重新执行
 
 **✅ 保留项目已有命令；重复日志确实妨碍定位时，再定向试输出过滤，而非全局套一层“省token”插件。** RTK能把测试输出整理成计数与失败摘要，适合评估高噪声回归场景；是否值得保留，要看完成同一任务的质量、回读与总投入。[经验：采用判断；[采用与对照](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)]
+
+**失败只剩计数时，先取回日志，不先让 Agent 重跑。** 本仓用 RTK OSS 1.0.1 回放一次真实的历史测试失败输出：通用 `rtk test` 将约285KB缩成280字节，却藏掉了“磁盘已满”这个根因；返回的 `rtk recall HASH --full` 无需重跑便完整取回净化后的输入。本例不采用通用包装器作为 unittest 默认，保留项目原命令；已使用过滤器时，把“先recall定位，再决定是否重跑”交给 Agent。[本仓工具实试；[回放范围与记录](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)，非模型收益比较]
 
 **“取回原始输出”不等于恢复原命令会给出的全部诊断。** RTK v1.0.1的[pytest封装](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/cmds/python/pytest_cmd.rs#L21-L74)在没有对应参数时添加`--tb=short`、`-q`、`-rxX`，然后才捕获和过滤；未生成的长traceback无法事后找回。显式`--tb=long`可覆盖短traceback默认，但仍会经过过滤。[一手：固定源码，未运行]
 
