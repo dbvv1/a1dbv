@@ -1,0 +1,31 @@
+{
+  "commit": "7dea2077f4851e7709b68db11eb6f3e02c0dfa46",
+  "changed_tracked_files": [
+    "src/routes/Data.svelte"
+  ],
+  "matches_published_two_line_patch": true,
+  "lock_sha256": "505d7986f1445d4d3eb5cc42244d260b07490daf90debc5822833144ed612a2e",
+  "verified_outputs": [
+    ".svelte-kit/output/server/index.js",
+    ".svelte-kit/output/server/remote-entry.js",
+    ".svelte-kit/output/server/.vite/manifest.json",
+    ".svelte-kit/output/client/.vite/manifest.json",
+    ".svelte-kit/tsconfig.json"
+  ],
+  "old_failure": "Existing build log ended Killed; no saved exit status, OOM counter or timeout record was available. Root cause unknown.",
+  "limits": [
+    "Browser, HTTP transport, Runed URL behavior and hydration remain unverified.",
+    "adapter-auto did not detect a supported deployment environment.",
+    "Initial missing generated tsconfig warning resolved by successful build generation; no configuration changed."
+  ],
+  "checked_at_utc": "2026-10-23T12:13:21Z",
+  "command": "npm run build",
+  "exit_code": 0,
+  "timeout": false,
+  "package_versions": {
+    "@sveltejs/kit": "2.48.5",
+    "svelte": "5.43.10",
+    "vite": "7.2.2"
+  },
+  "source_or_config_changed_for_retry": false
+}

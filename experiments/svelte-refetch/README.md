@@ -29,7 +29,7 @@ Limit 输入没有禁用。`$effect.pending()` 是所在边界异步工作的计
 4. 将本包全部 .mjs 文件放到应用根目录。先运行 `node preflight-check.mjs` 检查前置条件校验器的正常、缺输入和错误版本分支。设置环境变量 SVELTE_TEST_TOOLS 为第 3 步目录的绝对路径。
 5. 原版运行 `node trial.mjs`：必须失败在 pending 按钮应禁用的断言。`node trial.mjs --baseline` 则检查并报告已知原版失败现象，不代表修复通过。
 6. `git apply <本包路径>/refetch-loading.patch` 后，`node trial.mjs` 应通过等待、成功和失败边界检查。
-7. `node server-check.mjs` 检查真实服务端 schema/handler 和独立服务器渲染；`npm run check` 检查类型。完整 `npm run build` 应另外完成，本次未完成。
+7. `node server-check.mjs` 检查真实服务端 schema/handler 和独立服务器渲染；`npm run check` 检查类型。`npm run build` 已在相同固定源码与补丁的干净副本完成，记录见 [构建回执](build-result.json)。
 
 ## 验收与局限
 
@@ -37,7 +37,8 @@ Limit 输入没有禁用。`$effect.pending()` 是所在边界异步工作的计
 - 已通过：实际 data.remote.ts 的 Zod schema 和 handler，第二页 IDs 6–10；缺 page/limit 时默认 1/10，缺整个参数对象或 page=0 拒绝。
 - 已通过：实际组件的独立 Svelte 服务器渲染保留首次 pending 文本，没有初始数据表。这并不声称 SSR 输出首屏帖子；原例本来就由 pending boundary 输出占位。
 - 已通过：修改前后 svelte-check 均 0 错误／0 警告；git diff --check。
-- 未完成：生产构建在转换 194 个模块后、rendering chunks 阶段被终止，原因未知。随后一次重复类型检查也被终止，未得到新结果；此前对同一两行补丁的类型检查已完成通过。初次独立 SSR 测试的 dev 构建还曾因测试打包的开发上下文报错，改为服务端 production 编译后通过；不能把它当应用修复。
+- 已通过：同一源码、两行补丁与lockfile的干净副本执行生产构建退出0，生成SSR及客户端产物；adapter-auto未识别部署目标，不等于已部署。
+- 历史未完成：前次构建和随后重复类型检查被终止，原因未知；不以本次成功倒推原因。此前同一补丁类型检查已完成通过。独立SSR测试最初的dev上下文错误通过修正测试编译方式解决，不是应用补丁。
 - 未验证：真实浏览器画面、HTTP 路由和传输、Runed URL 同步、查询缓存／重复请求、hydration、错误后的 reset/retry、真实部署。
 
 组件试验使用真实编译器和真实 Query 类，但替换 URL 状态及响应来源，以手动 resolve/reject 控制等待，不替代全应用测试。server-check 分别验证服务端数据契约与 SSR，不是端到端客户端／服务端往返。
