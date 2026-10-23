@@ -6,7 +6,7 @@
 
 - **方向（10-22 用户批准重写）**：找到真实技术人员正在用的、当前最好的 AI coding 做法、工具和开源项目，亲手试过，提炼成读者马上能用的东西；留约 10% 给新意实验。官方、社区、开源三方对照。见[锚点](../../AGENTS.md)和[运行手册](LONG-TERM-PLAN.md)。
 - **dot-A（AI coding 与 M6）**：优先将已有检索／代码图／窄 Skill 的发现做成一条真实编码示范，回流主专题；持续前沿发现与收件箱处理，P79 按冻结子批次续做。接收 B 已推分支，保持双方成果可用。
-- **dot-B（游戏）**：以 [Star-Rush-Reborn](https://github.com/dbvv1/Star-Rush-Reborn) 为长期实战项目，先试玩并打磨驾驶、镜头、反馈等最影响体验的细节，再按真实瓶颈深化客户端模块；包含 AI 美术、音乐／音效的制作、接入与二改，现有纯代码资源不作为限制。代码和资源在游戏仓库，方法回流本仓。[Game-Core-Knowledge](https://github.com/dbvv1/Game-Core-Knowledge)作轻量知识参考与部分维护。P109收口为窄示例，P110接收后按需应用；B 原浏览器入口限定重试仍待答，不绕过或阻塞独立工作。详见[本轮补充](reviews/2026-10-23-direction-guidance.md#补充实战与知识仓库)。
+- **dot-B（游戏）**：主线为本仓游戏AI全链路与客户端／gameplay核心模块；[Star-Rush-Reborn](https://github.com/dbvv1/Star-Rush-Reborn)是实际验证支线，要把驾驶体验和AI美术／音乐资源链做成真实结果并回流，同时持续推进其他核心专题，不转成单款赛车专职开发。[Game-Core-Knowledge](https://github.com/dbvv1/Game-Core-Knowledge)轻量参考、按分工部分维护。P109收口为窄例；原浏览器限定重试待答的边界保留。长程选题与自主续接见[手册§9](LONG-TERM-PLAN.md#9-两周路线10-23-至-11-06)。
 - **本轮审计与指导（10-23）**：[接手审计](reviews/2026-10-23-direction-guidance.md)确认方向改善，重点转到完整示范与可借用机制；[校准追审](reviews/2026-10-23-quality-followup.md)及基线一并接入，不重复安排同批游戏页审计。各项按实际证据推进，取消每日项目／模块数量和每包必升等级要求；长期安排见[手册§9](LONG-TERM-PLAN.md#9-两周路线10-23-至-11-06)。
 
 - **当前能力与实际价值追审（10-23）**：[结果与一周重点](reviews/2026-10-23-current-value-audit.md)：Oil UI 已独立重放；OpenSpec区分CLI与Skill；OCR函数修复需补公开产物并统一状态。B优先接收赛车最新分支、完成同弯驾驶与资源链，已有WebGL实跑按版本复用，不重做整仓评分。
