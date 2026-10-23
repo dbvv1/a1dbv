@@ -256,9 +256,15 @@
 
 ## 2. Superpowers：重点看 Skill 之间怎样衔接
 
-本轮直接读了 brainstorming、writing-plans、subagent-driven-development、systematic-debugging、verification-before-completion 等文件。**[一手：项目配置 C1]**
+### v7.0.1：入口分流与加载检查（2026-10-23）
 
-配置按任务清晰度选择访谈或直接执行，计划列文件／接口／验证，调度者准备子任务上下文，并检查任务和整条分支；调试先定位根因，完成须读当前验证结果。简单清楚的任务允许直接做，不应概括为强制全套流程。**[一手：C1]**
+**改变的选择：已有插件先分直做、设计、inline 与逐任务评审，不把 P59 的 6.4.2 结果当现版效果。** 本轮为既有研究的版本续接，保留原 P59 样本、模型与 gap2；未重跑模型。[研究]
+
+[官方 v7.0.1 发布说明](https://github.com/obra/superpowers/releases/tag/v7.0.1)承认 v7.0.0 默认问答公式化、令人厌烦，改成先读上下文。固定 tag 解引用提交为 `2ce8aa15d05bd57213e6f746f953aafb7ded7a8b`；[brainstorming](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/brainstorming/SKILL.md)允许完全清楚的小任务直做，自动发起问答时给退出选项，用户主动要求 brainstorming 则不主动邀请跳过。完整路径仍先选方案、写短／完整设计、获批准，再进计划；因此“新版更轻”不能理解为删除全部批准关口。[一手：发布与固定源码]
+
+[writing-plans](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/writing-plans/SKILL.md)按可独立测试、值得单独评审的产物拆任务，把配置／文档并进其服务的交付；[executing-plans](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/executing-plans/SKILL.md)为同会话 inline 实施，取消每任务的实现者／评审者派发；有子 Agent 工具时末尾整分支独审，无工具则明确披露自审并由用户决定是否合入。这些能力并非本轮证明的全新功能；读者先选择所需评审粒度，再比较等待与成本，不把 inline 叫裸原生或假定必然更省。[一手；研究]
+
+**检查与边界。** 临时副本已运行官方 [Skill 尺寸检查](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/tests/skill-size/test-skill-size.sh)及隔离 [SessionStart](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/hooks/session-start) JSON 检查，均通过；[using-superpowers](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/using-superpowers/SKILL.md)仍完整注入低触发阈值规则，直做不等于不加载。发布说明以拆出 references 避免压缩后丢约束；尺寸通过不证明真实宿主接收、压缩后重读或模型遵循。未安装／启用插件或运行模型；社区体验复用既有原帖，现版效果未试用，详细执行回执留提交说明。[经验：确定性执行；一手：源码／修订意图；研究：边界]
 
 ### 社区暴露的两个失败模式
 
