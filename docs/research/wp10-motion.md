@@ -739,3 +739,49 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 **代价与撤回。** [研究] 筛选增加多视口、集合切换及数据保留责任；全体更简单，原低频牺牲连续感。二改快速入屏对象／附属视口后核近景、总览、远主＋近窗、出入屏、缩放反向及暂停恢复；危险难追或突跳就扩范围／撤回。模拟、碰撞与索引照原契约，不套 zoom 阈值。
 
 [研究] 未测筛选成本、帧时或辨识；0.5.6 留代码不证明全版无回归，历史试玩不覆盖目标设备。不排名全体／选择性插值或推断 AI 收益。
+
+
+<a id="arcade-vehicles"></a>
+
+## 街机车辆：先比现成控制模型，再决定是否窄取规则
+
+核实：2026-10-23 UTC。范围是漂移、跳跃与连锁加速成为核心玩法的车辆，不替代普通角色／肢体交互建议。**当前最高水平未知；以下仅公开资料与固定源码静读，未运行游戏、引擎或真实模型，生产质量、二改工时与手感收益未证，不升为整链验证。** [研究]
+
+**✅ 默认先比较现成街机底座，而非从“不要逼真轮胎”直接跳到自建。** 能保目标操控且许可、引擎版本与依赖合适就复用；整套耦合不合才抽取窄规则。👀 下列两个公开实现是比较／阅读候选，不是即装即用推荐。[研究]
+
+| 同一选择 | 可借的机制与证据 | 会改变采用决定的成本 |
+|---|---|---|
+| 近期联网街机样例 NetickRocketCars，固定 `907ec505`（2026-01-26） | [CarController.cs][vehicle-netick-code] 用轮位射线、侧向摩擦与漂移抓地调整；悬挂动画另算，不以完整轮胎模拟为前提。[一手] | 继承网络回放类、使用 Netick 状态／Sandbox；自动扶正含世界高度大于 10 即退出的场景条件。[研究] 停车楼等新场景不能只换模型；单机须比较抽离成本，不照搬整个联机工程。 |
+| 较轻的 ArcadeVehiclePhysics，固定 `2883b931`（2024-11-27） | [项目说明][vehicle-light] 分物理、能力、视觉脚本，无 Netick 绑定；漂移与 boost 可单独读。[一手] | 工程仍是 [Unity 2018.4.5f1][vehicle-light-version]；近期提交不等于现代版本支持。许可／网络负担较少，不等于状态与时序验收更少；见下方松键路径。[研究] |
+
+**许可是分层筛选，不看根目录一个 MIT 就放行。** [一手／研究]
+
+- Netick 样例的 [MIT][vehicle-netick-license] 不覆盖整个工程：[README credits][vehicle-netick-readme] 中音频有仅为本项目授予的许可，另含 Custom／Asset Store EULA 资产。[锁文件][vehicle-netick-lock] 还依赖 NetickForUnity `549aa7f5`；该固定树未见独立许可文件，[package.json][vehicle-netick-package] 也无许可字段。官方链接的 [Netick 商店页][vehicle-netick-store] 是 Standard Unity Asset Store EULA／Extension Asset，不能据此替 GitHub 固定版本补授权。**不把整套当通用 MIT 商用底座**；只借确属 MIT 的运动代码也须保留声明，重新接自己的输入／步进／查询，排除依赖代码和资产，授权疑点先确认。[研究]
+- 轻库根 [MIT][vehicle-light-license] 支持代码复用；README 单列演示车模型来源，不能代替资产许可核查。可只比较代码，另配已获授权资产；旧输入与演示视觉依赖仍需迁移，未证明比 Netick 抽离更省总工时。[一手／研究]
+
+**低依赖反例：松开 boost 后是否还应有推力？** 固定 [CaBoost.cs 第 29–70 行][vehicle-light-boost] 的可达条件是组件持续启用、接地、燃料未耗尽时按住，再松键：Update 先读键，回血分支不写 `currentBoost`，FixedUpdate 仍消费上次推力，直到后续进入清零分支。已检索该树全部 C# 写点：该值只有本类初始化、赋力与清零；[基类][vehicle-light-base] 没有禁用／复位钩子，UI／视觉不代清推力。**这是静态风险，不是引擎复现或作者已确认 bug**；先定按住式还是定时式：若目标是松键即停，必须验该序列；若承诺持续加速，则核推力、燃料与提示是否共同遵守，不能一律清零。[一手／研究]
+
+[CaDrift][vehicle-light-drift] 则只在接地时更新 `isDrifting`，Update 写抓地系数；[CpLateralFriction][vehicle-light-friction] 在 LateUpdate 算侧力、FixedUpdate 施力并复位系数。空中松键保留漂移可能是有意政策，不能直接“修掉”；需先约定落地恢复与多物理步时的消费规则。[一手／研究]
+
+**用制作取舍约束二改，而非只看技术名称。** [PGRC 开发者 2025-01-03 原帖][vehicle-pgrc] 说明 boost 时长可叠加，并用排气颜色提示余量；同帖 02-07 玩家报告高速擦碰／落地翻车，只是个人反例，不代表共识。[一手／社区] [Top Drifters 作者 2025 自述][vehicle-topdrifters] 则选择 WheelCollider，称半尺寸车辆需要重调参数；作品当时在开发，且作者承认 Unreal 经验不足，不能据此排名引擎。[一手] 两者支持的判断是：先定叠加、接地、失败恢复政策，不把 WheelCollider 与“不能街机”画等号。[研究]
+
+**官方对照与撤回条件。** Unity Vehicles [0.1.1-exp.1 changelog][vehicle-unity] 已在 2025-09-02 修正空气阻力施加错误、轮力不均导致的偏转等问题，不能把旧帖当现版未修故障，也不能因官方／实验包身份就推定适合该玩法。AI 可先整理状态读写、隔离输入／反馈、补项目规则与验收场景；人决定漂移可控性、保速与碰撞惩罚。新增连锁 boost 后比较：按住式／定时式各自的松键／耗尽、离地后松漂移／落地、高速擦墙／坡顶跳跃、翻车复位；已有连段或可达路线受损就撤回该规则改动。上述两库均未做此二改，不能声称 AI 已节省返工。[一手／研究]
+
+**探索回执与缺口。** 同日检索 indienova「车辆 物理 Unity」「漂移 物理 开发」及知乎「车辆物理 街机」，未找到近两年同题生产比较，不以无关教程凑正例。PGRC 2026 技术视频仅取得简介／章节，未读到字幕正文，不用其推导内部实现。仍缺同一项目的整套复用／抽离规则对照、目标 Unity 版本运行与玩家体验；现有证据只足以改变筛选顺序，不足以选出最优底座。[研究]
+
+[vehicle-netick-code]: https://github.com/NetickNetworking/NetickRocketCars/blob/907ec50519d61920eefbbd34897aecf2e81e5dc1/Assets/Rocket%20Cars/Scripts/Player/Car/CarController.cs
+[vehicle-netick-license]: https://github.com/NetickNetworking/NetickRocketCars/blob/907ec50519d61920eefbbd34897aecf2e81e5dc1/LICENSE
+[vehicle-netick-readme]: https://github.com/NetickNetworking/NetickRocketCars/blob/907ec50519d61920eefbbd34897aecf2e81e5dc1/README.md
+[vehicle-netick-lock]: https://github.com/NetickNetworking/NetickRocketCars/blob/907ec50519d61920eefbbd34897aecf2e81e5dc1/Packages/packages-lock.json
+[vehicle-netick-package]: https://github.com/NetickNetworking/NetickForUnity/blob/549aa7f5c71eb14b1a09b6ab9d3fb3a820365760/package.json
+[vehicle-netick-store]: https://assetstore.unity.com/packages/tools/network/netick-networking-engine-292096
+[vehicle-light]: https://github.com/benmcinnes/ArcadeVehiclePhysics/tree/2883b931c37d55682dc7d4b55551f55bd6d1d0bd
+[vehicle-light-version]: https://github.com/benmcinnes/ArcadeVehiclePhysics/blob/2883b931c37d55682dc7d4b55551f55bd6d1d0bd/ProjectSettings/ProjectVersion.txt
+[vehicle-light-license]: https://github.com/benmcinnes/ArcadeVehiclePhysics/blob/2883b931c37d55682dc7d4b55551f55bd6d1d0bd/LICENSE
+[vehicle-light-boost]: https://github.com/benmcinnes/ArcadeVehiclePhysics/blob/2883b931c37d55682dc7d4b55551f55bd6d1d0bd/Assets/ArcadeVehiclePhysics/Vehicle/Scripts/CA%20-%20CarAbilities/CaBoost.cs#L29-L70
+[vehicle-light-base]: https://github.com/benmcinnes/ArcadeVehiclePhysics/blob/2883b931c37d55682dc7d4b55551f55bd6d1d0bd/Assets/ArcadeVehiclePhysics/Vehicle/Scripts/CA%20-%20CarAbilities/CaAbility.cs
+[vehicle-light-drift]: https://github.com/benmcinnes/ArcadeVehiclePhysics/blob/2883b931c37d55682dc7d4b55551f55bd6d1d0bd/Assets/ArcadeVehiclePhysics/Vehicle/Scripts/CA%20-%20CarAbilities/CaDrift.cs#L28-L61
+[vehicle-light-friction]: https://github.com/benmcinnes/ArcadeVehiclePhysics/blob/2883b931c37d55682dc7d4b55551f55bd6d1d0bd/Assets/ArcadeVehiclePhysics/Vehicle/Scripts/CP%20-%20CarPhysics/CpLateralFriction.cs#L35-L66
+[vehicle-pgrc]: https://steamcommunity.com/app/2737300/discussions/0/599640708794564635/
+[vehicle-topdrifters]: https://www.reddit.com/r/Unity3D/comments/1majlpx/we_made_a_game_with_unreal_engine_and_switched_to/
+[vehicle-unity]: https://docs.unity3d.com/Packages/com.unity.vehicles@0.1/changelog/CHANGELOG.html
