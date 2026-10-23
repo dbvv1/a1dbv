@@ -72,6 +72,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [DebugMCP standalone](https://github.com/microsoft/DebugMCP/tree/main/npm/cli) | 无IDE时向MCP客户端提供断点／变量工具 | [用户#31的无IDE需求与发布回执](https://github.com/microsoft/DebugMCP/issues/31)不是普遍收益证明 | [0.1.2与pdb同输入实试](../experiments/python-debugger-entry.md)均完成观察，输出可见性有差别 | 🧪 pdb够用就不装，CLI与扩展Skill须分开 |
 | [Agentation](https://www.agentation.com/) | 把多条页面批注复制给不同编码客户端 | [Nodum十月采用](https://github.com/nodummd/nodum/blob/main/tasks/nodum-master-plan.md#6-progress-log)为维护者自报 | [3.1.2两条批注导出／刷新实试与截图](../experiments/agentation-feedback.md)，排序后旧标记未跟随对象 | 🧪 原生评论够用就不装，旧定位须复核 |
 | [TanStack Intent](https://github.com/TanStack/intent) | 已用TanStack的项目可从安装包取得窄领域配方 | [维护者0.5发布说明](https://tanstack.com/blog/intent-0.5-skills-you-can-maintain)说明随包交付与维护的区别 | [实际加载后完成可分享筛选](../experiments/tanstack-url-state/README.md#真实浏览器补验)，已有真实浏览器截图 | 🧪 包内版本标记仍需核对 |
 | [Graphicle](https://github.com/graphicle-ai/graphicle) | 用跨文件图和行号导航陌生仓库 | 339★及[HN 48分／15评](https://news.ycombinator.com/item?id=50088713)为关注快照 | 0.1.4定位与两文件反例已有[真实输出截图](research/2026-10-22-frontier-trials.md#graphicle导航有用影响图需要核对) | 🧪 同名错边仍在，不据图删测试 |
