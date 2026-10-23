@@ -385,3 +385,15 @@ Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657
 默认保留可靠入口，按需要的视图选择；必要上下文、工具或质量门未承接时撤回迁移。仅核文档与公开体验，未运行客户端切换或同任务效果比较，不新增探针。[研究]
 
 独立复核（2026-10-22）：实际六文件修复Hook范围、check结论与测试汇总矛盾、P79结果主语后接收；核原文和精确提交元数据，不代表P81十二页完成、差距0或效果实验通过。[研究：审阅范围]
+
+## 冷恢复的保存设置：0.164.0窄修订
+
+核实：2026-10-24（UTC+8）。[稳定版0.164.0](https://github.com/openai/codex/releases/tag/rust-v0.164.0)于10-23 12:48:10（UTC+8）发布，包含[#55923](https://github.com/openai/codex/pull/55923)。这里仅核app-server的`thread/resume`固定实现与测试定义，未运行客户端／测试，也不推断账号或已安装版本。[一手／范围]
+
+**新全局默认不等于旧线程恢复后的这三个字段。** 此次新增保留`service_tier`、`reasoning_summary`、`personality`，不是首次恢复全部模型／权限配置。[固定实现](https://github.com/openai/codex/blob/430a16799d90e296fb27b1e94f206023902b7e56/codex-rs/app-server/src/request_processors/thread_processor.rs#L4196-L4281)在加载配置后应用合格历史快照；当前恢复请求显式给出同字段时不覆盖。CLI具体flag到请求的映射未核，不提供推测命令。[一手]
+
+- **没有合格快照**时保留已加载配置；**有快照但字段缺失**时复制`None`，不是逐字段回退全局默认。`service_tier`／`personality`识别类型化参数与对应config键，summary检查`model_reasoning_summary`键；这个窄优先关系不扩写为整套配置或安全优先级。[一手：上述实现及[字段定义](https://github.com/openai/codex/blob/430a16799d90e296fb27b1e94f206023902b7e56/codex-rs/protocol/src/protocol.rs#L2338-L2366)]
+- **快照归属要匹配线程。** [选择逻辑](https://github.com/openai/codex/blob/430a16799d90e296fb27b1e94f206023902b7e56/codex-rs/app-server/src/request_processors/persisted_resume_settings.rs#L51-L72)逆向查所属线程，兼容无owner旧快照；跨过外来线程快照后不再接收更旧ownerless记录，不能把复制的历史一概当配置来源。[一手]
+- **保存的tier与恢复响应中的有效tier须分开。** [冷恢复测试定义](https://github.com/openai/codex/blob/430a16799d90e296fb27b1e94f206023902b7e56/codex-rs/app-server/tests/suite/v2/thread_resume.rs#L505-L613)覆盖保存priority后全局改flex、恢复仍保留选择，但当前模型不支持时恢复响应的有效tier为None；[归属与显式覆盖测试](https://github.com/openai/codex/blob/430a16799d90e296fb27b1e94f206023902b7e56/codex-rs/app-server/tests/suite/v2/thread_resume.rs#L845-L1017)覆盖另一侧。仅阅读测试定义，不声称本轮测试通过或速度／用量效果。[一手／范围]
+
+采用动作是核对恢复后的有效状态，确需改变时显式覆盖这三个字段，而不是仅改全局默认后假定旧线程已跟随；不据此自动启用付费档位或改权限。[研究]

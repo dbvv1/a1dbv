@@ -91,7 +91,7 @@ stop_debugging()    # No active debug session to stop
 MCP 入口有具名工具与参数 schema，但取值／求值主要仍是 content 中的人类可读文本，不是统一的强类型结果；没有证明比终端更好解析或更省上下文。[源码／本仓实试]
 
 
-[经验] 读取 date 对象的具名变量结果包含很长的特殊方法类型树，精确求值更直接。本次 `continue_execution` 后首次状态仍为 running，约0.5秒后再查为 no-session。第一次探索回合立即 stop，第二回合补齐自然退出证据；两回合原始记录均保留。
+[经验] 读取 date 对象的具名变量结果包含很长的特殊方法类型树，精确求值更直接。本次 `continue_execution` 后首次状态仍为 running，约0.5秒后再查为 no-session。第一次探索回合立即 stop，第二回合补齐自然退出证据。
 
 [经验] 自然完成后 MCP 主进程在 stdin EOF 后8秒仍未退出，测试 harness 对其进程组发送 SIGTERM，退出码-15；这是 host 清理，不是应用失败。结束后的独立进程检查未见本次程序或 debugpy.adapter；机器回执中的清理叙述本身不是进程扫描记录。
 
