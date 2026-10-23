@@ -1,6 +1,6 @@
 import { levels, newGame, transition, getTide, saveGame, loadGame } from './g1-tide-post-core.mjs';
 
-// Stable IDs map to seven generated candidate files; reused files are not new assets.
+// Stable IDs map to generated candidate files (v1 plus the preset v2 variants); reused files are not new assets.
 // Null remains a supported explicit geometric-placeholder configuration.
 export const assetManifest = Object.freeze({
   'terrain.land': '../docs/img/g1-tide-land-v1.png',
@@ -12,6 +12,8 @@ export const assetManifest = Object.freeze({
   'goal.lighthouse': '../docs/img/g1-tide-lighthouse-v1.png',
   'ui.mail': '../docs/img/g1-tide-mail-v1.png',
   'ui.tide': '../docs/img/g1-tide-tide-icon-v1.png',
+  'actor.postman.raft': '../docs/img/g1-tide-postman-raft-v2.png',
+  'ui.raft': '../docs/img/g1-tide-raft-icon-v2.png',
 });
 const byId = id => document.getElementById(id);
 const canvas = byId('board');
@@ -107,7 +109,14 @@ function draw() {
     ctx.fillStyle = '#fff3cf'; ctx.fillRect(x,y,52,36); ctx.strokeStyle = '#795c37'; ctx.lineWidth = 3;
     ctx.strokeRect(x,y,52,36); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+26,y+20); ctx.lineTo(x+52,y); ctx.stroke();
   });
-  imageOr('actor.postman', state.x * size, state.y * size, size, () => {
+  if (state.raftActive && !images.has('actor.postman.raft')) {
+    ctx.fillStyle = '#c6a56d'; ctx.strokeStyle = '#654d2d'; ctx.lineWidth = 3;
+    const x = state.x * size, y = state.y * size;
+    ctx.fillRect(x + 8, y + 75, size - 16, 18); ctx.strokeRect(x + 8, y + 75, size - 16, 18);
+    // This simple deployment marker is UI geometry, not an additional generated asset.
+  }
+  const actorId = state.raftActive ? 'actor.postman.raft' : 'actor.postman';
+  imageOr(actorId, state.x * size, state.y * size, size, () => {
     const x = (state.x+.5)*size, y = (state.y+.5)*size;
     ctx.fillStyle = '#122c39'; ctx.beginPath(); ctx.ellipse(x,y+26,29,10,0,0,Math.PI*2); ctx.fill();
     ctx.fillStyle = state.status === 'lost' ? '#e98e7c' : '#ffcf64'; ctx.beginPath(); ctx.arc(x,y,24,0,Math.PI*2); ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = '#473e30'; ctx.stroke();
@@ -126,13 +135,16 @@ function render(note = '') {
   renderDomIcon('mail-icon', 'ui.mail');
   renderDomIcon('tide-icon', 'ui.tide');
   renderDomIcon('next-tide-icon', 'ui.tide');
+  renderDomIcon('raft-icon', 'ui.raft');
+  byId('level').value = state.levelId;
+  byId('raft').textContent = state.levelId === 'baseline' ? '未配备' : state.raftActive ? '已展开 · 上岸消耗' : state.raftAvailable ? '可用 · 1 次穿行' : '已消耗';
   byId('tide').textContent = tideLabel(state.turn);
   byId('next-tide').textContent = state.turn === Number.MAX_SAFE_INTEGER ? '回合上限' : tideLabel(state.turn + 1);
   byId('turn').textContent = state.turn;
   byId('mail').textContent = state.hasMail ? '已拾取' : '尚未拾取';
   byId('position').textContent = `${state.x + 1}，${state.y + 1}`;
   byId('status').textContent = state.status === 'won' ? '投递成功！灯塔收到来信。可重新开始。' : state.status === 'lost' ? '投递失败：涨潮淹没了浅滩。重新开始，再选时机。' : note || (state.hasMail ? '信已装好，前往灯塔。注意下一步潮汐。' : '先找到信封，再把它送往灯塔。');
-  canvas.setAttribute('aria-label', `8列6行地图。邮差在第${state.x+1}列第${state.y+1}行，${tideLabel(state.turn)}，${state.hasMail ? '持有邮件' : '尚未拾信'}。${byId('status').textContent}`);
+  canvas.setAttribute('aria-label', `8列6行地图。邮差在第${state.x+1}列第${state.y+1}行，${tideLabel(state.turn)}，${state.hasMail ? '持有邮件' : '尚未拾信'}。折叠筏：${byId('raft').textContent}。${byId('status').textContent}`);
   document.querySelectorAll('[data-action]').forEach(button => { button.disabled = state.status !== 'playing' && button.dataset.action !== 'restart'; });
 }
 function act(action) {
@@ -142,6 +154,13 @@ function act(action) {
     render(action !== 'restart' && before.status === 'playing' && before.turn === state.turn ? '前方不可通行；没有消耗回合。' : '');
   } catch (error) { byId('status').textContent = `操作失败：${error.message}`; }
 }
+byId('level').addEventListener('change', () => {
+  try {
+    state = newGame(byId('level').value);
+    render('已切换关卡并重新开始。');
+    byId('save-feedback').textContent = '关卡已切换；文本框中的旧存档保持不变。';
+  } catch (error) { byId('level').value = state.levelId; byId('status').textContent = `切换失败：${error.message}`; }
+});
 document.querySelectorAll('[data-action]').forEach(button => button.addEventListener('click', () => act(button.dataset.action)));
 const keys = { ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right', w:'up', s:'down', a:'left', d:'right', ' ':'wait', r:'restart' };
 document.addEventListener('keydown', event => {
@@ -157,10 +176,12 @@ byId('save').addEventListener('click', () => {
 });
 byId('load').addEventListener('click', () => {
   try {
-    const restored = loadGame(byId('save-state').value);
-    if (restored.levelId !== 'baseline') throw new Error('v1 页面仅支持 baseline 关卡');
+    const source = JSON.parse(byId('save-state').value);
+    const restored = loadGame(source);
     state = restored; render();
-    byId('save-feedback').textContent = '状态已恢复。';
+    byId('save-feedback').textContent = source.schemaVersion === 1
+      ? 'v1 旧档已迁移到 v2：保留原进度，仍为无筏基线关卡，不赠送折叠筏。文本原稿未改写；可重新保存为 v2。'
+      : 'v2 状态已恢复。';
   } catch (error) { byId('save-feedback').textContent = `恢复失败，当前游戏未改变：${error.message}`; }
 });
 render();
