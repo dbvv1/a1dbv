@@ -1,0 +1,96 @@
+diff --git a/properties/test_pandas_roundtrip.py b/properties/test_pandas_roundtrip.py
+index 44be1dfc..48ae7942 100644
+--- a/properties/test_pandas_roundtrip.py
++++ b/properties/test_pandas_roundtrip.py
+@@ -14,7 +14,7 @@ pytest.importorskip("hypothesis")
+ import hypothesis.extra.numpy as npst  # isort:skip
+ import hypothesis.extra.pandas as pdst  # isort:skip
+ import hypothesis.strategies as st  # isort:skip
+-from hypothesis import given  # isort:skip
++from hypothesis import example, given  # isort:skip
+ from xarray.tests import has_pyarrow
+
+ numeric_dtypes = st.one_of(
+@@ -105,6 +105,26 @@ def test_roundtrip_pandas_series(ser, ix_name) -> None:
+     xr.testing.assert_identical(arr, roundtripped.to_xarray())
+
+
++@given(
++    st.lists(
++        st.integers(min_value=2, max_value=12), min_size=2, max_size=4, unique=True
++    )
++)
++@example([2, 3, 4])
++def test_roundtrip_multiindex_series_temporary_names(prefix_lengths: list[int]) -> None:
++    names = ["_" * n + "temporary_name" for n in prefix_lengths]
++    levels = [[10 * i + 2, 10 * i + 5] for i in range(len(names))]
++    index = pd.MultiIndex.from_product(levels, names=names)
++    series = pd.Series(range(100, 100 + len(index)), index=index, name="measure")
++
++    actual = xr.DataArray.from_series(series)
++
++    for name, values in zip(names, levels, strict=True):
++        assert actual.coords[name].dims == (name,)
++        np.testing.assert_array_equal(actual.coords[name], values)
++    pd.testing.assert_series_equal(actual.to_series(), series)
++
++
+ # Dataframes with columns of all the same dtype - for roundtrip to DataArray
+ numeric_homogeneous_dataframe = numeric_dtypes.flatmap(
+     lambda dt: pdst.data_frames(columns=pdst.columns(["a", "b", "c"], dtype=dt))
+diff --git a/xarray/core/dataarray.py b/xarray/core/dataarray.py
+index 202924b5..3d2e1531 100644
+--- a/xarray/core/dataarray.py
++++ b/xarray/core/dataarray.py
+@@ -4785,11 +4785,8 @@ class DataArray(
+         DataArray.to_series
+         Dataset.from_dataframe
+         """
+-        temp_name = "__temporary_name"
+-        if temp_name == series.index.name:
+-            # See properties/test_pandas_roundtrip.py:
+-            # @reproduce_failure('6.155.2', b'AEEAQQBBAQFBAEEBAJBfX3RlbXBvcmFyeV9uYW1l')
+-            temp_name = "__temporary_name_fallback"
++        # Avoid collisions with every index level, including MultiIndex names.
++        temp_name = utils.get_temp_dimname(series.index.names, "__temporary_name")
+         df = pd.DataFrame({temp_name: series})
+         ds = Dataset.from_dataframe(df, sparse=sparse)
+         result = ds[temp_name]
+diff --git a/xarray/tests/test_dataarray.py b/xarray/tests/test_dataarray.py
+index 407cd08c..2fd4bc60 100644
+--- a/xarray/tests/test_dataarray.py
++++ b/xarray/tests/test_dataarray.py
+@@ -3951,6 +3951,33 @@ class TestDataArray:
+             expected_da, DataArray.from_series(actual).drop_vars(["x", "y"])
+         )
+
++    @pytest.mark.parametrize(
++        "names",
++        [
++            ("x", "y"),
++            ("__temporary_name", "y"),
++            ("x", "__temporary_name"),
++            ("__temporary_name", "__temporary_name_fallback"),
++            ("__temporary_name", "___temporary_name", "____temporary_name"),
++        ],
++    )
++    @pytest.mark.parametrize("name", [None, "measure", "__temporary_name"])
++    def test_from_series_multiindex_name_collision(
++        self, names: tuple[str, ...], name: str | None
++    ) -> None:
++        levels = [[10 * i + 2, 10 * i + 5] for i in range(len(names))]
++        index = pd.MultiIndex.from_product(levels, names=names)
++        series = pd.Series(range(100, 100 + len(index)), index=index, name=name)
++
++        actual = DataArray.from_series(series)
++
++        assert actual.name == name
++        assert actual.dims == names
++        for level_name, values in zip(names, levels, strict=True):
++            assert actual.coords[level_name].dims == (level_name,)
++            np.testing.assert_array_equal(actual.coords[level_name], values)
++        pd.testing.assert_series_equal(actual.to_series(), series)
++
+     def test_from_series_multiindex(self) -> None:
+         # GH:3951
+         df = pd.DataFrame({"B": [1, 2, 3], "A": [4, 5, 6]})
