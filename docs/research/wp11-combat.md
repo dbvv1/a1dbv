@@ -1,6 +1,6 @@
 主线：一／二／三；战斗决策、原生能力取舍与第二次修改
 改变的建议：[研究] 战斗先统一结算、效果与时钟；AI先分感知、选敌、意图与攻击资格，再按复杂度升级。
-新证据：原WP11固定源码、官方契约及复盘迁入；2026-10-23追加P111卡牌完整闭环：近期作品修订、两套Unity固定实现与AI制作反例，仍未新增运行实测。
+新证据：原WP11固定源码、官方契约及复盘迁入；2026-10-23追加P111卡牌闭环与P118失视搜索：近期作品／玩家反馈、固定实现及引擎失败，未新增运行实测。
 
 # WP11分册：战斗、效果与AI
 
@@ -530,3 +530,50 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 玩家Reloecc报告拖牌／hover失效，跨战斗／continue仍坏；鼠标释放事件丢失是作者后续诊断，作者又称修复并上传，本仓未独立试玩或核修复前后。另有完整一局反馈称太易、音效重复、风格不齐，作者承认英雄牌池重叠较高。十英雄／156牌等规模不能证明完成，也不能从这一个案例推断当前模型普遍能力。[社区／研究]
 
 **因此AI交付分三层验。** 资料与ID／引用可静态核；费用、牌区、触发与恢复以确定输入和首次分歧轨迹核；真实拖放／取消、窗口失焦、跨战斗与继续游戏须在实际客户端验。人还需试玩早中晚生存、构筑取舍、文字理解和等待感，AI自动对局不能代替这些判断。正文的抽牌回能＋复制／自动出牌二改模板是待执行方案，仍继承§11通用验收，不另造随机／事件平台。[研究]
+
+<a id="p118-enemy-search-loop"></a>
+
+## P118：失视之后，搜索结束与警戒结束分开
+
+**[研究] 增量：搜索结束与警戒结束分开，补追线索、搜点与不可达出口。**
+**[研究] 默认：小状态机＋原生导航；先定逃脱机会，再定搜索预算。**
+**[研究] 仅静读，未运行游戏／引擎／模型，最高水平与体验未知。** 核实：2026-10-23（UTC+8）；参数和验收见[05](../../domains/game-dev/05-gameplay-architecture.md#p118-enemy-search-loop)。
+
+### 近期作品：逃脱空间与事后警戒共同设计
+
+[Ubisoft，2024-11-21，Shadows玩法说明](https://www.ubisoft.com/en-gb/game/assassins-creed/news/1lmnk4XTnnqRh1foViGYPR)有副游戏总监Simon的解释：城堡／堡垒分区，暴露后仍能恢复潜行；失视后成对搜索，分别搜索与观察，之后仍更怀疑。武士会离开烟雾、搜索时割除草丛，与普通士兵的行为不同。[一手：开发者发布前说明] **借“失去位置但保留事件后果”，不推断所有当前版本已按同一参数实现。** [研究]
+
+[The Dark Mod 2.13发布说明，2025-03-24](https://www.thedarkmod.com/posts/the-dark-mod-2-13-has-been-released/)解释非玩家物体旧简化照明判断与新的随机采样改进；[2.14说明，2026-03-20](https://www.thedarkmod.com/posts/the-dark-mod-2-14-has-been-released/)承认2.13新增感知的性能／物体识别问题使部分玩家退回2.12模式。[一手：维护者报告] 这反驳“传感器越精细自然越好”的默认，不证明新版本性能已在本仓复测，也不把下列多年演化的搜索逻辑说成2026新技术。[研究]
+
+### 固定开源链：不能把整条追击称作绝不读真值
+
+采用[官方镜像](https://github.com/stgatilov/darkmod_src)固定`4d0427244dd21951c74d22a33361517a220130ac`（2026-10-17开发快照），不是2.14发行包。[一手：Git记录／源码阅读]
+
+| 已读调用段 | 能支持的窄结论 |
+|---|---|
+| [CombatState L1120–1135](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/game/ai/States/CombatState.cpp#L1120-L1135)及[Memory常量](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/game/ai/Memory.h#L224) | 失视特定分支仍有3000ms盲追阶段，把lastReachable作为lastVisibleReachable；到已知点或超过两倍时限后转LostTrack。这是作者有意的宽限，不能拿该游戏证明失视立即停止更新，也不是通用推荐时长。[一手／研究] |
+| [LostTrackOfEnemy L66–102](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/game/ai/States/LostTrackOfEnemyState.cpp#L66-L102) | 以最后可见可达位置／最后可见位置设置搜索，ClearEnemy阻止后续UpdateEnemyPosition继续追真值，清动作与移动任务。这里才是明确的信息切换点；不能凭目标引用非空就认为允许实时追踪。[一手／研究] |
+| [SearchManager L401–489](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/game/SearchManager.cpp#L401-L489) | hiding-spot路径检查搜索体积、可达性、已分派索引；标记发生在分派时，不是证明已经到达／观察。这里只借候选过滤与去重，不称它完整覆盖所有搜索模式。[一手／研究] |
+| [InvestigateSpot L110–146](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/game/ai/Tasks/InvestigateSpotTask.cpp#L110-L146)、[L258–308](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/game/ai/Tasks/InvestigateSpotTask.cpp#L258-L308) | 死亡／昏迷、取消或进入战斗可结束调查；不可达且能看见该点时转向／停留观察，否则结束。抵达后还有调查动作，不把导航成功当搜索完成。[一手／研究] |
+| [SearchingState L49–68、L124–126](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/game/ai/States/SearchingState.cpp#L49-L126)及[L461–526](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/game/ai/States/SearchingState.cpp#L461-L526) | 警戒衰减决定退出，离开时退出共享搜索；部分搜索模式用尽藏点后仍在区域内生成随机点，因此“藏点耗尽”不等于TDM立即回岗。[一手／研究] |
+
+**许可先过门。** 固定[LICENSE L1–10、L112–130](https://github.com/stgatilov/darkmod_src/blob/4d0427244dd21951c74d22a33361517a220130ac/LICENSE.txt)说明软件GPL-3.0-or-later及附加条款／第三方许可，非软件资产通常为CC BY-NC-SA且任务可有独立限制。[一手] 本轮只提炼机制，没有复制代码／素材；它不是供闭源Unity游戏无条件粘贴的成套底座。[研究]
+
+### Unity／UE：原生能力给动作，不替你定搜索政策
+
+- **Unity 6.3导航**：[SamplePosition](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AI.NavMesh.SamplePosition.html)不考虑遮挡，文档明示可能从一层采到二层；[SetDestination](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AI.NavMeshAgent.SetDestination.html)返回请求结果，路径计算可能延迟；[pathStatus](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AI.NavMeshAgent-pathStatus.html)区分complete／partial／invalid。[一手] 所以随机点投影后还须核该角色的实际通路、搜索范围与楼层，不让一个布尔值同时代表选点、抵达和查看完成。[研究]
+- **Unity Behavior 1.0.16**：[节点文档](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/node-types.html)分位置／对象输入；[2026-05-26 changelog](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/changelog/CHANGELOG.html)修不可达导航永久Running，新增默认true的`FailIfUnreachable`，并修运行中位置变量改变不更新目的地。[一手] 优先核工程实际版本与失败出口；本文未安装包，不把发行说明当项目已修复。[研究]
+- **UE 5.8**：[AI Perception](https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine)区分当前与已知感知、各感官Max Age及Forget Stale Actors，视线还提供`Auto Success Range from Last Seen Location`。[一手] 后者可明确扩大持续感知许可，和搜索中的位置记忆不是同一参数。[研究]
+- **制作反例**：[Dr. Collederas，2025-08-01](https://collederas.com/blog/unreal-action-ai/)希望“失视X秒→调查声音”，发现ActorForgotten等所有刺激遗忘，不是单独视觉到期；用按目标的视线计时、同目标重获取消，以及不可达失败出口接StateTree。[一手：作者实作报告] 这是可借处理法，不采纳其“BT更麻烦”为通用结论，也不照抄文章对Expiration Age回调值的绝对说法；当前引擎源码与运行未复核。其文末仍把玩家上梯离开导航网格列为未覆盖练习。[研究]
+
+### 社区反证：相同规则，有人体验到机会，有人只剩等待
+
+[Reddit，2025-03-27原帖](https://www.reddit.com/r/assassinscreed/comments/1jl8doo/shadows_legit_has_the_best_stealth/)中YourThatOneGuy描述借暗处、诱饵和梁上躲藏潜入的乐趣；tanman_266批评屋顶背坡等待敌人放弃，Mexus51描述反复跳杀再回屋顶。另一回复认为长时间等待本身就乏味，但把不能爬屋顶解释为敌种能力差异。[社区：玩家自述] 他们未固定相同难度／版本，不据此断言全体玩家满意或某漏洞普遍存在。[研究]
+
+[机核，漆黑的游击士，2025-03-31](https://www.gcores.com/articles/196745)自述68小时，肯定专家模式下屋顶也不安全、道具有用途，同时不满当时不能自由切昼夜而难安排偏好的潜行条件。[社区] 这里支持**把难度、时间与路线一起记录**，不是当前版本功能声明；不会将其体验推成搜索算法证据。[研究]
+
+### 试验边界
+
+[研究；未执行] 05已给场景与有序事件轨迹；接真实实现后，分别核纯规则、原生感知／导航和真人可读性。故意加入失视读实时位置、旧声音续满预算、不可达永久Running，确认断言会失败。本轮不另写参考FSM自证：没有项目实现时只会证明自己的规则与断言一致。游戏智力、逃脱公平感与AI二改收益仍待验。
+
+**探索回执：** 截至2026-10-23，读Ubisoft／TDM团队2024–26原文、TDM官方镜像固定链、Unity／Epic文档、制作人博客、Reddit正反与机核原文；Indienova／知乎定向检索未取得更强同题实作。另一篇机核算法综述正文cache miss，不采其摘要作实现证据；无付费、引擎、模型或用户电脑运行。[研究]
