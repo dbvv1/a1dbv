@@ -1,0 +1,713 @@
+{
+  "schema": 1,
+  "date": "2026-10-23",
+  "node": "v24.19.0",
+  "input": {
+    "bytes": 15104,
+    "sha256": "3a79dabb67bb0cd598a18d08b954d9d357c27c30672f82ef5d3f4e7fe6ca3401",
+    "repositoryCommit": "15cd02d304e54cb42a4db4eefe719f76190f4b68",
+    "license": "Cesium, CC-BY-4.0; local derivatives change color and animation timing"
+  },
+  "versions": {
+    "gltfpack": "1.3.0",
+    "meshoptimizer": "1.3.0",
+    "three": "0.186.0",
+    "threeOld": "0.182.0",
+    "gltfTransformCore": "4.5.1"
+  },
+  "tolerance": {
+    "worldDistance": 0.01,
+    "normalizedTimeSamples": 61,
+    "color": 0.000001,
+    "duration": 0.00001
+  },
+  "baselines": {
+    "r0": {
+      "duration": 2.0833330154418945,
+      "tracks": 3,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.27963539958000183,
+        0.6399999856948853,
+        0.21094390749931335
+      ],
+      "metallic": 0
+    },
+    "r1": {
+      "duration": 2.0833330154418945,
+      "tracks": 3,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.8,
+        0.1,
+        0.2
+      ],
+      "metallic": 0
+    },
+    "r2": {
+      "duration": 1.6666663885116577,
+      "tracks": 3,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.8,
+        0.1,
+        0.2
+      ],
+      "metallic": 0
+    }
+  },
+  "outputs": {
+    "r0-ext.glb": {
+      "bytes": 5800,
+      "sha256": "8fc57bca24e5dbbff9cc06ded71a311bc2768e2332f4b591f347937db6330696",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1964
+        },
+        {
+          "byteLength": 5212,
+          "extensions": {
+            "EXT_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cc"
+      ]
+    },
+    "r0-khr.glb": {
+      "bytes": 5496,
+      "sha256": "f587737c0b519655a1330e55e57a1cf6bfff17a327adb5478bcd707f373a3ba2",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1664
+        },
+        {
+          "byteLength": 5212,
+          "extensions": {
+            "KHR_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cz"
+      ]
+    },
+    "r1-ext.glb": {
+      "bytes": 5744,
+      "sha256": "e5b0b604304867e5037a7693223c47edad6ce35633a424adefc890ab7fb1b595",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1964
+        },
+        {
+          "byteLength": 5212,
+          "extensions": {
+            "EXT_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cc"
+      ]
+    },
+    "r1-khr.glb": {
+      "bytes": 5444,
+      "sha256": "ab443b5fdfa1ea953353d261483433982a71b675f7bf4aae2fbcca411007edb4",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1664
+        },
+        {
+          "byteLength": 5212,
+          "extensions": {
+            "KHR_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cz"
+      ]
+    },
+    "r2-ext.glb": {
+      "bytes": 5704,
+      "sha256": "c4e1746a7a5ea54c846fbf0cce58e961131391ce345d5f9cc189a38c7f2f5719",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1924
+        },
+        {
+          "byteLength": 5056,
+          "extensions": {
+            "EXT_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cc"
+      ]
+    },
+    "r2-khr.glb": {
+      "bytes": 5404,
+      "sha256": "ce8f36f4311e03e4aed3f3f6596b01a577a79e40e6d033b3fbe00e90a99a3ec0",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1624
+        },
+        {
+          "byteLength": 5056,
+          "extensions": {
+            "KHR_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cz"
+      ]
+    },
+    "r0-ext-preserve-time.glb": {
+      "bytes": 5764,
+      "sha256": "26df67e488c9bd57746b73418f787931ca004b85077f4aa70f7420dc8164e431",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1928
+        },
+        {
+          "byteLength": 5056,
+          "extensions": {
+            "EXT_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cc",
+        "-af",
+        "0"
+      ]
+    },
+    "r1-ext-preserve-time.glb": {
+      "bytes": 5708,
+      "sha256": "55587f77deec9ef9a810ef7fdf3a3c82fb9f3d57b363b5545993a972480fd9d9",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1928
+        },
+        {
+          "byteLength": 5056,
+          "extensions": {
+            "EXT_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cc",
+        "-af",
+        "0"
+      ]
+    },
+    "r2-ext-preserve-time.glb": {
+      "bytes": 5704,
+      "sha256": "6ea5f9be1d02bdb6a73bc99d0f38cb60f6c88e7b6bd2a7456873a73103544310",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "EXT_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1924
+        },
+        {
+          "byteLength": 5056,
+          "extensions": {
+            "EXT_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cc",
+        "-af",
+        "0"
+      ]
+    },
+    "r0-khr-preserve-time.glb": {
+      "bytes": 5456,
+      "sha256": "2bcf3a61c5071214bca437f5f463e688eb614fd82165cca6e6e9fc16e17c8478",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1624
+        },
+        {
+          "byteLength": 5056,
+          "extensions": {
+            "KHR_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-cz",
+        "-af",
+        "0"
+      ]
+    },
+    "r0-fallback.glb": {
+      "bytes": 5728,
+      "sha256": "81f7894a6295e16ebe6ef6829eb0b378601b407a81d339ebf84251d985dda84a",
+      "extensionsUsed": [
+        "KHR_mesh_quantization",
+        "KHR_meshopt_compression"
+      ],
+      "extensionsRequired": [
+        "KHR_mesh_quantization"
+      ],
+      "buffers": [
+        {
+          "byteLength": 1932
+        },
+        {
+          "uri": "r0-fallback.fallback.bin",
+          "byteLength": 5212,
+          "extensions": {
+            "KHR_meshopt_compression": {
+              "fallback": true
+            }
+          }
+        }
+      ],
+      "args": [
+        "-ce",
+        "khr",
+        "-cf"
+      ]
+    },
+    "r0-fallback.fallback.bin": {
+      "bytes": 5212,
+      "sha256": "cc3f46bd0b2fd6b9405fd642b7a77517427cc64feb3fb83d9c4c72ad635208dd"
+    }
+  },
+  "cases": [
+    {
+      "file": "r0-ext.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.06399862632316246,
+      "absoluteTimeDistance": 0.01685394649971264,
+      "durationDrift": 0.025000333786010742,
+      "diagnosticPass": false,
+      "duration": 2.1083333492279053,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.2796354,
+        0.639999986,
+        0.210943907
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r0-khr.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.06399862632316246,
+      "absoluteTimeDistance": 0.01685394649971264,
+      "durationDrift": 0.025000333786010742,
+      "diagnosticPass": false,
+      "duration": 2.1083333492279053,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.2796354,
+        0.639999986,
+        0.210943907
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r1-ext.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.06399860567485659,
+      "absoluteTimeDistance": 0.016853961317544516,
+      "durationDrift": 0.025000333786010742,
+      "diagnosticPass": false,
+      "duration": 2.1083333492279053,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.800000012,
+        0.100000001,
+        0.200000003
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r1-khr.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.06399860567485659,
+      "absoluteTimeDistance": 0.016853961317544516,
+      "durationDrift": 0.025000333786010742,
+      "diagnosticPass": false,
+      "duration": 2.1083333492279053,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.800000012,
+        0.100000001,
+        0.200000003
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r2-ext.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.0018547162393595428,
+      "absoluteTimeDistance": 0.001855530165597935,
+      "durationDrift": 3.5762786865234375e-7,
+      "diagnosticPass": true,
+      "duration": 1.6666667461395264,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.800000012,
+        0.100000001,
+        0.200000003
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r2-khr.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.0018547162393595428,
+      "absoluteTimeDistance": 0.001855530165597935,
+      "durationDrift": 3.5762786865234375e-7,
+      "diagnosticPass": true,
+      "duration": 1.6666667461395264,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.800000012,
+        0.100000001,
+        0.200000003
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r0-ext-preserve-time.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.0018543824604954511,
+      "absoluteTimeDistance": 0.0018543824604954511,
+      "durationDrift": 0,
+      "diagnosticPass": true,
+      "duration": 2.0833330154418945,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.2796354,
+        0.639999986,
+        0.210943907
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r1-ext-preserve-time.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.0018543592280164816,
+      "absoluteTimeDistance": 0.0018543592280164816,
+      "durationDrift": 0,
+      "diagnosticPass": true,
+      "duration": 2.0833330154418945,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.800000012,
+        0.100000001,
+        0.200000003
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r2-ext-preserve-time.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.0018543587853147375,
+      "absoluteTimeDistance": 0.0018543587853147375,
+      "durationDrift": 0,
+      "diagnosticPass": true,
+      "duration": 1.6666663885116577,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.800000012,
+        0.100000001,
+        0.200000003
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r0-khr-preserve-time.glb",
+      "consumer": "three-0.186.0",
+      "decoder": true,
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.0018543824604954511,
+      "absoluteTimeDistance": 0.0018543824604954511,
+      "durationDrift": 0,
+      "diagnosticPass": true,
+      "duration": 2.0833330154418945,
+      "tracks": 1,
+      "triangles": 188,
+      "vertices": 160,
+      "boneNames": [
+        "Bone",
+        "Bone001"
+      ],
+      "color": [
+        0.2796354,
+        0.639999986,
+        0.210943907
+      ],
+      "metallic": 0
+    },
+    {
+      "file": "r0-ext.glb",
+      "consumer": "three-0.182.0",
+      "decoder": true,
+      "warnings": [],
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.06399862632316247,
+      "durationDrift": 0.025000333786010742,
+      "diagnosticPass": false
+    },
+    {
+      "file": "r0-khr.glb",
+      "consumer": "three-0.182.0",
+      "decoder": true,
+      "result": "rejected-or-semantic-failure",
+      "failurePhase": "load",
+      "error": "Failed to parse URL from ",
+      "errorType": "TypeError",
+      "warnings": [
+        "THREE.GLTFLoader: Unknown extension \"KHR_meshopt_compression\"."
+      ]
+    },
+    {
+      "file": "r0-ext.glb",
+      "consumer": "three-0.186.0",
+      "decoder": false,
+      "result": "rejected-or-semantic-failure",
+      "failurePhase": "load",
+      "error": "THREE.GLTFLoader: setMeshoptDecoder must be called before loading compressed files",
+      "errorType": "Error",
+      "warnings": []
+    },
+    {
+      "file": "r0-khr.glb",
+      "consumer": "three-0.186.0",
+      "decoder": false,
+      "result": "rejected-or-semantic-failure",
+      "failurePhase": "load",
+      "error": "THREE.GLTFLoader: setMeshoptDecoder must be called before loading compressed files",
+      "errorType": "Error",
+      "warnings": []
+    },
+    {
+      "file": "r0-fallback.glb",
+      "consumer": "three-0.186.0",
+      "decoder": false,
+      "warnings": [],
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.06415535416734663,
+      "durationDrift": 0.025000333786010742,
+      "diagnosticPass": false
+    },
+    {
+      "file": "r0-fallback.glb",
+      "consumer": "three-0.182.0",
+      "decoder": false,
+      "warnings": [],
+      "result": "loaded-and-compared",
+      "maxBidirectionalSampleDistance": 0.06415535416734663,
+      "durationDrift": 0.025000333786010742,
+      "diagnosticPass": false
+    }
+  ],
+  "initialFailure": {
+    "worldDistance": 0.06399862632316246,
+    "diagnosticThreshold": 0.01,
+    "classification": "Normalized-phase distance exceeded probe threshold; duration drift measured separately; -af 0 is a single-setting recovery, not proof that all residual error is quantization"
+  },
+  "limitations": [
+    "CPU only, no browser/GPU/engine or visual acceptance",
+    "Finite bidirectional vertex samples, not complete surface or motion proof",
+    "No textures, morph targets, LOD or runtime performance test",
+    "GLB graph master, not original DCC source"
+  ]
+}
