@@ -635,3 +635,19 @@ npm install --prefix tool --ignore-scripts --omit=optional --no-audit --no-fund 
 **实际续接：改稿后更新索引。** 本轮后续主干确实增加QMD说明并停用简报，未改造测试夹具；旧索引查询仍返回旧简报标题／要求，找不到新增QMD入口。确认两个公开集合没有update命令钩子后，执行一次普通 `qmd update`：更新7份docs，154份docs与46份experiments未变。再次检索／取回得到“简报已停用”和运行手册当前停止要求，也能找到QMD读者入口。没有执行模型、向量或Git更新命令。[本仓工具实试]
 
 因此把索引当可更新的资料副本，不把它当最新任务授权；先更新、再核当前源文件。若集合配了update-cmd，先检查其命令，不能照搬状态提示中的Git操作。[本仓实试／经验]
+
+## gh-stack：依赖分支与跨目录恢复
+
+核实与实试：2026-10-24（UTC+8），P90／M6。独立任务的 worktree 隔离已验，本次只补有依赖分支的父层更新与接续，不把相同脏树保护重复算新成果。[研究：范围]
+
+**需求来自实际多 Agent 使用者，而非先装管理器再找用途。** [norswap 的讨论 #473（8-24）](https://github.com/github/gh-stack/discussions/473)报告0.1.0每分支一个worktree时看不到共享栈、rebase受占用分支阻塞，只能自行detach再恢复。[官方0.2.0发布](https://github.com/github/gh-stack/releases/tag/v0.2.0)补共享catalog与跨树支持；[10-06公告](https://github.blog/changelog/2026-10-06-stacked-pull-requests-generally-available/)确认worktree入口。公告的仓库统计不当本题因果收益，旧问题也不外推新版仍坏。[社区：原帖；一手：发布]
+
+**固定工具与试用输入。** 使用官方0.2.1、源码 `29a36d314be664583705f18e41cebdf2b61ad514`；官方linux-amd64二进制SHA-256为 `ffe9d48b6342faffc3b0cb420202ff1df32e24faf32693debd7423274bbdf859`，与发行API一致。实际直接调用发行二进制；正文采用官方扩展的 `gh stack` 命令拼写，未运行扩展安装。复制本仓公开长任务模板到隔离仓库，构造父契约与依赖消费者；不用私人配置／凭据，不提交远端或创建PR。这是明确的合成工作流演示，不是生产修复或同题模型比较。[本仓实试]
+
+**实际结果：接续依据所属树，不依据当前目录。** 父层从v2改到v3后，`rebase --no-trunk` 在consumer产生真实Git文本冲突，exit3；换到有无关在制改动的主树过早`rebase --continue`，仍exit3且保留状态。随后只在consumer解决契约并更新其检查，再从主树continue成功。消费者脚本通过，`git merge-base --is-ancestor contract consumer`为0，恢复状态清除；主树的已跟踪改动与未跟踪文件前后哈希各自相同。[本仓实试]
+
+给 Agent 的操作重点是：先明确父子依赖与写入负责人，父层变化后更新子层；恢复前查实际冲突目录，在那里选择同时满足父层契约与消费者的改法。CLI保留/定位恢复状态，不替代语义验收；不要把“从脏的无关目录发出continue可用”误写成“允许重写正忙或脏的目标树”。独立分支仍沿用普通Git，跨树依赖成为重复负担时再采用，退出前完成已有恢复并保留提交。[研究：选择与限制]
+
+最短重放：从本仓根目录运行 `python3 experiments/replay_gh_stack_dependency.py --binary /path/to/official/gh-stack --output /path/to/new-trial`。先从[官方0.2.1发行页](https://github.com/github/gh-stack/releases/tag/v0.2.1)取得linux-amd64可执行文件；[脚本](../../experiments/replay_gh_stack_dependency.py)校验其固定哈希，只接受新输出目录，保留全部工作树、结果与日志，不下载安装、不清理旧现场。读者换平台时不能跳过哈希检查冒充本次同构复验。[本仓实试／可复制入口]
+
+首轮脚本误把冲突退出码预期写成2，真实CLI返回3后中断；随后从保留状态接续，没有reset重造成功。最终脚本改正为3，并在全新目录完整重跑通过，缺少binary与已有output的失败路径均退出2。正式使用仍检查实际文件、消费者与父链，不只读旧提交标题；未测远端sync、PR、abort、断电与并发锁，不称全功能通过。[本仓实试／返工与边界]
