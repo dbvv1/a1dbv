@@ -47,10 +47,14 @@ function PostsLayoutComponent() {
               <option value="desc">Z to A</option>
             </select>
           </label>
-          <button type="submit" className="border p-1">Apply</button>
+          <p id="posts-apply-help">Edits take effect only after you select Apply.</p>
+          <button type="submit" aria-describedby="posts-apply-help" className="border p-1">Apply</button>
           <Link to="/posts" search={postsSearchDefaults}>Clear filters</Link>
         </form>
-        <p role="status">{visiblePosts.length} of {posts.length} posts</p>
+        <div className="flex flex-wrap gap-x-2">
+          <p role="status">{visiblePosts.length} of {posts.length} posts</p>
+          <p>Applied filter: {q.trim() ? `“${q.trim()}”` : 'All titles'} · Title order: {sort === 'desc' ? 'Z to A' : 'A to Z'}</p>
+        </div>
         {visiblePosts.length === 0 && <p>No matching posts.</p>}
         <ul aria-label="Matching posts" className="list-disc pl-4">
           {visiblePosts.map((post) => (

@@ -56,5 +56,18 @@
     "result": "Real Chrome: live Posts, query/sort, detail, fresh-tab URL, reload, Back/Forward, Clear, empty result and invalid parameter defaults passed",
     "source": "Same executable source as initial delivered commit; normal Vite build and preview",
     "scope": "One cloud desktop Chrome session; no deployment or model-benefit comparison"
+  },
+  "revision_2026_10_24": {
+    "change": "Applied URL filter and sort summary; explicit Apply help",
+    "input": "Source-review feedback, not Agentation export",
+    "tests": {
+      "passed": 8,
+      "failed": 0,
+      "environment": "jsdom, real React DOM and Router, memory history, controlled fetch"
+    },
+    "build": "Vite and TypeScript passed",
+    "browser": "not verified; prior browser receipt covers earlier source only",
+    "source_sha256": "a5388948e94a54c9f65ab5612cfd3411cd24068c89e0389638992f1d853626d6",
+    "review_rework": "First independent cold run: three tests exceeded the pre-existing one-second initial lazy-load wait; unchanged rerun passed. Initial readiness wait bounded explicitly at five seconds; behavior assertions unchanged."
   }
 }

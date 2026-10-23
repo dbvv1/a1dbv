@@ -30,12 +30,16 @@ async function start(url: string) {
   const history = createMemoryHistory({ initialEntries: [url] })
   const router = createAppRouter(history)
   const view = render(<RouterProvider router={router} />)
-  await screen.findByRole('status')
+  // Cold lazy-module startup is not a one-second UI performance assertion.
+  await screen.findByRole('status', {}, { timeout: 5000 })
   return { router, history, view, user: userEvent.setup() }
 }
 function titles() {
   return within(screen.getByRole('list', { name: 'Matching posts' }))
     .queryAllByRole('link').map((link) => link.textContent)
+}
+function expectAppliedSummary(filter: string, order: string) {
+  expect(screen.getByText(`Applied filter: ${filter} · Title order: ${order}`)).toBeInTheDocument()
 }
 async function apply(user: ReturnType<typeof userEvent.setup>, q: string, sort = 'asc') {
   await user.clear(screen.getByRole('searchbox', { name: 'Filter titles' }))
@@ -45,29 +49,62 @@ async function apply(user: ReturnType<typeof userEvent.setup>, q: string, sort =
 }
 
 describe('URL-backed Posts consumer flow (real Router + React DOM, controlled HTTP)', () => {
+  it('keeps edited inputs as drafts until Apply updates the summary, results and URL together', async () => {
+    const { user, history } = await start('/posts?q=report&sort=desc')
+    const appliedURL = history.location.href
+    expectAppliedSummary('“report”', 'Z to A')
+    expect(screen.getByRole('button', { name: 'Apply' })).toHaveAccessibleDescription(
+      'Edits take effect only after you select Apply.',
+    )
+    await user.clear(screen.getByRole('searchbox', { name: 'Filter titles' }))
+    await user.type(screen.getByRole('searchbox', { name: 'Filter titles' }), '  Gamma  ')
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Title order' }), 'asc')
+    expect(screen.getByRole('searchbox')).toHaveValue('  Gamma  ')
+    expect(screen.getByRole('combobox')).toHaveValue('asc')
+    expectAppliedSummary('“report”', 'Z to A')
+    expect(screen.getByRole('status')).toHaveTextContent(/^3 of 4 posts$/)
+    expect(titles()).toEqual(['Delta report', 'Beta report', 'Alpha report'])
+    expect(history.location.href).toBe(appliedURL)
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => expectAppliedSummary('“Gamma”', 'A to Z'))
+    expect(screen.getByRole('status')).toHaveTextContent(/^1 of 4 posts$/)
+    expect(titles()).toEqual(['Gamma note'])
+    expect(history.location.search).toBe('?q=Gamma')
+  })
+
   it('applies filter/sort, retains them through detail and back link, clears explicitly, and restores history', async () => {
     const { router, history, user } = await start('/posts')
     expect(titles()).toEqual(['Alpha report', 'Beta report', 'Delta report', 'Gamma note'])
+    expectAppliedSummary('All titles', 'A to Z')
     await apply(user, 'REPORT', 'desc')
     await waitFor(() => expect(titles()).toEqual(['Delta report', 'Beta report', 'Alpha report']))
+    expectAppliedSummary('“REPORT”', 'Z to A')
     expect(history.location.search).toBe('?q=REPORT&sort=desc')
     const sharedURL = history.location.href
     await user.click(screen.getByRole('link', { name: 'Delta report' }))
     await screen.findByText('Body for Delta')
     expect(history.location.pathname).toBe('/posts/4')
+    expectAppliedSummary('“REPORT”', 'Z to A')
     expect(history.location.search).toBe('?q=REPORT&sort=desc')
     await user.click(screen.getByRole('link', { name: 'Back to results' }))
     await waitFor(() => expect(history.location.pathname).toBe('/posts'))
     expect(history.location.href).toBe(sharedURL)
+    expectAppliedSummary('“REPORT”', 'Z to A')
     await user.click(screen.getByRole('link', { name: 'Clear filters' }))
     await waitFor(() => expect(history.location.search).toBe(''))
     expect(titles()).toEqual(['Alpha report', 'Beta report', 'Delta report', 'Gamma note'])
+    expectAppliedSummary('All titles', 'A to Z')
     await act(async () => { history.back() })
     await waitFor(() => expect(screen.getByRole('searchbox')).toHaveValue('REPORT'))
     expect(titles()).toEqual(['Delta report', 'Beta report', 'Alpha report'])
+    expectAppliedSummary('“REPORT”', 'Z to A')
+    expect(history.location.search).toBe('?q=REPORT&sort=desc')
     await act(async () => { history.forward() })
     await waitFor(() => expect(screen.getByRole('searchbox')).toHaveValue(''))
     expect(screen.getByRole('combobox')).toHaveValue('asc')
+    expectAppliedSummary('All titles', 'A to Z')
+    expect(titles()).toEqual(['Alpha report', 'Beta report', 'Delta report', 'Gamma note'])
+    expect(history.location.search).toBe('')
     expect(router.state.status).toBe('idle')
   })
 
@@ -80,17 +117,20 @@ describe('URL-backed Posts consumer flow (real Router + React DOM, controlled HT
     const second = await start(url)
     await screen.findByText('Body for Beta')
     expect(titles()).toEqual(['Delta report', 'Beta report', 'Alpha report'])
+    expectAppliedSummary('“report”', 'Z to A')
     expect(screen.getByRole('searchbox')).toHaveValue('report')
     expect(screen.getByRole('combobox')).toHaveValue('desc')
     await second.user.click(screen.getByRole('link', { name: 'Back to results' }))
     await waitFor(() => expect(second.history.location.pathname).toBe('/posts'))
     expect(second.history.location.search).toBe('?q=report&sort=desc')
+    expectAppliedSummary('“report”', 'Z to A')
   })
 
   it.each(['?q=123&sort=sideways', '?q=%7B%22bad%22%3Atrue%7D&sort=%5B%22desc%22%5D'])('uses safe defaults for malformed URL input %s', async (query) => {
     const { user, history } = await start(`/posts${query}`)
     expect(screen.getByRole('searchbox')).toHaveValue('')
     expect(screen.getByRole('combobox')).toHaveValue('asc')
+    expectAppliedSummary('All titles', 'A to Z')
     expect(titles()).toEqual(['Alpha report', 'Beta report', 'Delta report', 'Gamma note'])
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(history.location.search).toBe(''))
@@ -101,6 +141,7 @@ describe('URL-backed Posts consumer flow (real Router + React DOM, controlled HT
     expect(titles()).toEqual([])
     expect(screen.getByText('No matching posts.')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('0 of 4 posts')
+    expectAppliedSummary('“absent”', 'Z to A')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     expect(titles()).toEqual([])
