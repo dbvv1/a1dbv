@@ -1,7 +1,7 @@
 # 20 · Codex 长程任务：可恢复、可验收、可控成本
 
 > P60整页复核：2026-10-22；前沿比较：已比较（完整目标、恢复、升级与当前版本接收）。最高水平卡及证据见下文与[续接研究](research/2026-10-12-long-task-evidence.md#p60续接从恢复执行到完成当前目标)。
-> 更新：2026-10-22（UTC+8）。来源与研究记录见[长程任务证据](research/2026-10-12-long-task-evidence.md)。
+> 更新：2026-10-24（UTC+8）；恢复模板同步最新目标检查，发布断点补对象核对入口。来源与研究记录见[长程任务证据](research/2026-10-12-long-task-evidence.md)。
 
 <a id="1-先选任务规模再选机制"></a>
 
@@ -69,6 +69,8 @@
 4. 验收 spec 版本，以及通过、失败、未运行证据适用的版本；[后续一轮全通过不替代未决旧项](22-agent-evaluation.md#连续需求先分清旧债新回归与测量问题)
 5. 待收集子任务、外部 job ID、未知结果与待授权动作
 6. 下一步最小安全动作与停止条件
+
+可复制的 [checkpoint-resume Skill](../templates/codex/.agents/skills/checkpoint-resume/SKILL.md)沿现有记录保存与恢复，先核新要求、取消及接管，再续旧步骤；本轮是正文与模板的一致性修订，未验证自动加载或模型收益。[经验：2026-10-24]
 
 **有效状态被中断，优先继续；错误路径污染了工作树，才比较回退。** Pi Durable 的任务恢复与 AgentRewind 的失败路径恢复回答不同问题：前者保住可继续的运行，后者把上下文与受控文件一起退回，并保留失败经验。不要因一次进程退出清空任务，也不要只清聊天、留着坏文件继续试。见[续接研究](research/2026-10-12-long-task-evidence.md#p60续接从恢复执行到完成当前目标)。[一手／研究]
 
@@ -203,10 +205,10 @@ Code Mode 提示运行时被替换时，先核对先前工具操作与外部任�
 1. 读取最新 `main` 的 commit 与 tree；本地 `origin/main` 可能过期，使用 `git fetch origin main` 后核对 `FETCH_HEAD`，或直接读取远端 ref。基线前进时，先整合并重新检查，不把旧快照整页覆盖回去
 2. 发布输入固定到已检查的提交，按该提交读取相对最新基线的变更内容，不从仍在并行修改的工作目录取文件；删除也显式表示，复用 `base_tree` 保留其余内容
 3. 工具允许时尽量一次写入全部变化；只有工具上限或调用失败需要时才拆分，不设固定文件数。`create_tree` 成功后仍要创建 commit、更新目标 ref，不能把一次写入称为整个发布完成
-4. 失败或回执丢失先查远端 ref、已返回的 tree／commit SHA 与内容；保存已核实结果，只继续未完成步骤。若 `main` 已前进，重查差异并处理冲突，不强推覆盖
+4. 失败或回执丢失先查远端 ref、已返回的 tree／commit SHA 与内容；分步上传时，回执没记录的 blob 也可能已经存在：从受检提交以 `git rev-parse <commit>:<path>` 取预期对象 ID，核对远端对象后复用，只补确认缺失的内容；对象存在不代表 ref 已发布。保存已核实结果，只继续未完成步骤。若 `main` 已前进，重查差异并处理冲突，不强推覆盖
 5. 以非强制方式更新 ref；发布后回读目标 ref、commit／tree SHA 和实际文件差异，确认指向预期成果；远端 CI 的结果另核，不能用本地检查代替
 
-主要依据：[GitHub tree API](https://docs.github.com/en/rest/git/trees#create-a-tree)支持基树与多条变更，省略基树会丢掉未列文件；[ref API](https://docs.github.com/en/rest/git/refs#update-a-reference)支持非强制更新。**[一手；经验：恢复策略]** 关键局限：实际连接器可能有不同的载荷、权限或分支保护限制，批量能力与成功回执必须按当前工具核实，不能为减调用绕过审批。核验范围见[研究记录](research/2026-10-12-development-conditions.md#dot-效率选择少一层包装不等于少一项验收)。
+主要依据：[blob 查询](https://docs.github.com/en/rest/git/blobs#get-a-blob)可按对象 ID 核内容；[GitHub tree API](https://docs.github.com/en/rest/git/trees#create-a-tree)支持基树与多条变更，省略基树会丢掉未列文件；[ref API](https://docs.github.com/en/rest/git/refs#update-a-reference)支持非强制更新。**[一手；经验：恢复策略]** 关键局限：实际连接器可能有不同的载荷、权限或分支保护限制，批量能力与成功回执必须按当前工具核实，不能为减调用绕过审批。核验范围见[研究记录](research/2026-10-12-development-conditions.md#dot-效率选择少一层包装不等于少一项验收)。
 
 **本仓库单例（2026-10-16）**：E4 发布前主干已前进到 `244bc9f`，重新整合后的 [`c9e71c7`](https://github.com/dbvv1/a1dbv/commit/c9e71c790050dd8b410de10d0b05c3fcfc0fe2c2)以它为父提交；后续 [`7a475db`](https://github.com/dbvv1/a1dbv/commit/7a475db46245fb88ed6869b70d9b2a315a34be48) 的发布回执分别记录 tree、commit 和 ref 更新，回读核对五个变更文件与本地受检提交内容相等。这支持把“整合、受检版本、发布、回读”分开核实；不是跨仓库成功率、长任务不中断或 hosted CI 通过的证明。**[经验：Git 历史与发布回读]**
 
