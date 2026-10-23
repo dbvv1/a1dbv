@@ -1,0 +1,62 @@
+diff --git a/tests/test_build_explorer.py b/tests/test_build_explorer.py
+index 96da485..1788216 100644
+--- a/tests/test_build_explorer.py
++++ b/tests/test_build_explorer.py
+@@ -591,6 +591,57 @@ console.log(JSON.stringify(result));
+         self.assertNotIn("\r", content)
+         self.assertEqual(source.read_bytes(), b'<html>\r\n<head></head>\r\n<body>content</body></html>')
+
++    def test_css_continuation_decoding_preserves_escape_boundaries(self):
++        slash = "\\"
++        for newline in ("\n", "\r\n", "\r", "\f"):
++            with self.subTest(newline=repr(newline)):
++                self.assertEqual(builder.css_unescape("a" + slash + newline + "b", string=True), "ab")
++                self.assertEqual(builder.css_unescape("a" + slash * 2 + newline + "b", string=True), "a" + slash + newline + "b")
++                self.assertEqual(builder.css_unescape("a" + slash * 3 + newline + "b", string=True), "a" + slash + "b")
++        self.assertEqual(builder.css_unescape("im" + slash + "\n" + "age"), "im" + slash + "\n" + "age")
++        self.assertEqual(builder.css_unescape(r"im\61 ge.png", string=True), "image.png")
++        self.assertEqual(builder.css_unescape(r"a\"b", string=True), 'a"b')
++
++    def test_css_bare_resource_continuations_remain_rejected(self):
++        (self.folder / "image.png").write_bytes(b"image")
++        for newline in ("\n", "\f"):
++            with self.subTest(newline=repr(newline)):
++                css = ".hero{background:url(im" + "\\" + newline + "age.png)}"
++                with self.assertRaises(ValueError):
++                    builder.embed_css(css, self.folder, self.folder, set())
++
++    def test_css_quoted_resource_line_continuations(self):
++        (self.folder / "image.png").write_bytes(b"image")
++        for newline in ("\n", "\r\n", "\r", "\f"):
++            for quote_char in ('"', "'"):
++                with self.subTest(newline=repr(newline), quote=quote_char):
++                    ref = quote_char + "im" + "\\" + newline + "age.png" + quote_char
++                    css = ".hero{background:url(" + ref + ")}"
++                    result = builder.embed_css(css, self.folder, self.folder, set())
++                    self.assertIn("data:image/png;base64,aW1hZ2U=", result)
++
++    def test_css_import_and_image_set_line_continuations(self):
++        (self.folder / "theme.css").write_text(".hero{color:red}", encoding="utf-8")
++        (self.folder / "image.png").write_bytes(b"image")
++        continuation = "\\" + "\n"
++        css = '@import "th' + continuation + 'eme.css"; .hero{background:image-set("im' + continuation + 'age.png" 1x)}'
++        result = builder.embed_css(css, self.folder, self.folder, set())
++        self.assertIn(".hero{color:red}", result)
++        self.assertIn("data:image/png;base64,aW1hZ2U=", result)
++        self.assertNotIn("@import", result)
++
++    def test_css_continuation_missing_and_remote_resources_preserve_output(self):
++        self.output.parent.mkdir(parents=True)
++        self.output.write_text("SENTINEL", encoding="utf-8")
++        continuation = "\\" + "\n"
++        for ref, expected in (("miss" + continuation + "ing.png", "找不到本地资源 missing.png"),
++                              ("ht" + continuation + "tps://example.com/a.png", "远程资源 https://example.com/a.png")):
++            with self.subTest(ref=ref):
++                self.source.write_text('<style>.hero{background:url("' + ref + '")}</style><p>content</p>', encoding="utf-8")
++                with self.assertRaisesRegex(ValueError, expected):
++                    builder.build(self.manifest, self.output, force=True)
++                self.assertEqual(self.output.read_text(encoding="utf-8"), "SENTINEL")
++
+     def test_css_imports_resolve_relative_to_each_stylesheet(self):
+         (self.folder / "styles" / "nested").mkdir(parents=True)
+         (self.folder / "styles" / "main.css").write_text('@import "nested/theme.css" layer(theme) supports(display: grid) screen; body{margin:0}', encoding="utf-8")
