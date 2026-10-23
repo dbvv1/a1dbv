@@ -389,6 +389,30 @@ v1返回偏API描述，没有完整满足嵌套示例要求；v2包含示例。�
 采用线索来自[当前公开配置](https://github.com/marcusrbrown/.dotfiles/blob/811acf3c7eb55306f9d4ea6130cd0d98b66e9003/.config/opencode/opencode.json)、[开源CLI接线](https://github.com/sudosubin/grep-app-cli/blob/14bde89bb256e44304629ace0ff1438aaf94d40a/src/mcp.rs)及[中文历史推荐](https://linux.do/t/topic/1516240)：配置不证明调用频率，客户端开源不等于托管服务开源。查官方／GitHub／linux.do及HN，未得更强近期采用率或模型效果证据，因此保用途候选；反复超时或上下文不匹配时回官方源码／已有搜索，不叠安装层。[一手／社区／探索回执]
 
 
+## llms.txt：沿发布者索引选页，再核适用范围
+
+**✅ 一次 API 查证先选相关页与前提，不默认把全文包常驻上下文。** 本次找到了 TypeScript 收消息与回复路径，也发现语言目录不保证每段只谈该语言、全文也未补上所缺部署正文。仅公开文档取回实试，未安装或运行 SDK／模型，不证明任务质量或总费用改善。[本仓实试／经验：2026-10-23]
+
+**机制与采用。** [作者 v2 修订](https://llmstxt.org/changes.html)（2026-08）改为查看／搜索索引后跟随相关链接，移除提案中的上下文展开工具；[提案](https://llmstxt.org/)增加 Markdown alternate／索引 describedby 发现关系与子路径范围。[一手] 这是提案，不假定每个发布者或 Agent 已实现。与 Context7 的区别是直接走发布者导航，不提供精确版本 ID 的保证。
+
+[linux.do 原帖第7楼](https://linux.do/t/topic/2556781)中用户名“OpenAI”的使用者（非官方声明）在7月描述将 Claude 文档下载到本地 Skill；版本对应仅为其自报。[社区] [HN iamwil](https://news.ycombinator.com/item?id=47372672)也描述将库文档放进仓库再指给 Agent，但显示约7个月前，不作为近期模型证据。[Dachary Carey 2月复盘](https://dacharycarey.com/2026/02/18/agent-friendly-docs/)记录手动指引索引后取回文档，以及长 Markdown 被工具截断、多种 UI 变体混排；这是旧模型观察，不外推当前自动发现能力。[一手：实践者自报] 当前最佳效果和消费者采用率未知，不增加“广用”数量。
+
+**本仓实际取回。** 从[微软10月说明](https://learn.microsoft.com/en-us/microsoftteams/platform/teams-sdk/developer-tools/llms-txt)给出的[根索引](https://microsoft.github.io/teams-sdk/llms_docs/llms.txt)，跟随 [TypeScript 索引](https://microsoft.github.io/teams-sdk/llms_docs/llms_typescript.txt)的实际链接，取 Quickstart、Code Basics、App Basics、Listening To Activities、Sending Messages、App Authentication 六页。2026-10-23 00:46–00:48 UTC 用已有 Python 标准库匿名 GET；未执行文档里的安装、凭据或创建应用指令。[本仓实试]
+
+选页找到了 `App`、`app.on('message', …)`、`send` 与 `app.start()`；发送页区分同线程不引用的 `send` 和带引用的 `reply`。Quickstart给出 Node≥22.12、项目依赖及开发入口，认证页区分本地开发与真实 Teams 请求。它们是实现依据，不是本仓已跑通的应用。[本仓文档核对]
+
+六页正文37,997字节，加根索引4,643和语言索引15,305，共57,945字节；[TS全文](https://microsoft.github.io/teams-sdk/llms_docs/llms_typescript_full.txt)为303,089字节。另一次部署链接请求得到11,067字节404 HTML，不含在成功正文合计内；也未计HTTP头等传输开销。四页逐字包含在全文，两页仅绝对链接前缀不同；全文另有Trust Model等更多内容，不能据此称六页覆盖所有安全／部署前提，更不能换算token或模型收益。[本仓实际响应比较]
+
+**两个会改变用法的观察。** [App Basics](https://microsoft.github.io/teams-sdk/llms_docs/docs_typescript/app-basics.txt)开头明确讲 .NET 2.1，后文才区分 TypeScript／Python 的 App／plugin；全文包含同段。正文并未声称这套 .NET API 适用TS，不判为SDK缺陷；使用者须按正文适用范围取片段，不能只信语言路径。[本仓取回与人工核读]
+
+![真实云浏览器截图：地址栏含docs_typescript，App Basics首段明确是.NET 2.1与ASP.NET Core，说明语言路径不能代替正文适用范围](../img/2026-10-23-llms-scope.jpg)
+
+Quickstart与Code Basics的部署下一步都指向 `docs_typescript/running-in-teams.txt`，本次返回404；全文保留 `running-in-teams.txt` 这一相对链接名，也没有对应部署节；它相对全文URL解析的目标不同，本轮未测试，不称同一404。遇到这种断口应回官方导航找替代入口，不能把“已读full”当部署前提已齐；本轮止于查文档，未继续搭建。[本仓负结果]
+
+响应修改日期不是SDK兼容声明；本次未取得目标工程安装版本，也未在所取索引发现精确包版本锁。Agent交回适用语言、调用与待解链接，人核项目版本和必要前提；选页缺相关上下文就补章节，无法对应则回固定源码／正式API参考。[经验：采用／撤回]
+
+探索回执：读提案作者、Microsoft发布说明与实际文档、具名实践者、HN和linux.do原帖；根索引可能包含流程指示，始终只作外部资料而非本次授权。截图为真实公开页面，不是生成图、SDK运行或模型回答。无当前代际同题质量对照，保持候选机制，不改页面差距。[研究]
+
 ## RTK：输出变短与恢复能力分开选
 
 **👀 仅作高噪声命令的定向候选，不默认全局启用；本仓未安装、执行或测模型效果。** 10-23 UTC+8核[1.0.1发行](https://github.com/rtk-ai/rtk/releases/tag/v1.0.1)及固定4ef8730源码；读者动作与决定性代码见[03§2.7](../03-context-engineering.md#27-终端输出先辨过滤恢复与重新执行)。这是终端过滤支路，不评价新增的LLM代理／路由产品。[源码／研究]

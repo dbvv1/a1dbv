@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 编辑更新：2026-10-23（UTC+8）；新增终端输出过滤与恢复的源码核查，RTK未试用；此前定点原文与摘要委派仍限资料，未运行当前模型；[此前证据范围](research/2026-10-13-context-tool-choice.md#p73定点原文与摘要委派)；[旧页首范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
+> 编辑更新：2026-10-23（UTC+8）；补官方文档索引选页实试；RTK仅源码核查未试用，未运行当前模型；[此前证据范围](research/2026-10-13-context-tool-choice.md#p73定点原文与摘要委派)；[旧页首范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
 > 一句话：**先区分需求、环境、模型能力、上下文和验证器问题；上下文应提供必要信息，而非尽可能堆满。**
 
 ## 30 秒选择：开始一个具体修改任务
@@ -183,6 +183,14 @@ Anthropic《Effective context engineering》（2025-09）是旧代设计参照�
 [恢复分支](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/tee.rs#L17-L105)／[recall实现](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/retriever.rs#L637-L727)／[bypass定义](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/lib.rs#L812-L842)。pytest路径仍[返回子进程退出码](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/runner.rs#L284-L367)，不能把摘要变短直接说成失败被掩盖。[一手：源码]
 
 Agent交回实际命令、退出状态和所用恢复记录；人核本题需要的失败细节是否还在。需要完整诊断的下一次运行先选原生输出；反复回读或重试抵消收益，就撤回该命令的过滤。`rtk gain`只是工具侧输出估计，不是整项费用或订阅额度的实测节省。[经验；[同题对照与当前版本边界](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)]
+
+### 2.8 外部文档：先沿索引选页，不默认整站灌入
+
+**✅ 已有官方文档入口时，先读其语言／任务索引，再取实现与前提页；不为一次查 API 先装 MCP 或下载整站。** `llms.txt` 是导航线索，不是版本锁或完整性证明；找不到适用页就回官方网页／固定源码，已有 Context7 精确版本入口也可沿用。[经验；[公开取回实试](research/2026-10-22-frontier-trials.md#llmstxt沿发布者索引选页再核适用范围)]
+
+给 Agent 的具体任务可以是：“从发布者索引找 TypeScript 收消息并回复的例子，交回 API、运行前提、适用版本和未解链接。”本次 Teams SDK 路径取到了 `app.on('message', …)` 与 `send`／`reply` 的区别，但 `docs_typescript` 下的 App Basics 首段仍是明确标注的 .NET 2.1；全文包也保留同段。**按正文语言与版本选用，不能拿 URL 的语言名替代判断。** [本仓文档取回实试，未运行 SDK／模型]
+
+关键前提链接失效时，补查对应官方入口，不靠改读 full 文件宣布完成：本次选页的部署下一步返回404，全文也未补上对应部署正文。人接收的是适用于当前工程的调用与未解前提，不是文件更短；若选页不断漏掉依赖，就扩大相关章节而非机械坚持最小上下文。[经验；[范围与截图](research/2026-10-22-frontier-trials.md#llmstxt沿发布者索引选页再核适用范围)]
 
 ## 3. 会话层面的上下文管理
 
