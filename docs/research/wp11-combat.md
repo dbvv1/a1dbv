@@ -1,10 +1,10 @@
 主线：一／二／三；战斗决策、原生能力取舍与第二次修改
 改变的建议：[研究] 战斗先统一结算、效果与时钟；AI先分感知、选敌、意图与攻击资格，再按复杂度升级。
-新证据：原WP11战斗与AI模块的固定源码、官方契约及开发者复盘原文迁入；本次仅拆分，未新增实测。
+新证据：原WP11固定源码、官方契约及复盘迁入；2026-10-23追加P111卡牌完整闭环：近期作品修订、两套Unity固定实现与AI制作反例，仍未新增运行实测。
 
 # WP11分册：战斗、效果与AI
 
-核实日期、许可与验证范围沿用[原记录总说明](2026-10-14-game-wp11-gameplay-architecture.md)及各节；本文只移动完整研究块，不改变原结论。
+核实日期、许可与验证范围沿用[原记录总说明](2026-10-14-game-wp11-gameplay-architecture.md)及各节；旧研究块沿用原结论；新增研究各节单列日期与边界。
 
 分册：[基础与生命周期](2026-10-14-game-wp11-gameplay-architecture.md) · [战斗与AI](wp11-combat.md) · [镜头与进度](wp11-camera.md)。
 
@@ -461,3 +461,72 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 - **UE 可选全局缩放。** [一手] [UE 5.8 UInputTriggerTimedBase](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/UInputTriggerTimedBase?lang=en-US)的 bAffectedByTimeDilation 默认 false，选择是否将全局时间缩放用于 held duration；不据此承诺角色局部倍率、菜单暂停或动画也已同步。[研究] 只需此契约时保留原生触发器，不能因 Unity 路径不同就复刻输入层。
 
 **选择与边界。** [研究] 沿现有执行实例保留资格、取消与唯一提交；UI 表达按法进度还是技能进度由用途定，动画释放沿前述窗口／退出政策，不额外搭状态框架。原生 Hold 满足即停止拆分；满蓄自动释放也合法，Veloren 不是统一规则。沿原蓄力二改加入攻速，再核停顿／暂停中的进度、耗能、松开／取消和释放次数；本轮仅官方契约、历史公告及固定源码阅读，未运行游戏／引擎／模型或验证手感。
+
+<a id="p111-deckbuilding"></a>
+## P111：卡牌构筑，从出牌到下一场的完整闭环
+
+核实：2026-10-23（UTC+8）。改变05 §7：从单招结算扩到单人PvE局内构筑的完整类型链，区分牌定义／本局永久牌／本战实例、唯一费用提交、有序触发、牌区循环、敌方回合与一次奖励。这里“永久”指本局跨战斗，并非账号解锁；局外meta沿原P105，不扩多人竞技、商业抽卡或完整Roguelike。[研究]
+
+**结论：先借完整原型读通循环，或借交互组件补表现；两者都不等于生产底座。** NueDeck的资格主要在UI、规则与装饰随机共流，CardHouse示例先迁弃牌区再执行效果／费用，正好暴露“看得见出牌”与可靠结算的差别。以下只读资料／固定源码，未安装项目、未购买插件、未运行Unity／UE／第三方代码、模型或玩家实验；不声称性能、二改工时、乐趣、存档或AI效果已验证。[一手／研究]
+
+### 作品对照：资源循环、信息与组合出口
+
+| 决定性原文 | 已核事实与选择 |
+|---|---|
+| Mega Crit [2026-05-22 Neowsletter 22](https://www.megacrit.com/news/2026-5-22-neowsletter-issue-22/)；[STS2官方公告汇总](https://steamcommunity.com/app/2868840/allnews/?l=english)，Main Update #2 `v0.107.1`，2026-06-18 UTC／19 UTC+8 | 5月替换Doormaker仅在beta，6月进入主线，不能停在“尚未实装”。设计复杂度是官方解释，不能推出当前全部平衡已固定。[一手] |
+| 同一官方汇总，`v0.107.1`工程师Ed说明与修订 | 多个派生seed的PRNG仍可能相关，曾可由开局act预测curse；改为xoshiro256**并由作者展示10k seed散点改善。这里只支持“分流之后仍需核相关与泄露”，不把作者检验当本仓统计验证，也不要求迁移所有项目RNG。[一手／研究] |
+| 同版与2026-07-30 beta `v0.110.0`条目 | Howl From Beyond／Bombardment在抽入手**后**触发；Hellraiser仅在敌人全部无限HP时限9张防软锁。7月修部分场景泄露洗牌顺序，Juggling第三张Attack引出自动牌时应复制原牌而非自动牌。分别支持时序、退化循环、隐藏信息、源实例身份，不推断同一根因或通用9张上限。[一手／研究] |
+| [Monster Train 2开发者访谈，2025-09](https://www.pcgamer.com/games/monster-train-2-lost-arsenal-update/)；仅开发者本人引语作一手，记者叙述作二手 | 费用、抽牌、容量具有跨构筑价值；作者解释永久成长路线低胜率可能因前期死亡，不能当统计已证明因果。Corruption的统计胜率与“不公平”感不同，支持把成型前生存和体验解释独立验，不照搬其平衡值。[一手／二手／研究] |
+| Firaxis署名，[Marvel’s Midnight Suns战斗说明，2022-10-26](https://blog.latam.playstation.com/2022/10/26/marvels-midnight-suns-explicamos-el-juego-por-turnos-y-cartas-de-combate-tactico-superheroico/) | 历史AAA跨子类型参照：每英雄8牌混合、补手至6、3次出牌／2次重抽；攻击／技能产Heroism，英雄牌和环境耗它，环境不耗出牌次数；随机在手牌而非命中失败。这展示手牌、行动与场地资源可分开，不是每局重建牌组的同类模板，也非2026现行数值核验。[一手／研究] |
+
+**玩家反馈不是投票定真理。** [机核，2025-05-21 MT2 demo体验](https://www.gcores.com/articles/199123)肯定组合，也提初始搭配选错后的补救成本；[TapTap，2025-06-05](https://www.taptap.cn/moment/679819562606135434)同时谈成型满足、词条解释与无尽拖沓。这些版本／个人体验不能合成总体口碑，却补上“能结算不等于愿意继续玩”的验收。[社区／研究]
+
+[STS社区讨论原帖](https://www.reddit.com/r/slaythespire/comments/1rzfy38/potential_hot_take_the_game_isnt_and_shouldnt_be/)既有支持削无限，也有反对终关才硬封的声音。因此正文不把无限自动判bug：人先决定有意组合、重复劳动和无进展软锁的边界，再定规则出口／告知时机；本轮未做受控试玩或玩家分层统计。[社区／研究]
+
+<a id="p111-implementations"></a>
+### 固定实现：看一次出牌实际经过谁
+
+#### Unity完整原型候选：NueDeck
+
+固定 `Arefnue/NueDeck@e0b61aa325064939874ad6ac4f3b551348eed4a6`（2022-09-17），[MIT](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/LICENSE)，工程版本为Unity `2020.3.34f1`；不称当前Unity已兼容。`V2.1.0`标签剥离为`8429de834b72e55aba4ae59b0db5b37093a27dee`，不是此次固定HEAD，商店日期不能替Git版本。[一手]
+
+| 链路／固定源码 | 读到什么；直接影响采用 |
+|---|---|
+| [HandController L302–332](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Collection/HandController.cs#L302-L332) → [CardBase L73–95](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Card/CardBase.cs#L73-L95) | 松鼠标时UI检查出牌许可、mana、目标；Use仅重查IsPlayable，协程扣费、逐项延迟后执行Action，再OnCardPlayed。单卡有顺序，不证明全局触发队列或其他入口安全。[一手／研究] |
+| [CollectionManager L54–122](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Managers/CollectionManager.cs#L54-L122) | 有手牌上限、空抽牌堆回收弃牌并继续抽、弃牌／消耗分区；每次Random.Range抽一个元素，不是预洗好固定顺序。牌区用CardData引用，不能承诺同定义两张有独立强化与复制来源。[一手／研究] |
+| [CombatManager L92–140](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Managers/CombatManager.cs#L92-L140)、[敌人行动 L279–290](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Managers/CombatManager.cs#L279-L290)、[EnemyBase L51–66](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Characters/EnemyBase.cs#L51-L66) | 我方广播后补mana、抽牌；敌方广播后弃手牌，协程逐个等待敌行动；意图显示NextAbility，行动用该能力。可读通回合闭环，规则和移动协程仍相连。[一手／研究] |
+| [胜利 L245–273](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Managers/CombatManager.cs#L245-L273) → [ChoiceCard L27–35](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Card/ChoiceCard.cs#L27-L35) → [GameManager L33–57](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Managers/GameManager.cs#L33-L57) | EndCombat守卫后保存角色血量、清牌区、建金币／卡奖励，选择直接向CurrentCardsList加CardData。该列表由DontDestroyOnLoad对象保内存，不能称磁盘存档或恢复奖励事务；所读路径OnExitApp为空。[一手／研究] |
+
+**决定性缺口不是“再加几张牌”。** CardBase [L180–225](https://github.com/Arefnue/NueDeck/blob/e0b61aa325064939874ad6ac4f3b551348eed4a6/Assets/NueGames/NueDeck/Scripts/Card/CardBase.cs#L180-L225)弃牌／消耗动画用`UnityEngine.Random.value`，抽牌又用同一全局随机，装饰二改可扰规则采样。未见已扣费操作统一取消／退款、局代次身份、可恢复队列或无副作用精确预览；`WaitForSeconds`也不是独立规则时钟。以上是所读链路缺口，不宣称对全部文件形式化证明。[一手／研究]
+
+[Exhaust扩展提交](https://github.com/Arefnue/NueDeck/commit/9f20261fd7e2b17bb3782bb5032d86a6a5fcd767)同时改CardBase、CollectionManager、UI和Prefab，说明加牌区跨多个绑定；[意图缩放／稀有度重叠修订](https://github.com/Arefnue/NueDeck/commit/7490c1d9dd7c6f41614c921b7c1ed8231c3fce85)是实际历史维护，不是本仓复测。当前[issues](https://github.com/Arefnue/NueDeck/issues)限制创建且无结果不能当无bug；2023未关闭PR不证明维护恢复。奖励Relic分支为空、完整删牌升级商店未核，不写成已有。[一手／研究]
+
+**👀 适合研究完整PvE原型，不直接采用为现行生产底座。** 新项目先估版本迁移、身份／队列／持久化改造成本；若需求包含复杂自动出牌、任意恢复、可靠取消或永久单卡改造，应撤回整套采用，只保经许可且通过项目测试的局部模块。[研究]
+
+#### Unity交互组件候选：CardHouse
+
+固定 `pipeworks-studios/CardHouse@6d4a4cd167835889f81fa38d5ce7aa6a771698bf`（2025-03-19，Updating to Unity 6），工程`6000.0.41f1`，README仍荐`2022.3.0f1`，不能忽略版本文字不同步。[根CC0](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/LICENSE)之外，[Third-Party Notices](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/Assets/CardHouse/Third-Party%20Notices/Third-Party%20Notices.txt)将Bebas Neue／Montserrat字体列为OFL，美术为CC0，不能统一按根许可处理素材。[一手]
+
+- **资格与提交不在同一处。** [DragDetector L16–29](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/Assets/CardHouse/CardHouseCore/Scripts/Dragging/DragDetector.cs#L16-L29)查DragGates，[CurrencyGate L15–25](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/Assets/CardHouse/CardHouseCore/Scripts/Gates/CurrencyGate.cs#L15-L25)查余额；[CardGroup L110–235](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/Assets/CardHouse/CardHouseCore/Scripts/Groups/CardGroup.cs#L110-L235)重验drop／group／目标gates并可恢复布局，但`UseOnTargetAndDiscard`先在L232迁入弃牌，再发目标事件、HandlePlayed。新增弃牌触发会碰到此先后，不可直接假设“费用→效果→弃牌”。[一手／研究]
+- **效果和费用由绑定决定。** [示例SpellZap prefab L1122–1148](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/Assets/CardHouse/SampleGames/DeckBuilder/Cards/DeckbuilderSpellZap.prefab#L1122-L1148)先费用Activate再目标操作；[CurrencyCost L30–35](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/Assets/CardHouse/CardHouseCore/Scripts/Currencies/CurrencyCost.cs#L30-L35)直接减值，没有同方法重验／回滚。Prefab保留旧显示名ResourceCost，实际经脚本引用解析；静读不冒充引擎绑定验证。[一手／研究]
+- **计时链不是事务。** [CardTransferOperator L22–48](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/Assets/CardHouse/CardHouseCore/Scripts/Card/Operators/CardTransferOperator.cs#L22-L48)支持转移／抽牌，缺牌可执行timed chain再试；[TimedEvent L15–31](https://github.com/pipeworks-studios/CardHouse/blob/6d4a4cd167835889f81fa38d5ce7aa6a771698bf/Assets/CardHouse/CardHouseCore/Scripts/Events/TimedEvent.cs#L15-L31)是UnityEvent后WaitForSeconds，未提供持久化规则游标。[一手／研究]
+
+[作者复盘](https://www.pipeworks.com/cardhouse-unity-tool/)承认原想数据立即结算、视觉追赶，但卡牌waypoint编排未完全解决，测试反馈促使加入timer链，并建议期间收窄输入中断。这是工具设计的真实取舍，不是所有视觉／规则解耦已实现。[一手] 作者工作室有商业卡牌经验，不等于那些产品使用了CardHouse。[研究]
+
+[issue #6](https://github.com/pipeworks-studios/CardHouse/issues/6)（2025-09-08，Open）报告Unity6教程旧输入API报错；[#7](https://github.com/pipeworks-studios/CardHouse/issues/7)同日报告教程sparkle allocator警告。未复测、不能推广成所有游戏内存泄漏；test scenes也不等于本仓测试通过。[社区／研究]
+
+**👀 已有规则、缺布局／拖放／牌区表现才采用其交互单位。** 所读路径未核campaign奖励与本局完整快照，不承诺精确预览、快进、独立RNG或可靠取消。需要这些能力时回到项目已有结算所有者，不能用更多TimedEvents堆成事务系统。[研究]
+
+### UE付费对照：有队列说明，不等于源码验过
+
+[Roguelike Deckbuilder Toolkit作者商品／文档页](https://www.fab.com/listings/c03abf82-580d-4cb1-b649-b19222235b60?lang=en)说明Action Queue分离logic／visual，示例有save／load、转场、胜败、RewardManager、story／shop；节点图明确为手工放置，不是随机地图生成。该公开说明使它成为完整campaign候选，不证明取消、队列持久化、奖励幂等或升级迁移已满足本页契约。[一手／研究]
+
+**👀 仅付费评估，不把广告承诺写成生产验证。** 未购买、未读付费源码、未运行；实际取得时分别核引擎与素材条款。作者另列字体OFL、Epic Infinity Blade／Paragon与CC图标，商店可购或允许AI标签均不能代替具体许可链。沿既有UE DataAsset／ActorComponent与窄规则即可起步，不因有卡牌而强加GAS；只有购买后同一闭环二改明显更适配，才扩大模板采用。[一手／研究]
+
+### AI案例与验法：同seed也可能玩不下去
+
+[Clanbound作者与玩家原帖](https://www.reddit.com/r/aigamedev/comments/1wlcv9z/i_cant_code_a_deckbuilder_claude_code_and_my_own/)：作者称Claude写码，从Unity WebGL移至PixiJS后同seed战斗一致；艺术自制，AI素材包有人工清理，非“零手修”，总工时／成本未知。[社区：作者自述]
+
+玩家Reloecc报告拖牌／hover失效，跨战斗／continue仍坏；鼠标释放事件丢失是作者后续诊断，作者又称修复并上传，本仓未独立试玩或核修复前后。另有完整一局反馈称太易、音效重复、风格不齐，作者承认英雄牌池重叠较高。十英雄／156牌等规模不能证明完成，也不能从这一个案例推断当前模型普遍能力。[社区／研究]
+
+**因此AI交付分三层验。** 资料与ID／引用可静态核；费用、牌区、触发与恢复以确定输入和首次分歧轨迹核；真实拖放／取消、窗口失焦、跨战斗与继续游戏须在实际客户端验。人还需试玩早中晚生存、构筑取舍、文字理解和等待感，AI自动对局不能代替这些判断。正文的抽牌回能＋复制／自动出牌二改模板是待执行方案，仍继承§11通用验收，不另造随机／事件平台。[研究]

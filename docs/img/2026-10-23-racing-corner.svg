@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="630" viewBox="0 0 1120 630" role="img" aria-labelledby="title desc">
+<title id="title">同一右弯：提前看懂、选择路线、松键恢复</title>
+<desc id="desc">机制示意，不是实测轨迹。路面向右转弯；入弯前应看见路线，弯中区分碰撞朝向、移动方向与美术车头，出弯检验恢复和奖励。镜头视域不代表实际引擎参数。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="context-stroke"/></marker></defs>
+<rect width="1120" height="630" rx="22" fill="#101d2b"/>
+<g font-family="sans-serif" fill="#eef5fa"><text x="40" y="48" font-size="27" font-weight="bold">一个弯道，把信息、控制和反馈放在一起验</text><text x="40" y="78" font-size="15" fill="#adc1d0">机制示意 · 非实测轨迹 · 不预设漂移一定比抓地快</text></g>
+<path d="M190 540 L190 320 Q190 180 350 180 L1000 180" fill="none" stroke="#3d535e" stroke-width="112"/>
+<path d="M190 540 L190 320 Q190 180 350 180 L1000 180" fill="none" stroke="#a8bdc5" stroke-width="3" stroke-dasharray="15 15"/>
+<path d="M190 500 L90 285 L340 285 Z" fill="#56b9df" fill-opacity=".13" stroke="#56b9df" stroke-dasharray="6 5"/>
+<g fill="#f7cc67"><path d="M152 292L168 277L152 262" fill="none" stroke="#f7cc67" stroke-width="6"/><path d="M152 340L168 325L152 310" fill="none" stroke="#f7cc67" stroke-width="6"/></g>
+<g transform="translate(190 450)"><rect x="-17" y="-30" width="34" height="60" rx="9" fill="#f2c86b" stroke="#172634" stroke-width="3"/><rect x="-11" y="-19" width="22" height="14" rx="4" fill="#203f51"/><path d="M0 -33V-96" stroke="#fff" stroke-width="4" marker-end="url(#arrow)"/></g>
+<g transform="translate(245 229) rotate(70)"><rect x="-17" y="-30" width="34" height="60" rx="9" fill="#f2c86b" stroke="#172634" stroke-width="3"/><rect x="-11" y="-19" width="22" height="14" rx="4" fill="#203f51"/></g>
+<path d="M245 229L310 177" stroke="#63d7a1" stroke-width="5" marker-end="url(#arrow)"/>
+<path d="M245 229L271 148" stroke="#68b9ff" stroke-width="5" marker-end="url(#arrow)"/>
+<path d="M245 229L327 201" stroke="#f2c86b" stroke-width="5" marker-end="url(#arrow)"/>
+<g transform="translate(770 180) rotate(90)"><rect x="-17" y="-30" width="34" height="60" rx="9" fill="#f2c86b" stroke="#172634" stroke-width="3"/><rect x="-11" y="-19" width="22" height="14" rx="4" fill="#203f51"/></g>
+<path d="M808 180H940" stroke="#63d7a1" stroke-width="5" marker-end="url(#arrow)"/>
+<path d="M735 205L748 210M710 205L723 210" stroke="#f6d879" stroke-width="4"/>
+<g font-family="sans-serif" fill="#eef5fa">
+<text x="38" y="578" font-size="21" font-weight="bold">① 提前看见入口</text><text x="38" y="604" font-size="16" fill="#adc1d0">地标、路肩、必要标识与镜头共同提示</text>
+<text x="368" y="127" font-size="21" font-weight="bold">② 选抓地或漂移</text>
+<text x="700" y="266" font-size="21" font-weight="bold">③ 松键后仍可控</text><text x="700" y="293" font-size="16" fill="#adc1d0">核路线、恢复、奖励时机和再次输入</text>
+</g>
+<rect x="372" y="330" width="700" height="255" rx="15" fill="#1c3041"/>
+<g font-family="sans-serif" font-size="18">
+<path d="M400 365H452" stroke="#63d7a1" stroke-width="4" marker-end="url(#arrow)"/><text x="470" y="371" fill="#63d7a1">物理朝向：碰撞体朝哪里</text>
+<path d="M400 401H452" stroke="#68b9ff" stroke-width="4" marker-end="url(#arrow)"/><text x="470" y="407" fill="#68b9ff">速度方向：车实际往哪里移动</text>
+<path d="M400 437H452" stroke="#f2c86b" stroke-width="4" marker-end="url(#arrow)"/><text x="470" y="443" fill="#f2c86b">视觉车头：美术表现，不自动决定前两者</text>
+<text x="400" y="490" fill="#eef5fa">先确认跟随目标，再调镜头阻尼与视域。</text>
+<text x="400" y="521" fill="#adc1d0" font-size="16">记录首次可见时机；比较同一入弯条件下的路线与纠偏。</text>
+<text x="400" y="550" fill="#adc1d0" font-size="16">更快的圈速、更多的漂移动作，都不单独证明更好玩。</text>
+</g></svg>

@@ -819,3 +819,49 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 [vehicle-pgrc]: https://steamcommunity.com/app/2737300/discussions/0/599640708794564635/
 [vehicle-topdrifters]: https://www.reddit.com/r/Unity3D/comments/1majlpx/we_made_a_game_with_unreal_engine_and_switched_to/
 [vehicle-unity]: https://docs.unity3d.com/Packages/com.unity.vehicles@0.1/changelog/CHANGELOG.html
+
+<a id="p112-racing-corner-loop"></a>
+
+## P112：街机赛车——让一个弯道可预判、可选择、可恢复
+
+核实：2026-10-23（UTC+8）。**[研究] ✅ 先联调路线提示、抓地／漂移选择与出弯恢复，不把“漂得更多”当作好开的标准。** 对应 [05 Gameplay 架构](../../domains/game-dev/05-gameplay-architecture.md)；本节承接 P103 的车辆底座选择，不重复插件排名。范围为单车、弯道与坡面的一条完整操作，不扩道具、联网或开放世界。**当前最高水平未知；实现候选均未试用，未运行游戏、引擎或模型。**
+
+### 先定弯道任务，再调漂移参数
+
+| 玩家要做的事 | 当前默认与撤回条件 [研究] |
+|---|---|
+| 提前知道往哪走、何时动作 | 让入口、出口与关键边缘可辨，再补必要路标；提示仍晚于操作窗口就先改布局／镜头，不只增转向力 |
+| 选择抓地或漂移 | 明定哪些弯道值得以转向约束换奖励；比较同入弯条件的净路线收益，直道也被迫刷漂移就重调奖励／成本 |
+| 松键后可靠出弯 | 分开物理朝向、速度方向、视觉车头，约定恢复与奖励；画面暗示的出口与实际运动不符就缩视觉偏转或改交接 |
+| 失误后重新掌控 | 按接地与起跳状态恢复，不每帧强扶正；破坏正常坡面、跳跃或有意路线就收窄辅助 |
+
+### 现成实现：借状态契约，不搬整套游戏
+
+[SuperTuxKart 1.5 固定配置](https://github.com/supertuxkart/stk-code/blob/1fb491f507216c5d181ccd85f29ff08eca003827/data/stk_config.xml#L483-L523)把漂移中转向映射到同向的最小／最大范围：反打可放宽弯度，不立即反向；视觉转角、恢复时间和结束后物理旋转分别配置。通用默认 `reduce-turn-min/max=0.2/0.8`、`revert-visual-time=0.7`、`time-till-bonus` 奖励门槛 `1.0/3.0` 秒（`bonus-time` 持续时间另为 `3.0/4.0` 秒），只是该版本默认，不是各车最终值或通用最佳参数。[一手]
+
+[固定 skidding.cpp](https://github.com/supertuxkart/stk-code/blob/1fb491f507216c5d181ccd85f29ff08eca003827/src/karts/skidding.cpp#L379-L551)区分累积与松键后的恢复状态；释放时安排物理朝向调整并发可能的奖励。**👀 借“进入—维持—释放—恢复”及反馈同源，不把低摩擦等同完整漂移。** 源文件标 GPL-3.0-or-later；不直接复制进许可不相容工程，也不据代码证明手感。现成 Unity 底座继续按 P103 的许可、版本、依赖筛选。[一手／研究]
+
+版本不可混用：[官方发布公告](https://blog.supertuxkart.net/2025/10/supertuxkart-15-release.html)日期为2025-10-20；本轮[下载页](https://supertuxkart.net/Download)仍将1.5列为最新稳定版，并说明Evolution尚无公开测试构建。以下Evolution问题只作开发反例，不声称已在1.5复现或修好。[一手／研究]
+
+### 画面必须说明动作时机，镜头必须说明去向
+
+任天堂[2025-05-21发行前访谈 Part 3](https://www.nintendo.com/us/whatsnew/ask-the-developer-vol-18-mario-kart-world-part-3/)解释强化白色浪尖，是为了让玩家看清波峰、判断跳跃时机；[Part 4](https://www.nintendo.com/us/whatsnew/ask-the-developer-vol-18-mario-kart-world-part-4/)以地标和倾斜地形引导路线，并观察不熟练成员发现卡点。**借的是把行动线索做进环境，不是取消箭头；交叉路仍要明确指路。** 这是设计者报告，不是发布后学习收益测量。[一手／研究]
+
+[Unity Cinemachine Follow 3.1.7](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineFollow.html)已有位置／角度阻尼与仅跟yaw的World Up绑定。**✅ 原有跟随组件优先，先选跟随参照，再调偏移、阻尼与FOV；不直接把漂移装饰节点当唯一方向。** 仅跟yaw适合相应地形承诺，不推广到反重力赛道；入口更晚可见或出口离屏就撤回该镜头变化。回看／重生历史沿既有相机段处理。[一手／研究]
+
+### 反例改变验收，不代表作品普遍失败
+
+- [Evolution #5720，2026-05-04](https://github.com/supertuxkart/stk-code/issues/5720)报告漂移视觉旋转未匹配物理，长窄车尤其穿帮；无精确构建号，仍未关闭。由此增加车长二改的显示／碰撞检查，不能据此判1.5所有车型有缺陷。[社区／研究]
+- [#5460](https://github.com/supertuxkart/stk-code/issues/5460)记录两轮接地时恢复过慢，也指出简单扶正可能使坡面轮子离地。维护者2026-06-13说明Evolution补了前后轮情况及正常起跳的激活延迟后关闭；本轮未核修订全文或复测。由此分测侧轮、前后轮、坡面与起跳，不只验翻车按钮。[一手／研究]
+- [mass 2026-08-06原文§7–8](https://note.com/we_love_mkwrld/n/n79e4b13aeb28)认为直线漂移单独不更快，需接后续弯道／MTJA；落地漂移收益有限。作者自称非最上位，全文未锁补丁号，只作具名玩家经验，不冒充专业排名或普遍定律。[社区]
+
+[任天堂2025-08-15技巧](https://www.nintendo.com/au/news-and-articles/get-a-head-start-on-mario-kart-world-with-a-few-tips/)也将漂移与其他加速来源分开，辅助转向开启／关闭分别允许两级／三级Mini-Turbo。借“辅助有明确政策和反馈”，不照搬其奖励限制；该页未注明补丁号。[一手／研究]
+
+### AI 实施与二改清单：规则可测，手感仍须玩
+
+1. 沿既有控制器明确状态、单位和松键／离地政策；记录输入、速度、三种方向、接地、阶段与奖励，不先造车辆框架。
+2. 同一弯道比较抓地、早漂、晚漂；固定输入查规则，人判断可控性。记录首次看见入口、首次正确操作、出弯速度和纠偏／碰撞，不只比圈速。
+3. 验奖励门槛前后松键、反打、离地松键与落地、擦墙、两轮接地、恢复中再次漂移；提示与实际奖励保持一致。
+4. 第二次只改车长或奖励门槛，复核碰撞对应、旧路线、提示和恢复。新手判断路线与时机，熟练者判断选择是否保留；脚本通过不等于好玩。
+
+[弯道机制图](../img/2026-10-23-racing-corner.svg)呈现入口—弯中—出口与三方向；图为机制示意，非实测轨迹。**未验证：目标设备成本、真实操控、AI二改工时与玩家收益；专业玩家同构建一手反例仍缺，不以来源数、热度或完成清单代替效果。**[研究]
