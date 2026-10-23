@@ -262,6 +262,19 @@ example本来不是精确业务断言，这不是工具缺陷。[默认检查范
 
 [固定git.go](https://github.com/alibaba/open-code-review/blob/375f64cd6f67a48a135da83cfcf59c52669a09cb/internal/diff/git.go)跳过结尾为斜杠的否定模式，随后partitionDiffs又不把此类gitignore排除放入Excluded；实测与[#1793](https://github.com/alibaba/open-code-review/issues/1793)一致。Git自己不认为a.go被忽略，base/head也已固定，不是模型漏看或范围不同。另有[#1779](https://github.com/alibaba/open-code-review/issues/1779)支持列表问题及[#1752](https://github.com/alibaba/open-code-review/issues/1752)Action零评论隐藏warning问题，不能混为同一个bug；本仓未运行Action。[一手：源码／使用者报告；本仓工具实跑]
 
+### 反向复测：清单齐了，也可能选错文件
+
+**目录重新纳入与文件重新纳入必须分开验。** 10-23 用同一 v1.13.3 发行程序做配对夹具：先强制跟踪 `src/a.go`，固定两个提交且只修改该文件，再比较 Git 自身的 ignore 判定与保存的 preview；不调用模型。[本仓工具实跑]
+
+| .gitignore 两行规则 | Git `check-ignore --no-index` | OCR preview | 既有清单 helper |
+|---|---|---|---|
+| `/*/`、`!/src/` | 不忽略 a.go | 可审／排除都空 | 退出1，发现漏项 |
+| `src/`、`!src/a.go` | 仍忽略 a.go，父目录未打开 | 把 a.go 列为可审 | 退出0，原始差异清单一致 |
+
+**清单对账通过不是 ignore 策略通过。** Git diff 仍包含已跟踪文件；若任务打算沿 gitignore 过滤评审输入，再逐项用 `git check-ignore --no-index -- src/a.go` 核规则：退出0表示忽略、1表示不忽略，其他结果是错误。是否实际评审该文件由任务意图决定，不能因 helper 退出0就声称过滤政策正确。[本仓复测／研究]
+
+返工发现：直接取消“跳过目录否定”也不够，`*` 加 `!*/` 只重开目录，不重开同样被 `*` 忽略的普通文件。本轮补丁停留在未编译草稿，缺少可用 Go 工具链，未产出修改后的 CLI，不称修复完成；源码中的排除理由缺失是另一问题。[本仓实跑／源码范围]
+
 ### 借用什么，何时不用
 
 [最小复现与对账说明](../../experiments/opencode_review_delegation.md)给出已真跑的两份小脚本；路径含空格／换行、rename/delete及坏输入已有回归。helper只核清单，不认证排除理由或实际审完。
