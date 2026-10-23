@@ -944,3 +944,48 @@ Unity 包的 UCL／Unity-dependent 条件、Celeste64 代码与资产分开许�
 验收刺激按失败来源选择：急反向查前视翻转，台阶／下落查垂直窗，窄门／绕柱查近裁剪和恢复振荡，近墙换肩查准星承诺，持续输入切镜查参考系，暂停／重生查历史和尾震；30／60／120 Hz、长帧与不同宽高比覆盖呈现变化，不当通用性能承诺。第二次需求加窄门和连续多击后，第一版开阔路线仍须接收。[研究]
 
 探索回执：截至 2026-10-23 UTC，读 Unity／Epic／Xbox 官方、Cinemachine／Celeste64 固定源码、作者 LinkedIn／开发日记、Unity Discussions、Steam 与中文博客原文；中文新版本深度实作未找到可作为决定性证据者。Steam 更新公告正文未取得，改用已可读作者原帖支持发布事实；Unity Issue Tracker 重定向不可读，不报告其当前修复状态。未运行引擎、模型或试玩，不据来源齐全宣称最高水平已知。[研究]
+
+<a id="p117-audio-lifecycle"></a>
+
+## 音频事件与混音：声音结束，不等于背景应该恢复
+
+**核实：2026-10-23 UTC。** [研究] ✅ 原生播放器／混音器继续用，补的是一次声音事件的完整退出路径：获准播放后按需让位，结束只撤自己的影响，最后依据仍活跃的请求和玩家当前设置重算。已有[并发](#45)、[持续声](#50)与[低延迟](#96)结论不重写；本节不开发通用音频框架。
+
+### 先做一张事件表，再选混音手段
+
+[研究] AI 从现有调用点整理每类声音的：**触发事实、实例所有者、类别／并发、目标总线、让位条件、停止条件、暂停政策**。命中跟结算结果，普通脚步不因“有声”就压低整场；机器循环跟活跃状态更新同一实例，离开状态、对象销毁／回池与切场都必须收尾。播放失败或过期的请求不应遗留背景衰减；受音频锁或加载影响的等待态与已开始播放分开处理。
+
+一个够小的路由是 `Music → GameMusic → UserMusic → Master`：`UserMusic` 接设置滑条，`GameMusic` 接对白／菜单等游戏混音；SFX、UI、Voice 只按实际独立调节需求分组，不机械扩成很多总线。**两段对白重叠时，第一段结束不能直接写回“进入前音量”**；保留第二段的让位，最后恢复的是此刻用户设置，而非旧值。重叠可选最强、叠加并封顶或显式状态优先，先按体验选一条，再映射所用工具；不同工具的“blend”并非同一算法。[研究]
+
+| 当前实现 | 同题选择，而非工具名单 | 最容易接错的地方 |
+|---|---|---|
+| **Unity 6.3 原生：✅ 默认** | [一手] [Audio Mixer Inspector](https://docs.unity3d.com/6000.3/Documentation/Manual/AudioMixerInspectors.html)提供 Send 与 Duck Volume，适合按实际信号压低背景；snapshot 适合已定义的游戏混音状态。[研究] 只缺这两件事，不引中间件 | [SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)调用后该 exposed 参数不再随 snapshot；用户与游戏层分开。检查返回值，在 Start 或之后应用设置，不在 Awake／OnEnable／AfterSceneLoad |
+| **Unreal 原生：✅ 已用 UE 就复用** | [一手] [Audio Modulation](https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-modulation-reference-guide-in-unreal-engine)已有 Control Bus／Mix，可把用户与设计控制分开。[研究] 不为移植 Unity 的管理器再包一层相同系统 | 多个调制器的组合依参数类型：音量衰减 dB 相加，HPF 取最大、LPF 取最小；不是所有参数做平均。按[Quick Start](https://dev.epicgames.com/documentation/unreal-engine/audio-modulation-quick-start-guide?lang=en-US)，同一 Mix 只能有一个活跃实例；两个所有者不能各自把同一 Mix 当私有开关 |
+| **FMOD Studio 2.04：✅ 已有作者工作流时用** | [一手] [Mixing](https://www.fmod.com/docs/2.04/studio/mixing.html)支持有范围的 snapshot 实例、优先级、分组和过渡。[研究] 需要事件内编辑多层让位时，可省项目自建作者工具 | blending 只对范围为 −∞ 至 +10 dB 的已纳入音量属性做相对加法，其他属性仍覆盖（如 compressor gain）；同组按强度合成。snapshot 要停止／解除触发，音频片段播完不自动等于它也结束 |
+| **Wwise：👀 已采用或确需集中作者工具时比较** | [一手] 官方 [2025 动态混音工作坊](https://info.audiokinetic.com/gamesoundcon-2025)围绕 Game Parameters、States、auto-ducking、side-chain、HDR 组合设计。[研究] 状态明确时沿已用 State／RTPC，依声音强弱让位才比较 meter／side-chain；不为一个音量滑条迁移 | 作者工具仍需要游戏给出正确状态与结束；本轮未跑 Wwise、未核出一套可直接复制的当前项目配置。许可／构建维护沿[已有许可比较](2026-10-14-game-wp10-client-modules.md#6-许可维护与采用边界)另核 |
+| **Howler 2.2.4／Web Audio：✅ 轻量 Web 沿现有入口** | [一手] [Howler 固定源码](https://github.com/goldfire/howler.js/blob/003b917c40cb41cf382ba47ae0ed7a35ca2abe76/src/howler.core.js#L1003-L1144)已有实例 ID、pause／stop／fade；[MIT](https://github.com/goldfire/howler.js/blob/003b917c40cb41cf382ba47ae0ed7a35ca2abe76/LICENSE.md)。[研究] 不需要中间件作者界面时，补少量项目规则即可 | `pause` 保播放位置，`stop` 重置到起点；`end` 在循环每轮也发，取消 fade 也可能发 `fade`，不能把回调名称当“整次声音自然结束” |
+
+**近期制作对照：复杂交互音乐不自动要求中间件。** [一手] Sandfall 团队在 [2025-03-27《Clair Obscur: Expedition 33》官方采访](https://www.unrealengine.com/developer-interviews/inside-the-development-journey-of-clair-obscur-expedition-33)说明全部使用 UE Audio；音乐管理器按探索、战斗、过场、菜单、对白分 context，每个 context 同时一曲，接管时旧／新曲分别转出／转入，曲目由少量同架构 MetaSound preset 构造。**[研究] 可借“用途分层、统一模板、明确交接”，不照搬其制作量；这不是单人无音频人员达到同等成品质量的证明。**
+
+### 四个参数失败，比再加一层 AudioManager 更值得先查
+
+| 观察到的失败 | 证据与修正方向 |
+|---|---|
+| 滑条改过以后，暂停／对白 snapshot 不再改变音乐音量 | [一手] Unity `SetFloat` 的显式接管规则。[研究] 分用户增益与游戏混音参数，先查谁写同一参数；[ClearFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.ClearFloat.html)该版文档只承诺复位初值，不据此宣称已验证完整 snapshot 归还流程 |
+| 两个房间 snapshot 都单独正常，边界重叠却不合预期 | [社区／一手] [FMOD 2024-10-24 原帖](https://qa.fmod.com/t/blending-reverb-snaphots/22219)报告异常，官方解释 scope、覆盖／相对加法及分组规则，未确认发帖者最终根因。[研究] 先画重叠状态与作用属性，不把“blending”理解为任意参数平均 |
+| 配音结束，音乐仍被压低；把一个 release 调短却没用 | [社区／一手] [FMOD 2026-03 原帖](https://qa.fmod.com/t/the-sound-that-contains-a-snapshot-instrument-does-not-stop/24103)：活跃 snapshot instrument 会让父事件不能自然结束；用户后来发现 snapshot 的 AHDSR release 仍是 1 秒，之前改的是 side-chain 的 10ms。[研究] 分“语音结束→解除触发→混音淡出结束”，这两个数是故障现场，不是推荐参数 |
+| 循环一轮就恢复背景，或取消淡出却触发“完成后停止” | [一手：源码] Howler [_ended](https://github.com/goldfire/howler.js/blob/003b917c40cb41cf382ba47ae0ed7a35ca2abe76/src/howler.core.js#L1951-L2008)先发 `end`，循环时仍继续；[_stopFade](https://github.com/goldfire/howler.js/blob/003b917c40cb41cf382ba47ae0ed7a35ca2abe76/src/howler.core.js#L1407-L1430)取消时也发 `fade`。[研究] 终止入口区分整次结束、循环边界、取消与主动 stop，并核实例身份；没有把此静读当浏览器回调复测 |
+
+### AI 实施顺序与最小反例
+
+1. **列出现有事实，不先重构。** AI 找到重复触发、循环创建处、用户音量写入处、snapshot 开关与清理处；人决定哪些声音应该互相让位。
+2. **先画信号路由与退出路径。** 保已有播放器，记录本次实例身份；自然结束、被抢占、主动打断、播放失败、对象退场分别进入适当清理，重复通知只能清一次。
+3. **再确定组合规则。** 同一参数只由明确的入口提交；重叠请求按所选规则重算，不各自保存／恢复旧音量。循环不靠每帧 Play 驱动，暂停／恢复与退场分开。
+4. **注入交错与二改。** A→B→停A→用户改音量→重播A→旧A回调→停B→退场；再把短提示改循环／将对白中断，核新实例仍在、旧影响归还。播放失败、遗漏 ID、无效参数也必须有结果。
+5. **分开验收。** 自动核触发次数、身份、活跃请求、目标参数和渲染数值；人用真实资源与设备听起音、方向、对白可懂度、音乐呼吸与反复循环。改 release／阈值后仍须听，不用峰值或接缝通过代替耐听。
+
+**最小反例已跑，不是一套音频框架。** [研究；本仓纯状态与浏览器离线合成检查] [脚本](../../experiments/game-audio-lifecycle.mjs)用两个重叠请求和独立用户音量比较正确路径与故意错误的“保存旧值→结束恢复”。示例只选最强让位：用户 `0.5`，A乘 `0.5`、B乘 `0.25`；A先结束时应仍是 `0.125`，错误单推子恢复到 `0.5`。用户改成 `0.8` 时应仍让位到 `0.2`。12时点、5类非法输入及重复／旧代结束检查通过；数字为合成测试，不是混音推荐值。
+
+复跑纯控制：`node experiments/game-audio-lifecycle.mjs`。另有[静态离线页](../../experiments/game-audio-lifecycle.html)，通过本地静态服务打开后用原生 `OfflineAudioContext` 将常量循环缓冲渲染到内存，显示两条路径的断言 JSON；它不播放声音、不请求麦克风、不取外部资源。**本仓浏览器离线渲染已通过：48kHz、双通道、144000帧，12个检查点与预期相符，见[原始结果](../../experiments/game-audio-lifecycle-results.json)。Unity／UE／FMOD／Wwise运行、真实资源听感和设备输出未测。** [W3C Web Audio](https://www.w3.org/TR/webaudio/#OfflineAudioContext)的离线缓冲与实际输出是不同验收面。
+
+**探索回执：** 截至2026-10-23，核Unity／UE／FMOD官方文档、Sandfall团队采访、FMOD 2024／2026原帖与Howler固定源码；中文社区实践页未完整读到，B站只取得说明未听看，未拿它们支撑技术结论；A Sound Effect 长访谈正文不可读，不使用检索摘要补出制作细节。当前最高制作水平未知，默认胜出的是此范围下已有原生能力与最小项目规则。[研究]
