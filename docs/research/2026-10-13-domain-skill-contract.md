@@ -799,3 +799,13 @@ W 的 Trivy 为 0.71.0，N 为 0.70.0；初始 DB 元数据相同也没有数据
 [Google skill-reach的overlap说明](https://google.github.io/skill-reach/cli/overlap/)明确词面相近不证明冲突、零重叠也不保证安全；用来挑检查对象，不据分数删Skill。本仓未试用。[一手]
 
 本轮同时回扫官方、GitHub、HN／Reddit与中文技术渠道；未取得可支持本题同装净收益的近期中文独立实测，不称社区共识。运行时假设调试候选已被23／15覆盖，不换产品名再算机制；原有发现／加载／结果分验继续保留。[研究：探索负结果]
+
+## 会话内改 Skill：刷新与正文生命周期
+
+2026-10-23核公开原文；这是原生操作补充，未运行Claude Code或验证模型收益，不增加已实试候选。[范围]
+
+[官方实时编辑](https://code.claude.com/docs/en/skills#edit-a-skill-during-a-session)区分启动时已存在的监听目录与之后新建的顶层目录；后者需要手动reload，而且不会因此补上自动监听。[正文生命周期](https://code.claude.com/docs/en/skills#skill-content-lifecycle)说明调用后的文本留在对话，后续轮次不重读。因此建议刷新后重新调用，并按任务明确采用新版；不声称会抹去历史正文。[一手／操作推论]
+
+[NVIDIA固定安装文档](https://github.com/NVIDIA/skills/blob/00c1b405688741cccdf8577a4a4a7428d5429c1e/docs/advanced-install.mdx#L111-L127)将检查安装CLI、实际链接、`/reload-skills`与`/skills`串成排查入口。其1.5.16最低要求指skills安装CLI，不是Claude Code；≤1.5.15漏建链接为维护者说明，本轮未复跑安装器。[一手：维护实践，7月16日修订]
+
+[用户报告93987](https://github.com/anthropics/claude-code/issues/93987)是9月13日Windows跨盘junction下刷新后仍漏技能的单例，核查时仍open且无评论；原Desktop 2.1.266与另起CLI 2.1.263版本不同，不能视作同版本对照，也不能说当前版已修复。若刷新仍不可见，核文件／链接与版本，不重复改description猜测；没有取得本题中文独立复现。[社区自报／研究：失败分流]

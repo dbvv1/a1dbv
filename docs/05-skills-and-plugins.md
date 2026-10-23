@@ -94,6 +94,12 @@ Skill frontmatter 的 Hook 在调用时注册，后续匹配事件仍可能执�
 
 **局限**：上述是当前官方契约和固定源码阅读，未运行宿主或验证 Skill 对当前模型的净收益。
 
+### 会话内改 Skill：刷新目录后，再调用新配方
+
+**先用原生刷新，不为每次改正文重启会话。** 非bare会话会监听启动时已存在的个人／项目／`--add-dir`下 `.claude/skills/`，仅覆盖 `SKILL.md` 文本；若顶层 `.claude/skills/` 是会话启动后才建，执行 `/reload-skills`，之后该目录每次改动也再次执行。用 `/skills` 核目标，再在消息开头显式 `/技能名` 调用，并核新版关键步骤。[一手：[当前官方说明](https://code.claude.com/docs/en/skills#edit-a-skill-during-a-session)，2026-10-23]
+
+**发现刷新不等于替换旧对话。** 已载入正文保留在上下文，不会每轮重读；不要仅凭“文件已改”就认为后续采用新版。若同一目录也是插件，改hooks、MCP、agents或output-styles要用 `/reload-plugins`，不是只刷新Skill。具体安装反例与范围见[研究记录](research/2026-10-13-domain-skill-contract.md#会话内改-skill刷新与正文生命周期)；本仓未运行原生客户端。[一手：[正文生命周期](https://code.claude.com/docs/en/skills#skill-content-lifecycle)；经验：操作选择]
+
 ## 2.5 Codex：Skill 应补什么，又可能增加什么
 
 OpenAI 官方 [skill-creator](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/skill-creator/SKILL.md) 明确写着 “Default assumption: Codex is already very smart”，要求只增加模型不具备的上下文，按任务脆弱性选择自由度，并把参考资料按需加载。这里支持的是**领域知识、可靠脚本、特定工具契约与真实约束**；不等于官方保证任何短 Skill 都更有效。**[一手：固定提交，2026-10-10 读取；研究：解释]**
