@@ -58,7 +58,7 @@ npm exec -- intent load '@tanstack/router-core#router-core/search-params' --json
 
 2026-10-23 23:03（UTC+8），重新构建同一份已交付源码，以普通Vite预览在真实Chrome运行，保留原JSONPlaceholder请求，没有替换API或数据。`dolorem`＋降序得到3/10；详情、复制URL到新标签及刷新均保留条件和正文，浏览器前进／后退、返回结果、清空、空结果及非法参数默认也已实际操作通过。[本轮真实客户端；[逐项记录与源文件哈希](browser-acceptance.json)]
 
-![真实Chrome：dolorem筛选与降序保留三条结果，打开第9条详情后条件仍在](../../docs/img/2026-10-23-tanstack-url-state.png)
+![真实Chrome：dolorem筛选与降序保留三条结果，打开第9条详情后条件仍在](../../docs/img/2026-10-23-tanstack-url-state.jpg)
 
 截图是实际页面，不是生成示意；只支持这个桌面浏览器与窄功能范围，不是跨设备体验或部署接收。
 

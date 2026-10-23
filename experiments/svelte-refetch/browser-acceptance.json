@@ -1,0 +1,54 @@
+{
+  "checked_at_utc": "2026-10-23T15:14:00Z/2026-10-23T15:22:00Z",
+  "upstream_commit": "7dea2077f4851e7709b68db11eb6f3e02c0dfa46",
+  "patch": "refetch-loading.patch",
+  "data_component_sha256": "f256a2c1e51eca56cbfad474e35bec571c8d76fd22e202bd423491c3a14861b0",
+  "package_lock_sha256": "505d7986f1445d4d3eb5cc42244d260b07490daf90debc5822833144ed612a2e",
+  "environment": "Desktop Chrome with normal Vite HTTP preview; existing fixed production build",
+  "data_source": "Unchanged example handler: 50 in-memory posts and original 4000ms delay; no response replacement or external API",
+  "checks": [
+    {
+      "case": "initial load",
+      "observed": "Boundary pending then page1, limit5, Post1–5 and enabled buttons"
+    },
+    {
+      "case": "Next pending and completion",
+      "observed": "URL page2; old Post1–5 retained, boundary pending2, Loading=true, both buttons disabled; then Post6–10/page2 and buttons restored"
+    },
+    {
+      "case": "Previous pending and completion",
+      "observed": "Old Post6–10 retained and buttons disabled; then Post1–5/page1 and buttons restored"
+    },
+    {
+      "case": "Limit and URL",
+      "observed": "limit3 written to URL; original rows retained during wait; then 3 rows,17 pages"
+    },
+    {
+      "case": "fresh tab and reload",
+      "observed": "/?limit=3&page=2 copied to new tab and reloaded; each shows boundary pending then Post4–6/page2/limit3"
+    },
+    {
+      "case": "captured page2 to page3 transition",
+      "observed": "limit3; pending retains Post4–6/page2 and disables both buttons; completion shows Post7–9/page3 and enables buttons"
+    }
+  ],
+  "limits": [
+    "Limit remains editable; changing it repeatedly while pending was not tested.",
+    "This does not establish request counts, cache correctness, deduplication, error reset/retry, rapid repeated clicks, invalid URL handling, Back/Forward history, cross-browser or deployment behavior.",
+    "No dedicated hydration diagnostics or complete console audit.",
+    "posts.loading can differ from visible boundary pending; this is a visible waiting-state fix, not a network lifecycle fix."
+  ],
+  "screenshots": [
+    {
+      "path": "../../docs/img/2026-10-23-svelte-pagination-pending.jpg",
+      "sha256": "d2d25b6e07ac77904a268b38dc4eb00786835c2fa2b9119000a8c1a00c81e1ab",
+      "state": "Page2 to page3 pending; old rows4–6, Loading=true, disabled buttons"
+    },
+    {
+      "path": "../../docs/img/2026-10-23-svelte-pagination-completed.jpg",
+      "sha256": "12f22506e3507b845cc65fc62344ce4d9a098cb11787cb8dbeebdd6ff87db7c0",
+      "state": "Page3 rows7–9, Loading=false, buttons restored"
+    }
+  ],
+  "capture": "Actual browser-native clipped screenshots,600x390,JPEG; no DOM or pixel alteration; images alone do not prove all interaction checks"
+}

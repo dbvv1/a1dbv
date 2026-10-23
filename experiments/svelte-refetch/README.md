@@ -1,6 +1,6 @@
 # SvelteKit 翻页时保留旧行并显示等待
 
-在固定公开示例里，保留 `await`，将翻页提示与 Previous/Next 的 disabled 依据改成 `$effect.pending() > 0`。这两处修改在编译后组件试验中通过；不是完整应用、浏览器或上线验收。
+在固定公开示例里，保留 `await`，将翻页提示与 Previous/Next 的 disabled 依据改成 `$effect.pending() > 0`。这两处修改已在编译后组件试验与真实浏览器正常路径通过；不是全场景或部署接收。
 
 ## 来源和范围
 
@@ -38,7 +38,18 @@ Limit 输入没有禁用。`$effect.pending()` 是所在边界异步工作的计
 - 已通过：实际组件的独立 Svelte 服务器渲染保留首次 pending 文本，没有初始数据表。这并不声称 SSR 输出首屏帖子；原例本来就由 pending boundary 输出占位。
 - 已通过：修改前后 svelte-check 均 0 错误／0 警告；git diff --check。
 - 已通过：同一源码、两行补丁与lockfile的干净副本执行生产构建退出0，生成SSR及客户端产物；adapter-auto未识别部署目标，不等于已部署。
-- 历史未完成：前次构建和随后重复类型检查被终止，原因未知；不以本次成功倒推原因。此前同一补丁类型检查已完成通过。独立SSR测试最初的dev上下文错误通过修正测试编译方式解决，不是应用补丁。
-- 未验证：真实浏览器画面、HTTP 路由和传输、Runed URL 同步、查询缓存／重复请求、hydration、错误后的 reset/retry、真实部署。
+- 后续真实浏览器正常路径已补验，见下；请求缓存／重复请求、专门hydration诊断、错误reset/retry及部署仍未验。
 
-组件试验使用真实编译器和真实 Query 类，但替换 URL 状态及响应来源，以手动 resolve/reject 控制等待，不替代全应用测试。server-check 分别验证服务端数据契约与 SSR，不是端到端客户端／服务端往返。
+初始组件试验使用真实编译器和真实 Query 类，但替换 URL 状态及响应来源，以手动 resolve/reject 控制等待，不替代全应用测试。server-check 分别验证服务端数据契约与 SSR，不是端到端客户端／服务端往返。
+
+
+## 真实浏览器：等待保旧行，完成后交新页
+
+2026-10-23 23:14–23:22（UTC+8），同一补丁和依赖锁的生产构建经普通Vite预览运行；Chrome真实调用原例内存数据handler，保留原4秒延迟，没有替换响应。[逐项记录](browser-acceptance.json)覆盖首次等待、双向翻页、Limit／页码URL同步、新标签页重开及刷新。[本轮真实客户端]
+
+下图是**实际页面局部截图**，不是重绘：limit3从第2页前往第3页时，旧Post4–6仍在、Loading为true、两按钮禁用；完成后变为Post7–9、Loading为false、按钮恢复。
+
+![真实翻页等待：旧Post4–6保留且双按钮禁用](../../docs/img/2026-10-23-svelte-pagination-pending.jpg)
+![真实翻页完成：Post7–9显示且按钮恢复](../../docs/img/2026-10-23-svelte-pagination-completed.jpg)
+
+Limit仍可编辑。本轮还观察到查询对象loading与可见边界pending不一致，因此只能接收界面等待行为，不能说网络活动、重复请求或缓存问题已经解决。图片呈现两种状态，其他交互结论以逐项记录为依据。[本轮实测／范围]

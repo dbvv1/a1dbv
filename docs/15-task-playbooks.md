@@ -142,7 +142,7 @@
 
 Agent先手动读取官方窄Skill的async资料，区分首次boundary占位与后续异步工作，再修改真实Data组件；官方autofixer实际运行无报告，但不能代替行为验收。没有改成社区建议的 `.current` 路线来牺牲原有await语义，也未验证自动加载Skill或模型收益。[一手／本仓实试]
 
-[两行补丁、失败到通过的重放与输入校验](../experiments/svelte-refetch/README.md)可复制。人核边界是否含其他异步工作、哪些控件该禁用；本例Limit输入仍可改。实际Query类与组件在jsdom通过，服务端schema／handler和独立SSR另验；生产构建已完成，**真实浏览器、URL／HTTP与hydration未验**，不能当成应用已交付。[本仓实试／范围]
+[两行补丁、失败到通过的重放与输入校验](../experiments/svelte-refetch/README.md)可复制。人核边界是否含其他异步工作、哪些控件该禁用；本例Limit输入仍可改。实际Query类与组件在jsdom通过，服务端schema／handler和独立SSR另验；生产构建及[真实浏览器正常翻页、URL同步与刷新](../experiments/svelte-refetch/README.md#真实浏览器等待保旧行完成后交新页)已补验；错误恢复、缓存／重复请求与专门hydration诊断仍未验。[本仓实试／范围]
 
 ### 实例：升级后远程CSV失败，先拆传输与解析
 

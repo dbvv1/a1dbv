@@ -147,7 +147,7 @@
     }
   ],
   "screenshot": {
-    "path": "../../docs/img/2026-10-23-tanstack-url-state.png",
+    "path": "../../docs/img/2026-10-23-tanstack-url-state.jpg",
     "sha256": "5acbce0b95d8e07eadf5f7af81965a9b27fafcf83f7a4e87579dce073ad9d4df",
     "capture": "Unmodified bytes from documented browser getScreenshot(), after fresh-tab deep-link refresh"
   },

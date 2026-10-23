@@ -590,4 +590,4 @@ timeout 60s .venv/bin/python experiments/replay_pwasm_consumer.py
 
 - [Meta 10-19薄编排器](https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/)针对阶段固定、领域规则不同的重复接入，以固定定序和隔离领域知识组织工作；生产收益为作者自报，未找到公开实现或同题独立采用，不据此另造编排器。[一手／研究]
 - [Xojo 10-20 Agentic Mode](https://blog.xojo.com/2026/10/20/use-ai-coding-agents-with-xojo-agentic-mode/)给该IDE增加编译反馈闭环，未取得足以改变已有Codex／Claude用户通用选择的证据。[一手／研究]
-- Meta中文搜索主要为二次转述，不充作独立采用；Claude dynamic-workflows官方页本轮读取失败，未用摘要补全实现或效果。[范围]
+- Meta中文搜索主要为二次转述，不充作独立采用。更正：此前把 Claude 工作流文档的入口识别错误写成官方页读取失败；10-23 已读到正确的[官方 workflows 页面](https://code.claude.com/docs/en/workflows)。此前失败不证明该页不可访问；目前仅核文档，未运行原生客户端或验证收益。[范围]
