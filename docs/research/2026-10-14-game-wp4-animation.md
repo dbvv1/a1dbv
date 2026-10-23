@@ -1,6 +1,6 @@
 主线：二／三／四；G1 动画、绑定、面部供给、第二次修改与授权
-改变的建议：[研究] 攻击后的防御先选输入仲裁与合法出口，命中停顿不替代恢复政策；[经验] 完整许可动作组、固定骨架与接触契约优先；生成只补内容缺口。先核生产资格与实际返回身份，再替换旧动作；体型、装备、程序步态、屏外求值和对白分别验收。
-新证据：[一手／研究] 2026-10-23补Motorica成套迭代、MotionBricks／ARDY分层控制与中文按动作对位反例；未试用。2026-10-22补全页十二项选择、BlendAnything异拓扑混合与固定接入源码、实践者及中英社区反证；未试用。2026-10-21补Hades II／Wilds修订、同一Ellen连击实现与缓冲时钟比较，PRIMAL仅作范围不匹配的领先候选；Uthana 显式模型／job／motion 契约；固定源码与生产反例限定重定向、程序步态及二改能力；Kimodo v1.2 撤回旧评测横比；Rhubarb、VRoid／VRM、MetaHuman、Audio2Face 区分面部供给与求解。各节保留原核实日期，未证零手修通过率或二改成本。
+改变的建议：[研究] 导入后接触退化先做同源压缩差分，保默认并局部修精度；攻击后的防御先选输入仲裁与合法出口，命中停顿不替代恢复政策；[经验] 完整许可动作组、固定骨架与接触契约优先；生成只补内容缺口。先核生产资格与实际返回身份，再替换旧动作；体型、装备、程序步态、屏外求值和对白分别验收。
+新证据：[一手／研究] 2026-10-23补Unity导入容差、UE ACL／Database质量档、CurveCodec 2存储取舍与开发者腿抖闭环自述；未运行压缩器。2026-10-23补Motorica成套迭代、MotionBricks／ARDY分层控制与中文按动作对位反例；未试用。2026-10-22补全页十二项选择、BlendAnything异拓扑混合与固定接入源码、实践者及中英社区反证；未试用。2026-10-21补Hades II／Wilds修订、同一Ellen连击实现与缓冲时钟比较，PRIMAL仅作范围不匹配的领先候选；Uthana 显式模型／job／motion 契约；固定源码与生产反例限定重定向、程序步态及二改能力；Kimodo v1.2 撤回旧评测横比；Rhubarb、VRoid／VRM、MetaHuman、Audio2Face 区分面部供给与求解。各节保留原核实日期，未证零手修通过率或二改成本。
 
 # WP4：动画、绑定与第二次修改
 
@@ -698,3 +698,48 @@ HF仓库修订`0e3c89024d896064b6851201373f7834784a386b`的[LICENSE][p9-k-licens
 [p39-ellipse]: https://github.com/UPC-ViRVIG/Environment-aware-Motion-Matching/blob/273928addc94ddf4a3bd7b8bf1ef17c360b0000e/Unity/Assets/EnvironmentMotionMatching/Scripts/CustomFeatureExtractors/EllipseFeatureExtractor.cs
 [p39-search]: https://github.com/UPC-ViRVIG/Environment-aware-Motion-Matching/blob/273928addc94ddf4a3bd7b8bf1ef17c360b0000e/Unity/Assets/EnvironmentMotionMatching/Scripts/MotionMatchingSearch/EnvironmentMotionMatchingSearch.cs
 [p39-gasp]: https://dev.epicgames.com/documentation/unreal-engine/game-animation-sample-project-in-unreal-engine
+
+
+## 压缩补研：导入后接触退化与装备二改（2026-10-23）
+
+**先区分内容错误和压缩损失，保原生默认、只修受损片段。** 本节补“源文件看起来正常，导入／交付后接触退化”的排查选择，接原有装备二改与引擎消费者检查；不重新评选动画生成工具。[研究]
+
+### 当前最高水平卡与采用边界
+
+| 层次 | 同题证据 | 对本仓读者的选择 |
+|---|---|---|
+| 当前最高水平 | 最佳玩家可见接触质量未知；CurveCodec 2（2026-10论文）以逐片段误差契约减少存储，作者明确不是ACL运行时替代 | 👀 借“解码后复核”的机制；存储更小不构成迁移理由 |
+| 原生生产路线 | Unity 6.3导入压缩；UE5.8建议多数项目用默认Anim Compress ACL，提供网格目标与特殊骨精度 | ✅ 保原生默认，以相同输入定位受损片段，再修设置；官方建议不等于采用率统计 |
+| 可行诊断 | 同源高精度对照、最终角色／装备末端验收 | ✅ 作为本仓当前默认排查；没测零手修通过率、性能与净工时 |
+
+来源为下列官方、论文／作者实现及开发者原帖；核实2026-10-23。[一手／研究]
+
+### Unity与Unreal分别改什么
+
+[Unity 6.3 Animation tab](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AnimationClip.html)说明Off不削减关键帧，代价是更大文件／运行内存与更慢性能；需要精度时建议用关键帧削减并降低容差。Rotation Error以度衡量旋转差，Position／Scale Error以原曲线值的百分比判断削减；它们不是最终世界空间接触阈值。Optimal适用于Generic／Humanoid，Legacy的Keyframe Reduction and Compression另有仅影响文件存储的含义，不能跨选项套用“包体降多少，内存就降多少”。[一手]
+
+[UE5.8 ACL官方页](https://dev.epicgames.com/documentation/unreal-engine/animation-compression-library-in-unreal-engine?lang=en-US)建议多数项目保默认codec。Optimization Targets用Skeletal Mesh估算蒙皮变形，较高保真可能增加占用；普通骨的默认虚拟顶点距离为3cm，但socket骨以及hand／eye／IK／camera等匹配骨采用Safe Virtual Vertex Distance。因此长附件二改应检查真实末端是否被误差评估代表，不能把所有手部问题归咎于3cm默认，也不默认让普通角色全局增精度。[一手／研究]
+
+**ACL Database是单独的交付条件。** 同一官方页说明：它按贡献误差剔除关键帧，但个别片段即使数值误差更低，感知质量仍可能不如固定帧率剔除；编辑器默认最高质量预览，cooked构建默认最低质量且不会自动stream，必须显式请求更高档。使用该codec时要在实际档位看整段运动，不能将预览验收直接沿用到发布构建。普通ACL没有这条Database流送前提。[一手／研究]
+
+固定[ACL v2.1.0 track_desc.h](https://github.com/nfrechette/acl/blob/414689d5cff4286a7898487a46dc5e48005d38da/includes/acl/core/track_desc.h)将`precision`和`shell_distance`分开：误差在骨骼周围刚性壳上测量，默认单位为cm。这支持保留评估对象与单位；新装备超出旧评估范围时，旧报告不自动代表新末端。本库版本仅用来核机制，未断言UE5.8内置同一提交。[一手／研究]
+
+### 制作反例：别先把导入抖动记成绑定失败
+
+[3ds Max到Unreal的开发者原帖](https://www.reddit.com/r/UnrealEngine5/comments/1vdwoaa/problems_with_animation_from_3ds_max_to_unreal/)中，作者以3ds Max 2024 CAT制作生物，导入后腿部振动；关闭导出重采样、重建普通骨骼并加root均未解决，同一作者随后报告调整Bone Compression Settings后抖动消失。它支持先做压缩差分、少走一次重绑弯路。[一手：作者自述；研究：排查顺序]
+
+原帖未列UE版本、前后codec／误差值、发布构建或可重放文件；仅核正文与作者回复，未复看视频或独立诊断根因。发表日未取到，只记2026-10-23核读；不能据此建议全部换codec，更不是长武器专项实证。[研究]
+
+### 前沿对照：CurveCodec 2省存储，但运行时与许可不同
+
+[CurveCodec 2论文v1](https://arxiv.org/html/2610.04211)日期2026-10-03；作者仓README记10-02发布v0.2.0，[GitHub release](https://github.com/AIGAnimation/AnimationCodec/releases/tag/v0.2.0)显示10-17，两者分开记录。论文作者报告在其保留测试集与相对ACL的最坏误差契约下达到0.37倍字节数，但契约含容差且只约束采样时刻。它整段顺序解码，没有ACL式随机姿态访问；再转ACL有第二次有损处理和额外压缩时间。较低存储不能直接推成更低运行内存、响应延迟或更好接触。[一手／研究]
+
+[作者项目页](https://rubbly.cn/publications/curvecodec/)将其定位为整段存储／传输；[v0.2.0许可](https://github.com/AIGAnimation/AnimationCodec/blob/v0.2.0/LICENSE)覆盖代码、权重和文档，仅准非商业，商业产品与营利组织内部使用需另获书面许可，第三方数据另核。因此仅保前沿机制候选，不作为商业独立游戏默认，更不为压缩问题增加生成模型链。[一手／研究]
+
+### 二改验收与本轮实际范围
+
+1. 保存同一源动作、骨架映射、导入／压缩配置及误差评估对象；固定速度、输入与相机，比较当前设置和高精度对照。差异随压缩变化才继续定位该层，否则返回源动作或转换层。[研究]
+2. 只修改已识别的受损片段／精度设置；换长装备后，旧装备和新装备都看握点、支撑脚、全程及转场，采样间也检查。记录解码误差、占用与目标设备成本，不能只看库内均值或包体。[研究]
+3. 局部调整仍不合格或超预算，撤回配置／资产修改、保旧合格组合。Agent可批查配置与差分，人判断最终画面；本轮没有运行引擎、压缩器或测玩家观感。[研究]
+
+**无引擎入口已核，但没有合适的随仓制作小样。** ACL固定版[压缩器](https://github.com/nfrechette/acl/blob/414689d5cff4286a7898487a46dc5e48005d38da/tools/acl_compressor/sources/acl_compressor.cpp)提供输入、配置、统计与二进制输出，能报告最坏轨道／时刻；`-test`的准确性断言受构建开关影响。其[格式参考](https://github.com/nfrechette/acl/blob/414689d5cff4286a7898487a46dc5e48005d38da/tools/format_reference.acl.sjson)是字段示意，73样本声明只有两个示例，不可当现成动作；[读写单测](https://github.com/nfrechette/acl/blob/414689d5cff4286a7898487a46dc5e48005d38da/tests/sources/io/test_reader_writer.cpp)只有人工构造的四样本轨道。代码MIT，构建需C++、CMake和固定RTM／sjson-cpp依赖，单测另需Catch2。没有为本题造合成骨链或取未知大小的数据包；这不阻塞上述资料修正，也不构成真实制作验证。[一手／研究]
