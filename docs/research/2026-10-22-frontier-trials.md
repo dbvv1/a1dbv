@@ -459,7 +459,7 @@ Quickstart与Code Basics的部署下一步都指向 `docs_typescript/running-in-
 
 **选择：需要跨角色接手与连续二改时，试用当前规格＋本次差量；协作者主要依赖工作项系统时，不强迁仓库。** [研究]
 **增量：从“先写计划”转向谁会复用它、交付后怎样维护，补07与21已有工具／验证说明没有覆盖的采用对照。** [研究]
-**范围：2026-10-23（UTC+8）读公开原文与固定源码，未安装、运行候选或测模型效果；采用率与同预算最高水平未知。**
+**范围：2026-10-23 核对既有公开原文，并安装 OpenSpec 1.14.3，在隔离的合成 JSON 导出项目完成连续两次变更、归档与失败分支；未运行模型或原生客户端，未测团队效率／采用率。**
 
 ### 实际接力、持续采用与退出
 
@@ -469,12 +469,41 @@ Quickstart与Code Basics的部署下一步都指向 `docs_typescript/running-in-
 - [Reddit，08-31](https://www.reddit.com/r/SpecDrivenDevelopment/comments/1w3897j/new_to_openspec_is_this_multistep/)：一名senior与两名junior的新使用团队发现，PR批准后同步、归档及再次提交多了一轮往返；评论有保持同一change持续修订、提前审设计及逐任务批准的不同做法。不是官方唯一流程，提示试用时应把评审与最终同步的责任安排好。[社区：原帖]
 - [Rapoport Studio，05-14／08-28更新](https://rapoport.studio/en/lab/the-openspec-method-in-production)：长期采用者要求当前能力规格与实现同PR更新，历史归档保留当时决策；曾遇到愿望式提案、错误任务顺序及规格陈旧。文内统计仍为五月窗口，不引用为收益证明；其自定义current目录不当官方路径。[社区：作者实践]
 
-### 实现怎样支撑接力
+### 两次改动实试：差量合回当前规格，漏带旧场景会被拦下
 
-固定[1.14.3发行](https://github.com/Fission-AI/OpenSpec/releases/tag/v1.14.3)（10-17），commit `c794978f4f8845ce59693373c9dd882ee776588c`。[工作流](https://github.com/Fission-AI/OpenSpec/blob/c794978f4f8845ce59693373c9dd882ee776588c/docs/workflows.md)允许实现中更新材料；Agent归档路径可选择不同步，CLI archive是另一条确定性路径。因此采用方案应检查当前规格是否已更新，而非只看归档完成。[一手：文档；研究：采用含义]
+**🧪 值得借用的是“二改必须带上仍有效的旧约定”，而不只是多写一份计划。** 首次增加 JSON 导出，第二次增加 pretty 选项；两轮归档后，下一位可直接读 `openspec/specs/record-export/spec.md`，找到当前需求和三个场景，不必从两份历史提案重拼。只证明此合成例子的规格接续，不证明开发速度更快。[经验：CLI 实试]
 
-[specs-apply.ts](https://github.com/Fission-AI/OpenSpec/blob/c794978f4f8845ce59693373c9dd882ee776588c/src/core/specs-apply.ts#L509-L538)按需求身份应用差量，MODIFIED替换需求块并检查旧场景在新块中是否缺失；这解释了规格维护机制，不证明实现符合规格，也不替代测试。本轮仅读源码，不声称上述检查已实跑。[一手：源码]
+固定官方 [`@fission-ai/openspec@1.14.3`](https://www.npmjs.com/package/@fission-ai/openspec/v/1.14.3)，MIT；[发行及源码](https://github.com/Fission-AI/OpenSpec/releases/tag/v1.14.3) SHA 为 `c794978f4f8845ce59693373c9dd882ee776588c`。npm 发布 provenance 的 resolvedDependencies 同指该 SHA；读取并比对元数据，未独立验证签名。Node 24.19.0，临时目录安装，无全局配置、模型调用或付费服务；CLI telemetry 关闭。[一手：包／发布元数据；经验：环境]
 
-下一次实试应比较“现有plan／任务记录”与此路线的连续两次改动，观察接手者能否找到当前约定、二改是否保住旧行为，以及文档／评审返工；只跑初始化不足以回答这些问题。[经验：试验设计，未运行]
+| 实际操作 | 观察到的结果 | 接手时怎么用 |
+|---|---|---|
+| `init --tools claude --profile core`，再 `new change` | 写入 6 个 Skill、6 个命令和配置；新 change 仅创建元数据，`status` 指向先取 proposal instructions | CLI 不会替你写需求；本次四份正文均由试验者填写 |
+| 首次 ADDED 两个场景并归档 | 当前规格出现顺序、空数组两个场景，差量进入带日期的 archive | 历史决策留在 archive，当前约定在 specs |
+| 二次 MODIFIED 只填新增 pretty 场景 | `validate --strict` 与 `archive --yes --json` 均 exit 1，指出遗漏原场景；当前规格未变，change 仍在 | MODIFIED 是整块替换，不是只追加本次变化；复制仍有效的旧场景后再改 |
+| 补回旧场景、实现并验证后归档 | 当前规格变为三个场景；本地测试先 3/4 后 4/4 | 合入同时检查实现测试和当前规格的 diff，不只看计划完成 |
+
+以上均为确定性 CLI／合成代码实试，不是 Claude 或 Codex 执行 Skill 的效果。原拟“现有plan／任务记录”对照、真实接手者能否少返工，以及团队效率仍未测，不以本次成功替代。[经验]
+
+**两个“成功”最容易误读。** 四份计划文件存在时 `status` 返回 `isPlanningComplete=true`、`isComplete=true`，但 `instructions apply` 仍显示 `complete: 0, remaining: 2`；`archive --yes --json` 又能把这两个未完成任务归档并更新规格。未带 `--yes` 时，同一分支会以 `archive_tasks_incomplete` 拒绝。因此计划齐备、归档完成，都不等于实现通过。[经验；[固定 archive 实现](https://github.com/Fission-AI/OpenSpec/blob/c794978f4f8845ce59693373c9dd882ee776588c/src/core/archive.ts)]
+
+**归档也可能只收走差量，留下旧规格。** 同一二改用 `--skip-specs` 后 exit 0，返回 `specsUpdated:false`，当前规格逐字未变。另一个分支保留场景标题、把空数组输出从 `[]` 改成 `null`，验证和归档都通过：丢失场景检查不是语义回归测试。初次自动创建的 Purpose 也仍是 TBD，严格验证会报占位警告；直接补齐当前 spec 的 Purpose 后才通过。[经验]
+
+可复制的接手顺序（既有项目中执行）：
+
+```bash
+openspec status --change add-pretty-export --json
+openspec instructions apply --change add-pretty-export --json
+openspec show record-export --type spec
+openspec validate add-pretty-export --strict
+node --test
+# 核对任务、代码、测试和差量，再进行已决定的归档：
+openspec archive add-pretty-export --yes --json
+openspec show record-export --type spec
+openspec validate --specs --strict
+```
+
+复现脚本需已安装的 1.14.3 CLI，自己只创建临时合成项目；不自动安装、不跑模型、不清理目录，每个子命令限时45秒。脚本覆盖上述正反分支并保留带退出码的输出。[经验；[可复制复现脚本](../../experiments/replay_openspec_handoff.py)]
+
+注意两条路径不同：本次实跑的是确定性 CLI archive；生成的 `/opsx:archive` Skill 则指导 Agent 先评估同步、可选择不同步，再移动目录，`/opsx:sync` 是 Agent 编辑。不能把前者的场景遗漏拦截直接算成后者的运行保证。[一手：本次生成 Skill；未运行 Agent 路径]
 
 探索回执：读官方固定文档／源码、英文团队原文、V2EX及Reddit原帖；linux.do本轮命中转引未作原帖证据。GitHub main历史页缓存较旧，改以发布页与固定发行SHA核实现。不采UVIK的50题排名，既有研究已记录日期及原始材料问题；不因star或数量目标提升评级。[研究]
