@@ -1,0 +1,1 @@
+{"name":"p124-texture-consumer","private":true,"type":"module","dependencies":{"ktx-parse":"2.0.0","pngjs":"7.0.0","three":"0.186.0"}}

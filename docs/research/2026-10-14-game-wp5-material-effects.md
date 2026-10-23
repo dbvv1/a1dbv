@@ -477,3 +477,26 @@ UCSD的[MaterialApprentice v1](https://arxiv.org/html/2607.13318v1)（2026-07-14
 [Epic Paragon hair历史示例（4.27文档）](https://dev.epicgames.com/documentation/en-us/unreal-engine/photorealistic-character?application_version=4.27)采用masked＋动态dither，依赖TAA多帧收敛并承认运动伪影；边缘淡出还靠配套头皮纹理遮补。它说明质量代价，不证明任意cards零手修；缺配套源时换资产，不要求程序员补画头皮。[一手／研究]
 
 **二改与撤回。** 现有兼容MSAA路线才按轮廓缺口比较A2C；转视角、近远距离、风动、交叠及阴影一起验。远处覆盖缩失可另比较Unity[保覆盖mip](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/TextureImporter-mipMapsPreserveCoverage.html)，它不修排序。薄丝／密度损失、时域伪影或预算不合就撤回材质迁移，换配套成熟资源或接受不透明几何的风格限制。第二次换纹理或密度后重验，不只看静帧；当前仍是公开契约／作者报告，未执行这些验收。[研究]
+
+
+## 纹理交付实试：颜色标签之外还要验实际数据
+
+核实：2026-10-23 UTC；接现有材质语义／平铺研究，不扩场景平台。[本仓运行／研究]
+
+**改变的建议：按槽确定源值含义，再做编码；输出DFD正确也不能代替数据保留。** [P124完整复跑](../../experiments/p124-texture-consumer.md)用Poly Haven Brick Wall 001三张CC0配套图和KTX-Software 4.4.2；真实ARM源自带gamma=0.45455。不压缩、不缩放的原1k输入，UNORM隐式导入与convert-linear的R/G平均绝对误差为0.094321／0.095432，assign-linear为0，输出DFD均linear。因此这里需要的是按数据槽“赋语义”，不是把本来就代表线性数据的数值再作颜色变换。[本仓运行]
+
+### 当前选择及真实代价
+
+[2026 Khronos压缩实践](https://www.khronos.org/assets/uploads/developers/presentations/3D_on_the_Web_2026_-_Best_Practices_for_Compressing_glTF_Textures.pdf)把下载、GPU上传、驻留分开，单模型传输优先与多资产场景不应机械使用同一默认。[glTF Transform官方契约](https://gltf-transform.dev/modules/extensions/classes/KHRTextureBasisu)也明确注册扩展不执行压缩，且其输出没有可选PNG/JPEG回退；ETC1S对normal／ORM需特别检查。[一手]
+
+P124固定512基线：颜色ETC1S，normal与ARM分别比较ETC1S／UASTC。三图全ETC1S为129,134B，数据槽UASTC为646,975B；normal的RGBA8解码mean角误差9.74°→2.37°，ARM的R/G/B RMSE由0.03571／0.02641／0.00939变为0.00466／0.00545／0。UASTC降低此组诊断误差但约5倍总文件；不宣布通用赢家，继续以实际相机、下载和设备约束决定。[本仓运行／研究]
+
+所有误差相对固定512输入，不把1024→512损失归给编码；预处理按颜色线性光／数据数值／法线向量分别平均，仍未验远处mip、法线方差补偿、平铺接缝和观感。官方原生提取与Three随包Basis WASM两个真实入口的level 0 RGBA逐字节一致，底层不是独立算法。BC7转码块成功并进入Three材质CPU对象，只证明这些数据／对象操作；RGBA8诊断不冒充BC7最终误差，输出块字节不冒充GPU驻留。[本仓运行]
+
+### 真实失败来源与后续修改
+
+[2025-08 Three用户原帖及维护者诊断](https://discourse.threejs.org/t/unsupported-vkformat-in-three-ktx2loader/86562)显示：即便已有transcoder文件，当时仍因容器中的PVRTC格式未获加载器支持而失败；维护者随后补到r180，设备支持仍另核。同帖mip长度校验错误被维护者判为不妨碍正确加载，不能当成该次失败原因。P124没有复现该帖资产，而是依据这一瓶颈检查自己的实际输出和真实解码；[当前KTX2Loader文档](https://threejs.org/docs/pages/KTX2Loader.html)要求设备能力检测，CPU结果不能替代浏览器接收。[社区亲历／一手／研究]
+
+另实测KTX 4.4.2 `--normal-mode`：它会换成X→RGB、Y→alpha，按普通XYZ解释出现mean 81.37°角误差。结果支持保默认RGB法线时不启此开关，不支持“压缩器损坏了法线”的结论。按配方二改则先隔离目标纹理对象、统一各槽repeat，再只改roughness乘法因子，保对照、采样属性、块字节和源哈希。[一手／本仓运行]
+
+预设计的错误颜色空间、只改颜色槽平铺、共享纹理误改、截断和缺文件，另作为回归；不包装成真实发现。工具／源许可、固定版本、命令、完整数值及未验范围均在P124，无模型／引擎／浏览器／视觉验证，不代表AI生成资产的零手修成功率或生产成本。[本仓运行／研究]
