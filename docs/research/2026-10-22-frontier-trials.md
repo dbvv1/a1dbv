@@ -601,3 +601,32 @@ timeout 60s .venv/bin/python experiments/replay_pwasm_consumer.py
 - [Meta 10-19薄编排器](https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/)针对阶段固定、领域规则不同的重复接入，以固定定序和隔离领域知识组织工作；生产收益为作者自报，未找到公开实现或同题独立采用，不据此另造编排器。[一手／研究]
 - [Xojo 10-20 Agentic Mode](https://blog.xojo.com/2026/10/20/use-ai-coding-agents-with-xojo-agentic-mode/)给该IDE增加编译反馈闭环，未取得足以改变已有Codex／Claude用户通用选择的证据。[一手／研究]
 - Meta中文搜索主要为二次转述，不充作独立采用。更正：此前把 Claude 工作流文档的入口识别错误写成官方页读取失败；10-23 已读到正确的[官方 workflows 页面](https://code.claude.com/docs/en/workflows)。此前失败不证明该页不可访问；目前仅核文档，未运行原生客户端或验证收益。[范围]
+
+
+## QMD纯词法检索：先找到原文，再判断证据
+
+2026-10-24（UTC+8）。🧪 已试QMD 2.8.3的本地BM25检索与按行取回；已知关键词仍推荐原生搜索，多篇资料需要排序入口时才选用。未测模型收益，不把检索排名当证据等级。[本仓工具实试／经验]
+
+**实际问题。** “接页面批注时已有的对象定位／状态与验收经验在哪里，哪些是真实改稿而非仅导出？” 本次只读索引公开仓库docs／experiments的207份Markdown；原生`rg`已找到关键来源。完整问句在`qmd search`零命中；关键词`页面 批注`前五依次为Agentation实验、Posts README、运行手册、Serena实验、03主专题。前两条摘要仍停在文档开头，须按docid／行号读取正文。[本仓实试]
+
+取回原文后确认：Agentation只完成导出与定位观察；Posts确有源码审查驱动的修改及真实Chrome接收。二者不能拼接成已验证的批注改稿链。工具提供的是候选排序和可直接取回的来源位置，判断仍来自对应原文；本次没有证明它优于原生搜索的结果质量。[本仓实试／研究]
+
+**最小入口。** Node24.19.0／npm11.9.0，安装前检查脚本，隔离目录安装时禁用脚本并省略可选推理二进制，只补SQLite平台扩展；不是通用跨平台安装指引：
+
+```sh
+# 在准备好的隔离目录中设置；不改全局配置
+export HOME="$PWD/home" XDG_CACHE_HOME="$PWD/cache" XDG_CONFIG_HOME="$PWD/config" npm_config_cache="$PWD/npm-cache"
+npm install --prefix tool --ignore-scripts --omit=optional --no-audit --no-fund @tobilu/qmd@2.8.3 sqlite-vec-linux-x64@0.1.9
+# 将 public-repo 替换为已授权资料所在的仓库路径
+./tool/node_modules/.bin/qmd collection add ./public-repo/docs --name docs --mask '**/*.md'
+./tool/node_modules/.bin/qmd collection add ./public-repo/experiments --name experiments --mask '**/*.md'
+./tool/node_modules/.bin/qmd search '页面 批注' --json -n 5
+# 复制自己的搜索结果ID和所需行范围，不复用他人索引的ID
+./tool/node_modules/.bin/qmd get '#实际ID:起始行:行数'
+```
+
+本次207份文件为docs161／experiments46；内建排除.git、node_modules等生成目录。包目录约194MB、索引18.1MB，首次索引耗时未测；不能用“无需模型”理解为零安装投入。状态显示0向量，隔离目录未发现GGUF／GGML文件；没有运行embed／query／vsearch／pull、MCP服务或全局Hook。只索引用户明确授权的资料，索引含原文，不宜把私有目录混入共享索引。[本仓实试／经验]
+
+**来源与反例。** npm发布gitHead为[facd35e](https://github.com/tobi/qmd/tree/facd35e01359e59d938bc9418e93fb9318addee3)，[CLI](https://github.com/tobi/qmd/blob/facd35e01359e59d938bc9418e93fb9318addee3/src/cli/qmd.ts)的search走searchFTS，[模型入口](https://github.com/tobi/qmd/blob/facd35e01359e59d938bc9418e93fb9318addee3/src/llm.ts)延迟加载；本次安装后的dist亦已核。[一手源码／本仓实试]
+
+英文使用者[#976](https://github.com/tobi/qmd/issues/976)报告2.8.3在大量中文笔记中的长CJK查询零结果，不能据此推断所有中文查询失败；[#331](https://github.com/tobi/qmd/issues/331)的正面体验属于旧版混合路线，不证明本次纯词法效果。[LINUX DO原帖与评论](https://linux.do/t/topic/1562457)有人关心模型资源，也有人仅安装尚未验证节省，本次不采用节省百分比。探索覆盖官方发布／实现、GitHub真实使用报告和中文社区，止于一个实际资料定位问题，不扩中文边界矩阵。[社区／探索回执]
