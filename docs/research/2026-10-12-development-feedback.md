@@ -466,6 +466,9 @@ Playwright [#38200](https://github.com/microsoft/playwright/issues/38200)报告�
 
 ## API修改：声明差异、消费者契约与真实集成
 
+10-24补验：[固定发布契约558→559的oasdiff 1.34.0实试](../../experiments/oasdiff-contract-review.md)给出实际定位、退出码、文件校验与维护者已合入的约束修复；不是重跑下述上游服务或证明模型收益。[本仓实试]
+
+
 核实：2026-10-19 UTC。改变09“先确定性检查”的API修改分支：已有可靠且投入可接受的真实集成优先复用；只缺公开契约变更反馈时先补schema兼容检查，只有消费者/提供方独立演进且双方可维护验证时才评估Pact。不是三层全部必装，不据源码宣称提效。**[研究：采用判断]**
 
 **声明兼容与实现符合不同。** [oasdiff固定说明](https://github.com/oasdiff/oasdiff/blob/be6ad7a7103e667bc4dbe61ffcf8af3e3f01d5c7/docs/BREAKING-CHANGES.md)按OpenAPI声明判断旧请求/响应契约，不以某台服务端恰好宽松接收为准；例如新增必填请求属性即使带default仍破坏旧契约。`breaking`用于判破坏，`diff`输出一般差异，门槛须明确`--fail-on`；生成了客户端或定义没变不能独自证明实际服务符合定义。已有自动检查若覆盖实现符合、消费者需要及目标版本组合，不必只为“契约测试”换框架。**[一手：工具/Pact官方契约；经验：选型]**
