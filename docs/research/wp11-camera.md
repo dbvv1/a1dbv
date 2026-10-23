@@ -507,6 +507,85 @@
 
 **边界 [一手／研究]**：[Flare引擎](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#L28-L38)代码GPL-3.0-or-later；[Empyrean Campaign](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/README.md#L17-L25)数据／美术CC-BY-SA 3.0或后续，非引擎许可。SPD代码GPL-3.0-or-later；未验全部分支／保存故障恢复，政策与引擎无关。
 
+<a id="p115-adventure-state"></a>
+## 叙事冒险完整模块：选择过对白，不等于完成了任务
+
+**结论：[研究] 世界状态决定能做什么，叙事工具决定怎样说；“看过／选过／成功交付”分别记录。**
+**实试增量：[一手：本端] inkjs 的一次性 `*` 选项会消费失败的交付机会；改为 `+` 并由游戏完成状态限制，才可在物品回来后重试。**
+**边界：2026-10-23；只运行 inkjs 2.4.0 的合成编译／运行时夹具，其他候选仅读；未运行商业游戏、Unity／Unreal／Godot、模型或玩家实验。**
+
+本节承接上面的历史／当前条件，补足“提前发现→接取→交付→回访→恢复”的闭环；不是新建长期游戏，也不把对话框、任务日志与世界规则合成一个大框架。旧 Flare／SPD 证据仍支持物品查询范围与完成事实，不重复搬录。
+
+### 1. 质量参照：玩家的行动要改变谁能知道、谁能做什么
+
+| 原始公开机制 | 本题可借机制；不据此声称内部实现 |
+|---|---|
+| [Expelled! 官方](https://www.inklestudios.com/expelled/)及[2025 发布介绍](https://www.inklestudios.com/blog/)：允许自由行动，角色记得所见所闻，一天时间限制下反复尝试。[一手：作者说明] | [研究] 非线性回访按当前情境重选内容；世界发生了、玩家知道了、某个 NPC 听说了不是同一事实。若目标是无压力探索，不照搬时间限制。 |
+| [Great God Grove 官方商店页](https://store.steampowered.com/app/2840190/Great_God_Grove/)：2024-11-15 发行，收集并发射话语解决谜题，递送消息可改变人物反应。[一手：作者说明] | [研究] 话语也能是玩法对象；验收要追到取得、持有、使用与目标反应，而非止于播完一句。这里只借语义转成行动的机制，不提取作品对白或资产。 |
+
+两作给的是不同互动目标，不是“分支越多越好”的排行。[研究] 最小体验标准：提示让玩家知道缺的是信息、可用物品还是见面条件；回访承认已经做过的事；关键提交失败仍有合理重试；不把角色未知的线索直接当作其已知。何种后果应永久、何时错过机会以及对白的因果和语气，由人决定。
+
+### 2. 当前方案：先选状态边界，不按功能总数买框架
+
+| 候选／固定范围 | 实际边界与本题判断 |
+|---|---|
+| **Unity Yarn Spinner 3.2.8，👀 条件化回访候选** | [发行固定 bfc5b6a](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/releases/tag/v3.2.8)，[MIT](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/LICENSE.md)；Unity 2022.3+。[Variable Storage](https://docs.yarnspinner.dev/components/variable-storage/variable-storage)可接游戏自己的状态；[固定保存实现](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.Utility.cs#L35-L169)只序列化三类变量字典，不保存 VM 执行位置。适合世界驱动的 NPC 对话；重进稳定节点是项目政策，非任意行续播承诺。[一手／研究] |
+| **ink 1.2.1／inkjs 2.4.0，🧪 本题窄试用** | [ink 固定 35c63e5 的运行契约](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/Documentation/RunningYourInk.md#saving-and-loading)提供故事状态 JSON；[官方仓库](https://github.com/inkle/ink)指向 JS 移植。[inkjs 固定 edccead](https://github.com/y-lohse/inkjs/tree/edccead8700e9f21be9825d87d8645d8c82a9936)为 MIT，含编译器。适合分支文本与故事执行位置都重要的内容；世界、物品和已发外部操作不会自动被故事 JSON 接管。[一手／研究] |
+| **Pixel Crushers Dialogue System，👀 商业整合候选** | [维护者答复](https://forum.pixelcrushers.com/post/dialogues-save-with-custom-save-system-13719652)区分 Dialogue System Saver（变量／任务）与 Conversation State Saver（对话位置），可序列化嵌入已有存档；[补充说明](https://forum.pixelcrushers.com/post/howto-how-to-use-save-system-with-other-save-system-assets-13715422)明确只保存配置的 Saver，不自动保存全场景。若需要可视编辑与已有资产集成，可比较其接入代价；未购买、未审付费源码／本项目商用资格，不能列为已采用。[一手／研究] |
+| **Godot Dialogic 2-alpha20，👀 Godot 内容制作候选** | [固定 e301e1b](https://github.com/dialogic-godot/dialogic/tree/e301e1bb5e62e6de22c6b7748c4372d0570bb4a7)，仓库代码 MIT；[alpha20 说明](https://github.com/dialogic-godot/dialogic/releases/tag/2.0-alpha-20)要求 Godot 4.5+，明确破坏旧存档。[保存重构 PR2695](https://github.com/dialogic-godot/dialogic/pull/2695)把 timeline/index 与各子系统状态打包为 DialogicSaveState；旧文档的 Dictionary／current_state_info 例子不能直接照搬。适合 Godot 既有路线，不为了对白从 Unity 迁引擎。[一手／研究] |
+
+**Unreal 对照：[一手／研究]** [Yarn 官方 UE 集成](https://docs.yarnspinner.dev/yarn-spinner-for-unreal/unreal)目前仍为 Pre-release／Alpha，要求 UE5.4+；以原生 SaveGame 保存变量，不等价于 Unity 包。其 [YSPL 1.0](https://github.com/YarnSpinnerTool/YarnSpinner-UnrealEngine/blob/main/LICENSE.md)不同于 Unity 固定版 MIT，含再分发、竞争工具与 AI 训练限制；采用前按实际版本核许可和 Agent 数据处理，不全量照搬或输入源码。
+
+**本题默认：[研究]** 已有项目保留叙事工具；Unity 世界互动复杂时，由游戏持有任务／库存权威，工具以纯查询读条件、命令请求提交；文本游戏也可让工具持有大部分状态，但每份数据仍只有一套权威。新项目优先比较 Yarn 的条件化节点与 ink 的故事恢复需求，不据一次 JS 小例判二者整体胜负。Dialogic 升级破坏旧档、编排边界返工大于写作收益，或商业接入不能减少实际制作负担时撤回／锁版；当前最佳维护收益未知。
+
+### 3. 交互条件为什么不能顺手修改状态
+
+[Tim Nugent 2025-12-17 作者文章](https://yarnspinner.dev/blog/saliency-and-state-mutation/)用一个构造反例说明：saliency 先检查所有候选再选择；若 `game_state()` 每次调用都递增，节点排列改变就可能先选到不同内容，然后进入 fallback。作者明说这不是最初提问者的真实故障原因；此处是官方演示，非本端 Yarn 复现。[一手]
+
+[官方 saliency 契约](https://docs.yarnspinner.dev/write-yarn-scripts/advanced-scripting/saliency)将 `QueryBestContent` 与 `ContentWasSelected` 分开，前者只查询、后者才可记选中。可用它先判断 NPC 是否有话说；条件复杂度／重复抑制不是任务优先级保证。关键推进应通过互斥条件或明确优先策略胜过闲聊，保无候选回退；不能靠给条件多加几个 `and` 当可靠任务调度。[一手／研究]
+
+[研究] 路由顺序示例：已完成→完成回访；未接取→介绍；已接且可交付→交付；否则→缺条件提醒。查询返回条件与原因，不耗物、不发奖、不写“已说”；提交时再查当前状态。异步动画或场景退出可以取消表现，但不倒退已经成功的世界提交；未提交就按正常条件重试。具体取消／输入归还沿 04 既有契约，不增加另一套存档服务。
+
+### 4. 可复跑夹具：先写出会失败的回访路径
+
+完整文件：[Ink 内容](../../experiments/game_adventure_state.ink)、[Node 探针](../../experiments/game_adventure_state_probe.cjs)、[结构化回执](../../experiments/game_adventure_state_results.json)。代码为本仓原创合成示例，不取自两部作品。探针只执行同步规则；不在仓库安装依赖，也不把新依赖加入原完整离线入口。[一手：本端]
+
+```bash
+# 从仓库根运行；需要 Node 和 npm，联网只用于取得公开 MIT 包。
+trial="$(mktemp -d)"
+npm --cache "$trial/npm-cache" install --prefix "$trial" \
+  --ignore-scripts --no-audit --no-fund --save-exact inkjs@2.4.0
+node experiments/game_adventure_state_probe.cjs "$trial"
+```
+
+包缺失／版本不符直接失败，不跳过；安装后探针不联网。2026-10-23 在 Node v24.19.0、inkjs 编译器及 runtime 2.4.0 下完成；来源 tag／commit／许可保留在回执。[一手：本端]
+
+| 实际检查 | 观察结果 |
+|---|---|
+| 接取前已有物、缺物、接取前离开、反复查询／回访 | 正常路由；提前持物不用重拾，查询不改世界。 |
+| 保存待选项、选中后尚未 Continue、提交后再载入回访 | 当前例恢复选择与提交；完成后不重奖。保存为同一 JSON 的故事＋世界快照，不是磁盘原子提交测试。 |
+| 显示交付后移走物品，再取回物品回访 | 命令拒绝时不完成／发奖；可重复 `+` 选项允许之后重试。 |
+| 只改一句文字；缺存档输入；错误跳转目标 | 本例文字修改后旧选择可续；缺输入及编译错误均拒绝。 |
+| **反证：改回一次性 `*`** | 交付失败仍消费对白选择，重新持物后没有 Deliver；这是作者错把“选过”当“完成”，不是 ink 缺陷。 |
+| **反证：新故事状态混用旧世界快照** | 同一 archive.seal 的成功提交回调在诊断数组中出现两次；未验证外部持久奖励或磁盘故障。完整读旧档重玩属于另一种设计政策，不与混用快照混淆。 |
+| **反证：重命名 deliver_offer 节点** | 旧选择继续时报 `Failed to find content at path`；一次文字修改成功不能保证任意内容迁移。 |
+
+本端最初还有一处作者错误：相邻条件块之后直接遇到 END，缺物时把介绍选择截断；改为显式命名节点路由后，接取前离开检查通过。完整探针的 12 项检查及 3 个预期反证均已运行；不等于完整游戏或 C#／引擎等价通过。[一手：本端]
+
+### 5. Agent 的二改任务与验收
+
+[研究] 给 Agent 的第二次修改：把“持物就能交”改为“须先告知管理员线索；交付会消耗印章并开放档案室”，保接取前探索、暂存和旧档。先列每个事实的写入者、交付入口、选择策略、恢复节点与内容 ID；保可重试命令、已提交后回访和同一保存代的数据，再补台词。不要让模型自由生成的文字成为任务状态权威。
+
+- 用有效的整份快照覆盖未见／未接、已知未持物、可交付、已完成；可注入变量调试，但须验证组合本来可达。
+- 从每个入口跑接取前拿物、存仓、取回、交付拒绝、成功、重复点击、换场景回访；确认提示和提交查询同一物品范围。
+- 区分显示中断、选择已作但命令未执行、提交已完成三种恢复点；检查输入／异步取消，不能只测打开对话。
+- 版本修改后用旧的有效快照继续选择、存取并回访；节点移除需迁移到声明的安全节点，不能忽略加载警告。
+- 人验关键话题不被闲聊饿死、回访承认经历、任务反馈可理解、NPC 不越权知道信息以及文本因果／语气；日志正确不证明叙事好玩。
+
+[社区] [r/gamedev 原帖](https://www.reddit.com/r/gamedev/comments/1u3u152/how_to_implement_and_debug_stories/)作者做按天推进的 Unity／Yarn 游戏，直接开第三天会缺前两天选择，且自述对白与游戏分开保存；讨论建议用有效整档作阶段夹具，也有人报告手拨相关标志容易配出矛盾状态。此为少量具体反馈，不是整体工具排行或节时测量。
+
+**探索回执：** 截至 2026-10-23，读官方作品机制、Yarn／ink／Dialogic／Pixel Crushers 文档与源码／维护者讨论、Reddit 原帖；中文 iThome 原帖请求返回 403，未绕过、未据摘要立论。未读付费源码，未复测作品或引擎；候选比较是状态／恢复边界，不是全文本质量与制作效率评测。[一手／社区／研究]
+
 <a id="s37-1"></a>
 ## 镜头借出控制：持续更新历史与当前视点分开
 
