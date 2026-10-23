@@ -2,7 +2,7 @@
 **旧调查支持选题，新案例支持试法；目前没有足以排出 2026 年 10 月全行业质量冠军的同题证据。** [研究]
 **本端做过精确版本检索和 Battle Drones v4 公开产物短试玩，未试用 AI 制作工具，未复现制作或测得净收益。** [经验]
 
-# 游戏版值得一试：六个任务入口的依据
+# 游戏版值得一试：七个任务入口的依据
 
 核实：2026-10-23（UTC+8）；试玩于 10-22 UTC，未指定模型版本不补猜。结论见[游戏 README](../../domains/game-dev/README.md#游戏版值得一试)。[研究]
 
@@ -63,3 +63,24 @@
 资产成本还须计淘汰、重生成、脚本、导入、接收及二改，声音还含审听；全链成本未知，未声称更便宜。采用前沿 [3D](../../domains/game-dev/assets/3d.md)／[音频](../../domains/game-dev/assets/audio.md)核当时的输入输出权利、计划与发布要求，作者能展示不代表读者可商用。[研究]
 
 **探索回执：** 截至 2026-10-23（UTC+8），综合 GDC／JetBrains 原调查、Playgama 方法页、Game Tactics 与 Simon Willison 制作者原文、Reddit 英中文原帖及 linux.do；开源核到 Battle Drones v4 固定标签与 P98 固定包源码，官方契约复用既有 3D／音频页与版本检索记录。未独立取得两篇 Reddit 的绝对发布日期，未做账号工具制作、付费、安装、模型调用或 Unity／Unreal 运行，未使用用户电脑；没有可比较的全链成本和当前全行业口碑排名。[经验／研究]
+
+
+## 7. pxl：让资产族共享源，但补丁不会自动跟着形状走
+
+**🧪 新意首试：从零做小像素资产族时，可把“主体＋变体＋逐帧补丁”的文本源列入对照；只有换色需求不迁移现有管线。** 核实 2026-10-23；本轮为公开源码、许可与制作说明核读及公开产物观察，未执行工具、安装依赖或调用模型。[研究]
+
+[上游 claude-pxl](https://github.com/crsolver/claude-pxl/tree/21fee41f7ecce00bc868d7567f24ffd0f3acc8fa)与 [uilianks fork](https://github.com/uilianks/pxl/tree/a012fc78b92e5deff27e56bba563f22895c3916c)分别固定于 10-15／10-22 提交；fork 的 [MIT 许可](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/LICENSE)不替输入图片授予权利。[作者原帖](https://www.reddit.com/r/ClaudeAI/comments/1xc30xk/i_built_5_claude_code_skills_that_make_game/)展示像素、矢量、3D、材质与音频代码工具组合，说明标注后继续改源的做法；这是作者自述，没有独立生产效率对照或广泛采用证据，不据此排“最好用”。[一手／社区]
+
+**可借的是依赖关系，而非换色功能本身。** [basics](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/examples/basics.px.js)用同一 `slime` 派生红／蓝变体与眨眼补丁，宝箱另引用 `_lock` 部件。[build.ts](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/src/core/build.ts)先复制引用基图，再执行局部操作；动画每帧重用公共内容并执行该帧补丁，不累计上一帧。[动画测试源码](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/test/anim.test.ts)明确写有公共红底、逐帧改单像素和时长断言，本端未运行。这样主体改动有传播路径，但眨眼的 `grid(10, 5, ...)` 是绝对坐标：基型眼睛移位后，补丁并不自动跟随，仍要逐变体／全帧看图。[一手：源码核读／研究]
+
+| 同一任务的对照 | 当前选择 |
+|---|---|
+| 合格 PNG 只换色、裁切或合成 | 保留既有 [Python 图像操作](https://pillow.readthedocs.io/en/stable/reference/Image.html)；没有证据表明迁入 DSL 更省工。[研究] |
+| 已有 Aseprite 分层动画 | 沿 [CLI 批导出](https://www.aseprite.org/docs/cli/)、[脚本换色](https://aseprite.org/api/command/ReplaceColor)与 [linked cels](https://www.aseprite.org/docs/linked-cels/)；后者已能把一处修改传播到关联帧，共享修改并非 pxl 首创。[一手／研究] |
+| 没有可编辑源，要持续新增同族小像素资产 | pxl 的增量是把基图引用、变体和帧补丁显式放进文本 diff；是否比既有脚本更好维护，尚待同题二改比较。[研究] |
+
+**已有作品不等于二改实验。** [eldritch 最终源码](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/showcase/eldritch.px.js)含局部反馈注释，但源码与 PNG 的公开路径历史均只有 [一次新增提交](https://github.com/uilianks/pxl/commit/4c2c0e900db4478cf03948384bf7f2ba216bbafb)，未取得可比较前后。另有 [polish 示例](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/examples/polish.px.js)把两套画法并排；它是作者预制对照，不是本端修改结果。作者标注流程的返工次数、淘汰率与接受成本未知。[一手／研究] 本端实际查看固定版本 [eldritch 原尺寸 PNG](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/showcase/media/eldritch_130x160.png)与 [polish 图](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/docs/gallery/polish.png)：前者青绿触须与红眼可辨，后者右侧蘑菇有左上高光和右下暗紫，区别于左侧重黑轮廓与同心亮区；这只是公开产物观察，不是本端渲染或画质验收。[经验]
+
+首试应固定三件同族资产和一段短动画，改一次公共主体，再改一个局部表情，核引用、尺寸、透明边界和全部帧；已有合格资源仍是对照。若补丁维护更贵或需要人工逐像素修补，就保留原路线。附带注意：[CLI 的 lint](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/src/node/cli.ts)仅取动画首帧，发现问题仍返回 0，不能当全帧发布门。这是试验建议与静态边界，未执行，也未验证画质或引擎接收。[研究]
+
+**本项探索回执：** 同步查 Reddit 的上游／fork 作者与使用者讨论、GitHub 实现，以及中文检索、linux.do、HN；中文命中以教程转述为主，未找到同题独立生产反馈。[另一 fork 的展示讨论](https://www.reddit.com/r/aigamedev/comments/1xb3k2l/opus_55_pixel_art_with_claude_pxl/)既有外观称赞，也有仪表不一致的反馈；它使用不同分支，不能把其新增能力或问题直接套给本次固定版本。未取得成套二改效率对照。[社区／研究]
