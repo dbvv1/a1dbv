@@ -1,6 +1,6 @@
 主线：一／二／三／四；运动、碰撞与视听反馈
-改变的建议：[研究] 新增移动能力先保输入消费、跳跃资格与速度交接；精确落点和动量连续性分目标，不把即时转向或统一清零当默认。
-新证据：P35 补 GDC 2025 Penny 设计复盘、2026 Smooth Walking 候选、Unity 1.4.5／UE 原生跳跃契约及固定 Celeste64 状态分支；仅资料，未实测。
+改变的建议：[研究] 确认命中后并列做动作仲裁与反馈编排，按轻重分层；时钟、去重、停止和复位由项目契约管理，不交给反馈插件猜。
+新证据：2026-10-23 补 Wilds／Dead Cells／Warframe 作品修订，Cinemachine／Feel／Tween／UE 生命周期对照与可执行清单；仅资料和源码，全部未试用。
 
 # WP10：运动与视听反馈
 
@@ -98,18 +98,52 @@ Penny 是已发行作品的设计取舍，不是通用最优证明；Holden 是�
 
 <a id="4"></a>
 
-### 2. 具体动作的体验和生产成本
+<a id="hit-feedback"></a>
 
-| 情境 | 最小可用且有质量的基线 | 增加能力的触发；目标体验 | 成本／回退 |
-|---|---|---|---|
-| 2D 精确平台／快节奏动作 | 起停、转向、跳高、落点与碰撞关系可理解；少量姿态也明确区分起手／生效／恢复 | [研究] 玩家合理短按常被拒绝时，分别增加按键缓冲和离地宽限；命中难辨时增加受击姿态与短音效，而非先堆粒子 | [研究] 容错会改变可达距离／战斗窗口；过期指令自动执行就收窄状态或时长。像素精度／相机呈现另审，不照抄物理数值 |
-| 3D 第三人称移动／战斗 | 碰撞／位移只有一个负责人，输入方向、转身与姿态协调；先用 Animator／Clip／Blend Tree | [研究] 打断感觉迟钝先查 Exit Time／混合时长；步态不合先对齐位移与动画。确实需要脚／手接触才增加原生 Rigging／IK | [研究] 约束层、骨架一致性及动作覆盖成为新维护成本；移除无明显改善的约束。代码可调接触目标，但不能自动补齐缺失的动作风格 |
-| 重武器或有承诺的动作 | 接受输入后及时给起手反馈，前摇和收招保留可学习节奏 | [研究] 接触缺乏力度时才加短顿帧／声音层次；需要连段时定义缓冲与取消窗口 | [研究] 追求零前摇、任意取消会消掉策略；顿帧过长／频繁会使连击不连贯。所有视觉变化不应悄悄修改伤害窗口 |
-| 高频群战／多目标命中 | 威胁、玩家和命中结果始终可辨，声音并发受控 | [研究] 把特效／音频强度按轻重与重要性分层；多命中顿帧合并设上限，保留必要提示 | [研究] 全屏闪光、累计震动、长拖尾与无限刷新暂停会冲淡重点。可降低纯呈现强度而保持规则相同，规则性暂停则明确记录 |
+### 2. 完整反馈模块：结果、力度与通道分开设计
 
-[一手] [Unity 6.3 转场文档](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html) 区分 Exit Time＋条件、时长单位及打断排队，并说明避免脚滑的接触调节；不支持全关 Exit Time。[Animation Rigging 1.4 官方页](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/index.html) 实际 1.4.1，页生成 2026-01-17，为可选能力。
+核实：2026-10-23 UTC。**[研究] ✅ 以确认 HitResult 并列驱动动作仲裁和反馈编排，默认复用原生播放器；多通道反复编排才评估 Feel。** 本节替换原来“重武器／群战加短反馈”的窄建议；作品参照、参数和生命周期一起接到[正文执行清单](../../domains/game-dev/04-client-modules.md#打击感与反馈先让命中有含义再让重击有分量)。仅资料与源码阅读，未安装反馈库、购买资产、运行引擎或做观感测试，最高质量排名未知。
 
-[研究] 单人无手工美术修补时，先统一动作／反馈时刻、调有限动作的速度／转场和程序化演出。骨架、接触或方向覆盖仍不足，就缩动作集合或换许可清楚的资产；AI 查时序与参数，人判断力度和迟钝。
+#### 作品怎么做：强调哪一击，比统一加大更重要
+
+| 代表作／原文 | 决定性证据、改变的选择与限制 |
+|---|---|
+| **Monster Hunter Wilds，AAA，2024-12-19 发行前社区更新**：[官方公告](https://steamcommunity.com/games/582010/announcements/detail/500560073905406298)；[实际读到的官方转引](https://devtrackers.gg/monster-hunter-world/p/c8161ebd-monster-hunter-wilds-pre-launch-community-update) | [一手转引] 开发者解释，《World》反馈过重的意见促使 Beta 减少 hitstop；Beta 后又收到攻击力度不足的意见，遂强化终结和强攻击。[研究] 两次方向相反的调整支持按动作地位分层，不支持“越长越重越好”。官方索引交叉核对，原公告工具未返回正文，未观看视频／试玩；没有可复用毫秒参数 |
+| **Dead Cells，优秀独立，2017 开发者访谈**：[Fighting 段](https://80.lv/articles/interview-with-the-developers-of-dead-cells) | [一手] 开发者描述暴击的一帧冻结、随后零点几秒减速（历史描述），配血花和专属声音。[研究] 借“确认事件同时组织节奏／声画”，不能把一帧武断换成 16.7 ms，也不能把访谈当当前版常量；没有本仓因果 A/B |
+| **Warframe，2025-10 官方修订**：[PC 40.0.0，10-15](https://www.warframe.com/en/patch-notes/pc/40-0-0)；[PSN 40.0.3，10-21](https://www.warframe.com/en/patch-notes/psn/40-0-3) | [一手] 在恢复曾误去掉的后坐镜头后，玩家报告不适；关 Screen Shake 时去掉相关镜头位移，以准星菱形继续表达 recoil。后续仍有分开后坐／屏震设置的诉求，公告说明主机 cert 边界。[研究] 命中／后坐的信息不应被绑死于镜头运动，不声称后续已彻底解决晕动 |
+
+**[社区] “打击感差”不是一个参数诊断。** [机核 2024-11-08 Wilds Beta 讨论](https://www.gcores.com/articles/190510)涉及轮廓与低机位遮挡；[Reddit 2024-12-04 讨论](https://www.reddit.com/r/MonsterHunter/comments/1h64wll/i_cant_believe_overseas_fans_used_to_hate_hitstop/)中轻武器连贯与重击力度有不同意见。另一个独立游戏的 [Katanaut Demo Steam 原帖，2025-01-19](https://steamcommunity.com/app/3032830/discussions/0/632293266018036582/)把失控前冲、接触姿态和低对比也归为打击感，开发者回应待调整，未见本轮后续复测。[研究] 所以先把问题拆成动作控制、接触可读性、节奏和感官负担；这些是个别观察，不是总体玩家共识或当前发行版故障列表。
+
+#### 参数合同：反馈插件接不了的那一半
+
+[研究] 输入接受即发起手预反馈，命中查询／结算后才发结果；`HitResult` 至少可关联动作、段序号、目标、结果、接触位置／方向和实例代次。动作仲裁决定受击、霸体、击退、死亡优先级，反馈编排只选择该结果的声画触觉。两个分支并列，不让“是否播放特效”决定是否受伤。
+
+| 必填参数 | 比较与失败条件 [研究] |
+|---|---|
+| 接触／节奏 | 采样→接受→判定→首反馈分别记时；起手、生效、恢复与取消窗口分开。迟到先修链路，不能以零前摇／任意取消牺牲动作承诺 |
+| hitstop scope／时钟 | 逐项指定攻击者、受击者、世界、动画、物理、粒子、相机、音频、UI 与输入 TTL 是否停；局部表现冻结不能假定冻结所有子系统。凡改变反应／判定窗口，作为玩法规则，不偷偷随画质或无障碍选项改变 |
+| 重入／合并 | 同击用关联身份去重；真实多段用不同序号，多目标各结算但镜头／声音／触觉设预算，合并方式和上限显式。全局 cooldown 既可能漏真实下一击，也不能证明同击已去重 |
+| 恢复／所有者 | 每个持续效果有所属动作、对象、玩家与代次；暂停、取消、销毁、回池、换设备、退局、重开逐项定停止／恢复政策。旧回调不能改新实例，停止不能灭掉别人仍有效的贡献 |
+| 质量 | 轻／重、格挡／命中可辨，接触方向正确，下一威胁可见；层级声音起音不被并发吞掉，镜头与触觉不累。没有跨武器、设备和玩家的最佳毫秒配方 |
+
+[一手] [Unity 6000.3 timeScale](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Time-timeScale.html)：零时 FixedUpdate 和 WaitForSeconds 不推进，修改从后续帧生效。[研究] 恢复必须有仍推进的路径；释放本次持有权后重算有效状态，不盲写 `timeScale=1` 或恢复已过时的旧值。固定步是否随倍率改另定。输入、菜单权限和触觉沿 [WP10 content #21／#22](wp10-content.md#21) 的既有 1.20.1 证据，不用较老包文档倒退版本；旧命中脉冲过期后不补播，持续状态另定恢复。
+
+#### Unity 优先的实现比较：时钟、停止和复位并非同义词
+
+| 路线／固定依据 | 采用单位与撤回条件 |
+|---|---|
+| **原生 Animator／AudioSource／Particle System＋Cinemachine**：[ImpulseManager 3.1 API 实际 3.1.7](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/api/Unity.Cinemachine.CinemachineImpulseManager.html)；[main 固定源码](https://github.com/Unity-Technologies/com.unity.cinemachine/blob/45728f3030787076f32930101d11d9ca96fe3a0f/com.unity.cinemachine/Runtime/Impulse/CinemachineImpulseManager.cs) | [一手] `ImpulseManager.IgnoreTimeScale` 独立于 Brain；快照 `GetImpulseAt` 位移相加、旋转相乘，不是总强度封顶；Cancel 可衰减／立即，Clear 清全局，过期事件可复用。[研究] ✅ 项目补通道预算和所有者，不长期保过期 handle 或用 Clear 清单次命中。main 快照不等于发行 3.1.7；[2019 菜单冻结 shake 原帖](https://discussions.unity.com/t/can-impulselistener-ignore-timescale/750827)说明时钟易混，不是当前 bug 判定 |
+| **Feel**：[MMF Player 文档](https://feel-docs.moremountains.com/mmf-player.html)；[发行记录](https://feel.moremountains.com/feel-releases) | [一手] `StopFeedbacks()` 默认停序列和内容，false 只停序列，`InterruptsOnStop=false` 的子效果可继续；`RestoreInitialValues` 另调用，重入／cooldown 不代事件 ID；Player 与子反馈时钟都须核。6.3（2026-10）需 Unity 6000.5.0f1+，6.0 才有 Sequential mode，不能套回 5.x。[研究] 👀 多动作反复编排才有潜在收益；本仓 6000.3 不直接升级，未购买／安装或读付费源码。停止后残留／重开音高等修复记录说明整包仍需回归 |
+| **DOTween**：[develop 固定 TweenSettingsExtensions](https://github.com/Demigiant/dotween/blob/bfb02b05551a45204352dc43bdc15b882147891a/_DOTween.Assembly/DOTween/TweenSettingsExtensions.cs#L87-L110)；[官方文档](https://dotween.demigiant.com/documentation.php)；[许可](https://dotween.demigiant.com/license.php) | [一手] 快照内部 1.3.045，不当商店发行版；已入 Sequence 的子 tween 不接受 SetLink，嵌套更新时钟由根序列控制；independent＋Fixed 在 timeScale=0 仍无 FixedUpdate。许可非 MIT，允许商用而改版分发受限。[研究] ✅ 项目已有就复用根 handle，明确 Kill／Complete／回初值，避免 KillAll；不拷改版库进公共模板，也不为一次闪色迁库 |
+| **PrimeTween 近期对照**：[1.5.1 固定 changelog](https://github.com/KyryloKuzyk/PrimeTween/blob/023630e033ddaf197cb5f135b7cd0deda1a3557c/changelog.md)（2026-10-21）；[许可](https://github.com/KyryloKuzyk/PrimeTween/blob/023630e033ddaf197cb5f135b7cd0deda1a3557c/LICENSE) | [一手] 1.5.0 增取消 stop／complete 策略，修 CompleteAll 的回调重启自身冻结；公开模板须经 NPM 引依赖，不能捆源码／tgz，不是无条件宽松开源。[社区／一手] [issue 220](https://github.com/KyryloKuzyk/PrimeTween/issues/220) 是旧版 build／加载存档后极短 tween 协程问题，缺稳定最小复现，1.4.0 标记相关复用问题已修。[研究] 👀 提醒测 build 与重开，不证明当前坏或性能最好；无实测净收益不迁库 |
+
+**Unreal 对照。** [一手] [Camera Shake](https://dev.epicgames.com/documentation/en-us/unreal-engine/camera-shakes-in-unreal-engine) 的 Single Instance 是再次触发重启，不是忽略重复命中；[UGameplayCueNotify_Burst](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/UGameplayCueNotify_Burst) 非实例一次性，不能放 latent delay／timeline。[研究] 原生 Montage／Niagara／Audio／Force Feedback 各自管理生命周期，已用 GAS 才沿下文 PredictionKey；CustomTimeDilation 不能据此推定所有物理／音频／网络都冻结。本轮未核这些覆盖，不造 Unity 式统一暂停配方。
+
+**[研究] AI 与人各验什么。** AI 写绑定、分档参数、身份／时钟 trace、去重和生命周期回归，先锁规则再逐通道 A/B；人验动作接触、可控性、威胁辨识与舒适性。首反馈和帧间隔必须在首次播放、密集命中、30／60／120 显示率及长帧分别看；自动检查不证明外设到发光延迟、真实音频输出或乐趣。第二次需求把单击改多段＋多目标，再加霸体／击杀，核伤害次数与反馈预算各自成立，并覆暂停、回池／重生及网络确认／拒绝／重演。具体步骤沿正文清单，不另建实验平台。
+
+**探索回执。** 截止 2026-10-23，读开发者访谈、官方更新／API、固定 GitHub 源码与 issue、Unity Discussions、Steam、Reddit、中文机核；Wilds 官方正文仅经转引读到，未看视频，Feel 付费源码未取，候选生产采用规模与体验排名未建立。旧 Celeste／Deepnight、Factorio／NGO／GAS 证据复用如下，不计本轮新作品或实测。
+
+**保留的运动边界。** [研究] 2D 精确动作需要才加有期限缓冲／离地宽限，容错改变可达距离和战斗窗口；3D 保一个位移负责人，先 Animator／Clip／Blend Tree，接触缺口才上 Rigging／IK。骨架、方向覆盖不足就换许可清楚资产或缩动作集合。[一手] [Unity 6.3 转场](https://docs.unity3d.com/6000.3/Documentation/Manual/class-Transition.html)区分 Exit Time＋条件、时长单位和打断排队，不支持全关 Exit Time；[Animation Rigging 1.4 页实际 1.4.1](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/index.html)为可选能力。
 
 **回合等待预算（核实：2026-10-15 UTC+8）。** [研究] ✅ 先比较缩短高频反馈与可选快速播放，沿用动作完成条件和一次性结算。
 
@@ -147,7 +181,7 @@ Penny 是已发行作品的设计取舍，不是通用最优证明；Holden 是�
 
 ### 5. 下一步验证和本轮交付边界
 
-[研究] 未来获准切片选一个高频动作：2D 跳跃／短连击，3D 转身／近战。固定规则后切纯呈现，缓冲／顿帧窗口另作玩法变量；记录首反馈、长帧和误操作，由人判断可控／可读。二改再核是否只需动作参数和少量绑定。
+[研究] 完整反馈的逐通道 A/B、第二次需求与退出恢复统一沿[正文执行清单](../../domains/game-dev/04-client-modules.md#交给-ai-的执行清单先基线再加第二次需求)；运动扩展沿 P35 的单跳→冲刺→中断。仅预注册，未跑游戏；保留可复用配置与少量事件绑定是否真能减少二改成本，仍待实际工程验证。
 
 <a id="8"></a>
 
