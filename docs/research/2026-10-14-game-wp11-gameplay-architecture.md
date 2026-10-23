@@ -818,3 +818,37 @@ AD模拟时停普通循环，[普通存档门槛](https://github.com/IvarK/Antim
 专业作者 [Luke 的无代码教程](https://datvm.github.io/TimberbornMods/ModdingGuide/getting-started)展示最小字段修改，但仍用 Update 7 的路径与能力边界；[TimberAPI 作者说明](https://github.com/Timberborn-Modding-Central/TimberAPI/blob/main/README.md)也指出不少旧功能已进入官方支持。两者提醒先核版本，不默认照旧教程装框架，也不把历史“JSON 能力有限”当 1.1 结论。[一手／研究] 社区覆盖仍不足：已检索 Reddit、indienova 与知乎；[Reddit 制作求助](https://www.reddit.com/r/Timberborn/comments/1s9r6qg/building_blueprint_documentationtimbermesh_error/)涉及数据与模型加载，却无已核解决结果，不能当补丁故障实测。中文未找到同题专业实作，专业作者资料也未提供该开关的独立复测。[研究]
 
 **Agent 的具体交付：** 给既有配方增加材料，再要求修改其数量；交最小补丁、编辑器往返 diff、按声明加载顺序得到的预期结果及发布文件清单。只测承诺支持的模组组合／顺序；冲突可通过声明依赖、顺序或不兼容解决，不要求任意组合都成功。人再验游戏内实际内容与发布包；若数据没有目标能力才升级代码，不因补丁冲突立刻造平台。[研究；全部待执行]
+
+<a id="p106-equipment-loss-supply"></a>
+
+## P106：装备损毁与替代供给，要一起改
+
+**[研究] 改变建议：想让玩家临场重建，才把装备当消耗；同时设计逃生、替代供给与保留构筑的相反路线。**
+**[一手／社区] Cogmind 提供真实制作参照，也有接受重建和被构筑不稳定劝退的两种玩家反馈。**
+**[研究] 最高水平未知；👀 仅机制评估，未运行游戏、引擎、模型或玩家对照。** 核实：2026-10-23（UTC+8）。
+
+### 当代复盘与当前规则：消耗不只是扣一个数
+
+[Kyzrati 2025-08-07 原文](https://www.gridsagegames.com/blog/2025/08/designing-for-mastery-in-roguelikes-w-roguelike-radio/)的 Comebacks／Agency／Consequences 将受击损耗、裸核逃生与环境零件重建连起来；特定缺件可用限量制造补足，洞穴则缺少常规替代供给。作者也承认长期保持构筑的玩家未必喜欢；这是近期复盘，不是2025才新增机制。作者所称玩家数据差异未独立核实，不据此声称设计有效。[一手／研究]
+
+[官方手册 Beta 17.1](https://www.gridsagegames.com/cogmind/manual.txt)在 Explorer 列出按当前状态替换主设施出生点附近物品、洞穴残骸不自毁的辅助政策；Salvage 明确制造机造出的机器人不留可回收部件，紧接着说明未装配的库存物品总会掉落。不能宽化为完全无掉落。[一手] **二改补给时要核制造—回收循环**是研究推导，不是作者在此声明的设计意图。[研究]
+
+### 现成相反路线及其维护成本
+
+同一手册仍提供 RPGLIKE，降低部件损毁并允许治疗；不是本仓凭空提出一套永久装备模式。[一手] [2020-01-06 制作复盘](https://www.gridsagegames.com/blog/2020/01/special-mode-design-rpglike/)解释：完全不毁加休息恢复的初案需要重做挑战，工作量过大而放弃；转移部件伤害到核心后，又在 Beta 9.4 恢复护甲的保护作用。**旧历史对照**说明改损耗会改掉其他资源价值，不能将其包装成近期新技术或最优参数。[一手／研究]
+
+**开源反向参照：修复不必回到全新。** CDDA 2026-10-22 实验版固定 `afe52ab` 的[非枪支修复路径](https://github.com/CleverRaven/Cataclysm-DDA/blob/afe52ab9847fdd229ad5bc6acdafa2631bcd5e04/src/iuse_actor.cpp#L3284-L3554)先核材料，成功时消耗并减损伤，失败可能进一步损坏甚至毁物；[损伤调整](https://github.com/CleverRaven/Cataclysm-DDA/blob/afe52ab9847fdd229ad5bc6acdafa2631bcd5e04/src/item_degrade.cpp#L856-L881)不会因负向修复量直接抹掉基础长期磨损。[一手：源码静读] 因而 AI 新增“修复”按钮时，要保材料供应、失败风险及长期磨损政策，不能顺手清零所有状态；此结论仅限所读路径，不推广为所有故障不可修，也不建议把整套 CDDA 移植到 Unity。[研究；未运行]
+
+### 玩家为何意见相反
+
+| 已读原帖与发言者 | 支持的窄结论 |
+|---|---|
+| [r/Cogmind，Rushional](https://www.reddit.com/r/Cogmind/comments/1r03nwk/i_think_im_officially_too_stupid_for_cogmind/)自述约90小时，损失快于合适零件补充 | 即使认可QoL，也可能因构筑不稳定而焦虑；不能只叫玩家接受损毁 |
+| [r/roguelikes，jglazer75／Ok-Pepper-1447](https://www.reddit.com/r/roguelikes/comments/1hrsuip/im_considering_getting_cogmind_but_one_negative/)分别自述转为动态构筑后更有趣、被打散后逃脱重建 | 有玩家喜欢转换和恢复，但“总能重建”只是其体验，不是供给保证 |
+| [r/Cogmind，uniqiq](https://www.reddit.com/r/Cogmind/comments/1s1vm8p/the_cogmind_is_the_most_frustrating_game_ive_ever/)认可可毁装备，后续承认已有进步，但对扩展胜利目标下的失败仍感挫败 | 不满也可能来自学习／反馈，不能全归为讨厌损毁 |
+
+以上是不同玩家的自述，未取得同构建、同难度的受控比较；评论精确日期未统一核实，不据时长、票数或商店好评率量化效果。[社区／研究]
+
+**AI 二改交付（待验）**：沿现有组件／数据与伤害、掉落接口，只改一种关键件的损毁政策，再改一处替代来源；记录损失后仍可做的动作、可达补给及其代价。比较正常补给与缺件路线、制造后回收、辅助模式开关；若承诺稳定构筑，则反查治疗是否让护甲无用。沿05通用契约验一次结算／重开，人试玩核重建意愿；库存身份与堆栈沿既有段，不为此另造经济框架。[研究]
+
+**探索回执**：截至2026-10-23，读作者博客、当前手册、Reddit正反；中文Steam搜到2025个人手册翻译，但它不是独立体验验证，未找到可核的近期同题中文正反。开源已核 CDDA 固定修复路径，仅借机制，不直接复用到 Unity，也不复制代码或素材。两篇论坛公告要求登录，停止访问且未换镜像；未试用、未比较AI二改工时。[研究]
