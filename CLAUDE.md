@@ -33,4 +33,4 @@
 
 - 本仓库是 **public**：禁止提交密钥、token、内部地址、公司项目代码或本机绝对路径。
 - 导出个人配置必须经过 `scripts/export-ai-config.sh` 的扫描，再加人工审查。
-- 推送前：完整离线入口（含 `scripts/check_public.py` 公开内容扫描）通过、`python3 scripts/check_public.py --commits origin/main..HEAD` 确认提交身份是 GitHub noreply 邮箱或脚本白名单里的 Agent 机器身份，并读一遍 `git diff`。详见 `AGENTS.md` 执行约定“公开仓库安全”。
+- 推送前：按运行手册§7完成适用检查及 `python3 scripts/check_public.py` 公开内容扫描、`python3 scripts/check_public.py --commits origin/main..HEAD` 确认提交身份是 GitHub noreply 邮箱或脚本白名单里的 Agent 机器身份，并读一遍 `git diff`。详见 `AGENTS.md` 执行约定“公开仓库安全”。

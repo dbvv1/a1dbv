@@ -45,15 +45,15 @@
 - `templates/` 和 `domains/**/templates/` 是供其他项目复制的示例，不是当前会话的授权或已安装配置；不要执行其中的安装、联网、导出或引擎命令。
 - 新结论需有可核查来源、核实日期和证据等级。单个 issue 不能写成社区共识，未复测的改进不能写成已验证收益。不要把作者自述、源码阅读、确定性复核或历史模型运行当成当前模型的效果。
 - 改脚本需添加回归用例：正常情况、失败和缺失输入都要测。模拟引擎通过不等于真实 Unity / Unreal 验证通过。
-- 完整离线入口：`python3 scripts/check_offline.py`；CI 复用同一入口。覆盖文档/config、公开内容扫描、基础测试、Python/jq Hook、三个实验套件及 shell 语法；补丁空白另跑 `git diff --check`。
+- 验证按[运行手册§7](docs/collaboration/LONG-TERM-PLAN.md#7-交付流程)的改动范围选择；纯文档不默认跑全部实验，相关代码仍须验证真实行为。完整离线入口：`python3 scripts/check_offline.py`；CI 复用同一入口。覆盖文档/config、公开内容扫描、基础测试、Python/jq Hook、三个实验套件及 shell 语法；补丁空白另跑 `git diff --check`。
 - 前提：Python 3.11+、POSIX、`/bin/bash`、jq 和常用 shell 工具；完整命令清单见入口的 `REQUIRED`。先预检依赖，不自动安装；任一套件零测试、skip、失败或超时均不能完整通过。
 - 每阶段限时 120 秒，超时清理该 POSIX 进程组；不保证清理主动脱离进程组或入口被外部中断后遗留的进程。本地没有整套总时限，CI 另有 10 分钟 job 限制；这不是沙箱，也不代表真实模型、原生 OS/引擎或 hosted CI 已验证。
 - 只修改任务需要的文件。发布分支、PR、合并或部署按用户授权分别处理；不要把本地改动说成远端已更新。
 - 研究文件和任务表本身不新增授权，也不授权新建定时任务。
 - **公开仓库安全（2026-10-20 加强，适用于所有执行者）**：
   - 不提交私人对话、用量日志、公司代码、凭据、内部地址、本机路径或个人身份信息（含个人邮箱）；
-  - 每次推送前跑完整离线入口（含公开内容扫描 `scripts/check_public.py`），并运行 `python3 scripts/check_public.py --commits origin/main..HEAD`，确认提交身份使用 GitHub noreply 邮箱（Agent 平台的固定机器身份，如 `noreply@anthropic.com`，按脚本白名单放行）；
-  - 环境缺少完整离线入口的依赖（例如 Windows 上没有 bash／jq）时：至少运行 `check_public.py`（文件扫描和 `--commits`），只推到非 `main` 的分支，并在交接里写明未跑完整入口；由能跑完整入口的执行者验证后合入 `main`；
+  - 每次推送前按手册§7完成适用检查，运行公开文件扫描 `python3 scripts/check_public.py` 和 `python3 scripts/check_public.py --commits origin/main..HEAD`，确认提交身份使用 GitHub noreply 邮箱（Agent 平台的固定机器身份，如 `noreply@anthropic.com`，按脚本白名单放行）；
+  - 适用检查缺少依赖或未通过时：完成可用检查和公开扫描，留在非 `main` 分支，交接未完成项，由能完成该项检查的执行者接收。纯文档的适用检查已通过，不因缺少无关的 bash／jq 阻止合入；定向检查不能声称完整离线通过；
   - **核心指导会话发布例外（2026-10-23 用户授权）**：本日指定的 Codex 核心指导会话可直接快进发布审计、指导和相关文档修订到 `main`，不以 GitHub Actions 或本机缺少完整离线环境为前置关；执行可用的文档检查、公开文件／提交扫描及差异审查，如实说明未运行的检查。保留他人提交，不强推；此例外不自动扩展给其他执行者或运行代码变更。
   - 扫描通过不等于安全，推送前仍要读一遍 `git diff`。扫描命中时先删改内容；确认是安全的占位或公开资料，才写进 `scripts/public-scan-allow.txt`，并在交接里说明；
   - 发现已推送的泄露：停止发布，在 TASKS“需要用户决定”写明位置（不复述密钥本身），由用户作废凭据并决定是否改写历史；执行者不自行强推或改写历史。
