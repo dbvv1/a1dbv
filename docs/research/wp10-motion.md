@@ -926,6 +926,19 @@ Unity 6.3 [Audio设置](https://docs.unity3d.com/6000.3/Documentation/Manual/cla
 
 **成本与撤回。** 先定单人能维护的相机模式、区域触发、遮挡材质例外和可选运动通道；内容每增加一个房间就需新特例时，比较简化几何、改取景或减少视角自由度。新增 Deoccluder 查询、Confiner 烘焙及扩展并非零成本，本轮没有设备测量；不写通用射线数／最佳阻尼。可靠窄跟随没有缺口就保留，Cinemachine 的完整功能不构成迁移理由。[研究]
 
+<a id="camera-control-return"></a>
+### 控制借出与返回：画面事件不拥有玩法权限
+
+**2026-10-23 核实。[研究] ✅ 在现有模式入口保存交接身份，返回时按当前资格重新提交目标／权限，而非恢复借出前快照。** 完整执行顺序放在[04 镜头模块](../../domains/game-dev/04-client-modules.md#camera-contract)，这里仅补证据边界；未运行引擎，不能称最优体验已验证。
+
+[一手] Cinemachine 3.1.7 的 [Brain Events](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineBrainEvents.html)把 Activated 放在混合开始，零时长 cut 不发 Blend Finished；Timeline 混合不发 Blend Created。[事件流](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineEvents.html)还包括各 Brain 和子相机管理器。因此“任何混合完成就启用玩家”和“只等完成事件才释放”都不足以覆盖返回；事件须过滤所属视口与期望目标，cut／取消有各自路径。[研究]
+
+[一手] [Input Axis Controller](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineInputAxisController.html)的混合期抑制只约束该控制器，轴仍可由脚本／动画驱动。[研究] 菜单保持期间的观察、自动回正与角色移动许可仍由模式决定；不能把此选项当完整接管。既有[暂停持有／死亡后恢复反例](wp10-content.md#5-暂停叠加与转场关闭一层不等于恢复整局)与[反馈所有者清理](#hit-feedback)直接复用，不另造两套恢复器。
+
+**推导反例，非引擎复现：** 剧情 A 返回玩家 P 的混合尚未结束，P 死亡并重生为 Q；A 的旧完成通知随后到达。若通知恢复保存的 Follow／输入开关，镜头会拉回旧对象或越过死亡／菜单权限。采用交接 ID＋目标代次校验，旧通知只可幂等结束自己的持有，不能提交 Q 的目标／许可；新状态选择 Q 的取景并处理旧反馈。相机可复用同一个对象，所以只比较相机引用不够。[研究]
+
+[研究] 这是跨职责的窄协调，不建议新建通用相机事务平台。无重入／中断需求的单入口可保简单状态；有意连续操控的观察模式保持其移动参考系，不为等画面强锁玩家。重生清历史、正常借出保连续性仍沿[既有历史政策](wp11-camera.md#s12-2)，不与权限恢复绑成一次全局 reset。
+
 <a id="camera-version"></a>
 ### 当前版本：Editor 升级与相机手感回归分开接收
 
