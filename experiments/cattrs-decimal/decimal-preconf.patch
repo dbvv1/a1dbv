@@ -1,0 +1,168 @@
+diff --git a/docs/preconf.md b/docs/preconf.md
+index 022426a..6986c72 100644
+--- a/docs/preconf.md
++++ b/docs/preconf.md
+@@ -237,3 +237,18 @@ Bytes are serialized as base 85 strings. Sets are serialized as lists, and deser
+ Tuples are serialized as lists, and deserialized back into tuples.
+ _tomlkit_ only supports mappings with string keys so mappings will have their keys stringified before serialization, and destringified during deserialization.
+ [`date`](https://docs.python.org/3/library/datetime.html#datetime.date) and [`datetime`](https://docs.python.org/3/library/datetime.html#datetime.datetime) objects are passed through to be unstructured by _tomlkit_ itself.
++
++## Decimal values
++
++The JSON, ujson, orjson, PyYAML and msgspec JSON converters support
++`decimal.Decimal`. They encode Decimal values as strings to preserve precision,
++trailing zeros, signed zero and exponents. The msgspec converter leaves encoding
++to msgspec's native implementation rather than installing a custom unstructure
++hook, preserving its optimized paths for supported classes and collections.
++
++String round-trips are exact. A number already parsed as a float may have lost
++precision, which converting it to a Decimal cannot recover. For numeric input
++handled by the Decimal structure hook, PyYAML uses `Decimal(str(value))`; the JSON converters use `Decimal(value)`.
++Native msgspec Struct handling remains delegated to msgspec and may use different
++numeric conversion rules. Use strings when exact decimal representation matters. A plain `cattrs.Converter`
++is unchanged and still needs explicit Decimal structure hooks.
+diff --git a/src/cattrs/preconf/json.py b/src/cattrs/preconf/json.py
+index 4a55659..d1e9319 100644
+--- a/src/cattrs/preconf/json.py
++++ b/src/cattrs/preconf/json.py
+@@ -3,6 +3,7 @@
+ from base64 import b85decode, b85encode
+ from collections.abc import Set
+ from datetime import date, datetime
++from decimal import Decimal
+ from json import dumps, loads
+ from typing import Any, TypeVar, Union
+
+@@ -38,6 +39,7 @@ def configure_converter(converter: BaseConverter) -> None:
+     """
+     Configure the converter for use with the stdlib json module.
+
++    * decimals are serialized as strings to preserve precision
+     * bytes are serialized as base85 strings
+     * datetimes are serialized as ISO 8601
+     * counters are serialized as dicts
+@@ -49,6 +51,8 @@ def configure_converter(converter: BaseConverter) -> None:
+     .. versionchanged:: 24.2.0
+         Enums are left to the library to unstructure, speeding them up.
+     """
++    converter.register_unstructure_hook(Decimal, str)
++    converter.register_structure_hook(Decimal, lambda v, _: Decimal(v))
+     converter.register_unstructure_hook(
+         bytes, lambda v: (b85encode(v) if v else b"").decode("utf8")
+     )
+diff --git a/src/cattrs/preconf/msgspec.py b/src/cattrs/preconf/msgspec.py
+index 0623fda..28706d7 100644
+--- a/src/cattrs/preconf/msgspec.py
++++ b/src/cattrs/preconf/msgspec.py
+@@ -6,6 +6,7 @@ from base64 import b64decode
+ from collections.abc import Callable
+ from dataclasses import is_dataclass
+ from datetime import date, datetime
++from decimal import Decimal
+ from enum import Enum
+ from functools import partial
+ from threading import local
+@@ -86,6 +87,7 @@ class MsgspecJsonConverter(Converter):
+ def configure_converter(converter: Converter) -> None:
+     """Configure the converter for the msgspec library.
+
++    * decimals are serialized as strings to preserve precision
+     * bytes are serialized as base64 strings, directly by msgspec
+     * datetimes and dates are passed through to be serialized as RFC 3339 directly
+     * enums are passed through to msgspec directly
+@@ -95,6 +97,8 @@ def configure_converter(converter: Converter) -> None:
+     .. versionchanged:: 24.2.0
+         Enums are left to the library to unstructure, speeding them up.
+     """
++    # msgspec already encodes Decimal as a string; keep its native passthroughs.
++    converter.register_structure_hook(Decimal, lambda v, _: Decimal(v))
+     configure_passthroughs(converter)
+
+     converter.register_unstructure_hook(Struct, to_builtins)
+diff --git a/src/cattrs/preconf/orjson.py b/src/cattrs/preconf/orjson.py
+index 27b0bc4..ad7336b 100644
+--- a/src/cattrs/preconf/orjson.py
++++ b/src/cattrs/preconf/orjson.py
+@@ -3,6 +3,7 @@
+ from base64 import b85decode, b85encode
+ from collections.abc import Set
+ from datetime import date, datetime
++from decimal import Decimal
+ from enum import Enum
+ from functools import partial
+ from typing import Any, TypeVar, Union
+@@ -43,6 +44,7 @@ def configure_converter(converter: Converter) -> None:
+     """
+     Configure the converter for use with the orjson library.
+
++    * decimals are serialized as strings to preserve precision
+     * bytes are serialized as base85 strings
+     * datetimes and dates are passed through to be serialized as RFC 3339 by orjson
+     * typed namedtuples are serialized as lists
+@@ -56,6 +58,8 @@ def configure_converter(converter: Converter) -> None:
+     .. versionchanged:: 24.2.0
+         Enums are left to the library to unstructure, speeding them up.
+     """
++    converter.register_unstructure_hook(Decimal, str)
++    converter.register_structure_hook(Decimal, lambda v, _: Decimal(v))
+     converter.register_unstructure_hook(
+         bytes, lambda v: (b85encode(v) if v else b"").decode("utf8")
+     )
+diff --git a/src/cattrs/preconf/pyyaml.py b/src/cattrs/preconf/pyyaml.py
+index 9d8f76e..f70261f 100644
+--- a/src/cattrs/preconf/pyyaml.py
++++ b/src/cattrs/preconf/pyyaml.py
+@@ -1,6 +1,7 @@
+ """Preconfigured converters for pyyaml."""
+
+ from datetime import date, datetime
++from decimal import Decimal
+ from functools import partial
+ from typing import Any, TypeVar, Union
+
+@@ -42,6 +43,7 @@ def configure_converter(converter: BaseConverter) -> None:
+     """
+     Configure the converter for use with the pyyaml library.
+
++    * decimals are serialized as strings to preserve precision
+     * frozensets are serialized as lists
+     * string enums are converted into strings explicitly
+     * datetimes and dates are validated
+@@ -50,6 +52,8 @@ def configure_converter(converter: BaseConverter) -> None:
+     .. versionchanged:: 24.1.0
+         Add support for typed namedtuples.
+     """
++    converter.register_unstructure_hook(Decimal, str)
++    converter.register_structure_hook(Decimal, lambda v, _: Decimal(str(v)))
+     converter.register_unstructure_hook(
+         str, lambda v: v if v.__class__ is str else v.value
+     )
+diff --git a/src/cattrs/preconf/ujson.py b/src/cattrs/preconf/ujson.py
+index 2ba5682..8d47fc3 100644
+--- a/src/cattrs/preconf/ujson.py
++++ b/src/cattrs/preconf/ujson.py
+@@ -3,6 +3,7 @@
+ from base64 import b85decode, b85encode
+ from collections.abc import Set
+ from datetime import date, datetime
++from decimal import Decimal
+ from typing import Any, AnyStr, TypeVar, Union
+
+ from typing_extensions import TypeForm
+@@ -37,6 +38,7 @@ def configure_converter(converter: BaseConverter):
+     """
+     Configure the converter for use with the ujson library.
+
++    * decimals are serialized as strings to preserve precision
+     * bytes are serialized as base64 strings
+     * datetimes are serialized as ISO 8601
+     * sets are serialized as lists
+@@ -45,6 +47,8 @@ def configure_converter(converter: BaseConverter):
+     .. versionchanged:: 24.2.0
+         Enums are left to the library to unstructure, speeding them up.
+     """
++    converter.register_unstructure_hook(Decimal, str)
++    converter.register_structure_hook(Decimal, lambda v, _: Decimal(v))
+     converter.register_unstructure_hook(
+         bytes, lambda v: (b85encode(v) if v else b"").decode("utf8")
+     )

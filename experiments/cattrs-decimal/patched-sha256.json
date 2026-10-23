@@ -1,0 +1,8 @@
+{
+  "src/cattrs/preconf/json.py": "c5dc017c3787564c41b0dc1aa2a46060f8124bb1203dbc03b78456c664455cc8",
+  "src/cattrs/preconf/ujson.py": "c74a2c942f872f8e26c4e25a9f63960cfb0b6abe1431883fb59053de4c19ad05",
+  "src/cattrs/preconf/orjson.py": "505e47910e34f1b7879fd1d944b454a0c42c760a452e86526283c93465957795",
+  "src/cattrs/preconf/pyyaml.py": "cd8c7c75e0b80586a62a52e8beb089898ef10f690f54a5e4498a5eed5488b616",
+  "src/cattrs/preconf/msgspec.py": "4a269cb65bbda1bfe2a4141f21e0eae2742906a2762bd849a985c8e9e7acac96",
+  "docs/preconf.md": "db49fcb3aaff9126a81c45a23594d77a3af95ee2c2400e897698d6dbca259c7d"
+}

@@ -1,0 +1,62 @@
+{
+  "replay_missing_args": {
+    "exit": 2,
+    "rejected": true
+  },
+  "replay_missing_source": {
+    "exit": 1,
+    "rejected": true
+  },
+  "replay_wrong_source": {
+    "exit": 1,
+    "rejected": true
+  },
+  "replay_optimized": {
+    "exit": 1,
+    "rejected": true
+  },
+  "replay_existing_output": {
+    "exit": 1,
+    "rejected": true
+  },
+  "navigate_missing_args": {
+    "exit": 2,
+    "rejected": true
+  },
+  "navigate_wrong_source": {
+    "exit": 1,
+    "rejected": true
+  },
+  "navigate_optimized": {
+    "exit": 1,
+    "rejected": true
+  },
+  "local_missing_args": {
+    "exit": 2,
+    "rejected": true
+  },
+  "local_wrong_backend": {
+    "exit": 2,
+    "rejected": true
+  },
+  "local_optimized_json": {
+    "exit": 0,
+    "explicit_tuple_check": true
+  },
+  "local_optimized_pyyaml": {
+    "exit": 0,
+    "explicit_tuple_check": true
+  },
+  "local_optimized_ujson": {
+    "exit": 0,
+    "explicit_tuple_check": true
+  },
+  "local_optimized_orjson": {
+    "exit": 0,
+    "explicit_tuple_check": true
+  },
+  "local_optimized_msgspec": {
+    "exit": 0,
+    "explicit_tuple_check": true
+  }
+}

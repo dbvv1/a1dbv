@@ -221,6 +221,12 @@ Agent从实际安装的router-core包加载search-params窄Skill，再读当前m
 
 读者先运行`npm ci`、`npm test`、`npm run build`，再按入口启动页面；迁入自己的项目时核哪些字段真的影响服务器取数。7项真实Router／React DOM流程覆盖详情、清空、历史与URL重建；生产构建和类型检查通过，实际浏览器与线上HTTP仍未验。首次`toSorted`与原ES2022目标不符，改为排序过滤后的新数组，而不是为这一步升级编译目标。[本仓实试／范围]
 
+### 实例：补齐Decimal支持，保住已有原生能力
+
+**✅ 只解决自己的应用，先注册局部hooks；需要库默认支持时，再采用五后端补丁。** 针对[cattrs维护者的未决要求](https://github.com/python-attrs/cattrs/pull/764#issuecomment-4826035821)，本仓补齐json、PyYAML、ujson、orjson及msgspec的精确字符串往返；msgspec保已有原生编码，只补解码。[本仓实试；[可直接运行的应用入口与库补丁](../experiments/cattrs-decimal/README.md)，2026-10-23]
+
+Agent沿同名适配器的真实声明追到hook身份分流，读者需核实际序列化输出和`Decimal.as_tuple()`，而非只比数值相等：尾零、负零和指数也要保住。另验所测标量及attrs/list/dict中自定义hook覆盖预配置。已经过float解析丢失的精度无法恢复，本例保证的是固定后端上的字符串往返，不是任意数字输入无损。[本仓实试／边界]
+
 ## 4. 重构
 
 **✅ 先锁定行为，再做小步等价修改。** 特征测试保护必要行为（含奇怪行为），每步跑相关检查。机械改名先用 IDE／语言重构，重复规则优先现成 codemod；少量异质调用／业务判断交 Agent。评审查复制已有实现。两种实现都能用时，按[下一项确定修改](22-agent-evaluation.md#两种实现都能用用下一项确定修改决定保留谁)选保留路径。[经验]

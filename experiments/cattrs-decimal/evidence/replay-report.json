@@ -1,0 +1,22 @@
+{
+  "source_commit": "bde101a5a67997c61a3ee0e971386a82fe141d4e",
+  "python": "3.12.14",
+  "baseline": {
+    "passed": 12,
+    "failed": 104,
+    "skipped": 0,
+    "errors": 0
+  },
+  "patched": {
+    "passed": 116,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 0
+  },
+  "upstream": {
+    "passed": 73,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 0
+  }
+}

@@ -1,0 +1,15 @@
+json scalar TypeError Object of type Decimal is not JSON serializable
+json attrs TypeError Object of type Decimal is not JSON serializable
+json nested TypeError Object of type Decimal is not JSON serializable
+pyyaml scalar RepresenterError ('cannot represent an object', Decimal('12345678901234567890.1234500'))
+pyyaml attrs RepresenterError ('cannot represent an object', Decimal('12345678901234567890.1234500'))
+pyyaml nested RepresenterError ('cannot represent an object', Decimal('12345678901234567890.1234500'))
+ujson scalar StructureHandlerNotFoundError Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.
+ujson attrs StructureHandlerNotFoundError Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.
+ujson nested StructureHandlerNotFoundError Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.
+orjson scalar TypeError Type is not JSON serializable: decimal.Decimal
+orjson attrs TypeError Type is not JSON serializable: decimal.Decimal
+orjson nested TypeError Type is not JSON serializable: decimal.Decimal
+msgspec scalar StructureHandlerNotFoundError Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.
+msgspec attrs StructureHandlerNotFoundError Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.
+msgspec nested StructureHandlerNotFoundError Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.

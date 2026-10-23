@@ -1,0 +1,420 @@
+[
+  {
+    "symbol": "json_make_converter",
+    "request": {
+      "file": "tests/test_preconf.py",
+      "line": 50,
+      "column": 50
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/json.py",
+        "line": 72,
+        "name": "make_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 50,
+        "column": 50
+      },
+      {
+        "line": 80,
+        "column": 21
+      },
+      {
+        "line": 370,
+        "column": 16
+      },
+      {
+        "line": 381,
+        "column": 16
+      },
+      {
+        "line": 387,
+        "column": 16
+      },
+      {
+        "line": 401,
+        "column": 16
+      },
+      {
+        "line": 418,
+        "column": 16
+      },
+      {
+        "line": 426,
+        "column": 16
+      },
+      {
+        "line": 443,
+        "column": 16
+      },
+      {
+        "line": 1072,
+        "column": 8
+      }
+    ]
+  },
+  {
+    "symbol": "pyyaml_make_converter",
+    "request": {
+      "file": "tests/test_preconf.py",
+      "line": 52,
+      "column": 52
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/pyyaml.py",
+        "line": 77,
+        "name": "make_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 52,
+        "column": 52
+      },
+      {
+        "line": 82,
+        "column": 21
+      },
+      {
+        "line": 1076,
+        "column": 8
+      }
+    ]
+  },
+  {
+    "symbol": "ujson_make_converter",
+    "request": {
+      "file": "tests/test_preconf.py",
+      "line": 55,
+      "column": 51
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/ujson.py",
+        "line": 69,
+        "name": "make_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 55,
+        "column": 51
+      },
+      {
+        "line": 85,
+        "column": 21
+      },
+      {
+        "line": 459,
+        "column": 16
+      },
+      {
+        "line": 470,
+        "column": 16
+      },
+      {
+        "line": 481,
+        "column": 16
+      },
+      {
+        "line": 494,
+        "column": 16
+      },
+      {
+        "line": 502,
+        "column": 16
+      },
+      {
+        "line": 519,
+        "column": 16
+      },
+      {
+        "line": 1075,
+        "column": 8
+      }
+    ]
+  },
+  {
+    "symbol": "orjson_make_converter",
+    "request": {
+      "file": "tests/test_preconf.py",
+      "line": 70,
+      "column": 56
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/orjson.py",
+        "line": 113,
+        "name": "make_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 70,
+        "column": 56
+      },
+      {
+        "line": 92,
+        "column": 35
+      },
+      {
+        "line": 537,
+        "column": 56
+      },
+      {
+        "line": 539,
+        "column": 16
+      },
+      {
+        "line": 552,
+        "column": 56
+      },
+      {
+        "line": 554,
+        "column": 16
+      },
+      {
+        "line": 566,
+        "column": 56
+      },
+      {
+        "line": 568,
+        "column": 16
+      },
+      {
+        "line": 582,
+        "column": 56
+      },
+      {
+        "line": 584,
+        "column": 16
+      },
+      {
+        "line": 593,
+        "column": 56
+      },
+      {
+        "line": 595,
+        "column": 16
+      },
+      {
+        "line": 614,
+        "column": 56
+      },
+      {
+        "line": 616,
+        "column": 16
+      },
+      {
+        "line": 1098,
+        "column": 56
+      },
+      {
+        "line": 1100,
+        "column": 23
+      }
+    ]
+  },
+  {
+    "symbol": "msgspec_make_converter",
+    "request": {
+      "file": "tests/test_preconf.py",
+      "line": 72,
+      "column": 57
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/msgspec.py",
+        "line": 120,
+        "name": "make_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 72,
+        "column": 57
+      },
+      {
+        "line": 97,
+        "column": 36
+      },
+      {
+        "line": 998,
+        "column": 57
+      },
+      {
+        "line": 1000,
+        "column": 16
+      },
+      {
+        "line": 1009,
+        "column": 57
+      },
+      {
+        "line": 1011,
+        "column": 16
+      },
+      {
+        "line": 1025,
+        "column": 57
+      },
+      {
+        "line": 1027,
+        "column": 16
+      },
+      {
+        "line": 1036,
+        "column": 57
+      },
+      {
+        "line": 1038,
+        "column": 16
+      },
+      {
+        "line": 1054,
+        "column": 57
+      },
+      {
+        "line": 1056,
+        "column": 16
+      },
+      {
+        "line": 1106,
+        "column": 57
+      },
+      {
+        "line": 1108,
+        "column": 23
+      }
+    ]
+  },
+  {
+    "symbol": "json.configure_converter",
+    "request": {
+      "file": "src/cattrs/preconf/json.py",
+      "line": 79,
+      "column": 4
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/json.py",
+        "line": 38,
+        "name": "configure_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 38,
+        "column": 4
+      },
+      {
+        "line": 79,
+        "column": 4
+      }
+    ]
+  },
+  {
+    "symbol": "ujson.configure_converter",
+    "request": {
+      "file": "src/cattrs/preconf/ujson.py",
+      "line": 75,
+      "column": 4
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/ujson.py",
+        "line": 37,
+        "name": "configure_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 37,
+        "column": 4
+      },
+      {
+        "line": 75,
+        "column": 4
+      }
+    ]
+  },
+  {
+    "symbol": "orjson.configure_converter",
+    "request": {
+      "file": "src/cattrs/preconf/orjson.py",
+      "line": 119,
+      "column": 4
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/orjson.py",
+        "line": 43,
+        "name": "configure_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 43,
+        "column": 4
+      },
+      {
+        "line": 119,
+        "column": 4
+      }
+    ]
+  },
+  {
+    "symbol": "msgspec.configure_converter",
+    "request": {
+      "file": "src/cattrs/preconf/msgspec.py",
+      "line": 122,
+      "column": 4
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/msgspec.py",
+        "line": 87,
+        "name": "configure_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 87,
+        "column": 4
+      },
+      {
+        "line": 122,
+        "column": 4
+      }
+    ]
+  },
+  {
+    "symbol": "pyyaml.configure_converter",
+    "request": {
+      "file": "src/cattrs/preconf/pyyaml.py",
+      "line": 83,
+      "column": 4
+    },
+    "definitions": [
+      {
+        "file": "src/cattrs/preconf/pyyaml.py",
+        "line": 42,
+        "name": "configure_converter"
+      }
+    ],
+    "references": [
+      {
+        "line": 42,
+        "column": 4
+      },
+      {
+        "line": 83,
+        "column": 4
+      }
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+json TypeError
+pyyaml RepresenterError
+ujson '1.2345678901234567e+19' unstructure: Decimal('12345678901234567890.1234500')
+orjson TypeError
+msgspec b'"12345678901234567890.1234500"' unstructure: Decimal('12345678901234567890.1234500')
+<class 'decimal.Decimal'> identity: True to_builtins: False direct encoder: True
+<class '__main__.Box'> identity: False to_builtins: True direct encoder: True
+list[decimal.Decimal] identity: True to_builtins: False direct encoder: True
+dict[str, decimal.Decimal] identity: False to_builtins: True direct encoder: True
