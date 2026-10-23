@@ -577,3 +577,51 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 [研究；未执行] 05已给场景与有序事件轨迹；接真实实现后，分别核纯规则、原生感知／导航和真人可读性。故意加入失视读实时位置、旧声音续满预算、不可达永久Running，确认断言会失败。本轮不另写参考FSM自证：没有项目实现时只会证明自己的规则与断言一致。游戏智力、逃脱公平感与AI二改收益仍待验。
 
 **探索回执：** 截至2026-10-23，读Ubisoft／TDM团队2024–26原文、TDM官方镜像固定链、Unity／Epic文档、制作人博客、Reddit正反与机核原文；Indienova／知乎定向检索未取得更强同题实作。另一篇机核算法综述正文cache miss，不采其摘要作实现证据；无付费、引擎、模型或用户电脑运行。[研究]
+
+
+<a id="p126-immunity-contract"></a>
+## P126 净化之后为什么仍掉血：状态与伤害的入口不同
+
+核实：2026-10-23。改变05§7：沿既有活效果集合先分移旧、挡新、伤害保护；暂挂仅在需要恢复原效果时选用。不重做来源所有权、堆层／刷新或属性重算。[研究]
+
+### 读者先决定保护什么
+
+**✅ 先把承诺落到实际消费入口，不先迁移框架。** “免疫”可以指拒绝新状态、清除旧状态或不受某类伤害，三者不会自动互相推出；被挡的状态也不应先播成功表现，再空跑到期。下面是设计选择，不是所有游戏通用的净化规则。[研究]
+
+| 玩家承诺 | 修改位置与验收 |
+|---|---|
+| 清除已有负面状态 | 对活效果按可驱散范围移除；明确不可驱散项、是否整栈，不以清一个标签代替生命周期退出 |
+| 一段时间不再中状态 | 在施加入口检查后再提交状态与成功表现；保护结束不补施期间被拒的效果，除非玩法另有排队规则 |
+| 某类伤害无效 | 追环境伤害、命中伤害和周期伤害各自的结算入口；拒状态不等于 HP 不变 |
+| 暂时失效，之后恢复 | 保原实例与来源，不假装已被驱散；另定剩余时间、周期和恢复首跳，不能由“失活”名字推断冻结 |
+
+**让 AI 先找两条调用链再改。** 在现有工程定位“施加→活效果→退出”和“命中／环境→伤害结算”，交规则表与沿原测试入口的轨迹：已中状态→净化→保护期间再次施加／环境伤害→保护结束；记录拒绝原因、活效果、HP和反馈。保留两保护来源撤一／重复退出测试；不用新增效果框架或独立演示工程。[研究]
+
+### 作品给出的反例：同样叫毒，未必都是状态
+
+[一手：开发者设计] SPD 的[Cleric公开设计](https://shatteredpixel.com/blog/coming-soon-to-shattered-the-cleric.html)将 Cleanse 描述为移除负面状态、授护盾，并可提供短暂负面状态免疫。它是作品自身的组合设计，不是“净化必含免伤”的定义。
+
+以下实读固定版本`57a4e06a4caf162446d1c28caa7983f0493fecf0`（2026-10-06，SPD 4.0.2发行更新），只核源码、不称运行复现：[一手]
+
+| 消费链 | 证据与结论 |
+|---|---|
+| 清旧与挡新 | [Cleanse.java L89–102](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Cleanse.java#L89-L102)先移负面 Buff，再按天赋授 Cleanse、加盾；[Char.add L1221–1228](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L1221-L1228)在 Cleanse 存在时拒新负面。两处均排除 AllyBuff、LostInventory，不能写成清／挡一切状态 |
+| 地面毒气伤害 | [ToxicGas L45–52](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/ToxicGas.java#L45-L52)传自身运行类型给 isImmune，仅返回 false 才调用 damage，不创建中毒 Buff；[Char.isImmune L1380–1397](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L1380-L1397)汇总角色／属性／Buff免疫类，以 isAssignableFrom 匹配 |
+| 另有毒气保护 | [PotionOfPurity L92–97](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfPurity.java#L92-L97)授 BlobImmunity；其[免疫集合 L61–81](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/BlobImmunity.java#L61-L81)含 ToxicGas。另一个[ToxicImbue L118–130](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ToxicImbue.java#L118-L130)分别列 ToxicGas 与 Poison，并在附着后清已有 Poison，说明两类需显式组合 |
+
+[研究] 由此只能推出 Cleanse 的拒负面入口不自动挡 ToxicGas；盾和其他保护仍可能影响实际 HP，不能把这条链说成“净化必定掉血”或一个已复现的 bug。作品使用类集合不意味着 Unity 也应照搬类继承做分类；SPD 为 GPL-3.0-or-later，本次不复制代码。
+
+### Unity现成方案与UE对照：借机制，不为一个开关换底座
+
+[社区：历史单例] [Unity Discussions 2022-07-15原帖](https://discussions.unity.com/t/status-effects-and-immunity/887989)的开发者已把状态做成 Prefab，遇到免疫目标仍先创建、再不生效直到到期的问题；提问者接受在实例化前检查适用性。它支撑施加入口的真实需求，不证明该结构最佳，也不是近两年普遍故障统计。
+
+[一手：固定源码] Unity开源 EX-GAS `801735292820a6de9dd1abbac0e2139025840a61`（2025-05-12）已经区分这些机制：
+- [GameplayEffect L113–126](https://github.com/No78Vino/gameplay-ability-system-for-unity/blob/801735292820a6de9dd1abbac0e2139025840a61/Assets/GAS/Runtime/Effects/GameplayEffect.cs#L113-L126)分别检查施加条件、持续条件和施加免疫标签；[Container L78–95](https://github.com/No78Vino/gameplay-ability-system-for-unity/blob/801735292820a6de9dd1abbac0e2139025840a61/Assets/GAS/Runtime/Effects/GameplayEffectContainer.cs#L78-L95)在 instant 执行前也检查免疫，但阻止时的 Cue 仍是 TODO。
+- [Container L49–67、L147–164](https://github.com/No78Vino/gameplay-ability-system-for-unity/blob/801735292820a6de9dd1abbac0e2139025840a61/Assets/GAS/Runtime/Effects/GameplayEffectContainer.cs#L49-L67)分别按效果标签移除，以及按持续条件激活／失活；[Spec L233–269](https://github.com/No78Vino/gameplay-ability-system-for-unity/blob/801735292820a6de9dd1abbac0e2139025840a61/Assets/GAS/Runtime/Effects/GameplayEffectSpec.cs#L233-L269)执行／激活触发移除，失活另处理动态标签与能力。不能从存在“失活”就推定计时冻结正确。
+- [README](https://github.com/No78Vino/gameplay-ability-system-for-unity/blob/801735292820a6de9dd1abbac0e2139025840a61/README.md)提示测试覆盖不足、依赖付费 Odin Inspector；[代码MIT许可](https://github.com/No78Vino/gameplay-ability-system-for-unity/blob/801735292820a6de9dd1abbac0e2139025840a61/LICENSE)不消除第三方依赖成本。[研究] 本次仅作机制参照、未安装／运行；已有它就核这些入口与反馈，不因一个净化需求采用整套移植。没有验证真实发行游戏采用或断言其为当前最佳框架。
+
+[一手] UE公开[UImmunityGameplayEffectComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/UImmunityGameplayEffectComponent)定义为阻止其他 GameplayEffectSpec 施加，instant效果自身不能持续授免疫；[Gameplay Effects](https://dev.epicgames.com/documentation/unreal-engine/gameplay-effects-for-the-gameplay-ability-system-in-unreal-engine?lang=en-US)区分instant执行与持续效果入活容器。[研究] 已用GAS沿原生机制核配置；免疫组件不自动等于清旧、暂挂或拦截绕过GAS的自定义伤害。
+
+**采用与撤回。** 默认保留当前角色活效果集合，明确施加、驱散、伤害三个入口与成功／拒绝反馈；只有规则反复共享、现有实现难维护，才比较更完整模块。若玩法有意“净化并免伤”，显式组合而非删掉免伤；若只是临时压制，就保实例并验证恢复，不误清旧效果。[研究]
+
+**探索回执与限制。** 截至2026-10-23，核SPD开发日志与固定源码、Unity原帖、EX-GAS README／固定源码、Epic公开文档；SPD 2025 Reddit讨论仅检索摘要、原帖获取失败，不采用为玩家失败证据。未安装、未跑Unity／UE／游戏，无观感、性能或模型收益实测；最高水平未知，本项只补已识别的选择缺口。[研究]
