@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-labelledby="title desc">
+<title id="title">同一输入，不同校准模式：输出大小不等于精度</title>
+<desc id="desc">100 Hz 合成输入，固定库 f1a7600。仅比较10.00秒与10.01秒两个观测时刻：原始Y分别为+0.2和0度每秒。Manual输出分别为+0.2、0，Stillness和Stillness+SensorFusion均为0、−0.2。Manual未先做已知偏置手动校准。同样输入可来自绕重力轴恒速转动或静止偏置，因此不能判断哪个模式更准；非实体手柄或引擎测试。</desc>
+<rect width="900" height="560" rx="18" fill="#f3f6fb"/>
+<g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif" fill="#16263d">
+<text x="30" y="43" font-size="30" font-weight="bold">同一输入，不同校准模式</text>
+<text x="30" y="79" font-size="22">输出更小或更大，都不能直接判为“更准”。</text>
+<rect x="32" y="101" width="22" height="18" rx="2" fill="#3769b0"/>
+<text x="64" y="118" font-size="20">10.00 秒｜原始 Y = +0.2°/s</text>
+<rect x="460" y="101" width="22" height="18" rx="2" fill="#93724a"/>
+<text x="492" y="118" font-size="20">10.01 秒｜原始 Y = 0°/s</text>
+<text x="30" y="159" font-size="20">校准后 Y 输出（°/s）</text>
+<line x1="111" y1="195.0" x2="865" y2="195.0" stroke="#d8e0eb" stroke-width="1"/>
+<text x="95" y="202.0" font-size="20" text-anchor="end">+0.2</text>
+<line x1="111" y1="237.5" x2="865" y2="237.5" stroke="#d8e0eb" stroke-width="1"/>
+<text x="95" y="244.5" font-size="20" text-anchor="end">+0.1</text>
+<line x1="111" y1="280" x2="865" y2="280" stroke="#6c7e94" stroke-width="2"/>
+<text x="95" y="287" font-size="20" text-anchor="end">0</text>
+<line x1="111" y1="322.5" x2="865" y2="322.5" stroke="#d8e0eb" stroke-width="1"/>
+<text x="95" y="329.5" font-size="20" text-anchor="end">−0.1</text>
+<line x1="111" y1="365.0" x2="865" y2="365.0" stroke="#d8e0eb" stroke-width="1"/>
+<text x="95" y="372.0" font-size="20" text-anchor="end">−0.2</text>
+<rect x="189" y="195.0" width="46" height="85.0" rx="2" fill="#3769b0"/>
+<text x="212" y="183.0" font-size="22" text-anchor="middle" font-weight="bold">+0.2</text>
+<line x1="255" y1="280" x2="301" y2="280" stroke="#93724a" stroke-width="5"/>
+<text x="278" y="268.0" font-size="22" text-anchor="middle" font-weight="bold">0</text>
+<text x="245" y="418" font-size="22" text-anchor="middle">Manual</text>
+<line x1="434" y1="280" x2="480" y2="280" stroke="#3769b0" stroke-width="5"/>
+<text x="457" y="268.0" font-size="22" text-anchor="middle" font-weight="bold">0</text>
+<rect x="500" y="280" width="46" height="85.0" rx="2" fill="#93724a"/>
+<text x="523" y="390.0" font-size="22" text-anchor="middle" font-weight="bold">−0.2</text>
+<text x="490" y="418" font-size="22" text-anchor="middle">Stillness</text>
+<line x1="679" y1="280" x2="725" y2="280" stroke="#3769b0" stroke-width="5"/>
+<text x="702" y="268.0" font-size="22" text-anchor="middle" font-weight="bold">0</text>
+<rect x="745" y="280" width="46" height="85.0" rx="2" fill="#93724a"/>
+<text x="768" y="390.0" font-size="22" text-anchor="middle" font-weight="bold">−0.2</text>
+<text x="735" y="418" font-size="22" text-anchor="middle">Stillness+</text>
+<text x="735" y="443" font-size="22" text-anchor="middle">SensorFusion</text>
+<text x="30" y="418" font-size="20">校准模式</text>
+<text x="30" y="473" font-size="19">Manual 未先做已知偏置手动校准；不是“已校准对照”。</text>
+<text x="30" y="499" font-size="19">同一输入可来自绕重力轴恒速转动，也可来自静止偏置。</text>
+<text x="30" y="525" font-size="19" fill="#52657c">100 Hz 合成输入 · 固定库 f1a7600 · 两个观测时刻，非连续曲线</text>
+<text x="30" y="551" font-size="19" fill="#52657c">来源：实际运行 CSV · 非实体手柄／引擎测试；精度与手感未知。</text>
+</g>
+</svg>
