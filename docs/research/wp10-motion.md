@@ -478,6 +478,31 @@ Human Fall Flat 开发者在 [2017-10-27 回复 #9](https://steamcommunity.com/a
 - **低频查询保入口。** Cogmind [2022 作者实作](https://www.gridsagegames.com/blog/2022/03/special-commands-menu-design/) 将低频命令集中到 Space 菜单，保快捷键；地图尺可从菜单开启、Space 关闭，未添常驻按钮以免占位。[Beta 11 发布](https://store.steampowered.com/news/posts/?appids=722730&enddate=1650631665&feed=steam_community_announcements)确认菜单可用。[一手] 不把即时威胁藏进低频入口。[研究]
 - **高频并列也会挤占常用项。** Factorio [FFF363](https://www.factorio.com/blog/post/fff-363) 因嵌套制作分类打断操作，将平铺改默认；[1.1.0 发布](https://forums.factorio.com/91657)确认。[一手] [发行后原帖](https://forums.factorio.com/viewtopic.php?start=100&t=91657#p522402)中 KatherineOfSky 称物流低频，平铺隔开常用库存／制作而关闭，Serenity 认同。[社区] 频繁一起用的放近，低频可发现地展开；作者频率不能代表所有玩家。[研究]
 
+### 放大 UI：保信息与连续操作
+
+核实：2026-10-23 UTC。[研究] 本节接上方常显／查询选择：**只需大字时，先在既有组件内分开文字与装饰缩放、重排；空间仍不足，再用带摘要和操作补偿的半模态。** 当前最高水平未知，以下为作者实现说明，未试用，不证明统一放大、重排或模态哪种普遍更好。
+
+- **近期候选：先重排，不先藏信息。** [一手：作者自述] Mytheria [2026-10-08 制作记录](https://cobomakesgames.com/blog/game-ui-text-size/)将文字放大与多数画框分开，较大档重排库存列，少数标签另设上限，并逐屏检查尺寸。游戏未发行；作者自己区分字号与实际字形高度，不据字号表认证掌机可读性。[研究] 借重排机制，不照搬比例／上限，也不把未发行展示当玩家验证。
+- **旧生产案例：折叠须补信息与动作。** [一手] Cogmind [2024-02-23 作者实现](https://www.gridsagegames.com/blog/2024/02/full-ui-upscaling-part-5-completion-and-demos/)在半模态库存入口保容量／新物提示，拖动自动展开并接续键盘操作；完整模态换回地图空间，当时暴露日志遮战斗、教程漏看，旧布局仍可选。菜单适配也是大量工作，不只是改字号。[研究] 此例早于近两年窗口，仅支持可借机制，不作当前领先证明。
+
+**Unity 落地先锁版本。** [一手] [uGUI 2.6 的 Layout Element](https://docs.unity.cn/Packages/com.unity.ugui@2.6/manual/script-LayoutElement.html)已列 Max Width/Height，但 [UUM-144431](https://issuetracker.unity.com/issues/5183/layout-elements-min-width-can-be-set-bigger-that-max-width-which-breaks-the-max-width)明确 6000.3.15f1 等旧版没有该字段；6000.6.0a7 的 Min 大于 Max 可破坏约束，核实时仍 Open、仅测 macOS。[研究] 已有支持版先验原生上限／换行；旧版只有局部缺口，不为一个面板升级引擎或迁框架，参数冲突也不靠自动缩字掩盖。
+
+**开源替代只补布局缺口。** [一手：固定源码] [uLayout 1.8.1／965c44a](https://github.com/pokeblokdude/uLayout/tree/965c44ae8a26e9e062e5d0d35b583ce4f6d2a05b)（2026-10-22，MIT）保留 uGUI，提供内容测量、Grow 与控件分行；[LayoutText](https://github.com/pokeblokdude/uLayout/blob/965c44ae8a26e9e062e5d0d35b583ce4f6d2a05b/Runtime/Scripts/LayoutText.cs#L37-L91)订阅 TMP dirty、测内容尺寸；[变更记录](https://github.com/pokeblokdude/uLayout/blob/965c44ae8a26e9e062e5d0d35b583ce4f6d2a05b/CHANGELOG.md)显示1.8改事件驱动，不能沿用旧轮询成本断言。[研究] 👀 仅多处 flex／wrap 确有维护缺口才比较，原生够用就不加层。其 max 后再 min 的顺序不能保证冲突参数仍守上限，控件分行也不包文字溢出；不负责摘要／焦点，发行采用与收益未知，未安装运行。
+
+[一手] Unity 官方 [LetterSpell 固定示例](https://github.com/Unity-Technologies/a11y-public-sample/blob/ec14cfcb8c10bafab83ea02cd17759d77b225fae/README.md)明示 display size slider 未实现，不能当完成的缩放方案；许可为 Unity Companion，非任意引擎通用底座。[研究] 可借其输入／无障碍映射，不为本需求整套引入。
+
+[社区] [2025-10 本地化操作提示实作](https://discussions.unity.com/t/psa-max-width-workaround-for-layout-in-ugui/1690844)因嵌套横向布局不能直接用 ContentSizeFitter，做子项尺寸上限及变动标脏；旧补法不应无条件复制到新版。[2025-12 至 2026-05 模拟器讨论](https://discussions.unity.com/t/wrong-constant-physical-size-using-device-simulator-on-uitk/1698654)有两位开发者报告 UITK 物理尺寸在模拟器与设备不同，含6.3.9f1；尚非普遍缺陷结论。[研究] 局部约束仍有更新成本，编辑器尺寸预览不替真实设备观察。
+
+[一手] [Steam Deck 显示要求](https://partner.steamgames.com/doc/steamhardware/compat)按 1280×800、约30厘米观察，要求最小屏幕字形高度9px并推荐12px。[研究] 字号／布局探针只能筛问题，不能把字号表当字形或真机可读性验收。
+
+[一手] [Beta 13 发布及后续补丁](https://store.steampowered.com/news/posts/?appgroupname=Cogmind&appids=722730&enddate=1710735641&feed=steam_community_announcements)说明布局设置需重启，240229／240304已将部分原日志信息补到黑客终端，不能把2月文章的遗漏当作当前未修缺陷；当前[Beta17.1手册](https://www.gridsagegames.com/cogmind/manual.txt)仍列三种布局、重启生效与可展开的战斗日志历史。[研究] 借的是降级后补信息路径的过程，不要求现成项目新增实时换布局。
+
+[研究] **采用与撤回：** 不可隐藏的信息由本游戏决策时点确定，不照抄别人的常驻列表；收起面板必须补状态摘要、发现入口和当前输入设备的连续操作。优先复用布局／组件，新增自动展开需处理拖动结束和返回焦点；信息看不全或操作频繁中断就回退常驻／半模态。远端操作沿用下方 [#66](#66)，不把折叠当迁移到新界面的理由。
+
+[研究] **二改只预注册：** 新增长物品名／第二类提示，再用同一查看、拖放或键盘连续操作、返回任务比较普通／大字档；核折叠前后摘要更新、教程／危险提示及原布局；档位切换按项目承诺，实时切换保当前操作，需重启则说明并验重进。既有信号与玩法设置沿用 [#67–68](#67)，不另建通用验收；本轮未运行 AI、引擎或游戏。
+
+探索回执（2026-10-23 UTC）：已读两游戏作者、Unity 文档／issue／Discussions、固定开源和 Steam 要求；中文检索含 indienova，未找到近期同题实作，视觉篇及谈话会正文403未读、不绕过。当前最高水平、真实设备与 AI 二改收益仍未知；不提高整格等级。[研究]
+
 <a id="66"></a>
 
 ### 远端界面：监看、局部命令与连续编辑
