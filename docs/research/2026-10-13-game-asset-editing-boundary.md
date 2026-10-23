@@ -1,10 +1,10 @@
 主线：二／三；G1 资产处理与第二次修改
-改变的建议：[经验] 默认经引擎 Editor API 改资产，文本直改限已验证例外；返工先区分生成、后处理与运行时缺陷，静态图与动画分别验收
-新证据：[一手／社区] 官方契约冲突、固定修复与采用／撤回记录；[研究] GLB／PNG 确定性复核只证局部结构，未运行模型或引擎，不证明零手修发行质量
+改变的建议：[经验] 返工先定位缺陷；静态图在真实布局缩图后验收，程序化语义与装饰图分层；引擎资产默认经 Editor API 修改
+新证据：[一手] Star-Rush 三张 AI 选卡插画已制作／接入，海岸实际缩图触发图片二改；历史 GLB／PNG 复核与引擎资料仍只支持各自范围
 
 # 游戏资产编辑：引擎 API 不等于专用 Agent 接口
 
-> 核实时间：2026-10-13（UTC+8）。本轮只读官方文档与公开 issue；未运行 Unity、Unreal 或模型。**[一手：官方文档；社区：原始报告；经验：采用判断]**
+> 核实时间：2026-10-23（UTC+8）补选卡实作；2026-10-13 的引擎编辑研究只读官方文档与公开 issue，未运行 Unity、Unreal 或模型。**[一手：官方文档；社区：原始报告；经验：采用判断]**
 
 **✅ 采用最小修正。** 撤回“编辑器操作必须走官方 Agent 接口”，按源码、文本序列化与二进制资产选择路径；资产默认经引擎 Editor API 修改。直接编辑 Unity 文本资产只作为项目验证过的受限例外，不反向承诺任意 YAML 修改安全。正文只修游戏 README/01 的对应表述，不重验其中所有工具版本。
 
@@ -65,3 +65,50 @@
 - **反证：静态用途没有一起撤回。** 后续 [374038f](https://github.com/TechProGabe/little-apartment-big-city/commit/374038f44a042cde1029e7eaf0b318eeccb621c4)加入 14 个说话者肖像并更新游戏映射；[固定修名脚本](https://github.com/TechProGabe/little-apartment-big-city/blob/2acbbd04af72ca082bd43eed20972ea873db5523/scripts/fix-nameplates.mjs)覆盖四张肖像的指定姓名区域再绘制字体。[作者记录](https://github.com/TechProGabe/little-apartment-big-city/blob/2acbbd04af72ca082bd43eed20972ea873db5523/kb/art-direction.md)称图像编辑会串脸或改名失败；修正前 staging 输入未入 Git，未独立复现修图成功率。规则明确的文字可用程序处理，不能外推到姿态与蒙皮；大肖像采用也不能证明小图标／连续动画可用。**[一手：代码与作者报告；研究：范围限制]**
 
 **验收含义。** 本轮核对的是 React/Canvas 游戏的采用／撤回历史，没有运行上游游戏、模型、修图脚本或 Unity，也没有独立美术评审、完整主动工时和商用授权链；公开可读不等于可复用这些资产。程序绘制回退依赖现有身体／配色模板，不能保证任何程序员零美术投入都能从头复刻。固定视角小资产在第二次需求修改后的前后产物、淘汰样本、实际尺寸与打包辨识仍缺；应保持条件化试用，而不是用本案例冒充该完整试验。**[研究：未覆盖范围；经验：停止外推]**
+
+## 选卡插画实作：让真实缩图决定二改
+
+**✅ 保留程序化功能层，只用生成图补环境身份；能否采用由真实卡片决定，不由母版的大图观感决定。** 2026-10-23，Star-Rush 做完三张大厅选卡插画的制作、处理、加载和一次海岸图二改。本例补上上文历史案例缺少的“自己制作 → 接入 → 在实际尺寸发现问题 → 再改同一资产”；不把菜单装饰通过扩成驾驶体验、动画或全游戏资产链完成。[一手：实作；研究：采用范围]
+
+### 先比较三种来源，再决定生成什么
+
+| 来源 | 本次选择及原因 |
+|---|---|
+| 原有程序化卡片 | 路线、标题、难度与选中态本已明确，继续作为功能基线与失败回退；不让模型重画这些精确语义 |
+| Kenney 现成包 | 官方 [Racing Pack](https://kenney.nl/assets/racing-pack) 与 [Background Elements Remastered](https://kenney.nl/assets/background-elements-remastered) 均列 CC0；前者是俯视赛车瓦片／车辆，后者是背景组件，本次未接入，不能直接充当三张特定主题卡 |
+| 原创图像生成／参考编辑 | 只补海岸、樱花、训练场的环境插画；主题辨识仍须在原卡尺寸验，未比较其他图像模型的同题质量 |
+
+[一手：原卡源码、Kenney 官方包页；研究：任务匹配判断，2026-10-23核] 延续本页既有社区案例，不以这次小制作宣布当前最优工具；全流程零手修最高水平仍未知。
+
+**输入与配方要能接手。** 本单元共4次内置 `image_gen` 调用：海岸首图、以其为风格参考的樱花／训练图，以及真正编辑海岸首图的 v2；工具未公开模型快照。前三张不同主题不是“同一资产三次修改”。未输入第三方图，提示要求不画文字、数字、箭头、路线或 UI 框；原始 PNG、完整提示词、风格／编辑参考、前后 SHA-256 与 `revises` 都保在[资源来源清单][course-art-manifest]和[提示词][course-art-prompts]。[一手：制作记录]
+
+生成服务产物不是 CC0 素材；[OpenAI 条款](https://openai.com/policies/terms-of-use/)区分适用合同与地区，并不保证输出独特，本例不承诺独占版权或全部发行权利。[一手，2026-10-23核]
+
+### 真正的问题在缩图后出现
+
+**v1：海岸卡的树、屋檐和街景更显眼，海的身份不足。** 这是1188×761兼容模式大厅的原始截图；另外两张卡分别呈樱花与训练场，路线与文字仍是原 UI。
+
+![首版实际大厅：左侧海岸卡在缩图后更像树木屋檐街景，三张卡保留原路线与文字](../img/star-rush-course-art-v1-lobby.jpg)
+
+**v2：扩大蓝绿水面与浅色岸线，原卡布局不动。** 以 `coast-v1.png` 作编辑输入，保小店身份、同族配色和左侧暗色净空，简化远处房屋及细节；重新缩图、打包后，海岸比首版更容易从画面辨认。樱花／训练图、卡片 CSS、路线位置和路径都未改变；这是图片二改，不是改透明度或换裁切。[一手：同视口实际观察；这是作者目检，不是玩家识别率测量]
+
+![海岸图片二改后的相同大厅：左卡增加蓝色海面和岸线，右侧两图与三卡路线布局保持原样](../img/star-rush-course-art-v2-lobby.jpg)
+
+### 从母版到失败回原卡，只保这一条窄链
+
+1. **保源再处理**：1774×887 PNG 保留；[处理脚本][course-art-processing]用 Pillow 12.3.0 转 RGB、Lanczos 最大512×256（不放大）、WebP quality=82／method=6，不手绘补图。初版三图合计41,958字节；仅换海岸 v2 后40,588字节。旧海岸 v1 与全部母版留源仓，不进当前运行包；另外两张仍用 v1。[一手：配方与文件]
+2. **打包只认选中输出**：[构建入口][course-art-build]按赛道／文件白名单、180 KB 单图上限与简单 VP8 WebP 容器检查接收，内容哈希进 URL；同源客户端文件与 Worker 精确路由一起生成。输入缺失、非法路径／清单、截断图像与超预算失败时不悄悄发包；这不是完整压缩数据损坏检测。[一手：源码与回归]
+3. **功能不等待装饰**：[加载器][course-art-loader]只加 `alt=""`／`aria-hidden` 装饰图；加载时仍可选卡，失败移除图片，保原色底、SVG 路线、按钮名称与点击行为。精确语义仍来自程序，不来自生成图。[一手：源码与回归]
+4. **下一次修改只换目标图**：新增版本、更新 manifest 的母版／派生哈希与修改关系，重跑处理和构建，再用相同布局对照。主题仍不清楚或影响路线时退回原卡，而不是继续堆生成图或把三个主题一并重生。[研究：从本次失败提炼的做法]
+
+**验收到哪里：** [资源验收说明][course-art-readme]记录：v1真实浏览器已看见三图，完成三赛道切换、练习自动选训练、进赛与返回；v2做海岸同卡视觉复验；最终整合版另核三卡加载、进赛与退出大厅，本文前后截图仍只用于图片二改对照。处理／DOM生命周期／构建输入／Worker路由有[离线测试][course-art-tests]；显式派发 `load/error` 不算真实浏览器网络失败实测。手机／短屏、真实加载失败、任意损坏图片、玩家收益和发布端尚未验，截图为兼容模式，不能代替WebGL赛中质量。[一手：实际验收与测试范围]
+
+**探索回执：** 截止2026-10-23，复核上述官方包页与条款、固定项目源码／母版／提示词和实际大厅图；本轮是已有研究的实作续接，未另跑模型榜或社区全渠道搜索。读者可借这条“语义与图像分层、缩图验收触发二改”的做法，不应据此选出普遍最好的图像模型。[研究]
+
+[course-art-manifest]: https://github.com/dbvv1/Star-Rush-Reborn/blob/07e18395bff8a172f7d552ccae0f6cefe7458fce/assets/course-art/manifest.json
+[course-art-prompts]: https://github.com/dbvv1/Star-Rush-Reborn/blob/07e18395bff8a172f7d552ccae0f6cefe7458fce/assets/course-art/PROMPTS.md
+[course-art-processing]: https://github.com/dbvv1/Star-Rush-Reborn/blob/07e18395bff8a172f7d552ccae0f6cefe7458fce/prepare-course-art.py
+[course-art-build]: https://github.com/dbvv1/Star-Rush-Reborn/blob/07e18395bff8a172f7d552ccae0f6cefe7458fce/build.mjs
+[course-art-loader]: https://github.com/dbvv1/Star-Rush-Reborn/blob/07e18395bff8a172f7d552ccae0f6cefe7458fce/course-art.js
+[course-art-tests]: https://github.com/dbvv1/Star-Rush-Reborn/blob/07e18395bff8a172f7d552ccae0f6cefe7458fce/tests/course-art.mjs
+[course-art-readme]: https://github.com/dbvv1/Star-Rush-Reborn/blob/07e18395bff8a172f7d552ccae0f6cefe7458fce/assets/course-art/README.md
