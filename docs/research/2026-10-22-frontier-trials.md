@@ -440,3 +440,28 @@ Quickstart与Code Basics的部署下一步都指向 `docs_typescript/running-in-
 当前[0.50发布](https://ast-grep.github.io/blog/new-ver-50)补多语言 outline，并改变自定义原生语言库加载；不要为让扫描出结果就批准未知解析器。[一手] [outline](https://ast-grep.github.io/guide/outline-code)仅本地语法导航，不解析类型、引用或调用图。[一手] 本轮没有工具执行记录、真实迁移产物或模型同题收益，最高水平未知，保持候选。
 
 探索回执：截至10月23日，已读官方文档／Skill源码、七月实践者原文、HN与linux.do正反需求；Reddit同题讨论作发现线索，未用热度或摘要证明采用率；未造替代解析器夹具冒充工具实试。[研究]
+
+
+## OpenSpec：规格接力与协作落点
+
+**选择：需要跨角色接手与连续二改时，试用当前规格＋本次差量；协作者主要依赖工作项系统时，不强迁仓库。** [研究]
+**增量：从“先写计划”转向谁会复用它、交付后怎样维护，补07与21已有工具／验证说明没有覆盖的采用对照。** [研究]
+**范围：2026-10-23（UTC+8）读公开原文与固定源码，未安装、运行候选或测模型效果；采用率与同预算最高水平未知。**
+
+### 实际接力、持续采用与退出
+
+- [Ilya Zakharau，09-05](https://ilyazakharau.com/blog/spec-driven-development-in-practice)：小团队已使用数月；PM迭代提案后提交分支，开发者接手设计、任务、实现与测试，再由变更材料生成发布说明及用户文档，最后同步归档。作者选择OpenSpec因为组织已有，不是工具比较胜出；项目为单仓、独立且尚未成为存量复杂系统的portal。明确小修、安全和evals仍走别的路径，作者也认为已知改哪里时整套流程费时费token。这是有下游读者的采用，不是净收益测量。[社区：第一人称]
+- [Talk Think Do，06-01](https://talkthinkdo.com/ai-velocity-report/moving-away-from-openspec/)：团队曾采用后退出仓库中心流程，问题不是没有Git权限，而是客户、BA及交付经理需要把范围变化与估算、实际成本关联。改用协作规划与Azure DevOps工作项，保留规格及验收纪律。支持按协作者选择存放位置，不推出所有团队都应退出。[社区：团队复盘]
+- [V2EX，07-14至30](https://v2ex.com/t/1227194)：#11自述持续使用，楼主认为OpenSpec粒度过粗，#13从它派生自有流程后不再沿用原包。正反都属于个人经历，不能换算采用率或当前版本胜负。[社区：原帖]
+- [Reddit，08-31](https://www.reddit.com/r/SpecDrivenDevelopment/comments/1w3897j/new_to_openspec_is_this_multistep/)：一名senior与两名junior的新使用团队发现，PR批准后同步、归档及再次提交多了一轮往返；评论有保持同一change持续修订、提前审设计及逐任务批准的不同做法。不是官方唯一流程，提示试用时应把评审与最终同步的责任安排好。[社区：原帖]
+- [Rapoport Studio，05-14／08-28更新](https://rapoport.studio/en/lab/the-openspec-method-in-production)：长期采用者要求当前能力规格与实现同PR更新，历史归档保留当时决策；曾遇到愿望式提案、错误任务顺序及规格陈旧。文内统计仍为五月窗口，不引用为收益证明；其自定义current目录不当官方路径。[社区：作者实践]
+
+### 实现怎样支撑接力
+
+固定[1.14.3发行](https://github.com/Fission-AI/OpenSpec/releases/tag/v1.14.3)（10-17），commit `c794978f4f8845ce59693373c9dd882ee776588c`。[工作流](https://github.com/Fission-AI/OpenSpec/blob/c794978f4f8845ce59693373c9dd882ee776588c/docs/workflows.md)允许实现中更新材料；Agent归档路径可选择不同步，CLI archive是另一条确定性路径。因此采用方案应检查当前规格是否已更新，而非只看归档完成。[一手：文档；研究：采用含义]
+
+[specs-apply.ts](https://github.com/Fission-AI/OpenSpec/blob/c794978f4f8845ce59693373c9dd882ee776588c/src/core/specs-apply.ts#L509-L538)按需求身份应用差量，MODIFIED替换需求块并检查旧场景在新块中是否缺失；这解释了规格维护机制，不证明实现符合规格，也不替代测试。本轮仅读源码，不声称上述检查已实跑。[一手：源码]
+
+下一次实试应比较“现有plan／任务记录”与此路线的连续两次改动，观察接手者能否找到当前约定、二改是否保住旧行为，以及文档／评审返工；只跑初始化不足以回答这些问题。[经验：试验设计，未运行]
+
+探索回执：读官方固定文档／源码、英文团队原文、V2EX及Reddit原帖；linux.do本轮命中转引未作原帖证据。GitHub main历史页缓存较旧，改以发布页与固定发行SHA核实现。不采UVIK的50题排名，既有研究已记录日期及原始材料问题；不因star或数量目标提升评级。[研究]

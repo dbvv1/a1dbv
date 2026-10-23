@@ -31,6 +31,7 @@
 | **窄Skill：Matt Pocock** | 只借grill-with-docs澄清会改变实现的决定 | 从架构问题开始，决定已齐就进入实现 | [Faruk实际重构](https://blog.faruk.dev.br/articles/agents/matt-pocock-skills-harness-product-crud/)未走完整ticket链 | 🧪 按需试用，本仓未运行 |
 | **语义MCP：Serena** | 用符号身份查声明与调用位置 | 从同名符号定位开始，原生搜索或LSP已够就不用 | [Luca使用](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)与[中文短试无明显差异](https://www.v2ex.com/t/1249379)并存 | 🧪 按语义缺口试用，本仓未安装运行 |
 | **版本文档MCP：Context7** | 从已索引版本取对应API片段，再核原文tag | 已有MCP入口时先resolve再传精确libraryId，缺版本则回官方文档 | [生成文档修复回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)说明普通刷新未必重建生成页 | 🧪 [匿名两版查询与截图](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)已试，未测模型效果 |
+| **规格接力：OpenSpec** | 将本次差量合回当前约定，供下一位接手二改 | 从跨角色功能二改开始，无人复用就沿用现有任务 | [团队持续采用与退出](research/2026-10-22-frontier-trials.md#openspec规格接力与协作落点)说明协作落点比文件数量重要 | 🧪 [按接手需要试用](07-workflows.md#openspec让下一位接手当前约定而不只是旧计划)，本仓未安装运行 |
 | **并行写入：Git worktree** | 每个独立写入任务保留自己的目录、分支和未提交现场 | 先用原生入口或Git，跨树管理成为瓶颈再评估管理器 | [事故后采用](https://blog.michaelschilling.com/blog/many-agents-one-clone/)与[集成后收缩并发](https://utsabpant.com/blog/running-coding-agents-in-parallel)支持条件使用 | ✅ 借用机制，[隔离／合入／脏树保护与截图](research/2026-10-22-frontier-trials.md#git-worktree不装编排器也能隔离写入)已验 |
 | **网页验收：Playwright CLI＋Skill** | 用短命令观察网页、操作元素并检查结果 | 已有Playwright先复用项目入口，现有浏览器已够用就不另装 | [实践者由MCP转CLI](https://www.reddit.com/r/claude/comments/1v9aa4z/for_claude_code_what_do_you_prefer_mcp_tools/)与[调用后仍漏验收](https://linux.do/t/topic/2560865)支持按目标选用 | 🧪 [预装1.62.0探针与截图](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)已核，浏览器流程未验 |
 
