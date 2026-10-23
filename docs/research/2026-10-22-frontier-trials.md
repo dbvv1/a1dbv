@@ -527,3 +527,38 @@ openspec validate --specs --strict
 注意两条路径不同：本次实跑的是确定性 CLI archive；生成的 `/opsx:archive` Skill 则指导 Agent 先评估同步、可选择不同步，再移动目录，`/opsx:sync` 是 Agent 编辑。不能把前者的场景遗漏拦截直接算成后者的运行保证。[一手：本次生成 Skill；未运行 Agent 路径]
 
 探索回执：读官方固定文档／源码、英文团队原文、V2EX及Reddit原帖；linux.do本轮命中转引未作原帖证据。GitHub main历史页缓存较旧，改以发布页与固定发行SHA核实现。不采UVIK的50题排名，既有研究已记录日期及原始材料问题；不因star或数量目标提升评级。[研究]
+
+
+## pwasm：把已合入的兼容工作交给真实消费者
+
+核实／实跑：2026-10-23 UTC。续接[15§6.1](../15-task-playbooks.md#61-兼容实现先借现成验收题再补功能)，不是新增通用测试框架或推荐替换运行时。[本仓实试]
+
+**先复用已被作者接收的工作。** [Willison 10月1日原帖](https://simonwillison.net/2026/Oct/1/pwasm/)希望把既有 MicroPython／micro JavaScript 实验跑在 pwasm 上并加速；[PR12](https://github.com/simonw/pwasm/pull/12)当天已合并。本次查询 main 仍为发行提交 `3398e812b0fffe4db8dbf1eb2df2d7b60ec7dad7`，没有再交重复 PR。[一手]
+
+**实际消费者入口。** 从[固定 research 原例](https://github.com/simonw/research/tree/fe91d6d50a0cacfebae78ab186417109af3446ee/wasmi-python-sandbox/examples)提取两份文件各自首个多行 guest 程序，通过 pwasm 公开 API 执行；并未运行完整原脚本，后面的内存、递归、文件系统／import 循环未复跑。host 数据为合成价格与用户对象，无真实金融操作。[本仓实试／范围]
+
+- QuickJS 完成 `host.lookup_user`→对象 JSON 输出→数组平方与布尔值／类型组合。同一 bundled `quickjs.wasm` 在 pwasm 0.2a0 与成熟 wasmtime 50.0.1 都返回 `[1,4,9,true,"number"]`，stdout逐字一致；参考状态为0、异常为空。wasmtime只加窄ABI适配，未另造通用运行平台。
+- MicroPython 完成合成价格聚合84.0、类方法的异常捕获和集合排序0–6。CPython 3.12.14执行同一源程序作语言语义参照，**不是另一运行时执行相同MicroPython WASM**。
+- MQuickJS 执行同一现代JS程序，在第2行报SyntaxError；不能因都叫JavaScript就直接替换，未改写程序强求通过。[本仓实试]
+
+**真实返工是验收判据，不是运行时补丁。** 首次把MicroPython／CPython整个stdout判等失败：前者字典显示GOOG、AAPL，后者AAPL、GOOG。重验保留两份原文和 `raw_text_equal=false`，明确采用**本次自定的映射内容判等条件**，只解析映射／总额，剩余异常与列表输出仍逐行严格比较后通过。未取得原作者“顺序无关”契约；如果读者消费者依赖插入顺序，该差异仍须处理，不能用归一化隐去。[本仓实试／经验]
+
+**负例与停止界线也可重复。** 同一QuickJS `null.x` 在两引擎产生相同TypeError；pwasm的语言错误及soft timeout之后，已有 `u.id * 2` 仍为2。hard fuel stop抛OutOfFuel后直接丢弃实例，不验收继续复用；不比较不同引擎的fuel数值。合成一页内存越界读取在两者都trap。另一个合成模块承诺返回i32却不压值：wasmtime拒绝验证，pwasm只解码成功，**未实例化或执行无效模块**。这不证明安全隔离；validator、SIMD、exception handling仍不能算已支持。[本仓实试／源码]
+
+[保存的实际结果](../../experiments/pwasm_consumer_results.json)保留双方原始stdout、正常返回与各失败文本，可与重跑输出逐项对照。
+
+**运行入口与来源。** Python 3.10+，先在隔离环境自行安装PyPI固定依赖 `pwasm==0.2a0 wasmtime==50.0.1`；Linux可运行：
+
+```bash
+timeout 60s .venv/bin/python experiments/replay_pwasm_consumer.py
+```
+
+[脚本](../../experiments/replay_pwasm_consumer.py)不安装软件；从固定官方GitHub下载两份原例，逐一核SHA256，再用AST提取字符串，不执行其宿主脚本。包版本和三个guest哈希也固定；默认在新临时目录保存输入与JSON结果，可用 `--output-dir` 指定产物目录，已有未改输入可用 `--inputs-dir` 离线重放。所有报告的正负结果、参考状态与继续使用状态均有断言；禁用`python -O`。参考引擎设100,000,000 fuel和32MiB上限，正常pwasm guest调用设10秒；外层60秒是整进程护栏，不是安全认证。[本仓实试]
+
+包身份核对：PyPI的pwasm wheel SHA256为 `6bba3f1bea0bfb8d5b76ab5c3bba2f3cd6389c69cab44b2e6a20abf435bc17c0`，wasmtime Linux x86_64 wheel为 `cc14c3a17654e0394e0225b11813532ef0cd7bd1e222a0c5494cdedaabeddac4`，独审与官方发行元数据一致；pwasm全部25个包文件与固定源码一致。guest构建来源见[上游README](https://github.com/simonw/pwasm/blob/3398e812b0fffe4db8dbf1eb2df2d7b60ec7dad7/src/pwasm/guests/README.md)，本次未从C源码重建二进制。[一手／本仓核对]
+
+[入口回归](../../experiments/test_replay_pwasm_consumer.py)使用同一依赖与正常重放保存的输入，运行 `python experiments/test_replay_pwasm_consumer.py --inputs-dir <输入目录>`；缺失、篡改输入、错误包版本和禁用断言四项均拒绝且不产出成功结果。[本仓实试]
+
+**测试范围不能合并成全绿。** 既有三组guest测试36过；既有spec选 `i32 or call_indirect or memory`，11份WAST×4模式共44过、320未选；另用默认runner跑i32／memory／call_indirect为576通过、0失败、144跳过，跳的是内部WAST命令，不是pytest项。runner仍跳过无效／畸形及未知命令。独审重放消费者、80项测试及三文件runner，结果一致。曾尝试全套，在进度78%后退出137、无最终摘要，原因未确认；未盲重试，不称全套通过或推断OOM。[本仓实试／独立复验]
+
+本例证明固定公开消费者及有限差异的可复跑结果，不证明一般CPython等价、完整标准、安全沙箱、生产替代、速度提升或模型收益；未新增中文独立复现证据。[范围]

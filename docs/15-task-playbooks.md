@@ -263,9 +263,11 @@ flowchart TD
 
 **可以直接交给Agent的任务**：“让现有消费者完成这条具体任务；先接入目标版本的外部测试，报告已过、已知未实现和跳过项，再补阻碍消费者的能力；最后交回消费者结果和仍欠缺的支持范围。” 这是有外部标准时的任务起点，不是每个业务小改都要搭一套一致性平台。[经验]
 
-- **验收题从外部来，接入方式仍要核。** Willison十月用现有MicroPython／JavaScript实验作为[pwasm续做目标](https://simonwillison.net/2026/Oct/1/pwasm/)；[PR12](https://github.com/simonw/pwasm/pull/12)接入官方WebAssembly语料和wasmtime对照，而不是只加自写断言。本仓核过[语料来源](https://github.com/simonw/pwasm/blob/3398e812b0fffe4db8dbf1eb2df2d7b60ec7dad7/tests/spec/README.md)及与固定上游的文件一致性，未运行该项目。[一手／源码核对]
+- **验收题从外部来，接入方式仍要核。** Willison十月用现有MicroPython／JavaScript实验作为[pwasm续做目标](https://simonwillison.net/2026/Oct/1/pwasm/)；[PR12](https://github.com/simonw/pwasm/pull/12)接入官方WebAssembly语料和wasmtime对照，而不是只加自写断言。本仓核过[语料来源](https://github.com/simonw/pwasm/blob/3398e812b0fffe4db8dbf1eb2df2d7b60ec7dad7/tests/spec/README.md)及与固定上游的文件一致性；后续消费者与聚焦测试实跑见下，未完成全套验收。[一手／源码核对]
 - **把未实现当待办，不当通过。** [初始清单](https://github.com/simonw/pwasm/blob/69e3ba45a63333d3b3229827a12ed6ddea33fa78/tests/test_spec.py)用strict xfail，意外通过会要求清理旧标记；[发布树](https://github.com/simonw/pwasm/blob/3398e812b0fffe4db8dbf1eb2df2d7b60ec7dad7/tests/test_spec.py)清空清单，并用[四种执行模式](https://github.com/simonw/pwasm/blob/3398e812b0fffe4db8dbf1eb2df2d7b60ec7dad7/tests/conftest.py)检查同一语料。人核已过行为是否保持，不接受为变绿而扩大豁免。[一手；经验]
 - **接收看消费者和支持范围，不只看清单清零。** 该[runner仍跳过无效／畸形模块](https://github.com/simonw/pwasm/blob/3398e812b0fffe4db8dbf1eb2df2d7b60ec7dad7/tests/spec_runner.py#L408-L484)，所以绿灯不等于完整标准或安全沙箱；作者也明确不信任这个alpha项目。要求Agent把跳过范围带回结果，若消费者必需行为未覆盖，就保留成熟实现或缩小承诺。[一手／经验]
+
+**🧪 已把原例送进公开消费者入口，而非只读清单。** 固定pwasm 0.2a0重放原作者两份示例各自首个多行guest程序：QuickJS的host调用、JSON／数组结果，与wasmtime执行同一WASM一致；MicroPython完成聚合、异常和排序，但与CPython的字典显示顺序不同。本次明确选择只比映射内容后通过，原始差异仍保留；若调用者依赖顺序，就不能放宽。同一现代JS程序在MQuickJS报语法错误，不能直接替换。见[实际输出、返工与可运行入口](research/2026-10-22-frontier-trials.md#pwasm把已合入的兼容工作交给真实消费者)。既有guest测试36过、聚焦spec四模式44过；全套进程中止，跳过项仍保留，不据此推荐安全沙箱或生产替代。[本仓实试／独立复验，2026-10-23]
 
 这次借用的是“外部语料→显式缺口→真实消费者”的续做方式，非推荐pwasm替换生产运行时；维护投入还包括runner与版本更新。探索覆盖作者／GitHub、官方规范／pytest及V2EX／linux.do检索，未取得同题中文独立复现；模型名称仅据作者标注，未测本仓模型收益，不改变页级差距。[研究：2026-10-23]
 

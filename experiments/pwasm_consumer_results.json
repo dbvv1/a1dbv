@@ -1,0 +1,94 @@
+{
+  "versions": {
+    "pwasm": "0.2a0",
+    "wasmtime": "50.0.1"
+  },
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "fixed_sha": "3398e812b0fffe4db8dbf1eb2df2d7b60ec7dad7",
+  "quickjs_reference": {
+    "status": 0,
+    "result": "[1,4,9,true,\"number\"]",
+    "stdout": "hello from JS, user is {\"id\":1,\"name\":\"user-1\",\"admin\":true}\n",
+    "exception": ""
+  },
+  "quickjs_pwasm": {
+    "result": [
+      1,
+      4,
+      9,
+      true,
+      "number"
+    ],
+    "stdout": "hello from JS, user is {\"id\":1,\"name\":\"user-1\",\"admin\":true}\n"
+  },
+  "micropython_pwasm": "prices: {'GOOG': 42.0, 'AAPL': 42.0} total: 84.0\ncaught: insufficient funds\n[0, 1, 2, 3, 4, 5, 6]\n",
+  "cpython_reference": "prices: {'AAPL': 42.0, 'GOOG': 42.0} total: 84.0\ncaught: insufficient funds\n[0, 1, 2, 3, 4, 5, 6]\n",
+  "micropython_raw_text_equal": false,
+  "micropython_semantic": {
+    "prices": {
+      "GOOG": 42.0,
+      "AAPL": 42.0
+    },
+    "total": 84.0,
+    "remaining_lines": [
+      "caught: insufficient funds",
+      "[0, 1, 2, 3, 4, 5, 6]"
+    ]
+  },
+  "cpython_semantic": {
+    "prices": {
+      "AAPL": 42.0,
+      "GOOG": 42.0
+    },
+    "total": 84.0,
+    "remaining_lines": [
+      "caught: insufficient funds",
+      "[0, 1, 2, 3, 4, 5, 6]"
+    ]
+  },
+  "micropython_semantic_equal": true,
+  "mquickjs_author_program": {
+    "error": "JSError",
+    "message": "SyntaxError: unexpected character in expression\n    at <sandbox>:2:1\n"
+  },
+  "js_exception_reference": {
+    "status": 1,
+    "result": "",
+    "stdout": "",
+    "exception": "TypeError: cannot read property 'x' of null\n    at <eval> (<eval>:1:1)\n"
+  },
+  "js_exception_pwasm": {
+    "error": "JSError",
+    "message": "TypeError: cannot read property 'x' of null\n    at <eval> (<eval>:1:1)\n"
+  },
+  "after_language_error": 2,
+  "soft_stop": {
+    "error": "JSError",
+    "message": "InternalError: interrupted\n    at <eval> (<eval>:1:1)\n"
+  },
+  "after_soft_stop": 2,
+  "hard_stop": {
+    "error": "OutOfFuel",
+    "message": "fuel budget of 40443 units exhausted",
+    "decision": "discard this instance; no reuse acceptance"
+  },
+  "invalid_reference": {
+    "error": "WasmtimeError",
+    "message": "failed to compile: wasm[0]::function[0]\n\nCaused by:\n    0: WebAssembly translation error\n    1: Invalid input WebAssembly code at offset 33: type mismatch: expected i32 but nothing on stack\n"
+  },
+  "invalid_pwasm": "decoded without validation; not instantiated or executed",
+  "out_of_bounds_pwasm": {
+    "error": "TrapError",
+    "message": "out of bounds memory access"
+  },
+  "out_of_bounds_wasmtime": {
+    "error": "Trap",
+    "message": "error while executing at wasm backtrace:\n    0:     0x2a - <unknown>!<wasm function 0>\n\nCaused by:\n    0: memory fault at wasm address 0x10000 in linear memory of size 0x10000\n    1: wasm trap: out of bounds memory access\n"
+  },
+  "acceptance_scope": "First multiline payload only; content-only mapping criterion chosen for this replay; not general compatibility or security",
+  "artifacts": {
+    "quickjs.wasm": "6dba22b6af15ae1d3e13d0a1e780ab21e8d2814ab934760fe17bdaa63c0d7191",
+    "mquickjs.wasm": "2a940bfe3f5142f7abda0f7c42bc66c0e2c51052e119437ae8fa819a9c9f6833",
+    "micropython.wasm": "6f7b35aa342738ddfc47b3a34381afb62be3f640ead7f0e112020a2873baf84f"
+  }
+}
