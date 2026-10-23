@@ -1,6 +1,6 @@
 主线：一／二／三／四；玩法反馈、额外能力、第二次修改与可维护交付
 改变的建议：[研究] 默认组件＋窄规则＋局部状态机，按真实复杂度升级。先定状态所有者、时钟、退出与输入边界；相机先定信息与控制目标，关卡、成长、教学与辅助按玩家决策取舍。物品区分可互换性，任务区分历史与当前条件；功能通过仍须核体验；群体叠招先分攻击许可、站位与单体冷却；蓄力按输入识别、技能计量与释放选择；回放按影子展示、原因复演与倒带续玩选择记录内容；本地多人按独立活动与双方可读性选共享／分屏
-新证据：2026-10-23（UTC+8）补世界输出／NPC与整页供给选择；2026-10-22补 Sandfall／NeoBards 2026 制作复盘、Wube 2026 系统演进与 Unity／Highstreet 2025 混合架构取舍；并保留 Phaser 共享能力修复与旧工程固定版本边界。[一手／社区] 原文、固定源码、官方契约及历史修复日期见各节。[研究] 未作游戏、引擎、模型或玩家对照
+新证据：2026-10-23（UTC+8）补数据模组局部补丁、世界输出／NPC与整页供给选择；2026-10-22补 Sandfall／NeoBards 2026 制作复盘、Wube 2026 系统演进与 Unity／Highstreet 2025 混合架构取舍；并保留 Phaser 共享能力修复与旧工程固定版本边界。[一手／社区] 原文、固定源码、官方契约及历史修复日期见各节。[研究] 未作游戏、引擎、模型或玩家对照
 
 # WP11：单人独立游戏的 gameplay 架构取舍
 
@@ -753,3 +753,36 @@ AD模拟时停普通循环，[普通存档门槛](https://github.com/IvarK/Antim
 ### [独立活动的相反路线与二改：Larian](wp11-camera.md#s42-4)
 
 ### [二改验收与未覆盖部分](wp11-camera.md#s42-5)
+
+
+<a id="p104-mod-blueprint-patches"></a>
+
+## P104：AI 二改模组，别把局部补丁补成完整定义
+
+**[研究] 默认：已有数据／编辑器够用就保局部补丁；新增素材、行为再分别进入资产、代码制作链。**
+**[一手／研究] 反直觉：Timberborn 编辑器会补齐缺字段，修改型 Blueprint 反而要关闭其默认补齐行为；不是关闭所有校验。**
+**[研究] 未试用：只读公开文档／工具样例，未运行游戏、引擎或模型；合并结果与 AI 二改收益未验证。** 核实：2026-10-23（UTC+8）。
+
+### 先选制作链，不为一个配方造模组平台
+
+| 要改什么 | 最小路线；升级成本 |
+|---|---|
+| 既有地图布局／数值／配方 | 原有编辑器或数据补丁；先查内容路径与叠加语义，不先引入脚本运行时 |
+| 新模型／材质 | 沿现有资产导入与构建链；文本改对不等于素材可用 |
+| 数据未暴露的新行为 | 窄代码扩展；计入游戏 API、构建与发布维护，不把任意代码加载称为安全沙箱 |
+
+[官方 Modding 文档](https://github.com/mechanistry/timberborn-modding/wiki)区分不需 Unity 的数据修改与导入 DLL／资产、构建 AssetBundle 的工具链；[代码入口](https://github.com/mechanistry/timberborn-modding/wiki/Coding-basics)提供 C# DLL／`IModStarter`。这只证明该游戏开放的能力，不是给自己的 Unity 项目可直接安装的通用运行框架。[一手／研究] UE 仅作边界对照：[SML v3.11.3](https://docs.ficsit.app/satisfactory-modding/v3.11.3/Development/ModLoader/index.html)的 Blueprint mod 是 Unreal 插件资产／脚本，不是这里的 JSON 补丁；不据其版本页推荐当前安装组合。
+
+### 决定性区别：补丁不是不完整的定义
+
+[Blueprint Editor 官方说明（2025-10-29）](https://github.com/mechanistry/timberborn-modding/wiki/Blueprint-Editor)明确：编辑器自动补齐遗漏字段；制作 modifying Blueprint 时启用 `Disable Blueprint validation`。这不是本仓猜测，也不代表 JSON 语法、引用或运行时检查全部关闭。未取得编辑器验证器／运行合并器的公开实现，不能扩写内部效果。[一手／研究]
+
+[Blueprints 官方规则（2025-12-10）](https://github.com/mechanistry/timberborn-modding/wiki/Blueprints)说明遗漏字段保留、数组默认替换，支持追加／删除；最高 priority **先**应用，`#remove` 要给完整对象。[一手] 两个待验推演：A 先向同一数组追加材料，B 后替换该数组，A 的追加可能消失；A 把材料数量 10 改为 20，B 仍删除数量 10 的完整对象，不能假定删除成功。这是合并契约推导，不是已复现故障。[研究]
+
+### 当前版本、发布和反向参照
+
+[官方发布流](https://store.steampowered.com/oldnews/?appgroupname=Timberborn&appids=1062090&feed=steam_community_announcements&headlines=0&l=english)记录 2026-09-03 的 1.1 与 10-20 主分支补丁；Wiki 也跟随 Experimental，不能把最新工具文档当稳定版实测。[一手] [Mod Builder](https://github.com/mechanistry/timberborn-modding/wiki/Mod-Builder)区分 Dev／Clean build；[发布说明](https://github.com/mechanistry/timberborn-modding/wiki/Mod-management)通过 `workshop_data.json` 保留 Workshop 条目，更新时可不覆盖手改描述。二改还要核发布包与条目身份，不止 JSON 差异。[一手／研究]
+
+专业作者 [Luke 的无代码教程](https://datvm.github.io/TimberbornMods/ModdingGuide/getting-started)展示最小字段修改，但仍用 Update 7 的路径与能力边界；[TimberAPI 作者说明](https://github.com/Timberborn-Modding-Central/TimberAPI/blob/main/README.md)也指出不少旧功能已进入官方支持。两者提醒先核版本，不默认照旧教程装框架，也不把历史“JSON 能力有限”当 1.1 结论。[一手／研究] 社区覆盖仍不足：已检索 Reddit、indienova 与知乎；[Reddit 制作求助](https://www.reddit.com/r/Timberborn/comments/1s9r6qg/building_blueprint_documentationtimbermesh_error/)涉及数据与模型加载，却无已核解决结果，不能当补丁故障实测。中文未找到同题专业实作，专业作者资料也未提供该开关的独立复测。[研究]
+
+**Agent 的具体交付：** 给既有配方增加材料，再要求修改其数量；交最小补丁、编辑器往返 diff、按声明加载顺序得到的预期结果及发布文件清单。只测承诺支持的模组组合／顺序；冲突可通过声明依赖、顺序或不兼容解决，不要求任意组合都成功。人再验游戏内实际内容与发布包；若数据没有目标能力才升级代码，不因补丁冲突立刻造平台。[研究；全部待执行]
