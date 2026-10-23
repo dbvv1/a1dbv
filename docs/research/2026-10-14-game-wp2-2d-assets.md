@@ -225,6 +225,37 @@ Oxford的[PIXLRelight](https://arxiv.org/html/2605.18735v1)（2026-05）§3.4／
 
 **采用与撤回。** 自制组合预览须能辨认必要部件是否加载；缺件时先修评估器，不据图淘汰美术。身体完整只排除缺件，仍要核预览与实际消费者的坐标、层序及输入约定；异常定位到源内容后，才补相应源或换来源。不能因预览独有异常返工美术，也不能把所有错位归为工具。修别名也增加状态映射维护，错误缺件规则可能误挡刻意无头／无躯干的对象，应按实际对象定义必要集合。本轮未运行引擎、模型或复现图片，不证明节省工时；只借明确撤回记录收窄返工判断，不新增通用检查框架。**[研究：条件选择]**
 
+### 静态图到可编辑rig：先准备分件和活动范围
+
+**2026-10-23补核；结论：已有正确PSD／rig不重新分解，缺层的正面动漫角色才评估See-through＋rig-c，小幅idle／gesture先于激烈动作。** 增量不是“骨骼动画比逐帧好”，而是AI能把静态稿转成可继续改部件、关节与曲线的候选源；全套零手修最优未知。既有Spine／引擎动画源不迁移，自动分层也不等于可自由转身。[研究]
+
+#### 输入决定能动多少，不以生成帧充当源
+
+[See-through固定README](https://github.com/shitagaki-lab/see-through/blob/df019de5129d6c4b406587a14c3501669441a783/README.md)将动漫角色分解为补全的语义层及层序，输出PSD；这是专项分层，不是单纯抠背景。[rig-parts固定配置源码](https://github.com/rig-c/parts/blob/cab7610ee9ce283f3b9fac5388e7a264af47ad76/src/config.ts)分别保存assemble、bones、meshes、regions和motion，生成参数只供可选图像adapter读取；因而改动作不必重画每一帧，但该表示不会证明补全内容正确。[一手：源码／作者说明；研究]
+
+[固定入门链](https://github.com/rig-c/getting-started/blob/093204686165630a9d6912675fc0cf9df6ada398/README.md)要求单角色正面、手臂离身、手掌分开、双腿留缝，另取全身与头部两次分层及18关节点。它仍修正踝点，招手又限制上臂幅度以免袖笼处裂开；这支持“围绕可活动范围准备图”，不支持任意概念稿自动合格。[一手：作者已记述的制作修正，非本仓复测]
+
+[作者2026-10-23原帖](https://www.reddit.com/r/aigamedev/comments/1xdb3am/i_had_an_ai_agent_rig_and_animate_2d_characters/)明确数值检查只验结构，头摆错位置也可能通过；剧烈动作需要替换绘图。公开多角色／换装展示是作者演示，本轮未取得独立发售采用或连续换装的质量、工时对照。因此Agent可改配置，人仍看整段；不能把检查条数或编译成功升级为美术验收。[一手：作者报告；研究]
+
+#### 与现有源、付费服务分别选
+
+| 路线 | 值得采用的增量 | 门槛与退出 |
+|---|---|---|
+| 已有Spine／引擎分件与动作 | 原部件、层序、曲线继续修改，免重新猜隐藏面 | 缺新视角／动作回源补齐或换现成组，不借AI迁移已有好源 |
+| See-through＋rig-c | 用语义层和关节生成可编辑规格，再编译播放；适合受限正面小幅表演候选 | 分层在包外；缺完整部件、关节位置不可信或活动后裂开，就换源／缩幅，不以手绘兜底 |
+| Layer Spine agent | 官方承诺平图或PSD→分件＋rig；同会话可修pivot、节奏并保骨骼／slot／动作名 | Creative Units余额与工作区开放先确认；按交付画面决定，未试用、不承诺零手修 |
+
+[Layer官方指南](https://help.layer.ai/articles/8437695088-rig-a-2d-character-for-spine)（2026-10-13更新，10-23核）说明输入已有角色／生物／道具图，已有正确分件PSD可直接用；平图需补被遮挡内容。交付含JSON、atlas、纹理页，idle及最多三段所请求动作，必要时附分层PSD。它支持4.1／4.2／4.3，实际版本须匹配消费者；任务前展示Creative Units成本，不据此推算统一单价。工作区未启用时须联系支持，生成结果也不包含Spine编辑器或runtime授权。[一手／研究]
+
+#### 代码、输入、模型和消费者四道许可门
+
+- **工具代码：** [parts固定NOTICE](https://github.com/rig-c/parts/blob/cab7610ee9ce283f3b9fac5388e7a264af47ad76/NOTICE.md)区分MIT代码与外部输入、模型。See-through的[代码许可](https://github.com/shitagaki-lab/see-through/blob/df019de5129d6c4b406587a14c3501669441a783/LICENSE)为Apache-2.0，不据此给所有底模、权重和结果统一清权。[当前LayerDiff 3D模型卡](https://huggingface.co/layerdifforg/seethroughv0.0.2_layerdiff3d)允许商业使用，但继承Open RAIL用途限制；其余深度模型、生成底模和输入权利分别核，不能只凭代码许可放行。[一手／研究]
+- **现成输入与生成依赖：** 上述固定入门链的exam输入为CC BY-NC 4.0，不能作为商用游戏底座；其自制角色配方还列非商业upscaler。故“包MIT、CPU可跑”不等于整条商业制作链放行，不直接复制配方。[一手：作者许可说明；研究]
+- **自有角色入口未闭合：** 入门指南GPU配方约需23GB模型；免费网页需账户与两次分层额度，作者明确该PSD路径尚未端到端跑过，且少深度信息。本仓未下载、注册、上传或运行；现成NC样本跑通也只能验后半链，不能说完成新角色制作。[一手／研究]
+- **播放与编辑分开：** [固定player实现说明](https://github.com/rig-c/play/blob/a7f248f355a5483be268b53ba2de1451d921b6a7/README.md)消费自有`skeleton.model.json`并用自身posing core，不链接Spine runtime；该链的Spine出口为4.3，需匹配编辑器／runtime；官方Spine出口仍核[编辑器协议](https://esotericsoftware.com/spine-editor-license)及[runtime协议](https://esotericsoftware.com/spine-runtimes-license)。Spine JSON可导入不等于获赠编辑器，格式兼容不免运行时授权。[一手／研究]
+
+**二改怎样接收。** 保同一分件、关节与动作源，先改局部节奏，再换同规格部件；播放旧、新动作看接缝、接触、层序和视觉身份，改一处时不重生全部帧。需要转身新绘图、持续手补遮挡面或逐点美术调整时撤回。这里只给生产选择与接收方法；未安装工具、生成模型、运行浏览器／引擎，也未证明本仓的制作质量和成本收益，不算动画实作完成。[研究]
+
 ## 3. 瓦片和自动QA：先确定它究竟验证什么
 
 [Tiled Terrain原文](https://docs.mapeditor.org/en/stable/manual/terrain/)分corner、edge、mixed与简化blob，所需图块不同。须分开：单图自身周期性、允许的异种邻接/角、引擎采样/图集露缝。规则、内容和采样分别修，不能把一张可重复纹理叫完整地形组。**[一手／经验]**
