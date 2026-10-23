@@ -84,6 +84,179 @@
 
 **[研究] 回归重点是第二次打开与不同退出。** 无新增工作时不能仅凭 null handle 判失败；丢弃 Load 句柄或对 Preload 仅调用 Unload 均不证明持有已撤销。未来记录完成次数、资源身份、持有来源和退出驻留，覆盖一个消费者退出、另一个仍使用。
 
+<a id="resource-lifecycle-workflow"></a>
+## 完整资源生命周期：退出、共享、转场与恢复
+
+**[研究] ✅ 默认让独立消费者各持原生加载引用；只有真正共用一份引用时，才由共同所有者协调退出。**
+**[研究] 转场先区分“新资源可用”“新玩法获准运行”“旧场景可放弃”，把返回和失败放进同一交接。**
+**[研究] 本轮取代04资源段的接口中心叙述，复用上文P125等待契约；2026-10-24（UTC+8）源码／资料研究，示例未编译、未运行Unity／UE、设备或模型。**
+
+### 1. 原生已经做了什么，项目还需要做什么
+
+| 责任 | 先复用现成能力 | 仅项目能决定的部分 |
+|---|---|---|
+| 找资源、加载依赖、复用加载操作 | Addressables 的 key／location／provider 与操作缓存 | key 是否是本次要显示的内容，何时拒收 |
+| 生命周期等待 | 既有 Completed／Coroutine；4.x单所有者原生等待见上文 | 销毁、禁用、换目标各自是否结束使用 |
+| 两消费者 | 每次静态 LoadAssetAsync 获取一份引用；分别归还 | 全局常驻／短暂预览／池对象分别活多久 |
+| 场景卸载 | Addressables.LoadSceneAsync／UnloadSceneAsync | 什么时候新世界允许运行、失败返回哪一层 |
+| 内存清理 | 对应构建后端、Profiler／Memory Profiler | 允许的并存峰值、有界预留、可牺牲的装饰 |
+
+[研究] 这个划分比“所有请求都进一个全局资源管理器”少一个重复缓存／引用计数层。若项目已有能正确交接的成熟层，保留而非重写；只在需要统一优先级、预算、重试合并或跨界驻留时增加窄协调，不把每种资源都强行包装成相同 Dispose。
+
+**固定源码说明独立获取不是重复下载的同义词。** [一手] 沿用P125的4.1.1包镜像 `99d59c9b2a39024617b347953389ca631517bd2b`：
+- [AddressablesImpl.cs L659–705](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/Runtime/AddressablesImpl.cs#L659-L705)把加载交给 ResourceManager；[ResourceManager.cs L327–375](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/Runtime/ResourceManager/ResourceManager.cs#L327-L375)对 provider／location／类型构造缓存键，命中时增加引用并返回 handle。这里只证明匹配操作的复用，不保证不同目录版本、不同类型、自定义 provider 或已释放后重载仍是同一操作。[一手／研究]
+- [AssetReference.cs L516–537](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/Runtime/AssetReference.cs#L516-L537)实例方法在已有有效 operation 时返回默认值并报错；多次获取用静态 `Addressables.LoadAssetAsync<T>(assetReference)`，对应[官方入口](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/LoadingAssetReferences.html)。复制 struct、从 `.Result` 存个对象字段，都不是另一次获取。[一手／研究]
+- [Completed 契约 L100–107](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/Runtime/ResourceManager/AsyncOperations/AsyncOperationHandle.cs#L100-L107)说明已完成操作的新增回调会延至当前帧 LateUpdate。因此先建立本次请求，再注册回调；不要写只对“慢下载”成立的初始化顺序。[一手／研究]
+
+[研究] `IsValid()` 只表示底层操作仍有效，不证明调用者还有未归还的一份引用；两次合法获取的 handle 也可能相等。项目要按取得／转交／归还记录自己那份，不对 handle 值做全局去重。`ReferenceCount` 含框架内部和其他依赖持有，只用于诊断，不能当 UI 订阅人数或决定谁该释放。
+
+### 2. 现成实现与生产反例：借机制，不照抄整个加载器
+
+**现代原生实现是当前默认，历史完整游戏示例只补职责结构。** [一手] [Chop Chop固定源码](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/UOP1_Project/Assets/Scripts/SceneManagement/SceneLoader.cs#L75-L197)用 `_isLoading` 抑制重复入口，加载场景后设置活动场景，再发 `_onSceneReady` 让生成系统启动；[作者架构说明](https://github.com/UnityTechnologies/open-project-1/wiki/Game-Architecture-Overview)把 SceneLoader 放 PersistentManagers。可借的是**存活协调者、串行转场、显式就绪事件**，不是新框架名单。
+
+[研究] 同文件 `UnloadPreviousScene` 发起卸旧后直接 `LoadNewScene`，完成回调直接访问 Result，缺状态失败分支；没有“按返回丢弃新世界并恢复旧世界”的完整路径。因此它不是可直接采用的可恢复转场实现，也不能据它宣称卸旧完成后才载新或已控住峰值。编辑器冷启动还用了 WaitForCompletion，沿用P125挂起反例，不复制为跨版本默认。
+
+[一手] [README](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/README.md)明确2021-12已停止开发、Unity2020.3演示，固定提交日期2022-06-26；[根许可](https://github.com/UnityTechnologies/open-project-1/blob/608eac98df29cd97821a6115cd52dfb9027345b1/LICENSE)Apache-2.0。本轮只提炼架构、无搬资产；若复制代码需保留通知并核依赖，不将这个旧demo包装成近两年生产最佳实践。
+
+**跨场景保活失败发生在真实开发中，而非只有理论。** [社区／一手：参与者自述] [2024-10至11原帖](https://discussions.unity.com/t/addressable-scene-loses-scriptable-objects-references-when-other-scene-is-loaded/1539023)作者报告常驻UI仍丢ScriptableObject／Sprite；Unity参与者补测 `UnloadUnusedAssets` 后发现Editor与Windows／Android不一致，并引导按handle持有。该案例支持“构建里验依赖寿命”，不证明所有Addressables项目都应改成全常驻，也不采纳帖中“全部资产都必须标Addressable”的泛化答复。[研究]
+
+**为什么不直接缓存结果。** [社区] [2020原帖与作者补测](https://discussions.unity.com/t/should-i-cache-the-asset-returned-from-loadassetasync/807083)讨论重复同key加载和引用计数；作者报告后续调用比首次快，但测法／设备不足以给现代项目数值保证。[研究] 当前默认来自上述4.1.1源码，不依赖旧帖的“0ms”；真有频繁卸载／重载再加短期持有，不把裸 Result 字典当正确保活。
+
+[研究] 最新原生契约、旧完整实现与近两年开发反例各提供不同证据。尚无同任务、同目标设备、近两年已发行独立游戏的公开端到端对照，**当前最高生产表现未知**；这是缺口，不拿厂商示例或作者感受补成实证排名。
+
+<a id="resource-lifecycle-example"></a>
+### 3. 可交给 AI 改写的最小例：两个窗口各持一份引用
+
+[研究] 以下为本仓独立编写的**实现起点，未编译／未引擎验证**，不是新库。目标是uGUI Sprite预览；每个窗口一个组件，一个 Image 只由该组件写入。`OnEnable` 获取，`OnDisable` 撤接收资格并清UI，pending请求保留到完成后释放；同key两个组件不会共享同一份释放责任。所有调用在Unity主线程，加载超时／下载重试交现有provider政策；这不是底层网络取消例，也不用于Scene或InstantiateAsync。
+
+```csharp
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+
+public sealed class OwnedSpritePreview : MonoBehaviour
+{
+  [SerializeField] private AssetReferenceSprite asset;
+  [SerializeField] private Image target;
+  private Request current;
+
+  private void OnEnable()
+  {
+    if (target == null || asset == null || !asset.RuntimeKeyIsValid())
+    {
+      Debug.LogError("Preview requires a target and valid asset key.", this);
+      return;
+    }
+    current = new Request(target); // 先建立本次身份，再启动/订阅
+    current.Start(asset);
+  }
+
+  private void OnDisable()
+  {
+    Request old = current;
+    current = null;
+    old?.Close();
+  }
+
+  private sealed class Request
+  {
+    private Image receiver;
+    private AsyncOperationHandle<Sprite> handle;
+    private bool owns, completed, closed;
+
+    public Request(Image receiver) { this.receiver = receiver; }
+
+    public void Start(AssetReferenceSprite key)
+    {
+      handle = Addressables.LoadAssetAsync<Sprite>(key);
+      owns = true;
+      handle.Completed += Complete;
+    }
+
+    public void Close()
+    {
+      if (closed) return;
+      closed = true; // 撤资格先于清理；旧请求不再有 UI 目标
+      if (receiver != null) receiver.sprite = null;
+      receiver = null;
+      if (completed) ReleaseOwned();
+      // pending 由原生完成委托保住 Request，到 Complete 收尾
+    }
+
+    private void Complete(AsyncOperationHandle<Sprite> result)
+    {
+      result.Completed -= Complete;
+      completed = true;
+      if (!closed && receiver != null &&
+          result.Status == AsyncOperationStatus.Succeeded)
+      {
+        receiver.sprite = result.Result; // 使用期间继续保引用
+        return;
+      }
+      if (!closed && result.Status == AsyncOperationStatus.Failed)
+        Debug.LogException(result.OperationException);
+      ReleaseOwned(); // 失败、目标消失或晚到；均只归还自己这份
+    }
+
+    private void ReleaseOwned()
+    {
+      if (!owns) return;
+      owns = false;
+      Addressables.Release(handle);
+      handle = default;
+    }
+  }
+}
+```
+
+**怎样接入而不是只粘贴。** [研究] 指定项目实际包、Image和合法Sprite key；确保两个窗口各自绑定不同Image却可指同一AssetReference。先在目标工程编译，给获取／完成／关闭／释放加请求ID和key日志；慢加载A关闭后立刻打开B，断言A不能写B，再让两窗口同时开、只关一个。失败时本例只记录错误并清持有，产品应在当前窗口显示可重试占位，下一次打开／显式重试创建新 Request，不复活旧对象。若 `Start` 在返回句柄之前抛同步异常，调用层记录失败并显示占位；不要尝试释放未取得的句柄。
+
+[研究] 本例故意不在pending Close时release，减少“还要观察的handle已失效”的组合；代价是旧请求至完成仍占持有，频繁打开会积累待完成请求。产品若观测积压，先限并发／合并待处理意图，再按真实包改早释放政策并验回调失效；不是无条件更省内存的实现。它也不使用易复用source的取消适配器，未宣称修复UniTask #649。改成4.x原生等待时须整体替换释放协议，按上文失败异常与token契约处理，不能只把 Complete 改成 await。
+
+**已有一份共享handle怎么补。** [研究] 让唯一共同所有者持原引用，消费者只拿可撤销订阅或借用凭证，不向消费者暴露 Release。记录活跃订阅和可用结果；一个退出只撤自己。最后一个退出后，若尚pending由所有者收尾；若已成功且无其他保留政策则释放。逐个分发前重新检查订阅资格，并在调用业务回调前提交内部状态，处理回调同步关闭另一窗口的重入；晚订阅者应走同一资格检查。只有要把使用期真正分离给新所有者时才另Acquire，并明确这份由谁还。这个小协调不替代原生缓存，不缓存共享Awaitable供重复await。
+
+### 4. 转场实施表：失败后回哪里，必须先决定
+
+[一手] [4.1.1场景文档](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/LoadingScenes.html)说明其底层是SceneManager；`activateOnLoad=false`阻异步队列直至激活，Single卸当前场景并调用UnloadUnusedAssets。[研究] 因而本表默认Additive＋自动激活，但新关卡从Awake起就不得自行提交玩法副作用；只禁输入远远不够，还要管计时、刷怪、存档写入与事件注册。
+
+| 阶段 | 协调者保存／动作 | 取消或失败处理 |
+|---|---|---|
+| 请求前 | 目的地、不可变requestId、旧场景引用、恢复点、原输入目标；只接一个运输中的操作 | 预取消不创建新加载；同帧重复入口合并为待处理意图 |
+| Prepare | 冻结旧场景玩法输入；保持旧内容可恢复；加载必要依赖并检查完整性 | 旧场景仍在则恢复它；新请求取消只撤接收资格，不假定底层已停 |
+| Stage | 新场景可已激活，游戏规则仍未授权；接收对应requestId的场景结果与准备结果 | 成功但已取消的新场景用UnloadSceneAsync；失败句柄按当前API归还，不按成功场景访问Result |
+| Commit | 在一次主线程交接中检查代次／目标，再绑定恢复数据、切active scene和输入／镜头目标、启用新玩法 | 这是项目提交边界，不能被旧结果再次触发；数据恢复失败不得先启用新玩法 |
+| Retire | 新场景已可运行后卸旧场景，清旧订阅、池和引用；观察卸载结果 | 卸载异常保留待清理状态；核实际Scene状态与剩余持有后决定下一步，不盲用旧句柄重试或重做Commit |
+| Return/Retry | 提交前回旧场景；提交后返回是一个新的反向转场，从约定恢复点重建 | 不把重复回调当重复发奖；不能恢复的瞬态状态需明示，而不是只保场景名 |
+
+[一手／研究] **卸载操作和场景加载引用分开记。** 固定[AddressablesImpl L1497–1522](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/Runtime/AddressablesImpl.cs#L1497-L1522)默认自动释放返回的卸载operation；要在完成后保留它作诊断，显式`autoReleaseHandle:false`，取完状态后释放该卸载operation。此选项不等于保住原场景加载引用：[SceneProvider L276–321](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/Runtime/ResourceManager/ResourceProviders/SceneProvider.cs#L276-L321)收尾另行release场景加载handle，且底层返回null也走完成。检查实际场景是否仍加载、已发生的生命周期事件与持有账，再决定重试／告警；不要拿`Succeeded`或一个已失效句柄证明完全清理。
+
+[研究] Unity场景激活不是项目事务；Awake／OnEnable已发生的副作用不会因Unload自动撤销。若现有关卡无法关闭副作用，先做轻量引导场景和显式启动入口，不能虚构“先加载后提交”已成立。最小字段是本次身份、阶段、旧/新场景操作与资格；操作日志中的身份要来自本次局部请求，不从可变化的 `currentScene` 反推。
+
+**低内存替代不是失败恢复的等价实现。** [研究] 当旧＋新＋共享依赖＋解码／上传临时占用超目标预算，先切常驻小读条壳，确认旧场景卸载结束再载新。壳里保取消／重试／退菜单，旧状态从恢复点重建；无需为“平滑”强留双场景。若先下载依赖再卸旧，它只改变磁盘就绪，不承诺纹理GPU上传／Awake／玩法初始化完成；进度应分别表示下载、场景准备、进入，不把PercentComplete当字节比例或100%可玩。
+
+[研究] 退出读条时若场景加载已经进行，默认仍让其完成并立即卸载；壳和协调者活到收尾结束。若确需停在未激活状态，必须为取消路径提供激活→卸载的可达步骤，且准备激活产生的生命周期回调，不等待已经被它挡住的后续操作。没有这些保证，撤回延迟激活方案。
+
+### 5. 持有正确之后，再决定驻留与构建后端
+
+[一手] [4.1.1卸载文档](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/UnloadingAddressableAssets.html)区分场景资源与独立加载资源；DontDestroyOnLoad不代替加载引用。[研究] 把需要常驻的玩家／UI依赖单独获取更容易控制保活范围；Acquire整个场景可作为明确选择，但可能把不再需要的依赖一起留住。不是按对象挪到新Scene就自动迁移了资源所有权。
+
+[一手] [4.1.1内存文档](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/memory-assets.html)区分AssetBundle与content directory：前者的卸载受整包持有影响，后者可按资产释放，但目录注册持续至系统关闭。文档同时说明引用归零与内存观察不同、反复最后释放又重载会产生churn。[研究] 因而取三份证据：本项目获取／释放账、框架资产和依赖驻留、设备真实内存峰值。只看“handle有效”“ReferenceCount=0”或托管GC，均不足以证明没有遗漏／预算已守住。
+
+[一手] [构建系统选择](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/content-build-systems.html)将content directories限定Unity6.6+，目前只支持本地内容；远程、内容更新或旧Editor走AssetBundles。允许既有本地＋远程混合，但共享依赖可能重复构建，因此默认选一种。[研究] 这是原生新能力影响卸载颗粒度，不是本轮推荐迁移的性能实证；已发布AssetBundle项目先修持有与分组，只有目标版本与内容发布要求匹配再比较后端。
+
+**UE不照搬Unity每次Load对应一次Release。** [一手] 2026-10-24补核[LoadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/LoadPrimaryAssets)／[PreloadPrimaryAssets](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UAssetManager/PreloadPrimaryAssets)仍为上述不同契约；无新工作返回null也可能完成。[研究] 共同拥有者管理PrimaryAsset集合与卸载时机，消费者撤资格仍需本次身份；不要把Load的句柄析构当资产卸载，也不要把Preload仅调用Unload当清理。回调取消问题沿用UE-207209版本证据，不把目标修复版本写成已解决。
+
+### 6. 怎样判断做完，以及何时撤回
+
+[研究] 先在真实目标工程完成四种路径：慢加载退出、缓存命中退出、共享只退出一个、切场失败返回再重试；再增加同帧退出/完成和第二次需求“预览变常驻／池化”。验每份业务持有最终释放一次、结果与requestId一致、提交最多一次、输入与镜头只指当前世界、读条可离开。对于场景卸载和实例释放记录各自类型，不把总Release次数当全部验收。
+
+[研究] 冷启动、目标Player、断网／失败注入和正常缓存往返应分报；内存没有业务持有但高水位稳定，先解释后端与缓存，不直接判泄漏；若反复往返仍增长则定位未清订阅、池、Acquire与跨场景强引用。工程内真断网等操作由项目授权环境执行，本轮仅交检查设计，不新增CPU替身或伪引擎测试。
+
+[研究] 撤回条件：原生独立引用已够用就不加共享管理层；每次返回都立刻重载且产生实测churn才保小范围有界缓存；双场景超峰值改读条壳；原生4等待与现有版本不兼容就保Completed／原有异步；新后端不满足远程发布则保AssetBundles。若新方案增加状态分支却未改善读者的退出、共享或恢复能力，缩回原生加最小项目语义。
+
+**探索回执。** [研究] 截止2026-10-24（UTC+8），按缺口读Unity4.1.1官方／固定源码、Epic公开API、Unity Discussions原帖与Chop Chop加载器；复用P125版本审查。缺同任务近两年发行案例和引擎实测；下一步在获授权工程走完整流程，以镜头／输入协作验Commit，不另扩探针。
+
 ## 3. ink：存档格式兼容，不等于剧情修改兼容
 
 [一手] `inkle/ink@35c63e52f1d36060930dc7ed3cfba38ea224b528`，commit API 2026-05-05，1.2.1；MIT [LICENSE](https://github.com/inkle/ink/blob/35c63e52f1d36060930dc7ed3cfba38ea224b528/LICENSE.txt)。已读 StoryState／Story／CallStack／VariablesState。
