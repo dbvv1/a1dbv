@@ -562,3 +562,32 @@ timeout 60s .venv/bin/python experiments/replay_pwasm_consumer.py
 **测试范围不能合并成全绿。** 既有三组guest测试36过；既有spec选 `i32 or call_indirect or memory`，11份WAST×4模式共44过、320未选；另用默认runner跑i32／memory／call_indirect为576通过、0失败、144跳过，跳的是内部WAST命令，不是pytest项。runner仍跳过无效／畸形及未知命令。独审重放消费者、80项测试及三文件runner，结果一致。曾尝试全套，在进度78%后退出137、无最终摘要，原因未确认；未盲重试，不称全套通过或推断OOM。[本仓实试／独立复验]
 
 本例证明固定公开消费者及有限差异的可复跑结果，不证明一般CPython等价、完整标准、安全沙箱、生产替代、速度提升或模型收益；未新增中文独立复现证据。[范围]
+
+
+## grill-with-docs：选择性记录不是完整交接
+
+**保留其澄清用途，不把词汇表和ADR当全部决定的快照。** 固定源码区分持久术语、重要取舍与仍留在会话的其他决定；跨人接手还应核确定程度。[一手／研究，2026-10-23]
+**没有本轮Skill实跑或收益比较。** 中文使用者给出具体接手失败，但未公开原ADR、对话或使用版本；不能证明确定性软件缺陷。[社区／范围]
+**最小建议是复用已有规格核原回答，不安装新流程。** 已确认、暂定和未决分清即可；这项工程判断留待真实后续接手验证，不制造对照题。[经验]
+
+### 固定源码与相反证据
+
+读取固定于 `5beb35b040e3de97e54fa9e386d7e42d15c295c2`（提交2026-10-19 UTC）。[domain-modeling L62–74](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/domain-modeling/SKILL.md#L62-L74)不让词汇表承担规格，并要求ADR同时满足难逆转、缺背景会困惑、真实权衡三个条件；不满足就跳过。它是选择性记录设计，而非保存失败。[一手]
+
+[grill文档L33–39](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/docs/engineering/grill-with-docs.md#L33-L39)说明其余决定仍在会话，后续to-spec须继续同一会话；[L54–55](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/docs/engineering/grill-with-docs.md#L54-L55)也提醒顺序保证、负面要求与数值默认可能在下游弱化，应对照原回答检查。不能只传GLOSSARY／ADR就推定其流程完整。[一手／研究]
+
+**上游并未要求省略理由。** [ADR格式L10–23](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/domain-modeling/ADR-FORMAT.md#L10-L23)要求背景、决定与原因，但proposed／accepted等状态是可选项。文档存在不证明这次生成正确，也不能把论坛使用失败说成源码必然抹平状态。[一手／研究]
+
+### 原帖里的失败与保留意见
+
+[linux.do原帖](https://linux.do/t/topic/3048958)的#1／#7（10-20）与#13／#16（10-21）是同一作者接手他人文档时的观察：随手接受的AI建议、AI填补的理解与真正定案不易区分，暂定事项可能被写成裁决。#15评论反驳未提供原因就无法记录原因，此类问题并非AI独有，同时保留grill帮助完善边界的用途。该页及[完整JSON](https://linux.do/t/3048958.json)已读取，单帖/13、/15网页入口失败不等于正文缺失。[社区；读取时间2026-10-23]
+
+[Reddit既有使用讨论](https://www.reddit.com/r/ClaudeCode/comments/1w89udt/matt_pocock_skills_grilling_and_wayfinder_how_is/)有产物改善、访谈／审查投入和多人上下文风险的不同报告，仅作为历史正反参照，不算本周新采用，也不能合并成净收益结论。[社区／范围]
+
+### 本轮未转成安装推荐的候选
+
+本轮按近一周续扫官方、实践者、GitHub、HN、Reddit、linux.do和V2EX，未找到足以替换当前原生流程的新安装默认。已覆盖的Battle Drones等不重复计发现。[研究：负结果]
+
+- [Meta 10-19薄编排器](https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/)针对阶段固定、领域规则不同的重复接入，以固定定序和隔离领域知识组织工作；生产收益为作者自报，未找到公开实现或同题独立采用，不据此另造编排器。[一手／研究]
+- [Xojo 10-20 Agentic Mode](https://blog.xojo.com/2026/10/20/use-ai-coding-agents-with-xojo-agentic-mode/)给该IDE增加编译反馈闭环，未取得足以改变已有Codex／Claude用户通用选择的证据。[一手／研究]
+- Meta中文搜索主要为二次转述，不充作独立采用；Claude dynamic-workflows官方页本轮读取失败，未用摘要补全实现或效果。[范围]
