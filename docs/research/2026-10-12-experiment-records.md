@@ -782,3 +782,18 @@ full报告器未随该固定Skill提供，源码入口404；[build-eval说明](h
 **同题验收题**：一个分页接口、两个调用方和共享fixture同时修改，结束标志及失败重试语义未定，哪些可立即并行？本次交付应先派不依赖新语义的调用点调查／文档盘点，确定会改变消费行为的语义后再让实现与调用方适配并行；交接标谁提供哪项契约、哪条断言解除等待，共享fixture有明确持有者。最终集成核真实消费；不能删掉原重试要求后宣布独立。此题是教学转化，独立读者效果未验。[经验]
 
 **探索与验证回执**：19:20–19:25 UTC查公开需求、PR、固定代码与评论；根端复核4305／4550正文、原需求、14文件差异及parity断言。两PR所报87通过／1跳过与144通过／4跳过均为作者记录，本仓未安装或运行此项目、模型与客户端。V2EX的[Threadlight](https://www.v2ex.com/t/1233531)／[AnyPal](https://www.v2ex.com/amp/t/1235026)及Reddit的[合并讨论](https://www.reddit.com/r/ClaudeCode/comments/1t9prcp/how_are_you_handling_merge_safety_when_running/)／[Herdsman演示](https://www.reddit.com/r/PiCodingAgent/comments/1x1jrjq/pi_herdsman_update_from_async_subagents_to/)未提供更强拆分产物；后者仅两项文档任务，不作代码集成依据。TRAE原帖和GSD修复页正文未取得；既有NP-Bench、Graphicle与旧GSD失败不计新发现。完整读取分母未可靠登记，不算比例或新漏检率，不改差距1。[研究]
+
+
+## 窄评审：按任务缩小启动输入
+
+2026-10-24（UTC+8）。08已有角色输入原则，本次只补可直接使用的原生临时子 Agent 入口，不增评审轮次，不重审已验成果。[研究：源码／文档，未运行 Claude 模型或客户端]
+
+**契约与版本。** [官方字段表](https://code.claude.com/docs/en/sub-agents#frontmatter-reference)与[v2.1.271 发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.271)共同确认 `omitClaudeMd` 可用于 frontmatter／`--agents` JSON；发布于2026-09-15 06:12 UTC+8。正文采用临时定义而非插件：只做文件核对时显式提供 Read／Glob／Grep，不硬编码某模型。受管理策略仍适用；此配置不是移除组织策略的方法。当前官方发布核到[v2.1.309](https://github.com/anthropics/claude-code/releases/tag/v2.1.309)，不代表本端安装版本。
+
+**实践与源码。** 阅读[lean-agents 固定 c08376cc](https://github.com/mdalexandre/claude-code-lean-agents/tree/c08376cc80641ab75affe701a321dfebc861f78b) README、agents/lean-checker.md、派发 Hook 及其测试。作者在[原帖](https://www.reddit.com/r/ClaudeAI/comments/1x9i2tl/i_built_a_blind_checker_subagent_for_claude_code/)介绍用窄输入检查工件；这是维护者自述，不是独立采用。其统计来自重配置环境且不同任务样本不对等，不能证明当前模型质量或总成本收益。checker仍允许Bash，文字要求只读不是硬隔离；自动派发Hook仅按description判断MCP／Skill需求，本次不采用整包、Hook或私有会话统计脚本。
+
+**真实反例。** [#100366](https://github.com/anthropics/claude-code/issues/100366)在2.1.293用合成标记观察到启动省略后，读取子目录仍引入该目录CLAUDE.md和路径规则；[关闭回执](https://github.com/anthropics/claude-code/issues/100366#issuecomment-6202571339)是文档说明已补，不是完全隔离已修好。当前官方正文亦保留此行为；因此只能称缩小启动输入。另[#96405](https://github.com/anthropics/claude-code/issues/96405)独立使用者请求更细粒度启动裁剪，支持问题存在，不证明任何固定工具包最优。
+
+**中文渠道与缺口。** 检索LINUX DO和V2EX的 `omitClaudeMd`；取得[LINUX DO 4月3日原帖](https://linux.do/t/topic/1887895)，作者依据当时文档／源码讲Explore省略和委派补齐背景。这不是9月公开自定义字段后的真实任务验收，未找到可用于证明当前配置收益的中文一手结果；不把旧解析或搜索未命中写成社区共识。没有采用来源未明的逆向代码作为当前客户端契约。
+
+**取舍与止步。** 只把原生操作回流08，未列“值得一试”整包候选。下次自然的文件评审可选择这一入口；若需浏览器、测试或专门MCP，保留相应执行能力，不为省上下文删验收。没有自然任务时就以该窄结论收口，不新造任务、效果实验或边界矩阵。

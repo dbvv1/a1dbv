@@ -59,6 +59,16 @@ Anthropic 的研究系统与 Cognition 的编码实践面对不同任务；Cogni
 
 **上下文按角色给**：独立评审先给变更与必要验收依据，不默认附上编码者的整段过程；由主 Agent 结合原需求核对发现。需要针对当前难点给建议的咨询 Agent，则带上相关状态、约束与已试路径，缺关键文件先补查。两者都不是空白上下文或全量轨迹的固定配方；沿用 [09 的评审输入](09-review-and-quality.md)。**[一手：Cognition 角色差异；经验：采用判断]**
 
+**Claude Code：一次性缩小文件评审的启动输入。** 若任务所需规则已能写进委派，可用原生 `--agents` 定义临时子 Agent，无需安装评审框架；先用 `claude --version` 确认 **v2.1.271+**。在仓库目录启动（以下为 Bash／zsh）：
+
+```sh
+claude --agents '{"focused-reviewer":{"description":"核对指定文件与验收要求","prompt":"只核对委派中的工件、验收和必要项目规则；缺规则先报告，不猜测。指出具体文件证据；不能执行的验收标未验。","tools":["Read","Glob","Grep"],"omitClaudeMd":true}}'
+```
+
+随后明确要求使用 `focused-reviewer`，给实际变更文件、验收条件及必须遵守的项目规则；在委派记录核对确实调用了它。该定义只在本次会话存在，不固定模型；实际选择还受调用参数与子 Agent 模型配置影响。这里只适合文件核对，不能运行测试或接收浏览器页面；这些验收仍交给具备对应工具的执行者，不用“只读评审”替代实际接收。
+
+`omitClaudeMd` 仅省略启动时的用户／项目／本地 CLAUDE.md 注入，不保证盲审；工作于子目录时仍会加载适用规则，也不适用于 `--agent` 主会话入口。依赖大量项目约定而无法完整交接时保留默认加载。当前结论来自[官方入口](https://code.claude.com/docs/en/sub-agents#what-loads-at-startup)与[源码／社区反例](research/2026-10-12-experiment-records.md#窄评审按任务缩小启动输入)，本仓尚未实跑此配置，不声称提升评审质量或降低总投入。
+
 审计和评审中的独立调查较容易并行；迁移要分开看：调查可读并行，实际修改必须先对齐共享接口、数据契约和依赖顺序，再验证整合结果。**文件不同不代表语义独立**。这与 [Anthropic 研究系统](https://www.anthropic.com/engineering/multi-agent-research-system)及 [Agent Teams](https://code.claude.com/docs/en/agent-teams#when-to-use-agent-teams)对依赖与协调成本的限制一致。**[一手：文档；经验：采用建议]**
 
 > 上一版里“并行加速 11–52%、耦合任务慢 5.8%”这两个数字找不到出处，已删除。
