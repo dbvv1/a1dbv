@@ -213,6 +213,14 @@ Agent先追CLI→formatter→输出，再查同一formatter的exec消费者：�
 这是本仓局部功能补丁，不是fd已发布能力；完整测试仍有一项在原版也复现的Git祖先环境失败，未声称全套通过、Windows支持或速度提升。[验证范围]
 
 
+### 实例：把列表筛选变成可分享的URL
+
+**🧪 已用TanStack Router时，把已应用的筛选与排序放在父路由，让列表、详情和返回共用同一状态。** 本仓给固定官方basic示例增加标题筛选、升降序与清空；[完整源码、依赖锁与运行入口](../experiments/tanstack-url-state/README.md)可复制，不是上游缺陷修复或客户项目交付。[本仓实试，2026-10-23]
+
+Agent从实际安装的router-core包加载search-params窄Skill，再读当前middleware源码：`retainSearchParams`保详情条件，`stripSearchParams`省略默认参数；**清空要显式写默认值，不能用空对象期待覆盖retain**。本例只筛已取回的十条数据，不把展示参数机械塞进`loaderDeps`，也不为两个字段新增Zod。[源码／本仓实试]
+
+读者先运行`npm ci`、`npm test`、`npm run build`，再按入口启动页面；迁入自己的项目时核哪些字段真的影响服务器取数。7项真实Router／React DOM流程覆盖详情、清空、历史与URL重建；生产构建和类型检查通过，实际浏览器与线上HTTP仍未验。首次`toSorted`与原ES2022目标不符，改为排序过滤后的新数组，而不是为这一步升级编译目标。[本仓实试／范围]
+
 ## 4. 重构
 
 **✅ 先锁定行为，再做小步等价修改。** 特征测试保护必要行为（含奇怪行为），每步跑相关检查。机械改名先用 IDE／语言重构，重复规则优先现成 codemod；少量异质调用／业务判断交 Agent。评审查复制已有实现。两种实现都能用时，按[下一项确定修改](22-agent-evaluation.md#两种实现都能用用下一项确定修改决定保留谁)选保留路径。[经验]

@@ -1,0 +1,53 @@
+{
+  "checked": "2026-10-23",
+  "upstream_commit": "6b9fe6d29552270836c511bc9b343d73541f4424",
+  "react_router": "1.170.46",
+  "router_core": "1.171.39",
+  "intent": "0.5.6",
+  "loaded_skill": "@tanstack/router-core#router-core/search-params",
+  "source": "local",
+  "skill_declared_library_version": "1.171.15",
+  "installed_skill_sha256": "e886e5c3285309a0e95c52e30e73d4ff52cffc366f0d97d02003b9696e8a8804",
+  "matches_pinned_upstream_skill": true,
+  "app_tests": {
+    "passed": 7,
+    "failed": 0,
+    "environment": "jsdom + real React DOM + real TanStack Router + memory history + controlled fetch"
+  },
+  "build": "Vite and TypeScript passed",
+  "independent_review": {
+    "verdict": "pass; no blocking findings",
+    "tests": "7 passed; build and typecheck passed",
+    "limits": [
+      "No real browser, visual/responsive or live HTTP verification.",
+      "Fresh router reconstruction models URL recovery, not browser reload.",
+      "Loading presentation not asserted; error test exercises 200/null custom NotFoundError, not HTTP failure."
+    ]
+  },
+  "model_skill_benefit_comparison": "not performed",
+  "hooks_or_global_setup": "not activated",
+  "fresh_consumer_replay": {
+    "install": "npm ci passed; 140 packages",
+    "tests": "7 passed",
+    "build": "Vite and tsc --noEmit passed"
+  },
+  "loaded_skill_path": "node_modules/@tanstack/router-core/skills/router-core/search-params/SKILL.md",
+  "activation": "Manual CLI list/load and read; native agent automatic activation not tested",
+  "commands": [
+    "npm exec -- intent list --json",
+    "npm exec -- intent load '@tanstack/router-core#router-core/search-params' --json"
+  ],
+  "discovery_record": {
+    "use": "@tanstack/router-core#router-core/search-params",
+    "packageName": "@tanstack/router-core",
+    "packageVersion": "1.171.39",
+    "packageSource": "local",
+    "skillName": "router-core/search-params",
+    "type": "sub-skill"
+  },
+  "browser_attempt": {
+    "same_launch_http": "Vite GET /posts returned application HTML",
+    "managed_cloud_browser": "ERR_CONNECTION_REFUSED; cause unconfirmed",
+    "result": "No real-browser UI acceptance; DOM/memory-history remains the tested interaction scope"
+  }
+}
