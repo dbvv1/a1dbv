@@ -288,6 +288,14 @@ echo "$?"  # 0
 
 **独立 Dan Luu，9月，[验证技术比较](https://danluu.com/agentic-testing/)。** Codex／GPT-5.6 Sol 的 Rust Zstd 任务比较26种提示及4个 Skill，主体每条件／effort 80次。TDD等名称可改变动作，却仍会生成不能检出错误的测试；形式化工具也须核实际证明的性质。采用目标缺陷反例及合理输入差异，不能只数测试。该单任务旧代结果不支持“不要TDD”或当前代技术排名。[一手／研究]
 
+### 当前代补证：额外测试指导不自动变成更好实现
+
+**Taktile 工程师 Tom Larkworthy，10月22日，[Claude 属性测试比较](https://taktile.com/blog/property-based-testing-claude)。** 单一 Rust Zstd 任务比较无额外测试指令、短 PBT 指令和约13KB的Rust版指导，作者标注Haiku／Sonnet／Opus 5.5；共81次，隐藏功能验收全过的运行数分别为26／27、25／27、26／27。“默认”不等于不写测试或没有Agent环境。[一手：作者实验；2026-10-23核全文／原图，未本仓模型复跑]
+
+生成测试的变异检出评分在Sonnet medium、Opus low改善较大；Opus medium／high未显示明确的额外PBT指导优势。采用含义是先验现有模型与任务的测试产物，再补所缺方法，不默认堆长指导；这不是Superpowers／OpenSpec全流程、当前Codex或生产可靠性的对照。[一手／研究]
+
+[正确性原图](https://cdn.sanity.io/images/o8dlvrl5/production/c4beadda900b911b17dce272e555aef674f7c907-760x408.svg)列出多数设置每条件5次、xhigh每条件2次；[评分原图](https://cdn.sanity.io/images/o8dlvrl5/production/650e72f1688f984a9761022fb1e66eb3d29f127f-760x500.svg)注明xhigh长指导沿用只点名decoder的旧提示，误差线为50% bootstrap区间，不能解读为95%区间或统计等效。原文未附逐次数据、完整移植提示或精确API模型ID，不做新排名。探索复用已有PBT／外部验收题，补读作者原文、图注、[HN](https://news.ycombinator.com/item?id=49605246)与[中文讨论](https://linux.do/t/topic/2376513/14)；社区热帖不是采用率或实验复现。[研究：核查边界]
+
 ### 同样失败，恢复动作可以完全不同
 
 **Terminal-Bench [PR2114](https://github.com/harbor-framework/terminal-bench/pull/2114)，9月28日[公开轨迹分析](https://github.com/harbor-framework/terminal-bench/pull/2114#issuecomment-5879421239)**，对应固定 [57fd2b96](https://github.com/stbenjam/terminal-bench/commit/57fd2b96d491b43628fce41cb63b9377f771cf4f)。Fable 5.1／Claude Code 2.1.284 max 拒绝作弊指令后进行了真实调试，但改错层，目标产物未变；Astra／Codex 0.158.0 xhigh 则工具调用前被服务端安全拦截。两者均留下4／7测试失败，含义不同。此处是公开自动分析摘要，不是本仓重跑或逐条完整轨迹复审；PR仍未合入，旧回执不覆盖新head。[一手：运行摘要；研究]

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>音频让位恢复：离线合成检查</title>
+<style>
+body{font:16px/1.6 system-ui,sans-serif;max-width:960px;margin:32px auto;padding:0 20px;color:#182438;background:#f5f7fb}
+h1{font-size:25px}pre{white-space:pre-wrap;background:white;padding:18px;border:1px solid #bbc7d8;border-radius:8px}
+strong{color:#17572f}
+</style>
+<h1>音频让位恢复：离线合成检查</h1>
+<p>A 先结束但 B 仍在 → 用户改音量 → 旧回调到达 → 场景清理。</p>
+<p>示例只选<strong>最强让位生效</strong>，用户音量在另一层相乘。不是引擎快照实现或通用混音框架。</p>
+<p>以常量循环缓冲做纯离线渲染，不接扬声器、不请求麦克风、不下载资源。不判断听感。</p>
+<p id="status">正在检查……</p>
+<pre id="result">等待 OfflineAudioContext</pre>
+<script type="module">
+import { renderOffline } from './game-audio-lifecycle.mjs';
+try {
+  const result = await renderOffline(OfflineAudioContext);
+  document.querySelector('#status').textContent = 'PASS：12 个渲染检查点、5 类非法输入；两请求交错与旧回调恢复符合示例政策。';
+  document.querySelector('#result').textContent = JSON.stringify(result, null, 2);
+} catch (error) {
+  document.querySelector('#status').textContent = 'FAIL';
+  document.querySelector('#result').textContent = String(error.stack || error);
+}
+</script>
+</html>
