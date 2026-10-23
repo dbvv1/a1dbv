@@ -1,0 +1,294 @@
+{
+  "scope": "Actual KTX 4.4.2 encoding; official native extraction and Three-bundled WASM CPU transcoding; Three CPU material revision only. No browser/GPU/visual acceptance.",
+  "versions": {
+    "ktx": "4.4.2",
+    "three": "186",
+    "pngjs": "7.0.0",
+    "ktxParse": "2.0.0"
+  },
+  "inputs": {
+    "diffuse": {
+      "sourceBytes": 1782607,
+      "sha256": "903f042853052b3b4dcbf9a511d688b77983f5af641a3effbb2e130d159daed0",
+      "pngGamma": 0.45455,
+      "baselineBytes": 473535,
+      "baselineSHA256": "ed3bc704823b7c5b35c370f97009dadeb6bef98dfc91a08a79c7a6616e1bbd87"
+    },
+    "nor_gl": {
+      "sourceBytes": 2562545,
+      "sha256": "0b51c30896a1706d8a5bb24448bcff791ec2e51458a90fef9498e61f74de9efe",
+      "pngGamma": 0,
+      "baselineBytes": 508406,
+      "baselineSHA256": "d698c73e09098de7bc1e912d5de05f3f3838ad120efaf2a8d52007e904732d54"
+    },
+    "arm": {
+      "sourceBytes": 1084907,
+      "sha256": "aa8a7f54060ea5d564c35b13956b6689e0b4e693a9bfd8f719dcf61db65e6795",
+      "pngGamma": 0.45455,
+      "baselineBytes": 297665,
+      "baselineSHA256": "cfa37623466ac453e8b5f5d299bfebaf31c2162e1deaed42c888a270e415b5e1"
+    }
+  },
+  "results": {
+    "diffuse-basis-lz": {
+      "bytes": 55135,
+      "sha256": "49287cde700d264e4c3a98f149683ee0d1fe67854212abe785f0203f2167cad4",
+      "transferFunction": "srgb",
+      "allMipCPUChecks": {
+        "levels": 10,
+        "rgbaAndBC7Transcoded": true,
+        "rgbaBytes": 1398100,
+        "bc7BlockBytes": 349552
+      },
+      "level0RGBA8": {
+        "domain": "linear-light RGB",
+        "rmse": [
+          0.020864,
+          0.011824,
+          0.012797
+        ],
+        "mae": [
+          0.014611,
+          0.007588,
+          0.008861
+        ],
+        "maxAbs": [
+          0.292426,
+          0.149905,
+          0.131196
+        ]
+      },
+      "nativeAndWasmBaseRGBAEqual": true
+    },
+    "nor_gl-basis-lz": {
+      "bytes": 43014,
+      "sha256": "6e439731a16db777944da08d45ff72f3f419c100fc327c4e91bb28c178f722f9",
+      "transferFunction": "linear",
+      "allMipCPUChecks": {
+        "levels": 10,
+        "rgbaAndBC7Transcoded": true,
+        "rgbaBytes": 1398100,
+        "bc7BlockBytes": 349552
+      },
+      "level0RGBA8": {
+        "domain": "linear data RGB",
+        "rmse": [
+          0.068896,
+          0.07763,
+          0.054728
+        ],
+        "mae": [
+          0.047115,
+          0.052549,
+          0.028144
+        ],
+        "maxAbs": [
+          0.47451,
+          0.568627,
+          0.388235
+        ],
+        "normalDegrees": {
+          "mean": 9.744234,
+          "p95": 29.399579,
+          "max": 83.297299
+        }
+      },
+      "nativeAndWasmBaseRGBAEqual": true
+    },
+    "nor_gl-uastc": {
+      "bytes": 313701,
+      "sha256": "580b9b482bf8ba30e3e459d6e422ddd929e2fbe39848f985599ac01946d4e643",
+      "transferFunction": "linear",
+      "allMipCPUChecks": {
+        "levels": 10,
+        "rgbaAndBC7Transcoded": true,
+        "rgbaBytes": 1398100,
+        "bc7BlockBytes": 349552
+      },
+      "level0RGBA8": {
+        "domain": "linear data RGB",
+        "rmse": [
+          0.018635,
+          0.018244,
+          0.014594
+        ],
+        "mae": [
+          0.012586,
+          0.012332,
+          0.007901
+        ],
+        "maxAbs": [
+          0.192157,
+          0.223529,
+          0.215686
+        ],
+        "normalDegrees": {
+          "mean": 2.365067,
+          "p95": 6.547853,
+          "max": 26.5302
+        }
+      },
+      "nativeAndWasmBaseRGBAEqual": true
+    },
+    "arm-basis-lz": {
+      "bytes": 30985,
+      "sha256": "40b2ac4fb231085c2a85377494c2b533f1b5ea3111198137c95870b3745da7f3",
+      "transferFunction": "linear",
+      "allMipCPUChecks": {
+        "levels": 10,
+        "rgbaAndBC7Transcoded": true,
+        "rgbaBytes": 1398100,
+        "bc7BlockBytes": 349552
+      },
+      "level0RGBA8": {
+        "domain": "linear data RGB",
+        "rmse": [
+          0.035707,
+          0.026408,
+          0.009388
+        ],
+        "mae": [
+          0.021895,
+          0.017444,
+          0.003441
+        ],
+        "maxAbs": [
+          0.392157,
+          0.254902,
+          0.113725
+        ]
+      },
+      "nativeAndWasmBaseRGBAEqual": true
+    },
+    "arm-uastc": {
+      "bytes": 278139,
+      "sha256": "75605a28e61971ee28f9461cfb9e45a744eaaa6c1b12277c83b5b4d5c17fff44",
+      "transferFunction": "linear",
+      "allMipCPUChecks": {
+        "levels": 10,
+        "rgbaAndBC7Transcoded": true,
+        "rgbaBytes": 1398100,
+        "bc7BlockBytes": 349552
+      },
+      "level0RGBA8": {
+        "domain": "linear data RGB",
+        "rmse": [
+          0.00466,
+          0.005449,
+          0
+        ],
+        "mae": [
+          0.002875,
+          0.003334,
+          0
+        ],
+        "maxAbs": [
+          0.047059,
+          0.062745,
+          0
+        ]
+      },
+      "nativeAndWasmBaseRGBAEqual": true
+    }
+  },
+  "metadataProbe": {
+    "implicit": {
+      "transferFunction": 1,
+      "mae": [
+        0.094321,
+        0.095432,
+        0
+      ],
+      "maxAbs": [
+        0.282353,
+        0.266667,
+        0
+      ],
+      "gammaConversionWarning": true
+    },
+    "assigned": {
+      "transferFunction": 1,
+      "mae": [
+        0,
+        0,
+        0
+      ],
+      "maxAbs": [
+        0,
+        0,
+        0
+      ],
+      "gammaConversionWarning": false
+    },
+    "converted": {
+      "transferFunction": 1,
+      "mae": [
+        0.094321,
+        0.095432,
+        0
+      ],
+      "maxAbs": [
+        0.282353,
+        0.266667,
+        0
+      ],
+      "gammaConversionWarning": true
+    }
+  },
+  "normalMode": {
+    "defaultXYZMeanDegrees": 81.368614,
+    "meanXByteError": 2.916485,
+    "meanYInAlphaByteError": 2.997177,
+    "maxRGBReplicationError": 68,
+    "layoutHypothesis": {
+      "meanRGBToX": 2.978085,
+      "meanRGBToXYZ": 50.529938,
+      "meanAlphaToOpaque": 125.677845
+    }
+  },
+  "revisions": {
+    "r1OnlyAllSlotRepeatChangedTo": [
+      2,
+      2
+    ],
+    "r2OnlyRoughnessFactorChangedTo": 0.65,
+    "controlUnchanged": true,
+    "sourceHashesUnchanged": true,
+    "ARMTextureObjectStillSharedWithinTarget": true,
+    "retained": [
+      "colorSpace",
+      "wrapS/T",
+      "offset",
+      "rotation",
+      "UV channel",
+      "metalness",
+      "normalScale",
+      "normalMapType",
+      "all mip block bytes"
+    ]
+  },
+  "negatives": [
+    {
+      "name": "truncated KTX2 payload",
+      "expectedRejection": true
+    },
+    {
+      "name": "designed: only base color repeat changed",
+      "expectedRejection": true
+    },
+    {
+      "name": "designed: data slot tagged sRGB",
+      "expectedRejection": true
+    },
+    {
+      "name": "designed: shared texture mutated without clone",
+      "expectedRejection": true
+    },
+    {
+      "name": "missing source file",
+      "expectedRejection": true,
+      "exitCode": 4
+    }
+  ],
+  "rawDetails": "Generated locally as p124-texture-raw.json; per-mip diagnostics, snapshots and full commands are intentionally not committed."
+}
