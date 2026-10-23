@@ -51,7 +51,7 @@ Agent调查、修改并交回实际检查结果，人核目标、旧行为与遗
 | 看真实开发者怎样使用 Skills 和 Agent | [24 社区工作流与失败案例](docs/24-community-workflows.md) |
 | 比较年初与现在，判断旧建议是否过时 | [00 五维范式快照](docs/00-state-of-ai-coding.md#1-当前最高水平年初与-10-月到底变了什么) → [14 条件自主默认](docs/14-synthesis.md#0-30-秒结论按任务选入口交付到可继续修改) |
 | 判断工作流是否对强模型仍有价值 | [24 的独立分析](docs/24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) |
-| 解决具体编码任务 | [15 按任务类型的打法](docs/15-task-playbooks.md) |
+| 解决具体编码任务 | [先选可重放案例](docs/15-task-playbooks.md#先动手选一个可重放案例) → [按任务选打法](docs/15-task-playbooks.md#0-总表) |
 | 判断新模型、Skill 或配置是否值得换 | [22 Agent 评估](docs/22-agent-evaluation.md) |
 | 做长任务、自建 Agent 或无人值守流程 | [16 自建 Agent](docs/16-building-agents.md) → [20 可靠的长任务](docs/20-codex-long-horizon.md) |
 | 查看长期研究重点和待验证问题 | [研究路线](docs/research/README.md) |

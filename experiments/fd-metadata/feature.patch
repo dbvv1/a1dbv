@@ -1,0 +1,464 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 67dbfc4..104d0f5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,7 +1,7 @@
+ # Upcoming Release
+
+ ## Features
+--
++- Add output-only `{%y}` (type) and `{%s}` (byte size) placeholders to `--format`, see #2131.
+
+ ## Bugfixes
+ - Fix inline case-insensitive regex flags incorrectly making other `--and` patterns case-sensitive, see #2184 (@mabunemeh)
+diff --git a/README.md b/README.md
+index a259c11..c090e89 100644
+--- a/README.md
++++ b/README.md
+@@ -235,6 +235,27 @@ The syntax for generating commands is similar to that of [GNU Parallel](https://
+
+ If you do not include a placeholder, *fd* automatically adds a `{}` at the end.
+
++### Metadata in formatted output
++
++`--format` additionally supports `{%y}` (file, dir, symlink, or other) and `{%s}`
++(filesystem metadata size in bytes). Use the existing `{}` for the path.
++Directory sizes are not recursive totals. With `--follow`, resolved links describe
++their targets; broken links describe the link itself. Unavailable required metadata
++fails output instead of inventing a size. Existing filters may have cached metadata;
++this is not an atomic filesystem snapshot.
++
++For example, in Bash this produces NUL-terminated records with actual tab separators:
++
++```bash
++fd --print0 --format $'{%y}\t{%s}\t{}'
++```
++
++A consumer must split records at NUL, then split only the first two tabs, keeping
++the entire remaining path. This handles spaces, tabs, and newlines in valid UTF-8
++filenames; ordinary line-oriented TSV does not. Existing non-UTF-8 filename
++conversion remains lossy. `--format` does not interpret backslash escapes itself.
++The new placeholders remain literal in `--exec` and `--exec-batch` arguments.
++
+ #### Parallel vs. serial execution
+
+ For `-x`/`--exec`, you can control the number of parallel jobs by using the `-j`/`--threads` option.
+diff --git a/doc/fd.1 b/doc/fd.1
+index dee773d..8ef1457 100644
+--- a/doc/fd.1
++++ b/doc/fd.1
+@@ -427,6 +427,10 @@ parent directory
+ path without file extension
+ .IP {/.}
+ basename without file extension
++.IP {%y}
++file type: file, dir, symlink, or other
++.IP {%s}
++filesystem metadata size in bytes (not recursive directory size)
+ .IP {{
+ literal '{' (an escape sequence)
+ .IP }}
+@@ -434,6 +438,15 @@ literal '}' (an escape sequence)
+ .P
+ Notice that you can use "{{" and "}}" to escape "{" and "}" respectively, which is especially
+ useful if you need to include the literal text of one of the above placeholders.
++.P
++Metadata follows the walker's link policy: resolved links describe targets with
++\-\-follow, while links recovered as broken by the walker describe themselves.
++Missing required metadata fails output; prior complete records may remain.
++Existing filters may have cached metadata. Path-only formats add no metadata lookup.
++.P
++Use \-\-print0 for NUL-terminated records. Backslash escapes are not expanded.
++With tab-delimited type, size, and path, a consumer must split only the first two
++tabs and retain the complete remaining path, which may contain tabs or newlines.
+ .RE
+ .TP
+ .BI "\-x, \-\-exec " command
+@@ -458,8 +471,8 @@ The order in which different search results are processed and their output is pr
+ guaranteed, even with --threads=1.
+
+ Before executing the command, any placeholder patterns in the command are replaced with the
+-corresponding values for the current file. The same placeholders are used as in the "\-\-format"
+-option.
++corresponding values for the current file. The same path placeholders are used as in the "\-\-format"
++option; metadata placeholders {%y} and {%s} remain literal in exec arguments.
+
+ If no placeholder is present, an implicit "{}" at the end is assumed.
+
+diff --git a/src/cli.rs b/src/cli.rs
+index 2cc5367..ce8aaa8 100644
+--- a/src/cli.rs
++++ b/src/cli.rs
+@@ -477,6 +477,12 @@ pub struct Opts {
+     ///   '{//}': parent directory
+     ///   '{.}': path without file extension
+     ///   '{/.}': basename without file extension
++    ///   '{%y}': file type (file, dir, symlink, or other)
++    ///   '{%s}': metadata size in bytes (not recursive directory size)
++    ///
++    /// Metadata follows --follow: resolved links describe their targets; broken links
++    /// describe the link itself. Missing metadata fails output rather than printing zero.
++    /// Use --print0 for NUL-terminated records. Backslash escapes are not expanded.
+     #[arg(
+         long,
+         value_name = "fmt",
+diff --git a/src/fmt/mod.rs b/src/fmt/mod.rs
+index 79eb704..3dcc543 100644
+--- a/src/fmt/mod.rs
++++ b/src/fmt/mod.rs
+@@ -3,6 +3,8 @@ mod input;
+ use std::borrow::Cow;
+ use std::ffi::{OsStr, OsString};
+ use std::fmt::{self, Display, Formatter};
++use std::fs::Metadata;
++use std::io;
+ use std::path::{Component, Path, Prefix};
+ use std::sync::OnceLock;
+
+@@ -21,6 +23,8 @@ pub enum Token {
+     Parent,
+     NoExt,
+     BasenameNoExt,
++    FileType,
++    FileSize,
+     Text(String),
+ }
+
+@@ -32,6 +36,8 @@ impl Display for Token {
+             Self::Parent => f.write_str("{//}")?,
+             Self::NoExt => f.write_str("{.}")?,
+             Self::BasenameNoExt => f.write_str("{/.}")?,
++            Self::FileType => f.write_str("{%y}")?,
++            Self::FileSize => f.write_str("{%s}")?,
+             Self::Text(ref string) => f.write_str(string)?,
+         }
+         Ok(())
+@@ -49,6 +55,7 @@ pub enum FormatTemplate {
+ }
+
+ static PLACEHOLDERS: OnceLock<AhoCorasick> = OnceLock::new();
++static OUTPUT_PLACEHOLDERS: OnceLock<AhoCorasick> = OnceLock::new();
+
+ impl FormatTemplate {
+     pub fn has_tokens(&self) -> bool {
+@@ -56,14 +63,33 @@ impl FormatTemplate {
+     }
+
+     pub fn parse(fmt: &str) -> Self {
++        let placeholders = PLACEHOLDERS.get_or_init(|| {
++            AhoCorasick::new(["{{", "}}", "{}", "{/}", "{//}", "{.}", "{/.}"]).unwrap()
++        });
++        Self::parse_with(fmt, placeholders)
++    }
++
++    /// Output-only metadata placeholders must remain literal in exec arguments.
++    pub fn parse_output(fmt: &str) -> Self {
++        let placeholders = OUTPUT_PLACEHOLDERS.get_or_init(|| {
++            AhoCorasick::new([
++                "{{", "}}", "{}", "{/}", "{//}", "{.}", "{/.}", "{%y}", "{%s}",
++            ])
++            .unwrap()
++        });
++        Self::parse_with(fmt, placeholders)
++    }
++
++    pub fn needs_metadata(&self) -> bool {
++        matches!(self, Self::Tokens(tokens) if tokens.iter().any(|token| matches!(token, Token::FileType | Token::FileSize)))
++    }
++
++    fn parse_with(fmt: &str, placeholders: &AhoCorasick) -> Self {
+         // NOTE: we assume that { and } have the same length
+         const BRACE_LEN: usize = '{'.len_utf8();
+         let mut tokens = Vec::new();
+         let mut remaining = fmt;
+         let mut buf = String::new();
+-        let placeholders = PLACEHOLDERS.get_or_init(|| {
+-            AhoCorasick::new(["{{", "}}", "{}", "{/}", "{//}", "{.}", "{/.}"]).unwrap()
+-        });
+         while let Some(m) = placeholders.find(remaining) {
+             match m.pattern().as_u32() {
+                 0 | 1 => {
+@@ -110,9 +136,32 @@ impl FormatTemplate {
+     /// the path separator in all placeholder tokens. Fixed text and tokens are not affected by
+     /// path separator substitution.
+     pub fn generate(&self, path: impl AsRef<Path>, path_separator: Option<&str>) -> OsString {
+-        use Token::*;
+-        let path = path.as_ref();
++        self.generate_inner(path.as_ref(), path_separator, None)
++    }
+
++    /// Generate output using the walker's metadata, preserving its symlink policy.
++    /// Missing metadata is an error only when a metadata placeholder needs it.
++    pub fn generate_with_metadata(
++        &self,
++        path: impl AsRef<Path>,
++        path_separator: Option<&str>,
++        metadata: Option<&Metadata>,
++    ) -> io::Result<OsString> {
++        if self.needs_metadata() && metadata.is_none() {
++            return Err(io::Error::other(
++                "could not read metadata for formatted entry",
++            ));
++        }
++        Ok(self.generate_inner(path.as_ref(), path_separator, metadata))
++    }
++
++    fn generate_inner(
++        &self,
++        path: &Path,
++        path_separator: Option<&str>,
++        metadata: Option<&Metadata>,
++    ) -> OsString {
++        use Token::*;
+         match *self {
+             Self::Tokens(ref tokens) => {
+                 let mut s = OsString::new();
+@@ -131,6 +180,22 @@ impl FormatTemplate {
+                         Placeholder => {
+                             s.push(Self::replace_separator(path.as_ref(), path_separator))
+                         }
++                        FileType => s.push(metadata.map_or("{%y}", |metadata| {
++                            let kind = metadata.file_type();
++                            if kind.is_file() {
++                                "file"
++                            } else if kind.is_dir() {
++                                "dir"
++                            } else if kind.is_symlink() {
++                                "symlink"
++                            } else {
++                                "other"
++                            }
++                        })),
++                        FileSize => s.push(metadata.map_or_else(
++                            || "{%s}".to_owned(),
++                            |metadata| metadata.len().to_string(),
++                        )),
+                         Text(string) => s.push(string),
+                     }
+                 }
+@@ -206,6 +271,8 @@ fn token_from_pattern_id(id: u32) -> Token {
+         4 => Parent,
+         5 => NoExt,
+         6 => BasenameNoExt,
++        7 => FileType,
++        8 => FileSize,
+         _ => unreachable!(),
+     }
+ }
+@@ -215,6 +282,75 @@ mod fmt_tests {
+     use super::*;
+     use std::path::PathBuf;
+
++    #[test]
++    fn metadata_only_and_repeated_tokens() {
++        let temp = tempfile::NamedTempFile::new().unwrap();
++        temp.as_file().set_len(3).unwrap();
++        let metadata = temp.as_file().metadata().unwrap();
++        for (text, expected) in [
++            ("{%s}", "3"),
++            ("{%y}", "file"),
++            ("{%s}|{%y}|{%s}|{%t}", "3|file|3|{%t}"),
++        ] {
++            let template = FormatTemplate::parse_output(text);
++            assert!(
++                template
++                    .generate_with_metadata("unused", None, None)
++                    .is_err()
++            );
++            assert_eq!(
++                template
++                    .generate_with_metadata("unused", None, Some(&metadata))
++                    .unwrap(),
++                OsString::from(expected)
++            );
++        }
++    }
++
++    #[test]
++    fn output_metadata_does_not_change_exec_grammar() {
++        let text = r"{%y}\t{%s}\n";
++        let exec = FormatTemplate::parse(text);
++        assert!(!exec.has_tokens());
++        assert_eq!(exec.generate("ignored", None), OsString::from(text));
++        let output = FormatTemplate::parse_output(text);
++        assert!(output.needs_metadata());
++        assert!(output.generate_with_metadata("gone", None, None).is_err());
++        let escaped = FormatTemplate::parse_output("{{%y}} {{%s}}");
++        assert!(!escaped.needs_metadata());
++        assert_eq!(
++            escaped.generate_with_metadata("gone", None, None).unwrap(),
++            OsString::from("{%y} {%s}")
++        );
++    }
++
++    #[test]
++    fn path_only_output_needs_no_metadata() {
++        let output = FormatTemplate::parse_output(r"{}\t{/}\n");
++        assert!(!output.needs_metadata());
++        assert_eq!(
++            output
++                .generate_with_metadata("missing/file", None, None)
++                .unwrap(),
++            OsString::from(r"missing/file\tfile\n")
++        );
++    }
++
++    #[test]
++    fn output_metadata_uses_supplied_snapshot() {
++        let temp = tempfile::NamedTempFile::new().unwrap();
++        temp.as_file().set_len(17).unwrap();
++        let metadata = temp.as_file().metadata().unwrap();
++        let output = FormatTemplate::parse_output("{%y}\t{%s}\t{}");
++        // The display path intentionally does not exist: never stat a transformed path.
++        assert_eq!(
++            output
++                .generate_with_metadata("display-only", None, Some(&metadata))
++                .unwrap(),
++            OsString::from("file\t17\tdisplay-only")
++        );
++    }
++
+     #[test]
+     fn parse_no_placeholders() {
+         let templ = FormatTemplate::parse("This string has no placeholders");
+diff --git a/src/main.rs b/src/main.rs
+index fd58d53..30626e2 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -355,7 +355,7 @@ fn construct_config(mut opts: Opts, pattern_regexps: &[String]) -> Result<Config
+         format: opts
+             .format
+             .as_deref()
+-            .map(crate::fmt::FormatTemplate::parse),
++            .map(crate::fmt::FormatTemplate::parse_output),
+         command: command.map(Arc::new),
+         batch_size: opts.batch_size,
+         exclude_patterns: opts.exclude.iter().map(|p| String::from("!") + p).collect(),
+diff --git a/src/output.rs b/src/output.rs
+index ce1e793..d45af91 100644
+--- a/src/output.rs
++++ b/src/output.rs
+@@ -1,11 +1,11 @@
+ use std::borrow::Cow;
++use std::ffi::OsStr;
+ use std::io::{self, Write};
+
+ use lscolors::{Indicator, LsColors, Style};
+
+ use crate::config::Config;
+ use crate::dir_entry::DirEntry;
+-use crate::fmt::FormatTemplate;
+ use crate::hyperlink::PathUrl;
+ use crate::sanitize::sanitize_for_term;
+
+@@ -15,6 +15,30 @@ fn replace_path_separator(path: &str, new_path_separator: &str) -> String {
+
+ // TODO: this function is performance critical and can probably be optimized
+ pub fn print_entry<W: Write>(stdout: &mut W, entry: &DirEntry, config: &Config) -> io::Result<()> {
++    // Resolve fallible formatting before emitting any hyperlink prefix or record bytes.
++    let formatted = config
++        .format
++        .as_ref()
++        .map(|format| {
++            let metadata = if format.needs_metadata() {
++                entry.metadata()
++            } else {
++                None
++            };
++            format
++                .generate_with_metadata(
++                    entry.stripped_path(config),
++                    config.path_separator.as_deref(),
++                    metadata,
++                )
++                .map_err(|error| {
++                    io::Error::new(
++                        error.kind(),
++                        format!("{}: {}", entry.path().display(), error),
++                    )
++                })
++        })
++        .transpose()?;
+     let mut has_hyperlink = false;
+     if config.hyperlink
+         && let Some(url) = PathUrl::new(entry.path())
+@@ -23,8 +47,8 @@ pub fn print_entry<W: Write>(stdout: &mut W, entry: &DirEntry, config: &Config)
+         has_hyperlink = true;
+     }
+
+-    if let Some(ref format) = config.format {
+-        print_entry_format(stdout, entry, config, format)?;
++    if let Some(ref formatted) = formatted {
++        print_entry_format(stdout, config, formatted)?;
+     } else if let Some(ref ls_colors) = config.ls_colors {
+         print_entry_colorized(stdout, entry, config, ls_colors)?;
+     } else {
+@@ -66,16 +90,7 @@ fn print_trailing_slash<W: Write>(
+ }
+
+ // TODO: this function is performance critical and can probably be optimized
+-fn print_entry_format<W: Write>(
+-    stdout: &mut W,
+-    entry: &DirEntry,
+-    config: &Config,
+-    format: &FormatTemplate,
+-) -> io::Result<()> {
+-    let output = format.generate(
+-        entry.stripped_path(config),
+-        config.path_separator.as_deref(),
+-    );
++fn print_entry_format<W: Write>(stdout: &mut W, config: &Config, output: &OsStr) -> io::Result<()> {
+     // TODO: support writing raw bytes on unix?
+     let s = output.to_string_lossy();
+     write!(
+@@ -194,3 +209,50 @@ fn print_entry_uncolorized<W: Write>(
+         print_trailing_slash(stdout, entry, config, None)
+     }
+ }
++
++#[cfg(test)]
++mod metadata_tests {
++    use super::*;
++    use clap::Parser;
++
++    #[test]
++    fn missing_metadata_emits_no_partial_record_or_hyperlink() {
++        let temp = tempfile::tempdir().unwrap();
++        let entry = DirEntry::broken_symlink(temp.path().join("missing"), Some(1));
++        for template in ["{%y}", "{%s}", "{%y}\t{%s}\t{}"] {
++            let opts =
++                crate::cli::Opts::parse_from(["fd", "--format", template, "--hyperlink=always"]);
++            let config = crate::construct_config(opts, &[]).unwrap();
++            let mut bytes = Vec::new();
++            let error = print_entry(&mut bytes, &entry, &config).unwrap_err();
++            assert_eq!(error.kind(), io::ErrorKind::Other);
++            assert!(
++                error
++                    .to_string()
++                    .contains(&entry.path().display().to_string())
++            );
++            assert!(bytes.is_empty());
++        }
++    }
++
++    #[test]
++    fn missing_metadata_does_not_break_path_only_output() {
++        for (template, expected) in [
++            ("{/}", "missing"),
++            ("constant", "constant"),
++            ("{{%y}} {{%s}}", "{%y} {%s}"),
++        ] {
++            let temp = tempfile::tempdir().unwrap();
++            let path = temp.path().join("missing");
++            let entry = DirEntry::broken_symlink(path.clone(), Some(1));
++            let opts = crate::cli::Opts::parse_from(["fd", "--format", template, "--print0"]);
++            let config = crate::construct_config(opts, &[]).unwrap();
++            let mut bytes = Vec::new();
++            print_entry(&mut bytes, &entry, &config).unwrap();
++            assert_eq!(bytes, format!("{expected}\0").as_bytes());
++            // An eager lookup above would have cached None permanently.
++            std::fs::write(path, "now present").unwrap();
++            assert!(entry.metadata().is_some());
++        }
++    }
++}
