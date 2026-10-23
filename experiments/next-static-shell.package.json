@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "start": "next start -p 3127",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@next/playwright": "16.4.3",
+    "@playwright/test": "1.64.1",
+    "typescript": "5.9.3",
+    "@types/node": "24.10.0",
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.0"
+  }
+}
