@@ -52,7 +52,15 @@ npm exec -- intent load '@tanstack/router-core#router-core/search-params' --json
 - `npm test`：7 项真实 Router + React DOM 消费流程通过。jsdom 环境、memory history、受控 fetch；生产 loader 和 redaxios 照常执行，未伪造 Router／组件。覆盖详情与返回、清空后后退前进、复制详情 URL 的新 Router 重建、错误类型／非法排序、空结果与重复 Apply、筛选中换序和输入清空、原有导航／错误演示。
 - `npm run build`：Vite 构建与严格 TypeScript 检查通过。
 - 首次用了 `toSorted`，类型检查发现上游 lib 仍是 ES2022；改为 `.filter(...).sort(...)`，排序的本来就是新数组，不改原 loader 数据，也无需升级上游编译目标。测试中误用了 `getByRole` 不支持的 `exact` 选项，类型检查后删除。
-- 同启动环境HTTP已取回应用HTML；云端浏览器连接被拒，原因未确定，因此未验真实浏览器渲染、可视截图、线上API或部署。新 Router 重建是 URL 恢复的程序化验证，不写成浏览器刷新实测。未做模型有无 Skill 对照，因此不声称提高成功率、节省 token 或减少返工。
+- 初始程序化验收使用jsdom／memory history；后续真实Chrome与HTTP补验见下，两种证据分别保留。未做移动端、性能、安全或线上部署验收。未做模型有无 Skill 对照，因此不声称提高成功率、节省 token 或减少返工。
+
+## 真实浏览器补验
+
+2026-10-23 23:03（UTC+8），重新构建同一份已交付源码，以普通Vite预览在真实Chrome运行，保留原JSONPlaceholder请求，没有替换API或数据。`dolorem`＋降序得到3/10；详情、复制URL到新标签及刷新均保留条件和正文，浏览器前进／后退、返回结果、清空、空结果及非法参数默认也已实际操作通过。[本轮真实客户端；[逐项记录与源文件哈希](browser-acceptance.json)]
+
+![真实Chrome：dolorem筛选与降序保留三条结果，打开第9条详情后条件仍在](../../docs/img/2026-10-23-tanstack-url-state.png)
+
+截图是实际页面，不是生成示意；只支持这个桌面浏览器与窄功能范围，不是跨设备体验或部署接收。
 
 ## 来源与许可
 

@@ -15,15 +15,6 @@
     "environment": "jsdom + real React DOM + real TanStack Router + memory history + controlled fetch"
   },
   "build": "Vite and TypeScript passed",
-  "independent_review": {
-    "verdict": "pass; no blocking findings",
-    "tests": "7 passed; build and typecheck passed",
-    "limits": [
-      "No real browser, visual/responsive or live HTTP verification.",
-      "Fresh router reconstruction models URL recovery, not browser reload.",
-      "Loading presentation not asserted; error test exercises 200/null custom NotFoundError, not HTTP failure."
-    ]
-  },
   "model_skill_benefit_comparison": "not performed",
   "hooks_or_global_setup": "not activated",
   "fresh_consumer_replay": {
@@ -45,9 +36,25 @@
     "skillName": "router-core/search-params",
     "type": "sub-skill"
   },
-  "browser_attempt": {
+  "initial_code_review": {
+    "verdict": "pass; no blocking findings",
+    "tests": "7 passed; build and typecheck passed",
+    "limits": [
+      "No real browser, visual/responsive or live HTTP verification.",
+      "Fresh router reconstruction models URL recovery, not browser reload.",
+      "Loading presentation not asserted; error test exercises 200/null custom NotFoundError, not HTTP failure."
+    ]
+  },
+  "earlier_browser_attempt": {
     "same_launch_http": "Vite GET /posts returned application HTML",
     "managed_cloud_browser": "ERR_CONNECTION_REFUSED; cause unconfirmed",
     "result": "No real-browser UI acceptance; DOM/memory-history remains the tested interaction scope"
+  },
+  "browser_acceptance": {
+    "checked_at_utc": "2026-10-23T15:03:00Z",
+    "receipt": "browser-acceptance.json",
+    "result": "Real Chrome: live Posts, query/sort, detail, fresh-tab URL, reload, Back/Forward, Clear, empty result and invalid parameter defaults passed",
+    "source": "Same executable source as initial delivered commit; normal Vite build and preview",
+    "scope": "One cloud desktop Chrome session; no deployment or model-benefit comparison"
   }
 }

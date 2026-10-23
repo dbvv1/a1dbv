@@ -219,7 +219,7 @@ Agent先追CLI→formatter→输出，再查同一formatter的exec消费者：�
 
 Agent从实际安装的router-core包加载search-params窄Skill，再读当前middleware源码：`retainSearchParams`保详情条件，`stripSearchParams`省略默认参数；**清空要显式写默认值，不能用空对象期待覆盖retain**。本例只筛已取回的十条数据，不把展示参数机械塞进`loaderDeps`，也不为两个字段新增Zod。[源码／本仓实试]
 
-读者先运行`npm ci`、`npm test`、`npm run build`，再按入口启动页面；迁入自己的项目时核哪些字段真的影响服务器取数。7项真实Router／React DOM流程覆盖详情、清空、历史与URL重建；生产构建和类型检查通过，实际浏览器与线上HTTP仍未验。首次`toSorted`与原ES2022目标不符，改为排序过滤后的新数组，而不是为这一步升级编译目标。[本仓实试／范围]
+读者先运行`npm ci`、`npm test`、`npm run build`，再按入口启动页面；迁入自己的项目时核哪些字段真的影响服务器取数。7项真实Router／React DOM流程覆盖详情、清空、历史与URL重建；生产构建、类型检查及[真实Chrome／HTTP补验](../experiments/tanstack-url-state/README.md#真实浏览器补验)通过，未扩成跨设备或部署结论。首次`toSorted`与原ES2022目标不符，改为排序过滤后的新数组，而不是为这一步升级编译目标。[本仓实试／范围]
 
 ### 实例：补齐Decimal支持，保住已有原生能力
 

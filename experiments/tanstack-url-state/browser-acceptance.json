@@ -1,0 +1,158 @@
+{
+  "checked_at_utc": "2026-10-23T15:03:00Z",
+  "commit": "ee4f20ff479d8e9f1b957b3995423342ccc66d0b",
+  "browser": "managed cloud CDP Chrome",
+  "host": "Linux native terminal",
+  "preview": "normal Vite loopback preview",
+  "source_comparison": [
+    {
+      "path": ".gitignore",
+      "matches_main": true,
+      "sha256": "4ebc9fc47959489cb5417d45cf1cf3409db031f242c41c5dd75e5e42308e9a19"
+    },
+    {
+      "path": "LICENSE",
+      "matches_main": true,
+      "sha256": "a405ee70c632bb938acb7ac5f210e814409b3760ea9d2329d8ed8ffcfd11a0e7"
+    },
+    {
+      "path": "index.html",
+      "matches_main": true,
+      "sha256": "c461a81246b9d1cd972bb10485a8538bc599820e87f0dffaac0c957b8e6bea8e"
+    },
+    {
+      "path": "package-lock.json",
+      "matches_main": true,
+      "sha256": "d712b5e09f55b82901debd0fbf7a61f3b87df52133ae310b5ebe11eb7361be38"
+    },
+    {
+      "path": "package.json",
+      "matches_main": true,
+      "sha256": "b62ae8ae6db41ed385e44dccf0d66cb52c340c07f21fdb8c01c1bde73aa6b6e2"
+    },
+    {
+      "path": "src/main.tsx",
+      "matches_main": true,
+      "sha256": "00e9ad93c98e0240b12f44d78d4f6ccf2562ff5362b1903c5245f3fabeb16075"
+    },
+    {
+      "path": "src/posts-search.ts",
+      "matches_main": true,
+      "sha256": "e34592f65d5f5d8c4543f9e72ae819b95eb34cd893bbde19bcef0889f0e33218"
+    },
+    {
+      "path": "src/posts.lazy.tsx",
+      "matches_main": true,
+      "sha256": "906270cdd5ef1ecdf8e3a57e3a40a20b0a3f3d60cac66f0e0c1fce104c302c45"
+    },
+    {
+      "path": "src/posts.ts",
+      "matches_main": true,
+      "sha256": "70f114d21a5fc44027b103a7e0e8fd9fc078a89dc50c0808d48bfcf7d7dbc45e"
+    },
+    {
+      "path": "src/router.tsx",
+      "matches_main": true,
+      "sha256": "b3802be0cac69b3c8435601c05e1288e886692c661e57921b24dc404dc0cba9f"
+    },
+    {
+      "path": "src/styles.css",
+      "matches_main": true,
+      "sha256": "1405a2d7a1303a8fb954ae36003c67f376ccd71d90952035b8ee1687d7b44f76"
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "matches_main": true,
+      "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5"
+    },
+    {
+      "path": "tests/posts.test.tsx",
+      "matches_main": true,
+      "sha256": "5f81ab13c958dc44e4ab932b9930ccfc98231dc9c85e58c1c3a51a28a600bbef"
+    },
+    {
+      "path": "tests/setup.ts",
+      "matches_main": true,
+      "sha256": "f3703ee50dde9d3ae24f079f9b7e8b6e273d9fd3ca5c88ee16b4286a5f0fd253"
+    },
+    {
+      "path": "tsconfig.json",
+      "matches_main": true,
+      "sha256": "1ed8417d20772e4d9393e8fe36b9145637c1a58750cf10e69f0fcfb06ee50f63"
+    },
+    {
+      "path": "vite.config.js",
+      "matches_main": true,
+      "sha256": "6c40e9a106e480dfa13fb9a133289689ab33289f546a3bbfd8d8f6427a29dc11"
+    },
+    {
+      "path": "vitest.config.js",
+      "matches_main": true,
+      "sha256": "d7396e43fa6924ce9ed269b6bd946d919880e6c9c4fac675e8563f543ca95267"
+    }
+  ],
+  "build": "npm run build passed (Vite build and tsc --noEmit)",
+  "checks": [
+    {
+      "test": "real data",
+      "result": "PASS",
+      "observed": "10 posts from unchanged JSONPlaceholder-backed loader; detail 9 body rendered. No intercepts, mocks or fixture replacements."
+    },
+    {
+      "test": "query and sort",
+      "result": "PASS",
+      "url": "/posts?q=dolorem&sort=desc",
+      "observed": "3 of 10, ids 9,6,8 in descending title order"
+    },
+    {
+      "test": "detail retention",
+      "result": "PASS",
+      "url": "/posts/9?q=dolorem&sort=desc",
+      "observed": "Filter dolorem, Z to A, 3 of 10, detail title and body"
+    },
+    {
+      "test": "copy URL to fresh tab",
+      "result": "PASS",
+      "observed": "New tab restores identical filter, sort, result list and detail"
+    },
+    {
+      "test": "deep-link refresh",
+      "result": "PASS",
+      "observed": "Reload restores identical state via ordinary Vite SPA fallback"
+    },
+    {
+      "test": "browser Back/Forward",
+      "result": "PASS",
+      "observed": "Back returns filtered list; Forward returns detail with same q/sort"
+    },
+    {
+      "test": "Back to results link",
+      "result": "PASS",
+      "observed": "Returns /posts?q=dolorem&sort=desc with 3 results"
+    },
+    {
+      "test": "Clear",
+      "result": "PASS",
+      "observed": "Returns /posts, blank query, A to Z, 10 of 10"
+    },
+    {
+      "test": "empty result",
+      "result": "PASS",
+      "observed": "zzzz-no-result-m4 gives 0 of 10 and No matching posts."
+    },
+    {
+      "test": "invalid URL parameters",
+      "result": "PASS",
+      "observed": "/posts?q=123&sort=invalid normalizes to /posts, blank query, A to Z, 10 of 10"
+    }
+  ],
+  "screenshot": {
+    "path": "../../docs/img/2026-10-23-tanstack-url-state.png",
+    "sha256": "5acbce0b95d8e07eadf5f7af81965a9b27fafcf83f7a4e87579dce073ad9d4df",
+    "capture": "Unmodified bytes from documented browser getScreenshot(), after fresh-tab deep-link refresh"
+  },
+  "limitations": [
+    "Narrow functional acceptance only; not exhaustive compatibility, accessibility, load, security or mobile testing.",
+    "Local preview only, not a deployment."
+  ]
+}
