@@ -2,3 +2,9 @@
 experiments/claude-e1-e3/transcripts/A-haiku-2.jsonl	C:\\Users\\nodejs
 tests/test_config_export.py	sk-SYNTHETIC_TEST_SENTINEL_12345678901234567890
 tests/test_config_export.py	/home/synthetic-person/
+
+# Nintendo public interview URL slugs; inspected source pages, not credentials.
+domains/game-dev/05-gameplay-architecture.md	sk-the-developer-vol-18-mario-kart-world-part-3
+domains/game-dev/05-gameplay-architecture.md	sk-the-developer-vol-18-mario-kart-world-part-4
+docs/research/wp10-motion.md	sk-the-developer-vol-18-mario-kart-world-part-3
+docs/research/wp10-motion.md	sk-the-developer-vol-18-mario-kart-world-part-4
