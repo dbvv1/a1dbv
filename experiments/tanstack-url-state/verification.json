@@ -66,7 +66,7 @@
       "environment": "jsdom, real React DOM and Router, memory history, controlled fetch"
     },
     "build": "Vite and TypeScript passed",
-    "browser": "not verified; prior browser receipt covers earlier source only",
+    "browser": "Passed narrow real Chrome acceptance on unchanged source; see browser-acceptance.json revision_2026_10_24",
     "source_sha256": "a5388948e94a54c9f65ab5612cfd3411cd24068c89e0389638992f1d853626d6",
     "review_rework": "First independent cold run: three tests exceeded the pre-existing one-second initial lazy-load wait; unchanged rerun passed. Initial readiness wait bounded explicitly at five seconds; behavior assertions unchanged."
   }

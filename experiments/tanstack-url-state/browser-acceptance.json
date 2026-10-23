@@ -154,5 +154,124 @@
   "limitations": [
     "Narrow functional acceptance only; not exhaustive compatibility, accessibility, load, security or mobile testing.",
     "Local preview only, not a deployment."
-  ]
+  ],
+  "revision_2026_10_24": {
+    "checked_at_utc": "2026-10-23T19:38:32Z",
+    "commit": "d776fa232cf0ed726d839a6345915cdf95bc6085",
+    "browser": "managed dot cloud CDP Chrome; Linux native desktop",
+    "preview": "Existing revised Vite production build, ordinary loopback preview; no deployment",
+    "source_comparison": [
+      {
+        "path": "package.json",
+        "matches_main": true,
+        "sha256": "b62ae8ae6db41ed385e44dccf0d66cb52c340c07f21fdb8c01c1bde73aa6b6e2"
+      },
+      {
+        "path": "package-lock.json",
+        "matches_main": true,
+        "sha256": "d712b5e09f55b82901debd0fbf7a61f3b87df52133ae310b5ebe11eb7361be38"
+      },
+      {
+        "path": "vite.config.js",
+        "matches_main": true,
+        "sha256": "6c40e9a106e480dfa13fb9a133289689ab33289f546a3bbfd8d8f6427a29dc11"
+      },
+      {
+        "path": "index.html",
+        "matches_main": true,
+        "sha256": "c461a81246b9d1cd972bb10485a8538bc599820e87f0dffaac0c957b8e6bea8e"
+      },
+      {
+        "path": "src/main.tsx",
+        "matches_main": true,
+        "sha256": "00e9ad93c98e0240b12f44d78d4f6ccf2562ff5362b1903c5245f3fabeb16075"
+      },
+      {
+        "path": "src/posts-search.ts",
+        "matches_main": true,
+        "sha256": "e34592f65d5f5d8c4543f9e72ae819b95eb34cd893bbde19bcef0889f0e33218"
+      },
+      {
+        "path": "src/posts.lazy.tsx",
+        "matches_main": true,
+        "sha256": "a5388948e94a54c9f65ab5612cfd3411cd24068c89e0389638992f1d853626d6"
+      },
+      {
+        "path": "src/posts.ts",
+        "matches_main": true,
+        "sha256": "70f114d21a5fc44027b103a7e0e8fd9fc078a89dc50c0808d48bfcf7d7dbc45e"
+      },
+      {
+        "path": "src/router.tsx",
+        "matches_main": true,
+        "sha256": "b3802be0cac69b3c8435601c05e1288e886692c661e57921b24dc404dc0cba9f"
+      },
+      {
+        "path": "src/styles.css",
+        "matches_main": true,
+        "sha256": "1405a2d7a1303a8fb954ae36003c67f376ccd71d90952035b8ee1687d7b44f76"
+      },
+      {
+        "path": "src/vite-env.d.ts",
+        "matches_main": true,
+        "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5"
+      }
+    ],
+    "build_reuse": "Existing build and 8-test consumer evidence reused; no executable source, dependency, or config modification in this acceptance",
+    "live_data": "Unchanged JSONPlaceholder-backed production loader; 10 posts and detail 9 body observed; no fixtures, interceptions or mocks",
+    "checks": [
+      {
+        "test": "Initial summary",
+        "result": "PASS",
+        "observed": "10 of 10, All titles and A to Z; Apply help visible"
+      },
+      {
+        "test": "Unsubmitted draft",
+        "result": "PASS",
+        "observed": "Typing dolorem and selecting desc left URL /posts, summary All titles/A to Z, and 10 results unchanged"
+      },
+      {
+        "test": "Apply",
+        "result": "PASS",
+        "observed": "URL q=dolorem&sort=desc, summary dolorem/Z to A, 3 results in id order 9,6,8"
+      },
+      {
+        "test": "Second unsubmitted draft",
+        "result": "PASS",
+        "observed": "Typing not-yet-applied and selecting asc kept applied dolorem/Z to A, 3 results, and URL unchanged"
+      },
+      {
+        "test": "Detail and back-to-results",
+        "result": "PASS",
+        "observed": "Detail 9 body rendered and return retained applied URL, summary and three results"
+      },
+      {
+        "test": "Clear plus browser Back/Forward",
+        "result": "PASS",
+        "observed": "Clear restored /posts, All titles/A to Z, 10 results; Back restored dolorem/Z to A and three; Forward restored cleared state"
+      },
+      {
+        "test": "Fresh-tab deep link and reload",
+        "result": "PASS",
+        "observed": "Fresh tab opened /posts/9?q=dolorem&sort=desc and reloaded; final screen showed detail body, matching form values, applied summary and 3 results"
+      },
+      {
+        "test": "Empty result summary",
+        "result": "PASS",
+        "observed": "zzzz-no-result Apply yielded 0 of 10, No matching posts, and exact applied query summary"
+      }
+    ],
+    "page_feedback": "No actionable issue observed in this narrow desktop acceptance; no new Agentation annotation or new modification was manufactured. This is acceptance of source-review-driven revision, not a complete annotation-to-edit chain.",
+    "screenshot": {
+      "file": "../../docs/img/2026-10-24-posts-applied-filter.png",
+      "sha256": "0d3fce5dfb240004e71781a615d067b82133035f9331a2924b17c19005f59530",
+      "capture": "Documented cloud browser getScreenshot, unmodified bytes; fresh deep-link reload screen inspected"
+    },
+    "limitations": [
+      "Narrow desktop browser acceptance, not mobile/responsive, exhaustive accessibility, performance, security or model-benefit validation",
+      "Fresh-tab and reload were validated as a combined final-state flow, not separately timed",
+      "Browser build version not independently queried; managed tool identifies Chrome"
+    ],
+    "cleanup": "Owned native Vite preview stopped with Ctrl+C; shell prompt confirmed; no repository edits"
+  }
 }
