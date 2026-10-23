@@ -424,3 +424,19 @@ Quickstart与Code Basics的部署下一步都指向 `docs_typescript/running-in-
 当前恢复源码只支持有条件回取：默认SQLite普通成功不归档，非零退出且捕获至少500字节才走常规保存；显式列表截断另存相应段。记录可能受容量、存储失败及清理影响；`--full`只扩到已存内容，不能补上pytest未输出的traceback。[源码：正文所链实现与同文件测试，仅阅读]
 
 当前[发行组件表](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/README.md#L124-L131)区分Apache-2.0的OSS包和含BUSL-1.1引擎的默认包，不能沿用旧教程的整包单许可说法。探索读官方源码／作者回应、HN、linux.do及两家实验原文；没有为本次调查安装、建夹具、运行候选或读取任何实际账户／会话日志。保留原生输出基线，不以此次资料核查补“当红”数量。[一手／探索回执]
+
+## ast-grep：先验规则，再批量定位
+
+**选择：重复语法改动可让 Agent 交可测试规则；文本搜索与语义重构继续各司其职。** [经验]
+**增量：审阅对象从几十个自由编辑点，变为规则、正反例与实际改动清单。** [经验；收益待验]
+**范围：2026-10-23（UTC+8）公开资料核查，未安装／运行候选或模型。** 不把官方例子或以下作者经验写成本仓实试。
+
+[官方 Skill 源文](https://github.com/ast-grep/agent-skill/blob/main/ast-grep/skills/ast-grep/SKILL.md)先做例子和规则测试，再扫真实工程；[原生测试](https://ast-grep.github.io/guide/test-rule.html)支持应报告／不报告样例和快照。[一手] 这是可复用的工作产物，不代表测试样例已覆盖整个工程。[研究]
+
+[linux.do 10月10日原帖第5楼](https://linux.do/t/topic/3004044)自报批量替换脚本引入错误，第12楼建议 ast-grep，但没有工具改后成功回执。[社区] [HN 真实任务](https://news.ycombinator.com/item?id=47845429)要求给所有调用增加默认 locale，Agent 找到67处却想只改签名；这是历史需求，不是本工具效果对照。[社区]
+
+[VT Code 作者答复](https://news.ycombinator.com/item?id=47898384)明确文本与结构搜索独立分路；不采信同串评论中未经比较的普遍优越论。[一手／研究] [Matt Coles 7月6日实用复盘](https://coles.codes/posts/anchoring-specs-to-code-with-ast-grep/)还把长期文档段落绑定结构规则，移动代码后重新定位；改名仍会失配，作者也遇到某种 Python pattern 零命中而换规则。这是值得试的延伸，不等于结构命中能证明文档行为正确。[一手／研究]
+
+当前[0.50发布](https://ast-grep.github.io/blog/new-ver-50)补多语言 outline，并改变自定义原生语言库加载；不要为让扫描出结果就批准未知解析器。[一手] [outline](https://ast-grep.github.io/guide/outline-code)仅本地语法导航，不解析类型、引用或调用图。[一手] 本轮没有工具执行记录、真实迁移产物或模型同题收益，最高水平未知，保持候选。
+
+探索回执：截至10月23日，已读官方文档／Skill源码、七月实践者原文、HN与linux.do正反需求；Reddit同题讨论作发现线索，未用热度或摘要证明采用率；未造替代解析器夹具冒充工具实试。[研究]
