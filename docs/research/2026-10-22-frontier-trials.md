@@ -440,19 +440,39 @@ Quickstart与Code Basics的部署下一步都指向 `docs_typescript/running-in-
 
 ## ast-grep：先验规则，再批量定位
 
-**选择：重复语法改动可让 Agent 交可测试规则；文本搜索与语义重构继续各司其职。** [经验]
-**增量：审阅对象从几十个自由编辑点，变为规则、正反例与实际改动清单。** [经验；收益待验]
-**范围：2026-10-23（UTC+8）公开资料核查，未安装／运行候选或模型。** 不把官方例子或以下作者经验写成本仓实试。
+**选择：重复 API 迁移先借维护者规则，核对匹配集合与回调语义，再批量应用。** [经验]
+**增量：Pinia Colada 的现成规则漏跑负例；修正测试后暴露误改，收窄匹配后生成可检查差量。** [本仓实试]
+**范围：2026-10-23，ast-grep 0.51.0；真实维护者规则与自建边界夹具，不是整应用迁移或模型收益对照。** [本仓实试]
 
-[官方 Skill 源文](https://github.com/ast-grep/agent-skill/blob/main/ast-grep/skills/ast-grep/SKILL.md)先做例子和规则测试，再扫真实工程；[原生测试](https://ast-grep.github.io/guide/test-rule.html)支持应报告／不报告样例和快照。[一手] 这是可复用的工作产物，不代表测试样例已覆盖整个工程。[研究]
+[Pinia Colada 正式迁移说明](https://pinia-colada.esm.dev/cookbook/migrations.html#_0-21-1-0)把 `useQuery(factory, () => value)` 改为 `useQuery(() => factory(value))`；`useQueryState` 对应改为取工厂结果的 `.key`。固定 [e79a039 规则](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rules/migration-0-21-to-1-0.yaml)同时匹配表达式、return 块和普通函数，不需要逐处自由改写。[一手]
 
-[linux.do 10月10日原帖第5楼](https://linux.do/t/topic/3004044)自报批量替换脚本引入错误，第12楼建议 ast-grep，但没有工具改后成功回执。[社区] [HN 真实任务](https://news.ycombinator.com/item?id=47845429)要求给所有调用增加默认 locale，Agent 找到67处却想只改签名；这是历史需求，不是本工具效果对照。[社区]
+**第一次返工是修测试，而不是调规则。** 固定[测试文件](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rule-tests/migration-0-21-to-1-0-test.yaml)两处将 `valid` 拼成 `vaild`，CLI 没有拒绝，原四组19例全绿；只改键名后，两组失败。原规则会把副作用块 `() => { sideEffect() }` 拼进函数参数，产物未通过本次 Node 语法检查。[本仓实试]
 
-[VT Code 作者答复](https://news.ycombinator.com/item?id=47898384)明确文本与结构搜索独立分路；不采信同串评论中未经比较的普遍优越论。[一手／研究] [Matt Coles 7月6日实用复盘](https://coles.codes/posts/anchoring-specs-to-code-with-ast-grep/)还把长期文档段落绑定结构规则，移动代码后重新定位；改名仍会失配，作者也遇到某种 Python pattern 零命中而换规则。这是值得试的延伸，不等于结构命中能证明文档行为正确。[一手／研究]
+给两条迁移规则的 `PARAMS` 增加以下约束后，四组27例及既有修复快照通过；自建夹具中的六个目标改写、六个非目标保留，产物语法与重复运行不再变化的检查通过。这些是有界夹具结果，不是总体准确率。[本仓实试]
 
-当前[0.50发布](https://ast-grep.github.io/blog/new-ver-50)补多语言 outline，并改变自定义原生语言库加载；不要为让扫描出结果就批准未知解析器。[一手] [outline](https://ast-grep.github.io/guide/outline-code)仅本地语法导航，不解析类型、引用或调用图。[一手] 本轮没有工具执行记录、真实迁移产物或模型同题收益，最高水平未知，保持候选。
+```yaml
+constraints:
+  PARAMS:
+    not: { kind: statement_block }
+```
 
-探索回执：截至10月23日，已读官方文档／Skill源码、七月实践者原文、HN与linux.do正反需求；Reddit同题讨论作发现线索，未用热度或摘要证明采用率；未造替代解析器夹具冒充工具实试。[研究]
+**可复制入口。** 准备 Git、Python 3、Node 24+、隔离安装的 `@ast-grep/cli@0.51.0`，以及检出上述固定 SHA 的 Pinia Colada 副本，再运行[重放脚本](../../experiments/replay_astgrep_migration.py)：[经验：操作]
+
+```sh
+python3 experiments/replay_astgrep_migration.py \
+  --source ./pinia-colada \
+  --ast-grep ./tool/node_modules/.bin/ast-grep
+```
+
+脚本不安装依赖或修改输入树，只复制固定迁移材料到临时目录，依次复现原版绿灯、修键名后的失败与收窄后的通过；输出可继续检查的规则、改写产物与摘要。借输出规则做自己的迁移时，先用 `ast-grep scan -r RULE FILE --json` 看清命中，再加 `--update-all` 改写、审 diff 并跑目标项目回归；不要把本次语法通过当业务接收。[本仓实试／经验]
+
+**还要核两类语义。** 参数名同为 `useQuery` 的局部函数仍会被误改；普通函数返回 `this.value` 仍会转成箭头函数，改变绑定方式。因此确认导入身份还不够，需检查 `this`／`arguments` 与复杂回调，必要时手改或用语义重构。本次没有运行 Pinia 全项目类型／运行时套件，也没有证实这些边界在其真实业务中产生故障。[本仓实试／研究]
+
+[官方 Skill](https://github.com/ast-grep/agent-skill/blob/main/ast-grep/skills/ast-grep/SKILL.md)的例子→规则→测试→扫描可以复用；[原生规则测试](https://ast-grep.github.io/guide/test-rule.html)中 `valid` 是不应报告、`invalid` 是应报告。先确认已知正反例确实被执行，再相信绿灯，并检查替换后的代码。[一手／经验]
+
+既有采用与反例继续保留：[linux.do 原帖](https://linux.do/t/topic/3004044)报告批量脚本引错并有人推荐 ast-grep，未提供成功回执；[HN 的默认 locale 需求](https://news.ycombinator.com/item?id=47845429)是实际批量修改问题而非工具效果证据；[VT Code 作者](https://news.ycombinator.com/item?id=47898384)按查询分文本／结构搜索。[Matt Coles 的文档锚点实践](https://coles.codes/posts/anchoring-specs-to-code-with-ast-grep/)借结构定位代码，改名与 pattern 零命中仍需维护。[社区／一手]
+
+[0.50 的 outline 更新](https://ast-grep.github.io/blog/new-ver-50)是既有能力来源，不是本次安装版本；[outline](https://ast-grep.github.io/guide/outline-code)不解析类型或调用图。探索续接既有 HN、linux.do 与作者原帖，新增正式迁移文档、固定源码和实际 CLI 检查；未发上游 issue，未运行模型。保持 🧪 按任务试用，不据这一例宣称最高水平。[一手／研究]
 
 
 ## OpenSpec：规格接力与协作落点
