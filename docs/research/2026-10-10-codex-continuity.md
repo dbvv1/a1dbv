@@ -397,3 +397,13 @@ Codex [#46468](https://github.com/openai/codex/issues/46468#issuecomment-6081657
 - **保存的tier与恢复响应中的有效tier须分开。** [冷恢复测试定义](https://github.com/openai/codex/blob/430a16799d90e296fb27b1e94f206023902b7e56/codex-rs/app-server/tests/suite/v2/thread_resume.rs#L505-L613)覆盖保存priority后全局改flex、恢复仍保留选择，但当前模型不支持时恢复响应的有效tier为None；[归属与显式覆盖测试](https://github.com/openai/codex/blob/430a16799d90e296fb27b1e94f206023902b7e56/codex-rs/app-server/tests/suite/v2/thread_resume.rs#L845-L1017)覆盖另一侧。仅阅读测试定义，不声称本轮测试通过或速度／用量效果。[一手／范围]
 
 采用动作是核对恢复后的有效状态，确需改变时显式覆盖这三个字段，而不是仅改全局默认后假定旧线程已跟随；不据此自动启用付费档位或改权限。[研究]
+
+## 终端提示预设：0.164.0
+
+核实：2026-10-24（UTC+8）。[0.164.0 发行](https://github.com/openai/codex/releases/tag/rust-v0.164.0)固定源码 `6aaac694803004a63c6f393d153c96d22521a6b9`；仅阅读实现与测试定义，未安装／运行 Codex、未读取私人配置，未测模型收益。读者入口回流 [Codex 专题](../01-agents/codex.md#少量重复提示先用原生预设)。[一手／范围]
+
+**以发行实现而非早期 tooltip 指导操作。** [菜单实现](https://github.com/openai/codex/blob/6aaac694803004a63c6f393d153c96d22521a6b9/codex-rs/tui/src/chatwidget/quick_dials.rs)的 `n` 新建、`e` 编辑、`d` 删除、`s` 设置入口与数字槽位处理，对应[交互测试定义](https://github.com/openai/codex/blob/6aaac694803004a63c6f393d153c96d22521a6b9/codex-rs/tui/src/chatwidget/tests/quick_dials_tests.rs)。已有槽位数字走正常提交队列并保留 composer 草稿；菜单 Enter 不是浏览槽位的入口。不要沿用早期 PR 描述的“s saves”，也不要编出 `/presets save` 等子命令。[一手]
+
+**保存的是用户级提示快捷入口。** [类型定义](https://github.com/openai/codex/blob/6aaac694803004a63c6f393d153c96d22521a6b9/codex-rs/config/src/types.rs)与[持久化实现](https://github.com/openai/codex/blob/6aaac694803004a63c6f393d153c96d22521a6b9/codex-rs/tui/src/app/quick_dials.rs)规定 0–9 共十槽，提示非空且不超过 8,000 UTF-8 字节；图片和 linked mentions 不复制进提示。设置预设另有模型、权限、终端标题、状态栏，不把它们当作无副作用文本。默认 Ctrl-X 后按 p 的快捷键可被配置冲突影响，因此正文给 `/presets` 入口。[一手]
+
+选择上，几条个人常用短提示没有必要升级成插件或领域 Skill；当需求变成跨项目分发知识、脚本及资源，预设不能代替 Skill。此处只确认当前原生操作配方，没有社区同题比较或当前模型效果证据，不称最高质量方案或已验证提效。[研究]
