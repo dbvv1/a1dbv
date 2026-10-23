@@ -40,6 +40,28 @@
 
 [研究] 已有方案无正确性或 profiler 缺口就保留；允许必要互操作，不为统一语法迁移。
 
+<a id="addressables4-native-await"></a>
+### Addressables 4：单所有者用原生等待，共享引用仍分开管理
+
+**[研究] 🧪 已采用 Addressables 4、加载引用归一个生命周期所有时，先评估原生 `ToAwaitable(token)`；共享消费者保 `Completed` 与共同所有者。** 取代“为了取消只能另加适配器”的隐含选择，不要求稳定旧项目升级，也不撤销上面的 UniTask／旧版本风险与通用代次检查。核实：2026-10-23；未运行 Unity、目标设备或模型。
+
+**当前版本与许可。** [官方 changelog](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/changelog/CHANGELOG.html)将直接 await、token／MonoBehaviour 重载列在 **4.0.0（2026-07-17）**；本次固定 **4.1.1** 包镜像 [`99d59c9`](https://github.com/needle-mirror/com.unity.addressables/tree/99d59c9b2a39024617b347953389ca631517bd2b)，[package.json](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/package.json)最低 `unity: 6000.0`，不是 Unity 6.5 专属。[LICENSE.md](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/LICENSE.md)为 Unity Companion License、限 Unity-dependent projects；镜像公开不等于 MIT。应通过项目兼容的官方包管理入口使用，不把镜像当另一套加载框架。[一手：官方文档／包源码镜像]
+
+| 当前需要 | 选择与关键约束 |
+|---|---|
+| 一次加载跟随对象销毁 | `ToAwaitable(this)` 绑定 `destroyCancellationToken`；成功后销毁仍释放，不另叠一份无条件 `OnDestroy` release |
+| UI／对象反复 Enable、Disable | 每次 Enable 建新 CTS，对应 Disable 取消并 Dispose；销毁 token 不覆盖仅禁用，取消应在主线程 |
+| 多个独立消费者共用一份 handle | 共同所有者保句柄，通过 `Completed` 分发；消费者退出撤自身接收资格，不各自接管同一引用的取消释放 |
+| 已有旧包／UniTask／简单协程路径 | 先保现有可用实现；按上一节核适配器版本、身份与收尾，不为统一语法迁移 |
+
+前三行来自[4.1.1 API 契约](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/api/UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle-1.ToAwaitable.html)与[生命周期示例](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/load-wait-asynchronous-async-await.html)，最后一行为选择建议。[一手／研究] `Awaitable` 单次等待与“多个 awaiter 是否各有一份持有引用”是两件事；handle 值复制不会 Acquire。即使每个消费者另有合法持有，也不能据此跳过该版本失败／取消组合验收。
+
+**失败清理不能照搬 `.Task` 模板。** `.Task` 失败可能给默认值或部分结果，需查状态；直接 await 会抛 `AsyncOperationHandleException<T>`。固定 [AsyncOperationHandle.cs](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/Runtime/ResourceManager/AsyncOperations/AsyncOperationHandle.cs#L282-L362)在失败时为异常另 Acquire 一份引用；[AwaitableOperationDriver.cs](https://github.com/needle-mirror/com.unity.addressables/blob/99d59c9b2a39024617b347953389ca631517bd2b/Runtime/ResourceManager/AsyncOperations/AwaitableOperationDriver.cs)负责失败／取消时释放调用方引用，已有自动释放监听者时交由它负责。因此 catch 应立即 `e.Handle.Release()`，不留到对象退出才清；不再把旧 `finally { originalHandle.Release(); }` 原样叠上；成功且未绑定有效生命周期 token 时仍由所有者释放。[一手／研究]
+
+**迟到结果仍要验，取消不是网络／加载中止证明。** 上述 driver 对预取消先释放并返回取消；pending 路径额外持有内部引用，以完成／取消仲裁 source；成功后仍保 token 注册供生命周期结束释放。源码解释了职责，但不证明目标包组合、重入或引擎运行已经正确。AI 可据真实包写验收：完成前退出、成功后退出、失败后对象仍存活、Disable 后重开、缓存同步完成、两个消费者只退出一个；分别核结果身份、有效消费者接收与各持有引用的释放，而不是只断言 await 抛取消。[一手／研究]
+
+**探索回执与失败参照。** 本轮按已有缺口续查官方 4.1.1 文档、固定包源码、原 UniTask #649 研究及 Unity Discussions 原帖，未重做通用异步框架排名。[2025-08 作者升级报告](https://discussions.unity.com/t/scene-loading-hang-after-upgrading-from-2021-3-to-6000-0/1680128)描述 Unity 6000.0.55f1 中场景 Awake 内 `WaitForCompletion` 挂起，旧 2021.3 工程能运行；这是不用同步阻塞掩盖异步问题的实际反例，不证明 4.1.1 修复该问题，也不是新 API 的生产采用证明。[社区／研究] 当前最佳生产表现未知；现成实现优先官方单所有者示例，共享场景沿原生完成通知，不新建通用资源管理器。无引擎授权时停在版本源码与验收清单，不以伪实现实验冒充原生验证。
+
 ## 2. Unreal 反证：文档承诺与具体版本缺陷分开
 
 [FStreamableHandle API](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/FStreamableHandle)：CancelHandle 立即 release，以取消替代完成回调，延迟队列也应停止；ReleaseHandle 仅移除持有关系。[一手]

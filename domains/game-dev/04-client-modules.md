@@ -319,6 +319,10 @@ Unity Character Controller 1.4.5 是 ECS 包，非 GameObject 即插升级。平
 
 **[研究] ✅ 加载所有者＋请求代次，旧代结果只收尾；预取消先处理再创建 handle。** Addressables 使用期间保句柄，失败也清理。所核 UniTask 适配器默认取消不 release、预取消在接管前返回；#649 池复用串线未见确认修复，高频取消先保底层等待／原生完成通知，由存活所有者收尾，业务 guard 不证明库内身份正确。[一手]
 
+**[研究] 🧪 单一所有者可改用 Addressables 4 原生等待，不必只为取消再装适配器。** 4.0 起提供 `await handle`／`ToAwaitable(token)`；所核 4.1.1 最低 Unity 6.0。后者接管该引用的取消释放，成功后取消也会释放；失败立即释放异常的 `e.Handle`，不要再按旧模板无条件释放原引用。反复启停用每轮新 token，`ToAwaitable(this)` 只跟销毁，不跟 Disable。[一手]
+
+**共享一份 handle 仍保共同所有者＋`Completed` 分发。** 多个消费者各自给同一引用绑定取消，会让一方退出释放别人还在用的引用；复制 handle 不增引用，同一个 Awaitable 不能重复 await。AI 先写清谁持有、何时退出，再选接口；取消不保证终止底层加载。新旧版本与验收见[原生等待分流](../../docs/research/2026-10-14-game-wp10-client-modules.md#addressables4-native-await)。本轮只核文档／源码，未运行引擎。[一手／研究]
+
 activateOnLoad=false 阻塞异步队列，激活须另安排；UE-207209 交叉取消仍回调的目标修复版不等于已修。[取消版本、替代及回归](../../docs/research/2026-10-14-game-wp10-client-modules.md#1-unitask新增自动释放为何仍不能等同完整取消)；既有异步没缺口就保留。[一手／研究]
 
 #### 资源释放：所有权、驻留、总内存分别看
