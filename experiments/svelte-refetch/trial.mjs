@@ -1,0 +1,35 @@
+import {checkPrerequisites,newTrialDirectory} from './preflight.mjs';
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import path from 'node:path';
+const toolRoot=process.env.SVELTE_TEST_TOOLS;
+const query=checkPrerequisites(process.cwd(),toolRoot);
+const {compile,compileModule}=await import('svelte/compiler');
+const {build}=await import('esbuild');
+const {JSDOM}=createRequire(path.resolve(toolRoot,'package.json'))('jsdom');
+const trialDir=newTrialDirectory(process.cwd());
+const mod=(name,code)=>fs.writeFileSync(trialDir+'/'+name+'.js',compileModule(code,{filename:name+'.svelte.js',generate:'client',dev:true}).js.code);
+mod('query',`import {tick} from 'svelte'; const remote_responses={};\n`+query.slice(query.indexOf('export class Query')));
+mod('state',`export const params=$state({page:1,limit:5}); export function useSearchParams(){return params}; export const navigating={to:null};`);
+fs.writeFileSync(trialDir+'/remote.js',`import {Query} from './query.js'; export const pending=[]; const cache=new Map(); export function getPosts(args){const key=JSON.stringify(args);if(!cache.has(key)){cache.set(key,new Query(key,()=>new Promise((resolve,reject)=>pending.push({args,resolve,reject}))));}return cache.get(key)}`);
+for(const name of ['Pagination','Data','+page']){
+ let source=fs.readFileSync('src/routes/'+name+'.svelte','utf8').replace('"runed/kit"','"./state.js"').replace('"$app/state"','"./state.js"').replace('"$lib/data.remote"','"./remote.js"');
+ let out=compile(source,{filename:name+'.svelte',generate:'client',dev:true,experimental:{async:true}}).js.code.replaceAll('./Pagination.svelte','./Pagination.js').replaceAll('./Data.svelte','./Data.js');fs.writeFileSync(trialDir+'/'+name+'.js',out);
+}
+fs.writeFileSync(trialDir+'/entry.js',`import {mount,flushSync,settled,unmount} from 'svelte';import App from './+page.js';import {params} from './state.js';import {pending} from './remote.js';window.t={params,pending,flushSync,settled,unmount,app:mount(App,{target:document.body})};`);
+const bundle=await build({entryPoints:[trialDir+'/entry.js'],bundle:true,write:false,platform:'browser',conditions:['browser'],format:'iife',define:{'process.env.NODE_ENV':'"development"'}});
+const dom=new JSDOM('<!doctype html><body></body>',{pretendToBeVisual:true,runScripts:'outside-only',url:'https://example.test'});dom.window.eval(bundle.outputFiles[0].text);
+const {t}=dom.window;const patched=!process.argv.includes('--baseline');const pause=()=>new Promise(r=>setTimeout(r,20));
+const payload=(page)=>({data:[{id:page,title:'Page '+page,date:'2026-01-01'}],pagination:{page,limit:5,total:10,totalPages:2}});
+await pause();assert.match(dom.window.document.body.textContent,/Initial loading/);
+t.pending[0].resolve(payload(1));await t.settled();await pause();
+assert.match(dom.window.document.body.textContent,/Page 1/);assert.equal(dom.window.document.querySelector('button').disabled,false);
+dom.window.document.querySelectorAll('button')[1].click();await pause();
+assert.equal(dom.window.document.querySelector('tbody').textContent.includes('Page 1'),true);
+assert.equal(dom.window.document.querySelectorAll('button')[1].disabled,patched);
+assert.equal(dom.window.document.querySelectorAll('button')[0].disabled,patched);
+assert.equal(dom.window.document.querySelector('strong').parentElement.textContent.trim().endsWith(String(patched)),true);
+console.log(patched?'PASS pending controls disabled; old row retained':'BASELINE FAILURE CONFIRMED: pending controls remain enabled; old row retained');
+t.pending.at(-1).resolve(payload(2));await t.settled();await pause();assert.match(dom.window.document.querySelector('tbody').textContent,/Page 2/);assert.equal([...dom.window.document.querySelectorAll('button')].every(b=>!b.disabled),true);assert.equal(dom.window.document.querySelector('strong').parentElement.textContent.trim().endsWith('false'),true);console.log('PASS success settles new rows and re-enables controls');
+t.params.page=3;await pause();assert.equal(dom.window.document.querySelectorAll('button')[1].disabled,patched);t.pending.at(-1).reject(new Error('Synthetic server failure'));await pause();assert.match(dom.window.document.body.textContent,/Synthetic server failure/);assert.equal(dom.window.document.querySelector('table'),null);console.log('PASS rejection enters existing failure boundary');await t.unmount(t.app);dom.window.close();

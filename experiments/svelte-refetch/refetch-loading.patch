@@ -1,0 +1,20 @@
+diff --git a/src/routes/Data.svelte b/src/routes/Data.svelte
+index 803da7d..2e8a86e 100644
+--- a/src/routes/Data.svelte
++++ b/src/routes/Data.svelte
+@@ -36,7 +36,7 @@
+     <h2>Posts</h2>
+     <p>
+         <strong>Loading (during page change or refetch)?</strong>
+-        {posts.loading}
++        {$effect.pending() > 0}
+     </p>
+     <table>
+         <thead>
+@@ -62,5 +62,5 @@
+     bind:page={params.page}
+     bind:limit={params.limit}
+     totalPages={pagination.totalPages}
+-    loading={posts.loading}
++    loading={$effect.pending() > 0}
+ />
