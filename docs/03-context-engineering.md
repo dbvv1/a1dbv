@@ -1,6 +1,6 @@
 # 03 · 上下文工程
 
-> 编辑更新：2026-10-23（UTC+8）；补官方文档索引选页实试；RTK仅源码核查未试用，未运行当前模型；[此前证据范围](research/2026-10-13-context-tool-choice.md#p73定点原文与摘要委派)；[旧页首范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
+> 编辑更新：2026-10-24（UTC+8）；补 Serena 符号编辑的采用场景与最短用法、保留官方文档索引选页实试；RTK仅源码核查未试用，未运行当前模型；[此前证据范围](research/2026-10-13-context-tool-choice.md#p73定点原文与摘要委派)；[旧页首范围](research/2026-10-13-context-study-reassessment.md#历史页首核实范围)。
 > 一句话：**先区分需求、环境、模型能力、上下文和验证器问题；上下文应提供必要信息，而非尽可能堆满。**
 
 ## 30 秒选择：开始一个具体修改任务
@@ -138,7 +138,7 @@ Anthropic《Effective context engineering》（2025-09）是旧代设计参照�
 
 ### 2.5 跨文件符号检索：何时补 Serena
 
-**🧪 原生搜索、IDE 或现有 LSP 不足以定位跨文件引用／重命名时，再试 [Serena](https://github.com/oraios/serena/blob/main/README.md)。** 先只读对照 IDE 引用、目标配置与已知调用点，再限定编辑并编译测试；维护耗时超过收益就退回原生。**关键局限**：语言后端和版本决定能力，[Windows 初始化反例](https://github.com/oraios/serena/issues/2069)不能靠关闭防护解决；main 能力与 [v1.7/v2 许可](https://github.com/oraios/serena/blob/main/LICENSE)不可混用，本地索引返回的代码仍进入模型上下文。**[一手／社区；经验：选择，2026-10-12，未安装]**
+**🧪 Agent 缺少可调用的符号检索／编辑入口时，再补 [Serena](https://github.com/oraios/serena/blob/main/README.md)；已有原生搜索、IDE／语言工具够用就沿用。** 搜索帮助找到实现，符号编辑让 Agent 指定“文件里的哪个方法”来替换或相邻插入；本仓 Python/Jedi 实试已跑通，最短用法见下。语言后端和版本决定能力，跨文件引用仍先对照已知调用点和目标配置。[一手／本仓实试／经验：选择，2026-10-24]
 
 **跨平台或构建配置修改，先补目标配置的核查。** 同一后端、同一构建下与 IDE 结果一致，仍可能共同漏掉其他配置。gopls 的引用查询只查所选文件的默认构建；这类任务先据目标配置核对相关文件清单，必要时补局部文本搜索，再在对应配置中核验调用点。[固定版本契约与真实需求](research/2026-10-13-context-tool-choice.md#跨配置修改原生引用也有构建范围) **[一手；社区；经验：选择，2026-10-17（UTC+8）]** **局限**：文本同名不证明语义身份；配置范围缺口本身不构成新增检索框架的理由。
 
@@ -153,6 +153,18 @@ Anthropic《Effective context engineering》（2025-09）是旧代设计参照�
 **先定位导入别名指向谁，再决定哪些适配器需要改。** cattrs的五个后端都有`make_converter`／`configure_converter`；本仓实际用Jedi的goto与文件内references定位声明，再追msgspec按hook身份选择原生编码的分支。[完整示范与导航入口](../experiments/cattrs-decimal/README.md)把Decimal支持做成可复制产物，没有安装或声称实测Serena／LSP。[本仓实试，2026-10-23]
 
 真正改变选择的是：ujson会静默变浮点数，而msgspec已能原生编码精确字符串。前者补字符串编码，后者只补结构化；动态注册最终选了哪个hook，另用实际后端及`get_dumps_hook`验收。静态定位不是运行时调用图，也不证明比rg更快。[源码／本仓实试]
+
+#### 从查符号到按符号编辑
+
+**实际用处是把编辑目标从旧位置换成文件＋符号路径。** [Serena 2.1.0 实试](../experiments/serena-symbol-edit.md)中，读取后在文件前方插行仍命中原方法，缺失／歧义名拒绝写入；正确替换与相邻插入通过解析、import 和窄行为检查。[本仓实试：2026-10-24，Python/Jedi]
+
+**按任务选，不把所有改动都交给符号工具。** 找字符串／配置继续用搜索，改方法内一两行继续用局部文本补丁，重命名优先现有 IDE／语言工具；本次原生 Jedi rename 也已跑通。经常需要替换整方法或相邻新增定义、宿主又没有对应接口时，Serena 才值得接入。[本仓实试／经验：采用判断]
+
+**最短用法**：初始化后，`find_symbol` 指定文件和完整符号路径并读取正文 → `replace_symbol_body` 提交完整方法（相邻新增用 `insert_after_symbol`）→ 核对差量并跑相关测试；[固定参数与首次接入](../experiments/serena-symbol-edit.md#最短用法查当前方法--按符号改--验结果)可照着替换。[本仓实试／经验]
+
+**关键限制：符号定位不是版本锁。** 外部修改过的同名方法会被旧准备正文覆盖；多人改同一方法先协调归属，写前重读也不构成原子保护。现有五场景足以支持上述窄采用结论，不证明真实业务修改更快或模型修复率更高，本轮边界检查到此收口。[本仓实试／研究]
+
+历史适配问题仍按后端核对：[Windows 初始化反例](https://github.com/oraios/serena/issues/2069)不能靠关闭防护解决；main 能力与 [v1.7/v2 许可](https://github.com/oraios/serena/blob/main/LICENSE)不可混用，本地索引返回的代码仍进入模型上下文。[一手／社区；2026-10-12 资料核查，非本次 Python 实试范围]
 
 ### 2.6 大文件：先定点原文还是摘要委派
 
