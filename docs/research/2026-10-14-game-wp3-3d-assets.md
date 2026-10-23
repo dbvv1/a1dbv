@@ -761,3 +761,18 @@ SDK检查成员颜色、几何／UV／骨骼权重数组、joint映射、inverse
 [官网](https://alaya-lab.github.io/EditHero/)仅补展示；[仓库](https://github.com/AlayaLab/EditHero)已记录10-08发布，不沿旧摘要写待发布。[数据卡](https://huggingface.co/datasets/AlayaLab/EditHero)为mixed-cc，含非商业链；[组件声明](https://github.com/AlayaLab/EditHero/blob/main/THIRD_PARTY_LICENSES.md)不代替完整依赖清权。[许可正文](https://huggingface.co/datasets/AlayaLab/EditHero/raw/main/LICENSE-DATA.md)读取不可访问，未重试；不推荐下载作商用资源。[一手]
 
 **P51前置使用回执：** 提示版本2026-10-21，基线f346814；12:04–12:07 UTC读研，精确主动工时未知。输入已知：茶壶／Fox／TRELLIS.2头盔／ControlFoley，未重跑。新文档N=7、正文F=6（含失败许可）；决定性D=1、FD=1。摘要／镜像不重复计；按研究家族另为2/2，不混口径。[Nova3D](https://arxiv.org/html/2607.22738)§4.3仅自身18项编辑，未作同题编辑对照，淘汰。无合格外部漏检分母；不计P37完整验收或P51完整项目。停止于新证据已改变窄选择，合法现成／程序／生成的游戏约束全链仍缺。
+
+## 19. P123：压缩成功之后，由真实消费者接手
+
+**✅ 保源与累计配方，继续保合格EXT；先核实际加载器与decoder，再比较KHR。** 2026-10-23以Khronos RiggedSimple实跑gltfpack1.3、Three0.186／0.182；这是§16未覆盖的真实加载器／解码与CPU蒙皮链，不再重复共享引用去重实验。[本仓运行]
+
+| 读者会做错的选择 | 实测与采用判断 |
+|---|---|
+| 看到GLB压小、parse成功就接收 | 默认EXT5800B／KHR5496B均能由新消费者解码，但本例clip时长从2.083333015s变2.108333349s；时轴独立验 |
+| 新扩展名字就默认迁移 | 旧loader的KHR无fallback输入先警告、后在本Node路径失败；有decoder不代表注册了扩展。保已兼容EXT |
+| 删required标记就算有回退 | 工具原生`-ce khr -cf`产GLB与实际fallback文件，共10940B；两消费者缺decoder仍加载，但并未恢复原动画时长 |
+| 优化产物上继续猜二改 | 从未压缩GLB母版累计改材质、再缩动画时间至0.8倍；`-af 0`分支保两改并恢复原时长，路径不清就回源 |
+
+默认与保时点分支同题比较：各61个归一相位的世界空间蒙皮顶点集双向最大距离从0.063998626降至0.001854382；固定源绝对时轴则从0.016853946降到同值。它避开顶点重排的逐下标误判，但仍不是完整曲面／动作或视觉检验。0.01世界单位仅为本夹具诊断线，不能当游戏品质标准；单变量恢复不证明全部剩余误差只来自量化。[本仓运行／研究]
+
+本次不测纹理／LOD／GPU／浏览器／引擎，最终观感未知。源为可编辑GLB图、不是原DCC文件；样例©2017 Cesium CC-BY-4.0、15104B，固定SHA与署名、原生命令失败、Node适配及复跑入口见[实验说明](../../experiments/p123-meshopt-consumer.md)。正式资产仍沿§9／目标消费者入口接收，不据这一个skin样例改变整页质量排序。[本仓运行／研究]
