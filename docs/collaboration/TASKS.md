@@ -20,19 +20,10 @@
 | P90 | **前沿发现**：按手册探索成熟与新候选，验收沿[13](../13-frontier-radar.md)五问／实试证据，处理收件箱 | dot-A | OpenSpec变更／归档与ast-grep迁移已实试，Superpowers 7.0.1已核源码／加载；未测模型收益。 |
 | P81 | C1核心12页：对照强参照查漏，用真实编码任务深化发现，交可复制入口、关键选择、产物与返工并回流正文 | dot-A | [编码／消费者重放](../15-task-playbooks.md)发布，范围见正文，模型收益未测；[OCR函数补丁](../../experiments/ocr-matcher-replay.md)收口，完整CLI未验。 |
 | P79 | **C1／C3吸取验证**：①核心12页与25各3题取首页／社区真需求，不从正文倒推；题／要点冻结后独审，未参与写作的新会话读页／无文档作答并独立盲判，比较决策、条件、撤回与原生答对率，修低增量页。②templates/generic三文件默认／撤回及脚本回归；③固定任务有／无包比较结果／返工／人工修改；④M6同需求按25／普通检索对照独立参照查漏。验收：①题答／两组结果；②AGENTS／CLAUDE／Skill；③④先冒烟再扩批 | dot-A | [冒烟](../../experiments/absorption/runs/20261022-smoke-v1/results.md)未测得读页决策增益；[三题预注册](../../experiments/absorption/p79-fresh-prereg.md)已审冻结、6答未跑，未知模型不进可比对；旧题库不改，M6另批。原入口平台失败断连，不等预算／版本批准。[三文件包](../../templates/README.md#核心决策最小包)补重复变换分流，加载／收益未验 |
-| 原B-P80 | C2：2D十组选择 | dot-B | 41a47fa经A独审保链接收gap1；整族未试；[消歧／历史][prior-tasks]。 |
-| P78 | C2：3D十项选择 | dot-B | 原B-P75；独审gap1，CuACD／Rigel纠偏见[历史][prior-tasks]；整族未试。 |
-| P74 | C2：游戏02整页校准 | dot-B | 9a0eba35保链gap1；未试，见[历史][prior-tasks]。 |
-| P73 | C2：UI二改及04委派／接收 | dot-B | 1cc2637f保链；04由P98承接；效果未知。 |
-| P63 | C2：资源供给整页 | dot-B | 659adbcd由P97承接；未试。 |
-| P64 | C2：材质整页选择 | dot-B | dbcef200保链gap1；P86补正见[互审](reviews/2026-10-22-dot-b-mutual-review.md)；未试。 |
-| P37 | 旧资产选择由整页承接 | dot-B | e1919cab等保链；音频资料gap1未试；[历史][prior-tasks]。 |
-| P91 | C2视频整页：筛选费用、连续性与动态镜头 | dot-B | df9eafc由P95承接；未试用。 |
+| 旧C2文稿记录 | 原B-P80／P78／P74／P73／P63／P64／P37／P91／P92／P93的范围与承接见[固定快照][c2-1023] | B | 保留原状态，不把文稿接收等同整族实试；后续项目见下。 |
 | P94 | C2：音乐谱源二改，比较固定渲染与重演绎 | dot-B | a7b212c独审保链；谱源导入损失已补，未试／试听。 |
 | P95 | C2视频整页／图（接P91） | dot-B | b1b9004保链gap1；[互审](reviews/2026-10-23-dot-b-mutual-review.md)已取回；未试。 |
-| P92 | C2动画十二项选择 | dot-B | a4b7391由P96承接。 |
 | P96 | C2动画整页／图（接P92） | B | 03f140f／ef956ac保链gap1；图已核，工具／模型／引擎及成本未验。 |
-| P93 | 游戏03入口 | B | 由P97承接，未试。 |
 | P97 | 游戏03整页选择图与世界输出分流 | B | a493b31经A补正保链gap1；图已核，模型／引擎／二改／成本未试。 |
 | P98 | 游戏04整页 | B | 1ae7808独审保链合入；资料gap1，模块／引擎未试。 |
 | P99 | 游戏版值得一试 | B | 05d2b64独审保链合入；六类候选，v4产物试玩非AI工具实试。 |
@@ -56,6 +47,8 @@
 | P117 | 音频恢复 | B | 已接收；Node独验，浏览器合成自报，未听验。 |
 | P118 | 失视搜索与返回 | B | 独审接收；作品／源码研究，未运行敌人AI。 |
 | P119 | 完整场景与二改 | B | 独审接收；制作方案，未改游戏或验WebGL。 |
+| P120 | 动画导入后的接触退化 | B | 独审接收；压缩诊断研究，未验引擎或观感。 |
+| P121 | 分支二改的消费链 | B | 独审接收；路线／收益／遭遇归属研究，未验玩法。 |
 
 ## 需要用户决定／保留事实
 
@@ -79,3 +72,5 @@
 [prior-tasks]: https://github.com/dbvv1/a1dbv/blob/15c3c171bb7df3cc3194046125628c59ad891a28/docs/collaboration/TASKS.md
 
 [audit-tasks]: https://github.com/dbvv1/a1dbv/blob/7028197a97197740027c38e819ced649f7f16f4c/docs/collaboration/TASKS.md
+
+[c2-1023]: https://github.com/dbvv1/a1dbv/blob/030d04dd5dafbd9d42281c314a6be30d64e06692/docs/collaboration/TASKS.md
