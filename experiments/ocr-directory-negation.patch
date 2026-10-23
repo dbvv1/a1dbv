@@ -1,0 +1,145 @@
+--- a/internal/diff/git.go
++++ b/internal/diff/git.go
+@@ -309,26 +309,41 @@
+ 		return true
+ 	}
+ 
+-	excluded := false
+-	for _, pat := range gitignorePatterns {
+-		body, negated := strings.CutPrefix(pat, "!")
+-		if body == "" {
+-			continue
+-		}
+-
+-		// Directory-only patterns (trailing "/") apply to directories, never to
+-		// files. Git uses a negated one such as `!*/` to keep descending into
+-		// subdirectories, not to re-admit the files inside them — honouring it
+-		// here would readmit everything below the root.
+-		if negated && strings.HasSuffix(body, "/") {
+-			continue
+-		}
+-
+-		if matchGitignoreBody(relPath, body) {
+-			excluded = !negated
+-		}
+-	}
+-	return excluded
++	// Resolve each directory separately: an excluded parent cannot be
++	// reopened by a child rule, and reopening a directory does not reopen files.
++	components := strings.Split(relPath, "/")
++	for i := range components {
++		candidate := strings.Join(components[:i+1], "/")
++		isDir := i < len(components)-1
++		excluded := false
++		for _, pat := range gitignorePatterns {
++			body, negated := strings.CutPrefix(pat, "!")
++			if body == "" {
++				continue
++			}
++			matched := false
++			if pattern, dirOnly := strings.CutSuffix(body, "/"); dirOnly {
++				if !isDir {
++					continue
++				}
++				pattern, anchored := strings.CutPrefix(pattern, "/")
++				target := candidate
++				if !anchored && !strings.Contains(pattern, "/") {
++					target = components[i]
++				}
++				matched, _ = doublestar.Match(pattern, target)
++			} else {
++				matched = matchGitignoreBody(candidate, body)
++			}
++			if matched {
++				excluded = !negated
++			}
++		}
++		if excluded {
++			return true
++		}
++	}
++	return false
+ }
+ 
+ // isProviderDirExcluded reports whether relPath matches the provider's
+--- /dev/null
++++ b/internal/diff/gitignore_oracle_test.go
+@@ -0,0 +1,78 @@
++// SPDX-License-Identifier: Apache-2.0
++// Copyright 2026 alibaba/open-code-review Contributors
++
++package diff
++
++import (
++	"errors"
++	"os"
++	"os/exec"
++	"path/filepath"
++	"strings"
++	"testing"
++)
++
++func TestIsPathExcluded_GitDirectoryOracle(t *testing.T) {
++	cases := []struct {
++		name     string
++		patterns []string
++		path     string
++	}{
++		{"root_directory_reinclude", []string{"/*/", "!/src/"}, "src/a.go"},
++		{"named_directory_reinclude", []string{"src/", "!src/"}, "src/a.go"},
++		{"file_and_directory_star", []string{"/*", "!/src/"}, "src/a.go"},
++		{"allow_directories_only", []string{"*", "!*/"}, "src/a.go"},
++		{"allow_go_files", []string{"*", "!*/", "!*.go"}, "src/a.go"},
++		{"allow_go_keeps_other_files_out", []string{"*", "!*/", "!*.go"}, "src/a.txt"},
++		{"later_directory_reexclude", []string{"/*/", "!/src/", "src/"}, "src/a.go"},
++		{"later_file_reexclude", []string{"/*/", "!/src/", "*.go"}, "src/a.go"},
++		{"root_file_not_directory", []string{"/*/", "!/src/"}, "a.go"},
++		{"other_directory_stays_out", []string{"/*/", "!/src/"}, "other/a.go"},
++		{"nested_under_readmitted", []string{"/*/", "!/src/"}, "src/nested/a.go"},
++		{"file_negation_cannot_reopen_parent", []string{"src/", "!src/a.go"}, "src/a.go"},
++		{"nested_directory_cannot_reopen_parent", []string{"src/", "!src/nested/"}, "src/nested/a.go"},
++		{"directory_name_not_file", []string{"src/", "!src/"}, "src"},
++		{"nested_directory_name", []string{"src/", "!src/"}, "outer/src/a.go"},
++		{"nested_anchor_not_readmitted", []string{"**/src/", "!/src/"}, "outer/src/a.go"},
++		{"root_anchor_readmitted", []string{"**/src/", "!/src/"}, "src/a.go"},
++		{"hard_vendor_exclusion", []string{"*", "!*/", "!*.go"}, "vendor/a.go"},
++	}
++	for _, tc := range cases {
++		t.Run(tc.name, func(t *testing.T) {
++			dir := t.TempDir()
++			home := t.TempDir()
++			run := func(args ...string) error {
++				cmd := exec.Command("git", args...)
++				cmd.Dir = dir
++				cmd.Env = []string{"PATH=" + os.Getenv("PATH"), "HOME=" + home,
++					"LC_ALL=C", "GIT_CONFIG_NOSYSTEM=1", "GIT_CONFIG_GLOBAL=/dev/null"}
++				return cmd.Run()
++			}
++			if err := run("init", "-q"); err != nil {
++				t.Fatal(err)
++			}
++			path := filepath.Join(dir, filepath.FromSlash(tc.path))
++			if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
++				t.Fatal(err)
++			}
++			if err := os.WriteFile(path, []byte("package example\n"), 0644); err != nil {
++				t.Fatal(err)
++			}
++			if err := os.WriteFile(filepath.Join(dir, ".gitignore"), []byte(strings.Join(tc.patterns, "\n")+"\n"), 0644); err != nil {
++				t.Fatal(err)
++			}
++			err := run("check-ignore", "--no-index", "--quiet", "--", tc.path)
++			gitIgnored := err == nil
++			if err != nil {
++				var exit *exec.ExitError
++				if !errors.As(err, &exit) || exit.ExitCode() != 1 {
++					t.Fatal(err)
++				}
++			}
++			want := gitIgnored || isProviderDirExcluded(tc.path)
++			if got := IsPathExcluded(dir, tc.path, tc.patterns); got != want {
++				t.Fatalf("IsPathExcluded(%q, %v) = %v, Git plus provider policy = %v", tc.path, tc.patterns, got, want)
++			}
++		})
++	}
++}
