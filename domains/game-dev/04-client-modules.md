@@ -292,6 +292,20 @@ flowchart LR
 
 **[研究] ✅ 按漏碰／误接触选原生检测。** Unity 6.3 内置 **3D** 线性运动在 Speculative 失败时比 Continuous（静态）／Continuous Dynamic（动态刚体）；sweep 不补旋转，Speculative 含角运动却可能漏碰／误弹。UE Chaos CCD 与 ProjectileMovement 扫掠／细分分开，开物理后由物理接管；substep 不替检测算法，回调按攻击 ID 去重。破坏反弹／推动就退回；[版本反例](../../docs/research/wp10-motion.md#95)。[一手／研究]
 
+#### 穿过触发区：要的是阻挡、经过，还是仍在里面？
+
+**[研究] ✅ 保现有碰撞模块，先按玩法分三条路径；不要把“升 CCD”当统一修复。**
+
+| 玩法需要 | 先选什么；什么情况另查 |
+|---|---|
+| 撞墙停下／反弹／推动 | 沿上面的 motor／刚体检测；不要为了报伤害把无响应触发区改成实体墙 |
+| 高速穿过拾取物／检查点，只需知道经过 | 先核安装版原生连续 sensor／运动 sweep；没有相应契约才用 ray／shape cast，过滤与唯一结算沿原模块 |
+| 持续区域伤害／贴身开攻击窗口，需要当前占据 | 当前姿态 overlap 查询负责候选；路径 cast 补跨步经过，不能代替起始已重叠；命中时段与结算仍归技能 |
+
+**[实验] Box2D 3.2.0 的新能力可以省掉一类自写检测，但不能把经过当停留。** 同一静止薄 sensor 的真实 C 库对照：3.1.1 漏掉一步完整穿越，3.2.0 在穿越步报 begin、下一步报 end；穿越步末圆已在区外，`sensor_data` 仍有该圆。用于一次拾取合适，不按这段回调间隔推算实际停留时长。移动 sensor／旋转近战不在此次验证范围；[固定版本、源码与六组实跑](../../docs/research/wp10-motion.md#p127-sensor-crossing)。
+
+**Unity 能力按安装版核，不随上游升级自动获得。** 6.3 的 LowLevelPhysics2D 明确 trigger 无连续检测；3D `SphereCast` 的初始重叠也需另查。UE 则分 blocking 与 overlap、双方开启事件；[对应官方契约](../../docs/research/wp10-motion.md#p127-sensor-crossing)不支持跨引擎一刀切。[一手／研究，2026-10-23]
+
 ### 3D 角色运动：先选想要的控制，再选碰撞求解方式
 
 | 控制目标 | 当前路线与责任 [研究] |

@@ -989,3 +989,41 @@ Unity 包的 UCL／Unity-dependent 条件、Celeste64 代码与资产分开许�
 复跑纯控制：`node experiments/game-audio-lifecycle.mjs`。另有[静态离线页](../../experiments/game-audio-lifecycle.html)，通过本地静态服务打开后用原生 `OfflineAudioContext` 将常量循环缓冲渲染到内存，显示两条路径的断言 JSON；它不播放声音、不请求麦克风、不取外部资源。**本仓浏览器离线渲染已通过：48kHz、双通道、144000帧，12个检查点与预期相符，见[原始结果](../../experiments/game-audio-lifecycle-results.json)。Unity／UE／FMOD／Wwise运行、真实资源听感和设备输出未测。** [W3C Web Audio](https://www.w3.org/TR/webaudio/#OfflineAudioContext)的离线缓冲与实际输出是不同验收面。
 
 **探索回执：** 截至2026-10-23，核Unity／UE／FMOD官方文档、Sandfall团队采访、FMOD 2024／2026原帖与Howler固定源码；中文社区实践页未完整读到，B站只取得说明未听看，未拿它们支撑技术结论；A Sound Effect 长访谈正文不可读，不使用检索摘要补出制作细节。当前最高制作水平未知，默认胜出的是此范围下已有原生能力与最小项目规则。[研究]
+
+
+<a id="p127-sensor-crossing"></a>
+
+## P127：高速穿越触发区，事件不等于当前占据
+
+**结论：物理阻挡、路径经过与当前占据分别选；已有原生连续 sensor 就先复用，不先写替代物理。**
+**新增实证：Box2D 3.2.0 能报静止 sensor 的跨步经过，但该步的 sensor data 可以含已经离开的物体。**
+**范围：2026-10-23 UTC；真实官方 C 库六组对照，未运行 Unity／UE、移动 sensor、近战或玩家测试。**
+
+### 现成方案与版本差异
+
+[一手] Box2D [3.2.0 release](https://github.com/erincatto/box2d/releases/tag/v3.2.0)（2026-10-19）新增 continuous sensor events，列快速 shape 对静止 sensor、bullet 对非 bullet sensor。固定 [3.1.1 手册](https://github.com/erincatto/box2d/blob/8c661469c9507d3ad6fbd2fea3f1aa71669c2fe3/docs/simulation.md)的 Sensors 则明确一步穿越不检测。两版都是 MIT；本仓使用原库，不复制第三方代码。[3.2.0 许可](https://github.com/erincatto/box2d/blob/178495ba35695aefe9c321e569d2277f06db3b90/LICENSE)
+
+[一手／研究] [3.2.0 手册](https://github.com/erincatto/box2d/blob/178495ba35695aefe9c321e569d2277f06db3b90/docs/simulation.md)仍将可靠范围限定为不移动 sensor；快速物体对快速移动 sensor 推荐 ray／shape cast，双方还须启用 `enableSensorEvents`。所以新版本不是“任何 trigger 都连续”，也不是任意旋转武器的完整命中方案。已经使用 Box2D 且确有静止区域漏触发，可比较升级；没有这一缺口不为单个功能换物理底层。
+
+### 真实 C 库：穿越可被记住，末位置并不重叠
+
+[实验] 官方固定 3.1.1／3.2.0，各跑高速 sensor、低速 sensor 与高速 solid，场景同一几何和时步；初始化后实读默认 continuous=1、速度上限400 m/s。动态非 bullet 圆从 x=-0.2 m 以24 m/s前进，静止盒半宽0.05 m、圆半径0.05 m，dt=1/60 s、substep=1；一步到+0.2 m，前后都完全在区外。完整配置、编译方式、断言与原始CSV见[复跑记录](../../experiments/p127-sensor-crossing.md)。
+
+| 高速 sensor 观测 | 3.1.1 | 3.2.0 |
+|---|---|---|
+| step 1，末位置 x=+0.2 m | 无事件、sensor data为空 | begin=1、sensor data有1个对象 |
+| step 2，末位置 x=+0.6 m | 无事件、sensor data为空 | end=1、sensor data为空 |
+
+[实验] 两版低速对照均能报 begin／end；solid 对照均在第一步阻挡于 x=-0.095 m，contact begin 在第二步才出现。这里只说明本配置通知时序，不推出全部引擎回调延迟。无重叠依据固定 y=0、无旋转几何关系独立观察，并非库 overlap query 的对照测试。
+
+[一手：源码／研究] 固定 [solver.c](https://github.com/erincatto/box2d/blob/178495ba35695aefe9c321e569d2277f06db3b90/src/solver.c)收集连续 sensor hits；[sensor.c L156–164](https://github.com/erincatto/box2d/blob/178495ba35695aefe9c321e569d2277f06db3b90/src/sensor.c#L156-L164)将这些 hits 加入 overlap 数据。源码另有限定 `B2_MAX_CONTINUOUS_SENSOR_HITS` 并过滤实体阻挡之后的 sensor hit；本次只有一个静止 sensor，不承诺任意密集路径全部触发。它是保留经过的设计，不是错误数据：拾取／检查点可消费一次穿越；需要“仍在区域内”的持续伤害则使用当前姿态的 overlap 查询，不能直接按 begin/end 相隔步数算真实停留时间。撤回的应是错误消费方式，不是默认关闭连续事件。
+
+### Unity／Unreal：保原生，不把上游能力硬套过去
+
+- [一手] Unity [6.3 LowLevelPhysics2D.PhysicsShapeDefinition.isTrigger](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/LowLevelPhysics2D.PhysicsShapeDefinition-isTrigger.html)明确 trigger 无连续碰撞并建议 ray／shape cast；仅此 API 范围，不外推传统 Rigidbody2D／3D。[UUM-121087](https://issuetracker.unity.com/issues/1992/box2d-bug-fixes-and-improvements)只确认6000.3.0b5／6000.4.0a2更新到上游另一个提交，不能证明集成3.2。当前Unity最新版是否有同等能力，本轮未知。
+- [一手／研究] Unity [SphereCast（页面6000.0）](https://docs.unity3d.com/ja/current/ScriptReference/Physics.SphereCast.html)明确起始球已重叠时不检测该 collider；因此贴身开命中窗口不能只加路径cast。保现有 overlap 候选，再按动作需要补区间；不统一放大体积，也不改已有命中身份规则。6000.3同页本轮返回异常HTML，不声称精确版本复测。
+- [一手] UE [OnComponentBeginOverlap](https://dev.epicgames.com/documentation/unreal-engine/BlueprintAPI/Collision/OnComponentBeginOverlap)区分 overlap 与 blocking，双方需开启 GenerateOverlapEvents；继续沿现有 ProjectileMovement／Chaos 运动所有者核路径，不把 Unity trigger 限制翻译为 UE 定律。
+
+[研究] 交给 Agent 的窄二改：先列现有碰撞事实由谁生成、谁移动、哪些消费者需要一次经过／当前占据／停留时长；复用原生事件／查询，保持攻击取消、回池与唯一结算政策。验收增加薄触发区完整穿越、起始已重叠、低速正常进入及实体墙对照。这里实跑了前述Box2D六组；贴身、移动双方与技能消费仍需项目测试，不用库通过代替玩法正确。
+
+**探索回执：** 核到2026-10-23的Box2D官方release、固定两版源码／许可与任务issue、Unity／Epic官方契约；Reddit 2025近战boxcast原帖读取失败，未使用摘要，未取得近期生产作品或中文社区的可靠同题反例。当前最佳近战方案未知，本项只补已证实的静止触发区选择与事件消费边界；未扩成近战教程或新增通用框架。
