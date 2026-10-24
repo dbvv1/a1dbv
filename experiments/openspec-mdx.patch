@@ -1,0 +1,3350 @@
+diff --git a/package.json b/package.json
+--- a/package.json
++++ b/package.json
+@@ -75,6 +75,7 @@
+   "dependencies": {
+     "@inquirer/core": "^12.0.0",
+     "@inquirer/prompts": "^8.5.2",
++    "@mdx-js/mdx": "3.1.1",
+     "brace-expansion": "^5.0.12",
+     "chalk": "^5.6.2",
+     "commander": "^14.0.0",
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -24,6 +24,9 @@
+       '@inquirer/prompts':
+         specifier: ^8.5.2
+         version: 8.5.2(@types/node@20.19.43)
++      '@mdx-js/mdx':
++        specifier: 3.1.1
++        version: 3.1.1
+       brace-expansion:
+         specifier: ^5.0.12
+         version: 5.0.12
+@@ -547,6 +550,9 @@
+     resolution: {integrity: sha512-6QEf6yqFbETdwGITKq57aYoPfX/3K8XFNwsAlx0C1M7o8cb79sv1M3w+tWuWvIcSbNqrLF7OD7YpZMVVz335hQ==}
+     engines: {node: '>=20.0.0'}
+ 
++  '@mdx-js/mdx@3.1.1':
++    resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
++
+   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
+     resolution: {integrity: sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ==}
+     engines: {node: ^22.20 || ^24.12 || >=25}
+@@ -705,23 +711,47 @@
+   '@types/chai@5.2.2':
+     resolution: {integrity: sha512-8kB30R7Hwqf40JPiKhVzodJs2Qc1ZJ5zuT3uzw5Hq/dhNCl3G3l83jfpdI1e20BP348+fV7VIL/+FxaXkqBmWg==}
+ 
++  '@types/debug@4.1.13':
++    resolution: {integrity: sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw==}
++
+   '@types/deep-eql@4.0.2':
+     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
+ 
+   '@types/esrecurse@4.3.1':
+     resolution: {integrity: sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw==}
+ 
++  '@types/estree-jsx@1.0.5':
++    resolution: {integrity: sha512-52CcUVNFyfb1A2ALocQw/Dd1BQFNmSdkuC3BkZ6iqhdMfQz7JWOFRuJFloOzjk+6WijU56m9oKXFAXc7o3Towg==}
++
+   '@types/estree@1.0.9':
+     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
+ 
++  '@types/hast@3.0.5':
++    resolution: {integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==}
++
+   '@types/json-schema@7.0.15':
+     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+ 
++  '@types/mdast@4.0.4':
++    resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
++
++  '@types/mdx@2.0.14':
++    resolution: {integrity: sha512-T48PeuJtvLosNTPVhfnIp3i/n3a4g4Bad7YCq5k64D4u7NwDrAotikQ+5+sjtUvBmxCMlbo3dVL+C2dP0rWHzg==}
++
++  '@types/ms@2.1.0':
++    resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
++
+   '@types/node@20.19.43':
+     resolution: {integrity: sha512-6oYBAi5ikg4Pl+kGsoYtawUMBT2zZMCvPNF7pVLnHZfd1zf38DRiWn/gT01RYCdUqkv7Fhr+C9ot4/tb+2sVvA==}
+ 
+   '@types/picomatch@4.0.3':
+     resolution: {integrity: sha512-iG0T6+nYJ9FAPmx9SsUlnwcq1ZVRuCXcVEvWnntoPlrOpwtSTKNDC9uVAxTsC3PUvJ+99n4RpAcNgBbHX3JSnQ==}
++
++  '@types/unist@2.0.11':
++    resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
++
++  '@types/unist@3.0.3':
++    resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
+ 
+   '@typescript-eslint/eslint-plugin@8.71.2':
+     resolution: {integrity: sha512-K72/pvT7qpm8q3k8G5u93NCSN1RcLxX5h7Gw0bQpbMXviBHeY6Nx1WEwmk9wP+eKTSQ8ecxvcgt/ZX/rB938xQ==}
+@@ -782,6 +812,9 @@
+     resolution: {integrity: sha512-zozlN0UA32bSG2zkKAgQyRYSbEISVoyU6vvkKYo2aSny74D8Jh4e+POkJ6Lk0dlezZi5x7TtD+88Xb06IB8nhg==}
+     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+ 
++  '@ungap/structured-clone@1.4.0':
++    resolution: {integrity: sha512-1mEZtMKPM09vDmQt5y7YvmN2+DFTP7Tg0EWXdic8/C6VRnpb33e4ghisCIE3WZjsE2N8mf+QV1Zqh7ZFYLWInQ==}
++
+   '@vitest/expect@4.1.12':
+     resolution: {integrity: sha512-vFlTt+YEu9WBpNjdGayNmlMVzrWPi1+sv853/7t2FU7hpO5gAFBKHzQmkCq5Xjpr+evegF2994LQT3hF3mRlqQ==}
+ 
+@@ -833,6 +866,13 @@
+     resolution: {integrity: sha512-Bq3SmSpyFHaWjPk8If9yc6svM8c56dB5BAtW4Qbw5jHTwwXXcTLoRMkpDJp6VL0XzlWaCHTXrkFURMYmD0sLqg==}
+     engines: {node: '>=12'}
+ 
++  astring@1.9.0:
++    resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
++    hasBin: true
++
++  bail@2.0.2:
++    resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
++
+   balanced-match@4.0.4:
+     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
+     engines: {node: 18 || 20 || >=22}
+@@ -848,6 +888,9 @@
+   cacheable@2.5.0:
+     resolution: {integrity: sha512-60cyAOytib/OzBw1JNSoSV/boK1AtHryDIjvVBk7XbN4ugfkM3+Sry7fEjNgPMGgOjuaZPAp8ruZ0Cxafwyq9g==}
+ 
++  ccount@2.0.1:
++    resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
++
+   chai@6.2.2:
+     resolution: {integrity: sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==}
+     engines: {node: '>=18'}
+@@ -856,6 +899,18 @@
+     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
+     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+ 
++  character-entities-html4@2.1.0:
++    resolution: {integrity: sha512-1v7fgQRj6hnSwFpq1Eu0ynr/CDEw0rXo2B61qXrLNdHZmPKgb7fqS1a2JwF0rISo9q77jDI8VMEHoApn8qDoZA==}
++
++  character-entities-legacy@3.0.0:
++    resolution: {integrity: sha512-RpPp0asT/6ufRm//AJVwpViZbGM/MkjQFxJccQRHmISF/22NBtsHqAWmL+/pmkPWoIUJdWyeVleTl1wydHATVQ==}
++
++  character-entities@2.0.2:
++    resolution: {integrity: sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ==}
++
++  character-reference-invalid@2.0.1:
++    resolution: {integrity: sha512-iBZ4F4wRbyORVsu0jPV7gXkOsGYjGHPmAyv+HiHG8gi5PtC9KI2j1+v8/tlibRvjoWX027ypmG/n0HtO5t7unw==}
++
+   chardet@2.2.0:
+     resolution: {integrity: sha512-rddelWYNPRrXq6PtNEN2S3f6t9ILzvqaN5pVgi4kqt9jHQaXIial9PznB5iSPVlQSLNaaH22ItWz3EJtQ10+OA==}
+ 
+@@ -870,6 +925,12 @@
+   cli-width@4.1.0:
+     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
+     engines: {node: '>= 12'}
++
++  collapse-white-space@2.1.0:
++    resolution: {integrity: sha512-loKTxY1zCOuG4j9f6EPnuyyYkf58RnhhWTvRoZEokgB+WbdXehfjFviyOVYkqzEWz1Q5kRiZdBYS5SwxbQYwzw==}
++
++  comma-separated-tokens@2.0.3:
++    resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
+ 
+   commander@14.0.3:
+     resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
+@@ -894,8 +955,18 @@
+       supports-color:
+         optional: true
+ 
++  decode-named-character-reference@1.3.0:
++    resolution: {integrity: sha512-GtpQYB283KrPp6nRw50q3U9/VfOutZOe103qlN7BPP6Ad27xYnOIWv4lPzo8HCAL+mMZofJ9KEy30fq6MfaK6Q==}
++
+   deep-is@0.1.4:
+     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
++
++  dequal@2.0.3:
++    resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
++    engines: {node: '>=6'}
++
++  devlop@1.1.0:
++    resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
+ 
+   diff@9.0.0:
+     resolution: {integrity: sha512-svtcdpS8CgJyqAjEQIXdb3OjhFVVYjzGAPO8WGCmRbrml64SPw/jJD4GoE98aR7r25A0XcgrK3F02yw9R/vhQw==}
+@@ -903,6 +974,12 @@
+ 
+   es-module-lexer@2.3.2:
+     resolution: {integrity: sha512-poHGpORABojJJucnV9KbOavETW8lBVnphkW77ER5/BQ5Fz7oXSoCNek7IH3vR5nRjdsEz926ibFYX8KtLQmdyw==}
++
++  esast-util-from-estree@2.0.0:
++    resolution: {integrity: sha512-4CyanoAudUSBAn5K13H4JhsMH6L9ZP7XbLVe/dKybkxMO7eDyLsT8UHl9TRNrU2Gr9nz+FovfSIjuXWJ81uVwQ==}
++
++  esast-util-from-js@2.0.1:
++    resolution: {integrity: sha512-8Ja+rNJ0Lt56Pcf3TAmpBZjmx8ZcK5Ts4cAzIOjsjevg9oSXJnl6SUQ2EevU8tv3h6ZLWmoKL5H4fgWvdvfETw==}
+ 
+   esbuild@0.28.2:
+     resolution: {integrity: sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==}
+@@ -951,6 +1028,24 @@
+     resolution: {integrity: sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==}
+     engines: {node: '>=4.0'}
+ 
++  estree-util-attach-comments@3.0.0:
++    resolution: {integrity: sha512-cKUwm/HUcTDsYh/9FgnuFqpfquUbwIqwKM26BVCGDPVgvaCl/nDCCjUfiLlx6lsEZ3Z4RFxNbOQ60pkaEwFxGw==}
++
++  estree-util-build-jsx@3.0.1:
++    resolution: {integrity: sha512-8U5eiL6BTrPxp/CHbs2yMgP8ftMhR5ww1eIKoWRMlqvltHF8fZn5LRDvTKuxD3DUn+shRbLGqXemcP51oFCsGQ==}
++
++  estree-util-is-identifier-name@3.0.0:
++    resolution: {integrity: sha512-hFtqIDZTIUZ9BXLb8y4pYGyk6+wekIivNVTcmvk8NoOh+VeRn5y6cEHzbURrWbfp1fIqdVipilzj+lfaadNZmg==}
++
++  estree-util-scope@1.0.1:
++    resolution: {integrity: sha512-B0np3dcdxqILX5e9nEi5/Fr4K7gL4oYFVPV1zRa2e9wRCbQoZZNWOZFYyoInvXUPJXBXjss+QXlWLJChDEHDkA==}
++
++  estree-util-to-js@2.0.0:
++    resolution: {integrity: sha512-WDF+xj5rRWmD5tj6bIqRi6CkLIXbbNQUcxQHzGysQzvHmdYG2G7p/Tf0J0gpxGgkeMZNTIjT/AoSvC9Xehcgdg==}
++
++  estree-util-visit@2.0.0:
++    resolution: {integrity: sha512-m5KgiH85xAhhW8Wta0vShLcUvOsh3LLPI2YVwcbio1l7E09NTLL1EyMZFM1OyWowoH0skScNbhOPl4kcBgzTww==}
++
+   estree-walker@3.0.3:
+     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
+ 
+@@ -961,6 +1056,9 @@
+   expect-type@1.4.0:
+     resolution: {integrity: sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==}
+     engines: {node: '>=12.0.0'}
++
++  extend@3.0.2:
++    resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
+ 
+   fast-deep-equal@3.1.3:
+     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
+@@ -1022,6 +1120,15 @@
+     resolution: {integrity: sha512-iZyKG96/JwPz1N55vj2Ie2vXbhu440zfUfJvSwEqEbeLluk7NnapfGqa7LH0mOsnDxTF85Mx8/dyR6HfqcbmbQ==}
+     engines: {node: '>=20'}
+ 
++  hast-util-to-estree@3.1.3:
++    resolution: {integrity: sha512-48+B/rJWAp0jamNbAAf9M7Uf//UVqAoMmgXhBdxTDJLGKY+LRnZ99qcG+Qjl5HfMpYNzS5v4EAwVEF34LeAj7w==}
++
++  hast-util-to-jsx-runtime@2.3.6:
++    resolution: {integrity: sha512-zl6s8LwNyo1P9uw+XJGvZtdFF1GdAkOg8ujOw+4Pyb76874fLps4ueHXDhXWdk6YHQ6OgUtinliG7RsYvCbbBg==}
++
++  hast-util-whitespace@3.0.0:
++    resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
++
+   hookified@1.15.1:
+     resolution: {integrity: sha512-MvG/clsADq1GPM2KGo2nyfaWVyn9naPiXrqIe4jYjXNZQt238kWyOGrsyc/DmRAQ+Re6yeo6yX/yoNCG5KAEVg==}
+ 
+@@ -1051,6 +1158,18 @@
+     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
+     engines: {node: '>=0.8.19'}
+ 
++  inline-style-parser@0.2.7:
++    resolution: {integrity: sha512-Nb2ctOyNR8DqQoR0OwRG95uNWIC0C1lCgf5Naz5H6Ji72KZ8OcFZLz2P5sNgwlyoJ8Yif11oMuYs5pBQa86csA==}
++
++  is-alphabetical@2.0.1:
++    resolution: {integrity: sha512-FWyyY60MeTNyeSRpkM2Iry0G9hpr7/9kD40mD/cGQEuilcZYS4okz8SN2Q6rLCJ8gbCt6fN+rC+6tMGS99LaxQ==}
++
++  is-alphanumerical@2.0.1:
++    resolution: {integrity: sha512-hmbYhX/9MUMF5uh7tOXyK/n0ZvWpad5caBA17GsC6vyuCqaWliRG5K1qS9inmUhEMaOBIW7/whAnSwveW/LtZw==}
++
++  is-decimal@2.0.1:
++    resolution: {integrity: sha512-AAB9hiomQs5DXWcRB1rqsxGUstbRroFOPPVAomNk/3XHR5JyEZChOyTWe2oayKnsSsr/kcGqF+z6yuH6HHpN0A==}
++
+   is-extglob@2.1.1:
+     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
+     engines: {node: '>=0.10.0'}
+@@ -1059,10 +1178,17 @@
+     resolution: {integrity: sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==}
+     engines: {node: '>=0.10.0'}
+ 
++  is-hexadecimal@2.0.1:
++    resolution: {integrity: sha512-DgZQp241c8oO6cA1SbTEWiXeoxV42vlcJxgH+B3hi1AiqqKruZR3ZGF8In3fj4+/y/7rHvlOZLZtgJ/4ttYGZg==}
++
+   is-interactive@2.0.0:
+     resolution: {integrity: sha512-qP1vozQRI+BMOPcjFzrjXuQvdak2pHNUMZoeG2eRbiSqyvbEf/wQtEOTOX1guk6E3t36RkaqiSt8A/6YElNxLQ==}
+     engines: {node: '>=12'}
+ 
++  is-plain-obj@4.1.0:
++    resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
++    engines: {node: '>=12'}
++
+   is-unicode-supported@2.1.0:
+     resolution: {integrity: sha512-mE00Gnza5EEB3Ds0HfMyllZzbBrmLOX3vfWoj9A9PEnTfratQ/BcaJOuMhnkhjXvb2+FkY3VuHqtAGpTPmglFQ==}
+     engines: {node: '>=18'}
+@@ -1100,8 +1226,129 @@
+     resolution: {integrity: sha512-ja1E3yCr9i/0hmBVaM0bfwDjnGy8I/s6PP4DFp+yP+a+mrHO4Rm7DtmnqROTUkHIkqffC84YY7AeqX6oFk0WFg==}
+     engines: {node: '>=18'}
+ 
++  longest-streak@3.1.0:
++    resolution: {integrity: sha512-9Ri+o0JYgehTaVBBDoMqIl8GXtbWg711O3srftcHhZ0dqnETqLaoIK0x17fUw9rFSlK/0NlsKe0Ahhyl5pXE2g==}
++
+   magic-string@0.30.21:
+     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
++
++  markdown-extensions@2.0.0:
++    resolution: {integrity: sha512-o5vL7aDWatOTX8LzaS1WMoaoxIiLRQJuIKKe2wAw6IeULDHaqbiqiggmx+pKvZDb1Sj+pE46Sn1T7lCqfFtg1Q==}
++    engines: {node: '>=16'}
++
++  mdast-util-from-markdown@2.1.0:
++    resolution: {integrity: sha512-KRLgmPaP2H1ul2bpoJkOS+9pAcDAAj9Nu1mqLnh8NLeJG5tlvj42TH80PIGBpROWlRXLk0lDrWNuZCFy/tsB4A==}
++
++  mdast-util-mdx-expression@2.0.1:
++    resolution: {integrity: sha512-J6f+9hUp+ldTZqKRSg7Vw5V6MqjATc+3E4gf3CFNcuZNWD8XdyI6zQ8GqH7f8169MM6P7hMBRDVGnn7oHB9kXQ==}
++
++  mdast-util-mdx-jsx@3.2.0:
++    resolution: {integrity: sha512-lj/z8v0r6ZtsN/cGNNtemmmfoLAFZnjMbNyLzBafjzikOM+glrjNHPlf6lQDOTccj9n5b0PPihEBbhneMyGs1Q==}
++
++  mdast-util-mdx@3.0.0:
++    resolution: {integrity: sha512-JfbYLAW7XnYTTbUsmpu0kdBUVe+yKVJZBItEjwyYJiDJuZ9w4eeaqks4HQO+R7objWgS2ymV60GYpI14Ug554w==}
++
++  mdast-util-mdxjs-esm@2.0.1:
++    resolution: {integrity: sha512-EcmOpxsZ96CvlP03NghtH1EsLtr0n9Tm4lPUJUBccV9RwUOneqSycg19n5HGzCf+10LozMRSObtVr3ee1WoHtg==}
++
++  mdast-util-phrasing@4.1.0:
++    resolution: {integrity: sha512-TqICwyvJJpBwvGAMZjj4J2n0X8QWp21b9l0o7eXyVJ25YNWYbJDVIyD1bZXE6WtV6RmKJVYmQAKWa0zWOABz2w==}
++
++  mdast-util-to-hast@13.2.1:
++    resolution: {integrity: sha512-cctsq2wp5vTsLIcaymblUriiTcZd0CwWtCbLvrOzYCDZoWyMNV8sZ7krj09FSnsiJi3WVsHLM4k6Dq/yaPyCXA==}
++
++  mdast-util-to-markdown@2.2.0:
++    resolution: {integrity: sha512-2Jn/ADrHFFyyniBMi0bncTbJqU78K3/TEYvzvwrWWzD9MYPUa/Gm4r3nOeKFQg/PDM5BsbDYdc8ackW4NTY6NA==}
++
++  mdast-util-to-string@4.0.0:
++    resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
++
++  micromark-core-commonmark@2.0.4:
++    resolution: {integrity: sha512-wxEeE8v8XVvOrxn1TZj74qYhAtTQsSqufHVS3uNVyT1MupXxhyaHk8/9xDNPh9BmL77QNDgWTkZ3RsYHB2ry7w==}
++
++  micromark-extension-mdx-expression@3.0.1:
++    resolution: {integrity: sha512-dD/ADLJ1AeMvSAKBwO22zG22N4ybhe7kFIZ3LsDI0GlsNr2A3KYxb0LdC1u5rj4Nw+CHKY0RVdnHX8vj8ejm4Q==}
++
++  micromark-extension-mdx-jsx@3.0.2:
++    resolution: {integrity: sha512-e5+q1DjMh62LZAJOnDraSSbDMvGJ8x3cbjygy2qFEi7HCeUT4BDKCvMozPozcD6WmOt6sVvYDNBKhFSz3kjOVQ==}
++
++  micromark-extension-mdx-md@2.0.0:
++    resolution: {integrity: sha512-EpAiszsB3blw4Rpba7xTOUptcFeBFi+6PY8VnJ2hhimH+vCQDirWgsMpz7w1XcZE7LVrSAUGb9VJpG9ghlYvYQ==}
++
++  micromark-extension-mdxjs-esm@3.0.0:
++    resolution: {integrity: sha512-DJFl4ZqkErRpq/dAPyeWp15tGrcrrJho1hKK5uBS70BCtfrIFg81sqcTVu3Ta+KD1Tk5vAtBNElWxtAa+m8K9A==}
++
++  micromark-extension-mdxjs@3.0.0:
++    resolution: {integrity: sha512-A873fJfhnJ2siZyUrJ31l34Uqwy4xIFmvPY1oj+Ean5PHcPBYzEsvqvWGaWcfEIr11O5Dlw3p2y0tZWpKHDejQ==}
++
++  micromark-factory-destination@2.0.1:
++    resolution: {integrity: sha512-Xe6rDdJlkmbFRExpTOmRj9N3MaWmbAgdpSrBQvCFqhezUn4AHqJHbaEnfbVYYiexVSs//tqOdY/DxhjdCiJnIA==}
++
++  micromark-factory-label@2.0.1:
++    resolution: {integrity: sha512-VFMekyQExqIW7xIChcXn4ok29YE3rnuyveW3wZQWWqF4Nv9Wk5rgJ99KzPvHjkmPXF93FXIbBp6YdW3t71/7Vg==}
++
++  micromark-factory-mdx-expression@2.0.3:
++    resolution: {integrity: sha512-kQnEtA3vzucU2BkrIa8/VaSAsP+EJ3CKOvhMuJgOEGg9KDC6OAY6nSnNDVRiVNRqj7Y4SlSzcStaH/5jge8JdQ==}
++
++  micromark-factory-space@2.1.0:
++    resolution: {integrity: sha512-fS8hnLIjnjvdQIj39Geug8wWsR0HrYZ43KShKxNfwT7t2LOHo/LbWZEzEaSOjwtjdCsjoE6syHhonEzW0zv0+Q==}
++
++  micromark-factory-title@2.0.1:
++    resolution: {integrity: sha512-5bZ+3CjhAd9eChYTHsjy6TGxpOFSKgKKJPJxr293jTbfry2KDoWkhBb6TcPVB4NmzaPhMs1Frm9AZH7OD4Cjzw==}
++
++  micromark-factory-whitespace@2.0.1:
++    resolution: {integrity: sha512-Ob0nuZ3PKt/n0hORHyvoD9uZhr+Za8sFoP+OnMcnWK5lngSzALgQYKMr9RJVOWLqQYuyn6ulqGWSXdwf6F80lQ==}
++
++  micromark-util-character@2.1.1:
++    resolution: {integrity: sha512-wv8tdUTJ3thSFFFJKtpYKOYiGP2+v96Hvk4Tu8KpCAsTMs6yi+nVmGh1syvSCsaxz45J6Jbw+9DD6g97+NV67Q==}
++
++  micromark-util-chunked@2.0.1:
++    resolution: {integrity: sha512-QUNFEOPELfmvv+4xiNg2sRYeS/P84pTW0TCgP5zc9FpXetHY0ab7SxKyAQCNCc1eK0459uoLI1y5oO5Vc1dbhA==}
++
++  micromark-util-classify-character@2.0.1:
++    resolution: {integrity: sha512-K0kHzM6afW/MbeWYWLjoHQv1sgg2Q9EccHEDzSkxiP/EaagNzCm7T/WMKZ3rjMbvIpvBiZgwR3dKMygtA4mG1Q==}
++
++  micromark-util-combine-extensions@2.0.1:
++    resolution: {integrity: sha512-OnAnH8Ujmy59JcyZw8JSbK9cGpdVY44NKgSM7E9Eh7DiLS2E9RNQf0dONaGDzEG9yjEl5hcqeIsj4hfRkLH/Bg==}
++
++  micromark-util-decode-numeric-character-reference@2.0.2:
++    resolution: {integrity: sha512-ccUbYk6CwVdkmCQMyr64dXz42EfHGkPQlBj5p7YVGzq8I7CtjXZJrubAYezf7Rp+bjPseiROqe7G6foFd+lEuw==}
++
++  micromark-util-decode-string@2.0.1:
++    resolution: {integrity: sha512-nDV/77Fj6eH1ynwscYTOsbK7rR//Uj0bZXBwJZRfaLEJ1iGBR6kIfNmlNqaqJf649EP0F3NWNdeJi03elllNUQ==}
++
++  micromark-util-edit-map@1.0.0:
++    resolution: {integrity: sha512-Pa2ljlsEL6sVwFaYeyrOLSYbQt73JvGbPOYFq+9AElXiSnfI5Q4465RRZ1sHv7lDjDOnGRDDaqPXqClqWK/q1Q==}
++
++  micromark-util-encode@2.0.1:
++    resolution: {integrity: sha512-c3cVx2y4KqUnwopcO9b/SCdo2O67LwJJ/UyqGfbigahfegL9myoEFoDYZgkT7f36T0bLrM9hZTAaAyH+PCAXjw==}
++
++  micromark-util-events-to-acorn@2.0.3:
++    resolution: {integrity: sha512-jmsiEIiZ1n7X1Rr5k8wVExBQCg5jy4UXVADItHmNk1zkwEVhBuIUKRu3fqv+hs4nxLISi2DQGlqIOGiFxgbfHg==}
++
++  micromark-util-html-tag-name@2.0.1:
++    resolution: {integrity: sha512-2cNEiYDhCWKI+Gs9T0Tiysk136SnR13hhO8yW6BGNyhOC4qYFnwF1nKfD3HFAIXA5c45RrIG1ub11GiXeYd1xA==}
++
++  micromark-util-normalize-identifier@2.0.1:
++    resolution: {integrity: sha512-sxPqmo70LyARJs0w2UclACPUUEqltCkJ6PhKdMIDuJ3gSf/Q+/GIe3WKl0Ijb/GyH9lOpUkRAO2wp0GVkLvS9Q==}
++
++  micromark-util-resolve-all@2.0.1:
++    resolution: {integrity: sha512-VdQyxFWFT2/FGJgwQnJYbe1jjQoNTS4RjglmSjTUlpUMa95Htx9NHeYW4rGDJzbjvCsl9eLjMQwGeElsqmzcHg==}
++
++  micromark-util-sanitize-uri@2.0.1:
++    resolution: {integrity: sha512-9N9IomZ/YuGGZZmQec1MbgxtlgougxTodVwDzzEouPKo3qFWvymFHWcnDi2vzV1ff6kas9ucW+o3yzJK9YB1AQ==}
++
++  micromark-util-subtokenize@2.1.0:
++    resolution: {integrity: sha512-XQLu552iSctvnEcgXw6+Sx75GflAPNED1qx7eBJ+wydBb2KCbRZe+NwvIEEMM83uml1+2WSXpBAcp9IUCgCYWA==}
++
++  micromark-util-symbol@2.0.1:
++    resolution: {integrity: sha512-vs5t8Apaud9N28kgCrRUdEed4UJ+wWNvicHLPxCa9ENlYuAY31M0ETy5y1vA33YoNPDFTghEbnh6efaE8h4x0Q==}
++
++  micromark-util-types@2.0.3:
++    resolution: {integrity: sha512-oxB2Ik03hI0gv+VNn9tnh1t1YEe9MDPptViAEgfdf3YQHsn0pzGTgCdlSCJXcwhqm8phaEuM7zeEu3QQzVBrPg==}
++
++  micromark@4.0.3:
++    resolution: {integrity: sha512-oGYfQzHSG5dOMovQcJ3fyTmZlWAWpi0XA0sJwJs+i6OT88o1+Jtw/8z0CmdowSLxGhhFK89rQ/oXph/wN02PNw==}
+ 
+   mimic-function@5.0.1:
+     resolution: {integrity: sha512-VP79XUPxV2CigYP3jWwAUFSku2aKqBH7uTAapFWCBqutsbmDo96KY5o8uh6U+/YSIn5OxJnXp73beVkpqMIGhA==}
+@@ -1157,6 +1404,9 @@
+   package-manager-detector@1.8.0:
+     resolution: {integrity: sha512-yQA4H19AmPEoMUeavPMDIe1higySl/gH/yaQrkT/s07Qp+7pp2hYz30N3z2l5BkjVkF9Ow6o0wjJamm2y7Sn0A==}
+ 
++  parse-entities@4.0.2:
++    resolution: {integrity: sha512-GG2AQYWoLgL877gQIKeRPGO1xF9+eG1ujIb5soS5gPvLQ1y2o8FL90w2QWNdf9I361Mpp7726c+lj3U0qK1uGw==}
++
+   path-exists@4.0.0:
+     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
+     engines: {node: '>=8'}
+@@ -1183,6 +1433,9 @@
+     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
+     engines: {node: '>= 0.8.0'}
+ 
++  property-information@7.2.0:
++    resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
++
+   punycode@2.3.1:
+     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
+     engines: {node: '>=6'}
+@@ -1190,6 +1443,32 @@
+   qified@0.10.1:
+     resolution: {integrity: sha512-+Owyggi9IxT1ePKGafcI87ubSmxol6smwJ+RAHDQlx9+9cPwFWDiKFFCPuWhr9ignlGpZ9vDQLw67N4dcTVFEA==}
+     engines: {node: '>=20'}
++
++  recma-build-jsx@1.0.0:
++    resolution: {integrity: sha512-8GtdyqaBcDfva+GUKDr3nev3VpKAhup1+RvkMvUxURHpW7QyIvk9F5wz7Vzo06CEMSilw6uArgRqhpiUcWp8ew==}
++
++  recma-jsx@1.0.1:
++    resolution: {integrity: sha512-huSIy7VU2Z5OLv6oFLosQGGDqPqdO1iq6bWNAdhzMxSJP7RAso4fCZ1cKu8j9YHCZf3TPrq4dw3okhrylgcd7w==}
++    peerDependencies:
++      acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
++
++  recma-parse@1.0.0:
++    resolution: {integrity: sha512-OYLsIGBB5Y5wjnSnQW6t3Xg7q3fQ7FWbw/vcXtORTnyaSFscOtABg+7Pnz6YZ6c27fG1/aN8CjfwoUEUIdwqWQ==}
++
++  recma-stringify@1.0.0:
++    resolution: {integrity: sha512-cjwII1MdIIVloKvC9ErQ+OgAtwHBmcZ0Bg4ciz78FtbT8In39aAYbaA7zvxQ61xVMSPE8WxhLwLbhif4Js2C+g==}
++
++  rehype-recma@1.0.0:
++    resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
++
++  remark-mdx@3.1.1:
++    resolution: {integrity: sha512-Pjj2IYlUY3+D8x00UJsIOg5BEvfMyeI+2uLPn9VO9Wg4MEtN/VTIq2NEJQfde9PnX15KgtHyl9S0BcTnWrIuWg==}
++
++  remark-parse@11.0.0:
++    resolution: {integrity: sha512-FCxlKLNGknS5ba/1lmpYijMUzX2esxW5xQqjWxw2eHFfS2MSdaHVINFmhjo+qN1WhZhNimq0dZATN9pH0IDrpA==}
++
++  remark-rehype@11.1.2:
++    resolution: {integrity: sha512-Dh7l57ianaEoIpzbp0PC9UKAdCSVklD8E5Rpw7ETfbTl3FqcOOgq5q2LVDhgGCkaBv7p24JXikPdvhhmHvKMsw==}
+ 
+   restore-cursor@5.1.0:
+     resolution: {integrity: sha512-oMA2dcrw6u0YfxJQXm342bFKX/E4sG9rbTzO9ptUcR/e8A33cHuvStiYOwH7fszkZlZ1z/ta9AAoPk2F4qIOHA==}
+@@ -1242,6 +1521,13 @@
+     resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
+     engines: {node: '>=0.10.0'}
+ 
++  source-map@0.7.6:
++    resolution: {integrity: sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ==}
++    engines: {node: '>= 12'}
++
++  space-separated-tokens@2.0.2:
++    resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
++
+   stackback@0.0.2:
+     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
+ 
+@@ -1256,10 +1542,19 @@
+     resolution: {integrity: sha512-GaPUh5gfdrYzqeVNZvUfT23vYYxXzKYidUcnMtJg/3rxRV63EFZy3k6xfKlmfeJD0176lnUV/Usr3XcwSvFzpg==}
+     engines: {node: '>=20'}
+ 
++  stringify-entities@4.0.4:
++    resolution: {integrity: sha512-IwfBptatlO+QCJUo19AqvrPNqlVMpW9YEL2LIVY+Rpv2qsjCGxaDLNRgeGsQWJhfItebuJhsGSLjaBbNSQ+ieg==}
++
+   strip-ansi@7.2.0:
+     resolution: {integrity: sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==}
+     engines: {node: '>=12'}
+ 
++  style-to-js@1.1.21:
++    resolution: {integrity: sha512-RjQetxJrrUJLQPHbLku6U/ocGtzyjbJMP9lCNK7Ag0CNh690nSH8woqWH9u16nMjYBAok+i7JO1NP2pOy8IsPQ==}
++
++  style-to-object@1.0.14:
++    resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
++
+   tinybench@2.9.0:
+     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
+ 
+@@ -1278,6 +1573,12 @@
+   totalist@3.0.1:
+     resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
+     engines: {node: '>=6'}
++
++  trim-lines@3.0.1:
++    resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
++
++  trough@2.2.0:
++    resolution: {integrity: sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw==}
+ 
+   ts-api-utils@2.5.0:
+     resolution: {integrity: sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA==}
+@@ -1304,8 +1605,35 @@
+   undici-types@6.21.0:
+     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+ 
++  unified@11.0.5:
++    resolution: {integrity: sha512-xKvGhPWw3k84Qjh8bI3ZeJjqnyadK+GEFtazSfZv/rKeTkTjOJho6mFqh2SM96iIcZokxiOpg78GazTSg8+KHA==}
++
++  unist-util-is@6.0.1:
++    resolution: {integrity: sha512-LsiILbtBETkDz8I9p1dQ0uyRUWuaQzd/cuEeS1hoRSyW5E5XGmTzlwY1OrNzzakGowI9Dr/I8HVaw4hTtnxy8g==}
++
++  unist-util-position-from-estree@2.0.0:
++    resolution: {integrity: sha512-KaFVRjoqLyF6YXCbVLNad/eS4+OfPQQn2yOd7zF/h5T/CSL2v8NpN6a5TPvtbXthAGw5nG+PuTtq+DdIZr+cRQ==}
++
++  unist-util-position@5.0.0:
++    resolution: {integrity: sha512-fucsC7HjXvkB5R3kTCO7kUjRdrS0BJt3M/FPxmHMBOm8JQi2BsHAHFsy27E0EolP8rp0NzXsJ+jNPyDWvOJZPA==}
++
++  unist-util-stringify-position@4.0.0:
++    resolution: {integrity: sha512-0ASV06AAoKCDkS2+xw5RXJywruurpbC4JZSm7nr7MOt1ojAzvyyaO+UxZf18j8FCF6kmzCZKcAgN/yu2gm2XgQ==}
++
++  unist-util-visit-parents@6.0.2:
++    resolution: {integrity: sha512-goh1s1TBrqSqukSc8wrjwWhL0hiJxgA8m4kFxGlQ+8FYQ3C/m11FcTs4YYem7V664AhHVvgoQLk890Ssdsr2IQ==}
++
++  unist-util-visit@5.1.0:
++    resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
++
+   uri-js@4.4.1:
+     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
++
++  vfile-message@4.0.3:
++    resolution: {integrity: sha512-QTHzsGd1EhbZs4AsQ20JX1rC3cOlt/IWJruk893DfLRr57lcnOeMaWG4K0JrRta4mIJZKth2Au3mM3u03/JWKw==}
++
++  vfile@6.0.3:
++    resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
+ 
+   vite@7.3.7:
+     resolution: {integrity: sha512-AHEzTORMbi7/7aXp7w7KZ5+DCUdSeLsJz0grY8xHpc9DHdYb0vQu6DqJfm2tOw3gDExNgPgnJTXxM6syYFHaCA==}
+@@ -1417,6 +1745,9 @@
+ 
+   zod@4.6.7:
+     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
++
++  zwitch@2.0.4:
++    resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
+ 
+ snapshots:
+ 
+@@ -1837,6 +2168,36 @@
+       tinyglobby: 0.2.17
+       yaml: 2.9.1
+ 
++  '@mdx-js/mdx@3.1.1':
++    dependencies:
++      '@types/estree': 1.0.9
++      '@types/estree-jsx': 1.0.5
++      '@types/hast': 3.0.5
++      '@types/mdx': 2.0.14
++      acorn: 8.18.0
++      collapse-white-space: 2.1.0
++      devlop: 1.1.0
++      estree-util-is-identifier-name: 3.0.0
++      estree-util-scope: 1.0.1
++      estree-walker: 3.0.3
++      hast-util-to-jsx-runtime: 2.3.6
++      markdown-extensions: 2.0.0
++      recma-build-jsx: 1.0.0
++      recma-jsx: 1.0.1(acorn@8.18.0)
++      recma-stringify: 1.0.0
++      rehype-recma: 1.0.0
++      remark-mdx: 3.1.1
++      remark-parse: 11.0.0
++      remark-rehype: 11.1.2
++      source-map: 0.7.6
++      unified: 11.0.5
++      unist-util-position-from-estree: 2.0.0
++      unist-util-stringify-position: 4.0.0
++      unist-util-visit: 5.1.0
++      vfile: 6.0.3
++    transitivePeerDependencies:
++      - supports-color
++
+   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
+     optional: true
+ 
+@@ -1925,19 +2286,43 @@
+     dependencies:
+       '@types/deep-eql': 4.0.2
+ 
++  '@types/debug@4.1.13':
++    dependencies:
++      '@types/ms': 2.1.0
++
+   '@types/deep-eql@4.0.2': {}
+ 
+   '@types/esrecurse@4.3.1': {}
+ 
++  '@types/estree-jsx@1.0.5':
++    dependencies:
++      '@types/estree': 1.0.9
++
+   '@types/estree@1.0.9': {}
+ 
++  '@types/hast@3.0.5':
++    dependencies:
++      '@types/unist': 3.0.3
++
+   '@types/json-schema@7.0.15': {}
+ 
++  '@types/mdast@4.0.4':
++    dependencies:
++      '@types/unist': 3.0.3
++
++  '@types/mdx@2.0.14': {}
++
++  '@types/ms@2.1.0': {}
++
+   '@types/node@20.19.43':
+     dependencies:
+       undici-types: 6.21.0
+ 
+   '@types/picomatch@4.0.3': {}
++
++  '@types/unist@2.0.11': {}
++
++  '@types/unist@3.0.3': {}
+ 
+   '@typescript-eslint/eslint-plugin@8.71.2(@typescript-eslint/parser@8.71.2(eslint@10.12.0)(typescript@6.0.3))(eslint@10.12.0)(typescript@6.0.3)':
+     dependencies:
+@@ -2030,6 +2415,8 @@
+       '@typescript-eslint/types': 8.71.2
+       eslint-visitor-keys: 5.0.1
+ 
++  '@ungap/structured-clone@1.4.0': {}
++
+   '@vitest/expect@4.1.12':
+     dependencies:
+       '@standard-schema/spec': 1.1.0
+@@ -2097,6 +2484,10 @@
+ 
+   ansi-regex@6.2.2: {}
+ 
++  astring@1.9.0: {}
++
++  bail@2.0.2: {}
++
+   balanced-match@4.0.4: {}
+ 
+   brace-expansion@5.0.12:
+@@ -2113,10 +2504,20 @@
+       keyv: 5.6.0
+       qified: 0.10.1
+ 
++  ccount@2.0.1: {}
++
+   chai@6.2.2: {}
+ 
+   chalk@5.6.2: {}
+ 
++  character-entities-html4@2.1.0: {}
++
++  character-entities-legacy@3.0.0: {}
++
++  character-entities@2.0.2: {}
++
++  character-reference-invalid@2.0.1: {}
++
+   chardet@2.2.0: {}
+ 
+   cli-cursor@5.0.0:
+@@ -2126,6 +2527,10 @@
+   cli-spinners@3.4.0: {}
+ 
+   cli-width@4.1.0: {}
++
++  collapse-white-space@2.1.0: {}
++
++  comma-separated-tokens@2.0.3: {}
+ 
+   commander@14.0.3: {}
+ 
+@@ -2143,11 +2548,35 @@
+     dependencies:
+       ms: 2.1.3
+ 
++  decode-named-character-reference@1.3.0:
++    dependencies:
++      character-entities: 2.0.2
++
+   deep-is@0.1.4: {}
+ 
++  dequal@2.0.3: {}
++
++  devlop@1.1.0:
++    dependencies:
++      dequal: 2.0.3
++
+   diff@9.0.0: {}
+ 
+   es-module-lexer@2.3.2: {}
++
++  esast-util-from-estree@2.0.0:
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      devlop: 1.1.0
++      estree-util-visit: 2.0.0
++      unist-util-position-from-estree: 2.0.0
++
++  esast-util-from-js@2.0.1:
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      acorn: 8.18.0
++      esast-util-from-estree: 2.0.0
++      vfile-message: 4.0.3
+ 
+   esbuild@0.28.2:
+     optionalDependencies:
+@@ -2242,6 +2671,35 @@
+ 
+   estraverse@5.3.0: {}
+ 
++  estree-util-attach-comments@3.0.0:
++    dependencies:
++      '@types/estree': 1.0.9
++
++  estree-util-build-jsx@3.0.1:
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      devlop: 1.1.0
++      estree-util-is-identifier-name: 3.0.0
++      estree-walker: 3.0.3
++
++  estree-util-is-identifier-name@3.0.0: {}
++
++  estree-util-scope@1.0.1:
++    dependencies:
++      '@types/estree': 1.0.9
++      devlop: 1.1.0
++
++  estree-util-to-js@2.0.0:
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      astring: 1.9.0
++      source-map: 0.7.6
++
++  estree-util-visit@2.0.0:
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      '@types/unist': 3.0.3
++
+   estree-walker@3.0.3:
+     dependencies:
+       '@types/estree': 1.0.9
+@@ -2249,6 +2707,8 @@
+   esutils@2.0.3: {}
+ 
+   expect-type@1.4.0: {}
++
++  extend@3.0.2: {}
+ 
+   fast-deep-equal@3.1.3: {}
+ 
+@@ -2302,6 +2762,51 @@
+     dependencies:
+       hookified: 1.15.1
+ 
++  hast-util-to-estree@3.1.3:
++    dependencies:
++      '@types/estree': 1.0.9
++      '@types/estree-jsx': 1.0.5
++      '@types/hast': 3.0.5
++      comma-separated-tokens: 2.0.3
++      devlop: 1.1.0
++      estree-util-attach-comments: 3.0.0
++      estree-util-is-identifier-name: 3.0.0
++      hast-util-whitespace: 3.0.0
++      mdast-util-mdx-expression: 2.0.1
++      mdast-util-mdx-jsx: 3.2.0
++      mdast-util-mdxjs-esm: 2.0.1
++      property-information: 7.2.0
++      space-separated-tokens: 2.0.2
++      style-to-js: 1.1.21
++      unist-util-position: 5.0.0
++      zwitch: 2.0.4
++    transitivePeerDependencies:
++      - supports-color
++
++  hast-util-to-jsx-runtime@2.3.6:
++    dependencies:
++      '@types/estree': 1.0.9
++      '@types/hast': 3.0.5
++      '@types/unist': 3.0.3
++      comma-separated-tokens: 2.0.3
++      devlop: 1.1.0
++      estree-util-is-identifier-name: 3.0.0
++      hast-util-whitespace: 3.0.0
++      mdast-util-mdx-expression: 2.0.1
++      mdast-util-mdx-jsx: 3.2.0
++      mdast-util-mdxjs-esm: 2.0.1
++      property-information: 7.2.0
++      space-separated-tokens: 2.0.2
++      style-to-js: 1.1.21
++      unist-util-position: 5.0.0
++      vfile-message: 4.0.3
++    transitivePeerDependencies:
++      - supports-color
++
++  hast-util-whitespace@3.0.0:
++    dependencies:
++      '@types/hast': 3.0.5
++
+   hookified@1.15.1: {}
+ 
+   hookified@2.2.0: {}
+@@ -2320,13 +2825,28 @@
+ 
+   imurmurhash@0.1.4: {}
+ 
++  inline-style-parser@0.2.7: {}
++
++  is-alphabetical@2.0.1: {}
++
++  is-alphanumerical@2.0.1:
++    dependencies:
++      is-alphabetical: 2.0.1
++      is-decimal: 2.0.1
++
++  is-decimal@2.0.1: {}
++
+   is-extglob@2.1.1: {}
+ 
+   is-glob@4.0.3:
+     dependencies:
+       is-extglob: 2.1.1
+ 
++  is-hexadecimal@2.0.1: {}
++
+   is-interactive@2.0.0: {}
++
++  is-plain-obj@4.1.0: {}
+ 
+   is-unicode-supported@2.1.0: {}
+ 
+@@ -2363,9 +2883,326 @@
+       is-unicode-supported: 2.1.0
+       yoctocolors: 2.2.0
+ 
++  longest-streak@3.1.0: {}
++
+   magic-string@0.30.21:
+     dependencies:
+       '@jridgewell/sourcemap-codec': 1.6.0
++
++  markdown-extensions@2.0.0: {}
++
++  mdast-util-from-markdown@2.1.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++      '@types/unist': 3.0.3
++      decode-named-character-reference: 1.3.0
++      devlop: 1.1.0
++      mdast-util-to-string: 4.0.0
++      micromark: 4.0.3
++      micromark-util-decode-numeric-character-reference: 2.0.2
++      micromark-util-decode-string: 2.0.1
++      micromark-util-normalize-identifier: 2.0.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++      unist-util-stringify-position: 4.0.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-mdx-expression@2.0.1:
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      devlop: 1.1.0
++      mdast-util-from-markdown: 2.1.0
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-mdx-jsx@3.2.0:
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      '@types/unist': 3.0.3
++      ccount: 2.0.1
++      devlop: 1.1.0
++      mdast-util-from-markdown: 2.1.0
++      mdast-util-to-markdown: 2.2.0
++      parse-entities: 4.0.2
++      stringify-entities: 4.0.4
++      unist-util-stringify-position: 4.0.0
++      vfile-message: 4.0.3
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-mdx@3.0.0:
++    dependencies:
++      mdast-util-from-markdown: 2.1.0
++      mdast-util-mdx-expression: 2.0.1
++      mdast-util-mdx-jsx: 3.2.0
++      mdast-util-mdxjs-esm: 2.0.1
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-mdxjs-esm@2.0.1:
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      devlop: 1.1.0
++      mdast-util-from-markdown: 2.1.0
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-phrasing@4.1.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++      unist-util-is: 6.0.1
++
++  mdast-util-to-hast@13.2.1:
++    dependencies:
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      '@ungap/structured-clone': 1.4.0
++      devlop: 1.1.0
++      micromark-util-sanitize-uri: 2.0.1
++      trim-lines: 3.0.1
++      unist-util-position: 5.0.0
++      unist-util-visit: 5.1.0
++      vfile: 6.0.3
++
++  mdast-util-to-markdown@2.2.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++      '@types/unist': 3.0.3
++      longest-streak: 3.1.0
++      mdast-util-phrasing: 4.1.0
++      mdast-util-to-string: 4.0.0
++      micromark-util-character: 2.1.1
++      micromark-util-classify-character: 2.0.1
++      micromark-util-decode-string: 2.0.1
++      micromark-util-html-tag-name: 2.0.1
++      unist-util-visit: 5.1.0
++      zwitch: 2.0.4
++
++  mdast-util-to-string@4.0.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++
++  micromark-core-commonmark@2.0.4:
++    dependencies:
++      decode-named-character-reference: 1.3.0
++      devlop: 1.1.0
++      micromark-factory-destination: 2.0.1
++      micromark-factory-label: 2.0.1
++      micromark-factory-space: 2.1.0
++      micromark-factory-title: 2.0.1
++      micromark-factory-whitespace: 2.0.1
++      micromark-util-character: 2.1.1
++      micromark-util-chunked: 2.0.1
++      micromark-util-classify-character: 2.0.1
++      micromark-util-edit-map: 1.0.0
++      micromark-util-html-tag-name: 2.0.1
++      micromark-util-normalize-identifier: 2.0.1
++      micromark-util-resolve-all: 2.0.1
++      micromark-util-subtokenize: 2.1.0
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-extension-mdx-expression@3.0.1:
++    dependencies:
++      '@types/estree': 1.0.9
++      devlop: 1.1.0
++      micromark-factory-mdx-expression: 2.0.3
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-events-to-acorn: 2.0.3
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-extension-mdx-jsx@3.0.2:
++    dependencies:
++      '@types/estree': 1.0.9
++      devlop: 1.1.0
++      estree-util-is-identifier-name: 3.0.0
++      micromark-factory-mdx-expression: 2.0.3
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-events-to-acorn: 2.0.3
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++      vfile-message: 4.0.3
++
++  micromark-extension-mdx-md@2.0.0:
++    dependencies:
++      micromark-util-types: 2.0.3
++
++  micromark-extension-mdxjs-esm@3.0.0:
++    dependencies:
++      '@types/estree': 1.0.9
++      devlop: 1.1.0
++      micromark-core-commonmark: 2.0.4
++      micromark-util-character: 2.1.1
++      micromark-util-events-to-acorn: 2.0.3
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++      unist-util-position-from-estree: 2.0.0
++      vfile-message: 4.0.3
++
++  micromark-extension-mdxjs@3.0.0:
++    dependencies:
++      acorn: 8.18.0
++      acorn-jsx: 5.3.2(acorn@8.18.0)
++      micromark-extension-mdx-expression: 3.0.1
++      micromark-extension-mdx-jsx: 3.0.2
++      micromark-extension-mdx-md: 2.0.0
++      micromark-extension-mdxjs-esm: 3.0.0
++      micromark-util-combine-extensions: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-destination@2.0.1:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-label@2.0.1:
++    dependencies:
++      devlop: 1.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-mdx-expression@2.0.3:
++    dependencies:
++      '@types/estree': 1.0.9
++      devlop: 1.1.0
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-events-to-acorn: 2.0.3
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++      unist-util-position-from-estree: 2.0.0
++      vfile-message: 4.0.3
++
++  micromark-factory-space@2.1.0:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-title@2.0.1:
++    dependencies:
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-whitespace@2.0.1:
++    dependencies:
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-character@2.1.1:
++    dependencies:
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-chunked@2.0.1:
++    dependencies:
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-classify-character@2.0.1:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-combine-extensions@2.0.1:
++    dependencies:
++      micromark-util-chunked: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-decode-numeric-character-reference@2.0.2:
++    dependencies:
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-decode-string@2.0.1:
++    dependencies:
++      decode-named-character-reference: 1.3.0
++      micromark-util-character: 2.1.1
++      micromark-util-decode-numeric-character-reference: 2.0.2
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-edit-map@1.0.0:
++    dependencies:
++      micromark-util-types: 2.0.3
++
++  micromark-util-encode@2.0.1: {}
++
++  micromark-util-events-to-acorn@2.0.3:
++    dependencies:
++      '@types/estree': 1.0.9
++      '@types/unist': 3.0.3
++      devlop: 1.1.0
++      estree-util-visit: 2.0.0
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++      vfile-message: 4.0.3
++
++  micromark-util-html-tag-name@2.0.1: {}
++
++  micromark-util-normalize-identifier@2.0.1:
++    dependencies:
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-resolve-all@2.0.1:
++    dependencies:
++      micromark-util-types: 2.0.3
++
++  micromark-util-sanitize-uri@2.0.1:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-encode: 2.0.1
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-subtokenize@2.1.0:
++    dependencies:
++      devlop: 1.1.0
++      micromark-util-chunked: 2.0.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-symbol@2.0.1: {}
++
++  micromark-util-types@2.0.3: {}
++
++  micromark@4.0.3:
++    dependencies:
++      '@types/debug': 4.1.13
++      debug: 4.4.3
++      decode-named-character-reference: 1.3.0
++      devlop: 1.1.0
++      micromark-core-commonmark: 2.0.4
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-chunked: 2.0.1
++      micromark-util-combine-extensions: 2.0.1
++      micromark-util-decode-numeric-character-reference: 2.0.2
++      micromark-util-edit-map: 1.0.0
++      micromark-util-encode: 2.0.1
++      micromark-util-normalize-identifier: 2.0.1
++      micromark-util-resolve-all: 2.0.1
++      micromark-util-sanitize-uri: 2.0.1
++      micromark-util-subtokenize: 2.1.0
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++    transitivePeerDependencies:
++      - supports-color
+ 
+   mimic-function@5.0.1: {}
+ 
+@@ -2419,6 +3256,16 @@
+ 
+   package-manager-detector@1.8.0: {}
+ 
++  parse-entities@4.0.2:
++    dependencies:
++      '@types/unist': 2.0.11
++      character-entities-legacy: 3.0.0
++      character-reference-invalid: 2.0.1
++      decode-named-character-reference: 1.3.0
++      is-alphanumerical: 2.0.1
++      is-decimal: 2.0.1
++      is-hexadecimal: 2.0.1
++
+   path-exists@4.0.0: {}
+ 
+   path-key@3.1.1: {}
+@@ -2437,11 +3284,74 @@
+ 
+   prelude-ls@1.2.1: {}
+ 
++  property-information@7.2.0: {}
++
+   punycode@2.3.1: {}
+ 
+   qified@0.10.1:
+     dependencies:
+       hookified: 2.2.0
++
++  recma-build-jsx@1.0.0:
++    dependencies:
++      '@types/estree': 1.0.9
++      estree-util-build-jsx: 3.0.1
++      vfile: 6.0.3
++
++  recma-jsx@1.0.1(acorn@8.18.0):
++    dependencies:
++      acorn: 8.18.0
++      acorn-jsx: 5.3.2(acorn@8.18.0)
++      estree-util-to-js: 2.0.0
++      recma-parse: 1.0.0
++      recma-stringify: 1.0.0
++      unified: 11.0.5
++
++  recma-parse@1.0.0:
++    dependencies:
++      '@types/estree': 1.0.9
++      esast-util-from-js: 2.0.1
++      unified: 11.0.5
++      vfile: 6.0.3
++
++  recma-stringify@1.0.0:
++    dependencies:
++      '@types/estree': 1.0.9
++      estree-util-to-js: 2.0.0
++      unified: 11.0.5
++      vfile: 6.0.3
++
++  rehype-recma@1.0.0:
++    dependencies:
++      '@types/estree': 1.0.9
++      '@types/hast': 3.0.5
++      hast-util-to-estree: 3.1.3
++    transitivePeerDependencies:
++      - supports-color
++
++  remark-mdx@3.1.1:
++    dependencies:
++      mdast-util-mdx: 3.0.0
++      micromark-extension-mdxjs: 3.0.0
++    transitivePeerDependencies:
++      - supports-color
++
++  remark-parse@11.0.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++      mdast-util-from-markdown: 2.1.0
++      micromark-util-types: 2.0.3
++      unified: 11.0.5
++    transitivePeerDependencies:
++      - supports-color
++
++  remark-rehype@11.1.2:
++    dependencies:
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      mdast-util-to-hast: 13.2.1
++      unified: 11.0.5
++      vfile: 6.0.3
+ 
+   restore-cursor@5.1.0:
+     dependencies:
+@@ -2508,6 +3418,10 @@
+ 
+   source-map-js@1.2.2: {}
+ 
++  source-map@0.7.6: {}
++
++  space-separated-tokens@2.0.2: {}
++
+   stackback@0.0.2: {}
+ 
+   std-env@4.2.0: {}
+@@ -2519,9 +3433,22 @@
+       get-east-asian-width: 1.6.0
+       strip-ansi: 7.2.0
+ 
++  stringify-entities@4.0.4:
++    dependencies:
++      character-entities-html4: 2.1.0
++      character-entities-legacy: 3.0.0
++
+   strip-ansi@7.2.0:
+     dependencies:
+       ansi-regex: 6.2.2
++
++  style-to-js@1.1.21:
++    dependencies:
++      style-to-object: 1.0.14
++
++  style-to-object@1.0.14:
++    dependencies:
++      inline-style-parser: 0.2.7
+ 
+   tinybench@2.9.0: {}
+ 
+@@ -2535,6 +3462,10 @@
+   tinyrainbow@3.1.1: {}
+ 
+   totalist@3.0.1: {}
++
++  trim-lines@3.0.1: {}
++
++  trough@2.2.0: {}
+ 
+   ts-api-utils@2.5.0(typescript@6.0.3):
+     dependencies:
+@@ -2559,9 +3490,56 @@
+ 
+   undici-types@6.21.0: {}
+ 
++  unified@11.0.5:
++    dependencies:
++      '@types/unist': 3.0.3
++      bail: 2.0.2
++      devlop: 1.1.0
++      extend: 3.0.2
++      is-plain-obj: 4.1.0
++      trough: 2.2.0
++      vfile: 6.0.3
++
++  unist-util-is@6.0.1:
++    dependencies:
++      '@types/unist': 3.0.3
++
++  unist-util-position-from-estree@2.0.0:
++    dependencies:
++      '@types/unist': 3.0.3
++
++  unist-util-position@5.0.0:
++    dependencies:
++      '@types/unist': 3.0.3
++
++  unist-util-stringify-position@4.0.0:
++    dependencies:
++      '@types/unist': 3.0.3
++
++  unist-util-visit-parents@6.0.2:
++    dependencies:
++      '@types/unist': 3.0.3
++      unist-util-is: 6.0.1
++
++  unist-util-visit@5.1.0:
++    dependencies:
++      '@types/unist': 3.0.3
++      unist-util-is: 6.0.1
++      unist-util-visit-parents: 6.0.2
++
+   uri-js@4.4.1:
+     dependencies:
+       punycode: 2.3.1
++
++  vfile-message@4.0.3:
++    dependencies:
++      '@types/unist': 3.0.3
++      unist-util-stringify-position: 4.0.0
++
++  vfile@6.0.3:
++    dependencies:
++      '@types/unist': 3.0.3
++      vfile-message: 4.0.3
+ 
+   vite@7.3.7(@types/node@20.19.43)(yaml@2.9.1):
+     dependencies:
+@@ -2622,3 +3600,5 @@
+   yoctocolors@2.2.0: {}
+ 
+   zod@4.6.7: {}
++
++  zwitch@2.0.4: {}
+diff --git a/skills/openspec-archive-change/SKILL.md b/skills/openspec-archive-change/SKILL.md
+--- a/skills/openspec-archive-change/SKILL.md
++++ b/skills/openspec-archive-change/SKILL.md
+@@ -11,6 +11,10 @@
+ 
+ Archive a completed change in the experimental workflow.
+ 
++**Canonical spec filename:** Every `<spec-file>` below is a placeholder, not a literal filename. Resolve it before any spec read, write, deletion, comparison, or Git history lookup. For the selected change, use the specs artifact's CLI instructions `outputPath` and concrete `existingOutputPaths` (or the equivalent selected-root status paths). Reuse an already fetched instructions snapshot rather than requesting another one. For an existing spec, preserve its confirmed canonical filename. The native default is `spec.md`; an explicitly MDX-configured planning root uses `spec.mdx`. Never infer the format from the invoking repository's configuration when a store is selected: use the same selected-root CLI flags and `planningHome.root` as the change. If no change exists yet, read only confirmed existing canonical spec paths; defer choosing new filenames until its artifact instructions are available.
++
++Apply that resolved filename to ALL illustrated paths below, including main specs, new delta specs, examples, and `git log` / `git show` pathspecs. Preserve capability paths and the selected planning root. If CLI instructions fail, the filename cannot be established, or both canonical siblings exist for one capability, stop before writing and report the conflict. Never create the opposite-extension sibling as a fallback. This filename rule does not rename proposal.md, design.md, tasks.md, or other artifacts.
++
+ **Store selection:** If the user names a store (a store is a standalone OpenSpec repo registered on this machine) or the work lives in one, run `openspec store list --json` to discover registered store ids, then pass `--store <id>` on the commands that read or write specs and changes (`new change`, `status`, `instructions`, `list`, `show`, `validate`, `archive`, `doctor`, `context`, `schemas`, `view`). Once selected, treat `--store <id>` as sticky for the rest of the workflow. Every unscoped example of those commands below is shorthand: before running it, append the flag. For example, run `openspec status --change "<name>" --json --store "<id>"`, not the unscoped form shown below. Other commands do not take the flag. Hints printed by commands already carry the flag; keep it on follow-ups. Without a store, commands act on the nearest local `openspec/` root.
+ 
+ **Project check:** These steps expect a project that already uses OpenSpec. Before the first step that writes anything (`new change`, `archive`, `sync specs`, or authoring an artifact file), confirm the project has a root: run `openspec list --json` (with `--store <id>` when a store is selected, since the store is then the root) and read `root`. A root object means the project is set up. `"root": null` means it is not - there is no `openspec/` directory here, and a write such as `openspec new change` would create one as a side effect. The command also exits non-zero, which is that answer rather than a broken CLI, so read the JSON instead of retrying or working around it.
+@@ -115,7 +119,7 @@
+    delta specs from other artifacts.
+ 
+    **If delta specs exist:**
+-   - Compare each delta spec with its corresponding main spec at `<planningHome.root>/openspec/specs/<capability-path>/spec.md` (use the store-aware `planningHome.root` from step 2, not a hardcoded repo path)
++   - Compare each delta spec with its corresponding main spec at `<planningHome.root>/openspec/specs/<capability-path>/<spec-file>` (use the store-aware `planningHome.root` from step 2, not a hardcoded repo path)
+    - A missing main spec is **not automatically** "already synced". For a new capability, the main spec is an *output* of the sync, not an input:
+      - If the delta has MODIFIED or RENAMED requirements, report that only ADDED requirements can create a new main spec and mark that capability as sync-blocked. Never invent a requirement that has no current version.
+      - Otherwise, if the delta has only REMOVED requirements and the change's `.openspec.yaml` declares `retire_capabilities: true`, the capability is already retired: count it as already synced, warn that there is nothing left to remove, and do not recreate the main spec. Apply this rule both now and when verifying a completed sync.
+diff --git a/skills/openspec-bulk-archive-change/SKILL.md b/skills/openspec-bulk-archive-change/SKILL.md
+--- a/skills/openspec-bulk-archive-change/SKILL.md
++++ b/skills/openspec-bulk-archive-change/SKILL.md
+@@ -10,6 +10,10 @@
+ ---
+ 
+ Archive multiple completed changes in a single operation.
++
++**Canonical spec filename:** Every `<spec-file>` below is a placeholder, not a literal filename. Resolve it before any spec read, write, deletion, comparison, or Git history lookup. For the selected change, use the specs artifact's CLI instructions `outputPath` and concrete `existingOutputPaths` (or the equivalent selected-root status paths). Reuse an already fetched instructions snapshot rather than requesting another one. For an existing spec, preserve its confirmed canonical filename. The native default is `spec.md`; an explicitly MDX-configured planning root uses `spec.mdx`. Never infer the format from the invoking repository's configuration when a store is selected: use the same selected-root CLI flags and `planningHome.root` as the change. If no change exists yet, read only confirmed existing canonical spec paths; defer choosing new filenames until its artifact instructions are available.
++
++Apply that resolved filename to ALL illustrated paths below, including main specs, new delta specs, examples, and `git log` / `git show` pathspecs. Preserve capability paths and the selected planning root. If CLI instructions fail, the filename cannot be established, or both canonical siblings exist for one capability, stop before writing and report the conflict. Never create the opposite-extension sibling as a fallback. This filename rule does not rename proposal.md, design.md, tasks.md, or other artifacts.
+ 
+ This skill allows you to batch-archive changes, handling spec conflicts intelligently by checking the codebase to determine what's actually implemented.
+ 
+@@ -218,7 +222,7 @@
+       - If a change has no included delta specs, do not run the sync workflow for it.
+ 
+    b. **Verify included delta specs before moving changeRoot**:
+-      - Re-run the comparison only for delta specs in `includedDeltas` against main spec at `<planningHome.root>/openspec/specs/<capability-path>/spec.md` (use the store-aware `planningHome.root` from step 3 status JSON, not a hardcoded repo path).
++      - Re-run the comparison only for delta specs in `includedDeltas` against main spec at `<planningHome.root>/openspec/specs/<capability-path>/<spec-file>` (use the store-aware `planningHome.root` from step 3 status JSON, not a hardcoded repo path).
+       - Verify that main specs are updated:
+         - ADDED requirements present
+         - MODIFIED requirements carrying scenario and description changes named in the delta, with their other scenarios intact
+@@ -280,7 +284,7 @@
+ 
+ Example 1: Only one implemented
+ ```text
+-Conflict: <planningHome.root>/openspec/specs/auth/spec.md touched by [add-oauth, add-jwt]
++Conflict: <planningHome.root>/openspec/specs/auth/<spec-file> touched by [add-oauth, add-jwt]
+ 
+ Checking add-oauth:
+ - Delta adds "OAuth Provider Integration" requirement
+@@ -295,7 +299,7 @@
+ 
+ Example 2: Both implemented
+ ```text
+-Conflict: <planningHome.root>/openspec/specs/api/spec.md touched by [add-rest-api, add-graphql]
++Conflict: <planningHome.root>/openspec/specs/api/<spec-file> touched by [add-rest-api, add-graphql]
+ 
+ Checking add-rest-api (created 2026-01-10):
+ - Delta adds "REST Endpoints" requirement
+@@ -363,7 +367,7 @@
+ - If sync is requested, run the `openspec-sync-specs` workflow inline (agent-driven) for each change with included delta specs
+ - Carry the per-delta `includedDeltas` and `excludedDeltas` decisions into execution; sync and verify only included deltas
+ - Report every excluded delta as `sync skipped` without treating the archive itself as skipped
+-- Never archive a change while a spec sync is still in flight — run the sync inline and verify main specs at `<planningHome.root>/openspec/specs/<capability-path>/spec.md` before moving `changeRoot`
++- Never archive a change while a spec sync is still in flight — run the sync inline and verify main specs at `<planningHome.root>/openspec/specs/<capability-path>/<spec-file>` before moving `changeRoot`
+ - Fetch archive inputs once per selected root before spec inspection or moves
+ - Fetch all required specs-rule snapshots before the batch's first main-spec write or move
+ - A failed archive-inputs lookup never blocks the batch; it proceeds with no context or guidance
+diff --git a/skills/openspec-continue-change/SKILL.md b/skills/openspec-continue-change/SKILL.md
+--- a/skills/openspec-continue-change/SKILL.md
++++ b/skills/openspec-continue-change/SKILL.md
+@@ -10,6 +10,10 @@
+ ---
+ 
+ Continue working on a change by creating the next artifact.
++
++**Canonical spec filename:** Every `<spec-file>` below is a placeholder, not a literal filename. Resolve it before any spec read, write, deletion, comparison, or Git history lookup. For the selected change, use the specs artifact's CLI instructions `outputPath` and concrete `existingOutputPaths` (or the equivalent selected-root status paths). Reuse an already fetched instructions snapshot rather than requesting another one. For an existing spec, preserve its confirmed canonical filename. The native default is `spec.md`; an explicitly MDX-configured planning root uses `spec.mdx`. Never infer the format from the invoking repository's configuration when a store is selected: use the same selected-root CLI flags and `planningHome.root` as the change. If no change exists yet, read only confirmed existing canonical spec paths; defer choosing new filenames until its artifact instructions are available.
++
++Apply that resolved filename to ALL illustrated paths below, including main specs, new delta specs, examples, and `git log` / `git show` pathspecs. Preserve capability paths and the selected planning root. If CLI instructions fail, the filename cannot be established, or both canonical siblings exist for one capability, stop before writing and report the conflict. Never create the opposite-extension sibling as a fallback. This filename rule does not rename proposal.md, design.md, tasks.md, or other artifacts.
+ 
+ **Store selection:** If the user names a store (a store is a standalone OpenSpec repo registered on this machine) or the work lives in one, run `openspec store list --json` to discover registered store ids, then pass `--store <id>` on the commands that read or write specs and changes (`new change`, `status`, `instructions`, `list`, `show`, `validate`, `archive`, `doctor`, `context`, `schemas`, `view`). Once selected, treat `--store <id>` as sticky for the rest of the workflow. Every unscoped example of those commands below is shorthand: before running it, append the flag. For example, run `openspec status --change "<name>" --json --store "<id>"`, not the unscoped form shown below. Other commands do not take the flag. Hints printed by commands already carry the flag; keep it on follow-ups. Without a store, commands act on the nearest local `openspec/` root.
+ 
+@@ -60,7 +64,7 @@
+ 
+    **Before anything else, finish a partly written artifact**:
+    - An artifact whose output is a glob pattern (e.g. `specs/**/*.md`) reads `done` as soon as one matching file exists, so a run interrupted while writing its files leaves it `done` with some still missing
+-   - For each such `done` artifact, first get its instructions and read any completed dependencies needed to determine the expected files. Then compare those files with `artifactPaths.<id>.existingOutputPaths`. For spec-driven's `specs`, read the proposal and check for one `specs/<capability-path>/spec.md` per capability it lists; resolve each expected path against `changeRoot` before comparing path identity, and verify each one remains inside `changeRoot` after resolving symlinks, both in its parent directories and in the file itself if it already exists
++   - For each such `done` artifact, first get its instructions and read any completed dependencies needed to determine the expected files. Then compare those files with `artifactPaths.<id>.existingOutputPaths`. For spec-driven's `specs`, read the proposal and check for one `specs/<capability-path>/<spec-file>` per capability it lists; resolve each expected path against `changeRoot` before comparing path identity, and verify each one remains inside `changeRoot` after resolving symlinks, both in its parent directories and in the file itself if it already exists
+    - Never write an expected path that fails that check; stop and tell the user. If any are missing, write only the missing files, each at its checked path - when the `instruction` field delegates creation to a skill or command, invoke it only if it can write each file to its checked path; otherwise stop and tell the user - and STOP - that counts as this invocation's ONE artifact. If you cannot tell whether a file was left out on purpose, ask the user
+ 
+    ---
+diff --git a/skills/openspec-explore/SKILL.md b/skills/openspec-explore/SKILL.md
+--- a/skills/openspec-explore/SKILL.md
++++ b/skills/openspec-explore/SKILL.md
+@@ -10,6 +10,10 @@
+ ---
+ 
+ Enter explore mode. Think deeply. Visualize freely. Follow the conversation wherever it goes.
++
++**Canonical spec filename:** Every `<spec-file>` below is a placeholder, not a literal filename. Resolve it before any spec read, write, deletion, comparison, or Git history lookup. For the selected change, use the specs artifact's CLI instructions `outputPath` and concrete `existingOutputPaths` (or the equivalent selected-root status paths). Reuse an already fetched instructions snapshot rather than requesting another one. For an existing spec, preserve its confirmed canonical filename. The native default is `spec.md`; an explicitly MDX-configured planning root uses `spec.mdx`. Never infer the format from the invoking repository's configuration when a store is selected: use the same selected-root CLI flags and `planningHome.root` as the change. If no change exists yet, read only confirmed existing canonical spec paths; defer choosing new filenames until its artifact instructions are available.
++
++Apply that resolved filename to ALL illustrated paths below, including main specs, new delta specs, examples, and `git log` / `git show` pathspecs. Preserve capability paths and the selected planning root. If CLI instructions fail, the filename cannot be established, or both canonical siblings exist for one capability, stop before writing and report the conflict. Never create the opposite-extension sibling as a fallback. This filename rule does not rename proposal.md, design.md, tasks.md, or other artifacts.
+ 
+ **IMPORTANT: Explore mode is for thinking, not implementing.** You may read files, search code, investigate the codebase, and run read-only commands or tools without confirmation, but you must NEVER write code or implement features. If the user asks you to implement something, do not start it here: say that explore mode does not implement, and point them at `/openspec-propose`, which turns the discussion into a change. The work happens from that change, never from explore mode. You MAY create or update OpenSpec change artifacts (proposals, designs, specs) within a confirmed scope—that's capturing thinking, not implementing. Answering design or clarifying questions is never consent to write. Before the first write-capable action, name the artifacts or files you would change and what you would do, ask a direct yes/no question, and wait for the user's confirmation in a separate message. Confirmation covers only the scope you described; ask again before expanding it. An explicit request from the user to capture the exploration as a new change is itself that confirmation, covering the change and the change artifacts the request names; scaffold it first as described below.
+ 
+@@ -182,8 +186,8 @@
+ 
+     | Insight Type               | Where to Capture                    |
+     |----------------------------|-------------------------------------|
+-    | New requirement discovered | `specs/<capability-path>/spec.md` |
+-    | Requirement changed        | `specs/<capability-path>/spec.md` |
++    | New requirement discovered | `specs/<capability-path>/<spec-file>` |
++    | Requirement changed        | `specs/<capability-path>/<spec-file>` |
+     | Design decision made       | `design.md`                       |
+     | Scope changed              | `proposal.md`                     |
+     | New work identified        | `tasks.md`                        |
+diff --git a/skills/openspec-propose/SKILL.md b/skills/openspec-propose/SKILL.md
+--- a/skills/openspec-propose/SKILL.md
++++ b/skills/openspec-propose/SKILL.md
+@@ -11,11 +11,15 @@
+ 
+ Propose a new change - create the change and generate all artifacts in one step.
+ 
++**Canonical spec filename:** Every `<spec-file>` below is a placeholder, not a literal filename. Resolve it before any spec read, write, deletion, comparison, or Git history lookup. For the selected change, use the specs artifact's CLI instructions `outputPath` and concrete `existingOutputPaths` (or the equivalent selected-root status paths). Reuse an already fetched instructions snapshot rather than requesting another one. For an existing spec, preserve its confirmed canonical filename. The native default is `spec.md`; an explicitly MDX-configured planning root uses `spec.mdx`. Never infer the format from the invoking repository's configuration when a store is selected: use the same selected-root CLI flags and `planningHome.root` as the change. If no change exists yet, read only confirmed existing canonical spec paths; defer choosing new filenames until its artifact instructions are available.
++
++Apply that resolved filename to ALL illustrated paths below, including main specs, new delta specs, examples, and `git log` / `git show` pathspecs. Preserve capability paths and the selected planning root. If CLI instructions fail, the filename cannot be established, or both canonical siblings exist for one capability, stop before writing and report the conflict. Never create the opposite-extension sibling as a fallback. This filename rule does not rename proposal.md, design.md, tasks.md, or other artifacts.
++
+ **Planning boundary**: This workflow creates planning artifacts only. The user request that selected or triggered this workflow authorizes planning only, even if it asks to build or fix something. Do not edit project code. After the planning artifacts are complete, stop. Do not start implementation in the same response, even if the initial request asks for it. Wait for a new user request after the artifacts are presented; then start the apply workflow.
+ 
+ I'll create a change with the artifacts your schema defines. With the default spec-driven schema that is:
+ - proposal.md (what & why)
+-- `specs/<capability-path>/spec.md` (what the system must do - a delta, not the main spec)
++- `specs/<capability-path>/<spec-file>` (what the system must do - a delta, not the main spec)
+ - design.md (how)
+ - tasks.md (implementation steps)
+ 
+diff --git a/skills/openspec-sync-specs/SKILL.md b/skills/openspec-sync-specs/SKILL.md
+--- a/skills/openspec-sync-specs/SKILL.md
++++ b/skills/openspec-sync-specs/SKILL.md
+@@ -11,6 +11,10 @@
+ 
+ Sync delta specs from a change to main specs.
+ 
++**Canonical spec filename:** Every `<spec-file>` below is a placeholder, not a literal filename. Resolve it before any spec read, write, deletion, comparison, or Git history lookup. For the selected change, use the specs artifact's CLI instructions `outputPath` and concrete `existingOutputPaths` (or the equivalent selected-root status paths). Reuse an already fetched instructions snapshot rather than requesting another one. For an existing spec, preserve its confirmed canonical filename. The native default is `spec.md`; an explicitly MDX-configured planning root uses `spec.mdx`. Never infer the format from the invoking repository's configuration when a store is selected: use the same selected-root CLI flags and `planningHome.root` as the change. If no change exists yet, read only confirmed existing canonical spec paths; defer choosing new filenames until its artifact instructions are available.
++
++Apply that resolved filename to ALL illustrated paths below, including main specs, new delta specs, examples, and `git log` / `git show` pathspecs. Preserve capability paths and the selected planning root. If CLI instructions fail, the filename cannot be established, or both canonical siblings exist for one capability, stop before writing and report the conflict. Never create the opposite-extension sibling as a fallback. This filename rule does not rename proposal.md, design.md, tasks.md, or other artifacts.
++
+ This is an **agent-driven** operation - you will read delta specs and directly edit main specs to apply the changes. This allows intelligent merging (e.g., adding a scenario without copying the entire requirement).
+ 
+ **Store selection:** If the user names a store (a store is a standalone OpenSpec repo registered on this machine) or the work lives in one, run `openspec store list --json` to discover registered store ids, then pass `--store <id>` on the commands that read or write specs and changes (`new change`, `status`, `instructions`, `list`, `show`, `validate`, `archive`, `doctor`, `context`, `schemas`, `view`). Once selected, treat `--store <id>` as sticky for the rest of the workflow. Every unscoped example of those commands below is shorthand: before running it, append the flag. For example, run `openspec status --change "<name>" --json --store "<id>"`, not the unscoped form shown below. Other commands do not take the flag. Hints printed by commands already carry the flag; keep it on follow-ups. Without a store, commands act on the nearest local `openspec/` root.
+@@ -64,7 +68,7 @@
+    A caller narrows it by naming an explicit list of complete entries from
+    `existingOutputPaths` — copy those absolute values verbatim. Archive does
+    this inline, and a user can too (for example, by selecting the entry ending
+-   in `/specs/billing/invoices/spec.md`).
++   in `/specs/billing/invoices/<spec-file>`).
+    Then sync only the named paths and leave the remaining delta specs untouched:
+    bulk archive excludes a delta whose implementation it could not find, and
+    syncing it anyway would write a main spec the caller deliberately withheld.
+@@ -104,7 +108,7 @@
+ 
+    a. **Read the delta spec** to understand the intended changes
+ 
+-   b. **Read the main spec** at `<planningHome.root>/openspec/specs/<capability-path>/spec.md` (may not exist yet)
++   b. **Read the main spec** at `<planningHome.root>/openspec/specs/<capability-path>/<spec-file>` (may not exist yet)
+ 
+       **If it does not exist yet** (a new capability), match what `openspec archive` does:
+       only ADDED requirements may be applied - step d creates the spec from them.
+@@ -112,6 +116,16 @@
+       capability and report that its main spec does not exist and only ADDED is allowed
+       for a new spec; never invent the missing requirement. REMOVED has nothing to
+       remove - skip it and warn.
++
++   **MDX preservation:** When the canonical file is MDX, treat its imports,
++   exports, and JSX as source text only; never execute module code, import it,
++   render it, or evaluate expressions. An omitted module preamble in the delta
++   retains the existing main spec's import/export preamble. If the delta supplies
++   module declarations, they replace that entire preamble, not just matching
++   lines. Preserve requirement JSX verbatim with its requirement block. Do not
++   drop retained module declarations when removing requirements; unexplained
++   content still blocks retirement under the conditions below. If the preamble
++   boundary or replacement is unclear, stop rather than inventing a merge.
+ 
+    c. **Apply changes intelligently**:
+ 
+@@ -129,7 +143,7 @@
+ 
+       **REMOVED Requirements:**
+       - Remove the entire requirement block from main spec
+-      - Retiring the capability. Delete the whole `spec.md` - and the directory once
++      - Retiring the capability. Delete the whole `<spec-file>` - and the directory once
+         nothing else is left in it - only when ALL of these hold:
+         1. removing the requirements *this run* left no requirement blocks;
+         2. the rest of the spec is well-formed (it still has a `## Purpose`);
+@@ -139,7 +153,7 @@
+            title, Purpose, Requirements header, or a canonical requirement's
+            statement, scenarios, or fenced examples;
+         5. the change's `.openspec.yaml` declares `retire_capabilities: true`;
+-        6. the `spec.md` resolves inside the real specs root (do not follow a
++        6. the `<spec-file>` resolves inside the real specs root (do not follow a
+            capability-directory symlink to delete an external file).
+         If removing the selected requirements would leave no requirement blocks and
+         any retirement condition is not satisfied, do not modify the main spec. Stop
+@@ -168,7 +182,7 @@
+         `openspec archive` rejects it with `Spec must have at least one requirement`.
+         An empty delta has no operations to sync; report it as blocked too.
+         Never write an empty `## Requirements` section.
+-      - Create `<planningHome.root>/openspec/specs/<capability-path>/spec.md`
++      - Create `<planningHome.root>/openspec/specs/<capability-path>/<spec-file>`
+       - Add Purpose section: copy the delta's `## Purpose` body verbatim when it has one
+         (this is what `openspec archive` does); only write a brief TBD placeholder when it does not
+       - Add Requirements section with the ADDED requirements
+@@ -186,7 +200,7 @@
+    - What changes were made (requirements added/modified/removed/renamed)
+    - Any new main spec left with a TBD Purpose placeholder, so it gets written
+      now rather than lingering
+-   - Any capability retired, naming the deleted `spec.md`, its Purpose, and
++   - Any capability retired, naming the deleted `<spec-file>`, its Purpose, and
+      either a pasteable `git checkout` or checkout-scoped recovery guidance
+ 
+ **Delta Spec Format Reference**
+diff --git a/skills/openspec-verify-change/SKILL.md b/skills/openspec-verify-change/SKILL.md
+--- a/skills/openspec-verify-change/SKILL.md
++++ b/skills/openspec-verify-change/SKILL.md
+@@ -10,6 +10,10 @@
+ ---
+ 
+ Verify that an implementation matches the change artifacts (specs, tasks, design).
++
++**Canonical spec filename:** Every `<spec-file>` below is a placeholder, not a literal filename. Resolve it before any spec read, write, deletion, comparison, or Git history lookup. For the selected change, use the specs artifact's CLI instructions `outputPath` and concrete `existingOutputPaths` (or the equivalent selected-root status paths). Reuse an already fetched instructions snapshot rather than requesting another one. For an existing spec, preserve its confirmed canonical filename. The native default is `spec.md`; an explicitly MDX-configured planning root uses `spec.mdx`. Never infer the format from the invoking repository's configuration when a store is selected: use the same selected-root CLI flags and `planningHome.root` as the change. If no change exists yet, read only confirmed existing canonical spec paths; defer choosing new filenames until its artifact instructions are available.
++
++Apply that resolved filename to ALL illustrated paths below, including main specs, new delta specs, examples, and `git log` / `git show` pathspecs. Preserve capability paths and the selected planning root. If CLI instructions fail, the filename cannot be established, or both canonical siblings exist for one capability, stop before writing and report the conflict. Never create the opposite-extension sibling as a fallback. This filename rule does not rename proposal.md, design.md, tasks.md, or other artifacts.
+ 
+ **Store selection:** If the user names a store (a store is a standalone OpenSpec repo registered on this machine) or the work lives in one, run `openspec store list --json` to discover registered store ids, then pass `--store <id>` on the commands that read or write specs and changes (`new change`, `status`, `instructions`, `list`, `show`, `validate`, `archive`, `doctor`, `context`, `schemas`, `view`). Once selected, treat `--store <id>` as sticky for the rest of the workflow. Every unscoped example of those commands below is shorthand: before running it, append the flag. For example, run `openspec status --change "<name>" --json --store "<id>"`, not the unscoped form shown below. Other commands do not take the flag. Hints printed by commands already carry the flag; keep it on follow-ups. Without a store, commands act on the nearest local `openspec/` root.
+ 
+@@ -101,8 +105,8 @@
+        - Add CRITICAL issue: "Requirement not found: <requirement name>"
+        - Recommendation: "Implement requirement X: <description>"
+      - For each REMOVED requirement, the change asks for the behavior to be gone, so invert the check:
+-       - A REMOVED block carries only the requirement name and any `**Reason**`/`**Migration**` notes, so the delta does not describe the behavior itself. Before searching, read the baseline requirement in the main spec at `<planningHome.root>/openspec/specs/<capability-path>/spec.md`, using the same capability path as the delta spec. Match it by exact normalized name, the rule OpenSpec uses when it applies REMOVED blocks: the heading text after `Requirement:`, trimmed, with a closing `#` run dropped only when a space or tab precedes it (so `C#` keeps its `#`), compared case-sensitively. A similarly worded heading is not a match; a rename belongs under RENAMED. Its body and scenarios are the evidence for the behavior that must be gone; never search from the requirement name alone.
+-       - If that file holds no requirement with that exact normalized name - for example because an earlier sync already applied the removal, or a similarly named ADDED requirement replaced it - recover the baseline from the same file's history, in the planning repository rather than the current directory: `git -C "<planningHome.root>" log -p -- openspec/specs/<capability-path>/spec.md`, or `git -C "<planningHome.root>" show <commit>^:./openspec/specs/<capability-path>/spec.md` once you have identified the commit that applied the removal. Empty output means the pathspec matched nothing, not that there is no baseline: `git log` reports an unmatched path as success, so re-check the path before drawing any conclusion from silence.
++       - A REMOVED block carries only the requirement name and any `**Reason**`/`**Migration**` notes, so the delta does not describe the behavior itself. Before searching, read the baseline requirement in the main spec at `<planningHome.root>/openspec/specs/<capability-path>/<spec-file>`, using the same capability path as the delta spec. Match it by exact normalized name, the rule OpenSpec uses when it applies REMOVED blocks: the heading text after `Requirement:`, trimmed, with a closing `#` run dropped only when a space or tab precedes it (so `C#` keeps its `#`), compared case-sensitively. A similarly worded heading is not a match; a rename belongs under RENAMED. Its body and scenarios are the evidence for the behavior that must be gone; never search from the requirement name alone.
++       - If that file holds no requirement with that exact normalized name - for example because an earlier sync already applied the removal, or a similarly named ADDED requirement replaced it - recover the baseline from the same file's history, in the planning repository rather than the current directory: `git -C "<planningHome.root>" log -p -- openspec/specs/<capability-path>/<spec-file>`, or `git -C "<planningHome.root>" show <commit>^:./openspec/specs/<capability-path>/<spec-file>` once you have identified the commit that applied the removal. Empty output means the pathspec matched nothing, not that there is no baseline: `git log` reports an unmatched path as success, so re-check the path before drawing any conclusion from silence.
+        - A baseline that adds nothing to its own title - no body beyond a restatement of the name, no scenarios - is unusable evidence, the same as a missing one. If no usable baseline is available in either place, mark **Spec Coverage** as not verified for that entry with the reason and stop there: do not search, and never count an unsearched removal as passing.
+        - Search codebase for that behavior. Matches in `openspec/` artifacts or docs, or in code that serves only the Migration note or an ADDED requirement, are not evidence by themselves. Report any code path that still delivers the removed behavior, including one shared with an ADDED requirement.
+        - Finding no implementation is the expected result, but only once the baseline behavior was the thing you searched for. Never report a REMOVED requirement as "Requirement not found" or recommend implementing it.
+@@ -112,7 +116,7 @@
+      - For each RENAMED entry (`FROM:`/`TO:`), the name changes but the behavior stays, so check the TO requirement for that unchanged behavior:
+        - Do not report the FROM name as missing, and do not require code symbols, identifiers, or file names to be renamed.
+        - If the TO name also appears under MODIFIED, its behavior is checked there against the MODIFIED text; skip it here.
+-       - Otherwise, read the baseline requirement in the main spec at `<planningHome.root>/openspec/specs/<capability-path>/spec.md`, using the same capability path as the delta spec: the requirement under the FROM name, or under the TO name only when the FROM name is absent because the main spec is already synced. Its body and scenarios are the evidence for the behavior the TO requirement keeps.
++       - Otherwise, read the baseline requirement in the main spec at `<planningHome.root>/openspec/specs/<capability-path>/<spec-file>`, using the same capability path as the delta spec: the requirement under the FROM name, or under the TO name only when the FROM name is absent because the main spec is already synced. Its body and scenarios are the evidence for the behavior the TO requirement keeps.
+        - Search codebase for that behavior and assess if it is still implemented.
+        - If it appears unimplemented:
+          - Add CRITICAL issue: "Renamed requirement not found: <TO name>"
+diff --git a/src/commands/change.ts b/src/commands/change.ts
+--- a/src/commands/change.ts
++++ b/src/commands/change.ts
+@@ -1,3 +1,4 @@
++import { splitMdxModule } from '../core/parsers/mdx-module.js';
+ import { promises as fs } from 'fs';
+ import path from 'path';
+ import chalk from 'chalk';
+@@ -16,7 +17,7 @@
+ import { getTaskProgressForChange } from '../utils/task-progress.js';
+ import { FileSystemUtils } from '../utils/file-system.js';
+ import { assertDiscoveredSpecFile } from '../utils/spec-path-containment.js';
+-import { discoverSpecFiles } from '../utils/spec-discovery.js';
++import { canonicalSpecPath, discoverSpecFiles } from '../utils/spec-discovery.js';
+ import {
+   foldRequirementName,
+   parseDeltaSpec,
+@@ -215,18 +216,19 @@
+     for (const { id: capability, specFile: deltaSpecPath } of discovered) {
+       const deltaContent = await fs.readFile(deltaSpecPath, 'utf-8');
+ 
+-      const mainSpecPath = path.join(mainSpecsDir, ...capability.split('/'), 'spec.md');
++      const mainSpecPath = canonicalSpecPath(mainSpecsDir, capability);
+       let mainContent: string | null = null;
+       try {
+         assertDiscoveredSpecFile(mainSpecsDir, mainSpecPath);
+         mainContent = await fs.readFile(mainSpecPath, 'utf-8');
++        if (mainSpecPath.endsWith('.mdx')) mainContent = splitMdxModule(mainContent).markdown;
+       } catch (error) {
+         if ((error as NodeJS.ErrnoException)?.code !== 'ENOENT') throw error;
+         // No main spec on disk. For ADDED requirements that is the ordinary new
+         // capability case; MODIFIED requirements are handled as a mismatch below.
+       }
+ 
+-      const plan = parseDeltaSpec(deltaContent);
++      const plan = parseDeltaSpec(deltaSpecPath.endsWith('.mdx') ? splitMdxModule(deltaContent).markdown : deltaContent);
+       const renameMap = buildRenameMap(plan.renamed);
+ 
+       for (const block of plan.added) {
+@@ -283,7 +285,7 @@
+           // missing main spec is an authoring error, not a new capability.
+           // Rendering it as all-additions would hide what archive will reject.
+           entry.warning =
+-            `No main spec at openspec/specs/${capability}/spec.md, ` +
++            `No main spec at openspec/specs/${capability}/${path.basename(mainSpecPath)}, ` +
+             `so MODIFIED requirement "${block.name}" has nothing to diff against`;
+         }
+ 
+diff --git a/src/commands/spec.ts b/src/commands/spec.ts
+--- a/src/commands/spec.ts
++++ b/src/commands/spec.ts
+@@ -1,12 +1,13 @@
+ import { existsSync, readFileSync } from 'fs';
+ import path, { join } from 'path';
++import { splitMdxModule } from '../core/parsers/mdx-module.js';
+ import { MarkdownParser } from '../core/parsers/markdown-parser.js';
+ import { Validator } from '../core/validation/validator.js';
+ import type { Spec } from '../core/schemas/index.js';
+ import type { RootOutput } from '../core/root-selection.js';
+ import { isInteractive } from '../utils/interactive.js';
+ import { getSpecIds } from '../utils/item-discovery.js';
+-import { discoverSpecFiles } from '../utils/spec-discovery.js';
++import { canonicalSpecPath, discoverSpecFiles } from '../utils/spec-discovery.js';
+ import { assertDiscoveredSpecFile } from '../utils/spec-path-containment.js';
+ 
+ const SPECS_DIR = 'openspec/specs';
+@@ -37,7 +38,7 @@
+ function parseSpecFromFile(specsDir: string, specPath: string, specId: string): Spec {
+   assertSpecPath(specsDir, specPath);
+   const content = readFileSync(specPath, 'utf-8');
+-  const parser = new MarkdownParser(content);
++  const parser = new MarkdownParser(specPath.endsWith('.mdx') ? splitMdxModule(content).markdown : content);
+   return parser.parseSpec(specId);
+ }
+ 
+@@ -109,12 +110,12 @@
+       }
+     }
+ 
+-    const specPath = join(this.specsDir, specId, 'spec.md');
++    const specPath = canonicalSpecPath(this.specsDir, specId);
+     assertSpecPath(this.specsDir, specPath);
+     if (!existsSync(specPath)) {
+       // Root-aware callers get the absolute path; the cwd-based noun form
+       // keeps its historical forward-slash relative message on all platforms.
+-      const displayPath = this.rootPath ? specPath : `openspec/specs/${specId}/spec.md`;
++      const displayPath = this.rootPath ? specPath : `openspec/specs/${specId}/${path.basename(specPath)}`;
+       throw new Error(`Spec '${specId}' not found at ${displayPath}`);
+     }
+ 
+@@ -222,11 +223,11 @@
+       }
+     }
+ 
+-    const specPath = join(SPECS_DIR, specId, 'spec.md');
++    const specPath = canonicalSpecPath(SPECS_DIR, specId);
+     assertSpecPath(SPECS_DIR, specPath);
+     
+     if (!existsSync(specPath)) {
+-      throw new Error(`Spec '${specId}' not found at openspec/specs/${specId}/spec.md`);
++      throw new Error(`Spec '${specId}' not found at openspec/specs/${specId}/${path.basename(specPath)}`);
+     }
+ 
+     const validator = new Validator(options.strict);
+diff --git a/src/commands/validate.ts b/src/commands/validate.ts
+--- a/src/commands/validate.ts
++++ b/src/commands/validate.ts
+@@ -16,6 +16,7 @@
+   isStoreSelectedRoot,
+ } from '../core/root-selection.js';
+ import { canRenderSpinner, isInteractive, resolveNoInteractive } from '../utils/interactive.js';
++import { canonicalSpecPath } from '../utils/spec-discovery.js';
+ import { getSpecIds } from '../utils/item-discovery.js';
+ import { getAvailableChanges } from './workflow/shared.js';
+ import { nearestMatches } from '../utils/match.js';
+@@ -344,7 +345,7 @@
+       process.exitCode = report.valid ? 0 : 1;
+       return;
+     }
+-    const file = path.join(root.specsDir, id, 'spec.md');
++    const file = canonicalSpecPath(root.specsDir, id);
+     const start = Date.now();
+     const report = await validator.validateSpec(file);
+     const durationMs = Date.now() - start;
+@@ -482,7 +483,7 @@
+     for (const id of specIds) {
+       queue.push(async () => {
+         const start = Date.now();
+-        const file = path.join(root.specsDir, id, 'spec.md');
++        const file = canonicalSpecPath(root.specsDir, id);
+         const report = await validator.validateSpec(file);
+         const durationMs = Date.now() - start;
+         return { id, type: 'spec' as const, valid: report.valid, issues: report.issues, durationMs };
+diff --git a/src/core/archive.ts b/src/core/archive.ts
+--- a/src/core/archive.ts
++++ b/src/core/archive.ts
+@@ -24,7 +24,7 @@
+   pruneEmptyDirs,
+   type SpecUpdate,
+ } from './specs-apply.js';
+-import { discoverSpecFiles, findUnreadDeltaFiles, hasAnyFileUnder } from '../utils/spec-discovery.js';
++import { discoverSpecFiles, findUnreadDeltaFiles, hasAnyFileUnder, canonicalSpecName } from '../utils/spec-discovery.js';
+ import {
+   METADATA_FILENAME,
+   formatUnknownChangeMetadataKeysMessage,
+@@ -1497,7 +1497,7 @@
+       // (#1385). Its existence alone must run validation, which reports it and
+       // blocks the archive. A directory named spec.md is a normal capability
+       // folder, so only a regular file counts.
+-      const rootSpecStat = await fs.stat(path.join(changeSpecsDir, 'spec.md')).catch(() => null);
++      const rootSpecStat = await fs.stat(path.join(changeSpecsDir, canonicalSpecName(changeSpecsDir))).catch(() => null);
+       let hasDeltaSpecs = rootSpecStat?.isFile() === true;
+       // Likewise for delta sections in any other file the merge path does not
+       // read (specs/<capability>.md, a note beside spec.md): without this the
+@@ -1876,7 +1876,7 @@
+               // so re-reporting that one error would just abort the fix (#1302).
+               if (p.outcome !== 'write') continue;
+               const specName = p.update.id;
+-              const report = await new Validator().validateSpecContent(specName, p.rebuilt);
++              const report = await new Validator().validateSpecContent(specName, p.rebuilt, p.update.target.endsWith('.mdx') ? 'mdx' : 'md');
+               if (!report.valid) {
+                 // This run is what emptied the capability, and "no
+                 // requirements" is the only thing wrong with the spec that
+diff --git a/src/core/artifact-graph/instruction-loader.ts b/src/core/artifact-graph/instruction-loader.ts
+--- a/src/core/artifact-graph/instruction-loader.ts
++++ b/src/core/artifact-graph/instruction-loader.ts
+@@ -22,7 +22,7 @@
+   type ActionContext,
+   type PlanningHomeSummary,
+ } from '../change-status-policy.js';
+-import { readProjectConfig, validateConfigRules, type ProjectConfig } from '../project-config.js';
++import { getSpecFormat, readProjectConfig, validateConfigRules, type ProjectConfig } from '../project-config.js';
+ import type { ReferenceIndexEntry } from '../references.js';
+ import type { PlanningHome } from '../planning-home.js';
+ import type { ChangeMetadata } from '../change-metadata/index.js';
+@@ -358,7 +358,10 @@
+     throw new Error(`Artifact '${artifactId}' not found in schema '${context.schemaName}'`);
+   }
+ 
+-  const templateContent = loadTemplate(context.schemaName, artifact.template, context.projectRoot);
++  const rawTemplate = loadTemplate(context.schemaName, artifact.template, context.projectRoot);
++  const templateContent = context.projectRoot && getSpecFormat(context.projectRoot) === 'mdx'
++    ? rawTemplate.replace(/\bspec\.md\b(?!x)/g, 'spec.mdx')
++    : rawTemplate;
+   const dependencies = getDependencyInfo(artifact, context.graph, context.completed, context.skippedArtifacts);
+   const unlocks = getUnlockedArtifacts(context.graph, artifactId);
+ 
+diff --git a/src/core/artifact-graph/resolver.ts b/src/core/artifact-graph/resolver.ts
+--- a/src/core/artifact-graph/resolver.ts
++++ b/src/core/artifact-graph/resolver.ts
+@@ -5,6 +5,8 @@
+ import { FileSystemUtils } from '../../utils/file-system.js';
+ import { parseSchema, SchemaValidationError } from './schema.js';
+ import type { SchemaYaml } from './types.js';
++import { getSpecFormat } from '../project-config.js';
++import { isSpecsArtifactPath } from './outputs.js';
+ 
+ /**
+  * Error thrown when loading a schema fails.
+@@ -227,7 +229,25 @@
+   }
+ 
+   try {
+-    return parseSchema(content);
++    const schema = parseSchema(content);
++    if (projectRoot && getSpecFormat(projectRoot) === 'mdx') {
++      const isStockSchema = normalizedName === 'spec-driven' &&
++        path.resolve(schemaDir) === path.resolve(getPackageSchemasDir(), 'spec-driven');
++      for (const artifact of schema.artifacts) {
++        if (isSpecsArtifactPath(artifact.generates)) {
++          if (isStockSchema) {
++            artifact.generates = 'specs/**/spec.mdx';
++          } else if (artifact.generates !== 'specs/**/spec.mdx') {
++            throw new Error(`Schema '${normalizedName}' artifact '${artifact.id}' must generate 'specs/**/spec.mdx' when specFormat is mdx`);
++          }
++        }
++        if (artifact.instruction) artifact.instruction = artifact.instruction.replace(/\bspec\.md\b(?!x)/g, 'spec.mdx');
++      }
++      if (schema.apply?.instruction) {
++        schema.apply.instruction = schema.apply.instruction.replace(/\bspec\.md\b(?!x)/g, 'spec.mdx');
++      }
++    }
++    return schema;
+   } catch (err) {
+     if (err instanceof SchemaValidationError) {
+       throw new SchemaLoadError(
+diff --git a/src/core/list.ts b/src/core/list.ts
+--- a/src/core/list.ts
++++ b/src/core/list.ts
+@@ -2,6 +2,7 @@
+ import path from 'path';
+ import { getTaskProgressForChange, formatTaskStatus } from '../utils/task-progress.js';
+ import { readFileSync, type Dirent } from 'fs';
++import { splitMdxModule } from './parsers/mdx-module.js';
+ import { MarkdownParser } from './parsers/markdown-parser.js';
+ import type { RootOutput } from './root-selection.js';
+ import { discoverSpecFiles } from '../utils/spec-discovery.js';
+@@ -274,7 +275,8 @@
+     const specs: SpecInfo[] = [];
+     for (const { id, specFile } of discovered) {
+       try {
+-        const content = readFileSync(specFile, 'utf-8');
++        const raw = readFileSync(specFile, 'utf-8');
++        const content = specFile.endsWith('.mdx') ? splitMdxModule(raw).markdown : raw;
+         const parser = new MarkdownParser(content);
+         const spec = parser.parseSpec(id);
+         specs.push({ id, requirementCount: spec.requirements.length });
+diff --git a/src/core/parsers/change-parser.ts b/src/core/parsers/change-parser.ts
+--- a/src/core/parsers/change-parser.ts
++++ b/src/core/parsers/change-parser.ts
+@@ -1,3 +1,4 @@
++import { splitMdxModule } from './mdx-module.js';
+ import { MarkdownParser, Section } from './markdown-parser.js';
+ import { buildCodeFenceMask } from './requirement-text.js';
+ import { parseDeltaSpec, type DeltaPlan, type RequirementBlock } from './requirement-blocks.js';
+@@ -73,10 +74,15 @@
+     for (const { id, specFile } of specFiles) {
+       try {
+         const content = await fs.readFile(specFile, 'utf-8');
+-        const plan = parseDeltaSpec(content);
++        const plan = parseDeltaSpec(specFile.endsWith('.mdx') ? splitMdxModule(content).markdown : content);
+         if (Object.values(plan.sectionPresence).some(Boolean)) hasDeltaSections = true;
+         deltas.push(...this.parseSpecDeltas(id, plan));
+       } catch (error) {
++        // An explicitly configured MDX delta must not disappear from structured
++        // output when its syntax is invalid. Keep legacy Markdown tolerance.
++        if (specFile.endsWith('.mdx')) {
++          throw new Error(`Cannot parse MDX delta ${specFile}: ${error instanceof Error ? error.message : String(error)}`);
++        }
+         // Spec file might not be readable, which is okay
+         continue;
+       }
+diff --git a/src/core/parsers/mdx-module.ts b/src/core/parsers/mdx-module.ts
+new file mode 100644
+--- /dev/null
++++ b/src/core/parsers/mdx-module.ts
+@@ -0,0 +1,38 @@
++import { createProcessor } from '@mdx-js/mdx';
++
++/** Parse, never evaluate, an MDX document. Preserve module statements by their
++ * original source ranges, and blank them in the Markdown view so JavaScript
++ * strings cannot masquerade as OpenSpec headings. Line numbers stay stable.
++ */
++export function splitMdxModule(source: string): { markdown: string; module: string } {
++  const tree = createProcessor({ format: 'mdx' }).parse(source);
++  // The existing OpenSpec grammar reads column-zero Markdown headings. MDX
++  // permits identical bytes inside JavaScript strings or nested JSX children;
++  // those are not spec structure. Refuse that ambiguous supported shape rather
++  // than allowing a string to become an ADDED/MODIFIED/REMOVED operation.
++  const inspect = (node: { type: string; position?: { start: { offset?: number }; end: { offset?: number } }; children?: unknown[] }): void => {
++    if (node.type.startsWith('mdx') && node.type !== 'mdxjsEsm') {
++      const start = node.position?.start.offset;
++      const end = node.position?.end.offset;
++      if (start !== undefined && end !== undefined && /^#{1,4}[ \t]+/m.test(source.slice(start, end))) {
++        throw new Error('OpenSpec headings must be top-level Markdown, not embedded in MDX JSX or expressions. Escape heading-like text inside the component.');
++      }
++    }
++    for (const child of node.children ?? []) inspect(child as Parameters<typeof inspect>[0]);
++  };
++  for (const node of tree.children) inspect(node);
++  const statements: string[] = [];
++  let markdown = '';
++  let offset = 0;
++  for (const node of tree.children) {
++    if (node.type !== 'mdxjsEsm') continue;
++    const start = node.position?.start.offset;
++    const end = node.position?.end.offset;
++    if (start === undefined || end === undefined) throw new Error('MDX module is missing source positions');
++    statements.push(source.slice(start, end));
++    markdown += source.slice(offset, start) + source.slice(start, end).replace(/[^\r\n]/g, ' ');
++    offset = end;
++  }
++  markdown += source.slice(offset);
++  return { markdown, module: statements.join('\n\n') };
++}
+diff --git a/src/core/project-config.ts b/src/core/project-config.ts
+--- a/src/core/project-config.ts
++++ b/src/core/project-config.ts
+@@ -32,6 +32,7 @@
+  * - Consistent with other OpenSpec schemas
+  */
+ export const ProjectConfigSchema = z.object({
++  specFormat: z.enum(['md', 'mdx']).optional(),
+   // Required: which schema to use (e.g., "spec-driven", or project-local schema name)
+   schema: z
+     .string()
+@@ -293,6 +294,28 @@
+   if (type === 'object') return 'a mapping';
+   if (type === 'number' || type === 'boolean') return `a ${type}`;
+   return `a ${type}`;
++}
++
++export type SpecFormat = 'md' | 'mdx';
++
++class InvalidSpecFormatError extends Error {}
++
++function parseSpecFormat(value: unknown): SpecFormat {
++  if (value === undefined) return 'md';
++  if (value === 'md' || value === 'mdx') return value;
++  throw new InvalidSpecFormatError("Invalid 'specFormat' field in config (must be 'md' or 'mdx')");
++}
++
++/** Resolve the canonical spec format without silently changing mutation targets. */
++export function getSpecFormat(projectRoot: string): SpecFormat {
++  const configPath = resolveConfigFilePath(projectRoot);
++  if (configPath === null) return 'md';
++  const raw = parseYaml(readFileSync(configPath, 'utf-8'));
++  if (raw == null) return 'md';
++  if (typeof raw !== 'object' || Array.isArray(raw)) {
++    throw new InvalidSpecFormatError(`Invalid project config at ${configPath}: expected an object`);
++  }
++  return parseSpecFormat(raw.specFormat);
+ }
+ 
+ /**
+@@ -330,6 +353,7 @@
+     }
+ 
+     const config: Partial<ProjectConfig> = {};
++    if (raw.specFormat !== undefined) config.specFormat = parseSpecFormat(raw.specFormat);
+ 
+     // Parse schema field using Zod
+     const schemaField = z.string().min(1);
+@@ -445,6 +469,7 @@
+     // Return partial config even if some fields failed
+     return Object.keys(config).length > 0 ? (config as ProjectConfig) : null;
+   } catch (error) {
++    if (error instanceof InvalidSpecFormatError) throw error;
+     console.warn(
+       `Warning: could not parse ${configPathForWarnings(projectRoot)} (${error instanceof Error ? error.message.split('\n')[0] : String(error)}); ignoring it.`
+     );
+diff --git a/src/core/references.ts b/src/core/references.ts
+--- a/src/core/references.ts
++++ b/src/core/references.ts
+@@ -20,6 +20,8 @@
+ } from './store/foundation.js';
+ import { getStoreRootForBackend } from './store/registry.js';
+ import { inspectRegisteredStore, type ResolvedOpenSpecRoot } from './root-selection.js';
++import { splitMdxModule } from './parsers/mdx-module.js';
++import { canonicalSpecPath } from '../utils/spec-discovery.js';
+ import { getSpecIds } from '../utils/item-discovery.js';
+ import { FileSystemUtils } from '../utils/file-system.js';
+ import { MAX_CONTEXT_SIZE, type DeclarationEntry } from './project-config.js';
+@@ -174,11 +176,10 @@
+     specIds.map(async (specId) => {
+       let summary = '';
+       try {
+-        const content = await fs.readFile(
+-          path.join(referencedRoot, 'openspec', 'specs', specId, 'spec.md'),
+-          'utf-8'
+-        );
+-        summary = sanitizeInline(extractFirstPurposeLine(content));
++        const specFile = canonicalSpecPath(path.join(referencedRoot, 'openspec', 'specs'), specId);
++        const content = await fs.readFile(specFile, 'utf-8');
++        const markdown = specFile.endsWith('.mdx') ? splitMdxModule(content).markdown : content;
++        summary = sanitizeInline(extractFirstPurposeLine(markdown));
+       } catch {
+         // Unreadable spec file: index the id with an empty summary.
+       }
+@@ -482,7 +483,21 @@
+       continue;
+     }
+ 
+-    const specs = await collectSpecEntries(inspection.canonicalRoot);
++    let specs: ReferenceSpecEntry[];
++    try {
++      specs = await collectSpecEntries(inspection.canonicalRoot);
++    } catch (error) {
++      entries.push({
++        store_id: id,
++        root: inspection.canonicalRoot,
++        status: [warning(
++          'reference_specs_unreadable',
++          `Referenced store '${id}' specs could not be indexed: ${sanitizeInline(error instanceof Error ? error.message : String(error))}`,
++          'Check the referenced store config and canonical spec files, then retry.'
++        )],
++      });
++      continue;
++    }
+     const entry: ReferenceIndexEntry = {
+       store_id: id,
+       root: inspection.canonicalRoot,
+diff --git a/src/core/specs-apply.ts b/src/core/specs-apply.ts
+--- a/src/core/specs-apply.ts
++++ b/src/core/specs-apply.ts
+@@ -23,12 +23,13 @@
+ import { findMainSpecStructureIssues } from './parsers/spec-structure.js';
+ import { buildCodeFenceMask } from './parsers/code-fence.js';
+ import { MarkdownParser } from './parsers/markdown-parser.js';
++import { splitMdxModule } from './parsers/mdx-module.js';
+ import {
+   MIN_PURPOSE_LENGTH,
+   PURPOSE_PLACEHOLDER_PREFIX,
+   PURPOSE_PLACEHOLDER_SUFFIX,
+ } from './validation/constants.js';
+-import { discoverSpecFiles } from '../utils/spec-discovery.js';
++import { discoverSpecFiles, canonicalSpecPath } from '../utils/spec-discovery.js';
+ import { FileSystemUtils } from '../utils/file-system.js';
+ import { assertSpecFileWithin } from '../utils/spec-path-containment.js';
+ import { matchLineEnding } from '../utils/line-endings.js';
+@@ -127,7 +128,7 @@
+   const discovered = await discoverSpecFiles(changeSpecsDir);
+ 
+   for (const { id, specFile } of discovered) {
+-    const targetFile = path.join(mainSpecsDir, ...id.split('/'), 'spec.md');
++    const targetFile = canonicalSpecPath(mainSpecsDir, id);
+     const source = resolveTrustedSpecPath(changeSpecsDir, specFile);
+     // Main specs always live at `<project root>/openspec/specs`, so the
+     // project root is the grandparent - a linked capability directory may not
+@@ -218,7 +219,11 @@
+   };
+   // Read change spec content (delta-format expected)
+   assertTrustedSpecPath(update.sourceRoot, update.source);
+-  const changeContent = await fs.readFile(update.source, 'utf-8');
++  const rawChange = await fs.readFile(update.source, 'utf-8');
++  const isMdx = update.source.endsWith('.mdx');
++  const changeModule = isMdx ? splitMdxModule(rawChange) : { markdown: rawChange, module: '' };
++  const changeContent = changeModule.markdown;
++  let moduleSource = changeModule.module;
+ 
+   // Parse deltas from the change spec file
+   const plan = parseDeltaSpec(changeContent);
+@@ -369,6 +374,12 @@
+   assertTrustedSpecPath(update.targetRoot, update.target);
+   try {
+     targetContent = await fs.readFile(update.target, 'utf-8');
++    if (isMdx) {
++      const targetModule = splitMdxModule(targetContent);
++      targetContent = targetModule.markdown;
++      // An omitted module means retain; an explicit one is a complete replacement.
++      moduleSource = changeModule.module || targetModule.module;
++    }
+     // A delta Purpose only seeds a spec that does not exist yet. Say so rather
+     // than dropping it silently - the specs instruction tells authors to write
+     // one for new capabilities, and the delta file looks identical either way.
+@@ -647,12 +658,18 @@
+   // glued the heading to the Purpose paragraph and the first requirement, so
+   // every archive rewrote a well-formatted spec into that shape. Separate
+   // non-empty slices with one blank line instead.
+-  const rebuilt =
+-    collapseBlankRunsOutsideFences(
+-      [parts.before.trimEnd(), parts.headerLine, reqBody, parts.after.trim()]
+-        .filter((s) => s !== '')
+-        .join('\n\n')
+-    ).trimEnd() + '\n';
++  const joined = [parts.before.trimEnd(), parts.headerLine, reqBody, parts.after.trim()]
++    .filter((s) => s !== '')
++    .join('\n\n');
++  // Blank lines inside JSX expressions/template literals are data, not merely
++  // Markdown layout. Do not normalize them with the Markdown-only formatter.
++  let rebuilt = (isMdx ? joined : collapseBlankRunsOutsideFences(joined)).trimEnd() + '\n';
++
++  if (isMdx) {
++    rebuilt = (moduleSource ? moduleSource + '\n\n' : '') + rebuilt.trimStart();
++    // Validate the combined document before any filesystem writes.
++    splitMdxModule(rebuilt);
++  }
+ 
+   return {
+     rebuilt,
+@@ -669,7 +686,7 @@
+     // is discarded with it, so a rebuilt-body scan only ever sees headings above
+     // the first requirement - it would veto `### Notes` written before the
+     // requirements and miss the identical heading written after them.
+-    unaccountedContent: contentTheMergeCannotName(parts),
++    unaccountedContent: [...contentTheMergeCannotName(parts), ...(moduleSource ? ['MDX module declarations'] : [])],
+   };
+ }
+ 
+@@ -1150,7 +1167,7 @@
+     await pruneEmptyDirs(path.dirname(update.target), mainSpecsDir);
+   }
+ 
+-  const nominal = options.displayPath ?? `openspec/specs/${update.id}/spec.md`;
++  const nominal = options.displayPath ?? `openspec/specs/${update.id}/${path.basename(update.target)}`;
+   if (!options.silent) {
+     console.log(`Retiring ${nominal}: all requirements removed.`);
+   }
+@@ -1292,7 +1309,7 @@
+   if (options.silent) return;
+ 
+   const specName = update.id;
+-  console.log(`Applying changes to ${options.displayPath ?? `openspec/specs/${specName}/spec.md`}:`);
++  console.log(`Applying changes to ${options.displayPath ?? `openspec/specs/${specName}/${path.basename(update.target)}`}:`);
+   if (counts.added) console.log(`  + ${counts.added} added`);
+   if (counts.modified) console.log(`  ~ ${counts.modified} modified`);
+   if (counts.removed) console.log(`  - ${counts.removed} removed`);
+diff --git a/src/core/templates/workflows/archive-change.ts b/src/core/templates/workflows/archive-change.ts
+--- a/src/core/templates/workflows/archive-change.ts
++++ b/src/core/templates/workflows/archive-change.ts
+@@ -8,6 +8,7 @@
+ import { optionalWorkflow } from '../optional-workflow.js';
+ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
+ import { PROJECT_ROOT_GUARD } from './project-root.js';
++import { withCanonicalSpecPaths } from './canonical-spec.js';
+ 
+ /**
+  * Archiving must merge delta specs into the main specs; the `sync` workflow is
+@@ -29,7 +30,7 @@
+ );
+ 
+ export function getArchiveChangeSkillTemplate(): SkillTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'openspec-archive-change',
+     description: 'Archive a completed OpenSpec change in the experimental workflow. Use when the user wants to finalize and archive a change after implementation is complete. Also use when the user says "openspec archive" or "opsx archive".',
+     instructions: `Archive a completed change in the experimental workflow.
+@@ -235,11 +236,11 @@
+     license: 'MIT',
+     compatibility: 'Requires openspec CLI.',
+     metadata: { author: 'openspec', version: '1.0' },
+-  };
++  });
+ }
+ 
+ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'OPSX: Archive',
+     description: 'Archive a completed change in the experimental workflow',
+     category: 'Workflow',
+@@ -491,5 +492,5 @@
+ - Existing CLI checks, resolved paths, prompts, and command contracts are unchanged
+ - Artifact rules constrain only the specs being written and are never operation guidance
+ - Never copy runtime context, operation guidance, or artifact-rule text verbatim into output files`
+-  };
++  });
+ }
+diff --git a/src/core/templates/workflows/bulk-archive-change.ts b/src/core/templates/workflows/bulk-archive-change.ts
+--- a/src/core/templates/workflows/bulk-archive-change.ts
++++ b/src/core/templates/workflows/bulk-archive-change.ts
+@@ -8,6 +8,7 @@
+ import { optionalWorkflow } from '../optional-workflow.js';
+ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
+ import { PROJECT_ROOT_GUARD } from './project-root.js';
++import { withCanonicalSpecPaths } from './canonical-spec.js';
+ 
+ /**
+  * Archiving must merge delta specs into the main specs; the `sync` workflow is
+@@ -29,7 +30,7 @@
+ );
+ 
+ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'openspec-bulk-archive-change',
+     description: 'Archive multiple completed OpenSpec changes at once. Use when archiving several parallel changes. Also use for a plural archive request - "openspec bulk-archive", "opsx bulk-archive", "openspec archive all", or "openspec archive these changes".',
+     instructions: `Archive multiple completed changes in a single operation.
+@@ -391,11 +392,11 @@
+     license: 'MIT',
+     compatibility: 'Requires openspec CLI.',
+     metadata: { author: 'openspec', version: '1.0' },
+-  };
++  });
+ }
+ 
+ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'OPSX: Bulk Archive',
+     description: 'Archive multiple completed changes at once',
+     category: 'Workflow',
+@@ -756,5 +757,5 @@
+ - Keep runtime inputs, conflict analysis, CLI-derived values, and artifact rules separate
+ - Artifact rules constrain only written specs
+ - Never copy runtime input or artifact-rule text verbatim into output files`
+-  };
++  });
+ }
+diff --git a/src/core/templates/workflows/canonical-spec.ts b/src/core/templates/workflows/canonical-spec.ts
+new file mode 100644
+--- /dev/null
++++ b/src/core/templates/workflows/canonical-spec.ts
+@@ -0,0 +1,19 @@
++/** Keep globally installed workflow text aligned with the selected planning root. */
++const CANONICAL_SPEC_GUIDANCE = `**Canonical spec filename:** Every \`<spec-file>\` below is a placeholder, not a literal filename. Resolve it before any spec read, write, deletion, comparison, or Git history lookup. For the selected change, use the specs artifact's CLI instructions \`outputPath\` and concrete \`existingOutputPaths\` (or the equivalent selected-root status paths). Reuse an already fetched instructions snapshot rather than requesting another one. For an existing spec, preserve its confirmed canonical filename. The native default is \`spec.md\`; an explicitly MDX-configured planning root uses \`spec.mdx\`. Never infer the format from the invoking repository's configuration when a store is selected: use the same selected-root CLI flags and \`planningHome.root\` as the change. If no change exists yet, read only confirmed existing canonical spec paths; defer choosing new filenames until its artifact instructions are available.
++
++Apply that resolved filename to ALL illustrated paths below, including main specs, new delta specs, examples, and \`git log\` / \`git show\` pathspecs. Preserve capability paths and the selected planning root. If CLI instructions fail, the filename cannot be established, or both canonical siblings exist for one capability, stop before writing and report the conflict. Never create the opposite-extension sibling as a fallback. This filename rule does not rename proposal.md, design.md, tasks.md, or other artifacts.`;
++
++/** Adapt both skill and command bodies, including interpolated shared text. */
++export function withCanonicalSpecPaths<T extends { instructions?: string; content?: string }>(template: T): T {
++  const adapt = (body: string): string => {
++    const rendered = body.replace(/\bspec\.md\b/g, '<spec-file>');
++    const firstParagraph = rendered.indexOf('\n\n');
++    if (firstParagraph < 0) return `${rendered}\n\n${CANONICAL_SPEC_GUIDANCE}`;
++    return `${rendered.slice(0, firstParagraph)}\n\n${CANONICAL_SPEC_GUIDANCE}${rendered.slice(firstParagraph)}`;
++  };
++  return {
++    ...template,
++    ...(template.instructions !== undefined ? { instructions: adapt(template.instructions) } : {}),
++    ...(template.content !== undefined ? { content: adapt(template.content) } : {}),
++  };
++}
+diff --git a/src/core/templates/workflows/continue-change.ts b/src/core/templates/workflows/continue-change.ts
+--- a/src/core/templates/workflows/continue-change.ts
++++ b/src/core/templates/workflows/continue-change.ts
+@@ -8,6 +8,7 @@
+ import { optionalWorkflow } from '../optional-workflow.js';
+ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
+ import { PROJECT_ROOT_GUARD } from './project-root.js';
++import { withCanonicalSpecPaths } from './canonical-spec.js';
+ 
+ /**
+  * The planning-complete handoff. Neither `apply` nor `archive` is guaranteed
+@@ -35,7 +36,7 @@
+    - Never write an expected path that fails that check; stop and tell the user. If any are missing, write only the missing files, each at its checked path - when the \`instruction\` field delegates creation to a skill or command, invoke it only if it can write each file to its checked path; otherwise stop and tell the user - and STOP - that counts as this invocation's ONE artifact. If you cannot tell whether a file was left out on purpose, ask the user`;
+ 
+ export function getContinueChangeSkillTemplate(): SkillTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'openspec-continue-change',
+     description: 'Continue working on an OpenSpec change by creating the next artifact. Use when the user wants to progress their change, create the next artifact, or continue their workflow. Also use when the user says "openspec continue" or "opsx continue".',
+     instructions: `Continue working on a change by creating the next artifact.
+@@ -155,11 +156,11 @@
+     license: 'MIT',
+     compatibility: 'Requires openspec CLI.',
+     metadata: { author: 'openspec', version: '1.0' },
+-  };
++  });
+ }
+ 
+ export function getOpsxContinueCommandTemplate(): CommandTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'OPSX: Continue',
+     description: 'Continue working on a change - create the next artifact (Experimental)',
+     category: 'Workflow',
+@@ -278,5 +279,5 @@
+ - **IMPORTANT**: \`context\` and \`rules\` are constraints for YOU, not content for the file
+   - Do NOT copy \`<context>\`, \`<rules>\`, \`<project_context>\` blocks into the artifact
+   - These guide what you write, but should never appear in the output`
+-  };
++  });
+ }
+diff --git a/src/core/templates/workflows/explore.ts b/src/core/templates/workflows/explore.ts
+--- a/src/core/templates/workflows/explore.ts
++++ b/src/core/templates/workflows/explore.ts
+@@ -8,6 +8,7 @@
+ import { optionalWorkflow } from '../optional-workflow.js';
+ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
+ import { PROJECT_ROOT_GUARD } from './project-root.js';
++import { withCanonicalSpecPaths } from './canonical-spec.js';
+ 
+ const PLANNING_GUIDANCE = `## Planning a Change
+ 
+@@ -74,7 +75,7 @@
+ );
+ 
+ export function getExploreSkillTemplate(): SkillTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'openspec-explore',
+     description: 'Enter OpenSpec explore mode - a thinking partner for exploring ideas, investigating problems, and clarifying requirements in a project that uses OpenSpec. Use when the user wants to think through something before or during an OpenSpec change. Also use when the user says "openspec explore" or "opsx explore".',
+     instructions: `Enter explore mode. Think deeply. Visualize freely. Follow the conversation wherever it goes.
+@@ -395,11 +396,11 @@
+     license: 'MIT',
+     compatibility: 'Requires openspec CLI.',
+     metadata: { author: 'openspec', version: '1.0' },
+-  };
++  });
+ }
+ 
+ export function getOpsxExploreCommandTemplate(): CommandTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'OPSX: Explore',
+     description: 'Enter explore mode - think through ideas, investigate problems, clarify requirements',
+     category: 'Workflow',
+@@ -608,5 +609,5 @@
+ - **Do visualize** - A good diagram is worth many paragraphs
+ - **Do explore the codebase** - Ground discussions in reality
+ - **Do question assumptions** - Including the user's and your own`
+-  };
++  });
+ }
+diff --git a/src/core/templates/workflows/propose.ts b/src/core/templates/workflows/propose.ts
+--- a/src/core/templates/workflows/propose.ts
++++ b/src/core/templates/workflows/propose.ts
+@@ -8,6 +8,7 @@
+ import { optionalWorkflow } from '../optional-workflow.js';
+ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
+ import { PROJECT_ROOT_GUARD } from './project-root.js';
++import { withCanonicalSpecPaths } from './canonical-spec.js';
+ 
+ /**
+  * The implementation handoff. `apply` is not guaranteed to be installed, so
+@@ -31,7 +32,7 @@
+ );
+ 
+ export function getOpsxProposeSkillTemplate(): SkillTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'openspec-propose',
+     description: 'Propose a new OpenSpec change with all artifacts generated in one step. Use when the user wants to quickly describe what they want to build and get a complete proposal with design, specs, and tasks ready for implementation. Also use when the user says "openspec propose" or "opsx propose".',
+     instructions: `Propose a new change - create the change and generate all artifacts in one step.
+@@ -191,11 +192,11 @@
+     license: 'MIT',
+     compatibility: 'Requires openspec CLI.',
+     metadata: { author: 'openspec', version: '1.0' },
+-  };
++  });
+ }
+ 
+ export function getOpsxProposeCommandTemplate(): CommandTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'OPSX: Propose',
+     description: 'Propose a new change - create it and generate all artifacts in one step',
+     category: 'Workflow',
+@@ -354,5 +355,5 @@
+ - Ask about ambiguities that would materially change scope, externally observable behavior, compatibility, or acceptance criteria; for minor details, make reasonable assumptions and record them
+ - If a change with that name already exists, ask if user wants to continue it or create a new one
+ - Verify each artifact file exists after writing before proceeding to next`
+-  };
++  });
+ }
+diff --git a/src/core/templates/workflows/sync-specs.ts b/src/core/templates/workflows/sync-specs.ts
+--- a/src/core/templates/workflows/sync-specs.ts
++++ b/src/core/templates/workflows/sync-specs.ts
+@@ -7,9 +7,10 @@
+ import type { SkillTemplate, CommandTemplate } from '../types.js';
+ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
+ import { PROJECT_ROOT_GUARD } from './project-root.js';
++import { withCanonicalSpecPaths } from './canonical-spec.js';
+ 
+ export function getSyncSpecsSkillTemplate(): SkillTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'openspec-sync-specs',
+     description: 'Sync delta specs from an OpenSpec change to main specs. Use when the user wants to update main specs with changes from a delta spec, without archiving the change. Also use when the user says "openspec sync" or "opsx sync".',
+     instructions: `Sync delta specs from a change to main specs.
+@@ -106,6 +107,16 @@
+       capability and report that its main spec does not exist and only ADDED is allowed
+       for a new spec; never invent the missing requirement. REMOVED has nothing to
+       remove - skip it and warn.
++
++   **MDX preservation:** When the canonical file is MDX, treat its imports,
++   exports, and JSX as source text only; never execute module code, import it,
++   render it, or evaluate expressions. An omitted module preamble in the delta
++   retains the existing main spec's import/export preamble. If the delta supplies
++   module declarations, they replace that entire preamble, not just matching
++   lines. Preserve requirement JSX verbatim with its requirement block. Do not
++   drop retained module declarations when removing requirements; unexplained
++   content still blocks retirement under the conditions below. If the preamble
++   boundary or replacement is unclear, stop rather than inventing a merge.
+ 
+    c. **Apply changes intelligently**:
+ 
+@@ -284,11 +295,11 @@
+     license: 'MIT',
+     compatibility: 'Requires openspec CLI.',
+     metadata: { author: 'openspec', version: '1.0' },
+-  };
++  });
+ }
+ 
+ export function getOpsxSyncCommandTemplate(): CommandTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'OPSX: Sync',
+     description: 'Sync delta specs from a change to main specs',
+     category: 'Workflow',
+@@ -387,6 +398,16 @@
+       capability and report that its main spec does not exist and only ADDED is allowed
+       for a new spec; never invent the missing requirement. REMOVED has nothing to
+       remove - skip it and warn.
++
++   **MDX preservation:** When the canonical file is MDX, treat its imports,
++   exports, and JSX as source text only; never execute module code, import it,
++   render it, or evaluate expressions. An omitted module preamble in the delta
++   retains the existing main spec's import/export preamble. If the delta supplies
++   module declarations, they replace that entire preamble, not just matching
++   lines. Preserve requirement JSX verbatim with its requirement block. Do not
++   drop retained module declarations when removing requirements; unexplained
++   content still blocks retirement under the conditions below. If the preamble
++   boundary or replacement is unclear, stop rather than inventing a merge.
+ 
+    c. **Apply changes intelligently**:
+ 
+@@ -562,5 +583,5 @@
+ - Fetch specs instructions once for direct sync, or reuse the archive-supplied snapshot inline
+ - Stop before every main-spec write on a non-zero or invalid JSON specs-instruction response
+ - Artifact rules constrain only the specs being written and are never copied into output files`
+-  };
++  });
+ }
+diff --git a/src/core/templates/workflows/verify-change.ts b/src/core/templates/workflows/verify-change.ts
+--- a/src/core/templates/workflows/verify-change.ts
++++ b/src/core/templates/workflows/verify-change.ts
+@@ -7,9 +7,10 @@
+ import type { SkillTemplate, CommandTemplate } from '../types.js';
+ import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
+ import { PROJECT_ROOT_GUARD } from './project-root.js';
++import { withCanonicalSpecPaths } from './canonical-spec.js';
+ 
+ export function getVerifyChangeSkillTemplate(): SkillTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'openspec-verify-change',
+     description: 'Verify implementation matches OpenSpec change artifacts. Use when the user wants to validate that implementation is complete, correct, and coherent before archiving. Also use when the user says "openspec verify" or "opsx verify".',
+     instructions: `Verify that an implementation matches the change artifacts (specs, tasks, design).
+@@ -217,11 +218,11 @@
+     license: 'MIT',
+     compatibility: 'Requires openspec CLI.',
+     metadata: { author: 'openspec', version: '1.0' },
+-  };
++  });
+ }
+ 
+ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
+-  return {
++  return withCanonicalSpecPaths({
+     name: 'OPSX: Verify',
+     description: 'Verify implementation matches change artifacts before archiving',
+     category: 'Workflow',
+@@ -427,5 +428,5 @@
+ - Code references in format: \`file.ts:123\`
+ - Specific, actionable recommendations
+ - No vague suggestions like "consider reviewing"`
+-  };
++  });
+ }
+diff --git a/src/core/validation/validator.ts b/src/core/validation/validator.ts
+--- a/src/core/validation/validator.ts
++++ b/src/core/validation/validator.ts
+@@ -1,3 +1,4 @@
++import { splitMdxModule } from '../parsers/mdx-module.js';
+ import { z, ZodError } from 'zod';
+ import { readFileSync, promises as fs } from 'fs';
+ import path from 'path';
+@@ -30,7 +31,7 @@
+ import { findMainSpecStructureIssues } from '../parsers/spec-structure.js';
+ import { FileSystemUtils } from '../../utils/file-system.js';
+ import { assertDiscoveredSpecFile } from '../../utils/spec-path-containment.js';
+-import { discoverSpecFiles, findUnreadDeltaFiles, hasAnyFileUnder } from '../../utils/spec-discovery.js';
++import { discoverSpecFiles, findUnreadDeltaFiles, hasAnyFileUnder, canonicalSpecName, canonicalSpecPath } from '../../utils/spec-discovery.js';
+ import {
+   METADATA_FILENAME,
+   formatUnknownChangeMetadataKeysMessage,
+@@ -55,7 +56,8 @@
+     const issues: ValidationIssue[] = [];
+     const specName = this.extractNameFromPath(filePath);
+     try {
+-      const content = readFileSync(filePath, 'utf-8');
++      const raw = readFileSync(filePath, 'utf-8');
++      const content = filePath.endsWith('.mdx') ? splitMdxModule(raw).markdown : raw;
+       const parser = new MarkdownParser(content);
+       
+       const spec = parser.parseSpec(specName);
+@@ -84,9 +86,10 @@
+   /**
+    * Validate spec content from a string (used for pre-write validation of rebuilt specs)
+    */
+-  async validateSpecContent(specName: string, content: string): Promise<ValidationReport> {
++  async validateSpecContent(specName: string, content: string, format: 'md' | 'mdx' = 'md'): Promise<ValidationReport> {
+     const issues: ValidationIssue[] = [];
+     try {
++      if (format === 'mdx') content = splitMdxModule(content).markdown;
+       const parser = new MarkdownParser(content);
+       const spec = parser.parseSpec(specName);
+       const result = SpecSchema.safeParse(spec);
+@@ -189,12 +192,12 @@
+       // archives while its requirements never reach openspec/specs/ (#1385).
+       // Only a regular file counts — a *directory* named spec.md is a capability
+       // folder like any other, and discoverSpecFiles reads it normally.
+-      const rootSpecStat = await fs.stat(path.join(specsDir, 'spec.md')).catch(() => null);
++      const rootSpecStat = await fs.stat(path.join(specsDir, canonicalSpecName(specsDir))).catch(() => null);
+       hasRootLevelSpec = rootSpecStat?.isFile() === true;
+       if (hasRootLevelSpec) {
+         issues.push({
+           level: 'ERROR',
+-          path: 'spec.md',
++          path: canonicalSpecName(specsDir),
+           message:
+             'Delta spec found at specs/spec.md. Delta specs must live under a capability path (e.g. specs/<capability-path>/spec.md) — a file at the specs/ root is ignored when the change is applied or archived.',
+         });
+@@ -204,7 +207,11 @@
+         let content: string | undefined;
+         try {
+           content = await fs.readFile(specFile, 'utf-8');
+-        } catch {
++          if (specFile.endsWith('.mdx')) content = splitMdxModule(content).markdown;
++        } catch (error) {
++          if (specFile.endsWith('.mdx')) {
++            issues.push({ level: 'ERROR', path: path.relative(specsDir, specFile), message: error instanceof Error ? error.message : String(error) });
++          }
+           continue;
+         }
+ 
+@@ -372,11 +379,7 @@
+         // Run archive's scenario-loss check here too, so the change fails at
+         // authoring time instead of days later at archive time (#1477).
+         if (options.mainSpecsDir && plan.modified.length > 0) {
+-          const mainSpecFile = path.join(
+-            options.mainSpecsDir,
+-            ...specId.split('/'),
+-            'spec.md'
+-          );
++          const mainSpecFile = canonicalSpecPath(options.mainSpecsDir, specId);
+           issues.push(
+             ...(await this.findScenarioLossIssues(
+               plan.modified,
+@@ -492,7 +495,7 @@
+       issues.push({
+         level: 'ERROR',
+         path: file.path,
+-        message: `Delta spec found at specs/${file.path}. Delta specs must be a spec.md inside a capability folder — this file is ignored when the change is applied or archived. Move its requirements into specs/${file.expected}.`,
++        message: `Delta spec found at specs/${file.path}. Delta specs must be a ${canonicalSpecName(specsDir)} inside a capability folder — this file is ignored when the change is applied or archived. Move its requirements into specs/${file.expected}.`,
+       });
+     }
+ 
+@@ -561,6 +564,11 @@
+       issues.push(...await this.collectTaskFileIssues(changeDir, options.projectRoot));
+     }
+ 
++    if (canonicalSpecName(specsDir) === 'spec.mdx') {
++      for (const issue of issues) {
++        issue.message = issue.message.replace(/\bspec\.md\b(?!x)/g, 'spec.mdx').replace(/\.md files/g, '.mdx files');
++      }
++    }
+     return this.createReport(issues);
+   }
+ 
+@@ -713,6 +721,7 @@
+     assertDiscoveredSpecFile(mainSpecRoot, mainSpecFile);
+     try {
+       mainContent = await fs.readFile(mainSpecFile, 'utf-8');
++      if (mainSpecFile.endsWith('.mdx')) mainContent = splitMdxModule(mainContent).markdown;
+     } catch (error) {
+       const code = (error as NodeJS.ErrnoException)?.code;
+       // Reported only for the codes that mean the file itself is unusable, and
+@@ -984,7 +993,7 @@
+     for (const update of updates) {
+       // discoverSpecFiles builds both this id and the entryPath the checks
+       // above report under, from the same walk.
+-      const entryPath = FileSystemUtils.toPosixPath(`${update.id}/spec.md`);
++      const entryPath = FileSystemUtils.toPosixPath(`${update.id}/${path.basename(update.source)}`);
+       // A delta those checks already rejected would be reported twice, the
+       // second time in archive's wording rather than the wording that names
+       // the actual mistake.
+diff --git a/src/core/view.ts b/src/core/view.ts
+--- a/src/core/view.ts
++++ b/src/core/view.ts
+@@ -2,6 +2,7 @@
+ import * as path from 'path';
+ import chalk from 'chalk';
+ import { getTaskProgressForChange, formatTaskStatus } from '../utils/task-progress.js';
++import { splitMdxModule } from './parsers/mdx-module.js';
+ import { MarkdownParser } from './parsers/markdown-parser.js';
+ import { discoverSpecFiles } from '../utils/spec-discovery.js';
+ import { loadChangeContext, formatChangeStatus, type ChangeStatus } from './artifact-graph/index.js';
+@@ -160,7 +161,8 @@
+ 
+     for (const { id, specFile } of await discoverSpecFiles(specsDir)) {
+       try {
+-        const content = fs.readFileSync(specFile, 'utf-8');
++        const raw = fs.readFileSync(specFile, 'utf-8');
++        const content = specFile.endsWith('.mdx') ? splitMdxModule(raw).markdown : raw;
+         const parser = new MarkdownParser(content);
+         const spec = parser.parseSpec(id);
+         const requirementCount = spec.requirements.length;
+diff --git a/src/utils/spec-discovery.ts b/src/utils/spec-discovery.ts
+--- a/src/utils/spec-discovery.ts
++++ b/src/utils/spec-discovery.ts
+@@ -1,7 +1,27 @@
+-import { promises as fs } from 'fs';
++import { promises as fs, existsSync } from 'fs';
++import { getSpecFormat } from '../core/project-config.js';
+ import path from 'path';
+-import { assertDiscoveredSpecFile } from './spec-path-containment.js';
++import { assertDiscoveredSpecFile, findProjectRoot } from './spec-path-containment.js';
+ import { parseDeltaSpec } from '../core/parsers/requirement-blocks.js';
++
++/** Resolve from the lexical planning tree, not cwd or a capability symlink target.
++ * Both project and standalone-store roots use <root>/openspec/. Library callers
++ * with standalone specs directories retain the historical Markdown default.
++ */
++export function canonicalSpecName(specsRoot: string): 'spec.md' | 'spec.mdx' {
++  const projectRoot = findProjectRoot(specsRoot);
++  return projectRoot && getSpecFormat(projectRoot) === 'mdx' ? 'spec.mdx' : 'spec.md';
++}
++
++export function canonicalSpecPath(specsRoot: string, id: string): string {
++  const name = canonicalSpecName(specsRoot);
++  const directory = path.join(specsRoot, ...id.split('/'));
++  const other = name === 'spec.md' ? 'spec.mdx' : 'spec.md';
++  if (existsSync(path.join(directory, other))) {
++    throw new Error(`Capability '${id}' contains ${other}, but this planning root selects ${name}. Move or convert the spec explicitly; mixed canonical formats are not merged.`);
++  }
++  return path.join(directory, name);
++}
+ 
+ export interface DiscoveredSpec {
+   /** Spec id relative to the specs root, forward-slash separated on every platform (e.g. "web" or "platform/session-layout"). */
+@@ -28,6 +48,7 @@
+  */
+ export async function discoverSpecFiles(specsRoot: string): Promise<DiscoveredSpec[]> {
+   const results: DiscoveredSpec[] = [];
++  const canonical = canonicalSpecName(specsRoot);
+   const walk = async (dir: string, segments: string[]): Promise<void> => {
+     let entries;
+     try {
+@@ -40,7 +61,11 @@
+       if (entry.name.startsWith('.')) continue;
+       if (entry.isDirectory()) {
+         await walk(path.join(dir, entry.name), [...segments, entry.name]);
+-      } else if (entry.name === 'spec.md' && segments.length > 0) {
++      } else if ((entry.name === 'spec.md' || entry.name === 'spec.mdx') && segments.length > 0) {
++        if (entry.name !== canonical) {
++          throw new Error(`Unexpected ${entry.name} under capability '${segments.join('/')}'; this planning root selects ${canonical}. Convert explicitly before continuing.`);
++        }
++        canonicalSpecPath(specsRoot, segments.join('/'));
+         const specFile = path.join(dir, entry.name);
+         if (entry.isFile()) {
+           assertDiscoveredSpecFile(specsRoot, specFile);
+@@ -88,6 +113,7 @@
+  */
+ export async function findUnreadDeltaFiles(specsRoot: string): Promise<UnreadDeltaFile[]> {
+   const results: UnreadDeltaFile[] = [];
++  const canonical = canonicalSpecName(specsRoot);
+   const walk = async (dir: string, segments: string[]): Promise<void> => {
+     let entries;
+     try {
+@@ -103,7 +129,7 @@
+         continue;
+       }
+       if (!entry.isFile() && !entry.isSymbolicLink()) continue;
+-      if (entry.name === 'spec.md' || !entry.name.toLowerCase().endsWith('.md')) continue;
++      if (entry.name === canonical || !/\.mdx?$/i.test(entry.name)) continue;
+       const filePath = path.join(dir, entry.name);
+       let content: string;
+       try {
+@@ -116,8 +142,8 @@
+       }
+       if (!Object.values(parseDeltaSpec(content).sectionPresence).some(Boolean)) continue;
+       const capability =
+-        segments.length > 0 ? segments.join('/') : entry.name.slice(0, -'.md'.length);
+-      results.push({ path: [...segments, entry.name].join('/'), expected: `${capability}/spec.md` });
++        segments.length > 0 ? segments.join('/') : entry.name.replace(/\.mdx?$/i, '');
++      results.push({ path: [...segments, entry.name].join('/'), expected: `${capability}/${canonical}` });
+     }
+   };
+   await walk(specsRoot, []);
+diff --git a/src/utils/spec-path-containment.ts b/src/utils/spec-path-containment.ts
+--- a/src/utils/spec-path-containment.ts
++++ b/src/utils/spec-path-containment.ts
+@@ -18,7 +18,7 @@
+  * its boundary. A specs root reached some other way (a store given by path)
+  * has no project to name, and containment stays at the specs root.
+  */
+-function findProjectRoot(specsRoot: string): string | null {
++export function findProjectRoot(specsRoot: string): string | null {
+   let current = path.resolve(specsRoot);
+   let below: string | null = null;
+   while (true) {
+diff --git a/test/commands/mdx-command-paths.test.ts b/test/commands/mdx-command-paths.test.ts
+new file mode 100644
+--- /dev/null
++++ b/test/commands/mdx-command-paths.test.ts
+@@ -0,0 +1,104 @@
++import { afterEach, beforeEach, describe, expect, it } from 'vitest';
++import { promises as fs } from 'node:fs';
++import os from 'node:os';
++import path from 'node:path';
++import { spawnSync } from 'node:child_process';
++import { ChangeParser } from '../../src/core/parsers/change-parser.js';
++import { getGlobalDataDir, registerStore } from '../../src/core/index.js';
++
++const bin = path.resolve('bin/openspec.js');
++const requirement = (word: string) => `### Requirement: Read records
++The system SHALL ${word} records.
++
++#### Scenario: Read
++- **WHEN** a record is requested
++- **THEN** the record is returned
++`;
++const moduleText = "import { Notice } from './components.js';\n\nexport const owner = 'platform';\n\n";
++const main = moduleText + '# Records\n\n## Purpose\nRead records consistently across clients.\n\n## Requirements\n\n' + requirement('read') + '\n<Notice />\n';
++
++describe('canonical MDX command paths', () => {
++  let root: string;
++  beforeEach(async () => {
++    root = await fs.mkdtemp(path.join(os.tmpdir(), 'openspec-mdx-commands-'));
++    await fs.mkdir(path.join(root, 'openspec/specs/platform/records'), { recursive: true });
++    await fs.mkdir(path.join(root, 'openspec/changes'), { recursive: true });
++    await fs.writeFile(path.join(root, 'openspec/config.yaml'), 'schema: spec-driven\nspecFormat: mdx\n');
++    await fs.writeFile(path.join(root, 'openspec/specs/platform/records/spec.mdx'), main);
++  });
++  afterEach(async () => {
++    await fs.rm(root, { recursive: true, force: true });
++  });
++  function run(args: string[]) {
++    return spawnSync(process.execPath, [bin, ...args], {
++      cwd: root, encoding: 'utf8', env: { ...process.env, NO_COLOR: '1', OPENSPEC_TELEMETRY: '0' },
++    });
++  }
++  it('shows nested MDX raw and structured content through the CLI', () => {
++    const raw = run(['show', 'platform/records', '--type', 'spec']);
++    expect(raw.status, raw.stderr).toBe(0);
++    expect(raw.stdout.trim()).toBe(main.trim());
++    const json = run(['show', 'platform/records', '--type', 'spec', '--json']);
++    expect(json.status, json.stderr).toBe(0);
++    expect(JSON.parse(json.stdout)).toMatchObject({ id: 'platform/records', requirementCount: 1 });
++  });
++  it('lists only real Markdown requirements, not headings in ESM strings', async () => {
++    const spoof = 'export const sample = `\n## Requirements\n### Requirement: Bogus\nSHALL not count\n`;\n\n';
++    await fs.writeFile(path.join(root, 'openspec/specs/platform/records/spec.mdx'), spoof + main);
++    const result = run(['list', '--specs', '--json']);
++    expect(result.status, result.stderr).toBe(0);
++    expect(JSON.parse(result.stdout).specs).toEqual([{id:'platform/records',requirementCount:1}]);
++  });
++  it('validates individual and bulk MDX specs through the CLI', () => {
++    for (const args of [
++      ['validate', 'platform/records', '--type', 'spec', '--json'],
++      ['validate', '--specs', '--json'],
++    ]) {
++      const result = run(args);
++      expect(result.status, result.stderr + result.stdout).toBe(0);
++      expect(JSON.parse(result.stdout).items).toEqual(expect.arrayContaining([
++        expect.objectContaining({ id: 'platform/records', valid: true }),
++      ]));
++    }
++  });
++  it('pairs MDX deltas with MDX main specs for structured diffs', async () => {
++    const changeDir = path.join(root, 'openspec/changes/improve-records');
++    await fs.mkdir(path.join(changeDir, 'specs/platform/records'), { recursive: true });
++    await fs.writeFile(path.join(changeDir, 'proposal.md'), '## Why\nImprove record reads.\n\n## What Changes\n- Improve reads.\n');
++    await fs.writeFile(path.join(changeDir, 'specs/platform/records/spec.mdx'), moduleText + '## MODIFIED Requirements\n\n' + requirement('cache') + '\n<Notice />\n');
++    const result = run(['show', 'improve-records', '--type', 'change', '--json', '--diff']);
++    expect(result.status, result.stderr + result.stdout).toBe(0);
++    const delta = JSON.parse(result.stdout).deltas[0];
++    expect(delta).toMatchObject({ spec: 'platform/records', operation: 'MODIFIED' });
++    expect(delta.warning).toBeUndefined();
++    expect(JSON.stringify(delta.diff)).toContain('cache');
++  });
++  it('uses the selected store format instead of the calling project format', async () => {
++    const app = path.join(root, 'app');
++    await fs.mkdir(path.join(app, 'openspec'), { recursive: true });
++    await fs.writeFile(path.join(app, 'openspec/config.yaml'), 'schema: spec-driven\nspecFormat: md\n');
++    const env = { ...process.env, XDG_DATA_HOME: path.join(root, 'data'), XDG_CONFIG_HOME: path.join(root, 'config'), OPENSPEC_TELEMETRY: '0' };
++    await registerStore({ id: 'mdx-store', localPath: root, globalDataDir: getGlobalDataDir({ env }) });
++    for (const args of [
++      ['show', 'platform/records', '--type', 'spec', '--json', '--store', 'mdx-store'],
++      ['validate', 'platform/records', '--type', 'spec', '--json', '--store', 'mdx-store'],
++    ]) {
++      const result = spawnSync(process.execPath, [bin, ...args], { cwd: app, encoding: 'utf8', env });
++      expect(result.status, result.stderr + result.stdout).toBe(0);
++      expect(result.stdout).toContain('platform/records');
++    }
++  });
++  it('does not silently substitute proposal prose for an invalid MDX delta', async () => {
++    const changeDir = path.join(root, 'openspec/changes/broken-records');
++    await fs.mkdir(path.join(changeDir, 'specs/records'), { recursive: true });
++    await fs.writeFile(path.join(changeDir, 'specs/records/spec.mdx'), 'export const broken = ;\n\n## ADDED Requirements\n');
++    const parser = new ChangeParser('## Why\nImprove reads.\n\n## What Changes\n- Improve records.\n', changeDir);
++    await expect(parser.parseChangeWithDeltas('broken-records')).rejects.toThrow(/Cannot parse MDX delta .*spec\.mdx/);
++  });
++  it('rejects canonical siblings rather than silently choosing a file', async () => {
++    await fs.writeFile(path.join(root, 'openspec/specs/platform/records/spec.md'), main);
++    const result = run(['show', 'platform/records', '--type', 'spec', '--json']);
++    expect(result.status).not.toBe(0);
++    expect(result.stderr + result.stdout).toMatch(/spec.md.*spec.mdx/i);
++  });
++});
+diff --git a/test/core/artifact-graph/instruction-loader.test.ts b/test/core/artifact-graph/instruction-loader.test.ts
+--- a/test/core/artifact-graph/instruction-loader.test.ts
++++ b/test/core/artifact-graph/instruction-loader.test.ts
+@@ -837,3 +837,35 @@
+     });
+   });
+ });
++
++describe('MDX canonical artifact instructions', () => {
++  let root: string;
++  let previousXdg: string | undefined;
++  beforeEach(() => {
++    root = fs.mkdtempSync(path.join(os.tmpdir(), 'openspec-mdx-instructions-'));
++    previousXdg = process.env.XDG_DATA_HOME;
++    process.env.XDG_DATA_HOME = path.join(root, 'xdg');
++    const change = path.join(root, 'openspec', 'changes', 'example');
++    fs.mkdirSync(path.join(change, 'specs', 'auth'), { recursive: true });
++    fs.writeFileSync(path.join(root, 'openspec', 'config.yaml'), 'schema: spec-driven\nspecFormat: mdx\n');
++    fs.writeFileSync(path.join(change, 'specs', 'auth', 'spec.mdx'), '# Spec\n');
++  });
++  afterEach(() => {
++    if (previousXdg === undefined) delete process.env.XDG_DATA_HOME;
++    else process.env.XDG_DATA_HOME = previousXdg;
++    fs.rmSync(root, { recursive: true, force: true });
++  });
++  it('uses MDX for completion, outputs, guidance and proposal template without changing other filenames', () => {
++    const context = loadChangeContext(root, 'example');
++    expect(context.completed.has('specs')).toBe(true);
++    const specs = generateInstructions(context, 'specs');
++    expect(specs.outputPath).toBe('specs/**/spec.mdx');
++    expect(specs.existingOutputPaths).toEqual([path.join(root, 'openspec', 'changes', 'example', 'specs', 'auth', 'spec.mdx')]);
++    expect(specs.instruction).toContain('spec.mdx');
++    const proposal = generateInstructions(context, 'proposal');
++    expect(proposal.outputPath).toBe('proposal.md');
++    expect(proposal.template).toContain('specs/<capability-path>/spec.mdx');
++    expect(proposal.template).not.toMatch(/spec\.md\b/);
++    expect(formatChangeStatus(context).artifactPaths.specs.outputPath).toBe('specs/**/spec.mdx');
++  });
++});
+diff --git a/test/core/artifact-graph/resolver.test.ts b/test/core/artifact-graph/resolver.test.ts
+--- a/test/core/artifact-graph/resolver.test.ts
++++ b/test/core/artifact-graph/resolver.test.ts
+@@ -827,3 +827,40 @@
+     });
+   });
+ });
++
++describe('MDX canonical schema outputs', () => {
++  let root: string;
++  let previousXdg: string | undefined;
++  beforeEach(() => {
++    root = fs.mkdtempSync(path.join(os.tmpdir(), 'openspec-mdx-schema-'));
++    previousXdg = process.env.XDG_DATA_HOME;
++    process.env.XDG_DATA_HOME = path.join(root, 'xdg');
++    fs.mkdirSync(path.join(root, 'openspec'));
++  });
++  afterEach(() => {
++    if (previousXdg === undefined) delete process.env.XDG_DATA_HOME;
++    else process.env.XDG_DATA_HOME = previousXdg;
++    fs.rmSync(root, { recursive: true, force: true });
++  });
++  it('preserves native outputs and only adapts stock specs when opted in', () => {
++    expect(resolveSchema('spec-driven', root).artifacts.find(a => a.id === 'specs')?.generates).toBe('specs/**/*.md');
++    fs.writeFileSync(path.join(root, 'openspec', 'config.yaml'), 'specFormat: mdx\n');
++    const schema = resolveSchema('spec-driven', root);
++    expect(schema.artifacts.find(a => a.id === 'specs')?.generates).toBe('specs/**/spec.mdx');
++    for (const id of ['proposal', 'design', 'tasks']) {
++      expect(schema.artifacts.find(a => a.id === id)?.generates).toBe(`${id}.md`);
++    }
++    expect(schema.artifacts.find(a => a.id === 'specs')?.instruction).toContain('spec.mdx');
++    expect(schema.artifacts.find(a => a.id === 'specs')?.instruction).not.toMatch(/spec\.md\b/);
++  });
++  it('requires custom specs schemas to explicitly declare the canonical MDX glob', () => {
++    fs.writeFileSync(path.join(root, 'openspec', 'config.yaml'), 'specFormat: mdx\n');
++    const dir = path.join(root, 'openspec', 'schemas', 'custom');
++    fs.mkdirSync(dir, { recursive: true });
++    const schemaText = 'name: custom\nversion: 1\nartifacts:\n  - id: contracts\n    generates: specs/**/*.md\n    description: Contracts\n    template: spec.md\n';
++    fs.writeFileSync(path.join(dir, 'schema.yaml'), schemaText);
++    expect(() => resolveSchema('custom', root)).toThrow('specs/**/spec.mdx');
++    fs.writeFileSync(path.join(dir, 'schema.yaml'), schemaText.replace('specs/**/*.md', 'specs/**/spec.mdx'));
++    expect(resolveSchema('custom', root).artifacts[0].generates).toBe('specs/**/spec.mdx');
++  });
++});
+diff --git a/test/core/mdx-references.test.ts b/test/core/mdx-references.test.ts
+new file mode 100644
+--- /dev/null
++++ b/test/core/mdx-references.test.ts
+@@ -0,0 +1,37 @@
++import { afterEach, beforeEach, describe, expect, it } from 'vitest';
++import { promises as fs } from 'node:fs';
++import os from 'node:os';
++import path from 'node:path';
++import { registerStore } from '../../src/core/store/registry.js';
++import { assembleReferenceIndex } from '../../src/core/references.js';
++import type { ResolvedOpenSpecRoot } from '../../src/core/root-selection.js';
++
++describe('MDX referenced stores', () => {
++  let root: string;
++  beforeEach(async () => { root = await fs.mkdtemp(path.join(os.tmpdir(), 'openspec-mdx-ref-')); });
++  afterEach(async () => { await fs.rm(root, { recursive: true, force: true }); });
++  async function assemble(ambiguous = false) {
++    const store = path.join(root, 'store');
++    const capability = path.join(store, 'openspec/specs/records');
++    await fs.mkdir(capability, { recursive: true });
++    await fs.mkdir(path.join(store, 'openspec/changes'), { recursive: true });
++    await fs.writeFile(path.join(store, 'openspec/config.yaml'), 'schema: spec-driven\nspecFormat: mdx\n');
++    await fs.writeFile(path.join(capability, 'spec.mdx'), 'export const note = `\n## Purpose\nFake summary\n`;\n\n# Records\n\n## Purpose\nActual summary\n');
++    if (ambiguous) await fs.writeFile(path.join(capability, 'spec.md'), '# Duplicate\n');
++    const globalDataDir = path.join(root, 'data');
++    await registerStore({ id: 'mdx-store', localPath: store, globalDataDir });
++    const app = path.join(root, 'app');
++    await fs.mkdir(app, { recursive: true });
++    return assembleReferenceIndex({ references: [{ id: 'mdx-store' }], globalDataDir, resolvedRoot: { path: app, source: 'nearest' } as ResolvedOpenSpecRoot });
++  }
++  it('indexes actual MDX purpose without interpreting module template strings as headings', async () => {
++    const entries = await assemble();
++    expect(entries[0].specs).toEqual([{ id: 'records', summary: 'Actual summary' }]);
++    expect(entries[0].status).toEqual([]);
++  });
++  it('degrades ambiguous referenced stores to a diagnostic', async () => {
++    const entries = await assemble(true);
++    expect(entries[0].status).toEqual(expect.arrayContaining([expect.objectContaining({ code: 'reference_specs_unreadable', severity: 'warning' })]));
++    expect(entries[0].specs).toBeUndefined();
++  });
++});
+diff --git a/test/core/mdx-specs.test.ts b/test/core/mdx-specs.test.ts
+new file mode 100644
+--- /dev/null
++++ b/test/core/mdx-specs.test.ts
+@@ -0,0 +1,78 @@
++import { describe, it, expect, beforeEach, afterEach } from 'vitest';
++import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
++import os from 'node:os';
++import path from 'node:path';
++import { splitMdxModule } from '../../src/core/parsers/mdx-module.js';
++import { findSpecUpdates, buildUpdatedSpec, writeUpdatedSpec } from '../../src/core/specs-apply.js';
++import { discoverSpecFiles, canonicalSpecName } from '../../src/utils/spec-discovery.js';
++import { Validator } from '../../src/core/validation/validator.js';
++
++let root: string;
++beforeEach(async () => { root = await mkdtemp(path.join(os.tmpdir(), 'mdx-spec-test-')); });
++afterEach(async () => { await rm(root, { recursive: true, force: true }); });
++async function put(file: string, value: string) { await mkdir(path.dirname(file), {recursive:true}); await writeFile(file,value); }
++const purpose = '## Purpose\n\nThis interactive specification explains complete shipping behavior to shoppers.';
++const rule = (n: number) => `### Requirement: Shipping\nThe store SHALL offer shipping at ${n} dollars.\n\n#### Scenario: Basket\n- **WHEN** an order is placed\n- **THEN** the price is shown\n\n<Card value={${n}} />`;
++
++describe('canonical MDX specs', () => {
++  it('keeps JavaScript heading-looking strings out of Markdown and never executes imports', () => {
++    const source = 'import secret from "not-installed"\n\nexport const text = `\n## Requirements\n`;\n\n# Real\n';
++    const result = splitMdxModule(source);
++    expect(result.module).toContain('## Requirements');
++    expect(result.markdown).not.toContain('## Requirements');
++    expect(result.markdown.split('\n')).toHaveLength(source.split('\n').length);
++    expect(result.markdown).toContain('# Real');
++  });
++  it('rejects malformed MDX before writes', () => {
++    expect(() => splitMdxModule('# Spec\n\n<Card value={ />')).toThrow();
++  });
++  it('does not interpret headings inside JSX template strings as delta operations', () => {
++    const source = '## ADDED Requirements\n\n<Card value={`\n## REMOVED Requirements\n### Requirement: Other\n`} />';
++    expect(() => splitMdxModule(source)).toThrow('top-level Markdown');
++  });
++  it('uses actual planning root rather than outer directories named openspec', () => {
++    expect(canonicalSpecName(path.join(root, 'openspec/store/loose/specs'))).toBe('spec.md');
++  });
++  it('requires explicit format and rejects ambiguous or opposite-format canonical sources', async () => {
++    const specs=path.join(root,'openspec/specs');
++    await put(path.join(specs,'nested/ship/spec.mdx'),'# MDX');
++    await expect(discoverSpecFiles(specs)).rejects.toThrow('selects spec.md');
++    await put(path.join(root,'openspec/config.yaml'),'schema: spec-driven\nspecFormat: mdx\n');
++    expect((await discoverSpecFiles(specs))[0].id).toBe('nested/ship');
++    await put(path.join(specs,'nested/ship/spec.md'),'# Markdown');
++    await expect(discoverSpecFiles(specs)).rejects.toThrow();
++  });
++  it('creates then changes MDX while retaining real module, JSX and unchanged rule', async () => {
++    await put(path.join(root,'openspec/config.yaml'),'schema: spec-driven\nspecFormat: mdx\n');
++    const change=path.join(root,'openspec/changes/add');
++    const main=path.join(root,'openspec/specs');
++    const mod='import { Card } from "card"\n\nexport const currency = "USD";';
++    const stable=rule(9).replace(/Shipping/g,'Delivery').replace(/Basket/g,'Promise');
++    await put(path.join(change,'specs/ship/spec.mdx'),`${mod}\n\n# Ship\n\n${purpose}\n\n## ADDED Requirements\n\n${rule(50)}\n\n${stable}\n`);
++    const [first]=await findSpecUpdates(change,main);
++    const built=await buildUpdatedSpec(first,'add',{silent:true});
++    expect(built.rebuilt).toContain(mod);
++    expect(built.rebuilt).toContain(stable);
++    expect(first.target).toMatch(/spec.mdx$/);
++    await writeUpdatedSpec(first,built.rebuilt,built.counts,{silent:true});
++    const second=path.join(root,'openspec/changes/update');
++    await put(path.join(second,'specs/ship/spec.mdx'),`## MODIFIED Requirements\n\n${rule(75)}\n`);
++    const [update]=await findSpecUpdates(second,main);
++    const changed=await buildUpdatedSpec(update,'update',{silent:true});
++    expect(changed.rebuilt).toContain(mod);
++    expect(changed.rebuilt).toContain(stable);
++    expect(changed.rebuilt).toContain('<Card value={75} />');
++    expect(changed.rebuilt).not.toContain('<Card value={50} />');
++    expect((await new Validator(true).validateSpecContent('ship',changed.rebuilt,'mdx')).valid).toBe(true);
++    expect(await readFile(first.target,'utf8')).toBe(built.rebuilt);
++  });
++  it('does not collapse blank lines in JSX string data', async () => {
++    await put(path.join(root,'openspec/config.yaml'),'specFormat: mdx\n');
++    const change=path.join(root,'openspec/changes/add');
++    const main=path.join(root,'openspec/specs');
++    const body=rule(50)+'\n\n<Card value={`a\n\n\n\nb`} />';
++    await put(path.join(change,'specs/ship/spec.mdx'),`# Ship\n\n${purpose}\n\n## ADDED Requirements\n\n${body}\n`);
++    const [update]=await findSpecUpdates(change,main);
++    expect((await buildUpdatedSpec(update,'add',{silent:true})).rebuilt).toContain('`a\n\n\n\nb`');
++  });
++});
+diff --git a/test/core/project-config.test.ts b/test/core/project-config.test.ts
+--- a/test/core/project-config.test.ts
++++ b/test/core/project-config.test.ts
+@@ -1103,3 +1103,30 @@
+     });
+   });
+ });
++
++describe('canonical spec format', () => {
++  let root: string;
++  beforeEach(() => {
++    root = fs.mkdtempSync(path.join(os.tmpdir(), 'openspec-spec-format-'));
++    fs.mkdirSync(path.join(root, 'openspec'));
++  });
++  afterEach(() => fs.rmSync(root, { recursive: true, force: true }));
++  it('defaults to Markdown and reads explicit MDX from config.yml', async () => {
++    const { getSpecFormat } = await import('../../src/core/project-config.js');
++    expect(getSpecFormat(root)).toBe('md');
++    fs.writeFileSync(path.join(root, 'openspec', 'config.yml'), 'schema: spec-driven\nspecFormat: mdx\n');
++    expect(getSpecFormat(root)).toBe('mdx');
++    expect(readProjectConfig(root)?.specFormat).toBe('mdx');
++  });
++  it('rejects invalid format in both readers, without silently falling back', async () => {
++    const { getSpecFormat } = await import('../../src/core/project-config.js');
++    fs.writeFileSync(path.join(root, 'openspec', 'config.yaml'), 'schema: spec-driven\nspecFormat: html\n');
++    expect(() => getSpecFormat(root)).toThrow('specFormat');
++    expect(() => readProjectConfig(root)).toThrow('specFormat');
++  });
++  it('does not silently use Markdown for malformed configuration', async () => {
++    const { getSpecFormat } = await import('../../src/core/project-config.js');
++    fs.writeFileSync(path.join(root, 'openspec', 'config.yaml'), 'specFormat: [');
++    expect(() => getSpecFormat(root)).toThrow();
++  });
++});
+diff --git a/test/core/templates/canonical-spec.test.ts b/test/core/templates/canonical-spec.test.ts
+new file mode 100644
+--- /dev/null
++++ b/test/core/templates/canonical-spec.test.ts
+@@ -0,0 +1,50 @@
++import { describe, expect, it } from 'vitest';
++import { getOpsxProposeSkillTemplate, getOpsxProposeCommandTemplate } from '../../../src/core/templates/workflows/propose.js';
++import { getContinueChangeSkillTemplate, getOpsxContinueCommandTemplate } from '../../../src/core/templates/workflows/continue-change.js';
++import { getSyncSpecsSkillTemplate, getOpsxSyncCommandTemplate } from '../../../src/core/templates/workflows/sync-specs.js';
++import { getVerifyChangeSkillTemplate, getOpsxVerifyCommandTemplate } from '../../../src/core/templates/workflows/verify-change.js';
++import { getArchiveChangeSkillTemplate, getOpsxArchiveCommandTemplate } from '../../../src/core/templates/workflows/archive-change.js';
++import { getBulkArchiveChangeSkillTemplate, getOpsxBulkArchiveCommandTemplate } from '../../../src/core/templates/workflows/bulk-archive-change.js';
++import { getExploreSkillTemplate, getOpsxExploreCommandTemplate } from '../../../src/core/templates/workflows/explore.js';
++
++const bodies = () => [
++  getOpsxProposeSkillTemplate().instructions, getOpsxProposeCommandTemplate().content,
++  getContinueChangeSkillTemplate().instructions, getOpsxContinueCommandTemplate().content,
++  getSyncSpecsSkillTemplate().instructions, getOpsxSyncCommandTemplate().content,
++  getVerifyChangeSkillTemplate().instructions, getOpsxVerifyCommandTemplate().content,
++  getArchiveChangeSkillTemplate().instructions, getOpsxArchiveCommandTemplate().content,
++  getBulkArchiveChangeSkillTemplate().instructions, getOpsxBulkArchiveCommandTemplate().content,
++  getExploreSkillTemplate().instructions, getOpsxExploreCommandTemplate().content,
++];
++
++describe('canonical spec paths in generated workflows', () => {
++  it('makes both surfaces use selected-root CLI filenames, not hardcoded Markdown paths', () => {
++    expect(bodies()).toHaveLength(14);
++    for (const body of bodies()) {
++      expect(body).toContain('Canonical spec filename:');
++      expect(body).toContain('`outputPath`');
++      expect(body).toContain('`existingOutputPaths`');
++      expect(body).toContain('`planningHome.root`');
++      expect(body).toContain('Never infer the format from the invoking repository');
++      expect(body).toContain('both canonical siblings exist');
++      expect(body).toContain('Never create the opposite-extension sibling');
++      expect(body).toContain('`spec.md`');
++      expect(body).toContain('`spec.mdx`');
++      expect(body).not.toMatch(/\/spec\.md\b/);
++      expect(body).toContain('<spec-file>');
++    }
++  });
++  it('corrects verification history pathspecs and main-spec writes', () => {
++    for (const body of [getVerifyChangeSkillTemplate().instructions, getOpsxVerifyCommandTemplate().content]) {
++      expect(body).toContain('git -C "<planningHome.root>" log -p -- openspec/specs/<capability-path>/<spec-file>');
++      expect(body).toContain('show <commit>^:./openspec/specs/<capability-path>/<spec-file>');
++    }
++    for (const body of [getSyncSpecsSkillTemplate().instructions, getOpsxSyncCommandTemplate().content]) {
++      expect(body).toContain('Create `<planningHome.root>/openspec/specs/<capability-path>/<spec-file>`');
++      expect(body).toContain('never execute module code');
++      expect(body).toContain('retains the existing main spec');
++      expect(body).toContain('replace that entire preamble');
++      expect(body).toContain('Preserve requirement JSX verbatim');
++    }
++  });
++});
+diff --git a/test/core/templates/skill-templates-parity.test.ts b/test/core/templates/skill-templates-parity.test.ts
+--- a/test/core/templates/skill-templates-parity.test.ts
++++ b/test/core/templates/skill-templates-parity.test.ts
+@@ -76,45 +76,45 @@
+ }
+ 
+ const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
+-  getExploreSkillTemplate: '80246765b685ec1e5530e8348bde84ed2ba0a6c418c9fbcd7e9e79a638d289dd',
++  getExploreSkillTemplate: 'df3f0e6cf942c45695cf7762ed0b006905daaa48acbacf5d2eb42f534ac54c0f',
+   getNewChangeSkillTemplate: '0e5035b7b42198afc430206a1dbc9579096650ef0813d85e837d5a6cd0b98a85',
+-  getContinueChangeSkillTemplate: '2da5a24eb949f0717ffdb23c28c021ab6f73dc4beeb92ab709b8dbdac9db7355',
++  getContinueChangeSkillTemplate: '11add1e8d779cde0667fc1586688413d389ca0157f72cf419105e209d9d77f3d',
+   getApplyChangeSkillTemplate: 'c4f02c29137e19b34bf1dc59146941b8c920214aa2cf3ce80ae7f1b982e976fc',
+   getFfChangeSkillTemplate: '0eb8ddc6da710bc9ed6cd142a2eec1bec883f730125d76dc38e532bd5395bdf2',
+-  getSyncSpecsSkillTemplate: 'bc80fe9b07eaa289e5eb8a3ce65eb7df722a16d864e37283c678220712e4f230',
++  getSyncSpecsSkillTemplate: '96d8dfc11c05337c6d1bb39e301f6bf6382b9da0d7d08b002b6af30efea77c3c',
+   getOnboardSkillTemplate: '84258a06c0ca88de708a23dd74e9a17efe11eff63a071b3864c781dcd5a0a4b7',
+-  getOpsxExploreCommandTemplate: 'c0af210bc070b7ac5168523b381cb9e213e4e102205bfc26bdae15677d954ae1',
++  getOpsxExploreCommandTemplate: 'd6a087b507b4c48cc82ac3e9f74e6d06d6ec686432073062ae688115a6fef5a7',
+   getOpsxNewCommandTemplate: '6d504fef1e0d4ced7c423f4cc9d9d2cee11b1a6224edf685e06a3f0757e0ebff',
+-  getOpsxContinueCommandTemplate: '9e36b758c2760fcab4dcef4677ee678eb29eac00f31de8cbc99f812a440afaaf',
++  getOpsxContinueCommandTemplate: '86e7325a2d37af13aba439142f1ecccd3a43ede9b7972ed64db42fcfac9ce358',
+   getOpsxApplyCommandTemplate: '9b733946aa7216b45d084bb5affd7071086db6f91282c3666731a17543825ff1',
+   getOpsxFfCommandTemplate: '625d6a4a52adeaa16dbceff378f1d7cb07556e79b19d9af63feca5125aa4da13',
+-  getArchiveChangeSkillTemplate: '04a029782fc4137971fad6f54cfda3685d7e0b835b06565f9a509b4878093099',
+-  getBulkArchiveChangeSkillTemplate: '44dbd3c7a347e5f8339b2141393f2ac36017527cce251483fe70f2059c1e286e',
+-  getOpsxSyncCommandTemplate: '60550b7bb9829421656d6324a9e4c951bc912f48f88882d1a07ce7f78397a5e7',
+-  getVerifyChangeSkillTemplate: '9c45ab6d958a9fc432fa59b8d447ca8722a2275da566e91c0e545f531a921ed3',
+-  getOpsxArchiveCommandTemplate: '5d153490bf1ca24207f49856826720f793c8884a6ec15059104107b0e34ee345',
++  getArchiveChangeSkillTemplate: '168cf5a2e2d6becca4ae0e48417ae44b6c1b7020307cf25985269b2bdd7068ef',
++  getBulkArchiveChangeSkillTemplate: '9930d1ad8a96a363a9d92aa06cd1f83d2f323c193c15389c992c881df85ff135',
++  getOpsxSyncCommandTemplate: '3ffc7de8c3e6ba374a6f16139ba9699d3c2796af7104eaf2d7894b27008890d2',
++  getVerifyChangeSkillTemplate: '943326d18594721050d242e6b28354cd030596bb7c6513e53b8dfdead66b8d8b',
++  getOpsxArchiveCommandTemplate: '602359490bb1599eabf5640fbf716d7ece70a8d81d45360c0d73e36d0b0bdd0d',
+   getOpsxOnboardCommandTemplate: '0cf66e164c0e14c916c6d1ebb5d80ded07d7fb8e55d4eb34eba43e8ca9c28558',
+-  getOpsxBulkArchiveCommandTemplate: 'cb1d55d6ce53686bfe94be5e081c7a4d06a8e4d10b63019132df5bb3db7144cb',
+-  getOpsxVerifyCommandTemplate: 'ddc3fe6d529c82703ac131fb4383e4ae1f8df152d11afd75ae74ca17b12f1b24',
+-  getOpsxProposeSkillTemplate: 'd5e0e2d675cedaffbd771892f15edd8f7f55b464ee42362b1572aa59c4c1d492',
+-  getOpsxProposeCommandTemplate: 'f30af4ce5b7677bd664da71dd6d616a93278335e8828a7c3442fab59c339a11b',
++  getOpsxBulkArchiveCommandTemplate: 'bcfa65a1d6158973145cf4aadab5302bfd2b7eaffb95ed9ce68a33b04ff3c0f5',
++  getOpsxVerifyCommandTemplate: 'fe4c28d28f3c98840eec991bb38b8bbb02a8405bcca447d49c22f904dce3a9d5',
++  getOpsxProposeSkillTemplate: 'ef6ab7d403a7e147923f254ec7929fa91d2a50cd90e638d4a213ababd42f8e1d',
++  getOpsxProposeCommandTemplate: '83b99a1cb770c8f76506837853d8353456643f682c91f6e36601da9294b99180',
+   getFeedbackSkillTemplate: 'dabeb5e825b9349abc8156c3e7b8608f27987912a6d9bf47ef29addde6138133',
+   getUpdateChangeSkillTemplate: '14c209b8a18d1b100d372b0ef96707b70a7c64117a16309ee463f66d39180b3e',
+   getOpsxUpdateCommandTemplate: '33528a80c9436c9dad74084a37d2fce5e78e34abfb71185fa21495a4f2a8b4d3',
+ };
+ 
+ const EXPECTED_GENERATED_SKILL_CONTENT_HASHES: Record<string, string> = {
+-  'openspec-explore': '90a87227a7d3dca576448bb16936cede31b4e4666d35a6f0744e0b9bc628f1ac',
++  'openspec-explore': '3c811f8dbbfd87628abc4e743a56ee20d6bc98da9e61a981fe67a3aa29eebeaa',
+   'openspec-new-change': '27e09d43785953827efc9a98bb9d6cf06db48fe6abe7e1c049409fe5b5061323',
+-  'openspec-continue-change': 'd8859091316ad43a58cd015091454a95bf49378ec9d9117b24ab9b2396dc8303',
++  'openspec-continue-change': '2133878447b6984483b9da27e23549c6bf4fec3a51240ac68c50ed6af5fffc13',
+   'openspec-apply-change': '991a1d4687f1c8c7147d8c3b68cf14e9c515c6c53bb026356dac3b80e909b827',
+   'openspec-ff-change': '224ff2ed2315eb23876fc4b83d796b60cf3cd05d853f2612e5b056ee7a6e93d2',
+-  'openspec-sync-specs': '3909936a236a21a9a6d5bf495f90b396b3b68fc9220d7b2c1894668653beb2e4',
+-  'openspec-archive-change': '5f0d131a885dcdcd9ba2172ea9a42bc6748125e24b8c4eecb7c86f1a4aea83af',
+-  'openspec-bulk-archive-change': 'd2a258055ab2f0d8086c4348d37212ebc95a5adef2d5f524db959fb93490d5c8',
+-  'openspec-verify-change': '082453eb0a8079a4c1c72c243373bf6489ebac56f9adaa8b58588047823ded0d',
++  'openspec-sync-specs': '717bbd51aff8247e96ba407eeeb49bfd57979f187b67b4f007afea9910df1fe8',
++  'openspec-archive-change': 'd78270e86c69518b78c2ff5582c62a7394627622f3f1d0616caab676172ce7f6',
++  'openspec-bulk-archive-change': 'fbffef6413a4363c7f072794e841d1e3e79b3b62ec30f503f7c6a7ab97d15f28',
++  'openspec-verify-change': '7e7bc770e90dbd4731cf6dc250971e562e243bed56766e9ccafaf34220f95367',
+   'openspec-onboard': '6993eff867d97d485e080078f9dfb80e968e242f3b17a924eeb077715fd548fa',
+-  'openspec-propose': '2bbfc169f483cbacc481bf5160aece61d5237e1bca80955f48f7e2a4814e6143',
++  'openspec-propose': '45429605b4d54bec67c640145d49df4f108b37da8d2e51766db4c6af65f0e57b',
+   'openspec-update-change': 'a6fc9d6972bfb024b91f0a01e14d8a7666ae641bcad83cfae937e41dcccc545a',
+ };
+ 
+@@ -331,25 +331,25 @@
+       [
+         'propose skill',
+         generateSkillContent(asDeployed(getOpsxProposeSkillTemplate()), 'PARITY-BASELINE'),
+-        'specs/<capability-path>/spec.md',
++        'specs/<capability-path>/<spec-file>',
+         "Preserve an existing capability's full path",
+       ],
+       [
+         'propose command',
+         getOpsxProposeCommandTemplate().content,
+-        'specs/<capability-path>/spec.md',
++        'specs/<capability-path>/<spec-file>',
+         "Preserve an existing capability's full path",
+       ],
+       [
+         'explore skill',
+         generateSkillContent(asDeployed(getExploreSkillTemplate()), 'PARITY-BASELINE'),
+-        'specs/<capability-path>/spec.md',
++        'specs/<capability-path>/<spec-file>',
+         "Preserve an existing capability's full path",
+       ],
+       [
+         'explore command',
+         getOpsxExploreCommandTemplate().content,
+-        'specs/<capability-path>/spec.md',
++        'specs/<capability-path>/<spec-file>',
+         "Preserve an existing capability's full path",
+       ],
+       [
+@@ -367,37 +367,37 @@
+       [
+         'sync skill',
+         generateSkillContent(asDeployed(getSyncSpecsSkillTemplate()), 'PARITY-BASELINE'),
+-        '<planningHome.root>/openspec/specs/<capability-path>/spec.md',
++        '<planningHome.root>/openspec/specs/<capability-path>/<spec-file>',
+         'Preserve the full path from each delta spec',
+       ],
+       [
+         'sync command',
+         getOpsxSyncCommandTemplate().content,
+-        '<planningHome.root>/openspec/specs/<capability-path>/spec.md',
++        '<planningHome.root>/openspec/specs/<capability-path>/<spec-file>',
+         'Preserve the full path from each delta spec',
+       ],
+       [
+         'archive skill',
+         generateSkillContent(asDeployed(getArchiveChangeSkillTemplate()), 'PARITY-BASELINE'),
+-        '<planningHome.root>/openspec/specs/<capability-path>/spec.md',
++        '<planningHome.root>/openspec/specs/<capability-path>/<spec-file>',
+         'Preserve the full path from each delta spec',
+       ],
+       [
+         'archive command',
+         getOpsxArchiveCommandTemplate().content,
+-        '<planningHome.root>/openspec/specs/<capability-path>/spec.md',
++        '<planningHome.root>/openspec/specs/<capability-path>/<spec-file>',
+         'Preserve the full path from each delta spec',
+       ],
+       [
+         'bulk archive skill',
+         generateSkillContent(asDeployed(getBulkArchiveChangeSkillTemplate()), 'PARITY-BASELINE'),
+-        '<planningHome.root>/openspec/specs/<capability-path>/spec.md',
++        '<planningHome.root>/openspec/specs/<capability-path>/<spec-file>',
+         'Preserve the full path from each delta spec',
+       ],
+       [
+         'bulk archive command',
+         getOpsxBulkArchiveCommandTemplate().content,
+-        '<planningHome.root>/openspec/specs/<capability-path>/spec.md',
++        '<planningHome.root>/openspec/specs/<capability-path>/<spec-file>',
+         'Preserve the full path from each delta spec',
+       ],
+     ];
+@@ -406,7 +406,7 @@
+       expect(content, label).toContain(capabilityPathDefinition);
+       expect(content, label).toContain(destination);
+       expect(content, label).toContain(preservationGuidance);
+-      expect(content, label).not.toContain('specs/<capability>/spec.md');
++      expect(content, label).not.toContain('specs/<capability>/<spec-file>');
+     }
+ 
+     const onboardVariants: Array<[string, string]> = [
+@@ -583,7 +583,7 @@
+       expect(content, variant).toContain('not only the ones the sync reports it touched');
+ 
+       // Main spec paths are store-root aware
+-      expect(content, variant).toContain('<planningHome.root>/openspec/specs/<capability-path>/spec.md');
++      expect(content, variant).toContain('<planningHome.root>/openspec/specs/<capability-path>/<spec-file>');
+ 
+       // Semantic main-spec structure contract.
+       expect(content, variant).toContain('A new main spec starts with a `# <capability> Specification` title. An existing main spec keeps its title exactly as it is.');
+@@ -774,7 +774,7 @@
+       expect(content, variant).toContain('do not move its `changeRoot`');
+ 
+       // Main spec paths are store-root aware
+-      expect(content, variant).toContain('<planningHome.root>/openspec/specs/<capability-path>/spec.md');
++      expect(content, variant).toContain('<planningHome.root>/openspec/specs/<capability-path>/<spec-file>');
+     }
+   });
+ 
+@@ -860,9 +860,9 @@
+         'copy those absolute values verbatim'
+       );
+       expect(content, variant).toContain('selecting the entry ending');
+-      expect(content, variant).toContain('/specs/billing/invoices/spec.md');
++      expect(content, variant).toContain('/specs/billing/invoices/<spec-file>');
+       expect(content, variant).not.toContain('only sync the billing delta');
+-      expect(content, variant).not.toContain('only sync `specs/billing/invoices/spec.md`');
++      expect(content, variant).not.toContain('only sync `specs/billing/invoices/<spec-file>`');
+ 
+       // Step 4 is the operative loop. Narrowing step 3 alone left the loop
+       // still iterating "each path returned by the CLI", which re-widens the
+diff --git a/test/core/templates/verify-change-delta-operations.test.ts b/test/core/templates/verify-change-delta-operations.test.ts
+--- a/test/core/templates/verify-change-delta-operations.test.ts
++++ b/test/core/templates/verify-change-delta-operations.test.ts
+@@ -75,7 +75,7 @@
+     const renamed = section(body, '- For each RENAMED entry', '6. **Verify Correctness**', label);
+ 
+     expect(renamed, label).toContain('check the TO requirement for that unchanged behavior');
+-    expect(renamed, label).toContain('`<planningHome.root>/openspec/specs/<capability-path>/spec.md`');
++    expect(renamed, label).toContain('`<planningHome.root>/openspec/specs/<capability-path>/<spec-file>`');
+     expect(renamed, label).toContain('the requirement under the FROM name, or under the TO name only when the FROM name is absent because the main spec is already synced.');
+     expect(renamed, label).toContain('Its body and scenarios are the evidence for the behavior the TO requirement keeps.');
+     expect(renamed, label).toContain('Search codebase for that behavior and assess if it is still implemented.');
+@@ -132,7 +132,7 @@
+     const removed = section(body, '- For each REMOVED requirement', '- For each RENAMED entry', label);
+ 
+     expect(removed, label).toContain('A REMOVED block carries only the requirement name and any `**Reason**`/`**Migration**` notes');
+-    expect(removed, label).toContain('`<planningHome.root>/openspec/specs/<capability-path>/spec.md`');
++    expect(removed, label).toContain('`<planningHome.root>/openspec/specs/<capability-path>/<spec-file>`');
+     expect(removed, label).toContain('Its body and scenarios are the evidence for the behavior that must be gone');
+     expect(removed, label).toContain('never search from the requirement name alone');
+     // Exact normalized name only (#2098): after a sync, a near-named ADDED
+@@ -174,15 +174,15 @@
+   it.each(bodies)('%s: gives a runnable, store-aware history command', (label, body) => {
+     const removed = section(body, '- For each REMOVED requirement', '- For each RENAMED entry', label);
+ 
+-    expect(removed, label).toContain('git -C "<planningHome.root>" log -p -- openspec/specs/<capability-path>/spec.md');
++    expect(removed, label).toContain('git -C "<planningHome.root>" log -p -- openspec/specs/<capability-path>/<spec-file>');
+     // `rev:path` resolves from the repository root, not from `-C`; the `./`
+     // keeps it relative to a planning root that is a subdirectory (monorepo).
+-    expect(removed, label).toContain('git -C "<planningHome.root>" show <commit>^:./openspec/specs/<capability-path>/spec.md');
++    expect(removed, label).toContain('git -C "<planningHome.root>" show <commit>^:./openspec/specs/<capability-path>/<spec-file>');
+     expect(removed, label).not.toMatch(/show <commit>\^:openspec\//);
+     // An unquoted planning root splits on spaces and runs git in the wrong place.
+     expect(removed, label).not.toMatch(/git -C <planningHome\.root>/);
+     expect(removed, label).toContain('Empty output means the pathspec matched nothing');
+-    // A bare `<capability-path>/spec.md` pathspec matches nothing: the
++    // A bare `<capability-path>/<spec-file>` pathspec matches nothing: the
+     // placeholder is defined relative to `specs/`.
+     expect(removed, label).not.toMatch(/git[^`\n]*log[^`\n]*--\s+<capability-path>/);
+     // History must be read from the planning home, which may be a store repo

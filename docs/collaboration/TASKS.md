@@ -22,7 +22,7 @@
 | 编号 | 项目与验收 | 负责 | 状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿发现**：成熟与新候选，沿[13](../13-frontier-radar.md)五问／实试验收，处理收件箱 | dot-A | 停简报；[增量测试反馈](../../experiments/testmon-feedback.md)实试；强方法比较／组合与真实模型采用优先；窄试用收口。Oil UI页面策略拒绝，视觉待入口获准；Plannotator未接收。 |
-| P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [实操入口](../15-task-playbooks.md#实例评审改变失败后的接手指令)补发送后失败的定向评审；[误修保护](../09-review-and-quality.md#把不修这条告警变成可执行的保护)已补，续真实模型采用及产物接收；[OCR补丁](../../experiments/ocr-matcher-replay.md)完整CLI未验，模型收益未测。 |
+| P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [MDX规格扩展](../../experiments/openspec-mdx-adoption.md)原生Agent实施、二改接收及独审；续完整能力采用。[OCR](../../experiments/ocr-matcher-replay.md)完整CLI未验，旧欠项保留。 |
 | P79 | **C1／C3吸取验证**：①核心12页与25各3题取首页／社区真需求，不从正文倒推；题／要点冻结后独审，未参与写作的新会话读页／无文档作答并独立盲判，比较决策、条件、撤回与原生答对率，修低增量页。②templates/generic三文件默认／撤回及脚本回归；③固定任务有／无包比较结果／返工／人工修改；④M6同需求按25／普通检索对照独立参照查漏。验收：①题答／两组结果；②AGENTS／CLAUDE／Skill；③④先冒烟再扩批 | dot-A | [冒烟](../../experiments/absorption/runs/20261022-smoke-v1/results.md)未测得读页决策增益；[三题预注册](../../experiments/absorption/p79-fresh-prereg.md)已审冻结、6答未跑，未知模型不进可比对；旧题库不改，M6另批。原入口平台失败断连，非待批。[三文件包](../../templates/README.md#核心决策最小包)补重复变换分流，加载／收益未验 |
 | 旧C2文稿 | 范围／状态见[快照][c2-1023] | B | 文稿非整族实试。 |
 | P94 | 音乐谱源二改 | B | 已独审；导入损失已补，未试听。 |

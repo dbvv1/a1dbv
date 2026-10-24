@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "nodeVersion": "v24.22.1",
+  "buildDigest": {
+    "sha256": "d96594305c648da853c1b61f647ff9d94d4290302a4689e35a01fe20899c0880",
+    "javascriptFiles": 218
+  },
+  "consumerVersions": {
+    "@mdx-js/mdx": "3.1.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "results": [
+    {
+      "phase": "initial-policy",
+      "amount": 50,
+      "mdxBytes": 871,
+      "htmlBytes": 903,
+      "importPreserved": true,
+      "exportPreserved": true,
+      "unchangedRequirementExact": true,
+      "compiled": true,
+      "serverRendered": true
+    },
+    {
+      "phase": "raise-threshold",
+      "amount": 75,
+      "mdxBytes": 871,
+      "htmlBytes": 903,
+      "importPreserved": true,
+      "exportPreserved": true,
+      "unchangedRequirementExact": true,
+      "compiled": true,
+      "serverRendered": true
+    }
+  ],
+  "negativeResults": [
+    {
+      "case": "invalid-mdx",
+      "validationRejected": true,
+      "archiveRejected": true,
+      "noMutation": true
+    },
+    {
+      "case": "opposite-format-collision",
+      "validationRejected": true,
+      "archiveRejected": true,
+      "noMutation": true
+    }
+  ],
+  "markdownBaseline": true,
+  "limitations": [
+    "Synthetic shipping-policy fixture, not a production integration",
+    "React server rendering, not browser visual or interaction QA",
+    "Independent consumer acceptance, not an independent coding-agent control"
+  ],
+  "upstream_commit": "6d04a1b58dedc95729d34e4f223d9d483aae210a",
+  "agent_model": "unknown",
+  "coding_agent_control": false,
+  "implementation_dependencies": {
+    "manager": "pnpm@10.34.5",
+    "frozen_install": true,
+    "direct_lock_mismatches": 0,
+    "lock_sha256": "acee150e018ce66391e973103382e1f586c7b31177a83226db727663a4651815"
+  },
+  "patch_sha256": "4792c712df4df52fc6c4a6856e2806a6a348c1a035cf02abedd17c6f76782ec5"
+}
