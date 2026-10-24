@@ -44,6 +44,12 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools)从预装
 - 🧪 原生调用仍有可测重复开销时，再试一个批处理或结果过滤接口。同一任务分别比较通过情况、计价成本、总等待与人的投入；不因工具数少就判定更优。**[经验：采用判断]**
 - 🧪 当前接口拿不到所需状态，或需要只暴露窄操作时，试维护中的兼容接口；已有 typed 工具有效就保留。小模型／本地模型也要验证实际调用；模型大小、浏览器任务或“禁止 shell”都不足以单独证明 MCP 更适合。**关键局限**：MCP 是接口协议，不是沙箱；例如 Claude Code 的本地 MCP 进程在 Bash 沙箱外运行，需要进程级隔离时按[客户端安全边界](01-agents/claude-code.md)选择宿主。**[一手：[官方沙箱范围](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)；经验：采用判断]**
 
+### 只有 shell 时，临时使用一个公开 MCP 动作
+
+**🧪 没有原生MCP入口，但要用已授权的公开资料工具，可试 MCPorter 的一次性调用；已有有效入口就不加这一层。** 本仓用0.16.0匿名读取TanStack/router的DeepWiki目录与正文，完整结果落盘后只提取Search Parameters章，供接手Agent继续定位源码。[本仓实试；[可复制命令与条件](../experiments/mcporter-public-read.md)]
+
+关键是临时配置关闭自动导入、隔离HOME／XDG并禁用OAuth，再点名只读工具；不把日常客户端配置整批带进来。正文近893KB，先在代码侧选出目标章，不要求模型通读全部。这里只验证入口和文件消费，wiki仍须回当前源码核实，未证明模型收益。[本仓实试／经验]
+
 ### 应用状态在浏览器里，不必先造后端
 
 **✅ 先接已有状态与执行入口；🧪 当前浏览器／宿主确实支持时，才试浏览器侧接口。** OpenAI 的 Runme 案例用 WebMCP 让 Agent 操作现有 notebook，避免只为传统 MCP endpoint 给静态客户端加后端；人仍审核评估系统、基础设施与已批准资源的选择。固定[注册实现](https://github.com/runmedev/web/blob/4a74e79efa18d78d63930112818b560bb10a0bb3/app/src/components/WebMcp/WebMcpToolRegistrationHost.tsx)会先查宿主入口，并将 ExecuteCode 标为非只读。[一手：作者自述／固定源码]
