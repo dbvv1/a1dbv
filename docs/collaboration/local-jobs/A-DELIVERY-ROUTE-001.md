@@ -2,7 +2,7 @@
 
 id: A-DELIVERY-ROUTE-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4154c7802c1b0734714a509db374689843954436
 result_branch: relay/a-delivery-route-001
@@ -26,3 +26,7 @@ result_branch: relay/a-delivery-route-001
 ## 范围
 
 不编辑 TASKS、运行手册、长期提示词、其他主专题或 Memos 产物；不运行模型对照／软件实验，不操作浏览器或用户桌面，不配置账号／凭据、不用新收费服务、不向外部发帖。实际本地模型身份、执行通道、关键人工介入与独审结果简记本任务；不得写私人路径或原始敏感日志。按已有Git入口先认领，成果只推 result_branch，由dot-A最终接收整合。
+
+## 执行与结果
+
+认领：dot 本地协作；2026-10-24T20:59:39.729117+00:00。任务来源 main 固定提交 `f2fed3e`。认领发布后在独立检出与原生 Workflow 中执行；仅写本任务指定文件，结果推指定分支供 dot-A 接收整合，不重跑联通或旧实验。
