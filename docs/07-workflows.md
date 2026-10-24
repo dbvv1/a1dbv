@@ -1,11 +1,13 @@
 # 07 · 工作流方法论
 
 > P46来源校准：2026-10-21；前沿比较：已比较（团队自用机制与采用边界），同预算效果优胜未知。最高水平卡及条件见[三篇校准](research/2026-10-15-exploration-evidence.md#p46按团队追踪来源与漏检校准)。
-> 编辑更新：2026-10-25（UTC+8，补真实 Agent 实施与 MDX 消费者接收）。按任务的不确定性选择实现、规格、测试或样品；来源与核查范围见[研究记录](research/2026-10-12-baml-and-review.md#工作流页历史页头)。
+> 编辑更新：2026-10-25（UTC+8，重写已有项目完整功能路线；复用真实 Agent 实施与 MDX 消费者接收）。按缺口选择原生实现、窄规格／测试或完整框架；来源与核查范围见[研究记录](research/2026-10-12-baml-and-review.md#工作流页历史页头)。
 
 > 代际复核：2026-10-21，对照 Opus 5.5／当前原生 harness 的公开实践；标签定义见 [00](00-state-of-ai-coding.md#30-秒结论)。
 
 ## 30 秒：先解决哪一种不确定性
+
+**已有项目要加一个完整功能：默认让原生 Agent 读现有入口、测试和真实消费者，直接实现并用项目反馈验收。缺会改变实现的决定、能区分错误的检查或共享契约／交接依据时，再补一页以内的窄规格或定向测试；跨多个文件／消费者只提高写契约的收益，不是门槛。完整规格框架留给多角色、合规／审计、长期规格资产或多 Agent 共享契约。选择条件、起点和退出信号见 [§2](#2-标准节奏探索--计划--实现--提交-)。**
 
 ✅ **〔跨代保留〕目标和约束已清楚，就直接实现并验证；别先选一套流程。** 还缺什么，再补什么：
 - **〔跨代保留〕业务规则、兼容或交付约束不能猜**：先查现有依据，只问答案会改变实现的问题，把决定写进任务或短 Spec；已有依据就不再访谈。
@@ -18,18 +20,18 @@
 
 ## 当前最高水平与比较范围
 
-<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
+<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-25 -->
 
 **当前领先做法是让强 Agent 完成整轮工作，再按缺失的依据补约束、样品或实际路径验证，而不是预先固定流程长度。** 近期参照为 Addy Osmani／Anthropic 的 [Opus 5.5 实践（9-22）](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)、Cursor 的[探索委派删减（9-23）](https://cursor.com/blog/improved-token-efficiency)与 John Phamous／Vercel 的[产品设计方法（6-25）](https://vercel.com/blog/teaching-agents-product-design-at-vercel)。本仓选择这一层的条件做法；跨任务最佳流程仍未知。[一手：团队原文；研究：比较]
 
 | 同一个选择 | 领先路线与本仓取舍 | 独立来源的支持与反例 |
 |---|---|---|
-| 直接实现，还是先规划／写规格 | 目标清楚便整轮执行；未决决定会改变产品时先澄清，不按文件数分级 | [Willison 的 Battle Drones（10-20）](https://simonwillison.net/2026/Oct/20/battledrones/)既有过夜整轮玩法修改，也有第8轮先分析再约定新地图；支持随未知切换，不证明规格因果提效 |
+| 直接实现、窄规格，还是完整框架 | 默认原生 Agent＋项目反馈；缺会改变实现的决定、可执行检查或共享契约时加窄规格／定向测试，多文件／多消费者只是收益信号；多角色、合规或长期规格资产才用完整框架。文件数是收益信号，不是自动关卡 | [Claude Code 官方](https://code.claude.com/docs/en/best-practices)明确小改直接做、较大功能先访谈写自包含 Spec，并给可运行的检查；[Willison 的 Battle Drones（10-20）](https://simonwillison.net/2026/Oct/20/battledrones/)支持随未知切换；Spec Kit／Kiro／BMAD 的 brownfield／quick 入口说明框架不必全流程；Marmelab 文章中引用的 1300 行 Markdown 例子是成本反例（单一例子，见 §2） |
 | 原生流程，还是整包 Skill／外层循环 | 先保原生自主性；具体漏项才加窄反馈，已有反馈足够便撤去额外层 | [Krupa 的同题比较（9-29）](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)把补丁正确性、回归测试与整包投入分开；小题结果不能决定所有长任务或窄 TDD Skill 的价值 |
 | 有了设计配方／测试结果，能否接收 UI 二改 | 设计依据交代方向；新消费者和新状态另核关键交互，机械检查直接对应目标 | Equinor 的 [10月公开评审与修复](https://github.com/equinor/design-system/pull/5584#discussion_r4193983965)发现短对话框遗漏的长内容滚动关闭问题；旧短实例检查没有覆盖新消费者的关键手势 |
 | 把纠正沉淀为全局流程，还是局部依据 | 业务决定放任务／规格，行为回归放测试，真正通用的方法才固化 | 同一 Equinor 评审要求测试对照 ADR 的目标阈值，而非重算实现公式；基础层合入与后续页面可用也分开接收 |
 
-**本仓已比较领先路线并给出条件默认，尚未证明统一最优。** 差距仍在四种路线缺少同一真实维护任务的完整成本对照。来源独立性、固定SHA和验证范围集中见[本轮研究](research/2026-10-12-baml-and-review.md#p69工作流整页比较与ui二改)。[研究：2026-10-22 UTC+8]
+**本仓已比较领先路线并给出条件默认，尚未证明统一最优。** 新增的厂商基准只支持“功能／多文件可能有收益”，且是单团队、单模型、50 张工单、未独立复现；原生、窄规格和完整框架仍缺同一真实维护任务的完整成本对照。来源独立性、固定SHA和验证范围集中见[本轮研究](research/2026-10-12-baml-and-review.md#p69工作流整页比较与ui二改)。[研究：2026-10-25 UTC+8]
 
 ## 1. 核心：验证闭环 ✅
 
@@ -57,22 +59,80 @@
 
 ## 2. 标准节奏：探索 → 计划 → 实现 → 提交 ✅
 
-以 Claude Code 中先调查、审方案再实施的任务为例；Plan 是规划工作流，需真正只读时另设工具与执行环境限制，见 [06 权限模式](06-hooks-and-guardrails.md#3-权限模式)：
+**已有项目加一个完整功能，默认是“原生 Agent + 项目自己的反馈”，不是先选一套流程。** 这里的“完整功能”指用户可感知、要从实现接到真实入口、做完必须能实际运行验收的一项功能；它可能涉及多个文件或旧消费者，但文件数不是路线开关。项目里已有入口、约定、测试和真实消费者时，让 Agent 先读这些并在执行中规划；只有在缺会改变实现的决定、缺能区分错误的检查，或缺共享契约／交接／审计依据时，才补窄规格、测试或完整规格框架。**默认路线胜在少一层产物、反馈直接来自项目本身；它输给规格路线的情况，也正是这些依据缺失，而不是单纯“功能大”或“文件多”。**
+
+| 路线 | 什么时候选 | 第一步 | 什么情况不值得加 |
+|---|---|---|---|
+| **原生 Agent＋项目反馈（默认）** | 目标清楚；现有代码、测试和运行入口能回答大部分问题；改动落在已有模式上；一个上下文能完成，或只需短交接 | 交底目标、入口、必须保留的行为和验收命令；让 Agent 先跑现有检查／启动应用，再实现并出示证据 | 缺的是产品决定、权限或真实消费者反馈；加流程不能补这些 |
+| **窄规格／测试辅助** | 行为不能从代码推断，但一页以内能写清；需要交接、共享契约或审计依据；已有规格／组件消费者要保持当前约定；已知正确行为但缺能区分错误的检查（补定向测试，不必写规格）。跨多个文件、层或消费者只提高收益信号，不是门槛 | 只写会改变实现的约束、必须保留的旧行为、一两个验收例或命令；已有 OpenSpec 等增量工具就写 delta，不重抄全量；缺检查时先红后绿 | 只是把实现步骤抄成文档；行为清楚且现有测试已覆盖；写规格比实现还费时 |
+| **完整规格框架** | 缺共享契约、审计产物或长期维护依据：多人多角色、合规／审计、长期维护的规格要作为资产、多个并行 Agent 需要共享可审计的契约与产物，或组织已有流程；大型陌生子系统、需要从零建立规格的新模块 | 先按框架自己的 existing-project／brownfield 指南做一个有界变更；有 constitution／项目原则文件时只写已成立的事实；优先用 quick spec、bug entry 或 fast path，不默认全流程 | 小修、重构、写测试，或已有任务和测试足以表达时；为“大功能”自动上全套 |
+
+窄规格的访谈写法见 [§3](#3-大功能访谈式-spec-)，前置设计与垂直切片见 [§3.4](#34-大功能的前置设计与垂直切片-)，完整工具对照见 [§5](#5-spec-驱动开发sdd)；TDD 的具体判断见 §4。
+
+**优先复用现成的轻入口。** Claude Code 官方强调给 Agent 可运行的检查，小改直接做；较大功能可先访谈并写自包含 Spec。Anthropic 的长时 harness 从已有进度和端到端反馈接续工作；Spec Kit、Kiro、OpenSpec 和 BMAD 也有 existing-project、Quick Spec、增量 change 或直接 build 的入口，不必为使用框架而走全流程。
+
+**规格成本开始超过它补上的缺口，就收窄或撤回。** Marmelab 文章中引用的 Spec Kit 日期显示例子据称生成 8 个文件、约 1300 行 Markdown；Uvik 厂商自报只能作弱条件信号，不据其排名选择框架，也不据此声称本仓任务获得净收益。
+
+| 开工前要交底 | 具体内容 | 缺了怎么办 |
+|---|---|---|
+| 目标与用户结果 | 用户能看到什么变化，什么算完成 | 先问或做可撤回样品；不要猜业务规则 |
+| 入口与相似实现 | 相关目录、命令、已有模式、运行方式 | Agent 先探索；范围过大时用子 Agent |
+| 必须保留的行为 | 旧 API／CLI／schema／数据／交互／鉴权／性能／旧消费者 | 从测试、文档和调用方找；找不到就写成短契约 |
+| 验收路径 | 测试、构建、启动应用、真实消费者 | 先补最小可运行入口；不能验证就明说 |
+| 边界 | 不能改的目录、接口、数据、依赖 | 用权限或沙箱执行，不靠提示词保证 |
+
+已有资料能回答的先让 Agent 自己查，不要求用户重述；只有答案会改变实现的才问。
+
+**默认动作按缺口取，不是四道关卡。** 需要先审方案时，用下面的官方四步；目标、兼容要求和授权清楚时，Agent 可在执行中规划并连续完成，多文件本身不要求 Plan 或人工批准：
 
 1. **探索**（Claude Code Plan 模式）：“阅读 src/auth，理解 session 和登录是怎么处理的。”
 2. **计划**：“我要加 Google OAuth，需要改哪些文件？写个计划。”可以按 `Ctrl+G` 在编辑器里直接改计划。
 3. **实现**：退出 Plan 模式，“按计划实现，给回调写测试，跑测试并修复失败”。
 4. **提交**：让它写提交信息并开 PR。
 
-**按未知和决策分流**：上面是需要先审方案的示例，不是所有任务的四个关卡。目标、兼容要求和授权清楚时，Agent 可在执行中规划并连续完成；多文件本身不要求 Plan 或人工批准。存在会改变实现的关键歧义时，再先调查或讨论。**[经验：采用判断，2026-10-13]**
+Plan 是规划工作流，需真正只读时另设工具与执行环境限制，见 [06 权限模式](06-hooks-and-guardrails.md#3-权限模式)。
 
-**✅ 计划开始反复构建整套实现、再转抄代码时，先改计划产物，不先加评审或继续细拆。** 让 Agent 留下文件、接口、规格值、测试名与断言代码和验证命令；实现者能自行决定的函数体不逐段复制，尚未确定的算法与确需探明的 API 仍可调查。人检查缩减后是否仍能明确实施与验收，以计划相对规格的膨胀和重复代码为信号，不设统一行数上限。Superpowers 的实际修订支持这一窄选择，见[计划产物核查](research/2026-10-12-community-source-records.md#计划变成实现先改变产物)。**局限：作者重放只支持所测规划行为；不能推出所有任务应少写测试，或新计划已改善当前模型的最终交付。** **[一手：补丁；社区：作者报告；经验：采用判断，2026-10-21 UTC+8]**
+**把必须保留的行为变成可检查的东西，并让实际消费者反馈改变实现。** 已有测试、契约测试、快照、CLI 回执或真实消费者都能承担；没有时先补最小入口，不先加流程。单测、类型检查、静态组件渲染只覆盖各自那层：CLI 要真跑命令，服务要发真实请求，组件要在实际加载路径里渲染，交互和视觉要在浏览器里操作；静态组件执行不是浏览器验收，Agent 写过代码也不是增益证据。检查按改动范围选最小充分集：目标行为已有用例就定向跑，不默认全量；只有共享契约、数据迁移或跨消费者变化才扩大。反馈失败时改实现或改错误的需求／检查，不重复同一提示；旧契约冲突时先更新短规格或计划，再改代码。
+
+**能直接改给编码 Agent 的短起点：**
+
+```
+在现有项目里实现 [功能]，用户可见结果是 [结果]。
+先读 [入口/相似实现/测试/运行命令]，沿用现有模式；不要改 [不能动的目录、接口、数据或依赖]。
+必须保留：[旧 API/CLI/schema/数据/交互/鉴权/性能/旧消费者]。
+验收：运行 [命令] 并通过；再从 [真实入口或消费者] 走一遍 [场景]，把输出或截图给我。
+只有答案会改变实现、且现有资料回答不了时才问我；其余自行决定并继续。
+```
+
+**一次自然的下一次变化。** 功能会继续维护时，从真实待办或消费者需求里取一个会触及旧边界的变化（阈值、新状态、新消费者、旧数据），保留旧要求并回归受影响路径；功能不会继续演进就不做第二次修改，不为验证流程制造缺陷。本仓 MDX 采用就是这样：原生 Agent 完成限定扩展，第二次只改运费阈值，旧送达要求和组件依赖保留，两轮都由真实 OpenSpec CLI 与 MDX／React 消费者接收；模型身份未知，静态渲染不等于浏览器交互，也没有测得净速度或质量收益。详见[采用记录](../experiments/openspec-mdx-adoption.md)。
+
+| 可并行 | 必须串行 |
+|---|---|
+| 读代码、查资料；文件不重叠的独立模块；消费者夹具与文档；互不依赖的候选样品 | 共享接口、数据模型、迁移顺序、权限边界；契约变更后的下游更新；最终集成与真实消费者验收 |
+
+Worktree 和并行会话只隔离写入，不自动提供独立证据；主 Agent 要逐个检查子 Agent 交回的证据，再验证整合结果。
+
+| 信号 | 动作 |
+|---|---|
+| 一句话能描述 diff；现有模式和测试已覆盖 | 直接做，不写规格、不加框架 |
+| 行为不能从代码推断，或共享契约／交接依据未定 | 写一页以内的窄规格／短契约，补定向测试 |
+| 已知正确行为但现有检查不能区分错误 | 补红/绿定向测试；不必写规格 |
+| 跨多个文件或层、多消费者，但行为清楚且测试已覆盖 | 直接做；跨文件／消费者只提高写契约的收益，不是自动门槛 |
+| 多人多角色、合规／审计、长期规格资产、多 Agent 需要共享可审计契约 | 用完整框架，但先走 brownfield 指南和有界变更，优先 quick／fast path |
+| 规格文档比代码膨胀快、评审要看两遍、规格过期或被忽略 | 收窄或撤回规格，回到原生＋项目反馈 |
+| 反复失败且没有新反馈，或缺权限、产品决定 | 先处理缺失依据；权限未获准时停依赖动作，不换路绕过，也不加更多流程 |
+| 高风险、明确漏审或跨路径契约变化 | 加一次独立审查；已有可信审查可复用，不例行叠加 |
+
+**✅ 计划开始反复构建整套实现、再转抄代码时，先改计划产物，不先加评审或继续细拆。** 让 Agent 留下文件、接口、规格值、测试名与断言代码和验证命令；实现者能自行决定的函数体不逐段复制，尚未确定的算法与确需探明的 API 仍可调查。人检查缩减后是否仍能明确实施与验收，以计划相对规格的膨胀和重复代码为信号，不设统一行数上限。Superpowers 的实际修订支持这一窄选择，见[计划产物核查](research/2026-10-12-community-source-records.md#计划变成实现先改变产物)。**局限：作者重放只支持所测规划行为；不能推出所有任务应少写测试，或新计划已改善当前模型的最终交付。**
 
 **模式名不构成通用安全边界**：CodeBuddy CLI 官方契约中，`plan` 期间普通文件编辑与命令仍委托进入前的权限模式，另受规则与目标保护约束；不能照搬上例认定只读，更不等于沙箱。客户端范围见[入口核查](research/2026-10-12-community-source-records.md#codebuddy入口与计划权限)，环境隔离原则见[10 §3](10-security.md#3-防护原则)。**[一手；研究：范围，未执行验证]**
 
+
+**依据**：[一手] [Claude Code best practices](https://code.claude.com/docs/en/best-practices)、[Anthropic effective harnesses](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Spec Kit existing-project](https://github.github.com/spec-kit/guides/existing-projects.html)、[Kiro Quick Spec](https://kiro.dev/docs/specs/quick-spec/)、[OpenSpec workflows](https://github.com/Fission-AI/OpenSpec/blob/main/docs/workflows.md)、[BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)；[社区：单例] [Marmelab 引用的日期显示例子](https://marmelab.com/blog/2025/11/12/spec-driven-development-waterfall-strikes-back.html)，不是该文作者的一次实跑；[一手：厂商自报；未独立复现] [Uvik 基准](https://uvik.net/blog/spec-driven-development-benchmark/)，50 单 brownfield Python、单团队／单模型，±10 个百分点噪声、规格阶段35.1% token，页面标注更新2026-10-08早于所称运行日2026-10-15且未链接原始CSV，本仓2026-10-22已决定不据其排名调评级；[经验] 本节条件选择复用本仓MDX采用记录及计划产物核查（2026-10-21）；核实2026-10-25。
+
 ## 3. 大功能：访谈式 Spec ✅
 
-适用于尚有会改变实现的关键取舍，不由“大功能”三个字自动触发。只补不可从现有资料取得的决定；视觉偏好可先用样品澄清，再写已确认约束。**[经验：采用条件，依据见上文]**
+§2 已给出何时选窄规格；这里展开访谈式写法。它适用于尚有会改变实现的关键取舍，不由“大功能”三个字自动触发。只补不可从现有资料取得的决定；视觉偏好可先用样品澄清，再写已确认约束。**[经验：采用条件，依据见上文]**
 
 ```
 我想做 [简述]。用 AskUserQuestion 工具详细采访我。
@@ -156,22 +216,24 @@
 
 ## 5. Spec 驱动开发（SDD）
 
+§2 已给出何时选完整框架；这里保留工具对照、历史成本和采用边界。
+
 | 工具 | 风格 | 评级 |
 |---|---|---|
-| [GitHub Spec Kit](https://github.com/github/spec-kit) | 功能流程含 Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge；当前另有 bug/想法评估入口 | 🧪 按未决约束与维护需要试用 |
-| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 轻量，偏增量变更（`/opsx:propose`），支持 30+ 工具 | 🧪 |
-| [Kiro](https://kiro.dev) | 原生需求／设计／任务与显式修订，见[采用边界](research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界) | 🧪 按审阅与维护需要试用 |
-| [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | 模拟敏捷团队的多个角色，产出物很多 | 👀 |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | 功能流程含 Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge；另有 existing-project 指南与 bug／想法独立入口 | 🧪 按未决约束与维护需要试用 |
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 轻量增量 change（`/opsx:propose` → `apply` → `archive`），支持 30+ 工具，已有项目按 delta 改当前规格 | 🧪 |
+| [Kiro](https://kiro.dev) | 原生需求／设计／任务与显式修订；[Quick Spec](https://kiro.dev/docs/specs/quick-spec/) 可无审批门生成三件套，见[采用边界](research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界) | 🧪 按审阅与维护需要试用 |
+| [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | 模拟敏捷团队的多个角色，产出物很多；小改也可直接 build，v7 仍为预览 | 👀 |
 
 **历史批评（[社区]：Birgitta Böckeler、François Zaninotto 与 HN 讨论）**
 
 下面是历史使用体验，不代表当前版本只有完整 SDD 一条路径；Spec Kit 的2026-10-10源码已提供独立 bug 流程，见 [21 的版本与原帖](21-agent-patterns.md)。
-- Spec Kit 给一个简单的日期显示功能生成了 **1300 行 Markdown**；审阅大量生成的 Markdown 可能比审代码还累；
+- Marmelab 文章中引用的 Spec Kit 日期显示例子据称生成了 8 个文件、约 **1300 行 Markdown**；审阅大量生成的 Markdown 可能比审代码还累；
 - Böckeler 在2025-09用 Kiro 修一个小 bug，却得到四个 user stories、十六条验收标准，认为过重；这支持按任务收窄规格，不证明当前没有修订通路；
 - 有人报告写规格占了项目一半的时间；用完整 SDD 修 bug 显然是大材小用。
 - 支持者的反驳：瀑布模型的问题在于反馈周期长达数月，而 SDD 的周期是几分钟。
 
-**本仓库的判断 [经验：条件采用]**：规格的价值是固定容易猜错或丢失的约束，不是先写齐文档。中大型功能不自动需要完整 SDD；小修若涉及有歧义的行为，也先用一两个例子说清预期。探索／原型期避免长 Spec，先用能回答当前问题的样品；已确认的边界可以写短说明。已有任务与测试足以表达时直接做，只有跨步骤决策需要保存时再选轻量 Spec 或增量工具。实现发现约束冲突时更新规格，不能为服从旧计划继续做错。Kiro已有显式修订与任务同步入口，但仍需人确认新约束、核对受影响任务与实现；不把同步或任务勾选当验收通过。若额外文档没有补上真实缺口，就收窄或撤回规格流程，见[原文与修订边界](research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界)。上面的历史成本反例仍成立；新增依据与适用范围见[契约与可观察偏好](research/2026-10-12-baml-and-review.md#工作流首选契约与可观察偏好)。
+**本仓库的判断 [经验：条件采用]**：选择条件见 §2；这里只补采用边界。规格的价值是固定容易猜错或丢失的约束，不是先写齐文档。已有任务与测试足以表达时直接做；只有跨步骤决策需要保存时才选轻量 Spec 或增量工具。实现发现约束冲突时更新规格，不能为服从旧计划继续做错。Kiro 的显式修订与任务同步仍需人确认新约束、核对受影响任务与实现；不把同步或任务勾选当验收通过。额外文档没有补上真实缺口，就收窄或撤回规格流程，见[原文与修订边界](research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界)。上面的历史成本反例仍成立；新增依据与适用范围见[契约与可观察偏好](research/2026-10-12-baml-and-review.md#工作流首选契约与可观察偏好)。
 
 ### OpenSpec：让下一位接手当前约定，而不只是旧计划
 
@@ -272,6 +334,8 @@ Anthropic 的两篇历史工程报告应连着读：2025-11 的方案逐功能�
 - Anthropic：[Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)、[Building a C compiler](https://www.anthropic.com/engineering/building-c-compiler)
 - [Ralph Loop 插件](https://github.com/anthropics/claude-plugins-official/tree/c2bdb427efe8673f190ae862c273cfa368d2390f/plugins/ralph-loop)
 - [Birgitta Böckeler：Understanding SDD（Martin Fowler 网站）](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)、[François Zaninotto：SDD: The Waterfall Strikes Back](https://marmelab.com/blog/2025/11/12/spec-driven-development-waterfall-strikes-back.html)、[HN 讨论](https://news.ycombinator.com/item?id=45935763)（Kiro 相关归因已核，其他概括沿用历史记录）
+- [GitHub Spec Kit：Adopting in an Existing Project](https://github.github.com/spec-kit/guides/existing-projects.html)、[Kiro Specs](https://kiro.dev/docs/specs/)、[Kiro Quick Spec](https://kiro.dev/docs/specs/quick-spec/)、[OpenSpec workflows](https://github.com/Fission-AI/OpenSpec/blob/main/docs/workflows.md)、[BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)（2026-10-25 核当前文档）
+- [Uvik SDD benchmark](https://uvik.net/blog/spec-driven-development-benchmark/)（厂商自办；页面自称运行日 2026-10-15，但最后更新 2026-10-08，早于所称运行日；原始 CSV 未链接；单团队、单模型、50 张工单，未独立复现）
 
 ## 官方示例也要匹配协作方式
 
