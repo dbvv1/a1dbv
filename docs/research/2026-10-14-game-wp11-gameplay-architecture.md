@@ -852,3 +852,35 @@ AD模拟时停普通循环，[普通存档门槛](https://github.com/IvarK/Antim
 **AI 二改交付（待验）**：沿现有组件／数据与伤害、掉落接口，只改一种关键件的损毁政策，再改一处替代来源；记录损失后仍可做的动作、可达补给及其代价。比较正常补给与缺件路线、制造后回收、辅助模式开关；若承诺稳定构筑，则反查治疗是否让护甲无用。沿05通用契约验一次结算／重开，人试玩核重建意愿；库存身份与堆栈沿既有段，不为此另造经济框架。[研究]
 
 **探索回执**：截至2026-10-23，读作者博客、当前手册、Reddit正反；中文Steam搜到2025个人手册翻译，但它不是独立体验验证，未找到可核的近期同题中文正反。开源已核 CDDA 固定修复路径，仅借机制，不直接复用到 Unity，也不复制代码或素材。两篇论坛公告要求登录，停止访问且未换镜像；未试用、未比较AI二改工时。[研究]
+
+
+<a id="reward-choice-evidence"></a>
+## 局内奖励选择：直接权重、票袋与供给底线不是一回事
+
+核实：2026-10-24 UTC；对应[05局内奖励](../../domains/game-dev/05-gameplay-architecture.md#reward-choice)。本轮补小资源池怎样产生可用选择，不重开P105局外解锁、卡牌底座或随机隔离。默认是资格过滤＋单次展示去重，只有明确供给问题才加长期状态；属于研究判断，最高玩家体验与制作效率未知。[研究]
+
+### 一手作品与固定实现
+
+| 已读来源 | 支持什么；不支持什么 |
+|---|---|
+| [Windblown 0.99官方补丁](https://windblown.game/Patchnotes/0.99)，2026-10-22，Rewards Update | 装备来源由2改3选、部分场景可选商店类型、精英增强来源保最低稀有度。[一手] 可分别调候选数、来源与质量；未披露抽样算法或改善幅度，不能写成三选一必然优于二选一。[研究] |
+| SPD v3.3.8，固定`7b8b845a76fe76c6b7c031ae9e570852411f56db`：[Generator.java L622–735](https://github.com/00-Evan/shattered-pixel-dungeon/blob/7b8b845a76fe76c6b7c031ae9e570852411f56db/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Generator.java#L622-L735)、[L817–850](https://github.com/00-Evan/shattered-pixel-dungeon/blob/7b8b845a76fe76c6b7c031ae9e570852411f56db/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Generator.java#L817-L850) | 抽中减票、耗尽重置；直接权重另有入口，神器不重置且耗尽返回null，由调用者回退为戒指。[一手] 袋与普通抽样可按来源混用，不是通用三选一实现。仅读固定历史版本，不称当前HEAD或已运行。[研究] |
+| 同版[Dungeon.java L502–525](https://github.com/00-Evan/shattered-pixel-dungeon/blob/7b8b845a76fe76c6b7c031ae9e570852411f56db/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java#L502-L525) | 力量药、升级卷轴的生成需求按楼层阶段与已生成数另算。[一手] 支持把关键供给与普通随机分层；此处未追完整生成、拾取路径，不把“判定需要生成”写成玩家必然获得。[研究] |
+| [Black Dragon Mage作者公告](https://steamcommunity.com/app/2207230/allnews/)，Update v0.6.7，2025-12-07 | 作者修复早期解锁少、反复禁选使付费地图宝箱耗尽候选并卡住。[一手] 空池须有产品回退；未取得补丁源码，不推断作者采用哪种回退。[研究] |
+| Halls of Torment [Dev Journal #4官方正文](https://store.steampowered.com/news/posts/?enddate=1686747619&feed=steam_community_announcements)，2023-06-14，历史对照 | 作者区分重抽本次特性选择、当局移除特性及后继。[一手] 只借不同作用范围，未核2026全套药水规则；与近期来源控制／最低品质比较，不据旧机制宣布最优。[研究] |
+
+固定SPD文件声明GPL-3.0-or-later；本轮只借机制，不复制源码／素材，不推荐把Java游戏底座迁到Unity。Unity／UE原生随机能力及隔离边界沿[既有比较](#随机所有权补研装饰二改是否改变玩法序列)，它们不提供作品的资格／供给政策。[一手／研究]
+
+### 玩家需求并不一致
+
+已读[r/roguelites原帖](https://www.reddit.com/r/roguelites/comments/1md3pkj/do_complex_build_systems_make_roguelites_more_fun/)：manderson1313厌倦每局重复少数升级，blorbagorp偏好能计划见到目标的小池，VagrantPilgrim担心复杂构筑打断动作节奏。[社区：个人自述，精确发言日未核] 因此增加池量、降低重复或提高定向性没有统一胜者；本轮不以票数证明普遍偏好，仍先定位玩家缺的是变化、可规划性还是少停顿。[研究]
+
+### 决定与可反驳条件
+
+**先保证“选择合法”，再决定是否保证“构筑及时成形”。** 原型普通奖励按正权重抽取、展示内身份唯一；若关键供给缺口才分出阶段规则，而非让所有稀有物品都按袋循环。正文10票／18次缺口是数学构造，无模拟或玩家效果声明。[研究]
+
+**展示记账不等于获得记账。** 若袋控制内容曝光，新展示即耗票是自洽选择；若契约保证获得补给，未选不算获得。多选奖励若只在选中时耗长期票，不能仍套用“整袋展示频率”的保证。采用哪种取决于玩法，不能由随机API决定。[研究]
+
+**有限控制保留适应，不代替内容质量。** 重抽或选来源让玩家付代价换机会，禁选则持续改变可行集合；若只有指定组合可玩，应先修替代路线或必要前置供给，不用更多重抽次数遮掩。无效候选归规则验证；玩家是否愿意改构筑、是否觉得选择只是耗时，仍须实际试玩。[研究]
+
+本轮只读公开补丁、固定源码与原生文档；未购买、运行模型／引擎、制作新游戏或CPU小样，不声称玩家收益／AI二改成本已测。实施与验收直接回05，存档／随机隔离沿既有契约，不另造框架。[研究]
