@@ -30,6 +30,22 @@
 主流参照是独立调查、worktree 与定向 review；可行基线是一位主 Agent 连续完成实现和验证。本仓推荐属于与近期领先机制比较后的条件默认，统一最佳拓扑仍未知。对应[C09卡](collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c09--多-agent)、[独立来源与代际边界](research/2026-10-12-experiment-records.md#p70原生协调与人工中转)；权限、恢复与隔离仍按下文入口契约，不由效果案例推定。[研究：2026-10-22 UTC+8]
 
 
+
+### 旧角色链要不要改成 Skill？
+
+**🧪 先试合并共享同一任务状态的串行角色，不把每个子 Agent 原样改名为 Skill。** 适合自建的“规划→领域判断→执行”链；独立评审、可并行调查和确需权限隔离的执行者仍有单独上下文的理由。Anthropic [10-22迁移指南](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)讨论企业Agent架构，不能直接证明编码任务的最优拓扑。[一手；经验：采用范围，2026-10-24]
+
+1. **先保知识与行为，再去角色包装。** 原领域规则、工具和验收不变，比较原链与主循环＋按需知识；权限与硬前提由实际工具执行，不随提示删减撤掉。
+2. **分清少交接的收益与 Skill 的收益。** 替代路线成立后，若要判断知识包是否必要，再保持工具、去掉候选Skill比较；没有独有知识就可只留工具，不强制造一个包。
+3. **检查旁路，不只看总分。** 主循环新拿到工具后，可能绕过仍需其他知识的邻接任务；看原来跨角色的数据是否真的传到最终结果。发现必要行为退化，就修路由／知识或恢复原分工。
+
+这些操作借自[固定迁移步骤](https://github.com/anthropics/single-agent-loop-kit/blob/c43796287b83bec847db923f07131d1cc8de750d/skill/steps/03-fold.md)，是源码／方法核查，**本仓未运行模型迁移对照**；该套件自称不维护的参考实现，不作为生产依赖推荐。[一手／研究]
+
+[Kim Olsen的10-23报价Agent试验](https://dev.to/kimolsen/ai-sales-agent-test-four-subagents-vs-one-loop-with-skills-58eg)恰好说明归因问题：单循环每次加载全部Skill，观察到的差异不能归给按需加载；多体组又只转发问题、不传原邮件且用自由文本交接。它支持检查交接丢失，不证明单循环普遍胜过良好分工。[社区：作者合成任务实测，非编码对照]
+
+探索回执：核官方指南／固定开源步骤、作者试验与[Reddit原讨论](https://www.reddit.com/r/ClaudeAI/comments/1xdwquj/anthropics_new_guide_oct_22_argues_most_agents/)；中文检索仅找到转述，未作独立采用证据。未安装迁移套件、未新增评估或审批流程。[研究]
+
+
 ## 1. 证据
 
 | 来源 | 发现 |
