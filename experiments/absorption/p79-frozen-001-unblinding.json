@@ -1,0 +1,42 @@
+{
+  "judgments_sha256": "3980249e74eb98d0478e8e121864ca2bfd82aad163b4517ed122f49995dd5e81",
+  "adjudication_sha256": "09c5a30bbd6fa95ad1798b5fc477449dbd099e05298ce5907f39b99684902c0e",
+  "items": [
+    {
+      "id": "727c73ac016e74cf",
+      "question": "F06",
+      "group": "doc",
+      "answer_utf8_sha256": "262e978e1a22925a05edc22f66de8e1a9060e3c73c33e367bd92120c059b55c9"
+    },
+    {
+      "id": "c63ac3bdf74d66ba",
+      "question": "F04",
+      "group": "no_doc",
+      "answer_utf8_sha256": "eff37b20a5b5fa48bca752470c4d56fde9824079cc4ef1a933bb61f829a891f0"
+    },
+    {
+      "id": "bb7d7b8e453dc2e9",
+      "question": "F06",
+      "group": "no_doc",
+      "answer_utf8_sha256": "bb1170e37d66ff21dc3642ad7f117f046bfb79eca4dbd0960dfd5fc72fdca9fc"
+    },
+    {
+      "id": "a0d3224e85dd891e",
+      "question": "F01",
+      "group": "no_doc",
+      "answer_utf8_sha256": "263c7e53c0c02ea77d9ce28bdb16eb7794cf0b635816bef2aa7ab971864cef9f"
+    },
+    {
+      "id": "daad2a067b2fec37",
+      "question": "F04",
+      "group": "doc",
+      "answer_utf8_sha256": "f77a1ca0881cb75f2108ec5d0241f2760dc788e5fc48084cdee14351692cf817"
+    },
+    {
+      "id": "afa06807228b0f95",
+      "question": "F01",
+      "group": "doc",
+      "answer_utf8_sha256": "774806f6efce66cb42a5037641c0c01ceeeb48767086cc52c77b88c10dd153b4"
+    }
+  ]
+}
