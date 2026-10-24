@@ -131,6 +131,24 @@ Agent 列受影响节点、字段和依赖，沿已有回归核新旧消息顺�
 
 主要依据：官方子 Agent 指南要求主任务整合结果；#40932 报告结果投递停滞，#38989 报告递归评审和重复测试。**[一手；社区]** 局限：提示“不要提前结束”无法独自修复投递与唤醒故障，必要结果仍须实际收集、验证。
 
+### 接手 CI：沿同一运行取回当前证据
+
+**✅ 旧观察者没返回时，先用仓库、提交SHA和run ID找回远端结果，不先重跑CI或重新实施补丁。** Agent先核当前attempt与目标SHA，再取该attempt的jobs／相关steps；人核这些检查是否覆盖原验收，而不是只看一个绿色总状态。[经验；2026-10-24公开案例只读复核]
+
+例如接手[cli/cli PR14804](https://github.com/cli/cli/pull/14804)在固定`fa812ef2b1ab1240ca023b7a4b720cbeef7fbdcd`上的[运行40001614534](https://github.com/cli/cli/actions/runs/40001614534)：旧attempt1已结束但结论为`action_required`，jobs=0；本次读取的当前attempt2为success，六个job均完成。第一轮不是测试失败，也不是空jobs就算通过；现在可以依据第二轮接收这条workflow，不继续沿用旧阻塞。[一手：GitHub实际响应]
+
+已有获准的GitHub CLI入口时，可按这个案例查询；没有run ID先按精确SHA与workflow定位，不取全仓“最新一条”。下列CLI参数按[原生文档](https://cli.github.com/manual/gh_run_view)和[固定实现](https://github.com/cli/cli/blob/4f2cfe92e3499f8581bf39db77e0a1431fa7b55c/pkg/cmd/run/shared/shared.go)核对；本仓实际使用等价GitHub GET读取，未运行gh客户端。[一手／源码；本仓只读核对]
+
+```bash
+gh run list --repo cli/cli --commit fa812ef2b1ab1240ca023b7a4b720cbeef7fbdcd --workflow go.yml
+gh run view 40001614534 --repo cli/cli --attempt 1 --json headSha,status,conclusion,jobs
+gh run view 40001614534 --repo cli/cli --attempt 2 --json headSha,status,conclusion,jobs
+```
+
+直接API入口：[attempt1](https://api.github.com/repos/cli/cli/actions/runs/40001614534/attempts/1)及[jobs](https://api.github.com/repos/cli/cli/actions/runs/40001614534/attempts/1/jobs?per_page=100)、[attempt2 jobs](https://api.github.com/repos/cli/cli/actions/runs/40001614534/attempts/2/jobs?per_page=100)。其他运行先查当前`run_attempt`；取全分页并核job的SHA，不把截断列表当完整检查。job的steps也须回[该SHA的workflow](https://github.com/cli/cli/blob/fa812ef2b1ab1240ca023b7a4b720cbeef7fbdcd/.github/workflows/go.yml)理解：本例Windows／macOS的debug-overrides步骤按条件跳过，不能一见skipped就认定失败。[一手：真实响应／固定workflow]
+
+交回run URL、SHA、attempt、相关job ID和剩余验收；仍在运行就由负责交付的主任务沿同一ID接续。另一个[真实使用者的多attempt产物问题](https://github.com/cli/cli/issues/12437)说明同run或同名artifact不能证明是本次产物。本例没有读取日志或下载artifact，也不证明PR全部必需检查、合并提交或最终产品通过；只把旧交接更新成当前这一条workflow的证据。[社区／本仓核对／经验]
+
 ## 6. 工作树隔离不是权限隔离
 
 **先让每个任务有能启动、能观察的验证路径，再延长运行时间。** [Cursor环境复盘（2026-07-30）](https://cursor.com/blog/cloud-agent-environment)报告：只补启动Skill帮助有限，真正简化的是统一启动入口与长进程管理。与[OpenAI自用harness](https://openai.com/index/harness-engineering/)逐worktree运行应用的做法相比，共同可借的是把启动和检查变成稳定工具能力，而非给模型更多守候职责。默认复用现有启动脚本，按失败点补最小缺口；人核跨任务状态污染、真实行为覆盖及维护负担，不默认搭一套常驻平台。[一手：团队自报；研究：同题比较，未测净收益]

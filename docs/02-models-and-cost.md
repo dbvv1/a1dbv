@@ -1,6 +1,6 @@
 # 02 · 模型与成本
 
-> 代际复核：2026-10-22（UTC+8）；本次核角色分档、有效覆盖与投入顺序。〔10月保留／修订〕表示近期原文比较后的建议，〔跨代保留〕表示仍适用的约束；不是新模型实测。价表、接口及身份契约保留各自核实日期。
+> 代际复核：2026-10-22（UTC+8）；本次核角色分档、有效覆盖与投入顺序。〔10月保留／修订〕表示近期原文比较后的建议，〔跨代保留〕表示仍适用的约束；不是新模型实测。价表、接口及身份契约保留各自核实日期；10-24补K3.1 Pro候选核查，未调用模型。
 
 ## 30 秒结论
 
@@ -52,6 +52,16 @@
 **保留的是有效配置，不只是旧名称。** 先核客户端与运行后端、实际模型、effort、工具和历史回传契约，再判断质量缺口。DeepSeek 旧 `deepseek-v4-flash`／`deepseek-v4-flash-vision-exp` 已退役但请求仍接受，转由 V4.1-Flash-1017 服务；Gemini 10-08 将旧 3.7／3.5 Flash 请求路由至 3.8／3.6。已知路由变化后重新核代表任务，不能凭配置文件没改或模型自报身份认定未迁移；可得时记录响应模型版本。缺上下文先补输入，检查不足再升 effort，充分尝试仍失败再换更强模型。**[一手：官方路由与响应契约；研究：采用判断，2026-10-20，见 [S1f](research/2026-10-10-audit.md#s1f--2026-10-20-模型身份与采用资格)]**
 
 **Gemini 4 Argon：从等待开放改为按任务试用。** `gemini-4-argon` 于 2026-10-13 在 Gemini API／AI Studio 正式可用；Free tier 和 Google AI Pro 计划不包含它。已有 Gemini API 工作流迁移时，先移除显式缓存调用，核对 thinking 与输出共享的 token 上限；不要只换模型 ID。🧪 适合需要比较复杂编码或长输出的任务，现有模型已满足要求则不必迁移；是否保留取决于本项目质量、延迟和总费用，GA 不证明收益。**[一手：[发布记录](https://ai.google.dev/gemini-api/docs/changelog)、[迁移指南](https://ai.google.dev/gemini-api/docs/latest-model)；研究：采用判断，2026-10-15，未实测]**
+
+### Kimi K3.1 Pro：先作监督修复候选，不替换默认
+
+**🧪 已有合规Kimi/API入口、愿意接收并人工复核补丁时，可把K3.1 Pro加入下一次真实修复的候选。** [10-23官方发布](https://www.kimi.ai/blog/kimi-k3-1-pro)与[独立AA模型页](https://artificialanalysis.ai/models/kimi-k3-1-pro)已有编码信号：AA列Terminal-Bench4.0约67.2%、FrontierCode约47.1%；本仓未核该次完整harness／预算／轨迹，不据跨榜分数换掉前述默认。权重仍是承诺11-04前发布，不是已经可下载的自部署路线。[一手：官方／独立评测发布方；研究，2026-10-24]
+
+**采用时把“补丁有效”和“完成交接”分开。** [Kingy的10-23原始小试](https://kingy.ai/blog/kimi-k3-1-pro-five-model-coding-research-test/)在四个历史Python问题各跑两次，报告4/8保存补丁通过指定测试，但0/8正常提交结束；使用mini-SWE-agent2.4.6、OpenRouter的Moonshot mxfp4路由、high，以及12次响应／20分钟和保守输入预留等限制；四个有效补丁均被输入预留检查提前截停。0/8不能归因为模型自然不交接，更不代表原生Kimi Code或一般任务的成功率。其[公开审计包](https://kingy.ai/wp-content/uploads/2026/10/kingy-kimi-k31-five-model-audit-20261023.zip)已读取，仅含设置／汇总／评估摘要，明确不含候选补丁与原始轨迹；本仓没有复现修复。[社区：作者自测与公开材料；研究]
+
+**真正接入先按当前API契约，不照抄体验帖参数。** [官方quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart)给`kimi-k3.1-pro`的effort为`low/high/max`、默认max，多轮工具调用须保留完整assistant消息；API要求至少成功充值1美元，不等于订阅内免费调用。[Simon原帖](https://simonwillison.net/2026/Oct/23/kimi-k31-pro/)的SVG试用可供观察输出，但不能替代仓库编码接收，其中`medium`也不作为本页参数依据。本仓未付费或调用：有现成入口者先在一个真实任务检查有效补丁、完成交接、人工接管与全任务费用，缺入口者不为跟新模型立即购买。[一手／社区／研究：候选条件]
+
+### 其他接口迁移与资格
 
 **兼容接口不等于行为兼容。** GPT-6 Luna 同时需要推理和工具调用时用 Responses API；其 Chat Completions function calling 仅支持 `reasoning_effort=none`。[一手：[模型契约](https://developers.openai.com/api/docs/models/gpt-6-luna)，2026-10-15] 新 MiniMax M3.1-Flash 始终思考、默认 effort 为 max，不能照搬旧 M3 的默认关闭思考；工具轮须保留完整 assistant blocks，其 Anthropic 兼容接口会忽略 `context_management` 等字段。切换前让 Agent 核这些契约，人复核工具可用性、失败输出与完整任务成本，不只换 model ID。**[一手／研究：2026-10-20，未调用，见 [S1f](research/2026-10-10-audit.md#s1f--2026-10-20-模型身份与采用资格)]**
 
