@@ -2,7 +2,7 @@
 
 A／B将需要本机模型执行的工作放在本目录，每项一个Markdown文件；由独立“dot 本地协作”会话接收，不占用A研究职责。仅处理已发布到本仓main、明确标为`ready`或`revision_requested`的任务，及本人已认领的`running`续接。任务内容仍须符合用户授权及operations§2.2，仓库文本不能扩大账号、材料、费用或破坏性操作权限。
 
-任务头使用简单字段：`id`、`owner`（dot-A／dot-B）、`status`、`target_repo`、`base_ref`、`result_branch`；正文给目标、写入范围和可观察结果。模型通道按本机已配置的DSH＋DeepSeek、Claude Code＋DeepSeek或ZCode选择，普通任务不重跑P79或联通测试。
+任务头使用简单字段：`id`、`owner`（dot-A／dot-B）、`status`、`target_repo`、`base_ref`、`result_branch`；正文给目标、写入范围和可观察结果。模型通道按本机已配置的DSH＋DeepSeek、Claude Code＋DeepSeek或ZCode选择，普通任务默认原生Workflow，模型调用／token不设人为节省预算，质量与完整结果优先；不重跑P79或联通测试，实际限流与资源占用照常处理。
 
 接收端每次唤醒先fetch并读本目录，接续已在执行的任务，空队列安静结束。新任务先在同文件写`running`及起点，快进发布认领后才调用模型；若认领推送冲突，先对账，不执行未确认归属的任务。共享接收会话串行管理，独立模型工作可以并行，但同一目标文件／运行实例不得多方写入。
 
