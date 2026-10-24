@@ -1,0 +1,1499 @@
+diff --git a/web/src/components/MemoActionMenu/MemoShareImagePreview.tsx b/web/src/components/MemoActionMenu/MemoShareImagePreview.tsx
+index e80b596..4302ef0 100644
+--- a/web/src/components/MemoActionMenu/MemoShareImagePreview.tsx
++++ b/web/src/components/MemoActionMenu/MemoShareImagePreview.tsx
+@@ -43,6 +43,7 @@ const MemoShareImagePreview = forwardRef<HTMLDivElement, { width: number }>(({ w
+               content={memo.content}
+               attachments={memo.attachments}
+               compact={false}
++              filterCompletedTasks={false}
+               contentClassName="text-[14px] leading-6.5 sm:text-[15px]"
+             />
+           </div>
+diff --git a/web/src/components/MemoEditor/view/MemoContentView.tsx b/web/src/components/MemoEditor/view/MemoContentView.tsx
+index 2051b90..d024a06 100644
+--- a/web/src/components/MemoEditor/view/MemoContentView.tsx
++++ b/web/src/components/MemoEditor/view/MemoContentView.tsx
+@@ -15,6 +15,7 @@ import { findAnchorTarget } from "@/utils/markdown-manipulation";
+ import { headingSlugs } from "./headings";
+ import LinkMetadataCard from "./LinkMetadataCard";
+ import { type LinkCardMount, linkCardsExtension } from "./linkCards";
++import { applyCompletedTaskVisibility, MEMO_TASK_VISIBILITY_EXTENSION, memoTaskVisibilityExtension } from "./taskVisibility";
+ import { useSearchMatchHighlight } from "./useSearchMatchHighlight";
+ import { useTagNavigation } from "./useTagNavigation";
+ 
+@@ -33,6 +34,11 @@ export interface MemoContentViewProps {
+    * Markdown, in which only the ticked item's `[ ]` or `[x]` changed.
+    */
+   onTaskToggle?: (content: string) => void;
++  /**
++   * Whether the browser reading preference may hide completed tasks here. Default
++   * true; the share-image export turns it off because the image stands for the memo.
++   */
++  filterCompletedTasks?: boolean;
+   className?: string;
+   contentClassName?: string;
+   onClick?: (e: React.MouseEvent) => void;
+@@ -65,9 +71,22 @@ let nextLinkCardKey = 0;
+  * may hide their target. MemoEditor shows a memo by name through it; previews pass content.
+  */
+ const MemoContentViewImpl = (props: MemoContentViewProps) => {
+-  const { className, contentClassName, content, attachments, memoName, parentPage, compact, onTaskToggle, onClick, onDoubleClick } = props;
++  const {
++    className,
++    contentClassName,
++    content,
++    attachments,
++    memoName,
++    parentPage,
++    compact,
++    onTaskToggle,
++    filterCompletedTasks = true,
++    onClick,
++    onDoubleClick,
++  } = props;
+   const navigate = useNavigate();
+-  const { linkPreview: linkPreviewEnabled } = useDevicePreferences();
++  const { linkPreview: linkPreviewEnabled, hideCompletedTasks: hideCompletedTasksPreference } = useDevicePreferences();
++  const hideCompletedTasks = filterCompletedTasks && hideCompletedTasksPreference;
+   const navigateToTag = useTagNavigation(parentPage);
+   // Whatever the page's search matched is painted here, without altering the rendered tree.
+   const contentRef = useRef<HTMLDivElement>(null);
+@@ -99,6 +118,44 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
+     editor?.refreshViews("linkCards");
+   }, [editor, linkPreviewEnabled]);
+ 
++  // Completed tasks leave the read-only view through a block view, so the document, its
++  // Markdown and the remaining checkboxes keep their source mapping. The preference is read
++  // through a ref; changing it redraws only the blocks this extension drew.
++  const hideCompletedTasksRef = useRef(hideCompletedTasks);
++  hideCompletedTasksRef.current = hideCompletedTasks;
++  const taskVisibility = useMemo(() => memoTaskVisibilityExtension(() => hideCompletedTasksRef.current), []);
++  const contentExtensions = useMemo(() => [...linkCards, taskVisibility], [linkCards, taskVisibility]);
++  const appliedHideCompletedTasks = useRef(hideCompletedTasks);
++  useEffect(() => {
++    if (appliedHideCompletedTasks.current === hideCompletedTasks) return;
++    appliedHideCompletedTasks.current = hideCompletedTasks;
++    editor?.refreshViews(MEMO_TASK_VISIBILITY_EXTENSION);
++  }, [editor, hideCompletedTasks]);
++
++  // A list with a second paragraph or a code block does not fit the editor's block model,
++  // so the whole list is one raw block and the block view above never sees its items: the
++  // editor draws them itself. Mark the completed ones in that drawn DOM, and mark them
++  // again whenever the editor replaces what it drew. The document and Markdown stay as
++  // they are, so ticks and spacing keep their source mapping.
++  useEffect(() => {
++    if (!editor) return;
++    const root = contentRef.current;
++    if (!root) return;
++    applyCompletedTaskVisibility(root, hideCompletedTasks);
++    const observer = new MutationObserver(() => applyCompletedTaskVisibility(root, hideCompletedTasks));
++    observer.observe(root, { childList: true, subtree: true });
++    return () => observer.disconnect();
++  }, [editor, hideCompletedTasks]);
++
++  // A tick changes only its own block, so a completed parent kept as context would keep
++  // the element it had while it still had open work. Redraw the filtered blocks once the
++  // editor has applied the document it reports.
++  const handleTaskToggle = (markdown: string) => {
++    onTaskToggle?.(markdown);
++    editor?.refreshViews(MEMO_TASK_VISIBILITY_EXTENSION);
++    if (contentRef.current) applyCompletedTaskVisibility(contentRef.current, hideCompletedTasksRef.current);
++  };
++
+   // In-memo anchors scroll within this memo; a collapsed card may hide the target, so it opens the detail page.
+   const handleLinkClick = ({ href }: { href: string }) => {
+     if (!href.startsWith("#")) return false;
+@@ -113,7 +170,13 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
+   };
+ 
+   return (
+-    <div className={`w-full flex flex-col justify-start items-start text-foreground ${className || ""}`}>
++    <div
++      className={cn(
++        "w-full flex flex-col justify-start items-start text-foreground",
++        hideCompletedTasks && "memos-hide-completed-tasks",
++        className,
++      )}
++    >
+       <div
+         ref={contentRef}
+         data-memo-content
+@@ -131,12 +194,12 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
+         <MemoMarkdown
+           editorRef={setEditor}
+           value={content}
+-          onChange={onTaskToggle}
++          onChange={onTaskToggle ? handleTaskToggle : undefined}
+           taskToggle={Boolean(onTaskToggle)}
+           toolbar={false}
+           slashMenu={false}
+           attachments={attachments}
+-          extensions={linkCards}
++          extensions={contentExtensions}
+           headingIds={headingSlugs}
+           onLinkClick={handleLinkClick}
+           // Tags filter the list when clicked here; mentions of people who exist open their page.
+diff --git a/web/src/components/MemoEditor/view/taskVisibility.ts b/web/src/components/MemoEditor/view/taskVisibility.ts
+new file mode 100644
+index 0000000..10fce94
+--- /dev/null
++++ b/web/src/components/MemoEditor/view/taskVisibility.ts
+@@ -0,0 +1,140 @@
++import { type Block, type Doc, type Extension, type ListItemBlock, quoteKind } from "@usememos/editor";
++
++/** Attribute on the empty element a hidden completed task item renders into, for the reading CSS. */
++export const HIDDEN_COMPLETED_TASK_ATTRIBUTE = "data-memos-hidden-completed-task";
++
++/** Name of the block-view extension, for `editor.refreshViews()` when the preference changes. */
++export const MEMO_TASK_VISIBILITY_EXTENSION = "memoTaskVisibility";
++
++const isCompletedTask = (block: Block): block is ListItemBlock => block.type === "listItem" && block.listType === "task" && block.checked;
++
++/** One answer per document: the editor renders a block at a time and keeps documents immutable. */
++const hiddenByDoc = new WeakMap<Doc, ReadonlySet<string>>();
++
++/**
++ * The completed task items a reader can stop seeing without losing work. Nested
++ * list items belong to the item above them until the indent drops back; a
++ * completed parent above an open task or other nested list content stays visible
++ * as that content's context. A note that follows the list is not nesting.
++ *
++ * The editor's block views draw these items empty instead of drawing the block,
++ * so this only decides what is shown: the document, its ids and its Markdown are
++ * untouched, and ticking a remaining task still changes only that item's bracket.
++ */
++export function hiddenCompletedTaskIds(doc: Doc): ReadonlySet<string> {
++  const cached = hiddenByDoc.get(doc);
++  if (cached) return cached;
++  const blocks = doc.blocks;
++  const hidden = new Set<string>();
++
++  const hasVisibleDescendant = (start: number, indent: number, quote: ReturnType<typeof quoteKind>): boolean => {
++    for (let index = start + 1; index < blocks.length; index += 1) {
++      const block = blocks[index];
++      if (block.type !== "listItem") return false;
++      if (quoteKind(block) !== quote) return false;
++      if (block.indent <= indent) return false;
++      if (!isCompletedTask(block) || hasVisibleDescendant(index, block.indent, quote)) return true;
++    }
++    return false;
++  };
++
++  for (let index = 0; index < blocks.length; index += 1) {
++    const block = blocks[index];
++    if (!isCompletedTask(block)) continue;
++    if (!hasVisibleDescendant(index, block.indent, quoteKind(block))) hidden.add(block.id);
++  }
++  hiddenByDoc.set(doc, hidden);
++  return hidden;
++}
++
++/**
++ * The reading preference as a block view: while `isEnabled()` is true, completed
++ * task items with no open work below them render empty; everything else renders
++ * as the editor draws it, checkboxes included. A preference change re-runs this
++ * through `refreshViews(MEMO_TASK_VISIBILITY_EXTENSION)`, and an edited document
++ * re-renders the blocks it changed.
++ */
++export function memoTaskVisibilityExtension(isEnabled: () => boolean): Extension {
++  return {
++    name: MEMO_TASK_VISIBILITY_EXTENSION,
++    blockView: {
++      match: isCompletedTask,
++      render: (block, element, ctx) => {
++        if (!isEnabled() || !hiddenCompletedTaskIds(ctx.editor.state.doc).has(block.id)) return false;
++        element.setAttribute(HIDDEN_COMPLETED_TASK_ATTRIBUTE, "");
++      },
++    },
++  };
++}
++
++/** The editor's read-only rendering of a raw Markdown block whose structure its block model cannot hold. */
++const RAW_MARKDOWN_VIEW_SELECTOR = ".mbe-view-markdown";
++
++const LIST_ITEM_CLASS = "mbe-list-item";
++
++const listItemIndent = (item: HTMLElement): number => {
++  const indent = Number(item.dataset.indent);
++  return Number.isFinite(indent) ? indent : 0;
++};
++
++/** The box the editor draws for a task item, or null for an ordinary list item. */
++const taskCheckbox = (item: HTMLElement): HTMLInputElement | null =>
++  item.querySelector<HTMLInputElement>(":scope > .mbe-marker > input.mbe-checkbox");
++
++/**
++ * Whether an item keeps a list below it worth reading: a nested element the raw
++ * rendering drew, or a following item indented below it that the editor lowered
++ * into the same flow.
++ */
++const hasVisibleDescendant = (item: HTMLElement, visible: ReadonlyMap<HTMLElement, boolean>): boolean => {
++  for (const descendant of Array.from(item.querySelectorAll<HTMLElement>(`.${LIST_ITEM_CLASS}`))) {
++    if (visible.get(descendant) === true) return true;
++  }
++  const indent = listItemIndent(item);
++  for (let sibling = item.nextElementSibling; sibling; sibling = sibling.nextElementSibling) {
++    if (!(sibling instanceof HTMLElement) || !sibling.classList.contains(LIST_ITEM_CLASS)) break;
++    if (listItemIndent(sibling) <= indent) break;
++    if (visible.get(sibling) === true) return true;
++  }
++  return false;
++};
++
++const setTaskHidden = (item: HTMLElement, hidden: boolean): void => {
++  if (hidden) {
++    item.setAttribute(HIDDEN_COMPLETED_TASK_ATTRIBUTE, "");
++    item.hidden = true;
++    return;
++  }
++  if (!item.hasAttribute(HIDDEN_COMPLETED_TASK_ATTRIBUTE)) return;
++  item.removeAttribute(HIDDEN_COMPLETED_TASK_ATTRIBUTE);
++  item.hidden = false;
++};
++
++/**
++ * The reading preference for a list the editor keeps as one raw Markdown block: a
++ * list whose item holds a second paragraph or a code block does not fit the block
++ * model, so no block view sees its items and the editor draws them itself. This
++ * marks the completed ones in that drawn DOM, with the same rule as
++ * `hiddenCompletedTaskIds`: a completed item stays while a nested item stays, so
++ * open work and other list content below it keep their context. The Markdown, the
++ * document's block ids and every checkbox stay as they are.
++ *
++ * Reapplied after the editor draws again; `editor.refreshViews` does not reach
++ * these nested elements.
++ */
++export function applyCompletedTaskVisibility(root: HTMLElement, isEnabled: boolean): void {
++  for (const container of Array.from(root.querySelectorAll<HTMLElement>(RAW_MARKDOWN_VIEW_SELECTOR))) {
++    const items = Array.from(container.querySelectorAll<HTMLElement>(`.${LIST_ITEM_CLASS}`));
++    const visible = new Map<HTMLElement, boolean>();
++    // Document order puts every descendant and later sibling after its item, so
++    // walking backwards decides what stays before anything it keeps visible.
++    for (let index = items.length - 1; index >= 0; index -= 1) {
++      const item = items[index];
++      const checkbox = taskCheckbox(item);
++      const completed = item.dataset.listType === "task" && checkbox !== null && checkbox.checked;
++      const stays = !completed || hasVisibleDescendant(item, visible);
++      visible.set(item, stays);
++      setTaskHidden(item, isEnabled && !stays);
++    }
++  }
++}
+diff --git a/web/src/components/MemoReadingOptions.tsx b/web/src/components/MemoReadingOptions.tsx
+new file mode 100644
+index 0000000..57e6600
+--- /dev/null
++++ b/web/src/components/MemoReadingOptions.tsx
+@@ -0,0 +1,30 @@
++import { useId } from "react";
++import { Switch } from "@/components/ui/switch";
++import { updateDevicePreferences, useDevicePreferences } from "@/hooks/useDevicePreferences";
++import { cn } from "@/lib/utils";
++import { useTranslate } from "@/utils/i18n";
++
++/**
++ * The reading switch on a memo's page, so a reader who is not signed in can hide
++ * completed task items. It is the browser-wide device preference: it changes what
++ * this browser shows, never the memo, its URL or sharing.
++ */
++const MemoReadingOptions = ({ className }: { className?: string }) => {
++  const t = useTranslate();
++  const { hideCompletedTasks } = useDevicePreferences();
++  const labelId = useId();
++  return (
++    <div className={cn("flex w-full items-center justify-end gap-2", className)}>
++      <span id={labelId} className="text-sm text-muted-foreground">
++        {t("memo.hide-completed-tasks")}
++      </span>
++      <Switch
++        aria-labelledby={labelId}
++        checked={hideCompletedTasks}
++        onCheckedChange={(checked) => updateDevicePreferences({ hideCompletedTasks: checked })}
++      />
++    </div>
++  );
++};
++
++export default MemoReadingOptions;
+diff --git a/web/src/hooks/useDevicePreferences.ts b/web/src/hooks/useDevicePreferences.ts
+index 402c278..3423a5d 100644
+--- a/web/src/hooks/useDevicePreferences.ts
++++ b/web/src/hooks/useDevicePreferences.ts
+@@ -10,11 +10,13 @@ export interface DevicePreferences {
+   linkPreview: boolean;
+   /** Double-clicking an editable memo opens it in the editor. */
+   doubleClickEdit: boolean;
++  /** Show only the task items a reader still has to do, wherever a memo is read. */
++  hideCompletedTasks: boolean;
+ }
+ 
+ export const DEVICE_PREFERENCES_KEY = "memos-device-preferences";
+ 
+-const DEFAULT_DEVICE_PREFERENCES: DevicePreferences = { linkPreview: true, doubleClickEdit: false };
++const DEFAULT_DEVICE_PREFERENCES: DevicePreferences = { linkPreview: true, doubleClickEdit: false, hideCompletedTasks: false };
+ 
+ const readBoolean = (value: unknown, fallback: boolean) => (typeof value === "boolean" ? value : fallback);
+ 
+@@ -25,6 +27,7 @@ const parse = (raw: string | null): DevicePreferences => {
+     return {
+       linkPreview: readBoolean(data.linkPreview, DEFAULT_DEVICE_PREFERENCES.linkPreview),
+       doubleClickEdit: readBoolean(data.doubleClickEdit, DEFAULT_DEVICE_PREFERENCES.doubleClickEdit),
++      hideCompletedTasks: readBoolean(data.hideCompletedTasks, DEFAULT_DEVICE_PREFERENCES.hideCompletedTasks),
+     };
+   } catch (error) {
+     console.warn("Failed to load device preferences from localStorage:", error);
+diff --git a/web/src/index.css b/web/src/index.css
+index 5085c3e..49be989 100644
+--- a/web/src/index.css
++++ b/web/src/index.css
+@@ -97,4 +97,17 @@
+     outline: 2px solid var(--ring);
+     outline-offset: 1px;
+   }
++
++  /* Reading preference: a hidden completed task item renders empty through the editor's
++     block view, and its wrapper goes too so the list's spacing leaves with it. */
++  .memos-hide-completed-tasks .mbe-block-view:has(> [data-memos-hidden-completed-task]) {
++    display: none;
++  }
++}
++
++/* A completed item inside a raw Markdown list has no block view to draw it empty, so it
++   stays in the drawn DOM; this hides it. Unlayered and more specific than the editor's
++   own `display: flex` for list items, which would otherwise override `[hidden]`. */
++.memos-hide-completed-tasks .mbe-list-item[data-memos-hidden-completed-task] {
++  display: none;
+ }
+diff --git a/web/src/locales/ar.json b/web/src/locales/ar.json
+index 4426eb4..0329eb0 100644
+--- a/web/src/locales/ar.json
++++ b/web/src/locales/ar.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}} تم التحديث في {{date}}",
+     "connections": "الاتصالات",
+     "grid-compact-hint": "تستخدم تخطيطات الشبكة دائمًا بطاقات مضغوطة.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "التخطيط",
+     "layout-auto": "تلقائي",
+     "layout-auto-description": "عدد الأعمدة حسب عرض الشاشة",
+diff --git a/web/src/locales/az.json b/web/src/locales/az.json
+index 3cb5870..ed01de5 100644
+--- a/web/src/locales/az.json
++++ b/web/src/locales/az.json
+@@ -400,6 +400,7 @@
+     "compact-mode": "Yığcam rejim",
+     "connections": "Bağlantılar",
+     "grid-compact-hint": "Şəbəkə düzülüşləri həmişə yığcam kartlardan istifadə edir.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Düzülüş",
+     "layout-auto": "Avtomatik",
+     "layout-auto-description": "Ekrana sığdığı qədər sütun",
+diff --git a/web/src/locales/bg.json b/web/src/locales/bg.json
+index 5ac8b25..8d20f9a 100644
+--- a/web/src/locales/bg.json
++++ b/web/src/locales/bg.json
+@@ -391,6 +391,7 @@
+     "back-to": "Обратно към {{source}}",
+     "connections": "Връзки",
+     "grid-compact-hint": "Мрежовите оформления винаги използват компактни карти.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Оформление",
+     "layout-auto": "Автоматично",
+     "layout-auto-description": "Толкова колони, колкото се побират на екрана",
+diff --git a/web/src/locales/ca.json b/web/src/locales/ca.json
+index f54e370..b467176 100644
+--- a/web/src/locales/ca.json
++++ b/web/src/locales/ca.json
+@@ -353,6 +353,7 @@
+     "back-to": "Torna a {{source}}",
+     "connections": "Connexions",
+     "grid-compact-hint": "Els dissenys de quadrícula sempre utilitzen targetes compactes.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Disseny",
+     "layout-auto": "Automàtic",
+     "layout-auto-description": "Tantes columnes com càpiguen a la pantalla",
+diff --git a/web/src/locales/cs.json b/web/src/locales/cs.json
+index 6f6936f..39a2fcb 100644
+--- a/web/src/locales/cs.json
++++ b/web/src/locales/cs.json
+@@ -353,6 +353,7 @@
+     "back-to": "Zpět na {{source}}",
+     "connections": "Připojení",
+     "grid-compact-hint": "Mřížkové rozvržení vždy používá kompaktní karty.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Rozvržení",
+     "layout-auto": "Automaticky",
+     "layout-auto-description": "Tolik sloupců, kolik se vejde na obrazovku",
+diff --git a/web/src/locales/da.json b/web/src/locales/da.json
+index 8f95b6e..6da2458 100644
+--- a/web/src/locales/da.json
++++ b/web/src/locales/da.json
+@@ -391,6 +391,7 @@
+     "back-to": "Tilbage til {{source}}",
+     "connections": "Forbindelser",
+     "grid-compact-hint": "Gitterlayout bruger altid kompakte kort.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Layout",
+     "layout-auto": "Auto",
+     "layout-auto-description": "Så mange kolonner som der er plads til på skærmen",
+diff --git a/web/src/locales/de.json b/web/src/locales/de.json
+index c122e1c..c193a7f 100644
+--- a/web/src/locales/de.json
++++ b/web/src/locales/de.json
+@@ -353,6 +353,7 @@
+     "back-to": "Zurück zu {{source}}",
+     "connections": "Verbindungen",
+     "grid-compact-hint": "Rasterlayouts verwenden immer kompakte Karten.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Layout",
+     "layout-auto": "Automatisch",
+     "layout-auto-description": "So viele Spalten, wie auf den Bildschirm passen",
+diff --git a/web/src/locales/el.json b/web/src/locales/el.json
+index c56ec1e..4c6ea9d 100644
+--- a/web/src/locales/el.json
++++ b/web/src/locales/el.json
+@@ -391,6 +391,7 @@
+     "back-to": "Επιστροφή στο {{source}}",
+     "connections": "Συνδέσεις",
+     "grid-compact-hint": "Οι διατάξεις πλέγματος χρησιμοποιούν πάντα συμπαγείς κάρτες.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Διάταξη",
+     "layout-auto": "Αυτόματη",
+     "layout-auto-description": "Τόσες στήλες όσες χωράνε στην οθόνη",
+diff --git a/web/src/locales/en-GB.json b/web/src/locales/en-GB.json
+index c913313..4fb081f 100644
+--- a/web/src/locales/en-GB.json
++++ b/web/src/locales/en-GB.json
+@@ -352,6 +352,7 @@
+     "back-to": "Back to {{source}}",
+     "connections": "Connections",
+     "grid-compact-hint": "Grid layouts always use compact cards.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Layout",
+     "layout-auto": "Auto",
+     "layout-auto-description": "As many columns as fit the screen",
+diff --git a/web/src/locales/en.json b/web/src/locales/en.json
+index b7f6c82..b645d9c 100644
+--- a/web/src/locales/en.json
++++ b/web/src/locales/en.json
+@@ -400,6 +400,7 @@
+     "compact-mode": "Compact mode",
+     "connections": "Connections",
+     "grid-compact-hint": "Grid layouts always use compact cards.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Layout",
+     "layout-auto": "Auto",
+     "layout-auto-description": "As many columns as fit the screen",
+diff --git a/web/src/locales/es.json b/web/src/locales/es.json
+index 8409638..ac60be6 100644
+--- a/web/src/locales/es.json
++++ b/web/src/locales/es.json
+@@ -353,6 +353,7 @@
+     "back-to": "Volver a {{source}}",
+     "connections": "Conexiones",
+     "grid-compact-hint": "Los diseños de cuadrícula siempre utilizan tarjetas compactas.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Diseño",
+     "layout-auto": "Automático",
+     "layout-auto-description": "Tantas columnas como quepan en la pantalla",
+diff --git a/web/src/locales/et.json b/web/src/locales/et.json
+index aba0602..880d0c6 100644
+--- a/web/src/locales/et.json
++++ b/web/src/locales/et.json
+@@ -391,6 +391,7 @@
+     "back-to": "Tagasi {{source}} juurde",
+     "connections": "Ühendused",
+     "grid-compact-hint": "Ruudustikupaigutused kasutavad alati kompaktseid kaarte.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Paigutus",
+     "layout-auto": "Automaatne",
+     "layout-auto-description": "Nii palju veerge kui ekraanile mahub",
+diff --git a/web/src/locales/fa.json b/web/src/locales/fa.json
+index 9a4b3ac..76219f1 100644
+--- a/web/src/locales/fa.json
++++ b/web/src/locales/fa.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}} به‌روزرسانی شده در {{date}}",
+     "connections": "اتصالات",
+     "grid-compact-hint": "طرح‌بندی‌های شبکه‌ای همیشه از کارت‌های فشرده استفاده می‌کنند.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "طرح‌بندی",
+     "layout-auto": "خودکار",
+     "layout-auto-description": "به تعداد ستون‌هایی که صفحه نمایش را پر می‌کنند",
+diff --git a/web/src/locales/fi.json b/web/src/locales/fi.json
+index 3ea6937..d689fee 100644
+--- a/web/src/locales/fi.json
++++ b/web/src/locales/fi.json
+@@ -391,6 +391,7 @@
+     "back-to": "Takaisin kohtaan {{source}}",
+     "connections": "Yhteydet",
+     "grid-compact-hint": "Ruudukkoasetteluissa käytetään aina kompakteja kortteja.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Asettelu",
+     "layout-auto": "Automaattinen",
+     "layout-auto-description": "Niin monta saraketta kuin näytölle mahtuu",
+diff --git a/web/src/locales/fr.json b/web/src/locales/fr.json
+index a63e4d3..db61b0e 100644
+--- a/web/src/locales/fr.json
++++ b/web/src/locales/fr.json
+@@ -353,6 +353,7 @@
+     "back-to": "Retour à {{source}}",
+     "connections": "Connexions",
+     "grid-compact-hint": "Les mises en page en grille utilisent toujours des cartes compactes.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Mise en page",
+     "layout-auto": "Automatique",
+     "layout-auto-description": "Autant de colonnes que l'écran peut en afficher",
+diff --git a/web/src/locales/gl.json b/web/src/locales/gl.json
+index 0567fa8..2199f34 100644
+--- a/web/src/locales/gl.json
++++ b/web/src/locales/gl.json
+@@ -353,6 +353,7 @@
+     "back-to": "Volver a {{source}}",
+     "connections": "Conexións",
+     "grid-compact-hint": "Os deseños de cuadrícula sempre usan tarxetas compactas.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Deseño",
+     "layout-auto": "Automático",
+     "layout-auto-description": "Tantas columnas como axusten á pantalla",
+diff --git a/web/src/locales/he.json b/web/src/locales/he.json
+index dd8e4ac..71cf14d 100644
+--- a/web/src/locales/he.json
++++ b/web/src/locales/he.json
+@@ -367,6 +367,7 @@
+     },
+     "compact-mode": "מצב קומפקטי",
+     "grid-compact-hint": "פריסות רשת משתמשות תמיד בכרטיסים קומפקטיים.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "פריסה",
+     "layout-auto": "אוטומטי",
+     "layout-auto-description": "מספר העמודות המרבי שמתאים למסך",
+diff --git a/web/src/locales/hi.json b/web/src/locales/hi.json
+index adc96b2..bb41da9 100644
+--- a/web/src/locales/hi.json
++++ b/web/src/locales/hi.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}} को {{date}} पर अपडेट किया गया",
+     "connections": "कनेक्शन",
+     "grid-compact-hint": "ग्रिड लेआउट हमेशा कॉम्पैक्ट कार्ड का इस्तेमाल करते हैं।",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "लेआउट",
+     "layout-auto": "ऑटो",
+     "layout-auto-description": "स्क्रीन में जितने कॉलम फिट हों",
+diff --git a/web/src/locales/hr.json b/web/src/locales/hr.json
+index 656f1a7..085b9b8 100644
+--- a/web/src/locales/hr.json
++++ b/web/src/locales/hr.json
+@@ -353,6 +353,7 @@
+     "back-to": "Natrag na {{source}}",
+     "connections": "Veze",
+     "grid-compact-hint": "Mrežni rasporedi uvijek koriste kompaktne kartice.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Raspored",
+     "layout-auto": "Automatski",
+     "layout-auto-description": "Onoliko stupaca koliko stane na zaslon",
+diff --git a/web/src/locales/hu.json b/web/src/locales/hu.json
+index 9a5fbb5..699ab71 100644
+--- a/web/src/locales/hu.json
++++ b/web/src/locales/hu.json
+@@ -353,6 +353,7 @@
+     "back-to": "Vissza a {{source}}-hez",
+     "connections": "Kapcsolatok",
+     "grid-compact-hint": "A rácsos elrendezések mindig kompakt kártyákat használnak.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Elrendezés",
+     "layout-auto": "Automatikus",
+     "layout-auto-description": "Annyi oszlop, amennyi elfér a képernyőn",
+diff --git a/web/src/locales/id.json b/web/src/locales/id.json
+index b92477a..96d7c29 100644
+--- a/web/src/locales/id.json
++++ b/web/src/locales/id.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}} diperbarui pada {{date}}",
+     "connections": "Koneksi",
+     "grid-compact-hint": "Tata letak grid selalu menggunakan kartu ringkas.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Tata Letak",
+     "layout-auto": "Otomatis",
+     "layout-auto-description": "Sebanyak kolom yang sesuai dengan layar",
+diff --git a/web/src/locales/it.json b/web/src/locales/it.json
+index 5cd990a..66d32ce 100644
+--- a/web/src/locales/it.json
++++ b/web/src/locales/it.json
+@@ -353,6 +353,7 @@
+     "back-to": "Torna a {{source}}",
+     "connections": "Connessioni",
+     "grid-compact-hint": "I layout a griglia utilizzano sempre schede compatte.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Layout",
+     "layout-auto": "Automatico",
+     "layout-auto-description": "Tante colonne quante ne possono entrare nello schermo",
+diff --git a/web/src/locales/ja.json b/web/src/locales/ja.json
+index 614e5b9..6ca09ff 100644
+--- a/web/src/locales/ja.json
++++ b/web/src/locales/ja.json
+@@ -295,6 +295,7 @@
+     },
+     "compact-mode": "コンパクト表示",
+     "grid-compact-hint": "グリッドレイアウトでは常にコンパクトなカードで表示されます。",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "レイアウト",
+     "layout-auto": "自動",
+     "layout-auto-description": "画面に収まる分だけ列を表示",
+diff --git a/web/src/locales/ka-GE.json b/web/src/locales/ka-GE.json
+index 7ea40a7..cfce3e5 100644
+--- a/web/src/locales/ka-GE.json
++++ b/web/src/locales/ka-GE.json
+@@ -353,6 +353,7 @@
+     "back-to": "დაბრუნება {{source}}-ზე",
+     "connections": "კავშირები",
+     "grid-compact-hint": "ბადისებრი განლაგებები ყოველთვის კომპაქტურ ბარათებს იყენებს.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "განლაგება",
+     "layout-auto": "ავტომატური",
+     "layout-auto-description": "ეკრანზე რამდენიც უნდა მოთავსდეს",
+diff --git a/web/src/locales/ko.json b/web/src/locales/ko.json
+index dbcee78..12c4cf0 100644
+--- a/web/src/locales/ko.json
++++ b/web/src/locales/ko.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}}이 {{date}}에 업데이트되었습니다.",
+     "connections": "연결",
+     "grid-compact-hint": "그리드 레이아웃은 항상 컴팩트 카드를 사용합니다.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "레이아웃",
+     "layout-auto": "자동",
+     "layout-auto-description": "화면에 맞는 열 개수",
+diff --git a/web/src/locales/lt.json b/web/src/locales/lt.json
+index 6e9f9d5..8014032 100644
+--- a/web/src/locales/lt.json
++++ b/web/src/locales/lt.json
+@@ -391,6 +391,7 @@
+     "back-to": "Atgal į {{source}}",
+     "connections": "Ryšiai",
+     "grid-compact-hint": "Tinklelio išdėstymuose visada naudojamos kompaktiškos kortelės.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Išdėstymas",
+     "layout-auto": "Automatinis",
+     "layout-auto-description": "Tiek stulpelių, kiek telpa ekrane",
+diff --git a/web/src/locales/lv.json b/web/src/locales/lv.json
+index 366f32c..b2c8e1e 100644
+--- a/web/src/locales/lv.json
++++ b/web/src/locales/lv.json
+@@ -391,6 +391,7 @@
+     "back-to": "Atpakaļ uz {{source}}",
+     "connections": "Savienojumi",
+     "grid-compact-hint": "Režģa izkārtojumos vienmēr tiek izmantotas kompaktas kartes.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Izkārtojums",
+     "layout-auto": "Automātiski",
+     "layout-auto-description": "Tik daudz kolonnu, cik ietilpst ekrānā",
+diff --git a/web/src/locales/mr.json b/web/src/locales/mr.json
+index 94450b7..d98c95c 100644
+--- a/web/src/locales/mr.json
++++ b/web/src/locales/mr.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}} हे {{date}} वर अद्यतनित केले",
+     "connections": "जोडण्या",
+     "grid-compact-hint": "ग्रिड लेआउटमध्ये नेहमी संक्षिप्त कार्ड वापरले जातात.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "लेआउट",
+     "layout-auto": "ऑटो",
+     "layout-auto-description": "स्क्रीनवर मावतील तितके स्तंभ",
+diff --git a/web/src/locales/nb.json b/web/src/locales/nb.json
+index 4ea9801..6be5af1 100644
+--- a/web/src/locales/nb.json
++++ b/web/src/locales/nb.json
+@@ -353,6 +353,7 @@
+     "back-to": "Tilbake til {{source}}",
+     "connections": "Tilkoblinger",
+     "grid-compact-hint": "Rutenettoppsett bruker alltid kompakte kort.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Oppsett",
+     "layout-auto": "Auto",
+     "layout-auto-description": "Så mange kolonner som får plass på skjermen",
+diff --git a/web/src/locales/nl.json b/web/src/locales/nl.json
+index 4fa96c5..3684b89 100644
+--- a/web/src/locales/nl.json
++++ b/web/src/locales/nl.json
+@@ -353,6 +353,7 @@
+     "back-to": "Terug naar {{source}}",
+     "connections": "Verbindingen",
+     "grid-compact-hint": "Rasterindelingen gebruiken altijd compacte kaarten.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Indeling",
+     "layout-auto": "Automatisch",
+     "layout-auto-description": "Zoveel kolommen als er op het scherm passen",
+diff --git a/web/src/locales/nn.json b/web/src/locales/nn.json
+index a46cf9f..9f104bf 100644
+--- a/web/src/locales/nn.json
++++ b/web/src/locales/nn.json
+@@ -394,6 +394,7 @@
+       "has-task-list": "Har gjeremålsliste"
+     },
+     "grid-compact-hint": "Rutenett nyttar alltid kompakte kort.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Oppsett",
+     "layout-auto": "Automatisk",
+     "layout-auto-description": "Så mange kolonnar som skjermen har plass til",
+diff --git a/web/src/locales/pl.json b/web/src/locales/pl.json
+index 4b042c5..a1bbcc7 100644
+--- a/web/src/locales/pl.json
++++ b/web/src/locales/pl.json
+@@ -353,6 +353,7 @@
+     "back-to": "Powrót do {{source}}",
+     "connections": "Połączenia",
+     "grid-compact-hint": "Układy siatki zawsze korzystają z kart kompaktowych.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Układ",
+     "layout-auto": "Automatycznie",
+     "layout-auto-description": "Tyle kolumn, ile mieści się na ekranie",
+diff --git a/web/src/locales/pt-BR.json b/web/src/locales/pt-BR.json
+index 8fc9ee0..6a57c72 100644
+--- a/web/src/locales/pt-BR.json
++++ b/web/src/locales/pt-BR.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}} atualizado em {{date}}",
+     "connections": "Conexões",
+     "grid-compact-hint": "Os layouts de grade sempre usam cartões compactos.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Layout",
+     "layout-auto": "Automático",
+     "layout-auto-description": "Quantas colunas couberem na tela",
+diff --git a/web/src/locales/pt-PT.json b/web/src/locales/pt-PT.json
+index 6e17732..cdf9684 100644
+--- a/web/src/locales/pt-PT.json
++++ b/web/src/locales/pt-PT.json
+@@ -353,6 +353,7 @@
+     "back-to": "Voltar para {{source}}",
+     "connections": "Ligações",
+     "grid-compact-hint": "Os layouts de grelha utilizam sempre cartões compactos.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Layout",
+     "layout-auto": "Automático",
+     "layout-auto-description": "Quantas colunas couberem no ecrã",
+diff --git a/web/src/locales/ro.json b/web/src/locales/ro.json
+index e9bd57f..ec0c311 100644
+--- a/web/src/locales/ro.json
++++ b/web/src/locales/ro.json
+@@ -391,6 +391,7 @@
+     "back-to": "Înapoi la {{source}}",
+     "connections": "Conexiuni",
+     "grid-compact-hint": "Aspectele de tip grilă utilizează întotdeauna carduri compacte.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Aspect",
+     "layout-auto": "Automat",
+     "layout-auto-description": "Atâtea coloane câte se potrivesc pe ecran",
+diff --git a/web/src/locales/ru.json b/web/src/locales/ru.json
+index 784357e..feb6b91 100644
+--- a/web/src/locales/ru.json
++++ b/web/src/locales/ru.json
+@@ -345,6 +345,7 @@
+       "updated": "Задачи обновлены"
+     },
+     "grid-compact-hint": "В макетах с сеткой всегда используются компактные карточки.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Макет",
+     "layout-auto": "Автоматически",
+     "layout-auto-description": "Столько столбцов, сколько помещается на экране",
+diff --git a/web/src/locales/sk.json b/web/src/locales/sk.json
+index 022d3a0..fbf9252 100644
+--- a/web/src/locales/sk.json
++++ b/web/src/locales/sk.json
+@@ -391,6 +391,7 @@
+     "back-to": "Späť na {{source}}",
+     "connections": "Pripojenia",
+     "grid-compact-hint": "Mriežkové rozloženia vždy používajú kompaktné karty.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Rozloženie",
+     "layout-auto": "Automaticky",
+     "layout-auto-description": "Toľko stĺpcov, koľko sa zmestí na obrazovku",
+diff --git a/web/src/locales/sl.json b/web/src/locales/sl.json
+index 93cef07..07405f4 100644
+--- a/web/src/locales/sl.json
++++ b/web/src/locales/sl.json
+@@ -353,6 +353,7 @@
+     "back-to": "Nazaj na {{source}}",
+     "connections": "Povezave",
+     "grid-compact-hint": "Mrežne postavitve vedno uporabljajo kompaktne kartice.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Postavitev",
+     "layout-auto": "Samodejno",
+     "layout-auto-description": "Toliko stolpcev, kolikor se prilega zaslonu",
+diff --git a/web/src/locales/sr.json b/web/src/locales/sr.json
+index 3440e64..ad97faa 100644
+--- a/web/src/locales/sr.json
++++ b/web/src/locales/sr.json
+@@ -391,6 +391,7 @@
+     "back-to": "Назад на {{source}}",
+     "connections": "Везе",
+     "grid-compact-hint": "Распореди мреже увек користе компактне картице.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Распоред",
+     "layout-auto": "Аутоматски",
+     "layout-auto-description": "Колико год колона стане на екран",
+diff --git a/web/src/locales/sv.json b/web/src/locales/sv.json
+index 5b13620..ad3ebab 100644
+--- a/web/src/locales/sv.json
++++ b/web/src/locales/sv.json
+@@ -353,6 +353,7 @@
+     "back-to": "Tillbaka till {{source}}",
+     "connections": "Anslutningar",
+     "grid-compact-hint": "Rutnätslayouter använder alltid kompakta kort.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Layout",
+     "layout-auto": "Auto",
+     "layout-auto-description": "Så många kolumner som får plats på skärmen",
+diff --git a/web/src/locales/th.json b/web/src/locales/th.json
+index 0247955..66ac1e1 100644
+--- a/web/src/locales/th.json
++++ b/web/src/locales/th.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}} อัปเดตเมื่อ {{date}}",
+     "connections": "การเชื่อมต่อ",
+     "grid-compact-hint": "รูปแบบตารางจะใช้การ์ดแบบกะทัดรัดเสมอ",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "รูปแบบการจัดวาง",
+     "layout-auto": "อัตโนมัติ",
+     "layout-auto-description": "จำนวนคอลัมน์มากที่สุดเท่าที่จะพอดีกับหน้าจอ",
+diff --git a/web/src/locales/tr.json b/web/src/locales/tr.json
+index 99e82f5..5d2d0bf 100644
+--- a/web/src/locales/tr.json
++++ b/web/src/locales/tr.json
+@@ -328,6 +328,7 @@
+     "compact-mode": "Kompakt mod",
+     "connections": "Bağlantılar",
+     "grid-compact-hint": "Izgara düzenleri her zaman kompakt kartlar kullanır.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Düzen",
+     "layout-auto": "Otomatik",
+     "layout-auto-description": "Ekrana sığdığı kadar sütun",
+diff --git a/web/src/locales/uk.json b/web/src/locales/uk.json
+index 3e763d5..25439b3 100644
+--- a/web/src/locales/uk.json
++++ b/web/src/locales/uk.json
+@@ -353,6 +353,7 @@
+     "back-to": "Назад до {{source}}",
+     "connections": "З'єднання",
+     "grid-compact-hint": "Макети сітки завжди використовують компактні картки.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Макет",
+     "layout-auto": "Авто",
+     "layout-auto-description": "Стільки стовпців, скільки поміщається на екран",
+diff --git a/web/src/locales/vi.json b/web/src/locales/vi.json
+index 6e5e0fa..6859788 100644
+--- a/web/src/locales/vi.json
++++ b/web/src/locales/vi.json
+@@ -341,6 +341,7 @@
+     "count-memos-updated-in-date": "{{count}} {{memos}} được cập nhật vào {{date}}",
+     "connections": "Kết nối",
+     "grid-compact-hint": "Bố cục lưới luôn sử dụng thẻ nhỏ gọn.",
++    "hide-completed-tasks": "Hide completed tasks",
+     "layout": "Bố cục",
+     "layout-auto": "Tự động",
+     "layout-auto-description": "Số cột tùy ý cho vừa màn hình",
+diff --git a/web/src/locales/zh-Hans.json b/web/src/locales/zh-Hans.json
+index 6f0e6b8..fa452fa 100644
+--- a/web/src/locales/zh-Hans.json
++++ b/web/src/locales/zh-Hans.json
+@@ -323,6 +323,7 @@
+     "compact-mode": "紧凑模式",
+     "connections": "关联",
+     "grid-compact-hint": "网格布局始终使用紧凑卡片。",
++    "hide-completed-tasks": "隐藏已完成任务",
+     "layout": "布局",
+     "layout-auto": "自动",
+     "layout-auto-description": "根据屏幕宽度显示尽可能多的列",
+diff --git a/web/src/locales/zh-Hant.json b/web/src/locales/zh-Hant.json
+index 6cdd29d..d667655 100644
+--- a/web/src/locales/zh-Hant.json
++++ b/web/src/locales/zh-Hant.json
+@@ -375,6 +375,7 @@
+     },
+     "compact-mode": "精簡模式",
+     "grid-compact-hint": "網格版面一律使用精簡卡片。",
++    "hide-completed-tasks": "隱藏已完成任務",
+     "layout": "版面配置",
+     "layout-auto": "自動",
+     "layout-auto-description": "依螢幕寬度顯示最多可容納的欄數",
+diff --git a/web/src/pages/MemoDetail.tsx b/web/src/pages/MemoDetail.tsx
+index 6873f2b..38ca857 100644
+--- a/web/src/pages/MemoDetail.tsx
++++ b/web/src/pages/MemoDetail.tsx
+@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo as useReactMemo, useRef, useState } fro
+ import { Link, Navigate, useLocation, useParams } from "react-router-dom";
+ import MemoCommentSection, { type MemoCommentSectionHandle } from "@/components/MemoCommentSection";
+ import MemoParentPlaceholder, { type MemoParentStatus } from "@/components/MemoParentPlaceholder";
++import MemoReadingOptions from "@/components/MemoReadingOptions";
+ import MemoView, { type MemoViewHandle } from "@/components/MemoView";
+ import { computeCommentAmount } from "@/components/MemoView/MemoViewContext";
+ import { createMemoNavigationState, resolveMemoDetailOrigin } from "@/components/MemoView/navigation";
+@@ -253,6 +254,7 @@ const MemoDetail = () => {
+         />
+         <div className="w-full max-w-2xl px-4 sm:px-6">
+           <div className="w-full">
++            <MemoReadingOptions className="mb-2" />
+             {!isShareMode && parentStatus && (
+               <div className="mb-2 md:hidden">
+                 <MemoParentPlaceholder status={parentStatus} onRetry={handleParentRetry} />
+diff --git a/web/tests/device-preferences.test.tsx b/web/tests/device-preferences.test.tsx
+index 0ea584a..728f4e0 100644
+--- a/web/tests/device-preferences.test.tsx
++++ b/web/tests/device-preferences.test.tsx
+@@ -5,23 +5,27 @@ import { DEVICE_PREFERENCES_KEY, updateDevicePreferences, useDevicePreferences }
+ describe("device preferences", () => {
+   beforeEach(() => localStorage.clear());
+ 
+-  it("defaults to link previews on and double-click editing off", () => {
++  it("defaults to link previews on, double-click editing off and completed tasks shown", () => {
+     const { result } = renderHook(() => useDevicePreferences());
+-    expect(result.current).toEqual({ linkPreview: true, doubleClickEdit: false });
++    expect(result.current).toEqual({ linkPreview: true, doubleClickEdit: false, hideCompletedTasks: false });
+   });
+ 
+   it("reads saved values and ignores malformed ones", () => {
+-    localStorage.setItem(DEVICE_PREFERENCES_KEY, JSON.stringify({ linkPreview: false, doubleClickEdit: "yes" }));
++    localStorage.setItem(DEVICE_PREFERENCES_KEY, JSON.stringify({ linkPreview: false, doubleClickEdit: "yes", hideCompletedTasks: true }));
+     const { result } = renderHook(() => useDevicePreferences());
+-    expect(result.current).toEqual({ linkPreview: false, doubleClickEdit: false });
++    expect(result.current).toEqual({ linkPreview: false, doubleClickEdit: false, hideCompletedTasks: true });
+   });
+ 
+   it("persists updates and shares them with every reader", () => {
+     const first = renderHook(() => useDevicePreferences());
+     const second = renderHook(() => useDevicePreferences());
+     act(() => updateDevicePreferences({ doubleClickEdit: true }));
+-    expect(first.result.current).toEqual({ linkPreview: true, doubleClickEdit: true });
+-    expect(second.result.current).toEqual({ linkPreview: true, doubleClickEdit: true });
+-    expect(JSON.parse(localStorage.getItem(DEVICE_PREFERENCES_KEY) ?? "null")).toEqual({ linkPreview: true, doubleClickEdit: true });
++    expect(first.result.current).toEqual({ linkPreview: true, doubleClickEdit: true, hideCompletedTasks: false });
++    expect(second.result.current).toEqual({ linkPreview: true, doubleClickEdit: true, hideCompletedTasks: false });
++    expect(JSON.parse(localStorage.getItem(DEVICE_PREFERENCES_KEY) ?? "null")).toEqual({
++      linkPreview: true,
++      doubleClickEdit: true,
++      hideCompletedTasks: false,
++    });
+   });
+ });
+diff --git a/web/tests/memo-content-view.test.tsx b/web/tests/memo-content-view.test.tsx
+index f59d259..3aa4e0e 100644
+--- a/web/tests/memo-content-view.test.tsx
++++ b/web/tests/memo-content-view.test.tsx
+@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
+ import { beforeEach, describe, expect, it, vi } from "vitest";
+ import { MemoMarkdown } from "@/components/MemoEditor/MemoMarkdown";
+ import { MemoContentView } from "@/components/MemoEditor/view/MemoContentView";
++import { updateDevicePreferences } from "@/hooks/useDevicePreferences";
+ 
+ const state = vi.hoisted(() => ({
+   linkPreview: true,
+@@ -29,9 +30,13 @@ vi.mock("@/contexts/MemoFilterContext", async (importOriginal) => ({
+   }),
+ }));
+ 
+-vi.mock("@/hooks/useDevicePreferences", () => ({
+-  useDevicePreferences: () => ({ linkPreview: state.linkPreview, doubleClickEdit: false }),
+-}));
++vi.mock("@/hooks/useDevicePreferences", async (importOriginal) => {
++  const actual = await importOriginal<typeof import("@/hooks/useDevicePreferences")>();
++  return {
++    ...actual,
++    useDevicePreferences: () => ({ ...actual.useDevicePreferences(), linkPreview: state.linkPreview }),
++  };
++});
+ vi.mock("@/contexts/MentionResolutionContext", () => ({ useResolvedMentionUsernames: () => state.resolved }));
+ vi.mock("@/hooks/useNavigateTo", () => ({ default: () => state.navigateTo }));
+ vi.mock("@/hooks/useNearViewport", () => ({ useNearViewport: () => ({ ref: () => {}, isNearViewport: true }) }));
+@@ -49,7 +54,16 @@ const renderMemo = (content: string, props: Partial<React.ComponentProps<typeof
+     </MemoryRouter>,
+   );
+ 
++/** The task items the editor actually drew, not the empty element a block view hosts. */
++const taskItems = (container: HTMLElement) => Array.from(container.querySelectorAll<HTMLElement>(".mbe-list-item[data-list-type='task']"));
++
++const taskItem = (container: HTMLElement, label: string) =>
++  taskItems(container).find((item) => item.querySelector(":scope > .mbe-content")?.textContent?.startsWith(label));
++
++const taskCheckbox = (item: HTMLElement) => item.querySelector<HTMLInputElement>(":scope > .mbe-marker > input.mbe-checkbox");
++
+ beforeEach(() => {
++  localStorage.clear();
+   state.linkPreview = true;
+   state.resolved = new Set();
+   state.tagsSetting = undefined;
+@@ -81,6 +95,281 @@ describe("memo view", () => {
+   });
+ });
+ 
++describe("completed task reading preference", () => {
++  it("shows every task by default", () => {
++    const { container } = renderMemo("- [ ] Open\n- [x] Done");
++    expect(container).toHaveTextContent("Open");
++    expect(container).toHaveTextContent("Done");
++    expect(container.querySelector(".memos-hide-completed-tasks")).toBeNull();
++  });
++
++  it("hides completed tasks and restores them when the preference is turned off", async () => {
++    const { container } = renderMemo("- [ ] Open\n- [x] Done");
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    expect(container).toHaveTextContent("Open");
++    expect(container).not.toHaveTextContent("Done");
++    expect(container.querySelector(".memos-hide-completed-tasks")).not.toBeNull();
++    expect(container.querySelector("[data-memos-hidden-completed-task]")).not.toBeNull();
++
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: false }));
++    expect(container).toHaveTextContent("Done");
++    expect(container.querySelector("[data-memos-hidden-completed-task]")).toBeNull();
++  });
++
++  it("keeps open nested items and the completed parent that gives them context", async () => {
++    const { container } = renderMemo("- [x] Parent\n  - [ ] Child\n  - [x] Done child\n- [x] Done sibling");
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    expect(container).toHaveTextContent("Parent");
++    expect(container).toHaveTextContent("Child");
++    expect(container).not.toHaveTextContent("Done child");
++    expect(container).not.toHaveTextContent("Done sibling");
++  });
++
++  it("hides an all-completed list and restores it", async () => {
++    const { container } = renderMemo("- [x] Parent\n  - [x] Child");
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    expect(container).not.toHaveTextContent("Parent");
++    expect(container).not.toHaveTextContent("Child");
++
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: false }));
++    expect(container).toHaveTextContent("Parent");
++    expect(container).toHaveTextContent("Child");
++  });
++
++  it("leaves code, ordinary lists and links alone", async () => {
++    const content = [
++      "- [ ] Open",
++      "- [x] Done",
++      "",
++      "- ordinary bullet",
++      "",
++      "```",
++      "- [x] not a task",
++      "```",
++      "",
++      "[Example](https://example.com)",
++    ].join("\n");
++    const { container } = renderMemo(content);
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    expect(container).not.toHaveTextContent("Done");
++    expect(container).toHaveTextContent("ordinary bullet");
++    expect(container).toHaveTextContent("- [x] not a task");
++    expect(screen.getByRole("link", { name: "Example" })).toBeInTheDocument();
++  });
++
++  it("hides completed tasks and keeps open ones inside a quote", async () => {
++    const { container } = renderMemo("> - [x] Done\n> - [ ] Open");
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    expect(container).toHaveTextContent("Open");
++    expect(container).not.toHaveTextContent("Done");
++  });
++
++  it("hides a completed item when a code block keeps the whole list as raw Markdown", async () => {
++    const content = ["- [x] Done", "- [ ] Open", "", "  ```js", "  let x = 1;", "  ```"].join("\n");
++    const { container } = renderMemo(content);
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++
++    expect(container.querySelector(".mbe-view-markdown")).not.toBeNull();
++    expect(taskItem(container, "Done")).not.toBeVisible();
++    expect(taskItem(container, "Open")).toBeVisible();
++    expect(container.querySelector(".mbe-code code")).toHaveTextContent("let x = 1;");
++    // The source is untouched: only the rendered element is hidden.
++    expect(taskItem(container, "Done")).toHaveTextContent("Done");
++
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: false }));
++    expect(taskItem(container, "Done")).toBeVisible();
++    expect(taskItem(container, "Open")).toBeVisible();
++  });
++
++  it("hides a completed item in a multi-paragraph list and keeps the open item's text", async () => {
++    const content = ["- [x] Done", "- [ ] Open", "", "  second paragraph"].join("\n");
++    const { container } = renderMemo(content);
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++
++    expect(taskItem(container, "Done")).not.toBeVisible();
++    expect(taskItem(container, "Open")).toBeVisible();
++    expect(taskItem(container, "Open")).toHaveTextContent("second paragraph");
++  });
++
++  it("keeps a completed raw item that gives an open nested task its context", async () => {
++    const content = [
++      "- [x] Parent",
++      "  ```js",
++      "  let x = 1;",
++      "  ```",
++      "  - [x] Child done",
++      "  - [ ] Child open",
++      "- [ ] Open sibling",
++    ].join("\n");
++    const { container } = renderMemo(content);
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++
++    expect(taskItem(container, "Parent")).toBeVisible();
++    expect(taskItem(container, "Child done")).not.toBeVisible();
++    expect(taskItem(container, "Child open")).toBeVisible();
++    expect(taskItem(container, "Open sibling")).toBeVisible();
++  });
++
++  it("keeps a completed raw item above an indented open task", async () => {
++    const content = [
++      "- [x] Parent",
++      "  ```js",
++      "  let x = 1;",
++      "  ```",
++      "  - [x] Child done",
++      "    - [ ] Grandchild open",
++      "- [ ] Open sibling",
++    ].join("\n");
++    const { container } = renderMemo(content);
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++
++    expect(taskItem(container, "Parent")).toBeVisible();
++    expect(taskItem(container, "Child done")).toBeVisible();
++    expect(taskItem(container, "Grandchild open")).toBeVisible();
++    expect(taskItem(container, "Open sibling")).toBeVisible();
++  });
++
++  it("hides and restores an all-completed raw list", async () => {
++    const content = ["- [x] Parent", "  ```js", "  let x = 1;", "  ```", "  - [x] Child", "    - [x] Grandchild", "- [x] Other"].join("\n");
++    const { container } = renderMemo(content);
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++
++    for (const label of ["Parent", "Child", "Grandchild", "Other"]) {
++      expect(taskItem(container, label)).not.toBeVisible();
++    }
++    expect(container.querySelector("[data-memos-hidden-completed-task]")).not.toBeNull();
++
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: false }));
++    for (const label of ["Parent", "Child", "Grandchild", "Other"]) {
++      expect(taskItem(container, label)).toBeVisible();
++    }
++    expect(container.querySelector("[data-memos-hidden-completed-task]")).toBeNull();
++  });
++
++  it("keeps raw Markdown, checkbox permissions and non-task content when tasks hide", async () => {
++    const content = [
++      "- [x] Done",
++      "- [ ] Open",
++      "",
++      "  ```js",
++      '  const task = "- [x] untouched";',
++      "  ```",
++      "",
++      "- ordinary bullet",
++      "",
++      "[Example](https://example.com)",
++    ].join("\n");
++    const onTaskToggle = vi.fn();
++    const { container } = renderMemo(content, { onTaskToggle });
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++
++    const done = taskItem(container, "Done");
++    expect(done).not.toBeVisible();
++    // The source is still there: a checked box and the text, only not displayed.
++    expect(taskCheckbox(done!)).toBeChecked();
++    expect(done).toHaveTextContent("Done");
++    // Open tasks keep their existing permission and update path.
++    expect(taskCheckbox(taskItem(container, "Open")!)).not.toBeDisabled();
++    expect(taskItems(container)).toHaveLength(2);
++    expect(container.querySelector(".mbe-code code")).toHaveTextContent('const task = "- [x] untouched";');
++    expect(container).toHaveTextContent("ordinary bullet");
++    expect(screen.getByRole("link", { name: "Example" })).toBeVisible();
++    expect(onTaskToggle).not.toHaveBeenCalled();
++  });
++
++  it("hides raw list tasks from the first paint when the preference is already on", () => {
++    updateDevicePreferences({ hideCompletedTasks: true });
++    const content = ["- [x] Done", "- [ ] Open", "", "  ```js", "  let x = 1;", "  ```"].join("\n");
++    const { container } = renderMemo(content);
++    expect(taskItem(container, "Done")).not.toBeVisible();
++    expect(taskItem(container, "Open")).toBeVisible();
++  });
++
++  it("hides completed tasks from the first paint when the preference is already on", () => {
++    updateDevicePreferences({ hideCompletedTasks: true });
++    const { container } = renderMemo("- [ ] Open\n- [x] Done");
++    expect(container).toHaveTextContent("Open");
++    expect(container).not.toHaveTextContent("Done");
++  });
++
++  it("renders every task when a caller turns the filter off", async () => {
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    const { container } = renderMemo("- [ ] Open\n- [x] Done", { filterCompletedTasks: false });
++    expect(container).toHaveTextContent("Open");
++    expect(container).toHaveTextContent("Done");
++  });
++
++  it("renders every raw list task when a caller turns the filter off", async () => {
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    const content = ["- [x] Done", "- [ ] Open", "", "  ```js", "  let x = 1;", "  ```"].join("\n");
++    const { container } = renderMemo(content, { filterCompletedTasks: false });
++    expect(taskItem(container, "Done")).toBeVisible();
++    expect(taskItem(container, "Open")).toBeVisible();
++    expect(container.querySelector("[data-memos-hidden-completed-task]")).toBeNull();
++  });
++
++  it("hides a completed parent once its last open child is ticked", async () => {
++    const content = "- [x] Parent\n  - [ ] A\n  - [ ] B";
++    const onTaskToggle = vi.fn();
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    const { container } = renderMemo(content, { onTaskToggle });
++    expect(container).toHaveTextContent("Parent");
++
++    fireEvent.mouseDown(container.querySelectorAll<HTMLInputElement>("input.mbe-checkbox")[1]);
++    await waitFor(() => expect(onTaskToggle).toHaveBeenCalledWith("- [x] Parent\n  - [x] A\n  - [ ] B"));
++    expect(container).not.toHaveTextContent("A");
++    expect(container).toHaveTextContent("Parent");
++
++    const remaining = container.querySelectorAll<HTMLInputElement>("input.mbe-checkbox");
++    expect(remaining).toHaveLength(2);
++    fireEvent.mouseDown(remaining[1]);
++    await waitFor(() => expect(container).not.toHaveTextContent("Parent"));
++  });
++
++  it("keeps the source mapping when a visible task is ticked", async () => {
++    const content = "- [ ] First\n- [x] Second\n\nNote";
++    const onTaskToggle = vi.fn();
++    const { container } = renderMemo(content, { onTaskToggle });
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    const checkbox = container.querySelector<HTMLInputElement>("input.mbe-checkbox");
++    expect(checkbox).not.toBeNull();
++    fireEvent.mouseDown(checkbox!);
++    await waitFor(() => expect(onTaskToggle).toHaveBeenCalledWith("- [x] First\n- [x] Second\n\nNote"));
++  });
++
++  it("does not write a memo when the preference changes", async () => {
++    const onTaskToggle = vi.fn();
++    renderMemo("- [ ] Open\n- [x] Done", { onTaskToggle });
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: false }));
++    expect(onTaskToggle).not.toHaveBeenCalled();
++  });
++
++  it("keeps every task while the editor is editable", async () => {
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    const { container } = render(
++      <MemoryRouter>
++        <MemoMarkdown value={"- [ ] Open\n- [x] Done"} editable />
++      </MemoryRouter>,
++    );
++    expect(container).toHaveTextContent("Open");
++    expect(container).toHaveTextContent("Done");
++  });
++
++  it("keeps a raw list's source while the editor is editable", async () => {
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++    const content = ["- [x] Done", "- [ ] Open", "", "  ```js", "  let x = 1;", "  ```"].join("\n");
++    const { container } = render(
++      <MemoryRouter>
++        <MemoMarkdown value={content} editable />
++      </MemoryRouter>,
++    );
++    expect(container).toHaveTextContent("Done");
++    expect(container).toHaveTextContent("Open");
++    expect(container).toHaveTextContent("let x = 1;");
++  });
++});
++
+ describe("tags and mentions", () => {
+   it("toggles the tag filter from a list", () => {
+     renderMemo("Plan #work today");
+diff --git a/web/tests/memo-detail-access.test.tsx b/web/tests/memo-detail-access.test.tsx
+index 2a86b61..be446b6 100644
+--- a/web/tests/memo-detail-access.test.tsx
++++ b/web/tests/memo-detail-access.test.tsx
+@@ -12,6 +12,7 @@ import { type Memo, MemoSchema } from "@/types/proto/api/memo_service_pb";
+ const state = vi.hoisted(() => ({
+   currentUser: undefined as { name: string } | undefined,
+   getMemo: vi.fn(),
++  getSharedMemo: vi.fn(),
+   listMemoComments: vi.fn(),
+   setMemoDetail: vi.fn(),
+   toastError: vi.fn(),
+@@ -43,6 +44,19 @@ function renderDetail(client: QueryClient, name = "memos/restored") {
+ }
+ const createClient = () => new QueryClient({ defaultOptions: { queries: { retry: false, retryDelay: 0 } } });
+ 
++function renderSharedMemo(client: QueryClient, token = "token-1") {
++  return render(
++    <QueryClientProvider client={client}>
++      <MemoryRouter initialEntries={[`/memos/shares/${token}`]}>
++        <Routes>
++          <Route path="/memos/shares/:token" element={<MemoDetail />} />
++          <Route path="/404" element={<div>not found</div>} />
++        </Routes>
++      </MemoryRouter>
++    </QueryClientProvider>,
++  );
++}
++
+ describe("memo detail access recovery", () => {
+   beforeEach(() => {
+     vi.clearAllMocks();
+@@ -50,6 +64,23 @@ describe("memo detail access recovery", () => {
+     state.listMemoComments.mockResolvedValue({ comments: [], nextPageToken: "" });
+   });
+ 
++  it("offers the browser reading switch to a guest", async () => {
++    const client = createClient();
++    const memo = create(MemoSchema, { name: "memos/public-note", content: "- [ ] Open\n- [x] Done" });
++    state.getMemo.mockResolvedValue(memo);
++    renderDetail(client, memo.name);
++    expect(await screen.findByRole("switch", { name: "memo.hide-completed-tasks" })).toBeInTheDocument();
++    client.clear();
++  });
++
++  it("offers the browser reading switch on an anonymous share link", async () => {
++    const client = createClient();
++    state.getSharedMemo.mockResolvedValue(create(MemoSchema, { name: "memos/shared-note", content: "- [ ] Open\n- [x] Done" }));
++    renderSharedMemo(client);
++    expect(await screen.findByRole("switch", { name: "memo.hide-completed-tasks" })).toBeInTheDocument();
++    client.clear();
++  });
++
+   it.each(["fresh", "stale"])("revalidates a %s cached denial before showing a restored memo", async (freshness) => {
+     const client = createClient();
+     const name = "memos/restored";
+diff --git a/web/tests/memo-editor-view.test.tsx b/web/tests/memo-editor-view.test.tsx
+index 3aef4db..df6a903 100644
+--- a/web/tests/memo-editor-view.test.tsx
++++ b/web/tests/memo-editor-view.test.tsx
+@@ -4,6 +4,7 @@ import { act, fireEvent, render, waitFor } from "@testing-library/react";
+ import { MemoryRouter } from "react-router-dom";
+ import { beforeEach, describe, expect, it, vi } from "vitest";
+ import { MemoEditor } from "@/components/MemoEditor/MemoEditor";
++import { updateDevicePreferences } from "@/hooks/useDevicePreferences";
+ import { memoKeys } from "@/hooks/useMemoQueries";
+ import { ListMemosResponseSchema, type Memo, MemoSchema } from "@/types/proto/api/memo_service_pb";
+ 
+@@ -39,9 +40,24 @@ const memo = (content: string): Memo => create(MemoSchema, { name: "memos/one",
+ describe("MemoEditor in view mode", () => {
+   beforeEach(() => {
+     vi.resetAllMocks();
++    localStorage.clear();
+     state.currentUser = undefined;
+   });
+ 
++  it("hides completed tasks for an owner with the browser reading preference, without writing", () => {
++    const { client, renderMemo } = setup();
++    state.currentUser = { name: "users/owner" };
++    client.setQueryData(memoKeys.list({}), create(ListMemosResponseSchema, { memos: [memo("- [ ] Open\n- [x] Done")] }));
++    updateDevicePreferences({ hideCompletedTasks: true });
++
++    const { container } = renderMemo("memos/one");
++
++    expect(container).toHaveTextContent("Open");
++    expect(container).not.toHaveTextContent("Done");
++    expect(container.querySelector("input.mbe-checkbox")).not.toBeDisabled();
++    expect(api.updateMemo).not.toHaveBeenCalled();
++  });
++
+   it("shows the memo a list already holds, without fetching it", () => {
+     const { client, renderMemo } = setup();
+     client.setQueryData(memoKeys.list({}), create(ListMemosResponseSchema, { memos: [memo("# Title\n\nSome **bold** text")] }));
+diff --git a/web/tests/memo-reading-options.test.tsx b/web/tests/memo-reading-options.test.tsx
+new file mode 100644
+index 0000000..846f01b
+--- /dev/null
++++ b/web/tests/memo-reading-options.test.tsx
+@@ -0,0 +1,29 @@
++import { act, fireEvent, render, screen } from "@testing-library/react";
++import { beforeEach, describe, expect, it, vi } from "vitest";
++import MemoReadingOptions from "@/components/MemoReadingOptions";
++import { DEVICE_PREFERENCES_KEY, updateDevicePreferences } from "@/hooks/useDevicePreferences";
++
++vi.mock("@/utils/i18n", () => ({ useTranslate: () => (key: string) => key }));
++
++beforeEach(() => localStorage.clear());
++
++describe("memo reading options", () => {
++  it("offers a guest a visible, labelled and focusable switch", () => {
++    render(<MemoReadingOptions />);
++    expect(screen.getByText("memo.hide-completed-tasks")).toBeInTheDocument();
++    const toggle = screen.getByRole("switch", { name: "memo.hide-completed-tasks" });
++    expect(toggle).toHaveAttribute("aria-checked", "false");
++    expect(toggle).not.toBeDisabled();
++    expect(toggle.tabIndex).toBe(0);
++  });
++
++  it("saves the choice in this browser and reflects choices made elsewhere", () => {
++    render(<MemoReadingOptions />);
++    fireEvent.click(screen.getByRole("switch", { name: "memo.hide-completed-tasks" }));
++    expect(screen.getByRole("switch", { name: "memo.hide-completed-tasks" })).toHaveAttribute("aria-checked", "true");
++    expect(JSON.parse(localStorage.getItem(DEVICE_PREFERENCES_KEY) ?? "null")).toMatchObject({ hideCompletedTasks: true });
++
++    act(() => updateDevicePreferences({ hideCompletedTasks: false }));
++    expect(screen.getByRole("switch", { name: "memo.hide-completed-tasks" })).toHaveAttribute("aria-checked", "false");
++  });
++});
+diff --git a/web/tests/memo-task-visibility.test.ts b/web/tests/memo-task-visibility.test.ts
+new file mode 100644
+index 0000000..0e6ccba
+--- /dev/null
++++ b/web/tests/memo-task-visibility.test.ts
+@@ -0,0 +1,42 @@
++import { type Block, type Doc, listItem, paragraph, quote } from "@usememos/editor";
++import { describe, expect, it } from "vitest";
++import { hiddenCompletedTaskIds } from "@/components/MemoEditor/view/taskVisibility";
++
++const doc = (...blocks: Block[]): Doc => ({ blocks });
++
++describe("hiddenCompletedTaskIds", () => {
++  it("hides completed tasks and leaves open ones visible", () => {
++    const open = listItem("task", [], { checked: false });
++    const done = listItem("task", [], { checked: true });
++    expect(hiddenCompletedTaskIds(doc(open, done))).toEqual(new Set([done.id]));
++  });
++
++  it("keeps a completed parent whose nested task is still open", () => {
++    const parent = listItem("task", [], { checked: true });
++    const openChild = listItem("task", [], { checked: false, indent: 1 });
++    const doneChild = listItem("task", [], { checked: true, indent: 1 });
++    const doneSibling = listItem("task", [], { checked: true });
++    expect(hiddenCompletedTaskIds(doc(parent, openChild, doneChild, doneSibling))).toEqual(new Set([doneChild.id, doneSibling.id]));
++  });
++
++  it("hides a completed list whose nested tasks are all completed", () => {
++    const parent = listItem("task", [], { checked: true });
++    const child = listItem("task", [], { checked: true, indent: 1 });
++    expect(hiddenCompletedTaskIds(doc(parent, child))).toEqual(new Set([parent.id, child.id]));
++  });
++
++  it("keeps a completed task above nested non-task content as its context", () => {
++    const parent = listItem("task", [], { checked: true });
++    const bullet = listItem("bullet", [], { indent: 1 });
++    const doneSibling = listItem("task", [], { checked: true });
++    expect(hiddenCompletedTaskIds(doc(parent, bullet, doneSibling))).toEqual(new Set([doneSibling.id]));
++  });
++
++  it("does not treat a following paragraph or another quote as nesting", () => {
++    const quoted = listItem("task", [], { checked: true, quote: "quote" });
++    const plain = listItem("task", [], { checked: true, indent: 1 });
++    const done = listItem("task", [], { checked: true });
++    expect(hiddenCompletedTaskIds(doc(quoted, plain, paragraph(), done))).toEqual(new Set([quoted.id, plain.id, done.id]));
++    expect(hiddenCompletedTaskIds(doc(quoted, quote()))).toEqual(new Set([quoted.id]));
++  });
++});
+diff --git a/web/tests/preferences-media-metadata.test.tsx b/web/tests/preferences-media-metadata.test.tsx
+index 499049a..9ec8187 100644
+--- a/web/tests/preferences-media-metadata.test.tsx
++++ b/web/tests/preferences-media-metadata.test.tsx
+@@ -61,7 +61,11 @@ describe("PreferencesSection", () => {
+     fireEvent.click(screen.getByRole("switch", { name: "memo.link-preview" }));
+     fireEvent.click(screen.getByRole("switch", { name: "setting.preference.double-click-edit" }));
+ 
+-    expect(JSON.parse(localStorage.getItem(DEVICE_PREFERENCES_KEY) ?? "null")).toEqual({ linkPreview: false, doubleClickEdit: true });
++    expect(JSON.parse(localStorage.getItem(DEVICE_PREFERENCES_KEY) ?? "null")).toEqual({
++      linkPreview: false,
++      doubleClickEdit: true,
++      hideCompletedTasks: false,
++    });
+     expect(mocks.mutate).not.toHaveBeenCalled();
+ 
+     act(() => updateDevicePreferences({ linkPreview: true }));

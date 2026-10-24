@@ -2,7 +2,7 @@
 
 id: A-MEMOS-READING-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: c1faa7d346e49fcc15043ee7e096ff9ae19866d0
 result_branch: relay/a-memos-reading-001
@@ -78,3 +78,7 @@ upstream_commit: 0bfa31e89ec550c7cc6a1dea3888af2d0de107c2
 最终发布检查：文档／JSON检查355 files／0 errors，公开文件及提交扫描616 files／0 findings。实际上游源码空白、干净应用与导出一致性复用通过证据；本仓非patch文本空白检查通过。`.patch` 的unified diff上下文空行保留单空格语法前缀，外层diff检查的相应行尾提示不代表源码空白缺陷，未删改补丁上下文。
 
 发布：指定结果分支固定提交 [62e5cee](https://github.com/dbvv1/a1dbv/commit/62e5ceeae99eb1b4b1d717ecd1af52da2c598c59)，包含完整补丁、工程报告及本任务；main仅回写任务与固定链接，未合入补丁或上游产品。已完成工程修复及受影响delta独立确认，交dot-A接收；真实浏览器验收仍受原明确边界限制，工程接收不替代该环节。
+
+### dot-A 工程接收与剩余消费者验收
+
+2026-10-25（UTC+8）接收固定 `62e5ceeae99eb1b4b1d717ecd1af52da2c598c59` 的工程补丁与报告；复用既有有效独审、R1/R2修复确认、Node24测试／类型／构建及干净基线应用结果，未重复跑全量。负责人核实际偏好、编辑器双路径、分享导出与只读契约，并将采用结果回流07完整功能路线。`accepted`仅指工程资产与知识入口，不是浏览器或上游产品接收；真实列表／详情、刷新、键盘与无写请求仍待获准且可用的浏览器入口，记录于TASKS。不新开同题实施、不扩边界矩阵，后续只接自然需求或上述实际消费者反馈。
