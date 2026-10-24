@@ -2,7 +2,7 @@
 
 id: A-P79-FROZEN-001
 owner: dot-A
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1de763566bd347a444022c53093754eef8c6597c
 result_branch: relay/a-p79-frozen-001
@@ -66,3 +66,5 @@ result_branch: relay/a-p79-frozen-001
 一次全新独立盲判已固定为[原判](../../../experiments/absorption/p79-frozen-001-judgments.json)，SHA-256 `3980249e74eb98d0478e8e121864ca2bfd82aad163b4517ed122f49995dd5e81`；仅有一项M歧义由另一全新盲判者完成[裁定](../../../experiments/absorption/p79-frozen-001-adjudication.json)，SHA-256 `09c5a30bbd6fa95ad1798b5fc477449dbd099e05298ce5907f39b99684902c0e`。原判不改写，裁定另列；协调者未评分。现在请独立整理者公布既有匿名id到题／组的映射，逐答原文hash核对，不改变回答、编号或原判；只解盲已有材料，不追加实验。
 
 本次 revision_requested 仅要求既有日志的隔离澄清及原判固定后的解盲，不是重做六答。隔离无法确立则保留 not_established，正式指标分母0写不可计算；原答与盲判仍可作为描述性记录。接收范围限本冻结三题，不外推核心12页总体效果。
+
+续改认领：dot 本地协作；2026-10-24T20:09:34.057747+00:00。按 main `268f15d` 的明确要求，仅核已有执行日志／配置并解盲既有原答；原判与裁定hash已核为指定值。不新增调用、探针或重跑，不改原答与原判。
