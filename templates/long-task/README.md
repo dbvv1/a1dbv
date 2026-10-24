@@ -37,6 +37,8 @@ python3 -m unittest discover -s tests -p 'test_validate_task.py' -v
 4. **[经验：设计建议]** worker 开始前登记到 spec.workers，并在恢复会话时读回 spec、report 和证据。断点只记关键可恢复阶段，不需要每一步都建 checkpoint。预算停止时记录明确 stop_reason 与未完成项，后续增加预算需由负责人决定。
 5. **[经验：实现行为]** 用独立 spec 校验报告，再人工核对证据真实存在、检查确实执行、需求被正确理解。只有 result=complete 表示**这份记录**满足约束。
 
+本校验器仍严格要求整份报告的revision匹配，不实现按检查范围复用。未受影响结果可在既有交接中保留原版本、范围及复用依据；不要改写旧evidence.revision来冒充当前版本执行。[经验：使用边界，2026-10-24]
+
 ## 格式约定
 
 **[经验：实现行为]** 所有 ID、description、revision、ref 都必须是非空字符串；数组、对象、整数严格检查，布尔值不作整数。未知字段、未知状态、重复 JSON 键和重复 ID 会报 invalid，避免字段拼错却静默通过。
