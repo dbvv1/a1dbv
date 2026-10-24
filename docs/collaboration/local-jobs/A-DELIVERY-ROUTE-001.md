@@ -2,7 +2,7 @@
 
 id: A-DELIVERY-ROUTE-001
 owner: dot-A
-status: running
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4154c7802c1b0734714a509db374689843954436
 result_branch: relay/a-delivery-route-001
@@ -30,3 +30,32 @@ result_branch: relay/a-delivery-route-001
 ## 执行与结果
 
 认领：dot 本地协作；2026-10-24T20:59:39.729117+00:00。任务来源 main 固定提交 `f2fed3e`。认领发布后在独立检出与原生 Workflow 中执行；仅写本任务指定文件，结果推指定分支供 dot-A 接收整合，不重跑联通或旧实验。
+
+## 实施记录
+
+- 执行通道：Claude Code＋DeepSeek 的原生 Workflow（implementation → independent-verification，两阶段完成；原始阶段结果及初次核查失败记录留本机）。模型身份取响应元数据 `deepseek-flash`；不据客户端或会话环境标注推断。
+- 人工介入：用户提供方向与任务规格；改稿、证据核对与检查由 Agent 完成，未逐行人工改稿。
+- 改动：`docs/07-workflows.md`（30 秒入口、§2 路线、当前最高水平比较行、§3／§5 去重、来源）与本任务文件。未改其他主专题、TASKS、运行手册、长期提示词或 Memos 产物。
+- 复用：`experiments/openspec-mdx-adoption.md` 与 07 现有 MDX 段落；未重跑实验，未操作浏览器／桌面／服务，未做模型对照或 P79 续批。
+- 调查（2026-10-25）：核当前官方与开发者原文，包括 Claude Code best practices、Anthropic effective harnesses、GitHub Spec Kit existing-project 指南、Kiro Specs、OpenSpec workflows、BMAD-METHOD；从业者反例取既有 Marmelab 记录；厂商自办 Uvik SDD benchmark 仅作条件证据，未独立复现。新增来源已写入 07 的“来源”。中文社区 V2EX／linux.do 原帖在当前环境无法读取，仅有搜索摘要，未作为决定依据；INNOQ 原文同被环境阻止，未采用其数字；社区对照沿用既有 HN 讨论与 OpenSpec issue 固定证据。
+- 检查（最后一次相关修改后）：`python3 scripts/check_repo.py` → 351 files, 0 errors；`python3 scripts/check_public.py` → 611 files, 0 findings；`python3 scripts/check_public.py --commits origin/main..HEAD` → 611 files, 0 findings；`git diff --check` → OK；两文件为 UTF-8、LF、无 BOM。
+- 独立审查（原始结果，未先行修饰）：发现 2 个实质问题。①高：路线选择条件自相矛盾——§2／30 秒／信号表把“跨多个文件或多消费者”同时写成窄规格触发条件和“不是门槛”，又用“只有会改变实现的信息缺失”排除缺检查与协作／审计依据，读者无法明确选择。②中：Uvik 基准页面标注最后更新 2026-10-08，早于所称运行日 2026-10-15，原始 CSV 未链接；新稿未继承本仓 2026-10-22“不据其排名调评级”的既有判断。次要问题：Marmelab 的 1300 行例子实为文章中引用的 Spec Kit 案例，不是作者单次运行；Kiro Quick Spec 应链具体页；30 秒摘要缺证据标签。
+- 修订：在原文件范围内统一为“缺实现决定→窄规格；缺可执行检查→定向测试；缺共享契约／交接／审计依据→窄规格或完整框架；跨文件／消费者仅提高收益信号”，并在信号表补“3 文件但行为清楚、测试已覆盖→直接做”；Uvik 增加来源成熟度限制并降为弱条件信号；修正 Marmelab 措辞、补 Quick Spec 链接和 30 秒证据标签。
+- 复检：修订后 `check_repo.py` 351 files/0 errors；`check_public.py` 611 files/0 findings；commit scan 611 files/0 findings；`git diff --check` OK；两文件 UTF-8、LF、无 BOM。未重跑实验、浏览器或服务。
+- 未做／限制：未提交、推送或部署（按任务由父级发布）；未运行模型对照、软件实验、浏览器或服务。
+- 状态：`review_ready`，待父级最终独立审查与发布。
+
+### dot-A 在制补充：遵循已更新的正文写法
+
+main `bebd201` 已更新 CLAUDE.md：正文先给推荐与做法，来源、等级和核实日期集中到节末依据行，局限只留会改变选择的。请在当前改稿与独审中采用，不重启或重复已有模型调用；原范围与真实采用证据不变。A-STYLE-REWRITE-001明确不碰07，两项独立。若当前稿已完成，保留成果后仅修这一写法差量，不重做内容研究。
+
+### 父执行端收口
+
+主调用实际起止为2026-10-24 21:01:42—21:21:27 UTC，一次调用成功；父调用及两阶段assistant元数据均为 `deepseek-flash`。另一次独立只读code-reviewer对最终内容与原始采用材料核查：未发现路线选择、MDX证据外推或复制起点缺陷；唯一问题为新增正文仍逐段贴证据标签。父执行端按main `bebd201`及上述在制补充，仅整理新路线的依据行和会改变选择的局限，保留原建议、锚点、来源和原始失败记录；未重启模型或重做研究。
+
+发布：指定结果分支固定提交 [541c573](https://github.com/dbvv1/a1dbv/commit/541c57344af380f287358f2974363c8284a64a66)；只交付07与本任务文件，由dot-A接收整合，未将07合入main。已同步最新main并保留在制补充；最终文档检查353 files、0 errors，公开文件与提交扫描613 files、0 findings，空白检查通过。新增路线依据已集中节末，不顺带改写未受影响全文。
+
+
+### dot-A 接收
+
+接收固定产物 `541c57344af380f287358f2974363c8284a64a66` 的07任务路线，复用已完成独审及实质问题修订。整合保留 main 的认领、结果和写法补充，仅澄清遇到权限缺口须停止依赖动作、不换路绕过；未重做同题审查或实验。正文交付是可用的条件选择和短起点，真实采用复用 MDX 消费者结果，不声称新完成浏览器验收或方法净收益。
