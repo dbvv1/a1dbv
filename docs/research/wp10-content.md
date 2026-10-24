@@ -662,3 +662,51 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 - [一手] UniTask **2.5.10**→`7c0f199fe0d3fc528024488ccd671e6c7b27745b`：[README 339–349](https://github.com/Cysharp/UniTask/blob/7c0f199fe0d3fc528024488ccd671e6c7b27745b/README.md#L339-L349)、[UniTask.Delay.cs 722–746](https://github.com/Cysharp/UniTask/blob/7c0f199fe0d3fc528024488ccd671e6c7b27745b/src/UniTask/Assets/Plugins/UniTask/Runtime/UniTask.Delay.cs#L722-L746)及[791–797](https://github.com/Cysharp/UniTask/blob/7c0f199fe0d3fc528024488ccd671e6c7b27745b/src/UniTask/Assets/Plugins/UniTask/Runtime/UniTask.Delay.cs#L791-L797)。默认在 PlayerLoop 检查取消，既非立即也非必须等延时结束，不能笼统说一定下一帧；预取消 token 直接返回已取消任务，`cancelImmediately` 注册回调代价更重（没有本仓实测数值）。
 
 [研究] **采用：** 检索可帮定位，答案涉及取消时序时仍对齐项目锁定包与一手源码；无精确版本就公开缺口并退回固定来源。两次 HTTP 成功不证明 API 运行正确、Addressables 竞态解决或 AI 净收益；本次不改变 UniTask 高频取消边界，也不作工具口碑排名。
+
+
+<a id="coop-continuity"></a>
+## 合作续局：从房主退出到世界、身份与操作恢复
+
+**[研究] 当前采用：已有栈先用其恢复能力，按允许的权威与回退选择，不默认自建迁移器。** NGO 的 DA 是分布对象权威；NfE／Fusion Host Mode 是恢复玩家主机，两者不是同一功能开关。
+**[研究] 新增判断：会话续存、世界恢复、玩家重入和持久奖励分别成立，不能只验剩余玩家还能移动。**
+核实：2026-10-24 UTC；公开文档、示例说明与作者实践，未运行引擎／服务、多客户端或 AI 模型，最高体验水平未知。正文入口：[客户端续局](../../domains/game-dev/04-client-modules.md#coop-continuity)。
+
+### 1. 先借生产取舍，不从“支持迁移”反推采用
+
+[一手：开发者访谈] [Dagger Directive 的 Daniel Fowler](https://unity.com/blog/how-to-leverage-distributed-authority-for-multiplayer-co-op-games)（2025-09-29）讲述从社区合作需求出发采用 Unity DA；他评价迁移体验积极，也说明对象转移配置仍需正确设置。团队另留直连路径，以应对服务不可用或停运，但直连房主退出会结束游戏。[研究] 可借的是“服务路径与保底路径各有明确承诺”，不是照抄其质量结论；这是供应商主持的访谈，不是独立横评。
+
+[一手：作者原帖] [Rift Fishing 的迁移实现](https://www.reddit.com/r/gamedev/comments/1pfvdon/how_i_added_host_migration_to_my_multiplayer_game/)给轻量反例：备份主机保存部分会话状态，掉线后玩家回菜单再自动重聚；作者明确钓点、裂隙和位置仍有未恢复部分。[研究] 休闲长房间可接受短暂重聚，但动作任务还须交还正确世界、对象关系和操作权，不能把这份自述当完整状态迁移范本。
+
+### 2. Unity 优先：选举、对象接管与快照恢复分开接
+
+[一手] [MPS 当前迁移文档](https://docs.unity.com/en-us/mps-sdk/session-host-migration)明确 host election 不迁移网络同步数据，`SessionHostChanged` 与 `SessionMigrated` 通知含义不同。默认数据 handler 面向 NfE（最低 1.7.0），NGO 指向 DA；`WithHostMigration` 不会代建世界中的 `EnableHostMigration` 组件。MPS 1.2 起默认 handler 可在缺失时创建 client/server worlds，旧版接法不可混抄。[研究] 先锁工程包版本，再沿原生接入；迁移完成事件也仍需项目确认角色与玩法已可操作。
+
+[一手] [NfE 1.9.3 迁移说明](https://docs.unity3d.com/Packages/com.unity.netcode@1.9/manual/host-migration/host-migration-intro.html)描述定期保存可同步世界状态，由新主机恢复；官方集成使用 Lobby、Relay、Authentication 与关联云项目。检测、选举、上传／下载和重连构成总等待，不可拿快照周期充当玩家等待上限。[研究] 对未进入快照的任务状态、随机流程或服务端独有数据逐项定恢复政策；不要承诺任意对象都自动保存。
+
+[一手：官方说明／社区维护回应] [DA 发布与讨论](https://discussions.unity.com/t/unity-distributed-authority-is-now-generally-available/1643825)说明客户端分别持有对象权威；某客户端网络慢主要影响它拥有的对象，可通过转移改变归属。2025-08 使用者报告迁移后新加入失败，维护者指出 MPS 1.1.6 修过旧房主重入，并区分 Lobby owner 与 DA session owner 未同步的可能原因；不是已证明同一缺陷，也不是当前版本仍坏。[研究] 采用测试要覆盖“原成员续局＋旧房主重返＋新成员加入”，不能只核 owner 回调触发。
+
+[一手：官方样例入口] DA 发布帖链接到 [Asteroids 官方样例](https://github.com/Unity-Technologies/com.unity.multiplayer.samples.bitesize/tree/main/Experimental/Asteroids-CMB-NGO-Sample)，可供已具备服务／引擎条件的读者继续核版本后试用；本轮只读页面，不推荐直接搬整个工程。Social Hub 旧文档链接复核时跳到包首页而未取得正文；公开样例源码 tree API 返回403，已停止该入口，未固定源码／许可树，不把样例入口写成源码验证或复制授权。
+
+### 3. 替代与 UE 对照：同名能力不能替代世界契约
+
+[一手] [Fusion 2 Host Migration API](https://doc.photonengine.com/fusion/v2/manual/advanced/host-migration)的 Host Mode 路线需要结束旧 Runner、创建新 Runner，以迁移 token 和恢复回调重建网络对象；只保最新云端快照，因此其后变化可能丢失。[官方样例](https://doc.photonengine.com/fusion/v2/technical-samples/fusion-host-migration)已列 2.1.2（2026-09-08），运行需 Fusion AppId。[研究] 已用 Fusion 可先比较该完整样例，不能仅因它有迁移就迁移整套网络栈；按玩法定快照／带宽与回退预算，不照搬文档示例间隔。
+
+[一手] [EOS Lobbies 与 Sessions](https://dev.epicgames.com/docs/epic-online-services/multiplayer/lobbies-and-sessions/lobbies-and-sessions-introduction?lang=en-US)把 owner 转移列作 Lobby 能力；[UE Sessions Interface](https://dev.epicgames.com/documentation/unreal-engine/sessions-interface-in-unreal-engine?lang=en-US)管理会话和加入目标。[研究] 这些契约不能推导为 UE listen-server 世界已自动重建；已有 UE 项目应沿自己的复制、存档与重连方案验证，不拿 Unity 方案当跨引擎接口。专服仍活着时不存在“玩家服务器离开”的接班问题；专服故障恢复是另一项运维／状态承诺。
+
+[研究] **完整成本：** SDK／示例／资产许可分别核，UGS／Photon 的账户、服务使用与收费条件在采用时查当前合同，不将公开代码或免费额度当无限免费托管。还需承担状态覆盖、对象身份重建、版本兼容、网络异常测试和客服解释。此轮不购买、不创建凭据、不下载／运行引擎；已有实现可靠时保留，明确断局比不可靠的“自动续局”更好。
+
+### 4. Agent 如何接入：先列恢复状态，再测第二次修改
+
+[研究] 沿现有网络管理器做下列工作，不另建通用框架；这是可执行任务与待验标准，不是本轮通过记录。
+
+| Agent 要交什么 | 完成条件与失败处理 |
+|---|---|
+| 现有状态归属清单 | 会话 owner、对象 authority、稳定玩家身份、世界恢复点、跨局进度各有读写者；临时连接 ID 不直接当永久玩家 ID |
+| 迁移状态流程 | 检测→冻结提交／解释等待→选定接管→恢复与重连→核 ready→交还控制；旧通知有代次校验，失败可退出安全点 |
+| 恢复内容与关系 | 位置只是其中一项；持物／放置物、敌人阶段、任务、计时／随机状态按需要纳入；重生／重建引用按稳定身份重连 |
+| 持久奖励规则 | 若外部存档已确认奖励，恢复旧世界不能再次发奖；使用持久提交标识去重并声明回退后可否重打领奖。短暂迁移先停新提交，无法确认的操作保待核状态 |
+| 二改与真实验收 | 添放置物或阶段转换，沿正文三客户端矩阵重验，核新加入及原房主重返；日志给时序／恢复点，人验等待解释与操作连续性 |
+
+[研究] 快照回退和持久奖励是两份状态，强行一起回滚可能抹掉已确认进度，只恢复世界又可能重复奖励；这是项目必须作出的规则选择，不是网络 SDK 自动提供的事务。若全员退出，则另沿正常存档／结束本局政策处理，不能无限期待另一个玩家接管。
+
+**探索回执：** 截至2026-10-24，读取 Unity／Photon／Epic 官方资料、Dagger 作者访谈、Unity Discussions 与 Reddit 作者原帖、公开 GitHub 样例页面；中文社区定向检索未获得可用当前一手原帖。官方样例源码未取得；未据热度／宣传决定质量，未实测延迟、迁移成功率、成本或玩家体验。
