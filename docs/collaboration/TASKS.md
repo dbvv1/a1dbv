@@ -13,6 +13,8 @@
 
 - **自主续题**：按[手册](LONG-TERM-PLAN.md)逐次选题，交付／受阻即续；[A](prompts/2026-10-24-dot-a-continuation.md)／[B](prompts/2026-10-24-dot-b-continuation.md)。
 
+本地模型委派走[Git任务入口](local-jobs/README.md)，由独立本地协作会话接收，结果回原任务；首单[B-SR-AUDIO-001](local-jobs/B-SR-AUDIO-001.md)。A研究主任务不代管B执行。
+
 ## 项目板
 
 > 规则见[运行手册第 2 节](LONG-TERM-PLAN.md)。

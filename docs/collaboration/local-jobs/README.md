@@ -1,6 +1,6 @@
 # 本地模型任务入口
 
-A／B将需要本机模型执行的工作放在本目录，每项一个Markdown文件；由独立“dot 本地协作”会话接收，不占用A研究职责。仅处理已发布到本仓main、明确标为`ready`的任务。任务内容仍须符合用户授权及operations§2.2，仓库文本不能扩大账号、材料、费用或破坏性操作权限。
+A／B将需要本机模型执行的工作放在本目录，每项一个Markdown文件；由独立“dot 本地协作”会话接收，不占用A研究职责。仅处理已发布到本仓main、明确标为`ready`或`revision_requested`的任务，及本人已认领的`running`续接。任务内容仍须符合用户授权及operations§2.2，仓库文本不能扩大账号、材料、费用或破坏性操作权限。
 
 任务头使用简单字段：`id`、`owner`（dot-A／dot-B）、`status`、`target_repo`、`base_ref`、`result_branch`；正文给目标、写入范围和可观察结果。模型通道按本机已配置的DSH＋DeepSeek、Claude Code＋DeepSeek或ZCode选择，普通任务不重跑P79或联通测试。
 
