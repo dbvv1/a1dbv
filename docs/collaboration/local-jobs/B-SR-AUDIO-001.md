@@ -2,7 +2,7 @@
 
 id: B-SR-AUDIO-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: dbvv1/Star-Rush-Reborn
 base_ref: 3e9dab8c5037d3856665947e3df9d56beb98fa06
 result_branch: local/dot-b-rail-audio-001
@@ -30,12 +30,24 @@ result_branch: local/dot-b-rail-audio-001
 
 ## 执行与结果
 
-认领：dot 本地协作；2026-10-24T17:50:46.150987+00:00。独立检出分支 `codex/local-b-sr-audio-001`；产品结果分支按任务头。认领发布后启动已配置 Claude Code＋DeepSeek 的原生 Workflow，保留实际执行与检查结果。当前仅认领，模型实施尚未启动。
+- 状态：`review_ready`，待 dot-B／原负责人接收；未合入产品 master、未部署。
+- 实际执行：已配置 Claude Code＋DeepSeek 的原生 Workflow，实施与独立验证两阶段；父席及两阶段原生响应型号均为 `deepseek-flash`。2026-10-25 01:54:42—02:10:39（UTC+8），单次父进程调用正常结束；原始父席、阶段输出与失败／检查记录留在本机，不提交私人会话或连接资料。
+- 产品结果分支：[`local/dot-b-rail-audio-001`](https://github.com/dbvv1/Star-Rush-Reborn/tree/local/dot-b-rail-audio-001)。提交：[5058ee844a8c4cebe4e62cf823698386a59592fa](https://github.com/dbvv1/Star-Rush-Reborn/commit/5058ee844a8c4cebe4e62cf823698386a59592fa)，直接基于任务固定 `3e9dab8`。
+- 产物：两份原创确定性 PCM WAV，轻擦 0.24 秒／21,212 B，中撞 0.38 秒／33,560 B，合计 54,772 B；可复现的 Python 标准库源、种子／模态参数和清单，以及同源哈希资源打包／Worker 路由。试听与修改入口：[素材说明和 WAV 链接](https://github.com/dbvv1/Star-Rush-Reborn/blob/5058ee844a8c4cebe4e62cf823698386a59592fa/assets/rail-audio/README.md)。不是托管 AI 音频生成服务的产物。
+- 实际接入：沿原 `collisionFeedback → impactSound` 的 rail 分支，impact＜2 轻擦、2–6 等功率交叉淡化、＞6 中撞；未就绪／请求或解码失败保留原程序声，素材正常播放不叠加原护栏声。沿既有 master／音效音量／静音总线；碰撞阈值、冷却、驾驶物理与其他声音路径未改。
+- 已通过：生产构建；确定性再生成 `--check`；定向音频 6/6；`npm test` 中既有 HUD／选卡 12/12、音频 6/6、客户端与 API 集成。独立验证原始输出含 `FOCUSED_EXIT=0`、`NPM_TEST_EXIT=0`，不是仅据外层调用退出判断。源码定向集成使用真实碰撞调用链及替身 AudioContext，另核构建字节、缺失／损坏输入、回退、音量／静音和非 rail 路径；驾驶逻辑源与基线一致。
+- 真实浏览器解码已验：本机隔离 Edge 155.0.4283.62 打开普通预览，两份实际 Worker 同源 WAV 均 HTTP 200／`audio/wav`，真实 `decodeAudioData` 返回非零、有限样本，页面无脚本错误。直接复用已有结果：[浏览器记录](https://github.com/dbvv1/Star-Rush-Reborn/blob/5058ee844a8c4cebe4e62cf823698386a59592fa/assets/rail-audio/browser-decode-check.json)。它证明素材可取得并解码，不代替真实比赛混音。
+- 代码独审：一次独立只读审查，没有提出可执行代码缺陷；受审源码快照与交付一致。公开文件及提交身份扫描覆盖 58 个文本文件，退出 0／无命中；已人工检查源码和素材说明差异。
+- 待接收：人耳试听、金属感与轻／中自然度、重复疲劳、真实碰撞时机／强度分布、发动机／音乐掩蔽和最终响度平衡；本次未取得真实浏览器混音录音，未做生产域名／移动端和不同输出设备验收。保留候选与可运行接入，最终音频品质及任务 `accepted` 由原负责人决定。
 
-## 后续事实补充：已有B音频交付（2026-10-24）
+## 接收所需的另一份已有成果
 
-本任务认领前，B已交付固定版本[5266703](https://github.com/dbvv1/Star-Rush-Reborn/commit/5266703f3302410a994c69ec15345edf11edc455)：Kenney CC0源、轻／中素材、可复做处理脚本、真实事件接入、程序化回退、加载打包及相关测试，详见[源件与接收说明](https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/assets/impact-audio/README.md)及[原运行回执](https://github.com/dbvv1/Star-Rush-Reborn/pull/1#issuecomment-6374260570)。原浏览器已见 `ready/ready` 和 `light #2`，仅证明解码与轻触发；中档实战、最终混音听验、听后二改及AI生成未完成。[一手：既有源码／运行回执]
+B在[02c4688分支补充](https://github.com/dbvv1/a1dbv/blob/02c4688/docs/collaboration/local-jobs/B-SR-AUDIO-001.md)披露了先行实现：[Star-Rush 5266703](https://github.com/dbvv1/Star-Rush-Reborn/commit/5266703f3302410a994c69ec15345edf11edc455)，使用Kenney CC0源、轻／中素材及处理脚本，已有事件接入、程序化回退和打包；[源件说明](https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/assets/impact-audio/README.md)。该分支的旧running状态不覆盖上面的本地交付结果。
 
-**该成果不能算本任务的本地模型实施。** 此补充不改已领取的base_ref、status、原目标与认领输入，不取消或接管本地执行。读取者先保留在制工作并对照上述成果，再明确实际接续范围和回执，避免重复实现既有接入；未确认实际开始时，不从 `running` 标签推断模型已启动。
+B接收时对照该实现与5058ee8的确定性候选，决定采用的代码／素材及后续修改，不重复第三套接入。工程接收、候选选择与最终混音分别说明实际范围；已有验证复用，只验新增或冲突部分。具体续改回本任务revision_requested；接收决定可先发布在B自有分支，由自动接收端汇回main。本段是两份成果的接收导航，未代替B作选择、标accepted或声称听感合格。
 
-B负责最终内容接收，不转交A研究主任务。这里仅补已有交付事实和差异接收要求，不新增本地执行或权限授权。
+## B限定接收：保留独立合成源，沿已有运行链比较
+
+2026-10-24，B已将5058ee8的原配方、manifest、两WAV及源说明纳入[产品a2ca063](https://github.com/dbvv1/Star-Rush-Reborn/commit/a2ca06395c4f8dcf8e260a4a337f37bfc7779e28)（父5266703），保留本任务独立产物，不将其归为先行CC0制作。默认Kenney及播放器／混音／回退不变；显式构建 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build` 才换素材，普通build恢复默认。没有采用5058整支运行代码、交叉淡化或增益设计，具体[修改与比较入口](https://github.com/dbvv1/Star-Rush-Reborn/blob/a2ca06395c4f8dcf8e260a4a337f37bfc7779e28/assets/impact-audio/candidates/synth-v1/README.md)保留来源及许可限制。
+
+源复现、构建选择／恢复和可修改配方链已有独审与检查，包含0.245秒合法时长修改的舍入兼容修正；此处接收限于源与候选工程。认可上文公开回执报告的本地模型实施，不声称本轮另读私人日志；确定性合成不是AI音频生成。未试听／最终品质未知，不把候选工程接收改成整任务 `accepted`，保留当前status、base_ref、原认领／执行结果和待验项。最终混音与听后二改仍由B按实际可听结果接收，不转交A研究主任务。

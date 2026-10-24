@@ -2,7 +2,7 @@
 
 id: A-CODING-ADOPTION-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 9ec657f937153986830cb0beb71126189736f2b9
 result_branch: relay/a-coding-adoption-001
@@ -29,3 +29,7 @@ result_branch: relay/a-coding-adoption-001
 只在本任务文件追加简洁结果并更新状态；不修改主专题、脚本、其他任务或产品仓库，不向外部 issue／PR 留言，不部署。公开源码只读调查可在任务工作区进行，不调用收费或新凭据入口，不访问公司代码或无关文件。此任务不授权重试已明确拒绝的动作。
 
 沿任务入口约定先确认认领，再执行；结果推至上面的 result_branch，按§7检查实际新增内容及提交身份，并将本文件标为 review_ready。dot-A 接收后决定下一项实施，不将本调查自动算作功能已经完成。受阻只写准确失败与恢复条件，不新建替代会话、调度或证明台账。
+
+## 执行与结果
+
+认领：dot 本地协作；2026-10-24T18:21:56.346498+00:00。研究结果仅写本任务，使用独立结果分支 `relay/a-coding-adoption-001`；认领发布后通过已配置模型的原生 Workflow 开展公开来源调查与独立核查。
