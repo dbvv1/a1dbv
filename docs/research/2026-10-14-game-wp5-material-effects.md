@@ -126,6 +126,36 @@ UCSD的[MaterialApprentice v1](https://arxiv.org/html/2607.13318v1)（2026-07-14
 
 [研究] 仍按正文最低设备、最坏并发及画面可读性决定去留。局部技能与装饰烟雾比较各有范围；固定烟花轨迹／爆点已在整页收口节另行比较；缺本仓实测本身不是自动扣分理由。Smolder既有讲义补读保留在M6记录，本单元不重复记新发现，也不要求移植专有渲染器。
 
+## 整招采用补核：可编辑源不等于玩法接线
+
+核实：2026-10-24。补的是可获得源、整招二改与接入反例；原有 P64 三路比较、预算和许可门不重做。以下为资料／固定源码，工具、模型、引擎及玩家效果均未试；没有零手修合格率或同预算冠军。[研究]
+
+| 读者条件 | 当前默认与可借机制 | 不覆盖什么／撤回条件 |
+|---|---|---|
+| Unity 已有合格原生资源 | ✅ 保 Prefab／粒子及原编排；参考 Dragon Crashers 的技能局部编辑 | 不为一招增加新 runtime；若模板不能分阶段就拆层／换模板，不强用 Timeline |
+| 需要独立特效源或跨引擎库 | 🧪 比较 Effekseer 的编辑源与目标插件，以官方 TriggerLaser 学阶段切换 | 插件、单位、材质及停止语义仍须核；维护成本超过复用价值就保原生 |
+| 希望 Agent 制作可修改结构 | 👀 effekseer-vfx-skill 可读 recipe、分阶段评审与实帧反馈值得观察 | 尚无本仓试用／独立生产成本；不是 Unity 即插即用，也不是自动玩法实现 |
+
+### 官方源：先控制阶段，再增加纹理
+
+**E1 [一手]** [Effekseer TriggerLaser 教程](https://effekseer.github.io/Help_Tool/en/ToolTutorial/15.html)给出 `TriggerLaser.efkefc`：开始只生成 Charge，trigger 0 删除它并启动 Laser；删除后的平滑退出使用 `Fade out after delete`，寿命内 fade 不覆盖触发删除。[研究] 借其阶段开关，不把视觉 trigger 当伤害或取消所有者。源和纹理仍按指定资产核许可。
+
+**E2 [一手]** [Unity Dragon Crashers 作者制作说明](https://unity.com/blog/games/get-to-know-dragon-crashers-our-latest-2d-sample-project)将技能 Timeline 嵌入 Unit Prefab，绑定动画与粒子，在 Prefab 模式局部迭代，移动 Ability Happened 信号对齐接触。[现行资源页](https://assetstore.unity.com/packages/templates/packs/dragon-crashers-2d-sample-project-190721)列 1.7.0（2026-09-11）及 Unity 6000.3 URP 兼容。前者是历史机制，未下载验证新版内部实现；免费样例不是零美术投入证明，也不保证任意取消。
+
+### 生成候选：源码保留了什么，接入还缺什么
+
+**E3 [一手：作者材料／源码]** [effekseer-vfx-skill 固定 f17526c](https://github.com/kanaworksai-hue/effekseer-vfx-skill/tree/f17526c6438d215e7f6e6da84caa795495f47439)保 recipe、brief、纹理及 `.efkefc`／`.efk`。[整招说明](https://github.com/kanaworksai-hue/effekseer-vfx-skill/blob/f17526c6438d215e7f6e6da84caa795495f47439/skills/effekseer-vfx/references/sequence.md)先以基本形状审时序、尺寸和摆放，再细化，优先游戏实帧；两假人的展示场景不含项目动画／镜头／光照。[研究] 可借分阶段制作，不照搬其所有审美规则或将 Agent 评分等同玩家可读性。
+
+**E4 [源码／研究]** [VfxHandle.gd](https://github.com/kanaworksai-hue/effekseer-vfx-skill/blob/f17526c6438d215e7f6e6da84caa795495f47439/skills/effekseer-vfx/assets/godot-lab/scripts/VfxHandle.gd)中 `release()` 只关闭循环、设置 released 并调用 `stop_root()`，不清 `flight_elapsed`／`screen_at`；`_process()` 仍推进插值到达与屏幕事件。节点尚存且达到时点时仍可能发事件，若先 finished 释放则不会；`stop()` 才停止并排队释放。**这是 API 接线边界，不是已复现 bug：视觉收尾不等于游戏取消，arrived 不等于碰撞确认。** 项目应沿原状态所有者决定命中、取消与晚事件失效，不从示例另造战斗框架。
+
+**E5 [一手：作者自述]** [README 限制](https://github.com/kanaworksai-hue/effekseer-vfx-skill/blob/f17526c6438d215e7f6e6da84caa795495f47439/README.md)：作者验证 macOS ARM64／Windows x64 构建与 Godot 窗口渲染；Linux 仅 authoring、build 未验证，headless Linux capture 不支持。初始工具链约 250 MB，另有插件；像素指标不是 GPU／overdraw，16 例仍有两例 iterate。[第三方声明](https://github.com/kanaworksai-hue/effekseer-vfx-skill/blob/f17526c6438d215e7f6e6da84caa795495f47439/THIRD_PARTY_NOTICES.md)列代码 MIT、生成后处理示例纹理但不附原图；输入／模型资格不能仅由代码许可推定。采用总成本还含候选调用、源改动、接入及实际渲染返工，本轮不估主动分钟。
+
+**E6 [一手：作者重建案例]** [失败对照](https://github.com/kanaworksai-hue/effekseer-vfx-skill/blob/f17526c6438d215e7f6e6da84caa795495f47439/skills/effekseer-vfx/references/cases.md)把已知缺陷重新构造：接触白层停留过长遮目标；拖尾粒子活着但纹理已播空；参数回读正确却未呈现破洞。非原始历史 A/B，也非本仓观察到的画面。[研究] 二改按绝对时刻复看接触、余波与清场，不只验参数和粒子存活。
+
+**E7 [社区：真实作者自述]** [Crystal Guardians TD 制作者原帖](https://www.reddit.com/r/Unity3D/comments/1tc6r4l/how_i_stopped_hundreds_of_vfx_graph_effects_from/)描述几百敌人各挂多个 VFX 的成本、共享位置覆盖同帧爆炸，改批量输入后又用了覆盖全地图的 bounds；讨论中承认没比较事件参数路线。[研究] 借并发／实例数与剔除粒度的取舍，不把纹理批处理当统一最优或把其收益当独立复测。搜得新 skill 的外部介绍以转述为主，未取得独立使用者整招二改成本。
+
+**最小采用验收 [研究]：** 同一招先以预警→确认命中→余波三层完成灰盒；保范围、单位、源与稳定引用，二改仅缩短蓄力并取消一次。实际镜头下查预警仍可读、取消后不发晚命中、低档装饰不挡下一危险，再测最低设备最坏并发。三层是制作责任分开，不要求新系统或三个文件；合格现成源满足就停，不为完整流程重新生成。
+
 ## 动态事实表：采用前再核，最迟 2026-11-14
 
 [一手／研究] 以下只记录本次可读的一手页面与固定版本，不表示实际安装版本或已通过资产生产验收。复核日期是维护期限，不是许可有效期；采用、上传、购买或升级早于期限时，先做相应复核。型号、价格与生产资格在此单点维护；§四保留固定机制／反例，§六区分权利层。引擎合同仍回到 WP1，不在本 WP 重复裁定。本次仅合并旧记录，不刷新核实日。
