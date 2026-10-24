@@ -89,6 +89,8 @@ def shadow(operation):
 
 准确的验证边界：上游全套测试因浏览器项失败而停止，没有全套通过摘要；Chromium报告socket权限错误，桌面／手机截图未产出，未关闭沙箱或换路绕过。这里只确认打包与静态保护，视觉、剪贴板、实际选择交互及模型设计效果均未验。三个输入稿为合成夹具，不是模型质量对照。[本仓实测]
 
+10-24补接收仍未完成：原三候选与成品保留，云浏览器HTTP连接失败后页面绑定被URL策略拒绝，已停止；待该入口获准后续接视觉与选择反馈，不重跑已有生成器检查。[本仓执行记录]
+
 最小使用方式：在独立试验项目按[官方README](https://github.com/oil-oil/oil-ui/blob/7002e1a3b3e3bc19d4159e2a37917456dafd5ad4/README.md)安装。本轮执行`npx skills add oil-oil/oil-ui --agent codex --skill oil-ui --yes`，CLI解析为1.7.4，安装后才核对上述源码SHA，该入口本身不锁版本。使用Python 3.10+；候选目录放HTML，将下列manifest保存为`<候选目录>/manifest.json`，调用`python3 .agents/skills/oil-ui/scripts/build_explorer.py <候选目录>`；生成后在浏览器打开`<候选目录>/style-explorer.html`；修改源页后加`--force`重建，输出不会自动更新。可只用两项，不必凑三个方向。[一手／本仓实测]
 
 ```json
@@ -651,3 +653,35 @@ npm install --prefix tool --ignore-scripts --omit=optional --no-audit --no-fund 
 最短重放：从本仓根目录运行 `python3 experiments/replay_gh_stack_dependency.py --binary /path/to/official/gh-stack --output /path/to/new-trial`。先从[官方0.2.1发行页](https://github.com/github/gh-stack/releases/tag/v0.2.1)取得linux-amd64可执行文件；[脚本](../../experiments/replay_gh_stack_dependency.py)校验其固定哈希，只接受新输出目录，保留全部工作树、结果与日志，不下载安装、不清理旧现场。读者换平台时不能跳过哈希检查冒充本次同构复验。[本仓实试／可复制入口]
 
 首轮脚本误把冲突退出码预期写成2，真实CLI返回3后中断；随后从保留状态接续，没有reset重造成功。最终脚本改正为3，并在全新目录完整重跑通过，缺少binary与已有output的失败路径均退出2。正式使用仍检查实际文件、消费者与父链，不只读旧提交标题；未测远端sync、PR、abort、断电与并发锁，不称全功能通过。[本仓实试／返工与边界]
+
+
+## Context Hub：把库文档与已验证经验一起交接
+
+**可借的是“按库条目取回项目经验”，不是自动变聪明。** 10-24（UTC+8）用官方 npm `@aisuite/chub@0.1.4` 将本仓已验证的 Next 库存／Suspense 经验保存为本地注记，新CLI进程取回同条目时生成了包含经验的文档。适合已经按库查文档、希望复用局部经验的人；只有一条项目约束时，直接保存在项目文档更省维护。[本仓实试／经验]
+
+来源：[官方项目](https://github.com/andrewyng/context-hub)、[固定主干67dcbeb](https://github.com/andrewyng/context-hub/tree/67dcbeb2eb42c808549f08397920ad58be7c2206)、[npm发布包](https://www.npmjs.com/package/@aisuite/chub/v/0.1.4)。[中文原帖](https://linux.do/t/topic/1772603)的读者追问与Context7有何区别，属于发现线索，不证明使用收益，也不采用回复中的产品归属说法。[GitHub #74](https://github.com/andrewyng/context-hub/issues/74)的源码读者指出自动附注的信任风险；本轮只核备注行为，不把该帖其余风险当已复现。当前主干[注记文档](https://github.com/andrewyng/context-hub/blob/67dcbeb2eb42c808549f08397920ad58be7c2206/docs/feedback-and-annotations.md)与本次实际包行为不同，见下。[一手／社区]
+
+最短复用路线：在独立试用目录安装精确包，隔离本地记录，搜索并核版本，再保存一条自己已验证的经验。下面对应本轮入口；`CHUB_DIR`隔离本项目备注，不是权限沙箱。[本仓实试]
+
+```bash
+export npm_config_cache="$PWD/npm-cache"
+npm install --save-exact --ignore-scripts --no-audit --no-fund @aisuite/chub@0.1.4
+export CHUB_DIR="$PWD/chub-data" CHUB_TELEMETRY=0 CHUB_FEEDBACK=0
+./node_modules/.bin/chub search next/next --json
+./node_modules/.bin/chub annotate next/next "本项目Next16.4.3：标题立即可见、库存保持实时。实际build失败后，将读取库存移入Suspense内的异步子组件，保留connection()，build通过；未验导航延迟。证据：https://github.com/dbvv1/a1dbv/blob/ddb18ac/experiments/next-static-shell.md"
+./node_modules/.bin/chub get next/next --lang js --version 16.2.6 > handoff.md
+```
+
+本轮实际备注使用英文表述上述同一已发布经验，包含日期、项目版本、证据和build限定；不是新造代码问题，也未重跑Next构建。取回文档只提供16.2.6，标注2026-05-29、revision2；它不能为16.4.3的API行为背书。接手Agent应读备注中的固定案例，而不是混淆文档版本。[本仓实试]
+
+| 真实操作 | 实际交付给下次读取的内容 |
+|---|---|
+| annotate后，独立进程单文档get重定向 | 12,484字节，原文及`[Agent note]`中的项目经验均在 |
+| 改用get的`-o`选项 | 11,209字节，仅文档原文，项目备注未进入文件 |
+| 照当前主干说明加`--with-annotations` | 发布包退出1、未知参数；本包默认自动附备注 |
+
+这些字节只用于识别产物，不是token节省或收益。包内注记按entry ID保存一条JSON，写新注记替换旧值，不绑定项目／语言／版本；跨项目可分别指定CHUB_DIR，跨机器要明确交出必要文件。备注是本地可改内容，只保存核过的事实，不允许它提供新授权。[源码／本仓实试／经验]
+
+安装包registry SHA1为`39fad45082d70f0067c352024b96eca20ba0e77c`；Node24.19.0、安装脚本关闭。未配置MCP、未运行feedback命令、未改用户全局配置；环境变量关闭该包遥测／反馈，未做抓包证明。仅确认CLI存储、跨进程读取和文件交接，不宣称Agent理解、模型收益、跨版本正确或胜过普通项目文档。[本仓实试]
+
+探索回执：核官方GitHub／npm、源码、GitHub issue与中文原帖，当前核对截至10-24；中文讨论是旧发现线索，近期独立采用与净收益仍未知，不把新近核实写成新发布。[研究]
