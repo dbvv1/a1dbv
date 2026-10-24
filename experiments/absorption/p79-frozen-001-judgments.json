@@ -1,0 +1,418 @@
+{
+  "input_sha256": "32ad278f1d3971d0258badd386758a5291aad25d51d32b984ae0b4ca435a4a4b",
+  "basis": "仅此输入文件中的共同提示、逐项固定answer_key及原始回答。未读取仓库指导、历史或其他任务文件；未浏览或查身份/条件。",
+  "grading_method": "D/K/R按固定key分别判定；满足要求相应关键条件完整，部分表示有实质正确内容但有明确缺项。M独立，不合成总分。字数及格式独立于质量。未要求精确版本或数字，也未将未提内部术语单独作为D/K/R缺项。",
+  "judgments": [
+    {
+      "anonymous_id": "727c73ac016e74cf",
+      "D": {
+        "grade": "满足",
+        "reason": "区分短会话、长闲置终端与未盘点桌面，优先核已有能力并限定试点，保留手动路线。",
+        "evidence": [
+          "30万token终端长闲置：核查版本与配置后试内建idle compaction",
+          "桌面先盘点版本与支持情况；未确认则手动阶段压缩"
+        ],
+        "missing_conditions": []
+      },
+      "K": {
+        "grade": "部分",
+        "reason": "入口、版本、配置与规模/闲置阈值均有核查依据，并要求真实事件及恢复状态核对；成本核算未明确覆盖压缩本身。",
+        "evidence": [
+          "保留默认阈值（200K+、约54分钟）",
+          "核查版本、`idleCompaction`及阈值配置、实际入口",
+          "确认真实压缩事件，而不是仅凭等待",
+          "恢复后核对文件/HEAD、待办与检查，比较重读与返工成本"
+        ],
+        "missing_conditions": [
+          "未明确计入压缩自身的处理成本；缓存读取与重建、重读及返工不能无条件等同于完整成本。"
+        ]
+      },
+      "R": {
+        "grade": "部分",
+        "reason": "有状态丢失与净成本不降的撤回及手动替代，但未明确不触发时先排查触发条件的操作分支，也未覆盖重复压缩/执行。",
+        "evidence": [
+          "丢步骤、继承旧绿灯或净成本不降，则关闭`idleCompaction`或改手动",
+          "关键条件：版本配置、真实触发、恢复状态与成本证据；缺一不算有效。"
+        ],
+        "missing_conditions": [
+          "不触发时先核条件的分支未明确。",
+          "重复压缩或重复执行时的调整/撤回未明确。"
+        ]
+      },
+      "M": {
+        "grade": "命中",
+        "reason": "识别终端idle compaction、规模与闲置的联合门槛，并区别短会话及手动阶段路线；不以未背出版本扣分。",
+        "evidence": [
+          "5万token/闲置10分钟：不启用；这低于终端约20万token阈值，预计不会触发",
+          "试内建idle compaction，保留默认阈值（200K+、约54分钟）",
+          "未确认则手动阶段压缩"
+        ],
+        "missing_conditions": []
+      },
+      "ambiguities": [],
+      "protocol": {
+        "nonwhitespace_unicode_characters": 466,
+        "count_method": "Python Unicode code point iteration; exclude characters for which str.isspace() is true; Markdown markers, punctuation, ASCII and headings remain counted.",
+        "budget": 600,
+        "length_compliance": true,
+        "three_required_headings": {
+          "现在决定": true,
+          "最小核查": true,
+          "何时改变或撤回": true
+        },
+        "observable_refusal": false,
+        "observable_truncation": false,
+        "tool_use": "无法判断",
+        "tool_use_reason": "只有原答文本，没有执行轨迹；提到工具或命令不等于实际调用。",
+        "claims_of_completed_validation": "未观察到宣称已完成本题验证。",
+        "factual_verification_scope": "未查外部来源，不把工具能力或精确机制数字的未核实状态自动计入D/K/R。"
+      }
+    },
+    {
+      "anonymous_id": "c63ac3bdf74d66ba",
+      "D": {
+        "grade": "满足",
+        "reason": "先查发现/客户端兼容，不直接换模型；服务端强校验或拆工具保留互斥语义。",
+        "evidence": [
+          "先不重写描述、不换模型",
+          "互斥改由处理函数强校验（二者恰一，否则返回明确错误）",
+          "若仍被过滤，再拆成两个各自必填一个输入的工具"
+        ],
+        "missing_conditions": []
+      },
+      "K": {
+        "grade": "部分",
+        "reason": "有清单差分、日志和schema二分及非法输入校验，但未要求合法输入成功完成真实调用，亦未分离模型API层。",
+        "evidence": [
+          "直接调服务端tools/list，和客户端实际列表比对",
+          "只回退新增约束做二分，确认触发点",
+          "用两输入同给、都不给各调一次，确认运行时拒绝",
+          "核对双方协议版本与客户端支持的JSON Schema子集"
+        ],
+        "missing_conditions": [
+          "缺少两种合法输入的成功调用/恢复验收。",
+          "未区分客户端接收与下游模型API接受schema的边界。"
+        ]
+      },
+      "R": {
+        "grade": "部分",
+        "reason": "能在服务端缺失、保守schema仍失败及语义被削弱时重定位/撤回，但升级后的复验未给出。",
+        "evidence": [
+          "服务端原始列表就缺→改服务端注册层，别动schema",
+          "若连保守对象schema也拒绝或无法调用，拆工具或升级/更换客户端",
+          "若简化后出现两输入都被接受、且处理函数未拒绝，立即撤回并改拆工具"
+        ],
+        "missing_conditions": [
+          "升级或更换客户端后仍须复验合法/非法输入与真实调用，原答未说明。"
+        ]
+      },
+      "M": {
+        "grade": "未命中",
+        "reason": "提到顶层组合关键词与协议/客户端区别，但没有识别根级和属性内处理差异，也未明确近期协议允许根object旁组合关键词。",
+        "evidence": [
+          "不用顶层oneOf/anyOf",
+          "协议合规≠客户端实现支持全部关键字"
+        ],
+        "missing_conditions": [
+          "缺少根级与属性内差异这一具体机制。"
+        ]
+      },
+      "ambiguities": [],
+      "protocol": {
+        "nonwhitespace_unicode_characters": 578,
+        "count_method": "Python Unicode code point iteration; exclude characters for which str.isspace() is true; Markdown markers, punctuation, ASCII and headings remain counted.",
+        "budget": 600,
+        "length_compliance": true,
+        "three_required_headings": {
+          "现在决定": true,
+          "最小核查": true,
+          "何时改变或撤回": true
+        },
+        "observable_refusal": false,
+        "observable_truncation": false,
+        "tool_use": "无法判断",
+        "tool_use_reason": "只有原答文本，没有执行轨迹；提到工具或命令不等于实际调用。",
+        "claims_of_completed_validation": "未观察到宣称已完成本题验证。",
+        "factual_verification_scope": "未查外部来源，不把工具能力或精确机制数字的未核实状态自动计入D/K/R。"
+      }
+    },
+    {
+      "anonymous_id": "bb7d7b8e453dc2e9",
+      "D": {
+        "grade": "满足",
+        "reason": "选择长闲置大上下文终端限定试点，短会话和未盘点桌面保留简单路线，并先保存检查点。",
+        "evidence": [
+          "仅对30万token、闲置超1小时的终端会话做小范围可选试点",
+          "桌面端先盘点客户端版本与能力，暂不试点"
+        ],
+        "missing_conditions": []
+      },
+      "K": {
+        "grade": "部分",
+        "reason": "有现有能力、触发阈值和实际触发/前后状态验证以及待做步骤核对；未明确把终端实际版本、配置与联合触发条件逐一对齐，也未明确压缩自身成本。",
+        "evidence": [
+          "确认现有客户端是否具备原生自动压缩、手动压缩、触发阈值/日志",
+          "核对是否真正触发、前后token量、摘要是否保留X/文件/决策",
+          "记录恢复耗时、遗漏和返工，与手动压缩比较"
+        ],
+        "missing_conditions": [
+          "缺少对试点终端实际版本和生效配置是否满足规模/闲置触发条件的明确核查。",
+          "未明确记录压缩自身成本。"
+        ]
+      },
+      "R": {
+        "grade": "部分",
+        "reason": "状态丢失、收益不抵成本时撤回并留手动路线；触发不可见就撤回，没有先核条件的排查分支，重复压缩/执行也未覆盖。",
+        "evidence": [
+          "若任一步骤丢失、触发不可见、摘要无法核对，或节省不抵成本，立即撤回自动压缩",
+          "保留手动分阶段压缩与检查点"
+        ],
+        "missing_conditions": [
+          "不触发时先核条件的分支缺失。",
+          "重复压缩或重复执行时的处理未明确。"
+        ]
+      },
+      "M": {
+        "grade": "未命中",
+        "reason": "选择大上下文长闲置试点，但把原生自动压缩作为待确认能力，未具体识别终端idle compaction与其他触发方式的区别。",
+        "evidence": [
+          "确认现有客户端是否具备原生自动压缩、手动压缩、触发阈值/日志",
+          "关键条件是客户端原生能力/版本、闲置与token分布"
+        ],
+        "missing_conditions": [
+          "具体idle compaction机制未识别；并非因未给精确数字/版本扣分。"
+        ]
+      },
+      "ambiguities": [],
+      "protocol": {
+        "nonwhitespace_unicode_characters": 477,
+        "count_method": "Python Unicode code point iteration; exclude characters for which str.isspace() is true; Markdown markers, punctuation, ASCII and headings remain counted.",
+        "budget": 600,
+        "length_compliance": true,
+        "three_required_headings": {
+          "现在决定": true,
+          "最小核查": true,
+          "何时改变或撤回": true
+        },
+        "observable_refusal": false,
+        "observable_truncation": false,
+        "tool_use": "无法判断",
+        "tool_use_reason": "只有原答文本，没有执行轨迹；提到工具或命令不等于实际调用。",
+        "claims_of_completed_validation": "未观察到宣称已完成本题验证。",
+        "factual_verification_scope": "未查外部来源，不把工具能力或精确机制数字的未核实状态自动计入D/K/R。"
+      }
+    },
+    {
+      "anonymous_id": "a0d3224e85dd891e",
+      "D": {
+        "grade": "满足",
+        "reason": "先保留价值、限定试用并盘点版本/接入，用小对照而非直接换模型或压规则。",
+        "evidence": [
+          "保留Hook，但把它设为canary小范围试用",
+          "记录客户端版本、接入路径（CLI/IDE/API/代理）、Hook事件与输出注入位置"
+        ],
+        "missing_conditions": []
+      },
+      "K": {
+        "grade": "部分",
+        "reason": "有固定任务环境、Hook开关和输出形式对照及跨轮缓存观测，但同轮后续调用观测不够明确，升级后也没有同时复核功能和原复现的验收。",
+        "evidence": [
+          "同一固定任务、同一仓库快照、同一客户端/接入，做2×3对照：Hook开/关×连续3个用户轮次",
+          "记录每轮第一条请求的延迟、请求数、可见的input/cache读写token",
+          "Hook输出固定短句 vs 当前动态说明",
+          "缩短/稳定输出并升级客户端后再评估"
+        ],
+        "missing_conditions": [
+          "明确记录同轮后续请求与跨轮首请求的可比行为，而不只是每轮第一条请求。",
+          "升级前后须同时复核Hook功能与原异常，泛称再评估不充分。"
+        ]
+      },
+      "R": {
+        "grade": "部分",
+        "reason": "与Hook无关时能保留并转查接入，但无法复现就撤回Hook不等同于停止推广未证实的故障结论；还缺禁用伤害正确性时恢复能力及升级无效的分支。",
+        "evidence": [
+          "若各版本/接入均复现且与Hook无关，保留Hook，转为升级或修接入",
+          "若无法复现或收益低于成本，撤回Hook"
+        ],
+        "missing_conditions": [
+          "未复现不应据此撤掉已知有价值的Hook或推广故障结论。",
+          "禁用影响正确性时恢复必要能力的分支缺失。",
+          "升级后原异常未变时重新定位未明确。"
+        ]
+      },
+      "M": {
+        "grade": "未命中",
+        "reason": "提出上下文重建/缓存键假说，未具体指出Hook输出跨轮重新序列化与共享前缀形态改变。",
+        "evidence": [
+          "重点查跨轮上下文重建和缓存键",
+          "判断是输出长度问题还是缓存失效"
+        ],
+        "missing_conditions": [
+          "缺少具体重新序列化/前缀形态变化机制。"
+        ]
+      },
+      "ambiguities": [],
+      "protocol": {
+        "nonwhitespace_unicode_characters": 477,
+        "count_method": "Python Unicode code point iteration; exclude characters for which str.isspace() is true; Markdown markers, punctuation, ASCII and headings remain counted.",
+        "budget": 600,
+        "length_compliance": true,
+        "three_required_headings": {
+          "现在决定": true,
+          "最小核查": true,
+          "何时改变或撤回": true
+        },
+        "observable_refusal": false,
+        "observable_truncation": false,
+        "tool_use": "无法判断",
+        "tool_use_reason": "只有原答文本，没有执行轨迹；提到工具或命令不等于实际调用。",
+        "claims_of_completed_validation": "未观察到宣称已完成本题验证。",
+        "factual_verification_scope": "未查外部来源，不把工具能力或精确机制数字的未核实状态自动计入D/K/R。"
+      }
+    },
+    {
+      "anonymous_id": "daad2a067b2fec37",
+      "D": {
+        "grade": "满足",
+        "reason": "优先从发现与兼容链路定位，并提出保留服务端校验的适配/拆工具路线。",
+        "evidence": [
+          "先按“服务声明→客户端实际清单→单工具最小schema”定位，不重写描述、不换模型",
+          "在保留服务端校验前提下调整schema或拆分工具"
+        ],
+        "missing_conditions": []
+      },
+      "K": {
+        "grade": "部分",
+        "reason": "具有清单差分、最小schema及根/属性对照，并明确合法与非法真实调用；但没有独立识别模型API层。",
+        "evidence": [
+          "导出服务端该工具schema与客户端实际清单",
+          "对照根级互斥结构和把同一约束置于properties内的写法",
+          "分别调用两种合法单输入及同时提供两互斥输入的样例，确认仅后者报错"
+        ],
+        "missing_conditions": [
+          "未区分客户端schema接收/过滤与下游模型API的兼容边界。"
+        ]
+      },
+      "R": {
+        "grade": "部分",
+        "reason": "升级/最小schema恢复后复验互斥，语义放松会撤回；缺失不随schema变化或已可见仍不可调用的分支未明确。",
+        "evidence": [
+          "若升级客户端或最小schema已恢复，且互斥非法输入仍被拒，保留并撤临时方案",
+          "若调整后工具出现但非法组合可通过",
+          "撤回该改动，回到原schema并将问题升级给宿主或服务作者"
+        ],
+        "missing_conditions": [
+          "缺失不随schema变化时撤回修复并重定位未明确。",
+          "恢复可见但真实调用仍失败时的撤回/重定位未明确。"
+        ]
+      },
+      "M": {
+        "grade": "命中",
+        "reason": "明确根级与属性内处理不同的客户端兼容机制，并把协议层合规与宿主支持区分。近期协议允许这一点采用语义识别而非要求逐字声明。",
+        "evidence": [
+          "作者称合规只说明协议版本，不证明当前宿主支持该schema形状",
+          "对照根级互斥结构和把同一约束置于properties内的写法",
+          "若根级结构被丢弃、属性内可载入"
+        ],
+        "missing_conditions": []
+      },
+      "ambiguities": [
+        {
+          "dimension": "M",
+          "issue": "根级/属性内客户端差异很明确，但近期协议允许根object旁组合关键词仅由协议合规与宿主支持的区分隐含，未直接断言。",
+          "current_resolution": "判命中：按机制语义识别，不强求固定术语。",
+          "requires_separate_uninvolved_adjudicator": true,
+          "adjudication_question": "固定key是否要求显式承认近期协议允许根级组合关键词，还是原答的协议/宿主区别加根级/属性内对照已充分？此争议只影响M。"
+        }
+      ],
+      "protocol": {
+        "nonwhitespace_unicode_characters": 428,
+        "count_method": "Python Unicode code point iteration; exclude characters for which str.isspace() is true; Markdown markers, punctuation, ASCII and headings remain counted.",
+        "budget": 600,
+        "length_compliance": true,
+        "three_required_headings": {
+          "现在决定": true,
+          "最小核查": true,
+          "何时改变或撤回": true
+        },
+        "observable_refusal": false,
+        "observable_truncation": false,
+        "tool_use": "无法判断",
+        "tool_use_reason": "只有原答文本，没有执行轨迹；提到工具或命令不等于实际调用。",
+        "claims_of_completed_validation": "未观察到宣称已完成本题验证。",
+        "factual_verification_scope": "未查外部来源，不把工具能力或精确机制数字的未核实状态自动计入D/K/R。"
+      }
+    },
+    {
+      "anonymous_id": "afa06807228b0f95",
+      "D": {
+        "grade": "满足",
+        "reason": "保留Hook与规则/模型，先盘点代表性版本与接入再做对照，没有将旧问题当当前定论。",
+        "evidence": [
+          "保留Hook、现有规则和模型，暂不全局推广",
+          "先做代表性版本与入口的最小对照",
+          "官方只确认该路径缓存修复，Hook根因未独立确认"
+        ],
+        "missing_conditions": []
+      },
+      "K": {
+        "grade": "满足",
+        "reason": "明确固定任务/模型/入口等配置，开关Hook并观测同轮多次调用及下一用户轮次的缓存行为；升级保留条件同时包括原症状消失与Hook功能正常。",
+        "evidence": [
+          "同版本/模型/effort/入口/项目，只开关Hook",
+          "含首轮多次工具调用和第二用户轮次，比较第二轮历史重发、重建与Hook输出",
+          "升级后症状消失且Hook正常：采用升级"
+        ],
+        "missing_conditions": []
+      },
+      "R": {
+        "grade": "部分",
+        "reason": "支持升级后验证、现版仍异常时改变注入方式及保留等价必要检查；但缺少无Hook也异常时重新定位的关键阴性分支。",
+        "evidence": [
+          "无明显额外重建或收益大于增量处理：保留并逐步推广",
+          "当前版仍稳定重建：先缩为回合末/按需注入并验证功能",
+          "仍无净收益或损伤必要行为，则撤回每调用Hook，保留等价检查"
+        ],
+        "missing_conditions": [
+          "无Hook也失败时须重新定位而非继续调整Hook；原答未明确这一因果排除条件。"
+        ]
+      },
+      "M": {
+        "grade": "未命中",
+        "reason": "提到疑似缓存前缀重建并正确限定官方修复证据，但没有具体说明输出跨轮重新序列化或共享前缀形态变化。",
+        "evidence": [
+          "把现象记为跨用户轮次疑似缓存前缀重建",
+          "官方只确认该路径缓存修复，Hook根因未独立确认"
+        ],
+        "missing_conditions": [
+          "跨轮重新序列化、共享前缀形态改变的具体机制未表达；仅重建症状不足。"
+        ]
+      },
+      "ambiguities": [],
+      "protocol": {
+        "nonwhitespace_unicode_characters": 495,
+        "count_method": "Python Unicode code point iteration; exclude characters for which str.isspace() is true; Markdown markers, punctuation, ASCII and headings remain counted.",
+        "budget": 600,
+        "length_compliance": true,
+        "three_required_headings": {
+          "现在决定": true,
+          "最小核查": true,
+          "何时改变或撤回": true
+        },
+        "observable_refusal": false,
+        "observable_truncation": false,
+        "tool_use": "无法判断",
+        "tool_use_reason": "只有原答文本，没有执行轨迹；提到工具或命令不等于实际调用。",
+        "claims_of_completed_validation": "未观察到宣称已完成本题验证。",
+        "factual_verification_scope": "未查外部来源，不把工具能力或精确机制数字的未核实状态自动计入D/K/R。"
+      }
+    }
+  ],
+  "adjudication_needed": [
+    {
+      "anonymous_id": "daad2a067b2fec37",
+      "dimension": "M",
+      "reason": "近期协议允许根级组合关键词的识别是隐含而非显式；请另一位未参与评分者仅就该窄点裁定。"
+    }
+  ]
+}
