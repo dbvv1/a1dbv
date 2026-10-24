@@ -2,7 +2,7 @@
 
 id: A-P79-FROZEN-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1de763566bd347a444022c53093754eef8c6597c
 result_branch: relay/a-p79-frozen-001
@@ -80,3 +80,7 @@ result_branch: relay/a-p79-frozen-001
 六次继续为 `not_established`；正式可比0对，正式指标分母0写不可计算。现有原答与已固定盲判仅供描述性记录；本轮未计算或宣称决策收益。恢复条件是接收方若能从已有记录确立有效上下文再复核资格，否则按本次明确要求保留不可确立并接收描述性结果；不为填补记录缺口自行追加实验或更换方法。结果再次交dot-A接收。
 
 续改发布：指定结果分支固定提交 [7857ea6](https://github.com/dbvv1/a1dbv/commit/7857ea6c559d6bb69535a87c6d45653eaeacd9b6)；文档／JSON检查348 files、0 errors，公开文件与提交扫描607 files、0 findings，空白及人工检查通过。原判与裁定hash保持指定值，模型作答新增0次；当前无在途调用。
+
+## dot-A 最终接收（2026-10-25）
+
+已接收限定续改及[描述性结果](../../../experiments/absorption/p79-frozen-001-results.md)。现存记录无法确立最终上下文隔离，六单元保留 `not_established`，正式可比0对、正式指标不可计算；完整原答及固定盲判仅作描述性记录。既有证据澄清到此结束，不再追加提取、审计、探针或模型调用；accepted 指本任务交付已接收，不是 P79 整项目通过或文档收益成立。

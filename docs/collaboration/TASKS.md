@@ -24,7 +24,7 @@
 |---|---|---|---|
 | P90 | **前沿发现**：成熟与新候选，沿[13](../13-frontier-radar.md)五问／实试验收，处理收件箱 | dot-A | 停简报；[增量测试反馈](../../experiments/testmon-feedback.md)实试；强方法比较／组合与真实模型采用优先；窄试用收口。Oil UI页面策略拒绝，视觉待入口获准；Plannotator未接收。 |
 | P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [MDX规格扩展](../../experiments/openspec-mdx-adoption.md)原生Agent实施、二改接收及独审；续完整能力采用。[OCR](../../experiments/ocr-matcher-replay.md)完整CLI未验，旧欠项保留。 |
-| P79 | C1／C3 吸取验证 | dot-A | **10-25 收口**：冻结三题六答与盲判保留为描述性记录（`relay/a-p79-frozen-001`），隔离未确立、正式可比 0 对；不再续批，正式对照仅在用户明确要求时开展。A-P79-FROZEN-001 待 dot-A 按描述性结果接收后关闭。 |
+| P79 | C1／C3 吸取验证 | dot-A | **10-25 收口**：[冻结三题结果](../../experiments/absorption/p79-frozen-001-results.md)已按描述性记录接收，隔离未确立、正式可比 0 对；不再续批，正式对照仅在用户明确要求时开展。 |
 | SR | **Star-Rush 品质版本**：master 随时可玩，赛中 AI 美术、音频、驾驶手感有可体验的提升（原 P112／P113／P117） | B | master 自 10-23 起未更新；成果分散在临时分支 `racing-quality`（HUD、教练、卡片、音频候选）、`canvas-house-anchors`、`scene-authoring`、`local/dot-b-rail-audio-001`。先合入 master（未听／未看部分以开关或原默认合入），再做赛中美术、音频与驾驶；最终试听交可用接收端。 |
 | B-模块 | **客户端／gameplay 完整模块**：动作与连段、瞄准、镜头、角色控制、资源生命周期、敌人 AI、技能／Buff、成长与奖励、叙事、合作续局等（原 P39、P98、P99、P101–P106、P110–P111、P114–P115、P118、P121–P122、P125–P127、P129–P130） | B | 均已接收为资料／源码研究，多数未实测。按完整开发问题合并进 04／05 正文；角色控制模块在 `dot-b/tmp/20261025-character-control` 待合。 |
 | B-制作链 | **AI 制作链**：2D／像素、动画源与导入、3D 与压缩消费者、材质特效、音乐音效、视频、场景作者（原旧 C2 文稿、P94–P97、P100、P107、P116、P119–P120、P123–P124、P128、分件 rig、特效源） | B | 已接收为研究；音频制作链文稿在 `dot-b/tmp/20261025-audio-production-case` 待合。下一步优先落到 Star-Rush 赛中美术与音频的实际制作。 |
