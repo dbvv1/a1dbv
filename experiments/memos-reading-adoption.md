@@ -107,3 +107,5 @@ Workflow 子代理的 assistant 响应元数据为 `model=deepseek-flash`；部�
 - 工程结果可接收；真实界面/浏览器验收待负责人。
 
 **依据**：[一手] 固定上游 [usememos/memos提交](https://github.com/usememos/memos/commit/0bfa31e89ec550c7cc6a1dea3888af2d0de107c2)、[MIT LICENSE](https://github.com/usememos/memos/blob/0bfa31e89ec550c7cc6a1dea3888af2d0de107c2/LICENSE)，本次原始补丁应用、Node24定向／全量测试、lint与build结果；[经验] 仅针对当前补丁的产品取舍及两次独立工程审查。原始记录留本机；核实2026-10-25。
+
+发布空白检查说明：补丁保留unified diff上下文空行必需的单空格前缀，外层仓库的 `git diff --check` 会将这些上下文行报告为行尾空白，不能直接删去。实际上游源码的空白检查及补丁应用检查已通过；本仓非patch文本的空白检查通过。
