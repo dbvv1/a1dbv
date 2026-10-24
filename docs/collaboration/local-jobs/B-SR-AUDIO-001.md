@@ -46,6 +46,8 @@ B在[02c4688分支补充](https://github.com/dbvv1/a1dbv/blob/02c4688/docs/colla
 
 B接收时对照该实现与5058ee8的确定性候选，决定采用的代码／素材及后续修改，不重复第三套接入。工程接收、候选选择与最终混音分别说明实际范围；已有验证复用，只验新增或冲突部分。具体续改回本任务revision_requested；接收决定可先发布在B自有分支，由自动接收端汇回main。本段是两份成果的接收导航，未代替B作选择、标accepted或声称听感合格。
 
+负责人反馈固定来源：[dot-b/tmp/20261025-audio-production-case · c8cc3ed](https://github.com/dbvv1/a1dbv/blob/c8cc3edd5cd9e3bb38b95d0a5ae3fcc12ed5e10d/docs/collaboration/local-jobs/B-SR-AUDIO-001.md)。以下保留负责人原文，main 的认领、执行结果与 `review_ready` 状态不改。
+
 ## B限定接收：保留独立合成源，沿已有运行链比较
 
 2026-10-24，B已将5058ee8的原配方、manifest、两WAV及源说明纳入[产品a2ca063](https://github.com/dbvv1/Star-Rush-Reborn/commit/a2ca06395c4f8dcf8e260a4a337f37bfc7779e28)（父5266703），保留本任务独立产物，不将其归为先行CC0制作。默认Kenney及播放器／混音／回退不变；显式构建 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build` 才换素材，普通build恢复默认。没有采用5058整支运行代码、交叉淡化或增益设计，具体[修改与比较入口](https://github.com/dbvv1/Star-Rush-Reborn/blob/a2ca06395c4f8dcf8e260a4a337f37bfc7779e28/assets/impact-audio/candidates/synth-v1/README.md)保留来源及许可限制。
