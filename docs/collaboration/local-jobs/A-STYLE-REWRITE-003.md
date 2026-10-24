@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-003
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 795c8f6c06607b6931ae19b45451b949825c77ec
 result_branch: relay/a-style-rewrite-003
@@ -35,3 +35,5 @@ result_branch: relay/a-style-rewrite-003
 ## 执行与结果
 
 待认领；发布不代表已启动。沿原生Workflow执行，已有同任务调用时仅接续。
+
+认领：dot 本地协作；2026-10-24T23:36:15.310174+00:00。任务来源main固定提交 `ed232d7`。与现有交付无写入重叠，先发布认领再沿既有原生Workflow执行；仅写本任务授权文件，保留原始结果，成果推指定分支由dot-A接收。
