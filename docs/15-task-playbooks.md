@@ -1,6 +1,6 @@
 # 15 · 按任务类型的打法
 
-> 更新：2026-10-24（UTC+8）。任务起点见下；Codex 的[五情境入口](01-agents/codex.md#五种情境先做最小改变)说明何时再加知识、工具或流程。版本与验证范围见各节研究链接。
+> 更新：2026-10-25（UTC+8）。任务起点见下；Codex 的[五情境入口](01-agents/codex.md#五种情境先做最小改变)说明何时再加知识、工具或流程。版本与验证范围见各节研究链接。
 > 依据包括 Anthropic 官方最佳实践与 Opus 5.5 指南 [一手]、Willison 与 HumanLayer 的公开实践 [社区]；组合建议标为 [经验]。除明确标注的局部实测外，案例据公开材料，仅支持局部机制，不代表当前产品推荐或 AI／固定 Skill 净收益；来源／反证见研究。
 
 ## 先动手：改善 Agent 的一项能力
@@ -392,6 +392,14 @@ flowchart TD
 [BAML 两条 PR 都获自动肯定](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划--4-自动评审和测试记录能证明多少)提醒回到具体行为核评审结论。
 
 **局限**：追改每个挑刺会增加过度设计，评审“通过”也不能替代实际验证。
+
+### 实例：评审改变失败后的接手指令
+
+**不要只问“错误有没有捕获”，让独立评审核对“报错时，动作究竟做到哪一步”。** Postbag作者在真实1.4.0发布评审中让Claude Code与Codex互审；[作者自述](https://www.reddit.com/r/MCPservers/comments/1wvvooq/i_built_an_mcp_server_that_lets_claude_code_and/)称Codex注入`fsync`失败后，发现程序说“未记录”，但记录已经可以读到。[社区：本人实践]
+
+给已有Agent的定向任务可写：“审这段发送及错误处理：分别检查提交前、提交后写记录前、写入后同步失败；用隔离替身核实际副作用与返回状态，指出下一步该检查什么，不把报错自动解释为可以重试。”不必换工具或增加评审轮数。[经验]
+
+**接收结果不是改成成功，而是保留已提交事实、撤回‘未记录’断言。** [已合入#20](https://github.com/parasxos/postbag/pull/20)的[固定实现](https://github.com/parasxos/postbag/blob/b21325f6ec2517238aefc03d7ef5abcc76de92de/postbag.py#L560-L569)改报“记录无法确认”，要求重发前查账本和接收会话；[公开回归](https://github.com/parasxos/postbag/blob/b21325f6ec2517238aefc03d7ef5abcc76de92de/test_review_core.py#L187-L227)分别断言无记录／已有一条记录，且替身只被调用一次。这里核过源码与合入状态，未重跑；Agent归因来自作者，不证明双模型优于单次定向评审。[一手：源码／接收记录；范围]
 
 ## 9. 文档、提交信息、发布说明
 
