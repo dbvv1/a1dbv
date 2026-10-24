@@ -31,3 +31,11 @@ result_branch: local/dot-b-rail-audio-001
 ## 执行与结果
 
 认领：dot 本地协作；2026-10-24T17:50:46.150987+00:00。独立检出分支 `codex/local-b-sr-audio-001`；产品结果分支按任务头。认领发布后启动已配置 Claude Code＋DeepSeek 的原生 Workflow，保留实际执行与检查结果。当前仅认领，模型实施尚未启动。
+
+## 后续事实补充：已有B音频交付（2026-10-24）
+
+本任务认领前，B已交付固定版本[5266703](https://github.com/dbvv1/Star-Rush-Reborn/commit/5266703f3302410a994c69ec15345edf11edc455)：Kenney CC0源、轻／中素材、可复做处理脚本、真实事件接入、程序化回退、加载打包及相关测试，详见[源件与接收说明](https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/assets/impact-audio/README.md)及[原运行回执](https://github.com/dbvv1/Star-Rush-Reborn/pull/1#issuecomment-6374260570)。原浏览器已见 `ready/ready` 和 `light #2`，仅证明解码与轻触发；中档实战、最终混音听验、听后二改及AI生成未完成。[一手：既有源码／运行回执]
+
+**该成果不能算本任务的本地模型实施。** 此补充不改已领取的base_ref、status、原目标与认领输入，不取消或接管本地执行。读取者先保留在制工作并对照上述成果，再明确实际接续范围和回执，避免重复实现既有接入；未确认实际开始时，不从 `running` 标签推断模型已启动。
+
+B负责最终内容接收，不转交A研究主任务。这里仅补已有交付事实和差异接收要求，不新增本地执行或权限授权。
