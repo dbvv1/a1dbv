@@ -5,13 +5,13 @@
 ## 分工与重点
 
 - **方向（10-22 用户批准重写）**：找到真实技术人员正在用的、当前最好的 AI coding 做法、工具和开源项目，亲手试过，提炼成读者马上能用的东西；留约 10% 给新意实验。官方、社区、开源三方对照。见[锚点](../../AGENTS.md)和[运行手册](LONG-TERM-PLAN.md)。
-- **dot-A（AI coding 与 M6）**：实试Agent能力并回流；停通用修库，续发现／P79，接收B分支。
+- **dot-A：AI coding／M6**；能力实用与回流，续P79、接收B。
 - **dot-B（游戏）**：游戏AI全链路与客户端核心；[Star-Rush](https://github.com/dbvv1/Star-Rush-Reborn)验证驾驶／资源链并回流，不转赛车专职。[Game-Core-Knowledge](https://github.com/dbvv1/Game-Core-Knowledge)按分工参考。P109保窄例与原浏览器重试边界；续接见[手册§9](LONG-TERM-PLAN.md#9-两周路线10-23-至-11-06)。
-- **已接入审计（10-23）**：[方向指导](reviews/2026-10-23-direction-guidance.md)与[校准基线](reviews/2026-10-23-quality-followup.md)保留，不重复审同批或按数量／升分推进；续接见手册§9。
+- **已有审计**：[方向指导](reviews/2026-10-23-direction-guidance.md)／[校准基线](reviews/2026-10-23-quality-followup.md)，不重复。
 
 - **最新审计（10-24）**：[结论与纠偏](reviews/2026-10-24-direction-delta-audit.md)。A停止通用修库；B续核心、驾驶／音频链。
 
-- **自主续题（10-24）**：按[手册§4／6／9](LONG-TERM-PLAN.md)逐次自主选题；交付／受阻即续接，偏题同步纠正任务、指导与入口。续接：[A](prompts/2026-10-24-dot-a-continuation.md)／[B](prompts/2026-10-24-dot-b-continuation.md)。
+- **自主续题**：按[手册](LONG-TERM-PLAN.md)逐次选题，交付／受阻即续；[A](prompts/2026-10-24-dot-a-continuation.md)／[B](prompts/2026-10-24-dot-b-continuation.md)。
 
 ## 项目板
 
@@ -19,9 +19,9 @@
 
 | 编号 | 项目与验收 | 负责 | 状态／下一步 |
 |---|---|---|---|
-| P90 | **前沿发现**：成熟与新候选，沿[13](../13-frontier-radar.md)五问／实试验收，处理收件箱 | dot-A | 停简报；[增量测试反馈](../../experiments/testmon-feedback.md)实试；优先在真实任务使用已有诊断／接续能力，窄试用收口，新试用按重要缺口选。Oil UI页面策略拒绝，视觉待入口获准；Plannotator未接收。 |
-| P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [实操入口](../15-task-playbooks.md)已审；Payment故障取证已审；[OCR补丁](../../experiments/ocr-matcher-replay.md)完整CLI未验，模型收益未测。 |
-| P79 | **C1／C3吸取验证**：①核心12页与25各3题取首页／社区真需求，不从正文倒推；题／要点冻结后独审，未参与写作的新会话读页／无文档作答并独立盲判，比较决策、条件、撤回与原生答对率，修低增量页。②templates/generic三文件默认／撤回及脚本回归；③固定任务有／无包比较结果／返工／人工修改；④M6同需求按25／普通检索对照独立参照查漏。验收：①题答／两组结果；②AGENTS／CLAUDE／Skill；③④先冒烟再扩批 | dot-A | [冒烟](../../experiments/absorption/runs/20261022-smoke-v1/results.md)未测得读页决策增益；[三题预注册](../../experiments/absorption/p79-fresh-prereg.md)已审冻结、6答未跑，未知模型不进可比对；旧题库不改，M6另批。原入口平台失败断连，不等预算／版本批准。[三文件包](../../templates/README.md#核心决策最小包)补重复变换分流，加载／收益未验 |
+| P90 | **前沿发现**：成熟与新候选，沿[13](../13-frontier-radar.md)五问／实试验收，处理收件箱 | dot-A | 停简报；[增量测试反馈](../../experiments/testmon-feedback.md)实试；优先真实任务用已有能力；窄试用收口，新试用按缺口选。Oil UI页面策略拒绝，视觉待入口获准；Plannotator未接收。 |
+| P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [实操入口](../15-task-playbooks.md)已审；续[性能改稿接收](../research/2026-10-12-development-maintenance.md#运行证据进入性能改稿web-edit)，公开栈复算／源码；[OCR补丁](../../experiments/ocr-matcher-replay.md)完整CLI未验，模型收益未测。 |
+| P79 | **C1／C3吸取验证**：①核心12页与25各3题取首页／社区真需求，不从正文倒推；题／要点冻结后独审，未参与写作的新会话读页／无文档作答并独立盲判，比较决策、条件、撤回与原生答对率，修低增量页。②templates/generic三文件默认／撤回及脚本回归；③固定任务有／无包比较结果／返工／人工修改；④M6同需求按25／普通检索对照独立参照查漏。验收：①题答／两组结果；②AGENTS／CLAUDE／Skill；③④先冒烟再扩批 | dot-A | [冒烟](../../experiments/absorption/runs/20261022-smoke-v1/results.md)未测得读页决策增益；[三题预注册](../../experiments/absorption/p79-fresh-prereg.md)已审冻结、6答未跑，未知模型不进可比对；旧题库不改，M6另批。原入口平台失败断连，非待批。[三文件包](../../templates/README.md#核心决策最小包)补重复变换分流，加载／收益未验 |
 | 旧C2文稿 | 范围／状态见[快照][c2-1023] | B | 文稿非整族实试。 |
 | P94 | C2：音乐谱源二改，比较固定渲染与重演绎 | dot-B | a7b212c独审保链；谱源导入损失已补，未试／试听。 |
 | P95 | C2视频整页／图（接P91） | dot-B | b1b9004保链gap1；[互审](reviews/2026-10-23-dot-b-mutual-review.md)已取回；未实试。 |

@@ -538,3 +538,26 @@ PEG 由[PR19503](https://github.com/python/cpython/pull/19503)于2020-04-23（UT
 ### 最小诊断交付包与接收条件
 
 [阅读本节](2026-10-12-development-stateful-diagnostics.md#最小诊断交付包与接收条件)
+
+
+## 运行证据进入性能改稿：web-edit
+
+**结论：让Agent基于实际操作的profile选择修改，再把等价优化与行为取舍分开接收。** 这是旧候选的采用链深化，不是新工具试用或新修库任务；未重做应用／模型／性能实验。[研究，2026-10-24]
+
+**缺什么、如何改变选择。** Willison的[10-12原文](https://simonwillison.net/2026/oct/12/)确认让Codex／GPT-6 Astra Extra High分析已有web-edit；[固定研究产物](https://github.com/simonw/research/tree/3695d1dc68f717b2c14024163b00e1c8e132f238/python-3-15-web-edit-profiling)明确是LLM生成报告，负载为合成繁忙编辑，而非真人典型会话。随后[PR1](https://github.com/simonw/web-edit/pull/1)的实际任务是读取这份报告并优化应用，作者标注Claude Opus 5.5 Extra；这是两次不同入口的接续，不能据标签隔离模型贡献。[一手：作者任务与公开产物]
+
+**原始证据已复算。** 对固定目录的`artifacts/stacks.txt`逐行取末尾权重，函数在同一栈只计一次：总15,296，WorkerThread.run为14,546（95.1%），preserve_endings为9,914（64.8%），find_longest_match为5,854。四项为包含关系，不能相加。CPU采样只定位执行热点，不能当请求延迟；原报告13.40%采样错误，未校正偏差。Python[官方采样契约](https://docs.python.org/3.15/library/profiling.sampling.html#sampling-configuration)也将默认主线程与`-a`全线程区分；本例若忽略worker覆盖，就会错过主要文件工作。[本仓：公开文本数据复算；一手：报告／官方]
+
+**固定改稿与接收决定。** 基线`12e22614e7f281fb8d591e1bfb11d83356f3ded6`，候选[`c0cf53956c7b95979961d4359a135fca25a0db9f`](https://github.com/simonw/web-edit/blob/c0cf53956c7b95979961d4359a135fca25a0db9f/web_edit/files.py)，合入`31effee95cf8632aa7ecdd549f79a462d4de8dac`；[0.1a1发布](https://github.com/simonw/web-edit/releases/tag/0.1a1)列入此PR。核对新旧`files.py`后可分开三项，不按“全部测试绿”整体宣称等价：[一手：Git／源码；研究]
+
+| 实际变化 | 接手时据什么决定 |
+|---|---|
+| 只有一种换行时，直接归一化再恢复该行尾，省掉行比较 | 作者报告与旧版字节等价；复用项目换行/BOM检查，不把这条保证扩到混合行尾 |
+| 混合行尾用唯一行锚点及局部SequenceMatcher替代全文件匹配 | 重复行的归属可能变化；若任务要求旧输出逐字节不变，不能用总体正确率／速度接受该部分 |
+| 写入过程中计算digest，返回本次写入版本而非replace后重读版本 | 外部写入发生在该窗口时，下一次保存应识别冲突；保留flush/fsync、目标再核验，不能为“少读一次”删恢复义务 |
+
+**测试能证明什么。** PR报告相同130项测试在新旧实现均通过。可复用候选`tests/test_app.py`里的`test_preserves_line_endings_and_bom`、`test_preserves_mixed_endings_with_scattered_edits`、`test_create_then_repeated_save_uses_returned_version`等，命令为`uv run --extra test pytest`；这是原作者入口，本轮未执行。保存版本常规测试不能单独证明replace后竞态。作者另报600份带跟踪编辑的stdlib样本中总体行尾保持更好，但25份更差；原始真值、20,000次fuzz及基准脚本明确未随PR公开，不把这些汇总当本仓复验。[一手：作者自报／固定测试；研究]
+
+**结果与边界。** 已发布的实现完成了从热点到快路径／算法／I/O修改的接续；作者的loopback吞吐改善只对应其合成负载和运行环境。本仓可核的是公开栈计数、固定差量与发布归属，不声称实时采样、应用测试、浏览器或当前模型收益通过。采样权限仍按平台处理，不照抄报告里的macOS签名或更改系统安全设置。[研究]
+
+探索回执：按已有性能页缺口定向追作者原文、公开原始栈、PR实现／测试和Python官方契约；既有10-20探索已看过web-edit，本轮不算首次发现。未取得同题独立社区复现或作者未公开的验证语料；不为此扩新工具／故障矩阵。[研究]
