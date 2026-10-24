@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-002
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 81785778c1fae4fbb0a08a9106c773d6a5c26a72
 result_branch: relay/a-style-rewrite-002
@@ -40,3 +40,25 @@ result_branch: relay/a-style-rewrite-002
 ## 执行与结果
 
 认领：dot 本地协作；2026-10-24T22:21:03.907434+00:00。任务来源main `9ce6695`，四个目标文件与现有Memos任务无写入重叠；认领发布后沿既有原生Workflow分文件实施与独立验证，不重跑已完成首批。
+
+### 结果回写（2026-10-25，review_ready）
+
+原生 Workflow 以四个文件独占实施 agent＋一个独立只读验证 agent 执行（5 agents、0 errors、313 tool uses、780,762 subagent tokens、1,908,160 ms）；implementationRaw／verificationRaw 保留在任务私有 `attempt-1/scratch/.../wkt3aalx2.output` 与 `.claude/.../wf_2a0633a8-d72/journal.jsonl`。请求别名为 `deepseek-v4.1-flash[1m]`（CLI stderr 标记 `unrecognized_model`）；原始 assistant 消息的响应元数据 model 为 `deepseek-flash`，不把请求别名当作独立 API 身份。
+
+基线：工作区与 `origin/main` 均为 `3727e9d`；发布前 `git fetch origin main` 仍为 `3727e9d`，`base_ref` 与最新 main 之间四个目标文件无改动，无需按新基线重做。各文件改写前后源快照与一次性验证脚本均为任务私有，未入库。
+
+| 文件 | 非空白字符 前→后 | 去依据行正文比例 | 正文证据标签 前→后 | 限定语 前→后 | 依据行 |
+|---|---|---|---|---|---|
+| `docs/25-ai-exploration.md` | 12,964→13,881 | 0.996 | 29→1（仅页首 `[经验]`） | 14→18 | 12 |
+| `docs/24-community-workflows.md` | 10,989→11,447 | 0.930 | 36→0 | 8→9 | 11 |
+| `docs/08-multi-agent.md` | 18,748→20,055 | 0.851 | 48→1（仅标题 `[一手]`） | 7→6 | 18 |
+| `docs/20-codex-long-horizon.md` | 17,286→17,790 | 0.847 | 71→0 | 16→17 | 18 |
+
+- 机械不变量全部通过：标题逐行相同 15/27/20/20；`<a id|name>` 0/0/0/1；围栏代码与 Mermaid 0/0/2/1 逐字相同；表格 5/3/7/3 块、行列维度一致；原文 URL 与相对链接、行内代码、数字／版本／日期记号无缺失；评级计数 25 `✅1 🧪1 👀2 ⛔2`、24 `✅14 🧪10 ⛔1`、08 `✅4 🧪9 👀2 ⛔1`、20 `✅20 🧪2` 均与原文相等。
+- 独立验证初判：25／24／08 PASS；20 机械不变量 PASS、prose FAIL——§1 的 `〔10 月确认〕`、§1 表格四个 `〔跨代保留〕` 与一个 `〔10 月补核〕` 被删，`标签定义见 [00]` 因此变为孤立引用。原始失败输出与旧句清单保留在任务私有 `verify-independent-2/`。
+- 修复：仅修改 `docs/20-codex-long-horizon.md`，恢复上述六个状态标签，不改结论、标题、表格维度或评级；重跑该文件受影响检查——标题 20/20、锚点 1/1、围栏 1/1、链接 62/62、行内代码 34/35（无缺失）、数字／版本／日期无缺失、评级与表格维度一致、去依据行正文比例 0.935（文件脚本口径）；再用独立验证器单文件复跑，全部不变量 PASS、比例 0.847、旧句 130→124（差值正好对应六个标签恢复）、正文证据标签 0。未重跑其他文件或无关实验。
+- “旧文有、新文无”字面句：25 63/403、24 106/301、08 93/440、20 124/474；逐项抽查均为页首过程语、证据标签迁移、导航“详见”改写或分句 artifact，未发现知识句、结论方向、撤回／推翻条件或“未试用／未实测／未验证／单例／仅摘要”状态丢失。完整清单为任务私有：`verify-independent-2/old-only-sentences.json`、`attempt-1/verify-24.txt`、`attempt-1/08-old-only-sentences.txt`、`file-20/20-old-only-sentences.json`。
+- 最终检查：`python3 scripts/check_repo.py` 354 files／0 errors；`python3 scripts/check_public.py` 614 files／0 findings；`git diff --check` 通过；四个文件 UTF-8、LF、无 BOM／CRLF。
+- 需要负责人判断：1）25 的 `## 30 秒结论` 无独立来源且不足约 500 字，未单设依据行，依据写在页首概述；2）24 的 §7 多个短 `###` 的来源合并为 `## 7` 末尾一条较长依据行；3）08 的 30 秒依据行以“依据见本页 §1—§10”汇总，未逐项列源；4）20 的 `### 4.1` 前依据行覆盖父节引言后再进入子节；5）20 的 `〔〕` 状态标签按原文恢复，未改标签定义。
+
+发布：仅推指定结果分支 `relay/a-style-rewrite-002`，每个目标文件一次提交——25 `1b5a3c5`、24 `f6fb58a`、08 `8abd6ae`、20 `2cfc9e0`；任务文件随后单独提交。未合入 `main`，未推送其他分支；提交后补跑提交身份扫描。
