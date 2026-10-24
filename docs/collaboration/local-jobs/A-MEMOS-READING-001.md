@@ -2,7 +2,7 @@
 
 id: A-MEMOS-READING-001
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: c1faa7d346e49fcc15043ee7e096ff9ae19866d0
 result_branch: relay/a-memos-reading-001
@@ -49,4 +49,32 @@ upstream_commit: 0bfa31e89ec550c7cc6a1dea3888af2d0de107c2
 
 认领：dot 本地协作；2026-10-24T20:59:39.730488+00:00。任务来源 main 固定提交 `f2fed3e`。认领发布后在独立检出与原生 Workflow 中执行；仅写本任务指定文件，结果推指定分支供 dot-A 接收整合，不重跑联通或旧实验。
 
+进度（2026-10-25）：
+
+- 修复轮完成父级独立审查的两项修正，补丁与报告已重出；最终状态 `review_ready`。
+- R1（raw 列表）：旧实现只处理 block 模型里的 `listItem`。`@usememos/editor 26.10.26` 在列表项含第二段或代码块时，用 `fitsModel` 把整个列表降为一个 raw Markdown 块，`blockView` 看不到其中条目，普通完成项因此不隐藏。现新增 `applyCompletedTaskVisibility`：在 raw 块的真实渲染 DOM（`.mbe-view-markdown`）上按“DOM 后代 + 流内 `data-indent` 兄弟”判断嵌套，给可隐藏的完成项加标记与 `hidden`，CSS `display: none` 覆盖编辑器的 `display: flex`；偏好变化同步应用，编辑器重绘由 `MutationObserver` 重放。未自写 Markdown 解析器、未字符串改写源 Markdown、未动共享编辑器包。新增 9 个真实 `MemoContentView` 回归：代码块使整表 raw、多段列表、未完成子项保留父项上下文、缩进子项、全完成隐藏/恢复、原文与勾选权限/代码/普通列表/链接保持、挂载后经 effect/MutationObserver 隐藏（jsdom 不能证明首帧无闪烁）、编辑模式保留全部任务、调用方关闭过滤时 raw 任务全显示。
+- R2（测试参数）：原报告把 `pnpm test -- --maxWorkers=4` 当作受控 4 worker 全量；实际 Vitest 将 `--maxWorkers=4` 放进 `options['--']`，worker 未受限。原日志保留，不再作为限制证据。调用 `vitest run --help` 确认 `--maxWorkers` 是顶层选项后，用绝对 `--dir` 重跑 `pnpm exec vitest run --maxWorkers=4`：首轮 pnpm 启动器为 bundled Node `v24.19.0`，但 vitest 子进程经 PATH 解析为 Node `v22.23.2`，退出 0，191 files / 1602 tests passed，作为 Node22 子进程结果保留。随后把 bundled Node24 的 bin 置于 PATH，确认 `node -v` 与 `pnpm exec node -v` 均为 `v24.19.0`，同一入口复跑退出 0，191 files / 1602 tests passed（约 221s）。旧默认并行全量偶发 1–2 个动态导入超时；没有固定干净基线对照，失败原因未确立，不断言为既有缺陷。
+- 定点验证：`memo-content-view` 修复前 7 failed / 36 passed，修复后 44 passed；相关 7 个测试文件合计 71 passed（首轮日志的 vitest 子进程为 Node22）；将 bundled Node24 置于 PATH 后，显式 7 files 复跑 71 passed，`pnpm lint`（tsc + Biome，663 files）与 `pnpm build` 均退出 0。命令、输出与退出状态写入任务私有 `repair-1/logs/`，旧日志未覆盖；两段原始输出与运行元数据另存 `repair-1/raw/`（`targeted-repair.raw.txt`、`repair-verification.raw.txt`、`run-metadata.json`）。
+- 补丁复核：相对固定提交 `0bfa31e89ec550c7cc6a1dea3888af2d0de107c2` 重新导出 `experiments/memos-reading-adoption.patch`，含全部 60 个改动/新增文件；在干净固定基线 `git apply --check` 与 `git apply` 均退出 0。
+- 产品实现不变的部分：当前浏览器 `hideCompletedTasks` 设备偏好（默认关闭）；详情页（含匿名 share 路由）提供带文字、可聚焦开关；源 Markdown、block id、写请求、权限与编辑模式全文保持不变；嵌套未完成子项保留父项上下文，全完成列表可恢复；分享图片导出不受偏好影响。
+- 审查与验证历史：上一阶段独立审查提出并修复 2 个 should-fix（勾选后父项残留、分享图片丢任务），复审 `CONFIRMED`；Workflow 第二阶段只读复检为 `review_ready`。本轮修正由 native Workflow 第二阶段独立只读验证：未发现 R1/R2 代码阻断，指出 3 处报告准确性问题；本轮已按实际日志修正，父执行端原独立审查者随后仅复核R1/R2受影响delta，确认两项均解决、未发现新的实质代码缺陷；日志索引占位说明已据原始调用更正，未重跑或改写原日志。
+- 明确边界：真实浏览器仍未运行且被禁止；匿名 share 路由测试 mock 了 `MemoView`，只证明开关可达，真实内容渲染由 `memo-content-view.test.tsx` 单独覆盖；上一阶段执行席自述误触工作目录外 pnpm 依赖检查并已恢复，独立审查未验证全局状态；本轮为定位既有 pnpm 做过只读查看（`ls`/`pnpm -v`），未修改任何用户级路径或配置；`canonicalModel` 别名不是独立 API 模型证明。
+- 模型元数据（取自响应元数据）：原实施为 Claude Code native Workflow 子代理，`model=deepseek-flash`，2026-10-25 05:02–05:51 +08:00；实施内复核为 Claude Code CLI，客户端日志报告 `canonicalModel=deepseek-v4.1-flash[1m]`（别名，非独立 API 证明），05:21–05:48；原独立验证为 native Workflow 第二段子代理，`model=deepseek-flash`，05:51–06:09；本轮修正与自检为 native Workflow 子代理，assistant 响应元数据 `model=deepseek-flash`，06:24–07:00；本轮独立复审为 native Workflow 第二段子代理，`model=deepseek-flash`，06:52–07:01，结论 R1/R2 无代码阻断、报告准确性问题已列出并修正；无任务内人工介入，本轮无全局安装改动。
+- 未运行：真实浏览器、Playwright、Memos 服务、demo、示例账户/数据库及桌面操作；等待负责人真实浏览器验收（`samramen000001`、`rendertest0001`）。工程可接收与浏览器待验分开记录，不声称方法收益或 accepted。
+- 结果分支：`relay/a-memos-reading-001`（当前工作树按任务规则未提交，父级负责发布；不提供未产生的提交链接）。状态：`review_ready`。
+
+父执行端最终工程审查发现 raw 列表遗漏与全量测试参数说明错误；本轮只做有证据的定向修正，原结果、失败和通过日志保留，未重做原实施或联通。
+
+### 父执行端最终工程接收准备
+
+原调用2026-10-24 21:01:42—22:11:57 UTC完成；同任务原会话的定向修复调用22:24:06—23:09:15 UTC完成，两次各一次父进程启动，原始阶段及失败均保留。原调用与修复各阶段assistant实际model为 `deepseek-flash`；内部CLI复核仅有canonical别名的部分继续按未独立获证处理。原独立工程审查者已对修复delta确认R1/R2解决；补丁仍是固定上游的60文件变更，与当前源树一致。Node24下七文件71测试、全量191文件1602测试、lint和build均通过；不把早期错误参数或未确立因果的超时改写成有效证明。
+
+父端只修正公开回执的追溯文字并核对产物；用户级npm恢复继续明确为执行席报告、未独立验证，不扩大为全局状态通过。工程结果交 `review_ready`，真实浏览器入口、视觉／键盘／刷新表现及负责人最终接收仍待原明确条件，不启动服务或浏览器，不宣称方法收益或accepted。
+
+此前在制记录（现已完成修订，保留历史）：
+
 最终工程审查发现并已隔离两项需修订内容：真实编辑器把含多段／代码块的整个列表保留为raw Markdown，当前过滤会漏掉同列表的普通完成项；原全量命令中的额外 `--` 没有实际设置4-worker上限，原通过结果保留但不能据此归因并发超时。现继续原任务，仅修Memos展示层、真实组件回归与说明，保留原始失败；不改通用编辑器库，不新增浏览器、服务或用户级npm操作。
+
+最终发布检查：文档／JSON检查355 files／0 errors，公开文件及提交扫描616 files／0 findings。实际上游源码空白、干净应用与导出一致性复用通过证据；本仓非patch文本空白检查通过。`.patch` 的unified diff上下文空行保留单空格语法前缀，外层diff检查的相应行尾提示不代表源码空白缺陷，未删改补丁上下文。
+
+发布：指定结果分支固定提交 [62e5cee](https://github.com/dbvv1/a1dbv/commit/62e5ceeae99eb1b4b1d717ecd1af52da2c598c59)，包含完整补丁、工程报告及本任务；main仅回写任务与固定链接，未合入补丁或上游产品。已完成工程修复及受影响delta独立确认，交dot-A接收；真实浏览器验收仍受原明确边界限制，工程接收不替代该环节。
