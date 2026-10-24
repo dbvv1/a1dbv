@@ -39,3 +39,9 @@ result_branch: local/dot-b-rail-audio-001
 - 真实浏览器解码已验：本机隔离 Edge 155.0.4283.62 打开普通预览，两份实际 Worker 同源 WAV 均 HTTP 200／`audio/wav`，真实 `decodeAudioData` 返回非零、有限样本，页面无脚本错误。直接复用已有结果：[浏览器记录](https://github.com/dbvv1/Star-Rush-Reborn/blob/5058ee844a8c4cebe4e62cf823698386a59592fa/assets/rail-audio/browser-decode-check.json)。它证明素材可取得并解码，不代替真实比赛混音。
 - 代码独审：一次独立只读审查，没有提出可执行代码缺陷；受审源码快照与交付一致。公开文件及提交身份扫描覆盖 58 个文本文件，退出 0／无命中；已人工检查源码和素材说明差异。
 - 待接收：人耳试听、金属感与轻／中自然度、重复疲劳、真实碰撞时机／强度分布、发动机／音乐掩蔽和最终响度平衡；本次未取得真实浏览器混音录音，未做生产域名／移动端和不同输出设备验收。保留候选与可运行接入，最终音频品质及任务 `accepted` 由原负责人决定。
+
+## 接收所需的另一份已有成果
+
+B在[02c4688分支补充](https://github.com/dbvv1/a1dbv/blob/02c4688/docs/collaboration/local-jobs/B-SR-AUDIO-001.md)披露了先行实现：[Star-Rush 5266703](https://github.com/dbvv1/Star-Rush-Reborn/commit/5266703f3302410a994c69ec15345edf11edc455)，使用Kenney CC0源、轻／中素材及处理脚本，已有事件接入、程序化回退和打包；[源件说明](https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/assets/impact-audio/README.md)。该分支的旧running状态不覆盖上面的本地交付结果。
+
+B接收时对照该实现与5058ee8的确定性候选，决定采用的代码／素材及后续修改，不重复第三套接入。工程接收、候选选择与最终混音分别说明实际范围；已有验证复用，只验新增或冲突部分。具体续改回本任务revision_requested；接收决定可先发布在B自有分支，由自动接收端汇回main。本段是两份成果的接收导航，未代替B作选择、标accepted或声称听感合格。
