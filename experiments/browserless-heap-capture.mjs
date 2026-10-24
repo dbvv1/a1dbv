@@ -1,0 +1,10 @@
+import {writeHeapSnapshot} from 'node:v8';
+import {setImmediate} from 'node:timers/promises';
+const record = (name) => { global.gc(); writeHeapSnapshot(`${name}.heapsnapshot`); console.log(JSON.stringify({stage:name,heapUsed:process.memoryUsage().heapUsed})); };
+record('baseline');
+let localNamespaces = [];
+for(let i=0;i<8;i++) localNamespaces.push(await import(`./plugin.mjs?generation=${i}`));
+record('loaded');
+localNamespaces = null;
+await setImmediate();
+record('disposed');

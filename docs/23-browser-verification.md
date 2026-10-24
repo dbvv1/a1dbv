@@ -65,6 +65,10 @@ Playwright MCP 通过结构化的 accessibility snapshot 暴露页面，常规�
 
 **🧪 页面请求失败或卡顿，现有证据不足时，再试 [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp)。** 基线是项目 Playwright 测试/trace 与人工 DevTools；增量是把实时控制台、网络与性能诊断交给 Agent。只有找到原先难获的原因或减少抄日志才保留，稳定路径仍写回归。**关键局限**：浏览器内容可被读取/修改，localhost 不代表零外发；须用隔离测试 profile，核对统计、CrUX 与[请求头脱敏开关](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/main/docs/configuration.md)，脱敏不保护全部正文、URL 或截图。**[一手；经验：采用判断，2026-10-12，未连接浏览器]**
 
+**🧪 已有堆快照，可让 Agent 离线追“谁持有对象”，不必先连接浏览器。** Chrome DevTools MCP 1.12.0用`--memoryDebugging`开启分析：摘要→初始／清理后差量→对象查询→持有链，最后关闭快照；已有人工DevTools足够时沿用，不把大JSON全塞上下文。[官方机制与可复制入口](../experiments/browserless-heap.md)。[一手／本仓工具实试，2026-10-24]
+
+本仓原创建模示例在清空本地引用后仍找到8个对象，并取回`ModuleLoader → LoadCache → ModuleJob → ModuleWrap → SourceTextModule → Cell → 对象`链段；全程仅分析本地文件，未调用浏览器工具。**局限：ESM缓存本身是预期行为，此例不证明真实应用泄漏或Agent收益，路径也有截断。** 快照会扰动GC且可能含敏感数据，先核来源与授权。[本仓实试／经验]
+
 ## 3. 给 Agent 一个可验收的任务
 
 以“增加收货地址表单”为例，约定下面的行为，而不只说“做好看一点”：**[经验：工程建议]**

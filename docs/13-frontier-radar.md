@@ -77,6 +77,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [DevTools离线堆分析](../experiments/browserless-heap.md) | 已有快照时让Agent追对象持有链，不再手抄DevTools表 | [1.12.0](https://github.com/ChromeDevTools/chrome-devtools-mcp/releases/tag/chrome-devtools-mcp-v1.12.0)取消分析工具的浏览器依赖 | 三阶段合成ESM快照取回LoadCache链段，无浏览器调用 | 🧪 缓存保留不自动等于应用泄漏，未测模型收益 |
 | [MCPorter](https://github.com/openclaw/mcporter) | shell-only Agent临时调用已授权的公开MCP | [日用复盘与官方入口](../experiments/mcporter-public-read.md#来源与验证范围)；不据自报评效率 | 0.16.0匿名取TanStack/router资料，全文落盘后提取目标章 | 🧪 已有原生入口就沿用，不自动导入客户端配置 |
 | [Context Hub](https://github.com/andrewyng/context-hub) | 查库文档时带回已验证的项目经验 | 社区提出与Context7的区别，见[原帖及核查](research/2026-10-22-frontier-trials.md#context-hub把库文档与已验证经验一起交接) | 0.1.4实际保存Next经验，新进程取回含备注文件 | 🧪 单项目先用项目文档；发布包与主干备注语义不同 |
 | [QMD词法检索](https://github.com/tobi/qmd) | 多篇Markdown先排序再按行取原文 | [中文查询报告](https://github.com/tobi/qmd/issues/976)提示词法不等于语义检索 | [2.8.3无模型实试](research/2026-10-22-frontier-trials.md#qmd纯词法检索先找到原文再判断证据)找回批注与改稿依据 | 🧪 已知关键词先用rg，额外索引按需建 |
