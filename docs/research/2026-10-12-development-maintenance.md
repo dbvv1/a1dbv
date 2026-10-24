@@ -623,7 +623,7 @@ Push与落盘非原子；扫描（`internal/manager/manager.go:592–620`）取c
 
 ### 固定源码与三路判别（静态证据）
 
-固定 open-telemetry/opentelemetry-demo 的 `ba1757b3f197916640fff4f7c549b99e54835ab8`，文件头 Apache-2.0。本节均为同SHA源码／测试预期和人工推导；未运行demo、Cypress、模型或故障开关。表中信号以分支实际执行、追踪及导出有效为前提，不把源码里的日志当现场观察。[一手／研究]
+固定 open-telemetry/opentelemetry-demo 的 `ba1757b3f197916640fff4f7c549b99e54835ab8`，文件头 Apache-2.0。下表保留10-21源码／测试预期与推导；10-24已补[Payment与flagd两路实试](../../experiments/p49_payment_rpc.md)，完整demo、Cypress、模型及错误目标路径仍未运行。下表整条传播链不因局部实试而全部通过。[一手／研究／本仓局部实试]
 
 共用有效合成订单与正常前置服务；三路 `(paymentFailure, paymentUnreachable)` 为 `(0,false)`、`(1,false)`、`(0,true)`；留当次评估值，不以配置存在代触发。两个开关同时开会先走错误目标，不能作独立对照。[开关配置][p49-flags]、[付款实现][p49-charge]、[checkout实现][p49-checkout]。[一手]
 
@@ -651,7 +651,9 @@ Push与落盘非原子；扫描（`internal/manager/manager.go:592–620`）取c
 4. **语义保真**：先复用exception、底层状态和目标证据；仅剩Internal／422且无法分因时，才补低敏来源／原因／依赖目标字段。保持emitRawPii关闭，不为诊断收集真实卡号／CVV；trace管线脱敏不能推成所有日志已脱敏。[配置][p49-flags]／[Collector][p49-collector]
 5. **验收与撤回**：先核发出→采样→导出→Collector→后端保留／查询链，再用缺迹辅助判断。正常付款不包办邮件等全部副作用；证据不可访问或相关性未核时保留“原因未定”，撤回自动根因承诺。实际发布须另验接收者可取得证据，不能凭本静态表授权付款重试、重启或回滚。
 
-**验证边界**：完成同SHA调用链、配置与测试预期的静态核对；应用、自动插桩实际字段、SDK内部错误映射、接收端查询、模型诊断率及维护收益均未实测。下列为固定源码定位，非运行回执。
+**10-24真实接收**：现有Payment服务、官方flagd v0.16.0与锁文件依赖跑通正常／100%注入。外置OpenFeature after hook只记录实际flag值与当前RPC身份；真实flagd span、charge异常、handler日志及客户端回执在同trace上对应。注入确实早于卡验证，客户端为gRPC UNKNOWN；服务端OTel ERROR的数值虽同为2，不能作wire code使用。正常合成请求返回ID且charged=false，非真实资金操作。[本仓实试]
+
+**当前验证边界**：只接收Payment→flagd及console遥测，不含Checkout／frontend映射、错误目标、Collector／Jaeger查询或模型诊断收益。应用源码未改，只按官方说明准备proto／依赖，另加只读flag观察器；参数化入口及固定日志核验见[重放说明](../../experiments/p49_payment_rpc.md)。下列链接仍是整链的固定源码定位，不是完整应用运行回执。
 
 [p49-flags]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/flagd/demo.flagd.json
 [p49-charge]: https://github.com/open-telemetry/opentelemetry-demo/blob/ba1757b3f197916640fff4f7c549b99e54835ab8/src/payment/charge.js#L27-L115

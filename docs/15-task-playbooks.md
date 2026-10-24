@@ -141,7 +141,11 @@
 
 **✅ 让生成 Agent 先复用已有 trace／日志，按目标故障交判别表与取证入口（本例为正常、主动报错、依赖不可达）。** 沿源头异常→服务包装→API→用户提示追一遍，标清最早能区分原因的信号；只有现有证据不能区分目标故障，才补低敏结构化原因／来源。已有字段和入口够用就不再加埋点，也不默认另购诊断 Agent。[研究：可行层默认]
 
-**为什么不能只交“有日志、有错误码”？** 固定 OpenTelemetry Astronomy Shop 中，付款故障注入抛普通 Error，API 却按字符串把这一路呈现为 payment decline；相同外层 Internal 又可包装错误目标的连接失败。Agent 容易照用户提示修卡信息，或凭缺少 Payment span 宣称服务宕机；维护人应核原始原因、当次目标、关联与导出链，再决定操作。[一手：源码与测试预期，未运行]
+**🧪 已实跑的例子：`Invalid token`来自故障开关，不是认证系统。** 固定OpenTelemetry Astronomy Shop的Payment＋flagd原生链中，同一合成请求正常时返回transactionId；仅切换开关后，实际评估`paymentFailure=1`，同trace的charge异常与handler日志指向主动抛错行，客户端收到gRPC UNKNOWN。Agent应先查最早可区分原因的信号，而不是看到token就换凭据。[本仓实试；[可复制入口与结果](../experiments/p49_payment_rpc.md)]
+
+**同一个数字也可能不是同一种状态。** 本例客户端gRPC `code=2`是UNKNOWN，服务端span的OTel `status.code=2`是ERROR；后者没有`rpc.grpc.status_code`字段，不能代客户端回执。把实际flag评估、源头位置与同请求结果交给接手Agent，才有足够依据作这次诊断。[本仓实试]
+
+完整应用API按字符串将该错误呈现为payment decline、错误目标也可被包成Internal，这两段仍是源码证据，本轮没有扩跑Checkout／frontend。缺少Payment span也不能单独证明服务宕机；维护人核当前依赖目标、关联与导出链，再决定操作。[一手：源码；经验]
 
 **当前最高水平参照（本项，2026-10-21核实）**：Tao 等7月可观测代码研究把可运行与故障信号分验；Cursor 团队9月 Rollouts 从 diff 制定发布观察计划、消费已有遥测。前者关注生成的诊断语义，后者关注发布后的判断；本仓先选低投入可行层，因为缺信号时观察 Agent 也无从判别，同题最优方案仍未知。[来源、三路固定证据与交付要求](research/2026-10-12-development-maintenance.md#p49生成服务的故障证据)保留比较和边界。[研究；一手：厂商自述]
 
