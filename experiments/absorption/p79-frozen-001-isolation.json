@@ -1,0 +1,213 @@
+{
+  "job": "A-P79-FROZEN-001",
+  "scope": "existing six calls only; no new invocation or probe",
+  "request_boundary": "Frozen payload bytes and actual launch/adapter paths are recorded; outgoing API request and final effective system context are not recorded.",
+  "catalog_semantics": "Retained entry contract treats init.plugins as loaded-plugin metadata, not merely disk discovery. Neither these records nor agent-name catalogs contain the instruction bodies or prove whether additional instructions entered the model context. Agent definition/source and activation are not captured.",
+  "unclassified_agent": "Slot 1 does not match the previously confirmed name set. This batch records its string name only, with no definition/source/prompt. Name withheld; cannot classify or establish whether it contributed instructions from existing records.",
+  "common_limits": [
+    "Workspace/user instructions, historical memory, researcher conversation and plugin/agent instruction absence cannot be proved from this batch response stream.",
+    "No replay, profile/credential read, plugin source inspection, new trace or other model call was performed.",
+    "Retain not_established for all six; confirmed formally comparable pairs remain zero.",
+    "If existing recorded evidence is insufficient, report denominator zero as not calculable; these raw answers and fixed judgments remain descriptive records."
+  ],
+  "common_effective_fields": {
+    "adapter_effective_audit": {
+      "argvVerbatim": true,
+      "cwdMatchesRequested": true,
+      "homeMatchesRequested": true,
+      "isolationPathsAppliedLast": true,
+      "legacyHomePathsRemoved": true,
+      "tmpdirMatchesAttempt": true,
+      "stateHomeMatchesAttempt": true,
+      "pwdMatchesRequested": true,
+      "profileEnvPreserved": true,
+      "parentEnvUnchanged": true,
+      "toolsEmptyPreserved": true,
+      "disallowedStarPreserved": true,
+      "strictMcpPreserved": true,
+      "mcpConfigArgumentPreserved": true,
+      "streamJsonPreserved": true,
+      "barePreserved": true,
+      "restrictedPreserved": true,
+      "skillsDisabledPreserved": true
+    },
+    "session_persistence_disabled": true,
+    "resume_or_continue_flag_present": false,
+    "explicit_system_or_append_prompt_flag_present": false,
+    "init_counts": {
+      "tools": 0,
+      "mcp_servers": 0,
+      "skills": 0,
+      "plugins": 2,
+      "agents": 5
+    },
+    "plugins": [
+      {
+        "slot": 1,
+        "name_matches_previously_confirmed_builtin": true,
+        "field_names": [
+          "name",
+          "path",
+          "source"
+        ],
+        "source_classification": "unclassified_redacted",
+        "prompt_body_recorded": false
+      },
+      {
+        "slot": 2,
+        "name_matches_previously_confirmed_builtin": true,
+        "field_names": [
+          "name",
+          "path",
+          "source"
+        ],
+        "source_classification": "unclassified_redacted",
+        "prompt_body_recorded": false
+      }
+    ],
+    "agents": [
+      {
+        "slot": 1,
+        "metadata_type": "str",
+        "matches_previously_confirmed_builtin_name": false,
+        "definition_or_prompt_recorded": false
+      },
+      {
+        "slot": 2,
+        "metadata_type": "str",
+        "matches_previously_confirmed_builtin_name": true,
+        "definition_or_prompt_recorded": false
+      },
+      {
+        "slot": 3,
+        "metadata_type": "str",
+        "matches_previously_confirmed_builtin_name": true,
+        "definition_or_prompt_recorded": false
+      },
+      {
+        "slot": 4,
+        "metadata_type": "str",
+        "matches_previously_confirmed_builtin_name": true,
+        "definition_or_prompt_recorded": false
+      },
+      {
+        "slot": 5,
+        "metadata_type": "str",
+        "matches_previously_confirmed_builtin_name": true,
+        "definition_or_prompt_recorded": false
+      }
+    ],
+    "outgoing_api_request_or_effective_prompt_captured": false,
+    "context_isolation": "not_established"
+  },
+  "units": [
+    {
+      "question": "F04",
+      "group": "no_doc",
+      "attempt": 1,
+      "status": "answer_collected_not_scored",
+      "exit_code": 0,
+      "stdin_matches_frozen_input": true,
+      "fresh_workdir_empty_before_and_after": true,
+      "non_init_system_event_counts": {
+        "status": 1,
+        "thinking_tokens": 3155
+      },
+      "unclassified_system_event_count": 0,
+      "actual_tool_event_count": 0,
+      "effective_subagent_reference_count": 0,
+      "common_effective_fields_match": true,
+      "context_isolation": "not_established"
+    },
+    {
+      "question": "F04",
+      "group": "doc",
+      "attempt": 1,
+      "status": "answer_collected_not_scored",
+      "exit_code": 0,
+      "stdin_matches_frozen_input": true,
+      "fresh_workdir_empty_before_and_after": true,
+      "non_init_system_event_counts": {
+        "status": 1,
+        "thinking_tokens": 2317
+      },
+      "unclassified_system_event_count": 0,
+      "actual_tool_event_count": 0,
+      "effective_subagent_reference_count": 0,
+      "common_effective_fields_match": true,
+      "context_isolation": "not_established"
+    },
+    {
+      "question": "F01",
+      "group": "doc",
+      "attempt": 1,
+      "status": "answer_collected_not_scored",
+      "exit_code": 0,
+      "stdin_matches_frozen_input": true,
+      "fresh_workdir_empty_before_and_after": true,
+      "non_init_system_event_counts": {
+        "status": 1,
+        "thinking_tokens": 4671
+      },
+      "unclassified_system_event_count": 0,
+      "actual_tool_event_count": 0,
+      "effective_subagent_reference_count": 0,
+      "common_effective_fields_match": true,
+      "context_isolation": "not_established"
+    },
+    {
+      "question": "F01",
+      "group": "no_doc",
+      "attempt": 1,
+      "status": "answer_collected_not_scored",
+      "exit_code": 0,
+      "stdin_matches_frozen_input": true,
+      "fresh_workdir_empty_before_and_after": true,
+      "non_init_system_event_counts": {
+        "status": 1,
+        "thinking_tokens": 3070
+      },
+      "unclassified_system_event_count": 0,
+      "actual_tool_event_count": 0,
+      "effective_subagent_reference_count": 0,
+      "common_effective_fields_match": true,
+      "context_isolation": "not_established"
+    },
+    {
+      "question": "F06",
+      "group": "no_doc",
+      "attempt": 1,
+      "status": "answer_collected_not_scored",
+      "exit_code": 0,
+      "stdin_matches_frozen_input": true,
+      "fresh_workdir_empty_before_and_after": true,
+      "non_init_system_event_counts": {
+        "status": 1,
+        "thinking_tokens": 2487
+      },
+      "unclassified_system_event_count": 0,
+      "actual_tool_event_count": 0,
+      "effective_subagent_reference_count": 0,
+      "common_effective_fields_match": true,
+      "context_isolation": "not_established"
+    },
+    {
+      "question": "F06",
+      "group": "doc",
+      "attempt": 1,
+      "status": "answer_collected_not_scored",
+      "exit_code": 0,
+      "stdin_matches_frozen_input": true,
+      "fresh_workdir_empty_before_and_after": true,
+      "non_init_system_event_counts": {
+        "status": 1,
+        "thinking_tokens": 3728
+      },
+      "unclassified_system_event_count": 0,
+      "actual_tool_event_count": 0,
+      "effective_subagent_reference_count": 0,
+      "common_effective_fields_match": true,
+      "context_isolation": "not_established"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 id: A-P79-FROZEN-001
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1de763566bd347a444022c53093754eef8c6597c
 result_branch: relay/a-p79-frozen-001
@@ -68,3 +68,15 @@ result_branch: relay/a-p79-frozen-001
 本次 revision_requested 仅要求既有日志的隔离澄清及原判固定后的解盲，不是重做六答。隔离无法确立则保留 not_established，正式指标分母0写不可计算；原答与盲判仍可作为描述性记录。接收范围限本冻结三题，不外推核心12页总体效果。
 
 续改认领：dot 本地协作；2026-10-24T20:09:34.057747+00:00。按 main `268f15d` 的明确要求，仅核已有执行日志／配置并解盲既有原答；原判与裁定hash已核为指定值。不新增调用、探针或重跑，不改原答与原判。
+
+### 续改回传：已有证据澄清与解盲
+
+已完成本次限定续改，无新增模型作答、探针或重跑。独立整理者在指定原判与裁定hash固定后公布[匿名id到题／组的对应及逐答UTF-8 hash](../../../experiments/absorption/p79-frozen-001-unblinding.json)；六项各一次，沿用原随机顺序和编号，逐答与既有blind及原始result精确相同。原答、blind、原判和裁定均未修改，本执行端没有评分或改判。
+
+[隔离脱敏证据](../../../experiments/absorption/p79-frozen-001-isolation.json)只提取这六次已有start、adapter audit和stdout：共同参数／路径审计字段加逐次生效结果，保留空cwd、新HOME、无恢复、禁工具和输入hash一致等证据。六次没有显式system／append prompt或resume参数；这些仅说明调用形态，不能证明最终模型上下文无额外内容。
+
+**无法从现存记录补证最终上下文纯净。** 记录没有出站API请求体、最终有效system prompt或加载指令正文，因而无法逐项排除工作区／用户指令、历史记忆、研究者对话及插件／agent指令。init.plugins按已加载插件元数据处理，不降格成磁盘发现；但加载元数据也没有记录指令注入内容。agent名录没有定义或prompt，六次第1项名称均未匹配既有确认集合，只能保留未分类，不能据名字判定来源、激活或上下文注入。缺失记录不能由“未见工具／hook事件”替代。
+
+六次继续为 `not_established`；正式可比0对，正式指标分母0写不可计算。现有原答与已固定盲判仅供描述性记录；本轮未计算或宣称决策收益。恢复条件是接收方若能从已有记录确立有效上下文再复核资格，否则按本次明确要求保留不可确立并接收描述性结果；不为填补记录缺口自行追加实验或更换方法。结果再次交dot-A接收。
+
+续改发布：指定结果分支固定提交 [7857ea6](https://github.com/dbvv1/a1dbv/commit/7857ea6c559d6bb69535a87c6d45653eaeacd9b6)；文档／JSON检查348 files、0 errors，公开文件与提交扫描607 files、0 findings，空白及人工检查通过。原判与裁定hash保持指定值，模型作答新增0次；当前无在途调用。
