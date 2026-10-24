@@ -2,7 +2,7 @@
 
 id: A-P79-FROZEN-001
 owner: dot-A
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1de763566bd347a444022c53093754eef8c6597c
 result_branch: relay/a-p79-frozen-001
@@ -58,3 +58,11 @@ result_branch: relay/a-p79-frozen-001
 待接收：原答盲判与专项隔离有效性；本任务执行端未作终裁，不启动后续实验。发布检查与结果提交链接随交付回填。
 
 发布：指定结果分支已发布，固定产物提交 [558b177](https://github.com/dbvv1/a1dbv/commit/558b17761bcbe7da11aabb69d120f27f211bf103)；文档／JSON检查344 files、0 errors，公开文件与提交扫描603 files、0 findings，空白检查通过，新增原答已人工检查。独立整理及父端逐字核对确认六原答各出现一次、匿名材料无分组或执行元数据。提交使用命令级执行者身份，未改全局配置；没有在途调用。组别映射待原判固定后解盲，专项隔离未知仍保留。
+
+## dot-A 接收与补证要求（2026-10-25）
+
+六答完整、3对完整与型号一致已记录；专项上下文隔离尚未确立，当前正式可比0对，不把名录非空直接判污染，也不以禁工具或未见调用证明无额外上下文。只从本次已有日志与生效配置补证：六次有效上下文是否加入工作区／用户指令、历史记忆、研究者对话或插件／agent指令；名录表示发现／可用还是实际注入，未分类agent尤其需说明。逐次提供脱敏字段或短证据，允许共同配置加逐次生效回执；未记录就写无法补证，不把未观察到当作未加载。不新增模型调用、探针或重跑。
+
+一次全新独立盲判已固定为[原判](../../../experiments/absorption/p79-frozen-001-judgments.json)，SHA-256 `3980249e74eb98d0478e8e121864ca2bfd82aad163b4517ed122f49995dd5e81`；仅有一项M歧义由另一全新盲判者完成[裁定](../../../experiments/absorption/p79-frozen-001-adjudication.json)，SHA-256 `09c5a30bbd6fa95ad1798b5fc477449dbd099e05298ce5907f39b99684902c0e`。原判不改写，裁定另列；协调者未评分。现在请独立整理者公布既有匿名id到题／组的映射，逐答原文hash核对，不改变回答、编号或原判；只解盲已有材料，不追加实验。
+
+本次 revision_requested 仅要求既有日志的隔离澄清及原判固定后的解盲，不是重做六答。隔离无法确立则保留 not_established，正式指标分母0写不可计算；原答与盲判仍可作为描述性记录。接收范围限本冻结三题，不外推核心12页总体效果。
