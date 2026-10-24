@@ -2,7 +2,7 @@
 
 id: B-SR-AUDIO-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: dbvv1/Star-Rush-Reborn
 base_ref: 3e9dab8c5037d3856665947e3df9d56beb98fa06
 result_branch: local/dot-b-rail-audio-001
@@ -30,4 +30,12 @@ result_branch: local/dot-b-rail-audio-001
 
 ## 执行与结果
 
-认领：dot 本地协作；2026-10-24T17:50:46.150987+00:00。独立检出分支 `codex/local-b-sr-audio-001`；产品结果分支按任务头。认领发布后启动已配置 Claude Code＋DeepSeek 的原生 Workflow，保留实际执行与检查结果。当前仅认领，模型实施尚未启动。
+- 状态：`review_ready`，待 dot-B／原负责人接收；未合入产品 master、未部署。
+- 实际执行：已配置 Claude Code＋DeepSeek 的原生 Workflow，实施与独立验证两阶段；父席及两阶段原生响应型号均为 `deepseek-flash`。2026-10-25 01:54:42—02:10:39（UTC+8），单次父进程调用正常结束；原始父席、阶段输出与失败／检查记录留在本机，不提交私人会话或连接资料。
+- 产品结果分支：[`local/dot-b-rail-audio-001`](https://github.com/dbvv1/Star-Rush-Reborn/tree/local/dot-b-rail-audio-001)。提交：[5058ee844a8c4cebe4e62cf823698386a59592fa](https://github.com/dbvv1/Star-Rush-Reborn/commit/5058ee844a8c4cebe4e62cf823698386a59592fa)，直接基于任务固定 `3e9dab8`。
+- 产物：两份原创确定性 PCM WAV，轻擦 0.24 秒／21,212 B，中撞 0.38 秒／33,560 B，合计 54,772 B；可复现的 Python 标准库源、种子／模态参数和清单，以及同源哈希资源打包／Worker 路由。试听与修改入口：[素材说明和 WAV 链接](https://github.com/dbvv1/Star-Rush-Reborn/blob/5058ee844a8c4cebe4e62cf823698386a59592fa/assets/rail-audio/README.md)。不是托管 AI 音频生成服务的产物。
+- 实际接入：沿原 `collisionFeedback → impactSound` 的 rail 分支，impact＜2 轻擦、2–6 等功率交叉淡化、＞6 中撞；未就绪／请求或解码失败保留原程序声，素材正常播放不叠加原护栏声。沿既有 master／音效音量／静音总线；碰撞阈值、冷却、驾驶物理与其他声音路径未改。
+- 已通过：生产构建；确定性再生成 `--check`；定向音频 6/6；`npm test` 中既有 HUD／选卡 12/12、音频 6/6、客户端与 API 集成。独立验证原始输出含 `FOCUSED_EXIT=0`、`NPM_TEST_EXIT=0`，不是仅据外层调用退出判断。源码定向集成使用真实碰撞调用链及替身 AudioContext，另核构建字节、缺失／损坏输入、回退、音量／静音和非 rail 路径；驾驶逻辑源与基线一致。
+- 真实浏览器解码已验：本机隔离 Edge 155.0.4283.62 打开普通预览，两份实际 Worker 同源 WAV 均 HTTP 200／`audio/wav`，真实 `decodeAudioData` 返回非零、有限样本，页面无脚本错误。直接复用已有结果：[浏览器记录](https://github.com/dbvv1/Star-Rush-Reborn/blob/5058ee844a8c4cebe4e62cf823698386a59592fa/assets/rail-audio/browser-decode-check.json)。它证明素材可取得并解码，不代替真实比赛混音。
+- 代码独审：一次独立只读审查，没有提出可执行代码缺陷；受审源码快照与交付一致。公开文件及提交身份扫描覆盖 58 个文本文件，退出 0／无命中；已人工检查源码和素材说明差异。
+- 待接收：人耳试听、金属感与轻／中自然度、重复疲劳、真实碰撞时机／强度分布、发动机／音乐掩蔽和最终响度平衡；本次未取得真实浏览器混音录音，未做生产域名／移动端和不同输出设备验收。保留候选与可运行接入，最终音频品质及任务 `accepted` 由原负责人决定。
