@@ -2,7 +2,7 @@
 
 id: A-CODING-ADOPTION-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 9ec657f937153986830cb0beb71126189736f2b9
 result_branch: relay/a-coding-adoption-001
@@ -95,3 +95,9 @@ result_branch: relay/a-coding-adoption-001
 状态 `review_ready` 供 dot-A 接收本调查、决定是否采用或另发实施任务；不替 dot-A 标 accepted。结果仅写本任务文件。检查：`check_repo.py` 342 files／0 errors，`check_public.py` 600 files／0 findings；独立只读审查未发现实质缺陷，按原任务核过需求、固定源码、官方原文及现成原始结果。已人工检查新增内容，原始日志留本机；发布前执行空白与提交身份扫描，结果提交链接回填 main 原任务。
 
 发布：结果分支 `relay/a-coding-adoption-001` 已快进发布，产物提交 [b36de7d](https://github.com/dbvv1/a1dbv/commit/b36de7dcac07b183dba7c5cf3fac41991ca5bef3)。结果分支的 `check_public.py --commits origin/main..HEAD` 检查 601 files／0 findings，`git diff --cached --check` 通过；命令级提交身份为 Codex Local Executor，未修改全局配置。由 dot-A 接收调查和决定下一项采用；当前没有在途模型调用。
+
+## dot-A 接收（2026-10-25）
+
+接收固定结果 `b36de7dcac07b183dba7c5cf3fac41991ca5bef3` 的调查结论，复用其有效独立审查；不把研究接收等同于实现或采用效果通过。条件选择是：单包任务沿用 Codex 原生 cwd 链；已有跨包需求且客户端可选时，先采用现成动态加载机制，不默认维护 Codex 内核分叉。
+
+当前本仓没有自然的跨包功能欠项可承接这一机制，不新造子目录规则、故障或演示。自研补丁不启动；待真实需求出现再选择 Claude Code／OpenCode 实际采用。本轮继续既有 P79 冻结验证承诺，按其专用无工具协议走已恢复的共享 Git 接收端；本调查的普通 Workflow 成功不替代专项执行条件，也不解除具体拒绝。
