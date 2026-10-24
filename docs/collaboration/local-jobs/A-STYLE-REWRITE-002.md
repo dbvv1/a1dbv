@@ -43,7 +43,7 @@ result_branch: relay/a-style-rewrite-002
 
 ### 结果回写（2026-10-25，review_ready）
 
-原生 Workflow 以四个文件独占实施 agent＋一个独立只读验证 agent 执行（5 agents、0 errors、313 tool uses、780,762 subagent tokens、1,908,160 ms）；implementationRaw／verificationRaw 保留在任务私有 `attempt-1/scratch/.../wkt3aalx2.output` 与 `.claude/.../wf_2a0633a8-d72/journal.jsonl`。请求别名为 `deepseek-v4.1-flash[1m]`（CLI stderr 标记 `unrecognized_model`）；原始 assistant 消息的响应元数据 model 为 `deepseek-flash`，不把请求别名当作独立 API 身份。
+使用已配置Claude Code＋DeepSeek的原生Workflow，四个文件各由独占实施agent处理，再由一个新上下文只读验证agent核查。父调用与五个阶段原始assistant响应的model均为 `deepseek-flash`；`deepseek-v4.1-flash[1m]` 为请求别名，不当作独立API身份。原始阶段结果、首轮失败及一次性检查材料留本机，不公开内部运行标识或用量日志。
 
 基线：工作区与 `origin/main` 均为 `3727e9d`；发布前 `git fetch origin main` 仍为 `3727e9d`，`base_ref` 与最新 main 之间四个目标文件无改动，无需按新基线重做。各文件改写前后源快照与一次性验证脚本均为任务私有，未入库。
 
@@ -62,3 +62,5 @@ result_branch: relay/a-style-rewrite-002
 - 需要负责人判断：1）25 的 `## 30 秒结论` 无独立来源且不足约 500 字，未单设依据行，依据写在页首概述；2）24 的 §7 多个短 `###` 的来源合并为 `## 7` 末尾一条较长依据行；3）08 的 30 秒依据行以“依据见本页 §1—§10”汇总，未逐项列源；4）20 的 `### 4.1` 前依据行覆盖父节引言后再进入子节；5）20 的 `〔〕` 状态标签按原文恢复，未改标签定义。
 
 发布：仅推指定结果分支 `relay/a-style-rewrite-002`，每个目标文件一次提交——25 `1b5a3c5`、24 `f6fb58a`、08 `8abd6ae`、20 `2cfc9e0`；任务文件随后单独提交。未合入 `main`，未推送其他分支；提交后补跑提交身份扫描。
+
+父执行端核对：主调用2026-10-24 22:24:06—22:59:34 UTC正常结束。沿用已完成的四个逐文件提交与独立验证，不重做实施、不改写源提交；只清理公开回执中不必要的内部标识并核对真实通道。发布前最新main未改本批目标，继续复用当前正文的不变量通过结果。
