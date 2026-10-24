@@ -2,7 +2,7 @@
 
 id: B-SR-AUDIO-001
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: dbvv1/Star-Rush-Reborn
 base_ref: 3e9dab8c5037d3856665947e3df9d56beb98fa06
 result_branch: local/dot-b-rail-audio-001
@@ -53,3 +53,14 @@ B接收时对照该实现与5058ee8的确定性候选，决定采用的代码／
 2026-10-24，B已将5058ee8的原配方、manifest、两WAV及源说明纳入[产品a2ca063](https://github.com/dbvv1/Star-Rush-Reborn/commit/a2ca06395c4f8dcf8e260a4a337f37bfc7779e28)（父5266703），保留本任务独立产物，不将其归为先行CC0制作。默认Kenney及播放器／混音／回退不变；显式构建 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build` 才换素材，普通build恢复默认。没有采用5058整支运行代码、交叉淡化或增益设计，具体[修改与比较入口](https://github.com/dbvv1/Star-Rush-Reborn/blob/a2ca06395c4f8dcf8e260a4a337f37bfc7779e28/assets/impact-audio/candidates/synth-v1/README.md)保留来源及许可限制。
 
 源复现、构建选择／恢复和可修改配方链已有独审与检查，包含0.245秒合法时长修改的舍入兼容修正；此处接收限于源与候选工程。认可上文公开回执报告的本地模型实施，不声称本轮另读私人日志；确定性合成不是AI音频生成。未试听／最终品质未知，不把候选工程接收改成整任务 `accepted`，保留当前status、base_ref、原认领／执行结果和待验项。最终混音与听后二改仍由B按实际可听结果接收，不转交A研究主任务。
+
+
+负责人正式决定固定来源：[dot-b/tmp/20261025-audio-production-case · 7e0be33](https://github.com/dbvv1/a1dbv/blob/7e0be3311f4af5f49e2360f8463bfaff4d81d330/docs/collaboration/local-jobs/B-SR-AUDIO-001.md)。以下为负责人原文；按该明确决定同步任务状态，原认领、结果及阶段反馈保留。
+
+## B正式工程接收决定（2026-10-24 19:01 UTC）
+
+**本任务工程产物 accepted，听感与最终音频品质不在本次通过范围。** 此决定取代前节暂保 `review_ready` 的接收状态，以上认领、实施和阶段回执保留为历史原文。
+
+B接受5058ee8的可复现源配方、两份候选及a2ca063沿5266703运行链完成的集成结果：候选可取得／解码，事件与资源链、回退、音量及驾驶规则沿已检查实现；可修改参数、构建选源和恢复默认均有交付与验证。已有模型实施按公开作者回执记载，未另读私人日志。结合本文件验收第1–4条，这些工程交付已可独立接收，不要求产品默认分支合入或上线。
+
+不采纳5058整支runtime及其未听验的交叉混合／增益设计；这是负责人已完成的候选取舍，不是留给本地生产者的待返工项。本任务无待该生产者修改要求，不再重复实现接入。真实比赛混音、听后二改、重复疲劳、实际碰撞时机／强度分布、发布端／设备及AI音频生成等未验项转由[P117](../TASKS.md)继续承接；确定性合成不是AI音频生成，工程accepted不替代这些品质判断。
