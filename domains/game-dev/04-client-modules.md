@@ -457,17 +457,101 @@ flowchart LR
 
 ### 保存、续玩与升级旧档
 
-#### 存档复用：借序列化与存储能力，自己决定哪些进度能恢复
+**✅ 先让玩家放心离开，再让下一次进入接上原来的决定。** 小型单人游戏默认在房间结算后／回合提交后保存一致状态，复用引擎序列化与存储，只补本作的恢复规则。这里的“续玩”不是撤销失败：永久死亡也能有中途退出；是否允许返回更早检查点另定。边界太远迫使玩家久等，就缩小安全段或增加明确检查点，不先承诺任意一帧原样恢复。
 
-**[研究] ✅ 续玩与撤销失败分开；长局借房间／回合一致边界保存，边界太远就调整。** 永久死亡也可续玩。DTO／JsonUtility、Newtonsoft、UE SaveGame、Easy Save 的选取见前表；Easy Save CreateBackup 覆盖旧备份，Mindustry 列表仅查 metadata，恢复须完整读取＋内容校验，失败不回写默认新局。[一手]
+以下以“清完房间、领取奖励、进入安全出口；重开回到该出口”为首版设计例，只保存角色、房间访问／完成、奖励与检查点。二版再加入持久门与容器，使已开门、已取物也能保持；下面状态表与数据结构展示含二版的最终职责。保存点选在弹体与奖励结算结束之后；已有不同产品承诺应保留，不为套例改变死亡／重试规则。
 
-卡顿分捕获／序列化／写入；Unity 后台 JsonUtility DTO 不得并发访问／修改，UE 异步保存仍在 game thread 序列化。保存退出等本次目标状态结果，失败保恢复选择；改关卡连地址／附属进度迁移。[一手；[存档比较及断电待测边界](../../docs/research/wp10-content.md#30)]
+<a id="存档复用借序列化与存储能力自己决定哪些进度能恢复"></a>
+
+#### 先写清保存什么，再选序列化工具
+
+| 状态 | 本例如何处理；读者能继续做什么 |
+|---|---|
+| 角色与本局进度 | 保存必要属性、库存实例、已提交奖励与检查点；恢复后继续同一局，而非只回同一张地图 |
+| 房间与持久对象 | 保存稳定房间／摆放对象 ID、门状态、容器剩余内容及已取走标记；已清遭遇不再产敌或发奖 |
+| 动态持久对象 | 保存独立实例 ID、定义 ID、必要位置和状态；恢复时创建，再解析对象间引用 |
+| 当前动画、弹体、短时特效 | 本例只在没有未完成玩法结算的边界保存，恢复为约定的待机状态；不能把丢弃瞬态说成任意时刻恢复 |
+| 局外进度、设置与叙事 | 各自所有者提供数据；涉及同一奖励的状态必须属于同一一致代次。设置不随读档回滚，叙事状态不能替代世界／库存 |
+
+稳定 ID 来自内容作者与实例创建规则，不用数组下标、物体显示名或当前运行对象引用。关卡内手放门／箱在作者源中保存唯一 ID，复制时生成新 ID，构建前查重；运行时新增持久对象在第一次创建时分配并随档保留。这个映射通常只需现有场景注册表与少量函数，不需要通用对象数据库。
+
+**默认保简单 DTO。** Unity 小档用 `JsonUtility`，确需字典／JSON 树再沿已安装的 Newtonsoft 包；UE 用自定义 `SaveGame` 与平台槽接口。已用 Easy Save 且满足需求就复用，不为几个 DTO 新购工具。原生保存负责数据转换与写入，项目负责将数据应用回门、敌人和玩家；Epic 的 SaveGame 流程也如此。复杂对象图增加类型、引用与迁移负担，简单检查点先保窄 DTO。
+
+依据：[原生／商业工具与许可比较](../../docs/research/wp10-content.md#30)核实于2026-10-14；[Epic SaveGame 流程](https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine)于2026-10-25补核。
+
+#### 正常保存：捕获的是一次决定之后的世界
+
+```text
+SaveEnvelope
+  schemaVersion, contentVersion, runId, revision
+  roomId, checkpointId, visitedRoomIds
+  playerState, inventoryRecords, completedEncounterIds, claimedRewardIds
+  worldRecords[]       // instanceId, definitionId, state, referenceIds
+  removedWorldIds[]    // 明确已取走／删除的持久对象
+  storyCheckpoint     // 仅有叙事时；和世界同代
+```
+
+字段是本例实施起点，不是要求每款游戏都保存这些集合。`revision` 标识同一局中已捕获状态的新旧，不能单独证明持久化或跨文件原子性。定义参数通常保在内容中，档里存必要活状态；玩法确需历史值时才存其值，不保存一份完整资源副本。
+
+正常保存沿一条串行路径：
+
+1. **确认一致边界。** 奖励、库存、遭遇完成已提交，当前没有尚待执行的关联命令；否则先完成／取消到约定边界，并给玩家明确反馈。简单小档可短暂冻结本局写入后复制，捕获结束即恢复操作。
+2. **捕获独立数据。** 各所有者把同一代状态写入 DTO。深拷贝可变集合，不把仍由玩法修改的 List／对象引用交给后台。Unity JSON 可在后台处理独立 DTO；UE 异步保存的序列化仍在 game thread，不能由“Async”推断整个过程离开主线程。若捕获本身卡顿，先减少保存范围／调整边界，别把不一致的跨帧采集当优化。
+3. **序列化并提交。** 复用平台／现有存储适配器，按其已验证能力管理暂存、有效副本与备份；一个槽的写入串行，避免较旧请求最后覆盖较新快照。写入失败不得以失败或未验证产物覆盖上一有效档；只有目标快照按适配器约定提交成功，才切换有效版本。其断电保障仍以目标平台实测为准。没有测到重复写成本时不增加复杂合并队列。
+4. **向玩家交回结果。** “保存中”与“已保存至哪个房间／回合”分开；保存退出必须等待覆盖本次目标状态的结果，不能拿先前自动保存成功代报。失败同时保留上一份有效档与当前可玩状态，提供重试或明确放弃退出的选择，不静默回到主菜单；不能先删唯一有效档再尝试写新档。
+
+关联状态优先放在一份快照；已有分文件设计沿其代次／提交协议，各文件独立成功不等于同代提交。检查点应在游玩过程中保存，因为挂起／强杀不保证调用 `OnApplicationQuit`；`.bak`、文件替换和 try/catch 的断电耐久仍须按目标平台验证。
+
+依据：[续玩边界](../../docs/research/wp10-content.md#35)，2026-10-15；[保存响应与线程／退出契约](../../docs/research/wp10-content.md#36)，2026-10-16。
+
+#### 重新进入：先恢复对象关系，再把世界交给玩家
+
+读档不是把 JSON 填回当前正在运行的世界。主菜单的槽位信息只帮助选择；metadata 可读不代表完整实体、内容版本与进度有效。默认在常驻加载壳内完成以下步骤，失败停在壳里提供其他副本／重试，不回写默认新局覆盖原档：
+
+```text
+Resume(slot):                         // 项目伪代码，非已运行实现
+  candidate = ReadValidateAndMigrateCopy(slot)
+  room = PrepareRoom(candidate.roomId, gameplayEnabled=false)
+  index = RegisterAuthoredObjects(room)          // 稳定 instanceId；重复 ID 报错
+  ReconcilePersistentObjects(index, candidate)   // 持久删除、已有对象、动态新增
+  ApplyValuesWithoutGameplayEvents(index, candidate)
+  ResolveReferencesById(index, candidate)        // 所有需引用的对象已存在
+  ValidateRequiredRelationsAndCheckpoint(index, candidate)
+  BindPresentationFromState(index)              // 门外观、箱子内容、HUD，不重新领奖
+  CommitCurrentRunAndCamera(candidate, room)
+  EnableGameplayAndInput(room)
+```
+
+这些步骤借现有 Session／场景协调者，不要求每步一个系统。`gameplayEnabled=false` 必须是真实工程约束：初始脚本只注册和建立依赖，刷怪、自动交互、发奖励由显式开始入口控制。**实例化之后再禁用可能已经太晚。** Unity 6.3 `Instantiate` 保留原对象激活状态，活跃实例可在调用中执行 Awake／OnEnable。可以使用原本未激活的制作源，或确保启动回调尊重恢复门；不能在恢复后一次激活又被 Awake 的“默认初始化”覆盖。UE 同样沿项目的生成／初始化入口补恢复阶段，不能假设读回 SaveGame 就已经恢复 Actor 世界。
+
+**“档里没有”必须有明确含义。** 对既有房间摆放内容，本例以作者默认值为基线，记录改动和明确的删除标记：已取物／删除对象先抑制生成；未改变的对象才保作者默认。动态生成的持久对象则以保存记录为准，没记录不凭上次生成逻辑再补一份。已清遭遇另由完成状态抑制刷怪／结算，不能只靠“场上没有敌人”推断。新增内容在旧档里自然没有记录，须由迁移决定是否出现在已访问房间，不和“已经被玩家拿走”混为一谈。
+
+**先注册身份，再解析依赖。** Mindustry 固定版先读内容映射与地图，再创建、读取并注册实体，之后调用 `afterReadAll`；CommandAI 在此阶段按单位 ID 找回攻击目标。这支持延后解析依赖，但该游戏读取会重置并修改实际世界，并非隔离事务。借它的职责顺序即可，不移植 GPL 的 Java 对象图。
+
+依据：2026-10-25补核 [Unity 6.3 Instantiate 激活契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Object.Instantiate.html)，以及 Mindustry 固定 `17012d6` 的[读取顺序](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L64-L75)、[实体注册与后处理](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L495-L553)、[目标引用恢复](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/ai/types/CommandAI.java#L519-L524)。
+
+恢复后，玩家应看到检查点位置、库存、开门状态和当前目标相互一致，并能立即继续行动。房间物理布局或出生点已变时，不能用同一个旧坐标硬塞进去；沿明确的检查点迁移／安全恢复点处理，恢复位置与已完成进度分别说明。场景准备、资源引用及失败卸载复用[资源生命周期](#切换关卡与释放资源)，不要再写第二套加载器。
+
+#### 第二次修改：增加持久门和容器，不重做保存系统
+
+首版先交“完成房间→领奖→保存退出→重开到出口”的完整路线。二改让玩家打开一扇门、从一个容器取走物品后再退出：
+
+- **内容作者**给门／箱稳定摆放 ID，定义默认关闭、初始内容和恢复后的外观；同定义多箱必须是不同实例。箱内剩余库存与玩家库存写入同一快照，转移后不各存各的中间状态。
+- **实现者**在原记录中加入门状态、容器剩余内容／已领取状态；载入用“赋最终状态”而不是调用会扣钥匙、播放奖励或发成就的 `Interact/Open` 命令。开门动画可省，门碰撞和外观不能不一致。
+- **版本处理**增加 schema／content 迁移：本例首版已保存 `visitedRoomIds`，二版新增门／箱按房间访问事实迁移：未访问房间用作者默认；已访问房间的新门设为已开放、新箱记为不补发，避免重新阻断旧路线或生成未承诺奖励。首版没有持久门／箱，不声称能恢复其历史开合／剩余物。若接手的更旧档连访问事实都没有，须明确保守迁移／章节恢复政策，不能从当前房间或空字段猜全程访问；已有门箱记录则按其实际记录迁移，不覆盖为此默认。其他游戏可有意补发，但应单独说明，不靠缺字段默认值偷偷决定奖励政策。
+- **AI 任务**沿保存捕获、内容注册、恢复赋值和引用解析四处补差量；交同一存档重开两次的预期轨迹，并保首版路线。人检查是否清楚保存了哪里、回来有没有重走无意义流程、箱内外物品与目标是否能解释。
+
+最低接收需走保存前后两条正常轨迹：门开／关、箱取走／剩余、已清／未进房间都能续；再验同定义多个实例、引用目标已删除、仅备份可用和写入失败。必要引用缺失应停止该候选并解释；可选目标允许清空时按规则恢复为无目标，不凭列表顺序绑定另一对象。接收时另测真实构建重启、目标存储平台、长局成本及断电恢复。
 
 #### 旧档升级：版本可读之外还要进度正确
 
-**[研究] ✅ 稳定内容 ID、schemaVersion／contentVersion 与逐版本迁移，先截一致快照，失败保唯一原档。** 两次内容修改后核剧情、选项、库存、奖励。几何／连接改变时比迁移与受限旧实现，旧世界运行不代表旧模板还能生产／混建；布局保不住或双版本负担太大就缩更新／支持边界，不静默损坏进度。[Factorio 取舍](../../docs/research/2026-10-14-game-wp10-client-modules.md#旧内容升级补研保旧世界不等于放行旧模板生产)。
+保留 `schemaVersion`／`contentVersion` 与逐版本迁移，迁移在副本进行，失败保唯一原档。Mindustry 的槽列表主要读 metadata；Thrive 固定版普通档有版本化读取，但遗留 JSON upgrader 入口并不适用于新 archive，不能只凭类名复用。Easy Save `CreateBackup` 会覆盖已有备份，迁移前副本与普通轮换分开。核完整读取、剧情、库存、已领状态及恢复后再次保存，不只验解析成功。[存档来源与边界](../../docs/research/wp10-content.md#30)（2026-10-14）
 
-ink 可能抛错或近似恢复并 warning，须捕获后决定迁移／回退章节；它只管叙事，非世界／库存存档。[一手；[ink 源码反证](../../docs/research/2026-10-14-game-wp10-client-modules.md#3-ink存档格式兼容不等于剧情修改兼容)]
+关卡改名、地址／位置互换要连附属进度迁移；几何连接改变时比较迁移与受限旧实现。保旧世界运行、允许旧模板继续生成、允许新旧混建是不同承诺，不能靠同一 ID 保证；维护负担过高就收窄更新／支持边界，不静默损坏进度。[旧布局取舍](../../docs/research/2026-10-14-game-wp10-client-modules.md#旧内容升级补研保旧世界不等于放行旧模板生产)（2026-10-19）
+
+ink 只保存叙事执行状态，不负责世界／库存；内容改动后可能失败或近似恢复并给 warning，必须捕获后决定迁移／回退章节，不能将故事 JSON 成功当整局恢复。[固定源码反证](../../docs/research/2026-10-14-game-wp10-client-modules.md#3-ink存档格式兼容不等于剧情修改兼容)（既有2026-10-14核查）
+
+**验证范围：**以上为公开文档、既有固定源码和项目设计推导，2026-10-25补核正常载入链；未运行模型、Unity／UE、游戏或存储故障实验，不宣称可玩恢复、断电耐久与效率收益已通过。
 
 ### 接入手柄、暂停与多人菜单
 
@@ -877,9 +961,254 @@ Tytarenko 2026-09 Unity 制作复盘报告二改旧图残留、胜线覆盖不�
 
 **[研究] AI 译文是候选，追加内容重新验。** 小项目文本表，反复多语言增量再比 TMS；只改说话人／玩法条件也需回审。未验新文可延期、明确回退或缩语言，不继承旧验收；[供给取舍](../../docs/research/wp10-content.md#译文供给追加文本不继承旧验收)。
 
+**[研究] ✅ 首版用一个作者源串起菜单、数量提示和两位说话人的短对白；导出的运行表是产物，不是唯一作者源。** 菜单键与对白 lineID 各用各的稳定身份：菜单用可读 key，对白用脚本里的 `#line:` 标签；标签后缀只是脚本写法，运行 ID 是带 `line:` 前缀的完整 key（`#line:hangar_02_010` → `line:hangar_02_010`），文本表、资产表和 sidecar 都用完整 ID，Provider 直接用 `line.ID` 不补前缀；只在运行层按当前 locale 汇合。
+
+| 层 | 所有者 | 最小做法 | 不能做什么 |
+|---|---|---|---|
+| 作者源 | 内容作者 | `content/ui.yaml` 或 CSV：key、原文、类型化参数 schema、语境、布局上限；`content/dialogue/*.yarn`：说话人、`#line:`、可选语音引用 | 不把导出的运行表当唯一源；不在译文里写参数类型 |
+| 翻译输入 | 译者／审校 | 按 key／lineID 的待译表：原文、语境、说话人、参数说明、长度；译文与状态分列 | 不改 key／lineID 来“修”译文；不拿原文占位 |
+| 运行表 | 导入脚本 | Unity String Table Collection（每 locale 一张）、UE String Table、Yarn 文本／资产表 | 运行表不反向成为作者源；二进制表不手工合并 |
+| 运行绑定 | 项目代码 | `LocalizedString`／`FText::FromStringTable`／Yarn LineProvider；参数在调用时填 | 不从译文反推参数；不把格式化结果当事实存档 |
+| 保存 | 存档／日志 | 消息 ID＋类型化参数＋当时值；当前语言显示另行重译 | 不只存渲染后的字符串 |
+
+实施顺序：先写作者源与待译表，再导出到原生表并接运行绑定，最后接显示、推进、切语言和二改队列；不要先做自建平台。
+
+#### 首版：少量菜单、数量提示和两位说话人
+
+**[研究] ✅ 先做 2 个菜单键、2 个数量提示状态、2 位说话人的 6 句对白，其中 3 句有配音、3 句只有字幕。** 这是完整链路的最小切片，不把“表能导入”当验收。
+
+作者源只写一遍，翻译输入按身份对齐。首版语言对用 `zh-Hans` 原文和 `en` 译文；加第三种语言只加 locale 列和对应资产，不改 key／lineID。
+
+```yaml
+# content/ui.yaml — 作者源；导出的 String Table 是产物
+- key: ui.menu.inventory
+  source: 背包
+  params: {}
+  context: 主菜单；按钮宽 320，最多一行
+- key: ui.menu.settings
+  source: 设置
+  params: {}
+  context: 主菜单；与暂停菜单同名
+- key: ui.hud.arrows_needed
+  source: "还需要 {need} 支箭（已有 {have}/{target}）"
+  params: { need: int, have: int, target: int }
+  context: "HUD；目标随难度；need = max(0, target - have)；need=0 改用 ui.hud.arrows_ready"
+- key: ui.hud.arrows_ready
+  source: "箭够了（{have}/{target}）"
+  params: { have: int, target: int }
+  context: HUD；need=0
+```
+
+```yarn
+title: hangar_02
+---
+Navigator: 舱门卡住了。 #line:hangar_02_010
+Mechanic: 让我看看。 #line:hangar_02_020
+Navigator: 别碰那根线。 #line:hangar_02_030
+Mechanic: 已经太晚了。 #line:hangar_02_040
+Navigator: 先切断电源。 #line:hangar_02_050
+Mechanic: 你来切。 #line:hangar_02_060
+===
+```
+
+脚本 `#line:hangar_02_010` 编译后的运行 ID 是 `line:hangar_02_010`；`hangar_02_010` 只是标签后缀，不是任何表的 API key。文本表、资产表、sidecar 都用完整 `line:` ID；Provider 把 `line.ID` 直接当 entry key，不会补前缀；clip 文件仍可命名 `vo/hangar_02_010_en`，路径不是表 key。`line:hangar_02_010`、`_020`、`_050` 配 `en` 语音；`line:hangar_02_030`、`_040`、`_060` 首版无语音。对白文本与语音分别按完整 ID 查表，不靠音频文件名猜。
+
+作者源里的 `Navigator:`／`Mechanic:` 只到 Yarn 行；它不会自动进翻译表，也不会自动成为运行显示名。默认 `LinePresenter` 的 `line.CharacterName` 来自本地化文本里的 `character` 标记（如 `[character name="Navigator"]` 或 `Navigator:` 前缀）；译文表只写句子时它为空，姓名／头像会丢。本例选 sidecar：导出时把 speaker 写成 sidecar 行，项目 `SpeakerPresenter` 按完整 `line.TextID` 查 `speaker`，再绑定本地化显示名、头像和颜色；不靠作者表有 speaker 就假定 Runner 消费到了。
+
+| 表示 | 例子 | 谁消费 |
+|---|---|---|
+| 脚本标签后缀 | `#line:hangar_02_010` 的后缀 `hangar_02_010` | 只用于作者源／导出识别 |
+| 运行 lineID＝文本／资产表 key＝sidecar key | `line:hangar_02_010` | Provider 的 `line.ID`、String／Asset Table、sidecar |
+| 稳定 speaker ID | `navigator`／`mechanic` | sidecar → `SpeakerPresenter` 绑本地化名／头像／颜色 |
+| 本地化显示名 | UI 表 `character.navigator.name`：`领航员`／`Navigator` | `SpeakerPresenter` 按当前 locale 取 |
+| clip 路径 | `vo/hangar_02_010_en` | Asset Table 的资产引用；不是 API key |
+
+```yaml
+# content/dialogue/sidecar.yaml — 项目建议；按完整运行 lineID 索引
+- lineID: line:hangar_02_010
+  speaker: navigator
+  context: 舱门故障；Navigator 先开口
+  voice_take: vo/hangar_02_010_en
+- lineID: line:hangar_02_020
+  speaker: mechanic
+  context: Mechanic 上前检查舱门
+  voice_take: vo/hangar_02_020_en
+- lineID: line:hangar_02_030
+  speaker: navigator
+  context: 阻止 Mechanic 碰线
+  voice_take: null
+- lineID: line:hangar_02_040
+  speaker: mechanic
+  context: 已碰到电线后的回应
+  voice_take: null
+- lineID: line:hangar_02_050
+  speaker: navigator
+  context: 要求先切断电源
+  voice_take: vo/hangar_02_050_en
+- lineID: line:hangar_02_060
+  speaker: mechanic
+  context: 请对方执行断电
+  voice_take: null
+```
+
+```csharp
+// 项目组件；sidecar 导出为六个 LineSpeaker，Inspector 配两个 SpeakerBinding。
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.UI;
+using Yarn.Unity;
+
+public class SpeakerPresenter : DialoguePresenterBase
+{
+    [Serializable] public struct LineSpeaker { public string lineID, speaker; }
+    [Serializable] public struct SpeakerBinding {
+        public string speaker;
+        public Sprite avatar;
+        public Color color;
+    }
+    [SerializeField] LineSpeaker[] lines;
+    [SerializeField] SpeakerBinding[] speakers;
+    [SerializeField] TMP_Text nameLabel;
+    [SerializeField] Image portrait;
+    Dictionary<string, string> speakerByLine;
+    Dictionary<string, SpeakerBinding> bindingBySpeaker;
+
+    void Awake()
+    {
+        speakerByLine = lines.ToDictionary(x => x.lineID, x => x.speaker);
+        bindingBySpeaker = speakers.ToDictionary(x => x.speaker);
+        HideSpeaker();
+    }
+    void HideSpeaker()
+    {
+        nameLabel.text = "";
+        nameLabel.gameObject.SetActive(false);
+        portrait.sprite = null;
+        portrait.gameObject.SetActive(false);
+    }
+    public override YarnTask OnDialogueStartedAsync()
+    {
+        HideSpeaker();
+        return YarnTask.CompletedTask;
+    }
+    public override YarnTask RunLineAsync(LocalizedLine line, LineCancellationToken token)
+    {
+        var speaker = speakerByLine[line.TextID]; // 完整运行 ID，如 line:hangar_02_010
+        var binding = bindingBySpeaker[speaker];
+        nameLabel.text = new LocalizedString("UI", "character." + speaker + ".name").GetLocalizedString();
+        portrait.sprite = binding.avatar;
+        portrait.color = binding.color;
+        nameLabel.gameObject.SetActive(true);
+        portrait.gameObject.SetActive(true);
+        return YarnTask.CompletedTask;
+    }
+    public override YarnTask OnDialogueCompleteAsync()
+    {
+        HideSpeaker();
+        return YarnTask.CompletedTask;
+    }
+}
+```
+
+启动对白前导出上述六行映射，给 `speakers` 填 `navigator`／`mechanic` 的头像和颜色，在 UI 表补齐 `character.navigator.name` 与 `character.mechanic.name` 的两语言显示名，并接上姓名／头像控件；`Awake` 先建索引再进入 Runner。此组件展示项目接线，不是本轮已编译的游戏样例；新增行也须进入映射。选择同步取名的首版先预载 UI 表，WebGL 改用上表的异步读取路径。
+
+LinePresenter 配 `characterNameText = null`、`showCharacterNameInLine = false`，只用 `TextWithoutCharacterName` 显示字幕，避免与 sidecar 名重复；`line.CharacterName` 不是稳定 speaker ID。
+
+语音引用（可选，按完整 lineID＋locale）：
+
+| 运行 lineID（表 key） | `en` 语音资产 |
+|---|---|
+| `line:hangar_02_010` | `vo/hangar_02_010_en` |
+| `line:hangar_02_020` | `vo/hangar_02_020_en` |
+| `line:hangar_02_050` | `vo/hangar_02_050_en` |
+| `line:hangar_02_030`／`line:hangar_02_040`／`line:hangar_02_060` | 无；只走字幕 |
+
+翻译输入示例（`en`，节选）：
+
+| 身份（完整运行 ID／菜单 key） | 原文 | 译文 | 状态 |
+|---|---|---|---|
+| `ui.menu.inventory` | 背包 | Inventory | approved |
+| `ui.hud.arrows_needed` | 还需要 {need} 支箭（已有 {have}/{target}） | Need {need:plural:{} more arrow\|{} more arrows} ({have}/{target}) | approved |
+| `ui.hud.arrows_ready` | 箭够了（{have}/{target}） | Arrows ready ({have}/{target}) | approved |
+| `line:hangar_02_010` | 舱门卡住了。 | The hatch is stuck. | approved |
+| `line:hangar_02_030` | 别碰那根线。 | Don't touch that cable. | approved |
+
+译文 `text` 只写句子；base 语言列由 Yarn 管理，可能带 `Navigator:` 前缀，LinePresenter 用 `TextWithoutCharacterName` 去掉；speaker 由 sidecar 提供，不要求译者复制说话人名，也不把 `line.CharacterName` 当 speaker ID。待译表每行至少 `id`、`locale`、`text`、`status`、`source_hash`、`context_hash`、`voice_take`；运行表不需要后三列，审校视图需要。作者源、待译表和运行表都保留 `{need}` 等命名占位符；Unity 侧把同名字典（或带同名字段的对象）作为 `Arguments` 的元素，由 Smart Format 的 Dictionary／Reflection source 解析；若改用位置参数，导出时映射为 `{0}`／`{1}`／`{2}`，表与绑定必须一致。表中的 `approved` 是流程状态示例，不是本轮语言审校结论；本轮未做译义审校。
+
+`need` 是整数，英文用 `plural` 选 `arrow/arrows`；中文源没有复数，译文却能按目标语言规则变化。`need=0` 时由代码选 `ui.hud.arrows_ready`，不把“是否已完成”塞进译文的 `choose`；玩法条件留在代码，语法变化留在表里。数值按 locale 格式化，数字和量词保持邻近，不用字符串拼接把数值塞进译文。`need`、`have`、`target` 在同一句里按“还差／已有／目标”的顺序出现，玩家不必从两段文字自己算；数值格式随 locale，量词由译文决定。Unity 侧把 `ui.hud.arrows_needed` 标为 Smart String 并用命名参数；UE 侧同一句用 `FText::Format` 的 `{need}|plural(one=more arrow,other=more arrows)`，参数仍是整数；UE 括号内用逗号分隔，Unity Smart String 的复数形态用 `|` 分隔，两种语法不能互套。
+
+按这个设计，玩家应看到一条正常链：菜单按当前语言显示；HUD 显示“还需要 2 支箭（已有 1/3）”；对白显示说话人和字幕，有语音就播，没有就按字幕阅读；第一次按键补全文字，第二次推进；设置里切语言后，菜单和数量提示立即更新，对白按下一节策略处理。不要求双语并排。
+
+项目已用 ink 或 Yarn 就保留现有栈；下面的 Yarn 接线只示范 lineID 与语音表如何被真实消费者找到，不要求迁后端。语音制作、响度与许可沿用 [assets/audio](assets/audio.md)／WP6；对白触发的玩法事实与命令沿 [05](05-gameplay-architecture.md)，本节不改这些模块。AI 可整理语境、产候选译文、查参数与占位符一致性并写最小绑定；人审意思、口吻、文化语境与读听，格式检查不代译义验收。
+
+#### 原生表与绑定：条目身份和真实消费者
+
+**[研究] ✅ Unity 项目用 String Table Collection＋LocalizedString；UE 用 String Table＋FText；Yarn 用 lineID 同时查文本表和可选语音表。** 三者都按稳定身份查当前 locale，不把显示文本当身份。
+
+| 消费者 | 锁定版本与条目身份 | 导入／绑定 | 会改变做法的限制 |
+|---|---|---|---|
+| Unity 菜单／HUD | Unity 6000.3.15f1＋Localization 1.5.13；String Table Collection 的 Shared Table Data 存 key 名与 Id，每 locale 一张表 | CSV 含 `Key`、`Id` 和各 locale 列；`CSV(Merge)` 只更新 CSV 中出现的项；新 key 的 Id 留空或 0；改 key 名要带 Id；运行时 `LocalizedString(table, entry)`，`GetLocalizedString()`／`GetLocalizedStringAsync()`，`StringChanged` 刷新 | 表可能异步加载；`GetLocalizedString()` 会等待，其 `WaitForCompletion` 在 WebGL 不受支持；Smart String 字面量进字符集、占位符不进；`Arguments` 不序列化 |
+| UE 菜单／HUD | UE 5.8；String Table 条目＝表 ID＋key；CSV 必须 `Key`、`SourceString`，其余列作 metadata | `FText::FromStringTable(tableId, key)` 或 `LOCTABLE`；`FText::Format` 填参数，`\|plural(one=...,other=...)`、`\|ordinal(...)`、`\|gender(...)`（括号内逗号分隔）；`FTextFormat` 随 culture 重编译 | CSV 不自动打包，需加入 Additional Non-Asset Directories to Package；String Table 资产是二进制，冲突不能合并，按表拆小；`FText`→`FString` 丢 history；多语言译文走 UE localization 流程，不套 Unity 的 locale 列 |
+| Yarn 对白 | Yarn Spinner Unity v3.2.8（`bfc5b6a2…`，MIT）；脚本写 `#line:hangar_02_010`，运行 ID／表 key 是 `line:hangar_02_010`；全项目唯一 | `UnityLocalisedLineProvider` 直接用 `line.ID` 作为 String Table 的 entry key，另用同一 ID 查 Asset Table；文本表和语音表分开配置；`BuiltinLocalisedLineProvider` 也按 lineID 查文本／资产 | 重复 lineID 报错；缺文本返回错误行；缺资产可能为 `null`，也可能被 `UseFallback` 取到别语言资产；lineID 存脚本正文，删行或改标签会换身份；语音是“某语言的该行资产”，不是全局文件名约定 |
+
+Yarn 的 `UnityLocalisedLineProvider` 本身就是 Unity Localization 的真实消费者：它按配置的 `LocalizedStringTable`／`LocalizedAssetTable` 查 lineID；菜单的 `LocalizedString` 与它不必共用集合。[一手：固定源码]
+
+**菜单 key 与对白 lineID 不强制合一。** 菜单 key 由界面作者维护，跨屏幕复用；lineID 由叙事源生成、逐行存在。合表只在确实共享术语和审校时做；否则分成 `UI` 与 `Dialogue` 两个集合，差异更容易审。审校视图可以合在一张待译表，运行表仍按 UI／Dialogue 分开；两者可以指向同一术语表，但不互相改身份。维护成本主要在 key／lineID 改名、二进制表冲突和逐语言审校，不在“能不能导入”；Unity 包与 UE 引擎按各自项目许可，Yarn 固定提交为 MIT，字体与配音许可另核。[研究]
+
+**四个所有者不要越界。** 作者源定义原文、参数类型、语境和语音引用；导出表只装身份与各语言文本；运行绑定在调用时接收类型化参数；存档保存消息 ID、参数和当时值。译文只提供目标语言措辞，不能反推参数类型、默认值或玩法事实。承诺可重译的历史消息按保存的 ID＋参数用当前语言重译，当时数值不变；玩家原文不套此政策。这条沿用 [#37 的旧报告契约](../../docs/research/wp10-content.md#37)。[研究]
+
+菜单／HUD 的最小绑定（伪代码，API 名按上文真实接口）：
+
+```csharp
+// Unity：菜单／HUD；need/have/target 来自游戏状态，不从译文解析
+var s = new LocalizedString("UI", "ui.hud.arrows_needed");
+s.Arguments = new object[] {
+    new Dictionary<string, object> { ["need"] = need, ["have"] = have, ["target"] = target }
+};
+label.text = s.GetLocalizedString();
+```
+
+**首版 Yarn 正常接线（组件配置，不是直接调 Provider 冒充 Runner）。** [研究]
+
+| 位置 | 配置 | 真实字段／入口 |
+|---|---|---|
+| YarnProject | Base Language `zh-Hans`；启用 Use Unity Localisation System；String Table Collection 指定 `Dialogue`，Apply 导入行 | 官方导入步骤；base 语言列由 Yarn 管理，不手改 |
+| DialogueRunner | Yarn Project 指 `HangarProject`；Line Provider 槽放 `UnityLocalisedLineProvider`（只 AddComponent 不填槽，运行时会退到 Builtin） | 源码 `yarnProject`／`lineProvider` 是序列化字段，公开 getter；`SetProject` 可设项目 |
+| UnityLocalisedLineProvider | Strings Table `Dialogue`；Asset Table `DialogueAssets`；文本和资产都按完整 `line.ID` 查 | 源码字段 `stringsTable`／`assetTable` |
+| Presenters | `LinePresenter`、项目 `SpeakerPresenter`、`VoiceOverPresenter` 放进 runner 的 Dialogue Presenters；`LineAdvancer` 作为同场景组件配 `runner`／`presenter`，它在 `Start()` 里把自己加进列表 | `DialoguePresenters` 可读写；`LineAdvancer.Start()` 会追加自身，不要手工重复加 |
+| 入口 | `runner.StartDialogue("hangar_02")`；或 `autoStart=true`＋`startNode=hangar_02` | 公开方法／字段；Runner 取行后设 `LocalizedLine.Source=this` 再派发，不能绕过 |
+
+首版手动推进：把 `LineAdvancer` 的 Input Mode 设为 `KeyCodes`，确认自动添加的 `Yarn.Unity.LineAdvancerInput.KeyCodes` 组件关联同一个 LineAdvancer，并把 `hurryUpLineKeyCode=Space`、`nextLineKeyCode=None`、`hurryUpOptionsKeyCode=None`、`cancelDialogueKeyCode=None`（本例无选项，避免同键发两类事件）；再设 `LinePresenter.autoAdvance=false`，文字显示完等待 `NextContentToken`；`VoiceOverPresenter.endLineWhenVoiceoverComplete=false`，语音完不自动结束；`LineAdvancer` 的 `runner` 指同一个 Runner、`presenter` 指 LinePresenter、`separateHurryUpAndAdvanceControls=false`（默认），它在 `Start()` 里把自己加进 Dialogue Presenters，不要再手工重复加。它第一次按键在文字未完成时调 `runner.RequestHurryUpLine()` 补全文字，`OnLineDisplayComplete` 后第二次按键调 `runner.RequestNextLine()` 推进。`LinePresenter.autoAdvanceDelay` 是“文字全部显示完后”的固定等待，不是打字速度（打字速度是 `lettersPerSecond`／`wordsPerSecond`），也不是按字数算的阅读时间；若保留自动推进，要在项目层按行在显示完成后启动阅读计时，到点调 `runner.RequestNextLine()`，不能拿固定 `autoAdvanceDelay` 当阅读下限。[一手：固定源码]
+
+```csharp
+// 项目入口；Runner 内部会取行、设 Source 并派发所有 Presenter，不要自己调 GetLocalizedLineAsync
+await runner.StartDialogue("hangar_02");
+```
+
+**缺语音与 locale／fallback。** 首版保留上述原生 `UnityLocalisedLineProvider`＋`VoiceOverPresenter`，不另接自定义 Provider。它的文本和资产查询都固定传 `FallbackBehavior.UseFallback`，因此在 Locale 配置中清空 `zh-Hans`、`en` 两边的 Fallback Locale 列表；启动时用各 Locale 的 `GetFallbacks()` 确认都没有其他语言。补齐两语言的 UI／Dialogue 文本表，DialogueAssets 只填本语言实际存在的 clip，缺配音条目留空。这样 en 缺 clip 时不会回退到中文音频，zh-Hans 也不会借用英文语音。[一手／研究]
+
+原生 `VoiceOverPresenter` 已支持 `AudioClip` 和 `IAssetProvider.TryGetAsset` 两条资产解析路径，不需额外写一个未接入播放的解析片段。没有 clip 时该组件会记错误日志；`endLineWhenVoiceoverComplete=false` 保持当前行，字幕和 Space 推进仍由 `LinePresenter`／`LineAdvancer` 完成。落地时实际检查缺配音的 030／040／060 行：字幕可读、姓名头像正确、没有别语言音频、可以手动推进。缺文本会显示 Provider 的 `!! Error: Missing localisation ...`，先补文本再交付；本轮只核源码与接线蓝图，未跑场景。[一手：固定源码]
+
+#### 切语言：菜单、数量提示与当前句
+
+**[研究] ✅ 菜单和数量提示立即刷新；对白默认在下一句边界生效，当前句保留进度。** 语言是显示偏好，不是重跑剧情。
+
+| 界面 | 切语言时做什么 | 保留什么 | 不要做什么 |
+|---|---|---|---|
+| 菜单／HUD 静态文本 | 重新解析当前 key；`StringChanged` 或显式刷新 | 当前页面、焦点、选择、滚动位置 | 重建整页、丢焦点、重播转场 |
+| 数量提示 | 用当前 `have/target` 重算 `need`，重新填类型化参数 | 同一 key 和游戏状态 | 缓存旧格式化字符串；从译文读数字 |
+| 对白当前句 | 默认读完当前句，下一句起用新语言；若要立即切换，只按当前 lineID 重新取文本并替换显示；sidecar 的 speaker／context 不变，`SpeakerPresenter` 按新 locale 重取 `character.<speaker>.name`，头像不换 | lineID、节点位置、已读／已听状态、选择 | 重放已发玩法命令、重置节点、丢进度 |
+| 历史消息／日志 | 承诺可重译的消息用保存的 ID＋参数按当前语言重译；玩家原文保持原样 | 当时参数值、玩家原文 | 用译文反推参数；改写历史事实 |
+
+当前句立即换语言只在产品明确要求时做：文本可以换，语音默认不中途重播；旧音频的时长不能套到新语言句子上。切语言不重新加载场景，也不把“自动重译”当作可以丢弃玩家进度的理由。[研究]
+
 #### 新语言也会改变旧内容的显示
 
-**[研究] ✅ 新语言与旧档名字一起核字库，子集／预填充随内容更新；改键样例硬编码也接表。** Unity ATG 按锁定 Toolkit 版本与内存／首字形目标评估。可重译报告存消息 ID＋类型参数，历史量保当时值，玩家原文保留；译文反推不回 key。Unity Arguments 不序列化、读档重建；UE FText→FString 丢 text history。[一手；[字体／旧报告反例](../../docs/research/wp10-content.md#37)]
+**[研究] ✅ 新语言与旧档名字一起核字库，子集／预填充随内容更新；改键样例硬编码也接表。** Unity ATG 按锁定 Toolkit 版本与内存／首字形目标评估。可重译报告存消息 ID＋类型参数，历史量保当时值，玩家原文保留；译文反推不回 key。Unity Arguments 不序列化、读档重建；UE FText→FString 丢 text history。[一手；[字体／旧报告反例](../../docs/research/wp10-content.md#37)] Unity String Table 的字符集从表内容生成，Smart String 只算字面量、不算占位符；译文增字后重生成，数字和符号另核。[一手；[文本表证据](../../docs/research/wp10-content.md#text-tables)]
 
 #### 文字已经画进图里：先选择生产表示
 
@@ -895,7 +1224,71 @@ Tytarenko 2026-09 Unity 制作复盘报告二改旧图残留、胜线覆盖不�
 
 #### 对白拖沓：补全文字、推进语音与退出会话分开
 
-**[研究] ✅ 分补全文字、结束句子、退出会话，沿已有组件配。** Yarn 文字／语音信号不同，退出不撤已发玩法命令；Firewatch 保护特定会话，inkle 短气泡可自动继续，按内容定保护／补述／重入。Yarn 3.2.8 开 endLineWhenVoiceoverComplete 时缺配音也可能结束，须阅读回退；加语言／分支验事实与选项，来不及读／丢信息就退回推进范围；[对白比较](../../docs/research/wp10-content.md#92)。[一手]
+**[研究] ✅ 分补全文字、结束句子、退出会话，沿已有组件配。** Yarn 文字／语音信号不同，退出不撤已发玩法命令；Firewatch 保护特定会话，inkle 短气泡可自动继续，按内容定保护／补述／重入。Yarn 3.2.8 开 endLineWhenVoiceoverComplete 时缺配音也可能结束，须阅读回退；该开关在 Presenter 级、不在行级，有未配音句时默认关闭或只在 clip 存在时请求推进。加语言／分支验事实与选项，来不及读／丢信息就退回推进范围；[对白比较](../../docs/research/wp10-content.md#92)。[一手]
+
+#### 第二次修改：只回审受影响项
+
+**[研究] ✅ 二改按身份和内容哈希圈范围：只回审受影响 key／lineID，保留未变的人工译文与审批。** 先分清“只改运行参数值／条件分支”和“改原文／语境”两类，前者不重译，后者才进回审队列。
+
+第二次需求示例：目标值从 3 改 2；HUD 仍按 `need = max(0, target - have)` 选键——`need>0` 用 `ui.hud.arrows_needed`，`need==0` 用 `ui.hud.arrows_ready`。`line:hangar_02_030` 从 speaker `navigator` 改由 `mechanic` 说；新增 `Mechanic: 我早说过了。 #line:hangar_02_045`（运行 ID `line:hangar_02_045`），无语音。若产品另有“一次至少补 2 支”的补给操作规则，它是独立的按钮可用／提示条件，不能拿来选 HUD 键；否则 `have=1`、`need=1` 时会被误判成“够了”。本例收敛为只改目标值，不引入该规则。
+
+```yaml
+# 二改后的 sidecar 行；译文表 line:hangar_02_030 的句子不变
+- lineID: line:hangar_02_030
+  speaker: mechanic
+  context: Mechanic 阻止 Navigator 碰线
+  voice_take: null
+```
+
+二改 `have`／`need` 的两语言预期（`target=2`）：
+
+| `have` | `need` | HUD 键 | `zh-Hans` | `en` |
+|---|---|---|---|---|
+| 0 | 2 | `ui.hud.arrows_needed` | 还需要 2 支箭（已有 0/2） | Need 2 more arrows (0/2) |
+| 1 | 1 | `ui.hud.arrows_needed` | 还需要 1 支箭（已有 1/2） | Need 1 more arrow (1/2) |
+| 2 | 0 | `ui.hud.arrows_ready` | 箭够了（2/2） | Arrows ready (2/2) |
+
+| 变化 | 译文回审 | 语音 | 字库／布局 | 保留什么 |
+|---|---|---|---|---|
+| 仅参数值或条件分支（不改文案） | key、原文、schema 不变就不重译；按上表测 `have=0/1/2` → `need=2/1/0`，HUD 仍按 `need>0`／`need==0` 选键 | 不动 | 数字宽度；HUD 不换行 | 全部已批准译文与审批 |
+| 源句或条件文案变化 | 只审该 key；旧人工译文可留作候选；英文 plural／choose 重核 | 该句有配音且有声文案变，旧 clip 失效 | 新字符、长度、换行 | 其他 key 的译文与审批 |
+| 仅语境变化（同文同 speaker） | 标待复核，保留现译；核称呼、语气、术语、敬语 | 有语音则进表演／语境回审；与录音失配才标 stale 重录，没有失配不改音频 | 语境说明、审校视图 | 其他对白与选项 |
+| 说话人变化（源文不变） | 标待复核，保留现译；核称呼、敬语、人物绑定 | 有语音则旧 clip 失效、重录；无语音（如 `line:hangar_02_030`）只回审译文和人物绑定，不要求重录 | 显示名、头像、颜色绑定 | 其他对白与选项 |
+| 新增未配音句 | 新增并人审；不回退旧句音频 | 无 clip；不继承旧时长 | 新字符、换行、字幕阅读时间 | 旧句音频与已验结论 |
+| 译文变长 | 审该句 | 配音则重录或只用字幕 | 按钮／字幕最大宽度、两行、省略号 | 其他语言布局 |
+
+哪些人工译文保留：`source_hash` 和 `context_hash` 都没变的 key 保持 `approved`；只改语境或说话人时保留现有译文并标 `needs_review`，不要清空；原文改了才把旧译文降为候选；不要整批覆盖人工成果。`source_hash` 覆盖原文＋参数 schema，`context_hash` 覆盖语境／说话人；只改运行时参数值不改哈希。语境变但同文同 speaker 时，译文标 `needs_review`，已有语音进 `context_review`（表演／语境回审），只有与录音失配才 `stale` 重录；speaker 变或有声文案变，语音才直接 `stale`。`line:hangar_02_030` 首版无 clip，二改换 speaker 只回审译文和人物绑定，不凭空要求重录。这个队列是项目建议，不是 TMS 的审批语义。
+
+最小影响清单（伪代码）：
+
+```text
+changed = keys where source_hash != approved_source_hash
+       or context_hash != approved_context_hash
+for k in changed:
+    translation[k].status = "needs_review"       # 保留现有 text
+    if voice[k]:
+        if text_changed(k) or speaker_changed(k):
+            voice[k].status = "stale"            # 有声文案或 speaker 变 → 旧 clip 失效
+        elif context_hash_changed(k):
+            voice[k].status = "context_review"   # 同文同 speaker，只回审表演/语境；失配才转 stale
+    font_subset.add(new_codepoints(source[k].text))
+    font_subset.add(new_codepoints(translation[k].text))
+    layout_check(k, locales)
+# 未变的 key 不进入本轮回审
+```
+
+新增未配音句的显示回退：不播旧 clip；字幕先按打字机效果显示，玩家第一次按键补全；之后玩家可按键推进，自动推进只在达到阅读下限后发生。阅读下限用项目配置，默认拉丁约 15 字符／秒、CJK 约 6 字／秒，且不短于 2.5 秒；这是待人验的默认值，不是引擎规则。旧配音的时长和“已验”结论不继承到新句。
+
+#### 交给 AI 的首版与二改任务单
+
+| 轮次 | 给 AI 的目标、入口与约束 | 要求返回的差量 | 人验收 |
+|---|---|---|---|
+| **首版：菜单＋数量＋两说话人** | 目标：2 个菜单键、2 个数量提示状态、2 位说话人的 6 句对白（3 句有配音）。入口：现有 UI 文本绑定、Unity Localization／UE String Table、现有 Yarn 项目与 `UnityLocalisedLineProvider`／`LinePresenter`／`VoiceOverPresenter`／`LineAdvancer`。约束：菜单 key 与完整 `line:` ID 分开；sidecar 按完整 ID 接 speaker；保留现有叙事后端；不新建翻译平台。 | 作者源与翻译输入样例、sidecar、导出／导入映射、Runner 组件配置、文本表与语音表配置、缺语音回退、`have=0/1/2` 与英文复数用例、切语言策略。 | 中文／英文意思、口吻、文化语境；变量是否可读；有／无语音都能读完并推进；切语言不丢进度；真实字幕与听感待引擎和人验。 |
+| **二版：数量条件＋说话人语境＋未配音句** | 在首版上把目标值 3 改 2（`have=0/1/2` → `need=2/1/0`，HUD 仍按 `need>0`／`need==0` 选键）、把 `line:hangar_02_030` 的 sidecar speaker 从 `navigator` 改为 `mechanic`、新增 `line:hangar_02_045` 无语音。约束：只回审受影响项；保留已批准人工译文；`line:hangar_02_030` 无 clip，不要求重录；有 clip 且 speaker 或有声文案变才标 stale。 | 变更清单与哈希、译文回审队列、语音失效／语境回审清单、字库子集差异、布局检查、更新后的 `have=0/1/2` 两语言文本与切语言用例。 | 受影响译文的意思／口吻；新说话人是否一致；未配音句阅读时间；长译文布局；不改其他语言的已确认译文。 |
+
+以上是作者源、导出、绑定与二改的实现起点；未运行引擎、未做语言审校、未生成或试听配音，真实字幕、布局、阅读与听感待验；不重分发字体、音频或引擎包。
+
+**依据**：[一手] Unity Localization 1.5.13 [String Tables](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/StringTables.html)、[CSV 导入](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/CSV.html)、[Smart Strings](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/SmartStrings.html)、[Plural Formatter](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/Plural-Formatter.html)、[LocalizedString API](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.html)；[一手] UE 5.8 [Text Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine)、[String Tables](https://dev.epicgames.com/documentation/unreal-engine/using-string-tables-for-text-in-unreal-engine?lang=en-US)、[FText](https://dev.epicgames.com/documentation/en-us/unreal-engine/ftext-in-unreal-engine)；[一手：固定源码] Yarn Spinner Unity v3.2.8 `bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d` 的 [UnityLocalisedLineProvider.Installed.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/LineProviders/UnityLocalisedLineProvider.Installed.cs)、[BuiltinLocalisedLineProvider.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/LineProviders/BuiltinLocalisedLineProvider.cs)、[DialogueRunner.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs)、[VoiceOverPresenter.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs)、[LinePresenter.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LinePresenter.cs)、[LineAdvancer.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LineAdvancer.cs)、[行标签](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization/line-tagging.md)、[本地化与资产](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization.md)、[Unity Localisation 导入](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization/unity-localization)；[一手] Unity Localization 1.5.13 [FallbackBehavior](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.Settings.FallbackBehavior.html)；[研究] 作者源字段、sidecar speaker 接线、四个所有者、按哈希回审、切语言当前句策略与阅读时间默认值为本项目建议，不是引擎 API；复用 [WP10 文本表与 lineID 证据](../../docs/research/wp10-content.md#text-tables)、[译文供给](../../docs/research/wp10-content.md#译文供给追加文本不继承旧验收)、[字体／旧报告](../../docs/research/wp10-content.md#37)、[对白推进](../../docs/research/wp10-content.md#92)。核实 2026-10-25，未运行引擎、未做语言审校、未生成或试听配音，真实显示／阅读／听感待验。
 
 <a id="coop-continuity"></a>
 ### 小队联机：房主离开后，怎样继续这一局

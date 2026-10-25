@@ -145,7 +145,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 
 **先看口径：下表是 API 单价，不能换算订阅内任务数或额度百分比。** OpenAI 条目为 Standard、单请求输入不超过 272K token 的基础档；Claude Haiku 5.5 按总输入是否超过 100K 分档。缓存写入、长上下文与速度附加费见「表中未展开的计费维度」；其他历史条目回各自来源确认。
 
-| 模型 | 输入 | 缓存读取 | 输出 | 来源与核实日期 |
+| 模型 | 输入 | 缓存读取 | 输出 | 核实日期 |
 |---|---|---|---|---|
 | **Claude Haiku 5.5**（Standard） | $0.10（总输入 >100K：$0.50） | $0.01（>100K：$0.05） | $0.50（>100K：$2.50） | 2026-10-11（UTC+8） |
 | GPT-6 Luna（Standard ≤272K） | $0.10 | $0.01 | $0.50 | 2026-10-15 |
@@ -292,7 +292,7 @@ MiMo、DeepSeek、MiniMax、百炼仍是可另行比较的候选；其当前套�
 
 **保密取决于完整路径**：本地权重之外，还要核模型 endpoint、harness、搜索／MCP 与遥测的外发路径。Ollama 支持云模型和搜索，需按官方 local-only 设置关闭云功能；这不替其他工具保证离线。
 
-**选型用[本项目任务集](09-review-and-quality.md#3-给自己的-ai-配置做评估)。** “家用模型相当于 Haiku／Sonnet”“质量落后前沿若干月”和 HN“共识”都没有同任务、同 harness、同预算证据，只作参考；厂商自报分数也不当质量等价。
+**选型用[本项目任务集](09-review-and-quality.md#3-给自己的-ai-配置做评估)。** “家用模型相当于 Haiku／Sonnet”“质量落后前沿若干月”和 HN“共识”都没有同任务、同 harness、同预算证据，不作普适推荐；厂商自报分数也不当质量等价。
 
 **依据**：[一手] [Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B)、[原始仓库](https://huggingface.co/Qwen/Qwen3.8-27B/tree/main)、[API usage](https://huggingface.co/Qwen/Qwen3.8-27B#api-usage)、[Qwen3.6-35B-A3B](https://huggingface.co/Qwen/Qwen3.6-35B-A3B)、[Gemma4-26B-A4B-it](https://huggingface.co/google/gemma-4-26B-A4B-it)、[Ollama FAQ](https://docs.ollama.com/faq#how-does-ollama-handle-concurrent-requests)、[local-only 设置](https://docs.ollama.com/faq#how-do-i-disable-ollamas-cloud-features)；[研究] 候选与条件（2026-10-15，未实测）；核实 2026-10-15。
 
