@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-004
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a27356f628c3a15115df9acaf1e40533fa26d55c
 result_branch: relay/a-style-rewrite-004
@@ -63,3 +63,7 @@ result_branch: relay/a-style-rewrite-004
 最终收口补充：上表为原独立验证阶段计数；其后仅补回原有证据分类、核正权限同强度措辞及长小节依据位置。最终 04／10 受影响结构、链接、代码、数字、评级、表格和正文比例检查通过，06 复用原通过结果；原始失败与阶段计数不改写。发布前整合 main `bf4d75b`，三页无并发变动。
 
 Git 回传：指定结果分支 `relay/a-style-rewrite-004`，固定提交 [`bc3df67ac8cc5a06dffb94cda5491575d53c185c`](https://github.com/dbvv1/a1dbv/commit/bc3df67ac8cc5a06dffb94cda5491575d53c185c)。三页各自提交；最终文档检查 359 文件、公开内容检查 620 文件、四个新增提交身份与公开扫描、空白检查通过。main 仅回传原任务，三页正文由 dot-A 抽读接收整合；状态 `review_ready`。
+
+## dot-A 接收（2026-10-25）
+
+负责人抽读工具选择、Hook与沙箱边界、安全事件及权限建议，接收三页改写；06多核实日期与10表后集中依据保留。复用有效独审及修订后的定向检查，不重复同题审查。 保留最新 main 的回传链接及结果分支历史，工程／浏览器／方法收益的原有未验范围不变。最终集成树另跑文档、公开文件、提交身份与空白检查。
