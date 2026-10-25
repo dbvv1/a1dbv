@@ -5,6 +5,7 @@ owner: dot-A
 status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6f7494afc9707a1377e3fa88ce139e7a1df04e0e
+accept: auto
 result_branch: relay/a-readability-cleanup-001
 
 ## 目标
@@ -32,7 +33,7 @@ result_branch: relay/a-readability-cleanup-001
 
 用原生 Workflow 实施，由非作者核对：先只读新文，复述主要选择、第一步和关键取舍；再对照原文核关键结论、数字、版本与日期、来源和适用条件。有遗漏就修对应段。
 
-核完的页按批交付，每批不超过 2 份待合入，负责人逐批接收。全部接收后本任务结束，不再开后续改写批次。
+核完一页就按自动接收合入 main，负责人事后抽查。全部接收后本任务结束，不再开后续改写批次。
 
 ## 当前结果
 
