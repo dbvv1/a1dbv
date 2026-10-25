@@ -57,7 +57,7 @@ dot-A 运行：仅每小时心跳；当前接口支持PR事件，普通main／re
 
 10-26 按默认授权清出：dot-A Memoh 与 P27 listmonk 的测试库合成管理员、dot-A Memos 的云端浏览器入口（用 dot 的云电脑）、P109 的限定重试、P7 的执行确认、OpenSpec #2115 的贡献邀请。负责人直接推进，平台拦下时只停那一步。
 
-**资产取回阻塞**：[B-MOBA-ASSET-PREFLIGHT-001](local-jobs/B-MOBA-ASSET-PREFLIGHT-001.md) 云端官方页面取回 HTTP 403（curl 22）；停止下载，待新访问证据，资产解析与二改未执行，模拟原调用继续。
+**资产取回阻塞**：[B-MOBA-ASSET-PREFLIGHT-001](local-jobs/B-MOBA-ASSET-PREFLIGHT-001.md) 第三方官方取回 HTTP 403（curl 22）保持停止；自有合成夹具已完成 Blender 解析／GLB 配色二改，真实角色待新访问证据，模拟原调用继续。
 
 **平台拒绝**：P107（固定 a012fc7 的公开工具执行）和 Action 调试 10f6a6db 曾被平台拒绝。负责人补齐具体命令和用途后，再请用户在 Dot 里批准；此前不列为待决。
 
