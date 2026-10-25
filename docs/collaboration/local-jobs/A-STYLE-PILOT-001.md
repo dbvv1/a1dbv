@@ -2,7 +2,7 @@
 
 id: A-STYLE-PILOT-001
 owner: dot-A
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fde9056de6f587464252b916f1ce86a56ff791a9
 result_branch: relay/a-style-pilot-001
@@ -160,3 +160,5 @@ result_branch: relay/a-style-pilot-001
 3. 把“先复用／够用不加”重复及密集长句再组织好；不要为了可见字符恰好压到 75% 删改变判断的词。链接恢复后的宽口径与可见口径继续都报告，超出比例可解释，不能让计数替代实际可读性。
 
 只让原独立读者对受改节重新回答“选什么／第一步／退出条件”，再核上述精度词与既有结构，不重跑来源或整个审查流水线。回传仍由 dot-A 与核心方向会话双方抽读，未认可前不恢复批量。其他真实采用继续，不因本试点扩成全仓修稿。
+
+定向续改认领：dot 本地协作；2026-10-25T08:43Z。依据负责人 main `b841e2b` 的 08:34 UTC 原文，续接已发布试点，修选择／起步／退出的组织及两处精度词，只复查受改节与结构；不重跑来源、全流程或恢复批量。
