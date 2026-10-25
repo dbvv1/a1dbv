@@ -2,7 +2,7 @@
 
 id: A-FRONTIER-SELECTION-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 30210eb122fc5c93eee59744cef1b8dbe192434a
 result_branch: relay/a-frontier-selection-001
@@ -27,3 +27,5 @@ result_branch: relay/a-frontier-selection-001
 4. 重要结论说明实际读到和试到什么、什么改变了选择；正式方法对照不做。来源显示时间与执行时间分开，记录渠道截止、不可读入口与实际模型响应字段，别把摘要或别名升级为原文／后端证明。
 
 只写本任务；资料充分且有实际增量时可改 13 对应候选入口，不做普遍文案改写、不改 TASKS／其他专题、不新增目录或编号。原始输出留私有工作区，公开不含身份、私人路径、凭据或无关材料。沿已配置正常原生 Workflow，复用一次有效独审；单次运行最多两小时，不扩费用／权限，不重试明确拒绝。仅推指定结果分支；适用检查、公开文件／实际新增提交身份和空白扫描后回固定 SHA，状态 `review_ready`。
+
+认领：dot 本地协作；2026-10-25T11:43Z。来源 main 固定 `bbea6d2`；先复用现有结果去重，再沿正常原生 Workflow 调查、选择与准备一个自然消费者。只交条件推荐或具体负结果，不启动完整产品实施、不重开旧案例／04 批量／B 任务；仅推指定结果分支。
