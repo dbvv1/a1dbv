@@ -548,6 +548,8 @@
 
 ### [4. 后续只预注册一个二改遭遇](wp11-combat.md#s19-5)
 
+### [5. 制作接入：离线制品、群体消费者与几何二改](wp11-combat.md#navigation-production-evidence)
+
 ## [关卡组合补研：连通之后还要选择什么](wp11-camera.md#s20-1)
 
 ### [1. 两类游戏，借不同的小机制](wp11-camera.md#s20-2)
