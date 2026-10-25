@@ -451,6 +451,24 @@
 
 [研究] Godot LabelSettings 不硬译为 Unity／UE API；字体授权仍另核，不推荐分发。Factorio 控制器 mod guide 正文未取得，未采搜索摘要。字体解析／渲染、手柄与 UI 自动化均未运行。
 
+<a id="text-tables"></a>
+
+### 8. 原生文本表：条目身份、导入与运行绑定
+
+核实：2026-10-25 UTC；主线三／四。补 04 首版接入：条目身份、CSV 导入、运行消费者与缺失项；未运行引擎或游戏。[研究]
+
+**Unity Localization 1.5.13：key＋Id 是身份，locale 表是显示。** [一手] [String Tables](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/StringTables.html) 说明 String Table Collection 是编辑器资产，包含每个 locale 一张 String Table 和一份 Shared Table Data；Shared Table Data 存 key 名与 Id，String Table 按 key 返回该 locale 的文字。条目可以是静态文字，也可标为 Smart String；字符集从表内容生成，Smart String 只算字面量、不算占位符，脚本入口为 `StringTableCollection.GenerateCharacterSet`。
+
+[一手] [CSV](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/CSV.html) 的导出列是 `Key`、`Id` 和各 locale 列；导入必须含 `Key` 或 `Id`，`CSV` 替换内容，`CSV(Merge)` 只更新 CSV 中出现的项。新条目 Id 留空或填 0，由系统分配；改 key 名要启用 `Include Id`，否则可能新建 key。列头缺失按未包含处理；文档没有承诺省略的 locale／注释列会保留旧译文。
+
+[一手] [Smart Strings](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/SmartStrings.html) 用 `{name}` 命名占位符、`plural`／`choose` 等格式化器；运行时把 `object[]` 赋给 `LocalizedString.Arguments` 再 `GetLocalizedString()`。[Plural Formatter](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/Plural-Formatter.html) 按 String Table 的 locale 使用 CLDR 的 `zero／one／two／few／many／other`，表单数随语言不同，不能假设英文的 one／other 通用。[LocalizedString API](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.html) 以 `TableReference`＋`TableEntryReference` 定位条目，`GetLocalizedStringAsync()` 非阻塞，`StringChanged` 在 locale／引用／变量变化时通知；表可能异步加载，`GetLocalizedString()` 会等待完成，`WaitForCompletion` 在 WebGL 不受支持。
+
+**UE 5.8：表 ID＋key，FText 保留 history。** [一手] [String Tables](https://dev.epicgames.com/documentation/unreal-engine/using-string-tables-for-text-in-unreal-engine?lang=en-US) 说明表可由 C++、CSV 或资产创建；CSV 必须 `Key` 和 `SourceString`，其余列作为 metadata；运行时用 `FText::FromStringTable(tableId, key)` 或 `LOCTABLE`，条目身份是表 ID＋key；资产里的 `FText` 属性也可直接链接表项，不必在 C++ 里手写 key。CSV 不自动打包，要把目录加入 Additional Non-Asset Directories to Package；String Table 资产是二进制，冲突无法合并，官方建议拆小表。
+
+[一手] [Text Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine) 与 [FText](https://dev.epicgames.com/documentation/en-us/unreal-engine/ftext-in-unreal-engine)：`FText::Format` 用 `{0}`／`{Name}` 占位符，`|plural(one=...,other=...)`、`|ordinal(...)`、`|gender(...)` 做语法变化（括号内参数用逗号分隔，`|` 只把占位符接到修饰符；Unity Smart String 的 `{n:plural:...|...}` 则用 `|` 分隔复数形态，二者不能互套）；数字按当前 culture 格式化，`FTextHistory` 支持 culture-correct 重建，`FTextFormat` 在 culture 变化时自动重编译；`FText` 转 `FString` 会丢 history，不能拿它当可重译的保存格式。
+
+**采用边界。** [研究] 小项目保持 CSV／原生表＋版本控制，导出的表按 key／Id 可差量审；缺项、异步加载、二进制合并和平台打包各自要处理。CSV 导入成功、表里有 key、运行时不报错都不证明译文正确；TMS 只在反复多人多语言增量协作的收益足够时比较，沿[译文供给](#译文供给追加文本不继承旧验收)，不自建平台。未运行引擎、未导入表或做语言审校。
+
 <a id="79"></a>
 
 ## 拾取坐标补研：显示变换不能靠 DPI 猜回去
@@ -580,6 +598,36 @@
 
 **实际范围：** 公开文档、固定源码及作者原文静读，无对白体验测试。[研究]
 
+<a id="yarn-line-delivery"></a>
+
+### 对白供给：lineID 是文本与可选语音的共同键
+
+核实：2026-10-25 UTC；主线三。补 04 首版对白接入：lineID、文本表、语音表与缺语音回退；依据固定源码与官方行标签文档，未运行游戏。[研究]
+
+[一手] 固定 `YarnSpinnerTool/YarnSpinner-Unity@bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d`（v3.2.8，MIT）的 [UnityLocalisedLineProvider.Installed.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/LineProviders/UnityLocalisedLineProvider.Installed.cs)：文本用 `GetTableEntryAsync(stringsTable.TableReference, line.ID, null, FallbackBehavior.UseFallback)`，语音用 `GetLocalizedAssetAsync<Object>(assetTable.TableReference, shadowLineID ?? line.ID, null, FallbackBehavior.UseFallback)`；文本表和资产表是分别配置的 `LocalizedStringTable`／`LocalizedAssetTable`。缺文本时返回带 `!! Error: Missing localisation for line ...` 的错误行；缺资产按 fallback 可能返回别语言资产，只有没有可用回退时才为 `null`。locale 取 `LocalizationSettings.SelectedLocale.Identifier.Code`，设置不存在的 locale 会抛错。
+
+[一手] **line.ID 是完整运行 ID，不是标签后缀。** 脚本 `#line:hangar_02_010` 编译后 `line.ID` 是 `line:hangar_02_010`；Provider 把它直接作为 String Table 的 entry key 和 Asset Table 的 entry key，不会自动补 `line:` 前缀。导出／CSV、运行表、sidecar 都用完整 ID；`hangar_02_010` 只是标签后缀。clip 文件可命名 `vo/hangar_02_010_en`，但 Asset Table 的 key 仍是 `line:hangar_02_010`，不能手工导出裸后缀当 API key。
+
+[一手] [Unity Localisation 导入](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization/unity-localization)：Yarn Project 设 Base Language `zh-Hans`（必须是 Localization 已配置的 locale）、启用 Use Unity Localisation System、String Table Collection 指定独立的 `Dialogue` 集合后 Apply；行的 key 是 `#line` ID，base 语言列由 Yarn 管理，不要手改；Asset Table 不会自动生成，要建同名 key（如 `line:tom-1`）。[一手] [DialogueRunner.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs)：`OnLineReceivedAsync` 调 `LineProvider.GetLocalizedLineAsync`，设 `localisedLine.Source = this`，再由 `RunLocalisedLine` 把同一行派发给所有 `DialoguePresenters`；`DialogueRunner` 有 `yarnProject`／`lineProvider` 序列化字段、公开 `SetProject`／`StartDialogue(string)`／`DialoguePresenters`，`autoStart`＋`startNode` 也可启动。不要绕过 Runner 直接调 Provider 冒充完整链路。
+
+[一手] [LinePresenter.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LinePresenter.cs)：`autoAdvance` 默认 false；`autoAdvanceDelay` 是 typewriter 完成后的固定等待，不是 `lettersPerSecond`／`wordsPerSecond` 的打字速度，也不是按字数算的阅读时间。[LineAdvancer.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LineAdvancer.cs)：配置 `runner`＋`presenter`、`separateHurryUpAndAdvanceControls=false` 时，第一次按键在文字未完成时 `RequestHurryUpLine()`，`OnLineDisplayComplete` 后第二次按键 `RequestNextLine()`；`VoiceOverPresenter.endLineWhenVoiceoverComplete=false` 时语音结束不自动推进。
+
+[一手] [LocalizedLine.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/LineProviders/LocalizedLine.cs)：`CharacterName` 从本地化文本的 `character` 标记（`character` 属性的 `name`）取；译文只写句子时为空。默认 `LinePresenter` 有 `characterNameText` 时读 `line.CharacterName`，所以直接导出不带 speaker 的译文会丢姓名。项目可按完整 `line.TextID` 查 sidecar 的 speaker，再绑本地化显示名／头像；`TextID` 由 Provider 设为 `line.ID`，不要把 `line.CharacterName` 当稳定 speaker ID。
+
+[一手] [BuiltinLocalisedLineProvider.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/LineProviders/BuiltinLocalisedLineProvider.cs)：用 `YarnProject.GetLocalization(locale)` 的 `GetLocalizedString(sourceLineID)` 取文本、`GetLocalizedObjectAsync<Object>(sourceLineID)` 取资产；`_textLocaleCode` 与 `_assetLocaleCode` 可不同并各带回退，缺文本警告后返回 `LocalizedLine.InvalidLine`，缺资产为 `null`。因此文本与语音可以用不同语言回退，产品必须先决定是否允许“字幕英文、语音日文”；默认不应把不同语言语音配在同一句下。[一手／研究]
+
+[一手] [VoiceOverPresenter.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs)：播放对象是 `LocalizedLine.Asset`，是 `AudioClip` 就 `PlayOneShot`，是 `IAssetProvider` 就 `TryGetAsset`；没有可用 clip 时记录含 `dialogueLine.TextID` 的错误。`endLineWhenVoiceoverComplete` 为真且存在 `IRequestLineCancellation` 时，缺语音也会请求结束当前行；该开关在 Presenter 上，不是按行配置。
+
+[一手] [行标签文档](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization/line-tagging.md) 规定 `#line:<unique-id>` 写在脚本行尾，全项目唯一；没有标签时 Yarn 自动生成，Unity 的 Add Line Tags 只给没有标签的行补。标签是脚本正文的一部分，保留该行与标签时改文案不会换 ID；删行或改标签会断掉文本表／语音表的对应。[本地化与资产文档](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization.md) 说明 Line Provider 按 lineID 取当前 locale 的本地化行和本地化行资产，语音是“某一行的某语言资产”，不是全局文件名约定。[一手／研究]
+
+**采用判断。** [研究] 对白沿用 Yarn；lineID 作为文本与语音的共同键，但文本表和资产表分开，菜单 key 不并进同一身份。缺语音默认按字幕阅读回退：Presenter 的“语音完即结束”要在有未配音句时关闭，或只在确有 clip 时由项目请求推进；不能继承旧句的语音时长。换语言默认下一句生效，当前句保留 lineID、节点和已读状态。
+
+**二改预注册。** [研究] 改说话人或来源句子时，保留 lineID 以复用文本表定位；如果语义已变，旧译文标待复核。只改语境、同文同 speaker 时，已有语音进表演／语境回审，与录音失配才 stale 重录；speaker 变或有声文案变，旧 clip 才直接 stale。新增未配音句只加文本表项和脚本行，不加资产项；缺资产返回 `null` 后，若 Presenter 的语音完开关仍为真，它会请求结束当前行，因此要在项目层关闭或按 clip 存在性门控，并给足阅读时间。删除行要同时清文本／资产项，避免孤儿条目；重复 lineID、缺文本和缺资产分别测。
+
+**缺语音与 fallback。** [一手] `UnityLocalisedLineProvider` 对文本和资产都传 `FallbackBehavior.UseFallback`。[FallbackBehavior](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.Settings.FallbackBehavior.html) 的 `UseFallback` 会沿当前 Locale 的 Fallback Locale 链取值；若 en 的链含 zh-Hans，en 缺 clip 时可能拿到中文音频，而不是 `null`。默认策略要明确：文本和语音都只用当前 locale，缺当前语言语音就回字幕；内置 Provider 固定 `UseFallback`，项目 Provider 应对文本和语音资产显式用 `DontUseFallback`，或在项目 VoicePresenter 中按当前 locale 的 Asset Table 项解析后再播。若保留内置 Provider，启动时用 `Locale.GetFallbacks()` 确认 en 的链不含 zh-Hans，并实测缺 clip 返回 `null`；否则缺 clip 仍可能拿到中文音频。`VoiceOverPresenter` 对 `LocalizedLine.Asset` 先试 `AudioClip`，再试 `IAssetProvider.TryGetAsset`；只写 `line.Asset as AudioClip` 会漏掉后一条路径。[一手／研究]
+
+**实际范围。** 公开固定源码与官方文档静读；未运行对话、未播音频、未做语言审校，阅读时间与听感待验。[研究]
+
 <a id="103"></a>
 
 ## 改键持久化：既有选型回流
@@ -658,6 +706,8 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 **保留译文和保留审批分开选。** [Crowdin配置更新契约](https://support.crowdin.com/developer/configuration-file/#changed-strings-update)的update_as_unapproved保译文撤审批，update_without_changes连审批保留；未设时变更串旧译文丢失。语义变化先留待复核候选，不整批覆盖人工成果。此为2026-10-20滚动文档，不代表所有UI默认。[一手／研究]
 
 **二改至少核新增句、否定／条件变化及只改语境。** 确认受影响项回审、旧人工译文保留，实际发行文件没有误混未审新文；格式检查不证明译义正确。延期内容、明确原文回退或缩小语言范围须按玩法与支持承诺决定，不能静默混语；仍保原字库、塑形、布局、编辑和操作检查。[研究；未执行]
+
+**身份与显示分开。** [研究] 译文供给只改目标语言 `text`，不改 key／lineID／参数 schema；菜单 key 与对白 lineID 的导入、运行绑定和缺语音回退见[原生文本表](#text-tables)与[对白供给](#yarn-line-delivery)。作者源、导出表、运行绑定和保存参数各有主人，不能拿译文反推参数或历史值。
 
 **集成维护超过增量收益就撤回TMS或缩小范围。** 译义／术语自动二改闭环、目标语言质量、订阅运维与审校工时均未实测；两案例不足以排名工具／模型。提交云服务前另核文本／译文权利与传输授权；本轮无安装、付费、账号连接、翻译生成或引擎实验。[研究]
 
@@ -755,3 +805,5 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 [研究] 快照回退和持久奖励是两份状态，强行一起回滚可能抹掉已确认进度，只恢复世界又可能重复奖励；这是项目必须作出的规则选择，不是网络 SDK 自动提供的事务。若全员退出，则另沿正常存档／结束本局政策处理，不能无限期待另一个玩家接管。
 
 **探索回执：** 截至2026-10-24，读取 Unity／Photon／Epic 官方资料、Dagger 作者访谈、Unity Discussions 与 Reddit 作者原帖、公开 GitHub 样例页面；中文社区定向检索未获得可用当前一手原帖。官方样例源码未取得；未据热度／宣传决定质量，未实测延迟、迁移成功率、成本或玩家体验。
+
+**首版接线差量（2026-10-26）**：对白人物组件按完整 `line:` ID 导出六行索引，`Awake` 建人物绑定，覆盖 `OnDialogueStartedAsync`／`RunLineAsync`／`OnDialogueCompleteAsync`，结束清姓名和头像。原生 Provider＋VoiceOverPresenter 路线要求 zh-Hans、en 的 fallback 列表都为空、文本表补齐；不再示范未接入播放的自定义 clip 片段。LineAdvancer 的 KeyCodes 输入组件用 `hurryUpLineKeyCode=Space`，其余三键 None；合并加速／推进模式由同一 Space 完成两次操作。固定源：[Presenter 生命周期](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/DialoguePresenterBase.cs)、[按键组件](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LineAdvancer.Keycodes.cs)。仅源码与文档接线核查，未编译／运行场景。
