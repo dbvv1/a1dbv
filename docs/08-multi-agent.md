@@ -184,9 +184,11 @@ claude --agents '{"focused-reviewer":{"description":"核对指定文件与验收
 
 **✅ 保留原生产者单写者，让独立接收者用固定产物和原需求核对实际结果。** 从[固定交付接收模板](../templates/generic/fixed-delivery-review.md#交给审查者的输入)交入版本、验收目标与可重放命令；先复用已有检查，再把每项目标对应到测试断言、CLI 退出条件或输出字段。退出码只覆盖其中一部分时，读取剩余结果再决定是否接收，不为此新增编排平台或重审全部实现。
 
-MOBA-Like 固定模拟产物的独立接收中，32 项测试通过；源码核对却表明 CLI 只因异常或回放哈希不一致失败，卡死、超时、时长和难度目标仍需读取输出。现有回放测试核了同命令的 hash／status／winner，但最长 120 秒且不要求产生胜者，因此不能据此接收“完整获胜对局可重放”。本次独立接收端的 CLI 因运行入口受限未执行。生产者随后实际采用[既有 reviewer](https://github.com/dbvv1/a1dbv/commit/46a55ea9cf6b57cd683d791d1268de04b640b457) 的版本与异常输入要求，补齐 v1 超时样例的重放证据，避免用同 seed 的 v2 胜局替代；这改变了证据接收，未新增代码发现，原三项缺陷修复不归功模板。接手时按相同版本、种子与完整命令核终局或超时，再与对应输出比较，而非只重跑同一组单测。
+MOBA-Like 固定模拟产物的独立接收中，32 项测试通过；源码核对却表明 CLI 只因异常或回放哈希不一致失败，卡死、超时、时长和难度目标仍需读取输出。现有回放测试核了同命令的 hash／status／winner，但最长 120 秒且不要求产生胜者，因此不能据此接收“完整获胜对局可重放”。首轮独立接收端的 CLI 因运行入口受限未执行。生产者随后实际采用[既有 reviewer](https://github.com/dbvv1/a1dbv/commit/46a55ea9cf6b57cd683d791d1268de04b640b457) 的版本与异常输入要求，补齐 v1 超时样例的重放证据，避免用同 seed 的 v2 胜局替代；这改变了证据接收，未新增代码发现，原三项缺陷修复不归功模板。接手时按相同版本、种子与完整命令核终局或超时，再与对应输出比较，而非只重跑同一组单测。
 
-**依据**：[本仓独立接收／源码核对，2026-10-25] [固定 CLI 的退出条件](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tools/sim.ts#L537-L539)、[回放测试](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tests/replay.test.ts#L7-L28)及[需求目标](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/docs/brief.md#自动验收目标)；[生产者实际采用回传](collaboration/local-jobs/B-MOBA-SIMULATION-001.md#当前结果)确认补齐了版本匹配的异常证据；其批量运行与回放为生产者回传，不是本次独立接收端运行，未测方法提效。
+**需要自动接收批量报告时，复用[窄接收器与命令](../templates/generic/fixed-delivery-review.md#对真实批量-json-加一个接收检查)。** 显式传入局数、种子与内容版本，再核报告的分母、终局、异常和时长。后续在生产者正式提供的新入口，独立接收端实际运行 200 局：CLI 退出 0，报告却含 199 终局／1 超时，接收器据此退出 1。它只核该批次报告，500 局对称、难度与技能目标仍分别接收。
+
+**依据**：[本仓独立接收／源码核对，2026-10-25] [固定 CLI 的退出条件](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tools/sim.ts#L537-L539)、[回放测试](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tests/replay.test.ts#L7-L28)及[需求目标](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/docs/brief.md#自动验收目标)；[生产者实际采用回传](collaboration/local-jobs/B-MOBA-SIMULATION-001.md#当前结果)确认补齐了版本匹配的异常证据；其批量运行与回放为生产者回传，不是首轮独立接收端运行，未测方法提效。
 
 ## 5. 其他厂商的并行与多 Agent 方式（2026-10）
 
