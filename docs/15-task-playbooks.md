@@ -372,7 +372,7 @@ Agent容易漏动态引用、间接消费者和故障时才启用的保护；人
 
 **🧪 项目已有覆盖率时，用 [diff-cover](https://github.com/Bachmann1234/diff_cover) 补一张本次未执行行清单；真正的验收仍用产品请求和可核对的结果。** 先从当前源码重建 XML，按固定基线 SHA 比较，把 JSON 中的缺失行交给 Agent 补测；要阻断须显式设 `--fail-under`，无测量行不算通过。目标测试本来明确、反馈足够时，不必再加这一层。
 
-[Datasette 显式整数参数原型](collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md#可直接运行的入口)给出可复制补丁与请求：Agent 实现 opt-in 绑定，人用 `typeof(:age)`、400／无写入和返回 SQL/params 的独立重放核结果。最终 90 条改动行全部执行，但重复 JSON 字段与元数据重放问题靠消费者／独审才修好；因此不要把覆盖率换成“功能已验收”。原型尚有编辑 SQL 后丢类型与完整门禁欠项，生产默认仍保留原行为。
+[Datasette 显式整数参数原型](collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md#可直接运行的入口)给出可复制补丁与请求：Agent 实现 opt-in 绑定，人用 `typeof(:age)`、400／无写入和返回 SQL/params 的独立重放核结果。最终 90 条改动行全部执行，但重复 JSON 字段与元数据重放问题靠消费者／独审才修好；因此不要把覆盖率换成“功能已验收”。SQL 编辑后保留类型与当前值已由六项真实浏览器回归验证；完整门禁仍有欠项，生产默认保留原行为。
 
 **依据**：[一手／本仓实试，2026-10-25] [选择与三方对照](collaboration/local-jobs/A-FRONTIER-SELECTION-001.md)、[固定补丁与 POSIX 接收](collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md#dot-a-接收与-posix-补验2026-10-25-1551-utc)；真实开发接入已验，净提效未测。
 
