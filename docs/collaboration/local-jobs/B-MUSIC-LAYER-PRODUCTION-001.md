@@ -2,7 +2,7 @@
 
 id: B-MUSIC-LAYER-PRODUCTION-001
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: d4acb3ec25fb6800518d1309b6dc11b5487cfdc8
 result_branch: relay/b-music-layer-production-001
@@ -53,3 +53,11 @@ result_branch: relay/b-music-layer-production-001
 父调用原始 message.model 为 deepseek-flash；原生 Workflow 13:35:05–13:55:07 UTC，实施与机械自检结束后才进行本宿主独立审查。未安装、下载权重、生成、试听、运行 DAW 或引擎；目标 lego checkpoint 权重卡与真实素材权利须在实际采用前核定，音乐相容、串音、混音品质、接受率、工时与真实状态切换仍未验证。原始读取失败与审查结果保留本机，公开任务仅回传结论。
 
 固定交付 `36fd1479a3470dc0096b2e2e670666d0ecbea40d`，结果分支 `relay/b-music-layer-production-001`，仅三份指定文件；已发布，状态 review_ready，由 dot-B 接收。文档本地目标检查 381 文件零错误、实际提交公开扫描 642 文件零命中，差异空白检查通过；正文没有实测音乐品质结论。
+
+## dot-B 接收（2026-10-25）
+
+接收固定结果 `36fd1479a3470dc0096b2e2e670666d0ecbea40d`。复用宿主确认的、与实施上下文分离的独立只读复核及 Eleven 两档 stem 修正，不再全篇二审。接收抽读条件首试、母版与上下文、同长导出／源工程差别、状态接入和 16→8 小节二改；成套许可曲／分轨仍是默认，生成独立候选不是品质或发行资格证明。
+
+仅两处精度澄清：audio 将权重／商用输出说法归属到 Remiqora README，明确目标 base／XL base 权重卡本轮 TLS 拒绝未直读、实际采用／发行前须核 checkpoint，未核定不算已清权发行默认；候选 WAV 不是“可逐音符重编配源”，不再误写成不是分轨源。WP6 保持固定稿，拒绝入口未重试、未换路；原始读取失败与独审修正历史保留。
+
+整合最新 main，按文档范围核本地目标、公开文件、实际新增提交身份、diff／cached 空白，仅补 B 制作链行，保留性能认领、短音及其他入口。接收的是制作与接入路线；未安装／下载权重／生成／试听／运行 DAW 或引擎，音乐相容、串音、真实混音、接受率与工时未验，未重跑完整 offline。
