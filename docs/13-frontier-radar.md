@@ -101,7 +101,7 @@
 | Oil UI | 用现成比较器挑选已有HTML设计候选 | 2,005★及9-30新建为发现快照 | 0.23.9打包与保原件已验，浏览器未验 | 🧪 部分试用，修改源页后须重建 |
 | VibeWise | 学陌生技术栈时先讲方案再让Agent实现 | 3,853★及9-29新建为发现快照 | 0.1.44安装／恢复已有[真实输出截图](research/2026-10-22-frontier-trials.md#vibewise学习项目按需开reset不是关闭) | 🧪 教学按需开，暂停用pause而非reset |
 | OpenCodeReview delegation | 规则多时由CLI备料、现有Agent评审 | 约4.8万★及迁移自述为采用线索 | 1.13.3输入准备已有[真实输出截图](research/2026-10-22-frontier-trials.md#ocr-delegation-trial) | 🧪 [先对账Git清单](research/2026-10-22-frontier-trials.md#ocr-delegation-trial)，preview可能静默漏项 |
-| [diff-cover](https://github.com/Bachmann1234/diff_cover) | 已有覆盖率的项目，让 Agent 直接看到本次改动里哪些行没执行；先生成当前源码报告，再按固定基线比较 | 10.6.0，Apache-2.0；真实使用线索与候选比较见[记录](collaboration/local-jobs/A-FRONTIER-SELECTION-001.md) | 合成报告已验 JSON 未执行行、未跟踪文件与失败退出；真实项目待验 | 🧪 须显式设 `--fail-under` 才阻断；行覆盖不证明断言有效 |
+| [diff-cover](https://github.com/Bachmann1234/diff_cover) | 已有覆盖率的项目，让 Agent 直接看到本次改动里哪些行没执行；先生成当前源码报告，再按固定基线比较 | 10.6.0，Apache-2.0；真实使用线索与候选比较见[记录](collaboration/local-jobs/A-FRONTIER-SELECTION-001.md) | [Datasette 原型](collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md)已消费当前覆盖率：90 条改动行／0 缺失；完整门禁仍有欠项 | 🧪 须显式设 `--fail-under` 才阻断；行覆盖不证明断言有效 |
 
 版本、耗时、许可及未验范围留在[对应试用记录](research/2026-10-22-frontier-trials.md)，以上均未证明模型质量或完整成本收益。
 
