@@ -53,3 +53,14 @@ result_branch: relay/b-readability-cleanup-001
 宿主执行增量（2026-10-26）：Claude Code＋DeepSeek 原生 Workflow 首篇已实际返回；原始 assistant message.model 为 `deepseek-flash`，请求 alias `deepseek-v4.1-flash[1m]` 另记。非作者按先新后旧顺序完成首篇核对；修来源性质分组，并沿原调用纳入负责人 f1308f2 已交接的开门揭示制作模块，只核新增事实／已审修复。来源模块现已进入 main，原写者停止写入，避免覆盖新增。 本任务全范围尚未完成，状态保留 running，后续按已明确逐页增量要求继续。
 
 发布恢复：用户明确授权后，仅更正错误合并提交身份；原 `8b7d1e9` 替换为 `de859f081d6547eeb976ba3b5da7d0dd1b1564b6`，后续提交只重接父引用，文件树、提交说明与他人身份保留；受保护的精确 lease 更新后 main 为 `1a3fad0dba89e45555f3cc1197d2ee986ab8d158`，身份扫描通过。后续每次 merge／commit 显式使用单次 noreply，检查结果与推送分步执行；未新增规则层。
+
+
+## 首篇视频增量待接收（2026-10-26）
+
+`domains/game-dev/assets/video.md` 原生 Workflow 整页整理已完成。非作者先只读新文并保存读后复述：读者先按玩家状态依赖与运动必要性选择静态／实时可编辑源／固定影片，再核渠道、同镜头二改与总成本；之后才对照原文核结论、数字、原日期、来源性质与适用条件。发现 S43 社区经验、S22／S29官方条款归档与 S54 V2EX 的来源组混放，已定点修正，同审差量关闭。
+
+负责人固定 f1308f2 新增制作模块沿原调用追加接入；非作者只核新增事实及已审修复：开门揭示 A／B／C 正常链、先提交世界状态、Unity 源与实例绑定、离线渲染作者源、生成器分工、长武器与译文增长30%的二改、混合 A→影片B→C段级退出、取消迟到回调与WebGL音频边界全部保留。对照来源快照与固定官方资料后无必须修项，WP7仅作只读证据，未修改。
+
+实际通道 Claude Code＋DeepSeek，原始 message.model 为 `deepseek-flash`，请求 alias另记；没有模型／引擎／播放器实验。此页为 review_ready 增量，整体仍 running；下一页按顺序是 `01-engine-integration.md`。实际写者为本地协作执行端，不是 dot-B 研究主任务。真实音画、设备、回调行为和质量待项目验收；本端只推结果分支，不标 accepted。
+
+本次固定结果：[73ca388e1b94a0d9777aaa2d6dcc628039ed62d7](https://github.com/dbvv1/a1dbv/commit/73ca388e1b94a0d9777aaa2d6dcc628039ed62d7)，仅指定 relay 分支；check_repo.py、公开文件／实际新增提交身份扫描及交付差量检查通过。

@@ -43,3 +43,12 @@ result_branch: relay/a-readability-cleanup-001
 宿主执行增量（2026-10-26）：Claude Code＋DeepSeek 原生 Workflow 首篇已实际返回；原始 assistant message.model 为 `deepseek-flash`，请求 alias `deepseek-v4.1-flash[1m]` 另记。非作者按先新后旧顺序完成首篇核对；发现角色选档首句、原核实日重复、旧额度资格条件与导航方向四处差量，沿原调用定点修订，不整篇重派。 本任务全范围尚未完成，状态保留 running，后续按已明确逐页增量要求继续。
 
 发布恢复：用户明确授权后，仅更正错误合并提交身份；原 `8b7d1e9` 替换为 `de859f081d6547eeb976ba3b5da7d0dd1b1564b6`，后续提交只重接父引用，文件树、提交说明与他人身份保留；受保护的精确 lease 更新后 main 为 `1a3fad0dba89e45555f3cc1197d2ee986ab8d158`，身份扫描通过。后续每次 merge／commit 显式使用单次 noreply，检查结果与推送分步执行；未新增规则层。
+
+
+## 首篇增量待接收（2026-10-26）
+
+`docs/02-models-and-cost.md` 已完成原生 Workflow 整页整理。非作者先只读新文并独立复述：读者能按实现／协调／审查选推理档、找到保缓存换档与新任务入口、区分 API／订阅额度和总投入；随后才打开原文，核数字、版本／原日期、来源性质与适用条件。发现角色选档首句未落实、日期重复、Pro 200 旧额度资格范围变宽及导航方向四项，沿原调用定点修正，同审差量已全部关闭。无在线事实刷新，无新模型试验或密度统计。
+
+实际通道 Claude Code＋DeepSeek；原始 message.model 为 `deepseek-flash`，alias另记。当前页整理／修订已结束，独占写者为本地协作执行端；不是 dot-A 研究主任务。此页为 review_ready 增量，全任务仍 running；下一页按顺序是 `docs/19-experiments.md`，其他声明范围尚未完成。只推指定结果分支，本端不标 accepted。
+
+本次固定结果：[99e7137aac85607b31593516514b97e90be43382](https://github.com/dbvv1/a1dbv/commit/99e7137aac85607b31593516514b97e90be43382)，仅指定 relay 分支；check_repo.py、公开文件／实际新增提交身份扫描及交付差量检查通过。
