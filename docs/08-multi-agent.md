@@ -180,6 +180,14 @@ claude --agents '{"focused-reviewer":{"description":"核对指定文件与验收
 
 **依据**：[一手：作者研究] [APM 研究](https://agentic-project-management.dev/research/thesis/evaluation-results/)；[研究] [并行结果按依赖接收](research/2026-10-12-experiment-records.md#p72审计补强并行结果按依赖接收)；[经验] 采用建议与收尾条件；核实 2026-10-14。
 
+### 接收已有产物：先核退出条件，再核目标结果
+
+**✅ 保留原生产者单写者，让独立接收者用固定产物和原需求核对实际结果。** 从[固定交付接收模板](../templates/generic/fixed-delivery-review.md#交给审查者的输入)交入版本、验收目标与可重放命令；先复用已有检查，再把每项目标对应到测试断言、CLI 退出条件或输出字段。退出码只覆盖其中一部分时，读取剩余结果再决定是否接收，不为此新增编排平台或重审全部实现。
+
+MOBA-Like 固定模拟产物的独立接收中，32 项测试通过；源码核对却表明 CLI 只因异常或回放哈希不一致失败，卡死、超时、时长和难度目标仍需读取输出。现有回放测试核了同命令的 hash／status／winner，但最长 120 秒且不要求产生胜者，因此不能据此接收“完整获胜对局可重放”。批量 CLI 因运行入口受限尚未执行；下一步是从原命令取得真实输出，对照原目标逐项接收，而非再跑同一组单测。生产者已完成的修复与本次接收发现分开归属。
+
+**依据**：[本仓独立接收／源码核对，2026-10-25] [固定 CLI 的退出条件](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tools/sim.ts#L537-L539)、[回放测试](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tests/replay.test.ts#L7-L28)及[需求目标](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/docs/brief.md#自动验收目标)；本次采用的是接收模板与独立消费，生产者是否采用该路线及其收益仍待反馈。
+
 ## 5. 其他厂商的并行与多 Agent 方式（2026-10）
 
 **需要跨云端任务或 API 层编排时，先核各厂商当前的隔离环境与多 Agent 入口，再决定是否引入。**
