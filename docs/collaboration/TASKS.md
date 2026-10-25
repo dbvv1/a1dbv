@@ -7,12 +7,12 @@
 > 每轮纠偏只改本节，最多三条（手册§6）。更新：2026-10-25，Claude 核心方向会话。
 
 - **A**：AI coding 为中心，任务路线在开源项目和真实仓库的开发中用上；恢复前沿发现（约两成精力），持续引入当前值得用的新工具和做法。
-- **B**：专注主线（游戏 AI 全链路、客户端核心模块）和不受阻的游戏案例内容。Star-Rush 中许可清楚、工程验证通过的素材默认启用；需要人听、看、玩的验收记入下方“待人工验收”，统一处理，不再阻塞或占用 B 的时间。
+- **B**：专注主线（游戏 AI 全链路、客户端核心模块）。作品案例按[细则§6](game-taskbook.md#6-作品案例)统一：MOBA-Like 是当前主案例，先做到可玩，用来实测已写的技能、AI、寻路等模块；Star-Rush 进入维护期，FPS-Like 排队。需要人听、看、玩的验收记入下方“待人工验收”，统一处理，不阻塞 B。
 - **共同**：按用户10-26委托清理存量正文，旧搬标签／固定压缩模板退出。25探索先交完整改写；04与游戏03复用已核单页成果。A按[A存量任务](local-jobs/A-READABILITY-CLEANUP-001.md)、B按[B存量任务](local-jobs/B-READABILITY-CLEANUP-001.md)一次整理余页，非作者对照保事实，交完收口；在途业务持续推进。
 
 ## 分工
 
-- 方向见 [AGENTS 锚点](../../AGENTS.md)。dot-A：AI coding 与 M6；dot-B：游戏 AI 全链路与客户端／gameplay，Star-Rush 为现有载体，Game-Core-Knowledge 按原分工。
+- 方向见 [AGENTS 锚点](../../AGENTS.md)。dot-A：AI coding 与 M6；dot-B：游戏 AI 全链路与客户端／gameplay，作品案例见[游戏方向细则§6](game-taskbook.md#6-作品案例)，Game-Core-Knowledge 按原分工。
 - 本地模型委派走 [local-jobs](local-jobs/README.md)，由独立本地协作会话接收；A 研究主任务不代管 B 执行。
 - 指导层：Claude 核心方向会话负责方向与原则，Codex 审计会话负责增量审计、本地执行与仓库整理（手册§6）。已有审计：[方向指导](reviews/2026-10-23-direction-guidance.md)、[增量审计](reviews/2026-10-24-direction-delta-audit.md)，不重复。
 
@@ -25,7 +25,8 @@
 | P90 | **前沿发现**：成熟与新候选，沿[13](../13-frontier-radar.md)五问／实试验收，处理收件箱 | dot-A | 停简报；[增量测试反馈](../../experiments/testmon-feedback.md)实试；[diff-cover](local-jobs/A-FRONTIER-SELECTION-001.md) 已在 Datasette 原型消费；行执行不等于行为验收，不扩窄试。Oil UI页面策略拒绝，视觉待入口获准；Plannotator未接收。 |
 | P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [MDX规格扩展](../../experiments/openspec-mdx-adoption.md)原生Agent实施、二改接收及独审；[Datasette 显式整数参数](local-jobs/A-DATASETTE-TYPED-PARAMS-001.md)研究原型接收；POSIX 无新增失败，完整门禁／编辑器欠项见回执，非生产默认。[OCR](../../experiments/ocr-matcher-replay.md)完整CLI未验，旧欠项保留。 |
 | P79 | C1／C3 吸取验证 | dot-A | **10-25 收口**：[冻结三题结果](../../experiments/absorption/p79-frozen-001-results.md)已按描述性记录接收，隔离未确立、正式可比 0 对；不再续批，正式对照仅在用户明确要求时开展。 |
-| SR | **Star-Rush 品质版本**：master 随时可玩，赛中 AI 美术、音频、驾驶手感有可体验的提升（原 P112／P113／P117） | B | master 已整合为 `6324d55`：HUD、教练、卡片、音频候选、Canvas 房屋锚点与场景作者链均已在主干；当前护栏仍默认 procedural，样本与房屋锚点显式开启。Kenney 默认启用的 `10f5f90` 仅本地完成、上传被拒，未进入 master；听／看／玩集中到下方人工验收，B 转回主线。 |
+| SR | **Star-Rush 维护期**：master 随时可玩，只做品质提升；顺序见仓库 [brief](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/brief.md)（原 P112／P113／P117） | B | 10-26 补 AGENTS／brief、README 改为面向玩家。master 已整合为 `6324d55`：HUD、教练、卡片、音频候选、Canvas 房屋锚点与场景作者链均已在主干；当前护栏仍默认 procedural，样本与房屋锚点显式开启。Kenney 默认启用的 `10f5f90` 仅本地完成、上传被拒，未进入 master；听／看／玩集中到下方人工验收，B 转回主线。 |
+| MOBA | **MOBA-Like 纵切片**：可玩，再完成第二次需求修改；实测技能／Buff、英雄与小兵 AI、寻路、成长与技能制作链（FPS-Like 在此之后开工） | B | 10-26 建仓库骨架：[AGENTS](https://github.com/dbvv1/MOBA-Like/blob/main/AGENTS.md)、[任务书](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md)。下一步：建工程，先打通模拟层与无画面对局。 |
 | B-模块 | **客户端／gameplay 完整模块**：动作与连段、瞄准、镜头、角色控制、资源生命周期、敌人 AI、技能／Buff、成长与奖励、叙事、合作续局等（原 P39、P98、P99、P101–P106、P110–P111、P114–P115、P118、P121–P122、P125–P127、P129–P130） | B | 角色控制已进 [04 完整模块](../../domains/game-dev/04-client-modules.md#character-control)；[05 技能／效果模块](../../domains/game-dev/05-gameplay-architecture.md#7-战斗与技能先统一结算再决定-gas)已整合蓄力、施放／承诺、连段、效果堆层／时钟／快照、净化免疫与属性重算，给正常链、实施起点与二改。复用资料／源码与独审，未引擎实测／模型运行。[菜单与设置模块](../../domains/game-dev/04-client-modules.md#菜单也是控制的一部分)已接收：音量首版，大字／改键／隐藏项与确认层二改，草稿／预览／保存／待应用分离；文稿 Workflow 与独审完成，真实菜单／写盘／体验未验。[性能诊断模块](../../domains/game-dev/04-client-modules.md#压低卡顿与设备耗用)已接收：正常遭遇采集／归因、最小修补、发布复核与新内容二改；设备／引擎及收益未实测。继续合并已有研究，不逐项新开小题。 |
 | B-制作链 | **AI 制作链**：2D／像素、动画源与导入、3D 与压缩消费者、材质特效、音乐音效、视频、场景作者（原旧 C2 文稿、P94–P97、P100、P107、P116、P119–P120、P123–P124、P128、分件 rig、特效源） | B | 已接收 [短音制作链](../../domains/game-dev/assets/audio.md#可复制制作起点短样本与现有程序声混合)：源与许可、处理配方、规格二改、加载打包及事件接入；保留现有工程回执，已按 master `6324d55` 区分历史样本默认与当前 procedural 默认。[角色与武器动画模块](../../domains/game-dev/assets/animation.md)已整合动作供给／AI补缺、导入、图层、握点与换弹二改，接收为制作／实现蓝图，未引擎实测。[完整场景制作模块](../../domains/game-dev/assets/3d.md#完整片段先做一个能走能看能改的场景)已接收：同包供给、作者源／运行引用与傍晚局部二改；原生 Workflow 文稿完成，实际场景／画面／性能与二改未验。[技能特效制作模块](../../domains/game-dev/assets/materials.md#把候选交成整招而不是一段漂亮特效)已接收：整招阶段／图层／参数、扇形二改与同屏主次；文稿 Workflow 完成，实际视觉／性能未验。[2D 制作模块](../../domains/game-dev/assets/2d.md)已接收：作者源／规格、角色与地形配方、导入事件、加地形与换装二改；具体资产源未取得，真实引擎／视觉／玩法未验。[音乐增轨路线](../../domains/game-dev/assets/audio.md#保留探索录音新增战斗声部先选路线再做可回改候选)已接收：保探索录音、条件增轨、源工程／同长导出与编配二改；目标 checkpoint 许可待实际采用前核定，未生成／试听／DAW／引擎实测。继续合并已有制作研究并做独立制作／接入；最终听验留在下方人工清单。 |
 | P109 | 潮汐邮差：资产与木筏二改 | B | 窄例；v1 实玩见[正文](../../domains/game-dev/06-indie-roadmap.md)，v2 素材、筏与旧档客户端验收欠项保留。 |
