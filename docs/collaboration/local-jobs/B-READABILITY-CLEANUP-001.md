@@ -15,6 +15,10 @@ result_branch: relay/b-readability-cleanup-001
 
 按防御密度从高到低：domains/game-dev/assets/video.md，然后是 domains/game-dev/ 下其余页：01-engine-integration.md、02-verification-and-playtesting.md、04-client-modules.md、05-gameplay-architecture.md、06-indie-roadmap.md、README.md、assets/2d.md、assets/3d.md、assets/animation.md、assets/audio.md、assets/materials.md。25 探索、04 MCP 和游戏 03 已改好，不再动。
 
+**追加范围（2026-10-26）**：`domains/game-dev/unity/` 与 `domains/game-dev/unreal/` 下全部 Markdown，含其 `templates/` 里的 AGENTS、CLAUDE、README、agents 与 Skill 说明。模板会被读者复制进自己的项目，写法问题会跟着扩散，优先级与正文相同；只改说明文字，命令、脚本、路径和字段名保持不变，改后按 CLAUDE.md 的模板规则用模拟输入跑一遍相关脚本。
+
+**不改的范围**：`docs/research/`、`experiments/`、`docs/collaboration/reviews/`、`archive/` 和 local-jobs 历史记录是留档证据，不重写；正文引用它们时，在正文里写清结论。
+
 开工前看最新 main 和在制分支；同一文件只有一个写者，有人在改就先做别的页，最后统一回头改。已经清楚的页保留原样。
 
 ## 怎么改
