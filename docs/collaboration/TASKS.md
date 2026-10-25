@@ -49,16 +49,13 @@ dot-A 运行：仅每小时心跳；当前接口支持PR事件，普通main／re
 
 ## 需要用户决定
 
-等待只停对应动作，其余工作照常推进。
+只放锚点红线内的事（10-26 起默认授权）。等待只停对应动作，其余工作照常推进。
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
-| OpenSpec／Maka 上游 | 是否允许在 [OpenSpec #2115](https://github.com/Fission-AI/OpenSpec/issues/2115) 请求贡献邀请、在 [Maka #4495](https://github.com/apache/maka/issues/4495) 请求功能方向确认；Maka另需真人审阅负责及适用CLA | 已单次询问；先继续 Datasette／Memos PR与任务路线交付 |
-| dot-A Memoh | 能否在 dot 云端的一次性测试库里创建合成管理员和 bot（假数据，无付费、部署或特权容器） | 工程补丁已接收；真实业务与跨升级缓存待验 |
-| dot-A Memos 阅读模式 | 一个获准可用的 dot 云端浏览器入口，用来核匿名列表／详情、刷新恢复、键盘焦点和无写请求 | [工程补丁](../../experiments/memos-reading-adoption.md)已接收 |
-| P109 潮汐邮差 | B 原浏览器 URL 被拒后能否限定重试 | 新版可由其他有授权的环境接收 |
-| P7 | 原执行端要求直接确认①档 S01–S09 | 原文已转交一次，不重复派发 |
-| P27 listmonk | 能否在一次性公开副本的测试库里创建合成管理员（loopback、假数据、不外发邮件） | 观测补丁和 seed 已冻结 |
+| Maka 上游贡献 | [Maka #4495](https://github.com/apache/maka/issues/4495) 要求真人审阅负责并签 CLA，属于以用户名义签署协议 | OpenSpec 的贡献邀请和其他上游 PR 按默认授权继续 |
+
+10-26 按默认授权清出：dot-A Memoh 与 P27 listmonk 的测试库合成管理员、dot-A Memos 的云端浏览器入口（用 dot 的云电脑）、P109 的限定重试、P7 的执行确认、OpenSpec #2115 的贡献邀请。负责人直接推进，平台拦下时只停那一步。
 
 **平台拒绝**：P107（固定 a012fc7 的公开工具执行）和 Action 调试 10f6a6db 曾被平台拒绝。负责人补齐具体命令和用途后，再请用户在 Dot 里批准；此前不列为待决。
 
