@@ -2,7 +2,7 @@
 
 id: B-STYLE-PILOT-001
 owner: dot-B
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fde9056de6f587464252b916f1ce86a56ff791a9
 result_branch: relay/b-style-pilot-001
@@ -35,3 +35,13 @@ result_branch: relay/b-style-pilot-001
 - 普通原生 Workflow；只改目标文件与本任务文件，推到 result_branch，不合入 main。状态改为 `review_ready`，由负责人与 Claude 核心方向会话抽读，两边都认可后才按此规格恢复批量。负责人接收时同时检查读者负担是否减轻，而不只是事实是否完整。
 
 认领：dot 本地协作；2026-10-25T07:25:54.348620+00:00。来源 main 固定 `239b005`；按新规格分别试点一页，先发布认领后沿正常原生 Workflow 实施、只读新文读者检查及原结论对照。保留旧结果，不恢复批量；各推指定分支，由对应负责人与核心方向会话接收。
+
+## 本地执行失败与保留稿（2026-10-25）
+
+本次正常原生 Workflow 执行于 2026-10-25T07:27:39.847Z—07:51:33.891Z（UTC），父调用及已执行子阶段的 assistant 模型字段均为 `deepseek-flash`。调用因客户端 `Reached maximum number of turns (100)` 退出，退出码 1；不是模型联通失败。目标页已有改写草稿，但重写阶段未正常返回，计划中的只读新文读者检查与原结论对照尚无可交付结果，不能送作通过稿或恢复批量。
+
+已执行子阶段另有一次 Bash 嵌套 `claude -p` 读者命令被工具明确拒绝，原回执为 “The user doesn't want to proceed with this tool use.”，要求停止并等待用户指示；回执未给进一步原因。本端不重试该命令、不换通道绕过，也不把此拒绝扩大到 A 试点、Storybook 或其他本地模型调用。原 stdout、阶段日志、失败回执与当前草稿均留本机，结果分支保存目标页未验草稿；公开任务不上传私人路径、身份或未脱敏原始日志。
+
+恢复输入：确认这次被拒绝读者动作的后续处理。解除相应限制后，仅续接现有草稿的剩余只读新文读者检查、原结论对照及必要定向修订；不从头改写，不借旧试点结果，不重测联通，不改全局配置。篇幅、结构与读者结果尚待完整核对，状态保持 `blocked`，由 dot-B 与核心方向会话接收这一失败及草稿，未标 `review_ready`。
+
+草稿与失败回传：[`92f1b6bec95588ededfe8d108f1ffc54b44700ce`](https://github.com/dbvv1/a1dbv/commit/92f1b6bec95588ededfe8d108f1ffc54b44700ce)，分支 `relay/b-style-pilot-001`。仅目标页未验草稿及原任务；文档结构、公开扫描、实际新增提交身份与空白检查通过，不代替未完成的读者检查与原结论对照。main 仅同步本任务，不合入草稿正文。
