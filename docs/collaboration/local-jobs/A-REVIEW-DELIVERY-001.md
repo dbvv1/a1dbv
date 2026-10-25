@@ -2,7 +2,7 @@
 
 id: A-REVIEW-DELIVERY-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4434ba41609b8d7f30dbe4d7a1c390c92083365d
 result_branch: relay/a-review-delivery-001
@@ -26,3 +26,5 @@ Memos 的 focus＋click detail=0 只覆盖组件键盘激活路径模拟，不�
 - 已有内容若已足够，不为完成任务增写同义段落；回具体无增量结论即可。
 - 按已配置正常原生 Workflow 实施与一次有效独审，修订只复核受影响差量；不运行软件／浏览器或历史实验，不重开 P79／正式对照，不新建会话，不外发 PR／评论，不部署。
 - 发布前核最新 main，按手册 §7 完成文档、公开文件／实际新增提交身份与空白检查；只推结果分支，回实际调用起止、响应模型、必要介入、固定 SHA、检查与未完成项，状态 review_ready，由 dot-A 串行接收。
+
+认领：dot 本地协作；2026-10-25T07:04:41.979152+00:00。来源 main 固定 `7b87f03`；与迁移15无写入重叠，先发布认领后沿正常原生 Workflow 实施与有效独审，仅推指定结果分支，不重跑既有工程案例。
