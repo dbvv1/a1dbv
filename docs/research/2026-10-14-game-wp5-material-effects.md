@@ -1,6 +1,7 @@
 主线：二／三／四；G1 材质、特效的选型、迭代与发行
 改变的建议：[研究] 锁纹样二改先分“可编辑结构”和“shader 能表达”；清漆／积尘先比较原生分层，不因生成首图较好就整套重生。可取消技能优先复用／按运动重组，缺结构才评估原生粒子生成；装饰烟雾换镜头需要深度时先比较已有体积路径；保留参数复用、投影、重复采样及其他特效边界。
 新证据：[一手／研究] 整页新增MaterialApprentice（2026-07）图编辑与Unity 6.3／VFX 17.3／UE 5.8烟花事件契约；P64已补 MultiMat v3、多瓣材质增强、StableMaterials v4 原文及实际发布范围，Adobe 位图包装图与 Unity 6.3 coat 成本。新增 ParticleGen（2026-08）与独立 KinemaFX（2025）原文条件比较；新增装饰烟雾改镜头比较：FieryGS、神经six-way与既有Smolder生产机制；保留固定源码和反例，未实测资产、性能或工时。
+技能特效生产模块补核：2026-10-25（UTC+8）。只补参数驱动效果族与正常阶段接入会改变默认的官方契约缺口；复用 P64 三路比较、整招采用补核与可读性各节，未运行引擎或生成资产。
 
 # WP5 材质与特效：共同参数源、运行时与生成边界
 
@@ -155,6 +156,61 @@ UCSD的[MaterialApprentice v1](https://arxiv.org/html/2607.13318v1)（2026-07-14
 **E7 [社区：真实作者自述]** [Crystal Guardians TD 制作者原帖](https://www.reddit.com/r/Unity3D/comments/1tc6r4l/how_i_stopped_hundreds_of_vfx_graph_effects_from/)描述几百敌人各挂多个 VFX 的成本、共享位置覆盖同帧爆炸，改批量输入后又用了覆盖全地图的 bounds；讨论中承认没比较事件参数路线。[研究] 借并发／实例数与剔除粒度的取舍，不把纹理批处理当统一最优或把其收益当独立复测。搜得新 skill 的外部介绍以转述为主，未取得独立使用者整招二改成本。
 
 **最小采用验收 [研究]：** 同一招先以预警→确认命中→余波三层完成灰盒；保范围、单位、源与稳定引用，二改仅缩短蓄力并取消一次。实际镜头下查预警仍可读、取消后不发晚命中、低档装饰不挡下一危险，再测最低设备最坏并发。三层是制作责任分开，不要求新系统或三个文件；合格现成源满足就停，不为完整流程重新生成。
+
+## 技能特效生产模块补核：参数驱动效果族与正常阶段接入
+
+核实：2026-10-25（UTC+8）；Unity 6000.3 文档、VFX Graph 17.3 与 UE 当前公开 API 页。主线二／三。**改变的建议：** 整招生产的默认单位从“一招一份可编辑源”推进到“一族共享语言＋每招形状配置＋每次施放运行值”；阶段、范围和命中都接玩法已确认事件。官方组件的“停发／重置”不能替代取消与命中语义。复用 [P64 三路比较](#p64可取消技能特效的三路比较)、[整招采用补核](#整招采用补核可编辑源不等于玩法接线)与可读性、预算各节，不重做工具排名或来源链。[研究]
+
+### 官方实现缺口：参数、停发与事件
+
+| 一手事实 | 对默认的影响 | 不能推出什么 |
+|---|---|---|
+| [VFX Graph 17.3 Blackboard](https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/Blackboard.html)的属性可设 Exposed，经组件与 C# 读写；[VisualEffect](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.html) 提供 [SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.SetFloat.html)／`SetVector3`／`SetGradient`／`SetTexture`，setter 会把属性标为已覆盖；[SendEvent](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.SendEvent.html) 可带 `VFXEventAttribute`，事件接 Spawn Start／Stop 后替代默认 OnPlay／OnStop | 一族可共用一份图，按技能配置写暴露参数；阶段用命名事件切，减少复制资产 | 暴露参数不等于玩法状态；事件名、载荷与校验仍须项目自己定义 |
+| [VisualEffect](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.html) 的 `Stop` 只向所有 Spawn 系统发停止事件，页面未承诺清空已有粒子；[Reinit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.Reinit.html) 恢复初始状态、内部时间归零并重发 initial event | 取消要分“停发、自然收尾、立即清场”；不能把 Stop 当瞬间消失，也不能用 Reinit 做取消 | 未给出各层残留在目标项目的实际表现 |
+| [ParticleSystem.Stop](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/ParticleSystem.Stop.html) 默认 `StopEmitting`，已有粒子继续；`StopEmittingAndClear` 立即移除；[Main 模块](https://docs.unity3d.com/6000.3/Documentation/Manual/PartSysMainModule.html)的 Stop Action 在粒子全部死亡且超过 Duration 后触发 | 同一招不同层可选不同停发策略；回池前等寿命或显式清空 | Stop Action 不是阶段计时器，不能拿它驱动命中 |
+| [Sub Emitters](https://docs.unity3d.com/6000.3/Documentation/Manual/PartSysSubEmitModule.html)只有 Birth 支持多项 burst，Collision／Death／Trigger／Manual 只支持单个 burst | 命中层的多段爆裂不能默认挂 Death；多 burst 改 Birth 或手动触发 | 不说明各引擎版本的性能 |
+| [Shape 模块](https://docs.unity3d.com/6000.3/Documentation/Manual/PartSysShapeModule.html)的 Cone 有 Angle，Shape 的 Arc 属性可限制角度范围 | 扇形可用原生形状发射，但范围边界仍应由玩法半径／角度生成 | 原生扇形发射不等于判定形状一致 |
+| [UNiagaraComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/Niagara/UNiagaraComponent) 的 `SetVariableFloat`／`SetVariableVec3` 按名覆盖 user parameter，`ResetSystem` 回到初始模拟状态 | UE 同样按参数合同接；重置不等于保留现场取消 | API 页未统一说明 Deactivate 后已有粒子的语义，须按目标版本与 System／Emitter State 核 |
+
+[一手／研究] 上表只补会改变默认的契约缺口；VFX Graph 事件属性、Particle System 与 Niagara 的其余模块边界沿用 P64 与整招采用补核，不重扫全部官方文档。
+
+### 效果族的结构：共享语言，形状与运行值分级
+
+[研究] 正文把族参数分三级：族共享（色板、材质、边缘粗细、阶段顺序、优先级、占屏预算）、每招（beam／cone、范围绑定、时序、强调色、占屏上限）、每次施放（原点、方向、progress、intensity、结果、寿命）。这是项目约定，不是引擎字段；用配置校验拒收未知阶段、越界角度和缺失绑定，运行实例只写施放级字段。它针对两个真实维护问题：改一招却复制整套材质，以及 AI 顺手改到全族。
+
+[研究] ring／ribbon／flash／粒子／flipbook 按责任分，不按文件数分：范围边界、蓄力进度、方向／飞行、确认接触、冲击余波、内部细节各归一层。第一次只交灰盒也可验收责任是否清楚；外观源与派生纹理后补。作者源（Prefab／图／效果源与族配置）、派生纹理（flipbook、noise、SDF、六向光照）和运行实例（组件、参数值、阶段、寿命）分开保存，避免把当前目标、剩余蓄力或命中状态写进共享资产。
+
+### 首版与二改：同一合同下换形状
+
+[研究] 首版蓄力射击按预警→蓄力→释放→飞行→确认命中→余波六段接 05 的正常链，不把六段拆成六段视频再拼接：范围与进度读玩法参数，释放只在提交成功后，命中只在确认结果后，余波独立降档。第二改加同族扇形技能时共享色板、轮廓、节拍、材质与结果标记，只换形状绑定和范围参数；扇环由半径／角度生成，不拉伸 beam 贴图，多目标命中按确认结果合并，不按视觉射线计数；单目标强度与命中数量分开计，不把命中数累加成亮度。
+
+[研究] 两招同屏的优先级为来袭威胁 > 我方主动攻击 > 命中确认 > 余波；重叠时降低低优先级层的亮度／频率／时长，不删高优先级边界；共享色板下用轮廓、位置和时序区分，不靠颜色。强度可同族缩放，但不能用更大闪光把低优先级攻击装成更紧急；占屏预算超限先减装饰与余波、合并重复命中 flash。该顺序是设计规则，未做玩家识别实验，不能写成已验证的可读性收益。
+
+### 未执行的两招同屏验收设计
+
+场景：束射与扇形朝不同方向同时出现，随后插入更紧急的敌方预警；固定目标相机、最低画质和设备预算。下表是验收设计，本轮没有对应运行或画面。
+
+| 问题 | 机械可查 | 必须人看 |
+|---|---|---|
+| 事件与参数同源 | 事件轨迹、参数写入者、是否存在第二套蓄力／伤害状态 | — |
+| 阶段与取消 | progress 0→1、提交失败、取消、回池后无晚事件 | 预警是否仍可读、取消是否突兀 |
+| 两招同屏 | 优先级枚举、占屏预算、层降档记录 | 能否指出来源、方向、实际范围、进度、强度与主次 |
+| 成本 | 系统数、发射器数、屏幕覆盖、驻留记录 | 目标相机与最低画质下的实际帧时间 |
+
+[研究] 机械项只证明接线与状态归属，不证明打击感、节奏或两招可读；像素／截图评审也不能代替运动中的识别。
+
+### 选源与成本
+
+- **原生 Prefab／粒子／VFX Graph 默认：** 已有合格模板只改参数，不重做；成本是作者源、接线、版本升级与参数维护。
+- **许可清楚的现成源：** Effekseer 指定 CC0 包与 TriggerLaser 可学阶段切换；Dragon Crashers 等免费样例可学 Prefab／Timeline 局部编辑；样例许可、插件版本、单位与停止语义仍逐项核，免费样例不等于零美术投入。
+- **AI 补纹理或可编辑结构（有条件）：** 只在缺纹理、缺结构且输入／输出许可清楚时用；承担候选淘汰、清理、风格一致、接线和重生成。像素评审不等于 GPU 预算，也不保证范围与命中正确。
+- **维护成本：** 按族共享一份材质／参数表、每招一份形状／时序、每次施放只写运行值计；不按文件数或粒子数计。
+
+### 验证边界与重开条件
+
+未运行 Unity／Unreal／Effekseer、未生成资产、未做同屏人看。需要实测的是：阶段事件与参数是否同一来源、取消／回池是否残留晚事件、两招同屏是否保来源方向范围进度主次、目标相机与最低画质的占屏与帧成本。若实测显示共享图无法表达某招形状，或事件合同仍逼每招复制资产，再回到条件比较，不先加框架。动态版本只在新官方契约改变选择时重核，本轮不刷新全部来源。
+
+依据：本节复用 P64 三路比较、整招采用补核与可读性各节；新增仅上表官方 API 与正文参数分级。[一手／研究]
 
 ## 动态事实表：采用前再核，最迟 2026-11-14
 
