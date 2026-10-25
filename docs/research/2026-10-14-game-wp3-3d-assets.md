@@ -575,6 +575,33 @@ Meshy 端点当前 `latest` 标 Meshy 7，不能借几何生成页的 7.1 推断
 建议只约束采用前提：这不是各引擎当前完整支持清单，也不是实际加载测试；最终文件仍须经过目标项目的导入和二改验收。
 
 
+<a id="skinned-gltf-consumer-evidence"></a>
+
+### 蒙皮接收：把规范提示变成消费者的具体检查
+
+**保留作者源和现有导出，验证整体变换是否真正带上蒙皮与骨骼。** 本次是原创 Beacon Guard 的三份固定 GLB（blue、amber、blue-long），源／导出与长刃二改沿动画页已有实现，不从这个占位样本推断生成模型的美术品质。正式采用时保配方、DCC 工程、导出设置与许可；运行 GLB 可以重新生成，源端改动与旧场景引用仍须一起回归。
+
+| 接收层 | 实际结果与读者动作 |
+|---|---|
+| 规范与自包含 | 锁定官方 npm `gltf-validator@2.0.0-dev.3.10`，三份 GLB error 均为 0，warning 为 25／26／25，info 为 24／25／24；全部问题保留，未截断、无外部资源。读取／解析失败、error、外部资源请求或截断均返回非零，不能只看“成功加载”。 |
+| 具体 warning | 均为 `NODE_SKINNED_MESH_NON_ROOT`，提示 mesh 的父节点变换不能直接当作蒙皮变换。此发行包计 Warning；核实当日官方 main 问题表已列 Information，不能用网页新级别改写锁包实测。Info 均为无贴图材质未用的 `TEXCOORD_0`；这里只解释本组问题，不豁免其他警告。 |
+| 实际消费者 | 锁定 `three@0.186.1`，纯 Node 的 `GLTFLoader.parseAsync`＋`AnimationMixer` 加载三份资产，各采 idle 0.5s、walk 8/30s、attack 0.6s，共 9 组。将包含 mesh 与骨架的 `gltf.scene` 平移 `(3,2,-4)` 米并等比缩放 1.7；先存原世界点，逐坐标算 `原值×1.7＋平移`，对照更新后的所有蒙皮顶点与 15 根骨骼世界位置，而非用新根矩阵给自己生成期望。 |
+| 正反例与采用 | 9 组在 `1e-5` 米阈值内通过；只平移／缩放 mesh、留下骨架的故意错误操作，在三资产首个 idle 样本均失败。保现有层级，以共同根执行整角色操作；不能从 CPU 数值通过外推浏览器／GPU 渲染、非等比缩放、连续动作衔接或正式游戏表现。 |
+
+使用 Node.js 24 和 npm，在固定 MOBA-Like 检出版本的仓库根运行：
+
+```sh
+npm --prefix asset-pipeline/validation ci --ignore-scripts --no-audit --no-fund
+node asset-pipeline/validation/validate.mjs
+node asset-pipeline/validation/consumer.mjs
+npm --prefix asset-pipeline/validation test
+```
+
+`consumer.mjs --mesh-only` 是预期 exit 1 的人为反例。现有 5 项测试覆盖正常规范检查、截断 GLB、缺失输入、整根变换及 mesh-only 反例，实跑全部通过、0 skip。
+
+来源与范围（2026-10-25 UTC）：[固定已发布实现与重跑说明](https://github.com/dbvv1/MOBA-Like/tree/99f342621c09bec28da3945e8ed412e076100d59/asset-pipeline/validation)、[原资产与作者源](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)、[官方问题表](https://github.com/KhronosGroup/glTF-Validator/blob/main/ISSUES.md)。[本仓运行] 资产与消费者已实跑并经非作者独审；未运行浏览器／GPU 或游戏。
+
+
 ## 13. 程序化二改：复用已有配方，还是补新形状与规则
 
 核实：2026-10-16（UTC+8）。**改变的选择：** 保留同包资产与已有程序配方优先，但把支持范围内的参数修改，与新增模块／风格／连接规则分开。后者先确认合格源件和规则的供给；只能靠人工美术补齐时，换完整资源体系或缩需求，不默认自建通用生成器。[研究／经验]

@@ -2,7 +2,8 @@
 
 id: B-STAR-RUSH-SMOKE-001
 owner: dot-B
-status: review_ready
+status: accepted
+accept: auto
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 8de570ab2822c673ec7bb3a190ae18c85a57a417
 result_branch: relay/b-star-rush-smoke-001
@@ -49,3 +50,10 @@ Star-Rush 已按用户要求从源重建 Kenney 并合入 master `af569f88309a31
 - 实际WebGL2、倒计时后按W速度>5、比赛计时推进、1280×720非背景画布；console／page／request／HTTP错误与cleanup错误均0。量化颜色1564、最大色占比0.2942，warning1为Three弃用提醒；sandbox=true，软件WebGL不称硬件GPU。
 - `outputs/smoke/report.json`、`race.png`、`canvas.png`均已生成并仅留本机，截图未外发。公开文件／实际新增提交身份扫描通过；画面审美、手感、听感与硬件GPU未验，交dot-B接收。
 - 实际通道Claude Code＋DeepSeek原生Workflow，原始message.model为deepseek-flash，请求别名单列；复用原调用，未重建另一套smoke。
+
+
+## dot-B 接收更新（固定来源 1c93eb2d39302d438d085f04f48528d00c93bf4d）
+
+当前接收：按用户2026-10-26明确授权，原调用继续；有效非作者独审及目标检查／实际结果通过后，宿主可协调既有发布者，在自身范围串行快进发布产品默认分支与a1回执，保留远端前进和他人成果，负责人事后抽查。撤回下文历史“只交结果分支／等B再审批”的组织限制；不是重派，不跳过失败／未验门禁，其他具体拒绝仍停。工程检查与真实浏览器结果分别验收；不得以构建／单测通过替代最终集成树的浏览器断言。
+
+当前验收：按用户自动接收授权，已将已独审的Windows三行修复与最新master 5cc161e串行整合并快进发布到[32b2d3a](https://github.com/dbvv1/Star-Rush-Reborn/commit/32b2d3abde569f182c13780077669f3ab628f946)。代码／依赖／实际smoke入口与已测e9cf503完全一致，只保留最新主线的说明更新；复用28/28测试及真实沙箱WebGL2、赛中W／计时／画布断言，新增整合及提交身份检查通过。工程与浏览器smoke范围accepted；画面、手感、听感仍待人工，无部署。上文“只结果分支待B接收”为已撤回的历史组织限制。
