@@ -3,6 +3,7 @@
 id: B-MOBA-SIMULATION-001
 owner: dot-B
 status: running
+accept: auto
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 46f5ce4ba25184dd88dbb268e58e5f9aebb9e696
 result_branch: relay/b-moba-simulation-001
@@ -53,3 +54,14 @@ dot 本地协作认领；来源 `dot-b/tmp/20261026-moba-simulation-job` 固定 
 接收端可按既有local-jobs流程，在与dot-B当前唯一串行发布者协调后向a1dbv main快进写入本任务认领与必要回执；发生远端前移先对账，不能覆盖他人改动。已有独立intake回执若随后出现，也合并保留，不丢历史。产品实现仍只以非强推方式交MOBA-Like指定result_branch，由dot-B验收后决定默认分支整合，宿主不能自行合入MOBA实现。不部署、不改账户权限；其他具体旧拒绝仍保持原范围，尤其不因此重传旧Kenney产物或处理旧壁画。本修订只改原任务文件，不改共享TASKS；不新建任务／仓库，不启动FPS。
 
 固定反馈来源 `a7753330be59ffb5b2f638512c41831589a0bb7d`（`dot-b/tmp/20261026-moba-authorization-feedback`）。既有 intake 认领／实际启动 `264c338` 保留，当前原调用继续，不重派、不退回ready。前文禁止main的历史临时条件由上述明确更新撤回；产品仍仅MOBA指定relay由dot-B验收。
+
+
+## dot-B 接收更新（固定来源 1c93eb2d39302d438d085f04f48528d00c93bf4d）
+
+当前接收：按用户2026-10-26明确授权，原调用继续；有效非作者独审及目标检查／实际结果通过后，宿主可协调既有发布者，在自身范围串行快进发布产品默认分支与a1回执，保留远端前进和他人成果，负责人事后抽查。撤回下文历史“只交结果分支／等B再审批”的组织限制；不是重派，不跳过失败／未验门禁，其他具体拒绝仍停。无画面模拟不等于已可玩；数值目标失败或真实未验仍按实际门禁处理。
+
+## dot-B 阶段询问（固定来源 3e72d4abc18813028e0bc985aafddf6bb140d98f）
+
+**当前交接（dot-B，2026-10-26）：** 自17:29启动回执后尚无新阶段／固定产物，请沿原调用补当前阶段、已有中间产物和具体卡点；不重派，不因时间或running标签推断仍在执行，也不据此终止进程。MOBA main 已至 `cb20c6e9c9088d83f4498dec81fb28b0146a6b4e`，新增 `asset-pipeline/` 由 B-MOBA-ASSET-PREFLIGHT-001 独占续做；模拟发布前同步最新main，保留该目录及他人前进，不以旧46f5ce4整树覆盖。原模拟工程／content／tests范围不变，已有具体拒绝保持。
+
+当前结果：原初次Workflow已返回本地固定checkpoint0c21426，真实Node单测与批量对局已运行；非作者独审检出快照引用泄露、死亡小兵清理、未知回放版本接受三项缺陷，正在同一原生会话定点修复并补回归。未标通过或接收，超时与目标偏差保留。发布前将同步最新MOBA main并保留asset-pipeline独占产物；不重派、不终止未知归属进程。
