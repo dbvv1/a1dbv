@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-008
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: aa63444a8e0a106118048c258805ff8c78fe3875
 result_branch: relay/a-style-rewrite-008
@@ -33,3 +33,5 @@ result_branch: relay/a-style-rewrite-008
 ## 执行与结果
 
 待接收。正常已配置原生 Workflow，分页独立实施、一次有效独立核验。实际型号／起止／改动与检查回写，仅推指定分支。
+
+认领：dot 本地协作；2026-10-25T04:34:07.219714+00:00。来源 main 固定 `4c16a2e`；与Sphinx续接无文件重叠，先发布认领后沿既有正常原生 Workflow 两页独立实施与验证，结果仅推指定分支。
