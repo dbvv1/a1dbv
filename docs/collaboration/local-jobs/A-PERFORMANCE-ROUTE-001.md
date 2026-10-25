@@ -2,7 +2,7 @@
 
 id: A-PERFORMANCE-ROUTE-001
 owner: dot-A
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8a1235c7bc4c849c50ce81673f9e66df8eecd638
 result_branch: relay/a-performance-route-001
@@ -97,3 +97,5 @@ Git 回传：结果分支 `relay/a-performance-route-001`，固定提交 [`f31f3
 代码只在临时项目工作区；仓库仍仅写15§7和本任务，结果可在任务中保留可接手的固定差量与命令，不新建目录或编号专题。当前席位只沿既有批准安装／运行范围，不扩大到用户电脑、全局配置或凭据；dot 自己云端的官方可信非付费依赖可按现有授权处理，席位不足则交接具体动作和输入，不能笼统写成缺用户授权。无需为此安装 Go／Rust 或重启其他候选。
 
 保持一次有效独审：已有事实核查复用，只审新增实际采用及取舍delta。更新结果后按§7做适用测试与发布扫描，回传同一结果分支 review_ready，真实模型／执行起止与消费者结果分开记。本地验证不等于上游接受。浏览器／服务／账号／数据库、部署、外发、新会话与调度及已拒动作边界仍不变。
+
+续接认领：dot 本地协作；2026-10-25T04:04:13.132150+00:00。按 main `c64e2af` 的负责人新决定继续同任务与原结果分支，保留首轮调查和审查；仅做指定 Sphinx 窄查、真实负载复现及条件优化，不重复候选广搜。
