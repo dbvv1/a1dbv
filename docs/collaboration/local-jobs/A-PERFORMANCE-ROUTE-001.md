@@ -2,7 +2,7 @@
 
 id: A-PERFORMANCE-ROUTE-001
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8a1235c7bc4c849c50ce81673f9e66df8eecd638
 result_branch: relay/a-performance-route-001
@@ -99,3 +99,265 @@ Git 回传：结果分支 `relay/a-performance-route-001`，固定提交 [`f31f3
 保持一次有效独审：已有事实核查复用，只审新增实际采用及取舍delta。更新结果后按§7做适用测试与发布扫描，回传同一结果分支 review_ready，真实模型／执行起止与消费者结果分开记。本地验证不等于上游接受。浏览器／服务／账号／数据库、部署、外发、新会话与调度及已拒动作边界仍不变。
 
 续接认领：dot 本地协作；2026-10-25T04:04:13.132150+00:00。按 main `c64e2af` 的负责人新决定继续同任务与原结果分支，保留首轮调查和审查；仅做指定 Sphinx 窄查、真实负载复现及条件优化，不重复候选广搜。
+
+## Sphinx 真实负载复现与可撤回本地索引（2026-10-25，续接）
+
+**结论：在固定 Sphinx `1ddf1981` 与 GCC 撤除 Sphinx 文档前的 `bd044da` 上，issue #10966 的真实 `cpp` 负载可稳定构建；当前热点不是 5.3.0 的 `direct_lookup`（0.50s），而是 `_find_named_symbols` 的同名候选线性扫描（profile 累计 5.35s）。按 C domain 的有序候选索引做可撤回本地差量后，五次成对构建（含两次倒序）墙钟均值 31.22s→28.92s（−2.31s，约 7.4%），`gccint.texi` 逐字节相同、54 条 warning 集合相同、116 个 C++ domain 测试与 299 个 domain 测试通过。该差量只在临时工作区验证，未提交上游、未在本仓采用；收益只代表这一固定历史负载与单机，不能写成 Sphinx 全面提速。** 首轮负结果和审查保留在上文；本节只取代“未运行／无当前 profile／环境硬门槛”这组缺口，不重跑候选广搜。
+
+### 窄查：issue、旧优化分支与当前源码
+
+- [issue #10966](https://github.com/sphinx-doc/sphinx/issues/10966) 仍 OPEN，labels `domains:cpp`、`help wanted`、`type:performance`；assignee 是 2022-11-11 self-assigned 的 jakobandersen；页面 Development 显示 “No branches or pull requests”；最后实质评论 2026-03-24 称 issue 已 stalled，无维护者新答复。按负责人纠偏，只记为“当前活动未证实”，不据此宣布无人执行或活跃实现。
+- fork 分支 [`c_cpp_optimizations`](https://github.com/jakobandersen/sphinx/tree/c_cpp_optimizations) 头为 [`2f21346`](https://github.com/jakobandersen/sphinx/commit/2f2134671c91016735ff94097c1f1fada8b4306e)（2022-11-11），只有三项提交：`018105f` 缓存 `get_newest_id`、`d752a79` 特化 `ASTIdentifier`／`ASTOperator` 的 `__eq__`、`2f21346` 类型修正；没有关联 PR，2022 年后无更新。
+- 两项实质优化已在当前固定源码中：`_ast.py` [`get_newest_id`](https://github.com/sphinx-doc/sphinx/blob/1ddf1981c4aac4ff72bfb4a97e05909d55c3a149/sphinx/domains/cpp/_ast.py#L4629) 已有 `_newest_id_cache`；`_ast.py` [`ASTIdentifier.__eq__`](https://github.com/sphinx-doc/sphinx/blob/1ddf1981c4aac4ff72bfb4a97e05909d55c3a149/sphinx/domains/cpp/_ast.py#L61) 已特化并注明为性能。旧 profile 的 55.776s `direct_lookup` 不再成立，本次实测 0.495s；复用时不需要再抄一遍这两项。
+- 仍未索引的是名字查找：[`_find_named_symbols`](https://github.com/sphinx-doc/sphinx/blob/1ddf1981c4aac4ff72bfb4a97e05909d55c3a149/sphinx/domains/cpp/_symbol.py#L390) 经 [`_candidates`](https://github.com/sphinx-doc/sphinx/blob/1ddf1981c4aac4ff72bfb4a97e05909d55c3a149/sphinx/domains/cpp/_symbol.py#L480) 逐项遍历 `_children`。C domain 的 [`_children_by_name`](https://github.com/sphinx-doc/sphinx/blob/1ddf1981c4aac4ff72bfb4a97e05909d55c3a149/sphinx/domains/c/_symbol.py#L126)（[#12162](https://github.com/sphinx-doc/sphinx/pull/12162) 合入）是单值 dict，不能直接照搬：C++ 同一作用域有重载／特化候选，还需要匿名实体候选顺序。
+
+### 真实负载、固定版本与命令
+
+原 issue 的负载是 GCC 的 `gcc/doc/gccint`，但 GCC 主干已在 2022-11-14 撤除这批 Sphinx 文档（[`191dbc35`](https://github.com/gcc-mirror/gcc/commit/191dbc356882)），当前 `master` 已无 `gcc/doc/gccint`。因此固定撤除前最后提交 [`bd044dae`](https://github.com/gcc-mirror/gcc/commit/bd044dae51caea3c641f86ec5cb0ebccf7e06de7)（2022-11-10），并固定 Sphinx [`1ddf1981`](https://github.com/sphinx-doc/sphinx/commit/1ddf1981c4aac4ff72bfb4a97e05909d55c3a149)（9.3.0，BSD-2-Clause）。只取文档路径，不克隆整棵 GCC：
+
+```bash
+git clone --depth 1 --filter=blob:none --sparse https://github.com/gcc-mirror/gcc.git gcc
+cd gcc
+git sparse-checkout set gcc/doc doc
+git fetch --depth 1 origin bd044dae51caea3c641f86ec5cb0ebccf7e06de7
+git checkout bd044dae51caea3c641f86ec5cb0ebccf7e06de7
+python -m venv venv
+venv/Scripts/python -m pip install -e <Sphinx 1ddf1981 checkout>
+venv/Scripts/python -m sphinx -b texinfo -d doctrees gcc/doc/gccint output -j 1
+venv/Scripts/python -m cProfile -o profile.prof -m sphinx -b texinfo -d doctrees-prof gcc/doc/gccint output-prof -j 1
+```
+
+- 环境：Windows 11、Python 3.13.5、docutils 0.23；`-j auto` 与 `-j 1` 在本负载都约 31s，配对实验统一用 `-j 1` 降低多进程噪声。
+- 16 个 intersphinx inventory 在本次环境不可达；54 条 warning 包含这些网络失败、文档既有重复声明和不存在的跨手册 label，before／after 逐项相同。原 issue 的 44s／79s 来自 2022 年另一台机器和 Sphinx 5.3.0，不能与本轮绝对值比较。
+- 构建后的 C++ 符号树：根作用域 1057 个子符号、全树 2655 个、无匿名符号；每次名字查找平均要扫约 683 个候选，这是线性扫描的成本来源。
+
+### Profile 与五次成对构建
+
+| 指标 | 固定源码 | 本地索引差量 |
+|---|---|---|
+| cProfile 墙钟 | 53.283s | 48.887s |
+| profiler 内累计 | 46.403s | 41.867s |
+| 总函数调用 | 102,274,565 | 78,259,767 |
+| `_find_named_symbols` 累计 | 5.353s | 0.033s |
+| `_matches` 调用 | 4,202,919 | 48 |
+| `resolve_xref` 累计 | 5.112s | 0.376s |
+| `direct_lookup` 累计 | 0.495s | 0.395s |
+
+无 profiler 的五次成对构建（同一命令、每次全新 doctree）：
+
+| 轮次 | 顺序 | baseline | 本地索引 | 差 |
+|---|---|---|---|---|
+| 1 | base→opt | 31.546s | 28.748s | −2.798s |
+| 2 | base→opt | 30.736s | 29.580s | −1.156s |
+| 3 | base→opt | 30.296s | 27.700s | −2.596s |
+| 4 | opt→base | 31.452s | 28.602s | −2.850s |
+| 5 | opt→base | 32.088s | 29.963s | −2.125s |
+| 均值 | — | 31.224s | 28.919s | −2.305s（−7.4%） |
+
+前三次 baseline→opt，后两次 opt→base 控制顺序偏差；五次方向一致，差值 1.2–2.9s。后两轮整体墙钟更高（机器负载漂移），不影响相对方向。profile 的函数调用开销会放大索引收益，因此以墙钟约 7.4% 为准，不写更高倍数。
+
+### 可撤回本地差量
+
+只改 `sphinx/domains/cpp/_symbol.py`（+96/−6）：
+
+- 每个 `Symbol` 增加 `_children_by_ident: dict[str, list[Symbol]]`，按 `str(identOrOp)` 保存直接子符号，保持插入顺序；在 `Symbol.__init__`、`remove`、`_unconditional_add` 三处维护；旧 pickle 首次访问时按 `_children` 惰性重建。
+- `_candidates` 增加 `ident_or_op` 参数：`match_self` 只在名字相等时产出；无匿名子节点时从索引取同名候选；有匿名子节点时退回原 `children_recurse_anon` 全遍历并按名字过滤，保证匿名候选与原顺序一致。
+- 索引只是预过滤，候选仍交给 `_matches` 做模板参数／实参的精确比较，重载与特化选择逻辑不变。
+
+```diff
+diff --git a/sphinx/domains/cpp/_symbol.py b/sphinx/domains/cpp/_symbol.py
+index 7d815c0..e6681ee 100644
+--- a/sphinx/domains/cpp/_symbol.py
++++ b/sphinx/domains/cpp/_symbol.py
+@@ -27,6 +27,18 @@
+ logger = logging.getLogger(__name__)
+
+
++def _ident_key(identOrOp: ASTIdentifier | ASTOperator) -> str:
++    """Return a hashable key for the per-scope child index.
++
++    ``ASTIdentifier`` and the concrete ``ASTOperator`` classes are equal when
++    their fields are equal, and their string form is derived from those same
++    fields.  Equal names therefore always get the same key.  The key may be
++    coarser than equality for some AST type nodes, which is harmless: every
++    candidate is still checked by ``Symbol._matches``.
++    """
++    return str(identOrOp)
++
++
+ class _DuplicateSymbolError(Exception):
+     def __init__(self, symbol: Symbol, declaration: ASTDeclaration) -> None:
+         assert symbol
+@@ -221,15 +233,58 @@ def __init__(
+         # Remember to modify Symbol.remove if modifications to the parent change.
+         self._children: list[Symbol] = []
+         self._anon_children: list[Symbol] = []
++        # Index of direct children keyed by their identifier/operator, used to
++        # avoid scanning every child of a scope for each symbol lookup.
++        self._children_by_ident: dict[str, list[Symbol]] = {}
++        self._anon_present = False
+         # note: _children includes _anon_children
+         if self.parent:
+             self.parent._children.append(self)
++            self.parent._index_child(self)
+         if self.declaration:
+             self.declaration.symbol = self
+
+         # Do symbol addition after self._children has been initialised.
+         self._add_template_and_function_params()
+
++    def _child_index(self) -> dict[str, list[Symbol]]:
++        """Return the index of direct children by identifier/operator.
++
++        The index is rebuilt lazily for symbol trees loaded from a pickle
++        written before this optimization existed.
++        """
++        index = self.__dict__.get('_children_by_ident')
++        if index is None:
++            index = {}
++            for child in self._children:
++                if child.identOrOp is not None:
++                    index.setdefault(_ident_key(child.identOrOp), []).append(child)
++            self._children_by_ident = index
++        return index
++
++    def _index_child(self, child: Symbol) -> None:
++        # Build the index before appending so that old trees stay complete.
++        index = self._child_index()
++        if child.identOrOp is not None:
++            key = _ident_key(child.identOrOp)
++            children = index.setdefault(key, [])
++            if child not in children:
++                children.append(child)
++            if child.identOrOp.is_anon():
++                self._anon_present = True
++                if child not in self._anon_children:
++                    self._anon_children.append(child)
++
++    def _has_anon_children(self) -> bool:
++        anon_present = self.__dict__.get('_anon_present')
++        if anon_present is None:
++            anon_present = any(
++                child.identOrOp is not None and child.identOrOp.is_anon()
++                for child in self._children
++            )
++            self._anon_present = anon_present
++        return anon_present
++
+     def __repr__(self) -> str:
+         return f'<Symbol {self.to_string(indent=0)!r}>'
+
+@@ -293,6 +348,21 @@ def remove(self) -> None:
+             return
+         assert self in self.parent._children
+         self.parent._children.remove(self)
++        if self.identOrOp is not None:
++            key = _ident_key(self.identOrOp)
++            children = self.parent._child_index().get(key)
++            if children is not None:
++                try:
++                    children.remove(self)
++                except ValueError:
++                    pass
++                if not children:
++                    del self.parent._children_by_ident[key]
++            if self.identOrOp.is_anon():
++                try:
++                    self.parent._anon_children.remove(self)
++                except ValueError:
++                    pass
+         self.parent = None
+
+     def clear_doc(self, docname: str) -> None:
+@@ -424,7 +494,9 @@ def _find_named_symbols(
+                     template_args = None
+
+         for s in self._candidates(
+-            match_self=match_self, recurse_in_anon=recurse_in_anon
++            ident_or_op=ident_or_op,
++            match_self=match_self,
++            recurse_in_anon=recurse_in_anon,
+         ):
+             if Symbol.debug_lookup:
+                 Symbol.debug_print('candidate:')
+@@ -478,19 +550,36 @@ def _matches(
+         return True
+
+     def _candidates(
+-        self, *, match_self: bool, recurse_in_anon: bool
++        self,
++        *,
++        ident_or_op: ASTIdentifier | ASTOperator,
++        match_self: bool,
++        recurse_in_anon: bool,
+     ) -> Iterator[Symbol]:
++        key = _ident_key(ident_or_op)
+         s = self
+         if Symbol.debug_lookup:
+             Symbol.debug_print('searching in self:')
+             logger.debug(s.to_string(Symbol.debug_indent + 1), end='')
+         while True:
+-            if match_self:
++            # Candidates that do not have the queried name are rejected by
++            # ``_matches`` anyway, so only the matching children need to be
++            # yielded, in their original insertion order.
++            if match_self and s.identOrOp == ident_or_op:
+                 yield s
+-            if recurse_in_anon:
+-                yield from s.children_recurse_anon
++            if recurse_in_anon and s._has_anon_children():
++                # Symbols below anonymous children can match as well, and
++                # their candidates interleave with direct children.  Keep the
++                # original traversal when such children exist to preserve the
++                # candidate order exactly.
++                for candidate in s.children_recurse_anon:
++                    if (
++                        candidate.identOrOp is not None
++                        and candidate.identOrOp == ident_or_op
++                    ):
++                        yield candidate
+             else:
+-                yield from s._children
++                yield from s._child_index().get(key, ())
+
+             if s.siblingAbove is None:
+                 break
+@@ -986,6 +1075,7 @@ def _unconditional_add(self, other_child: Symbol) -> None:
+         # TODO: hmm, should we prune by docnames?
+         self._children.append(other_child)
+         other_child.parent = self
++        self._index_child(other_child)
+         other_child._assert_invariants()
+
+     def add_name(
+```
+
+（临时工作区路径不入公开记录；差量文件仅作交接，不新建目录。）
+
+### 行为验收与消费者
+
+- `gccint.texi` 与 `Makefile` 在 baseline 和 opt 的每次运行间 SHA-256 相同，`cmp` 逐字节一致；54 条 warning 集合逐项相同。
+- `tests/test_domains/test_domain_cpp.py`：固定源码 116 passed，差量 116 passed；`tests/test_domains`：差量 299 passed。
+- 实际 CLI 消费者就是 issue 命令里的 `sphinx-build -b texinfo`；下游 texinfo 编译（`makeinfo`／`texi2any`）本机没有，未运行，不能声称整条 GCC 文档发布链已验证。
+- 本地验证不等于上游接受；未向外发 issue／PR／评论，也未声称接管维护者任务。
+
+### 接收、撤回与仍缺
+
+- 可接手：固定上述两个 SHA，按命令复现；差量只放在该固定 Sphinx 树内，接收方可先跑 `tests/test_domains` 与同一 GCC 构建再比较输出。
+- 撤回条件：任一引用解析目标、anchor／ID、warning、texinfo 输出或测试出现差异；匿名作用域候选顺序不能保持；索引维护漏掉新增／删除子符号；或上游／他人出现同范围有序索引实现。满足任一即撤回差量，不用基准变绿替代行为验收。
+- 仍缺：`makeinfo`／下游发布链验证；其他 GCC 版本、其他项目负载与 N／2N 伸缩曲线；多机重复；上游对方向的答复。当前结论只适用于本固定历史负载。
+- 未做：未安装 Go／Rust／Java，未做正式 Agent 方法 A/B，未用生成语料替代真实负载，未提交上游，未新建目录或台账。
+
+### 执行元数据（续接）
+
+- 实际响应字段：本续接子代理原始 assistant `message.model` 为 `deepseek-flash`；请求别名 `deepseek-v4.1-flash[1m]`，后端具体型号未另证。
+- 客户端与调用：Claude Code 子代理（原生 Workflow `sphinx-continuation` 的 sole writer），2026-10-25T04:05:56Z—04:31Z（本席检查完成）；同一 Workflow 后续只有机械 delivery-check，语义审查由父级原生 reviewer 负责。
+- 差量可应用性：从本记录抽取的 diff 已在固定源码的干净 clone 上通过 `git apply --check`（无需忽略空白）。
+- 检查：`check_repo.py` 364 files／0 errors；`check_public.py` 625 files／0 findings；`git diff --check` 无输出；本席未 commit／push，结果分支由父级发布。未运行完整离线套件（纯文档与临时工作区代码，按 §7 只跑适用检查）。
+- 交付状态：`review_ready`；本地验证与机械检查完成，新增实际采用差量待父级原生 reviewer 语义审查，不宣称审查完成或上游接受。
+
+### 续接独立审查与最终交付核对
+
+原独立审查者只复核本次相对 `8fafe32` 的实际采用 delta，复用未变事实：已亲读固定源码、局部索引差量、五对原始 texinfo／warning、原始命令与测试输出，未发现实质缺陷。五对均值 31.2236s→28.9186s（约7.38%）只属于这份单机固定历史真实负载；未运行 makeinfo／完整发布链、其他项目、多机或正式模型方法对照。旧 pickle 惰性重建、特定增量及并行场景没有专项前后对照，不由现有测试数外推全面通过。
+
+实际续接原生调用 2026-10-25T04:05:39.214Z—04:40:22.046Z（UTC）正常退出；父调用与两个阶段原始响应字段均为 `deepseek-flash`，请求别名另记。原始首轮负结果、负责人纠偏、真实负载证据和代码差量均保留。15与本任务之外无仓库改动，产品代码只在任务临时工作区。

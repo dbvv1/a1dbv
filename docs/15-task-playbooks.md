@@ -410,7 +410,9 @@ flowchart TD
 
 **画布缩放迟迟不清晰，先分未算完还是在等屏外预绘。** 后者在可让出的异步路径先呈现可见结果再补周边，不默认换绘图库。[Penpot 的呈现／预绘拆分](research/2026-10-13-domain-skill-contract.md#交互画布先呈现可见区域再补屏外预绘)有固定实现，无独立延迟收益测量。
 
-**依据**：[本仓实试／经验] Chrome DevTools MCP 离线查询；[一手：作者自报；经验：采用] OpenAI 维护案例与 P45；[经验] 性能目标与改动纪律；[一手；研究] PerfAgent 评估；[一手：论文与源码；研究] 竞争实现轻量搜索；[一手／研究] Roaring、libc++ 与共享状态修订链；[一手：作者标注与源码；研究] pnpm v11；[一手／社区；研究] CPython、pandas、SGLang、Sanity／Onyx 与 Penpot；[经验：报告；一手：源码；研究] alchemy-utils 批处理语义；核实 2026-10-25。
+**✅ 真实公开负载仍慢时，先固定历史版本和原命令复现，再用 profile 决定改哪层；候选索引只替换同名扫描，不替代行为验收。** [issue #10966](https://github.com/sphinx-doc/sphinx/issues/10966) 的真实负载是 GCC 文档；当前 GCC 主干已撤掉这批 Sphinx 文档，必须固定撤除前 [`bd044da`](https://github.com/gcc-mirror/gcc/commit/bd044dae51caea3c641f86ec5cb0ebccf7e06de7)、Sphinx [`1ddf1981`](https://github.com/sphinx-doc/sphinx/commit/1ddf1981c4aac4ff72bfb4a97e05909d55c3a149)，才有 1057 个根作用域 C++ 符号、单次 texinfo 构建约 31s 的规模。原报告 5.3.0 的 55.8s `direct_lookup` 在当前 9.3.0 已因缓存 `get_newest_id` 和特化 `__eq__` 消失（0.50s），剩余热点是 `_find_named_symbols` 逐项扫描同名候选（profile 累计 5.35s）。参照 C domain 的 `_children_by_name` 给 C++ 加有序候选索引后，该函数降到 0.03s，五次成对构建（含倒序）墙钟 31.2→28.9s（约 7%），`gccint.texi` 逐字节相同、warning 集合相同、C++ domain 测试全过。关键是索引只做同名预过滤，仍由 `_matches` 保重载／特化选择；遇到匿名子节点退回原遍历保顺序；该差量只在临时工作区验证，未提交上游、未在本仓采用，7% 只代表这一固定历史负载和单机。固定差量、命令与撤回条件见[本任务记录](collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)。
+
+**依据**：[本仓实试／经验] Chrome DevTools MCP 离线查询；[一手：作者自报；经验：采用] OpenAI 维护案例与 P45；[经验] 性能目标与改动纪律；[一手；研究] PerfAgent 评估；[一手：论文与源码；研究] 竞争实现轻量搜索；[一手／研究] Roaring、libc++ 与共享状态修订链；[一手：作者标注与源码；研究] pnpm v11；[一手／社区；研究] CPython、pandas、SGLang、Sanity／Onyx 与 Penpot；[经验：报告；一手：源码；研究] alchemy-utils 批处理语义；[一手：固定源码与本地复现；经验：采用入口] Sphinx #10966、GCC `bd044da`、Sphinx `1ddf1981` 的有序候选索引试验（[本任务](collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)）；核实 2026-10-25。
 
 ### 把运行证据交给 Agent，接收时区分优化与行为改动
 
