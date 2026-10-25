@@ -8,6 +8,8 @@
 
 插件打包同一 MCP 时不重复接入；带 Skills、Hook 或 LSP 时按[组件与权限](https://code.claude.com/docs/en/plugins-reference#mcpservers)评审；任务选择见第 3 节。
 
+起步：先看文件／CLI／有效 typed 工具是否够用；要接入 MCP 时先在 `/mcp` 查已有连接，接入与撤回见 §5。MCP／CLI 四层选择见 §2。
+
 2026-07-28 规范影响新接入，不是升级理由：协议取消初始化握手和协议级会话，业务状态改用显式句柄；HTTP 用 [`Mcp-Method`／`Mcp-Name`](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http) 路由，服务端仍须校验与请求体一致，这些头不提供认证、权限或注入防护。[授权规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)面向 HTTP；stdio 从环境取凭证；CIMD 推荐、DCR 兼容，按支持选择；切换前核实客户端支持，见[固定规范](research/2026-10-10-audit.md#s5--mcp-2026-07-28-规范)。
 
 **依据**：[一手] [Claude 插件清单](https://code.claude.com/docs/en/plugins-reference#mcpservers)、[固定规范](research/2026-10-10-audit.md#s5--mcp-2026-07-28-规范)、[传输规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)、[授权规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)；[经验：采用判断／边界] 插件组件评审、认证与注入头边界；[研究：采用判断] 动作与接入选择；核实 2026-10-21。
@@ -16,7 +18,7 @@
 
 <!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-21 -->
 
-**按任务和权威状态选接口，不统一换成一种协议。** OpenAI／Jeremy Lewi 的 [8-25 Runme 复盘](https://developers.openai.com/blog/automating-repetitive-work-at-openai-with-codex)接已有 notebook；Ramp 的 [10-20 Laminar 系列](https://builders.ramp.com/post/building-laminar)把工具发现与凭证／动作控制分开。本仓只在补缺口或改善质量与总投入时借用，不复制整套平台。
+**按任务和权威状态选接口，不统一换成一种协议。** OpenAI／Jeremy Lewi 的 [8-25 Runme 复盘](https://developers.openai.com/blog/automating-repetitive-work-at-openai-with-codex)接已有 notebook；Ramp 的 [10-20 Laminar 系列](https://builders.ramp.com/post/building-laminar)把工具发现与凭证／动作控制分开。本仓只在补缺口或改善质量与总投入时借用，不复制整套平台；起步按 §2 四层判断，接入先在 `/mcp` 查已有连接，撤回见 §5。
 
 Microsoft／CMU 的 [9-10 企业任务研究](https://arxiv.org/html/2609.11999v1)支持在获准的开放任务中保留 shell；[9-17 消融](https://arxiv.org/html/2609.20804v1)显示删工具的结果随模型和任务反转。默认保留有效原生能力，按状态、权限与组合需求补接口。
 
@@ -26,7 +28,7 @@ Microsoft／CMU 的 [9-10 企业任务研究](https://arxiv.org/html/2609.11999v
 
 ## 2. MCP vs CLI：按任务与调用路径选择
 
-**按任务和调用路径选 MCP 或 shell，两者不互斥。** MCP 既承载 typed 工具，也承载代码执行；先分四层。
+**按任务和调用路径选 MCP 或 shell，两者不互斥。** MCP 既承载 typed 工具，也承载代码执行；先分四层；选定后先在 `/mcp` 查已有连接，再按 §5 接入、验收与撤回。
 
 | 要决定的层 | 当前默认与新增条件 |
 |---|---|
@@ -40,7 +42,7 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 代码侧过滤也能减少输入，[Anthropic 的 MCP 代码执行方案](https://www.anthropic.com/engineering/code-execution-with-mcp)是例子。参数 schema 只校验形状，CLI 同样须核参数、结构化输出和退出码；都不要把秘密拼入命令或返回值。
 
 **本仓库的判断**：
-- ✅ 强模型已有 shell 且任务在授权范围内：先缩小查询、分块返回或合并读取，原生能力够用就不追加 Skill。验收要区分裁剪与丢失：先存完整报告和退出码，再提取字段；提高显示预算不能恢复已丢内容。无完整报告且重跑有副作用时先查权威结果。见[固定输出链路与回归](research/2026-10-13-context-tool-choice.md#工具输出显示裁剪与采集丢失)。
+- ✅ 强模型已有 shell 且任务在授权范围内：先缩小查询、分块返回或合并读取，原生能力够用就不追加 Skill。验收要区分裁剪与丢失：先存完整报告和退出码，再提取字段；提高显示预算不能恢复已丢内容。无完整报告且重跑可能有副作用时，先查权威结果，不自动重跑。见[固定输出链路与回归](research/2026-10-13-context-tool-choice.md#工具输出显示裁剪与采集丢失)。
 - 🧪 原生调用仍有可测重复开销时再试批处理或结果过滤接口；比较通过情况、计价成本、总等待与人的投入。
 - 🧪 当前接口拿不到状态，或只该暴露窄操作时，试仍在维护的兼容接口；已有 typed 工具有效就保留。小模型／本地模型也要验证实际调用。MCP 不是沙箱；Claude Code 的本地 MCP 进程在 Bash 沙箱外运行（[官方沙箱范围](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)），需要进程级隔离时按[客户端安全边界](01-agents/claude-code.md)选宿主。
 
@@ -58,9 +60,9 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 ### 成本下降，不等于多获得一种能力
 
-**接口成本下降不等于多获得能力；原生查询已够短且成功，就不加新层。** [onlycodes 的历史对照](research/2026-10-13-context-tool-choice.md#工具接口先缩小原生查询再判断是否补接口)比较 Codex CLI 0.130.0 / GPT-5.5 的原生、受限 shell 与单一代码接口：代码接口成本低 19.91%、通过 140 对 139 次，但墙钟多 1.62%；只减少原生工具的 shell 臂更贵。
+**接口成本下降不等于多获得能力；原生查询已够短且成功，就不加新层。** [onlycodes 的历史对照](research/2026-10-13-context-tool-choice.md#工具接口先缩小原生查询再判断是否补接口)比较 Codex CLI 0.130.0 / GPT-5.5 的原生、受限 shell 与单一代码接口：代码接口臂的缓存调整估算成本低 19.91%、通过 140 对 139 次，但墙钟多 1.62%；只减少原生工具的 shell 臂更贵。
 
-不用“CLI 最低、Code Mode 固定更慢／更贵”的通用排名；增加等待、失败或人工处理就缩减或撤回。研究替换工具面，成本为估算，不能外推当前版本；权限、凭证隔离与沙箱要求不随成本结论放宽。
+不用“CLI 最低、Code Mode 固定更慢／更贵”的通用排名；增加等待、失败或人工处理就缩减或撤回。研究替换工具面，成本为缓存调整估算，不能外推当前版本；权限、凭证隔离与沙箱要求不随成本结论放宽。
 
 ### 从规范到可运行实现
 
@@ -76,18 +78,18 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 ## 3. 按任务选择服务与权限
 
-> 先复用已有能力；新增时固定可核查版本，托管服务核官方端点与权限。
+> 每行先给起点；不满足新增条件就停在起点。确需新增时固定可核查版本，托管服务核官方端点与权限。
 
-| 当前任务 | 先用什么；何时新增 | 接入后最重要的边界 |
+| 当前任务 | 起点；不满足新增条件就停在起点 | 接入后边界；不符合就退回起点 |
 |---|---|---|
-| 查 Issue、PR、CI | ✅ 已有 `gh` 能查就沿用；🧪 无 shell 或需受限远程接口时用 GitHub MCP | 只读工具面、窄凭证；lockdown 不缩小凭证 |
-| 查数据库／线上异常 | ✅ 已有查询、导出或监控够用就不加；🧪 需连续查询时接服务 | 按项目与角色限权；日志／工单是外部内容，不直接授权命令 |
-| 浏览器探索、运行诊断 | ✅ 先复用项目测试；🧪 只有观察／诊断缺口时加 Playwright MCP 或 DevTools MCP | 登录态、网页内容与执行边界按 [23](23-browser-verification.md#诊断缺口chrome-devtools-mcp)选择 |
-| 库版本与 API 检索 | ✅ lockfile、目标版文档、类型定义；🧪 查找反复失败再试 Context7 | 生成摘要不证明兼容 |
-| 跨文件符号修改 | ✅ 原生 LSP 加文本搜索；🧪 语义缺口再试 Serena | 先核语言／会话支持；语义查询为空时查项目导入，核验定义与调用点后编辑，见 [03](03-context-engineering.md#25-跨文件符号检索何时补-serena) |
-| 设计还原 | ✅ 截图、组件示例与源码；🧪 缺结构／组件契约再用 Figma | 映射跟随组件 API，最终做运行验收 |
-| 跨会话查事实 | ✅ 最新任务记录；👀 找不到跨任务事实才评估记忆服务 | 可检索不等于事实仍有效 |
-| 编辑器对象操作 | ✅ 已有脚本／测试接口；🧪 需当前场景、资产或对象操作再选引擎插件／MCP | 查操作覆盖、版本及结果回读，见[引擎接入](../domains/game-dev/01-engine-integration.md) |
+| 查 Issue、PR、CI | ✅ 起点：已有 `gh`；🧪 无 shell 或需受限远程接口时用 GitHub MCP | 只读工具面、窄凭证；lockdown 不缩小凭证 |
+| 查数据库／线上异常 | ✅ 起点：已有查询、导出或监控；🧪 需连续查询时接服务 | 按项目与角色限权；日志／工单是外部内容，不直接授权命令 |
+| 浏览器探索、运行诊断 | ✅ 起点：项目测试；🧪 只有观察／诊断缺口时加 Playwright MCP 或 DevTools MCP | 登录态、网页内容与执行边界按 [23](23-browser-verification.md#诊断缺口chrome-devtools-mcp)选择 |
+| 库版本与 API 检索 | ✅ 起点：lockfile、目标版文档、类型定义；🧪 查找反复失败再试 Context7 | 生成摘要不证明兼容 |
+| 跨文件符号修改 | ✅ 起点：原生 LSP 加文本搜索；🧪 语义缺口再试 Serena | 先核语言／会话支持；语义查询为空时查项目导入，核验定义与调用点后编辑，见 [03](03-context-engineering.md#25-跨文件符号检索何时补-serena) |
+| 设计还原 | ✅ 起点：截图、组件示例与源码；🧪 缺结构／组件契约再用 Figma | 映射跟随组件 API，最终做运行验收 |
+| 跨会话查事实 | ✅ 起点：最新任务记录；👀 找不到跨任务事实，且需按项目、实体或时间检索时才评估记忆服务 | 可检索不等于事实仍有效 |
+| 编辑器对象操作 | ✅ 起点：已有脚本／测试接口；🧪 需当前场景、资产或对象操作再选引擎插件／MCP | 查操作覆盖、版本及结果回读，见[引擎接入](../domains/game-dev/01-engine-integration.md) |
 
 ### GitHub 与数据库：只读具体限制哪一层
 
@@ -138,7 +140,7 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 - 工具失败往往只返回状态，Skill 要求“**不是明确的成功，就当作失败**”。
 - 详见 [game-dev/01](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)。
 
-新建服务优先复用兼容 SDK，按目标协议处理显式业务句柄、结果与错误；HTTP 授权按双方支持选注册方式。异步沿用第 2 节判据，不把连接成功当成业务完成。
+新建服务前，先判断已有接口是否够用；够用就停在现有接口，不够再优先复用兼容 SDK，按目标协议处理显式业务句柄、结果与错误。HTTP 授权按双方支持选注册方式；异步沿用第 2 节判据，不把连接成功当成业务完成。
 
 **依据**：[一手] Anthropic《Writing effective tools for agents》（2025-09）、[Epic 官方插件](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)、[引擎侧核实与局限](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)；[经验：采用判断] 新建服务的接入顺序；核实 2026-10-21。
 
@@ -146,7 +148,9 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 **✅ 先在 `/mcp` 看已有连接；已有插件提供同一服务时不要再手工加一份。** 确有缺口再按[官方 MCP 配置](https://code.claude.com/docs/en/mcp)选择远程 HTTP 或本地 stdio。项目级 `.mcp.json` 可共享，但只提交环境变量引用，不提交 token；安装命令、服务器地址和工具权限都要评审。插件能自启它打包的服务器，不能只看名称。
 
-接入后用窄任务确认拿到所需数据、范围正确、结果与权威来源相符；后续仍反复越权、结果不完整或维护负担超过省下的查找，就在 `/mcp` 禁用连接并回到已有 CLI／资料。交互/非交互审批不同，不能依赖“启动时总会弹确认”；按[项目审批与托管配置](https://code.claude.com/docs/en/mcp#project-server-approvals-and-workspace-trust)核对。未报告端到端实测收益。
+接入后用窄任务确认拿到所需数据、范围正确、结果与权威来源相符。交互/非交互审批不同，不能依赖“启动时总会弹确认”；按[项目审批与托管配置](https://code.claude.com/docs/en/mcp#project-server-approvals-and-workspace-trust)核对。未报告端到端实测收益。
+
+**撤回条件**：后续反复越权、结果不完整，或维护负担超过省下的查找，就在 `/mcp` 禁用连接，回到已有 CLI／资料。
 
 **依据**：[一手] [官方 MCP 配置](https://code.claude.com/docs/en/mcp)、[项目审批与托管配置](https://code.claude.com/docs/en/mcp#project-server-approvals-and-workspace-trust)；[经验：采用顺序／撤回判断] 接入与撤回条件；核实 2026-10-21。
 
