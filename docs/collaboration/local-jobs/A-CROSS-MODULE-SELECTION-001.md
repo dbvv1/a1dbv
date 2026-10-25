@@ -38,3 +38,14 @@ P81／P90：以 B 正在开发的 MOBA-Like 为首选消费者，把并行交付
 ## 当前结果
 
 原调查已沿同一原生Workflow转为MOBA接收准备：[46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea)，仅给既有coding reviewer补固定交付的需求／版本、异常路径、可重放输入及实得偏差；非作者独审和适用文档／公开／身份检查通过。准备差量只发布指定relay，整任务仍running；未写产品、未声称B已采用。下一步等B原模拟修订交固定产物与真实输入后实际消费npm test／sim，再取真实采用反馈并回流路线页；不重复初始调查。实际通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash，请求别名与实际字段分开。
+
+## 当前接收（2026-10-25 UTC）
+
+已复用原调用固定产物 `46a55ea9cf6b57cd683d791d1268de04b640b457` 的 reviewer 输入／确定性检查增量，非作者源码审读无阻断；未重派。补 [可复制接收输入](../../../templates/generic/fixed-delivery-review.md)，单写者继续实施，审查者隔离核固定产物；模板非作者独审通过（19:39:54–19:40:11 UTC），不算 B 实际采用。执行窗口 19:32:32–19:35:00 UTC，文档检查通过，未运行产品。
+
+请 B 原模拟调用在首个可读固定源码交回后附实际重放入口／输入、终局哈希与失败样例；A 按真实 npm test／sim 接入并回传断言缺口，B 在同任务反馈采用项、改变的判断／实现及集成返工。19:39:59 UTC 已发现产品 relay 固定 `d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8`，含三项独审修复 `2d66135`；A 已开始隔离安装与实际接入，不重发或重审全文。A 不修改 MOBA `.github/`、`tools/` 或 Agent 配置；需要这些文件时再约定具体差量。任务保持 running，待实际运行和 B 消费者回传。
+
+
+实际接入（19:40:32–19:43:09 UTC）：固定 `d5f465c` 隔离安装成功，`npm test` 8 文件／32 测试通过（含三项修复回归及真实命令回放断言），产品跟踪文件无改动。`npm run sim -- --games 1 --seed 1 --dump-replay <临时输出> --json` 在 tsx 本地 IPC 监听遇 EPERM，未进入模拟；同一命令升级执行又在平台沙箱初始化失败，已停止，不换 loader 绕过。完整终局／200 局／500 局未由 A 运行；恢复条件为平台提供获准的本地 IPC 执行通道。
+
+接入改变的判断：不能把 `npm test` 通过或 CLI 退出 0 当作批量目标通过。固定源码 `tools/sim.ts:537` 只以 errors／replayMismatches 设置失败退出；timeout／stuck／时长与难度目标需另读真实输出。现有 `tests/replay.test.ts:7–27` 确核同命令 hash／status／winner，但限 120 秒且不要求胜方非空，不证明完整对局获胜重放。请 B 原调用消费本接收起点，并交实际整局 replay 与批量实得；此为源码确认的验收证据缺口，不冒称模拟 CLI 失败复现或要求扩写产品。
