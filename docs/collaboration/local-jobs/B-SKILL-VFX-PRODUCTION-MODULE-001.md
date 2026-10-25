@@ -59,3 +59,15 @@ result_branch: relay/b-skill-vfx-production-module-001
   - 动态事实只核本轮会改变选择的官方 API 页；既有许可、价格、版本与来源沿用原文日期，未刷新全部来源，未重做工具排名或实验。
   - 目标占屏、优先级和强度上限是设计起点，不是实测阈值；族参数字段名是项目示意约定，不是引擎内置 API。
 - 接收：dot-B 接收；本会话不自行合入 main、不声明独立审查；父会话负责提交与推送结果分支。
+
+## 根会话独立语义审查与发布（2026-10-25）
+
+> 本节在实现交接之后追加；与上文“工作树／待提交”表述冲突时，以本节为最终状态。
+
+- 审查对象：内容提交 `83c7122771ed6d8639a46669a72c2daa050fc43a` 的三文件差量；根会话在 Workflow 结束后独立阅读正文、研究记录与任务文件，不使用嵌套 reviewer、Explore、CLI 模型或另一个 Workflow。
+- 结论：**未发现范围内语义缺陷，可接收**。七项 brief、ring／ribbon／flash／粒子／flipbook 责任、作者源／派生纹理／运行实例分离、族／每招／每次施放三级参数、装配顺序、首版六段链、二改扇形与并发优先级均覆盖；05 保持只读，其他材质、烟雾、轨迹、慢放、照明、预算与发行入口未改。
+- 官方声明复核：逐条对照 Unity 6000.3／VFX Graph 17.3 与 UE 当前页面——Stop Action 需粒子全灭且 age 超过 Duration；Sub Emitters 仅 Birth 支持多项 burst，Collision／Death／Trigger／Manual 单 burst；Shape Arc 与 Cone Angle；ParticleSystem.Stop 默认 StopEmitting；VisualEffect.Stop 仅向 Spawn 系统发停止事件、未承诺清空；Reinit 恢复初始状态、内部时间归零并重发 initial event；SetFloat 自动标 overridden；Blackboard Exposed 可经组件与 C# 读写；Niagara SetVariableFloat／SetVariableVec3 局部覆盖、ResetSystem 回初始模拟状态、Deactivate 无描述。未发现正文把这些说成玩法状态或取消语义。
+- 根审查修正：只做两处精度修正——交接中的原始模型元数据改为实读值（raw `message.model` = `deepseek-flash`；请求别名 `deepseek-v4.1-flash[1m]`），以及把取消收费／退款句限定为 05 的本例政策（其他招式可另定）。未扩大范围。
+- 机械检查（内容提交后）：`check_repo.py` 380 文件 0 error；`check_public.py` 641 文件 0 findings；`check_public.py --commits origin/main..HEAD` 0 findings；`git diff --check` 与 `git diff --cached --check` 通过；提交身份 `Codex Local Executor <codex@users.noreply.github.com>` 为 noreply 白名单身份。未跑完整 `check_offline.py`（纯文档，按手册§7只跑适用检查）。
+- 发布范围：仅结果分支 `relay/b-skill-vfx-production-module-001`；未合入 main，未强推。固定内容 SHA：`83c7122771ed6d8639a46669a72c2daa050fc43a`；本审查记录提交即推送后的分支 HEAD（根会话在交接回复中回报完整 SHA）。
+- 未验项：未运行 Unity／Unreal／Effekseer、未生成资产、未做阶段截图或两招同屏人看；视觉可读性、手感、取消残留、占屏与帧成本均未取得证据；动态事实沿用原文日期，未刷新全部来源。不得把本文件或正文写成品质通过。
