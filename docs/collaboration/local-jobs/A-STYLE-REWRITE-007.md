@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-007
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8581f07db365d41d3ef3725c603f501065a92b26
 result_branch: relay/a-style-rewrite-007
@@ -33,3 +33,5 @@ result_branch: relay/a-style-rewrite-007
 ## 执行与结果
 
 待接收。沿已配置正常原生 Workflow，两页可独立实施，一次有效独立核验。实际模型／执行起止／修订与检查回写；仅推指定结果分支。
+
+认领：dot 本地协作；2026-10-25T03:35:07.134989+00:00。来源 main 固定 `ac37c7f`；先发布认领再沿既有正常原生 Workflow 分页实施与独立验证，只推指定结果分支。
