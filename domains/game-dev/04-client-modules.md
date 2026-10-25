@@ -25,7 +25,7 @@ flowchart TD
 - **AI 分工：** 接组件、补回归；[人验手感、视听与译义](#2-十一个模块的最低交付线)。
 - **完整控制：** 从[起停、转向、空中落点到坡阶平台](#character-control)，用轨迹定义手感，再接动画与镜头。
 - **完整镜头：** 从[预判、跟随到遮挡与震动](#camera-contract)，先保玩家控制，再加镜头语言。
-- **合作续局：** [房主离开后](#coop-continuity)，按权威架构选接管方式，恢复世界后再交还控制。
+- **小队联机：** [先完成一起进场与结算](#coop-production)，再按权威架构选择房主离开后的续局。
 - **二改：** [按症状选读](#3-按当前任务选择实现与验收)，重点守取消、暂停、旧档和设备。
 - **证据：** 资料／源码比较，模块库与引擎未试用；两次检索不证明 AI 制作收益，整链质量上限未知。
 
@@ -1382,7 +1382,38 @@ for k in changed:
 来源：[一手] Unity Localization 1.5.13 [String Tables](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/StringTables.html)、[CSV 导入](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/CSV.html)、[Smart Strings](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/SmartStrings.html)、[Plural Formatter](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/Smart/Plural-Formatter.html)、[LocalizedString API](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.LocalizedString.html)、[FallbackBehavior](https://docs.unity3d.com/Packages/com.unity.localization@1.5/api/UnityEngine.Localization.Settings.FallbackBehavior.html)；[一手] UE 5.8 [Text Localization](https://dev.epicgames.com/documentation/en-us/unreal-engine/text-localization-in-unreal-engine)、[String Tables](https://dev.epicgames.com/documentation/unreal-engine/using-string-tables-for-text-in-unreal-engine?lang=en-US)、[FText](https://dev.epicgames.com/documentation/en-us/unreal-engine/ftext-in-unreal-engine)；[一手：固定源码] Yarn Spinner Unity v3.2.8 `bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d` 的 [UnityLocalisedLineProvider.Installed.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/LineProviders/UnityLocalisedLineProvider.Installed.cs)、[BuiltinLocalisedLineProvider.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/LineProviders/BuiltinLocalisedLineProvider.cs)、[DialogueRunner.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs)、[VoiceOverPresenter.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/VoiceOverPresenter.cs)、[LinePresenter.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LinePresenter.cs)、[LineAdvancer.cs](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/LineAdvancer.cs)、[行标签](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization/line-tagging.md)、[本地化与资产](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization.md)、[Unity Localisation 导入](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization/unity-localization)；[研究] 作者源字段、sidecar speaker 接线、四个所有者、按哈希回审、切语言当前句策略与阅读时间默认值为本项目建议，不是引擎 API；复用 [WP10 文本表与 lineID 证据](../../docs/research/wp10-content.md#text-tables)、[译文供给](../../docs/research/wp10-content.md#译文供给追加文本不继承旧验收)、[字体／旧报告](../../docs/research/wp10-content.md#37)、[对白推进](../../docs/research/wp10-content.md#92)。核实 2026-10-25，未运行引擎、未做语言审校、未生成或试听配音，真实显示／阅读／听感待验。
 
 <a id="coop-continuity"></a>
-### 小队联机：房主离开后，怎样继续这一局
+<a id="小队联机房主离开后怎样继续这一局"></a>
+<a id="coop-production"></a>
+### 小队联机：从一起进场到结算，再决定怎样续局
+
+**已有可靠网络栈就沿用；新的小队 PvE 先做“一人开房、队友加入、合作开门、结算退出”的完整短局。** Unity GameObject 项目可从 NGO 客户端—服务器模式起步：玩家主机负责本局裁决，客户端提交操作、显示同步结果；联网服务负责找房与连通。信任朋友主机、允许主机退出结束短局时，这比先造迁移器直接；竞技裁决或必须持续在线则比较专服，愿意分担对象权威才比较下文 DA。这里是实现蓝图，未运行多客户端或服务。
+
+#### 首版：把房间、世界和玩家操作接起来
+
+沿现有启动壳保一个会话协调者，配一张挑战场景、玩家 prefab、共享门和结算状态；不要把每个 UI／特效都变成网络对象。作者保存玩法内容版本、网络 prefab 清单、出生点与场景配置，客户端和主机使用同一份兼容构建。发起 Create／Join 前先配好 approval 与单一角色生成策略，注册网络启动回调；在该包的 NetworkSceneManager 可用时立即订阅完成事件，赶在对应同步完成之前。下表是运行职责顺序，先用两个独立进程走完，再扩玩法。
+
+| 步骤 | Unity 优先的实施起点 | 玩家能得到什么 |
+|---|---|---|
+| 1. 建房与加入 | 已用 UGS 时初始化服务并认证；MPS `CreateSessionAsync` 配 `WithRelayNetwork()`，队友用 `JoinSessionByCodeAsync`。这一路会自动建立网络连接，项目别再并行 `StartHost/StartClient`；已有直连／其他栈则保原入口 | 明确显示创建、加入、失败或取消；邀请码不是游戏已载入的信号 |
+| 2. 接收玩家 | 服务器核本局人数、可加入阶段与内容兼容，把已验证玩家身份映射到临时连接 ID；NGO 客户端—服务器项目用 connection approval 接项目检查。自动生成 player 与自定义生成只保一条路 | 一人一个席位／角色，不因重连多生成一份；不以客户端自报的玩家 ID 认领别人的进度 |
+| 3. 载入同一个世界 | 启用集成场景管理时由服务器走 `NetworkSceneManager.LoadScene`；初次同步看 `SynchronizeComplete`，切关看 `LoadEventCompleted` 及完成／超时客户端列表，再完成本地 HUD、输入与角色绑定 | 该玩家的场景、对象与表现依赖就绪后才交输入；普通 `sceneLoaded` 或别人 ready 都不能替他交权 |
+| 4. 运行合作动作 | 客户端经 RPC 提交“我要开这扇门”等意图；服务器从接收元数据识别发送者，核角色、距离、阶段、消耗和重复操作，再修改共享状态。运动也明确唯一权威与更新来源 | 规则只结算一次；自己按下按钮可先给操作反馈，开门／命中等成功反馈跟确认结果 |
+| 5. 呈现和中途加入 | 门状态、任务阶段、持物等用可同步的当前状态；一次声光事件另走事件通知。`NetworkVariable` 在 `OnNetworkSpawn` 已有初始同步值，先应用当前值，再订阅变化；退出时解除订阅 | 新玩家看见已经开的门，而非等下一次变化；加入时不重播整局开门声或再次发奖励 |
+| 6. 结算与退出 | 服务器结束本局操作、生成结果身份；按既有存档政策确认进度后显示结算。MPS 离开用 `session.LeaveAsync()` 收尾关联网络，其他栈沿配套生命周期；解除对象与本地订阅、清空角色绑定，再回菜单 | “已确认保存”和“尚待确认”可区分；重开下一局不继承旧玩家／回调，普通成员退出不结束仍有主机的房间 |
+
+**先把世界状态和瞬时反馈分开，才容易加新玩家。** RPC 不给离线玩家补历史；`NetworkVariable` 的“持续”是会话内当前值同步，不是落盘。初始值和后续变更可调用同一个纯状态呈现方法，成功音效／奖励则由确认事件独立触发。NGO 的 client anticipation 也不是完整预测回滚；需要更低运动响应时，沿[预测与确认](../../docs/research/wp10-motion.md#8)评估已有运动方案，不把移动、命中和奖励一起当本地真值。
+
+**连接安全与玩法裁决各管一层。** 接入前固定所用 NGO／MPS 包版本；本节 API 依据 NGO 2.7.0 与 MPS 会话文档。connection approval 本身不加密／认证原始 payload，也不适用于 DA 拓扑；身份认证沿已配置服务及安全传输，别在裸 payload 放密码或长期凭据。主机仍是玩家机器，服务器侧检查不使它变成可信托管服务器。服务费、带宽、跨机网络回归与内容版本维护均是采用成本，不因有免费示例消失。
+
+#### 二改：增加可携带钥匙，让新成员在遭遇之间加入
+
+先保持原开门挑战不变，再把钥匙做成有稳定物品身份的共享状态：地面位置／持有人／已消耗三种状态由服务器统一更新。拾取请求核距离与当前持有人，两个玩家同时请求也只能有一个成功；开门消耗与门状态在同一规则操作里确定。表现层按持有人挂到手部，挂接成功本身不代表获得所有权；玩家离开时按项目规则把钥匙放回安全点或保给原身份。
+
+新增玩家先同步当前遭遇、已开门、已消耗物与持有关系，再在可加入点生成角色；本例默认遭遇间加入，战斗中先等待／观察。引用的角色或物品尚未生成时，表现等待对应实例再绑定，不凭回调先后复制一把钥匙。若以后要求战斗中加入，就连同敌人阶段、计时与目标归属一起扩同步范围，而不是只解锁房间按钮。
+
+交给 AI 的产物是原网络栈上的场景、窄规则组件和可重复操作脚本，不是新网络框架。先验两人正常协作与结算，再验第三人加入、同抢钥匙、持有人退出、内容不兼容拒绝和下一局重开；记录各端角色／物品／门／奖励状态。随后在目标设备与真实延迟／丢包条件下验移动、确认反馈和等待解释；双进程本机正确不替代跨机网络或玩家体验。
+
+#### 房主离开：在完整短局上增加续局承诺
 
 **先定续局承诺，再沿现有网络栈接现成机制；选出新房主不等于世界已恢复。** 专用服务器仍在时，普通玩家离开只需处理其角色，不必迁移客户端主机；玩家兼任服务器才有接管问题。短局可以明确结束并保已确认进度，长时合作才更值得承担无房主续局的成本。
 
@@ -1405,7 +1436,7 @@ Dagger Directive 的开发者采用 DA，同时留不支持迁移的直连退路
 
 网络响应仍沿[预测与确认](../../docs/research/wp10-motion.md#8)，跨局落盘沿[保存续玩](#保存续玩与升级旧档)；续局验证不替代延迟／丢包下的正常玩法验收。
 
-来源：[一手／研究] 开发者案例与官方网络栈比较，完整版本、成本与反例见 [WP10 续局](../../docs/research/wp10-content.md#coop-continuity)；未运行服务、引擎或多客户端。
+来源：[一手／研究] 正常链 API 与初始状态接线核实 2026-10-25，见 [WP10 正常合作链](../../docs/research/wp10-content.md#coop-normal-production)；房主续局的开发者案例、网络栈比较与成本沿 2026-10-24 的 [WP10 续局](../../docs/research/wp10-content.md#coop-continuity)。未运行服务、引擎或多客户端。
 
 <a id="发布更新下载量与安装重写分开看"></a>
 <a id="release-delivery-production"></a>

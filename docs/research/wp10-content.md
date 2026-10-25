@@ -778,6 +778,18 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 **[研究] 新增判断：会话续存、世界恢复、玩家重入和持久奖励分别成立，不能只验剩余玩家还能移动。**
 核实：2026-10-24 UTC；公开文档、示例说明与作者实践，未运行引擎／服务、多客户端或 AI 模型，最高体验水平未知。正文入口：[客户端续局](../../domains/game-dev/04-client-modules.md#coop-continuity)。
 
+<a id="coop-normal-production"></a>
+### 正常合作链：把会话连通、世界同步与操作资格分开
+
+2026-10-25 补核；这是将现有预测／续局材料补成首版实现链，不是新的网络产品或已运行的合作游戏。[研究] 默认短局客户端—服务器、遭遇间加入及钥匙二改为项目建议；保留原 DA／NfE／Fusion 续局选择，不能混用权威模型。
+
+- [一手] MPS [创建](https://docs.unity.com/en-us/mps-sdk/create-session)、[加入](https://docs.unity.com/en-us/mps-sdk/join-session)、[离开](https://docs.unity.com/en-us/mps-sdk/leave-a-session)与[网络时机说明](https://docs.unity.com/en-us/mps-sdk/session-networking)：带 `WithRelayNetwork` 的创建与加入会建立网络连接；没选网络配置才可先做准备房间、由主机之后启动网络；`LeaveAsync` 移除本地成员并关闭关联网络模块。[研究] 首版沿一种入口，不把会话成功当玩法 ready，也不再并行手写第二次启动。采用前锁工程实际 SDK 版本，成本仍含底层服务。
+- [一手] NGO 2.7.0 [connection approval](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/basics/connection-approval.html)允许项目批准／拒绝和选择是否自动生成 player；不适用于 DA，原始 payload 无内建加密／认证。[研究] 角色生成单一路径、稳定身份经验证后映射连接、内容兼容及可加入阶段由项目接上，不能复制示例密码当安全认证。
+- [一手] 同版 [NetworkSceneManager](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/basics/scenemanagement/using-networkscenemanager.html)会同步受管理场景及已生成网络对象；初次同步与后续载入使用各自的完成事件；[SceneEvent 字段](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/api/Unity.Netcode.SceneEvent.html)区分载入已完成和超时客户端，普通 Unity 场景回调早于网络处理完成。[研究] 项目还要确认角色／HUD／输入可用，超时成员由加入政策处置，不从单端 loadComplete 推全队 ready。
+- [一手] [NetworkVariable](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/basics/networkvariable.html)为新加入者同步当前值，初值应用须同时走 `OnNetworkSpawn`，不只等 `OnValueChanged`；[RPC](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/advanced-topics/message-system/rpc.html)提供发送者元数据及调用权限。[研究] 用当前状态重建门／持物表现，用确认事件播一次反馈；规则校验、奖励去重与持久保存仍是项目职责。钥匙状态机与遭遇间加入扩展是据此设计的未实测二改，不是 SDK 自动保证。
+
+未运行引擎、服务、跨机网络或多客户端；原开发者／社区证据及未取得源码的边界沿下面各节，不据文档确认推广成体验或安全测试通过。
+
 ### 1. 先借生产取舍，不从“支持迁移”反推采用
 
 [一手：开发者访谈] [Dagger Directive 的 Daniel Fowler](https://unity.com/blog/how-to-leverage-distributed-authority-for-multiplayer-co-op-games)（2025-09-29）讲述从社区合作需求出发采用 Unity DA；他评价迁移体验积极，也说明对象转移配置仍需正确设置。团队另留直连路径，以应对服务不可用或停运，但直连房主退出会结束游戏。[研究] 可借的是“服务路径与保底路径各有明确承诺”，不是照抄其质量结论；这是供应商主持的访谈，不是独立横评。
