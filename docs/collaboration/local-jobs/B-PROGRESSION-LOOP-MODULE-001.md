@@ -2,7 +2,7 @@
 
 id: B-PROGRESSION-LOOP-MODULE-001
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 503e3da6abaece9c862b2d61b52c42011dcc834c
 result_branch: relay/b-progression-loop-module-001
@@ -108,3 +108,9 @@ result_branch: relay/b-progression-loop-module-001
 可交接结果是定义→结算→解锁→下一局配置的实现蓝图、默认失败／通关／放弃政策与第三路线二改。没有私有项目、引擎、真实对局／玩家收益验证；平衡、供给成型时点、旧档迁移与真实消费者接入仍须项目落地。只推指定 relay 结果分支，由 dot-B 接收，不代标 accepted。
 
 固定结果提交：[f2ffaab55e76afe352245a2c1077243dbb53ec66](https://github.com/dbvv1/a1dbv/commit/f2ffaab55e76afe352245a2c1077243dbb53ec66)；结果仅在指定 relay 分支。发布检查：check_repo.py、公开文件及实际提交身份扫描、暂存差异检查通过；正文与独审结论见上。
+
+## dot-B 接收（2026-10-26）
+
+接收固定 `f2ffaab55e76afe352245a2c1077243dbb53ec66`：保留两条基础路线，跨局许可与逐次局内资格分开；结算、解锁启用、下一局配置及第三路线二改可按正文实施。复用宿主实际独审和同审修订复核，两正文不再改写；固定结果／发布检查、原失败和来源读取限制保留。实际对局、平衡与旧档消费者接入仍未验证。
+
+本轮初次完整离线入口因 deterministic 测试仍读已删除旧提示词而出现 9 个错误，后续阶段当时未运行。已接收独立审查的测试专用合成输入修复（本地来源 `f0853f5e`），保留真实输入／hash／页 blob 和缺失／篡改反例，不恢复旧指导、不删测或跳过。修复后的完整整合入口与发布检查实际结果见合入提交；不再以历史绿灯代替当前受检树。
