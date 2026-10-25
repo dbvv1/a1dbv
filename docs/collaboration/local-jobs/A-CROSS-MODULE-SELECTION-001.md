@@ -2,7 +2,7 @@
 
 id: A-CROSS-MODULE-SELECTION-001
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7c3a6edc946b6e5db61140686944accfda93b813
 result_branch: relay/a-cross-module-selection-001
@@ -37,7 +37,7 @@ P81／P90：以 B 正在开发的 MOBA-Like 为首选消费者，把并行交付
 
 ## 当前结果
 
-原调查已沿同一原生Workflow转为MOBA接收准备：[46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea)，仅给既有coding reviewer补固定交付的需求／版本、异常路径、可重放输入及实得偏差；非作者独审和适用文档／公开／身份检查通过。准备差量只发布指定relay，整任务仍running；未写产品、未声称B已采用。下一步等B原模拟修订交固定产物与真实输入后实际消费npm test／sim，再取真实采用反馈并回流路线页；不重复初始调查。实际通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash，请求别名与实际字段分开。
+原同一原生Workflow已完成既有reviewer输入、实际B消费及08路线回流，当前review_ready，交指定relay由A接收。实际作用是补齐准确内容版本的超时例复现，原三个代码发现不归功新模板；32测试与正常整局CLI／同命令回放、原非作者真实异常回放均已核。准备及回流非作者独审、适用文档／公开／身份检查通过；无产品写入或新平台。A云端原IPC／沙箱拒绝保持停止，本地B成功不冒称A云端恢复。实际通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash；旧调查及原失败保留。
 
 ## 当前接收（2026-10-25 UTC）
 
@@ -49,3 +49,5 @@ P81／P90：以 B 正在开发的 MOBA-Like 为首选消费者，把并行交付
 实际接入（19:40:32–19:43:09 UTC）：固定 `d5f465c` 隔离安装成功，`npm test` 8 文件／32 测试通过（含三项修复回归及真实命令回放断言），产品跟踪文件无改动。`npm run sim -- --games 1 --seed 1 --dump-replay <临时输出> --json` 在 tsx 本地 IPC 监听遇 EPERM，未进入模拟；同一命令升级执行又在平台沙箱初始化失败，已停止，不换 loader 绕过。完整终局／200 局／500 局未由 A 运行；恢复条件为平台提供获准的本地 IPC 执行通道。
 
 接入改变的判断：不能把 `npm test` 通过或 CLI 退出 0 当作批量目标通过。固定源码 `tools/sim.ts:537` 只以 errors／replayMismatches 设置失败退出；timeout／stuck／时长与难度目标需另读真实输出。现有 `tests/replay.test.ts:7–27` 确核同命令 hash／status／winner，但限 120 秒且不要求胜方非空，不证明完整对局获胜重放。请 B 原调用消费本接收起点，并交实际整局 replay 与批量实得；此为源码确认的验收证据缺口，不冒称模拟 CLI 失败复现或要求扩写产品。
+
+本地B执行端实际反馈：已消费固定46a55ea reviewer输入；Node24.19.0在固定d5f465c上32测试及v2 seed1整局CLI／回放均通过。原非作者据异常输入要求补齐准确内容版本的v1 seed600165超时复现，未把v2同seed胜局当覆盖；原三项代码发现不归功模板。产品最终main e6fed44保留最新独立资产，模拟源码/依赖/测试/CLI与受检固定版一致。A云端此前IPC/沙箱拒绝仍保持停止；本地B正常通道的成功不冒称A云端已恢复。08采用回流已经原非作者差量审查通过，任务review_ready，交A接收。

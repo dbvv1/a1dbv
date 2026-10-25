@@ -255,6 +255,21 @@ MOBA-Like 固定模拟产物的独立接收中，32 项测试通过；源码核�
 
 **依据**：[一手] Claude Code 的[子 Agent](https://code.claude.com/docs/en/sub-agents)、[worktree](https://code.claude.com/docs/en/worktrees)、[Agent Teams](https://code.claude.com/docs/en/agent-teams)、[Dynamic Workflow](https://code.claude.com/docs/en/workflows) 入口，[Anthropic 多 Agent 研究系统](https://www.anthropic.com/engineering/multi-agent-research-system)、[Cursor 9-23 原文](https://cursor.com/blog/improved-token-efficiency)、[Cognition 2026-04 修订](https://cognition.com/blog/multi-agents-working)；[一手：公开补丁] [Spec Kit 改稿链](research/2026-10-12-experiment-records.md#p81任务依赖按当前承诺重划边界)；[研究] [Coding agent teams 10-12 评测](https://arxiv.org/html/2610.17471v1)、[依赖接收](research/2026-10-12-experiment-records.md#p72审计补强并行结果按依赖接收)、[worktree 的状态边界](research/2026-10-12-experiment-records.md#worktree隔离到哪里配置缓存与被测产物)、[评审层选择](09-review-and-quality.md#按风险选择评审层不默认逐层叠加)；[经验：本仓实际生产] [A-DELIVERY-ROUTE-001](https://github.com/dbvv1/a1dbv/blob/795c8f6c06607b6931ae19b45451b949825c77ec/docs/collaboration/local-jobs/A-DELIVERY-ROUTE-001.md)、[A-STYLE-REWRITE-001](https://github.com/dbvv1/a1dbv/blob/795c8f6c06607b6931ae19b45451b949825c77ec/docs/collaboration/local-jobs/A-STYLE-REWRITE-001.md)、[A-STYLE-REWRITE-002](https://github.com/dbvv1/a1dbv/blob/795c8f6c06607b6931ae19b45451b949825c77ec/docs/collaboration/local-jobs/A-STYLE-REWRITE-002.md)、[A-MEMOS-READING-001](https://github.com/dbvv1/a1dbv/blob/795c8f6c06607b6931ae19b45451b949825c77ec/docs/collaboration/local-jobs/A-MEMOS-READING-001.md)、[最终整合](https://github.com/dbvv1/a1dbv/commit/795c8f6c06607b6931ae19b45451b949825c77ec)；核实 2026-10-25。
 
+### 确定性模拟与版本化回放：先对齐内容版本，再只核修复差量
+
+**✅ 确定性模拟、版本化回放这类能从固定输入重算的交付，验收时用“原任务固定版本＋内容版本／种子／命令”重放：正常局与真实失败／超时局分别复现，已有可信审查只核修复差量。** 作者自带的 checker 只验证作者写的断言；“最新”分支可能混入无关改动，无法把失败归到本次修复；同 seed 但内容版本不同会换掉实际对局、终局和 hash，绿不能证明原失败例已被覆盖。
+
+1. **第一步只钉输入。** 从[固定交付接收输入](../templates/generic/fixed-delivery-review.md)复制任务，交给既有 [code-reviewer](../templates/generic/.claude/agents/code-reviewer.md)；填写原需求、受检固定 SHA／产物版本、内容版本、种子与完整命令序列或录制文件、预期哈希／终局状态／胜负／时长，以及正常与异常消费路径、失败样例、作者实得与目标偏差；缺项写“审查未完成”，不先看作者结论。
+2. **正常与真实失败分开跑。** 在固定版本上重放正常局，再单独复现失败／超时局；超时／未终局保留 `timeout`、`winner=null` 等原状态，不静默排除或并入某一方胜负。同一版本、同一输入重放两次，哈希、胜负、时长和终局状态要逐项一致。
+3. **原非作者只核修复差量。** 已有可信审查可直接复用，修订只复查本次 delta 与受影响输入，不重造全文审查；作者 checker 只作待核代码，不是独立预期。
+4. **哈希合同变了就记录兼容选择。** 合法状态变化可能让旧 hash 对新固定版本不匹配，而同一命令的终局和时长仍不变；写清旧／新 hash、变化原因、哪些旧输入仍可读取及哪些终局哈希不再兼容；同一固定版本重放不一致仍须修复。
+
+**只对确定性、可重放输入的交付设这条检查。** 纯文档、格式或无法固定内容版本的小修不做回放门槛；已有测试和本地评审够用时不再开独立会话；没有真实失败／超时样例就写缺口，不补造。它也不替代浏览器、视觉／手感或集成验收，不为此新增框架、审批或台账。
+
+**本仓采用后补齐了一处异常覆盖。** MOBA-Like 的原非作者差量审查消费固定 `46a55ea` 的 reviewer 输入要求，补跑原 v1 seed600165 超时样例：v2 同 seed 的胜局不能证明 v1 失败例已覆盖。按准确内容版本复现后，该例与 v2 seed136／400327 都在 1200 秒超时、`winner=null`，同版本回放一致。实际改变的是异常证据复现范围，原三个代码缺陷在模板消费前已发现并由原调用修复，本轮同审关闭；没有把这些发现归功模板，也没有证明普遍效率或轮次收益。对应固定模拟的 32 项测试与正常 v2 seed1 整局／同命令回放通过；GC 修复使旧终局哈希不再兼容，兼容选择和详细实得见 [B 原任务](collaboration/local-jobs/B-MOBA-SIMULATION-001.md)。
+
+**依据**：[本仓模板／实际消费] [code-reviewer 模板](../templates/generic/.claude/agents/code-reviewer.md) 固定 `46a55ea`，[A-CROSS-MODULE-SELECTION-001](collaboration/local-jobs/A-CROSS-MODULE-SELECTION-001.md)；消费者 MOBA-Like 受检 [`d5f465c`](https://github.com/dbvv1/MOBA-Like/commit/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8)（修订 `2d66135`）、最终 main [`e6fed44`](https://github.com/dbvv1/MOBA-Like/commit/e6fed4460d00ec23175f1bd70bb20eb18a884b5e)；[经验：实际消费] Node 24.19.0 测试与单局重放、v1／v2 超时补测；详细日志私有，公开只留固定 SHA；核实 2026-10-26（UTC+8）。
+
 ## 7. 子 Agent 配置手册（Claude Code）
 
 **按任务只给必要工具与上下文：模型可从 `inherit` 起步，会改文件的子 Agent 加 worktree 隔离，重型 MCP 只挂给需要的子 Agent。** frontmatter 里最有用的字段如下，写在 `.claude/agents/<name>.md`；只有 `name` 和 `description` 必填。
