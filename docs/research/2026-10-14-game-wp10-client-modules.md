@@ -958,6 +958,12 @@ Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/docu
 
 **迁移代价与改判。** Dead by Daylight [2022 年 3 月开发者更新](https://forums.bhvr.com/dead-by-daylight/discussion/315701/developer-update-march-2022)称内容增长使分组扩大，因而重排／重平衡；[5.7.0 发行通知](https://forums.bhvr.com/dead-by-daylight/discussion/320530/release-information-5-7-0)确认文件结构变更需一次近乎全量重下。这是进入发行的迁移代价，未独立验证宣传速度，也不代表单人项目收益。布局调整后若局部更新仍牵连大量无关数据，或迁移成本不值，先缩改动范围／保原布局，再比较交付路线；下载、安装、临时磁盘与既有加载表现分别验收。没有运行引擎、打包器、游戏或模型，维护工时与本项目净收益未知。[一手／研究]
 
+### 发布候选的正常构建入口（2026-10-26 UTC+8 补核）
+
+Unity 6.3 [Build Profiles](https://docs.unity3d.com/6000.3/Documentation/Manual/build-profiles.html)区分 Platforms 的共享设置／场景数据与保存为资产的项目 profile；后者可分别配置场景并进版本控制。[BuildReport](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Build.Reporting.BuildReport.html)提供本次构建结果、大小、耗时和步骤／错误；某些无效输入可在报告生成前失败，存在报告也不代表实际游戏路径通过。UE 5.8 [Packaging](https://dev.epicgames.com/documentation/en-us/unreal-engine/packaging-your-project)分 Build、Cook、Stage、Package，并将 Deploy／Run 列为另外的可选操作；Game Default Map 决定打包后起点，教程的 Development 例不是 Shipping 验收。[一手]
+
+[04 发布模块](../../domains/game-dev/04-client-modules.md#release-delivery-production)据此把旧平台差分、内容裁剪、符号／反馈和 WP9 内容基线接成一次发布候选及新房／语音二改。代码构建、内容集合、存档 schema 分别对应不同兼容性；三种安装路径和回退数据选择为本项目实施建议，不是平台自动保证。上述 2026-10-19／20 的机制与历史生产案例不改日期；未实际构建、分发、迁移玩家数据或证明效率收益。[研究]
+
 ## 发行裁剪：内容完整性与资源规格分开选
 
 核实：2026-10-20（UTC+8）。[研究] ✅ 先保目标玩法必需的内容，再比较规格派生、渠道交付或有意收窄玩法。包体不足不直接推出换素材／重生成，也不把删内容当无损优化。本节补的是已有资源被发行预算裁剪后的进度代价，不替代前节下载与安装重写、WP2最终编码画质或完整目标构建检查。
