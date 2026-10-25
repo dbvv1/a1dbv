@@ -49,3 +49,7 @@ result_branch: relay/b-readability-cleanup-001
 本补充只更新原任务的输入交接，保持原认领／在制状态；不是重派或另启模型指令。不要整条合入来源分支，也不要替dot-B重试已被拒的main动作；正文继续交现有独立结果分支，默认分支发布仍按当前授权与具体拒绝边界处理。
 
 上述 dot-B 原文固定反馈来源：`d69e4b5348119336f295bb4a371f27b2a0e4804a`（`dot-b/tmp/20261026-cleanup-video-feedback`）。保留当前认领与原调用；首篇改写已返回，非作者先新后旧核对已完成，新增制作模块只沿原调用接入差量并定向核查。当前 Codex 审计会话接收，原负责人 Git 交接保持，不由本端代标 accepted。
+
+宿主执行增量（2026-10-26）：Claude Code＋DeepSeek 原生 Workflow 首篇已实际返回；原始 assistant message.model 为 `deepseek-flash`，请求 alias `deepseek-v4.1-flash[1m]` 另记。非作者按先新后旧顺序完成首篇核对；修来源性质分组，并沿原调用纳入负责人 f1308f2 已交接的开门揭示制作模块，只核新增事实／已审修复。来源模块现已进入 main，原写者停止写入，避免覆盖新增。 本任务全范围尚未完成，状态保留 running，后续按已明确逐页增量要求继续。
+
+发布恢复：用户明确授权后，仅更正错误合并提交身份；原 `8b7d1e9` 替换为 `de859f081d6547eeb976ba3b5da7d0dd1b1564b6`，后续提交只重接父引用，文件树、提交说明与他人身份保留；受保护的精确 lease 更新后 main 为 `1a3fad0dba89e45555f3cc1197d2ee986ab8d158`，身份扫描通过。后续每次 merge／commit 显式使用单次 noreply，检查结果与推送分步执行；未新增规则层。
