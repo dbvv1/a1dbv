@@ -142,6 +142,14 @@
 
 **依据**：[一手：历史补丁；研究] [BAML 双 PR](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)；[社区／一手；经验] OCRmyPDF 兼容修复按输入机制分流；[经验] 本节调试默认；核实 2026-10-25。
 
+### 缺文件后“挂起”：先量并发收尾，再核上游修复是否经过该路径
+
+**✅ 用公开 fixture 的副本、任务独占 SQLite 与显式配置跑真实 CLI，先记退出码、stderr、DB 和标签；挂起时再用 stdlib `faulthandler` 取线程栈，并用 `--threads 0` 对照，区分线程池／收尾与单条命令本身。** beets 2.14.1 固定 master `d7397566` 的 ffmpeg 后端：5 条有效＋2 条缺文件的 threaded 运行正常退出（11.5s，2 次 `ffmpeg exited with status`，有效条目全部落库，缺失记录保持 NULL），串行 2.4s；116 条有效＋4 条缺文件时 threaded 110.6s、串行 15.9s，PR #7112 head `bbeb7ebc` 的同一 threaded 命令 6.6s。10s 线程栈显示 `ExceptionWatcher.run` 停在 `get_nowait()` 忙等、主线程在 `close_pool → pool.join`，与 #5449 同机制；#7112 改 `get(timeout=0.1)` 后缺文件处理、DB 和标签结果不变。采用现有 PR，不另写补丁。
+
+**不要把源码阅读当成已复现挂起。** 本例当前主机（Windows 11／Python 3.13.5）最大只到 120 条，未出现无限挂起；原报告是 macOS 15／Python 3.14.7／beets 2.13.1。单主机性能退化支持同一机制，但不等于已在原平台复现；#7112 仍 open/unmerged，也未实现 issue 建议的“跳过缺失文件／提示 `beet update`”。可接手命令与上游补丁见 [A-RUNTIME-DIAGNOSIS-001](collaboration/local-jobs/A-RUNTIME-DIAGNOSIS-001.md)。
+
+**依据**：[本仓实试／一手：源码，2026-10-25] beets master `d7397566` 与 PR #7112 head `bbeb7ebc` 的真实 CLI、临时 SQLite 与公开 fixture 对照；[社区：单例] beets #6963 原报告与 #5449；仅 Windows／Python 3.13，未复现无限挂起，未验证 macOS；核实 2026-10-25。
+
 ### 先让 Agent 停在真实执行处，再猜分支
 
 **Python 的断点／变量观察先用原生 `python -m pdb`，不必先装 MCP。** [同输入实试与具体命令](../experiments/python-debugger-entry.md)让 pdb 与 DebugMCP standalone 0.1.2 都在未改动程序里停住、取日期值、单步确认分支并正常结束，结果一致。
