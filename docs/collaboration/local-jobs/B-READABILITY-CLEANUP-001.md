@@ -41,7 +41,7 @@ result_branch: relay/b-readability-cleanup-001
 
 - 视频首篇：已接收固定正文 `d7625f051c447e443dfa04c540318a0dd9e32d29`（交付分支 `f6c5166df9e4e4c73077453a74c342f0eda0178a`）的定点续改。沿原会话重组直接选路与来源归位，复用原非作者仅核改段的复核；“未知→绝对否定”和插镜范围偏移已修复关闭。原数字／许可／Veo条件及完整制作链保持；没有新模型／引擎／成片验收。本页 accepted，全任务仍 running。
 - 引擎页：按accept:auto合入[6d4d9ce](https://github.com/dbvv1/a1dbv/commit/6d4d9ce35e74c597f7585fbc358bfca85ba2831d)，来源正文[fb3006c](https://github.com/dbvv1/a1dbv/commit/fb3006c)。先新后旧独审及入口堆叠、来源归位、原时区和CLI／MCP条件差量全部关闭；原数字／条件保持，检查通过。本页accepted，真实引擎行为未验。
-- 后续按清单接验证页、04／05及其余正文和追加模板；04／05原写者已明确释放。全任务仍running，全部范围接收后才结束并触发最终审计事件。
+- 验证页与04客户端页正在同一原生Workflow的独立正文作者中处理，宿主串行回执。05架构页按最新负责人反馈协调写入，不覆盖原作者。其余按清单和追加模板接续；全任务仍running，全部范围接收后才触发最终审计事件。
 - 实际通道：Claude Code＋DeepSeek 原生Workflow，原始message.model=deepseek-flash；原调用与失败／修订保留，宿主非作者差量核对不代审计接收。
 
 模块写入已释放：04／05／wp10-content／WP11 对应模块已随 `0b78679817e7909e7919e5bb366616738dd7b946` 交付，原模块写者停止写入；后续存量清理可按既定顺序接续这些正文，不再等待旧 running。视频首篇定向续改已接收，原下一页 01 的在制日志保持。

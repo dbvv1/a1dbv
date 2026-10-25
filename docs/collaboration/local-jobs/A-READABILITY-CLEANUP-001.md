@@ -38,7 +38,7 @@ result_branch: relay/a-readability-cleanup-001
 ## 当前结果
 
 - 已接收：02与19原决定保留；21按accept:auto合入[6d4d9ce](https://github.com/dbvv1/a1dbv/commit/6d4d9ce35e74c597f7585fbc358bfca85ba2831d)，来源正文[9c0cf2c](https://github.com/dbvv1/a1dbv/commit/9c0cf2c)。先新后旧独审及gstack采用入口差量已关闭，原事实与条件保留，检查通过。
-- 在制：09-review-and-quality与05-skills-and-plugins两个独立正文作者的原生Workflow已启动，任务回执由宿主串行汇总；不再改已接收页。
+- Skills页按accept:auto合入[14d1fe5](https://github.com/dbvv1/a1dbv/commit/14d1fe57bd6a87f3ce4fcf2a7addd51fdb479284)，正文[a39bee3](https://github.com/dbvv1/a1dbv/commit/a39bee3)。先新后旧独审及来源重复／复用入口差量已关闭，历史锚点保留，适用检查通过。09评审页正沿原调用修首读发现的重复与指代问题；不再改已接收页。
 - 后续按清单及追加首页／模板范围接续，全任务仍running；全部范围接收后才结束并触发已登记的最终审计事件。
 
 认领与恢复：dot 本地协作；2026-10-26。按 main 固定 `0a64c83` 的 ready 任务及本轮明确恢复指令启动。首个独占页 `docs/02-models-and-cost.md`，按任务顺序逐页整篇处理，核完一页交增量；非作者先只读新文复述，再对照原文核结论／数据／来源。游戏04、05仍由现有模块原写者负责，未交付前跳过；保留Datasette编辑器原调用。25探索、04MCP、游戏03排除，不改规则层、不统计限定词密度、不设比例或30秒阈值、不新开后续批次。只发布结果分支与本任务回传，当前Codex审计会话接收，本端不标accepted。
