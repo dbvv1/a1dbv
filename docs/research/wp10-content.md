@@ -10,7 +10,7 @@
 
 ## 菜单补研：跨暂停、改键与设备切换保住控制
 
-核实：2026-10-14 UTC。主线 2／3；将 04 的菜单“关键页可达”深化为切换后可控、反馈可信，并限定 02 逻辑动作注入的证明范围；依据为官方文档和发行游戏更新。[一手／研究]
+核实：2026-10-14 UTC。主线 2／3；将 04 的菜单“关键页可达”深化为切换后可控、反馈可信，并限定 02 逻辑动作注入的证明范围；依据为官方文档和发行游戏更新。[一手／研究] 改键持久化的 GUID／落盘边界见[#103](#103)，整页选型见[整页选型回流](#整页选型回流ui-toolkit-新能力与迁移成本)，动态 UI 重建见[#83](#83)；本节只留菜单控制、暂停交接与设置管线。
 
 <a id="17"></a>
 
@@ -154,7 +154,51 @@
 
 [研究] 未来用原生暂停→设置→返回，再加滑条、动态隐藏项和确认层。改确认键并换设备，核焦点／导航、实际绑定提示、返回目标、过期缓存与当前按住政策；重绑定取消也走返回路径。
 
-[研究] 记录二改复制的政策与旧页回归；少量共享开关边界仍难维护，才引框架，无减负则撤回。AI 补绑定／导航／回归，人判操作负担；日志与截图互证，状态注入不代验设备路径。
+[研究] 记录二改复制的政策与旧页回归；少量共享开关边界仍难维护，才引框架，无减负则撤回。AI 补绑定／导航／回归，人判操作负担；日志与截图互证，状态注入不代验设备路径。设置定义、草稿、预览与保存的分工见下节。
+
+<a id="settings-pipeline"></a>
+
+#### 设置到保存：定义、草稿、预览、提交分开
+
+核实：2026-10-25 UTC。主线二／三。补 [04 菜单模块](../../domains/game-dev/04-client-modules.md#菜单也是控制的一部分) 从“控件能用”到“设置能改、能退、能保存”的缺口；只读官方文档与固定源码，未运行引擎或真实菜单。[研究]
+
+**先定职责，再选控件。** 设置定义、当前有效值、已保存值、草稿、预览、保存和控件绑定是七个不同责任；把“滑块回调”同时当保存入口，取消和保存失败就没有位置。
+
+| 责任 | 内容 | 默认落点 |
+|---|---|---|
+| 定义 | 稳定 id、默认值、类型、生效时机、可见条件、读／写与格式化 | 项目设置表，不是引擎内置 |
+| 有效值 | 最近一次提交后已生效的值；启动时从已保存值应用，预览期间运行时可能暂时不同 | 设置会话 |
+| 已保存值 | 上次成功保存的值；可含待重启项，和有效值不同 | 存储层＋设置会话 |
+| 草稿 | 玩家正在改的值；打开时复制已保存值，保留待重启项 | 设置会话；改动只按值语义标脏 |
+| 预览 | 只写需要即时反馈的运行时输出，并保留本次编辑开始时的有效值快照；应用成功后同步到新的有效值 | 音量的 mixer 参数等 |
+| 提交与保存 | 提交在保存成功后把草稿写运行时；保存只写存储，返回可观察的成功／失败／不确定结果 | 设置会话＋存储层，分开调用 |
+| 绑定 | 把定义映射到具体控件和输入动作 | 行适配器／输入映射 |
+
+行显示按脏项／待重启／有效值三层取值；脏项指草稿与已保存值按设置值语义不同，不由当前有效值决定。取消把草稿回到已保存值，不回旧有效值，否则上次保存的待重启项会丢。
+
+**三类生效时机分开。** 项目按设置消费者实际初始化的时机归类，不按设置页分组：
+
+| 类型 | 例子 | 何时生效 | 取消与返回 |
+|---|---|---|---|
+| 即时预览 | 主音量、音乐、语音 | 推滑块即写运行时 | 取消回本次编辑开始时的快照；有未应用改动时先问放弃 |
+| 按应用提交 | 字号、界面缩放、部分画质、改键 | 保存成功后写运行时 | 取消不写运行时；改键恢复原 override |
+| 需重启 | 渲染后端、输入后端、部分平台画质 | 只保存待生效值，下次启动初始化前应用 | 返回不撤销已保存值；行标“重启后生效” |
+
+本模块示例不实现显示模式／分辨率切换，以免把引擎的确认／回退、超时和保存结果混成一条未实现承诺；若项目另做，应按 [`ConfirmVideoMode`／`RevertVideoMode`](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8) 和项目自己的超时单独处理，不并入本示例的保存流程。
+
+**引擎契约支持这三段，但不替项目做完整模型。**
+
+- [一手] UE 5.8 的 [`UGameUserSettings`](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8) 把设值、应用、确认／回退和保存分成不同入口（其中 `ApplySettings` 仍把应用和保存绑在一起）：`SetScreenResolution`／`SetFullscreenMode` 只改用户设置，`ApplySettings` 应用并保存，`SaveSettings` 只保存，`ConfirmVideoMode`／`RevertVideoMode` 处理显示模式确认，`LoadSettings` 从持久存储读取（调用时机由项目决定）。`ApplySettings` 把应用和保存绑在一起，`SaveSettings` 本身也不返回错误；要单独报告保存失败或先校验，只能改用设置值＋项目自己的存储层和运行时应用，不把它当唯一事务。
+- [一手] Unity 6000.3 的 [`Screen.SetResolution`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Screen.SetResolution.html) 在帧末生效且不保存；显示模式不在本示例内，若项目另做，才需自己保留上一组值、起确认计时器和超时。[`AudioMixer.SetFloat`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html) 写暴露参数，调用后快照不再控制该参数，参数缺失或正在编辑快照时返回 false，所以取消要写回自己保存的本次编辑开始时的值。
+- [一手] Lyra 的 [GameSettings 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine) 把设置定义、动态 getter/setter、编辑条件（可禁用、隐藏、禁止重置）和注册表分开；[公开镜像的变更跟踪器](https://git.singinwhale.com/singinwhale/RealtimeStyleTransferRuntime/raw/commit/3bfe5ec9d1073534ccc519bc10cef15ae208096a/Plugins/GameSettings/Source/Private/Registry/GameSettingRegistryChangeTracker.cpp) 在应用时 `Apply()` 后 `StoreInitial()`，取消时 `RestoreToInitial()`。官方页只讲到注册表和编辑条件，应用／取消事务在源码可核；它是示例插件，不是引擎内置。
+- [一手：固定源码] OpenTTD 提交 `cb7027` 的 [`settings_internal.h`](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h) 用 `NewgameOnly`、`NoNetwork`、`NotInSave`、`NotInConfig` 等标志和 `startup` 构造参数区分“不能局内改”“不写入存档／配置”“启动时直接读”；[`settings.cpp`](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp) 的配置保存与游戏存档分开，`NewgameOnly` 在 `IsEditable` 中拦截。
+- [一手] Input System 1.20 的 [binding override](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html) 是非破坏性的：`ApplyBindingOverride` 只改 override，`RemoveBindingOverride` 恢复原绑定；[保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html) 只存 override，载入默认先清旧 override。冲突、落盘和迁移仍由项目负责；组合键按子 binding 索引改，显示用 `GetBindingDisplayString`。
+
+**预览与保存必须是两个入口，保存结果要有真实来源。** `dirty` 只比较草稿和已保存值（50→60→50 回到原值就清掉），不要拿当前有效值比：已保存的待重启项本来就与有效值不同，否则会被误报成未保存。Unity 的 [`PlayerPrefs.Save()`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html) 返回 void，UE 的 [`save_settings()`](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8) 返回 None；正常返回只说明调用发生，不能包装成“已落盘／成功”。项目已有返回错误或完成事件的存储就直接用；没有就用最小文件适配器，把 `Ok` 限制在可观察边界：序列化成功（非空结果）、临时文件写入并 `Flush(true)` 返回、目标文件替换／移动返回。任一步抛异常返回失败，替换阶段异常标“不确定”。`Ok` 不保证断电或崩溃后仍可读，也不覆盖同步盘或其他进程。保存失败或不确定时保留草稿、留在页面、给出可重试提示；若要重开设置确认盘上结果，先说明重开会丢弃当前草稿。重开后非 OnRestart 项若 stored 与运行时不同，显示已保存值并标“已保存，待应用”；玩家明确应用时即使 dirty 为空也把这些项纳入校验与提交。重开不自动应用，也不把已保存当作已生效。在重新读盘确认前，保存失败或不确定时不显示“已保存”，不清 `dirty`，不写 OnApply 运行时；预览项仍可试听但说明尚未落盘。这条走正常应用流程，不另立容灾章节。
+
+**证据边界。** 未运行引擎、未构建菜单、未验设备、读屏、音量和保存失败的真实反馈；文件适配器只核了 .NET Standard 2.1 API 的存在与异常边界，未实机写盘、未做掉电或故障注入，不能称为可靠持久化验收。[研究]
+
+**依据**：[一手] [UE 5.8 UGameUserSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8)、[Lyra Sample Game Settings 5.8](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine)、[Unity Screen.SetResolution](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Screen.SetResolution.html)、[Unity AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)、[Unity PlayerPrefs.Save](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html)、[.NET FileStream.Flush(Boolean)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=netstandard-2.1)、[.NET File.Replace](https://learn.microsoft.com/en-us/dotnet/api/system.io.file.replace?view=netstandard-2.1)、[Input System 1.20 保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)、[Input System 1.20 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)；[一手：固定源码] [OpenTTD settings_internal.h](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)、[OpenTTD settings.cpp](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp)、[Lyra GameSettings 变更跟踪器公开镜像](https://git.singinwhale.com/singinwhale/RealtimeStyleTransferRuntime/raw/commit/3bfe5ec9d1073534ccc519bc10cef15ae208096a/Plugins/GameSettings/Source/Private/Registry/GameSettingRegistryChangeTracker.cpp)；[研究] 七责任拆分、脏标记按已保存值比较、三类时机与文件适配器边界为本项目建议；核实 2026-10-25，未运行引擎。
 
 <a id="28"></a>
 
@@ -461,6 +505,7 @@
 - [一手] [uGUI 官方优化指南](https://unity.com/how-to/unity-ui-optimization-tips)：Canvas 变化需重析批次，子 Canvas 自管几何／batching，可按更新时机拆；非每值改都重建全树 mesh/layout。独立边界不能合批、可能增 draw，静态仍绘。指南无固定版，非 6.3 实测。[研究]
 - [一手] [Unity 6.3 LTS 移动元素契约](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-use-usage-hints-to-reduce-draw-calls-and-geometry-regeneration.html)（页面构建 2026-10-14）：top／left／width／height／flex 可引起布局重算及传播；style.translate 在 transform 阶段移动，不重算布局；频繁变换可用 DynamicTransform 避免 CPU mesh 更新。**仅视觉移动才走这条路；真实内容重排不能冻结布局来省成本。** 不由此迁移稳定 uGUI 或拆出多个 UIDocument。[研究]
 - [一手] [6.3 平台与网格限制](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-support-for-runtime-ui/uie-performance-consideration-runtime/uie-platform-and-mesh)：尺寸变化会重新生成几何，部分 Android 设备与 Web 不能局部更新 index buffer。仍需设备测量，不保证跨平台收益相同。[研究]
+- [一手] [UI Toolkit 6.3 支持属性](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-USS-SupportedProperties.html)：`display: none` 把元素移出 UI，`visibility: hidden` 仍占布局空间。设置页隐藏当前行并让下面上移时用前者，同时把焦点移到相邻可见行；不要用透明度或 `visibility` 保留一个不可操作的坑。[研究]
 
 <a id="86"></a>
 
@@ -478,7 +523,7 @@
 
 [研究] ✅ 预算够用保留；热点先分布局／几何／批次／GPU，去重复写入，只试一个边界并保交互。uGUI 按更新时机拆；Toolkit 纯视觉用 transform；UMG 先 invalidation，剩 draw 压力且反馈允许才试 Retainer。
 
-[研究] 二改静 HUD 加持续值再加动画，同设备／分辨率比基线与一局部改动，记 CPU 重建、draw/GPU、缓存内存及可见反馈。菜单／显隐后实际点击与已承诺导航核数值／焦点；无 CPU 收益或 GPU／内存／延迟超预算则撤回，停更先查版本／失效，不全树强刷。
+[研究] 二改静 HUD 加持续值再加动画，同设备／分辨率比基线与一局部改动，记 CPU 重建、draw/GPU、缓存内存及可见反馈。菜单／显隐后实际点击与已承诺导航核数值／焦点；无 CPU 收益或 GPU／内存／延迟超预算则撤回，停更先查版本／失效，不全树强刷。设置页的值文本和按条件显隐也按这条先修重复写入；隐藏当前焦点行前先移焦点，别用整页重建掩盖失效，见[#settings-pipeline](#settings-pipeline)。
 
 ### 换肤后二改：新局恢复与反馈形状一起接收
 
@@ -539,7 +584,7 @@
 
 ## 改键持久化：既有选型回流
 
-2026-10-17（UTC+8）。[研究] 回流[既有先导](../../experiments/m6-search-pilot-20261017.json)的 arms[2].result、grades[1].report：Unity 6.3 先用 Input System 1.20.1 加应用薄层，不重做选型。原生[override保存／加载](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)配稳定 binding GUID；项目负责冲突、落盘及版本迁移。按索引保存会受重排影响，新增绑定拓扑也不是 override 的保存对象；恢复默认须同步旧设置。[一手／研究]
+2026-10-17（UTC+8）。[研究] 回流[既有先导](../../experiments/m6-search-pilot-20261017.json)的 arms[2].result、grades[1].report：Unity 6.3 先用 Input System 1.20.1 加应用薄层，不重做选型。原生[override保存／加载](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)配稳定 binding GUID；项目负责冲突、落盘及版本迁移。按索引保存会受重排影响，新增绑定拓扑也不是 override 的保存对象；恢复默认须同步旧设置。[一手／研究] 草稿、预览、应用和保存的分工见 [#settings-pipeline](#settings-pipeline)；本节只保留改键本身的持久化契约。
 
 UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/UEnhancedInputUserSettings)已有映射、重置与保存，默认固定存档槽；[映射参数](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/FMapPlayerKeyArgs)区分 MappingName、slot、设备与 profile，不套 Unity GUID。[研究] 默认沿原生能力，身份／结构变更才补迁移；文档不保证任意动作改版自动恢复。此次是资料支持结论的入口回流与 UE 契约对照，无新增效果、引擎或设备验证。
 
@@ -619,7 +664,7 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 
 ## 整页选型回流：UI Toolkit 新能力与迁移成本
 
-**[研究] 新项目的数据／布局密集 UI 可以在实现前直接试 UITK；已有可靠 uGUI 不因新功能、手柄或一次换肤自动迁移。** 本节补的是版本和生产成本差异，不用 UI 单项代表整个客户端的最高水平。
+**[研究] 新项目的数据／布局密集 UI 可以在实现前直接试 UITK；已有可靠 uGUI 不因新功能、手柄或一次换肤自动迁移。** 本节补的是版本和生产成本差异，不用 UI 单项代表整个客户端的最高水平。完整暂停设置菜单的底座比较、草稿／保存与二改路径见[04 菜单模块](../../domains/game-dev/04-client-modules.md#菜单也是控制的一部分)；本节只保留整页 UI Toolkit 选型与迁移成本。
 **[一手／研究] 2026-10-22 UTC 读取的 6000.7 手册仍显示 Beta，runtime 总表仍荐 uGUI；功能表已包含 UITK Animation Clips／Timeline。** 保留 6.3 特有边界，不能把旧限制当成 6.7 不支持。
 **[研究] 未安装／运行引擎或 UI 工程；最佳视觉质量、零手修可交付性及本项目工时／性能收益未知。** 现有十一模块决策复用 WP10 与动画、音频等专题的固定证据，不为数量另列工具。
 

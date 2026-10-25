@@ -487,9 +487,227 @@ ink 可能抛错或近似恢复并 warning，须捕获后决定迁移／回退�
 
 #### 菜单也是控制的一部分
 
-**[研究] ✅ 初开／重开有有效焦点，确认／返回由当前层处理，关闭回原项或后备项；改键留取消、提示随绑定。** 原生路径坏先修。Unity UI vs Game Input 可借选择恢复，却不支持混用；提示变化不自动退出 UI。uGUI 防背景点击丢选择，Toolkit 重启 UIDocument 后重建焦点；CommonUI 不包办 UMG 导航。[一手]
+**✅ 先让玩家从暂停菜单走完一次“改音量→试听→应用或取消→回到战斗”，再把同一套设置行扩成字号、改键、按条件隐藏和确认层。** 键鼠和手柄都要能找到入口、改完知道发生了什么、返回时不丢刚改的值。已有 uGUI 或 UMG 菜单保留；缺的是设置定义、草稿和保存这条链，不是换 UI 框架。下面给正常路径、最小数据与首版／二版交付；实际手感、读屏和游戏内效果本轮未验。
 
-第二个菜单重复政策才抽共享层；多暂停原因关闭只撤自身，Session 管持有者／加载权限。新设置页用真实改键、换设备和返回验收；[Celeste／Thrive 反例](../../docs/research/wp10-content.md#16)。[研究]
+**玩家路径。** 战斗暂停 → 设置 → 主音量 → 推滑块试听 → 应用（或取消）→ 回到暂停菜单 → 继续游戏。第二次需求在同一路径上加字号档、改键、按条件隐藏当前项，以及放弃更改／重置确认层；入口和返回路径不变。本示例不实现显示模式／分辨率切换。
+
+**提示随当前设备。** 键盘显示可读键名，手柄显示对应键位图标；换设备后重取确认／返回／应用提示，不退出菜单。缺图标时回退到文字，不让玩家猜当前按什么。
+
+```mermaid
+flowchart LR
+  A[暂停菜单] --> B[设置页]
+  B --> C[改草稿]
+  C -->|音量| D[即时预览]
+  C -->|字号／改键| E[草稿待应用]
+  D --> F{应用}
+  E --> F
+  F -->|是| G[保存成功后应用]
+  F -->|否| H[恢复预览并丢草稿]
+  G -->|失败| C
+  G -->|成功| I[回暂停菜单]
+  H --> I
+  I --> J[恢复玩法输入]
+```
+
+##### 设置责任与导航接口
+
+设置本身有七项责任：定义、当前有效值、已保存值、草稿、预览、应用与保存、绑定；下表另列导航焦点与输入路由，避免把它们塞进某个控件回调。
+
+| 职责 | 谁持有 | 默认做法 |
+|---|---|---|
+| 设置定义 | 项目设置表 | 每个设置一条：稳定 id、默认值、控件类型、生效时机、读有效值／写运行时、可见条件、标签和值格式。Unity／UE 都没有覆盖全部设置的通用定义／草稿模型（UE 的 `UGameUserSettings` 只覆盖部分用户设置），这张表是项目自己的。 |
+| 当前有效值 | 设置会话 | 最近一次提交后已生效的值；启动时从已保存值应用，缺项用默认值。预览期间运行时可能暂时不同，快照另存。 |
+| 已保存值 | 存储层＋设置会话 | 上次成功保存的值；可能含“待重启”项，和当前有效值不同。 |
+| 草稿 | 设置会话 | 打开设置页时从已保存值复制；玩家改动只写草稿并按值语义标脏，不直接写存档。 |
+| 预览 | 设置会话 | 只给需要即时反馈的项（主音量、音乐、语音）写运行时输出，同时保留本次编辑开始时的有效值快照；应用成功后把快照推进到新的有效值。预览不是保存。 |
+| 应用与保存 | 设置会话＋存储层 | 应用把草稿中按提交生效的项写运行时；保存只写文件／平台存储，并返回可观察的成功、失败或不确定结果。两者分开调用。 |
+| 控件绑定 | 行适配器 | 每种控件一个适配器，只读定义、显示值和转发改动；不持有存档键，也不复制事件链。 |
+| 导航焦点与输入路由 | 菜单层＋输入层 | 菜单层管当前层、初始焦点、隐藏项后的焦点和返回目标；输入层管 UI／玩法模式切换，UI 消费输入不自动挡 gameplay，沿用[输入与暂停](#输入与暂停先定动作权限再切输入)。 |
+
+**最小数据与调用顺序（本项目约定，不是 Unity／Unreal 内置类）。**
+
+```csharp
+enum ApplyTiming { Preview, OnApply, OnRestart }
+
+sealed class SaveResult {
+    public bool Ok;          // 只表示存储层观察到写入并替换／移动完成，不是引擎内建返回值
+    public bool Uncertain;   // 替换阶段异常，盘上可能是新值或旧值
+    public string Message;
+}
+
+sealed class SettingDef<T> {
+    public string Id;                          // 稳定存档键，不用行号或显示名
+    public T Default;
+    public ApplyTiming Timing;
+    public Func<SettingsRuntime, T> Read;      // 打开／刷新时读有效值
+    public Action<SettingsRuntime, T> Apply;   // 只改运行时
+    public Func<T, string> Validate;           // 返回 null 表示通过；改键冲突等
+    public Func<SettingsContext, bool> VisibleWhen;
+    public string LabelKey;
+    public string Format(T value);             // 值文本、单位和特殊状态
+    public Func<T, T, bool> ValueEquals = (a, b) => EqualityComparer<T>.Default.Equals(a, b); // 可覆盖；浮点按落盘精度
+}
+
+// 打开设置页：一次会话，不把事件和存储塞进每个滑块
+var effective = runtime.CurrentValues();       // 最近一次提交后已生效的值
+var stored    = store.LoadOrDefaults(defs);    // 上次成功保存，可能含待重启值
+var draft     = stored.Clone();                // 本次编辑，保留待重启项
+var preview   = effective.Clone();             // 取消时恢复本次编辑开始时的运行时值
+var previewTouched = new HashSet<string>();    // 本次会话实际改过运行时的预览项
+
+void OnRowChanged<T>(SettingDef<T> def, T value) {
+    draft.Set(def.Id, value);
+    if (def.ValueEquals(draft.Get(def.Id), stored.Get(def.Id)))
+        dirty.Remove(def.Id);                  // 50→60→50：回到已保存值，不再算未保存
+    else
+        dirty.Add(def.Id);                     // 只和 stored 比，不和 effective 比
+    if (def.Timing == ApplyTiming.Preview) {
+        def.Apply(runtime, value);             // 预览随实际值，不受脏状态影响
+        previewTouched.Add(def.Id);            // 取消时按实际碰过的项回快照
+    }
+    row.Refresh(def, value);                   // 行显示随实际值；dirty 只控制未保存提示
+}
+
+SaveResult ApplyAll() {
+    // 未保存与待应用分开：重开后 stored=draft 也可能仍不同于运行时。
+    var applyDefs = defs.Where(def => dirty.Contains(def.Id)
+        || (def.Timing != ApplyTiming.OnRestart
+            && !def.ValueEquals(draft.Get(def), def.Read(runtime)))).ToArray();
+    foreach (var def in applyDefs) {
+        var invalid = def.Validate?.Invoke(draft.Get(def));
+        if (invalid != null) {
+            status.Show(invalid);
+            return new SaveResult { Ok = false, Message = invalid }; // 保留草稿与待应用值
+        }
+    }
+    var result = store.Save(draft);             // 可观察的完成／失败，来源见下
+    if (!result.Ok) {
+        status.Show(result.Uncertain
+            ? "保存结果不确定；当前更改仍在，重开会丢弃草稿，可先重试"
+            : "保存失败，更改还在，可重试");
+        return result;                          // 不关页、不清 dirty、不丢 draft、不改运行时
+    }
+    foreach (var def in applyDefs)
+        if (def.Timing != ApplyTiming.OnRestart)
+            def.Apply(runtime, draft.Get(def)); // 包含已保存但尚未应用的 Preview／OnApply 项
+    stored = draft.Clone();
+    effective = runtime.CurrentValues();       // 重新读实际已生效值，OnRestart 仍保持旧值
+    preview = effective.Clone();                // 下一次取消回到刚应用的值
+    previewTouched.Clear();
+    draft = stored.Clone();
+    dirty.Clear();
+    return result;
+}
+
+void Cancel() {
+    foreach (var def in touchedPreviewDefs())
+        def.Apply(runtime, preview.Get(def.Id)); // 按实际碰过的预览项恢复，不依赖 dirty
+    draft = stored.Clone();                       // 保留已保存的待重启值
+    dirty.Clear();
+    previewTouched.Clear();
+}
+```
+
+**保存结果从哪来。** `store.Save` 的 `Ok` 不能直接取引擎调用：Unity 的 [`PlayerPrefs.Save()`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html) 返回 void，UE 的 [`save_settings()`](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8) 返回 None，正常返回只说明调用发生，不说明已经可靠落盘，更不能用它清 dirty；只有 PlayerPrefs 的工程也不能把 `Save()` 包装成永远成功。项目已有返回错误或完成事件的存储（存档服务、平台云存档）就直接接；没有就把 `draft` 转成 DTO，用一个最小文件适配器把可观察边界收在三步：
+
+```csharp
+sealed class FileSettingsStore {
+    readonly string path;
+    string Tmp => path + ".tmp";
+    string Bak => path + ".bak";
+
+    public SaveResult Save(SettingsDraft draft) {
+        string json;
+        try {
+            var data = draft.ToSettingsData();       // DTO 只用可序列化字段／List，不用字典或接口
+            json = JsonUtility.ToJson(data, true);   // 1. 序列化完成
+            var normalized = json.Trim();
+            if (normalized.Length == 0 || normalized == "{}" || normalized == "null")
+                return new SaveResult { Ok = false, Message = "序列化结果为空，未写入" };
+        } catch (Exception e) {
+            return new SaveResult { Ok = false, Message = "序列化失败，未写入：" + e.Message };
+        }
+
+        try {
+            using (var fs = new FileStream(Tmp, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var w = new StreamWriter(fs, new UTF8Encoding(false))) {
+                w.Write(json);
+                w.Flush();
+                fs.Flush(true);                       // 2. 写入并刷出中间文件缓冲
+            }
+        } catch (Exception e) {
+            TryDelete(Tmp);
+            return new SaveResult { Ok = false, Message = "写入失败，原文件未替换：" + e.Message };
+        }
+
+        var replacing = File.Exists(path);
+        try {
+            if (replacing) File.Replace(Tmp, path, Bak); // 3. 替换完成
+            else File.Move(Tmp, path);
+            return new SaveResult { Ok = true };
+        } catch (Exception e) {
+            return new SaveResult {
+                Ok = false,
+                Uncertain = true,                     // 可能已换或未换，不能报告成功
+                Message = "替换阶段异常，盘上可能是新值或旧值：" + e.Message
+            };
+        }
+    }
+
+    static void TryDelete(string file) {
+        try { if (File.Exists(file)) File.Delete(file); } catch { }
+    }
+}
+```
+
+`Ok` 只表示本进程观察到“序列化成功、临时文件写入并 `Flush(true)` 返回、目标文件替换或移动返回”。序列化成功也只表示 `JsonUtility.ToJson` 没抛异常且结果非空，不证明所有字段都进了 JSON；它不保证断电／系统崩溃后仍可读，不覆盖同步盘、杀毒软件或另一进程同时写，也不证明盘上内容能再次反序列化；`File.Replace` 还要求源和目标同卷，部分平台不支持时会抛异常。替换阶段异常标 `Uncertain`：此时既不显示“已保存”，也不清 dirty 或丢草稿，保持页面并提示玩家可先重试；若要重开设置确认盘上结果，先说明重开会丢弃当前草稿。重开后不自动改运行时：非 OnRestart 项若 stored 与当前运行时不同，显示已保存值并标“已保存，待应用”；玩家明确应用时，即使 dirty 为空，也将这些项纳入校验和提交。不自动重试或自动关页；读取层遇到无法解析或缺失的目标文件应回退 `.bak` 或上次有效档并提示，不能静默用默认值覆盖。承诺的是可观察的完成／失败反馈，不是引擎级持久化成功。
+
+**统一顺序。** **校验草稿 → 保存 → 应用运行时**：改键冲突、数值范围等在 `store.Save` 前拦截，失败只提示并保留草稿。本示例不实现显示模式／分辨率切换；若项目另做，它需要引擎自己的确认／回退和超时，不能把这条分支混进本示例的保存流程。
+
+**行显示按三层取值。** 脏项（draft 与 stored 按 `ValueEquals` 不等）显示草稿；`OnRestart` 且已保存值不等于有效值时显示已保存值并标“重启后生效”；非 OnRestart 项若 stored 与当前运行时不同，显示 stored 并标“已保存，待应用”；其余显示有效值。取消回到已保存值，而不要回到旧有效值，否则上次保存的待重启项会被丢掉。启动时先把已保存值应用到运行时，再让 `effective` 等于它；`OnRestart` 项在 `ApplyAll` 里只更新 `stored`，不改运行时。保存失败或结果不确定时，`dirty`、草稿和预览都不动，OnApply 项不改运行时，Preview 项仍是试听值；取消会按 `previewTouched` 恢复。OnRestart 项保存成功后，行上显示“重启后生效”，下次打开仍显示待生效值，而不是旧的有效值。
+
+**脏标记与三条路径的一致性。** `dirty` 只回答“草稿和已保存值是否不同”：50→60→50 回到原值就清掉，返回时不再弹未保存；只和 `stored` 比，不和 `effective` 比，因为已保存的待重启值本来就与当前有效值不同，拿有效值比会把“已保存但尚未生效”误报成未提交。应用集合另含非 OnRestart 且草稿不同于实际运行时的项，与 dirty 无关；因此重开后的已保存字号 150%、运行时 100% 即使 dirty 为空，也能在明确应用后生效。集合先固定，再校验、保存和提交；成功后 `stored` 推进到草稿，`effective` 重读运行时，`dirty` 清空；取消把草稿回到 `stored` 并恢复本次碰过的预览项，已保存的待重启值保留、未保存改动丢弃；保存失败或不确定时 `stored`、`effective`、`draft`、`dirty` 和预览都不动。真正的重启后，启动时把 `stored` 应用到运行时，待生效标记自然消失。`ValueEquals` 默认用 `EqualityComparer<T>.Default`，浮点／改键等由定义覆盖：浮点按实际落盘精度或滑块步长量化后比较，枚举按枚举值，改键按 binding id 加 override 路径，字符串按序数；不用对象引用或 UI 原始浮点噪声。
+
+**新增一个设置只做三步：** 在表里加一条定义；给它的控件类型注册或复用一个行适配器；补一条“打开→改→应用／取消→再打开”的回归用例。存档键、脏标记、应用、保存和返回都走同一会话，不要为每个滑块再写一套回调和存储。
+
+##### 三类生效时机与返回
+
+| 类型 | 典型设置 | 玩家看到什么 | 取消与返回 |
+|---|---|---|---|
+| **即时预览** | 主音量、音乐、语音 | 推滑块立即听到，值文本同步 | 取消恢复本次编辑开始时的快照；有未应用改动时返回，先问“放弃更改？” |
+| **按应用提交** | 字号、界面缩放、部分画质、改键 | 改的是草稿，点“应用”后整页生效 | 取消不写运行时；改键恢复原 override；未应用改动返回同上 |
+| **需重启** | 渲染后端、输入后端、部分平台画质 | 保存后行标“重启后生效”，本局不变 | 返回不撤销已保存值；保存成功即不再问“未保存” |
+
+未提交提示只针对“改动未保存”的草稿；已保存的待重启值不算未保存。落到三个具体项：音量推滑块就试听，返回前有改动先问，取消回到原音量；字号改完点“应用”才整页变化，未应用就返回先问，取消保持原字号；改键捕获只写候选，冲突先提示，应用才写 override，取消或中途返回恢复原键。音量的即时预览写 [AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html) 的暴露参数（调用后快照不再接管该参数），取消时写回本次编辑开始前的值。OpenTTD 的[设置描述表](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)把 `NewgameOnly`、`NotInSave`、`NotInConfig`、`startup` 写成定义字段，配置保存与游戏存档分开；可借它把时机放进定义，而不是散落在每个 UI 回调里。显示模式的引擎契约只在 [WP10 设置到保存](../../docs/research/wp10-content.md#settings-pipeline)保留，不进入本节确认层。
+
+**改键接同一条会话，但校验独立。** 捕获阶段只写草稿候选，行上显示候选键；应用前先查同动作和全局快捷键冲突，校验通过后才走统一的保存并写 Input System 的 [binding override](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)。取消或返回恢复应用前的 override；组合键按子 binding 索引改，不能把组合根当一个键。显示用 [`GetBindingDisplayString`](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)／当前设备的按键名，不硬编码“A／×”；换设备后重取提示。GUID、冲突和迁移边界继续沿用[改键持久化](../../docs/research/wp10-content.md#103)。
+
+**隐藏项与确认层的默认。** 可见性由定义里的条件决定，例如未启用语音时隐藏语音音量行；不要删数据，也不要每帧重建整页。当前焦点行被隐藏时，焦点移到下一条可见行，没有就上一条，再没有就本节第一行；滚动位置和已改值保留。确认层默认焦点放在最不破坏当前状态的动作：放弃更改层选“继续编辑”，重置层选“取消”。关闭确认层回到打开它的那一行；该行已隐藏就按上面的顺序找最近可见行。关闭设置页只撤本层；关闭暂停菜单才释放本层暂停持有，其他暂停来源仍由各自持有者管理；第二个菜单重复同一政策才抽共享菜单层，不为首版先建框架。
+
+**大字档。** 用一个 `fontScale` 作用于菜单标题、标签、值和键位摘要，不给每个控件单独改字号。放大后标签和值都要在：窄宽度先把值换到标签下一行，再让列表滚动；不把值裁掉，也不用缩小字号换空间。焦点环、滚动条和底部“确认／返回／应用”摘要一起放大；验收走同一路径的 100% 和 150% 两档，最长标签和最长值都要看。
+
+##### 底座选择：保留现有菜单，只补缺的链
+
+| 底座（锁定版本） | 这个菜单直接有什么 | 还要项目补／作者成本 | 迁移代价 | 默认 |
+|---|---|---|---|---|
+| **uGUI**（Unity 6000.3） | [Selectable 的 Automatic／Explicit 导航](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)、EventSystem、TMP 值文本；现有暂停菜单可直接加页 | 设置定义、草稿和保存要项目补；动态隐藏后要重接导航；背景点击默认清选择 | 无（已用 uGUI） | ✅ 已有 uGUI 项目保留 |
+| **UI Toolkit 6.3** | UXML／USS、运行时数据绑定、ListView、焦点控制；[层级重建后要重设焦点](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html) | 设置模型同样要项目补；行控件、样式和焦点要重做；6.7 的新能力不套到 6.3 | 高（重建现有页） | 🧪 新项目且团队已用 UITK 时直接试；不为设置页单迁 |
+| **UMG 5.8＋CommonUI** | UMG 控件与导航；[CommonUI 的激活栈、目标焦点和返回处理](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)；[`bAutoRestoreFocus` 与焦点恢复](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)；[Lyra GameSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine) 提供可借的定义、编辑条件和注册表模式，但它是示例插件不是引擎内置 | 仍需项目设置会话；CommonUI 的激活、返回和焦点策略要学；小菜单照搬整套插件会增维护 | 中到高 | ✅ 已有 UMG 保留；🧪 多层模态／设备提示反复出现才加 CommonUI |
+
+官方 UI vs Game Input 样例可借显式 UI 交接和选择保存；它明确不支持 mixed models，也没有嵌套弹窗栈，不能当完整菜单底座。CommonUI 不包办 UMG 导航；uGUI 的 [Deselect on Background Click](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/ui-input-module-reference.html) 默认清选择；Toolkit 禁用 `UIDocument` 的 GameObject 后层级会重建，重新启用时须再次设置焦点。选择底座看现有项目缺什么，不按 API 数量换框架；[整页选型与迁移案例](../../docs/research/wp10-content.md#整页选型回流ui-toolkit-新能力与迁移成本)保留版本差异和作者成本。
+
+首版落在现有暂停菜单的一个新页：一张 `SettingDef` 表、一个 `SettingsSession`、一个音量行适配器和一个带可观察完成／失败的存储层（文件适配器示例见上）；二版在同一会话和入口上增加定义与行适配器，确认层与焦点回退只加在菜单层，不改入口。
+
+##### 交给 AI 的首版与第二次需求
+
+| 轮次 | 给 AI 的目标、现有入口和约束 | 要求返回的差量 | 人验收 |
+|---|---|---|---|
+| **首版：音量** | 目标：暂停→设置→主音量→试听→应用／取消→返回。入口：现有暂停菜单、AudioMixer 的暴露参数、现有设置文件。约束：一条定义、一个会话、一个行适配器；预览与保存分开。 | 新增 `SettingDef` 表、`SettingsSession`、音量行、存储返回值；覆盖应用成功、保存失败、取消三条路径。 | 键鼠和手柄各走一遍；推滑块能听到且取消后回到原音量；保存失败时页面不关、值还在；返回后战斗输入恢复。 |
+| **二版：大字＋改键＋隐藏＋确认** | 在首版上追加：字号档、跳跃改键（含冲突）、按条件隐藏当前行（如未启用语音时隐藏语音音量）、放弃更改／重置确认层。入口和会话不变。 | 加字号定义和 `fontScale`；加改键定义、捕获、冲突检查和 override 恢复；加 `VisibleWhen` 与焦点回退；加确认层和默认焦点。 | 100%／150% 下标签和值都可读；改键取消不改变原键；隐藏当前行后焦点落到相邻可见行；确认层取消回到原行；保存失败仍保留草稿。 |
+
+以上是文档与实现起点；未运行引擎、未构建真实菜单，键鼠／手柄导航、手感、读屏、实际音量和游戏内效果待验。
+
+**依据**：[一手] [Unity 6000.3 AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)、[AudioListener.volume](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-volume.html)、[PlayerPrefs.Save](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html)、[JsonUtility.ToJson](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/JsonUtility.ToJson.html)、[.NET FileStream.Flush(Boolean)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=netstandard-2.1)、[.NET File.Replace](https://learn.microsoft.com/en-us/dotnet/api/system.io.file.replace?view=netstandard-2.1)、[Input System 1.20 保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)、[Input System 1.20 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)、[Input System 1.20 UI Input Module](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/ui-input-module-reference.html)、[uGUI 2.0 Navigation](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)、[UI Toolkit 6.3 焦点 FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)、[UI Toolkit 6.3 display／visibility](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-USS-SupportedProperties.html)、[UE 5.8 UGameUserSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8)、[Lyra Sample Game Settings 5.8](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine)、[CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)、[CommonUI 焦点接口](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)；[一手：固定源码] [OpenTTD 设置描述表](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)、[配置读写](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp)；[研究] 定义／草稿／预览／保存拆分、脏标记只与已保存值比较、三类时机、焦点与二改流程为本项目建议，显示模式不在本示例范围；文件适配器为项目示例，只核了 .NET Standard 2.1 API 存在与异常边界和 JsonUtility 的公开字段／序列化规则，未实机写盘；沿 [WP10 设置到保存](../../docs/research/wp10-content.md#settings-pipeline)；核实 2026-10-25，未运行引擎或真实菜单。
 
 ### 压低卡顿与设备耗用
 
@@ -519,7 +737,7 @@ UE PSO Precaching 延迟 proxy／默认材质可能丢关键预警，先准备�
 
 ### 修改界面与拾取交互
 
-[研究] 远端界面分监看、局部命令与连续编辑：先摘要／预览，细节操作才进入；移镜、选中、下令分清。概览误选就收窄，反复切换才扩大；[Factorio／Zero-K 依据](../../docs/research/wp10-motion.md#66)，未测收益。
+[研究] 远端界面分监看、局部命令与连续编辑：先摘要／预览，细节操作才进入；移镜、选中、下令分清。概览误选就收窄，反复切换才扩大；[Factorio／Zero-K 依据](../../docs/research/wp10-motion.md#66)，未测收益。本地暂停设置菜单的完整实现见[菜单也是控制的一部分](#菜单也是控制的一部分)；本节保留远端入口、放大、换肤、动态 UI 和拾取，不重复设置会话。
 
 #### 放大 UI：先保信息，再选重排或折叠
 
@@ -531,7 +749,7 @@ UE PSO Precaching 延迟 proxy／默认材质可能丢关键预警，先准备�
 | 面板可收起，但状态仍需随时知道 | 入口保容量／新事件等摘要，保已有快捷键／拖放路径；只留一个无状态图标不够 |
 | 完整模态能换回视野 | 仅在可中断查询时采用；日志遮危险、教程消失或反复开关就退回半模态／常驻 |
 
-Unity先核已锁版本原生能力：uGUI 2.6有最大尺寸，已核6000.3.15f1无此字段；多处flex／wrap缺口才评估uLayout，未试用。已有可用原布局时保留回退；Agent 二改新增物品／长标签后，在同一“查看状态→连续操作→返回”任务比较普通与大字档，并核新提示和旧操作仍可达，切档／重启按项目承诺。[研究；[近期重排候选、Cogmind 旧案例与边界](../../docs/research/wp10-motion.md#放大-ui保信息与连续操作)] 未运行引擎或真实游戏，不声称体验收益。
+Unity先核已锁版本原生能力：uGUI 2.6有最大尺寸，已核6000.3.15f1无此字段；多处flex／wrap缺口才评估uLayout，未试用。已有可用原布局时保留回退；Agent 二改新增物品／长标签后，在同一“查看状态→连续操作→返回”任务比较普通与大字档，并核新提示和旧操作仍可达，切档／重启按项目承诺。[研究；[近期重排候选、Cogmind 旧案例与边界](../../docs/research/wp10-motion.md#放大-ui保信息与连续操作)] 未运行引擎或真实游戏，不声称体验收益。暂停设置菜单的大字档沿用同一原则：一个 `fontScale` 作用于标签和值，值换行或下移但不消失；列表滚动、焦点环和键位摘要一起验，100%／150% 各走一遍，见[菜单模块](#菜单也是控制的一部分)。
 
 #### 换肤后重开：规则清空不等于画面恢复
 
@@ -541,7 +759,7 @@ Tytarenko 2026-09 Unity 制作复盘报告二改旧图残留、胜线覆盖不�
 
 #### 动态 UI 变贵：先找谁使它反复重建
 
-**[研究] ✅ 先修重复写入，再分重建／绘制热点。** 动态牵静态才拆 uGUI Canvas，代价是独立 batching；UITK 视觉移动用 translate／DynamicTransform，真重排走布局。UE 先 Invalidation，全局启用不叠局部 Box，draw-call 仍紧才 Retainer。CPU 无改善或 GPU／内存／延迟更差就退回；二改验显隐、焦点、点击；[CanvasScaler 反例与修复版](../../docs/research/wp10-content.md#83)。[一手]
+**[研究] ✅ 先修重复写入，再分重建／绘制热点。** 动态牵静态才拆 uGUI Canvas，代价是独立 batching；UITK 视觉移动用 translate／DynamicTransform，真重排走布局。UE 先 Invalidation，全局启用不叠局部 Box，draw-call 仍紧才 Retainer。CPU 无改善或 GPU／内存／延迟更差就退回；二改验显隐、焦点、点击；[CanvasScaler 反例与修复版](../../docs/research/wp10-content.md#83)。[一手] 设置页的值文本和按条件显隐也按这条先修重复写入；隐藏当前焦点行前先把焦点移到相邻可见行，别用整页重建掩盖失效，见[菜单模块](#菜单也是控制的一部分)。
 
 #### 显示正确但拾取偏移：先核位置来自哪里
 
