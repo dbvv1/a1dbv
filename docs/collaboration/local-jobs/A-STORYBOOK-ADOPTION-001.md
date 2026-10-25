@@ -2,7 +2,7 @@
 
 id: A-STORYBOOK-ADOPTION-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 32e2f2cbb9e457c11c9b30373bb970d68527f753
 result_branch: relay/a-storybook-adoption-001
@@ -31,3 +31,5 @@ result_branch: relay/a-storybook-adoption-001
 - 应用修改留独占临时工作区；不推第三方仓库、PR／评论或部署。可接手的固定 base、完整补丁、命令、回滚和消费者结果放本任务；补丁过大先说明交付形式，不传整仓或省略关键代码。不新增目录、编号专题或证明台账。
 - 给出默认／可信替代／不用条件、具体消费者与实际模型响应元数据；区分来源已读、实际调用、工程通过与真实体验。按一次有效独审接收，修订只复验受影响范围，未变证据直接复用。
 - 发布前核最新 main，跑文档、公开文件、实际新增提交身份与空白检查；仅推指定结果分支，回固定 SHA、执行起止及未完成项，状态 `review_ready`。dot-A 串行接收，不批量改写其他页。
+
+认领：dot 本地协作；2026-10-25T07:37:54.920550+00:00。来源 main 固定 `fd186dc`；与 A／B 试点无文件重叠，先发布认领后沿正常原生 Workflow 聚焦调查与条件采用。只写13候选入口与本任务，不解除既有浏览器／服务拒绝，不为试工具造需求。
