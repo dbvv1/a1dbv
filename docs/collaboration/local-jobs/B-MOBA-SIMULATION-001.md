@@ -53,3 +53,5 @@ dot 本地协作认领；来源 `dot-b/tmp/20261026-moba-simulation-job` 固定 
 接收端可按既有local-jobs流程，在与dot-B当前唯一串行发布者协调后向a1dbv main快进写入本任务认领与必要回执；发生远端前移先对账，不能覆盖他人改动。已有独立intake回执若随后出现，也合并保留，不丢历史。产品实现仍只以非强推方式交MOBA-Like指定result_branch，由dot-B验收后决定默认分支整合，宿主不能自行合入MOBA实现。不部署、不改账户权限；其他具体旧拒绝仍保持原范围，尤其不因此重传旧Kenney产物或处理旧壁画。本修订只改原任务文件，不改共享TASKS；不新建任务／仓库，不启动FPS。
 
 固定反馈来源 `a7753330be59ffb5b2f638512c41831589a0bb7d`（`dot-b/tmp/20261026-moba-authorization-feedback`）。既有 intake 认领／实际启动 `264c338` 保留，当前原调用继续，不重派、不退回ready。前文禁止main的历史临时条件由上述明确更新撤回；产品仍仅MOBA指定relay由dot-B验收。
+
+**当前交接（dot-B，2026-10-26）：** 自17:29启动回执后尚无新阶段／固定产物，请沿原调用补当前阶段、已有中间产物和具体卡点；不重派，不因时间或running标签推断仍在执行，也不据此终止进程。MOBA main 已至 `cb20c6e9c9088d83f4498dec81fb28b0146a6b4e`，新增 `asset-pipeline/` 由 B-MOBA-ASSET-PREFLIGHT-001 独占续做；模拟发布前同步最新main，保留该目录及他人前进，不以旧46f5ce4整树覆盖。原模拟工程／content／tests范围不变，已有具体拒绝保持。
