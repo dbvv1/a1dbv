@@ -34,7 +34,7 @@ result_branch: relay/a-readability-cleanup-001
 
 ## 当前结果
 
-- 已接收：02／19沿原负责人决定；21／05／09／11／06／17／10均已独审及适用检查通过并合入[dcf2b51](https://github.com/dbvv1/a1dbv/commit/dcf2b516d3fb2b90e6ada0758f0d5b09f56edabc)。本次17正文[d0b207f](https://github.com/dbvv1/a1dbv/commit/d0b207f)、10正文[9504bae](https://github.com/dbvv1/a1dbv/commit/9504bae)的症状入口、采用条件及来源归位差量已关闭。
-- 当前写者：原生Workflow的独立正文作者处理open-source-agents与codex；08采用回流[8319183](https://github.com/dbvv1/a1dbv/commit/8319183)待A接收，清理暂不并写08。后续仍按完整清单及首页／模板范围执行，不重做已接收页。
+- 已接收：02／19沿原负责人决定；21／05／09／11／06／17／10／open-source-agents／codex已独审及检查通过，合入[1812895](https://github.com/dbvv1/a1dbv/commit/1812895e249aa03d063875b3cc2c10dc7af64bd2)。本次两篇Agent正文[d0845bd](https://github.com/dbvv1/a1dbv/commit/d0845bd)的旧锚点与重复范围差量已关闭。
+- 当前写者：原生Workflow的独立正文作者处理22评测与18团队采用；08采用回流[8319183](https://github.com/dbvv1/a1dbv/commit/8319183)待A接收，清理暂不并写08。后续仍按完整清单及首页／模板范围执行，不重做已接收页。
 - 实际通道Claude Code＋DeepSeek，message.model=deepseek-flash。非作者先新后旧核对，不统计限定词密度／比例／30秒，不改规则层或新开批次；任务回执由宿主串行汇总。
 - 全部声明范围接收后才标accepted，并发送已授权的一次最终审计事件。此卡按[负责人反馈](https://github.com/dbvv1/a1dbv/blob/d2e021c/docs/collaboration/local-jobs/A-READABILITY-CLEANUP-001.md)收敛，旧阶段与决定留Git历史。

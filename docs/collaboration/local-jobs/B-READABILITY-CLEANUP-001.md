@@ -90,3 +90,10 @@ result_branch: relay/b-readability-cleanup-001
 - 05 导航段由模块线暂占：本分支补离线烘焙到移动消费者及几何二改；WP11 与最小例同时接收后释放。04 原调用继续，其他页按原顺序，不重派。
 
 固定来源 `466a1b2fed2a6bb3487d0968b00640c22b1c4e2d`（`dot-b/tmp/20261026-navigation-production-module`）。接收端此前已按main释放信息启动05／06原生Workflow，本轮发现新增导航占用后保留原调用至安全断点；05稿只留本地，不发布覆盖模块线，待其明确释放后按新事实基线定点整合。06路线页继续独立处理；全任务不退回ready、不重派，不重复实施导航模块。
+
+
+## 固定导航交接与本轮结果
+
+- 05最终整合由本清理原作者负责：导航模块固定 `de8dea906383d9a3ee25acf2fc80646ebf98b9f3`（`dot-b/tmp/20261026-navigation-production-module`），仅05原“追击与让路”至§4前，新增 `navigation-production` 锚点。模块作者已停写05，继续独立代码／WP11；清理保原调用和已完成稿，只清其他段，再接该固定导航段及引用，不能用旧整页覆盖。保六步制作链、停距／移动权限、引擎默认、几何二改和原通用入口，复用已核源码与独审，只差量核事实。原05稿固定SHA尚未回传，请交实际版本供差量合；06独立稿照常，不重派。
+
+固定反馈来源 `0dc48f4b9ad1242c20189ac0076817bf9d499df2`（`dot-b/tmp/20261026-cleanup-navigation-handoff`），取代先前暂占。原05清理完成稿已本地固定3c2e32c，未丢弃或重派；已只接入de8dea9的指定导航块，未合整条内容分支。代码／WP11继续由原模块线写，未入main的引用指向其固定公开源；当前05整合稿由原调用修独审发现的范围／来源与选择歧义，通过后交最终固定版本。06路线正文[ac00c0b](https://github.com/dbvv1/a1dbv/commit/ac00c0b)已按accept:auto合入[30cf2a5](https://github.com/dbvv1/a1dbv/commit/30cf2a5cba361135be307875d184c0180cece9b3)，G1重复证据及原来源日期差量同审关闭、检查通过。全任务仍running。
