@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-004
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a27356f628c3a15115df9acaf1e40533fa26d55c
 result_branch: relay/a-style-rewrite-004
@@ -35,3 +35,5 @@ result_branch: relay/a-style-rewrite-004
 ## 执行与结果
 
 待认领；已有同任务调用只接续。
+
+认领：dot 本地协作；2026-10-25T00:44:00.103763+00:00。来源 main 固定 `ceca31d`；与在制08无文件重叠，先发布认领再运行正常原生 Workflow。结果仅推指定分支，保留原始输出。
