@@ -2,7 +2,7 @@
 
 id: A-DATASETTE-TYPED-PARAMS-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1c1040a50cc56fdb335f6058b83edd52b9543194
 result_branch: relay/a-datasette-typed-params-001
@@ -48,3 +48,5 @@ result_branch: relay/a-datasette-typed-params-001
 回写 `review_ready`：设计／patch／固定 SHA、实际通道与模型响应字段、产品检查已过／失败／未运行、待人工项，以及一句本次反馈是否真帮助发现遗漏。负责人接收后将真实任务路线与可复制入口回流现有正文，P81/P90 简记状态；不新建证明台账，不把研究标签抹成上游已采用。每次真实搭建／运行遵守两小时上限，受阻仅停依赖环节，原任务保留恢复条件。
 
 依据：仓库 AGENTS、CLAUDE、运行手册 §4/7/9、TASKS、local-jobs README；选择固定 099a98d 与 main 1c1040a；2026-10-25 只读复核。#2946 网页再读取仍显示 open／research、无关联开发，页面缓存不等于实时 API，无新增完整 PR 搜索；实施开工补核。固定 CI 网页本次 Cache miss，完整命令以实施端取得同 SHA 源码为准；未运行任何 Datasette 测试。https://github.com/simonw/datasette/issues/2946 。diff-cover 官方仓库链接已打开确认：https://github.com/Bachmann1234/diff_cover 。
+
+认领：dot 本地协作；2026-10-25T12:53Z。来源 main 固定 `98fc453`，复用已接收前沿选择与审查。仅在隔离副本实施 opt-in 原型及真实产品消费者；先核可用受支持平台，不安装特权设施。完整 POSIX 门禁与未运行项逐项报告，保持正常 TLS 校验；仅推指定结果分支。
