@@ -4,6 +4,7 @@
 P9 补核（2026-10-20 UTC+8）：保持三档型号，新增干声母版／固定视频接入边界，见 §2.7；仅公开资料，未试听或运行。
 成套供给补核（2026-10-20）：保留已过权利与玩法验收的子集，再换缺口；OpenSFX发布修订与独立作者/生成研究的边界见末节。
 本轮补充（2026-10-20，UTC+8）：声音组织模拟事件时，比较单向跟随与共同调度；Mini Metro 的实际改造和公开参数支持选择，Mini Motorways 作者反例限制推广。
+本轮补充（2026-10-25，UTC）：保留探索录音、以旧轨为上下文生成独立战斗声部的条件路线；固定 Remiqora 0.3.0 源码／README 与 ACE-Step 引擎，许可、导出边界与二改见 §「音乐增轨生产：上下文 lego、同长导出与二改边界」；未安装、未下载权重、未运行生成／引擎、未试听。
 
 # WP6：音频资源路线、可修改性与授权边界
 
@@ -548,6 +549,47 @@ Cogmind 作者[2020 制作复盘](https://www.gridsagegames.com/blog/2020/06/bui
 | 只有装饰声需要落拍 | 只量化该声音，不延迟必达动作或必要反馈 | 声画分离明显、响应变钝则立即播放或取消装饰；不是所有输入都可等下一拍 |
 
 [研究] 二改先列哪些事件允许被重新排时、哪些必须即时，再改一组节律；后续获准验证时同时检查生成／上下车行为、容量压力、正常／快进／暂停恢复和听感，不能只验音频文件。已有一般入口的许可、映射、旧引用、混音、设备与连续听感检查全部保留。当前仅公开作者说明与参数文档核对，无游戏、引擎、模型或试听运行；未证明零手修质量、总成本或提效。现成合格声音和程序声源仍需音乐设计，不因能写JSON就承诺专业结果。
+
+## 音乐增轨生产：上下文 lego、同长导出与二改边界
+
+核实：2026-10-25（UTC）。主线二／三。改变的选择：原探索录音必须保留且没有兼容分轨时，增加“以旧轨为上下文生成独立声部”的条件路线，并与拆 stem、时间段替换、独立生成部件分开；默认仍是许可曲／分轨。以下只读固定源码、官方页与上游 issue，未安装、未下载权重、未运行生成／引擎／GUI、未试听。正文制作链见[音频音乐段](../../domains/game-dev/assets/audio.md#保留探索录音新增战斗声部先选路线再做可回改候选)。[研究]
+
+**证据定位（版本分开）。** Remiqora v0.3.0 固定 [`0d38d6daa605f9303794b901e1a1dae2ad8b84df`](https://github.com/inikolax/remiqora/tree/0d38d6daa605f9303794b901e1a1dae2ad8b84df)，同版 [README](https://github.com/inikolax/remiqora/blob/0d38d6daa605f9303794b901e1a1dae2ad8b84df/README.md) 与 [LICENSE](https://github.com/inikolax/remiqora/blob/0d38d6daa605f9303794b901e1a1dae2ad8b84df/LICENSE)；后续 README 固定 [`d3bb4da53eb05cb50133d4ea5365de653c5eed39`](https://github.com/inikolax/remiqora/blob/d3bb4da53eb05cb50133d4ea5365de653c5eed39/README.md) 只用于说明 0.4.2 新增 Stable Audio 3／提示助手，不与 0.3.0 混成同一受检版本。读的路径：[AiPartPanel.vue 327–350](https://github.com/inikolax/remiqora/blob/0d38d6daa605f9303794b901e1a1dae2ad8b84df/frontend/src/components/editor/AiPartPanel.vue#L327-L350)、[aiParts.ts 73–103](https://github.com/inikolax/remiqora/blob/0d38d6daa605f9303794b901e1a1dae2ad8b84df/frontend/src/stores/aiParts.ts#L73-L103)、[utils/aiParts.ts 39–133](https://github.com/inikolax/remiqora/blob/0d38d6daa605f9303794b901e1a1dae2ad8b84df/frontend/src/utils/aiParts.ts#L39-L133)、[dawExport.ts 73–110](https://github.com/inikolax/remiqora/blob/0d38d6daa605f9303794b901e1a1dae2ad8b84df/frontend/src/utils/dawExport.ts#L73-L110)、[patches README](https://github.com/inikolax/remiqora/blob/0d38d6daa605f9303794b901e1a1dae2ad8b84df/external/patches/README.md)。引擎侧固定 ACE-Step-1.5 [`ca1e85fe9430179831e6bc6be790c332190a3866`](https://github.com/ace-step/ACE-Step-1.5/tree/ca1e85fe9430179831e6bc6be790c332190a3866)（与补丁 base `ca1e85f` 一致），读其 LICENSE、[constants.py](https://github.com/ace-step/ACE-Step-1.5/blob/ca1e85fe9430179831e6bc6be790c332190a3866/acestep/constants.py#L82-L89)、README 硬件表与 [API.md](https://github.com/ace-step/ACE-Step-1.5/blob/ca1e85fe9430179831e6bc6be790c332190a3866/docs/en/API.md#L249-L254)，并读上游 issue [#1088](https://github.com/ace-step/ACE-Step-1.5/issues/1088)。[一手：固定源码；社区：单例 issue]
+
+**可借机制（源码支持，不等于听感通过）。**
+
+- **模式与模型。** arranger 有 `lego`／`repaint`／`continue`／`cover` 四种模式；`lego` 对应 ACE `task_type=lego`，`repaint` 与 `continue` 都落到 `repaint`，`cover` 落到 `cover`。UI 按模型的 `supported_task_types` 过滤，而 ACE 固定版本 `TASK_TYPES_TURBO = ["text2music","repaint","cover","cover-nofsq"]`、`TASK_TYPES_BASE` 才含 `extract`／`lego`／`complete`；因此 lego 必须用 base。README 给 base 约 4.8GB、turbo 不能做；XL base 约 20GB、要求 16GB 以上卡。turbo 用 8 步，base 在 Remiqora 里用 50 步，ACE API 建议 base 32–64 步。[一手：固定源码／README]
+- **上下文。** `renderContext` 把选中 lane 的 clip buffer 混成模型听的立体声 WAV：含轨音量、clip 淡入淡出和 warp；跳过 muted clip 与 MIDI clip；**刻意不进效果图**——压缩器／限幅器约 18ms 延迟会让模型把声部写晚；不理会 mute／solo，效果器也不进上下文；最后峰归一化到 0.9。上下文最长 `MAX_CONTEXT_SEC=600` 秒。arranger 以 multipart `ctx_audio` 上传，ACE 接受 `ctx_audio`／`src_audio`。[一手：固定源码]
+- **请求与候选。** 请求带 `bpm`、`key_scale`（24 个 key，留空不传）、**硬编码 `time_signature: '4'`**、可选 `vocal_language`、`guidance_scale=7.0`、`use_random_seed=true`、`batch_size=count`、`audio_format='wav'`；lego 还带 `track_name` 与 `lyrics`（空时 `[Instrumental]`）。源码注释说明：复用已在上下文里的 part 的 seed 会让 lego 返回上下文复制品，所以每次用新随机 seed。结果保存成库里的 WAV，每个变体落在自己的 lane；`insertVariants` 只为 `repaint`／`continue`／`cover` 调用 `holdRange` 压住原轨，**lego 不自动静音旧轨**。lego 另算变体与上下文的 Pearson 相关（降到约 6kHz），`COPY_THRESHOLD=0.3`；注释记录复制样本约 0.75–0.96。第一个低于阈值的变体设为可听，其余静音；都不低于阈值时仍用第一个。用户可逐个听、留一个。丢弃的候选在下次项目保存时删除，仍被 clip 引用的保留；库保存失败时仍给临时模型 URL，但不保证长期可用。[一手：固定源码]
+- **同长导出。** `renderStems` 对每条可听 lane（尊重 mute／solo，至少一个未静音 clip）单独从 0:00 渲染，包含轨音量、pan 与效果，master 用中性设置，所有 stem 补到同长；先测效果图延迟（Chromium 约 18ms 的压缩器 lookahead）再回移。ZIP 里是 `stems/NN Name.wav` + `.RPP` + README，另可导出 `.dawproject`（Bitwig Studio、Studio One、Cubase 14+）。RPP 只写 tempo（4/4）、采样率、轨名／颜色、item 长度与 WAV 路径；DAWproject 的 channel 只有 mute／pan／volume。**不带效果链、自动化或 MIDI**；MIDI clip 在同一次渲染里被合成成音频（`renderTimeline` 的 sawtooth oscillator）。因此它是可继续混音的派生交接，不是完整作者工程。[一手：固定源码]
+- **工程与安装。** 项目存在服务器，**没有自动保存**，必须点 Save，带未保存修改离开会警告；安装时选的模型／项目文件夹之后不能移动（数据库存绝对路径）。README 明示预发布、会有破坏性变更与粗糙处；安装包未签名，Windows SmartScreen／macOS Gatekeeper 会拦。首次安装约 18GB（ACE-Step + turbo + FFmpeg + Python），lego 另选 base 约 4.8GB，XL base 约 20GB，全装约 60GB；Windows 需 RTX 20 系以上与 580+ 驱动，作者在 RTX 4080 16GB 上测过；macOS 走 Apple Silicon；Linux CUDA 为社区路径。没有内置认证，只应放可信网络。[一手：固定 README]
+- **补丁维护。** ACE-Step 在 `ca1e85f` 上打小补丁（取消任务 API 等，MIT）；audio.cpp 固定 `dev` 分支的 `39f9013`（Apache-2.0），但 `dev` 会 rebase／force-push，补丁说明记录这个 pin 已经需要过一次 bump，checkout 失败时要更新脚本里的 ref。[一手：固定补丁说明]
+
+**不能据此声称。** lego 能稳定产出可用新声部、音乐相容、零串音或完整作者工程都不成立：上游 issue #1088 有用户报告 lego／complete 不加请求的乐器或输出混乱，2026-05 因不活跃被 stale 机器人关闭，没有修复回执；相关性只是复制启发式，不是相容分数；本轮没有试听、MIR 测量、串音／相位／电平测试、接受率或主动工时。导出会烘入轨处理且 master 中性，RPP／DAWproject 也没有效果链、自动化或 MIDI，不能把它说成可在任意 DAW 恢复全部参数。旧轨“不自动静音”只是项目行为，不是对分离度或音乐相容的保证。候选 WAV 也不是可重编配源：音频级剪辑只改位置、淡化、warp 和混音，改音符／配器要么重跑，要么另走 MIDI／谱源路线。[一手／研究；社区：单例 issue]
+
+**输入输出对照。**
+
+| 路线 | 实际输入 | 实际输出 | 版本／限制 |
+|---|---|---|---|
+| Remiqora lego（上下文增轨） | 选中旧轨混音 WAV（≤600 秒）+ 轨道类别 + 描述／歌词 + BPM／key；固定 4/4 | 2–4 个独立 WAV 变体，各占一 lane；旧轨不自动静音 | ACE-Step base；复制启发式；相容／串音未验 |
+| Eleven inpainting | 已存歌曲（`song_id`）或上传 + composition plan：音频引用块 `song_id` + `range.start_ms`／`end_ms`，生成块 `text` + `duration_ms`，可选 `positive_styles`／`negative_styles`／`conditioning_ref` | `compose` 返回生成音频，`compose_detailed` 另返回 `song_id` | `music_v2`／`music_v2_5`；每块 3–120 秒、最多 30 块、conditioning ref ≤30 秒、range ≥50ms；按整曲时间范围，不是 stem；页面未写乐器级插入 |
+| Eleven 拆 stem | 音频文件 + 可选 `stem_variation_id` + `output_format` | 分离后的 ZIP 分轨 | 可能高延迟；只分离已有内容；`stem_variation_id` 可选 `two_stems_v1`／`six_stems_v1`，默认后者 |
+| Stable Audio 3 独立部件 | 文字标签（如 `TrackType: Instrument`、`Format: Duo`、genre、BPM） | 新独立 part／duo | 不产生可理解人声；分开调用是独立渲染，要自己对齐 BPM／调性并检查 fit；web stem 导出实验性；checkpoint 支持不一 |
+| Stable Audio 3 inpainting | seed audio + mask 起止 + 提示 | 同一文件只重生成选中区间，区间外保留 | 可多区间；从结尾 mask 可做 continuation；短 mask 可能接近原音；medium 最长 6:20、small 2:00 |
+| 参考生成／整曲重演绎 | 参考曲或风格提示（Music v2.5／Suno v6）或符号控制（YuE2） | 新作品／重演绎音频 | 既有记录：参考只引导风格，不是原曲加层；主题／音色／波形不保证；YuE2 权重 CC BY-NC 4.0 不能商用 |
+| 拆 stem（一般） | 完整混音 | 多条分轨 | 只恢复已有内容；请求不存在的乐器可能耗额度但没有可用 stem |
+| 保源改谱 | 合法 MIDI／专用谱 + SoundFont | 固定渲染音频 | 已有 yovoice 记录：导入只取首个 tempo 和 tick=0 拍号，不保 CC／pitch bend；WAV 不是谱 |
+| 成套许可成对版本 | 许可普通／强度／快版 | 现成完整片段 | 默认；缺兼容版本才换路线 |
+
+**许可链。** Remiqora 代码 MIT，只覆盖 UI 与编排；ACE-Step 代码 MIT，Remiqora README 称权重也 MIT、作者明确允许商用输出；本页既有 §9 已核 turbo 包 MIT，XL-turbo 卡另明确商用输出，但 **lego 默认的 `acestep-v15-base`（及可选 XL base）权重卡本轮未能直读**：Hugging Face 连接 TLS 握手被拒，按任务约束不绕过，采用前必须按实际 checkpoint 再核。YuE2-3B 权重是 CC BY-NC 4.0，不能商用；audio.cpp 的 Apache-2.0 只覆盖代码。Demucs 代码 MIT，`htdemucs` 权重本轮未单独核。FFmpeg 的 GPL 静态构建在首次启动下载，不随仓库再分发；若再分发安装包另核。后续 0.4.2 README 新增 Stable Audio 3：代码 MIT，权重 Community License（需注册；年收入低于 US$1M 免费，超过另许）加 Gemma 条款；提示助手 Qwen3.5 为 Apache-2.0 且只写文本。**这些是 0.4.2 的说明，不是 0.3.0 的受检内容。** 输入录音的权利单独核，模型训练数据声明不是你的素材清权；输出跟随实际生成模型的许可，不由 Remiqora 的 MIT 覆盖，纯 AI 输出的可执行版权也不保证。[一手／研究]
+
+**成本与采用条件。** 除上面的安装体积、硬件、预发布、无自动保存和补丁漂移外，还要计候选淘汰、试听、第二次修改和导出后 DAW 返工；这些工时本轮未知。采用前确认：机器满足 CUDA／显存与磁盘；能接受未签名安装和预发布风险；ACE-Step base 与目标 checkpoint 的权重许可已按实际文件核过；输入录音有权；项目会显式 Save 并备份源件与导出物。没有这些条件时，回到许可成套曲／分轨、保源改谱或收窄音乐状态，不用 lego 硬补。[研究]
+
+**二改与接收。** 可参数化的是战斗层音量／pan／EQ／压缩／淡入淡出、clip 裁到 8 小节、循环区、保留哪个候选、状态阈值／交叉时长、哪层在哪个状态发声；必须重新候选并试听的是换轨道类别或角色、换上下文轨或段落、改调性／BPM／拍号、需要现有候选裁不出的新进入／收尾素材，以及要改原录音本身。16→8 小节若只是缩短战斗层，按乐句边界裁切加短淡出；若要求重新生成 8 小节版本，重跑 lego／repaint 并重新试听。验收时在同一混音里同旧轨听进入、退出和快速反复切换，检查峰值／动态余量、循环相位、旧轨未停、暂停恢复，再导出到目标 DAW 核起点与循环，最后按游戏现有音乐状态接入；相关分数、波形或导出成功都不能代替试听。两轮仍破坏原轨或听感不成立，就回到许可成对版本或减少状态，不无限重抽。[研究]
+
+**未验与下一步。** 本轮没有安装、下载权重、运行模型／引擎／GUI、试听或做 MIR／串音／电平测量；音乐相容、零串音、候选接受率、主动工时和最终混音均未知。获准后的最小验证是：一段已验收探索曲 + 一个战斗层轨道类别，生成 2–3 个候选，同旧轨试听并记淘汰，导出 stems 后导入目标 DAW 核同长同起点，再做一次 16→8 小节二改并记工时；仍不把单次结果写成通用质量结论。没有该验证时，正文只给可执行路线与边界，不宣称品质通过。[研究]
+
+**探索回执（2026-10-25）：** 固定 GitHub 源码／README／LICENSE／补丁说明、ACE 上游 issue、Eleven 与 Stability 官方页；Hugging Face 权重卡连接被拒未读（未绕过 TLS），未读独立游戏采用或同题二创听评，未试听或运行。[研究]
 
 ## 成套音效供给：保留合格子集，再替换缺口
 
