@@ -186,6 +186,8 @@ claude --agents '{"focused-reviewer":{"description":"核对指定文件与验收
 
 MOBA-Like 固定模拟产物的独立接收中，32 项测试通过；源码核对却表明 CLI 只因异常或回放哈希不一致失败，卡死、超时、时长和难度目标仍需读取输出。现有回放测试核了同命令的 hash／status／winner，但最长 120 秒且不要求产生胜者，因此不能据此接收“完整获胜对局可重放”。首轮独立接收端的 CLI 因运行入口受限未执行。生产者随后实际采用[既有 reviewer](https://github.com/dbvv1/a1dbv/commit/46a55ea9cf6b57cd683d791d1268de04b640b457) 的版本与异常输入要求，补齐 v1 超时样例的重放证据，避免用同 seed 的 v2 胜局替代；这改变了证据接收，未新增代码发现，原三项缺陷修复不归功模板。接手时按相同版本、种子与完整命令核终局或超时，再与对应输出比较，而非只重跑同一组单测。
 
+**修复改变哈希覆盖的状态时，分开接收输入兼容与终局哈希兼容。** 同一命令仍得到相同胜负和时长，也可能与旧 hash 不兼容；记录变化原因、旧／新 hash 及仍可读取的输入。同一固定版本重放不一致仍须修复。
+
 **新运行优先用产品原生目标门。** MOBA-Like 已提供 `--verify-targets normal|mirror|difficulty`；普通批次从 `npm run sim -- --games 200 --seed 1 --verify-targets normal` 开始，其他 profile 按[固定 brief](https://github.com/dbvv1/MOBA-Like/blob/f4379be2fe2e41c076dc1fd1c52f7853fce22378/docs/brief.md)运行。原生门先保留报告，目标失败退出 1；每个 profile 的实际结果分别接收，不再为实时运行叠加另一套门。
 
 **已有固定历史 JSON 需要独立接收时，复用[窄接收器与命令](../templates/generic/fixed-delivery-review.md#对真实批量-json-加一个接收检查)。** 显式传入局数、种子与内容版本，再核报告的分母、终局、异常和时长。后续在生产者正式提供的新入口，独立接收端实际运行 200 局：CLI 退出 0，报告却含 199 终局／1 超时，接收器据此退出 1。它只核该批次报告，500 局对称、难度与技能目标仍分别接收。
