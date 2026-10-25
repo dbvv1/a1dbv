@@ -10,6 +10,8 @@
 - **B**：专注主线（游戏 AI 全链路、客户端核心模块）。作品案例按[细则§6](game-taskbook.md#6-作品案例)统一：MOBA-Like 是当前主案例，先做到可玩，用来实测已写的技能、AI、寻路等模块；Star-Rush 进入维护期，FPS-Like 排队。需要人听、看、玩的验收记入下方“待人工验收”，统一处理，不阻塞 B。
 - **共同**：按用户 10-26 委托一次清理存量正文：A 按 [A 存量任务](local-jobs/A-READABILITY-CLEANUP-001.md)、B 按 [B 存量任务](local-jobs/B-READABILITY-CLEANUP-001.md)，按防御密度从高到低整篇重写（正文、首页、模板与引擎页；留档记录不改），非作者对照原文保住事实，全部接收后收口，不再开后续改写批次。指导文件（本页、提示词、任务书）用同一写法：状态格只写当前态和下一步。
 
+> **10-26 历史改写，所有执行者先重新同步**：为清除一个合并提交里的公司邮箱，main 和 58 个分支的历史已按用户授权改写，内容和其他提交的作者信息不变。开工前先 `git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune`，本地分支按远端重建（`git reset --hard origin/<分支>`），未推送的提交 cherry-pick 到新基线；不要推送基于旧历史的分支或合并旧提交。
+
 ## 分工
 
 - 方向见 [AGENTS 锚点](../../AGENTS.md)。dot-A：AI coding 与 M6；dot-B：游戏 AI 全链路与客户端／gameplay，作品案例见[游戏方向细则§6](game-taskbook.md#6-作品案例)，Game-Core-Knowledge 按原分工。

@@ -8,7 +8,7 @@
 
 1. 在自己的分支（`<执行者>/<主题>`）完成一个可接收结果，按手册§7完成审查和适用检查。
 2. `git fetch origin main:refs/remotes/origin/main`（确保 `origin/main` 是最新），把它合并进自己的分支，不 rebase 已推送的提交；冲突时保留他人的 TASKS 行，本人的 TASKS 行随同一次交付修改。
-3. 暂存本次内容，跑 `git diff --cached --check` 和 `python3 scripts/check_public.py`；提交后跑 `python3 scripts/check_public.py --commits origin/main..HEAD`，再读一遍 `git diff origin/main`。
+3. 暂存本次内容，跑 `git diff --cached --check` 和 `python3 scripts/check_public.py`；提交后跑 `python3 scripts/check_public.py --commits origin/main..HEAD`，有任何发现就停下，不推送；合并提交也要用 noreply 身份（在本仓库设 `git config user.email` 为 noreply，不改全局配置）。再读一遍 `git diff origin/main`。
 4. `git push origin HEAD:main`，只允许快进；不强推，不改写已发布的历史。
 
 **提交身份**：在本次命令里用 `-c user.name=… -c user.email=…` 标明实际执行者，邮箱用 GitHub noreply 或 Agent 平台的固定机器身份（如 `noreply@anthropic.com`）。不改全局配置，也不必再向用户确认。
