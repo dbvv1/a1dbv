@@ -4,7 +4,7 @@
 
 ## 30 秒结论
 
-**✅ 默认采用最小权限与操作系统隔离；审批、提示词和“已开启 sandbox”都不能单独证明隔离完成。** 日常可信项目可用本地沙箱；外来仓库、带秘密的 CI 或无人值守任务，先隔离整个执行环境，再按需要开放目录和网络。Claude Code 先核 §3.2 的有效配置与平台前提，Codex 核 §3 的有效权限 profile。
+**✅ 默认采用最小权限与操作系统隔离；审批、提示词和“已开启 sandbox”都不能单独证明隔离完成。** 日常可信项目可用本地沙箱；外来仓库、带秘密的 CI 或无人值守任务，先隔离整个执行环境，再按需要开放目录和网络。第一步按客户端核对有效配置：Claude Code 看 [§3.2](#32-claude-code-沙箱操作手册)，Codex 看 [§3 的权限 profile](#codex-文件排除的采用条件)。
 
 **撤回条件**：工具要靠关闭文件隔离、放开全部 socket、排除整个解释器或暴露生产凭证才能跑通时，暂停该步骤，换无秘密的独立环境；不要把“能运行”当作“仍安全”。本页比较接入、执行与核查机制，不作客户端安全认证。
 
@@ -14,17 +14,17 @@
 
 <!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-21 -->
 
-**近期领先实践是分层约束真实执行，而不是让模型多背一段安全提示。** OpenAI 在 2026-05-08 内部部署复盘中组合沙箱、边界审批、受控网络和强制配置，并把动作结果与原请求、审批记录关联后交安全人员判断。它是实际团队做法，不是不同防护方案的安全率排名。
+**近期领先实践是分层约束真实执行，而不是让模型多背一段安全提示。** OpenAI 在 2026-05-08 内部部署复盘中组合沙箱、边界审批、受控网络和强制配置，并把动作结果与原请求、审批记录关联后交安全人员判断。这是实际团队做法，不是不同防护方案的安全率排名。
 
-**工具发现不是授权边界。** Ramp 的 Laminar Connectors 把谁能使用凭证、允许什么操作集中在服务层；其工具搜索只解决工具暴露与上下文负担。隐藏工具或改变模型可见目录后，仍须在实际调用端限制权限。
+**工具发现不是授权边界。** Ramp 的 Laminar Connectors 把谁能使用凭证、允许什么操作集中在服务层；工具搜索只解决工具暴露与上下文负担。隐藏工具或改变模型可见目录后，仍须在实际调用端限制权限。
 
 **本仓默认先限定可接触的数据与可执行动作，再增加反馈自动化。** MCP 补接口、Hook 补事件检查、原生沙箱限制进程，三者不能互相代替；外部服务的业务鉴权仍由服务端承担。主流部署比例与跨任务最佳组合未知，先采用目标环境能真正执行的最小边界。详见 [04 接口选择](04-mcp.md)、[06 事件边界](06-hooks-and-guardrails.md)。
 
-**调查异常时，要区分“获得允许”与“实际发生”。** 在已有授权范围保留必要的请求、决定与结果关联，先核动作是否执行及影响，再判断是否恢复；不要只因审批通过就宣布安全，也不默认记录完整对话或秘密。字段与保存范围由任务和数据要求决定。
+**调查异常时，区分“获得允许”与“实际发生”。** 在已有授权范围保留必要的请求、决定与结果关联，先核动作是否执行及影响，再判断是否恢复；不要只因审批通过就宣布安全，也不默认记录完整对话或秘密。字段与保存范围由任务和数据要求决定。
 
 ### 公网产物：把数据边界留在查询过滤之外
 
-**✅ 接收 Agent 生成的公网应用时，匿名访问核查与数据隔离分别做。** 扫描能发现开放行为，但不能替代应用可接触的数据边界；公开服务若不需要内部数据，优先让它运行在不持有这些数据与权限的环境中。已有隔离满足要求就保留，不为个案重建平台。
+**✅ 接收 Agent 生成的公网应用时，匿名访问核查与数据隔离分开做。** 扫描能发现开放行为，但不能替代应用可接触的数据边界；公开服务若不需要内部数据，优先让它运行在不持有这些数据与权限的环境中。已有隔离满足要求就保留，不为个案重建平台。
 
 METR 的 2026-08-31 复盘披露：3 月生成的面板因失败时放行而失去鉴权；5 月另一个只读查询入口虽默认限制公开数据，仍存在越界缺陷。团队随后隔离公共生产与内部基础设施。这是独立团队的事故反例，不是某套扫描方法的效果复现。
 
@@ -42,7 +42,7 @@ Agent 应核当前部署入口、鉴权失败行为和数据来源；人确定�
 
 接入私有仓库、外部资料与可写远端的 Coding Agent 很容易同时具备这三点；是否成立要看实际环境。被投毒的 README 或 Issue 可诱导 Agent 用已有权限外泄，不必先利用代码漏洞。实例见案例一。
 
-**依据**：[研究] Simon Willison lethal trifecta（2025-06）；[二手] Arcjet 解读；核实 2026-10-21。
+**依据**：[研究] Simon Willison lethal trifecta（2025-06）；[二手] [The lethal trifecta（Arcjet 解读）](https://arcjet.com/learn/lethal-trifecta)；核实 2026-10-21。
 
 ## 2. 2026 年的真实事件与研究
 
@@ -62,56 +62,73 @@ Agent 应核当前部署入口、鉴权失败行为和数据来源；人确定�
 | **Wikimedia 发现 OpenAI 失控 Agent**（2026-10） | 编辑 wiki、尝试利用托管的笔记工具、大量流量；未发现被攻破。开放网络的维护者承担了调查和溯源成本 | 见依据 |
 | 学术研究 | MCP 生态攻击的大规模分析（arXiv 2509.06572）、MCP 服务器污点漏洞（VIPER-MCP）、开发者常见安全误区（MCP Pitfall Lab） | 见依据 |
 
-**依据**：[二手] CSA Agentjacking 研究笔记、postmark-mcp 与 LiteLLM PyPI 后门报道；[一手] [Gemini CLI changelogs](https://github.com/google-gemini/gemini-cli/tree/main/docs/changelogs)、Anthropic 自曝、[OpenAI 官方复盘](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)、[Wikimedia 博客](https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/)；[社区：原文] [Embrace The Red](https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/)、[thereallo.dev](https://thereallo.dev/blog/claude-code-prompt-steganography)、[Scale X 统计](https://scalex.dev/blog/ai-agent-permissions-stats/)（[HN 讨论](https://news.ycombinator.com/item?id=49195468)）；[研究：摘要] arXiv 2509.06572、VIPER-MCP、MCP Pitfall Lab；核实 2026-10-21。
+**依据**：[二手] [CSA Agentjacking 研究笔记](https://labs.cloudsecurityalliance.org/research/csa-research-note-agentjacking-mcp-sentry-injection-20260612/)、[Checkmarx：MCP Security Incidents](https://checkmarx.com/learn/mcp-security-risks-real-world-incidents-and-security-controls/)、postmark-mcp 与 LiteLLM PyPI 后门报道；[一手] [Gemini CLI changelogs](https://github.com/google-gemini/gemini-cli/tree/main/docs/changelogs)、Anthropic 自曝、[OpenAI 官方复盘](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)、[Wikimedia：OpenAI "rogue" agent activities](https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/)；[社区：原文] [Embrace The Red：Breaking Claude Code Opus 5 Auto Mode](https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/)、[thereallo.dev：隐写标记](https://thereallo.dev/blog/claude-code-prompt-steganography)、[Scale X：Humans missed 1 in 3 threats](https://scalex.dev/blog/ai-agent-permissions-stats/)（[HN 讨论](https://news.ycombinator.com/item?id=49195468)）；[研究：摘要] arXiv 2509.06572、VIPER-MCP、MCP Pitfall Lab；核实 2026-10-21。
 
 ## 2.1 四个案例拆解：攻击链和本可以断开的那一环
 
-**按“入口 → 放大器 → 出口”拆解案例，优先找本环境能断开的那一环。** 四个案例的可断开环节如下。
+**先看每个案例的断点或启示，再看攻击链。** 按“入口 → 放大器 → 出口”拆解，四个案例的断点、启示与攻击链如下。
 
-### 案例一：GitHub MCP “有毒流程”（2025-05，Invariant Labs）[社区：安全厂商原文]
+<a id="案例一github-mcp-有毒流程2025-05invariant-labs社区安全厂商原文"></a>
+### 案例一：GitHub MCP “有毒流程”（2025-05，Invariant Labs）
 
-- **场景**：Claude Desktop 的 GitHub MCP 可访问公开与私有仓库；用户仅要求查看公开仓库的 open issue。
-- **入口**：攻击者在公开仓库提交一个 issue，里面藏了提示注入。
-- **放大器**：注入利用同一 token 读取私有项目名、搬家计划和薪资；用户此前选了工具调用“Always Allow”。
-- **出口**：Agent 在**公开仓库**开 PR，把读到的私有内容写进去，攻击者直接就能看到。
 - **本可以断开的一环**：
   - **一个会话只碰一个仓库**（作者给的策略就是“每个会话只能访问一个仓库”），或者让读取外部 issue 的会话只拿只读、单仓库的 token；
   - 这不是 MCP 服务器代码的 bug，而是架构问题：致命三要素在一个会话里同时成立了。
+- **攻击链**：
+  - **场景**：Claude Desktop 的 GitHub MCP 可访问公开与私有仓库；用户仅要求查看公开仓库的 open issue。
+  - **入口**：攻击者在公开仓库提交一个 issue，里面藏了提示注入。
+  - **放大器**：注入利用同一 token 读取私有项目名、搬家计划和薪资；用户此前选了工具调用“Always Allow”。
+  - **出口**：Agent 在**公开仓库**开 PR，把读到的私有内容写进去，攻击者直接就能看到。
 
-### 案例二：s1ngularity / Nx 供应链攻击（2025-08）[一手：Nx 安全公告 + 社区：StepSecurity 分析]
+**依据**：[社区：安全厂商原文] [Invariant Labs：GitHub MCP 漏洞](https://invariantlabs.ai/blog/mcp-github-vulnerability)；[经验] 断开环节与采用建议；核实 2026-10-21。
 
-- **入口**：Nx 仓库的 PR 校验工作流用了 `pull_request_target`，并把 `${{ github.event.pull_request.title }}` 直接拼进 `run:` 脚本。一个精心构造的 PR 标题就能执行任意命令，拿到有写权限的 `GITHUB_TOKEN`，再借它触发持有 npm token 的发布流程。漏洞工作流从 master 删掉后，**仍然留在旧分支上可以被触发**。
-- **放大器**：恶意 postinstall `telemetry.js` 用 `which` 找本机 AI CLI，依次调用 `claude --dangerously-skip-permissions -p`、`gemini --yolo -p`、`q chat --trust-all-tools --no-interactive`。提示词令已登录的 Agent 递归搜索 `$HOME`、`$HOME/.config`、`/etc` 的钱包、密钥和凭证，把路径写入 `/tmp/inventory.txt`。
-- **出口**：用受害者自己的 `gh` 凭证，在受害者账号下建公开仓库 `s1ngularity-repository`，上传多重 base64 编码的结果。还往 `.bashrc` 和 `.zshrc` 里追加了 `sudo shutdown -h 0`。
-- **规模**：Wiz 事后统计约 2,180 个账号、7,200 个仓库暴露。恶意版本在线约 5 小时。
+<a id="案例二s1ngularity--nx-供应链攻击2025-08一手nx-安全公告--社区stepsecurity-分析"></a>
+### 案例二：s1ngularity / Nx 供应链攻击（2025-08）
+
 - **本可以断开的环节**：
   - **CI**：不在 `pull_request_target` 里拼接不可信输入；发布改用 trusted publishing（Nx 事后的做法）；
   - **本机**：恶意安装脚本直接调用 CLI 并传 bypass 参数，不依赖 shell 别名；应在无秘密的受限环境运行不可信安装脚本；
   - **凭证**：秘密应留在不可信安装环境外；`sandbox.credentials` 只保护被沙箱覆盖的命令，拦不住外层恶意安装进程直接读取主机凭证；
-  - **依赖**：陌生依赖先审 `package.json` 与锁文件变更，在无秘密、限制挂载与出网的独立环境中用 `npm ci --ignore-scripts` 安装，后续测试／构建也留在该环境。该选项跳过安装脚本，但显式 `npm test`／`npm run` 仍执行目标脚本；见 [npm 契约与锁文件边界](research/2026-10-12-development-conditions.md#陌生依赖安装后仍须隔离测试)。
+  - **依赖**：陌生依赖先审 `package.json` 与锁文件变更，在无秘密、限制挂载与出网的独立环境中用 `npm ci --ignore-scripts` 安装，后续测试／构建也留在该环境。该选项跳过安装脚本，但显式 `npm test`／`npm run` 仍执行目标脚本；npm 契约与锁文件边界见下段。
+- **攻击链**：
+  - **入口**：Nx 仓库的 PR 校验工作流用了 `pull_request_target`，并把 `${{ github.event.pull_request.title }}` 直接拼进 `run:` 脚本。一个精心构造的 PR 标题就能执行任意命令，拿到有写权限的 `GITHUB_TOKEN`，再借它触发持有 npm token 的发布流程。漏洞工作流从 master 删掉后，**仍然留在旧分支上可以被触发**。
+  - **放大器**：恶意 postinstall `telemetry.js` 用 `which` 找本机 AI CLI，依次调用 `claude --dangerously-skip-permissions -p`、`gemini --yolo -p`、`q chat --trust-all-tools --no-interactive`。提示词令已登录的 Agent 递归搜索 `$HOME`、`$HOME/.config`、`/etc` 的钱包、密钥和凭证，把路径写入 `/tmp/inventory.txt`。
+  - **出口**：用受害者自己的 `gh` 凭证，在受害者账号下建公开仓库 `s1ngularity-repository`，上传多重 base64 编码的结果。还往 `.bashrc` 和 `.zshrc` 里追加了 `sudo shutdown -h 0`。
+  - **规模**：Wiz 事后统计约 2,180 个账号、7,200 个仓库暴露。恶意版本在线约 5 小时。
 
-**确需被跳过的原生构建时，按包恢复，不必全开脚本或更换包管理器。** npm 12.2.0 已默认阻止未准入的依赖安装脚本，但通常只警告；先用 `npm install-scripts ls` 找出未审项，审过必要包后用 `npm install-scripts approve <包>` 记录默认的已安装版本准入，核对其实际生效后，在原隔离环境中定向重建并验证功能。已有明确拒绝项时 approve 不会覆盖；批准只写策略，不会补跑构建。CI 可加 `--strict-allow-scripts` 让新出现的未审脚本失败，不与 `--ignore-scripts` 混用来期待此检查。已有 pnpm 项目复用其 `allowBuilds`／`strictDepBuilds`，无需为此迁移。**局限：准入不验证脚本安全，也不隔离项目脚本或运行期代码；安装通过仍可能缺少被明确拒绝的必要产物。** 见[版本、实际采用与配置优先级](research/2026-10-12-development-conditions.md#陌生依赖安装后仍须隔离测试)。
+**确需恢复已跳过的原生构建时，审过所需包后按包批准，并在原隔离环境重建。** 不必全开脚本或更换包管理器。npm 12.2.0 已默认阻止未准入的依赖安装脚本，但通常只警告。按以下顺序恢复：
+
+1. `npm install-scripts ls` 找出未审项；
+2. 审过必要包后，用 `npm install-scripts approve <包>` 记录默认已安装版本的准入（裸包名可匹配多个已安装版本；只批准所需版本时传明确包版本）；
+3. 核对实际生效后，在原隔离环境中定向重建并验证功能。
+
+已有明确拒绝项时 approve 不会覆盖，需先调整相冲突的拒绝策略；批准只写策略，不会补跑构建。CI 可加 `--strict-allow-scripts` 让新出现的未审脚本失败，不要与 `--ignore-scripts` 混用来期待此检查。已有 pnpm 项目复用 `allowBuilds`／`strictDepBuilds`，无需为此迁移。**局限：准入不验证脚本安全，也不隔离项目脚本或运行期代码；安装通过仍可能缺少被明确拒绝的必要产物。** 见[版本、实际采用与配置优先级](research/2026-10-12-development-conditions.md#陌生依赖安装后仍须隔离测试)。
 
 **依据**：[一手] [Nx 安全公告 GHSA-cxm3-wv7p-598c](https://github.com/nrwl/nx/security/advisories/GHSA-cxm3-wv7p-598c)；[社区：原文] [StepSecurity：Nx 恶意包分析](https://www.stepsecurity.io/blog/supply-chain-security-alert-popular-nx-build-system-package-compromised-with-data-stealing-malware)；[二手] [BleepingComputer：2,180 个账号受影响](https://www.bleepingcomputer.com/news/security/ai-powered-malware-hit-2-180-github-accounts-in-s1ngularity-attack/)；[经验] 断开环节与采用建议；npm 契约见正文研究记录；核实 2026-10-21。
 
-### 案例三：Amazon Q VS Code 扩展 1.84.0（2025-07，CVE-2025-8217）[一手：AWS 安全公告]
+<a id="案例三amazon-q-vs-code-扩展-18402025-07cve-2025-8217一手aws-安全公告"></a>
+### 案例三：Amazon Q VS Code 扩展 1.84.0（2025-07，CVE-2025-8217）
 
-- **入口**：CodeBuild 配置里的 GitHub token 权限过大，攻击者借它往扩展的开源仓库提交了恶意代码；
-- **放大器**：恶意代码被自动打进正式版本，发到用户手里；
-- **结果**：AWS 的结论是，这段代码因为**语法错误**没能执行。按媒体报道，注入的是一段让 Agent 清理本机和云资源的提示词，AWS 公告本身没有描述它的内容；
 - **启示**：AI 工具自己的供应链就是攻击面。“提示词即载荷”让恶意代码更难被传统扫描器识别。
+- **攻击链**：
+  - **入口**：CodeBuild 配置里的 GitHub token 权限过大，攻击者借它往扩展的开源仓库提交了恶意代码；
+  - **放大器**：恶意代码被自动打进正式版本，发到用户手里；
+  - **结果**：AWS 的结论是，这段代码因为**语法错误**没能执行。按媒体报道，注入的是一段让 Agent 清理本机和云资源的提示词，AWS 公告本身没有描述它的内容。
 
-### 案例四：Agent 之间互相“授权”（Anthropic 内部，2026）[一手：Anthropic 安全博客]
+**依据**：[一手] [AWS-2025-015](https://aws.amazon.com/security/security-bulletins/AWS-2025-015/)；[二手] 案例三媒体报道；[经验] 断开环节与采用建议；核实 2026-10-21。
 
-- **经过**：一次模型升级之后，事件响应 Agent 通过 Slack **请求写代码的 Agent 推送一个修复**，最终被人工闸门拦下；
+<a id="案例四agent-之间互相授权anthropic-内部2026一手anthropic-安全博客"></a>
+### 案例四：Agent 之间互相“授权”（Anthropic 内部，2026）
+
 - **Anthropic 的结论**：“把边界画在访问权限和动作上，而不是画在模型的指令上”；
+- **经过**：一次模型升级之后，事件响应 Agent 通过 Slack **请求写代码的 Agent 推送一个修复**，最终被人工闸门拦下；
 - **对应的产品机制**：Claude Code 的 Agent Teams 把来自其他 Agent 的消息标记为“来自另一个 Claude 会话”。队友不能代替你批准权限，被拒绝的动作也不能转交给别的队友去执行。auto mode 的分类器把其他 Agent 转述的“已获批准”当作不可信输入。
+
+**依据**：[一手] Anthropic 安全博客与 [Agent Teams 权限文档](https://code.claude.com/docs/en/agent-teams#permissions)；[经验] 断开环节与采用建议；核实 2026-10-21。
 
 ### 案例共性
 
 不可信输入借过大的权限抵达外泄或破坏渠道；案例三因语法错误未执行，案例四的生产推送由人工闸门拦下。
-
-**依据**：[社区：原文] [Invariant Labs：GitHub MCP 漏洞](https://invariantlabs.ai/blog/mcp-github-vulnerability)、[StepSecurity：Nx 恶意包分析](https://www.stepsecurity.io/blog/supply-chain-security-alert-popular-nx-build-system-package-compromised-with-data-stealing-malware)；[一手] [Nx 安全公告 GHSA-cxm3-wv7p-598c](https://github.com/nrwl/nx/security/advisories/GHSA-cxm3-wv7p-598c)、[AWS-2025-015](https://aws.amazon.com/security/security-bulletins/AWS-2025-015/)、Anthropic 安全博客与 Agent Teams 文档；[二手] [BleepingComputer：2,180 个账号受影响](https://www.bleepingcomputer.com/news/security/ai-powered-malware-hit-2-180-github-accounts-in-s1ngularity-attack/)、案例三媒体报道；[经验] 断开环节与采用建议；核实 2026-10-21。
 
 ## 3. 防护原则
 
@@ -145,18 +162,20 @@ Agent 应核当前部署入口、鉴权失败行为和数据来源；人确定�
 
 固定实现与历史入口反例见[研究记录](research/2026-10-12-community-source-records.md#codex-文件排除从关闭请求到采用条件)。关键局限：只核对公开机制与历史反馈，没有执行上述验收，也没有证明当前每个 App 构建均已接入同一策略。
 
-**依据**：[一手] Anthropic 安全博客、npm 与 pip／uv 官方契约、[Claude Code 权限说明](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)、[Codex 权限说明](https://learn.chatgpt.com/docs/permissions)；[研究] 三要素、采用判断与验收条件；[经验：未执行上述验收] 采用边界；核实 2026-10-21。
+**依据**：[一手] Anthropic 安全博客、npm 与 pip／uv 官方契约、[Claude Code 权限说明](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)、[Codex 权限说明](https://learn.chatgpt.com/docs/permissions)、[Plugin security and trust](https://code.claude.com/docs/en/plugins/security)；[研究] 三要素、采用判断与验收条件；[经验：未执行上述验收] 采用边界；核实 2026-10-21。
 
 ## 3.1 auto mode 能挡住多少：官方公布的数字
 
-**把 auto mode 用于有沙箱兜底的日常开发，不用它替代高风险基础设施的人审。** Anthropic 公布的 auto mode 分类器设计与误差如下：
+**把 auto mode 用于有沙箱兜底的日常开发，不用它替代高风险基础设施的人审。**
 
-**设计**：
+官方定位优于 `--dangerously-skip-permissions`，可能弱于认真人审。生产凭证、基础设施和共享资源仍靠环境边界（凭证不进会话、出网白名单）。17% 漏放（见下表）多数源于看见危险后，仍把类似批准的上下文误作**整个影响范围**的同意。
+
+**官方公布的设计**：
 - 两级：快速是／否过滤器“宁可错拦”，仅被标记动作进入第二级链式推理；
 - 白名单里的只读操作和项目内的文件编辑不经过分类器；
 - 分类器看用户消息和工具调用内容，**不看工具输出或 Agent 解释**（“reasoning-blind by design”）；工具结果另经服务端提示注入探针筛查。
 
-**误差**：
+**官方公布的误差**：
 
 | 测试集 | 只用第一级 | 完整流程 |
 |---|---|---|
@@ -165,11 +184,6 @@ Agent 应核当前部署入口、鉴权失败行为和数据来源；人确定�
 | 合成的外泄攻击 1000 条：漏放率 | 1.8% | 5.7% |
 
 **内部越界记录**：清理旧分支却删远程分支；认证失败后翻找其他 token；按近似名字删除任务；为分享脚本构造创建 Gist 的命令；部署检查失败后跳过校验。更早还出现上传工程师 GitHub token 到内部计算集群、尝试迁移生产数据库。
-
-**怎么用这些数字**：
-- 17% 漏放多数源于看见危险后，仍把类似批准的上下文误作**整个影响范围**的同意；
-- 官方定位优于 `--dangerously-skip-permissions`，可能弱于认真人审，**不能替代高风险基础设施人审**；
-- 用于**有沙箱兜底**的日常开发；生产凭证、基础设施和共享资源仍靠环境边界（凭证不进会话、出网白名单）。
 
 **依据**：[一手] [Claude Code auto mode 工程博客](https://www.anthropic.com/engineering/claude-code-auto-mode)；核实 2026-10-21。
 
@@ -221,7 +235,7 @@ Agent 应核当前部署入口、鉴权失败行为和数据来源；人确定�
 
 **别为兼容性把边界关掉。** `excludedCommands` 会让匹配命令失去文件和网络隔离；排除解释器或可写项目脚本，等于允许其内容在外运行。目录／主机不足时优先只补对应范围；需要本机全部权限的工具应移到无秘密的独立环境。
 
-**Linux／WSL2 另核 Unix socket。** `bubblewrap`／`socat` 齐全不等于 socket 已隔离；缺可选 seccomp 时可继续运行但无该过滤，`allowAllUnixSockets: true` 也会跳过它。WSL2 的 Windows 程序启动经互操作 socket，不能仅凭 Linux 网络 namespace 推断 Windows 宿主不可达。Ubuntu 24.04+ 的 AppArmor 拒绝 user namespace 时应按官方窄化配置处理，不以全局关闭保护或开放所有 socket 作为默认修复。
+**Linux／WSL2 另核 Unix socket。** `bubblewrap`／`socat` 齐全不等于 socket 已隔离；缺可选 seccomp 时可继续运行但无该过滤，`allowAllUnixSockets: true` 也会跳过它。WSL2 的 Windows 程序启动经互操作 socket，不能仅凭 Linux 网络 namespace 推断 Windows 宿主不可达。Ubuntu 24.04+ 的 AppArmor 拒绝 user namespace 时应按官方窄化配置处理，不以全局关闭保护或开放所有 socket 作为默认修复。放行 `/var/run/docker.sock` 等于把主机交出去。
 
 **`mask` 不是跨平台的“安全认证开关”。** 文件 mask 在 macOS 按拒读处理，Linux／WSL2 才可提供占位副本；代理替换还需 TLS termination。启用 mask 却不写 `injectHosts` 时，可替换到全部允许域名；使用提取模式且未匹配时，默认 `onExtractNoMatch: "warn"` 可保留原文。无认证需求就保留 `deny`；确需 mask 时由负责人核对目标、失败处理与平台，不为消除认证错误恢复明文或扩域。
 
@@ -231,11 +245,10 @@ Agent 应核当前部署入口、鉴权失败行为和数据来源；人确定�
 
 - **只覆盖受支持的 shell 命令及子进程**（当前文档列 Bash、PowerShell、Monitor）：Read、Edit、WebFetch 等内置工具另受工具权限约束（`denyRead` 拦不住 Read 工具，`allowedDomains` 也限制不了 WebFetch）；MCP 服务器进程和 Hook 不受这层 Bash 沙箱隔离，须另限配置来源或隔离整个进程。命令 Hook 使用用户完整权限，不能把模型工具调用审批当成它的启动闸门。
 - **宽泛的域名就是外泄通道**：允许 `github.com` 这类域名后，代理只看客户端声明的主机名、不解 TLS，可能被域前置（domain fronting）绕过；
-- **Unix socket**：放行 `/var/run/docker.sock` 等于把主机交出去；
 - **容器里的弱化模式**：`enableWeakerNestedSandbox` 会显著削弱隔离，只在外层另有隔离时使用；
 - **要隔离整个进程**：连同 MCP、Hook 一起隔离，就把整个 Claude Code 放进 sandbox runtime 或 dev container。
 
-**依据**：[一手] [Claude Code Sandboxing 文档](https://code.claude.com/docs/en/sandboxing)、[命令 Hook 安全说明](https://code.claude.com/docs/en/hooks#security-considerations)、固定实现与版本反证；[经验] 采用建议与取舍；只读公开文档与源码，未运行沙箱或读取真实凭据；核实 2026-10-21。
+**依据**：[一手] [Claude Code Sandboxing 文档](https://code.claude.com/docs/en/sandboxing)、[命令 Hook 安全说明](https://code.claude.com/docs/en/hooks#security-considerations)、[Claude Code Security](https://code.claude.com/docs/en/security)、固定实现与版本反证；[一手：官方博客，厂商自述] [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)；[社区：原文] [Matthew Green：Is sandboxing sufficient to contain rogue agents?](https://blog.cryptographyengineering.com/2026/09/30/is-sandboxing-sufficient-to-contain-rogue-agents/)；[经验] 采用建议与取舍；只读公开文档与源码，未运行沙箱或读取真实凭据；核实 2026-10-21。
 
 ## 3.3 CI 里的 Agent：claude-code-action 的安全边界
 
@@ -316,16 +329,8 @@ Agent 应核当前部署入口、鉴权失败行为和数据来源；人确定�
 | [Trail of Bits skills](https://github.com/trailofbits/skills) | 安全审计类 Skills |
 | [gitleaks](https://github.com/gitleaks/gitleaks) / [trufflehog](https://github.com/trufflesecurity/trufflehog) | 提交前扫描密钥 |
 
-**依据**：[经验] 清单按前文案例与 §3 边界整理，工具链接见上表；核实 2026-10-21。
+**依据**：[经验] 清单按前文案例与 §3 边界整理，工具链接见上表；[社区：原文] [Simon Willison：默认硬性预算上限](https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/)；核实 2026-10-21。
 
 ## 来源
 
-- [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)、[Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode)
-- Claude Code 文档：[Sandboxing](https://code.claude.com/docs/en/sandboxing)、[Security](https://code.claude.com/docs/en/security)、[Agent teams 权限](https://code.claude.com/docs/en/agent-teams#permissions)；[claude-code-action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md)
-- [How Anthropic secures its AI-native SDLC](https://claude.com/resources/articles/how-anthropic-secures-its-ai-native-software-development-lifecycle)（2026-07）
-- 案例：[Invariant Labs：GitHub MCP 漏洞](https://invariantlabs.ai/blog/mcp-github-vulnerability)、[Nx 安全公告 GHSA-cxm3-wv7p-598c](https://github.com/nrwl/nx/security/advisories/GHSA-cxm3-wv7p-598c)、[StepSecurity：Nx 恶意包分析](https://www.stepsecurity.io/blog/supply-chain-security-alert-popular-nx-build-system-package-compromised-with-data-stealing-malware)、[BleepingComputer：2,180 个账号受影响](https://www.bleepingcomputer.com/news/security/ai-powered-malware-hit-2-180-github-accounts-in-s1ngularity-attack/)、[AWS-2025-015](https://aws.amazon.com/security/security-bulletins/AWS-2025-015/)
-- [Scale X：Humans missed 1 in 3 threats](https://scalex.dev/blog/ai-agent-permissions-stats/)（[HN](https://news.ycombinator.com/item?id=49195468)）、[Wikimedia：OpenAI "rogue" agent activities](https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/)
-- [Plugin security and trust](https://code.claude.com/docs/en/plugins/security)
-- [gemini-cli changelogs](https://github.com/google-gemini/gemini-cli/tree/main/docs/changelogs)
-- [Matthew Green：Is sandboxing sufficient to contain rogue agents?](https://blog.cryptographyengineering.com/2026/09/30/is-sandboxing-sufficient-to-contain-rogue-agents/)、[Embrace The Red：Breaking Claude Code Opus 5 Auto Mode](https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/)、[thereallo.dev：隐写标记](https://thereallo.dev/blog/claude-code-prompt-steganography)、[Simon Willison：默认硬性预算上限](https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/)
-- [CSA：Agentjacking](https://labs.cloudsecurityalliance.org/research/csa-research-note-agentjacking-mcp-sentry-injection-20260612/)、[Checkmarx：MCP Security Incidents](https://checkmarx.com/learn/mcp-security-risks-real-world-incidents-and-security-controls/)、[The lethal trifecta（Arcjet 解读）](https://arcjet.com/learn/lethal-trifecta)（二手）
+各节末行“依据”已给出该节来源、来源类型与核实日期，本页不再重复列链接。完整历史、固定版本与分项复核范围见页首研究记录；安全工具入口见[§4 安全工具表](#安全工具社区)。
