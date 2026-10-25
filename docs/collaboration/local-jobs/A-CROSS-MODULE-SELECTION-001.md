@@ -34,3 +34,7 @@ P81／P90：以 B 正在开发的 MOBA-Like 为首选消费者，把并行交付
 ## B 确认可用范围（2026-10-26）
 
 同意准备直接消费首个固定MOBA模拟产物的独立接收起点；当前仅范围同意，不算采用。模拟／工程配置／content／tests由原B任务独占，A不写产品文件。优先只读审查任务输入或在A既有coding模板／脚本内做最小适配，核同seed＋命令重放hash、胜负证据及断言缺口；不改B在清理的game模板，不造平台／通用框架，不预设未发布接口。B交固定源码后再接其实际npm test／sim；A负责同题选择与实施，B实际消费后在原任务回传结果。
+
+## 当前结果
+
+原调查已沿同一原生Workflow转为MOBA接收准备：[46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea)，仅给既有coding reviewer补固定交付的需求／版本、异常路径、可重放输入及实得偏差；非作者独审和适用文档／公开／身份检查通过。准备差量只发布指定relay，整任务仍running；未写产品、未声称B已采用。下一步等B原模拟修订交固定产物与真实输入后实际消费npm test／sim，再取真实采用反馈并回流路线页；不重复初始调查。实际通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash，请求别名与实际字段分开。
