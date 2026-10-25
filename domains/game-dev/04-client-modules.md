@@ -441,9 +441,33 @@ flowchart LR
 
 **按症状选读，先交一条完整链，再做第二次需求。** 新增内容后的检查均为后续验证设计。
 
+<a id="scene-loading-production"></a>
 ### 切换关卡与释放资源
 
 **先按消费者寿命持有资源，再决定等待语法；同资产被两处使用，不等于必须自建共享缓存。** 第一步分清谁持有、何时释放：小常驻内容保直接引用；需要按需驻留／内容交付才用 Addressables。原生负责加载、依赖和引用计数，项目只补接收资格、场景交接与失败恢复。
+
+#### 首版：从启动壳进入一间可玩的关卡
+
+**先做“菜单→关卡 A→出口→关卡 B→回菜单”，把准备与正式进入分开。** 默认保一个小型启动壳，独占转场协调者、加载界面、输入路由和公共镜头／监听者；关卡只提供环境、出生点及本关内容。少量本地关卡可用 `SceneManager`＋直接引用；以下为已有 Addressables 项目的接线蓝图，新增它的理由应是按需驻留／内容交付，而不是换一种 `await` 写法。未编译或运行引擎。
+
+| 放在哪里 | 最少交付什么 | 运行时由谁用 |
+|---|---|---|
+| 启动壳 | 一份协调者、当前关卡持有、输入／镜头与加载界面；不随关卡卸载 | 菜单和出口只提交目的地；协调者串行执行，不各写一套加载器 |
+| 每关作者源 | 一个 `SceneEntry`：稳定关卡 ID、命名出生点、覆盖本关渲染／碰撞／玩法的 `GameplayRoot`、需绑定的场景对象 | 加载成功后只从返回的 Scene 找入口并核唯一；不用全局查找误取仍在内存的旧关卡 |
+| 本次交接 | `requestId`、目的地、出生点、恢复数据、阶段、旧／新场景加载句柄 | 本次请求持有准备结果；提交后才把新关卡的持有交给当前世界 |
+
+`SceneEntry`、`GameplayRoot` 和下表的 Prepare／Enter 是项目接口，不是引擎组件。作者源让 `GameplayRoot` 初始关闭，连同本关渲染／碰撞一起等待；其余对象从 Awake 起也只做局部初始化，不自动刷怪、发奖或写存档。入口握有序列化引用，统一准备和启用本关规则；组件在关闭期间可显式 Prepare，后续 Awake／OnEnable 不覆盖已恢复数据，也不自行发出 Enter。已有成熟关卡入口就补这些责任，不再加并列框架。
+
+| 正常顺序 | 首版实际接线 | 玩家何时能看到或操作 |
+|---|---|---|
+| 1. 收请求 | 菜单／出口交 `sceneKey` 和出生点，记录旧世界恢复点；停止旧世界玩法推进及其输入，显示加载遮罩 | 加载界面的返回／重试仍可操作，旧世界保持可恢复 |
+| 2. 载入 | 常驻协调者调用 `Addressables.LoadSceneAsync(key, LoadSceneMode.Additive, activateOnLoad: true)`，保返回句柄并查完成状态 | 进度分下载、场景准备、进入；进度条完成不自行解除遮罩 |
+| 3. 准备内容 | 从 `handle.Result.Scene` 的根对象取得本关 `SceneEntry`，核关卡 ID／出生点；取得依赖，在关闭玩法的状态下生成本关角色、应用恢复数据并准备规则 | 新对象未获准行动；恢复失败仍能返回旧世界 |
+| 4. 接好归属 | 关卡局部新实例明确挂到本关根；需改场景的根对象用 `MoveGameObjectToScene` 指定已载入的新 Scene。准备公共镜头、HUD 和输入的目标引用，保留旧绑定供恢复 | 遮罩仍在；到此完成会失败的准备，不靠动画完成回调交权 |
+| 5. 正式进入 | 再核本次资格与 `SetActiveScene(newScene)` 成功；在主线程、不跨等待点地切镜头／HUD／输入绑定、关闭旧内容根，提交 current world 后打开新内容根并 Enter，最后交还输入和撤遮罩。Enter 只消费已准备好的数据 | 玩家能在正确出生点行动；提交以后“返回”是新转场，而不是撤销已经开始的世界 |
+| 6. 卸旧 | 当前世界接走新句柄；协调者清旧订阅／池，再以旧加载句柄调用 `UnloadSceneAsync` 并观察结果 | 新世界继续；卸载失败留待清理状态，不重做进入或重新发奖 |
+
+**三个“激活”分开接。** Additive 载入不会自动换 Active Scene；`SetActiveScene` 影响默认新建对象归属和光照设置，不负责选择哪些场景渲染，也不启动游戏规则。已有对象不会因它自动搬家；`MoveGameObjectToScene` 只能移动根对象到已加载场景。准备阶段显式指定新实例归属，提交再切 Active Scene；若提交前已改镜头／活动场景却中途失败，要恢复旧 Active Scene、旧根和旧镜头／HUD／输入绑定后再撤遮罩。把可能失败的恢复／资源工作留在 Prepare，而不是在 Enter 中再加载。
 
 #### 场景切换：取消等待不等于取消工作
 
@@ -456,16 +480,6 @@ flowchart LR
 
 前两种共享是不同所有权模型，不按 handle 相等或全局 `ReferenceCount` 判断“我是否拥有”。`AssetReference.LoadAssetAsync` 实例方法不能在未释放时重复加载；独立消费者走上述静态 API。等待／UniTask 取消差异沿用[已核版本契约](../../docs/research/2026-10-14-game-wp10-client-modules.md#addressables4-native-await)。
 
-**切场默认由不随关卡销毁的协调者串行接单：内存容许时，新场景准备成功再放弃旧场景。** 新场景的 gameplay 必须默认未启用；引擎激活不等于允许刷怪、扣费或接收输入。
-
-```mermaid
-flowchart LR
-  A[旧场景可恢复] --> B[冻结旧玩法输入<br/>Additive 加载新场景]
-  B --> C{本次仍有效且准备成功?}
-  C -->|是| D[恢复数据并切交互目标<br/>启用新玩法，再卸旧场景]
-  C -->|失败或已返回| E[卸掉晚到新场景<br/>恢复旧场景输入与提示]
-```
-
 返回按钮先撤销本次交接资格、恢复可操作反馈，未完加载由协调者继续收尾；连续点击只更新待处理目的地，不并发修改一个 `currentScene`。预算放不下双场景时，改为常驻小读条场景→卸旧→载新，失败退到读条中的重试／菜单；必须保存可重建状态，不能再承诺立即回原现场。`activateOnLoad=false` 会阻塞异步队列，不能一边卡激活一边等卸载腾内存；普通路径先用 `true`＋项目玩法门。
 
 #### 资源释放：所有权、驻留、总内存分别看
@@ -475,12 +489,19 @@ flowchart LR
 - **内存规则先认后端。** AssetBundle 共包会耦合卸载，按相近寿命分组；Unity 6.6+／Addressables 4 的本地 content directories 可逐资产卸载，远程／内容更新仍按 AssetBundle 路线。旧工程不默认迁移。
 - **只为测到的反复卸载重载加有界驻留。** 先看 Addressables Profiler 的引用／依赖，再用 Memory Profiler 看实际内存与切场峰值；缓存无上限或双场景超预算就撤回。UE 仍区分 LoadPrimaryAssets 显式卸载与 PreloadPrimaryAssets 活动句柄保活，不能逐窗口 Unload 当消费者计数。
 
+#### 二改：提前准备下一关，或让同一角色跨关
+
+**沿同一套 Prepare→Enter 增量修改，不另建“预加载器”。** 若只想减少下载等待，提前下载依赖后仍要正常载入／初始化；磁盘缓存不是内存保活，也不保证首绘已准备。若要把下一关完整留在内存，就以另一个仍关闭玩法的关卡准备它，并明确旧关＋预备关＋共享源＋临时上传的峰值预算；不再用 `activateOnLoad=false` 挂住队列。离开候选路线便卸掉未使用关卡，同一时刻只保约定数量的候选。
+
+角色二改为跨关常驻时，把角色实例、资产持有及池的所有者一起移到启动壳：卸旧关前解除旧触发区／事件、重绑新出生点和镜头，角色仍只存在一份；不要仅给旧实例加 `DontDestroyOnLoad`。新旧关都使用的图集／音频各按下面的独立引用或共同所有者持有，谁退出就归还谁的份额。普通关卡对象仍随本关卸载，不能因为一个常驻角色把整张旧地图永久留住。
+
 #### 交给 AI：从两个窗口做到一次可恢复转场
 
-给 AI 实际引擎／包版本、资产 key、窗口和常驻协调者脚本，以及目标内存预算；沿现有实现改。先用[独立引用示例与交接表](../../docs/research/2026-10-14-game-wp10-client-modules.md#resource-lifecycle-example)落实以下结果，再接第二次需求“同资源多窗口＋返回重试”：
+给 AI 实际引擎／包版本、资产 key、窗口和常驻协调者脚本，以及目标内存预算；沿现有实现改。先实现上面的正常六步，再用[独立引用示例与交接表](../../docs/research/2026-10-14-game-wp10-client-modules.md#resource-lifecycle-example)落实以下结果，再接第二次需求“同资源多窗口＋返回重试”：
 
 | 操作 | 必须观察什么，而非只看 await 结束 |
 |---|---|
+| 首版：菜单→A→B→菜单 | 出生点／存档状态正确，局部实例属于本关；只有当前关推进，镜头／HUD／输入指向同一世界，旧关可释放 |
 | A 开始加载→关闭→重开 B；强制 A 最后完成 | B 只显示自己的结果；A 无界面写入，自己的获取最终各释放一次 |
 | 两窗口同 key；退出一个，再退出另一个 | 剩余窗口仍可用；获取／释放按持有者对账，不把系统总引用数当业务人数 |
 | 切 A→B 时返回、失败、再试；缓存命中也跑 | 交互目标与玩法启用至多提交一次；晚到 B 卸载；失败后能返回或重试，不留永久读条 |
@@ -488,7 +509,7 @@ flowchart LR
 
 真实构建验冷／热加载、失败和往返峰值。Chop Chop 的常驻协调可借，但缺失败恢复；2024 开发者原帖显示 Editor 与 Player 卸载差异。当前最高生产表现未知，本轮未测性能或 AI 收益。
 
-来源：[一手／研究] 文档与源码研究 2026-10-24（UTC+8）；完整依据与可改写示例见 [WP10 资源生命周期](../../docs/research/2026-10-14-game-wp10-client-modules.md#resource-lifecycle-workflow)。
+来源：[一手／研究] 既有等待、共享、内存及 Chop Chop／开发者反例沿 2026-10-24（UTC+8）的 [WP10 资源生命周期](../../docs/research/2026-10-14-game-wp10-client-modules.md#resource-lifecycle-workflow)，原日期与未验范围不变；2026-10-26（UTC+8）补核 Unity 6.3 的 [SetActiveScene](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.SceneManager.SetActiveScene.html)、[根对象入口](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.Scene.GetRootGameObjects.html)、[MoveGameObjectToScene](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.SceneManager.MoveGameObjectToScene.html)与 Addressables [2.9.1](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/LoadingScenes.html)／[4.1.1](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/LoadingScenes.html)场景接口。启动壳、六步及二改是项目实现建议，未引擎验证，不将引擎版本和两个包版本假定为任意兼容组合。
 
 ### 保存、续玩与升级旧档
 

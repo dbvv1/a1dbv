@@ -237,6 +237,14 @@ public sealed class OwnedSpritePreview : MonoBehaviour
 
 [研究] 退出读条时若场景加载已经进行，默认仍让其完成并立即卸载；壳和协调者活到收尾结束。若确需停在未激活状态，必须为取消路径提供激活→卸载的可达步骤，且准备激活产生的生命周期回调，不等待已经被它挡住的后续操作。没有这些保证，撤回延迟激活方案。
 
+#### 正常接线补核：载入、Active Scene 与玩法入口
+
+2026-10-26（UTC+8），只补 [04 首版接线](../../domains/game-dev/04-client-modules.md#scene-loading-production)缺少的场景归属接口，不刷新上面 2026-10-24 的等待／共享／生产反例结论。Unity 6.3 [SetActiveScene](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.SceneManager.SetActiveScene.html)明确 Additive 后原活动场景仍保留；活动场景决定默认实例化目标和光照设置，与渲染哪些场景无关，未载入时返回 false。[MoveGameObjectToScene](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.SceneManager.MoveGameObjectToScene.html)只迁移根对象到已加载场景；[GetRootGameObjects](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.Scene.GetRootGameObjects.html)给出该场景的根对象入口。因此“新场景加载成功”不能代替运行对象归属与公共镜头／输入的绑定。[一手／研究]
+
+本次实现建议让启动壳独占协调和公共表现，每关作者源提供唯一 SceneEntry、出生点与关闭的 GameplayRoot（含本关渲染／碰撞／玩法）；准备阶段显式安排对象归属／恢复数据，提交阶段切 Active Scene、交接当前世界并启用规则。上述名字是项目语义，不是 Unity API；普通场景激活产生的 Awake 等副作用仍须由内容作者控制。首版角色随关卡重建，二改跨关角色时将实例与依赖持有共同移交常驻所有者；不把移动 GameObject 误认为 AssetBundle 引用也已移交。[研究]
+
+Addressables [2.9.1](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/LoadingScenes.html)与[4.1.1](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/LoadingScenes.html)均描述 Additive／activateOnLoad 参数和延迟激活阻塞队列；本模块保已安装、兼容的包，不为接线迁移。几何／光照、首帧、实例归属、取消恢复及双关峰值都未在 Unity／UE 中实测；新的六步表是将已有交接实施表落到作者和消费者入口，不是可直接导入的已验证框架。[一手／研究]
+
 ### 5. 持有正确之后，再决定驻留与构建后端
 
 [一手] [4.1.1卸载文档](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/UnloadingAddressableAssets.html)区分场景资源与独立加载资源；DontDestroyOnLoad不代替加载引用。[研究] 把需要常驻的玩家／UI依赖单独获取更容易控制保活范围；Acquire整个场景可作为明确选择，但可能把不再需要的依赖一起留住。不是按对象挪到新Scene就自动迁移了资源所有权。
