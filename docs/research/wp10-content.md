@@ -12,6 +12,17 @@
 
 核实：2026-10-14 UTC。主线 2／3；将 04 的菜单“关键页可达”深化为切换后可控、反馈可信，并限定 02 逻辑动作注入的证明范围；依据为官方文档和发行游戏更新。[一手／研究] 改键持久化的 GUID／落盘边界见[#103](#103)，整页选型见[整页选型回流](#整页选型回流ui-toolkit-新能力与迁移成本)，动态 UI 重建见[#83](#83)；本节只留菜单控制、暂停交接与设置管线。
 
+<a id="input-normal-production"></a>
+### 正常输入链：动作定义、玩家实例与模拟消费
+
+2026-10-25 将既有菜单／死区／多人／改键材料补成一个可实施首版：键鼠与手柄驱动同一角色，再加交互改键和第二玩家。连续值缓存、有序请求、角色代次与缓冲时钟是项目建议，不是新库、已跑原型或网络确定性结论；原控制器仍独占运动写入。[研究]
+
+- [一手] Input System 1.20.1 [Actions](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/Actions.html)区分输入含义与设备绑定；[InputAction API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputAction.html)说明动作不是按渲染帧采样，同帧可以看到多次值变化，触发阶段随动作类型／interaction 而变。[研究] 指定 Jump 的操作语义，连续移动保最新值、离散请求按序消费，不能靠一个未清除布尔值跨固定步执行。
+- [一手] [PlayerInput 与 UI](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/use-player-input-component-ui.html)要求从所属 `PlayerInput.actions` 读取，UI module 关联同一动作配置；绕读全局 `InputSystem.actions` 会绕开设备过滤。[研究] 每玩家一个适配器／命令缓存，定义资产可复用，实例归属与角色代次分开管理。既有固定源码与 UE LocalPlayer 对照沿 [多人契约](#23)。
+- [一手] [运行时改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/rebind-action-runtime.html)要求释放 RebindingOperation；其[操作 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.RebindingOperation.html)不接受仍 enabled 的目标 action，并可用 OnApplyBinding 截获路径、改存草稿。[保存／加载 override](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)支持 JSON，加载默认移除当前 override。[研究] 采集结果、设置草稿、应用与落盘分别接，应用前不改运行绑定；采用临时覆盖时，完成取候选后与取消时均还原，配置拓扑迁移仍沿 [原改键证据](#103)。
+
+输入采样与物理时序复用 [WP10 响应](wp10-motion.md#1-四类时间问题不能用同一种平滑处理)的 Unity 1.19 官方说明，不把更新文稿日期当作重验该历史版本。按住恢复、系统取消、震动、混用提示、真实作品与授权边界仍见下面原节；本次未运行 Unity／UE、手柄或多玩家。
+
 <a id="17"></a>
 
 ### 1. 先补玩家体验缺口，不因手柄支持迁移 UI
