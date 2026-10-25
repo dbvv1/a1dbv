@@ -225,6 +225,45 @@
 - **AI 风险 [研究]**：用进入条件冒充持续条件，追击目标消失仍施法；状态退出后异步 MoveTo 继续改速度；等待动画结束永远不退出；共享 Blackboard 上一次目标残留；错误地假定一个 tick 最多一次转换或 StateTree 等所有 Task 完成。
 - **将来验证**：死亡／眩晕打断、不可打断窗口结束后的退出，以及不可达、目标销毁、子图替换、禁用再启用的终止／失败。图资产另核升级、枚举改名、Prefab覆盖后的实际运行实例。
 
+<a id="utility-intent-evidence"></a>
+
+#### 效用选意图：作品分工、现成候选与固定源码
+
+**小项目采用薄评分层选意图、既有 FSM 执行；效用不是 BT 的替代宗教。** 对应 [05 效用模块](../../domains/game-dev/05-gameplay-architecture.md#utility-intent-selection)的补兵／换血／撤退／推塔正常链。作者实践支持把合法动作、用途与执行分开；分值和调度仍须按自己的玩法设计，当前最高水平及本案例实际收益未知。
+
+| 公开实践（2017） | 本题借什么 | 不据此推出什么 |
+|---|---|---|
+| Paragon 的参数化 BT、空间查询与技能选择器 | 技能用途标签服务不同英雄，候选日志帮助查原因；保执行结构而局部评分 | 一张评分表能取代整套 AI 或团队战略 |
+| Dragon Age: Inquisition BDS | 把合法动作及其用途列成候选，再评价并执行 | 闭源商业作品的权重适合自己的战斗 |
+| Guild Wars 2 考虑项设计 | 原始输入归一化、响应曲线与乘积评分的结构 | 因素越多越准确；零分或跨意图可比性自动成立 |
+| Paragon 战略层 | 团队应去哪里与个体战斗怎样做分工 | 1v1 首版必须先造团队规划平台 |
+
+来源：作者公开章节 [Paragon Bots](https://www.gameaipro.com/GameAIPro3/GameAIPro3_Chapter32_Paragon_Bots_A_Bag_of_Tricks.pdf)、[DA:I BDS](https://www.gameaipro.com/GameAIPro3/GameAIPro3_Chapter31_Behavior_Decision_System_Dragon_Age_Inquisition%E2%80%99s_Utility_Scoring_Architecture.pdf)、[GW2 考虑项](https://www.gameaipro.com/GameAIPro3/GameAIPro3_Chapter13_Choosing_Effective_Utility-Based_Considerations.pdf)、[Being Where It Counts](https://www.gameaipro.com/GameAIPro3/GameAIPro3_Chapter24_Being_Where_It_Counts_Telling_Paragon_Bots_Where_to_Go.pdf)。这是机制参照，不是本仓运行复现。
+
+**先算制作与维护成本，再选库。** 目前没有同案例的真实品质／工时比较；商业工具未购买或运行，开源候选仅静读，不能以营销中的“更自然”替代效果证据。
+
+| 路线 | 适合什么；采用评级 | 成本与撤回条件 |
+|---|---|---|
+| 薄评分＋现有 FSM／执行图 | ✅ 少量英雄，已有移动／技能执行；BT 局部分支也可评分 | 若只是固定巡逻→追击→攻击，条件规则更省；不维护两套打断所有者 |
+| Utility Intelligence GO | 👀 多设计者反复调决策／目标过滤、曲线，需要编辑器运行预览 | 商业许可、类型／版本约束和资产迁移需在自己的角色上试改核定；未购买、未试用 |
+| ZorPastaman UtilityAI | 👀 阅读 Brain／Consideration／Action 分工与切换差值；固定版 MIT | 宿主仍补资格、全零出口和强制退出；不直接替换已有执行器 |
+| crashkonijn/GOAP | 👀 “先拿钥匙→开门→救援”等可替换多步达成路径；作者仓库 Apache-2.0 | 增加状态、前置条件、效果、计划失效重规划；只加支援意图不值得换框架 |
+
+来源：官方 [UE BT Overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---overview)、[Unity Behavior 1.0](https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/index.html)；作者 [Utility Intelligence GO Overview](https://uintel-go.utilityworlds.com/Documentation/Overview/)（页显更新 2026-08-09），另读 Decision／Decision Makers 页、[FAQ 类型／版本约束](https://utilityworlds.com/FAQs/)；[GOAP 仓库与许可](https://github.com/crashkonijn/GOAP)。既有 Unity Behavior 1.0.16／UnityHFSM 2.3 生命周期结论仍沿上节原记录，不刷新核实日期。
+
+**固定 Brain 展示了可借机制，也展示了必须由宿主补齐的语义。** 读 ZorPastaman/UtilityAI `5471701695f333f01a6d0dc441fbebb574fafa51`（2025-10-16）的 Brain、BrainSettings、package 和 MIT 许可，未运行该 Unity 库：
+
+- 考虑项相乘得到动作分；增加相同的非 1 因素会降低乘积，须核因素数量与跨动作校准。
+- `FindBestActionIndex()` 从索引 0 开始，仅更高分替换，因此全零 argmax 返回首项。初始化据此 `Begin()` 首项；运行时经过 `SwitchAction()`，又可能因差值门槛保留当前非首项。它没有显式“无可选动作”语义。
+- `SwitchAction()` 比较当前与新动作的本轮分数，差小于 `minimalUtilityDifference` 才返回；达到门槛就 `End()` 旧动作、切索引、`Begin()` 新动作。同一索引不重复进入。差值本身不区分资格失效、技能承诺或反应时机。
+- 因而正文不直接搬这个选择器：发起资格、阶段持续合法性、战术退出分层；无正分候选提交回退，不能抢断合法恢复期。正文示例用严格 `>` 的切换政策，与库的“达到门槛”分开。
+
+固定来源：[Brain.cs](https://github.com/ZorPastaman/UtilityAI/blob/5471701695f333f01a6d0dc441fbebb574fafa51/Runtime/Core/Brain.cs)、[BrainSettings.cs](https://github.com/ZorPastaman/UtilityAI/blob/5471701695f333f01a6d0dc441fbebb574fafa51/Runtime/Core/BrainSettings.cs)、[LICENSE.md](https://github.com/ZorPastaman/UtilityAI/blob/5471701695f333f01a6d0dc441fbebb574fafa51/LICENSE.md)。没有复制库实现或下载副本进入交付。
+
+**合成检查支持算术，不代表产品行为通过。** 原创 Python 检查 19 项通过：低血曲线、四个评分式、危险单调性、零／空候选、资格淘汰、切换差值、稳定排序、NaN、缺失／越界输入及重复身份。首次低血曲线的浮点完全相等断言失败，改近似断言后通过，公式未变。该脚本未实现反应队列、导航、技能或引擎，故恢复期全零、迟到回调、实际反应、公平感、性能和跨运行时确定性仍待产品验收。
+
+本节资料核实：2026-10-26（UTC+8）；文档／源码静读与原创算术合成检查。正文四公式、候选接口与调度是设计建议。新上下文非作者独审指出的资格／冷却、回退与承诺、固定库全零三项均已定点修复；整合后只复核重组差量。MOBA-Like 尚无采用证据，案例边界沿 [brief 固定版](https://github.com/dbvv1/MOBA-Like/blob/46f5ce4ba25184dd88dbb268e58e5f9aebb9e696/docs/brief.md)：先 1v1，再第二英雄＋指向改方向弹道，支援不替换此里程碑。Valve 官方 wiki 此轮返回 403 后停止该入口，未读内容不作依据。
+
 ### 3. 数据驱动配置：静态定义、活实例、存档不能同一个对象
 
 **[研究] 最低完成度**：定义保存稳定ID、初值和资产引用；实例保存HP、冷却、目标与阶段；存档保存可迁移快照及schemaVersion。沿用SO／DataAsset／DataTable／CSV，校验ID、引用、范围与迁移，不由格式决定架构。

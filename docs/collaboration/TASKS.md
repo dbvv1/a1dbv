@@ -31,7 +31,7 @@ dot-A 运行：仅每小时心跳；当前接口支持PR事件，普通main／re
 | P79 | C1／C3 吸取验证 | dot-A | **10-25 收口**：[冻结三题结果](../../experiments/absorption/p79-frozen-001-results.md)已按描述性记录接收，隔离未确立、正式可比 0 对；不再续批，正式对照仅在用户明确要求时开展。 |
 | SR | **Star-Rush 维护期**：master 随时可玩，只做品质提升；顺序见仓库 [brief](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/brief.md)（原 P112／P113／P117） | B | [master `5cc161e0`](https://github.com/dbvv1/Star-Rush-Reborn/commit/5cc161e04652d8644afa5daa429e986f04e036c2) 已合入 smoke 脚本，保留从源重建的 Kenney 默认与程序音回退。工程验收通过；真实浏览器待原本地任务验证，最终混音待人工。旧 `10f5f90` 不重传，旧壁画不在本次范围。 |
 | MOBA | **MOBA-Like 纵切片**：可玩，再完成第二次需求修改；实测技能／Buff、英雄与小兵 AI、寻路、成长与技能制作链（FPS-Like 在此之后开工） | B | 10-26 建仓库骨架：[AGENTS](https://github.com/dbvv1/MOBA-Like/blob/main/AGENTS.md)、[任务书](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md)。下一步：建工程，先打通模拟层与无画面对局。 |
-| B-模块 | **客户端／gameplay 完整模块**：动作与连段、瞄准、镜头、角色控制、资源生命周期、敌人 AI、技能／Buff、成长与奖励、叙事、合作续局等（原 P39、P98、P99、P101–P106、P110–P111、P114–P115、P118、P121–P122、P125–P127、P129–P130） | B | 已接收：[角色控制](../../domains/game-dev/04-client-modules.md#character-control)、[技能／效果](../../domains/game-dev/05-gameplay-architecture.md#7-战斗与技能先统一结算再决定-gas)、[菜单与设置](../../domains/game-dev/04-client-modules.md#菜单也是控制的一部分)、[性能诊断](../../domains/game-dev/04-client-modules.md#压低卡顿与设备耗用)。[跨局成长与奖励](../../domains/game-dev/05-gameplay-architecture.md#meta-progression-loop)已接收：局内构筑、结算解锁、下一局配置和第三路线二改；真实对局、平衡与旧档接入待验。[本地化制作接线](../../domains/game-dev/04-client-modules.md#增加语言与推进对白)和[存档正常续玩](../../domains/game-dev/04-client-modules.md#保存续玩与升级旧档)已接收：双语对白接线／二改、检查点到可玩世界的恢复链／门箱持久化二改；译义、引擎、真实读听与存储恢复待验。都是文稿加独审，引擎实测随 MOBA-Like 进行。旧提示词删除引起的共享离线测试回归已修复。下一步：继续合并已有研究。 |
+| B-模块 | **客户端／gameplay 完整模块**：动作与连段、瞄准、镜头、角色控制、资源生命周期、敌人 AI、技能／Buff、成长与奖励、叙事、合作续局等（原 P39、P98、P99、P101–P106、P110–P111、P114–P115、P118、P121–P122、P125–P127、P129–P130） | B | 已接收：[角色控制](../../domains/game-dev/04-client-modules.md#character-control)、[技能／效果](../../domains/game-dev/05-gameplay-architecture.md#7-战斗与技能先统一结算再决定-gas)、[菜单与设置](../../domains/game-dev/04-client-modules.md#菜单也是控制的一部分)、[性能诊断](../../domains/game-dev/04-client-modules.md#压低卡顿与设备耗用)。[跨局成长与奖励](../../domains/game-dev/05-gameplay-architecture.md#meta-progression-loop)已接收：局内构筑、结算解锁、下一局配置和第三路线二改；真实对局、平衡与旧档接入待验。[本地化制作接线](../../domains/game-dev/04-client-modules.md#增加语言与推进对白)和[存档正常续玩](../../domains/game-dev/04-client-modules.md#保存续玩与升级旧档)已接收：双语对白接线／二改、检查点到可玩世界的恢复链／门箱持久化二改；译义、引擎、真实读听与存储恢复待验。都是文稿加独审，引擎实测随 MOBA-Like 进行。旧提示词删除引起的共享离线测试回归已修复。[效用选意图](../../domains/game-dev/05-gameplay-architecture.md#utility-intent-selection)实现蓝图已接收：四意图、资格分层、反应与技能承诺、第二英雄／弹道二改；19 项合成选择检查通过，MOBA 采用与对局待验。下一步：局内等级／金币／装备模块。 |
 | B-制作链 | **AI 制作链**：2D／像素、动画源与导入、3D 与压缩消费者、材质特效、音乐音效、视频、场景作者（原旧 C2 文稿、P94–P97、P100、P107、P116、P119–P120、P123–P124、P128、分件 rig、特效源） | B | 已接收：[短音](../../domains/game-dev/assets/audio.md#可复制制作起点短样本与现有程序声混合)、[角色与武器动画](../../domains/game-dev/assets/animation.md)、[完整场景](../../domains/game-dev/assets/3d.md#完整片段先做一个能走能看能改的场景)、[技能特效](../../domains/game-dev/assets/materials.md#把候选交成整招而不是一段漂亮特效)、[2D](../../domains/game-dev/assets/2d.md)、[音乐增轨](../../domains/game-dev/assets/audio.md#保留探索录音新增战斗声部先选路线再做可回改候选)。[视频／过场](../../domains/game-dev/assets/video.md#制作起点一段能回到游戏的开门揭示)已接收：制作路线、首版接线与换装／长译文二改已写入，文稿独审完成，影片／引擎／听看未验。实际制作与接入随 MOBA-Like 和 Star-Rush 进行，听看验收在下方清单。 |
 | P109 | 潮汐邮差：资产与木筏二改 | B | 窄例；v1 实玩见[正文](../../domains/game-dev/06-indie-roadmap.md)，v2 素材、筏与旧档客户端验收欠项保留。 |
 
@@ -49,16 +49,15 @@ dot-A 运行：仅每小时心跳；当前接口支持PR事件，普通main／re
 
 ## 需要用户决定
 
-等待只停对应动作，其余工作照常推进。
+只放锚点红线内的事（10-26 起默认授权）。等待只停对应动作，其余工作照常推进。
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
-| OpenSpec／Maka 上游 | 是否允许在 [OpenSpec #2115](https://github.com/Fission-AI/OpenSpec/issues/2115) 请求贡献邀请、在 [Maka #4495](https://github.com/apache/maka/issues/4495) 请求功能方向确认；Maka另需真人审阅负责及适用CLA | 已单次询问；先继续 Datasette／Memos PR与任务路线交付 |
-| dot-A Memoh | 能否在 dot 云端的一次性测试库里创建合成管理员和 bot（假数据，无付费、部署或特权容器） | 工程补丁已接收；真实业务与跨升级缓存待验 |
-| dot-A Memos 阅读模式 | 一个获准可用的 dot 云端浏览器入口，用来核匿名列表／详情、刷新恢复、键盘焦点和无写请求 | [工程补丁](../../experiments/memos-reading-adoption.md)已接收 |
-| P109 潮汐邮差 | B 原浏览器 URL 被拒后能否限定重试 | 新版可由其他有授权的环境接收 |
-| P7 | 原执行端要求直接确认①档 S01–S09 | 原文已转交一次，不重复派发 |
-| P27 listmonk | 能否在一次性公开副本的测试库里创建合成管理员（loopback、假数据、不外发邮件） | 观测补丁和 seed 已冻结 |
+| Maka 上游贡献 | [Maka #4495](https://github.com/apache/maka/issues/4495) 要求真人审阅负责并签 CLA，属于以用户名义签署协议 | OpenSpec 的贡献邀请和其他上游 PR 按默认授权继续 |
+
+10-26 按默认授权清出：dot-A Memoh 与 P27 listmonk 的测试库合成管理员、dot-A Memos 的云端浏览器入口（用 dot 的云电脑）、P109 的限定重试、P7 的执行确认、OpenSpec #2115 的贡献邀请。负责人直接推进，平台拦下时只停那一步。
+
+**资产取回阻塞**：[B-MOBA-ASSET-PREFLIGHT-001](local-jobs/B-MOBA-ASSET-PREFLIGHT-001.md) 第三方官方取回 HTTP 403（curl 22）保持停止；自有夹具及原创占位角色已通过限定验收（15 骨骼／三动作／阵营形状标记／长刃二改），第三方源仍待新访问证据；本云轮收口交根代理云电脑，模拟原调用继续。
 
 **平台拒绝**：P107（固定 a012fc7 的公开工具执行）和 Action 调试 10f6a6db 曾被平台拒绝。负责人补齐具体命令和用途后，再请用户在 Dot 里批准；此前不列为待决。
 
