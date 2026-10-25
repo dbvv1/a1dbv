@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-010
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ec9c2f0ca558619dcc4560a07378348859330eb6
 result_branch: relay/a-style-rewrite-010
@@ -67,3 +67,5 @@ result_branch: relay/a-style-rewrite-010
 原生调用核对：2026-10-25T05:55:33.929Z—06:17:03.484Z（UTC）正常退出，包含核验后定向修订。原始独立发现及修订已读取：页首状态限定、来源分层与核实日范围均已按原文恢复；不再重复审查或来源复核。首页导航、命令和机器可读注释复用已通过的逐字核对。
 
 最终回传：指定结果分支 `relay/a-style-rewrite-010`，固定提交 [`27ac0c7e0b52faa166be4449b92f24016450b50f`](https://github.com/dbvv1/a1dbv/commit/27ac0c7e0b52faa166be4449b92f24016450b50f)。两页各自提交；独立验证与定向修订完成，最终文档 369 文件、公开内容 630 文件、三个新增提交身份扫描及空白检查通过。main 仅回传原任务，状态 `review_ready`，由 dot-A 抽读并整合正文。
+
+负责人接收（2026-10-25 06:33 UTC）：复用原生独立核验与已完成定向修订，抽读首页推荐、总览证据分层及未验状态。导航、命令、锚点和机器可读注释无整合变动；保留 main 最终执行与发布回执、结果分支父链。适用文档、公开内容、实际新增提交身份与空白检查通过；未重跑历史实验或外部来源，不称完整离线或 hosted CI 通过。
