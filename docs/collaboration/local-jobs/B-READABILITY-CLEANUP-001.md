@@ -2,7 +2,7 @@
 
 id: B-READABILITY-CLEANUP-001
 owner: dot-B
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6f7494afc9707a1377e3fa88ce139e7a1df04e0e
 result_branch: relay/b-readability-cleanup-001
@@ -33,3 +33,5 @@ result_branch: relay/b-readability-cleanup-001
 ## 当前结果
 
 待接收。这里只写已交付页及提交、剩余页和当前写者、阻塞。
+
+认领与恢复：dot 本地协作；2026-10-26。按 main 固定 `0a64c83` 的 ready 任务及本轮明确恢复指令启动。首个独占页 `domains/game-dev/assets/video.md`，按任务顺序逐页整篇处理，核完一页交增量；非作者先只读新文复述，再对照原文核结论／数据／来源。游戏04、05仍由现有模块原写者负责，未交付前跳过；保留Datasette编辑器原调用。25探索、04MCP、游戏03排除，不改规则层、不统计限定词密度、不设比例或30秒阈值、不新开后续批次。只发布结果分支与本任务回传，当前Codex审计会话接收，本端不标accepted。
