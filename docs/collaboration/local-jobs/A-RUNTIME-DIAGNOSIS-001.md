@@ -2,7 +2,7 @@
 
 id: A-RUNTIME-DIAGNOSIS-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8b12e5ae04ea27bb81206d2cf8aaffbe40791a5e
 result_branch: relay/a-runtime-diagnosis-001
@@ -549,3 +549,5 @@ PR 另含两个 watcher 回归测试与一条 ``:bug:`5449` `` changelog；本�
 正常退出后的任务进程无残留有原记录支持，超时回收未触发、脱离子树清理未验；旧大场景库被重建，不能倒推每次库快照均存在。原报告平台、无限挂起和缺文件 UX 仍待验／未实现。工作结论只限当前运行与条件采用，不标为原平台修复已验收；原始失败、早期发布稿与后续修订均保留。
 
 最终回传：结果分支 `relay/a-runtime-diagnosis-001`，固定提交 [`18a346ab84c56074620977d70f3374499102085d`](https://github.com/dbvv1/a1dbv/commit/18a346ab84c56074620977d70f3374499102085d)，包含对早期 `20a9fb8` 的追加修订而非改写历史。文档 374 文件、公开内容与实际新增提交身份 635 文件、空白检查通过；四个 Python 代码块与全体 PowerShell 命令通过语法检查，未重复应用运行。main 仅回传原任务，15 §2 路线由 dot-A 接收，状态 `review_ready`；结论限本机未复现／现有 PR 条件采用，未标原平台与 UX 完成。
+
+负责人接收（2026-10-25 11:32 UTC）：复用有效独立审查、完整命令定向复核与原七次消费者运行；保留最新 main 回执和结果历史。15 正文压为实际诊断选择与接手入口，不将有限等待写成已复现无限挂起，不把 PR 条件采用写成原平台修复完成。此题收口，不追加平台矩阵或缺文件 UX 修补系列。
