@@ -638,6 +638,41 @@ npm install --prefix tool --ignore-scripts --omit=optional --no-audit --no-fund 
 
 因此把索引当可更新的资料副本，不把它当最新任务授权；先更新、再核当前源文件。若集合配了update-cmd，先检查其命令，不能照搬状态提示中的Git操作。[本仓实试／经验]
 
+<a id="qmd-hybrid-intake"></a>
+### 混合检索接真实交付：相关性不裁决当前状态
+
+**本次交接继续默认用 `rg`／词法检索；已有常驻索引、确有同义表达缺口时，再试显式混合查询。** QMD 2.8.3 的语义检索与重排已经实际跑通，但在本次 CPU 环境中，11 份完整接收材料建向量用时 33m26s，一次带重排的查询用时 349.906s；没有表现出足以替换已知入口搜索的收益。常驻进程、GPU 和未知入口的大库收益未测。[本仓实际消费／条件选择]
+
+**消费者与固定范围。** 本轮要接收正在交付的 Memoh 缓存依赖升级：找最终补丁、当前真正验证的层次，以及旧任务“等待批准”是否仍约束执行。输入是公开 main [`c11819a`](https://github.com/dbvv1/a1dbv/tree/c11819a) 的真实文件，没有改写材料或制造故障。先索引 docs 200／experiments 56／根约定 2，共 258 份；CPU 嵌入约 10 分钟仅落库 32 块、涉及 3 份文档，正常中止（exit 130），不能称全库语义检索完成。
+
+随后按当前交付范围建独立 `intake` 索引：AGENTS、CLAUDE、07、15、TASKS、operations、Memoh 迁移任务、Memos 两份任务、MOBA 跨模块任务及 Memos 实验，共 **11 份完整文档、257,495 字节**。不是仅保留答案段，也不是全库未知入口检索；最终 **155 块、11 文档完整嵌入，exit 0，status 无 pending**。显式 CPU 模式，doctor 报 4 math cores，宿主显示约 9.8 GiB 内存；未测试 GPU。[本仓实试]
+
+| 实际操作 | 结果与改变的决定 |
+|---|---|
+| 原生 `rg`＋文件导航；QMD `search 'Memoh 缓存'` | 已找到相关任务与 15；词法前列仍是旧任务。完整中文问句的 BM25 为零，不能把这一步写成语义失败。 |
+| 首问：Agent 写 `intent`＋`lex: Memoh`＋中文 `vec`，保留重排 | 349.906s／exit 0；查询嵌入 8.7s，9 块重排 339.3s。`--explain` 确有 FTS、vector 和 rerank 贡献。旧任务过程第 1，当前 15 第 2，TASKS 第 3，Memos 续改第 4；语义单路把 15 排第 1，但融合后仍不能按首条裁决现状。 |
+| 第二问：当前默认授权与旧待批准记录；显式 `--no-rerank` | 21.183s／exit 0，查询嵌入 13.4s；TASKS、AGENTS、operations 居前三。它是因 CPU 成本选择的另一问题，不是同题速度或质量倍率。 |
+
+**实际接收按断言取源，而非整篇选新弃旧。** 对首问命中运行 `get`，从旧任务 76–99 行取得四文件补丁的校验值及 `21b44d1`／pnpm 10.27.0 的应用与回滚入口；从同快照 15 第 316 行核到后端 API／SQL 已验、这些请求不经过 Colada、bot 最终 failed、页面与旧缓存恢复未验，生产默认不变；从 AGENTS 36–47 行核当前默认授权与红线，不继承任务旧过程里的等待询问。固定补丁仍有效，不能因记录包含旧时态而整篇弃用。能否交上游还须核目标项目贡献规范，不能从“生产暂缓”推成“禁止开 Draft”。这是原生 Agent 对实际来源的接收，不是模型方法对照。[本仓实际消费]
+
+**从现有 Agent 开始。** 先确认公开索引范围和当前源版本，按该版本自带 `qmd skills get qmd --full` 的指引自行写检索意图与词法／语义字段，取结果后继续按行读原文。已有索引时可用：
+
+```sh
+# intake 是本轮自建索引名；替换成自己的已配置索引
+qmd --index intake query --json --explain -n 5 -C 12 \
+  $'intent: 查Memoh依赖升级的最终补丁和当前真实验收范围，区分已执行结果与早期计划，排除其他应用\nlex: Memoh\nvec: 缓存依赖升级之后最终交付的补丁在哪里，实际验证了哪些功能，哪些页面和恢复行为仍待验证'
+# CPU 不值得等重排时，可显式加 --no-rerank；这时只做融合排序
+qmd --index intake get '#本次结果ID:起始行:行数'
+```
+
+新建索引先用 `collection add`，再 `embed`，用 status 核完整性；安装的 CLI 为 `@tobilu/qmd@2.8.3`，沿前节隔离 HOME／缓存的办法，不省略推理依赖，安装时 `--ignore-scripts`。本轮使用 `QMD_EMBED_MODEL=hf:Qwen/Qwen3-Embedding-0.6B-GGUF/Qwen3-Embedding-0.6B-Q8_0.gguf`、`QMD_FORCE_CPU=1`、`QMD_EMBED_PARALLELISM=1`，`embed --max-docs-per-batch 2 --timeout 60`。公开模型共下载约 2.56 GB：Qwen 嵌入和默认 Qwen 重排均为 Apache-2.0，默认扩写模型卡标 MIT；工具 MIT，没有账户、远端推理或 API 付费。本轮扩写模型已下载，但 `vsearch` 的尝试在 120 秒超时；**它也隐式调用扩写，不能把该超时归为短 embedding 失败**。成功的两问用 typed query，跳过自动扩写；不宣称扩写模型已完成消费。
+
+**真实更新后，文本新了不等于向量齐了。** 后续公开 main [`3c1dc95`](https://github.com/dbvv1/a1dbv/tree/3c1dc95) 已整理 Memoh 当前后端状态。保持原 11 文件集合、核无 update hook 后执行 `qmd update`：4 更新／7 不变；词法查找与 `get` 已读到新的后端 API／SQL 记录及 UI 未验边界。此时 status 仍显示 155 向量，却同时有 **4 文档 pending、60 个 orphaned chunks**；没有再嵌入或运行混合查询，不称全向量更新成功。接收这种新回执先回当前文本即可，不为显示向量数量而反复重建。[本仓实际续接]
+
+**探索与执行回执。** 官方当前包／版本 Skill／固定源码，与 GitHub 中文查询、混合使用和扩写反例及 LINUX DO 原帖交叉核查；中文帖子中的节省倍率未采用。实试窗口 2026-10-25 **19:40:23–20:37:53 UTC**；首次全库运行正常中止，11 文件嵌入 19:55:38 起、CLI 计 33m26s；首问 20:29:43–20:35:33、第二问 20:35:39–20:36:01。模型运行期间以异步等待为主，以上为运行墙钟，不是有人在线写作工时；首次计时包装因系统没有 `/usr/bin/time` 未启动查询，随后用 Python 标准库计时。检查与独审另行完成，不以提交时间冒充运行时间。
+
+**依据**：[一手：固定实现／Skill] [QMD 2.8.3](https://github.com/tobi/qmd/tree/facd35e01359e59d938bc9418e93fb9318addee3)、[混合与向量查询实现](https://github.com/tobi/qmd/blob/facd35e01359e59d938bc9418e93fb9318addee3/src/store.ts)、[模型加载](https://github.com/tobi/qmd/blob/facd35e01359e59d938bc9418e93fb9318addee3/src/llm.ts)；[一手：模型卡] [Qwen 嵌入](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B-GGUF)、[重排](https://huggingface.co/ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF)、[扩写](https://huggingface.co/tobil/qmd-query-expansion-1.7B-gguf)；[社区：使用者原文，沿各帖原日期] [词法中文问题 #976](https://github.com/tobi/qmd/issues/976)、[混合使用与排名建议 #331](https://github.com/tobi/qmd/issues/331)、[扩写语言问题 #454](https://github.com/tobi/qmd/issues/454)、[LINUX DO 安装与资源反馈](https://linux.do/t/topic/1562457)；[本仓实试／研究] 真实接收、版本续接与条件选择；核实 2026-10-25 UTC。
+
 ## gh-stack：依赖分支与跨目录恢复
 
 核实与实试：2026-10-24（UTC+8），P90／M6。独立任务的 worktree 隔离已验，本次只补有依赖分支的父层更新与接续，不把相同脏树保护重复算新成果。[研究：范围]
