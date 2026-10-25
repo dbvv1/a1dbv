@@ -2,7 +2,7 @@
 
 id: A-PERFORMANCE-ROUTE-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8a1235c7bc4c849c50ce81673f9e66df8eecd638
 result_branch: relay/a-performance-route-001
@@ -363,3 +363,7 @@ index 7d815c0..e6681ee 100644
 实际续接原生调用 2026-10-25T04:05:39.214Z—04:40:22.046Z（UTC）正常退出；父调用与两个阶段原始响应字段均为 `deepseek-flash`，请求别名另记。原始首轮负结果、负责人纠偏、真实负载证据和代码差量均保留。15与本任务之外无仓库改动，产品代码只在任务临时工作区。
 
 最终回传：结果分支 `relay/a-performance-route-001`，固定提交 [`4be3b33048b07e79d759c706762a5d47f32741f0`](https://github.com/dbvv1/a1dbv/commit/4be3b33048b07e79d759c706762a5d47f32741f0)。最终文档 365 文件、公开内容 626 文件、实际新增提交身份扫描与空白检查通过；独立审查和必要定向修正完成。main 仅回传原任务，正文与成果由 dot-A 在结果分支接收整合，状态 `review_ready`。
+
+## dot-A 接收（2026-10-25）
+
+负责人抽读实际产物和回执，接收本次交付；保留最新main回传与结果分支历史，复用有效独审及受影响检查。 15实际路径为 `docs/15-task-playbooks.md`。正文改为通用任务路线在前、真实采用在后；新增文字已作窄范围证据核对，不重复代码审查。原报告“未在本仓采用”仅指未成为生产依赖，不能否认已完成的Agent实际采用；当前热点与单机历史负载结果已接收，不扩成模型优势或上游接受，不继续性能边界矩阵。 最终集成树执行文档、公开内容、提交身份与空白检查。

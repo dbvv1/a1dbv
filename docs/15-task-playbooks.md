@@ -410,7 +410,11 @@ flowchart TD
 
 **画布缩放迟迟不清晰，先分未算完还是在等屏外预绘。** 后者在可让出的异步路径先呈现可见结果再补周边，不默认换绘图库。[Penpot 的呈现／预绘拆分](research/2026-10-13-domain-skill-contract.md#交互画布先呈现可见区域再补屏外预绘)有固定实现，无独立延迟收益测量。
 
-**依据**：[本仓实试／经验] Chrome DevTools MCP 离线查询；[一手：作者自报；经验：采用] OpenAI 维护案例与 P45；[经验] 性能目标与改动纪律；[一手；研究] PerfAgent 评估；[一手：论文与源码；研究] 竞争实现轻量搜索；[一手／研究] Roaring、libc++ 与共享状态修订链；[一手：作者标注与源码；研究] pnpm v11；[一手／社区；研究] CPython、pandas、SGLang、Sanity／Onyx 与 Penpot；[经验：报告；一手：源码；研究] alchemy-utils 批处理语义；核实 2026-10-25。
+**✅ 已有真实慢任务，默认组合是固定目标版本与负载、原生 profiler、项目内相近实现、Agent 局部改动和真实产物验收。** 先重测当前热点，再决定改哪层，不沿旧报告直接优化；优先复用项目已有实现模式，而非另接一套优化框架。旧负载已撤除时才恢复其历史版本，并限定收益范围；热点不能复现或无法保原行为，就不接收补丁。
+
+本仓已让 Claude Code 中响应标识为 `deepseek-flash` 的 Agent 实际采用这条路线：对 [Sphinx #10966 的历史 GCC 文档负载](collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)，重测发现旧报告热点已消退，改为优化当前候选扫描；参照 C domain 建有序索引，保留原匹配逻辑及必要的原序遍历。单机固定负载五对构建均值从 31.2s 降至 28.9s（约7%），texinfo 输出逐字节相同、warning 集合相同，相关 domain 测试通过。方法与补丁已在临时工作区实际采用和验证，未提交上游，也未验证下游完整发布链；这不是正式方法 A/B，不能把提速归因为模型优势。
+
+**依据**：[本仓实试／经验] Chrome DevTools MCP 离线查询；[一手：作者自报；经验：采用] OpenAI 维护案例与 P45；[经验] 性能目标与改动纪律；[一手；研究] PerfAgent 评估；[一手：论文与源码；研究] 竞争实现轻量搜索；[一手／研究] Roaring、libc++ 与共享状态修订链；[一手：作者标注与源码；研究] pnpm v11；[一手／社区；研究] CPython、pandas、SGLang、Sanity／Onyx 与 Penpot；[经验：报告；一手：源码；研究] alchemy-utils 批处理语义；[一手：固定源码与本地复现；经验：采用入口] Sphinx #10966、GCC `bd044da`、Sphinx `1ddf1981` 的有序候选索引试验（[本任务](collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)）；核实 2026-10-25。
 
 ### 把运行证据交给 Agent，接收时区分优化与行为改动
 
