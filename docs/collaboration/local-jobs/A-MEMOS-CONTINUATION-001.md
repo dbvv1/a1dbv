@@ -2,7 +2,7 @@
 
 id: A-MEMOS-CONTINUATION-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 08672c65540ce65fc45edec51ccb856e67d78a28
 result_branch: relay/a-memos-continuation-001
@@ -28,3 +28,5 @@ result_branch: relay/a-memos-continuation-001
 在允许的 Node24／Vitest／Testing Library 真实组件入口取得失败→通过证据；按手册§7重验受影响组件、类型／构建与补丁应用，复用未受影响结果。不为纯正文重跑实验。若无法复现，保存具体输入、结果与自然恢复条件，不制造故障。公开文件、提交身份和空白检查必做。
 
 真实浏览器、视觉、Tab 顺序及跨页刷新依然未验；不启动浏览器、服务、demo、账户或数据库，不重试已拒动作，不把 jsdom 叫浏览器通过。不外发 PR／issue、不部署、不新建会话或调度。只推指定结果分支，回写本任务 review_ready，由 dot-A 接收。发布前 fetch；07 或补丁有并发变化先协调，不覆盖。
+
+认领：dot 本地协作；2026-10-25T01:34:18.215737+00:00。来源 main 固定 `d93709a`；两个任务无文件重叠，先发布认领后沿既有正常原生 Workflow 执行，复用原产物与有效结果。仅推各自指定结果分支。

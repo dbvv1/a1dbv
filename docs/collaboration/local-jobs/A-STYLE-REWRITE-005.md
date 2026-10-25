@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-005
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 08672c65540ce65fc45edec51ccb856e67d78a28
 result_branch: relay/a-style-rewrite-005
@@ -33,3 +33,5 @@ result_branch: relay/a-style-rewrite-005
 ## 执行与结果
 
 待接收。使用正常已配置原生 Workflow，每页独立实施，一次有效独立验证；实际执行起止、响应型号、检查和修订回写本任务。仅推指定结果分支，不自行合 main，不启动服务／浏览器或重试拒绝动作。
+
+认领：dot 本地协作；2026-10-25T01:34:18.216425+00:00。来源 main 固定 `d93709a`；两个任务无文件重叠，先发布认领后沿既有正常原生 Workflow 执行，复用原产物与有效结果。仅推各自指定结果分支。
