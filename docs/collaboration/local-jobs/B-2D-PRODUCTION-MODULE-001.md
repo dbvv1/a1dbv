@@ -2,7 +2,7 @@
 
 id: B-2D-PRODUCTION-MODULE-001
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2f2c916593a4a308ff6a73e6b34a85852ec9e724
 result_branch: relay/b-2d-production-module-001
@@ -73,3 +73,9 @@ result_branch: relay/b-2d-production-module-001
 ## 最终交付位置
 
 状态 `review_ready`；固定内容提交 `ab795b1e18cf2ab83fe29f607e4b75b10ee38498`，结果分支 `relay/b-2d-production-module-001`，基于最新 main `2e9d228`。此前“待提交／不自行发布”为实施模型阶段说明；宿主已完成一次独立只读复核及发现修正，保留原始失败结果，按范围发布，由 dot-B 最终接收。文稿生产已完成，真实资产／引擎导入／玩家视觉验收不在本次已验范围。
+
+## dot-B 接收（2026-10-25）
+
+接收固定结果 `def2bdff538eac63c3f182c5f673dfaa161029d7`（内容 `ab795b1e18cf2ab83fe29f607e4b75b10ee38498`）。复用负责人确认的宿主独立只读复核及 F1–F3／帧区间修订，不把实施模型自称独立的回执当审查来源。接收抽读作者源前提、47-blob 边界、导出与引擎消费分工、pivot／事件约定、地形与装备二改，未发现必须改写的结论。
+
+整合入口检查发现重组移除了旧标题锚点；仅在对应新段补回 2D 与 WP2 的旧 id 兼容入口，正文结论不改。整合最新 main 后按文档范围检查本地目标、公开文件、实际新增提交身份、diff／cached 空白；保留 UI、音乐、pilot 与 VFX 来源校正。接收的是制作／实现蓝图：未取得具体资产源，未实际导入引擎或验视觉／玩法，未新增模型 reader、生成实验或完整 offline。
