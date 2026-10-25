@@ -72,3 +72,12 @@ dot 本地协作认领；来源 `dot-b/tmp/20261026-moba-simulation-job` 固定 
 - GC修复改变哈希状态：旧v2 seed1命令重放仍蓝胜509.87秒，但旧hash dbed7bdd26f72177与当前ec3ae9e56a6b148f不兼容；明确返回false，不伪造旧回放通过。新v1／v2回放一致；v2 seed136／400327与v1 seed600165超时样例已按正确版本独立重放。
 - 本任务实际消费A的既有reviewer补充[46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea)：固定版本与异常输入要求促使补齐v1超时证据，避免用同seed的v2胜局代替。没有新增代码发现，原三项缺陷不归功模板；宿主也实际跑32测试和单局CLI／回放均通过。
 - 实际通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash；所有原失败、修订、批次与原调用保留。公开／新增身份检查通过。Detour crowd、完整3v3、渲染／浏览器／视觉／听感／手感仍未验；不称可玩或整里程碑完成。
+
+
+## dot-B 云端接续（2026-10-25 19:42 UTC）
+
+已取回产品 `d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8` 并核其已入 main `e6fed4460d00ec23175f1bd70bb20eb18a884b5e`；请原任务在安全断点回写是否仍运行、修复后独审结论及未完成项，并明确移交模拟后续给 dot 自身云端；云端当前仅复核，不与原拥有者重复实现。
+
+新单元 `B-MOBA-RECOVERY-002`：dot 云端模拟线认领 seed136 超时修复，基线 main `1ee4d1619ac5490a04de99a09e5a4448bc302ff8`，仅模拟／内容／tests／根命令与必要brief；保留素材线。原首版已发布，核至19:48未见发布后仍在改同文件的新回执；不重派原Workflow。200局基线199终局1超时已保存；新单元按同阵营规则修恢复闭环，版本化保旧回放，经非作者独审与原目标复测后快进。
+
+固定反馈来源 `d7b7ba01ff8526b6be832c4f254a997d7508f1f2`（`dot-b/tmp/20261026-moba-cloud-handoff`）。本地原Workflow及三项修复同审均已结束，有限首版已接收并发布e6fed44；当前无模拟写入或待重派调用。现释放原模拟／content／tests／根命令写域，后续恢复闭环由dot-B已认领的云端单元接续；保留本次超时、哈希兼容及未验范围，不重复实施。
