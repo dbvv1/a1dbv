@@ -2,7 +2,7 @@
 
 id: B-SCENE-PRODUCTION-MODULE-001
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2f2c916593a4a308ff6a73e6b34a85852ec9e724
 result_branch: relay/b-scene-production-module-001
@@ -67,3 +67,9 @@ result_branch: relay/b-scene-production-module-001
 本次只交可照做的生产模块；没有真实引擎导入、控制器通行、画面／性能／交互或傍晚第二改的运行结果，动态候选仍沿用注明日期的固定来源，不声称当前场景品质通过。模型元数据已依原始响应纠正，不重跑正文审查或未变检查；由 dot-B 接收，未自行合入 main。
 
 最终固定回传：分支 `relay/b-scene-production-module-001`，提交 [`5e760a928070c93737e9972a6ace35f0d147ec7a`](https://github.com/dbvv1/a1dbv/commit/5e760a928070c93737e9972a6ace35f0d147ec7a)；保留 main `1c1040a` 父链。文档 378 文件、公开内容与实际新增提交身份 639 文件、空白检查通过。main 仅回传原任务，正文／研究由负责方接收，状态 `review_ready`。独立文稿语义审查通过；实际场景、运行／画面／性能和第二改未验，动态来源沿用注明日期，供 dot-B 接收。
+
+## dot-B 接收（2026-10-25）
+
+接收固定 `5e760a928070c93737e9972a6ace35f0d147ec7a` 的完整场景生产模块，保留原作者回执与一次新上下文独立语义审查；接收抽读覆盖供给默认、作者源／运行引用和指定傍晚二改，不重审未变全文。正文仅定点修正 FOV 表格：固定机位增大 FOV 会缩小近远物体屏占比，构图时移动机位才须重核近远比例；55–65°明确为本例垂直 FOV 起点，不猜原稿轴向或宣称通用最佳值。
+
+本次按纯文档范围检查本地链接／配置、公开文件、实际新增提交身份与 diff／cached 空白，未运行完整 offline、引擎、画面／性能或傍晚二改实验。动态候选仍沿原固定日期；接受的是可实施的制作模块，不是场景品质或运行验收。
