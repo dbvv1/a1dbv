@@ -2,7 +2,7 @@
 
 id: A-RUNTIME-DIAGNOSIS-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8b12e5ae04ea27bb81206d2cf8aaffbe40791a5e
 result_branch: relay/a-runtime-diagnosis-001
@@ -30,3 +30,5 @@ result_branch: relay/a-runtime-diagnosis-001
 - 临时运行只用当前执行端已获准的公开软件与现有工作区，非付费；不创建账号、凭据或持久访问，不改安全设置、不部署，不扩大既有具体拒绝。缺入口先区分未尝试、实际能力不足与真实拒绝，不能把其他任务限制直接泛化。
 - 单次搭建／运行最多两小时，保留成功产物及具体缺失输入后停依赖步骤，不扩展为探针矩阵。输出只保必要摘要和可接手完整差量，不上传整仓、个人路径或原始私有日志。
 - 仅推结果分支；核最新 main，执行适用文档／相关行为检查、公开文件／实际新增提交身份与空白扫描；回固定 SHA、实际起止与未完成项，状态 `review_ready`，由 dot-A 接收。
+
+认领：dot 本地协作；2026-10-25T10:33Z。来源 main 固定 `5a63d88`；先核现有 #7112 与消费者状态，再沿原生 Workflow 复现／条件采用。仅临时 fixture、独占 SQLite 与显式配置；不读真实音乐库／HOME，不重测联通或制造额外故障，仅推指定分支。
