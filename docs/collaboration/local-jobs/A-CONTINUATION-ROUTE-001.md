@@ -2,7 +2,7 @@
 
 id: A-CONTINUATION-ROUTE-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e7f120be039ab39cc3aadf126aa9d1ab438aea08
 result_branch: relay/a-continuation-route-001
@@ -24,3 +24,5 @@ result_branch: relay/a-continuation-route-001
 只修改 `docs/20-codex-long-horizon.md` 与本任务。优先重组现有§3–5相近内容而非叠加一套流程，保标题锚点、有效命令和未变证据；给清晰默认、可信替代的条件、短可复制接手起点和退出条件。具体调试、SHA串、计数留原任务链接，正文不变成内部流水账；不另建模板、台账、目录或编号专题，不改15／08／TASKS。
 
 使用已配置正常原生 Workflow，实施与一次全新上下文独立审查；审新增路线及证据映射，复用未变历史检查，不复跑软件或模型实验。发布前fetch，20并发变化须整合不覆盖。按§7做文档、公开文件／提交身份、空白检查，回写实际客户端、响应型号、起止和范围；推指定结果分支 review_ready，由dot-A接收。不外发issue／PR、不启动浏览器／服务、不部署、不新建会话／调度、不重试已拒动作。
+
+认领：dot 本地协作；2026-10-25T05:14:10.343849+00:00。来源 main 固定 `709f073`；两任务无文件重叠，先发布认领后执行既有正常原生 Workflow，复用固定成果，不重跑软件或历史实验。仅推指定结果分支。
