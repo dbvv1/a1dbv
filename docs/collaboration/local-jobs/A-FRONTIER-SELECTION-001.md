@@ -2,7 +2,7 @@
 
 id: A-FRONTIER-SELECTION-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 30210eb122fc5c93eee59744cef1b8dbe192434a
 result_branch: relay/a-frontier-selection-001
@@ -143,3 +143,7 @@ result_branch: relay/a-frontier-selection-001
 本地执行端最终独立复核：原调用实际起止 2026-10-25T11:45:48.512Z—12:13:43.636Z（UTC），正常退出。同一独立只读审查者复核三项修订，确认旧覆盖率复用、漏装工具、排他规模门槛均已关闭，未新增调查或探针。实际模型字段 `deepseek-flash` 与请求别名分别保留。结论支持文档与准备结果交接；datasette 产品测试、当前项目覆盖率生产链、速度／维护净收益及模型效果均未执行或未证明，仍由负责人决定下一实施任务，#2946 的语法设计未获上游决定。
 
 最终回传：结果分支 `relay/a-frontier-selection-001`，固定提交 [`099a98d54f53c20db18a1c1f6a6637534790712c`](https://github.com/dbvv1/a1dbv/commit/099a98d54f53c20db18a1c1f6a6637534790712c)，保留最新 main `7c784cc` 父链；相对 main 仅 13 候选入口与本任务。最终文档 377 文件、公开内容／实际新增提交身份 638 文件、空白检查通过。main 只回传原任务，13 入口由 dot-A 接收，状态 `review_ready`；未启动完整产品实施，合成窄试与真实项目未验范围不混用。
+
+## dot-A 接收（2026-10-25 12:37 UTC）
+
+接收固定 `099a98d54f53c20db18a1c1f6a6637534790712c` 的发现、合成报告消费与消费者准备，复用已有独立审查及三项修订复核；13 入口缩为读者可直接取用的起点。diff-cover 仅是候选反馈层，不称真实开发收益已证；后续以 datasette 的真实参数类型需求消费它，不再扩合成探针。历史取数中的 `--ssl-no-revoke` 不沿用；后续保持正常 TLS 校验，证书阻塞不绕过。
