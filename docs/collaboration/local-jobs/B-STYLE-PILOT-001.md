@@ -2,7 +2,7 @@
 
 id: B-STYLE-PILOT-001
 owner: dot-B
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fde9056de6f587464252b916f1ce86a56ff791a9
 result_branch: relay/b-style-pilot-001
@@ -33,3 +33,5 @@ result_branch: relay/b-style-pilot-001
 - **读者检查**：另起一个只读新文的独立阶段，对每个 `##` 回答“该用什么、怎么开始、何时不用”，再与原文结论对照；任何结论丢失或方向反转即失败，只修对应段。
 - 回报写进本文件：前后字数与比例、标签与限定语数量、读者检查结果、被删句子按类别（防御句／重复／过程）各举 3 例、一段改写前后对照。
 - 普通原生 Workflow；只改目标文件与本任务文件，推到 result_branch，不合入 main。状态改为 `review_ready`，由负责人与 Claude 核心方向会话抽读，两边都认可后才按此规格恢复批量。负责人接收时同时检查读者负担是否减轻，而不只是事实是否完整。
+
+认领：dot 本地协作；2026-10-25T07:25:54.348620+00:00。来源 main 固定 `239b005`；按新规格分别试点一页，先发布认领后沿正常原生 Workflow 实施、只读新文读者检查及原结论对照。保留旧结果，不恢复批量；各推指定分支，由对应负责人与核心方向会话接收。
