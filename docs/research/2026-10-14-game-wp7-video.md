@@ -1,10 +1,10 @@
-主线：二／三／四；动态源镜头、固定成片与持续修改的选择
-改变的建议：[研究] 保留动态状态源镜头；预览省钱取决于淘汰率；离散剪辑可显式控制，跨镜头内容接续仍须审查
-新证据：[一手／社区／研究] 2026-10-22补CutCraft、Sandfall制作机制与两篇制作者自述；复核Veo公告，未试用模型／引擎，费用阈值为条件推导
+主线：游戏 AI 制作链；动态源镜头、固定成片与持续修改的选择
+改变的建议：[研究] 把现有选型收进开门揭示完整制作链：源镜头／演员绑定、首版接入、预渲染源交付、换装备与长译文二改；生成只补固定镜头
+新证据：[一手／研究] 2026-10-25 核 Timeline／Cinemachine／Recorder、UE 绑定与离线输出、VideoPlayer 准备与 Web 音频限制；既有模型、源码与社区证据复用，不重列榜单
 
 # WP7：视频与过场，先选择可修改的表达形式
 
-核实时间：2026-10-22整页补核；其余沿2026-10-14阶段F证据，原始调查为2026-10-13 UTC。仅理论与只读源码调查；无模型/引擎运行、安装、权重下载、付费调用或实际游戏成片验收。引用 WP1 已核清的 Wan/Runway/LTX 基础许可，不重复抄完整条款。下文“一手”代表官方文本、代码或当事人陈述；“研究”代表本轮推断与采用建议。
+核实时间：2026-10-25制作接线补核；生成比较沿2026-10-22整页补核，其余沿2026-10-14阶段F证据，原始调查为2026-10-13 UTC。仅理论与只读源码调查；无模型/引擎运行、安装、权重下载、付费调用或实际游戏成片验收。引用 WP1 已核清的 Wan/Runway/LTX 基础许可，不重复抄完整条款。下文“一手”代表官方文本、代码或当事人陈述；“研究”代表本轮推断与采用建议。
 
 ## 一、采用建议与反例
 
@@ -18,11 +18,7 @@
 
 ### 三档推荐：按交付条件，不做通用排行榜
 
-| 档位 | 采用判断与必须条件 | 成本、许可及取代关系 |
-|---|---|---|
-| 最佳质量（含付费） | **🧪 固定英雄镜头：Runway Gen-4.5 + 必要时 Aleph 2.0；需要首尾帧/延展约束时先比较Omni具体模式；Veo只保留另渠道GA待核，不新接公告10-22关闭的Gemini API预览ID。** 已有合法且成套的参考图；镜头不承担可变化的装备或分支状态；可接受样本淘汰；必须经过第二次修改验收。这里的“质量档”是较多制作预算的选择，不是本轮实测胜者 | Gen-4.5 为12 credits/s，Aleph为28 credits/s，编辑还计关键帧；Veo旧Developer API价格不转用于其他渠道。Runway自有输出商用按WP1与补充行；Omni按付费Developer API条款，其他Veo入口重新核合同／地区／报价。取代纯T2V反复抽卡；若同角色多镜头重做仍不合格，撤回到引擎或静态图 [一手：S6–S10；研究] |
-| 最佳性价比 | **✅ 总成本默认：已有资产 + Timeline/Sequencer，或静态图+程序镜头。🧪 确需生成且720p够用：`gemini-omni-1.1-flash` 作短镜头生成/第二次修改候选。** 服务地区与上传内容合规；接受生成编辑有附带变化；音轨与字幕不焊死 | 引擎路线无逐秒生成费，仍有引擎/资产许可与工时。Omni 720p视频输出约$0.10/s，另收输入/文字输出token；不是整部成片$0.10/s。取代把Veo当Google唯一默认的旧判断；高精确物体/机位约束失败即退回参数化镜头 [一手：S5、S6；研究] |
-| 本地或免费 | **🧪 指定 Wan2.2-TI2V-5B：只作无对白、短气氛镜头的本地基线；没有适合GPU就用静态/引擎路线，不为“免费”购硬件。👀 LTX-2.5留作有条件的可控重做升级** | Wan固定官方路径最低24GB VRAM、offload配置；代码/该权重Apache-2.0且输出条款已在WP1核清。不是免费算力。LTX有营收门槛、组件和LoRA许可；Retake/A2Vid等控制有价值但未实测。取代“开放权重就零成本”的说法；本地总工时或重做费更高时撤回 [一手：S11–S15；研究] |
+**当前档位以[正文条件三档](../../domains/game-dev/assets/video.md#条件三档)与[§十二](#十二p95整页选择与前沿纠偏)为准，不保留已被撤回的 Runway 质量优先表。** 固定成片按生成／图生／编辑分别比较 Wan3、H3、Seedance2.5／Omni；Runway 留作既有编辑与导出工作流候选。性价比默认仍是已有源镜头／静态表达；本地 Wan2.2 基线与 H3 上限、LTX 控制专项分开。逐项成本、渠道及许可集中在[§十](#动态事实表)，不可把历史价目当现价。[研究，2026-10-25 去重；比较证据日期未更新]
 
 **一句最关键局限：本轮没有证据证明任何生成视频方案能在零人工美术修补下，稳定交付整套多角色、多语言且反复修改的游戏过场。**
 
@@ -259,7 +255,7 @@ AI可完成公开端点差异定位、许可条件对照与引用更新；瓶颈
 
 ## 十一、整页比较的新增量（2026-10-22）
 
-**默认仍是动态状态用源镜头，固定成片才比较生成；新增的是筛选经济性和剪辑分工的失败边界，不是“先分镜再剪辑”的常识。** 正文整页表已覆盖表达形式、动态状态、固定奇观、多镜头、预览、二改、本地、本地化和播放交付；保留差距2，整套生成可用率、持续修改工时及质量上限仍未知。[研究]
+**默认仍是动态状态用源镜头，固定成片才比较生成；新增的是筛选经济性和剪辑分工的失败边界，不是“先分镜再剪辑”的常识。** 正文整页表已覆盖表达形式、动态状态、固定奇观、多镜头、预览、二改、本地、本地化和播放交付；此阶段曾记差距2，后续整页纠偏见§十二；整套生成可用率、持续修改工时及质量上限仍未知。[研究]
 
 ### 预览筛选的费用边界
 
@@ -353,3 +349,33 @@ S54 V2EX原帖2026-04-03起：#16报告三图参数400、#18站方确认当时�
 - **S57** Wan3仓：https://github.com/AlibabaCloud-Official/Wan3.0 [一手；目录仅README／LICENSE，不作权重许可证据]
 
 Wan3／H3托管发行合同、最新模型的游戏二改与非目标保持、长译文、全片零手修成本以及目标设备仍未验；这些是采用和效果边界，不用更强宣传填补。没有付费／API调用。一次尝试非正式AA路径text-to-video-with-audio返回不可访问，正确text-to-video公开页成功；不是权限拒绝，未绕过访问控制。[研究]
+
+
+## 十三、完整制作链：源镜头与成片各自交付什么
+
+**本次增量是能从头制作、接入再修改的正常链，不是再加一组生成器失败边界。** 正文以“机关成功→开门揭示→回到控制”贯穿：复用合法场景与动作，先灰盒三镜头，运行时绑定真实演员；固定奇观才从同源离线渲染或试生成，所有路线保留声音／字幕源并回到同一剧情出口；混合版显式 A→B 影片→C 段级推进，B 结束只推进而不退场。具体步骤在[制作起点](../../domains/game-dev/assets/video.md#制作起点一段能回到游戏的开门揭示)，此处仅保留改变选择的接线证据与未验范围。
+
+| 决定 | 本次核到的实际交付机制 | 反例与维护成本 |
+|---|---|---|
+| 动态角色继续用源镜头 | Timeline asset 保存轨道／片段，实例保存对象绑定；`SetGenericBinding` 关联场景组件。UE Replaceable 可把编辑预览演员换成运行角色 | 共享 asset 改动影响所有实例；绑定替换不是动作／接触质量保证，也不会补出缺失演员资源 |
+| 切点与混合用成熟时间轴 | Cinemachine Shot Clips 引用镜头，相邻切换、重叠混合；多轨与多 Timeline 有明确覆盖关系 | 单个短片先用单一镜头轨，避免无意覆盖；其调度能力不等于整段演出品质 |
+| 固定高预算画面可离线渲染 | Recorder 编辑器 Play mode 输出影片、图像序列、独立 WAV；UE Movie Render Pipeline 输出并复用渲染预设 | Recorder 不在发布包运行；图像序列可重渲／重剪但不是源场景，仍保留地图、序列、依赖和预设 |
+| 播放器只加游戏边界，不自研剪辑器 | VideoPlayer 准备完成与正式播放分开；内嵌音频有 AudioSource／Direct 路由 | WebGL AudioSource 不能照搬非 Web 总线；外置音轨需要共同时基，回调中各自启动不保证同步 |
+
+**采用反证没有消失。** S2 的 Dispatch 说明预渲染可以交换运行负担，但分支缓冲、团队和外包成本仍在；S42 的 Sandfall 支持动态演员复用，却仍逐场安排受控战斗场地。S14 的固定 LTX Retake 代码、S41 的剪辑研究、S54 的聚合渠道反馈继续约束生成插入镜头；本次不再下载或复读不变材料，也不把历史实读写成本轮模型结果。真正能让生成替换默认的证据，是同一游戏镜头完成换物／长译文二改且总成本更低，而不是宣传成片更漂亮。
+
+**交付验收范围。** 文稿给出了源文件／依赖版本、渲染剪辑工程、母版／派生片、语言／绑定配置、正常播放与第二次修改的检查对象；它没有创建 `.playable`、角色／场景资产、实际影片或可运行适配器。目标平台、编码、音画同步、瞬时／重复跳过、长译文与设备耗用仍需在真实项目验收；不在知识库里另造模拟过场来冒充完成。
+
+依据：S58–S64 [一手] 与上述 [研究]，2026-10-25；既有社区／固定源码按原核实日期复用。
+
+### 本次一手入口与版本
+
+- **S58** [Timeline asset 与 instance](https://docs.unity3d.com/Packages/com.unity.timeline@1.8/manual/tl-overview.html)及[Director 属性](https://docs.unity3d.com/Packages/com.unity.timeline@1.8/manual/playable-director.html)：页面元数据为 1.8.13，源／绑定分离、共享修改影响与 Game Time／Unscaled／DSP 时钟。[一手]
+- **S59** [Cinemachine 与 Timeline](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/concept-timeline.html)及[接线步骤](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/setup-timeline.html)：页面元数据为 3.1.7，镜头绑定、切换／混合与覆盖规则。[一手]
+- **S60** [Unity 6.3 SetGenericBinding](https://docs.unity.com/en-us/engine/6000.3/script-reference/unityengine/playables/playabledirector/setgenericbinding)：轨道 source object 绑定到实际场景对象或组件；不是按名称自动选演员。[一手]
+- **S61** [Recorder](https://docs.unity3d.com/Packages/com.unity.recorder@5.1/manual/index.html)：页面元数据 5.1.7，编辑器限定与影片／图序／WAV 输出。[一手]
+- **S62** [UE Custom Binding](https://dev.epicgames.com/documentation/en-us/unreal-engine/dynamic-binding-in-sequencer)：页面显示 UE 5.8，Possessable／Spawnable／Replaceable 的不同生命周期。[一手]
+- **S63** [UE Movie Render Pipeline](https://dev.epicgames.com/documentation/unreal-engine/movie-render-pipeline-in-unreal-engine)：页面显示 UE 5.8，MRQ／MRG、序列与地图及离线导出；不把源场景与成片混为一种资产。[一手]
+- **S64** Unity 6.3 [prepareCompleted](https://docs.unity.com/en-us/engine/6000.3/script-reference/unityengine/video/videoplayer/preparecompleted)、[audioOutputMode](https://docs.unity.com/en-us/engine/6000.3/script-reference/unityengine/video/videoplayer/audiooutputmode)、[AudioSource](https://docs.unity.com/ja-jp/engine/6000.3/script-reference/unityengine/video/videoaudiooutputmode/audiosource)、[Direct](https://docs.unity.com/zh-cn/engine/6000.3/script-reference/unityengine/video/videoaudiooutputmode/direct)：准备阶段及非 Web／Web 音频分界。[一手]
+
+版本是实际读取页面的标识，不是已装配或验证的引擎组合。旧域 Unity 6.3 SetGenericBinding 路径未取到正文，随后在现行官方 docs.unity.com 入口取得；没有把失访算成 API 缺失，也未绕过权限。无模型／引擎运行、生成、付费调用或权重下载。
