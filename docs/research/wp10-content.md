@@ -531,6 +531,15 @@ Unity 恢复阶段还须控制初始化：`Instantiate` 保留源对象激活状
 
 核实：2026-10-16 UTC+8；主线三。动态 HUD／菜单已测重建热点后，先查反复失效原因再选原生边界，不按静／动态标签普遍拆 Canvas／套 Retainer。[研究]
 
+<a id="hud-normal-production"></a>
+### 正常 HUD：状态单向呈现，操作走命令
+
+[研究] 2026-10-25 将既有 UI 选型、菜单生命周期、换肤同步和拾取材料整合为局内 HUD 实施起点。玩法状态→呈现数据→控件是一条单向链；按钮→命令→规则确认→状态更新是另一条链。生命／技能／目标是首版，护盾与充能是二改；`HudState`、绑定代次、依赖字段及 tick 换算为项目建议，不是新库 API。未运行引擎、设备或实际游戏，未将 MOBA 候选客户端计为采用。
+
+- [一手] Unity 6.3 [绑定模式与更新触发](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-data-binding/uie-runtime-binding/mode-update)默认 TwoWay；ToTarget 只推向 UI，ToTargetOnce 除非标 dirty 仅更新一次。运行时[数据源](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-data-binding/uie-runtime-binding/define-data-source)可用 `INotifyBindablePropertyChanged` 按属性通知；未报告的变化不被更新，普通源则默认轮询。[研究] 只读生命／冷却显式选择 ToTarget；适配层更新派生字段与通知，不让 UI 反写规则，也不假设绑定自动消除每帧成本。
+- [一手] Unity 6.3 [运行界面示例](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-HowTo-CreateRuntimeUI.html)明确 UIDocument 已实例化视觉树，UI reload 时相关同对象 MonoBehaviour 经停用／再启用，UI 接线放 OnEnable／OnDisable。[研究] 每次从当前树取得控件、成对订阅和解除，再推完整现态；不要只在 Start 缓存旧控件。[uGUI 2.0.0 Button API](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/UnityEngine.UI.Button.html)支持 onClick／Submit，由原生事件转项目命令即可；此为 API 来源版本，不要求降级现有包。
+- [一手] [UE 5.8 UMG Viewmodel](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-viewmodel-for-unreal-engine)仍标 Beta，FieldNotify 在变化时通知绑定；C++ 要显式广播，派生 getter 的通知需接依赖。Create Instance 为各 widget 建不同实例，Manual 可传共享实例。[研究] 复杂界面已有采用理由才接插件；小 HUD 沿事件驱动 UMG 即可，玩家级数据不误当全局共享。
+
 <a id="84"></a>
 
 ### 先去掉错误变化，再决定是否缓存
