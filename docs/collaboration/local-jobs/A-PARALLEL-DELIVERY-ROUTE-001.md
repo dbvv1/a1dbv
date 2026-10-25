@@ -2,7 +2,7 @@
 
 id: A-PARALLEL-DELIVERY-ROUTE-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1cd80938b5de203e0425d26363d610120924339c
 result_branch: relay/a-parallel-delivery-route-001
@@ -34,3 +34,5 @@ result_branch: relay/a-parallel-delivery-route-001
 ## 执行与结果
 
 待认领。已运行同任务只接续，不重复启动。
+
+认领：dot 本地协作；2026-10-25T00:36:26.805008+00:00。来源 main 固定 `ea42dc5`；先发布认领后沿正常原生 Workflow 执行。独占 08 与本任务，复用既有公开成果，结果仅推指定分支。
