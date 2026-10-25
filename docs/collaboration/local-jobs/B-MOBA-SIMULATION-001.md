@@ -39,3 +39,8 @@ result_branch: relay/b-moba-simulation-001
 dot 本地协作认领；来源 `dot-b/tmp/20261026-moba-simulation-job` 固定 `634e5778572e85c77857203dc37fe66286791c41`，只导入本任务。核 MOBA-Like 远端仅 main，仍为 `46f5ce4ba25184dd88dbb268e58e5f9aebb9e696`，无已有代码／结果分支或重复调用；a1dbv 原任务尚未导入 main，本项始终保持此边界。
 
 仅在本独立 intake 分支发布认领成功后使用 Claude Code＋DeepSeek 原生 Workflow；产品独占工程根配置、src/sim、src/content、tests和必要tools，结果只到 MOBA-Like 的 relay/b-moba-simulation-001。无画面模拟与二改实施、Node实际验证后宿主另取独立审查；不声称已可玩、已视觉／听感通过或已默认分支合入。成长／本地化原结果保持，清理稿与本产品无同文件写入。
+
+
+## 原调用执行事实（2026-10-26）
+
+独立 intake 认领 `ccd794a` 已实际发布，随后于 2026-10-25T17:29:02.394Z 启动 Claude Code＋DeepSeek 普通原生 Workflow。当前原始 assistant message.model 已见 `deepseek-flash`，请求 alias `deepseek-v4.1-flash[1m]` 单列；不是仅认领、未调用或联通测试。当前阶段为源码实施与真实 Node 验证，尚未形成可交接固定产品或宿主独审结论。原调用继续，禁止重派；本任务仍只在 intake／产品 relay 分支回传，不导入或写入两仓默认分支。
