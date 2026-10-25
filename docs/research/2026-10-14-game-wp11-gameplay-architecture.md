@@ -519,7 +519,7 @@
 
 ## 局外解锁：构筑能力与控制池分开安排
 
-核实：2026-10-23（UTC）。P105，主线一／三。新增的是解锁次序与随机池的选择，不重做存档身份或[重复成长成本](2026-10-14-game-wp12-indie-roadmap.md#构筑补研选择清楚之后还要付多少换法成本)；原关卡成长时机、存档与通用二改契约继续适用。[研究]
+核实：2026-10-25（UTC）。P105，主线一／三。新增的是解锁次序、随机池与跨局结算链的选择，不重做存档身份或[重复成长成本](2026-10-14-game-wp12-indie-roadmap.md#构筑补研选择清楚之后还要付多少换法成本)；原关卡成长时机、存档与通用二改契约继续适用。本轮补固定开源调用链，仍属研究判断，未实玩。[研究]
 
 **👀 默认先分四件事，再排解锁节奏。** 槽位／工具让玩家能够组织哪些选择；扩池增加未来可能遇见的内容；控制池允许排除部分内容；永久数值提高同样操作下的能力。需要尽早展示组合时可前置部分能力，重视随机适应时保留池宽；长期变强本身是目标则可保永久数值。不是要求所有新档立即获得全部构筑。[研究]
 
@@ -539,6 +539,42 @@
 
 **永久数值的相反选择 [一手]。** Rogue Command [2025-09-26官方公告正文](https://store.steampowered.com/news/posts/?enddate=1758878370&feed=steam_community_announcements)（[该游戏原帖](https://steamcommunity.com/games/1461910/announcements/detail/519725729918746752)）宣布 Battle Archive 向所有玩家开放：从仅扩池转为可撤点的永久升级，并同时提高基础难度。作者认为更有动力，也承认自身视角偏差、仍需反馈。[研究] 这反驳统一删除永久成长，但同步改难度不能证明升级树独立改善体验。聚合正文混有其他游戏，仅取 Rogue Command 段；原帖本轮未返回完整正文。
 
+### 固定开源调用链：从结算到下一局配置
+
+对应 [05 局外成长](../../domains/game-dev/05-gameplay-architecture.md#meta-progression-loop)；本段只补固定源码，不重写上面的作品对照。[研究]
+
+**Shattered Worlds，MIT，固定 `384227e`（2026-10-07）。** TypeScript 牌组构筑 roguelite；跨局链能在固定源码里逐段追到，不是只看接口：
+
+| 段 | 固定源码 | 源码里能追到的行为 |
+|---|---|---|
+| 初始化 | [main.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/main.ts) | 生产入口初始化 profile／runStats，再把运行时交给下一局入口；这条链不是只在测试里拼出来。[一手] |
+| 定义 | [data/feats/types.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/data/feats/types.ts)、[data/unlocks/types.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/data/unlocks/types.ts) | `FeatDefinition`＝条件＋奖励（内存碎片／解锁）；`UnlockDefinition` 区分 `startingStat`、`handSizeBonus`、`minResourcePerTurn`、`rarityBonus`、`keywordDamageBonus`、`playerCardModifier`、`starterDeckOverride`、`worldUnlock`、`actReward`。[一手] |
+| 结算 | [runStats.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/runStats.ts)、[featEvaluator.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/featEvaluator.ts)、[RunSummaryView.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/view/RunSummaryView.ts) | `RunEnded` 把本局写进 `runStats`；`featEvaluator` 订阅后跳过 `abandoned`，对 `RunRecord`／lifetime／witness 求值；每个 feat 只追加一次；摘要显示结果、局内事实与获得的碎片。[一手] |
+| 持久进度 | [featsProfile.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/featsProfile.ts)、[unlocksProfile.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/unlocksProfile.ts) | 带 `version` 的 profile；feat 按 ID 去重；`purchased`／`activated` 分开；`activated` 必须是 `purchased` 子集；读取失败或形状不符回空档。[一手] |
+| 购买／启用 | [data/unlocks/catalog.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/data/unlocks/catalog.ts) | 可花余额＝已赚碎片减已购成本（派生，不存可变余额）；预算限制启用集合；starter deck 只允许一个。[一手] |
+| 下一局配置 | [gameplayRuntime.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/gameplayRuntime.ts) | `startSession` 读 `activated`，`resolveStarterDeckId`＋`buildRunModifiers` 后创建本局；本局拿的是计算后的配置，该入口没有回写 meta。[一手] |
+
+表中 `UnlockDefinition` 的 9 个变体是代码层效果粒度；本页四类奖励是按“到账／候选池／槽位／永久数值”的业务分类，不能用变体数反推四类判错或漏项。设计文档 [destiny-progression.md](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/.lore/reference/progression/destiny-and-unlocks/destiny-progression.md) 讨论选项、知识、故事与 power 等持久内容，但把 power 的具体答案留空；不能把“power”当成已实现的永久数值效果。[unlock-system-runtime-ownership.md](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/.lore/reference/progression/destiny-and-unlocks/unlock-system-runtime-ownership.md) 记录“购买＋逐局启用”与“总是生效”“按世界门禁”的取舍。两者是作者设计意图，不是玩家验证，也不是现实现数值效果。
+
+**支持范围与代价。** MIT 代码（素材另有许可，本轮未逐项核）；2026-06 创建，2026-10-25 为 1 star／0 fork、38 条解锁定义、有测试文件，属于外部采用很少的个人项目。feats／unlocks 两个 profile 的 `localStorage` 持久层目前只见版本 1 校验，没有跨版本迁移代码；项目整体并非完全没有迁移：[runStats.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/runStats.ts) 有 v1→v2、[userSettings.ts](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/userSettings.ts) 有 v1／v2→v3。因此只能说这两个 profile 的迁移未核，不能概括为“v1 localStorage 无迁移”。适合借“定义／结算／持久／配置”分离和四类业务奖励的拆分，不适合直接当生产底座。维护时要带 schema 版本、测试和未知 ID 处理，不能把整款游戏搬进项目。[一手／研究]
+
+**KeeperRL，GPL-2.0 代码，固定 `95d2be4`。** 2013 年创建、2026-10-25 为 1009 stars；`data_free` 为 CC BY-SA，`data` 只随官方二进制分发。它把同一条链压得很小：
+
+| 段 | 固定源码 | 源码里能追到的行为 |
+|---|---|---|
+| 定义 | [keeper_creatures.txt](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/data_free/game_config/keeper_creatures.txt)、[achievements.txt](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/data_free/game_config/achievements.txt) | 内容块写 `unlock = "goblins"` 等可选门禁；成就 ID 与名称在配置里声明。[一手] |
+| 持久进度 | [unlocks.cpp](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/unlocks.cpp) | `Unlocks` 是一个压缩文件里的字符串集合；`isUnlocked` 读取，`unlock` 写入；`achieve` 只是加 `ACH_` 前缀。[一手] |
+| 授予 | [game.cpp](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/game.cpp)、[effect.cpp](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/effect.cpp) | `considerAchievement` 在征服敌人、击杀、击晕和 `RetiredGame` 时授予；`Effects::Unlock` 可直接写解锁。授予点分布在对局事件，不是统一结算页。[一手] |
+| 下一局配置 | [avatar_info.cpp](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/avatar_info.cpp)、[creature_predicate.cpp](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/creature_predicate.cpp) | 开局选择按 `KeeperCreatureInfo.unlock` 过滤；内容谓词 `Unlocked` 读同一集合。[一手] |
+
+它证明成熟项目可以把“定义门禁＋持久集合＋开局消费”保持在几十行，并让所有入口读同一集合；不证明失败／通关结算总结、货币收益或四类奖励的体验。维护代价是 C++／SDL 代码库要跟引擎、存档路径和 UI 一起接；GPL-2.0 代码与 CC BY-SA／受限 `data` 分开，不能把内容直接搬进闭源项目。[一手／研究]
+
+**Survivors Roguelike Kit，MIT，固定 `3f9053`。** Unity 6／DOTween 完整模板（2026-10-25 为 44 stars／17 forks；DOTween 自带许可另核）。[PowerUpAttributeUpgrade.cs](https://github.com/Roo-Roo-Roo/survivors-roguelike-kit/blob/3f905381d73a34b516030528b8ef6743868b9e52/Assets/RGame/RoguelikeKit/Scripts/UI/MainMenu/PowerUp/PowerUpAttributeUpgrade.cs) 用金币购买永久属性，修改属性运行时 SO 与 `AttributeSO` 后触发保存；[SaveGame.cs](https://github.com/Roo-Roo-Roo/survivors-roguelike-kit/blob/3f905381d73a34b516030528b8ef6743868b9e52/Assets/RGame/RoguelikeKit/Scripts/System/Save/SaveGame.cs) 用 `JsonUtility` 序列化属性与金币；[CharacterSaveSO.cs](https://github.com/Roo-Roo-Roo/survivors-roguelike-kit/blob/3f905381d73a34b516030528b8ef6743868b9e52/Assets/RGame/RoguelikeKit/Scripts/System/Save/CharacterSaveSO.cs) 用两个布尔量解锁角色。本轮在该模板里只追到“永久数值＋角色开关＋保存”，没有结算总结、解锁目录或候选池接线；适合看 SO／JSON 存档接缝，不能当完整局外成长底座。[一手／研究]
+
+**可反驳条件。** 先分五对象（定义、持久进度、本局状态、结算结果、下一局配置），再排四类奖励；结算按 `runId` 一次，下一局配置只算一次，启用集合受拥有集合约束，余额由账本派生。判断新增解锁是增加选择还是稀释供给，看老路线首个核心工具时点、首次补强前合法候选数和无效候选数；老路线仍能成型才算选择。老路线变晚且无补偿、无效候选增加、玩家无法解释或总是跳过新项，就后移／缩小／撤下，不靠提高权重掩盖。[研究]
+
+**仍缺。** 没有成熟的全量同题开源底座：Shattered Worlds 完整但外部采用很少，KeeperRL 成熟但不是同一局内结算链，Survivors Kit 只覆盖永久数值和存档；Unity／UE 的完整接入、真实玩家验证、留存与平衡数据都未取得。[研究]
+
 ### AI 二改交付与玩家验收，不混成一个通过
 
 0.99还记录已修复赐福条件只检查首名玩家、重抽未检查条件的问题；这是资格检查的历史反例，不是 Deck 过滤故障。[一手] 因而二改须覆盖自身承诺的各玩家与重抽入口。[研究]
@@ -547,7 +583,7 @@
 
 玩家验证分新手与熟手的新档，观察何时能解释并主动使用组合、是否为效率拒绝新解锁、是否仍为拿到工具重复刷取。数值成长、基础难度和奖励分布尽量分开改，避免把变强误读为学会；若前置导致选择过载，或缩池只剩固定最优套路，就退回部分开放／调整供给，而非继续加解锁项。[研究；未验证]
 
-**边界。** 只读公开补丁和社区原文；未运行模型、游戏、引擎或玩家实验，未取得可靠同题开源接入证据。以上支持条件取舍，不证明AI净收益、留存改善或当前最高水平；完整效果仍未知。[研究]
+**边界。** 只读公开补丁、社区原文和固定开源源码；源码经 GitHub Contents API 读取固定提交，未运行 tests／build，也未运行游戏、引擎或玩家实验，未把作者设计意图当玩家收益。新增源码只证明调用链与职责分离存在：Shattered Worlds 完整但外部采用很少，KeeperRL 成熟但不是同一局内结算链，Survivors Kit 只覆盖永久数值与存档；Unity／UE 完整接入、真实玩家验证、留存与平衡数据仍未取得。以上支持条件取舍，不证明AI净收益、留存改善或当前最高水平；完整效果仍未知。[研究]
 
 ## [受限动作补研：开放意图不等于更强战斗 AI](wp11-combat.md#s21-1)
 
