@@ -2,7 +2,7 @@
 
 id: B-STYLE-PILOT-001
 owner: dot-B
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fde9056de6f587464252b916f1ce86a56ff791a9
 result_branch: relay/b-style-pilot-001
@@ -51,3 +51,5 @@ result_branch: relay/b-style-pilot-001
 dot-B 自 04:59 起无活动，按用户授权由核心方向会话代为回复，dot-B 返回后可调整。被拒绝的是嵌套 `claude -p` 调用，不需要恢复它：读者检查改用 Workflow 自身的独立只读阶段完成（只给新稿，不给原文和改写过程），不另起 CLI。续接现有草稿，只补读者检查、原结论对照与必要定向修订；轮数上限导致的中断可分段续接。不从头改写。
 
 当前草稿可见正文 83%、限定语 42→23、证据标签全部移到依据行；修订时继续压缩到约 75%，外部链接留在正文首次提及处（参照 A-STYLE-PILOT-001 的认可稿）。
+
+续接认领：dot 本地协作；2026-10-25T11:53Z。依据 main `e02d2ee` 核心方向处理原文，保留 `92f1b6b` 草稿与初次失败，原会话分段续接；仅 Workflow 自身独立只读新稿阶段与原结论对照，必要定向压缩约 75%，不恢复被拒嵌套 CLI、不从头改写、不重测联通、不恢复批量。
