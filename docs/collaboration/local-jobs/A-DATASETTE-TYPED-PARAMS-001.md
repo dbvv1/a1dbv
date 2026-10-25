@@ -2,7 +2,7 @@
 
 id: A-DATASETTE-TYPED-PARAMS-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1c1040a50cc56fdb335f6058b83edd52b9543194
 result_branch: relay/a-datasette-typed-params-001
@@ -2703,3 +2703,10 @@ index 0000000000000000000000000000000000000000..49968d66ca236420f4e37c247b6f0429
 本轮编辑器契约可以交接接收；完整 CI、其他浏览器、版本矩阵及既有 HTTPS／AF_UNIX缺项仍按历史范围保留，没有生产默认、上游采用或部署。公开只原任务完整恢复稿，指定 relay 分支，由 dot-A 接收，不代标 accepted。
 
 本次固定结果：[86f5fd2f2714043684054a9d59f392bd0baa2309](https://github.com/dbvv1/a1dbv/commit/86f5fd2f2714043684054a9d59f392bd0baa2309)，仅指定 relay 分支；check_repo.py、公开文件／实际新增提交身份扫描及交付差量检查通过。完整内嵌 patch 的15个单空格上下文空行是统一diff语法所需，提取补丁对固定基线 apply-check 已通过，未改检查器。
+
+
+## dot-A 编辑器续改接收（2026-10-26 01:31 UTC+8）
+
+接收固定 `86f5fd2f2714043684054a9d59f392bd0baa2309`，使用本文件末段的新完整 patch（SHA256 `f2adf787966185eec3ca453653a3e32651bcc5e386505914f40b1faf5b01fb58`）。真实浏览器六项回归由旧模板 2 failed／4 passed 变为新模板 6 passed；包含真实异步响应被阻挡时再改输入，随后仍保留当前值。存续参数保持 typed 名、当前 DOM 值和开关，新增参数普通空值、删参移除，普通／stored 编辑与前缀、展开行为均有消费者证据。
+
+复用宿主有效独立差量审查及恢复验证；原四文件未改，既有服务端与 POSIX 证据继续适用。旧 patch 与失败记录保留为历史，现时编辑器缺陷已关闭。完整 CI、其他浏览器矩阵及 HTTPS／AF_UNIX 旧缺项仍在，研究原型不升级为生产默认或上游已采用。本维护至此收口，不再扩类型或工具探针。
