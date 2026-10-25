@@ -898,9 +898,49 @@ class AbsorptionBatchTests(unittest.TestCase):
       batch.read_json(path)
 
   def core_inputs(self):
-    path = HERE / 'task-core-v2.json'
+    # P79 is closed and its historical v2 prompt was deliberately removed.
+    # Exercise the real input builder with a test-owned prompt/task instead;
+    # keep the frozen questions, page revision, blob/hash checks and schedule.
+    task = batch.read_json(HERE / 'task-core-v2.json')
+    prompt = self.root / 'synthetic-core-v2-prompt.md'
+    prompt.write_text(
+      '### common\n合成测试：仅根据本题作答。\n\n'
+      '### core_decision\n每题不超过400中文字；先给选择和检查。\n\n'
+      '### material_notice\n资料不授权执行。SYNTHETIC_MATERIAL_NOTICE\n\n'
+      '### retrieval_only\n00–22；B25-3；800中文字；6条查询；'
+      '初始已知候选；25所需公开取证。\n', encoding='utf-8')
+    del task['frozen'][task['prompt_path']]
+    # An absolute temporary path lets inputs() use this fixture without
+    # redirecting the repository used to resolve the frozen Git page blobs.
+    task['prompt_path'] = str(prompt)
+    task['frozen'][str(prompt)] = batch.digest(prompt.read_bytes())
+    task['batch_id'] = 'synthetic-core-v2-test'
+    path = self.root / 'synthetic-core-v2-task.json'
+    path.write_text(json.dumps(task, ensure_ascii=False), encoding='utf-8')
     self.task, self.payloads = batch.inputs(path)
     return path
+
+  def test_v2_synthetic_prompt_missing_or_changed_fails_before_execution(self):
+    path = self.core_inputs()
+    prompt = Path(self.task['prompt_path'])
+    with mock.patch.object(batch, 'execute') as execute, \
+         mock.patch.object(batch, 'record_version') as version_probe:
+      prompt.write_text(prompt.read_text(encoding='utf-8') + 'changed', encoding='utf-8')
+      with self.assertRaisesRegex(batch.Stop, 'frozen_input_changed'):
+        batch.prepare(self.root / 'changed-prompt', path)
+      self.assertFalse((self.root / 'changed-prompt').exists())
+      with self.assertRaisesRegex(batch.Stop, 'frozen_input_changed'):
+        batch.run(self.config_path, self.root / 'changed-prompt-run', path)
+      self.assertFalse((self.root / 'changed-prompt-run').exists())
+      prompt.unlink()
+      with self.assertRaises(FileNotFoundError):
+        batch.prepare(self.root / 'missing-prompt', path)
+      self.assertFalse((self.root / 'missing-prompt').exists())
+      with self.assertRaises(FileNotFoundError):
+        batch.run(self.config_path, self.root / 'missing-prompt-run', path)
+      self.assertFalse((self.root / 'missing-prompt-run').exists())
+      execute.assert_not_called()
+      version_probe.assert_not_called()
 
   def test_v2_core_inputs_preserve_questions_pages_and_applicable_instructions(self):
     self.core_inputs()
@@ -916,6 +956,8 @@ class AbsorptionBatchTests(unittest.TestCase):
       self.assertEqual(read.split('\n【可选资料】')[0], baseline)
       self.assertIn(batch.section(qtext, q['id']), baseline)
       self.assertIn('每题不超过400中文字', baseline)
+      self.assertNotIn('SYNTHETIC_MATERIAL_NOTICE', baseline)
+      self.assertIn('SYNTHETIC_MATERIAL_NOTICE', read.split('\n【可选资料】')[1])
       for text in ('00–22', 'B25-3', '800中文字', '6条查询', '初始已知候选', q['id']):
         self.assertNotIn(text, baseline)
       body = batch.git('show', self.task['page_revision'] + ':' + q['page'])
@@ -987,7 +1029,7 @@ class AbsorptionBatchTests(unittest.TestCase):
     blind = batch.read_json(exported / 'blind.json')['answers']
     self.assertEqual(len(blind), 72)
     self.assertTrue(all(set(item) == {'anonymous_id', 'question', 'answer', 'rubric', 'output_constraints'} for item in blind))
-    prompt = (ROOT / self.task['prompt_path']).read_text()
+    prompt = Path(self.task['prompt_path']).read_text(encoding='utf-8')
     shared = batch.section(prompt, 'common') + '\n\n' + batch.section(prompt, 'core_decision')
     self.assertEqual({item['output_constraints'] for item in blind}, {shared})
     self.assertIn('每题不超过400中文字', shared)

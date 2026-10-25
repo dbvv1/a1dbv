@@ -2,7 +2,7 @@
 
 id: A-DATASETTE-TYPED-PARAMS-001
 owner: dot-A
-status: running
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1c1040a50cc56fdb335f6058b83edd52b9543194
 result_branch: relay/a-datasette-typed-params-001
@@ -1200,3 +1200,1513 @@ index 0000000..49968d6
 只交同一任务的完整可恢复更新 patch（明确旧→新 hash）与简短续改结果，必要时修正原型限制的现时状态，历史回执不抹去；不改15／13／TASKS，由负责人接收回流。既有免费公开依赖、正常TLS、无新账号／安全设置／上游发布／部署及单次两小时边界均保持。上述编辑契约通过即停止，不扩类型选择器或新功能。
 
 续改认领：dot 本地协作；2026-10-26。固定来源 `9124841a6ad3bf5e5c39bde6e1791d13c4b388f1`（dot-a/datasette-editor-continuation-20261026），仅接续本节编辑器类型／当前值保持；原型限定接收与原失败／已验结果不撤销。复用原模型上下文、隔离app和结果分支，禁止重发初始流程；当前阶段为定向实现及新增浏览器回归，完成后宿主独审新差量并回传。不会重试 AF_UNIX、原 insecure HTTPS、版本矩阵或上游发布。
+
+---
+
+## 编辑 SQL 保持已选类型与当前值：续改结果（2026-10-26）
+
+认领：dot 本地协作；固定来源 `9124841a6ad3bf5e5c39bde6e1791d13c4b388f1`（dot-a/datasette-editor-continuation-20261026），仅接续原原型编辑器类型／当前值保持。产品基线仍为 `a8e13cc489b41f2f9a5aa691f5eb1bedf99a0e0b`，不换基线、不重发初始 Workflow、不扩类型或新功能。历史回执、原失败与已通过证据全部保留。
+
+### 旧 → 新补丁
+
+- 旧完整 patch：SHA256 `8598177d98f5832b8e932a0f51b380fa0c4bee3b1b9627532cbacc89b8692a00`（续改前四文件；60/185/消费者 6/6 与独审/POSIX 证据不变）。
+- 新完整 patch：SHA256 `f2adf787966185eec3ca453653a3e32651bcc5e386505914f40b1faf5b01fb58`（六文件：原四文件内容未变，新增 `_sql_parameter_scripts.html` 与 `tests/test_playwright.py` 差量）。
+- `git apply --numstat`：`_sql_parameter_scripts.html` +43/-14、`query.html` +1/-0、`typed_params.py` +104/-0、`views/database.py` +58/-15、`test_playwright.py` +382/-0、`test_typed_params.py` +645/-0。
+- 恢复验证：pristine `a8e13cc` 副本上 `git apply --check` 通过；应用后 `tests/test_typed_params.py` **60 passed**、新 Playwright 6 项 **6 passed**；`git apply -R` 后 `git status --short` 为空。
+- 续改前源码、旧 patch、设计稿与公开稿已保存 `editor-1/pre-edit`，未覆写旧证据；本文件历史回执不删除。
+
+### 实现实际边界
+
+- 只改 `datasette/templates/_sql_parameter_scripts.html`：表单内存在 `input[name="_typed_params"]` 且值为 `1` 时，参数状态以 SQL base name（`age`）为键，同时保留提交字段名（`age::int`）。刷新渲染按 base name 匹配，保留 typed 后缀、启用标志和**渲染时的 DOM 当前值**。
+- 普通模式、`_sql_param_` 前缀、Expand/Collapse 仍按字段名自身作为状态键，路径与行为不变；不推断类型、不加类型选择器、不重构通用参数系统。
+- 服务端 SQL base binding／HTML typed 双映射、POST JSON 重复拒绝、`_extra=query` 重放等原修正未回退；本轮不改服务端文件。
+- 新参数无历史状态时创建普通空字段；参数从 SQL 删除后控件随 DOM 移除，重新添加不恢复旧 typed 键或旧值。
+- 异步发现沿用原 `refreshSequence` 丢弃过期响应；`renderParameters` 在响应到达时 `syncParameterState` 读取当前 DOM，因此响应返回前用户再次编辑不会被请求发起时快照覆盖。
+
+### 新回归、原失败与新通过
+
+- 新增 6 个 Playwright 真实浏览器测试，复用项目 `tests/test_playwright.py` 的 `datasette_server`／`page` 契约；fixture 增加一个 stored query 供 Edit SQL 检查。覆盖：typed 加第二参数、重排、连续刷新、0→-5；异步发现响应前再编辑；删除后再添加；普通模式；stored→Edit SQL；execute-write 的 `_sql_param_` 前缀与 Expand/Collapse。
+- 新通过：`pytest tests/test_playwright.py --playwright --browser chromium --browser-channel chrome -k "sql_editor or stored_query_edit or execute_write_parameter_prefix"` → **6 passed**（按 `pyproject.toml` 的 `playwright` 可选组在任务 venv 安装 pytest-playwright 1.64.1；系统 Chrome 156.0.8078.48，channel=chrome；未执行 `playwright install`、未下载浏览器、未新装扩展/浏览器）。
+- 原失败：把 `_sql_parameter_scripts.html` 换回 `editor-1/pre-edit` 版本后同一命令 → **2 failed / 4 passed**；失败为“保留 typed 后缀与当前值”和“异步响应前编辑不丢”，实际重建为 `name="age"`、值空。日志 `editor-1/browser/playwright-old-template.log`。
+- 实施方另一路 CDP 真浏览器自查（系统 Chrome + 自有 loopback fixture，无凭据、无真实 profile、正常 loopback HTTP）：**26/26 通过**；同脚本对旧模板在首项保留检查失败（`editor-1/browser/old-template-failure.log`）。产物：`editor-1/browser/browser-check-results.json`、`browser-check-pass.log`、`01-preserved-before-submit.png` 至 `06-stored-edit-link.png`。
+- 受影响 Python 定向复跑：`tests/test_typed_params.py` **60 passed**；`tests/test_html.py::test_query_parameter_form_fields` 与 `test_database_page_sql_parameter_refresh_markup` **2 passed**；`tests/test_queries.py -k "parameter or execute_write"` **37 passed**；现有 Playwright 抽样 **5 passed**。旧 185/消费者 6/6 未重跑，不当作本轮新证据。
+- 浏览器实际提交请求：`_typed_params=1&age::int=-5&other=`；结果 `typeof(:age)=integer`、绑定值 `-5`；删除再加后提交为 `_typed_params=1&age=&other=`，不出现 `age::int`。
+- 附带基线观察：一次性运行 `tests/test_html.py` 与 `tests/test_stored_queries.py` 全文件出现 19 failed/18 errors，日志中无断言失败，全部为 Windows 临时目录 teardown `PermissionError [WinError 32/5]`（已知平台基线）；其中参数表单定向 2 项单独通过。该全文件结果不作为本次通过，也未重试。
+- 未运行/缺口：完整 `test.yml`（受支持 Linux/POSIX + 3.14、扩展编译、精确 HTTPS、plugins shell）、版本矩阵、全量 Windows、AF_UNIX 与含 `--insecure` 的精确 HTTPS 脚本均未重试；新 Playwright 在 CI 的 chromium/firefox/webkit 未跑。以上不与本次编辑契约通过混写。
+- 模型原始字段：父／子 assistant `message.model=deepseek-flash`（`editor-1/native.stdout.jsonl` 实读）；system／workflow_progress 的 `model` 为请求 alias `deepseek-v4.1-flash[1m]`，二者分开记录，不据此反推后端。
+- 审查分工：本轮仅实施与真实自查；新差量由宿主独立审查和接收，不声称已独审、已推送或已发布。
+
+### 原型限制的现时状态
+
+本文件早前回执记录的限制“浏览器内改 SQL 后现有 JS 只按 SQL 重建裸字段，会丢 `::int` 后缀和原值”**现时已修复**：在显式 `_typed_params=1` 表单内，存续参数的 typed 后缀、启用开关和当前 DOM 值经过 SQL 改写、增加第二参数、重排、连续刷新和异步响应前编辑均保留；普通模式、stored→Edit SQL、`_sql_param_` 前缀、Expand/Collapse 按原合同。先前限定接收不撤销，历史回执保留。
+
+### 完整更新 patch（旧 `8598177…` → 新 `f2adf78…`）
+
+将下面内容保存为 `typed-params.patch`，在固定基线 `a8e13cc489b41f2f9a5aa691f5eb1bedf99a0e0b` 上 `git apply`；反向为 `git apply -R`。同一文件也位于任务私有目录 `editor-1/typed-params-updated.patch`。
+
+补丁内 15 个 unified-diff 空上下文行带必要的单个空格标记，`git diff --check` 会把它们报为新增尾空白；它们是补丁语法而非新增源码，改成空行会使 `git apply` 报 corrupt patch。源码与补丁新增行本身无行尾空白，`git apply --check` 与逆应用均通过。
+
+```diff
+diff --git a/datasette/templates/_sql_parameter_scripts.html b/datasette/templates/_sql_parameter_scripts.html
+index 9b83889e279518082a5eeee0a56e95bf7e6439fa..d600195273782fef2fed0faa120343fe4712cfb0 100644
+--- a/datasette/templates/_sql_parameter_scripts.html
++++ b/datasette/templates/_sql_parameter_scripts.html
+@@ -15,32 +15,55 @@ window.datasetteSqlParameters = (() => {
+     return sqlInput ? sqlInput.value : "";
+   }
+ 
++  const TYPED_SEPARATOR = "::";
++
++  // The opt-in typed mode is announced by the server-rendered hidden flag.
++  // Only that form separates the SQL base name ("age") from the submitted
++  // field name ("age::int"); ordinary forms keep the historical behaviour of
++  // using the parameter name for both.
++  function typedParametersEnabled(form) {
++    const flag = form.querySelector('input[name="_typed_params"]');
++    return Boolean(flag && flag.value === "1");
++  }
++
++  function parameterBaseName(manager, name) {
++    if (!manager.typedParameters) {
++      return name;
++    }
++    const separator = name.indexOf(TYPED_SEPARATOR);
++    return separator === -1 ? name : name.slice(0, separator);
++  }
++
+   function controlState(control) {
+     return {
+       value: control.value,
+       expanded: control.tagName.toLowerCase() === "textarea",
++      name: control.dataset.parameterName,
+     };
+   }
+ 
++  function rememberControl(manager, control) {
++    manager.parameterState.set(
++      parameterBaseName(manager, control.dataset.parameterName),
++      controlState(control)
++    );
++  }
++
+   function syncParameterState(manager) {
+     manager.parameterState = new Map();
+     manager.section
+       .querySelectorAll("[data-parameter-control]")
+-      .forEach((control) => {
+-        manager.parameterState.set(
+-          control.dataset.parameterName,
+-          controlState(control)
+-        );
+-      });
++      .forEach((control) => rememberControl(manager, control));
+   }
+ 
+   function createControl(parameter, id, state, namePrefix) {
+     const control = document.createElement(state.expanded ? "textarea" : "input");
++    const fieldName = state.name || parameter;
+     control.id = id;
+-    control.name = `${namePrefix || ""}${parameter}`;
++    control.name = `${namePrefix || ""}${fieldName}`;
+     control.value = state.value;
+     control.setAttribute("data-parameter-control", "");
+-    control.dataset.parameterName = parameter;
++    control.dataset.parameterName = fieldName;
+     if (state.expanded) {
+       control.rows = 5;
+     } else {
+@@ -74,7 +97,10 @@ window.datasetteSqlParameters = (() => {
+     if (selectionStart !== undefined && replacement.setSelectionRange) {
+       replacement.setSelectionRange(selectionStart, selectionStart);
+     }
+-    manager.parameterState.set(parameter, controlState(replacement));
++    manager.parameterState.set(
++      parameterBaseName(manager, replacement.dataset.parameterName),
++      controlState(replacement)
++    );
+   }
+ 
+   function renderParameters(manager, parameters) {
+@@ -93,9 +119,14 @@ window.datasetteSqlParameters = (() => {
+ 
+     parameters.forEach((parameter, index) => {
+       const id = `qp${index + 1}`;
++      // State is keyed by the SQL base name. In typed mode a surviving
++      // parameter keeps the submitted typed name ("age::int") and the value
++      // currently in the DOM; a genuinely new parameter gets a plain empty
++      // field and never infers a type.
+       const state = previousState.get(parameter) || {
+         value: "",
+         expanded: false,
++        name: parameter,
+       };
+       if (!manager.allowExpand) {
+         state.expanded = false;
+@@ -107,7 +138,7 @@ window.datasetteSqlParameters = (() => {
+ 
+       const label = document.createElement("label");
+       label.htmlFor = id;
+-      label.textContent = parameter;
++      label.textContent = state.name || parameter;
+ 
+       const control = createControl(parameter, id, state, manager.namePrefix);
+ 
+@@ -134,10 +165,7 @@ window.datasetteSqlParameters = (() => {
+       if (!control.matches || !control.matches("[data-parameter-control]")) {
+         return;
+       }
+-      manager.parameterState.set(
+-        control.dataset.parameterName,
+-        controlState(control)
+-      );
++      rememberControl(manager, control);
+     });
+ 
+     if (!manager.allowExpand) {
+@@ -244,6 +272,7 @@ window.datasetteSqlParameters = (() => {
+             : false
+           : options.allowExpand,
+       namePrefix: section ? section.dataset.parameterNamePrefix || "" : "",
++      typedParameters: typedParametersEnabled(form),
+       parameterState: new Map(),
+     };
+     if (section) {
+diff --git a/datasette/templates/query.html b/datasette/templates/query.html
+index 8dd1037f7c8020fc0ae3350e6c8c71d672346f19..88dede451edd3cb20241a8891c8bbd7fc867ae4e 100644
+--- a/datasette/templates/query.html
++++ b/datasette/templates/query.html
+@@ -38,6 +38,7 @@
+ {% block description_source_license %}{% include "_description_source_license.html" %}{% endblock %}
+ 
+ <form class="sql core" action="{{ urls.database(database) }}{% if stored_query %}/{{ stored_query }}{% endif %}" method="{% if stored_query_write %}post{% else %}get{% endif %}" data-parameters-url="{{ urls.database(database) }}/-/query/parameters">
++    {% if query and query.typed_params_enabled %}<input type="hidden" name="_typed_params" value="1">{% endif %}
+     <h3>Custom SQL query{% if display_rows %} returning {% if truncated %}more than {% endif %}{{ "{:,}".format(display_rows|length) }} row{% if display_rows|length == 1 %}{% else %}s{% endif %}{% endif %}{% if not query_error %}
+         <span class="show-hide-sql">(<a href="{{ show_hide_link }}">{{ show_hide_text }}</a>)</span>
+     {% endif %}</h3>
+diff --git a/datasette/typed_params.py b/datasette/typed_params.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..829f50273a7d4c16a48d9e307434997112979ce4
+--- /dev/null
++++ b/datasette/typed_params.py
+@@ -0,0 +1,104 @@
++from __future__ import annotations
++
++import re
++from dataclasses import dataclass
++
++TYPED_PARAMS_FLAG = "_typed_params"
++TYPE_SEPARATOR = "::"
++SUPPORTED_TYPES = ("int",)
++INT64_MIN = -(2**63)
++INT64_MAX = 2**63 - 1
++_INTEGER_RE = re.compile(r"-?[0-9]+\Z")
++
++
++class TypedParameterError(ValueError):
++    "A query string violated the opt-in typed parameter contract."
++
++
++@dataclass
++class ResolvedTypedParameters:
++    params: dict
++    # base parameter name -> key used in the query string, e.g. "age" -> "age::int"
++    typed_names: dict[str, str]
++    enabled: bool
++
++
++def resolve_typed_parameters(params, named_parameters, args=None):
++    """Resolve opt-in ``name::int`` values into Python integers.
++
++    ``params`` carries the legacy-resolved values (first value wins for GET
++    query strings, last value wins for POST form bodies), ``named_parameters``
++    the names derived from the SQL (or a stored query's declared parameters),
++    and ``args`` the original MultiParams used to detect repeated keys. With the
++    feature off this returns ``params`` unchanged, preserving legacy string
++    semantics.
++
++    A repeated ``_typed_params`` flag is rejected before the enabled check so
++    the outcome does not depend on which value happens to be first or last.
++    """
++    if args is not None and len(args.getlist(TYPED_PARAMS_FLAG)) > 1:
++        raise TypedParameterError(f"{TYPED_PARAMS_FLAG} may only be supplied once")
++
++    if params.get(TYPED_PARAMS_FLAG) != "1":
++        return ResolvedTypedParameters(params=params, typed_names={}, enabled=False)
++
++    named = set(named_parameters)
++    typed_names = {}
++    resolved = dict(params)
++
++    for key in params:
++        if TYPE_SEPARATOR not in key:
++            continue
++        base, _, type_name = key.partition(TYPE_SEPARATOR)
++        if not base:
++            raise TypedParameterError(f"Invalid typed parameter name {key!r}")
++        if type_name not in SUPPORTED_TYPES:
++            raise TypedParameterError(
++                "Unsupported parameter type {!r} in {!r}; supported types: {}".format(
++                    type_name, key, ", ".join(SUPPORTED_TYPES)
++                )
++            )
++        if base.startswith("_"):
++            raise TypedParameterError(
++                f"Typed parameter {key!r} cannot target an underscore parameter"
++            )
++        if base not in named:
++            raise TypedParameterError(
++                f"Typed parameter {key!r} does not match a named parameter in this query"
++            )
++        if base in params:
++            raise TypedParameterError(
++                f"Parameter {base!r} was supplied both with and without a type suffix"
++            )
++        if args is not None and len(args.getlist(key)) > 1:
++            raise TypedParameterError(f"Parameter {key!r} was supplied more than once")
++
++        value = params[key]
++        if value == "":
++            raise TypedParameterError(
++                f"Parameter {key!r} requires an integer value; it was empty"
++            )
++        if not _INTEGER_RE.match(value):
++            raise TypedParameterError(
++                f"Parameter {key!r} requires a base-10 integer; got {value!r}"
++            )
++        try:
++            integer = int(value)
++        except ValueError:
++            # Python limits how many digits int() will parse
++            raise TypedParameterError(
++                f"Parameter {key!r} requires a base-10 integer; got {value!r}"
++            )
++        if not INT64_MIN <= integer <= INT64_MAX:
++            raise TypedParameterError(
++                f"Parameter {key!r} is outside SQLite's signed 64-bit integer range "
++                f"({INT64_MIN} to {INT64_MAX})"
++            )
++
++        del resolved[key]
++        resolved[base] = integer
++        typed_names[base] = key
++
++    return ResolvedTypedParameters(
++        params=resolved, typed_names=typed_names, enabled=True
++    )
+diff --git a/datasette/views/database.py b/datasette/views/database.py
+index da207601436a60d849a58b05d42a0f13da4987a9..a995f827a885ea9ee4da8516507e87c3abfd7419 100644
+--- a/datasette/views/database.py
++++ b/datasette/views/database.py
+@@ -14,8 +14,10 @@ from datasette.extras import ExtraScope, extra_names_from_request
+ from datasette.plugins import pm
+ from datasette.resources import DatabaseResource, QueryResource
+ from datasette.stored_queries import StoredQuery, stored_query_to_dict
++from datasette.typed_params import TypedParameterError, resolve_typed_parameters
+ from datasette.utils import (
+     InvalidSql,
++    MultiParams,
+     add_cors_headers,
+     await_me_maybe,
+     call_with_supported_arguments,
+@@ -626,17 +628,45 @@ class QueryView(View):
+         # Process the POST
+         body = await request.post_body()
+         body = body.decode("utf-8").strip()
++        args = None
+         if body.startswith("{") and body.endswith("}"):
+-            params = json.loads(body)
++            # json.loads() collapses repeated object keys, which would hide a
++            # repeated typed parameter or _typed_params flag. Keep the root
++            # object's original pairs for MultiParams duplicate detection while
++            # returning ordinary dicts (nested objects included) so the
++            # existing str(value) conversion below is unchanged.
++            root_pairs = []
++
++            def _collect_root_pairs(pairs):
++                # The hook runs for nested objects first; the top-level object
++                # completes last, leaving its pairs in root_pairs.
++                root_pairs[:] = pairs
++                return dict(pairs)
++
++            params = json.loads(body, object_pairs_hook=_collect_root_pairs)
++            args = MultiParams(root_pairs)
+             # But we want key=value strings
+             for key, value in params.items():
+                 params[key] = str(value)
+         else:
+-            params = dict(parse_qsl(body, keep_blank_values=True))
++            pairs = parse_qsl(body, keep_blank_values=True)
++            args = MultiParams(pairs)
++            # dict(pairs) keeps the legacy last-value-wins POST semantics;
++            # args is only used below to detect repeated typed keys.
++            params = dict(pairs)
+ 
+         # Don't ever send csrftoken as a SQL parameter
+         params.pop("csrftoken", None)
+ 
++        named_parameters = stored_query.parameters or derive_named_parameters(
++            stored_query.sql
++        )
++        try:
++            typed_params = resolve_typed_parameters(params, named_parameters, args)
++        except TypedParameterError as ex:
++            raise DatasetteError(str(ex), title="Invalid typed parameter", status=400)
++        params = typed_params.params
++
+         # Should we return JSON?
+         should_return_json = (
+             request.headers.get("accept") == "application/json"
+@@ -767,7 +797,8 @@ class QueryView(View):
+                 raise Forbidden("execute-sql")
+ 
+         # Flattened because of ?sql=&name1=value1&name2=value2 feature
+-        params = {key: request.args.get(key) for key in request.args}
++        args = request.args
++        params = {key: args.get(key) for key in args}
+         sql = None
+ 
+         if stored_query:
+@@ -781,11 +812,24 @@ class QueryView(View):
+             named_parameters = stored_query.parameters
+         if not named_parameters and sql:
+             named_parameters = derive_named_parameters(sql)
+-        named_parameter_values = {
+-            named_parameter: params.get(named_parameter) or ""
+-            for named_parameter in named_parameters
+-            if not named_parameter.startswith("_")
+-        }
++        try:
++            typed_params = resolve_typed_parameters(params, named_parameters, args)
++        except TypedParameterError as ex:
++            raise DatasetteError(str(ex), title="Invalid typed parameter", status=400)
++        params = typed_params.params
++        # Extras and any consumer replaying the reported SQL bind the SQL base
++        # names, so report base name -> resolved value ("age" -> 0). HTML form
++        # refill and the edit-SQL link keep the query-string spelling with the
++        # type suffix ("age::int" -> 0) so resubmission stays typed.
++        named_parameter_values = {}
++        typed_parameter_values = {}
++        for named_parameter in named_parameters:
++            if named_parameter.startswith("_"):
++                continue
++            value = params.get(named_parameter, "")
++            named_parameter_values[named_parameter] = value
++            refill_name = typed_params.typed_names.get(named_parameter, named_parameter)
++            typed_parameter_values[refill_name] = value
+         # Set to blank string if missing from params
+         for named_parameter in named_parameters:
+             if named_parameter not in params and not named_parameter.startswith("_"):
+@@ -1034,16 +1078,14 @@ class QueryView(View):
+                 except InvalidSql:
+                     pass
+                 if allow_execute_sql and is_validated_sql and ":_" not in sql:
++                    edit_sql_values = {"sql": sql, **typed_parameter_values}
++                    if typed_params.enabled:
++                        edit_sql_values["_typed_params"] = "1"
+                     edit_sql_url = (
+                         datasette.urls.database(database)
+                         + "/-/query"
+                         + "?"
+-                        + urlencode(
+-                            {
+-                                "sql": sql,
+-                                **named_parameter_values,
+-                            }
+-                        )
++                        + urlencode(edit_sql_values)
+                     )
+             save_query_url = None
+             if (
+@@ -1084,6 +1126,7 @@ class QueryView(View):
+                         query={
+                             "sql": sql,
+                             "params": params,
++                            "typed_params_enabled": typed_params.enabled,
+                         },
+                         stored_query=stored_query.name if stored_query else None,
+                         private=private,
+@@ -1097,7 +1140,7 @@ class QueryView(View):
+                         allow_execute_sql=allow_execute_sql,
+                         save_query_url=save_query_url,
+                         tables=await get_tables(datasette, request, db, allowed_dict),
+-                        named_parameter_values=named_parameter_values,
++                        named_parameter_values=typed_parameter_values,
+                         edit_sql_url=edit_sql_url,
+                         display_rows=await display_rows(
+                             datasette, database, request, rows, columns
+diff --git a/tests/test_playwright.py b/tests/test_playwright.py
+index 665ed32acb1c4bc2f0ff86b975c41f1aad2bd473..c991705d23533ffe390f2b1791ca320cc648acb6 100644
+--- a/tests/test_playwright.py
++++ b/tests/test_playwright.py
+@@ -4,6 +4,7 @@ import socket
+ import subprocess
+ import sys
+ import time
++from urllib.parse import parse_qs, urlencode, urlsplit
+ 
+ import httpx2
+ import pytest
+@@ -179,6 +180,16 @@ def write_playwright_config(config_path):
+                             "create-table": True,
+                             "insert-row": True,
+                             "set-column-type": True,
++                            "execute-write-sql": True,
++                        },
++                        "queries": {
++                            "ages_above": {
++                                "sql": (
++                                    "select title, score from projects "
++                                    "where score + 1 > :age order by score"
++                                ),
++                                "params": ["age"],
++                            },
+                         },
+                         "tables": {
+                             "projects": {
+@@ -2301,3 +2312,374 @@ def test_menu_long_plugin_content_and_no_popover_fallback(page, datasette_server
+     assert panel.evaluate("node => node.scrollTop > 0")
+     page.keyboard.press("Escape")
+     expect(panel).not_to_be_visible()
++
++
++TYPED_AGE_SQL = "select :age as value, typeof(:age) as kind from projects"
++TYPED_AGE_OTHER_SQL = (
++    "select :age as value, typeof(:age) as kind, :other as other from projects"
++)
++TYPED_OTHER_AGE_SQL = (
++    "select :other as other, :age as value, typeof(:age) as kind from projects"
++)
++TYPED_OTHER_AGE_REFRESH_SQL = (
++    "select :other as other, :age as value, typeof(:age) as kind "
++    "from (select * from projects)"
++)
++
++
++def typed_query_url(server, sql, pairs):
++    return f"{server}data/-/query?" + urlencode([("sql", sql)] + list(pairs))
++
++
++def parameter_controls(page):
++    return page.locator("[data-parameter-control]").evaluate_all(
++        """nodes => nodes.map(node => ({
++            name: node.name,
++            dataName: node.dataset.parameterName,
++            value: node.value,
++        }))"""
++    )
++
++
++def set_sql_editor(page, sql):
++    page.evaluate(
++        """sql => {
++            const editor = window.editor;
++            if (!editor) {
++                throw new Error("CodeMirror editor was not initialised");
++            }
++            editor.dispatch({
++                changes: {from: 0, to: editor.state.doc.length, insert: sql},
++            });
++        }""",
++        sql,
++    )
++
++
++def install_delayed_parameter_fetch(page):
++    page.add_init_script("""
++        (() => {
++          const originalFetch = window.fetch;
++          window.__parameterFetchStarted = 0;
++          window.__parameterFetchHeld = 0;
++          window.__parameterFetchReleased = false;
++          window.__parameterFetchWaiters = [];
++          window.fetch = (input, init) => {
++            const url =
++              typeof input === "string"
++                ? input
++                : input.url || input.href || String(input);
++            if (!String(url).includes("/-/query/parameters")) {
++              return originalFetch(input, init);
++            }
++            window.__parameterFetchStarted += 1;
++            return originalFetch(input, init).then(
++              (response) =>
++                new Promise((resolve) => {
++                  window.__parameterFetchHeld += 1;
++                  if (window.__parameterFetchReleased) {
++                    resolve(response);
++                  } else {
++                    window.__parameterFetchWaiters.push(() =>
++                      resolve(response)
++                    );
++                  }
++                })
++            );
++          };
++          window.__releaseParameterFetch = () => {
++            window.__parameterFetchReleased = true;
++            const waiters = window.__parameterFetchWaiters.splice(0);
++            waiters.forEach((release) => release());
++          };
++        })();
++        """)
++
++
++@pytest.mark.playwright
++def test_sql_editor_preserves_typed_parameter_name_and_current_value(
++    page, datasette_server
++):
++    page.goto(
++        typed_query_url(
++            datasette_server,
++            TYPED_AGE_SQL,
++            [("_typed_params", "1"), ("age::int", "0")],
++        )
++    )
++    assert page.locator('input[name="_typed_params"]').input_value() == "1"
++    age = page.locator('input[name="age::int"]')
++    assert age.input_value() == "0"
++    assert age.get_attribute("data-parameter-name") == "age::int"
++
++    # The user changes the current DOM value before the SQL refresh completes.
++    age.fill("-5")
++
++    # Adding a second parameter keeps the surviving typed field and value and
++    # gives the new parameter a plain empty field, without inferring a type.
++    with page.expect_response(
++        lambda response: "/-/query/parameters" in response.url
++    ) as response_info:
++        set_sql_editor(page, TYPED_AGE_OTHER_SQL)
++    assert response_info.value.ok
++    page.wait_for_function(
++        "document.querySelectorAll('[data-parameter-control]').length === 2 "
++        "&& document.querySelectorAll('[data-parameter-control]')[1]"
++        ".dataset.parameterName === 'other'"
++    )
++    assert parameter_controls(page) == [
++        {"name": "age::int", "dataName": "age::int", "value": "-5"},
++        {"name": "other", "dataName": "other", "value": ""},
++    ]
++
++    # Reordering the SQL moves the rows without losing the typed name or value.
++    with page.expect_response(
++        lambda response: "/-/query/parameters" in response.url
++    ) as response_info:
++        set_sql_editor(page, TYPED_OTHER_AGE_SQL)
++    assert response_info.value.ok
++    page.wait_for_function(
++        "document.querySelectorAll('[data-parameter-control]')[0]"
++        ".dataset.parameterName === 'other'"
++    )
++    assert parameter_controls(page) == [
++        {"name": "other", "dataName": "other", "value": ""},
++        {"name": "age::int", "dataName": "age::int", "value": "-5"},
++    ]
++
++    # A second consecutive refresh keeps the current value again.
++    page.evaluate("""() => {
++            window.__parameterRenders = 0;
++            new MutationObserver(() => {
++                window.__parameterRenders += 1;
++            }).observe(
++                document.querySelector("[data-sql-parameters-section]"),
++                {childList: true}
++            );
++        }""")
++    with page.expect_response(
++        lambda response: "/-/query/parameters" in response.url
++    ) as response_info:
++        set_sql_editor(page, TYPED_OTHER_AGE_REFRESH_SQL)
++    assert response_info.value.ok
++    page.wait_for_function("window.__parameterRenders > 0")
++    assert parameter_controls(page) == [
++        {"name": "other", "dataName": "other", "value": ""},
++        {"name": "age::int", "dataName": "age::int", "value": "-5"},
++    ]
++
++    # Submitting after the refresh proves the request keeps the typed key and
++    # current value, and the server binds it as an integer.
++    page.locator('form.sql.core input[type="submit"]').click()
++    page.wait_for_load_state("domcontentloaded")
++    query = parse_qs(urlsplit(page.url).query)
++    assert query["_typed_params"] == ["1"]
++    assert query["age::int"] == ["-5"]
++    result_text = page.locator("table.rows-and-columns").inner_text()
++    assert "integer" in result_text
++    assert "-5" in result_text
++    # The input is rebuilt from the response with the same typed spelling.
++    assert page.locator('input[name="age::int"]').input_value() == "-5"
++
++
++@pytest.mark.playwright
++def test_sql_editor_delete_then_readd_parameter_does_not_revive_typed_key(
++    page, datasette_server
++):
++    page.goto(
++        typed_query_url(
++            datasette_server,
++            TYPED_AGE_SQL,
++            [("_typed_params", "1"), ("age::int", "0")],
++        )
++    )
++    assert page.locator('input[name="age::int"]').count() == 1
++
++    # Deleting :age removes the typed control entirely.
++    with page.expect_response(
++        lambda response: "/-/query/parameters" in response.url
++    ) as response_info:
++        set_sql_editor(page, "select :other as other from projects")
++    assert response_info.value.ok
++    page.wait_for_function(
++        "document.querySelectorAll('[data-parameter-control]').length === 1 "
++        "&& document.querySelector('[data-parameter-control]')"
++        ".dataset.parameterName === 'other'"
++    )
++    assert parameter_controls(page) == [
++        {"name": "other", "dataName": "other", "value": ""},
++    ]
++    assert page.locator('input[name="age::int"]').count() == 0
++
++    # Adding :age back creates a new ordinary empty field; the old typed key
++    # and value are not resurrected.
++    with page.expect_response(
++        lambda response: "/-/query/parameters" in response.url
++    ) as response_info:
++        set_sql_editor(
++            page,
++            "select :age as value, typeof(:age) as kind, "
++            ":other as other from projects",
++        )
++    assert response_info.value.ok
++    page.wait_for_function(
++        "document.querySelectorAll('[data-parameter-control]').length === 2 "
++        "&& document.querySelectorAll('[data-parameter-control]')[0]"
++        ".dataset.parameterName === 'age'"
++    )
++    assert parameter_controls(page) == [
++        {"name": "age", "dataName": "age", "value": ""},
++        {"name": "other", "dataName": "other", "value": ""},
++    ]
++    assert page.locator('input[name="age::int"]').count() == 0
++
++    # Submission no longer carries a typed key for age.
++    page.locator('form.sql.core input[type="submit"]').click()
++    page.wait_for_load_state("domcontentloaded")
++    query = parse_qs(urlsplit(page.url).query, keep_blank_values=True)
++    assert query["_typed_params"] == ["1"]
++    assert "age::int" not in query
++    assert query["age"] == [""]
++
++
++@pytest.mark.playwright
++def test_sql_editor_keeps_edit_made_while_parameter_discovery_is_in_flight(
++    page, datasette_server
++):
++    install_delayed_parameter_fetch(page)
++    page.goto(
++        typed_query_url(
++            datasette_server,
++            TYPED_AGE_SQL,
++            [("_typed_params", "1"), ("age::int", "0")],
++        )
++    )
++    age = page.locator('input[name="age::int"]')
++    assert age.input_value() == "0"
++    page.evaluate(
++        "window.__pendingControl = "
++        "document.querySelector('input[name=\"age::int\"]')"
++    )
++    set_sql_editor(page, TYPED_AGE_OTHER_SQL)
++    page.wait_for_function("window.__parameterFetchHeld === 1")
++
++    # The discovery response is held by the page fixture; the user edits the
++    # still-live field before the response is delivered.
++    age.fill("-11")
++    page.evaluate("window.__releaseParameterFetch()")
++    page.wait_for_function(
++        "document.querySelector('input[name=\"age::int\"]') "
++        "!== window.__pendingControl"
++    )
++    assert parameter_controls(page) == [
++        {"name": "age::int", "dataName": "age::int", "value": "-11"},
++        {"name": "other", "dataName": "other", "value": ""},
++    ]
++
++
++@pytest.mark.playwright
++def test_sql_editor_ordinary_mode_keeps_plain_parameters(page, datasette_server):
++    page.goto(
++        typed_query_url(
++            datasette_server,
++            "select :age as value from projects",
++            [("age", "0")],
++        )
++    )
++    assert page.locator('input[name="_typed_params"]').count() == 0
++    age = page.locator('input[name="age"]')
++    assert age.input_value() == "0"
++    age.fill("-5")
++
++    with page.expect_response(
++        lambda response: "/-/query/parameters" in response.url
++    ) as response_info:
++        set_sql_editor(page, "select :age as value, :other as other from projects")
++    assert response_info.value.ok
++    page.wait_for_function(
++        "document.querySelectorAll('[data-parameter-control]').length === 2"
++    )
++    assert parameter_controls(page) == [
++        {"name": "age", "dataName": "age", "value": "-5"},
++        {"name": "other", "dataName": "other", "value": ""},
++    ]
++
++
++@pytest.mark.playwright
++def test_stored_query_edit_sql_keeps_typed_parameter(page, datasette_server):
++    page.goto(
++        f"{datasette_server}data/ages_above?"
++        + urlencode({"_typed_params": "1", "age::int": "0"})
++    )
++    assert page.locator('input[name="age::int"]').input_value() == "0"
++    assert page.locator('input[name="_typed_params"]').input_value() == "1"
++
++    edit_link = page.locator("a.stored-query-edit-sql")
++    assert edit_link.count() == 1
++    edit_link.click()
++    page.wait_for_load_state("domcontentloaded")
++    assert "/data/-/query?" in page.url
++    query = parse_qs(urlsplit(page.url).query)
++    assert query["_typed_params"] == ["1"]
++    assert query["age::int"] == ["0"]
++    assert page.locator('input[name="age::int"]').input_value() == "0"
++
++
++@pytest.mark.playwright
++def test_execute_write_parameter_prefix_and_expand_collapse_unchanged(
++    page, datasette_server
++):
++    page.goto(
++        f"{datasette_server}data/-/execute-write?"
++        + urlencode({"sql": "update projects set title = :title where id = :id"})
++    )
++    section = page.locator("#execute-write-parameters-section")
++    assert section.get_attribute("data-parameter-name-prefix") == "_sql_param_"
++    assert section.get_attribute("data-allow-expand") == "1"
++    assert page.locator('input[name="_sql_param_title"]').input_value() == ""
++    assert page.locator('input[name="_sql_param_id"]').input_value() == ""
++    page.locator('input[name="_sql_param_title"]').fill("Launched")
++    page.locator('input[name="_sql_param_id"]').fill("1")
++
++    # Expanding and collapsing keeps the prefixed submit name and current value.
++    toggle = section.locator("[data-parameter-toggle]").first
++    toggle.click()
++    title_area = page.locator('textarea[name="_sql_param_title"]')
++    assert title_area.input_value() == "Launched"
++    assert toggle.get_attribute("aria-expanded") == "true"
++    assert toggle.inner_text() == "Collapse"
++    title_area.fill("Launched from textarea")
++    toggle.click()
++    title = page.locator('input[name="_sql_param_title"]')
++    assert title.input_value() == "Launched from textarea"
++    assert toggle.get_attribute("aria-expanded") == "false"
++    assert toggle.inner_text() == "Expand"
++
++    # A normal parameter refresh keeps values and the prefix; the new parameter
++    # is a plain empty field under the same prefix.
++    with page.expect_response(
++        lambda response: "/-/execute-write/analyze" in response.url
++    ) as response_info:
++        set_sql_editor(
++            page,
++            "update projects set title = :title, metadata = :metadata "
++            "where id = :id",
++        )
++    assert response_info.value.ok
++    page.wait_for_function(
++        "document.querySelectorAll("
++        "'#execute-write-parameters-section [data-parameter-control]'"
++        ").length === 3"
++    )
++    assert page.locator('input[name="_sql_param_title"]').input_value() == (
++        "Launched from textarea"
++    )
++    assert page.locator('input[name="_sql_param_id"]').input_value() == "1"
++    assert page.locator('input[name="_sql_param_metadata"]').input_value() == ""
++    assert page.locator(
++        "#execute-write-parameters-section [data-parameter-control]"
++    ).evaluate_all("nodes => nodes.map(node => node.name)") == [
++        "_sql_param_title",
++        "_sql_param_metadata",
++        "_sql_param_id",
++    ]
+diff --git a/tests/test_typed_params.py b/tests/test_typed_params.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..49968d66ca236420f4e37c247b6f0429df4594a3
+--- /dev/null
++++ b/tests/test_typed_params.py
+@@ -0,0 +1,645 @@
++import sqlite3
++from urllib.parse import urlencode
++
++import pytest
++import pytest_asyncio
++from bs4 import BeautifulSoup as Soup
++
++from datasette.app import Datasette
++
++PEOPLE_SQL = """
++create table people (
++  id integer primary key,
++  name text,
++  age integer
++);
++insert into people (name, age) values
++  ('Alice', 30),
++  ('Bob', 41),
++  ('Carol', 0),
++  ('Dave', -5);
++"""
++
++AGE_SQL = (
++    "select name, age, typeof(:age) as bound_type, :age as bound_value, "
++    "age + 1 > :age as matches from people order by id"
++)
++
++
++@pytest_asyncio.fixture
++async def ds():
++    ds = Datasette(memory=True)
++    db = ds.add_memory_database("typed")
++    await ds.invoke_startup()
++    await db.execute_write_script(PEOPLE_SQL)
++    await ds.add_query(
++        "typed",
++        "ages_above",
++        "select name, age from people where age + 1 > :age order by age",
++        parameters=["age"],
++        is_trusted=True,
++        source="user",
++        owner_id="root",
++    )
++    await ds.add_query(
++        "typed",
++        "underscore_declared",
++        "select 1 as one",
++        parameters=["_foo"],
++        is_trusted=True,
++        source="user",
++        owner_id="root",
++    )
++    await ds.add_query(
++        "typed",
++        "add_probe",
++        "insert into probes (note) values (typeof(:age))",
++        parameters=["age"],
++        is_write=True,
++        is_trusted=True,
++        source="user",
++        owner_id="root",
++    )
++    await db.execute_write("create table probes (note text)")
++    await ds.add_query(
++        "typed",
++        "add_note",
++        "insert into notes (value) values (:value)",
++        parameters=["value"],
++        is_write=True,
++        is_trusted=True,
++        source="user",
++        owner_id="root",
++    )
++    await db.execute_write("create table notes (value text)")
++    try:
++        yield ds
++    finally:
++        ds.close()
++
++
++POST_FORM_HEADERS = {"content-type": "application/x-www-form-urlencoded"}
++POST_JSON_HEADERS = {"content-type": "application/json"}
++
++
++def replay_in_memory(sql, params):
++    """Replay reported SQL/params in an independent SQLite connection."""
++    conn = sqlite3.connect(":memory:")
++    try:
++        conn.executescript(PEOPLE_SQL)
++        cursor = conn.execute(sql, params)
++        names = [column[0] for column in cursor.description]
++        return [dict(zip(names, row)) for row in cursor.fetchall()]
++    finally:
++        conn.close()
++
++
++def typed_path(sql, pairs):
++    return "/typed/-/query.json?" + urlencode([("sql", sql)] + list(pairs))
++
++
++@pytest.mark.asyncio
++async def test_default_string_semantics_unchanged(ds):
++    response = await ds.client.get(typed_path(AGE_SQL, [("age", "30")]))
++    assert response.status_code == 200
++    data = response.json()
++    assert [
++        (row["name"], row["bound_type"], row["bound_value"]) for row in data["rows"]
++    ] == [
++        ("Alice", "text", "30"),
++        ("Bob", "text", "30"),
++        ("Carol", "text", "30"),
++        ("Dave", "text", "30"),
++    ]
++    # age + 1 > '30' is false for every row: expression comparison is not coerced
++    assert [row["matches"] for row in data["rows"]] == [0, 0, 0, 0]
++
++
++@pytest.mark.asyncio
++async def test_explicit_int_binds_integer_and_changes_expression_comparison(ds):
++    response = await ds.client.get(
++        typed_path(AGE_SQL, [("_typed_params", "1"), ("age::int", "30")])
++    )
++    assert response.status_code == 200
++    rows = response.json()["rows"]
++    assert [(row["name"], row["bound_type"], row["bound_value"]) for row in rows] == [
++        ("Alice", "integer", 30),
++        ("Bob", "integer", 30),
++        ("Carol", "integer", 30),
++        ("Dave", "integer", 30),
++    ]
++    # Manually checkable: age + 1 > 30 is true only for Alice (31) and Bob (42)
++    assert [row["name"] for row in rows if row["matches"]] == ["Alice", "Bob"]
++
++
++@pytest.mark.asyncio
++async def test_typed_suffix_ignored_without_explicit_enable(ds):
++    response = await ds.client.get(typed_path(AGE_SQL, [("age::int", "30")]))
++    assert response.status_code == 200
++    rows = response.json()["rows"]
++    # :age was missing, so Datasette's legacy blank-string fallback applied
++    assert {row["bound_type"] for row in rows} == {"text"}
++    assert {row["bound_value"] for row in rows} == {""}
++    assert [row["matches"] for row in rows] == [0, 0, 0, 0]
++
++
++@pytest.mark.asyncio
++async def test_disabled_toggle_keeps_colon_colon_as_literal_argument(ds):
++    response = await ds.client.get(
++        typed_path(
++            "select :name as value, typeof(:name) as t",
++            [("_typed_params", "0"), ("name::int", "7")],
++        )
++    )
++    assert response.status_code == 200
++    assert response.json()["rows"] == [{"value": "", "t": "text"}]
++
++
++@pytest.mark.asyncio
++async def test_zero_is_bound_and_rendered_in_html(ds):
++    response = await ds.client.get(
++        typed_path(
++            "select :age as v, typeof(:age) as t",
++            [("_typed_params", "1"), ("age::int", "0")],
++        )
++    )
++    assert response.status_code == 200
++    assert response.json()["rows"] == [{"v": 0, "t": "integer"}]
++
++    html = await ds.client.get(
++        "/typed/-/query?"
++        + urlencode(
++            {
++                "sql": "select :age as v, typeof(:age) as t",
++                "_typed_params": "1",
++                "age::int": "0",
++            }
++        )
++    )
++    assert html.status_code == 200
++    assert (
++        'name="age::int" value="0" data-parameter-control '
++        'data-parameter-name="age::int"' in html.text
++    )
++    assert '<input type="hidden" name="_typed_params" value="1">' in html.text
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize(
++    "value,expected",
++    [
++        ("-9223372036854775808", -9223372036854775808),
++        ("9223372036854775807", 9223372036854775807),
++        ("-1", -1),
++        ("007", 7),
++    ],
++)
++async def test_int_bounds_and_canonical_form(ds, value, expected):
++    response = await ds.client.get(
++        typed_path(
++            "select :age as v, typeof(:age) as t",
++            [("_typed_params", "1"), ("age::int", value)],
++        )
++    )
++    assert response.status_code == 200
++    assert response.json()["rows"] == [{"v": expected, "t": "integer"}]
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize(
++    "value",
++    [
++        "-9223372036854775809",
++        "9223372036854775808",
++        "99999999999999999999999999999999",
++    ],
++)
++async def test_int_out_of_sqlite_range_is_400(ds, value):
++    response = await ds.client.get(
++        typed_path("select :age as v", [("_typed_params", "1"), ("age::int", value)])
++    )
++    assert response.status_code == 400
++    data = response.json()
++    assert data["ok"] is False
++    assert data["status"] == 400
++    assert "age::int" in data["error"]
++    assert "64-bit" in data["error"]
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize(
++    "value",
++    [
++        "",
++        "12.5",
++        "abc",
++        " 1",
++        "1 ",
++        "1_0",
++        "+1",
++        "0x10",
++        "1e3",
++        "-",
++        "--1",
++        "١٢",
++        "9" * 5000,
++    ],
++)
++async def test_invalid_integer_values_are_400(ds, value):
++    response = await ds.client.get(
++        typed_path("select :age as v", [("_typed_params", "1"), ("age::int", value)])
++    )
++    assert response.status_code == 400
++    data = response.json()
++    assert data["ok"] is False
++    assert data["status"] == 400
++    assert "age::int" in data["error"]
++
++
++@pytest.mark.asyncio
++async def test_missing_parameter_keeps_legacy_blank_string(ds):
++    response = await ds.client.get(
++        typed_path("select :age as v, typeof(:age) as t", [("_typed_params", "1")])
++    )
++    assert response.status_code == 200
++    assert response.json()["rows"] == [{"v": "", "t": "text"}]
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize(
++    "pairs,fragment",
++    [
++        ([("age::int", "1"), ("age::int", "2")], "more than once"),
++        ([("age::int", "1"), ("age::int", "1")], "more than once"),
++        ([("age", "1"), ("age::int", "2")], "both with and without"),
++        ([("age::float", "1")], "Unsupported parameter type"),
++        ([("age::", "1")], "Unsupported parameter type"),
++        ([("::int", "1")], "Invalid typed parameter name"),
++        ([("other::int", "1")], "does not match a named parameter"),
++        (
++            [("_typed_params", "1"), ("_typed_params", "1"), ("age::int", "1")],
++            "only be supplied once",
++        ),
++    ],
++)
++async def test_duplicate_conflict_unknown_and_repeated_toggle_are_400(
++    ds, pairs, fragment
++):
++    response = await ds.client.get(
++        typed_path("select :age as v", [("_typed_params", "1")] + pairs)
++    )
++    assert response.status_code == 400
++    data = response.json()
++    assert data["status"] == 400
++    assert fragment in data["error"]
++
++
++@pytest.mark.asyncio
++async def test_unicode_named_parameter_keeps_default_then_opts_in(ds):
++    sql = "select :naïve as v, typeof(:naïve) as t"
++    default = await ds.client.get(
++        "/typed/-/query.json?" + urlencode({"sql": sql, "naïve": "café"})
++    )
++    assert default.status_code == 200
++    assert default.json()["rows"] == [{"v": "café", "t": "text"}]
++
++    typed = await ds.client.get(
++        "/typed/-/query.json?"
++        + urlencode({"sql": sql, "_typed_params": "1", "naïve::int": "5"})
++    )
++    assert typed.status_code == 200
++    assert typed.json()["rows"] == [{"v": 5, "t": "integer"}]
++
++
++@pytest.mark.asyncio
++async def test_typed_underscore_target_is_rejected(ds):
++    response = await ds.client.get(
++        typed_path("select :_foo as v", [("_typed_params", "1"), ("_foo::int", "1")])
++    )
++    assert response.status_code == 400
++    assert "cannot target an underscore parameter" in response.json()["error"]
++
++
++@pytest.mark.asyncio
++async def test_url_encoded_key_and_value(ds):
++    path = (
++        "/typed/-/query.json?"
++        + urlencode({"sql": "select :age as v, typeof(:age) as t"})
++        + "&_typed_params=1&age%3A%3Aint=%2D5"
++    )
++    response = await ds.client.get(path)
++    assert response.status_code == 200
++    assert response.json()["rows"] == [{"v": -5, "t": "integer"}]
++
++
++@pytest.mark.asyncio
++async def test_stored_query_json_and_html_refill(ds):
++    response = await ds.client.get(
++        "/typed/ages_above.json?" + urlencode({"_typed_params": "1", "age::int": "30"})
++    )
++    assert response.status_code == 200
++    assert response.json()["rows"] == [
++        {"name": "Alice", "age": 30},
++        {"name": "Bob", "age": 41},
++    ]
++
++    default_response = await ds.client.get(
++        "/typed/ages_above.json?" + urlencode({"age": "30"})
++    )
++    assert default_response.status_code == 200
++    assert default_response.json()["rows"] == []
++
++    html = await ds.client.get(
++        "/typed/ages_above?" + urlencode({"_typed_params": "1", "age::int": "30"})
++    )
++    assert html.status_code == 200
++    assert (
++        'name="age::int" value="30" data-parameter-control '
++        'data-parameter-name="age::int"' in html.text
++    )
++    assert '<input type="hidden" name="_typed_params" value="1">' in html.text
++    table = Soup(html.text, "html.parser").find("table")
++    rows = [
++        [td.get_text() for td in tr.select("td")] for tr in table.select("tbody tr")
++    ]
++    assert rows == [["Alice", "30"], ["Bob", "41"]]
++    edit_link = Soup(html.text, "html.parser").select_one("a.stored-query-edit-sql")
++    assert edit_link is not None
++    assert "_typed_params=1" in edit_link["href"]
++    assert "age%3A%3Aint=30" in edit_link["href"]
++
++
++@pytest.mark.asyncio
++async def test_stored_write_post_uses_integer_binding(ds):
++    response = await ds.client.post(
++        "/typed/add_probe",
++        data={"_typed_params": "1", "age::int": "0"},
++    )
++    assert response.status_code == 302
++    note = (await ds.get_database("typed").execute("select note from probes")).first()[
++        0
++    ]
++    assert note == "integer"
++
++
++@pytest.mark.asyncio
++async def test_underscore_declared_parameters_are_not_refilled(ds):
++    response = await ds.client.get(
++        "/typed/underscore_declared.json?" + urlencode({"_typed_params": "1"})
++    )
++    assert response.status_code == 200
++    assert response.json()["rows"] == [{"one": 1}]
++
++
++@pytest.mark.asyncio
++async def test_stored_write_post_json_uses_integer_binding(ds):
++    response = await ds.client.post(
++        "/typed/add_probe",
++        json={"_typed_params": "1", "age::int": "-7"},
++    )
++    assert response.status_code == 302
++    note = (await ds.get_database("typed").execute("select note from probes")).first()[
++        0
++    ]
++    assert note == "integer"
++
++
++@pytest.mark.asyncio
++async def test_stored_write_post_typed_error_is_400(ds):
++    response = await ds.client.post(
++        "/typed/add_probe",
++        data={"_typed_params": "1", "age::int": "bad"},
++    )
++    assert response.status_code == 400
++    assert "age::int" in response.text
++    note_rows = (await ds.get_database("typed").execute("select note from probes")).rows
++    assert note_rows == []
++
++
++@pytest.mark.asyncio
++async def test_typed_errors_do_not_leak_as_500_for_html(ds):
++    response = await ds.client.get(
++        "/typed/-/query?"
++        + urlencode({"sql": "select :age", "_typed_params": "1", "age::int": "nope"})
++    )
++    assert response.status_code == 400
++    assert "age::int" in response.text
++
++
++@pytest.mark.asyncio
++async def test_permission_denial_precedes_typed_validation():
++    ds = Datasette(memory=True, config={"allow_sql": {"id": "root"}})
++    db = ds.add_memory_database("typed")
++    await ds.invoke_startup()
++    await db.execute_write_script(PEOPLE_SQL)
++    try:
++        response = await ds.client.get(
++            typed_path("select :age", [("_typed_params", "1"), ("age::int", "nope")])
++        )
++        assert response.status_code == 403
++        assert "age::int" not in response.text
++    finally:
++        ds.close()
++
++
++@pytest.mark.asyncio
++async def test_untrusted_stored_permissions_precede_typed_validation():
++    ds = Datasette(memory=True, config={"allow_sql": {"id": "root"}})
++    db = ds.add_memory_database("p")
++    await ds.invoke_startup()
++    await db.execute_write_script(
++        "create table notes (id integer primary key, note text)"
++    )
++    await ds.add_query(
++        "p",
++        "read_untrusted",
++        "select :age as v",
++        parameters=["age"],
++        is_trusted=False,
++        source="user",
++        owner_id="root",
++    )
++    await ds.add_query(
++        "p",
++        "write_untrusted",
++        "insert into notes (note) values (:note)",
++        parameters=["note"],
++        is_write=True,
++        is_trusted=False,
++        source="user",
++        owner_id="root",
++    )
++    try:
++        read = await ds.client.get(
++            "/p/read_untrusted.json?"
++            + urlencode({"_typed_params": "1", "age::int": "bad"})
++        )
++        assert read.status_code == 403
++        assert "age::int" not in read.text
++
++        write = await ds.client.post(
++            "/p/write_untrusted", data={"_typed_params": "1", "note::int": "bad"}
++        )
++        assert write.status_code == 403
++        assert "note::int" not in write.text
++        assert (await db.execute("select * from notes")).rows == []
++    finally:
++        ds.close()
++
++
++@pytest.mark.asyncio
++async def test_unenabled_post_duplicate_plain_keys_keep_last_value(ds):
++    # Legacy a8e13cc POST semantics: dict(parse_qsl(...)) -> last value wins.
++    response = await ds.client.post(
++        "/typed/add_note",
++        content="value=1&value=2",
++        headers=POST_FORM_HEADERS,
++    )
++    assert response.status_code == 302
++    row = (await ds.get_database("typed").execute("select value from notes")).first()
++    assert row[0] == "2"
++
++
++@pytest.mark.asyncio
++async def test_enabled_mode_leaves_untyped_parameter_as_text(ds):
++    response = await ds.client.get(
++        typed_path(AGE_SQL, [("_typed_params", "1"), ("age", "30")])
++    )
++    assert response.status_code == 200
++    rows = response.json()["rows"]
++    assert {(row["bound_type"], row["bound_value"]) for row in rows} == {("text", "30")}
++    assert [row["matches"] for row in rows] == [0, 0, 0, 0]
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize(
++    "flags",
++    [
++        [("_typed_params", "0"), ("_typed_params", "1")],
++        [("_typed_params", "1"), ("_typed_params", "0")],
++        [("_typed_params", "0"), ("_typed_params", "0")],
++    ],
++)
++async def test_repeated_toggle_is_400_regardless_of_order(ds, flags):
++    response = await ds.client.get(
++        typed_path("select :age as v", flags + [("age::int", "1")])
++    )
++    assert response.status_code == 400
++    assert "only be supplied once" in response.json()["error"]
++
++
++@pytest.mark.asyncio
++async def test_post_duplicate_typed_values_are_400(ds):
++    response = await ds.client.post(
++        "/typed/add_probe",
++        content="_typed_params=1&age::int=1&age::int=2",
++        headers=POST_FORM_HEADERS,
++    )
++    assert response.status_code == 400
++    assert "more than once" in response.text
++    assert (
++        await ds.get_database("typed").execute("select note from probes")
++    ).rows == []
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize(
++    "body",
++    [
++        '{"_typed_params":"1","age::int":"1","age::int":"2"}',
++        '{"_typed_params":"1","age::int":"1","age::int":"1"}',
++    ],
++)
++async def test_post_json_duplicate_typed_values_are_400(ds, body):
++    response = await ds.client.post(
++        "/typed/add_probe", content=body, headers=POST_JSON_HEADERS
++    )
++    assert response.status_code == 400
++    assert "more than once" in response.text
++    assert (
++        await ds.get_database("typed").execute("select note from probes")
++    ).rows == []
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize(
++    "body",
++    [
++        '{"_typed_params":0,"_typed_params":1,"age::int":"1"}',
++        '{"_typed_params":1,"_typed_params":0,"age::int":"1"}',
++        '{"_typed_params":0,"_typed_params":0,"age::int":"1"}',
++    ],
++)
++async def test_post_json_repeated_toggle_is_400_and_does_not_write(ds, body):
++    response = await ds.client.post(
++        "/typed/add_probe", content=body, headers=POST_JSON_HEADERS
++    )
++    assert response.status_code == 400
++    assert "only be supplied once" in response.text
++    assert (
++        await ds.get_database("typed").execute("select note from probes")
++    ).rows == []
++
++
++@pytest.mark.asyncio
++async def test_post_json_duplicate_plain_keys_keep_last_value(ds):
++    response = await ds.client.post(
++        "/typed/add_note",
++        content='{"value":"1","value":"2"}',
++        headers=POST_JSON_HEADERS,
++    )
++    assert response.status_code == 302
++    row = (await ds.get_database("typed").execute("select value from notes")).first()
++    assert row[0] == "2"
++
++
++@pytest.mark.asyncio
++async def test_post_json_nested_object_keeps_legacy_stringification(ds):
++    response = await ds.client.post("/typed/add_note", json={"value": {"a": 1}})
++    assert response.status_code == 302
++    row = (await ds.get_database("typed").execute("select value from notes")).first()
++    assert row[0] == "{'a': 1}"
++
++
++@pytest.mark.asyncio
++async def test_custom_query_extra_reports_base_binding_and_replays(ds):
++    response = await ds.client.get(
++        typed_path(
++            AGE_SQL,
++            [("_typed_params", "1"), ("age::int", "0"), ("_extra", "query")],
++        )
++    )
++    assert response.status_code == 200
++    data = response.json()
++    assert data["query"]["sql"] == AGE_SQL
++    # Extras must expose the SQL binding name and resolved integer, not the
++    # query-string spelling, or the reported SQL/params cannot be replayed.
++    assert data["query"]["params"] == {"age": 0}
++    replayed = replay_in_memory(data["query"]["sql"], data["query"]["params"])
++    assert replayed == data["rows"]
++    assert {row["bound_type"] for row in replayed} == {"integer"}
++    assert {row["bound_value"] for row in replayed} == {0}
++
++
++@pytest.mark.asyncio
++async def test_stored_query_extra_reports_base_binding_and_replays(ds):
++    response = await ds.client.get(
++        "/typed/ages_above.json?"
++        + urlencode({"_typed_params": "1", "age::int": "0", "_extra": "query"})
++    )
++    assert response.status_code == 200
++    data = response.json()
++    assert data["query"]["sql"] == (
++        "select name, age from people where age + 1 > :age order by age"
++    )
++    assert data["query"]["params"] == {"age": 0}
++    replayed = replay_in_memory(data["query"]["sql"], data["query"]["params"])
++    assert (
++        replayed
++        == data["rows"]
++        == [
++            {"name": "Carol", "age": 0},
++            {"name": "Alice", "age": 30},
++            {"name": "Bob", "age": 41},
++        ]
++    )
+```
+
+
+## 宿主编辑器差量独审（2026-10-26）
+
+原会话续改实际运行 2026-10-25T16:14:26.958Z–17:12:40.139Z；Claude Code＋DeepSeek 普通原生 Workflow，原始父／子 assistant message.model 为 `deepseek-flash`，请求 alias `deepseek-v4.1-flash[1m]` 单列。没有重发初始 Workflow。
+
+宿主另取原独立 code-reviewer，以固定 continuation 原文、完整刷新链及五个调用者、六个 Playwright 用例、真实浏览器脚本／原流／截图和公开完整 patch 定向核对。异步用例确实在真实 fetch 已取得响应、交给产品的 Promise 仍被阻挡时输入 -11，再释放并确认替换后控件保持 age::int=-11；不是顺序编辑或直接调用渲染函数。旧模板同例 2 failed／4 passed、新模板 6 passed，证明覆盖了两个原缺陷；另一条 CDP 26/26 属实施方自查，不称独审。
+
+独审未发现必须修项：当前值／类型／flag保持、新参数为空、删参无残留、删后再加、普通模式、stored→Edit SQL、前缀与Expand／Collapse均有相应消费者证据；原服务端四文件与续改前一致，原 F1／F2及POSIX证据仍有效，不重复全量。独审另将公开最终 patch 提取后对固定干净基线执行 git apply --check，exit 0。新完整 patch SHA256 为 `f2adf787966185eec3ca453653a3e32651bcc5e386505914f40b1faf5b01fb58`；旧 SHA及原失败留存。
+
+本轮编辑器契约可以交接接收；完整 CI、其他浏览器、版本矩阵及既有 HTTPS／AF_UNIX缺项仍按历史范围保留，没有生产默认、上游采用或部署。公开只原任务完整恢复稿，指定 relay 分支，由 dot-A 接收，不代标 accepted。
+
+本次固定结果：[86f5fd2f2714043684054a9d59f392bd0baa2309](https://github.com/dbvv1/a1dbv/commit/86f5fd2f2714043684054a9d59f392bd0baa2309)，仅指定 relay 分支；check_repo.py、公开文件／实际新增提交身份扫描及交付差量检查通过。完整内嵌 patch 的15个单空格上下文空行是统一diff语法所需，提取补丁对固定基线 apply-check 已通过，未改检查器。
+
+
+## dot-A 编辑器续改接收（2026-10-26 01:31 UTC+8）
+
+接收固定 `86f5fd2f2714043684054a9d59f392bd0baa2309`，使用本文件末段的新完整 patch（SHA256 `f2adf787966185eec3ca453653a3e32651bcc5e386505914f40b1faf5b01fb58`）。真实浏览器六项回归由旧模板 2 failed／4 passed 变为新模板 6 passed；包含真实异步响应被阻挡时再改输入，随后仍保留当前值。存续参数保持 typed 名、当前 DOM 值和开关，新增参数普通空值、删参移除，普通／stored 编辑与前缀、展开行为均有消费者证据。
+
+复用宿主有效独立差量审查及恢复验证；原四文件未改，既有服务端与 POSIX 证据继续适用。旧 patch 与失败记录保留为历史，现时编辑器缺陷已关闭。完整 CI、其他浏览器矩阵及 HTTPS／AF_UNIX 旧缺项仍在，研究原型不升级为生产默认或上游已采用。本维护至此收口，不再扩类型或工具探针。
