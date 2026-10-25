@@ -281,15 +281,10 @@
 
 ### 6. 战斗与技能：先统一结算权，再谈 GAS
 
-**[研究] 最低完成度**：请求→合法性／资源检查→启动与承诺→命中→效果提交→结束／取消，每步唯一权威。动画可触发窗口，VFX不重复扣血；晚事件须随取消、死亡、卸载失效。攻击身份应区分重入／池化，同目标多次命中按玩法定。
+完整的体验目标、底座选择、职责、正常施放链、配置和二改现统一在 [05 §7](../../domains/game-dev/05-gameplay-architecture.md#7-战斗与技能先统一结算再决定-gas)，本节保留原生生命周期与历史动作证据，不再维护第二份实现规范。2026-10-25 整合；资料／源码研究，未运行引擎。
 
-- **Unity 最佳性价比 [研究]**：先 Health／Combatant／AbilityRunner 小组件＋不可变 AbilityDefinition＋每次施放的 AbilityExecution；已有成熟角色控制器或技能模块覆盖实际玩法时复用并留适配边界，不从零造全能技能编辑器。
-- **UE默认 [研究]**：少量动作先用ActorComponent／Montage／现有输入。重复的属性、叠层、标签、成本冷却、目标或必要预测使统一模型更划算时再用GAS；复杂单机也可适用，不按技能数或联网与否划死门槛。
-- **官方代价 [一手]**：GAS 的 CommitAbility 应用费用与冷却；正常结束要显式 EndAbility，否则可能持续阻挡其他动作；Per-Actor 实例跨施放复用，成员需清理。[Gameplay Abilities](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-abilities-in-unreal-engine)
-- **Lyra边界 [一手]**：[Abilities in Lyra](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US)中Pawn依赖possession、PlayerState、Input、Game Feature就绪，PawnExtension满足条件才授能力，失Pawn撤关联能力。跨Pawn ASC服务具体多人生命周期，不默认搬入单机。
-- **可省**：几种固定动作先上完整 GameplayTag 分类、全技能网络预测、通用公式 DSL、可组合效果图；也不在 Unity 里为了名字相同去复刻 UE GAS 全栈。
-- **AI 风险 [研究]**：Check 后仍可能失效却无提交时检查；费用扣两次；取消技能忘移除标签、移动锁、命中盒和订阅；非实例化默认对象写玩家私有状态；Per-Actor 复用残留上次目标；重生重复授予。
-- **将来验证**：施放准备／费用提交／命中／恢复各阶段插入死亡、眩晕、失去目标、场景卸载；断言费用、冷却、效果、伤害和奖励次数；同时攻击与治疗的顺序固定。若有网络再测延迟／丢包／预测回滚；单机切片不替联网通过。
+- [Epic Gameplay Abilities](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-abilities-in-unreal-engine)：CommitAbility 应用费用／冷却；正常结束须 EndAbility；Per-Actor 复用需清成员。2026-10-25 复核公开生命周期文档，不据此声称现有工程正确。
+- [Abilities in Lyra](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US)：PawnExtension 等 possession、PlayerState、Input、Game Feature 就绪才授能力，失 Pawn 撤关联；这是多人生命周期参照，不是单机必须采用的整套底座。
 
 **动作响应与承诺（2026-10-15 UTC+8）。** [研究] 沿技能定义／执行实例与局部状态机，分别定移动转向、阶段出口和再次攻击资格。动画退出不等于退款、重开命中盒或清冷却；本节只补输入识别后的动作许可。
 
@@ -297,16 +292,12 @@
 - **固定机制 [一手]**：Overgrowth [playercontrol.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/playercontrol.as#L469-L478)提供移动／跳／蹲／抓／攻击取消意图；[aschar.as](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L9600-L9610)检查动画已设、cancel门槛及延迟再EndAttack；[退出路径](https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L6260-L6274)清动画回调并回运动。[研究] 借请求、阶段许可与退出；未核完整曲线，不能推出帧数／退款。代码Apache-2.0，动画美术另属权利人。
 - **撤回反例 [一手]**：[Overgrowth 1.2 公告，2018-03-15](https://www.wolfire.com/blog/2018/03/Overgrowth-1-2---Combat-improvements/)取消casual外攻击吸附，缩短高难度肩投距离。[研究] 自动修位会改承诺；第三人称近战与Hades俯视比较不推广格斗帧表／联网竞技。
 
-[研究] **二改预注册**：原生动画层增加重武器／攻速增益，在起手、命中、恢复时请求移动、防御、再攻击，核恢复、次数、费用与已提交效果。缺过渡则缩窄出口或换合规片段；出口若破坏频率、预警或武器差异就撤回。退款／冷却沿原结算规则，不加框架。
-
 **动画释放边界补核（2026-10-16 UTC+8）。** 主线3；改变的建议：动画淡出后失去后续操作，先核现成回调与释放时机，不统一添加定时解锁；新证据：Epic 历史维护复现与 UE 5.8 当前选项契约，Unity 6.3 过渡状态机制对照。
 
 - **已修历史问题 [一手]**：[UE-183351](https://issues.unrealengine.com/issue/UE-183351)的Lyra长淡出中移动打断，监听Completed／Interrupted的EndAbility可能漏触发。WaitDelay仅报告中的workaround；已Fixed、Target Fix 5.3、修复`25328943`，不当当前故障。未下载Lyra／私有引擎源码。
 - **当前选择 [一手]**：[UE 5.8 PlayMontageAndWait](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Ability/Tasks/PlayMontageAndWait)区分淡出与播放完成；Allow Interrupt After Blend Out=true才在淡出后给Interrupted，关闭时该阶段打断无Interrupted／Complete，页面不证默认值。Stop When Ability Ends=true使正常结束也停Montage，显式取消总停止。先核选项，不据旧问题加watchdog。
 - **释放政策 [研究]**：完整播放才还控制→覆盖淡出中的打断；淡出开始即结束规则→核EndAbility是否截断应保留表现；后面还有Montage／逻辑→只推进或取消当前阶段。清理可共享，取消不得提交成功结果。
 - **Unity边界 [一手／研究]**：[Unity 6.3 StateMachineBehaviour](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.html)允许current／next／interrupted同时活跃，同步层可多次回调；[OnStateExit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/StateMachineBehaviour.OnStateExit.html)只是结束评估。旧出口只释自己的占用／窗口，不能撤新动作；局部表现仍用原生回调，不将机制推成当前故障。
-
-**[研究] 二改预注册**：拉长恢复段，在淡出前／中／后打断并立即再出招。按执行身份核锁释放、旧出口不误结束新招、取消无成功结果、剩余动画符合政策；费用／冷却／已提交效果不变。原生配置满足即停止，锁定版本确有缺口才局部补偿并核重入／重开。
 
 ### 7. 相机：先复用成熟运行时，验收的是可读性与控制权
 

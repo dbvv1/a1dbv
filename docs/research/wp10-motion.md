@@ -1,10 +1,67 @@
 主线：一／二／三／四；运动、碰撞与视听反馈
-改变的建议：[研究] 命中分动作仲裁与反馈编排；镜头分预判、跟随、避障与装饰，先保玩家控制，再逐层调体验。
-新证据：2026-10-23 补打击感及完整镜头模块；新增 Cinemachine 6.6 核心包升级、Impulse 原生合并／次级反应与升级手感反例（仅资料／源码，未试用）；另记 Star-Rush 本端兼容模式 HUD 检查。
+改变的建议：[研究] 角色控制用起停距离、转向轨迹与落点带定义体验，再复用 motor 并协同动画、镜头与反馈。
+新证据：2026-10-24 整合完整角色控制，补 Holden 起停拟合／固定修正版、当前 Starter 条目及 Celeste64 运动分区；资料／源码静读，未试用。既有打击感、镜头与窄 HUD 检查保留。
 
 # WP10：运动与视听反馈
 
 [总摘要、生命周期与预算](2026-10-14-game-wp10-client-modules.md)；[输入、UI 与内容](wp10-content.md)。除末尾明确列出的 Star-Rush 本端兼容模式 HUD 检查，本册为既有公开资料／源码研究；其他机制、完整游戏／引擎体验与玩家收益未实测，也不代表模型能力已验证。
+
+<a id="character-control"></a>
+## 完整角色控制：把起停、转向、落点和身体表现连成可调流程
+
+**[研究] 默认：自由移动保代码控制，接触复用成熟 motor；把停距、转向轨迹与落点带作为设计输入，再接动画／镜头。**
+**[研究] 增量：补的是正向操控品质和实施次序，不再以跳跃资格／取消恢复替代完整控制；正文替换原简短运动选型段，保已有锚点。**
+**范围：2026-10-24 UTC，公开资料与固定源码静读；未安装角色包、运行引擎／模型或试玩，最高体验水平和维护收益未知。**
+
+### 现有覆盖与这次整合
+
+探索回执：[研究] 本轮为既有研究续接，新增读官方页面、作者文章、固定源码与历史 Unity Discussions 原帖；未新增完整中文／多社区扫描，不将旧章探索范围算作本轮完成。
+
+本册已有 [P35](#p35新增移动能力后保住控制契约) 的缓冲／跳跃资格／接续、[3D 运动](#9)的 motor／平台／root motion、[镜头模块](#camera-contract)及[打击感](#hit-feedback)。WP11 的[镜头参照](wp11-camera.md#s9-4)、05 的技能／状态接续可直接引用；这次不改它们、不重包装路线意图研究。[研究]
+
+缺口是：读者仍不容易从“角色发黏／转弯漂／落地不好控”定位控制目标、参数组、身体表现和内容尺度。正文现在给一条从体验目标到现成底座、参数、可操作调校场和 AI 二改的路径。选目标后再选控制器，不把“换为更高级 motor”当手感答案。[研究]
+
+<a id="control-evidence"></a>
+### 强实践对照：哪些机制真正改变选择
+
+| 原始证据 | 能借的机制；本轮判断与边界 |
+|---|---|
+| **Penny’s Big Breakaway，GDC 2025**：沿本册 [P35 的 PDF 页码与作者证据](#最高水平卡与同题比较)，本轮不声称重看演讲 | [一手／研究] 动量与动作组合可成为表达空间；对照精确修正，保留“高速不必瞬转”的路线。关卡和反馈要解释失败，不能把更快制动统一当改善 |
+| **Celeste64 固定 `6edfe1ebd2a21a6134d7675a28e357891025407e`**：[Player.cs L991–1122](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L991-L1122)，本轮重新读取 | [一手] 无输入时地／空摩擦不同；地面低速趋目标速度，高速转方向，强反向进 skid；超速保留与空中修正另分支。[研究] 借响应分区，不抄常量、坡速或临时边缘纠偏；该游戏风格和 jam 架构不是通用质量上限 |
+| **Daniel Holden，2026-01-07**：[New Movement Model](https://theorangeduck.com/page/new-movement-model) | [一手] 分加减速、方向性加速、转向、速度平滑及朝向；作者说明进入 Mover Smooth Walking。[研究] ✅ 先用简单目标速度趋近；需要保速转弯／动画轨迹时🧪独立这些自由度，不将速度弹簧当纯表现、不默认迁 Mover |
+| **Holden，2026-02-15**：[Fitting Code Driven Displacement Revisited](https://theorangeduck.com/page/fitting-code-driven-displacement-revisited) | [一手] 在临界弹簧模型下以起停距离／时间估参；简化停距假设初始加速度零，停时需速度阈值。[研究] 借“从可见尺度倒推参数”的工作方式，正文恒制动公式是另一模型，不能混算；途中制动、反向和碰撞后重新观测 |
+| **ECM2 用户与作者原帖，2023-04**：[原文 #881–882](https://discussions.unity.com/t/released-easy-character-movement-2/839721?page=45) | [社区／一手] 用户反馈样例 dash 结束停顿，作者指出样例主动清零，并说明加减速／摩擦继续影响运动。[研究] 碰撞 motor 可复用，样例的动量政策仍须按游戏重选；历史问题不证明现行包故障或全部控制器都有同一原因 |
+
+**固定可复核的新实现。** [一手] `orangeduck/MovementModel@ae699fde7b8c8e268facdff0dbbc2ade8e2db9bd`（2026-02-02），本轮读 [MIT](https://github.com/orangeduck/MovementModel/blob/ae699fde7b8c8e268facdff0dbbc2ade8e2db9bd/LICENSE)与 [movement.cpp L430–458](https://github.com/orangeduck/MovementModel/blob/ae699fde7b8c8e268facdff0dbbc2ade8e2db9bd/movement.cpp#L430-L458)：`next_vel` 更新中间状态，`track_vel` 是实际速度弹簧目标。作者[勘误](https://theorangeduck.com/page/microblog)说明早先文章代码用错目标，2026-02-02 修正。**[研究] 需要试这个模型时固定修正版，不照旧文章片段生成实现；这是控制曲线示例，不含 Unity 碰撞／平台整合，也没有本仓实跑。**
+
+[研究] 三种速度路线的代价不同：直接跟目标速度最容易理解但方向突变强；有限加减速有可解释停距但转向会减速；再独立转向／弹簧可扩大表现范围，却增加参数耦合、状态和轨迹验收。响应不是越快越好，平滑不是越多越好；缺口只在视觉朝向，就不要把整个物理速度送进新滤波器。
+
+<a id="control-foundations"></a>
+### Unity 实现起点与 UE 对照：复用哪一层
+
+**Starter 条目不能凭旧名称判断。** [一手] 本轮读 Unity 官方[条目 196526](https://assetstore.unity.com/packages/3d/characters/first-person-third-person-character-controllers-196526)：原 ThirdPerson URL 重定向到 First Person + Third Person | Character Controllers，2.0.1、2026-09-17、免费，兼容表含 6000.3 URP；标 **Non standard EULA**。另一个[条目 267961](https://assetstore.unity.com/packages/essentials/starter-assets-character-controllers-urp-267961)仅自身标 deprecated。没有下载 2.0.1 或核其包内文档／许可，不能沿用旧版脚本字段、推断所有 Starter 停更或宣称 AI 输入权限。[研究] 👀 作为快速建立可操作基线的当前官方候选；已有许可明确的旧版本可以继续，不因重命名强制升级。
+
+**motor 复用沿已核机制，不重新造表。** [研究] [既有五方案](#11)已经比较 OpenKCC、CMF、SRMove、ECM2 与 Philippe St-Amand KCC 的接地、平台、依赖与许可。本轮未重新核每个商店的发行状态，因此不将 10-14 价格／版本提升为 10-24 最新。OpenKCC 是可改接触底座；CMF 是速度／momentum 分工参考；Starter 是快速上手组合；ECM2/KCC 解决更复杂接触。目的不同，不能按功能数排名。
+
+[一手] 重新读取 [ECM2 Character 文档](https://oscar-gracian.gitbook.io/easy-character-movement-2/user-manual/general/components/character)：Character 处理移动模式并把运动交 CharacterMovement；默认 auto-simulation 通过 LateFixedUpdate 协程安排在 Unity 物理更新之后。[研究] 窄策略沿实际包回调接入，不能再随意加一个 FixedUpdate 重复驱动。文档未锁版本且未验包；正式接入按安装版确认，不复制不匹配 API。沿[旧许可核查](#现成-motor-补比先借已有平台机制再决定补什么)处理商业包与 Agent 输入权限，公开文档可读不等于包代码可输入。
+
+[一手] [Unity Character Controller 1.4.5](https://docs.unity3d.com/Packages/com.unity.charactercontroller@1.4/manual/index.html)仍是 Entities 路线；GameObject 内置 CC 的 [Move](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/CharacterController.Move.html)没有自动重力，平台／速度语义沿[既有核查](#10)。[研究] 已有 ECS 用其标准角色／平台入口，非 ECS 不因它“官方”而迁移；已有 Rigidbody 手感合格也无需强换。
+
+[一手] [Epic 当前 Mover 文档](https://dev.epicgames.com/documentation/en-us/unreal-engine/mover-in-unreal-engine)仍标 UE 5.8 Experimental，并提示 API／数据格式可能变、更成熟后仍会继续支持 CMC。[研究] Smooth Walking 的新思想可评估，成熟胶囊角色仍默认 CMC；回滚、非标准形体或模块模式有结构性需求才改变默认。动画采样上限与完整角色 gameplay 不等同，GASP 的定位沿[已有 UE 记录](#15)。
+
+### 参数推导、输入与协同的实施边界
+
+[研究] 正文的恒制动／跳高公式是理想运动学初值，不是引擎复制代码：无额外力／碰撞、固定重力或恒制动才满足；模拟步与阈值改变实际停点。`MoveTowards` 类速度趋近可以先用地面加速／制动两档，转向是否用独立曲线由 90°／180° 轨迹决定。半衰期适合时间一致的响应表达，但不能把任意 `Lerp(v,target,k*dt)` 都叫精确半衰期，也不能用平滑遮输入等待。[研究]
+
+[一手] Unity Input System 1.20.1 的[处理器入口](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/Processors.html)、[内置处理器](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/built-in-processors.html)及[处理层级](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/introduction-to-processors.html)区分值变换及 Control／Binding／Action 层。[研究] 检查现有死区而非机械再加一次；模拟幅度要进入速度映射。镜头水平参考基在接近竖直时需稳定后备，具体是上一有效朝向还是角色 yaw 由项目选择。持续输入是否跟导演切镜沿 [WP11 已有来源](wp11-camera.md#s9-4)，不把装饰视图强当唯一玩法参考。
+
+[研究] 动画、镜头、反馈各消费合适信息：意图给启动／瞄准，实际支撑面相对速度给步态，碰撞前相对接近速度给落地力度，稳定呈现姿态给跟随。角速度平台的支撑点速度、root motion 经过 motor 及视觉／物理更新阶段沿[旧 3D 运动](#9)；非零世界位移不等于角色在走。缺动作资产时优先换合规资源或缩动作范围，程序不能凭空修好接触姿态。
+
+### 验收为什么是一个调校场，而不是一次取消测试
+
+[研究] 正文实施清单让 AI 在现有项目内交可操作场景、参数释义、轨迹与前后录屏；一条路线覆盖短推、起停、折返、空控、坡阶和平台，再接瞄准／落地表现。每个区段对应一个玩家可学能力，机器记录原因、人判断可控／可读与乐趣。没有执行这些验收，不填写已通过，也不为文稿额外写脱离引擎的 CPU 模拟来证明手感。
+
+二改提高跑速时同时核停距、转向空间与镜头预判；二改瞄准侧移时同时核移动基、朝向与动画。只让与需求有关的轨迹变化，不要求新旧全部相同。碰撞、资源、输入暂停等基础正确性继续沿既有章节；本轮主结果是正向操控和开发调校方法，不另造通用 controller／新游戏。[研究]
 
 ## P35：新增移动能力后保住控制契约
 

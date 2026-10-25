@@ -61,7 +61,7 @@
 <a id="s18-1"></a>
 ## 效果叠加补研：来源所有权不等于合并规则
 
-核实：2026-10-15（UTC+8）。[研究] §7补来源与合并规则：其他来源仍有效或施放结束而毒应持续时，“取消就清标签”不足；先定谁维持、重复如何合并。
+核实：2026-10-15（UTC+8）；2026-10-25 合并实现建议到 [05 §7](../../domains/game-dev/05-gameplay-architecture.md#7-战斗与技能先统一结算再决定-gas)。以下保来源与合并规则的固定实现、实际消费者和许可，不另维护一套模块。[研究]
 
 <a id="s18-2"></a>
 ### 1. OpenRA：来源退出只撤自己的授予
@@ -76,7 +76,7 @@
 | [TS nod-structures.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ts/rules/nod-structures.yaml)、[TS defaults.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ts/rules/defaults.yaml) | 真实隐形发生器以 ProximityExternalCondition 授予 cloakgenerator；消费者 Cloak 的条件为 cloakgenerator 或 crate-cloak，证明多个授权入口确实用于游戏规则，不只是未用样例 |
 | [RA defaults.yaml](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/mods/ra/rules/defaults.yaml)、[DamageMultiplier.cs](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/OpenRA.Mods.Common/Traits/Multipliers/DamageMultiplier.cs) | Iron Curtain 条件连接覆盖色、计时条和 Modifier=0 的伤害修饰；修饰器禁用时返回 100。这说明效果状态与表现可共享条件，但不证明任意计时 UI 都准确 |
 
-[研究] 重叠来源需分别退出时，从活授予推导状态；数量用计数，撤回权限／重复释放用来源句柄。句柄不解决清理顺序、重生、序列化；单一不重叠所有者仍可用布尔值。不为此移植OpenRA trait／YAML。
+[研究] token 支持逐来源撤销，不自动解决重生／存档；本仓采用选择与保护光环例已移至 05 §7。
 
 [一手] 项目自己的 [Conditions Wiki](https://github.com/OpenRA/OpenRA/wiki/Conditions)列出实际光环、铁幕与 EMP 使用；页面示例明确针对旧 release-20180307。本次采用上述固定现行路径核实，不把旧 Wiki 的 structures.yaml 路径当当前文件布局。
 
@@ -90,7 +90,7 @@
 - [PotionOfHaste.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHaste.java)实际使用 prolong；[FlavourBuff.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FlavourBuff.java)到调度时刻 detach。这是单一可延期效果，不是每瓶药各建一层计时
 - [PoisonDart.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java)调用 affect(Poison).set；[Poison.java](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java)的 set 取 left 与新 duration 的最大值，另一个 extend 方法才加长；每次伤害由 left/3 的整数部分加一计算。到期或目标死亡 detach，存档保存 left
 
-[研究] 独立层、max与sum会改变毒镖伤害和重复收益，配置改动也是平衡修改。由人选合并规则，不推广成所有毒都合一；回合调度不可直接换成帧时钟。
+[研究] 上述真实消费者分别采用独立实例、较晚结束点和加时长；不是同一个“叠加”操作。
 
 <a id="s18-4"></a>
 ### 3. Unity 与 UE 的采用边界
@@ -104,15 +104,7 @@
 <a id="s18-5"></a>
 ### 4. 窄二改题、许可与验证范围
 
-[研究] 后续预注册：原有冲刺保护增加一个保护光环，再给毒镖增加可选叠加升级。基线与修改后使用相同遭遇，逐项记录有效来源、剩余时间、伤害及玩家可见图标；不预先增加框架。
-
-| 待证规则 | 对照输入与期望，由设计先确认 |
-|---|---|
-| 独立保护来源 | A 生效→B 生效→A 结束，B 仍保护；再 B 结束才移除。重复 A 清理不影响 B；重复是否报错由边界契约决定 |
-| 时长合并 | 原剩余 8，新施加 3：max 保持 8，刷新为 3，相加为 11；独立层则是 8 与 3 两个计时。这里是规则示意，非任何游戏的实测结果 |
-| 效果与施放寿命 | 冲刺结束只释放冲刺保护；毒命中后施法者死亡是否保留按设计断言，不默认清光目标状态 |
-| 驱散与恢复 | 指定来源、清一层、清整类分别测试；驱散后立即重施、旧回调迟到、目标重生不得删新效果 |
-| 可读性 | 两光环重叠及毒升级前后，让玩家解释图标数量、剩余时间和重复使用收益；图标没消失不自动证明伤害规则正确 |
+二改已统一到 05 §7 的蓄力／灼烧／双光环例；以下许可仍适用。来源撤销不等于合并政策，按类清除也不等于撤一次授予。[研究]
 
 [一手] 文件头及[OpenRA COPYING](https://github.com/OpenRA/OpenRA/blob/e180e3225f3930272dd451917467631618f8976f/COPYING)、[SPD LICENSE.txt](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt)均为GPL-3.0-or-later；直接复用须处理分发义务及素材权利，不作闭源Unity／UE即插模块。
 
@@ -324,9 +316,7 @@
 <a id="s32-1"></a>
 ## 效果时钟补研：调度时间、行动次数与到期显示
 
-主线三，GC；核实：2026-10-16（UTC+8）。
-改变建议：05 §7 持续效果按行动调度、指定次数或模拟时间选择；首末跳、到期与剩余显示一起定义，不把“声明时钟”简化为统一 N 秒。
-新证据：Shattered Pixel Dungeon 的毒／加速消费者与历史显示修订，不同作者 Flare／Empyrean 的秒数效果、暂停及恢复路径。[研究]
+核实：2026-10-16（UTC+8）；2026-10-25 将时间／周期／二改规范整合进 [05 §7](../../domains/game-dev/05-gameplay-architecture.md#多来源效果先定合并规则再增加框架)。本节保 SPD／Flare 的不同调度机制及显示反例。[研究]
 
 <a id="s32-2"></a>
 ### 回合玩法：调度时间不等于输入次数
@@ -353,18 +343,12 @@
 - [一手：历史反例] [#1843](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1843)报告 Salt Cube 剩余 17、17、15；[维护者2024-09-18回复](https://github.com/00-Evan/shattered-pixel-dungeon/issues/1843#issuecomment-2359484764)解释 Buff 的速度变化，但数值只在其行动时更新，选择保留。[研究] 跳变不等于结算错或玩家能理解，非当前复现
 - [一手：近期修订] [58f0e5b，2026-07-06](https://github.com/flareteam/flare-engine/commit/58f0e5b1242680d6575e5035c960f3a5f025aaf7)分护盾强度／计时，使限时护盾 tooltip 显示期限。[研究] 支持量／期限分别显示，非毒／加速同病证据，无独立复测或体验测量
 
-[研究] ✅ 沿既有行动队列、模拟更新与效果实例确定推进单位、首末跳、移除和显示，保留每种玩法自己的暂停政策。不为效果种类增加而统一 N 秒、所有输入减一或搬入另一游戏调度器；本节不改变既有多来源合并与撤销建议，也不重复数值组合与命中连锁。
-
-[研究] **二改预注册**：毒增加移动加速，验快慢动作、等待、临界跳伤及行动机会；按次数承诺才按有效行动扣。即时版本在跳伤／到期前开普通菜单、暂停、切后台恢复，各依政策继续／冻结，冻结不补积压跳伤。记状态、时间／次数、UI边界，不以显示平滑代结算。
-
 **边界 [一手／研究]**：SPD文件头GPL-3.0-or-later；Flare [README许可节](https://github.com/flareteam/flare-engine/blob/1969baeb89ebf94cf22e2bc2ed4e3d8413714d4f/README.md#license)为GPLv3-or-later，内容[LICENSE.txt](https://github.com/flareteam/flare-game/blob/af6eee6d339ac98011864bfe89da837fe7769c28/LICENSE.txt)为CC-BY-SA 3.0。未核快照组合兼容或跨设备恢复；时间／行动政策只写一份。
 
 <a id="s33-1"></a>
 ## 效果读取时点：持续代价与一次承诺
 
-主线三／GC；核实：2026-10-16（UTC+8）。[研究]
-改变05 §7：二改加入临时增伤／换装时，按字段选择施加快照或动态读取，不让实例复用决定规则。[研究]
-新证据：PoE 1.2.0、WoW 6.0.2的历史正式修订及2026单玩家显示反馈；不新增效果框架。[一手／社区]
+核实：2026-10-16（UTC+8）；2026-10-25 将按字段选读取时点整合进 05 §7。以下为历史正式修订及单玩家显示反馈，不当作当前全技能规则。[一手／社区]
 
 **持续收益与代价一起持续。** [一手] PoE [1.2.0正式补丁的General Balance Changes](https://www.pathofexile.com/forum/view-thread/998489)规定装备／支持宝石变动后持续技能更新；[开发者说明](https://www.pathofexile.com/forum/view-thread/951414)（2014-06-18 发布、10-10 修订）以 Mon’tregul’s Grasp 为例：快照换装保强僵尸又绕过少数量代价，限制后续装备设计。作者承认会削弱构筑，安排赛季间改，属设计理由非收益测量。字段仍不同步：生成等级须重召／新实例更新，Righteous Fire 拔技能仍持续，装备、被动、支持宝石分别处理。[研究] “修快照”不等于每跳重读全部字段。
 
@@ -372,12 +356,10 @@
 
 **快照刷新要可判断。** [社区] [2026-03-22玩家原帖](https://us.forums.blizzard.com/en/wow/t/feral-feedback-snapshotting-is-hard-with-current-cooldown-manager/2278000)要求图标显示旧流血实际保留的强化，而非仅当前增益／剩时。[研究] 单玩家信息需求，不核全部职业现规则、普遍体验或 2014 前后对照。
 
-**采用与撤回 [研究]**：沿实例按字段分已承诺值／动态依赖，刷新时长与强度分别定，需要比较才显示差异。快照造成换装仪式／规避持续代价就缩范围；动态读取毁掉强化攻击的延迟部分就恢复局部快照，不全回滚。未取得到期复用残留快照的独立修复链；不新增实测计划。
-
 <a id="s34-1"></a>
 ## 属性修饰补研：计算顺序与重算
 
-核实：2026-10-16（UTC+8），主线三／GC。改变05第7节：效果所有权与层数不足以定义计算；首次和重建采用同一顺序，区分派生上限与已发生的资源变化。[研究]
+核实：2026-10-16（UTC+8）；2026-10-25 将重算与实际 HP 的实现建议整合进 05 §7。本节保计算顺序的修复链、固定消费者和许可。[研究]
 
 **重建曾改变结果。** [一手：维护链] Wesnoth [#4419维护者例子](https://github.com/wesnoth/wesnoth/issues/4419#issuecomment-537258606)：先设最大 HP=100 再加 100 得 200，重建按类型重排却成 100；[报告者补充](https://github.com/wesnoth/wesnoth/issues/4419#issuecomment-537261328)称删无关修改也触发。[2020-08-20合入的#5085](https://github.com/wesnoth/wesnoth/pull/5085)采用记录顺序重放，不是讨论候选全实现。
 
@@ -386,8 +368,6 @@
 **倍率有阶段。** [一手／研究] SPD 4.0.2 `57a4e06a4caf162446d1c28caa7983f0493fecf0`的[萨满](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Shaman.java#L153-L170)授虚弱／易伤；[攻击链](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java#L479-L512)先攻击者虚弱×0.67，经取整、防御、扣护甲，再目标易伤×1.33，后续还有钩子、damage、护盾，中间值非最终 HP 差。[治疗药](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java#L76-L84)移效果后下一击重查，不反算上一击。
 
 OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实际等级规则](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/mods/ra/rules/defaults.yaml#L60-L83)影响伤害；[发射侧／装甲处理](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Warheads/DamageWarhead.cs#L73-L90)和[承伤侧处理](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/Health.cs#L158-L189)分阶段，存在整数转换；禁用[DamageMultiplier](https://github.com/OpenRA/OpenRA/blob/b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787/OpenRA.Mods.Common/Traits/Multipliers/DamageMultiplier.cs#L32-L35)返回100%。[历史乘算评审](https://github.com/OpenRA/OpenRA/pull/6079#discussion_r15618105)关于200%与50%回到100%的讨论起点是装填间隔，不伪称伤害bug；这里只支持计算语义须明确，不能推广为整个管线只取整一次。[一手／研究]
-
-**二改预注册 [研究]**：A加入B，核首次／重建、删无关项、A到期、期间永久成长后撤临时效果；有意义的顺序保留。核小伤害、护甲、取整、降上限与当前HP，避免重算重复治疗／扣血，现有函数够用不加DSL。
 
 **边界 [一手／研究]**：Wesnoth相关文件GPL-2.0-or-later，SPD／OpenRA为GPL-3.0-or-later。只核固定消费者与历史修复，不代表复现或当前全路径正确。
 
@@ -453,14 +433,12 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 <a id="s40-1"></a>
 ## 蓄力技能补研：按法识别、技能进度与释放
 
-核实：2026-10-18（UTC+8）；主线一／三。改变 05 §7 的蓄力二改选择：原生 Hold 契约满足就保留，游戏规则改变蓄力速率／资源时沿已有技能状态计量，不把满格当释放。[研究]
+核实：2026-10-18（UTC+8）；2026-10-25 将蓄力设计、正常施放链与加速二改整合进 05 §7。本节保动作与输入契约差异。[研究]
 
 - **历史设计拆分。** [一手] Hades II [2024-10-16 Olympic Update 官方公告](https://steamcommunity.com/games/1145350/announcements/detail/7057794870234137717?l=english)将 Sorceress 改为 Omega 动作加速，旧效果移至 Silver Wheel；后者在引导 Omega 时减慢周围事物。同页可含相邻更新，本轮按公告 ID `7057794870234137717` 与标题定位正文。[研究] 支持自身动作与周围减速可分别设计，不证明内部时钟、当前平衡或玩家体验改善。
 - **满蓄仍可持有。** [一手] Veloren `21db1de49c7b57013acac7a309983b530a65b848`（2026-10-17）的 [charged_ranged.rs L59–66](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/charged_ranged.rs#L59-L66)按阶段 timer／charge_duration 给进度；[L93–178](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/charged_ranged.rs#L93-L178)在松开或能量不足且未发射时按蓄力比例发弹，满蓄按住仍持有。[utils.rs L1722–1757](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/common/src/states/utils.rs#L1722-L1757)分输入状态与 timer，后者以 dt 乘攻速及阶段倍率，Charge 用 charge_speed_modifier。[研究] 支持技能进度区别于单纯按住时长；未追其暂停链，不外推停顿政策。代码 [GPL-3.0](https://github.com/veloren/veloren/blob/21db1de49c7b57013acac7a309983b530a65b848/LICENSE)，这里只借机制。
 - **Unity 输入计时不是提交回执。** [一手] [Input System 1.17 InputAction 文档](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.17/api/UnityEngine.InputSystem.InputAction.html#UnityEngine_InputSystem_InputAction_GetTimeoutCompletionPercentage)说明 timeout 完成率可到 1，而超时尚未由输入更新处理、动作未 performed。另核源码 `05e45ddbaf18a93245b068d787d74b738b90d01c` 的 [InputEvent L162–175](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Events/InputEvent.cs#L162-L175)真实时间线与 [StartTimeout L2289–2315](https://github.com/Unity-Technologies/InputSystem/blob/05e45ddbaf18a93245b068d787d74b738b90d01c/Packages/com.unity.inputsystem/InputSystem/Runtime/Actions/InputActionState.cs#L2289-L2315)按输入时间加秒数注册；该 SHA 不宣称等同 1.17 包，暂停中是否处理还取决于更新与启用状态。
 - **UE 可选全局缩放。** [一手] [UE 5.8 UInputTriggerTimedBase](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/EnhancedInput/UInputTriggerTimedBase?lang=en-US)的 bAffectedByTimeDilation 默认 false，选择是否将全局时间缩放用于 held duration；不据此承诺角色局部倍率、菜单暂停或动画也已同步。[研究] 只需此契约时保留原生触发器，不能因 Unity 路径不同就复刻输入层。
-
-**选择与边界。** [研究] 沿现有执行实例保留资格、取消与唯一提交；UI 表达按法进度还是技能进度由用途定，动画释放沿前述窗口／退出政策，不额外搭状态框架。原生 Hold 满足即停止拆分；满蓄自动释放也合法，Veloren 不是统一规则。沿原蓄力二改加入攻速，再核停顿／暂停中的进度、耗能、松开／取消和释放次数；本轮仅官方契约、历史公告及固定源码阅读，未运行游戏／引擎／模型或验证手感。
 
 <a id="p111-deckbuilding"></a>
 ## P111：卡牌构筑，从出牌到下一场的完整闭环
@@ -582,20 +560,11 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 <a id="p126-immunity-contract"></a>
 ## P126 净化之后为什么仍掉血：状态与伤害的入口不同
 
-核实：2026-10-23。改变05§7：沿既有活效果集合先分移旧、挡新、伤害保护；暂挂仅在需要恢复原效果时选用。不重做来源所有权、堆层／刷新或属性重算。[研究]
+核实：2026-10-23；2026-10-25 合并建议到 05 §7，并复核 EX-GAS 默认分支仍为 `801735292820a6de9dd1abbac0e2139025840a61`，README 的 Odin／测试提示及 Container 免疫 Cue TODO 未变。本节保净化与伤害入口反例及替代成本。[一手／研究]
 
 ### 读者先决定保护什么
 
-**✅ 先把承诺落到实际消费入口，不先迁移框架。** “免疫”可以指拒绝新状态、清除旧状态或不受某类伤害，三者不会自动互相推出；被挡的状态也不应先播成功表现，再空跑到期。下面是设计选择，不是所有游戏通用的净化规则。[研究]
-
-| 玩家承诺 | 修改位置与验收 |
-|---|---|
-| 清除已有负面状态 | 对活效果按可驱散范围移除；明确不可驱散项、是否整栈，不以清一个标签代替生命周期退出 |
-| 一段时间不再中状态 | 在施加入口检查后再提交状态与成功表现；保护结束不补施期间被拒的效果，除非玩法另有排队规则 |
-| 某类伤害无效 | 追环境伤害、命中伤害和周期伤害各自的结算入口；拒状态不等于 HP 不变 |
-| 暂时失效，之后恢复 | 保原实例与来源，不假装已被驱散；另定剩余时间、周期和恢复首跳，不能由“失活”名字推断冻结 |
-
-**让 AI 先找两条调用链再改。** 在现有工程定位“施加→活效果→退出”和“命中／环境→伤害结算”，交规则表与沿原测试入口的轨迹：已中状态→净化→保护期间再次施加／环境伤害→保护结束；记录拒绝原因、活效果、HP和反馈。保留两保护来源撤一／重复退出测试；不用新增效果框架或独立演示工程。[研究]
+清旧、挡新、免伤与暂挂的选择、成功／拒绝反馈及正常组合回归统一见 [05 §7](../../domains/game-dev/05-gameplay-architecture.md#多来源效果先定合并规则再增加框架)，这里保留支撑选择的产品与实现证据。[研究]
 
 ### 作品给出的反例：同样叫毒，未必都是状态
 
@@ -621,7 +590,5 @@ OpenRA `release-20250330`固定`b4f3d8ae02b6bd6f4a3a5441e6d0daf7c5073787`，[实
 - [README](https://github.com/No78Vino/gameplay-ability-system-for-unity/blob/801735292820a6de9dd1abbac0e2139025840a61/README.md)提示测试覆盖不足、依赖付费 Odin Inspector；[代码MIT许可](https://github.com/No78Vino/gameplay-ability-system-for-unity/blob/801735292820a6de9dd1abbac0e2139025840a61/LICENSE)不消除第三方依赖成本。[研究] 本次仅作机制参照、未安装／运行；已有它就核这些入口与反馈，不因一个净化需求采用整套移植。没有验证真实发行游戏采用或断言其为当前最佳框架。
 
 [一手] UE公开[UImmunityGameplayEffectComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/GameplayAbilities/UImmunityGameplayEffectComponent)定义为阻止其他 GameplayEffectSpec 施加，instant效果自身不能持续授免疫；[Gameplay Effects](https://dev.epicgames.com/documentation/unreal-engine/gameplay-effects-for-the-gameplay-ability-system-in-unreal-engine?lang=en-US)区分instant执行与持续效果入活容器。[研究] 已用GAS沿原生机制核配置；免疫组件不自动等于清旧、暂挂或拦截绕过GAS的自定义伤害。
-
-**采用与撤回。** 默认保留当前角色活效果集合，明确施加、驱散、伤害三个入口与成功／拒绝反馈；只有规则反复共享、现有实现难维护，才比较更完整模块。若玩法有意“净化并免伤”，显式组合而非删掉免伤；若只是临时压制，就保实例并验证恢复，不误清旧效果。[研究]
 
 **探索回执与限制。** 截至2026-10-23，核SPD开发日志与固定源码、Unity原帖、EX-GAS README／固定源码、Epic公开文档；SPD 2025 Reddit讨论仅检索摘要、原帖获取失败，不采用为玩家失败证据。未安装、未跑Unity／UE／游戏，无观感、性能或模型收益实测；最高水平未知，本项只补已识别的选择缺口。[研究]
