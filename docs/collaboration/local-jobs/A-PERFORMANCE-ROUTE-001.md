@@ -2,7 +2,7 @@
 
 id: A-PERFORMANCE-ROUTE-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8a1235c7bc4c849c50ce81673f9e66df8eecd638
 result_branch: relay/a-performance-route-001
@@ -26,3 +26,5 @@ result_branch: relay/a-performance-route-001
 回传实际模型／客户端、执行起止、来源永久链接、源码位置、当前需求／PR状态、选择与撤回条件。一次有效独审覆盖新增正文和推荐证据；无正文则独立核对选题关键事实，不叠评审。按手册§7做适用文档／公开内容／身份／空白检查；不为纯文档跑实验。推指定结果分支并回写 review_ready，不能称实现完成。
 
 不接触私人会话、公司代码、账号用量、秘密，不付费、不下载大模型、不创建账号／数据库身份，不启动浏览器或服务、部署、外发issue／PR、新建会话或调度，不重试已拒动作。已有拒绝不换路；局部受阻只停对应动作。发布前fetch，15若并发变化先协调；13改写另有执行者，不碰。
+
+认领：dot 本地协作；2026-10-25T02:44:04.284827+00:00。来源 main 固定 `fe4296b`；性能研究与13改写无文件重叠，先发布认领再执行既有正常原生 Workflow。复用已有成果，产物仅推指定结果分支。
