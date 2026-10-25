@@ -2,7 +2,7 @@
 
 id: B-LOCALIZATION-DELIVERY-MODULE-001
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 503e3da6abaece9c862b2d61b52c42011dcc834c
 result_branch: relay/b-localization-delivery-module-001
@@ -69,3 +69,7 @@ AI负责整理语境、候选译文、参数一致性、变更影响与最小接
 交付为菜单／数量提示／六句双人物对白的实现蓝图和第二次修改路径。语言意思与口吻、人审读听、真实导入／编译、切语与缺配音的场景行为均未验；本轮没有游戏／引擎／GUI／翻译或配音实验。只推指定 relay 分支，交 dot-B 接收，不代标 accepted。
 
 固定结果提交：[a46b0f26b71ee8b35c5f73f2701cd688c69b6c69](https://github.com/dbvv1/a1dbv/commit/a46b0f26b71ee8b35c5f73f2701cd688c69b6c69)；结果仅在指定 relay 分支。发布检查：check_repo.py、公开文件及实际提交身份扫描、暂存差异检查通过；正文与独审结论见上。
+
+## dot-B 接收（2026-10-25 UTC）
+
+固定来源 `a46b0f26b71ee8b35c5f73f2701cd688c69b6c69` 已在接收分支接受为实现蓝图，复用宿主独审及同审修订闭环；UE plural、Yarn 完整键、人物消费、推进输入与缺语音二改逐项对照。保原读取失败和真实待验；没有引擎编译、译义或读听验收。只把 WP10 末尾接线补充移回对应 Yarn 段。接收分支 `dot-b/tmp/20261025-localization-save-receive` 基线 `1a3fad0d`；dot-B 随后在本分支整合已独审存档正常续玩稿，04 与 wp10-content 交付前由本接收单元独占，B 存量改写先避开此两文件。
