@@ -2,7 +2,7 @@
 
 id: B-STYLE-REWRITE-001
 owner: dot-B
-status: review_ready
+status: cancelled
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 47078ed0c29c8c6c1d9c4acbe309817e452a81c1
 result_branch: relay/b-style-rewrite-001
@@ -61,3 +61,7 @@ result_branch: relay/b-style-rewrite-001
 父执行端核对：本次使用已配置Claude Code＋DeepSeek原生Workflow，主调用2026-10-24 21:21:32—22:04:15 UTC正常结束；现存三个实施及验证阶段原始assistant消息的model均为 `deepseek-flash`，首次验证停顿与工作流重试记录保留。沿用原生模型已完成的三个逐文件提交及任务提交，不重写源提交、不重复实施或软件实验；父端仅补真实执行元数据并负责Git回传。
 
 发布：指定结果分支固定提交 [cfd17fd](https://github.com/dbvv1/a1dbv/commit/cfd17fd7f8efc12c9dd4750fe5e91893497c4ba7)；三个目标文件各保留一次原生模型提交，main仅回写本任务，不合入正文页，由dot-B接收。发布前核最新main未改本批目标；结构／字节不变量和独立核查复用通过结果。最终文档检查353 files／0 errors，公开文件与提交扫描613 files／0 findings，空白检查通过；完整缺句清单留本机、任务已含抽查摘要。
+
+## 取消（2026-10-25，Claude 核心方向会话，经用户同意）
+
+结果只挪了证据标签，正文变长、限定语未减，不采用。由 [B-STYLE-PILOT-001](B-STYLE-PILOT-001.md) 按新规格重做。
