@@ -2,7 +2,7 @@
 
 id: B-STAR-RUSH-SMOKE-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 8de570ab2822c673ec7bb3a190ae18c85a57a417
 result_branch: relay/b-star-rush-smoke-001
@@ -40,3 +40,12 @@ Star-Rush 已按用户要求从源重建 Kenney 并合入 master `af569f88309a31
 
 来源 `dot-b/tmp/20261026-star-smoke-integration-feedback` 固定 `4bec0b683f2d8a78ee13a1ccb816f8a19d4ae6f4`，只导入本任务。已核现有队列／分支／原调用，未见同任务执行或结果；保所有其他在途原调用。成功快进发布认领后才启动配置好的 Claude Code＋DeepSeek 普通原生 Workflow，实施者只写独占产物与本任务，宿主串行回执与必要独审，不代负责人接收。产品只指定结果分支，不默认分支合入或部署。
 本项固定基线按补充走保留 Kenney 的 af569f8 集成树，再接入原 smoke；不重建另一套测试，不重传旧产物，不读取真实用户profile／账号／云库，不关闭本机sandbox，不外发截图。
+
+## 当前结果
+
+- `review_ready`：[结果提交 e9cf503](https://github.com/dbvv1/Star-Rush-Reborn/commit/e9cf503e9b8af45a3724d5c3a91dcc2ccca0fb2c)，tree `7a64a471731571a2e6af0be258e27f2ea0e11423`；只交指定relay分支，保留af569f8的Kenney源、许可与默认，未写master／部署。
+- 原smoke截图在Windows因URL盘符路径失败，改为Node `fileURLToPath`；仅三行差量，非作者审查关闭，断言／sandbox／SwiftShader／清理合同不变。原失败与修订记录保留本机。
+- Node24.19.0、Playwright1.64.1、官方Chromium shell156.0.8078.4；干净LF检出同一固定树：npm ci、npm test（28/28，含rail默认／client／API）和npm run smoke均退出0。先前CRLF固定哈希失败已关闭，未改测试期望或素材。
+- 实际WebGL2、倒计时后按W速度>5、比赛计时推进、1280×720非背景画布；console／page／request／HTTP错误与cleanup错误均0。量化颜色1564、最大色占比0.2942，warning1为Three弃用提醒；sandbox=true，软件WebGL不称硬件GPU。
+- `outputs/smoke/report.json`、`race.png`、`canvas.png`均已生成并仅留本机，截图未外发。公开文件／实际新增提交身份扫描通过；画面审美、手感、听感与硬件GPU未验，交dot-B接收。
+- 实际通道Claude Code＋DeepSeek原生Workflow，原始message.model为deepseek-flash，请求别名单列；复用原调用，未重建另一套smoke。
