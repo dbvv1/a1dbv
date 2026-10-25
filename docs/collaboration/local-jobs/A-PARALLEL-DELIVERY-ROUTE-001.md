@@ -2,7 +2,7 @@
 
 id: A-PARALLEL-DELIVERY-ROUTE-001
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1cd80938b5de203e0425d26363d610120924339c
 result_branch: relay/a-parallel-delivery-route-001
@@ -33,6 +33,27 @@ result_branch: relay/a-parallel-delivery-route-001
 
 ## 执行与结果
 
-待认领。已运行同任务只接续，不重复启动。
+已完成原生调用，接续独立语义审查与交付。
 
 认领：dot 本地协作；2026-10-25T00:36:26.805008+00:00。来源 main 固定 `ea42dc5`；先发布认领后沿正常原生 Workflow 执行。独占 08 与本任务，复用既有公开成果，结果仅推指定分支。
+
+### 本次执行回执（2026-10-25，review_ready）
+
+- 执行通道与型号：Claude Code 原生 Workflow 子代理（本任务执行席）。assistant 响应元数据 `model=deepseek-flash`；系统 init 的 `deepseek-v4.1-flash[1m]` 为请求别名，不作为独立 API 身份。实际执行起止：2026-10-25T00:37:12.836Z—00:49:47.777Z（UTC，原调用正常退出）。
+- 改动：`docs/08-multi-agent.md`（30 秒入口改为并行交付选择；§4 去掉已移入 §6 的拆分与并发项；§6 重写为“多个独立目标 → 交回 → 独审 → 整合 → 下一次变化”路线；§8 汇总段去重）与本任务文件。标题锚点、既有命令和未受影响内容保留；未新增编号专题、目录、配置框架或证明台账。
+- 路线要点：原生按需委派／独立 worktree／额外编排三层选择与投入；先定共享决定、唯一写者与验收；交回固定 base SHA、完整产物、真实验证与未验项；一次全新上下文有效独审，复用可信审查并只复查变化；按实际文件／接口重叠串行整合，保留主干与结果分支历史；部分真实消费者未验时分开记录可接收产物与缺失目标；附短起点和下一次自然变化。正文不复制大量 SHA／时间／测试计数。
+- 复用：A-DELIVERY-ROUTE-001、A-STYLE-REWRITE-001/002、A-MEMOS-READING-001 与最终整合 795c8f6 的公开任务回执和固定产物；既有官方、社区、开源与研究证据。未重跑模型对照、软件实验、浏览器、服务或 demo，未制造依赖冲突。
+- 发布前 main：fetch 后 `origin/main` 由 `0a43fd1` 前进到 `ceca31d`；两者之间 `docs/08-multi-agent.md` 无改动，无需按新基线整合。A-STYLE-REWRITE-003 的四个目标文件（01-agents/codex.md、01-agents/claude-code.md、02-models-and-cost.md、09-review-and-quality.md）与本任务无写入重叠。
+- 检查：`python3 scripts/check_repo.py` → 358 files, 0 errors；`python3 scripts/check_public.py` → 619 files, 0 findings；`python3 scripts/check_public.py --commits origin/main..HEAD` → 619 files, 0 findings（阶段检查时区间无新提交；本次提交后的身份与公开内容另按实际新增区间扫描）；`git diff --check` → OK。结构自检：标题行与改动前一致（20 个），表格列数一致，41 个本地链接均存在，原有代码块逐字保留，两文件为 UTF-8、LF、无 BOM。
+- 独立审查：一次全新上下文只读 code-reviewer 已核原始需求、两文件差量、固定生产提交父链、Memos 报告与相关补丁，未发现实质缺陷。未重跑原软件、浏览器或模型实验。
+- 未做／边界：未 commit／push（父级发布到结果分支与 main 回写）；未运行模型对照、软件实验、浏览器、服务或 demo；未改 TASKS、指导层、其他正文或产品代码；未外发 issue／PR、未部署、未重试已拒动作、未新建会话或调度。正文与任务回执不声称并行更快、更便宜、质量更高或浏览器成品。
+- 状态：`review_ready`，独立审查已完成，结果由 dot-A 接收。
+
+### 交付检查原始发现的核正（2026-10-25）
+
+- 阶段检查把 §7 两处旧标题链接判为需更新；父端源码核对发现目标页仍有同名显式 `<a id>`，原链接有效。已撤回这两处无必要的链接修改，保留原链接和原始检查输出，不把该项算真实缺陷。
+- 原始阶段检查与对应输出留本机，范围外文件未修改；其余既有文档／公开检查继续按实际覆盖复用。
+
+发布基线：已快进整合最新 main `1b0e35f`，08 无并发变动；保留既有提交与负责人接收反馈。原生 Workflow 与独立语义审查均已结束，响应字段均为 `deepseek-flash`，后端具体型号未另证。最终提交身份与公开内容按实际新增提交扫描。
+
+Git 回传：结果分支 `relay/a-parallel-delivery-route-001`，固定提交 [`ebad3020f564ba9119800226a53c768bee915942`](https://github.com/dbvv1/a1dbv/commit/ebad3020f564ba9119800226a53c768bee915942)。最终文档检查 359 文件、公开内容检查 620 文件、实际新增提交身份扫描、空白检查通过；一次独立语义审查无实质缺陷。main 只回传原任务，08 正文留结果分支由 dot-A 接收整合。
