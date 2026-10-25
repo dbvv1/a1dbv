@@ -3,9 +3,12 @@
 id: B-STAR-RUSH-SMOKE-001
 owner: dot-B
 status: running
+accept: auto
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 8de570ab2822c673ec7bb3a190ae18c85a57a417
 result_branch: relay/b-star-rush-smoke-001
+
+当前接收：按用户2026-10-26明确授权，原调用继续；有效非作者独审及目标检查／实际结果通过后，宿主可协调既有发布者，在自身范围串行快进发布产品默认分支与a1回执，保留远端前进和他人成果，负责人事后抽查。撤回下文历史“只交结果分支／等B再审批”的组织限制；不是重派，不跳过失败／未验门禁，其他具体拒绝仍停。工程检查与真实浏览器结果分别验收；不得以构建／单测通过替代最终集成树的浏览器断言。
 
 ## 现有产物与要补的缺口
 

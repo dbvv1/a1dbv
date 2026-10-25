@@ -3,9 +3,12 @@
 id: B-MOBA-SIMULATION-001
 owner: dot-B
 status: running
+accept: auto
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 46f5ce4ba25184dd88dbb268e58e5f9aebb9e696
 result_branch: relay/b-moba-simulation-001
+
+当前接收：按用户2026-10-26明确授权，原调用继续；有效非作者独审及目标检查／实际结果通过后，宿主可协调既有发布者，在自身范围串行快进发布产品默认分支与a1回执，保留远端前进和他人成果，负责人事后抽查。撤回下文历史“只交结果分支／等B再审批”的组织限制；不是重派，不跳过失败／未验门禁，其他具体拒绝仍停。无画面模拟不等于已可玩；数值目标失败或真实未验仍按实际门禁处理。
 
 ## 起点与交付
 
