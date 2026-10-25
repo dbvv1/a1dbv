@@ -1,6 +1,6 @@
 # 动画与绑定：先固定动作契约，再补生成
 
-> 核实更新：2026-10-26；适用：单人程序员、不做人工美术修补。角色／武器模块已核公开文档与固定源码，新增程序化占位角色的源→GLB→刃长二改实证；生成服务／引擎未运行；各来源原核实日期与许可见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md)。
+> 核实更新：2026-10-26；适用：单人程序员、不做人工美术修补。角色／武器模块已核公开文档与固定源码，新增程序化占位角色的源→GLB→刃长二改与多单位快照消费者实证；生成服务／引擎未运行；各来源原核实日期与许可见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md)。
 
 ## 30 秒结论
 
@@ -363,6 +363,22 @@ sh asset-pipeline/placeholder/run.sh
 ```
 
 这会重建三套 Blend／GLB、验证、跑负例并渲染预览。代价是维护生成脚本、重新导出和验收；仅限本例刃长二改，未记录主动制作工时，不能据此估算任意比例／动作修改的省工率。需要手指握持、自然步态或近景表演时，仍先选完整合格供给；角色武器的复杂二改沿[前文步骤](#给-ai-一次真正完整的二改)。
+
+<a id="multiunit-animation-consumer"></a>
+
+**同一份 GLB 供多个单位使用时，共享只读资产，隔离每个单位的动画与外观状态。** Beacon Guard 的实际消费者先 `loadCharacterAssets()` 加载蓝／橙源，再用 `createPresentation({catalog, assets})` 建立表现容器；随后 `sync` 按快照的实体 ID 建立实例：`SkeletonUtils.clone` 复制骨架绑定，每个角色有自己的 `AnimationMixer` 和克隆材质，几何与 clip 共用。这样改某个单位的姿态／材质参数不会让同源队友一起改变，也不必为每个单位重导一份 GLB；代价是实例骨架、混合器与材质仍各占资源。
+
+| 什么时候调用 | 消费者负责什么 |
+|---|---|
+| `loadCharacterAssets()` 成功后创建 view，把 `view.root` 加进场景 | 加载器在部分失败或缺 idle／walk 时清理已载入源；createPresentation 建立供 view 内对象共用的地图资源 |
+| 每个逻辑步后 `view.sync(simulation.snapshot())` | 只读快照，按阵营选源并维护实例，以 `(x,z)` 更新整角色根；按相邻逻辑位置选 idle／walk 与朝向，同 tick 重复调用不重复推进。死亡隐藏，复活首 tick 回 idle；实体被移出快照才释放对应实例 |
+| 每个绘制帧 `view.advance(renderDeltaSeconds, alpha)` | 推进独立混合器，并在最近两份逻辑快照端点间插值位置；`alpha` 是固定步长累加器比例 0–1，默认 1 直接用最新端点。启用插值以晚一逻辑 tick 的表现换连续位置；不把画面位置写回模拟 |
+| 换局或回放倒退前 `view.reset()` | 释放旧实例、清 tick／插值端点；新生与复活也重置端点，不从旧尸体位置滑回。reset 保留可复用的地图与源资产 |
+| 离场移除 root 后 `view.dispose()` | 释放这个 view 的实例骨架／材质及自有地图资源；所有共用源的 view 都退出后，资产持有者才调 `disposeCharacterAssets(assets)` |
+
+固定实现只据位移播放 idle／walk，**没有攻击／命中事件就不拿冷却猜攻击动画**。同一个 catalog 还可经 `abilityViewModel` 生成图标语义与冷却显示：tick 按 `rules.tickRate` 换成秒，缺方向弹道图标就返回空并显示技能名，不借指向技能图凑齐。表现层提供已知禁用原因，目标／距离／朝向合法性仍由模拟裁决。
+
+在[固定消费者目录](https://github.com/dbvv1/MOBA-Like/tree/c6b38d6dd7d8a64415f5f1b768b41bc3757c7b29/asset-pipeline/presentation)的 MOBA-Like 仓库根运行 `npm --prefix asset-pipeline/presentation ci --ignore-scripts --no-audit --no-fund`、`npm --prefix asset-pipeline/presentation test`，可复跑真实 Simulation 快照与 GLB 的 8 项 Node 检查。它比[单个 scene 的整根检查](3d.md#skinned-gltf-consumer)多验证了独立实例、时间推进和释放，但仍不是 GPU 游戏画面：测试导航是直线路径夹具，正式游戏入口、滑步和动作衔接尚未验。完整接线与实测范围见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26（UTC+8）。
 
 保留已验旧版，新版在目标需求下胜出再替换默认。通用交接仍保作者工程实际具备的 rig／层／约束／道具参照、原动作／处理版、骨架／Avatar、root、压缩、事件与接触数据；工具批查引用、时长、事件、数值和根轨迹，目标相机再验姿态、风格与响应，并计淘汰／返工及第二改主动工时。2D 换装核动作／方向交集，对白成对更新声音与口型，非人形改变运动语义时回到专用控制与源内容；只有烘焙结果先计重建成本，阈值由玩法和目标设备决定（[WP4 通用验收](../../../docs/research/2026-10-14-game-wp4-animation.md#6-第二次修改的最小后续验收本轮不执行)）。
 
