@@ -23,7 +23,7 @@
 | 编号 | 项目与验收 | 负责 | 状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿发现**：成熟与新候选，沿[13](../13-frontier-radar.md)五问／实试验收，处理收件箱 | dot-A | 停简报；[增量测试反馈](../../experiments/testmon-feedback.md)实试；[diff-cover](local-jobs/A-FRONTIER-SELECTION-001.md) 已在 Datasette 原型消费；行执行不等于行为验收，不扩窄试。Oil UI页面策略拒绝，视觉待入口获准；Plannotator未接收。 |
-| P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [MDX规格扩展](../../experiments/openspec-mdx-adoption.md)原生Agent实施、二改接收及独审；[Datasette 显式整数参数](local-jobs/A-DATASETTE-TYPED-PARAMS-001.md)研究原型接收；POSIX 无新增失败，编辑器类型／当前值保持已修；完整门禁欠项见回执，非生产默认。[OCR](../../experiments/ocr-matcher-replay.md)完整CLI未验，旧欠项保留。 |
+| P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [MDX规格扩展](../../experiments/openspec-mdx-adoption.md)原生Agent实施、二改接收及独审；[Datasette #3015](https://github.com/simonw/datasette/pull/3015) 已提交 Draft，原型收口、跟进评审；AI与测试／文档欠项已披露。[MOBA采用](local-jobs/A-CROSS-MODULE-SELECTION-001.md)选择与实施同任务，待B确认用法／文件范围。[OCR](../../experiments/ocr-matcher-replay.md)完整CLI未验，旧欠项保留。 |
 | P79 | C1／C3 吸取验证 | dot-A | **10-25 收口**：[冻结三题结果](../../experiments/absorption/p79-frozen-001-results.md)已按描述性记录接收，隔离未确立、正式可比 0 对；不再续批，正式对照仅在用户明确要求时开展。 |
 | SR | **Star-Rush 维护期**：master 随时可玩，只做品质提升；顺序见仓库 [brief](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/brief.md)（原 P112／P113／P117） | B | [master `5cc161e0`](https://github.com/dbvv1/Star-Rush-Reborn/commit/5cc161e04652d8644afa5daa429e986f04e036c2) 已合入 smoke 脚本，保留从源重建的 Kenney 默认与程序音回退。工程验收通过；真实浏览器待原本地任务验证，最终混音待人工。旧 `10f5f90` 不重传，旧壁画不在本次范围。 |
 | MOBA | **MOBA-Like 纵切片**：可玩，再完成第二次需求修改；实测技能／Buff、英雄与小兵 AI、寻路、成长与技能制作链（FPS-Like 在此之后开工） | B | 10-26 建仓库骨架：[AGENTS](https://github.com/dbvv1/MOBA-Like/blob/main/AGENTS.md)、[任务书](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md)。下一步：建工程，先打通模拟层与无画面对局。 |
@@ -49,6 +49,7 @@
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
+| OpenSpec／Maka 上游 | 是否允许在 [OpenSpec #2115](https://github.com/Fission-AI/OpenSpec/issues/2115) 请求贡献邀请、在 [Maka #4495](https://github.com/apache/maka/issues/4495) 请求功能方向确认；Maka另需真人审阅负责及适用CLA | 已单次询问；先继续 Datasette／Memos PR与任务路线交付 |
 | dot-A Memoh | 能否在 dot 云端的一次性测试库里创建合成管理员和 bot（假数据，无付费、部署或特权容器） | 工程补丁已接收；真实业务与跨升级缓存待验 |
 | dot-A Memos 阅读模式 | 一个获准可用的 dot 云端浏览器入口，用来核匿名列表／详情、刷新恢复、键盘焦点和无写请求 | [工程补丁](../../experiments/memos-reading-adoption.md)已接收 |
 | P109 潮汐邮差 | B 原浏览器 URL 被拒后能否限定重试 | 新版可由其他有授权的环境接收 |
