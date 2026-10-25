@@ -2,7 +2,7 @@
 
 id: B-MOBA-SIMULATION-001
 owner: dot-B
-status: running
+status: accepted
 accept: auto
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 46f5ce4ba25184dd88dbb268e58e5f9aebb9e696
@@ -64,4 +64,11 @@ dot 本地协作认领；来源 `dot-b/tmp/20261026-moba-simulation-job` 固定 
 
 **当前交接（dot-B，2026-10-26）：** 自17:29启动回执后尚无新阶段／固定产物，请沿原调用补当前阶段、已有中间产物和具体卡点；不重派，不因时间或running标签推断仍在执行，也不据此终止进程。MOBA main 已至 `cb20c6e9c9088d83f4498dec81fb28b0146a6b4e`，新增 `asset-pipeline/` 由 B-MOBA-ASSET-PREFLIGHT-001 独占续做；模拟发布前同步最新main，保留该目录及他人前进，不以旧46f5ce4整树覆盖。原模拟工程／content／tests范围不变，已有具体拒绝保持。
 
-当前结果：原初次Workflow已返回本地固定checkpoint0c21426，真实Node单测与批量对局已运行；非作者独审检出快照引用泄露、死亡小兵清理、未知回放版本接受三项缺陷，正在同一原生会话定点修复并补回归。未标通过或接收，超时与目标偏差保留。发布前将同步最新MOBA main并保留asset-pipeline独占产物；不重派、不终止未知归属进程。
+## 当前结果
+
+- 按accept:auto接收有限无画面模拟交付，产品main／relay为[e6fed44](https://github.com/dbvv1/MOBA-Like/commit/e6fed4460d00ec23175f1bd70bb20eb18a884b5e)。保留远端最新asset-pipeline；模拟独审固定d5f465c与最终版的源码／依赖／测试／CLI无差异，无部署。
+- 原同会话修订[2d66135](https://github.com/dbvv1/MOBA-Like/commit/2d66135)：快照深拷贝与只读、死亡小兵及ID跟踪回收、未知回放／内容版本拒绝，原非作者实证复核全部关闭。旧源码跑新增回归5失败／1通过，当前8文件32测试通过；类型／构建、真实v1／v2对局与新回放一致。
+- 实际200局：蓝104／红95／超时1，中位11:36.4，0异常／卡死；500局：269／230／超时1，Wilson95区间49.42%–58.12%覆盖50%，中位11.89分钟；高对低100局91%、超时1。旧原批次仍保留，不改分母或把超时算胜负；技能hitCasts/casts为施放计命中率，heroHits为伤害作用次数，伤害占比只以技能伤害为分母。
+- GC修复改变哈希状态：旧v2 seed1命令重放仍蓝胜509.87秒，但旧hash dbed7bdd26f72177与当前ec3ae9e56a6b148f不兼容；明确返回false，不伪造旧回放通过。新v1／v2回放一致；v2 seed136／400327与v1 seed600165超时样例已按正确版本独立重放。
+- 本任务实际消费A的既有reviewer补充[46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea)：固定版本与异常输入要求促使补齐v1超时证据，避免用同seed的v2胜局代替。没有新增代码发现，原三项缺陷不归功模板；宿主也实际跑32测试和单局CLI／回放均通过。
+- 实际通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash；所有原失败、修订、批次与原调用保留。公开／新增身份检查通过。Detour crowd、完整3v3、渲染／浏览器／视觉／听感／手感仍未验；不称可玩或整里程碑完成。
