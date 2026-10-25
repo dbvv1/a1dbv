@@ -18,7 +18,7 @@
 - 本地模型委派走 [local-jobs](local-jobs/README.md)，由独立本地协作会话接收；A 研究主任务不代管 B 执行。
 - 指导层：Claude 核心方向会话负责方向与原则，Codex 审计会话负责增量审计、本地执行与仓库整理（手册§6）。已有审计：[方向指导](reviews/2026-10-23-direction-guidance.md)、[增量审计](reviews/2026-10-24-direction-delta-audit.md)，不重复。
 
-dot-A 运行：仅每小时心跳；当前接口支持PR事件，普通main／relay push不支持，尚未订阅。Git交接靠当前执行与心跳发现。
+dot-A 运行：一个每小时心跳兜底；Datasette #3015／Memos #6502 的人工评审与评论已订阅事件（无定时轮询），普通main／relay push仍不支持。Memoh后端及Memos构建／API已补验；Memos已通过自己云桌面的正常入口加载，匿名UI验收在途；Datasette贡献文档已接入原PR，既有MOBA采用／清理继续。优先后台代理和自己的云电脑，Codex仅作本端无法完成的后备。
 
 ## 项目板
 
@@ -27,7 +27,7 @@ dot-A 运行：仅每小时心跳；当前接口支持PR事件，普通main／re
 | 编号 | 项目与验收 | 负责 | 状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿发现**：成熟与新候选，沿[13](../13-frontier-radar.md)五问／实试验收，处理收件箱 | dot-A | 停简报；[增量测试反馈](../../experiments/testmon-feedback.md)实试；[diff-cover](local-jobs/A-FRONTIER-SELECTION-001.md) 已在 Datasette 原型消费；行执行不等于行为验收，不扩窄试。Oil UI页面策略拒绝，视觉待入口获准；Plannotator未接收。 |
-| P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [MDX规格扩展](../../experiments/openspec-mdx-adoption.md)原生Agent实施、二改接收及独审；[Datasette #3015](https://github.com/simonw/datasette/pull/3015) 已提交 Draft，原型收口、跟进评审；AI与测试／文档欠项已披露；[Memos #6502](https://github.com/usememos/memos/pull/6502)亦为Draft，跟评审、浏览器smoke未验。[MOBA采用](local-jobs/A-CROSS-MODULE-SELECTION-001.md)选择与实施同任务，B已同意A只做独立接收起点，待首个固定模拟产物及实际消费。[OCR](../../experiments/ocr-matcher-replay.md)完整CLI未验，旧欠项保留。 |
+| P81 | C1核心12页：强参照查漏，以真实任务验Agent能力；交可复制入口、选择与结果，回流正文 | dot-A | [MDX规格扩展](../../experiments/openspec-mdx-adoption.md)原生Agent实施、二改接收及独审；[Datasette #3015](https://github.com/simonw/datasette/pull/3015) 已提交 Draft，原型收口、跟进评审；AI与测试范围已披露，贡献文档已补齐；[Memos #6502](https://github.com/usememos/memos/pull/6502)亦为Draft，跟评审，匿名浏览器消费者已运行、完整验收在途。[MOBA采用](local-jobs/A-CROSS-MODULE-SELECTION-001.md)选择与实施同任务，B已同意A只做独立接收起点，已接收B固定模拟产物；A在官方新入口复现200局及超时反例，接收器独审在途。[OCR](../../experiments/ocr-matcher-replay.md)完整CLI未验，旧欠项保留。 |
 | P79 | C1／C3 吸取验证 | dot-A | **10-25 收口**：[冻结三题结果](../../experiments/absorption/p79-frozen-001-results.md)已按描述性记录接收，隔离未确立、正式可比 0 对；不再续批，正式对照仅在用户明确要求时开展。 |
 | SR | **Star-Rush 维护期**：master 随时可玩，只做品质提升；顺序见仓库 [brief](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/brief.md)（原 P112／P113／P117） | B | [master `8dec2c2`](https://github.com/dbvv1/Star-Rush-Reborn/commit/8dec2c211eb595c183ac1d5aa5d7b84067cdea14) 已接收同源 loopback 服务入口，34 项单测及集成通过。宿主沙箱软件 WebGL2 已验；dot 云桌面已实看开局、W 加速、计时与 Canvas 场景，WebGL2 未过、降级原因待核。转向牌作者源与局部二改已接收，游戏接入／实机效果待验；Kenney 默认保持。硬件 GPU、审美、手感、混音待验；旧 `10f5f90` 和壁画不重传。 |
 | MOBA | **MOBA-Like 纵切片**：可玩，再完成第二次需求修改；实测技能／Buff、英雄与小兵 AI、寻路、成长与技能制作链（FPS-Like 在此之后开工） | B | 10-26 建仓库骨架：[AGENTS](https://github.com/dbvv1/MOBA-Like/blob/main/AGENTS.md)、[任务书](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md)。下一步：建工程，先打通模拟层与无画面对局。 |
@@ -53,7 +53,7 @@ dot-A 运行：仅每小时心跳；当前接口支持PR事件，普通main／re
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
-| Maka 上游贡献 | [Maka #4495](https://github.com/apache/maka/issues/4495) 要求真人审阅负责并签 CLA，属于以用户名义签署协议 | OpenSpec 的贡献邀请和其他上游 PR 按默认授权继续 |
+| Maka 上游贡献 | 真人贡献者须实际审阅负责，适用时本人签CLA，不能由AI代称完成 | [OpenSpec邀请已发](https://github.com/Fission-AI/OpenSpec/issues/2115#issuecomment-6401683363)；其他PR继续 |
 
 10-26 按默认授权清出：dot-A Memoh 与 P27 listmonk 的测试库合成管理员、dot-A Memos 的云端浏览器入口（用 dot 的云电脑）、P109 的限定重试、P7 的执行确认、OpenSpec #2115 的贡献邀请。负责人直接推进，平台拦下时只停那一步。
 
@@ -68,3 +68,7 @@ dot-A 运行：仅每小时心跳；当前接口支持PR事件，普通main／re
 [audit-tasks]: https://github.com/dbvv1/a1dbv/blob/7028197a97197740027c38e819ced649f7f16f4c/docs/collaboration/TASKS.md
 
 [c2-1023]: https://github.com/dbvv1/a1dbv/blob/030d04dd5dafbd9d42281c314a6be30d64e06692/docs/collaboration/TASKS.md
+
+平台动作记录（10-26）：Maka #4495 方向评论发布返回403 `Resource not accessible by integration`，回读未发出，未重试／换路；Memoh Chromium启动的singleton IPC socket返回EPERM，页面／缓存验收停该入口，普通TCP后端继续。
+
+Memos的host-visible提权包装及后备Codex Chromium启动失败已留[固定记录](local-jobs/A-MEMOS-BUILT-SMOKE-001.md)，不重试或改安全设置。自己的云桌面原生终端正常入口现已加载真实页面，匿名验收继续；owner登录／编辑仍未验。

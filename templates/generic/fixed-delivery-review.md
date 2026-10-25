@@ -43,4 +43,22 @@
 
 首轮独立审查已发现的快照引用泄露、死亡小兵清理、未知回放版本接受，应接原修复回归，不再造另一套模拟。无画面验证不涵盖浏览器或手感。
 
-**核实与状态**：2026-10-25，依据 [MOBA-Like brief](https://github.com/dbvv1/MOBA-Like/blob/c66f250f817b1ad7357088cba12f6ad30c83b8c8/docs/brief.md)、[B 原任务](../../docs/collaboration/local-jobs/B-MOBA-SIMULATION-001.md)及 [A 接收约定](../../docs/collaboration/local-jobs/A-CROSS-MODULE-SELECTION-001.md)。本起点尚待固定模拟源码与 B 实际消费；不声称已跑产品测试。
+**核实与状态**：2026-10-25，依据 [MOBA-Like brief](https://github.com/dbvv1/MOBA-Like/blob/c66f250f817b1ad7357088cba12f6ad30c83b8c8/docs/brief.md)、[B 原任务](../../docs/collaboration/local-jobs/B-MOBA-SIMULATION-001.md)及 [A 接收约定](../../docs/collaboration/local-jobs/A-CROSS-MODULE-SELECTION-001.md)。初版接收起点形成时尚无固定源码；现既有 reviewer 已获 B 的真实采用反馈，新 JSON 接收器已由 A 消费真实报告。采用归属与运行范围见下节及 A 接收约定。
+
+
+## 对真实批量 JSON 加一个接收检查
+
+生产者 CLI 退出 0 不一定表示目标达标。MOBA 接收可用 [check_moba_batch.py](../../scripts/check_moba_batch.py)，只读纯 JSON，显式指定局数、种子和内容版本；不加载产品源码、不执行引擎，也不修改 B 的 CLI。
+
+```bash
+# 在已获准的产品检出中保存真实报告；同一 shell 内保留这个目录变量。
+REPORT_DIR="$(mktemp -d)"
+npm --silent run sim -- --games 200 --seed 1 --content-version 2 --json > "$REPORT_DIR/report.json" 2> "$REPORT_DIR/report.stderr"
+printf '%s\n' "$?" > "$REPORT_DIR/sim-exit-code.txt"
+# 同一 shell 切换到本知识库根目录后接收：0=适用检查通过，1=目标失败，2=无效输入。
+python3 scripts/check_moba_batch.py "$REPORT_DIR/report.json" --games 200 --seed 1 --content-version 2
+```
+
+检查覆盖分母完整性、终局、异常、卡死、抽查回放和时长中位数；输出明确未查 500 局多种子对称、难度胜率、技能统计和独立引擎重放。少于 200 局只算所请求的小批次，不能代替完整基线。它核报告字段而非证明报告真实；仍保固定 SHA、原命令和日志，并读源码核字段定义。
+
+**实际消费（2026-10-25）**：固定 [49c36a1](https://github.com/dbvv1/MOBA-Like/commit/49c36a14c4ed0b46c56021aedbc6e63430cf15f7) 的新官方 Node 入口在普通 sandbox 运行，200 局 CLI 退出 0，但真实报告为 199 终局／1 超时（seed136）、中位 696.4 秒、0 异常／卡死、抽查 3 次回放无差异；接收器据此退出 1，不把确定性通过当成全局完成。A 本次解析出的纯 JSON 与 B 已公开的 [原200局报告](../../docs/collaboration/local-jobs/artifacts/B-MOBA-SIMULATION-001/v2-200-seed1.json)逐字段相同，直接复用该报告，不重复上传；[回归](../../tests/test_check_moba_batch.py)另明确区分合成正常／失败／缺输入用例。旧 `d5f465c` CLI 的 IPC 拒绝仍保留，新入口由 B 正式发布，不是接收者自行改 loader。
