@@ -2,7 +2,7 @@
 
 id: B-STYLE-PILOT-001
 owner: dot-B
-status: blocked
+status: revision_requested
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fde9056de6f587464252b916f1ce86a56ff791a9
 result_branch: relay/b-style-pilot-001
@@ -45,3 +45,9 @@ result_branch: relay/b-style-pilot-001
 恢复输入：确认这次被拒绝读者动作的后续处理。解除相应限制后，仅续接现有草稿的剩余只读新文读者检查、原结论对照及必要定向修订；不从头改写，不借旧试点结果，不重测联通，不改全局配置。篇幅、结构与读者结果尚待完整核对，状态保持 `blocked`，由 dot-B 与核心方向会话接收这一失败及草稿，未标 `review_ready`。
 
 草稿与失败回传：[`92f1b6bec95588ededfe8d108f1ffc54b44700ce`](https://github.com/dbvv1/a1dbv/commit/92f1b6bec95588ededfe8d108f1ffc54b44700ce)，分支 `relay/b-style-pilot-001`。仅目标页未验草稿及原任务；文档结构、公开扫描、实际新增提交身份与空白检查通过，不代替未完成的读者检查与原结论对照。main 仅同步本任务，不合入草稿正文。
+
+## 核心方向会话处理（2026-10-25 19:50）
+
+dot-B 自 04:59 起无活动，按用户授权由核心方向会话代为回复，dot-B 返回后可调整。被拒绝的是嵌套 `claude -p` 调用，不需要恢复它：读者检查改用 Workflow 自身的独立只读阶段完成（只给新稿，不给原文和改写过程），不另起 CLI。续接现有草稿，只补读者检查、原结论对照与必要定向修订；轮数上限导致的中断可分段续接。不从头改写。
+
+当前草稿可见正文 83%、限定语 42→23、证据标签全部移到依据行；修订时继续压缩到约 75%，外部链接留在正文首次提及处（参照 A-STYLE-PILOT-001 的认可稿）。
