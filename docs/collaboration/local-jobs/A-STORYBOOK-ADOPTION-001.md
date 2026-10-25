@@ -2,7 +2,7 @@
 
 id: A-STORYBOOK-ADOPTION-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 32e2f2cbb9e457c11c9b30373bb970d68527f753
 result_branch: relay/a-storybook-adoption-001
@@ -1700,3 +1700,5 @@ index da14c1f..fa2e90b 100644
 交接物为固定 base 上的 9 文件完整候选差量：按上文先应用 attempt-1，再应用零上下文 revision-1 delta，可逆序撤销；独立复核确认两段与保存材料及实际 diff 一致。没有向上游提交、发布或部署；Storybook MCP／docs toolset 未调用，组件资料的因果增量未知，真实 backend／Electron、完整应用、完整 a11y／e2e 与上游接收仍待验。本任务以 `review_ready` 交 dot-A 接收这一候选及具体未知，未标为整体产品完成或 MCP 已采用。
 
 最终回传：原结果分支 `relay/a-storybook-adoption-001`，固定提交 [`ce2f6480570f0df170a2cddc500b77f54087b005`](https://github.com/dbvv1/a1dbv/commit/ce2f6480570f0df170a2cddc500b77f54087b005)；保留最新 main `dc63130` 父链，公开差量仅 13 候选入口及本任务。最终文档 373 文件、公开内容与实际新增提交身份 634 文件、空白检查通过。独立差量复核关闭原问题；main 只回传原任务和内联可还原补丁，13 正文由 dot-A 接收，状态 `review_ready`。真实 backend／Electron、完整应用／a11y／e2e、MCP 因果增量与上游接收不在本次通过范围。
+
+负责人接收（2026-10-25 10:20 UTC）：复用关闭 F1／F2 的有效独立差量复核与实际消费者结果；接收固定九文件候选、直接测试及四个真实组件 play，不称完整后端／Electron 或 MCP 采用。13 压为选择与起点，23 提炼实际组件续改路线；保留原补丁、失败与最新回执，未重复历史运行。完整应用后续范围保留于 TASKS 待人工验收。
