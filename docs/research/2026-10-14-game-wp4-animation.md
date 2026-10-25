@@ -232,6 +232,13 @@ Agent可梳理窗口与调用链、实现请求身份／消费、补命中和落
 
 **来源**：[固定产物目录](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)内 `build.py`、`recipe.json`、`validate.py`、`validation.json`、`test-results.json` 与预览；2026-10-26（UTC+8）核读。保留上节 Cascadeur 的原核实日期与未试用范围，本例不验证其工程往返。
 
+
+**同一源的运行消费者已接到多单位快照，不再只做单 scene 变换。** [固定 `c6b38d6` 的 presentation](https://github.com/dbvv1/MOBA-Like/tree/c6b38d6dd7d8a64415f5f1b768b41bc3757c7b29/asset-pipeline/presentation) 复用原蓝／橙 GLB，不重做模型；`adapter.js` 用 `SkeletonUtils.clone` 保每实例骨架绑定，材质另 clone，`AnimationMixer` 每实例独立，几何／clip 共用。`sync` 读取真实 `Simulation.snapshot()`，稳定实体 ID 对应显示实例；逻辑 tick 的位置决定 idle／walk 和朝向，`advance` 只推进视觉混合器及快照端点插值。模型有 attack clip，但没有可信攻击事件就不触发它；不能把资源有动作与游戏已消费该动作混为一谈。
+
+`9a88ae0` 的 7 项真实 Node 检查覆盖真实 GLB 独立克隆／材质／蒙皮点、真实 Simulation 快照与兵波、W 冷却 tick→秒、状态移除／reset／释放及部分加载失败清理；增量 `c6b38d6` 的第 8 项核插值中点／端点、重复 render、非法 alpha 与复活端点。`advance(seconds, alpha=1)` 默认直接采用最新位置；累加器比例插值以一逻辑 tick 延迟换连续位置，端点来自逻辑快照而不是先前的插值结果。只有位置插值，不据此声称转身、混合切换或脚底接触已自然。
+
+`view.dispose()` 收实例资源与该 view 地图资源，不销毁共享 GLB 几何；`disposeCharacterAssets` 由资产持有者在全部消费者退出后统一调用。加载器等待两项 settled，任一失败或缺 idle／walk 则回收成功加载部分。图标模型按 catalog 语义选型、保冷却 tick 和秒，未知方向弹道返回空图标；表现的禁用提示不代替模拟裁决。Node 检查无需 WebGL，导航替身是直线路径；正式游戏入口、浏览器／GPU、动作观感未验。复用产品原独审与这次增量同审，本次文稿不重跑 Blender 或新增游戏验收；2026-10-26（UTC+8）核固定源码／回执。
+
 ### B. 商业动作：哪种控制对应哪种修改
 
 **能力按下列机制选择，生产资格查 [§8](#8-动态事实表2026-10-14-补核)。** Uthana 接着核[显式 2.1、refined IDs、重传 job 与 Text3.0 接口](#uthana-模型与返回契约补核2026-10-15-utc8)，不能只按商品名接收。[研究]
