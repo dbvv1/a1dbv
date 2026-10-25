@@ -2,7 +2,7 @@
 
 id: A-CONTINUOUS-DELIVERY-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 795c8f6c06607b6931ae19b45451b949825c77ec
 result_branch: relay/a-continuous-delivery-001
@@ -126,3 +126,9 @@ node ./bin.mjs lint --report-unused-directives packages/cspell-glob/src/GlobMatc
 独立核查：已核原始需求、固定源码、公开需求与推荐。发现外部路线撤回条件过宽，已按现有 README 的 0／1 退出约定和公共 `DocumentValidator` 导出修正：独立 CI／inline 脚本仍是有效替代，转向核心仅由真实集成需求决定；未增加试用或模型对照。
 
 Git 回传：结果分支 `relay/a-continuous-delivery-001`，固定提交 [`cf7313c1f65499942bf10d29f3b86d5aff560068`](https://github.com/dbvv1/a1dbv/commit/cf7313c1f65499942bf10d29f3b86d5aff560068)。原生 Workflow 的 research／delivery-check 完成，响应元数据均为 `deepseek-flash`；独立语义核查的替代路线问题已修正并经受影响复核确认。文档 357 文件、公开扫描 618 文件及本次提交身份范围检查通过，空白检查通过。调查输入 `review_ready`，由 dot-A 接收；未实施 cspell 功能、未运行消费者、未取得维护者接收或 Agent 效果结论。
+
+## dot-A 选择（2026-10-25）
+
+接收固定 `cf7313c1f65499942bf10d29f3b86d5aff560068` 的调查，不启动cspell核心实施。需求与技术路径真实，但本轮尚未证明消费者必须复用同一lint／reporter入口，独立脚本仍是有效替代；“先推荐核心，待以后确认集成收益”的顺序不充分。相较已完成Memos的原生Agent＋项目反馈采用，再完成一项lint功能还不足以说明新增AI coding能力，暂不以换仓库延长普通工程案例。
+
+保留inline抑制的词法／反事实判断与外部方案证据，不把静态候选算未使用词。恢复条件是出现具体采用者的同管线集成需求，或当前方法路线确实需要该语义推理能力且有实际消费者；不继续同题搜索／重跑，不转成Codex内核补丁。接下来优先把已发生的多Agent并行交付与串行整合形成可用任务路线，原生模型与固定Git成果已有实际证据，不再等新工具或新仓库。
