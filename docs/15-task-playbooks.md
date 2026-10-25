@@ -368,6 +368,14 @@ Agent容易漏动态引用、间接消费者和故障时才启用的保护；人
 
 **依据**：[社区／一手／研究] [公共边界测试](research/2026-10-12-community-source-records.md#3-matt-pocock控制权与领域语言)与 [JiTTest 目标比较](research/2026-10-12-development-conditions.md#生成测试先选保护未来还是查当前差异)，后者为内部部署自述，未证 Codex／Claude 净收益，保留 CI／人审；[一手：报告；经验，2026-10-16 UTC] remote-store 暂缓引入试验；[本仓工具实试／经验，2026-10-24] pytest --testmon 历史重放；[一手；经验] RTK 编码修订、sqlite-chronicle 写入路径与 NumPy／dateutil 属性测试；[一手／社区；经验] rclone 预演边界；[一手；经验：局部实测与建议，未运行包 CLI]；核实 2026-10-25。
 
+### 测试全绿后，让 Agent 看见改动行，再核消费者
+
+**🧪 项目已有覆盖率时，用 [diff-cover](https://github.com/Bachmann1234/diff_cover) 补一张本次未执行行清单；真正的验收仍用产品请求和可核对的结果。** 先从当前源码重建 XML，按固定基线 SHA 比较，把 JSON 中的缺失行交给 Agent 补测；要阻断须显式设 `--fail-under`，无测量行不算通过。目标测试本来明确、反馈足够时，不必再加这一层。
+
+[Datasette 显式整数参数原型](collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md#可直接运行的入口)给出可复制补丁与请求：Agent 实现 opt-in 绑定，人用 `typeof(:age)`、400／无写入和返回 SQL/params 的独立重放核结果。最终 90 条改动行全部执行，但重复 JSON 字段与元数据重放问题靠消费者／独审才修好；因此不要把覆盖率换成“功能已验收”。原型尚有编辑 SQL 后丢类型与完整门禁欠项，生产默认仍保留原行为。
+
+**依据**：[一手／本仓实试，2026-10-25] [选择与三方对照](collaboration/local-jobs/A-FRONTIER-SELECTION-001.md)、[固定补丁与 POSIX 接收](collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md#dot-a-接收与-posix-补验2026-10-25-1551-utc)；真实开发接入已验，净提效未测。
+
 ### 6.1 兼容实现：先借现成验收题，再补功能
 
 **已有库能满足需求就复用；确定要维护自己的解析器、协议兼容层或运行时时，先让Agent接上外部行为标准，而不是只继续生成自己的测试。** 先选一个真实消费者和目标版本，再取同版上游套件或成熟参考实现；没有可信参照时，回到本节的契约与定向回归。
