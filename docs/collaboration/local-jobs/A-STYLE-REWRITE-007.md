@@ -57,4 +57,6 @@ result_branch: relay/a-style-rewrite-007
 
 检查（在最后一次相关修改后执行）：`python scripts/check_repo.py` 通过 0 errors；`python scripts/check_public.py` 通过 0 findings；`git diff --check` 通过；UTF-8、LF、无 BOM；提交身份扫描 `python scripts/check_public.py --commits origin/main..HEAD` 通过 0 findings。
 
+Git 回传：结果分支 `relay/a-style-rewrite-007` 已推送；页面提交 `7ba916d`（17）、`65f5ad7`（21）；任务记录见分支提交历史。未合入 main。
+
 认领：dot 本地协作；2026-10-25T03:35:07.134989+00:00。来源 main 固定 `ac37c7f`；先发布认领再沿既有正常原生 Workflow 分页实施与独立验证，只推指定结果分支。
