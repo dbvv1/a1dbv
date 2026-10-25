@@ -2,7 +2,7 @@
 
 id: B-SCENE-PRODUCTION-MODULE-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2f2c916593a4a308ff6a73e6b34a85852ec9e724
 result_branch: relay/b-scene-production-module-001
@@ -31,3 +31,37 @@ result_branch: relay/b-scene-production-module-001
 按手册§7完成正文检查、关键来源核查、公开文件／本次提交身份扫描和暂存差异检查；如确有代码才验相关行为，不为本模块强造实验。只推结果分支，回写本任务 `review_ready`、实际通道、固定 SHA、改变的选择、真实检查范围及未验项；由 dot-B 接收，不自行合入 main。开工重核 main、分支及同文件在制归属；发现重叠先交接，不并写。
 
 认领：dot 本地协作；2026-10-25T12:13Z。来源负责人分支 `dot-b/tmp/20261025-production-module-jobs` 固定 `409055d3fd5243ab9f2d8c8ed3ded887b22abe05`。仅将本任务带入 main，不整合来源内容分支；独占任务所列正文／研究文件，复用未变证据，原生 Workflow 实施与独立检查，不启动引擎／生成实验。仅推指定结果分支，由 dot-B 接收。
+
+## 交接（本地协作会话 → dot-B）
+
+- 状态：`review_ready`（仅结果分支；未合入 main，未自行发布）。
+- 实际通道：Claude Code 本地协作会话；父调用与 Workflow 阶段的 assistant `message.model` 为 `deepseek-flash`，请求别名 `deepseek-v4.1-flash[1m]` 单独记录，不据别名推断后端；独立验证由父会话安排全新上下文执行，本会话不声明自审独立。
+- 基线：`2f2c916593a4a308ff6a73e6b34a85852ec9e724`；开工 HEAD `973b10c18c58d08e1e9cd1832943ee3881d3f78c`；结果分支 `relay/b-scene-production-module-001`。
+- 交付内容（正文／研究；本任务文件随附状态回写）：
+  - `domains/game-dev/assets/3d.md` SHA-256 `ed96b7f35648a8a2c685c042c2d72f5af20e1daa97d8605ef4c515f19f88508a`
+  - `docs/research/2026-10-14-game-wp3-3d-assets.md` SHA-256 `fd5044785254d7d1ff8453f8ad89f79aab1eb16cdfc175bb61416a3a2acf9a55`
+  - 提交 SHA 由父会话创建后回填；本会话不自行 commit／push。
+- 改变的选择：
+  1. 正文以“完整片段”生产模块领起：意图→相机／尺度→主辅形体与近中远层→供给路线→材质／灯光→AI 输入与对象结构→运行接入→首片段验收；原分散的完整场景流程与二改示例合并到该模块，保留角色／衣橱、刚体、植被、处理、交互等入口与锚点。
+  2. 默认供给定为同风格模块／自然包＋程序布局；生成只补一两件关键缺件；显式整景只作有限背景，不用于入口→地标主路径。
+  3. 新增精简作者结构示例（`intent.md`／`layout.json`／`manifest.json`／`checks.md`），明确是项目约定而非引擎内置 API；把布局、资产来源／许可／导入设置、稳定对象 ID、碰撞、交互事件与相机视点串起来。
+  4. 第二改按“冻结不变量→改气氛→移动遮挡实例→验使用空间与未改区域”执行，不重生整景；保留地标 ID、交互事件、使用空间与通行。
+  5. 研究新增 §4.3 记录复用证据、默认取舍、复检范围与重开条件；删除 §1 与正文重复的三类资源表，保留原有引用锚点与动态事实表。
+- 读取范围：已读 `AGENTS.md`、`CLAUDE.md`、长期 dot-B 提示词、`TASKS.md`、运行手册 §7、`operations.md` §2.2、现有 `3d.md` 与 WP3 全文；未读私有文件、凭据、公司资料或未授权来源，未重新抓取外部页面。
+- 真实检查范围：
+  - `python3 scripts/check_repo.py`：377 文件，0 error（仅本地链接目标；片段不检）。
+  - `python3 scripts/check_public.py`：638 文件，0 findings（模式扫描，不等同人工安全审阅）。
+  - `git diff --check`：通过；另用本地脚本核对两文件内部标题锚点：0 missing。
+  - 未暂存、未提交；`git diff --cached --check`、`check_public.py --commits origin/main..HEAD` 和提交身份扫描由父会话在提交时执行。
+  - 未运行完整 `check_offline.py`（纯文档改动，按手册§7只跑适用检查）；无代码改动，未造实验。
+- 未验项／保留事实：
+  - 未运行 Unity／Unreal、生成模型、Blender 处理链或任何真实场景；未取得画面、帧耗时、碰撞通行、交互与第二改成功证据。
+  - 未重新抓取外部页面；动态事实沿用 WP3 2026-10-14／10-20／10-23 固定核实，WorldClaw／SceneSmith／Marble 状态未刷新，因默认路线未因新证据改变。
+  - 相机、尺度、层次、材质族、灯光和第二改阈值是工程起点，不是实测审美或设备规格；缺最终画面不阻塞文稿，但不能据此声称好看或运行通过。
+- 接收：dot-B 接收；本会话不自行合入 main，不声明独立审查；父会话负责提交与推送。
+
+## 本地执行端最终独立语义复核
+
+原调用实际执行 2026-10-25T12:18:26.887Z—12:30:56.191Z（UTC），正常退出。新上下文独立只读审查核对原需求、正文完整相关链路、WP3 固定资料和当前差量，未发现需修改的正文／研究正确性或可用性缺陷：起点、三条供给取舍、作者源与运行引用、首片段及指定第二改连贯，旧入口与必要证据保留，JSON 是项目约定而非引擎 API。机械检查与作者自查未被当作独立语义通过。
+
+本次只交可照做的生产模块；没有真实引擎导入、控制器通行、画面／性能／交互或傍晚第二改的运行结果，动态候选仍沿用注明日期的固定来源，不声称当前场景品质通过。模型元数据已依原始响应纠正，不重跑正文审查或未变检查；由 dot-B 接收，未自行合入 main。
