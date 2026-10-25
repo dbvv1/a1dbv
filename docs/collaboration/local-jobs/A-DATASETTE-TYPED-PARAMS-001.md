@@ -2,7 +2,7 @@
 
 id: A-DATASETTE-TYPED-PARAMS-001
 owner: dot-A
-status: review_ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1c1040a50cc56fdb335f6058b83edd52b9543194
 result_branch: relay/a-datasette-typed-params-001
@@ -1165,3 +1165,38 @@ index 0000000..49968d6
 ## 固定交付
 
 结果提交 `75a103a35b56191043dc9c72d0f8bca4d4304f73`，结果分支 `relay/a-datasette-typed-params-001`，公开仅原任务（含完整 patch、设计和复现入口）；Datasette 产品基线仍为 `a8e13cc489b41f2f9a5aa691f5eb1bedf99a0e0b`。状态 review_ready，交 dot-A 接收并在现有支持平台补齐尚未运行的 POSIX 全量；没有上游提交、PR、部署或额外模型重派。宿主独立修订复核与真实浏览器证据已完成，Windows 原始失败、首次旧补丁及七项新回归失败保留。知识库文档检查382文件零错误、实际新增提交公开扫描643文件零命中；五个必要patch上下文空白提示按上文保留。
+
+
+## dot-A 接收与 POSIX 补验（2026-10-25 15:51 UTC）
+
+**接收为可恢复、可真实请求消费的 opt-in 研究原型，不作为生产默认或完整 CI 通过。** 固定 `75a103a35b56191043dc9c72d0f8bca4d4304f73`，产品基线与 patch SHA256 均不变；复用有效独审 F1/F2 与真实浏览器回执。默认字符串语义、显式整数、400、写入和返回 SQL/params 重放已验证；浏览器编辑 SQL 后参数重建丢类型／原值的限制仍在，不把此流程算通过。
+
+独立 dot 云端 Linux x86_64／Python 3.12.14／SQLite 3.53.1，从固定源码和内嵌 patch 恢复，四个源码文件哈希未变；实际执行 15:35–15:51 UTC。文档中六条 CLI 请求全部符合预期，新增类型测试 60 项、真实加载扩展 5 项通过；全仓 Black、Ruff、cog、blacken-docs 及精确 plugins shell 均退出 0。
+
+原环境非 serial 为 65 failed／2788 passed／81 skipped／8 xfailed／13 xpassed／4 errors，serial 为 3 failed／35 passed／2 errors，保留原始日志。测试夹具仅使用内存 exporter；将采样限定为测试进程 always_on、隔离后来安装的测试插件、明确各副本 PYTHONPATH，并补齐 httpx 官方 socks 可选依赖后，按同配置比较 pristine 与补丁：
+
+| 最终范围 | pristine | 原补丁 | 判断 |
+|---|---|---|---|
+| 非 serial | 2795 passed／2 failed／81 skipped／8 xfailed／13 xpassed | 2856 passed／1 failed／81 skipped／8 xfailed／13 xpassed | 补丁唯一失败 `test_homepage_sort_by_relationships` 在基线也出现；基线另一次 600-action 查询超时，补丁无新增 failed/error 节点 |
+| serial | 39 passed | 39 passed | 已被拒的 AF_UNIX 测试明确 deselect，不计通过或已证基线 |
+| 当前改动行覆盖 | 不适用 | 90 行／0 缺失（100%） | XML 由最终源码重建；只证明执行，不证明断言充分 |
+
+81 个 skip 为 75 个显式 opt-in Playwright、2 个标记 `rm?`、4 个标记 `TODO`，扩展测试零 skip。未跑整个 Python 版本矩阵；未上传 codecov。
+
+**未完成的完整门禁**：AF_UNIX socket 创建被平台以 `PermissionError [Errno 1]` 拒绝，未换路、升级或重试；需要该动作获准的 POSIX 环境才能补验。原 HTTPS 脚本就绪请求含 `--insecure`，未执行；仅用显式信任合成 CA 的单行修订副本验证 HEAD／GET 200 与退出，不能称精确原脚本通过。首页排序基线失败仍保留，不为本任务修改无关产品行为。这些缺项与源码／功能验收分开，禁止把全量结果写成全绿。
+
+补丁的实际价值是显式类型绑定与可重放请求；diff-cover 已接入真实开发反馈，但两处实质修复来自消费者／独立评审，不推断覆盖率带来模型质量或提速收益。后续生产采用须先决定上游语法、处理编辑器类型保持并补齐完整门禁；本轮不扩展类型或另造工具试验。
+
+## 后续维护：编辑 SQL 保留已选类型与当前值（2026-10-26 00:02 UTC+8）
+
+前一原型的限定接收不撤销；这次只补已实际观察到的核心编辑流程缺口，不新增类型或扩大生产承诺。继续原任务／原模型上下文与结果分支，保留原补丁、失败和已通过证据，不重发初始 Workflow。项目仍属 P81，新增差量是现有原型的自然维护，不另开工具试验。
+
+源码落点：`datasette/templates/_sql_parameter_scripts.html` 的状态以 `age::int` 存储，发现接口返回 `age`，刷新时匹配失败而重建裸字段与空值。保留服务端 SQL 基名／HTML typed 名双映射及原验证；只在明确 `_typed_params=1` 的表单内分离 SQL 基名和提交字段名。由实施者决定最小实现，不重构通用参数系统。
+
+验收：仍存在的 `:age` 在 SQL 改写、增添第二参数、重排及连续刷新后，保留 `age::int`、启用标志与**当前 DOM 输入值**；从 0 改成负数后应保留新值，异步发现返回前再次编辑输入也不丢失。新增参数仍生成普通空字段、不推断类型；删去参数不留下待提交 typed 键，删除后再添加无需恢复旧值。关闭 typed 模式、普通查询、stored → Edit SQL、`_sql_param_` 前缀与 Expand/Collapse 保持原行为。
+
+沿已获准、先前已实际验证的消费者环境运行真实浏览器，以字段名／值、提交请求和 `typeof(:age)`／返回行共同接收；只验源码或 Python 覆盖率不算新 JS 行为通过。新增聚焦浏览器回归，复跑受影响 typed／模板测试，复用不受影响的既有产品独审与 POSIX 证据；新差量做一次独立审查、修订只复核影响处。完整产品门禁仍有已记录缺项，不为此重试 AF_UNIX、原 insecure HTTPS 或平台矩阵。浏览器入口不可用时保留准确缺口，不换路绕过拒绝。
+
+只交同一任务的完整可恢复更新 patch（明确旧→新 hash）与简短续改结果，必要时修正原型限制的现时状态，历史回执不抹去；不改15／13／TASKS，由负责人接收回流。既有免费公开依赖、正常TLS、无新账号／安全设置／上游发布／部署及单次两小时边界均保持。上述编辑契约通过即停止，不扩类型选择器或新功能。
+
+续改认领：dot 本地协作；2026-10-26。固定来源 `9124841a6ad3bf5e5c39bde6e1791d13c4b388f1`（dot-a/datasette-editor-continuation-20261026），仅接续本节编辑器类型／当前值保持；原型限定接收与原失败／已验结果不撤销。复用原模型上下文、隔离app和结果分支，禁止重发初始流程；当前阶段为定向实现及新增浏览器回归，完成后宿主独审新差量并回传。不会重试 AF_UNIX、原 insecure HTTPS、版本矩阵或上游发布。
