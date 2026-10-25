@@ -1,0 +1,35 @@
+# A-STORYBOOK-ADOPTION-001 · 用真实组件与可执行故事交付 UI 功能
+
+id: A-STORYBOOK-ADOPTION-001
+owner: dot-A
+status: running
+target_repo: https://github.com/dbvv1/a1dbv
+base_ref: 32e2f2cbb9e457c11c9b30373bb970d68527f753
+result_branch: relay/a-storybook-adoption-001
+
+## 目标与选择
+
+恢复前沿发现，同时把候选放回真实开发：为已有 Storybook 的公开产品交付一个自然未决的 UI 功能，判断「当前组件源码＋按需组件资料＋可执行 stories／交互测试」是否补足原生 Agent 的信息或反馈缺口。不是工具接通演示、正式方法对照，也不为试工具新装整套设施或制造需求。
+
+已发现的三方线索（只读，未试用）：
+- [官方能力与框架差异](https://storybook.js.org/docs/ai/mcp/overview)：开发／测试 toolset 与读取组件 manifest 的 docs toolset 支持范围不同，当前仍 preview。
+- GitButler 的[真实接入 #16053](https://github.com/gitbutlerapp/gitbutler/pull/16053)及[次日撤掉每任务强制资料／MCP 的改动](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)：优先核源码与原话，比较按需窄 Skill 和全任务固定清单；不要把作者体验当受控收益。
+- [实践者原文](https://uiverify.ai/blog/storybook-mcp)：合法组件定制需要可执行用例，不只 props。作者经营相邻产品，小样本不作独立生产证明，不采用其付费服务。
+- [中文作者讨论](https://linux.do/t/topic/2771937)及[公开实现](https://github.com/gamecrafters-io/base-ui/blob/ed701de4b0d35ce686c2b265b329efae517969d7/README.md)：自有组件资料 MCP 是邻近机制，不冒称官方 Storybook MCP 的实用记录。
+- 实试前核[官方安全修复](https://github.com/storybookjs/storybook/security/advisories/GHSA-f2ph-cmg5-wxc8)与选定包；不要使用已知受影响版本。10.6.2 是本次读到的稳定修补版本，执行时仍核实际版本和兼容性。
+
+## 调查后在同一任务采用
+
+1. 优先从已有 Storybook、可复用组件及真实需求的公开项目选择消费者；GitButler 是线索而非指定载体。核需求是否仍未解决、是否已有在制实现、许可证与可执行消费者。先比较直接读源码＋项目原生测试是否已足够；没有自然需求或明确增量就交具体负结论，不扩大成随机修库。
+2. 条件成立后，沿既有已配置正常原生 Workflow，让真实模型读取选定知识，在授权工作区实施完整功能与应用接入，并为相关状态、合法定制及交互补 stories。先复用已有工具能力；需要新增持续访问、凭据、付费或超出接收端授权时只停依赖动作，不自行配置。
+3. 验收回真实功能主路径：正确复用组件、相关交互／可访问性检查及应用已有测试／构建；记录反馈实际改变了哪个判断或实现。仅 stories 生成或 tools/list 不算完成。浏览器或服务入口不具备现有授权时不换路，工程结果与未完成实际体验分开。
+4. 不重跑已完成 MDX／Memos／Sphinx，不触碰原有浏览器拒绝、账号、数据库或其他特定待批准动作。单次搭建／运行最多两小时；收益不足即收口，未解决的真实交付缺口保留恢复条件。
+
+## 独占写入与交付
+
+- 只写本任务及 `docs/13-frontier-radar.md` 的该候选入口；未实试就明确未试用，不把调研升级为采用。暂不改 04／09／15／23 或 TASKS，以免与在途任务重叠；有实际结果后由负责人决定正文路线入口。
+- 应用修改留独占临时工作区；不推第三方仓库、PR／评论或部署。可接手的固定 base、完整补丁、命令、回滚和消费者结果放本任务；补丁过大先说明交付形式，不传整仓或省略关键代码。不新增目录、编号专题或证明台账。
+- 给出默认／可信替代／不用条件、具体消费者与实际模型响应元数据；区分来源已读、实际调用、工程通过与真实体验。按一次有效独审接收，修订只复验受影响范围，未变证据直接复用。
+- 发布前核最新 main，跑文档、公开文件、实际新增提交身份与空白检查；仅推指定结果分支，回固定 SHA、执行起止及未完成项，状态 `review_ready`。dot-A 串行接收，不批量改写其他页。
+
+认领：dot 本地协作；2026-10-25T07:37:54.920550+00:00。来源 main 固定 `fd186dc`；与 A／B 试点无文件重叠，先发布认领后沿正常原生 Workflow 聚焦调查与条件采用。只写13候选入口与本任务，不解除既有浏览器／服务拒绝，不为试工具造需求。
