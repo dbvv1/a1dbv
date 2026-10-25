@@ -5,7 +5,7 @@
 
 # WP5 材质与特效：共同参数源、运行时与生成边界
 
-核实时间：2026-10-14（UTC+8）；参数复用补核于 10-16，三平面补核于 10-15，原动态事实表仍为 10-14。全文及各补研仅阅读公开文档／源码／论文／开发者记录；未安装软件、下载权重、模拟或生成资产、编译 shader 或运行 shader／GPU／模型／游戏引擎、购买服务、访问用户电脑或建立云任务。未做视觉／像素评审、试听或玩家实验；零手修通过率、识别率、设备性能与主动工时均未验证。来源的运行数字不属本仓库实测；离线检查不替代这些验证，hosted CI 未运行。正文见[材质与特效](../../domains/game-dev/assets/materials.md)，授权汇总见[WP1](2026-10-14-game-wp1-licensing.md)。
+核实时间：2026-10-14（UTC+8）；参数复用补核于 10-16，三平面补核于 10-15，动态事实各行保留核实日期。原 10-14 调查仅阅读公开文档／源码／论文／开发者记录；未安装软件、下载权重、模拟或生成资产、编译 shader 或运行 shader／GPU／模型／游戏引擎、购买服务、访问用户电脑或建立云任务。未做视觉／像素评审、试听或玩家实验；零手修通过率、识别率、设备性能与主动工时均未验证。来源的运行数字不属本仓库实测；离线检查不替代这些验证，hosted CI 未运行。正文见[材质与特效](../../domains/game-dev/assets/materials.md)，授权汇总见[WP1](2026-10-14-game-wp1-licensing.md)。
 
 ## P64：同表面二改的最高水平卡
 
@@ -214,12 +214,12 @@ UCSD的[MaterialApprentice v1](https://arxiv.org/html/2607.13318v1)（2026-07-14
 
 ## 动态事实表：采用前再核，最迟 2026-11-14
 
-[一手／研究] 以下只记录本次可读的一手页面与固定版本，不表示实际安装版本或已通过资产生产验收。复核日期是维护期限，不是许可有效期；采用、上传、购买或升级早于期限时，先做相应复核。型号、价格与生产资格在此单点维护；§四保留固定机制／反例，§六区分权利层。引擎合同仍回到 WP1，不在本 WP 重复裁定。本次仅合并旧记录，不刷新核实日。
+[一手／研究] 以下记录对应日期的一手页面与固定版本；Material Maker 1.8 的实际试运行另见下文，其余不表示已安装或通过资产生产验收。复核日期是维护期限，不是许可有效期；采用、上传、购买或升级早于期限时，先做相应复核。型号、价格与生产资格在此单点维护；§四保留固定机制／反例，§六区分权利层。引擎合同仍回到 WP1，不在本 WP 重复裁定。除明确标注的新补核外，旧记录不刷新核实日。
 
 | 事实／精确范围 | 一手来源 | 核实日期 | 下次复核 | 对建议的影响 |
 |---|---|---|---|---|
-| Material Maker releases 仍标 2026-07-14 的 1.7 为 Latest；固定 SHA `4c6cea67b659e1eb472f91590e06b2b1c5245916` | [发布页](https://github.com/RodZill4/material-maker/releases/tag/1.7) | 2026-10-14 | 采用前或 2026-11-14 | 图编辑可采用；不把主分支变化当已发布修复 |
-| 1.7 的 `--size` 解析未传给导出；#1506 有跨平台故障自述 | [固定源码](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/parse_args.gd#L98-L165)、[原帖](https://github.com/RodZill4/material-maker/issues/1506) | 2026-10-14 | 批处理采用前或 2026-11-14 | CLI 仍试用；参数接线已核，崩溃／补丁收益未复现 |
+| Material Maker 1.8 已于 2026-10-25 发布；固定 SHA `7d6daae3c74c09720afe4138ce09699ab3591ce1`，含 CLI 尺寸与创建输出目录修复声明 | [发布页](https://github.com/RodZill4/material-maker/releases/tag/1.8) | 2026-10-26 UTC+8 | 采用前或 2026-11-14 | 图编辑沿用；CLI 在目标环境实跑，不再以 1.7 参数缺陷判新版本 |
+| 历史 1.7 的 `--size` 解析未传给导出；#1506 有跨平台故障自述 | [固定源码](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/parse_args.gd#L98-L165)、[原帖](https://github.com/RodZill4/material-maker/issues/1506) | 2026-10-14 | 批处理采用前或 2026-11-14 | CLI 仍试用；参数接线已核，崩溃／补丁收益未复现 |
 | 编辑器默认 MIT；无生成权重层，所读许可无专门营收／地域门槛。社区库有 CC0、BY、BY-SA 分区，输入贴图／外部节点另核；官网／Steam 入口不改变输入许可 | [固定许可](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/LICENSE.md)、[素材库](https://www.materialmaker.org/materials) | 2026-10-14 | 选入每件素材前或 2026-11-14 | 免费工具不覆盖输入素材；保留逐件许可 |
 | Poly Haven 指定资产 CC0，允许商用／修改／分发且无资产营收门槛；logo／网页文字／预览渲染除外。2026-07-18 API 页含商用免费；live API 产品仍须标示来源、独有 User-Agent 等，不授权任意抓站 | [许可](https://polyhaven.com/license)、[API](https://polyhaven.com/our-api) | 2026-10-14 | 采用／API 接入前或 2026-11-14 | 指定纹理仍是免费基线；不扩大为任意抓站许可 |
 | Designer 16、Sampler 6 是 2026 公告所述代际；7 月公告含 Painter 12.1/OpenPBR | [官方公告](https://blog.adobe.com/en/publish/2026/07/21/adobe-substance-3d-unveils-new-innovations-deliver-faster-workflows-openpbr-everywhere-digital-twins-scale) | 2026-10-14 | 锁定实际补丁版前或 2026-11-14 | 保留参数图路线；公告版本不称安装版或最新补丁 |
@@ -240,7 +240,7 @@ UCSD的[MaterialApprentice v1](https://arxiv.org/html/2607.13318v1)（2026-07-14
 
 | 资源与条件 | 最佳质量档（含商业，按交付可靠性首试） | 最佳性价比档 | 本地／免费档 |
 |---|---|---|---|
-| 平铺地表、砖、木、漆、规则磨损 | ✅采用同风格、通道配套的成熟材料库；缺变体时用Substance Designer 16参数图／Sampler参数层；需要独特纹样时才🧪Sampler图转材质 | ✅采用同套Poly Haven指定CC0材质＋引擎参数变化；形状、缝距、磨损必须反复改时用Material Maker图 | ✅采用Material Maker 1.7＋原生Lit／Shader Graph；🧪其无人值守CLI导出须修复/验证后再进批量生产 |
+| 平铺地表、砖、木、漆、规则磨损 | ✅采用同风格、通道配套的成熟材料库；缺变体时用Substance Designer 16参数图／Sampler参数层；需要独特纹样时才🧪Sampler图转材质 | ✅采用同套Poly Haven指定CC0材质＋引擎参数变化；形状、缝距、磨损必须反复改时用Material Maker图 | ✅采用Material Maker 1.8＋原生Lit／Shader Graph；🧪其无人值守CLI导出在目标环境验证后再进批量生产 |
 | 已有UV的道具重贴图 | ✅保留mesh／UV、按材质区域赋现成或参数化材质；独特整体外观才进入WP3已审商业重贴图候选 | ✅共用少量主材质与区域mask，颜色/roughness/污渍强度做参数 | ✅原生参数材质＋合法输入；⛔MatLat v1.0.0权重不作商用免费路线 |
 | 命中、拖尾、蓄力、持续火焰等须响应玩法的特效 | ✅采用项目原生Particle System／VFX Graph／Niagara模板；近景烟火细节再加可靠烘焙flipbook | ✅能用现成参数包就不新增运行时；需要跨引擎样例库时🧪Effekseer 1.80.7＋指定CC0包 | ✅原生粒子或Effekseer；程序化noise、gradient、ring、ribbon先满足；不重新生成已有形状 |
 | 固定视点烟火、魔法背景／装饰叠层 | ✅匹配风格的成熟flipbook；缺少独特流体动态时🧪EmberGen商业许可参数模拟烘焙，按需six-way lighting | ✅同一运行时/模拟源多次烘焙与复用；不要为每个颜色/时长重生视频 | ✅Effekseer指定CC0效果烘焙或原生粒子；通用视频模型只作隔离🧪候选，alpha、循环和时序不过就撤回 |
@@ -268,7 +268,20 @@ UCSD的[MaterialApprentice v1](https://arxiv.org/html/2607.13318v1)（2026-07-14
 
 [材质正文](../../domains/game-dev/assets/materials.md#pbr-production)把上述同通道约束接成表面任务→作者源→配套通道→目标导出／导入→材质与对象→同条件复核。首次用两面墙核同源配置，二改将实例采样／粗糙度与作者结构／语义 mask 分开：前者沿已有参数和持有关系，后者回图源重导出所有受影响通道。它复用本页选源／许可／涂层证据，没有更新候选排名、原核实日期或提出新材质框架。[研究]
 
-实际消费者起点沿 [P124 固定源](../../experiments/p124-texture-consumer.md)：2026-10-23 的原图、KTX 4.4.2／Three 0.186.0 锁版本与真实 CPU 转码、共享纹理二改已独立复跑；只证明对应数值／引用保持，不是 GPU shader、Unity／UE、真实平铺尺度或新材质生成质量。正文正常六步、结构二改和两面墙目标画面仍是实施／验收建议，本次未运行新工具或重传源图。[本仓运行／研究]
+实际消费者起点沿 [P124 固定源](../../experiments/p124-texture-consumer.md)：2026-10-23 的原图、KTX 4.4.2／Three 0.186.0 锁版本与真实 CPU 转码、共享纹理二改已独立复跑；只证明对应数值／引用保持，不是 GPU shader、Unity／UE、真实平铺尺度或新材质生成质量。正常六步是综合建议；新增原创结构源的实际范围见下节，不重传 P124 源图。[本仓运行／研究]
+
+### Material Maker 1.8与本仓作者源试运行
+
+**批产选真实能导出的环境；结构源与运行材质分别保留。** 1.8 的 `parse_args.gd` 已把 `--size` 写入实际传出的 `image_size`，并尝试创建缺失输出目录；这是发布版本的源码事实，不等于尺寸、嵌套目录或退出状态已实测。旧 1.7 参数反例仍留作历史。#1506 在本次核读时仍开着，不能据另一个修复推断其关闭。
+
+本仓校验官方 Linux 1.8 包 SHA-256 后实际启动，`--version` 返回所带 Godot 4.7.2；在本次 Linux 容器做 `--headless` 示例导出未产生纹理，一次退出 139，无足够诊断归因于 #1506。该环境结果不否定 GUI 路线，也不证明其他环境不能批产；下一次须在具备相应渲染能力的环境验证完整导出，不反复重跑同一失败入口。
+
+**已跑通的作者源替代是[原生 Blender 砖墙例](../../experiments/material-authoring/README.md)。** 脚本建立原创 Brick 节点，Fac 同时驱动反向高度和砖／缝 roughness，颜色沿同一节点；保存作者图，再以 CPU 烘焙成两套 256² color／roughness／tangent normal。消费者另从 PNG 重建材质、保存相对引用，首版两墙同源，二版仅右墙砖缝 `0.018→0.045`、砖面 roughness `0.65→0.35`；左墙源与绑定未变。补验仅改 roughness 时，两次独立 normal 烘焙曾出现最大 5/255 的通道差；最终配方对未受影响的颜色／normal 直接复用，避免把重新采样当必须的二改成本。已有 Blender 的规则表面可借这条路线，不需要为了可回改而另造图编辑器；复杂纹样仍优先适配的成熟参数源。
+
+实际 Blender 4.3.2／Cycles CPU：6 项回归覆盖正常制作与保存重开、仅 roughness 二改保持结构通道、缺配方、非法参数、已有输出保护及缺贴图失败；作者已看同灯光／镜头的两墙图。只证明此节点图、输出数值和消费者绑定成立，未验平铺接缝、换灯／多视角、目标引擎、GPU、设备预算或品质优于其他工具。脚本与配方原创；生成 `.blend`、贴图、预览和过程日志本地保留，不提交报告堆。
+
+来源与日期：2026-10-25 UTC，实际运行本目录所链源；一手 [1.8 发布](https://github.com/RodZill4/material-maker/releases/tag/1.8)、[固定参数解析](https://github.com/RodZill4/material-maker/blob/7d6daae3c74c09720afe4138ce09699ab3591ce1/parse_args.gd)、[固定 MIT 许可](https://github.com/RodZill4/material-maker/blob/7d6daae3c74c09720afe4138ce09699ab3591ce1/LICENSE.md)与社区 [#1506](https://github.com/RodZill4/material-maker/issues/1506)。旧动态事实保各自日期，编辑器许可不覆盖任意社区材料。
+
 
 ## 三、第二次修改：留下什么源文件，什么情况下撤回
 
@@ -287,7 +300,7 @@ UCSD的[MaterialApprentice v1](https://arxiv.org/html/2607.13318v1)（2026-07-14
 
 ### M：Material Maker与现成基线
 
-- **M1 [一手，固定源码]** 上表固定 1.7 更新含 PBR metallic 默认值、subgraph 导出及修复；[固定 README](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/README.md)对应该快照，不沿用搜索摘要的 1.4RC。
+- **M1 [一手，固定源码；历史 1.7]** 当时 1.7 更新含 PBR metallic 默认值、subgraph 导出及修复；[固定 README](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/README.md)对应该快照，不沿用搜索摘要的 1.4RC。
 - **M2 [一手]** [材质节点/导出说明](https://rodzill4.github.io/material-maker/doc/material_nodes.html)：导出可以是PNG/EXR纹理、模板及buffer。由此采用“保图源＋按引擎烘焙”，不推断所有动态节点或材质模型在每个管线都有等价效果。
 - **M3 [一手：源码；社区：故障复现]** [#1506](https://github.com/RodZill4/material-maker/issues/1506)始于2026-07-16 Linux 1.7批导出崩溃、GUI可导；2026-10-10另有Windows两GPU复现和临时规避自述。核读[固定parse_args.gd](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/parse_args.gd#L98-L168)，`--size`写入`texture_size`，实际传入导出的仍是初始化2048的`image_size`；这是源码可确认的参数接线问题，不需运行才发现。[固定multi_renderer.gd](https://github.com/RodZill4/material-maker/blob/4c6cea67b659e1eb472f91590e06b2b1c5245916/addons/material_maker/engine/multi_renderer.gd#L172-L196)亦有异步初始化路径；崩溃时序及补丁收益本轮未实测，不将评论中的12/12作为自己验证。**改建议：GUI参数图可采用，1.7无人值守CLI先验证修复、输出尺寸、失败退出和缺目录超时；不直接把CLI/MCP封装宣传为稳定资产工厂。**
 - **M4 [一手]** [Poly Haven纹理标准](https://docs.polyhaven.com/technical-standards/textures)2026-05-28，要求成套地图、真实尺寸和photo-based制作；这是零手修现成基线的可检查规格，不是保证任一8K贴图适合目标设备。下载后应按占屏和预算降规格。
