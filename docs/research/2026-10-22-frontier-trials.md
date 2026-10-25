@@ -720,3 +720,25 @@ export CHUB_DIR="$PWD/chub-data" CHUB_TELEMETRY=0 CHUB_FEEDBACK=0
 安装包registry SHA1为`39fad45082d70f0067c352024b96eca20ba0e77c`；Node24.19.0、安装脚本关闭。未配置MCP、未运行feedback命令、未改用户全局配置；环境变量关闭该包遥测／反馈，未做抓包证明。仅确认CLI存储、跨进程读取和文件交接，不宣称Agent理解、模型收益、跨版本正确或胜过普通项目文档。[本仓实试]
 
 探索回执：核官方GitHub／npm、源码、GitHub issue与中文原帖，当前核对截至10-24；中文讨论是旧发现线索，近期独立采用与净收益仍未知，不把新近核实写成新发布。[研究]
+
+## Lychee：改完文档，验链接能否落到那一节
+
+**多页改标题后，给 Agent 加一次离线深链检查；单个已知链接仍可直接沿 GitHub 页面核对。** 本仓已有检查器确认文件存在，却不检查片段锚点。Lychee 0.24.2 补上的是这层反馈，不是事实核查、内容新鲜度或外链可用性；无需为此安装整套 Agent Skill、Hook 或新全局门。[本仓实际采用／选择]
+
+**实际消费者。** 在公开 `ad0c32b` 的归档副本检查 31 份 docs 正文，排除 research、collaboration 及仍在改写的 10／17 页；不读其他执行者的脏树。`check_repo.py` 原有检查通过，Lychee 的 `--offline --include-fragments` 则返回两条 `Cannot find fragment`：15 的真实 Chrome 回执仍指向已改名的浏览器小节；开源 Agent 页的“总览”仍指向旧标题。没有制造坏链或改造测试样本。[本仓实试]
+
+两条都再核固定 SHA 的 **GitHub 实际渲染 HTML、目录 anchor 与 permalink**，确认不是中文标点／slug 差异误报。任务路线写者按原断言修复：15 仍回到“初版真实浏览器补验”的 7 项测试与原日期，不借修链接换成新版验收；开源页回到当前总览的分层选择段。[两处修复 `440d3e0`](https://github.com/dbvv1/a1dbv/commit/440d3e0ab5a5c6e8df8e0ec83bfed8faa6c48acc) 发布后，原 31 份输入复验 exit 0／0 错误；再次取该 SHA 的 GitHub 渲染 HTML，源页 href 与目标 anchor 均对应。这是渲染内容核验，不是浏览器点击实测。[本仓实际消费]
+
+```sh
+# 从仓库根运行；填写指向改标题文档的入链源，不确定时扫相关正文集合
+lychee --offline --include-fragments --no-progress --format json \
+  docs/15-task-playbooks.md docs/01-agents/open-source-agents.md
+```
+
+改的是目标标题时，不能只扫描那个改动文件：未改动的其他页仍可能链接旧标题。把入链源也纳入检查，再让 Agent 交回**源位置、目标实际锚点和该段是否仍支持原断言**，再做最小修复。若标题有外部旧书签消费者，可以在目标保兼容锚；不能见机器报错就统一换到第一页或最新小节。目标渲染器不是 GitHub，或锚点由 JavaScript 生成时，回实际渲染页核对，不靠排除规则把报告刷绿。
+
+**范围与成本。** 使用官方 Linux 预编译包，核对同版发布的 SHA-256，版本 0.24.2；MIT／Apache-2.0，无账户与模型调用。首次调用因解压后子目录与预期不同未找到可执行文件，查看包内路径后正常运行；未改系统设置。31 份输入的首轮耗时 0.525s，exit 2；外部 URL 被 offline 排除，不能称全仓或外链通过，也不据此声称 Agent 净提速。本单元选择与实试窗口为 2026-10-25 20:46:16–20:51:50 UTC，含下载与协作等待；同集合修后检查为 0.469s。独审与发布另计，不把等待算成连续写作工时。[本仓实试]
+
+**为什么选这条反馈。** OpenTelemetry 的实际维护流程把普通构建与生产内部链接检查区分，避免预览里存在、生产不产出的页面漏检；中文技能仓库已把同版 Lychee 配成 Markdown pre-commit，有公开采用配置与作者使用自报，而非仅热度。该配置主要查外链，不能直接证明本轮片段检查；本轮只借官方 CLI 做按需离线检查，不照搬外链缓存／Hook。强替代是已有仓库检查加人工导航：链接少时足够；多页改写时本轮额外抓到两个原检查范围外的断点，因此采用这一步，而非替换原检查。
+
+**依据**：[一手] [Lychee 0.24.2 发布](https://github.com/lycheeverse/lychee/releases/tag/lychee-v0.24.2)、[固定版 Markdown 锚点实现](https://github.com/lycheeverse/lychee/blob/lychee-v0.24.2/lychee-lib/src/extract/markdown.rs)、[GitHub 章节链接规则](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#section-links)；[实践者／开源采用] [OpenTelemetry 链接检查](https://opentelemetry.io/site/build/link-checking/)、[中文使用者配置](https://github.com/TMYTiMidlY/skills/blob/main/.pre-commit-config.yaml)；[本仓实试] 冻结公开正文、两处实际修复与回验；核实 2026-10-25 UTC。
