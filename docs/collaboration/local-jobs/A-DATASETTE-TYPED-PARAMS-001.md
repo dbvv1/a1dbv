@@ -15,7 +15,7 @@ result_branch: relay/a-datasette-typed-params-001
 
 ## 可直接运行的入口
 
-[固定完整补丁、契约、请求及历史证据](https://github.com/dbvv1/a1dbv/blob/86f5fd2f2714043684054a9d59f392bd0baa2309/docs/collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md#可直接运行的入口)；使用其中末段新完整 patch，或直接取 PR head。采用结论在 [15 任务路线](../../15-task-playbooks.md#测试全绿后让-agent-看见改动行再核消费者)。
+[固定完整补丁、契约、请求及历史证据](https://github.com/dbvv1/a1dbv/blob/7f545ee38888fe07b7a70515d7a38732b90212f2/docs/collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md#可直接运行的入口)；使用其中末段新完整 patch，或直接取 PR head。采用结论在 [15 任务路线](../../15-task-playbooks.md#测试全绿后让-agent-看见改动行再核消费者)。
 
 <a id="dot-a-接收与-posix-补验2026-10-25-1551-utc"></a>
 ## 验证与下一步
