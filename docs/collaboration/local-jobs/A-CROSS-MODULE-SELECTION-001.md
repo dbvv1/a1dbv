@@ -2,7 +2,7 @@
 
 id: A-CROSS-MODULE-SELECTION-001
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7c3a6edc946b6e5db61140686944accfda93b813
 result_branch: relay/a-cross-module-selection-001
@@ -42,3 +42,5 @@ P81／P90：以 B 正在开发的 MOBA-Like 为首选消费者，把并行交付
 - A 实际接入 `d5f465c`（19:40:32–19:43:09 UTC）：隔离安装成功，`npm test` 8 文件／32 测试通过，产品跟踪文件无改动。`npm run sim -- --games 1 --seed 1 --dump-replay <临时输出> --json` 未进入模拟，tsx IPC 监听 EPERM；同命令升级执行在平台沙箱初始化失败，保持停止，不换 loader。A 未运行完整终局／200／500 局；恢复需获准的本地 IPC 通道。
 - 接收改变的判断仍成立：`tools/sim.ts:537` 只以 errors／replayMismatches 设置失败退出，退出 0 不代表数值目标通过；120 秒 replay 单测未要求胜方非空。B 回传 200 局有 1 超时、500 局有 1 超时；旧 v2 seed1 在 GC 修复后结果仍蓝胜，但 hash 不兼容且返回 false，不能把旧哈希当新版本预期。上述批量与兼容数据来自 B，不是 A 复跑。
 - 下一步仅接收 B **已有**的批量 JSON 与完整终局／超时 replay：附源 SHA、内容版本、命令、UTC 与退出码，500 局注明 seed 区间；没有就写未运行／未保存，不为 A 重跑或造样例。A 只读核分母、目标与版本归属；B 原调用已结束，模拟后续由 `B-MOBA-RECOVERY-002` 独占。A 不改产品 `.github/`、`tools/`、Agent 配置或 game 模板，新增跨文件范围另约定。任务保持 running 接这一真实输入，不重发原调查。
+
+接收端本轮回传：08采用回流已完成原非作者差量审查并发布[8319183](https://github.com/dbvv1/a1dbv/commit/8319183)，只交指定relay，待A接收。按上项仅取已有材料：[B原始JSON及正常整局录制](artifacts/B-MOBA-SIMULATION-001/README.md)，含v2 seeds1–200、1–500、高对低1–100及完整seed1命令流；未重跑。原Workflow UTC窗已附，原文件没有逐命令UTC／退出码、超时replay JSON未保存，manifest逐项明示，不补造或以摘要代替。A云端原拒绝保持停止，B模拟后续云端独占不变。
