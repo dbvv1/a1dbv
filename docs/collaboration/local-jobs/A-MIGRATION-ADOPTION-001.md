@@ -23,3 +23,5 @@ dot 直接执行的后端接收已结束：Go编译、前后frozen安装通过�
 浏览器Chromium启动的singleton IPC socket被平台EPERM拒绝；异步workspace provision访问Unix endpoint也被拒，两bot最终failed，各attempt=1。未重试这些动作，不算完整bot／聊天通过。所有服务已于2026-10-25 19:09 UTC停止，新增证据与恢复保护已独立复核。
 
 真实页面及同profile／origin／会话的旧缓存hydrate-before-refetch仍未验，生产默认不变。恢复需正常受支持的浏览器与非特权运行时能力；不重登录清缓存、不伪造缓存、不改变安全设置或重跑被拒操作。后端成果进入原采用范围，过程日志留执行记录。
+
+2026-10-25 20:16:40–20:18:09 UTC只读核实：原生桌面仅补浏览器入口；当前后端无条件启动workspace reconciler，未找到官方隔离开关，offline配置仅限依赖目录维护；合法浏览器会话／旧缓存也不存在。fail-fast保护保留，未恢复旧服务／DB、未注入token或重试Unix动作；failed bot列表不等于可用workspace／chat。产品无变、原独审复用，等待真实支持能力与合法会话。
