@@ -568,19 +568,17 @@ void OnRowChanged<T>(SettingDef<T> def, T value) {
     row.Refresh(def, value);                   // 行显示随实际值；dirty 只控制未保存提示
 }
 
-string ValidateDraft() {
-    foreach (var def in dirtyDefs()) {
-        var error = def.Validate?.Invoke(draft.Get(def));
-        if (error != null) return error;
-    }
-    return null;
-}
-
 SaveResult ApplyAll() {
-    var invalid = ValidateDraft();              // 改键冲突、范围等先于保存
-    if (invalid != null) {
-        status.Show(invalid);
-        return new SaveResult { Ok = false, Message = invalid }; // 不写存储，保留草稿
+    // 未保存与待应用分开：重开后 stored=draft 也可能仍不同于运行时。
+    var applyDefs = defs.Where(def => dirty.Contains(def.Id)
+        || (def.Timing != ApplyTiming.OnRestart
+            && !def.ValueEquals(draft.Get(def), def.Read(runtime)))).ToArray();
+    foreach (var def in applyDefs) {
+        var invalid = def.Validate?.Invoke(draft.Get(def));
+        if (invalid != null) {
+            status.Show(invalid);
+            return new SaveResult { Ok = false, Message = invalid }; // 保留草稿与待应用值
+        }
     }
     var result = store.Save(draft);             // 可观察的完成／失败，来源见下
     if (!result.Ok) {
@@ -589,13 +587,11 @@ SaveResult ApplyAll() {
             : "保存失败，更改还在，可重试");
         return result;                          // 不关页、不清 dirty、不丢 draft、不改运行时
     }
-    foreach (var def in dirtyDefs())
-        if (def.Timing == ApplyTiming.OnApply)
-            def.Apply(runtime, draft.Get(def)); // 保存成功后才提交
-    stored = draft.Clone();
-    foreach (var def in dirtyDefs())
+    foreach (var def in applyDefs)
         if (def.Timing != ApplyTiming.OnRestart)
-            effective.Set(def.Id, draft.Get(def)); // 只推进本次运行已生效的项
+            def.Apply(runtime, draft.Get(def)); // 包含已保存但尚未应用的 Preview／OnApply 项
+    stored = draft.Clone();
+    effective = runtime.CurrentValues();       // 重新读实际已生效值，OnRestart 仍保持旧值
     preview = effective.Clone();                // 下一次取消回到刚应用的值
     previewTouched.Clear();
     draft = stored.Clone();
@@ -664,13 +660,13 @@ sealed class FileSettingsStore {
 }
 ```
 
-`Ok` 只表示本进程观察到“序列化成功、临时文件写入并 `Flush(true)` 返回、目标文件替换或移动返回”。序列化成功也只表示 `JsonUtility.ToJson` 没抛异常且结果非空，不证明所有字段都进了 JSON；它不保证断电／系统崩溃后仍可读，不覆盖同步盘、杀毒软件或另一进程同时写，也不证明盘上内容能再次反序列化；`File.Replace` 还要求源和目标同卷，部分平台不支持时会抛异常。替换阶段异常标 `Uncertain`：此时既不显示“已保存”，也不清 dirty 或丢草稿，保持页面并提示玩家可先重试；若要重开设置确认盘上结果，先说明重开会丢弃当前草稿。不自动重试或自动关页；读取层遇到无法解析或缺失的目标文件应回退 `.bak` 或上次有效档并提示，不能静默用默认值覆盖。承诺的是可观察的完成／失败反馈，不是引擎级持久化成功。
+`Ok` 只表示本进程观察到“序列化成功、临时文件写入并 `Flush(true)` 返回、目标文件替换或移动返回”。序列化成功也只表示 `JsonUtility.ToJson` 没抛异常且结果非空，不证明所有字段都进了 JSON；它不保证断电／系统崩溃后仍可读，不覆盖同步盘、杀毒软件或另一进程同时写，也不证明盘上内容能再次反序列化；`File.Replace` 还要求源和目标同卷，部分平台不支持时会抛异常。替换阶段异常标 `Uncertain`：此时既不显示“已保存”，也不清 dirty 或丢草稿，保持页面并提示玩家可先重试；若要重开设置确认盘上结果，先说明重开会丢弃当前草稿。重开后不自动改运行时：非 OnRestart 项若 stored 与当前运行时不同，显示已保存值并标“已保存，待应用”；玩家明确应用时，即使 dirty 为空，也将这些项纳入校验和提交。不自动重试或自动关页；读取层遇到无法解析或缺失的目标文件应回退 `.bak` 或上次有效档并提示，不能静默用默认值覆盖。承诺的是可观察的完成／失败反馈，不是引擎级持久化成功。
 
 **统一顺序。** **校验草稿 → 保存 → 应用运行时**：改键冲突、数值范围等在 `store.Save` 前拦截，失败只提示并保留草稿。本示例不实现显示模式／分辨率切换；若项目另做，它需要引擎自己的确认／回退和超时，不能把这条分支混进本示例的保存流程。
 
-**行显示按三层取值。** 脏项（draft 与 stored 按 `ValueEquals` 不等）显示草稿；`OnRestart` 且已保存值不等于有效值时显示已保存值并标“重启后生效”；其余显示有效值。取消回到已保存值，而不要回到旧有效值，否则上次保存的待重启项会被丢掉。启动时先把已保存值应用到运行时，再让 `effective` 等于它；`OnRestart` 项在 `ApplyAll` 里只更新 `stored`，不改运行时。保存失败或结果不确定时，`dirty`、草稿和预览都不动，OnApply 项不改运行时，Preview 项仍是试听值；取消会按 `previewTouched` 恢复。OnRestart 项保存成功后，行上显示“重启后生效”，下次打开仍显示待生效值，而不是旧的有效值。
+**行显示按三层取值。** 脏项（draft 与 stored 按 `ValueEquals` 不等）显示草稿；`OnRestart` 且已保存值不等于有效值时显示已保存值并标“重启后生效”；非 OnRestart 项若 stored 与当前运行时不同，显示 stored 并标“已保存，待应用”；其余显示有效值。取消回到已保存值，而不要回到旧有效值，否则上次保存的待重启项会被丢掉。启动时先把已保存值应用到运行时，再让 `effective` 等于它；`OnRestart` 项在 `ApplyAll` 里只更新 `stored`，不改运行时。保存失败或结果不确定时，`dirty`、草稿和预览都不动，OnApply 项不改运行时，Preview 项仍是试听值；取消会按 `previewTouched` 恢复。OnRestart 项保存成功后，行上显示“重启后生效”，下次打开仍显示待生效值，而不是旧的有效值。
 
-**脏标记与三条路径的一致性。** `dirty` 只回答“草稿和已保存值是否不同”：50→60→50 回到原值就清掉，返回时不再弹未保存；只和 `stored` 比，不和 `effective` 比，因为已保存的待重启值本来就与当前有效值不同，拿有效值比会把“已保存但尚未生效”误报成未提交。应用成功后 `stored` 推进到草稿，`effective` 只推进非待重启项，`dirty` 清空；取消把草稿回到 `stored` 并恢复本次碰过的预览项，已保存的待重启值保留、未保存改动丢弃；保存失败或不确定时 `stored`、`effective`、`draft`、`dirty` 和预览都不动。真正的重启后，启动时把 `stored` 应用到运行时，待生效标记自然消失。`ValueEquals` 默认用 `EqualityComparer<T>.Default`，浮点／改键等由定义覆盖：浮点按实际落盘精度或滑块步长量化后比较，枚举按枚举值，改键按 binding id 加 override 路径，字符串按序数；不用对象引用或 UI 原始浮点噪声。
+**脏标记与三条路径的一致性。** `dirty` 只回答“草稿和已保存值是否不同”：50→60→50 回到原值就清掉，返回时不再弹未保存；只和 `stored` 比，不和 `effective` 比，因为已保存的待重启值本来就与当前有效值不同，拿有效值比会把“已保存但尚未生效”误报成未提交。应用集合另含非 OnRestart 且草稿不同于实际运行时的项，与 dirty 无关；因此重开后的已保存字号 150%、运行时 100% 即使 dirty 为空，也能在明确应用后生效。集合先固定，再校验、保存和提交；成功后 `stored` 推进到草稿，`effective` 重读运行时，`dirty` 清空；取消把草稿回到 `stored` 并恢复本次碰过的预览项，已保存的待重启值保留、未保存改动丢弃；保存失败或不确定时 `stored`、`effective`、`draft`、`dirty` 和预览都不动。真正的重启后，启动时把 `stored` 应用到运行时，待生效标记自然消失。`ValueEquals` 默认用 `EqualityComparer<T>.Default`，浮点／改键等由定义覆盖：浮点按实际落盘精度或滑块步长量化后比较，枚举按枚举值，改键按 binding id 加 override 路径，字符串按序数；不用对象引用或 UI 原始浮点噪声。
 
 **新增一个设置只做三步：** 在表里加一条定义；给它的控件类型注册或复用一个行适配器；补一条“打开→改→应用／取消→再打开”的回归用例。存档键、脏标记、应用、保存和返回都走同一会话，不要为每个滑块再写一套回调和存储。
 
