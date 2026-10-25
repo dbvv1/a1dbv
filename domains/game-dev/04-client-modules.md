@@ -711,29 +711,137 @@ sealed class FileSettingsStore {
 
 ### 压低卡顿与设备耗用
 
+**[研究] ✅ 三类现象分开：同一遭遇持续掉帧、首次进房尖峰、往返后内存上涨。** 先固定引擎／平台／管线／构建／画质／输入，采一段正常遭遇；再按主线程、worker、GPU、等待分类，加载按 IO→解码→初始化→上传→首绘拆，内存按等价状态快照追引用链。只改证据指向的一层，最后在发布构建复核。帧率目标、画面可读性、冷启动、稳态与峰值内存一起约束；单张 Profiler 截图、平均 FPS 或源码支持都不算收益。不要先扩池、关 GC、转 ECS、开 DRS 或堆监控。
+
+```mermaid
+flowchart TD
+  A[锁定版本、设备、画质与输入，采一段正常遭遇] --> B[原生分析器：帧时间、线程、GPU 与等待]
+  B --> C{哪类现象}
+  C -->|同遭遇持续掉帧| D[主线程／worker／GPU／等待分类]
+  C -->|首次进房尖峰| E[IO／解码／初始化／上传／首绘]
+  C -->|往返内存上涨| F[等价状态快照／引用链／保留类别]
+  D --> G[一个可证伪归因]
+  E --> G
+  F --> G
+  G --> H[最小补丁，只改有效层]
+  H --> I[同条件开发构建定位与发布构建复核]
+  I --> J{帧目标、可读性、冷启动与内存同时达标}
+  J -->|否| B
+  J -->|是| K[二改：新敌人／材质／波次后重采并重判]
+  K --> B
+```
+
 #### 设备预算：量最坏场景，不抄通用面数
 
-**[研究] ✅ 按最低设备／分辨率／帧率分预算，量冷启动、首技能、峰值战斗与关卡往返。** Unity Profiler／Frame Debugger、UE Insights 记录帧间隔分布、尖峰、驻留／峰值内存、音频、加载和包体，含关卡重叠与解压缓冲；开发构建定位、发布构建复核。60 fps 的 16.67 ms 是整帧，CPU／GPU／等待不简单相加。[一手／研究]
+**[研究] ✅ 按最低设备／分辨率／帧率分预算，量冷启动、首次进房、首技能、峰值战斗与关卡往返。** 记录帧间隔分布（p50、p95、p99、最长帧与次数）、尖峰、稳态与峰值内存、加载到可见／可操作的时长、音频和包体；开发构建定位，发布构建复核。60 fps 的 16.67 ms 是整帧，CPU／GPU／等待不简单相加。设备预算、DRS、呈现节奏、粒子和闲时选择沿用已有结论，本节只把它们接进同一条采集与复核路径。呈现节奏与持续长帧另见[平均 FPS 与实际看到的动作不是同一个承诺](../../docs/research/2026-10-14-game-wp10-client-modules.md#呈现节奏补研平均-fps-与实际看到的动作不是同一个承诺)，它管呈现同步与排队，不替代这里对工作耗时的归因。
 
 静止菜单确为渲染耗用才试 OnDemandRendering，保所需更新、输入／异步到达恢复绘制；耗用未降或首反馈变迟就退回。[Unciv 与 Android 延迟反例](../../docs/research/2026-10-14-game-wp10-client-modules.md#闲时预算少画几帧不等于整个应用一起慢)。[研究]
 
 **先固定降采样定位，再决定 DRS。** GPU 时间受益且负载波动才试有可辨下限的动态档；稳定负载保固定档，到下限仍超预算就修实际热点。Unity 6.3 URP 缩放示例非自动预算器，HDRP 17.3 有组件；UE 核平台原生预算。HUD 清楚不代场内警告，DRS 不保证避突发尖峰；[Fortnite 与管线对照](../../docs/research/2026-10-14-game-wp10-client-modules.md#分辨率预算固定档动态档与内容取舍)。[一手／研究，未实测]
 
+#### 采集：四个建议标记串一条正常遭遇
+
+**[研究] ✅ 用 `PrepareEncounter`／`ActivateEncounter`／`SpawnWave`／`ReleaseEncounter` 标真实工作边界；它们是项目建议语义，不是 Unity／UE 内置 API。** 标记只圈一段可解释的工作，不逐函数加；先四个够用，证据指向某段再嵌一个子标记。
+
+| 建议标记 | 圈住的真实工作 | 最少记录 | 不能据此判断 |
+|---|---|---|---|
+| `PrepareEncounter` | 选内容、读盘／加载、初始化、上传准备；玩家已可操作后的持续更新不放在这里 | 开始／结束、资源集合、线程、冷／热缓存 | 标记长不等于这段都在耗 CPU；可能含等待 |
+| `ActivateEncounter` | 提交遭遇状态、首绘、首个预警与首个可操作反馈 | 首个可见帧、首个可操作帧、首技能时刻 | 加载完成不等于能回应 |
+| `SpawnWave` | 每次波次生成、实例化、AI／导航注册 | 波次规模、实例数、分配、主线程／worker 占用 | 平均生成时间会掩盖单波尖峰 |
+| `ReleaseEncounter` | 离场、释放、回池、卸载；沿用现有生命周期 | 释放前后对象／原生资源、句柄、驻留 | 调用了释放不等于资源已归还 |
+
+**同步采样与阶段经过时间分开。** 原生 CPU scope 只圈同一次同步执行片段，返回／异常前成对关闭；Unity 的 `ProfilerMarker`（含 `Auto()`）不能跨 `await`／`yield`，UE 的作用域计时也只承诺当前作用域工作。加载等待、跨帧首绘、异步释放完成沿已有遭遇／阶段身份分别记开始与完成的时间或帧号，再与原生时间轴对齐；它们是经过时间，不冒充 CPU 耗时。四个建议语义名保持，表中的阶段工作按同步片段采样，不用一个 scope 包完整异步过程。[Unity 官方标记说明](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-add-markers-code.html)
+
+Unity 用 `ProfilerMarker`（`static readonly`，`Begin()`／`End()` 或 `Auto()`）；`Begin/End` 带条件编译，在非 Development 的 Release 构建中被编译掉，发布包不能靠这些自定义标记定位。UE 用 `TRACE_CPUPROFILER_EVENT_SCOPE` 家族，trace channel 默认关闭，需在 Development／Test 构建显式开启；动态字符串名有额外 CPU／内存开销，优先静态名。两端都先记构建类型、平台、图形 API、画质、分辨率、是否冷缓存；Unity／UE 与 Editor／Player 的同名标记不是同一机制。[一手；[版本与 API](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)]
+
+#### 分类：主线程、worker、GPU 与等待
+
+**[研究] ✅ 先看同一时间轴上的线程，再看单个标记。** Unity 6.3 CPU Usage 默认 Timeline 显示所有线程；Hierarchy 一次只看一个线程，Inverted Hierarchy 用来看许多小样本的累计。UE 5.8 Timing Insights 按线程分 CPU／GPU 轨道，Callers／Callees 给出调用关系。
+
+| 看到的信号 | 先查什么 | 不能据此下结论 |
+|---|---|---|
+| 主线程项目代码样本占主导 | 主线程 Hierarchy／Inverted Hierarchy，按方法与分配下钻 | 不先归因到“引擎慢” |
+| worker／job 轨道忙，主线程出现 `JobHandle.Complete`／`WaitForJobGroupID`／`Semaphore.WaitForSignal` | Timeline 同刻的 worker 工作与依赖链 | 等待标记不是该函数在耗 CPU；也不是把工作搬回主线程的理由 |
+| GPU 轨道忙，主线程出现 `Gfx.WaitForPresentOnGfxThread` | GPU 模块／Frame Debugger／平台 GPU 工具；过绘制、draw call、分辨率、着色器 | 不要优化主线程热点来解 GPU-bound |
+| `Gfx.WaitForCommands`／`Gfx.WaitForRenderThread` | 渲染线程命令与主线程提交；是否多线程渲染 | 不能把等待直接算到某个渲染函数 |
+| `WaitForTargetFPS` | 限帧／VSync／实际刷新率；Editor 用它模拟 VSync | 不是“应用在忙”，也不代表玩家构建同样空闲 |
+| `Physics.Processing` | 同刻 worker 物理任务；对象数与 job stealing | 不一定是物理求解本身重 |
+| `GC.Alloc`／`GC.Collect` | 分配调用栈、收集频率与峰值 | 零分配不等于低驻留；关 GC 不是修复 |
+
+**CPU 与 GPU 不能简单相加。** 60 fps 的 16.67 ms 是整帧，game／render 线程与 GPU 可以重叠，主线程上的 GPU 等待不是可再加一次的 GPU 时间；`FrameTimingManager` 在 Metal 上甚至可能报告 GPU 时间大于整帧。**采样本身也有开销。** Unity GPU Usage 默认关闭（开销高），Deep Profile 记录所有 C# 调用且开销高，内存快照要数秒；UE trace channel 默认关闭，动态事件名更贵。先用粗粒度模块定位，再对短时复现开深采；比较时保持同一采集方式，不拿带 Profiler 的数和不带的数直接比。等待、版本与采样细节见 [WP10 采集与分类](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)。[一手／研究]
+
 #### 首次技能：准备到能回应，而不只是加载完成
 
-**[研究] ✅ 准备下一遭遇的必要动作／提示，分加载、初始化、上传和首绘；未就绪用明确转场或已准备的等价反馈。**
+**[研究] ✅ 把首次进房／首次技能拆成 IO、解码／解压、初始化、上传、首绘五段；`PrepareEncounter` 准备下一遭遇必要内容，`ActivateEncounter` 记录首个可见帧与首个可操作帧。** 加载完成不等于能回应；未就绪用明确转场或已准备的等价反馈。关键预警与伤害不能靠延后绘制换顺滑，装饰可以降级。
 
-| 热点 | 窄方案／边界 [一手] |
-|---|---|
-| PSO／shader | Unity 6.3 实验性 GraphicsStateCollection 按平台／API 采集；旧 WarmUp 在 DX12／Vulkan／Metal 不保完整 PSO |
-| 激活／末尾加载 | 分批初始化，integration／上传分别调；backgroundLoadingPriority 仅 Player 生效，提高可能打断操作 |
-| 创建／GC | 先减分配，池需实际创建并定耗尽政策；defaultCapacity 仅容量，maxSize 不限借出并发 |
+| 阶段 | 先看什么 [一手] | 常见假象 | 最小修法／撤回 |
+|---|---|---|---|
+| IO | Unity File Access 模块的 Thread 列、Asset Loading 模块的 AsyncReadManager 字节分类；UE AssetLoadTime 与 Asset Loading Insights 的包顺序／异步加载 | 主线程等待就以为读盘在主线程；实际可能在 worker | 合并小读、避免同步 `Resources.Load`；先修路径与批量，不先加监控 |
+| 解码／解压 | Asset Loading 分类与 CPU 标记；`Texture2D.LoadImage` 同步 | 把解码算进“初始化” | 提前／拆分加载、降规格或换压缩；不靠提高 backgroundLoadingPriority 解决同步解码 |
+| 初始化 | `Application.Integrate Assets in Background`、`backgroundLoadingPriority`（仅 Player）、Awake／OnEnable／Instantiate | 读条结束就认为对象可用 | 分批初始化，非关键挪后；池要有上限与耗尽政策 |
+| 上传 | `QualitySettings.asyncUploadTimeSlice` 只调上传；`AsyncUploadManager.AsyncBufferResized` 警告 | 把上传算进后台读或 background priority | 预上传、拆大纹理、避免缓冲反复扩容；不删玩法数据换资格 |
+| 首绘／PSO | `Shader.CreateGPUProgram`／`CreateGraphicsGraphicsPipelineImpl`；UE PSO Precaching | 资源已加载就不会卡首绘 | 按平台／API 采 GraphicsStateCollection 或补 bundled cache；覆盖新材质／keyword，计内存 |
 
-UE PSO Precaching 延迟 proxy／默认材质可能丢关键预警，先准备必要组件，遗漏再补 bundled PSO。新材质／keyword／画质补采、严格匹配查缺包，验冷首发、再发、重启、切档；无改善或等待／内存超预算就撤回扩大预热／池；[版本与反例](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)。[一手／研究]
+`allowSceneActivation=false` 时停在 0.9、`isDone=false` 并阻 AsyncOperation 队列，随后卸载也不能运行；把旧场景、新数据与预热的并存峰值计入内存。旧 WarmUp 在 DX12／Vulkan／Metal 不保完整 PSO；UE PSO Precaching 可能延迟 proxy／默认材质而丢关键预警，先准备必要组件，遗漏再补 bundled PSO。新材质／keyword／画质补采、严格匹配查缺包，验冷首发、再发、重启、切档；无改善或等待／内存超预算就撤回扩大预热／池；[版本与反例](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)。[一手／研究]
+
+#### 往返内存：等价状态、引用链和五类保留
+
+**[研究] ✅ 对照等价状态，不拿两个不同时点的总数直接比。** 同一场景、同一位置、同一已加载内容、同一预热与回收时机下取快照：进房稳定后、离场释放稳定后、再次进房稳定后。要么都在自然时点取，要么都执行同样的显式回收并写明；Editor 快照含编辑器自身内存，只用于迭代，最终在 Player 构建核。不同会话的快照不保证可比，其他进程也会影响总量。[一手；[快照比较](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)]
+
+| 保留类别 | 怎么认 | 常见误判 | 处理 |
+|---|---|---|---|
+| 有界缓存／池 | 第一轮升到上限后持平；每轮对象数不增 | 把预热或缓存当泄漏 | 核上限、淘汰与耗尽政策；`defaultCapacity` 只是容量，`maxSize` 限闲置而非借出并发；无上限或随波次增长才是问题 |
+| 托管堆保留 | live 对象／used 已回落，reserved／committed 或空闲堆仍高；等价状态多轮看是否趋稳 | 把扩张后保留的空闲堆当成活对象泄漏，或只看 OS 总量 | 先核是否稳定及超预算，追峰值分配／碎片化；不是直接清引用，归还 OS 的时机不保证 |
+| 真实对象增长 | 托管 live 对象或 Unity Objects 数量／大小持续增加；UE 按 LLM tag／asset／class 分组 | 把临时对象、有界缓存或空闲堆算成泄漏 | 仅对超出既定寿命仍存活的对象追创建者、静态字段／事件／闭包等引用与所有者；沿现有生命周期修正 |
+| 原生资源 | Native Objects／Native Allocations；Unity 需开 `NativeObjects`／`NativeAllocations`；图形大小按对象报告 | 把快照当 GPU／驱动全量 | 与平台工具交叉核；区分 Unity 原生内存与驱动／GPU 私有内存 |
+| 临时峰值 | 转场、解压、上传缓冲、render target、场景重叠的峰值 | 只看稳态或只看离场后 | 记录峰值时刻与持续时间；保并存上限与内存预算 |
+
+[Unity 托管内存说明](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-managed-memory-introduction.html)指出扩大的堆即使大部分为空也会保留，归还 OS 的间隔不可靠；先分清 used/live 与 reserved，再决定是否追存活对象。追引用用 Memory Profiler 的 References 面板（选中对象的引用与被引用）；UE 用 Memory Insights 的 LLM tag、asset metadata 与 callstack 分组，memory channel 必须从进程开始就开。`UnloadUnusedAssets` 会查场景对象／组件与静态变量，但不查脚本执行栈，栈上引用不保对象；这是判断“谁还持有”的线索，不是新的释放协议。资源生命周期、所有者与卸载入口沿用[切换关卡与释放资源](#切换关卡与释放资源)。[一手／研究]
+
+#### 只改一层：一个可证伪归因与最小补丁
+
+**[研究] ✅ 把归因写成可被推翻的一句话，再做一个最小补丁。** 例：在同一构建／设备／输入下，`SpawnWave` 的主线程分配占该波长帧的主要部分；若把每波新建改为复用，`GC.Alloc` 与 p99 应下降，而峰值内存和可读性不恶化。若 p99 不降或内存／画面变差，归因错误或补丁应撤回。
+
+| 证据 | 最小补丁 | 同条件应看到 | 撤回／警戒 |
+|---|---|---|---|
+| 主线程每波分配 | 复用／减少分配，池只扩到实测并发 | `GC.Alloc` 与长帧下降 | 关 GC／无限扩池只是移走症状；峰值或卡顿变差就退回 |
+| worker 等待 | 减少依赖、合并 job、调整批大小 | 等待样本与主线程长帧下降 | 等待标记本身不是 CPU 成本；别把 worker 工作搬到主线程 |
+| GPU 过绘制／粒子 | 缩装饰并发、透明覆盖和大烟片；必要时固定降档 | GPU 时间与长帧下降 | HUD 清楚不代表场内预警可读；提示丢失就退回 |
+| 上传缓冲扩容 | 预分配／拆批／提前上传 | `AsyncBufferResized` 与首用尖峰消失 | 提高 background priority 不解决上传 |
+| 首绘 PSO | 采状态／预热／补 bundled cache | 首绘标记与首次尖峰下降 | 需覆盖新材质／keyword；内存超预算或遗漏就收窄 |
+| IO／解码／初始化 | 提前、拆分、降规格、移出主线程 | 加载到首可见／可操作时间下降 | 冷启动变差或关键反馈延后就不算成功 |
+| 超出既定寿命的托管活对象仍被引用 | 清静态／事件／闭包持有者 | 每轮对象 diff 持平 | 不要用定期全量卸载掩盖所有者错误 |
+| GPU-bound 且负载波动 | 有上下限的 DRS／固定低档 | 帧间隔改善且可读性达标 | 稳定负载、CPU-bound 或已到可辨下限时不选 DRS |
+
+**发布构建复核不能用开发构建的自定义标记冒充。** Unity 的自定义 `ProfilerMarker.Begin/End` 在非 Development 的 Release 构建被移除；`Auto()` 调用本身保留但不产生采样，并有少量开销；改用 `FrameTimingManager`（Release 需开 Frame Timing Stats；结果延迟四帧，Linux OpenGL／WebGL 无 GPU 时间，Metal 上 GPU 时间可能大于整帧）或 `ProfilerRecorder` 的内置计数器（可用于 Release Player，附着期间才测量，需 `Dispose`）。UE 的 Insights／`stat` 的可用性按构建配置与目标版本核；Shipping 是否保留 tracing 要按 `UE_TRACE_ENABLED`、断言与项目源码确认，不假设可用，发布包用已有计数器或平台工具。两侧都记录构建类型，不把 Development 的数当 Release 收益。同条件比较帧间隔分布（p50／p95／p99／最长帧次数）、加载到首可见／可操作、稳态与峰值内存、目标设备可读性与输入反馈；平均 FPS 或单张截图不算。AI 可以给数值与差量，最终可感知品质、最低设备体验和是否保留由人判断。[一手／研究]
 
 #### 密集粒子：先找预算花在哪里，再选 CPU 或 GPU
 
 **[研究] ✅ 分实例／更新与透明覆盖，先缩装饰并发、大烟片和无贡献尾部；池不免活跃成本。** Unity 小反馈用 Particle System，规模确需再试 VFX Graph，核 compute／SSBO／管线（17.3 不支持 OpenGL ES）；UE Niagara Effect Type 缩档，GPU 模拟仍有 System／Emitter CPU 开销。画质只裁演出，可点燃碎片的规则留玩法层；提示丢失或性能／内存恶化就退回。[一手；[Factorio 反例与迁移成本](../../docs/research/2026-10-14-game-wp10-client-modules.md#粒子预算补研模拟规模与透明覆盖不能互相代替)]
+
+#### 第二次需求：新敌人、材质或更大波次后重判
+
+**[研究] ✅ 同一路径重采，不假设旧瓶颈还在。** 新敌人可能把成本从生成移到 AI／导航／绘制；新材质可能新增 shader variant／PSO／上传和原生内存；更大波次可能抬高实例峰值、粒子／音频并发和 GC，也可能让原来的池上限或 DRS 下限变成新问题。
+
+| 二改变化 | 先重查 | 旧补丁怎么处理 |
+|---|---|---|
+| 新敌人 | 生成／AI／导航／动画／绘制／音频；每波峰值 | 原生成优化仍有效就保留；若瓶颈转到 GPU 或 AI，按新热点另改，不叠加旧调参 |
+| 新材质／keyword | 变体覆盖、首绘 PSO、上传、原生内存、首次进房 | 原 PSO 集合不够就补采；预热内存超预算就收窄覆盖或缩材质组合 |
+| 更大波次 | 实例数、粒子／音频并发、GC、峰值内存、帧间隔尾部 | 原池上限导致生成卡顿就重新定上限；原 DRS 模糊新预警就改内容或退回固定档 |
+| 往返更多次 | 每轮对象／原生资源 diff、缓存是否到顶 | 原缓存无界就设上限；真正的所有者泄漏不能用扩池解决 |
+
+验收同时含新内容首用、峰值波次、往返和旧内容回归；如果旧补丁让新瓶颈更差，撤回或缩小范围，不能因为第一版有效就保留。只有新工作边界需要时才加标记。[研究]
+
+#### 交给 AI 的两轮实施任务
+
+| 轮次 | 给 AI 的目标、入口与约束 | 要求返回的差量 | 人验收 |
+|---|---|---|---|
+| **首版：正常遭遇** | 目标：同一遭遇从采集到最小补丁。入口：现有场景／遭遇代码、引擎 Profiler／Insights、目标设备。约束：四个建议标记、不新建监控平台、先归因后补丁、一次只改一层。 | 标记位置与 diff、采集条件、线程／等待／加载／内存证据表、一句可证伪归因、最小补丁、同条件前后数据、发布构建复核方式。 | 目标机帧间隔与尖峰、首次进房等待、画面可读性、冷启动和内存峰值；人判断是否可接受。 |
+| **二版：新敌人／材质／更大波次** | 在一个入口加新内容，保留首版基线与补丁。约束：复用原标记，只在新边界补；先重判再改，不把旧补丁当默认。 | 瓶颈是否转移、旧补丁保留／缩小／撤回的理由、新最小补丁或明确不改、二改前后同条件数据、旧内容回归。 | 新敌人／材质是否可读、峰值波次是否可玩、目标设备体验与内存；人决定是否保留。 |
+
+以上是采集、解释与修改蓝图；未运行引擎、设备或真实游戏，任何帧率、内存或体验收益都待验，不把官方源码支持当实测。已有的资源生命周期、呈现节奏、DRS、粒子与发布材料按链接复用，不另造平台。
+
+**依据**：[一手] Unity 6000.3 [Profiler markers reference](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-markers.html)、[CPU Usage module](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-cpu-introduction.html)、[Profiler window](https://docs.unity3d.com/6000.3/Documentation/Manual/ProfilerWindow.html)、[Frame Debugger](https://docs.unity3d.com/6000.3/Documentation/Manual/FrameDebugger.html)、[ProfilerMarker](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Unity.Profiling.ProfilerMarker.html)、[ProfilerRecorder](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Unity.Profiling.ProfilerRecorder.html)、[FrameTimingManager](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/FrameTimingManager.html)、[Asset Loading module](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-asset-loading-module.html)、[File Access module](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-file-access-module.html)、[Memory Profiler 1.1.11 window](https://docs.unity3d.com/Packages/com.unity.memoryprofiler@1.1/manual/memory-profiler-window-reference.html)、[snapshot comparison](https://docs.unity3d.com/Packages/com.unity.memoryprofiler@1.1/manual/snapshots-comparison.html)、[CaptureFlags](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Unity.Profiling.Memory.CaptureFlags.html)、[memory overview](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-memory-overview.html)、[Resources.UnloadUnusedAssets](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Resources.UnloadUnusedAssets.html)；[一手] UE 5.8 [Unreal Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine)、[Timing Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/timing-insights-in-unreal-engine)、[Memory Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/memory-insights-in-unreal-engine)、[Trace developer guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/developer-guide-to-tracing-in-unreal-engine?application_version=5.8)、[stat commands](https://dev.epicgames.com/documentation/en-us/unreal-engine/stat-commands-in-unreal-engine)；[研究] 四标记命名与工作边界、等价状态取点、五类保留归并与二改判断为本项目建议，不是引擎内置 API；线程／等待语义、快照与版本差异按上述官方页。[一手／研究] PSO、加载、池化、DRS、粒子与呈现节奏沿用 [WP10 首发帧时间补研](../../docs/research/2026-10-14-game-wp10-client-modules.md#首发帧时间补研从资源已加载到动作可见)。核实 2026-10-25，未运行引擎、设备或真实游戏。
 
 ### 修改界面与拾取交互
 
