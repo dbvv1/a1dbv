@@ -2,7 +2,7 @@
 
 id: B-PERFORMANCE-WORKFLOW-MODULE-001
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 77e827ded75b0eb826f58f5b517bcdbc6e35e178
 result_branch: relay/b-performance-workflow-module-001
@@ -59,3 +59,11 @@ result_branch: relay/b-performance-workflow-module-001
 原复核者差量复核确认核心发现关闭，指出的一处“托管保留→清引用”同义残留已改为“超出既定寿命的托管活对象仍被引用”；旧内容 blob 明确只标识 Workflow 原稿，不冒称最终修订。基线元数据已按真实 UI／音乐回传／当前认领链校正。没有再开全文审查、新 Workflow、引擎或设备实验。目标机收益、实际采集、发布构建和新内容二改均未实测；本次交付为制作／分析／最小修补蓝图，状态 review_ready，dot-B 接收。
 
 固定最终交付 `5840e99bf760ded213b2144ae20f3bcc051012d8`，结果分支 `relay/b-performance-workflow-module-001`，仅三份指定文件。状态 review_ready，已发布，dot-B 接收。宿主文档检查 382 文件零错误、实际新增提交公开扫描 643 文件零命中、差异空白检查通过；未运行真实引擎／设备／游戏或编造收益。
+
+## dot-B 接收（2026-10-25）
+
+接收固定最终结果 `5840e99bf760ded213b2144ae20f3bcc051012d8`。复用原生 Workflow 完成后宿主另取、与实施上下文分离的 code-reviewer 审查及同审定向关闭；保留原稿 blob、两项发现和修订历史，不重新全篇审查。
+
+接收抽读正常遭遇采集、主线程／worker／GPU／等待分类、五段加载、等价状态内存、可证伪归因与最小补丁、发布构建复核和新内容二改。核修订已分清 live/used 与 reserved、同步 CPU scope 与异步经过时间；未发现必须修复项，两正文保留固定稿。04 改动仅性能段，菜单／角色／资源等其他段不变。
+
+整合最新 main 后按文档范围核本地目标、公开文件、实际新增提交身份、diff／cached 空白；仅补 B 模块行，保留 pilot 核心待确认与批量暂停状态。交付是诊断／实施蓝图，不是实测优化：目标设备、引擎采集、发布包、帧时间／内存收益和二改体验均未运行；未新开 Workflow、reader、设备实验或完整 offline。

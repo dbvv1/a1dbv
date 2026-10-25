@@ -397,11 +397,53 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 
 ## 首发帧时间补研：从资源已加载到动作可见
 
-核实：2026-10-14 UTC。主线 3／4；将首发热点细化为遭遇准备、可见反馈与驻留成本。依据 Unity 6.3 PSO／加载／池 API、Epic PSO 文档及 Tom Looman 的 Windows DX12 样例 trace。[一手／研究]
+核实：2026-10-14 UTC；2026-10-25 UTC 补采集开销、线程／等待、内存快照、发布构建与二改路径。主线 3／4；默认跟随项目锁定的 Unity 6000.3（URP）与 UE 5.8，不把编辑器／玩家构建、Unity／UE 的同名标记当同一机制。依据 Unity 6.3 Profiler／Memory Profiler 1.1.11／FrameTimingManager 文档、UE 5.8 Insights／Trace 文档及既有 PSO／加载／池资料。[一手／研究]
 
 ### 1. 先定义要保住的动作，再选择把工作移到哪里
 
 [研究] 首次进房／技能应分别准备资产、实例、上传与绘制；输入缓冲、插值和池化各不能兜底 PSO。只准备下一遭遇必要内容，关键预警与伤害保持一致；装饰可降级，必要时明确延后遭遇。
+
+[研究] 用四个项目建议语义标记串正常遭遇：`PrepareEncounter`（选内容、读盘／加载、初始化、上传准备）、`ActivateEncounter`（提交状态、首个可见／可操作反馈）、`SpawnWave`（每波实例化与 AI／导航注册）、`ReleaseEncounter`（离场、释放、回池、卸载）。它们不是 Unity／UE 内置 API；标记只圈真实工作边界，先四个够用，证据指向某段再嵌子标记。
+
+[研究] 四个名称同时标识阶段语义，不等于用一个 CPU scope 圈完整异步过程。CPU scope 只包同步片段，退出／异常成对关闭；异步加载开始到完成、激活到首可见／可操作、卸载完成，用已有阶段身份关联时间或帧号并对齐原生时间轴。Unity 的 `ProfilerMarker`（含 `Auto()`）不支持跨 `await`／`yield`，UE 作用域计时也只测当前作用域；经过时间与实际 CPU 工作分报。[一手：[Unity 添加标记](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-add-markers-code.html)]
+
+**API 与构建差异。** [一手] Unity 6000.3 的 [ProfilerMarker](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Unity.Profiling.ProfilerMarker.html) 用 `Begin`／`End` 或 `Auto()`；`Begin`／`End` 带 `ConditionalAttribute`，在非 Development（Release）构建中被条件编译掉；`Auto()` 调用本身不能移除，但不产生采样，保留少量开销。UE 5.8 [Trace 开发者指南](https://dev.epicgames.com/documentation/en-us/unreal-engine/developer-guide-to-tracing-in-unreal-engine?application_version=5.8) 的 `TRACE_CPUPROFILER_EVENT_SCOPE` 家族把一段 C++ 作用域记成 Timing Insights 的命名计时；trace channel “默认关闭，必须显式开启”；动态字符串名比静态名多 CPU／内存开销；Trace 关闭时宏编译为空。[研究] 两端都先写清版本、构建类型、平台、图形 API、管线、画质、分辨率、冷缓存；不能把 Editor／Player、Development／Shipping、Unity／UE 的同名标记当同一机制。
+
+#### 1.1 采集条件与采样开销
+
+| 采集方式 | 已核语义 | 选择条件与开销 |
+|---|---|---|
+| Unity CPU Usage | [一手] [CPU Usage module](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-cpu-introduction.html)：CPU Usage “始终启用”；Timeline 默认，把“所有线程放在同一时间轴”；Hierarchy 一次一个线程；Inverted Hierarchy 按标记聚合、看许多小样本累计。 | 先做基线；Timeline 看线程关系，Hierarchy／Inverted 看调用与累计。Record 时该模块始终采集，关闭窗口也仍在；文档未给开销数值。 |
+| Unity GPU Usage | [一手] [Profiler window](https://docs.unity3d.com/6000.3/Documentation/Manual/ProfilerWindow.html)：“默认不启用，因为开销高”。 | 只在 GPU 假说需要证实或比较档位时短开；不能一直开着跑基线。 |
+| Unity Deep Profile | [一手] [CPU Usage module](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-cpu-introduction.html)：“记录这些样本开销高”；深采给每个 C# 方法加检查，开销还会记到调用者。 | 只在已经缩到短复现的热点用；不拿深采的全帧时间当优化前后对比。 |
+| Unity 自定义标记 | [一手] `ProfilerMarker` 是“最高效的 profiling 方式”，比 `Profiler.BeginSample` 少传字符串；Release 移除 `Begin/End`；`Auto()` 保留少量开销但不采样。 | 开发构建定位；发布复核改用计数器／帧计时。 |
+| Unity ProfilerRecorder | [一手] [ProfilerRecorder](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Unity.Profiling.ProfilerRecorder.html) 记录 marker 或 counter；可在 Editor 和 Player builds“包括 Release Players”；分配非托管资源、实现 `IDisposable`，容量有界，`WrappedAround` 表示溢出。 | 发布包长时间低开销观察内置计数器；记得 `Dispose`，不要把它当无成本日志。 |
+| Unity FrameTimingManager | [一手] [FrameTimingManager](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/FrameTimingManager.html) 提供帧级 CPU／GPU 时间；Development Player 常开，Release 需开 Frame Timing Stats 或附着 ProfilerRecorder；固定延迟四帧；Linux OpenGL／WebGL 无 GPU 时间；Metal 上 GPU 时间可能大于整帧。 | 发布构建的主要帧时间复核；报告延迟、平台缺项和 TBR 语义，不能当逐帧即时值。 |
+| UE Timing Insights | [一手] [Timing Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/timing-insights-in-unreal-engine)：CPU／GPU 按线程分轨；事件宽度表示该线程处理时间；Callers／Callees 给调用关系；`ContextSwitch` 通道显示 CPU 核心上下文切换，`Task` 通道显示前提任务与后续任务。 | 先看线程与依赖；等待／阻塞要结合切换到哪个线程，不把事件宽度直接当函数 CPU 成本。 |
+| UE Memory Insights | [一手] [Memory Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/memory-insights-in-unreal-engine)：记录每次分配／重分配／释放，重建使用；含 LLM tag 与 callstack；memory channel“必须从进程开始就激活”；LLM track 在会话开始数秒后才开始、按帧粒度；callstack 需 `.pdb`／`.elf` 等调试信息。 | 内存增长用全程 trace；短时快照不足以覆盖启动后数秒才开始的 LLM 轨迹。 |
+| UE Asset Loading Insights | [一手] [Unreal Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine)：使用 `AssetLoadTime` trace channel，覆盖按资产类型的细节、包加载顺序、异步加载优先级检查与轨道过滤。 | 首次进房／首次技能加载路径；与 Timing Insights 同 trace 看线程。 |
+| Memory Profiler 快照 | [一手] [Memory Profiler window](https://docs.unity3d.com/Packages/com.unity.memoryprofiler@1.1/manual/memory-profiler-window-reference.html)：捕获 Managed Objects／Native Objects／Native Allocations；捕获可能“数秒，取决于应用大小”；Editor 快照总含编辑器内存，最终应看 Player；不同会话快照“不一定完全准确”。 | 往返内存用等价状态快照；快照本身改变内存与时间，固定取点，不用它做帧时间对比。 |
+
+[研究] 采样条件至少包括：引擎与包版本、平台与图形 API、管线与画质、分辨率与实际刷新率、VSync／限帧、Development／Release、冷／热缓存、场景与玩家输入。先粗粒度模块定位，再对短时复现开深采或 GPU 模块；比较前后保持同一采集方式，不拿带 Profiler 的数和不带的数直接比。官方页没有给这些开关的统一开销数值，不能编一个百分比。
+
+#### 1.2 线程、GPU 与等待
+
+[一手] Unity 6000.3 [Profiler markers reference](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-markers.html) 对常见标记的语义：
+
+| 标记 | 文档语义 | 不能据此下结论 |
+|---|---|---|
+| `WaitForTargetFPS` | 应用等待 `Application.targetFrameRate` 目标的时间；若为 `Gfx.WaitForPresentOnGfxThread` 子样本，表示等 GPU／VSync。Editor 用该标记模拟 VSync；Android／iOS 可能强制 VSync 或 30／60 上限。 | 不是应用在耗 CPU；Editor 与 Player 不可直接类比。 |
+| `Gfx.WaitForPresentOnGfxThread` | 主线程已准备开始下一帧，但渲染线程尚未完成等待 GPU present；“可能表示应用 GPU-bound”。 | 不是主线程函数本身费时；不要用主线程优化解 GPU 瓶颈。 |
+| `Gfx.WaitForCommands` | 渲染线程已准备接收新命令；“若看到该标记，可能表示主线程瓶颈”。 | 不是渲染线程在忙。 |
+| `Gfx.WaitForRenderThread` | 多线程渲染下，主线程等待渲染线程处理完命令。 | 等待时间不能直接算给某个渲染函数。 |
+| `Gfx.PresentFrame` | 应用等待 GPU 渲染并 present 的时间，包含等待 VSync。 | 不是可再加一次的 CPU 时间。 |
+| `Semaphore.WaitForSignal`／`JobHandle.Complete`／`WaitForJobGroupID` | 线程同步点／JobHandle 同步栅栏；文档明确这些多线程标记“不测量消耗的 CPU 周期”，只表示同步与 Job System 信息。 | 不是该函数在耗 CPU；要看同刻真正工作的线程。 |
+| `Physics.Processing` | 主线程等待物理模拟完成；对象少时也可能反映 worker 在做其他系统的任务（job stealing）。 | 不一定是物理求解重。 |
+| `GC.Alloc`／`GC.Collect` | 托管堆分配／垃圾回收样本；Timeline 中 `GC.Alloc` 用红紫色表示分配大小。 | 零分配不等于低驻留；关 GC 不是修复。 |
+
+[一手] UE 5.8 [Timing Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/timing-insights-in-unreal-engine) 把 CPU／GPU 按线程分轨，事件宽度是“线程处理它的时间”；`ContextSwitch` 提供 CPU 核心上下文切换显示，`Task` 提供任务及其前提／后续任务。[研究] 同名的“等待”在两边不是同一机制：Unity 的 `Gfx.WaitForPresentOnGfxThread` 与 UE 的 Game／Render／GPU 轨道不能按名字对齐；先读各自线程模型，再比较。
+
+[研究] **CPU 与 GPU 不能简单相加。** 60 fps 的 16.67 ms 是整帧；game／render 线程与 GPU 可并行，主线程等待 GPU 的时间不是可再加一次的 GPU 时间。Unity 官方还说明 Metal 的 tile-based deferred rendering 可能让 GPU 时间大于整帧，Linux OpenGL／WebGL 干脆没有 GPU 时间。等待样本、同步点和 `Idle` 表示“没在做有用工作”或“等另一线程”，不等于该名字对应的函数消耗了同等 CPU。用线程时间轴、每帧分布和同条件重复来判断，不用一帧样本相加。
 
 ### 2. Unity 6.3 原生选项与不能互换的承诺
 
@@ -414,11 +456,49 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 - [一手] [Texture and mesh loading](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData.html) 将 binary 上传跨帧；[资格页](https://docs.unity3d.com/6000.3/Documentation/Manual/LoadingTextureandMeshData-make-compatible.html)：纹理非 read/write、非 Resources，Android 要 LZ4；LoadImage 强制同步，网格另有 bone weights／BlendShapes 条件。[asyncUploadTimeSlice](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/QualitySettings-asyncUploadTimeSlice.html) 只调上传，非 backgroundLoadingPriority。[研究] 不为资格删玩法 CPU 数据／形变，先权衡提前加载或降规格。
 - [一手] [allowSceneActivation](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AsyncOperation-allowSceneActivation.html)=false 时停 0.9、isDone=false 并阻 AsyncOperation 队列，随后卸载也不能运行。[研究] 不能等队列后卸载腾内存再激活；计入旧场景／新数据／预热并存峰值，激活门不分摊 Awake/OnEnable。
 
+#### 2.1 加载关键路径：IO、解码、初始化、上传、首绘
+
+[研究] 首次进房／技能按五段拆，不用一个“加载”标记盖住全部：
+
+| 阶段 | Unity 6.3 可核工具 | UE 5.8 可核工具 | 先改什么 |
+|---|---|---|---|
+| IO | [一手] [File Access module](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-file-access-module.html) 记录打开／关闭／seek／在途读／句柄，Accesses 有 Thread 列；[Asset Loading module](https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-asset-loading-module.html) 把 `AsyncReadManager` 请求字节按 texture／mesh／audio／scripting／virtual-texture 等分类；两模块默认关闭，需 Analyze Markers。 | [一手] `AssetLoadTime` channel／Asset Loading Insights 给按资产类型的细节、包加载顺序与异步加载检查。 | 合并小读、避免同步加载、提前或分批；先确认读发生在哪个线程，不凭主线程等待推断。 |
+| 解码／解压 | [一手] Asset Loading 分类与 CPU 标记；`LoadImage` 同步（见上条）；没有单一通用“解码”标记。 | Asset Loading Insights 按资产类型；纹理／包解压计入加载路径。 | 降规格、换压缩、提前／拆分；不靠提高 background priority 解决同步解码。 |
+| 初始化 | [一手] 见上条 `backgroundLoadingPriority`（仅 Player、Editor 不生效、2/4/10/50 ms）；可看 `Application.Integrate Assets in Background`。 | [研究] 用 Timing Insights 看 GameThread 的异步加载与 PostLoad／初始化样本。 | 分批初始化、非关键挪后、避免在激活门里做重活。 |
+| 上传 | [一手] 见上条 texture／mesh 与 `asyncUploadTimeSlice`；`AsyncBufferResized`／`AsyncBufferDelete` 警告表示上传缓冲扩容／删除，慢且造成 CPU 尖峰；`LoadImage` 同步。 | [研究] 用 Timing Insights 与平台 GPU 工具确认上传发生在哪个线程、是否与首绘重叠。 | 预上传、拆大纹理、避免缓冲反复扩容；不为资格删玩法 CPU 数据／形变。 |
+| 首绘／PSO | [一手] 见上条 PSO 契约；定位 `Shader.CreateGPUProgram`／`CreateGraphicsGraphicsPipelineImpl`；数量不是毫秒保证。 | [一手] PSO Precaching 在 PostLoad 收集并异步编译，未完可延 proxy／默认材质或阻塞绘制；驱动缓存首取仍有成本。 | 按平台／API 采状态、覆盖新材质／keyword、在必用前完成；计内存，遗漏就补 bundled cache。 |
+
+[研究] “加载完成”不等于“能回应”：`PrepareEncounter` 结束只说明资源就绪，`ActivateEncounter` 还要看首个可见帧、首个预警、首个可操作帧。未就绪用明确转场或已准备的等价反馈；关键预警和伤害不能延后绘制，装饰可降级。冷进程首次进房、同进程再进、重启保留驱动缓存三种条件分开记；`allowSceneActivation=false` 的旧场景／新数据／预热并存峰值计入内存。
+
+#### 2.2 内存快照：等价状态、引用链与五类保留
+
+[一手] [Memory Profiler 1.1.11 window](https://docs.unity3d.com/Packages/com.unity.memoryprofiler@1.1/manual/memory-profiler-window-reference.html) 的 Capture 下拉含 Managed Objects／Native Objects／Native Allocations；捕获可能数秒；References 面板显示“选中对象的引用与被引用”；Editor 快照“总含更多内存且行为不同”，最终优化应看 Player 构建。[一手] [Compare snapshots](https://docs.unity3d.com/Packages/com.unity.memoryprofiler@1.1/manual/snapshots-comparison.html) 分 Summary／Unity Objects／All Of Memory，默认隐藏相同数据；不同会话快照“不一定完全准确”，其他进程也会影响总量，需尽量保持条件相同。[一手] [CaptureFlags](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Unity.Profiling.Memory.CaptureFlags.html)：`NativeObjects` 收原生对象，`NativeAllocations` 收 Unity 原生分配及其图形大小；`NativeAllocations`／`NativeAllocationSites` 只有在构建支持原生调用栈（当前需要源码访问）时才增加数据。
+
+[一手] [Memory overview](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-memory-overview.html)：托管堆、C# 非托管（`NativeArray`／`UnsafeUtility.Malloc`）与 Unity 原生内存是不同层；原生内存“通常是应用内存的最大块”。[一手] [Resources.UnloadUnusedAssets](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Resources.UnloadUnusedAssets.html)：遍历场景对象／组件并检查静态变量，“不检查脚本执行栈”，只被栈引用的资产会被卸载；异步返回 `AsyncOperation`。[研究] 这些是分类与追所有者的依据，不是新的释放协议；所有权、取消和卸载入口沿用[完整资源生命周期](#resource-lifecycle-workflow)。
+
+[一手] [Unity 托管内存](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-managed-memory-introduction.html)明确：扩张后的托管堆即使大部分为空也会保留，归还 OS 的时机不保证。[研究] used/live 回落而 reserved 仍高时先看稳定性、预算及峰值分配／碎片化；只有超寿命活对象才进入引用链排查。
+
+| 保留类别 | 等价状态里怎么认 | 常见误判 | 追到哪里 |
+|---|---|---|---|
+| 有界缓存／池 | 第一轮升到上限后持平；每轮对象数不增 | 把预热当泄漏 | 核上限、淘汰、耗尽政策；容量不证明预创建或并发上限。 |
+| 托管堆保留 | live 对象／used 已回落，reserved／committed 或空闲堆仍高；等价状态多轮看是否趋稳 | 把扩张后保留的空闲堆当成活对象泄漏，或只看 OS 总量 | 先核是否稳定及超预算，追峰值分配／碎片化；不是直接清引用，归还 OS 的时机不保证 |
+| 真实对象增长 | 托管 live 对象或 Unity Objects 数量／大小持续增加；UE 按 LLM tag／asset／class 分组 | 把临时对象、有界缓存或空闲堆算成泄漏 | 仅对超出既定寿命仍存活的对象追创建者、静态字段／事件／闭包等引用与所有者；沿现有生命周期修正 |
+| 原生资源 | Native Objects／Native Allocations；图形大小按对象报告；Unity 对象原生内存与驱动／GPU 私有内存不是同一层 | 把快照当 GPU／显存全量 | 与平台工具交叉核；区分 Unity 对象、原生分配与驱动／GPU。 |
+| 临时峰值 | 转场、解压、上传缓冲、render target、场景重叠的峰值 | 只看稳态或只看离场后 | 记录峰值时刻与持续时间；保并存上限与预算。 |
+
+[一手] UE 5.8 [Memory Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/memory-insights-in-unreal-engine) 记录每次分配／重分配／释放，含 LLM tag 与 callstack；memory channel 必须从进程开始激活；LLM track 在会话开始数秒后才开始、按帧粒度；可按 Package／Asset Name、Class、Callstack 分组，支持 CSV／TSV 导出；callstack 需 `.pdb`／`.elf` 等调试信息。[研究] 等价状态是两引擎共同前提：同场景、同位置、同已加载内容、同预热与回收时机；要么都自然取点，要么都显式回收并写明。不同会话的绝对总量不能直接当因果证据。
+
+#### 2.3 发布构建复核
+
+[一手] Unity 自定义 `ProfilerMarker.Begin/End` 在非 Development 的 Release 构建被移除；`Auto()` 调用本身保留但不产生采样，并有少量开销；Release 复核改用 `FrameTimingManager`（Release 需开 Frame Timing Stats，或附着 `ProfilerRecorder` 自动启用；固定延迟四帧；Linux OpenGL／WebGL 无 GPU 时间；Metal 上 GPU 时间可能大于整帧）或 `ProfilerRecorder` 的内置计数器（可在 Release Player 用，附着期间才测量，需 `Dispose`）。[一手] UE 的 Insights／`stat` 的可用性按构建配置与目标版本核；`stat commands` 页只建议在非 debug build 启动，不能据此假定 Shipping 仍保留 tracing。Shipping 是否保留要按 `UE_TRACE_ENABLED`、断言与项目源码确认，不假设可用。[研究] 发布包用项目已有计数器、平台 GPU／CPU 工具或最小遥测；不能把 Development 构建的自定义标记数据当 Release 收益，也不能假设 Shipping 一定能开 Insights。
+
+[研究] 同条件比较：帧间隔 p50／p95／p99／最长帧与尖峰次数、加载到首可见／可操作、稳态与峰值内存、冷启动、目标设备可读性与输入反馈。平均 FPS 会掩盖尖峰；单张 Profiler 截图没有分布；一帧样本不能证明归因。人判断可感知品质与最低设备体验。
+
 ### 3. 池化与 GC：提前付费的范围必须有上限
 
 [一手] [ObjectPool 构造参数](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Pool.ObjectPool_1-ctor.html)：defaultCapacity 仅存储容量，空池才 createFunc，maxSize 限闲置保留、满池归还销毁。[研究] 容量不证明预创建或玩法并发上限；Get/Release 立即归还可能只反复用一件。核独立实例数，明确耗尽时创建／复用装饰／拒绝可选，不能丢关键弹体。
 
-[一手] [Pooling and reusing](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-reusable-code.html) 要求复用重置且非线程安全；[GC overview](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-garbage-collector.html) 不回收仍被引用对象。[研究] 池也持资源／原生成本，零 GC.Alloc 不等于低驻留；按遭遇释放，核托管／原生／GPU。
+[一手] [Pooling and reusing](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-reusable-code.html) 要求复用重置且非线程安全；[GC overview](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-garbage-collector.html) 不回收仍被引用对象。[研究] 池也持资源／原生成本，零 GC.Alloc 不等于低驻留；按遭遇释放，核托管／原生／GPU。池充满到上限后持平属于有界预热，不按泄漏处理；每轮仍增长才回到所有者与引用链。
 
 [一手] [GC modes](https://docs.unity3d.com/6000.3/Documentation/Manual/performance-incremental-garbage-collection.html)：增量分摊而非少做，引用频变可回退完整收集，关闭有堆增长风险。[研究] 先修热分配、按需有界池；PSO 热点不靠全局关 GC 解决。
 
@@ -430,6 +510,13 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 
 **[研究] 采用与撤回**：✅ 锁版本使用原生 automatic precaching；🧪 trace 证实遗漏才补 bundled cache。关键预警提前准备；预算不足就缩首场内容／材质组合，不能靠跳绘关键提示换顺滑。
 
+#### 4.1 UE 5.8 的 trace、线程与内存
+
+- [一手] [Unreal Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine) 捕获高频事件；Trace Server 无 UI、官方称“对性能影响最小”；`.utrace` 与 `.ucache` 自描述、跨引擎发布版本兼容；Timing Insights 分 CPU／GPU 轨道；Memory Insights 记录每次分配；Asset Loading Insights 用 `AssetLoadTime` channel；另有 Audio Insights 等。
+- [一手] [Trace 开发者指南](https://dev.epicgames.com/documentation/en-us/unreal-engine/developer-guide-to-tracing-in-unreal-engine?application_version=5.8)：channel 默认关闭；`TRACE_CPUPROFILER_EVENT_SCOPE` 家族，静态名优先；动态字符串有额外 CPU／内存；`NoSync` 事件更小更快但不能跨线程协调；Trace 关闭时宏编译为空；`TRACE_BOOKMARK` 用于不频繁状态变化；`SCOPE_CYCLE_COUNTER`／`QUICK_SCOPE_CYCLE_COUNTER`／`SCOPED_NAMED_EVENT` 在 `-statnamedevents` 时也出现在 Timing Insights。
+- [一手] [stat commands](https://dev.epicgames.com/documentation/en-us/unreal-engine/stat-commands-in-unreal-engine)：`stat unit` 显示 Frame／Game／Draw／GPU／RHIT／DynRes；`stat game`／`stat gpu`／`stat memory`；`stat startfile`／`stopfile`，startfile 在 PIE 关闭后仍可能继续，必须 stopfile；文档建议在非 debug build 启动。
+- [研究] 与 Unity 不同名不同机制：UE 的 Game／Draw／GPU 不是 Unity 的 main／render／GPU 标记；等待要看 ContextSwitch／Task 与线程轨道，不能把 `stat unit` 的几列直接相加成整帧。
+
 ### 5. 第二次修改的未来验收设计
 
 [研究] 预注册新增不同材质／keyword／渲染状态技能，允许进房立即施放，并保留旧技能基线：
@@ -439,7 +526,20 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 3. 比较无准备、遭遇范围及必要扩大范围的耗时、反馈、长帧、活动／闲置实例、峰值与离场留存；准备迟于必用时刻同样失败。
 4. 换画质／后端重查覆盖，退出重进核池重置及预热误触发的声音／伤害／奖励；装饰降档不得改关键提示窗口。
 
-[研究] Unity 实验 API 的目标补丁兼容性待验；54.1 ms 仅是作者 trace。
+[研究] 二改不假设旧瓶颈还在：
+
+| 新内容 | 先重查 | 旧补丁的保留／缩小／撤回 |
+|---|---|---|
+| 新敌人 | 生成、AI、导航、动画、绘制、音频；每波峰值 | 原生成优化仍有效就保留；瓶颈转到 GPU／AI 就按新热点另改，不叠加旧调参 |
+| 新材质／keyword | 变体覆盖、首绘 PSO、上传、原生内存、首次进房 | PSO 集合不够就补采；预热内存超预算就收窄覆盖或缩材质组合 |
+| 更大波次 | 实例数、粒子／音频并发、GC、峰值内存、帧间隔尾部 | 原池上限导致生成卡顿就重定上限；原 DRS 模糊新预警就改内容或退回固定档 |
+| 更多往返 | 每轮对象／原生资源 diff、缓存是否到顶 | 原缓存无界就设上限；真正的所有者泄漏不能用扩池解决 |
+
+[研究] 验收同时含新内容首用、峰值波次、往返和旧内容回归；旧补丁让新瓶颈更差就撤回或缩小，不因第一版有效而保留。只有新工作边界需要时才加标记。Unity 实验 API 的目标补丁兼容性待验；54.1 ms 仅是作者 trace，不是本项目收益。
+
+### 6. 实施落点与证据边界
+
+[研究] 给 AI 的起点：沿既有遭遇代码加四个建议标记（Unity `ProfilerMarker` 或 UE `TRACE_CPUPROFILER_EVENT_SCOPE`），记录构建／平台／API／画质／冷热缓存；采一次正常遭遇，整理线程／等待／五段加载／五类内存的证据；写一句可证伪归因；只做一个最小补丁；回同条件复核；发布构建用内置计数器／帧计时，不把开发构建当发布。人决定可感知品质、最低设备体验与是否保留。本段是蓝图，未运行引擎／设备／游戏，未伪造收益；PSO、加载、池化、DRS、粒子与呈现节奏的既有依据继续复用。
 
 ## [菜单补研：跨暂停、改键与设备切换保住控制](wp10-content.md#16)
 
