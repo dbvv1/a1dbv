@@ -2,7 +2,7 @@
 
 id: A-MIGRATION-ADOPTION-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1111379adfff03dbcd65040af57a30e1b5479bf9
 result_branch: relay/a-migration-adoption-001
@@ -27,3 +27,5 @@ result_branch: relay/a-migration-adoption-001
 - 使用既有已配置正常原生 Workflow；实际模型从本次响应元数据记录，别名与后端证明分开。一次有效全新上下文独审，修订仅复验受影响范围；未改的规则实验、来源与检查不重跑。
 - 只用公开资料和现有授权工作区；不读私人会话、账号用量、公司代码、秘密，不改变凭据／全局设置，不付费、下载大模型、运行引擎或新建会话。原特定拒绝不因一般授权解除；受阻只停相关环节。
 - 发布前核最新 main 和目标文件并发变化，按手册 §7 跑适用检查、公开扫描、实际新增提交身份与空白检查。仅结果分支发布；回写固定 SHA、真实执行起止、模型／客户端、结果与未完成项，状态 review_ready，由 dot-A 接收串行合入。
+
+认领：dot 本地协作；2026-10-25T05:54:14.926543+00:00。来源 main 固定 `87d948d`；迁移采用与首页改写无文件重叠，先发布认领后执行既有正常原生 Workflow。复用旧规则夹具结果，限定本任务范围与现有权限；仅推指定结果分支。

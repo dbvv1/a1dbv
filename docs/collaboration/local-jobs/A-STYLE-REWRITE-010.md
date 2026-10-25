@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-010
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ec9c2f0ca558619dcc4560a07378348859330eb6
 result_branch: relay/a-style-rewrite-010
@@ -29,3 +29,5 @@ result_branch: relay/a-style-rewrite-010
 - 发布前 fetch 最新 main：目标文件自 base_ref 之后有改动的，以最新 main 为基线重做该文件，并对最新内容重跑验证。每个文件一次提交，推到 result_branch；除本任务文件外不改其他文件。
 - 在本任务文件回写：各文件改写前后字数、正文标签与限定语数量、验证结果、“旧文有、新文无”清单链接或摘要、需要负责人判断的地方。按运行手册§7 跑 `python3 scripts/check_repo.py`、公开扫描与提交扫描；纯文档改写，不跑无关实验。状态改为 `review_ready`。
 - 负责人抽读确认后合入 main，再按同一规则派发其余页面；本任务不自行合入 main。在 `accepted` 之前，负责人不向本批文件合入新正文，需要时先写到 research 页。
+
+认领：dot 本地协作；2026-10-25T05:54:14.927305+00:00。来源 main 固定 `87d948d`；迁移采用与首页改写无文件重叠，先发布认领后执行既有正常原生 Workflow。复用旧规则夹具结果，限定本任务范围与现有权限；仅推指定结果分支。
