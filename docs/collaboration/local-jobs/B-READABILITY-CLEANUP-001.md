@@ -13,9 +13,9 @@ result_branch: relay/b-readability-cleanup-001
 
 ## 范围与顺序
 
-按防御密度从高到低：domains/game-dev/assets/video.md，然后是 domains/game-dev/ 下其余页：01-engine-integration.md、02-verification-and-playtesting.md、04-client-modules.md、05-gameplay-architecture.md、06-indie-roadmap.md、README.md、assets/2d.md、assets/3d.md、assets/animation.md、assets/audio.md、assets/materials.md。04、05 和 assets 里还在写的模块段落，等原写者交付后再改。25 探索、04 MCP 和游戏 03 已改好，不再动。
+按防御密度从高到低：domains/game-dev/assets/video.md，然后是 domains/game-dev/ 下其余页：01-engine-integration.md、02-verification-and-playtesting.md、04-client-modules.md、05-gameplay-architecture.md、06-indie-roadmap.md、README.md、assets/2d.md、assets/3d.md、assets/animation.md、assets/audio.md、assets/materials.md。25 探索、04 MCP 和游戏 03 已改好，不再动。
 
-开工前看最新 main 和在制分支；同一文件只有一个写者，有人在改就先做别的页。已经清楚的页保留原样。
+开工前看最新 main 和在制分支；同一文件只有一个写者，有人在改就先做别的页，最后统一回头改。已经清楚的页保留原样。
 
 ## 怎么改
 
@@ -28,7 +28,7 @@ result_branch: relay/b-readability-cleanup-001
 
 用原生 Workflow 实施，由非作者核对：先只读新文，复述主要选择、第一步和关键取舍；再对照原文核关键结论、数字、版本与日期、来源和适用条件。有遗漏就修对应段。
 
-每页核完就交增量，负责人逐页接收。全部接收后本任务结束，不再开后续改写批次。
+核完的页按批交付，每批不超过 2 份待合入，负责人逐批接收。全部接收后本任务结束，不再开后续改写批次。
 
 ## 当前结果
 

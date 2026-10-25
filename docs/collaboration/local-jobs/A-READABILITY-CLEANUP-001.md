@@ -15,7 +15,7 @@ result_branch: relay/a-readability-cleanup-001
 
 按防御密度从高到低：docs/02-models-and-cost.md、docs/19-experiments.md、docs/21-agent-patterns.md、docs/09-review-and-quality.md、docs/05-skills-and-plugins.md、docs/11-community-pulse.md、docs/06-hooks-and-guardrails.md、docs/17-troubleshooting.md、docs/10-security.md、docs/01-agents/open-source-agents.md、docs/01-agents/codex.md、docs/22-agent-evaluation.md、docs/18-team-adoption.md，然后是其余页：docs/00-state-of-ai-coding.md、docs/03-context-engineering.md、docs/07-workflows.md、docs/08-multi-agent.md、docs/12-resources.md、docs/13-frontier-radar.md、docs/14-synthesis.md、docs/15-task-playbooks.md、docs/16-building-agents.md、docs/20-codex-long-horizon.md、docs/23-browser-verification.md、docs/24-community-workflows.md、docs/README.md、docs/01-agents/claude-code.md、docs/01-agents/gemini-cli.md、docs/01-agents/ide-and-others.md、docs/01-agents/README.md。25 探索、04 MCP 和游戏 03 已改好，不再动。
 
-开工前看最新 main 和在制分支；同一文件只有一个写者，有人在改就先做别的页。已经清楚的页保留原样。
+开工前看最新 main 和在制分支；同一文件只有一个写者，有人在改就先做别的页，最后统一回头改。已经清楚的页保留原样。
 
 ## 怎么改
 
@@ -28,7 +28,7 @@ result_branch: relay/a-readability-cleanup-001
 
 用原生 Workflow 实施，由非作者核对：先只读新文，复述主要选择、第一步和关键取舍；再对照原文核关键结论、数字、版本与日期、来源和适用条件。有遗漏就修对应段。
 
-每页核完就交增量，负责人逐页接收。全部接收后本任务结束，不再开后续改写批次。
+核完的页按批交付，每批不超过 2 份待合入，负责人逐批接收。全部接收后本任务结束，不再开后续改写批次。
 
 ## 当前结果
 
