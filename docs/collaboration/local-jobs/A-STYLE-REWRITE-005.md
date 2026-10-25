@@ -2,7 +2,7 @@
 
 id: A-STYLE-REWRITE-005
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 08672c65540ce65fc45edec51ccb856e67d78a28
 result_branch: relay/a-style-rewrite-005
@@ -62,3 +62,7 @@ result_branch: relay/a-style-rewrite-005
 上表为独立验证阶段计数；之后只修已列证据元数据、未测状态位置与短节依据位置。原始验证和失败记录保留，最终受影响不变量检查单列，未重跑实验或刷新来源。
 
 Git 回传：指定结果分支 `relay/a-style-rewrite-005`，固定提交 [`ac23172d3559214308863ec86eea480bad1ef620`](https://github.com/dbvv1/a1dbv/commit/ac23172d3559214308863ec86eea480bad1ef620)。两页各自提交；最终文档 361 文件、公开内容 622 文件、三个新增提交身份扫描、空白检查均通过。独立验证和受影响收口完成，状态 `review_ready`；main 只回传本任务，由 dot-A 抽读并整合两页正文。
+
+## dot-A 接收（2026-10-25）
+
+保留结果分支历史与最新 main 回传记录，复用一次有效独审和已通过的受影响检查，负责人抽读后接收。 最终集成树运行文档、公开文件、提交身份及空白检查。

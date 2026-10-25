@@ -11,7 +11,7 @@ index e80b596..4302ef0 100644
              />
            </div>
 diff --git a/web/src/components/MemoEditor/view/MemoContentView.tsx b/web/src/components/MemoEditor/view/MemoContentView.tsx
-index 2051b90..d024a06 100644
+index 2051b90..9dd97c6 100644
 --- a/web/src/components/MemoEditor/view/MemoContentView.tsx
 +++ b/web/src/components/MemoEditor/view/MemoContentView.tsx
 @@ -15,6 +15,7 @@ import { findAnchorTarget } from "@/utils/markdown-manipulation";
@@ -59,7 +59,7 @@ index 2051b90..d024a06 100644
    const navigateToTag = useTagNavigation(parentPage);
    // Whatever the page's search matched is painted here, without altering the rendered tree.
    const contentRef = useRef<HTMLDivElement>(null);
-@@ -99,6 +118,44 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
+@@ -99,6 +118,58 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
      editor?.refreshViews("linkCards");
    }, [editor, linkPreviewEnabled]);
  
@@ -92,19 +92,33 @@ index 2051b90..d024a06 100644
 +    return () => observer.disconnect();
 +  }, [editor, hideCompletedTasks]);
 +
++  // The editor restores focus itself when a tick redraws the block, but only around its own
++  // apply; the filtered redraw below runs after that and would leave focus on a removed
++  // element. A block id survives the redraw, so it locates the same task's new checkbox.
++  const focusedTaskBlockId = (): string | undefined => {
++    const active = document.activeElement;
++    if (!(active instanceof HTMLElement) || !active.classList.contains("mbe-checkbox")) return undefined;
++    return active.closest<HTMLElement>("[data-block-id]")?.dataset.blockId;
++  };
++
 +  // A tick changes only its own block, so a completed parent kept as context would keep
 +  // the element it had while it still had open work. Redraw the filtered blocks once the
-+  // editor has applied the document it reports.
++  // editor has applied the document it reports, then put keyboard focus back on the same
++  // task if it is still shown; a tick that hides the task leaves no checkbox to focus.
 +  const handleTaskToggle = (markdown: string) => {
 +    onTaskToggle?.(markdown);
++    const blockId = focusedTaskBlockId();
 +    editor?.refreshViews(MEMO_TASK_VISIBILITY_EXTENSION);
-+    if (contentRef.current) applyCompletedTaskVisibility(contentRef.current, hideCompletedTasksRef.current);
++    const root = contentRef.current;
++    if (!root) return;
++    applyCompletedTaskVisibility(root, hideCompletedTasksRef.current);
++    if (blockId) root.querySelector<HTMLInputElement>(`[data-block-id="${blockId}"] .mbe-checkbox`)?.focus({ preventScroll: true });
 +  };
 +
    // In-memo anchors scroll within this memo; a collapsed card may hide the target, so it opens the detail page.
    const handleLinkClick = ({ href }: { href: string }) => {
      if (!href.startsWith("#")) return false;
-@@ -113,7 +170,13 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
+@@ -113,7 +184,13 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
    };
  
    return (
@@ -119,7 +133,7 @@ index 2051b90..d024a06 100644
        <div
          ref={contentRef}
          data-memo-content
-@@ -131,12 +194,12 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
+@@ -131,12 +208,12 @@ const MemoContentViewImpl = (props: MemoContentViewProps) => {
          <MemoMarkdown
            editorRef={setEditor}
            value={content}
@@ -977,7 +991,7 @@ index 0ea584a..728f4e0 100644
    });
  });
 diff --git a/web/tests/memo-content-view.test.tsx b/web/tests/memo-content-view.test.tsx
-index f59d259..3aa4e0e 100644
+index f59d259..ed91912 100644
 --- a/web/tests/memo-content-view.test.tsx
 +++ b/web/tests/memo-content-view.test.tsx
 @@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
@@ -1022,7 +1036,7 @@ index f59d259..3aa4e0e 100644
    state.linkPreview = true;
    state.resolved = new Set();
    state.tagsSetting = undefined;
-@@ -81,6 +95,281 @@ describe("memo view", () => {
+@@ -81,6 +95,305 @@ describe("memo view", () => {
    });
  });
  
@@ -1274,6 +1288,30 @@ index f59d259..3aa4e0e 100644
 +    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
 +    await act(async () => updateDevicePreferences({ hideCompletedTasks: false }));
 +    expect(onTaskToggle).not.toHaveBeenCalled();
++  });
++
++  it("keeps keyboard focus on a task that becomes completed but stays visible for its open child", async () => {
++    const onTaskToggle = vi.fn();
++    const { container } = renderMemo("- [ ] Parent\n  - [ ] Child", { onTaskToggle });
++    await act(async () => updateDevicePreferences({ hideCompletedTasks: true }));
++
++    const parent = taskItem(container, "Parent");
++    expect(parent).not.toBeNull();
++    const checkbox = taskCheckbox(parent!);
++    checkbox?.focus();
++    expect(checkbox).toHaveFocus();
++
++    // Space on a checkbox activates it as a click with detail 0; the editor's click
++    // handler toggles a task only for that value.
++    fireEvent.click(checkbox!, { detail: 0 });
++
++    await waitFor(() => expect(onTaskToggle).toHaveBeenCalledWith("- [x] Parent\n  - [ ] Child"));
++    // The redraw makes a new checkbox for the same block; the keyboard position stays
++    // on that task while it is still shown as the open child's context.
++    const after = taskItem(container, "Parent");
++    expect(after).not.toBeNull();
++    expect(taskCheckbox(after!)).toHaveFocus();
++    expect(container).toHaveTextContent("Child");
 +  });
 +
 +  it("keeps every task while the editor is editable", async () => {

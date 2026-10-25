@@ -2,7 +2,7 @@
 
 id: A-MEMOS-CONTINUATION-001
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 08672c65540ce65fc45edec51ccb856e67d78a28
 result_branch: relay/a-memos-continuation-001
@@ -67,3 +67,7 @@ result_branch: relay/a-memos-continuation-001
 本地执行端已读取上述独立复审的原始结论、核对两处公开表述修订与原始回归输出，复用这次有效审查，不另叠审查树。其提出的隐藏任务焦点为既有边界，异步回写覆盖缺口与回调前取焦点建议不作为已复现缺陷扩修。
 
 Git 回传：指定结果分支 `relay/a-memos-continuation-001`，固定提交 [`e38fb3cbfb3fc53b71053c7344ed42dd993952d0`](https://github.com/dbvv1/a1dbv/commit/e38fb3cbfb3fc53b71053c7344ed42dd993952d0)。完整补丁仍针对同一固定上游，工程回归、类型／lint／构建与干净补丁应用结果见上；独立审查的问题已按证据修正公开表述。最终文档 361 文件、公开内容 622 文件、实际新增提交身份扫描和空白检查通过。main 只回传原任务，补丁与07留结果分支由 dot-A 接收；真实浏览器、Tab 顺序、跨页刷新仍未验。
+
+## dot-A 接收（2026-10-25）
+
+保留结果分支历史与最新 main 回传记录，复用一次有效独审和已通过的受影响检查，负责人抽读后接收。 本次只接收工程二改：新增回归实际为 focus 后触发 detail:0 click 的键盘激活路径组件模拟，非实际按键或浏览器接收；负责人按该证据核正07与报告措辞，未改代码或重跑未受影响实验。真实浏览器与异步回写覆盖仍未验。 最终集成树运行文档、公开文件、提交身份及空白检查。
