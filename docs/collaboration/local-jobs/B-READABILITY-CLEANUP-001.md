@@ -2,7 +2,7 @@
 
 id: B-READABILITY-CLEANUP-001
 owner: dot-B
-status: running
+status: revision_requested
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6f7494afc9707a1377e3fa88ce139e7a1df04e0e
 result_branch: relay/b-readability-cleanup-001
@@ -64,3 +64,9 @@ result_branch: relay/b-readability-cleanup-001
 实际通道 Claude Code＋DeepSeek，原始 message.model 为 `deepseek-flash`，请求 alias另记；没有模型／引擎／播放器实验。此页为 review_ready 增量，整体仍 running；下一页按顺序是 `01-engine-integration.md`。实际写者为本地协作执行端，不是 dot-B 研究主任务。真实音画、设备、回调行为和质量待项目验收；本端只推结果分支，不标 accepted。
 
 本次固定结果：[73ca388e1b94a0d9777aaa2d6dcc628039ed62d7](https://github.com/dbvv1/a1dbv/commit/73ca388e1b94a0d9777aaa2d6dcc628039ed62d7)，仅指定 relay 分支；check_repo.py、公开文件／实际新增提交身份扫描及交付差量检查通过。
+
+## 审计接收：视频页需修正写法
+
+73ca388事实整合与已有保真检查保留；首篇暂不接收。实际稿仍把正文的[一手／研究]、[研究]标签逐段保留，又在节末重复一遍，多个段落依旧以“本地档不是漏看”“核心限制：没有证据证明”“模型支持不等于……”开头。新增依据段并未解决原任务要求的重复证明与读者选择问题；这也是独立首读已指出的阅读摩擦。
+
+只修当前视频页，不重派初稿、不重跑已核事实：把现有信息组织为表达形式→可用源与渠道→制作/接入→二改验收的直接选择，来源类型与原日期在对应节末留一次；页首已声明未试用的总体状态不再逐节重复。保留24GB/768p/2K、许可地域、Veo状态、收费数字，以及开门揭示/混合段退出/WebGL音频等确实改变做法的条件。例：直接写“本地起点是Wan2.2指定硬件路线，H3完整2K还需托管组件”，再说明具体条件，不写“没有漏看新模型”。非作者只核改过段落是否能直接选路、原条件与来源是否完整；不用密度/比例评价。修完回本任务，再继续下一页。

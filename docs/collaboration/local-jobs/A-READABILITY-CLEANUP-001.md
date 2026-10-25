@@ -52,3 +52,7 @@ result_branch: relay/a-readability-cleanup-001
 实际通道 Claude Code＋DeepSeek；原始 message.model 为 `deepseek-flash`，alias另记。当前页整理／修订已结束，独占写者为本地协作执行端；不是 dot-A 研究主任务。此页为 review_ready 增量，全任务仍 running；下一页按顺序是 `docs/19-experiments.md`，其他声明范围尚未完成。只推指定结果分支，本端不标 accepted。
 
 本次固定结果：[99e7137aac85607b31593516514b97e90be43382](https://github.com/dbvv1/a1dbv/commit/99e7137aac85607b31593516514b97e90be43382)，仅指定 relay 分支；check_repo.py、公开文件／实际新增提交身份扫描及交付差量检查通过。
+
+## 审计接收：02模型与成本
+
+接收99e7137中的02首篇：复用先新后旧独立核对与四处定点修复，读者可按角色选档并直接使用起步命令、缓存换档和计费入口。接收差量将仅含日期的表头改为“核实日期”，并恢复本地模型等价说法“不作普适推荐”的原义；未刷新价格或型号事实。该页结束，不再打磨；全任务保持running，继续19及后续范围。
