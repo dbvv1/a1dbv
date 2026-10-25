@@ -35,17 +35,10 @@ P81／P90：以 B 正在开发的 MOBA-Like 为首选消费者，把并行交付
 
 同意准备直接消费首个固定MOBA模拟产物的独立接收起点；当前仅范围同意，不算采用。模拟／工程配置／content／tests由原B任务独占，A不写产品文件。优先只读审查任务输入或在A既有coding模板／脚本内做最小适配，核同seed＋命令重放hash、胜负证据及断言缺口；不改B在清理的game模板，不造平台／通用框架，不预设未发布接口。B交固定源码后再接其实际npm test／sim；A负责同题选择与实施，B实际消费后在原任务回传结果。
 
-## 当前结果
+## 当前采用与接续（2026-10-25 UTC）
 
-原调查已沿同一原生Workflow转为MOBA接收准备：[46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea)，仅给既有coding reviewer补固定交付的需求／版本、异常路径、可重放输入及实得偏差；非作者独审和适用文档／公开／身份检查通过。准备差量只发布指定relay，整任务仍running；未写产品、未声称B已采用。下一步等B原模拟修订交固定产物与真实输入后实际消费npm test／sim，再取真实采用反馈并回流路线页；不重复初始调查。实际通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash，请求别名与实际字段分开。
-
-## 当前接收（2026-10-25 UTC）
-
-已复用原调用固定产物 `46a55ea9cf6b57cd683d791d1268de04b640b457` 的 reviewer 输入／确定性检查增量，非作者源码审读无阻断；未重派。补 [可复制接收输入](../../../templates/generic/fixed-delivery-review.md)，单写者继续实施，审查者隔离核固定产物；模板非作者独审通过（19:39:54–19:40:11 UTC），不算 B 实际采用。执行窗口 19:32:32–19:35:00 UTC，文档检查通过，未运行产品。
-
-请 B 原模拟调用在首个可读固定源码交回后附实际重放入口／输入、终局哈希与失败样例；A 按真实 npm test／sim 接入并回传断言缺口，B 在同任务反馈采用项、改变的判断／实现及集成返工。19:39:59 UTC 已发现产品 relay 固定 `d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8`，含三项独审修复 `2d66135`；A 已开始隔离安装与实际接入，不重发或重审全文。A 不修改 MOBA `.github/`、`tools/` 或 Agent 配置；需要这些文件时再约定具体差量。任务保持 running，待实际运行和 B 消费者回传。
-
-
-实际接入（19:40:32–19:43:09 UTC）：固定 `d5f465c` 隔离安装成功，`npm test` 8 文件／32 测试通过（含三项修复回归及真实命令回放断言），产品跟踪文件无改动。`npm run sim -- --games 1 --seed 1 --dump-replay <临时输出> --json` 在 tsx 本地 IPC 监听遇 EPERM，未进入模拟；同一命令升级执行又在平台沙箱初始化失败，已停止，不换 loader 绕过。完整终局／200 局／500 局未由 A 运行；恢复条件为平台提供获准的本地 IPC 执行通道。
-
-接入改变的判断：不能把 `npm test` 通过或 CLI 退出 0 当作批量目标通过。固定源码 `tools/sim.ts:537` 只以 errors／replayMismatches 设置失败退出；timeout／stuck／时长与难度目标需另读真实输出。现有 `tests/replay.test.ts:7–27` 确核同命令 hash／status／winner，但限 120 秒且不要求胜方非空，不证明完整对局获胜重放。请 B 原调用消费本接收起点，并交实际整局 replay 与批量实得；此为源码确认的验收证据缺口，不冒称模拟 CLI 失败复现或要求扩写产品。
+- 已采用原调用 [46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea) 的固定交付 reviewer 增量，并发布 [可复制接收起点](../../../templates/generic/fixed-delivery-review.md)（`dc63f20`）；单写者继续实施，独立审查者核固定需求／版本、异常输入、回放与实得偏差。原调查沿 Claude Code＋DeepSeek 原生 Workflow 转入实施，message.model=`deepseek-flash`；未重派。模板及新增实际接入差量的非作者独审、文档／公开／身份检查通过。
+- **B 已实际消费**：固定 [efe1fca 回执](https://github.com/dbvv1/a1dbv/blob/efe1fca23ac229e1cd6b85a11f4dab4ee0a9c8ef/docs/collaboration/local-jobs/B-MOBA-SIMULATION-001.md) 的“当前结果”确认 reviewer 的版本／异常输入要求促使补齐 v1 超时证据，避免用同 seed 的 v2 胜局代替；没有新增代码发现，三项既有缺陷不归功模板。该采用反馈已交 [08 任务路线](../../08-multi-agent.md#4-实操建议)负责人回流。本单元采用已闭环，不把它扩大为方法效率或游戏可玩证明。
+- A 实际接入 `d5f465c`（19:40:32–19:43:09 UTC）：隔离安装成功，`npm test` 8 文件／32 测试通过，产品跟踪文件无改动。`npm run sim -- --games 1 --seed 1 --dump-replay <临时输出> --json` 未进入模拟，tsx IPC 监听 EPERM；同命令升级执行在平台沙箱初始化失败，保持停止，不换 loader。A 未运行完整终局／200／500 局；恢复需获准的本地 IPC 通道。
+- 接收改变的判断仍成立：`tools/sim.ts:537` 只以 errors／replayMismatches 设置失败退出，退出 0 不代表数值目标通过；120 秒 replay 单测未要求胜方非空。B 回传 200 局有 1 超时、500 局有 1 超时；旧 v2 seed1 在 GC 修复后结果仍蓝胜，但 hash 不兼容且返回 false，不能把旧哈希当新版本预期。上述批量与兼容数据来自 B，不是 A 复跑。
+- 下一步仅接收 B **已有**的批量 JSON 与完整终局／超时 replay：附源 SHA、内容版本、命令、UTC 与退出码，500 局注明 seed 区间；没有就写未运行／未保存，不为 A 重跑或造样例。A 只读核分母、目标与版本归属；B 原调用已结束，模拟后续由 `B-MOBA-RECOVERY-002` 独占。A 不改产品 `.github/`、`tools/`、Agent 配置或 game 模板，新增跨文件范围另约定。任务保持 running 接这一真实输入，不重发原调查。
