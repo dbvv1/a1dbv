@@ -2,7 +2,7 @@
 
 id: A-REVIEW-DELIVERY-001
 owner: dot-A
-status: running
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4434ba41609b8d7f30dbe4d7a1c390c92083365d
 result_branch: relay/a-review-delivery-001
@@ -28,3 +28,44 @@ Memos 的 focus＋click detail=0 只覆盖组件键盘激活路径模拟，不�
 - 发布前核最新 main，按手册 §7 完成文档、公开文件／实际新增提交身份与空白检查；只推结果分支，回实际调用起止、响应模型、必要介入、固定 SHA、检查与未完成项，状态 review_ready，由 dot-A 串行接收。
 
 认领：dot 本地协作；2026-10-25T07:04:41.979152+00:00。来源 main 固定 `7b87f03`；与迁移15无写入重叠，先发布认领后沿正常原生 Workflow 实施与有效独审，仅推指定结果分支，不重跑既有工程案例。
+
+## 结果回写（2026-10-25，review_ready）
+
+**结论：已在 09 的 §2 增补“从实现产物到可接收交付”路线，用相邻既有材料与两个已接收案例组织成可复制的接收默认；未另造审批流程，未把安全边界或工具清单当主要交付。只改 `docs/09-review-and-quality.md` 与本任务，未运行软件、浏览器或历史实验。**
+
+### 正文变化
+
+- 30 秒结论增加一条：接收按原验收和实际消费者判断，不以意见数量判完成；先分应修／保留／待证据，修后只复验受影响差量和同一消费者路径，未验项单列。
+- §2 新增“从实现产物到可接收交付”：默认组合为原验收＋项目确定性反馈＋实际消费者＋一次原生独立评审，小改动已有检查覆盖时不强加独立评审；五步为锁目标与保留行为、三类反馈分层、应修／保留／待证据分类、只修获准范围并复验受影响差量、按可观察条件结束并交付。另含何时值得加专门工具或多视角，以及短可复制接收请求。
+- 与相邻页分工用链接区分：完整功能见 07，多个结果并行整合见 08，停下后接回见 20；本页只回答产物能不能收、收到什么程度。
+- 案例表复用既有公开记录：Memos 阅读模式及焦点二改（改变实现：raw Markdown 列表过滤、按 block id 恢复焦点；仅纠正表述：`pnpm test -- --maxWorkers=4` 未限制 worker；保留：原文、勾选权限、父子过滤、分享图片、编辑模式；边界：真实组件＋jsdom，`focus＋click detail=0` 是键盘激活模拟，不是真实 Space／Tab，浏览器未验）；Sphinx 性能路线（改变实现：旧 `direct_lookup` 热点在当前固定版本不成立，改查 `_find_named_symbols`；仅纠正判断：没有当前 profile／缺工具链不是硬门槛；保留：已有缓存与特化、候选顺序和匹配逻辑，texinfo 输出逐字节相同、warning 集合相同、domain 测试通过；边界：真实 CLI `sphinx-build -b texinfo`，单机固定历史负载约 7%，不是模型评审收益、全面提速或上游接受，下游 makeinfo 未验）。
+- 实践清单增加一条接收检查；既有标题、锚点、命令、事实和历史状态保留。
+
+### 复用与未做
+
+- 复用 `experiments/memos-reading-adoption.md`、`docs/collaboration/local-jobs/A-MEMOS-CONTINUATION-001.md`、`docs/collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md` 的公开记录；未重跑 Memos／Sphinx，未启动浏览器／服务，未做模型对照或 P79 续批。
+- 未新增目录、编号专题、配置或证明台账；未改 TASKS、digest 或其他页；按本次执行指令不提交、不推送，结果留在当前工作树。
+
+### 检查
+
+- `python3 scripts/check_repo.py` → 370 files / 0 errors。
+- `python3 scripts/check_public.py` → 631 files / 0 findings。
+- `git diff --check` → 无输出；`docs/09-review-and-quality.md` 为 UTF-8、LF、无 BOM；新增表格列数一致，新链接目标存在，本地锚点核对通过。
+- 发布前 fetch：`origin/main` 仍为 `fde9056`，09 与本任务无并发差异。
+- 未运行完整离线套件（纯文档，按手册 §7 只跑适用检查）；本次不产生提交，`check_public.py --commits` 的提交身份扫描不适用。
+
+### 执行元数据
+
+- 执行：Claude Code 原生 Workflow 子代理。父调用入口启动 `2026-10-25T07:05:47Z`；实施阶段 `2026-10-25T07:06:43–07:13:02Z`，机械交付检查阶段 `2026-10-25T07:13:05–07:14:24Z`（UTC，取自原始响应时间戳）。
+- 模型：两个 Workflow 子代理的 assistant 原始响应 `message.model` 均为 `deepseek-flash`；运行环境标注的请求别名 `deepseek-v4.1-flash[1m]` 单列，不作为后端具体型号证明。
+- 必要介入：无任务内人工介入；根执行端在 Workflow 后完成一次新上下文只读实质审查，未跑软件、浏览器或历史实验。
+- 未完成项：按本次执行指令不提交、不推送，固定 SHA 未产生；提交身份扫描因此不适用。
+- 固定 SHA：未产生，不回填未来发布值。
+- 独立审查：`general-purpose` 只读子代理，assistant `message.model=deepseek-flash`，`2026-10-25T07:16:12–07:21:18Z`；核两文件差量、任务要求、Memos／Sphinx 原记录、链接／锚点、模拟／CLI／未验边界与公开元数据，结论 `FINDINGS: none`。该原调用内复核记录保留；本地执行端另外取得项目 code-reviewer 对本次差量的只读审查，结论同为无实质问题，不重跑工程案例。
+- 状态：`review_ready`，待 dot-A 串行接收。
+
+本地执行端核对：实际原生调用 2026-10-25T07:05:47.285Z—07:22:43.183Z（UTC）正常退出；父调用与两个 Workflow 阶段原始响应字段均为 `deepseek-flash`。本次 code-reviewer 已亲读原始目标、09差量、公开 Memos／Sphinx 产物及消费者断言，未发现实质问题；原有组件仿真、真实CLI和未验浏览器边界保留，未产生新的工程或评审收益实验。
+
+最终回传：结果分支 `relay/a-review-delivery-001`，固定提交 [`93852265437bcc4d74a472a049b87b5589ae1183`](https://github.com/dbvv1/a1dbv/commit/93852265437bcc4d74a472a049b87b5589ae1183)。独立审查及必要定向修订完成；最终文档 373 文件、公开内容与实际新增提交身份扫描 634 文件、空白检查通过。main 只回传原任务，正文与产物由 dot-A 接收，状态 `review_ready`；工程／消费者与未验范围按上文保留。
+
+负责人接收（2026-10-25 07:43 UTC）：复用已完成有效独审与原运行结果，保留最新 main 的完整回执及结果父链。正文只提炼可执行选择，细节回链本任务；迁移仅接收工程差量，全量失败与真实业务／缓存恢复欠项保留，生产依赖暂不建议升级。接收路线不重跑历史案例，不增加新的评审收益声称。最终文档、公开内容、提交身份与空白检查随本次整合执行。

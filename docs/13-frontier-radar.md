@@ -1,6 +1,6 @@
 # 13 · 前沿雷达（2026-10）
 
-> 核实日期：2026-10-24（UTC+8）。依据为各节依据行所列的官方文档、社区原帖、开源仓库与本仓试用记录；历史条目沿用各自原核实基线。
+> 核实日期：2026-10-24，Storybook 路线补充 2026-10-25（UTC+8）。依据为各节依据行所列的官方文档、社区原帖、开源仓库与本仓试用记录；历史条目沿用各自原核实基线。
 
 ## 当红必看：工具入口与代表做法
 
@@ -44,6 +44,7 @@
 | **增量测试反馈：pytest-testmon** | 用执行关系从既有测试选择本次反馈 | 测试昂贵且相关目标不易列全时试；小套件先直接跑文件 | Polylogue 采用与[暂缓的成本比较](research/2026-10-12-development-feedback.md#新增选测能力先比较改动类型与完整运行成本)并存 | 🧪 [2.2.0历史改动重放](../experiments/testmon-feedback.md)已试；成熟工具，未测模型／净提速 |
 | **依赖接续：GitHub gh-stack** | 父层修订后在所属工作树重排子层，按恢复日志继续 | 子任务依赖未合入父层时用；独立任务仍用普通worktree | 多Agent使用者的旧版缺口与官方0.2.0工作树支持 | 🧪 [0.2.1冲突与跨树恢复实试](08-multi-agent.md#有依赖的分支更新父层再接续消费者)，未测远端PR／模型收益 |
 | **网页验收：Playwright CLI＋Skill** | 用短命令观察网页、操作元素并检查结果 | 已有Playwright先复用项目入口，现有浏览器已够用就不另装 | 实践者由MCP转CLI与调用后仍漏验收支持按目标选用 | 🧪 [预装1.62.0探针与截图](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)已核，浏览器流程未验 |
+| **组件反馈：Storybook stories／MCP** | 复用真实组件，用 story 状态和交互断言接回 Agent | 已有 Storybook、状态交互难以只靠源码判断时用；MCP 资料工具另按缺口选择 | GitButler 接入后改按需使用；本仓 Maka 续改实际跑通 4 个目标 play | 🧪 [真实组件续改路线](23-browser-verification.md#先让真实组件接住续改再验完整应用)；MCP／docs toolset 未试 |
 
 **想让Agent真正验网页？** 已有项目依赖时，先用 `npx --no-install playwright --version` 确认本地版本，再查 `npx playwright cli --help`，不必先全局安装；CLI提供动作，Skill提供用法，能直接用CLI时也不强求先装Skill。
 
@@ -110,6 +111,10 @@
 **接手陌生仓库，不知道先用哪一个？** [15 的接手任务卡](15-task-playbooks.md#1-理解陌生或遗留代码)按模块、符号、依赖版本与调用例分流，最后交回修改落点和相关检查，不要求装齐工具。
 
 **依据**：[一手／社区／本仓实测] 下表取证与复现（详见[总记录](research/2026-10-22-frontier-trials.md)）；[一手] [chrome-devtools-mcp 1.12.0](https://github.com/ChromeDevTools/chrome-devtools-mcp/releases/tag/chrome-devtools-mcp-v1.12.0)、[MCPorter](https://github.com/openclaw/mcporter)、[Context Hub](https://github.com/andrewyng/context-hub)、[QMD](https://github.com/tobi/qmd)、[DebugMCP](https://github.com/microsoft/DebugMCP/tree/main/npm/cli)、[Agentation](https://www.agentation.com/)、[TanStack Intent](https://github.com/TanStack/intent)、[Graphicle](https://github.com/graphicle-ai/graphicle)、[GPT with Taste](https://github.com/NB-Corp/gpt-with-taste)、[InstaLanding](https://github.com/RayVelez27/instalanding.ai)、[Coucou](https://github.com/Louis-CFM/coucou)、[Whiteboard](https://github.com/devdotfast/whiteboard)、[Oil UI](https://github.com/oil-oil/oil-ui)、[VibeWise](https://github.com/nykooi1/vibe-wise)、[OpenCodeReview](https://github.com/alibaba/open-code-review)；[社区] [QMD issue #976](https://github.com/tobi/qmd/issues/976)、[DebugMCP #31](https://github.com/microsoft/DebugMCP/issues/31)、[Nodum 采用](https://github.com/nodummd/nodum/blob/main/tasks/nodum-master-plan.md#6-progress-log)、[TanStack 0.5 发布说明](https://tanstack.com/blog/intent-0.5-skills-you-can-maintain)、[Graphicle HN](https://news.ycombinator.com/item?id=50088713)、[GPT with Taste linux.do](https://linux.do/t/topic/3016674)、[InstaLanding Reddit](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)、[Whiteboard HN](https://news.ycombinator.com/item?id=49833867)、[OpenCodeReview 迁移自述](https://github.com/alibaba/open-code-review/issues/1020#issuecomment-6163982899)；[本仓实试] 各条试用记录见上表链接；[研究] 候选筛选与未验范围；核实 2026-10-24。
+
+**已有 Storybook 就把它用作真实组件的反馈入口，不必先加 MCP。** 从当前组件契约开始，把正常、失败恢复和进行中状态做成可执行故事，交给 Agent 修复并复验；应用数据与桌面宿主仍回实际应用接收。Maka 的侧聊模型选择已用这条路线完成两处续改，详见 [23 的起点与验收](23-browser-verification.md#先让真实组件接住续改再验完整应用)。组件资料确有缺口时再评估 MCP；其 docs toolset 支持范围依赖框架与 manifest，当前仍 preview。
+
+**依据**：[一手] [Storybook 文档](https://storybook.js.org/docs/ai/mcp/overview)、[安全修复](https://github.com/storybookjs/storybook/security/advisories/GHSA-f2ph-cmg5-wxc8)；[一手：采用与撤回] [GitButler 接入](https://github.com/gitbutlerapp/gitbutler/pull/16053)及[撤掉全任务强制清单](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)；[社区：作者小试] [UI Verify](https://uiverify.ai/blog/storybook-mcp)，非独立生产比较；[社区／开源] [中文讨论](https://linux.do/t/topic/2771937)与[邻近实现](https://github.com/gamecrafters-io/base-ui/blob/ed701de4b0d35ce686c2b265b329efae517969d7/README.md)；[本仓实际采用] [固定补丁、82 项受影响测试与 4 个 play](collaboration/local-jobs/A-STORYBOOK-ADOPTION-001.md#本地执行端最终独立差量复核)，使用假服务与真实组件，未调用 MCP，不推断资料工具的因果收益；核实 2026-10-25。
 
 ### 🧪 新意实验：让应用交接当前实现，而不只留聊天
 
