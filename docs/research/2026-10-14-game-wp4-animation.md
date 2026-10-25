@@ -1,6 +1,6 @@
-主线：二／三／四；G1 动画、绑定、面部供给、第二次修改与授权
-改变的建议：[研究] 导入后接触退化先做同源压缩差分，保默认并局部修精度；攻击后的防御先选输入仲裁与合法出口，命中停顿不替代恢复政策；[经验] 完整许可动作组、固定骨架与接触契约优先；生成只补内容缺口。先核生产资格与实际返回身份，再替换旧动作；体型、装备、程序步态、屏外求值和对白分别验收。
-新证据：[一手／研究] 2026-10-23补Unity导入容差、UE ACL／Database质量档、CurveCodec 2存储取舍与开发者腿抖闭环自述；未运行压缩器。2026-10-23补Motorica成套迭代、MotionBricks／ARDY分层控制与中文按动作对位反例；未试用。2026-10-22补全页十二项选择、BlendAnything异拓扑混合与固定接入源码、实践者及中英社区反证；未试用。2026-10-21补Hades II／Wilds修订、同一Ellen连击实现与缓冲时钟比较，PRIMAL仅作范围不匹配的领先候选；Uthana 显式模型／job／motion 契约；固定源码与生产反例限定重定向、程序步态及二改能力；Kimodo v1.2 撤回旧评测横比；Rhubarb、VRoid／VRM、MetaHuman、Audio2Face 区分面部供给与求解。各节保留原核实日期，未证零手修通过率或二改成本。
+主线：游戏 AI 制作链与角色动画模块。
+改变的建议：完整动作源先于求解器；同一 Animator 共享机制、武器配置承载内容，接触按依赖与动作阶段接入。
+新增核实：2026-10-25 固定 Rigging 1.4.1 与 LlamAcademy 源码／许可；既有供给、导入、连续性、压缩资料进入完整模块。仅资料／源码阅读，未运行模型或引擎。
 
 # WP4：动画、绑定与第二次修改
 
@@ -8,18 +8,56 @@
 
 **阅读路径：§2 选控制能力 → §4 分四层权利 → [§8](#8-动态事实表2026-10-14-补核)核生产资格与实际返回 → §6 验收后替换旧动作。** 后续专题段分别处理骨架、装备、交互、屏外求值与对白，服务升级不代替这些二改验收。[研究]
 
+<a id="角色武器模块来源层求解和二改"></a>
+## 角色武器模块：来源、层、求解和二改
+
+**结论：保同一 Animator 的共享机制，按武器提供动作与姿态配置；资源缺口先回供给，接触缺口再查层与求值。** 2026-10-25 补读固定公开源码，支持正文从角色／枪型选源到二改的实现路线；不是已有完整 Unity 工程或零手修品质实测。默认、配置、接入顺序与验收只维护在[完整模块](../../domains/game-dev/assets/animation.md#weapon-animation-module)，本节留决定性证据。
+
+### 现成实现怎样借，哪里不能直接搬
+
+[LlamAcademy 固定 `81cb444d25f1c0044835440977da48305ca6325e`](https://github.com/llamacademy/scriptable-object-based-guns/tree/81cb444d25f1c0044835440977da48305ca6325e)实际项目为 Unity 2022.3.4f1、Animation Rigging 1.2.1；README 的“2021.3+”是最低要求，不是已验证 Unity 6.3。该快照是 gun system 教学项目，适合借配置／装配，不作为完整角色动画底座。
+
+| 已读调用链 | 实际支持的机制 | 正文采用／改变 |
+|---|---|---|
+| [GunScriptableObject.Spawn](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/Assets/Scripts/Guns/GunScriptableObject.cs) → [PlayerGunSelector.SetupGun](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/Assets/Scripts/Guns/Demo/PlayerGunSelector.cs) | 创建枪模型、应用局部 SpawnPoint／SpawnRotation；选择器克隆运行枪配置并设置单／双手风格、重找握点 | 借“武器数据→装配→姿态消费者”；正文的 `WeaponPoseProfile` 为新设计，不伪称该项目已有此类型 |
+| [PlayerIK](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/Assets/Scripts/Guns/Demo/PlayerIK.cs) | `Setup` 按名字找 LeftHand／RightHand／Elbow；`OnAnimatorIK` 调 Animator.SetIKPosition／Rotation／Hint | 实际为 Mecanim IK，`using ...Rigging` 不证明使用 Two Bone IK。当前设计采用包约束时不能混称接口或默认两个求解器同时管手 |
+| [PlayerAction.Update／EndReload](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/Assets/Scripts/Guns/Demo/PlayerAction.cs) | reload 开始时手／肘公共权重设 0.25，结束设 1；UpdateCrosshair 在 FromGun 路径读枪方向再写 AimTarget | 正文按实际接触阶段分支撑手与瞄准，0.25 不作推荐数值；不复制“枪定目标→IK又转枪”的循环 |
+| [README Scope／Aiming／Animations](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/README.md) | 作者明确 Demo 可能不即插即用，完整 Player Controller 不在范围；FromGun 与 Rigging／IK 相互驱动需禁用对应 rig；Rifle／Pistol Idle 需另取 | 保留缺素材与版本迁移成本，不能把下载代码当持枪／换弹内容已齐 |
+
+代码根 [LICENSE](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/LICENSE) 为 MIT；README 另要求动作和 Unity Particle Pack，故根代码许可不替外部动作／素材清权。本次下载并静读上述公开文件，没有打开 Unity、取得外部角色动作或试运行枪系统。
+
+**依据**：[一手：固定源码／作者说明] 上表及 [ProjectVersion](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/ProjectSettings/ProjectVersion.txt)、[manifest](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/Packages/manifest.json)；核实 2026-10-25。
+
+### Rigging 1.4.1 的顺序与目标读取
+
+使用公开包镜像固定 [`1bd2bf88886c18e9012b90f9c3c331bc85c2f513`](https://github.com/needle-mirror/com.unity.animation.rigging/tree/1bd2bf88886c18e9012b90f9c3c331bc85c2f513)，不称镜像为 Unity 官方仓库。`package.json` 为 1.4.1、最低 Unity 6000.0.23f1，CHANGELOG 记录 2026-01-16；[LICENSE.md](https://github.com/needle-mirror/com.unity.animation.rigging/blob/1bd2bf88886c18e9012b90f9c3c331bc85c2f513/LICENSE.md) 指向 Unity Companion License，非通用 MIT 组件。正式接入用项目匹配的包管理版本，不为阅读镜像改游戏依赖。
+
+- [RigBuilderUtils.BuildPlayables／BuildPlayableGraph](https://github.com/needle-mirror/com.unity.animation.rigging/blob/1bd2bf88886c18e9012b90f9c3c331bc85c2f513/Runtime/AnimationRig/RigBuilderUtils.cs)先创建 scene-to-stream 同步链，再沿 layers 列表建输出；[RigUtils.GetConstraints](https://github.com/needle-mirror/com.unity.animation.rigging/blob/1bd2bf88886c18e9012b90f9c3c331bc85c2f513/Runtime/AnimationRig/RigUtils.cs)按 `GetComponentsInChildren` 收集有效约束。官方 [Rigging Workflow](https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.4/manual/RiggingWorkflow.html)明确约束在基础姿态后应用，并说明层级的深度优先求值顺序。
+- [TwoBoneIKConstraintJob](https://github.com/needle-mirror/com.unity.animation.rigging/blob/1bd2bf88886c18e9012b90f9c3c331bc85c2f513/Runtime/AnimationJobs/TwoBoneIKConstraintJob.cs)绑定 root／mid／tip 为读写、target／hint 为只读，使用当前 stream 求解；权重控制求解贡献，不提供换弹接触阶段识别。
+- [ReadOnlyTransformHandle.Bind](https://github.com/needle-mirror/com.unity.animation.rigging/blob/1bd2bf88886c18e9012b90f9c3c331bc85c2f513/Runtime/AnimationJobs/TransformHandle.cs)按目标是否在 `animator.avatarRoot` 下选择 stream 或 scene handle；[RigSyncSceneToStreamJob](https://github.com/needle-mirror/com.unity.animation.rigging/blob/1bd2bf88886c18e9012b90f9c3c331bc85c2f513/Runtime/AnimationJobs/RigSyncSceneToStreamJob.cs)同步局部 TRS／属性。这支持把身体修正、主手／武器及支撑手安排成有序依赖，不支持“任意 Update／LateUpdate 读写都自然同帧”。
+
+**正文的稳定 WeaponProxy／握点是设计推导。** 控制节点保在 Animator 层级、先绑定后交换视觉枪和局部配置，避免运行中随意替换目标；未被约束引用但要由场景驱动的父控制节点按官方流程用 RigTransform。若改骨架、重建图或动态重绑定，还需实际检查首帧、屏外返回、模式时序和所有接触；静读不能保证任意工程配置都没有一帧延迟。
+
+**依据**：[一手：固定包源码／官方文档] 上述路径及 [package](https://github.com/needle-mirror/com.unity.animation.rigging/blob/1bd2bf88886c18e9012b90f9c3c331bc85c2f513/package.json)、[CHANGELOG](https://github.com/needle-mirror/com.unity.animation.rigging/blob/1bd2bf88886c18e9012b90f9c3c331bc85c2f513/CHANGELOG.md)；[研究] 姿态权威与应用顺序，核实 2026-10-25，未引擎验证。
+
+### 层、来源与强替代怎样改变默认
+
+[Unity 6.3 Layers](https://docs.unity3d.com/6000.3/Documentation/Manual/AnimationLayers.html)区分 override／additive；[Avatar Mask](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AvatarMask.html)的手脚 IK 选项影响混合的 IK 曲线，不是所有包约束的开关。[Override Controller](https://docs.unity3d.com/6000.3/Documentation/Manual/AnimatorOverrideController.html)复用状态结构换 clip，官方还提醒换短 clip 时核转场时点。因此正文分“同语义换内容”和“弹匣换成逐发装填”等新语义，不用 clip 覆盖掩盖阶段缺口。
+
+[Lyra 官方公开说明](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-in-lyra-sample-game-in-unreal-engine)提供按武器 linked-layer 内容和上／下身混合参照；启停的 distance matching 与循环步幅修正可组合。文档还残留明确写 5.0 的局部限制，不将网页版本栏当逐项功能已在 5.8 重验。本次不下载 Lyra／受限资产，只借公开架构说明；完整工程的 UE-Only／AI 输入等具体许可沿既有记录另核。
+
+AI 供给复用并复核 [Motorica 2026-01-20 回灌](https://motorica.com/blog/motion-matching-made-simple-episode-4-retargeting-props-and-the-reverse-workflow)与 [08-11 作者访谈](https://motorica.com/blog/masters-2026-michal-navratil-interview)：前者说明移动数据后仍需手部姿态／IK，后者保留生成基底上手工 Control Rig 修改的实例。它们支持“按实际场景小批补覆盖、持物另处理”，不支持生成即完整双手动作。Uthana、Cascadeur 作者源与本地候选继续沿原各节，未重计历史试用或虚构新模型运行。
+
+**探索与验证范围**：2026-10-25新增核 Unity 官方层／导入／IK 文档、固定包源码和 LlamAcademy 作者代码；复用 WP4 既有中英社区和生产反例，未重复全渠道搜索、未新增普遍口碑结论。未运行生成服务、引擎、模型或目标设备，二改和最终品质待实际消费者验收。模块资料接收不代表角色已制成。
+
+
 ## 全页收口：十二项选择与新机制（2026-10-22）
 
-**完整许可动作＋固定骨架仍是默认；真正新增的是异拓扑“已有动作混合”候选，不是又一个视频动捕器。** 本轮接续全页，保留P39及§6通用验收；正文十二项表覆盖主要选择，不把单资产或一个新模型当成整页结项。[研究]
+**完整许可动作＋固定骨架仍是默认；真正新增的是异拓扑“已有动作混合”候选，不是又一个视频动捕器。** 本轮接续全页，保留 P39 与通用验收边界；原十二项比较现整合入正文选择及完整模块，不把单资产或一个新模型当成整页结项。[研究]
 
 ### 最高水平卡与三层交付
 
-| 层次 | 参照、决定与差距 |
-|---|---|
-| 当前最高水平 | 整套零手修生产未知。近期工程参照是Epic 2026-08-12 GASP5.8的检索与显式混合并用；非人形混合前沿参照是2026-07论文及BlendAnything，不把研究指标拼成全页冠军。[一手／研究] |
-| 成熟／主流工程参照 | 成套许可动作、骨架复用、状态／混合和局部IK；采用率未调查。与生成、检索、神经混合逐任务比较，缺动作内容时不先换控制器。[研究] |
-| 当前推荐 | 完整动作覆盖优先；连续性、接触、取消与脸部按不同消费者分开升级。属于成熟机制的条件选择，不是同题实测最佳。[经验／研究] |
-| 值得关注／直接可用 | 👀BlendAnything只读机制；现有位移、二改和配对验收规则可直接作为需求清单，尚非已通过实验或已安装模板。[研究] |
+原十二项选择现由[正文最高水平表](../../domains/game-dev/assets/animation.md#当前最高水平全页主要选择与领先替代)及[角色／武器模块](../../domains/game-dev/assets/animation.md#weapon-animation-module)统一维护；本节保留 GASP／BlendAnything 与生产反证，不复制第二份采用表。整套零手修质量、净工时和采用率仍未知。
 
 ### BlendAnything：先分清三种任务
 
@@ -50,12 +88,7 @@
 
 ### 同一问题的四条路线
 
-| 问题 | 成熟路线 | 近期替代与采用决定 |
-|---|---|---|
-| 同风格走跑、启停、转向缺一整套 | 完整许可动作组＋状态混合／MM | 👀Motorica生成集合及站姿约束，合同闭合后比较整套覆盖而非片段数量 |
-| 玩家轨迹已有，但急转／刹停找不到合格姿态 | 补许可动作，有限重定时／warp | 👀录玩法root轨迹回灌生成，仍须验接触及未修改动作 |
-| 连续控制和交互组合太多 | GASP局部混合／检索＋显式控制 | 👀MotionBricks／ARDY生成中间动作，保持游戏仲裁且不据研究演示迁移 |
-| 新攀爬动作需要前后对位，旧动作落点被破坏 | 分动作匹配轴、阶段与目标 | ✅先局部修改，神经目标也须区分硬接触与软准备／退出 |
+集合供给、玩法轨迹补洞、在线过渡与按动作对位的选择已进入[正文制作入口](../../domains/game-dev/assets/animation.md#weapon-animation-module)。以下保留各路线原始证据、许可与人工劳动，避免同一决定在正文／研究各写一套。
 
 ### Motorica：集合、回灌与站姿不是同一个按钮
 
@@ -278,14 +311,7 @@ Rokoko 条款由 Vision 产品页直接进入，`/terms-of-use-update`重定向�
 
 ## 6. 第二次修改的最小后续验收（本轮不执行）
 
-**先配对请求、job 与最终 motion 身份，再验收和替换；失败保留旧动作。** Uthana 的字段路径与重传去重按 [§8 返回契约](#uthana-模型与返回契约补核2026-10-15-utc8)，下列为后续验收设计，未实测。[研究]
-
-1. 保存同一 rig/模型 hash、clip 命名与单位/fps、模型/服务版本、source 运动/seed、root 策略、Avatar/retarget pose、事件/contacts，以及原始与处理后文件；不依赖服务历史保存。[经验]
-2. 第一版用最小完整玩法动作组进入引擎，先通过目标设备占屏尺寸下的实际剪影、接触、地面与动作事件要求，别只看 DCC 正面。[经验]
-3. 第二版做两类改动：保持骨架换同规格外观/装备；将攻击命中提前且恢复不变，或提高移动速度并保持脚落点。再加一个确实需要新语义的动作，区分参数可复用与内容缺口。[研究]
-4. 自动核骨架映射、clip 非空/时长、有限数值/四元数、根轨迹、事件顺序/范围、末端接触漂移、首尾姿态与速度、旧引用。阈值按相机、角色尺寸、速度和玩法定，不伪造通用合格毫米线。[研究]
-5. 再看实际角色/道具与状态转换；“握得对、动作能读、打击有力、风格一致”不以单一数值代替。有限重生/重录后仍需刷权重、手画帧或逐点摆姿才能通过，就回退到现成组或缩小动作需求。[经验]
-6. 总成本按全部服务费＋本地算力＋挑选/重录/代码修复/回归主动时间，除以合格动作秒数或合格动作数；保存第二改增量，不能只报每生成秒价。[研究]
+通用交付与完整角色二改统一见[正文第二次修改](../../domains/game-dev/assets/animation.md#第二次修改决定是否留下)及[角色／武器二改](../../domains/game-dev/assets/animation.md#给-ai-一次真正完整的二改)，未执行。来源与运行工件分开保存，先核请求／job／最终 motion 身份，再决定替换旧版本；Uthana 字段与重传契约保留在 [§8](#uthana-模型与返回契约补核2026-10-15-utc8)。成本包括淘汰、重录、程序处理和回归主动时间，不以生成秒价代替合格交付成本。
 
 ### 成本例（只算术，不是实测）
 
