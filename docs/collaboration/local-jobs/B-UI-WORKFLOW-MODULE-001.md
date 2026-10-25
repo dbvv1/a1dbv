@@ -41,7 +41,7 @@ result_branch: relay/b-ui-workflow-module-001
 
 ## 实施回报
 
-状态：`review_ready`（文稿完成，待根会话固定提交与独立审查）。实际通道：普通 Claude Code 原生 Workflow（实施＋只读机械交付检查；语义独审由根会话承担）。实际 assistant `message.model`：`deepseek-flash`。Workflow 未执行 git 提交、推送、修订或回退；发布由 root 处理，固定提交 SHA 由 root 回填，缺失 SHA 不作为文稿完成前提。基线：本端 HEAD `1c1040a50cc56fdb335f6058b83edd52b9543194`；开工重核 `origin/main` `0bbf91cc4a8e1cbc6d7dbc5dae207c55817556a7`，交付检查时 `origin/main` 已到 `d4acb3ec25fb6800518d1309b6dc11b5487cfdc8`，发布前重核 `215f054a0ca84e33c79d855af9a0fe29dfe59309`，两个目标文件均无差异。认领 2026-10-25T12:33Z；Workflow 实际执行约 12:38–13:01Z（UTC）。
+状态：`review_ready`（文稿完成，已由根会话复核并发布结果分支；待 dot-B 接收）。实际通道：普通 Claude Code 原生 Workflow（实施＋只读机械交付检查；语义独审由根会话承担）。实际 assistant `message.model`：`deepseek-flash`。Workflow 未执行 git 提交、推送、修订或回退；内容提交 `48a5485f366c3a531d3aa1ec711f0859169db4b4` 已由 root 发布到结果分支，交接提交见分支 HEAD。基线：本端 HEAD `1c1040a50cc56fdb335f6058b83edd52b9543194`；开工重核 `origin/main` `0bbf91cc4a8e1cbc6d7dbc5dae207c55817556a7`，交付检查时 `origin/main` 已到 `d4acb3ec25fb6800518d1309b6dc11b5487cfdc8`，发布前重核 `215f054a0ca84e33c79d855af9a0fe29dfe59309`，两个目标文件均无差异。认领 2026-10-25T12:33Z；Workflow 实际执行约 12:38–13:01Z（UTC）。
 
 ### 改变了哪些默认
 
@@ -83,4 +83,6 @@ result_branch: relay/b-ui-workflow-module-001
 2. **保存结果改为可观察来源。** 删除“引擎调用正常返回即 `SaveResult.Ok`”的写法；明确 `PlayerPrefs.Save():void` 和 `save_settings():None` 只说明调用发生。项目已有可报告存储就直接用，否则给出最小文件适配器（接收当前草稿并转可序列化 DTO）：序列化（异常或空结果返回失败）→ 临时文件写入并 `Flush(true)` → `File.Replace`／`File.Move` 完成才返回 `Ok`；序列化和写入异常返回失败，替换阶段异常返回 `Uncertain`。失败或不确定都保留草稿、`dirty` 和页面反馈，不显示已保存、不写 OnApply 运行时、不清 `dirty`；重开确认盘上结果前说明会丢弃当前草稿。正文明确 `Ok` 只到可观察边界，不保证掉电、崩溃或跨进程持久化。
 3. **显示模式最小收口。** 本示例不实现显示模式／分辨率切换，删除超时确认值和“先应用后保存”的实现承诺；保留放弃更改／重置确认层、确认返回，以及音量、大字、改键、动态隐藏和键鼠／手柄正常流。
 
-自检仅按受影响消费者路径推演一次：`stored=50` 时草稿 50→60→50 后 `dirty` 为空、返回不弹未保存；另推保存失败／`Uncertain` 后草稿与 `dirty` 保留、取消回预览快照。作者自检不称独立验收。修正交 root 只审差量；Workflow 内未执行 git 提交／推送／修订／回退，未重跑全量联通、UI、引擎或生成实验，未新增公开报告；旧稿私有副本与原失败结果保留。本次差量由实际 assistant `message.model`：`deepseek-flash` 在普通 Workflow 单 fix agent（约 2026-10-25T13:30–13:37Z）中完成，未再调用 reviewer／Explore／嵌套 Workflow／CLI 模型。
+root 复核后重跑 `check_repo.py`（378 文件，0 错误）、`check_public.py`（639 文件，0 命中）、`check_public.py --commits origin/main..HEAD`（0 命中）和 `git diff --check`（通过）；发布内容提交 `48a5485f366c3a531d3aa1ec711f0859169db4b4` 到结果分支。
+
+自检仅按受影响消费者路径推演一次：`stored=50` 时草稿 50→60→50 后 `dirty` 为空、返回不弹未保存；另推保存失败／`Uncertain` 后草稿与 `dirty` 保留、取消回预览快照。作者自检不称独立验收。root 已复核差量并发布结果分支；Workflow 内未执行 git 提交／推送／修订／回退，未重跑全量联通、UI、引擎或生成实验，未新增公开报告；旧稿私有副本与原失败结果保留。本次差量由实际 assistant `message.model`：`deepseek-flash` 在普通 Workflow 单 fix agent（约 2026-10-25T13:30–13:37Z）中完成，未再调用 reviewer／Explore／嵌套 Workflow／CLI 模型。
