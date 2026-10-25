@@ -5,6 +5,7 @@ owner: dot-A
 status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6f7494afc9707a1377e3fa88ce139e7a1df04e0e
+accept: auto
 result_branch: relay/a-readability-cleanup-001
 
 ## 目标
@@ -32,7 +33,7 @@ result_branch: relay/a-readability-cleanup-001
 
 用原生 Workflow 实施，由非作者核对：先只读新文，复述主要选择、第一步和关键取舍；再对照原文核关键结论、数字、版本与日期、来源和适用条件。有遗漏就修对应段。
 
-核完的页按批交付，每批不超过 2 份待合入，负责人逐批接收。全部接收后本任务结束，不再开后续改写批次。
+核完一页就按自动接收合入 main，负责人事后抽查。全部接收后本任务结束，不再开后续改写批次。
 
 ## 当前结果
 
@@ -68,3 +69,9 @@ result_branch: relay/a-readability-cleanup-001
 独审发现研究来源仍在正文与节末重复，原调用定点修正后，同审只核此差量并关闭：E3／E2／E4／E5／E6及环境／先导节来源合并到各节末，命令／fixture／workflow-ablation操作入口保留就地。没有新事实刷新、历史实验重跑、密度指标或额外审查树。实际 message.model为deepseek-flash，请求alias单列，通道为Claude Code＋DeepSeek。
 
 此页 review_ready，待当前审计会话接收；整体仍 running，02已接收不再改，下一顺序为21-agent-patterns。只指定结果分支，本端不标 accepted。
+
+第二页固定结果：[508004348fa5655236d00d42b55caec6d06c1010](https://github.com/dbvv1/a1dbv/commit/508004348fa5655236d00d42b55caec6d06c1010)，仅relay/a-readability-cleanup-001；文档入口、公开文件及实际提交身份检查通过。
+
+## 审计接收：19实测记录
+
+接收5080043中的19页。复用非作者先读新文、再对原文及来源归位差量的核对；E1至E6数字、版本、混杂因素、原日期、好坏基线与复现入口均保留。输入分项改成表格，复现操作按步骤呈现，来源在语义节末归位，读者可直接选择单Agent/指令/费用核查路线。补留旧“复查状态”锚点以保持外部引用。该页收口；全任务仍running，继续21与后续范围。
