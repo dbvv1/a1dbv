@@ -164,6 +164,10 @@ Mega Crit 的历史选型重视授权信任、平台与现成引擎服务；Road
 
 ## 5. 第二次重生成：更新已有对象，保留正确含义
 
+**已有可编辑作者源时，先比较引擎原生导入，不把 Web 的交换格式直接升级为默认管线。** 本仓固定 Beacon Guard 是 15 骨同源角色、六种常量材质；从原 Blend 显式导出 FBX，原生 ModelImporter／Generic Animator 加独立 PNG／Lit 比“已有 GLB→加 glTF importer→复制失联 `.anim`”更适合作为下一采用候选。源侧已实际跑过 FBX 导出／重导和 death 改慢，保另外四动作；Unity 的 take 映射、clip 引用、Root 倒地、颜色及 Player 仍待许可恢复后实跑。起点与可复制脚本见[原生遭遇房候选](../../experiments/unity-encounter/README.md)，不是已完成引擎验收。已有验证过的 glTF 链、运行时 GLB 或复杂 glTF 材质有明确收益时保留，不为格式统一迁移。
+
+来源与范围：2026-10-26，固定作者源及 Blender 4.3.2 实跑、Unity ModelImporter API 与 glTFast 固定源码对照，细节集中于上述可执行候选；无 Unity 编译／运行／构建结果。
+
 **✅ 先复用引擎导入器，Agent 入口只负责发起与回读。** Unity 6+ 缺运行中 Editor 连接时再选官方 CLI/Pipeline；AI Assistant 包内旧 MCP 已被[官方弃用](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)，`unity mcp` 继续支持。批量规格先用 Unity Presets/AssetPostprocessor，或 Unreal Editor Python 与适配格式的 Interchange pipeline；不用新建导入服务，也不必为了批处理强升到支持 MCP 的引擎版本。
 
 **Unity 批量写入与消费新资产分两段。** [Unity 6.3 批量契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.StartAssetEditing.html)要求 scope 内只做不依赖完整导入结果的操作；用 `AssetEditingScope`／`using` 或 `try/finally` 配对释放，最外层暂停结束且相关导入完成后，再加载新资产并更新下游引用。批量控制未承诺原子回滚；异常或单项失败后，先核各项返回值、日志与实际资产，不因 scope 已退出就宣称整批成功或已恢复。证据与回调边界见本节末来源。

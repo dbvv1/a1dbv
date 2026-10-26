@@ -2,7 +2,7 @@
 
 id: B-UNITY-ADOPTION-001
 owner: dot-B
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 010336d7
 result_branch: relay/b-unity-adoption-001
@@ -45,4 +45,8 @@ accept: auto
 
 ## 当前结果
 
-2026-10-26：待既有接收端核已安装引擎并领取。云端已核当前官方插件源码及现有模板，尚未运行 Unity；这不是工程采用结果。
+- 已确认本机三个 2022.3 编辑器均因无可用 Unity 许可无法 headless 启动，2020.3.26f1 定制安装也不能作为干净引擎；任务已回写为 blocked，并记录同口径模块状态、判定依据与恢复条件。
+- 产物：[0495a18](https://github.com/dbvv1/a1dbv/commit/0495a18bc6441915ab04d3dd1bfc3e7e41672978)，分支 `relay/b-unity-adoption-001`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：由用户在 Unity Hub 登录并激活可用许可或放置有效本地许可文件；恢复后以 2022.3.64f1 重跑同一 -createProject 探针（要求退出码 0 且生成 ProjectSettings/ProjectVersion.txt），再继续第一轮工程创建、测试与构建。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。

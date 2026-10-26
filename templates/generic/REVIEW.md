@@ -18,6 +18,10 @@ naming, and refactoring suggestions are Nit at most.
 
 - Every behavior claim cites `file:line` in the source. Do not infer
   behavior from names.
+- Check unresolved, decision-changing factual claims against the cited source
+  for predicate strength, time, subject, and conditions, report support or the
+  precise gap rather than an aggregate score, and skip claims outside that
+  scope or already supported by a still-valid source check.
 - For each Important finding, say how to show it fails: an input, a
   command, or a test that would fail.
 

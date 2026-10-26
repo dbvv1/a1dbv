@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 namespace NativeEncounter.Editor
 {
-  // Run only in a new, authorized project after source staging and compatible glTF import.
+  // Run only in a new, authorized project after source staging and native FBX ModelImporter import.
   public static class PrepareEncounter
   {
     const string Inputs = "Assets/Encounter/Inputs";
@@ -24,11 +24,13 @@ namespace NativeEncounter.Editor
         throw new InvalidOperationException("Save your current scene before creating the isolated encounter.");
       if (AssetDatabase.IsValidFolder(Output) || Directory.Exists(Output))
         throw new InvalidOperationException("Generated exists; do not overwrite the original scene. Use the revision command.");
-      var model = AssetDatabase.LoadAssetAtPath<GameObject>(Inputs + "/blue-reactions.glb");
-      if (model == null) throw new InvalidOperationException("Stage blue-reactions.glb and enable a compatible Editor glTF importer first.");
-      var amber = AssetDatabase.LoadAssetAtPath<GameObject>(Inputs + "/amber.glb");
-      if (amber == null) throw new InvalidOperationException("Stage amber.glb and finish Editor import first.");
-      var imported = AssetDatabase.LoadAllAssetsAtPath(Inputs + "/blue-reactions.glb").OfType<AnimationClip>().ToArray();
+      var model = AssetDatabase.LoadAssetAtPath<GameObject>(Inputs + "/blue-reactions.fbx");
+      if (model == null) throw new InvalidOperationException("Stage blue-reactions.fbx and its source JSON, then finish ModelImporter import.");
+      var amber = AssetDatabase.LoadAssetAtPath<GameObject>(Inputs + "/amber.fbx");
+      if (amber == null) throw new InvalidOperationException("Stage amber.fbx and its source JSON, then finish ModelImporter import.");
+      var imported = AssetDatabase.LoadAllAssetsAtPath(Inputs + "/blue-reactions.fbx").OfType<AnimationClip>().ToArray();
+      foreach (var source in new[] { "blue-reactions", "amber" })
+        if (!File.Exists(Inputs + "/" + source + ".source.json")) throw new FileNotFoundException("Missing source material metadata: " + source);
       foreach (var name in Actions)
         if (imported.Count(c => c.name == name) != 1)
           throw new InvalidOperationException("Expected one named source clip: " + name);
@@ -43,19 +45,13 @@ namespace NativeEncounter.Editor
       var states = controller.layers[0].stateMachine;
       foreach (var name in Actions)
       {
-        // Native persistent copies prevent importer loop defaults from changing gameplay clips.
-        var clip = UnityEngine.Object.Instantiate(imported.Single(c => c.name == name));
-        clip.name = name; clip.legacy = false;
-        var settings = AnimationUtility.GetAnimationClipSettings(clip);
-        settings.loopTime = name == "idle" || name == "walk";
-        settings.loopBlend = settings.loopTime;
-        AnimationUtility.SetAnimationClipSettings(clip, settings);
-        AssetDatabase.CreateAsset(clip, Output + "/" + name + ".anim");
+        // Reference stable, canonical ModelImporter sub-assets; no disconnected .anim copies.
+        var clip = imported.Single(c => c.name == name);
         var state = states.AddState(name); state.motion = clip;
         if (name == "idle") states.defaultState = state;
       }
-      CreateActorPrefab(model, controller, "Guard");
-      CreateActorPrefab(amber, controller, "AmberGuard");
+      CreateActorPrefab(model, controller, "Guard", "blue-reactions");
+      CreateActorPrefab(amber, controller, "AmberGuard", "amber");
       var left = CreateWallMaterial("LeftWall", "base", shader);
       var right = CreateWallMaterial("RightWall", "base", shader);
       var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -82,18 +78,20 @@ namespace NativeEncounter.Editor
       Validate();
       Debug.Log("Encounter prepared, not yet tested or built. Add this scene to the selected Build Profile.");
     }
-    static void CreateActorPrefab(GameObject model, AnimatorController controller, string name)
+    static void CreateActorPrefab(GameObject model, AnimatorController controller, string name, string source)
     {
       var root = new GameObject(name);
       try
       {
         var visual = (GameObject)PrefabUtility.InstantiatePrefab(model);
         visual.transform.SetParent(root.transform, false);
+        BindCharacterMaterials(visual, source);
         var animators = visual.GetComponentsInChildren<Animator>(true);
         if (animators.Length != 1) throw new InvalidOperationException("Expected exactly one imported Animator; inspect importer configuration.");
         var animator = animators[0];
         animator.runtimeAnimatorController = controller;
         animator.applyRootMotion = false;
+        PrefabUtility.RecordPrefabInstancePropertyModifications(animator);
         var motor = root.AddComponent<CharacterController>();
         motor.height = 1.8f; motor.center = new Vector3(0, 0.9f, 0); motor.radius = 0.3f;
         var actor = root.AddComponent<EncounterActor>(); actor.animator = animator;
@@ -101,6 +99,48 @@ namespace NativeEncounter.Editor
         if (prefab == null) throw new InvalidOperationException("Prefab save failed");
       }
       finally { UnityEngine.Object.DestroyImmediate(root); }
+    }
+    [Serializable] sealed class SourceMaterial { public string name; public float[] color; public float metallic; public float roughness; }
+    [Serializable] sealed class SourceMesh { public string name; public string[] materials; }
+    [Serializable] sealed class SourceAction { public string name; public float firstFrame; public float lastFrame; }
+    [Serializable] sealed class SourceDescription { public string colorSpace; public float fps; public SourceAction[] actions; public SourceMaterial[] materials; public SourceMesh[] meshes; }
+    static void BindCharacterMaterials(GameObject visual, string source)
+    {
+      var data = JsonUtility.FromJson<SourceDescription>(File.ReadAllText(Inputs + "/" + source + ".source.json"));
+      if (data == null || data.colorSpace != "scene-linear" || data.materials == null || data.meshes == null) throw new InvalidDataException("Missing source material description");
+      var materials = data.materials.ToDictionary(m => m.name, m =>
+      {
+        if (m.color == null || m.color.Length != 4) throw new InvalidDataException("Invalid material color: " + m.name);
+        var material = new Material(WallShader()) { name = source + "_" + m.name };
+        // Blender values are scene-linear; Unity shader Color properties take sRGB inputs.
+        var color = new Color(m.color[0], m.color[1], m.color[2], m.color[3]).gamma;
+        color.a = m.color[3];
+        material.SetColor(material.HasProperty("_BaseColor") ? "_BaseColor" : "_Color", color);
+        material.SetFloat("_Metallic", m.metallic);
+        material.SetFloat(material.HasProperty("_Smoothness") ? "_Smoothness" : "_Glossiness", 1 - m.roughness);
+        AssetDatabase.CreateAsset(material, Output + "/" + material.name + ".mat");
+        return material;
+      });
+      foreach (var renderer in visual.GetComponentsInChildren<Renderer>(true))
+      {
+        var mesh = data.meshes.Single(m => m.name == renderer.name);
+        renderer.sharedMaterials = mesh.materials.Select(name => materials[name]).ToArray();
+        PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
+      }
+    }
+    static AnimationClip FindClip(string name)
+    {
+      return AssetDatabase.LoadAllAssetsAtPath(Inputs + "/blue-reactions.fbx")
+        .OfType<AnimationClip>().SingleOrDefault(c => c.name == name);
+    }
+    [MenuItem("Encounter/Reimport source models and validate references")]
+    public static void ReimportModels()
+    {
+      foreach (var source in new[] { "blue-reactions", "amber" })
+        AssetDatabase.ImportAsset(Inputs + "/" + source + ".fbx", ImportAssetOptions.ForceUpdate);
+      Validate();
+      // A changed source take refreshes its range in the postprocessor. Existing controller
+      // references must still point to the imported sub-assets; a lost reference is a failure.
     }
     static Shader WallShader()
     {
@@ -186,10 +226,19 @@ namespace NativeEncounter.Editor
     [MenuItem("Encounter/Validate native animation assets")]
     public static void Validate()
     {
+      var colorProbe = new Color(0.5f, 0.5f, 0.5f, 0.25f).gamma;
+      if (Mathf.Abs(colorProbe.r - 0.735357f) > 0.0001f || colorProbe.a != 0.25f)
+        throw new InvalidOperationException("Unexpected linear-to-sRGB Color contract");
+      var source = JsonUtility.FromJson<SourceDescription>(File.ReadAllText(Inputs + "/blue-reactions.source.json"));
+      if (source == null || source.fps <= 0 || source.actions == null) throw new InvalidDataException("Missing source action ranges");
       foreach (var name in Actions)
       {
-        var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(Output + "/" + name + ".anim");
-        if (clip == null || clip.legacy || clip.length <= 0) throw new InvalidOperationException("Invalid native clip: " + name);
+        var clip = FindClip(name);
+        if (clip == null || clip.legacy || clip.length <= 0) throw new InvalidOperationException("Invalid imported clip: " + name);
+        var action = source.actions.Single(a => a.name == name);
+        var expectedSeconds = (action.lastFrame - action.firstFrame) / source.fps;
+        if (Mathf.Abs(clip.length - expectedSeconds) > 0.001f)
+          throw new InvalidOperationException("Imported duration differs from current source: " + name);
         var loops = AnimationUtility.GetAnimationClipSettings(clip).loopTime;
         if (loops != (name == "idle" || name == "walk")) throw new InvalidOperationException("Wrong loop policy: " + name);
       }
@@ -199,9 +248,9 @@ namespace NativeEncounter.Editor
       foreach (var name in Actions)
       {
         var matches = states.Where(s => s.state.name == name).ToArray();
-        var native = AssetDatabase.LoadAssetAtPath<AnimationClip>(Output + "/" + name + ".anim");
+        var native = FindClip(name);
         if (matches.Length != 1 || matches[0].state.motion != native)
-          throw new InvalidOperationException("State does not reference its persistent native clip: " + name);
+          throw new InvalidOperationException("State does not reference its current imported clip: " + name);
       }
       foreach (var name in new[] { "Guard", "AmberGuard" })
       {

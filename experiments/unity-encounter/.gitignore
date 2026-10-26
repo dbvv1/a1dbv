@@ -5,3 +5,7 @@
 /Temp/
 /Logs/
 /Builds/
+/exported-*/
+/revised-source/
+/revised-fbx/
+/source-check.json

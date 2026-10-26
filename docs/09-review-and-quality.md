@@ -227,6 +227,16 @@
 
 **依据**：[一手／本仓实际采用] [Memos 组件实施与独审](../experiments/memos-reading-adoption.md)（jsdom）及[后续真实匿名页面接收](collaboration/local-jobs/A-MEMOS-BUILT-SMOKE-001.md#当前执行)（浏览器、实际 PNG、网络与 SQLite；运行 2026-10-25 UTC，非作者范围复核未重演），[Sphinx](collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)（真实 CLI，非完整下游链）；[一手／研究] 原生评审、反馈收齐与保留判断的既有来源；[经验] 本路线组合，非评审净收益对照。原核对 2026-10-25；Memos 后续证据回流 2026-10-26，未重跑历史实验。
 
+### 文档有出处，还要核结论的强度
+
+**🧪 已有引用仍出现事实越界时，本次建议在现有一轮审查中，只核会改变采用决定且尚未核清的主张。** 先从固定原文独立写出它能支持的结论，再与草稿对照谓词强度（如“允许”还是“推荐为默认”）、时间、对象和条件。交回“原主张 → 原文位置／短句 → 支持或不支持及理由”；支持不够就收窄、删除或列为待证据。决定性主张未过，不能由其余正确内容的平均分补足。已有检查已核清、原文与主张均未变时直接复用，不逐句展开全篇，也不另开模型裁判轮次。可把对应一句放进现有 [REVIEW.md](../templates/generic/REVIEW.md) 的 Evidence bar。
+
+借用的是**逐条支持判定和理由**，不是另装评估器：Ragas 的固定实现先拆断言，再判断能否由上下文推出；内部有理由，最终却只返回总分，用户也报告过取不到理由。这里直接核草稿原句，保留其时间与条件，避免拆句时先弱化了待核主张。
+
+本仓一份 AI 文档已有固定引用且通过独审，仍把“旧规则允许开源项目作为任务来源”判成“第三方应用曾为主线”，接收抽查才收窄；出处和独审状态都不能替代这一步支持关系核对。这个旧失败用于校准检查对象，不证明新提示已经降低漏检。
+
+**依据**：[一手：官方建议] [逐主张核支持原句](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations)；[一手：固定源码，2026-02-24] [Ragas 逐断言判定](https://github.com/vibrantlabsai/ragas/blob/298b68274234c060deacab3cf5fb52aa3a20e885/src/ragas/metrics/collections/faithfulness/util.py#L27-L86)、[总分与返回面](https://github.com/vibrantlabsai/ragas/blob/298b68274234c060deacab3cf5fb52aa3a20e885/src/ragas/metrics/collections/faithfulness/metric.py#L116-L159)；[一手：使用者报告／维护者回复，0.4.3] [理由未返回 #2566](https://github.com/vibrantlabsai/ragas/issues/2566)；[本仓公开失败校准] [原报告](https://github.com/dbvv1/a1dbv/blob/09aa64c1d107e1cabd73ce87061ac20fa41afeaa/experiments/public-guidance-reader.md)、[接收后收窄](https://github.com/dbvv1/a1dbv/commit/c4c2decce6913b239dbe501463abfba5b36c816e)；[经验：采用建议] 本段检查动作，未运行 Ragas、未作效果对照；核读 2026-10-26。
+
 ### 把“不修这条告警”变成可执行的保护
 
 **✅ 确认告警误把项目契约当缺陷后，必要时补一条保护原行为的回归，而不只是关闭意见。** 适用于后续 Agent 容易重复提出同一“修补”的兼容行为；旧版本也这样做只是参照，不能单独证明它正确或安全。

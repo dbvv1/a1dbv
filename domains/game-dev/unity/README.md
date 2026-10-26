@@ -16,6 +16,10 @@
 
 表中的采用判断为 **[经验]**；CLI/Pipeline 的版本与直接命令/MCP 分工见[官方迁移说明](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli) **[一手]**。插件选型见 [01 工具链](01-toolchain.md)，模板合并边界见 [templates](templates/README.md)。没有安全的资产操作入口时报告具体缺口，不改写 YAML 绕过、不自行安装。当前仅完成两种接口配置的[文档走查](../../../docs/research/2026-10-14-game-wp13-agent-config.md#4-f1-复核入口必须按已配置能力分支)，未证明真实 Agent 或引擎效果。**[研究]**
 
+## 已有作者源怎样进入真正的 Unity 工程
+
+**固定 Blend 角色先试显式 FBX→ModelImporter→原生 Animator／Prefab；独立 PBR PNG 接目标 Lit。** [原生遭遇房准备件](../../../experiments/unity-encounter/README.md)复用已有角色和材质作者源，不迁移 Three 的运行时。它把 `GuardRig|…|death` 映射为稳定 clip 名、按本次 TakeInfo 更新结束帧，并直接引用导入子资产；角色常量颜色显式从 scene-linear 转到 Unity Color 输入。源侧 FBX 和动作二改已经运行，Unity 编译、原生引用、画面与构建仍未验，因此是 🧪 采用候选。收集开门只验证环境入口；完整采用还须让角色、PBR、原生玩法和第二次源修改进入真实 Player。
+
 ## 三个最重要的认识
 
 1. **场景和 Prefab 默认经 Editor API 修改；文本修改只保留项目已验证的受限例外，保留 GUID／fileID 并核引用。** Unity 官方 Skill 原话：“有编辑器可用时，驱动它，而不是手工编辑场景或资源文件” **[一手]**。
