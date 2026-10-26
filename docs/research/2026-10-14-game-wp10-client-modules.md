@@ -274,6 +274,27 @@ Addressables [2.9.1](https://docs.unity3d.com/Packages/com.unity.addressables@2.
 - **改变建议**：[研究] 捕获 LoadJson warning，核位置、选项及已领奖励；可用稳定节点／checkpoint 迁移，任意保存点兼容与章节回退须另定。
 - ink 只作叙事状态机，不为非叙事游戏引入通用存档。未核发行游戏可靠性，The Intercept 旧 jam demo 不作现代底座。
 
+<a id="native-save-consumer"></a>
+## 存档原生采用：显式字段与自动场景恢复的实际取舍
+
+**结论仍是小进度保显式 DTO；需要场景对象图才试现成库，并把新局默认与旧玩家状态分开。** [04 正文](../../domains/game-dev/04-client-modules.md#native-save-consumer)和[原生复现](../../experiments/native-save-adoption/README.md)补齐原存档章的消费者，不自建平台。[研究／实测]
+
+比较了官方 Godot serialization demo（固定 `4.7-6ad6167`）、Fern Forest Games 的 SaveKit（MIT，固定 `9ca2dabdfd24712a2ad60b76d0a04e5a981b6e4a`）、现成 slot 路线及原 Unity JsonUtility／UE SaveGame。官方 demo 显式写玩家状态和敌人集合；SaveKit 的现成 demo 包含可交互对象、共享序列化接口、资源与原 UI，适合检验自动恢复的代价。CodingQuests 的[slot 示例](https://github.com/CodingQuests/godot-save-system)也明确节点路径身份、动态对象不自动恢复和单场景限制；本次只读未运行，不据其“atomic”介绍推导断电保障。SaveKit 也不以低样板量或新颖性取得通用默认，独立生产采用与行业最高水平未知。[源码／研究]
+
+**正常链先过。** 官方 JSON demo 原保存按钮写盘；新进程原加载按钮恢复玩家位置、血量 63、血条 63、剩余敌人 2，并能继续移动。SaveKit 原 demo 经原交互回调获得红框计数 2、位置变化、笔记、蓝框移除；原 SaveManager 落盘、新进程恢复这些状态，随后红框计数可到 3，重载原档又回 2。并未用 Python 重建场景或只比较 JSON。[实测]
+
+**真实二改反例。** SaveKit `SaveKitResource.save_to_dict` 默认省略等于脚本默认值的字段：原绿框计数 0 未写，红框 2 已写。把 `BoxData.click_count` 的新局默认改为 1 后，原加载 API 仍返回 OK，旧绿框和真实标签却变 1；接收器只将这两条进度／呈现失败记作预期反例，其他错误不放行。项目层沿已有 `load_from_dict`，在原解码前设置唯一旧版本的缺值含义，再沿 `save_to_dict`／原 `encode_var` 显式保存活状态，旧档绿 0／新局绿 1 均恢复；续存红 3、绿 0 都有明确记录，原档摘要和插件核心逐文件摘要保持。[固定源码／实测]
+
+初次适配曾把裸 `int 0` 塞到编码字段字典，真实 `JSON.to_native` 拒绝。最终修正是设置资源的旧业务默认后让原 codec 解码，不修改 serializer、不把 JSON 字段和值类型凭想象拼出来。该窄适配只有一个历史版本；正式游戏仍沿原章 schema／content 迁移。SaveKit 自己的 JSON `version` 是编码格式版本，不能因此声称内容升级已经处理。[实测／研究]
+
+**快照语义不是持续世界政策。** 固定 `save_manager.gd` 会删未载入的 `saveable` 节点；`deserializer.gd` 仍用 NodePath 定位。这对恢复当时快照有用，但新增摆放物／移动父节点必须按项目政策处理。官方小示例也只恢复选定字段；不要为了接一次插件反过来扩大玩家承诺。[源码／研究]
+
+[Godot Forum 原帖](https://forum.godotengine.org/t/keeping-old-save-files-working-after-scene-changes/128831)（2025-11）报告节点改名／路径变化后旧档失效，回复建议版本／映射；其中把资源 UID、节点唯一名与所有实例身份混说的部分不采纳。[近期 Reddit 发布 demo 开发者](https://www.reddit.com/r/godot/comments/1x27hhy/save_file_versioning_after_release_how_do_you_do/)询问嵌套农业存档的改名／结构更新，评论有逐版本迁移、备份与结构检查的实际用法，也有失败后当无存档且未提示的缺口。它们支持“正常恢复后继续操作、保原档、明确迁移结果”，不证明某个插件已包办这些步骤。[社区原文]
+
+**探索回执与范围。** 2026-10-26 实读官方文档／完整 demo、SaveKit 固定实现／demo／许可、slot 项目原文和上述原帖；中文 linux.do／V2EX 搜索及开发日记原页未找到足够具体的存档采用证据，不用无关帖子凑结论。原生 Linux headless 两条消费者与二改通过；可选上游 GUT 套件、目标包／硬件、恶意存档、断电恢复、云存档未在本次验证。素材保原通知，未重分发引擎／字体或使用真实玩家数据。
+
+来源：官方 [保存游戏](https://docs.godotengine.org/en/4.7/tutorials/io/saving_games.html)、[完整 serialization 源码](https://github.com/godotengine/godot-demo-projects/tree/6ad6167/loading/serialization)；固定 SaveKit [资源保存](https://github.com/fernforestgames/godot-savekit/blob/9ca2dabdfd24712a2ad60b76d0a04e5a981b6e4a/addons/savekit/resource.gd)、[管理器](https://github.com/fernforestgames/godot-savekit/blob/9ca2dabdfd24712a2ad60b76d0a04e5a981b6e4a/addons/savekit/save_manager.gd)、[反序列化](https://github.com/fernforestgames/godot-savekit/blob/9ca2dabdfd24712a2ad60b76d0a04e5a981b6e4a/addons/savekit/deserializer.gd)。官方 archive 摘要与运行入口见实验；旧资料核实日保持。
+
 ## 旧内容升级补研：保旧世界不等于放行旧模板生产
 
 核实：2026-10-19（UTC+8）。主线三／四，GB／GC；改变04旧档选型：几何或连接规则改版，先比较迁移与受限保留旧实现，再分别决定旧模板是否继续生产、怎样与新内容混用。身份有效也可能几何不兼容，不重复导入ID建议。[研究]
