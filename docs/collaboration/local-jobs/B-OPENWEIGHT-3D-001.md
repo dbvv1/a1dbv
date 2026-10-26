@@ -2,7 +2,7 @@
 
 id: B-OPENWEIGHT-3D-001
 owner: dot-B
-status: blocked
+status: revision_requested
 target_repo: dbvv1/MOBA-Like
 base_ref: 69d1588e62d4530a1eb5e3606b99e764fa9c7db5
 result_branch: relay/b-openweight-3d-001
@@ -40,10 +40,20 @@ result_branch: relay/b-openweight-3d-001
 4. 回传实际 GPU 型号、峰值显存、推理／处理耗时、源码／权重版本及采用文件；没跑成功就写未完成。若本机无法取得实际游戏图，保资产工程候选并明确由云端产品 owner 补真图，不把离线 Blender 图当运行品质。
 5. 只快进推 `result_branch`，不推产品 main、不部署；回写本任务为 `review_ready` 或带恢复条件的 `blocked`。产品 owner 实际接入评估后才决定采用／发布；未胜过旧件就保旧件，不强行为开放权重试验降低品质。
 
+## 修改要求
+
+- 续接同一任务与原结果分支，先 fetch `relay/b-openweight-3d-001` 的 `cce60833a0c5acd30ef895f9b15c41bd4f57f733`；不要从旧 base 重建覆盖结果，不合产品 main。此次 cloud 只修来源/输入工具，不重新生成模型或动运行资产。
+- 取回本任务接收端自己生成的原独立审查全文，按原 8 条逐项回应；只读该单元审查输出，不找无关会话/账号/凭据。原文未公开，不能用“10项测试通过”代替8条闭合。
+- 官方 `VAST-AI/TripoSG` 存在，云端已读其 MIT 模型卡；撤回“该仓库404不存在”和“TLS必为平台拒绝”的推断。保留本机 `UNEXPECTED_EOF_WHILE_READING`、`ConnectError: EOF occurred in violation of protocol`、外层 `LocalEntryNotFoundError` 的原错误类型；区分TLS/HTTP响应、执行环境与时间，不公布私人路径或敏感头。未取得ServerHello只能说根因未知，不等于证书问题或权限拒绝。
+- 不重试已明确拒绝动作，不关TLS验证、不换镜像/代理/凭据/系统证书。若确认先前未执行且有网络恢复新证据，只作一次同源受限检查；仍EOF就记准确目标与恢复条件，继续独立依赖工作。云端模型卡可读不算本机权重下载成功。
+- 新核许可缺口：`diso==0.1.4`[上游LICENSE](https://github.com/SarahWeiii/diso/blob/main/LICENSE)与PyPI为CC BY-NC 4.0，不随TripoSG MIT变许可；暂不沿diso制作产品，不推断生成输出自动受NC。先核原已授权独立TripoSR（含torchmcubes的MPL-2.0许可/编译，分发依赖代码须守相应条款、灰底RGB与`--no-remove-bg`），依赖链可用则优先跑这一低成本路线，不另造提取框架。TripoSG窄对照仅限官方已有`use_flash_decoder=False`→`hierarchical_extract_geometry`→scikit-image marching_cubes；把diso顶层import延迟到flash函数，交最小patch/上游基SHA/patch hash并让runner核真实修订身份，不伪报clean上游。显式nonflash，先不含diso的import/提取测试，再测12GB实际峰值；不是另换模型/权重来源。当前cloud runner尚未实现该模式，不可直接运行认作许可已清。
+- 仅确有其他合法CUDA扩展仍需compiler时再沿源README的NVIDIA官方12.8隔离Conda途径：先核已有host MSVC/compiler及专用prefix，dry-run审列表；只user-space Toolkit/compiler/headers/libraries，不装驱动、不改全局PATH/安全。缺host compiler单独报阻塞。固定实际Python/torch等版本与hash，不盲照历史安装表；torch CUDA wheel/runtime不等于完整编译工具链。
+- 复用已修runner：强制本地权重/离线、完整Hub revision、干净固定源码与真实import路径一致、禁止覆盖非空输出、同步CUDA计时。先跑原5输入测试和新增`tools/openweight-rock/test_runner.py`5项，再补接收端真实依赖/缺权重失败。语法通过不算生成器实现就绪；原8条及真实pipeline尚待验证。
+- 有权重后记录真实下载revision/逐文件hash，原始mesh必须来自TripoSG推理；输入绘图脚本不是AI 3D产物。按原合同做后处理与实际场景接入，不能保留旧KayKit来源标签。未来接入从届时产品最新main只移植允许资产差量，其他14GLB及新消费者保留，不整条旧基础合回main。
+- 回写当前结果只分清已修、生成未开始/实际运行、下一准确阻塞；若网络仍阻断，交出其余可独立执行的依赖/原8条修复结果，再标blocked，不循环空跑或新增替代任务。
+
 ## 当前结果
 
-- 已准备自制 RGBA 输入、alpha 校验工具与 TripoSG 薄调用脚本（5 项输入测试通过），但官方权重下载被本机到 Hugging Face 的 TLS 阻断、diso 需 CUDA Toolkit 才能构建，推理与 GLB 接入未开始；独立复审仍有 8 条文档/脚本问题未修正。
-- 产物：[29bff1e](https://github.com/dbvv1/MOBA-Like/commit/29bff1ea22e9328d0fc82a30ab5cc2f6e8f036e0)，分支 `relay/b-openweight-3d-001`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
-- 下一步：在可访问官方 Hub 的网络取得并固定 VAST-AI/TripoSG 权重与 revision/hash，另装 CUDA Toolkit 12.8（或预编译 diso）和 Python 3.10 环境；随后修正本轮 8 条复审问题并运行 tools/openweight-rock/run_triposg.py，再做 Blender 后处理与 manifest 接入。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+- 接收端原产物[29bff1e](https://github.com/dbvv1/MOBA-Like/commit/29bff1ea22e9328d0fc82a30ab5cc2f6e8f036e0)只有自制RGBA输入与调用骨架；TLS EOF与提取依赖未解决，推理和GLB接入未开始，原8条复审全文待接收端取回。
+- 云端续修[e761e87](https://github.com/dbvv1/MOBA-Like/commit/e761e87d409cf5ea966d80630586c375895465ee)及许可补充[cce6083](https://github.com/dbvv1/MOBA-Like/commit/cce60833a0c5acd30ef895f9b15c41bd4f57f733)已在同一relay分支：修正来源/离线与输出保护、README错误归因；原输入5项＋runner CPU5项通过，真实官方源码身份和890²预处理通过，运行GLB未变。
+- 下一步：接收端领取本revision，续原单元修原8条，先核TripoSR独立合法低成本路线，TripoSG只比较官方nonflash窄修；官方TLS恢复后才取权重/真实推理。Git revision_requested不代表正在执行，未取得任何AI生成mesh或品质结论。
