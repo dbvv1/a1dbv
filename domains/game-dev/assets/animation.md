@@ -1,6 +1,6 @@
 # 动画与绑定：先固定动作契约，再补生成
 
-> 核实更新：2026-10-26；适用：单人程序员、不做人工美术修补。角色／武器模块已核公开文档与固定源码，新增程序化占位角色的源→GLB→刃长二改与多单位快照消费者实证；生成服务／引擎未运行；各来源原核实日期与许可见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md)。
+> 核实更新：2026-10-26；适用：单人程序员、不做人工美术修补。角色／武器模块已核公开文档与固定源码，MOBA 已采用可编辑角色源、五动作合同与实际事件消费者；生成服务及原生 Unity／Unreal 未运行；各来源原核实日期与许可见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md)。
 
 ## 30 秒结论
 
@@ -346,62 +346,58 @@ UE 查 [bounds 来源／继承](https://dev.epicgames.com/documentation/en-us/un
 
 ## 第二次修改决定是否留下
 
-**✅ 持续改角色时交付作者源＋运行资产，不只交成片或烘焙 clip。🧪 接受几何占位风格时，可从参数化角色起步。** Beacon Guard 已做出蓝／橙阵营、单／双鳍标记和 15 骨骼的 idle／walk／attack：它把“保可编辑源”落实为可运行的制作起点，而非替代优质商用角色美术。
+**✅ 改已接入游戏的角色，先保骨架／绑定与动作语义，再改轮廓和必要动作；同时交可编辑源与运行 GLB。** MOBA 的骑士、枪盾兵、弩兵没有重新寻找一套互不兼容的 rig：复用本仓原创十五骨骼，保 `idle/walk/attack/hurt/death` 五个名字，重新制作可见网格。英雄用冠盔、肩甲、披风与剑盾；战斗尺度预览复评后，近战兵扩大圆盾，远程兵改尖风帽、窄肩和横弩。兵种分辨主要靠大轮廓，不靠加细节或换颜色；成套来源与场景所有权见 [3D 采用起点](3d.md#moba-battle-supply)，这里管动作如何继续接得上。
 
-| 保留什么 | 本例能改什么、保住什么 |
-|---|---|
-| `recipe.json`＋`build.py` | 配方改阵营色、标记、刃长；脚本保身体比例、骨骼连接、关键帧与脚底竖直校正规则。Blend 可继续编辑，但下次脚本重生成会覆盖手改产物 |
-| `.blend` 作者工程 | 保独立部件、蒙皮、骨架和三个 Actions；没有额外 IK 控制器／分层动画可供恢复，不把简单 rig 包装成完整动画师工程 |
-| `.glb` 运行交换资产 | 保网格、材质、蒙皮、15 骨骼与三动作，便于消费者加载；强制采样后不保原关键帧插值表达，也不携带配方／生成算法。硬边拆点使顶点数增加，不能按顶点索引直接对比源模型 |
+**五动作合同保的是语义和接口，不是每条曲线永远不变。** 枪兵的 `attack` 改成刺击、弩兵改成短后坐，不能让横弩继续播放过顶剑击。保原作者源的哈希作为回退起点，在派生源改几何／动作，检查骨名、顺序、层级、静止轴与绑定；相同名字或都是十五骨，不足以证明兼容。换体型、握柄或关节拓扑后重验蒙皮、脚底、武器扫掠和包围范围，不能沿用旧外观的通过结论。
 
-**实际二改把刃长从 0.75 米改为 1.05 米，只改 `WeaponBlade` 顶点。** 握柄／护手仍随 `Hand_R`，其他网格、材质、骨骼静止结构和动作曲线保持；源→GLB 采样变形点最大误差约 0.0032 毫米。由此可选“改配方→重生成→比对未改数据”，不必重新设计整套动作；脚本仍会重建并导出三动作。但刀变长会扩大扫掠范围；本例保住动作结构，不意味着新刀已经通过战斗碰撞或接触验收。
+| 交付层 | 留下什么 | 本例改后怎么验 |
+|---|---|---|
+| 作者输入 | 固定原始 rig／动作源、生成脚本、配方与许可；可继续打开的 `.blend` | 原始源不覆盖；派生源保合同并记录实际改了哪些几何／动作。简单 rig 没有完整动画师 IK 控制器，不凭 `.blend` 扩大承诺 |
+| 运行资产 | 自包含 GLB，米制 Y-up／+Z 朝前，脚底锚点，十五骨与五 clip | 真文件核 skin／clip／高度／预算；硬边拆点后按变形位置而非顶点索引比较 |
+| 游戏接入 | 英雄分层消费者、兵种混合器、权威事件与实例生命周期 | 每个逻辑步收事件；真实相机看移动中出手、接触、受击、死亡与重开，不以“文件能播放”代替采用 |
 
-从下方固定产物取得仓库后，在 **MOBA-Like 仓库根**、已装 Blender 4.3.2 的环境运行：
+**检查导出时加一个快速动作的子帧，不只对齐首末 pose。** 本例源 Bezier 挥剑与 GLB 烘焙采样在半帧处曾差约 6 cm；在可编辑派生源按整数帧线性采样后，六角色×五动作各查五个整数帧及一个半帧：整数帧容差 0.3 mm、半帧容差 5 mm，实测英雄最大约 2.61 mm、兵约 0.142 mm。这样保住原整数帧姿态并收窄源／运行插值差异；抽样不证明所有时刻相同，也不证明动作自然。需要更柔和的源曲线时，应提高采样或重定误差线后复评，别只把容差放大到检查通过。
+
+**从已发布的同一份源和消费者重做一次，而不是另搭演示角色。** 在 [MOBA 固定 b4dff100 的资源目录](https://github.com/dbvv1/MOBA-Like/tree/b4dff1007527a2f8bfae81ca4749e90321f7bd7f/asset-pipeline/battle)取得工程后，从产品根目录、Blender 4.3.2 与 Python 3 环境运行：
 
 ```sh
-sh asset-pipeline/placeholder/run.sh
+blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pipeline/battle/tools/build.py
+python3 asset-pipeline/battle/tests/test_assets.py
+blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pipeline/battle/tests/check_animation.py
 ```
 
-这会重建三套 Blend／GLB、验证、跑负例并渲染预览。代价是维护生成脚本、重新导出和验收；仅限本例刃长二改，未记录主动制作工时，不能据此估算任意比例／动作修改的省工率。需要手指握持、自然步态或近景表演时，仍先选完整合格供给；角色武器的复杂二改沿[前文步骤](#给-ai-一次真正完整的二改)。
+早期“只改刃长”的小样仍可用来练不变量检查：`0.75→1.05` 米只改 `WeaponBlade` 顶点，握柄／护手随 `Hand_R`，其他网格、材质、骨骼与曲线不变，源→GLB 采样点最大约 0.0032 mm；它没有证明长刀的战斗扫掠已合格。旧三动作配方与 `placeholder/run.sh` 保留在[固定小样](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)，不再作为当前游戏角色入口。脚本重生成会覆盖派生 Blend 的手改，持续维护的改动应回到作者配方。
 
 <a id="multiunit-animation-consumer"></a>
 
-**同一份 GLB 供多个单位使用时，共享只读资产，隔离每个单位的动画与外观状态。** Beacon Guard 的实际消费者先 `loadCharacterAssets()` 加载蓝／橙源，再用 `createPresentation({catalog, assets})` 建立表现容器；随后 `sync` 按快照的实体 ID 建立实例。`SkeletonUtils.clone` 之后，在**同一角色内部**，仅对骨骼对象序列和逆绑定矩阵完全相同的 mesh 共用 skeleton，保各自 bindMatrix；同一源材质也只 clone 一次。跨角色的骨架、`AnimationMixer` 和材质仍独立，几何与只读 clip 共用。这样既不让队友同步变姿态／颜色，也不因角色有多个部件就重复分配同一套骨架。要单独改角色某一部件材质，再为该部件 clone 并承担释放。
+**共享只读资产，隔离每个单位的骨架、混合器和可变外观状态。** 当前 `world.ts` 用 `loadBattleAssets()` 取成套 GLB，以 `hero-teal/hero-rust` 创建 `createPresentation({catalog, assets, heroesOnly:true})`；小兵和建筑由 `createBattlefield` 读同一快照。两条消费者都挂到真实 Three 场景，不再让旧分类几何冒充正式兵／塔。`SkeletonUtils.clone` 后，仅在同一角色内部、骨骼对象序列与逆绑定矩阵相同的 mesh 共用 skeleton，并保各自 bindMatrix；几何和只读 clip 可以跨单位共享，骨架与 mixer 不能共享。
 
-| 什么时候调用 | 消费者负责什么 |
+英雄按源材质在实例内 clone 一次，需单独改色的部件再独立 clone／释放；当前小兵保共享只读材质，若以后要单兵染色，先分离它的材质再写，不能把英雄的隔离保证套到所有实例。`resourceInventory` 按对象与底层 ArrayBuffer 去重、`assertResourceBudget` 按调用方上限拒绝意外复制；只统计传入的 roots／clips，不含未传的派生轨、完整 JS 堆或 GPU 显存。
+
+| 调用时机 | 真实消费者负责什么 |
 |---|---|
-| `loadCharacterAssets()` 成功后创建 view，把 `view.root` 加进场景 | 部分失败或缺 idle／walk 时清理已载入源；成功后由调用方持有。createPresentation 建立 view 内共用的地图资源 |
-| 每个逻辑步后 `view.sync(simulation.snapshot())` | 只读快照，按阵营选源并维护实例，以 `(x,z)` 更新整角色根；按相邻逻辑位置选 idle／walk 与朝向，同 tick 重复调用不重复推进。死亡隐藏，复活首 tick 回 idle；实体被移出快照才释放对应实例 |
-| 每个绘制帧 `view.advance(renderDeltaSeconds, alpha)` | 推进独立混合器，并在最近两份逻辑快照端点间插值位置；`alpha` 是固定步长累加器比例 0–1，默认 1 直接用最新端点。启用插值以晚一逻辑 tick 的表现换连续位置；不把画面位置写回模拟 |
-| 换局或回放倒退前 `view.reset()` | 释放旧实例、清 tick／插值端点；新生与复活也重置端点，不从旧尸体位置滑回。reset 保留可复用的地图与源资产 |
-| 离场移除 root 后 `view.dispose()` | 释放这个 view 的实例骨架／材质及自有地图资源；所有共用源的 view 都退出后，资产持有者才调 `disposeCharacterAssets(assets)` |
+| 资产加载成功后建 world | 英雄与兵种选择各自模型／动作；失败清理已载源，成功后源由 world 持有 |
+| 每个 `step` 后 `world.sync(snapshot, playerId)` | 按实体 ID 同步位置、朝向与当步事件；英雄 sync 同 tick 幂等，不能跳过中间逻辑步只收最后快照 |
+| 每个绘制帧 `world.draw(seconds, alpha)` | 插值位置；运行中英雄按 `latestTime-(1-alpha)/tickRate` 采动作，避免 catch-up 后再算一次 delta；兵种的独立 mixer 按绘制 delta 推进，不把画面位置写回模拟 |
+| 回放倒退／换局 | 独立英雄 view 倒退前 `reset()`；游戏 Restart 销毁旧 world、重建模拟与消费者。复活重置插值端点，不从旧尸体滑回 |
+| 离场 | 先释放实例骨架／克隆材质和自有地景，再由资产持有者释放共享源；迟到的 world 也随 lifetime 回收 |
 
-固定实现只据位移播放 idle／walk，**没有攻击／命中事件就不拿冷却猜攻击动画**。同一个 catalog 还可经 `abilityViewModel` 生成图标语义与冷却显示：tick 按 `rules.tickRate` 换成秒，缺方向弹道图标就返回空并显示技能名，不借指向技能图凑齐。表现层提供已知禁用原因，目标／距离／朝向合法性仍由模拟裁决。
+原 `loadCharacterAssets(customLoad, {signal})` 仍是独立适配器的取消接口：取消的是本次消费，迟到结果回收；成功移交后再 abort 不销毁存活共享源，也不保证 GLTFLoader 网络 I/O 中断。当前游戏改走成套 `loadBattleAssets()`，不要误以为它自动继承了该 signal 参数。
 
-**取消本次消费，不销毁已移交的共享源。** 离场时可用 `loadCharacterAssets(undefined, {signal})` 取消待完成的加载消费，已完成与迟到结果都回收；成功返回后，后来 abort 不销毁仍在使用的资产，仍按上表统一释放。这是已验模块接口，不代表游戏入口已接 signal，也不承诺 GLTFLoader 网络 I/O 中断。
-
-**先量资源归属，再设预算。** `resourceInventory({roots, clips})` 把所有共享源与实际消费者一起按对象／底层 ArrayBuffer 身份去重，`assertResourceBudget` 用调用方给的明确上限阻止意外复制；不要把多个视图长度相加当成实际保留内存。统计含 clip 键值与骨架矩阵，但不是 JS heap、图像或 GPU 显存，目标设备预算仍要实测。
-
-**少量英雄可以先不用旧动画球做剔除，把精确范围计算放到真正拾取时。** 本例仅对克隆英雄的 SkinnedMesh 关闭 `frustumCulled`，地图不动；代价是离屏角色也可能提交绘制。实际 `Raycaster` 派发时再按当前蒙皮点计算 box→保守 sphere，先用 `sync/advance` 更新矩阵，不逐帧扫描。大量角色／高频拾取另选粗代理或完整保守界；这与下方小夹具逐次刷新包围是不同成本选择。
-
-在[固定消费者目录](https://github.com/dbvv1/MOBA-Like/tree/4822f31317b3416758b0507e03a2c460991257f4/asset-pipeline/presentation)的 MOBA-Like 仓库根运行 `npm --prefix asset-pipeline/presentation ci --ignore-scripts --no-audit --no-fund`、`npm --prefix asset-pipeline/presentation test`，可复跑 18 项 Node 检查，含真实 Simulation 快照／GLB 与受控异步／参数夹具，覆盖实例独立、资源去重／释放、取消、真实视锥反例和 Raycaster 交点。这组 Node 检查使用直线路径夹具，比[单个 scene 的整根检查](3d.md#skinned-gltf-consumer)多验证实例与生命周期；正式游戏接线另沿下面的可玩入口，不把两类证据混成同一次测试。
-
-**把已验接口接进真实主循环，而不是再造一套预览器。** [正式可玩源码 `3bcda00f`](https://github.com/dbvv1/MOBA-Like/tree/3bcda00fb35361cc5a25ee74e3768a2f3678c563) 的 `src/client.ts` 先载入实际 Detour 数据并创建 Simulation，再由 `src/render/world.ts` 加载 GLB、建立 presentation 并挂到 Three 场景。每个 30 Hz 逻辑步先消费玩家／bot 命令，随后 `snapshot→world.sync`；每个绘制帧调用 `world.draw→presentation.advance`，用剩余步长比例插值，再渲染。这让玩法拥有位移，视觉拥有平滑；后台页暂停本地对局并清积累，不在返回时追跑数分钟。Restart／离页用同一个 lifetime 逆序释放输入、视图、共享源和导航，迟到建成的 world 也即时释放。
-
-在该固定源码、Node ≥22.12 与可用 WebGL2 浏览器下，先 `npm ci`、`npm run dev`，打开终端地址，右键移动、S 停止；[完整操作](https://github.com/dbvv1/MOBA-Like/blob/3bcda00fb35361cc5a25ee74e3768a2f3678c563/README.md)可继续施法和重开。原可玩候选 `d32f5d9` 的软件 WebGL2 smoke 已实际验证这些移动／停止、镜头、E 技能实体与非背景画面，接收后进入 main；上述角色、表现和主循环文件相对它未变。该版本采用 idle／walk 与多单位表现；同源 death 随后已按下方正式接线进入可玩构建，分层挥击／hurt 仍不因“GLB 有动作”算作游戏采用。硬件 GPU 成本、滑步、动作衔接和最终美术仍需目标机验收；固定来源与复用检查见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26 UTC。
+**少量英雄可先关闭旧动画球剔除，把精确范围计算放到真正拾取时。** 本例 SkinnedMesh 的 `frustumCulled=false` 避免 idle 球漏掉挥刀顶点；实际 Raycaster 派发时按当前蒙皮点求 box→保守 sphere，并先更新世界矩阵。代价是离屏角色仍可能绘制、拾取要扫顶点；大量角色或高频拾取改用另验的粗代理／完整保守界，不把这次功能修复当性能胜出。
 
 <a id="layered-animation-consumer"></a>
 
-**已有兼容挥击动作、需要移动中播放时，先按骨骼分责任，而不是把两个全身 clip 等权叠起来。** [同源分层消费者](../../../experiments/character-animation/README.md)已实际加载这组固定 GLB：Root／双腿只读移动，上身在移动与 attack 之间作权重和为 1 的覆盖；实例根位置仍由 motor／模拟写，换姿态后更新蒙皮包围，避免旧 idle 球误裁挥出的刀刃。先把导出首键 `1/30s` 归零再定周期，避免把前导一帧算入循环。调用方给绝对视觉时钟、移动混合量和权威动作起点；消费者不从冷却猜动作，也不发命中事件。
+**攻击和受击由真实事件驱动，动作结束不反过来决定伤害。** 当前英雄的优先级为 `death > hurt > attack > idle/walk`；每步事件按 `(tick, ordinal)` 去重，reset 清游标。`castStarted` 建前摇，`castResolved` 或 `basicAttack` 启动出手；`castCancelled` 只取消相应 cast。只有 `heroDamaged.hpDamage>0` 才播身体受击，全护盾吸收不假装身体受伤。模拟死亡、选敌、伤害与复活都不等待动画；不存在权威命中事件时，不从冷却、castSlot 或 HP 差补造。
 
-二改保旧 profile，将本例约定的视觉接触由 `.6s` 提前到 `.35s`、恢复仍为 `17/30s`，分段映回同一作者动作；取消则冻结出层采样、淡回当前移动，长刃仍用原握柄和手骨。需要全身重心参与的动作先换供给或站定播放，不把此掩码当所有动作的默认。
+**移动中的英雄优先分上下身责任；小兵先保武器动作和实际出手一致。** 英雄源轨先把首键归零，避免把导出前导帧算进循环；英雄八个上身骨、七个下身骨拆轨：腿与外根位移由移动／快照负责，受击默认只覆盖上身；源和派生轨只读缓存、mixer/action 逐角色独立。小兵在 `basicAttack` 后播放本兵种全身 `attack`，再回 `idle/walk`；它不是英雄分层、hurt 或死亡尾段的等价实现。英雄观察 `alive→dead` 播 death、结束后再保留一秒尸体；初见已死不补播，复活清旧姿态。小兵当前离开 alive 集合即移除，不把“GLB 有 death”说成兵也已播放死亡动画。
 
-**缺受击／死亡时，先补作者动作，再交全身消费者。** 同例的 `author_reactions.py` 打开固定蓝版 Blend，只新增 hurt／death，保原三动作、网格、绑定与材质，保存重开后导出五动作 GLB。受击播放后回调用方当前底层状态，若要打断挥击由玩法清掉原攻击；死亡由玩法明确选为当前全身状态，覆盖双腿与挥击并保持末帧，重生时再清动作与时钟，不让尸体继续走。倒下的贴地检查改用全部变形点，且要核混合后的姿态，不能只查站立鞋底或作者单片段。二改把倒下阶段 `.8s → 1.2s`，结尾保持仍为 `.2s`，其他四动作导出键值不变；消费者读新片段时长，无需同步硬编码计时。
+**二改“受击仍要走路”时先改掩码，不先重画 GLB。** 默认 `hurtRegion:'upper'` 复用同一 hurt 源的上身轨；用 `motionOptions: {hurtRegion:'full', strike:.3, recovery:17/30}` 可比较旧全身反应或调整视觉出手，实际 resolve／命中时刻不变。活跃 attack/hurt 混合时按变形顶点求本地最低点，只向上补内部 Root，外根仍由模拟独占；这是局部平地接触修正，不是坡地足 IK，开销随角色与顶点数增长。
 
-这条 a1 独立链已有 16 项真实 Three／GLB 检查、5 项 Blender 源生成／重开检查，原 4 项预览检查在采样输出逐字节不变后复用；已看分层和受击／死亡两组各 16 个 CPU 姿态。非零移动相位曾造成约 9.8 mm 混合穿地，已加混合后内部 Root 竖直补偿；两版本／四起点 60 Hz 检查通过本例 1 mm 容差。它多一次顶点扫描，只适用于角色局部平地，不是坡地足 IK。仍是机械占位；源和 death 的后续游戏采用见下段，独立实验本身不证明连续观感、滑步或 GPU 游戏效果。命令、配置与实际范围集中于[同源实验](../../../experiments/character-animation/README.md)和 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26 UTC。
+需要更细的源／分层修改，可复跑[同源实验](../../../experiments/character-animation/README.md)：旧 profile 的视觉接触 `.6s→.35s`、恢复仍 `17/30s`，分段采同一挥击；取消冻结出层采样后淡回移动。另一次倒下 `.8s→1.2s`、尾部保持 `.2s` 保其余四动作；混合穿地约 9.8 mm 的反例促成内部 Root 校正，两版本／四起点 60 Hz 检查达到本例 1 mm 容差。实验的 16 项 Three／GLB、5 项 Blender 检查与复用的 4 项预览检查仍是对应旧样本证据，不能拿来免验当前重塑人物或推广为任意重定向。
 
-**同一作者源已从 a1 交回可玩游戏，不再另造演示资产。** [MOBA 固定 `92e229b` 的源入口](https://github.com/dbvv1/MOBA-Like/blob/92e229b114cdf7e2d0e5f17edd6aa0f20b67071c/asset-pipeline/characters/beacon-guard/README.md)保存脚本、Blend、五动作 GLB 与配方；同版 Blender 重导出一致，24→36 倒下帧数二改保其余四动作。蓝队用新源；橙队先核实际骨序／层级、局部与世界骨轴、绑定及 inverse 一致，再仅复用 hurt／death 轨，保自己的几何／材质——这是同绑定复用，不是通用重定向。正式消费者目前只新增播放 death：观察 `alive→dead` 后从头播放，片段结束再保留一秒尸体；初见即死不补造，复活／重开清旧姿态，模拟死亡、选敌和复活时机不等待动画。hurt／attack 的事件消费尚未进入此正式版本。原 CPU／独审覆盖死亡接线，已接受的软件 WebGL2 smoke 确认真实五动作 GLB 加载及原输入／场景；死亡连续观感仍需试玩，具体固定入口与回执见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md#playable-death-adoption)。
+**验收从源继续走到实际主循环。** 在 Node ≥22.12、可用 WebGL2 浏览器的环境，从当前固定产品根目录执行 `npm ci`、`npm --prefix asset-pipeline/presentation ci`，随后 `npm test`、`npm --prefix asset-pipeline/presentation test` 和 `npm run smoke`；用 `npm run dev` 实际移动、施法、受击、死亡与 Restart，并在[可玩站](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)观察当前采用结果。模拟为 30 Hz，主循环每步同步、每帧绘制；后台暂停本地对局并清积累，终局只让有限视觉尾段结束，不补造模拟取消或命中。Node 数值检查用于克隆／释放、取消、bounds、事件与混合差量；软件 WebGL 真帧和正常输入交战已采用，但不能代替自然步态、滑步、连续打击感和硬件 GPU 成本评估。
 
-保留已验旧版，新版在目标需求下胜出再替换默认。通用交接仍保作者工程实际具备的 rig／层／约束／道具参照、原动作／处理版、骨架／Avatar、root、压缩、事件与接触数据；工具批查引用、时长、事件、数值和根轨迹，目标相机再验姿态、风格与响应，并计淘汰／返工及第二改主动工时。2D 换装核动作／方向交集，对白成对更新声音与口型，非人形改变运动语义时回到专用控制与源内容；只有烘焙结果先计重建成本，阈值由玩法和目标设备决定（[WP4 通用验收](../../../docs/research/2026-10-14-game-wp4-animation.md#6-第二次修改的最小后续验收本轮不执行)）。
+**何时换来源或收窄：** 需要手指握持、近景表演、全身重心参与或不兼容体型，而有限程序改源仍不能达到目标相机要求时，优先完整合格动作供给；别叠更复杂控制器掩盖素材缺口。本文当前实证是 Three 网页消费者，原生 Unity／Unreal 与生成服务未运行；整体战斗仍未达到 LoL 参照品质。软件检查通过与历史页面崩溃／旧版 GPU exit 9 的范围见 [3D 同次采用](3d.md#moba-battle-supply)，不据一次通过推断全设备稳定。
 
-**依据与范围**：[原创固定产物、脚本与报告](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)，2026-10-26（UTC+8）。产物自行以 CC0 提供，无第三方素材；Blender 4.3.2 已重开六文件、采样比对并通过真实篡改／缺失／缺动作负例，原非作者独审可复用，详见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)。作者预览用于几何占位与指定姿态检查；运行采用和未验效果按上面的各自消费者区分。第三方来源的既有 403 保持停止，不以原创占位补齐其供给结论。
+**依据与范围：** [本仓原创 CC0 源／实际消费者与二改] MOBA [b4dff100 资源源与验证](https://github.com/dbvv1/MOBA-Like/tree/b4dff1007527a2f8bfae81ca4749e90321f7bd7f/asset-pipeline/battle)、[同版英雄表现](https://github.com/dbvv1/MOBA-Like/tree/b4dff1007527a2f8bfae81ca4749e90321f7bd7f/asset-pipeline/presentation)、[主循环接线](https://github.com/dbvv1/MOBA-Like/blob/b4dff1007527a2f8bfae81ca4749e90321f7bd7f/src/render/world.ts)，2026-10-26 UTC；[旧样本实际范围与固定来源] [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，保留原源→GLB、刃长、分层与反应动作实验入口。当前角色原始 rig 与派生资源按各自 CC0 文件，包内来源／哈希集中于产品，不将第三方来源既有 403 或未取得角色写成已解决。
