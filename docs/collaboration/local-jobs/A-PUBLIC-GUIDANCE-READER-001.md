@@ -38,4 +38,5 @@ result_branch: relay/a-public-guidance-reader-001
 - 产物：[09aa64c](https://github.com/dbvv1/a1dbv/commit/09aa64c1d107e1cabd73ce87061ac20fa41afeaa)，分支 `relay/a-public-guidance-reader-001`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 已按 accept: auto 合入 main：[5efda3d](https://github.com/dbvv1/a1dbv/commit/5efda3d03c6d6caaa48f40d2c93f5dea597165eb)。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+- 执行通道据回执为本机 Claude Code＋DeepSeek 原生 Workflow；实际响应 `message.model`、具体型号／版本未提供，未知，不从通道或其他任务推定。
+- 负责人接收后抽查补正：保留原独审／自动合入记录；“旧来源允许”不足以证明“第三方应用曾为主线”，已将对应分类收窄为有限原文未见依据。当前职责、发布、受阻续接与下一单元判断继续复用；冻结后已完成的 Hippo 不重复派出。
