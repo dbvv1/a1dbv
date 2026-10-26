@@ -1,0 +1,26 @@
+{
+  "line:hangar_02_010": {
+    "text": "The hatch is stuck.",
+    "reviewedSource": "f3649050b7080fbd947bedca708c76aa43ea45d7ecdbcdd0262a02eee9424c0a"
+  },
+  "line:hangar_02_020": {
+    "text": "Let me look. We still need {0} parts.",
+    "reviewedSource": "82ef0e3b48dcbc32d19729b17acba74f719fffdf67e2883f2ec4dc11c06f480d"
+  },
+  "line:hangar_02_030": {
+    "text": "Do not touch that wire.",
+    "reviewedSource": "d43a69db46e7ad42190649ca3d8261efbc1cc3f8848e6cb27832c1edb1fa087e"
+  },
+  "line:hangar_02_040": {
+    "text": "Too late.",
+    "reviewedSource": "6d5e1a12bde5d877704b748dcff58514a0aedf6e974d467a9dd0ab8d87df65e3"
+  },
+  "line:hangar_02_050": {
+    "text": "Cut the power first.",
+    "reviewedSource": "11c5ed37d513f1409a225a33c609a522cd5bc60462b222dd4ee528f9483a58e8"
+  },
+  "line:hangar_02_060": {
+    "text": "You do it.",
+    "reviewedSource": "1a480f4e3fa218b82274aa19865398760437cedf487617b03dc4337679fd641e"
+  }
+}

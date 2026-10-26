@@ -86,6 +86,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [Yarn 作者到真实 VM](../experiments/yarn-localization-production/README.md) | 让 AI 改对白后核 lineID、变量、人物及受影响译文，不只看导出表 | 官方核心 3.2.2／MIT，Compiler＋Dialogue；2026-10-26 核实 | 真实双语六句、二改七句；文本／人物／语境／新增四行待审，旧表拒绝、新表进入 VM | 🧪 保官方 CSV／原生导入；本例 JSON 只作预检，未跑 Unity 字幕／语音 |
 | [符号身份先于解析](../experiments/native-symbol-triage/README.md) | 让 AI 调查原生故障前先核模块 ID，避免用错符号修错代码 | 官方 Sentry CLI 3.8.2 固定源码／FSL-1.1-MIT；2026-10-26 核实 | Linux 原创 ELF 默认 5/5、另含 CLI 6/6：两份可用符号中错配者仍给貌似可信行号 | 🧪 本地查验不需上传；不把 usable 当匹配，不代 IL2CPP／远程接收实测 |
 | [Luban 配置生产链](../experiments/luban-data-production/README.md) | 游戏多表引用与生成消费者成为日常负担时，让 AI 改作者源而非生成文件 | 5.1.0／MIT，官方源码与社区对照见 [WP11](research/2026-10-14-game-wp11-gameplay-architecture.md#data-production-chain)；2026-10-26 核实 | 真实生成→TS 编译→Tables 加载、字段／引用二改，3 测试含 5 类非法输入通过 | 🧪 小量沿已有 JSON／SO；strict 失败仍可产文件，须看退出码／报告；未验原生游戏接入 |
 | [show-me 最小结构 diff](../experiments/show-me-symlink-handoff.md) | 交接互相影响的分支时，先标判断顺序和每条回归位置 | 固定 `653b6411` 的 Skill 与真实组合反馈 #12，链接见记录 | 手动应用表达形状：212 行原 diff 配 26 行交接，熟悉补丁的接收者 4/4 定位分支与测试 | 🧪 简单 diff 直接审；插件未调用，未测理解提速；代码候选仍待完整检查 |

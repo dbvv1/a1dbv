@@ -1,0 +1,10 @@
+title: hangar_02
+---
+<<declare $need = 2>>
+Navigator: 舱门卡住了。 #line:hangar_02_010 #context:door_stuck
+Mechanic: 让我看看，还需要 {$need} 个零件。 #line:hangar_02_020 #context:parts_needed
+Navigator: 别碰那根线。 #line:hangar_02_030 #context:warn_about_wire
+Mechanic: 已经太晚了。 #line:hangar_02_040 #context:wire_already_touched
+Navigator: 先切断电源。 #line:hangar_02_050 #context:emergency_instruction
+Mechanic: 你来切。 #line:hangar_02_060 #context:ask_other_person
+===

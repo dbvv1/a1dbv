@@ -1,0 +1,30 @@
+{
+  "line:hangar_02_010": {
+    "text": "The hatch is stuck.",
+    "reviewedSource": "f3649050b7080fbd947bedca708c76aa43ea45d7ecdbcdd0262a02eee9424c0a"
+  },
+  "line:hangar_02_020": {
+    "text": "We need {0} fuses to open the hatch.",
+    "reviewedSource": "5de4329dc1d7a859ebb9311cb8bf3e59598ca9aa81c5517215b7bef3925013c6"
+  },
+  "line:hangar_02_030": {
+    "text": "Do not touch that wire.",
+    "reviewedSource": "d43a69db46e7ad42190649ca3d8261efbc1cc3f8848e6cb27832c1edb1fa087e"
+  },
+  "line:hangar_02_040": {
+    "text": "Too late.",
+    "reviewedSource": "4cb8cd98d594f51576f6e89fa8116aa6e21ff0a20d3cd20842813bc3cdd709d4"
+  },
+  "line:hangar_02_050": {
+    "text": "First, switch off the power.",
+    "reviewedSource": "33e0477e3bec788eb58497317c692e0a02693d34a87803fc7e5aff576caee22d"
+  },
+  "line:hangar_02_060": {
+    "text": "You do it.",
+    "reviewedSource": "1a480f4e3fa218b82274aa19865398760437cedf487617b03dc4337679fd641e"
+  },
+  "line:hangar_02_070": {
+    "text": "The hatch is open.",
+    "reviewedSource": "ad4f1aafee26afc3ee70b67d500f0b6ea9a94059d01150d72d6f69b7c8efb724"
+  }
+}

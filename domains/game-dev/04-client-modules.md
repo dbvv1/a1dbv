@@ -1199,7 +1199,7 @@ Mechanic: 你来切。 #line:hangar_02_060
 
 脚本 `#line:hangar_02_010` 编译后的运行 ID 是 `line:hangar_02_010`；`hangar_02_010` 只是标签后缀，不是任何表的 API key。文本表、资产表、sidecar 都用完整 `line:` ID；Provider 把 `line.ID` 直接当 entry key，不会补前缀；clip 文件仍可命名 `vo/hangar_02_010_en`，路径不是表 key。`line:hangar_02_010`、`_020`、`_050` 配 `en` 语音；`line:hangar_02_030`、`_040`、`_060` 首版无语音。对白文本与语音分别按完整 ID 查表，不靠音频文件名猜。
 
-作者源里的 `Navigator:`／`Mechanic:` 只到 Yarn 行；它不会自动进翻译表，也不会自动成为运行显示名。默认 `LinePresenter` 的 `line.CharacterName` 来自本地化文本里的 `character` 标记（如 `[character name="Navigator"]` 或 `Navigator:` 前缀）；译文表只写句子时它为空，姓名／头像会丢。本例选 sidecar：导出时把 speaker 写成 sidecar 行，项目 `SpeakerPresenter` 按完整 `line.TextID` 查 `speaker`，再绑定本地化显示名、头像和颜色；不靠作者表有 speaker 就假定 Runner 消费到了。
+**编译表保留 `Navigator:`／`Mechanic:` 前缀；只有项目导出或译文主动只留句子时，才需要显式承接人物信息。** 原生译文保留角色前缀／标记也可沿默认姓名解析，不是所有 Yarn 项目都需要 sidecar。默认 `LinePresenter` 的 `line.CharacterName` 来自本地化文本里的 `character` 标记（如 `[character name="Navigator"]` 或 `Navigator:` 前缀）；译文表只写句子时它为空，姓名／头像会丢。本例选 sidecar：导出时把 speaker 写成 sidecar 行，项目 `SpeakerPresenter` 按完整 `line.TextID` 查 `speaker`，再绑定本地化显示名、头像和颜色；不靠作者表有 speaker 就假定 Runner 消费到了。
 
 | 表示 | 例子 | 谁消费 |
 |---|---|---|
@@ -1330,6 +1330,18 @@ LinePresenter 配 `characterNameText = null`、`showCharacterNameInLine = false`
 按这个设计，玩家应看到一条正常链：菜单按当前语言显示；HUD 显示“还需要 2 支箭（已有 1/3）”；对白显示说话人和字幕，有语音就播，没有就按字幕阅读；第一次按键补全文字，第二次推进；设置里切语言后，菜单和数量提示立即更新，对白按下一节策略处理。不要求双语并排。
 
 项目已用 ink 或 Yarn 就保留现有栈；下面的 Yarn 接线只示范 lineID 与语音表如何被真实消费者找到，不要求迁后端。语音制作、响度与许可沿用 [assets/audio](assets/audio.md)／WP6；对白触发的玩法事实与命令沿 [05](05-gameplay-architecture.md)，本节不改这些模块。AI 可整理语境、产候选译文、查参数与占位符一致性并写最小绑定；人审意思、口吻、文化语境与读听，格式检查不代译义验收。
+
+#### 云端采用：先把作者源、译文和说话人交给真实消费者
+
+**已有 Yarn Project 先用官方 Export Strings and Metadata／Update Existing Strings Files；已有 Unity Localization 集合保原导入。** 官方 CSV 已有行 ID、上下文和变化检查，原文修改会标 `NEEDS UPDATE`，不必先建自己的翻译平台。人物／语境在外部数据里改变时，项目仍要补上对应审校影响。
+
+[可运行作者到消费者链](../../experiments/yarn-localization-production/README.md)使用官方 YarnSpinner.Compiler／YarnSpinner 3.2.2：`CompilationJob → Compiler.Compile` 取得真实行表与程序，`Dialogue.SetProgram/SetNode/Continue` 派发真实 `line.ID` 和替换值，原生 `LineParser.ExpandSubstitutions` 填译文；同一行再按导出的 sidecar 接人物显示名。云端已跑中文／英文六句，不是遍历表假装执行；无需启动 Unity 就能先发现丢 ID、漏参数与人物绑定断裂。
+
+**二改只送有影响的行复审，再让运行消费者读新值。** 实验把 020 的零件改保险丝，040 的句子不变但改说话人，050 只改语境，另增 070；待审恰为这四行，010／030／060 继续有效。旧译表先被拒，第二版固定译表进真实 VM 后输出 `We need 2 fuses to open the hatch.`，040 显示 `Navigator: Too late.`。这比“两个 JSON 格式正确”多验证了实际身份、变量与人物消费者。
+
+实验 JSON／作者快照签名只用于这个预检，**不是可直接导入 Unity 的表，也不是语言质量评分**。译文 fixture 的签名是合成约定；不能让 AI 自动重算签名就宣称审过。正式项目仍用原生导入器进入下文 Runner／Provider／Presenter；行外剧情、变量语义、字体、字幕布局、语音与推进另验，不能拿终端行替代。这里运行的是核心 NuGet 3.2.2，下面 Unity 插件 3.2.8 的接线仍是固定源码研究。
+
+来源与范围：[实际调用点、二改与社区对照](../../docs/research/wp10-content.md#yarn-compiler-vm-localization)，官方／固定源码／云端 Compiler＋VM 为[一手]，审校选择为[研究]；2026-10-26。未运行 Unity 表导入、字幕或语音。
 
 #### 原生表与绑定：条目身份和真实消费者
 

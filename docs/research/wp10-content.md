@@ -660,6 +660,34 @@ Unity 恢复阶段还须控制初始化：`Instantiate` 保留源对象激活状
 
 **实际范围。** 公开固定源码与官方文档静读；未运行对话、未播音频、未做语言审校，阅读时间与听感待验。[研究]
 
+
+<a id="yarn-compiler-vm-localization"></a>
+
+### 作者源到 Compiler／VM：让译文和说话人被真实消费者用上
+
+**✅ 保原生导出／导入，只在云端补能实跑的作者到消费者预检。** 已有 Unity Yarn Project 可用 Export Strings and Metadata／Update Existing Strings Files；已有 Unity Localization 集合则沿原导入，不为脚本检查换格式。本轮用官方核心 Compiler／Dialogue VM 把既有六句示例跑通，再做文字、人物和语境二改；不是另建叙事 VM、菜单平台或翻译服务。[研究]
+
+**官方已有更新机制，先借而不是重造。** [内置本地化说明](https://docs.yarnspinner.dev/yarn-spinner-for-unity/assets-and-localization/inbuilt-localisation)给 CSV 的 id／text／lock／comment 和 metadata 文件，译者只改 language／text；更新操作加入新行、删去移除行、把源文本变化标 NEEDS UPDATE。项目还要把外部人物／语境变化纳入审校，不能仅看译文文字。当前[本地化示例](https://yarnspinner.dev/docs/unity/06-localisation-and-assets/)甚至直接在译文保留 `Rosa:`，所以 sidecar 是一种人物 UI 分工，不是 Yarn 的强制补丁。当前网页为 Unity 3.3.x，以下核心实跑版本另列，不冒充新版 Unity 插件已运行。[一手／研究]
+
+**社区反证指向作者源组织，不指向强制换工具。** [2026 年本地化讨论](https://www.reddit.com/r/gamedev/comments/1qg5zz1/how_to_localize_a_game_in_unity/)原帖是想从他人已编译游戏中找文本；回复指出延后本地化会使文本散在脚本、配置、场景和贴图，运行拼接还会碰语法差异，也有实际使用其他插件者报告可用。这里只借“明确作者源与上下文”的问题，不建议提取第三方游戏或推断一种插件普遍最好。[社区／研究]
+
+#### 固定版本和真实调用点
+
+- [YarnSpinner.Compiler 3.2.2](https://www.nuget.org/packages/YarnSpinner.Compiler/3.2.2)与核心 YarnSpinner 3.2.2，固定 [源码 `5b3a4ff2d24e4f727e3f90fee5d8ce637474c305`](https://github.com/YarnSpinnerTool/YarnSpinner/tree/5b3a4ff2d24e4f727e3f90fee5d8ce637474c305)，MIT；官方 NuGet 实装，依赖锁在实验 `packages.lock.json`。Unity 插件仍沿上节 3.2.8 固定研究，它不是核心 NuGet 版本号。
+- `CompilationJob.CreateFromString` → `Compiler.Compile` 取得 Program、StringTable 与 Diagnostics。实际表保 `line:hangar_02_010` 和 `Navigator: 舱门卡住了。`；变量表达编为 `{0}`，不是翻译器自己造参数。显式行标签通过 `isImplicitTag` 核查；隐式 ID 不承诺跨编译稳定。
+- [原生 LineParser](https://github.com/YarnSpinnerTool/YarnSpinner/blob/5b3a4ff2d24e4f727e3f90fee5d8ce637474c305/YarnSpinner/YarnSpinner.Markup/LineParser.cs)识别 `character` 属性；本例将人物前缀分离到 sidecar 后译文只留句子，稳定 speaker ID／本地化姓名由同一行消费者取。**不是编译器丢了姓名，而是正文式导出必须承接它。** 这修正原 04 “speaker 不会进翻译表”的过宽表述。
+- [Dialogue](https://github.com/YarnSpinnerTool/YarnSpinner/blob/5b3a4ff2d24e4f727e3f90fee5d8ce637474c305/YarnSpinner/Dialogue.cs)执行 SetProgram／SetNode／Continue，LineHandler 得到真实 `line.ID` 与 `line.Substitutions`；`LineParser.ExpandSubstitutions` 再给目标语言文本填值。沿官方 [TestBase](https://github.com/YarnSpinnerTool/YarnSpinner/blob/5b3a4ff2d24e4f727e3f90fee5d8ce637474c305/YarnSpinner.Tests/TestBase.cs)调用方式；核心要求配置 OptionsHandler，即使当前脚本没有选项，也不能省掉就声称运行成功。本例对意外选项／玩法命令报错，不自行解释／跳过。
+
+#### 真实二改：原文相同也可能需要重新审校
+
+[可运行实验](../../experiments/yarn-localization-production/README.md)用 .NET SDK 8.0.427／runtime 8.0.33 实际编译六行基线、双语 VM 输出，再运行七行第二版。基线 020 真实填入数量 2；第二版改成保险丝后输出 `We need 2 fuses to open the hatch.`。040 句子相同但人物从 Mechanic 改 Navigator，VM 输出行的姓名也实际改变，不是只改了一张导出表。
+
+旧译表对第二版的重审队列精确包含：020 文本、040 人物、050 语境、070 新行；010／030／060 不变。先拒绝带旧作者快照的候选，再用第二版固定译表进入 VM。另验缺译、漏占位符、未知人物、重复／隐式 ID 与缺作者文件；六组全通过，无 skip。输出含原编译表／sidecar、带原因的重审队列与双语实际行；未采用的旧表不进入播放。
+
+**快照不是自动审校。** 实验的 `reviewedSource` 是该行作者表达／人物／语境／节点的保守签名，供检测已改而未复审，不是官方 CSV lock 字段或语言质量证明。固定译表只是合成测试约定，未声称真人已审；AI 不应改完源后自动重算签名来“清待审”。行外剧情与变量语义变化还需人工影响分析；本例格式不可直接导入 Unity，也不覆盖 shadow lines／复杂复数／所有富文本。正式游戏仍从官方导入器接既有 Runner／Provider／Presenter。
+
+**AI 能交付的实际采用**是源文件与字段增量、真实编译诊断、明确受影响的翻译／人物／语境行，以及消费新数据的 VM 输出；翻译者负责含义、语气和长度，程序员继续在引擎核布局、字号、语音和推进。2026-10-26 核实并运行上述云端链；没有 Unity 场景、语音或 UI 运行证据，不用终端双语行替代它们。既有字体、locale/fallback、字幕时间和存档消息语义的检查保留。[一手／研究]
+
 <a id="103"></a>
 
 ## 改键持久化：既有选型回流

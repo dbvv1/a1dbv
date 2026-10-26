@@ -1,0 +1,4 @@
+{
+  "Navigator": { "id": "navigator", "names": { "zh-Hans": "领航员", "en": "Navigator" } },
+  "Mechanic": { "id": "mechanic", "names": { "zh-Hans": "工程师", "en": "Mechanic" } }
+}
