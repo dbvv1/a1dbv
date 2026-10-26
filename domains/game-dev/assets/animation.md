@@ -388,7 +388,7 @@ sh asset-pipeline/placeholder/run.sh
 
 **把已验接口接进真实主循环，而不是再造一套预览器。** [正式可玩源码 `3bcda00f`](https://github.com/dbvv1/MOBA-Like/tree/3bcda00fb35361cc5a25ee74e3768a2f3678c563) 的 `src/client.ts` 先载入实际 Detour 数据并创建 Simulation，再由 `src/render/world.ts` 加载 GLB、建立 presentation 并挂到 Three 场景。每个 30 Hz 逻辑步先消费玩家／bot 命令，随后 `snapshot→world.sync`；每个绘制帧调用 `world.draw→presentation.advance`，用剩余步长比例插值，再渲染。这让玩法拥有位移，视觉拥有平滑；后台页暂停本地对局并清积累，不在返回时追跑数分钟。Restart／离页用同一个 lifetime 逆序释放输入、视图、共享源和导航，迟到建成的 world 也即时释放。
 
-在该固定源码、Node ≥22.12 与可用 WebGL2 浏览器下，先 `npm ci`、`npm run dev`，打开终端地址，右键移动、S 停止；[完整操作](https://github.com/dbvv1/MOBA-Like/blob/3bcda00fb35361cc5a25ee74e3768a2f3678c563/README.md)可继续施法和重开。原可玩候选 `d32f5d9` 的软件 WebGL2 smoke 已实际验证这些移动／停止、镜头、E 技能实体与非背景画面，接收后进入 main；上述角色、表现和主循环文件相对它未变。这里已采用的是 idle／walk 与多单位表现，下面的分层挥击和 hurt／death 仍是独立作者—消费者实验，不由“GLB 有动作”推成游戏已播放。硬件 GPU 成本、滑步、动作衔接和最终美术仍需目标机验收；固定来源与复用检查见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26 UTC。
+在该固定源码、Node ≥22.12 与可用 WebGL2 浏览器下，先 `npm ci`、`npm run dev`，打开终端地址，右键移动、S 停止；[完整操作](https://github.com/dbvv1/MOBA-Like/blob/3bcda00fb35361cc5a25ee74e3768a2f3678c563/README.md)可继续施法和重开。原可玩候选 `d32f5d9` 的软件 WebGL2 smoke 已实际验证这些移动／停止、镜头、E 技能实体与非背景画面，接收后进入 main；上述角色、表现和主循环文件相对它未变。该版本采用 idle／walk 与多单位表现；同源 death 随后已按下方正式接线进入可玩构建，分层挥击／hurt 仍不因“GLB 有动作”算作游戏采用。硬件 GPU 成本、滑步、动作衔接和最终美术仍需目标机验收；固定来源与复用检查见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26 UTC。
 
 <a id="layered-animation-consumer"></a>
 
@@ -398,7 +398,9 @@ sh asset-pipeline/placeholder/run.sh
 
 **缺受击／死亡时，先补作者动作，再交全身消费者。** 同例的 `author_reactions.py` 打开固定蓝版 Blend，只新增 hurt／death，保原三动作、网格、绑定与材质，保存重开后导出五动作 GLB。受击播放后回调用方当前底层状态，若要打断挥击由玩法清掉原攻击；死亡由玩法明确选为当前全身状态，覆盖双腿与挥击并保持末帧，重生时再清动作与时钟，不让尸体继续走。倒下的贴地检查改用全部变形点，且要核混合后的姿态，不能只查站立鞋底或作者单片段。二改把倒下阶段 `.8s → 1.2s`，结尾保持仍为 `.2s`，其他四动作导出键值不变；消费者读新片段时长，无需同步硬编码计时。
 
-这条 a1 独立链已有 16 项真实 Three／GLB 检查、5 项 Blender 源生成／重开检查，原 4 项预览检查在采样输出逐字节不变后复用；已看分层和受击／死亡两组各 16 个 CPU 姿态。非零移动相位曾造成约 9.8 mm 混合穿地，已加混合后内部 Root 竖直补偿；两版本／四起点 60 Hz 检查通过本例 1 mm 容差。它多一次顶点扫描，只适用于角色局部平地，不是坡地足 IK。仍是机械占位，未接 MOBA，也未验连续观感、滑步或 GPU 游戏效果。命令、配置与实际范围集中于[同源实验](../../../experiments/character-animation/README.md)和 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26 UTC。
+这条 a1 独立链已有 16 项真实 Three／GLB 检查、5 项 Blender 源生成／重开检查，原 4 项预览检查在采样输出逐字节不变后复用；已看分层和受击／死亡两组各 16 个 CPU 姿态。非零移动相位曾造成约 9.8 mm 混合穿地，已加混合后内部 Root 竖直补偿；两版本／四起点 60 Hz 检查通过本例 1 mm 容差。它多一次顶点扫描，只适用于角色局部平地，不是坡地足 IK。仍是机械占位；源和 death 的后续游戏采用见下段，独立实验本身不证明连续观感、滑步或 GPU 游戏效果。命令、配置与实际范围集中于[同源实验](../../../experiments/character-animation/README.md)和 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26 UTC。
+
+**同一作者源已从 a1 交回可玩游戏，不再另造演示资产。** [MOBA 固定 `92e229b` 的源入口](https://github.com/dbvv1/MOBA-Like/blob/92e229b114cdf7e2d0e5f17edd6aa0f20b67071c/asset-pipeline/characters/beacon-guard/README.md)保存脚本、Blend、五动作 GLB 与配方；同版 Blender 重导出一致，24→36 倒下帧数二改保其余四动作。蓝队用新源；橙队先核实际骨序／层级、局部与世界骨轴、绑定及 inverse 一致，再仅复用 hurt／death 轨，保自己的几何／材质——这是同绑定复用，不是通用重定向。正式消费者目前只新增播放 death：观察 `alive→dead` 后从头播放，片段结束再保留一秒尸体；初见即死不补造，复活／重开清旧姿态，模拟死亡、选敌和复活时机不等待动画。hurt／attack 的事件消费尚未进入此正式版本。原 CPU／独审覆盖死亡接线，已接受的软件 WebGL2 smoke 确认真实五动作 GLB 加载及原输入／场景；死亡连续观感仍需试玩，具体固定入口与回执见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md#playable-death-adoption)。
 
 保留已验旧版，新版在目标需求下胜出再替换默认。通用交接仍保作者工程实际具备的 rig／层／约束／道具参照、原动作／处理版、骨架／Avatar、root、压缩、事件与接触数据；工具批查引用、时长、事件、数值和根轨迹，目标相机再验姿态、风格与响应，并计淘汰／返工及第二改主动工时。2D 换装核动作／方向交集，对白成对更新声音与口型，非人形改变运动语义时回到专用控制与源内容；只有烘焙结果先计重建成本，阈值由玩法和目标设备决定（[WP4 通用验收](../../../docs/research/2026-10-14-game-wp4-animation.md#6-第二次修改的最小后续验收本轮不执行)）。
 
