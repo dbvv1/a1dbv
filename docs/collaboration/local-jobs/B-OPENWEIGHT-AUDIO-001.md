@@ -2,7 +2,7 @@
 
 id: B-OPENWEIGHT-AUDIO-001
 owner: dot-B
-status: ready
+status: running
 target_repo: dbvv1/Star-Rush-Reborn
 base_ref: ecbb4843923b2fe12f994dd9862042c60d40fe5c
 result_branch: relay/dot-b-openweight-audio-001
