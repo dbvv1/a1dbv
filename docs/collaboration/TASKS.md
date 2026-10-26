@@ -29,7 +29,7 @@
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[细则 G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 下一步：服务端第一页，联网模型选型与接入起点，在 MOBA-Like 模拟上跑两端帧同步样例（两端状态哈希一致）；已写模块进案例用时补实测。 |
 | B-制作链 | **AI 全链路**（[细则 G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [开门源→影片→玩法](../../experiments/gate-reveal/README.md)已实际制作、浏览器播放／跳过返回与二改通过（静音灰盒）。下一步：MOBA 英雄模型与动作从制作到接入 main，写回 3d、animation 两页，以进入可玩构建为验收。 |
 | SR | **Star-Rush 品质提升**：驾驶手感、竞速 AI、美术与音频，按 [brief](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/brief.md) | dot-B | master [`5cfbb91`](https://github.com/dbvv1/Star-Rush-Reborn/commit/5cfbb9135abdfc32fe8c64026f486aea8ce75ee5) 已接入转向牌共享源与构建开关；默认 baseline 保原画面，三变体客户端回归通过。下一步候选实机观感与试玩反馈，不卡其他项。 |
-| FPS | **FPS-Like 纵切片**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | MOBA-Like main 可玩后开工，先做模拟层和无画面验收。 |
+| FPS | **FPS-Like 纵切片**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | 本地 headless `0658f843` 已通过独审，继续客户端；`git push origin HEAD:refs/heads/b/fps-headless-v1` 因 FPS-Like 不在显式推送授权范围被平台拒绝，待用户补充该仓库普通快进推送授权，期间不重试发布。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
 ## 待人工验收（统一查看）
