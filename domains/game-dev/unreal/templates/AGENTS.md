@@ -13,7 +13,9 @@
 
 ## 已配置接口与验证入口
 
-- 编辑器接口：TODO（现有 Editor Python / Unreal MCP / 项目工具的名称、版本与能力；没有就写无）。先核对实际配置与可用工具；MCP、Agent Skill、Live Coding 各自确认，不能相互推定。
+**先登记项目里真实可用的入口，再写下表命令；没有的写“无”。MCP、Agent Skill、Live Coding 各自确认，不能相互推定。**
+
+- 编辑器接口：TODO（现有 Editor Python / Unreal MCP / 项目工具的名称、版本与能力；没有就写无）。
 - 编译与测试入口：TODO（已有 UBT/项目脚本、报告位置和编辑器开关前提）。已有入口足够就沿用；下表只保留已采用的样例，未复制或不可用的脚本改为项目真实命令。
 - 缺少必要能力时，报告当前任务、缺少的操作/观测和已完成部分；不自行安装 MCP、LSP、插件或新框架，也不改写二进制资产绕过。缺验证入口不等于验证通过。
 
@@ -38,11 +40,11 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 | 自动化测试 | 已采用该脚本，python3、UnrealEditor-Cmd 和对应构建可用 | `.claude/skills/ue-run-tests/scripts/run_tests.sh <项目名>.<模块>` |
 | 查看可用测试 | 已有可定位的 UnrealEditor-Cmd | `UnrealEditor-Cmd <项目>.uproject -ExecCmds="Automation List;Quit" -unattended -NullRHI` |
 
-没有 MCP 时仍可沿用项目已有 Live Coding 入口（仅适用于函数体改动），或请用户关闭编辑器后用现有 UBT/构建脚本。头文件、反射、新类/模块改动始终按下面的完整构建规则处理，不因某个工具缺失而切到 Hot Reload。
+**没有 MCP 也能编译：只改 `.cpp` 函数体时用项目已有 Live Coding 入口；其他情况请用户关闭编辑器后走现有 UBT/构建脚本。** 头文件、反射、新类/模块改动始终按下面的完整构建规则处理，不因某个工具缺失而切到 Hot Reload。
 
 ## 硬性规则
 
-1. **不要读写** `Binaries/`、`Intermediate/`、`DerivedDataCache/`、`Saved/`；`Saved/Logs/` 可以读，当前获准测试在 `Saved/Automation/ai-report/` 中生成的报告也可读，不泛读其他 `Saved/` 内容或手改产物。实际读取仍须符合项目工具权限，本条不扩大权限。
+1. **不要读写** `Binaries/`、`Intermediate/`、`DerivedDataCache/`、`Saved/`。`Saved/Logs/` 可以读；当前获准测试在 `Saved/Automation/ai-report/` 中生成的报告也可以读，不泛读其他 `Saved/` 内容或手改产物。实际读取仍须符合项目工具权限，本条不扩大权限。
 2. **`.uasset` / `.umap` 是二进制文件，绝不能用文本工具编辑。** 修改资产、关卡、蓝图一律通过已配置的 Unreal MCP 或 Editor Python；均不可用时停写并报告所需操作。
 3. 通过 MCP 或 Editor Python 做批量修改前后都要存盘；结果不明确时停止后续写入，先回读实际资产状态，不假设完全未修改后盲目重试。明确 success 也须回读目标及引用。
 4. 改了头文件、`UPROPERTY` / `UFUNCTION`、新增类或模块：**不要用 Live Coding**，请我关闭编辑器后用命令行完整编译。
@@ -67,6 +69,8 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
      只填写已配置的 Python、自动化测试或 MCP 工具，不要求新建工具集。
      没有这些接口就删掉本节，沿用现有测试并说明运行时观测缺口。 -->
 
+**只填已配置的观测和动作工具；没有就删掉本节，沿用现有测试，并在总结里写明运行时观测缺口。**
+
 | 目的 | 工具 / 命令 |
 |---|---|
 | 导出当前游戏状态 | TODO（如 `MyGameTestTools.get_game_state`） |
@@ -79,11 +83,13 @@ TODO：列出主要模块（`.Build.cs`）及依赖方向，例如 `MyGameCore �
 
 <!-- 只填写本次修改涉及的现有实现/测试位置；没有相应系统就删去，不要求新建框架。 -->
 
-- 重导入目标与 pipeline：TODO（已有对象路径、源身份、要覆盖/保留的属性）。重生成应更新已有资产，不以新增 `_1` 或相同名字代替；Interchange 覆盖策略须明确，回读材质槽、Blueprint 使用点与软引用/Primary Asset ID，语义对应不唯一时停止自动替换。
-- 加载所有者及退出入口：TODO。按目标版本区分 FStreamableHandle 的 CancelHandle 与 ReleaseHandle；回调核当前请求、对象寿命及结果资产是否齐全，业务结果至多接收一次；HasLoadCompleted/加载计数包含失败项，不能当作成功。测同帧完成/交叉取消；不能只凭 CancelHandle 已返回就接受迟到结果。
-- 定义与实例：TODO（DataAsset/DataTable、Session/角色/施放实例的类型）。共享定义/CDO 不存当前 HP、冷却或目标；正常结束、取消、死亡、卸载和池回收清理计时器、委托、任务与命中窗口。计时器的暂停时钟：TODO。
-- 伤害/奖励唯一提交入口：TODO；Montage 晚事件不能重复结算。已用 GAS 时明确 CommitAbility 的费用/冷却、取消退款政策与 EndAbility 路径，Per-Actor 实例下次激活不能带上次目标。沿用 PlayMontageAndWait 时，按完整播放、淡出即释放或继续后续阶段选择出口，核目标版本的 Allow Interrupt After Blend Out 与 Stop When Ability Ends；不把淡出、完成、打断统一当成功结束。
-- SaveGame 类型、旧档夹具与兼容政策：TODO。保存稳定内容 ID、schemaVersion/contentVersion 和一致快照；内容改名需迁移，不把 UObject 引用或数组序号当持久身份；写入失败保留原档，旧档恢复后进度和奖励须正确。
+**先定身份、所有权与唯一入口，再写实现和测试；下面每条只保留项目真实存在的契约。**
+
+- 重导入目标与 pipeline：TODO（已有对象路径、源身份、要覆盖/保留的属性）。**重生成要更新原资产，不新建副本。** 不以新增 `_1` 或相同名字代替；Interchange 覆盖策略须明确，回读材质槽、Blueprint 使用点与软引用/Primary Asset ID，语义对应不唯一时停止自动替换。
+- 加载所有者及退出入口：TODO。**先按目标版本定好释放语义，再接收回调。** 区分 FStreamableHandle 的 CancelHandle 与 ReleaseHandle；回调核当前请求、对象寿命及结果资产是否齐全，业务结果至多接收一次；HasLoadCompleted/加载计数包含失败项，不能当作成功。测同帧完成/交叉取消；不能只凭 CancelHandle 已返回就接受迟到结果。
+- 定义与实例：TODO（DataAsset/DataTable、Session/角色/施放实例的类型）。**共享定义/CDO 不存运行时状态**（当前 HP、冷却或目标）。正常结束、取消、死亡、卸载和池回收清理计时器、委托、任务与命中窗口。计时器的暂停时钟：TODO。
+- 伤害/奖励唯一提交入口：TODO。**结算只走一个入口，Montage 晚事件不能重复。** 已用 GAS 时明确 CommitAbility 的费用/冷却、取消退款政策与 EndAbility 路径，Per-Actor 实例下次激活不能带上次目标。沿用 PlayMontageAndWait 时，按完整播放、淡出即释放或继续后续阶段选择出口，核目标版本的 Allow Interrupt After Blend Out 与 Stop When Ability Ends；不把淡出、完成、打断统一当成功结束。
+- SaveGame 类型、旧档夹具与兼容政策：TODO。**旧档是验收条件。** 保存稳定内容 ID、schemaVersion/contentVersion 和一致快照；内容改名需迁移，不把 UObject 引用或数组序号当持久身份；写入失败保留原档，旧档恢复后进度和奖励须正确。
 
 ## 提交约定
 
