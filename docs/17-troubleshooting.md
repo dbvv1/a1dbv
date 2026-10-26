@@ -1,6 +1,6 @@
 # 17 · Agent 跑偏了怎么办：故障排查手册
 
-> 核实：2026-10-26（jrnl 运行态采用）；2026-10-22（整页诊断选择比较；历史案例保留各自日期）。依据：[一手] Anthropic 的模型迁移与提示指南（Claude API 官方 Skill 中的 `model-migration.md`）、Claude Code 最佳实践与 changelog；[社区]、[研究] 的案例与实验见各节依据行。其中的提示词是 Anthropic 在 Fable 5.1 上测试过的英文原文、部分句子“承重”，下文给出原文和中文意思；用在其他模型上效果需要自己验证 [经验]。
+> 核实：2026-10-26（jrnl 运行态采用、全量重读与分块选择）；2026-10-22（整页诊断选择比较；历史案例保留各自日期）。依据：[一手] Anthropic 的模型迁移与提示指南（Claude API 官方 Skill 中的 `model-migration.md`）、Claude Code 最佳实践与 changelog；[社区]、[研究] 的案例与实验见各节依据行。其中的提示词是 Anthropic 在 Fable 5.1 上测试过的英文原文、部分句子“承重”，下文给出原文和中文意思；用在其他模型上效果需要自己验证 [经验]。
 
 ## 30 秒结论
 
@@ -160,14 +160,15 @@ jrnl 的真实未决问题把 `2022-03-12 23:59` 读成次日 `00:59`。Agent �
 ✅ **先区分“历史太长”“压缩后立刻填满”和“必要信息不见了”，不要默认清空。** 在 Claude Code 用 `/context` 查看占用，再选动作：
 
 - **仍在同一任务，只需腾出空间**：用 `/compact <保留重点>`，保留目标、约束和验证结果；不必用交接替代正常压缩。
-- **明确出现 auto-compaction thrashing**：按行段／函数读大文件，缩小工具输出，必要时把大文件调查移到子 Agent；再定向压缩。清空后仍复发时，对照 `/context`：`Messages` 最大就查新读入的内容，其他行合计更大就精简启动加载项。
+- **单次大文件／工具输出触发 auto-compaction thrashing**：按任务只读相关行段／函数，缩小工具输出，必要时把大文件调查移到子 Agent；再定向压缩。清空后仍复发时，对照 `/context`：`Messages` 最大就查新读入的内容，其他行合计更大就精简启动加载项。
+- **每次压缩后又从头读完整索引**：先查全量重读是谁规定的——项目指令、工具运行合同，还是 Agent 自行选择。若合同要求完整读完，**同样总量切成更小块仍可能装不下**；应按现有 scope 流程减少实际纳入的低价值资料，不能擅自丢掉必读候选。任务不需要这份全量认知时，明确退出该流程，再按任务读源码并说明范围；不能把局部读取当作已完成全量合同。只反复 `/clear`、调小 `chunk_tokens` 或让新 Agent 重跑同一合同，都没有改变这个总量问题。
 - **任务已换、旧思路需要丢弃，或关键约定已丢**：先核对当前文件和原结果；需要新会话时，只带最新目标、决定、进度和证据。已有任务记录足够就复用，[20 §4](20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)说明应保留什么；`/handoff` 只是本仓模板 Skill，不是原生命令或 `/compact` 的通用替代。
 
 **清理启动负担时，先删冲突和无关材料，必要约束保留。** 近期模型实践与独立 Factory 按需加载支持这一机制；若负担已经小、失败模式也未改变，就不继续删规则。输入节约不等于调试准确率提高。
 
-局限：这些是 Claude Code 当前文档的机制与处置建议，不是所有模型／客户端都适用或已实测有效的恢复保证。
+局限：客户端操作按所用产品核对；全量重读分流来自 AOCI 公开报告与固定源码核查，本轮未重放现场循环或实测恢复收益。
 
-**依据**：[一手] 官方[最佳实践](https://code.claude.com/docs/en/best-practices#manage-context-aggressively)支持定向压缩、[thrashing 排查](https://code.claude.com/docs/en/troubleshooting#auto-compaction-stops-with-a-thrashing-error)指出此时压缩已成功但新输入再次撑满窗口（2026-10-15，UTC+8）；[一手；经验：采用判断] [近期模型实践](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)、[独立 Factory 按需加载](https://factory.com/news/deferred-context-engine)；[经验：采用判断] 清空与交接选择；核实 2026-10-22。
+**依据**：[一手] 官方[最佳实践](https://code.claude.com/docs/en/best-practices#manage-context-aggressively)支持定向压缩、[thrashing 排查](https://code.claude.com/docs/en/troubleshooting#auto-compaction-stops-with-a-thrashing-error)指出此时压缩已成功但新输入再次撑满窗口（2026-10-15，UTC+8）；[一手；经验：采用判断] [近期模型实践](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)、[独立 Factory 按需加载](https://factory.com/news/deferred-context-engine)；[经验：采用判断] 清空与交接选择；核实 2026-10-22。 [一手／社区；研究：全量重读分流] [AOCI 原帖、维护者回复与固定源码链](research/2026-10-26-context-reload-scope.md)；核实 2026-10-26。
 
 ### 2.7 API 幻觉和过时知识
 
