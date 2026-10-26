@@ -1,17 +1,52 @@
 # 该装哪些 Skill 与插件
 
-**✅ 按当前任务只补一项：库 API 总写错版本，试 Context7；缺具体领域做法，先读依赖包自带的窄 Skill；需要整方法编辑而宿主没有符号接口，再试 Serena。** 普通修错沿用现有搜索、文档和测试。先查 lockfile 与已启用工具，避免把已有能力再装一遍。
+**✅ 按当前任务只补一项：库 API 总写错版本，试 Context7；缺具体领域做法，先读依赖包自带的窄 Skill；需要整方法编辑而宿主没有符号接口，再试 Serena。** 普通修错沿用现有搜索、文档和测试。先确认消费包实际解析到的依赖与已启用工具，避免找错源码或把已有能力再装一遍。
 
 ## 现在选什么
 
 | 你要解决的问题 | 当前推荐与第一步 | 何时不适用 |
 |---|---|---|
-| 库升级快，Agent 反复写出旧 API | 🧪 **Context7**：按 lockfile 查目标版文档；检索仍费力时接入下方官方插件 | 官方版本文档、类型定义已能稳定回答；或查询需要上传专有代码 |
+| 库升级快，Agent 反复写出旧 API | 🧪 **Context7**：确认依赖身份后，按 lockfile 查目标版文档；检索仍费力时接入下方官方插件 | 官方版本文档、类型定义已能稳定回答；或查询需要上传专有代码 |
 | 库能用，但不知道某类功能该怎样组合 API | 🧪 **库作者的窄 Skill**：已有 TanStack Router、要做可分享筛选时，读取包内 `search-params` | 没用这个库；单条官方示例已经足够；本地包没有该 Skill 时回对应版本指南 |
 | 经常替换完整方法或在方法旁插入定义 | 🧪 **Serena**：先读当前符号正文，再按文件＋符号名编辑 | 只改几行文本、原生 IDE／LSP 已够用，或多人同时写同一方法 |
 | 需求未定，确实需要访谈、设计和计划衔接 | 🧪 **Superpowers 按项目试用**；小 bug 直做、未决架构先设计、已定计划按下方 inline 执行 | 清楚的小修复无需整包；⛔ 暂缓全局强制，完整设计路径有人工批准关口 |
 
 Skill 提供做法，MCP 提供调用能力，插件把它们打包分发；选的是缺口，不是文件形式。跨任务、跨当前模型的整体最高水平仍未知，这里给的是已有源码、使用反馈与实试支持的条件选择。要查宿主差异看 [05](../05-skills-and-plugins.md)，缺浏览器、数据或运行能力看 [04](../04-mcp.md)。
+
+## 先定位实际依赖，再选文档或源码
+
+**✅ 问“项目实际怎么做”，从调用方找到已解析包、项目补丁和具体模块；问“这个版本怎样用”，再查官方文档或 Context7。** 原生导航已能找到实现就直接读，不必另装工具。版本标签不能单独证明实现身份：Zed 的 `reqwest` 实际指向重命名的 Git fork `zed-reqwest`；Vite 把 `debug` 替换成 `obug`，还给 `dotenv-expand@13.0.0` 打了改变变量展开行为的补丁。直接下载同名库或对应上游 tag，会漏掉这些差异。
+
+以本仓 [opensrc 修复](../../experiments/opensrc-ref-integrity/README.md)的 HTTP 客户端为例：在已准备依赖的 opensrc 根目录，用 Bash、Cargo、jq、realpath 定位 CLI 的**普通直接依赖**。换项目时改前三个变量：消费包清单、代码使用的依赖边名、实际目标平台；有显式 feature 选择时给 metadata 带上相同参数。
+
+```bash
+set -o pipefail
+manifest=packages/opensrc/cli/Cargo.toml
+dep=reqwest
+target=x86_64-unknown-linux-gnu
+cargo metadata --format-version 1 --locked --offline \
+  --manifest-path "$manifest" --filter-platform "$target" |
+  jq -e --arg manifest "$(realpath "$manifest")" --arg dep "$dep" '
+    . as $m
+    | $m.packages[] | select(.manifest_path == $manifest)
+    | .id as $consumer
+    | $m.resolve.nodes[] | select(.id == $consumer)
+    | .deps[] | select(.name == $dep)
+    | select(any(.dep_kinds[]; .kind == null))
+    | .pkg as $id
+    | $m.packages[] | select(.id == $id)
+    | {name, version, source, manifest_path,
+       lib_src: [.targets[] | select(.kind | index("lib")) | .src_path]}
+  '
+```
+
+这沿消费包的依赖边连接 PackageId，不解析 ID 字符串，也不在全局缓存里取第一个同名目录。接着在本机读返回的 `manifest_path`、`lib_src`，沿调用处进入实际模块。离线缺包时先按项目锁文件补齐依赖；查不到这条边则检查消费包和依赖类别，不换成猜测的版本。
+
+**已经试到哪一步**：在 opensrc 0.7.3 的既有修复工作区完成离线查询，定位到 reqwest 0.12.28，读取了 `http_client()` 实际使用的 `src/blocking/client.rs`。它的 `timeout` 接受可选时长；同版异步客户端的同名方法接受 `Duration`，默认值也不同。因此包与版本正确后仍要跟实际模块。此查询和源码阅读未测真实网络超时，也未新增编译测试。
+
+**API 能否编译，仍按项目当前 target／feature 检查。** Cargo metadata 的 feature 集可能合并工作区其他成员的选择；源码中存在、在线文档展示或 `features` 数组列出，都不能替代消费包的构建验证。Context7 保留为已确认身份与版本的用法查询；需补取上游源码时再用 Git 固定提交或试 opensrc，远端源码不替代项目已安装、已打补丁的实现。
+
+**依据**：[一手] [Cargo metadata 契约](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)、[Zed 的重命名依赖](https://github.com/zed-industries/zed/blob/57c7b10ece671185a8863515667ee5248c6f0d53/Cargo.toml#L864-L872)、[Vite 的 alias／patch 配置](https://github.com/vitejs/vite/blob/e954a9cda0b5254be495a937333a0be1b8503d8f/pnpm-workspace.yaml#L13-L22)与[实际补丁](https://github.com/vitejs/vite/blob/e954a9cda0b5254be495a937333a0be1b8503d8f/patches/dotenv-expand%4013.0.0.patch)；[用户原帖／维护者解释] [Cargo #7754 的 feature 合并问题](https://github.com/rust-lang/cargo/issues/7754)。源码、原帖与本仓离线定位核实 2026-10-26。
 
 ## 版本 API：用官方 Context7 插件，明确选版本
 
