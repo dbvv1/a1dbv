@@ -720,6 +720,18 @@ ink 只保存叙事执行状态，不负责世界／库存；内容改动后可�
 
 **玩家路径。** 战斗暂停 → 设置 → 主音量 → 推滑块试听 → 应用（或取消）→ 回到暂停菜单 → 继续游戏。第二次需求在同一路径上加字号档、改键、按条件隐藏当前项，以及放弃更改／重置确认层；入口和返回路径不变。本示例不实现显示模式／分辨率切换。
 
+##### 底座选择：保留现有菜单，只补缺的链
+
+| 底座（锁定版本） | 这个菜单直接有什么 | 还要项目补／作者成本 | 迁移代价 | 默认 |
+|---|---|---|---|---|
+| **uGUI**（Unity 6000.3） | Selectable 的 Automatic／Explicit 导航、EventSystem、TMP 值文本；现有暂停菜单可直接加页 | 设置定义、草稿和保存要项目补；动态隐藏后要重接导航；背景点击默认清选择 | 无（已用 uGUI） | ✅ 已有 uGUI 项目保留 |
+| **UI Toolkit 6.3** | UXML／USS、运行时数据绑定、ListView、焦点控制；层级重建后要重设焦点 | 设置模型同样要项目补；行控件、样式和焦点要重做；6.7 的新能力不套到 6.3 | 高（重建现有页） | 🧪 新项目且团队已用 UITK 时直接试；不为设置页单迁 |
+| **UMG 5.8＋CommonUI** | UMG 控件与导航；CommonUI 的激活栈、目标焦点和返回处理；`bAutoRestoreFocus` 与焦点恢复；Lyra GameSettings 提供可借的定义、编辑条件和注册表模式，但它是示例插件不是引擎内置 | 仍需项目设置会话；CommonUI 的激活、返回和焦点策略要学；小菜单照搬整套插件会增维护 | 中到高 | ✅ 已有 UMG 保留；🧪 多层模态／设备提示反复出现才加 CommonUI |
+
+官方 UI vs Game Input 样例可借显式 UI 交接和选择保存；它明确不支持 mixed models，也没有嵌套弹窗栈，不能当完整菜单底座。CommonUI 不包办 UMG 导航；uGUI 的 Deselect on Background Click 默认清选择；Toolkit 禁用 `UIDocument` 的 GameObject 后层级会重建，重新启用时须再次设置焦点。选择底座看现有项目缺什么，不按 API 数量换框架；[整页选型与迁移案例](../../docs/research/wp10-content.md#整页选型回流ui-toolkit-新能力与迁移成本)保留版本差异和作者成本。
+
+只需一两个设置时，沿已有具体行适配器；要扩成完整设置页时，再采用下文示例：一张 `SettingDef` 表、一个 `SettingsSession`、一个音量行适配器和一个带可观察完成／失败的存储层（文件适配器示例见下）；二版在同一会话和入口上增加定义与行适配器，确认层与焦点回退只加在菜单层，不改入口。
+
 [FPS 的单行灵敏度设置](https://github.com/dbvv1/FPS-Like/blob/239df5badd8c43e14f57d381af379805910a1232/src/input/sensitivity.ts)沿原暂停菜单走通改值、保存／取消、重载、恢复默认及回到开火换弹；浏览器保存失败时保留原运行值和草稿；恢复默认也先写入草稿，保存并应用时只删除自身覆盖键，取消不改存储。异步指针锁获准时仍核未提交草稿，不能只在“继续”点击时检查一次；未提交就留在菜单供保存或取消。只需这一项时保留具体行适配器，不先为它搭通用设置框架。
 
 **网页已有 DOM 菜单，优先借原生模态隔离背景，再补游戏自己的返回语义。** 用带可访问名称的 `<dialog>` 配合 `showModal()`／`close()`，让浏览器处理背景 inert 与导航范围，不先手写 Tab 循环。首次打开聚焦进入／继续／下一回合；内容更新后只在原焦点已隐藏、禁用或离开菜单时回有效主按钮，保住仍有效的滑块焦点。尤其要测“下一回合替换按钮→指针锁失败”：菜单还开着，不代表旧焦点仍能操作。菜单关闭与玩法恢复权限分别处理；外层致命错误出现前先释放模态，避免错误被顶层菜单遮住。Unity／UE 仍沿本节自己的原生 UI 与输入路由，不套 DOM API。
@@ -748,6 +760,22 @@ flowchart LR
   I --> J[恢复玩法输入]
 ```
 
+##### 三类生效时机与返回
+
+| 类型 | 典型设置 | 玩家看到什么 | 取消与返回 |
+|---|---|---|---|
+| **即时预览** | 主音量、音乐、语音 | 推滑块立即听到，值文本同步 | 取消恢复本次编辑开始时的快照；有未应用改动时返回，先问“放弃更改？” |
+| **按应用提交** | 字号、界面缩放、部分画质、改键 | 改的是草稿，点“应用”后整页生效 | 取消不写运行时；改键恢复原 override；未应用改动返回同上 |
+| **需重启** | 渲染后端、输入后端、部分平台画质 | 保存后行标“重启后生效”，本局不变 | 返回不撤销已保存值；保存成功即不再问“未保存” |
+
+音量的即时预览写 AudioMixer.SetFloat 的暴露参数（调用后快照不再接管该参数），取消时写回本次编辑开始前的值。OpenTTD 的设置描述表把 `NewgameOnly`、`NotInSave`、`NotInConfig`、`startup` 写成定义字段，配置保存与游戏存档分开；可借它把时机放进定义，而不是散落在每个 UI 回调里。显示模式的引擎契约只在 WP10 设置到保存保留，不进入本节确认层。
+
+**改键接同一条会话，但校验独立。** 捕获阶段只写草稿候选，行上显示候选键；应用前先查同动作和全局快捷键冲突，校验通过后才走统一的保存并写 Input System 的 binding override。取消或返回恢复应用前的 override；组合键按子 binding 索引改，不能把组合根当一个键。显示用 `GetBindingDisplayString`／当前设备的按键名，不硬编码“A／×”；换设备后重取提示。GUID、冲突和迁移边界继续沿用[改键持久化](../../docs/research/wp10-content.md#103)。
+
+**隐藏项与确认层的默认。** 可见性由定义里的条件决定，例如未启用语音时隐藏语音音量行；不要删数据，也不要每帧重建整页。当前焦点行被隐藏时，焦点移到下一条可见行，没有就上一条，再没有就本节第一行；滚动位置和已改值保留。确认层默认焦点放在最不破坏当前状态的动作：放弃更改层选“继续编辑”，重置层选“取消”。关闭确认层回到打开它的那一行；该行已隐藏就按上面的顺序找最近可见行。关闭设置页只撤本层；关闭暂停菜单才释放本层暂停持有，其他暂停来源仍由各自持有者管理；第二个菜单重复同一政策才抽共享菜单层，不为首版先建框架。
+
+**大字档。** 用一个 `fontScale` 作用于菜单标题、标签、值和键位摘要，不给每个控件单独改字号。放大后标签和值都要在：窄宽度先把值换到标签下一行，再让列表滚动；不把值裁掉，也不用缩小字号换空间。焦点环、滚动条和底部“确认／返回／应用”摘要一起放大；验收走同一路径的 100% 和 150% 两档，最长标签和最长值都要看。
+
 ##### 设置责任与导航接口
 
 设置本身有七项责任：定义、当前有效值、已保存值、草稿、预览、应用与保存、绑定；下表另列导航焦点与输入路由，避免把它们塞进某个控件回调。
@@ -763,7 +791,7 @@ flowchart LR
 | 控件绑定 | 行适配器 | 每种控件一个适配器，只读定义、显示值和转发改动；不持有存档键，也不复制事件链。 |
 | 导航焦点与输入路由 | 菜单层＋输入层 | 菜单层管当前层、初始焦点、隐藏项后的焦点和返回目标；输入层管 UI／玩法模式切换，UI 消费输入不自动挡 gameplay，沿用[输入与暂停](#输入与暂停先定动作权限再切输入)。 |
 
-**最小数据与调用顺序（本项目约定，不是 Unity／Unreal 内置类）。**
+**按需展开实现：下面保留扩展型设置页的数据与调用顺序。** 先按前面的三类生效时机作选择，再接定义、会话与存储；这些是项目约定，不是 Unity／Unreal 内置类。
 
 ```csharp
 enum ApplyTiming { Preview, OnApply, OnRestart }
@@ -918,34 +946,6 @@ sealed class FileSettingsStore {
 
 **新增一个设置只做三步：** 在表里加一条定义；给它的控件类型注册或复用一个行适配器；补一条“打开→改→应用／取消→再打开”的回归用例。存档键、脏标记、应用、保存和返回都走同一会话，不要为每个滑块再写一套回调和存储。
 
-##### 三类生效时机与返回
-
-| 类型 | 典型设置 | 玩家看到什么 | 取消与返回 |
-|---|---|---|---|
-| **即时预览** | 主音量、音乐、语音 | 推滑块立即听到，值文本同步 | 取消恢复本次编辑开始时的快照；有未应用改动时返回，先问“放弃更改？” |
-| **按应用提交** | 字号、界面缩放、部分画质、改键 | 改的是草稿，点“应用”后整页生效 | 取消不写运行时；改键恢复原 override；未应用改动返回同上 |
-| **需重启** | 渲染后端、输入后端、部分平台画质 | 保存后行标“重启后生效”，本局不变 | 返回不撤销已保存值；保存成功即不再问“未保存” |
-
-未提交提示只针对“改动未保存”的草稿；已保存的待重启值不算未保存。落到三个具体项：音量推滑块就试听，返回前有改动先问，取消回到原音量；字号改完点“应用”才整页变化，未应用就返回先问，取消保持原字号；改键捕获只写候选，冲突先提示，应用才写 override，取消或中途返回恢复原键。音量的即时预览写 AudioMixer.SetFloat 的暴露参数（调用后快照不再接管该参数），取消时写回本次编辑开始前的值。OpenTTD 的设置描述表把 `NewgameOnly`、`NotInSave`、`NotInConfig`、`startup` 写成定义字段，配置保存与游戏存档分开；可借它把时机放进定义，而不是散落在每个 UI 回调里。显示模式的引擎契约只在 WP10 设置到保存保留，不进入本节确认层。
-
-**改键接同一条会话，但校验独立。** 捕获阶段只写草稿候选，行上显示候选键；应用前先查同动作和全局快捷键冲突，校验通过后才走统一的保存并写 Input System 的 binding override。取消或返回恢复应用前的 override；组合键按子 binding 索引改，不能把组合根当一个键。显示用 `GetBindingDisplayString`／当前设备的按键名，不硬编码“A／×”；换设备后重取提示。GUID、冲突和迁移边界继续沿用[改键持久化](../../docs/research/wp10-content.md#103)。
-
-**隐藏项与确认层的默认。** 可见性由定义里的条件决定，例如未启用语音时隐藏语音音量行；不要删数据，也不要每帧重建整页。当前焦点行被隐藏时，焦点移到下一条可见行，没有就上一条，再没有就本节第一行；滚动位置和已改值保留。确认层默认焦点放在最不破坏当前状态的动作：放弃更改层选“继续编辑”，重置层选“取消”。关闭确认层回到打开它的那一行；该行已隐藏就按上面的顺序找最近可见行。关闭设置页只撤本层；关闭暂停菜单才释放本层暂停持有，其他暂停来源仍由各自持有者管理；第二个菜单重复同一政策才抽共享菜单层，不为首版先建框架。
-
-**大字档。** 用一个 `fontScale` 作用于菜单标题、标签、值和键位摘要，不给每个控件单独改字号。放大后标签和值都要在：窄宽度先把值换到标签下一行，再让列表滚动；不把值裁掉，也不用缩小字号换空间。焦点环、滚动条和底部“确认／返回／应用”摘要一起放大；验收走同一路径的 100% 和 150% 两档，最长标签和最长值都要看。
-
-##### 底座选择：保留现有菜单，只补缺的链
-
-| 底座（锁定版本） | 这个菜单直接有什么 | 还要项目补／作者成本 | 迁移代价 | 默认 |
-|---|---|---|---|---|
-| **uGUI**（Unity 6000.3） | Selectable 的 Automatic／Explicit 导航、EventSystem、TMP 值文本；现有暂停菜单可直接加页 | 设置定义、草稿和保存要项目补；动态隐藏后要重接导航；背景点击默认清选择 | 无（已用 uGUI） | ✅ 已有 uGUI 项目保留 |
-| **UI Toolkit 6.3** | UXML／USS、运行时数据绑定、ListView、焦点控制；层级重建后要重设焦点 | 设置模型同样要项目补；行控件、样式和焦点要重做；6.7 的新能力不套到 6.3 | 高（重建现有页） | 🧪 新项目且团队已用 UITK 时直接试；不为设置页单迁 |
-| **UMG 5.8＋CommonUI** | UMG 控件与导航；CommonUI 的激活栈、目标焦点和返回处理；`bAutoRestoreFocus` 与焦点恢复；Lyra GameSettings 提供可借的定义、编辑条件和注册表模式，但它是示例插件不是引擎内置 | 仍需项目设置会话；CommonUI 的激活、返回和焦点策略要学；小菜单照搬整套插件会增维护 | 中到高 | ✅ 已有 UMG 保留；🧪 多层模态／设备提示反复出现才加 CommonUI |
-
-官方 UI vs Game Input 样例可借显式 UI 交接和选择保存；它明确不支持 mixed models，也没有嵌套弹窗栈，不能当完整菜单底座。CommonUI 不包办 UMG 导航；uGUI 的 Deselect on Background Click 默认清选择；Toolkit 禁用 `UIDocument` 的 GameObject 后层级会重建，重新启用时须再次设置焦点。选择底座看现有项目缺什么，不按 API 数量换框架；[整页选型与迁移案例](../../docs/research/wp10-content.md#整页选型回流ui-toolkit-新能力与迁移成本)保留版本差异和作者成本。
-
-首版落在现有暂停菜单的一个新页：一张 `SettingDef` 表、一个 `SettingsSession`、一个音量行适配器和一个带可观察完成／失败的存储层（文件适配器示例见上）；二版在同一会话和入口上增加定义与行适配器，确认层与焦点回退只加在菜单层，不改入口。
-
 ##### 交给 AI 的首版与第二次需求
 
 | 轮次 | 给 AI 的目标、现有入口和约束 | 要求返回的差量 | 人验收 |
@@ -953,9 +953,9 @@ sealed class FileSettingsStore {
 | **首版：音量** | 目标：暂停→设置→主音量→试听→应用／取消→返回。入口：现有暂停菜单、AudioMixer 的暴露参数、现有设置文件。约束：一条定义、一个会话、一个行适配器；预览与保存分开。 | 新增 `SettingDef` 表、`SettingsSession`、音量行、存储返回值；覆盖应用成功、保存失败、取消三条路径。 | 键鼠和手柄各走一遍；推滑块能听到且取消后回到原音量；保存失败时页面不关、值还在；返回后战斗输入恢复。 |
 | **二版：大字＋改键＋隐藏＋确认** | 在首版上追加：字号档、跳跃改键（含冲突）、按条件隐藏当前行（如未启用语音时隐藏语音音量）、放弃更改／重置确认层。入口和会话不变。 | 加字号定义和 `fontScale`；加改键定义、捕获、冲突检查和 override 恢复；加 `VisibleWhen` 与焦点回退；加确认层和默认焦点。 | 100%／150% 下标签和值都可读；改键取消不改变原键；隐藏当前行后焦点落到相邻可见行；确认层取消回到原行；保存失败仍保留草稿。 |
 
-以上是文档与实现起点；未运行引擎、未构建真实菜单，键鼠／手柄导航、手感、读屏、实际音量和游戏内效果待验。
+上述 Unity／UE 设置页是文档与实现起点，尚未在引擎里构建；键鼠／手柄导航、手感、读屏、实际音量和游戏内效果待验。Web 实跑范围见前面的独立段落。
 
-来源：[一手] 保存与文件边界：[PlayerPrefs.Save](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html)、[UE 5.8 UGameUserSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8)、[JsonUtility.ToJson](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/JsonUtility.ToJson.html)、[.NET FileStream.Flush(Boolean)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=netstandard-2.1)、[.NET File.Replace](https://learn.microsoft.com/en-us/dotnet/api/system.io.file.replace?view=netstandard-2.1)；音频预览：[AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)、[AudioListener.volume](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-volume.html)；改键：[Input System 1.20 保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)、[Input System 1.20 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)；底座与焦点：[uGUI 2.0 Navigation](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)、[UI Toolkit 6.3 焦点 FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)、[UI Toolkit 6.3 display／visibility](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-USS-SupportedProperties.html)、[Lyra Sample Game Settings 5.8](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine)、[CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)、[CommonUI 焦点接口](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)、[Input System 1.20 UI Input Module](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/ui-input-module-reference.html)；[一手：固定源码] [OpenTTD 设置描述表](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)、[配置读写](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp)；[研究] 定义／草稿／预览／保存拆分、脏标记只与已保存值比较、三类时机、焦点与二改流程为本项目建议，显示模式不在本示例范围；文件适配器为项目示例，只核了 .NET Standard 2.1 API 存在与异常边界和 JsonUtility 的公开字段／序列化规则，未实机写盘；沿 [WP10 设置到保存](../../docs/research/wp10-content.md#settings-pipeline)。核实 2026-10-25，未运行引擎或真实菜单。
+来源：[一手] 保存与文件边界：[PlayerPrefs.Save](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html)、[UE 5.8 UGameUserSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8)、[JsonUtility.ToJson](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/JsonUtility.ToJson.html)、[.NET FileStream.Flush(Boolean)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=netstandard-2.1)、[.NET File.Replace](https://learn.microsoft.com/en-us/dotnet/api/system.io.file.replace?view=netstandard-2.1)；音频预览：[AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)、[AudioListener.volume](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-volume.html)；改键：[Input System 1.20 保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)、[Input System 1.20 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)；底座与焦点：[uGUI 2.0 Navigation](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)、[UI Toolkit 6.3 焦点 FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)、[UI Toolkit 6.3 display／visibility](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-USS-SupportedProperties.html)、[Lyra Sample Game Settings 5.8](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine)、[CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)、[CommonUI 焦点接口](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)、[Input System 1.20 UI Input Module](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/ui-input-module-reference.html)；[一手：固定源码] [OpenTTD 设置描述表](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)、[配置读写](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp)；[研究] 定义／草稿／预览／保存拆分、脏标记只与已保存值比较、三类时机、焦点与二改流程为本项目建议，显示模式不在本示例范围；文件适配器为项目示例，只核了 .NET Standard 2.1 API 存在与异常边界和 JsonUtility 的公开字段／序列化规则，未实机写盘；沿 [WP10 设置到保存](../../docs/research/wp10-content.md#settings-pipeline)。核实 2026-10-25；该 Unity／UE 设置页未实跑。
 
 ### 压低卡顿与设备耗用
 
