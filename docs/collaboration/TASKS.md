@@ -28,7 +28,7 @@
 | MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 双英雄选择／四技能／重开已采用；一次基本战斗的塔、兵、英雄与地表已由许可清楚资源替换，权威攻击／受击反馈和 HUD／声音候选已入 [main b4dff100](https://github.com/dbvv1/MOBA-Like/commit/b4dff1007527a2f8bfae81ca4749e90321f7bd7f)，10-26 [网站](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)已同步此版。软件 WebGL2 实战与非作者实图显示相对旧版改善，**仍未达到英雄联盟基本战斗参照品质**；继续交战层级、危险区语义与音画手感。旧本机基线[原任务](local-jobs/B-MOBA-CLIENT-SMOKE-001.md)取消续拍，保部分结果与独审缺陷。默认 v8；Git 不自动部署网站。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[细则 G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 当前优先把现有 Web 简单内容的品质做好；[Unity 原生采用](local-jobs/B-UNITY-ADOPTION-001.md)保留接收端许可阻断与独立源候选，暂停工程、实跑与扩展，恢复须以届时用户方向为准，不随许可恢复自动开跑。 |
 | B-制作链 | **AI 全链路**（[细则 G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [原创角色源→多单位→可玩主循环](../../domains/game-dev/assets/animation.md#multiunit-animation-consumer)已回流：idle／walk／death 与权威事件驱动 attack／hurt 已入正式 c218→083，原软件 WebGL2 功能检查通过；[静音开门影片](../../experiments/gate-reveal/README.md)制作与返回玩法也已实跑。统一场景／塔／兵／英雄资源与权威战斗反馈已随 b4dff100 入站；基础制作与接入不等于品质达标，当前按英雄联盟基本战斗参照继续层级、危险区与声音的实玩并排优化，声音主观听验仍未评。 |
-| SR | **Star-Rush 品质提升**：完整弯道的驾驶、画面、声音与反馈，以地平线为主参照，保跑圈玩法 | dot-B | master [`56d6179`](https://github.com/dbvv1/Star-Rush-Reborn/commit/56d6179408c6941584544d913f9e1667cd5197e5) 已修正 Playwright 默认 unsafe 参数排除；旧“最终无 unsafe”推断已撤回，真实软件 WebGL 像素保留。[公路候选 `f4efca2`](https://github.com/dbvv1/Star-Rush-Reborn/tree/f4efca21b257c9f739d3f09f03c415f49dbbbdcf) 76 项与客户端／独审通过，但整体驾驶品质未通过，继续本云同弯实玩。[公开站](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site)仍为 `c287b23`，不自动换候选。 |
+| SR | **Star-Rush 品质提升**：完整弯道的驾驶、画面、声音与反馈，以地平线为主参照，保跑圈玩法 | dot-B | master [`487112a`](https://github.com/dbvv1/Star-Rush-Reborn/commit/487112a61f7ba2fd846f2f8c5b126caa76e7cb8c) 已接同站 `/road` 未定稿普通公路候选，`/` 保默认街机；本机记录／幽灵隔离、不连在线榜或房间。全测、独审及本云两入口真实软件 WebGL 开局／重开／菜单往返通过；待同步[既有公开站](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site)，整体驾驶品质未达到参照。 |
 | FPS | **FPS-Like 纵切片**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | 10-26 [公开网站](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site) v3 已部署：握持／弹匣留屏、命中中心让出目标、真实落点与菜单前倒地反馈改善；云端正常软件 WebGL 射击循环及非作者实图复评接受此增量，**仍未达到 CS2 基本射击循环品质**。下一步单步枪轮廓、握持与换弹接触，声音主观听验仍待评。`git push origin HEAD:refs/heads/b/fps-headless-v1` 因 FPS-Like 不在显式推送授权范围被平台拒绝，须用户补充该仓库普通快进推送授权才恢复；期间不重试 GitHub 发布，网站部署与 Git 权限分开。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
@@ -37,7 +37,7 @@
 需要人亲自听、看、玩才能判断的项目集中在这里，由用户择时统一验收；执行者记录后继续其他工作。
 
 - MOBA-Like：[可玩入口与操作](https://github.com/dbvv1/MOBA-Like/blob/main/README.md)的硬件 GPU 画面、操作手感与完整对局体验；软件 WebGL2 smoke 已通过。
-- Star-Rush：[地平线方向同弯候选 `f4efca2`](https://github.com/dbvv1/Star-Rush-Reborn/tree/f4efca21b257c9f739d3f09f03c415f49dbbbdcf)：普通油门／制动／转向、无喷射奖励，跑酷实体移出赛道；工程已审；车体阶段三轮正常 Canvas 仍暴露触墙／恢复问题，移出障碍待实际复看，未达到参照。旧小喷 A/B 仅历史，候选未部署／未默认，我们继续云端优化，不等待用户接管。完整视听、硬件表现与候选声音仍待验。
+- Star-Rush：`487112a` 的普通公路候选仅为可试玩对照，未默认；制动转向耦合错误已修，路内跑酷物移出，离散工具输入不能代替真人连续操控或证明所有触墙是物理缺陷。我们继续本云优化完整弯道，不等待用户接管；整体手感、完整视听与硬件表现未达成验收，候选声音仍待实玩混合判断。
 - 潮汐邮差 v2：素材、木筏与旧档。
 - Memos：owner 登录与编辑。
 - Maka 侧聊模型选择：真实后端／Electron 与完整应用体验（[固定候选](local-jobs/A-STORYBOOK-ADOPTION-001.md)）。
