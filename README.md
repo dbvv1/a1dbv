@@ -13,9 +13,9 @@
 | CLAUDE.md／AGENTS.md 怎么写 | [03 §2.3](docs/03-context-engineering.md#23-写什么不写什么官方最佳实践-一手)、[模板](templates/README.md) | 🟡 |
 | 怎样让 Agent 自己验证、别只报完成 | [07 §1](docs/07-workflows.md#1-核心验证闭环-)、[23 浏览器验证](docs/23-browser-verification.md) | 🟡 |
 | 上下文怎么管、会话越聊越笨怎么办 | [03 §3](docs/03-context-engineering.md#3-会话层面的上下文管理)、[17 §2.6](docs/17-troubleshooting.md) | 🟡 |
-| 该装哪些 Skill 与插件 | [05 Skill 与插件](docs/05-skills-and-plugins.md) | ⏳ |
+| 该装哪些 Skill 与插件 | [按能力缺口选一项，附配置与起步](docs/decisions/skills-and-plugins.md) | ✅ |
 | 该接哪些 MCP | [04 MCP](docs/04-mcp.md) | ✅ |
-| Codex 过度防御、过度工程怎么治 | [17 §2.5](docs/17-troubleshooting.md) | ⏳ |
+| Codex 过度防御、过度工程怎么治 | [按触发输入与契约收敛改动](docs/decisions/codex-overengineering.md) | ✅ |
 | 子代理与多 Agent 怎么组织 | [08 多 Agent](docs/08-multi-agent.md) | 🟡 |
 | 长任务与无人值守怎么跑 | [20 长任务](docs/20-codex-long-horizon.md) | 🟡 |
 | 强模型与弱模型怎么分工、怎么控成本 | [02](docs/02-models-and-cost.md)、[08](docs/08-multi-agent.md) | 🟡 |
@@ -26,7 +26,7 @@
 | 前端与 UI 任务 | [23 浏览器验证](docs/23-browser-verification.md) | 🟡 |
 | 遗留代码与大迁移 | [15 任务打法](docs/15-task-playbooks.md) | ✅ |
 | 团队怎么推广 | [18 团队落地](docs/18-team-adoption.md) | ✅ |
-| 本周值得试什么 | [13 前沿雷达](docs/13-frontier-radar.md) | ⏳ |
+| 本周值得试什么 | [本周 Top 5：按当前编码任务选](docs/13-frontier-radar.md#本周-top-5) | ✅ |
 | 用 AI 做游戏 | [游戏分支](domains/game-dev/README.md) | 🟡 |
 
 需要自己找当前最强的做法时，用 [explore-frontier Skill](templates/generic/.claude/skills/explore-frontier/SKILL.md)。

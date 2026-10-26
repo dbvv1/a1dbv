@@ -2,7 +2,7 @@
 
 id: A-OFFLINE-BASELINE-CHECK-001
 owner: dot-A
-status: blocked
+status: cancelled
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7b775bbdac27af662f9291d1cba989196d4f75f6
@@ -32,5 +32,5 @@ result_branch: relay/a-offline-baseline-check-001
 - 固定基线 7b775bbd 在既有接收端环境被原入口 preflight 拦下（Windows 原生 Python 的 os.name=nt、缺 /bin/bash 的 POSIX 条件与 jq），19 阶段全部未运行，已把可复核的 blocked 结果和恢复条件回写到任务卡。
 - 产物：[2d44b36](https://github.com/dbvv1/a1dbv/commit/2d44b361380ba2e23eff2a67b64b60ec3c580ff5)，分支 `relay/a-offline-baseline-check-001`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：由 dot-A 在 Python 报告 os.name=posix、/bin/bash 可执行且 PATH 有 jq 的环境，用同一固定 SHA 重跑 python3 scripts/check_offline.py 并从第 1 阶段重新记录。
+- 已停止：2026-10-27 按用户新方向取消本流程核验任务，不再续跑或派发；已有结果保留。实际代码交付仍按运行手册 §7 运行适用检查。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
