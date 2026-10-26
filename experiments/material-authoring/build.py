@@ -10,12 +10,19 @@ import bpy
 from mathutils import Vector
 
 
+# This example deliberately uses a broad, shallow bevel that survives its bake budget.
+BRICK_SCALE = 4.0
+MORTAR_SMOOTH = 1.0
+BUMP_DISTANCE = 0.005
+MIN_EDGE_TEXELS = 2.0
+
+
 def read_recipe(path):
     recipe = json.loads(path.read_text(encoding='utf-8'))
     if set(recipe) != {'resolution', 'base', 'changed'}:
         raise ValueError('recipe must contain resolution, base, changed')
-    if type(recipe['resolution']) is not int or recipe['resolution'] not in (64, 128, 256, 512):
-        raise ValueError('resolution must be 64, 128, 256 or 512')
+    if type(recipe['resolution']) is not int or recipe['resolution'] not in (128, 256, 512):
+        raise ValueError('resolution must be 128, 256 or 512')
     for name in ('base', 'changed'):
         values = recipe[name]
         if set(values) != {'mortar', 'roughness'}:
@@ -24,6 +31,9 @@ def read_recipe(path):
             value = values[key]
             if type(value) not in (float, int) or not math.isfinite(value) or not bounds[0] <= value <= bounds[1]:
                 raise ValueError(f'invalid {name}.{key}')
+        edge_texels = values['mortar'] * MORTAR_SMOOTH / BRICK_SCALE * recipe['resolution']
+        if edge_texels < MIN_EDGE_TEXELS:
+            raise ValueError(f'{name}: bevel spans {edge_texels:.3f} texels; use at least {MIN_EDGE_TEXELS:g} by widening mortar or increasing resolution')
     return recipe
 
 
@@ -46,11 +56,11 @@ def source_material(name, preset):
     uv = nodes.new('ShaderNodeTexCoord')
     brick = nodes.new('ShaderNodeTexBrick')
     brick.name = 'Shared brick structure'
-    brick.inputs['Scale'].default_value = 4.0
+    brick.inputs['Scale'].default_value = BRICK_SCALE
     brick.inputs['Brick Width'].default_value = 0.5
     brick.inputs['Row Height'].default_value = 0.25
     brick.inputs['Mortar Size'].default_value = preset['mortar']
-    brick.inputs['Mortar Smooth'].default_value = 0.01
+    brick.inputs['Mortar Smooth'].default_value = MORTAR_SMOOTH
     brick.inputs['Color1'].default_value = (0.32, 0.075, 0.035, 1)
     brick.inputs['Color2'].default_value = (0.22, 0.04, 0.018, 1)
     brick.inputs['Mortar'].default_value = (0.13, 0.12, 0.10, 1)
@@ -66,7 +76,7 @@ def source_material(name, preset):
     roughness.inputs['To Max'].default_value = 0.9
     links.new(brick.outputs['Fac'], roughness.inputs['Value'])
     bump = nodes.new('ShaderNodeBump')
-    bump.inputs['Distance'].default_value = 0.025
+    bump.inputs['Distance'].default_value = BUMP_DISTANCE
     links.new(height.outputs[0], bump.inputs['Height'])
     shader = nodes.new('ShaderNodeBsdfPrincipled')
     shader.inputs['Metallic'].default_value = 0
@@ -128,7 +138,7 @@ def consumer_material(directory, name):
     return material
 
 
-def consumer_scene(directory):
+def consumer_scene(directory, recipe):
     scene = blank_scene()
     scene.world = bpy.data.worlds.new('Fixed lighting')
     scene.world.use_nodes = True
@@ -158,6 +168,12 @@ def consumer_scene(directory):
         if image.source == 'FILE':
             image.filepath = '//' + Path(image.filepath).name
     bpy.ops.wm.save_as_mainfile(filepath=str(directory / 'consumer.blend'))
+    # Same camera, lights and objects: compare the authored surface to the PNG consumer.
+    # Do not save this temporary source replacement into consumer.blend.
+    for panel, preset in zip(panels, ('base', 'changed')):
+        panel.data.materials[0] = source_material(f'preview_{preset}', recipe[preset])[0]
+    scene.render.filepath = str(directory / 'source.png')
+    bpy.ops.render.render(write_still=True)
 
 
 def main():
@@ -181,7 +197,7 @@ def main():
         bake_maps(obj, parts, output, name, recipe['resolution'], channels)
     bpy.ops.wm.save_as_mainfile(filepath=str(output / 'author.blend'))
     (output / 'recipe.json').write_text(json.dumps(recipe, indent=2) + '\n', encoding='utf-8')
-    consumer_scene(output)
+    consumer_scene(output, recipe)
     print('MATERIAL_PRODUCTION_OK', bpy.app.version_string, flush=True)
 
 

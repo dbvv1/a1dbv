@@ -276,11 +276,13 @@ UCSD的[MaterialApprentice v1](https://arxiv.org/html/2607.13318v1)（2026-07-14
 
 本仓校验官方 Linux 1.8 包 SHA-256 后实际启动，`--version` 返回所带 Godot 4.7.2；在本次 Linux 容器做 `--headless` 示例导出未产生纹理，一次退出 139，无足够诊断归因于 #1506。该环境结果不否定 GUI 路线，也不证明其他环境不能批产；下一次须在具备相应渲染能力的环境验证完整导出，不反复重跑同一失败入口。
 
-**已跑通的作者源替代是[原生 Blender 砖墙例](../../experiments/material-authoring/README.md)。** 脚本建立原创 Brick 节点，Fac 同时驱动反向高度和砖／缝 roughness，颜色沿同一节点；保存作者图，再以 CPU 烘焙成两套 256² color／roughness／tangent normal。消费者另从 PNG 重建材质、保存相对引用，首版两墙同源，二版仅右墙砖缝 `0.018→0.045`、砖面 roughness `0.65→0.35`；左墙源与绑定未变。补验仅改 roughness 时，两次独立 normal 烘焙曾出现最大 5/255 的通道差；最终配方对未受影响的颜色／normal 直接复用，避免把重新采样当必须的二改成本。已有 Blender 的规则表面可借这条路线，不需要为了可回改而另造图编辑器；复杂纹样仍优先适配的成熟参数源。
+**已跑通的作者源替代是[原生 Blender 砖墙例](../../experiments/material-authoring/README.md)。** 脚本建立原创 Brick 节点，Fac 同时驱动反向高度和砖／缝 roughness，颜色沿同一节点；保存作者图，再以 CPU 烘焙成两套 color／roughness／tangent normal。消费者另从 PNG 重建材质、保存相对引用，首版两墙同源，二版仅右墙砖缝 `0.018→0.045`、砖面 roughness `0.65→0.35`；左墙源与绑定未变。补验仅改 roughness 时，两次独立 normal 烘焙曾出现最大 5/255 的通道差；最终配方对未受影响的颜色／normal 直接复用，避免把重新采样当必须的二改成本。已有 Blender 的规则表面可借这条路线，不需要为了可回改而另造图编辑器；复杂纹样仍优先适配的成熟参数源。
 
-实际 Blender 4.3.2／Cycles CPU：6 项回归覆盖正常制作与保存重开、仅 roughness 二改保持结构通道、缺配方、非法参数、已有输出保护及缺贴图失败；作者已看同灯光／镜头的两墙图。只证明此节点图、输出数值和消费者绑定成立，未验平铺接缝、换灯／多视角、目标引擎、GPU、设备预算或品质优于其他工具。脚本与配方原创；生成 `.blend`、贴图、预览和过程日志本地保留，不提交报告堆。
+**通道齐全还不等于烘焙保住作者表面。** 10-26 在同一相机／灯光下分别替换颜色／roughness 与 normal，主要高光差异随 baked normal 出现；旧 256² 图中 base 的 X 只有正坡、changed 只有负坡，原“有变化＋近单位长度”检查漏掉它。固定 Brick 源码把 Smooth 定义为 mortar 宽度的比例，故旧 `0.01` 在本图 Scale 4 下的过渡仅 `0.018×0.01÷4×256≈0.012` texel（changed 约 `0.029`）；Bump 又按相邻位置高度差求法线。欠采样风险是源码与实物共同支持的解释，不把全部渲染差异归成一个引擎 bug。
 
-来源与日期：2026-10-25 UTC，实际运行本目录所链源；一手 [1.8 发布](https://github.com/RodZill4/material-maker/releases/tag/1.8)、[固定参数解析](https://github.com/RodZill4/material-maker/blob/7d6daae3c74c09720afe4138ce09699ab3591ce1/parse_args.gd)、[固定 MIT 许可](https://github.com/RodZill4/material-maker/blob/7d6daae3c74c09720afe4138ce09699ab3591ce1/LICENSE.md)与社区 [#1506](https://github.com/RodZill4/material-maker/issues/1506)。旧动态事实保各自日期，编辑器许可不覆盖任意社区材料。
+本例最终改用 Smooth `1`、Bump Distance `0.005`、512²，让源成为较圆缓的浅槽；默认两坡宽约 `2.30／5.76` texel。低于 2 texel 的组合提前拒绝，同时检查 normal 的双轴正负坡向，并新增 `source.png` 与消费端 `after.png` 同条件对照。实看更接近，但这是调整源设计与烘焙预算，不是原尖锐表面的无损转换，2 texel 也不是普遍画质门槛。Blender 4.3.2／Cycles CPU 的 8 项回归增加欠采样和单侧法线反例，保原正常链／二改／缺失输入等检查；未验目标引擎、GPU、设备预算或优于其他工具。脚本与配方原创，生成物和过程日志本地保留。
+
+来源与日期：2026-10-25 UTC，实际运行本目录所链源；一手 [1.8 发布](https://github.com/RodZill4/material-maker/releases/tag/1.8)、[固定参数解析](https://github.com/RodZill4/material-maker/blob/7d6daae3c74c09720afe4138ce09699ab3591ce1/parse_args.gd)、[固定 MIT 许可](https://github.com/RodZill4/material-maker/blob/7d6daae3c74c09720afe4138ce09699ab3591ce1/LICENSE.md)与社区 [#1506](https://github.com/RodZill4/material-maker/issues/1506)。旧动态事实保各自日期，编辑器许可不覆盖任意社区材料。10-26 消费保真补验依据上述实际脚本及 Blender 4.3.2 [Brick](https://github.com/blender/blender/blob/v4.3.2/intern/cycles/kernel/svm/brick.h)／[Bump](https://github.com/blender/blender/blob/v4.3.2/intern/cycles/kernel/svm/displace.h)固定实现。
 
 
 ## 三、第二次修改：留下什么源文件，什么情况下撤回

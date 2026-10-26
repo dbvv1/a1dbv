@@ -38,7 +38,7 @@ class MaterialProductionTest(unittest.TestCase):
             self.assertNotEqual((self.output / f'base_{channel}.png').read_bytes(), (self.output / f'changed_{channel}.png').read_bytes())
 
     def test_roughness_only_preserves_color_and_normal(self):
-        for size, mortar in [(256, 0.018), (64, 0.005)]:
+        for size, mortar in [(512, 0.018), (128, 0.08)]:
             with self.subTest(size=size, mortar=mortar):
                 recipe = json.loads((HERE / 'recipe.json').read_text())
                 recipe['resolution'] = size
@@ -50,6 +50,34 @@ class MaterialProductionTest(unittest.TestCase):
                 self.run_blender('verify.py', '--output', out)
                 for channel in ('color', 'normal'):
                     self.assertEqual((out / f'base_{channel}.png').read_bytes(), (out / f'changed_{channel}.png').read_bytes())
+
+    def test_underresolved_bevel_fails_before_output(self):
+        recipe = json.loads((HERE / 'recipe.json').read_text())
+        recipe['resolution'] = 256
+        path = self.root / 'underresolved.json'; path.write_text(json.dumps(recipe))
+        out = self.root / 'underresolved'
+        result = self.run_blender('build.py', '--recipe', path, '--output', out, succeeds=False)
+        self.assertIn('bevel spans', result.stdout)
+        self.assertFalse(out.exists())
+
+    def test_one_sided_normal_fails_even_when_unit_length(self):
+        out = self.root / 'one-sided'; shutil.copytree(self.output, out)
+        # Fold all X slopes onto +X. Norm length and variation remain valid,
+        # reproducing the previously missed one-sided bake without old artifacts.
+        script = self.root / 'one-sided.py'
+        script.write_text("""import bpy, sys
+from pathlib import Path
+p = Path(sys.argv[sys.argv.index('--') + 1])
+image = bpy.data.images.load(str(p)); image.colorspace_settings.name = 'Non-Color'
+values = list(image.pixels)
+for i in range(0, len(values), 4):
+    values[i] = (abs(2 * values[i] - 1) + 1) / 2
+image.pixels[:] = values
+image.filepath_raw = str(p); image.file_format = 'PNG'; image.save()
+""")
+        self.run_blender(script, out / 'base_normal.png')
+        result = self.run_blender('verify.py', '--output', out, succeeds=False)
+        self.assertIn('normal must retain both slopes', result.stdout)
 
     def test_missing_input_does_not_create_output(self):
         out = self.root / 'missing'

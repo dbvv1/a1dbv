@@ -15,6 +15,9 @@ def verify(directory):
         nodes = material.node_tree.nodes
         brick = nodes['Shared brick structure']
         rough = nodes['Region roughness']
+        assert abs(brick.inputs['Mortar Smooth'].default_value - 1.0) < 1e-6
+        bump = next(n for n in nodes if n.type == 'BUMP')
+        assert abs(bump.inputs['Distance'].default_value - 0.005) < 1e-6
         assert abs(brick.inputs['Mortar Size'].default_value - recipe[name]['mortar']) < 1e-6
         assert abs(rough.inputs['To Min'].default_value - recipe[name]['roughness']) < 1e-6
         assert rough.inputs['Value'].links[0].from_socket == brick.outputs['Fac']
@@ -39,6 +42,8 @@ def verify(directory):
             if channel == 'normal':
                 x, y, z = [values[offset::4] for offset in range(3)]
                 assert max(x) - min(x) > 0.1 and max(y) - min(y) > 0.1
+                # A unit-length normal can still omit one side of every brick edge.
+                assert all(min(axis) < 0.48 and max(axis) > 0.52 for axis in (x, y)), 'normal must retain both slopes on X and Y'
                 assert min(z) >= 0.5
                 assert all(abs((2*a-1)**2 + (2*b-1)**2 + (2*c-1)**2 - 1) < 0.025 for a,b,c in zip(x,y,z))
     structure_changed = recipe['base']['mortar'] != recipe['changed']['mortar']
@@ -58,7 +63,7 @@ def verify(directory):
             assert Path(image.filepath).name.startswith(preset + '_')
             color = image.filepath.endswith('_color.png')
             assert image.colorspace_settings.name == ('sRGB' if color else 'Non-Color')
-    for name in ('before', 'after'):
+    for name in ('before', 'after', 'source'):
         image = bpy.data.images.load(str(directory / f'{name}.png'), check_existing=False)
         assert tuple(image.size) == (640, 320)
         rgb = list(image.pixels)[0::4]
