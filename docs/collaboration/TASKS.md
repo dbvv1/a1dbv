@@ -36,6 +36,7 @@
 
 需要人亲自听、看、玩才能判断的项目集中在这里，由用户择时统一验收；执行者记录后继续其他工作。
 
+- FPS-Like：已交当前原混音／受伤声候选两段真实交火录音；候选默认关闭，待听是否能分清“我命中”与“我受伤”、是否遮掉敌人枪声及连续疲劳。录音成功不等于听感采用；网页当前仍为 v8。
 - MOBA-Like：[可玩入口与操作](https://github.com/dbvv1/MOBA-Like/blob/main/README.md)的硬件 GPU 画面、操作手感与完整对局体验；软件 WebGL2 smoke 已通过。
 - Star-Rush：[公路候选](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road)的整体手感、视听与硬件画面；海岸环境声开关对比试听。
 - 潮汐邮差 v2：素材、木筏与旧档。
