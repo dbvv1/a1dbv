@@ -41,4 +41,4 @@ result_branch: relay/a-readability-cleanup-001
 ## 修改要求
 
 - 00总览、12资源索引、Gemini页与16自建Agent页已由dot-A云端后台代理实施并独审接收，后续跳过，不属于本机DeepSeek调用成果。
-- `templates/README.md`与`templates/codex/README.md`由dot-A云端继续整理；其他写者避开这两份入口说明。
+- `templates/README.md`与`templates/codex/README.md`由dot-A云端独审接收，后续跳过；`templates/long-task/README.md`由dot-A云端继续整理，其他写者避开。
