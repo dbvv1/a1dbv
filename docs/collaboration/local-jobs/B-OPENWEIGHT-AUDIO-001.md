@@ -2,7 +2,7 @@
 
 id: B-OPENWEIGHT-AUDIO-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: dbvv1/Star-Rush-Reborn
 base_ref: ecbb4843923b2fe12f994dd9862042c60d40fe5c
 result_branch: relay/dot-b-openweight-audio-001
@@ -43,10 +43,10 @@ result_branch: relay/dot-b-openweight-audio-001
 
 ## 当前结果
 
-- /road 海岸环境声改为按赛道惰性加载：仅在选择汐见海岸并进入倒计时或比赛后请求一次，其他赛道、无尽模式与 / 入口不再请求，失败不重试也不阻塞驾驶。补上可复跑的种子频带测量脚本与数据，把 29.8%/5.3% 更正为实测 23.50%/6.35%，默认构建仍为 off 且产物不含该音频 URL。
-- 产物：[fa5664f](https://github.com/dbvv1/Star-Rush-Reborn/commit/fa5664fcf42626aa869e66ecb2eb8b6b7221ed72)，分支 `relay/dot-b-openweight-audio-001`。
+- 新增可复跑的浏览器检查与实时混音录制，验证 /road 汐见海岸 380–660 m 只惰性请求并播放一次海岸环境层、默认 off 无请求无资源；已产出单独循环试听件、开关对比 WebM 与弯道截图，默认构建仍关闭。
+- 产物：[8e563d6](https://github.com/dbvv1/Star-Rush-Reborn/commit/8e563d6645bdb85e0981808bbbbd3391694eb967)，分支 `relay/dot-b-openweight-audio-001`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：进行人工听辨（单独资源、循环接缝、与关闭环境层对比）和实玩混合录音验收；有条件时用 Node 24 重跑 npm test/smoke。
+- 下一步：人工听辨单独资源、循环接缝及开关对比（含 Forza 公路片段环境层级参照），由 dot-B 决定采用或撤回；正式合入前有条件时用 Node 24 重跑 npm test/smoke。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
 
 ## dot-B 接收反馈
