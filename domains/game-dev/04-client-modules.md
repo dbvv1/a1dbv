@@ -521,6 +521,8 @@ flowchart LR
 - **内存规则先认后端。** AssetBundle 共包会耦合卸载，按相近寿命分组；Unity 6.6+／Addressables 4 的本地 content directories 可逐资产卸载，远程／内容更新仍按 AssetBundle 路线。旧工程不默认迁移。
 - **只为测到的反复卸载重载加有界驻留。** 先看 Addressables Profiler 的引用／依赖，再用 Memory Profiler 看实际内存与切场峰值；缓存无上限或双场景超预算就撤回。UE 仍区分 LoadPrimaryAssets 显式卸载与 PreloadPrimaryAssets 活动句柄保活，不能逐窗口 Unload 当消费者计数。
 
+**网页案例：释放渲染器资源与终止独占上下文不是同一件事。** MOBA 每次重开拥有一个独立 Three.js renderer；实际连续三次重开后，旧 canvas 已移除、`renderer.dispose()` 已调用，但弱引用观察的旧 WebGL context 仍未 lost。这只证明该时点仍活，不证明无限泄漏，也不能把页面 crash 归因于它。最终退出的[已采用实现](https://github.com/dbvv1/MOBA-Like/blob/eb4a906b8d1cb3ac5f72f2bfba26efb2791bf805/src/render/owned-renderer.ts)在资源清理后依次 dispose、尝试 `forceContextLoss()`、移除 canvas，以 finally 保前序异常不跳过最终出口、弱集合防重复释放；不承诺一个资源抛错后其余场景资源都已清理。Three.js 0.186.1 的该关闭调用依赖 `WEBGL_lose_context` 扩展。真实复测观察三旧上下文 lost、新世界仍渲染，以及模型加载失败时已建上下文关闭；正式重开 smoke 另跑通过，旧 crash 记录仍保留。第二次需求是共享 renderer／设备时，退出只归还本消费者资源，不能沿用“关上下文”：Unity／UE 的设备由引擎管理，更不能按关卡退出直接强制关闭 GPU。
+
 #### 二改：提前准备下一关，或让同一角色跨关
 
 **沿同一套 Prepare→Enter 增量修改，不另建“预加载器”。** 若只想减少下载等待，提前下载依赖后仍要正常载入／初始化；磁盘缓存不是内存保活，也不保证首绘已准备。若要把下一关完整留在内存，就以另一个仍关闭玩法的关卡准备它，并明确旧关＋预备关＋共享源＋临时上传的峰值预算；不再用 `activateOnLoad=false` 挂住队列。离开候选路线便卸掉未使用关卡，同一时刻只保约定数量的候选。
