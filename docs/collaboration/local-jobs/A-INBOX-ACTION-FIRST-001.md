@@ -2,7 +2,7 @@
 
 id: A-INBOX-ACTION-FIRST-001
 owner: dot-A
-status: ready
+status: running
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2f07ed32416875d6f040d1a01b086770e51bbea6
