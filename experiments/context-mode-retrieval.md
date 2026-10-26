@@ -36,6 +36,16 @@ try {
 
 其实现按标题分块，用 FTS5 porter／trigram 合并排序、fuzzy 兜底；查询按空白分词，不是自然语言语义检索。本次两条没有空格的中文问句没有命中，改关键词才取回，不能外推所有中文问句都失败。已知源文件时，额外建索引没有替代原生定位；只有反复查询多份资料、并能回核关键条件时才值得保留。
 
+## 资料更新后：先同步来源，再核索引版本
+
+**反复查当前候选时，先把授权副本同步到要决策的 Git 版本，再核索引的 `contentHash` 是否等于当前文件 SHA-256。** 自动刷新只检查原文件路径，不会追踪 `main`；旧的固定副本即使每次查询都正常，也不会自行变成最新资料。hash 不一致时显式重做 `index({ path, source })`；源文件已撤下时，缓存只能作历史参考，当前选择回 Git 原文＋`rg`。
+
+本次沿用上述固定组件，在同一隔离索引中把 13 从 `010336d` 的父提交换成该提交的真实原文，只问“Hippo 当前该不该接为默认？”：更新前零结果，普通写入更新后自动刷新 1 个来源、返回 2 个完整块，source hash 与新文件一致；重复查询刷新 0。新原块与 `git show`＋`rg` 找到的行一致：**Hippo 不接为本仓默认，指导仍用 Git 原文＋`rg`**，替代关系和引用须回源。
+
+另用相同公开字节核两个受控文件边界：保留不晚于入库时间的旧 mtime 时，内容虽已换新，刷新仍为 0，显式重新索引才取回新行；把隔离副本移到别名、使原路径不存在后，仍能返回相同缓存块，刷新也是 0。这两项是隔离元数据／缺源检查，不是线上故障重放。**刷新数为 0 既可能表示没有变化，也可能表示没有检查到变化，不能据此判定资料仍有效。**
+
+依据：[本仓真实更新](https://github.com/dbvv1/a1dbv/commit/010336d7e8b8357af27a9e3ca777853c7ed8c443)与 [固定实现的刷新门控](https://github.com/mksglu/context-mode/blob/8b74cbba68a79e45170dd5866dee949fd6ddd8e1/src/store.ts#L1407-L1458)。此轮只验证来源更新／缺源后的使用边界，未重跑前述 8 文件召回；核实 2026-10-26 UTC。
+
 ## 来源与选择依据
 
 - [一手] [固定 store.ts](https://github.com/mksglu/context-mode/blob/8b74cbba68a79e45170dd5866dee949fd6ddd8e1/src/store.ts) 的查询清理、索引／原块返回与时间戳；[db-base.ts](https://github.com/mksglu/context-mode/blob/8b74cbba68a79e45170dd5866dee949fd6ddd8e1/src/db-base.ts) 的 Bun 分支。包版本写 1.0.169，但 [6-29 同号 release](https://github.com/mksglu/context-mode/releases/tag/v1.0.169) 不是本次 main 提交；许可 Elastic-2.0，属 source-available，不称 OSI 开源。
