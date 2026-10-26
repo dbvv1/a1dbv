@@ -451,6 +451,33 @@ P60已核维护链没有新增运行结果，本轮不重报发现。没有两�
 
 跨线个人雷达：[Simon Willison](https://simonwillison.net/)及其[9-27演讲整理](https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/)。本人经验为一手，转引追原作者；本仓已收录，不计新增。
 
+### 2026-10-26：固定来源覆盖
+
+**补两类入口：跨团队的新项目清单，以及会撤回推荐的真实用户讨论。** 官方自用名册继续保留，本轮不重做已发布的 OMP、评审、QMD 或浏览器 heap。读者是寻找本仓下一次 Agent 开发试用的人；新增的是可交给试用线的入口和取舍；接收以实际本仓任务选用／明确不选及理由为准，不以浏览条数验收。
+
+| 固定入口／本轮截止 | 实际覆盖与下一次追踪方向 |
+|---|---|
+| [Anthropic Engineering](https://www.anthropic.com/engineering)、[Claude.dev](https://claude.dev/)、[Claude Code changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) | 10-26 UTC 读工程索引、changelog 顶部 2.1.310／309；评审、自动化、eval 等已有材料复用。后续追具体恢复／工具输出改变，不把每条更新另写新品。 |
+| [OpenAI Codex releases](https://github.com/openai/codex/releases)、[Cursor changelog](https://cursor.com/changelog)／[工程博客](https://cursor.com/blog) | 读 Codex 0.164.0（10-23）与 Cursor 10-16／13 条目、近期工程索引。Codex changelog 网页超过工具 4 MB 上限，非 403；release 已读，未运行相应客户端。 |
+| GitHub topics：[claude-code](https://github.com/topics/claude-code?o=desc&s=updated)、[codex](https://github.com/topics/codex?o=desc&s=updated)、[mcp](https://github.com/topics/mcp?o=desc&s=updated)、[coding-agent](https://github.com/topics/coding-agent?o=desc&s=updated)；[weekly](https://github.com/trending?since=weekly) | 四个 topic 读最近更新第一页；周榜工具返回上月缓存，不称“本周热门”。名单只供发现，再核当前仓、release 和 issue；没有同口径历史数据，不算 star 增长。 |
+| [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code)、[awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) | 固定 `0d0c623a`／`f225f117` 源码读知识、文档、工具和工作流相关段，非逐项全文认证。与榜单合并得到 context-mode、Archify、show-me，不把同项目多次命中计多项发现。 |
+| HN 的同题讨论与 [Algolia API](https://hn.algolia.com/api) | 按 coding agent、9 月以来故事查询；读取 [Drawgent 原帖与评论](https://news.ycombinator.com/item?id=49857729)。作者想整理自己的草图，有实践者试白板后转 Mermaid，也有人认为原生 HTML 更直接。图形交互不自动带来解释质量，保轻量基线。 |
+| Reddit：[r/ClaudeCode](https://www.reddit.com/r/ClaudeCode/)、[r/codex](https://www.reddit.com/r/codex/)、[r/PiCodingAgent](https://www.reddit.com/r/PiCodingAgent/) | 读 10-19 showcase、[10-22 评审闭环复盘及质疑](https://www.reddit.com/r/codex/comments/1xcku1r/codex_reviewed_claude_codes_pull_requests_for_3/)，另读 [context-mode 开销](https://www.reddit.com/r/PiCodingAgent/comments/1ugk8hi/contextmode_is_adding_15k_tokens_to_every_request/)及[跨客户端体验](https://www.reddit.com/r/PiCodingAgent/comments/1tzc5en/anyone_using_the_contextmode_extension_any/)。用户自报与评论、作者自推分开；未回复的 finding 不等于已修，下载数不等于实际用户数。 |
+| LINUX DO：[context-mode 6-04 原帖与回复](https://linux.do/t/topic/2305228?tl=en)、[Timzaak 持续实践帖](https://linux.do/t/topic/1988118?page=2&tl=en) | 前者提醒主输出压缩量不等于总成本／质量；后者读到 10-22，从重平台设想退回需求澄清 Skill＋查询／上报 MCP，仍是构想，先前删掉重复 Skill 则有作者自用反馈。加入实践者名册追实际取舍，不移植整套流程。另一个 10-11 CLI 帖只取得搜索内容、原页 cache miss，不算原帖补读。 |
+| V2EX：[工具差异讨论](https://v2ex.com/t/1247635)、[10 月客户端故障帖](https://www.v2ex.com/t/1249887) | 前者正文与可见回复已读：同模型仍要比完整任务接收，推广回复自报利益关系；后者正文可读但回复只见作者列表，不称完整评论覆盖，也不把单用户桌面症状推成普遍模型退化。 |
+| 实践者：[Simon Willison 月归档](https://simonwillison.net/2026/Oct/)、[O’Reilly Radar](https://www.oreilly.com/radar/radar-trends-to-watch-october-2026/) | 前者读归档相关段，既有 Battle Drones／预算上限等不重计新发现；后者软件开发段带入 Jevmem 与 AX，再回原仓核账号／部署代价。newsletter 是发现入口，不是效果裁决。 |
+| X：[ClaudeDevs](https://x.com/ClaudeDevs)、[simonw](https://x.com/simonw) | 两个公开主页本次返回 403，原因未知，停止该入口；[10-25 实践者转引](https://aimaker.substack.com/p/claude-code-updates-october-2026)可读但保留转引身份，不计 X 原帖或评论已读。没有用户新贴链接待处理。 |
+| 上周固定样本：[HN 精确查询](https://hn.algolia.com/api/v1/search?query=%22Claude+Code%22&tags=story&numericFilters=created_at_i%3E%3D1792339200%2Ccreated_at_i%3C1792944000&hitsPerPage=10) | 按上海 10-19 至 10-25 完整自然周固定相关性前 10 条，纠正 UTC 初查窗口后固定成员 ID、不按旧仓命中换名单；全文／可见评论均已读，项目再核原仓。不是 HN 全量或热门榜；2 项适用漏项进入 inbox，其余已有机制、场景不适用或时点消息分开，完整成员见 [25](../25-ai-exploration.md#2026-10-26上周-hn-样本校准)。 |
+| 冷启动历史补充：[AgentIndex 10-07 的 13 项清单](https://agentindex.app/zh/guides/new-tools-2026-10/) | 正文已读，完整成员进入 [25 校准](../25-ai-exploration.md#2026-10-26冷启动历史补充)。工具详情页多数 cache miss；另行下载该清单 HTML 返回 403 后停止下载，未用替代地址绕取。项目能力回独立原仓核，目录快照不替代当前源码。 |
+
+**本轮交给试用线的精华**：context-mode 先试显式索引与原块取回；需要解释实际修改时，先借 show-me 的最小表达，再决定是否需要 Archify 的源码关联交互。前者不是模型摘要，后两者的文件／行号检查也不能证明图说得对。方法线已用固定 `8b74cbba` 的 `ContentStore` 组件读 8 份本仓公开文件，形成[经非作者接收的记录](../../experiments/context-mode-retrieval.md)：原块可逐字回查，但完整中文问句可能无结果，仍需关键词与来源定位；已有路径保 `rg`，不称提效。不启动 plugin/server、不接会话或全局 hooks。下一份真实 PDF 输入到来时，再选 anymd，不为试工具制造文档任务。
+
+源码入口：[context-mode store.ts](https://github.com/mksglu/context-mode/blob/8b74cbba68a79e45170dd5866dee949fd6ddd8e1/src/store.ts)（完整文本、分块、hash 与检索）、[show-me Skill](https://github.com/humanlayer/skills/blob/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/show-me/skills/show-me/SKILL.md)（按问题选表达、显式调用）、[Archify 证据检查](https://github.com/tt-a1i/archify/blob/81c6be8d87090670c45d08a8f97f9d29c5af0bec/archify/renderers/shared/repository-evidence.mjs)（固定 revision 与行范围）、[anymd lean.rs](https://github.com/SylphxAI/anymd/blob/71fb95b521588241af5a23fa2de701207ac93430/crates/anymd/src/lean.rs)（预算、cursor 与 CLI/MCP 默认差异）。许可、用户反馈与撤回条件集中在[收件箱](../collaboration/inbox.md)，除 context-mode 组件已试并接收外，其余未试用，均不据源码阅读记成采用。
+
+上周新增的固定实现：[lights-on 计划检查](https://github.com/gojko/lights-on-software-factory/blob/7e8ee8b4dcd9857da48845b187540e3e1891c70f/workspace/.claude/workflow/src/generator/plan-checks.js)与[完成判定](https://github.com/gojko/lights-on-software-factory/blob/7e8ee8b4dcd9857da48845b187540e3e1891c70f/workspace/.claude/workflow/src/generator/completed-steps-of.js)，[usage-guard core](https://github.com/rbartoli/agent-usage-guard/blob/8e9f91313eeb2d97bfb1f9f8b64582013cdb39e8/core/agents.ts)与[Claude 适配层](https://github.com/rbartoli/agent-usage-guard/blob/8e9f91313eeb2d97bfb1f9f8b64582013cdb39e8/hooks/register.ts)。只读源码／文档，未运行或改宿主设置；作者生产口径与独立用户反馈分列，不复制省费或拦截胜率。
+
+**探索回执**：截至 2026-10-26 04:40 UTC，官方、GitHub、HN、Reddit、LINUX DO、V2EX 与实践者入口均有相应读取；X 原文受阻、周榜快照过时、部分页面仅摘要／未读如上。完整全渠道查验分母与净工时不能可靠恢复，不补填读取率或效率数字；可复算的是 25 的上完整上海自然周 HN 前 10 条样本，13 项目录另记历史补充。最高水平未知，本轮交付的是具体候选与采用边界。
+
 ### 三篇指定校准卡
 
 #### A. Anthropic：Redesigning source control

@@ -4,4 +4,26 @@
 
 ## 待处理
 
+### 2026-10-26 固定来源扫描
+
+读者是用 Agent 维护脚本、知识库和多 Agent 长任务的开发者。本轮增量是把“少送输出”“保留原始证据”“自动记忆”分开选，不按 star 或节省百分比全装插件。试用线能据下列入口在本仓选一个真实读改任务，取得原段、保住决定性限制并交成修改，才算用上；下表均未试用；context-mode 组件的已接收结果在本页“已处理”。
+
+| 候选／来源 | 解决什么、谁在用与社区评价 | 下一步与取舍 |
+|---|---|---|
+| 👀 [HumanLayer show-me](https://github.com/humanlayer/skills/tree/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/show-me)，GitHub 清单线索；[真实组合需求 #12](https://github.com/humanlayer/skills/issues/12) | 给代码交接选最小表达：调用树、结构 diff、Mermaid，复杂时才用 HTML。发帖者称 Matt Pocock 的 PR Skill 已复制其形式，自己也准备借给 PR review Skill；禁止隐式调用仍是组合限制，不是发帖者已完成采用或自动触发已解决。 | **轻量第二选择**：显式读 Skill，用于本仓一次真实脚本／规则修改的解释，让接手者说出受影响分支和边界。固定 `653b6411`，MIT；不装整个 HumanLayer 循环，不以生成图代替理解验收。 |
+| 👀 [Archify 3.2](https://github.com/tt-a1i/archify/releases/tag/v3.2.0)，awesome-claude-code 线索；[SpecDev 作者采用](https://github.com/tt-a1i/archify/discussions/952)、[导出缺说明卡反馈](https://github.com/tt-a1i/archify/discussions/721) | 从真实源码形成带位置的可交互解释；SpecDev 作者自报 Windows 集成使用，导出用户提醒 PNG/PDF 不一定带上 HTML 说明。源码位置校验不等于解释语义正确。 | 只有本仓读者需要点击固定源码／连续更图时，才与 show-me／Mermaid 比；二者不用为凑数都装。固定 `81c6be8d`，Apache-2.0；root 下 browser-check 会请求 `--no-sandbox`，不得照跑或为此改安全设置。当前未运行浏览器／插件。 |
+| 👀 [anymd](https://github.com/SylphxAI/anymd)，[AgentIndex 10-07 清单](https://agentindex.app/zh/guides/new-tools-2026-10/)补入；[真实 OpenCode 用户 #881](https://github.com/SylphxAI/anymd/issues/881) | 文档转 Markdown，带页码、预算与续读 cursor；用户报告原始 stdio 可读，但严格客户端因 nullable 字段错误列为 required 而拒绝，说明“服务能跑”不等于 Agent 能用。修复已见固定源码与 8.5.3 changelog。 | 下一次本仓论文／文档研究需要本地 PDF 时试 `read`→`search`→按页核原文；基线是原生 PDF 抽取＋页图，不拿作者速度榜作结论。固定 `71fb95b5`，MIT 本地核心；CLI 默认不限预算，须显式给 `--max-tokens`。付费 cite-check 不在本次选择内，不运行改所有客户端的 `setup`。 |
+| 👀 [Hippo](https://github.com/kitfunso/hippo-memory)，同一清单补入；[外部测试提议 #346](https://github.com/kitfunso/hippo-memory/issues/346) | 跨编码客户端的本地记忆，区分 pinned、superseded 与 outcome；外部关注的是旧事实退役后是否仍被召回。该 issue 是测试提议，不是完成的独立效果证明。 | 暂保 Git 里的短交接与当前任务表；仅在同一公开决策反复失忆时，比较显式存取与原文件检索。固定 `4d078af8`，MIT；`init` 会改已有指令文件并安装宿主 hooks，不能当纯本地建库。未读取真实会话，未采用全局记忆。 |
+| ⛔ [AOCI-CODE](https://github.com/aoci-spec/aoci-code)，同一清单补入；[用户 #114 与维护者回应](https://github.com/aoci-spec/aoci-code/issues/114)、[性能反馈 #127](https://github.com/aoci-spec/aoci-code/issues/127) | Git 版本化的仓库认知索引。有用户认可用途却报告慢，另有完整索引未读完即压缩、恢复又全量读的循环；维护者确认分块只降单次输出，不降累计上下文。 | 本仓先不加全量索引；按任务读源码。固定 `7351c9de` 仍要求压缩后完整 Overview；索引放不下时不能以调小 chunk 当修好。当前为 FSL-1.1-MIT 源码可用许可，不照清单早期“未识别许可证”概括，也不当 MIT 当前版。 |
+| ⛔ [Jevmem](https://github.com/Avinash-jetwani/jevmem)，[O’Reilly 10-06 雷达](https://www.oreilly.com/radar/radar-trends-to-watch-october-2026/)补入 | 保存决策与失败路径并退役旧事实；作者自测手写 `CLAUDE.md` 做得相近，尚无独立采用效果。MIT 代码不等于纯离线产品：当前接入需 TypeSafe API，消息、相邻轮次和记忆会送出。 | 本仓不接账号、付费或导入会话；只保留“新规则取代旧规则但留历史”的机制参照。已有 Git 交接足够时不增加服务。 |
+| ⛔ [Google AX](https://github.com/google/ax)，同一 O’Reilly 雷达补入 | 声明式编排 Task／Workspace／Model，分离任务、工作区与模型配置；官方明确仍重度开发、稳定版前可能破坏性变更，独立生产使用成效未知。 | 已有宿主与 worktree 能接住本仓任务，暂不另建 Kubernetes＋Agent Substrate 集群。需要自管大规模执行面时再核恢复和隔离契约；未部署。 |
+| 👀 [lights-on-software-factory](https://github.com/gojko/lights-on-software-factory)，[上周 HN 原帖](https://news.ycombinator.com/item?id=50160198)补入 | 把计划依赖、同阶段写入冲突、分组门禁与恢复判定交给确定性程序；Votito 作者自用抽出，省费约 80% 仅作者口径，评论问隔离和凭据，并无独立收益验证。 | 固定 `7e8ee8b4`，MIT；源码完成判定需末次 worker 完成、所属运行组 gate 绿且后续无反驳。先与本仓已有完成卡／版本门禁比较，只借缺的机械判定；不装整套权限、hooks 或读取真实会话。试用线核后不选：本仓没有它的 progress 协议产物，不手工翻译现有日志制造采用。保原法，未试用。 |
+| ⛔ [agent-usage-guard](https://github.com/rbartoli/agent-usage-guard)，[上周 HN 原帖与讨论](https://news.ycombinator.com/item?id=50198936)补入 | Claude Code mod 在代理启动、重上下文和重复失败前询问／拦截，合并本机多会话计数；作者报告旧 hooks 降 burst 但 lockout 仍增加，默认绝对阈值按自己的 Max 5x 调，不能推广。 | 固定 `8e9f9131`，MIT；core 判定与宿主适配分开，跨机器、独立终端队友及无前置事件的 fork 有覆盖边界，失败通常放行，不是硬预算安全边界。当前宿主不接该 mod，先用原生额度／并发控制；无真实失控消费不安装，未试用。 |
+
+收件箱只记待选与判断，不把本轮补录当成已试用；上周固定 10 条参照见 [25 周校准](../25-ai-exploration.md#2026-10-26上周-hn-样本校准)，另有 [13 项冷启动历史补充](../25-ai-exploration.md#2026-10-26冷启动历史补充)。
+
 ## 已处理
+
+| 候选／来源 | 解决什么、谁在用与社区评价 | 实际结果与去向 |
+|---|---|---|
+| ✅ [context-mode](https://github.com/mksglu/context-mode)，GitHub 清单线索；[Pi 使用者讨论](https://www.reddit.com/r/PiCodingAgent/comments/1ugk8hi/contextmode_is_adding_15k_tokens_to_every_request/)、[中文原帖](https://linux.do/t/topic/2305228?tl=en) | 把大输出存入索引，需要时取回原块，而非只留模型摘要。Pi 用户有保留长任务用法，也有报告额外提示、重复加载工具和临时交接丢失；版本未明确，不能直接套成当前故障率。 | **[组件试用记录](../../experiments/context-mode-retrieval.md)已获非作者接收**：8 份公开本仓文件／344 块，18 个返回块逐字存在；两个完整中文问题无结果，改关键词／限定来源才补齐，入库时间不能当核实日。已有路径仍用 `rg`＋按段读取；反复多源查阅才试显式索引，不声称提效。固定 `8b74cbba`，Elastic-2.0；不要把同名托管 gateway 当成本地项目。全插件启动会修用户 hooks/settings，独立 server 也有旧库清理／会话索引，先不启两者；完整原段取不回就保原法。去向：[13 值得一试](../13-frontier-radar.md#值得一试近4周的新项目与做法)。 |
