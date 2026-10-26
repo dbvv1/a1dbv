@@ -1,0 +1,38 @@
+{
+  "repository": "https://github.com/dbvv1/MOBA-Like",
+  "commit": "912c04ccb36b3c3b06cd7fcfba5b5a2341b8a81e",
+  "files": [
+    {
+      "path": "asset-pipeline/characters/beacon-guard/assets/blue-reactions.glb",
+      "destination": "blue-reactions.glb",
+      "sha256": "16bcf40a65e1cc81b1c48c9cf39f0af65e25c58eca7060cca0660a1fbc4943d6"
+    },
+    {
+      "path": "asset-pipeline/placeholder/assets/amber.glb",
+      "destination": "amber.glb",
+      "sha256": "b52c8593ad3a7866e9f924837c357625d6f70882ddfe78355f4857301823e032"
+    },
+    {
+      "path": "asset-pipeline/placeholder/assets/blue-long.glb",
+      "destination": "blue-long.glb",
+      "sha256": "306ab11e5e04ab220b71147283869c6b4d2855e0686f55466cff050028893830"
+    },
+    {
+      "path": "asset-pipeline/placeholder/LICENSE.txt",
+      "destination": "CHARACTER-LICENSE.txt",
+      "sha256": "7bf6a8e46f8fdd7334739234a14f06e56014a7d044cbb344f0ca586fe788bb7e"
+    }
+  ],
+  "material_source": {
+    "repository": "https://github.com/dbvv1/a1dbv",
+    "commit": "30ab045360454654ab90b2c2da90915d752e34ed",
+    "path": "experiments/material-authoring",
+    "reuse": "Run existing build.py and verify.py; do not duplicate its node graph or bake implementation."
+  },
+  "importer_review": {
+    "repository": "https://github.com/Unity-Technologies/com.unity.cloud.gltfast",
+    "commit": "fdb580527a41fd7006916030768ba74d3728f987",
+    "version": "6.20.1-pre.1",
+    "status": "source-reviewed only; select compatible installed version before running"
+  }
+}
