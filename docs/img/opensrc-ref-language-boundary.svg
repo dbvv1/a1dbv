@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="450" viewBox="0 0 1040 450" role="img" aria-labelledby="title desc">
+  <title id="title">合法 ref +main，不等于 fetch refspec +main</title>
+  <desc id="desc">请求 owner/repo@+main。本地首版修复将 +main 直接作为 fetch refspec，Git 把加号解释为强制标记，选中 main 分支。经独立审查的补丁先按 Git 规则校验单个 ref，再构造 ++main:refs/opensrc/source；第一个加号是固定的强制标记，第二个加号属于源名称 +main，选中正确分支。示意夹具中 main 和 +main 分别指向提交 B 和 A。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="450" rx="16" fill="#f8fafc"/>
+  <g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif" fill="#172b43">
+    <text x="24" y="34" font-size="24" font-weight="700">合法 ref 不等于 fetch refspec：同一个 +main，为何取到不同分支？</text>
+    <rect x="350" y="56" width="340" height="55" rx="10" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="520" y="91" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="23">owner/repo@<tspan fill="#075985" font-weight="700">+main</tspan></text>
+    <path d="M 520 111 V 130 H 268 V 149 M 520 130 H 772 V 149" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M 268 138 V 149" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="24" y="150" width="488" height="248" rx="12" fill="#fff7f5" stroke="#e2b8b1"/>
+    <text x="48" y="183" font-size="22" font-weight="700" fill="#9a3412">本地首版修复（回归）</text>
+    <text x="48" y="216" font-size="19">把输入直接当成 fetch refspec</text>
+    <text x="268" y="259" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="30" font-weight="700"><tspan fill="#9a3412">+</tspan><tspan fill="#172b43">main</tspan></text>
+    <text x="268" y="292" text-anchor="middle" font-size="18"><tspan fill="#9a3412">强制标记 +</tspan><tspan>　＋　源 main</tspan></text>
+    <path d="M 268 303 V 325" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="100" y="332" width="336" height="47" rx="8" fill="#ffffff" stroke="#b4533c"/>
+    <text x="268" y="362" text-anchor="middle" font-size="21" fill="#9a3412"><tspan font-family="DejaVu Sans Mono, monospace" font-weight="700">main</tspan> → 提交 B（选错）</text>
+
+    <rect x="528" y="150" width="488" height="248" rx="12" fill="#eff8fc" stroke="#a3c9da"/>
+    <text x="552" y="183" font-size="22" font-weight="700" fill="#075985">经独立审查的补丁</text>
+    <text x="552" y="216" font-size="19">按 Git 规则校验单个 ref，再构造 refspec</text>
+    <text x="772" y="259" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="23" font-weight="700"><tspan fill="#9a3412">+</tspan><tspan fill="#075985">+main</tspan><tspan fill="#475569">:refs/opensrc/source</tspan></text>
+    <text x="579" y="292" font-size="18" fill="#9a3412">固定 +</text>
+    <text x="685" y="292" font-size="18" fill="#075985">源 +main</text>
+    <text x="864" y="292" font-size="18" fill="#475569">固定目标</text>
+    <path d="M 772 303 V 325" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="604" y="332" width="336" height="47" rx="8" fill="#ffffff" stroke="#2480a7"/>
+    <text x="772" y="362" text-anchor="middle" font-size="21" fill="#075985"><tspan font-family="DejaVu Sans Mono, monospace" font-weight="700">+main</tspan> → 提交 A（正确）</text>
+    <text x="24" y="433" font-size="18" fill="#475569">回归夹具让 main 与 +main 指向不同提交（图中 A／B），才能发现“命令成功，却取错源码”。</text>
+  </g>
+</svg>
