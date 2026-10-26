@@ -24,8 +24,8 @@
 | 测试驱动、规格驱动、计划模式 | [按缺口选计划、测试与规格](docs/decisions/planning-and-tests.md) | ✅ |
 | 前端与 UI 任务 | [真实组件、用户路径与失败恢复](docs/decisions/verification.md) | ✅ |
 | 遗留代码与大迁移 | [15 任务打法](docs/15-task-playbooks.md) | ✅ |
-| 新模型、工具或流程值得换吗 | [用真实任务比较质量与总投入](docs/22-agent-evaluation.md) | 🟡 |
-| 已有产品正常工作，还应怎样改 | [按具体问题选择后续改进](docs/15-task-playbooks.md#102-已有产品按问题选择改进) | 🟡 |
+| 新模型、工具或流程值得换吗 | [用真实任务比较质量与总投入](docs/decisions/tool-adoption.md) | ✅ |
+| 已有产品正常工作，还应怎样改 | [按具体问题选择后续改进](docs/decisions/product-improvement.md) | ✅ |
 | 团队怎么推广 | [18 团队落地](docs/18-team-adoption.md) | ✅ |
 | 本周值得试什么 | [本周 Top 5：按当前编码任务选](docs/13-frontier-radar.md#本周-top-5) | ✅ |
 | 用 AI 做游戏 | [游戏分支](domains/game-dev/README.md) | 🟡 |

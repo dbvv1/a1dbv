@@ -18,3 +18,4 @@
 # Unified patch context markers are data; added source whitespace is checked on apply.
 experiments/openspec-mdx.patch whitespace=-blank-at-eol
 experiments/memos-reading-adoption.patch whitespace=-blank-at-eol
+experiments/opensrc-ref-integrity/source-ref-integrity.patch whitespace=-blank-at-eol

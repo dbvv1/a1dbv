@@ -251,57 +251,8 @@ P47 新研究、P52 的 02／03／09 合并交付、P54 入口分层选择留有
 
 ## 2026-10-26：上周 HN 样本校准
 
-**先固定外部样本，再查已有记录；没写过项目名不等于漏掉重要能力。** 读者是维护发现渠道的人；增量是从上个完整自然周核出值得补的候选与不用重复安装的旧机制；验收是同一成员表、冻结树和判断能复查，并把适用漏项交到收件箱。
-
-主窗口按 **Asia/Shanghai，2026-10-19 00:00（含）至 10-26 00:00（不含）**，即 UTC 10-18 16:00 至 10-25 16:00；10-26 当前周尚未完整。10-26 04:36:56 UTC 固定 [HN Algolia 查询](https://hn.algolia.com/api/v1/search?query=%22Claude+Code%22&tags=story&numericFilters=created_at_i%3E%3D1792339200%2Ccreated_at_i%3C1792944000&hitsPerPage=10)：精确短语 `"Claude Code"`、`story`、上述时间窗、默认相关性顺序前 **10** 条（当时返回总匹配 95 条），先冻结下表 ID 再核仓库。这只是一个有界外部参照，不是 HN 全量、热度前十或整个领域；重查排序可能变，下表成员不随之换。早先 UTC 自然周查询已探索性读过重合成员；改为上海窗口后固定本表，没有因旧仓命中而换名单，原查询另存、不混分母。这不是盲采样。
-
-扫描前仍固定 `b6d007eb087468209c98bc691c31a39c1cfc81fe`；对全仓已跟踪文本核项目名、规范仓 URL／旧名及来源 ID，再回已有正文判断机制。10 条的这篇来源／具体项目均未找到记录，但其中已有 tmux、worktree、预算和停止状态的建议，不能把它们记成新能力。
-
-| 固定成员／HN ID（日期为上海日期） | 读取与去重后的判断 | 本轮处理 |
-|---|---|---|
-| [Tmux and Claude Code，50148855](https://news.ycombinator.com/item?id=50148855)，10-19 | 商业工具作者的教程；完整讨论中有持续 tmux 用户，也有因维护负担换回原生界面的人。[08](08-multi-agent.md)已有 tmux／worktree | 新来源，旧机制；按是否需 SSH 持续会话选择，不把作者所谓“四 Agent 上限”当通用上限 |
-| [agent-usage-guard，50198936](https://news.ycombinator.com/item?id=50198936)，10-23 | 跨会话代理计数、额度与重试前置拦截；作者回报 burst 降但 lockout 仍增，用户追问不同订阅阈值。预算原则已有，具体 mod 未记 | **适用漏项补入 inbox**；当前宿主不装 Claude mod，先保原生额度／并发控制 |
-| [lights-on-software-factory，50160198](https://news.ycombinator.com/item?id=50160198)，10-20 | Votito 作者抽出的确定性计划／门禁／恢复工具；社区主要追问权限与隔离，省费数字不是独立效果 | **适用漏项补入 inbox**；可借机械判定，不迁整套权限和宿主 |
-| [出站 HTTP 带邮箱，50219875](https://news.ycombinator.com/item?id=50219875)，10-24 | 已读 HN 讨论，但 X 原文未核，评论引用的历史 issue 也未在本轮核实 | 保留待核安全线索，不把标题写成已证实当前产品行为；不换入口绕取受阻 X |
-| [Nexus-CLI，50176129](https://news.ycombinator.com/item?id=50176129)，10-21 | [原仓](https://github.com/xamrayev/nexus-cli)要求取得网页会话凭据，并宣传多账号轮换避限 | 不进入本仓试用；不读凭据、不建账号池、不把“免费”当采用依据 |
-| [SIwithin，50167456](https://news.ycombinator.com/item?id=50167456)，10-20 | [原仓](https://github.com/metahumansworld/SIwithin)仅 macOS，Codex adapter 明示尚未对真实 CLI 运行、预算仅软限制；评论问相对原生功能增量 | 预算／停止原则已有；当前 Linux 场地不适用，保原生受控执行，不称硬封顶已验 |
-| [Archestra 1.4，50185318](https://news.ycombinator.com/item?id=50185318)，10-22 | 已读 [1.4 发布重点](https://github.com/archestra-ai/archestra/releases/tag/platform-v1.4.0)：新自托管运行面、权限与策略迁移；该 HN 条目无评论 | 需自托管运行面时再评估；本仓暂无迁移消费者，未部署，不按发布 PR 数判收益 |
-| [Pi-cowboy，50142277](https://news.ycombinator.com/item?id=50142277)，10-19 | [原仓](https://github.com/electric-dragon-80000v/pi-cowboy)组合 Herdr 与跨 harness worktree；copy-on-write 依赖文件系统，ext4 回退 checkout；HN 是作者介绍与另一工具作者的集成提议 | [13 已有 worktree 默认](13-frontier-radar.md)覆盖基础需要；不为换编排器重做，尚无独立完成任务的收益证据 |
-| [安装脚本宕机，50192140](https://news.ycombinator.com/item?id=50192140)，10-22 | HN 当日标题，无评论；未执行安装脚本或验证当时／当前可用性 | 时间性故障，不是新能力；不能把历史标题当当前阻塞 |
-| [从头构建 coding agent 课程，50219641](https://news.ycombinator.com/item?id=50219641)，10-24 | 已读作者全文与[课程仓介绍](https://github.com/decodingai-magazine/building-a-coding-agent-from-scratch-course)；赞助关系公开，参考其他 benchmark 不等于课程产物已胜出 | 学习资源待深入，不为本仓既有开发任务另造 harness／付费运行 |
-
-**处理结果是 2 项适用漏项补成选择、3 项已有机制的新来源、3 项不进入当前试用、2 条时点消息待核；不是 10/10 重要能力漏检。** 两个补入项首次可核本仓登记为 10-26：相对 HN 刊出，usage-guard 为 3、lights-on 为 6 个上海日历日；它们真正最早公开到实际发现的时差仍未知。没有同口径前一周样本，不与历史 6/25、下面的 13 项目录或本轮其他渠道计算“漏检下降”。
-
-下一轮继续同一查询窗口／前 10 条规则，并补一个不限定 Claude Code 的独立入口，避免关键词造成平台偏置。候选取舍与试用状态见[收件箱](collaboration/inbox.md)，官方／开源／社区渠道覆盖和受阻处见[来源回执](research/2026-10-15-exploration-evidence.md#2026-10-26固定来源覆盖)；核实 2026-10-26。
+**先固定外部样本，再核已有记录；区分新来源、旧机制和真正会改变选择的遗漏。** 样本、分母与历史判定见[原校准记录](research/2026-10-15-exploration-evidence.md#2026-10-26上周-hn-样本校准)。
 
 ## 2026-10-26：冷启动历史补充
 
-**这份较早清单只补冷启动历史，不代替当周漏检对照，也不宣称漏检下降。** 读者是维护前沿雷达的人；增量是分清没发现、已知但没采用和清单快照过时；验收是按下面同一成员表与冻结树复查后，试用线能取得候选，而非把所有名字都装一遍。
-
-参照固定为 AgentIndex **2026-10-07《新收录：13 个值得关注的工具》完整 13 项**，10-26 04:21 UTC 读取；它按 README 与当日 GitHub 数据编辑，不是独立效果评测。“新”是该目录新收录，不等于项目刚发布。扫描前仓库固定在 `b6d007eb087468209c98bc691c31a39c1cfc81fe`，查全仓已跟踪文本的项目名、仓库路径与已确认旧名；`anymd` 也查 `pdf-reader-mcp`，`OGAM` 的普通子串误中游戏博客域名不计。这里比较项目发现，不要求此前已引用同一篇清单。
-
-| 固定参照成员／检索标识 | 扫描前记录 | 本轮处理 |
-|---|---|---|
-| aoci-code／aoci-spec | 未记录 | 补入收件箱；全索引容量与恢复循环会改变采用判断，暂保按任务读取 |
-| Hippo／kitfunso/hippo-memory | 未记录 | 补入；本地记忆可评估，独立效果尚缺，不默认装 hooks |
-| Gentle-AI／Gentleman-Programming/gentle-ai | **已有** | [07 既有研究](research/2026-10-12-development-conditions.md)已读真实消费者问题；不是本轮新发现，也不因清单推荐而重开已撤的 SDD |
-| Ref Tools MCP／ref-tools、ref.tools | 未记录 | 待核；文档工具候选，尚未证明优于已有官方文档／Context7 |
-| PipesHub／pipeshub | 未记录 | 待核；企业多源上下文不直接等于本仓开发缺口 |
-| anymd／SylphxAI、pdf-reader-mcp | 未记录 | 补入；下一次真实 PDF 研究可试页码＋预算续读，仍核原页 |
-| crw／fastcrw | 未记录 | 待核；抓取服务候选，不用它绕过已拒访问 |
-| korean-law-mcp | 未记录 | 韩国法律领域，不是本轮本仓 AI 开发试用项 |
-| docker-android／budtmo | 未记录 | Android 工程候选；本仓无对应运行消费者 |
-| A9T9 RPA／a9t9、ui.vision | 未记录 | 桌面自动化候选，本轮不更换已有宿主 |
-| Pascal Editor／pascalorg、editor.pascal.app | 未记录 | 建筑编辑器，转领域线自行判断，不混入本仓编程采用 |
-| AiSOC／beenuar/aisoc | 未记录 | 安全运营场景，本轮不扩成第三方产品验证 |
-| Off Grid AI／off-grid-ai、独立词 OGAM | 未记录 | 手机／Mac 离线工具，本轮不扩展到用户设备 |
-
-**结果：扫描前 1/13 已记录，12/13 是名称记录缺口。** 其中 3 项补成有取舍的条目、3 项待核、6 项不进入本轮试用；这不是 12 项“重要工具全漏”，也不是 3 项已采用。参照刊出到本轮首次仓库登记的可核间隔为 **19 个日历日**，不是实际发现时差；真实最早公开日和执行者私下知晓日未知。它是后验固定目录对照，不是独立盲测，不与 10-22 的 6/25 不同参照计算涨跌；补录后也不把历史缺口改为 0。
-
-10-26 后续已把 Ref Tools、PipesHub、crw 的适用与不采用条件补到[收件箱](collaboration/inbox.md#2026-10-26-历史目录三项补核)；上表及“3 项待核”保留首次对照时点，不回改历史计数，也不把补核当试用。
-
-**快照差异另记，不算新漏项。** 清单当日未识别 AOCI 许可证；本次固定源码声明 FSL-1.1-MIT。anymd 当前源码另有付费 cite-check，免费转换与付费证据工具须分开；当前 README 和清单的发布日期不同，不能将后来能力倒填进 10-07 清单。所有热度仅作来源筛选，本轮没有同口径历史快照，不报 star 涨幅或热门排名改善。
-
-**下一轮修正**：把 AgentIndex 的新收录清单加入来源名册，但仍逐项回原仓与真实用户核查；继续扫官方工程出口和 GitHub topics，避免目录成为唯一入口。本轮 GitHub 渠道另发现的 context-mode 与外部清单补入分账；试用接收记录留在[收件箱](collaboration/inbox.md)，本轮候选尚无采用收益结论。
-
-来源：[固定外部清单](https://agentindex.app/zh/guides/new-tools-2026-10/)、[收件箱原始项目与社区入口](collaboration/inbox.md)、[固定来源回执](research/2026-10-15-exploration-evidence.md#2026-10-26固定来源覆盖)；[研究] 固定树记录覆盖与后验校准；核实 2026-10-26。
+**历史目录只补冷启动，不能代替当周对照；补录也不回改历史漏检。** 固定成员、未知项与后续补核见[原校准记录](research/2026-10-15-exploration-evidence.md#2026-10-26冷启动历史补充)。

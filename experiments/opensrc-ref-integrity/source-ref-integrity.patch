@@ -1,0 +1,493 @@
+diff --git a/packages/opensrc/cli/src/core/fetcher.rs b/packages/opensrc/cli/src/core/fetcher.rs
+index 4d72cf5..8cc3ef7 100644
+--- a/packages/opensrc/cli/src/core/fetcher.rs
++++ b/packages/opensrc/cli/src/core/fetcher.rs
+@@ -5,7 +5,7 @@ use crate::core::cache::{
+     PackageEntry, RepoEntry,
+ };
+ use crate::core::error::{Error, Result};
+-use crate::core::git::{fetch_repo_source, fetch_source};
++use crate::core::git::{fetch_repo_source, fetch_source, validate_repo_ref};
+ use crate::core::registries::repo::{parse_repo_spec, resolve_repo};
+ use crate::core::registries::{
+     detect_input_type, parse_package_spec, resolve_package, PackageSpec, Registry,
+@@ -129,6 +129,7 @@ fn ensure_repo_cached(spec: &str, verbose: bool) -> Result<FetchOutcome> {
+     let display = format!("{}/{}/{}", repo_spec.host, repo_spec.owner, repo_spec.repo);
+ 
+     if let Some(ref r) = repo_spec.git_ref {
++        validate_repo_ref(r)?;
+         if let Some(existing) = get_repo_info(&display)? {
+             if existing.version == *r {
+                 return Ok(FetchOutcome {
+diff --git a/packages/opensrc/cli/src/core/git.rs b/packages/opensrc/cli/src/core/git.rs
+index a6277dd..f15c63d 100644
+--- a/packages/opensrc/cli/src/core/git.rs
++++ b/packages/opensrc/cli/src/core/git.rs
+@@ -22,7 +22,7 @@ struct CloneResult {
+     error: Option<String>,
+ }
+ 
+-fn git_clone_output(args: &[&str]) -> std::io::Result<std::process::Output> {
++fn git_output(args: &[&str]) -> std::io::Result<std::process::Output> {
+     Command::new("git")
+         .args(args)
+         .stdout(std::process::Stdio::null())
+@@ -39,7 +39,7 @@ fn clone_at_tag(repo_url: &str, target: &Path, version: &str) -> CloneResult {
+     let target_str = target.to_string_lossy();
+ 
+     for tag in &tags {
+-        let output = git_clone_output(&[
++        let output = git_output(&[
+             "clone",
+             "--depth",
+             "1",
+@@ -64,7 +64,7 @@ fn clone_at_tag(repo_url: &str, target: &Path, version: &str) -> CloneResult {
+         }
+     }
+ 
+-    let output = git_clone_output(&["clone", "--depth", "1", repo_url, &target_str]);
++    let output = git_output(&["clone", "--depth", "1", repo_url, &target_str]);
+ 
+     match output {
+         Ok(o) if o.status.success() => CloneResult {
+@@ -92,56 +92,83 @@ fn clone_at_tag(repo_url: &str, target: &Path, version: &str) -> CloneResult {
+     }
+ }
+ 
+-fn clone_at_ref(repo_url: &str, target: &Path, git_ref: &str) -> CloneResult {
+-    let target_str = target.to_string_lossy();
+-
+-    let output = git_clone_output(&[
+-        "clone",
+-        "--depth",
+-        "1",
+-        "--branch",
+-        git_ref,
+-        "--single-branch",
+-        repo_url,
+-        &target_str,
+-    ]);
+-
+-    if let Ok(o) = output {
+-        if o.status.success() {
+-            return CloneResult {
+-                success: true,
+-                error: None,
+-            };
+-        }
++pub fn validate_repo_ref(git_ref: &str) -> Result<()> {
++    if git_ref.is_empty() {
++        return Err(Error::InvalidRepoSpec(
++            "repository ref must not be empty".to_string(),
++        ));
+     }
++    // check-ref-format does not accept --, so do not let the ref become an option.
++    if git_ref.starts_with('-') {
++        return Err(Error::InvalidRepoSpec(format!(
++            "invalid repository ref {git_ref:?}"
++        )));
++    }
++    let output = git_output(&["check-ref-format", "--allow-onelevel", git_ref])?;
++    if !output.status.success() {
++        return Err(Error::InvalidRepoSpec(format!(
++            "expected a single branch, tag, or commit, got {git_ref:?}"
++        )));
++    }
++    Ok(())
++}
+ 
+-    let _ = fs::remove_dir_all(target);
+-
+-    let output = git_clone_output(&["clone", "--depth", "1", repo_url, &target_str]);
++fn clone_at_ref(repo_url: &str, target: &Path, git_ref: &str) -> CloneResult {
++    if let Err(error) = validate_repo_ref(git_ref) {
++        return CloneResult {
++            success: false,
++            error: Some(error.to_string()),
++        };
++    }
+ 
+-    match output {
+-        Ok(o) if o.status.success() => CloneResult {
+-            success: true,
+-            error: Some(format!(
+-                "Could not find ref \"{git_ref}\", cloned default branch instead"
+-            )),
+-        },
+-        Ok(o) => {
+-            let stderr = stderr_string(&o);
+-            let msg = if stderr.is_empty() {
+-                "Failed to clone repository".to_string()
+-            } else {
+-                format!("Failed to clone repository: {stderr}")
+-            };
+-            CloneResult {
+-                success: false,
+-                error: Some(msg),
++    let target_str = target.to_string_lossy();
++    // Unlike clone --branch, fetch accepts commit SHAs as well as branches and tags.
++    // Fix the force marker and destination so a valid leading + remains source text.
++    let refspec = format!("+{git_ref}:refs/opensrc/source");
++    let commands: &[&[&str]] = &[
++        &["init", "--quiet", "--", &target_str],
++        &[
++            "-C",
++            &target_str,
++            "fetch",
++            "--depth",
++            "1",
++            "--",
++            repo_url,
++            &refspec,
++        ],
++        &[
++            "-C",
++            &target_str,
++            "checkout",
++            "--detach",
++            "refs/opensrc/source",
++        ],
++    ];
++
++    for args in commands {
++        let error = match git_output(args) {
++            Ok(o) if o.status.success() => continue,
++            Ok(o) => {
++                let stderr = stderr_string(&o);
++                if stderr.is_empty() {
++                    format!("Failed to fetch ref \"{git_ref}\"")
++                } else {
++                    format!("Failed to fetch ref \"{git_ref}\": {stderr}")
++                }
+             }
+-        }
+-        Err(e) => CloneResult {
++            Err(e) => format!("Failed to run git: {e}"),
++        };
++        let _ = fs::remove_dir_all(target);
++        return CloneResult {
+             success: false,
+-            error: Some(format!("Failed to run git: {e}")),
+-        },
++            error: Some(error),
++        };
++    }
++
++    CloneResult {
++        success: true,
++        error: None,
+     }
+ }
+ 
+@@ -213,6 +240,7 @@ pub fn fetch_source(resolved: &ResolvedPackage) -> Result<FetchResult> {
+ }
+ 
+ pub fn fetch_repo_source(resolved: &ResolvedRepo) -> Result<FetchResult> {
++    validate_repo_ref(&resolved.git_ref)?;
+     let repo_path = get_repo_path(&resolved.display_name, &resolved.git_ref)?;
+ 
+     if repo_path.exists() {
+@@ -255,3 +283,221 @@ pub fn fetch_repo_source(resolved: &ResolvedRepo) -> Result<FetchResult> {
+         registry: None,
+     })
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use std::path::PathBuf;
++    use std::sync::atomic::{AtomicUsize, Ordering};
++
++    static NEXT_FIXTURE: AtomicUsize = AtomicUsize::new(0);
++
++    struct RepoFixture {
++        root: PathBuf,
++        repo: PathBuf,
++    }
++
++    impl RepoFixture {
++        fn new() -> Self {
++            let root = std::env::temp_dir().join(format!(
++                "opensrc-git-{}-{}",
++                std::process::id(),
++                NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed)
++            ));
++            fs::create_dir(&root).unwrap();
++            let repo = root.join("repo");
++            fs::create_dir(&repo).unwrap();
++            let fixture = Self { root, repo };
++            fixture.git(&["init", "--initial-branch=main"]);
++            fs::write(fixture.repo.join("version.txt"), "release").unwrap();
++            fixture.git(&["add", "version.txt"]);
++            fixture.git(&["commit", "-m", "release"]);
++            fixture.git(&["tag", "v1.0.0"]);
++            fs::write(fixture.repo.join("version.txt"), "default branch").unwrap();
++            fixture.git(&["commit", "-am", "advance main"]);
++            fixture
++        }
++
++        fn git(&self, args: &[&str]) -> String {
++            let output = Command::new("git")
++                .args([
++                    "-c",
++                    "user.name=opensrc-tests",
++                    "-c",
++                    "user.email=opensrc-tests@example.invalid",
++                    "-c",
++                    "commit.gpgsign=false",
++                ])
++                .args(args)
++                .current_dir(&self.repo)
++                .output()
++                .unwrap();
++            assert!(output.status.success(), "{}", stderr_string(&output));
++            String::from_utf8(output.stdout).unwrap().trim().to_string()
++        }
++
++        fn clone_ref(&self, git_ref: &str) -> (CloneResult, PathBuf) {
++            let target = self.root.join("checkout");
++            let result = clone_at_ref(&self.repo.to_string_lossy(), &target, git_ref);
++            (result, target)
++        }
++    }
++
++    impl Drop for RepoFixture {
++        fn drop(&mut self) {
++            let _ = fs::remove_dir_all(&self.root);
++        }
++    }
++
++    #[test]
++    fn test_clone_at_ref_missing_ref_does_not_use_default_branch() {
++        let fixture = RepoFixture::new();
++        let spec = crate::core::registries::repo::parse_repo_spec("owner/repo@missing").unwrap();
++        let (result, target) = fixture.clone_ref(spec.git_ref.as_deref().unwrap());
++
++        assert!(
++            !result.success,
++            "missing ref must not clone the default branch"
++        );
++        assert!(result.error.unwrap().contains("missing"));
++        assert!(
++            !target.exists(),
++            "failed clone must not leave a cache entry"
++        );
++    }
++
++    #[test]
++    fn test_clone_at_ref_existing_tag() {
++        let fixture = RepoFixture::new();
++        let (result, target) = fixture.clone_ref("v1.0.0");
++
++        assert!(result.success, "{:?}", result.error);
++        assert!(result.error.is_none());
++        assert_eq!(
++            fs::read_to_string(target.join("version.txt")).unwrap(),
++            "release"
++        );
++    }
++
++    #[test]
++    fn test_clone_at_ref_existing_branch() {
++        let fixture = RepoFixture::new();
++        let (result, target) = fixture.clone_ref("main");
++
++        assert!(result.success, "{:?}", result.error);
++        assert!(result.error.is_none());
++        assert_eq!(
++            fs::read_to_string(target.join("version.txt")).unwrap(),
++            "default branch"
++        );
++    }
++
++    #[test]
++    fn test_clone_at_ref_commit_sha() {
++        let fixture = RepoFixture::new();
++        let sha = fixture.git(&["rev-parse", "v1.0.0"]);
++        let spec =
++            crate::core::registries::repo::parse_repo_spec(&format!("owner/repo@{sha}")).unwrap();
++        let (result, target) = fixture.clone_ref(spec.git_ref.as_deref().unwrap());
++
++        assert!(result.success, "{:?}", result.error);
++        assert!(result.error.is_none());
++        assert_eq!(
++            fs::read_to_string(target.join("version.txt")).unwrap(),
++            "release"
++        );
++    }
++
++    #[test]
++    fn test_clone_at_ref_empty_ref_does_not_use_default_branch() {
++        let fixture = RepoFixture::new();
++        let (result, target) = fixture.clone_ref("");
++
++        assert!(!result.success);
++        assert!(result.error.unwrap().contains("empty"));
++        assert!(!target.exists());
++    }
++
++    #[test]
++    fn test_clone_at_ref_rejects_refspec_syntax() {
++        let fixture = RepoFixture::new();
++        for git_ref in [":x", ":", "main:other"] {
++            let spec =
++                crate::core::registries::repo::parse_repo_spec(&format!("owner/repo@{git_ref}"))
++                    .unwrap();
++            let (result, target) = fixture.clone_ref(spec.git_ref.as_deref().unwrap());
++
++            assert!(
++                !result.success,
++                "refspec {git_ref:?} must not be reinterpreted"
++            );
++            assert!(result.error.is_some());
++            assert!(!target.exists(), "invalid ref must not leave a cache entry");
++        }
++    }
++
++    #[test]
++    fn test_clone_at_ref_leading_plus_is_a_literal_branch_name() {
++        let fixture = RepoFixture::new();
++        fixture.git(&["branch", "+main", "v1.0.0"]);
++        let spec = crate::core::registries::repo::parse_repo_spec("owner/repo@+main").unwrap();
++        let (result, target) = fixture.clone_ref(spec.git_ref.as_deref().unwrap());
++
++        assert!(result.success, "{:?}", result.error);
++        assert!(result.error.is_none());
++        assert_eq!(
++            fs::read_to_string(target.join("version.txt")).unwrap(),
++            "release"
++        );
++    }
++
++    #[test]
++    fn test_fetch_repo_source_rejects_empty_ref_before_cache_hit() {
++        let fixture = RepoFixture::new();
++        let cache = fixture.root.join("cache");
++        fs::create_dir_all(cache.join("main")).unwrap();
++        fs::write(cache.join("main/version.txt"), "already cached").unwrap();
++        let spec = crate::core::registries::repo::parse_repo_spec("owner/repo@").unwrap();
++        // An absolute display path keeps this cache fixture isolated without
++        // changing OPENSRC_HOME for the other tests running in this process.
++        let resolved = ResolvedRepo {
++            git_ref: spec.git_ref.unwrap(),
++            repo_url: fixture.repo.to_string_lossy().to_string(),
++            display_name: cache.to_string_lossy().to_string(),
++        };
++
++        let error = fetch_repo_source(&resolved).unwrap_err();
++        assert!(error.to_string().contains("empty"));
++        assert_eq!(
++            fs::read_to_string(cache.join("main/version.txt")).unwrap(),
++            "already cached"
++        );
++    }
++
++    #[test]
++    fn test_clone_at_ref_rejects_option_and_pattern_syntax() {
++        let fixture = RepoFixture::new();
++        for git_ref in ["--tags", "--upload-pack=not-a-command", "main*"] {
++            let (result, target) = fixture.clone_ref(git_ref);
++
++            assert!(!result.success, "invalid ref {git_ref:?} must fail");
++            assert!(result.error.is_some());
++            assert!(!target.exists());
++        }
++    }
++
++    #[test]
++    fn test_clone_at_ref_missing_repository() {
++        let fixture = RepoFixture::new();
++        let target = fixture.root.join("checkout");
++        let result = clone_at_ref(
++            &fixture.root.join("missing-repo").to_string_lossy(),
++            &target,
++            "main",
++        );
++
++        assert!(!result.success);
++        assert!(result.error.is_some());
++        assert!(!target.exists());
++    }
++}
+diff --git a/packages/opensrc/cli/tests/repo_refs.rs b/packages/opensrc/cli/tests/repo_refs.rs
+new file mode 100644
+index 0000000..06810dd
+--- /dev/null
++++ b/packages/opensrc/cli/tests/repo_refs.rs
+@@ -0,0 +1,76 @@
++use std::fs;
++use std::path::PathBuf;
++use std::process::Command;
++use std::time::{SystemTime, UNIX_EPOCH};
++
++struct CacheFixture(PathBuf);
++
++impl CacheFixture {
++    fn new() -> Self {
++        let nonce = SystemTime::now()
++            .duration_since(UNIX_EPOCH)
++            .unwrap()
++            .as_nanos();
++        let root =
++            std::env::temp_dir().join(format!("opensrc-ref-cache-{}-{nonce}", std::process::id()));
++        fs::create_dir(&root).unwrap();
++        let fixture = Self(root);
++        fs::create_dir_all(fixture.0.join("repos/github.com/owner/repo/main")).unwrap();
++        fs::write(
++            fixture
++                .0
++                .join("repos/github.com/owner/repo/main/source.txt"),
++            "cached main",
++        )
++        .unwrap();
++        fixture
++    }
++}
++
++impl Drop for CacheFixture {
++    fn drop(&mut self) {
++        let _ = fs::remove_dir_all(&self.0);
++    }
++}
++
++#[test]
++fn invalid_repo_refs_are_rejected_before_metadata_cache_hits() {
++    let cache = CacheFixture::new();
++    for git_ref in [
++        "",
++        ":x",
++        ":",
++        "main:other",
++        "--tags",
++        "--upload-pack=not-a-command",
++        "main*",
++    ] {
++        let index = serde_json::json!({
++            "repos": [{
++                "name": "github.com/owner/repo",
++                "version": git_ref,
++                "path": "repos/github.com/owner/repo",
++                "fetchedAt": "2026-01-01T00:00:00Z"
++            }]
++        });
++        fs::write(cache.0.join("sources.json"), index.to_string()).unwrap();
++
++        let output = Command::new(env!("CARGO_BIN_EXE_opensrc"))
++            .args(["path", &format!("owner/repo@{git_ref}")])
++            .env("OPENSRC_HOME", &cache.0)
++            .output()
++            .unwrap();
++
++        assert!(
++            !output.status.success(),
++            "invalid ref {git_ref:?} must not return a cached path"
++        );
++        assert!(output.stdout.is_empty());
++        assert!(String::from_utf8_lossy(&output.stderr).contains("Invalid repository format"));
++        assert_eq!(
++            fs::read_to_string(cache.0.join("repos/github.com/owner/repo/main/source.txt"))
++                .unwrap(),
++            "cached main"
++        );
++    }
++}
