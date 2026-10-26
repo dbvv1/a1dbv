@@ -49,7 +49,7 @@ result_branch: relay/b-openweight-3d-001
 - 新核许可缺口：`diso==0.1.4`[上游LICENSE](https://github.com/SarahWeiii/diso/blob/main/LICENSE)与PyPI为CC BY-NC 4.0，不随TripoSG MIT变许可；暂不沿diso制作产品，不推断生成输出自动受NC。先核原已授权独立TripoSR（含torchmcubes的MPL-2.0许可/编译，分发依赖代码须守相应条款、灰底RGB与`--no-remove-bg`），依赖链可用则优先跑这一低成本路线，不另造提取框架。TripoSG窄对照仅限官方已有`use_flash_decoder=False`→`hierarchical_extract_geometry`→scikit-image marching_cubes；把diso顶层import延迟到flash函数，交最小patch/上游基SHA/patch hash并让runner核真实修订身份，不伪报clean上游。显式nonflash，先不含diso的import/提取测试，再测12GB实际峰值；不是另换模型/权重来源。当前cloud runner尚未实现该模式，不可直接运行认作许可已清。
 - 仅确有其他合法CUDA扩展仍需compiler时再沿源README的NVIDIA官方12.8隔离Conda途径：先核已有host MSVC/compiler及专用prefix，dry-run审列表；只user-space Toolkit/compiler/headers/libraries，不装驱动、不改全局PATH/安全。缺host compiler单独报阻塞。固定实际Python/torch等版本与hash，不盲照历史安装表；torch CUDA wheel/runtime不等于完整编译工具链。
 - 复用已修runner：强制本地权重/离线、完整Hub revision、干净固定源码与真实import路径一致、禁止覆盖非空输出、同步CUDA计时。先跑原5输入测试和新增`tools/openweight-rock/test_runner.py`5项，再补接收端真实依赖/缺权重失败。语法通过不算生成器实现就绪；原8条及真实pipeline尚待验证。
-- 有权重后记录真实下载revision/逐文件hash，原始mesh必须来自TripoSG推理；输入绘图脚本不是AI 3D产物。按原合同做后处理与实际场景接入，不能保留旧KayKit来源标签。未来接入从届时产品最新main只移植允许资产差量，其他14GLB及新消费者保留，不整条旧基础合回main。
+- 有权重后记录真实下载revision/逐文件hash，原始mesh必须来自本次实际选用的TripoSG或TripoSR推理，记录对应模型／源码／权重身份，不把TripoSR结果写成TripoSG；输入绘图脚本不是AI 3D产物。按原合同做后处理与实际场景接入，不能保留旧KayKit来源标签。未来接入从届时产品最新main只移植允许资产差量，其他14GLB及新消费者保留，不整条旧基础合回main。
 - 回写当前结果只分清已修、生成未开始/实际运行、下一准确阻塞；若网络仍阻断，交出其余可独立执行的依赖/原8条修复结果，再标blocked，不循环空跑或新增替代任务。
 
 ## 当前结果
