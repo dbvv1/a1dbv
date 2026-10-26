@@ -1,0 +1,4 @@
+[
+  {"id": "hit", "damage": 10, "cooldownSeconds": 1.2},
+  {"id": "heavy", "damage": 25, "cooldownSeconds": 2.4}
+]

@@ -1,0 +1,16 @@
+<module name="">
+  <bean name="Skill">
+    <var name="id" type="string"/>
+    <var name="damage" type="int#range=[1,1000]"/>
+    <var name="cooldownSeconds" type="float#range=[0.1,60]"/>
+  </bean>
+  <bean name="Enemy">
+    <var name="id" type="string"/>
+    <var name="displayName" type="string"/>
+    <var name="maxHp" type="int#range=[1,10000]"/>
+    <var name="speed" type="float#range=[0.1,20]"/>
+    <var name="skillId" type="string#ref=TbSkill"/>
+  </bean>
+  <table name="TbSkill" value="Skill" input="*@skills.json"/>
+  <table name="TbEnemy" value="Enemy" input="*@enemies.json"/>
+</module>

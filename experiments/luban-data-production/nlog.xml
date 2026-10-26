@@ -1,0 +1,4 @@
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <targets><target name="stdout" xsi:type="Console" error="false" layout="${level}: ${message}" /></targets>
+  <rules><logger name="*" minlevel="Info" writeTo="stdout" /></rules>
+</nlog>

@@ -1,0 +1,4 @@
+[
+  {"id": "scout", "displayName": "Scout", "maxHp": 80, "speed": 4.5, "skillId": "hit"},
+  {"id": "guard", "displayName": "Guard", "maxHp": 140, "speed": 2.5, "skillId": "heavy"}
+]

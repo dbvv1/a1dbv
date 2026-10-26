@@ -1020,3 +1020,33 @@ AD模拟时停普通循环，[普通存档门槛](https://github.com/IvarK/Antim
 **有限控制保留适应，不代替内容质量。** 重抽或选来源让玩家付代价换机会，禁选则持续改变可行集合；若只有指定组合可玩，应先修替代路线或必要前置供给，不用更多重抽次数遮掩。无效候选归规则验证；玩家是否愿意改构筑、是否觉得选择只是耗时，仍须实际试玩。[研究]
 
 本轮只读公开补丁、固定源码与原生文档；未购买、运行模型／引擎、制作新游戏或CPU小样，不声称玩家收益／AI二改成本已测。实施与验收直接回05，存档／随机隔离沿既有契约，不另造框架。[研究]
+
+<a id="data-production-chain"></a>
+## 数据正常生产链：保作者源，验真实消费者，再扩大生成范围
+
+核实：2026-10-26 UTC。补 [05 §4](../../domains/game-dev/05-gameplay-architecture.md#4-数据驱动定义实例存档分开)缺少的日常作者→生成→使用→二改，不替代上文定义／实例／存档与模组契约。默认少量配置沿已有 JSON／SO，多表生成试 Luban；这是按制作负担的选择，不是性能或全行业最高水平结论。
+
+### 原生起点、成熟生成器与作者实际需求
+
+| 已读依据 | 能借什么；影响选择的边界 |
+|---|---|
+| Unity [SO 数据指南](https://unity.com/how-to/separate-game-data-logic-scriptable-objects)；[PaddleGameSO 固定源码](https://github.com/UnityTechnologies/PaddleGameSO/tree/1cf25681333058c27468c1c2eb49591e7d72ef9f)，该提交 2025-08-12 | `GameDataSO` 保存速度、球参数、布局与资产引用；`GameSetup` 注入 Ball／Paddle，后者真实读取参数。适合已有 Inspector 工作流，不能据此要求所有系统都 SO 化。README 已指向较新 Asset Store 版，此次未下载新发行物；旧仓未见顶层代码 LICENSE，ThirdPartyNotices 不替代完整许可，只阅读、不复制 |
+| [Luban 5.1.0 release](https://github.com/focus-creative-games/luban/releases/tag/v5.1.0)，2026-09-10；固定源码 [`df34215d2e22035073d1af83d44e3ac0744dc3b3`](https://github.com/focus-creative-games/luban/tree/df34215d2e22035073d1af83d44e3ac0744dc3b3) | MIT；已有 schema、类型模板、范围／引用验证、结构化诊断，不需要自造表框架。静读 `RefValidator`、`RangeValidator` 和 `src/Luban/Program.cs`：JSON 诊断由 `Console.Error.WriteLine` 输出到 stderr，普通日志另流 |
+| 官方 [examples 固定版](https://github.com/focus-creative-games/luban_examples/tree/c52e273f1f50a263e9257dddb35c8e222d9777b8)，2026-09-10；[安装](https://www.datable.cn/docs/guide/install)、[AI 文档](https://www.datable.cn/docs/ai/overview) | examples MIT，内含可运行 5.1.0 生成器；复用现成 `typescript-json` 模板及生成 Tables，不照抄旧 npm 依赖。官方还提供 schema 查询与 AI 工具，但本题生成 CLI 已够用，未试 MCP／Luban.Agent |
+| [r/Unity3D 原帖及评论](https://www.reddit.com/r/Unity3D/comments/1mcd5s5/discussion_on_scriptable_object_architecture_in/)，2025 年讨论 | 已读使用者对可复用武器／动画数据的肯定、对过度事件通道和全局共享对象难调试的担忧，以及作者是否都在 Unity 中工作的区别。属于不同个人经历，不采纳未经测量的性能倍数或“SO 一律不用”判断 |
+
+三方对照后的选择是**按作者位置与消费者数量选择管线**：原生资产拖拽留 SO，现有 JSON 能满足就不迁移；稳定 schema 与多表引用成为持续问题才试生成。公开材料不能证明 Luban 在所有小项目上优于这两者；没有真实制作耗时对照，不写节省百分比。
+
+### 实际运行：不是手写加载器冒充生成成功
+
+[实验目录](../../experiments/luban-data-production/README.md)含原创敌人／技能 JSON、schema、消费代码和回归入口；生成代码与第三方二进制不入库。使用官方 examples 内完整生成器，版本实读 `5.1.0+df34215d2e22035073d1af83d44e3ac0744dc3b3`，.NET 8.0.33（SDK 8.0.427）、Node 24.22.1、锁定 TypeScript 5.9.3。安装 SDK 初次临时空间不足，源码构建又遇 NuGet 迁移 mutex 环境异常；改用工作磁盘安装与官方已编译分发完成运行，不将失败构建算通过。
+
+真实执行 `--strict --errorFormat json -c typescript-json -d json`，然后严格编译消费者，加载生成 `Tables` 并访问已解析 `skillId_ref`。3 个测试通过：
+
+1. 正常源数据与二改：`scout` 的 maxHp 80／hit damage 10；增加 armor 6、maxHp 100、引用 heavy damage 25 后，新生成类型可编译、加载值正确。受损血量由独立实例扣 10；不实现战斗护甲公式。旧输出仍能重载为原值，不是活会话热更保证。
+2. 五类失败子用例：缺引用、范围越界、重复 ID、缺必填字段、缺输入文件。实际生成器非零退出、结构化 `ok=false` 且有 errors；失败候选不进入消费者的 generated_validated 目录，旧数据字节未变。
+3. 同源重复生成：JSON 字节相同；不推广为跨平台或任意模板确定性承诺。
+
+**关键反例是严格失败仍可能留下生成文件。** 引用／范围错误两个用例都实见 `output/tbenemy.json` 存在，故“生成了新文件”不是验收依据。实验以退出码和 stderr 结构化报告共同决定接受；实际工程还须把生成代码与数据一起编译验收再替换。目录复制只演示门槛，不是原子发布或崩溃恢复实现。
+
+这次完整验证的是配置工具与真实生成消费者，Unity／UE 接收、资产 ID 映射、游戏内伤害／节奏未运行。后续接入已有工程时，应在同一测试场景分别看命中数、接近速度、技能反应窗口；不要为证明生成器有用先建新玩法或全量改表。

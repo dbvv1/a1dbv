@@ -1,0 +1,7 @@
+{
+  "name": "a1-luban-data-production",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": { "test": "python3 verify.py" },
+  "devDependencies": { "typescript": "5.9.3" }
+}
