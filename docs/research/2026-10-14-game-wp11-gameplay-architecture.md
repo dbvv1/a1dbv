@@ -349,6 +349,17 @@ npm run sim -- --content-version 8 --games 500 --seed 201 --verify-targets mirro
 - [Epic Gameplay Abilities](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-abilities-in-unreal-engine)：CommitAbility 应用费用／冷却；正常结束须 EndAbility；Per-Actor 复用需清成员。2026-10-25 复核公开生命周期文档，不据此声称现有工程正确。
 - [Abilities in Lyra](https://dev.epicgames.com/documentation/unreal-engine/abilities-in-lyra-in-unreal-engine?lang=en-US)：PawnExtension 等 possession、PlayerState、Input、Game Feature 就绪才授能力，失 Pawn 撤关联；这是多人生命周期参照，不是单机必须采用的整套底座。
 
+<a id="moba-skill-event-consumer"></a>
+**MOBA 正式采用回流（2026-10-26，[一手／运行＋源码]）。** [正式 main 912c04c](https://github.com/dbvv1/MOBA-Like/tree/912c04ccb36b3c3b06cd7fcfba5b5a2341b8a81e)已有输入→技能定义／实例→真实结算→原创动作／HUD 的正常链。它支持指向／方向／地面／自身的既有目标类型与版本解释，不是上文蓄力、三层灼烧、双光环、净化的完整设计实现；采用建议仍为补原组件职责，不迁移 GAS。
+
+- [模拟来源](https://github.com/dbvv1/MOBA-Like/blob/912c04ccb36b3c3b06cd7fcfba5b5a2341b8a81e/src/sim/simulation.ts)：通过 `commandCast` 扣资源后发开始，在各 delivery 成功点发提交，真实失能／死亡／失效处发取消；`dealDamage` 和 v9 单位阶段各自记录实际 HP 与护盾损失。普攻另在已承诺出手处记录，空挥／全护盾不会被错当“没有攻击”。没有动画回调二次扣血。
+- [事件契约及反例](https://github.com/dbvv1/MOBA-Like/blob/912c04ccb36b3c3b06cd7fcfba5b5a2341b8a81e/tests/presentation-events.test.ts)：当前 tick 批、深拷贝、同 tick 开始／提交、真实取消、终局重读、v8／v9 护盾／过量与互杀，旧 state/hash/输入回放格式不加事件字段。只读输出随同版本输入重新生成，不保证跨版本相同事件或跨运行时浮点确定性。
+- [客户端](https://github.com/dbvv1/MOBA-Like/blob/912c04ccb36b3c3b06cd7fcfba5b5a2341b8a81e/src/client.ts)在每个固定逻辑步后同步，[动作消费者](https://github.com/dbvv1/MOBA-Like/blob/912c04ccb36b3c3b06cd7fcfba5b5a2341b8a81e/asset-pipeline/presentation/motion-state.js)用 `tick+ordinal` 拒绝重复，以 `castId` 关联提交／取消。它只保当前动作；开始依据真实 castTime 映射源前摇，提交后才播放视觉挥击，视觉接触不保证命中。`hpDamage>0` 才受伤，纯护盾吸收不伪造身体受击，死亡覆盖活体动作，终局终止未完成视觉等待。
+
+这一接入补足了原“快照供晚加入 UI”建议的具体前提：**状态快照可晚读，瞬时事实若只保一批就必须每逻辑步收取**；同 render 多 step 不能只保最终批。重开既重建模拟，也清理旧动作／事件游标。真实源动画、上下身混合与资源生命期继续由[制作链原模块](../../domains/game-dev/assets/animation.md#multiunit-animation-consumer)维护，本节不复制其资产实现。
+
+本轮复用已通过的事件反例、真实 GLB Node 消费和[固定 48faed4 软件 WebGL 回执](https://github.com/dbvv1/a1dbv/blob/f2c83cb2/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)，并核正式采用的源文件：E 的实际输入与挂接 actor `attack.upper` 权重／轨道已浏览器验证；护盾／受伤细分仍以 Node 反例为据。没有重跑引擎选型或给完整蓄力示例补虚构运行证据。待验的玩家英雄选择不计本次正式采用。
+
 **动作响应与承诺（2026-10-15 UTC+8）。** [研究] 沿技能定义／执行实例与局部状态机，分别定移动转向、阶段出口和再次攻击资格。动画退出不等于退款、重开命中盒或清冷却；本节只补输入识别后的动作许可。
 
 - **历史调整 [一手]**：[Hades 官方历史补丁](https://www.supergiantgames.com/blog/hades-updates/)在2020-10-27改Guan Yu缓冲使连击间可Dash，2020-12-01同时加快Heavy Knuckle并解原地锁。[研究] 支持局部控制权调整，不能拆因果或推出所有武器任意取消、Hades II当前规则。

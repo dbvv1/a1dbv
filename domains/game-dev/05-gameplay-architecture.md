@@ -8,7 +8,7 @@
 
 **✅ 原生组件、可测试规则和局部状态机优先；明确状态所有者、结算点、退出清理再加框架。** HFSM／行为树／GAS／ECS 各解不同问题。
 
-AI 分工和验收均由本页契约与 [WP11](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md) 推导，不是模型能力实测。本页运行证据来自明确列出的合成／离线检查与观察：MOBA 效用合成检查及已发布 v8 无画面对局、局内成长 8 条合成算术、陀螺固定库、inkjs 合成规则；Recast/Detour Node 的实跑仅限固定版本、同设备离线导航与 Crowd 数值行为；另有 Star-Rush 兼容模式 HUD／主弯键控观察。其余机制未实测，手感／性能／维护收益未知。**各节专项验收均须同时通过§11 通用验收。**
+AI 分工和验收均由本页契约与 [WP11](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md) 推导，不是模型能力实测。本页运行证据来自明确列出的合成／离线检查与观察：MOBA 效用合成检查及已发布 v8 无画面对局、局内成长 8 条合成算术、陀螺固定库、inkjs 合成规则；Recast/Detour Node 的实跑仅限固定版本、同设备离线导航与 Crowd 数值行为；另有 Star-Rush 兼容模式 HUD／主弯键控观察。另有下文技能事实到原创动作的 Node 与软件 WebGL 接入；其余机制未实测，手感／性能／维护收益未知。**各节专项验收均须同时通过§11 通用验收。**
 
 **来源与范围**：本页机制判断与 WP11 研究为[研究]；明确列出的合成／离线检查为[一手／研究]，运行观察为[一手／经验]。
 
@@ -392,7 +392,7 @@ Timberborn 修改型 Blueprint 须开 `Disable Blueprint validation` 避免默�
 
 **专项验收：** 死亡回调重入同一结算，奖励仍只提交一次。
 
-晚加入 UI 读快照，必要时用操作身份拒绝旧事件。SO 通道属项目资产，换场景仍须退订；省字符串总线／完整事件溯源。见 [WP11 事件](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#5-事件用于传播已发生事实别把一次命令拆成无人负责的广播)。
+晚加入 UI 读快照，必要时用操作身份拒绝旧事件。若接口只保当前逻辑步的事实，呈现须每次 step 后收取，不能只读最后渲染帧；[下文 MOBA 已采用接入](#skill-event-consumer)给出有界批与重开的实际消费。SO 通道属项目资产，换场景仍须退订；省字符串总线／完整事件溯源。见 [WP11 事件](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#5-事件用于传播已发生事实别把一次命令拆成无人负责的广播)。
 
 **区域任务响应对象进出就持续重选，仅指定对象才展开固定队列。** 多单位保追加／替换、能力过滤、空筛选语义；BAR 未合并候选复测仍吞命令／误派友军，仅是该 RTS 证据，不指定引擎实现。见 [WP11 区域命令](../../docs/research/wp11-camera.md#s16-1)。
 
@@ -531,6 +531,19 @@ GAS 已提供叠加、到期等配置就用原生策略；`None` 是独立实例
 规则轨迹和自动测试验计算与归属；实际试玩验操作节奏、读条、读招、打击反馈与构筑选择。只有后者受限时，保留具体版本与待试玩项，继续完成数据、代码与可运行接入，不把数值通过写成手感通过。
 
 **来源与范围**：本节正常链、配置与二改为[研究]设计，核实 2026-10-25；机制证据复用上列固定资料，无本轮真实模型、游戏引擎或玩法品质实测。
+
+<a id="skill-event-consumer"></a>
+### 已采用接入：真实施法事实驱动动作，不让动画再结算
+
+**MOBA-Like 沿现有组件走通了较窄的一组技能，而不是实现上面的整套蓄力／灼烧设计。** 在[已采用版本](https://github.com/dbvv1/MOBA-Like/tree/912c04ccb36b3c3b06cd7fcfba5b5a2341b8a81e)按 README 启动网页，选择 Q／E 等技能再点击目标：输入按 catalog 的 `targetType` 发命令，Simulation 校验并承诺费用／冷却，推进施放与弹道／区域；HUD 读冷却与拒绝原因，原创动作只消费实际输出。此案例在接受施法时扣费；后续失能／目标失效不会自动退款，不能把前文“释放时承诺”的设计例当成其当前规则。
+
+**表现接三类不同事实，不用一个“攻击中”布尔值统管。** `castStarted` 带一次施放的 `castId`；`castResolved` 是实际 delivery 提交，不证明命中；`castCancelled` 来自真实中断／失效点。普攻即时结算不走施法实例，另由真实消耗攻击冷却处发 `basicAttack`，不从伤害猜出手。`heroDamaged` 分开实际 HP 损失和护盾吸收，受伤动作只消费 `hpDamage>0`；死亡读存活状态变化。v9 已承诺的后续空挥可以有攻击事件但没有尸体伤害，源动作的视觉接触帧也不再扣血。
+
+**收取频率是接口的一部分。** 当前 `snapshot().events` 仅保一个逻辑 tick 的深拷贝批，按 `tick+ordinal` 排序／去重；它不进权威状态哈希，不是历史补发服务。客户端每次 `step` 后同步消费者，同一渲染帧推进多个逻辑步也逐步收取。消费者只保当前施放／受伤阶段，不无界累计；重开清空游标与动作，倒序快照要求先 reset。只按 render 取最后快照会漏掉中间的零前摇施法与伤害，增加 EventBus 不能补回漏读。
+
+接入时保留原输入、模拟和资源所有者：技能定义／实例仍在 `src/content`、`src/sim`，逐步消费在 `src/client.ts`，动作阶段在 `asset-pipeline/presentation/motion-state.js`。可运行 `npx vitest run tests/presentation-events.test.ts` 看零前摇、取消、护盾／过量、v8／v9 与重复读取反例，再运行 `npm --prefix asset-pipeline/presentation test` 看真实 GLB／阶段消费；`npm run dev` 体验输入→施法→动作／场景反馈。复用当前仓库入口，不另建一套技能框架或日志平台。
+
+**验证边界：** 固定源码的只读事件与真实 GLB 消费有 Node 检查；[原软件 WebGL 回执](https://github.com/dbvv1/a1dbv/blob/f2c83cb2/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)实跑 E 输入、真实挂接 actor 的 `attack.upper` 轨道／权重和旧场景断言。不是所有受伤场景的浏览器覆盖，更不是手感、硬件性能或完整蓄力设计通过。具体源码、反例与旧回放边界见 [WP11 接入证据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#moba-skill-event-consumer)。
 
 ### 选敌：先保意图，再调辅助
 
