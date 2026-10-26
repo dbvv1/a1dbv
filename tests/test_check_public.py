@@ -1,4 +1,5 @@
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import tempfile
@@ -15,6 +16,8 @@ spec.loader.exec_module(module)
 FAKE_KEY = "sk-" + "A1b2C3d4" * 4
 FAKE_HOME = "/Users/" + "alice" + "/project"
 FAKE_EMAIL = "alice" + "@" + "gmail.com"
+WORKSPACE_PREFIX = "/workspace/" + "scratch/"
+FAKE_WORKSPACE = WORKSPACE_PREFIX + "ab12" * 3
 
 
 class PublicScanTests(unittest.TestCase):
@@ -43,6 +46,43 @@ class PublicScanTests(unittest.TestCase):
     files = {"a.md": f"token {FAKE_KEY}\n{FAKE_HOME}\nmail {FAKE_EMAIL}\n",
              "b.txt": "-----BEGIN RSA " + "PRIVATE KEY-----\n"}
     self.assertEqual(["credential", "email", "local-path", "private-key"], self.kinds(files))
+
+  def test_flags_cloud_instance_root_and_descendants(self):
+    for path in (FAKE_WORKSPACE, FAKE_WORKSPACE + "/", FAKE_WORKSPACE + "/repo/report.md",
+                 FAKE_WORKSPACE + "/shared/result.json", WORKSPACE_PREFIX + "AB12" * 3):
+      with self.subTest(path=path):
+        count, findings = self.run_fixture({"a.md": f"Evidence: `{path}`\n"})
+        self.assertEqual(1, count)
+        self.assertEqual([{"kind": "local-path", "file": "a.md", "line": 1,
+                           "match": path[:len(FAKE_WORKSPACE)]}], findings)
+
+  def test_workspace_examples_and_non_instance_segments_pass(self):
+    paths = ("/workspace/repo", "/workspace/shared/repo", WORKSPACE_PREFIX.rstrip("/"),
+             WORKSPACE_PREFIX + "<instance-id>/repo", WORKSPACE_PREFIX + "${INSTANCE}/repo",
+             WORKSPACE_PREFIX + "example/repo", "/tmp/example/repo",
+             FAKE_WORKSPACE.lstrip("/"), "docs" + FAKE_WORKSPACE,
+             "https://example.com" + FAKE_WORKSPACE,
+             FAKE_WORKSPACE[:-1] + "/repo", FAKE_WORKSPACE + "0/repo",
+             FAKE_WORKSPACE + "-example/repo", FAKE_WORKSPACE + ".example/repo",
+             WORKSPACE_PREFIX + "gh12" * 3 + "/repo")
+    for path in paths:
+      with self.subTest(path=path):
+        self.assertEqual((1, []), self.run_fixture({"a.md": path}))
+
+  def test_cli_rejects_tracked_cloud_instance_path(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      (root / "evidence.md").write_text(f"Evidence: `{FAKE_WORKSPACE}/report.md`\n", encoding="utf-8")
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      subprocess.run(["git", "-C", str(root), "add", "evidence.md"], check=True)
+      result = subprocess.run(["python3", str(SCRIPT), "--root", str(root)],
+                              capture_output=True, text=True)
+      self.assertEqual(1, result.returncode)
+      report = json.loads(result.stdout)
+      self.assertEqual(1, report["checked_files"])
+      self.assertEqual([{"kind": "local-path", "file": "evidence.md", "line": 1,
+                         "match": FAKE_WORKSPACE}], report["findings"])
+      self.assertEqual("", result.stderr)
 
   def test_credential_is_redacted_in_output(self):
     findings = self.run_fixture({"a.md": FAKE_KEY})[1]

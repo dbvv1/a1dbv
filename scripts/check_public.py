@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Scan files and commit identities for content that must not enter this public repository.
 
-High-precision patterns only: credentials, private keys, personal home paths and
-non-placeholder email addresses. A pass does not replace reading the diff; it
-cannot recognise company code, private conversations or internal hostnames.
+High-precision patterns only: credentials, private keys, personal home and cloud
+instance paths, and non-placeholder email addresses. A pass does not replace
+reading the diff; it cannot recognise company code, private conversations or internal hostnames.
 """
 import argparse
 import json
@@ -19,6 +19,8 @@ PATTERNS = [
     r"|AIza[A-Za-z0-9_-]{35}|eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}")),
   ("private-key", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
   ("local-path", re.compile(r"/(?:Users|home)/[A-Za-z0-9._-]+/|[A-Za-z]:\\{1,2}Users\\{1,2}[A-Za-z0-9._-]+")),
+  # Concrete 12-hex instance segments, not generic workspace examples or relative paths.
+  ("local-path", re.compile(r"(?<![\w./-])/workspace/scratch/[0-9a-fA-F]{12}(?![\w.-])")),
   ("email", re.compile(r"\b[A-Za-z0-9][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
 ]
 # Placeholders and machine identities that are safe to publish.

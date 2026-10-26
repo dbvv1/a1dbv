@@ -24,7 +24,7 @@
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；固定来源每周一轮，候选进收件箱，漏检对照记入 [25](../25-ai-exploration.md) | dot-A | 下一步：第一轮扫描和首次漏检对照。上次校准 10-22：25 项参照漏 6 项。 |
-| P81 | **试用与写成选择**：读者照着就能采用；在本仓自己的 AI 开发里试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | 已有采用结论（Datasette、MDX、Memos、Storybook、Memoh）写进路线页后收口；[Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502) 跟评审；jrnl 补丁待用户创建 PR（见下）。 |
+| P81 | **试用与写成选择**：读者照着就能采用；在本仓自己的 AI 开发里试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | 已有采用结论已回流并收口；本仓[公开路径回归](local-jobs/A-PUBLIC-PATH-REGRESSION-001.md)与[context-mode窄试](local-jobs/A-CONTEXT-INDEX-TRIAL-001.md)已独审接收，原生回归／rg仍是对应任务默认；[Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502) 跟评审；jrnl 补丁待用户创建 PR（见下）。 |
 | MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 可玩集成已入 [main 274bc62](https://github.com/dbvv1/MOBA-Like/commit/274bc62c69f84294fbd4c97f7acff9f16ca8f68a)，[原 smoke 任务](local-jobs/B-MOBA-CLIENT-SMOKE-001.md)已接受软件 WebGL2 实跑与独审；按 [README](https://github.com/dbvv1/MOBA-Like/blob/main/README.md) 运行并操作。默认 v8，模拟指标继续作调参报告；下一步第二次需求修改与制作链接入。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[细则 G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | [联网与服务端](../../domains/game-dev/07-networking-and-server.md)已给条件选型与引擎接线；固定 MOBA 三进程 TCP 样例正常／延迟重试 300 tick 哈希一致，读者入口实跑。下一步沿案例实际采用补齐模块，不把同机样例写成公网或浏览器联网。 |
 | B-制作链 | **AI 全链路**（[细则 G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [原创角色源→多单位→可玩主循环](../../domains/game-dev/assets/animation.md#multiunit-animation-consumer)已回流：idle／walk 正式采用，原软件 WebGL2 通过；[静音开门影片](../../experiments/gate-reveal/README.md)制作与返回玩法也已实跑。下一步接收完整动作进入可玩 main，未合 hurt／death 不计采用。 |
@@ -49,7 +49,8 @@
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
-| jrnl 上游 PR | GitHub 集成在上游仓库创建 PR 返回 403。补丁已在 fork：用户打开 [compare 页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422?expand=1) 点创建（Draft），标题与说明用 [采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md)里的修复摘要 | 其他上游 PR 照常跟进 |
+| jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
+| Actual 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/actualbudget/actual/compare/master...dbvv1:actual:dot-a/load-config-typescript-1483)创建Draft。拟标题：`[AI] Migrate sync server configuration loader to TypeScript`；正文保留官方空模板，人类字段不代填 | 本仓发现、试用与既有PR跟进继续 |
 | Maka 上游贡献 | 真人贡献者须实际审阅负责，适用时本人签 CLA | [OpenSpec 邀请已发](https://github.com/Fission-AI/OpenSpec/issues/2115#issuecomment-6401683363)；其他 PR 继续 |
 
 **停止的动作**：Maka #4495 评论同样因集成 403 未发出；MOBA 第三方素材官方取回 HTTP 403，自有与原创占位素材已通过；P107 与 Action 调试 10f6a6db 曾被平台拒绝，负责人补齐命令和用途后再请用户在 Dot 里批准。

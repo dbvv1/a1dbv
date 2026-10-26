@@ -63,7 +63,7 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 | Claude Code | `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md` | 原生 AGENTS 入口从 v2.1.277 起提供，部分 provider／禁遥测会话到 v2.1.281 才支持。默认检查当前目录及祖先：有 `CLAUDE.md`、`.claude/CLAUDE.md` 或 `CLAUDE.local.md` 就不走 AGENTS 回退；用户级 `~/.claude/CLAUDE.md` 不触发这个抑制。子目录按需发现，不能假定所有指令已在开场加载 |
 | Codex | `AGENTS.md`、`AGENTS.override.md` | 每次运行启动时建立指令链；全局先选首个非空 override／AGENTS，项目从根到当前目录逐层选择 override、AGENTS、备用文件名，每层最多一份；项目文档默认总预算 32 KiB。单包任务可用 `--cd` 在目标包启动并带入根到 cwd 链；根会话跨兄弟包仍缺自动发现。不能把 Claude 的 `@` 导入或子目录按需发现直接移植过来。codex-cli 0.154.0 fixture 只核对上下文组装（根启动根 1／包 0，包目录启动根 1／包 1），不证明模型遵守 |
 | Gemini CLI | `GEMINI.md`（可配置文件名） | 未重核，按目标客户端文档确认 |
-| OpenCode V2 | `AGENTS.md`（workspace 内嵌套） | 读文件或列目录时发现 workspace 内嵌套 AGENTS，nearest-first、去重；compaction／revert 可重载，已加载规则文件被改后不自动重载。只核文档／源码契约，未实跑采用，不证明模型效果 |
+| OpenCode V2 | `AGENTS.md`（workspace 内嵌套） | 读文件或列目录时发现 workspace 内嵌套 AGENTS，nearest-first、去重；compaction／revert 可重载，已加载规则文件被改后不自动重载。只核官方文档契约，未实跑采用，不证明模型效果 |
 | Cursor / Copilot 等 | 各自规则格式或 AGENTS 入口 | 文件同名不证明发现、合并和刷新规则相同，未重核 |
 
 **✅ 已有 AGENTS 跨包需求且客户端可选时，优先采用现成的动态发现，不默认自研 Codex。** Claude Code 的既有原生规则仍保留；OpenCode V2 在读取文件／列目录时发现 workspace 内嵌套 AGENTS，是现成候选；单包任务沿用 Codex 原生 `--cd` 链。本仓当前没有真实跨包采用成果，不能把文档／源码契约写成已采用或模型已遵守。
