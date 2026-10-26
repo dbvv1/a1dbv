@@ -37,7 +37,7 @@
 需要人亲自听、看、玩才能判断的项目集中在这里，由用户择时统一验收；执行者记录后继续其他工作。
 
 - MOBA-Like：[可玩入口与操作](https://github.com/dbvv1/MOBA-Like/blob/main/README.md)的硬件 GPU 画面、操作手感与完整对局体验；软件 WebGL2 smoke 已通过。
-- Star-Rush：[普通公路候选](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road)已公开可试玩，但未默认、未定稿；制动转向耦合错误已修，路内跑酷物移出，离散工具输入不能代替真人连续操控或证明所有触墙是物理缺陷。我们继续本云优化完整弯道，不等待用户接管；整体手感、完整视听与硬件表现未达成验收，候选声音仍待实玩混合判断。
+- Star-Rush：[普通公路候选](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road)已公开可试玩，但未默认、未定稿；制动转向耦合错误已修，路内跑酷物移出，离散工具输入不能代替真人连续操控或证明所有触墙是物理缺陷。我们继续本云优化完整弯道，不等待用户接管；整体手感、完整视听与硬件表现未达成验收，海岸环境声已有本云真实关闭／开启混音试听文件（不同驾驶、Canvas、无增益），待统一听辨接缝与掩蔽，默认仍关闭、未采用。
 - 潮汐邮差 v2：素材、木筏与旧档。
 - Memos：owner 登录与编辑。
 - Maka 侧聊模型选择：真实后端／Electron 与完整应用体验（[固定候选](local-jobs/A-STORYBOOK-ADOPTION-001.md)）。

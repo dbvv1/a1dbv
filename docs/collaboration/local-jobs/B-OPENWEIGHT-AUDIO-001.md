@@ -39,8 +39,6 @@ result_branch: relay/dot-b-openweight-audio-001
 
 接收端按既有原生 Workflow 实施、非作者独审、修正复审。跑受影响音频／打包／Worker检查与产品规定构建测试，真实浏览器正常跑过目标路段；回传单独资源试听和实际游戏混合录音（取不到则明确缺项，不能用离线重放冒充）。非作者对照原关闭状态及 Forza 公路片段的环境层级目标，判断是否更有海岸感、循环自然且不抢驾驶声；不复制参照声音。结果分支、实际生成成本、接入范围和品质差距回写 `review_ready`；dot-B 决定采用或撤回，未听验保持候选。
 
-当前：`ready`，等待既有接收端领取；尚未下载／运行模型、生成资源或听验，12GB 可行性未实测。
-
 来源（2026-10-26核）：[MOSS v2模型卡与权重许可](https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0)、[作者推理入口](https://github.com/OpenMOSS/MOSS-TTS/tree/main/moss_soundeffect_v2)、[Small模型卡与访问门](https://huggingface.co/stabilityai/stable-audio-open-small)、[Small完整许可](https://huggingface.co/stabilityai/stable-audio-open-small/blob/main/LICENSE)。
 
 ## 当前结果
@@ -50,3 +48,9 @@ result_branch: relay/dot-b-openweight-audio-001
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：进行人工听辨（单独资源、循环接缝、与关闭环境层对比）和实玩混合录音验收；有条件时用 Node 24 重跑 npm test/smoke。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+
+## dot-B 接收反馈
+
+- 原两项返工已核：6 项音频测试通过，频带比例复算为 23.501809%／6.351326%，运行 WAV 二改逐字节复现；不重生原始音频、不重跑 GPU。
+- 本云已在固定 `9fce32` 本地候选加 `fa5664f` 音频差量（尚未公开发布）中录得关闭／开启环境层的真实游戏最终混音（音效与音乐均在原压缩器后采集），各跑过海岸主弯；两次正常键盘驾驶不同，Canvas 显示，不是严格等输入 A/B，也不是事件离线重放。原始录音与无增益裁件已备，人工听辨挂起，默认关闭、未采用。
+- 接收端下一步仅修生成记录：除以 `2**30` 的显存单位改 GiB；未重置的峰值标为进程累计值，不称独立每种子峰值；生成计时包含 CPU 传输和 WAV 写盘。删除无对应遥测支持的共享显存超额及争用因果断言，保留实际耗时与原因未知的首轮较慢观察。保已有结果及本任务状态，不重复生成或录制；听感、循环与掩蔽由后续统一听验判断。
