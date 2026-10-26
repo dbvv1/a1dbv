@@ -2,7 +2,7 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 35c82ed114139e47a0029a795460528e4ba9810f
 result_branch: relay/b-moba-client-smoke-001
@@ -19,8 +19,8 @@ result_branch: relay/b-moba-client-smoke-001
 
 ## 当前结果
 
-- 固定候选 `d32f5d9`（`b/moba-playable-integrated-v8`）的 `npm ci` 与 `npm run smoke` 在本机实跑退出 0，原有断言全部通过（contentVersion 8、E 键鼠施放、技能区域与效果对象、非背景像素、无浏览器错误），渲染为软件 WebGL2；独立审查通过。
-- 按 MOBA-Like brief 的合入门槛，这个候选可以直接合入 main；硬件 GPU 画面与手感进入待人工验收。
-- 10-26 按用户方向调整由 Claude 核心方向会话接收，原“补录证据字段”的修改要求取消，旧过程见 Git 历史。
-
-- 新 `35c82ed`：待本次浏览器结果；软件渲染据实记录，人工美术与手感另验。回写固定版本、实际命令退出及通过／失败结论即可，失败给具体阶段交原客户端 owner；不额外补录证明字段、不上传本地截图／私人路径／完整日志、不改产品 main或部署。
+- 固定候选 35c82ed 在本机以 Node 22.23.2 实跑 npm ci、npm test 与 npm run smoke 均退出 0，119 项测试通过，smoke 报告 passed=true 且覆盖 Q/E 瞄准预览、Esc 取消、E 施放区域与效果对象、非背景像素及无浏览器错误；软件 WebGL2 已据实确认，未改代码。
+- 本单元没有文件改动。
+- 检查：check_public（文件） 通过；独立审查通过。
+- 下一步：由接收端回写固定版本与命令退出结论；硬件 GPU 画面、手感与美术待人工验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
