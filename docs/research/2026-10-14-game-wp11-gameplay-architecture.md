@@ -205,13 +205,31 @@
 
 ### 1. 游戏循环：把“一局结束”做成真正的生命周期边界
 
-**[研究] 最低完成度**：按需保留Boot／FrontEnd／Loading／Playing／Paused／Results，暂停可为Playing子状态。一个Session／Run拥有本局敌人、临时奖励、计时器、订阅与取消；Settings／存档另属常驻域。下一局创建新session，而非分散重置布尔值。
+**[研究] 默认保既有组件与原生循环，补齐装配、目标事实、唯一结果、结果消费者和下一局五个调用点。** 比过 PaddleBall 的小型完整应用、Boss Room 的联网整局和官方 FSM 教学：前两者能看见真实消费者与跨阶段数据，FSM 仅解决组织方式。单机不为流程引入网络／服务或 DI，不要求每种状态都是独立资产／类；无跨品类最高水平或维护收益实测。
 
-- **Unity 默认**：一个组合入口装配组件，规则接受明确的 delta/tick；沿已有 Update／FixedUpdate，不替换整个 PlayerLoop。需要物理的运动留在正确时序；UI、相机、菜单是否用不受暂停影响的时间各自声明。
-- **UE 对照 [一手]**：GameInstance 跨关卡，GameMode 随关卡而建，Pawn 与控制者分开；不要把世界内 Actor 引用永久塞入 GameInstance 来“保持状态”。[Gameplay Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine)
-- **可省**：自建引擎循环、跨所有玩法的 GameManager 继承树、单机不需要的服务器会话层；只为快速开始也不必引入 DI 容器。
-- **AI 典型风险 [研究]**：第二次加入暂停后，动画停但技能协程／菜单计时仍推进；重开重复订阅，旧一局奖励延迟回调写到新局；失败与胜利同时触发双重结算。
-- **将来验证**：同一输入轨迹跑正常结束、失败、暂停时重试、加载中退出，断言每个 session 最多结算一次；旧 session 的事件和回调不能改变新 session；重试若干轮后对象、订阅和任务数回到基线。时钟／物理确定性需真实引擎，纯规则测试不能代替。
+#### 固定源码：要借消费者，不只借一个状态枚举
+
+| 材料／版本 | 实际读到的调用链与改变的选择 |
+|---|---|
+| [PaddleGameSO `1cf2568`](https://github.com/UnityTechnologies/PaddleGameSO/tree/1cf25681333058c27468c1c2eb49591e7d72ef9f)，本轮沿已缓存固定源码；工程 Unity 2021.3.21f1 | `Assets/PaddleBall/Scripts/Managers/GameManager.cs` 在 Awake 调 `GameSetup.Initialize/SetupLevel`；开局发 `GameStarted`，进球发 `PointScored`，目标完成发 `GameEnded`。`ScoreManager.cs` 监听开局新建每位玩家的 `Score` 并更新 UI，结束后不再计分。因此“重新开始”必须接每个实际消费者，不是只把 GameManager 的布尔值清零。 |
+| [Boss Room `1299ba4`](https://github.com/Unity-Technologies/com.unity.multiplayer.samples.coop/tree/1299ba4fc97d83b634e7d32a86c438ba668d7f9c)，工程 Unity 6000.0.52f1、manifest NGO 2.4.3／VContainer 1.16.8 | `Assets/Scripts/Gameplay/GameState/ServerBossRoomState.cs` 在网络场景加载完成后做初次生成；全员失去 Alive 或 Boss Dead 进入 `CoroGameOver`，先写 `PersistentGameState.WinState`，再等收尾并加载 PostGame。`ServerPostGameState.cs` 在网络生成时结束会话并把结果给 `NetworkPostGame.WinState`，再玩加载 CharSelect，返回菜单走连接关闭。借结果先于表现、跨场景仅传所需摘要，不把服务端授权移给客户端。 |
+| 同一 Boss Room 固定源码的实际限制 | 胜／败常量分别为 7／2.5 秒，协程注释仍写“5 seconds”，应读参数而非抄注释；它使用 `WaitForSeconds`，暂停时间策略需项目另定。该协程没有本节建议的唯一结果仲裁，不能把演示当同帧胜败已防重的实现。`PersistentGameState` 实际只存 WinState，本节成绩／奖励摘要是扩展建议，不是 sample 已实现完整战报。 |
+
+PaddleBall 固定仓 README 明示已有[较新版 Asset Store 项目](https://assetstore.unity.com/packages/templates/tutorials/scriptableobjects-paddle-ball-project-325743)，且自述演示为展现模式而非最少代码；本轮没有导入新版，也未在固定旧仓找到整库 LICENSE，故只读机制，不复制代码／素材或声称商用已获许可。Boss Room 的固定 `LICENSE.md` 为 Unity Companion License（Unity-dependent projects），依赖与第三方资产仍需按选用项核权利；本轮只取源码与元数据，没有搬运资源。官网旧文“最新 LTS”字样不替代各工程的实际 ProjectVersion。
+
+**官方说明对照。** [PaddleBall 总览](https://unity.com/how-to/get-started-with-scriptableobjects-demo)区分启动装配、SceneLoader 与玩法管理者，并说明只选给项目带来实际好处的模式；[Unity 6 状态模式教程](https://learn.unity.com/course/design-patterns/tutorial/develop-a-modular-flexible-codebase-with-the-state-programming-pattern)主要展示角色状态，不能当完整开局／结算产品。UE 对照沿 [Gameplay Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine)：GameInstance 跨关卡，GameMode 随关卡，Pawn／控制者分离；常驻对象不保旧世界 Actor 引用。
+
+#### 正常制作与第二次修改
+
+**[研究] 第一版完成一次选择到下一局，而非完成生命周期类。** 复用现有生成、目标、计分与输入入口：配置进本局、加载装配后开控、真实目标事实决定结果、摘要进结果 UI／进度系统、再玩回同一装配入口。游戏沿 Update／FixedUpdate，菜单／收尾表现时钟另定；不替换 PlayerLoop。小项目先用既有重载路径，只有目标设备等待成为真实问题才维护局部重置清单。
+
+**二改选“失败快重试，胜利仍有结果”。** 规则结果与展示时间分开；跳过展示仍走同一结算／记录，重试复用同一新局入口。设置／已解锁进度保留，本局目标、分数、敌人、投射物与临时奖励重建；重开后旧回调无权写新局。局内 respawn、检查点继续与整局重开是不同操作，不能都调用清空整局的 Reset。
+
+**社区反证支持分解等待，不支持统一秒数。** [Rage Tower 作者的重生速度讨论，2025-09-09](https://www.reddit.com/r/IndieDev/comments/1nclfad/i_sped_up_the_players_respawn_is_that_enough_or/)已读原帖与正反回复：频繁失败时有人要求快捷重试、去掉无信息黑屏，也有人需要短暂喘息或保留动画且可跳过。作者参与讨论，但没有受控 A/B 数据；这些是验证问题，不是“越快越好”的实测排名，也不据评论转述确认 Celeste／Super Meat Boy 的具体实现。
+
+**AI 的交付**是五个现有调用点的接线、结果与输入切换、复用重开路径和一次正常二改；典型失败是造未调用的框架、仅重置 UI、旧目标继续计分、重复奖励或在跳过结果时跳过结算。规则测试核正常胜败、冲突优先级、唯一结果与重开初值；Play Mode／设备从菜单跑到再玩，检查镜头、输入、目标、HUD、音效与结果；保留暂停时重试（恢复本局时钟，不困在 timeScale=0）与加载中退出（迟到完成不再开控）两条中断验收。Profiler 分清加载／重置与装饰停留，人比较死因反馈、胜利回味和连续重试节奏。离线测试不替真实时序或试玩。
+
+**探索与验证范围**：2026-10-26 核上述官方、固定公开源码及社区原帖，未运行 Unity／联网服务或测等待与维护收益；较新版 PaddleBall 仅找到入口未导入。正文流程是实施研究第一版，不把 sample 的功能或社区愿望写成本项目验收。
 
 ### 2. 状态机、行为树与 StateTree：先问什么会打断什么
 
