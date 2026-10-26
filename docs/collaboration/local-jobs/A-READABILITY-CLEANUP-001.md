@@ -32,10 +32,11 @@ result_branch: relay/a-readability-cleanup-001
 
 ## 当前结果
 
-- docs/README.md 已按读者问题重写入口、评级与维护各节，但独立复审发现两处语义损失：情境 B 丢失「有依据、可比较标准」限定，一手来源判断丢失「可能」限定，尚未通过审查。
-- 产物：[42fbcaf](https://github.com/dbvv1/a1dbv/commit/42fbcaff5dc34eb0d51480e76647ecd2e5ca3689)，分支 `relay/a-readability-cleanup-001-u1`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：带 retryNote 重跑本单元，恢复上述两处限定并复审通过，再继续 docs/15-task-playbooks.md、docs/01-agents/README.md 等剩余页面。
+- docs/README.md 已按读者优先重排：先给选路与判断标准，依据行集中到节末，并恢复「有依据和可比较标准的质量目标」与「一手来源可能只证明厂商这样写」两处限定；检查全部通过。
+- 产物：[d243e8c](https://github.com/dbvv1/a1dbv/commit/d243e8c2ae7fca7f640c3592228607d806f4cd81)，分支 `relay/a-readability-cleanup-001-u2`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 已按 accept: auto 合入 main：[c0a9c63](https://github.com/dbvv1/a1dbv/commit/c0a9c63863a010999eddba7e2a91a5b172109a66)。
+- 下一步：对其余收窄范围页面（根 README.md、docs/15-task-playbooks.md、docs/01-agents/README.md、docs/01-agents/claude-code.md 及 templates/ 下非 README 的 Markdown）逐页做非作者读者实测，确认无需改写即可结束任务。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
 
 ## 修改要求
