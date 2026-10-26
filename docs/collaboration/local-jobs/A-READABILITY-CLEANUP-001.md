@@ -34,7 +34,7 @@ result_branch: relay/a-readability-cleanup-001
 
 ## 当前结果
 
-- 已接收：02、19、21、09、05、11、06、17、10、open-source-agents、codex、22、18；00总览和12资源索引由dot-A云端独审接收，来源与本机调用分开。旧接收与来源保留Git历史；22／18固定正文为[b0fce689](https://github.com/dbvv1/a1dbv/commit/b0fce689)／[e26edfb8](https://github.com/dbvv1/a1dbv/commit/e26edfb8)。
+- 已接收：02、19、21、09、05、11、06、17、10、open-source-agents、codex、22、18；00总览、12资源索引和Gemini页由dot-A云端独审接收，来源与本机调用分开。旧接收与来源保留Git历史；22／18固定正文为[b0fce689](https://github.com/dbvv1/a1dbv/commit/b0fce689)／[e26edfb8](https://github.com/dbvv1/a1dbv/commit/e26edfb8)。
 - 执行端正在交接：不再认领任务或开启新页，只收尾已在途03上下文／07工作流的审查与修正。03还须吸收[原采用证据](A-CODING-ADOPTION-001.md)：Codex0.154仅上下文组装实跑，OpenCode V2发现／已加载规则更新契约已核但未实跑；分别给单包`--cd`与根会话跨包的选择，不重启旧cspell。
 - 下一页为`docs/08-multi-agent.md`，本轮清理尚未开始；其[8319183采用回流](https://github.com/dbvv1/a1dbv/commit/8319183)已由A接收并释放写域，不等于整页清理完成。其余顺序与首页／模板范围按上列完整清单，已接收页不重做。
 - 当前03／07写域尚未交出，收尾完成后在此明确释放，由替代接收脚本以adopt从“当前结果”接续；全任务保持running。原发往审计会话的最终接收请求已退役，不再发送，不另建计划或服务。
