@@ -36,7 +36,7 @@
 先覆盖最核心、最通用、最重要的模块，每个先做出完整可用的一版，再按案例反馈深入。
 
 - **客户端**：渲染与性能、资源加载与内存、动画、物理与碰撞、输入、UI、音频、存档、本地化、平台适配与发布、编辑器扩展；
-- **引擎**（Unity 优先、Unreal 对照）：项目结构与资源管线、编辑器工具与引擎官方 Agent 接口、构建与发布、性能剖析，写在 `unity/`、`unreal/` 与 01 引擎接入；
+- **引擎**（Unity 优先，Unreal、Godot 对照）：项目结构与资源管线、编辑器工具与引擎官方 Agent 接口、构建与发布、性能剖析，写在 `unity/`、`unreal/` 与 01 引擎接入；
 - **服务端（独立游戏常用部分）**：联网模型选型（帧同步、状态同步、回滚）、房间与匹配、账号与云存档、排行榜、在线配置与遥测，优先给托管服务和开源服务端的接入起点；
 - **Gameplay 架构**：游戏循环、状态机与行为树、数据驱动配置、组件与 ECS 的取舍、战斗与技能、相机、关卡。
 
@@ -82,21 +82,7 @@
 
 ## 5. 历史工作包索引
 
-工作线代号（GA–GF、M5 等）见 [BACKLOG](../research/BACKLOG.md)。
-
-| WP | 内容 | 现属工作线 | 主要页面 |
-|---|---|---|---|
-| WP0 | 盘点与缺口 | — | [WP0 盘点](../research/2026-10-14-game-wp0-inventory.md) |
-| WP1 | 授权与商用门槛 | GA | `domains/game-dev/03-generative-ai-in-games.md` |
-| WP2–WP7 | 2D、3D、动画与绑定、材质与特效、音频、视频 | GA | `domains/game-dev/assets/` |
-| WP8 | 跨资源风格一致性 | GA | `domains/game-dev/03-generative-ai-in-games.md` |
-| WP9 | 从生成结果到引擎资产 | GB | `domains/game-dev/01-engine-integration.md`、`unity/`、`unreal/` |
-| WP10 | 客户端核心模块 | GC | `domains/game-dev/04-client-modules.md` |
-| WP11 | Gameplay 架构 | GC | `domains/game-dev/05-gameplay-architecture.md` |
-| WP12 | 独立游戏路线图 | GD | `domains/game-dev/06-indie-roadmap.md` |
-| WP13 | 游戏项目的 Agent 配置 | GE、M5 | `domains/game-dev/unity/templates/`、`unreal/templates/` |
-
-原任务书的完整文本（依赖表、各 WP 必须覆盖的要点、阶段 F 安排）见 Git 历史中的 [重构前版本](https://github.com/dbvv1/a1dbv/blob/e81875d500c894b30c1924c801b99bace499019d/docs/collaboration/game-taskbook.md)。
+WP0–WP13 的页面现由[模块与制作链地图](../../domains/game-dev/README.md)统一列出；工作线代号见 [BACKLOG](../research/BACKLOG.md)，原任务书见 Git 历史中的[重构前版本](https://github.com/dbvv1/a1dbv/blob/e81875d500c894b30c1924c801b99bace499019d/docs/collaboration/game-taskbook.md)。
 
 ## 6. 作品案例
 
