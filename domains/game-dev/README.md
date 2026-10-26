@@ -82,7 +82,7 @@
 | [05 Gameplay架构](05-gameplay-architecture.md) | 整页比较组件／混合架构、状态兼容、完整技能制作与镜头关卡；保规则结算与原制作链，以二改接收决定扩展 |
 | [07 联网与服务端](07-networking-and-server.md) | 状态／输入同步与预测回滚的条件选择；现成引擎接线、两端真实 MOBA 模拟输入帧消费和共同状态验证 |
 | [08 关卡与遭遇](08-level-design-and-encounters.md) | 从体验概念、可玩布局、真实角色尺度到遭遇节奏与二改；沿现有工程制作，不先造生成器 |
-| [unity/](unity/README.md) | Unity：**引擎基础知识**（每节附 AI 要点）、Unity CLI 和官方插件、大型项目的编译和测试闭环、配置模板 |
+| [unity/](unity/README.md) | Unity：**引擎基础知识**（每节附 AI 要点）、Unity CLI 和官方插件、大型项目的编译和测试闭环、配置模板；[动画运行时](unity/04-animation-runtime.md)、[内容作者工具](unity/05-content-authoring-tools.md)、[物理道具与机关](unity/06-physics-interaction.md) |
 | [unreal/](unreal/README.md) | Unreal：**引擎基础知识**（每节附 AI 要点）、UE 5.8 官方 MCP 和 Epic 插件、Live Coding 与 UBT、自动化测试、配置模板 |
 
 ## 5. 历史盘点与当前推进
