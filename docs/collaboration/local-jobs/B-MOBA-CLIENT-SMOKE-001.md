@@ -2,14 +2,14 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
-base_ref: 4520ff9d74191d3710d38ac947de9e72af51a485
+base_ref: d32f5d9014200c0e2d686c5d28e7a37114429f51
 result_branch: relay/b-moba-client-smoke-001
 
 ## 要完成的事
 
-验证上述固定候选，不重新实现客户端。原 B-MOBA-SIMULATION-001 的无画面首版已 accepted，宿主已结束并移交；本项是首次客户端真实浏览器验收，不重派模拟。先读目标仓 AGENTS、docs/brief.md 和现有 smoke 说明，核本任务是否已有领取／运行，沿同一调用接续。候选分支为 `b/moba-browser-smoke-candidate`，tree `9e95ce02d666571626ba8e8bcb614bcc46882771`。固定候选已有 72 项 Node 测试、构建及有效非作者独审；云端浏览器首启与 Restart 实见 WebGL2 Disabled，不能当 3D 通过。
+接收端已完成的 [4520ff9 实测回执](https://github.com/dbvv1/a1dbv/blob/345d8d64e063756043284f00f85b8139cdf29665/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)由 B 接受，旧通过事实保留，不当成新树通过。本次仅续验最终整合候选 `b/moba-playable-integrated-v8`，固定上述 SHA、tree `1be247214b1cbd394400f907b3e8cfdb478d038a`，父 `4822f31317b3416758b0507e03a2c460991257f4`；已有96项测试、双构建与有效差量独审。原调用已结束，不重做模拟／实现、不新建任务号。先核是否已有本次领取／调用，未结束则接续。
 
 在既有获授权接收环境取得精确提交，使用 Node >=22.12.0，执行 `npm ci`、`npm run smoke`。后者自行 build:web 并启动临时 loopback 服务；如现有授权环境缺 Chromium，仅按官方 `npx playwright install chromium` 安装。失败保留原退出码和具体阶段，不换镜像、代理、浏览器二进制或 sandbox 绕过拒绝；不设置 `MOBA_SMOKE_CLOUD_NO_SANDBOX`，该例外仅限 dot 自身云容器，不能扩到本机。
 
@@ -23,13 +23,8 @@ result_branch: relay/b-moba-client-smoke-001
 
 仅由既有本地协作会话使用已配置模型执行普通原生 Workflow；本任务不授权 dot 直接操作用户电脑，不新开 Codex／cloud_threads，不下载模型权重、新建凭据、付费、部署或上传成绩。保留既有明确拒绝，只暂停对应动作；loopback 测试不访问生产服务或账号。
 
-## 本地接收
+## 当前结果与续验
 
-已由独立本地协作认领，来源 [ed56e61](https://github.com/dbvv1/a1dbv/blob/ed56e61a7b2f621bbc80d86d9015f420ea08ccdb/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)（dot-b/tmp/20261026-moba-browser-smoke-job）。从指定候选4520ff9隔离运行现有harness；先发布认领，再调用已配置Claude Code＋DeepSeek原生Workflow。复用已完成源码独审，不改产品、不重跑原模拟任务；由宿主核实际退出码与本地报告，交回dot-B接收。
-
-## 当前结果
-
-- 固定候选[4520ff9](https://github.com/dbvv1/MOBA-Like/commit/4520ff9d74191d3710d38ac947de9e72af51a485)，tree `9e95ce02d666571626ba8e8bcb614bcc46882771`，运行前后跟踪文件均无改动；未修改或发布产品。Claude Code＋DeepSeek原生Workflow完成，实际message.model=`deepseek-flash`，宿主另核真实命令输出、退出码、源码断言与本地report，未以模型自报代验。
-- 2026-10-26 UTC：`npm ci` 03:00:59–03:01:26退出0；`npm run smoke` 03:01:32–03:01:43退出0（包含typecheck及Vite构建）。Node24.22.1／npm10.9.8／Playwright Chromium156.0.8078.4，sandbox启用，既有官方浏览器，未安装替代二进制或设置cloud no-sandbox例外。
-- 现有全部断言通过：Three WebGL2活上下文、tick16→33、真实右键移动及S停止、镜头解锁／边缘平移／Space回锁、四技能按钮与HP/Mana、非背景像素1280×650／188色／dominantFraction0.4870；console/page/HTTP/request错误及cleanupErrors均空。启动参数为既有SwiftShader软件渲染，不代表硬件性能或人工手感通过。
-- report与截图保持本地ignored，未读取或外发图片像素，未上传原始日志；源码独审与72项Node测试复用。安装提示3项依赖漏洞（1 moderate／2 critical）及构建大chunk警告，按只验固定候选范围未改版本／配置；交dot-B判断后续处置。待dot-B接收本次浏览器验收，人工画面／声音／手感仍待验；本任务不合产品main、不部署。
+- 旧 `4520ff9`：宿主真实 `npm ci`／`npm run smoke` 退出0，原全部断言及软件 WebGL2 通过；B 已核固定树／断言并接收。完整环境、时间与3项依赖漏洞提示保留在上述固定回执；不是硬件或人工品质通过。
+- 新 `d32f5d9`：尚未浏览器验收。本次仍只执行 `npm ci`、`npm run smoke`，保原断言并检查新源码要求的 contentVersion 8、真实 E 键鼠施放、snapshot zone 及实际 Three 效果对象；不得将旧报告改标新 SHA。
+- 运行前后核固定树和跟踪文件不变；宿主独核实际命令时间／退出／报告，原源码独审复用。若失败，交精确 failure.stage/category、notice 及脱敏字段，由现有客户端 owner 修，不自行改实现／依赖／断言。通过后交 B 唯一产品发布者；本任务不合产品 main。
