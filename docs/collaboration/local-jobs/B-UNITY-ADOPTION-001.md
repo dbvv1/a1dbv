@@ -2,7 +2,7 @@
 
 id: B-UNITY-ADOPTION-001
 owner: dot-B
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 010336d7
 result_branch: relay/b-unity-adoption-001
@@ -45,4 +45,17 @@ accept: auto
 
 ## 当前结果
 
-2026-10-26：待既有接收端核已安装引擎并领取。云端已核当前官方插件源码及现有模板，尚未运行 Unity；这不是工程采用结果。
+2026-10-26：**blocked（许可不可用）**。已安装编辑器无法取得授权许可，本单元停在引擎能力核实；没有创建 Unity 工程，没有测试、构建、运行或序列化结果，`experiments/unity-agent-adoption/` 尚未产出。
+
+**已核实（2026-10-26 UTC+8；许可探测为实际 batchmode 退出码，模块状态为安装目录文件检查，不是静态推断）**
+
+- 引擎与模块：本机已安装 2022.3.64f1、2022.3.60f1 和 2022.3.60f1c1（中国版）。按同一口径检查，三版磁盘上都有相同的 Windows Standalone 支持（`PlaybackEngines/windowsstandalonesupport`，含 IL2CPP 与 `win64_server_*` 变体）和 `Editor/Data/il2cpp`；三版 `modules.json` 的 `windows-il2cpp`、`windows-server` 均未标 `isInstalled`，其中 2022.3.64f1 与 2022.3.60f1 只把 Visual Studio 标为已安装，2022.3.60f1c1 未标任何模块。因此只确认支持文件已在磁盘上，未执行构建验证，不能据此认为构建模块可用。因下述许可问题均未执行构建。
+- 许可探测：在隔离公开样例目录用 `-batchmode -nographics -quit -createProject <样例目录>` 分别启动上述三个 2022.3 编辑器。2022.3.64f1 退出码 198，2022.3.60f1 与 2022.3.60f1c1 退出码 1；日志均为 `No valid Unity Editor license found. Please activate your license.`，未生成 `ProjectSettings/ProjectVersion.txt`。
+- 许可客户端：报 `No ULF license found` 与 `Token not found in cache`；`com.unity.editor.headless`、`com.unity.editor.ui`、`com.unity.editor.legacy.pro` 等 entitlement 均为 `granted: False`、`group: (null)`。没有可用的本地许可或已登录令牌。
+- 另有一处 2020.3.26f1 非 Hub 安装能通过许可阶段启动，但启动日志出现 `EditorHacking > Address and domain whitelist disabled`，随后因包缓存中 `com.unity.timeline@1.4.8` 的 `IPlayableBehaviour` 接口不匹配而中止；不能证明它是已授权可用引擎，也无法建立干净基线，未采用。
+- 边界：未登录任何账户、未激活或接受许可、未安装新引擎、未创建凭据、未读取私有工程；探测目录（含 Logs 与临时 Library）已删除，未进入版本库。
+- 结论类型：**许可不可用**，不是“缺安装”，也不是“无法确认”。本机已有目标版本编辑器与 Windows 构建支持文件，缺的是可用许可；支持文件能否支撑构建，须待许可恢复后实测。
+
+**恢复条件**
+
+由用户在 Unity Hub 登录并激活可用许可，或放置有效的本地许可文件；执行者不代为登录、激活或接受条款。恢复后以 2022.3.64f1 为目标版本，用同一 `-createProject` 探针复核，要求退出码 0 且生成含该版本的 `ProjectSettings/ProjectVersion.txt`；确认后再从第一轮继续：创建 `experiments/unity-agent-adoption/` 工程、三件收集物开门、真实 EditMode／PlayMode 测试与 Windows 构建运行，再做第二轮阈值 3→5 的 Editor API 序列化修改。许可未恢复前，本任务不产生工程或验证结论。
