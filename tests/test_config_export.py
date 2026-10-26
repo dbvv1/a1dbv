@@ -119,6 +119,41 @@ class ConfigExportTests(unittest.TestCase):
         self.assertNotEqual(self.stage_files("settings.json").returncode, 0)
         self.assertFalse(self.stage.exists())
 
+  def test_non_json_constants_in_discarded_settings_fail_before_write(self):
+    for token in ("NaN", "Infinity", "-Infinity"):
+      for index, value in enumerate((token, '{"nested":[' + token + ']}')):
+        with self.subTest(token=token, nested=bool(index)):
+          self.stage = self.root / ("stage-%s-%d" % (token, index))
+          self.put("settings.json", '{"discarded":' + value + ',"private":"' + SECRET + '"}')
+          before = set(self.root.iterdir())
+          result = self.stage_files("settings.json")
+          self.assertNotEqual(result.returncode, 0)
+          self.assertNotIn(str(self.source), result.stdout + result.stderr)
+          self.assertEqual(set(self.root.iterdir()), before)
+
+  def test_optional_settings_and_valid_discarded_values_roundtrip(self):
+    texts = ('{}', '{"discarded":"NaN"}', '{"discarded":"Infinity"}',
+             '{"discarded":"-Infinity"}', '{"discarded":1e999}', '{"discarded":-1e999}',
+             '{"discarded":{"nested":["NaN","Infinity","-Infinity",true,false,null]}}')
+    for index, text in enumerate(texts):
+      with self.subTest(text=text):
+        self.stage = self.root / ("stage-%d" % index)
+        self.output = self.root / ("public-snapshot-%d" % index)
+        self.put("settings.json", text)
+        result = self.stage_files("settings.json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.stage / "claude/settings.json").read_bytes(), b"{}\n")
+        result = self.promote()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.output / "claude/settings.json").read_bytes(), b"{}\n")
+
+  def test_missing_settings_file_fails_without_writing(self):
+    before = set(self.root.iterdir())
+    result = self.stage_files("settings.json")
+    self.assertNotEqual(result.returncode, 0)
+    self.assertNotIn(str(self.source), result.stdout + result.stderr)
+    self.assertEqual(set(self.root.iterdir()), before)
+
   def test_missing_and_deleted_sources_do_not_reuse_old_snapshot(self):
     source_file = self.put("CLAUDE.md", "old instructions")
     self.assertEqual(self.stage_files("CLAUDE.md").returncode, 0)

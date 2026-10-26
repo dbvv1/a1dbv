@@ -63,7 +63,9 @@ if not isinstance(settings, dict):
 python3 -m unittest discover -s tests -p test_config_export.py -v
 ```
 
-**依据**：[本仓真实脚本／合成输入实跑] [实现](../../scripts/export_ai_config.py)、[回归](../../tests/test_config_export.py)；2026-10-26 上表行为与现有 18 项测试通过。这里示范如何判定必要防护，未把脚本行为当作提示词改善模型的效果。
+**合法 JSON 是已有契约，所以非法数字常量值得拒绝，合法但很大的指数不应一并封掉。** 本仓随后用 `parse_constant` 补齐 `NaN`、`Infinity`、`-Infinity` 的入口检查：真实 `stage` 命令原来接收 6/6 份非法配置，修后为 0/6；8/8 份合法对照仍能完成 `stage → promote`。正常字符串、空设置与合法大指数照常保留。
+
+**依据**：[本仓真实脚本／合成输入实跑] [实现](../../scripts/export_ai_config.py)、[21 项回归](../../tests/test_config_export.py)；[Python 官方解析契约](https://docs.python.org/3.12/library/json.html#json.load)；2026-10-26 核实。
 
 ## 何时不适用
 

@@ -92,6 +92,9 @@ def read_text(path):
 
 
 def parse_json(text):
+  def reject_constant(_):
+    fail("JSON 含无效数值。")
+
   def pairs(items):
     result = {}
     for key, value in items:
@@ -99,7 +102,7 @@ def parse_json(text):
         fail("JSON 含重复字段。")
       result[key] = value
     return result
-  return json.loads(text, object_pairs_hook=pairs)
+  return json.loads(text, object_pairs_hook=pairs, parse_constant=reject_constant)
 
 
 def filter_settings(text):
