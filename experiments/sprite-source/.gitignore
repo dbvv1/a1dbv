@@ -1,0 +1,4 @@
+inputs/
+generated*/
+.blender-user/
+.venv/
