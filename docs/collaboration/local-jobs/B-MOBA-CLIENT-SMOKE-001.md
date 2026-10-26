@@ -1,30 +1,27 @@
-# B-MOBA-CLIENT-SMOKE-001 · 固定客户端候选的真实浏览器验收
+# B-MOBA-CLIENT-SMOKE-001 · 基本战斗的真实质量基线
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: accepted
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 083183c245c2e8f4bd3dbbfa7e3d7c75a0357b3b
 result_branch: relay/b-moba-client-smoke-001
 
 ## 要完成的事
 
-让玩家在已有 Veyra／Morrow 中选择下一局英雄，用真实技能操作并重开。候选 `b/moba-hero-selection` 固定上述 SHA、tree `0ef3b0c27add970c4f14268b8cdd701650481c1f`；只改客户端选择／启动、玩家说明和测试，不改模拟、数值、素材源或依赖。
+083 的功能 smoke／双英雄选择已接受，本轮不重做旧 smoke。按用户新的品质标准，为一次基本战斗取得真实操作与非作者并排观察，给制作与整合指出最大的差距；不把功能通过称品质完成。
 
-## 修改要求
+## 本轮范围
 
-原 `641cf16` 已真实 ci／smoke 退出 0、HUD 图 decode 64×64 和旧断言通过，正式接入 [main 912c04c](https://github.com/dbvv1/MOBA-Like/commit/912c04ccb36b3c3b06cd7fcfba5b5a2341b8a81e)，树与受检树相同。旧 48 等接受保留。本次为同任务下一完整玩法修改，不重测旧提交、不新开任务；先核本修订是否已领取，在途则接续。
+在既有授权环境打开已部署的 [083](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)；若部署不可用，可从固定提交按 README 启动本地同树。正常输入带英雄随一波小兵向前，至少一次方向／地面技能施放、普攻／受击，观察塔前推进或撤退。实际操作几分钟即可，不要求结束整局，不改源码／数值／依赖／断言，不注入作弊状态，不跑自动 smoke 来代替玩。
 
-在固定新候选执行 `npm ci`、`npm run smoke`；现有脚本保全部旧断言，新增真实 DOM 选择 Morrow（当前局仍 Veyra）→ Restart → Morrow Q/W/E/R → 同选重开恢复资源／冷却 → 改回 Veyra／新局推进／单一 canvas。W 是立即自身护盾，其余目标行为沿现有 controls。作者已实跑 142 root tests、29 presentation tests、CLI／Web 构建及公开扫描；浏览器新链尚未实跑，不能用这些替代。
+参照为 [Thronefall 官方商店的 1.0 gameplay 视频／截图](https://store.steampowered.com/app/2239150/Thronefall/)中的小规模塔前交战：只比较地景／单位轮廓、敌我与攻击焦点、声音层次、界面完成度；不把两者玩法／内容规模当全等，不要求购买或安装付费游戏。只用官方公开参考，参考截图／录像仅留本地，不进公开 Git。
 
-同时按原 Workflow 做一次非作者读者检查：选择何时生效、重开保／改选择、Morrow 自身 W 与方向／地面技能是否可照界面操作，读取本次七文件差量即可；不要重复研究整仓，不加证明门。不得改源码／依赖／断言；失败报具体阶段并交原 owner，不自行修实现。仅回固定 SHA、命令退出、通过／具体失败和读者发现，不补录额外字段。
+在同一视口尺度并排查看当前战斗与参照，留本地截图或短录像。非作者列出最影响整体体验的三个差距：玩家看到／听到什么、哪个战斗阶段妨碍判断、优先改什么。声音未能实际听到就标未评，不从代码推断音质；帧率／硬件手感也不由自动断言代填。评价必须独立，不照作者预设打分；本次是基线，不要求给 PASS。
 
-在既有获授权接收环境使用 Node >=22.12.0；如缺 Chromium，仅按官方 `npx playwright install chromium` 安装。失败保留原退出码与具体阶段，不换镜像、代理、浏览器二进制或 sandbox 绕过拒绝；不设置 `MOBA_SMOKE_CLOUD_NO_SANDBOX`，该例外仅限 dot 自身云容器。截图／原始日志留本地 ignored，不上传私人路径或图片；不改产品 main 或部署。硬件与手感仍人工另验。
+只回固定版本、实际操作范围、参考片段与三个主要差距／阻碍。截图／原始视频／日志留本地 ignored，不上传私人路径或图片。云作者浏览器 WebGL2 不可用，不在该受阻浏览器重复重试；接收端如也受阻，报准确限制，不换二进制、代理、镜像或 sandbox 绕过拒绝。沿既有接收环境，不新任务，不重复领取。
 
-## 当前结果
+## 已接受与当前结果
 
-- 固定候选 083183c 已完成真实浏览器验收：npm ci 退出 0，npm run smoke 退出 0，Chromium 软 WebGL2 下旧断言全部保留通过，新链覆盖选 Morrow→Restart→W/Q/E/R 实际施放→同选重开恢复资源与冷却→改回 Veyra 新局推进，非作者读者检查亦通过。
-- 本单元没有文件改动。
-- 检查：check_public（文件） 通过；独立审查通过。
-- 接收：产品 [main 083183c](https://github.com/dbvv1/MOBA-Like/commit/083183c245c2e8f4bd3dbbfa7e3d7c75a0357b3b) 已按原受检树快进采用；[网站](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)也已于 07:59 UTC 完成独立部署更新到 083183c；线上 GPU 玩法未再验，Git 合入不自动发布网站。硬件与手感另行人工验收。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+- 083 功能链：ci／smoke 0，真实 Morrow 选择、四技能、保／改选择重开与独审通过，产品与公开站已采用；这不是品质 PASS。
+- 本轮基本战斗品质基线：待实际操作／并排观察，未宣称在跑或达参照水平。
