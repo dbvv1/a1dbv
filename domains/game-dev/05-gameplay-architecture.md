@@ -412,21 +412,48 @@ Timberborn 修改型 Blueprint 须开 `Disable Blueprint validation` 避免默�
 
 **来源与范围**：Timberborn 的 Blueprint 补丁语义为[一手]；模组二改风险与验收为[研究]。
 
-## 5. 组件与 ECS：迁移热点，不迁移口号
+## 5. 组件与 ECS：把一个完整循环做快，而不是全工程换架构
 
-**✅ 组件管对象，普通类／函数管规则；热点或必需能力不足才扩架构。** 先定位渲染／蒙皮／碰撞／寻路，再比局部 Jobs/Burst／ECS；预测需求可早于 CPU 热点。具体路线限 Unity，UE 共用能力／整段成本原则。
+**✅ 原生组件接对象，普通类／函数管规则；先减无用工作和改算法，再比较局部 Jobs/Burst 与 Entities。** 批量同构 CPU 工作、预测栈等明确能力可以支持 ECS；GPU overdraw、昂贵动画或大量托管桥接不会仅因换数据容器消失。没有通用“多少对象就上 ECS”的门槛，UE 的 Mass 也不能直接照抄 Unity 的 API 与成本。
 
-**保制作链，边界成本吃掉收益就缩子系统。** Survival Kids 以 Netcode for Entities 做预测、保组件玩法，但单机仍付双重模拟成本；Highstreet 退混合物理以保 VR 生态，服务器核关键碰撞。不能据两案选择单人全 ECS，也不排除其他预测栈。见 [P76 生产取舍][production]。
+### 先选能完成当前制作目标的最小路线
 
-**专项验收：** 同玩法／设备测整段成本与二改工时，包括同步、playback 和后续系统，不止 ECB 录制。
+| 读者正在做什么 | 默认与升级条件 | 能省什么，仍要承担什么 |
+|---|---|---|
+| 少量行为不同的角色／机关，已有 Animator、物理和 Inspector 工作流 | 保组件；把真正重复的更新集中，降低不必要的扫描频率 | 保制作链，集中管理本身不保证变快；先核主线程真正花在哪里 |
+| 很多探测者找目标、同类数值计算，输入输出能连续存储 | 🧪 局部 Jobs/Burst，保 GameObject 作者／表现 | 可并行纯数据计算，但抽取位置、排序、同步与结果回写仍计成本；不需要先安装 Entities |
+| 多个系统反复查询／组合相同数据，或已选 Netcode for Entities 等能力 | 👀 局部 Entities 子系统，保其余制作链 | 共享实体数据与查询；新增 baking、World／系统顺序、资源生命周期和托管桥接成本 |
+| 大部分玩法与目标能力都按实体组织，团队接受该制作模式 | 比较完整 ECS 方案与原路线后决定 | V Rising／Survival Kids 是生产参照，不是单人项目必需底座；最高性价比须由自己的构建和二改证明 |
 
-结构变更／同步／查询均计成本；ECB／enableable／强制 Complete 的计时陷阱见研究。
+**完整第一版以“现有单位找到可攻击目标”为例：位置与资格 → 最近合法目标 → 原战斗系统发起攻击 → 原动画／UI 呈现。** 先固定是否按地面距离、射程、阵营、可见性和切目标节奏；优化不得悄悄改变这些规则。大量单位并不等于每帧每单位都全表扫描：先试按玩法节奏分批更新与空间划分，但保对近距离危险的及时反应。让玩家看到选对目标、不穿楼层锁敌、切换不过度抖动，比追一个空场循环的峰值重要。
 
-**按数据规模和预算选 ECS；不能据 V Rising 的适应成本选择单人全 ECS，也没有通用对象数阈值。** 见 [WP11 ECS](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#4-组件jobsburstecs先用数据规模和预算选不用对象数口号选)。
+### 从官方可读源码接入，不自造 ECS 框架
 
-**复用缓冲时，持久历史须独立所有。** 会被覆盖的对象不能只留引用；Agent 补快照／恢复清理，继续模拟再撤销／重做，核历史未变。计复制成本／历史上限，必要时退逐帧分配但保正确性修复。见 [WP11 二改源码](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#近期-coding-agent-二改缓冲寿命与时钟信任)。
+以下路径均相对 [固定官方 Samples](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0)；固定工程与许可见节末，不把不同包版本的 API 拼在一起。
 
-**来源与范围**：Survival Kids、Highstreet、V Rising 与 WP11 源码为[一手／研究]；ECB／enableable／强制 Complete 的计时陷阱为[一手]；团队报告未复测；成本与阈值判断为[研究]。
+1. **先把组件路线走完整。** `Dots101/Jobs101/Assets/TargetsAndSeekers/Step 1` 提供普通对象比较；Step 2／3 把位置拷入 `NativeArray`、用单作业／`IJobParallelFor` 求最近点，再回主线程消费。把已有单位位置和资格转为一次只读快照，输出单位 ID／无目标结果，交回原战斗负责人；不在这个纯数据 job 内访问托管 Animator／Transform 或直接重复结算伤害。数组复用、尺寸变化和释放按单位生命周期管理。
+2. **先比较算法，再比较存储架构。** Jobs101 Step 4 已有按 X 排序、二分定位、按距离剪枝，不需要迁移实体。示例输出的是位置；游戏输出应携带原对象身份映射，不能把排序后的索引当敌人 ID。示例 `Schedule` 后立即 `Complete` 便于展示结果，实际项目依赖允许时安排其他工作、到消费者真正需要时再完成；若会引入一帧延迟，先明确目标选择是否允许，而非为跑分自动延迟。
+3. **确需 Entities，保留可编辑源。** 从 `Dots101/Entities101/Assets/HelloCube/3. Prefabs` 读 `SpawnerAuthoring → Baker → Spawner.Prefab → SpawnSystem`；作者仍在 Inspector 选 Prefab、填参数，Baker 生成实体数据。把小子场景纳入既有场景加载路径，出生时实例化已烘焙 Prefab；不要运行时把整场景 GameObject 逐个“转实体”。读取其他 SO／资产数据时声明 baking 依赖，参数二改才会重烘焙到正确结果。
+4. **在真实系统中找入口。** `14. ClosestTarget` 的 `SettingsAuthoring` 提供数量、Prefab、空间划分选项，`TargetingSystem` 演示查询、依赖和结果 Entity；`Target` 在这个样例中是“保存当前目标”的组件，不是凭名字就能当作所有可攻击者标签。实际项目先定义阵营／活状态／范围查询契约，再把候选结果接原攻击入口。样例的 Simple／KDTree 分支直接索引候选或取堆顶；接入资格过滤后须显式处理空集，输出 `Entity.Null`／无目标，不能照搬非空演示。初始化、计算、战斗消费、表现各定一位写入者；作业依赖与系统顺序分别核实，不能认为并行安排自动保证业务顺序。
+5. **表现继续用成熟路径。** `7. GameObjectSync` 演示实体到 GameObject 的变换同步，`Firefighters/Step 4` 把动画角色和 HUD 接回托管对象；这些访问不能 Burst 编译。小量高品质角色可保原 Animator／UI，单向读模拟结果；大规模角色则把同步、动画、绘制加入整段预算，再考虑表现方案。ECS 查询快不等于动画、物理或渲染已经快。
+
+### 正常二改：从地面敌人加一个飞行目标，再加暂时失去攻击资格
+
+**先改玩法距离，再改数据和消费者。** 固定 ClosestTarget 样例的 `Simple` 路线用 XZ 平面，`None` 与 KDTree 用三维位置；平面演示可一致，加入高度后不再是等价实现。例如原点处单位面对 `(1,10,0)` 与 `(3,0,0)`：平面最近是前者，三维最近是后者。选择地面投影还是空间距离由玩法决定，AI 要同步两条算法、预期目标和调试画线，不能直接以 sample 的速度说明优劣。
+
+**临时状态先选字段或 enableable，确需改变组件组合时再做结构变化。** 新增眩晕时，普通组件路线先改资格过滤；Entities 若要让查询暂时排除某类组件，可参考 `6. EnableableComponents`，它不改变 archetype，但普通查询把禁用组件视为不存在。每帧 Add／Remove 标签可能制造结构变化；使用 enableable 也要核读写同步，不是免费开关。死亡／出生通过明确时点处理，ECB 只是记录，播放之后才改变世界；消费者别在记录销毁后继续默认目标有效。
+
+### AI 的完整任务与验收
+
+**交给 AI：现有查询与战斗调用点、作者 Prefab、固定样例版本、目标距离／资格契约、预算场景和第二次内容修改。** 让它先给最小迁移边界，再交 source diff、实际接线和测试；不接受整库改成 Entities、为通过编译删动画／物理，或只交一个无消费者的 job。UI／输入／资产／存档仍沿各自模块。
+
+验收同一组单位与目标：正常选敌、无候选、等距规则、飞行／高台、出生死亡、资格变化；对照原算法的目标身份，而非只比数量。作者改参数／Prefab 后重烘焙、运行构建，再验新单位确实使用新值；一份配置改动不应要求手改生成数据。若长期历史复用缓冲，快照要独立所有，防止下一帧覆盖撤销／回放记录；继续模拟后再撤销／重做，计复制成本与历史上限，见 [WP11 缓冲二改](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#近期-coding-agent-二改缓冲寿命与时钟信任)。
+
+**测整条循环与制作周转。** 在同玩法、资产、目标设备与出生／死亡密度下，分开记录抽取／索引构建／计算／等待／回写／后续系统，以及整帧 P95/P99、内存、首次与持续负载；比较原组件、局部 Jobs 和候选 Entities，不只录 ECB 而漏 playback。记录加飞行类型、换 Prefab／动画的实际改动；边界搬运吃掉收益就缩回子系统。剖析入口沿 [客户端性能链](04-client-modules.md#压低卡顿与设备耗用)，不另建无真实场景的性能榜。
+
+**生产反例仍成立：** Survival Kids 为预测选 Netcode for Entities，单机仍承担双重模拟；Highstreet 为保 VR 生态退出混合物理，服务端核关键碰撞。它们支持按能力和制作链选范围，而非全 ECS。见 [P76 生产取舍][production]。
+
+**来源与核实（2026-10-26）**：以上接线为固定官方样例源码及 [Baker 文档](https://docs.unity.cn/Packages/com.unity.entities@1.4/manual/baking-baker-overview.html)研究；工程 Unity `6000.2.10f1`，Entities101 锁定 Entities `1.4.3`／Entities Graphics `1.4.16`，Unity Companion License，仅按其 Unity 依赖项目条款复用。社区作者对学习成本与混合制作链的反馈、源码逐点依据及原生产参照见 [WP11 ECS](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#4-组件jobsburstecs先用数据规模和预算选不用对象数口号选)。未运行原生样例，性能与制作提速未测；本版给出完整选择与接入路线，不宣称已迁移游戏。
 
 ## 6. 事件：命令有负责人，事实才广播
 

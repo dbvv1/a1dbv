@@ -332,6 +332,26 @@ npm run sim -- --content-version 8 --games 500 --seed 201 --verify-targets mirro
 - **AI 风险 [研究]**：用 Add/Remove tag 表达每帧变化而制造结构变更；读写依赖遗漏；把 ECB 录制完成当已应用；复用销毁的 Entity；忘记禁用组件过滤；authoring 数据修改却没有重烘焙。
 - **将来验证**：同玩法、资产、设备与出生／死亡密度下比较组件、局部Jobs和ECS，测CPU P95/P99、同步、内存、主线程／worker及二改工时。样例强制Complete只属测量设施；结构变更计时只录ECB、playback在后，ENABLEABLE还混用ECB启用与直接禁用，须连后续系统计总成本，不能据局部计时排名。
 
+#### 正常制作补研：先选算法，再决定是否需要实体
+
+核实：2026-10-26 UTC。沿同一固定 `6786a741ee1f118ed14cecfa02beae8e926937b0` 补读完整正常链，不刷新上面的生产案例核实日。未运行 Unity；以下为源码观察和据此提出的接入判断，不含性能排名。
+
+固定 `Dots101/Entities101/ProjectSettings/ProjectVersion.txt` 是 Unity `6000.2.10f1`；其 `Packages/packages-lock.json` 为 Entities `1.4.3`、Entities Graphics `1.4.16`、Burst `1.8.25`、Collections `2.6.3`。Jobs101 则为 Burst `1.8.25`／Collections `2.6.2`，没有 Entities 包；不要把 README 的“1.4 系列”误写成所有包同补丁版本。仓库 LICENSE 为 Unity Companion License，Unity 依赖项目适用，不是可任意移植到 UE 的 MIT 工具库。本轮仅阅读，不复制代码／资产。
+
+| 已读真实入口（固定 SHA 下） | 源码事实与正常制作意义 |
+|---|---|
+| [Jobs101 TargetsAndSeekers](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0/Dots101/Jobs101/Assets/TargetsAndSeekers)，Step 1–4 | Step 3 `FindNearest.cs` 在 MonoBehaviour 内分配持久 NativeArray、每帧复制 Transform 位置，调并行 job 后立即 Complete，再画线；`FindNearestJob` 用 Burst。Step 4 多了排序依赖、X 轴二分和剪枝。说明可只改算法／Jobs，不必迁移实体；也说明不可只计 worker 而漏位置复制、排序与等待 |
+| [HelloCube 3. Prefabs](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0/Dots101/Entities101/Assets/HelloCube/3.%20Prefabs) | `SpawnerAuthoring` 的 Baker 将 GameObject Prefab 用 `GetEntity(...Dynamic)` 写入 Spawner；SpawnSystem 实例化后写 LocalTransform。`FallAndDestroySystem` 通过 BeginSimulation ECB 记录销毁，等该系统下次更新播放。编辑源→烘焙→实例→系统可追，不是运行时逐个转换 GameObject |
+| [HelloCube 14. ClosestTarget](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0/Dots101/Entities101/Assets/HelloCube/14.%20ClosestTarget) | SettingsAuthoring 保作者数量、Prefab、空间划分选项；Target 组件保存当前目标 Entity。Simple 先保存 `Position.xz` 到 float2 再查距离，None 对 float3 查距离，KDTree 加入完整 Position。Simple 保原 index 映射回 Entity；Jobs101 Step4 仅返回位置。接攻击消费者须保身份，而非排序索引 |
+| [7. GameObjectSync](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0/Dots101/Entities101/Assets/HelloCube/7.%20GameObjectSync) 与 [Firefighters Step 4](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0/Dots101/Entities101/Assets/Firefighters/Step%204) | RotationSystem、AnimationSystem、UISystem 访问托管 GameObject／Animator／UI，OnUpdate 明确不能 Burst。Firefighters 初始化动画 GameObject，复制位姿、设置 IsMoving；HUD 聚合熄火数、触发重排资格。完整实体玩法仍可保成熟表现，但桥接不是零成本，也不证明支持全部动画需求 |
+| [6. EnableableComponents](https://github.com/Unity-Technologies/EntityComponentSystemSamples/tree/6786a741ee1f118ed14cecfa02beae8e926937b0/Dots101/Entities101/Assets/HelloCube/6.%20EnableableComponents) 与 [Baker 官方文档](https://docs.unity.cn/Packages/com.unity.entities@1.4/manual/baking-baker-overview.html) | 示例切状态的查询显式 IgnoreComponentEnabledState，正常旋转查询只匹配启用项。Baker 必须无状态，访问外部数据要通过 Baker API／依赖记录，不能在 Baker 缓存结果而漏二改重烘焙 |
+
+**平面 sample 的算法切换不应直接成为三维玩法的性能比较。** 对原点，A=`(1,10,0)`、B=`(3,0,0)` 的平面距离平方为 1／9，空间距离平方为 101／9，两个规则确实选不同目标。这是依据源码的算术反例，不是样例运行 bug 复现；原样例平面场景没有证明出错。正文因此要求先统一目标距离／资格，再量算得快不快，不引用 README 作者设备的倍数作项目预算。
+
+社区对照已读 [ECS Samples/Misconceptions 讨论原帖](https://www.reddit.com/r/Unity3D/comments/1iq2xx9/ecs_samples_updated_with_interesting/)：PiLLe1974 提醒小团队关注 Prefab、场景、动画等整套制作链，认为可只用 Jobs／Burst；另有使用者偏好 ECS 组织方式与组合能力，不能以评论判定普遍生产效率。另读 [Cravecrops 的敌群试作](https://www.reddit.com/r/unity/comments/1wrms5j/ecs_is_quite_complicated_but_the_results_are/)原文：作者同时报告较陡学习成本与大量敌人顺畅的主观收获，没有硬件／规模／对照数据，不转述为性能证据。
+
+据此，首版默认是保持对象作者与表现、迁移一个有真实输入输出的批处理；多个系统共享同类数据或必需能力才扩大实体边界。试玩须验最近目标、飞行高度、攻击资格和切换节奏；性能须把采集、索引、依赖等待、桥接、动画／渲染与二改成本一起比较。完整迁移与最高性价比仍未知；原生环境不运行不妨碍交付这份可沿真实样例实施的路线。
+
 ### 5. 事件：用于传播已发生事实，别把一次命令拆成无人负责的广播
 
 **[研究] 最低完成度**：对象内直接调用；跨边界确需多观察者才用类型化事件。命令有唯一处理者和结果，DamageApplied／EnemyDied等事实提交后再通知。声明同步／排队、顺序、重入和丢弃；SO通道仅在Inspector装配／跨场景有收益时用。
