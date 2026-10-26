@@ -42,3 +42,11 @@ result_branch: relay/dot-b-openweight-audio-001
 当前：`ready`，等待既有接收端领取；尚未下载／运行模型、生成资源或听验，12GB 可行性未实测。
 
 来源（2026-10-26核）：[MOSS v2模型卡与权重许可](https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0)、[作者推理入口](https://github.com/OpenMOSS/MOSS-TTS/tree/main/moss_soundeffect_v2)、[Small模型卡与访问门](https://huggingface.co/stabilityai/stable-audio-open-small)、[Small完整许可](https://huggingface.co/stabilityai/stable-audio-open-small/blob/main/LICENSE)。
+
+## 当前结果
+
+- 已用 MOSS-SoundEffect-v2.0 在 RTX 5070 实测生成并处理 9.25 秒海岸环境声，作为默认关闭的 STAR_RUSH_COAST_AMBIENCE=coast-v1 候选接入 /road 汐见海岸 380–660 m；npm test、smoke 与真实浏览器加载通过，听感与实玩混音未验。独立复审仍有 2 项未关闭：/road 选其他赛道时仍会预载请求该音频，种子选择的 29.8%/5.3% 缺可复现测量口径。
+- 产物：[24618e1](https://github.com/dbvv1/Star-Rush-Reborn/commit/24618e1e58689abff49267adfe21c4d0ee9b196f)，分支 `relay/dot-b-openweight-audio-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：修复复审两项后再审：改为按赛道惰性加载（或如实记录预载取舍并同步文档/测试），补种子选择测量口径并更正百分比；完成后做人工听辨与实玩混合录音验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
