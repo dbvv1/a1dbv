@@ -2,27 +2,24 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
-base_ref: 97a29a58956e89538d9f6a10b66467d794fa08cd
+base_ref: 48faed4190ebf18029a0350364b4faa3c0fa1c76
 result_branch: relay/b-moba-client-smoke-001
 
 ## 要完成的事
 
-给试玩 MOBA-Like 的玩家接收同一原创角色源的动作版本；完成后默认角色资产能在真实构建中加载，且已有瞄准／取消／施法继续可用。用既有严格 smoke 的真实 GLB 请求和场景／输入断言验收，不把 CPU 动作测试当完整死亡画面或手感通过。
+给试玩 MOBA-Like 的玩家接收施法与角色动作的真实接线；完成后正常 E 输入能驱动已挂接角色的上身攻击动作，且预览／取消／施法仍可用。用原严格 smoke 的真实输入、角色 Action 权重与已有场景断言确认接入，不把 CPU 动作测试当完整画面或手感通过。
 
 ## 修改要求
 
-`35c82ed` 的本机通过结果已由 B 接受并合入产品 [0b27b9a](https://github.com/dbvv1/MOBA-Like/commit/0b27b9a34e1a6156c75959a45790d901f991f072)，不重做。本次只续验 `b/moba-hero-reactions` 上述固定 SHA，tree `88f220230efb274fa7d8ddad755b1bacb4920ec5`；135项root／21项presentation测试、双构建与非作者独审通过。新原创CC0 GLB含5动作，目前实际接入death的alive边沿；hurt／attack尚未接入，后续event桥接不混入本树。
+原 `97a29a5` 已实测接收并合入产品 [92e229b](https://github.com/dbvv1/MOBA-Like/commit/92e229b114cdf7e2d0e5f17edd6aa0f20b67071c)，受检树与正式树相同。本次仅续验 `b/moba-event-animation` 上述固定 SHA、tree `a4896729e068b9e1d1b05cb9e109066961d5d72b`；29项presentation／138项root测试、根tsc／双构建及新上下文独审通过，时钟／朝向／终局修复已闭合。原调用已完成；先核本次是否已领取，若仍在途接续原调用。
 
-只执行现有 `npm ci`、`npm run smoke`，新harness核真实成功加载 `blue-reactions-*.glb`，保Q／E预览、Esc取消、施法、Three／像素／错误等全部断言。不改源码／依赖／断言、不重派实现、不加补录字段；先核同输入是否已有调用，在途则接续。结果只回固定版本、命令退出及通过／失败阶段，人工动作与硬件画面另验，不改产品main或部署。
+只执行现有 `npm ci`、`npm run smoke`。新严格断言在真实 E 后核已挂接可见 actor 的 `attack.upper` 有轨道且权重>0，保真实GLB请求、Q/E预览、Esc取消、施法区域／Three对象、像素与错误等原全部断言。不改源码／依赖／断言、不重做实现或新增任务；回固定SHA、实际退出与通过／具体失败即可，不补录证明字段。CPU hurt/death二改不等浏览器美术通过，硬件与人工动作观感另验；本任务不改产品main或部署。
 
 在既有获授权接收环境取得精确提交，使用 Node >=22.12.0，执行 `npm ci`、`npm run smoke`。后者自行 build:web 并启动临时 loopback 服务；如现有授权环境缺 Chromium，仅按官方 `npx playwright install chromium` 安装。失败保留原退出码和具体阶段，不换镜像、代理、浏览器二进制或 sandbox 绕过拒绝；不设置 `MOBA_SMOKE_CLOUD_NO_SANDBOX`，该例外仅限 dot 自身云容器，不能扩到本机。
 
 ## 当前结果
 
-- 在固定提交 97a29a5（tree 88f22023）上 npm ci 与 npm run smoke 均退出 0，真实 GLB 请求成功、全部既有浏览器断言通过（软件 SwiftShader WebGL2），未改源码或断言。
-- 本单元没有文件改动。
-- 检查：check_public（文件） 通过；独立审查通过。
-- 下一步：任务范围已完成；硬件 GPU 画面与人工手感另走人工验收。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+- 旧 `97a29a5`：[a24f5042](https://github.com/dbvv1/a1dbv/commit/a24f5042a9617c915e21114981e112935d8b82ab)记录 `npm ci`／smoke退出0，真实GLB请求和原全部断言通过，软件SwiftShader WebGL2，源码未改且独审通过；B已接受。35／d32旧接受保留Git历史。
+- 新 `48faed4`：待本次烟测。截图与原始日志保持接收端本地，不上传私人路径或图片；失败交原客户端owner，不自行改代码或扩验收系统。
