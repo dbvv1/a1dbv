@@ -2,7 +2,7 @@
 
 id: B-OPENWEIGHT-3D-001
 owner: dot-B
-status: running
+status: blocked
 target_repo: dbvv1/MOBA-Like
 base_ref: 69d1588e62d4530a1eb5e3606b99e764fa9c7db5
 result_branch: relay/b-openweight-3d-001
@@ -60,8 +60,8 @@ result_branch: relay/b-openweight-3d-001
 
 ## 当前结果
 
-- 本单元完成 TripoSR 独立薄调用、TripoSG nonflash 延迟 diso 的 patch/runner、GLB 后处理合同与 19 项测试；但独立复审未通过：权重指纹漏收嵌套 config.json，README 状态措辞、19 项计数拆分与验证命令环境说明不一致，真实推理仍因拿不到官方权重及 torchmcubes 缺 CUDA Toolkit 未进行。
-- 产物：[21c1a39](https://github.com/dbvv1/MOBA-Like/commit/21c1a3911934d99458002e869f10dcbb10740287)，分支 `relay/b-openweight-3d-001`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
-- 下一步：先修正复审 4 项并取得通过复审；待官方 Hub 可完成 TLS 握手取到固定 revision、隔离 CUDA 环境可构建 torchmcubes、并补 Blender 采用源后，再跑真实推理、12 GB 峰值与 GLB 接入。
+- 已闭合独立复审 4 项：权重指纹收嵌套 config.json、README 状态/计数/venv 说明对齐，20 项测试在任务 venv 全通过且复审通过。任务整体仍 blocked：本机无法从官方 Hub 取得权重、缺 CUDA Toolkit 构建 torchmcubes、无 Blender，真实推理、12 GB 峰值与 rock.glb 接入均未开始。
+- 产物：[00fc2f9](https://github.com/dbvv1/MOBA-Like/commit/00fc2f9153a972591e61f9f00f4523de0cfdc44d)，分支 `relay/b-openweight-3d-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：待官方 Hub TLS 可握手并取得固定 revision、隔离 CUDA 环境可构建 torchmcubes、补 Blender 采用源后，跑真实推理与 GLB 接入并做旧/新同视角对比。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
