@@ -2,7 +2,7 @@
 
 id: A-MEMOS-BUILT-SMOKE-001
 owner: dot-A
-status: blocked
+status: cancelled
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 98e7a5987223474ad008140e0dd8ea86a1458dd6
 product_ref: 00d217067504e2b912bfd418199eef69d23a3c6a
@@ -10,9 +10,9 @@ result_branch: dot-a/memos-built-smoke
 
 ## 目标与边界
 
-接收 [Memos Draft PR #6502](https://github.com/usememos/memos/pull/6502) 的原补丁，不扩功能。沿新默认授权在 dot 云端构建真实前后端，以一次性假数据核匿名列表／详情、嵌套任务、偏好刷新、真实键盘焦点、无写请求及编辑／分享图原文。
+[Memos Draft PR #6502](https://github.com/usememos/memos/pull/6502) 的既有补丁与匿名消费者证据保留。按2026-10-26用户方向及[当前长期提示词](../prompts/dot-a.md)，取消剩余完整产品验收；采用结论回流07／09／15／23，后续只跟维护者反馈，不把本任务留作待执行QA。
 
-## 当前执行
+## 已完成范围
 
 dot 直接执行，本机接收端不重复认领。自己的云电脑已完成前端release与Go后端构建；同次sandbox会话里真实Go＋SQLite、合成管理员和两条假memo的匿名列表／详情API通过，内嵌SPA与构建字节一致，发布源码未改。
 
@@ -22,8 +22,8 @@ dot 直接执行，本机接收端不重复认领。自己的云电脑已完成�
 
 20:12:11Z正常停服；20:13:43–20:13:57Z同原生终端核5239／5240无监听，退出前恢复开关OFF并关闭测试tab。未清其他站点数据。Chrome/CDP已知，精确版本未获；chrome://version受HTTP(S) URL策略拒绝后停止，未换路。
 
-证据冻结于云目录 `/workspace/scratch/9025ae5dd75c/memos-built-smoke-20261025-1848/BROWSER-RESULT.md` 及 `evidence/browser-20261025-2006/`；含四张截图、实际exported-raw.png、final-network.jsonl、final-backend-server.log及cleanup-listeners.txt。非作者AI范围复核通过，非真人审阅；连续交互及SQLite比较依执行记录，静态独审未重演。PR正文20:16:18Z据实更新，仍Draft／原head／60文件，零产品改动。
+截图、实际导出与请求／停服日志保留于原执行记录。非作者AI范围复核通过，非真人审阅；连续交互及SQLite比较依执行记录，静态独审未重演。PR正文20:16:18Z据实更新，仍Draft／原head／60文件，零产品改动。
 
-## 外部等待与下一触发
+## 未验范围与停止条件
 
-仅匿名public列表／详情已验；owner登录／编辑／task-checkbox写入及写后焦点、signed share-token、全完成夹具、跨浏览器仍未验。受browserAuth边界不直接填secret或注入session；不为此索取真实账号。MemoEditor DOM边界仍待维护者方向，不以本文豁免。等待真实维护者反馈或合法已有浏览器会话／明确支持能力，未触发前不重复重跑；原产品独审复用。
+仅匿名public列表／详情已验；owner登录／编辑／task-checkbox写入及写后焦点、signed share-token、全完成夹具、跨浏览器仍未验。受browserAuth边界不直接填secret或注入session；不为此索取真实账号。MemoEditor DOM边界仍待维护者方向，不以本文豁免。这些未验项不再由dot-A继续补全；已有结果不会因此升格为完整产品通过。维护者新反馈进入原PR贡献线，本补验任务不自动恢复。
