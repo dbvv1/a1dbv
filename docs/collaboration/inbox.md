@@ -30,6 +30,10 @@
 | ⛔ [PipesHub](https://github.com/pipeshub-ai/pipeshub-ai)，[作者帖与资源／模型问答](https://www.reddit.com/r/LocalLLaMA/comments/1waobyi/an_opensource_context_layer_for_building_ai_on/) | **本仓公共文件没有跨组织撤权／连接器需求，保 `rg` 或显式索引**；当前未试用。出现真实多权限消费者后，再核撤权与引用版本；此前不部署多服务、不创建 PAT、不接公司资料。只读官方部署与可见问答，未核完整实现／权限传播；不把“自托管”写成离线或数据不外发。 | 把企业多源资料变成保源权限、带引用的 Agent 上下文；作者称测试过本地模型，评论追问小模型关系抽取与 slim 部署成本，不是独立采用证明。slim 不等于零模型／embedding 成本；按阶段选模型在该问答里仍是计划。 |
 | 👀 [crw／fastcrw](https://github.com/fastcrw/crw)，[MCP 模式文档](https://docs.fastcrw.com/mcp/)；[真实 SDK 字段遗漏 #557](https://github.com/fastcrw/crw/issues/557)；固定 `dc1a5968`／0.39.0，AGPL-3.0 | **只在真实、已获准的网页格式转换需求下选它，先保原生网页读取**；当前未运行。MCP 的 `CRW_LOCAL` 分支强制本地引擎，不代表其他子命令也忽略远端配置；搜索还需 backend，本地模式会尝试发现／启动浏览器，Auto 按已配置后端回退，代理需另配。Chrome 启动代码含 `--no-sandbox`，本轮不走该入口；未核纯 HTTP／离线入口前不运行，既有 403 更不能拿来试抓取。 | 抓取／转换、站点映射与搜索接口。用户的 sitemap 不是“包没更新”，而是服务字段被 SDK 丢掉；维护者报告 0.36.0 发布后核过，两者不等于本仓复测。 |
 
+### 2026-10-26 按生产问题补入
+
+- 👀 [Humanizer 3.1.0](https://github.com/blader/humanizer/blob/8c307f367c91bd974002f10f2be2965d642c13df/SKILL.md)（MIT，固定 `8c307f367c91bd974002f10f2be2965d642c13df`）：技术写作风格编辑 Skill，**未试用**，等下一份真实新稿需要精简且能保住决策语义时再试，不重开已接收批次。[Akita 自用](https://akitaonrails.github.io/en/2026/09/17/talking-about-my-ai-skills/)的是定制 3.0；原版历史[添事实 #187](https://github.com/blader/humanizer/issues/187)与[删排名／同时性 #212](https://github.com/blader/humanizer/issues/212)已有修订，当前收益待验。
+
 ## 已处理
 
 | 候选／来源 | 实际结果与去向 | 解决什么、谁在用与社区评价 |
