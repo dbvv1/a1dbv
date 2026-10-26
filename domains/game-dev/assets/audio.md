@@ -64,7 +64,7 @@ flowchart LR
   G -->|换源或调参后复验| C
 ```
 
-**可复现默认：普通构建已启用 Kenney，程序声保留为即时回退。** 已发布的[源重建版本 `af569f8`][rail-master]从保留的 CC0 OGG 按原配方重建，两运行 WAV 与 manifest 字节不变；`npm run build` 即打包这两片。样本尚未 ready、HTTP／解码失败或超时，本次碰撞立即用原程序声，不在稍后补播。要比较合成源用 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build`，要完全不打包／请求样本用 `STAR_RUSH_RAIL_SOURCE=procedural npm run build`；未知选项让构建失败，而不是静默换源。默认接入的工程检查已通过，听感仍待下文验收。[一手：2026-10-25 固定源码与已有检查；[重建范围](../../../docs/research/2026-10-14-game-wp6-audio.md#制作回流短样本与程序声混合)]
+**可复现默认：普通构建已启用 Kenney，程序声保留为即时回退。** 已发布的[源重建版本 `af569f8`][rail-master]从保留的 CC0 OGG 按原配方重建，两运行 WAV 与 manifest 字节不变；`npm run build` 即打包这两片。AudioContext 为 `running` 时，样本尚未 ready、HTTP／解码失败或超时才即时回退到程序声；暂停／中断时丢弃本次一次性碰撞，恢复后只播新事件，不由碰撞强行 `resume()`。要比较合成源用 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build`，要完全不打包／请求样本用 `STAR_RUSH_RAIL_SOURCE=procedural npm run build`；未知选项让构建失败，而不是静默换源。默认接入的工程检查已通过，听感仍待下文验收。[一手：2026-10-25 源重建、2026-10-26 [运行状态门禁](https://github.com/dbvv1/Star-Rush-Reborn/blob/a6e3cf4323fc61df0772f09b0b29adfd3bdd833b/audio.js)与已有检查；[接收范围](../../../docs/research/2026-10-14-game-wp6-audio.md#制作回流短样本与程序声混合)]
 
 ### 从哪几件产物开始
 
