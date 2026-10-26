@@ -384,7 +384,11 @@ sh asset-pipeline/placeholder/run.sh
 
 **少量英雄可以先不用旧动画球做剔除，把精确范围计算放到真正拾取时。** 本例仅对克隆英雄的 SkinnedMesh 关闭 `frustumCulled`，地图不动；代价是离屏角色也可能提交绘制。实际 `Raycaster` 派发时再按当前蒙皮点计算 box→保守 sphere，先用 `sync/advance` 更新矩阵，不逐帧扫描。大量角色／高频拾取另选粗代理或完整保守界；这与下方小夹具逐次刷新包围是不同成本选择。
 
-在[固定消费者目录](https://github.com/dbvv1/MOBA-Like/tree/4822f31317b3416758b0507e03a2c460991257f4/asset-pipeline/presentation)的 MOBA-Like 仓库根运行 `npm --prefix asset-pipeline/presentation ci --ignore-scripts --no-audit --no-fund`、`npm --prefix asset-pipeline/presentation test`，可复跑 18 项 Node 检查，含真实 Simulation 快照／GLB 与受控异步／参数夹具，覆盖实例独立、资源去重／释放、取消、真实视锥反例和 Raycaster 交点。它比[单个 scene 的整根检查](3d.md#skinned-gltf-consumer)多验证了实例与生命周期，但仍不是 GPU 游戏画面：测试导航是直线路径夹具，离屏成本、正式游戏入口、滑步和动作衔接尚未验。完整接线与实测范围见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26（UTC+8）。
+在[固定消费者目录](https://github.com/dbvv1/MOBA-Like/tree/4822f31317b3416758b0507e03a2c460991257f4/asset-pipeline/presentation)的 MOBA-Like 仓库根运行 `npm --prefix asset-pipeline/presentation ci --ignore-scripts --no-audit --no-fund`、`npm --prefix asset-pipeline/presentation test`，可复跑 18 项 Node 检查，含真实 Simulation 快照／GLB 与受控异步／参数夹具，覆盖实例独立、资源去重／释放、取消、真实视锥反例和 Raycaster 交点。这组 Node 检查使用直线路径夹具，比[单个 scene 的整根检查](3d.md#skinned-gltf-consumer)多验证实例与生命周期；正式游戏接线另沿下面的可玩入口，不把两类证据混成同一次测试。
+
+**把已验接口接进真实主循环，而不是再造一套预览器。** [正式可玩源码 `3bcda00f`](https://github.com/dbvv1/MOBA-Like/tree/3bcda00fb35361cc5a25ee74e3768a2f3678c563) 的 `src/client.ts` 先载入实际 Detour 数据并创建 Simulation，再由 `src/render/world.ts` 加载 GLB、建立 presentation 并挂到 Three 场景。每个 30 Hz 逻辑步先消费玩家／bot 命令，随后 `snapshot→world.sync`；每个绘制帧调用 `world.draw→presentation.advance`，用剩余步长比例插值，再渲染。这让玩法拥有位移，视觉拥有平滑；后台页暂停本地对局并清积累，不在返回时追跑数分钟。Restart／离页用同一个 lifetime 逆序释放输入、视图、共享源和导航，迟到建成的 world 也即时释放。
+
+在该固定源码、Node ≥22.12 与可用 WebGL2 浏览器下，先 `npm ci`、`npm run dev`，打开终端地址，右键移动、S 停止；[完整操作](https://github.com/dbvv1/MOBA-Like/blob/3bcda00fb35361cc5a25ee74e3768a2f3678c563/README.md)可继续施法和重开。原可玩候选 `d32f5d9` 的软件 WebGL2 smoke 已实际验证这些移动／停止、镜头、E 技能实体与非背景画面，接收后进入 main；上述角色、表现和主循环文件相对它未变。这里已采用的是 idle／walk 与多单位表现，下面的分层挥击和 hurt／death 仍是独立作者—消费者实验，不由“GLB 有动作”推成游戏已播放。硬件 GPU 成本、滑步、动作衔接和最终美术仍需目标机验收；固定来源与复用检查见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26 UTC。
 
 <a id="layered-animation-consumer"></a>
 
@@ -398,4 +402,4 @@ sh asset-pipeline/placeholder/run.sh
 
 保留已验旧版，新版在目标需求下胜出再替换默认。通用交接仍保作者工程实际具备的 rig／层／约束／道具参照、原动作／处理版、骨架／Avatar、root、压缩、事件与接触数据；工具批查引用、时长、事件、数值和根轨迹，目标相机再验姿态、风格与响应，并计淘汰／返工及第二改主动工时。2D 换装核动作／方向交集，对白成对更新声音与口型，非人形改变运动语义时回到专用控制与源内容；只有烘焙结果先计重建成本，阈值由玩法和目标设备决定（[WP4 通用验收](../../../docs/research/2026-10-14-game-wp4-animation.md#6-第二次修改的最小后续验收本轮不执行)）。
 
-**依据与范围**：[原创固定产物、脚本与报告](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)，2026-10-26（UTC+8）。产物自行以 CC0 提供，无第三方素材；Blender 4.3.2 已重开六文件、采样比对并通过真实篡改／缺失／缺动作负例，原非作者独审可复用，详见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)。静态预览仅支持几何占位与指定姿态检查；完整连续运动、真实游戏接入和最终美术未验。第三方来源的既有 403 保持停止，不以原创占位补齐其供给结论。
+**依据与范围**：[原创固定产物、脚本与报告](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)，2026-10-26（UTC+8）。产物自行以 CC0 提供，无第三方素材；Blender 4.3.2 已重开六文件、采样比对并通过真实篡改／缺失／缺动作负例，原非作者独审可复用，详见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)。作者预览用于几何占位与指定姿态检查；运行采用和未验效果按上面的各自消费者区分。第三方来源的既有 403 保持停止，不以原创占位补齐其供给结论。
