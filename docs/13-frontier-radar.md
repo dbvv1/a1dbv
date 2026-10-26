@@ -86,6 +86,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [符号身份先于解析](../experiments/native-symbol-triage/README.md) | 让 AI 调查原生故障前先核模块 ID，避免用错符号修错代码 | 官方 Sentry CLI 3.8.2 固定源码／FSL-1.1-MIT；2026-10-26 核实 | Linux 原创 ELF 默认 5/5、另含 CLI 6/6：两份可用符号中错配者仍给貌似可信行号 | 🧪 本地查验不需上传；不把 usable 当匹配，不代 IL2CPP／远程接收实测 |
 | [Luban 配置生产链](../experiments/luban-data-production/README.md) | 游戏多表引用与生成消费者成为日常负担时，让 AI 改作者源而非生成文件 | 5.1.0／MIT，官方源码与社区对照见 [WP11](research/2026-10-14-game-wp11-gameplay-architecture.md#data-production-chain)；2026-10-26 核实 | 真实生成→TS 编译→Tables 加载、字段／引用二改，3 测试含 5 类非法输入通过 | 🧪 小量沿已有 JSON／SO；strict 失败仍可产文件，须看退出码／报告；未验原生游戏接入 |
 | [show-me 最小结构 diff](../experiments/show-me-symlink-handoff.md) | 交接互相影响的分支时，先标判断顺序和每条回归位置 | 固定 `653b6411` 的 Skill 与真实组合反馈 #12，链接见记录 | 手动应用表达形状：212 行原 diff 配 26 行交接，熟悉补丁的接收者 4/4 定位分支与测试 | 🧪 简单 diff 直接审；插件未调用，未测理解提速；代码候选仍待完整检查 |
 | [Hippo 显式退役](../experiments/hippo-public-guidance-retrieval.md) | 跨工具保存历史决定，手动标明哪条被替换 | 固定 `4d078af8`；外部 #346 只是测试提议 | 隔离组件保留旧行并排除当前召回；四个中文问题失去词项后返回相同前五条，未取出新的主引擎和发布原段；新行 `source` 仍指旧段、`artifact_ref` 为空 | ⛔ 本仓指导仍用 Git 原文＋`rg`；替代关系与引用须人工回源，未接宿主集成或私人记忆 |

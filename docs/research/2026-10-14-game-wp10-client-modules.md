@@ -993,6 +993,41 @@ Unity 6.3 [Build Profiles](https://docs.unity3d.com/6000.3/Documentation/Manual/
 
 ## [字体选择补研：缺字回退与地域字形优先分开](wp10-content.md#字体选择补研缺字回退与地域字形优先分开)
 
+## 发行诊断：正常调查链与符号误配反例
+
+**[研究] 补的是“报告→定位→复现→修复构建”，不是再选一套监控。** 原节已有 Unity／UE／Sentry 接收、同意、符号与真实修订链，但正文欠缺拿到反馈后怎样工作。默认沿已有合格接收链，保人工反馈；先对齐发行构建、内容与模块身份，再读栈，最后以同一失败动作验修复。自动采集、上传符号／源码、账户与真实日志不属于本地工具可用就能顺便开启的步骤。
+
+### 正常制作顺序及实际平台起点
+
+1. **反馈和分级**：无法启动、损失进度、稳定可复现阻断优先于偶发非阻断告警；同时保构建／渠道／平台／架构、最后成功动作与期待结果。使用最短获准日志或合成数据，现存存档先保原件，不让修复程序覆盖唯一复现材料。
+2. **构建和符号**：归档实际包、对应符号、源码／依赖／内容版本；按模块 ID 与架构匹配，不只按发行名／文件名。原生栈中的模块相对地址与运行地址分清，ASLR 下不能把任意绝对地址直接喂给离线工具；本实验特意关闭 PIE，只证明误配风险。
+3. **调查与修复**：托管异常、原生崩溃、无异常软锁分别走相应证据，读到函数不等于知道原因。先保失败动作，缩成复现，再修依赖／状态／资源生命周期；加宽 catch、关掉日志或删报告不是修复。
+4. **新构建与反馈**：同输入旧包失败、新包恢复，再验正常路径、缺输入／资源与旧进度；按同平台／构建观察回归，结合暴露量与采集变化看报告，不能把报错总数下降直接算成功。
+
+**Unity 6.3 的两条符号路径不要混。** [IL2CPP 托管栈文档](https://docs.unity.com/en-us/engine/6000.3/manual/programming-environment/scripting-backends/il2cpp/il2cpp-managed-stack-traces)说明 `Method Name, File Name, and Line Number` 利用程序集 managed `.pdb` 生成随 Player 交付的行号数据，也能在 Release／Master 内联时提供完整托管栈；增加包体／构建时间。只为栈信息不建议开更重的 Script Debugging。这是托管异常信息，不自动代替 native crash 的平台符号；[Diagnostics 符号说明](https://docs.unity.com/en-us/cloud/developer-data/debugging-symbols-intro)要求模块 UUID／GUID 与符号精确匹配。Windows native PDB 与 managed PDB 的用途也不能混称“有一个 pdb 就齐了”。
+
+**UE 的报告客户端不是接收服务器。** [UE 5.8 Crash Reporting](https://dev.epicgames.com/documentation/en-us/unreal-engine/crash-reporting-in-unreal-engine)列报告中的错误类型、线程栈、日志和上下文，packaged 项目需配置接收链；按原节选定服务后验证真正收到与符号化。应用还能运行的 ensure、崩溃和用户反馈分开，不把任一后台事件当所有错误都能采到。
+
+**社区反例不是根因诊断。** [2025 年 Android 开发者原帖](https://www.reddit.com/r/Unity3D/comments/1mlq92z/get_readable_stack_traces_from_google_play_store/)自述包含完整符号仍不知怎样定位，所贴栈实际上已有 `libunity` 与 `libil2cpp` 函数／BuildId。它提醒区分“已符号化到函数”“有项目源码行”“知道根因”；不能凭这份栈认定其游戏故障原因，也不能把所有可读性不足都归为未上传符号。原帖公开的机器／应用路径不纳入本仓实验。
+
+### 本地工具实证：同地址、错符号，也会有貌似可信的行号
+
+[可复现实验](../../experiments/native-symbol-triage/README.md)使用原创 `room.c`，在 Linux x86_64、GCC 14.2.0／GNU binutils 2.44／Python 3.12.14 编译两版 ELF；`-g -O0 -no-pie`，保 Build ID，分离 debug companion 再 strip。v1 缺房时用 `backtrace` 输出真实本进程错误栈并退出 2；v2 改为输出可返回／重试提示并退出 0。它是命令行错误路径，不触发真实游戏崩溃或构建菜单。
+
+| 实际执行 | 观察及限制 |
+|---|---|
+| 默认五项测试 | 5/5 通过：正常房／缺参数、错误与修复路径、正确符号身份和行号、误配可读结果、缺符号／文件；工具缺失或误配反例不再成立会失败，不 skip |
+| `readelf -n` 与 `addr2line` | v1 二进制／companion Build ID 相同；v2 ID 不同。同一错误地址正确解析为 `open_room`／`room.c:14`，错配 v2 却是 `main`／`room.c:19`；strip 文件缺行号 |
+| 可选 Sentry CLI 3.8.2 | 含可选项 6/6 通过。两份 companion `check --json` 均 `is_usable: true`；按 v1 Debug ID 用限定目录 `find`，正确目录退出 0，错配／空目录退出 1，缺文件 check 退出 1 |
+
+**所以先验身份，再信解析。** `check` 回答该文件基本可用与具备什么信息，不接受“待匹配的崩溃模块”参数；这不是工具错误。已核固定 [check.rs](https://github.com/getsentry/sentry-cli/blob/4602f5e5724d541c17df9119285adf5693c985be/src/commands/debug_files/check.rs) 调 `DifFile::open_path/is_usable`，以及 [find.rs](https://github.com/getsentry/sentry-cli/blob/4602f5e5724d541c17df9119285adf5693c985be/src/commands/debug_files/find.rs) 的给定 ID 和目录搜索。`--no-well-known --no-cwd` 加显式 `--path` 使实验不误用其他目录的正确符号；主路径没有凭据，也没有调用 upload。
+
+**版本与权利分开。** 从官方 npm 包 `@sentry/cli@3.8.2` 安装，tag 固定 `4602f5e5724d541c17df9119285adf5693c985be`；包与固定源码 [LICENSE](https://github.com/getsentry/sentry-cli/blob/4602f5e5724d541c17df9119285adf5693c985be/LICENSE) 均为 **FSL-1.1-MIT**，列内部使用等允许用途及竞争性用途限制，不是当前 MIT 工具，也不与原节 MIT 的 Unity／UE SDK混同。[官方 CLI 文档](https://docs.sentry.io/cli/dif/)明确区分本地 check／find 与需要组织 token 的 upload，并说明 source bundle 会打包源码；本轮未创建／使用服务或上传任何文件。
+
+**AI 的实际任务**：先把一条获准反馈落到同构建与真实消费者，再做可重复的失败输入和窄修复；第二次需求只增加能解释假设的阶段／配置事实或另一个平台的符号链。人核严重性、数据范围和恢复是否对玩家成立。原节启用／禁用、断网、缓存、SDK 自身失败与注入边界均保留，不因正常链补齐而删掉。
+
+**探索与范围**：2026-10-26 读官方平台说明、近两年社区原帖及固定 Sentry CLI 实现，并实际运行上述本地实验；GNU 工具沿环境现成版本，未测其跨版本排名。原始合成错误与解析结果留在实验运行目录，仓库只提交源码／测试／说明。未运行 Unity／UE／IL2CPP、远程接收或真实玩家故障；未知的是原生栈覆盖、诊断开销与现场修复收益，不是本地工具是否执行成功。原接收、SDK修订与隐私事实的核实日继续见下一节。
+
 ## 发行诊断：先保可定位反馈，再选自动报告
 
 核实：2026-10-20（UTC+8，接收返工补核）。[研究] **✅ 先核项目实际采集状态，再决定保留／停用／新增自动链；人工反馈始终保留。** Unity新项目可能已启用诊断，未安装第三方SDK不能当未采集。选仅人工路线先明确关闭相关自动诊断，再验目标发布包；已有合格且授权清楚的诊断链可保留，不为了“人工优先”无差别拆除。自动异常／崩溃报告不覆盖无崩溃的软锁、坏档或不好玩。
