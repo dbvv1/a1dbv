@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test test.mjs",
-    "sample": "node sample.mjs"
+    "sample": "node sample.mjs",
+    "test:reactions": "node --test test_reactions.mjs"
   },
   "dependencies": {
     "three": "0.186.1"

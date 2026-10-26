@@ -3,6 +3,8 @@ import {
   AnimationMixer,
   LoopOnce,
   PropertyBinding,
+  Matrix4,
+  Vector3,
 } from "three";
 import { clone } from "three/addons/utils/SkeletonUtils.js";
 
@@ -28,7 +30,7 @@ export const lowerBones = Object.freeze([
 
 // Exported frame 1 is at 1/30s. Periods start at the first key, not that zero padding.
 // Clone tracks so normalizing time cannot alter any original shared source clip.
-export function prepareSource(gltf) {
+export function prepareSource(gltf, { reactions = false } = {}) {
   const bones = [];
   gltf.scene.traverse((o) => {
     if (o.isBone) bones.push(o.name);
@@ -38,6 +40,17 @@ export function prepareSource(gltf) {
     throw Error("fixed 15-bone source required");
   const clips = {},
     durations = { idle: 1, walk: 32 / 30, attack: 35 / 30 };
+  if (reactions)
+    for (const name of ["hurt", "death"]) {
+      const clip = gltf.animations.find((a) => a.name === name);
+      if (!clip?.tracks.length) throw Error(`one ${name} clip required`);
+      const duration =
+        Math.max(...clip.tracks.map((t) => t.times.at(-1))) -
+        Math.min(...clip.tracks.map((t) => t.times[0]));
+      if (!(duration >= 0.1 && duration <= 3))
+        throw Error("unsupported reaction duration");
+      durations[name] = duration;
+    }
   for (const [name, duration] of Object.entries(durations)) {
     const candidates = gltf.animations.filter((a) => a.name === name);
     if (candidates.length !== 1) throw Error(`one ${name} clip required`);
@@ -156,6 +169,24 @@ export function attackPose(time, attack) {
   return { weight, sourceTime };
 }
 
+// Gameplay passes the chosen full-body state; death is held until that state clears.
+export function reactionPose(time, reaction, clips) {
+  if (reaction == null) return { name: null, weight: 0, sourceTime: 0 };
+  if (!["hurt", "death"].includes(reaction.name) || !clips[reaction.name])
+    throw Error("prepared reaction clip required");
+  nonnegative(reaction.startedAt, "reaction startedAt");
+  const duration = clips[reaction.name].duration,
+    fade = 0.06;
+  const elapsed = time - reaction.startedAt;
+  return {
+    name: reaction.name,
+    weight:
+      clamp(elapsed / fade) *
+      (reaction.name === "hurt" ? clamp((duration - elapsed) / fade) : 1),
+    sourceTime: Math.min(duration, Math.max(0, elapsed)),
+  };
+}
+
 // Absolute-time visual consumer: caller owns movement, attack legality and hits.
 // Separate lower/upper track sets avoid averaging a full-body walk with attack.
 export function createConsumer(source) {
@@ -180,11 +211,16 @@ export function createConsumer(source) {
   const mixer = new AnimationMixer(root),
     actions = {};
   for (const [name, clip] of Object.entries(source.clips))
-    for (const region of name === "attack" ? ["upper"] : ["lower", "upper"]) {
+    for (const region of ["hurt", "death"].includes(name)
+      ? ["full"]
+      : name === "attack"
+        ? ["upper"]
+        : ["lower", "upper"]) {
       const tracks = clip.tracks.filter(
         (t) =>
+          region === "full" ||
           upper.has(PropertyBinding.parseTrackName(t.name).nodeName) ===
-          (region === "upper"),
+            (region === "upper"),
       );
       if (!tracks.length) throw Error("empty animation region");
       const a = mixer.clipAction(
@@ -196,13 +232,18 @@ export function createConsumer(source) {
       a.paused = true;
       actions[`${name}.${region}`] = a;
     }
+  const poseRoot = root.getObjectByName("Root");
+  const groundOffset = new Vector3(),
+    point = new Vector3(),
+    inverse = new Matrix4();
   let disposed = false;
-  function sample({ time = 0, walk = 0, attack = null } = {}) {
+  function sample({ time = 0, walk = 0, attack = null, reaction = null } = {}) {
     if (disposed) throw Error("consumer disposed");
     nonnegative(time, "time");
     if (!Number.isFinite(walk) || walk < 0 || walk > 1)
       throw Error("walk weight must be in [0,1]");
     const pose = attackPose(time, attack); // Validate before changing any pose.
+    const full = reactionPose(time, reaction, source.clips);
     for (const [key, a] of Object.entries(actions)) {
       const [name, region] = key.split(".");
       const weight =
@@ -212,15 +253,57 @@ export function createConsumer(source) {
             (region === "upper" ? 1 - pose.weight : 1);
       a.enabled = true;
       a.paused = true;
-      a.setEffectiveWeight(weight);
+      a.setEffectiveWeight(
+        region === "full"
+          ? name === full.name
+            ? full.weight
+            : 0
+          : weight * (1 - full.weight),
+      );
       a.time =
-        name === "attack"
-          ? pose.sourceTime
-          : time % source.clips[name].duration;
+        region === "full"
+          ? name === full.name
+            ? full.sourceTime
+            : 0
+          : name === "attack"
+            ? pose.sourceTime
+            : time % source.clips[name].duration;
     }
+    // Undo the previous visual offset before the mixer can reuse an unchanged binding.
+    poseRoot.position.sub(groundOffset);
+    groundOffset.set(0, 0, 0);
     mixer.update(0);
     root.updateMatrixWorld(true);
     for (const s of skeletons) s.update();
+    if (full.weight > 0) {
+      // Author contact alone does not survive an arbitrary locomotion-phase blend.
+      // Fixed flat-floor fixture: lift the internal rig, never the motor-owned outer root.
+      inverse.copy(root.matrixWorld).invert();
+      let lowest = Infinity;
+      root.traverse((object) => {
+        if (!object.isSkinnedMesh) return;
+        for (let i = 0; i < object.geometry.attributes.position.count; i++) {
+          object
+            .getVertexPosition(i, point)
+            .applyMatrix4(object.matrixWorld)
+            .applyMatrix4(inverse);
+          lowest = Math.min(lowest, point.y);
+        }
+      });
+      if (lowest < 0) {
+        inverse
+          .copy(poseRoot.parent.matrixWorld)
+          .invert()
+          .multiply(root.matrixWorld);
+        groundOffset
+          .set(0, -lowest, 0)
+          .applyMatrix4(inverse)
+          .sub(point.set(0, 0, 0).applyMatrix4(inverse));
+        poseRoot.position.add(groundOffset);
+        root.updateMatrixWorld(true);
+        for (const s of skeletons) s.update();
+      }
+    }
     // Three caches skinned bounds: old idle bounds can cull a later extended blade.
     // This small fixture pays the CPU vertex scan; production budgets need measurement.
     root.traverse((object) => {
@@ -229,7 +312,7 @@ export function createConsumer(source) {
         object.computeBoundingSphere();
       }
     });
-    return pose;
+    return { ...pose, weight: pose.weight * (1 - full.weight) };
   }
   function dispose() {
     if (disposed) return;
