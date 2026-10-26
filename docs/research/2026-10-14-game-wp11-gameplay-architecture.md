@@ -358,7 +358,7 @@ npm run sim -- --content-version 8 --games 500 --seed 201 --verify-targets mirro
 
 这一接入补足了原“快照供晚加入 UI”建议的具体前提：**状态快照可晚读，瞬时事实若只保一批就必须每逻辑步收取**；同 render 多 step 不能只保最终批。重开既重建模拟，也清理旧动作／事件游标。真实源动画、上下身混合与资源生命期继续由[制作链原模块](../../domains/game-dev/assets/animation.md#multiunit-animation-consumer)维护，本节不复制其资产实现。
 
-本轮复用已通过的事件反例、真实 GLB Node 消费和[固定 48faed4 软件 WebGL 回执](https://github.com/dbvv1/a1dbv/blob/f2c83cb2/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)，并核正式采用的源文件：E 的实际输入与挂接 actor `attack.upper` 权重／轨道已浏览器验证；护盾／受伤细分仍以 Node 反例为据。没有重跑引擎选型或给完整蓄力示例补虚构运行证据。待验的玩家英雄选择不计本次正式采用。
+本轮复用已通过的事件反例、真实 GLB Node 消费和[固定 48faed4 软件 WebGL 回执](https://github.com/dbvv1/a1dbv/blob/f2c83cb2/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)，并核正式采用的源文件：E 的实际输入与挂接 actor `attack.upper` 权重／轨道已浏览器验证；护盾／受伤细分仍以 Node 反例为据。没有重跑引擎选型或给完整蓄力示例补虚构运行证据。玩家英雄选择属另一个二改，采用与运行入口见[案例 README](https://github.com/dbvv1/MOBA-Like/blob/main/README.md)，不扩大本段技能动作证据。
 
 **动作响应与承诺（2026-10-15 UTC+8）。** [研究] 沿技能定义／执行实例与局部状态机，分别定移动转向、阶段出口和再次攻击资格。动画退出不等于退款、重开命中盒或清冷却；本节只补输入识别后的动作许可。
 

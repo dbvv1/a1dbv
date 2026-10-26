@@ -2,7 +2,7 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 083183c245c2e8f4bd3dbbfa7e3d7c75a0357b3b
 result_branch: relay/b-moba-client-smoke-001
@@ -26,5 +26,5 @@ result_branch: relay/b-moba-client-smoke-001
 - 固定候选 083183c 已完成真实浏览器验收：npm ci 退出 0，npm run smoke 退出 0，Chromium 软 WebGL2 下旧断言全部保留通过，新链覆盖选 Morrow→Restart→W/Q/E/R 实际施放→同选重开恢复资源与冷却→改回 Veyra 新局推进，非作者读者检查亦通过。
 - 本单元没有文件改动。
 - 检查：check_public（文件） 通过；独立审查通过。
-- 下一步：无剩余单元；由接收端记录结果，硬件与手感按任务另行人工验收。
+- 接收：产品 [main 083183c](https://github.com/dbvv1/MOBA-Like/commit/083183c245c2e8f4bd3dbbfa7e3d7c75a0357b3b) 已按原受检树快进采用；网站仍为 912c04c，Git 合入不自动更新部署。硬件与手感另行人工验收。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
