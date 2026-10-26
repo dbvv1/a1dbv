@@ -2,7 +2,7 @@
 
 id: B-OPENWEIGHT-3D-001
 owner: dot-B
-status: running
+status: blocked
 target_repo: dbvv1/MOBA-Like
 base_ref: 69d1588e62d4530a1eb5e3606b99e764fa9c7db5
 result_branch: relay/b-openweight-3d-001
@@ -42,4 +42,8 @@ result_branch: relay/b-openweight-3d-001
 
 ## 当前结果
 
-`ready`：已核现有 CC0／脚本制作与场景正文任务，未发现同单元开放权重 3D 结果；尚未由本机领取，真实 GPU 执行、产物与运行品质均未知。下一步由接收端按同一 id 领取并执行，Git 文件本身不唤醒任务。
+- 已准备自制 RGBA 输入、alpha 校验工具与 TripoSG 薄调用脚本（5 项输入测试通过），但官方权重下载被本机到 Hugging Face 的 TLS 阻断、diso 需 CUDA Toolkit 才能构建，推理与 GLB 接入未开始；独立复审仍有 8 条文档/脚本问题未修正。
+- 产物：[29bff1e](https://github.com/dbvv1/MOBA-Like/commit/29bff1ea22e9328d0fc82a30ab5cc2f6e8f036e0)，分支 `relay/b-openweight-3d-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：在可访问官方 Hub 的网络取得并固定 VAST-AI/TripoSG 权重与 revision/hash，另装 CUDA Toolkit 12.8（或预编译 diso）和 Python 3.10 环境；随后修正本轮 8 条复审问题并运行 tools/openweight-rock/run_triposg.py，再做 Blender 后处理与 manifest 接入。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
