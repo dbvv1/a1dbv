@@ -30,6 +30,7 @@
 | [02-large-project-guide.md](02-large-project-guide.md) | 大型项目落地：禁区、编译和测试闭环、Play 模式验证、大仓库 |
 | [**03-engine-fundamentals.md**](03-engine-fundamentals.md) | **Unity 基础知识**：对象模型、生命周期、序列化、程序集与 Domain Reload、null 语义、资源、渲染管线、输入和 UI、性能、测试、版本路线；每节附“AI 要点” |
 | [04-animation-runtime.md](04-animation-runtime.md) | 角色动画运行时：步态、过渡、上身瞄准、根运动与权威位移；Animator／Animancer／Motion Matching 的选择与原生接入起点 |
+| [05-content-authoring-tools.md](05-content-authoring-tools.md) | 内容作者工具：保原数据，连接 Inspector／空间预览／原玩法试跑；原生、Alchemy、Tri、Odin 的选择与二改 |
 | [../03 游戏中的生成式 AI](../03-generative-ai-in-games.md#1-资产管线agent-负责搬运和规范) | AI 生成 3D、2D、音频、动画资源（跨引擎，已上移） |
 | [Unreal 分支](../unreal/README.md) | 对照阅读：两个引擎在 AI 接入上的差异 |
 | [templates/](templates/) | 可以拷进 Unity 项目的配置（在 [templates/generic](../../../templates/generic/) 基础上增加 Unity 专用部分） |
