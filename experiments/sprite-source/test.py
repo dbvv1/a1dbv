@@ -136,6 +136,37 @@ class SpriteSourceTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     SpritePackage(out)
 
+    def test_finite_outside_canvas_pivot_remains_supported(self):
+        out = self.root / 'outside-pivot'
+        shutil.copytree(self.packages['blue'], out)
+        metadata = json.loads((out / 'sprites.json').read_text())
+        metadata['pivot_px'] = [-8, 100]
+        (out / 'sprites.json').write_text(json.dumps(metadata))
+        package = SpritePackage(out)
+        canvas = Image.new('RGBA', (256, 256))
+        package.draw(canvas, (80, 160), 'walk', 'right', .42)
+        self.assertIsNotNone(canvas.getbbox())
+        self.assertEqual(package.pivot, [-8, 100])
+
+    def test_bad_pivot_and_missing_actions_refuse_loading(self):
+        cases = {
+            'nan-pivot': lambda m: m.update(pivot_px=[math.nan, 83]),
+            'short-pivot': lambda m: m.update(pivot_px=[48]),
+            'bool-pivot': lambda m: m.update(pivot_px=[True, 83]),
+            'bad-size': lambda m: m.update(size=0),
+            'empty-clips': lambda m: m.update(clips={}),
+            'missing-direction': lambda m: m['clips']['walk']['directions'].pop('right'),
+        }
+        for name, mutate in cases.items():
+            with self.subTest(name=name):
+                out = self.root / name
+                shutil.copytree(self.packages['blue'], out)
+                metadata = json.loads((out / 'sprites.json').read_text())
+                mutate(metadata)
+                (out / 'sprites.json').write_text(json.dumps(metadata))
+                with self.assertRaises(ValueError):
+                    SpritePackage(out)
+
     def test_existing_outputs_are_not_overwritten(self):
         out = self.root/'preserved'; out.mkdir(); (out/'keep.txt').write_text('keep')
         before = hashes(out)

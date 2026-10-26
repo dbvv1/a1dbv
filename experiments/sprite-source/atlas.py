@@ -58,9 +58,19 @@ class SpritePackage:
                 raise ValueError('atlas format/size mismatch')
             self.image = image.copy()
         self.pivot = self.metadata['pivot_px']
-        if self.metadata['pivot_origin'] != 'top-left':
-            raise ValueError('unexpected pivot origin')
-        for clip in self.metadata['clips'].values():
+        size = self.metadata['size']
+        if (type(size) is not int or not 32 <= size <= 256 or
+                self.metadata['pivot_origin'] != 'top-left' or
+                not isinstance(self.pivot, list) or len(self.pivot) != 2 or
+                any(type(value) not in (int, float) or not math.isfinite(value)
+                    for value in self.pivot)):
+            raise ValueError('invalid common-canvas size or foot pivot')
+        clips = self.metadata['clips']
+        if not isinstance(clips, dict) or set(clips) != {'idle', 'walk', 'attack'}:
+            raise ValueError('package must contain idle, walk and attack')
+        for clip in clips.values():
+            if not isinstance(clip.get('directions'), dict) or set(clip['directions']) != {'down', 'right', 'up', 'left'}:
+                raise ValueError('each clip must contain all four directions')
             times = clip['times']; duration = clip['duration']
             if not math.isfinite(duration) or duration <= 0 or not times or times[0] != 0 or any(not math.isfinite(t) for t in times) or any(a >= b for a,b in zip(times,times[1:])):
                 raise ValueError('invalid clip clock')
