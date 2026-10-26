@@ -2,7 +2,7 @@
 
 id: A-PUBLIC-GUIDANCE-READER-001
 owner: dot-A
-status: ready
+status: running
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b2b3f65d64b4304640563817a9388aff87c73c6a
