@@ -2,9 +2,35 @@
 
 > **先找当前最高水平的做法，再用证据判断是否采用。** 本仓库帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用；主干是通用 AI coding，具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
-**想直接动手？先选要增强的 Agent 能力。** 从[实操入口](docs/15-task-playbooks.md#先动手改善-agent-的一项能力)进入：把领域知识变成改法、接收页面修改意图、检查 API 兼容性，或接续有依赖的分支。每项都链接操作与实际验证范围；不把工具安装或模型配置本身当成效果。
+## 读者问题 → 答案
 
-执行资产详见 [长程执行](docs/20-codex-long-horizon.md) 与 [开源机制](docs/21-agent-patterns.md)；证据等级详见 [说明](docs/README.md#评级与证据体系)。
+**按你现在要解决的问题找答案。** ✅ 照做即可；🟡 有答案，仍在整理成一页；⏳ 整理中。
+
+| 问题 | 先看 | 状态 |
+|---|---|---|
+| 选 Claude Code、Codex 还是 Cursor | [01 Agent 选择](docs/01-agents/README.md) | ✅ |
+| 模型和推理档怎么选、多贵 | [02 模型与成本](docs/02-models-and-cost.md) | ✅ |
+| CLAUDE.md／AGENTS.md 怎么写 | [03 §2.3](docs/03-context-engineering.md#23-写什么不写什么官方最佳实践-一手)、[模板](templates/README.md) | 🟡 |
+| 怎样让 Agent 自己验证、别只报完成 | [07 §1](docs/07-workflows.md#1-核心验证闭环-)、[23 浏览器验证](docs/23-browser-verification.md) | 🟡 |
+| 上下文怎么管、会话越聊越笨怎么办 | [03 §3](docs/03-context-engineering.md#3-会话层面的上下文管理)、[17 §2.6](docs/17-troubleshooting.md) | 🟡 |
+| 该装哪些 Skill 与插件 | [05 Skill 与插件](docs/05-skills-and-plugins.md) | ⏳ |
+| 该接哪些 MCP | [04 MCP](docs/04-mcp.md) | ✅ |
+| Codex 过度防御、过度工程怎么治 | [17 §2.5](docs/17-troubleshooting.md) | ⏳ |
+| 子代理与多 Agent 怎么组织 | [08 多 Agent](docs/08-multi-agent.md) | 🟡 |
+| 长任务与无人值守怎么跑 | [20 长任务](docs/20-codex-long-horizon.md) | 🟡 |
+| 强模型与弱模型怎么分工、怎么控成本 | [02](docs/02-models-and-cost.md)、[08](docs/08-multi-agent.md) | 🟡 |
+| 怎么审 AI 写的代码 | [09 评审](docs/09-review-and-quality.md)、[REVIEW 模板](templates/generic/REVIEW.md) | ✅ |
+| 权限、沙箱与 Hooks 怎么配 | [10 安全](docs/10-security.md)、[06 Hooks](docs/06-hooks-and-guardrails.md) | 🟡 |
+| 调试、Agent 跑偏或谎报完成 | [17 排障](docs/17-troubleshooting.md)、[15 调试](docs/15-task-playbooks.md) | ✅ |
+| 测试驱动、规格驱动、计划模式 | [07 工作流](docs/07-workflows.md) | 🟡 |
+| 前端与 UI 任务 | [23 浏览器验证](docs/23-browser-verification.md) | 🟡 |
+| 遗留代码与大迁移 | [15 任务打法](docs/15-task-playbooks.md) | ✅ |
+| 团队怎么推广 | [18 团队落地](docs/18-team-adoption.md) | ✅ |
+| 本周值得试什么 | [13 前沿雷达](docs/13-frontier-radar.md) | ⏳ |
+| 用 AI 做游戏 | [游戏分支](domains/game-dev/README.md) | 🟡 |
+
+需要自己找当前最强的做法时，用 [explore-frontier Skill](templates/generic/.claude/skills/explore-frontier/SKILL.md)。
+
 
 ---
 

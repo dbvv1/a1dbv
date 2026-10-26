@@ -23,4 +23,4 @@
 - 已覆盖但过时或结论不同（写明哪里不同、谁更有依据）；
 - 没覆盖。
 
-没覆盖和过时的条目，按影响读者选择的程度排序，前几条直接加进 TASKS 项目板；同时计入 M6 漏检。结果写到 `docs/collaboration/reviews/<日期>-top10-check.md`，并在当天[简报](../digest.md)里列出最重要的一两条。
+没覆盖和过时的条目，按影响读者选择的程度排序，前几条直接加进 TASKS 项目板；同时计入 M6 漏检。结果写到 `docs/collaboration/reviews/<日期>-top10-check.md`。

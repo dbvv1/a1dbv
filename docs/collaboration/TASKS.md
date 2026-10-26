@@ -4,15 +4,15 @@
 
 ## 当前重点
 
-> 每轮纠偏只改本节，最多三条（手册§6）。更新：2026-10-26，Claude 核心方向会话。
+> 每轮纠偏只改本节，最多三条（手册§6）。更新：2026-10-27，Claude 核心方向会话。
 
-- **A**：试验场换成案例仓库的真实编码任务和 a1dbv 脚本，不再为 dot 自己的协作造新机制。先在入口页就地回答这些读者问题：CLAUDE.md／AGENTS.md 怎么写（附最强团队的真实文件）、Codex 过度防御怎么治、该装哪些 Skill 与插件、长任务与多 Agent 怎么组织、强弱模型怎么分工、本周值得试什么。存量页删掉 frontier 标记与页头日期流水账。
-- **B**：玩法用品类标准做法，品质尽量向品类标杆靠近（MOBA 对英雄联盟，Star-Rush 对地平线的公路弯道、保留跑圈，FPS 对 CS2）；每个单元跑通后与参照并排评估、针对差距优化，截图与差距清单放案例 `docs/quality.md`。被采用的改进在同一单元写回模块或制作链页。本机试开放权重 3D 与音频生成，做出一个进入作品的资源。
-- **共同**：完成看读者或玩家得到的价值；过程写在提交说明里，写做了什么、还差什么，不写免责，不进正文和 TASKS。独立审查只用于新默认做法、模板和作品版本。未结束的任务文件不超过 80 行、本页不超过 10 KB。
+- **A**：从根 README 的“读者问题 → 答案”地图取下一项，先做 ⏳：该装哪些 Skill 与插件、Codex 过度防御怎么治、本周值得试什么（13 首屏改成本周 Top 5）；根 README 其余入口表逐步并入地图。停掉为自己流程派的核验任务（离线基线检查、收件箱格式）。
+- **B**：三条线按 `domains/game-dev/README.md` 的模块与制作链地图各自推进：模块线把“可用”的模块在案例里证实，引擎与服务端按地图补第一版，已有内容合并补全不另开重复页；制作链让开放权重 3D 与音频进作品；案例按里程碑阶梯走质量环节，差距清单放各案例 `docs/quality.md`。新页成熟度如实标，文档依据的最多“可用”。
+- **共同**：完成看读者或玩家得到的价值；过程写在提交说明里，写做了什么、还差什么，不写免责，不进正文和 TASKS。独立审查只用于新默认做法、模板和作品版本。本机接收端只做需要本机 GPU 或本机工具的任务。
 
 ## 分工
 
-- 方向见 [AGENTS 锚点](../../AGENTS.md)。dot-A：AI coding 与 M6；dot-B：游戏 AI 全链路与客户端／gameplay，作品案例见[游戏方向细则§6](game-taskbook.md#6-作品案例)。
+- 方向见 [AGENTS 锚点](../../AGENTS.md)。dot-A：AI coding 与 M6；dot-B：游戏 AI 全链路与核心模块（客户端／gameplay、引擎、部分服务端），作品案例见[游戏方向细则§6](game-taskbook.md#6-作品案例)。
 - 本地模型委派走 [local-jobs](local-jobs/README.md)，由本机接收端（固定脚本）领取执行。旧的 Codex 接收端已退役；两个清理任务由新接收端按收窄后的范围接续。
 - 指导层：Claude 核心方向会话负责方向与原则，Codex 审计会话负责增量审计与仓库整理（手册§6）。
 - 10-26 a1dbv 历史已按用户授权改写：开工前 `git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune`，本地分支按远端重建，不推送基于旧历史的分支。
@@ -51,6 +51,7 @@
 |---|---|---|
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
 | Actual 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/actualbudget/actual/compare/master...dbvv1:actual:dot-a/load-config-typescript-1483)创建Draft。拟标题：`[AI] Migrate sync server configuration loader to TypeScript`；正文保留官方空模板，人类字段不代填 | 本仓发现、试用与既有PR跟进继续 |
+| 本机模型权重下载 | 开放权重 3D 在本机取权重时 TLS 连接中断（B-OPENWEIGHT-3D-001），可能需要用户检查本机网络或代理 | 音频与其他制作链照常 |
 | Maka 上游贡献 | 真人贡献者须实际审阅负责，适用时本人签 CLA | [OpenSpec 邀请已发](https://github.com/Fission-AI/OpenSpec/issues/2115#issuecomment-6401683363)；其他 PR 继续 |
 
 **停止的动作**：Maka #4495 评论同样因集成 403 未发出；MOBA 第三方素材官方取回 HTTP 403，自有与原创占位素材已通过；P107 与 Action 调试 10f6a6db 曾被平台拒绝，负责人补齐命令和用途后再请用户在 Dot 里批准。

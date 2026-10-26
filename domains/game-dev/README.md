@@ -7,6 +7,43 @@
 
 **从这里开始：[独立游戏从概念到发布的路线图](06-indie-roadmap.md)。** 按概念、原型、垂直切片、内容生产、打磨、发布和上线后选择下一步；每阶段列质量标准、AI 能做、人必须决定与对应专题。先过许可与真人反馈；扩角色／组合前确认玩家能察觉核心选择差异；切片必须经历第二次需求修改。阶段路线仍是资料比较。G1 的实测范围与未验项见第 5 节。[研究]
 
+## 模块与制作链地图
+
+**先看你要做的模块或资源现在做到什么程度。** 成熟度：案例证实＝在本仓案例里用上并验证；可用＝有默认做法、实现起点和 AI 怎样实施；研究中＝只有零散研究或缺页。引擎专属内容以官方文档与工具为据，未在引擎里实跑的最多标“可用”。
+
+| 核心模块 | 去哪看 | 成熟度 |
+|---|---|---|
+| 游戏循环、固定步长与确定性回放 | [05 游戏循环](05-gameplay-architecture.md) | 案例证实（网页） |
+| 流程与场景状态机（启动、菜单、加载、对局、结算） | [05](05-gameplay-architecture.md)、[04 场景切换](04-client-modules.md) | 可用 |
+| 输入与操作手感 | [04 输入](04-client-modules.md) | 可用 |
+| 相机 | [05 相机](05-gameplay-architecture.md)、[04](04-client-modules.md) | 可用 |
+| 战斗、技能与命中反馈 | [05 战斗与技能](05-gameplay-architecture.md) | 案例证实（网页） |
+| AI 行为与寻路 | [05](05-gameplay-architecture.md) | 案例证实（网页） |
+| 数据驱动配置 | [05](05-gameplay-architecture.md) | 可用 |
+| 关卡与遭遇 | [08 关卡与遭遇](08-level-design-and-encounters.md) | 可用 |
+| 动画运行时 | [动画](assets/animation.md)、[Unity 动画运行时](unity/04-animation-runtime.md) | 案例证实（网页） |
+| 物理、碰撞与交互 | [04](04-client-modules.md)、[Unity 物理交互](unity/06-physics-interaction.md) | 可用 |
+| 渲染、光照与性能 | [04 渲染](04-client-modules.md)、[Unity 场景光照](unity/07-scene-rendering-and-lighting.md) | 可用 |
+| 资源加载与内存 | [04](04-client-modules.md) | 案例证实（网页） |
+| UI 与 HUD | [04](04-client-modules.md) | 可用 |
+| 音频事件与混音 | [04](04-client-modules.md)、[音频](assets/audio.md) | 案例证实（听感待评） |
+| 存档、本地化、设置与可访问性 | [04](04-client-modules.md) | 可用 |
+| 调试、日志、遥测与崩溃 | [04 发行后诊断](04-client-modules.md) | 可用 |
+| 内容制作工具与编辑器扩展 | [Unity 内容工具](unity/05-content-authoring-tools.md) | 可用 |
+| 引擎接入（Unity 优先、Unreal 对照） | [01 引擎接入](01-engine-integration.md)、[Unity](unity/README.md)、[Unreal](unreal/README.md) | 可用 |
+| 平台与发布 | [04](04-client-modules.md) | 可用 |
+| 服务端：联网同步、房间、账号与云存档 | [07 联网与服务端](07-networking-and-server.md) | 可用 |
+
+| 制作链 | 没有美术时现在能做到 | 离品类标杆还差 |
+|---|---|---|
+| [2D](assets/2d.md) | AI 插画用于菜单选卡；图标为手写 SVG | 角色、地表与 UI 套件的风格一致性 |
+| [3D 角色与场景](assets/3d.md) | CC0 低模包加脚本改色、重塑成统一风格 | 角色精度与场景丰富度；AI 生成 3D 尚未进作品 |
+| [动画](assets/animation.md) | 脚本手写的基础动作片段 | 文生动作与动捕清理 |
+| [材质、特效与光照](assets/materials.md) | 共享渐变图集、程序特效、卡通与 Lambert 光照 | 光照氛围、后处理与技能特效 |
+| [音频](assets/audio.md) | CC0 音效、程序合成音乐；开放权重生成的环境声候选 | 听感与混音层级；配音 |
+| [视频](assets/video.md) | 实验短片 | 尚未进作品 |
+
+
 ## 游戏版值得一试
 
 **先按任务选工具，不按热度换栈：下面七项是首试候选，不是当前全行业质量排行。** 旧调查支持需求／检索与编码优先，新案例提供可借的制作步骤；截至 2026-10-23（UTC+8），下表各候选保留各自的试用范围。本仓 G1 实战不计入表中比较，也不计作各工具的制作复现或行业采用率。[研究]
