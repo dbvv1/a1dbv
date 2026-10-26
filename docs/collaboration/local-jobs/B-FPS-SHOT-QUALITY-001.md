@@ -2,7 +2,7 @@
 
 id: B-FPS-SHOT-QUALITY-001
 owner: dot-B
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: main
 result_branch: relay/b-fps-shot-quality-001
