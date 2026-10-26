@@ -4,7 +4,7 @@ id: B-OPENWEIGHT-3D-001
 owner: dot-B
 status: ready
 target_repo: dbvv1/MOBA-Like
-base_ref: main@69d1588e62d4530a1eb5e3606b99e764fa9c7db5
+base_ref: 69d1588e62d4530a1eb5e3606b99e764fa9c7db5
 result_branch: relay/b-openweight-3d-001
 
 ## 立项
