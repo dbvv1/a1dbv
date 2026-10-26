@@ -40,6 +40,12 @@
 | F12 | 同模型主／子合桶；`TaskUsage.total_tokens` 角色费用依据待核，按任务选模型而非为遥测换模型 | 末段 |
 | F13 | 原核实日期、官方／固定源码／使用者反馈的类型，以及 SDK／模型与账户用量的未运行范围 | 依据段 |
 
+## 后续生产使用：收件箱入口
+
+**把决定移到前列后，再删掉两列之间重复的触发条件。** 本仓随后把这套写法用于[前沿收件箱](../../docs/collaboration/inbox.md)的 13 项真实入口。非作者先只读候选逐项回答选择、状态和下一步，再核事实；41 个原链接及决定性条件保留。但[首份候选](https://github.com/dbvv1/a1dbv/commit/82b00a56cc60beaf061225b733cdb24d374641aa)把部分条件写了两遍，不能只因答案正确就认定改写减负成功。
+
+同口径统计 13 条数据行，去首尾 `|` 后三列以 ` | ` 连接，行间换行，含 Markdown 与 URL，去所有空白：原入口 5544，首候选 5999（增加 455，8.21%）。负责人仅修 anymd、show-me、lights-on 和 usage-guard 四处已发现的问题，去重复或校正动作，修后 5917（仍比原入口增加 373，6.73%）。结构改进是决定与状态前置，长度目标未实现；原稿到新稿还补入 anymd 后续修复与目录条件，不能把全部增字都归于同义重复。未测阅读时长，也没有新增工具试用。
+
 ## 写法来源
 
 - **Codex：明确影响场景，给可行动的最小修正。** 固定提交 `970111f6` 的 [review rubric](https://github.com/openai/codex/blob/970111f6cb62cc02fe36a82ea7d71b37a2889c97/codex-rs/prompts/templates/review/rubric.md)要求说明具体受影响对象、触发场景与可行动问题；它经 [REVIEW_PROMPT](https://github.com/openai/codex/blob/970111f6cb62cc02fe36a82ea7d71b37a2889c97/codex-rs/prompts/src/review_request.rs#L8-L9)装配，由 [review task](https://github.com/openai/codex/blob/970111f6cb62cc02fe36a82ea7d71b37a2889c97/codex-rs/core/src/tasks/review.rs#L118-L138)设为实际审查指令。本稿将这项审查原则借用为场景动作，合并重复版本提醒。

@@ -2,7 +2,7 @@
 
 id: A-INBOX-ACTION-FIRST-001
 owner: dot-A
-status: blocked
+status: accepted
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2f07ed32416875d6f040d1a01b086770e51bbea6
@@ -38,8 +38,10 @@ result_branch: relay/a-inbox-action-first-001
 
 ## 当前结果
 
-- inbox 13 项已改为当前选择/试用状态/下一步先行，关键事实、来源、评级与日期角色保留；独立复审仅剩本卡第45行把 diff 记成 +41/−2（实际 numstat +40/−1），其余均通过。
-- 产物：[82b00a5](https://github.com/dbvv1/a1dbv/commit/82b00a56cc60beaf061225b733cdb24d374641aa)，分支 `relay/a-inbox-action-first-001`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：把本卡第45行更正为 diff +40/−1 行、净 +39 后重跑最终独审，再由接收端做非作者读者测试、提交身份扫描与合入。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+- 结论：dot-A 接收当前选择／状态／下一步前置的清晰入口改进；长度目标未实现，不记为压缩或减负成功。新试用／新工具采用均为 0。
+- 原产物：[82b00a5](https://github.com/dbvv1/a1dbv/commit/82b00a56cc60beaf061225b733cdb24d374641aa)。本次只修 anymd 重复条件、show-me 重复调用条件、lights-on 当前决定与旧比较步骤冲突，以及 usage-guard 的宿主再评估条件；未重写全表。
+- 退回候选的统计冻结为 `ac7d95d..82b00a5`：13 行去空白 5544→5999（+455，+8.21%）；inbox 含空白字符 6828→7308，39 行不变，diff +16/−16；本卡 2550→5613，40→79 行，diff **+40/−1**（原 +41/−2 错），合计 9378→12921 字符、+56/−17 行。`base_ref` 2f07ed3 只固定派发输入，当时尚无本卡，不能作本卡统计基线。
+- 最终入口同口径为 5544→5917（+373，+6.73%），整文件 6828→7223 字符／39 行；13 项、11 待／2 已、评级与日期角色不变。原 41 个 URL 全保留，另加既定 04／10 入口；长度仍高于旧版，卡缩短不计正文收益。
+- 审查：新上下文非作者已对原候选完成 13/13 项读者实测和事实／来源核对；原候选卡中的作者复读不作独审。最终四处定向修正已由非作者复验通过，必要条件未丢；其余九行未改。
+- 历史：接收端在 6f11613 回写 blocked，统计错误与独审未完成照实保留；已完成的候选检查不冒充最终接收检查。执行通道为 Claude Code＋DeepSeek 原生 Workflow，可公开的 provider／model 返回元数据未知。
+- 下一步：dot-A 串行发布并核远端；本次接收的合入位置见本卡 Git 历史。详细计数、验证与审查回执留在接收提交说明。
