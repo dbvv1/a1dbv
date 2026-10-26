@@ -810,6 +810,17 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 
 未运行引擎、服务、跨机网络或多客户端；原开发者／社区证据及未取得源码的边界沿下面各节，不据文档确认推广成体验或安全测试通过。
 
+<a id="server-input-frames"></a>
+### 两端输入帧：从确定性模拟到真实网络消费者
+
+[实测，2026-10-26] [服务端首模块](../../domains/game-dev/07-networking-and-server.md)沿既有合作链补上模型选择，实际消费者见 [server-lockstep](../../experiments/server-lockstep/README.md)。固定正式 MOBA `3bcda00fb35361cc5a25ee74e3768a2f3678c563`、v8、seed 901、实际 Detour navmesh，Node 24.22.1：服务端及两个客户端是三个独立进程，使用真实 loopback TCP；导入未修改的 `Simulation.step`／`finalHash`，没有另造模拟或改产品里程碑。
+
+正常与发送延迟／应用重试两轮各 300 tick（30 Hz），所有帧都核两端完整状态哈希，最终均为 `80d7e4741c8fdfcb`；延迟轮去重 54 个相同输入重试，实际到达顺序不同但提交顺序一致。输入包括真实英雄移动与停止，机器人没有在两端各自生成输入。7 项检查含两种正常轮、真实断开、错误哈希终止、缺源失败、schema／所有权、分帧，以及直接改变原模拟的同帧操作顺序／目标帧反例；不会把注入错误哈希叫成引擎本身发生不同步。
+
+决定性接缝是**共同初态、目标 tick、同帧稳定顺序、去重和确认**。服务端先校验连接绑定的角色与数据，再在齐帧后排序；上一帧双方哈希确认后才开下一步。运行握手比较源码、内容、依赖锁、navmesh、Node 版本与初始状态；输入／确认等待超时或分歧结束本局。它既没有通过认证的公网账号，也没有中途重连、预测／回滚或跨 JS 引擎确定性；不能作为反作弊证明。原 MOBA 浏览器客户端仍不是联网对战版本。
+
+[一手／开源，2026-10-26] 默认选择复用原 NGO／MPS 接线；NGO 2.7 [anticipation](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/advanced-topics/client-anticipation.html)明确不含完整 rollback/replay prediction；NfE 1.9 [predicted simulation](https://docs.unity3d.com/Packages/com.unity.netcode@1.9/manual/prediction-n4e.html)按 `Simulate` 过滤当前实体；Fusion 2 [输入循环](https://doc.photonengine.com/fusion/v2/manual/input/player-input)与 Quantum 3 [Verified／Predicted frames](https://doc.photonengine.com/quantum/v3/manual/frames)是不同状态约束。GGRS [请求式保存／恢复／推进](https://docs.rs/ggrs/latest/ggrs/)说明回滚所需游戏接缝，既有 [Factorio FFF412](https://www.factorio.com/blog/post/fff-412)支持不盲目预测整世界与重复视听事件的成本取舍。这些 SDK 未在本项目运行，服务合同／价格采用时另核，不据资料比较宣称跨项目最高水平。
+
 ### 1. 先借生产取舍，不从“支持迁移”反推采用
 
 [一手：开发者访谈] [Dagger Directive 的 Daniel Fowler](https://unity.com/blog/how-to-leverage-distributed-authority-for-multiplayer-co-op-games)（2025-09-29）讲述从社区合作需求出发采用 Unity DA；他评价迁移体验积极，也说明对象转移配置仍需正确设置。团队另留直连路径，以应对服务不可用或停运，但直连房主退出会结束游戏。[研究] 可借的是“服务路径与保底路径各有明确承诺”，不是照抄其质量结论；这是供应商主持的访谈，不是独立横评。
