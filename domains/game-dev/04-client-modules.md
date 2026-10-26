@@ -1,6 +1,6 @@
 # 客户端核心模块：让操作有回应，让体验连续
 
-> 编辑更新：2026-10-26（UTC）。单人程序、无人工美术／音频修补；Unity 主线、Unreal 对照。资产导入见 [01](01-engine-integration.md)，资源供给见 [03](03-generative-ai-in-games.md)。本页结合资料、固定源码与网页案例；各节标明实测范围，Unity／UE 未运行，最高体验水平未知。资料核实时间及版本见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
+> 编辑更新：2026-10-26（UTC）。单人程序、无人工美术／音频修补；Unity 主线、Unreal 对照。资产导入见 [01](01-engine-integration.md)，资源供给见 [03](03-generative-ai-in-games.md)。本页结合资料、固定源码、网页案例与 Godot 原生发布包验证；各节标明实测范围，Unity／UE 未运行，最高体验水平未知。资料核实时间及版本见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md)。
 
 ## 30 秒结论：先把核心动作做舒服
 
@@ -1579,6 +1579,25 @@ Dagger Directive 的开发者采用 DA，同时留不支持迁移的直连退路
 Unity 的 **Platforms 配置与已保存的项目 Build Profile 不同**：前者的一些选项和场景数据会跨平台共享；项目 profile 才适合保存独立的开发／发布设置。两个 profile 仍要核最终有效值，不把复制 profile 当成自动关掉调试、诊断或改变裁剪。UE 的 Package 也不等于已部署／运行；缺 Game Default Map 的项目可能只见黑屏。首版先人工走通同一入口，再让 AI 自动化，不用一条“构建命令退出 0”替代成品检查。
 
 **保三种身份，不只一个版本字符串。** 应用构建对应代码与平台配置；内容构建对应这次可用的资源集合；存档 schema 对应恢复与迁移规则。把它们与实际产物／符号关联即可，不另建发布平台。存档兼容沿[保存续玩](#保存续玩与升级旧档)，现场定位沿[发行后诊断](#发行后诊断先保反馈再接自动报告)；只有需要自动报告时才接相应服务，不为构建顺手增加数据采集。
+
+<a id="native-release-consumer"></a>
+#### Godot 实际接入：把原生应用包交给消费者
+
+**✅ 已有 Godot 项目沿官方 preset／既有 CI 导出，接收的是复制到独立目录的完整应用，不是 Editor 中的场景或单独 PCK。** [可运行实验](../../experiments/godot-export-adoption/README.md)已用官方 4.7.2 Linux 模板把上述六步推进到实际包：同一官方小游戏先源工程验证，再分别生成／运行 debug 与 release，最后改标题、应用版本和移动规则，运行新包并重开原包。已有 Unity／UE 路线不因这份验证而迁移。
+
+| 正常制作动作 | AI 接什么，消费者验什么 |
+|---|---|
+| 固定构建输入 | 匹配项目引擎与官方模板版本，保存 `export_presets.cfg`；沿原 CI 缓存依赖即可，不自动加发布账号或托管 |
+| 定必要／未发布内容 | 按实际资源类型写 include／exclude；同一份声明既查必需标题／场景存在，也查未发布关卡未被带出 |
+| 产出真正应用 | `--export-debug` 与 `--export-release` 分开；本例交 exe＋PCK，缺任一者不拿旧输出补齐；`--export-pack` 仅有数据 |
+| 从交付副本运行 | 不带项目源／开发缓存，走实际主场景与项目已有测试入口，核资源、回合、碰撞、死亡及重开；发布程序实际辨为非 Editor |
+| 二改并保旧包 | v1 标题／版本／12帧位移为 `Training shift / 1.0.0 / 80px`，v2 为 `Night shift / 1.1.0 / 48px`；旧包再开仍是 v1，旧 exe／PCK 摘要不变 |
+
+**先核内容，而不是见“导出成功”就发布。** 本次 `all_resources` 且无过滤的 release 虽退出 0，HUD 所需 `.txt` 却缺失，合成的未发布 JSON 关卡反而被纳入；对本例加 `*.txt` include 与 `unreleased/*` exclude 后才通过。Godot 当前把 JSON 当资源，不能照旧示例把 JSON 一概视为默认不导出的普通文本。AI 可列资源清单、改 preset、用实际包定位缺项；人确定哪些内容应发布及目标设备表现，不用扩大到“把全部源文件都打进去”修缺项。
+
+官方模板的 `--script`／`--main-pack` 能力也不能按 Editor 假定；本例沿正常入口并用项目参数启动窄回归，不重编模板放开路径覆盖。发布检查用明确失败返回，不只用非 debug 构建会忽略的 GDScript `assert`。本节实际覆盖 Linux headless 原生导出／包内资源与玩法消费者；GPU 画面、真实音频、商店分发、其他目标平台及上文存档升级路径仍须各自验，不把这次官方示例算成本仓作品采用。
+
+依据：官方导出／CLI／JSON 实现、固定 Firebelley v8.0.0 CI 实现、近期真实导出反馈与中文已发布游戏对照，见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#native-release-consumer)。2026-10-26 定向核实并实际运行；原六步、平台差分、内容裁剪与旧档检查继续保留。
 
 #### 更新路线：代码、内容与下载成本分开选
 

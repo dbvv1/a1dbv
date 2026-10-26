@@ -1,10 +1,10 @@
 主线：一／二／三／四；客户端体验、第二次修改与交付
 改变的建议：[研究] 首包先保必要玩法内容，再派生合格规格； 图中文字二改先比较生产表示与导出维护，再扩语言； 先复用原生组件，再按具体症状补输入、运动、呈现和资源／平台更新责任；以可控、可读及旧内容兼容判断取舍。 插值成为热点时按观察尺度筛选呈现，保留模拟与入屏所需数据；掉帧先验证固定降采样的收益，再选择动态分辨率或改内容。 重复内容按机械转换、项目参数与专门作者语义分流，不因重复次数自建整套工具。
-新证据：[一手／社区] 2026-10-20补发行诊断；接收返工前置实际采集检查、追加SentryUE1.25.0差异，保留旧源码与Factorio／osu证据； 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
+新证据：2026-10-26 新增官方 Godot 原生应用导出与交付副本消费者、资源过滤反例和 v2／旧 v1 回归（原生发布包消费者节）。[一手／社区] 2026-10-20补发行诊断；接收返工前置实际采集检查、追加SentryUE1.25.0差异，保留旧源码与Factorio／osu证据； 官方契约、固定源码、修复链与不同作者案例支持有条件选择；具体版本、反证和许可见各节，尚无本项目引擎或玩家实测。 2026-10-17补OpenRCT2发行源码／试玩回执与VVVVVV屏外取样修复，不把少处理对象写成已测性能收益。 2026-10-19补NITW语法／本地化链与Yarn声明生成维护反证，历史制作和当前工具能力分开。
 
 # WP10：客户端模块怎样在第二次修改后仍然可靠
 
-证据核实：2026-10-13—15 UTC；动态 UI、模拟输入、本地多人及手柄反馈补核为 2026-10-16 UTC+8，混用边界补核为 2026-10-17 UTC+8；各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。全文未安装付费插件，未开展游戏、引擎、模型、设备或玩家实测；源码与作者数据不等于本项目复现，也不证明本项目性能、体验或 AI 净收益。仓库离线检查、算术核对及特殊验证限制按各节记录区分。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
+证据核实：2026-10-13—15 UTC；动态 UI、模拟输入、本地多人及手柄反馈补核为 2026-10-16 UTC+8，混用边界补核为 2026-10-17 UTC+8；各节保留版本和日期。[一手] 为官方契约／固定源码／作者报告，[社区] 为原帖，[研究] 为推导。原研究未安装付费插件；新加 Godot 原生发布包节单列实际引擎验证，其余旧节不扩大为游戏、引擎、模型、设备或玩家实测；源码与作者数据不等于本项目复现，也不证明本项目性能、体验或 AI 净收益。仓库离线检查、算术核对及特殊验证限制按各节记录区分。建议落点为 [客户端核心模块](../../domains/game-dev/04-client-modules.md)。
 
 **[研究] ✅ 默认复用成熟组件；仅补项目缺少的所有权、迁移和模式切换规则。** 先验场景取消、释放、旧档、暂停与设备峰值，再决定是否加框架；无同任务实测，不作质量／性能排名。
 
@@ -963,6 +963,34 @@ Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/docu
 Unity 6.3 [Build Profiles](https://docs.unity3d.com/6000.3/Documentation/Manual/build-profiles.html)区分 Platforms 的共享设置／场景数据与保存为资产的项目 profile；后者可分别配置场景并进版本控制。[BuildReport](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Build.Reporting.BuildReport.html)提供本次构建结果、大小、耗时和步骤／错误；某些无效输入可在报告生成前失败，存在报告也不代表实际游戏路径通过。UE 5.8 [Packaging](https://dev.epicgames.com/documentation/en-us/unreal-engine/packaging-your-project)分 Build、Cook、Stage、Package，并将 Deploy／Run 列为另外的可选操作；Game Default Map 决定打包后起点，教程的 Development 例不是 Shipping 验收。[一手]
 
 [04 发布模块](../../domains/game-dev/04-client-modules.md#release-delivery-production)据此把旧平台差分、内容裁剪、符号／反馈和 WP9 内容基线接成一次发布候选及新房／语音二改。代码构建、内容集合、存档 schema 分别对应不同兼容性；三种安装路径和回退数据选择为本项目实施建议，不是平台自动保证。上述 2026-10-19／20 的机制与历史生产案例不改日期；未实际构建、分发、迁移玩家数据或证明效率收益。[研究]
+
+<a id="native-release-consumer"></a>
+### 原生发布包消费者：不以 Editor 或数据包代替应用
+
+**改变的做法：把原六步落实到真实导出程序，补“必要内容齐／未发布内容未带出／二改后旧包保持”的接收；不新增发布平台。** 对应 [04 发布段](../../domains/game-dev/04-client-modules.md#native-release-consumer)，复现于 [Godot 应用包实验](../../experiments/godot-export-adoption/README.md)。[研究／实测]
+
+| 方案 | 选择与实核依据 |
+|---|---|
+| 原生 preset＋官方 CLI | **本次采用**。官方编辑器与同版 Linux x86_64 debug／release 模板；导出、交付副本与实际主场景消费者分开，无商店／账号依赖 |
+| 既有 Unity Build Profiles／UE Package | 沿前节入口，不为这次云端实验迁移项目。构建与实际包运行的区别仍成立，未原生复测 Unity／UE |
+| 现成 Firebelley/godot-export | 已有 GitHub Actions 时可沿其固定版本；v8.0.0／MIT，SHA `615a6f7afc22d6266bf55c17748fb07447e8bdab`。源码先 import，再按 preset 选 debug／release 或 pack，导出非零会失败；import 异常会警告后继续，缺 export_path 会跳过该项。应核实际候选和消费者，不能只认 Action 完成。本次未执行 Actions 或安装它 |
+| 只发 PCK／用 Editor 代跑 | 不选作应用验收。官方明确 Export PCK/ZIP 只有项目数据；标准发布模板路径覆盖能力与 Editor 不同，不能暗中换运行器过门 |
+
+Firebelley 借用的是已有 preset／缓存／构建流程，不照搬示例的自动建 release、写权限与旧版下载 URL。依赖版本固定，候选上传另循项目已授权渠道。本次直接 CLI 是窄实验入口，不宣称比成熟 CI 更高效。[固定源码／研究]
+
+**官方文件分类与旧提示冲突时，看实际包。** Godot 的 JSON-as-resource 实现已在 4.0 合入；2026 年 PR #119555 又修正把 `*.json` 列为非资源的旧导出提示。当前 4.7 文档仍有旧举例，因此不能按该例推导 JSON 必须手工 include。本次相同 preset、`all_resources`、空过滤的 release 实际遗漏 `stage_title.txt`、同时包含未引用的合成 `unreleased/bonus_level.json`；它退出 0、能运行回合，却被消费者拒收。只改 include `*.txt` 与 exclude `unreleased/*` 后，源标题进入原 HUD，未发布数据消失。[官方源码／实测]
+
+**真实二改链。** 复用固定官方 demo 原四份脚本及原场景，新增窄项目 autoload：正常启动读标题写原 HUD，显式 `smoke` 参数才走自动回归。v1 debug 与 release 的实际 template 均正常运行，分别报告 debug=true／false；v2 复用原生作者脚本保存变体，把主场景选到变体、标题改为 Night shift、版本改为 1.1.0。新交付副本中 12 帧位移 80→48px，原回合、物理死亡与重开通过；v1 再开仍是 Training shift／1.0.0／80px，原六份脚本／场景及旧 exe／PCK 摘要未变。全部运行都从复制的 exe＋PCK 启动，不带项目 `project.godot`、源目录或开发缓存；不是原生 Editor 读取 pack。[实测]
+
+**验证应在 release 中仍有效。** GDScript `assert` 在非 debug 构建中忽略；本例显式记录失败并返回非零，原始错误输出与完成标记也必须一致。完整入口包含源工程、错误过滤包、两种配置、新版与旧版再开；文件交付／缺数据／过滤另有 4 项纯文件单测（含许可随包）。输出不会在失败后被旧包替代。[官方契约／实测]
+
+**现实反馈。** [Reddit 导出 JSON 的原帖](https://www.reddit.com/r/godot/comments/1u6c8n9/when_did_godot_start_automatically_exporting_json/)（2026-06）要求试玩版只带部分谜题，作者发现空 include 仍导出 JSON；评论指向官方实现与旧提示修正，作者选择命名／排除模式。借内容边界，不把社区建议当适用于所有项目的配方。[社区]
+
+[Godot Forum 导出失败](https://forum.godotengine.org/t/export-issues-unsure-of-source/137265)（2026-04-18，4.5.1）报告在项目目录能运行、移出后部分功能失效；改小写后仍失败，未给完整闭环，不能采纳“Windows 不支持大写／空格”的泛化诊断。[中文 V2EX 已发布游戏帖](https://www.v2ex.com/t/1187822)（2026-01-23）有作品发布与后续更新，也有另一开发者 Linux／Web 导出正常而微信模拟器黑屏的反馈；这支持按最终目标验包，不支持 Linux 通过外推渠道兼容或当前模板修复。[社区：正反反馈]
+
+**范围。** 2026-10-26 真实 Linux x86_64 官方 4.7.2 应用导出、独立目录启动与上述消费者通过；GPU 画面、真实音频输出、平台签名／商店、下载差分、存档升级和其他架构不在本例。发行许可沿原步骤核引擎、第三方组件和素材；本地技术验证不是整套发行授权审查。[实测范围]
+
+来源：官方 [导出](https://docs.godotengine.org/en/4.7/tutorials/export/exporting_projects.html)、[Linux](https://docs.godotengine.org/en/4.7/tutorials/export/exporting_for_linux.html)、[CLI](https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html)、[assert](https://docs.godotengine.org/en/4.7/tutorials/scripting/gdscript/gdscript_basics.html#assert-keyword)、[JSON 实现 #65295](https://github.com/godotengine/godot/pull/65295)、[旧提示修正 #119555](https://github.com/godotengine/godot/pull/119555)，[Firebelley 固定源码](https://github.com/firebelley/godot-export/blob/615a6f7afc22d6266bf55c17748fb07447e8bdab/src/godot.ts)及 README／MIT 许可，社区原帖见上。2026-10-26 定向核实；固定下载摘要与完整复现入口在实验。
 
 ## 发行裁剪：内容完整性与资源规格分开选
 
