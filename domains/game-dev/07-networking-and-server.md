@@ -118,6 +118,29 @@ flowchart LR
 
 依据：[Unity 身份](https://docs.unity.com/en-us/authentication/approaches-to-authentication)、[云档版本](https://docs.unity.com/en-us/cloud-save/concepts/write-locks)与[数据权限](https://docs.unity.com/en-us/cloud-save/concepts/player-data)；[PlayFab 条件写](https://learn.microsoft.com/en-us/rest/api/playfab/data/object/set-objects?view=playfab-rest)及[v2 切换公告](https://developer.microsoft.com/en-us/games/articles/2026/09/update-new-titles-move-to-v2-economy-statistics-and-leaderboards/)；[Nakama 存储](https://heroiclabs.com/docs/nakama/concepts/storage/collections/)与[排行榜](https://heroiclabs.com/docs/nakama/concepts/leaderboards/)；[UGS](https://unity.com/products/gaming-services/pricing)／[PlayFab](https://developer.microsoft.com/en-us/games/products/playfab/pricing/)当前计费口径，2026-10-26 [一手／开源／本仓实跑]。一位 Unity 开发者的[最高分 metadata 不更新经历](https://www.reddit.com/r/Unity3D/comments/1g3ut1p/unable_to_properly_update_builtin_leaderboard/)也说明成绩记录不宜充当可变玩家档案；其客户端保最高分的 workaround 不用于这里的权威结算。固定版本接缝与实际检查范围见 [WP10](../../docs/research/wp10-content.md#player-cloud-progress)。
 
+<a id="online-config-observation"></a>
+### 在线配置与观测：知道这一局用了哪版，再决定是否回滚
+
+**✅ Unity／UGS 项目先接 Remote Config，按实际分析需求接 Analytics；已有 PlayFab 沿 Title Data＋Telemetry。** 自托管 Node 服务器、需要文件／Git 管配置时，🧪 比较 OpenFeature＋GO Feature Flag，再沿现成 Prometheus 观测服务行为。配置和分析可以独立采用，不为调一项参数先搭一套运营平台。
+
+| 需求与已有条件 | 第一条正常链 | 主要成本与适用范围 |
+|---|---|---|
+| Unity 已有服务项目 | 选环境→初始化与身份→拉 RC→验证候选→开局采用；在相应数据政策下用 Analytics 记录实际版本／结果 | RC 与 Analytics 分别配置；分析计费看 MAU、事件与查询，免费 SDK 不等于不限量数据服务 |
+| PlayFab 已有账号／后端 | Title Data 读静态配置→服务端定局规则→Telemetry 记分析事件；需要驱动自动规则才用 PlayStream | Title Data 存在传播缓存，不能当实时共享变量或瞬时全局停止开关；事件按量与大小计费 |
+| 需要自托管公开组件 | GO Feature Flag 取配置→OpenFeature provider 评估→原服务器消费；Prometheus 拉取低基数指标 | 省去自写评估／采集协议，但发布权限、服务可用性和存储运维仍归项目；运维指标不自动变成玩家漏斗／留存分析 |
+
+**把下载、采用和生效分开。** 定义一份带 schema／规则 revision 的完整配置，先核类型、范围、内容兼容，再在开局或其他明确安全点固定。伤害、人数与掉落等共同规则由服务器选择一份，所有玩家消费同一结果；不能让客户端各自分组后直接改变共同世界。远端返回成功但 schema 不兼容也不采用。游戏可继续内置默认或明确保存的 last-known-good，来源要记清，不能让“还在加载”改写进行中的局。
+
+Unity RC 4.2.5／runtime 4.0.4 的接线是：初始化时选环境，登录已有身份，注册结果处理再拉取；`appConfig.assignmentId` 可关联分配，但不是项目的永久规则版本，`configAssignmentHash` 的可复取期限也只有 56 小时。另存自己的 `rulesRevision`。固定 runtime 的 `FetchConfigsAsync` 遇 HTTP／网络错误可能直接抛异常，项目要 `catch` 后走已验证旧快照或默认，不能只等文档中的 Cached 回调。客户端缓存可修改，配置里不放秘密，也不把它当可信奖励来源。
+
+**观测记“实际用上”，不只记“取到了”。** 按局开始／结果、配置来源和规则 revision 设计最小 schema；失败率、调用延迟和采用次数交服务指标，留存／漏斗等行为问题再选分析服务。结束事件携带本局固定版本，而不是上报时最新配置。Unity Analytics 常规批量发送与离线补传意味着 Dashboard 不是即时裁决通道；上线前按对应 Editor／SDK 核采集初始化。Unity 6.2+／Analytics 6.1+ 使用 UnityConsent，已有 Granted 会在 UGS 初始化时启动采集，不能统一假定“初始化后仍未发送”。RC 可独立使用，不为下载配置强开行为分析。
+
+[可运行接入](../../experiments/online-config-observation/README.md)没有另造示意玩法：用 GO Feature Flag 1.57.2＋OpenFeature，复用上文固定 MOBA 的真实 `Simulation`／Detour，只适配已有 `heroesPerTeam` 参数。r1 1v1 已开局后，r2 只让新 canary 局变为 2v2，稳定组和旧局不变；r3 回滚恢复未来局。真实 Prometheus 3.15.1 拉取并查询实际采用版本／来源及 60 tick 模拟片段计数；服务停掉后下一局明确回到内置默认。它验证配置进入原模块的接缝，不是 MOBA 产品已联网运营或完整对局平衡结论。
+
+**二改先明确生效范围。** 追加新字段时让旧构建忽略／拒绝不支持的配置，保原局与存档规则；回滚发布一份新的可识别 revision，使未来局回到已知参数。要立即终止进行中局，单独设计业务出口；切回旧参数不会撤销已发奖励。监控按有限 revision／模式聚合，不把玩家 ID 或每局 UUID 放进指标标签；配置评估次数不是采用人数，有 canary 也不自动证明因果效果。先写成功指标与撤回条件，再决定是否做正式 A/B 试验。
+
+依据：[Unity RC 接入](https://docs.unity.com/en-us/remote-config/code-integration)、[环境](https://docs.unity.com/en-us/remote-config/environments)、[Analytics 初始化](https://docs.unity.com/en-us/analytics/get-started/get-started)／[SDK 行为](https://docs.unity.com/en-us/analytics/sdks-and-apis/sdk-behaviour)；[PlayFab Title Data](https://learn.microsoft.com/en-us/gaming/playfab/live-service-management/game-configuration/titledata/)／[Telemetry](https://learn.microsoft.com/en-us/xbox/playfab/data-analytics/ingest-data/telemetry-overview)；[GO Feature Flag](https://gofeatureflag.org/docs/sdk/server_providers/openfeature_javascript)与[Prometheus 指标](https://prometheus.io/docs/practices/instrumentation/)，2026-10-26 [一手／开源／本仓实跑]。Unity 开发者的[异步错误处理原帖](https://discussions.unity.com/t/unity-remote-config-package-fetchconfigsasync-does-not-actually-handle-response-errors/1703270)与固定包源码相符；版本与实跑范围见 [WP10](../../docs/research/wp10-content.md#online-config-observation)。未运行托管服务／Unity，未发送真实玩家数据；最高水平与生产成本冠军未知。
+
 ## 4. 用已有 MOBA 模拟跑两端输入帧，而不是另写一个假游戏
 
 **🧪 已经有确定性模拟，就先把同一局放进两个独立进程。** [可运行入口](../../experiments/server-lockstep/README.md)直接导入正式 MOBA 固定 `3bcda00f` 的 `Simulation` 和 Detour 数据，不改它的生产代码。一个服务端按席位排帧并裁决，两个 Node 客户端只消费服务端提交的下一帧；同机同版本的三份状态哈希互相核对。它验证这个输入接缝，不把浏览器浮点、认证或互联网体验的问题藏掉。

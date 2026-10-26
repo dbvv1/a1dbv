@@ -1,0 +1,18 @@
+{
+  "name": "a1-online-config-observation",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^22.12.0 || ^24.0.0 || >=26"
+  },
+  "scripts": {
+    "prepare:linux": "node prepare.mjs",
+    "demo": "node run.mjs demo",
+    "test": "node run.mjs test"
+  },
+  "dependencies": {
+    "@openfeature/go-feature-flag-provider": "2.0.0",
+    "@openfeature/server-sdk": "1.23.0",
+    "@prometheus-io/client": "0.16.1"
+  }
+}

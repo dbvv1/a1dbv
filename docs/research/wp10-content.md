@@ -880,3 +880,14 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 [研究] 快照回退和持久奖励是两份状态，强行一起回滚可能抹掉已确认进度，只恢复世界又可能重复奖励；这是项目必须作出的规则选择，不是网络 SDK 自动提供的事务。若全员退出，则另沿正常存档／结束本局政策处理，不能无限期待另一个玩家接管。
 
 **探索回执：** 截至2026-10-24，读取 Unity／Photon／Epic 官方资料、Dagger 作者访谈、Unity Discussions 与 Reddit 作者原帖、公开 GitHub 样例页面；中文社区定向检索未获得可用当前一手原帖。官方样例源码未取得；未据热度／宣传决定质量，未实测延迟、迁移成功率、成本或玩家体验。
+
+<a id="online-config-observation"></a>
+## 在线配置与观测：原模拟的真实采用链（2026-10-26）
+
+[本仓实跑] [最小入口](../../experiments/online-config-observation/README.md)复用原 `server-lockstep/source.mjs` 与正式 MOBA `3bcda00f`，只增加可选人数 1／2、保旧默认和源／依赖／导航检查。GO Feature Flag relay 1.57.2、OpenFeature server SDK 1.23.0／provider 2.0.0 实际远程评估一个 object flag；应用核 schema、v8、人数、revision 后创建原 Simulation。r1 旧局仍 2 英雄，r2 新 canary 4 英雄、稳定组 2 英雄；r3 回滚仅影响新局。每实例 60 tick，1v1 hash `1131636eda1a1a34`、2v2 `50211eb8bd38bb6f`，不是完整对局、平衡或跨设备确定性验证。
+
+[本仓实跑] Prometheus 3.15.1 与官方 JS client 0.16.1 实际 HTTP scrape、PromQL 查询采用与完成片段计数；候选读取不记采用，参数不兼容／缺 key／服务关闭后明示 builtin 默认。所有配置／指标通信只在 loopback，GO Feature Flag OTel/exporter 与 provider 数据收集关闭，Prometheus 无 remote_write；仅合成分组、无真实玩家数据或账号。`prom-client` 当前已迁移到官方 `@prometheus-io/client`，使用现有固定新入口而非新增自造采集器。原服务／Detour生命周期及缺输入也由真实测试覆盖；未验证 TLS、线上部署、玩家分析、告警或 MOBA 可玩客户端接入。
+
+[一手／源码核对] Unity Remote Config 4.2.5 依赖 runtime 4.0.4；官方包 `ConfigManagerImpl.cs` 的 `FetchConfigsAsync` 在 `await SendWebRequest` 遇 `WebRequestExtensions.cs` 抛错时越过后面的缓存分支。正文因此要求项目捕获失败、使用自己确认的快照／默认，而不保证 Cached 回调。属性源码为 `assignmentId`，分配追踪不等于项目规则版本；可复取 `configAssignmentHash` TTL 56 小时。Analytics 6.3.0／Unity 6.2+ 的新同意 API 与旧 StartDataCollection 路线分开，历史 Granted 可在初始化时开采集。均未装引擎或跑托管服务。
+
+选择依据集中见[服务端正文](../../domains/game-dev/07-networking-and-server.md#online-config-observation)；固定 [RC runtime 官方包](https://download.packages.unity.com/com.unity.remote-config-runtime/-/com.unity.remote-config-runtime-4.0.4.tgz)、[开发者错误处理原帖](https://discussions.unity.com/t/unity-remote-config-package-fetchconfigsasync-does-not-actually-handle-response-errors/1703270)、[Analytics 迁移](https://docs.unity.com/en-us/analytics/sdks-and-apis/sdk61-migration-guide)、[GO Feature Flag v1.57.2](https://github.com/thomaspoignant/go-feature-flag/releases/tag/v1.57.2)、[Prometheus client v0.16.1](https://github.com/prometheus/client_js/tree/v0.16.1)。Title Data 缓存传播不保证即时全局生效；遥测分析不承担权威奖励和回滚事务。托管现价按 [UGS](https://unity.com/products/gaming-services/pricing)／[PlayFab](https://developer.microsoft.com/en-us/games/products/playfab/pricing/)采用时核 MAU、事件大小／次数及查询成本，不把本地免费运行泛化为生产零成本。
