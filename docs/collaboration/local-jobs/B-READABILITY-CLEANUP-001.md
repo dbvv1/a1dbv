@@ -37,8 +37,8 @@ result_branch: relay/b-readability-cleanup-001
 
 ## 当前结果
 
-- 已接收：assets/video.md、01-engine-integration.md、02-verification-and-playtesting.md、04-client-modules.md、05-gameplay-architecture.md、06-indie-roadmap.md、游戏目录README.md。05固定正文[417c42d7](https://github.com/dbvv1/a1dbv/commit/417c42d7)、入口页[713a88a8](https://github.com/dbvv1/a1dbv/commit/713a88a8)已独审／检查接收于[b6e7f064](https://github.com/dbvv1/a1dbv/commit/b6e7f064)及其祖先；其余原接收与来源保留Git历史。
-- 执行端正在交接：不再认领任务或开启新页，只收尾已在途assets/2d.md与assets/3d.md。原正文作者已结束，非作者先新后旧审查正在进行，发现缺口只修既有两页；当前写域尚未释放。
-- 下一页为`domains/game-dev/assets/animation.md`，尚未开始；其后audio／materials与unity／unreal模板按上列有限清单。保留原模块线新采用事实，不重做已接收页，不重派已有业务调用。
-- 收尾完成后在此明确释放，由替代接收脚本以adopt从“当前结果”接续；全任务保持running。原发往审计会话的最终接收请求已退役，不再发送，不另建计划或服务。
+- 已接收：assets/video.md、01-engine-integration.md、02-verification-and-playtesting.md、04-client-modules.md、05-gameplay-architecture.md、06-indie-roadmap.md、游戏目录README.md、assets/2d.md、assets/3d.md。05固定正文[417c42d7](https://github.com/dbvv1/a1dbv/commit/417c42d7)、入口页[713a88a8](https://github.com/dbvv1/a1dbv/commit/713a88a8)已独审／检查接收于[b6e7f064](https://github.com/dbvv1/a1dbv/commit/b6e7f064)及其祖先；其余原接收与来源保留Git历史。
+- 在途2D／3D已收尾：固定正文[2c6269e1](https://github.com/dbvv1/a1dbv/commit/2c6269e1)完成非作者先新后旧审查；四项差量独审通过，追加六行原未运行事实已恢复并由宿主非作者逐行核对与快照一致，适用检查通过后按accept:auto接收。作者、独审及恢复调用均已结束，当前写域已释放。
+- 下一页为`domains/game-dev/assets/animation.md`，尚未开始，adopt后先同步最新main并核原模块写者占用；其后audio／materials与unity／unreal模板按上列有限清单。保留原模块线新采用事实，不重做已接收页，不重派已有业务调用。
+- 本端收尾与交接已完成，由替代接收脚本以adopt从“当前结果”接续；全任务保持running。本端不再认领任务、开启新页或派发下一批。原发往审计会话的最终接收请求已退役，不再发送，不另建计划或服务。
 - 本机原通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash；非作者先新后旧核对，检查通过才按accept:auto接收。宿主串行汇总任务回执；CPU／文稿／离线检查不扩大为引擎或人工听看通过。
