@@ -947,3 +947,21 @@ Rust 七组与准备脚本三组通过，无 skip。只在同一进程／同编�
 [一手／源码核对] Unity Remote Config 4.2.5 依赖 runtime 4.0.4；官方包 `ConfigManagerImpl.cs` 的 `FetchConfigsAsync` 在 `await SendWebRequest` 遇 `WebRequestExtensions.cs` 抛错时越过后面的缓存分支。正文因此要求项目捕获失败、使用自己确认的快照／默认，而不保证 Cached 回调。属性源码为 `assignmentId`，分配追踪不等于项目规则版本；可复取 `configAssignmentHash` TTL 56 小时。Analytics 6.3.0／Unity 6.2+ 的新同意 API 与旧 StartDataCollection 路线分开，历史 Granted 可在初始化时开采集。均未装引擎或跑托管服务。
 
 选择依据集中见[服务端正文](../../domains/game-dev/07-networking-and-server.md#online-config-observation)；固定 [RC runtime 官方包](https://download.packages.unity.com/com.unity.remote-config-runtime/-/com.unity.remote-config-runtime-4.0.4.tgz)、[开发者错误处理原帖](https://discussions.unity.com/t/unity-remote-config-package-fetchconfigsasync-does-not-actually-handle-response-errors/1703270)、[Analytics 迁移](https://docs.unity.com/en-us/analytics/sdks-and-apis/sdk61-migration-guide)、[GO Feature Flag v1.57.2](https://github.com/thomaspoignant/go-feature-flag/releases/tag/v1.57.2)、[Prometheus client v0.16.1](https://github.com/prometheus/client_js/tree/v0.16.1)。Title Data 缓存传播不保证即时全局生效；遥测分析不承担权威奖励和回滚事务。托管现价按 [UGS](https://unity.com/products/gaming-services/pricing)／[PlayFab](https://developer.microsoft.com/en-us/games/products/playfab/pricing/)采用时核 MAU、事件大小／次数及查询成本，不把本地免费运行泛化为生产零成本。
+
+
+<a id="unity-localization-version-choice"></a>
+## Unity 本地化版本分流：现成控件减少接线，但不代替可操作界面
+
+**既有 6.3／1.5 保留；已经评估 6.7 Beta 时，才借内置 Runtime 和语言控件。** 本轮重读模块地图后，缺口不是另一份终端译文表，而是开发者会把旧包、新模块与新 UI 示例混用。[04 接入链](../../domains/game-dev/04-client-modules.md#unity-localization-version-choice)补正常作者→绑定→语言选择→持久偏好→显示／导航二改，不再造独立框架。[研究]
+
+**官方新旧职责。** [1.5.13 UI Toolkit 手册](https://docs.unity3d.com/Packages/com.unity.localization@1.5/manual/UIToolkit.html)明确 Unity 6 的原生数据绑定；[Dragon Crashers 说明](https://docs.unity3d.com/6000.0/Documentation/Manual/best-practice-guides/ui-toolkit-for-advanced-unity-developers/localization.html)展示 Settings 选择 locale、UXML 静态绑定和动态选项。样例经官方 Asset Store 提供，本次只核官方说明，未取得／运行整包，不以第三方镜像冒充官方源码。旧 Unity Royale MIT 示例虽可读，但不是当前本地化基准；BagelGame 是官方推荐的完整 UI 项目候选，本轮未运行，不据其 UI 覆盖推导本地化完成。[一手／比较]
+
+[6.7 Beta 手册](https://docs.unity.com/en-us/engine/6000.7/manual/localization)则把 Runtime 放进引擎；Direct references 是正常起点，2.0 包另提供 Addressables 与 CSV／XLIFF 作者工具。[语言菜单示例](https://docs.unity.com/en-us/engine/6000.7/manual/localization/examples/example-language-selection-menu)已有两种控件；[UI 绑定](https://docs.unity.com/en-us/engine/6000.7/manual/localization/translations/localize-ui-toolkit)使用 Unity.Localization；[加载说明](https://docs.unity.com/en-us/engine/6000.7/manual/localization/content-storage-and-loading/synchronous-and-asynchronous-loading)区分可同步的源与 Awaitable 异步读取，事件绑定默认异步。不要把 1.5 的 Addressables handle／等待行为机械套到新模块。[一手]
+
+**固定源码核对，不重分发实现。** UnityCsReference 的 `6000.7.0b6` 为 `a82c9c7b16e154e6c31c367584bed63f74555ba5`：`Modules/LocalizationRuntime/Managed/UI/LanguageDropdown.cs` 与 `LocaleSelectionBridge.cs` 实际筛 enabled locales，随初始化／选择变化刷新，并按 panel attach／detach 订阅；`Settings/StartupLocaleSelectors.cs` 的 PlayerPrefLocaleSelector 读写语言 code。`Settings/LocalizationSettings.cs` 默认 selector 链是命令行后系统语言，并没有自动加入保存偏好。现成控件解决的是绑定和列表，不自动完成项目的偏好优先级。[固定源码]
+
+源码按 [Unity Reference Only License](https://github.com/Unity-Technologies/UnityCsReference/blob/a82c9c7b16e154e6c31c367584bed63f74555ba5/README.md)只作参考，不是 MIT 开源底座；这里不复制／修改／分发它。当前仓库 HEAD 已是 7000.0 alpha，本轮特意固定 6.7 tag，不能拿 HEAD 的功能代替目标版本。官方 [自定义 selector 示例](https://docs.unity.com/en-us/engine/6000.7/manual/localization/examples/example-custom-startup-locale-selector)名称和叙述说 save file，但代码仍用 PlayerPrefs；因此只借接口与优先级，不声称已有真实文件消费者。
+
+**近期使用者的完整结局。** [6.7.b2 原帖](https://discussions.unity.com/t/localization-runtime-module-doesnt-work-in-6-7-b2/1737688)先报告 UI Builder 可预览、Play 中空字符串／locale，原作者 10 月 5 日随后称 b3 恢复文本，另一用户 10 月 12 日称 b4 绑定正常。它支持区分预览与运行，不能写成当前未修缺陷或广泛稳定性结论。[2026 官方 UI 教学帖及用户反馈](https://discussions.unity.com/t/new-video-tutorial-series-on-ui-toolkit-in-unity-6-4/1708498)也反映跨版本教程造成接线困惑；因此保版本分流，不让新例反向污染旧工程。[社区原文]
+
+**范围与下一接收。** 官方手册和上述固定实现已读；未运行 Unity、未验证 2.0 包安装／Yarn 兼容／字体画面与焦点。正常界面接收沿原章看菜单、数量提示、长译文、字体与返回导航，不能拿类型或字符串断言代替画面。Godot 官方 translation／BiDi demo 仅是后续真实显示消费者候选，尚未采用；不因为另一个引擎易跑就改变 Unity 优先。核实 2026-10-26，原节的版本与核实日保留。

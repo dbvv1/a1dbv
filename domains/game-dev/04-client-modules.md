@@ -1428,6 +1428,27 @@ await runner.StartDialogue("hangar_02");
 
 原生 `VoiceOverPresenter` 已支持 `AudioClip` 和 `IAssetProvider.TryGetAsset` 两条资产解析路径，不需额外写一个未接入播放的解析片段。没有 clip 时该组件会记错误日志；`endLineWhenVoiceoverComplete=false` 保持当前行，字幕和 Space 推进仍由 `LinePresenter`／`LineAdvancer` 完成。落地时实际检查缺配音的 030／040／060 行：字幕可读、姓名头像正确、没有别语言音频、可以手动推进。缺文本会显示 Provider 的 `!! Error: Missing localisation ...`，先补文本再交付；本轮只核源码与接线蓝图，未跑场景。
 
+<a id="unity-localization-version-choice"></a>
+#### Unity 语言菜单：保现有 1.5，6.7 Beta 才接内置新路线
+
+**✅ 已有 Unity 6.3＋Localization 1.5.13 保上面的表、绑定与 Yarn 接线；👀 已经评估 6.7 Beta 的项目，再试内置 Localization Runtime。** 不为省一个语言下拉框升级引擎。两条路线都能让作者改译文、运行菜单随语言刷新，但新模块不是把旧包版本号改成 2.0：命名空间、表和加载接口已有变化，第三方 Provider 的兼容性须单独验证。
+
+| 你正在做的项目 | 正常接入起点 | 不要混用 |
+|---|---|---|
+| 已有 6.3／1.5.13 | 原 String／Asset Table＋`UnityEngine.Localization`；UI Builder 给 text 绑定 LocalizedString，动态字段沿现成 SetBinding／StringChanged。完整界面可参照官方 Dragon Crashers 的 Settings 语言选择与动态选项 | 保已核 Yarn 3.2.8 接线；不据新模块同名类型声称 Provider 已兼容 |
+| 已在 6.7 Beta 评估新模块 | Project Settings → Localization 创建设置、添加 enabled locales；建 Resource Table Collection，在 Resource Tables 为 key 填各语言值；UI Builder 绑定 LocalizedString。内置类型在 `Unity.Localization` | 这是内置 Runtime 的版本分流，不是在旧工程里复制新 UXML 后补几个 using |
+| 6.7 只需随包的文本／资产 | 先用 Direct references；确需 Addressables 或 CSV／XLIFF 导入导出，再按该版本官方文档接 2.0 包 | 内置不等于所有作者导入工具都不需包；不要为小菜单先搭远程内容系统 |
+
+**先用现成语言控件，再接项目的保存政策。** 6.7 UI Builder 的 `LanguageDropdown`／`LanguageRadioButtonGroup`（`Unity.Localization.UI`）会列出 enabled locales、写入 SelectedLocale，并跟随其他界面的语言变化。沿官方语言菜单示例放进现有面板即可，不另写“遍历语言→回调→刷新所有标签”的框架。原菜单外观和焦点顺序仍由项目配置；控件存在不证明长译文能放下。
+
+想让下次启动保留选择，在 startup selectors 中把 `PlayerPrefLocaleSelector` 放在 System Locale Selector 前；若项目保留命令行测试覆盖，明确它与保存偏好的优先级。没有可用保存选择才交给下一 selector；不是每次启动先强设系统语言再改回来。偏好来自异步存档时，先加载偏好，再按官方 defer initialization／`InitializeAsync` 接入。不要将文档中名为 SaveFileLocaleSelector 的示例误认成已实现文件存储：其当前代码仍调用 PlayerPrefs，真正存档适配归项目。
+
+**一次正常接收要看见并能操作。** 作者改一个菜单条目与带数量参数的提示，运行时从入口切语言，确认绑定取到新值、字体和断行可读、当前焦点仍可到达返回按钮；退出再开验证偏好。二改加长译文／放大字号后，先调整现有布局的换行、伸缩或滚动，不逐语言硬编码坐标；再加一种 locale，检查菜单自动出现新项且旧语言和当前游戏状态未丢。UI Builder 预览、Play 和目标包分别接收，字体／RTL／编辑的既有验收继续适用。
+
+AI 可沿锁定版本的官方示例接表、控件和绑定，列出需要重排的界面；人决定语言质量、字号和溢出时保留什么信息。让 AI 同时给旧／新两套 namespace 的“兼容代码”，或只验译文值而没有实际界面，均不算完成。
+
+来源与范围：[官方手册、固定 6.7.0b6 实现和完整社区回复](../../docs/research/wp10-content.md#unity-localization-version-choice)，2026-10-26；本节是源码核对后的接入研究，未运行 Unity／迁移旧项目。6.7 仍为 Beta，不替代上述稳定工程默认。
+
 #### 切语言：菜单、数量提示与当前句
 
 **菜单和数量提示立即刷新；对白默认在下一句边界生效，当前句保留进度。** 语言是显示偏好，不是重跑剧情。
