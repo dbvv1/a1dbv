@@ -1029,7 +1029,9 @@ Unity 用 `ProfilerMarker`（`static readonly`，`Begin()`／`End()` 或 `Auto()
 | 超出既定寿命的托管活对象仍被引用 | 清静态／事件／闭包持有者 | 每轮对象 diff 持平 | 不要用定期全量卸载掩盖所有者错误 |
 | GPU-bound 且负载波动 | 有上下限的 DRS／固定低档 | 帧间隔改善且可读性达标 | 稳定负载、CPU-bound 或已到可辨下限时不选 DRS |
 
-**✅ 阴影带纹先查受光模型，再决定增加阴影预算。** 固定相机、几何、主光与曝光，先分清缺面、亮面自阴影和背光面的明暗噪声；缺面先走[绕序与法线检查](assets/3d.md#减面uvlod与碰撞借成熟工具做小处理)。暗部提亮可能只是掩盖伪影，全关投影又会失去接地感。让 AI 只改一个可解释的变量，保留旧画面，比较主车／角色、通路和危险提示，而不是只盯一块干净的背景。
+**✅ 黑线与条纹先查几何和受光模型，再决定增加阴影预算。** 固定相机、主光与曝光，先分清缺面、外露底面、亮面自阴影和背光面的明暗噪声；缺面先走[绕序与法线检查](assets/3d.md#减面uvlod与碰撞借成熟工具做小处理)。暗部提亮可能只是掩盖伪影，全关投影又会失去接地感。让 AI 只改一个可解释的变量，保留旧画面，比较主车／角色、通路和危险提示，而不是只盯一块干净的背景。
+
+**连续表面出现黑檐，先核交界环与内部封口。** Star-Rush 原雪帽是独立闭合锥体，雪线处山体局部 x／z 半宽为 21／18，雪帽为 25／22，外露向下底面形成黑檐。实现从 `scenery.js::mountainLower`／`mountainSnow` 开始：切分同一侧面，让交界顶点逐点一致，保留侧面法线与共同变换，不生成内部封口；测试核坐标、朝向与多余水平面，再同灯同相机复看。两处海岸实图的黑檐随几何修正消失；真实屋檐或分离部件仍保留需要的底面。
 
 Star-Rush 的 Three r186 Toon 渐变 `[95,145,195,245]` 在负 `N·L` 仍给直射亮度，阴影采样会调制这部分亮度。把渐变前两档临时置零后，树背颗粒消退，但明暗交界过硬；改用原生 `MeshLambertMaterial` 的 `max(N·L,0)` 连续受光，才保住较自然的过渡。已采用的公路候选配合环境补光 0.7，保主光、1024 阴影图与默认背面投影；此前单加到 2048 只让影边更硬，主要条纹仍在，不值得为此增加四倍阴影像素。四倍是阴影图面积，不是整帧耗时。
 
@@ -1044,7 +1046,7 @@ const rendering = initializeRendering(canvas, options);
 
 需要刻意包裹光或卡通分阶时保留 Toon，不把 Lambert 当通用风格升级；错误绕序、亮面自阴影和投影偏移仍各自修。该案例三处固定视角与正常起步／短转向／制动支持的是降噪和层次改善，硬件帧率仍按本节预算路径量。当前车尾偏暗、树云塑料感等差距留在作品的 [quality](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/quality.md)，不靠更大阴影图替代材质与构图。
 
-来源：[已采用案例与实现](https://github.com/dbvv1/Star-Rush-Reborn/commit/ecbb4843923b2fe12f994dd9862042c60d40fe5c)（`build.mjs` → `render-init.js` → `render-three.js`）；[Three r186 渐变采样](https://github.com/mrdoob/three.js/blob/r186/src/renderers/shaders/ShaderChunk/gradientmap_pars_fragment.glsl.js)、[Lambert 直射项](https://github.com/mrdoob/three.js/blob/r186/src/renderers/shaders/ShaderChunk/lights_lambert_pars_fragment.glsl.js)。源码与软件 WebGL 实测 2026-10-26；Unity／UE 选目标管线对应受光材质，不能照搬本例强度值。
+来源：[已采用受光实现](https://github.com/dbvv1/Star-Rush-Reborn/commit/ecbb4843923b2fe12f994dd9862042c60d40fe5c)（`build.mjs` → `render-init.js` → `render-three.js`）；[雪线几何与回归](https://github.com/dbvv1/Star-Rush-Reborn/commit/c4c7d658f57f5afe9e26ccf0e47dfb4aa307b9b8)（`scenery.js`、`tests/landscape-snow.test.mjs`）；[Three r186 渐变采样](https://github.com/mrdoob/three.js/blob/r186/src/renderers/shaders/ShaderChunk/gradientmap_pars_fragment.glsl.js)、[Lambert 直射项](https://github.com/mrdoob/three.js/blob/r186/src/renderers/shaders/ShaderChunk/lights_lambert_pars_fragment.glsl.js)。源码与软件 WebGL 实测 2026-10-26；Unity／UE 选目标管线对应受光材质，不能照搬本例强度值。
 
 **发布构建复核不能用开发构建的自定义标记冒充。** Unity 的自定义 `ProfilerMarker.Begin/End` 在非 Development 的 Release 构建被移除；`Auto()` 调用本身保留但不产生采样，并有少量开销；改用 `FrameTimingManager`（Release 需开 Frame Timing Stats；结果延迟四帧，Linux OpenGL／WebGL 无 GPU 时间，Metal 上 GPU 时间可能大于整帧）或 `ProfilerRecorder` 的内置计数器（可用于 Release Player，附着期间才测量，需 `Dispose`）。UE 的 Insights／`stat` 的可用性按构建配置与目标版本核；Shipping 是否保留 tracing 要按 `UE_TRACE_ENABLED`、断言与项目源码确认，不假设可用，发布包用已有计数器或平台工具。两侧都记录构建类型，不把 Development 的数当 Release 收益。同条件比较帧间隔分布（p50／p95／p99／最长帧次数）、加载到首可见／可操作、稳态与峰值内存、目标设备可读性与输入反馈；平均 FPS 或单张截图不算。AI 可以给数值与差量，最终可感知品质、最低设备体验和是否保留由人判断。
 
