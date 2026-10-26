@@ -1207,11 +1207,48 @@ Tytarenko 2026-09 Unity 制作复盘报告二改旧图残留、胜线覆盖不�
 
 实施顺序：先写作者源与待译表，再导出到原生表并接运行绑定，最后接显示、推进、切语言和二改队列；不要先做自建平台。
 
+**正常接收先看玩家能否读懂并操作。** 菜单按当前语言显示；HUD 显示“还需要 2 支箭（已有 1/3）”；对白显示说话人和字幕，有语音就播，没有就按字幕阅读；第一次按键补全文字，第二次推进；设置里切语言后，菜单和数量提示立即更新，对白按本节后面的切语言策略处理。不要求双语并排。
+
+项目已用 ink 或 Yarn 就保留现有栈；下面的 Yarn 接线只示范 lineID 与语音表如何被真实消费者找到，不要求迁后端。语音制作、响度与许可沿用 [assets/audio](assets/audio.md)／WP6；对白触发的玩法事实与命令沿 [05](05-gameplay-architecture.md)，本节不改这些模块。AI 可整理语境、产候选译文、查参数与占位符一致性并写最小绑定；人审意思、口吻、文化语境与读听，格式检查不代译义验收。
+
+#### 云端采用：先把作者源、译文和说话人交给真实消费者
+
+**已有 Yarn Project 先用官方 Export Strings and Metadata／Update Existing Strings Files；已有 Unity Localization 集合保原导入。** 官方 CSV 已有行 ID、上下文和变化检查，原文修改会标 `NEEDS UPDATE`，不必先建自己的翻译平台。人物／语境在外部数据里改变时，项目仍要补上对应审校影响。
+
+[可运行作者到消费者链](../../experiments/yarn-localization-production/README.md)使用官方 YarnSpinner.Compiler／YarnSpinner 3.2.2：`CompilationJob → Compiler.Compile` 取得真实行表与程序，`Dialogue.SetProgram/SetNode/Continue` 派发真实 `line.ID` 和替换值，原生 `LineParser.ExpandSubstitutions` 填译文；同一行再按导出的 sidecar 接人物显示名。云端已跑中文／英文六句，不是遍历表假装执行；无需启动 Unity 就能先发现丢 ID、漏参数与人物绑定断裂。
+
+**二改只送有影响的行复审，再让运行消费者读新值。** 实验把 020 的零件改保险丝，040 的句子不变但改说话人，050 只改语境，另增 070；待审恰为这四行，010／030／060 继续有效。旧译表先被拒，第二版固定译表进真实 VM 后输出 `We need 2 fuses to open the hatch.`，040 显示 `Navigator: Too late.`。这比“两个 JSON 格式正确”多验证了实际身份、变量与人物消费者。
+
+实验 JSON／作者快照签名只用于这个预检，**不是可直接导入 Unity 的表，也不是语言质量评分**。译文 fixture 的签名是合成约定；不能让 AI 自动重算签名就宣称审过。正式项目仍用原生导入器进入下文 Runner／Provider／Presenter；行外剧情、变量语义、字体、字幕布局、语音与推进另验，不能拿终端行替代。这里运行的是核心 NuGet 3.2.2，下面 Unity 插件 3.2.8 的接线仍是固定源码研究。
+
+来源与范围：[实际调用点、二改与社区对照](../../docs/research/wp10-content.md#yarn-compiler-vm-localization)，官方／固定源码／云端 Compiler＋VM 为[一手]，审校选择为[研究]；2026-10-26。未运行 Unity 表导入、字幕或语音。
+
+<a id="unity-localization-version-choice"></a>
+#### Unity 语言菜单：保现有 1.5，6.7 Beta 才接内置新路线
+
+**✅ 已有 Unity 6.3＋Localization 1.5.13 保原表、绑定与 Yarn 接线；👀 已经评估 6.7 Beta 的项目，再试内置 Localization Runtime。** 不为省一个语言下拉框升级引擎。两条路线都能让作者改译文、运行菜单随语言刷新，但新模块不是把旧包版本号改成 2.0：命名空间、表和加载接口已有变化，第三方 Provider 的兼容性须单独验证。
+
+| 你正在做的项目 | 正常接入起点 | 不要混用 |
+|---|---|---|
+| 已有 6.3／1.5.13 | 原 String／Asset Table＋`UnityEngine.Localization`；UI Builder 给 text 绑定 LocalizedString，动态字段沿现成 SetBinding／StringChanged。完整界面可参照官方 Dragon Crashers 的 Settings 语言选择与动态选项 | 保已核 Yarn 3.2.8 接线；不据新模块同名类型声称 Provider 已兼容 |
+| 已在 6.7 Beta 评估新模块 | Project Settings → Localization 创建设置、添加 enabled locales；建 Resource Table Collection，在 Resource Tables 为 key 填各语言值；UI Builder 绑定 LocalizedString。内置类型在 `Unity.Localization` | 这是内置 Runtime 的版本分流，不是在旧工程里复制新 UXML 后补几个 using |
+| 6.7 只需随包的文本／资产 | 先用 Direct references；确需 Addressables 或 CSV／XLIFF 导入导出，再按该版本官方文档接 2.0 包 | 内置不等于所有作者导入工具都不需包；不要为小菜单先搭远程内容系统 |
+
+**先用现成语言控件，再接项目的保存政策。** 6.7 UI Builder 的 `LanguageDropdown`／`LanguageRadioButtonGroup`（`Unity.Localization.UI`）会列出 enabled locales、写入 SelectedLocale，并跟随其他界面的语言变化。沿官方语言菜单示例放进现有面板即可，不另写“遍历语言→回调→刷新所有标签”的框架。原菜单外观和焦点顺序仍由项目配置；控件存在不证明长译文能放下。
+
+想让下次启动保留选择，在 startup selectors 中把 `PlayerPrefLocaleSelector` 放在 System Locale Selector 前；若项目保留命令行测试覆盖，明确它与保存偏好的优先级。没有可用保存选择才交给下一 selector；不是每次启动先强设系统语言再改回来。偏好来自异步存档时，先加载偏好，再按官方 defer initialization／`InitializeAsync` 接入。不要将文档中名为 SaveFileLocaleSelector 的示例误认成已实现文件存储：其当前代码仍调用 PlayerPrefs，真正存档适配归项目。
+
+**一次正常接收要看见并能操作。** 作者改一个菜单条目与带数量参数的提示，运行时从入口切语言，确认绑定取到新值、字体和断行可读、当前焦点仍可到达返回按钮；退出再开验证偏好。二改加长译文／放大字号后，先调整现有布局的换行、伸缩或滚动，不逐语言硬编码坐标；再加一种 locale，检查菜单自动出现新项且旧语言和当前游戏状态未丢。UI Builder 预览、Play 和目标包分别接收，字体／RTL／编辑的既有验收继续适用。
+
+AI 可沿锁定版本的官方示例接表、控件和绑定，列出需要重排的界面；人决定语言质量、字号和溢出时保留什么信息。让 AI 同时给旧／新两套 namespace 的“兼容代码”，或只验译文值而没有实际界面，均不算完成。
+
+来源与范围：[官方手册、固定 6.7.0b6 实现和完整社区回复](../../docs/research/wp10-content.md#unity-localization-version-choice)，2026-10-26；本节是源码核对后的接入研究，未运行 Unity／迁移旧项目。6.7 仍为 Beta，不替代上述稳定工程默认。
+
 #### 首版：少量菜单、数量提示和两位说话人
 
 **先做 2 个菜单键、2 个数量提示状态、2 位说话人的 6 句对白，其中 3 句有配音、3 句只有字幕。** 这是完整链路的最小切片，不把“表能导入”当验收。
 
-作者源只写一遍，翻译输入按身份对齐。首版语言对用 `zh-Hans` 原文和 `en` 译文；加第三种语言只加 locale 列和对应资产，不改 key／lineID。
+**按需展开示例。** 以下 YAML、sidecar 和组件说明作者字段与运行绑定怎样接上，不替代前面的官方导出／更新入口。作者源只写一遍，翻译输入按身份对齐。首版语言对用 `zh-Hans` 原文和 `en` 译文；加第三种语言只加 locale 列和对应资产，不改 key／lineID。
 
 ```yaml
 # content/ui.yaml — 作者源；导出的 String Table 是产物
@@ -1348,7 +1385,7 @@ public class SpeakerPresenter : DialoguePresenterBase
 }
 ```
 
-启动对白前导出上述六行映射，给 `speakers` 填 `navigator`／`mechanic` 的头像和颜色，在 UI 表补齐 `character.navigator.name` 与 `character.mechanic.name` 的两语言显示名，并接上姓名／头像控件；`Awake` 先建索引再进入 Runner。此组件展示项目接线，不是本轮已编译的游戏样例；新增行也须进入映射。选择同步取名的首版先预载 UI 表，WebGL 改用上表的异步读取路径。
+启动对白前导出上述六行映射，给 `speakers` 填 `navigator`／`mechanic` 的头像和颜色，在 UI 表补齐 `character.navigator.name` 与 `character.mechanic.name` 的两语言显示名，并接上姓名／头像控件；`Awake` 先建索引再进入 Runner。此组件展示项目接线，不是本轮已编译的游戏样例；新增行也须进入映射。选择同步取名的首版先预载 UI 表，WebGL 改用下文“原生表与绑定”的异步读取路径。
 
 LinePresenter 配 `characterNameText = null`、`showCharacterNameInLine = false`，只用 `TextWithoutCharacterName` 显示字幕，避免与 sidecar 名重复；`line.CharacterName` 不是稳定 speaker ID。
 
@@ -1374,22 +1411,6 @@ LinePresenter 配 `characterNameText = null`、`showCharacterNameInLine = false`
 译文 `text` 只写句子；base 语言列由 Yarn 管理，可能带 `Navigator:` 前缀，LinePresenter 用 `TextWithoutCharacterName` 去掉；speaker 由 sidecar 提供，不要求译者复制说话人名，也不把 `line.CharacterName` 当 speaker ID。待译表每行至少 `id`、`locale`、`text`、`status`、`source_hash`、`context_hash`、`voice_take`；运行表不需要后三列，审校视图需要。作者源、待译表和运行表都保留 `{need}` 等命名占位符；Unity 侧把同名字典（或带同名字段的对象）作为 `Arguments` 的元素，由 Smart Format 的 Dictionary／Reflection source 解析；若改用位置参数，导出时映射为 `{0}`／`{1}`／`{2}`，表与绑定必须一致。表中的 `approved` 是流程状态示例，不是本轮语言审校结论；本轮未做译义审校。
 
 `need` 是整数，英文用 `plural` 选 `arrow/arrows`；中文源没有复数，译文却能按目标语言规则变化。`need=0` 时由代码选 `ui.hud.arrows_ready`，不把“是否已完成”塞进译文的 `choose`；玩法条件留在代码，语法变化留在表里。数值按 locale 格式化，数字和量词保持邻近，不用字符串拼接把数值塞进译文。`need`、`have`、`target` 在同一句里按“还差／已有／目标”的顺序出现，玩家不必从两段文字自己算；数值格式随 locale，量词由译文决定。Unity 侧把 `ui.hud.arrows_needed` 标为 Smart String 并用命名参数；UE 侧同一句用 `FText::Format` 的 `{need}|plural(one=more arrow,other=more arrows)`，参数仍是整数；UE 括号内用逗号分隔，Unity Smart String 的复数形态用 `|` 分隔，两种语法不能互套。
-
-按这个设计，玩家应看到一条正常链：菜单按当前语言显示；HUD 显示“还需要 2 支箭（已有 1/3）”；对白显示说话人和字幕，有语音就播，没有就按字幕阅读；第一次按键补全文字，第二次推进；设置里切语言后，菜单和数量提示立即更新，对白按下一节策略处理。不要求双语并排。
-
-项目已用 ink 或 Yarn 就保留现有栈；下面的 Yarn 接线只示范 lineID 与语音表如何被真实消费者找到，不要求迁后端。语音制作、响度与许可沿用 [assets/audio](assets/audio.md)／WP6；对白触发的玩法事实与命令沿 [05](05-gameplay-architecture.md)，本节不改这些模块。AI 可整理语境、产候选译文、查参数与占位符一致性并写最小绑定；人审意思、口吻、文化语境与读听，格式检查不代译义验收。
-
-#### 云端采用：先把作者源、译文和说话人交给真实消费者
-
-**已有 Yarn Project 先用官方 Export Strings and Metadata／Update Existing Strings Files；已有 Unity Localization 集合保原导入。** 官方 CSV 已有行 ID、上下文和变化检查，原文修改会标 `NEEDS UPDATE`，不必先建自己的翻译平台。人物／语境在外部数据里改变时，项目仍要补上对应审校影响。
-
-[可运行作者到消费者链](../../experiments/yarn-localization-production/README.md)使用官方 YarnSpinner.Compiler／YarnSpinner 3.2.2：`CompilationJob → Compiler.Compile` 取得真实行表与程序，`Dialogue.SetProgram/SetNode/Continue` 派发真实 `line.ID` 和替换值，原生 `LineParser.ExpandSubstitutions` 填译文；同一行再按导出的 sidecar 接人物显示名。云端已跑中文／英文六句，不是遍历表假装执行；无需启动 Unity 就能先发现丢 ID、漏参数与人物绑定断裂。
-
-**二改只送有影响的行复审，再让运行消费者读新值。** 实验把 020 的零件改保险丝，040 的句子不变但改说话人，050 只改语境，另增 070；待审恰为这四行，010／030／060 继续有效。旧译表先被拒，第二版固定译表进真实 VM 后输出 `We need 2 fuses to open the hatch.`，040 显示 `Navigator: Too late.`。这比“两个 JSON 格式正确”多验证了实际身份、变量与人物消费者。
-
-实验 JSON／作者快照签名只用于这个预检，**不是可直接导入 Unity 的表，也不是语言质量评分**。译文 fixture 的签名是合成约定；不能让 AI 自动重算签名就宣称审过。正式项目仍用原生导入器进入下文 Runner／Provider／Presenter；行外剧情、变量语义、字体、字幕布局、语音与推进另验，不能拿终端行替代。这里运行的是核心 NuGet 3.2.2，下面 Unity 插件 3.2.8 的接线仍是固定源码研究。
-
-来源与范围：[实际调用点、二改与社区对照](../../docs/research/wp10-content.md#yarn-compiler-vm-localization)，官方／固定源码／云端 Compiler＋VM 为[一手]，审校选择为[研究]；2026-10-26。未运行 Unity 表导入、字幕或语音。
 
 #### 原生表与绑定：条目身份和真实消费者
 
@@ -1438,27 +1459,6 @@ await runner.StartDialogue("hangar_02");
 **缺语音与 locale／fallback。** 首版保留上述原生 `UnityLocalisedLineProvider`＋`VoiceOverPresenter`，不另接自定义 Provider。它的文本和资产查询都固定传 `FallbackBehavior.UseFallback`，因此在 Locale 配置中清空 `zh-Hans`、`en` 两边的 Fallback Locale 列表；启动时用各 Locale 的 `GetFallbacks()` 确认都没有其他语言。补齐两语言的 UI／Dialogue 文本表，DialogueAssets 只填本语言实际存在的 clip，缺配音条目留空。这样 en 缺 clip 时不会回退到中文音频，zh-Hans 也不会借用英文语音。
 
 原生 `VoiceOverPresenter` 已支持 `AudioClip` 和 `IAssetProvider.TryGetAsset` 两条资产解析路径，不需额外写一个未接入播放的解析片段。没有 clip 时该组件会记错误日志；`endLineWhenVoiceoverComplete=false` 保持当前行，字幕和 Space 推进仍由 `LinePresenter`／`LineAdvancer` 完成。落地时实际检查缺配音的 030／040／060 行：字幕可读、姓名头像正确、没有别语言音频、可以手动推进。缺文本会显示 Provider 的 `!! Error: Missing localisation ...`，先补文本再交付；本轮只核源码与接线蓝图，未跑场景。
-
-<a id="unity-localization-version-choice"></a>
-#### Unity 语言菜单：保现有 1.5，6.7 Beta 才接内置新路线
-
-**✅ 已有 Unity 6.3＋Localization 1.5.13 保上面的表、绑定与 Yarn 接线；👀 已经评估 6.7 Beta 的项目，再试内置 Localization Runtime。** 不为省一个语言下拉框升级引擎。两条路线都能让作者改译文、运行菜单随语言刷新，但新模块不是把旧包版本号改成 2.0：命名空间、表和加载接口已有变化，第三方 Provider 的兼容性须单独验证。
-
-| 你正在做的项目 | 正常接入起点 | 不要混用 |
-|---|---|---|
-| 已有 6.3／1.5.13 | 原 String／Asset Table＋`UnityEngine.Localization`；UI Builder 给 text 绑定 LocalizedString，动态字段沿现成 SetBinding／StringChanged。完整界面可参照官方 Dragon Crashers 的 Settings 语言选择与动态选项 | 保已核 Yarn 3.2.8 接线；不据新模块同名类型声称 Provider 已兼容 |
-| 已在 6.7 Beta 评估新模块 | Project Settings → Localization 创建设置、添加 enabled locales；建 Resource Table Collection，在 Resource Tables 为 key 填各语言值；UI Builder 绑定 LocalizedString。内置类型在 `Unity.Localization` | 这是内置 Runtime 的版本分流，不是在旧工程里复制新 UXML 后补几个 using |
-| 6.7 只需随包的文本／资产 | 先用 Direct references；确需 Addressables 或 CSV／XLIFF 导入导出，再按该版本官方文档接 2.0 包 | 内置不等于所有作者导入工具都不需包；不要为小菜单先搭远程内容系统 |
-
-**先用现成语言控件，再接项目的保存政策。** 6.7 UI Builder 的 `LanguageDropdown`／`LanguageRadioButtonGroup`（`Unity.Localization.UI`）会列出 enabled locales、写入 SelectedLocale，并跟随其他界面的语言变化。沿官方语言菜单示例放进现有面板即可，不另写“遍历语言→回调→刷新所有标签”的框架。原菜单外观和焦点顺序仍由项目配置；控件存在不证明长译文能放下。
-
-想让下次启动保留选择，在 startup selectors 中把 `PlayerPrefLocaleSelector` 放在 System Locale Selector 前；若项目保留命令行测试覆盖，明确它与保存偏好的优先级。没有可用保存选择才交给下一 selector；不是每次启动先强设系统语言再改回来。偏好来自异步存档时，先加载偏好，再按官方 defer initialization／`InitializeAsync` 接入。不要将文档中名为 SaveFileLocaleSelector 的示例误认成已实现文件存储：其当前代码仍调用 PlayerPrefs，真正存档适配归项目。
-
-**一次正常接收要看见并能操作。** 作者改一个菜单条目与带数量参数的提示，运行时从入口切语言，确认绑定取到新值、字体和断行可读、当前焦点仍可到达返回按钮；退出再开验证偏好。二改加长译文／放大字号后，先调整现有布局的换行、伸缩或滚动，不逐语言硬编码坐标；再加一种 locale，检查菜单自动出现新项且旧语言和当前游戏状态未丢。UI Builder 预览、Play 和目标包分别接收，字体／RTL／编辑的既有验收继续适用。
-
-AI 可沿锁定版本的官方示例接表、控件和绑定，列出需要重排的界面；人决定语言质量、字号和溢出时保留什么信息。让 AI 同时给旧／新两套 namespace 的“兼容代码”，或只验译文值而没有实际界面，均不算完成。
-
-来源与范围：[官方手册、固定 6.7.0b6 实现和完整社区回复](../../docs/research/wp10-content.md#unity-localization-version-choice)，2026-10-26；本节是源码核对后的接入研究，未运行 Unity／迁移旧项目。6.7 仍为 Beta，不替代上述稳定工程默认。
 
 #### 切语言：菜单、数量提示与当前句
 
