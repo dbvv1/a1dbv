@@ -67,6 +67,34 @@ flowchart LR
 
 依据：上一节官方接口和 GGRS 文档／开源实现，2026-10-26 [一手／开源]；未在本项目安装这些网络 SDK。不要为引用的包版本强行升级已有项目。
 
+<a id="managed-room-chain"></a>
+### 房间、匹配与重连：先用现成服务接完一局
+
+**✅ 已有 Unity NGO 就沿 MPS 会话；已有 Node 玩法、只缺房间链时，🧪 先试 Colyseus 自托管。** 需要账号、存档、好友与排行一起落地，再比较 Nakama。三者省的是不同工作，不因“都有匹配”就把稳定游戏搬到另一运行时。
+
+| 已有条件／需求 | 接入起点 | 主要新增成本 |
+|---|---|---|
+| Unity NGO＋服务项目 | MPS 初始化与玩家认证→创建／加入 session→网络与玩法 ready | 服务项目和配置、用量与平台政策；匿名登录仍需服务初始化。创建时选 `WithRelayNetwork()` 会自动开网络，先大厅后开局则延后启动，不另调第二套启动器 |
+| Node 玩法＋小队实时房间 | Colyseus `Room` 管权威状态，SDK `create`／`joinById`／`joinOrCreate`，用原生 Schema 同步 | 自托管进程、TLS、监控和生命周期；只做单进程房间可先不用 DB，持久化与跨进程扩容另接 |
+| 还要账号／云存档／社交／排行 | Nakama 后端＋authoritative match handler | PostgreSQL 协议兼容数据库、迁移和运维；其 TypeScript 是沙箱 VM，不是 Node，不能直接搬依赖 `fs`／`crypto` 的模拟。Relay 只转发，不替你校验玩法 |
+
+**先跑“建房→好友加入→全员准备→开局→恢复或结束→清理”，再加复杂匹配。** [Colyseus 可运行链](../../experiments/colyseus-room-chain/README.md)锁定官方 core `0.18.23`、SDK `0.18.6`，真实服务与独立客户端经 WebSocket 通信。匿名合成玩家共同完成三次激活，只演示权威会话接缝，不另造游戏模拟或接入生产账号。在该目录 `npm ci` 后 `npm run demo -- normal`，即可看到少一人 ready 不开始、双方共同结束和空房销毁；`restart` 演示新进程回原局，`timeout` 明确过期结束，`trio` 将需求改为三人齐备而保双人房不变。
+
+| 阶段 | 应用自己决定什么 | 交给现成框架什么 |
+|---|---|---|
+| 找房／加入 | 好友房明确 room ID；规则版本与模式服务端验证，只有声明的 `filterBy` 字段参与对应匹配 | 房间实例、座位预留、连接与 state 编解码；`joinOrCreate` 找不到会新建，不能拿它替代回原局 |
+| 准备／开局 | 所有人已载入并 ready 后服务器切阶段，显式 `lock()` 拒绝新人；只在合法阶段收玩法命令 | `maxClients` 的满员自动锁与空位自动释放；它不是玩法 ready |
+| 短暂掉线 | `onDrop` 标离线并保玩家，本例暂停操作；在有界窗口调用 `allowReconnection` | 自动重试或 token 续接预留席位；`onReconnect` 与最终 `onLeave` 分开 |
+| 恢复／结束 | 各客户端收到自己的新 state 后才恢复输入；超时／主动离开按规则结束；完成结果由权威状态确认 | 回传当前状态、最终离开与空房 `onDispose`，而非替应用决定奖励／持久化 |
+
+**恢复连接后先等新状态，再允许操作。** 本次固定 SDK 的 `onReconnect` 早于新 token 写入及后续全量 state；不要同步存旧 token，或只看一个玩家恢复就替另一端开放输入。自动重试保原 Room，进程重启的 `client.reconnect(token)` 返回新 Room，监听也要重绑。离线队列不是业务日志：本例暂停时换输入 epoch，拒绝恢复后积压的旧操作；当前 epoch 内客户端本地递增操作序号、服务器去重，不从延迟 state 反复取同一 `lastSeq+1`。真正需要续传的购买／结算另做确认与持久化，不重播所有瞬时技能点击。
+
+**先自托管跑通，不把许可免费当成免运维。** Colyseus 为 MIT，Nakama 开源版为 Apache-2.0；上线还需认证、TLS、预算、监控与数据政策。Colyseus 多进程要配共享 Presence／Driver 等，Nakama 要维护数据库；进程内重连不保证进程崩溃后恢复。托管可省部分运维，但服务价格／合同按采用时核，本例没有付费或部署。Unity／Nakama 接线为资料比较，Colyseus 才是本次真实运行项，不宣称跨项目成本冠军。
+
+独立作品 [AlienFall 的开发日志](https://alienfall.io/journal.html)也采用 Node／Colyseus，并把持久数据与跨进程共享分别交 SQLite／Redis；可借其按职责组合现成部件的做法，不把作者自述的容量或成本推广成本例实测。
+
+依据：[Colyseus 匹配](https://docs.colyseus.io/matchmaker)、[锁房](https://docs.colyseus.io/matchmaker/visibility)、[重连](https://docs.colyseus.io/room/reconnection)、[扩容](https://docs.colyseus.io/scalability)及固定 npm SDK 源码；[Nakama 仓库](https://github.com/heroiclabs/nakama)、[TypeScript 运行时](https://heroiclabs.com/docs/nakama/server-framework/typescript-runtime/)与[权威对局](https://heroiclabs.com/docs/nakama/concepts/multiplayer/authoritative/)；[Unity MPS 会话与网络](https://docs.unity.com/en-us/mps-sdk/session-networking)，2026-10-26 [一手／开源／本仓实跑]。实际路径与范围见 [WP10](../../docs/research/wp10-content.md#managed-room-chain)。
+
 ## 4. 用已有 MOBA 模拟跑两端输入帧，而不是另写一个假游戏
 
 **🧪 已经有确定性模拟，就先把同一局放进两个独立进程。** [可运行入口](../../experiments/server-lockstep/README.md)直接导入正式 MOBA 固定 `3bcda00f` 的 `Simulation` 和 Detour 数据，不改它的生产代码。一个服务端按席位排帧并裁决，两个 Node 客户端只消费服务端提交的下一帧；同机同版本的三份状态哈希互相核对。它验证这个输入接缝，不把浏览器浮点、认证或互联网体验的问题藏掉。

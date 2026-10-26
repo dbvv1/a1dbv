@@ -1,0 +1,1 @@
+{"name":"a1-colyseus-room-chain","private":true,"type":"module","engines":{"node":">=22"},"scripts":{"test":"node --test test.mjs","demo":"node demo.mjs"},"dependencies":{"@colyseus/core":"0.18.23","@colyseus/ws-transport":"0.18.4","@colyseus/schema":"5.0.42","@colyseus/sdk":"0.18.6"}}
