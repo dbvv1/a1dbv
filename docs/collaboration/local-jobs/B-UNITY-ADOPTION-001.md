@@ -12,6 +12,10 @@ accept: auto
 增量：复用本仓模板和已有官方工具，做原创“收集物开门”最小工程，走完脚本修改、真实编译／测试、构建及第二次需求修改。
 验收：非作者在同一已安装引擎从 README 复现，核两轮测试报告、构建结果和保存重开的序列化值；无引擎结果不算通过。
 
+## 当前接续决定（2026-10-26）
+
+当前先把现有 Web 简单内容的品质做好，暂停后续 Unity 工程、实跑与扩展；下文工程方案仅保留为原任务记录，不继续执行。真实许可阻断仍保留，但许可恢复不触发自动接续；以后是否恢复须以届时用户方向为准，获准后仍续用本任务，不重复派发。
+
 ## 先核能力，再做完整单元
 
 先同步 main，读 AGENTS、CLAUDE、dot-B 提示词、TASKS、game-taskbook、01-engine-integration、unity/README、unreal/README 和 WP9 既有材料；核在制分支与同任务认领，已有产物续接而非新建同项。
@@ -48,5 +52,5 @@ accept: auto
 - 已确认本机三个 2022.3 编辑器均因无可用 Unity 许可无法 headless 启动，2020.3.26f1 定制安装也不能作为干净引擎；任务已回写为 blocked，并记录同口径模块状态、判定依据与恢复条件。
 - 产物：[0495a18](https://github.com/dbvv1/a1dbv/commit/0495a18bc6441915ab04d3dd1bfc3e7e41672978)，分支 `relay/b-unity-adoption-001`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：由用户在 Unity Hub 登录并激活可用许可或放置有效本地许可文件；恢复后以 2022.3.64f1 重跑同一 -createProject 探针（要求退出码 0 且生成 ProjectSettings/ProjectVersion.txt），再继续第一轮工程创建、测试与构建。
+- 接续：按当前先 Web 品质的要求暂停；不要求现在处理 Unity 许可。仅在未来用户方向允许恢复且已有有效许可时，同任务先复核 2022.3.64f1 的 -createProject 探针（退出码 0 且生成 ProjectSettings/ProjectVersion.txt），再决定后续工程执行。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
