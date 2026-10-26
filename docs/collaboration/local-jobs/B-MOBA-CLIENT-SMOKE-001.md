@@ -2,7 +2,7 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 641cf1622d0805cf03db33711d04f21bd11cc2fd
 result_branch: relay/b-moba-client-smoke-001
@@ -21,5 +21,8 @@ result_branch: relay/b-moba-client-smoke-001
 
 ## 当前结果
 
-- 旧 `48faed4`：[f2c83cb2](https://github.com/dbvv1/a1dbv/commit/f2c83cb2)实跑ci／smoke退出0，真实E的挂接可见actor `attack.upper` 权重1／24轨道和全部旧断言通过，源码未改且独审通过；B已接受。旧97等接受保留Git历史。
-- 新 `641cf16`：待本次烟测。截图／原始日志保持本地，不上传私人路径或图片；失败交原客户端owner，不自行改代码。
+- 在固定 SHA 641cf16（tree 55c961f7…）上 npm ci 与 npm run smoke 均退出 0，真实 HUD 的 Q Rift Lancet 图标 img.decode() 成功且为 64×64，原有角色动作、GLB、预览/取消、施法、像素与错误断言全部通过，源码未改。
+- 本单元没有文件改动。
+- 检查：check_public（文件） 通过；独立审查通过。
+- 下一步：无剩余开发项；人工图标观感与硬件表现按任务约定另验，交 dot-B 记录。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
