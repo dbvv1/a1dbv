@@ -1,0 +1,278 @@
+diff --git a/packages/sync-server/package.json b/packages/sync-server/package.json
+index 922aeec..b012da8 100644
+--- a/packages/sync-server/package.json
++++ b/packages/sync-server/package.json
+@@ -20,7 +20,7 @@
+   "imports": {
+     "#db": "./src/db.js",
+     "#account-db": "./src/account-db.js",
+-    "#load-config": "./src/load-config.js",
++    "#load-config": "./src/load-config.ts",
+     "#migrations": "./src/migrations.ts",
+     "#accounts/*": "./src/accounts/*.js",
+     "#app-enablebanking/services/*": "./src/app-enablebanking/services/*.ts",
+diff --git a/packages/sync-server/src/accounts/openid.test.ts b/packages/sync-server/src/accounts/openid.test.ts
+index 62588df..0974d32 100644
+--- a/packages/sync-server/src/accounts/openid.test.ts
++++ b/packages/sync-server/src/accounts/openid.test.ts
+@@ -4,6 +4,7 @@ import createDebug from 'debug';
+ import type * as OpenIdClient from 'openid-client';
+
+ import { getAccountDb } from '#account-db';
++import { config } from '#load-config';
+
+ import { loginWithOpenIdFinalize, loginWithOpenIdSetup } from './openid';
+
+@@ -91,3 +92,41 @@ it.each(['', 'actual:*', 'actual-sensitive:openid'])(
+     }
+   },
+ );
++
++const now = 1_800_000_000_000;
++const providerExpiration = now / 1000 + 7200;
++
++it.each([
++  [86400, now / 1000 + 86400],
++  ['never', -1],
++  ['openid-provider', providerExpiration],
++] as const)(
++  'preserves the session expiration for %s',
++  async (setting, expected) => {
++    const previous = config.get('token_expiration');
++    const clock = vi.spyOn(Date, 'now').mockReturnValue(now);
++    config.set('token_expiration', setting);
++    provider.callback.mockResolvedValue({
++      access_token: 'provider-token',
++      expires_at: providerExpiration,
++    });
++    provider.userinfo.mockResolvedValue({ preferred_username: 'admin' });
++
++    try {
++      const start = await loginWithOpenIdSetup('https://actual.example');
++      const state = new URL(start.url ?? '').searchParams.get('state');
++      const result = await loginWithOpenIdFinalize({ code: 'code', state });
++      expect(result.error).toBeUndefined();
++      const token = new URL(result.url ?? '').searchParams.get('token');
++      expect(
++        getAccountDb().first(
++          'SELECT expires_at FROM sessions WHERE token = ?',
++          [token],
++        ),
++      ).toEqual({ expires_at: expected });
++    } finally {
++      config.set('token_expiration', previous);
++      clock.mockRestore();
++    }
++  },
++);
+diff --git a/packages/sync-server/src/accounts/openid.ts b/packages/sync-server/src/accounts/openid.ts
+index 14a0ecc..2ac59f6 100644
+--- a/packages/sync-server/src/accounts/openid.ts
++++ b/packages/sync-server/src/accounts/openid.ts
+@@ -323,14 +323,14 @@ export async function loginWithOpenIdFinalize(body) {
+
+     const token = uuidv4();
+
++    const tokenExpiration = config.get('token_expiration');
+     let expiration;
+-    if (config.get('token_expiration') === 'openid-provider') {
++    if (tokenExpiration === 'openid-provider') {
+       expiration = tokenSet.expires_at ?? TOKEN_EXPIRATION_NEVER;
+-    } else if (config.get('token_expiration') === 'never') {
++    } else if (tokenExpiration === 'never') {
+       expiration = TOKEN_EXPIRATION_NEVER;
+-    } else if (typeof config.get('token_expiration') === 'number') {
+-      expiration =
+-        Math.floor(Date.now() / 1000) + config.get('token_expiration');
++    } else if (typeof tokenExpiration === 'number') {
++      expiration = Math.floor(Date.now() / 1000) + tokenExpiration;
+     } else {
+       expiration = Math.floor(Date.now() / 1000) + 10 * 60; // Default to 10 minutes
+     }
+diff --git a/packages/sync-server/src/load-config-types.test.ts b/packages/sync-server/src/load-config-types.test.ts
+new file mode 100644
+index 0000000..8ce2fd7
+--- /dev/null
++++ b/packages/sync-server/src/load-config-types.test.ts
+@@ -0,0 +1,66 @@
++import { afterEach, expect, expectTypeOf, it, vi } from 'vitest';
++
++import { config } from './load-config';
++
++afterEach(() => {
++  vi.unstubAllEnvs();
++  vi.resetModules();
++});
++
++it('exposes the runtime types of configuration values', () => {
++  expectTypeOf(config.get('token_expiration')).toEqualTypeOf<
++    number | 'never' | 'openid-provider'
++  >();
++  expectTypeOf(config.get('simplefinAllowedNetworks')).toEqualTypeOf<
++    string[]
++  >();
++  expectTypeOf(config.get('trustedAuthProxies')).toEqualTypeOf<string[]>();
++  expectTypeOf(config.get('https')).toEqualTypeOf<{
++    doc: string;
++    key: string;
++    cert: string;
++  }>();
++  expectTypeOf(config.get('upload')).toEqualTypeOf<{
++    doc: string;
++    fileSizeSyncLimitMB: number;
++    syncEncryptedFileSizeLimitMB: number;
++    fileSizeLimitMB: number;
++  }>();
++
++  expect(config.get('https')).toEqual({
++    doc: 'HTTPS configuration.',
++    key: '',
++    cert: '',
++  });
++  expect(config.get('simplefinAllowedNetworks')).toEqual([]);
++});
++
++it.each([
++  ['never', 'never'],
++  ['openid-provider', 'openid-provider'],
++  ['0', 0],
++  ['86400', 86400],
++] as const)(
++  'loads token expiration %s with its runtime type',
++  async (input, expected) => {
++    vi.stubEnv('ACTUAL_TOKEN_EXPIRATION', input);
++    const { config: loaded } = await import('./load-config');
++    expect(loaded.get('token_expiration')).toBe(expected);
++  },
++);
++
++it.each(['invalid', '-1', 'Infinity'])(
++  'rejects invalid token expiration %s while loading',
++  async input => {
++    vi.stubEnv('ACTUAL_TOKEN_EXPIRATION', input);
++    await expect(import('./load-config')).rejects.toThrow(
++      /Invalid token_expiration value/,
++    );
++  },
++);
++
++it('coerces an environment port without changing the config contract', async () => {
++  vi.stubEnv('ACTUAL_PORT', '5012');
++  const { config: loaded } = await import('./load-config');
++  expect(loaded.get('port')).toBe(5012);
++});
+diff --git a/packages/sync-server/src/load-config.js b/packages/sync-server/src/load-config.ts
+similarity index 86%
+rename from packages/sync-server/src/load-config.js
+rename to packages/sync-server/src/load-config.ts
+index 1928219..6e10085 100644
+--- a/packages/sync-server/src/load-config.js
++++ b/packages/sync-server/src/load-config.ts
+@@ -30,10 +30,56 @@ const actualAppWebBuildPath = path.join(
+ );
+ debug(`Actual web build path: '${actualAppWebBuildPath}'`);
+
++// Custom formats can coerce values beyond the type of their default.
++// Convict also retains the nested documentation strings in the loaded values.
++type ServerConfig = {
++  env: 'production' | 'development' | 'test';
++  mode: 'test' | 'development';
++  projectRoot: string;
++  dataDir: string;
++  port: string | number;
++  hostname: string;
++  serverFiles: string;
++  userFiles: string;
++  webRoot: string;
++  loginMethod: 'password' | 'header' | 'openid';
++  allowedLoginMethods: string[];
++  simplefinAllowedNetworks: string[];
++  trustedProxies: string[];
++  trustedAuthProxies: string[];
++  https: { doc: string; key: string; cert: string };
++  upload: {
++    doc: string;
++    fileSizeSyncLimitMB: number;
++    syncEncryptedFileSizeLimitMB: number;
++    fileSizeLimitMB: number;
++  };
++  openId: {
++    doc: string;
++    discoveryURL: string;
++    issuer: {
++      doc: string;
++      name: string;
++      authorization_endpoint: string;
++      token_endpoint: string;
++      userinfo_endpoint: string;
++    };
++    client_id: string;
++    client_secret: string;
++    server_hostname: string;
++    authMethod: 'openid' | 'oauth2';
++  };
++  token_expiration: number | 'never' | 'openid-provider';
++  enforceOpenId: boolean;
++  userCreationMode: 'manual' | 'login';
++  github: { doc: string; token: string };
++  corsProxy: { doc: string; enabled: boolean };
++};
++
+ // Custom formats
+ convict.addFormat({
+   name: 'tokenExpiration',
+-  validate(val) {
++  validate(val: unknown) {
+     if (val === 'never' || val === 'openid-provider') return;
+     if (typeof val === 'number' && Number.isFinite(val) && val >= 0) return;
+
+@@ -44,10 +90,10 @@ convict.addFormat({
+     }
+
+     throw new Error(
+-      `Invalid token_expiration value: ${val}: value was "${val}"`,
++      `Invalid token_expiration value: ${String(val)}: value was "${String(val)}"`,
+     );
+   },
+-  coerce(val) {
++  coerce(val: unknown) {
+     if (val === 'never' || val === 'openid-provider') return val;
+     if (typeof val === 'number') return val;
+
+@@ -63,13 +109,13 @@ convict.addFormat({
+
+ convict.addFormat({
+   name: 'ipNetworks',
+-  validate(values) {
++  validate(values: unknown) {
+     if (!Array.isArray(values)) {
+       throw new Error('Expected an array of IP addresses or CIDR ranges');
+     }
+     values.forEach(parseAllowedNetwork);
+   },
+-  coerce: value =>
++  coerce: (value: string) =>
+     value
+       .split(',')
+       .map(entry => entry.trim())
+@@ -77,7 +123,7 @@ convict.addFormat({
+ });
+
+ // Main config schema
+-const configSchema = convict({
++const configSchema = convict<ServerConfig>({
+   env: {
+     doc: 'The application environment.',
+     format: ['production', 'development', 'test'],
+diff --git a/upcoming-release-notes/migrate-server-config-to-typescript.md b/upcoming-release-notes/migrate-server-config-to-typescript.md
+new file mode 100644
+index 0000000..8d71d51
+--- /dev/null
++++ b/upcoming-release-notes/migrate-server-config-to-typescript.md
+@@ -0,0 +1,6 @@
++---
++category: Maintenance
++authors: [dbvv1]
++---
++
++Migrate the sync server configuration loader to TypeScript.
