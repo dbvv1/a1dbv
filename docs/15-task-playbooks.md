@@ -1,6 +1,6 @@
 # 15 · 按任务类型的打法
 
-> 核实 2026-10-25（UTC+8）；迁移与阅读偏好采用回流 2026-10-26。任务起点见下；Codex 的[五情境入口](01-agents/codex.md#五种情境先做最小改变)说明何时再加知识、工具或流程。依据：Anthropic 官方最佳实践与 Opus 5.5 指南 [一手]、Willison 与 HumanLayer 公开实践 [社区]、组合建议 [经验]；除标注的局部实测外，案例仅支持局部机制，不代表当前产品推荐或 AI／固定 Skill 净收益。
+> 核实 2026-10-25（UTC+8）；迁移、阅读偏好与原生诊断采用回流 2026-10-26。任务起点见下；Codex 的[五情境入口](01-agents/codex.md#五种情境先做最小改变)说明何时再加知识、工具或流程。依据：Anthropic 官方最佳实践与 Opus 5.5 指南 [一手]、Willison 与 HumanLayer 公开实践 [社区]、组合建议 [经验]；除标注的局部实测外，案例仅支持局部机制，不代表当前产品推荐或 AI／固定 Skill 净收益。
 
 ## 先动手：改善 Agent 的一项能力
 
@@ -8,7 +8,7 @@
 
 | 你希望 Agent 做得更好 | 从哪里开始 |
 |---|---|
-| 取得运行态证据，定位实际走过的分支 | [原生 pdb 与 DebugMCP](#2-调试)：先用已有断点／取值入口，再判断是否需要工具接入 |
+| 取得运行态证据，定位实际走过的分支 | [原生调试路线](#先让-agent-停在真实执行处再猜分支)：读回错误先核落盘值，分支未知用 pdb／窄 trace；需要具名跨客户端调试再接 MCP |
 | 准确接收页面修改意图 | [页面批注](03-context-engineering.md#210-页面批注交意图也要交当前对象)：交接对象与意图，核当前页面身份后修改 |
 | 按领域约束选择改法，而不是关检查求绿 | [框架原生反馈](05-skills-and-plugins.md#框架反馈已经可执行时先让知识进入改法)：用真实Next构建失败区分stream／cache／block，保留实时库存 |
 | 在 API 改稿前获得可定位的兼容性反馈 | [发布契约实试](../experiments/oasdiff-contract-review.md)：实际JSON诊断指出受影响请求；合理的输入收紧仍需版本与兼容决定 |
@@ -154,11 +154,13 @@ beets 的缺文件报告中，Agent 用公开音频副本、独占 SQLite 和真
 
 ### 先让 Agent 停在真实执行处，再猜分支
 
-**Python 的断点／变量观察先用原生 `python -m pdb`，不必先装 MCP。** [同输入实试与具体命令](../experiments/python-debugger-entry.md)让 pdb 与 DebugMCP standalone 0.1.2 都在未改动程序里停住、取日期值、单步确认分支并正常结束，结果一致。
+**Python 的断点／变量观察先用原生 `python -m pdb`；数据读回不对时，先对照输入、落盘值与读回值，再选观察位置。** [同输入实试与具体命令](../experiments/python-debugger-entry.md)中，pdb 与 DebugMCP standalone 0.1.2 都在未改程序里停住、取日期值、单步确认分支并正常结束，结果一致。
 
-需要跨 MCP 客户端调用具名调试工具时再考虑 standalone，它无需 VS Code，但仍需显式 DAP adapter；复杂对象先列名再精确求值。此次程序输出只进入 host stderr，客户端是否把它交给 Agent 未验；`continue` 返回也不能代替结束状态。不要把扩展 Skill 的测试发现提示照搬给 CLI。
+jrnl 的实际问题把 `23:59` 读成次日 `00:59`，但落盘 UTC 正确。Agent 因而保留解析和写入，用原生 `sys.settrace` 定位读回转换，只修这一层，再用原 CLI 与 DST 回归接收。可借用的是“先用数据排除假设，再取最窄运行值”的顺序；[固定补丁与接收](17-troubleshooting.md#真实采用先看写入值再追读回转换)已有 22 项相关检查通过，完整套件仍保留基线同样的 4 个排版失败。
 
-**依据**：[源码／本仓实试，2026-10-24] pdb 与 DebugMCP standalone 0.1.2 同输入对照；未测模型修复收益；核实 2026-10-24。
+需要跨 MCP 客户端调用具名调试工具时再考虑 standalone，它无需 VS Code，但仍需显式 DAP adapter；复杂对象先列名再精确求值。DebugMCP 同输入试验的程序输出只进入 host stderr，客户端是否把它交给 Agent 未验；`continue` 返回也不能代替结束状态。不要把扩展 Skill 的测试发现提示照搬给 CLI。
+
+**依据**：[源码／本仓实试，2026-10-24] pdb 与 DebugMCP standalone 0.1.2 同输入对照，未测模型修复收益；[实际采用，2026-10-26] [jrnl CLI、落盘检查与原生 trace](../experiments/jrnl-dayone-runtime-diagnosis.md)，不是工具效率排名，未验真实 Day One 客户端或跨平台 CI。
 
 ### 接管生成服务：先交能区分原因的证据
 
