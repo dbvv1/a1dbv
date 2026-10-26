@@ -11,7 +11,7 @@
 | 选 Claude Code、Codex 还是 Cursor | [01 Agent 选择](docs/01-agents/README.md) | ✅ |
 | 模型、推理档与强弱分工怎么选、多贵 | [按任务分工](docs/decisions/model-roles.md) · [计费明细](docs/02-models-and-cost.md) | ✅ |
 | CLAUDE.md／AGENTS.md 怎么写 | [共享规则、加载首验与真实团队样例](docs/decisions/instruction-files.md) | ✅ |
-| 怎样让 Agent 自己验证、别只报完成 | [07 §1](docs/07-workflows.md#1-核心验证闭环-)、[23 浏览器验证](docs/23-browser-verification.md) | 🟡 |
+| 怎样让 Agent 自己验证、别只报完成 | [按目标行为选检查、修复与接收](docs/decisions/verification.md) | ✅ |
 | 上下文怎么管、会话越聊越笨怎么办 | [按症状压缩、重开与恢复检查点](docs/decisions/context-management.md) | ✅ |
 | 该装哪些 Skill 与插件 | [按能力缺口选一项，附配置与起步](docs/decisions/skills-and-plugins.md) | ✅ |
 | 该接哪些 MCP | [04 MCP](docs/04-mcp.md) | ✅ |
@@ -20,8 +20,8 @@
 | 怎么审 AI 写的代码 | [09 评审](docs/09-review-and-quality.md)、[REVIEW 模板](templates/generic/REVIEW.md) | ✅ |
 | 权限、沙箱与 Hooks 怎么配 | [10 安全](docs/10-security.md)、[06 Hooks](docs/06-hooks-and-guardrails.md) | 🟡 |
 | 调试、Agent 跑偏或谎报完成 | [17 排障](docs/17-troubleshooting.md)、[15 调试](docs/15-task-playbooks.md) | ✅ |
-| 测试驱动、规格驱动、计划模式 | [07 工作流](docs/07-workflows.md) | 🟡 |
-| 前端与 UI 任务 | [23 浏览器验证](docs/23-browser-verification.md) | 🟡 |
+| 测试驱动、规格驱动、计划模式 | [按缺口选计划、测试与规格](docs/decisions/planning-and-tests.md) | ✅ |
+| 前端与 UI 任务 | [真实组件、用户路径与失败恢复](docs/decisions/verification.md) | ✅ |
 | 遗留代码与大迁移 | [15 任务打法](docs/15-task-playbooks.md) | ✅ |
 | 团队怎么推广 | [18 团队落地](docs/18-team-adoption.md) | ✅ |
 | 本周值得试什么 | [本周 Top 5：按当前编码任务选](docs/13-frontier-radar.md#本周-top-5) | ✅ |

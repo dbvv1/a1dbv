@@ -4,6 +4,14 @@
 
 ## 待处理
 
+### 2026-10-26 广扫补入：三个实际任务候选
+
+- 👀 **Sentry：复用 CI 实际选中的测试。** 下一次真实 CI 失败，交给 Agent：`读取失败 job 的原命令、配置和选中 nodeid，在同一代码版本重放；修后先验原失败，再跑项目要求的检查。` [实际 AGENTS](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/AGENTS.md#L53-L59)与[workflow](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/.github/workflows/backend.yml#L144-L162)已有消费者；artifact 只留一天，过期重建，已有明确失败用例时直接跑它。本仓未试用。
+
+- 👀 **agent-browser 0.39.4：按版本读 Skill，增量看网页。** 真实 UI 任务需反复观察时，可比较已装 CLI 的 `skills get core` → `snapshot -i --delta`（丢失上下文用 `--full`），核关键状态与返回文本量；[官方配方](https://github.com/vercel-labs/agent-browser/blob/04ba5264dade678062c3cdcce0f4f293e748249f/skill-data/core/SKILL.md)的 WebMCP 调用不能替代 UI 输入路径。[当前启动实现](https://github.com/vercel-labs/agent-browser/blob/04ba5264dade678062c3cdcce0f4f293e748249f/cli/src/native/cdp/chrome.rs#L1597-L1637)在 root／CI／容器自动关闭 Chrome 沙箱，[多 worktree 用户](https://github.com/vercel-labs/agent-browser/issues/2214)还报告本地安装覆盖全局命令，因此本轮只收录，浏览器对照待保留沙箱的获准环境；未安装或试用。
+
+- 👀 **opensrc：方便读依赖实现，版本证据另核。** [agent-browser 的真实配置](https://github.com/vercel-labs/agent-browser/blob/04ba5264dade678062c3cdcce0f4f293e748249f/AGENTS.md#L146-L168)已采用；多依赖反复查实现时再试[官方 Skill](https://github.com/vercel-labs/opensrc/blob/b51de60867e806da1839b33dd29c29424f12521b/skills/opensrc/SKILL.md)。固定实现[缺 tag/ref 会回退默认分支并删除 .git](https://github.com/vercel-labs/opensrc/blob/b51de60867e806da1839b33dd29c29424f12521b/packages/opensrc/cli/src/core/git.rs#L37-L209)，[警告只在 verbose 显示](https://github.com/vercel-labs/opensrc/blob/b51de60867e806da1839b33dd29c29424f12521b/packages/opensrc/cli/src/core/fetcher.rs#L24-L120)，[用户另报 monorepo 元数据差异](https://github.com/vercel-labs/opensrc/issues/61)；涉及版本兼容仍读安装包或官方固定提交，单次 API 查询不装。本仓未试用。
+
 ### 2026-10-26 固定来源扫描
 
 读者是用 Agent 维护脚本、知识库和多 Agent 长任务的开发者。本轮增量是把“少送输出”“保留原始证据”“自动记忆”分开选，不按 star 或节省百分比全装插件。试用线能据下列入口在本仓选一个真实读改任务，取得原段、保住决定性限制并交成修改，才算用上；下表均未试用；show-me 写法、context-mode 与 Hippo 组件的已接收结果在本页“已处理”。
