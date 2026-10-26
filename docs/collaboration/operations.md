@@ -88,7 +88,7 @@
 
 有 `ready` 任务超过 40 分钟没被领取时，dot 在 TASKS“分工”一节标出，并通知用户检查本机是否开机、已登录。
 
-**减少等待**：常规的 GitHub 提交与推送由用户在各账号的 Custom rules（Settings → Personalization → Custom rules，插件权限另设）里设为无需询问。只写“提交、推送”会被平台当作外部操作拒绝；能通过的写法是：“向我本人拥有的 GitHub 仓库 dbvv1/a1dbv 和 dbvv1/MOBA-Like 提交，并以快进方式推送到它们的分支；不强推、不删除分支、不改仓库设置”（B 的账号再加上 dbvv1/Star-Rush-Reborn）。向开源项目上游开 PR 属于真正的外部操作，用户在对话里预先批准，平台仍要求确认时就停下来问。提交身份沿用§1 的单次 GitHub noreply，不需要再确认。
+**减少等待**：常规的 GitHub 提交与推送由用户在各账号的 Custom rules（Settings → Personalization → Custom rules，插件权限另设）里设为无需询问。只写“提交、推送”会被平台当作外部操作拒绝；能通过的写法是：“向我本人拥有的 GitHub 仓库 dbvv1/a1dbv 和 dbvv1/MOBA-Like 提交，并以快进方式推送到它们的分支；不强推、不删除分支、不改仓库设置”（B 的账号再加上 dbvv1/Star-Rush-Reborn）。向开源项目上游开 PR 属于真正的外部操作，用户在对话里预先批准，平台仍要求确认时就停下来问。GitHub 集成在别人的仓库上创建 PR 或评论会返回 403（集成只能写装了它的仓库）：遇到时把分支推到 fork，在 TASKS“需要用户决定”写一行 compare 链接和拟定标题，由用户点开创建，不重试、不换凭据。提交身份沿用§1 的单次 GitHub noreply，不需要再确认。
 
 **额度**：暂不作为约束（2026-10-26 用户决定）。遇到平台的休息提示时，在 TASKS 记下恢复时间，期间由本机模型继续。
 

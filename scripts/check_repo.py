@@ -13,6 +13,25 @@ import tomllib
 from urllib.parse import unquote, urlsplit
 
 
+# Coordination records stay short: they grew into process logs that crowded out reader content.
+TASKS_FILE = Path("docs/collaboration/TASKS.md")
+TASKS_MAX_BYTES = 10 * 1024
+JOB_DIR = Path("docs/collaboration/local-jobs")
+JOB_MAX_LINES = 80
+JOB_FINAL = {"accepted", "cancelled"}
+
+
+def record_limits(root, relative, text):
+  if relative == TASKS_FILE and len(text.encode("utf-8")) > TASKS_MAX_BYTES:
+    return [f"{relative}: over {TASKS_MAX_BYTES // 1024} KB; move finished rows to archive/"]
+  if relative.parent == JOB_DIR and relative.name != "README.md":
+    status = re.search(r"^status\s*[:：]\s*(\S+)", text, re.M)
+    lines = len(text.splitlines())
+    if lines > JOB_MAX_LINES and not (status and status.group(1) in JOB_FINAL):
+      return [f"{relative}: active job file has {lines} lines (max {JOB_MAX_LINES}); keep current state and next step, move process detail to commit messages"]
+  return []
+
+
 def check(root):
   errors = []
   count = 0
@@ -39,6 +58,7 @@ def check(root):
       continue
     if kind != ".md":
       continue
+    errors.extend(record_limits(root, relative, text))
     fence = None
     for line_number, line in enumerate(text.splitlines(), 1):
       start = re.match(r"^\s*(`{3,}|~{3,})", line)

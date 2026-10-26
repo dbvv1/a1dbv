@@ -40,6 +40,15 @@ class RepoCheckTests(unittest.TestCase):
     self.assertEqual(2, result["checked_files"])
     self.assertEqual(2, len(result["errors"]))
 
+  def test_record_limits(self):
+    job = "docs/collaboration/local-jobs/X-001.md"
+    long_body = "\n".join(f"line {i}" for i in range(90))
+    self.assertEqual(1, len(self.run_fixture({job: "status: running\n" + long_body})["errors"]))
+    self.assertEqual([], self.run_fixture({job: "status: accepted\n" + long_body})["errors"])
+    self.assertEqual([], self.run_fixture({job: "status: running\nshort\n"})["errors"])
+    self.assertEqual([], self.run_fixture({"docs/collaboration/local-jobs/README.md": long_body})["errors"])
+    self.assertEqual(1, len(self.run_fixture({"docs/collaboration/TASKS.md": "x" * 11000})["errors"]))
+    self.assertEqual([], self.run_fixture({"docs/collaboration/TASKS.md": "x" * 9000})["errors"])
 
 if __name__ == "__main__":
   unittest.main()

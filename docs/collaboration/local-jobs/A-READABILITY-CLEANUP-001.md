@@ -12,9 +12,7 @@ result_branch: relay/a-readability-cleanup-001
 
 ## 范围与顺序
 
-按防御密度从高到低：docs/02-models-and-cost.md、docs/19-experiments.md、docs/21-agent-patterns.md、docs/09-review-and-quality.md、docs/05-skills-and-plugins.md、docs/11-community-pulse.md、docs/06-hooks-and-guardrails.md、docs/17-troubleshooting.md、docs/10-security.md、docs/01-agents/open-source-agents.md、docs/01-agents/codex.md、docs/22-agent-evaluation.md、docs/18-team-adoption.md，然后是其余页：docs/00-state-of-ai-coding.md、docs/03-context-engineering.md、docs/07-workflows.md、docs/08-multi-agent.md、docs/12-resources.md、docs/13-frontier-radar.md、docs/14-synthesis.md、docs/15-task-playbooks.md、docs/16-building-agents.md、docs/20-codex-long-horizon.md、docs/23-browser-verification.md、docs/24-community-workflows.md、docs/README.md、docs/01-agents/claude-code.md、docs/01-agents/gemini-cli.md、docs/01-agents/ide-and-others.md、docs/01-agents/README.md。25 探索、04 MCP 和游戏 03 已改好，不再动。
-
-**追加范围（2026-10-26）**：仓库首页 `README.md`，以及 `templates/` 下全部 Markdown（README、AGENTS、CLAUDE、REVIEW、agents 与 Skill 说明）。模板会被读者复制进自己的项目，写法问题会跟着扩散，优先级与正文相同；只改说明文字，命令、脚本、路径和字段名保持不变，改后按 CLAUDE.md 的模板规则用模拟输入跑一遍相关脚本。
+**收窄（2026-10-26 用户决定）**：只做读者真正会读的入口页和会被复制的模板，已接收页保留（见当前结果）。剩余范围：仓库首页 `README.md`、`docs/README.md`、`docs/15-task-playbooks.md`、`docs/01-agents/README.md`、`docs/01-agents/claude-code.md`，以及 `templates/` 下全部 Markdown（`templates/README.md` 与 `templates/codex/README.md` 由 dot-A 云端整理，避开）。模板只改说明文字，命令、脚本、路径和字段名保持不变，改后按 CLAUDE.md 的模板规则用模拟输入跑一遍相关脚本。其余页（08、13、14、20、23、24、ide-and-others 等）不再单独改写，下次因内容更新被改动时按编写约定一起重写。
 
 **不改的范围**：`docs/research/`、`experiments/`、`docs/collaboration/reviews/`、`archive/` 和 local-jobs 历史记录是留档证据，不重写；正文引用它们时，在正文里写清结论。
 
@@ -28,15 +26,15 @@ result_branch: relay/a-readability-cleanup-001
 
 ## 验收
 
-用原生 Workflow 实施，由非作者核对：先只读新文，复述主要选择、第一步和关键取舍；再对照原文核关键结论、数字、版本与日期、来源和适用条件。有遗漏就修对应段。
+用原生 Workflow 实施，由非作者做读者实测：只读新文，回答一个真实读者问题（推荐什么、第一步、何时不适用），说出读者新知道了什么；答不出、或只是换了说法压短篇幅，就不通过。再对照原文核关键结论、数字、版本与日期、来源和适用条件，有遗漏就修对应段。
 
-核完一页就按自动接收合入 main，负责人事后抽查。全部接收后本任务结束，不再开后续改写批次。
+核完一页就按自动接收合入 main，负责人事后抽查。收窄后的范围全部接收即标 accepted，不再开后续改写批次。
 
 ## 当前结果
 
 - 已接收：02、19、21、09、05、11、06、17、10、open-source-agents、codex、22、18、03、07；00总览、12资源索引、Gemini页和16自建Agent页由dot-A云端独审接收，来源与本机调用分开。旧接收与来源保留Git历史；22／18固定正文为[b0fce689](https://github.com/dbvv1/a1dbv/commit/b0fce689)／[e26edfb8](https://github.com/dbvv1/a1dbv/commit/e26edfb8)。
 - 在途03／07已收尾：固定正文[6a977f40](https://github.com/dbvv1/a1dbv/commit/6a977f40)完成先新后旧独审，四处阅读笔记及03的[既有采用证据](A-CODING-ADOPTION-001.md)反馈差量均独审通过，适用检查通过后按accept:auto接收。Codex0.154只核上下文组装，OpenCode V2契约已核未实跑；未重启cspell或新做实验。
-- 下一页为`docs/08-multi-agent.md`，本轮清理尚未开始；其[8319183采用回流](https://github.com/dbvv1/a1dbv/commit/8319183)已由A接收并释放写域，不等于整页清理完成。其余顺序与首页／模板范围按上列完整清单，已接收页不重做。
+- 收窄后 08 不再单独改写；下一页按上面范围从 `docs/README.md` 开始。
 - 本端03／07作者与独审均已结束，写域已释放，下一页尚未开始；由替代接收脚本以adopt从“当前结果”接续，全任务保持running。本端不再认领任务、开启新页或派发下一批。原发往审计会话的最终接收请求已退役，不再发送，不另建计划或服务。
 - 本机原通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash；非作者先新后旧核对，检查通过才按accept:auto接收。任务回执由宿主串行汇总，旧过程留Git历史。
 
