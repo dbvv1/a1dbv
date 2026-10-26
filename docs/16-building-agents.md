@@ -6,25 +6,44 @@
 
 ## 1. 先问：真的需要自建吗？
 
-**30 秒结论：✅ 重复代码／CI／依赖维护，先复用现成 Agent 循环；做自己的产品不等于重写循环。** 单次修改从 CLI／编码 SDK 起步，批量任务先用已有委派；有质量／成本缺口时，也比较另一成熟 harness，再考虑自己实现。目标枚举、版本、审批、交付状态或领域验收有缺口时，只补对应薄层。有明确质量／时延目标也可直接比较自建，但要把环境、适配和人的接收算进投入。**⛔ 不因任务多或要嵌入产品就重写 harness。** 额外层不能改善所需结果，或下一次修改的维护负担抵消收益，就删减该层，保留验收边界。
+**✅ 重复代码／CI／依赖维护，先复用现成 Agent 循环；产品化也可以复用，不必重写 harness。** 单次修改从 CLI／编码 SDK 起步，批量任务先用原生委派。按下面的路径选入口，再看第 2 节的 harness／部署对照。
+
+```
+先用 CLI／编码 SDK 完成同一维护请求
+├─ 批量目标 → 先核原生委派能否完整接收
+├─ 要嵌入产品 → 现成编码能力用编码 SDK；业务工具先 Tool Runner／Agents SDK，工作区也核 SandboxAgent
+├─ 愿意交出循环与会话运行 → 比较 Managed Agents／Agents API 的部署与数据边界
+└─ 仍缺控制责任 → 只补缺口；重写循环须另证其必要性
+```
+
+**有明确质量、成本或时延目标时，比较成熟替代与自建；把环境、适配和人的接收一起计入。** 目标枚举、版本、审批、交付状态或领域验收缺什么，就只补对应薄层。额外层没有改善结果，或下一次修改的维护负担抵消收益时，撤掉该层、保留验收边界。
+
+**任何一条答案为“否”，就停在更简单的方案（单次调用或固定工作流）；四条检查来自 Anthropic 官方 Skill**：
+
+1. **复杂度**：任务是否多步骤、难以事先完全写清？
+2. **价值**：结果是否值得更高的成本和延迟？
+3. **可行性**：模型是否擅长这类任务？
+4. **出错代价**：错误能否被发现和恢复（测试、评审、回滚）？
+
+**依据**：四问来自 Anthropic 官方 Skill（入口见[页末来源](#来源)）；复用、改造与自建的比较见下节。核实 2026-10-22。
 
 ### 当前最高水平
 
 <!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
 
-**先复用现成循环；只有跨产品控制、模型接入或可观测性等缺口，并愿承担平台维护时才自建。整体质量／总投入冠军仍未知，本仓采用比较后的条件默认。** 领先工程参照是 Ramp／Sam Kronick 的 10月20日 Laminar 复盘：团队为跨产品控制、模型选择与可观测性自建，仍承担升级、人审和值班。独立于它的 Spotify 6月3日复盘继续复用 Agent SDK；两者证明不同约束下的采用，不是统一成本竞赛。
+**跨产品控制、模型接入或可观测性确有缺口，且愿承担平台维护，才借鉴自建路线。** Ramp／Sam Kronick 的 10月20日 Laminar 复盘是领先工程参照：团队尝试多种路线后，选择自己控制跨产品交互、模型选择／接入与观测，自建后仍承担升级、人审和值班。独立于它的 Spotify 6月3日复盘继续复用 Agent SDK。两者代表不同约束下的选择，本仓据此给条件默认，不把它们当统一成本竞赛。
 
 | 主要选择 | 领先替代／反例 | 本仓决定 |
 |---|---|---|
 | 代码维护循环 | 现成原生／通用 harness、自建平台；Databricks同模型比较与9月独立研究并未确立通用冠军 | 先复用；明确质量／成本目标时先比较另一成熟实现，保审批、工具与历史契约 |
-| 产品控制与二改 | Ramp统一平台、Spotify编码SDK、Shopify领域证明链 | 只补缺失的版本、权限、接收或产品行为；现成能力追上就删重复责任 |
+| 产品控制与二改 | Ramp统一平台、Spotify编码SDK、Shopify领域证明链 | 先保留现有循环，只补缺失的版本、权限、接收或产品行为；无独特收益或现成能力追上就删重复责任 |
 | 业务工具与工作区 | 普通SDK runner＋服务端工具、编码SDK、应用内SandboxAgent | 按需要的工具／工作区选，不因需要文件就从零写循环 |
 | 托管还是自运维 | Managed／Agents API、自托管执行面、应用内SDK | 先核控制面数据和运行责任，再选部署；自托管沙箱不等于数据不出网 |
 | 工具、上下文与批量调用 | 当前工具搜索／压缩／程序化调用；受限窗口改造与宽窗反例 | 先复用已有机制，只有实际失败仍在才改该部分，按任务形状决定是否批处理 |
 | 权限、凭证与外部写入 | 宿主审批／vault与应用执行的自定义函数 | 宿主覆盖的复用；应用保授权、结果记录和未知结果对账，不把隐藏密钥当授权限制 |
 | 验收、结束与成本 | outcomes、测试／人审；正确补丁但运行超时的反例 | 同时报是否达标、是否结束、真实成本与下一次修改；不以循环返回或API成功判完成 |
 
-主流采用比例未知；缺完整人工成本和当前最高端模型二改对照，上述条件默认不是效果排名。当前工程取舍、旧代独立实验与当前接口契约的区分见[研究记录](research/2026-10-12-long-task-evidence.md#p83整页构建agent的选择)。
+整体质量／总投入冠军与主流采用比例仍未知；完整人工成本和当前最高端模型的二改对照还缺，以上条件默认不是效果排名。当前工程取舍、旧代独立实验与当前接口契约的区分见[研究记录](research/2026-10-12-long-task-evidence.md#p83整页构建agent的选择)。
 
 **依据**：[一手：团队自报] [Ramp Laminar 复盘（10-20）](https://builders.ramp.com/post/building-laminar)、[Spotify 6月3日复盘](https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint)；[研究] [研究记录](research/2026-10-12-long-task-evidence.md#p83整页构建agent的选择)、本节同题比较；核实 2026-10-22。
 
@@ -40,8 +59,6 @@
 
 **复用不等于绑定模型厂商的原生 harness。** Databricks 的生产代码库历史任务比较给另一成熟实现留下选择空间；独立原生／通用框架研究也未确立平均优势。换实现时，Agent 运行同类任务并交结果，人核质量、完成行为及维护投入；未保住所需契约就退回原组合。
 
-**自建的理由应是现成方案仍不能满足的产品要求。** Ramp 尝试多种路线后，选择自己控制跨产品交互、模型接入和观测；不是仅因需要一个 SDK。有相同缺口且愿承担平台维护才借这种路线，先保留现有循环；无独特收益或现成实现已补齐，就撤掉重复层。
-
 **把准备和再改也算进去。** Spotify 的数据迁移复盘（Devon Edwards Joseph，2026-04-22）在当时不能外取 schema／文档的受限入口下，因全量提示难维护而放弃 Scio 分支。若新需求持续膨胀提示／映射，先收窄覆盖或改善接口。Agent 查当前代码并验证，人决定业务语义、风险和接收；继续的 dbt／BigQuery 路线因缺构建时单测，仍由下游团队手测。
 
 **依据**：[一手] [Databricks 生产代码库历史任务比较](https://www.databricks.com/blog/benchmarking-coding-agents-databricks-multi-million-line-codebase)、[Spotify 数据迁移复盘（2026-04-22）](https://engineering.atspotify.com/2026/4/background-coding-agents-dataset-migrations-honk-part-4)、[Ramp Laminar 复盘（10-20）](https://builders.ramp.com/post/building-laminar)；[研究] [独立原生／通用框架研究](https://arxiv.org/html/2609.11987)、同题比较口径；核实 2026-10-22。
@@ -56,18 +73,11 @@
 
 内网工具优先接已有 MCP／CLI（见 [04](04-mcp.md)）；若工具输入输出也不得出网，先排除不符合数据边界的路线，细节见 §4.5。
 
-**任何一条答案为“否”，就停在更简单的方案（单次调用或固定工作流）；四条检查来自 Anthropic 官方 Skill**：
-
-1. **复杂度**：任务是否多步骤、难以事先完全写清？
-2. **价值**：结果是否值得更高的成本和延迟？
-3. **可行性**：模型是否擅长这类任务？
-4. **出错代价**：错误能否被发现和恢复（测试、评审、回滚）？
-
-**依据**：[一手] [Claude Security 文档](https://support.claude.com/en/articles/14661296-use-claude-security)、[Codex Security 文档](https://help.openai.com/en/articles/20001107-codex-security)、[Anthropic 固定参考版本](https://github.com/anthropics/defending-code-reference-harness/tree/d3bea6b5793b5f3d59a75ebe69a58efa88383145)、Shopify／Anthropic 团队原文、Anthropic 官方 Skill；[经验] 团队分工取舍；[研究] [固定源码与比较](research/2026-10-12-long-task-evidence.md#p57续补专用入口与领域证明链)；核实 2026-10-22。
+**依据**：[一手] [Claude Security 文档](https://support.claude.com/en/articles/14661296-use-claude-security)、[Codex Security 文档](https://help.openai.com/en/articles/20001107-codex-security)、[Anthropic 固定参考版本](https://github.com/anthropics/defending-code-reference-harness/tree/d3bea6b5793b5f3d59a75ebe69a58efa88383145)、Shopify／Anthropic 团队原文；[经验] 团队分工取舍；[研究] [固定源码与比较](research/2026-10-12-long-task-evidence.md#p57续补专用入口与领域证明链)；核实 2026-10-22。
 
 ## 2. 两个关键问题：谁提供 harness，谁提供部署
 
-**先分开看 harness 与部署：谁写循环、谁托管，是两个独立问题。** Anthropic 的划分方式最清楚：**harness**（Agent 循环、上下文管理）和**部署**（运行在哪里）是两个独立的问题。
+**harness 管循环与上下文，部署管运行位置；分别选择谁提供。** 下面沿 Anthropic 的划分列出两层责任，再对照 OpenAI 的入口。
 
 | 方案 | 你写什么 | harness | 部署 | 自带的工具 | 适用 |
 |---|---|---|---|---|---|
@@ -88,17 +98,9 @@ OpenAI 的对应划分（developers.openai.com）：
 
 **依据**：[一手] Anthropic 官方文档（harness／部署划分）、[OpenAI Agents 文档](https://developers.openai.com/api/docs/guides/agents)；核实 2026-10-22。
 
-## 3. 怎么选
+<a id="3-怎么选"></a>
 
-**先按下面的顺序选；能用现成入口完成同一维护请求，就不自建。**
-
-```
-先用 CLI／编码 SDK 完成同一维护请求
-├─ 批量目标 → 先核原生委派能否完整接收
-├─ 要嵌入产品 → 现成编码能力用编码 SDK；业务工具先 Tool Runner／Agents SDK，工作区也核 SandboxAgent
-├─ 愿意交出循环与会话运行 → 比较 Managed Agents／Agents API 的部署与数据边界
-└─ 仍缺控制责任 → 只补缺口；重写循环须另证其必要性
-```
+## 3. 选定 SDK 后，固定运行契约
 
 **两个容易混淆的点**：
 - **Tool Runner 不等于 Claude Agent SDK。** 前者不自带 Claude Code 的本地读改测环境，但可接自定义工具和服务端搜索／代码执行；后者提供现成编码 harness。截至 2026-10-10，Python 版 Agent SDK 的官方发行包已捆绑 Claude Code CLI，默认无需另外安装；可用 `ClaudeAgentOptions(cli_path=...)` 指定其他 CLI。见[官方 README 固定来源 S6](research/2026-10-10-audit.md)；安装文档未运行验证。
@@ -158,6 +160,7 @@ OpenAI 的对应划分（developers.openai.com）：
 **先验适配层，再启用**：API 支持不等于所用框架已支持。OpenAI Responses 路径须保留程序事件、原始调用来源 `caller` 和结果关联；缺失时留在直接调用或换已支持该契约的接口，不能只加一个开关。普通业务工具仍先用 Tool Runner／Agents SDK，不新增自建 harness。限制：节省与兼容性都依赖具体任务、版本和执行路径，真实失败及固定源码详见 [S6b](research/2026-10-10-audit.md#s6b--2026-10-15-程序化工具调用的采用边界)。
 
 
+**依据**：[一手] [Claude 程序化工具调用](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)、[OpenAI 程序化工具调用](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)、固定源码；[研究] [S6b 采用边界](research/2026-10-10-audit.md#s6b--2026-10-15-程序化工具调用的采用边界)、采用判断；核实 2026-10-22。
 
 ### 4.4 质量：把“完成标准”交给独立的评判者
 **把完成标准交给独立评判者，并读取 outcome result 判断是否达标。**
@@ -175,9 +178,6 @@ OpenAI 的对应划分（developers.openai.com）：
 - **有限选项判断有缺口才试决策接口**：反复出现的语义路由、分类或检查项预筛，现有规则／模型在质量、等待或成本上不足时，再比较 OpenAI Decisions API 或开源决策模型；不把开放式规划整体改成选项打分。误报、漏报、复核和升级计入总成本，无净收益就撤回。阈值须按目标任务校准，回退与权限由程序守住，详见 [02](02-models-and-cost.md#21-新类别决策模型2026-09-起)及[原始契约与比较范围](research/2026-10-10-audit.md#s1d--2026-10-16-决策接口的评分与执行边界)。
 
 **依据**：[一手] [outcomes 契约](https://platform.claude.com/docs/en/managed-agents/define-outcomes)（2026-10-15 UTC+8）、[vault 与适配范围](https://platform.claude.com/docs/en/managed-agents/vaults)、[CLI reference](https://code.claude.com/docs/en/cli-reference)、[Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets)、[Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes)、[Agents API 概览](https://developers.openai.com/api/docs/guides/agents-api/overview)、[web 工具限制](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions)、固定证据；[研究] [22 评估](22-agent-evaluation.md)、[14 规律一](14-synthesis.md#1-规律一验证覆盖与自主权分开判断)、[20 §9](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)、[02](02-models-and-cost.md#21-新类别决策模型2026-09-起)、[S1d](research/2026-10-10-audit.md#s1d--2026-10-16-决策接口的评分与执行边界)；核实 2026-10-22。
-
-**依据**：[一手] [Claude 程序化工具调用](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)、[OpenAI 程序化工具调用](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)、固定源码；[研究] [S6b 采用边界](research/2026-10-10-audit.md#s6b--2026-10-15-程序化工具调用的采用边界)、采用判断；核实 2026-10-22。
-
 
 ## 5. 成本参考
 
