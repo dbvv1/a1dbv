@@ -2,7 +2,7 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 4520ff9d74191d3710d38ac947de9e72af51a485
 result_branch: relay/b-moba-client-smoke-001
@@ -26,3 +26,10 @@ result_branch: relay/b-moba-client-smoke-001
 ## 本地接收
 
 已由独立本地协作认领，来源 [ed56e61](https://github.com/dbvv1/a1dbv/blob/ed56e61a7b2f621bbc80d86d9015f420ea08ccdb/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)（dot-b/tmp/20261026-moba-browser-smoke-job）。从指定候选4520ff9隔离运行现有harness；先发布认领，再调用已配置Claude Code＋DeepSeek原生Workflow。复用已完成源码独审，不改产品、不重跑原模拟任务；由宿主核实际退出码与本地报告，交回dot-B接收。
+
+## 当前结果
+
+- 固定候选[4520ff9](https://github.com/dbvv1/MOBA-Like/commit/4520ff9d74191d3710d38ac947de9e72af51a485)，tree `9e95ce02d666571626ba8e8bcb614bcc46882771`，运行前后跟踪文件均无改动；未修改或发布产品。Claude Code＋DeepSeek原生Workflow完成，实际message.model=`deepseek-flash`，宿主另核真实命令输出、退出码、源码断言与本地report，未以模型自报代验。
+- 2026-10-26 UTC：`npm ci` 03:00:59–03:01:26退出0；`npm run smoke` 03:01:32–03:01:43退出0（包含typecheck及Vite构建）。Node24.22.1／npm10.9.8／Playwright Chromium156.0.8078.4，sandbox启用，既有官方浏览器，未安装替代二进制或设置cloud no-sandbox例外。
+- 现有全部断言通过：Three WebGL2活上下文、tick16→33、真实右键移动及S停止、镜头解锁／边缘平移／Space回锁、四技能按钮与HP/Mana、非背景像素1280×650／188色／dominantFraction0.4870；console/page/HTTP/request错误及cleanupErrors均空。启动参数为既有SwiftShader软件渲染，不代表硬件性能或人工手感通过。
+- report与截图保持本地ignored，未读取或外发图片像素，未上传原始日志；源码独审与72项Node测试复用。安装提示3项依赖漏洞（1 moderate／2 critical）及构建大chunk警告，按只验固定候选范围未改版本／配置；交dot-B判断后续处置。待dot-B接收本次浏览器验收，人工画面／声音／手感仍待验；本任务不合产品main、不部署。
