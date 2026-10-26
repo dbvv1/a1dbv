@@ -25,7 +25,7 @@
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；固定来源每周一轮，候选进收件箱，漏检对照记入 [25](../25-ai-exploration.md) | dot-A | 下一步：第一轮扫描和首次漏检对照。上次校准 10-22：25 项参照漏 6 项。 |
 | P81 | **试用与写成选择**：读者照着就能采用；在本仓自己的 AI 开发里试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | 已有采用结论（Datasette、MDX、Memos、Storybook、Memoh）写进路线页后收口；[Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502) 跟评审；jrnl 补丁待用户创建 PR（见下）。 |
-| MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main 只有模拟层；可玩集成版 `b/moba-playable-integrated-v8`（`d32f5d9`）的 smoke 已由 [B-MOBA-CLIENT-SMOKE-001](local-jobs/B-MOBA-CLIENT-SMOKE-001.md) 实跑通过，下一步合入 main。模拟指标按 brief 只作调参报告。 |
+| MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 可玩集成已入 [main 274bc62](https://github.com/dbvv1/MOBA-Like/commit/274bc62c69f84294fbd4c97f7acff9f16ca8f68a)，[原 smoke 任务](local-jobs/B-MOBA-CLIENT-SMOKE-001.md)已接受软件 WebGL2 实跑与独审；按 [README](https://github.com/dbvv1/MOBA-Like/blob/main/README.md) 运行并操作。默认 v8，模拟指标继续作调参报告；下一步第二次需求修改与制作链接入。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[细则 G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 下一步：服务端第一页，联网模型选型与接入起点，在 MOBA-Like 模拟上跑两端帧同步样例（两端状态哈希一致）；已写模块进案例用时补实测。 |
 | B-制作链 | **AI 全链路**（[细则 G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 下一步：MOBA 英雄模型与动作从制作到接入 main，写回 3d、animation 两页，以进入可玩构建为验收。 |
 | SR | **Star-Rush 品质提升**：驾驶手感、竞速 AI、美术与音频，按 [brief](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/brief.md) | dot-B | master `4975dcb` 可玩；转向牌接入是下一项；硬件 GPU 效果记入待人工验收，不卡住其他项。 |
@@ -36,6 +36,7 @@
 
 需要人亲自听、看、玩才能判断的项目集中在这里，由用户择时统一验收；执行者记录后继续其他工作。
 
+- MOBA-Like：[可玩入口与操作](https://github.com/dbvv1/MOBA-Like/blob/main/README.md)的硬件 GPU 画面、操作手感与完整对局体验；软件 WebGL2 smoke 已通过。
 - Star-Rush：护栏碰撞音频两套候选的听感与混音；Canvas 房屋锚点（`STAR_RUSH_CANVAS_HOUSE_ANCHORS=on`）目视；主弯驾驶手感与完整 WebGL 画面。
 - 潮汐邮差 v2：素材、木筏与旧档。
 - Memos：owner 登录与编辑。
