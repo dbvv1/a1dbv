@@ -13,6 +13,8 @@ argument-hint: "[Target] [Configuration]"
 
 ## 选哪种编译方式
 
+**默认用本脚本编译 `<项目名>Editor`、`Development`；只有「编辑器开着 + 只改 `.cpp` 函数体 + 已有可用 Live Coding 入口」时才留在编辑器内编译。**
+
 | 情况 | 做法 |
 |---|---|
 | 编辑器开着，**只改了 `.cpp` 函数体**，已有可用 Live Coding 入口 | 使用项目既有入口；仅当已配置 MCP 暴露该工具时，调用 `LiveCodingToolset.CompileLiveCoding`，等待诊断，不同时运行本脚本 |
@@ -21,7 +23,6 @@ argument-hint: "[Target] [Configuration]"
 | CI，或者编辑器本来就没开 | 运行本脚本 |
 
 - 先核对项目已采用本 Skill/脚本且能定位引擎；未采用时沿用 AGENTS 登记的既有构建命令，不要求复制整套模板。
-- 不加参数时编译 `<项目名>Editor`、`Development`。
 - 编译游戏本体：`build.sh <项目名> Development`。
 
 ## 处理结果

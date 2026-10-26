@@ -11,6 +11,8 @@ argument-hint: "[EditMode|PlayMode] [testFilter]"
 .claude/skills/unity-run-tests/scripts/run_tests.sh $ARGUMENTS
 ```
 
+**默认跑 EditMode；用第 2 个参数把范围限定到相关命名空间或测试名。**
+
 - 第 1 个参数：`EditMode`（默认）或 `PlayMode`。
 - 第 2 个参数（可选）：过滤条件，例如命名空间 `MyGame.Combat` 或完整测试名。
 - 装了 Unity CLI 时脚本会用 `unity test`，否则用编辑器的 `-runTests` batchmode。

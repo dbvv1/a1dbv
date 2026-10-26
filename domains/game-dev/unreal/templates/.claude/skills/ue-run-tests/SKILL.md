@@ -11,6 +11,8 @@ argument-hint: "[测试过滤，如 MyGame.Combat]"
 .claude/skills/ue-run-tests/scripts/run_tests.sh $ARGUMENTS
 ```
 
+**先 `ue-build` 编译通过，再用过滤条件跑与改动相关的测试。**
+
 - 参数是测试过滤条件（默认为项目名），写法同 Epic 文档：
   - `MyGame.Combat`：运行这个前缀下的所有测试；
   - `MyGame.Combat.Damage+MyGame.Inventory`：运行多个；

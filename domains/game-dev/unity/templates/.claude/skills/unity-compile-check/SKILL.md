@@ -13,12 +13,13 @@ argument-hint: "[--editor | --dotnet | --batch]"
 
 ## 选哪种模式
 
+**不确定就不加参数：有 `.sln` 和 dotnet 时脚本走 `--dotnet`，否则走 `--batch`。** 其余按编辑器状态和目标选择：
+
 | 情况 | 参数 |
 |---|---|
 | 编辑器已打开，Unity 6+，装了 Unity CLI 和 Pipeline 包 | `--editor`（`unity recompile`，最准确，秒级） |
 | 只想快速检查，已生成 .sln | `--dotnet` |
 | 编辑器关闭，需要完整编译 | `--batch`（几分钟） |
-| 不确定 | 不加参数：有 .sln 和 dotnet 就用 dotnet，否则用 batch |
 
 ## 处理结果
 
