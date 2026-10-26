@@ -821,6 +821,15 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 
 [一手／开源，2026-10-26] 默认选择复用原 NGO／MPS 接线；NGO 2.7 [anticipation](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/advanced-topics/client-anticipation.html)明确不含完整 rollback/replay prediction；NfE 1.9 [predicted simulation](https://docs.unity3d.com/Packages/com.unity.netcode@1.9/manual/prediction-n4e.html)按 `Simulate` 过滤当前实体；Fusion 2 [输入循环](https://doc.photonengine.com/fusion/v2/manual/input/player-input)与 Quantum 3 [Verified／Predicted frames](https://doc.photonengine.com/quantum/v3/manual/frames)是不同状态约束。GGRS [请求式保存／恢复／推进](https://docs.rs/ggrs/latest/ggrs/)说明回滚所需游戏接缝，既有 [Factorio FFF412](https://www.factorio.com/blog/post/fff-412)支持不盲目预测整世界与重复视听事件的成本取舍。这些 SDK 未在本项目运行，服务合同／价格采用时另核，不据资料比较宣称跨项目最高水平。
 
+<a id="managed-room-chain"></a>
+### 现成房间服务：从准备到恢复与结束
+
+[实测，2026-10-26] [colyseus-room-chain](../../experiments/colyseus-room-chain/README.md)在 Node 24.22.1 运行官方 npm core `0.18.23`、ws-transport `0.18.4`、schema `5.0.42`、SDK `0.18.6`，不用总包的账号／DB组件。服务监听本机 loopback，两个独立进程经真实 SDK 创建／加入、ready、权威激活、共同结束和销毁；三人房是同政策的容量二改。`joinOrCreate` 匹配、坏协议／缺房／满员失败、短断线自动恢复、新进程 token 续接、保座过期、主动离开均沿真实 Room 生命周期，不用模拟连接或私造匹配层。只有合成标签和短生命周期会话能力，不是公网身份服务或 MOBA 生产联网。 最终 8 项真实服务检查通过、无 skip；读者 normal／reconnect／restart／timeout／trio 入口按实际阶段核结果与全进程清理，原非作者审查发现的快速操作序号问题已定点修复。
+
+决定性差异已在实际消费者中体现：掉线保玩家与座位，最终 `onLeave` 才移除；进程重启拿到新 Room 后重绑 state 监听。固定 SDK `build/Room.mjs` 在 JOIN 处理中先触发 `onReconnect`、后更新 token，另一个 ROOM_STATE 才替换完整状态，因此每端都等后续 state 再允许操作／取得新 token。首次读者 `restart` 命令曾在返回者恢复后过早让另一端操作，已改为各端独立等就绪；不是依赖 sleep 猜更新时机。自动重连会补发排队消息，本例用暂停时递增 epoch 拦旧操作、玩家 seq 去重。独审亲跑又发现从异步 state 取 `lastSeq+1` 会合并同端两次新操作，已改客户端维护当期已发序号高水位，新 epoch／重连全量 state 后按确认序号重建；两次快速输入和恢复后的下一次操作另有真实回归。这不等于持久事务日志。服务端进程退出的容灾、生产认证、TLS、跨机与承载未验证。
+
+选型依据：已有 Unity NGO 保 [MPS session/network 生命周期](https://docs.unity.com/en-us/mps-sdk/session-networking)；现有 Node 玩法仅缺房间时，Colyseus 减少自建匹配／同步／重连接缝；若账号、存储、社交与排行都是需求，再比较 [Nakama](https://github.com/heroiclabs/nakama)。后者 TypeScript 为[沙箱运行时](https://heroiclabs.com/docs/nakama/server-framework/typescript-runtime/)，不是可以直接运行 Node 模拟的环境；relayed match 不校验玩法，authoritative handler 仍须写规则与结束。两套开源／自托管许可不等于零运维，未运行 Nakama／MPS 或测出通用省时／省钱赢家。 [AlienFall 作者开发日志](https://alienfall.io/journal.html)自述以 Node／Colyseus、SQLite 与 Redis 分担实时规则、持久数据和跨进程状态，支持按职责组合而非自建全部设施；未复核其性能数字。[一手／开源／研究，2026-10-26] 官方接口见[匹配](https://docs.colyseus.io/matchmaker)、[可见性／锁](https://docs.colyseus.io/matchmaker/visibility)、[重连](https://docs.colyseus.io/room/reconnection)、[固定SDK](https://registry.npmjs.org/@colyseus%2fsdk/0.18.6)与[服务器扩容](https://docs.colyseus.io/scalability)。
+
 ### 1. 先借生产取舍，不从“支持迁移”反推采用
 
 [一手：开发者访谈] [Dagger Directive 的 Daniel Fowler](https://unity.com/blog/how-to-leverage-distributed-authority-for-multiplayer-co-op-games)（2025-09-29）讲述从社区合作需求出发采用 Unity DA；他评价迁移体验积极，也说明对象转移配置仍需正确设置。团队另留直连路径，以应对服务不可用或停运，但直连房主退出会结束游戏。[研究] 可借的是“服务路径与保底路径各有明确承诺”，不是照抄其质量结论；这是供应商主持的访谈，不是独立横评。
