@@ -2,7 +2,7 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: d32f5d9014200c0e2d686c5d28e7a37114429f51
 result_branch: relay/b-moba-client-smoke-001
@@ -26,7 +26,7 @@ result_branch: relay/b-moba-client-smoke-001
 ## 当前结果与续验
 
 - 旧 `4520ff9`：宿主真实 `npm ci`／`npm run smoke` 退出0，原全部断言及软件 WebGL2 通过；B 已核固定树／断言并接收。完整环境、时间与3项依赖漏洞提示保留在上述固定回执；不是硬件或人工品质通过。
-- 新 `d32f5d9`：尚未浏览器验收。本次仍只执行 `npm ci`、`npm run smoke`，保原断言并检查新源码要求的 contentVersion 8、真实 E 键鼠施放、snapshot zone 及实际 Three 效果对象；不得将旧报告改标新 SHA。
+- 新 `d32f5d9`：接收端已回实跑通过摘要，具体证据字段待补；不重跑、不将旧报告改标新 SHA。
 - 运行前后核固定树和跟踪文件不变；宿主独核实际命令时间／退出／报告，原源码独审复用。若失败，交精确 failure.stage/category、notice 及脱敏字段，由现有客户端 owner 修，不自行改实现／依赖／断言。通过后交 B 唯一产品发布者；本任务不合产品 main。
 
 ## 当前结果
@@ -36,3 +36,7 @@ result_branch: relay/b-moba-client-smoke-001
 - 检查：check_public（文件） 通过；独立审查通过。
 - 下一步：将固定 SHA 的脱敏通过事实交 dot-B 唯一串行发布者；本任务不合产品 main。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+
+## 修改要求
+
+只读取本次已跑的日志／report补交付事实，不重跑 `npm ci`／smoke、不改代码、不新增审查。补实际 Node／Chromium、两命令起止时间与退出码、运行前后 SHA／tree／跟踪状态；从现存 report摘 contentVersion、initial/finalTick、effect名称／mesh数／zone对应、pixels及错误数组。报告没有commit字段就用原git记录独核，不添加或伪造字段。非实施宿主说明实际核过哪些命令输出／报告及与固定源码的对应，不能只复述模型总结；缺记录如实标未知。整合成一处当前结果，保旧4520已接受事实；不交私人路径、截图或完整日志。补齐后交B串行发布者立即接收，不另建任务或新门禁。
