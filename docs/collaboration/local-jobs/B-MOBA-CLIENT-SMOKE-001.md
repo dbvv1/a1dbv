@@ -2,7 +2,7 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 97a29a58956e89538d9f6a10b66467d794fa08cd
 result_branch: relay/b-moba-client-smoke-001
@@ -21,5 +21,8 @@ result_branch: relay/b-moba-client-smoke-001
 
 ## 当前结果
 
-- 旧 `35c82ed`：[f1f24de8](https://github.com/dbvv1/a1dbv/commit/f1f24de8)回执 `npm ci`／test／smoke均退出0，119项测试与全部浏览器断言通过，软件WebGL2；独审通过，B已接受。更早d32接受及取消补录要求保留Git历史。
-- 新 `97a29a5`：待本次固定树烟测；截图与原始日志保持接收端本地，不上传私人路径或图片。失败仅交原客户端owner定位，不扩成新实现任务。
+- 在固定提交 97a29a5（tree 88f22023）上 npm ci 与 npm run smoke 均退出 0，真实 GLB 请求成功、全部既有浏览器断言通过（软件 SwiftShader WebGL2），未改源码或断言。
+- 本单元没有文件改动。
+- 检查：check_public（文件） 通过；独立审查通过。
+- 下一步：任务范围已完成；硬件 GPU 画面与人工手感另走人工验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
