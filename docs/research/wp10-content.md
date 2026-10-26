@@ -4,7 +4,7 @@
 
 # WP10：输入、UI 与内容
 
-[总摘要、生命周期与预算](2026-10-14-game-wp10-client-modules.md)；[运动与视听反馈](wp10-motion.md)。本册均为既有公开资料／源码研究，不代表本项目游戏、引擎、设备或玩家实测。
+[总摘要、生命周期与预算](2026-10-14-game-wp10-client-modules.md)；[运动与视听反馈](wp10-motion.md)。引擎接线以公开资料／固定源码研究为主；独立工具与消费者实跑范围在对应节列明，不代表本项目游戏、引擎、设备或玩家实测。
 
 <a id="16"></a>
 
@@ -848,6 +848,34 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 决定性接缝是**共同初态、目标 tick、同帧稳定顺序、去重和确认**。服务端先校验连接绑定的角色与数据，再在齐帧后排序；上一帧双方哈希确认后才开下一步。运行握手比较源码、内容、依赖锁、navmesh、Node 版本与初始状态；输入／确认等待超时或分歧结束本局。它既没有通过认证的公网账号，也没有中途重连、预测／回滚或跨 JS 引擎确定性；不能作为反作弊证明。原 MOBA 浏览器客户端仍不是联网对战版本。
 
 [一手／开源，2026-10-26] 默认选择复用原 NGO／MPS 接线；NGO 2.7 [anticipation](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/advanced-topics/client-anticipation.html)明确不含完整 rollback/replay prediction；NfE 1.9 [predicted simulation](https://docs.unity3d.com/Packages/com.unity.netcode@1.9/manual/prediction-n4e.html)按 `Simulate` 过滤当前实体；Fusion 2 [输入循环](https://doc.photonengine.com/fusion/v2/manual/input/player-input)与 Quantum 3 [Verified／Predicted frames](https://doc.photonengine.com/quantum/v3/manual/frames)是不同状态约束。GGRS [请求式保存／恢复／推进](https://docs.rs/ggrs/latest/ggrs/)说明回滚所需游戏接缝，既有 [Factorio FFF412](https://www.factorio.com/blog/post/fff-412)支持不盲目预测整世界与重复视听事件的成本取舍。这些 SDK 未在本项目运行，服务合同／价格采用时另核，不据资料比较宣称跨项目最高水平。
+
+<a id="rollback-adoption"></a>
+### 预测回滚采用：把等待成本换成可恢复状态与重演
+
+**结论：保现有引擎网络栈；本地操作的等待已影响玩法，才接成熟预测。** [07](../../domains/game-dev/07-networking-and-server.md#rollback-adoption)补全“是否值得换、从哪里接、二改要维护什么”，[可运行实验](../../experiments/ggrs-rollback-adoption/README.md)只验证官方飞船模拟进入真实 GGRS 请求循环。不是把 MOBA 移植到 Rust，也不是新网络框架。[研究／本仓实跑]
+
+**比较先于试验。** Unity GameObject 需要现成预测时沿 Fusion Host／Server；官方 [2.1 Physics Addon](https://doc.photonengine.com/fusion/v2/addons/physics-addon-2.1)明确客户端才承担重演，延迟高时成本更重，普通用途可先选内置物理方式。NfE 对已采用 ECS 的项目有 predicted ghost／PredictedSimulationSystemGroup，Quantum 则要求规则迁入确定性模拟；不能以一个开源示例通过为理由推翻这些已有项目条件。GGRS 胜在可在云端直接检查真实 Save／Load／Advance 合同，许可为 MIT 或 Apache-2.0；不据此评成 Unity 接入成本或行业质量冠军。
+
+**真正做过游戏的人补足了性能以外的代价。** Signs of Danger 作者在 [Bad Networks](https://www.slowrush.dev/news/bad-networks/)（2024-12-06）展示不同弱网条件下本地响应与远端纠正的区别，也指出重演增加设备负担；其网络注入方式未在本仓采用。[Rolling Back Sound](https://www.slowrush.dev/news/sound-for-rollback-networking/)（2025-05-02）把每 tick 声音计划与实际音频分离，比较等确认的延迟与即时播放后的补播／停止／去重，也保留了未处理的声音参数恢复边界。中文作者 [Game 回滚联机](https://www.geekx.cn/articles/2026/game-checkpoint/)（2026-08-24）同样强调完整模拟状态而非截图，但本轮未取得其固定实现，不借其网络参数作测量结论。[一手开发经验／中文社区]
+
+#### 固定来源与真实调用
+
+- 发布 tag [`v0.13.0`／`d8e2cf1e`](https://github.com/gschup/ggrs/tree/d8e2cf1e16abe5c761ee6b01bab2888084c5e74c)与官方后续 [`25bd9983`](https://github.com/gschup/ggrs/tree/25bd9983dee3ecb0677be03b9e2e23d2bd6d29cb)均实际读源码；后者仍用 0.13.0 包字符串，CHANGELOG 的 Unreleased 明示 input packets 携带编码基准帧、协议不兼容。实验采用后者 Git revision，不冒充 crates.io 发布版。MIT／Apache-2.0、官方 sample 许可与主仓一致。
+- `examples/ex_game/ex_game.rs` 在两者内容相同；准备脚本核 SHA-256 后原样 `include!`，直接调用其 `State::new`／`State::advance`。不运行 `Game::render`／键盘函数，不重写运动／碰撞模型。Macroquad 依赖用于编译原文件，不是已开图形窗口的证据。
+- `SessionBuilder → P2PSession::add_local_input/poll_remote_clients/advance_frame` 产生真实请求；适配器按顺序完整克隆／载回状态，`NonBlockingSocket` 对真正 `Message` 做 bincode 编解码，只把交付时刻放在用户态队列。库自己的预测、输入历史、协议和回滚调用均执行，传输延迟不是操作系统网络实验。
+- 初版运动和二版脉冲／9 tick 冷却使用同一输入入口；新增 cooldown／boost count 包进同一快照。输入变化由库的 `PredictRepeatLast` 预测，故意遗漏恢复仅用于负例，不作为可用分支。
+
+#### 实际结果及失败如何改变采用
+
+Linux x64／Rust 1.99.1，80 最终逻辑帧（40 帧脚本操作＋40 帧中性输入）：三轮交付延迟时，两端等待模式各 240 次无推进、80 次 Advance；预测窗口 8 时各 9 次 Load、99 次 Save、107 次 Advance，无停步，单次最多 4 次 Advance。技能二改对应 18／117／134，增加的输入变化也增加误预测，不能归因于状态字段本身。最终完整序列化字节与同输入确认版参考一致，不只比渲染位置。
+
+故意漏恢复新增字段，脉冲次数实际从每人 3 变成 6，确认版对照检出不一致。缺本地输入由 GGRS 拒绝；一直收不到远端输入则到第 8 帧停止。固定源码的真实返回可能是 `Ok` 且没有 Advance，而 API 注释仍提 `PredictionThreshold`；适配按请求／实际帧进展判断，不只依赖该异常。这是本次能直接改变接入代码的发现。
+
+**首次发布版没有被“修成通过”后抹掉。** crates.io 0.13.0 同题等待模式在 2,000 次纯用户态轮询后停在帧 1；加入每轮 1 ms 的真实等待给协议计时器机会后，仍未在上限内完成，仅到帧 11。固定后续官方源码无需该 sleep 即完成。同一次源码对照包含其他上游改动，未做逐提交性能归因；采用理由是固定集成用例完成和上游已说明的编码基准改动，不是自造协议修复。正式项目需要稳定发行依赖时，应核修复的发布与兼容性，而不是照抄版本字符串。
+
+Rust 七组与准备脚本三组通过，无 skip。只在同一进程／同编译器跑两个会话；没有跨平台确定性、公网、UDP／WebRTC、正式游戏、原生引擎、画面／声音或设备性能证据。实验沿官方浮点运动，没有把它改成定点后虚称原例确定性。[本仓实跑]
+
+探索回执：截至 2026-10-26，读 Fusion／既有 Unity 接线资料、GGRS 发布与开发源码／变更、真实独立游戏开发日志及中文作者原文；中文页浏览抓取 cache miss 后用普通公开 HTTP 取得正文，未绕过访问拒绝。最高水平未知；未登录服务或运行原生引擎。
 
 <a id="player-cloud-progress"></a>
 ## 同一身份的云档、确认进度与排行
