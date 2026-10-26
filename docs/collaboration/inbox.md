@@ -22,6 +22,16 @@
 
 收件箱只记待选与判断，不把本轮补录当成已试用；上周固定 10 条参照见 [25 周校准](../25-ai-exploration.md#2026-10-26上周-hn-样本校准)，另有 [13 项冷启动历史补充](../25-ai-exploration.md#2026-10-26冷启动历史补充)。
 
+### 2026-10-26 历史目录三项补核
+
+这三项解决的是首次目录对照留下的“待核”，不是再跑一次周扫描。读者先分清本地 adapter、远端检索与自托管数据平台；能说出实际数据路径、原生替代和不装条件才算补全判断，以下均未试用。
+
+| 候选／来源 | 解决什么、谁在用与社区评价 | 当前选择与重开条件 |
+|---|---|---|
+| ⛔ [Ref Tools MCP](https://github.com/ref-tools/ref-tools-mcp)，[官方安装](https://docs.ref.tools/context/install/index)；[自托管疑问 #10](https://github.com/ref-tools/ref-tools-mcp/issues/10)、[项目文档用户 #32](https://github.com/ref-tools/ref-tools-mcp/issues/32) | 按检索历史筛文档，减少重复结果；真实用户用它查手册、希望保存项目材料，后者不能当自动笔记已发布。MIT 仓是 legacy stdio adapter，固定 `f5feb829` 的搜索／读取仍请求 Ref 服务；历史维护者也明确索引不在本地。 | 保官方原文／已有 Context7；当前官方接入需 API key 或 OAuth，不因 adapter 开源就称无需账号、离线或可自托管。未核当前价格，不引用历史免费额度；不开户或导入文档。只有现有入口确实漏必要文档且服务接入已获相应授权，才比较完整检索任务。 |
+| ⛔ [PipesHub](https://github.com/pipeshub-ai/pipeshub-ai)，[作者帖与资源／模型问答](https://www.reddit.com/r/LocalLLaMA/comments/1waobyi/an_opensource_context_layer_for_building_ai_on/) | 把企业多源资料变成保源权限、带引用的 Agent 上下文。作者称测试过本地模型；评论追问小模型关系抽取与 slim 部署成本，不是独立采用证明。slim 不等于零模型／embedding 成本；按阶段选模型在该问答里仍是计划。 | 本仓公共文件没有跨组织撤权／连接器需求，保 `rg` 或显式索引。只读官方部署与可见问答，未核完整实现／权限传播；不部署多服务、不创建 PAT、不接公司资料。出现真实多权限消费者后，再核撤权与引用版本，而非凭“自托管”就承诺数据不会外发。 |
+| 👀 [crw／fastcrw](https://github.com/fastcrw/crw)，[MCP 模式文档](https://docs.fastcrw.com/mcp/)；[真实 SDK 字段遗漏 #557](https://github.com/fastcrw/crw/issues/557) | 抓取／转换、站点映射与搜索接口；用户的 sitemap 不是“包没更新”，而是服务字段被 SDK 丢掉，维护者报告 0.36.0 发布后核过，两者不等于本仓复测。固定 `dc1a5968`／0.39.0，AGPL-3.0。 | 可留给真实、已获准的网页格式转换需求；先保原生网页读取。MCP 的 `CRW_LOCAL` 分支强制本地引擎，不代表其他子命令也忽略远端配置；搜索还需 backend。MCP 本地模式会尝试发现／启动浏览器；Auto 按已配置后端回退，代理需另配。Chrome 启动代码含 `--no-sandbox`，本轮不走该入口；未核纯 HTTP／离线入口前不运行，既有 403 更不能拿来试抓取。 |
+
 ## 已处理
 
 | 候选／来源 | 解决什么、谁在用与社区评价 | 实际结果与去向 |
