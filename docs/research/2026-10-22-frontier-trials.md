@@ -742,3 +742,41 @@ lychee --offline --include-fragments --no-progress --format json \
 **为什么选这条反馈。** OpenTelemetry 的实际维护流程把普通构建与生产内部链接检查区分，避免预览里存在、生产不产出的页面漏检；中文技能仓库已把同版 Lychee 配成 Markdown pre-commit，有公开采用配置与作者使用自报，而非仅热度。该配置主要查外链，不能直接证明本轮片段检查；本轮只借官方 CLI 做按需离线检查，不照搬外链缓存／Hook。强替代是已有仓库检查加人工导航：链接少时足够；多页改写时本轮额外抓到两个原检查范围外的断点，因此采用这一步，而非替换原检查。
 
 **依据**：[一手] [Lychee 0.24.2 发布](https://github.com/lycheeverse/lychee/releases/tag/lychee-v0.24.2)、[固定版 Markdown 锚点实现](https://github.com/lycheeverse/lychee/blob/lychee-v0.24.2/lychee-lib/src/extract/markdown.rs)、[GitHub 章节链接规则](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#section-links)；[实践者／开源采用] [OpenTelemetry 链接检查](https://opentelemetry.io/site/build/link-checking/)、[中文使用者配置](https://github.com/TMYTiMidlY/skills/blob/main/.pre-commit-config.yaml)；[本仓实试] 冻结公开正文、两处实际修复与回验；核实 2026-10-25 UTC。
+
+
+<a id="omp-semantic-runtime"></a>
+## OMP：LSP 预览是编辑清单，不是迁移验收
+
+**已有真实迁移需求时，先看语言服务实际给了什么，再决定哪些修改能交给它。** 本轮在 Actual Budget 欢迎的小范围 JS→TS 迁移中，用 OMP 18.12.6 预览 `packages/sync-server/src/load-config.js` → `load-config.ts`；不是为了试工具另造改名任务。源码的无后缀相对导入、`package.json` 的开发 `imports.#load-config` 和发布 `publishConfig.imports.#load-config` 是不同消费者，不能一并改后缀。
+
+| 实际步骤 | 返回与意义 |
+|---|---|
+| 用隔离的 OMP 工具入口调用真实 TypeScript 服务，不接模型后端 | Bun 1.4.4、typescript-language-server 6.0.2；目标项目依赖 TypeScript 6.0.3（未保存服务的版本选择通知）；`symbols` 返回 `configSchema` 等真实符号，`diagnostics` 为 `OK` |
+| `rename_file` 显式 `apply: false` | 返回 `success: true`，正文只有改名预览标题；原始 `WorkspaceEdit` 为 `{ "changes": {} }`，没有引用编辑，也没有 `package.json` 编辑 |
+| 核对只读边界 | 源文件、`package.json`、`yarn.lock` 前后哈希一致，目标 `.ts` 未创建；这是预览的正确行为，不是写入失败 |
+| 决定后续实施 | 不用 `apply` 代办整项迁移；显式把开发别名改为 `.ts`，不机械改写既有发布映射；最终由原项目类型、真实构建入口与行为检查接收 |
+
+**这里的成功只表示取得预览，不表示迁移完成；空编辑也不是“LSP 坏了”。** 无后缀相对导入本来可能无需变化，包清单契约也未必属于该语言服务的改名覆盖范围。方法线在试用前已识别两类别名、计划手工核对；本次排除了“交给自动 apply 就能完成”的假设，没有替它发现新引用、节省已测工时或完成迁移。目标基线为 `actualbudget/actual` 的 `2ccf885`；方法线已完成迁移，经非作者复核的[实际迁移记录](../../experiments/actual-config-type-migration.md)确认相关 36 例、根类型检查及构建后实际启动通过；这是本地方法与产品验证，不等于上游已接受。实际 Vite 输出采用 bundle／chunks，并非按源路径逐文件发布；保持旧发布映射不代表验证了该字面路径。
+
+实际运行的是 npm 发布包 18.12.6，不是同版本号的仓库 `main`；锁文件固定包完整性。已读 `main` 的 `0b5c27ab24719c86a5986b95ee55f4e75bc1aaa0` 并核对发布包：本次 `rename_file` 分支一致，其他分支存在差异，因此不把两份源码混称同一版本。
+
+**采用与撤回：** 已有 IDE 的语义重构足够时沿用它；需要 Agent 集成语义编辑才考虑 OMP。其 `rename`／`rename_file` 默认应用，真实任务先显式预览；固定实现遇服务器启动失败或不支持 `willRenameFiles` 仍可能移动路径，支持方法的服务器实际报错才在应用前中止。若预期消费者不在预览中，转为显式维护并用原生检查接收，不以工具成功状态替代。十月使用者肯定实际改名与调试，中英文讨论也有复杂度和结果差异；尚无依据普遍替换现有 Agent。
+
+运行态另行按需求分流：OMP 集成 DAP 的暂停、变量、线程与子会话；[Cursor Debug Mode](https://cursor.com/docs/agent/debug-mode)提供假设驱动插桩与复现。已被原生日志／trace 定位的问题继续修，不为功能表换工具；本轮没运行 DAP，不把七月已关闭的 JS／TS 调试问题 #5984 当当前仍坏。
+
+**依据**：[一手：固定实现] [OMP LSP](https://github.com/can1357/oh-my-pi/blob/0b5c27ab24719c86a5986b95ee55f4e75bc1aaa0/packages/coding-agent/src/lsp/tool.ts#L599-L797)、[模型提示](https://github.com/can1357/oh-my-pi/blob/0b5c27ab24719c86a5986b95ee55f4e75bc1aaa0/packages/coding-agent/src/prompts/tools/lsp.md)、[DAP 文档](https://github.com/can1357/oh-my-pi/blob/0b5c27ab24719c86a5986b95ee55f4e75bc1aaa0/docs/tools/debug.md)；[真实任务] [Actual 迁移需求](https://github.com/actualbudget/actual/issues/1483)；[使用者] [十月实际使用](https://github.com/can1357/oh-my-pi/issues/15618)、[提示与实现不符](https://github.com/can1357/oh-my-pi/issues/15857)、[七月故障及关闭](https://github.com/can1357/oh-my-pi/issues/5984)、[HN 正反反馈](https://news.ycombinator.com/item?id=48994611)、[中文真实使用讨论](https://linux.do/t/topic/2260153)与[七月扩展取舍](https://linux.do/t/topic/2637702)；核实 2026-10-26 UTC。
+
+探索回执：按手册§3与既有来源名册读 Cursor、Claude Code 官方近期工程／评审文章，HN、Reddit、linux.do 原帖和 OMP／Trace／reviewer-agent 开源实现；相关主题优先近 3–6 个月，既有 Cursor Debug Mode 用作成熟基线。HN Algolia 读取失败，HN 网页原帖可读；未取得 X 原帖，不用转载补成已读。本节只交真实 OMP 预览与条件取舍，其他候选留在本地队列，不堆进正文；未形成可比任务对照，最高水平未知。
+
+<a id="review-scope-before-retry"></a>
+## 评审重试：未变不等于已审，先核前轮覆盖
+
+**先确认前轮实际读到了哪些改动，再复审新增差量及其影响；未变但被省略的文件仍待审。** Cursor 10-07 已修正大分支静默截断和“候选意见全被排除却像全绿”的提示；10-14 支持回复仍确认，local `/review-bugbot` 在模型读自定义指令前裁剪文件包，重复同一 `Diff` 选择会再次装载同一批文件。让它“只补漏掉的文件”不等于改变输入：未提交内容可改选 `uncommitted changes`，已提交遗漏则让现有 Agent 按文件读取相对基线的 diff。此为两条实际用户报告与官方回复的范围，未运行 Cursor，不泛化为全部托管评审当前仍漏文件。
+
+开源对照是 reviewer-agent `3e53befbba6eed0bfd72fd29e068d0bef507c78e`：暂存树哈希绑定内容、路径和模式，同会话重试按 blob／mode 输出 `CHANGED`、`UNCHANGED` 与实际差量；换审者或 HEAD 变化时不沿用该差量。源码对 Claude 后端的截断备料拒绝批准，对 Pi 后端可观察到的截断／读取错误／没读暂存 diff 拒绝批准。**这些是不同的保证：树哈希只说明版本相同，不能单独证明审者完整读过。**
+
+本轮实际消费当前 OMP 文档两文件暂存改动：纯 stdlib 备料函数产出完整 patch、tree 与 blob，独立审者逐字对照暂存 diff，发现“Cursor 插桩与重放”误述，修为“插桩与复现”。随后工具只内联这一行变化并标 13 未变，与原生 `git diff` 的 blob 差量逐字一致。没有安装提交 hooks／模型后端，独审由已有协作能力完成，不能把发现归功于插件模型质量；后续新增 Actual 试用内容后，这轮旧审查也不再覆盖新稿。
+
+**本次仍选原生 Git＋现有独审，不为两文件单轮修订引入整套插件。** 只有已有多轮评审、确有版本或差量交接负担时再借备料机制；遇部分范围、换审者或版本变化，先补实际输入与覆盖，不反复重跑相同的不完整包。不制造大 diff 测截断，也没有验证所有后端、重命名／mode-only 路径或效率收益。
+
+**依据**：[一手／真实用户] [10-07 提示修正](https://forum.cursor.com/t/review-bugbot-on-a-large-local-branch-reports-bugbot-found-no-bugs/173568)、[10-14 实际省略与支持回复](https://forum.cursor.com/t/local-review-bugbot-always-skips-the-same-files-on-a-large-diff/174649)；[一手：固定实现] [暂存补丁与树](https://github.com/rladr-org/reviewer-agent/blob/3e53befbba6eed0bfd72fd29e068d0bef507c78e/reviewer_git.py#L1716-L1774)、[重试差量](https://github.com/rladr-org/reviewer-agent/blob/3e53befbba6eed0bfd72fd29e068d0bef507c78e/reviewer_prompts.py#L1200-L1300)、[截断备料拒绝](https://github.com/rladr-org/reviewer-agent/blob/3e53befbba6eed0bfd72fd29e068d0bef507c78e/commit_hook.py#L229-L252)；[本仓实试] 两文件完整备料与真实反馈修订，仅限上述范围；核实 2026-10-26 UTC。
