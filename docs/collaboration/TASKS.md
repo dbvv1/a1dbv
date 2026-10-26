@@ -29,7 +29,7 @@
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 回滚取舍已交付；[Godot 原生二改](../../domains/game-dev/01-engine-integration.md#godot-native-authoring)已交付官方导入、原场景与资源新进程消费；未验画面／导出，不迁案例。[旧 Unity 实跑](local-jobs/B-UNITY-ADOPTION-001.md)仍暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [海岸音频](local-jobs/B-OPENWEIGHT-AUDIO-001.md)已在 RTX 5070 生成两 seed 候选，relay `fa5664f`；尚未混合听验，构建默认 off。[3D 岩簇](local-jobs/B-OPENWEIGHT-3D-001.md)原任务 `cce6083` 修复待接收端续验，尚无生成 mesh。资源采用后回流制作链，不与案例云端品质互等。 |
 | SR | **Star-Rush 完整弯道品质**：以地平线公路弯道为参照，保留跑圈 | dot-B | [master c4c7d65](https://github.com/dbvv1/Star-Rush-Reborn/commit/c4c7d658f57f5afe9e26ccf0e47dfb4aa307b9b8) 已上网站 v5：[公路候选](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road)接合雪线、分离小屏 HUD 并分层海岸远景；当前截图与差距见产品 docs/quality.md。下一步核公路默认入口与旧模式、存档和回放边界；音频候选待听。 |
-| FPS | **FPS-Like 射击循环品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | [main 0d8c0c2](https://github.com/dbvv1/FPS-Like/commit/0d8c0c2c29e3b5d208b943d46a8f713392a9e855) 已上网站 v8：换弹双袖保接触；[换弹做法](../../domains/game-dev/assets/animation.md#第四步换弹手离开枪是动作的一部分)已回流。差距在左腕、手指、人物单姿态与声音。下一步核开火／受击声画辨识。 |
+| FPS | **FPS-Like 射击循环品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | [main 239df5b](https://github.com/dbvv1/FPS-Like/commit/239df5badd8c43e14f57d381af379805910a1232) 已交灵敏度保存／取消／恢复与双后端正常输入；[输入与设置](../../domains/game-dev/04-client-modules.md#input-production)已回流。网站当前仍 v8（换弹双袖保接触）；真人瞄准手感、腕指与人物动作仍有差距，声音见待听。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
 ## 待人工验收（统一查看）
