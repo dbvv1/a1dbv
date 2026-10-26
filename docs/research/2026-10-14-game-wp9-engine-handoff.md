@@ -1,6 +1,6 @@
 主线：G1 引擎资产接入；主线三“第二次修改仍可靠”
 改变的建议：01/unity/unreal 从接口接通转为复用导入器、明确覆盖策略、验证语义身份；源层级联动与引擎组件保留分别选，解耦后显式同步；撤回旧 Unity AI MCP 并列推荐
-新证据：2026-10-22（UTC+8）补整页八组选择、内嵌宿主、依赖批次与旧序列化状态、修改后画面及恢复范围（§15）；整页独立复评登记差距1，无引擎／模型实测；此前补构建引用链与消费者查询的语义反例；2026-10-21补代码—资产影响范围同题比较与索引负结果边界（§14），无引擎／模型实测；2026-10-20补同作赛道源／共享定义／九图消费者与两轮继承包（§13），仅静态核对；2026-10-20（UTC+8）补旧骨骼FBX跨导入器二改的路由回退、原用户有限回执及5.7旧入口反例（§4.3）；2026-10-17（UTC+8） 补 Unity 官方同源 FBX 前后对照／6.3 解包合同与 UE5.8 FBX Scene 层级重建边界（§3.2／4.2）；补核 Spine 用户材质删除、固定修复与同用户回执，区分保护用户资产与自动同步（§3.6）；2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
+新证据：2026-10-26 补 Godot 官方导入→原场景→资源二改→新进程消费者的真实 headless 链（§16）；保其他引擎原范围。2026-10-22（UTC+8）补整页八组选择、内嵌宿主、依赖批次与旧序列化状态、修改后画面及恢复范围（§15）；整页独立复评登记差距1，无引擎／模型实测；此前补构建引用链与消费者查询的语义反例；2026-10-21补代码—资产影响范围同题比较与索引负结果边界（§14），无引擎／模型实测；2026-10-20补同作赛道源／共享定义／九图消费者与两轮继承包（§13），仅静态核对；2026-10-20（UTC+8）补旧骨骼FBX跨导入器二改的路由回退、原用户有限回执及5.7旧入口反例（§4.3）；2026-10-17（UTC+8） 补 Unity 官方同源 FBX 前后对照／6.3 解包合同与 UE5.8 FBX Scene 层级重建边界（§3.2／4.2）；补核 Spine 用户材质删除、固定修复与同用户回执，区分保护用户资产与自动同步（§3.6）；2026-10-16 UTC 补核 FBX 显式 clip 列表与新增 take 脱节、固定参考源码及 UUM-130850 仅新增通知的修复（§3.5）；同日补核 Unity 6.3 批量暂停、嵌套释放、单项返回与导入回调契约及既有固定源码（§12）；2026-10-15 UTC 补核 UnityGLTF 跨资产 remap 冷导入失败、固定修复及 2.22.0 标签（§3.4）；§11 官方安装／最少工具集、UnrealClaude 固定版本和双层权限及作者兼容答复；§10 官方 Pipeline 失联／桌面截图回退、beta.13 异步结果修复与 Coplay 固定测试作业实现；§9 不同作者的迁移代价与官方观测入口对照；§8 Assistant 2.20.0-pre.2 的版本前提、生成／替换边界及逐 job 计费
 
 # WP9：第二次重生成应更新哪一个资产
 
@@ -619,3 +619,45 @@ Unreal 沿用 §4.2 的任务结果接口，补明已核 Python 5.6 的非阻塞
 [g01-prefab]: https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PrefabUtility.RecordPrefabInstancePropertyModifications.html
 [g01-ue]: https://www.strayspark.studio/blog/unreal-mcp-server-v5-verified-editing-ue58
 [g01-locked]: https://www.strayspark.studio/docs/unreal-mcp-server/patches-and-plans
+
+
+<a id="godot-native-authoring"></a>
+## 16. Godot 作者到原生消费者：正常二改先用已有 CLI
+
+**决定：已有 Godot 项目让 Agent 先交可复现的原生导入与二改消费者，不为自动化先装桥；新工程也不据文本可读性宣布跨引擎优胜。** 本节把 §9／§11 的入口研究补成一次真实实施，默认不改变 Unity／UE 工程路线。实现见 [实验](../../experiments/godot-scene-authoring/README.md)，正式入口在 [01 §4.1](../../domains/game-dev/01-engine-integration.md#godot-native-authoring)。
+
+### 16.1 同题比较：选现成完整消费者，不造演示框架
+
+| 候选 | 采用判断与本次依据 |
+|---|---|
+| 官方稳定版 CLI＋完整 GDScript demo | **本次采用**：官方 Dodge the Creeps 已有输入、碰撞、HUD、计时刷怪、死亡与重开；直接消费原脚本／场景，比只造空 Node 或假 importer 更能检出二改丢失 |
+| 同游戏官方 C# demo／已有 [GUT](https://github.com/bitwes/Gut) 或 [GdUnit4](https://github.com/godot-gdunit-labs/gdUnit4) | 已有 C# 或测试套件就保原路线；GdUnit4 已有 Scene Runner 与 CLI，GUT 亦有 CLI，按各自兼容表匹配引擎。标准 GDScript 小例子不需要再引入 .NET／测试插件；两套未安装，不做性能排名 |
+| 官方 3D demo | 任务是 3D 光照、材质或控制器时更合适；本次只验证场景／资源作者链，不能用无 GPU 的 2D 结果替代 3D 画面 |
+| 社区编辑器桥／全新自动化平台 | 缺实时读取或交互才核对应版本能力；本次原生 CLI 已完成任务，因此不安装。未试用桥，最佳桥未知 |
+| 只 `--check-only`／文本改 `.tscn` | 解析可作为早检，不能代替 import 与真实消费者；本次保留“解析通过但资源缺失”的实际反例 |
+
+版本按官方 archive 选择 **4.7.2 stable（2026-08-18）**，不是当时 4.8 beta；配官方 demo release **4.7-6ad6167（2026-07-07）**，归档摘要固定在实验。既有项目维持原版本，这个选择只确定可复现实验。
+
+**真实使用者的正反证据**：
+- Godot Forum [BigMech 作者发布复盘](https://forum.godotengine.org/t/just-shipped-my-first-godot-game-bigmech-a-roguelike-mech-shooter-android-ios-soon/138327)（2026-05-07）自报 Godot 4.5／C#／.NET 8、GdUnit4、headless CI，以及资源迁移检出重复 ID；同帖玩家很快死亡，作者承认平衡仍需调整。借“资源也进测试”的机制，不把作者测试数量／耗时当本仓测量，更不能推导游戏好玩。[社区：作者自报及试玩反馈]
+- [Inconsistent exports](https://forum.godotengine.org/t/inconsistent-exports/133589)（2026-02-19）报告 4.6.1 Mono 的 CI 导出与本机不同，含纹理／信号问题；未确认因果或修复，不能说 4.7.2 也有该 bug。它提醒目标导出另验，不以解析／本机运行替代。[社区：未闭合问题]
+- [LINUX DO 的 Godot＋AI 协作讨论](https://linux.do/t/topic/1946833?tl=zh_CN)（2026-04-11）既有文本场景便于协作的反馈，也有输出偏离设计、UI／结构仍需人工把关的意见；建议查匹配版本资料、分清计划与执行。这里只借窄任务与原生反馈，不采用帖子中的模型／引擎主观排名。[中文社区]
+
+### 16.2 实际消费者与保存修正
+
+原始 `main.gd`／`player.gd`／`mob.gd`／`hud.gd` 均保持官方源码。探针发 HUD 按钮信号与 `Input.action_press`，由原信号连接、`_process`、Timer、RigidBody2D／Area2D 和 HUD 协程执行完整回合。没有自写替代 VM、碰撞器或游戏循环。
+
+作者脚本把 Player.speed 从 400 改 240、MobTimer.wait_time 从 0.5 改 0.25；原 shape 复制后改半径／高度 27／68→14／40，保存外部 `.tres` 并加载接回，再保存变体场景。首次普通 `instantiate()`→`pack()` 实际遗漏子节点 shape 覆盖并出现重复信号连接；改成编辑构建 `GEN_EDIT_STATE_MAIN`＋指定 Player 为可编辑实例后，外部引用和行为均能新进程重开。这个修正针对当前嵌套结构，不承诺所有继承／共享资产都可统一重打包。
+
+同一固定种子与 60 FPS 游戏帧：原版／二改向右 12 帧分别 80／48 px，固定观察段的原定时器刷怪 2／5；横向相隔 72 px 的受控敌人，原版触发死亡，缩小 shape 的变体不触发，随后重叠仍死亡。两者都等官方 HUD 回到开始按钮，再重开核玩家、分数与旧敌人；原版第三次新进程仍为原参数／行为。
+
+另一个实际失败更重要：未 import 的原游戏虽然报资源错误，仍能走完逻辑且退出 0。最终接收同时核退出码、引擎原始 ERROR、实际动画纹理／音频／字体引用和行为；保留干净副本未导入的失败，再 import 后重验。缺参数、缺场景、删掉保存的外部 shape 也须失败。脚本与归档校验分别运行，缺依赖不 skip。
+
+### 16.3 范围、环境与采用边界
+
+- **已跑**：Linux x86_64 官方 4.7.2 原生 importer、场景／资源保存重开、脚本、定时器、2D 物理；稳定结果与复现命令在实验。**未跑**：系统鼠标／键盘、GPU 渲染、真实音频输出、目标导出、复杂工程或本仓游戏接入。没有刷新 Unity／UE 原实验范围。[实测]
+- 每次独立 HOME/XDG/TMPDIR；官方源码默认 LSP 为 loopback、DAP 显式 `127.0.0.1`，实跑落盘配置的 debug／language_server host 也为 `127.0.0.1`，导入进程正常退出后再启动消费者。[源码／实测]
+- 代码 MIT，图片 CC0；指定背景音乐 CC-BY 3.0，Xolonium 字体 OFL 1.1；保下载包内全部通知。不是所有资源都 MIT。[官方许可文件]
+- Agent 可把新资源和消费者断言接进现有工程，人负责目标设备上的视觉、碰撞公平感、节奏与音画验收。现有入口已经满足需求时不新增 MCP／通用测试平台；整体最高 AI 效率仍未知。[采用判断]
+
+来源：官方 [版本 archive](https://godotengine.org/download/archive/)、[固定 demo](https://github.com/godotengine/godot-demo-projects/tree/4.7-6ad6167/2d/dodge_the_creeps)、[4.7 CLI](https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html)、[PackedScene](https://docs.godotengine.org/en/4.7/classes/class_packedscene.html)、[ResourceSaver](https://docs.godotengine.org/en/4.7/classes/class_resourcesaver.html)、[编辑器网络默认值](https://github.com/godotengine/godot/blob/4.7.2-stable/editor/settings/editor_settings.cpp)、[DAP 源码](https://github.com/godotengine/godot/blob/4.7.2-stable/editor/debugger/debug_adapter/debug_adapter_server.cpp)，社区原帖见 §16.1。2026-10-26 核实、下载校验并实际运行。
