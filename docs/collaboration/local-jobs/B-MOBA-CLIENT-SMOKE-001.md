@@ -2,12 +2,16 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: running
+status: cancelled
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 083183c245c2e8f4bd3dbbfa7e3d7c75a0357b3b
 result_branch: relay/b-moba-client-smoke-001
 
-## 要完成的事
+## 取消后续执行
+
+本轮旧 083／Thronefall 基线不再续拍或重审：云端现已能进行真实软件 WebGL 战斗观察，已完成 083 对照与新候选实战；用户主参照改为英雄联盟，Thronefall 仅保留视觉辅助。保留下面已有部分结果及独审失败，不将本轮标 accepted。接收端读到取消后在安全边界停止，保已有本地素材／日志；本条仅撤回后续要求，不证明本机进程已经退出，不影响其他任务或未来必要的硬件 GPU 验证。
+
+## 原任务范围（历史）
 
 083 的功能 smoke／双英雄选择已接受，本轮不重做旧 smoke。按用户新的品质标准，为一次基本战斗取得真实操作与非作者并排观察，给制作与整合指出最大的差距；不把功能通过称品质完成。
 
@@ -31,5 +35,5 @@ result_branch: relay/b-moba-client-smoke-001
 - 083 基本战斗品质基线已产出：部署站与固定提交逐字节一致、250s 真实输入会话、与 Thronefall 官方截图的同视口并排、三个优先差距与改法；但独立复审未通过，E 地面施放证据误标为成功帧、派生对比图仍引用旧会话、部分统计口径说明有误。
 - 本单元没有文件改动。
 - 检查：check_public（文件） 通过；独立审查未通过或未完成。
-- 下一步：修正 play.mjs 的技能成功判定并重拍 E 圆圈帧、用当前会话重建 zoom/compare 派生图、订正 fieldSemantics 文案，然后重审。
+- 下一步：取消上述补拍／重审；保留现有部分结果及其证据缺陷，待接收端确认安全停止。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
