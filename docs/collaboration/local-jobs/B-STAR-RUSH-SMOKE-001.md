@@ -2,7 +2,7 @@
 
 id: B-STAR-RUSH-SMOKE-001
 owner: dot-B
-status: revision_requested
+status: running
 accept: auto
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 3f73455801037b5bc7587f17d0a5c2c16b2f725e
