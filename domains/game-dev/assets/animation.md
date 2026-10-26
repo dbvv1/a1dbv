@@ -366,11 +366,11 @@ sh asset-pipeline/placeholder/run.sh
 
 <a id="multiunit-animation-consumer"></a>
 
-**同一份 GLB 供多个单位使用时，共享只读资产，隔离每个单位的动画与外观状态。** Beacon Guard 的实际消费者先 `loadCharacterAssets()` 加载蓝／橙源，再用 `createPresentation({catalog, assets})` 建立表现容器；随后 `sync` 按快照的实体 ID 建立实例：`SkeletonUtils.clone` 复制骨架绑定，每个角色有自己的 `AnimationMixer` 和克隆材质，几何与 clip 共用。这样改某个单位的姿态／材质参数不会让同源队友一起改变，也不必为每个单位重导一份 GLB；代价是实例骨架、混合器与材质仍各占资源。
+**同一份 GLB 供多个单位使用时，共享只读资产，隔离每个单位的动画与外观状态。** Beacon Guard 的实际消费者先 `loadCharacterAssets()` 加载蓝／橙源，再用 `createPresentation({catalog, assets})` 建立表现容器；随后 `sync` 按快照的实体 ID 建立实例。`SkeletonUtils.clone` 之后，在**同一角色内部**，仅对骨骼对象序列和逆绑定矩阵完全相同的 mesh 共用 skeleton，保各自 bindMatrix；同一源材质也只 clone 一次。跨角色的骨架、`AnimationMixer` 和材质仍独立，几何与只读 clip 共用。这样既不让队友同步变姿态／颜色，也不因角色有多个部件就重复分配同一套骨架。要单独改角色某一部件材质，再为该部件 clone 并承担释放。
 
 | 什么时候调用 | 消费者负责什么 |
 |---|---|
-| `loadCharacterAssets()` 成功后创建 view，把 `view.root` 加进场景 | 加载器在部分失败或缺 idle／walk 时清理已载入源；createPresentation 建立供 view 内对象共用的地图资源 |
+| `loadCharacterAssets()` 成功后创建 view，把 `view.root` 加进场景 | 部分失败或缺 idle／walk 时清理已载入源；成功后由调用方持有。createPresentation 建立 view 内共用的地图资源 |
 | 每个逻辑步后 `view.sync(simulation.snapshot())` | 只读快照，按阵营选源并维护实例，以 `(x,z)` 更新整角色根；按相邻逻辑位置选 idle／walk 与朝向，同 tick 重复调用不重复推进。死亡隐藏，复活首 tick 回 idle；实体被移出快照才释放对应实例 |
 | 每个绘制帧 `view.advance(renderDeltaSeconds, alpha)` | 推进独立混合器，并在最近两份逻辑快照端点间插值位置；`alpha` 是固定步长累加器比例 0–1，默认 1 直接用最新端点。启用插值以晚一逻辑 tick 的表现换连续位置；不把画面位置写回模拟 |
 | 换局或回放倒退前 `view.reset()` | 释放旧实例、清 tick／插值端点；新生与复活也重置端点，不从旧尸体位置滑回。reset 保留可复用的地图与源资产 |
@@ -378,7 +378,13 @@ sh asset-pipeline/placeholder/run.sh
 
 固定实现只据位移播放 idle／walk，**没有攻击／命中事件就不拿冷却猜攻击动画**。同一个 catalog 还可经 `abilityViewModel` 生成图标语义与冷却显示：tick 按 `rules.tickRate` 换成秒，缺方向弹道图标就返回空并显示技能名，不借指向技能图凑齐。表现层提供已知禁用原因，目标／距离／朝向合法性仍由模拟裁决。
 
-在[固定消费者目录](https://github.com/dbvv1/MOBA-Like/tree/c6b38d6dd7d8a64415f5f1b768b41bc3757c7b29/asset-pipeline/presentation)的 MOBA-Like 仓库根运行 `npm --prefix asset-pipeline/presentation ci --ignore-scripts --no-audit --no-fund`、`npm --prefix asset-pipeline/presentation test`，可复跑真实 Simulation 快照与 GLB 的 8 项 Node 检查。它比[单个 scene 的整根检查](3d.md#skinned-gltf-consumer)多验证了独立实例、时间推进和释放，但仍不是 GPU 游戏画面：测试导航是直线路径夹具，正式游戏入口、滑步和动作衔接尚未验。完整接线与实测范围见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26（UTC+8）。
+**取消本次消费，不销毁已移交的共享源。** 离场时可用 `loadCharacterAssets(undefined, {signal})` 取消待完成的加载消费，已完成与迟到结果都回收；成功返回后，后来 abort 不销毁仍在使用的资产，仍按上表统一释放。这是已验模块接口，不代表游戏入口已接 signal，也不承诺 GLTFLoader 网络 I/O 中断。
+
+**先量资源归属，再设预算。** `resourceInventory({roots, clips})` 把所有共享源与实际消费者一起按对象／底层 ArrayBuffer 身份去重，`assertResourceBudget` 用调用方给的明确上限阻止意外复制；不要把多个视图长度相加当成实际保留内存。统计含 clip 键值与骨架矩阵，但不是 JS heap、图像或 GPU 显存，目标设备预算仍要实测。
+
+**少量英雄可以先不用旧动画球做剔除，把精确范围计算放到真正拾取时。** 本例仅对克隆英雄的 SkinnedMesh 关闭 `frustumCulled`，地图不动；代价是离屏角色也可能提交绘制。实际 `Raycaster` 派发时再按当前蒙皮点计算 box→保守 sphere，先用 `sync/advance` 更新矩阵，不逐帧扫描。大量角色／高频拾取另选粗代理或完整保守界；这与下方小夹具逐次刷新包围是不同成本选择。
+
+在[固定消费者目录](https://github.com/dbvv1/MOBA-Like/tree/4822f31317b3416758b0507e03a2c460991257f4/asset-pipeline/presentation)的 MOBA-Like 仓库根运行 `npm --prefix asset-pipeline/presentation ci --ignore-scripts --no-audit --no-fund`、`npm --prefix asset-pipeline/presentation test`，可复跑 18 项 Node 检查，含真实 Simulation 快照／GLB 与受控异步／参数夹具，覆盖实例独立、资源去重／释放、取消、真实视锥反例和 Raycaster 交点。它比[单个 scene 的整根检查](3d.md#skinned-gltf-consumer)多验证了实例与生命周期，但仍不是 GPU 游戏画面：测试导航是直线路径夹具，离屏成本、正式游戏入口、滑步和动作衔接尚未验。完整接线与实测范围见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26（UTC+8）。
 
 <a id="layered-animation-consumer"></a>
 
