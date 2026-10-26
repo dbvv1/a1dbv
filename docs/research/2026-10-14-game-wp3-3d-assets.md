@@ -1,6 +1,7 @@
 主线：二／三／四；G1 3D 选型、第二次修改与交付
 改变的建议：[研究／工程建议] 保合格资源族与可编辑源默认；完整场景先从实际视角组织大形、焦点与近中远层，AI改编排并按缺口补件，不以单资产清单或整景首图代替品质。显式场景生成与概念／背景分开比较；建筑、刚体、植被和角色沿各自二改门槛接收。
 新证据：[一手／研究] 2026-10-23补近两年创作者制作实践、WorldClaw／SceneSmith的可编辑机制与发布边界、Star-Rush两渲染路径和路段方案与待验条件（§4.2）；10-22的植被／角色／碰撞比较及旧局部验证保留原节。新路线未运行模型／引擎，未产生新场景画质实测。
+实证补充：[本仓实跑] 2026-10-26（UTC）Infinigen 2 室内作者源生成／保存重开／CPU 渲染与对象组二改已验；整景 USDC 未交付，范围与接续条件见§4。
 生产模块：[研究／工程建议] 2026-10-25把§4.2完整场景比较与§4.1建筑族、§11交互、§15植被、§16资源族二改、§19消费者合成“意图→可玩片段→第二改”流程（§4.3）。不新增外部来源、不运行引擎／生成器、不取得视觉或运行验证；版本、费用与许可继续由§10维护。
 
 # WP3：3D资产路线、原生低模与第二次修改
@@ -110,6 +111,32 @@ Poly Haven用于写实单资产，仍可能超游戏预算；[2026-07-18 API说�
 **👀 Infinigen（a0d1a0dd，2026-10-08）**是有源码的程序化基线，适合借参数配方，不是AI生成模型；主许可BSD-3-Clause，含明确标注的CC0程序代码。[一手：[固定README](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/README.md)、[LICENSE](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/LICENSE)] 本轮不以科研合成世界demo证明实时游戏资产预算；优先复用一类已有参数化资产而非整套场景系统。[经验]
 
 固定[导出说明](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/docs/source/ExportingToExternalFileFormats.md)给出更强反证：程序材质需烘焙且有损；文档正式支持全场景USDC；固定实现对usda/usdc均走USD分支，非USD路径才显式实体化实例并可能显著膨胀；动画导出未正式支持，透明材质可能不正确。不要将作者关于格式能力的泛化解释推广为所有格式都不支持实例，只采用该导出器的明确限制。对应[源码](https://github.com/princeton-vl/infinigen/blob/a0d1a0dd5644904d3cb921ff24260160ac06ae08/src/infinigen/tools/export.py)的`export_curr_scene`／`export_single_obj`在非USD路径调用`realizeInstances`（约1135–1189行）；不以文件内未调用的辅助函数充当实际执行路径。[一手：文档+固定源码]
+
+### Infinigen 2：室内源的实际制作与二改
+
+**🧪 需要可编辑的室内作者源时可试；已有合格模块包仍先保原布局。** 本轮沿官方 `224598d4` 的 `2.0.0a3` 实际生成，不把上文 v1 导出契约自动搬给 v2。它以程序配方而非生成模型产出房间、家具、材质与相机，适合让 Agent 负责选择房型、保存源和按对象修改；要交可玩关卡，还需项目自己的预算、通行与交互消费者。与 SceneSmith 的模型／服务整链、尚无可运行发布的 WorldClaw 相比，本轮先选了能在 CPU 独立跑的公开实现，不据此宣称视觉最高水平。
+
+**正常链：固定环境和配方 → 生成并保存作者源 → 在原源上改对象组 → 单独烘焙导出、核消费者。** 同固定检出已安装运行，可复现入口如下；输出与工具缓存留在自己的工作目录，不将自动产生的硬件／路径记录提交到项目。首次遇到岩石配方会从 Blender 官方扩展库安装 A.N.T.Landscape，需联网。
+
+```bash
+uv venv --python 3.11 .venv
+uv pip install --python .venv/bin/python \
+  'git+https://github.com/princeton-vl/infinigen.git@224598d4a2ff95b4fc928e72c222598b7122c698' \
+  'gin-config==0.5.0'
+export XDG_CONFIG_HOME="$PWD/.infinigen-user/config"
+export XDG_CACHE_HOME="$PWD/.infinigen-user/cache"
+export INFINIGEN_CYCLES_DEVICE_TYPE=CPU
+.venv/bin/python -m infinigen2.generate room_livingroom_rand \
+  --seed 42 --save_blend --output outputs/livingroom
+```
+
+此命令生成 `scene.blend`，**不包含 render exporter，因此没有图片是正常结果**。本轮用同版 bpy 重开源，再以 Cycles CPU、512×384、16 samples 渲染；已看实际图像，未把随机室内陈设评为游戏美术合格。实跑环境为 Python 3.11.17、bpy 4.2.0、procfunc 0.37.0、NumPy 1.26.4；生成阶段约 28.7 秒，作者源约 145.7 MB。原生 metadata 在保存前报告基网格 200,606、细分估计 11,254,482 三角；保存时还会烘焙共享 modifier 前缀，不能把前一个数字当运行资产预算。
+
+**第二次要求只把沙发后移时，改已选源，不整间重生。** 该 seed 的 `sofa_00` 与三个 `cushion_throw_pillow_rand*` 是四个独立对象，抱枕并非沙发子节点。本轮将这四个对象一起沿 Y 平移 0.35 米，另存、重开并再渲染；115 个其他对象的变换、网格坐标／索引和材质引用保持不变，原 `.blend` 的 hash 不变。交给 AI 的修改清单应列部件组、位移和保留项；若改的是墙、门或房间尺寸，再验相邻结构和通行，不能从这次家具变换推断自动重排成立。`--trace codegen` 在本例的 room 迭代处因 Proxy 不支持迭代失败；普通生成成功，因此本例保存配方与 `.blend`，不承诺已经得到可重放的展开代码。
+
+**到运行资产先解决密度，再在作者源副本上烘焙导出。** 本轮将保存的 v2 客厅交给同固定仓内保留的 `infinigen.tools.export.export_curr_scene`，指定 USDC、64² 贴图；这是真实导出试验，不是宣称 v2 已有独立游戏导出 API。第一次与渲染并行、随后单独运行都被终止（exit 137）；单独一次约 171 秒，未到 600 秒限时，只留下部分贴图，没有 USDC。具体终止原因未证实，本次停下大整景导出，保留作者源；后续需先明确资源预算／降低已验源的复杂度，再接真正运行消费者，而不是将 `.blend` 的成功算成引擎通过。
+
+**来源与许可（2026-10-26，UTC）**：[固定 README／主 BSD-3-Clause](https://github.com/princeton-vl/infinigen/tree/224598d4a2ff95b4fc928e72c222598b7122c698)、[安装依赖](https://github.com/princeton-vl/infinigen/blob/224598d4a2ff95b4fc928e72c222598b7122c698/pyproject.toml)、[原生 CLI 与保存阶段](https://github.com/princeton-vl/infinigen/blob/224598d4a2ff95b4fc928e72c222598b7122c698/src/infinigen2/generate.py)、[房间生成器](https://github.com/princeton-vl/infinigen/blob/224598d4a2ff95b4fc928e72c222598b7122c698/src/infinigen2/scenes/room/room.py)、[本轮所用导出器](https://github.com/princeton-vl/infinigen/blob/224598d4a2ff95b4fc928e72c222598b7122c698/src/infinigen/tools/export.py)。本次实际安装的 A.N.T.Landscape 0.2.0 声明 GPL-2.0-or-later，工具依赖不统称 BSD／CC0；未引入模型权重或检索素材。社区作者在 [#352](https://github.com/princeton-vl/infinigen/issues/352) 报告旧版先减面再导入 UE，同时追问开门和连通性；这是旧版采用线索，不是本次引擎验证，也不将其后来被纠正的连通性猜测当现行缺陷。
 
 **👀 Marble Pro仅作受限背景候选。** 它能生成／编辑／扩展世界，交付Gaussian splat、低精度collider或高质量mesh；具体导出档和商用口径冲突统一见[§10](#10-动态事实表限定补核)。[一手／研究]
 
