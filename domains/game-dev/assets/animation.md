@@ -122,9 +122,11 @@ flowchart LR
 | 回握 | 在动作已接近握点时渐增支撑约束，恢复瞄准 | IK 修小偏差，不跨身体拉手；肘弯与枪托仍合理 |
 | 完成或中断 | 表现归还相应层／约束；技能按自身阶段决定装填结果 | 切枪／受击后旧动作不能改新武器配置，不能因动画淡出又加一次弹 |
 
+**✅ 近景接触已配套、袖臂仍整组平移时，先保掌—弹匣接触再解身体端。** FPS-Like 的原掌指和既有可见弹匣路径作为腕端目标，相机空间肩锚、两段定长与外侧肘提示只驱动原创袖形；Three 与 Canvas 共用这一变形，不再分别拼动作。分件接缝须共享腕段的轴、环向与末圈顶点；中心对齐仍会露楔形背景，不能靠放大袖口遮住。短连射→换弹→就绪的双后端连续片验证了弯肘可读、整袖平移减少；只适用于已校验腕目标全程可达的近景换弹；换握、取新匣或躯干联动不由这套袖形解决。左腕折面与固定手指仍缺，不据此声称 Unity/Unreal 已验证。实现起点是 [FPS-Like 的末端求解与共截面袖形](https://github.com/dbvv1/FPS-Like/blob/0d8c0c2c29e3b5d208b943d46a8f713392a9e855/src/render/arm.ts)，输入仍来自原武器阶段；当前效果见 [FPS-Like](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site)。
+
 [LlamAcademy 的实际示例](https://github.com/llamacademy/scriptable-object-based-guns/blob/81cb444d25f1c0044835440977da48305ca6325e/Assets/Scripts/Guns/Demo/PlayerAction.cs)在换弹起点把手／肘权重统一降到 0.25，结束再回 1。这是读得见的教学接线，不是分阶段双手装填已解决；本模块改成按接触职责控制，动作路径不兼容时仍换动作，而不把常数调得更低当完成。
 
-**依据**：[一手：固定源码] 上述 `PlayerAction` 与同版 `PlayerIK`；[研究] 分阶段路线沿 [WP4 接触／对位证据](../../../docs/research/2026-10-14-game-wp4-animation.md#比例与装备补研接触参照可达性与体积)推导；核实 2026-10-25，未实测。
+**依据**：[一手：固定源码] 上述 `PlayerAction` 与同版 `PlayerIK`；[研究] 分阶段路线沿 [WP4 接触／对位证据](../../../docs/research/2026-10-14-game-wp4-animation.md#比例与装备补研接触参照可达性与体积)推导，2026-10-25 核实，Unity 接线未实测；[案例实测] FPS-Like `0d8c0c2`，2026-10-26 正常输入核 Three／Canvas 的程序袖形与接缝。
 
 ### 什么时候换更强方案
 
