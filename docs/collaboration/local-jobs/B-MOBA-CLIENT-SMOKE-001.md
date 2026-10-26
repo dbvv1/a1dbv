@@ -2,7 +2,7 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: d32f5d9014200c0e2d686c5d28e7a37114429f51
 result_branch: relay/b-moba-client-smoke-001
@@ -28,3 +28,11 @@ result_branch: relay/b-moba-client-smoke-001
 - 旧 `4520ff9`：宿主真实 `npm ci`／`npm run smoke` 退出0，原全部断言及软件 WebGL2 通过；B 已核固定树／断言并接收。完整环境、时间与3项依赖漏洞提示保留在上述固定回执；不是硬件或人工品质通过。
 - 新 `d32f5d9`：尚未浏览器验收。本次仍只执行 `npm ci`、`npm run smoke`，保原断言并检查新源码要求的 contentVersion 8、真实 E 键鼠施放、snapshot zone 及实际 Three 效果对象；不得将旧报告改标新 SHA。
 - 运行前后核固定树和跟踪文件不变；宿主独核实际命令时间／退出／报告，原源码独审复用。若失败，交精确 failure.stage/category、notice 及脱敏字段，由现有客户端 owner 修，不自行改实现／依赖／断言。通过后交 B 唯一产品发布者；本任务不合产品 main。
+
+## 当前结果
+
+- 固定候选 d32f5d9 的 npm ci 与 npm run smoke 实跑退出 0，新源码要求的 contentVersion 8、真实 E 键鼠施放、snapshot zone 与 Three 效果对象、非背景像素及浏览器错误断言全部通过，软件 WebGL2 已如实注明，独立审查通过且跟踪文件未变。
+- 本单元没有文件改动。
+- 检查：check_public（文件） 通过；独立审查通过。
+- 下一步：将固定 SHA 的脱敏通过事实交 dot-B 唯一串行发布者；本任务不合产品 main。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
