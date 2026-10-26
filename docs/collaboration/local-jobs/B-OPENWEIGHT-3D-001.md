@@ -54,6 +54,8 @@ result_branch: relay/b-openweight-3d-001
 
 ## 当前结果
 
-- 接收端原产物[29bff1e](https://github.com/dbvv1/MOBA-Like/commit/29bff1ea22e9328d0fc82a30ab5cc2f6e8f036e0)只有自制RGBA输入与调用骨架；TLS EOF与提取依赖未解决，推理和GLB接入未开始，原8条复审全文待接收端取回。
-- 云端续修[e761e87](https://github.com/dbvv1/MOBA-Like/commit/e761e87d409cf5ea966d80630586c375895465ee)及许可补充[cce6083](https://github.com/dbvv1/MOBA-Like/commit/cce60833a0c5acd30ef895f9b15c41bd4f57f733)已在同一relay分支：修正来源/离线与输出保护、README错误归因；原输入5项＋runner CPU5项通过，真实官方源码身份和890²预处理通过，运行GLB未变。
-- 下一步：接收端领取本revision，续原单元修原8条，先核TripoSR独立合法低成本路线，TripoSG只比较官方nonflash窄修；官方TLS恢复后才取权重/真实推理。Git revision_requested不代表正在执行，未取得任何AI生成mesh或品质结论。
+- 本单元完成 TripoSR 独立薄调用、TripoSG nonflash 延迟 diso 的 patch/runner、GLB 后处理合同与 19 项测试；但独立复审未通过：权重指纹漏收嵌套 config.json，README 状态措辞、19 项计数拆分与验证命令环境说明不一致，真实推理仍因拿不到官方权重及 torchmcubes 缺 CUDA Toolkit 未进行。
+- 产物：[21c1a39](https://github.com/dbvv1/MOBA-Like/commit/21c1a3911934d99458002e869f10dcbb10740287)，分支 `relay/b-openweight-3d-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：先修正复审 4 项并取得通过复审；待官方 Hub 可完成 TLS 握手取到固定 revision、隔离 CUDA 环境可构建 torchmcubes、并补 Blender 采用源后，再跑真实推理、12 GB 峰值与 GLB 接入。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
