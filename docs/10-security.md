@@ -212,7 +212,7 @@ anymd 不配置允许目录时，不会额外收窄操作系统允许的文件�
 - **网络**：受沙箱覆盖的命令经代理按域名检查；有效列表还会合并 `WebFetch(domain:...)` 规则，空 `allowedDomains` 不等于离线。要锁定列表，使用可信设置来源的 `strictAllowlist`；
 - **受保护路径**：即使在可写目录里，`.claude/` 下的设置、Skill、Agent、Hook，`.mcp.json`，`.bashrc`，`.gitconfig`，`.git/hooks` 也禁止写入，而且没有办法单独放开。这些保护仅在文件隔离开启且命令仍处于沙箱时成立；`filesystem.disabled: true` 会连同其他文件保护一起关闭。
 
-**推荐起点**（放在用户级或托管设置里，仓库级的 `credentials` 条目会被忽略；必须结合下表核对实际配置，不是完整宿主隔离）：
+**推荐起点**（放在用户级或托管设置里；当前版本会合并各已加载设置层的 `credentials` deny，而本例的 `strictAllowlist` 不接受仓库级配置；必须结合下表核对实际配置，不是完整宿主隔离）：
 
 ```json
 {
@@ -262,7 +262,7 @@ anymd 不配置允许目录时，不会额外收窄操作系统允许的文件�
 - **容器里的弱化模式**：`enableWeakerNestedSandbox` 会显著削弱隔离，只在外层另有隔离时使用；
 - **要隔离整个进程**：连同 MCP、Hook 一起隔离，就把整个 Claude Code 放进 sandbox runtime 或 dev container。
 
-**依据**：[一手] [Claude Code Sandboxing 文档](https://code.claude.com/docs/en/sandboxing)、[命令 Hook 安全说明](https://code.claude.com/docs/en/hooks#security-considerations)、[Claude Code Security](https://code.claude.com/docs/en/security)、固定实现与版本反证；[一手：官方博客，厂商自述] [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)；[社区：原文] [Matthew Green：Is sandboxing sufficient to contain rogue agents?](https://blog.cryptographyengineering.com/2026/09/30/is-sandboxing-sufficient-to-contain-rogue-agents/)；[经验] 采用建议与取舍；只读公开文档与源码，未运行沙箱或读取真实凭据；核实 2026-10-21。
+**依据**：[一手] [Claude Code Sandboxing 文档](https://code.claude.com/docs/en/sandboxing)、[命令 Hook 安全说明](https://code.claude.com/docs/en/hooks#security-considerations)、[Claude Code Security](https://code.claude.com/docs/en/security)、固定实现与版本反证；[一手：官方博客，厂商自述] [How we contain Claude](https://www.anthropic.com/engineering/how-we-contain-claude)；[社区：原文] [Matthew Green：Is sandboxing sufficient to contain rogue agents?](https://blog.cryptographyengineering.com/2026/09/30/is-sandboxing-sufficient-to-contain-rogue-agents/)；[经验] 采用建议与取舍；只读公开文档与源码，未运行沙箱或读取真实凭据；核实 2026-10-21。 `credentials` deny 的设置层合并规则按[官方凭证说明](https://code.claude.com/docs/en/sandboxing#protect-credentials)补核 2026-10-26。
 
 ## 3.3 CI 里的 Agent：claude-code-action 的安全边界
 

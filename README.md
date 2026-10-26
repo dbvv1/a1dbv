@@ -2,6 +2,7 @@
 
 > **先找当前最高水平的做法，再用证据判断是否采用。** 本仓库帮助开发者判断：面对具体任务，怎样用 **AI Coding** 获得更好的结果，哪些新工具与方法值得采用；主干是通用 AI coding，具体领域（如游戏开发 / Unity）作为分支放在 [`domains/`](domains/)。
 
+<a id="按目标开始阅读"></a>
 ## 读者问题 → 答案
 
 **按你现在要解决的问题找答案。** ✅ 照做即可；🟡 有答案，仍在整理成一页；⏳ 整理中。
@@ -18,11 +19,13 @@
 | Codex 过度防御、过度工程怎么治 | [按触发输入与契约收敛改动](docs/decisions/codex-overengineering.md) | ✅ |
 | 子代理怎么组织，长任务怎么无人值守 | [委派、整合验收与中断续接](docs/decisions/long-tasks.md) | ✅ |
 | 怎么审 AI 写的代码 | [09 评审](docs/09-review-and-quality.md)、[REVIEW 模板](templates/generic/REVIEW.md) | ✅ |
-| 权限、沙箱与 Hooks 怎么配 | [10 安全](docs/10-security.md)、[06 Hooks](docs/06-hooks-and-guardrails.md) | 🟡 |
+| 权限、沙箱与 Hooks 怎么配 | [工作区自主执行与必要边界](docs/decisions/permissions-and-hooks.md) | ✅ |
 | 调试、Agent 跑偏或谎报完成 | [17 排障](docs/17-troubleshooting.md)、[15 调试](docs/15-task-playbooks.md) | ✅ |
 | 测试驱动、规格驱动、计划模式 | [按缺口选计划、测试与规格](docs/decisions/planning-and-tests.md) | ✅ |
 | 前端与 UI 任务 | [真实组件、用户路径与失败恢复](docs/decisions/verification.md) | ✅ |
 | 遗留代码与大迁移 | [15 任务打法](docs/15-task-playbooks.md) | ✅ |
+| 新模型、工具或流程值得换吗 | [用真实任务比较质量与总投入](docs/22-agent-evaluation.md) | 🟡 |
+| 已有产品正常工作，还应怎样改 | [按具体问题选择后续改进](docs/15-task-playbooks.md#102-已有产品按问题选择改进) | 🟡 |
 | 团队怎么推广 | [18 团队落地](docs/18-team-adoption.md) | ✅ |
 | 本周值得试什么 | [本周 Top 5：按当前编码任务选](docs/13-frontier-radar.md#本周-top-5) | ✅ |
 | 用 AI 做游戏 | [游戏分支](domains/game-dev/README.md) | 🟡 |
@@ -38,48 +41,14 @@
 
 ## 一页纸：怎样把 AI 编程用好
 
-**✅ 保留已经稳定达标的工作流；新任务按下表选入口和配置。** 本节只保留实践判断的摘要；详细条件、依据和反证详见[核心建议清单](docs/README.md#核心建议一致性清单)指定的主专题，入口与配置分档详见 [02](docs/02-models-and-cost.md#1-原则按任务分档而不是追榜单)。先确认入口实际支持该型号和配置：以下是仓库采用建议，不是产品出厂默认或模型实测排名。
+**沿用已经有效的工具，从眼前一个真实任务开始；需要改变选择时，用上面的读者地图。**
 
-| 任务 | 现在用什么、怎么配 | 何时调整 |
-|---|---|---|
-| 本机日常功能、补测试或小修复 | Codex CLI：`codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`；已有Claude Code则用`claude --model claude-sonnet-5-5 --effort medium` | 仅漏深度先升effort；缺资源／验证工具先补对应入口，不以换模型代替 |
-| 困难跨模块重构、疑难bug或高兼容目标 | 同一入口可直接选GPT-6 Astra＋Light（CLI值`low`），或Opus 5.5＋`medium`；重验证可从`high`起 | 更强配置未改善质量，或等待、费用和返工不值，退回原配置；不必先失败才升档 |
-| 可脱离本机、希望关机后继续 | Codex Cloud已发布环境，模型按上两行；先核仓库依赖和检查能在云端执行 | 必须用本机设备、登录或VPN才能验收，就留本机入口，不假定云端自动继承 |
+1. **交代目标和保留行为。** 说明谁要完成什么、已有行为哪些必须留下；项目命令与特殊约定放进[共享指令](docs/decisions/instruction-files.md)。
+2. **补齐会改变实现的决定。** 目标清楚就实现，未知事实先调查；需要计划、测试或持久规格时，按[任务缺口](docs/decisions/planning-and-tests.md)选一种起步。
+3. **让 Agent 取得实际反馈。** 跑项目原生检查，再按任务核对真实组件、浏览器路径或后端读回；[验证页](docs/decisions/verification.md)给出可复制的任务与接收方式。体验与高影响取舍由人判断。
+4. **按结果补能力，再继续修改。** 查版本资料、读领域配方、调模型投入或拆分独立任务，分别看[扩展选择](docs/decisions/skills-and-plugins.md)、[模型分工](docs/decisions/model-roles.md)与[长任务接收](docs/decisions/long-tasks.md)。保留质量和总投入确有改善的做法。
 
-Agent 调查、修改并交回实际检查结果，人核目标、旧行为与遗漏的调用方，UI／手感需体验。不能猜的契约先调查、补决定；体验未定先做可撤回样品，再验一次代表性的后续修改。配置命令、官方依据及撤回条件详见 [01](docs/01-agents/README.md#30-秒结论) 与 [14](docs/14-synthesis.md#0-30-秒结论按任务选入口交付到可继续修改)；Codex 的 `-c` 只覆盖本次启动。
-
-**⛔ 不默认堆多套流程，或让 Agent 在没有验收出口时包办整个产品。** 有明确能力缺口或质量目标，才加最小工具／评审；可独立交付且有整合者时再并行。原路径无法访问必要资源、反复漏约束，或新方案的收益被等待和返工抵消，就调整或撤回该路径；这是采用边界，不是原生方案效果必胜的承诺。
-
-1. **先定义可观察的完成标准。** 编译、业务测试、浏览器操作和人工判断各覆盖不同问题。先让 Agent 能实际启动目标路径并观察结果，不要只接受完成声明。→ [07 工作流](docs/07-workflows.md)、[23 浏览器验证](docs/23-browser-verification.md)
-2. **上下文按任务提供。** 先定位相关事实，常驻规则只写必要信息；把暂时的搜索过程压缩为可复查的结论。长度、工具数量与推理强度都要通过任务对照决定。→ [03](docs/03-context-engineering.md)、[22](docs/22-agent-evaluation.md)
-3. **原生起步，有可定位的能力缺口或有依据的质量目标时，再选择最小有效补充。** 先复用资料、项目约定与已有工具，不必等功能失败，也不默认增加 Skill；不要同时堆叠几套争夺控制权的完整流程。→ [05](docs/05-skills-and-plugins.md)、[24 社区工作流](docs/24-community-workflows.md)
-4. **模型、工具、流程一起评估。** 必要行为不退步，目标质量、总费用、实际等待与人工审查／返工分别判断；API 账单、另购 credits 与订阅内额度分开记录，首次成功与重试也分开；选型分数与独立终评分开，避免只看排行榜、最佳一次结果或生成行数。→ [22 评估](docs/22-agent-evaluation.md)、[02 计费口径](docs/02-models-and-cost.md)
-5. **原生按需委派，显式拆分要有收益和交付边界。** 能扩大证据覆盖、减少主上下文或缩短关键路径，且结果能整合时再要求并行；接口改变后也要更新尚未执行的计划。→ [08](docs/08-multi-agent.md)、[24](docs/24-community-workflows.md)
-6. **自动运行需要故障恢复。** 进程结束、外部请求超时、旧记忆和日志截断都可能让“继续”变成重复或误判。显式状态、有限重试与写操作对账很重要。→ [20](docs/20-codex-long-horizon.md)
-7. **约束由实际执行边界落实。** 类型 schema、Hook 和模型评审都有适用范围；权限、凭证与副作用不能只靠提示词声明。→ [10 安全](docs/10-security.md)、[06 Hook 边界](docs/06-hooks-and-guardrails.md)
-8. **快速原型用来判断价值，真实交付需要补足证据。** 先比较现成方案、局部补充与完整替代，再打通有用的一步并试用；接入真实用户、数据或收费前检查权限、持久化、故障恢复和维护方式。→ [15 原型](docs/15-task-playbooks.md#10-原型和一次性脚本)、[18 交付与接管](docs/18-team-adoption.md)
-9. **读实践者的失败记录，也读源码与官方规范。** 开源作者、维护者和使用者有不同目标；个人成功案例不代表普遍收益，社区热度不等于证据。→ [09 证据边界](docs/09-review-and-quality.md#1-质量数据ai-代码的真实代价)、[24 实践案例](docs/24-community-workflows.md)
-10. **领域验证决定自主程度。** 游戏按问题组合编译、状态、画面和自动试玩证据，手感与乐趣仍需要人体验。→ [游戏验证](domains/game-dev/02-verification-and-playtesting.md)、[游戏路线图](domains/game-dev/06-indie-roadmap.md)
-
-**依据**：[经验：综合建议] 本节实践判断摘要；[研究：2026-10-20] 入口与配置分档详见正文 02；[研究] 上文主专题；核实 2026-10-20。
-
-## 按目标开始阅读
-
-| 你现在要做什么 | 推荐入口 |
-|---|---|
-| 需要向外找方案、参照，判断复用还是自建 | [25 AI 探索任务](docs/25-ai-exploration.md) → [12 来源与待验证](docs/12-resources.md) |
-| 已有失败，判断先补资料、工具还是流程 | [15 调试](docs/15-task-playbooks.md#2-调试) → [05 最小补充](docs/05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么) |
-| 功能正常，希望改善信息表达、响应或可维护性 | [15 已有产品改进](docs/15-task-playbooks.md#102-已有产品按问题选择改进) → [22 比较与撤回](docs/22-agent-evaluation.md#7-何时推广何时停止) |
-| 使用 Codex 或 Claude Code | [Codex](docs/01-agents/codex.md) → [Claude Code](docs/01-agents/claude-code.md) |
-| 看真实开发者怎样使用 Skills 和 Agent | [24 社区工作流与失败案例](docs/24-community-workflows.md) |
-| 比较年初与现在，判断旧建议是否过时 | [00 五维范式快照](docs/00-state-of-ai-coding.md#1-当前最高水平年初与-10-月到底变了什么) → [14 条件自主默认](docs/14-synthesis.md#0-30-秒结论按任务选入口交付到可继续修改) |
-| 判断工作流是否对强模型仍有价值 | [24 的独立分析](docs/24-community-workflows.md#本仓库判断强-agent-的默认基线应更轻) |
-| 改善 Agent 完成编码任务的能力 | [先选能力缺口](docs/15-task-playbooks.md#先动手改善-agent-的一项能力) → [按任务选打法](docs/15-task-playbooks.md#0-总表) |
-| 判断新模型、Skill 或配置是否值得换 | [22 Agent 评估](docs/22-agent-evaluation.md) |
-| 做长任务、自建 Agent 或无人值守流程 | [16 自建 Agent](docs/16-building-agents.md) → [20 可靠的长任务](docs/20-codex-long-horizon.md) |
-| 查看长期研究重点和待验证问题 | [研究路线](docs/research/README.md) |
-| 参与维护：开工规则、认领与评审 | [运行手册](docs/collaboration/LONG-TERM-PLAN.md)、[协作目录](docs/collaboration/README.md) |
-| 核对已发布的整体审计与修复 | [10-15 整体审计（基于 795ec5b）](docs/collaboration/reviews/2026-10-15-795ec5b.md)；[五项问题的主要修复](https://github.com/dbvv1/a1dbv/commit/4fa347a)；[历史来源记录](docs/research/2026-10-10-audit.md) |
+原理、比较与历史实试在下方证据目录；当前推荐与第一步集中在读者地图链接的答案页。
 
 ## 目录
 
@@ -87,7 +56,8 @@ Agent 调查、修改并交回实际检查结果，人核目标、旧行为与�
 
 | 文档 | 内容 |
 |---|---|
-| [docs/README.md](docs/README.md) | 阅读路径、核心建议归属、逐页成熟度、评级与证据体系 |
+| [docs/decisions/](docs/decisions/) | 按读者问题给出选择、可复制起步与何时不适用 |
+| [docs/README.md](docs/README.md) | 证据层阅读路径、核心建议归属、逐页成熟度与评级 |
 | [00 现状总览](docs/00-state-of-ai-coding.md) | 2026 年 AI coding 的格局、趋势、共识与争议 |
 | [01 Coding Agent](docs/01-agents/README.md) | Agent 对比矩阵与选型；Claude Code / Codex / Gemini CLI / 开源 Agent / IDE 类深度页 |
 | [02 模型与成本](docs/02-models-and-cost.md) | 模型档位、价格、订阅 vs API、额度、国内 Coding Plan、本地模型、基准测试可信度 |
@@ -101,7 +71,7 @@ Agent 调查、修改并交回实际检查结果，人核目标、旧行为与�
 | [10 安全](docs/10-security.md) | 威胁模型、真实事件与四个案例拆解、auto mode 误差、沙箱手册、CI 安全、参考架构、清单 |
 | [11 社区脉搏](docs/11-community-pulse.md) | 采用证据链、历史口碑、争议与生产力证据 |
 | [12 资源索引](docs/12-resources.md) | 一手信息源、技术社区、精选清单、如何持续跟进 |
-| [**13 前沿雷达**](docs/13-frontier-radar.md) | **最近 3–6 个月的大事件、价格战、新兴做法、争议，以及下季度值得关注的方向** |
+| [**13 前沿雷达**](docs/13-frontier-radar.md) | **本周 Top 5、候选采用判断与原始研究依据** |
 | [**14 深度分析**](docs/14-synthesis.md) | **六条底层规律（现象 → 机制 → 推论 → 边界）、决策框架、成熟度路线，以及什么证据会推翻这些判断** |
 | [**15 按任务类型的打法**](docs/15-task-playbooks.md) | 理解代码、调试、新功能、重构、迁移、补测试、性能、评审、文档、原型：每类任务的风险、打法、验证和提示词 |
 | [16 自建 Agent](docs/16-building-agents.md) | 什么时候值得自己搭；Claude Agent SDK / Tool Runner / Managed Agents 与 OpenAI Agents API / SDK / Codex SDK 的对比和选择 |
@@ -132,12 +102,14 @@ Agent 调查、修改并交回实际检查结果，人核目标、旧行为与�
 
 ## 维护约定
 
-**维护按证据优先、有判断、标明时效三条约定执行。** 方向详见 [AGENTS.md 方向锚点](AGENTS.md)，怎样参与维护详见 [运行手册](docs/collaboration/LONG-TERM-PLAN.md)：AI coding 为主，游戏开发为重点领域；不以提交数量替代真实收益。
+**维护按证据优先、有判断、标明时效三条约定执行。** 方向详见 [AGENTS.md 方向锚点](AGENTS.md)，怎样参与维护详见 [运行手册](docs/collaboration/LONG-TERM-PLAN.md)：AI coding 为主，游戏开发为重点领域；以读者能采用的选择和实际结果衡量工作。
 
 - **证据优先**：关键结论的来源、等级和日期集中写在每节末的“依据”行；一手来源（官方文档、源码、changelog）优先；只有搜索摘要的标注为二手。
-- **有判断**：不堆链接，写“适合谁、不适合谁、坑在哪”。
-- **会过时**：生态以周为单位变化，文档头部写核实日期；过时内容直接改或删。
+- **有判断**：给当前推荐、可复制起步和“何时不适用”。
+- **会过时**：来源和核实日期放在对应依据处，过时内容就地修订。
 - 本仓库是 **public**：禁止提交密钥、内部地址、公司代码。
+
+研究与维护入口：[研究路线](docs/research/README.md)、[协作目录](docs/collaboration/README.md)。历史复核：[10-15 整体审计（固定树）](docs/collaboration/reviews/2026-10-15-795ec5b.md)、[相关修复](https://github.com/dbvv1/a1dbv/commit/4fa347a)、[历史来源记录](docs/research/2026-10-10-audit.md)。
 
 ## 许可证
 
