@@ -237,6 +237,16 @@
 
 **依据**：[一手：官方建议] [逐主张核支持原句](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations)；[一手：固定源码，2026-02-24] [Ragas 逐断言判定](https://github.com/vibrantlabsai/ragas/blob/298b68274234c060deacab3cf5fb52aa3a20e885/src/ragas/metrics/collections/faithfulness/util.py#L27-L86)、[总分与返回面](https://github.com/vibrantlabsai/ragas/blob/298b68274234c060deacab3cf5fb52aa3a20e885/src/ragas/metrics/collections/faithfulness/metric.py#L116-L159)；[一手：使用者报告／维护者回复，0.4.3] [理由未返回 #2566](https://github.com/vibrantlabsai/ragas/issues/2566)；[本仓公开失败校准] [原报告](https://github.com/dbvv1/a1dbv/blob/09aa64c1d107e1cabd73ce87061ac20fa41afeaa/experiments/public-guidance-reader.md)、[接收后收窄](https://github.com/dbvv1/a1dbv/commit/c4c2decce6913b239dbe501463abfba5b36c816e)；[经验：采用建议] 本段检查动作，未运行 Ragas、未作效果对照；核读 2026-10-26。
 
+### 限定语挡住做法时，先写读者动作
+
+**🧪 需要补限定时，先指出哪个读者场景会取错数或做错事，再写“在这个场景下做什么”。** 保留改变动作的版本与条件，合并重复解释；首段给选择，迁移动作紧贴对应步骤。把这一条放进现有 [REVIEW.md](../templates/generic/REVIEW.md)，修订时沿用原行为、事实和来源。
+
+本仓已把这套写法用在一份真实在制的 SDK 取数稿：合并重复的 CLI 检查说明，把恢复后的取数动作提前。小节正文的非空白 Markdown 字符 **1042→937（约少 10.1%）**，叙述段 **4→3**，表格仍为 1 张、4 行；13 项事实与条件保留。独立读者只读新首段，就能答出独立调用加总、正常保存恢复后取最新累计及先核实际 CLI 版本；[旧／新样本与口径](../experiments/writing-action-first/README.md)可直接对照。
+
+**何时不适用：** 已清楚的段落保持原样；省字会删掉必要条件时，保留条件。本次只测改稿的文本变化与读者答案，SDK 未运行，理解速度、净工时和模型能力仍待另测；原整批材料因研究说明增长而变长。
+
+**依据**：[本仓真实写作采用／经验：条件选择] [比较样本](../experiments/writing-action-first/README.md)；[一手：固定配置与调用链] Codex 的具体影响场景与可行动修正、OpenClaw 的用户结果与迁移动作先行，固定版本及实际使用入口见[写法来源](../experiments/writing-action-first/README.md#写法来源)。核读与试用 2026-10-26。
+
 ### 把“不修这条告警”变成可执行的保护
 
 **✅ 确认告警误把项目契约当缺陷后，必要时补一条保护原行为的回归，而不只是关闭意见。** 适用于后续 Agent 容易重复提出同一“修补”的兼容行为；旧版本也这样做只是参照，不能单独证明它正确或安全。

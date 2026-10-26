@@ -22,6 +22,11 @@ naming, and refactoring suggestions are Nit at most.
   for predicate strength, time, subject, and conditions, report support or the
   precise gap rather than an aggregate score, and skip claims outside that
   scope or already supported by a still-valid source check.
+- When document caveats obscure the next action, identify the reader scenario
+  that would lead to a wrong action, then suggest the smallest action-first
+  rewrite, merging repeated explanations while preserving behavior, facts,
+  decision-changing conditions, versions, and cited sources. Leave already-clear
+  text unchanged; never remove a condition just to shorten it.
 - For each Important finding, say how to show it fails: an input, a
   command, or a test that would fail.
 
