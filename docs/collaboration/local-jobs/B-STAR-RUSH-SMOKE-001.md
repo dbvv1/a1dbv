@@ -2,7 +2,7 @@
 
 id: B-STAR-RUSH-SMOKE-001
 owner: dot-B
-status: running
+status: review_ready
 accept: auto
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 3f73455801037b5bc7587f17d0a5c2c16b2f725e
@@ -29,10 +29,10 @@ result_branch: relay/b-star-rush-smoke-001
 
 ## 当前结果
 
-- 在固定 3f73455 上以真实键盘完成海岸 0–800m 软件 WebGL2 采集，得到 380m/620m 弯段六状态帧、站台/电车帧与画面判断；唯一遗留是 s=95 的 L1 帧仍误标 after-station（站台中心约 97m、电车未入镜），需改名并同步报告。
+- 固定 3f73455 的软件 WebGL2 海岸采集完成，L1 帧更名为 L1-station_s93 并同步 summary/crop；独立复审确认站台与电车证据表述已修正，9 帧、363 条遥测及 check_public 0 findings 均一致。
 - 本单元没有文件改动。
-- 检查：check_public（文件） 通过；独立审查未通过或未完成。
-- 下一步：把 L1 改名为 L1-station_s95（或 L1-approach-station_s95），同步 summary frames[1] 与 crop 文件名，报告注明电车仅 L0_s83 同框、默认追尾视角未验证，然后复审收尾。
+- 检查：check_public（文件） 通过；独立审查通过。
+- 下一步：无剩余单元；等待 dot-B 接收产物并按协议回写任务状态。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
 
 ## dot-B 质量诊断续接（2026-10-26）
