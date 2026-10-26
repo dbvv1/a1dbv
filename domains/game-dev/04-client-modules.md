@@ -719,6 +719,14 @@ ink 只保存叙事执行状态，不负责世界／库存；内容改动后可�
 
 [FPS 的单行灵敏度设置](https://github.com/dbvv1/FPS-Like/blob/239df5badd8c43e14f57d381af379805910a1232/src/input/sensitivity.ts)沿原暂停菜单走通改值、保存／取消、重载、恢复默认及回到开火换弹；浏览器保存失败时保留原运行值和草稿；恢复默认也先写入草稿，保存并应用时只删除自身覆盖键，取消不改存储。异步指针锁获准时仍核未提交草稿，不能只在“继续”点击时检查一次；未提交就留在菜单供保存或取消。只需这一项时保留具体行适配器，不先为它搭通用设置框架。
 
+**网页已有 DOM 菜单，优先借原生模态隔离背景，再补游戏自己的返回语义。** 用带可访问名称的 `<dialog>` 配合 `showModal()`／`close()`，让浏览器处理背景 inert 与导航范围，不先手写 Tab 循环。首次打开聚焦进入／继续／下一回合；内容更新后只在原焦点已隐藏、禁用或离开菜单时回有效主按钮，保住仍有效的滑块焦点。尤其要测“下一回合替换按钮→指针锁失败”：菜单还开着，不代表旧焦点仍能操作。菜单关闭与玩法恢复权限分别处理；外层致命错误出现前先释放模态，避免错误被顶层菜单遮住。Unity／UE 仍沿本节自己的原生 UI 与输入路由，不套 DOM API。
+
+**返回按层处理，不把取消草稿等同于继续游戏。** 对需要指针锁的桌面 FPS，可让设置内 Esc 取消未应用草稿并返回原设置入口，暂停层则由继续按钮确认；用局部 `keydown` 消费 Esc 并执行这条动作。支持时设 `closedby="none"` 禁止浏览器自行关闭，不能只靠 `cancel.preventDefault()`：连续关闭请求可能已不可取消。验收既走 Tab／Shift+Tab、保存／取消、退出锁定与再次进入，也看窄屏与放大后真实控件；固定诊断入口若压住设置正文，就放回正常布局流。
+
+**兼容要分两层核。** `showModal()` 与 `closedby` 不是同一支持范围；可用 `'closedBy' in HTMLDialogElement.prototype` 检测后者。缺少 `closedby` 时保留明确返回按钮、菜单内键盘处理与可取消事件兜底，并在目标浏览器验平台返回动作；键盘回退不等于手机返回手势已覆盖。缺少原生模态能力则沿已验证的现有模态组件，不把 `aria-modal` 当作背景输入隔离。浏览器自身导航可拿走焦点，游戏要保证的是它不落到背景对局控件。
+
+来源：[一手／经验] [HTML dialog 与 close watcher](https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element)、[连续关闭的取消条件](https://html.spec.whatwg.org/multipage/interaction.html#close-watcher-infrastructure)、[Chrome 134 发布说明](https://developer.chrome.com/release-notes/134#dialog-light-dismiss)、[MDN closedBy 支持范围](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy)，核实 2026-10-26；MDN 当前仍标 Limited availability。本端真实键盘与菜单图检查在 Chromium 155 CPU 后端，下一回合拒权另用真实 Hud 组件与受控失败验收。
+
 **提示随当前设备。** 键盘显示可读键名，手柄显示对应键位图标；换设备后重取确认／返回／应用提示，不退出菜单。缺图标时回退到文字，不让玩家猜当前按什么。
 
 ```mermaid
