@@ -61,17 +61,20 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 | 工具 | 文件 | 会改变选择的加载条件 |
 |---|---|---|
 | Claude Code | `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md` | 原生 AGENTS 入口从 v2.1.277 起提供，部分 provider／禁遥测会话到 v2.1.281 才支持。默认检查当前目录及祖先：有 `CLAUDE.md`、`.claude/CLAUDE.md` 或 `CLAUDE.local.md` 就不走 AGENTS 回退；用户级 `~/.claude/CLAUDE.md` 不触发这个抑制。子目录按需发现，不能假定所有指令已在开场加载 |
-| Codex | `AGENTS.md`、`AGENTS.override.md` | 每次运行启动时建立指令链；全局先选首个非空 override／AGENTS，项目从根到当前目录逐层选择 override、AGENTS、备用文件名，每层最多一份；项目文档默认总预算 32 KiB。不能把 Claude 的 `@` 导入或子目录按需发现直接移植过来 |
+| Codex | `AGENTS.md`、`AGENTS.override.md` | 每次运行启动时建立指令链；全局先选首个非空 override／AGENTS，项目从根到当前目录逐层选择 override、AGENTS、备用文件名，每层最多一份；项目文档默认总预算 32 KiB。单包任务可用 `--cd` 在目标包启动并带入根到 cwd 链；根会话跨兄弟包仍缺自动发现。不能把 Claude 的 `@` 导入或子目录按需发现直接移植过来。codex-cli 0.154.0 fixture 只核对上下文组装（根启动根 1／包 0，包目录启动根 1／包 1），不证明模型遵守 |
 | Gemini CLI | `GEMINI.md`（可配置文件名） | 未重核，按目标客户端文档确认 |
-| Cursor / Copilot / OpenCode 等 | 各自规则格式或 AGENTS 入口 | 文件同名不证明发现、合并和刷新规则相同，未重核 |
+| OpenCode V2 | `AGENTS.md`（workspace 内嵌套） | 读文件或列目录时发现 workspace 内嵌套 AGENTS，nearest-first、去重；compaction／revert 可重载，已加载规则文件被改后不自动重载。只核文档／源码契约，未实跑采用，不证明模型效果 |
+| Cursor / Copilot 等 | 各自规则格式或 AGENTS 入口 | 文件同名不证明发现、合并和刷新规则相同，未重核 |
 
-- **项目路径有 `CLAUDE.local.md` 等抑制项时**：可保留仓库内显式导入，或在支持的用户／托管设置中选 `claude-md-and-agents-md`；不能把该选项写进项目 settings 就当全队生效。共同加载是拼接上下文，不是权限规则的确定性覆盖。
+**✅ 已有 AGENTS 跨包需求且客户端可选时，优先采用现成的动态发现，不默认自研 Codex。** Claude Code 的既有原生规则仍保留；OpenCode V2 在读取文件／列目录时发现 workspace 内嵌套 AGENTS，是现成候选；单包任务沿用 Codex 原生 `--cd` 链。本仓当前没有真实跨包采用成果，不能把文档／源码契约写成已采用或模型已遵守。
+
+- **有抑制项时还想统一入口**：除仓库内显式导入，也可在支持的用户／托管设置中选 `claude-md-and-agents-md`；不能把该选项写进项目 settings 就当全队生效。共同加载是拼接上下文，不是权限规则的确定性覆盖。
 - **跨仓库时**：`--add-dir` 只增加可访问目录，不默认加载其指令；额外目录加载开关覆盖 CLAUDE 文件与 rules，不覆盖原生 AGENTS 发现。确实需要共享约定时，选择相应 CLAUDE 入口或显式导入，并核实外部导入批准状态，不能只看目录可读。
 - **验证加载时**：新版本用 `/memory` 核对原生 AGENTS 路径，导入入口也核对 `/context`；`InstructionsLoaded` 不报告原生 AGENTS，但会报告 CLAUDE 导入（`include`）。没有该事件不能证明 AGENTS 没读，事件存在也不证明模型遵守了规则。
 
-**关键局限**：以上是指定日期的官方加载契约与发布记录，不是本仓客户端实测；详细优先级、版本差异及反例见[共享指令加载证据](research/2026-10-13-context-tool-choice.md#共享指令发现导入与加载证据)。需要多工具生成配置时可评估 [rulesync](https://github.com/dyoshikawa/rulesync)，但生成文件仍须通过目标客户端的加载检查。
+**关键局限**：以上是官方加载契约、发布记录与一次 codex-cli fixture 的上下文组装核对，不是模型效果实测；详细优先级、版本差异及反例见[共享指令加载证据](research/2026-10-13-context-tool-choice.md#共享指令发现导入与加载证据)。需要多工具生成配置时可评估 [rulesync](https://github.com/dyoshikawa/rulesync)，但生成文件仍须通过目标客户端的加载检查。
 
-**依据**：[一手] Claude Code／Codex 官方加载契约与发布记录、rulesync README；[经验] 建议；核实 2026-10-24。
+**依据**：[一手] [Claude Code memory](https://code.claude.com/docs/en/memory)、[Codex AGENTS.md 官方文档](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[OpenCode V2 instructions](https://opencode.ai/v2/docs/instructions/)、Claude Code／Codex 官方加载契约与发布记录、rulesync README；[本仓已接收调查] [A-CODING-ADOPTION-001 固定产物](https://github.com/dbvv1/a1dbv/commit/b36de7dcac07b183dba7c5cf3fac41991ca5bef3)（2026-10-25，复用其已核事实，含 Codex 固定源码 970111f6 与 fixture 结果）；[经验] 建议；核实 2026-10-24。
 
 ### 2.2 指令文件到底有没有用？（研究证据）
 
@@ -159,15 +162,17 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 
 **命中生成代码后，先找持久修改源。** 沿文件来源标记和构建规则回到源文件／模板，修改后按项目入口重生成并核对产物；运行文件可能正是生成物，不能据此认定它也是编辑源，也不宜为减少上下文一概排除读取。fullsend-ai 的风险标签功能曾只改入运行 bundle，后来回源修改，并由原评审者确认重生成一致。详见[固定补丁与复测范围](research/2026-10-13-context-tool-choice.md#生成代码运行产物与持久修改源)。**局限**：这支持追查生成关系，不证明新增语义索引或更多上下文有收益。
 
-**资料很多、只想先找到相关原文？** 已知关键词仍先用 `rg`；需要跨多篇 Markdown 排序并按行取回时，可选试 QMD 的纯词法 `search`。本仓2.8.3索引207份公开资料，`页面 批注`返回了导出实验、实际改稿与主专题，随后按返回docid取回原文，分清“导出过批注”和“确实改过页面”。同题原生搜索也能找到，增量是排序与取回入口，不是语义理解或模型提效。详见[最短操作与范围](research/2026-10-22-frontier-trials.md#qmd纯词法检索先找到原文再判断证据)。
+#### 资料检索：已知关键词先 `rg`，跨篇排序再试 QMD
 
-已安装对应版本后，先对授权的资料目录执行 `qmd collection add ./docs --name docs --mask '**/*.md'`，用 `qmd search '页面 批注' --json -n 5` 取候选，再复制返回的docid执行 `qmd get '#实际ID:起始行:行数'`。本次完整中文问句零命中，改为关键词才找到；没有使用向量或下载模型，别把 `search` 换成另一条混合检索命令而仍沿用本次范围。只有少量文件或已知路径就不必建索引。
+**资料很多、只想先找到相关原文？** 已知关键词仍先用 `rg`；需要跨多篇 Markdown 排序并按行取回时，可选试 QMD 的纯词法 `search`。本仓 2.8.3 索引 207 份公开资料，用 `页面 批注` 返回了导出实验、实际改稿与主专题，随后按返回 docid 取回原文，分清“导出过批注”和“确实改过页面”。同题原生搜索也能找到，增量是排序与取回入口，不是语义理解或模型提效。详见[最短操作与范围](research/2026-10-22-frontier-trials.md#qmd纯词法检索先找到原文再判断证据)。
 
-文档修改后先检查集合是否配置了会执行额外命令的更新钩子，再运行 `qmd update`，并回当前源文件确认决定性内容。本仓一次真实改稿后，旧索引仍返回已停用的简报要求；更新后才返回新规则与QMD入口。可取回的旧原文不是当前指令。
+已安装对应版本后，先对授权的资料目录执行 `qmd collection add ./docs --name docs --mask '**/*.md'`，用 `qmd search '页面 批注' --json -n 5` 取候选，再复制返回的 docid 执行 `qmd get '#实际ID:起始行:行数'`。本次完整中文问句零命中，改为关键词才找到；没有使用向量或下载模型，别把 `search` 换成另一条混合检索命令而仍沿用本次范围。只有少量文件或已知路径就不必建索引。
 
-**索引与所选快照一致，也不代表每段历史记录仍生效；按要回答的断言取原文，不整篇选新弃旧。** 将“补丁在哪里”“目前验过什么”“现在允许做什么”分开：固定补丁回到其版本与应用入口，验证状态回到对应版本的最新接收结果，执行边界回到当前任务及有效约定。每项保留路径、行号和版本；旧记录里的可用产物可以继续复用，已被替换的等待或限制不随产物一起继承。本仓在同一固定快照的 11 份完整文档中实际运行混合检索，旧任务过程排第一，现行路线排第二；接收时仍从旧任务取补丁校验值与应用入口、从路线取真实验证范围、从当前约定核执行边界，不能让相关性分数代替有效性判断。
+文档修改后先检查集合是否配置了会执行额外命令的更新钩子，再运行 `qmd update`，并回当前源文件确认决定性内容。本仓一次真实改稿后，旧索引仍返回已停用的简报要求；更新后才返回新规则与 QMD 入口。可取回的旧原文不是当前指令。
 
-**本次接收依据**：[本仓实试与原文消费](research/2026-10-22-frontier-trials.md#qmd-hybrid-intake)；核实 2026-10-25。已知入口仍沿用原生搜索／纯词法，不据这次有界接收改成默认 CPU 混合检索。
+**索引与所选快照一致，也不代表每段历史记录仍生效；按要回答的断言取原文，不整篇选新弃旧。** 将“补丁在哪里”“目前验过什么”“现在允许做什么”分开：固定补丁回到其版本与应用入口，验证状态回到对应版本的最新接收结果，执行边界回到当前任务及有效约定。每项保留路径、行号和版本；旧记录里的可用产物可以继续复用，已被替换的等待或限制不随产物一起继承。本仓在同一固定快照的 11 份完整文档中实际运行混合检索，旧任务过程排第一，现行路线排第二；接收时仍从旧任务取补丁校验值与应用入口、从路线取真实验证范围、从当前约定核执行边界，不能让相关性分数代替有效性判断。已知入口仍沿用原生搜索／纯词法，不据这次有界接收改成默认 CPU 混合检索。
+
+**本次接收依据**：[本仓实试与原文消费](research/2026-10-22-frontier-trials.md#qmd-hybrid-intake)；核实 2026-10-25。
 
 **依据**：[一手] Claude Code 权限契约、Aider 固定测试与 clangd 读取来源；[社区] fullsend-ai 补丁与复测（2026-10-18 UTC+8）；[经验] 选型判断；本仓 QMD 2.8.3 实试（未测模型收益）；核实 2026-10-24。
 
@@ -187,9 +192,9 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 
 #### 用在真实修改：分清同名后端，再保原生路径
 
-**先定位导入别名指向谁，再决定哪些适配器需要改。** cattrs的五个后端都有`make_converter`／`configure_converter`；本仓实际用Jedi的goto与文件内references定位声明，再追msgspec按hook身份选择原生编码的分支。详见[完整示范与导航入口](../experiments/cattrs-decimal/README.md)，它把Decimal支持做成可复制产物，没有安装或声称实测Serena／LSP。
+**先定位导入别名指向谁，再决定哪些适配器需要改。** cattrs 的五个后端都有 `make_converter`／`configure_converter`；本仓实际用 Jedi 的 goto 与文件内 references 定位声明，再追 msgspec 按 hook 身份选择原生编码的分支。详见[完整示范与导航入口](../experiments/cattrs-decimal/README.md)，它把 Decimal 支持做成可复制产物，没有安装或声称实测 Serena／LSP。
 
-真正改变选择的是：ujson会静默变浮点数，而msgspec已能原生编码精确字符串。前者补字符串编码，后者只补结构化；动态注册最终选了哪个hook，另用实际后端及`get_dumps_hook`验收。静态定位不是运行时调用图，也不证明比rg更快。
+真正改变选择的是：ujson 会静默变浮点数，而 msgspec 已能原生编码精确字符串。前者补字符串编码，后者只补结构化；动态注册最终选了哪个 hook，另用实际后端及 `get_dumps_hook` 验收。静态定位不是运行时调用图，也不证明比 rg 更快。
 
 **依据**：[本仓实试] cattrs-decimal 确定性示范（2026-10-23）；[一手] msgspec 源码；核实 2026-10-24。
 
@@ -209,7 +214,7 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 
 ### 2.6 大文件：先定点原文还是摘要委派
 
-**✅ 编辑、调试和约束判断，默认让承担判断或修改的 Agent 读定位后的原文及必要周边。** 大文件不等于必须整文件读取，也不等于适合交给摘要器。先检索符号、调用点与契约，再决定所需范围；发现关联跨出片段就继续追原文。当前原生参照见页首。
+**✅ 编辑、调试和约束判断，默认让承担判断或修改的 Agent 读定位后的原文及必要周边。** 大文件也按需要的范围读；摘要器只用于缩小候选，不承担编辑依据。先检索符号、调用点与契约，再决定所需范围；发现关联跨出片段就继续追原文。当前原生参照见页首。
 
 | 同一任务中的需要 | 选择 | 接收与撤回 |
 |---|---|---|
@@ -225,29 +230,27 @@ Spotify 的公开实践报告摘要遗漏线程安全问题、编辑仍需读原
 
 **程序卡与文档摘要分工，不互相替代。** 摘要帮定位规则，程序卡保存会改变执行顺序的前提与不变量，两者都要能回查当前依据。已知修改位置仍先读相关原文；跨步骤知识需复用才补卡，不为更短而删失败分支、并发约束或消费者。计划／评审放置详见[05 §2.5](05-skills-and-plugins.md#25-codexskill-应补什么又可能增加什么)。
 
-Code2Skill §5.5 压缩的是代码Skill，不是文档摘要，也不证明编辑可以只看摘要。若卡导致反复回读、漏约束或额外等待，恢复直接资料路径。
+Code2Skill §5.5 压缩的是代码 Skill，不是文档摘要，也不证明编辑可以只看摘要。若卡导致反复回读、漏约束或额外等待，恢复直接资料路径。
 
 **依据**：[一手] Spotify 作者自报（[公开实践](https://engineering.atspotify.com/2026/9/portal-by-spotify-cut-my-claude-code-token-usage-by-90)）、[固定版本评估脚本](https://github.com/spotify/portal-ai-plugins/blob/cd5f40fb98a2c61c6041b228d11766a5318dc312/plugins/shunt/evals/run.sh)；[社区／一手] shunt 外部复测与版本状态；[研究／经验] [Code2Skill §5.5](https://arxiv.org/html/2609.05571v1#S5.S5)；[经验] 条件默认与接收判断；核实 2026-10-24。
 
 ### 2.7 终端输出：先辨过滤、恢复与重新执行
 
-**✅ 保留项目已有命令；重复日志确实妨碍定位时，再定向试输出过滤，而非全局套一层“省token”插件。** RTK能把测试输出整理成计数与失败摘要，适合评估高噪声回归场景；是否值得保留，要看完成同一任务的质量、回读与总投入。详见[采用与对照](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)。
+**✅ 保留项目已有命令；重复日志确实妨碍定位时，再定向试输出过滤，而非全局套一层“省 token”插件。** RTK 能把测试输出整理成计数与失败摘要，适合评估高噪声回归场景；是否值得保留，要看完成同一任务的质量、回读与总投入。详见[采用与对照](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)。
 
-**失败只剩计数时，先取回日志，不先让 Agent 重跑。** 本仓用 RTK OSS 1.0.1 回放一次真实的历史测试失败输出：通用 `rtk test` 将约285KB缩成280字节，却藏掉了“磁盘已满”这个根因；返回的 `rtk recall HASH --full` 无需重跑便完整取回净化后的输入。本例不采用通用包装器作为 unittest 默认，保留项目原命令；已使用过滤器时，把“先recall定位，再决定是否重跑”交给 Agent。详见[回放范围与记录](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)，这是非模型收益比较。
+**失败只剩计数时，先取回日志，不先让 Agent 重跑。** 本仓用 RTK OSS 1.0.1 回放一次真实的历史测试失败输出：通用 `rtk test` 将约 285KB 缩成 280 字节，却藏掉了“磁盘已满”这个根因；返回的 `rtk recall HASH --full` 无需重跑便完整取回净化后的输入。本例不采用通用包装器作为 unittest 默认，保留项目原命令；已使用过滤器时，把“先 recall 定位，再决定是否重跑”交给 Agent。详见[回放范围与记录](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)，这是非模型收益比较。
 
-**“取回原始输出”不等于恢复原命令会给出的全部诊断。** RTK v1.0.1的pytest封装在没有对应参数时添加`--tb=short`、`-q`、`-rxX`，然后才捕获和过滤；未生成的长traceback无法事后找回。显式`--tb=long`可覆盖短traceback默认，但仍会经过过滤。以上来自固定源码，未运行。
-
-| 已安装RTK后的动作 | 实际得到什么 | 选择时注意 |
+| 已安装 RTK 后的动作 | 实际得到什么 | 选择时注意 |
 |---|---|---|
-| 复制结果中的`rtk recall HASH` | 读取此前保存的内容，不重跑测试 | 普通成功摘要不保证有恢复记录 |
-| 给recall加`--full` | 返回该记录已保存的全部内容 | 不会补回未生成、未保存或被容量截掉的部分 |
-| 用`rtk bypass`运行原命令 | 发起一次新的未过滤执行 | 不是回放，不为找日志盲目重做有副作用的动作 |
+| 复制结果中的 `rtk recall HASH` | 读取此前保存的内容，不重跑测试 | 普通成功摘要不保证有恢复记录 |
+| 给 recall 加 `--full` | 返回该记录已保存的全部内容 | 不会补回未生成、未保存或被容量截掉的部分 |
+| 用 `rtk bypass` 运行原命令 | 发起一次新的未过滤执行 | 不是回放，不为找日志盲目重做有副作用的动作 |
 
-恢复分支、recall实现与bypass定义均以固定源码为准；pytest路径仍返回子进程退出码，不能把摘要变短直接说成失败被掩盖。
+**“取回原始输出”不等于恢复原命令会给出的全部诊断。** RTK v1.0.1 的 pytest 封装在没有对应参数时添加 `--tb=short`、`-q`、`-rxX`，然后才捕获和过滤；未生成的长 traceback 无法事后找回，显式 `--tb=long` 可覆盖短 traceback 默认但仍会经过过滤。恢复分支、recall 实现与 bypass 定义同样以固定源码为准；pytest 路径仍返回子进程退出码，不能把摘要变短直接说成失败被掩盖。以上来自固定源码，未运行。
 
-Agent交回实际命令、退出状态和所用恢复记录；人核本题需要的失败细节是否还在。需要完整诊断的下一次运行先选原生输出；反复回读或重试抵消收益，就撤回该命令的过滤。`rtk gain`只是工具侧输出估计，不是整项费用或订阅额度的实测节省。详见[同题对照与当前版本边界](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)。
+Agent 交回实际命令、退出状态和所用恢复记录；人核本题需要的失败细节是否还在。需要完整诊断的下一次运行先选原生输出；反复回读或重试抵消收益，就撤回该命令的过滤。`rtk gain` 只是工具侧输出估计，不是整项费用或订阅额度的实测节省。详见[同题对照与当前版本边界](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)。
 
-**依据**：[本仓工具实试] RTK OSS 1.0.1 历史失败回放（约285KB→280字节；非模型收益比较）；[一手] RTK 固定源码与 pytest 封装（未运行）：[pytest封装](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/cmds/python/pytest_cmd.rs#L21-L74)、[恢复分支](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/tee.rs#L17-L105)、[recall实现](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/retriever.rs#L637-L727)、[bypass定义](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/lib.rs#L812-L842)、[退出码](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/runner.rs#L284-L367)；[经验] 采用判断；核实 2026-10-24。
+**依据**：[本仓工具实试] RTK OSS 1.0.1 历史失败回放（约 285KB→280 字节；非模型收益比较）；[一手] RTK 固定源码与 pytest 封装（未运行）：[pytest封装](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/cmds/python/pytest_cmd.rs#L21-L74)、[恢复分支](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/tee.rs#L17-L105)、[recall实现](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/retriever.rs#L637-L727)、[bypass定义](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/lib.rs#L812-L842)、[退出码](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/runner.rs#L284-L367)；[经验] 采用判断；核实 2026-10-24。
 
 ### 2.8 外部文档：先沿索引选页，不默认整站灌入
 
@@ -255,7 +258,7 @@ Agent交回实际命令、退出状态和所用恢复记录；人核本题需要
 
 给 Agent 的具体任务可以是：“从发布者索引找 TypeScript 收消息并回复的例子，交回 API、运行前提、适用版本和未解链接。”本次 Teams SDK 路径取到了 `app.on('message', …)` 与 `send`／`reply` 的区别，但 `docs_typescript` 下的 App Basics 首段仍是明确标注的 .NET 2.1；全文包也保留同段。**按正文语言与版本选用，不能拿 URL 的语言名替代判断。** 这是本仓文档取回实试，未运行 SDK／模型。
 
-关键前提链接失效时，补查对应官方入口，不靠改读 full 文件宣布完成：本次选页的部署下一步返回404，全文也未补上对应部署正文。人接收的是适用于当前工程的调用与未解前提，不是文件更短；若选页不断漏掉依赖，就扩大相关章节而非机械坚持最小上下文。
+关键前提链接失效时，补查对应官方入口，不靠改读 full 文件宣布完成：本次选页的部署下一步返回 404，全文也未补上对应部署正文。人接收的是适用于当前工程的调用与未解前提，不是文件更短；若选页不断漏掉依赖，就扩大相关章节而非机械坚持最小上下文。
 
 **依据**：[经验] 采用判断；[本仓文档取回实试] Teams SDK、`llms.txt` 选页与 404 前提核查（未运行 SDK／模型）；核实 2026-10-24。
 
@@ -298,7 +301,7 @@ Agent交回实际命令、退出状态和所用恢复记录；人核本题需要
 
 **Codex CLI 要单独核对**：原生 `/compact` 总结上下文，`/new` 开新聊天，`/resume` 续接保存会话；`/fork` 复制聊天并保留原会话，不能当成 Claude 的 fork 子 Agent。压缩失败或历史显示缺失按 [20](20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)处理，不因同名命令假定恢复保证相同。
 
-主要依据是官方命令、checkpointing、子 Agent 与侧问答契约；[核查记录](research/2026-10-13-context-tool-choice.md#会话动作按问题与宿主选择)保留版本与读取范围。**关键局限**：这些是文档契约，不保证摘要无损或拆分后省时省钱；§4.2 的收益与反例仍须按各自模型、任务和 harness 解读。
+**关键局限**：以上是文档契约，不保证摘要无损或拆分后省时省钱；§4.2 的收益与反例仍须按各自模型、任务和 harness 解读。核查记录保留版本与读取范围，见[会话动作按问题与宿主选择](research/2026-10-13-context-tool-choice.md#会话动作按问题与宿主选择)。
 
 **依据**：[一手] Claude Code 与 Codex 官方命令契约、checkpointing、子 Agent 与侧问答契约；[研究] §4.2 的收益与反例；[经验] 边界判断；核实 2026-10-24。
 
@@ -311,9 +314,9 @@ Agent交回实际命令、退出状态和所用恢复记录；人核本题需要
 | 进度文件 + git log | 同任务续接先复用已有任务记录与版本证据；Anthropic harness 的进度文件／JSON 清单是一个实现，机器消费时再选结构化格式 | ✅ |
 | Claude Code auto memory | Claude 自动记录偏好和纠正；默认机器本地，同机器同仓库的 worktree 共享，不自动跨机器／云同步 | 🧪（定期审阅它记了什么） |
 | Gemini CLI 的 memory 收件箱 | 记忆要经人审阅后才生效 | 🧪 |
-| 第三方记忆 MCP | 先分信息有用与服务能保住收益，见[直接coding比较](#46-独立记忆层先验信息价值再验自动供给)；接入边界仍见[04](04-mcp.md#跨会话记忆先区分检索与当前状态) | 👀 |
+| 第三方记忆 MCP | 先分信息有用与服务能保住收益，见[直接 coding 比较](#46-独立记忆层先验信息价值再验自动供给)；接入边界仍见[04](04-mcp.md#跨会话记忆先区分检索与当前状态) | 👀 |
 
-**独立记忆失效时，先回可读记录，不把“未检索到”当“从未发生”。** 升级时核实际安装来源，再验新捕获与后续检索；claude-mem同号marketplace与npm曾有不同产物状态。Agent整理来源与受影响范围，人判断是否停用该层及接收修订；详见[实际回退、维修与采用对照](research/2026-10-12-community-source-records.md#p82独立层的采用与维护责任)，不证明当前所有分发物已可靠。
+**独立记忆失效时，先回可读记录，不把“未检索到”当“从未发生”。** 升级时核实际安装来源，再验新捕获与后续检索；claude-mem 同号 marketplace 与 npm 曾有不同产物状态。Agent 整理来源与受影响范围，人判断是否停用该层及接收修订；详见[实际回退、维修与采用对照](research/2026-10-12-community-source-records.md#p82独立层的采用与维护责任)，不证明当前所有分发物已可靠。
 
 **Claude 的共享范围要另查**：启动只加载 `MEMORY.md` 前 200 行或 25KB（先到为准），主题文件按需读；普通子 Agent 不加载主会话 auto memory，继承全历史的 conversation fork 例外。子 Agent `memory` 使用独立目录，`project` 范围可随版本控制共享；目录可配置，默认本地不等于无法共享。跨机器／云环境或委派时，沿用恢复记录，交接必要事实与来源，不为续接同步全部私人记忆。详见[官方契约与开关边界](research/2026-10-10-audit.md#s2c--2026-10-16-auto-memory-的共享与交接边界)，核实于 2026-10-16（UTC+8），未运行客户端。
 
@@ -329,9 +332,9 @@ Agent交回实际命令、退出状态和所用恢复记录；人核本题需要
 
 **🧪 已经用 Context Hub 查库文档时，可把项目经验附在对应条目，再交出含备注的文档；只有一个项目需要这条经验，直接写项目文档更简单。** 本仓将已验证的 Next 库存／Suspense 改法附到 `next/next`，新 CLI 进程成功取回原文与经验，给接手 Agent 一个可读文件；未测模型是否采用或减少返工。详见[命令与结果](research/2026-10-22-frontier-trials.md#context-hub把库文档与已验证经验一起交接)。
 
-本次 npm `@aisuite/chub@0.1.4` 用 `chub annotate next/next "项目版本、已验选择及证据"` 保存，再用单文档 `chub get next/next --lang js --version 16.2.6 > handoff.md` 交接；**不要换成 `-o handoff.md`，实试该输出没有备注**。读者须先核搜索返回的版本：这里库文档是16.2.6，附注案例是16.4.3，二者不混作同版依据。
+本次 npm `@aisuite/chub@0.1.4` 用 `chub annotate next/next "项目版本、已验选择及证据"` 保存，再用单文档 `chub get next/next --lang js --version 16.2.6 > handoff.md` 交接；**不要换成 `-o handoff.md`，实试该输出没有备注**。读者须先核搜索返回的版本：这里库文档是 16.2.6，附注案例是 16.4.3，二者不混作同版依据。
 
-0.1.4会自动附带本地备注，而当前主干说明的 `--with-annotations` 在该发布包报未知参数。只保存自己核过的事实，注明来源、版本与范围；同条目新备注覆盖旧备注，不自动按项目或版本隔离。采用时固定包版本并检查交给 Agent 的实际文件，别把主干文档的新语义当成已安装行为。
+0.1.4 会自动附带本地备注，而当前主干说明的 `--with-annotations` 在该发布包报未知参数。只保存自己核过的事实，注明来源、版本与范围；同条目新备注覆盖旧备注，不自动按项目或版本隔离。采用时固定包版本并检查交给 Agent 的实际文件，别把主干文档的新语义当成已安装行为。
 
 **依据**：[本仓实试] Context Hub 0.1.4 交接与版本核对；[一手] 发布包源码；[经验] 采用判断（未测模型是否采用或减少返工）；核实 2026-10-24。
 
@@ -373,7 +376,7 @@ PR #4565 核实时未合并；作者真实模型失败报告针对旧 commit，�
 
 真实验收核对实际模型输入或权威来源重载，不直接把特定注入通道的测试套给所有 harness。复用现有恢复清单，不另加规则登记框架或合成探针。
 
-PMPA 与 SkillJack v2 分别展示了跨会话恶意规则持久化及由污染轨迹产生技能后删除源仍留衍生物的故障方式。PMPA 使用替代后端模型和模拟工作区；SkillJack 主要统计路由层面的策略违规代理指标，不是实际外部服务被攻破。不可把这些数字外推为默认 Codex/Claude 产品事故率；但这些故障方式支持将来源信任、授权和记忆召回分开处理。以上研究限定 harness/模型/合成任务，非本仓复现。
+**把来源信任、授权和记忆召回分开处理。** PMPA 与 SkillJack v2 分别展示了跨会话恶意规则持久化及由污染轨迹产生技能后删除源仍留衍生物的故障方式；这些故障方式支持上述分工。PMPA 使用替代后端模型和模拟工作区；SkillJack 主要统计路由层面的策略违规代理指标，不是实际外部服务被攻破。不可把这些数字外推为默认 Codex/Claude 产品事故率。以上研究限定 harness/模型/合成任务，非本仓复现。
 
 **依据**：[社区：单例，未复测] [OpenHands SDK #4544](https://github.com/OpenHands/software-agent-sdk/issues/4544)；[一手] 2026-10-10 UTC 源码复核（未运行当前 SDK）：[固定提交](https://github.com/OpenHands/software-agent-sdk/commit/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9)、[observation 转换](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/event/llm_convertible/observation.py#L68-L86)、[condenser](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/context/condenser/llm_summarizing_condenser.py#L247-L251)；[社区：历史实测；一手：未合并测试] [PR #4565](https://github.com/OpenHands/software-agent-sdk/pull/4565)、[固定回归测试](https://github.com/OpenHands/software-agent-sdk/tree/86e067dadd0a2398f6140c9f16220790be38af35/tests/integration/tests)；[研究：原文，限定 harness/模型/合成任务] [PMPA](https://arxiv.org/html/2609.13889v1)、[SkillJack v2](https://arxiv.org/html/2608.03509v2)；[经验] 采用判断；核实 2026-10-24。
 
@@ -389,21 +392,29 @@ PMPA 与 SkillJack v2 分别展示了跨会话恶意规则持久化及由污染�
 
 **候选记忆先进入待审队列，上下文预算配置只解决空间，不保证压缩后的事实仍然正确。** 2026-10-10 补核：Gemini CLI 的 Auto Memory 文档把候选记忆/Skill 放入待审 inbox，明确标记实验性、默认关闭；Claude Code 2.1.296 增加子 Agent 的 `autoCompactWindow`。两者分别解决记忆晋升和上下文预算问题。详见 [S1/S3 来源](research/2026-10-10-audit.md)。
 
-恢复任务时核对当前文件、服务和外部操作状态；记忆应包含来源、适用范围与失效条件。具体做法详见 [20 可靠的长任务](20-codex-long-horizon.md)。
+恢复任务时核对当前文件、服务和外部操作状态；记录来源、适用范围与失效条件，其余按 [4.4](#44-最小生命周期而不是无限追加) 与 [20 可靠的长任务](20-codex-long-horizon.md) 处理。
 
 **依据**：[一手] Gemini CLI Auto Memory 文档、Claude Code 2.1.296 变更记录（未运行）；[经验] 工程建议；核实 2026-10-24。
 
 ### 4.6 独立记忆层：先验信息价值，再验自动供给
 
-**✅ 默认保留当前代码、短恢复包和原生检索，不给每次修改强制注入旧任务记录。** 先比较相关历史信息是否改善实际代码结果，再比较服务的提取、更新与检索能否保住这份帮助；后者还要覆盖额外费用和人工维护。VibeMemBench的直接coding对照说明“存在有用经验”不等于现成系统能有效供给；其任务经过筛选，不能当所有记忆服务的排名。详见[论文与公开产物比较](research/2026-10-13-context-tool-choice.md#p44独立记忆层的两类coding比较)（研究，2026-10-21）。
+**✅ 默认保留当前代码、短恢复包和原生检索，不给每次修改强制注入旧任务记录。** 先比较相关历史信息是否改善实际代码结果，再比较服务的提取、更新与检索能否保住这份帮助；后者还要覆盖额外费用和人工维护。VibeMemBench 的直接 coding 对照说明“存在有用经验”不等于现成系统能有效供给；其任务经过筛选，不能当所有记忆服务的排名。详见[论文与公开产物比较](research/2026-10-13-context-tool-choice.md#p44独立记忆层的两类coding比较)（研究，2026-10-21）。
 
-**👀 状态对齐恢复值得追，但不默认安装整套图系统。** MemTrace在特定DeepSeek模型与两种harness上有正面质量结果，但Codex分支更慢、mini-swe-agent分支反而更快；它研究同任务恢复，不是上一种跨任务检索的冠军。
+**👀 状态对齐恢复值得追，但不默认安装整套图系统。** MemTrace 在特定 DeepSeek 模型与两种 harness 上有正面质量结果，但 Codex 分支更慢、mini-swe-agent 分支反而更快；它研究同任务恢复，不是上一种跨任务检索的冠军。
 
-**恢复时先核有效性。** Agent保留证据来源、适用版本和替代关系，人检查测试及其依赖是否仍有效；条件改变或无法确认就回查当前状态。
+**恢复时先核有效性。** Agent 保留证据来源、适用版本和替代关系，人检查测试及其依赖是否仍有效；条件改变或无法确认就回查当前状态。
 
 **收益消失就撤回。** 若服务不能保持任务质量，或维护与等待超过目标收益，撤回外部层。这一原生起点是当前可行默认，尚非经上述论文证明的最优。
 
 **依据**：[研究] VibeMemBench 直接 coding 对照、MemTrace 质量结果与恢复实验、公开产物比较（2026-10-21）；核实 2026-10-24。
+
+## Codex 续接：压缩后保留目标，不等于目标继续支配行动
+
+**✅ 保存当前目标、用户最新变更、实际产物、已知失败及下一动作，并在恢复时检查文件与执行事实。** 官方压缩提示要求记录进度、决定、约束、剩余动作，但它是期望行为，不是无损保证。近期使用报告同时存在“压缩后回旧任务”和“仍准确记得未完成范围却结束”两类现象，不能合并为遗忘。另有长会话延迟报告在高缓存命中与零 reasoning token 下仍慢，也不能靠上下文压缩次数判断问题已经解决。详见[固定来源与审查](research/2026-10-10-codex-continuity.md)。
+
+当记录已经完整，仍只总结而不行动，应检查续接/停止行为，不继续盲目扩大记忆文档。🧪 只有出现具体跨会话检索问题时才考虑额外记忆服务。
+
+**依据**：[一手／社区] Codex 连续性报告与审查记录；[研究] 采用判断；核实 2026-10-24。
 
 ## 来源
 
@@ -414,11 +425,3 @@ PMPA 与 SkillJack v2 分别展示了跨会话恶意规则持久化及由污染�
 - 指令研究：表 §2.2 的原文与[复核记录](research/2026-10-13-context-study-reassessment.md)；记忆与压缩研究：表 §4.2 的固定论文版本
 - [liao.gg：Agents don't need memory, they need documentation](https://liao.gg/blog/agents-dont-need-memory)（[HN](https://news.ycombinator.com/item?id=49945933)）
 - Harness 开销实测：[Systima](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)（72KB 指令文件让每次请求多约 2 万 token）
-
-## Codex 续接：压缩后保留目标，不等于目标继续支配行动
-
-**✅ 保存当前目标、用户最新变更、实际产物、已知失败及下一动作，并在恢复时检查文件与执行事实。** 官方压缩提示要求记录进度、决定、约束、剩余动作，但它是期望行为，不是无损保证。近期使用报告同时存在“压缩后回旧任务”和“仍准确记得未完成范围却结束”两类现象，不能合并为遗忘。另有长会话延迟报告在高缓存命中与零 reasoning token 下仍慢，也不能靠上下文压缩次数判断问题已经解决。详见[固定来源与审查](research/2026-10-10-codex-continuity.md)。
-
-当记录已经完整，仍只总结而不行动，应检查续接/停止行为，不继续盲目扩大记忆文档。🧪 只有出现具体跨会话检索问题时才考虑额外记忆服务。
-
-**依据**：[一手／社区] Codex 连续性报告与审查记录；[研究] 采用判断；核实 2026-10-24。
