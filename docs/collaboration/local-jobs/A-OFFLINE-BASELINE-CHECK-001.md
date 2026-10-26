@@ -2,7 +2,7 @@
 
 id: A-OFFLINE-BASELINE-CHECK-001
 owner: dot-A
-status: ready
+status: running
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7b775bbdac27af662f9291d1cba989196d4f75f6
