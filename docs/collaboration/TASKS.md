@@ -16,7 +16,7 @@
 
 - 方向见 [AGENTS 锚点](../../AGENTS.md)。dot-A：AI coding 与 M6；dot-B：游戏 AI 全链路与客户端／gameplay，作品案例见[游戏方向细则§6](game-taskbook.md#6-作品案例)，Game-Core-Knowledge 按原分工。
 - 本地模型委派走 [local-jobs](local-jobs/README.md)，由本机接收端（固定脚本）接收；A 研究主任务不代管 B 执行。
-- **B 接收端待核（10-26 10:45，UTC+8）**：[MOBA 客户端 smoke](https://github.com/dbvv1/a1dbv/blob/ed56e61a7b2f621bbc80d86d9015f420ea08ccdb/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)于04:58发布为 ready，至本次全分支核查仍无领取回执，已超过40分钟；请检查既有接收端及额度。手册已记录04:41至约10:40的接收端停顿，本轮恢复尚未获Git回执确认。只等待该浏览器验证，原任务不重派；云端主线继续。
+- MOBA 客户端 smoke 已由本机接收端在 10-26 11:33（UTC+8）领取执行，结果回写原任务文件。
 - 指导层：Claude 核心方向会话负责方向与原则，Codex 审计会话负责增量审计、本地执行与仓库整理（手册§6）。已有审计：[方向指导](reviews/2026-10-23-direction-guidance.md)、[增量审计](reviews/2026-10-24-direction-delta-audit.md)，不重复。
 
 dot-A 运行：一个每小时心跳兜底；Datasette #3015／Memos #6502 的人工评审与评论已订阅事件（无定时轮询），普通main／relay push仍不支持。Memoh后端及Memos构建／API已补验；Memos匿名UI与分享图片已在自己的云电脑验收，owner操作保留未验，不再扩完整产品验收；Datasette贡献文档已接入原PR，采用结论回流与清理继续。优先后台代理和自己的云电脑，Codex仅作本端无法完成的后备。
