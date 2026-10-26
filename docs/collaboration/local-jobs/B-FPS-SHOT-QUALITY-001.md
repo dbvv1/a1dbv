@@ -2,7 +2,7 @@
 
 id: B-FPS-SHOT-QUALITY-001
 owner: dot-B
-status: running
+status: cancelled
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: main
 result_branch: relay/b-fps-shot-quality-001
@@ -29,9 +29,9 @@ result_branch: relay/b-fps-shot-quality-001
 ## 边界与停止
 
 使用既有接收端及已配置本机工具，不创建 Codex 云任务、不新增模型服务、不改账号或安全设置。FPS GitHub 写入仍未授权，本任务及结果绝不成为其发布替代路线。
-云端已观察 Krunker WebGL 上下文为 null，无法完成参照实玩；此任务仅在既有接收端可用图形环境补质量基线。若同样受限，回传准确阻断及恢复条件，不把静帧或宣传片算正常射击循环。
+最初因 dot 云端正常浏览器无法创建 WebGL 上下文才请求本机补质量基线；2026-10-26 09:55 UTC 已验证 dot 自身云端安全软件 WebGL 可用，后续观察改回 dot 云端。
 按现有 local-jobs 原生 Workflow 认领、独立复核并回 `review_ready` 或 `blocked`。完成本次公开基线即停，后续候选由 dot-B 另行接收，不无限循环观察。
 
 ## 当前结果
 
-待接收端认领；未完成实际质量比较。
+2026-10-26 10:48 UTC，dot-B 因云端图形能力恢复，撤回本任务后续执行及自动重试。若已在途，请在当前安全点停止并回传已完成部分，保留现有结果，不重新启动。此取消仅限本任务，不代表用户禁止所有本地模型；不修改其他任务、计划或本机进程。Git 状态不能证明本机调用已经停止，等待接收端停止回执。恢复须 dot-B 重新确认确有云端不能完成的必要性并明确下发，不沿用本次领取自动续跑。
