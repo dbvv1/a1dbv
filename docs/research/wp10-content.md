@@ -821,6 +821,17 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 
 [一手／开源，2026-10-26] 默认选择复用原 NGO／MPS 接线；NGO 2.7 [anticipation](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/advanced-topics/client-anticipation.html)明确不含完整 rollback/replay prediction；NfE 1.9 [predicted simulation](https://docs.unity3d.com/Packages/com.unity.netcode@1.9/manual/prediction-n4e.html)按 `Simulate` 过滤当前实体；Fusion 2 [输入循环](https://doc.photonengine.com/fusion/v2/manual/input/player-input)与 Quantum 3 [Verified／Predicted frames](https://doc.photonengine.com/quantum/v3/manual/frames)是不同状态约束。GGRS [请求式保存／恢复／推进](https://docs.rs/ggrs/latest/ggrs/)说明回滚所需游戏接缝，既有 [Factorio FFF412](https://www.factorio.com/blog/post/fff-412)支持不盲目预测整世界与重复视听事件的成本取舍。这些 SDK 未在本项目运行，服务合同／价格采用时另核，不据资料比较宣称跨项目最高水平。
 
+<a id="player-cloud-progress"></a>
+## 同一身份的云档、确认进度与排行
+
+**建议按已有服务栈接，不自建认证与存储框架。** [07 正常链](../../domains/game-dev/07-networking-and-server.md#player-cloud-progress)默认 Unity／UGS 项目沿 Authentication＋Cloud Save＋受保护 Leaderboards；综合托管比较 PlayFab v2；需自托管控制且能维护 DB 才选 Nakama。匿名身份／可恢复绑定、普通 owner 云档／可信奖励、存储事务／榜单投影三组职责分开，相关 API、计量和真实开发者经验归正文节末，未注册或运行托管服务。[研究／一手，2026-10-26]
+
+[Nakama 可运行入口](../../experiments/nakama-player-progress/README.md)锁 3.41.0、PostgreSQL 17.11、官方 JS SDK 2.8.0，全部真实进程／HTTP／数据库在本端 loopback，数据为合成。两个 SDK 客户端完成原设备绑定→同一 ID 重新登录→章节恢复／旧版本拒绝→可信结果夹具确认／去重→Nakama 进程重启→排行补写；第二规则增加 XP≥20 解锁并保旧 XP／最佳分。保护集合在 before-write hook 拒绝抢先创建；确认 receipt 与 progress 同批条件写，排行单独从确认值按 `best` 投影。只证明此正常链与直接失败路径，不证明真实比赛结果、第三方登录、数据库灾备或生产安全。[本仓实跑]
+
+两处会改变接线的版本事实：SDK2.8.0 `rpcHttpKey` 发 GET query payload，而[服务3.41 HTTP RPC](https://github.com/heroiclabs/nakama/blob/v3.41.0/server/api_rpc.go)只读 POST body，本例改用官方 POST 协议；3.41 的存储版本冲突实际为 code9，旧文仍有 code3。PG 支持也不能沿旧 Linux 页下结论：[维护者已明确 PG14+ 正式支持](https://forum.heroiclabs.com/t/about-unofficial-and-official-db-support/5823)，固定仓库的 PG compose 与 Nakama 镜像版本仍须分别核。[一手／实际失败后修复，2026-10-26]
+
+跨服务一致性边界按实际接口：Nakama `MultiUpdate` 包含账号／存储／钱包，不含排行榜；本例没有虚构全局事务或使用重送会加分的 `incr`。保留确认对象后可在登录／结算后补榜；若要撤销／扣减或换赛季，另定投影版本。Unity Default/Public Player Data 的 owner 仍可写，可信奖励用 Protected＋服务端权限；不能仅把方法放进 Cloud Code 就认定全部客户端写入口已关闭。PlayFab 2026-11-01 新 title 的 v2 入口与 Game Saves 的客户端支持清单也须分别核，不混作 Unity 全平台现成云档。[一手／研究，固定依据见正文与实验 README]
+
 <a id="managed-room-chain"></a>
 ### 现成房间服务：从准备到恢复与结束
 

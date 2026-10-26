@@ -1,0 +1,19 @@
+{
+  "name": "nakama-player-progress-example",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare:linux": "node prepare-linux.mjs",
+    "demo": "node demo.mjs",
+    "test": "node --test --test-concurrency=1 test.mjs"
+  },
+  "dependencies": {
+    "@heroiclabs/nakama-js": "2.8.0"
+  },
+  "scarfSettings": {
+    "enabled": false
+  }
+}

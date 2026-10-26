@@ -1,6 +1,6 @@
 # 联网与服务端：先确定谁裁决，再让两端推进同一局
 
-> 核实：2026-10-26。面向已有单机玩法、准备做小规模联机的程序员；Unity 优先，Unreal 对照。引擎方案为文档／源码选择，实际运行的是固定 MOBA 模拟的三进程输入帧消费者；不把它称为浏览器联网版或公网验收。
+> 核实：2026-10-26。面向已有单机玩法、准备做小规模联机的程序员；Unity 优先，Unreal 对照。引擎方案为文档／源码选择，实际运行包括固定 MOBA 三进程输入帧、Colyseus 房间，以及 Nakama 本地合成账号／云档／排行链；不把独立样例称为产品公网验收。
 
 ## 1. 当前强方案与默认：先选同步方式
 
@@ -94,6 +94,29 @@ flowchart LR
 独立作品 [AlienFall 的开发日志](https://alienfall.io/journal.html)也采用 Node／Colyseus，并把持久数据与跨进程共享分别交 SQLite／Redis；可借其按职责组合现成部件的做法，不把作者自述的容量或成本推广成本例实测。
 
 依据：[Colyseus 匹配](https://docs.colyseus.io/matchmaker)、[锁房](https://docs.colyseus.io/matchmaker/visibility)、[重连](https://docs.colyseus.io/room/reconnection)、[扩容](https://docs.colyseus.io/scalability)及固定 npm SDK 源码；[Nakama 仓库](https://github.com/heroiclabs/nakama)、[TypeScript 运行时](https://heroiclabs.com/docs/nakama/server-framework/typescript-runtime/)与[权威对局](https://heroiclabs.com/docs/nakama/concepts/multiplayer/authoritative/)；[Unity MPS 会话与网络](https://docs.unity.com/en-us/mps-sdk/session-networking)，2026-10-26 [一手／开源／本仓实跑]。实际路径与范围见 [WP10](../../docs/research/wp10-content.md#managed-room-chain)。
+
+<a id="player-cloud-progress"></a>
+### 账号、云档与排行榜：换设备后继续同一份进度
+
+**✅ 已有 Unity／UGS 就接 Authentication＋Cloud Save＋Leaderboards；需综合托管后端再比较 PlayFab，愿意维护数据库才选 Nakama 自托管。** 普通单机云档解决“换设备接着玩”，可信进度解决“谁有资格改奖励”，排行榜只是结果的一种展示；不要用一份客户端 JSON 同时承担三者。
+
+| 项目条件 | 第一步与正常接线 | 主要取舍 |
+|---|---|---|
+| 已有 Unity 服务项目 | 初始化 Authentication→登录／绑定可恢复身份→Cloud Save 读档及 `writeLock`→玩法载入；可信奖励经 Cloud Code 写 Protected 数据及受保护榜单 | 少维护后端，但云项目／平台身份配置、读写／调用／流量预算仍要做；匿名账号不是跨设备恢复方式 |
+| 想用综合托管游戏后端 | PlayFab 身份→Entity Objects 条件保存，服务端确认结果→v2 Statistics／Leaderboards | 新 title 按 v2 接线；2026-11-01 起新建 title 不再支持旧 v1 Economy／Statistics／Leaderboards，已有 title 不受该切换影响 |
+| 需要自托管、能承担数据库运维 | Nakama 认证／Link→Storage 版本写入→服务端确认进度→authoritative leaderboard | 原生账号、存储与排行可复用；备份、迁移、监控、升级与线上身份安全归项目自己，不是“免费后端” |
+
+**先让玩家在原账号上绑定身份，再让第二端登录已有账号。** 第一端的匿名／设备 ID 可以建立游客档，却不能保证丢设备后找回。`Link` 给当前账号增加登录方式，重新 `Authenticate` 可能找到或创建另一账号；绑定冲突不能当作自动合档。进度重要时在换设备前提供可恢复登录，并为“已有两个档”明确选择／合并规则。演示只用本地合成邮箱，真实平台身份和找回流程另验。
+
+正常保存沿“读取内容＋版本→玩法改动→带原版本写入→收到确认后更新本地版本”。Unity 的 `writeLock`、Nakama 的对象 version、PlayFab 的 `ExpectedProfileVersion` 都服务于这一顺序；冲突后先取新档，让玩法或玩家决定，不能用设备时钟或无条件覆盖掩盖冲突。普通离线单机可允许 owner 写章节；竞技奖励、货币和排名来源放在服务器可写的对象中。还要禁止客户端抢先创建保护集合，而不只保护已经存在的记录。
+
+**结算先确认进度，再更新可重试的榜单。** 用稳定的玩家／对局结果 ID 去重，把确认记录与奖励进度放进所用存储实际支持的事务。Nakama 的存储批次可原子提交，但排行榜不在同一批事务里；本例将最高分投影到 `best` 榜，确认后或重新登录时可补写，短时间落榜不等于奖励丢失。`incr` 重送会再加分；赛季切换、扣减或撤销成绩不能照搬非递减最高分投影。经过 RPC 不证明对局真实，服务器仍须从权威玩法／可核结果生成奖励，不能原样相信客户端上传的分数。
+
+[可运行完整链](../../experiments/nakama-player-progress/README.md)用固定 Nakama 3.41.0＋PostgreSQL 17.11＋JS SDK 2.8.0，实际跑两个 SDK 客户端的合成身份恢复、章节云档、旧版本冲突、结果去重、真服务重启及排行补写。`npm run demo` 从第一份档走到第二需求“累计 XP≥20 解锁冲刺”，保原 XP／最佳分；`npm test` 还核客户端伪造／保护集合、原子批次和并发条件写。可信结果来自测试调用方，不是 MOBA 已接云存档，也未验证真实身份提供方、跨物理设备或生产宕机恢复。
+
+**成本先按操作量与职责算。** 云档别每帧写：按关卡／结算或明确检查点保存，区分每活跃玩家的读写、函数调用与流量；重试也算成本。UGS 的免费额度／排行榜优惠、PlayFab 的开发额度不等于长期生产零成本；PlayFab Development Mode 的 1,000 个玩家是累计创建账号，不是 1,000 MAU。自托管则把数据库和备份恢复工时计入。已有平台云档足以满足纯单机时，不为一个排行榜搬迁整个账号体系。
+
+依据：[Unity 身份](https://docs.unity.com/en-us/authentication/approaches-to-authentication)、[云档版本](https://docs.unity.com/en-us/cloud-save/concepts/write-locks)与[数据权限](https://docs.unity.com/en-us/cloud-save/concepts/player-data)；[PlayFab 条件写](https://learn.microsoft.com/en-us/rest/api/playfab/data/object/set-objects?view=playfab-rest)及[v2 切换公告](https://developer.microsoft.com/en-us/games/articles/2026/09/update-new-titles-move-to-v2-economy-statistics-and-leaderboards/)；[Nakama 存储](https://heroiclabs.com/docs/nakama/concepts/storage/collections/)与[排行榜](https://heroiclabs.com/docs/nakama/concepts/leaderboards/)；[UGS](https://unity.com/products/gaming-services/pricing)／[PlayFab](https://developer.microsoft.com/en-us/games/products/playfab/pricing/)当前计费口径，2026-10-26 [一手／开源／本仓实跑]。一位 Unity 开发者的[最高分 metadata 不更新经历](https://www.reddit.com/r/Unity3D/comments/1g3ut1p/unable_to_properly_update_builtin_leaderboard/)也说明成绩记录不宜充当可变玩家档案；其客户端保最高分的 workaround 不用于这里的权威结算。固定版本接缝与实际检查范围见 [WP10](../../docs/research/wp10-content.md#player-cloud-progress)。
 
 ## 4. 用已有 MOBA 模拟跑两端输入帧，而不是另写一个假游戏
 
