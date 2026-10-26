@@ -1,0 +1,12 @@
+{
+  "name": "character-animation-consumer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test.mjs",
+    "sample": "node sample.mjs"
+  },
+  "dependencies": {
+    "three": "0.186.1"
+  }
+}
