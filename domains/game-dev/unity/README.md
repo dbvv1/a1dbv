@@ -32,6 +32,7 @@
 | [04-animation-runtime.md](04-animation-runtime.md) | 角色动画运行时：步态、过渡、上身瞄准、根运动与权威位移；Animator／Animancer／Motion Matching 的选择与原生接入起点 |
 | [05-content-authoring-tools.md](05-content-authoring-tools.md) | 内容作者工具：保原数据，连接 Inspector／空间预览／原玩法试跑；原生、Alchemy、Tri、Odin 的选择与二改 |
 | [06-physics-interaction.md](06-physics-interaction.md) | 物理道具与机关：拿起、搬运、放投、推门与堆放；原生约束、现成样例、重量调校和易碎长箱二改 |
+| [07-scene-rendering-and-lighting.md](07-scene-rendering-and-lighting.md) | 场景渲染与光照：主光／阴影、角色与环境间接光、反射和后处理；关灯二改与两档设备的可读画面 |
 | [../03 游戏中的生成式 AI](../03-generative-ai-in-games.md#1-资产管线agent-负责搬运和规范) | AI 生成 3D、2D、音频、动画资源（跨引擎，已上移） |
 | [Unreal 分支](../unreal/README.md) | 对照阅读：两个引擎在 AI 接入上的差异 |
 | [templates/](templates/) | 可以拷进 Unity 项目的配置（在 [templates/generic](../../../templates/generic/) 基础上增加 Unity 专用部分） |
