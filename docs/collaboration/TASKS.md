@@ -27,7 +27,7 @@
 | P81 | **试用与写成选择**：读者照着就能采用；在本仓自己的 AI 开发里试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | 已有采用结论（Datasette、MDX、Memos、Storybook、Memoh）写进路线页后收口；[Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502) 跟评审；jrnl 补丁待用户创建 PR（见下）。 |
 | MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 可玩集成已入 [main 274bc62](https://github.com/dbvv1/MOBA-Like/commit/274bc62c69f84294fbd4c97f7acff9f16ca8f68a)，[原 smoke 任务](local-jobs/B-MOBA-CLIENT-SMOKE-001.md)已接受软件 WebGL2 实跑与独审；按 [README](https://github.com/dbvv1/MOBA-Like/blob/main/README.md) 运行并操作。默认 v8，模拟指标继续作调参报告；下一步第二次需求修改与制作链接入。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[细则 G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 下一步：服务端第一页，联网模型选型与接入起点，在 MOBA-Like 模拟上跑两端帧同步样例（两端状态哈希一致）；已写模块进案例用时补实测。 |
-| B-制作链 | **AI 全链路**（[细则 G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 下一步：MOBA 英雄模型与动作从制作到接入 main，写回 3d、animation 两页，以进入可玩构建为验收。 |
+| B-制作链 | **AI 全链路**（[细则 G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [开门源→影片→玩法](../../experiments/gate-reveal/README.md)已实际制作、浏览器播放／跳过返回与二改通过（静音灰盒）。下一步：MOBA 英雄模型与动作从制作到接入 main，写回 3d、animation 两页，以进入可玩构建为验收。 |
 | SR | **Star-Rush 品质提升**：驾驶手感、竞速 AI、美术与音频，按 [brief](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/brief.md) | dot-B | master `4975dcb` 可玩；转向牌接入是下一项；硬件 GPU 效果记入待人工验收，不卡住其他项。 |
 | FPS | **FPS-Like 纵切片**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | MOBA-Like main 可玩后开工，先做模拟层和无画面验收。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |

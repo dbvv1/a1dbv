@@ -1,0 +1,11 @@
+{
+  "fps": 12,
+  "seconds": 9,
+  "width": 480,
+  "height": 270,
+  "openingStart": 0.5,
+  "openingEnd": 3.5,
+  "cameraStart": [8, -12, 8],
+  "cameraEnd": [5, -8, 6],
+  "lookAt": [0, 3, 1]
+}

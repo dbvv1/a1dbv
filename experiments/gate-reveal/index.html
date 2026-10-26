@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gate Reveal — author source to playable world</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101a21;color:#e8e7dc;font:15px system-ui}main{max-width:940px;margin:24px auto;padding:0 20px}h1{font-size:26px;margin-bottom:5px}p{color:#a9b9bc;line-height:1.5}.eyebrow{color:#ddb674;letter-spacing:.15em;font-size:12px}#stage{position:relative;aspect-ratio:16/9;background:#142a2d;border:1px solid #526565;border-radius:10px;overflow:hidden}canvas,video{width:100%;height:100%;display:block}video{position:absolute;inset:0;object-fit:contain;background:#101a21}#caption{position:absolute;bottom:14px;left:10%;right:10%;text-align:center;background:#0b141ce0;padding:10px;border-radius:5px}#shot{position:absolute;top:14px;left:16px;background:#0b141ce0;padding:5px 9px;color:#f1c478}button,select{font:inherit;border:1px solid #60767a;border-radius:5px;padding:8px 12px;color:#e8e7dc;background:#20383e}button:disabled{opacity:.4}button:not(:disabled):hover{background:#34555c}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}pre{white-space:pre-wrap;color:#a9c6c9;font-size:12px;line-height:1.5}small{color:#a5b5b8}a{color:#e4bb76}
+</style><main>
+<div class="eyebrow">EDITABLE SOURCE · SILENT CINEMATIC STUDY</div><h1>The amber passage</h1>
+<p>Move with arrow keys / WASD. Near the pedestal, activate the gate (E). A uses the current character, B plays a real CPU-rendered film, C returns control. Cross the open arch.</p>
+<div id="stage"><canvas tabindex="0" width="960" height="540" aria-label="Playable gate world"></canvas><div id="shot"></div><div id="caption"></div></div>
+<div class="controls"><button id="start">Activate gate (E)</button><button id="pause">Pause / resume</button><button id="skip">Skip cinematic</button><button id="reset">Restart world</button><label>Version <select id="profile"><option value="base">Original · 0.75 weapon / 5s return</option><option value="revised">Second edit · 1.05 weapon / 6.5s return</option></select></label></div>
+<small>Original CC0 geometry, materials and shot; no audio track. Canvas 2D gameplay + native HTML video, not Unity / Unreal. The second edit reuses the identical B film.</small>
+<pre id="status" aria-live="off"></pre>
+<script type="module" src="app.mjs"></script></main></html>

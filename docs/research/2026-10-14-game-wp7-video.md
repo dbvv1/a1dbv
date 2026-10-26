@@ -364,7 +364,11 @@ Wan3／H3托管发行合同、最新模型的游戏二改与非目标保持、�
 
 **采用反证没有消失。** S2 的 Dispatch 说明预渲染可以交换运行负担，但分支缓冲、团队和外包成本仍在；S42 的 Sandfall 支持动态演员复用，却仍逐场安排受控战斗场地。S14 的固定 LTX Retake 代码、S41 的剪辑研究、S54 的聚合渠道反馈继续约束生成插入镜头；本次不再下载或复读不变材料，也不把历史实读写成本轮模型结果。真正能让生成替换默认的证据，是同一游戏镜头完成换物／长译文二改且总成本更低，而不是宣传成片更漂亮。
 
-**交付验收范围。** 文稿给出了源文件／依赖版本、渲染剪辑工程、母版／派生片、语言／绑定配置、正常播放与第二次修改的检查对象；它没有创建 `.playable`、角色／场景资产、实际影片或可运行适配器。目标平台、编码、音画同步、瞬时／重复跳过、长译文与设备耗用仍需在真实项目验收；不在知识库里另造模拟过场来冒充完成。
+**原创源到真实网页消费者（2026-10-26）。** [gate-reveal](../../experiments/gate-reveal/README.md)把同一开门例做成可重建的 Blender 4.3.2 源、Cycles CPU 图序及 FFmpeg 7.1.5 H.264 交付：480×270、12 fps、108 帧、9 秒、193179 B，原创几何／材质／门动画／相机为 CC0。最终片 SHA-256 为 `656260472ee17917e8d8ceca55b1d6bdd444b90c067ae5825a3345fd17b1e700`；源、图序和成片由脚本生成而不跟踪过程产物。初次渲染发现所用 Blender 构建没有 OpenImageDenoise，改成 24 samples 无降噪后完整输出，未更改安全设置。
+
+真实云桌面 Chrome 播放的是此片，不是计时器假播放器：Canvas 交互提交解锁后进入 A，原生 B 解码／暂停／恢复／自然结束，经 C 返回，实际 W 输入穿门。B 暂停在 4.448 秒时媒体／字幕时钟和玩家位置保持；自然结束媒体时间 9 秒；真实缺媒体时错误码 4、解码 0 帧，仍经 C 回世界并可穿门，不计媒体成功。二改选择长武器与长字幕，C 延长 30%，B 文件字节保持。9 项 Node 检查含受控媒体异步合同及真实 HTTP Range／缺文件；4 项 Python 检查实际启动 Blender 保存重开、FFmpeg 编码解码，比较机位二改前后网格／材质引用／门曲线，另核缺输入、无效配方、旧源保护。受控媒体测试与真实浏览器观察分开，不把前者算解码实测。
+
+实现决定是按段分工，而不是新增剪辑框架：每次 B 独立媒体元素、以 `currentTime` 驱动字幕，暂停同时停 A/C 展示时钟或 B 媒体；`play()` 失败回 C，跳过／重开释放旧源并忽略旧 promise／回调。该窄例没有声音、Unity／UE 工程或 GPU 性能结论；不能外推目标设备编码、旁白同步、最终美术与生成模型二改通过率。
 
 依据：S58–S64 [一手] 与上述 [研究]，2026-10-25；既有社区／固定源码按原核实日期复用。
 
@@ -378,4 +382,6 @@ Wan3／H3托管发行合同、最新模型的游戏二改与非目标保持、�
 - **S63** [UE Movie Render Pipeline](https://dev.epicgames.com/documentation/unreal-engine/movie-render-pipeline-in-unreal-engine)：页面显示 UE 5.8，MRQ／MRG、序列与地图及离线导出；不把源场景与成片混为一种资产。[一手]
 - **S64** Unity 6.3 [prepareCompleted](https://docs.unity.com/en-us/engine/6000.3/script-reference/unityengine/video/videoplayer/preparecompleted)、[audioOutputMode](https://docs.unity.com/en-us/engine/6000.3/script-reference/unityengine/video/videoplayer/audiooutputmode)、[AudioSource](https://docs.unity.com/ja-jp/engine/6000.3/script-reference/unityengine/video/videoaudiooutputmode/audiosource)、[Direct](https://docs.unity.com/zh-cn/engine/6000.3/script-reference/unityengine/video/videoaudiooutputmode/direct)：准备阶段及非 Web／Web 音频分界。[一手]
 
-版本是实际读取页面的标识，不是已装配或验证的引擎组合。旧域 Unity 6.3 SetGenericBinding 路径未取到正文，随后在现行官方 docs.unity.com 入口取得；没有把失访算成 API 缺失，也未绕过权限。无模型／引擎运行、生成、付费调用或权重下载。
+版本是实际读取页面的标识，不是已装配或验证的引擎组合。旧域 Unity 6.3 SetGenericBinding 路径未取到正文，随后在现行官方 docs.unity.com 入口取得；没有把失访算成 API 缺失，也未绕过权限。该 2026-10-25 文档核查未运行模型／Unity／UE、付费调用或权重下载；上述 2026-10-26 原创 Blender／浏览器实作单独列明。
+
+本例媒体 API 依据：[HTMLMediaElement.play](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play) 的异步成功／拒绝、[currentTime](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/currentTime) 的媒体时钟语义，2026-10-26 [一手]；实际行为以上述源码和浏览器验收为准。
