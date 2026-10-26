@@ -37,7 +37,7 @@
 需要人亲自听、看、玩才能判断的项目集中在这里，由用户择时统一验收；执行者记录后继续其他工作。
 
 - MOBA-Like：[可玩入口与操作](https://github.com/dbvv1/MOBA-Like/blob/main/README.md)的硬件 GPU 画面、操作手感与完整对局体验；软件 WebGL2 smoke 已通过。
-- Star-Rush：护栏碰撞音频两套候选的听感与混音；Canvas 房屋锚点（`STAR_RUSH_CANVAS_HOUSE_ANCHORS=on`）目视；主弯驾驶手感与完整 WebGL 画面；转向牌 `STAR_RUSH_SIGNBOARD_VARIANT=navy-v2` 在真实路段的运动、光照和左右辨识。
+- Star-Rush：[同弯驾驶 A/B `2ad6cf7`](https://github.com/dbvv1/Star-Rush-Reborn/blob/2ad6cf72157e27a9eba0326776bccf29beee3236/docs/driving-ab.md)：高速转向渐入、主动小喷与贴墙恢复已做正常 Canvas 同弯对照；尚未证明整体更好，正式站保留 baseline，继续实玩改进。另验完整 WebGL 画面、护栏声音与混音、Canvas 房屋锚点及 `navy-v2` 转向牌运动辨识。
 - 潮汐邮差 v2：素材、木筏与旧档。
 - Memos：owner 登录与编辑。
 - Maka 侧聊模型选择：真实后端／Electron 与完整应用体验（[固定候选](local-jobs/A-STORYBOOK-ADOPTION-001.md)）。
