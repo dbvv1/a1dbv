@@ -32,11 +32,11 @@ result_branch: relay/a-readability-cleanup-001
 
 ## 当前结果
 
-- 已接收：02、19、21、09、05、11、06、17、10、open-source-agents、codex、22、18、03、07；00总览、12资源索引、Gemini页和16自建Agent页由dot-A云端独审接收，来源与本机调用分开。旧接收与来源保留Git历史；22／18固定正文为[b0fce689](https://github.com/dbvv1/a1dbv/commit/b0fce689)／[e26edfb8](https://github.com/dbvv1/a1dbv/commit/e26edfb8)。
-- 在途03／07已收尾：固定正文[6a977f40](https://github.com/dbvv1/a1dbv/commit/6a977f40)完成先新后旧独审，四处阅读笔记及03的[既有采用证据](A-CODING-ADOPTION-001.md)反馈差量均独审通过，适用检查通过后按accept:auto接收。Codex0.154只核上下文组装，OpenCode V2契约已核未实跑；未重启cspell或新做实验。
-- 收窄后 08 不再单独改写；下一页按上面范围从 `docs/README.md` 开始。
-- 本端03／07作者与独审均已结束，写域已释放，下一页尚未开始；由替代接收脚本以adopt从“当前结果”接续，全任务保持running。本端不再认领任务、开启新页或派发下一批。原发往审计会话的最终接收请求已退役，不再发送，不另建计划或服务。
-- 本机原通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash；非作者先新后旧核对，检查通过才按accept:auto接收。任务回执由宿主串行汇总，旧过程留Git历史。
+- docs/README.md 已按读者问题重写入口、评级与维护各节，但独立复审发现两处语义损失：情境 B 丢失「有依据、可比较标准」限定，一手来源判断丢失「可能」限定，尚未通过审查。
+- 产物：[42fbcaf](https://github.com/dbvv1/a1dbv/commit/42fbcaff5dc34eb0d51480e76647ecd2e5ca3689)，分支 `relay/a-readability-cleanup-001-u1`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：带 retryNote 重跑本单元，恢复上述两处限定并复审通过，再继续 docs/15-task-playbooks.md、docs/01-agents/README.md 等剩余页面。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
 
 ## 修改要求
 
