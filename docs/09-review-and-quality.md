@@ -19,7 +19,9 @@
 
 <!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-21 -->
 
-**整体最高水平未知；相对测试＋PR人审的常见基线，本页采用比较后的可行默认：把自动评审前移到每个 PR，同一 diff 跨入口去重，只复审新增差异。** 这个默认借的是 Claude Code 团队的校准机制和 Cursor Bugbot 的增量复审，不是直接复制全量托管：Claude 的流程依赖可信作者、可回滚发布和事故跟踪；Bugbot 先查新差异、避免重复意见，但未证明少轮次就少漏审。两项机制都是厂商自报，不是同预算优胜比较。
+**整体最高水平未知；相对测试＋PR人审的常见基线，本页采用比较后的可行默认：把自动评审前移到每个 PR，同一 diff 跨入口去重；此前确已审过且未受新改动影响的部分，才可复用原结论。** 这个默认借的是 Claude Code 团队的校准机制和 Cursor Bugbot 的增量复审，不是直接复制全量托管：Claude 的流程依赖可信作者、可回滚发布和事故跟踪；Bugbot 先查新差异、避免重复意见，但未证明少轮次就少漏审。两项机制都是厂商自报，不是同预算优胜比较。
+
+**先补未覆盖范围，再做增量复审。** 对照本次 Git 变更全清单、实际送审文件与截断／省略提示；原评审范围内，未变但从未审过的文件仍是欠项。Cursor 本地 Bugbot 已会列出大 diff 的遗漏文件，但同一差异、同一 Diff 设置重跑仍组装同一文件包，Custom Instructions 不能补入裁掉的文件。未提交部分可改审 `uncommitted changes`；已提交的遗漏文件，交普通 Agent 显式对基线补审。别把反复跑同包当补齐覆盖，也不必为此重复已充分审过的全部范围。
 
 | 同题选择 | 当前参照 | 本页决定 |
 |---|---|---|
@@ -35,7 +37,7 @@
 
 **按你的评审范围选判据。** 固定版本的ReviewBench分类器允许既有或改动外问题算TP；只检查本次新增风险时，先区分范围，不为基准得分扩大修补。跨候选用固定gold的grounded recall比较覆盖，新增发现另核；augmented recall的分母随候选改变，不单独用于排名。源码、公开入口与采用边界见本节依据。
 
-**依据**：[一手] [Claude Code团队10-15复盘](https://claude.dev/blog/solving-code-review-at-anthropic/)、[Cursor 6-10更新](https://cursor.com/blog/bugbot-updates-june-2026)、[ReviewBench的10月5日复盘](https://github.blog/ai-and-ml/reviewbench-an-open-benchmark-for-ai-code-review/)；[研究] [CRBugBench v1](https://arxiv.org/html/2610.13668v1)、[代际研究](research/2026-10-12-baml-and-review.md#p52评审代际复核)、[研究记录](research/2026-10-12-baml-and-review.md#p72审计补强离线评审怎样进入放量)；[研究：采用层级／采用判断／代际边界] 本页默认、扩量条件与旧效果边界；核实 2026-10-24（代际复核 2026-10-22）。
+**依据**：[一手] [Claude Code团队10-15复盘](https://claude.dev/blog/solving-code-review-at-anthropic/)、[Cursor 6-10更新](https://cursor.com/blog/bugbot-updates-june-2026)、[本地 Bugbot 10-07 省略提示修复](https://forum.cursor.com/t/review-bugbot-on-a-large-local-branch-reports-bugbot-found-no-bugs/173568)、[10-14 支持回复：同 Diff 重跑仍同范围](https://forum.cursor.com/t/local-review-bugbot-always-skips-the-same-files-on-a-large-diff/174649/6)（2026-10-26 复核官方说明，未运行 Bugbot）、[ReviewBench的10月5日复盘](https://github.blog/ai-and-ml/reviewbench-an-open-benchmark-for-ai-code-review/)；[研究] [CRBugBench v1](https://arxiv.org/html/2610.13668v1)、[代际研究](research/2026-10-12-baml-and-review.md#p52评审代际复核)、[研究记录](research/2026-10-12-baml-and-review.md#p72审计补强离线评审怎样进入放量)；[研究：采用层级／采用判断／代际边界] 本页默认、扩量条件与旧效果边界；核实 2026-10-24（代际复核 2026-10-22）。
 
 ## 1. 质量数据：AI 代码的真实代价
 
