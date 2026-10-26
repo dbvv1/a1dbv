@@ -2,7 +2,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from run import copy_application, copy_notices, digest, write_preset
+from run import copy_application, copy_notices, digest, write_preset, require_script_profile
 
 
 class PackageTests(unittest.TestCase):
@@ -53,6 +53,34 @@ class PackageTests(unittest.TestCase):
             self.assertIn('include_filter="*.txt"', preset)
             self.assertIn('exclude_filter="unreleased/*"', preset)
             self.assertIn('binary_format/embed_pck=false', preset)
+
+
+class ProfileTests(unittest.TestCase):
+    # Parser fixtures only. Real engine output is validated by run.py --profile.
+    SAMPLE = ("BEGIN PROFILING\nACCUMULATED: total: 0.001\n"
+              "0:res://player.gd::14::_process\n\ttotal: 0.001 self: 0.001 tcalls: 406\n"
+              "1:res://main.gd::26::_on_MobTimer_timeout\n\ttotal: 0.001 self: 0.001 tcalls: 2\n")
+
+    def test_positive_gameplay_samples(self):
+        self.assertEqual(require_script_profile(self.SAMPLE)["_on_MobTimer_timeout"], 2)
+
+    def test_no_input_fails(self):
+        with self.assertRaises(RuntimeError):
+            require_script_profile("")
+
+    def test_successful_but_empty_capture_fails(self):
+        with self.assertRaises(RuntimeError):
+            require_script_profile("BEGIN PROFILING\nACCUMULATED: total: 0.0\nDELIVERY_RESULT failed=false")
+
+    def test_zero_calls_fail(self):
+        with self.assertRaises(RuntimeError):
+            require_script_profile(self.SAMPLE.replace("tcalls: 406", "tcalls: 0"))
+
+    def test_missing_enable_or_zero_total_fails(self):
+        for text in (self.SAMPLE.replace("BEGIN PROFILING", ""),
+                     self.SAMPLE.replace("total: 0.001\n", "total: 0.0\n")):
+            with self.subTest(text=text), self.assertRaises(RuntimeError):
+                require_script_profile(text)
 
 
 if __name__ == "__main__":

@@ -407,6 +407,29 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 
 核实：2026-10-14 UTC；2026-10-25 UTC 补采集开销、线程／等待、内存快照、发布构建与二改路径。主线 3／4；默认跟随项目锁定的 Unity 6000.3（URP）与 UE 5.8，不把编辑器／玩家构建、Unity／UE 的同名标记当同一机制。依据 Unity 6.3 Profiler／Memory Profiler 1.1.11／FrameTimingManager 文档、UE 5.8 Insights／Trace 文档及既有 PSO／加载／池资料。[一手／研究]
 
+<a id="native-script-profile"></a>
+### 原生脚本采样：让 AI 从真实报告判断，而不是从代码猜热点
+
+**选择：先接已有官方 Profiler；本例采用本地脚本报告，不新增采集平台。** [04 正文](../../domains/game-dev/04-client-modules.md#native-script-profile)和[原实验的可选采样](../../experiments/godot-export-adoption/README.md#脚本采样把实际回合交给官方-profiler)给出实际入口。[研究／实测]
+
+| 方案 | 适用与本次取舍 |
+|---|---|
+| 引擎已有 GUI Profiler／Unity Profiler／UE Insights | 正常开发优先，能按帧看脚本、线程与其他子系统。Godot 官方脚本 Profiler 当前不支持 C#；不要把 GDScript 入口套给 C# |
+| Godot 官方 local debugger＋脚本采样 | 本次实际采用；4.7.2 debug 应用无需另开 Editor 窗口、网络接收端或自建解析协议，输出函数路径／行号、total／self／调用数。用于脚本归因，不是 GPU 或完整 CPU 时间轴 |
+| Tracy | 引擎内部／线程问题再接；官方路线需带 `profiler=tracy` 与匹配 Tracy 的自编模板，采样还涉及符号。本次未编译／运行，不为几份脚本重建引擎 |
+| 官方 godot-benchmarks | 适合引擎版本／固定基准对照，已有命令行 JSON 输出；不是当前游戏同一次操作的归因，本次不跑全套来替玩法结论 |
+| ForeverVirus/GameAnalytics | 中文作者提供静态图谱与 AI 分析，原帖明确 Godot 当时尚无真机采集；当前 README 的运行采集入口仍写 Unity、正式桌面平台为 Windows。只读未试用，不把“识别 Godot 工程”当原生性能采样已接通 |
+
+**实跑揭示两种空结果。** 原交付 debug 包只加 `--profiling`：原回合 exit 0，但没有 BEGIN。固定 `main.cpp` 只有 `--debug` 设置 `local://`，且在调试器活跃时才开启 profiler。补齐后有 BEGIN，却在快速退出时只得到空累计。`LocalDebugger` 每隔至少一秒输出当帧样本；最终累计遍历仍存活的 GDScript 函数，而主循环先销毁场景，再关闭 debugger。当前加速回归不到一秒，因而退出成功／出现标题都不能证明有效采样。[固定源码／实测]
+
+项目已有探针在完成重开接收后、清理声音与销毁前停止 `scripts` profiler，保原四脚本／场景不变；源工程先得真实函数，随后同样接线在新导出的 v1／v2 debug 应用通过。应用仍从交付目录正常入口运行，非 Editor 加载 PCK。消费者要求 BEGIN、正累计和两项玩法函数非零调用，原空采样日志保留。[实测]
+
+**按原因读报告。** 最终两包 `player._process` 均 406 次，原刷怪回调 2→5 次，与波次间隔二改一致。报告还包含 `delivery_probe.frames` 的 415 次调用，不能把测试驱动当游戏需要消除的热点；当前正在执行的收尾回调尚未完整计入，停止点后的清理也不在采集范围。`ACCUMULATED.total` 来自各脚本 self 之和，函数 total 则包含子调用，所以百分比可重叠。该例没有目标机掉帧证据，结论是保原玩法实现、拿这条采样链去核真实症状，不报告“优化了多少”。[源码／实测／研究]
+
+**探索回执。** 2026-10-26 读官方 4.7 Profiler／EngineDebugger／Tracy、固定引擎实现、godot-benchmarks README及[中文作者原帖](https://linux.do/t/topic/1891455)与其[项目 README](https://github.com/ForeverVirus/GameAnalytics)。中文作者有成本动机与Godot能力限制，回复只有支持，不能算独立生产效果；两个 Reddit profiler 反馈页分别未取到正文／仅返回页面框架，不据摘要形成结论。未安装上述第三方工具；当前最高行业性能水平未知。真实验证仅覆盖本例脚本采集与内容二改，非 GPU、目标硬件性能或本仓游戏采用。
+
+来源：官方 [Profiler](https://docs.godotengine.org/en/4.7/tutorials/scripting/debug/the_profiler.html)、[EngineDebugger](https://docs.godotengine.org/en/4.7/classes/class_enginedebugger.html)、[Tracy](https://docs.godotengine.org/en/4.7/engine_details/development/profiling/tracy.html)，固定 4.7.2 [LocalDebugger](https://github.com/godotengine/godot/blob/4.7.2-stable/core/debugger/local_debugger.cpp)、[GDScript](https://github.com/godotengine/godot/blob/4.7.2-stable/modules/gdscript/gdscript.cpp)、[main](https://github.com/godotengine/godot/blob/4.7.2-stable/main/main.cpp)，[官方 benchmarks](https://github.com/godotengine/godot-benchmarks)。Godot MIT 许可沿原实验；核实 2026-10-26，不刷新下面旧证据日期。
+
 ### 1. 先定义要保住的动作，再选择把工作移到哪里
 
 [研究] 首次进房／技能应分别准备资产、实例、上传与绘制；输入缓冲、插值和池化各不能兜底 PSO。只准备下一遭遇必要内容，关键预警与伤害保持一致；装饰可降级，必要时明确延后遭遇。

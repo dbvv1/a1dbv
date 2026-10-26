@@ -43,3 +43,18 @@ python3 -m unittest discover -s . -v
 本地副本保 demo MIT、音乐 CC-BY、图片 CC0、字体 OFL 的原通知；正式发行还需按所用引擎／插件／素材提供对应版权与许可信息，可用官方 `Engine.get_license_text()`、`get_license_info()`、`get_copyright_info()` 整理 Godot 及第三方组件说明，不把一次技术验证当完整发行许可审查。
 
 来源：官方 [导出项目](https://docs.godotengine.org/en/4.7/tutorials/export/exporting_projects.html)、[Linux 导出](https://docs.godotengine.org/en/4.7/tutorials/export/exporting_for_linux.html)、[CLI](https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html)、[JSON 资源实现](https://github.com/godotengine/godot/pull/65295)、[修正旧 JSON 提示](https://github.com/godotengine/godot/pull/119555)、[Engine 许可信息接口](https://docs.godotengine.org/en/4.7/classes/class_engine.html)。2026-10-26 定向核实与本地阶段实跑；完整取舍见 [WP10 原生发布包消费者](../../docs/research/2026-10-14-game-wp10-client-modules.md#native-release-consumer)。
+
+
+## 脚本采样：把实际回合交给官方 Profiler
+
+**🧪 需要让 AI 读真实脚本报告时，给原命令追加 `--profile`。** 它保原导出／内容检查，给 v1 debug 包加 `--debug --profiling`，另导出 v2 debug 包走相同操作。无新 profiler 框架、网络服务或第三方依赖；4 项原文件测试与 5 项报告接收测试同用上面的 unittest 命令。
+
+官方本地 profiler 必须实际启用；项目探针在重开接收完成后、清理与场景销毁前停用 `scripts`，让引擎输出仍活着的脚本函数。只给 `--profiling` 曾没有报告；加 `--debug` 但等快速退出后才收累计，曾只有 `ACCUMULATED: total: 0.0`。两次进程都退出 0、原回合都正常，空采样仍不能接收。
+
+本轮完整 `--profile` 入口已通过：两种包与 v2／旧 v1 回归仍过；真实 debug 包中 `player._process` 均 406 次，波次二改使 `_on_MobTimer_timeout` 从 2→5 次。`require_script_profile` 要求开启标记、正累计、这两项玩法函数非零调用；不是只 grep “DELIVERY_RESULT”。测试中的报告字符串只验证接收逻辑，不能代替原生实跑。
+
+读日志时先分 `total`（含嵌套）、`self`、`tcalls`：累计 total 为脚本 self 合计，不是进程墙钟或整帧；不要相加嵌套百分比。`delivery_probe.frames` 是测试调度，当前收尾回调也未完整计入，不把它们当玩法热点。原版 `player.gd:40` 的类型兼容警告原样保留，回合与有效采样均通过；没有偷偷修改官方脚本消警告。
+
+这条固定步 headless 回归用于验证采样链和内容变化，不作帧率／GPU／设备预算比较。没有测到应修的目标机瓶颈，因此未修改玩法算法或声称提速；对真实卡顿，应沿 [04 采集与归因](../../domains/game-dev/04-client-modules.md#native-script-profile)在目标机重现并以相同采样方式复核。
+
+来源与取舍：[WP10 原生脚本采样](../../docs/research/2026-10-14-game-wp10-client-modules.md#native-script-profile)，2026-10-26 官方固定源码及本轮真实包验证。

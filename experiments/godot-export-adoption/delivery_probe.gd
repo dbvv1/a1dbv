@@ -61,6 +61,9 @@ func initialize_content():
 	game.get_node("HUD/StartButton").pressed.emit()
 	await frames(3)
 	check(game.get_node("Player").visible and game.score == 0, "exported restart")
+	# Stop before scene teardown: the local profiler reads live script functions.
+	if EngineDebugger.is_profiling("scripts"):
+		EngineDebugger.profiler_enable("scripts", false)
 	game.get_node("Music").stop()
 	game.get_node("DeathSound").stop()
 	OS.delay_msec(100)

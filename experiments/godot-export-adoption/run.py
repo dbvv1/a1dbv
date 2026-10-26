@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -92,11 +93,27 @@ def invoke(command, cwd, environment, log, expected=0, markers=()):
             print(" ", line, flush=True)
 
 
+def require_script_profile(text):
+    """Require real accumulated game samples, not a successful but empty capture."""
+    totals = re.findall(r"^ACCUMULATED: total: ([0-9.eE+-]+)$", text, re.M)
+    calls = {}
+    for name in ("_process", "_on_MobTimer_timeout"):
+        match = re.search(r"^\d+:res://(?:player|main)\.gd::\d+::" + name
+                          + r"\n[^\n]*tcalls: (\d+)", text, re.M)
+        if not match or int(match[1]) == 0:
+            raise RuntimeError("Missing live gameplay profile: " + name)
+        calls[name] = int(match[1])
+    if "BEGIN PROFILING" not in text or not totals or float(totals[-1]) <= 0:
+        raise RuntimeError("Missing or empty accumulated script profile")
+    return calls
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--godot", type=Path, required=True)
     parser.add_argument("--templates-dir", type=Path, required=True)
     parser.add_argument("--archive", type=Path)
+    parser.add_argument("--profile", action="store_true", help="Capture real debug-player script samples before teardown")
     args = parser.parse_args()
     engine, templates = args.godot.resolve(), args.templates_dir.resolve()
     if not engine.is_file() or not os.access(engine, os.X_OK):
@@ -143,9 +160,13 @@ def main():
 
     def consume(name, delivery, mode, title, speed, app_version, expected=0, extra=()):
         environment = isolated_environment(run / ("player-" + name))
-        invoke([str(delivery / "game.x86_64"), "--headless", "--fixed-fps", "60", "--", "smoke",
+        profile_flags = ["--debug", "--profiling"] if args.profile and mode == "debug" else []
+        invoke([str(delivery / "game.x86_64"), "--headless", *profile_flags, "--fixed-fps", "60", "--", "smoke",
                 title, mode, str(speed), app_version], delivery, environment,
                run / (name + "-consumer.log"), expected, ("DELIVERY_RESULT", *extra))
+        if profile_flags:
+            calls = require_script_profile((run / (name + "-consumer.log")).read_text())
+            print("PROFILE", name, calls, flush=True)
 
     bad, _ = build("missing-filters", "release", False)
     consume("missing-filters", bad, "release", "Training shift", 400, "1.0.0", 1,
@@ -164,6 +185,9 @@ def main():
     (project / "stage_title.txt").write_text("Night shift\n")
     v2, _ = build("v2-release", "release", True)
     consume("v2-release", v2, "release", "Night shift", 240, "1.1.0")
+    if args.profile:
+        debug2, _ = build("v2-debug", "debug", True)
+        consume("v2-debug", debug2, "debug", "Night shift", 240, "1.1.0")
     consume("v1-after-v2", v1, "release", "Training shift", 400, "1.0.0")
     if any(digest(v1 / name) != value for name, value in v1_receipt.items()):
         raise RuntimeError("Original delivered package changed")

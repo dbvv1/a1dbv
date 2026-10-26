@@ -959,6 +959,20 @@ flowchart TD
 
 **先固定降采样定位，再决定 DRS。** GPU 时间受益且负载波动才试有可辨下限的动态档；稳定负载保固定档，到下限仍超预算就修实际热点。Unity 6.3 URP 缩放示例非自动预算器，HDRP 17.3 有组件；UE 核平台原生预算。HUD 清楚不代场内警告，DRS 不保证避突发尖峰；[Fortnite 与管线对照](../../docs/research/2026-10-14-game-wp10-client-modules.md#分辨率预算固定档动态档与内容取舍)。
 
+<a id="native-script-profile"></a>
+#### Godot 实采：先拿到有效脚本样本，再决定是否优化
+
+**✅ 沿既有 Profiler；让 AI 离线读 Godot 脚本报告时，可用官方本地调试器，而非先加 AI 性能平台。** [原生应用实验](../../experiments/godot-export-adoption/README.md#脚本采样把实际回合交给官方-profiler)的可选 `--profile` 已从真实 debug 包采到原回合和内容二改。它补的是“采集→归因→二改复采”，既有 Unity／UE 的时间轴、目标设备与发布复核仍沿下文。
+
+1. **锁同一操作与版本。** 保开局、移动、刷怪、碰撞死亡、重开及玩法结果；先分清取的是源工程、debug 包还是 release 包。已有正常操作自动化就沿用，不为产生热点偷偷加负载。
+2. **启用并在对象仍活着时收尾。** 本地命令使用 `--debug --profiling`；本例在回合接收完成、场景销毁与测试清理前调用 `EngineDebugger.profiler_enable("scripts", false)`。只加 `--profiling` 实际无报告；快速退出后才看累计，曾只得到 `ACCUMULATED: total: 0.0`，不是“游戏不耗时”。
+3. **先认样本，再读排行。** 必须有本轮玩法函数及非零调用数；区分 `total`（含嵌套）、`self` 与 `tcalls`。累计页的 `total` 是脚本 self 之和，不是整帧／总运行时；嵌套百分比不能相加。测试探针也在表中，先标出它，不拿探针等待／调度去优化玩家代码。
+4. **按内容变化解释复采。** 同一原生消费者中，v1／v2 的 `player._process` 都为 406 次；更密波次使原刷怪回调从 2→5 次，原位移、死亡和重开仍过。先判断新增工作是否正是需求；没有目标设备热点证据，就不因排行第一或百分比上升改算法／上对象池。
+
+本次是 Linux headless 固定步回合的脚本采样接入，不测实际帧率、GPU、目标机预算或优化收益；release 的原玩法回归另过，但不因此继承 debug 采样。要解决真实掉帧，换成目标设备上同条件、同采样方式的正常操作，再按后文分类定位与复核。
+
+依据：官方 4.7.2 `LocalDebugger`、`GDScriptLanguage`、主循环清理源码与原生包实跑；官方 Profiler／Tracy、现成 benchmark 与中文作者工具对照见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#native-script-profile)。核实 2026-10-26。
+
 #### 采集：四个建议标记串一条正常遭遇
 
 **用 `PrepareEncounter`／`ActivateEncounter`／`SpawnWave`／`ReleaseEncounter` 标真实工作边界；它们是项目建议语义，不是 Unity／UE 内置 API。** 标记只圈一段可解释的工作，不逐函数加；先四个够用，证据指向某段再嵌一个子标记。
