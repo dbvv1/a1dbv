@@ -16,7 +16,9 @@ P9 补核（2026-10-20 UTC+8）：保持三档型号，新增干声母版／固�
 
 **已有可复用源件、处理脚本和运行接入，不再只给资源选型。** 固定候选版本采用两片短WAV补既有程序化系统；已从单档做过轻／中规格二改，最终混音与听后二改仍未验。[一手／研究，2026-10-24 UTC；[正文制作起点](../../domains/game-dev/assets/audio.md#可复制制作起点短样本与现有程序声混合)]
 
-**当前主干（2026-10-25）。** [master `6324d552e2a1beda2a3214a02e37d8f17aabf60f`](https://github.com/dbvv1/Star-Rush-Reborn/blob/6324d552e2a1beda2a3214a02e37d8f17aabf60f/README.md) 已整合这条链与两组候选；`build.mjs` 未设变量时选 procedural，不打包或加载样本。Kenney 与 synth-v1 均须显式构建，Kenney 默认启用改动仅本地完成、未发布。以下固定版本的默认及浏览器记录保留为历史证据，不当作主干现状或重新试听结果。[一手：固定主干源码]
+**已发布的源重建默认（2026-10-25）。** [`af569f88309a31c9000965eb879b079ff9955631`](https://github.com/dbvv1/Star-Rush-Reborn/commit/af569f88309a31c9000965eb879b079ff9955631)从已交付 CC0 OGG 运行原处理配方，ffmpeg 7.1.5 重建的两运行 WAV 与 manifest 字节不变；未改变 gain、碰撞阈值、冷却或其余声音。[构建入口](https://github.com/dbvv1/Star-Rush-Reborn/blob/af569f88309a31c9000965eb879b079ff9955631/build.mjs)未设变量时选择 Kenney；[资源装配](https://github.com/dbvv1/Star-Rush-Reborn/blob/af569f88309a31c9000965eb879b079ff9955631/impact-assets.mjs)保留显式 synth-v1／procedural，未知值抛错。procedural 不打包／请求样本；样本构建仍在未 ready、HTTP／解码失败或超时时立即回退，不追补旧事件。[一手：固定源码]
+
+该交付复用实际 build、26 项单测＋三赛道／6000 混合步／API 与音频打包检查、一次 fresh 独审及定向复核，发布者另跑 7 项音频测试；工程接收与最终混音听验分开。这里仅核固定代码和既有回执，未重跑或试听；以下 10-24 浏览器轻碰记录属于原候选，不升级为新默认的音频实战或品质结论。[既有检查：上述提交说明与[资产接收范围](https://github.com/dbvv1/Star-Rush-Reborn/blob/af569f88309a31c9000965eb879b079ff9955631/assets/impact-audio/README.md)]
 
 **证据定位。** 固定Star-Rush [5266703f3302410a994c69ec15345edf11edc455](https://github.com/dbvv1/Star-Rush-Reborn/commit/5266703f3302410a994c69ec15345edf11edc455)，父3e9dab8c5037d3856665947e3df9d56beb98fa06；本次阅读[资产README](https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/assets/impact-audio/README.md)、manifest、候选元数据、处理／播放器／打包源码和6项音频测试，复用[原制作与独审回执](https://github.com/dbvv1/Star-Rush-Reborn/pull/1#issuecomment-6374260570)。这是已有制作的知识回流，未重复运行游戏、模型或音频探针，未重扫外部候选；不重排本页近期生成上限。[一手：源码；既有运行回执]
 

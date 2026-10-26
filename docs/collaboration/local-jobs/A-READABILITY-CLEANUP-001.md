@@ -8,8 +8,6 @@ base_ref: 6f7494afc9707a1377e3fa88ce139e7a1df04e0e
 accept: auto
 result_branch: relay/a-readability-cleanup-001
 
-## 目标
-
 把存量正文改成[编写约定](../../../CLAUDE.md#编写约定)的写法：读者先拿到选择和做法，关键结论、数据、来源和会改变决定的条件一条不丢。用户 10-26 委托，本任务一次做完。
 
 ## 范围与顺序
@@ -24,8 +22,7 @@ result_branch: relay/a-readability-cleanup-001
 
 ## 怎么改
 
-- 整节重写，不逐句删词：首句给推荐，接着是理由、步骤和取舍；来源和原核实日期在节末写一次。
-- 只写会改变读者决定的限制，写一次。重复的范围声明、连串否定句和开发过程删掉，过程留在已有研究链接里。
+- 整节重写，不逐句删词：首句给推荐，接着是理由、步骤和取舍；来源和原核实日期在节末写一次。只写会改变读者决定的限制，写一次。重复的范围声明、连串否定句和开发过程删掉，过程留在已有研究链接里。
 - 命令、代码、显式锚点和引用保持可用；标题和表格可按读者的问题重组。
 - 事实有疑点时回原来源核对；核不清的照原状态写。
 
@@ -37,43 +34,7 @@ result_branch: relay/a-readability-cleanup-001
 
 ## 当前结果
 
-- 已接收：02与19原决定保留；21按accept:auto合入[6d4d9ce](https://github.com/dbvv1/a1dbv/commit/6d4d9ce35e74c597f7585fbc358bfca85ba2831d)，来源正文[9c0cf2c](https://github.com/dbvv1/a1dbv/commit/9c0cf2c)。先新后旧独审及gstack采用入口差量已关闭，原事实与条件保留，检查通过。
-- Skills页按accept:auto合入[14d1fe5](https://github.com/dbvv1/a1dbv/commit/14d1fe57bd6a87f3ce4fcf2a7addd51fdb479284)，正文[a39bee3](https://github.com/dbvv1/a1dbv/commit/a39bee3)。先新后旧独审及来源重复／复用入口差量已关闭，历史锚点保留，适用检查通过。09评审页已按accept:auto合入[a06e66d](https://github.com/dbvv1/a1dbv/commit/a06e66dfd902dab01a62790d35cbf6f4b40894cf)，正文[c1ff9e8](https://github.com/dbvv1/a1dbv/commit/c1ff9e8)：重复与案例指代差量同审关闭，引用锚点恢复，检查通过。社区页正文[633ff6a](https://github.com/dbvv1/a1dbv/commit/633ff6a)已按accept:auto合入[743ec67](https://github.com/dbvv1/a1dbv/commit/743ec67e522ab0fd592cd209ef56baa512440e2e)，日期归属同审关闭且检查通过。06-hooks页正沿原调用收重复与来源日期差量；不再改已接收页。
-- 后续按清单及追加首页／模板范围接续，全任务仍running；全部范围接收后才结束并触发已登记的最终审计事件。
-
-认领与恢复：dot 本地协作；2026-10-26。按 main 固定 `0a64c83` 的 ready 任务及本轮明确恢复指令启动。首个独占页 `docs/02-models-and-cost.md`，按任务顺序逐页整篇处理，核完一页交增量；非作者先只读新文复述，再对照原文核结论／数据／来源。游戏04、05仍由现有模块原写者负责，未交付前跳过；保留Datasette编辑器原调用。25探索、04MCP、游戏03排除，不改规则层、不统计限定词密度、不设比例或30秒阈值、不新开后续批次。只发布结果分支与本任务回传，当前Codex审计会话接收，本端不标accepted。
-
-宿主执行增量（2026-10-26）：Claude Code＋DeepSeek 原生 Workflow 首篇已实际返回；原始 assistant message.model 为 `deepseek-flash`，请求 alias `deepseek-v4.1-flash[1m]` 另记。非作者按先新后旧顺序完成首篇核对；发现角色选档首句、原核实日重复、旧额度资格条件与导航方向四处差量，沿原调用定点修订，不整篇重派。 本任务全范围尚未完成，状态保留 running，后续按已明确逐页增量要求继续。
-
-发布恢复：用户明确授权后，仅更正错误合并提交身份；原 `8b7d1e9` 替换为 `de859f081d6547eeb976ba3b5da7d0dd1b1564b6`，后续提交只重接父引用，文件树、提交说明与他人身份保留；受保护的精确 lease 更新后 main 为 `1a3fad0dba89e45555f3cc1197d2ee986ab8d158`，身份扫描通过。后续每次 merge／commit 显式使用单次 noreply，检查结果与推送分步执行；未新增规则层。
-
-
-## 首篇增量待接收（2026-10-26）
-
-`docs/02-models-and-cost.md` 已完成原生 Workflow 整页整理。非作者先只读新文并独立复述：读者能按实现／协调／审查选推理档、找到保缓存换档与新任务入口、区分 API／订阅额度和总投入；随后才打开原文，核数字、版本／原日期、来源性质与适用条件。发现角色选档首句未落实、日期重复、Pro 200 旧额度资格范围变宽及导航方向四项，沿原调用定点修正，同审差量已全部关闭。无在线事实刷新，无新模型试验或密度统计。
-
-实际通道 Claude Code＋DeepSeek；原始 message.model 为 `deepseek-flash`，alias另记。当前页整理／修订已结束，独占写者为本地协作执行端；不是 dot-A 研究主任务。此页为 review_ready 增量，全任务仍 running；下一页按顺序是 `docs/19-experiments.md`，其他声明范围尚未完成。只推指定结果分支，本端不标 accepted。
-
-本次固定结果：[99e7137aac85607b31593516514b97e90be43382](https://github.com/dbvv1/a1dbv/commit/99e7137aac85607b31593516514b97e90be43382)，仅指定 relay 分支；check_repo.py、公开文件／实际新增提交身份扫描及交付差量检查通过。
-
-## 审计接收：02模型与成本
-
-接收99e7137中的02首篇：复用先新后旧独立核对与四处定点修复，读者可按角色选档并直接使用起步命令、缓存换档和计费入口。接收差量将仅含日期的表头改为“核实日期”，并恢复本地模型等价说法“不作普适推荐”的原义；未刷新价格或型号事实。该页结束，不再打磨；全任务保持running，继续19及后续范围。
-
-
-第二页执行与核对（2026-10-26）：`19-experiments.md` 原生 Workflow 于2026-10-25T17:30:22.371Z返回，非作者先新文复述再对原文，确认关键数字、版本、原日期、边界和入口保持；发现部分语义节的研究来源仍在正文／节末重复。只修这些段的来源集中，命令／fixture／操作入口留在使用处；沿原调用续改，同审只核差量。02已由审计接收并修正原义，此页结束，不再修改。
-
-
-## 第二页实验方法增量待接收（2026-10-26）
-
-`docs/19-experiments.md` 已完成原生 Workflow 整页整理。非作者先只读新文并保存理解，再对原文核关键事实：E1缓存和输入数、2.1.294／2.1.296、E3的27次和新增测试、E2费用／墙钟、E4历史53方法／本次6方法与43条失败、E5的291行／288单元、E6两后端26方法以及原日期、混杂因素、未知／未跑状态、命令与夹具均保持。读者能选择单Agent起点、补回归知识、分项核工具投入并沿好坏基线复现。
-
-独审发现研究来源仍在正文与节末重复，原调用定点修正后，同审只核此差量并关闭：E3／E2／E4／E5／E6及环境／先导节来源合并到各节末，命令／fixture／workflow-ablation操作入口保留就地。没有新事实刷新、历史实验重跑、密度指标或额外审查树。实际 message.model为deepseek-flash，请求alias单列，通道为Claude Code＋DeepSeek。
-
-此页 review_ready，待当前审计会话接收；整体仍 running，02已接收不再改，下一顺序为21-agent-patterns。只指定结果分支，本端不标 accepted。
-
-第二页固定结果：[508004348fa5655236d00d42b55caec6d06c1010](https://github.com/dbvv1/a1dbv/commit/508004348fa5655236d00d42b55caec6d06c1010)，仅relay/a-readability-cleanup-001；文档入口、公开文件及实际提交身份检查通过。
-
-## 审计接收：19实测记录
-
-接收5080043中的19页。复用非作者先读新文、再对原文及来源归位差量的核对；E1至E6数字、版本、混杂因素、原日期、好坏基线与复现入口均保留。输入分项改成表格，复现操作按步骤呈现，来源在语义节末归位，读者可直接选择单Agent/指令/费用核查路线。补留旧“复查状态”锚点以保持外部引用。该页收口；全任务仍running，继续21与后续范围。
+- 已接收：02／19沿原负责人决定；21／05／09／11／06／17／10／open-source-agents／codex已独审及检查通过，合入[1812895](https://github.com/dbvv1/a1dbv/commit/1812895e249aa03d063875b3cc2c10dc7af64bd2)。本次两篇Agent正文[d0845bd](https://github.com/dbvv1/a1dbv/commit/d0845bd)的旧锚点与重复范围差量已关闭。
+- 当前写者：原生Workflow的独立正文作者处理22评测与18团队采用；dot-A云端并行处理00总览，原作者先避让该页，接收后不重做；08采用回流[8319183](https://github.com/dbvv1/a1dbv/commit/8319183)已按[当前路线](../../08-multi-agent.md#接收已有产物先核退出条件再核目标结果)接收，未机械合并重复段；08本次补齐哈希兼容选择后释放写域，无其他写者时回原清理队列。后续仍按完整清单及首页／模板范围执行，不重做已接收页。
+- 实际通道Claude Code＋DeepSeek，message.model=deepseek-flash。非作者先新后旧核对，不统计限定词密度／比例／30秒，不改规则层或新开批次；任务回执由宿主串行汇总。
+- 全部声明范围接收后才标accepted，并发送已授权的一次最终审计事件。此卡按[负责人反馈](https://github.com/dbvv1/a1dbv/blob/d2e021c/docs/collaboration/local-jobs/A-READABILITY-CLEANUP-001.md)收敛，旧阶段与决定留Git历史。

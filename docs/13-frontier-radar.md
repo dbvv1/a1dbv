@@ -1,6 +1,6 @@
 # 13 · 前沿雷达（2026-10）
 
-> 核实日期：2026-10-24，Storybook 路线与变更行覆盖候选补充 2026-10-25（UTC+8）。依据为各节依据行所列的官方文档、社区原帖、开源仓库与本仓试用记录；历史条目沿用各自原核实基线。
+> 核实日期：2026-10-24，Storybook 路线与变更行覆盖候选补充 2026-10-25（UTC+8），QMD 混合接收与 Lychee 深链反馈补充 2026-10-25（UTC）。依据为各节依据行所列的官方文档、社区原帖、开源仓库与本仓试用记录；历史条目沿用各自原核实基线。
 
 ## 当红必看：工具入口与代表做法
 
@@ -89,7 +89,8 @@
 | [DevTools离线堆分析](../experiments/browserless-heap.md) | 已有快照时让Agent追对象持有链，不再手抄DevTools表 | 1.12.0 取消分析工具的浏览器依赖 | 三阶段合成ESM快照取回LoadCache链段，无浏览器调用 | 🧪 缓存保留不自动等于应用泄漏，未测模型收益 |
 | MCPorter | shell-only Agent临时调用已授权的公开MCP | 日用复盘与官方入口详见[该记录](../experiments/mcporter-public-read.md#来源与验证范围)；不据自报评效率 | 0.16.0匿名取TanStack/router资料，全文落盘后提取目标章 | 🧪 已有原生入口就沿用，不自动导入客户端配置 |
 | Context Hub | 查库文档时带回已验证的项目经验 | 社区提出与Context7的区别，详见[原帖及核查](research/2026-10-22-frontier-trials.md#context-hub把库文档与已验证经验一起交接) | 0.1.4实际保存Next经验，新进程取回含备注文件 | 🧪 单项目先用项目文档；发布包与主干备注语义不同 |
-| QMD词法检索 | 多篇Markdown先排序再按行取原文 | 中文查询报告提示词法不等于语义检索 | [2.8.3无模型实试](research/2026-10-22-frontier-trials.md#qmd纯词法检索先找到原文再判断证据)找回批注与改稿依据 | 🧪 已知关键词先用rg，额外索引按需建 |
+| QMD词法／混合检索 | 已有索引、同义表达难定位时，显式组合词法与语义，再取原文 | 中文词法与扩写问题须分别处理，排名不裁决现状 | [2.8.3完整混合接收](research/2026-10-22-frontier-trials.md#qmd-hybrid-intake)：11文档155块，旧过程仍排当前路线之前 | 🧪 本次CPU日常交接仍选rg／词法；常驻索引与GPU收益未测 |
+| Lychee离线深链反馈 | 多页改标题后，让Agent连同入链源检查章节入口 | OpenTelemetry生产内部检查与中文技能仓库采用配置 | [0.24.2真实维护](research/2026-10-22-frontier-trials.md#lychee改完文档验链接能否落到那一节)：找出并修复2条旧深链，GitHub渲染回核 | 🧪 按需补片段反馈；不替代内容核实，不验证外链 |
 | DebugMCP standalone | 无IDE时向MCP客户端提供断点／变量工具 | 用户#31的无IDE需求与发布回执，不是普遍收益证明 | [0.1.2与pdb同输入实试](../experiments/python-debugger-entry.md)均完成观察，输出可见性有差别 | 🧪 pdb够用就不装，CLI与扩展Skill须分开 |
 | Agentation | 把多条页面批注复制给不同编码客户端 | Nodum十月采用为维护者自报 | [3.1.2两条批注导出／刷新实试与截图](../experiments/agentation-feedback.md)，排序后旧标记未跟随对象 | 🧪 原生评论够用就不装，旧定位须复核 |
 | TanStack Intent | 已用TanStack的项目可从安装包取得窄领域配方 | 维护者0.5发布说明说明随包交付与维护的区别 | [实际加载后完成可分享筛选](../experiments/tanstack-url-state/README.md#新版真实浏览器接收)，已有真实浏览器截图 | 🧪 包内版本标记仍需核对 |
@@ -104,6 +105,8 @@
 | [diff-cover](https://github.com/Bachmann1234/diff_cover) | 已有覆盖率的项目，让 Agent 直接看到本次改动里哪些行没执行；先生成当前源码报告，再按固定基线比较 | 10.6.0，Apache-2.0；真实使用线索与候选比较见[记录](collaboration/local-jobs/A-FRONTIER-SELECTION-001.md) | [Datasette 原型](collaboration/local-jobs/A-DATASETTE-TYPED-PARAMS-001.md)已消费当前覆盖率：90 条改动行／0 缺失；完整门禁仍有欠项 | 🧪 须显式设 `--fail-under` 才阻断；行覆盖不证明断言有效 |
 
 版本、耗时、许可及未验范围留在[对应试用记录](research/2026-10-22-frontier-trials.md)，以上均未证明模型质量或完整成本收益。
+
+**已知交付入口先用 `rg`／词法，不为一次接收临时建混合索引。** 本次 QMD 在 CPU 上为 11 份完整文档建向量耗时 33m26s，带重排首问 349.906s，仍把旧过程排第一。已有索引时，可按版本 Skill 写 `intent`／`lex`／`vec`，CPU 不值得等重排则显式 `--no-rerank`；结果仍按补丁、实际验证、当前约定分别取原文。原文更新后还要看 pending，不能由“有向量”推成“新内容已嵌入”。[实试范围、来源与撤回条件](research/2026-10-22-frontier-trials.md#qmd-hybrid-intake)，核实 2026-10-25 UTC。
 
 **候选里值得记住的两点**：Graphicle的可用导航与错误作用域边可以同时存在；Taste的安装不等于保留旧instructions的有效性。其余候选先保发现价值，未试用不写成推荐默认。用户新链接优先放[收件箱](collaboration/inbox.md)，每条处理结果回到本表；当前收件箱为空，命中率不计算。
 

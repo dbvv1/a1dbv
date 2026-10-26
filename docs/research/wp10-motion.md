@@ -1043,6 +1043,15 @@ Unity 包的 UCL／Unity-dependent 条件、Celeste64 代码与资产分开许�
 
 **核实：2026-10-23 UTC。** [研究] ✅ 原生播放器／混音器继续用，补的是一次声音事件的完整退出路径：获准播放后按需让位，结束只撤自己的影响，最后依据仍活跃的请求和玩家当前设置重算。已有[并发](#45)、[持续声](#50)与[低延迟](#96)结论不重写；本节不开发通用音频框架。
 
+<a id="audio-normal-production"></a>
+### 正常接线：素材准备、发声对象与实例消费
+
+[研究] 2026-10-25 将本节已有事件表、并发、持续声和混音组合成正文同一实施链：定义事件→准备资源→绑定声源→驱动实例→混音／退出。首版只做命中、机器循环和对白；新增移动载具先改声源及状态参数，第二警报先改共存语义与类别。沿已有原生默认和制作参照，不新增音频框架或宣称最高听感；本次未运行引擎、真实设备或试听。
+
+- [一手] Unity 6.3 [AudioSource](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource.html)的 `spatialBlend` 区分 2D／3D，单片可 Play／Pause／Stop，输出路由到 `outputAudioMixerGroup`，`playOnAwake` 会在激活时自动起播；[`PlayOneShot`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioSource.PlayOneShot.html)返回 void，不取消已有 Play／one-shot。[研究] 事件控制的声源预制体关闭自动起播，配置完成且请求获准才显式播放。共享 UI 短音可沿该入口；需要逐实例停止、位置或循环参数时分配独立受管声源，项目 handle 只表控制身份，不证明实际可听。
+- [一手] [AudioClip 导入](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioClip.html)区分解压常驻、压缩常驻与流式，代价分别是内存、播放解码和流式缓冲／读盘；平台覆盖改变结果。[`LoadAudioData`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioClip.LoadAudioData.html)默认同步，开启 loadInBackground 才异步；未 ready 就 Play 会推迟到数据就绪。[研究] 因此瞬时反馈的“不追补过期事件”必须在调用播放器**之前**由 ready／有效期判定落实，而不是把请求先交给引擎再丢项目队列。准备期按 `loadState` 查就绪；持续声恢复时重读当前活动状态，播放结束后按资源所有权释放。
+- [研究] 首版路由和让位继续用下表的原生职责。低成本实现是少量事件配置＋已有 AudioSource／Mixer，不为每次命中建一套可视化作者工具；只有复杂事件／互动音乐的编排维护成为实测瓶颈，再比较中间件及许可。源件的定位核心、立体声宽度与混音验收沿 [WP6](2026-10-14-game-wp6-audio.md#105-unityunreal同一质量目标不同原生职责)，未把短音 mono 规范扩展到整套声音。
+
 ### 先做一张事件表，再选混音手段
 
 [研究] AI 从现有调用点整理每类声音的：**触发事实、实例所有者、类别／并发、目标总线、让位条件、停止条件、暂停政策**。命中跟结算结果，普通脚步不因“有声”就压低整场；机器循环跟活跃状态更新同一实例，离开状态、对象销毁／回池与切场都必须收尾。播放失败或过期的请求不应遗留背景衰减；受音频锁或加载影响的等待态与已开始播放分开处理。

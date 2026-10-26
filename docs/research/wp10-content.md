@@ -12,6 +12,17 @@
 
 核实：2026-10-14 UTC。主线 2／3；将 04 的菜单“关键页可达”深化为切换后可控、反馈可信，并限定 02 逻辑动作注入的证明范围；依据为官方文档和发行游戏更新。[一手／研究] 改键持久化的 GUID／落盘边界见[#103](#103)，整页选型见[整页选型回流](#整页选型回流ui-toolkit-新能力与迁移成本)，动态 UI 重建见[#83](#83)；本节只留菜单控制、暂停交接与设置管线。
 
+<a id="input-normal-production"></a>
+### 正常输入链：动作定义、玩家实例与模拟消费
+
+2026-10-25 将既有菜单／死区／多人／改键材料补成一个可实施首版：键鼠与手柄驱动同一角色，再加交互改键和第二玩家。连续值缓存、有序请求、角色代次与缓冲时钟是项目建议，不是新库、已跑原型或网络确定性结论；原控制器仍独占运动写入。[研究]
+
+- [一手] Input System 1.20.1 [Actions](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/Actions.html)区分输入含义与设备绑定；[InputAction API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputAction.html)说明动作不是按渲染帧采样，同帧可以看到多次值变化，触发阶段随动作类型／interaction 而变。[研究] 指定 Jump 的操作语义，连续移动保最新值、离散请求按序消费，不能靠一个未清除布尔值跨固定步执行。
+- [一手] [PlayerInput 与 UI](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/use-player-input-component-ui.html)要求从所属 `PlayerInput.actions` 读取，UI module 关联同一动作配置；绕读全局 `InputSystem.actions` 会绕开设备过滤。[研究] 每玩家一个适配器／命令缓存，定义资产可复用，实例归属与角色代次分开管理。既有固定源码与 UE LocalPlayer 对照沿 [多人契约](#23)。
+- [一手] [运行时改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/rebind-action-runtime.html)要求释放 RebindingOperation；其[操作 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.RebindingOperation.html)不接受仍 enabled 的目标 action，并可用 OnApplyBinding 截获路径、改存草稿。[保存／加载 override](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)支持 JSON，加载默认移除当前 override。[研究] 采集结果、设置草稿、应用与落盘分别接，应用前不改运行绑定；采用临时覆盖时，完成取候选后与取消时均还原，配置拓扑迁移仍沿 [原改键证据](#103)。
+
+输入采样与物理时序复用 [WP10 响应](wp10-motion.md#1-四类时间问题不能用同一种平滑处理)的 Unity 1.19 官方说明，不把更新文稿日期当作重验该历史版本。按住恢复、系统取消、震动、混用提示、真实作品与授权边界仍见下面原节；本次未运行 Unity／UE、手柄或多玩家。
+
 <a id="17"></a>
 
 ### 1. 先补玩家体验缺口，不因手柄支持迁移 UI
@@ -520,6 +531,15 @@ Unity 恢复阶段还须控制初始化：`Instantiate` 保留源对象激活状
 
 核实：2026-10-16 UTC+8；主线三。动态 HUD／菜单已测重建热点后，先查反复失效原因再选原生边界，不按静／动态标签普遍拆 Canvas／套 Retainer。[研究]
 
+<a id="hud-normal-production"></a>
+### 正常 HUD：状态单向呈现，操作走命令
+
+[研究] 2026-10-25 将既有 UI 选型、菜单生命周期、换肤同步和拾取材料整合为局内 HUD 实施起点。玩法状态→呈现数据→控件是一条单向链；按钮→命令→规则确认→状态更新是另一条链。生命／技能／目标是首版，护盾与充能是二改；`HudState`、绑定代次、依赖字段及 tick 换算为项目建议，不是新库 API。未运行引擎、设备或实际游戏，未将 MOBA 候选客户端计为采用。
+
+- [一手] Unity 6.3 [绑定模式与更新触发](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-data-binding/uie-runtime-binding/mode-update)默认 TwoWay；ToTarget 只推向 UI，ToTargetOnce 除非标 dirty 仅更新一次。运行时[数据源](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-data-binding/uie-runtime-binding/define-data-source)可用 `INotifyBindablePropertyChanged` 按属性通知；未报告的变化不被更新，普通源则默认轮询。[研究] 只读生命／冷却显式选择 ToTarget；适配层更新派生字段与通知，不让 UI 反写规则，也不假设绑定自动消除每帧成本。
+- [一手] Unity 6.3 [运行界面示例](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-HowTo-CreateRuntimeUI.html)明确 UIDocument 已实例化视觉树，UI reload 时相关同对象 MonoBehaviour 经停用／再启用，UI 接线放 OnEnable／OnDisable。[研究] 每次从当前树取得控件、成对订阅和解除，再推完整现态；不要只在 Start 缓存旧控件。[uGUI 2.0.0 Button API](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/UnityEngine.UI.Button.html)支持 onClick／Submit，由原生事件转项目命令即可；此为 API 来源版本，不要求降级现有包。
+- [一手] [UE 5.8 UMG Viewmodel](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-viewmodel-for-unreal-engine)仍标 Beta，FieldNotify 在变化时通知绑定；C++ 要显式广播，派生 getter 的通知需接依赖。Create Instance 为各 widget 建不同实例，Manual 可传共享实例。[研究] 复杂界面已有采用理由才接插件；小 HUD 沿事件驱动 UMG 即可，玩家级数据不误当全局共享。
+
 <a id="84"></a>
 
 ### 先去掉错误变化，再决定是否缓存
@@ -777,6 +797,18 @@ UE 5.8 的[UserSettings](https://dev.epicgames.com/documentation/unreal-engine/A
 **[研究] 当前采用：已有栈先用其恢复能力，按允许的权威与回退选择，不默认自建迁移器。** NGO 的 DA 是分布对象权威；NfE／Fusion Host Mode 是恢复玩家主机，两者不是同一功能开关。
 **[研究] 新增判断：会话续存、世界恢复、玩家重入和持久奖励分别成立，不能只验剩余玩家还能移动。**
 核实：2026-10-24 UTC；公开文档、示例说明与作者实践，未运行引擎／服务、多客户端或 AI 模型，最高体验水平未知。正文入口：[客户端续局](../../domains/game-dev/04-client-modules.md#coop-continuity)。
+
+<a id="coop-normal-production"></a>
+### 正常合作链：把会话连通、世界同步与操作资格分开
+
+2026-10-25 补核；这是将现有预测／续局材料补成首版实现链，不是新的网络产品或已运行的合作游戏。[研究] 默认短局客户端—服务器、遭遇间加入及钥匙二改为项目建议；保留原 DA／NfE／Fusion 续局选择，不能混用权威模型。
+
+- [一手] MPS [创建](https://docs.unity.com/en-us/mps-sdk/create-session)、[加入](https://docs.unity.com/en-us/mps-sdk/join-session)、[离开](https://docs.unity.com/en-us/mps-sdk/leave-a-session)与[网络时机说明](https://docs.unity.com/en-us/mps-sdk/session-networking)：带 `WithRelayNetwork` 的创建与加入会建立网络连接；没选网络配置才可先做准备房间、由主机之后启动网络；`LeaveAsync` 移除本地成员并关闭关联网络模块。[研究] 首版沿一种入口，不把会话成功当玩法 ready，也不再并行手写第二次启动。采用前锁工程实际 SDK 版本，成本仍含底层服务。
+- [一手] NGO 2.7.0 [connection approval](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/basics/connection-approval.html)允许项目批准／拒绝和选择是否自动生成 player；不适用于 DA，原始 payload 无内建加密／认证。[研究] 角色生成单一路径、稳定身份经验证后映射连接、内容兼容及可加入阶段由项目接上，不能复制示例密码当安全认证。
+- [一手] 同版 [NetworkSceneManager](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/basics/scenemanagement/using-networkscenemanager.html)会同步受管理场景及已生成网络对象；初次同步与后续载入使用各自的完成事件；[SceneEvent 字段](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/api/Unity.Netcode.SceneEvent.html)区分载入已完成和超时客户端，普通 Unity 场景回调早于网络处理完成。[研究] 项目还要确认角色／HUD／输入可用，超时成员由加入政策处置，不从单端 loadComplete 推全队 ready。
+- [一手] [NetworkVariable](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/basics/networkvariable.html)为新加入者同步当前值，初值应用须同时走 `OnNetworkSpawn`，不只等 `OnValueChanged`；[RPC](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.7/manual/advanced-topics/message-system/rpc.html)提供发送者元数据及调用权限。[研究] 用当前状态重建门／持物表现，用确认事件播一次反馈；规则校验、奖励去重与持久保存仍是项目职责。钥匙状态机与遭遇间加入扩展是据此设计的未实测二改，不是 SDK 自动保证。
+
+未运行引擎、服务、跨机网络或多客户端；原开发者／社区证据及未取得源码的边界沿下面各节，不据文档确认推广成体验或安全测试通过。
 
 ### 1. 先借生产取舍，不从“支持迁移”反推采用
 

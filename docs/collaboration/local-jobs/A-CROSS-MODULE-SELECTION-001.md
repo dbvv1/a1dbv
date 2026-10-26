@@ -2,50 +2,25 @@
 
 id: A-CROSS-MODULE-SELECTION-001
 owner: dot-A
-status: running
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7c3a6edc946b6e5db61140686944accfda93b813
 result_branch: relay/a-cross-module-selection-001
 
-## 当前目标（2026-10-26 用户更新）
+## 已完成范围
 
-P81／P90：以 B 正在开发的 MOBA-Like 为首选消费者，把并行交付、审查或持续交付路线做成 B 能直接用的起点并实际用上。选择与实施在本任务内完成，不再单独交选题报告；已有调查复用，不重发在途调用。Datasette 已收口，不再扩原型。
+P81／P90：把单写者＋按需独立接收路线用于 MOBA-Like 的真实交付，完成既有 reviewer 输入、B 实际消费、A 独立接收及 [08 路线回流](../../08-multi-agent.md#接收已有产物先核退出条件再核目标结果)。只写本仓模板、接收脚本与正文；A 未改 B 产品／工程配置／game 模板，产品后续由 B 原任务负责。
 
-## 与 B 协作
+## 接收结果（2026-10-25 UTC）
 
-先读最新 main、B 的 MOBA 任务与产品 AGENTS／brief，经本文件的 Git 交接约定一个真实在制需求、当前写者、采用的起点和消费者反馈。请 B 在此确认用法及允许的文件范围；未确认前只在 a1dbv 现有模板／脚本范围准备，不改 MOBA-Like 文件。B 优先，产品实现及默认分支由 B 自己发布，A 不代合、不转向游戏内容。
+- **accepted**：[8319183](https://github.com/dbvv1/a1dbv/commit/8319183) 的08增量已与当前正文及可复制模板逐义核对。固定版本、真实异常、修复差量和采用归属复用[已接收路线](https://github.com/dbvv1/a1dbv/commit/d2e021cf1a8c4ea27e5fc3abecaf97c114f2f7bd)，只补哈希兼容选择，不重复合并15行；08本次发布后释放写域，无其他写者时回原清理队列。
+- B 实际采用[既有 reviewer 46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea)，版本／异常输入要求促使补齐 v1 超时证据，避免同 seed 的 v2 胜局替代；原三项代码发现不归功模板。见[固定B回传](https://github.com/dbvv1/a1dbv/blob/efe1fca23ac229e1cd6b85a11f4dab4ee0a9c8ef/docs/collaboration/local-jobs/B-MOBA-SIMULATION-001.md#当前结果)。
+- A 首轮 `d5f465c` 的32测试通过，CLI在运行入口前受阻；B正式发布新入口 `49c36a1` 后，A实际单局／回放与200局接收已完成。200局199终局／1超时、CLI为0，[独立接收器](../../../scripts/check_moba_batch.py)据报告退出1；源JSON与[B已有报告](artifacts/B-MOBA-SIMULATION-001/README.md)逐字段相同，复用未重传。早期受阻不被新入口抹去，报告文件缺少的原逐命令UTC／退出码仍按manifest保留。
+- 当前实时运行优先产品原生目标门；A接收器只用于固定历史JSON。版本、真实异常和旧hash兼容各按受检输入接收，不从同seed或CLI成功推全部目标达标，不宣称游戏可玩或方法提效。
+- 原通道Claude Code＋DeepSeek原生Workflow，message.model=`deepseek-flash`；原调查、产品及接收器有效独审复用，本次仅复核正文新差量。适用文档／公开／身份检查通过，无新模型调用、产品修改或重复测试。
 
-## 选择并实施
+## 接续
 
-复用 08／20 的路线和已验证组合，补查当前强实践的必要缺口。默认原生主 Agent 单写者＋按需并行调查／独审；只有真实模块可分离且共享决定清楚时才用多写者。不为演示强拆、不加额外编排平台、不开正式 A/B。
+本采用单元已闭环，不再等待旧回传或重派原调用。后续B正式产物只在确有新输入／接收需求时另开真实单元，保留其当前唯一写者，不以本卡制造在途。
 
-把约定路线交成可复制任务模板、必要的检查脚本或 Agent 配置，沿现有目录，围绕当前产品契约与统一消费者。由 B 的实际开发调用并回传：用了哪项、改变了什么决定／实现、集成结果与返工如何。没有可拆工作就采用单写者路线，不强造并行；约定的产品环节受阻时继续独立的模板和路线工作。
-
-采用后把结论回流对应任务路线页：推荐组合、胜过可信替代的理由、起点与不值得用的条件。和正在进行的存量清理核写者，必要时由负责人串行整合，不并写同页；不重复 MDX／Memos／Memoh／Maka／beets／Datasette 探针。
-
-## 回传与验收
-
-本地模型沿已配置原生 Workflow 承担实施和初稿；一份有效独审覆盖新差量，脚本补必要回归，实际消费者记录与检查相符。按最新手册 §7 验证、公开／身份扫描，只推本任务结果分支；A 自己快进发布 a1dbv，B 自己发布产品。
-
-任务文件一般40行内，只写当前结果、固定SHA、下一步或具体阻塞，过程写提交说明；状态 review_ready 后由 A 接收。只用公开材料和已有授权，保持正常TLS，不增加账号／费用／特权设施，不重试明确拒绝。
-
-当前交接：接收端已按旧 `335a62d` 认领；本节由用户新指示与 `146c0cc` 替换目标。请沿原调用吸收新目标、保留可用调查，不重发初始调用，不再单独交选择报告。B 已确认以下范围，沿原调用采用，不重发调查。
-
-## B 确认可用范围（2026-10-26）
-
-同意准备直接消费首个固定MOBA模拟产物的独立接收起点；当前仅范围同意，不算采用。模拟／工程配置／content／tests由原B任务独占，A不写产品文件。优先只读审查任务输入或在A既有coding模板／脚本内做最小适配，核同seed＋命令重放hash、胜负证据及断言缺口；不改B在清理的game模板，不造平台／通用框架，不预设未发布接口。B交固定源码后再接其实际npm test／sim；A负责同题选择与实施，B实际消费后在原任务回传结果。
-
-## 当前结果
-
-原调查已沿同一原生Workflow转为MOBA接收准备：[46a55ea](https://github.com/dbvv1/a1dbv/commit/46a55ea)，仅给既有coding reviewer补固定交付的需求／版本、异常路径、可重放输入及实得偏差；非作者独审和适用文档／公开／身份检查通过。准备差量只发布指定relay，整任务仍running；未写产品、未声称B已采用。下一步等B原模拟修订交固定产物与真实输入后实际消费npm test／sim，再取真实采用反馈并回流路线页；不重复初始调查。实际通道Claude Code＋DeepSeek原生Workflow，message.model=deepseek-flash，请求别名与实际字段分开。
-
-## 当前接收（2026-10-25 UTC）
-
-已复用原调用固定产物 `46a55ea9cf6b57cd683d791d1268de04b640b457` 的 reviewer 输入／确定性检查增量，非作者源码审读无阻断；未重派。补 [可复制接收输入](../../../templates/generic/fixed-delivery-review.md)，单写者继续实施，审查者隔离核固定产物；模板非作者独审通过（19:39:54–19:40:11 UTC），不算 B 实际采用。执行窗口 19:32:32–19:35:00 UTC，文档检查通过，未运行产品。
-
-请 B 原模拟调用在首个可读固定源码交回后附实际重放入口／输入、终局哈希与失败样例；A 按真实 npm test／sim 接入并回传断言缺口，B 在同任务反馈采用项、改变的判断／实现及集成返工。19:39:59 UTC 已发现产品 relay 固定 `d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8`，含三项独审修复 `2d66135`；A 已开始隔离安装与实际接入，不重发或重审全文。A 不修改 MOBA `.github/`、`tools/` 或 Agent 配置；需要这些文件时再约定具体差量。任务保持 running，待实际运行和 B 消费者回传。
-
-
-实际接入（19:40:32–19:43:09 UTC）：固定 `d5f465c` 隔离安装成功，`npm test` 8 文件／32 测试通过（含三项修复回归及真实命令回放断言），产品跟踪文件无改动。`npm run sim -- --games 1 --seed 1 --dump-replay <临时输出> --json` 在 tsx 本地 IPC 监听遇 EPERM，未进入模拟；同一命令升级执行又在平台沙箱初始化失败，已停止，不换 loader 绕过。完整终局／200 局／500 局未由 A 运行；恢复条件为平台提供获准的本地 IPC 执行通道。
-
-接入改变的判断：不能把 `npm test` 通过或 CLI 退出 0 当作批量目标通过。固定源码 `tools/sim.ts:537` 只以 errors／replayMismatches 设置失败退出；timeout／stuck／时长与难度目标需另读真实输出。现有 `tests/replay.test.ts:7–27` 确核同命令 hash／status／winner，但限 120 秒且不要求胜方非空，不证明完整对局获胜重放。请 B 原调用消费本接收起点，并交实际整局 replay 与批量实得；此为源码确认的验收证据缺口，不冒称模拟 CLI 失败复现或要求扩写产品。
+完整目标、历史认领、范围确认、原失败和新入口运行过程见[接收前固定记录](https://github.com/dbvv1/a1dbv/blob/313858066dd0d8cfc88588a67dd988172c974feb/docs/collaboration/local-jobs/A-CROSS-MODULE-SELECTION-001.md)；可复制操作见[固定交付模板](../../../templates/generic/fixed-delivery-review.md)。

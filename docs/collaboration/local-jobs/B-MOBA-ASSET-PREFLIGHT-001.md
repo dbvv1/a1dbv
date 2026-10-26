@@ -17,3 +17,5 @@ result_branch: dot-b/tmp/20261026-moba-asset-preflight
 更新授权：有效非作者独审、适用检查及公开／身份检查通过后，已完成独占内容可自行串行快进发布默认分支，根代理事后抽查；原仅分支交付限制撤回。此更新未解除实际 HTTP 拒绝，当前不以文稿代替资产验收。
 
 消费者接入：已接收 [固定 `99f3426`](https://github.com/dbvv1/MOBA-Like/tree/99f342621c09bec28da3945e8ed412e076100d59/asset-pipeline/validation) 的 GLTF 规范及 Three CPU 检查；三份原 GLB error 0、warning 25／26／25，整根变换正例与 mesh-only 反例均符合预期，5 项测试通过、0 skip。浏览器／GPU 和游戏仍未验，第三方取回停止条件不变。
+
+快照消费者：已接收 [固定 `9a88ae0`](https://github.com/dbvv1/MOBA-Like/tree/9a88ae03408e2ca8cc589981172296bcd573b6ad/asset-pipeline/presentation) 的真实 Simulation 快照→Three 资产接线，独立骨架／材质／mixer、整根位置与 idle／walk、阵营及 catalog 图标模型；7 项 Node 测试与非作者独审通过，含部分加载清理。导航使用直线路径测试夹具；真实游戏入口、WebGL、滑步与动作观感仍待验，不据冷却推断攻击动作。

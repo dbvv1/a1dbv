@@ -1,0 +1,38 @@
+{
+  "size": 96,
+  "sample_fps": 12,
+  "camera": {
+    "position": [
+      0,
+      -6,
+      5.05
+    ],
+    "target": [
+      0,
+      0,
+      1.45
+    ],
+    "ortho_scale": 3.4
+  },
+  "directions": {
+    "down": 0,
+    "right": 90,
+    "up": 180,
+    "left": 270
+  },
+  "clips": {
+    "idle": {
+      "loop": true
+    },
+    "walk": {
+      "loop": true
+    },
+    "attack": {
+      "loop": false
+    }
+  },
+  "sources": {
+    "blue": "cb563f407fe8252479a216411b585ea245286df77186317a8fef96d63a742b28",
+    "blue-long": "306ab11e5e04ab220b71147283869c6b4d2855e0686f55466cff050028893830"
+  }
+}

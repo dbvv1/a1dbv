@@ -1,0 +1,97 @@
+{
+  "source_review_commit": "d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8",
+  "accepted_commit": "e6fed4460d00ec23175f1bd70bb20eb18a884b5e",
+  "binding": "Simulation source, dependencies, tests and CLI match between these commits. Existing outputs copied unchanged; no rerun.",
+  "original_workflow_window_utc": {
+    "start": "2026-10-25T19:08:49.552Z",
+    "end": "2026-10-25T19:29:34.557Z"
+  },
+  "per_command_utc": "not separately saved with these original files",
+  "per_command_exit_code": "not separately saved with these original files; do not infer from JSON",
+  "records": [
+    {
+      "file": "v2-200-seed1.json",
+      "contentVersion": 2,
+      "seed_start": 1,
+      "seed_end": 200,
+      "attempted": 200,
+      "completed": 199,
+      "timeouts": 1,
+      "options": {
+        "games": 200,
+        "seed": 1,
+        "contentVersion": 2,
+        "blueDifficulty": "normal",
+        "redDifficulty": "normal",
+        "blueHero": "veyra",
+        "redHero": "veyra",
+        "maxSeconds": null,
+        "replayCount": 3,
+        "dumpReplay": null,
+        "json": true
+      },
+      "original_command": "not separately preserved in this JSON",
+      "reproduction_command": "npm run sim -- --games 200 --seed 1 --content-version 2 --blue-difficulty normal --red-difficulty normal --replay-count 3 --json"
+    },
+    {
+      "file": "v2-500-seed1.json",
+      "contentVersion": 2,
+      "seed_start": 1,
+      "seed_end": 500,
+      "attempted": 500,
+      "completed": 499,
+      "timeouts": 1,
+      "options": {
+        "games": 500,
+        "seed": 1,
+        "contentVersion": 2,
+        "blueDifficulty": "normal",
+        "redDifficulty": "normal",
+        "blueHero": "veyra",
+        "redHero": "veyra",
+        "maxSeconds": null,
+        "replayCount": 0,
+        "dumpReplay": null,
+        "json": true
+      },
+      "original_command": "not separately preserved in this JSON",
+      "reproduction_command": "npm run sim -- --games 500 --seed 1 --content-version 2 --blue-difficulty normal --red-difficulty normal --replay-count 0 --json"
+    },
+    {
+      "file": "v2-high-vs-low-100-seed1.json",
+      "contentVersion": 2,
+      "seed_start": 1,
+      "seed_end": 100,
+      "attempted": 100,
+      "completed": 99,
+      "timeouts": 1,
+      "options": {
+        "games": 100,
+        "seed": 1,
+        "contentVersion": 2,
+        "blueDifficulty": "high",
+        "redDifficulty": "low",
+        "blueHero": "veyra",
+        "redHero": "veyra",
+        "maxSeconds": null,
+        "replayCount": 0,
+        "dumpReplay": null,
+        "json": true
+      },
+      "original_command": "not separately preserved in this JSON",
+      "reproduction_command": "npm run sim -- --games 100 --seed 1 --content-version 2 --blue-difficulty high --red-difficulty low --replay-count 0 --json"
+    },
+    {
+      "file": "v2-seed1-complete-replay.json",
+      "contentVersion": 2,
+      "seed": 1,
+      "status": "blueWin",
+      "winner": 0,
+      "durationSeconds": 509.8666666666667,
+      "finalHash": "ec3ae9e56a6b148f",
+      "commands": 2578
+    }
+  ],
+  "timeout_replay_json": "not saved; independent original tool output called replayMatch for v2seeds136/400327 and v1seed600165; no serialized timeout command streams retained",
+  "scope": "Existing public simulation JSON only; no private logs, paths, screenshots or new samples."
+}

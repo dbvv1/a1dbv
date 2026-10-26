@@ -1,0 +1,99 @@
+{
+  "options": {
+    "games": 500,
+    "seed": 1,
+    "contentVersion": 2,
+    "blueDifficulty": "normal",
+    "redDifficulty": "normal",
+    "blueHero": "veyra",
+    "redHero": "veyra",
+    "maxSeconds": null,
+    "replayCount": 0,
+    "dumpReplay": null,
+    "json": true
+  },
+  "attempted": 500,
+  "completed": 499,
+  "errors": 0,
+  "timeouts": 1,
+  "blueWins": 269,
+  "redWins": 230,
+  "blueWinRate": 0.538,
+  "blueWinCi95": [
+    0.4941760408295009,
+    0.5812444881621506
+  ],
+  "highDifficultyWinRate": null,
+  "durations": {
+    "min": 269.03333333333336,
+    "median": 713.1666666666666,
+    "mean": 699.6220666666676,
+    "p95": 941.7333333333333,
+    "max": 1200
+  },
+  "stuckEvents": 0,
+  "gamesWithStuck": 0,
+  "commandRejections": 0,
+  "rejectionReasons": {},
+  "replayChecked": 0,
+  "replayMismatches": 0,
+  "firstMatchHash": "ec3ae9e56a6b148f",
+  "firstReplayExpectedHash": null,
+  "firstReplayActualHash": null,
+  "abilityRows": [
+    {
+      "id": "veyra.e",
+      "name": "Cinder Bloom",
+      "casts": 15076,
+      "hitCasts": 14864,
+      "hitRate": 0.985937914566198,
+      "heroHits": 12683,
+      "damage": 8782706.1938666,
+      "heroDamage": 200316.21695843223,
+      "damageShare": 0.7089262198520757
+    },
+    {
+      "id": "veyra.q",
+      "name": "Rift Lancet",
+      "casts": 22164,
+      "hitCasts": 21294,
+      "hitRate": 0.9607471575527883,
+      "heroHits": 2876,
+      "damage": 2500667.3865135787,
+      "heroDamage": 237666.47382436582,
+      "damageShare": 0.20184993534982046
+    },
+    {
+      "id": "veyra.r",
+      "name": "Skyfall Seal",
+      "casts": 3866,
+      "hitCasts": 2658,
+      "hitRate": 0.6875323331608898,
+      "heroHits": 1783,
+      "damage": 1105371.4651891561,
+      "heroDamage": 264272.8083775626,
+      "damageShare": 0.08922384479810384
+    },
+    {
+      "id": "veyra.w",
+      "name": "Slipstream",
+      "casts": 3826,
+      "hitCasts": 3826,
+      "hitRate": 1,
+      "heroHits": 0,
+      "damage": 0,
+      "heroDamage": 0,
+      "damageShare": 0
+    }
+  ],
+  "failureSamples": [
+    {
+      "seed": 136,
+      "status": "timeout",
+      "durationSeconds": 1200,
+      "error": null
+    }
+  ],
+  "stuckSamples": [],
+  "commandRejectionSamples": []
+}

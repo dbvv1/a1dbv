@@ -41,7 +41,7 @@ result_branch: relay/b-readability-cleanup-001
 
 - 视频首篇：已接收固定正文 `d7625f051c447e443dfa04c540318a0dd9e32d29`（交付分支 `f6c5166df9e4e4c73077453a74c342f0eda0178a`）的定点续改。沿原会话重组直接选路与来源归位，复用原非作者仅核改段的复核；“未知→绝对否定”和插镜范围偏移已修复关闭。原数字／许可／Veo条件及完整制作链保持；没有新模型／引擎／成片验收。本页 accepted，全任务仍 running。
 - 引擎页：按accept:auto合入[6d4d9ce](https://github.com/dbvv1/a1dbv/commit/6d4d9ce35e74c597f7585fbc358bfca85ba2831d)，来源正文[fb3006c](https://github.com/dbvv1/a1dbv/commit/fb3006c)。先新后旧独审及入口堆叠、来源归位、原时区和CLI／MCP条件差量全部关闭；原数字／条件保持，检查通过。本页accepted，真实引擎行为未验。
-- 验证页正文[6078dd7](https://github.com/dbvv1/a1dbv/commit/6078dd7)已按accept:auto合入[743ec67](https://github.com/dbvv1/a1dbv/commit/743ec67e522ab0fd592cd209ef56baa512440e2e)：原时区归属与来源归位同审关闭，适用检查通过。04客户端页正在原调用修来源性质／重复证明和设置状态转换，宿主串行回执。05架构页按最新负责人反馈协调写入，不覆盖原作者。其余按清单和追加模板接续；全任务仍running，全部范围接收后才触发最终审计事件。
+- 验证页正文[6078dd7](https://github.com/dbvv1/a1dbv/commit/6078dd7)已按accept:auto合入[743ec67](https://github.com/dbvv1/a1dbv/commit/743ec67e522ab0fd592cd209ef56baa512440e2e)：原时区归属与来源归位同审关闭，适用检查通过。04客户端页正文[f001026](https://github.com/dbvv1/a1dbv/commit/f001026)按accept:auto合入[03cc16e](https://github.com/dbvv1/a1dbv/commit/03cc16ee4ef9cf0295b5556fc9e2653a168585a0)，三项来源／设置状态差量同审关闭且检查通过。原生Workflow续05架构与06路线两个独立正文，已核原写者释放，保新增模块；宿主串行回执。其余按清单和追加模板接续；全任务仍running，全部范围接收后才触发最终审计事件。
 - 实际通道：Claude Code＋DeepSeek 原生Workflow，原始message.model=deepseek-flash；原调用与失败／修订保留，宿主非作者差量核对不代审计接收。
 
 模块写入已释放：04／05／wp10-content／WP11 对应模块已随 `0b78679817e7909e7919e5bb366616738dd7b946` 交付，原模块写者停止写入；后续存量清理可按既定顺序接续这些正文，不再等待旧 running。视频首篇定向续改已接收，原下一页 01 的在制日志保持。
@@ -83,3 +83,22 @@ result_branch: relay/b-readability-cleanup-001
 ## 宿主续改认领与在途协调（2026-10-26）
 
 固定 `b286980` 的审计原文已读取，视频首篇不接收的决定保留；沿原会话认领本次指定段续改，不重派初稿、不全页重审、不刷新已核事实。先保已在途第二页：引擎接入原调用于2026-10-25T17:31:36.515Z结束，未重发；其稿件保留，接下来先修视频的选择首句、重复状态和来源标签，非作者只核改动段。原制作模块、关键数字与限制继续完整保留。本地化已被dot-B接收并继续整合存档稿，04／wp10仍避开原写者；追加模板范围按原任务保留。
+
+
+## 05 导航段新增写者反馈
+
+- 05 导航段由模块线暂占：本分支补离线烘焙到移动消费者及几何二改；WP11 与最小例同时接收后释放。04 原调用继续，其他页按原顺序，不重派。
+
+固定来源 `466a1b2fed2a6bb3487d0968b00640c22b1c4e2d`（`dot-b/tmp/20261026-navigation-production-module`）。接收端此前已按main释放信息启动05／06原生Workflow，本轮发现新增导航占用后保留原调用至安全断点；05稿只留本地，不发布覆盖模块线，待其明确释放后按新事实基线定点整合。06路线页继续独立处理；全任务不退回ready、不重派，不重复实施导航模块。
+
+
+## 固定导航交接与本轮结果
+
+- 05最终整合由本清理原作者负责：导航模块固定 `de8dea906383d9a3ee25acf2fc80646ebf98b9f3`（`dot-b/tmp/20261026-navigation-production-module`），仅05原“追击与让路”至§4前，新增 `navigation-production` 锚点。模块作者已停写05，继续独立代码／WP11；清理保原调用和已完成稿，只清其他段，再接该固定导航段及引用，不能用旧整页覆盖。保六步制作链、停距／移动权限、引擎默认、几何二改和原通用入口，复用已核源码与独审，只差量核事实。原05稿固定SHA尚未回传，请交实际版本供差量合；06独立稿照常，不重派。
+
+固定反馈来源 `0dc48f4b9ad1242c20189ac0076817bf9d499df2`（`dot-b/tmp/20261026-cleanup-navigation-handoff`），取代先前暂占。原05清理完成稿已本地固定3c2e32c，未丢弃或重派；已只接入de8dea9的指定导航块，未合整条内容分支。代码／WP11继续由原模块线写，未入main的引用指向其固定公开源；当前05整合稿由原调用修独审发现的范围／来源与选择歧义，通过后交最终固定版本。06路线正文[ac00c0b](https://github.com/dbvv1/a1dbv/commit/ac00c0b)已按accept:auto合入[30cf2a5](https://github.com/dbvv1/a1dbv/commit/30cf2a5cba361135be307875d184c0180cece9b3)，G1重复证据及原来源日期差量同审关闭、检查通过。全任务仍running。
+
+
+## 05本轮接收
+
+[417c42d](https://github.com/dbvv1/a1dbv/commit/417c42d7)保留原清理完成稿，并仅接入上述固定导航交接块。非作者已完成先新后旧全文核对；原作者修正证据总范围、瞄准／赛车重复来源、丙解锁前后选择数量及暂缓动作歧义，新独立Claude Code＋DeepSeek审查逐项通过且核导航块未变。文档／公开／新增提交身份检查通过，本页按accept:auto接收；导航代码与WP11仍归原模块线，软件数值证据未扩大为引擎实测或手感通过。全任务仍running，按原有限清单继续未接收页。

@@ -1,0 +1,7 @@
+{
+  "name": "a1-recast-navigation-example",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test navigation.test.mjs" },
+  "dependencies": { "recast-navigation": "0.43.1" }
+}

@@ -237,6 +237,14 @@ public sealed class OwnedSpritePreview : MonoBehaviour
 
 [研究] 退出读条时若场景加载已经进行，默认仍让其完成并立即卸载；壳和协调者活到收尾结束。若确需停在未激活状态，必须为取消路径提供激活→卸载的可达步骤，且准备激活产生的生命周期回调，不等待已经被它挡住的后续操作。没有这些保证，撤回延迟激活方案。
 
+#### 正常接线补核：载入、Active Scene 与玩法入口
+
+2026-10-26（UTC+8），只补 [04 首版接线](../../domains/game-dev/04-client-modules.md#scene-loading-production)缺少的场景归属接口，不刷新上面 2026-10-24 的等待／共享／生产反例结论。Unity 6.3 [SetActiveScene](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.SceneManager.SetActiveScene.html)明确 Additive 后原活动场景仍保留；活动场景决定默认实例化目标和光照设置，与渲染哪些场景无关，未载入时返回 false。[MoveGameObjectToScene](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.SceneManager.MoveGameObjectToScene.html)只迁移根对象到已加载场景；[GetRootGameObjects](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.Scene.GetRootGameObjects.html)给出该场景的根对象入口。因此“新场景加载成功”不能代替运行对象归属与公共镜头／输入的绑定。[一手／研究]
+
+本次实现建议让启动壳独占协调和公共表现，每关作者源提供唯一 SceneEntry、出生点与关闭的 GameplayRoot（含本关渲染／碰撞／玩法）；准备阶段显式安排对象归属／恢复数据，提交阶段切 Active Scene、交接当前世界并启用规则。上述名字是项目语义，不是 Unity API；普通场景激活产生的 Awake 等副作用仍须由内容作者控制。首版角色随关卡重建，二改跨关角色时将实例与依赖持有共同移交常驻所有者；不把移动 GameObject 误认为 AssetBundle 引用也已移交。[研究]
+
+Addressables [2.9.1](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/LoadingScenes.html)与[4.1.1](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/LoadingScenes.html)均描述 Additive／activateOnLoad 参数和延迟激活阻塞队列；本模块保已安装、兼容的包，不为接线迁移。几何／光照、首帧、实例归属、取消恢复及双关峰值都未在 Unity／UE 中实测；新的六步表是将已有交接实施表落到作者和消费者入口，不是可直接导入的已验证框架。[一手／研究]
+
 ### 5. 持有正确之后，再决定驻留与构建后端
 
 [一手] [4.1.1卸载文档](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/UnloadingAddressableAssets.html)区分场景资源与独立加载资源；DontDestroyOnLoad不代替加载引用。[研究] 把需要常驻的玩家／UI依赖单独获取更容易控制保活范围；Acquire整个场景可作为明确选择，但可能把不再需要的依赖一起留住。不是按对象挪到新Scene就自动迁移了资源所有权。
@@ -949,6 +957,12 @@ Input System 1.19 UI 文档警告：gamepad 同时驱动 Virtual Mouse 与 navig
 Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/documentation/unreal-engine/how-to-create-a-patch-in-unreal-engine)以 package（如 .uasset）为最小纳入单位，保留已发行 cooked content、挂载新旧 PAK；长期保旧文件会增加存储，补丁怎样送达仍由分发平台决定。该页保留 Windows／Xbox One 使用范围说明，不代验所有 IoStore／平台组合。Steam 文档的旧 UE padding 示例未核目标 5.8 实现，因此不照抄参数。[一手／研究]
 
 **迁移代价与改判。** Dead by Daylight [2022 年 3 月开发者更新](https://forums.bhvr.com/dead-by-daylight/discussion/315701/developer-update-march-2022)称内容增长使分组扩大，因而重排／重平衡；[5.7.0 发行通知](https://forums.bhvr.com/dead-by-daylight/discussion/320530/release-information-5-7-0)确认文件结构变更需一次近乎全量重下。这是进入发行的迁移代价，未独立验证宣传速度，也不代表单人项目收益。布局调整后若局部更新仍牵连大量无关数据，或迁移成本不值，先缩改动范围／保原布局，再比较交付路线；下载、安装、临时磁盘与既有加载表现分别验收。没有运行引擎、打包器、游戏或模型，维护工时与本项目净收益未知。[一手／研究]
+
+### 发布候选的正常构建入口（2026-10-26 UTC+8 补核）
+
+Unity 6.3 [Build Profiles](https://docs.unity3d.com/6000.3/Documentation/Manual/build-profiles.html)区分 Platforms 的共享设置／场景数据与保存为资产的项目 profile；后者可分别配置场景并进版本控制。[BuildReport](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Build.Reporting.BuildReport.html)提供本次构建结果、大小、耗时和步骤／错误；某些无效输入可在报告生成前失败，存在报告也不代表实际游戏路径通过。UE 5.8 [Packaging](https://dev.epicgames.com/documentation/en-us/unreal-engine/packaging-your-project)分 Build、Cook、Stage、Package，并将 Deploy／Run 列为另外的可选操作；Game Default Map 决定打包后起点，教程的 Development 例不是 Shipping 验收。[一手]
+
+[04 发布模块](../../domains/game-dev/04-client-modules.md#release-delivery-production)据此把旧平台差分、内容裁剪、符号／反馈和 WP9 内容基线接成一次发布候选及新房／语音二改。代码构建、内容集合、存档 schema 分别对应不同兼容性；三种安装路径和回退数据选择为本项目实施建议，不是平台自动保证。上述 2026-10-19／20 的机制与历史生产案例不改日期；未实际构建、分发、迁移玩家数据或证明效率收益。[研究]
 
 ## 发行裁剪：内容完整性与资源规格分开选
 

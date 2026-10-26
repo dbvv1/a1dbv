@@ -64,7 +64,7 @@ flowchart LR
   G -->|换源或调参后复验| C
 ```
 
-**主干状态（2026-10-25）：** [master `6324d55`][rail-master] 已包含这条资产链与两套候选，普通构建仍用 `procedural`、不加载样本；显式 `STAR_RUSH_RAIL_SOURCE=kenney npm run build` 或 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build` 才选对应素材。下文的默认与运行记录属于固定候选版本，不能当作当前主干默认；Kenney 默认启用改动仅本地完成，未发布。[一手：固定主干源码]
+**可复现默认：普通构建已启用 Kenney，程序声保留为即时回退。** 已发布的[源重建版本 `af569f8`][rail-master]从保留的 CC0 OGG 按原配方重建，两运行 WAV 与 manifest 字节不变；`npm run build` 即打包这两片。样本尚未 ready、HTTP／解码失败或超时，本次碰撞立即用原程序声，不在稍后补播。要比较合成源用 `STAR_RUSH_RAIL_SOURCE=synth-v1 npm run build`，要完全不打包／请求样本用 `STAR_RUSH_RAIL_SOURCE=procedural npm run build`；未知选项让构建失败，而不是静默换源。默认接入的工程检查已通过，听感仍待下文验收。[一手：2026-10-25 固定源码与已有检查；[重建范围](../../../docs/research/2026-10-14-game-wp6-audio.md#制作回流短样本与程序声混合)]
 
 ### 从哪几件产物开始
 
@@ -91,7 +91,7 @@ flowchart LR
 
 [研究] 这是任务条件下的实现选择，不是同规格试听排名；音乐、配音与空间声源继续按本页各自路线选，不把mono短碰撞规格扩展到整页。
 
-**已有样本与可重建合成源，能在同一混音下比较。** 历史[固定接收版本][rail-synth]保留Kenney默认及原播放器，只纳入另一份本地交付的确定性模态／噪声配方与两WAV；当前主干用 `STAR_RUSH_RAIL_SOURCE=kenney`／`synth-v1` 分别构建样本，`STAR_RUSH_RAIL_SOURCE=procedural npm run build` 恢复程序音。每次样本构建只打包一对，轻／中界线、gain0.15、生命周期与回退不变，没有整支采用候选原来的交叉淡化和强度增益，因此可先判断源差异，再决定是否改混音。[一手／研究]
+**已有样本与可重建合成源，能在同一混音下比较。** 历史[固定接收版本][rail-synth]只纳入另一份本地交付的确定性模态／噪声配方与两WAV，保留原播放器；上面的固定默认版本沿用这条替代构建入口。每次样本构建只打包一对，轻／中界线、gain0.15、生命周期与回退不变，没有整支采用候选原来的交叉淡化和强度增益，因此可先判断源差异，再决定是否改混音。[一手／研究]
 
 合成配方可重建并做时长二改，源复现与两种构建链已检查；最终声音尚未听，不能据此判定哪组音色更好。它不是AI音频生成，也没有通用再分发许可：原说明仅称随项目条款，仓库未见独立LICENSE，不能套Kenney CC0。外部读者可借制作机制，复制这些合成资产前须另核授权。[一手／研究；[接收与验证范围](../../../docs/research/2026-10-14-game-wp6-audio.md#制作回流短样本与程序声混合)]
 
@@ -99,14 +99,14 @@ flowchart LR
 
 **把“技术安全参数”和“听后决定参数”分开。** 本例原OGG解码float峰超过1，转PCM前固定乘0.5只给量化留余量，不是响度优化；播放器样本gain `0.15`仍为暂定。听到单件不合材质就换源；尾音拖累节奏才改明确裁切／淡出配方；与发动机／轮胎／音乐互盖时先决定哪些层让位，再调实例增益或混音，而不是盲归一化所有片。每次只改已定位的原因并复验轻／中事件和重复疲劳。[一手／研究]
 
-**接收端下一步：** 按当前游戏[README][rail-master]安装依赖，显式选择 Kenney 或 synth-v1 构建并运行，首次用户手势启音；分别制造轻／中碰撞，在最终混音中听辨识、音量层次和反复擦碰，按结果换候选或改处理／混音参数后重验。当前已运行到轻事件，仍缺中档实战、可消费声音、最终混音与听后二改；不因此推翻已交出的源件、脚本和运行版本，也不宣称完整链品质通过。[一手／研究]
+**接收端下一步：** 按[固定版本 README][rail-master]安装依赖，默认构建 Kenney，比较时再显式选择 synth-v1；运行后首次用户手势启音，分别制造轻／中碰撞，在最终混音中听辨识、音量层次和反复擦碰，按结果换候选或改处理／混音参数后重验。历史候选已运行到轻事件，不把该记录当作新默认的听验；仍缺中档实战、可消费声音、最终混音与听后二改，不因此推翻已交出的源件、脚本和运行版本，也不宣称完整链品质通过。[一手／研究]
 
-[rail-master]: https://github.com/dbvv1/Star-Rush-Reborn/blob/6324d552e2a1beda2a3214a02e37d8f17aabf60f/README.md
-[rail-source]: https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/assets/impact-audio/README.md
+[rail-master]: https://github.com/dbvv1/Star-Rush-Reborn/blob/af569f88309a31c9000965eb879b079ff9955631/README.md
+[rail-source]: https://github.com/dbvv1/Star-Rush-Reborn/blob/af569f88309a31c9000965eb879b079ff9955631/assets/impact-audio/README.md
 [rail-recipe]: https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/prepare-impact-audio.py
 [rail-player]: https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/impact-audio.js
-[rail-pack]: https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/build.mjs
-[rail-tests]: https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/tests/impact-audio.mjs
+[rail-pack]: https://github.com/dbvv1/Star-Rush-Reborn/blob/af569f88309a31c9000965eb879b079ff9955631/build.mjs
+[rail-tests]: https://github.com/dbvv1/Star-Rush-Reborn/blob/af569f88309a31c9000965eb879b079ff9955631/tests/impact-audio.mjs
 [rail-readme]: https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/README.md
 
 ## 先让声音成为好玩的反馈，再增加素材数量
