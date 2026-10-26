@@ -2,7 +2,7 @@
 
 id: A-OFFLINE-BASELINE-CHECK-001
 owner: dot-A
-status: running
+status: blocked
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7b775bbdac27af662f9291d1cba989196d4f75f6
@@ -29,4 +29,7 @@ result_branch: relay/a-offline-baseline-check-001
 
 ## 当前结果
 
-待固定接收端领取；尚未执行本次独立环境基线检查。
+- 结论：固定基线 `7b775bbd`（tree `2022361efb9bf43fa7e9908ade8d860905676557`）在既有接收端环境未通过原入口 preflight，19 阶段全部未运行，不能称该基线通过；这是环境缺项，不是阶段超时。
+- 执行：2026-10-26T14:53:55Z 至 14:53:56Z（UTC），在 `base_ref` 的临时 detached worktree 中运行一次 `python3 scripts/check_offline.py`；受检 worktree 运行前后均为干净（`git status --porcelain` 为空），领取分支未重置。解释器 Python 3.13.5（Windows 原生，`os.name=nt`）；OS 类型 Windows（MINGW64/MSYS）。
+- 阶段：preflight 退出 2，标准输出为空；标准错误为 `BLOCKED: POSIX with /bin/bash is required by existing fixture tests`、`BLOCKED: missing required commands: jq` 和 `No phases ran; install nothing automatically.`。逐阶段结果：第 1–19 阶段全部未运行，测试 count／skip／exit 未知，非测试阶段不适用。
+- 缺项与恢复条件：需 Python 报告 `os.name=posix`、`/bin/bash` 可执行，并且 PATH 中有 `jq`。不在本机安装依赖、建 WSL／VM 或更换入口绕过；满足后由 dot-A 决定在具备 POSIX 与 jq 的环境用同一固定 SHA 重跑同一条命令，并从第 1 阶段重新记录。
