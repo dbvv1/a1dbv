@@ -1,6 +1,6 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-21；新增证据见[P55统一研究](research/2026-10-13-context-tool-choice.md#p55能力接入纠偏与授权边界)；服务未安装实测。
+> 核实时间：2026-10-21；schema 接入验收补核 2026-10-26。新增证据见[P55统一研究](research/2026-10-13-context-tool-choice.md#p55能力接入纠偏与授权边界)；服务未安装实测。
 
 ## 1. 先决定是否需要新增连接
 
@@ -153,6 +153,14 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 **撤回条件**：后续反复越权、结果不完整，或维护负担超过省下的查找，就在 `/mcp` 禁用连接，回到已有 CLI／资料。
 
 **依据**：[一手] [官方 MCP 配置](https://code.claude.com/docs/en/mcp)、[项目审批与托管配置](https://code.claude.com/docs/en/mcp#project-server-approvals-and-workspace-trust)；[经验：采用顺序／撤回判断] 接入与撤回条件；核实 2026-10-21。
+
+### 裸 stdio 可用，客户端却拒绝参数
+
+**先查 `tools/list` 的 `inputSchema`，再决定是否换接入方式。** anymd 8.5.1 的 `read`／`search` 曾把可省略字段列入 `required`：用户在 OpenCode 省略它们会被拒，补齐这些 nullable 字段或直接经 stdio 调服务端却成功。**允许 `null` 是值的约束，允许省略是键的约束**；字段即使接受 `null`，列在 `required` 中仍须带键。
+
+用同一个低风险读任务，对照目标客户端的省略调用与显式 `null` 调用（仅对确实接受 `null` 的字段）。若与裸调用结果不同，回查实际发布的 schema 与参数解码，确认省略规则不一致后再修 schema 生成源，而不是清空 `required`、放宽类型、枚举或数值边界。anymd 8.5.3 是这项 schema 的历史修复点；实际升级按当前安全公告选版本，还须包含 8.5.5 的后续安全修复，再在目标客户端重新发现工具并验最小调用和返回内容。显式 `null` 只作定位线索；仍不兼容就停用这条连接，保留原有 CLI／资料入口。
+
+**依据**：[社区：用户修前单例] [anymd #881](https://github.com/SylphxAI/anymd/issues/881)；[一手] [8.5.3 发布](https://github.com/SylphxAI/anymd/releases/tag/v8.5.3)、[后续安全公告](https://github.com/SylphxAI/anymd/security/advisories/GHSA-xrc8-gj3q-m8vm)、[MCP 工具契约](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#tool)、[JSON Schema required](https://json-schema.org/understanding-json-schema/reference/object#required-properties)；[固定源码与回归定义](research/2026-10-13-context-tool-choice.md#接入验收nullable与optional分开核对)，未运行上游或 OpenCode；核实 2026-10-26。
 
 ## 来源
 

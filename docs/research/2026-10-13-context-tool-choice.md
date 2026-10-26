@@ -463,6 +463,21 @@ print('4 assertions passed')
 
 本节只读公开文档、固定源码／测试与安全报告，未安装软件、执行服务／利用代码、访问私人账户或调用付费模型；没有模型质量、成本或防御成功率数据。删去规模、口碑与无条件安装例子后，接入判断以任务、权限和输入来源为准。
 
+## 接入验收：nullable与optional分开核对
+
+**改变选择：裸 stdio 读成功后，还要在目标客户端验最小参数调用；客户端报缺键时先核发布的 schema，不急着换协议或放宽全部校验。** `null` 是一个值，省略是没有这个键；MCP 的 `inputSchema` 用 JSON Schema 定义工具参数，而 `required` 要求列出的键实际存在。可空字段可以同时是必填字段；只有服务端本来允许省略、schema 却要求带键时，才是这里的契约不一致。
+
+### 真实故障、修复与保留的约束
+
+- **修前用户报告**：anymd #881（2026-10-09）给出 8.5.1、Linux 与 OpenCode 的复现。`read.required` 误含 `transcript`、`download_asr_model`、`images`、`revisions`，`search.required` 误含 `case_sensitive`、`whole_word`。OpenCode 省略时报缺键；显式传入这些 nullable 字段成功，裸 stdio 的 `read` 只传 `source` 也返回 Markdown。这个对照把“直调能读”与“目标客户端接受最小调用”分开了。
+- **生成源**：固定 `71fb95b521588241af5a23fa2de701207ac93430` 的 `schema.rs` 说明 `schema_with` 覆盖了 schemars 对 `Option` 的识别；修复在这些字段上显式加 `#[serde(default)]`，让生成的省略规则与解码一致，仍保留 nullable 类型与枚举。
+- **回归定义**：同提交 `lib.rs` 的 omission 测试检查四个公开工具的 `required`，并把逐字段省略后的键检查与实际参数解码对照：`read`／`outline` 只要求 `source`，`search` 只要求 `query`，`inspect` 仍要求 `operation` 和 `sources`。另一测试保留类型、枚举、`source`／`query` 最小长度、token／结果数／scale 边界；这不是把 schema 清空来求兼容。
+- **发布与验证范围**：8.5.3 发布说明确认修复，issue 中的修后测试通过是维护者自报；未见外部用户修后客户端回执。本次读取原帖、固定源码与测试定义，未安装 anymd／OpenCode、未运行上游测试或客户端。
+
+**采用与撤回**：现有用户按当前安全公告选版本，除 schema 修复外还须包含 8.5.5 的后续安全修复，目标客户端重新发现工具后，用同一低风险输入验省略调用与结果；需要定位时再对照语义允许的显式 `null`。自建工具则修生成源，并保留真正必填字段与值约束的回归。未通过目标客户端验收前继续用可靠的 CLI／资料入口，不把裸调用成功当成连接已可替代原入口。
+
+**依据**：[一手] [MCP 2026-07-28 Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#tool)、[JSON Schema 2020-12 §6.5.3 required](https://json-schema.org/draft/2020-12/json-schema-validation#section-6.5.3)、[null 与缺键的区别](https://json-schema.org/understanding-json-schema/reference/object#required-properties)；[社区：用户修前报告／维护者修后自报] [anymd #881](https://github.com/SylphxAI/anymd/issues/881)；[一手：固定源码／测试定义] [schema.rs 生成约定](https://github.com/SylphxAI/anymd/blob/71fb95b521588241af5a23fa2de701207ac93430/crates/anymd/src/schema.rs#L12-L37)、[ReadArgs](https://github.com/SylphxAI/anymd/blob/71fb95b521588241af5a23fa2de701207ac93430/crates/anymd/src/schema.rs#L642-L665)、[SearchArgs](https://github.com/SylphxAI/anymd/blob/71fb95b521588241af5a23fa2de701207ac93430/crates/anymd/src/schema.rs#L718-L723)、[omission／解码回归](https://github.com/SylphxAI/anymd/blob/71fb95b521588241af5a23fa2de701207ac93430/crates/anymd/src/lib.rs#L824-L878)、[约束保真回归](https://github.com/SylphxAI/anymd/blob/71fb95b521588241af5a23fa2de701207ac93430/crates/anymd/src/lib.rs#L880-L931)、[8.5.3 发布](https://github.com/SylphxAI/anymd/releases/tag/v8.5.3)、[后续安全公告](https://github.com/SylphxAI/anymd/security/advisories/GHSA-xrc8-gj3q-m8vm)；核实 2026-10-26。
+
 ## 共享指令：发现、导入与加载证据
 
 > 核实：2026-10-15（UTC+8，对应 10-14 UTC）。只读官方动态文档与固定发布记录；未启动 Claude Code／Codex、未修改真实配置、未执行模型或加载实验。**[一手：文档与发布记录；研究：采用判断]**
