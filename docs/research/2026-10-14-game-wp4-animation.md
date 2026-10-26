@@ -233,11 +233,17 @@ Agent可梳理窗口与调用链、实现请求身份／消费、补命中和落
 **来源**：[固定产物目录](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)内 `build.py`、`recipe.json`、`validate.py`、`validation.json`、`test-results.json` 与预览；2026-10-26（UTC+8）核读。保留上节 Cascadeur 的原核实日期与未试用范围，本例不验证其工程往返。
 
 
-**同一源的运行消费者已接到多单位快照，不再只做单 scene 变换。** [固定 `c6b38d6` 的 presentation](https://github.com/dbvv1/MOBA-Like/tree/c6b38d6dd7d8a64415f5f1b768b41bc3757c7b29/asset-pipeline/presentation) 复用原蓝／橙 GLB，不重做模型；`adapter.js` 用 `SkeletonUtils.clone` 保每实例骨架绑定，材质另 clone，`AnimationMixer` 每实例独立，几何／clip 共用。`sync` 读取真实 `Simulation.snapshot()`，稳定实体 ID 对应显示实例；逻辑 tick 的位置决定 idle／walk 和朝向，`advance` 只推进视觉混合器及快照端点插值。模型有 attack clip，但没有可信攻击事件就不触发它；不能把资源有动作与游戏已消费该动作混为一谈。
+**同一源的运行消费者已接到多单位快照，不再只做单 scene 变换。** [固定 `4822f31` 的 presentation](https://github.com/dbvv1/MOBA-Like/tree/4822f31317b3416758b0507e03a2c460991257f4/asset-pipeline/presentation) 复用原蓝／橙 GLB；`adapter.js` 的 `SkeletonUtils.clone` 后，只在同一 actor 内合并骨骼对象序列／逆绑定矩阵完全相同的 skeleton，保各 mesh 的 bindMatrix；相同源材质只 clone 一份，跨 actor 的骨架／材质／mixer 仍独立，几何／clip 共用。单部件要独立改材质时由调用方再 clone 并负责释放。原三动作全 clip 的实际蒙皮点对照及跨 actor／释放负例已验。
 
-`9a88ae0` 的 7 项真实 Node 检查覆盖真实 GLB 独立克隆／材质／蒙皮点、真实 Simulation 快照与兵波、W 冷却 tick→秒、状态移除／reset／释放及部分加载失败清理；增量 `c6b38d6` 的第 8 项核插值中点／端点、重复 render、非法 alpha 与复活端点。`advance(seconds, alpha=1)` 默认直接采用最新位置；累加器比例插值以一逻辑 tick 延迟换连续位置，端点来自逻辑快照而不是先前的插值结果。只有位置插值，不据此声称转身、混合切换或脚底接触已自然。
+`sync` 读取真实 `Simulation.snapshot()`，稳定实体 ID 对应显示实例；逻辑位移决定 idle／walk 和朝向，`advance(seconds, alpha=1)` 只推进视觉混合器及两份快照端点插值。默认 1 用最新位置，累加器比例插值以一逻辑 tick 延迟换连续位置；端点来自逻辑快照，不读前次插值位置。重复 tick 幂等，死亡隐藏，复活重置端点，倒退需 reset。没有可信攻击／命中事件就不触发源内 attack；资源有动作与游戏已消费不同。图标模型保 catalog 语义与冷却 tick→秒，未知方向弹道给空图标，禁用提示不代替模拟裁决。
 
-`view.dispose()` 收实例资源与该 view 地图资源，不销毁共享 GLB 几何；`disposeCharacterAssets` 由资产持有者在全部消费者退出后统一调用。加载器等待两项 settled，任一失败或缺 idle／walk 则回收成功加载部分。图标模型按 catalog 语义选型、保冷却 tick 和秒，未知方向弹道返回空图标；表现的禁用提示不代替模拟裁决。Node 检查无需 WebGL，导航替身是直线路径；正式游戏入口、浏览器／GPU、动作观感未验。复用产品原独审与这次增量同审，本次文稿不重跑 Blender 或新增游戏验收；2026-10-26（UTC+8）核固定源码／回执。
+**资源成本按真实所有权核，不把对象数当显存。** 相对原实现，6 英雄克隆新增 skeleton 从 153 降为 6、material 从 153 降为 36；不含蓝／橙源自身 2 skeleton／12 materials。两源＋两个 view 的 12 英雄，唯一 typed-array backing 从 567,552 降为 285,312 bytes，范围为 geometry／clip／boneMatrices，不含地图代理、JS 对象、图像或 GPU。`resources.js` 按实际 ArrayBuffer 身份统计整块 backing；视图长度之和可能重叠，也可能漏掉切片仍保留的底层空间。调用方将其实际源与消费者纳入清点，显式给预算；未知／空／非法／超额预算都拒绝。不据此保证设备内存或帧率。
+
+`view.dispose()` 收该 view 的 actor 集合与地图资源，不销毁共享 GLB 源；所有 view 退出后资产持有者再 `disposeCharacterAssets`。加载正常路径等待两项 settled，失败／缺必需 clip 则回收成功部分；`loadCharacterAssets(customLoad, {signal})` 预取消不启动，途中取消先拒绝消费并释放已完成部分，迟到结果亦回收，资源按身份去重释放。成功返回即转移所有权，后续 abort 不销毁存活消费者源；每次 loader 须交付该次调用拥有的资产。这是已验模块契约，不代表现有游戏入口已传入 signal，也不是 GLTFLoader 网络 I/O 中断保证。
+
+**真实动画包围反例决定当前小规模策略。** 固定 idle 球不能覆盖后续 walk；实际正交 Frustum 能含逃出旧球的顶点却排除旧球。最终仅英雄克隆 skin `frustumCulled=false`，不改源／地图；真正 Raycaster 派发时扫描一次当前顶点生成 box，再推保守 sphere并调用原 Three raycast，矩阵先由 sync/advance 更新。回归核实际几何命中与原 raycast 一致。它避免逐帧扫描，但离屏 draw 成本未知；大规模角色／高频拾取另选粗代理或已证明覆盖的保守界，不把关闭剔除叫成通用优化。
+
+最终 18 项 Node 检查，含真实 GLB／Simulation 与受控异步／参数夹具；保原实例、插值、兵波／冷却、reset／释放与部分失败覆盖，并加资源、取消、视锥／Raycaster 检查。复用各产品差量的真实非作者审查（共享资源独立 12 项、取消 17 项、bounds 18 项）；本次只核固定源码与文稿差量，未重跑产品。导航仍是直线夹具，不是 Detour／浏览器／GPU 或正式可玩入口；连续动作观感、离屏成本未验。2026-10-26 UTC，来源集中在上方固定 `adapter.js`、`resources.js`、`resource-test.mjs`、`cancel-test.mjs`、`bounds-test.mjs` 和 README。
 
 **同源挥击已在 a1 的[分层消费者](../../experiments/character-animation/README.md)实跑，未改上述 MOBA 消费者。** 原 GLB 的三个 clip 首键都在 `1/30s`，直接使用 duration 会把前导时间算入周期；派生 track 减首键后，idle／walk／attack 分别为 `1`、`32/30`、`35/30` 秒，源曲线不变。Root＋双腿 7 骨保移动，Torso／头／双臂与手 8 骨由移动和 attack 归一覆盖；不是把全身 walk 与局部 attack 都赋权 1 后平均。实际骨骼值与独立全片段求值对照，核下身保留、上身到指定姿态及 Hand_R 握柄保持。独审还用真实 Frustum 暴露旧 idle 包围球误裁挥击刀刃；最终逐次更新蒙皮 box／sphere，回归先缓存旧球再核新姿态顶点覆盖。逐顶点更新有 CPU 成本，批量实例仍须测预算。
 
