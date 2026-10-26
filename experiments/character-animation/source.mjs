@@ -1,0 +1,37 @@
+import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { prepareSource, disposeSource } from "./consumer.mjs";
+export {
+  prepareSource,
+  disposeSource,
+  upperBones,
+  lowerBones,
+} from "./consumer.mjs";
+
+export const hashes = Object.freeze({
+  blue: "cb563f407fe8252479a216411b585ea245286df77186317a8fef96d63a742b28",
+  "blue-long":
+    "306ab11e5e04ab220b71147283869c6b4d2855e0686f55466cff050028893830",
+});
+export const inputDirectory =
+  process.env.CHARACTER_SOURCE_DIR ??
+  fileURLToPath(new URL("./inputs", import.meta.url));
+export async function loadSource(variant = "blue", directory = inputDirectory) {
+  if (!Object.hasOwn(hashes, variant)) throw Error("unknown source variant");
+  const bytes = await readFile(resolve(directory, `${variant}.glb`));
+  if (createHash("sha256").update(bytes).digest("hex") !== hashes[variant])
+    throw Error("source hash mismatch");
+  const gltf = await new GLTFLoader().parseAsync(
+    bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+    "",
+  );
+  try {
+    return prepareSource(gltf);
+  } catch (error) {
+    disposeSource({ scene: gltf.scene });
+    throw error;
+  }
+}

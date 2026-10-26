@@ -380,6 +380,12 @@ sh asset-pipeline/placeholder/run.sh
 
 在[固定消费者目录](https://github.com/dbvv1/MOBA-Like/tree/c6b38d6dd7d8a64415f5f1b768b41bc3757c7b29/asset-pipeline/presentation)的 MOBA-Like 仓库根运行 `npm --prefix asset-pipeline/presentation ci --ignore-scripts --no-audit --no-fund`、`npm --prefix asset-pipeline/presentation test`，可复跑真实 Simulation 快照与 GLB 的 8 项 Node 检查。它比[单个 scene 的整根检查](3d.md#skinned-gltf-consumer)多验证了独立实例、时间推进和释放，但仍不是 GPU 游戏画面：测试导航是直线路径夹具，正式游戏入口、滑步和动作衔接尚未验。完整接线与实测范围见 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26（UTC+8）。
 
+<a id="layered-animation-consumer"></a>
+
+**已有兼容挥击动作、需要移动中播放时，先按骨骼分责任，而不是把两个全身 clip 等权叠起来。** [同源分层消费者](../../../experiments/character-animation/README.md)已实际加载这组固定 GLB：Root／双腿只读移动，上身在移动与 attack 之间作权重和为 1 的覆盖；实例根位置仍由 motor／模拟写，换姿态后更新蒙皮包围，避免旧 idle 球误裁挥出的刀刃。先把导出首键 `1/30s` 归零再定周期，避免把前导一帧算入循环。调用方给绝对视觉时钟、移动混合量和权威动作起点；消费者不从冷却猜动作，也不发命中事件。
+
+二改保旧 profile，将本例约定的视觉接触由 `.6s` 提前到 `.35s`、恢复仍为 `17/30s`，分段映回同一作者动作；取消则冻结出层采样、淡回当前移动，长刃仍用原握柄和手骨。10 项真实 Three／GLB 检查与 4 项 Blender 子进程检查通过，已看消费者实际蒙皮顶点的 16 个 CPU 姿态。它是 a1 的独立消费起点，尚未接入 MOBA；本源动作机械，静态图不证明连续观感、滑步或 GPU 游戏通过。需要全身重心参与的动作先换供给或站定播放，不把此掩码当所有动作的默认。具体配置与范围沿 [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，2026-10-26 UTC。
+
 保留已验旧版，新版在目标需求下胜出再替换默认。通用交接仍保作者工程实际具备的 rig／层／约束／道具参照、原动作／处理版、骨架／Avatar、root、压缩、事件与接触数据；工具批查引用、时长、事件、数值和根轨迹，目标相机再验姿态、风格与响应，并计淘汰／返工及第二改主动工时。2D 换装核动作／方向交集，对白成对更新声音与口型，非人形改变运动语义时回到专用控制与源内容；只有烘焙结果先计重建成本，阈值由玩法和目标设备决定（[WP4 通用验收](../../../docs/research/2026-10-14-game-wp4-animation.md#6-第二次修改的最小后续验收本轮不执行)）。
 
 **依据与范围**：[原创固定产物、脚本与报告](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)，2026-10-26（UTC+8）。产物自行以 CC0 提供，无第三方素材；Blender 4.3.2 已重开六文件、采样比对并通过真实篡改／缺失／缺动作负例，原非作者独审可复用，详见 [WP4](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)。静态预览仅支持几何占位与指定姿态检查；完整连续运动、真实游戏接入和最终美术未验。第三方来源的既有 403 保持停止，不以原创占位补齐其供给结论。
