@@ -23,7 +23,7 @@
 
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
-| P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；固定来源每周一轮，候选进收件箱，漏检对照记入 [25](../25-ai-exploration.md) | dot-A | 下一步：第一轮扫描和首次漏检对照。上次校准 10-22：25 项参照漏 6 项。 |
+| P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；固定来源每周一轮，候选进收件箱，漏检对照记入 [25](../25-ai-exploration.md) | dot-A | 10-26 首轮固定来源扫描与[有界周校准](../25-ai-exploration.md)已完成：上海 10-19～25 的固定 HN 查询前 10 条中补入 2 项适用漏项；不是全量漏检率，不与旧 6/25 直接比较，真实发现时差未知。下一步从收件箱按本仓真实消费者挑选试用，不重复本周扫描。 |
 | P81 | **试用与写成选择**：读者照着就能采用；在本仓自己的 AI 开发里试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | 已有采用结论已回流并收口；本仓[公开路径回归](local-jobs/A-PUBLIC-PATH-REGRESSION-001.md)与[context-mode窄试](local-jobs/A-CONTEXT-INDEX-TRIAL-001.md)已独审接收，原生回归／rg仍是对应任务默认；[Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502) 跟评审；jrnl 补丁待用户创建 PR（见下）。 |
 | MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 可玩集成已入 [main 274bc62](https://github.com/dbvv1/MOBA-Like/commit/274bc62c69f84294fbd4c97f7acff9f16ca8f68a)，[原 smoke 任务](local-jobs/B-MOBA-CLIENT-SMOKE-001.md)已接受软件 WebGL2 实跑与独审；按 [README](https://github.com/dbvv1/MOBA-Like/blob/main/README.md) 运行并操作。默认 v8，模拟指标继续作调参报告；下一步第二次需求修改与制作链接入。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[细则 G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | [联网与服务端](../../domains/game-dev/07-networking-and-server.md)已有同步／引擎接线、MOBA 输入一致性、Colyseus 房间和 Nakama 身份／云档／确认进度／排行完整链，独立读者实跑；下一步补在线配置与遥测的完整接入选择，案例采用后回流，不将独立样例算产品公网联网。 |
