@@ -2,7 +2,7 @@
 
 id: A-PUBLIC-GUIDANCE-READER-001
 owner: dot-A
-status: running
+status: accepted
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b2b3f65d64b4304640563817a9388aff87c73c6a
@@ -34,4 +34,8 @@ result_branch: relay/a-public-guidance-reader-001
 
 ## 当前结果
 
-待固定接收脚本领取；ready 不代表已运行。dot-A 的 Hippo 最小组件调查在独立写域继续，不等待本任务。
+- 新增 experiments/public-guidance-reader.md，用六条回答及逐项判定分清现行规则、曾有效后退役的旧决定与固定输入中无依据的说法，全部引用固定 SHA、相对文件与行号；独立审查发现的 3 处问题已修正并复审通过。
+- 产物：[09aa64c](https://github.com/dbvv1/a1dbv/commit/09aa64c1d107e1cabd73ce87061ac20fa41afeaa)，分支 `relay/a-public-guidance-reader-001`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 已按 accept: auto 合入 main：[5efda3d](https://github.com/dbvv1/a1dbv/commit/5efda3d03c6d6caaa48f40d2c93f5dea597165eb)。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
