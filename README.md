@@ -12,12 +12,11 @@
 | 模型、推理档与强弱分工怎么选、多贵 | [按任务分工](docs/decisions/model-roles.md) · [计费明细](docs/02-models-and-cost.md) | ✅ |
 | CLAUDE.md／AGENTS.md 怎么写 | [共享规则、加载首验与真实团队样例](docs/decisions/instruction-files.md) | ✅ |
 | 怎样让 Agent 自己验证、别只报完成 | [07 §1](docs/07-workflows.md#1-核心验证闭环-)、[23 浏览器验证](docs/23-browser-verification.md) | 🟡 |
-| 上下文怎么管、会话越聊越笨怎么办 | [03 §3](docs/03-context-engineering.md#3-会话层面的上下文管理)、[17 §2.6](docs/17-troubleshooting.md) | 🟡 |
+| 上下文怎么管、会话越聊越笨怎么办 | [按症状压缩、重开与恢复检查点](docs/decisions/context-management.md) | ✅ |
 | 该装哪些 Skill 与插件 | [按能力缺口选一项，附配置与起步](docs/decisions/skills-and-plugins.md) | ✅ |
 | 该接哪些 MCP | [04 MCP](docs/04-mcp.md) | ✅ |
 | Codex 过度防御、过度工程怎么治 | [按触发输入与契约收敛改动](docs/decisions/codex-overengineering.md) | ✅ |
-| 子代理与多 Agent 怎么组织 | [08 多 Agent](docs/08-multi-agent.md) | 🟡 |
-| 长任务与无人值守怎么跑 | [20 长任务](docs/20-codex-long-horizon.md) | 🟡 |
+| 子代理怎么组织，长任务怎么无人值守 | [委派、整合验收与中断续接](docs/decisions/long-tasks.md) | ✅ |
 | 怎么审 AI 写的代码 | [09 评审](docs/09-review-and-quality.md)、[REVIEW 模板](templates/generic/REVIEW.md) | ✅ |
 | 权限、沙箱与 Hooks 怎么配 | [10 安全](docs/10-security.md)、[06 Hooks](docs/06-hooks-and-guardrails.md) | 🟡 |
 | 调试、Agent 跑偏或谎报完成 | [17 排障](docs/17-troubleshooting.md)、[15 调试](docs/15-task-playbooks.md) | ✅ |
