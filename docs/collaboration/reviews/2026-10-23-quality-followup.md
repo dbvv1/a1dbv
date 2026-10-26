@@ -74,7 +74,7 @@
 
 对受审快照运行真实`scoreboard.py --today 2026-10-23`：C1核心15/15自评≤1，C2核心12/12自评≤1；C2独审分布仍为1个1、11个2。默认文本没有待处理分歧行，也没有逐页列出这11组两分。这是更新本轮独立基线之前的观察。[一手：脚本输出]
 
-[源码](../../../scripts/scoreboard.py)保留`marker.gap`、`audit_gap`和日期；仅当独审更差、独审日期不早于checked、且晚于audit回应日期时，`disputed=True`。同一真实扫描入口的临时夹具，自评固定1、独审固定2，结果如下。[源码／隔离执行]
+[源码](https://github.com/dbvv1/a1dbv/blob/7e229ddb8fb0bde7c4d67e408d5f71d4c1134619/scripts/scoreboard.py)保留`marker.gap`、`audit_gap`和日期；仅当独审更差、独审日期不早于checked、且晚于audit回应日期时，`disputed=True`。同一真实扫描入口的临时夹具，自评固定1、独审固定2，结果如下。[源码／隔离执行]
 
 | checked | audit回应 | 独审日期 | 待处理分歧 |
 |---|---|---|---|

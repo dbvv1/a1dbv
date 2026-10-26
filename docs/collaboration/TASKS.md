@@ -6,9 +6,9 @@
 
 > 每轮纠偏只改本节，最多三条（手册§6）。更新：2026-10-26，Claude 核心方向会话。
 
-- **A**：去最强的东西实际所在的地方找（官方团队与高质量项目自己怎么用 AI coding、Skill 与工具生态、真实反馈、Claude Code／Codex 的问题），来源按产出自行调整；找到的先在本仓生产上用出能数的变化，再写成选择。写法先给做法，限制只留改变决定的一条。
-- **B**：目标是整体高品质（画面、声音、手感、反馈、界面、完成度一起达到同规模优秀作品的水平），不只是功能正确：每个单元跑通后专门做质量评估（和参照并排、列差距）并针对差距优化，达到参照水平才算完成；AI 全链路用来把品质做上去。一次把一个完整片段整体做到参照水平再扩：Star-Rush 一段完整弯道，MOBA 一次基本战斗（先把方块塔、小兵、灰色地面和英雄换成制作链产出），FPS 一次射击循环。三个网页案例检验并串联知识。
-- **共同**：立项先写三句（读者、增量、怎么知道用上）；审查做读者实测；未结束的任务文件不超过 80 行、本页不超过 10 KB，由 `check_repo.py` 检查。存量清理已收窄到入口页和模板（见两个清理任务）。
+- **A**：试验场换成案例仓库的真实编码任务和 a1dbv 脚本，不再为 dot 自己的协作造新机制。先在入口页就地回答这些读者问题：CLAUDE.md／AGENTS.md 怎么写（附最强团队的真实文件）、Codex 过度防御怎么治、该装哪些 Skill 与插件、长任务与多 Agent 怎么组织、强弱模型怎么分工、本周值得试什么。存量页删掉 frontier 标记与页头日期流水账。
+- **B**：玩法用品类标准做法，品质尽量向品类标杆靠近（MOBA 对英雄联盟，Star-Rush 对地平线的公路弯道、保留跑圈，FPS 对 CS2）；每个单元跑通后与参照并排评估、针对差距优化，截图与差距清单放案例 `docs/quality.md`。被采用的改进在同一单元写回模块或制作链页。本机试开放权重 3D 与音频生成，做出一个进入作品的资源。
+- **共同**：完成看读者或玩家得到的价值；过程写在提交说明里，写做了什么、还差什么，不写免责，不进正文和 TASKS。独立审查只用于新默认做法、模板和作品版本。未结束的任务文件不超过 80 行、本页不超过 10 KB。
 
 ## 分工
 
@@ -24,7 +24,7 @@
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；来源按产出调整，候选进收件箱，漏检对照记入 [25](../25-ai-exploration.md) | dot-A | 10-26 首轮固定来源扫描与[有界周校准](../25-ai-exploration.md)已完成：上海 10-19～25 的固定 HN 查询前 10 条中补入 2 项适用漏项；不是全量漏检率，不与旧 6/25 直接比较，真实发现时差未知。下一步从收件箱按本仓真实消费者挑选试用，不重复本周扫描。 |
-| P81 | **试用与写成选择**：读者照着就能采用；在本仓自己的 AI 开发里试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | 旧采用已收口；[场景→动作写法](../../experiments/writing-action-first/README.md)已用于本仓在制稿：小节非空白 Markdown 字符 1042→937，13 项事实保留，已写入 [REVIEW](../../templates/generic/REVIEW.md)；SDK 仍为未运行素材。[Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502) 继续跟评审。symlink 扫描、Git 读取去重与 Hook 单次解析候选未发布；完整 offline 在 Python 3.12／3.13 均超时，Hook 的 3.12 定向也有超时。已过的定向与独审记录保留，原因未定；原完整门禁通过后再接收，不放宽限时或省测试。 |
+| P81 | **试用与写成选择**：读者照着就能采用；在案例仓库的真实编码任务和 a1dbv 脚本上试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | 旧采用已收口；[场景→动作写法](../../experiments/writing-action-first/README.md)已用于本仓在制稿：小节非空白 Markdown 字符 1042→937，13 项事实保留，已写入 [REVIEW](../../templates/generic/REVIEW.md)；SDK 仍为未运行素材。[Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502) 继续跟评审。symlink 扫描、Git 读取去重与 Hook 单次解析候选未发布；完整 offline 在 Python 3.12／3.13 均超时，Hook 的 3.12 定向也有超时。已过的定向与独审记录保留，原因未定；原完整门禁通过后再接收，不放宽限时或省测试。 |
 | MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | [main 8972ebf](https://github.com/dbvv1/MOBA-Like/commit/8972ebf392068c716ee7b12f427a1946d8d1206f) 与 [网站](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)已同步 v10：双英雄、四技能、重开和统一战斗资源已采用；英雄／兵条层级、敌区辨识与小兵接战空间有实际可见改善。软件 WebGL2 实战、适用检查与非作者审查通过，**仍未达到英雄联盟基本战斗参照品质**；下一段改善靠塔→受火→撤退的地表与威胁可读性。旧本机[基线任务](local-jobs/B-MOBA-CLIENT-SMOKE-001.md)已取消续拍，保部分结果及缺陷；Git 不自动部署网站。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[细则 G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 当前优先把现有 Web 简单内容的品质做好；[Unity 原生采用](local-jobs/B-UNITY-ADOPTION-001.md)保留接收端许可阻断与独立源候选，暂停工程、实跑与扩展，恢复须以届时用户方向为准，不随许可恢复自动开跑。 |
 | B-制作链 | **AI 全链路**（[细则 G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [原创角色源→多单位→可玩主循环](../../domains/game-dev/assets/animation.md#multiunit-animation-consumer)已回流：idle／walk／death 与权威事件驱动 attack／hurt 已入正式 c218→083，原软件 WebGL2 功能检查通过；[静音开门影片](../../experiments/gate-reveal/README.md)制作与返回玩法也已实跑。统一场景／塔／兵／英雄资源与权威战斗反馈已随 b4dff100 入站；基础制作与接入不等于品质达标，当前按英雄联盟基本战斗参照继续层级、危险区与声音的实玩并排优化，声音主观听验仍未评。 |

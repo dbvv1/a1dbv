@@ -16,8 +16,6 @@
 
 ## 当前最高水平：先比较能力面，再决定接口
 
-<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-21 -->
-
 **按任务和权威状态选接口，不统一换成一种协议。** OpenAI／Jeremy Lewi 的 [8-25 Runme 复盘](https://developers.openai.com/blog/automating-repetitive-work-at-openai-with-codex)接已有 notebook；Ramp 的 [10-20 Laminar 系列](https://builders.ramp.com/post/building-laminar)把工具发现与凭证／动作控制分开。本仓只在补缺口或改善质量与总投入时借用，不复制整套平台；起步按 §2 四层判断，接入先在 `/mcp` 查已有连接，撤回见 §5。
 
 Microsoft／CMU 的 [9-10 企业任务研究](https://arxiv.org/html/2609.11999v1)支持在获准的开放任务中保留 shell；[9-17 消融](https://arxiv.org/html/2609.20804v1)显示删工具的结果随模型和任务反转。默认保留有效原生能力，按状态、权限与组合需求补接口。

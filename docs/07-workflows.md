@@ -20,8 +20,6 @@
 
 ## 当前最高水平与比较范围
 
-<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-25 -->
-
 **当前领先做法是让强 Agent 完成整轮工作，再按缺失的依据补约束、样品或实际路径验证，而不是预先固定流程长度。** 近期参照为 Addy Osmani／Anthropic 的 [Opus 5.5 实践（9-22）](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)、Cursor 的[探索委派删减（9-23）](https://cursor.com/blog/improved-token-efficiency)与 John Phamous／Vercel 的[产品设计方法（6-25）](https://vercel.com/blog/teaching-agents-product-design-at-vercel)。本仓选择这一层的条件做法；跨任务最佳流程仍未知。[一手：团队原文；研究：比较]
 
 | 同一个选择 | 领先路线与本仓取舍 | 独立来源的支持与反例 |
@@ -138,7 +136,6 @@ Worktree 和并行会话只隔离写入，不自动提供独立证据；主 Agen
 **✅ 计划开始反复构建整套实现、再转抄代码时，先改计划产物，不先加评审或继续细拆。** 让 Agent 留下文件、接口、规格值、测试名与断言代码和验证命令；实现者能自行决定的函数体不逐段复制，尚未确定的算法与确需探明的 API 仍可调查。人检查缩减后是否仍能明确实施与验收，以计划相对规格的膨胀和重复代码为信号，不设统一行数上限。Superpowers 的实际修订支持这一窄选择，见[计划产物核查](research/2026-10-12-community-source-records.md#计划变成实现先改变产物)。**局限：作者重放只支持所测规划行为；不能推出所有任务应少写测试，或新计划已改善当前模型的最终交付。**
 
 **模式名不构成通用安全边界**：CodeBuddy CLI 官方契约中，`plan` 期间普通文件编辑与命令仍委托进入前的权限模式，另受规则与目标保护约束；不能照搬上例认定只读，更不等于沙箱。客户端范围见[入口核查](research/2026-10-12-community-source-records.md#codebuddy入口与计划权限)，环境隔离原则见[10 §3](10-security.md#3-防护原则)。**[一手；研究：范围，未执行验证]**
-
 
 **依据**：[一手] [Claude Code best practices](https://code.claude.com/docs/en/best-practices)、[Anthropic effective harnesses](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Spec Kit existing-project](https://github.github.com/spec-kit/guides/existing-projects.html)、[Kiro Quick Spec](https://kiro.dev/docs/specs/quick-spec/)、[OpenSpec workflows](https://github.com/Fission-AI/OpenSpec/blob/main/docs/workflows.md)、[BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)；[社区：单例] [Marmelab 引用的日期显示例子](https://marmelab.com/blog/2025/11/12/spec-driven-development-waterfall-strikes-back.html)，不是该文作者的一次实跑；[一手：厂商自报；未独立复现] [Uvik 基准](https://uvik.net/blog/spec-driven-development-benchmark/)，50 单 brownfield Python、单团队／单模型，±10 个百分点噪声、规格阶段35.1% token，页面标注更新2026-10-08早于所称运行日2026-10-15且未链接原始CSV，本仓2026-10-22已决定不据其排名调评级；[经验] 本节条件选择复用本仓MDX采用记录及计划产物核查（2026-10-21）；核实2026-10-25。
 

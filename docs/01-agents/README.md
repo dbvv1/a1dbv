@@ -22,8 +22,6 @@
 
 ## 当前最高水平：补齐反馈，再决定换哪一层
 
-<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
-
 **✅ 默认沿用能完成当前质量目标的原生入口，缺哪层就先改哪层。** 对同一已有 Web 仓库的可见问题与后续改稿，近期领先实践把实际运行反馈接回 Agent，而不是靠更换界面保证质量；Google 的[生产 profile 改稿](gemini-cli.md#当前最高水平)、Anthropic 的[真实客户端验证](ide-and-others.md#当前最高水平)与 Shopify 的[行为和同状态画面对照](https://shopify.engineering/helix)提供不同团队的参照。哪款入口整体最好仍未知，主流采用比例也未知；本仓推荐是比较后的可行默认。[一手：团队实践；研究]
 
 **三层可以组合。** IDE 可承载原 CLI，浏览工具可接现有 harness，独立环境也可运行这些组合；选择题是需要改变什么，不是三个产品类别选一个。[一手：[Zed两条路径](https://zed.dev/docs/ai/terminal-threads)、[Nous采用](https://github.com/NousResearch/hermes-agent/pull/81958)；研究]
@@ -42,7 +40,6 @@
 **较省token不自动成为新的默认。** Browser Use的[10-14同模型浏览工具比较](https://browser-use.com/posts/best-mcp-servers-to-control-a-browser)未检出质量胜者，较低模型费用与较短等待也不在同一方案上。它能帮助筛工具，不能替代本仓Web修复及二改的验收。[一手：厂商评测；研究]
 
 **迁移后保留质量目标，允许撤回实现路线。** Agent交补丁、原检查、可体验页面与一次代表性后续改稿，人核兼容、边界覆盖和体验；合计适配、主动工时、等待、费用及返工。新能力没有改善目标结果，或维护投入抵消收益，就撤回新路线。本文为原文与公开维护产物比较，未运行这些客户端／模型；证据与范围见[研究记录](../research/2026-10-12-community-source-records.md#p54续补缺浏览反馈先补工具迁移后验实际对象)。[研究]
-
 
 ## 选型建议
 

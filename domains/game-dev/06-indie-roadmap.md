@@ -298,8 +298,6 @@ flowchart LR
 
 ## 当前最高水平：阶段由待解决的问题决定，不按产量自动推进
 
-<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
-
 **近期质量参照是 Supergiant 的 [2026-05-23 开发者访谈](https://www.rpgsite.net/interview/20348-supergiant-games-interview-2026-greg-kasavin-darren-korb-hades-2-ending-music-future-coffee)：从概念选择共同开发方式，到上线后按不同经历玩家的反馈修订。** 其专业团队不是单人零手修证据。AI 实现／反馈的领先候选复用 WP13 的近期论文和独立作者实践，资产供给比较沿各资产专题。本表比较路线决策，不评选全流程工具赢家；完整同约束最佳路线与净收益仍未知。
 
 | 主要选择 | 领先或已采用的替代 | 本页决定与退出信号 |

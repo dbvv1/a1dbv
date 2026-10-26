@@ -29,8 +29,6 @@
 
 ### 当前最高水平
 
-<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
-
 **跨产品控制、模型接入或可观测性确有缺口，且愿承担平台维护，才借鉴自建路线。** Ramp／Sam Kronick 的 10月20日 Laminar 复盘是领先工程参照：团队尝试多种路线后，选择自己控制跨产品交互、模型选择／接入与观测，自建后仍承担升级、人审和值班。独立于它的 Spotify 6月3日复盘继续复用 Agent SDK。两者代表不同约束下的选择，本仓据此给条件默认，不把它们当统一成本竞赛。
 
 | 主要选择 | 领先替代／反例 | 本仓决定 |
@@ -158,7 +156,6 @@ OpenAI 的对应划分（developers.openai.com）：
 **🧪 只在代码能替代中间判断时采用**：批量独立查询、大结果过滤／聚合，或后续参数可由代码直接算出的依赖调用，先试现成 API／harness 的程序化工具调用；每步都要模型重新判断、用户审批或保留原生引用／文件时，默认直接调用，不因“调用多”就改写循环。Anthropic 与 OpenAI 当前文档均按任务形状区分；前者还报告过顺序单调用评测成本上升、质量未变的反例。
 
 **先验适配层，再启用**：API 支持不等于所用框架已支持。OpenAI Responses 路径须保留程序事件、原始调用来源 `caller` 和结果关联；缺失时留在直接调用或换已支持该契约的接口，不能只加一个开关。普通业务工具仍先用 Tool Runner／Agents SDK，不新增自建 harness。限制：节省与兼容性都依赖具体任务、版本和执行路径，真实失败及固定源码详见 [S6b](research/2026-10-10-audit.md#s6b--2026-10-15-程序化工具调用的采用边界)。
-
 
 **依据**：[一手] [Claude 程序化工具调用](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)、[OpenAI 程序化工具调用](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)、固定源码；[研究] [S6b 采用边界](research/2026-10-10-audit.md#s6b--2026-10-15-程序化工具调用的采用边界)、采用判断；核实 2026-10-22。
 

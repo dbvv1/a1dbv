@@ -5,8 +5,6 @@
 
 ## 当前最高水平
 
-<!-- frontier: status=已比较 gap=2 gen=2026-09 checked=2026-10-21 -->
-
 **按实际产物决定加减流程：清楚修复先原生，交付保留回归保护。** 跨任务的唯一最佳仍未知；本页已做机制比较，差距仍为 2。Krupa 的 2026-09-29 小任务消融比较原生与整包；Huntley 的 10-13 实践把重复违例交给确定性反馈。窄 TDD 是未测的补充候选，三路的真实第二次修改与总投入仍缺，详见 [P59 比较](research/2026-10-12-community-source-records.md#p59小修复的流程选择与回归交付)。
 
 [审计 C16](collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c16--社区工作流)的 Willison 执行验证与 Cursor 协调失败仍作参照；团队实验、主流调查详见 [P34 最高水平卡](research/2026-10-12-community-source-records.md#p34-最高水平卡)。P59 效果比较限 Sonnet 5.5／Superpowers 6.4.2；[v7.0.1 的入口与加载检查](#2-superpowers重点看-skill-之间怎样衔接)已覆盖版本分流，未验证当前模型效果。

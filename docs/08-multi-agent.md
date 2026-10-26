@@ -14,8 +14,6 @@
 
 ## 当前最高水平与默认的变化
 
-<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
-
 **默认让原生主 Agent 按需协调完整任务，不把减少人工编排误解成限制自主规模。** 近期领先参照是 Cursor 团队 Jediah Katz 等人的 9-23 原文：撤掉强制鼓励探索委派的提示，由已学会该能力的模型选择；不是取消子 Agent。
 
 **独立实践支持保留自主大轮次。** Willison 的 Battle Drones（10-20）用 Opus 5.5／Ultracode 协调多 Agent 过夜修改，作者之后试玩；这支持“人审结果、需要时改目标”，不证明多 Agent 比单体更快。
@@ -29,8 +27,6 @@
 主流参照是独立调查、worktree 与定向 review；可行基线是一位主 Agent 连续完成实现和验证。本仓推荐属于与近期领先机制比较后的条件默认，统一最佳拓扑仍未知。对应[C09卡](collaboration/reviews/2026-10-21-quality-audit-sota-cards.md#c09--多-agent)、[独立来源与代际边界](research/2026-10-12-experiment-records.md#p70原生协调与人工中转)；权限、恢复与隔离仍按下文入口契约，不由效果案例推定。
 
 **依据**：[一手：厂商自报] Cursor 团队 [9-23 原文](https://cursor.com/blog/improved-token-efficiency)；[社区：作者实践] Willison [Battle Drones（10-20）](https://simonwillison.net/2026/Oct/20/battledrones/)；[研究] [Cohere Labs 的 10-12 评测](https://arxiv.org/html/2610.17471v1)、[APM 作者的配对研究](https://agentic-project-management.dev/research/)、[原生协调与人工中转的独立来源比较](research/2026-10-12-experiment-records.md#p70原生协调与人工中转)；核实 2026-10-22。
-
-
 
 ### 旧角色链要不要改成 Skill？
 
@@ -47,7 +43,6 @@ Kim Olsen 的 10-23 报价 Agent 试验恰好说明归因问题：单循环每�
 以上是官方指南、固定开源步骤、作者试验与 Reddit 原讨论的核查；中文检索仅找到转述，未作独立采用证据。本仓未安装迁移套件，未新增评估或审批流程。
 
 **依据**：[一手] Anthropic [10-22 迁移指南](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)；[一手／研究] [固定迁移步骤](https://github.com/anthropics/single-agent-loop-kit/blob/c43796287b83bec847db923f07131d1cc8de750d/skill/steps/03-fold.md)源码；[社区：作者合成任务实测，非编码对照] [Kim Olsen 的 10-23 报价 Agent 试验](https://dev.to/kimolsen/ai-sales-agent-test-four-subagents-vs-one-loop-with-skills-58eg)；[社区] [Reddit 原讨论](https://www.reddit.com/r/ClaudeAI/comments/1xdwquj/anthropics_new_guide_oct_22_argues_most_agents/)；[经验] 采用范围；核实 2026-10-24。
-
 
 ## 1. 证据
 

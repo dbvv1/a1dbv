@@ -12,8 +12,6 @@ Agent负责在目标入口完成同一任务，交回改动、检查和未完成
 
 ## 当前最高水平
 
-<!-- frontier: status=已比较 gap=1 gen=2026-10 checked=2026-10-22 -->
-
 **近期领先机制是持久宿主、可运行环境和可接收的工作状态，而不是统一赢家。** VS Code [8-26 Agent Host](https://code.visualstudio.com/blogs/2026/08/26/agent-host-architecture)把会话生命周期移出单个窗口；Cursor [7-30 工程复盘](https://cursor.com/blog/cloud-agent-environment)先简化启动和长期进程，再接浏览验证。Spotify [8-10 Xirp](https://portal.spotify.com/blog/introducing-xirp)独立展示跨 harness 整理与上下文接续；其自有产品推广不是效果复现。[一手：不同团队自报；研究]
 
 | 主要选择 | 近期领先替代与反例 | 本仓决定 |
