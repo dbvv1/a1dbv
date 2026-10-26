@@ -6,8 +6,8 @@
 
 > 每轮纠偏只改本节，最多三条（手册§6）。更新：2026-10-26，Claude 核心方向会话。
 
-- **A**：回到使命本身：发现 → 试用 → 写成选择。每周一轮扫官方、开源项目、社区与技术博客，候选进[收件箱](inbox.md)，挑最值得的在本仓自己的 AI 开发里实际用，结论写进 13 与决策页；每周做一次漏检对照（M6）。Datasette #3015、Memos #6502 跟到结束，不再新开第三方应用采用。
-- **B**：AI 全链路、核心模块（先覆盖最核心、最通用的模块，含引擎与部分服务端）和三个案例一直同时推进。MOBA-Like：`b/moba-playable-integrated-v8` 的浏览器 smoke 已在 `d32f5d9` 实跑通过，直接合入 main，不再补证据字段；Star-Rush 做 brief 里的品质提升；FPS-Like 在 MOBA-Like main 可玩后开工。
+- **A**：去最强的东西实际所在的地方找（官方团队与高质量项目自己怎么用 AI coding、Skill 与工具生态、真实反馈、Claude Code／Codex 的问题），来源按产出自行调整；找到的先在本仓生产上用出能数的变化，再写成选择。写法先给做法，限制只留改变决定的一条。
+- **B**：知识是核心，三个网页案例把它检验并串联起来：案例里做一个功能会牵动多个模块和制作链，做出来后把各页改成互相链接、选择一致的一套，长页压成“默认做法＋实现起点＋何时不适用”。案例选同规模的优秀公开作品作参照，占位只活一个单元：MOBA 先把方块塔、小兵、灰色地面和英雄换成制作链产出。FPS-Like 在已部署的网页原型上继续纵切片，推送待用户在 Custom rules 补 FPS-Like。
 - **共同**：立项先写三句（读者、增量、怎么知道用上）；审查做读者实测；未结束的任务文件不超过 80 行、本页不超过 10 KB，由 `check_repo.py` 检查。存量清理已收窄到入口页和模板（见两个清理任务）。
 
 ## 分工
@@ -23,9 +23,9 @@
 
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
-| P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；固定来源每周一轮，候选进收件箱，漏检对照记入 [25](../25-ai-exploration.md) | dot-A | 10-26 首轮固定来源扫描与[有界周校准](../25-ai-exploration.md)已完成：上海 10-19～25 的固定 HN 查询前 10 条中补入 2 项适用漏项；不是全量漏检率，不与旧 6/25 直接比较，真实发现时差未知。下一步从收件箱按本仓真实消费者挑选试用，不重复本周扫描。 |
+| P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；来源按产出调整，候选进收件箱，漏检对照记入 [25](../25-ai-exploration.md) | dot-A | 10-26 首轮固定来源扫描与[有界周校准](../25-ai-exploration.md)已完成：上海 10-19～25 的固定 HN 查询前 10 条中补入 2 项适用漏项；不是全量漏检率，不与旧 6/25 直接比较，真实发现时差未知。下一步从收件箱按本仓真实消费者挑选试用，不重复本周扫描。 |
 | P81 | **试用与写成选择**：读者照着就能采用；在本仓自己的 AI 开发里试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | 已有采用结论已回流并收口；本仓[公开路径回归](local-jobs/A-PUBLIC-PATH-REGRESSION-001.md)与[context-mode窄试](local-jobs/A-CONTEXT-INDEX-TRIAL-001.md)已独审接收，原生回归／rg仍是对应任务默认；[Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502) 跟评审；jrnl 补丁待用户创建 PR（见下）。 |
-| MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 双英雄选择已入 [main 083183c](https://github.com/dbvv1/MOBA-Like/commit/083183c245c2e8f4bd3dbbfa7e3d7c75a0357b3b)：选择 Morrow／Veyra、四技能与保／改选择重开，[原 smoke 任务](local-jobs/B-MOBA-CLIENT-SMOKE-001.md)已接受软件 WebGL2 实跑与独审；按 [README](https://github.com/dbvv1/MOBA-Like/blob/main/README.md) 运行并操作。10-26 [网站](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)已部署 `083183c` 并设为所有人可访问；本次部署已完成，线上 GPU 玩法未再验。Git 推送不自动发布网站。默认 v8；下一步改善完整对局的可读性与操作体验，不以新增事件字段替代品质。 |
+| MOBA | **MOBA-Like 纵切片**：可玩 → 第二次需求修改，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 双英雄选择已入 [main 083183c](https://github.com/dbvv1/MOBA-Like/commit/083183c245c2e8f4bd3dbbfa7e3d7c75a0357b3b)：选择 Morrow／Veyra、四技能与保／改选择重开，[原 smoke 任务](local-jobs/B-MOBA-CLIENT-SMOKE-001.md)已接受软件 WebGL2 实跑与独审；按 [README](https://github.com/dbvv1/MOBA-Like/blob/main/README.md) 运行并操作。10-26 [网站](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)已部署 `083183c` 并设为所有人可访问；本次部署已完成，线上 GPU 玩法未再验。Git 推送不自动发布网站。默认 v8；下一步把塔、小兵、地面和英雄换成制作链产出，再改善完整对局的可读性与操作体验。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[细则 G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 当前优先把现有 Web 简单内容的品质做好；[Unity 原生采用](local-jobs/B-UNITY-ADOPTION-001.md)保留接收端许可阻断与独立源候选，暂停工程、实跑与扩展，恢复须以届时用户方向为准，不随许可恢复自动开跑。 |
 | B-制作链 | **AI 全链路**（[细则 G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [原创角色源→多单位→可玩主循环](../../domains/game-dev/assets/animation.md#multiunit-animation-consumer)已回流：idle／walk 与同源 death 已正式采用，原软件 WebGL2 通过；[静音开门影片](../../experiments/gate-reveal/README.md)制作与返回玩法也已实跑。下一步接收真实事件驱动的 attack／hurt 进入可玩 main，候选不计采用。 |
 | SR | **Star-Rush 品质提升**：驾驶手感、竞速 AI、美术与音频，按 [brief](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/brief.md) | dot-B | master [`c287b23`](https://github.com/dbvv1/Star-Rush-Reborn/commit/c287b23b868abab96269f6443ab1ce4814d587a4)：AI 按碰撞后障碍位置避让，真实输入对局＋Canvas 重放对照通过；64 项及客户端回归、独审通过。`3f73455` 严格软件 WebGL smoke 已接收，后续牌层／AI 差量未重跑严格 WebGL；10-26 对应 `c287b23` 的[新赛车站](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site)已部署并设为所有人可访问，旧站不变；公开页正常显示菜单，线上驾驶待验。 |
