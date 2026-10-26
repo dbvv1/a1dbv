@@ -2,7 +2,7 @@
 
 id: A-INBOX-ACTION-FIRST-001
 owner: dot-A
-status: running
+status: blocked
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2f07ed32416875d6f040d1a01b086770e51bbea6
@@ -37,4 +37,9 @@ result_branch: relay/a-inbox-action-first-001
 - 仅记录执行端实际返回且可公开的客户端／provider／model 元数据；没返回写“未知”，不由请求别名猜型号，不读取或外发私人日志、完整 headers。
 
 ## 当前结果
-待既有固定接收脚本领取；Git `ready` 不是运行回执。基线已核：2f07ed3 的 inbox 与 e02e948／6c371a 同文，13 项（11 待／2 已），入口正文 5544 个非空白 Markdown 字符；inbox 整文件 6828 个含空白 Unicode 字符／39 行。改后值、独审、执行模型与合入提交均尚未产生；未改写 inbox，未启动本机调用。
+
+- inbox 13 项已改为当前选择/试用状态/下一步先行，关键事实、来源、评级与日期角色保留；独立复审仅剩本卡第45行把 diff 记成 +41/−2（实际 numstat +40/−1），其余均通过。
+- 产物：[82b00a5](https://github.com/dbvv1/a1dbv/commit/82b00a56cc60beaf061225b733cdb24d374641aa)，分支 `relay/a-inbox-action-first-001`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：把本卡第45行更正为 diff +40/−1 行、净 +39 后重跑最终独审，再由接收端做非作者读者测试、提交身份扫描与合入。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
