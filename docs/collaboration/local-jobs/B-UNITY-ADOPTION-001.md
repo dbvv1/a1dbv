@@ -2,7 +2,7 @@
 
 id: B-UNITY-ADOPTION-001
 owner: dot-B
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 010336d7
 result_branch: relay/b-unity-adoption-001
