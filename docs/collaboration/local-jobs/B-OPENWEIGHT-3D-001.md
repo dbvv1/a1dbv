@@ -52,6 +52,12 @@ result_branch: relay/b-openweight-3d-001
 - 有权重后记录真实下载revision/逐文件hash，原始mesh必须来自本次实际选用的TripoSG或TripoSR推理，记录对应模型／源码／权重身份，不把TripoSR结果写成TripoSG；输入绘图脚本不是AI 3D产物。按原合同做后处理与实际场景接入，不能保留旧KayKit来源标签。未来接入从届时产品最新main只移植允许资产差量，其他14GLB及新消费者保留，不整条旧基础合回main。
 - 回写当前结果只分清已修、生成未开始/实际运行、下一准确阻塞；若网络仍阻断，交出其余可独立执行的依赖/原8条修复结果，再标blocked，不循环空跑或新增替代任务。
 
+## Unit 1 接收反馈（21c1a39，供同任务下一单元）
+
+- 保留下面已报 4 项复审欠项；云端用临时权重目录确认 `weights_fingerprint` 漏收 `vae/config.json`，需补嵌套配置枚举及“改配置即变指纹”的回归。19 项 CPU 测试通过不覆盖这个缺口，也不证明真实生成。
+- 原 8 条第 3 项尚未闭合：固定 TripoSR `107cefdc` 的 `tsr.system` 先经 `models.isosurface` 导入 `torchmcubes`，随后导入的 [tsr.utils](https://github.com/VAST-AI-Research/TripoSR/blob/107cefdc244c39106fa830359024f6a2f1c78871/tsr/utils.py) 仍在顶层 `import rembg`。前置缺 `torchmcubes` 的失败只说明流程停在更早处，不能据此宣称成功导入 TSR 已无 rembg 依赖。
+- 这里是 Python 库的导入依赖，不是已下载/初始化背景模型的证据；不把 rembg 库与 RMBG-1.4 权重或其许可混同。若作最小延迟导入修正，保官方基 SHA、patch/hash 和真实模块路径校验；在具备真实提取依赖的环境验证 `TSR` 成功导入且未导入 rembg，不以 mock 或前置失败代替成功路径，不下载背景模型。本轮依赖核验不运行权重推理；真实生成仍在依赖与来源条件满足后按原合同执行。
+
 ## 当前结果
 
 - 本单元完成 TripoSR 独立薄调用、TripoSG nonflash 延迟 diso 的 patch/runner、GLB 后处理合同与 19 项测试；但独立复审未通过：权重指纹漏收嵌套 config.json，README 状态措辞、19 项计数拆分与验证命令环境说明不一致，真实推理仍因拿不到官方权重及 torchmcubes 缺 CUDA Toolkit 未进行。
