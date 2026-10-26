@@ -2,7 +2,7 @@
 
 id: B-STAR-RUSH-SMOKE-001
 owner: dot-B
-status: running
+status: review_ready
 accept: auto
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 3f73455801037b5bc7587f17d0a5c2c16b2f725e
@@ -29,5 +29,8 @@ result_branch: relay/b-star-rush-smoke-001
 
 ## 当前结果
 
-- 历史 accepted 保留：旧 `e9cf503` 软件 WebGL 沙箱 smoke 通过，三行 Windows 路径修复已随 `32b2d3a` 接收；该证据只覆盖旧树。
-- 当前 `3f73455`：工程与 dot 同桌面 Canvas 实操已接收，严格软件 WebGL 尚未验证。本轮只补这一缺口；硬件 GPU、审美、手感和听感不由 smoke 代验。
+- 在固定 SHA 3f73455 上以 Node 24 执行 npm ci 与 npm run smoke，退出码均为 0；严格软件 WebGL2 开局通过且 console/page/request/HTTP/清理错误为零，本地已生成 report.json 与两张截图，未改产品代码或测试断言。
+- 产物：[3f73455](https://github.com/dbvv1/Star-Rush-Reborn/commit/3f73455801037b5bc7587f17d0a5c2c16b2f725e)，分支 `relay/b-star-rush-smoke-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：无后续单元；硬件 GPU、审美、手感和听感仍待人工验收，接收端可回写任务状态。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
