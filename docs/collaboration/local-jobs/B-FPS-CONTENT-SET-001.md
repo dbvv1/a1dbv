@@ -22,3 +22,11 @@ result_branch: relay/b-fps-content-set-001
 
 ## 怎样算做成
 标准件能从实际来源重建、解析并满足预算，动作与材质契约可接进案例；做一次调色或比例二改验证整批可重跑。交固定 SHA、3–5 件实际产物、接线入口和缺口。按当前 build Workflow 独审与适用检查、公扫后回 review_ready。阵容图需接入本作光照后用真 GPU 拍，与标杆比；尚未取得该图就保留待接入状态，不把离线解析称品质定稿。接线、实际整局验收及发布由案例线接续。
+
+## 当前结果
+
+- 已交付四件可重建标准件（4 个 GLB，合计 269,440B/4,313 三角形，固定 SHA）、风格页、确定性归一与校验脚本及 15 项测试，validate 实跑通过，改动与返回一致且未改 src。复审未通过：2 个未关闭问题仍在——docs/content-production.md 第 111 行把 weaponPose 数值误指到 wiring.json、把 rx24-root 的 name 说成 extras，wiring.json 第 11 行同样写错 rx24-root extras，需修正后重审。
+- 产物：[74b0e13](https://github.com/dbvv1/FPS-Like/commit/74b0e136572d5699e324e2e5f857fcc53a3c2b29)，分支 `relay/b-fps-content-set-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：修正 docs/content-production.md 第 111 行与 asset-pipeline/content-set/wiring.json 第 11 行的 restMount/weaponPose 与 rx24-root extras 表述，然后重跑复审。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
