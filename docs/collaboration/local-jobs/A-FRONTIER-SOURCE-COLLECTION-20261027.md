@@ -48,4 +48,8 @@ result_branch: relay/a-frontier-source-collection-20261027
 
 ## 当前结果
 
-待接收端领取；完成后只填产物、剩余缺口与 dot-A 审阅入口。
+- 已产出 sources.md（89 行）：Effect 跨版本消费端声明快照与生成物闸门、Biome 仓库级 codegen 触发表加 CI autofix、Nx 项目图下游反查、cargo-semver-checks 多 crate 兼容闸门，均附原始链接与真实消费者证据；check_repo 与 check_public 均通过。独立复审未通过，遗留一处仓内 Hook 归因错误。
+- 产物：[6523b9d](https://github.com/dbvv1/a1dbv/commit/6523b9d55d6afb48249dc46eef8d1fa6ccd73f3c)，分支 `relay/a-frontier-source-collection-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：修正 sources.md 第 48 行：docs/06 只是 PostToolUse additionalContext 的示例，本仓模板实际是 PreToolUse 路径保护 Hook（settings.json 编辑类 matcher + protected-paths.txt），澄清后重做独立复审。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
