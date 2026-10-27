@@ -4,6 +4,10 @@
 
 ## 待处理
 
+### 2026-10-27：沿真实启动链补测试，而非叠加审查轮次
+
+👀 **接入外部程序时，先跑真实宿主的最短路径，再让回归覆盖宿主的启动包装和环境差异。** Calyx 作者在 [DEV 复盘](https://dev.to/yuu1ch13/seven-rounds-of-ai-code-review-in-one-day-2048-tests-green-and-the-feature-had-never-started-once-1lb8)中自报多轮 AI 审查与大量绿测仍漏掉无法启动的窗格；[公开修复](https://github.com/yuuichieguchi/Calyx/commit/cd89aab20be8ac34d342e852d646d6fd88a7f267)可核：真实 Ghostty 会再包一层 `exec`，原测试只执行裸命令，修复去掉自身多余的 `exec`，测试改为经过宿主包装，并用不同的环境 HOME 检查显式配置确实生效。本仓只读核实、未在 macOS 运行；保留这个实际失效机制，不据作者轮次或测试数量推荐更多审查。核实：2026-10-27。
+
 ### 2026-10-27：先检查判官，再改生成提示
 
 👀 **评测突然判出大量错误时，先人工读失败样本，再决定改提示词还是改判据。** 中文实践者在 [ai-study-helper-v2 切片 030](https://github.com/lipeidonggz/ai-study-helper-v2/blob/325956ced3eaece484eb91a7a0c576e45794100e/docs/development/slices/030-agent-claim-strength-fidelity.md)记录：50 次尝试后发现原判据误伤保留转折的近义转述，否决原归因并撤回一次提示修改。它是作者的真实项目复盘，逐次 trace 未公开；本仓未试用，也不引入其审批或提交门禁。[原始材料与公开提交核对](local-jobs/artifacts/A-COMMUNITY-PRACTICE-SCAN-20261027/sources.md#dot-a-接收后的关键核对)。核实：2026-10-27。
