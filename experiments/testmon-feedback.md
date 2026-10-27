@@ -50,6 +50,7 @@ printf 'Retained isolated replay: %s\n' "$trial"
 
 ## 采用边界
 
+- **同时要外层 coverage 报告时，核实际执行记录，再决定怎样组合采集器。** 新发现的 [#270 修复与复用](testmon-outer-coverage/README.md)在真实子进程里恢复了被 testmon 暂停的外层测量：原本执行过却漏记的五行重新出现，正常选测与失败退出码保留。补丁待上游提交，按入口列出的固定环境复验；这是后续真实维护，不重跑上面的历史选测题。
 - 映射来自已执行的Python代码，静态文件、外部服务及子进程消费者不能只靠这张图判断；相关变化按项目规则显式补验。已有[原生选测与扩大范围](../docs/15-task-playbooks.md#6-补测试)继续适用。[一手／经验]
 - [Polylogue的实际采用](https://github.com/Sinity/polylogue/issues/1059)支持让Agent使用原生选择器，而[remote-store的暂缓报告](https://github.com/haalfi/remote-store/blob/45132599a2818fe1e02eb15c9e2016bada5a0103/sdd/research/research-bk-403-testmon-poc.md)说明收益依改动类型变化。后者沿用[此前已核记录](../docs/research/2026-10-12-development-feedback.md#新增选测能力先比较改动类型与完整运行成本)，本轮网页未重读成功；不移植两方耗时到本仓。[社区／研究]
 - 当前[PyPI版本](https://pypi.org/project/pytest-testmon/2.2.0/)发布于2025-12，不冒充刚发布的前沿工具。这里只补真实操作入口，未跑模型、生产项目、完整仓库离线套件或hosted CI，不宣称Agent效率提升。[一手／实试范围]

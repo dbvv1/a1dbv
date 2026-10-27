@@ -20,3 +20,4 @@ experiments/openspec-mdx.patch whitespace=-blank-at-eol
 experiments/memos-reading-adoption.patch whitespace=-blank-at-eol
 experiments/opensrc-ref-integrity/source-ref-integrity.patch whitespace=-blank-at-eol
 experiments/serena-vue-implementation/fix.patch whitespace=-blank-at-eol
+experiments/testmon-outer-coverage/fix.patch whitespace=-blank-at-eol
