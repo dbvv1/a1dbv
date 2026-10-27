@@ -24,7 +24,7 @@
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；来源按产出调整，候选进收件箱，漏检对照记入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 首轮扫描、周校准与[本周 Top 5](../13-frontier-radar.md#本周-top-5)已做。下一步按 explore-frontier 广扫，同时推进读者地图上仍为 🟡／⏳ 的问题，漏检记进探索证据。 |
-| P81 | **试用与写成选择**：读者照着就能采用；在案例仓库的真实编码任务和 a1dbv 脚本上试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | [读者地图](../../README.md)已补齐答案页。三项脚本已接收：公开扫描覆盖符号链接文本；同输入页面 Git 读取由 72 次降到 24 次；三个 Hook 单次解析事件。Catalog CLI 与其余完整测试分两段、各限 120 秒；跟评审 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。 |
+| P81 | **试用与写成选择**：真实编码任务试用，结论进决策页／模板 | dot-A | 脚本交付已接收；CI 投影经真实 PR／本机读者验收。跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)；Serena 见下表。 |
 | MOBA | **MOBA-Like 基本战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `9311f43`／网站 v12 未变。[Q候选](https://github.com/dbvv1/MOBA-Like/commit/003884b2188c4424e4b13af3e630b55ffc32f1ce)已看到普攻准备／释放／飞行及浅路、深草 Q 边缘改善。[攻城独立候选](https://github.com/dbvv1/MOBA-Like/commit/cca9c5dafb907fcc85a88f0e0b92ae29fe3969da)已发布；云端集成拍摄仅得一帧软件 WebGL2，后续帧超时。取消、动态接触、操控与整局视听仍待云端验证。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | Star `1dd89d3`／v7 已用存档；[MOBA候选](https://github.com/dbvv1/MOBA-Like/commit/ea7a06451cba085da8107fca634e51d5a2bb25bf)云端重开／续玩／跨标签实操通过，main／Site未变；Firefox 退出原因未明。完整 smoke 待补（未启动）；Codex 额度恢复提示 2026-11-02 06:08（时区未给），恢复后续原任务。改键 `89f0831` 仍候选。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | MOBA标准件与攻城源已制，待光照定稿；FPS／赛车标准件保留本机后台制作。CC0 1K HDRI已取得并解码；[本机GPU基线卡](local-jobs/B-CASE-GPU-BASELINE-001.md)已取消。开放权重音频未听未采用，3D仍缺权重／工具、无mesh；Nature配额恢复未知。 |
@@ -53,5 +53,6 @@
 | 本机模型权重下载 | 开放权重 3D 在本机取权重时 TLS 连接中断（B-OPENWEIGHT-3D-001），可能需要用户检查本机网络或代理 | 音频与其他制作链照常 |
 | opensrc 上游补丁 | 目标 fork 入口尚未就绪；仓库所有者提供可写 fork 后，继续发布已审的仓库 ref 修复 | 本仓读者问题与试用继续，[补丁与复用说明](../../experiments/opensrc-ref-integrity/README.md)保留待发 |
 | Maka 上游贡献 | 真人贡献者须实际审阅负责，适用时本人签 CLA | [OpenSpec 邀请已发](https://github.com/Fission-AI/OpenSpec/issues/2115#issuecomment-6401683363)；其他 PR 继续 |
+| Serena #2218 上游贡献 | 待可写 fork；CLA 须本人审阅决定 | 保留[已审补丁与验证](../../experiments/serena-vue-implementation/README.md)，其他主线继续 |
 
 **停止的动作**：Maka #4495 评论因集成 403 未发出；MOBA 第三方素材官方取回 HTTP 403，改由本机接收端代取；P107 与 Action 调试 10f6a6db 被平台拒绝，补齐命令和用途后请用户在 Dot 里批准。

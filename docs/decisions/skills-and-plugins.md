@@ -121,6 +121,8 @@ stripSearchParams({ arrayWithDefaults: ['foo', 'bar'] }),
 
 **Serena 值得借的是“按方法改”，不是要求所有查找都换工具。** 首次接入按[固定实试入口](../../experiments/serena-symbol-edit.md#研究记录固定环境与执行细节)配置项目与语言后端，再走 `initial_instructions` → `find_symbol(include_body=true)` → `replace_symbol_body` → 审 diff、跑相关测试。本仓 Serena 2.1.0／Python-Jedi 五场景中，插行后仍命中方法，歧义和不存在的符号拒绝写入；但旧正文可覆盖别人刚改的方法，因此同方法并发编辑先协调归属。这是公开夹具实试，业务任务收益未测。
 
+**同一工具也要按具体语言和动作核能力。** Vue 项目的实现查询若报 `-32601`，先查 Vue／TypeScript companion 的请求路由，不靠重写提示或重装整套工具。本仓已对[真实问题完成小补丁](../../experiments/serena-vue-implementation/README.md)，真实 LS 与默认工具调用的 43 项相关测试通过、已独审；补丁尚待 fork／CLA，未上游合入。原生 IDE／LSP 已能查到时沿用原入口。
+
 **已装 Superpowers，按任务选三条路：**
 
 - **清楚的小 bug → 直做**：目标与验收已定就直接修、跑回归；若自动开始不需要的访谈，明确要求跳过问答并继续。

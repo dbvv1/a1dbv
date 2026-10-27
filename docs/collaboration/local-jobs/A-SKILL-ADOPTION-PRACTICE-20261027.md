@@ -1,7 +1,7 @@
 # A-SKILL-ADOPTION-PRACTICE-20261027 · 从实际采用选择窄 Skill
 id: A-SKILL-ADOPTION-PRACTICE-20261027
 owner: dot-A
-status: running
+status: cancelled
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e24cc66b10eaedd34ca716ef7ab1964ca8d51ae8
@@ -26,3 +26,6 @@ result_branch: relay/a-skill-adoption-practice-20261027
 ## 验收
 每项原链接支持主张；公开采用与宣传区分清楚；本仓已有内容不重复；零增量可交具体负结果。
 按原生 Workflow 完成审查修正，跑 check_repo、check_public 与空白检查。单元不超过两小时，共享最多四并行，不使用 GPU。
+
+## 当前结果
+本端请求按单元时限停止新增调用，在安全边界保留已有产物；停止回执与阶段结果尚未收到，实际进程状态未知。后续先接已有材料与缺口，不自动重开同轮采集；Skill 采用研究继续。
