@@ -1,7 +1,7 @@
 # B-GENRE-REFERENCE-20261027 · 三个品类的可观察操控参照
 id: B-GENRE-REFERENCE-20261027
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-genre-reference-20261027
@@ -40,5 +40,8 @@ result_branch: relay/b-genre-reference-20261027
 
 ## 当前结果
 
-- 待修产物：[a82bfad](https://github.com/dbvv1/a1dbv/commit/a82bfad528c4aaaa4ec6bf35d9f1ca1d849ff6db)，仍沿 `relay/b-genre-reference-20261027`；只修上列两处后回固定提交，未接收为机制或品质结论。
-- 已有热键文字和 CS2 武器未知修正保留。视频均未播放、游戏未运行；本次未独立重读成功的 wiki／视频页面不因此判错，也不记为已核。
+- 修正了 LoL 录屏时间基与 Δt_game 换算、T-05/T-06 截止点 ±1 帧的采样点归类（Caitlyn 1.5 档 0.10 s、Riven 1.5 档 0.09 s 不再算最后一 tick），并补入 CS2 cl_showpos 为显示平滑值的作者自述限制；只改 sources.md，openIssues 为空，check_repo/check_public 均 0 错误（check_offline 因本机缺 /bin/bash 与 jq 未跑）。本任务为 build 类型，无读者实测项（taskDone/pageStuck）和候选收集项。
+- 产物：[fe91097](https://github.com/dbvv1/a1dbv/commit/fe91097ec49c0187620763ec6229ca9080ac29c8)，分支 `relay/b-genre-reference-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无剩余单元（remaining=false），接收端可提交本单元改动
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
