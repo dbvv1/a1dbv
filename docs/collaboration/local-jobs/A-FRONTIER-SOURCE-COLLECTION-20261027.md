@@ -2,7 +2,7 @@
 
 id: A-FRONTIER-SOURCE-COLLECTION-20261027
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8d68023b94af008d489565d22810beda7657ede0
 result_branch: relay/a-frontier-source-collection-20261027
@@ -48,8 +48,8 @@ result_branch: relay/a-frontier-source-collection-20261027
 
 ## 当前结果
 
-- 已产出 sources.md（89 行）：Effect 跨版本消费端声明快照与生成物闸门、Biome 仓库级 codegen 触发表加 CI autofix、Nx 项目图下游反查、cargo-semver-checks 多 crate 兼容闸门，均附原始链接与真实消费者证据；check_repo 与 check_public 均通过。独立复审未通过，遗留一处仓内 Hook 归因错误。
-- 产物：[6523b9d](https://github.com/dbvv1/a1dbv/commit/6523b9d55d6afb48249dc46eef8d1fa6ccd73f3c)，分支 `relay/a-frontier-source-collection-20261027`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：修正 sources.md 第 48 行：docs/06 只是 PostToolUse additionalContext 的示例，本仓模板实际是 PreToolUse 路径保护 Hook（settings.json 编辑类 matcher + protected-paths.txt），澄清后重做独立复审。
+- 修正了 sources.md 对仓内生成物保护的错误归因：实际是 PreToolUse 路径 Hook（settings.json + protect-paths.sh + protected-paths.txt），06 的 PostToolUse additionalContext 仅为能力示例，并写明该 Hook 只拦已知路径、不覆盖 Bash 写入与符号链接；check_repo 与 check_public 均通过。
+- 产物：[c484637](https://github.com/dbvv1/a1dbv/commit/c48463742db0144171deab1505c333534247e63e)，分支 `relay/a-frontier-source-collection-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交并推送结果分支，回写任务状态为 review_ready，交 dot-A 审阅。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
