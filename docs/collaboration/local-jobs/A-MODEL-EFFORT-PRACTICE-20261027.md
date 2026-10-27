@@ -1,7 +1,7 @@
 # A-MODEL-EFFORT-PRACTICE-20261027 · 真实编码任务中的模型与推理投入取舍
 id: A-MODEL-EFFORT-PRACTICE-20261027
 owner: dot-A
-status: revision_requested
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6e1f49b9001b9daa72446646128fa38cd8f15c77
