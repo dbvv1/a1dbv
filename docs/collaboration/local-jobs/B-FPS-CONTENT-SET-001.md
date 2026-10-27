@@ -2,7 +2,7 @@
 id: B-FPS-CONTENT-SET-001
 owner: dot-B
 kind: build
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: a97d57281dd6c6d941c6a6bef732dadf2953f2f4
 result_branch: relay/b-fps-content-set-001
@@ -25,8 +25,8 @@ result_branch: relay/b-fps-content-set-001
 
 ## 当前结果
 
-- 已修正 docs/content-production.md 与 wiring.json 中 restMount 来源、weaponPose 取值和 rx24-root extras 的错误表述，并用 GLB 原始 JSON 与 GLTFLoader 双向核实；审查无未关闭问题（openIssues 空），本单元为 build 类型，taskDone/pageStuck 与候选收集数量不适用。build --check、validate、内容测试 15/15 与 npm test 93/93 均通过。
+- 原 restMount／weaponPose／rx24-root name 与 extras 表述已修正，保留该修正；原端 build --check、validate、内容测试 15/15 与 npm test 93/93 已通过。四件 GLB 与 `74b0e13` 字节相同，云端接收发现以下格式阻塞。
 - 产物：[d787b6d](https://github.com/dbvv1/FPS-Like/commit/d787b6d2e099021a71f72f484016377eb9df924e)，分支 `relay/b-fps-content-set-001`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由接收端执行 check_public 并提交回 relay/b-fps-content-set-001；本任务实现范围已无剩余。
+- 检查：check_public（文件与新提交身份）通过；对上述 `d787b6d` 四件实际 GLB 重跑官方 glTF-Validator `2.0.0-dev.3.10`，合计 **48 errors / 0 warnings**（手臂武器 15、敌人 15、通路 9、命中反馈 9）：16 个 NORMAL 格式错误，32 个 NORMAL／COLOR_0 元素对齐错误。Three 可解析不等于 glTF 规范通过，本轮接收未通过。
+- 下一步：继续原 worktree／result_branch，不另派任务或重启已有调用。修 `build.mjs`：量化 NORMAL 声明 `KHR_mesh_quantization` 为 used／required，NORMAL／COLOR_0 每元素四字节对齐（或使用合法 FLOAT 布局）；重导四件，更新哈希并复核预算，加入官方 validator 回归，重跑相关测试、公扫与独审。`src` 接线与云端图形验收仍由案例线接续，不扩大本卡写入范围。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
