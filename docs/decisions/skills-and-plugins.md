@@ -13,6 +13,12 @@
 
 Skill 提供做法，MCP 提供调用能力，插件把它们打包分发；选的是缺口，不是文件形式。跨任务、跨当前模型的整体最高水平仍未知，这里给的是已有源码、使用反馈与实试支持的条件选择。要查宿主差异看 [05](../05-skills-and-plugins.md)，缺浏览器、数据或运行能力看 [04](../04-mcp.md)。
 
+**Codex 要找现成的 OpenAI 官方扩展，先用插件目录：** ChatGPT 桌面应用打开 Plugins → OpenAI；Codex CLI 输入 `/plugins`，查看详情后安装，再开新会话。IDE 扩展目前不支持插件。
+
+当前技能与插件示例看 [openai/plugins](https://github.com/openai/plugins)；旧 `openai/skills` 已于 2026-06-22 标记弃用。自己项目的一份 Skill 仍可放 `.agents/skills/<name>/SKILL.md`；需要可安装分发时，可以打包成只含 Skill 的插件。
+
+**依据**：[官方安装入口](https://learn.chatgpt.com/docs/plugins)、[本地 Skill 与分发](https://learn.chatgpt.com/docs/build-skills)、[弃用提交](https://github.com/openai/skills/commit/778b0e6129cf18cbaee3bf11479f583fadae8d03)；2026-10-27 核实。本仓核过 Codex CLI 0.164.0 的插件命令帮助，安装流程未实跑。
+
 ## 先定位实际依赖，再选文档或源码
 
 **✅ 问“项目实际怎么做”，从调用方找到已解析包、项目补丁和具体模块；问“这个版本怎样用”，再查官方文档或 Context7。** 原生导航已能找到实现就直接读，不必另装工具。版本标签不能单独证明实现身份：Zed 的 `reqwest` 实际指向重命名的 Git fork `zed-reqwest`；Vite 把 `debug` 替换成 `obug`，还给 `dotenv-expand@13.0.0` 打了改变变量展开行为的补丁。直接下载同名库或对应上游 tag，会漏掉这些差异。
