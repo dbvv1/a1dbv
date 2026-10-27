@@ -1,7 +1,7 @@
 # A-CONTEXT-COMMUNITY-FOLLOWTHROUGH-20261027 · 上下文管理的真实使用分歧
 id: A-CONTEXT-COMMUNITY-FOLLOWTHROUGH-20261027
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2f0ba5e76572d61a3049f44c3a930aa34f7f5b21
 result_branch: relay/a-context-community-followthrough-20261027
@@ -25,3 +25,11 @@ result_branch: relay/a-context-community-followthrough-20261027
 ## 验收
 按固定原生 Workflow 实施、非作者独立审查、必要修正复审；核原帖定位、语义、时间、模型版本及仓内增量。`check_repo`、`check_public`、空白检查通过；原文读不到不能称已覆盖。
 本单元最多两小时，共享四并行，由接收端调度；结束就交已得材料，不重复同条件读取失败，不把讨论材料称为本仓试用通过。
+
+## 当前结果
+
+- 已交付 HN 上下文管理讨论的跟进材料：核实原文与 64 条评论，记录了 128k–800k 的自报阈值分歧、删改历史中段会重写缓存前缀的机制、UniiChat/pi-optchat 摘要树候选（仅作者自报与模拟），以及“只给目标”不成立等负结果，未把讨论材料当作本仓试用通过。
+- 产物：[0d68792](https://github.com/dbvv1/a1dbv/commit/0d68792fe440691f383790a3028be3defa736acf)，分支 `relay/a-context-community-followthrough-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无剩余单元；由 dot-A 决定是否把缓存成本与额度/质量区分写入决策页，以及是否将 pi-optchat 列入前沿雷达待试。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
