@@ -26,11 +26,14 @@ function settle(ctx, logger, nk, payload) {
       typeof request.score !== 'number' || request.score < 0 || request.score > 1000000 ||
       Math.floor(request.score) !== request.score ||
       (request.rule !== 1 && request.rule !== 2)) failure('invalid settlement', 3);
+  var fingerprint = request.resultFingerprint === undefined ? '' : request.resultFingerprint;
+  if (typeof fingerprint !== 'string' || (fingerprint !== '' && !/^[a-f0-9]{64}$/.test(fingerprint))) failure('invalid result fingerprint', 3);
   if (nk.usersGetId([request.userId]).length !== 1) failure('unknown player', 5);
   var receipt = readOne(nk, 'settlement', request.matchId, request.userId);
   var old = readOne(nk, 'progress', 'main', request.userId);
   if (receipt) {
-    if (receipt.value.score !== request.score || receipt.value.rule !== request.rule) {
+    if (receipt.value.score !== request.score || receipt.value.rule !== request.rule ||
+        (receipt.value.resultFingerprint || '') !== fingerprint) {
       failure('result identity reused with a different result', 9);
     }
     return JSON.stringify({duplicate: true, progress: old.value});
@@ -43,7 +46,7 @@ function settle(ctx, logger, nk, payload) {
   if (next.schema >= 2) next.dashUnlocked = next.xp >= 20;
   nk.storageWrite([
     {collection: 'settlement', key: request.matchId, userId: request.userId,
-      value: {score: request.score, rule: request.rule}, version: '*', permissionRead: 0, permissionWrite: 0},
+      value: {score: request.score, rule: request.rule, resultFingerprint: fingerprint}, version: '*', permissionRead: 0, permissionWrite: 0},
     {collection: 'progress', key: 'main', userId: request.userId,
       value: next, version: old ? old.version : '*', permissionRead: 1, permissionWrite: 0}
   ]);

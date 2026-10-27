@@ -8,7 +8,9 @@
   "scripts": {
     "prepare:linux": "node prepare-linux.mjs",
     "demo": "node demo.mjs",
-    "test": "node --test --test-concurrency=1 test.mjs"
+    "test": "node --test --test-concurrency=1 test.mjs",
+    "demo:match": "node match-result-demo.mjs",
+    "test:match": "node --test --test-concurrency=1 match-result.test.mjs"
   },
   "dependencies": {
     "@heroiclabs/nakama-js": "2.8.0"
