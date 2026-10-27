@@ -1,7 +1,7 @@
 # A-SKILL-ADOPTION-PRACTICE-20261027 · 从实际采用选择窄 Skill
 id: A-SKILL-ADOPTION-PRACTICE-20261027
 owner: dot-A
-status: ready
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e24cc66b10eaedd34ca716ef7ab1964ca8d51ae8
