@@ -2,7 +2,7 @@
 id: B-MOBA-DIFFUSE-GPU-001
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 8ac7340ca3b6148e8158e7e252f1f52edb6e5494
 result_branch: relay/b-moba-diffuse-gpu-001
@@ -25,3 +25,11 @@ node --import tsx tools/capture.mjs --require-gpu --task-id B-MOBA-DIFFUSE-GPU-0
 
 ## 怎样算做成
 两条原生命令均退出 0、report.passed=true；rendererClass=gpu、repeat 原 RGBA／state／camera 门槛不放宽。manifest 对齐同 source/tree/bundle、before-after 同 state/camera/renderer；受控渲染变量仅 lighting 不同，原始 runId／时间／PID 如实保留。每次实际 flags、自有句柄退出、preview 端口拒连、ownerMatched=true 与 released=true 齐全；不外推全机进程退出。新 API 此前仅 CPU 验证，本次是受控实跑，不自动判品质通过；交 review_ready 给 dot-B 盲判。旧卡仍 blocked，历史 #1 owner 比较缺失不补造。
+
+## 当前结果
+
+- 已按卡面在固定提交 8ac7340 上一次干净构建并实跑 baseline GPU 拍摄（renderer=gpu、RTX 5070、unmasked，state/camera 与清理回执齐全），但重复拍摄 frame 0 RGBA 不一致致退出 1，按规则未执行 stylized-diffuse，故无 before-after 图与任何品质结论；三路独立审查通过、openIssues 为空（仅一条非阻塞表述观察），本卡为 build 类，无读者实测/页面卡点与候选收集项，归档 16 个文件已核对与返回一致。
+- 产物：[7968512](https://github.com/dbvv1/MOBA-Like/commit/79685125d2489c8e1edd2a5785eb49e2b5b78ae7)，分支 `relay/b-moba-diffuse-gpu-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：先由代码卡使同渲染器逐帧 RGBA 可复现（旧卡 B-MOBA-HEADLESS-GPU-001 同因 blocked），再从同一固定干净提交重跑本卡 baseline→stylized-diffuse 两条命令并重做证据归档。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
