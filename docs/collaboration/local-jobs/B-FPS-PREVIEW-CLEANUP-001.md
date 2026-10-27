@@ -2,7 +2,7 @@
 id: B-FPS-PREVIEW-CLEANUP-001
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4a3f610b4670522d54de9d0ba80278dbb5a9a615
 result_branch: relay/b-fps-preview-cleanup-001
