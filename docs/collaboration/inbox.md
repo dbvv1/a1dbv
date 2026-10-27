@@ -4,6 +4,17 @@
 
 ## 待处理
 
+<a id="flutter-native-rule-loading"></a>
+### 2026-10-27：Flutter 热重载没触发，先核指令有没有加载
+
+👀 **Flutter 改完代码、运行中的应用却没更新时，先核当前客户端实际加载的项目规则与 Dart MCP instructions，再考虑增加长 Skill。** 沿客户端支持的原生指令入口确认加载，在下一次真实 `lib/**/*.dart` 修改中观察 DTD 发现、MCP 调用与应用更新；已有入口能完成就沿用，不凭规则文件存在判定已生效。
+
+维护者 8-3 报告在 Antigravity 尝试 Skill、server description／instructions 与 `GEMINI.md`，只有后者自动起效；明确要求读取 server instructions 后也成功。8-19 使用者复测 Antigravity／Cursor，报告已恢复正常；8-21 维护者认为可能来自更新的工具名称／描述，也可能来自已有插件规则，未隔离原因。issue 于 10-8 关闭；9-2 才合入的 #228 不能作为 8-19 改善的因果证据。
+
+**只在适用的 Flutter 项目参考热重载规则。** 固定版本限定 `lib/` 下 Dart 改动，跳过测试目录及纯注释／空白变化；UI／`build` 方法等走 reload，涉及 `initState`、全局／静态状态、`main()` 等需重新初始化时再选 restart，不因改了 stateful widget 就一律重启。实际调用读当前 MCP schema，不照搬旧帖参数。本仓未安装、未试用；这是[已有加载排障](../03-context-engineering.md#21-各工具的加载规则一手)的真实案例补充，不新增通用默认或 Skill。
+
+**依据与范围**：[维护者尝试](https://github.com/dart-lang/ai/issues/498#issuecomment-5168550633)、[显式加载后的结果](https://github.com/dart-lang/ai/issues/498#issuecomment-5168595577)、[使用者 8-19 复测](https://github.com/dart-lang/ai/issues/498#issuecomment-5347423544)、[维护者 8-21 归因保留](https://github.com/dart-lang/ai/issues/498#issuecomment-5374304451)、[issue 关闭状态](https://github.com/dart-lang/ai/issues/498)；[已合入 #228](https://github.com/flutter/agent-plugins/pull/228)与[固定规则](https://github.com/flutter/agent-plugins/blob/90fa51dc9d1bd6694cee226397e08ec8193e9e69/rules/flutter-hot-reload.md)。仅核公开讨论、PR 与源码，未验证当前客户端行为；核实：2026-10-27 UTC。✅ 已入 [13 候选表](../13-frontier-radar.md#值得一试近4周的新项目与做法)。
+
 <a id="stryker-vitest5-test-selection"></a>
 ### 2026-10-27：mutation 分数骤降，先核 runner 是否真的执行测试
 

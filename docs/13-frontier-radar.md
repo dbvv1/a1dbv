@@ -97,6 +97,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [Flutter 原生指令加载排障](collaboration/inbox.md#flutter-native-rule-loading) | 代码已改、运行应用没更新时，先核原生规则／MCP instructions 实际加载，再考虑长 Skill | #498 维护者尝试、8-19 用户复测与 #228 固定规则，来源见入口 | 2026-10-27 只读核实；未安装、未试用 | 👀 成功原因未隔离；reload／restart 仅限适用 Flutter 项目，不新增通用默认 |
 | [Stryker／Vitest 5 测试选择](collaboration/inbox.md#stryker-vitest5-test-selection) | 已有 mutation 流水线、升级后分数骤降时，先让 Agent 核 `testsCompleted` 与 errors，保阈值修兼容栈，再决定是否补断言 | 上游 #6214／10.1.1 与 openclaw-atif #35 真实采用，来源见入口 | 2026-10-27 核原文与补丁；未安装、未试用 | 👀 零测试 survivor 先查 runner；11 killed＋17 errors 不是 28 killed，其他故障另诊断 |
 | [ToB 修补因果回放](09-review-and-quality.md#patch-causality-replay) | 修补仍疑似绕开真实路径时，用同入口／输入验原版失败、补丁通过、隔离树完整撤回后再失败，并保正常控制 | ToB 固定 Skill、GPAC 接收时收紧独立构建要求；来源见入口 | 本仓真实 CI 字段缺失修补回放为 1→0→1，控制全过；整插件未运行 | 🧪 只证明所测输入的修补；原回归已够用时不加整套流程 |
 | [Otari 窄架构检查](06-hooks-and-guardrails.md#otari-architecture-feedback) | Agent 在遗留代码中反复扩大旧依赖时，检查一条已定边界与具体旧债 | Mozilla AI 从“跑过命令”改 verifier，真实漏检后收窄旧包豁免；来源见入口 | 当前树 verifier 通过，独立检查器 302 项测试通过；未在 a1 真实改动中采用 | 🧪 新增豁免仍靠评审拒绝；已有检查够用就不加，不照搬全套架构器 |
