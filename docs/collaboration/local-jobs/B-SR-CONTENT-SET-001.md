@@ -2,10 +2,12 @@
 id: B-SR-CONTENT-SET-001
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 1dd89d3931196cb08f7b9a00541a54a6715dfe1d
 result_branch: relay/b-sr-content-set-001
+
+执行归属（2026-10-27 15:18 UTC）：dot 云端接续，接收端不再认领。已核原卡仍 ready、结果分支不存在且无同项活跃代理；本次仅认领，实施与验证尚未完成。沿用原任务和结果分支，不新建重复任务。
 
 执行边界（2026-10-27）：本机仅后台模型、命令行与文件处理；不打开交互浏览器／GUI，不控制桌面、键鼠或抢占前台。需要实际游戏操作或画面验收的部分交 dot 云端；不因此重启已有后台调用。
 
