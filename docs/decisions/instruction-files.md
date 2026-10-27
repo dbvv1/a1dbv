@@ -1,6 +1,6 @@
 # CLAUDE.md／AGENTS.md 怎么写
 
-**✅ 多工具项目用一份 `AGENTS.md` 保存共同约定：真实命令、任务入口、不可猜的契约和完成标准。** Claude Code 已能直接加载它，就只保留这一份；需要 Claude 专属规则或兼容旧会话时，在同目录 `CLAUDE.md` 导入。只用 Claude、现有 `CLAUDE.md` 已经好用的项目，继续维护原文件。
+**🟡 多工具项目先在真实任务里试用共享的 `AGENTS.md`：写清真实命令、任务入口、不可猜的契约和完成标准。** Claude Code 已能直接加载它，就只保留这一份；需要 Claude 专属规则或兼容旧会话时，在同目录 `CLAUDE.md` 导入。只用 Claude、现有 `CLAUDE.md` 已经好用的项目，继续维护原文件。
 
 ## 第一步：把四件事填进现有文件
 
@@ -50,7 +50,7 @@
 
 更多排障见 [03：加载规则](../03-context-engineering.md#21-各工具的加载规则一手)。
 
-**依据**：[官方] [Claude 导入](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools)、[原生加载检查](https://code.claude.com/docs/en/memory#my-agentsmd-isnt-loading)、[旧入口清理与去重](https://code.claude.com/docs/en/memory#remove-an-earlier-agentsmd-workaround)、[Codex 指令发现](https://learn.chatgpt.com/docs/agent-configuration/agents-md)；核实 2026-10-26。加载入口按官方文档核对，未实跑本页的 Claude 会话配置。
+**依据**：[官方] [Claude 导入](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools)、[原生加载检查](https://code.claude.com/docs/en/memory#my-agentsmd-isnt-loading)、[旧入口清理与去重](https://code.claude.com/docs/en/memory#remove-an-earlier-agentsmd-workaround)、[Codex 指令发现](https://learn.chatgpt.com/docs/agent-configuration/agents-md)；核实 2026-10-26。加载入口按官方文档核对；共享方案尚待真实多工具任务的加载与行为验收。
 
 ## 向强项目借什么，而不是整份照抄
 

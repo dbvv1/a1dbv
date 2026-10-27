@@ -1,6 +1,6 @@
 # 上下文怎么管，会话越聊越笨怎么办
 
-**✅ 先让 Agent 按当前任务找必要原文；同题历史太长才压缩，任务已换或旧思路反复误导时，带一份短检查点新开。** 缺信息就补信息，别把所有退化都当成“上下文太多”。自动压缩正常时沿用默认，不按固定轮数或百分比清空，也不先装记忆服务。
+**🟡 先让 Agent 按当前任务找必要原文；同题历史太长才压缩，任务已换或旧思路反复误导时，带一份短检查点新开。** 缺信息就补信息，别把所有退化都当成“上下文太多”。自动压缩正常时沿用默认，不按固定轮数或百分比清空，也不先装记忆服务。
 
 ## 第一步：给任务入口，不给整仓资料包
 
@@ -56,7 +56,7 @@ OpenAI 的当前提示实践也把“每次编辑前读完所有文档”改为�
 - **Claude Code**：支持 `/autocompact` 的版本可运行 `/autocompact auto` 回到模型调优窗口（命令自 v2.1.221 起提供）。它会保存设置；若提示被环境变量或更高优先级设置覆盖，先核覆盖来源。
 - **Codex**：`model_auto_compact_token_limit` 未设置时使用模型默认。检查实际生效配置，撤回自己为“防变笨”随意加入的阈值；不要把 `model_context_window` 填大当成获得了服务端更大容量。确有网关／模型容量差异时，按实际能力配置。
 
-**依据**：[官方] [Claude 命令](https://code.claude.com/docs/en/commands)、[自动压缩窗口及覆盖关系](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window)、[Codex 命令](https://learn.chatgpt.com/docs/developer-commands)、[Codex 配置](https://learn.chatgpt.com/docs/config-file/config-reference)，核实 2026-10-26。命令与配置按文档核对；本页未运行真实压缩或更改账户配置。
+**依据**：[官方] [Claude 命令](https://code.claude.com/docs/en/commands)、[自动压缩窗口及覆盖关系](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window)、[Codex 命令](https://learn.chatgpt.com/docs/developer-commands)、[Codex 配置](https://learn.chatgpt.com/docs/config-file/config-reference)，核实 2026-10-26。命令与配置按文档核对；本页的原生压缩和换会话步骤尚未在真实编码任务中运行，暂列候选。
 
 ## 要跨压缩或新会话：保存下一步能用的检查点
 
