@@ -33,8 +33,8 @@ result_branch: relay/b-genre-reference-20261027
 
 ## 当前结果
 
-- 已交付 Forza Horizon 6 的可观察操控参照（版本基线、三条连续实机定位、抓地/ABS/镜头/碰撞恢复原文证据、T-01–T-04 同场景对照任务及缺口），审查问题已修正并复审通过。
-- 产物：[335c18d](https://github.com/dbvv1/a1dbv/commit/335c18d8dcc806bcfd352614f41ce62b0be89afe)，分支 `relay/b-genre-reference-20261027`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：继续同一 sources.md 的下一单元：LoL 普攻取消/发射/命中/移动窗口，随后 CS2 移动/急停/连续后坐；Forza 碰撞后镜头仍为待观察缺口。
+- LoL 单元已追加到 sources.md（+362 行：L-01–L-12 原文证据、T-05–T-09 同场景对照、版本与输入条件、缺口），check_repo/check_public 通过；三视角审查 3 轮后仍有 3 个未关闭问题：L-06/T-07 的输入锁定窗口表述与 FAQ 冲突、T-05/T-06 未排除 Caitlyn Headshot 与 Darius W 的不可取消/重置、26.21 来源声明与探索回执矛盾。
+- 产物：[7f72d94](https://github.com/dbvv1/a1dbv/commit/7f72d9472298c49272a9ea9d187f3a2dea3901c3)，分支 `relay/b-genre-reference-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：先修正上述 3 个审查问题，再继续 CS2 移动/急停/连续后坐单元；Forza 碰撞后镜头仍待观察。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
