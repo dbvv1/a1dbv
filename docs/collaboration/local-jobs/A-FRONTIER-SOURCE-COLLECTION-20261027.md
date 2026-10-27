@@ -2,7 +2,7 @@
 
 id: A-FRONTIER-SOURCE-COLLECTION-20261027
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8d68023b94af008d489565d22810beda7657ede0
 result_branch: relay/a-frontier-source-collection-20261027
