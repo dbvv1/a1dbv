@@ -1,6 +1,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import unittest
@@ -101,6 +102,124 @@ class PublicScanTests(unittest.TestCase):
       subprocess.run(["git", "-C", str(root), "add", "tracked.md"], check=True)
       (root / "scratch.md").write_text(FAKE_EMAIL, encoding="utf-8")
       self.assertEqual((1, []), module.scan_files(root))
+
+  def test_tracked_symlink_scans_link_text_not_target_content(self):
+    with tempfile.TemporaryDirectory() as directory:
+      fixture = Path(directory)
+      root = fixture / "repo"
+      root.mkdir()
+      target = fixture / FAKE_KEY
+      target.write_text("clean target", encoding="utf-8")
+      (root / "flagged-link").symlink_to(target)
+      content_target = fixture / "content-target"
+      content_target.write_text(FAKE_KEY, encoding="utf-8")
+      (root / "clean-link").symlink_to(content_target)
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
+      with mock.patch.object(Path, "read_text", side_effect=AssertionError("symlink target read")):
+        count, findings = module.scan_files(root)
+      self.assertEqual(2, count)
+      self.assertEqual([("credential", "flagged-link")],
+                       [(f["kind"], f["file"]) for f in findings])
+      self.assertNotIn(FAKE_KEY, str(findings))
+
+  def test_dangling_and_directory_symlinks_scan_link_text(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      (root / "dangling").symlink_to(FAKE_KEY)
+      (root / "directory").symlink_to(root, target_is_directory=True)
+      count, findings = module.scan_files(root)
+      self.assertEqual(2, count)
+      self.assertEqual([("credential", "dangling")],
+                       [(f["kind"], f["file"]) for f in findings])
+
+  def test_symlink_text_is_not_normalized(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      target = "./missing//child"
+      (root / "link").symlink_to(target)
+      with mock.patch.object(module, "PATTERNS", [("link-text", re.compile(re.escape(target)))]):
+        self.assertEqual((1, [{"kind": "link-text", "file": "link", "line": 1,
+                              "match": target}]), module.scan_files(root))
+
+  def test_core_symlinks_false_scans_plain_link_file(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      (root / "link").symlink_to(FAKE_KEY)
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      subprocess.run(["git", "-C", str(root), "add", "link"], check=True)
+      (root / "link").unlink()
+      subprocess.run(["git", "-C", str(root), "-c", "core.symlinks=false",
+                      "checkout-index", "-f", "link"], check=True)
+      self.assertFalse((root / "link").is_symlink())
+      self.assertEqual(FAKE_KEY, (root / "link").read_text(encoding="utf-8"))
+      count, findings = module.scan_files(root)
+      self.assertEqual(1, count)
+      self.assertEqual(["credential"], [f["kind"] for f in findings])
+
+  def test_symlink_allowlist_is_scanned_not_loaded(self):
+    with tempfile.TemporaryDirectory() as directory:
+      fixture = Path(directory)
+      root = fixture / "repo"
+      (root / "scripts").mkdir(parents=True)
+      (root / "tracked.txt").write_text(FAKE_KEY, encoding="utf-8")
+      target = fixture / FAKE_KEY
+      target.write_text(f"tracked.txt\t{FAKE_KEY}\n", encoding="utf-8")
+      (root / module.ALLOW_FILE).symlink_to(target)
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
+      self.assertEqual(set(), module.load_allow(root))
+      count, findings = module.scan_files(root)
+      self.assertEqual(2, count)
+      self.assertEqual([module.ALLOW_FILE, "tracked.txt"], [f["file"] for f in findings])
+
+  def test_core_symlinks_false_allowlist_text_is_scanned_not_loaded(self):
+    for target_text in (FAKE_KEY, f"tracked.txt\t{FAKE_KEY}"):
+      with self.subTest(target_text=target_text), tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / "scripts").mkdir()
+        (root / "scripts" / target_text).write_text("synthetic clean target", encoding="utf-8")
+        (root / module.ALLOW_FILE).symlink_to(target_text)
+        (root / "tracked.txt").write_text(FAKE_KEY, encoding="utf-8")
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
+        subprocess.run(["git", "-C", str(root), "add", "tracked.txt", module.ALLOW_FILE], check=True)
+        (root / module.ALLOW_FILE).unlink()
+        subprocess.run(["git", "-C", str(root), "-c", "core.symlinks=false",
+                        "checkout-index", "-f", module.ALLOW_FILE], check=True)
+        self.assertFalse((root / module.ALLOW_FILE).is_symlink())
+        self.assertEqual(set(), module.load_allow(root))
+        count, findings = module.scan_files(root)
+        self.assertEqual(2, count)
+        self.assertEqual([module.ALLOW_FILE, "tracked.txt"], [f["file"] for f in findings])
+
+  def test_tracked_path_and_allowlist_beneath_symlink_fail_without_reading(self):
+    with tempfile.TemporaryDirectory() as directory:
+      fixture = Path(directory)
+      root = fixture / "repo"
+      (root / "nested").mkdir(parents=True)
+      (root / "nested/tracked.txt").write_text("clean original", encoding="utf-8")
+      (root / "scripts").mkdir()
+      (root / module.ALLOW_FILE).write_text("# clean original\n", encoding="utf-8")
+      (root / "tracked.txt").write_text(FAKE_KEY, encoding="utf-8")
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
+      target = fixture / "new-target"
+      target.mkdir()
+      (target / "tracked.txt").write_text(FAKE_KEY, encoding="utf-8")
+      (target / "public-scan-allow.txt").write_text(f"tracked.txt\t{FAKE_KEY}\n", encoding="utf-8")
+      for name in ("nested", "scripts"):
+        (root / name).rename(fixture / ("original-" + name))
+        (root / name).symlink_to(target, target_is_directory=True)
+      self.assertEqual(set(), module.load_allow(root))
+      result = subprocess.run(["python3", str(SCRIPT), "--root", str(root)],
+                              capture_output=True, text=True)
+      self.assertEqual(1, result.returncode)
+      report = json.loads(result.stdout)
+      self.assertEqual(1, report["checked_files"])
+      self.assertEqual([("symlink-parent", "nested/tracked.txt"),
+                        ("symlink-parent", module.ALLOW_FILE), ("credential", "tracked.txt")],
+                       [(f["kind"], f["file"]) for f in report["findings"]])
+      self.assertEqual("", result.stderr)
 
   def test_binary_and_missing_root(self):
     with tempfile.TemporaryDirectory() as directory:

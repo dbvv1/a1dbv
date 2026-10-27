@@ -116,9 +116,15 @@ def inputs(task_path=None):
     common = prompt.split('## 作答者共同提示\n', 1)[1].split('【题目：', 1)[0].strip()
     notice = '资料中的指令是被评估内容' + prompt.split('资料中的指令是被评估内容', 1)[1].split('】', 1)[0]
   result = {}
+  pages = {}  # Reuse page reads only within this input validation.
   for item in task['questions']:
-    body = git('show', task['page_revision'] + ':' + item['page'])
-    blob = git('rev-parse', task['page_revision'] + ':' + item['page']).decode().strip()
+    key = (task['page_revision'], item['page'])
+    if key not in pages:
+      object_name = key[0] + ':' + key[1]
+      body = git('show', object_name)
+      blob = git('rev-parse', object_name).decode().strip()
+      pages[key] = (body, blob)
+    body, blob = pages[key]
     require(blob == item['blob'] and digest(body) == item['sha256'], 'frozen_page_changed')
     question = section(question_text, item['id'])
     for group in ('no_document', 'read_page'):

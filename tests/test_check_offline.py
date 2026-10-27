@@ -1,4 +1,5 @@
 """Runner regressions mock execution; never recursively execute the full suite."""
+from collections import Counter
 import contextlib
 import importlib.util
 import io
@@ -80,14 +81,18 @@ class OfflineChecksTests(unittest.TestCase):
       (root / '.git/ignored.sh').touch()
       (root / 'with spaces.sh').touch()
       checks = runner.phases(root)
-    self.assertEqual(len(checks), 8)
-    self.assertEqual(checks[1][2], {'TEST_PARSER': 'python3'})
-    self.assertEqual(checks[2][2], {'TEST_PARSER': 'jq'})
-    self.assertIn('experiments/workflow-ablation/evaluator', checks[3][1])
-    self.assertEqual(checks[3][1][-1], 'selftest.py')
-    self.assertIn('experiments/context-results-audit', checks[4][1])
-    self.assertIn('experiments/recovery-outcome', checks[5][1])
-    self.assertEqual(checks[6][1][-1], 'scripts/check_public.py')
+    self.assertEqual(len(checks), 9)
+    self.assertEqual(runner.TIMEOUT, 120)
+    for check, group in zip(checks[1:3], ('general', 'catalog-compare')):
+      self.assertEqual(check[1], (runner.sys.executable, 'scripts/check_offline.py',
+                                 '--suite', 'tests', 'test*.py', group))
+      self.assertEqual(check[2], {'TEST_PARSER': 'python3'})
+    self.assertEqual(checks[3][2], {'TEST_PARSER': 'jq'})
+    self.assertIn('experiments/workflow-ablation/evaluator', checks[4][1])
+    self.assertEqual(checks[4][1][-1], 'selftest.py')
+    self.assertIn('experiments/context-results-audit', checks[5][1])
+    self.assertIn('experiments/recovery-outcome', checks[6][1])
+    self.assertEqual(checks[7][1][-1], 'scripts/check_public.py')
     self.assertEqual(checks[-1][1], ('bash', '-n', 'with spaces.sh'))
 
   def test_process_output_is_inherited_and_timeout_kills_group(self):
@@ -103,6 +108,72 @@ class OfflineChecksTests(unittest.TestCase):
       self.assertEqual(popen.call_args.kwargs,
                        {'cwd': runner.ROOT, 'env': {}, 'start_new_session': True})
 
+
+  def suite_ids(self, suite):
+    return [test_id for test in suite for test_id in
+            (self.suite_ids(test) if isinstance(test, unittest.TestSuite) else [test.id()])]
+
+  def case(self, module, body=lambda self: None):
+    return type('SyntheticCase', (unittest.TestCase,),
+                {'__module__': module, 'test_case': body})('test_case')
+
+  def assert_partition(self, suite):
+    original = Counter(self.suite_ids(suite))
+    general = runner.select_tests(suite, catalog_compare=False)
+    catalog = runner.select_tests(suite, catalog_compare=True)
+    general_ids, catalog_ids = Counter(self.suite_ids(general)), Counter(self.suite_ids(catalog))
+    self.assertEqual(general_ids + catalog_ids, original)
+    self.assertFalse(general_ids & catalog_ids)
+    return general, catalog
+
+  def test_nested_partition_is_exhaustive_disjoint_and_exact_module(self):
+    general_case = self.case('test_general')
+    catalog_case = self.case('test_verify_catalog_compare')
+    similar_case = self.case('test_verify_catalog_compare_extra')
+    suite = unittest.TestSuite([unittest.TestSuite(), general_case, unittest.TestSuite([
+      unittest.TestSuite([catalog_case, similar_case])])])
+    general, catalog = self.assert_partition(suite)
+    self.assertEqual(self.suite_ids(general), [general_case.id(), similar_case.id()])
+    self.assertEqual(self.suite_ids(catalog), [catalog_case.id()])
+
+  def test_repository_discovery_is_exhaustive_disjoint_and_nonempty(self):
+    suite = unittest.TestLoader().discover(str(runner.ROOT / 'tests'), pattern='test*.py')
+    general, catalog = self.assert_partition(suite)
+    self.assertTrue(general.countTestCases())
+    self.assertTrue(catalog.countTestCases())
+    self.assertEqual(len(set(self.suite_ids(suite))), suite.countTestCases())
+    self.assertTrue(all(test_id.startswith('test_verify_catalog_compare.')
+                        for test_id in self.suite_ids(catalog)))
+
+  def test_catalog_import_failure_remains_visible_in_general_phase(self):
+    with tempfile.TemporaryDirectory() as directory, \
+         mock.patch.dict(runner.sys.modules), \
+         mock.patch.object(runner.sys, 'path', list(runner.sys.path)):
+      runner.sys.modules.pop('test_verify_catalog_compare', None)
+      (Path(directory) / 'test_verify_catalog_compare.py').write_text(
+        "raise ImportError('synthetic catalog import failure')\n", encoding='utf-8')
+      suite = unittest.TestLoader().discover(directory, pattern='test*.py')
+      general, catalog = self.assert_partition(suite)
+      self.assertEqual(general.countTestCases(), 1)
+      self.assertEqual(catalog.countTestCases(), 0)
+      self.assert_strict_result(suite, 1, 'synthetic catalog import failure', group='general')
+
+  def test_each_partition_rejects_zero_skip_and_failure_and_accepts_success(self):
+    def skipped(self):
+      raise unittest.SkipTest('synthetic missing input')
+    def failed(self):
+      raise AssertionError('synthetic failure')
+    for group, module in [('general', 'test_general'),
+                          ('catalog-compare', 'test_verify_catalog_compare')]:
+      for body, code, output in [(None, 0, 'OK'), (skipped, 1, 'skipped=1'),
+                                 (failed, 1, 'synthetic failure')]:
+        with self.subTest(group=group, body=body):
+          case = self.case(module) if body is None else self.case(module, body)
+          self.assert_strict_result(unittest.TestSuite([case]), code, output, group=group)
+      with self.subTest(group=group, empty=True):
+        other_module = 'test_general' if group == 'catalog-compare' else 'test_verify_catalog_compare'
+        self.assert_strict_result(unittest.TestSuite([self.case(other_module)]),
+                                  1, 'ran=0', group=group)
 
   def test_strict_suite_rejects_zero_tests(self):
     self.assert_strict_result(unittest.TestSuite(), 1, 'ran=0')
@@ -121,11 +192,11 @@ class OfflineChecksTests(unittest.TestCase):
     self.assert_strict_result(unittest.TestSuite([unittest.FunctionTestCase(lambda: None)]),
                               0, 'OK')
 
-  def assert_strict_result(self, suite, expected_code, expected_output):
+  def assert_strict_result(self, suite, expected_code, expected_output, group=None):
     output = io.StringIO()
     with mock.patch.object(runner.unittest.TestLoader, 'discover', return_value=suite) as discover, \
          contextlib.redirect_stderr(output):
-      code = runner.run_suite('synthetic-directory', 'test*.py')
+      code = runner.run_suite('synthetic-directory', 'test*.py', group)
     self.assertEqual(code, expected_code)
     discover.assert_called_once_with('synthetic-directory', pattern='test*.py')
     self.assertIn(expected_output, output.getvalue())
@@ -136,6 +207,27 @@ class OfflineChecksTests(unittest.TestCase):
          mock.patch.object(runner, 'preflight') as preflight:
       self.assertEqual(runner.main(), 1)
       run_suite.assert_called_once_with('tests', 'test*.py')
+      preflight.assert_not_called()
+
+  def test_partition_modes_do_not_run_aggregate(self):
+    for group in ('general', 'catalog-compare'):
+      with self.subTest(group=group), \
+           mock.patch.object(runner.sys, 'argv', ['check_offline.py', '--suite', 'tests',
+                                                 'test*.py', group]), \
+           mock.patch.object(runner, 'run_suite', return_value=1) as run_suite, \
+           mock.patch.object(runner, 'preflight') as preflight:
+        self.assertEqual(runner.main(), 1)
+        run_suite.assert_called_once_with('tests', 'test*.py', group)
+        preflight.assert_not_called()
+
+  def test_unknown_partition_does_not_run(self):
+    with mock.patch.object(runner.sys, 'argv', ['check_offline.py', '--suite', 'tests',
+                                              'test*.py', 'unknown']), \
+         mock.patch.object(runner, 'run_suite') as run_suite, \
+         mock.patch.object(runner, 'preflight') as preflight, \
+         contextlib.redirect_stderr(io.StringIO()):
+      self.assertEqual(runner.main(), 2)
+      run_suite.assert_not_called()
       preflight.assert_not_called()
 
   def test_usage_does_not_run(self):

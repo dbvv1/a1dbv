@@ -20,18 +20,18 @@ input="$(cat)" || fail '无法读取输入'
 
 # 校验完整事件；允许缺失/null 路径，拒绝非字符串及控制字符。
 # jq -s 同时拒绝空输入与多个 JSON 文档，和 json.load 保持一致。
-json_get() {
+json_paths() {
   if [ "$parser" = jq ]; then
-    printf '%s' "$input" | jq -ser --arg field "$1" '
+    printf '%s' "$input" | jq -ser '
       def path_value: . == null or (type == "string" and (test("[\u0000-\u001f\u007f]") | not));
       if length != 1 then error("expected one JSON event") else .[0] end |
       if type != "object" then error("event must be an object") else . end |
       if has("tool_input") and (.tool_input | type) != "object" then error("tool_input must be an object") else . end |
       if ([.tool_input.file_path, .tool_input.notebook_path, .cwd] | all(path_value)) | not
         then error("paths and cwd must be strings without control characters") else . end |
-      if $field == "path" then (.tool_input.file_path // "") as $p |
-        if $p == "" then (.tool_input.notebook_path // "") else $p end
-      else (.cwd // "") end'
+      (.tool_input.file_path // "") as $p |
+      [(if $p == "" then (.tool_input.notebook_path // "") else $p end), (.cwd // "")] |
+      join("\u001f")'
   else
     printf '%s' "$input" | python3 -c '
 import json, sys
@@ -45,14 +45,16 @@ values = [tool.get("file_path"), tool.get("notebook_path"), data.get("cwd")]
 for value in values:
     if value is not None and (not isinstance(value, str) or any(ord(c) < 32 or ord(c) == 127 for c in value)):
         raise ValueError("paths and cwd must be strings without control characters")
-print((tool.get("file_path") or tool.get("notebook_path") or "") if sys.argv[1] == "path" else (data.get("cwd") or ""))
-' "$1"
+print((tool.get("file_path") or tool.get("notebook_path") or "") + "\x1f" + (data.get("cwd") or ""))
+'
   fi
 }
 
-file_path="$(json_get path)" || fail '无效 Hook 输入'
+# U+001F 已被完整校验拒绝，可无损分隔两字段（含空字符串、空白和反斜杠）。
+event_paths="$(json_paths)" || fail '无效 Hook 输入'
+file_path="${event_paths%%$'\x1f'*}"
 [ -n "$file_path" ] || exit 0
-cwd="$(json_get cwd)" || fail '无效 Hook 输入'
+cwd="${event_paths#*$'\x1f'}"
 
 # 不读取目标文件，也不使用 realpath；.. 仅在无符号链接前提下等价。
 normalize_path() {

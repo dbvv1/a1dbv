@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Scan files and commit identities for content that must not enter this public repository.
 
+Scan tracked working-tree files and symlink text, never symlink targets.
 High-precision patterns only: credentials, private keys, personal home and cloud
 instance paths, and non-placeholder email addresses. A pass does not replace
 reading the diff; it cannot recognise company code, private conversations or internal hostnames.
 """
 import argparse
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -39,10 +41,29 @@ ALLOW_FILE = "scripts/public-scan-allow.txt"
 SKIP_PARTS = {".git", "__pycache__", ".cache", ".venv", "node_modules"}
 
 
+def symlink_parent(root, path):
+  """Find a linked parent without traversing it."""
+  parent = root
+  for part in path.relative_to(root).parts[:-1]:
+    parent = parent / part
+    if parent.is_symlink():
+      return parent
+  return None
+
+
+def allow_is_tracked_symlink(root):
+  # core.symlinks=false checks out link text as a regular file, not configuration.
+  result = subprocess.run(["git", "-C", str(root), "ls-files", "--stage", "-z", "--", ALLOW_FILE],
+                          capture_output=True)
+  return result.returncode == 0 and any(
+    entry.startswith(b"120000 ") for entry in result.stdout.split(b"\0"))
+
+
 def load_allow(root):
   allow = set()
   path = root / ALLOW_FILE
-  if path.is_file():
+  if (symlink_parent(root, path) is None and not path.is_symlink()
+      and path.is_file() and not allow_is_tracked_symlink(root)):
     for line in path.read_text(encoding="utf-8").splitlines():
       if line.strip() and not line.startswith("#"):
         file, _, literal = line.partition("\t")
@@ -71,13 +92,20 @@ def scan_files(root):
   findings = []
   count = 0
   for path in tracked_files(root):
-    if not path.is_file() or path.is_symlink():
-      continue
     relative = path.relative_to(root).as_posix()
-    if relative == ALLOW_FILE:
+    parent = symlink_parent(root, path)
+    if parent is not None:
+      findings.append({"kind": "symlink-parent", "file": relative,
+                       "match": parent.relative_to(root).as_posix()})
       continue
     try:
-      text = path.read_text(encoding="utf-8")
+      if path.is_symlink():
+        # Git stores the link text, including for dangling links. Keep it verbatim.
+        text = os.readlink(path)
+      elif path.is_file() and (relative != ALLOW_FILE or allow_is_tracked_symlink(root)):
+        text = path.read_text(encoding="utf-8")
+      else:
+        continue
     except (UnicodeError, OSError):
       continue
     count += 1

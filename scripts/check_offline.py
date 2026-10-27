@@ -20,8 +20,10 @@ def phases(root):
   unit = (python, 'scripts/check_offline.py', '--suite')
   checks = [
     ('Local document targets and config syntax', (python, 'scripts/check_repo.py'), {}),
-    ('Deterministic tests (Python Hook backend)', (*unit, 'tests', 'test*.py'),
-     {'TEST_PARSER': 'python3'}),
+    ('Deterministic tests (Python Hook backend)',
+     (*unit, 'tests', 'test*.py', 'general'), {'TEST_PARSER': 'python3'}),
+    ('Catalog Compare CLI contract matrix',
+     (*unit, 'tests', 'test*.py', 'catalog-compare'), {'TEST_PARSER': 'python3'}),
     ('Hook jq backend regressions', (*unit, 'tests', 'test_protect_paths.py'),
      {'TEST_PARSER': 'jq'}),
     ('Evaluation fixtures (no models)',
@@ -65,9 +67,22 @@ def run_process(command, *, cwd, env, timeout):
       raise
 
 
-def run_suite(directory, pattern):
+def select_tests(suite, *, catalog_compare):
+  """Partition one logical CLI matrix; keep all other tests/import errors general."""
+  selected = unittest.TestSuite()
+  for test in suite:
+    if isinstance(test, unittest.TestSuite):
+      selected.addTest(select_tests(test, catalog_compare=catalog_compare))
+    elif test.id().startswith('test_verify_catalog_compare.') == catalog_compare:
+      selected.addTest(test)
+  return selected
+
+
+def run_suite(directory, pattern, group=None):
   """Internal phase adapter: unittest's ordinary success includes skips/zero tests."""
   suite = unittest.TestLoader().discover(directory, pattern=pattern)
+  if group is not None:
+    suite = select_tests(suite, catalog_compare=(group == 'catalog-compare'))
   result = unittest.TextTestRunner(verbosity=2).run(suite)
   if not result.testsRun or result.skipped:
     print(f'FAILED: strict suite requires tests and no skips '
@@ -81,6 +96,9 @@ def main():
   # Internal subprocess mode executes one suite, never the aggregate entry.
   if len(sys.argv) == 4 and sys.argv[1] == '--suite':
     return run_suite(sys.argv[2], sys.argv[3])
+  if (len(sys.argv) == 5 and sys.argv[1] == '--suite'
+      and sys.argv[4] in ('general', 'catalog-compare')):
+    return run_suite(sys.argv[2], sys.argv[3], sys.argv[4])
   if len(sys.argv) != 1:
     print('Usage: python3 scripts/check_offline.py', file=sys.stderr)
     return 2

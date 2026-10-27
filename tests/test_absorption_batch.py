@@ -943,7 +943,13 @@ class AbsorptionBatchTests(unittest.TestCase):
       version_probe.assert_not_called()
 
   def test_v2_core_inputs_preserve_questions_pages_and_applicable_instructions(self):
-    self.core_inputs()
+    with mock.patch.object(batch, 'git', wraps=batch.git) as read:
+      self.core_inputs()
+    references = list(dict.fromkeys(
+      self.task['page_revision'] + ':' + q['page'] for q in self.task['questions']))
+    self.assertEqual(read.call_args_list, [call for reference in references
+                     for call in (mock.call('show', reference), mock.call('rev-parse', reference))])
+    self.assertEqual(len(read.call_args_list), 24)
     self.assertEqual(len(self.task['questions']), 36)
     self.assertEqual(len(self.payloads), 72)
     self.assertEqual(len({q['page'] for q in self.task['questions']}), 12)
@@ -994,12 +1000,48 @@ class AbsorptionBatchTests(unittest.TestCase):
 
   def test_v2_page_blob_and_content_hash_are_both_checked(self):
     self.core_inputs()
-    for field in ('blob', 'sha256'):
-      task = copy.deepcopy(self.task)
-      task['questions'][0][field] = '0' * len(task['questions'][0][field])
-      with mock.patch.object(batch, 'read_json', return_value=task):
-        with self.assertRaisesRegex(batch.Stop, 'frozen_page_changed'):
-          batch.inputs(HERE / 'task-core-v2.json')
+    duplicate = next(i for i, q in enumerate(self.task['questions'])
+                     if i and q['page'] == self.task['questions'][0]['page'])
+    for index in (0, duplicate):
+      for field in ('blob', 'sha256'):
+        with self.subTest(index=index, field=field):
+          task = copy.deepcopy(self.task)
+          task['questions'][index][field] = '0' * len(task['questions'][index][field])
+          with mock.patch.object(batch, 'read_json', return_value=task):
+            with self.assertRaisesRegex(batch.Stop, 'frozen_page_changed'):
+              batch.inputs(HERE / 'task-core-v2.json')
+
+  def test_input_page_reads_are_fresh_across_calls_and_changed_references(self):
+    original_git = batch.git
+    tree = original_git('rev-parse', self.task['page_revision'] + '^{tree}').decode().strip()
+    changed_revision = copy.deepcopy(self.task)
+    changed_revision['page_revision'] = tree
+    changed_page = copy.deepcopy(self.task)
+    for field in ('page', 'blob', 'sha256'):
+      changed_page['questions'][0][field] = changed_page['questions'][1][field]
+    for task in (self.task, self.task, changed_revision, changed_page):
+      with self.subTest(revision=task['page_revision'], page=task['questions'][0]['page']), \
+           mock.patch.object(batch, 'read_json', return_value=task), \
+           mock.patch.object(batch, 'git', wraps=original_git) as read:
+        actual, payloads = batch.inputs()
+        self.assertEqual(actual, task)
+        references = list(dict.fromkeys(
+          task['page_revision'] + ':' + q['page'] for q in task['questions']))
+        self.assertEqual(read.call_args_list, [call for reference in references
+                         for call in (mock.call('show', reference), mock.call('rev-parse', reference))])
+        if task is not changed_page:
+          self.assertEqual(payloads, self.payloads)
+        else:
+          body = original_git('show', references[0])
+          self.assertTrue(all(payloads[q['id'], 'read_page'].endswith(body)
+                              for q in task['questions']))
+    missing = copy.deepcopy(self.task)
+    missing['questions'][0]['page'] = 'synthetic-missing-page.md'
+    with mock.patch.object(batch, 'read_json', return_value=missing), \
+         mock.patch.object(batch, 'git', wraps=original_git) as read:
+      with self.assertRaisesRegex(batch.Stop, 'frozen_git_object_unavailable'):
+        batch.inputs()
+    read.assert_called_once_with('show', missing['page_revision'] + ':synthetic-missing-page.md')
 
   def test_v2_72_units_fresh_status_identity_and_export_binding(self):
     path = self.core_inputs()

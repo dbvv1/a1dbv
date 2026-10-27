@@ -42,6 +42,26 @@ class HookTests(unittest.TestCase):
   def event(self, path, **extra):
     return dict(tool_input={'file_path': path}, **extra)
 
+  def trace_parser(self):
+    # Keep the isolated PATH; delegate to the same actual CLI, not a JSON mock.
+    parser = self.bin / PARSER
+    self.env['REAL_PARSER'] = str(parser.resolve())
+    calls = self.base / 'parser-calls'
+    self.env['PARSER_CALLS'] = str(calls)
+    parser.unlink()
+    parser.write_text('''#!/bin/bash
+printf 'call\\n' >> "$PARSER_CALLS"
+if [ "${PARSER_FAIL_AFTER_OUTPUT:-0}" = 1 ]; then
+  "$REAL_PARSER" "$@"
+  status=$?
+  [ "$status" -eq 0 ] || exit "$status"
+  exit 23
+fi
+exec "$REAL_PARSER" "$@"
+''', encoding='utf-8')
+    parser.chmod(0o755)
+    return calls
+
   def decision(self, path, expected='deny', **extra):
     p = self.run_hook(self.event(path, **extra))
     self.assertEqual(p.returncode, 0, p.stderr)
@@ -96,12 +116,44 @@ class HookTests(unittest.TestCase):
   def test_notebook_fallback(self):
     p = self.run_hook({'tool_input': {'notebook_path': 'dist/x.ipynb'}})
     self.assertEqual(json.loads(p.stdout)['hookSpecificOutput']['permissionDecision'], 'deny')
+    for file_path in [None, '']:
+      with self.subTest(file_path=file_path):
+        p = self.run_hook({'tool_input': {'file_path': file_path, 'notebook_path': 'dist/x.ipynb'}})
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertEqual(json.loads(p.stdout)['hookSpecificOutput']['permissionDecision'], 'deny')
+    p = self.run_hook({'tool_input': {'file_path': 'src/x', 'notebook_path': 'dist/x.ipynb'}})
+    self.assertEqual((p.returncode, p.stdout, p.stderr), (0, '', ''))
 
   def test_missing_path(self):
-    for event in [{}, {'tool_input': {}}, {'tool_input': {'file_path': None}}]:
+    for event in [{}, {'tool_input': {}}, {'tool_input': {'file_path': None}},
+                  self.event('', cwd=str(self.root)), self.event('', cwd='relative')]:
       with self.subTest(event=event):
         p = self.run_hook(event)
         self.assertEqual((p.returncode, p.stdout, p.stderr), (0, '', ''))
+
+  def test_input_parser_called_once(self):
+    calls = self.trace_parser()
+    for event, expected in [(self.event('src/x'), 1), ({}, 1),
+                            (self.event('dist/x', cwd=str(self.root)), 2)]:
+      with self.subTest(event=event):
+        calls.write_text('', encoding='utf-8')
+        p = self.run_hook(event)
+        self.assertEqual(p.returncode, 0, p.stderr)
+        # Matching rules retain one additional CLI call to serialize decide().
+        self.assertEqual(calls.read_text(encoding='utf-8').splitlines(), ['call'] * expected)
+        if expected == 2:
+          self.assertEqual(json.loads(p.stdout)['hookSpecificOutput']['permissionDecision'], 'deny')
+        else:
+          self.assertEqual(p.stdout, '')
+
+  def test_parser_failure_after_output_is_not_swallowed(self):
+    calls = self.trace_parser()
+    self.env['PARSER_FAIL_AFTER_OUTPUT'] = '1'
+    p = self.run_hook(self.event('dist/x', cwd=str(self.root)))
+    self.assertEqual(p.returncode, 1)
+    self.assertEqual(p.stdout, '')
+    self.assertIn('无效 Hook 输入', p.stderr)
+    self.assertEqual(calls.read_text(encoding='utf-8').splitlines(), ['call'])
 
   def test_missing_rules(self):
     self.rules.unlink()
@@ -125,6 +177,19 @@ class HookTests(unittest.TestCase):
   def test_relative_event_cwd(self):
     self.decision('../dist/x', cwd=str(self.root / 'src'))
 
+  def test_empty_cwd_falls_back_to_root(self):
+    for cwd in [None, '']:
+      with self.subTest(cwd=cwd):
+        self.decision('dist/x', cwd=cwd)
+
+  def test_path_and_cwd_fields_are_lossless(self):
+    self.rules.write_text('deny *\n', encoding='utf-8')
+    directory = '  目录 " $() ;  '
+    path = r'  文件 " $() ; \child  '
+    result = self.decision(path, cwd=str(self.root / directory))
+    relative = directory + '/' + path.replace('\\', '/')
+    self.assertEqual(result['permissionDecisionReason'], f'{relative} 受保护（规则：deny *）')
+
   def test_root_sibling_unmatched(self):
     p = self.run_hook(self.event(str(self.root) + '-other/dist/x'))
     self.assertEqual((p.returncode, p.stdout), (0, ''))
@@ -140,7 +205,9 @@ class HookTests(unittest.TestCase):
   def test_invalid_field_types(self):
     for event in [{'tool_input': []}, {'tool_input': None},
                   self.event(['dist/x']), self.event({'path': 'dist/x'}),
-                  self.event(42), self.event(False), self.event('dist/x', cwd=10)]:
+                  self.event(42), self.event(False), self.event('dist/x', cwd=10),
+                  {'cwd': 10}, {'tool_input': {'notebook_path': False}},
+                  {'tool_input': {'file_path': 'dist/x', 'notebook_path': []}}]:
       with self.subTest(event=event):
         p = self.run_hook(event)
         self.assertEqual(p.returncode, 1)
@@ -153,6 +220,20 @@ class HookTests(unittest.TestCase):
         p = self.run_hook(self.event('dist/a' + c + 'b'))
         self.assertEqual(p.returncode, 1)
         self.assertEqual(p.stdout, '')
+
+  def test_separator_and_controls_in_all_fields_are_errors(self):
+    for field in ['file_path', 'notebook_path', 'cwd']:
+      for char in ['\x1f', '\n', '\t']:
+        with self.subTest(field=field, char=repr(char)):
+          event = self.event('dist/x')
+          if field == 'cwd':
+            event[field] = str(self.root) + char
+          else:
+            event['tool_input'][field] = 'dist/x' + char
+          p = self.run_hook(event)
+          self.assertEqual(p.returncode, 1)
+          self.assertEqual(p.stdout, '')
+          self.assertIn('无效 Hook 输入', p.stderr)
 
   def test_output_json_escaping(self):
     for reason in ['tab\there', 'control\x01here', 'carriage\rreturn', 'quote" and \\ slash']:
