@@ -2,7 +2,7 @@
 id: B-FPS-PREVIEW-CLEANUP-001
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4a3f610b4670522d54de9d0ba80278dbb5a9a615
 result_branch: relay/b-fps-preview-cleanup-001
@@ -21,3 +21,11 @@ result_branch: relay/b-fps-preview-cleanup-001
 
 ## 怎样算做成
 按实际处理 UTC 分列已退出、仍存活、未知／跳过的对象及必要归属依据；用进程与端口所属信息复核两条原链退出、4173／4174 由这些 PID 持有的监听消失，不通过浏览器或 HTTP 访问。端口若已归别人只报告，不停止。说明原产物保留情况、未明 Edge 未触碰；有缺口就精确报部分完成或 blocked，不声称整台电脑资源已清空。结果推固定分支并回 `review_ready`，通过公开扫描及适用文档检查后交负责人审查。
+
+## 当前结果
+
+- 按 PID、启动 UTC 与父子链逐一复核后终止 B-FPS-SHOT-QUALITY-001 的两条预览链，11 个进程全部退出，4173/4174 回环监听消失且未被接管，原工作树与 ignored 素材未动，openIssues 为空；本单为 build 型，无 reader-test 的 taskDone/pageStuck 项。
+- 产物：[a972bb5](https://github.com/dbvv1/a1dbv/commit/a972bb5f828a5e0af0c48b36714d41ca509185c0)，分支 `relay/b-fps-preview-cleanup-001`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端回写本卡结果并推送固定分支 relay/b-fps-preview-cleanup-001，转 review_ready 交负责人审查。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
