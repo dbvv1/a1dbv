@@ -75,9 +75,29 @@ network_access = false
 | 执行前必须阻止某一动作 | 优先原生权限；必要的同步 `PreToolUse` Hook 分别验正常输入、拒绝、缺脚本与超时，需故障阻止时核 `onFailure: "block"` 的版本要求 |
 | 完成前总忘记测试 | 先把真实验证入口写进项目约定；确有漏检再试 `Stop`，不要每轮重跑整套检查 |
 
-**可借用的是窄反馈，不是更多关卡。** Ramp 的 OCA 团队撤回了「先证明遵守指定 Skill 才能报告」的严格检查，改成有限纠偏，生产写入与人工合入继续独立控制。本仓路径 Hook 已有合成输入回归；具体覆盖、失败语义与 Claude → Codex 迁移差异见 [06](../06-hooks-and-guardrails.md)，不能只改目录便搬到 Codex。
+**PostHog 把确定性检查留给仓库工具，Claude Hook 只做环境引导。** 它的实际 `AGENTS.md` 按 linters＋CI → lint-staged／husky → Skills → 指令的顺序选择自动化，因延迟和脆弱性不添加逐工具 Hook。下面摘取其 `SessionStart` 中的一项：
 
-**依据**：[一手：团队复盘] [Ramp OCA](https://builders.ramp.com/post/how-we-built-oca-our-ai-on-call-assistant)，原核实 2026-10-21；[本仓实测] [E6 路径 Hook 回归](../19-experiments.md#10-e6路径-hook-的确定性回归)，原核实 2026-10-11，非真实客户端验收；[一手] [Hooks 参考](https://code.claude.com/docs/en/hooks)，`onFailure: "block"` 需 v2.1.295+，不适用于 Stop 或后台 Hook，核实 2026-10-26。
+```json
+{
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/setup-flox.sh",
+        "timeout": 60
+      }]
+    }]
+  }
+}
+```
+
+这个脚本把已有 Flox 环境写入后续 Bash 的环境文件；缺少 Flox、`CLAUDE_ENV_FILE` 或运行在 Claude Web 时跳过。**会话反复缺运行环境时，才借这个形状接本项目已有的环境脚本；检查命令已经能跑就保持原配置。** 在项目 `.claude/settings.json` 合并已有 `hooks` 并替换脚本路径，保留权限与安全 Hook；新开该项目会话后，运行原先缺环境的命令验收。这里展示上游的环境准备，不要求安装 Flox。
+
+环境脚本需把后续 Bash 所需的 `export` 语句追加到 `$CLAUDE_ENV_FILE`；只在 Hook 子进程里激活环境，退出后不会传给后续命令。
+
+**依据**：[一手／实际配置] PostHog 固定 [AGENTS 优先次序 L282–293](https://github.com/PostHog/posthog/blob/d141be2ccf9b2c49251570db47022e0230204064/AGENTS.md#L282-L293)、[SessionStart 配置 L3–21](https://github.com/PostHog/posthog/blob/d141be2ccf9b2c49251570db47022e0230204064/.claude/settings.json#L3-L21)、[环境脚本 L1–16、L51–66](https://github.com/PostHog/posthog/blob/d141be2ccf9b2c49251570db47022e0230204064/.claude/hooks/setup-flox.sh#L1-L66)；核实 2026-10-27，未运行上游脚本或客户端。
+
+本仓路径 Hook 已有[合成输入回归](../19-experiments.md#10-e6路径-hook-的确定性回归)（原核实 2026-10-11，非真实客户端验收）；覆盖、失败语义与 Claude → Codex 迁移差异见 [06](../06-hooks-and-guardrails.md)，不能只改目录便搬到 Codex。官方 [`onFailure: "block"`](https://code.claude.com/docs/en/hooks) 需 v2.1.295+，不适用于 Stop 或后台 Hook，核实 2026-10-26。
 
 ## 何时换一种做法
 

@@ -434,7 +434,7 @@ Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/b
 [Control your dot](https://learn.chatgpt.com/docs/dots/controls#stop-work)分别控制 Pause、Activity 委派停止和 Scheduled 禁用排程；一处成功不代表所有层已停，副作用仍按 20 §9 对账。**[一手；研究：采用范围]**
 
 - [dot #51610](https://github.com/openai/codex/issues/51610)：10 月 7 日 macOS 本地 browser bundle 阻塞约 52 分钟，dot 多次 follow-up 返回 `steered`，恢复后集中收到。是 dot 反复发送，非系统复制；未证丢失、重复投递或旧指令执行，版本与根因未知。最终恢复反驳永久失败判断，却不给固定等待时长。**[社区：观察摘要，无确定性复现]**
-- [dot #52374](https://github.com/openai/codex/issues/52374)：云任务可读，续接却报 UNKNOWN／NOT_FOUND；不同作者另报定时、手动均未创建，或可读但 send 失败。**10 月 12 日 11:50 UTC 的补充案例已恢复**：原任务未重建，send 开新轮，完成后回读精确无害标记，未编辑、构建或部署项目。客户端与独立 CLI 此前均更新，未隔离同期后端变化，不能统一归因。不同 ID／API 的 CLI 报 Invalid task ID，也不证明原任务不存在；读取、续接、产出须分别核实。**[社区：故障与恢复报告]**
+- [dot #52374](https://github.com/openai/codex/issues/52374)：云任务可读，续接却报 UNKNOWN／NOT_FOUND。10 月 12 日的一个案例在原任务上恢复了新轮次并读回结果；10 月 23 日另一作者仍报告[历史可读、续接 UNKNOWN、回读没有新轮次](https://github.com/openai/codex/issues/52374#issuecomment-6364039681)，随后[任务控制界面加载失败，Retry 一次仍无可用控制](https://github.com/openai/codex/issues/52374#issuecomment-6365790971)。**先分别核读取、续接和实际产出；一次恢复不能作为所有任务已修复的依据。** 10 月 27 日回核时 issue 仍开放，未见关联修复；各个案根因未确认。**[社区：故障与恢复报告]**
 - [Nigel999 的社区原帖及支持回复](https://community.openai.com/t/dot-repeatedly-reports-progress-but-fails-to-complete-tasks-or-clearly-disclose-that-work-has-stopped/1402528)：用户收到进度但未完成，后确认无活动任务；支持要求核 app／系统版本、Activity、审批和阻塞，未确认根因或修复。这是另一作者的状态问题，非 #51610 独立复现或失败率样本。**[社区]**
 
 来源限定 ChatGPT dot／Codex 委派，不混入同名产品或通用 Agent。20 §5 已区分结果完成／送达／收集／验证；本节补输入接受与实际处理的区别。**[研究]**
