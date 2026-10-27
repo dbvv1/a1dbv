@@ -7,7 +7,7 @@
 > 每轮纠偏只改本节，最多三条（手册§6）。更新：2026-10-27，Claude 核心方向会话。
 
 - **A**：答案页按 [write-task-guide](../../templates/generic/.claude/skills/write-task-guide/SKILL.md) 做：按地图优先级，对使用者最多的页和新页下发本机模型做照做实测，按卡点改页面，状态随结果变化，不单独复评存量。核心推荐没在真实任务上用过的，优先在 dot-B 案例的日常编码里用。前沿候选收集也下发本机模型，你挑最强的深挖；同时跟进上游 PR。
-- **B**：先打通素材供给：被拒上传按 operations 的写法重试，云端取不到的 CC0 资源包和开放权重生成交本机接收端。案例按新的质量环节做：非作者看整屏并排截图定最大的三处差距，先补大差距，每个质量单元推送并更新公开网站，三个案例各定一个看得见的近期目标。模块与制作链按地图照常并行；已做的模块（帧同步、存档、菜单焦点等）交给案例线接进可玩版本。新开“AI 做游戏实例”线：找用 AI 全程或大规模做出的游戏和作者分享，先看与素材供给和三个案例最大差距相关的。
+- **B**：三类做法已写成 Skill：质量单元 [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)、模块 [game-module-from-case](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md)、AI 做游戏实例 [ai-made-games-scout](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md)。现状：三个案例都没有拍摄模式，也都没有环境光照与后处理。下一步给各案例做拍摄模式并下发本机拍真 GPU 基线（[细则§7](game-taskbook.md#7-下发本机模型的游戏任务)）；画面的第一个质量单元各做灯光层，手感按在途的品类操控对照继续。云端取不到的 CC0 包和开放权重生成交本机。
 - **共同**：完成看读者或玩家得到的价值；TASKS、quality.md 和正文只写现状、差距和变化，过程写进提交说明。独立审查只用于新默认做法、模板和作品版本。做法明确的单元下发本机模型（operations§2.2），接收端现在空闲，最多 4 个并行。B 可评估把 `node_modules` 的读取拒绝改为仅编辑拒绝，便于读已安装依赖的源码与随包 Skill。B 在下一项帧同步或存档接入中从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中择一，沿已有入口自然采用，遇自然上下文压力才用[原生压缩](../decisions/context-management.md)；保留原验收，记漏项、纠正轮次、恢复耗时与接入结果，不为对照重复实现。下一次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实际操作补验，不以截图或静态 DOM 代替。
 
 ## 分工
