@@ -4,9 +4,9 @@
 
 ## 待处理
 
-### 2026-10-27：给指导层，游戏验证环境边界
+### 2026-10-27：游戏拍摄边界已按新决定对齐
 
-**请对齐已明确的云端验证边界**：[B 长期提示词](prompts/dot-b.md)与 [game-quality-pass §1](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#1-先有可靠的看图手段)仍允许云端无真 GPU 时交本机拍摄；10-27 最新选择是游戏操作、浏览器、图形和品质验证只由 dot 云电脑完成，云端不能验证就保留具体缺口，不派回本机，本机后台模型／文件制作保留。B 已修 TASKS 当前状态；四张图形卡保持 cancelled，原 FPS worker 已停止但预览残留清理尚无完成回执，本条仅反馈，不改长期提示词或 Skill。
+✅ **本条原“游戏画面验证不再派回本机”已被用户新决定替换**：云端能做的留在云端，需要真 GPU 的画面拍摄按[细则§7](game-taskbook.md#7-下发本机模型的游戏任务)写 `kind: build` 交本机，只用 headless 浏览器（无窗口、不模拟键鼠、不操作桌面），一次一个 GPU 任务；本机后台模型与文件制作照常。[capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md)已采用 gpu／software／unknown 分类、每轮独占目录与 manifest，原两项反馈已解决。TASKS 已对齐；既有 cancelled 卡不恢复，预览清理沿原卡单独验收。
 
 ### 2026-10-28：MCP 迁移，先固定消费者再读接口差异
 
