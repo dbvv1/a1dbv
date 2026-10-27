@@ -1,7 +1,7 @@
 # B-GENRE-REFERENCE-20261027 · 三个品类的可观察操控参照
 id: B-GENRE-REFERENCE-20261027
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-genre-reference-20261027
@@ -33,8 +33,8 @@ result_branch: relay/b-genre-reference-20261027
 
 ## 当前结果
 
-- 单元 3 已把 CS2 移动、急停与连续后坐写入 sources.md（C-V1 官方更新、C-02～C-15 原文证据、C-T1～C-T6 对照任务），此前 3 个 LoL 审查问题已全部关闭，check_repo/check_public 均通过。审查未通过，仍有 2 个问题：练习工具 0.25x/0.5x 被写成需改设置文件（实为默认隐藏热键），C-11/C-12/C-13 的“步枪/AWP”武器条件无原文支持却写进条件矩阵、标题和 C-T6。
-- 产物：[dd614da](https://github.com/dbvv1/a1dbv/commit/dd614da37bbd061736ad1bdd6a144c252a58d973)，分支 `relay/b-genre-reference-20261027`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：修正练习工具倍速热键入口表述，并把三处武器条件改为“未写/播放时确认”并同步 C-T6，然后重跑三视角审查，再交接收端提交推送。
+- 已修正 sources.md 的两处审查问题：LoL 练习工具 Ctrl+Shift+2/3 改为练习工具内默认热键并新增 L-14 wiki 来源，CS2 C-11/C-12/C-13 的武器条件改为未写/播放时确认并同步条件矩阵与 C-T6。三视角独立审查通过，openIssues 为空，check_repo、check_public 与空白检查均通过，任务范围已完成。
+- 产物：[a82bfad](https://github.com/dbvv1/a1dbv/commit/a82bfad528c4aaaa4ec6bf35d9f1ca1d849ff6db)，分支 `relay/b-genre-reference-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交工作区改动并推送 relay/b-genre-reference-20261027，回 review_ready。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
