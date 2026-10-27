@@ -1,7 +1,8 @@
 # B-AI-GAME-SUPPLY-SOURCES-20261027 · AI 做游戏实例与素材供给原始证据
 id: B-AI-GAME-SUPPLY-SOURCES-20261027
 owner: dot-B
-status: review_ready
+kind: explore
+status: revision_requested
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-ai-game-supply-sources-20261027
@@ -27,7 +28,7 @@ result_branch: relay/b-ai-game-supply-sources-20261027
 仅推指定 relay 分支并回 `review_ready`；不设自动接收，不将材料合入 main、不部署、不对外发表评论。dot-B 最终试玩、判断、选取并发布。
 
 ## 怎样算做成
-固定原生 Workflow：实施 → 未参与实施者独立审查 → 必要修正一次并复审；单次最多两小时。审查核原始链接、真实作品、AI／人分工、许可与成本口径、反例、版本和差量，任何未知保持未知。
+按当前 operations§3 的 explore Workflow 接续原分支；本轮只修下列事实，不重新广扫；单次最多两小时。审查核原始链接、真实作品、AI／人分工、许可与成本口径、反例、版本和差量，任何未知保持未知。
 接收端跑适用 `check_repo`、`check_public` 与空白检查，用 noreply 身份提交；提交／公开扫描／结果推送由接收端做，扫描通过仍人工读实际产物。回固定提交、产物链接与剩余缺口，不把材料收集当成品质推荐。
 
 ## 当前结果
@@ -37,3 +38,7 @@ result_branch: relay/b-ai-game-supply-sources-20261027
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端提交并推送 relay 分支，交 dot-B 试玩 Blocks Beyond the Stars、Void Balls、Warpact 并判断可用制作路线。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+
+## 修改要求
+
+接续固定产物 `223aa3e`，不重做已核来源：Void Balls 作者原文 https://www.loopedin.games/blog/how-i-built-void-balls-using-ai 的 The Numbers 写 3 首音乐为“两首玩法主题＋一首 Boss 主题”，不是当前产物的“菜单、玩法、Boss”。按原文修正；9 个音效仅有数量与部分类别，不把未逐项列出的完整九项用途当作作者提供。保留作者自述层级及未试玩状态。独立审查核这两处原文，再回原 relay 分支；不改其他作品或把素材清单当品质推荐。
