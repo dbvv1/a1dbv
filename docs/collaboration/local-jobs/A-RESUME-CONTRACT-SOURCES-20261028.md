@@ -1,7 +1,7 @@
 # A-RESUME-CONTRACT-SOURCES-20261028 · 中断恢复先核哪一层
 id: A-RESUME-CONTRACT-SOURCES-20261028
 owner: dot-A
-status: ready
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 1d4c6819aad1d130f62128f484c748477428233b
