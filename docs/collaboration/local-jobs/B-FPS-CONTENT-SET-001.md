@@ -2,7 +2,7 @@
 id: B-FPS-CONTENT-SET-001
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: a97d57281dd6c6d941c6a6bef732dadf2953f2f4
 result_branch: relay/b-fps-content-set-001
@@ -25,8 +25,8 @@ result_branch: relay/b-fps-content-set-001
 
 ## 当前结果
 
-- 已交付四件可重建标准件（4 个 GLB，合计 269,440B/4,313 三角形，固定 SHA）、风格页、确定性归一与校验脚本及 15 项测试，validate 实跑通过，改动与返回一致且未改 src。复审未通过：2 个未关闭问题仍在——docs/content-production.md 第 111 行把 weaponPose 数值误指到 wiring.json、把 rx24-root 的 name 说成 extras，wiring.json 第 11 行同样写错 rx24-root extras，需修正后重审。
-- 产物：[74b0e13](https://github.com/dbvv1/FPS-Like/commit/74b0e136572d5699e324e2e5f857fcc53a3c2b29)，分支 `relay/b-fps-content-set-001`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
-- 下一步：修正 docs/content-production.md 第 111 行与 asset-pipeline/content-set/wiring.json 第 11 行的 restMount/weaponPose 与 rx24-root extras 表述，然后重跑复审。
+- 已修正 docs/content-production.md 与 wiring.json 中 restMount 来源、weaponPose 取值和 rx24-root extras 的错误表述，并用 GLB 原始 JSON 与 GLTFLoader 双向核实；审查无未关闭问题（openIssues 空），本单元为 build 类型，taskDone/pageStuck 与候选收集数量不适用。build --check、validate、内容测试 15/15 与 npm test 93/93 均通过。
+- 产物：[d787b6d](https://github.com/dbvv1/FPS-Like/commit/d787b6d2e099021a71f72f484016377eb9df924e)，分支 `relay/b-fps-content-set-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由接收端执行 check_public 并提交回 relay/b-fps-content-set-001；本任务实现范围已无剩余。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
