@@ -6,7 +6,7 @@ export async function waitFor(fn,label,limit=5000){
   while(Date.now()<end){const value=await fn();if(value)return value;await delay(20);}
   throw new Error(`Timed out: ${label}`);
 }
-function actor(file,args=[]){
+export function actor(file,args=[]){
   const child=fork(fileURLToPath(new URL(file,import.meta.url)),args,{stdio:['ignore','pipe','pipe','ipc'],execArgv:[]});
   let id=0,log='';const pending=new Map();
   child.stdout.on('data',data=>{log+=data;});child.stderr.on('data',data=>{log+=data;});

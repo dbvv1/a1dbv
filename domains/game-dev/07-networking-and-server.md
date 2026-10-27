@@ -136,11 +136,22 @@ flowchart LR
 
 依据：[Colyseus 连接生命周期](https://docs.colyseus.io/sdk/connection)、固定 SDK 0.18.6 `Room`／signal 源码及[实验](../../experiments/colyseus-room-chain/README.md#切房与取消恢复)，2026-10-27 [一手／本仓实跑]。上游 [#950](https://github.com/colyseus/colyseus/issues/950)也曾出现旧退出流程关闭新连接，维护者修复且用户复验；当前固定 core 0.18.23 已含该修复，本次修的是应用归属，不重复声称修了框架。此处为 Node／WebSocket 消费者，Unity／UE 沿现有会话与场景生命周期接线，未运行引擎。
 
-**先自托管跑通，不把许可免费当成免运维。** Colyseus 为 MIT，Nakama 开源版为 Apache-2.0；上线还需认证、TLS、预算、监控与数据政策。Colyseus 多进程要配共享 Presence／Driver 等，Nakama 要维护数据库；进程内重连不保证进程崩溃后恢复。托管可省部分运维，但服务价格／合同按采用时核，本例没有付费或部署。Unity／Nakama 接线为资料比较，Colyseus 才是本次真实运行项，不宣称跨项目成本冠军。
+**先自托管跑通，不把许可免费当成免运维。** Colyseus 为 MIT，Nakama 开源版为 Apache-2.0；上线还需认证、TLS、预算、监控与数据政策。Colyseus 多进程要配共享 Presence／Driver 等，Nakama 要维护数据库；进程内重连不保证进程崩溃后恢复。托管可省部分运维，但服务价格／合同按采用时核，本例没有付费或部署。Unity 接线仍为资料比较；Colyseus 与下节 Nakama 分别有本地真实消费者，不宣称跨项目成本冠军。
 
 独立作品 [AlienFall 的开发日志](https://alienfall.io/journal.html)也采用 Node／Colyseus，并把持久数据与跨进程共享分别交 SQLite／Redis；可借其按职责组合现成部件的做法，不把作者自述的容量或成本推广成本例实测。
 
 依据：[Colyseus 匹配](https://docs.colyseus.io/matchmaker)、[锁房](https://docs.colyseus.io/matchmaker/visibility)、[重连](https://docs.colyseus.io/room/reconnection)、[扩容](https://docs.colyseus.io/scalability)及固定 npm SDK 源码；[Nakama 仓库](https://github.com/heroiclabs/nakama)、[TypeScript 运行时](https://heroiclabs.com/docs/nakama/server-framework/typescript-runtime/)与[权威对局](https://heroiclabs.com/docs/nakama/concepts/multiplayer/authoritative/)；[Unity MPS 会话与网络](https://docs.unity.com/en-us/mps-sdk/session-networking)，2026-10-26 [一手／开源／本仓实跑]。实际路径与范围见 [WP10](../../docs/research/wp10-content.md#managed-room-chain)。
+
+<a id="room-authority-settlement"></a>
+#### 房间就绪之后：调起原规则，把确认结果送回同一会话
+
+**🧪 已分别跑通房间和结算时，先接完整“ready→原权威作业→持久确认→回传→回收”，不要再造一份计分模拟。** [原实验的 `bot_job` 入口](../../experiments/colyseus-room-chain/README.md#房间到可信结果)把 Colyseus 与下节现有 Nakama 链接通：`auth.token` 经匹配前 `static onAuth` 调 `/v2/account`，对照服务端配置坐席；两席齐备只启动一次原 `runBotMatch/replayMatch`。结果完整保存后才交既有可信发送者，服务 key、队伍和奖励内容不交客户端决定。
+
+两端看到同一 match ID／终局，只有两份真实回执齐备才显示 `completed`。首笔提交后发送者退出时，房间保留 `settlement-pending`；补投同一文件，不重跑模拟或换 ID。真实后端重启后，一份重复、一份首次，两席完成次数仍各 1、补榜 0／100。少 ready 不开局；模拟 timeout 不结算；终局采用前离开会撤销采用资格，有限作业排空后丢弃结果。采用后离开不撤销已提交进度，空房等待自有工作收尾后销毁。
+
+**这两个账号是合成观战／试验席，不是由入房推导出的真实奖励对象。** 本例仅演示本地测试进度；真实参赛、奖励和并发局资格须由可信业务另核。它读取旧固定 MOBA CPU 源，未接当前案例的真人输入或画面，也不将 TCP 输入实验强塞进第二套房间协议。这个作业房型不保座；原三次激活房的重连链继续独立可用。需要进程重启恢复或无人值守补投时，接已有持久任务系统：结果文件保留不等于房间会自动复活。
+
+依据：[Colyseus static auth](https://docs.colyseus.io/auth/room)、固定官方包与[真实运行／接口合同](../../experiments/colyseus-room-chain/README.md#房间到可信结果)，2026-10-27；复用下节原模拟／结算实现，新增 5 项真实服务测试，不计作 Unity／UE、公网或案例采用。
 
 <a id="player-cloud-progress"></a>
 ### 账号、云档与排行榜：换设备后继续同一份进度
