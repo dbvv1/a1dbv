@@ -1,7 +1,7 @@
 # A-CI-PROJECTION-READER-20261027 · 改页后的第二个真实 CI 任务
 id: A-CI-PROJECTION-READER-20261027
 owner: dot-A
-status: running
+status: blocked
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2c44b68ce8c52e132be0ea8917473d908a43b9b4
@@ -68,3 +68,8 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 ## 来源
 
 [GitHub combined status](https://docs.github.com/en/rest/commits/statuses#get-the-combined-status-for-a-specific-reference)说明无 statuses 也返回 pending；[check runs](https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference)说明 latest 与分页、最近 1,000 个 check suites 范围；[Actions runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository)说明 head_sha 过滤和查询上限。核实：2026-10-27。
+
+## 当前结果
+
+- 本机接收端连续 2 次未完成第 1 个单元：公开扫描有发现（email experiments/ci-result-projection/tmp-raw/pr3015.json:151，email experiments/ci-result-projection/tmp-raw/pr3015.json:298，email experiments/ci-result-projection/tmp-u2/pr.json:1，email experiments/ci-result-projection/tmp-u2/pr.json:1），未推送。负责人确认任务可以执行后改回 ready，接收端会重新领取。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
