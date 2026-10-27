@@ -45,6 +45,16 @@ flowchart LR
 
 依据与核实（2026-10-26）：[URP 阴影分辨率与距离](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/shadow-resolution-urp.html)、[官方 Package Samples](https://docs.unity.com/en-us/engine/6000.3/manual/render-pipelines/universal-render-pipeline/introduction/installing-and-configuring-urp/creating-a-urp-project/package-sample-urp-package-samples)。调节顺序为研究建议；未给通用毫秒或分辨率预算。
 
+### HDRI 与主光：先分清哪些光应被遮挡
+
+**🧪 环境填光使投影变淡时，先查日盘是否同时贡献无阴影填光和直接日照，再试天空／太阳分离。** 先回读材质是否真的接收环境光、阴影覆盖／bias／地面接收和雾的相机深度；若 HDRI 日盘经环境采样成为无对应遮挡的填光，同时又有实时方向光，继续抬曝光会拉平接地。此时保原 HDR 与许可，用可复现的处理生成天空填光，让直接太阳由能投影的主光承担。不是所有 HDRI 都应删太阳；已有正确遮挡或不同反射需求时，要按实际消费者另核。
+
+**Three 网页候选的二改是缩小光的职责，不是继续叠效果。** MOBA 保原 CC0 HDR，按[固定配方](https://github.com/dbvv1/MOBA-Like/blob/069b74bc410eec318a1effb0a05a7acc619b5bcc/assets/lighting/README.md)在加载后、PMREM 前识别上半球日盘，用邻域天空替换并羽化；太阳改由单一方向光负责，接触 AO 不加重，近战区不进远雾。二改收回了首次过强的填光；与原基线相比，同机位软件实帧的单位／塔接地更清楚，但树影仍黑硬、塔暗面细节合并，因此保留候选，不继续整体压黑。这个接入经验不等于 Unity APV／URP 实测。
+
+[候选 `069b74b` 的真实对照与差距](https://github.com/dbvv1/MOBA-Like/blob/069b74bc410eec318a1effb0a05a7acc619b5bcc/docs/quality.md)对应实测构建 `0b8f93c`，收口仅改文档，运行源码一致，尚未进入 MOBA 的 `main`／Site；相同状态与相机的非作者盲评仅接收阶段静态改善。整层接入相对原基线的 draw calls 为 296→455、提交三角形为 90,968→155,269，主要增加 AO 法线／深度 pass；不是帧时间或 GPU 性能结论。CPU 辐射积分只用来定位填光来源，不能代替真实画面对照。
+
+依据与核实（2026-10-27）：[HDRI 工作流作者的太阳分离方案](https://seblagarde.wordpress.com/2016/08/28/siggraph-2016-an-artist-friendly-workflow-for-panoramic-hdri/)（2016，机制参考）、[Poly Haven 作者的 HDRI 制作说明与实时日盘讨论](https://blog.polyhaven.com/how-to-create-high-quality-hdri/)、[Three PMREM](https://threejs.org/docs/pages/PMREMGenerator.html)、[GTAOPass](https://threejs.org/docs/pages/GTAOPass.html)。MOBA 候选运行于 dot 云端软件 WebGL。
+
 ### 间接光：移动角色不能成为环境里的另一张贴图
 
 **先决定谁贡献烘焙、谁接收什么，再按问题增加精度。** 固定墙地可贡献 GI；移动角色从探针获得间接光，关键直接光和动态阴影另由实时路径提供。不要把所有对象一键设为静态来获得“更亮”的画面，也不要混淆材质发光、屏幕 Bloom 与实际照亮旁边物体。

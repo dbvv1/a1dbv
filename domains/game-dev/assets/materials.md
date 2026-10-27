@@ -198,6 +198,12 @@
 
 **按正常画面保留阴影，按源修掉采样噪声。** FPS 本地候选 `87820b8`（未发布）在原镜头补出墙脚方向影；64 采样的墙面颗粒被拒，固定同 UV／原灯升到 1024 设置后，大幅减弱且目标和黄路线仍可读。两张 512² PNG 共 404,263B，理论 RGBA8 含 mip 约 2.67MiB；软件环境原→候选→原热态比较无明显持续回退，硬件预算未测。Basic 静态面失去动态光／镜面响应，人物无新投影，CPU 仍为原画面；改墙、换动态灯或要求人物正确进入暗部，就须重烘焙或改用相应实时／probe 路径，不能把这份固定光照当整套材质与场景质量完成。[本地运行]
 
+**🧪 接入整屏光照时，把世界材质与玩法提示的合成约定一起保住。** 先核模型是否真用受光材质；只有 `scene.environment` 非空，不代表环境照明进入了资产。需要固定显色的提示与透明特效不能机械混进 AO：本候选的[合成实现](https://github.com/dbvv1/MOBA-Like/blob/069b74bc410eec318a1effb0a05a7acc619b5bcc/src/render/lighting.ts)将 Three 的离屏线性世界经 OutputPass 输出后，再用实际世界深度绘制提示，沿用各材质的 `depthTest`／`depthWrite`、透明混合与 `toneMapped: false` 语义；原本不测深度的提示不会因此被遮挡；只从 AO 排除但仍统一过色调映射，会改变这些材质。该做法按当前后端接入，不要求 Unity／UE 仿造这条 pass 链。
+
+[MOBA 候选 `069b74b`](https://github.com/dbvv1/MOBA-Like/blob/069b74bc410eec318a1effb0a05a7acc619b5bcc/docs/quality.md)用原 HDR＋可复现日盘分离，不改模型／底色；同机位盲评中接地与体积小幅改善，青橙阵营和粉圈可读，普通入口看到移动及 Q 瞄准线，短暂弹体未完整观察。暗面合并与地表灰橄榄仍是差距，实测构建 `0b8f93c` 与候选运行源码一致，收口仅改文档，尚未由 `main`／Site 采用。光照配方、实帧成本与适用条件见[天空填光与太阳分工](../unity/07-scene-rendering-and-lighting.md#hdri-与主光先分清哪些光应被遮挡)；以完整动作复评决定保留，不用材质测试通过代替观感。
+
+依据与核实（2026-10-27）：MOBA 候选的 Three 0.186.1 源码／测试与 dot 云端软件 WebGL 观察；[MeshStandardMaterial](https://threejs.org/docs/pages/MeshStandardMaterial.html)、[OutputPass](https://threejs.org/docs/pages/OutputPass.html)、[Riot 的画面层次原则](https://www.leagueoflegends.com/en-us/news/dev/clarity-in-league/)。
+
 **[研究] 特效的维护单位应是少量共享语义与参数。** 一个效果保留范围形状、预警／生效／结束阶段、主要反馈与装饰层；新技能复用它们并改变确有玩法意义的参数。给新区域换氛围时先改共享光照／材质预设，别重新生成所有贴图；给技能换外观时保留可学习的边界与阶段。AI 可连接参数、整理材质引用和实现分层，人决定哪些信息应突出及何时已足够。整招的阶段合同、ring／ribbon／flash 分工与同族参数边界见[下节](#把候选交成整招而不是一段漂亮特效)。
 
 **[研究] 现有 URP Renderer Features 优先于自建渲染层。** 遮挡提示、全屏描边与后处理各解决不同问题；原生 pass 的适用范围、当前 Render Graph 路径和条件性 on-tile 选择，见 [WP5 可读性比较](../../../docs/research/2026-10-14-game-wp5-material-effects.md#体验质量深化有限预算中的视觉层次与统一风格)。
