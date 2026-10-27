@@ -1,7 +1,7 @@
 # A-TESTMON-PATCH-READER-20261028 · 已审补丁页的实际接入
 id: A-TESTMON-PATCH-READER-20261028
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: cafdfdbe49723577b9b4620d749d14e93414cb42
@@ -64,8 +64,4 @@ PYTHONPATH="$PWD" python -m pytest tests/test_configure.py tests/test_coverage_d
 
 ## 当前结果
 
-- 读者按页面在固定上游基线上顺序应用两份补丁，两个合法组合各 29 passed，树哈希与页面一致（taskDone=true）；页面仍造成 6 处卡点：虚拟环境位置与插件清单缺失、需先安装项目才注册入口点、只给 POSIX 写法、树哈希句缺 git add -f 前提、coverage 6.5.0 不可得、Python 补丁级差异。复核未留阻塞问题（remaining=false），仅提示读者记录有少量表述不一致，不影响技术结论。
-- 产物：[3b9b866](https://github.com/dbvv1/a1dbv/commit/3b9b86609c25995235d7539f440577fb92dfeea0)，分支 `relay/a-testmon-patch-reader-20261028`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端按既有流程提交并发布本结果分支；把六处页面缺口反馈给页面维护者。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+已接收[两环境各 29 项通过及安装卡点](artifacts/A-TESTMON-PATCH-READER-20261028/result.md)；读者读过其他任务记录，未通过独立盲读验收。页面已补环境准备，待自然任务再验。

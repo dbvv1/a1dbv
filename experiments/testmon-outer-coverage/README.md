@@ -6,19 +6,46 @@
 
 - 上游问题：[pytest-testmon #270](https://github.com/tarpas/pytest-testmon/issues/270)。基线：`94150742345d0bc3fb00a10c19c0ae26a0064c4e`。
 - 补丁 SHA-256：`5298e99c0fe08f0d3571572f00f8cc1cf9c57da144b7b94d1cecc483f178f1e2`；包含生产检测器、恢复被同名覆盖的配置测试和真实子进程回归。
-- 配套补丁 SHA-256：`67d6960051fde31c2f5a905d292bc00a725c931d5213e0986f4ee2cdcb0231ed`。顺序应用两份后，受检代码树为 `2264b6155ff3e9d908c7d5d5894b2e13ec038168`。
-- 在该上游基线的独立工作副本应用，原项目和已安装环境保持不动。POSIX 示例：
+- 配套补丁 SHA-256：`67d6960051fde31c2f5a905d292bc00a725c931d5213e0986f4ee2cdcb0231ed`。
+
+**先用 Python 3.11 与 coverage 7.8.2 这一组复现。** 准备 Git、已安装的 Python 3.11（记录实际补丁版本即可），在新建工作目录中把上面两份补丁的原始内容分别保存为 `fix.patch`、`coverage-core.patch`。以下只修改独立副本和新虚拟环境，原项目与原环境保持不动；若自己的版本已修复，沿用上游实现。
+
+先取固定源码并应用补丁，POSIX 与 Windows 均在这个新工作目录运行：
 
 ```sh
-git checkout 94150742345d0bc3fb00a10c19c0ae26a0064c4e
-git apply --check /path/to/fix.patch
-git apply /path/to/fix.patch
-git apply --check /path/to/coverage-core.patch
-git apply /path/to/coverage-core.patch
-PYTHONPATH="$PWD" python -m pytest tests/test_configure.py tests/test_coverage_detection.py tests/test_coverage_core.py tests/test_xdist_select.py tests/test_db_fingerprints.py -v
+git clone https://github.com/tarpas/pytest-testmon.git src
+cd src
+git checkout --detach 94150742345d0bc3fb00a10c19c0ae26a0064c4e
+git apply --check ../fix.patch
+git apply ../fix.patch
+git apply --check ../coverage-core.patch
+git apply ../coverage-core.patch
+git add -u
+git add -f tests/test_coverage_detection.py tests/test_coverage_core.py
+git write-tree
 ```
 
-使用已准备的测试虚拟环境；已验组合见下表。若自己的版本已修复，沿用上游实现；提交新增测试时注意上游 `/tests/` 忽略规则，核实际提交清单。
+`git write-tree` 应输出 `2264b6155ff3e9d908c7d5d5894b2e13ec038168`。这需要把两份新增测试也暂存：上游忽略整个 `/tests/`，普通 `git add -A` 会漏掉它们。这里只核对索引树，不需要提交。
+
+然后留在 `src` 目录创建虚拟环境、安装测试依赖和项目，再运行相关测试。**不要省略 `-e .` 这一步项目安装：它注册 pytest 插件入口点，仅设 `PYTHONPATH` 无法让 pytester 找到 `--testmon`。** 命令直接指定虚拟环境解释器，不需要激活，也不需要 `PYTHONPATH`。
+
+POSIX：
+
+```sh
+python3.11 -m venv ../venv
+../venv/bin/python -m pip install "pytest==8.3.5" "coverage==7.8.2" "pytest-cov==6.2.1" "pytest-xdist==3.8.0" -e .
+../venv/bin/python -m pytest tests/test_configure.py tests/test_coverage_detection.py tests/test_coverage_core.py tests/test_xdist_select.py tests/test_db_fingerprints.py -v
+```
+
+Windows PowerShell（使用 Python Launcher 选择 3.11）：
+
+```powershell
+py -3.11 -m venv ../venv
+& ../venv/Scripts/python.exe -m pip install "pytest==8.3.5" "coverage==7.8.2" "pytest-cov==6.2.1" "pytest-xdist==3.8.0" -e .
+& ../venv/Scripts/python.exe -m pytest tests/test_configure.py tests/test_coverage_detection.py tests/test_coverage_core.py tests/test_xdist_select.py tests/test_db_fingerprints.py -v
+```
+
+Git Bash 使用上面 Windows 三行时，去掉后两行开头的 `& `；不要改回裸 `python` 或设置 MSYS 风格的 `PYTHONPATH`。预期为 `29 passed`、退出码 0；pytest-xdist 支持 `-n` 分支，pytest-cov 支持 `--cov` 分支，二者都要安装。下表 coverage 6.5.0 行保留此前实测结果，不是本次复现的必装版本；索引不提供 6.5.0 时无需切换索引，7.8.2 同样覆盖缺少 `run:core` 的兼容路径。
 
 ## 实际变化与验证
 
