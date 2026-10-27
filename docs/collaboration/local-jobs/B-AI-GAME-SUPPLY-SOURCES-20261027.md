@@ -1,7 +1,7 @@
 # B-AI-GAME-SUPPLY-SOURCES-20261027 · AI 做游戏实例与素材供给原始证据
 id: B-AI-GAME-SUPPLY-SOURCES-20261027
 owner: dot-B
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-ai-game-supply-sources-20261027
