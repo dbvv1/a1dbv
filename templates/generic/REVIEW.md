@@ -51,7 +51,9 @@ findings only.
 
 - Duplicated logic that already exists elsewhere in the repo (name the
   existing function)
-- Errors that are caught and silently dropped
+- Errors swallowed outside the existing input, error, or supported-version contract.
+  Preserve legitimate tolerance and compatibility; verify that the handler covers
+  the recoverable case and that unrelated failures remain visible.
 - Tests that would pass even without the change
 - TODO: repo-specific invariants, e.g. "queries are scoped to the tenant",
   "new endpoints have an integration test"
