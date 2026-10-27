@@ -4,6 +4,15 @@
 
 ## 待处理
 
+<a id="portless-worktree-urls"></a>
+### 2026-10-27：Portless 命名开发入口
+
+👀 **多个 worktree 频繁切换时，可试 Portless，让 Agent 和浏览器引用稳定 URL；现有端口安排已清楚就沿用。** 运行现有开发命令时用 `portless run --name myapp <原开发命令>`，再在同一 worktree 用 `portless get myapp` 取得入口，交给已有测试配置；`get` 只构造 URL，就绪仍须请求应用的真实路由。试用选择高端口 HTTP：代理与应用统一设置 `PORTLESS_PORT=1355`、`PORTLESS_HTTPS=0`、`PORTLESS_SYNC_HOSTS=0`、`PORTLESS_LAN=0`、`PORTLESS_TLD=localhost`，先确认既有代理配置一致；默认 HTTPS／443 与 hosts 路径涉及系统配置，先不选。**本仓未安装、未试用**，等真实 UI 任务需要这类入口时再选；已核源码 0.15.12，Apache-2.0、Node.js 24+。
+
+**实际采用提醒：稳定 URL 也要接进测试。** state-in-url 已用 0.15.5 承载八个示例应用与 CI，但 E2E 仍写死主检出的 URL，工作树前缀会令测试找错入口；不复制其 `--force`，该选项会终止同名路由的现有进程。其脚本采用高端口 HTTP，却没有关闭 hosts 同步，不能据说明认定不改系统文件。浏览器会话仍按 Cookie 与存储作用域分别验收。
+
+**依据**：[一手：固定源码] [官方 Skill／配置](https://github.com/vercel-labs/portless/blob/8930095a147b8ff7d109aa8be0846137e87ffef0/skills/portless/SKILL.md)、[`get` 实现](https://github.com/vercel-labs/portless/blob/8930095a147b8ff7d109aa8be0846137e87ffef0/packages/portless/src/cli.ts#L2463-L2471)、[hosts 开关](https://github.com/vercel-labs/portless/blob/8930095a147b8ff7d109aa8be0846137e87ffef0/packages/portless/src/hosts.ts#L64-L70)、[`--force` 实现](https://github.com/vercel-labs/portless/blob/8930095a147b8ff7d109aa8be0846137e87ffef0/packages/portless/src/routes.ts#L223-L255)；[一手：实际消费者] [启动脚本](https://github.com/asmyshlyaev177/state-in-url/blob/cf2bc0f854ae6eda4a8234c9cd5e0a1a22a8cfaf/scripts/portless.sh)、[锁定 0.15.5](https://github.com/asmyshlyaev177/state-in-url/blob/cf2bc0f854ae6eda4a8234c9cd5e0a1a22a8cfaf/pnpm-lock.yaml#L188-L190)、[E2E 入口与使用限制](https://github.com/asmyshlyaev177/state-in-url/blob/cf2bc0f854ae6eda4a8234c9cd5e0a1a22a8cfaf/AGENTS.md#demo-app-urls)；[社区] [OpenCode 使用者自报](https://www.reddit.com/r/opencodeCLI/comments/1rqtxn3/portless_cli_for_consistent_dev_urls_makes/)、[V2EX 多 Agent 工作台仍需配端口](https://www.v2ex.com/t/1250974)（后者未采用 Portless）；核实 2026-10-27。
+
 ### 2026-10-26 广扫补入：三个实际任务候选
 
 - 👀 **Sentry：复用 CI 实际选中的测试。** 下一次真实 CI 失败，交给 Agent：`读取失败 job 的原命令、配置和选中 nodeid，在同一代码版本重放；修后先验原失败，再跑项目要求的检查。` [实际 AGENTS](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/AGENTS.md#L53-L59)与[workflow](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/.github/workflows/backend.yml#L144-L162)已有消费者；artifact 只留一天，过期重建，已有明确失败用例时直接跑它。本仓未试用。
