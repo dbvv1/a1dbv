@@ -2,10 +2,19 @@
 id: B-MOBA-HEADLESS-GPU-001
 owner: dot-B
 kind: build
-status: blocked
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 069b74bc410eec318a1effb0a05a7acc619b5bcc
 result_branch: relay/b-moba-headless-gpu-001
+
+## 修改要求（本轮只补既有安全回执）
+本轮覆盖下方原拍摄执行步骤：只补原验收遗漏，不新建浏览器／GUI／GPU调用、不重拍、不模拟键鼠、不改代码、重复阈值或 stateHash 基线。原 65 张 PNG、3 份失败报告及 manifest 全部保留，拍摄门槛仍失败，不升级为品质通过。
+1. 只读本次既有任务元数据与原始记录，补三次 run 及额外诊断的实际 UTC 顺序、目的、关联 PID／进程启动身份；分清领取、预检、浏览器启动、结束。没有旧记录就明确未证明，不补造时间或把现在的检查当历史证据。
+2. 补当时“我方唯一 GPU 任务”预检与原锁的获取／owner 匹配／释放情况；仅任务级锁就如实写明。只读原 argv 的安全相关 flags，明确实际 headless、sandbox、是否含 `--no-sandbox`／`--disable-setuid-sandbox`／`--enable-unsafe-swiftshader`／自选 executable；保报告 requested options 与实际 argv 证据的区别，不上传完整命令行、用户路径或私有日志。
+3. 对每次拍摄及诊断自有 browser／preview 链，以已记录 PID、启动 UTC／身份、父子关联与任务归属复核实际退出、对应监听消失／是否被别人接管；不能仅靠脚本 finally、exit code 或 blocked 标签认定已退出。用户的 Edge／桌面／其他任务不在范围。
+4. 若仍存在且可确证本任务自有的进程，仅沿原安全清理入口定点结束，再复核身份与退出／监听；不得按进程名或浏览器种类批杀、不停止归属未明对象、不扩大进程树。归属或权限不明就原样保留并报 blocked。
+5. 仅 owner token 匹配且本任务资源确证退出后释放原锁；不抢锁、不覆盖／删除不明旧锁，不改接收端配置。若从未有锁／记录缺失，照实写缺口，不能事后创建锁冒充当时执行。
+6. 只在原结果分支的既有 `result.md` 补上述公开安全回执，另回写本卡；快进保留 `56b52f8d6e534ac17732d59e656a73706ca26d69` 全部产物。回明确已退出／仍存活／未知、检查 UTC、还缺什么；拍摄复现失败与安全退出分别判定。无新增 GPU 执行；有不明对象或缺证时保持 blocked，不循环空跑。
 
 ## 目标
 为已发布的灯光候选取得首塔同状态改前／改后 GPU 实帧，每版独立重复两次；只补拍摄证据，不改灯光、玩法、默认入口或网站。固定版 `npm run smoke` 会用 page.mouse／page.keyboard，本卡不运行、不改写它，完整 smoke 缺口保留。此为唯一新 GPU 卡，四张旧游戏卡保持 cancelled，清理卡不重跑。
