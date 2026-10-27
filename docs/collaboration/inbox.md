@@ -112,7 +112,7 @@ Git 来源的 `ref` 填已审完整 commit SHA，每条项目命令都保留 `--
 
 ### 2026-10-26 按生产问题补入
 
-- 👀 [Humanizer 3.1.0](https://github.com/blader/humanizer/blob/8c307f367c91bd974002f10f2be2965d642c13df/SKILL.md)（MIT，固定 `8c307f367c91bd974002f10f2be2965d642c13df`）：技术写作风格编辑 Skill，**未试用**，等下一份真实新稿需要精简且能保住决策语义时再试，不重开已接收批次。[Akita 自用](https://akitaonrails.github.io/en/2026/09/17/talking-about-my-ai-skills/)的是定制 3.0；原版历史[添事实 #187](https://github.com/blader/humanizer/issues/187)与[删排名／同时性 #212](https://github.com/blader/humanizer/issues/212)已有修订，当前收益待验。
+- 👀 [Humanizer 3.1.0](https://github.com/blader/humanizer/blob/8c307f367c91bd974002f10f2be2965d642c13df/SKILL.md)（MIT，固定 `8c307f367c91bd974002f10f2be2965d642c13df`）：**可辅助精简新稿，保留事实复核。** 10-27 手工按 Skill 编辑新增 mutmut 候选时，首稿缩短却弱化了“零执行不能当通过”，经非作者读者核对后恢复；未安装插件，不做批量改写，净收益仍待观察。[Akita 自用](https://akitaonrails.github.io/en/2026/09/17/talking-about-my-ai-skills/)的是定制 3.0；历史[添事实 #187](https://github.com/blader/humanizer/issues/187)与[删排名／同时性 #212](https://github.com/blader/humanizer/issues/212)已有修订，仍须逐稿核语义。
 
 ## 已处理
 

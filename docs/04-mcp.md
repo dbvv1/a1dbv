@@ -39,7 +39,7 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 代码侧过滤也能减少输入，[Anthropic 的 MCP 代码执行方案](https://www.anthropic.com/engineering/code-execution-with-mcp)是例子。参数 schema 只校验形状，CLI 同样须核参数、结构化输出和退出码；都不要把秘密拼入命令或返回值。
 
-**核 CI 时先保契约字段，再裁仓库元数据。** 本仓已在真实发布上用[三来源 JSON 投影](../experiments/ci-result-projection/README.md)：保留精确 SHA、状态、数量和分页缺口，把 4,203 字符的响应缩到 924 字符。`pending` 且 statuses 总数为零表示尚无记录，不能报成排队或通过；片段与 39 项回归可直接复用，未测 token 或总耗时收益。
+**核 CI 时先保契约字段，再裁仓库元数据。** 本仓已在真实发布上用[三来源 JSON 投影](../experiments/ci-result-projection/README.md)：保留精确 SHA、状态及说明、数量和分页缺口，把一份 4,203 字符的响应缩到 924 字符。`pending` 且 statuses 总数为零表示尚无记录；`success` 的说明也可能写着跳过审核。片段与 46 项回归可复用，未测 token 或总耗时收益。
 
 **本仓库的判断**：
 - ✅ 强模型已有 shell 且任务在授权范围内：先缩小查询、分块返回或合并读取，原生能力够用就不追加 Skill。验收要区分裁剪与丢失：先存完整报告和退出码，再提取字段；提高显示预算不能恢复已丢内容。无完整报告且重跑可能有副作用时，先查权威结果，不自动重跑。见[固定输出链路与回归](research/2026-10-13-context-tool-choice.md#工具输出显示裁剪与采集丢失)。

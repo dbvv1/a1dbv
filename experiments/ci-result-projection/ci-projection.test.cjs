@@ -24,4 +24,9 @@ for(const kind of ['checks','actions']) for(const conclusion of [undefined,{},[]
 test(()=>a.throws(()=>p('statuses',sha,{...s('pending',[]),sha:'f'.repeat(40)}),/SHA mismatch/));
 test(()=>a.equal(p('statuses',sha,s('pending',[{state:'constructor'}])).items[0].observation,'unknown'));
 test(()=>{const {projectCI}=require('./ci-projection.cjs');const o=projectCI(sha,{statuses:s('pending',[]),checks:{total_count:0,check_runs:[]},actions:{total_count:0,workflow_runs:[]}});a.deepEqual(o.sources.map(x=>x.query_scope),['commit_statuses_latest_per_context','check_runs_filter_latest','actions_head_sha_without_event_filter']);a.ok(o.sources.every(x=>!('scope' in x)));});
+// Real CodeRabbit status from usememos/memos PR #6502, head 00d217067504e2b912bfd418199eef69d23a3c6a.
+test(()=>{const o=p('statuses',sha,s('success',[{context:'CodeRabbit',state:'success',description:'Review skipped: draft pull request'}])).items[0];a.equal(o.status,'success');a.equal(o.observation,'success');a.equal(o.description,'Review skipped: draft pull request');});
+test(()=>a.equal(p('statuses',sha,s('success',[{state:'success'}])).items[0].description,null));
+test(()=>a.equal(p('statuses',sha,s('success',[{state:'success',description:null}])).items[0].description,null));
+for(const description of [{},[],1,false]) test(()=>a.throws(()=>p('statuses',sha,s('success',[{state:'success',description}])),/Invalid status description/));
 console.log(`${checks} tests passed`);

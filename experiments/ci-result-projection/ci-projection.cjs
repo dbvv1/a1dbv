@@ -18,6 +18,7 @@ function projectCIPage(kind, sha, body) {
     if (!x || typeof x !== 'object' || typeof (kind === 'statuses' ? x.state : x.status) !== 'string') throw Error('Invalid record');
     if (kind !== 'statuses' && x.head_sha !== sha) throw Error('SHA mismatch');
     if (kind !== 'statuses' && x.conclusion !== null && typeof x.conclusion !== 'string') throw Error('Invalid conclusion');
+    if (kind === 'statuses' && x.description != null && typeof x.description !== 'string') throw Error('Invalid status description');
     const status = kind === 'statuses' ? x.state : x.status;
     const conclusion = kind === 'statuses' ? null : (x.conclusion ?? null);
     const observation = kind === 'statuses'
@@ -29,6 +30,7 @@ function projectCIPage(kind, sha, body) {
     return {id:x.id ?? null, name:x.context ?? x.name ?? null,
       sha:kind === 'statuses' ? body.sha : x.head_sha,
       status, conclusion, observation,
+      ...(kind === 'statuses' ? {description:x.description ?? null} : {}),
       url:kind === 'statuses' ? link(x.target_url) : link(x.html_url, x.details_url)};
   });
   const total = body.total_count;

@@ -19,7 +19,7 @@ const input = JSON.parse(fs.readFileSync('ci-input.json', 'utf8'));
 console.log(JSON.stringify(projectCI(input.sha, input), null, 2));
 ```
 
-三来源分别输出 `query_scope`、`total_count`、`returned_count`、`missing_count`、`page_complete` 和原始状态。数量缺口说明还需取后续页；本片段只处理已声明的第一页。必要状态／计数字段缺失、畸形记录或 SHA 不符直接报错；缺少名称或可用链接时保留 `null`。取消、跳过、中性和需要操作各自保留，不合成为绿色。
+三来源分别输出 `query_scope`、`total_count`、`returned_count`、`missing_count`、`page_complete` 和原始状态，commit status 同时保留 `description`。数量缺口说明还需取后续页；本片段只处理已声明的第一页。必要状态／计数字段缺失、畸形记录或 SHA 不符直接报错；缺少名称或可用链接时保留 `null`。取消、跳过、中性和需要操作各自保留，不合成为绿色。
 
 `page_complete` 只比较当前接口的总数与返回数。GitHub 的查询上限、未接入的 CI 和必需检查规则仍在这个判断之外；三来源均零应报告“当前未观测到记录”。HTTP(S) 检查链接仅做格式筛选，未验证可达。
 
@@ -33,7 +33,9 @@ console.log(JSON.stringify(projectCI(input.sha, input), null, 2));
 node experiments/ci-result-projection/ci-projection.test.cjs
 ```
 
-39 项回归覆盖空记录、pending/error、分页缺口、畸形字段、SHA 错配、非成功终态及链接过滤；非空记录为测试夹具。未配置为本仓发布门禁。
+46 项回归覆盖空记录、pending/error、分页缺口、畸形字段、SHA 错配、非成功终态、状态说明及链接过滤；回归使用夹具。未配置为本仓发布门禁。
+
+随后在 [Datasette #3015](https://github.com/simonw/datasette/pull/3015) 与 [Memos #6502](https://github.com/usememos/memos/pull/6502) 的真实跟进中再用：Actions 的 `action_required` 被保留，但首版漏掉 CodeRabbit 的 `description`，只剩 `success`。Memos 的说明实际是 `Review skipped: draft pull request`；现版保留原状态及说明，重放原响应后可读出跳过审核。状态成功与审核执行是两件事，接收时仍要读说明和目标报告。两个固定 head 分别为 `a6f3ade873fbe91d3c6a58a76a50d359217b5c90`、`00d217067504e2b912bfd418199eef69d23a3c6a`，观察时间 2026-10-27 13:13 UTC。
 
 ## 来源
 
