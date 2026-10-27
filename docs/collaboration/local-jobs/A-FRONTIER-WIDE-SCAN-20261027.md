@@ -1,7 +1,7 @@
 # A-FRONTIER-WIDE-SCAN-20261027 · 本周值得试什么：当前原始来源广扫
 id: A-FRONTIER-WIDE-SCAN-20261027
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc27b7d270ae666525f87bbdd2421cc257a9898c
 result_branch: relay/a-frontier-wide-scan-20261027
