@@ -29,7 +29,7 @@
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | Star v7 已用存档；MOBA `ea7a064` 重开／续玩／跨标签实操通过，改键 `89f0831` 仍候选，main／Site 未变。完整 smoke 未启动，Firefox 退出原因未明；Codex 恢复提示 2026-11-02 06:08（时区未给）。[Unity 源准备](../../experiments/unity-encounter/README.md)已接收，未在引擎实跑；原任务暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收；角色两件进可玩候选，通路／命中件待接线。Star 标准件已接线、实机未过。MOBA 灯光经验已回正文；开放权重音频未听未采用，3D 仍无 mesh，Nature 恢复未知。 |
 | B-实例 | **AI 做游戏实例**：作品、作者过程与社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏、未听音。Warpact 仍未玩到；没有新增整局品质推荐。 |
-| SR | **Star-Rush 完整比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `1dd89d3`／网站 v7 未改驾驶。标准件已接入本地候选 `345f914`，pilot／off 均未获 READY 或图。`dca3409` 软件全弯 frame0 已取得，公开上传仍待原审批。车控 `0817aa0` 仍仅短段观察；普通追尾、完整同弯操控与声音待验。 |
+| SR | **Star-Rush 完整比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `1dd89d3`／网站 v7 未改驾驶。标准件已接入本地候选 `345f914`，pilot／off 均未获 READY 或图。`dca3409` 软件全弯 frame0 已取得，公开上传原调用已取消、未生成远端产物；恢复待用户决定。车控 `0817aa0` 仅短段观察；普通追尾、完整同弯操控与声音待验。 |
 | FPS | **FPS-Like 完整回合品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | main `a97d572`／网站 v12 未变。[角色候选 `a0c8d52`](https://github.com/dbvv1/FPS-Like/commit/a0c8d52b952f04195c9ae31dca0af092c2418764)已实显，射击／换弹、一败局／续局／重开已观察；场景仍平、品质增益未定。软件前后单帧已导出，多帧 tab 崩溃；完整 smoke、操控及整局视听待验。[旧预览清理](local-jobs/B-FPS-PREVIEW-CLEANUP-001.md)11 个进程已退出并复核。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
