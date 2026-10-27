@@ -19,6 +19,10 @@ Skill 提供做法，MCP 提供调用能力，插件把它们打包分发；选�
 
 **依据**：[官方安装入口](https://learn.chatgpt.com/docs/plugins)、[本地 Skill 与分发](https://learn.chatgpt.com/docs/build-skills)、[弃用提交](https://github.com/openai/skills/commit/778b0e6129cf18cbaee3bf11479f583fadae8d03)；2026-10-27 核实。本仓核过 Codex CLI 0.164.0 的插件命令帮助，安装流程未实跑。
 
+**在 Claude Code 的 IDE 面板用 Skill 审当前文件，显式给目标，再核实际输入：** 例如 `/my-skill @path/to/file`；还涉及选区时核对实际传入的行。2.1.311 已修复 VS Code／JetBrains 面板自定义 Skill 和 slash command 漏带当前文件／选区的问题，旧版不要只凭附件 chip 判断。
+
+**依据**：[官方 2.1.311 修复](https://github.com/anthropics/claude-code/blob/08c6a4f5121ae140d3c1b5c96e3e5ae53587b54b/CHANGELOG.md#L83)、[用户同文件对照与显式引用绕法 #102799](https://github.com/anthropics/claude-code/issues/102799)；核实 2026-10-27，本仓未实跑该 IDE 修复。
+
 ## 先定位实际依赖，再选文档或源码
 
 **✅ 问“项目实际怎么做”，从调用方找到已解析包、项目补丁和具体模块；问“这个版本怎样用”，再查官方文档或 Context7。** 原生导航已能找到实现就直接读，不必另装工具。版本标签不能单独证明实现身份：Zed 的 `reqwest` 实际指向重命名的 Git fork `zed-reqwest`；Vite 把 `debug` 替换成 `obug`，还给 `dotenv-expand@13.0.0` 打了改变变量展开行为的补丁。直接下载同名库或对应上游 tag，会漏掉这些差异。

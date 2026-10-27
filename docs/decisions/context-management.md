@@ -34,6 +34,10 @@ OpenAI 的当前提示实践也把“每次编辑前读完所有文档”改为�
 | 已换成无关任务，或修正后仍不断回到旧方案 | 先保存下节的检查点，再开新会话；从当前文件和最新目标恢复 |
 | 压缩报错、断流，旧会话无法继续 | 保留原会话与工作区，先核当前 diff、在途操作及已返回结果，再从已核状态接续；别因缺一句完成回复重做写入 |
 
+**同一长轮次改过 `CLAUDE.md`／`MEMORY.md`，自动压缩后又读到旧内容，先核客户端版本。** Claude Code 2.1.311 已修复这条旧副本路径；旧版显式重读当前文件，含修复的版本在下一次自然压缩后核对新内容，再接原任务。先不叠加记忆注入插件，也不人为降低压缩阈值制造试验。
+
+**依据**：[官方修复](https://github.com/anthropics/claude-code/blob/08c6a4f5121ae140d3c1b5c96e3e5ae53587b54b/CHANGELOG.md#L12)、[旧版用户对照 #92949](https://github.com/anthropics/claude-code/issues/92949#issuecomment-6119121589)；核实 2026-10-27，本仓未实跑该客户端修复，保留现有原生压缩待验状态。
+
 **全量资料读不完时，切小块可能仍无效。** AOCI 的公开故障中，压缩后合同要求重读整份索引，分块只改每次响应大小，总量没变。遇到这类工具，要沿其范围配置减少实际纳入材料；任务不需要全量索引时，明确改走源码定位。仍要求全量审查的任务则保留完整覆盖，不能把局部读取报成全量完成。
 
 **依据**：[官方] [Claude 压缩循环排障](https://code.claude.com/docs/en/troubleshooting#auto-compaction-stops-with-a-thrashing-error)；[社区原帖] [AOCI #114 与维护者回复](https://github.com/aoci-spec/aoci-code/issues/114)、[Codex 长会话断流／已改文件但回复失败](https://github.com/openai/codex/issues/53653)；[既有证据] [17 排障分流](../17-troubleshooting.md#26-越聊越笨上下文腐化与压缩丢失)、[全量重读源码核查](../research/2026-10-26-context-reload-scope.md)，核实 2026-10-26。公开故障是特定环境的自述，本文未复现这些客户端故障。
