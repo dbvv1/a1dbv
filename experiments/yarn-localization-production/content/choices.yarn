@@ -1,0 +1,15 @@
+title: hangar_routes
+---
+<<declare $has_key = false>>
+<<declare $can_walk = true>>
+<<declare $need = 2>>
+<<declare $route = "none">>
+Navigator: 选一条路。 #line:route_prompt #context:route_choice
+-> Navigator: 用 {$need} 根保险丝打开舱门。 <<if $has_key>> #line:route_hatch #context:locked_route
+    <<set $route = "hatch">>
+    Mechanic: 舱门路线已选。 #line:route_hatch_result #context:route_result
+-> Navigator: 走维修楼梯。 <<if $can_walk>> #line:route_stairs #context:open_route
+    <<set $route = "stairs">>
+    Mechanic: 楼梯路线已选。 #line:route_stairs_result #context:route_result
+Navigator: 路线选择结束。 #line:route_end #context:after_choice
+===

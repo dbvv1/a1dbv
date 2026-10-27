@@ -1,0 +1,26 @@
+{
+  "line:route_prompt": {
+    "text": "Choose a route.",
+    "reviewedSource": "d5f7565943df7a96d81caefffc341b0025ac45b1539bdc5d54739375c71739af"
+  },
+  "line:route_hatch": {
+    "text": "Open the hatch using {0} fuses.",
+    "reviewedSource": "5577d25409fe0776543daf248121fa7959761ebbb4938d79939cfcd893cb86d1"
+  },
+  "line:route_hatch_result": {
+    "text": "Hatch route selected.",
+    "reviewedSource": "d15141d837d8287cebb898cecfa9189f0442dbf13205837b9b618de8c33a389e"
+  },
+  "line:route_stairs": {
+    "text": "Take the service stairs.",
+    "reviewedSource": "528efe08e967bc873a2e8e5f1ed13abb7da864399743eff4fc86166f7922a213"
+  },
+  "line:route_stairs_result": {
+    "text": "Stair route selected.",
+    "reviewedSource": "5ca4057610b26b90d43534cbde935fa300e301ecd7ae54318b75f2fde61486c4"
+  },
+  "line:route_end": {
+    "text": "Route choice finished.",
+    "reviewedSource": "515c5a8b873e2f8ba6feddb5e810f89cf1a159bab6581847676fae3daaeeb327"
+  }
+}

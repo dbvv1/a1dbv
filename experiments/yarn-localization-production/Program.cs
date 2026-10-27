@@ -17,6 +17,8 @@ static class Probe
   record AuthorLine(string Id, string Text, string Speaker, string Context, string Stamp, string RawText);
   record Bundle(Yarn.Program Program, Dictionary<string, AuthorLine> Lines);
   record Shown(string Id, string Speaker, string Name, string Text);
+  record ShownOption(int Id, bool Available, Shown Line);
+  record ChoiceRun(ShownOption[] Offered, ShownOption[] Displayed, List<Shown> Lines, string Route);
 
   static void Require(bool condition, string message)
   {
@@ -77,6 +79,17 @@ static class Probe
     }
   }
 
+  static Shown Localize(Line line, Bundle bundle, Dictionary<string, Translation> table, string locale)
+  {
+    var data = bundle.Lines[line.ID]; // ID and substitutions come from the actual VM.
+    var text = locale == "en" ? table[line.ID].Text : data.Text;
+    var expanded = LineParser.ExpandSubstitutions(text, line.Substitutions);
+    var parsed = Parser.ParseStringAndIncludeMarkupDiagnostics(expanded, locale);
+    Require(parsed.diagnostics.Count == 0, "Runtime markup error");
+    var speaker = Speakers.Values.Single(s => s.Id == data.Speaker);
+    return new(line.ID, data.Speaker, speaker.Names[locale], parsed.markup.Text);
+  }
+
   static List<Shown> Play(Bundle bundle, Dictionary<string, Translation> table, string locale)
   {
     // Validate the complete candidate before any line enters the real VM consumer.
@@ -88,22 +101,60 @@ static class Probe
     dialogue.LogErrorMessage = message => throw new InvalidDataException(message);
     dialogue.OptionsHandler = _ => throw new InvalidDataException("Unexpected choice in this linear fixture");
     dialogue.CommandHandler = _ => throw new InvalidDataException("Unexpected game command in this fixture");
-    dialogue.LineHandler = line =>
-    {
-      var data = bundle.Lines[line.ID]; // ID and substitutions are emitted by Yarn's actual VM.
-      var text = locale == "en" ? table[line.ID].Text : data.Text;
-      var expanded = LineParser.ExpandSubstitutions(text, line.Substitutions);
-      var parsed = Parser.ParseStringAndIncludeMarkupDiagnostics(expanded, locale);
-      Require(parsed.diagnostics.Count == 0, "Runtime markup error");
-      var speaker = Speakers.Values.Single(s => s.Id == data.Speaker);
-      shown.Add(new(line.ID, data.Speaker, speaker.Names[locale], parsed.markup.Text));
-    };
+    dialogue.LineHandler = line => shown.Add(Localize(line, bundle, table, locale));
     var completed = false;
     dialogue.DialogueCompleteHandler = () => completed = true;
     dialogue.SetNode("hangar_02");
     do { dialogue.Continue(); } while (dialogue.IsActive);
     Require(completed, "VM did not complete");
     return shown;
+  }
+
+  // For a custom core consumer only. Unity projects normally keep the official
+  // OptionsPresenter/OptionItem. These IDs belong to the current option batch,
+  // not to a saved story or another dialogue session.
+  static void SelectAvailable(Dialogue dialogue, OptionSet current, int optionId)
+  {
+    var matches = current.Options.Where(option => option.ID == optionId).ToArray();
+    Require(matches.Length == 1 && matches[0].IsAvailable, "Unknown or unavailable option");
+    dialogue.SetSelectedOption(matches[0].ID);
+  }
+
+  static ChoiceRun PlayChoices(Bundle bundle, Dictionary<string, Translation> table, string locale,
+    Action<Dialogue, OptionSet, ShownOption[]> select,
+    bool hasKey = false, bool canWalk = true, bool hideUnavailable = true, bool reverse = false)
+  {
+    if (locale == "en") Validate(bundle, table);
+    Require(locale is "en" or "zh-Hans", "Unsupported locale");
+    var variables = new MemoryVariableStore();
+    variables.SetValue("$has_key", hasKey);
+    variables.SetValue("$can_walk", canWalk);
+    variables.SetValue("$route", "none");
+    var dialogue = new Dialogue(variables);
+    dialogue.SetProgram(bundle.Program);
+    dialogue.LogErrorMessage = message => throw new InvalidDataException(message);
+    dialogue.CommandHandler = _ => throw new InvalidDataException("Unexpected game command in choice fixture");
+    var lines = new List<Shown>();
+    dialogue.LineHandler = line => lines.Add(Localize(line, bundle, table, locale));
+    ShownOption[] offered = [], displayed = [];
+    var batches = 0;
+    dialogue.OptionsHandler = current =>
+    {
+      Require(++batches == 1, "This fixture expects one option batch");
+      offered = current.Options.Select(option => new ShownOption(option.ID, option.IsAvailable,
+        Localize(option.Line, bundle, table, locale))).ToArray();
+      // Filtering and reordering change presentation only; retain the original ID.
+      displayed = offered.Where(option => !hideUnavailable || option.Available).ToArray();
+      if (reverse) Array.Reverse(displayed);
+      select(dialogue, current, displayed); // Synchronous test input, not a Unity button callback.
+    };
+    var completed = false;
+    dialogue.DialogueCompleteHandler = () => completed = true;
+    dialogue.SetNode("hangar_routes");
+    do { dialogue.Continue(); } while (dialogue.IsActive);
+    Require(completed && batches == 1, "Choice VM did not finish exactly one option batch");
+    Require(variables.TryGetValue<string>("$route", out var route), "VM route variable missing");
+    return new(offered, displayed, lines, route!);
   }
 
   static void Reject(Action action)
@@ -125,6 +176,8 @@ static class Probe
       var revised = Compile(revisedSource);
       var english = ReadTranslations(Path.Combine(content, "base.en.json"));
       var revisedEnglish = ReadTranslations(Path.Combine(content, "revised.en.json"));
+      var choices = Compile(File.ReadAllText(Path.Combine(content, "choices.yarn")));
+      var choicesEnglish = ReadTranslations(Path.Combine(content, "choices.en.json"));
       var review = NeedsReview(revised, english);
       var tests = new (string Name, Action Body)[] {
         ("compiler-to-real-VM-bilingual", () => {
@@ -158,6 +211,63 @@ static class Probe
           try { File.ReadAllText(Path.Combine(content, "absent.yarn")); }
           catch (FileNotFoundException) { return; }
           throw new Exception("Missing source unexpectedly exists");
+        }),
+        ("filtered-button-index-reproduces-wrong-branch", () => {
+          // Deliberately wrong adapter: the first displayed button is NOT option 0.
+          var wrong = PlayChoices(choices, choicesEnglish, "en", (d, _, _) => d.SetSelectedOption(0));
+          var right = PlayChoices(choices, choicesEnglish, "en",
+            (d, current, shown) => SelectAvailable(d, current, shown[0].Id));
+          Require(wrong.Displayed.Length == 1 && wrong.Displayed[0].Id == 1
+            && wrong.Displayed[0].Line.Id == "line:route_stairs", "Expected a filtered first button");
+          Require(!wrong.Offered[0].Available && wrong.Route == "hatch"
+            && wrong.Lines.Any(line => line.Id == "line:route_hatch_result"), "Wrong-ID counterexample not reproduced");
+          Require(right.Route == "stairs" && right.Lines.Any(line => line.Id == "line:route_stairs_result"),
+            "Original option ID did not reach the displayed route");
+          Console.WriteLine($"CHOICE displayed={wrong.Displayed[0].Line.Id} originalID=1 wrongSubmit=0 route={wrong.Route}; correctSubmit=1 route={right.Route}");
+        }),
+        ("localized-filtered-and-reordered-options-retain-identity", () => {
+          foreach (var locale in new[] { "zh-Hans", "en" }) {
+            var filtered = PlayChoices(choices, choicesEnglish, locale,
+              (d, current, shown) => SelectAvailable(d, current, shown[0].Id));
+            var reordered = PlayChoices(choices, choicesEnglish, locale,
+              (d, current, shown) => SelectAvailable(d, current, shown[0].Id), hasKey: true, reverse: true);
+            var hatch = PlayChoices(choices, choicesEnglish, locale,
+              (d, current, shown) => SelectAvailable(d, current, shown[0].Id), hasKey: true, canWalk: false);
+            Require(filtered.Route == "stairs" && reordered.Route == "stairs" && hatch.Route == "hatch",
+              "Locale, filtering or display order changed the selected branch");
+            Require(reordered.Displayed.Select(option => option.Id).SequenceEqual(new[] { 1, 0 }), "Reorder was not exercised");
+            Require(hatch.Displayed[0].Line.Text.Contains("2")
+              && hatch.Displayed[0].Line.Name == (locale == "en" ? "Navigator" : "领航员"), "Option localization lost VM substitution or speaker");
+          }
+        }),
+        ("unavailable-and-unknown-options-reject-before-VM-selection", () => {
+          var result = PlayChoices(choices, choicesEnglish, "en", (d, current, shown) => {
+            Require(shown.Length == 2 && !shown[0].Available, "Expected disabled option to remain visible");
+            Reject(() => SelectAvailable(d, current, -1));
+            Reject(() => SelectAvailable(d, current, 99));
+            Reject(() => SelectAvailable(d, current, shown[0].Id));
+            SelectAvailable(d, current, shown[1].Id); // Same pending VM still accepts a valid choice.
+          }, hideUnavailable: false);
+          Require(result.Route == "stairs" && !result.Lines.Any(line => line.Id == "line:route_hatch_result"),
+            "Rejected selection entered the hidden branch");
+        }),
+        ("no-available-option-explicitly-falls-through", () => {
+          var result = PlayChoices(choices, choicesEnglish, "en", (d, current, shown) => {
+            Require(shown.Length == 0 && current.Options.All(option => !option.IsAvailable), "Expected no available choice");
+            // This fixture chooses Yarn's no-selection fallthrough policy, not option 0.
+            d.SetSelectedOption(Dialogue.NoOptionSelected);
+          }, canWalk: false);
+          Require(result.Route == "none" && result.Lines.Select(line => line.Id)
+            .SequenceEqual(new[] { "line:route_prompt", "line:route_end" }), "No-option path entered a branch or stopped early");
+        }),
+        ("choice-localization-rejects-missing-text-and-parameter", () => {
+          var broken = new Dictionary<string, Translation>(choicesEnglish);
+          broken.Remove("line:route_stairs");
+          Action<Dialogue, OptionSet, ShownOption[]> shouldNotSelect = (_, _, _) => throw new Exception("Invalid choice table reached the VM");
+          Reject(() => PlayChoices(choices, broken, "en", shouldNotSelect));
+          broken = new(choicesEnglish);
+          broken["line:route_hatch"] = broken["line:route_hatch"] with { Text = "Open the hatch." };
+          Reject(() => PlayChoices(choices, broken, "en", shouldNotSelect));
         })
       };
       foreach (var test in tests) { test.Body(); Console.WriteLine("PASS " + test.Name); }

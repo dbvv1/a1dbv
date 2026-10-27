@@ -1233,6 +1233,8 @@ Tytarenko 2026-09 Unity 制作复盘报告二改旧图残留、胜线覆盖不�
 
 **二改只送有影响的行复审，再让运行消费者读新值。** 实验把 020 的零件改保险丝，040 的句子不变但改说话人，050 只改语境，另增 070；待审恰为这四行，010／030／060 继续有效。旧译表先被拒，第二版固定译表进真实 VM 后输出 `We need 2 fuses to open the hatch.`，040 显示 `Navigator: Too late.`。这比“两个 JSON 格式正确”多验证了实际身份、变量与人物消费者。
 
+**选项翻译、隐藏和排序只改展示，选择交回原 `Option.ID`。** Unity 保官方 OptionsPresenter／OptionItem；自定义消费者按 `Option.Line.ID` 查译文，提交时在本组选项中核 ID 与 `IsAvailable`，不用过滤后的按钮下标代替。原实验已复现“隐藏不可用的第 0 项后，首按钮显示楼梯却误入舱门”，保原 ID 后才进入楼梯分支；双语重排、拒绝不可用项及无可用项的明确继续政策见[实际选项消费者](../../experiments/yarn-localization-production/README.md#choice-identity)（2026-10-27）。选项 ID 只属本组，不作跨会话存档身份。
+
 实验 JSON／作者快照签名只用于这个预检，**不是可直接导入 Unity 的表，也不是语言质量评分**。译文 fixture 的签名是合成约定；不能让 AI 自动重算签名就宣称审过。正式项目仍用原生导入器进入下文 Runner／Provider／Presenter；行外剧情、变量语义、字体、字幕布局、语音与推进另验，不能拿终端行替代。这里运行的是核心 NuGet 3.2.2，下面 Unity 插件 3.2.8 的接线仍是固定源码研究。
 
 来源与范围：[实际调用点、二改与社区对照](../../docs/research/wp10-content.md#yarn-compiler-vm-localization)，官方／固定源码／云端 Compiler＋VM 为[一手]，审校选择为[研究]；2026-10-26。未运行 Unity 表导入、字幕或语音。
