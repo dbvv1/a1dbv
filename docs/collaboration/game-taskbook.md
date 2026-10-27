@@ -94,26 +94,27 @@ WP0–WP13 的页面现由[模块与制作链地图](../../domains/game-dev/READ
 
 新案例按以下做法建；Star-Rush 是早于本约定的存量作品，第 2 条只在它重构时适用：
 
-1. **新案例一次只开一个，已开的并行推进**。先在 brief 选品类标杆作参照（玩法用品类标准做法，不求创新），再做纵切片：一张图、一种模式、少量角色，走到“可玩 → 第二次需求修改”（§1 第 4 条），再扩内容。
+1. **新案例一次只开一个，已开的并行推进**。先在 brief 选品类标杆作参照（玩法用品类标准做法，不求创新），再做纵切片：一张图、一种模式、少量角色，内容类别与完整一局相同、数量缩小，走到“可玩 → 第二次需求修改”（§1 第 4 条），再扩内容。
 2. **模拟与渲染分离**。玩法跑在固定步长、按种子可复现的模拟层，渲染和界面只读状态、只发输入命令。同一份逻辑能在 Node 里无画面批量运行，机器人对战、数值回归和回放都能自动验收。
 3. **功能是门槛，质量要评估**。单元测试、无画面模拟断言和无头浏览器 smoke 是合入门槛；完成按 [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) 的质量单元评估。需要人听、看、玩的记入“待人工验收”，不阻塞后续工作。
 4. **知识双向流动**。模块线做出的实现接进案例的可玩版本；案例跑通、推翻或改写了某个模块的做法，就更新该模块页正文，附案例提交链接。案例仓库只记作品，不记研究结论。
-5. **只借玩法**。品类机制可以借鉴；名字、角色、地图布局、美术和音效原创，或使用许可清楚的素材。每个素材目录写明来源与许可。
+5. **只借玩法**。品类标准机制和标杆公开可查的数值量级（移速、射速、击杀所需时间、兵线时间）直接作起点，再按实测校准，不另造一套；不整套搬同一款的技能组、装备属性表和界面布局（《太极熊猫》诉《花千骨》案即以这种整套对应判赔）；名字、角色、地图布局、美术和音效原创，或使用许可清楚的素材。每个素材目录写明来源与许可。
 6. **网页实现的适用范围**。网页案例能检验玩法规则、AI 行为、确定性模拟与联网、测试方法和资源制作前半段；编辑器与场景序列化、导入设置、动画状态机、材质光照、引擎物理、构建与剖析证明不了，这部分写在 `unity/`、`unreal/` 时以官方文档与工具为据，本机接收端能跑引擎时补小工程实测。网页同样能做到高品质。
 
 每个案例仓库的指导只有三份，工具说明另放 `docs/`：`AGENTS.md` 写执行约定（`CLAUDE.md` 用 `@AGENTS.md` 引用同一份），`docs/brief.md` 写设计任务书（体验目标、切片范围、要跑通的模块、里程碑），`README.md` 面向玩家，`docs/quality.md` 放当前片段截图、参照链接与差距清单（每轮替换）。进度与阻塞只写在本仓库 TASKS，不在案例仓库另建任务板；开发经过写进提交说明。
 
 ## 7. 下发本机模型的游戏任务
 
-**做法已经写成 Skill 或规格、结果能被检查的单元下发本机模型；选差距、定目标、判定“确实更好”和发布留在 dot。** 任务文件按 [local-jobs](local-jobs/README.md) 的四件事写，接收端的模型较弱，规格要把数字、文件和接口写死。
+**做法已经写成 Skill 或规格、结果能被检查的单元下发本机模型；选差距、定目标、判定“确实更好”和发布留在 dot。** 任务文件按 [local-jobs](local-jobs/README.md) 的四件事写并标 `kind`；接收端的模型较弱，规格要把数字、文件和接口写死。案例仓库的任务不用自动接收。
 
-| 任务 | 按什么做 | 规格必须写清 | 怎样算做成 |
-|---|---|---|---|
-| 案例拍摄模式与截图脚本 | [capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md) | 案例仓库、机位表（位置、朝向、视场角、分辨率）、只改哪些文件；没有固定步长模拟层的案例（如 Star-Rush）写明改成虚拟时钟 | 每个机位连拍两次画面一致；正常游玩不受影响；测试覆盖参数缺失与非法机位 |
-| 真 GPU 截图与录像 | 同上，本机有窗口 Chromium | 版本 SHA、机位、输入脚本、帧数 | 文件名带 `gpu`，改前／改后齐全（参照图在本地合成，不进结果分支）；同时只跑一个 GPU 任务 |
-| 目标效果图候选 | [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) §2 | 输入截图、品类、美术方向一句话；写死模型、量化与工作流文件（dot 先自己跑通一次再下发） | 每个机位 2–3 张构图未变的候选，dot 选定 |
-| 资源准备 | 制作链页的规格 | 来源与许可、目标格式（glTF＋KTX2）、调色板、面数与 LOD、输出目录 | 许可文件随资源；规格脚本检查通过；同机位截图可见 |
-| 模块参考实现对照 | [game-module-from-case](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md) §2 | 机制、两三个固定 SHA 的仓库、要回答的问题 | 每条结论有源码行链接；dot 据此定接口 |
-| 模块编码单元 | 已定接口 | 接口签名、所属模拟层文件、必须通过的测试 | 测试与无画面模拟通过，不改接口外文件 |
-| AI 做游戏实例的候选收集 | [ai-made-games-scout](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md) §1 | 关心的差距、来源范围、数量 | 每个作品有可玩链接或完整录像、作者原文链接和截图；试玩、评水平和可借做法由 dot 做 |
-| 模块页照做实测 | [write-task-guide](../../templates/generic/.claude/skills/write-task-guide/SKILL.md) | 页面全文、真实任务 | 读者只记卡点、不改页面 |
+| 任务 | `kind` | 按什么做 | 规格必须写清 | 怎样算做成 |
+|---|---|---|---|---|
+| 案例拍摄模式与截图脚本 | `build` | [capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md) | 案例仓库、机位表（位置、朝向、视场角、分辨率）、只改哪些文件；没有固定步长模拟层的案例（如 Star-Rush）写明改成虚拟时钟 | 每个机位连拍两次画面一致；正常游玩不受影响；测试覆盖参数缺失与非法机位 |
+| 真 GPU 截图与录像 | `build` | 同上，本机有窗口 Chromium | 版本 SHA、机位、输入脚本、帧数 | 文件名带 `gpu`，改前／改后齐全（参照图在本地合成，不进结果分支）；同时只跑一个 GPU 任务 |
+| 目标效果图候选 | `build` | [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) §2 | 输入截图、品类、美术方向一句话；写死模型、量化与工作流文件（dot 先自己跑通一次再下发） | 每个机位 2–3 张构图未变的候选，dot 选定 |
+| 内容来源候选 | `explore` | [game-content-production](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md) §3 与[制作链页](../../domains/game-dev/assets/) | 内容清单中的条目、风格说明与标准件截图、许可要求 | 每条候选有来源链接、许可原文链接和预览图；dot 按标准件选定 |
+| 内容取得与归一 | `build` | 同上 §3–4 | 选定的来源、目标格式（glTF＋KTX2）、面数与 LOD、输出目录；需要登录的网页来源（如 Mixamo）和付费工具不下发 | 许可说明随资源；归一脚本可重跑；阵容图和同机位截图可见 |
+| 模块参考实现对照 | `explore` | [game-module-from-case](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md) §2 | 机制、两三个固定 SHA 的仓库、要回答的问题 | 每条结论有源码行链接；dot 据此定接口 |
+| 模块编码单元 | `build` | 已定接口 | 接口签名、所属模拟层文件、必须通过的测试 | 测试与无画面模拟通过，不改接口外文件 |
+| AI 做游戏实例的候选收集 | `explore` | [ai-made-games-scout](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md) §1 | 关心的差距、来源范围、数量 | 每个作品有可玩链接或完整录像、作者原文链接和截图；试玩、评水平和可借做法由 dot 做 |
+| 模块页照做实测 | `reader-test` | [write-task-guide](../../templates/generic/.claude/skills/write-task-guide/SKILL.md) | 页面全文、真实任务 | 读者只记卡点、不改页面 |
