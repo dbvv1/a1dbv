@@ -4,6 +4,10 @@
 
 ## 待处理
 
+### 2026-10-27：用户带入 GPT-6.1 Terra
+
+- 👀 **官方模型资料与 Artificial Analysis 六档 effort 评测已核，已收录进 [02 模型与成本](../02-models-and-cost.md#terra-effort-evidence)**，用于区分能力分数、单价与每题成本；本仓未调用模型实测。带入渠道为本 ChatGPT 对话，本次记 1 项漏检；公开来源、首次核实日期与发现时差边界见[校准记录](../research/2026-10-15-exploration-evidence.md#2026-10-27用户带入-gpt-61-terra-漏检)。
+
 <a id="portless-worktree-urls"></a>
 ### 2026-10-27：Portless 命名开发入口
 

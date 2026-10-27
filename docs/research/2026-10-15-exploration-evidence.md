@@ -437,6 +437,8 @@ P60已核维护链没有新增运行结果，本轮不重报发现。没有两�
 
 模型取舍名册补充（P65，2026-10-22）：新读[Stet作者的同题维护对照](https://www.stet.sh/blog/gpt-6-1-sol-vs-gpt-6-sol)，核公开提示／补丁／清单并追[Tor固定测试覆盖产物](https://github.com/Tor-Production/sol-coding-benchmark/tree/af860aa8cbbcbbca3dde3b44d48e7dda292b9238)；真实维护与构造题分开，判定器过窄不冒充模型能力差。最高水平卡、排除项及取舍归[P65记录](2026-10-10-audit.md#p65模型换代与effort的实际质量差异)。[一手／社区／研究]
 
+模型发布入口补充（2026-10-27）：复用已有 OpenAI 来源，读取 [API changelog](https://developers.openai.com/api/docs/changelog) 的新型号，再回官方模型页与 [Artificial Analysis release 页](https://artificialanalysis.ai/models/releases/gpt-6-1-terra)逐档核能力与成本；仅复查旧候选会漏掉新发布。后者是独立评测方原始结果，保留评测版本与成本口径，和本仓实测分开。[一手／第三方评测；核实 2026-10-27]
+
 交付接收名册补充（P61，2026-10-21）：新读[Stephen Toub 的 Copilot runtime 生产迁移复盘](https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/)，追[VS Code 同版本接管产物](https://github.com/microsoft/vscode/pull/341861)及[下一版采用](https://github.com/microsoft/vscode/pull/341922)；不把自动修绿视为可以改权限／判定器。固定链与自报／未核范围见[长任务研究](2026-10-12-long-task-evidence.md#p61整轮交付与争议接管)。[一手／研究]
 
 升级维护名册补充（P60，2026-10-21）：从[LangChain／Sydney Runkle的Delta Channels](https://www.langchain.com/blog/delta-channels-evolving-agent-runtime)追存储兼容承诺，再核LangGraph发行与[DeerFlow公开补丁退役](https://github.com/bytedance/deer-flow/pull/5734)。原文与固定修订已读，首次新写冷读及后续轮次的范围归[长任务研究](2026-10-12-long-task-evidence.md)；mock基准、作者运行和本仓验证分列。[一手／研究]
@@ -502,6 +504,14 @@ P60已核维护链没有新增运行结果，本轮不重报发现。没有两�
 **处理结果是 2 项适用漏项补成选择、3 项已有机制的新来源、3 项不进入当前试用、2 条时点消息待核；不是 10/10 重要能力漏检。** 两个补入项首次可核本仓登记为 10-26：相对 HN 刊出，usage-guard 为 3、lights-on 为 6 个上海日历日；它们真正最早公开到实际发现的时差仍未知。没有同口径前一周样本，不与历史 6/25、下面的 13 项目录或本轮其他渠道计算“漏检下降”。
 
 下一轮继续同一查询窗口／前 10 条规则，并补一个不限定 Claude Code 的独立入口，避免关键词造成平台偏置。候选取舍与试用状态见[收件箱](../collaboration/inbox.md)，官方／开源／社区渠道覆盖和受阻处见[来源回执](#2026-10-26固定来源覆盖)；核实 2026-10-26。
+
+### 2026-10-27：用户带入 GPT-6.1 Terra 漏检
+
+**本次记 1 项用户带入漏检，单列于既有周样本。** 带入渠道为本 ChatGPT 对话；2026-10-27 02:40 UTC 固定远端 `main` 为 `ece089cf34eab972a7a3a434d7a8394cd5cd2647`，全仓已跟踪文本及 02／模型角色决策页／13 均未收录 GPT-6.1 Terra。可确认的是既有扫描未捕获已公开的新模型，具体原因待定位。
+
+官方 changelog 刊出日期为 **2026-10-26**，本次首次核实为 **2026-10-27**；原文没有精确发布时间，实际发现时差未知。已核官方模型页与 Artificial Analysis Intelligence Index **v4.3.2** 的六档 effort 数据，正文去向为 [02 模型与成本](../02-models-and-cost.md)，接收状态见[收件箱](../collaboration/inbox.md#2026-10-27用户带入-gpt-61-terra)；本仓未调用模型实测。既有上海 10-19 至 10-25 完整自然周的 10 条 HN 成员、分母与结果保持原样，本个案不并入计算漏检率或变化。
+
+来源：[官方发布记录](https://developers.openai.com/api/docs/changelog)、[官方模型页](https://developers.openai.com/api/docs/models/gpt-6.1-terra)、[Artificial Analysis 原始评测](https://artificialanalysis.ai/models/releases/gpt-6-1-terra)；[研究：用户带入个案与固定树查漏]；核实 2026-10-27。
 
 ### 2026-10-26：冷启动历史补充
 
