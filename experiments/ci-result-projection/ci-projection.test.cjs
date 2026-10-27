@@ -1,0 +1,27 @@
+const {strict: a} = require('node:assert');
+const {projectCIPage:p} = require('./ci-projection.cjs');
+const sha='145801ec43790725a1c39ac765bdd3ba9721298b';
+const s=(state,statuses,total_count=statuses.length)=>({sha,state,statuses,total_count});
+const run=(status,conclusion)=>({id:1,head_sha:sha,status,conclusion,html_url:'https://github.com/dbvv1/a1dbv/actions/runs/1'});
+let checks=0; function test(f){f();checks++;}
+test(()=>{let o=p('statuses',sha,s('pending',[]));a.equal(o.observation,'no_records_observed');a.equal(o.page_complete,true);a.equal(o.combined_state,'pending')});
+test(()=>a.equal(p('statuses',sha,s('pending',[{state:'pending'}])).items[0].observation,'pending'));
+test(()=>a.equal(p('statuses',sha,s('failure',[{state:'error'}])).items[0].observation,'failure'));
+test(()=>{let o=p('statuses',sha,s('success',[{state:'success'}],101));a.equal(o.missing_count,100);a.equal(o.page_complete,false)});
+test(()=>a.equal(p('checks',sha,{total_count:1,check_runs:[run('queued',null)]}).items[0].observation,'pending'));
+test(()=>a.equal(p('actions',sha,{total_count:1,workflow_runs:[run('completed','failure')]}).items[0].observation,'failure'));
+for(const c of ['neutral','skipped','cancelled','action_required','stale']) test(()=>a.equal(p('checks',sha,{total_count:1,check_runs:[run('completed',c)]}).items[0].observation,c));
+test(()=>a.equal(p('checks',sha,{total_count:1,check_runs:[run('completed',null)]}).items[0].observation,'unknown'));
+test(()=>a.throws(()=>p('checks',sha,{total_count:1,check_runs:[{...run('completed','success'),head_sha:'f'.repeat(40)}]}),/SHA/));
+test(()=>a.throws(()=>p('statuses',sha,{statuses:[]})));
+test(()=>{let o=p('statuses',sha,s('failure',[{state:'failure',target_url:'javascript:alert(1)',url:'https://api.github.com/example'}]));a.equal(o.items[0].url,null)});
+test(()=>a.equal(p('actions',sha,{total_count:0,workflow_runs:[]}).observation,'no_records_observed'));
+test(()=>a.throws(()=>p('statuses',sha,s('pending',[{}])),/Invalid record/));
+test(()=>{const {projectCI}=require('./ci-projection.cjs'); const o=projectCI(sha,{statuses:s('pending',[]),checks:{total_count:0,check_runs:[]},actions:{total_count:0,workflow_runs:[]}}); a.equal(o.sources.length,3);a.ok(o.sources.every(x=>x.page_complete && x.observation==='no_records_observed'));});
+for(const kind of ['toString','constructor','__proto__','other']) test(()=>a.throws(()=>p(kind,sha,{}),/Invalid source kind/));
+for(const state of [undefined,null,{},1]) test(()=>a.throws(()=>p('statuses',sha,s(state,[])),/Invalid combined state/));
+for(const kind of ['checks','actions']) for(const conclusion of [undefined,{},[],1,true]) test(()=>a.throws(()=>p(kind,sha,{total_count:1,[kind==='checks'?'check_runs':'workflow_runs']:[run('completed',conclusion)]}),/Invalid conclusion/));
+test(()=>a.throws(()=>p('statuses',sha,{...s('pending',[]),sha:'f'.repeat(40)}),/SHA mismatch/));
+test(()=>a.equal(p('statuses',sha,s('pending',[{state:'constructor'}])).items[0].observation,'unknown'));
+test(()=>{const {projectCI}=require('./ci-projection.cjs');const o=projectCI(sha,{statuses:s('pending',[]),checks:{total_count:0,check_runs:[]},actions:{total_count:0,workflow_runs:[]}});a.deepEqual(o.sources.map(x=>x.query_scope),['commit_statuses_latest_per_context','check_runs_filter_latest','actions_head_sha_without_event_filter']);a.ok(o.sources.every(x=>!('scope' in x)));});
+console.log(`${checks} tests passed`);
