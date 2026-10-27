@@ -175,6 +175,24 @@
 核实：2026-10-26（UTC+8）。这里证明固定版本、同一设备上的离线导航与 Crowd 数值链，未证明跨设备确定性、中途 Crowd 快照恢复、动态障碍、规模吞吐或 Unity／UE 行为；MOBA 的 Crowd 消费者仍待接入。正式移动仍沿已有位移所有者／技能打断／动画模块，旧门权限、停距与人工体验验收保留。
 
 
+<a id="navigation-result-ownership"></a>
+### 6. 查询结果寿命：窄适配保住失败出口与原路径行为
+
+**固定 Recast JS 0.43.1 的失败查询需要归还已取得的原生结果；用公共低层 API 补清理，不重写导航。** 对外仍返回独立 JS 坐标，兼容原 helper 的局部路径夹点与错误结果；完整可达性由移动政策另判。本地消费者实证支持这项窄改，不支持浏览器崩溃归因。
+
+**源码与版本。** 官方固定 `8769e8b` 的 [package.json](https://github.com/isaac-mason/recast-navigation-js/blob/8769e8b9995f127033af9f6e6eeac3fad7d66201/packages/recast-navigation-core/package.json)标 `@recast-navigation/core` 0.43.1／MIT，配套 WASM 同版；沿上一节已核 npm gitHead。该版 [computePath](https://github.com/isaac-mason/recast-navigation-js/blob/8769e8b9995f127033af9f6e6eeac3fad7d66201/packages/recast-navigation-core/src/nav-mesh-query.ts#L651-L738)在走廊失败／为空、末多边形夹点失败、直线路径失败时提前返回，清理只在正常尾部。相邻 [低层契约与实现](https://github.com/isaac-mason/recast-navigation-js/blob/8769e8b9995f127033af9f6e6eeac3fad7d66201/packages/recast-navigation-core/src/nav-mesh-query.ts#L739-L921)把走廊与三个直线路径数组交给调用者；传入原生走廊只借用，传入 JS 数组才由方法内部建立并释放临时走廊。[数组实现](https://github.com/isaac-mason/recast-navigation-js/blob/8769e8b9995f127033af9f6e6eeac3fad7d66201/packages/recast-navigation-core/src/arrays.ts#L50-L75)区分借用堆视图与独立复制。对照 [官方 main](https://github.com/isaac-mason/recast-navigation-js/blob/main/packages/recast-navigation-core/src/nav-mesh-query.ts)仍见同样出口；[changelog](https://github.com/isaac-mason/recast-navigation-js/blob/main/packages/recast-navigation-core/CHANGELOG.md)的 0.43.1 是 TypeScript 数组兼容修改。
+
+| 已运行范围 | 结果与可支持的判断 |
+|---|---|
+| MOBA-Like 本地候选、实际关卡数据；原 helper 与薄适配各 10,000 次失败查询 | 原 `UnsignedIntArray` wrapper 残留 10,000，适配后 0；销毁导航后仍分别为 10,000／0。WASM 容量同为 64 MiB，wrapper 计数不等于 live native bytes 或进程 RSS。 |
+| 独立 CPU 复核：实际关卡＋断开的生成网格 | 14 项导航／寿命测试通过，含局部成功路径；另有 1,008 组新旧结果完全相同（603 成功、405 失败）。另验持有后的异常释放、1,000 次失败不积累数组、返回点经过后续 500 次查询仍不变。 |
+| 同一候选的消费者回归 | 完整 198 项测试通过；200 局 CPU 对局全部结束、无错误／超时，3 次回放相同。这里检验模拟兼容；画面、操作与手感仍由相应的浏览器／真人验收判断。 |
+
+**采用边界。** 只清本次已返回、由调用者持有的数组；库内部尚未返回结果时的分配异常以及 Query／默认 filter 自身的销毁不在这项修复内。两次已观察的浏览器崩溃路径失败数都是 0，不能据这处泄漏解释或宣称修好它们。更高版本若已修复，先在本项目成功／局部／失败输出与异常出口上回归，再撤本地适配；Unity NavMesh 与 UE 导航不照抄这些 JS 对象 API。
+
+探索回执：2026-10-27（UTC）定向核官方固定源码、当前 main 与 changelog，复用实际消费者和非作者 CPU 复核；npm 网页本次返回 403，未取得新的发行版列表。原导航选型的游戏作者实践、中文／引擎比较与日期沿前五节，本项不重做导航栈选型。候选仍为本地实现，未提供未发布提交的公开链接。
+
+
 <a id="s21-1"></a>
 ## 受限动作补研：开放意图不等于更强战斗 AI
 
