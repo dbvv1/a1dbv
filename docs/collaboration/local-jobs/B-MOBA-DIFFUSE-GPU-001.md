@@ -2,7 +2,7 @@
 id: B-MOBA-DIFFUSE-GPU-001
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 8ac7340ca3b6148e8158e7e252f1f52edb6e5494
 result_branch: relay/b-moba-diffuse-gpu-001
