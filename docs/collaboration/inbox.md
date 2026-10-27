@@ -4,6 +4,15 @@
 
 ## 待处理
 
+### 2026-10-27：本机广扫接收后的选择
+
+👀 **公共 API 改动先找项目自己的生成与兼容检查，不另搭通用审查框架。** Effect 已用 [`api-diff` 与迁移注解](https://github.com/Effect-TS/effect/pull/9971)持续刷新消费端迁移指导；Biome 把“变更类型→codegen 命令”写进 [AGENTS](https://github.com/biomejs/biome/blob/e2e5a36e1be8581419742a85268ad82f020da62e/AGENTS.md)，[真实规则 PR](https://github.com/biomejs/biome/pull/12580)由 CI 补齐遗漏的生成内容。适合已有多包或生成链的项目，本仓当前没有匹配的自然改动，未试用；不为试工具新造迁移。[四组原始材料与消费者](local-jobs/artifacts/A-FRONTIER-SOURCE-COLLECTION-20261027/sources.md)保留 Nx、Rust 兼容检查的取舍入口。
+
+⛔ **Entire：本仓保留 Git 交接与决策记录，不导入真实会话。** 它将提示与 transcript 放进旁路 Git refs，默认随 push 同步；公开仓采用前必须先决定这些会话是否可以公开，默认脱敏会跳过路径字段和图片/base64 对象。只有确需回看会话且材料允许保存、分享时再评估，当前未安装、未试用。依据：[存储与同步](https://docs.entire.com/guides/checkpoints/checkpoint-storage)、[0.12.2 脱敏实现](https://github.com/entireio/cli/blob/b6900cf9f71bfbebc68b88860892e8ae5bad30b8/redact/redact.go#L2522-L2535)、[HN 使用者采用](https://news.ycombinator.com/item?id=50251718)与[已有规格足够的反馈](https://news.ycombinator.com/item?id=50255682)。
+
+**Cursor Agent SDK 先按当前文档核包名。** [官方 quickstart](https://cursor.com/docs/agent-sdk/quickstart.md)使用 `@grok/agent-sdk`（原 `@cursor/bdk`），[发布博客](https://cursor.com/blog/agent-sdk)的 `@cursor/agent-sdk` 在核实日 registry 返回 404；当前包为 0.3.0。本仓未安装或运行，不新增默认。[广扫来源、正反反馈与未覆盖范围](local-jobs/artifacts/A-FRONTIER-WIDE-SCAN-20261027/sources.md)。本节核实：2026-10-27。
+
+
 ### 2026-10-27：只补测试契约审查，不装整套评审循环
 
 👀 **下一次真实脚本改动担心失败路径没测到时，可单独试官方 pr-review-toolkit 的 `pr-test-analyzer`；原生审查已能接住就沿用。** 这是插件子代理，提示它审“哪些具体契约违约仍能让测试变绿”，并明确 PR 或已确认的 base/head、源码和测试清单。即使测试文件没改也按行为判断是否需要它，不默认启动六角色。

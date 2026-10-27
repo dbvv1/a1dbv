@@ -1,7 +1,7 @@
 # A-FRONTIER-WIDE-SCAN-20261027 · 本周值得试什么：当前原始来源广扫
 id: A-FRONTIER-WIDE-SCAN-20261027
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc27b7d270ae666525f87bbdd2421cc257a9898c
 result_branch: relay/a-frontier-wide-scan-20261027
@@ -29,5 +29,6 @@ result_branch: relay/a-frontier-wide-scan-20261027
 - 已产出 sources.md：4 组可回溯候选（Agent Skills/AAIF、Cursor Agent SDK、Entire CLI 会话 checkpoint、Claude Code 2.1.309/310），附原始链接、日期版本、社区正反原文、仓内差异与关键未知，并写明覆盖缺口与排除项；独立审查 6 条问题已修正并复审通过，仓库校验 0 错误。
 - 产物：[e00d9e9](https://github.com/dbvv1/a1dbv/commit/e00d9e936150ac9f5d97d2a0f2340909d1e1dcb2)，分支 `relay/a-frontier-wide-scan-20261027`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端提交并推送 relay 分支，由 dot-A 从候选材料中选择深挖对象。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+
+- dot-A 接收：已接收官方、源码与 HN 材料；Cursor 包名按文档和 registry 核对，Entire 数据路径另核。收录范围为来源材料，尚无新增生产采用。

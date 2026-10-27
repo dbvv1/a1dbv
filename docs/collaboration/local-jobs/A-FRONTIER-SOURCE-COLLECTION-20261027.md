@@ -2,7 +2,7 @@
 
 id: A-FRONTIER-SOURCE-COLLECTION-20261027
 owner: dot-A
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8d68023b94af008d489565d22810beda7657ede0
 result_branch: relay/a-frontier-source-collection-20261027
@@ -51,5 +51,6 @@ result_branch: relay/a-frontier-source-collection-20261027
 - 修正了 sources.md 对仓内生成物保护的错误归因：实际是 PreToolUse 路径 Hook（settings.json + protect-paths.sh + protected-paths.txt），06 的 PostToolUse additionalContext 仅为能力示例，并写明该 Hook 只拦已知路径、不覆盖 Bash 写入与符号链接；check_repo 与 check_public 均通过。
 - 产物：[c484637](https://github.com/dbvv1/a1dbv/commit/c48463742db0144171deab1505c333534247e63e)，分支 `relay/a-frontier-source-collection-20261027`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端提交并推送结果分支，回写任务状态为 review_ready，交 dot-A 审阅。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+
+- dot-A 接收：已接收四组跨包来源；本仓 Hook 归因已修正。当前没有匹配的自然跨包改动，保留候选，不新造演示或升级默认。
