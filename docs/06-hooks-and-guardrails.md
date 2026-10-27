@@ -97,6 +97,15 @@ PreToolUse 的结构化决定：
 
 **依据**：[一手] [Hooks 参考](https://code.claude.com/docs/en/hooks)、[`onFailure` 文档](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails)、[Stop 限制](https://code.claude.com/docs/en/hooks#stop)、[退出码文档](https://code.claude.com/docs/en/hooks#exit-code-output)、[`StopFailure`](https://code.claude.com/docs/en/hooks#stopfailure)（当前文档）、官方变更记录 S1（2026-10-10 补核）；[经验] 边界分析；失败策略与 Stop 边界复核（2026-10-11，UTC+8），未做运行时实测；核实 2026-10-15（UTC+8）。
 
+<a id="otari-architecture-feedback"></a>
+### 🧪 Otari：检查结果，而不只检查跑过命令
+
+**遗留项目反复新增越层依赖时，可借 Otari 的窄架构检查，不必安装整套 Agent Guardrails。** 先选一条已确定的边界，沿现有 lint／CI 运行检查；需要结束前反馈时，再接已有宿主入口。Otari 的原 gate 只确认 Agent 跑过命令，后来改成 verifier 实际执行脚本。其旧包白名单也收窄到具体模块：脚本报告新违规和已消失的旧条目；**拒绝新增豁免仍靠评审，它不自动比较历史来保证名单只减不增。** 已有依赖检查够用，或架构边界尚未决定时，不加新检查器。
+
+可从上游 `scripts/check_architecture.py` 与对应测试看这一条规则怎样报错。本次原生 verifier 检查当前树通过，独立检查器测试 302 项通过；未接 a1 的真实改动、宿主 Hook 或模型 judge。上游还修过把 SQLAlchemy `cast` 当成类型标注而漏报的情况，别把自写 AST 检查当成完整语义分析。
+
+**依据**：[一手：采用与修订] [执行 verifier 的 #1786](https://github.com/mozilla-ai/otari/pull/1786)、[真实漏检后收窄规则的 #2041](https://github.com/mozilla-ai/otari/pull/2041)；[本次组件实跑] 固定 `875c8980` 的[检查器](https://github.com/mozilla-ai/otari/blob/875c89803bb23619b51cf4e1558a081fd6bbd6fd/scripts/check_architecture.py)与[302 项测试](https://github.com/mozilla-ai/otari/blob/875c89803bb23619b51cf4e1558a081fd6bbd6fd/tests/unit/test_check_architecture.py)，非模型收益比较；核实 2026-10-27。
+
 ### 高价值的 Hook 场景
 | 场景 | 事件 | 说明 |
 |---|---|---|

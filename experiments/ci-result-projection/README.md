@@ -41,6 +41,8 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 
 [本机新读者照页实测](../../docs/collaboration/local-jobs/artifacts/A-CI-PROJECTION-READER-20261027/result.md)在同日 13:42 UTC 完成 Memos 当前 head 核验，区分了成功但跳过审核、零 checks 与 `action_required`，46 项回归通过。按其卡点补上匿名只读入口、PR 元数据端点与临时输入保留方式。
 
+2026-10-27 又以同一冻结 Memos 响应、同一外部检查调用实际 `projectCI` 接口：基线 `56b00ee2` → 最终补丁 `5113e0ea` → 完整撤回，description 断言退出码为 **1→0→1**；正常控制全过，除新增 description 外完整输出一致。撤回的全树与基线相等，各臂实际加载模块的路径与哈希已核。这里只借用 Trail of Bits 的窄三臂机制，未运行整套插件；证明该输入的修复因果，不等于全部回归安全。做法与来源见 [09 的接收提示](../../docs/09-review-and-quality.md#从实现产物到可接收交付)。
+
 ## 来源
 
 [GitHub combined status](https://docs.github.com/en/rest/commits/statuses#get-the-combined-status-for-a-specific-reference)说明无 statuses 也返回 pending；[check runs](https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference)说明 latest 与分页、最近 1,000 个 check suites 范围；[Actions runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository)说明 head_sha 过滤和查询上限。核实：2026-10-27。
