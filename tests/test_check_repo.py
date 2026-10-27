@@ -32,6 +32,26 @@ class RepoCheckTests(unittest.TestCase):
   def test_invalid_json_and_toml(self):
     self.assertEqual(2, len(self.run_fixture({"a.json": "{", "b.toml": "x = ["})["errors"]))
 
+  def test_json_rejects_nonstandard_numeric_constants(self):
+    for name in ("data.json", "data.json.example"):
+      for constant in ("NaN", "Infinity", "-Infinity"):
+        for text in (constant, '{"nested": {"value": %s}}' % constant):
+          with self.subTest(name=name, constant=constant, text=text):
+            result = self.run_fixture({name: text})
+            self.assertEqual(1, result["checked_files"])
+            self.assertEqual(1, len(result["errors"]))
+            self.assertTrue(result["errors"][0].startswith(f"{name}: "), result["errors"])
+
+  def test_json_keeps_legal_values(self):
+    files = {
+      "empty.json": "{}",
+      "strings.json.example": '{"nan": "NaN", "infinity": "Infinity"}',
+      "numbers.json": '{"zero": 0, "negative": -1.5, "integer": 42, "large": 1e999}',
+    }
+    result = self.run_fixture(files)
+    self.assertEqual(3, result["checked_files"])
+    self.assertEqual([], result["errors"])
+
   def test_encoded_target(self):
     self.assertEqual([], self.run_fixture({"a.md": "[a](some%20file.md)", "some file.md": "ok"})["errors"])
 

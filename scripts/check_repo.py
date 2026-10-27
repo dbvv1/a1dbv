@@ -21,6 +21,10 @@ JOB_MAX_LINES = 80
 JOB_FINAL = {"accepted", "cancelled"}
 
 
+def reject_json_constant(value):
+  raise ValueError(f"invalid JSON numeric constant: {value}")
+
+
 def record_limits(root, relative, text):
   if relative == TASKS_FILE and len(text.encode("utf-8")) > TASKS_MAX_BYTES:
     return [f"{relative}: over {TASKS_MAX_BYTES // 1024} KB; move finished rows to archive/"]
@@ -50,7 +54,7 @@ def check(root):
     try:
       text = path.read_text(encoding="utf-8")
       if kind == ".json":
-        json.loads(text)
+        json.loads(text, parse_constant=reject_json_constant)
       elif kind == ".toml":
         tomllib.loads(text)
     except (UnicodeError, ValueError) as exc:
