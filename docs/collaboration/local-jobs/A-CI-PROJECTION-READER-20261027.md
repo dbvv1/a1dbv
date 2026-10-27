@@ -1,7 +1,7 @@
 # A-CI-PROJECTION-READER-20261027 · 新读者完成真实上游 CI 核验
 id: A-CI-PROJECTION-READER-20261027
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5113e0ea0c760cf69a1fb63b18f97b52bb6f32a2
