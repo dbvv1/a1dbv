@@ -2,7 +2,7 @@
 id: B-FPS-CONTENT-SET-001
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: a97d57281dd6c6d941c6a6bef732dadf2953f2f4
 result_branch: relay/b-fps-content-set-001
@@ -25,8 +25,8 @@ result_branch: relay/b-fps-content-set-001
 
 ## 当前结果
 
-- 原 restMount／weaponPose／rx24-root name 与 extras 表述已修正，保留该修正；原端 build --check、validate、内容测试 15/15 与 npm test 93/93 已通过。四件 GLB 与 `74b0e13` 字节相同，云端接收发现以下格式阻塞。
-- 产物：[d787b6d](https://github.com/dbvv1/FPS-Like/commit/d787b6d2e099021a71f72f484016377eb9df924e)，分支 `relay/b-fps-content-set-001`。
-- 检查：check_public（文件与新提交身份）通过；对上述 `d787b6d` 四件实际 GLB 重跑官方 glTF-Validator `2.0.0-dev.3.10`，合计 **48 errors / 0 warnings**（手臂武器 15、敌人 15、通路 9、命中反馈 9）：16 个 NORMAL 格式错误，32 个 NORMAL／COLOR_0 元素对齐错误。Three 可解析不等于 glTF 规范通过，本轮接收未通过。
-- 下一步：继续原 worktree／result_branch，不另派任务或重启已有调用。修 `build.mjs`：量化 NORMAL 声明 `KHR_mesh_quantization` 为 used／required，NORMAL／COLOR_0 每元素四字节对齐（或使用合法 FLOAT 布局）；重导四件，更新哈希并复核预算，加入官方 validator 回归，重跑相关测试、公扫与独审。`src` 接线与云端图形验收仍由案例线接续，不扩大本卡写入范围。
+- 四件 GLB 已按 glTF 规范重导：NORMAL 声明 KHR_mesh_quantization 为 used/required，NORMAL/COLOR_0 每元素占 4 字节槽，官方 Khronos validator 从 48 errors 降为 0 errors／0 warnings（唯一 info 是通路 TEXCOORD_0 预留纹理槽），并加入独立 validator 回归包；字节数与 SHA 已同步 manifest 与文档，实测 15/15 内容测试、3/3 validator 测试、根 npm test 93/93、npm run build 均通过。未关闭审查问题（openIssues）：无；本单元为 build 类型，不涉及 taskDone/pageStuck 与候选收集。
+- 产物：[b198df6](https://github.com/dbvv1/FPS-Like/commit/b198df62a56f4c520716fbc9cb4afac47dd62213)，分支 `relay/b-fps-content-set-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由接收端提交并公扫／独审；src 接线、真 GPU 阵容图与整局验收由案例线接续。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
