@@ -4,6 +4,14 @@
 
 ## 待处理
 
+### 2026-10-27：只补测试契约审查，不装整套评审循环
+
+👀 **下一次真实脚本改动担心失败路径没测到时，可单独试官方 pr-review-toolkit 的 `pr-test-analyzer`；原生审查已能接住就沿用。** 这是插件子代理，提示它审“哪些具体契约违约仍能让测试变绿”，并明确 PR 或已确认的 base/head、源码和测试清单。即使测试文件没改也按行为判断是否需要它，不默认启动六角色。
+
+官方包装仍以裸 `git diff --name-only` 起步；本仓干净工作树读到 0 文件，而两份真实已提交差量分别有 2／1 文件。实际用户日志也显示 Agent 可能自行补查 PR diff，因此这里要求显式范围，未把提示缺口写成必然漏审。OME 已在 reconciliation 重试评审中接入；CPace 组合评审后补了错误透传与分类测试，效果不能单归此角色。**本仓未安装、未运行该插件，当前没有未结的匹配脚本任务**，不重开已接收改动制造试用。
+
+**依据**：[固定角色](https://github.com/anthropics/claude-plugins-official/blob/41f619d61b999adec1a1c8deb97d1a5b6ac35bb6/plugins/pr-review-toolkit/agents/pr-test-analyzer.md)、[命令范围与角色选择](https://github.com/anthropics/claude-plugins-official/blob/41f619d61b999adec1a1c8deb97d1a5b6ac35bb6/plugins/pr-review-toolkit/commands/review-pr.md#L29-L43)、[真实调用日志 #319](https://github.com/anthropics/claude-plugins-official/issues/319)、[OME 接入](https://github.com/ome-projects/ome/commit/5e2466e331be8a28a0ca7ce6828b67fc842e1fb6)、[CPace 已合入评审与补测](https://github.com/the-sarge/cpace/pull/78)；[同类范围修订 #459](https://github.com/anthropics/claude-plugins-official/pull/459)因外部贡献范围关闭、未合入，当前不另投同类 PR；核实 2026-10-27。
+
 ### 2026-10-27：dotagents 的项目级 Skill 分发
 
 👀 **多个客户端确实要共享同一组 Skill 时，可评估 dotagents；少量本地 Skill 继续直接维护。** 已有 `agents.toml`，且来源、MCP／Hook 声明与目标客户端均已审过时，在项目内刷新：
