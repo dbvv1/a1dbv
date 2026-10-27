@@ -8,6 +8,12 @@
 
 **请对齐已明确的云端验证边界**：[B 长期提示词](prompts/dot-b.md)与 [game-quality-pass §1](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#1-先有可靠的看图手段)仍允许云端无真 GPU 时交本机拍摄；10-27 最新选择是游戏操作、浏览器、图形和品质验证只由 dot 云电脑完成，云端不能验证就保留具体缺口，不派回本机，本机后台模型／文件制作保留。B 已修 TASKS 当前状态；四张图形卡保持 cancelled，原 FPS worker 已停止但预览残留清理尚无完成回执，本条仅反馈，不改长期提示词或 Skill。
 
+### 2026-10-28：MCP 迁移，先固定消费者再读接口差异
+
+👀 **升级 MCP SDK／协议时，先比两版服务实际暴露的工具、schema、能力与资源，再用固定旧／新协议客户端验真实调用；本仓未试用。** 官方 servers 的 [interface-diff 脚本](https://github.com/modelcontextprotocol/servers/blob/1a9554d1ad252bc834f1fce9a7048ccc321ec980/scripts/interface-diff.mjs)已在 [#4975](https://github.com/modelcontextprotocol/servers/pull/4975)合入，入口为 `npm run interface-diff -- --base <ref> --report-dir <dir>`，需在该项目构建并启动两版服务。差异留给审阅，构建或探测失败报错；普通重命名继续项目原生测试。
+
+**先读差异报告采用的协议与能力。** 真实迁移 [#5131](https://github.com/modelcontextprotocol/servers/pull/5131)的客户端自动协商最新协议，实际比较旧版 `initialize` 与新版 `server/discover`；旧消费者兼容另由 Inspector 的 `--protocol-era legacy`／`modern` 和 SDK 客户端验证。其 Claude Code 实测只覆盖协商后的现代协议。维护者和工具作者的[原始采用讨论](https://github.com/modelcontextprotocol/servers/issues/4860)指向该交付；这是一份运行时协议迁移的接收做法，当前本仓没有匹配的自然迁移任务。核实：2026-10-27 UTC。
+
 ### 2026-10-27：OSS Verify，把已有 fuzz 性质交给独立证明检查器
 
 👀 **维护有明确性质的 C/C++ 库时，可从一份公开证明起步，再决定是否让 Agent 准备自己的 fuzz target；本仓未试用。** 在固定源码中选 `coturn/FuzzStunClient`，按 [checking](https://github.com/theorem-labs/oss-verify-proofs/blob/1045cd75d83eacd942040cb611c98305f33dea59/docs/checking.md)／[proving](https://github.com/theorem-labs/oss-verify-proofs/blob/1045cd75d83eacd942040cb611c98305f33dea59/docs/proving.md) 准备 Docker／Rocq checker，`./oft fetch coturn` 取项目产物，再在固定镜像、断网容器内运行 `./oft check coturn/FuzzStunClient --parts statements,proofs`。10-27 文档已补至少 1 GiB 硬栈上限；该固定版本 README 尚未同步，官方称后续 release 补齐。外部用户两核运行 34 分钟后主动停止，尚无该用户复验通过的回执。

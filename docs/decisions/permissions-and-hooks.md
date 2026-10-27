@@ -75,6 +75,10 @@ network_access = false
 | 执行前必须阻止某一动作 | 优先原生权限；必要的同步 `PreToolUse` Hook 分别验正常输入、拒绝、缺脚本与超时，需故障阻止时核 `onFailure: "block"` 的版本要求 |
 | 完成前总忘记测试 | 先把真实验证入口写进项目约定；确有漏检再试 `Stop`，不要每轮重跑整套检查 |
 
+**只拒绝当前工具调用时，命令型 `PreToolUse` Hook 返回 `hookSpecificOutput.permissionDecision: "deny"`，并把 `hookEventName` 设为 `PreToolUse`；顶层 `continue: false` 会停止整个会话。** 本仓路径 Hook 已采用前者。自定义 Hook 拦下一次编辑后整轮停住时，先核这两个字段；接收时既看目标调用被拒，也看独立的后续任务能否继续。`PostToolUse` 用于已执行后的反馈，阻止写入应放在执行前。
+
+**依据**：[官方输出契约](https://code.claude.com/docs/en/hooks#json-output)、[PreToolUse 决策](https://code.claude.com/docs/en/hooks#pretooluse-decision-control)；[真实撤换 agent-flow #10](https://github.com/josix/agent-flow/pull/10)与[固定修改](https://github.com/josix/agent-flow/commit/7f8b23ee0a1b2c248a4ab91ae1fd5dc27d9715c6)。维护者因整轮停顿改成单次拒绝，并移除执行后的重复路径拦截；本次核源码与官方契约，未复跑客户端，核实 2026-10-27。
+
 **PostHog 把确定性检查留给仓库工具，Claude Hook 只做环境引导。** 它的实际 `AGENTS.md` 按 linters＋CI → lint-staged／husky → Skills → 指令的顺序选择自动化，因延迟和脆弱性不添加逐工具 Hook。下面摘取其 `SessionStart` 中的一项：
 
 ```json
