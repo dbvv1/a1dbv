@@ -1,7 +1,7 @@
 # A-CI-PROJECTION-READER-20261027 · 新读者完成真实上游 CI 核验
 id: A-CI-PROJECTION-READER-20261027
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5113e0ea0c760cf69a1fb63b18f97b52bb6f32a2
@@ -63,3 +63,11 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 ## 来源
 
 [GitHub combined status](https://docs.github.com/en/rest/commits/statuses#get-the-combined-status-for-a-specific-reference)说明无 statuses 也返回 pending；[check runs](https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference)说明 latest 与分页、最近 1,000 个 check suites 范围；[Actions runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository)说明 head_sha 过滤和查询上限。核实：2026-10-27。
+
+## 当前结果
+
+- 读者按页面完成 Memos PR #6502 的 CI 投影实测：同一 40 位 SHA 取三源，statuses 1 条 success（draft 跳过审核）、checks 0 条（no_records_observed）、actions 1 条 action_required，46 tests passed，taskDone=true；openIssues 无。页面仍有 4 处非阻塞卡点：未定义“已授权 GitHub 入口”、操作节缺 PR 元数据端点、未写临时输入处置、未给非全零措辞示例。
+- 产物：[ef5f69b](https://github.com/dbvv1/a1dbv/commit/ef5f69b96ec1fb2a3144f5f1a7440315c0553912)，分支 `relay/a-ci-projection-reader-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无剩余工作单元；产物交接收端提交推送。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
