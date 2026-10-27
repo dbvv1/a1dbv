@@ -4,6 +4,18 @@
 
 ## 待处理
 
+### 2026-10-27：dotagents 的项目级 Skill 分发
+
+👀 **多个客户端确实要共享同一组 Skill 时，可评估 dotagents；少量本地 Skill 继续直接维护。** 已有 `agents.toml`，且来源、MCP／Hook 声明与目标客户端均已审过时，在项目内刷新：
+
+```bash
+npx @sentry/dotagents@3.4.0 --project install
+```
+
+Git 来源的 `ref` 填已审完整 commit SHA，每条项目命令都保留 `--project`：3.4.0 的 `agents.lock` 记录来源但不冻结安装，`--frozen` 已被忽略，无作用域参数则操作全局配置。Sentry JavaScript 已把共享 Skill 与声明入 Git；其提交的 dotagents Skill 较旧。**本仓未安装、未试用**，当前模板没有待解决的跨客户端分发任务，先不增加管理层。
+
+**依据**：[3.4.0 发布](https://github.com/getsentry/dotagents/releases/tag/3.4.0)、[固定 Skill 的作用域](https://github.com/getsentry/dotagents/blob/46558ca1670e823aa3f92d811309c81720babb53/plugins/dotagents/skills/dotagents/SKILL.md#L9-L17)、[忽略 `--frozen` 的实现](https://github.com/getsentry/dotagents/blob/46558ca1670e823aa3f92d811309c81720babb53/packages/dotagents/src/cli/commands/install.ts#L98-L115)、[锁文件契约](https://github.com/getsentry/dotagents/blob/46558ca1670e823aa3f92d811309c81720babb53/docs/src/content/docs/security.mdx#L72-L126)；[实际消费者配置](https://github.com/getsentry/sentry-javascript/blob/c125a5da2e6b7d916a5880f65876cddfee96c56d/agents.toml)、[其旧版锁定](https://github.com/getsentry/sentry-javascript/blob/c125a5da2e6b7d916a5880f65876cddfee96c56d/agents.lock#L12-L17)；[HN 使用者自报](https://news.ycombinator.com/item?id=47544018#47545728)，没有收益对照；核实 2026-10-27。
+
 ### 2026-10-27：SDK 迁移与按改动构建
 
 - 👀 **升级 Anthropic SDK 主版本时，把依赖升级和 API 契约修正一起交付。** 10-21 发布的 Python SDK 2.0／TypeScript SDK 1.0 默认使用 API 版本 `2026-10-21`，迁移时从 Messages 请求移除 `temperature/top_p/top_k`，并按实际客户端核认证头变化及既有网关、日志脱敏的兼容性（`AnthropicFoundry` 仍用 `x-api-key`）；Bedrock 用户已报告旧模型版本拒绝，Hermes 的开放 issue 仅列出待迁移路径，需要旧采样行为时暂保相应旧调用链，本仓未试用，待真实 SDK 升级任务采用。
