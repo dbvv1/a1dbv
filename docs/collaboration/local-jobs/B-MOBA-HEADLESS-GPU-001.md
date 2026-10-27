@@ -2,7 +2,7 @@
 id: B-MOBA-HEADLESS-GPU-001
 owner: dot-B
 kind: build
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 069b74bc410eec318a1effb0a05a7acc619b5bcc
 result_branch: relay/b-moba-headless-gpu-001
