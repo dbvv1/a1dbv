@@ -1,7 +1,7 @@
 # A-TESTMON-PATCH-READER-20261028 · 已审补丁页的实际接入
 id: A-TESTMON-PATCH-READER-20261028
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: cafdfdbe49723577b9b4620d749d14e93414cb42
