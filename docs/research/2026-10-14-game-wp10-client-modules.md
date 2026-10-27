@@ -1002,6 +1002,28 @@ Epic [UE 5.8 文档中的平台无关 PAK 路径](https://dev.epicgames.com/docu
 
 **迁移代价与改判。** Dead by Daylight [2022 年 3 月开发者更新](https://forums.bhvr.com/dead-by-daylight/discussion/315701/developer-update-march-2022)称内容增长使分组扩大，因而重排／重平衡；[5.7.0 发行通知](https://forums.bhvr.com/dead-by-daylight/discussion/320530/release-information-5-7-0)确认文件结构变更需一次近乎全量重下。这是进入发行的迁移代价，未独立验证宣传速度，也不代表单人项目收益。布局调整后若局部更新仍牵连大量无关数据，或迁移成本不值，先缩改动范围／保原布局，再比较交付路线；下载、安装、临时磁盘与既有加载表现分别验收。没有运行引擎、打包器、游戏或模型，维护工时与本项目净收益未知。[一手／研究]
 
+<a id="catalog-update-consumption"></a>
+### 远程目录的采用边界：更新查找表，不替换活世界
+
+**决定：已有远程内容链默认在加载本局资源前更新；确需运行中更新才先退出受影响内容，沿现有协调者串行交接，不再增加补丁／锁框架。** 原 04 已有应用更新与内容更新的选择及发行基线，本次补的是操作句柄、活资源、磁盘缓存三者不能互相代替。Unity 未运行；以下是固定原包源码／文档核查，未用抽取片段或 mock 声称引擎复现。[研究，2026-10-27]
+
+**固定来源。** 从官方包注册库取得 [2.9.1](https://packages.unity.com/com.unity.addressables/-/com.unity.addressables-2.9.1.tgz) 与 [4.1.1](https://packages.unity.com/com.unity.addressables/-/com.unity.addressables-4.1.1.tgz)，包内 `package.json` 版本吻合；本次下载的 SHA-256 分别为 `06dc6b4a4f29c7f1337394157f6a06b29ffdec059be612fded1dd4dbd393225e`、`5e61ff4ab79548b2afbc434a941bdcfafeec7b7e5cfab34adddaa7a39f59e9ea`。这是下载身份记录，不冒称已验证包的签名。源码沿 Unity Companion License，仅阅读、不在本仓分发包或执行附带工具。
+
+| 可确定的接缝 | 原包中的实际实现及采用影响 |
+|---|---|
+| 检查不是更新／下载 | `Runtime/Initialization/CheckCatalogsOperation.cs` 比较可更新目录的 hash；错误可带部分结果，但操作状态失败。调用方先核 Status，不能用空／非空结果独自解释“已最新” |
+| 更新不是世界替换 | `UpdateCatalogsOperation.Execute` 对 `ResourceLocatorInfo.UpdateContent` 写新 locator；不遍历并替换玩法实例。`AddressablesImpl.LoadAssetAsync(IResourceLocation)` 直接消费传入位置，按 key 的重载才重新查 locators；项目旧位置缓存也要退出旧批次 |
+| 清理失败可能发生在目录已换之后 | 同一 `Execute` 先更新 locator，再按 `m_AutoCleanBundleCache` 进入清理；`OnCleanCacheCompleted` 按清理状态完成整个更新操作。故自动清理失败不证明目录回滚。接线选择 `autoCleanBundleCache: false`，可选清理另报结果，不把整体错误自动重放成一次新内容交接 |
+| 三种释放不同 | 额外目录加载句柄的引用会影响操作缓存；玩法资产／实例仍按各自所有者释放；`CleanBundleCacheOperation` 枚举磁盘 bundle 缓存并清除不再引用的条目，不回滚 locator，也不代替释放场景／池 |
+
+**互斥是待原生核实的疑点，不写成已复现 SDK 故障。** [2.9 手册](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/LoadContentCatalogAsync.html)与[4.1 手册](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/LoadContentCatalogAsync.html)都称 `UpdateCatalogs` 会阻塞其他 Addressables 请求。核了两包的完整公开 `Addressables` 包装、`AddressablesImpl`、检查／更新／清理操作、目录 provider，以及包内全部 C# 中该字段的读写：`ShouldChainRequest`／`ChainOperation` 读取 `m_ActiveUpdateOperation`，但生产 `UpdateCatalogs` 返回局部 `op`，未找到把它登记到此字段的赋值。找到的赋值只在 `Tests/Runtime/AddressablesIntegrationTestsImpl.cs`，由测试直接注入 `DumbUpdateOperation` 来验证链式分支。相关字段／调用不在另一套条件编译实现中；`ENABLE_CONTENT_DIRECTORIES`、`ENABLE_CACHING` 与 Editor 排队路径也未补此登记。这个静态差异支持“不把该 API 当项目全局锁”的保守接线，**不证明真实 Player 的并发故障、频率或修复结果**；不用测试注入成功替代公开调用链验收。
+
+**为什么不改成清缓存／强行共存。** 当前官方说明要求归还旧 `LoadContentCatalogAsync` 操作后才能重新取得目录；当前包公开 API 的注释也明确，已载 bundle 与更新版本可能冲突，`Unique Bundle IDs` 以更多重建／下载和新旧同时驻留换取 ID 不冲突。它不迁移对象或存档。4.1.1 changelog 另记录 CCD URL／目录缓存名修复，4.1.0 记录多目录 provider 的更新开关修复；这些是各自版本修订，不能拿早期 1.x 反馈推断所有当前问题仍在。
+
+2025 年[开发者原帖](https://discussions.unity.com/t/addressables-content-update-not-working-modified-bundles-not-downloading/1604082)使用 2.2.2／2.3.16，代码把 `LoadContentCatalogAsync` 成功写成“发现更新”，并尝试清缓存后重下；原帖没有可核的最终解决结果。它是用户混淆“目录加载／更新检测／bundle 缓存”的实际反例，不是本轮复现或 2.9.1／4.1.1 的缺陷证据。更早[维护者答复](https://discussions.unity.com/t/updatecatalogs-and-checkforcatalogupdates-dont-see-any-updates/819330)解释额外目录句柄影响操作缓存；本轮采用以当前原包和手册为准，不照搬旧 workaround。
+
+接回 [04 原更新总入口](../../domains/game-dev/04-client-modules.md#catalog-update-consumption)：保持应用／内容／存档三种身份和旧基线；额外目录句柄释放、旧内容仍在用、Unique Bundle IDs 的预算、更新后重新解析、失败与清理重试分别处理。真正接收仍须用目标 Player、实际目录／bundle 与新旧内容消费者；本次没有更新吞吐、离线完整性或最高生产表现的实测结论。
+
 ### 发布候选的正常构建入口（2026-10-26 UTC+8 补核）
 
 Unity 6.3 [Build Profiles](https://docs.unity3d.com/6000.3/Documentation/Manual/build-profiles.html)区分 Platforms 的共享设置／场景数据与保存为资产的项目 profile；后者可分别配置场景并进版本控制。[BuildReport](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Build.Reporting.BuildReport.html)提供本次构建结果、大小、耗时和步骤／错误；某些无效输入可在报告生成前失败，存在报告也不代表实际游戏路径通过。UE 5.8 [Packaging](https://dev.epicgames.com/documentation/en-us/unreal-engine/packaging-your-project)分 Build、Cook、Stage、Package，并将 Deploy／Run 列为另外的可选操作；Game Default Map 决定打包后起点，教程的 Development 例不是 Shipping 验收。[一手]
