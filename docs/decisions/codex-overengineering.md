@@ -19,6 +19,8 @@
 
 **已有的输入容错也是要保留的行为。** ComfyUI 的 Flux 路径先把图像补到 patch 尺寸，再把输出裁回原尺寸；直接增加“尺寸必须整除，否则拒绝”会收紧它原本支持的输入。先辨明调用方允许的转换、默认值与错误处理，再决定保留、收窄或删除哪段防御。
 
+本仓随后在 [testmon 的真实修复](../../experiments/testmon-outer-coverage/README.md)中采用同一取舍：外层 coverage 共存走原有停采集分支，旧版缺少 core 配置只处理对应 `ConfigError`，其他异常继续抛出。最终组合在三个依赖环境中各有 29 项相关测试通过，保住了执行记录、选测和真实失败退出码。
+
 **依据**：[一手项目规则](https://github.com/Comfy-Org/ComfyUI/blob/e7051b03758a1247e3adb84a5b784ffacb9a23bd/AGENTS.md#user-input-tolerance)、[固定 Flux 输入处理与输出裁剪](https://github.com/Comfy-Org/ComfyUI/blob/e7051b03758a1247e3adb84a5b784ffacb9a23bd/comfy/ldm/flux/model.py#L314-L408)；源码核实 2026-10-27，未实跑该图像模型。
 
 ## 为什么选这个做法

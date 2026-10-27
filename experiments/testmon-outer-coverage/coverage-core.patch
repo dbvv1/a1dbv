@@ -1,0 +1,124 @@
+diff --git a/testmon/testmon_core.py b/testmon/testmon_core.py
+index 8813e61..80e78fb 100644
+--- a/testmon/testmon_core.py
++++ b/testmon/testmon_core.py
+@@ -18,7 +18,7 @@ except ImportError:
+ 
+ import pytest
+ from coverage import Coverage, CoverageData
+-from coverage.exceptions import CoverageException
++from coverage.exceptions import ConfigError
+ 
+ from testmon import db
+ from testmon import TESTMON_VERSION as TM_CLIENT_VERSION
+@@ -447,8 +447,8 @@ COVERAGE_CORE = "ctrace"
+ def force_context_capable_core(cov: Coverage):
+     try:
+         cov.set_option("run:core", COVERAGE_CORE)
+-    except CoverageException:
+-        # coverage < 7.10 has no core option and never defaults to sys.monitoring.
++    except ConfigError:
++        # coverage < 7.9 has no core option and never defaults to sys.monitoring.
+         pass
+ 
+ 
+diff --git a/tests/test_coverage_core.py b/tests/test_coverage_core.py
+new file mode 100644
+index 0000000..16422af
+--- /dev/null
++++ b/tests/test_coverage_core.py
+@@ -0,0 +1,94 @@
++import os
++import subprocess
++import sys
++
++import pytest
++from coverage import Coverage
++from coverage.exceptions import ConfigError, CoverageException
++
++from testmon.testmon_core import force_context_capable_core
++
++
++def test_real_coverage_core():
++    cov = Coverage(config_file=False)
++    if hasattr(cov.config, "core"):
++        cov.set_option("run:core", "sysmon")
++    force_context_capable_core(cov)
++    # Older coverage versions have no configurable core; newer ones must use
++    # the context-capable tracer even if their default is sys.monitoring.
++    if hasattr(cov.config, "core"):
++        assert cov.get_option("run:core") == "ctrace"
++
++
++def test_missing_core_option(monkeypatch):
++    cov = Coverage(config_file=False)
++
++    def missing_option(name, value):
++        assert (name, value) == ("run:core", "ctrace")
++        raise ConfigError("No such option: 'run:core'")
++
++    monkeypatch.setattr(cov, "set_option", missing_option)
++    force_context_capable_core(cov)
++
++
++@pytest.mark.parametrize("error", [RuntimeError, CoverageException])
++def test_unrelated_error_is_not_hidden(monkeypatch, error):
++    cov = Coverage(config_file=False)
++
++    def broken_option(name, value):
++        raise error("unexpected failure")
++
++    monkeypatch.setattr(cov, "set_option", broken_option)
++    with pytest.raises(error, match="unexpected failure"):
++        force_context_capable_core(cov)
++
++
++def run_testmon(path, *args):
++    env = os.environ.copy()
++    env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
++    env.pop("PYTEST_ADDOPTS", None)
++    env.pop("TESTMON_DATAFILE", None)
++    command = [sys.executable, "-m", "pytest", "-p", "testmon.pytest_testmon"]
++    if "-n" in args:
++        pytest.importorskip("xdist")
++        command += ["-p", "xdist.plugin"]
++    if "--cov=dependency" in args:
++        pytest.importorskip("pytest_cov")
++        command += ["-p", "pytest_cov.plugin"]
++    result = subprocess.run(
++        command + ["--testmon", "-q", *args],
++        cwd=path,
++        env=env,
++        text=True,
++        stdout=subprocess.PIPE,
++        stderr=subprocess.STDOUT,
++    )
++    print(result.stdout)
++    return result
++
++
++@pytest.mark.parametrize("args", [(), ("-n", "2"), ("--cov=dependency",)])
++def test_collect_select_and_preserve_failure(tmp_path, args):
++    (tmp_path / "pytest.ini").write_text("[pytest]\n")
++    dependency = tmp_path / "dependency.py"
++    dependency.write_text("def value():\n    return 1\n")
++    (tmp_path / "test_value.py").write_text(
++        "from dependency import value\n\ndef test_value():\n    assert value() == 1\n"
++    )
++    (tmp_path / "test_unaffected.py").write_text("def test_unaffected():\n    pass\n")
++    first = run_testmon(tmp_path, *args)
++    assert first.returncode == 0, first.stdout
++    assert "2 passed" in first.stdout
++    assert (tmp_path / ".testmondata").is_file()
++    if "--cov=dependency" not in args:
++        unchanged = run_testmon(tmp_path, *args)
++        assert unchanged.returncode == 0, unchanged.stdout
++        assert "no tests ran" in unchanged.stdout
++    # Changing the dependency should select its test, not an unrelated file.
++    dependency.write_text("def value():\n    return 100\n")
++    changed = run_testmon(tmp_path, *args)
++    assert changed.returncode == 1, changed.stdout
++    assert "1 failed" in changed.stdout
++    assert "1 passed" not in changed.stdout
++    assert "INTERNALERROR" not in changed.stdout
++    assert "AssertionError" in changed.stdout
