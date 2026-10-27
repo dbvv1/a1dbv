@@ -49,11 +49,11 @@ flowchart LR
 
 **🧪 环境填光使投影变淡时，先查日盘是否同时贡献无阴影填光和直接日照，再试天空／太阳分离。** 先回读材质是否真的接收环境光、阴影覆盖／bias／地面接收和雾的相机深度；若 HDRI 日盘经环境采样成为无对应遮挡的填光，同时又有实时方向光，继续抬曝光会拉平接地。此时保原 HDR 与许可，用可复现的处理生成天空填光，让直接太阳由能投影的主光承担。不是所有 HDRI 都应删太阳；已有正确遮挡或不同反射需求时，要按实际消费者另核。
 
-**Three 网页候选的二改是缩小光的职责，不是继续叠效果。** MOBA 保原 CC0 HDR，按[固定配方](https://github.com/dbvv1/MOBA-Like/blob/069b74bc410eec318a1effb0a05a7acc619b5bcc/assets/lighting/README.md)在加载后、PMREM 前识别上半球日盘，用邻域天空替换并羽化；太阳改由单一方向光负责，接触 AO 不加重，近战区不进远雾。二改收回了首次过强的填光；与原基线相比，同机位软件实帧的单位／塔接地更清楚，但树影仍黑硬、塔暗面细节合并，因此保留候选，不继续整体压黑。这个接入经验不等于 Unity APV／URP 实测。
+**Three 网页候选说明了技术职责，也暴露了品质失败。** MOBA 保原 CC0 HDR，按[固定配方](https://github.com/dbvv1/MOBA-Like/blob/069b74bc410eec318a1effb0a05a7acc619b5bcc/assets/lighting/README.md)在加载后、PMREM 前识别上半球日盘，用邻域天空替换并羽化；太阳改由单一方向光负责，接触 AO 不加重，近战区不进远雾。软件实帧曾获接地／体积的小幅改善判断，但同批 GPU 非作者盲评选了改前候选：改后塔身更暗、黑硬投影损害可读性，因此不采用 `069b74b`，下一轮换手段，不在这套灯光上继续调参。这个接入经验不等于 Unity APV／URP 实测。
 
-[候选 `069b74b` 的真实对照与差距](https://github.com/dbvv1/MOBA-Like/blob/069b74bc410eec318a1effb0a05a7acc619b5bcc/docs/quality.md)对应实测构建 `0b8f93c`，收口仅改文档，运行源码一致，尚未进入 MOBA 的 `main`／Site；相同状态与相机的非作者盲评仅接收阶段静态改善。整层接入相对原基线的 draw calls 为 296→455、提交三角形为 90,968→155,269，主要增加 AO 法线／深度 pass；不是帧时间或 GPU 性能结论。CPU 辐射积分只用来定位填光来源，不能代替真实画面对照。
+[当前 GPU 对照与差距](https://github.com/dbvv1/MOBA-Like/blob/38f36d149a409bb7be0d7ff4323326e34759851c/docs/quality.md)采用同相机、同状态的 `baecaf5`／`069b74b` 原始帧；两版均未进入 MOBA 的 `main`／Site，改前只是上一候选链。旧软件帧状态不同，跨环境差异原因未明；原拍摄重复性仍失败。整层接入相对改前的 draw calls 为 296→455、提交三角形为 90,968→155,269，主要增加 AO 法线／深度 pass；不是帧时间或 GPU 性能结论。CPU 辐射积分只用来定位填光来源，不能代替真实画面对照。
 
-依据与核实（2026-10-27）：[HDRI 工作流作者的太阳分离方案](https://seblagarde.wordpress.com/2016/08/28/siggraph-2016-an-artist-friendly-workflow-for-panoramic-hdri/)（2016，机制参考）、[Poly Haven 作者的 HDRI 制作说明与实时日盘讨论](https://blog.polyhaven.com/how-to-create-high-quality-hdri/)、[Three PMREM](https://threejs.org/docs/pages/PMREMGenerator.html)、[GTAOPass](https://threejs.org/docs/pages/GTAOPass.html)。MOBA 候选运行于 dot 云端软件 WebGL。
+依据与核实（2026-10-27）：[HDRI 工作流作者的太阳分离方案](https://seblagarde.wordpress.com/2016/08/28/siggraph-2016-an-artist-friendly-workflow-for-panoramic-hdri/)（2016，机制参考）、[Poly Haven 作者的 HDRI 制作说明与实时日盘讨论](https://blog.polyhaven.com/how-to-create-high-quality-hdri/)、[Three PMREM](https://threejs.org/docs/pages/PMREMGenerator.html)、[GTAOPass](https://threejs.org/docs/pages/GTAOPass.html)。MOBA 已有云端软件 WebGL 观察与 NVIDIA RTX 5070 同批静态盲评；本次结论只取 GPU 内部对照。
 
 ### 间接光：移动角色不能成为环境里的另一张贴图
 
