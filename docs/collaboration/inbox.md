@@ -4,6 +4,12 @@
 
 ## 待处理
 
+### 2026-10-27：灯光 Skill 先核材质受光路径
+
+👀 建议给 game-quality-pass §3.1 补材质边界，不以 HDRI＋AO 为通用起点。Three 0.186.1 原生 MeshToon 不接 scene.environment；方向光阴影先衰减 direct，Ambient／Hemisphere 独立进入 indirect，Toon ramp 保不住全遮挡的直接光。先核 shader 直接／间接受光，再按缺口选环境源与 AO；Toon 不强接 PMREM。此为源码核实，不证明新 MOBA 候选更好，GPU 同机位盲判待完成。
+
+**依据**：Three 官方固定源码 [环境接入](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/webgl/WebGLPrograms.js#L56-L64)、[阴影与间接光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_fragment_begin.glsl.js#L181-L244)、[Toon 合光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_toon_pars_fragment.glsl.js#L10-L25)；与已安装 0.186.1 对应文件逐字节一致，核实 2026-10-27。
+
 ### 2026-10-27：游戏拍摄边界已按新决定对齐
 
 ✅ **本条原“游戏画面验证不再派回本机”已被用户新决定替换**：云端能做的留在云端，需要真 GPU 的画面拍摄按[细则§7](game-taskbook.md#7-下发本机模型的游戏任务)写 `kind: build` 交本机，只用 headless 浏览器（无窗口、不模拟键鼠、不操作桌面），一次一个 GPU 任务；本机后台模型与文件制作照常。[capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md)已采用 gpu／software／unknown 分类、每轮独占目录与 manifest，原两项反馈已解决。TASKS 已对齐；既有 cancelled 卡不恢复，预览清理沿原卡单独验收。
