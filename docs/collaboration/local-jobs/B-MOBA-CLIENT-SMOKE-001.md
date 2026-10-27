@@ -2,7 +2,7 @@
 
 id: B-MOBA-CLIENT-SMOKE-001
 owner: dot-B
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: e829968c4bc5909f3b4342eb9f98c06282c8d400
 result_branch: relay/b-moba-client-smoke-001
