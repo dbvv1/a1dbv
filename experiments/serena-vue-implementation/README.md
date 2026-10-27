@@ -30,7 +30,29 @@ uv run --no-sync poe type-check
 git diff --check
 ```
 
-验证的是 Vue 项目里的 TypeScript 接口及默认工具调用；其他语言／平台、`.vue` 组件实现语义及真实 MCP 客户端未验。独立的 `include_info`／hover 问题未扩修。
+验证的是 Vue 项目里的 TypeScript 接口及默认工具参数；独立的 `include_info`／hover 问题未扩修。
+
+## 真实 MCP stdio 入口
+
+**先识别接口模式，再调用符号查询。** 此基线的新建配置默认 REPL，只暴露 `activate_project`、`initial_instructions`、`serena_repl`；需要一工具一操作时，启动参数显式加 `--agent-interface tools`。工具数量不同是接口选择，不必因此重装语言服务器。
+
+本次用官方 MCP Python SDK 2.2.0 的 `ClientSession` 启动实际 Serena stdio 子进程，执行 `initialize` → `tools/list` → `initial_instructions` → 查询。项目 `language_servers: ["vue"]`，使用补丁内 `src/shapes.ts` 夹具；各端项目、HOME、配置和 LSP 缓存独立，dashboard／GUI 关闭。已核实际导入源文件与对应固定 commit 的字节和哈希。
+
+| 路径 | 真实结果 |
+|---|---|
+| 原基线，显式 tools 接口 | 通信正常，工具 `isError=true`，内容为 LSP `-32601` |
+| 已审补丁，同一 tools 输入 | `isError=false`，唯一返回 `Square`／`Class`／`src/shapes.ts` |
+| 已审补丁，全新配置默认 REPL | 同一查询返回相同 Square；此项仅补丁 smoke |
+
+tools 接口的 `tools/call` 参数只有：
+
+```json
+{"name":"find_implementations","arguments":{"name_path":"Shape","relative_path":"src/shapes.ts"}}
+```
+
+REPL 先从 `initial_instructions` 取得本次 session id，再向 `serena_repl` 传 `session` 与 `code`。同一 session 先查 `s.info("lsp.find_implementations")`，再执行 `s.lsp.find_implementations(name_path="Shape", relative_path="src/shapes.ts")`；`s` 是该 REPL 提供的对象，这些代码不是 shell 命令。
+
+协议协商为 `2025-11-25`，Serena `2.1.1.dev0`、Python 3.13.5、Node 24.22.1；语言服务器版本同上。新上下文独立核过协议回执与实际加载来源，修复补丁保持原哈希。范围为 Linux SDK／stdio／Vue-TypeScript 路径；模型、IDE、其他平台／语言及 `.vue` 组件实现语义待验。
 
 ## 来源与许可
 

@@ -121,7 +121,9 @@ stripSearchParams({ arrayWithDefaults: ['foo', 'bar'] }),
 
 **Serena 值得借的是“按方法改”，不是要求所有查找都换工具。** 首次接入按[固定实试入口](../../experiments/serena-symbol-edit.md#研究记录固定环境与执行细节)配置项目与语言后端，再走 `initial_instructions` → `find_symbol(include_body=true)` → `replace_symbol_body` → 审 diff、跑相关测试。本仓 Serena 2.1.0／Python-Jedi 五场景中，插行后仍命中方法，歧义和不存在的符号拒绝写入；但旧正文可覆盖别人刚改的方法，因此同方法并发编辑先协调归属。这是公开夹具实试，业务任务收益未测。
 
-**同一工具也要按具体语言和动作核能力。** Vue 项目的实现查询若报 `-32601`，先查 Vue／TypeScript companion 的请求路由，不靠重写提示或重装整套工具。本仓已对[真实问题完成小补丁](../../experiments/serena-vue-implementation/README.md)，真实 LS 与默认工具调用的 43 项相关测试通过、已独审；补丁尚待 fork／CLA，未上游合入。原生 IDE／LSP 已能查到时沿用原入口。
+**同一工具也要按具体语言和动作核能力。** Vue 项目的实现查询若报 `-32601`，先查 Vue／TypeScript companion 的请求路由。本仓[已审补丁](../../experiments/serena-vue-implementation/README.md)通过 43 项相关测试；真实 MCP stdio 的同输入对照也从工具错误变为唯一 Square 实现，补丁版默认 REPL 查询同样通过。补丁尚待 fork／CLA，原生 IDE／LSP 已能查到时沿用原入口。
+
+**新接入时按实际工具列表选入口。** 已验的 `2.1.1.dev0` 基线全新配置默认 REPL：先读 `initial_instructions`，再用其 session 调 `serena_repl`。沿用上面直接调用独立符号工具的流程时，显式启动 `--agent-interface tools`；[两种入口的实际参数与范围](../../experiments/serena-vue-implementation/README.md#真实-mcp-stdio-入口)已有记录，模型／IDE 客户端效果仍待验证。
 
 **已装 Superpowers，按任务选三条路：**
 
