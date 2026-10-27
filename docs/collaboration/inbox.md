@@ -4,6 +4,14 @@
 
 ## 待处理
 
+### 2026-10-28：Vitest 先选原生 reporter，不叠两份终端输出
+
+👀 **已有 Vitest、测试输出太吵时，先核原生 `minimal`（别名 `agent`），不要在 `default` 旁再叠一个。** 在已安装 5.0.5 的项目可单次试 `pnpm exec vitest run <原测试路径> --reporter=minimal`；保留原 config／project 参数和验证范围。未自定义 reporters 时已有 Agent 自动选择；显式列表会替换默认列表，项目需要的 CI／JUnit 等消费者继续保留。
+
+本仓合成命令探针中，minimal 保留失败断言、退出码和最终 passed／failed／skipped 计数；default＋agent 则重复统计与错误报告。负责人复跑失败输入也观察到一份变两份。尚未在真实编码任务采用；社区有人报告安静输出反而触发 verbose 重跑，下一次自然 Vitest 改动看整个任务的回读与重跑，而非只比一次输出长短。
+
+**依据**：[官方默认选择](https://vitest.dev/guide/reporters#default-configuration)、[5.0.5 固定实现](https://github.com/vitest-dev/vitest/blob/7a825db43e2beca0b219d2eadaec334cb81af0c7/packages/vitest/src/node/reporters/minimal.ts)；[GenomeSpy 实际 Agent 指令](https://github.com/genome-spy/genome-spy/blob/91ce56e30eeb08f30e63fca518935d386e7f00f1/AGENTS.md#L79-L88)；[Cloudflare vinext 的组合配置](https://github.com/cloudflare/vinext/blob/a3b6b4df4f53a66d574ee86f42150e85d250196c/vite.config.ts#L146-L149)是借鉴前须实跑的反例，未运行其业务测试；[Reddit 原帖与正反评论](https://www.reddit.com/r/node/comments/1vrwxw5/should_node_test_runners_have_a_silentonsuccess/)。核实与合成探针：2026-10-27 UTC。
+
 ### 2026-10-27：灯光 Skill 先核材质受光路径
 
 👀 建议给 game-quality-pass §3.1 补材质边界，不以 HDRI＋AO 为通用起点。Three 0.186.1 原生 MeshToon 不接 scene.environment；方向光阴影先衰减 direct，Ambient／Hemisphere 独立进入 indirect，Toon ramp 保不住全遮挡的直接光。先核 shader 直接／间接受光，再按缺口选环境源与 AO；Toon 不强接 PMREM。此为源码核实，不证明新 MOBA 候选更好，GPU 同机位盲判待完成。
@@ -19,6 +27,8 @@
 👀 **升级 MCP SDK／协议时，先比两版服务实际暴露的工具、schema、能力与资源，再用固定旧／新协议客户端验真实调用；本仓未试用。** 官方 servers 的 [interface-diff 脚本](https://github.com/modelcontextprotocol/servers/blob/1a9554d1ad252bc834f1fce9a7048ccc321ec980/scripts/interface-diff.mjs)已在 [#4975](https://github.com/modelcontextprotocol/servers/pull/4975)合入，入口为 `npm run interface-diff -- --base <ref> --report-dir <dir>`，需在该项目构建并启动两版服务。差异留给审阅，构建或探测失败报错；普通重命名继续项目原生测试。
 
 **先读差异报告采用的协议与能力。** 真实迁移 [#5131](https://github.com/modelcontextprotocol/servers/pull/5131)的客户端自动协商最新协议，实际比较旧版 `initialize` 与新版 `server/discover`；旧消费者兼容另由 Inspector 的 `--protocol-era legacy`／`modern` 和 SDK 客户端验证。其 Claude Code 实测只覆盖协商后的现代协议。维护者和工具作者的[原始采用讨论](https://github.com/modelcontextprotocol/servers/issues/4860)指向该交付；这是一份运行时协议迁移的接收做法，当前本仓没有匹配的自然迁移任务。核实：2026-10-27 UTC。
+
+**客户端所见声明也要单独核。** Codex 用户 [#42283](https://github.com/openai/codex/issues/42283)复现了根 `oneOf` 旁的字段在客户端转换后丢失；[0.162.0 固定源码](https://github.com/openai/codex/blob/c1382380de69521303b416720a52f42d51af6248/codex-rs/code-mode-protocol/src/json_schema_types.rs#L111-L165)支持这个具体机制，[社区使用者](https://www.reddit.com/r/mcp/comments/1x2bnc5/claude_code_and_codex_break_on_different_mcp/)自报已增加逐客户端清单核对。自然接入或 schema 变更时，分开验服务暴露清单、客户端所见名称／参数、实际调用。当前 [Serena 实跑](../../experiments/serena-vue-implementation/README.md#真实-mcp-stdio-入口)覆盖 SDK／服务路径，Claude／Codex 的声明转换与模型调用待验；上述用户复现与固定源码也不泛指最新版。核实：2026-10-27 UTC。
 
 ### 2026-10-27：OSS Verify，把已有 fuzz 性质交给独立证明检查器
 

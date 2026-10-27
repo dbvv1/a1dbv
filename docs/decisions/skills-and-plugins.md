@@ -83,6 +83,8 @@ cargo metadata --format-version 1 --locked --offline \
 
 **已经试到哪一步**：本仓 10-23 的匿名远程 MCP 实试，服务自报 4.4.3；同一个 Pydantic 导出字典问题分别查两版，得到对应版本的方法与原文。这里推荐的是精确版本查询链，当前插件的安装界面未实跑。
 
+10-27 用刚完成的 [testmon 兼容修复](../../experiments/testmon-outer-coverage/README.md)复核检索覆盖：所需 coverage 6.5.0／7.8.2／7.17.0 均未出现在 `resolve-library-id` 返回的可选版本中，因此没有猜版本 ID 或查近邻版；这次问题沿用已安装对应版源码与真实回归判断。
+
 **依据**：[一手] [Claude Code 安装与作用域](https://code.claude.com/docs/en/discover-plugins)、[官方市场固定配置](https://raw.githubusercontent.com/anthropics/claude-plugins-official/ab024cdcfa7ca80be204acd4907656ba5a968589/external_plugins/context7/.mcp.json)与[当前插件入口](https://github.com/anthropics/claude-plugins-official/tree/main/external_plugins/context7)；当前核实 2026-10-26。[本仓实试] [双版本查询与结果](../research/2026-10-22-frontier-trials.md#context7精确版本查询实试)，原核实 2026-10-23。
 
 ## 领域配方：先读安装包，不为一项知识装整套流程
