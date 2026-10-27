@@ -730,9 +730,9 @@ FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac
 
 #### 菜单也是控制的一部分
 
-**先让玩家从暂停菜单走完一次“改音量→试听→应用或取消→回到战斗”，再把同一套设置行扩成字号、改键、按条件隐藏和确认层。** 键鼠和手柄都要能找到入口、改完知道发生了什么、返回时不丢刚改的值。已有 uGUI 或 UMG 菜单保留；缺的是设置定义、草稿和保存这条链，不是换 UI 框架。下面给正常路径、最小数据与首版／二版交付；实际手感、读屏和游戏内效果本轮未验。
+**先保已有菜单，走完“暂停→设置→改音量并试听→应用或取消→继续战斗”。** 键鼠和手柄都要找得到入口、看懂修改结果，返回时不丢值。只需一两个设置就沿用具体行适配器；扩成完整设置页时，再补定义、草稿与保存，不为设置换 UI 框架。
 
-**玩家路径。** 战斗暂停 → 设置 → 主音量 → 推滑块试听 → 应用（或取消）→ 回到暂停菜单 → 继续游戏。第二次需求在同一路径上加字号档、改键、按条件隐藏当前项，以及放弃更改／重置确认层；入口和返回路径不变。本示例不实现显示模式／分辨率切换。
+**沿同一路径二改。** 加字号档、改键、按条件隐藏当前项及放弃更改／重置确认层，保入口与返回路径；本示例不实现显示模式／分辨率切换。
 
 ##### 底座选择：保留现有菜单，只补缺的链
 
@@ -744,9 +744,9 @@ FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac
 
 官方 UI vs Game Input 样例可借显式 UI 交接和选择保存；它明确不支持 mixed models，也没有嵌套弹窗栈，不能当完整菜单底座。CommonUI 不包办 UMG 导航；uGUI 的 Deselect on Background Click 默认清选择；Toolkit 禁用 `UIDocument` 的 GameObject 后层级会重建，重新启用时须再次设置焦点。选择底座看现有项目缺什么，不按 API 数量换框架；[整页选型与迁移案例](../../docs/research/wp10-content.md#整页选型回流ui-toolkit-新能力与迁移成本)保留版本差异和作者成本。
 
-只需一两个设置时，沿已有具体行适配器；要扩成完整设置页时，再采用下文示例：一张 `SettingDef` 表、一个 `SettingsSession`、一个音量行适配器和一个带可观察完成／失败的存储层（文件适配器示例见下）；二版在同一会话和入口上增加定义与行适配器，确认层与焦点回退只加在菜单层，不改入口。
+**实现起点分两条。** 单项设置先看下面已采用的 FPS 具体行；完整原生设置页看后面的 `SettingDef` 表、`SettingsSession`、音量行适配器与可观察完成／失败的存储层。二改只在同一会话加定义和行适配器，确认层与焦点回退留在菜单层。
 
-[FPS 的单行灵敏度设置](https://github.com/dbvv1/FPS-Like/blob/239df5badd8c43e14f57d381af379805910a1232/src/input/sensitivity.ts)沿原暂停菜单走通改值、保存／取消、重载、恢复默认及回到开火换弹；浏览器保存失败时保留原运行值和草稿；恢复默认也先写入草稿，保存并应用时只删除自身覆盖键，取消不改存储。异步指针锁获准时仍核未提交草稿，不能只在“继续”点击时检查一次；未提交就留在菜单供保存或取消。只需这一项时保留具体行适配器，不先为它搭通用设置框架。
+[FPS 的单行灵敏度设置](https://github.com/dbvv1/FPS-Like/blob/239df5badd8c43e14f57d381af379805910a1232/src/input/sensitivity.ts)沿原暂停菜单走通改值、保存／取消、重载、恢复默认及回到开火换弹；浏览器保存失败时保留原运行值和草稿；恢复默认也先写入草稿，保存并应用时只删除自身覆盖键，取消不改存储。异步指针锁获准时仍核未提交草稿，不能只在“继续”点击时检查一次；未提交就留在菜单供保存或取消。
 
 **网页已有 DOM 菜单，优先借原生模态隔离背景，再补游戏自己的返回语义。** 用带可访问名称的 `<dialog>` 配合 `showModal()`／`close()`，让浏览器处理背景 inert 与导航范围，不先手写 Tab 循环。首次打开聚焦进入／继续／下一回合；内容更新后只在原焦点已隐藏、禁用或离开菜单时回有效主按钮，保住仍有效的滑块焦点。尤其要测“下一回合替换按钮→指针锁失败”：菜单还开着，不代表旧焦点仍能操作。菜单关闭与玩法恢复权限分别处理；外层致命错误出现前先释放模态，避免错误被顶层菜单遮住。Unity／UE 仍沿本节自己的原生 UI 与输入路由，不套 DOM API。
 
@@ -784,7 +784,7 @@ flowchart LR
 
 音量的即时预览写 AudioMixer.SetFloat 的暴露参数（调用后快照不再接管该参数），取消时写回本次编辑开始前的值。OpenTTD 的设置描述表把 `NewgameOnly`、`NotInSave`、`NotInConfig`、`startup` 写成定义字段，配置保存与游戏存档分开；可借它把时机放进定义，而不是散落在每个 UI 回调里。显示模式的引擎契约只在 WP10 设置到保存保留，不进入本节确认层。
 
-**改键接同一条会话，但校验独立。** 捕获阶段只写草稿候选，行上显示候选键；应用前先查同动作和全局快捷键冲突，校验通过后才走统一的保存并写 Input System 的 binding override。取消或返回恢复应用前的 override；组合键按子 binding 索引改，不能把组合根当一个键。显示用 `GetBindingDisplayString`／当前设备的按键名，不硬编码“A／×”；换设备后重取提示。GUID、冲突和迁移边界继续沿用[改键持久化](../../docs/research/wp10-content.md#103)。
+**改键复用[前节的捕获与取消规则](#二改改交互键再加入第二位玩家)，接同一草稿／保存链。** 应用前另查同动作与全局快捷键冲突；组合键按子 binding 索引改，不能把组合根当一个键。显示用 `GetBindingDisplayString`／当前设备的按键名，不硬编码“A／×”；换设备后重取提示。GUID、冲突和迁移边界继续沿用[改键持久化](../../docs/research/wp10-content.md#103)。
 
 **隐藏项与确认层的默认。** 可见性由定义里的条件决定，例如未启用语音时隐藏语音音量行；不要删数据，也不要每帧重建整页。当前焦点行被隐藏时，焦点移到下一条可见行，没有就上一条，再没有就本节第一行；滚动位置和已改值保留。确认层默认焦点放在最不破坏当前状态的动作：放弃更改层选“继续编辑”，重置层选“取消”。关闭确认层回到打开它的那一行；该行已隐藏就按上面的顺序找最近可见行。关闭设置页只撤本层；关闭暂停菜单才释放本层暂停持有，其他暂停来源仍由各自持有者管理；第二个菜单重复同一政策才抽共享菜单层，不为首版先建框架。
 
@@ -805,7 +805,7 @@ flowchart LR
 | 控件绑定 | 行适配器 | 每种控件一个适配器，只读定义、显示值和转发改动；不持有存档键，也不复制事件链。 |
 | 导航焦点与输入路由 | 菜单层＋输入层 | 菜单层管当前层、初始焦点、隐藏项后的焦点和返回目标；输入层管 UI／玩法模式切换，UI 消费输入不自动挡 gameplay，沿用[输入与暂停](#输入与暂停先定动作权限再切输入)。 |
 
-**按需展开实现：下面保留扩展型设置页的数据与调用顺序。** 先按前面的三类生效时机作选择，再接定义、会话与存储；这些是项目约定，不是 Unity／Unreal 内置类。
+**扩展型原生设置页的实现示意。** 按前面的三类生效时机接定义、会话与存储；下面是项目约定，不是 Unity／Unreal 内置类。
 
 ```csharp
 enum ApplyTiming { Preview, OnApply, OnRestart }
@@ -969,7 +969,7 @@ sealed class FileSettingsStore {
 
 上述 Unity／UE 设置页是文档与实现起点，尚未在引擎里构建；键鼠／手柄导航、手感、读屏、实际音量和游戏内效果待验。Web 实跑范围见前面的独立段落。
 
-来源：[一手] 保存与文件边界：[PlayerPrefs.Save](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html)、[UE 5.8 UGameUserSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8)、[JsonUtility.ToJson](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/JsonUtility.ToJson.html)、[.NET FileStream.Flush(Boolean)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=netstandard-2.1)、[.NET File.Replace](https://learn.microsoft.com/en-us/dotnet/api/system.io.file.replace?view=netstandard-2.1)；音频预览：[AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)、[AudioListener.volume](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-volume.html)；改键：[Input System 1.20 保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)、[Input System 1.20 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)；底座与焦点：[uGUI 2.0 Navigation](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)、[UI Toolkit 6.3 焦点 FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)、[UI Toolkit 6.3 display／visibility](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-USS-SupportedProperties.html)、[Lyra Sample Game Settings 5.8](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine)、[CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)、[CommonUI 焦点接口](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)、[Input System 1.20 UI Input Module](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/ui-input-module-reference.html)；[一手：固定源码] [OpenTTD 设置描述表](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)、[配置读写](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp)；[研究] 定义／草稿／预览／保存拆分、脏标记只与已保存值比较、三类时机、焦点与二改流程为本项目建议，显示模式不在本示例范围；文件适配器为项目示例，只核了 .NET Standard 2.1 API 存在与异常边界和 JsonUtility 的公开字段／序列化规则，未实机写盘；沿 [WP10 设置到保存](../../docs/research/wp10-content.md#settings-pipeline)。核实 2026-10-25；该 Unity／UE 设置页未实跑。
+来源：[一手] 保存与文件边界：[PlayerPrefs.Save](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html)、[UE 5.8 UGameUserSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8)、[JsonUtility.ToJson](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/JsonUtility.ToJson.html)、[.NET FileStream.Flush(Boolean)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=netstandard-2.1)、[.NET File.Replace](https://learn.microsoft.com/en-us/dotnet/api/system.io.file.replace?view=netstandard-2.1)；音频预览：[AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)、[AudioListener.volume](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-volume.html)；改键：[Input System 1.20 保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)、[Input System 1.20 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)；底座与焦点：[uGUI 2.0 Navigation](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)、[UI Toolkit 6.3 焦点 FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)、[UI Toolkit 6.3 display／visibility](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-USS-SupportedProperties.html)、[Lyra Sample Game Settings 5.8](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine)、[CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)、[CommonUI 焦点接口](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)、[Input System 1.20 UI Input Module](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/ui-input-module-reference.html)；[一手：固定源码] [OpenTTD 设置描述表](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)、[配置读写](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp)；[研究] 定义／草稿／预览／保存拆分、脏标记只与已保存值比较、三类时机、焦点与二改流程为本项目建议，显示模式不在本示例范围；文件适配器为项目示例，只核了 .NET Standard 2.1 API 存在与异常边界和 JsonUtility 的公开字段／序列化规则，未实机写盘；沿 [WP10 设置到保存](../../docs/research/wp10-content.md#settings-pipeline)。核实 2026-10-25。
 
 ### 压低卡顿与设备耗用
 
