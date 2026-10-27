@@ -2,7 +2,7 @@
 id: B-AI-GAME-SUPPLY-SOURCES-20261027
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-ai-game-supply-sources-20261027
@@ -35,6 +35,7 @@ result_branch: relay/b-ai-game-supply-sources-20261027
 
 ## 当前结果
 
+- 音频两文口径已分开；仅一行修订，未试玩，不计14作品。
 - Void Balls 音频口径已按作者原文修正：3 首音乐为两首玩法主题＋一首 Boss 主题，九项音效用途不再算作 The Numbers 提供，并保留作者自述与未试玩状态；独立审查通过、openIssues 为空，check_repo 488 文件与 check_public 874 文件均无错误。Workflow 返回 verified=14，但其自述的 §7 候选池并未出现在工作树，实际 diff 仅要求的一行；本轮为事实修正，未做实测试玩。
 - 产物：[a2f02d7](https://github.com/dbvv1/a1dbv/commit/a2f02d7c31c39d77ea27fc843da982e453373815)，分支 `relay/b-ai-game-supply-sources-20261027`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
