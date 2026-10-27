@@ -4,6 +4,10 @@
 
 ## 待处理
 
+### 2026-10-27：先检查判官，再改生成提示
+
+👀 **评测突然判出大量错误时，先人工读失败样本，再决定改提示词还是改判据。** 中文实践者在 [ai-study-helper-v2 切片 030](https://github.com/lipeidonggz/ai-study-helper-v2/blob/325956ced3eaece484eb91a7a0c576e45794100e/docs/development/slices/030-agent-claim-strength-fidelity.md)记录：50 次尝试后发现原判据误伤保留转折的近义转述，否决原归因并撤回一次提示修改。它是作者的真实项目复盘，逐次 trace 未公开；本仓未试用，也不引入其审批或提交门禁。[原始材料与公开提交核对](local-jobs/artifacts/A-COMMUNITY-PRACTICE-SCAN-20261027/sources.md#dot-a-接收后的关键核对)。核实：2026-10-27。
+
 ### 2026-10-27：本机广扫接收后的选择
 
 👀 **公共 API 改动先找项目自己的生成与兼容检查，不另搭通用审查框架。** Effect 已用 [`api-diff` 与迁移注解](https://github.com/Effect-TS/effect/pull/9971)持续刷新消费端迁移指导；Biome 把“变更类型→codegen 命令”写进 [AGENTS](https://github.com/biomejs/biome/blob/e2e5a36e1be8581419742a85268ad82f020da62e/AGENTS.md)，[真实规则 PR](https://github.com/biomejs/biome/pull/12580)由 CI 补齐遗漏的生成内容。适合已有多包或生成链的项目，本仓当前没有匹配的自然改动，未试用；不为试工具新造迁移。[四组原始材料与消费者](local-jobs/artifacts/A-FRONTIER-SOURCE-COLLECTION-20261027/sources.md)保留 Nx、Rust 兼容检查的取舍入口。
