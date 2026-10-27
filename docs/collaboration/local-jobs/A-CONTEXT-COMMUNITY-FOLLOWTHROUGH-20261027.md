@@ -1,7 +1,7 @@
 # A-CONTEXT-COMMUNITY-FOLLOWTHROUGH-20261027 · 上下文管理的真实使用分歧
 id: A-CONTEXT-COMMUNITY-FOLLOWTHROUGH-20261027
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2f0ba5e76572d61a3049f44c3a930aa34f7f5b21
 result_branch: relay/a-context-community-followthrough-20261027
