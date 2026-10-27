@@ -25,12 +25,12 @@
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；来源按产出调整，候选进收件箱，漏检对照记入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 首轮扫描、周校准与[本周 Top 5](../13-frontier-radar.md#本周-top-5)已做。下一步按 explore-frontier 广扫，同时推进读者地图上仍为 🟡／⏳ 的问题，漏检记进探索证据。 |
 | P81 | **试用与写成选择**：读者照着就能采用；在案例仓库的真实编码任务和 a1dbv 脚本上试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | [读者地图](../../README.md)已补齐答案页。三项脚本已接收：公开扫描覆盖符号链接文本；同输入页面 Git 读取由 72 次降到 24 次；三个 Hook 单次解析事件。Catalog CLI 与其余完整测试分两段、各限 120 秒；跟评审 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。 |
-| MOBA | **MOBA-Like 基本战斗**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | [main 9311f43](https://github.com/dbvv1/MOBA-Like/commit/9311f43e1b396827bf27caebc8ab715f5cb2cc84)／[网站 v12](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site) 已同步。整屏对照最大差距：平底地图缺空间层次、英雄身份弱、资产风格不统一；近期目标是出生地—首塔—首次兵线接触的连续战场，先改地图大面。 |
-| B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS `a97d572`／v12 已接菜单、输入与离页取消；[存档包](../../experiments/local-race-save/README.md)已接 Star `1dd89d3`／v7 并实操复验；MOBA 改键 `01e9568` 待 UI 接入。Yarn 选项身份、房间仿真结算服务链已验证，尚非真人联网。 |
-| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 音频 `2bc688a` 待听、未采用；3D `00fc2f9` 受权重 TLS／工具条件阻断、无 mesh。CC0 Suburban 七件工程候选色彩等价未过；Nature 许可及两件模型官方配额拒绝，恢复未知。 |
-| B-实例 | **AI 做游戏实例**：作品、作者过程与社区反馈 | dot-B | Riposte／FM1 等来源与许可已核，本轮未完成完整实玩，不作品质推荐；Battle Drones 仍仅原 1:38 窄试玩。 |
-| SR | **Star-Rush 完整弯道品质**：以地平线公路弯道为参照，保留跑圈 | dot-B | [master 1dd89d3](https://github.com/dbvv1/Star-Rush-Reborn/commit/1dd89d3931196cb08f7b9a00541a54a6715dfe1d)／[网站 v7](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site) 已同步保存失败、单项重试和短屏提示。最大差距仍是公路—路肩—环境连续性，三维场景候选未采用。 |
-| FPS | **FPS-Like 射击循环品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | [main a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d57281dd6c6d941c6a6bef732dadf2953f2f4)／[网站 v12](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site) 已同步菜单、短按与离页／重开。院落面板仍像重复盒子，未采用；目标为入口—掩体—目标区完整院落，Three 待验。 |
+| MOBA | **MOBA-Like 基本战斗**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | [main 9311f43](https://github.com/dbvv1/MOBA-Like/commit/9311f43e1b396827bf27caebc8ab715f5cb2cc84)／[网站 v12](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site) 未变。先补 LoL 式普攻准备—发射—命中—走 A；[v11 候选](https://github.com/dbvv1/MOBA-Like/commit/e829968c4bc5909f3b4342eb9f98c06282c8d400)已源／模拟独审，真实键鼠和并排复评待验，场景与英雄身份差距仍在。 |
+| B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS `a97d572`／v12 已接菜单、输入与离页取消；[存档包](../../experiments/local-race-save/README.md)已接 Star `1dd89d3`／v7 并实操复验；MOBA 改键 UI `89f0831` 已成候选、待操作验收。Yarn 选项身份、房间仿真结算服务链已验证，尚非真人联网。 |
+| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 音频 `2bc688a` 待听、未采用；3D `00fc2f9` 受权重 TLS／工具条件阻断、无 mesh。CC0 Suburban 已转原 UV／贴图候选，完整门和画面待验；Nature 许可及两件模型官方配额拒绝，恢复未知。 |
+| B-实例 | **AI 做游戏实例**：作品、作者过程与社区反馈 | dot-B | [作者实例](../../domains/game-dev/README.md#用-ai-做游戏)已发表来源线索，新增整局体验未完成。本机[素材供给扩查](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已领取，[品类参照补证](local-jobs/B-GENRE-REFERENCE-20261027.md)待领取；均未交付新结果。 |
+| SR | **Star-Rush 完整弯道品质**：以地平线公路弯道为参照，保留跑圈 | dot-B | [master 1dd89d3](https://github.com/dbvv1/Star-Rush-Reborn/commit/1dd89d3931196cb08f7b9a00541a54a6715dfe1d)／[网站 v7](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site) 未改驾驶。默认 road-v2 未完成手感对标；先做成熟车控同弯对照，短段 Canvas 键盘观察不算完整验收。外观候选不代替操控改造。 |
+| FPS | **FPS-Like 射击循环品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | [main a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d57281dd6c6d941c6a6bef732dadf2953f2f4)／[网站 v12](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site) 未变。[移动—制动—射击候选](https://github.com/dbvv1/FPS-Like/commit/fca31b0f542142b3bbd32c890c7b43a3207b917a)补实际速度精度与连续后坐；待正常操作、声音和 CS2 对照，不计品质完成。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
 ## 待人工验收（统一查看）
@@ -48,8 +48,6 @@
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
-| 仓库写入授权 | Star 保存交付原审批已成功，Git／网站已确认，无本批待批上传 | 其余独立工作继续 |
-| 备用浏览器条款 | 云端 Chromium 已退出；Firefox 首次要求接受[使用条款](https://www.mozilla.org/en-US/about/legal/terms/firefox/)，待用户决定 | 源码／CPU 工作继续，未验画面留候选 |
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
 | Actual 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/actualbudget/actual/compare/master...dbvv1:actual:dot-a/load-config-typescript-1483)创建Draft。拟标题：`[AI] Migrate sync server configuration loader to TypeScript`；正文保留官方空模板，人类字段不代填 | 本仓发现、试用与既有PR跟进继续 |
 | 本机模型权重下载 | 开放权重 3D 在本机取权重时 TLS 连接中断（B-OPENWEIGHT-3D-001），可能需要用户检查本机网络或代理 | 音频与其他制作链照常 |
