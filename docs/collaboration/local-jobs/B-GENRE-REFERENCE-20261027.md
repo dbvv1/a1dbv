@@ -1,7 +1,7 @@
 # B-GENRE-REFERENCE-20261027 · 三个品类的可观察操控参照
 id: B-GENRE-REFERENCE-20261027
 owner: dot-B
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-genre-reference-20261027
@@ -31,17 +31,6 @@ result_branch: relay/b-genre-reference-20261027
 按既有原生 Workflow 实施 → 未参与实施者独立审查 → 必要修正一次并复审；单次最多两小时。审查核原文支持范围、视频读取方式、版本、反例与去重，确保能据材料直接安排观察，而非仅有链接。
 接收端运行适用 `check_repo`、`check_public` 和空白检查；提交身份用 noreply，提交及推送由接收端做，公开扫描通过仍人工读实际差量。回固定提交、产物链接和未解缺口，不把来源收集写成品质验收通过。
 
-## 修改要求
-
-沿原分支修正以下两处，不重收品类资料；保留已有的输入锁定、Headshot／Darius W 分组、26.21 读取边界、默认热键及 CS2 武器未知修正。
-
-1. LoL 的时间坐标与边界归类须一致：[固定稿 L575–609](https://github.com/dbvv1/a1dbv/blob/a82bfad528c4aaaa4ec6bf35d9f1ca1d849ff6db/docs/collaboration/local-jobs/artifacts/B-GENRE-REFERENCE-20261027/sources.md#L575-L609)是在练习工具改变游戏速度，但随后仍统一用“60fps 的一帧＝16.7ms”判断游戏时间。明确记录游戏速度、源录屏帧率／时间戳和播放器速度；只有按真实时间恒定采集、无掉帧或重采样时，源帧差 Δn 才可按 Δt_game＝游戏速度×Δn／源录屏 fps 换算。播放器慢放本身不改变源帧时间；条件未知就保留未知，不套倍率。统一重算 T-05／T-06 的边界归类：最小反例是 1x／60fps 下，Caitlyn 1.5 档的 0.10s 距所列截止 0.087s 仅约 13ms，Riven 1.5 档的 0.09s 距 0.078s 仅约 12ms，却都直接归为最后一 tick，违反本稿的 ±1 帧排除规则。此项只修测量方法，不声称验证了客户端 tick 行为。
-2. CS2 的测速边界须进入实施条目：C-04 [原文](https://turbosmurfs.gg/article/how-to-counter-strafe-in-cs2)“Practice it with the new crosshair, one map and five commands”节的命令表后，作者明确提醒 `cl_showpos` 速度显示经过平滑，不是击发瞬间的精确物理速度。补到 C-04 与 C-T1／C-T2／C-T4：它只供趋势参考，不能单凭该读数判定 34% 阈值或精确归零时点；与动态散布／弹孔等观察分列，并把此限制标为作者自述，不升级为 Valve 契约。
-
 ## 当前结果
 
-- 修正了 LoL 录屏时间基与 Δt_game 换算、T-05/T-06 截止点 ±1 帧的采样点归类（Caitlyn 1.5 档 0.10 s、Riven 1.5 档 0.09 s 不再算最后一 tick），并补入 CS2 cl_showpos 为显示平滑值的作者自述限制；只改 sources.md，openIssues 为空，check_repo/check_public 均 0 错误（check_offline 因本机缺 /bin/bash 与 jq 未跑）。本任务为 build 类型，无读者实测项（taskDone/pageStuck）和候选收集项。
-- 产物：[fe91097](https://github.com/dbvv1/a1dbv/commit/fe91097ec49c0187620763ec6229ca9080ac29c8)，分支 `relay/b-genre-reference-20261027`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：无剩余单元（remaining=false），接收端可提交本单元改动
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 已接收[固定产物 fe91097 的来源索引](https://github.com/dbvv1/a1dbv/blob/fe91097ec49c0187620763ec6229ca9080ac29c8/docs/collaboration/local-jobs/artifacts/B-GENRE-REFERENCE-20261027/sources.md)，仅用于设计同场景对照：时间坐标与边界样本、`cl_showpos` 作者平滑限制两项已复核修正；视频未播放、游戏未运行，实际机制、操控与品质仍未验。
