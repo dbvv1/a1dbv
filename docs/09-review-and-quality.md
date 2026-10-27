@@ -79,9 +79,9 @@
 | 3. 人工评审 | 按项目准入与变更风险，合并前 | 按 [第 1 节](#1-质量数据ai-代码的真实代价)看设计、重复、错误处理及测试；先自行确认关键路径，再核对 AI 意见 | 需求取舍、设计与未被建议覆盖的风险，不只批准 AI 列出的项目 |
 | 4. 抽样复盘 | 每周或每月 | 抽查已合并的 AI PR、AI 评审漏掉的线上问题 | 校准前三层：把漏网的问题写进实际入口读取的规则文件或测试 |
 
-**存量安全漏项可试定向审计，不把模型 confirmed 当漏洞成立。** 🧪 目标版本、信任边界与接收人明确时，让 Agent 查跨路径／文档契约并交可复核候选；已有静态分析、测试和人审保留。没有可复核材料、只有重复告警或核查负担过高就收窄／停止，不自动上报、合并或部署。AI拟复现与补丁，人判影响、验证及发行；curl／Firefox接收与反例不证明自动审计净收益。
+**存量安全漏项先写清支持模式、信任边界和不算漏洞的情形，再让 Agent 交可复核候选。** 🧪 Pion 维护者反馈，泛化报告中的 panic 不自动计为 CVE；其已合入的 DetachedConn 修补把普通应用数据留到握手完成后交付，却保留明确接受的 0-RTT。照此检查：修补是否既阻止错误路径，又保住项目承诺的正常模式，而不是删功能求通过。已有检查和人审保留，接收与发行沿项目原流程；只有重复告警、无法复核或核查负担过高就收窄，不据模型的 confirmed 自动接收。
 
-**依据**：[一手／研究] 存量安全审计候选与维护者接收，未实测；[研究] [curl／Firefox接收与反例](research/2026-10-12-baml-and-review.md#存量安全审计候选发现到维护者接收)；核实 2026-10-24。
+**依据**：[社区：维护者自报] [Pion 原帖与评论](https://news.ycombinator.com/item?id=50124600)；[一手：已合入修补] [PR #1236](https://github.com/pion/dtls/pull/1236)、[固定认证修补](https://github.com/pion/dtls/commit/ab311fd375f87f2245e0960803e29a420fd39914)。本仓只读核实，未运行；核实 2026-10-27。
 
 ### 本地 / 会话内
 
@@ -221,6 +221,20 @@
 交付实际结果和未完成项；重复意见合并，不为清空评论制造修改。
 ```
 
+<a id="patch-causality-replay"></a>
+**🧪 修补反复失效、仍不清楚是否修到真实路径时，再加一次同输入回放。** 小修已有原回归充分覆盖就不加整套；需要补因果证据时，可把下面这段交给独立执行者：
+
+```text
+固定基线和最终补丁，在各自隔离工作树用同一真实入口、输入和外部检查重放，勿改复现迎合结果。
+缺陷断言应在基线失败、最终补丁通过；正常控制两边都通过。
+只在本次新建的隔离工作树完整撤回补丁，核全树等于基线，缺陷应再次出现。
+核实际加载代码／构建产物的路径与哈希，保留命令、结果和未验范围；环境失败不能算缺陷复现。
+```
+
+这借用 ToB 的窄机制，不要求安装其整套流程。[本仓 CI 投影实际回放](../experiments/ci-result-projection/README.md#本仓实际使用)得到缺陷断言 **1→0→1**、控制全过；它证明一个真实输入的修补，不证明全部回归安全或多 Agent 的净收益。
+
+**依据**：[一手：固定源码] [ToB prove-patch](https://github.com/trailofbits/skills/blob/196a9073ab10d35bacf111f945e02c00b2c6883a/plugins/patching-bugs/skills/prove-patch/SKILL.md)、[replay-regression](https://github.com/trailofbits/skills/blob/196a9073ab10d35bacf111f945e02c00b2c6883a/plugins/regression-hunt/skills/replay-regression/SKILL.md)；[一手：真实采用，非独立效果评估] [GPAC #3953](https://github.com/gpac/gpac/pull/3953) 合入流程时明确独立工作树与匹配库；[本仓实际执行] 上述单输入回放，未执行整套插件。核实 2026-10-27。
+
 实现见 [07](07-workflows.md#2-标准节奏探索--计划--实现--提交-)，并行整合见 [08](08-multi-agent.md#6-操作手册从一个大任务到并行执行)，跨轮接续见 [20](20-codex-long-horizon.md#3-完成条件来自验收原文不能由总结重新定义)。下列告警保护、反馈收齐与循环收敛展开具体入口。
 
 **依据**：[一手／本仓实际采用] [Memos 组件实施与独审](../experiments/memos-reading-adoption.md)（jsdom）及[后续真实匿名页面接收](collaboration/local-jobs/A-MEMOS-BUILT-SMOKE-001.md#当前执行)（浏览器、实际 PNG、网络与 SQLite；运行 2026-10-25 UTC，非作者范围复核未重演），[Sphinx](collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)（真实 CLI，非完整下游链）；[一手／研究] 原生评审、反馈收齐与保留判断的既有来源；[经验] 本路线组合，非评审净收益对照。原核对 2026-10-25；Memos 后续证据回流 2026-10-26，未重跑历史实验。
@@ -271,6 +285,15 @@ rsync 的已接收提交 a55ab05c 明确保留名称过滤语义，而非把过�
 **循环迟迟不收敛时，区分当前改动的新增风险、既存缺陷和重复发现。** Claude Code 团队 2026-10-15 复盘记录过评审循环失控，随后限制轮次、在前几轮之后只重审改动并抑制重复发现；支持本页的收窄默认，不把其具体轮数或 0／1／2 人审批表移作通用标准。人审要求仍由本项目风险与授权决定；撤回率或事故上升时恢复检查，不能只以少等审批证明收益。
 
 **依据**：[经验] 告警保护判断；[一手：维护者提交／固定源码，2026-10-24 核读] [rsync 提交 a55ab05c](https://github.com/RsyncProject/rsync/commit/a55ab05c1922f5cba915f203ec51e0ae15a57d3a)、[Codex-reported 用例](https://github.com/RsyncProject/rsync/blob/a55ab05c1922f5cba915f203ec51e0ae15a57d3a/testsuite/symlink-exclude-leaf_test.py#L43-L49)、[配套契约用例](https://github.com/RsyncProject/rsync/blob/a55ab05c1922f5cba915f203ec51e0ae15a57d3a/testsuite/daemon-exclude-namebased_test.py)；[研究] 验证范围；[一手：固定文档与实现；经验：采用判断] API 兼容性采用与反例 [官方范围、成熟项目两种采用与反例](research/2026-10-12-development-conditions.md#api修改声明差异消费者契约与真实集成)；[本仓 CLI 实试／一手：固定修复，2026-10-24，未验上游运行服务或模型收益] oasdiff 实试；[研究] CRBugBench 比较与人的负担 [比较、人的负担与边界](research/2026-10-12-baml-and-review.md#额外评审的增量与人的负担)；[一手：自用复盘；研究：条件采用] [Claude Code 团队 2026-10-15 复盘](https://claude.dev/blog/solving-code-review-at-anthropic/)；核实 2026-10-24。
+
+<a id="griffe-api-feedback"></a>
+### 🧪 Python 库改公开接口：先取 Griffe 兼容差量
+
+**维护已发布 Python 库时，可用 Griffe 给 Agent 补接口差量，先作为非阻断评审输入。** 起点是 `uvx --from griffe==2.4.0 griffe check path/to/package --against KNOWN_BASE --no-inspection`，替换包路径和已知 Git 基线，让 Agent 按报告核受影响调用，再决定恢复兼容或说明有意破坏；本次只核了这条通用 CLI 的帮助。Microsoft Agent Framework 的实际流程从可信 base 读取检查器与生命周期标记，静态比较合入后的源码，避免同一 PR 新加“实验性”标记隐藏旧稳定 API 的破坏。它把 `breaking change` 标签当意图声明，不当批准；synthetic merge ref 缺失或过期会跳过，检查绿灯不等于做过比较，应读摘要。
+
+本次按其 Griffe 2.4.0 固定依赖复跑官方检查器测试，7 项通过，包括旧基线过滤与 class／instance 属性区分；未在 a1 真实开发中采用。检查器曾因基线别名解析报错，不能把工具故障当成补丁破坏。内部脚本、只改运行行为或已有检查已覆盖所需兼容性时，不加这层；保留原行为测试。
+
+**依据**：[一手：用法] [Griffe 检查入口](https://mkdocstrings.github.io/griffe/guide/users/checking/)；[一手：采用、误报修订与故障] [Microsoft #8271](https://github.com/microsoft/agent-framework/pull/8271)、[#8419](https://github.com/microsoft/agent-framework/pull/8419)、[#9614](https://github.com/microsoft/agent-framework/pull/9614)；[本次组件实跑] 固定 `3b725b3b` 的[7 项测试](https://github.com/microsoft/agent-framework/blob/3b725b3b0ffe09ff00d57b31cc179d20d12a1e49/.github/tests/test_python_api_compatibility.py)，未测模型收益；核实 2026-10-27。
 
 ### 把PR反馈交给修订Agent：先收齐三个入口
 
