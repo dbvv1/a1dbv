@@ -123,7 +123,7 @@ stripSearchParams({ arrayWithDefaults: ['foo', 'bar'] }),
 
 **同一工具也要按具体语言和动作核能力。** Vue 项目的实现查询若报 `-32601`，先查 Vue／TypeScript companion 的请求路由。本仓[已审补丁](../../experiments/serena-vue-implementation/README.md)通过 43 项相关测试；真实 MCP stdio 的同输入对照也从工具错误变为唯一 Square 实现，补丁版默认 REPL 查询同样通过。补丁尚待 fork／CLA，原生 IDE／LSP 已能查到时沿用原入口。
 
-**新接入时按实际工具列表选入口。** 已验的 `2.1.1.dev0` 基线全新配置默认 REPL：先读 `initial_instructions`，再用其 session 调 `serena_repl`。沿用上面直接调用独立符号工具的流程时，显式启动 `--agent-interface tools`；[两种入口的实际参数与范围](../../experiments/serena-vue-implementation/README.md#真实-mcp-stdio-入口)已有记录，模型／IDE 客户端效果仍待验证。
+**新接入时按实际工具列表选入口。** 已验的 `2.1.1.dev0` 基线全新配置默认 REPL：先读 `initial_instructions`，再用其 session 调 `serena_repl`。沿用上面直接调用独立符号工具的流程时，显式启动 `--agent-interface tools`；有 `excluded_tools`／只读要求时，先核[两种入口的参数与约束](../../experiments/serena-vue-implementation/README.md#真实-mcp-stdio-入口)。模型／IDE 客户端效果仍待验证。
 
 **已装 Superpowers，按任务选三条路：**
 

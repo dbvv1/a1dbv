@@ -36,6 +36,8 @@ git diff --check
 
 **先识别接口模式，再调用符号查询。** 此基线的新建配置默认 REPL，只暴露 `activate_project`、`initial_instructions`、`serena_repl`；需要一工具一操作时，启动参数显式加 `--agent-interface tools`。工具数量不同是接口选择，不必因此重装语言服务器。
 
+**依赖工具排除或只读配置时，切接口前重核约束。** `excluded_tools` 适用于 tools 接口；REPL 用 `included_apis`／`excluded_apis` 选择 Serena 方法，`read_only` 也只禁用它自带的编辑方法。一般 Python 仍按 Serena 进程权限执行，实际文件／命令隔离要由宿主权限或容器落实；三个工具名只是入口数。依据：[固定配置说明](https://github.com/oraios/serena/blob/773a77e19f0da348f505640c33a8b4e1d7817dc2/docs/02-usage/050_configuration.md#agent-interfaces)、[官方 REPL 安全约定](https://github.com/oraios/serena/blob/773a77e19f0da348f505640c33a8b4e1d7817dc2/docs/02-usage/070_security.md#the-repl-interface)；本段为源码与契约核对，未做一般 Python 权限试验。
+
 本次用官方 MCP Python SDK 2.2.0 的 `ClientSession` 启动实际 Serena stdio 子进程，执行 `initialize` → `tools/list` → `initial_instructions` → 查询。项目 `language_servers: ["vue"]`，使用补丁内 `src/shapes.ts` 夹具；各端项目、HOME、配置和 LSP 缓存独立，dashboard／GUI 关闭。已核实际导入源文件与对应固定 commit 的字节和哈希。
 
 | 路径 | 真实结果 |
