@@ -119,7 +119,22 @@ flowchart LR
 | 短暂掉线 | `onDrop` 标离线并保玩家，本例暂停操作；在有界窗口调用 `allowReconnection` | 自动重试或 token 续接预留席位；`onReconnect` 与最终 `onLeave` 分开 |
 | 恢复／结束 | 各客户端收到自己的新 state 后才恢复输入；超时／主动离开按规则结束；完成结果由权威状态确认 | 回传当前状态、最终离开与空房 `onDispose`，而非替应用决定奖励／持久化 |
 
-**恢复连接后先等新状态，再允许操作。** 本次固定 SDK 的 `onReconnect` 早于新 token 写入及后续全量 state；不要同步存旧 token，或只看一个玩家恢复就替另一端开放输入。自动重试保原 Room，进程重启的 `client.reconnect(token)` 返回新 Room，监听也要重绑。离线队列不是业务日志：本例暂停时换输入 epoch，拒绝恢复后积压的旧操作；当前 epoch 内客户端本地递增操作序号、服务器去重，不从延迟 state 反复取同一 `lastSeq+1`。真正需要续传的购买／结算另做确认与持久化，不重播所有瞬时技能点击。
+**恢复连接后，每端等自己的新状态，再允许操作和保存新 token。** 固定 SDK 0.18.6 的 `onReconnect` 早于 token 更新及后续全量 state；自动重试保原 Room，手动 `client.reconnect(token)` 返回新 Room，需要重绑监听。离线队列不是业务日志：本例暂停时换输入 epoch，拒绝旧操作；同 epoch 内客户端本地递增 seq、服务器去重，不从延迟 state 反复取同一 `lastSeq+1`。需要续传的购买／结算另做确认与持久化。
+
+<a id="session-ownership"></a>
+#### 切房与取消恢复：旧连接成功，也不能接管新局
+
+**✅ 把“当前正在玩的会话”交给一个本地所有者；切房或退出先作废旧归属，再等待网络结果。** 复用项目已有流程所有者即可。只靠服务器 epoch 不够：epoch 区分一局内的输入阶段，不能阻止旧 Room 的回调把新局 HUD、快照与序号覆盖掉。房间／席位由 SDK 管，本地请求代次决定哪一个结果可以进入当前玩法。
+
+[可运行起点 `SessionOwner`](../../experiments/colyseus-room-chain/session-owner.mjs)保留原 Colyseus 的同步与自动重试，只补三处接缝：
+
+1. `owner.connect(() => sdk.joinById(roomId, options))` 发起前递增代次，撤掉旧会话的输入、token 与快照入口；旧 Room 主动离开。本例采用“离旧局，再尝试新局”，新加入失败就显示失败，不自动复活旧局。
+2. 回调捕获自己的 Room／代次，只能写自己仍拥有的当前会话。迟到成功释放它实际得到的 Room；迟到失败只结束旧请求，不改新局错误栏。仅移除应用注册的监听，保留 SDK 自己的退出清理。
+3. `owner.leave()` 先取消本地归属，再清理连接。固定 SDK 已排队的自动重试不会因 `reconnection.enabled=false` 自动取消，因此旧 Room 即使随后重连成功，也只执行离开；清掉其待发瞬时操作，不重新开放输入。底层请求仍可能完成，不能把本地取消当成已撤销服务器操作。
+
+本仓真实 loopback 服务曾复现：同一客户端从双人局切到三人局后，旧队友的下一次操作使当前 `roomId` 指新局、快照玩家却全属旧局。修复后的同进程切房、自动重试中退出、迟到手动重连、加入中取消与失败覆盖测试，分别核房间／席位、权威分数、新局 seq 和旧房回收；原重连／过期／输入去重也继续通过。首版接一个正常操作；二改加入“重连时回菜单再开新局”，让 AI 沿这条真实路径核所有权，而不只检查 `connected=true`。异步场景／角色加载还须在其最终应用点核同一归属，本例未包含这层引擎消费者。
+
+依据：[Colyseus 连接生命周期](https://docs.colyseus.io/sdk/connection)、固定 SDK 0.18.6 `Room`／signal 源码及[实验](../../experiments/colyseus-room-chain/README.md#切房与取消恢复)，2026-10-27 [一手／本仓实跑]。上游 [#950](https://github.com/colyseus/colyseus/issues/950)也曾出现旧退出流程关闭新连接，维护者修复且用户复验；当前固定 core 0.18.23 已含该修复，本次修的是应用归属，不重复声称修了框架。此处为 Node／WebSocket 消费者，Unity／UE 沿现有会话与场景生命周期接线，未运行引擎。
 
 **先自托管跑通，不把许可免费当成免运维。** Colyseus 为 MIT，Nakama 开源版为 Apache-2.0；上线还需认证、TLS、预算、监控与数据政策。Colyseus 多进程要配共享 Presence／Driver 等，Nakama 要维护数据库；进程内重连不保证进程崩溃后恢复。托管可省部分运维，但服务价格／合同按采用时核，本例没有付费或部署。Unity／Nakama 接线为资料比较，Colyseus 才是本次真实运行项，不宣称跨项目成本冠军。
 
