@@ -1,7 +1,7 @@
 # A-PUBLIC-TLS-DIAGNOSIS-20261027 · 公开网页 TLS 分层只读诊断
 id: A-PUBLIC-TLS-DIAGNOSIS-20261027
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc17d1d2b9983b7e255d03fc7c16ce5fdcf2d68c
@@ -41,5 +41,6 @@ result_branch: relay/a-public-tls-diagnosis-20261027
 - 已完成公开网页 TLS 分层只读诊断：DNS 与 TCP 建连成功，TLS 握手在约 5.0 秒时未完成、无证书校验结果和 HTTP 响应，同机到 github.com 的对照返回 200，根因记为未知；建议由网络管理员按 2026-10-27 10:31 UTC 时间窗核对网关侧握手记录，不要关闭 TLS 校验或改网络配置。审查三视角通过，openIssues 为 0。
 - 产物：[da69756](https://github.com/dbvv1/a1dbv/commit/da69756dbbcedbae90aa9b8c48172d8e29914559)，分支 `relay/a-public-tls-diagnosis-20261027`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：本任务无剩余工作单元，交由接收端提交与更新任务状态。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+- dot-A 接收：接收握手分层证据；根因未知、未修复。已向用户说明，不继续同条件探测或修改网络设置。

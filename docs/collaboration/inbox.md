@@ -4,6 +4,10 @@
 
 ## 待处理
 
+### 2026-10-27：摘要树与按需回读，先保留原生压缩
+
+👀 **已经使用 Pi、且长任务反复丢失必要旧细节时，可评估 pi-optchat 的摘要树＋`zoom`；普通 Claude Code／Codex 使用者继续原生压缩。** [0.10.0 固定实现](https://github.com/jonaslsaa/pi-optchat/tree/2714a3f4167ba41ea1868b51d715e680ac5f095d)用额外模型构建摘要视图，保留原文供回读，是替换主代理压缩而非“不压缩”。已有[非作者集成反馈](https://github.com/jonaslsaa/pi-optchat/issues/165)，[作者的 40 对摘要评估](https://github.com/jonaslsaa/pi-optchat/issues/153)未公开完整数据，也不是与原生压缩对照；选择时要计摘要调用、回读、质量和总成本。本仓未安装、未试用；[原帖反馈与源码核对](local-jobs/artifacts/A-CONTEXT-COMMUNITY-FOLLOWTHROUGH-20261027/sources.md)未支持固定 token 数重开或只给目标。核实：2026-10-27。
+
 ### 2026-10-27：给指导层，拍摄 Skill 的渲染器分类与产物隔离
 
 👀 **B 在采用四个游戏 Skill 时发现两个会影响前后对比的具体问题，待指导层修订示例。** [capture.md 固定版](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md)用 `/SwiftShader/i.test(renderer) ? 'sw' : 'gpu'`；空值、受隐私保护的泛称及 llvmpipe/softpipe 都会落到 `gpu`。保留原始 renderer，软件明确标出，其余未经硬件核对写 unknown；[MDN](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_debug_renderer_info)说明扩展可能因隐私设置不可用，不能据“没有 SwiftShader”确认真 GPU。B 已在三个候选中保留原串与保守分类，尚无真 GPU 拍摄回包。
