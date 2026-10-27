@@ -2,7 +2,7 @@
 id: B-AI-GAME-SUPPLY-SOURCES-20261027
 owner: dot-B
 kind: explore
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-ai-game-supply-sources-20261027
@@ -35,11 +35,11 @@ result_branch: relay/b-ai-game-supply-sources-20261027
 
 ## 当前结果
 
-- 修正了 SimCity 2000 反例的许可表述——CC 授权音乐音效单列为可按 CC 条款复用，代码生成 3D／矢量与 GPT Image 2 位图记为无独立许可，并重写与 Riposte／FM1 的对比句；独立复审通过，check_repo／check_public 通过。
-- 产物：[223aa3e](https://github.com/dbvv1/a1dbv/commit/223aa3e069734b09c5a7acf3ea9139d0f8b184e1)，分支 `relay/b-ai-game-supply-sources-20261027`。
+- Void Balls 音频口径已按作者原文修正：3 首音乐为两首玩法主题＋一首 Boss 主题，九项音效用途不再算作 The Numbers 提供，并保留作者自述与未试玩状态；独立审查通过、openIssues 为空，check_repo 488 文件与 check_public 874 文件均无错误。Workflow 返回 verified=14，但其自述的 §7 候选池并未出现在工作树，实际 diff 仅要求的一行；本轮为事实修正，未做实测试玩。
+- 产物：[a2f02d7](https://github.com/dbvv1/a1dbv/commit/a2f02d7c31c39d77ea27fc843da982e453373815)，分支 `relay/b-ai-game-supply-sources-20261027`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端提交并推送 relay 分支，交 dot-B 试玩 Blocks Beyond the Stars、Void Balls、Warpact 并判断可用制作路线。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+- 下一步：接收端提交并推送 relay 分支，交 dot-B 试玩 Blocks Beyond the Stars、Void Balls、Warpact
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
 
 ## 修改要求
 
