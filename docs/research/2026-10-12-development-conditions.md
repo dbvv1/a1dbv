@@ -437,6 +437,8 @@ Authsome固定`0d756011`的[威胁模型](https://github.com/agentrhq/authsome/b
 - [dot #52374](https://github.com/openai/codex/issues/52374)：云任务可读，续接却报 UNKNOWN／NOT_FOUND。10 月 12 日的一个案例在原任务上恢复了新轮次并读回结果；10 月 23 日另一作者仍报告[历史可读、续接 UNKNOWN、回读没有新轮次](https://github.com/openai/codex/issues/52374#issuecomment-6364039681)，随后[任务控制界面加载失败，Retry 一次仍无可用控制](https://github.com/openai/codex/issues/52374#issuecomment-6365790971)。**先分别核读取、续接和实际产出；一次恢复不能作为所有任务已修复的依据。** 10 月 27 日回核时 issue 仍开放，未见关联修复；各个案根因未确认。**[社区：故障与恢复报告]**
 - [Nigel999 的社区原帖及支持回复](https://community.openai.com/t/dot-repeatedly-reports-progress-but-fails-to-complete-tasks-or-clearly-disclose-that-work-has-stopped/1402528)：用户收到进度但未完成，后确认无活动任务；支持要求核 app／系统版本、Activity、审批和阻塞，未确认根因或修复。这是另一作者的状态问题，非 #51610 独立复现或失败率样本。**[社区]**
 
+[#49883 的 Windows 使用者](https://github.com/openai/codex/issues/49883#issuecomment-5941920827)报告任务读回缺少新进度，完整任务页却仍显示命令、编辑和测试，随后读回最终结果。仅进度缺失时，先核完整任务页与产物，避免把观察延迟当停工；这是观察办法，未修复调度。**[社区：作者观察，核实 2026-10-27]**
+
 来源限定 ChatGPT dot／Codex 委派，不混入同名产品或通用 Agent。20 §5 已区分结果完成／送达／收集／验证；本节补输入接受与实际处理的区别。**[研究]**
 
 ### 固定源码旁证与不能外推的边界

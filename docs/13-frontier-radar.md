@@ -97,6 +97,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [mutmut 3.8.0](https://github.com/boxed/mutmut/blob/3.8.0/README.rst) | Python 真实修复后，怀疑测试只覆盖新 helper 时，在隔离副本配置 `source_paths` 与现有回归；`mutmut run '<模块>.<函数>*'` 运行，再用 `mutmut browse` 看仍能通过测试的变异，按业务契约补断言 | rtl_433 的[固定配置](https://github.com/rtl-433-hass/rtl_433/blob/f59045c13d70b61ea91cbebf129e880dac08ef54/pyproject.toml)与[消费者测试](https://github.com/rtl-433-hass/rtl_433/blob/f59045c13d70b61ea91cbebf129e880dac08ef54/tests/test_mut_library_floor.py)覆盖异常回退、可变容器复制，并按影响范围缩小运行 | 未安装、未试用；2026-10-27 核源码与公开采用 | 👀 动态导入／subprocess 可能漏采集，先核实际运行了变异副本；零执行不能当通过。已有回归已抓准原问题时，保留原法，不设默认分数门槛 |
 | [Anthropic SDK 主版本迁移](collaboration/inbox.md#2026-10-27sdk-迁移与按改动构建) | SDK 升级时一并修 API 契约，按实际客户端核采样参数和认证头 | 官方迁移指南、Bedrock 用户问题与 Hermes 开放迁移待办，2026-10-27 核实 | 未试用；待真实 SDK 升级任务采用 | 👀 需要旧采样行为时暂保相应旧调用链，不能只改版本头 |
 | [Next.js 按源码变化构建](collaboration/inbox.md#2026-10-27sdk-迁移与按改动构建) | 维护框架源码时按改动范围及产物有效性选构建，不因新 worktree 就全量构建 | Next.js 10-22 已合入 AGENTS／backport Skill，2026-10-27 核实 | 未试用；待真实 Next.js 框架维护任务采用 | 👀 仅测例改动也须核现有产物；不推广为本仓门禁 |
 | [Portless 命名开发入口](collaboration/inbox.md#portless-worktree-urls) | 多个 worktree 频繁切换时，用稳定 URL 让 Agent、浏览器与测试指向同一应用 | state-in-url 的八应用与 CI 已采用，但其 E2E 仍写死主检出 URL | 未安装、未试用；已核 0.15.12 源码及 0.15.5 消费者，2026-10-27 | 👀 先选高端口 HTTP 并关闭 hosts 同步；`get` 不证明就绪，不复制 `--force`；现有端口安排够用就沿用 |
