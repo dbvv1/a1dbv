@@ -1,7 +1,7 @@
 # A-TESTMON-PATCH-READER-20261028 · 已审补丁页的实际接入
 id: A-TESTMON-PATCH-READER-20261028
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: cafdfdbe49723577b9b4620d749d14e93414cb42
@@ -61,3 +61,11 @@ PYTHONPATH="$PWD" python -m pytest tests/test_configure.py tests/test_coverage_d
 这里的选择是复用 `Coverage.current()` 和现成 no-collection 分支，保留已约定的兼容行为；没有把合法工具组合一律改成拒绝。诊断和修复是本仓真实工具维护任务，未做模型或效率对照。
 
 来源：[原始问题](https://github.com/tarpas/pytest-testmon/issues/270)、[固定检测与配置](https://github.com/tarpas/pytest-testmon/blob/94150742345d0bc3fb00a10c19c0ae26a0064c4e/testmon/configure.py)、[Coverage API](https://coverage.readthedocs.io/en/latest/api_coverage.html#coverage.Coverage.current)、[core 自 7.9 引入](https://coverage.readthedocs.io/en/7.14.0/config.html#run-core)；核实与实跑：2026-10-27 UTC。上游 MIT 许可随 [LICENSE](https://github.com/dbvv1/a1dbv/blob/cafdfdbe49723577b9b4620d749d14e93414cb42/experiments/testmon-outer-coverage/LICENSE) 保留。
+
+## 当前结果
+
+- 读者按页面在固定上游基线上顺序应用两份补丁，两个合法组合各 29 passed，树哈希与页面一致（taskDone=true）；页面仍造成 6 处卡点：虚拟环境位置与插件清单缺失、需先安装项目才注册入口点、只给 POSIX 写法、树哈希句缺 git add -f 前提、coverage 6.5.0 不可得、Python 补丁级差异。复核未留阻塞问题（remaining=false），仅提示读者记录有少量表述不一致，不影响技术结论。
+- 产物：[3b9b866](https://github.com/dbvv1/a1dbv/commit/3b9b86609c25995235d7539f440577fb92dfeea0)，分支 `relay/a-testmon-patch-reader-20261028`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端按既有流程提交并发布本结果分支；把六处页面缺口反馈给页面维护者。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
