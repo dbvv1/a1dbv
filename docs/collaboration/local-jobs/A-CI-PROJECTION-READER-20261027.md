@@ -1,7 +1,7 @@
 # A-CI-PROJECTION-READER-20261027 · 改页后的第二个真实 CI 任务
 id: A-CI-PROJECTION-READER-20261027
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fa6310040621656236d74998a19186b2f1b18fbe
@@ -71,8 +71,4 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 
 ## 当前结果
 
-- 新读者按改页后页面完成 Datasette #3015 当前 head 核验：三源齐全、无分页缺口、投影片段实跑、46 项回归通过，结论为该 head 不能接收为 CI 通过（6 条 action_required、checks 0、仅 Read the Docs 状态 success、PR 为 draft）；审查 remaining=false 无未关闭问题，页面卡点已记入产物（statuses 端点不分页却统一写 page/per_page、query_scope 取值只在代码、历史样本未提示需重新 GET、仓外临时目录与通用边界未豁免、checks=0 加 action_required 缺组合判读示例）。
-- 产物：[8e9421c](https://github.com/dbvv1/a1dbv/commit/8e9421c94f75915b764437d0cc416973c9cf5d11)，分支 `relay/a-ci-projection-reader-20261027`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：交 dot-A 接收并回 review_ready（不用 accept: auto）
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+接收 [u2 的真实 CI 观测与仓外命令入口](artifacts/A-CI-PROJECTION-READER-20261027/result-u2.md)，dot-A 重取同一 head 并重放一致；读者看过旧记录，严格新读者验收未通过，不升绿。回包的“不分页”和“全因待批准”结论已校正，原始回包保留在 [8e9421c](https://github.com/dbvv1/a1dbv/commit/8e9421c94f75915b764437d0cc416973c9cf5d11)，不重开同题。
