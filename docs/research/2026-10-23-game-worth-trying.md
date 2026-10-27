@@ -2,9 +2,9 @@
 **旧调查支持选题，新案例支持试法；目前没有足以排出 2026 年 10 月全行业质量冠军的同题证据。** [研究]
 **本端做过精确版本检索和 Battle Drones v4 公开产物短试玩，未试用 AI 制作工具，未复现制作或测得净收益。** [经验]
 
-# 游戏版值得一试：七个任务入口的依据
+# 游戏版值得一试与 AI 做游戏实例
 
-核实：2026-10-23（UTC+8）；试玩于 10-22 UTC，未指定模型版本不补猜。结论见[游戏 README](../../domains/game-dev/README.md#游戏版值得一试)。[研究]
+第 1–7 节核实：2026-10-23（UTC+8）；试玩于 10-22 UTC，未指定模型版本不补猜。第 8 节补入 10-27 的作品过程核查。读者入口：[值得一试](../../domains/game-dev/README.md#游戏版值得一试)／[用 AI 做游戏](../../domains/game-dev/README.md#用-ai-做游戏)。[研究]
 
 ## 1. “用得多”能回答到哪一步
 
@@ -84,3 +84,54 @@
 首试应固定三件同族资产和一段短动画，改一次公共主体，再改一个局部表情，核引用、尺寸、透明边界和全部帧；已有合格资源仍是对照。若补丁维护更贵或需要人工逐像素修补，就保留原路线。附带注意：[CLI 的 lint](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/src/node/cli.ts)仅取动画首帧，发现问题仍返回 0，不能当全帧发布门。这是试验建议与静态边界，未执行，也未验证画质或引擎接收。[研究]
 
 **本项探索回执：** 同步查 Reddit 的上游／fork 作者与使用者讨论、GitHub 实现，以及中文检索、linux.do、HN；中文命中以教程转述为主，未找到同题独立生产反馈。[另一 fork 的展示讨论](https://www.reddit.com/r/aigamedev/comments/1xb3k2l/opus_55_pixel_art_with_claude_pxl/)既有外观称赞，也有仪表不一致的反馈；它使用不同分支，不能把其新增能力或问题直接套给本次固定版本。未取得成套二改效率对照。[社区／研究]
+
+
+## 8. 用 AI 做游戏：制作过程与采用边界
+
+**本轮保留三条待试制作线索：Riposte 的建筑构造、FM1 的混合供给、DragonScape 的分类图标／二改保留。** 尚不足以据此确定三款游戏的品质目标。[研究]
+本节仅核作者／玩家原帖与固定源码，未复现制作或完成新增作品体验。Battle Drones 旧试玩沿[第 4 节](#4-battle-drones确实玩到了什么)。
+以下均为 🧪 候选，先在现有作品的一个完整局部验证。
+
+### Riposte：建筑先有构造，再加材质
+
+**待试顺序是先核角色与门洞的真实尺度、建筑体量及通行／视线布局，再选局部立面构造。** 给旧盒子贴百叶不等于形成完整场景。[研究]
+
+作者自述由 Claude Code 编写几何与玩法，人给参考、逐武器／附件修改并试玩；一次要求全部地图重做，消耗大量并行工作却几乎无收益。瞄准、后坐与声音的打磨比加功能更费时。[社区：作者自述]
+
+固定源为 `31ca050d8ce59f4885c01a3237f68cdf186c9b60`，README 标 **5.6.0 快照**，不与官网每次更新同步，也不含官方账号／大厅服务端。静读三个起点：[一手：源码]
+
+- [`02d-archi.js`](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/src/02d-archi.js)：局部立面坐标、洞口深度、窗框／百叶／门板；视觉洞口与整块碰撞盒分离，接入时仍须核能否通行。
+- [`02c-materials.js`](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/src/02c-materials.js)：按米铺纹理、世界空间大尺度变化、墙根污渍；它补表面，不替代建筑比例。
+- [`02-relief.js`](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/src/02-relief.js)：共享地面高度与道具底部局部整平。可作为路侧物接地的候选，而非已验的赛车道路方案。
+
+**转用限于已核授权部分。** 固定版代码为 MIT；NOTICE 排除名称／图标、Suno 免费方案音乐、Mixamo 烘焙动画及部分声音。不要整包搬资产；贴图、动画、音效分别回其来源条件。作者报告约一个月制作、订阅从 €20/月换到当月 €90/月；总工时与费用未知。玩家回帖既有好评，也有 RX580 约 20 FPS 和 Mac 长停顿，不能用作者设备的帧率保证目标设备。[社区／研究]
+
+依据（核实 2026-10-27 UTC）：[作者制作帖与玩家回帖](https://www.reddit.com/r/aigamedev/comments/1x79hnz/i_vibe_coded_a_free_multiplayer_fps_for_the/)、[固定 README](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/README.md)、[LICENSE](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/LICENSE)／[NOTICE](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/NOTICE.md)。
+
+### Formula Minus One：混合供给仍需设计与清理
+
+**待试线索是先定视觉主题、再组合资源；图像转 3D 尚不能当作免清理生产线。** 六个月复盘明确写出铅笔草图→图像生成→Tripo→Blender 清理瑕疵，音乐先在 MIDI 键盘起稿再生成，声音还用现成资源。作者重写半低模／双色风格指南，重做角色、菜单与关卡。它支持混合供给和持续设计；清理是否全由 Agent 完成未交代，尚不能作为“无需人工美术修补”的完整样板。[社区：作者自述]
+
+对 Star 可试的是一个弯道里路面、路肩、近景件与远景共享主题和尺度，属于流程启发，尚无实画面定标。反重力赛车的操控也不能直接套给公路车。原帖玩家指出手机转向太敏感、反复撞墙仍赢，作者承认要改；其视频自称 trailer，不充当连续实机。[研究／社区]
+
+作者在四个月时估计约 $200，同时说明订阅混用于其他用途；没有专项账本、清理工时或累计重试费。未核到可供本项目复用的全仓／资产许可，仅留过程线索。[社区／研究]
+
+依据（核实 2026-10-27 UTC）：[六个月制作原帖](https://www.reddit.com/r/ClaudeCoding/comments/1x4fyc1/vibecoded_a_futuristic_racer_demo_like_many_but_i/)、[四个月原帖及成本／玩家回帖](https://www.reddit.com/r/vibecoding/comments/1vvhi7t/vibe_coded_this_game_in_four_months/)。
+
+### DragonScape Idle：分类风格与保留已验图片
+
+作者自述按游戏数据生成静图；通用风格在 **32px 暗底**失效，后来按 UI、物品、敌人分类定风格。二改把 **content hash 与 style hash 分离**：文案变可保留已采用图，风格变显式标旧，不能用批量更新掩盖。待试线索是先验实际尺寸／背景，再扩图标族；不外推三维角色或动作。[社区／研究]
+
+仍需人选图和重生成，总成本未知；未复现脚本，也未核素材复用许可。依据（核实 2026-10-27 UTC）：[作者制作帖及修订回帖](https://www.reddit.com/r/aigamedev/comments/1wgfhfp/solo_dev_1000_hours_ai_art_and_aiassisted_code/)。
+
+### 其余只保留改变选择的反例
+
+- **Ascend From Nine Mountains**：[作者早期原回帖](https://www.reddit.com/r/aigamedev/comments/1ojio3t/has_anyone_published_a_game_yet/)明说生成后手动抠背景和修正。保留为角色姿态供给候选，当时有手修，当前是否消除仍待核。
+- **Remnants of R’lyeh**：[作者原帖](https://www.reddit.com/r/aigamedev/comments/1mriom7/i_used_meshy_ai_to_generate_3d_models_and/)说模型生成后精修／动画，回帖承认拓扑仍不足。不要由怪物宣传图推导可直接替换近景角色。
+- **Codex Mortis**：[demo 作者原帖](https://www.reddit.com/r/aigamedev/comments/1pidb5g/my_first_vibecoded_game_codex_mortis_demo_is_live/)说明角色动画没达到目标，改用 shader 摇摆；这是美术取舍，不是完整动作链已解决。旧 demo 的说法不当成当前正式版状态。
+
+上述原文核实于 2026-10-27 UTC；均未完成本端当前版体验。未能形成新的、可复验的“生成声音到游戏内混音无需人工处理”完整样板，声音选择继续沿[音频页](../../domains/game-dev/assets/audio.md)。[研究]
+
+**体验缺口与恢复条件。** 本轮 Riposte／FM1 官方 HTTPS 返回连接拒绝；Riposte 本地文件入口另受浏览器管理员策略阻断；之后支持浏览器退出，候选录像未加载出游戏帧。DragonScape 与原生 demo 未启动。这是访问／观察失败；待合法入口恢复或取得同版完整实机后，再比较完整局部的视听、操作与反馈。
+
+**探索回执。** 回源 Reddit 作者／玩家原帖、Riposte 固定代码与许可；中文反馈沿第 3 节，本次未新增检索。未重做 Battle Drones 或用宣传截帧补体验；完整成本与品质排名未知。[研究]

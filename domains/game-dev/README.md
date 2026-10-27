@@ -44,6 +44,21 @@
 | [视频](assets/video.md) | 实验短片 | 尚未进作品 |
 
 
+## 用 AI 做游戏
+
+**待试制作线索：真实尺度与空间布局、混合资产供给、图标分类与二改保留。** 下表新增三例核到了作者过程、公开源码或玩家反馈，尚未完成本端实玩或完整实机观看；作品品质待验。这组实例仅 Battle Drones 历史 v4 有 1:38 窄试玩记录。[研究]
+
+| 作品与入口 | AI 与人做了什么 | 待试制作线索 |
+|---|---|---|
+| 🧪 [Riposte: Frontline](https://www.playriposte.com/)：网页 FPS | 作者用 Claude Code 写 Three.js 几何与玩法，人提供参考、逐件调整并试玩；照片贴图、动画和声音另有来源。 | 先核真实尺度、建筑体量与通行／视线布局，再试立面构造；给旧盒子贴百叶不等于完整场景。代码 MIT 不覆盖整包资产，详见[作者、源码与排除项](../../docs/research/2026-10-23-game-worth-trying.md#riposte建筑先有构造再加材质)。 |
+| 🧪 [Formula Minus One](https://fm1.app/)：反重力赛车 | 作者持续六个月迭代；草图→图像生成→Tripo 3D→Blender 清理，另有现成声音、人工音乐草稿与风格指南。 | 待试整条赛道的主题与资产组合，而非坚持全程序几何。流程含 Blender 清理，未证实无需手修；[过程与成本](../../docs/research/2026-10-23-game-worth-trying.md#formula-minus-one混合供给仍需设计与清理)。 |
+| 🧪 [DragonScape Idle](https://dragonscapeidle.com/)：网页 idle RPG | 作者用游戏数据生成分类风格静图，人选图与重生成。 | 待试暗底小图标与二改保留，详见[作者原文](../../docs/research/2026-10-23-game-worth-trying.md#dragonscape-idle分类风格与保留已验图片)。 |
+| 🧪 [Battle Drones v4](https://simonw.github.io/battledrones/v4/)：历史 2D RTS | 作者用 Claude Code 多轮开发并亲自试玩；本端跑到采集→建造→造飞机、暂停重开。 | 保留小回路试玩线索，不把功能数当乐趣。未打完一局，当前 3D 版未进入玩法；[原作者与既有记录](../../docs/research/2026-10-23-game-worth-trying.md#4-battle-drones确实玩到了什么)。 |
+
+![Battle Drones v4 实际窄试玩：资源栏、部队、Airpad 与 Wasp 生产队列](../../docs/img/2026-10-23-game-battledrones-v4.jpg)
+
+图摄于 2026-10-22 UTC，记录的是公开产物，不是 AI 制作复现。新增实例原文与固定源码核实于 2026-10-27 UTC；[制作边界、未验与来源](../../docs/research/2026-10-23-game-worth-trying.md#8-用-ai-做游戏制作过程与采用边界)。资产选择仍沿 [2D](assets/2d.md)／[3D](assets/3d.md)／[音频](assets/audio.md)核许可与规格。[经验／研究]
+
 ## 游戏版值得一试
 
 **先按任务选工具，不按热度换栈：下面七项是首试候选，不是当前全行业质量排行。** 旧调查支持需求／检索与编码优先，新案例提供可借的制作步骤；截至 2026-10-23（UTC+8），下表各候选保留各自的试用范围。本仓 G1 实战不计入表中比较，也不计作各工具的制作复现或行业采用率。[研究]
@@ -51,16 +66,12 @@
 | 任务 | 为什么值得试 | 先试什么与撤回 | 本端实际状态 |
 |---|---|---|---|
 | 🧪 ChatGPT／Gemini：理需求、查资料 | [GDC 调查](https://investgame.net/wp-content/uploads/2026/01/2026-01-29-dec052f4_d88e_48ce_9f83_a18ce2f2a6e5_541400_GDC26_PDF_SOTI_Report.pdf)中 AI 用户最常报研究／头脑风暴，适合先把玩法疑问变成可核查问题。[一手] | 拿一条玩法写规则与反例并逐条查原文，来源或版本对不上就退回直接查资料。[研究] | 未试用，调查是 1 月跨岗位样本而非 10 月工具胜负。[研究] |
-| 🧪 Claude Code／Codex：小切片与二改 | [Playgama](https://playgama.com/ai-game-index/)站内历史游戏自报归属为 50%／20%，配合[制作案例](https://simonwillison.net/2026/Oct/20/battledrones/)将两者列入网页原型对照。[一手／研究] | 同一基线做“移动→采集→造单位”后再改建造规则，旧流程或引用被破坏就撤补丁。[研究] | v4 公开产物玩至 1:38，未复现制作，也未比较两工具。[经验] |
+| 🧪 Claude Code／Codex：小切片与二改 | [Playgama](https://playgama.com/ai-game-index/)站内历史游戏自报归属为 50%／20%，配合[制作案例](https://simonwillison.net/2026/Oct/20/battledrones/)将两者列入网页原型对照。[一手／研究] | 同一基线做“移动→采集→造单位”后再改建造规则，旧流程或引用被破坏就撤补丁。[研究] | [产物窄试玩见上节](#用-ai-做游戏)，未复现制作，也未比较两工具。[经验] |
 | 🧪 Cursor／GitHub Copilot：沿既有 IDE 改代码 | [游戏团队复盘](https://www.gametactics.io/blog/ai-tools-for-game-development-2026)给出 Unity C#／编辑器实践及误改序列化字段反例，已用 Cursor 可沿其 Agent，其他 IDE 先比兼容的 Copilot。[一手／研究] | 在现工程补一项编辑器校验并二改提示，越界改序列化字段或维护成本更高就退回原编辑流程。[研究] | 未试用，团队自述不证明净收益或当前口碑第一。[研究] |
 | 🧪 Context7：精确版本资料入口 | [固定检索记录](https://github.com/dbvv1/a1dbv/blob/1ae780868ba4d1bfeb7e322e5b89896f0c994320/docs/research/wp10-content.md#文档检索窄试用先辨版本再读源码)暴露了库名命中但版本未命中的真实边界。[经验] | 用项目锁定包问一次取消时序，拿不到精确版本就停止文档查询并读固定 tag 原文。[研究] | 两次 resolve 未返回所需版本 ID，已回 InputSystem／UniTask 固定源码。[经验] |
 | 🧪 Meshy＋Blender 脚本：局部资产候选 | [开发者原帖](https://www.reddit.com/r/aigamedev/comments/1x6ql3o/2_weeks_of_work_now_im_fully_committed_on_the/)把生成、尺寸与绑定处理连到 UE，提供了值得拆开验证的制作链。[社区] | 先做三件同族刚体并脚本统一二改尺寸／挂点，风格或轮廓需手修就回合格现成或参数化资源。[研究] | 未试用，作者角色手指／握持／肩部仍有问题，零手修链未成立。[社区／研究] |
 | 🧪 ElevenLabs：有限台词／占位旁白 | [同一作者](https://www.reddit.com/r/aigamedev/comments/1x6ql3o/2_weeks_of_work_now_im_fully_committed_on_the/)主要用于预告片旁白，适合先验证短文本而非整套角色演出。[社区／研究] | 用有授权的声音做三句并改其中一句，口吻接不上就退字幕／合法占位音频。[研究] | 未试用，连续补句、整套演出质量与完整成本未知。[研究] |
 | 🧪 [pxl：共享源的像素资产族](../../docs/research/2026-10-23-game-worth-trying.md#7-pxl让资产族共享源但补丁不会自动跟着形状走)（新意候选） | [公开示例](https://github.com/uilianks/pxl/blob/a012fc78b92e5deff27e56bba563f22895c3916c/examples/basics.px.js)把主体、换色变体与局部补丁写成可审文本，不是广用／质量冠军。[一手／研究] | 先改一处主体，再核变体与所有帧；坐标补丁错位就修源，已有合格 PNG／Aseprite 管线不为换色迁移。[研究] | 源码静读／公开产物观察；工具未运行，无可比二改前后，成本未知。[研究] |
-
-![Battle Drones v4 公开产物试玩：资源栏、部队与 Airpad 建造后的 Wasp 生产队列](../../docs/img/2026-10-23-game-battledrones-v4.jpg)
-
-**图是 v4 产物试玩，不是 Claude Code 工具实试或制作复现。** 本端在 2026-10-22 22:35–22:40 UTC 的云 Chrome 跑通采集、建造放置、造飞机与暂停重开；当前 3D 页因云环境禁用 WebGL 未进入玩法，不能记作游戏逻辑失败。[经验] [完整依据、试题与边界](../../docs/research/2026-10-23-game-worth-trying.md)；资产采用仍先核许可与目标规格，沿 [3D](assets/3d.md)／[音频](assets/audio.md) 原选择，不把这张候选表当发行放行。[研究]
 
 ## 1. 结合方式全景：游戏开发每个环节里 AI 做什么
 
