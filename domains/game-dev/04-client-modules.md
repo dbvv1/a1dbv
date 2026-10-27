@@ -549,49 +549,25 @@ FPS-Like 已发布的 [a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d572
 
 ### 保存、续玩与升级旧档
 
-**小型单人游戏默认用显式进度 DTO＋引擎存储，在结算边界保存；项目负责恢复对象和玩家决定。** 首版走完“清房间→领奖→安全出口保存→退出→重开续玩”，二版再加持久门／容器。下面给选型、数据、保存／恢复顺序和二改验收，可直接交给 AI 接入现有 Session／场景协调者。
-
-先定产品承诺：本例在弹体与奖励结算结束后保存角色、房间访问／完成、奖励与检查点。永久死亡也可以允许中途退出，但是否能回更早检查点另定；任意一帧恢复需要额外保存瞬态。安全边界太远就缩段或加检查点，已有死亡／重试政策保持不变。
+**小型单人游戏默认用显式进度 DTO＋引擎存储，在结算边界保存；恢复对象和玩家决定由项目负责。** 先做通“清房间→领奖→安全出口保存→退出→重开续玩”，二改再加持久门／容器。先定能续到哪里、死亡能否回更早检查点；本例不恢复未结算弹体、动画或短时特效，任意帧恢复另需瞬态状态。安全边界太远就缩段或加检查点，保持原死亡／重试政策。
 
 <a id="存档复用借序列化与存储能力自己决定哪些进度能恢复"></a>
-
-#### 先写清保存什么，再选序列化工具
-
-| 默认／替代 | 实现起点 | 何时不适用或需要补什么 |
-|---|---|---|
-| ✅ Unity 显式 DTO | 小档用 `JsonUtility`；字典／JSON 树沿已安装的 Newtonsoft 包 | 不直接保存运行对象引用；项目自己把数据应用回玩家、门和敌人 |
-| ✅ UE 显式进度 | 自定义 `SaveGame`＋平台槽接口 | 读回 SaveGame 不会自动重建 Actor 世界，仍需下文恢复阶段 |
-| ✅ 复用已有 Easy Save | 保现有、已满足需求的保存接口 | 几份 DTO 不值得另购；复杂对象图还要承担类型、引用与迁移维护，许可比较见来源 |
-| 🧪 场景快照库 | 确需多对象／资源恢复才看下节原生消费者 | 节点路径、缺省字段与场景新增／删除政策必须适合产品，少量检查点优先显式状态 |
-
-| 状态 | 本例如何处理；读者能继续做什么 |
-|---|---|
-| 角色与本局进度 | 保存必要属性、库存实例、已提交奖励与检查点；恢复后继续同一局，而非只回同一张地图 |
-| 房间与持久对象 | 保存稳定房间／摆放对象 ID、门状态、容器剩余内容及已取走标记；已清遭遇不再产敌或发奖 |
-| 动态持久对象 | 保存独立实例 ID、定义 ID、必要位置和状态；恢复时创建，再解析对象间引用 |
-| 当前动画、弹体、短时特效 | 本例只在没有未完成玩法结算的边界保存，恢复为约定的待机状态；不能把丢弃瞬态说成任意时刻恢复 |
-| 局外进度、设置与叙事 | 各自所有者提供数据；涉及同一奖励的状态必须属于同一一致代次。设置不随读档回滚，叙事状态不能替代世界／库存 |
-
-稳定 ID 来自内容作者与实例创建规则，不用数组下标、物体显示名或当前运行对象引用。关卡内手放门／箱在作者源中保存唯一 ID，复制时生成新 ID，构建前查重；运行时新增持久对象在第一次创建时分配并随档保留。沿现有场景注册表做 ID 查重、注册与解析。
-
-来源：[一手／研究] 原生／商业工具与许可比较见 [WP10 存档工具](../../docs/research/wp10-content.md#30)，核实于 2026-10-14；[Epic SaveGame 流程](https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine)于 2026-10-25 补核。
-
 <a id="native-save-consumer"></a>
-#### 原生采用：显式进度与场景快照，先选承诺再接库
+#### 实现起点：少量进度用 DTO，多对象快照先验旧档
 
-**用真实旧档决定是否采用场景保存库。** [官方 JSON demo 与 SaveKit 的可运行比较](../../experiments/native-save-adoption/README.md)已由 Godot 新进程加载原档并继续操作；入口与反例如下，详细字段轨迹保在 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#native-save-consumer)。
+| 选择 | 从哪里接 | 何时不适用／要补什么 |
+|---|---|---|
+| ✅ Unity 显式 DTO | 小档用 `JsonUtility`；字典／JSON 树沿已安装的 Newtonsoft 包 | 不存运行对象引用；自己把数据应用回玩家、门和敌人 |
+| ✅ UE 显式进度 | 自定义 `SaveGame`＋平台槽接口 | 读回数据不会自动重建 Actor 世界 |
+| ✅ 保已有 Easy Save | 沿已满足需求的保存接口 | 几份 DTO 不值得另购；复杂对象图仍需类型、引用和迁移维护 |
+| ✅ Godot 明确进度 | [原生比较](../../experiments/native-save-adoption/README.md)的官方 `save_load_json.gd`／原保存加载按钮 | 已在新进程恢复位置、血条、剩余敌人并继续移动；教学例的直接写文件仍须补提交保障 |
+| 🧪 Godot 多对象快照 | 同一比较中的 MIT SaveKit `9ca2dabd`，`save_scene_tree_to_disk`／`load_scene_tree_from_file` | 原 demo 的交互计数、笔记、位置和删除状态已恢复并继续操作；按节点路径找对象、删除快照外的 `saveable` 节点，频繁重排关卡／加内容时优先稳定 ID＋DTO |
 
-| 需求 | 现成起点与采用判断 |
-|---|---|
-| 少量明确进度 | 官方 `save_load_json.gd`／原保存与加载按钮恢复玩家位置、血条、剩余敌人并能继续移动；教学例的直接写文件需另补目标存储的提交保障 |
-| 多对象、资源与删除状态 | MIT SaveKit 固定 `9ca2dabd` 的 `SaveManager.save_scene_tree_to_disk`／`load_scene_tree_from_file`，原 demo 的交互计数、笔记、位置和已移除对象恢复后仍能继续操作 |
-| 二改默认值并保旧进度 | SaveKit 省略等于脚本默认值的字段；新局默认 0→1 后，未迁移旧档虽返回 OK，却将旧绿框改成 1。项目沿原 `load_from_dict` 补已知旧版含义、`save_to_dict` 显式写活状态后，旧档 0／新局 1 都通过 |
+**不要用“加载返回 OK”代替旧进度验收。** SaveKit 省略等于脚本默认值的字段：新局默认 0→1 后，旧档成功读入却将旧绿框改成 1。本例沿原 `load_from_dict` 补已知旧版含义、`save_to_dict` 显式写活状态，才保住旧档 0／新局 1。缺值可能是省略默认，也可能是旧版没有内容，按版本迁移，不能一律补 0。AI 接原 hook 并保真实旧档，人决定旧进度、新奖励与新增对象政策。
 
-**何时保显式 DTO：** SaveKit 按节点路径找对象，并删除快照未包含的 `saveable` 节点；关卡经常重排、持续补新内容或只存检查点时，稳定 ID＋显式状态更便于维护。缺字段既可能是默认值被省略，也可能是版本没有该内容，按已知版本迁移，不能一律补 0。AI 接原序列化 hook 并保真实旧档；人决定旧进度、新奖励和新增对象的政策。
+来源：[一手／研究] 工具与许可比较见 [WP10 存档工具](../../docs/research/wp10-content.md#30)，核实 2026-10-14；[Epic SaveGame](https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine)补核 2026-10-25。Godot 固定 demo、SaveKit 源码／原生实跑与开发者旧档反馈见 [WP10 原生消费者](../../docs/research/2026-10-14-game-wp10-client-modules.md#native-save-consumer)，核实 2026-10-26；实跑限本例合成档与场景消费者。
 
-依据：官方固定序列化 demo、MIT SaveKit `9ca2dabd` 源码与原生实跑，以及近期开发者旧档更新反馈见上述 WP10／实验；核实 2026-10-26。原生范围是本例合成存档与场景消费者，目标存储耐久、云同步、目标构建与真人操作按本节末验收。
-
-#### 正常保存：捕获的是一次决定之后的世界
+#### 保存：同代捕获，提交成功才显示已保存
 
 ```text
 SaveEnvelope
@@ -600,120 +576,83 @@ SaveEnvelope
   playerState, inventoryRecords, completedEncounterIds, claimedRewardIds
   worldRecords[]       // instanceId, definitionId, state, referenceIds
   removedWorldIds[]    // 明确已取走／删除的持久对象
-  storyCheckpoint     // 仅有叙事时；和世界同代
+  storyCheckpoint     // 有叙事时，与世界同代；设置不随读档回滚
 ```
 
-字段是本例实施起点，不是要求每款游戏都保存这些集合。`revision` 标识同一局中已捕获状态的新旧，不能单独证明持久化或跨文件原子性。定义参数通常保在内容中，档里存必要活状态；玩法确需历史值时才存其值，不保存一份完整资源副本。
+这是按需裁剪的起点：定义参数留在内容中，档里存必要活状态，只有玩法需要历史值才另存。稳定 ID 来自作者源和实例创建规则，不用数组下标、显示名或运行引用；手放对象复制时生成新 ID、构建前查重，动态持久对象首次创建分配 ID 并随档保留。沿现有场景注册表注册和解析。
 
-正常保存沿一条串行路径：
+1. **到一致边界再捕获。** 奖励、库存与遭遇完成已提交，关联命令已执行或取消。小档可短暂冻结本局写入、复制后恢复操作；各所有者提供同代 DTO，关联同一奖励的局外进度／叙事一起捕获，深拷贝可变集合。Unity 可后台序列化独立 DTO；UE 异步保存的序列化仍在 game thread。捕获卡顿先减范围／调边界，不跨帧拼不一致的世界。
+2. **每槽串行提交，失败留旧档。** 复用平台／现有适配器管理暂存、有效副本和备份，防止旧请求晚到覆盖新快照；只有新快照按适配器契约提交成功才切换有效版本。关联状态优先在一份快照；分文件必须有代次／提交协议，`revision` 或各文件各自成功都不能证明事务。
+3. **回执对应本次目标状态。** 区分“保存中”“已保存到哪个房间／回合”“保存失败”。保存退出等覆盖本次状态的结果，不能拿先前自动保存成功代替；失败保当前可玩状态，允许重试或明确放弃退出。**本地提交与上传分别回执**，不能以其一成功推断另一项。
 
-1. **确认一致边界。** 奖励、库存、遭遇完成已提交，当前没有尚待执行的关联命令；否则先完成／取消到约定边界，并给玩家明确反馈。简单小档可短暂冻结本局写入后复制，捕获结束即恢复操作。
-2. **捕获独立数据。** 各所有者把同一代状态写入 DTO。深拷贝可变集合，不把仍由玩法修改的 List／对象引用交给后台。Unity JSON 可在后台处理独立 DTO；UE 异步保存的序列化仍在 game thread，不能由“Async”推断整个过程离开主线程。若捕获本身卡顿，先减少保存范围／调整边界，别把不一致的跨帧采集当优化。
-3. **序列化并提交。** 复用平台／现有存储适配器管理暂存、有效副本与备份；每槽串行，防止旧请求晚到覆盖新快照。写前保住有效档，只有目标快照按适配器契约提交成功才切换有效版本；失败／未验证产物不能替换它。
-4. **向玩家交回结果。** 分清“保存中”和“已保存至哪个房间／回合”。保存退出等待覆盖本次目标状态的结果，而不是先前自动保存成功；失败保当前可玩状态，让玩家重试或明确放弃退出，不静默回主菜单。
+检查点在游玩中保存，不依赖 `OnApplicationQuit`／强杀回调。`.bak`、文件替换和 try/catch 也须按目标存储验耐久；Easy Save `CreateBackup` 会覆盖旧备份，迁移前保底副本与普通轮换分开。
 
-关联状态优先放在一份快照；分文件设计必须有代次／提交协议，各文件独立成功不等于同代提交。检查点在游玩过程中保存，挂起／强杀不保证调用 `OnApplicationQuit`。`.bak`、替换文件与 try/catch 的耐久性纳入节末目标平台验收。
+**网页已采用起点：** Star-Rush 的[自包含成绩模块](../../experiments/local-race-save/README.md)与[正式接线 `1dd89d3`](https://github.com/dbvv1/Star-Rush-Reborn/commit/1dd89d3931196cb08f7b9a00541a54a6715dfe1d)／网站 v7，保原键名、最近 100 条、最快幽灵、`road-v2`／旧街机隔离及昵称来源。修掉吞写异常仍显示已保存：失败保旧数据，部分成功分项显示，只重试失败项；回执／重试放首屏标题后。两模式真实源码消费者和 Canvas 公路自然完赛→榜单→再玩→重载、受控失败／恢复已验。它不提供中局续玩；两键不是事务，也无跨标签锁或断电耐久保证，真人驾驶、Three、手机与 Unity／UE 未验。核实 2026-10-27。
 
-来源：[研究] [续玩边界](../../docs/research/wp10-content.md#35)，2026-10-15；[保存响应与线程／退出契约](../../docs/research/wp10-content.md#36)，2026-10-16。
+来源：[研究] [续玩边界](../../docs/research/wp10-content.md#35)，2026-10-15；[保存响应、线程与退出契约](../../docs/research/wp10-content.md#36)，2026-10-16；备份契约见上文 WP10 存档工具（2026-10-14）。
 
-#### 网页案例接入：保存失败不能仍显示已保存
+#### 恢复与升级：先重建关系，再交回玩家
 
-**Star-Rush 已采用：复用现有本机成绩与最快幽灵，只补显式读写结果。** 原实现吞掉写异常，结算仍显示本机保存说明；[自包含模块与接线](../../experiments/local-race-save/README.md)保原键名、最近 100 条、最快幽灵和 `road-v2`／旧街机隔离，失败保旧数据，部分成功分别显示，不新增中局续玩。
-
-[正式接线 `1dd89d3`](https://github.com/dbvv1/Star-Rush-Reborn/commit/1dd89d3931196cb08f7b9a00541a54a6715dfe1d)已验证两种模式的真实源码消费者及 Canvas 公路自然完赛、榜单、再玩、重载；受控写失败与恢复后只重试失败项也走过实际界面。新读者发现短屏提示藏在下方后，同一回执／重试移至标题后，首屏可见；上传状态不复制保存状态，原昵称来源保留。两个键仍不是事务，无跨标签锁或断电耐久；未验证真人驾驶、Three、手机及 Unity／UE。本包说明区分原 Node 探针与实际采用，核实 2026-10-27。
-
-#### 网页中局续玩：重开前等保存权真正归还
-
-**同一页面换局，只等待自己正在释放的保存锁，再以 `ifAvailable: true` 申请下一局；其他标签占用就立即进入“不保存”模式。** 本例单槽协调器按 document 建一次，放在 `boot()` 外，同槽所有标签使用同一稳定锁名；不能每局新建而丢掉旧释放记录，也不改成排队等别人、`steal` 或固定延时重试。未获权、不支持 API 或请求失败时，手动保存、自动保存和删档都关闭，原档不变；玩家明确选择“替换旧档”也必须先获权。
-
-**实现起点：** MOBA 的[候选 `ea7a064`](https://github.com/dbvv1/MOBA-Like/commit/ea7a06451cba085da8107fca634e51d5a2bb25bf)提供独立的 [`src/save/ownership.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/src/save/ownership.ts)，`createSaveOwnership(() => navigator.locks)` 返回 `acquire(signal)`，结果是幂等释放函数或 `null`。锁只协调同一存储作用域内遵守协议的写者，不替代快照校验、存储提交或云端冲突控制。上游 `LocalMatch` 用原固定步长、玩家命令与机器人重演恢复完整会话，核哈希再接输入／表现；只有已有确定性基础的短局才借这种恢复方式，普通关卡保本节 DTO。
-
-关键不是“调用过 release”，而是区分下面两个 Promise；这是该 helper 的持有段，完整取消与失败处理仍沿链接源码：
-
-```ts
-// 内部 waiting promise 保持持有；resolve 它只是请求释放。
-const released = locks.request(slotName, {ifAvailable: true}, async lock => {
-  if (!lock || releaseRequested) { deliver(null); return; }
-  await new Promise<void>(unlock => {
-    finishHold = unlock;
-    deliver(release); // 交给本局释放函数，不把 request() 当成“获锁完成”。
-  });
-});
-// released 是 request() 的返回值；settled 后才越过本页交接屏障。
-released.then(complete, failed);
-```
-
-`deliver`／`complete`／`failed` 是上述 helper 回调职责的示意名，不是 Web Locks API。完整接线保三条顺序：
-
-1. **释放先登记，下一局才可能等待。** `release()` 幂等地标记本次已退出，把“原生 request 已 settled”的完成信号加入本页 `releasing` 集合，再调用 `finishHold()`；只有 `request().then(成功, 失败)` 收尾时才完成信号并移出集合。下一次 `acquire` 循环等集合排空、复核取消，再发自己的 `ifAvailable` 请求；两次申请之间若别的标签获权，仍返回 `null`，不能抢回。
-2. **取消撤资格，迟到的锁仍归还。** `ifAvailable` 与原生 `signal` 选项不能合用，所以 `signal` 由 helper 自己监听：等待本页交接时取消，立即结束本次等待，但不删除旧释放记录；申请已经发出、回调尚未到时取消，也走同一幂等 release，先标记退出、把该 request 的完成信号登记进 `releasing`，再向调用者返回 `null`。迟到回调直接返回、不交保存权、不提前删屏障，仍等原 request 收尾。已持有时取消同样 release；同步抛错、异步拒绝都结束等待并返回 `null`。
-3. **旧代清理只动旧资源。** `boot` 在同一段不跨 `await` 的清理中使旧代失效、停旧帧循环／输入／保存订阅并请求归还锁，再开新代。每次 `await` 后核代次；刚获得的释放函数先登记进本代 lifetime，再核资格，已关闭的 lifetime 要立即执行迟到清理。新世界还须在最后一次资源等待之后、挂载 canvas 之前核取消，旧 catch／finally 不能清新 HUD 或解开新一轮按钮。完整接线见同提交 [`src/client.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/src/client.ts)，资源归还沿[本页生命周期](#切换关卡与释放资源)。
-
-**最容易漏的负例：旧锁已收到释放请求，但浏览器还未完成释放。** 此时立即申请的新局会被自己的旧锁拒绝；玩家能玩新英雄却不能保存，刷新又回到旧英雄。用“回调返回就同步解锁”的 mock 会把这条错误测成通过。测试夹具必须分别控制回调交付、内部等待结束、原生释放完成，至少核下表：
-
-| 触发 | 应有结果 |
-|---|---|
-| A 保存→页内 New match B，延迟原生释放 | 完成释放前不发第二次 request；之后 B 能自动／手动保存，刷新续玩还是 B |
-| 第二标签打开／重开；或交接空隙被它先获权 | 败者立即可玩但不写、不删；不排队、不抢锁，当前 owner 继续保存 |
-| 等释放时取消；grant 回调迟到；快速重复重开／双清理 | 旧屏障保留至 request 收尾；迟到 grant 归还；只有最新代能绑定、保存与更新界面 |
-| API 缺失／getter 抛错／请求拒绝／存储写失败 | 明确“不保存／保存失败”，旧字节保留；失败不能卡住下一次合法尝试 |
-
-测试入口为同提交 [`save-ownership.test.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/tests/client/save-ownership.test.ts) 与 [`save-lifecycle.test.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/tests/client/save-lifecycle.test.ts)。回归已先红后绿；云端真实浏览器走过 Veyra 保存→页内换 Morrow→自动／手动保存→刷新 Continue 仍为 Morrow，第二标签不写而原标签仍能保存。**这是候选的窄功能验证，尚未进入 main／网站，完整 smoke 未运行；清理期另有原因未明的浏览器退出，不能据此宣称整体稳定性通过。**
-
-**页面生命周期另有边界。** 定期／进入 hidden 时保存已提交状态；`pagehide` 提前注册清理，`pageshow.persisted` 重建新会话，不复用已释放的 owner。Chrome 官方生命周期建议在 freeze 前释放影响其他标签的锁；接这个入口也要先停保存者，恢复后重新申请，不假定原权仍在。强杀未必触发退出回调，冻结后也不能依赖异步收尾继续运行，因此本页交接屏障不是退出落盘保障。Unity／UE／Godot 只借“撤销旧代→归还实际所有权→新代接管”的责任划分，各沿原生存档与资源 API，不存在可直接照搬的 Web Lock；本修复未在这些引擎中运行。
-
-依据：[一手] [Web Locks 的 waiting／released promises](https://w3c.github.io/web-locks/#locks)、[`ifAvailable` 与 `signal` 契约](https://w3c.github.io/web-locks/#api-lockmanager-request)、[Chrome 官方生命周期实现示例与各状态建议](https://developer.chrome.com/docs/web-platform/page-lifecycle-api#developer-recommendations-for-each-state)；[经验] 上述固定候选源码、受控异步回归与真实浏览器窄复测。核实 2026-10-27。
-
-#### 重新进入：先恢复对象关系，再把世界交给玩家
-
-读档不是把 JSON 填回当前正在运行的世界。主菜单的槽位信息只帮助选择；metadata 可读不代表完整实体、内容版本与进度有效。默认在常驻加载壳内完成以下步骤，失败停在壳里提供其他副本／重试，不回写默认新局覆盖原档：
+**读档在加载壳里对副本校验、逐版本迁移；失败留原档并提供备份／重试。** 槽位 metadata 可读不代表完整内容和进度有效，也不能回写默认新局覆盖它。保 `schemaVersion`／`contentVersion`，沿已有场景协调器执行：
 
 ```text
-Resume(slot):                         // 项目伪代码，非已运行实现
-  candidate = ReadValidateAndMigrateCopy(slot)
-  room = PrepareRoom(candidate.roomId, gameplayEnabled=false)
-  index = RegisterAuthoredObjects(room)          // 稳定 instanceId；重复 ID 报错
-  ReconcilePersistentObjects(index, candidate)   // 持久删除、已有对象、动态新增
-  ApplyValuesWithoutGameplayEvents(index, candidate)
-  ResolveReferencesById(index, candidate)        // 所有需引用的对象已存在
-  ValidateRequiredRelationsAndCheckpoint(index, candidate)
-  BindPresentationFromState(index)              // 门外观、箱子内容、HUD，不重新领奖
-  CommitCurrentRunAndCamera(candidate, room)
-  EnableGameplayAndInput(room)
+ReadValidateAndMigrateCopy(slot)
+→ PrepareRoom(gameplayEnabled=false)
+→ RegisterAuthoredObjects()                 // 稳定 ID 查重
+→ ReconcilePersistentObjects()              // 先抑制删除，再补动态对象
+→ ApplyValuesWithoutGameplayEvents()
+→ ResolveReferencesById()                   // 所需对象先存在
+→ ValidateRequiredRelationsAndCheckpoint()
+→ BindPresentationFromState()              // 门、箱、HUD，不重新领奖
+→ CommitCurrentRunAndCamera() → EnableGameplayAndInput()
 ```
 
-`gameplayEnabled=false` 必须由工程实现：初始脚本只注册和建立依赖，刷怪、自动交互、发奖励由显式开始入口控制。**实例化之后再禁用可能已经太晚。** Unity 6.3 `Instantiate` 保留原对象激活状态，活跃实例可在调用中执行 Awake／OnEnable。可以使用原本未激活的制作源，或确保启动回调尊重恢复门；不能在恢复后一次激活又被 Awake 的“默认初始化”覆盖。UE 同样沿项目的生成／初始化入口补恢复阶段，不能假设读回 SaveGame 就已经恢复 Actor 世界。
+**恢复门必须在实例化前生效。** Unity 6.3 `Instantiate` 保留源激活状态，活跃实例可在调用中运行 Awake／OnEnable；实例化后才 disable 已可能刷怪／发奖。用未激活制作源或尊重恢复阶段的初始化入口，首次激活也不能以默认初始化覆盖读回值。UE 同样在生成／初始化入口安排恢复；场景准备、资源归还与失败卸载沿[资源生命周期](#切换关卡与释放资源)，不重造加载器。
 
-**“档里没有”必须有明确含义。** 对既有房间摆放内容，本例以作者默认值为基线，记录改动和明确的删除标记：已取物／删除对象先抑制生成；未改变的对象才保作者默认。动态生成的持久对象则以保存记录为准，没记录不凭上次生成逻辑再补一份。已清遭遇另由完成状态抑制刷怪／结算，不能只靠“场上没有敌人”推断。新增内容在旧档里自然没有记录，须由迁移决定是否出现在已访问房间，不和“已经被玩家拿走”混为一谈。
+**“没有记录”按对象种类和版本解释：** 作者摆放内容用默认值＋改动＋明确删除标记，已取／删除对象抑制生成；动态持久对象按档中记录创建，没记录不重跑生成逻辑。已清遭遇用完成状态禁止再刷怪／发奖，不能从“场上没敌人”推断。新增内容由迁移决定是否进入已访问房间，不等同玩家已拿走。必需引用丢失则拒绝候选，可选目标按规则清空；不按列表顺序绑到别的对象。
 
-**先注册身份，再解析依赖。** Mindustry 固定版先读内容映射与地图，再创建、读取并注册实体，之后调用 `afterReadAll`；CommandAI 在此阶段按单位 ID 找回攻击目标。可借此依赖顺序；它的读取会重置并修改实际世界，不是隔离事务，GPL Java 对象图不作为本例移植起点。
+**二改持久门／容器沿捕获、注册、赋值、引用解析四处接入，另补迁移与旧档验收。** 门与同定义多箱各有实例 ID；箱内剩余物和玩家库存同快照，恢复赋最终状态，不调用会扣钥匙／发奖励的 `Interact/Open`。门碰撞与外观须一致。本例按 `visitedRoomIds` 迁移新内容：未访问房间用作者默认，已访问房间新门开放、新箱不补发；已有门箱按原记录保留。更旧档连访问事实也没有时，明确保守迁移／章节恢复政策，不从当前房间或空字段猜历史。首版未记录的开合／剩余物无法还原；有意补奖应写明政策。
 
-来源：2026-10-25 补核 [Unity 6.3 Instantiate 激活契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Object.Instantiate.html)，以及 Mindustry 固定 `17012d6` 的[读取顺序](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L64-L75)、[实体注册与后处理](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L495-L553)、[目标引用恢复](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/ai/types/CommandAI.java#L519-L524)。[一手] 固定源码。
+关卡改名、地址／位置互换要连附属进度迁移；几何或出生点改变时，明确迁移检查点／安全恢复点，分别保位置与完成进度。保旧世界运行、允许旧模板继续生成、允许新旧混建是三种承诺；同 ID 不保证兼容，维护成本过高就收窄更新／支持边界。
 
-恢复后，玩家应看到检查点位置、库存、开门状态和当前目标相互一致，并能立即继续行动。房间物理布局或出生点已变时，不能用同一个旧坐标硬塞进去；沿明确的检查点迁移／安全恢复点处理，恢复位置与已完成进度分别说明。场景准备、资源引用及失败卸载复用[资源生命周期](#切换关卡与释放资源)，不要再写第二套加载器。
+可借 Mindustry 的“内容映射／地图→实体创建注册→`afterReadAll` 解析目标 ID”顺序，但其读取会直接重置世界，不是隔离事务，也不移植 GPL 对象图。Thrive 的遗留 JSON upgrader 不适用于新版 archive；ink 只存叙事执行状态，内容更新可能失败或近似恢复并警告，须处理迁移／章节回退，不能当作世界／库存已恢复。
 
-#### 第二次修改：增加持久门和容器，不重做保存系统
+来源：[一手] Unity 6.3 [Instantiate 契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Object.Instantiate.html)及 Mindustry `17012d6` 的[读取顺序](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L64-L75)、[实体后处理](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L495-L553)、[目标引用](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/ai/types/CommandAI.java#L519-L524)，补核 2026-10-25。[研究] [工具／升级边界](../../docs/research/wp10-content.md#30)与 [ink 反例](../../docs/research/2026-10-14-game-wp10-client-modules.md#3-ink存档格式兼容不等于剧情修改兼容)，2026-10-14；[旧布局取舍](../../docs/research/2026-10-14-game-wp10-client-modules.md#旧内容升级补研保旧世界不等于放行旧模板生产)，2026-10-19。
 
-保首版续玩路线，再让玩家开门、从容器取物、保存退出。AI 只接四处差量：保存捕获、内容注册、恢复赋值、引用解析；职责如下：
+#### 网页中局续玩：等本页释放，跨标签不抢锁
 
-- **内容作者**给门／箱稳定摆放 ID，定义默认关闭、初始内容和恢复后的外观；同定义多箱必须是不同实例。箱内剩余库存与玩家库存写入同一快照，转移后不各存各的中间状态。
-- **实现者**在原记录中加入门状态、容器剩余内容／已领取状态；载入用“赋最终状态”而不是调用会扣钥匙、播放奖励或发成就的 `Interact/Open` 命令。开门动画可省，门碰撞和外观不能不一致。
-- **版本处理**增加 schema／content 迁移：本例首版已保存 `visitedRoomIds`，二版新增门／箱按房间访问事实迁移：未访问房间用作者默认；已访问房间的新门设为已开放、新箱记为不补发，避免重新阻断旧路线或生成未承诺奖励。首版没有持久门／箱，不声称能恢复其历史开合／剩余物。若接手的更旧档连访问事实都没有，须明确保守迁移／章节恢复政策，不能从当前房间或空字段猜全程访问；已有门箱记录则按其实际记录迁移，不覆盖为此默认。其他游戏可有意补发，但应单独说明，不靠缺字段默认值偷偷决定奖励政策。
-- **接收**交同一存档重开两次的预期轨迹；人检查保存位置是否清楚、回来是否多走无意义流程、箱内外物品与目标是否一致。
+**同一 document 换局先等自己的旧锁真正释放，再以 `ifAvailable: true` 申请；其他标签占用就立即进入“不保存”模式。** 单槽协调器建在 `boot()` 外，所有同作用域写者用同一稳定锁名；不每局重建，不排队等别人，不用 `steal` 或固定延时。无权、API 缺失或请求失败时，手动／自动保存、删档都关闭，玩家选择“替换旧档”也要先获权。锁只协调守协议的写者，不替代快照校验、存储提交或云冲突控制。
 
-最低接收覆盖门开／关、箱取走／剩余、已清／未进房间，再验同定义多个实例、引用目标已删除、仅备份可用和写入失败。必要引用缺失就停止该候选并解释；可选目标按规则清空，不凭列表顺序绑到另一对象。
+**实现入口：** MOBA [公开候选 `ea7a064`](https://github.com/dbvv1/MOBA-Like/commit/ea7a06451cba085da8107fca634e51d5a2bb25bf)的 [`src/save/ownership.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/src/save/ownership.ts)：先以 `const acquire = createSaveOwnership(() => navigator.locks)` 建协调器，`await acquire(signal)` 得到幂等 release 或 `null`；[`src/client.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/src/client.ts)接生命周期。其 `LocalMatch` 沿固定步长、玩家命令与机器人重演完整会话，核哈希后接输入／表现；**只有已有确定性基础的短局适合借这条恢复路线，普通关卡仍用 DTO**。
 
-#### 旧档升级：版本可读之外还要进度正确
+不要把“调用 release”当成“已经可获锁”。实现保三条时序：
 
-保留 `schemaVersion`／`contentVersion` 与逐版本迁移，迁移在副本进行，失败保唯一原档。Mindustry 的槽列表主要读 metadata；Thrive 固定版普通档有版本化读取，但遗留 JSON upgrader 入口并不适用于新 archive，不能只凭类名复用。Easy Save `CreateBackup` 会覆盖已有备份，迁移前副本与普通轮换分开。核完整读取、剧情、库存、已领状态及恢复后再次保存，不只验解析成功。
+1. **区分 waiting 与 released Promise。** `locks.request` 回调内等待的 Promise 保持锁；resolve 它只请求释放。`request()` 返回的 Promise settled 才完成释放屏障，而非获锁信号。`release()` 先幂等标记退出、把完成信号加入本页 `releasing` 集合，再 resolve 内部等待；仅 request 的成功／失败收尾完成信号并移出集合。下次 `acquire` 循环等集合排空，复核取消，再请求 `ifAvailable`；间隙若被其他标签先获权就返回 `null`。
+2. **取消先撤资格，迟到 grant 也归还。** `ifAvailable` 不能与原生 `signal` 选项合用，helper 自己监听：等本页释放时取消，结束此次等待但保旧屏障；请求已发、grant 未到时取消，先走 release 登记该 request 的屏障，再回 `null`。迟到回调直接返回、不交保存权，屏障等原 request 收尾；持有中取消同样 release。同步抛错／异步拒绝都结束等待并回 `null`。
+3. **旧代只清旧资源。** `boot` 在不跨 `await` 的清理段使旧代失效、停旧帧／输入／保存订阅并 release，再开新代。每次 await 后核代次；新获 release 先登记进本代 lifetime 再核资格，已关闭 lifetime 立即执行迟到清理。最后一次资源等待后、挂 canvas 前再核取消；旧 catch／finally 不清新 HUD、不解开新按钮。
 
-关卡改名、地址／位置互换要连附属进度迁移；几何连接改变时比较迁移与受限旧实现。保旧世界运行、允许旧模板继续生成、允许新旧混建是不同承诺，不能靠同一 ID 保证；维护负担过高就收窄更新／支持边界，不静默损坏进度。
+**关键反例：旧锁收到 release，浏览器还没真正释放，新局就会被自己的旧锁拒绝。** 玩家能换英雄却不能保存，刷新回到旧英雄。mock 必须分别控制 grant 回调、内部等待结束、原生释放完成；“回调一返回就同步解锁”会漏测。回归入口：[`save-ownership.test.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/tests/client/save-ownership.test.ts)、[`save-lifecycle.test.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/tests/client/save-lifecycle.test.ts)。
 
-ink 只保存叙事执行状态，不负责世界／库存；内容改动后可能失败或近似恢复并给 warning，必须捕获后决定迁移／回退章节，不能将故事 JSON 成功当整局恢复。
+回归已先红后绿；云端浏览器走过 Veyra 保存→页内换 Morrow→自动／手动保存→刷新 Continue 仍为 Morrow，第二标签不写、原标签继续保存。**该候选尚未进入 main／网站，完整 smoke 未运行；清理期另有原因未明的浏览器退出，整体稳定性仍未验证。**
 
-**发行前补验：** 用真实构建重启验证目标存储、保存失败、断电恢复与长局成本；云同步另验冲突与提交政策。Unity／UE 路线为文档、固定源码和设计推导，2026-10-25 补核正常载入链，未原生运行；Godot 消费者实跑不覆盖这些平台与耐久保障。
+页面生命周期另处理：定期／进入 hidden 时存已提交状态，提前注册 `pagehide` 清理；`pageshow.persisted` 建新会话并重新申请，不能复用旧 owner。freeze 前先停保存者再归还影响其他标签的锁，恢复后重新申请；强杀未必回调、冻结后异步收尾未必运行，因此交接屏障不是退出落盘保障。Unity／UE／Godot 只借“撤旧代→归还实际所有权→新代接管”的职责，沿原生 API 实现，没有可直接照搬的 Web Lock。
 
-来源：[研究] [存档来源与边界](../../docs/research/wp10-content.md#30)（2026-10-14）、[旧布局取舍](../../docs/research/2026-10-14-game-wp10-client-modules.md#旧内容升级补研保旧世界不等于放行旧模板生产)（2026-10-19）、[ink 存档格式反证](../../docs/research/2026-10-14-game-wp10-client-modules.md#3-ink存档格式兼容不等于剧情修改兼容)（既有 2026-10-14 核查）；[一手] 固定源码。
+依据：[一手] [waiting／released promises](https://w3c.github.io/web-locks/#locks)、[`ifAvailable`／`signal` 契约](https://w3c.github.io/web-locks/#api-lockmanager-request)、[Chrome 生命周期建议](https://developer.chrome.com/docs/web-platform/page-lifecycle-api#developer-recommendations-for-each-state)；[经验] 上述固定候选、受控回归与云端窄复测，核实 2026-10-27；本修复未在原生引擎运行。
+
+#### 验收短表：旧进度与新一轮都要继续得下去
+
+| 触发 | 必须观察到 |
+|---|---|
+| 正常保存退出、同档重开两次 | 检查点、库存、门／箱、目标一致；可继续操作，不重复刷怪／领奖；保存位置提示清楚 |
+| 二改门箱／内容后读真实旧档 | 门开关、取走／剩余、已清／未进房间、同定义多实例均符合迁移政策；恢复后再次保存仍正确 |
+| 损坏档、缺引用、仅备份可用、迁移失败 | 完整校验与恢复政策生效，唯一原档保住；必需引用缺失拒绝该候选，可选引用不乱绑 |
+| 写失败、旧保存晚到、保存退出 | 不覆盖有效档、不假报成功、不静默退主菜单；提交与上传分别反馈，可重试失败项 |
+| 页内换局且原生释放延迟 | 屏障前不发新 request；之后新局可自动／手动保存，刷新续玩仍是新局 |
+| 第二标签打开／重开，或抢在交接空隙获权 | 败者立即可玩但不写不删；不排队抢锁，当前 owner 继续保存 |
+| 等释放时取消、grant 迟到、快速重开／双清理、API getter 抛错／拒绝 | 旧屏障留到 request 收尾、迟到 grant 归还；只有最新代绑定／保存／更新 UI，失败不堵下次合法尝试 |
+| 目标构建重启、断电恢复、长局、云同步 | 实测目标存储耐久与成本；云端另验冲突和提交政策 |
+
+Unity／UE 保存恢复路线仍是文档、固定源码与设计推导（正常载入链补核 2026-10-25），未原生运行；Godot 实跑不覆盖其平台、目标构建和耐久保证。上表是实施验收要求，不把局部案例结果合成整表通过。
 
 <a id="input-production"></a>
 ### 接入手柄、暂停与多人菜单
