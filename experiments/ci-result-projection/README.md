@@ -29,7 +29,7 @@ console.log(JSON.stringify(projectCI(input.sha, input), null, 2));
 
 2026-10-27 发布核验中，读取提交 `145801ec43790725a1c39ac765bdd3ba9721298b` 的三个响应：statuses 的原始 `state` 为 `pending`，但三来源的 `total_count` 均为 0。投影保留这个区别，没有触发 CI 或把无记录记为通过。
 
-本次三响应封装为紧凑 JSON 共 4,203 个字符，投影结果 924 个字符；减少的是返回给阅读者的仓库元数据，不是已测 token、费用或总耗时收益。原始响应与投影在云工作区实际运行；不把该空记录样本推广成全部 CI 场景。
+本次输入与投影均按无缩进 `JSON.stringify` 计数，分别为 4,203 与 924 个字符；减少的是返回给阅读者的仓库元数据，不是已测 token、费用或总耗时收益。原始响应与投影在云工作区实际运行；不把该空记录样本推广成全部 CI 场景。
 
 ```sh
 node experiments/ci-result-projection/ci-projection.test.cjs

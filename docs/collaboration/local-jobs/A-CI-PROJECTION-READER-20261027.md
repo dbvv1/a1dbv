@@ -1,33 +1,32 @@
-# A-CI-PROJECTION-READER-20261027 · 新读者完成真实上游 CI 核验
+# A-CI-PROJECTION-READER-20261027 · 改页后的第二个真实 CI 任务
 id: A-CI-PROJECTION-READER-20261027
 owner: dot-A
-status: accepted
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 5113e0ea0c760cf69a1fb63b18f97b52bb6f32a2
+base_ref: 2c44b68ce8c52e132be0ea8917473d908a43b9b4
 result_branch: relay/a-ci-projection-reader-20261027
 
-## 目标与真实任务
-为正在跟进的 Memos #6502 核对当前 head 的 CI，区分状态成功、实际评审、等待动作与没有记录；这是上游跟进，不触发 CI、不回复评论、不改 PR。
-由没有读过此页的读者，仅照下方全文与仓内引用代码操作，先读 PR 当前 head，再读该 SHA 的三类公开 API；不拿旧 head 或页面里的旧观察代替当前结果。
-不额外看研究文、作者笔记或本任务以外的解题说明；页面引用的代码、官方 API 链接可以读。遇缺信息只记录卡点，不自行补教程。
-使用已配置的公开只读入口；不登录、不取新凭据、不改环境安全设置，不使用浏览器/GUI/键鼠，不读私人会话或账号用量。拒绝停该入口，技术失败记原错误，不换身份绕过。
-按 kind: reader-test Workflow 实做及非读者验收；只记操作、观察与卡点，不改页面、源码或配置。没有 Node 18+ 等前提就如实报告，不以模拟成功替代实际运行。
+## 目标与修改要求
+第一轮 Memos 已接收并按卡点改页；本轮换一个没读过页面和第一轮记录的新读者，照下方完整页完成现有 Datasette #3015 当前 head 的 CI 核验。目标 https://github.com/simonw/datasette/pull/3015 ，不触发 CI、不回复评论、不改 PR。
+只按页面输入与使用段操作；仓内引用代码及官方 API 文档可读。历史实测仅作背景，不重演三臂实验、不读取第一轮 result.md 或 reader-tests。不能用页面历史数字代替当前 GET 结果。
+公开仓库直接用匿名只读 GET 或已有合规只读入口；不登录、不查找凭据/环境 token、不读账号用量或私人会话、不用浏览器/GUI/键鼠。不因拒绝换身份；技术失败记录原错误，仅停该动作。
+按 reader-test Workflow 交独立验收：同一当前 head、三源原始状态/说明/分页缺口，实际运行投影片段，说明可否接收为通过及卡点。页面缺信息只记，不改页面、代码或默认。
 
 ## 写入与验收
-唯一成果 docs/collaboration/local-jobs/artifacts/A-CI-PROJECTION-READER-20261027/result.md：精确 head、三源结果摘要、实际命令/返回、是否照页完成、缺信息及原因。只保公开且必要字段，不提交整份仓库元数据。
-以实际 API 和脚本结果验收：同 head；分页缺口保留；状态说明能解释审核是否执行；零记录、action_required 和成功不混淆。由读者以外的角色核对原响应与结果。
-任务回 review_ready，推指定 relay，不用 accept: auto；dot-A 接收。单元最多两小时，使用共享四并行队列，不用 GPU。
+唯一新成果 docs/collaboration/local-jobs/artifacts/A-CI-PROJECTION-READER-20261027/result-u2.md；保留第一轮产物，沿原分支接续。
+交实际命令、HTTP结果、精确head、必要字段与观察时间；原响应在本地保留到验收，不提交整份元数据。由非读者核对原响应和结果，不靠完成自报。
+回 review_ready，不用 accept: auto；dot-A 接收。单元最多两小时，共享四并行，无GPU。只是新指南迭代，不重开第三方应用采用。
 
-## 页面全文（固定 5113e0ea；相对链接改为同 SHA 地址）
+## 页面全文（相对链接固定到本轮基线；字符计数说明同步澄清）
 
 # 让 Agent 读 CI 契约字段，不读整份仓库元数据
 
-核精确提交的 CI 时，先取完整 API JSON，再用 [ci-projection.cjs](https://github.com/dbvv1/a1dbv/blob/5113e0ea0c760cf69a1fb63b18f97b52bb6f32a2/experiments/ci-result-projection/ci-projection.cjs) 提取状态、数量、分页缺口与检查链接。`pending` 加空 statuses 应读成“当前没有 status 记录”，不能报成“CI 正在排队”。函数只读输入，不请求网络，也不决定能否合入。
+核精确提交的 CI 时，先取完整 API JSON，再用 [ci-projection.cjs](https://github.com/dbvv1/a1dbv/blob/2c44b68ce8c52e132be0ea8917473d908a43b9b4/experiments/ci-result-projection/ci-projection.cjs) 提取状态、数量、分页缺口与检查链接。`pending` 加空 statuses 应读成“当前没有 status 记录”，不能报成“CI 正在排队”。函数只读输入，不请求网络，也不决定能否合入。
 
 ## 输入与使用
 
-需要 Node.js 18+。沿用已授权 GitHub 入口，给同一完整 SHA 取以下三个响应，均明确 `page=1&per_page=100`：
+需要 Node.js 18+。公开仓库可用匿名 GitHub REST GET，也可沿用已有连接器或 `gh`；本例无需登录或查找凭据。核 PR 时，先取 `GET /repos/{owner}/{repo}/pulls/{number}` 的 `head.sha`；核已发布提交时直接用完整 SHA。给同一 SHA 取以下三个响应，均明确 `page=1&per_page=100`：
 
 - `GET /repos/{owner}/{repo}/commits/{sha}/status` → `statuses`
 - `GET /repos/{owner}/{repo}/commits/{sha}/check-runs?filter=latest` → `checks`
@@ -42,6 +41,8 @@ const input = JSON.parse(fs.readFileSync('ci-input.json', 'utf8'));
 console.log(JSON.stringify(projectCI(input.sha, input), null, 2));
 ```
 
+原响应和 `ci-input.json` 在本地保留到接收完成，不加入版本控制；交付只留必要字段与观察时间。
+
 三来源分别输出 `query_scope`、`total_count`、`returned_count`、`missing_count`、`page_complete` 和原始状态，commit status 同时保留 `description`。数量缺口说明还需取后续页；本片段只处理已声明的第一页。必要状态／计数字段缺失、畸形记录或 SHA 不符直接报错；缺少名称或可用链接时保留 `null`。取消、跳过、中性和需要操作各自保留，不合成为绿色。
 
 `page_complete` 只比较当前接口的总数与返回数。GitHub 的查询上限、未接入的 CI 和必需检查规则仍在这个判断之外；三来源均零应报告“当前未观测到记录”。HTTP(S) 检查链接仅做格式筛选，未验证可达。
@@ -50,7 +51,7 @@ console.log(JSON.stringify(projectCI(input.sha, input), null, 2));
 
 2026-10-27 发布核验中，读取提交 `145801ec43790725a1c39ac765bdd3ba9721298b` 的三个响应：statuses 的原始 `state` 为 `pending`，但三来源的 `total_count` 均为 0。投影保留这个区别，没有触发 CI 或把无记录记为通过。
 
-本次三响应封装为紧凑 JSON 共 4,203 个字符，投影结果 924 个字符；减少的是返回给阅读者的仓库元数据，不是已测 token、费用或总耗时收益。原始响应与投影在云工作区实际运行；不把该空记录样本推广成全部 CI 场景。
+本次输入与投影均按无缩进 `JSON.stringify` 计数，分别为 4,203 与 924 个字符；减少的是返回给阅读者的仓库元数据，不是已测 token、费用或总耗时收益。原始响应与投影在云工作区实际运行；不把该空记录样本推广成全部 CI 场景。
 
 ```sh
 node experiments/ci-result-projection/ci-projection.test.cjs
@@ -60,10 +61,10 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 
 随后在 [Datasette #3015](https://github.com/simonw/datasette/pull/3015) 与 [Memos #6502](https://github.com/usememos/memos/pull/6502) 的真实跟进中再用：Actions 的 `action_required` 被保留，但首版漏掉 CodeRabbit 的 `description`，只剩 `success`。Memos 的说明实际是 `Review skipped: draft pull request`；现版保留原状态及说明，重放原响应后可读出跳过审核。状态成功与审核执行是两件事，接收时仍要读说明和目标报告。两个固定 head 分别为 `a6f3ade873fbe91d3c6a58a76a50d359217b5c90`、`00d217067504e2b912bfd418199eef69d23a3c6a`，观察时间 2026-10-27 13:13 UTC。
 
+[本机新读者照页实测](https://github.com/dbvv1/a1dbv/blob/2c44b68ce8c52e132be0ea8917473d908a43b9b4/docs/collaboration/local-jobs/artifacts/A-CI-PROJECTION-READER-20261027/result.md)在同日 13:42 UTC 完成 Memos 当前 head 核验，区分了成功但跳过审核、零 checks 与 `action_required`，46 项回归通过。按其卡点补上匿名只读入口、PR 元数据端点与临时输入保留方式。
+
+2026-10-27 又以同一冻结 Memos 响应、同一外部检查调用实际 `projectCI` 接口：基线 `56b00ee2` → 最终补丁 `5113e0ea` → 完整撤回，description 断言退出码为 **1→0→1**；正常控制全过，除新增 description 外完整输出一致。撤回的全树与基线相等，各臂实际加载模块的路径与哈希已核。这里只借用 Trail of Bits 的窄三臂机制，未运行整套插件；证明该输入的修复因果，不等于全部回归安全。做法与来源见 [09 的接收提示](https://github.com/dbvv1/a1dbv/blob/2c44b68ce8c52e132be0ea8917473d908a43b9b4/docs/09-review-and-quality.md#从实现产物到可接收交付)。
+
 ## 来源
 
 [GitHub combined status](https://docs.github.com/en/rest/commits/statuses#get-the-combined-status-for-a-specific-reference)说明无 statuses 也返回 pending；[check runs](https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference)说明 latest 与分页、最近 1,000 个 check suites 范围；[Actions runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository)说明 head_sha 过滤和查询上限。核实：2026-10-27。
-
-## 当前结果
-
-dot-A 已接收真实 CI 核验及卡点，按原响应重放结果一致；页面补入口、PR head 端点与输入保留方式，未扩大 CI 通过范围。
