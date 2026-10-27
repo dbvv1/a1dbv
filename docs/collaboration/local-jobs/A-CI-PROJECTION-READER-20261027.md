@@ -1,7 +1,7 @@
 # A-CI-PROJECTION-READER-20261027 · 改页后的第二个真实 CI 任务
 id: A-CI-PROJECTION-READER-20261027
 owner: dot-A
-status: revision_requested
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2c44b68ce8c52e132be0ea8917473d908a43b9b4
