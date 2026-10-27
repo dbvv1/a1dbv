@@ -14,8 +14,8 @@ result_branch: relay/a-frontier-wide-scan-20261027
 2. 查 13、inbox、探索证据去重。A-FRONTIER-SOURCE-COLLECTION-20261027 正在专查跨包 API／下游契约，不重做该线；已处理 Terra、dotagents、pr-test-analyzer、Claude 2.1.311、pnpm 冷却、context-mode、Hippo、show-me 等只收真正改变现有结论的新事实。
 3. 官方入口读 OpenAI／Anthropic／Cursor 的工程实践、发布与实际配置，追到相应实现和真实任务，不只抄功能公告。高质量开源项目从真实 AGENTS、Skill、插件、工作流和最近 PR 看新采用；不要只用 star 或 README 宣传筛选。
 4. GitHub 热门／topic 可作入口，先核返回时间；旧缓存不可称本周。补查成熟项目近期发布、提交和使用 issue。使用公开搜索时同时考虑近期有更新的成熟仓库，不能只限定创建日期；无历史数据就不写 star 增长。
-5. 技术社区需要读原帖与有内容的评论：HN、Reddit 的 ClaudeCode／codex／ChatGPTCoding 等，LINUX DO、V2EX；不限 Claude Code 关键词，沿实际热议问题和项目名扩展。作者自推、独立使用者、转载分开；找实际任务、做法变化、正反反馈与撤回原因，不把赞数当效果。
-6. 搜索能力不足可用现有 gh api／正常 HTTPS：GitHub repository/issue search 与固定 commit；HN Algolia story 查询再读 items 评论树；中文社区和 Reddit 只走当前可读的原始页面。拒绝入口不重试或换身份绕过，写清没覆盖；摘要单列，不据此确认采用。
+5. 本任务的技术社区范围是 HN、Reddit 的 ClaudeCode／codex／ChatGPTCoding 等，读原帖与有内容的评论；LINUX DO、V2EX 已独立交给 A-COMMUNITY-PRACTICE-SCAN-20261027，不重复采集。不限 Claude Code 关键词，沿实际热议问题和项目名扩展。作者自推、独立使用者、转载分开；找实际任务、做法变化、正反反馈与撤回原因，不把赞数当效果。
+6. 搜索能力不足可用现有 gh api／正常 HTTPS：GitHub repository/issue search 与固定 commit；HN Algolia story 查询再读 items 评论树；Reddit 只走当前可读的原始页面。拒绝入口不重试或换身份绕过，写清没覆盖；摘要单列，不据此确认采用。
 7. 每个保留候选附：一句解决什么；原始实现／配置链接；实际消费者及 PR／提交／原帖链接；日期和版本；社区正反反馈的原文链接；与本仓差异；值得 dot-A 核实的关键未知。能找到可复制片段就附原位置，不能编写成已采用配置。
 8. 依价值收敛，不要求固定数量或每渠道凑条目。没有强候选也交明确查到什么、排除理由和真实覆盖缺口，不交工具名堆积；浏览数、提交数不当效果。不安装、运行候选或调用新模型，不新开第三方应用采用。
 
