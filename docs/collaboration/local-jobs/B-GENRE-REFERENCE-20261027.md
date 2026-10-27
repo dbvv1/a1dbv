@@ -6,6 +6,8 @@ target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-genre-reference-20261027
 
+执行边界（2026-10-27）：本机仅后台模型、命令行与文件处理；不打开交互浏览器／GUI，不控制桌面、键鼠或抢占前台。需要实际游戏操作或画面验收的部分交 dot 云端；不因此重启已有后台调用。
+
 ## 目标
 给 dot-B 一组能直接设计同场景手动对照的原始证据：Forza Horizon 公路转向／制动／碰撞／镜头，LoL 普攻取消／发射／命中／移动窗口，CS2 移动速度／急停精度／连续后坐。只交研究材料，dot 亲自观察并决定作品差距，不求精确商业参数，也不交泛工具名单。
 
