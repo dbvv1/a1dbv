@@ -54,6 +54,15 @@ REPL 先从 `initial_instructions` 取得本次 session id，再向 `serena_repl
 
 协议协商为 `2025-11-25`，Serena `2.1.1.dev0`、Python 3.13.5、Node 24.22.1；语言服务器版本同上。新上下文独立核过协议回执与实际加载来源，修复补丁保持原哈希。范围为 Linux SDK／stdio／Vue-TypeScript 路径；模型、IDE、其他平台／语言及 `.vue` 组件实现语义待验。
 
+**同一成功查询，REPL 用更小的首次服务器应答换一次发现往返。** 对已有两条成功协议复算 `tools/list`、`initial_instructions`、必要的 `s.info` 和最终查询的 `result` JSON：
+
+| 本次实际口径 | Tools | 默认 REPL |
+|---|---:|---:|
+| 上述四类返回合计，Unicode 码点 | 53,508 | 24,842 |
+| 实际 `tools/call` 次数 | 2 | 3（多一次 `s.info`） |
+
+算法为 `len(json.dumps(result, ensure_ascii=False, sort_keys=True, separators=(',', ':')))`；保留嵌套字符串及重复的 content／structuredContent，双方共同的 initialize 430 码点另计。最终结果完全相同。已有直接工具调用流程可保留 Tools；更在意该路径初始返回体积时，可沿原生 REPL。这里量的是 SDK 返回 JSON，客户端给模型的包装、token／费用、稳定时延与长会话摊销未测。
+
 ## 来源与许可
 
 [贡献规范](https://github.com/oraios/serena/blob/773a77e19f0da348f505640c33a8b4e1d7817dc2/CONTRIBUTING.md)允许经实际测试／认真审查的小型 AI 辅助修复。补丁保留上游组件许可，新增 SolidLSP 测试与夹具有 MIT SPDX；[Serena／SolidLSP 原许可](https://github.com/oraios/serena/blob/773a77e19f0da348f505640c33a8b4e1d7817dc2/LICENSE)继续适用。核实与运行：2026-10-27。
