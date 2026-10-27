@@ -1,7 +1,7 @@
 # A-JSON-SYNTAX-READER-001 · 按答案页修正文档门禁的 JSON 语法漏检
 id: A-JSON-SYNTAX-READER-001
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4491d1d4bfa2be9cd87f278c820be5d97cf3269c
 result_branch: relay/a-json-syntax-reader-001
@@ -72,4 +72,9 @@ python3 -m unittest discover -s tests -p test_config_export.py -v
 现有工作流已稳定达标时保持原样。想继续排查范围蔓延，读 [17：范围蔓延和越权](../17-troubleshooting.md#23-范围蔓延和越权)。
 ````
 ## 当前结果
-待本机接收端领取；dot-A 收到代码后独立运行任务验收，再按卡点决定是否改页及状态。
+
+- check_repo 的 JSON 门禁已改用 parse_constant 拒绝 NaN、Infinity、-Infinity（含嵌套与 .json.example），合法大指数等输入照常通过，并补了回归；Windows 上 check_repo/check_public 均 0 错误。
+- 产物：[8fe28c9](https://github.com/dbvv1/a1dbv/commit/8fe28c9d73e8df900715a5f09251f6f5bc0dfe04)，分支 `relay/a-json-syntax-reader-001`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交并推送结果分支，dot-A 收到后独立运行验收并按卡点决定是否改答案页。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
