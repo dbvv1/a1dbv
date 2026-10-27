@@ -2,7 +2,7 @@
 id: B-MOBA-HEADLESS-GPU-001
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 069b74bc410eec318a1effb0a05a7acc619b5bcc
 result_branch: relay/b-moba-headless-gpu-001
@@ -30,3 +30,11 @@ a1dbv 只回写本卡状态／当前结果；不改 TASKS、其他任务、游�
 两个完整 report 都 passed、4 张 frame16 全图齐全，manifest 的 class 均 gpu 且 unmasked=true；两版同一原始 renderer、浏览器版本、相机、状态与分辨率。各版两次的20帧 RGBA／stateHash／camera／time逐帧相等；改前对改后仅比较同状态，不要求两版像素相等。检查 PNG 可解码及实际像素尺寸、文件哈希和 manifest 引用均可复核。
 非作者核对原始产物与上述条件，按原生 build Workflow 审查；结果用原始值分清通过／失败／未执行，不把 GPU 拍摄通过写成灯光盲判或玩家手感通过。失败仍交有用的真实记录与恢复条件，回 blocked，不反复空跑。
 提交前跑适用 check_repo、check_public、空白检查，人工检查实际文件和图片；使用 noreply 身份，提交后扫描新提交身份，只快进推结果分支。回固定提交和产物链接为 review_ready；dot-B 收图后独立盲判，另定是否采用。
+
+## 当前结果
+
+- 两固定版本已在真实 NVIDIA GPU（ANGLE RTX 5070 D3D11，unmasked、class=gpu）上跑完 headless 拍摄并留下 3 个完整 run 与 manifest/result.md，但三次 --repeat 2 都在第二次重复首个差异帧被逐帧 RGBA 断言中止（report 全 false），只存 3 张 frame16 全图；另有 frame16 实际 stateHash 4a4767ad53dba0d9 与卡面 019550cb1f074a83 不符。审查三视角均通过、openIssues 为空，恢复条件已写入 result.md。
+- 产物：[56b52f8](https://github.com/dbvv1/MOBA-Like/commit/56b52f8d6e534ac17732d59e656a73706ca26d69)，分支 `relay/b-moba-headless-gpu-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：另派代码卡使逐文档初始化/绘制顺序可复现并核对或更新 frame16 stateHash 基线，再按原文命令重跑 before→after。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
