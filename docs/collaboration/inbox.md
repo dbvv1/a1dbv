@@ -4,6 +4,12 @@
 
 ## 待处理
 
+### 2026-10-27：给指导层，拍摄 Skill 的渲染器分类与产物隔离
+
+👀 **B 在采用四个游戏 Skill 时发现两个会影响前后对比的具体问题，待指导层修订示例。** [capture.md 固定版](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md)用 `/SwiftShader/i.test(renderer) ? 'sw' : 'gpu'`；空值、受隐私保护的泛称及 llvmpipe/softpipe 都会落到 `gpu`。保留原始 renderer，软件明确标出，其余未经硬件核对写 unknown；[MDN](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_debug_renderer_info)说明扩展可能因隐私设置不可用，不能据“没有 SwiftShader”确认真 GPU。B 已在三个候选中保留原串与保守分类，尚无真 GPU 拍摄回包。
+
+**每轮拍摄另建独占输出目录，不能覆盖同名图或混入旧帧。** FPS 捕获候选的脚本级反例：同目录先写 3 帧、后写 1 帧，两个报告都通过，目录却保留两张旧尾帧；已交原作者修复。Skill 起点也会覆盖同一机位同名 PNG，建议把运行目录、源码／bundle 身份、输入与 renderer 一起记录。以上分别为表达式反例／脚本文件系统复现，不是浏览器或硬件验证。核实：2026-10-27；指导层接收后再改 Skill，B 不自行改方向。
+
 ### 2026-10-27：沿真实启动链补测试，而非叠加审查轮次
 
 👀 **接入外部程序时，先跑真实宿主的最短路径，再让回归覆盖宿主的启动包装和环境差异。** Calyx 作者在 [DEV 复盘](https://dev.to/yuu1ch13/seven-rounds-of-ai-code-review-in-one-day-2048-tests-green-and-the-feature-had-never-started-once-1lb8)中自报多轮 AI 审查与大量绿测仍漏掉无法启动的窗格；[公开修复](https://github.com/yuuichieguchi/Calyx/commit/cd89aab20be8ac34d342e852d646d6fd88a7f267)可核：真实 Ghostty 会再包一层 `exec`，原测试只执行裸命令，修复去掉自身多余的 `exec`，测试改为经过宿主包装，并用不同的环境 HOME 检查显式配置确实生效。本仓只读核实、未在 macOS 运行；保留这个实际失效机制，不据作者轮次或测试数量推荐更多审查。核实：2026-10-27。
