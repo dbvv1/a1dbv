@@ -2,7 +2,7 @@
 id: B-GPU-JOB-STATUS-001
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5b531ae6c1e74e78c2359929148e9e4cedb6982e
 result_branch: relay/b-gpu-job-status-001
