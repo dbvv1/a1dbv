@@ -514,6 +514,8 @@ flowchart LR
 
 返回按钮先撤销本次交接资格、恢复可操作反馈，未完加载由协调者继续收尾；连续点击只更新待处理目的地，不并发修改一个 `currentScene`。预算放不下双场景时，改为常驻小读条场景→卸旧→载新，失败退到读条中的重试／菜单；必须保存可重建状态，不能再承诺立即回原现场。`activateOnLoad=false` 会阻塞异步队列，不能一边卡激活一边等卸载腾内存；普通路径先用 `true`＋项目玩法门。
 
+FPS-Like 已发布的 [a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d57281dd6c6d941c6a6bef732dadf2953f2f4)把 `pagehide` 清理注册移到首个 `await` 之前：离页后迟到的 Game 成功则释放，迟到拒绝不写旧 HUD，重开沿同一资格判断。独立实际资源 CPU 反例与正常 Canvas 结算→下一局→重开已验；渲染源码未变，沿此前 Three 结果，不代表本轮 WebGL 实跑（2026-10-27）。
+
 #### 资源释放：所有权、驻留、总内存分别看
 
 - **跨场景对象另有持有者。** `DontDestroyOnLoad` 不是依赖保活；优先把常驻 UI／角色依赖单独加载并持有，确需保整场景依赖才 Acquire 场景句柄并承担其驻留。加载成功的场景用 `UnloadSceneAsync` 收尾，不能套资产的 `Release` 模板。
@@ -699,6 +701,8 @@ FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac
 #### 二改：改交互键，再加入第二位玩家
 
 先沿下方[设置草稿与保存](#菜单也是控制的一部分)增加交互键一行：先撤该动作的玩法权限、停用目标 action，再捕获该玩家、目标 binding 与允许的设备／控件类型，UI 保留取消入口。完成或取消都释放 `RebindingOperation`，是否重新启用按当前菜单／玩法模式决定；用 `OnApplyBinding` 截获候选仅存草稿，应用才提交运行绑定；若采用原生临时覆盖，完成取出候选后和取消时都还原进入前的 override。应用后按稳定 binding 身份保存 override JSON、更新提示并实际操作；恢复默认也同步清掉已保存 override，重开不反弹旧键。新增／删除绑定属于配置版本变化，不能只靠恢复旧 JSON 迁移。
+
+**网页实现也沿原动作链，键位、输入消费者与提示共用一份绑定。** [MOBA 键位候选与接线说明](../../experiments/moba-keybindings/README.md)把有效值／草稿接到原 `createControls → SimCommand → Simulation`，保 QWER 默认和逻辑 `key` 语义，冲突先拒绝、明确选择才交换；进入设置释放旧瞄准，应用成功后再更新提示和操作。源码 CPU 已验真实命令消费，设置 UI 尚未接入；不覆盖组合键、非拉丁键、手柄与多人，不据此改变原生引擎选择。
 
 再加第二位玩家时，保原动作定义，给新玩家独立的 PlayerInput／命令缓存／角色绑定；设备分配、改键设置和反馈都跟所属玩家。共享暂停页明确谁操作，确需同时操作两套 uGUI 才接独立 module 与 MultiplayerEventSystem。让 A 改键、开关菜单、断连或退出时 B 仍能移动和确认；不要复制一套全局 `Gamepad.current` 读取或退出时禁掉所有人的 action。
 
