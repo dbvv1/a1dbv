@@ -33,8 +33,8 @@ result_branch: relay/b-genre-reference-20261027
 
 ## 当前结果
 
-- LoL 单元已追加到 sources.md（+362 行：L-01–L-12 原文证据、T-05–T-09 同场景对照、版本与输入条件、缺口），check_repo/check_public 通过；三视角审查 3 轮后仍有 3 个未关闭问题：L-06/T-07 的输入锁定窗口表述与 FAQ 冲突、T-05/T-06 未排除 Caitlyn Headshot 与 Darius W 的不可取消/重置、26.21 来源声明与探索回执矛盾。
-- 产物：[7f72d94](https://github.com/dbvv1/a1dbv/commit/7f72d9472298c49272a9ea9d187f3a2dea3901c3)，分支 `relay/b-genre-reference-20261027`。
+- 单元 3 已把 CS2 移动、急停与连续后坐写入 sources.md（C-V1 官方更新、C-02～C-15 原文证据、C-T1～C-T6 对照任务），此前 3 个 LoL 审查问题已全部关闭，check_repo/check_public 均通过。审查未通过，仍有 2 个问题：练习工具 0.25x/0.5x 被写成需改设置文件（实为默认隐藏热键），C-11/C-12/C-13 的“步枪/AWP”武器条件无原文支持却写进条件矩阵、标题和 C-T6。
+- 产物：[dd614da](https://github.com/dbvv1/a1dbv/commit/dd614da37bbd061736ad1bdd6a144c252a58d973)，分支 `relay/b-genre-reference-20261027`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：先修正上述 3 个审查问题，再继续 CS2 移动/急停/连续后坐单元；Forza 碰撞后镜头仍待观察。
+- 下一步：修正练习工具倍速热键入口表述，并把三处武器条件改为“未写/播放时确认”并同步 C-T6，然后重跑三视角审查，再交接收端提交推送。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
