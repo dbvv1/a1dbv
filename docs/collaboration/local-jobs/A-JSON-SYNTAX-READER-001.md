@@ -1,7 +1,7 @@
 # A-JSON-SYNTAX-READER-001 · 按答案页修正文档门禁的 JSON 语法漏检
 id: A-JSON-SYNTAX-READER-001
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4491d1d4bfa2be9cd87f278c820be5d97cf3269c
 result_branch: relay/a-json-syntax-reader-001
