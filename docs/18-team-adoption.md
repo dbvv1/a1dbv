@@ -101,6 +101,12 @@ Quick 的“无站点 owner”不等于平台无人维护，员工可覆盖站�
 | **仓库级**（共享） | AGENTS.md、`.claude/settings.json`、Skill、Hook、插件启用列表 | 进版本控制，**像代码一样评审**；插件可以锁定到某个提交 |
 | **个人级** | 个人偏好、快捷键、输出风格 | `~/.claude`、`settings.local.json`（不提交） |
 
+**🧪 让下一次真实任务从惯用入口用上共享规则。** 如果同类纠正反复出现，先核当前代码与适用范围，再把常驻约定放进实际加载的 AGENTS.md／CLAUDE.md，步骤放 Skill，可机械判定的错误交检查；长参考文档迁出后，入口保留何时读取它的指针。下一项相关任务从团队原有入口开始，核是否读到并改变行为、结果是否真的更新；仍反复出错时，查缺的是正确指导、检查还是工具能力。本仓未做团队实用验证。
+
+TeamRetro 五人团队自报的反例很具体：仓库基线 lint 未清干净时，全仓 `lint:fix` 淹没了任务差异；`gh pr edit` 返回 0 却未更新 PR，让按失败退出码触发的备用路径失效。Meta Forum 的页面定位反复出错，则改为让 Agent 行动前查询实时 UI 层级。前者提醒核实际结果，后者说明缺少状态查询能力时，补规则不如补工具。
+
+**上述候选依据**：[一手团队自报] [TeamRetro（2026-09-23）](https://www.teamretro.com/blog/claude-md-for-teams/)、[Meta Forum（2026-10-15）](https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/)；核实 2026-10-27。
+
 **托管下发不等于安全边界（2026-10-15，UTC+8 核对）**：Claude 的 server-managed settings 按实际认证的 Team／Enterprise 组织分发，Console API key CI 不继承 claude.ai 策略；强制约束须核入口并落实到受管端点、沙箱和网络（见 [10](10-security.md)）。**局限：服务端分发仍是客户端控制，未受管设备可绕过；第三方入口另核策略交付方式。**
 
 **配置迁移保住作用范围。** 先用现成分层、优先级与选择性同步：共享格式／检查契约，允许个人编辑体验不同；跨设备偏好与本机衍生值分开，不广播个人覆盖或机器默认。Ruff、Firefox 与 Prettier 的取舍支持按语义选择；局部历史反馈不证明所有配置都应同步或隔离。
