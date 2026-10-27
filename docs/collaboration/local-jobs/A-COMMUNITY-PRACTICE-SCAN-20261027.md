@@ -1,7 +1,7 @@
 # A-COMMUNITY-PRACTICE-SCAN-20261027 · 中文社区真实采用与撤回
 id: A-COMMUNITY-PRACTICE-SCAN-20261027
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e297a7a9b18417c5b7707e26c388d0c9a11e307a
 result_branch: relay/a-community-practice-scan-20261027
