@@ -30,4 +30,9 @@ result_branch: relay/b-genre-reference-20261027
 接收端运行适用 `check_repo`、`check_public` 和空白检查；提交身份用 noreply，提交及推送由接收端做，公开扫描通过仍人工读实际差量。回固定提交、产物链接和未解缺口，不把来源收集写成品质验收通过。
 
 ## 当前结果
-待接收端领取；产物回传后由 dot-B 设计并执行同场景观察。
+
+- 已交付 Forza Horizon 6 的可观察操控参照（版本基线、三条连续实机定位、抓地/ABS/镜头/碰撞恢复原文证据、T-01–T-04 同场景对照任务及缺口），审查问题已修正并复审通过。
+- 产物：[335c18d](https://github.com/dbvv1/a1dbv/commit/335c18d8dcc806bcfd352614f41ce62b0be89afe)，分支 `relay/b-genre-reference-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：继续同一 sources.md 的下一单元：LoL 普攻取消/发射/命中/移动窗口，随后 CS2 移动/急停/连续后坐；Forza 碰撞后镜头仍为待观察缺口。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
