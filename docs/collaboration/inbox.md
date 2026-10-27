@@ -4,6 +4,14 @@
 
 ## 待处理
 
+### 2026-10-27：OSS Verify，把已有 fuzz 性质交给独立证明检查器
+
+👀 **维护有明确性质的 C/C++ 库时，可从一份公开证明起步，再决定是否让 Agent 准备自己的 fuzz target；本仓未试用。** 在固定源码中选 `coturn/FuzzStunClient`，按 [checking](https://github.com/theorem-labs/oss-verify-proofs/blob/1045cd75d83eacd942040cb611c98305f33dea59/docs/checking.md)／[proving](https://github.com/theorem-labs/oss-verify-proofs/blob/1045cd75d83eacd942040cb611c98305f33dea59/docs/proving.md) 准备 Docker／Rocq checker，`./oft fetch coturn` 取项目产物，再在固定镜像、断网容器内运行 `./oft check coturn/FuzzStunClient --parts statements,proofs`。10-27 文档已补至少 1 GiB 硬栈上限；该固定版本 README 尚未同步，官方称后续 release 补齐。外部用户两核运行 34 分钟后主动停止，尚无该用户复验通过的回执。
+
+**入项目 Skill 可借的是把“正确”写成真正会失败的性质。** 它要求 seed 覆盖见证和可触发失败的修改；C/C++ 的 `assert` 可能被 `NDEBUG` 删除，性质失败应触发 `abort()`，而非普通 `return -1`。接收时核实际 harness：公开 LZO 示例只比较成功码与长度，内容相等须另有检查，该条目仍是待证明 statement。已发布证明的范围以对应 theorem 和编译产物为准；普通应用测试继续沿用原生回归与差分测试。
+
+**依据**：[官方研究](https://www.anthropic.com/research/formal-verification)、[固定公开证明](https://github.com/theorem-labs/oss-verify-proofs/tree/1045cd75d83eacd942040cb611c98305f33dea59)、[固定入项目 Skill](https://github.com/theorem-labs/oss-verify/blob/1bfa50204b14e6bdddde765e851afdb954314ba8/.claude/skills/add-project/SKILL.md)、[LZO harness 与状态](https://github.com/theorem-labs/oss-verify-proofs/blob/1045cd75d83eacd942040cb611c98305f33dea59/projects/lzo/lzo_compress_target/harness.yaml)、[真实复验反馈](https://github.com/theorem-labs/oss-verify-proofs/issues/2)。10-27 核实；公开快照 61 入口／26 库是已发布子集，研究样本为 239 入口／123 库，不混计。
+
 ### 2026-10-27：摘要树与按需回读，先保留原生压缩
 
 👀 **已经使用 Pi、且长任务反复丢失必要旧细节时，可评估 pi-optchat 的摘要树＋`zoom`；普通 Claude Code／Codex 使用者继续原生压缩。** [0.10.0 固定实现](https://github.com/jonaslsaa/pi-optchat/tree/2714a3f4167ba41ea1868b51d715e680ac5f095d)用额外模型构建摘要视图，保留原文供回读，是替换主代理压缩而非“不压缩”。已有[非作者集成反馈](https://github.com/jonaslsaa/pi-optchat/issues/165)，[作者的 40 对摘要评估](https://github.com/jonaslsaa/pi-optchat/issues/153)未公开完整数据，也不是与原生压缩对照；选择时要计摘要调用、回读、质量和总成本。本仓未安装、未试用；[原帖反馈与源码核对](local-jobs/artifacts/A-CONTEXT-COMMUNITY-FOLLOWTHROUGH-20261027/sources.md)未支持固定 token 数重开或只给目标。核实：2026-10-27。

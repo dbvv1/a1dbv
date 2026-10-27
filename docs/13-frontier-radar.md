@@ -97,6 +97,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [OSS Verify](collaboration/inbox.md#2026-10-27oss-verify把已有-fuzz-性质交给独立证明检查器) | 已有 C/C++ fuzz target、需要可复验性质的维护者：先选已有证明，核入口与性质，再用 `oft check`／Rocq 复验；官方 Skill 帮 Agent 把性质落实为可失败的测试入口 | Anthropic／Theorem 10-22 实践与固定公开证明；外部复验者遇栈限制，10-27 文档已补容器要求 | 未安装、未试用；2026-10-27 核公开实现，固定快照有 61 入口／26 库的 proofs | 👀 证明对应固定二进制、入口、性质与机器模型；先读修订后的 checking／proving 文档，一般应用回归不换整套链 |
 | [mutmut 3.8.0](https://github.com/boxed/mutmut/blob/3.8.0/README.rst) | Python 真实修复后，怀疑测试只覆盖新 helper 时，在隔离副本配置 `source_paths` 与现有回归；`mutmut run '<模块>.<函数>*'` 运行，再用 `mutmut browse` 看仍能通过测试的变异，按业务契约补断言 | rtl_433 的[固定配置](https://github.com/rtl-433-hass/rtl_433/blob/f59045c13d70b61ea91cbebf129e880dac08ef54/pyproject.toml)与[消费者测试](https://github.com/rtl-433-hass/rtl_433/blob/f59045c13d70b61ea91cbebf129e880dac08ef54/tests/test_mut_library_floor.py)覆盖异常回退、可变容器复制，并按影响范围缩小运行 | 未安装、未试用；2026-10-27 核源码与公开采用 | 👀 动态导入／subprocess 可能漏采集，先核实际运行了变异副本；零执行不能当通过。已有回归已抓准原问题时，保留原法，不设默认分数门槛 |
 | [Anthropic SDK 主版本迁移](collaboration/inbox.md#2026-10-27sdk-迁移与按改动构建) | SDK 升级时一并修 API 契约，按实际客户端核采样参数和认证头 | 官方迁移指南、Bedrock 用户问题与 Hermes 开放迁移待办，2026-10-27 核实 | 未试用；待真实 SDK 升级任务采用 | 👀 需要旧采样行为时暂保相应旧调用链，不能只改版本头 |
 | [Next.js 按源码变化构建](collaboration/inbox.md#2026-10-27sdk-迁移与按改动构建) | 维护框架源码时按改动范围及产物有效性选构建，不因新 worktree 就全量构建 | Next.js 10-22 已合入 AGENTS／backport Skill，2026-10-27 核实 | 未试用；待真实 Next.js 框架维护任务采用 | 👀 仅测例改动也须核现有产物；不推广为本仓门禁 |
