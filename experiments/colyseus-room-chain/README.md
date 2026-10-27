@@ -33,7 +33,7 @@ npm test
 
 - `room.mjs` 是应用规则：服务端确定房型人数、ready、开始、暂停与结束；`Room`／`MapSchema` 状态同步、座位、连接和回收都由官方库完成。会话身份取 `client.sessionId`，不让消息指定要操作的其他玩家。
 - `server.mjs` 定义 `duo`／`trio` 两种服务器房型；好友房用 `create→joinById`。原生 `joinOrCreate` 在测试中演示按房型匹配；以后按地图或规则版本找房时，显式配置服务端 `filterBy` 并验证输入，不能假设任意参数会自动参与匹配。
-- `client.mjs` 展示可移植的 SDK 接线；`harness.mjs` 只负责独立进程测试，不是产品服务框架。真实游戏用其现有输入与 UI 代替 IPC，把权威规则接到收到的命令，把同步状态交表现层。
+- `client.mjs` 展示 SDK 接线，`session-owner.mjs` 拥有当前玩法会话、快照与输入序号；`harness.mjs` 只负责独立进程测试，不是产品服务框架。真实游戏用其现有输入与 UI 代替 IPC，把权威规则接到收到的命令，把同步状态交表现层。
 - 本例的匿名名字只是合成标签，`onAuth` 仅校验协议和格式。公开服务需接已认证用户、TLS、频率限制及持久数据；这里没有创建真实账号，也没有证明反作弊或公网承载。
 
 **传输恢复不等于可以继续操作。** `onDrop` 保留玩家，`allowReconnection` 保座；`onLeave` 才删除最终离开的玩家。恢复后，每个客户端分别等自己的最新 state，再启用输入。固定 SDK 0.18.6 的 `onReconnect` 回调早于新 token 写入和后续全量 state；不要在这个回调同步保存旧 token 或把旧画面当新状态。刷新／进程重启得到新 Room，监听也要重建。
@@ -41,6 +41,48 @@ npm test
 离线发送队列不是可靠业务日志。本例每次暂停递增输入 epoch，服务器拒绝恢复后积压的旧操作；当前 epoch 内客户端为每次新操作分配本地递增 seq，服务器去重，重复不加分；不能每次从尚未回来的 state 取 `lastSeq+1`，否则快速两次新操作会撞号。新 epoch／重连全量 state 后再从已确认序号续起。换成真实玩法时，保留会话与规则的责任划分，再为需要续传的事务设计确认／持久化，不把所有技能点击无条件补发。
 
 **锁房、准备和持久化是不同事。** 满员自动锁不代表已开局；本例开始时显式锁房，直到结束不接新人。短线重连只恢复仍活着的服务进程内状态；进程崩溃、跨机迁移、存档和结算数据库未实现，不能把它称为容灾。
+
+## 切房与取消恢复
+
+**单一玩法会话由 `SessionOwner` 拥有，网络连接继续由 Colyseus 管。** 这个薄层已经接入上面的全部客户端入口；它解决同一应用回菜单、换房和取消恢复的归属，不替代 SDK、认证或服务器输入 epoch。已有流程所有者时，把相同判断接进去即可。
+
+```js
+import { Client } from '@colyseus/sdk';
+import { SessionOwner } from './session-owner.mjs';
+
+const sdk = new Client(endpoint);
+const owner = new SessionOwner();
+await owner.connect(() => sdk.joinById(roomId, {name:'Guest',protocol:1}));
+// JOIN 完成后仍等 owner.inspect().initialized；playing 后才可 activate()。
+owner.ready();
+// 用户取消恢复／回菜单；立刻撤销输入和快照归属，再等待旧连接清理。
+await owner.leave();
+```
+
+切换时先递增本地代次并离开旧 Room，再发起新加入；失败留在失败态，而不是回到旧局。每个监听捕获自己的 Room 与代次，迟到成功主动释放拿到的 Room，迟到失败不改当前 UI。`inspect()` 返回当前 `roomId`／`sessionId`、值快照和已发序号，`token()` 仅在收到当前 state 后可读；用这份快照驱动现有呈现，别绕过所有者继续保存全局 Room。异步加载场景或角色时，最终应用结果仍要核归属，本例只同步消费状态。
+
+三个身份各有职责：SDK 的 `roomId/sessionId` 定位房间与席位；本地 `generation` 淘汰旧请求／回调；服务器 `epoch + seq` 淘汰同局旧操作并去重。本地代次不是授权凭据，`sessionId` 也不是永久账号。
+
+**释放旧 Room 不是清空所有监听就结束。** 固定 SDK 的内部 `onLeave` 负责自身清理，所有者只移除自己注册的处理器。0.18.6 已排队的 retry timer 不会被 `enabled=false` 撤销：所有者关闭“断开事件再启动重连”的开关、丢弃旧瞬时操作队列，并保留释放监听；已经进入的 SDK retry 链仍可能继续至成功或达到 SDK 上限，成功后只离开那个旧 Room。调用方取消的只是采用资格，SDK 的 HTTP／WebSocket 请求仍可能完成；`leave()` 不承诺离线时服务器已经即时释放席位，服务器保座超时仍是最终出口。用户继续当前会话时，自动重连、全量 state 门槛和原输入序号逻辑保持不变。
+
+```sh
+node --test ownership.test.mjs
+npm test
+```
+
+2026-10-27 的实际消费者是原固定服务／SDK 与真实 WebSocket，不调用伪造的 state 回调：
+
+| 情境 | 观察到的结果 |
+|---|---|
+| 同一客户端从已得 1 分的 duo 切到 trio | 旧席位移除、旧局以 `peer-left` 结束；新局两次快速操作得到 `lastSeq=2`、分数 2，不继承旧局身份 |
+| 自动重试中退出，再创建新房 | 新房已收到 state 时，旧清理仍在等待；500 ms 重试成功后释放旧 Room，2500 ms 重试过保座期被拒，两者均不改变新房，首个操作为 seq 1 |
+| 手动重连成功，但结果晚于新房返回 | 确实恢复原席位的旧 Room 被释放，新局仍能推进；旧局保留原 1 分后结束 |
+| 加入尚未返回时取消 | 无当前快照、输入或可读 token；迟到 Room 被释放，空房回收 |
+| 旧请求失败晚到／当前缺失房间 | 前者不覆盖新局；后者明确失败并保空状态，不回退旧局 |
+
+迟到成功／失败用可控 Promise 暂缓**应用接收**，服务、SDK 握手与恢复状态照常真实运行，不是人为制造公网延迟。原 8 项加这 6 项，共 14 项通过，无 skip；未做跨设备、代理丢包、Unity／UE 或生产认证测试。基线旧全局 Room 写法曾让新房 ID 配上旧房玩家／分数；本次增量修复该应用竞态，不宣称网络库有此缺陷。
+
+依据：官方[连接生命周期](https://docs.colyseus.io/sdk/connection)与 npm 固定 SDK 0.18.6 的 `Room.mjs`／`signal.mjs`，2026-10-27。上游 [#950](https://github.com/colyseus/colyseus/issues/950)是服务器旧退出误关新连接的另一处问题，维护者与报告者已确认修复，当前 core 已含；中文 [Cocos 切后台讨论](https://forum.cocos.org/t/topic/169358)提示真实设备可能不立即送达断开回调，因此这里不把 loopback 清理视为移动端保证。
 
 ## 固定依赖与来源
 

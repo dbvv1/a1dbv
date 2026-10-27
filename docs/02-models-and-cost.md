@@ -147,6 +147,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 |---|---|---|---|---|
 | **Claude Haiku 5.5**（Standard） | $0.10（总输入 >100K：$0.50） | $0.01（>100K：$0.05） | $0.50（>100K：$2.50） | 2026-10-11（UTC+8） |
 | GPT-6 Luna（Standard ≤272K） | $0.10 | $0.01 | $0.50 | 2026-10-15 |
+| [GPT-6.1 Terra](#terra-effort-evidence)（`gpt-6.1-terra`，Standard ≤272K） | $1 | $0.05 | $5 | 2026-10-27 |
 | Mistral Large 4（预览，限时价） | $0.68（原价 $1.36） | $0.07 | $2.09（原价 $4.18） | 2026-10-15 |
 | GPT-6 Sol（`gpt-6-sol`，Standard ≤272K） | $2 | $0.20 | $10 | 2026-10-11（UTC+8） |
 | GPT-6.1 Sol（`gpt-6.1-sol`，Standard ≤272K） | $2 | $0.10 | $10 | 2026-10-11（UTC+8） |
@@ -159,6 +160,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 
 ### 表中未展开的计费维度
 
+- **Terra**：Standard 的 30m／12h 缓存写入分别为 $1.25／$2.50；总输入 >272K 时，整次请求的输入／缓存费率乘 2，输出乘 1.5。Fast 为 Standard 的 2 倍，Batch／Flex 为一半；不能把 Sol 的 Ultrafast 可用性套给 Terra。
 - **长上下文与速度**：`gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档 **30m** 缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。精确模型页见本节末。
 - **Luna／Astra 与 Grok**：Luna／Astra 的基础 **30m** 缓存写入分别为 $0.125／$12.50；总输入 >272K 时同样对整次请求收取输入／缓存 2 倍、输出 1.5 倍。Grok 4.7 在 >200K 时另计，长上下文预算须查对应地区的价表，不能沿用基础行。
 - **OpenAI 缓存 TTL**：先保留默认 `30m`；稳定前缀需隔数小时复用时，才试 `12h`；复用不足以抵消写入成本就退回 30m。GPT-5.6 及以后模型在 Responses API 用 `prompt_cache_options.ttl` 选择；写入分别按普通输入价的 **1.25／2.5 倍**计，替代而非叠加普通输入价，读取单价不变。Standard ≤272K 的 12h 写入：6.1 Sol $5、Luna $0.25、Astra $25／百万 token。最低寿命保障的是缓存读计价资格，**不是每次复用 KV 或更低延迟的保证**；也不外推订阅内 Codex／Work。核对见 [补核](research/2026-10-10-audit.md#s1h--2026-10-21-api-缓存寿命与写入预算)。
@@ -177,7 +179,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 - **失效排查按厂商与配置**：Claude 缓存指南说明，更改顶层 `output_config.effort` 会使消息缓存失效，对工具/系统缓存的影响依模型而异；显式写出原默认值不算变化，支持逐消息 effort 的模型也有保留前缀的路径。模型切换、前缀改动和 TTL 是排查因素，不能一概断言每次修改都会清空全部缓存。当前 Claude Code 成本文档将缓存统计放在 `/usage` 的 Session 区；它覆盖主会话，不能当作全部子 Agent 的合计。
 - **Harness 开销看完整任务**：[Systima 历史实验](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)与[本仓旧实验](19-experiments.md#3-e1固定开销)记录的是含缓存的原始输入量，不能当普通输入账单、订阅消耗或当前客户端成本排名；本仓原逐次数据还存在缺失。先定位实际负担，再比较质量、返工与含缓存总成本，配置范围和当前诊断见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。
 
-**依据**：[一手] [Claude 价格](https://platform.claude.com/docs/en/about-claude/pricing)（2026-10-11／2026-10-15）、[Haiku 5.5 模型页](https://platform.claude.com/docs/en/models/haiku-5-5/overview)、[系统卡 §8.9.3](https://www-cdn.anthropic.com/e1080d6bf5ae2018ea3c2f414064be03232f5be5/Claude%20Haiku%205.5%20System%20Card.pdf#page=128)（2026-10-16）；[一手] [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)（2026-10-15）、[GPT-6 Sol](https://developers.openai.com/api/docs/models/gpt-6-sol)、[GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol)（2026-10-11）、[GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)、[Mistral Large 4](https://docs.mistral.ai/models/mistral-large-4)、[Grok 4.7](https://docs.x.ai/developers/models/grok-4.7)、[Gemini 价格](https://ai.google.dev/gemini-api/docs/pricing)（2026-10-15）；[一手] [OpenAI 缓存指南](https://developers.openai.com/api/docs/guides/prompt-caching)、[OpenAI 价表](https://developers.openai.com/api/docs/pricing)、[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)、[Claude Code 成本文档](https://code.claude.com/docs/en/costs)；[研究] 计费口径、预算边界与缓存选择（2026-10-21，未实测）；核实 2026-10-15 至 2026-10-21。
+**依据**：[一手] [Claude 价格](https://platform.claude.com/docs/en/about-claude/pricing)（2026-10-11／2026-10-15）、[Haiku 5.5 模型页](https://platform.claude.com/docs/en/models/haiku-5-5/overview)、[系统卡 §8.9.3](https://www-cdn.anthropic.com/e1080d6bf5ae2018ea3c2f414064be03232f5be5/Claude%20Haiku%205.5%20System%20Card.pdf#page=128)（2026-10-16）；[一手] [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)（2026-10-15）、[GPT-6 Sol](https://developers.openai.com/api/docs/models/gpt-6-sol)、[GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol)（2026-10-11）、[GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)、[Mistral Large 4](https://docs.mistral.ai/models/mistral-large-4)、[Grok 4.7](https://docs.x.ai/developers/models/grok-4.7)、[Gemini 价格](https://ai.google.dev/gemini-api/docs/pricing)（2026-10-15）；[一手] [OpenAI 缓存指南](https://developers.openai.com/api/docs/guides/prompt-caching)、[OpenAI 价表](https://developers.openai.com/api/docs/pricing)、[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)、[Claude Code 成本文档](https://code.claude.com/docs/en/costs)；[研究] 计费口径、预算边界与缓存选择（2026-10-21，未实测）；核实 2026-10-15 至 2026-10-21；新增 [Terra 官方价格](https://developers.openai.com/api/docs/models/gpt-6.1-terra)核实 2026-10-27。
 
 <a id="同模型换推理档保留缓存前缀"></a>
 
@@ -310,6 +312,47 @@ MiMo、DeepSeek、MiniMax、百炼仍是可另行比较的候选；其当前套�
 4. **选型优先用本项目的代表任务，并先校准判定。** 换模型或配置时重跑，核检查是否覆盖真实需求、有没有把参考实现细节当必需条件；私有不自动等于可靠。Stet 的公开维护样本正显示这种错位（方法见[09](09-review-and-quality.md#3-给自己的-ai-配置做评估)）。
 
 **依据**：[一手：历史记录] [SWE-bench](https://www.swebench.com)、[Scale SWE-bench Pro](https://scale.com/leaderboard/swe_bench_pro_public)、[Terminal-Bench](https://www.tbench.ai)（2026-10-05 记录，未复核）；[研究] 适用范围与判定校准；核实 2026-10-05。
+
+<a id="terra-effort-evidence"></a>
+
+### 6.1 Terra 与 effort：同题通过率和 API 费用一起看
+
+**👀 GPT-6.1 Terra 已有公开分档数据，可列为下一次同题比较的候选；本仓未调用验证，不替换日常起点。** 官方于 2026-10-26 发布，定位侧重视觉推理、computer use 与写作；API 支持 `none/low/medium/high/xhigh/max`，默认 `medium`，工具调用要求 Responses API。编码相关的独立证据见下表。
+
+**先分清三个量**：API token 单价见第 2 节；同一模型只改 effort 不改该单价，但会改变推理、输出及工具轮次，未展示的推理 token 也按输出收费。AA Intelligence Index v4.3.2 是跨任务综合指数，**不是百分比，也不是纯 coding 分数**；AA 首页的加权 `Cost per Intelligence Index task` 又不同于下面的 **Terminal-Bench 4.0（TB4）成本/题**。
+
+**比较口径**：AA 用 mini-swe-agent 跑 TB4 全部 66 题，每题 3 次、取平均 pass@1，最多 500 steps，沿用上游时间／资源限制、保留完整轨迹而不压缩；这统一了题集与 harness，**没有统一 token 或美元预算**。费用是 AA 按评测 token、公开价率与近期典型缓存命中估算的模型 API 成本，不是当次实扣账单，也不含宿主与人工复核。下面是 2026-10-27 读取的公开快照，精确运行日期、API 快照 ID 及逐题差异在这些页面未提供，细小分差不判胜负。
+
+| GPT-6.1 Terra effort | AA Index v4.3.2 | TB4 pass@1 | AA 估算 TB4 API 成本/题 |
+|---|---|---|---|
+| none（AA 标 Non-reasoning） | 33.49 | 26.77% | $0.379 |
+| low | 36.21 | 15.15% | $0.107 |
+| medium | 41.32 | 32.32% | $0.276 |
+| high | 43.87 | 41.92% | $0.438 |
+| xhigh | 45.36 | 46.46% | $0.657 |
+| max | 48.11 | 55.56% | $1.485 |
+
+其他模型只摘录能说明升档取舍的档位；每行分数与费用按 effort 顺序一一对应，完整档位见节末 AA 分档页。
+
+| 模型／配置 | effort 对照 | TB4 pass@1 | AA 估算 TB4 API 成本/题 |
+|---|---|---|---|
+| GPT-6.1 Sol | medium → xhigh → max | 47.98% → 54.04% → 56.06% | $0.614 → $1.026 → $1.823 |
+| GPT-6 Astra | xhigh → max | 59.60% → 59.09% | $5.855 → $8.498 |
+| Claude Fable 5.1 † | xhigh → max | 55.05% → 52.02% | $15.783 → $19.218 |
+| Claude Opus 5.5 † | xhigh → max | 59.60% → 59.60% | $8.778 → $13.109 |
+| Claude Sonnet 5.5 † | medium → high → max | 29.80% → 43.94% → 63.64% | $1.578 → $2.186 → $12.646 |
+| Claude Haiku 5.5 | medium → max | 15.15% → 32.83% | $0.194 → $0.652 |
+| GPT-6 Luna | medium → max | 2.53% → 12.63% | $0.072 → $0.236 |
+
+† Fable／Opus／Sonnet 的 AA 条目均标 **Default Fallback**：安全分类器拒答时可转到厂商推荐模型；逐题实际触发与路由未公开。因此比较的是这些产品配置，不能宣称全程都是同一基础模型、完全相同设置。
+
+**这组数据怎么用于选候选和定预算**：
+
+- **Terra 半价 token 不等于同等质量下任务费减半。** max 的 TB4 为 55.56%／$1.485，Sol max 为 56.06%／$1.823；而 Sol medium 的 47.98%／$0.614 与 Terra xhigh 的 46.46%／$0.657 接近。下一次比较应包含原来的 Sol 档位，不能只拿同名 effort 或最高档算节省。
+- **升到 max 未必有额外 TB4 收益。** Astra、Opus、Fable 在上述 xhigh → max 快照中没有更高通过率，费用却上升；Sonnet 的 medium → high → max 则有明显分数与费用变化。它们支持逐模型、逐任务看收益，不支持“max 总是最好”或“永远不用 max”。
+- **低价小模型也要单独验质量。** Luna 与 Haiku 的短上下文 token 基础单价相同，但表中的 TB4 通过率与每题费用差异很大；不能由单价或这一项终端基准推断日常实现、审查或视觉任务等效。
+
+**依据**：[一手：官方] [Terra 发布](https://developers.openai.com/api/docs/changelog)、[Terra 接口](https://developers.openai.com/api/docs/models/gpt-6.1-terra)、[OpenAI 推理计费](https://developers.openai.com/api/docs/guides/reasoning#how-reasoning-works)、[Claude effort](https://platform.claude.com/docs/en/build-with-claude/effort)、[Claude thinking 计费](https://platform.claude.com/docs/en/build-with-claude/thinking)、[Claude fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback)；[一手：独立评测] AA 公开分档页及页面图表数据：[Terra](https://artificialanalysis.ai/models/releases/gpt-6-1-terra)、[Sol](https://artificialanalysis.ai/models/releases/gpt-6-1-sol)、[Astra](https://artificialanalysis.ai/models/releases/gpt-6-astra)、[Fable](https://artificialanalysis.ai/models/releases/claude-fable-5-1)、[Opus](https://artificialanalysis.ai/models/releases/claude-opus-5-5)、[Sonnet](https://artificialanalysis.ai/models/releases/claude-sonnet-5-5)、[Haiku](https://artificialanalysis.ai/models/releases/claude-haiku-5-5)、[Luna](https://artificialanalysis.ai/models/releases/gpt-6-luna)，[评测方法](https://artificialanalysis.ai/methodology/intelligence-benchmarking)、[成本口径](https://artificialanalysis.ai/methodology)；[研究] 候选与预算解读，未实测模型；核实 2026-10-27（UTC）。
 
 ## 来源
 

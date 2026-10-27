@@ -388,7 +388,13 @@ blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pip
 
 <a id="layered-animation-consumer"></a>
 
-**攻击和受击由真实事件驱动，动作结束不反过来决定伤害。** 当前英雄的优先级为 `death > hurt > attack > idle/walk`；每步事件按 `(tick, ordinal)` 去重，reset 清游标。`castStarted` 建前摇，`castResolved` 或 `basicAttack` 启动出手；`castCancelled` 只取消相应 cast。只有 `heroDamaged.hpDamage>0` 才播身体受击，全护盾吸收不假装身体受伤。模拟死亡、选敌、伤害与复活都不等待动画；不存在权威命中事件时，不从冷却、castSlot 或 HP 差补造。
+**攻击和受击由真实事件驱动，动作结束不反过来决定伤害。** 原剑盾英雄采用 `death > hurt > attack > idle/walk`；远程 Veyra 的已提交释放与普通受击分层，做法见下段。每步事件按 `(tick, ordinal)` 去重，reset 清游标。`castStarted` 建前摇，`castResolved` 或 `basicAttack` 启动出手；`castCancelled` 只取消相应 cast。只有 `heroDamaged.hpDamage>0` 才播身体受击，全护盾吸收不假装身体受伤。模拟死亡、选敌、伤害与复活都不等待动画；不存在权威命中事件时，不从冷却、castSlot 或 HP 差补造。
+
+**出手主形不够清楚时，先换合适的成熟动作源，再决定混合政策。** Veyra 的远程即时普攻不适合继续用短剑贴身挥击；已采用植物 focus 与 CC0 UAL1 Standard 的 `Spell_Simple_Enter/Shoot/Exit`，按准备、释放、收回重采样到原十五骨骼的八个上身骨，根与腿仍归移动。先比静止姿势、轴与实际空间侧：本例源 `hand_l` 和目标 `Hand_R` 都在正 X，照左右后缀配对会映错手。改作者配方与 Blend，再导出运行 GLB；检查旧四动作、骨架与绑定、子帧和脚底，不把同骨名当兼容证明。
+
+**已提交短释放期间保主手臂，普通受击只做低权重躯干叠加；真实控制和死亡仍优先。** Veyra 使用 `recoilLayer:'torso-additive'`，从原 hurt 躯干轨相对 idle 参考姿势求增量；短释放期间压低这层权重，避免连续普通伤害反复抹掉发起姿势；短释放结束后恢复原受击覆盖策略。真实 cast 等 resolve 才释放；即时普攻从真实提交开始，没有视觉伪造的伤害前准备。若多逻辑步跨过主姿势，只在当前动作原生命周期内、第一次实际 draw 时补呈现一次；取消、控制、死亡或过期即丢弃，sync 不算已画，也不积压历史动作。正常 1／3 tick 采样与连续受击反例都要核，不能只针对低帧率调时长。
+
+实现从[正式源与重采样配方](https://github.com/dbvv1/MOBA-Like/tree/9311f43e1b396827bf27caebc8ab715f5cb2cc84/asset-pipeline/heroes/veyra-release)及[同版 motion／adapter](https://github.com/dbvv1/MOBA-Like/tree/9311f43e1b396827bf27caebc8ab715f5cb2cc84/asset-pipeline/presentation)开始。实际正常视距的伸臂已越出躯干、武器身份更符合远程释放，但兵群与血条仍遮挡手部；这项有限采用没有证明拥挤战斗已清楚。来源：[Quaternius UAL1 官方免费 Standard](https://quaternius.itch.io/universal-animation-library)，原件／许可／哈希随配方保存；固定消费者及正常画面核实于 2026-10-26，2026-10-27 合入。
 
 **移动中的英雄优先分上下身责任；小兵先保武器动作和实际出手一致。** 英雄源轨先把首键归零，避免把导出前导帧算进循环；英雄八个上身骨、七个下身骨拆轨：腿与外根位移由移动／快照负责，受击默认只覆盖上身；源和派生轨只读缓存、mixer/action 逐角色独立。小兵在 `basicAttack` 后播放本兵种全身 `attack`，再回 `idle/walk`，仍不等于英雄分层或 hurt 消费。英雄观察 `alive→dead` 播 death、结束后再保留一秒尸体；初见已死不补播，复活清旧姿态。
 

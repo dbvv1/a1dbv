@@ -27,7 +27,7 @@ flowchart TD
 - **完整镜头：** 从[预判、跟随到遮挡与震动](#camera-contract)，先保玩家控制，再加镜头语言。
 - **串成一局：** [准备关卡](#scene-loading-production)→[输入／HUD 命令](#input-production)→规则确认→[声音与反馈](#audio-lifecycle)→[同一片段打包交付](#release-delivery-production)；需要联机时由[会话与网络权威](#coop-production)接管入场和共享状态。
 - **二改：** [按症状选读](#3-按当前任务选择实现与验收)，重点守取消、暂停、旧档和设备。
-- **证据：** 资料／源码比较，模块库与引擎未试用；两次检索不证明 AI 制作收益，整链质量上限未知。
+- **证据：** 各节区分资料／固定源码、网页案例与 [Godot 原生存档消费者](#native-save-consumer)等实跑；Unity／UE 的接入研究不计作原生验证。
 
 ## 1. 单人项目先借引擎，再补确实缺少的一层
 
@@ -547,13 +547,20 @@ flowchart LR
 
 ### 保存、续玩与升级旧档
 
-**先让玩家放心离开，再让下一次进入接上原来的决定。** 小型单人游戏默认在房间结算后／回合提交后保存一致状态，复用引擎序列化与存储，只补本作的恢复规则。这里的“续玩”不是撤销失败：永久死亡也能有中途退出；是否允许返回更早检查点另定。边界太远迫使玩家久等，就缩小安全段或增加明确检查点，不先承诺任意一帧原样恢复。
+**小型单人游戏默认用显式进度 DTO＋引擎存储，在结算边界保存；项目负责恢复对象和玩家决定。** 首版走完“清房间→领奖→安全出口保存→退出→重开续玩”，二版再加持久门／容器。下面给选型、数据、保存／恢复顺序和二改验收，可直接交给 AI 接入现有 Session／场景协调者。
 
-以下以“清完房间、领取奖励、进入安全出口；重开回到该出口”为首版设计例，只保存角色、房间访问／完成、奖励与检查点。二版再加入持久门与容器，使已开门、已取物也能保持；下面状态表与数据结构展示含二版的最终职责。保存点选在弹体与奖励结算结束之后；已有不同产品承诺应保留，不为套例改变死亡／重试规则。
+先定产品承诺：本例在弹体与奖励结算结束后保存角色、房间访问／完成、奖励与检查点。永久死亡也可以允许中途退出，但是否能回更早检查点另定；任意一帧恢复需要额外保存瞬态。安全边界太远就缩段或加检查点，已有死亡／重试政策保持不变。
 
 <a id="存档复用借序列化与存储能力自己决定哪些进度能恢复"></a>
 
 #### 先写清保存什么，再选序列化工具
+
+| 默认／替代 | 实现起点 | 何时不适用或需要补什么 |
+|---|---|---|
+| ✅ Unity 显式 DTO | 小档用 `JsonUtility`；字典／JSON 树沿已安装的 Newtonsoft 包 | 不直接保存运行对象引用；项目自己把数据应用回玩家、门和敌人 |
+| ✅ UE 显式进度 | 自定义 `SaveGame`＋平台槽接口 | 读回 SaveGame 不会自动重建 Actor 世界，仍需下文恢复阶段 |
+| ✅ 复用已有 Easy Save | 保现有、已满足需求的保存接口 | 几份 DTO 不值得另购；复杂对象图还要承担类型、引用与迁移维护，许可比较见来源 |
+| 🧪 场景快照库 | 确需多对象／资源恢复才看下节原生消费者 | 节点路径、缺省字段与场景新增／删除政策必须适合产品，少量检查点优先显式状态 |
 
 | 状态 | 本例如何处理；读者能继续做什么 |
 |---|---|
@@ -563,28 +570,24 @@ flowchart LR
 | 当前动画、弹体、短时特效 | 本例只在没有未完成玩法结算的边界保存，恢复为约定的待机状态；不能把丢弃瞬态说成任意时刻恢复 |
 | 局外进度、设置与叙事 | 各自所有者提供数据；涉及同一奖励的状态必须属于同一一致代次。设置不随读档回滚，叙事状态不能替代世界／库存 |
 
-稳定 ID 来自内容作者与实例创建规则，不用数组下标、物体显示名或当前运行对象引用。关卡内手放门／箱在作者源中保存唯一 ID，复制时生成新 ID，构建前查重；运行时新增持久对象在第一次创建时分配并随档保留。这个映射通常只需现有场景注册表与少量函数，不需要通用对象数据库。
-
-**默认保简单 DTO。** Unity 小档用 `JsonUtility`，确需字典／JSON 树再沿已安装的 Newtonsoft 包；UE 用自定义 `SaveGame` 与平台槽接口。已用 Easy Save 且满足需求就复用，不为几个 DTO 新购工具。原生保存负责数据转换与写入，项目负责将数据应用回门、敌人和玩家；Epic 的 SaveGame 流程也如此。复杂对象图增加类型、引用与迁移负担，简单检查点先保窄 DTO。
+稳定 ID 来自内容作者与实例创建规则，不用数组下标、物体显示名或当前运行对象引用。关卡内手放门／箱在作者源中保存唯一 ID，复制时生成新 ID，构建前查重；运行时新增持久对象在第一次创建时分配并随档保留。沿现有场景注册表做 ID 查重、注册与解析。
 
 来源：[一手／研究] 原生／商业工具与许可比较见 [WP10 存档工具](../../docs/research/wp10-content.md#30)，核实于 2026-10-14；[Epic SaveGame 流程](https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine)于 2026-10-25 补核。
 
 <a id="native-save-consumer"></a>
 #### 原生采用：显式进度与场景快照，先选承诺再接库
 
-**✅ 小型检查点继续用显式 DTO／原生存储；只有确实要恢复一组场景对象及其资源时，才试现成场景保存库。** [可运行比较](../../experiments/native-save-adoption/README.md)已把官方 Godot JSON demo 和 SaveKit 原 demo 交给真实新进程消费者。前者保存选定的玩家与敌人字段，后者自动处理 `saveable` 节点与资源；两者都不能替项目决定新内容与老进度的关系。
+**用真实旧档决定是否采用场景保存库。** [官方 JSON demo 与 SaveKit 的可运行比较](../../experiments/native-save-adoption/README.md)已由 Godot 新进程加载原档并继续操作；入口与反例如下，详细字段轨迹保在 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#native-save-consumer)。
 
-| 你要完成的动作 | 已有实现起点与实际接收 |
+| 需求 | 现成起点与采用判断 |
 |---|---|
-| 保存、退出、再进来继续玩 | 官方 `save_load_json.gd`／原按钮：新进程恢复位置、63 点血量、真实血条与 2 个敌人，玩家仍能移动。适合少量明确进度，不把教学样例的直接写文件当发布级耐久保障 |
-| 恢复多对象／资源和移除状态 | SaveKit 固定原 demo／`SaveManager.save_scene_tree_to_disk`、`load_scene_tree_from_file`：红框交互计数 2、位置、笔记及蓝框已移除均恢复；再点变 3，重载原档回 2。它替你做编码与重建，不替你规定持久身份 |
-| 改新局默认，又保旧玩家决定 | 新默认 0→1 后，未迁移旧档实际把未操作绿框变成 1，虽加载返回 OK；沿资源原 `load_from_dict` 给已知旧档补旧默认，沿 `save_to_dict` 显式写活状态后，旧档绿 0／新局绿 1 均通过 |
+| 少量明确进度 | 官方 `save_load_json.gd`／原保存与加载按钮恢复玩家位置、血条、剩余敌人并能继续移动；教学例的直接写文件需另补目标存储的提交保障 |
+| 多对象、资源与删除状态 | MIT SaveKit 固定 `9ca2dabd` 的 `SaveManager.save_scene_tree_to_disk`／`load_scene_tree_from_file`，原 demo 的交互计数、笔记、位置和已移除对象恢复后仍能继续操作 |
+| 二改默认值并保旧进度 | SaveKit 省略等于脚本默认值的字段；新局默认 0→1 后，未迁移旧档虽返回 OK，却将旧绿框改成 1。项目沿原 `load_from_dict` 补已知旧版含义、`save_to_dict` 显式写活状态后，旧档 0／新局 1 都通过 |
 
-**先区分“没有存字段”和“玩家确实取了默认值”。** SaveKit 默认省略与脚本默认值相同的字段；改变作者默认值会改变缺省旧档的解释。本例只处理一个已知旧版本，不把缺字段普遍补 0，也不另建迁移平台。让 AI 接原序列化／恢复接口、保一份真实旧档并走“加载→显示→继续操作→再保存”；人明确旧进度、新奖励和新对象的政策，再按下文完整版本链实施。
+**何时保显式 DTO：** SaveKit 按节点路径找对象，并删除快照未包含的 `saveable` 节点；关卡经常重排、持续补新内容或只存检查点时，稳定 ID＋显式状态更便于维护。缺字段既可能是默认值被省略，也可能是版本没有该内容，按已知版本迁移，不能一律补 0。AI 接原序列化 hook 并保真实旧档；人决定旧进度、新奖励和新增对象的政策。
 
-场景快照另有成本：该库按节点路径找对象，并删除快照未包含的 `saveable` 节点。关卡频繁重排、持续补新内容或只存少量检查点时，先保现有稳定 ID＋显式状态路线，不为省几份 DTO 把整个场景都交给反射。原生实测限本例合成存档与场景消费者，存储耐久、云同步、目标构建及真人操作沿原验收继续做。
-
-依据：官方固定序列化 demo、MIT SaveKit `9ca2dabd` 原代码与原生实跑，近期开发者旧档更新反馈见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#native-save-consumer)。核实 2026-10-26；不改变上文 Unity／UE 默认或迁移现有作品。
+依据：官方固定序列化 demo、MIT SaveKit `9ca2dabd` 源码与原生实跑，以及近期开发者旧档更新反馈见上述 WP10／实验；核实 2026-10-26。原生范围是本例合成存档与场景消费者，目标存储耐久、云同步、目标构建与真人操作按本节末验收。
 
 #### 正常保存：捕获的是一次决定之后的世界
 
@@ -604,10 +607,10 @@ SaveEnvelope
 
 1. **确认一致边界。** 奖励、库存、遭遇完成已提交，当前没有尚待执行的关联命令；否则先完成／取消到约定边界，并给玩家明确反馈。简单小档可短暂冻结本局写入后复制，捕获结束即恢复操作。
 2. **捕获独立数据。** 各所有者把同一代状态写入 DTO。深拷贝可变集合，不把仍由玩法修改的 List／对象引用交给后台。Unity JSON 可在后台处理独立 DTO；UE 异步保存的序列化仍在 game thread，不能由“Async”推断整个过程离开主线程。若捕获本身卡顿，先减少保存范围／调整边界，别把不一致的跨帧采集当优化。
-3. **序列化并提交。** 复用平台／现有存储适配器，按其已验证能力管理暂存、有效副本与备份；一个槽的写入串行，避免较旧请求最后覆盖较新快照。写入失败不得以失败或未验证产物覆盖上一有效档；只有目标快照按适配器约定提交成功，才切换有效版本。其断电保障仍以目标平台实测为准。没有测到重复写成本时不增加复杂合并队列。
-4. **向玩家交回结果。** “保存中”与“已保存至哪个房间／回合”分开；保存退出必须等待覆盖本次目标状态的结果，不能拿先前自动保存成功代报。失败同时保留上一份有效档与当前可玩状态，提供重试或明确放弃退出的选择，不静默回到主菜单；不能先删唯一有效档再尝试写新档。
+3. **序列化并提交。** 复用平台／现有存储适配器管理暂存、有效副本与备份；每槽串行，防止旧请求晚到覆盖新快照。写前保住有效档，只有目标快照按适配器契约提交成功才切换有效版本；失败／未验证产物不能替换它。
+4. **向玩家交回结果。** 分清“保存中”和“已保存至哪个房间／回合”。保存退出等待覆盖本次目标状态的结果，而不是先前自动保存成功；失败保当前可玩状态，让玩家重试或明确放弃退出，不静默回主菜单。
 
-关联状态优先放在一份快照；已有分文件设计沿其代次／提交协议，各文件独立成功不等于同代提交。检查点应在游玩过程中保存，因为挂起／强杀不保证调用 `OnApplicationQuit`；`.bak`、文件替换和 try/catch 的断电耐久仍须按目标平台验证。
+关联状态优先放在一份快照；分文件设计必须有代次／提交协议，各文件独立成功不等于同代提交。检查点在游玩过程中保存，挂起／强杀不保证调用 `OnApplicationQuit`。`.bak`、替换文件与 try/catch 的耐久性纳入节末目标平台验收。
 
 来源：[研究] [续玩边界](../../docs/research/wp10-content.md#35)，2026-10-15；[保存响应与线程／退出契约](../../docs/research/wp10-content.md#36)，2026-10-16。
 
@@ -629,11 +632,11 @@ Resume(slot):                         // 项目伪代码，非已运行实现
   EnableGameplayAndInput(room)
 ```
 
-这些步骤借现有 Session／场景协调者，不要求每步一个系统。`gameplayEnabled=false` 必须是真实工程约束：初始脚本只注册和建立依赖，刷怪、自动交互、发奖励由显式开始入口控制。**实例化之后再禁用可能已经太晚。** Unity 6.3 `Instantiate` 保留原对象激活状态，活跃实例可在调用中执行 Awake／OnEnable。可以使用原本未激活的制作源，或确保启动回调尊重恢复门；不能在恢复后一次激活又被 Awake 的“默认初始化”覆盖。UE 同样沿项目的生成／初始化入口补恢复阶段，不能假设读回 SaveGame 就已经恢复 Actor 世界。
+`gameplayEnabled=false` 必须由工程实现：初始脚本只注册和建立依赖，刷怪、自动交互、发奖励由显式开始入口控制。**实例化之后再禁用可能已经太晚。** Unity 6.3 `Instantiate` 保留原对象激活状态，活跃实例可在调用中执行 Awake／OnEnable。可以使用原本未激活的制作源，或确保启动回调尊重恢复门；不能在恢复后一次激活又被 Awake 的“默认初始化”覆盖。UE 同样沿项目的生成／初始化入口补恢复阶段，不能假设读回 SaveGame 就已经恢复 Actor 世界。
 
 **“档里没有”必须有明确含义。** 对既有房间摆放内容，本例以作者默认值为基线，记录改动和明确的删除标记：已取物／删除对象先抑制生成；未改变的对象才保作者默认。动态生成的持久对象则以保存记录为准，没记录不凭上次生成逻辑再补一份。已清遭遇另由完成状态抑制刷怪／结算，不能只靠“场上没有敌人”推断。新增内容在旧档里自然没有记录，须由迁移决定是否出现在已访问房间，不和“已经被玩家拿走”混为一谈。
 
-**先注册身份，再解析依赖。** Mindustry 固定版先读内容映射与地图，再创建、读取并注册实体，之后调用 `afterReadAll`；CommandAI 在此阶段按单位 ID 找回攻击目标。这支持延后解析依赖，但该游戏读取会重置并修改实际世界，并非隔离事务。借它的职责顺序即可，不移植 GPL 的 Java 对象图。
+**先注册身份，再解析依赖。** Mindustry 固定版先读内容映射与地图，再创建、读取并注册实体，之后调用 `afterReadAll`；CommandAI 在此阶段按单位 ID 找回攻击目标。可借此依赖顺序；它的读取会重置并修改实际世界，不是隔离事务，GPL Java 对象图不作为本例移植起点。
 
 来源：2026-10-25 补核 [Unity 6.3 Instantiate 激活契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Object.Instantiate.html)，以及 Mindustry 固定 `17012d6` 的[读取顺序](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L64-L75)、[实体注册与后处理](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/io/SaveVersion.java#L495-L553)、[目标引用恢复](https://github.com/Anuken/Mindustry/blob/17012d61d9e4c3cbd9820d87e81c24495486ac53/core/src/mindustry/ai/types/CommandAI.java#L519-L524)。[一手] 固定源码。
 
@@ -641,14 +644,14 @@ Resume(slot):                         // 项目伪代码，非已运行实现
 
 #### 第二次修改：增加持久门和容器，不重做保存系统
 
-首版先交“完成房间→领奖→保存退出→重开到出口”的完整路线。二改让玩家打开一扇门、从一个容器取走物品后再退出：
+保首版续玩路线，再让玩家开门、从容器取物、保存退出。AI 只接四处差量：保存捕获、内容注册、恢复赋值、引用解析；职责如下：
 
 - **内容作者**给门／箱稳定摆放 ID，定义默认关闭、初始内容和恢复后的外观；同定义多箱必须是不同实例。箱内剩余库存与玩家库存写入同一快照，转移后不各存各的中间状态。
 - **实现者**在原记录中加入门状态、容器剩余内容／已领取状态；载入用“赋最终状态”而不是调用会扣钥匙、播放奖励或发成就的 `Interact/Open` 命令。开门动画可省，门碰撞和外观不能不一致。
 - **版本处理**增加 schema／content 迁移：本例首版已保存 `visitedRoomIds`，二版新增门／箱按房间访问事实迁移：未访问房间用作者默认；已访问房间的新门设为已开放、新箱记为不补发，避免重新阻断旧路线或生成未承诺奖励。首版没有持久门／箱，不声称能恢复其历史开合／剩余物。若接手的更旧档连访问事实都没有，须明确保守迁移／章节恢复政策，不能从当前房间或空字段猜全程访问；已有门箱记录则按其实际记录迁移，不覆盖为此默认。其他游戏可有意补发，但应单独说明，不靠缺字段默认值偷偷决定奖励政策。
-- **AI 任务**沿保存捕获、内容注册、恢复赋值和引用解析四处补差量；交同一存档重开两次的预期轨迹，并保首版路线。人检查是否清楚保存了哪里、回来有没有重走无意义流程、箱内外物品与目标是否能解释。
+- **接收**交同一存档重开两次的预期轨迹；人检查保存位置是否清楚、回来是否多走无意义流程、箱内外物品与目标是否一致。
 
-最低接收需走保存前后两条正常轨迹：门开／关、箱取走／剩余、已清／未进房间都能续；再验同定义多个实例、引用目标已删除、仅备份可用和写入失败。必要引用缺失应停止该候选并解释；可选目标允许清空时按规则恢复为无目标，不凭列表顺序绑定另一对象。接收时另测真实构建重启、目标存储平台、长局成本及断电恢复。
+最低接收覆盖门开／关、箱取走／剩余、已清／未进房间，再验同定义多个实例、引用目标已删除、仅备份可用和写入失败。必要引用缺失就停止该候选并解释；可选目标按规则清空，不凭列表顺序绑到另一对象。
 
 #### 旧档升级：版本可读之外还要进度正确
 
@@ -658,7 +661,7 @@ Resume(slot):                         // 项目伪代码，非已运行实现
 
 ink 只保存叙事执行状态，不负责世界／库存；内容改动后可能失败或近似恢复并给 warning，必须捕获后决定迁移／回退章节，不能将故事 JSON 成功当整局恢复。
 
-**验证范围：** 原 Unity／UE 方案为公开文档、固定源码和设计推导，2026-10-25 补核正常载入链，尚未原生运行；新增 Godot 原生采用范围见上节，不扩展为存储故障、断电耐久或效率收益已验证。
+**发行前补验：** 用真实构建重启验证目标存储、保存失败、断电恢复与长局成本；云同步另验冲突与提交政策。Unity／UE 路线为文档、固定源码和设计推导，2026-10-25 补核正常载入链，未原生运行；Godot 消费者实跑不覆盖这些平台与耐久保障。
 
 来源：[研究] [存档来源与边界](../../docs/research/wp10-content.md#30)（2026-10-14）、[旧布局取舍](../../docs/research/2026-10-14-game-wp10-client-modules.md#旧内容升级补研保旧世界不等于放行旧模板生产)（2026-10-19）、[ink 存档格式反证](../../docs/research/2026-10-14-game-wp10-client-modules.md#3-ink存档格式兼容不等于剧情修改兼容)（既有 2026-10-14 核查）；[一手] 固定源码。
 
@@ -678,6 +681,10 @@ ink 只保存叙事执行状态，不负责世界／库存；内容改动后可�
 | 呈现与交接 | 控制器的实际运动交动画／镜头；交互确认后再播成功反馈。开菜单先改变玩法权限，再切 Gameplay／UI map 和焦点；返回仍保可达入口 | 按钮响应、动作获准、实际运动三者可分别定位；暂停、失焦和换角色不会把旧请求交给新身体 |
 
 输入更新与物理更新可分别选择：一帧可能没有或有多个 FixedUpdate，输入回调也可能在同帧发生多次。“最新连续值＋有序一次性请求”适配现有更新时序，固定输入时序足够就保留。[HUD 按钮](#hud-production)、设备与 AI 共用规则命令入口；单机交本机规则，[联机](#coop-production)按既定权威提交。确认状态刷新 HUD，成功[声音](#audio-lifecycle)与命中[反馈](#打击感与反馈先让命中有含义再让重击有分量)跟确认事件；按下反馈仍可先在本地显示，恢复／首次同步状态不重播历史提示。记录／回放也从同一命令入口接，不各写一遍角色状态。
+
+**按住自动连发等定时重复动作，跨步补算时要保留按下／松开边沿，而不只读最新 held 值。** 在每次发射截止点恢复当时的 held 与视角：随后才发生的松开不能抹掉此前合法的尾发，松开之后的模拟时刻也不能继续发射；切枪、换弹、弹药与冷却仍交原规则。暂停、失焦或重开清掉未消费的输入历史，内部边沿不必改成新的回放命令。
+
+FPS-Like 本地候选 `d76bcbf`（未发布）提供了失败反例：同样在 10 ms 按下、120 ms 松开，60／30／20 fps 修复后均保留 10／110 ms 两发；该例规定 109 ms 或恰在 110 ms 松开只发首发。正常 Chromium 软件 WebGL2 实按六次短连发，原版五次丢尾发，候选六次均保留。这里使用浏览器回调的 `performance.now()`，不是硬件采样时间或网络 sub-tick 等价实现；验证范围为浏览器输入层与原模拟，不是 Unity 实跑（2026-10-27）。
 
 已采用的 [MOBA 输入适配器](https://github.com/dbvv1/MOBA-Like/blob/a7d66054ae5885e38af43f88c4472a58cb765d89/src/input/controls.ts)直接把实际拾取到的可攻击敌人交给既有 `Attack` 命令，地面交给 `Move`；菜单事件留在 UI，不穿透到场景。正常操作已走通点敌追击至真实普攻、点地移动和菜单阻断，目标选择与攻击资格仍由原规则分工；实现与画面见[案例质量页](https://github.com/dbvv1/MOBA-Like/blob/a7d66054ae5885e38af43f88c4472a58cb765d89/docs/quality.md)（2026-10-26）。
 
@@ -717,7 +724,27 @@ ink 只保存叙事执行状态，不负责世界／库存；内容改动后可�
 
 **玩家路径。** 战斗暂停 → 设置 → 主音量 → 推滑块试听 → 应用（或取消）→ 回到暂停菜单 → 继续游戏。第二次需求在同一路径上加字号档、改键、按条件隐藏当前项，以及放弃更改／重置确认层；入口和返回路径不变。本示例不实现显示模式／分辨率切换。
 
+##### 底座选择：保留现有菜单，只补缺的链
+
+| 底座（锁定版本） | 这个菜单直接有什么 | 还要项目补／作者成本 | 迁移代价 | 默认 |
+|---|---|---|---|---|
+| **uGUI**（Unity 6000.3） | Selectable 的 Automatic／Explicit 导航、EventSystem、TMP 值文本；现有暂停菜单可直接加页 | 设置定义、草稿和保存要项目补；动态隐藏后要重接导航；背景点击默认清选择 | 无（已用 uGUI） | ✅ 已有 uGUI 项目保留 |
+| **UI Toolkit 6.3** | UXML／USS、运行时数据绑定、ListView、焦点控制；层级重建后要重设焦点 | 设置模型同样要项目补；行控件、样式和焦点要重做；6.7 的新能力不套到 6.3 | 高（重建现有页） | 🧪 新项目且团队已用 UITK 时直接试；不为设置页单迁 |
+| **UMG 5.8＋CommonUI** | UMG 控件与导航；CommonUI 的激活栈、目标焦点和返回处理；`bAutoRestoreFocus` 与焦点恢复；Lyra GameSettings 提供可借的定义、编辑条件和注册表模式，但它是示例插件不是引擎内置 | 仍需项目设置会话；CommonUI 的激活、返回和焦点策略要学；小菜单照搬整套插件会增维护 | 中到高 | ✅ 已有 UMG 保留；🧪 多层模态／设备提示反复出现才加 CommonUI |
+
+官方 UI vs Game Input 样例可借显式 UI 交接和选择保存；它明确不支持 mixed models，也没有嵌套弹窗栈，不能当完整菜单底座。CommonUI 不包办 UMG 导航；uGUI 的 Deselect on Background Click 默认清选择；Toolkit 禁用 `UIDocument` 的 GameObject 后层级会重建，重新启用时须再次设置焦点。选择底座看现有项目缺什么，不按 API 数量换框架；[整页选型与迁移案例](../../docs/research/wp10-content.md#整页选型回流ui-toolkit-新能力与迁移成本)保留版本差异和作者成本。
+
+只需一两个设置时，沿已有具体行适配器；要扩成完整设置页时，再采用下文示例：一张 `SettingDef` 表、一个 `SettingsSession`、一个音量行适配器和一个带可观察完成／失败的存储层（文件适配器示例见下）；二版在同一会话和入口上增加定义与行适配器，确认层与焦点回退只加在菜单层，不改入口。
+
 [FPS 的单行灵敏度设置](https://github.com/dbvv1/FPS-Like/blob/239df5badd8c43e14f57d381af379805910a1232/src/input/sensitivity.ts)沿原暂停菜单走通改值、保存／取消、重载、恢复默认及回到开火换弹；浏览器保存失败时保留原运行值和草稿；恢复默认也先写入草稿，保存并应用时只删除自身覆盖键，取消不改存储。异步指针锁获准时仍核未提交草稿，不能只在“继续”点击时检查一次；未提交就留在菜单供保存或取消。只需这一项时保留具体行适配器，不先为它搭通用设置框架。
+
+**网页已有 DOM 菜单，优先借原生模态隔离背景，再补游戏自己的返回语义。** 用带可访问名称的 `<dialog>` 配合 `showModal()`／`close()`，让浏览器处理背景 inert 与导航范围，不先手写 Tab 循环。首次打开聚焦进入／继续／下一回合；内容更新后只在原焦点已隐藏、禁用或离开菜单时回有效主按钮，保住仍有效的滑块焦点。尤其要测“下一回合替换按钮→指针锁失败”：菜单还开着，不代表旧焦点仍能操作。菜单关闭与玩法恢复权限分别处理；外层致命错误出现前先释放模态，避免错误被顶层菜单遮住。Unity／UE 仍沿本节自己的原生 UI 与输入路由，不套 DOM API。
+
+**返回按层处理，不把取消草稿等同于继续游戏。** 对需要指针锁的桌面 FPS，可让设置内 Esc 取消未应用草稿并返回原设置入口，暂停层则由继续按钮确认；用局部 `keydown` 消费 Esc 并执行这条动作。支持时设 `closedby="none"` 禁止浏览器自行关闭，不能只靠 `cancel.preventDefault()`：连续关闭请求可能已不可取消。验收既走 Tab／Shift+Tab、保存／取消、退出锁定与再次进入，也看窄屏与放大后真实控件；固定诊断入口若压住设置正文，就放回正常布局流。
+
+**兼容要分两层核。** `showModal()` 与 `closedby` 不是同一支持范围；可用 `'closedBy' in HTMLDialogElement.prototype` 检测后者。缺少 `closedby` 时保留明确返回按钮、菜单内键盘处理与可取消事件兜底，并在目标浏览器验平台返回动作；键盘回退不等于手机返回手势已覆盖。缺少原生模态能力则沿已验证的现有模态组件，不把 `aria-modal` 当作背景输入隔离。浏览器自身导航可拿走焦点，游戏要保证的是它不落到背景对局控件。
+
+来源：[一手／经验] [HTML dialog 与 close watcher](https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element)、[连续关闭的取消条件](https://html.spec.whatwg.org/multipage/interaction.html#close-watcher-infrastructure)、[Chrome 134 发布说明](https://developer.chrome.com/release-notes/134#dialog-light-dismiss)、[MDN closedBy 支持范围](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy)，核实 2026-10-26；MDN 当前仍标 Limited availability。本端真实键盘与菜单图检查在 Chromium 155 CPU 后端，下一回合拒权另用真实 Hud 组件与受控失败验收。
 
 **提示随当前设备。** 键盘显示可读键名，手柄显示对应键位图标；换设备后重取确认／返回／应用提示，不退出菜单。缺图标时回退到文字，不让玩家猜当前按什么。
 
@@ -737,6 +764,22 @@ flowchart LR
   I --> J[恢复玩法输入]
 ```
 
+##### 三类生效时机与返回
+
+| 类型 | 典型设置 | 玩家看到什么 | 取消与返回 |
+|---|---|---|---|
+| **即时预览** | 主音量、音乐、语音 | 推滑块立即听到，值文本同步 | 取消恢复本次编辑开始时的快照；有未应用改动时返回，先问“放弃更改？” |
+| **按应用提交** | 字号、界面缩放、部分画质、改键 | 改的是草稿，点“应用”后整页生效 | 取消不写运行时；改键恢复原 override；未应用改动返回同上 |
+| **需重启** | 渲染后端、输入后端、部分平台画质 | 保存后行标“重启后生效”，本局不变 | 返回不撤销已保存值；保存成功即不再问“未保存” |
+
+音量的即时预览写 AudioMixer.SetFloat 的暴露参数（调用后快照不再接管该参数），取消时写回本次编辑开始前的值。OpenTTD 的设置描述表把 `NewgameOnly`、`NotInSave`、`NotInConfig`、`startup` 写成定义字段，配置保存与游戏存档分开；可借它把时机放进定义，而不是散落在每个 UI 回调里。显示模式的引擎契约只在 WP10 设置到保存保留，不进入本节确认层。
+
+**改键接同一条会话，但校验独立。** 捕获阶段只写草稿候选，行上显示候选键；应用前先查同动作和全局快捷键冲突，校验通过后才走统一的保存并写 Input System 的 binding override。取消或返回恢复应用前的 override；组合键按子 binding 索引改，不能把组合根当一个键。显示用 `GetBindingDisplayString`／当前设备的按键名，不硬编码“A／×”；换设备后重取提示。GUID、冲突和迁移边界继续沿用[改键持久化](../../docs/research/wp10-content.md#103)。
+
+**隐藏项与确认层的默认。** 可见性由定义里的条件决定，例如未启用语音时隐藏语音音量行；不要删数据，也不要每帧重建整页。当前焦点行被隐藏时，焦点移到下一条可见行，没有就上一条，再没有就本节第一行；滚动位置和已改值保留。确认层默认焦点放在最不破坏当前状态的动作：放弃更改层选“继续编辑”，重置层选“取消”。关闭确认层回到打开它的那一行；该行已隐藏就按上面的顺序找最近可见行。关闭设置页只撤本层；关闭暂停菜单才释放本层暂停持有，其他暂停来源仍由各自持有者管理；第二个菜单重复同一政策才抽共享菜单层，不为首版先建框架。
+
+**大字档。** 用一个 `fontScale` 作用于菜单标题、标签、值和键位摘要，不给每个控件单独改字号。放大后标签和值都要在：窄宽度先把值换到标签下一行，再让列表滚动；不把值裁掉，也不用缩小字号换空间。焦点环、滚动条和底部“确认／返回／应用”摘要一起放大；验收走同一路径的 100% 和 150% 两档，最长标签和最长值都要看。
+
 ##### 设置责任与导航接口
 
 设置本身有七项责任：定义、当前有效值、已保存值、草稿、预览、应用与保存、绑定；下表另列导航焦点与输入路由，避免把它们塞进某个控件回调。
@@ -752,7 +795,7 @@ flowchart LR
 | 控件绑定 | 行适配器 | 每种控件一个适配器，只读定义、显示值和转发改动；不持有存档键，也不复制事件链。 |
 | 导航焦点与输入路由 | 菜单层＋输入层 | 菜单层管当前层、初始焦点、隐藏项后的焦点和返回目标；输入层管 UI／玩法模式切换，UI 消费输入不自动挡 gameplay，沿用[输入与暂停](#输入与暂停先定动作权限再切输入)。 |
 
-**最小数据与调用顺序（本项目约定，不是 Unity／Unreal 内置类）。**
+**按需展开实现：下面保留扩展型设置页的数据与调用顺序。** 先按前面的三类生效时机作选择，再接定义、会话与存储；这些是项目约定，不是 Unity／Unreal 内置类。
 
 ```csharp
 enum ApplyTiming { Preview, OnApply, OnRestart }
@@ -907,34 +950,6 @@ sealed class FileSettingsStore {
 
 **新增一个设置只做三步：** 在表里加一条定义；给它的控件类型注册或复用一个行适配器；补一条“打开→改→应用／取消→再打开”的回归用例。存档键、脏标记、应用、保存和返回都走同一会话，不要为每个滑块再写一套回调和存储。
 
-##### 三类生效时机与返回
-
-| 类型 | 典型设置 | 玩家看到什么 | 取消与返回 |
-|---|---|---|---|
-| **即时预览** | 主音量、音乐、语音 | 推滑块立即听到，值文本同步 | 取消恢复本次编辑开始时的快照；有未应用改动时返回，先问“放弃更改？” |
-| **按应用提交** | 字号、界面缩放、部分画质、改键 | 改的是草稿，点“应用”后整页生效 | 取消不写运行时；改键恢复原 override；未应用改动返回同上 |
-| **需重启** | 渲染后端、输入后端、部分平台画质 | 保存后行标“重启后生效”，本局不变 | 返回不撤销已保存值；保存成功即不再问“未保存” |
-
-未提交提示只针对“改动未保存”的草稿；已保存的待重启值不算未保存。落到三个具体项：音量推滑块就试听，返回前有改动先问，取消回到原音量；字号改完点“应用”才整页变化，未应用就返回先问，取消保持原字号；改键捕获只写候选，冲突先提示，应用才写 override，取消或中途返回恢复原键。音量的即时预览写 AudioMixer.SetFloat 的暴露参数（调用后快照不再接管该参数），取消时写回本次编辑开始前的值。OpenTTD 的设置描述表把 `NewgameOnly`、`NotInSave`、`NotInConfig`、`startup` 写成定义字段，配置保存与游戏存档分开；可借它把时机放进定义，而不是散落在每个 UI 回调里。显示模式的引擎契约只在 WP10 设置到保存保留，不进入本节确认层。
-
-**改键接同一条会话，但校验独立。** 捕获阶段只写草稿候选，行上显示候选键；应用前先查同动作和全局快捷键冲突，校验通过后才走统一的保存并写 Input System 的 binding override。取消或返回恢复应用前的 override；组合键按子 binding 索引改，不能把组合根当一个键。显示用 `GetBindingDisplayString`／当前设备的按键名，不硬编码“A／×”；换设备后重取提示。GUID、冲突和迁移边界继续沿用[改键持久化](../../docs/research/wp10-content.md#103)。
-
-**隐藏项与确认层的默认。** 可见性由定义里的条件决定，例如未启用语音时隐藏语音音量行；不要删数据，也不要每帧重建整页。当前焦点行被隐藏时，焦点移到下一条可见行，没有就上一条，再没有就本节第一行；滚动位置和已改值保留。确认层默认焦点放在最不破坏当前状态的动作：放弃更改层选“继续编辑”，重置层选“取消”。关闭确认层回到打开它的那一行；该行已隐藏就按上面的顺序找最近可见行。关闭设置页只撤本层；关闭暂停菜单才释放本层暂停持有，其他暂停来源仍由各自持有者管理；第二个菜单重复同一政策才抽共享菜单层，不为首版先建框架。
-
-**大字档。** 用一个 `fontScale` 作用于菜单标题、标签、值和键位摘要，不给每个控件单独改字号。放大后标签和值都要在：窄宽度先把值换到标签下一行，再让列表滚动；不把值裁掉，也不用缩小字号换空间。焦点环、滚动条和底部“确认／返回／应用”摘要一起放大；验收走同一路径的 100% 和 150% 两档，最长标签和最长值都要看。
-
-##### 底座选择：保留现有菜单，只补缺的链
-
-| 底座（锁定版本） | 这个菜单直接有什么 | 还要项目补／作者成本 | 迁移代价 | 默认 |
-|---|---|---|---|---|
-| **uGUI**（Unity 6000.3） | Selectable 的 Automatic／Explicit 导航、EventSystem、TMP 值文本；现有暂停菜单可直接加页 | 设置定义、草稿和保存要项目补；动态隐藏后要重接导航；背景点击默认清选择 | 无（已用 uGUI） | ✅ 已有 uGUI 项目保留 |
-| **UI Toolkit 6.3** | UXML／USS、运行时数据绑定、ListView、焦点控制；层级重建后要重设焦点 | 设置模型同样要项目补；行控件、样式和焦点要重做；6.7 的新能力不套到 6.3 | 高（重建现有页） | 🧪 新项目且团队已用 UITK 时直接试；不为设置页单迁 |
-| **UMG 5.8＋CommonUI** | UMG 控件与导航；CommonUI 的激活栈、目标焦点和返回处理；`bAutoRestoreFocus` 与焦点恢复；Lyra GameSettings 提供可借的定义、编辑条件和注册表模式，但它是示例插件不是引擎内置 | 仍需项目设置会话；CommonUI 的激活、返回和焦点策略要学；小菜单照搬整套插件会增维护 | 中到高 | ✅ 已有 UMG 保留；🧪 多层模态／设备提示反复出现才加 CommonUI |
-
-官方 UI vs Game Input 样例可借显式 UI 交接和选择保存；它明确不支持 mixed models，也没有嵌套弹窗栈，不能当完整菜单底座。CommonUI 不包办 UMG 导航；uGUI 的 Deselect on Background Click 默认清选择；Toolkit 禁用 `UIDocument` 的 GameObject 后层级会重建，重新启用时须再次设置焦点。选择底座看现有项目缺什么，不按 API 数量换框架；[整页选型与迁移案例](../../docs/research/wp10-content.md#整页选型回流ui-toolkit-新能力与迁移成本)保留版本差异和作者成本。
-
-首版落在现有暂停菜单的一个新页：一张 `SettingDef` 表、一个 `SettingsSession`、一个音量行适配器和一个带可观察完成／失败的存储层（文件适配器示例见上）；二版在同一会话和入口上增加定义与行适配器，确认层与焦点回退只加在菜单层，不改入口。
-
 ##### 交给 AI 的首版与第二次需求
 
 | 轮次 | 给 AI 的目标、现有入口和约束 | 要求返回的差量 | 人验收 |
@@ -942,9 +957,9 @@ sealed class FileSettingsStore {
 | **首版：音量** | 目标：暂停→设置→主音量→试听→应用／取消→返回。入口：现有暂停菜单、AudioMixer 的暴露参数、现有设置文件。约束：一条定义、一个会话、一个行适配器；预览与保存分开。 | 新增 `SettingDef` 表、`SettingsSession`、音量行、存储返回值；覆盖应用成功、保存失败、取消三条路径。 | 键鼠和手柄各走一遍；推滑块能听到且取消后回到原音量；保存失败时页面不关、值还在；返回后战斗输入恢复。 |
 | **二版：大字＋改键＋隐藏＋确认** | 在首版上追加：字号档、跳跃改键（含冲突）、按条件隐藏当前行（如未启用语音时隐藏语音音量）、放弃更改／重置确认层。入口和会话不变。 | 加字号定义和 `fontScale`；加改键定义、捕获、冲突检查和 override 恢复；加 `VisibleWhen` 与焦点回退；加确认层和默认焦点。 | 100%／150% 下标签和值都可读；改键取消不改变原键；隐藏当前行后焦点落到相邻可见行；确认层取消回到原行；保存失败仍保留草稿。 |
 
-以上是文档与实现起点；未运行引擎、未构建真实菜单，键鼠／手柄导航、手感、读屏、实际音量和游戏内效果待验。
+上述 Unity／UE 设置页是文档与实现起点，尚未在引擎里构建；键鼠／手柄导航、手感、读屏、实际音量和游戏内效果待验。Web 实跑范围见前面的独立段落。
 
-来源：[一手] 保存与文件边界：[PlayerPrefs.Save](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html)、[UE 5.8 UGameUserSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8)、[JsonUtility.ToJson](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/JsonUtility.ToJson.html)、[.NET FileStream.Flush(Boolean)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=netstandard-2.1)、[.NET File.Replace](https://learn.microsoft.com/en-us/dotnet/api/system.io.file.replace?view=netstandard-2.1)；音频预览：[AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)、[AudioListener.volume](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-volume.html)；改键：[Input System 1.20 保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)、[Input System 1.20 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)；底座与焦点：[uGUI 2.0 Navigation](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)、[UI Toolkit 6.3 焦点 FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)、[UI Toolkit 6.3 display／visibility](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-USS-SupportedProperties.html)、[Lyra Sample Game Settings 5.8](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine)、[CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)、[CommonUI 焦点接口](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)、[Input System 1.20 UI Input Module](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/ui-input-module-reference.html)；[一手：固定源码] [OpenTTD 设置描述表](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)、[配置读写](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp)；[研究] 定义／草稿／预览／保存拆分、脏标记只与已保存值比较、三类时机、焦点与二改流程为本项目建议，显示模式不在本示例范围；文件适配器为项目示例，只核了 .NET Standard 2.1 API 存在与异常边界和 JsonUtility 的公开字段／序列化规则，未实机写盘；沿 [WP10 设置到保存](../../docs/research/wp10-content.md#settings-pipeline)。核实 2026-10-25，未运行引擎或真实菜单。
+来源：[一手] 保存与文件边界：[PlayerPrefs.Save](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerPrefs.Save.html)、[UE 5.8 UGameUserSettings](https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/GameUserSettings?application_version=5.8)、[JsonUtility.ToJson](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/JsonUtility.ToJson.html)、[.NET FileStream.Flush(Boolean)](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=netstandard-2.1)、[.NET File.Replace](https://learn.microsoft.com/en-us/dotnet/api/system.io.file.replace?view=netstandard-2.1)；音频预览：[AudioMixer.SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Audio.AudioMixer.SetFloat.html)、[AudioListener.volume](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioListener-volume.html)；改键：[Input System 1.20 保存／载入改键](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/save-load-rebinds.html)、[Input System 1.20 API](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html)；底座与焦点：[uGUI 2.0 Navigation](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-SelectableNavigation.html)、[UI Toolkit 6.3 焦点 FAQ](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-faq-event-and-input-system.html)、[UI Toolkit 6.3 display／visibility](https://docs.unity3d.com/6000.3/Documentation/Manual/UIE-USS-SupportedProperties.html)、[Lyra Sample Game Settings 5.8](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-settings-in-unreal-engine)、[CommonUI Input Guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/commonui-input-technical-guide-for-unreal-engine)、[CommonUI 焦点接口](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/CommonUI/UCommonActivatableWidget)、[Input System 1.20 UI Input Module](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/ui-input-module-reference.html)；[一手：固定源码] [OpenTTD 设置描述表](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings_internal.h)、[配置读写](https://github.com/OpenTTD/OpenTTD/blob/cb7027538ccd8c4c15a592fc8f43b623b3fdf3f8/src/settings.cpp)；[研究] 定义／草稿／预览／保存拆分、脏标记只与已保存值比较、三类时机、焦点与二改流程为本项目建议，显示模式不在本示例范围；文件适配器为项目示例，只核了 .NET Standard 2.1 API 存在与异常边界和 JsonUtility 的公开字段／序列化规则，未实机写盘；沿 [WP10 设置到保存](../../docs/research/wp10-content.md#settings-pipeline)。核实 2026-10-25；该 Unity／UE 设置页未实跑。
 
 ### 压低卡顿与设备耗用
 
@@ -1196,11 +1211,48 @@ Tytarenko 2026-09 Unity 制作复盘报告二改旧图残留、胜线覆盖不�
 
 实施顺序：先写作者源与待译表，再导出到原生表并接运行绑定，最后接显示、推进、切语言和二改队列；不要先做自建平台。
 
+**正常接收先看玩家能否读懂并操作。** 菜单按当前语言显示；HUD 显示“还需要 2 支箭（已有 1/3）”；对白显示说话人和字幕，有语音就播，没有就按字幕阅读；第一次按键补全文字，第二次推进；设置里切语言后，菜单和数量提示立即更新，对白按本节后面的切语言策略处理。不要求双语并排。
+
+项目已用 ink 或 Yarn 就保留现有栈；下面的 Yarn 接线只示范 lineID 与语音表如何被真实消费者找到，不要求迁后端。语音制作、响度与许可沿用 [assets/audio](assets/audio.md)／WP6；对白触发的玩法事实与命令沿 [05](05-gameplay-architecture.md)，本节不改这些模块。AI 可整理语境、产候选译文、查参数与占位符一致性并写最小绑定；人审意思、口吻、文化语境与读听，格式检查不代译义验收。
+
+#### 云端采用：先把作者源、译文和说话人交给真实消费者
+
+**已有 Yarn Project 先用官方 Export Strings and Metadata／Update Existing Strings Files；已有 Unity Localization 集合保原导入。** 官方 CSV 已有行 ID、上下文和变化检查，原文修改会标 `NEEDS UPDATE`，不必先建自己的翻译平台。人物／语境在外部数据里改变时，项目仍要补上对应审校影响。
+
+[可运行作者到消费者链](../../experiments/yarn-localization-production/README.md)使用官方 YarnSpinner.Compiler／YarnSpinner 3.2.2：`CompilationJob → Compiler.Compile` 取得真实行表与程序，`Dialogue.SetProgram/SetNode/Continue` 派发真实 `line.ID` 和替换值，原生 `LineParser.ExpandSubstitutions` 填译文；同一行再按导出的 sidecar 接人物显示名。云端已跑中文／英文六句，不是遍历表假装执行；无需启动 Unity 就能先发现丢 ID、漏参数与人物绑定断裂。
+
+**二改只送有影响的行复审，再让运行消费者读新值。** 实验把 020 的零件改保险丝，040 的句子不变但改说话人，050 只改语境，另增 070；待审恰为这四行，010／030／060 继续有效。旧译表先被拒，第二版固定译表进真实 VM 后输出 `We need 2 fuses to open the hatch.`，040 显示 `Navigator: Too late.`。这比“两个 JSON 格式正确”多验证了实际身份、变量与人物消费者。
+
+实验 JSON／作者快照签名只用于这个预检，**不是可直接导入 Unity 的表，也不是语言质量评分**。译文 fixture 的签名是合成约定；不能让 AI 自动重算签名就宣称审过。正式项目仍用原生导入器进入下文 Runner／Provider／Presenter；行外剧情、变量语义、字体、字幕布局、语音与推进另验，不能拿终端行替代。这里运行的是核心 NuGet 3.2.2，下面 Unity 插件 3.2.8 的接线仍是固定源码研究。
+
+来源与范围：[实际调用点、二改与社区对照](../../docs/research/wp10-content.md#yarn-compiler-vm-localization)，官方／固定源码／云端 Compiler＋VM 为[一手]，审校选择为[研究]；2026-10-26。未运行 Unity 表导入、字幕或语音。
+
+<a id="unity-localization-version-choice"></a>
+#### Unity 语言菜单：保现有 1.5，6.7 Beta 才接内置新路线
+
+**✅ 已有 Unity 6.3＋Localization 1.5.13 保原表、绑定与 Yarn 接线；👀 已经评估 6.7 Beta 的项目，再试内置 Localization Runtime。** 不为省一个语言下拉框升级引擎。两条路线都能让作者改译文、运行菜单随语言刷新，但新模块不是把旧包版本号改成 2.0：命名空间、表和加载接口已有变化，第三方 Provider 的兼容性须单独验证。
+
+| 你正在做的项目 | 正常接入起点 | 不要混用 |
+|---|---|---|
+| 已有 6.3／1.5.13 | 原 String／Asset Table＋`UnityEngine.Localization`；UI Builder 给 text 绑定 LocalizedString，动态字段沿现成 SetBinding／StringChanged。完整界面可参照官方 Dragon Crashers 的 Settings 语言选择与动态选项 | 保已核 Yarn 3.2.8 接线；不据新模块同名类型声称 Provider 已兼容 |
+| 已在 6.7 Beta 评估新模块 | Project Settings → Localization 创建设置、添加 enabled locales；建 Resource Table Collection，在 Resource Tables 为 key 填各语言值；UI Builder 绑定 LocalizedString。内置类型在 `Unity.Localization` | 这是内置 Runtime 的版本分流，不是在旧工程里复制新 UXML 后补几个 using |
+| 6.7 只需随包的文本／资产 | 先用 Direct references；确需 Addressables 或 CSV／XLIFF 导入导出，再按该版本官方文档接 2.0 包 | 内置不等于所有作者导入工具都不需包；不要为小菜单先搭远程内容系统 |
+
+**先用现成语言控件，再接项目的保存政策。** 6.7 UI Builder 的 `LanguageDropdown`／`LanguageRadioButtonGroup`（`Unity.Localization.UI`）会列出 enabled locales、写入 SelectedLocale，并跟随其他界面的语言变化。沿官方语言菜单示例放进现有面板即可，不另写“遍历语言→回调→刷新所有标签”的框架。原菜单外观和焦点顺序仍由项目配置；控件存在不证明长译文能放下。
+
+想让下次启动保留选择，在 startup selectors 中把 `PlayerPrefLocaleSelector` 放在 System Locale Selector 前；若项目保留命令行测试覆盖，明确它与保存偏好的优先级。没有可用保存选择才交给下一 selector；不是每次启动先强设系统语言再改回来。偏好来自异步存档时，先加载偏好，再按官方 defer initialization／`InitializeAsync` 接入。不要将文档中名为 SaveFileLocaleSelector 的示例误认成已实现文件存储：其当前代码仍调用 PlayerPrefs，真正存档适配归项目。
+
+**一次正常接收要看见并能操作。** 作者改一个菜单条目与带数量参数的提示，运行时从入口切语言，确认绑定取到新值、字体和断行可读、当前焦点仍可到达返回按钮；退出再开验证偏好。二改加长译文／放大字号后，先调整现有布局的换行、伸缩或滚动，不逐语言硬编码坐标；再加一种 locale，检查菜单自动出现新项且旧语言和当前游戏状态未丢。UI Builder 预览、Play 和目标包分别接收，字体／RTL／编辑的既有验收继续适用。
+
+AI 可沿锁定版本的官方示例接表、控件和绑定，列出需要重排的界面；人决定语言质量、字号和溢出时保留什么信息。让 AI 同时给旧／新两套 namespace 的“兼容代码”，或只验译文值而没有实际界面，均不算完成。
+
+来源与范围：[官方手册、固定 6.7.0b6 实现和完整社区回复](../../docs/research/wp10-content.md#unity-localization-version-choice)，2026-10-26；本节是源码核对后的接入研究，未运行 Unity／迁移旧项目。6.7 仍为 Beta，不替代上述稳定工程默认。
+
 #### 首版：少量菜单、数量提示和两位说话人
 
 **先做 2 个菜单键、2 个数量提示状态、2 位说话人的 6 句对白，其中 3 句有配音、3 句只有字幕。** 这是完整链路的最小切片，不把“表能导入”当验收。
 
-作者源只写一遍，翻译输入按身份对齐。首版语言对用 `zh-Hans` 原文和 `en` 译文；加第三种语言只加 locale 列和对应资产，不改 key／lineID。
+**按需展开示例。** 以下 YAML、sidecar 和组件说明作者字段与运行绑定怎样接上，不替代前面的官方导出／更新入口。作者源只写一遍，翻译输入按身份对齐。首版语言对用 `zh-Hans` 原文和 `en` 译文；加第三种语言只加 locale 列和对应资产，不改 key／lineID。
 
 ```yaml
 # content/ui.yaml — 作者源；导出的 String Table 是产物
@@ -1337,7 +1389,7 @@ public class SpeakerPresenter : DialoguePresenterBase
 }
 ```
 
-启动对白前导出上述六行映射，给 `speakers` 填 `navigator`／`mechanic` 的头像和颜色，在 UI 表补齐 `character.navigator.name` 与 `character.mechanic.name` 的两语言显示名，并接上姓名／头像控件；`Awake` 先建索引再进入 Runner。此组件展示项目接线，不是本轮已编译的游戏样例；新增行也须进入映射。选择同步取名的首版先预载 UI 表，WebGL 改用上表的异步读取路径。
+启动对白前导出上述六行映射，给 `speakers` 填 `navigator`／`mechanic` 的头像和颜色，在 UI 表补齐 `character.navigator.name` 与 `character.mechanic.name` 的两语言显示名，并接上姓名／头像控件；`Awake` 先建索引再进入 Runner。此组件展示项目接线，不是本轮已编译的游戏样例；新增行也须进入映射。选择同步取名的首版先预载 UI 表，WebGL 改用下文“原生表与绑定”的异步读取路径。
 
 LinePresenter 配 `characterNameText = null`、`showCharacterNameInLine = false`，只用 `TextWithoutCharacterName` 显示字幕，避免与 sidecar 名重复；`line.CharacterName` 不是稳定 speaker ID。
 
@@ -1363,22 +1415,6 @@ LinePresenter 配 `characterNameText = null`、`showCharacterNameInLine = false`
 译文 `text` 只写句子；base 语言列由 Yarn 管理，可能带 `Navigator:` 前缀，LinePresenter 用 `TextWithoutCharacterName` 去掉；speaker 由 sidecar 提供，不要求译者复制说话人名，也不把 `line.CharacterName` 当 speaker ID。待译表每行至少 `id`、`locale`、`text`、`status`、`source_hash`、`context_hash`、`voice_take`；运行表不需要后三列，审校视图需要。作者源、待译表和运行表都保留 `{need}` 等命名占位符；Unity 侧把同名字典（或带同名字段的对象）作为 `Arguments` 的元素，由 Smart Format 的 Dictionary／Reflection source 解析；若改用位置参数，导出时映射为 `{0}`／`{1}`／`{2}`，表与绑定必须一致。表中的 `approved` 是流程状态示例，不是本轮语言审校结论；本轮未做译义审校。
 
 `need` 是整数，英文用 `plural` 选 `arrow/arrows`；中文源没有复数，译文却能按目标语言规则变化。`need=0` 时由代码选 `ui.hud.arrows_ready`，不把“是否已完成”塞进译文的 `choose`；玩法条件留在代码，语法变化留在表里。数值按 locale 格式化，数字和量词保持邻近，不用字符串拼接把数值塞进译文。`need`、`have`、`target` 在同一句里按“还差／已有／目标”的顺序出现，玩家不必从两段文字自己算；数值格式随 locale，量词由译文决定。Unity 侧把 `ui.hud.arrows_needed` 标为 Smart String 并用命名参数；UE 侧同一句用 `FText::Format` 的 `{need}|plural(one=more arrow,other=more arrows)`，参数仍是整数；UE 括号内用逗号分隔，Unity Smart String 的复数形态用 `|` 分隔，两种语法不能互套。
-
-按这个设计，玩家应看到一条正常链：菜单按当前语言显示；HUD 显示“还需要 2 支箭（已有 1/3）”；对白显示说话人和字幕，有语音就播，没有就按字幕阅读；第一次按键补全文字，第二次推进；设置里切语言后，菜单和数量提示立即更新，对白按下一节策略处理。不要求双语并排。
-
-项目已用 ink 或 Yarn 就保留现有栈；下面的 Yarn 接线只示范 lineID 与语音表如何被真实消费者找到，不要求迁后端。语音制作、响度与许可沿用 [assets/audio](assets/audio.md)／WP6；对白触发的玩法事实与命令沿 [05](05-gameplay-architecture.md)，本节不改这些模块。AI 可整理语境、产候选译文、查参数与占位符一致性并写最小绑定；人审意思、口吻、文化语境与读听，格式检查不代译义验收。
-
-#### 云端采用：先把作者源、译文和说话人交给真实消费者
-
-**已有 Yarn Project 先用官方 Export Strings and Metadata／Update Existing Strings Files；已有 Unity Localization 集合保原导入。** 官方 CSV 已有行 ID、上下文和变化检查，原文修改会标 `NEEDS UPDATE`，不必先建自己的翻译平台。人物／语境在外部数据里改变时，项目仍要补上对应审校影响。
-
-[可运行作者到消费者链](../../experiments/yarn-localization-production/README.md)使用官方 YarnSpinner.Compiler／YarnSpinner 3.2.2：`CompilationJob → Compiler.Compile` 取得真实行表与程序，`Dialogue.SetProgram/SetNode/Continue` 派发真实 `line.ID` 和替换值，原生 `LineParser.ExpandSubstitutions` 填译文；同一行再按导出的 sidecar 接人物显示名。云端已跑中文／英文六句，不是遍历表假装执行；无需启动 Unity 就能先发现丢 ID、漏参数与人物绑定断裂。
-
-**二改只送有影响的行复审，再让运行消费者读新值。** 实验把 020 的零件改保险丝，040 的句子不变但改说话人，050 只改语境，另增 070；待审恰为这四行，010／030／060 继续有效。旧译表先被拒，第二版固定译表进真实 VM 后输出 `We need 2 fuses to open the hatch.`，040 显示 `Navigator: Too late.`。这比“两个 JSON 格式正确”多验证了实际身份、变量与人物消费者。
-
-实验 JSON／作者快照签名只用于这个预检，**不是可直接导入 Unity 的表，也不是语言质量评分**。译文 fixture 的签名是合成约定；不能让 AI 自动重算签名就宣称审过。正式项目仍用原生导入器进入下文 Runner／Provider／Presenter；行外剧情、变量语义、字体、字幕布局、语音与推进另验，不能拿终端行替代。这里运行的是核心 NuGet 3.2.2，下面 Unity 插件 3.2.8 的接线仍是固定源码研究。
-
-来源与范围：[实际调用点、二改与社区对照](../../docs/research/wp10-content.md#yarn-compiler-vm-localization)，官方／固定源码／云端 Compiler＋VM 为[一手]，审校选择为[研究]；2026-10-26。未运行 Unity 表导入、字幕或语音。
 
 #### 原生表与绑定：条目身份和真实消费者
 
@@ -1427,27 +1463,6 @@ await runner.StartDialogue("hangar_02");
 **缺语音与 locale／fallback。** 首版保留上述原生 `UnityLocalisedLineProvider`＋`VoiceOverPresenter`，不另接自定义 Provider。它的文本和资产查询都固定传 `FallbackBehavior.UseFallback`，因此在 Locale 配置中清空 `zh-Hans`、`en` 两边的 Fallback Locale 列表；启动时用各 Locale 的 `GetFallbacks()` 确认都没有其他语言。补齐两语言的 UI／Dialogue 文本表，DialogueAssets 只填本语言实际存在的 clip，缺配音条目留空。这样 en 缺 clip 时不会回退到中文音频，zh-Hans 也不会借用英文语音。
 
 原生 `VoiceOverPresenter` 已支持 `AudioClip` 和 `IAssetProvider.TryGetAsset` 两条资产解析路径，不需额外写一个未接入播放的解析片段。没有 clip 时该组件会记错误日志；`endLineWhenVoiceoverComplete=false` 保持当前行，字幕和 Space 推进仍由 `LinePresenter`／`LineAdvancer` 完成。落地时实际检查缺配音的 030／040／060 行：字幕可读、姓名头像正确、没有别语言音频、可以手动推进。缺文本会显示 Provider 的 `!! Error: Missing localisation ...`，先补文本再交付；本轮只核源码与接线蓝图，未跑场景。
-
-<a id="unity-localization-version-choice"></a>
-#### Unity 语言菜单：保现有 1.5，6.7 Beta 才接内置新路线
-
-**✅ 已有 Unity 6.3＋Localization 1.5.13 保上面的表、绑定与 Yarn 接线；👀 已经评估 6.7 Beta 的项目，再试内置 Localization Runtime。** 不为省一个语言下拉框升级引擎。两条路线都能让作者改译文、运行菜单随语言刷新，但新模块不是把旧包版本号改成 2.0：命名空间、表和加载接口已有变化，第三方 Provider 的兼容性须单独验证。
-
-| 你正在做的项目 | 正常接入起点 | 不要混用 |
-|---|---|---|
-| 已有 6.3／1.5.13 | 原 String／Asset Table＋`UnityEngine.Localization`；UI Builder 给 text 绑定 LocalizedString，动态字段沿现成 SetBinding／StringChanged。完整界面可参照官方 Dragon Crashers 的 Settings 语言选择与动态选项 | 保已核 Yarn 3.2.8 接线；不据新模块同名类型声称 Provider 已兼容 |
-| 已在 6.7 Beta 评估新模块 | Project Settings → Localization 创建设置、添加 enabled locales；建 Resource Table Collection，在 Resource Tables 为 key 填各语言值；UI Builder 绑定 LocalizedString。内置类型在 `Unity.Localization` | 这是内置 Runtime 的版本分流，不是在旧工程里复制新 UXML 后补几个 using |
-| 6.7 只需随包的文本／资产 | 先用 Direct references；确需 Addressables 或 CSV／XLIFF 导入导出，再按该版本官方文档接 2.0 包 | 内置不等于所有作者导入工具都不需包；不要为小菜单先搭远程内容系统 |
-
-**先用现成语言控件，再接项目的保存政策。** 6.7 UI Builder 的 `LanguageDropdown`／`LanguageRadioButtonGroup`（`Unity.Localization.UI`）会列出 enabled locales、写入 SelectedLocale，并跟随其他界面的语言变化。沿官方语言菜单示例放进现有面板即可，不另写“遍历语言→回调→刷新所有标签”的框架。原菜单外观和焦点顺序仍由项目配置；控件存在不证明长译文能放下。
-
-想让下次启动保留选择，在 startup selectors 中把 `PlayerPrefLocaleSelector` 放在 System Locale Selector 前；若项目保留命令行测试覆盖，明确它与保存偏好的优先级。没有可用保存选择才交给下一 selector；不是每次启动先强设系统语言再改回来。偏好来自异步存档时，先加载偏好，再按官方 defer initialization／`InitializeAsync` 接入。不要将文档中名为 SaveFileLocaleSelector 的示例误认成已实现文件存储：其当前代码仍调用 PlayerPrefs，真正存档适配归项目。
-
-**一次正常接收要看见并能操作。** 作者改一个菜单条目与带数量参数的提示，运行时从入口切语言，确认绑定取到新值、字体和断行可读、当前焦点仍可到达返回按钮；退出再开验证偏好。二改加长译文／放大字号后，先调整现有布局的换行、伸缩或滚动，不逐语言硬编码坐标；再加一种 locale，检查菜单自动出现新项且旧语言和当前游戏状态未丢。UI Builder 预览、Play 和目标包分别接收，字体／RTL／编辑的既有验收继续适用。
-
-AI 可沿锁定版本的官方示例接表、控件和绑定，列出需要重排的界面；人决定语言质量、字号和溢出时保留什么信息。让 AI 同时给旧／新两套 namespace 的“兼容代码”，或只验译文值而没有实际界面，均不算完成。
-
-来源与范围：[官方手册、固定 6.7.0b6 实现和完整社区回复](../../docs/research/wp10-content.md#unity-localization-version-choice)，2026-10-26；本节是源码核对后的接入研究，未运行 Unity／迁移旧项目。6.7 仍为 Beta，不替代上述稳定工程默认。
 
 #### 切语言：菜单、数量提示与当前句
 
@@ -1663,6 +1678,27 @@ Unity 的 **Platforms 配置与已保存的项目 Build Profile 不同**：前�
 **Steam 随版更新先平台差分，小下载仍可能重写大包。** 异常先查包范围、重排／压缩扩散，无关牵连才分关卡／功能包，连一次性大下载算成本。下载量、安装时间和临时磁盘分别量，不从“补丁只有几 MB”推安装很快；为加载效率重排也可能扩大下载。
 
 **内容完整与规格合格分别验。** 缺一条必要赛道的高规格包，不能代替低规格但可完成挑战的包；SuperTuxKart 的历史裁剪曾迫使进度规则改变，后来渠道条件改变才纳回完整赛道。拆包若破坏首局、离线或旧档依赖，就纳回必要内容或明确缩小玩法承诺；别把默认全解锁叫作无损优化。具体历史包体数不当作今天渠道限额。
+
+<a id="catalog-update-consumption"></a>
+##### Unity 远程内容：先定更新窗口，再让新目录进入玩法
+
+**✅ 已有远程 Addressables 时，默认在加载本局内容之前更新；关卡／池仍在使用旧 bundle 时，先把更新留到下一次启动或安全转场。** 初始化默认会检查远程目录，已满足项目需求就不再每个菜单另写更新循环。确需玩家确认或手动检查时，沿项目版本的 `Only update catalogs manually` 设置，由现有启动／转场协调者串行执行；它同时挡住新的内容加载，不另造全局锁框架。
+
+目录更新改变后续的资源查找，不会把已生成角色、场景或池实例自动换成新版。必须当前会话更新时，先沿[资源所有权](#切换关卡与释放资源)退出受影响玩法、等待在途旧加载收尾，再归还场景、实例、池及其依赖持有并确认卸载完成，之后更新并重新进入；只取消等待不算旧内容已退出。确需新旧 bundle 共存，才评估构建时的 `Unique Bundle IDs`：它避免 ID 冲突，但旧对象仍归旧持有者，双份内存与更多 bundle 重建／下载成本仍在；不是运行时勾一个选项就完成世界迁移。
+
+下面接线适用于已选择手动更新、尚未载入受影响内容的协调者；固定核对 Addressables **2.9.1／4.1.1**，不要求旧工程升级：
+
+| 阶段 | 原生入口与项目责任 |
+|---|---|
+| 初始化与检查 | 等既有 `InitializeAsync` 成功，再 `CheckForCatalogUpdates(autoReleaseHandle: false)`；先看 `Status`，成功才复制 catalog ID 列表。失败不是“没有更新”，成功且空列表才沿现有内容进入 |
+| 更新目录 | 非空列表交 `UpdateCatalogs(autoCleanBundleCache: false, catalogs: ids, autoReleaseHandle: false)`；分别记录结果与错误，完成前不放行新加载。这里有意把可选磁盘清理分开，不把两项结果混成一个“更新成败” |
+| 消费新内容 | 更新后重新按 key／label 解析位置，再算下载量、按需 `DownloadDependenciesAsync`，成功后沿原 Load／Prepare／Enter。不要复用更新前缓存的 `IResourceLocation`、资产 handle 或实例当新版；下载成功也不是玩法 ready |
+| 归还操作句柄 | 显式关闭自动释放的调用，在读取状态／结果后由同一协调者释放各自句柄，异常出口也收尾；已沿自动释放的调用不再叠一次手工 Release。已有 `LoadContentCatalogAsync` 额外目录的加载句柄须先归还，否则操作缓存可能复用旧目录；释放该句柄不等于卸载已注册目录或释放玩法资产 |
+| 可选清磁盘缓存 | 内容已确认后再按磁盘策略调用 `CleanBundleCache`，单独观察并释放操作；失败记作清理待重试，不重新施加内容更新。保留所有仍支持的已加载目录所需缓存，不能用“清全部缓存”修复业务版本判断 |
+
+**失败不等于回滚。** 两个固定版本都先替换 locator，再执行可选的自动清缓存；后者失败能令总操作返回 Failed，而目录已经改变。即使分开调用，更新／下载失败也不能凭一个布尔值宣称还在旧目录：留在启动壳提供重试，只有已经验证可恢复的旧内容路径才允许继续。清磁盘缓存不会替你释放内存引用、还原目录或换掉场景实例。
+
+给 AI 的最小接收是同一发行基线的两份兼容内容：无更新、新目录含新资源、目录更新后依赖下载失败、旧池仍持有、清理失败各走一次；同时观察实际生成的内容身份、句柄归还和旧版离线路径，不只看 catalog API 成功。来源：[目录管理 2.9](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/manual/LoadContentCatalogAsync.html)／[4.1](https://docs.unity3d.com/Packages/com.unity.addressables@4.1/manual/LoadContentCatalogAsync.html)，固定包执行顺序、互斥待核点与开发者反例见 [WP10](../../docs/research/2026-10-14-game-wp10-client-modules.md#catalog-update-consumption)，2026-10-27 [一手／源码研究]。本节未运行 Unity 或内容更新构建，不把文档中的“阻塞其他请求”当作已验项目互斥保证。
 
 #### 二改：加一间房和可选语音，保住旧版玩家
 

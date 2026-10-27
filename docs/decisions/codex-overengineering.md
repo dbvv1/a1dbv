@@ -65,7 +65,13 @@ python3 -m unittest discover -s tests -p test_config_export.py -v
 
 **合法 JSON 是已有契约，所以非法数字常量值得拒绝，合法但很大的指数不应一并封掉。** 本仓随后用 `parse_constant` 补齐 `NaN`、`Infinity`、`-Infinity` 的入口检查：真实 `stage` 命令原来接收 6/6 份非法配置，修后为 0/6；8/8 份合法对照仍能完成 `stage → promote`。正常字符串、空设置与合法大指数照常保留。
 
-**依据**：[本仓真实脚本／合成输入实跑] [实现](../../scripts/export_ai_config.py)、[21 项回归](../../tests/test_config_export.py)；[Python 官方解析契约](https://docs.python.org/3.12/library/json.html#json.load)；2026-10-26 核实。
+**先辨清输入语言，再复用原生校验，并从公开入口验收。** JSON token 与“有限的 Python 浮点数”不是同一契约；同样，`owner/repo@ref` 接收单个仓库 ref，不是 `git fetch` 的 refspec：
+
+![opensrc 本地首版修复把 +main 解释成强制标记加源 main，取错分支；经审查的补丁校验单个 ref 后构造 ++main:refs/opensrc/source，保留字面源名 +main。](../img/opensrc-ref-language-boundary.svg)
+
+最终补丁保留选项边界，支持完整 SHA 与 `+main`。回归还让非法输入经过已有缓存的 `opensrc path` 入口，确认它在返回路径前失败；只测 clone helper 会漏掉缓存绕过。两例验证的是代码行为，提示词或模型收益仍需另测。
+
+**依据**：[本仓真实脚本／合成输入实跑] [实现](../../scripts/export_ai_config.py)、[21 项回归](../../tests/test_config_export.py)；[上游源码／本地修复与回归] [opensrc 补丁](../../experiments/opensrc-ref-integrity/source-ref-integrity.patch)与[复用说明](../../experiments/opensrc-ref-integrity/README.md)；[官方语义] [Python JSON](https://docs.python.org/3.12/library/json.html#json.load)、[Git ref](https://git-scm.com/docs/git-check-ref-format)、[fetch refspec](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt-ltrefspecgt)；2026-10-26 核实。
 
 ## 何时不适用
 

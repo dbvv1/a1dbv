@@ -29,6 +29,35 @@ class TemplateOverlayTests(unittest.TestCase):
   def domain(self, name):
     return ROOT / "domains/game-dev" / name / "templates"
 
+  def assert_permission_baseline(self, base, config):
+    for mode, entries in base["permissions"].items():
+      inherited = set(config["permissions"][mode])
+      for entry in entries:
+        if mode == "deny" and entry == "Edit(node_modules/**)":
+          # Domain templates may retain their stricter dependency-read policy.
+          self.assertTrue({entry, "Read(node_modules/**)"} & inherited,
+                          "node_modules edits must remain denied")
+        else:
+          self.assertIn(entry, inherited, mode)
+
+  def test_generic_dependency_reads_preserve_edit_and_secret_denials(self):
+    config = json.loads((BASE / ".claude/settings.json").read_text(encoding="utf-8"))
+    self.assertEqual(config["permissions"], {
+      "ask": ["Bash(git push*)"],
+      "deny": ["Read(.env)", "Read(.env.*)", "Read(**/secrets/**)",
+               "Edit(node_modules/**)", "Read(dist/**)", "Read(build/**)"],
+    })
+    self.assertIn(("deny", "node_modules/*"), rules(BASE / ".claude/protected-paths.txt"))
+
+  def test_dependency_baseline_rejects_missing_edit_protection(self):
+    base = json.loads((BASE / ".claude/settings.json").read_text(encoding="utf-8"))
+    self.assert_permission_baseline(base, base)
+    config = json.loads(json.dumps(base))
+    config["permissions"]["deny"] = [entry for entry in config["permissions"]["deny"]
+                                     if entry not in {"Read(node_modules/**)", "Edit(node_modules/**)"}]
+    with self.assertRaisesRegex(AssertionError, "node_modules"):
+      self.assert_permission_baseline(base, config)
+
   def recipe(self, name):
     text = (self.domain(name) / "README.md").read_text(encoding="utf-8")
     match = re.search(r"<!-- empty-project-recipe -->\s*```bash\n(.*?)\n```", text, re.S)
@@ -66,8 +95,7 @@ class TemplateOverlayTests(unittest.TestCase):
     for name in DOMAINS:
       with self.subTest(domain=name):
         config = json.loads((self.domain(name) / ".claude/settings.json").read_text(encoding="utf-8"))
-        for mode, entries in base["permissions"].items():
-          self.assertTrue(set(entries) <= set(config["permissions"][mode]), mode)
+        self.assert_permission_baseline(base, config)
         self.assertEqual(base["hooks"], config["hooks"])
         self.assertEqual(base_rules, rules(self.domain(name) / ".claude/protected-paths.txt")[:len(base_rules)])
 

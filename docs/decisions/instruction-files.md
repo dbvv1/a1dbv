@@ -88,6 +88,26 @@ make check
 
 **依据**：[一手／实际配置] [Anthropic Claude Cookbooks 固定文件](https://github.com/anthropics/claude-cookbooks/blob/9c1e493ddd2b82df399d2a61b9c806c539e18be6/CLAUDE.md)与[当前文件](https://github.com/anthropics/claude-cookbooks/blob/main/CLAUDE.md)；上述规则与命令重核 2026-10-26。两份上游配置均为源码核查，未运行其构建或模型任务。
 
+### NVIDIA：小改动用原生补丁，批量转换保留脚本
+
+**✅ 修改已有文本的局部内容，优先用 `Edit`／`apply_patch`；机械批量转换、生成与格式化，用项目已有的脚本、codemod、生成器或格式化器。** 让审阅者直接看到改了什么，少为几行修改再维护一段替换程序。
+
+cuda-python 的真实 `AGENTS.md` 有这段短句：
+
+> Try to use apply_patch for single file edits
+
+同条规则也允许工具不适用时换方案，并把自动生成、格式化和跨代码库机械替换列为例外。可借的是按修改类型选工具；读取、搜索、测试照常使用 shell。合并进现有项目指令时，可以只加这一条：
+
+```markdown
+- 先读目标文件与相关约定；局部文本修改优先用原生 Edit／apply_patch。批量转换、生成、格式化或需保留非 UTF-8 编码时，使用合适的脚本／codemod／生成器，说明选择理由；完成后检查最终 diff 并运行相关验证。
+```
+
+Claude Code 的 `Edit` 默认要求 `old_string` 与当前内容精确且唯一匹配；文件被其他人改过仍可能成功，因此协调好同一文件的写者，并审最终 diff。
+
+issue #92178 的使用者报告，几处字符串替换被写成 50 多行 Python，因 heredoc 脚本语法错误做了三次尝试；另有反馈说，写进指令后仍未稳定遵守。
+
+**依据**：[一手／实际配置] [NVIDIA cuda-python 固定文件 L191–205](https://github.com/NVIDIA/cuda-python/blob/585038dfa23437c17bb60b210a3db25464e32171/AGENTS.md#L191-L205)；[官方] [当前 Edit 行为与编码边界](https://code.claude.com/docs/en/tools-reference#edit-tool-behavior)；[社区原帖] [脚本三次尝试](https://github.com/anthropics/claude-code/issues/92178#issuecomment-5621524015)、[指令未稳定遵守](https://github.com/anthropics/claude-code/issues/92178#issuecomment-5979127203)、[linux.do 讨论](https://linux.do/t/topic/2828925)。核实 2026-10-26；Claude 工具语义按文档核对，社区结果为使用者自述。
+
 ## 何时不适用，怎么知道该改了
 
 - **只有某类任务需要的长流程**：放到任务文档或窄 Skill，根文件只写触发条件与入口。拆成多个文件再全部 `@` 导入，仍会一起加载；需要的是按任务读取，而非换文件名。

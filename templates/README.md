@@ -78,6 +78,8 @@ generic/
 
 **指令与编辑 Hook 只覆盖各自入口；需要硬隔离时，由运行环境落实权限。** 按所选组件核对下表，不因复制模板而扩大授权。
 
+**generic 对 `node_modules` 只设编辑拒绝，保留定点读取依赖的入口。** 用 `Edit(node_modules/**)` 配合现有路径 Hook 保护依赖文件；需要类型、实现或[随包 Skill](../docs/decisions/skills-and-plugins.md#领域配方先读安装包不为一项知识装整套流程)时，先从消费包定位，再读所需文件。常规搜索先限定项目源码目录，不为降噪禁止读取整个依赖目录。已有项目仍按有效权限决定访问。[官方 Read／Edit 语义](https://code.claude.com/docs/en/permissions#read-and-edit)，核实 2026-10-26；本项已核静态配置，客户端权限执行未实测。
+
 | 所选组件 | 采用前要核对的边界 |
 |---|---|
 | `settings.json` 与 Git 命令 | 模板不预授权宽泛的 Git 命令模式：例如 `git diff --output=路径` 可以写文件。Git 命令沿用宿主的有效权限 |

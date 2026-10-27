@@ -6,8 +6,9 @@ import { resolve } from 'node:path';
 import { loadSource } from './source.mjs';
 import { wire, send, validateInput, canonicalInput, frameCommands } from './protocol.mjs';
 const [sourceArg, framesArg = '300', mode = 'normal'] = process.argv.slice(2);
-if (!sourceArg || !Number.isSafeInteger(Number(framesArg)) || Number(framesArg) < 30 || Number(framesArg) > 900 || !['normal', 'jitter', 'disconnect', 'desync'].includes(mode))
-  throw new Error('usage: node --import tsx run.mjs SOURCE 30..900 normal|jitter|disconnect|desync');
+const modes = ['normal','jitter','disconnect','desync','cast','cast-jitter','cast-forged','cast-malformed','cast-conflict','cast-future'];
+if (!sourceArg || !Number.isSafeInteger(Number(framesArg)) || Number(framesArg) < 30 || Number(framesArg) > 900 || !modes.includes(mode))
+  throw new Error(`usage: node --import tsx run.mjs SOURCE 30..900 ${modes.join('|')}`);
 const source = resolve(sourceArg), frames = Number(framesArg);
 const { simulation, navigation, manifest } = await loadSource(source);
 const heroIds = [0, 1].map(team => simulation.snapshot().entities.find(e => e.kind === 'hero' && e.team === team).id);
@@ -16,7 +17,10 @@ let pending = [null, null], expectedTick = 1, started = false, completed = false
 let lastProgress = performance.now(), retries = 0, acceptedCommands = 0;
 const hashes = new Map();
 const ledger = new Map();
-const arrivalOrder = [];
+const arrivalOrder = [], committedFrames = [], casts = [];
+function heroState() {
+  return simulation.snapshot().heroes.map(({id,position,mana,cooldowns,shield}) => ({id,position,mana,cooldowns,shield}));
+}
 let interval;
 const server = createServer(socket => {
   sockets.add(socket);
@@ -58,15 +62,22 @@ function fail(error) {
   if (terminal) return;
   terminal = true; clearInterval(interval); process.exitCode = 1;
   console.error(`LOCKSTEP_ABORT: ${error.message}`);
+  if (mode.startsWith('cast')) console.error('CAST_ABORT_STATE '+JSON.stringify({tick:simulation.state.tick,casts,heroes:heroState()}));
   for (const socket of sockets) socket.end(JSON.stringify({kind:'abort',reason:error.message}) + '\n');
   close();
 }
 function succeed() {
   if (terminal) return;
+  // Replay the committed bounded prefix through the same original Simulation,
+  // not replayMatch(), whose contract is to run all the way to a terminal match.
+  const reference = new simulation.constructor({...simulation.config,navigation});
+  for (const frame of committedFrames) reference.step(frame.commands);
+  const replayHash = reference.finalHash();
+  if (replayHash !== simulation.finalHash()) { fail(new Error('committed prefix replay disagrees')); return; }
   completed = terminal = true; clearInterval(interval);
   for (const s of seats) send(s.socket, { kind: 'done', tick: frames, hash: simulation.finalHash() });
   console.log(JSON.stringify({ manifest, serverPid: process.pid, clientPids: children.map(c => c.pid),
-    tick: frames, hash: simulation.finalHash(), acceptedCommands, heroes: simulation.snapshot().entities.filter(e => e.kind === 'hero').map(e => ({id:e.id,position:e.position})), verifiedClientAcks: seats.map(s => s.lastAck), retries, arrivalOrder }));
+    tick: frames, hash: simulation.finalHash(), replayHash, casts, heroState:heroState(), acceptedCommands, heroes: simulation.snapshot().entities.filter(e => e.kind === 'hero').map(e => ({id:e.id,position:e.position})), verifiedClientAcks: seats.map(s => s.lastAck), retries, arrivalOrder }));
   close();
 }
 function close() {
@@ -86,7 +97,12 @@ interval = setInterval(() => {
   if (!started || expectedTick > frames || !pending.every(Boolean) ||
       !seats.every(s => s.lastAck === expectedTick - 1)) return;
   const tick = expectedTick, commands = frameCommands(pending);
-  acceptedCommands += simulation.step(commands).filter(result => result.accepted).length;
+  const hasCast = commands.some(command => command.type === 'cast'), before = hasCast ? heroState() : null;
+  committedFrames.push({tick,commands:structuredClone(commands)});
+  const results = simulation.step(commands);
+  acceptedCommands += results.filter(result => result.accepted).length;
+  if (hasCast) casts.push({tick,before,after:heroState(),results:results.map(({command,accepted,reason}) =>
+    ({heroId:command.heroId,slot:command.slot,accepted,reason}))});
   if (simulation.state.tick !== tick) { fail(new Error('simulation ended before the sample frame budget')); return; }
   hashes.set(tick, simulation.finalHash());
   for (const s of seats) send(s.socket, { kind: 'frame', tick, commands });
@@ -94,7 +110,7 @@ interval = setInterval(() => {
   // Input retry history is only needed for this short bounded exercise.
 }, 1000 / manifest.tickRate);
 const client = fileURLToPath(new URL('./client.mjs', import.meta.url));
-for (const seat of mode === 'jitter' ? [1, 0] : [0, 1]) {
+for (const seat of mode === 'jitter' || mode === 'cast-jitter' ? [1, 0] : [0, 1]) {
   const child = spawn(process.execPath, ['--import', 'tsx', client, source, String(server.address().port), String(seat), String(frames), mode], { cwd: source, stdio: ['ignore', 'pipe', 'pipe'] });
   children.push(child);
   child.stdout.on('data', data => process.stdout.write(`CLIENT ${data}`));

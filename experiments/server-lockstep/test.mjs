@@ -85,3 +85,77 @@ test('actual simulation changes when same-frame order or input tick changes; coo
   assert.deepEqual(result[0].position, result[2].position);
   console.log(JSON.stringify({orderProbe:result}));
 });
+
+
+test('real skill inputs consume original dash/mana/cooldown once; current and old retries match committed prefix replay', {timeout:45000}, async () => {
+  const runs = [await execute(270,'cast'),await execute(270,'cast-jitter')];
+  const receipts = runs.map(result => {
+    assert.equal(result.timedOut,false);assert.equal(result.code,0,result.err);
+    return JSON.parse(result.out.split('\n').find(line => line.startsWith('{"manifest"')));
+  });
+  const [normal,jitter] = receipts;
+  assert.equal(normal.hash,jitter.hash);assert.equal(normal.acceptedCommands,4);
+  assert.equal(normal.retries,0);assert.equal(jitter.retries,49);
+  assert.deepEqual(normal.casts,jitter.casts);assert.deepEqual(normal.heroState,jitter.heroState);
+  const close = (a,b) => assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
+  for (const [index,receipt] of receipts.entries()) {
+    assert.equal(receipt.hash,receipt.replayHash);assert.deepEqual(receipt.verifiedClientAcks,[270,270]);
+    assert.equal(new Set([receipt.serverPid,...receipt.clientPids]).size,3);
+    const clients = runs[index].out.split('\n').filter(line => line.startsWith('CLIENT {')).map(line=>JSON.parse(line.slice(7)));
+    assert.equal(clients.length,2);assert.ok(clients.every(client=>client.hash===receipt.hash));
+    assert.deepEqual(receipt.casts.map(frame=>frame.tick),[1,11,12,253]);
+    const [invalid,first,cooldown,second] = receipt.casts;
+    assert.ok(invalid.results.every(result=>!result.accepted && result.reason==='directionRequired'));
+    assert.ok(cooldown.results.every(result=>!result.accepted && result.reason==='cooldown'));
+    for (const cast of [first,second]) {
+      assert.ok(cast.results.every(result=>result.accepted && result.reason===null));
+      for (let seat=0;seat<2;seat++) {
+        close(cast.after[seat].position.x-cast.before[seat].position.x,seat ? -7 : 7);
+        close(cast.after[seat].mana,cast.before[seat].mana-30+8/30);
+        assert.equal(cast.before[seat].cooldowns.W,0);assert.equal(cast.after[seat].cooldowns.W,239);
+      }
+    }
+    for (let seat=0;seat<2;seat++) {
+      assert.equal(invalid.after[seat].mana,invalid.before[seat].mana);
+      assert.deepEqual(invalid.after[seat].position,invalid.before[seat].position);
+      assert.deepEqual(cooldown.after[seat].position,cooldown.before[seat].position);
+      close(cooldown.after[seat].mana,cooldown.before[seat].mana+8/30);
+      assert.equal(cooldown.after[seat].cooldowns.W,238);
+      close(receipt.heroState[seat].mana,304.8);assert.equal(receipt.heroState[seat].cooldowns.W,222);
+    }
+  }
+  console.log(JSON.stringify({skillHash:normal.hash,replayHash:normal.replayHash,retries:jitter.retries,
+    accepted:normal.acceptedCommands,finalMana:normal.heroState.map(hero=>hero.mana)}));
+});
+
+for (const [mode,reason] of [['cast-forged','input does not own this hero'],['cast-malformed','unsupported or malformed command'],
+  ['cast-future','input is not for the open frame'],['cast-conflict','conflicting retry for committed input']]) {
+  test(`real ${mode} is a protocol abort, not a gameplay cooldown rejection`,{timeout:12000},async()=>{
+    const result=await execute(270,mode);
+    assert.equal(result.timedOut,false);assert.notEqual(result.code,0);assert.ok(result.err.includes(reason),result.err);
+    assert.doesNotMatch(result.out,/verifiedClientAcks/);
+    const state=JSON.parse(result.err.split('\n').find(line=>line.startsWith('CAST_ABORT_STATE ')).slice(17));
+    assert.equal(state.tick,mode==='cast-conflict'?19:10);
+    const accepted=state.casts.flatMap(frame=>frame.results).filter(result=>result.accepted).length;
+    assert.equal(accepted,mode==='cast-conflict'?2:0);
+    if (mode!=='cast-conflict') assert.ok(state.heroes.every(hero=>hero.mana===330 && hero.cooldowns.W===0));
+  });
+}
+
+test('cast schema checks connection ownership and shape while preserving all intent fields for retry identity',()=>{
+  const cast={type:'cast',heroId:9,slot:'W',targetId:null,direction:{x:1,z:0},point:null};
+  const input={kind:'input',tick:11,commands:[cast]};
+  assert.equal(validateInput(input,9),input);
+  const reordered={commands:[{point:null,direction:{z:0,x:1},targetId:null,slot:'W',heroId:9,type:'cast'}],tick:11,kind:'input'};
+  assert.equal(canonicalInput(input),canonicalInput(validateInput(reordered,9)));
+  // Zero direction is finite/valid wire data; the original ability decides whether it can be cast.
+  assert.doesNotThrow(()=>validateInput({...input,commands:[{...cast,direction:{x:0,z:0}}]},9));
+  for (const change of [{slot:'Q'},{targetId:10},{direction:{x:-1,z:0}},{point:{x:0,z:0}}])
+    assert.notEqual(canonicalInput(input),canonicalInput(validateInput({...input,commands:[{...cast,...change}]},9)));
+  for (const change of [{heroId:10},{slot:'X'},{targetId:-1},{targetId:1.5},{direction:{x:Infinity,z:0}},
+    {direction:{x:1,z:0,y:0}},{point:{x:201,z:0}},{mana:9999},{cooldowns:{W:0}}])
+    assert.throws(()=>validateInput({...input,commands:[{...cast,...change}]},9));
+  const missing={...cast};delete missing.point;assert.throws(()=>validateInput({...input,commands:[missing]},9));
+  assert.notEqual(canonicalInput({...input,commands:[cast,{type:'stop',heroId:9}]}),
+    canonicalInput({...input,commands:[{type:'stop',heroId:9},cast]}));
+});

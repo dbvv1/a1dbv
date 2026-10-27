@@ -3,6 +3,7 @@ import { loadSource } from './source.mjs';
 import { wire, send, plannedInput } from './protocol.mjs';
 const [source, portString, seatString, framesString, mode = 'normal'] = process.argv.slice(2);
 const seat = Number(seatString), frames = Number(framesString);
+const skills = mode.startsWith('cast'), jitter = mode === 'jitter' || mode === 'cast-jitter';
 const { simulation, navigation, manifest } = await loadSource(source);
 const socket = connect({ host: '127.0.0.1', port: Number(portString) });
 let started = false, done = false, heroId, lastHash = simulation.finalHash();
@@ -15,13 +16,23 @@ function finish(code) {
 }
 function issue(tick) {
   if (mode === 'disconnect' && seat === 1 && tick === 20) { finish(3); return; }
-  const delay = mode === 'jitter' ? ((tick + seat) % 3) * 7 : 0;
+  const delay = jitter ? ((tick + seat) % 3) * 7 : 0;
   const timer = setTimeout(() => {
     timers.delete(timer);
     if (done) return;
-    const message = plannedInput(seat, heroId, tick);
+    const message = plannedInput(seat, heroId, tick, skills);
+    if (seat === 1 && tick === 11) {
+      if (mode === 'cast-forged') message.commands[0].heroId = simulation.getHero(0).id;
+      if (mode === 'cast-malformed') message.commands[0].mana = 9999;
+      if (mode === 'cast-future') message.tick++;
+    }
+    if (skills && seat === 1 && tick === 20 && (jitter || mode === 'cast-conflict')) {
+      const old = plannedInput(seat,heroId,11,skills);
+      if (mode === 'cast-conflict') old.commands[0].direction.x = 1;
+      send(socket,old); // already committed identity: retry or conflicting old command
+    }
     send(socket, message);
-    if (mode === 'jitter' && tick % 11 === 0) send(socket, message); // identical application retry
+    if (jitter && tick % 11 === 0) send(socket, message); // identical application retry
   }, delay);
   timers.add(timer);
 }
