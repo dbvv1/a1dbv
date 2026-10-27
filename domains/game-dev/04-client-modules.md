@@ -622,6 +622,48 @@ SaveEnvelope
 
 [正式接线 `1dd89d3`](https://github.com/dbvv1/Star-Rush-Reborn/commit/1dd89d3931196cb08f7b9a00541a54a6715dfe1d)已验证两种模式的真实源码消费者及 Canvas 公路自然完赛、榜单、再玩、重载；受控写失败与恢复后只重试失败项也走过实际界面。新读者发现短屏提示藏在下方后，同一回执／重试移至标题后，首屏可见；上传状态不复制保存状态，原昵称来源保留。两个键仍不是事务，无跨标签锁或断电耐久；未验证真人驾驶、Three、手机及 Unity／UE。本包说明区分原 Node 探针与实际采用，核实 2026-10-27。
 
+#### 网页中局续玩：重开前等保存权真正归还
+
+**同一页面换局，只等待自己正在释放的保存锁，再以 `ifAvailable: true` 申请下一局；其他标签占用就立即进入“不保存”模式。** 本例单槽协调器按 document 建一次，放在 `boot()` 外，同槽所有标签使用同一稳定锁名；不能每局新建而丢掉旧释放记录，也不改成排队等别人、`steal` 或固定延时重试。未获权、不支持 API 或请求失败时，手动保存、自动保存和删档都关闭，原档不变；玩家明确选择“替换旧档”也必须先获权。
+
+**实现起点：** MOBA 的[候选 `ea7a064`](https://github.com/dbvv1/MOBA-Like/commit/ea7a06451cba085da8107fca634e51d5a2bb25bf)提供独立的 [`src/save/ownership.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/src/save/ownership.ts)，`createSaveOwnership(() => navigator.locks)` 返回 `acquire(signal)`，结果是幂等释放函数或 `null`。锁只协调同一存储作用域内遵守协议的写者，不替代快照校验、存储提交或云端冲突控制。上游 `LocalMatch` 用原固定步长、玩家命令与机器人重演恢复完整会话，核哈希再接输入／表现；只有已有确定性基础的短局才借这种恢复方式，普通关卡保本节 DTO。
+
+关键不是“调用过 release”，而是区分下面两个 Promise；这是该 helper 的持有段，完整取消与失败处理仍沿链接源码：
+
+```ts
+// 内部 waiting promise 保持持有；resolve 它只是请求释放。
+const released = locks.request(slotName, {ifAvailable: true}, async lock => {
+  if (!lock || releaseRequested) { deliver(null); return; }
+  await new Promise<void>(unlock => {
+    finishHold = unlock;
+    deliver(release); // 交给本局释放函数，不把 request() 当成“获锁完成”。
+  });
+});
+// released 是 request() 的返回值；settled 后才越过本页交接屏障。
+released.then(complete, failed);
+```
+
+`deliver`／`complete`／`failed` 是上述 helper 回调职责的示意名，不是 Web Locks API。完整接线保三条顺序：
+
+1. **释放先登记，下一局才可能等待。** `release()` 幂等地标记本次已退出，把“原生 request 已 settled”的完成信号加入本页 `releasing` 集合，再调用 `finishHold()`；只有 `request().then(成功, 失败)` 收尾时才完成信号并移出集合。下一次 `acquire` 循环等集合排空、复核取消，再发自己的 `ifAvailable` 请求；两次申请之间若别的标签获权，仍返回 `null`，不能抢回。
+2. **取消撤资格，迟到的锁仍归还。** `ifAvailable` 与原生 `signal` 选项不能合用，所以 `signal` 由 helper 自己监听：等待本页交接时取消，立即结束本次等待，但不删除旧释放记录；申请已经发出、回调尚未到时取消，也走同一幂等 release，先标记退出、把该 request 的完成信号登记进 `releasing`，再向调用者返回 `null`。迟到回调直接返回、不交保存权、不提前删屏障，仍等原 request 收尾。已持有时取消同样 release；同步抛错、异步拒绝都结束等待并返回 `null`。
+3. **旧代清理只动旧资源。** `boot` 在同一段不跨 `await` 的清理中使旧代失效、停旧帧循环／输入／保存订阅并请求归还锁，再开新代。每次 `await` 后核代次；刚获得的释放函数先登记进本代 lifetime，再核资格，已关闭的 lifetime 要立即执行迟到清理。新世界还须在最后一次资源等待之后、挂载 canvas 之前核取消，旧 catch／finally 不能清新 HUD 或解开新一轮按钮。完整接线见同提交 [`src/client.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/src/client.ts)，资源归还沿[本页生命周期](#切换关卡与释放资源)。
+
+**最容易漏的负例：旧锁已收到释放请求，但浏览器还未完成释放。** 此时立即申请的新局会被自己的旧锁拒绝；玩家能玩新英雄却不能保存，刷新又回到旧英雄。用“回调返回就同步解锁”的 mock 会把这条错误测成通过。测试夹具必须分别控制回调交付、内部等待结束、原生释放完成，至少核下表：
+
+| 触发 | 应有结果 |
+|---|---|
+| A 保存→页内 New match B，延迟原生释放 | 完成释放前不发第二次 request；之后 B 能自动／手动保存，刷新续玩还是 B |
+| 第二标签打开／重开；或交接空隙被它先获权 | 败者立即可玩但不写、不删；不排队、不抢锁，当前 owner 继续保存 |
+| 等释放时取消；grant 回调迟到；快速重复重开／双清理 | 旧屏障保留至 request 收尾；迟到 grant 归还；只有最新代能绑定、保存与更新界面 |
+| API 缺失／getter 抛错／请求拒绝／存储写失败 | 明确“不保存／保存失败”，旧字节保留；失败不能卡住下一次合法尝试 |
+
+测试入口为同提交 [`save-ownership.test.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/tests/client/save-ownership.test.ts) 与 [`save-lifecycle.test.ts`](https://github.com/dbvv1/MOBA-Like/blob/ea7a06451cba085da8107fca634e51d5a2bb25bf/tests/client/save-lifecycle.test.ts)。回归已先红后绿；云端真实浏览器走过 Veyra 保存→页内换 Morrow→自动／手动保存→刷新 Continue 仍为 Morrow，第二标签不写而原标签仍能保存。**这是候选的窄功能验证，尚未进入 main／网站，完整 smoke 未运行；清理期另有原因未明的浏览器退出，不能据此宣称整体稳定性通过。**
+
+**页面生命周期另有边界。** 定期／进入 hidden 时保存已提交状态；`pagehide` 提前注册清理，`pageshow.persisted` 重建新会话，不复用已释放的 owner。Chrome 官方生命周期建议在 freeze 前释放影响其他标签的锁；接这个入口也要先停保存者，恢复后重新申请，不假定原权仍在。强杀未必触发退出回调，冻结后也不能依赖异步收尾继续运行，因此本页交接屏障不是退出落盘保障。Unity／UE／Godot 只借“撤销旧代→归还实际所有权→新代接管”的责任划分，各沿原生存档与资源 API，不存在可直接照搬的 Web Lock；本修复未在这些引擎中运行。
+
+依据：[一手] [Web Locks 的 waiting／released promises](https://w3c.github.io/web-locks/#locks)、[`ifAvailable` 与 `signal` 契约](https://w3c.github.io/web-locks/#api-lockmanager-request)、[Chrome 官方生命周期实现示例与各状态建议](https://developer.chrome.com/docs/web-platform/page-lifecycle-api#developer-recommendations-for-each-state)；[经验] 上述固定候选源码、受控异步回归与真实浏览器窄复测。核实 2026-10-27。
+
 #### 重新进入：先恢复对象关系，再把世界交给玩家
 
 读档不是把 JSON 填回当前正在运行的世界。主菜单的槽位信息只帮助选择；metadata 可读不代表完整实体、内容版本与进度有效。默认在常驻加载壳内完成以下步骤，失败停在壳里提供其他副本／重试，不回写默认新局覆盖原档：
