@@ -1,7 +1,7 @@
 # A-MODEL-EFFORT-PRACTICE-20261027 · 真实编码任务中的模型与推理投入取舍
 id: A-MODEL-EFFORT-PRACTICE-20261027
 owner: dot-A
-status: running
+status: revision_requested
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6e1f49b9001b9daa72446646128fa38cd8f15c77
@@ -28,3 +28,7 @@ result_branch: relay/a-model-effort-practice-20261027
 ## 验收
 原链接逐项支持主张；比较条件、相反反馈、实际使用者与宣传区分清楚；本仓已收内容不重复。按原生 Workflow 审查与修正，过 `check_repo`、`check_public`、空白检查。
 一个单元最多两小时，共享四并行由接收端调度；不用任务数量或采集条数证明产出，不为找到工具另造采用任务。
+
+## 修改要求：先交本轮现有结果
+本轮先收口已核材料，明确未覆盖和未完成项；没有合格增量就交具体负结果，不再扩采集或重开整轮。
+若仍有在途调用，在安全边界保留其现有产物后回传本单元；沿原任务和分支接续，不丢弃已有工作、不重复初次调查。
