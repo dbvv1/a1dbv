@@ -12,6 +12,12 @@
 
 **常规工作一次说清范围即可，不必逐条追问。** 已有授权与平台确认分别处理：平台或组织要求确认的步骤仍走它的入口；被拒绝时只停该动作，报告具体目标、原因、已完成部分与恢复条件。结果不确定先查状态，避免把重试变成重复提交或重复发布。
 
+**装依赖失败先读原始错误，别直接扩大权限。** 例如 pnpm 的 `ERR_PNPM_NO_MATURE_MATCHING_VERSION` 是发布冷却期约束：核包管理器版本与有效配置，选满足现有策略的版本或等待；确需例外按项目约定批准，并审查配置与锁文件差量。保留既有年龄和锁文件校验，不用删除锁文件或全局关门禁来掩盖原因。
+
+**pnpm 12.15.0 要区分显式策略与内建默认。** 显式设置 `minimumReleaseAge` 时 strict 默认开启，内建 1440 分钟则默认非 strict；有效 `minimumReleaseAgeStrict:false` 下的新解析可能回退到新版本，并将例外写进 `minimumReleaseAgeExclude`。已有锁文件也可重新受策略检查，fresh install 成功后仍核项目的 frozen CI；这套版本契约不能直接套给其他包管理器。
+
+**依据**：[固定默认值实现](https://github.com/pnpm/pnpm/blob/91774e72a04d52ce61db06339696a433d383c764/pnpm/crates/config/src/registry_options.rs#L194-L223)、[例外处理](https://github.com/pnpm/pnpm/blob/91774e72a04d52ce61db06339696a433d383c764/pnpm/crates/package-manager/src/minimum_release_age.rs)、[锁文件策略](https://pnpm.io/settings/dependency-resolution#trustlockfile)、[Sanity 的实际 Agent 约定](https://github.com/sanity-io/sanity/blob/a19012b7e77ee33888c3b5072e8486dc5997f367/AGENTS.md#L1286)、[用户报告及历史修复 #14409](https://github.com/pnpm/pnpm/issues/14409)；核实 2026-10-27，本仓尚无对应升级任务，未实跑此策略。
+
 ## Codex：先用工作区写入，按需申请越界
 
 **可信仓库的起点是 `workspace-write` + `on-request`。** 合并到个人 `~/.codex/config.toml`；工作区内允许的命令可直接运行，越界申请仍有审核入口。
