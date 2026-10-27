@@ -49,6 +49,12 @@
 
 **JSON 导出修复保留严格输入契约，而不宣布提示词胜出。** 新修复让 `NaN`、`Infinity`、`-Infinity` 六份非法配置从全部被接收变成全部拒绝；八份合法对照仍完成 `stage → promote`，包括空对象和合法大指数。它支持接收这个脚本修复；模型或提示词谁更好，要有相同任务条件下的对照，现有结果不作这项判断。
 
+在仓库根目录重跑这份已采用修复的回归：现有回归使用临时合成配置，实际调用导出 CLI 的 `stage → promote`，不读取个人配置。
+
+```bash
+python3 -m unittest discover -s tests -p test_config_export.py -v
+```
+
 依据：[本仓真实采用与撤回](../../experiments/scratch-path-scan-adoption.md)；[JSON 导出修复](https://github.com/dbvv1/a1dbv/commit/023c325247b9f50375cea14e72b807d35b3fa316)、[实现](../../scripts/export_ai_config.py)与[21 项原生回归](../../tests/test_config_export.py)；原核实 2026-10-26。
 
 ## 何时不适用

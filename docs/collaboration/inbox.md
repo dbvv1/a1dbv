@@ -4,6 +4,16 @@
 
 ## 待处理
 
+### 2026-10-27：SDK 迁移与按改动构建
+
+- 👀 **升级 Anthropic SDK 主版本时，把依赖升级和 API 契约修正一起交付。** 10-21 发布的 Python SDK 2.0／TypeScript SDK 1.0 默认使用 API 版本 `2026-10-21`，迁移时从 Messages 请求移除 `temperature/top_p/top_k`，并按实际客户端核认证头变化及既有网关、日志脱敏的兼容性（`AnthropicFoundry` 仍用 `x-api-key`）；Bedrock 用户已报告旧模型版本拒绝，Hermes 的开放 issue 仅列出待迁移路径，需要旧采样行为时暂保相应旧调用链，本仓未试用，待真实 SDK 升级任务采用。
+
+  **依据**：[官方迁移指南](https://platform.claude.com/docs/en/api/migration-2026-10-21)、[Python 2.0 发布](https://github.com/anthropics/anthropic-sdk-python/releases/tag/v2.0.0)、[Bedrock 用户对照](https://github.com/anthropics/anthropic-sdk-python/issues/2031)、[Hermes 迁移待办](https://github.com/NousResearch/hermes-agent/issues/142796)；核实 2026-10-27。
+
+- 👀 **维护 Next.js 框架源码时，按源码变化和现有产物决定构建，不因新 worktree 就跑 `build-all`。** Next.js 于 10-22 将 AGENTS 与 backport Skill 改为：仅核心 JS 用 `pnpm --filter=next build`，跨 JS 包用 `pnpm build`，Rust／Turbopack 用 `pnpm build-all`，仅改测试且框架产物有效则直接跑测试；切分支、pull 后产物过期仍须补构建，已发布原生绑定落后于源码且启动失败时再完整构建，本仓未试用，待真实 Next.js 框架维护任务采用，不改变本仓门禁。
+
+  **依据**：[已合入的 AGENTS／Skill 修改](https://github.com/vercel/next.js/commit/9ff761f2ceb2f38751578ba17bd2b3b9077c35f1)、[10-26 固定 AGENTS](https://github.com/vercel/next.js/blob/6f98e9fcedf6420658f0039376ef15d358e4cf1a/AGENTS.md#L105-L107)；核实 2026-10-27。
+
 ### 2026-10-27：用户带入 GPT-6.1 Terra
 
 - 👀 **官方模型资料与 Artificial Analysis 六档 effort 评测已核，已收录进 [02 模型与成本](../02-models-and-cost.md#terra-effort-evidence)**，用于区分能力分数、单价与每题成本；本仓未调用模型实测。带入渠道为本 ChatGPT 对话，本次记 1 项漏检；公开来源、首次核实日期与发现时差边界见[校准记录](../research/2026-10-15-exploration-evidence.md#2026-10-27用户带入-gpt-61-terra-漏检)。

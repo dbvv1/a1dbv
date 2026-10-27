@@ -97,6 +97,8 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [Anthropic SDK 主版本迁移](collaboration/inbox.md#2026-10-27sdk-迁移与按改动构建) | SDK 升级时一并修 API 契约，按实际客户端核采样参数和认证头 | 官方迁移指南、Bedrock 用户问题与 Hermes 开放迁移待办，2026-10-27 核实 | 未试用；待真实 SDK 升级任务采用 | 👀 需要旧采样行为时暂保相应旧调用链，不能只改版本头 |
+| [Next.js 按源码变化构建](collaboration/inbox.md#2026-10-27sdk-迁移与按改动构建) | 维护框架源码时按改动范围及产物有效性选构建，不因新 worktree 就全量构建 | Next.js 10-22 已合入 AGENTS／backport Skill，2026-10-27 核实 | 未试用；待真实 Next.js 框架维护任务采用 | 👀 仅测例改动也须核现有产物；不推广为本仓门禁 |
 | [Portless 命名开发入口](collaboration/inbox.md#portless-worktree-urls) | 多个 worktree 频繁切换时，用稳定 URL 让 Agent、浏览器与测试指向同一应用 | state-in-url 的八应用与 CI 已采用，但其 E2E 仍写死主检出 URL | 未安装、未试用；已核 0.15.12 源码及 0.15.5 消费者，2026-10-27 | 👀 先选高端口 HTTP 并关闭 hosts 同步；`get` 不证明就绪，不复制 `--force`；现有端口安排够用就沿用 |
 | [Godot 真正发布包](../experiments/godot-export-adoption/README.md) | 已有 Godot 项目让 AI 从交付包验新内容，不把Editor或PCK代成品 | 官方4.7.2模板与固定CI源码，2026-10-26核实 | debug/release与二改通过；检出txt遗漏／JSON误纳入；可选真实脚本采样检出空累计，波次调用2→5 | 🧪 Linux headless应用实跑；不代GPU/音频/渠道验收 |
 | [Godot 原生资源二改](../experiments/godot-scene-authoring/README.md) | 已有 Godot 项目让 AI 改场景后，交给原消费者而非只验文本 | 官方 4.7.2＋完整 demo；2026-10-26 核实 | 真 import／保存／新进程：位移80→48px、刷怪2→5、碰撞范围变化；未导入 exit 0 的漏检已补 | 🧪 原生 headless 非画面／导出验收；保已有引擎与测试框架 |
