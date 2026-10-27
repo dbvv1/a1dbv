@@ -4,6 +4,15 @@
 
 ## 待处理
 
+<a id="stryker-vitest5-test-selection"></a>
+### 2026-10-27：mutation 分数骤降，先核 runner 是否真的执行测试
+
+👀 **已有 Stryker、升级到 Vitest 5 后分数骤降时，先让 Agent 查报告里的 `coveredBy`、`testsCompleted` 和状态，再决定补断言。** 若旧 runner 10.0.0 把有覆盖的变异报为 `Survived`，却完成零测试，优先核测试名过滤：旧版用空格连接名称，Vitest 5 用 ` > `。保留原覆盖率与 mutation 阈值，将已用的 Stryker core／Vitest runner／TypeScript checker 一起升级到含修复的 10.1.1，Vitest 与覆盖率包保持配套，再跑同范围验证。
+
+真实采用者 openclaw-atif 的 #35 于 10-24 合入。**作者报告**早先 Vitest 5.0.5＋Stryker 10.0.0 的 354 项普通测试通过，但十个 survivor 执行零测试；升级后的 CI 报告为 **11 killed＋17 errors**，不是 28 killed。接收时须另查 errors，100 分不证明所有变异均被断言检出。#6210 还含静态变异误归类和 DEBUG 配置序列化故障的反馈，不能把所有异常都归因于名称分隔符。
+
+**依据与范围**：[真实采用 PR #35](https://github.com/openclaw/openclaw-atif/pull/35)；[上游 #6214](https://github.com/stryker-mutator/stryker-js/pull/6214)于 10-23 合入，补丁让覆盖键与测试 ID 共用分隔符；[10.1.0 发布说明](https://github.com/stryker-mutator/stryker-js/releases/tag/v10.1.0)列出该修复，[10.1.1](https://github.com/stryker-mutator/stryker-js/releases/tag/v10.1.1)因发布 provenance 问题重发；[其他使用者反馈 #6210](https://github.com/stryker-mutator/stryker-js/issues/6210)。本仓仅核原文、补丁与发布记录，未安装、未试用，也未独立复跑采用者 CI。核实：2026-10-27 UTC。✅ 已入 [13 候选表](../13-frontier-radar.md#值得一试近4周的新项目与做法)。
+
 ### 2026-10-28：Vitest 先选原生 reporter，不叠两份终端输出
 
 👀 **已有 Vitest、测试输出太吵时，先核原生 `minimal`（别名 `agent`），不要在 `default` 旁再叠一个。** 在已安装 5.0.5 的项目可单次试 `pnpm exec vitest run <原测试路径> --reporter=minimal`；保留原 config／project 参数和验证范围。未自定义 reporters 时已有 Agent 自动选择；显式列表会替换默认列表，项目需要的 CI／JUnit 等消费者继续保留。
