@@ -10,16 +10,15 @@
 - `GET /repos/{owner}/{repo}/commits/{sha}/check-runs?filter=latest` → `checks`
 - `GET /repos/{owner}/{repo}/actions/runs?head_sha={sha}` → `actions`
 
-将响应正文保存为一个 JSON 对象，键为 `sha`、`statuses`、`checks`、`actions`；取错页、额外过滤事件或状态会改变结果范围。不要把连接器的包装对象当 API 正文。以下片段从 `experiments/ci-result-projection/` 目录运行，`ci-input.json` 放在同目录：
+将三个响应正文组装为一个 JSON 对象，键为 `sha`、`statuses`、`checks`、`actions`，保存为 `ci-input.json`；取错页、额外过滤事件或状态会改变结果范围。不要把连接器的包装对象当 API 正文。原响应（包括 PR 元数据）和输入都放在 **Git 工作树之外**的任务临时目录，保留到接收完成；仓内未跟踪或被忽略的目录也不用于存放原响应。
 
-```js
-const fs = require('node:fs');
-const {projectCI} = require('./ci-projection.cjs');
-const input = JSON.parse(fs.readFileSync('ci-input.json', 'utf8'));
-console.log(JSON.stringify(projectCI(input.sha, input), null, 2));
+从 `experiments/ci-result-projection/` 目录运行下列命令，将最后一个参数替换为仓外 `ci-input.json` 的绝对路径，保留双引号。Bash 与 Windows PowerShell 使用同一命令；Windows PowerShell 可用 `Resolve-Path`、Bash 可用 `realpath` 取得已有文件的绝对路径。
+
+```sh
+node -e "const fs = require('node:fs'); const {projectCI} = require('./ci-projection.cjs'); const input = JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); console.log(JSON.stringify(projectCI(input.sha, input), null, 2));" "替换为仓外 ci-input.json 的绝对路径"
 ```
 
-原响应和 `ci-input.json` 在本地保留到接收完成，不加入版本控制；交付只留必要字段与观察时间。
+交付只留必要字段与观察时间，不提交原响应、输入或本机绝对路径；公开扫描仍照常运行。
 
 三来源分别输出 `query_scope`、`total_count`、`returned_count`、`missing_count`、`page_complete` 和原始状态，commit status 同时保留 `description`。数量缺口说明还需取后续页；本片段只处理已声明的第一页。必要状态／计数字段缺失、畸形记录或 SHA 不符直接报错；缺少名称或可用链接时保留 `null`。取消、跳过、中性和需要操作各自保留，不合成为绿色。
 

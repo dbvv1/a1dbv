@@ -1,14 +1,15 @@
 # A-CI-PROJECTION-READER-20261027 · 改页后的第二个真实 CI 任务
 id: A-CI-PROJECTION-READER-20261027
 owner: dot-A
-status: blocked
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 2c44b68ce8c52e132be0ea8917473d908a43b9b4
+base_ref: fa6310040621656236d74998a19186b2f1b18fbe
 result_branch: relay/a-ci-projection-reader-20261027
 
 ## 目标与修改要求
-第一轮 Memos 已接收并按卡点改页；本轮换一个没读过页面和第一轮记录的新读者，照下方完整页完成现有 Datasette #3015 当前 head 的 CI 核验。目标 https://github.com/simonw/datasette/pull/3015 ，不触发 CI、不回复评论、不改 PR。
+本轮接续 u2 已有调查，修复公开扫描卡点，不重新派读者或重做采集。只把本任务在 `experiments/ci-result-projection/` 下的 `tmp-raw/`、`tmp-u2/` 及 `ci-input.json` 移到 Git 工作树外的临时目录，保留原文；其他文件不动。按下方改页后的入口复用输入与结果，回报原观察时间及实际卡点；不改扫描器或白名单，不提交原始元数据。
+第一轮 Memos 已接收并按卡点改页；u2 原要求由没读过页面和第一轮记录的新读者核验 Datasette #3015，接收时保留实际读者与观察证据。目标 https://github.com/simonw/datasette/pull/3015 ，不触发 CI、不回复评论、不改 PR。
 只按页面输入与使用段操作；仓内引用代码及官方 API 文档可读。历史实测仅作背景，不重演三臂实验、不读取第一轮 result.md 或 reader-tests。不能用页面历史数字代替当前 GET 结果。
 公开仓库直接用匿名只读 GET 或已有合规只读入口；不登录、不查找凭据/环境 token、不读账号用量或私人会话、不用浏览器/GUI/键鼠。不因拒绝换身份；技术失败记录原错误，仅停该动作。
 按 reader-test Workflow 交独立验收：同一当前 head、三源原始状态/说明/分页缺口，实际运行投影片段，说明可否接收为通过及卡点。页面缺信息只记，不改页面、代码或默认。
@@ -18,11 +19,11 @@ result_branch: relay/a-ci-projection-reader-20261027
 交实际命令、HTTP结果、精确head、必要字段与观察时间；原响应在本地保留到验收，不提交整份元数据。由非读者核对原响应和结果，不靠完成自报。
 回 review_ready，不用 accept: auto；dot-A 接收。单元最多两小时，共享四并行，无GPU。只是新指南迭代，不重开第三方应用采用。
 
-## 页面全文（相对链接固定到本轮基线；字符计数说明同步澄清）
+## 页面全文（本轮修正仓外输入；相对链接固定到基线）
 
 # 让 Agent 读 CI 契约字段，不读整份仓库元数据
 
-核精确提交的 CI 时，先取完整 API JSON，再用 [ci-projection.cjs](https://github.com/dbvv1/a1dbv/blob/2c44b68ce8c52e132be0ea8917473d908a43b9b4/experiments/ci-result-projection/ci-projection.cjs) 提取状态、数量、分页缺口与检查链接。`pending` 加空 statuses 应读成“当前没有 status 记录”，不能报成“CI 正在排队”。函数只读输入，不请求网络，也不决定能否合入。
+核精确提交的 CI 时，先取完整 API JSON，再用 [ci-projection.cjs](https://github.com/dbvv1/a1dbv/blob/fa6310040621656236d74998a19186b2f1b18fbe/experiments/ci-result-projection/ci-projection.cjs) 提取状态、数量、分页缺口与检查链接。`pending` 加空 statuses 应读成“当前没有 status 记录”，不能报成“CI 正在排队”。函数只读输入，不请求网络，也不决定能否合入。
 
 ## 输入与使用
 
@@ -32,16 +33,15 @@ result_branch: relay/a-ci-projection-reader-20261027
 - `GET /repos/{owner}/{repo}/commits/{sha}/check-runs?filter=latest` → `checks`
 - `GET /repos/{owner}/{repo}/actions/runs?head_sha={sha}` → `actions`
 
-将响应正文保存为一个 JSON 对象，键为 `sha`、`statuses`、`checks`、`actions`；取错页、额外过滤事件或状态会改变结果范围。不要把连接器的包装对象当 API 正文。以下片段从 `experiments/ci-result-projection/` 目录运行，`ci-input.json` 放在同目录：
+将三个响应正文组装为一个 JSON 对象，键为 `sha`、`statuses`、`checks`、`actions`，保存为 `ci-input.json`；取错页、额外过滤事件或状态会改变结果范围。不要把连接器的包装对象当 API 正文。原响应（包括 PR 元数据）和输入都放在 **Git 工作树之外**的任务临时目录，保留到接收完成；仓内未跟踪或被忽略的目录也不用于存放原响应。
 
-```js
-const fs = require('node:fs');
-const {projectCI} = require('./ci-projection.cjs');
-const input = JSON.parse(fs.readFileSync('ci-input.json', 'utf8'));
-console.log(JSON.stringify(projectCI(input.sha, input), null, 2));
+从 `experiments/ci-result-projection/` 目录运行下列命令，将最后一个参数替换为仓外 `ci-input.json` 的绝对路径，保留双引号。Bash 与 Windows PowerShell 使用同一命令；Windows PowerShell 可用 `Resolve-Path`、Bash 可用 `realpath` 取得已有文件的绝对路径。
+
+```sh
+node -e "const fs = require('node:fs'); const {projectCI} = require('./ci-projection.cjs'); const input = JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); console.log(JSON.stringify(projectCI(input.sha, input), null, 2));" "替换为仓外 ci-input.json 的绝对路径"
 ```
 
-原响应和 `ci-input.json` 在本地保留到接收完成，不加入版本控制；交付只留必要字段与观察时间。
+交付只留必要字段与观察时间，不提交原响应、输入或本机绝对路径；公开扫描仍照常运行。
 
 三来源分别输出 `query_scope`、`total_count`、`returned_count`、`missing_count`、`page_complete` 和原始状态，commit status 同时保留 `description`。数量缺口说明还需取后续页；本片段只处理已声明的第一页。必要状态／计数字段缺失、畸形记录或 SHA 不符直接报错；缺少名称或可用链接时保留 `null`。取消、跳过、中性和需要操作各自保留，不合成为绿色。
 
@@ -61,15 +61,13 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 
 随后在 [Datasette #3015](https://github.com/simonw/datasette/pull/3015) 与 [Memos #6502](https://github.com/usememos/memos/pull/6502) 的真实跟进中再用：Actions 的 `action_required` 被保留，但首版漏掉 CodeRabbit 的 `description`，只剩 `success`。Memos 的说明实际是 `Review skipped: draft pull request`；现版保留原状态及说明，重放原响应后可读出跳过审核。状态成功与审核执行是两件事，接收时仍要读说明和目标报告。两个固定 head 分别为 `a6f3ade873fbe91d3c6a58a76a50d359217b5c90`、`00d217067504e2b912bfd418199eef69d23a3c6a`，观察时间 2026-10-27 13:13 UTC。
 
-[本机新读者照页实测](https://github.com/dbvv1/a1dbv/blob/2c44b68ce8c52e132be0ea8917473d908a43b9b4/docs/collaboration/local-jobs/artifacts/A-CI-PROJECTION-READER-20261027/result.md)在同日 13:42 UTC 完成 Memos 当前 head 核验，区分了成功但跳过审核、零 checks 与 `action_required`，46 项回归通过。按其卡点补上匿名只读入口、PR 元数据端点与临时输入保留方式。
+[本机新读者照页实测](https://github.com/dbvv1/a1dbv/blob/fa6310040621656236d74998a19186b2f1b18fbe/docs/collaboration/local-jobs/artifacts/A-CI-PROJECTION-READER-20261027/result.md)在同日 13:42 UTC 完成 Memos 当前 head 核验，区分了成功但跳过审核、零 checks 与 `action_required`，46 项回归通过。按其卡点补上匿名只读入口、PR 元数据端点与临时输入保留方式。
 
-2026-10-27 又以同一冻结 Memos 响应、同一外部检查调用实际 `projectCI` 接口：基线 `56b00ee2` → 最终补丁 `5113e0ea` → 完整撤回，description 断言退出码为 **1→0→1**；正常控制全过，除新增 description 外完整输出一致。撤回的全树与基线相等，各臂实际加载模块的路径与哈希已核。这里只借用 Trail of Bits 的窄三臂机制，未运行整套插件；证明该输入的修复因果，不等于全部回归安全。做法与来源见 [09 的接收提示](https://github.com/dbvv1/a1dbv/blob/2c44b68ce8c52e132be0ea8917473d908a43b9b4/docs/09-review-and-quality.md#从实现产物到可接收交付)。
+2026-10-27 又以同一冻结 Memos 响应、同一外部检查调用实际 `projectCI` 接口：基线 `56b00ee2` → 最终补丁 `5113e0ea` → 完整撤回，description 断言退出码为 **1→0→1**；正常控制全过，除新增 description 外完整输出一致。撤回的全树与基线相等，各臂实际加载模块的路径与哈希已核。这里只借用 Trail of Bits 的窄三臂机制，未运行整套插件；证明该输入的修复因果，不等于全部回归安全。做法与来源见 [09 的接收提示](https://github.com/dbvv1/a1dbv/blob/fa6310040621656236d74998a19186b2f1b18fbe/docs/09-review-and-quality.md#从实现产物到可接收交付)。
 
 ## 来源
 
 [GitHub combined status](https://docs.github.com/en/rest/commits/statuses#get-the-combined-status-for-a-specific-reference)说明无 statuses 也返回 pending；[check runs](https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference)说明 latest 与分页、最近 1,000 个 check suites 范围；[Actions runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository)说明 head_sha 过滤和查询上限。核实：2026-10-27。
 
 ## 当前结果
-
-- 本机接收端连续 2 次未完成第 1 个单元：公开扫描有发现（email experiments/ci-result-projection/tmp-raw/pr3015.json:151，email experiments/ci-result-projection/tmp-raw/pr3015.json:298，email experiments/ci-result-projection/tmp-u2/pr.json:1，email experiments/ci-result-projection/tmp-u2/pr.json:1），未推送。负责人确认任务可以执行后改回 ready，接收端会重新领取。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+原 u2 因仓内临时 PR JSON 进入公开扫描而未推送；本轮只迁移任务临时文件并接续已有产物。原观测结果及 reader-test 验收待回传。
