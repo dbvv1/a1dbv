@@ -1,0 +1,11 @@
+/staged*/
+/Assets/Encounter/Inputs/
+/Assets/Encounter/Generated/
+/Library/
+/Temp/
+/Logs/
+/Builds/
+/exported-*/
+/revised-source/
+/revised-fbx/
+/source-check.json

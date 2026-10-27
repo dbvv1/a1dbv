@@ -183,6 +183,12 @@ Mega Crit 的历史选型重视授权信任、平台与现成引擎服务；Road
 
 ## 5. 第二次重生成：更新已有对象，保留正确含义
 
+**有可编辑角色源时，先比较原生导入，不把 Web 交换格式直接定为引擎管线。** [固定源准备件](../../experiments/unity-encounter/README.md)已接收：同源 Blend 显式导出 FBX＋材质／动作元数据，接 Unity ModelImporter、Generic Animator 与原生 Lit；已有验证过的 glTF 链或运行时 GLB 需求继续沿用。它是实现起点，不是已验证 Unity 工程。
+
+Agent 可复用其中的固定 Git 取源与 hash 检查；导入候选只处理三个精确路径，从本次 TakeInfo 更新动作范围，让 controller 直接引用 canonical clip 子资产。二改将 death 改慢时检查当前时长、原引用与其他动作；原有事件／裁剪设置需明确保留，不能把重建本例配置的脚本当通用 importer。上游交付作者源与配方，下游分别接收 Animator／Prefab、材质和 Player 行为，Three 运行时不搬进 Unity。
+
+**来源与范围**：[原交付 `fe892dec5`](https://github.com/dbvv1/a1dbv/commit/fe892dec57266cfddd1f26904a6561efca261d32)，2026-10-26 Blender 4.3.2 导出／重导与动作二改已实跑；2026-10-27 接收复核固定输入和 Git 取源回归。Unity 编译、导入、画面及构建未运行，原任务仍暂停；网页采用与这份原生候选分开计算。
+
 **✅ 先复用引擎导入器，Agent 入口只负责发起与回读。** Unity 6+ 缺运行中 Editor 连接时再选官方 CLI/Pipeline；AI Assistant 包内旧 MCP 已被[官方弃用](https://docs.unity.com/en-us/unity-cli/replace-mcp-server-unity-cli)，`unity mcp` 继续支持。批量规格先用 Unity Presets/AssetPostprocessor，或 Unreal Editor Python 与适配格式的 Interchange pipeline；不用新建导入服务，也不必为了批处理强升到支持 MCP 的引擎版本。
 
 **Unity 批量写入与消费新资产分两段。** [Unity 6.3 批量契约](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AssetDatabase.StartAssetEditing.html)要求 scope 内只做不依赖完整导入结果的操作；用 `AssetEditingScope`／`using` 或 `try/finally` 配对释放，最外层暂停结束且相关导入完成后，再加载新资产并更新下游引用。批量控制未承诺原子回滚；异常或单项失败后，先核各项返回值、日志与实际资产，不因 scope 已退出就宣称整批成功或已恢复。证据与回调边界见本节末来源。
