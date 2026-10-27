@@ -25,18 +25,18 @@
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；来源按产出调整，候选进收件箱，漏检对照记入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 首轮扫描、周校准与[本周 Top 5](../13-frontier-radar.md#本周-top-5)已做。下一步按 explore-frontier 广扫，同时推进读者地图上仍为 🟡／⏳ 的问题，漏检记进探索证据。 |
 | P81 | **试用与写成选择**：读者照着就能采用；在案例仓库的真实编码任务和 a1dbv 脚本上试用，结论进 [13](../13-frontier-radar.md)、决策页和模板 | dot-A | [读者地图](../../README.md)已补齐答案页。三项脚本已接收：公开扫描覆盖符号链接文本；同输入页面 Git 读取由 72 次降到 24 次；三个 Hook 单次解析事件。Catalog CLI 与其余完整测试分两段、各限 120 秒；跟评审 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。 |
-| MOBA | **MOBA-Like 基本战斗**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | [main 9311f43](https://github.com/dbvv1/MOBA-Like/commit/9311f43e1b396827bf27caebc8ab715f5cb2cc84) 已发布施法动作、路肩、护盾图标与导航／结算／窄屏修复；[网站 v12](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site) 已同步。下一步先由非作者整屏对照标杆排序地图、角色尺度与场景层次差距，再改场景结构。 |
-| B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | [菜单焦点与返回](../../domains/game-dev/04-client-modules.md#菜单也是控制的一部分)已在 FPS 本地候选 `0e883e6` 实跑并通过非作者审查，待随 FPS 发布；帧同步、存档等待接进案例。[旧 Unity 实跑](local-jobs/B-UNITY-ADOPTION-001.md)暂停。 |
+| MOBA | **MOBA-Like 基本战斗**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | [main 9311f43](https://github.com/dbvv1/MOBA-Like/commit/9311f43e1b396827bf27caebc8ab715f5cb2cc84)／[网站 v12](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site) 已同步。整屏对照最大差距：平底地图缺空间层次、英雄身份弱、资产风格不统一；近期目标是出生地—首塔—首次兵线接触的连续战场，先改地图大面。 |
+| B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | [菜单焦点与返回](../../domains/game-dev/04-client-modules.md#菜单也是控制的一部分)已随 FPS `12ac526`／网站 v11 发布，实际菜单操作与射击组合经非作者验收；帧同步等待接入；存档线正补 Star 本机写入失败仍提示成功的真实缺口。[旧 Unity 实跑](local-jobs/B-UNITY-ADOPTION-001.md)暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [海岸音频](local-jobs/B-OPENWEIGHT-AUDIO-001.md)已在 RTX 5070 生成两 seed 候选，relay `fa5664f`；尚未混合听验，构建默认 off。[3D 岩簇](local-jobs/B-OPENWEIGHT-3D-001.md)原任务 `cce6083` 修复待接收端续验，尚无生成 mesh。资源采用后回流制作链，不与案例云端品质互等。 |
-| SR | **Star-Rush 完整弯道品质**：以地平线公路弯道为参照，保留跑圈 | dot-B | [公路网站 v5](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road)；默认公路入口与旧模式／存档边界在本地 `ebdc5ac` 待发布。下一步按并排截图补最大差距，音频待听。 |
-| FPS | **FPS-Like 射击循环品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | [main 239df5b](https://github.com/dbvv1/FPS-Like/commit/239df5badd8c43e14f57d381af379805910a1232)／[网站 v9](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site)：灵敏度保存／取消／恢复；地面与菜单焦点在本地待发布。最大差距是灰盒关卡与材质；下一步先补关卡场景与材质。 |
+| SR | **Star-Rush 完整弯道品质**：以地平线公路弯道为参照，保留跑圈 | dot-B | [master 997d0a8](https://github.com/dbvv1/Star-Rush-Reborn/commit/997d0a83b1d25adff9fff2f71826486d21d4df97)／[网站 v6](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site) 已同步：默认公路、路侧植被、天空与 Canvas 弯道提示。最大差距是公路与环境脱节，其次车辆身份、材质层次；近期目标为路肩—街区植被—远景连续的完整樱花弯段，音频待听。 |
+| FPS | **FPS-Like 射击循环品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | [main 12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac5264b186498716f849aec3325ab41d29f4aa)／[网站 v11](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site) 已同步地面、菜单焦点和短按射击修复。最大差距：巨型素墙灰盒、材质光照不统一、敌人与武器主体层级；近期目标为入口—掩体—目标区的完整院落交火。木箱／光照组合未接收，Three 页面崩溃待定位。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
 ## 待人工验收（统一查看）
 
 需要人亲自听、看、玩才能判断的项目集中在这里，由用户择时统一验收；执行者记录后继续其他工作。
 
-- FPS-Like：原混音与受伤声候选各一段真实交火录音，听能否分清“我命中”与“我受伤”、是否遮掉敌人枪声、连续听是否疲劳；网页 v9 用原混音。
+- FPS-Like：原混音与受伤声候选各一段真实交火录音，听能否分清“我命中”与“我受伤”、是否遮掉敌人枪声、连续听是否疲劳；网页 v11 用原混音。
 - MOBA-Like：[可玩入口与操作](https://github.com/dbvv1/MOBA-Like/blob/main/README.md)的硬件 GPU 画面、操作手感与完整对局体验；软件 WebGL2 smoke 已通过。
 - Star-Rush：[公路候选](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road)的整体手感、视听与硬件画面；海岸环境声开关对比试听。
 - 潮汐邮差 v2：素材、木筏与旧档。
@@ -47,7 +47,7 @@
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
-| 仓库写入授权 | dot-A 的 P81 候选分支已恢复上传；dot-B 的 FPS `preview.png` 等被拒上传恢复状态，待该端按 [operations](operations.md) 重试确认 | 被拒文件留分支，其余改动照常发布 |
+| 仓库写入授权 | dot-A 的 P81 候选分支已恢复上传；dot-B 原受阻文件已沿原连接器重试成功，三个案例 Git 与网站均已更新 | 当前无待批准的 B 上传；新增拒绝只停对应动作 |
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
 | Actual 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/actualbudget/actual/compare/master...dbvv1:actual:dot-a/load-config-typescript-1483)创建Draft。拟标题：`[AI] Migrate sync server configuration loader to TypeScript`；正文保留官方空模板，人类字段不代填 | 本仓发现、试用与既有PR跟进继续 |
 | 本机模型权重下载 | 开放权重 3D 在本机取权重时 TLS 连接中断（B-OPENWEIGHT-3D-001），可能需要用户检查本机网络或代理 | 音频与其他制作链照常 |
