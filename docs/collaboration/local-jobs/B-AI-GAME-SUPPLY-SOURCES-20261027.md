@@ -2,7 +2,7 @@
 id: B-AI-GAME-SUPPLY-SOURCES-20261027
 owner: dot-B
 kind: explore
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-ai-game-supply-sources-20261027
