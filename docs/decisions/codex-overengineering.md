@@ -1,6 +1,6 @@
 # Codex 过度防御、过度工程怎么治
 
-**先把“不要过度设计”换成具体取舍：每个新增校验、兜底、重试和抽象，都要对应真实输入、失败路径或明确需求；用最少的新机制完成整个目标。** 保留已有外部输入、权限和兼容性契约，把任务外改善留在交付说明中。🧪 建议先在眼前的一次小改动里试下面的提示，再决定是否写入项目 `AGENTS.md`。
+**✅ 先把“不要过度设计”换成具体取舍：每个新增校验、兜底、重试和抽象，都要对应真实输入、失败路径或明确需求；用最少的新机制完成整个目标。** 保留已有外部输入、权限和兼容性契约，把任务外改善留在交付说明中。在已经能编辑并运行项目检查的 Agent 会话里使用下方任务片段，无需另装精简插件。
 
 ## 第一步：给当前任务加这段
 
@@ -64,6 +64,8 @@ python3 -m unittest discover -s tests -p test_config_export.py -v
 ```
 
 **合法 JSON 是已有契约，所以非法数字常量值得拒绝，合法但很大的指数不应一并封掉。** 本仓随后用 `parse_constant` 补齐 `NaN`、`Infinity`、`-Infinity` 的入口检查：真实 `stage` 命令原来接收 6/6 份非法配置，修后为 0/6；8/8 份合法对照仍能完成 `stage → promote`。正常字符串、空设置与合法大指数照常保留。
+
+**新读者也按本页完成了另一处真实修复。** Claude Code＋DeepSeek 读者修正文档检查器的 JSON 语法漏检，未新增依赖或校验框架；负责人独立重放，12 个非法输入从全过变为全拒，13 个合法 JSON／TOML 输入仍通过。读者无页面卡点，保留原操作步骤；[任务与全文输入](../collaboration/local-jobs/A-JSON-SYNTAX-READER-001.md)、[结果](../collaboration/local-jobs/artifacts/A-JSON-SYNTAX-READER-001/reader-friction.md)，2026-10-27。
 
 **先辨清输入语言，再复用原生校验，并从公开入口验收。** JSON token 与“有限的 Python 浮点数”不是同一契约；同样，`owner/repo@ref` 接收单个仓库 ref，不是 `git fetch` 的 refspec：
 
