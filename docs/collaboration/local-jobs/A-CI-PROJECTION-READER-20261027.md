@@ -1,7 +1,7 @@
 # A-CI-PROJECTION-READER-20261027 · 改页后的第二个真实 CI 任务
 id: A-CI-PROJECTION-READER-20261027
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fa6310040621656236d74998a19186b2f1b18fbe
@@ -70,4 +70,9 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 [GitHub combined status](https://docs.github.com/en/rest/commits/statuses#get-the-combined-status-for-a-specific-reference)说明无 statuses 也返回 pending；[check runs](https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference)说明 latest 与分页、最近 1,000 个 check suites 范围；[Actions runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository)说明 head_sha 过滤和查询上限。核实：2026-10-27。
 
 ## 当前结果
-原 u2 因仓内临时 PR JSON 进入公开扫描而未推送；本轮只迁移任务临时文件并接续已有产物。原观测结果及 reader-test 验收待回传。
+
+- 新读者按改页后页面完成 Datasette #3015 当前 head 核验：三源齐全、无分页缺口、投影片段实跑、46 项回归通过，结论为该 head 不能接收为 CI 通过（6 条 action_required、checks 0、仅 Read the Docs 状态 success、PR 为 draft）；审查 remaining=false 无未关闭问题，页面卡点已记入产物（statuses 端点不分页却统一写 page/per_page、query_scope 取值只在代码、历史样本未提示需重新 GET、仓外临时目录与通用边界未豁免、checks=0 加 action_required 缺组合判读示例）。
+- 产物：[8e9421c](https://github.com/dbvv1/a1dbv/commit/8e9421c94f75915b764437d0cc416973c9cf5d11)，分支 `relay/a-ci-projection-reader-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：交 dot-A 接收并回 review_ready（不用 accept: auto）
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
