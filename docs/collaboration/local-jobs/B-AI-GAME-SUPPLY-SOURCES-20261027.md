@@ -1,7 +1,7 @@
 # B-AI-GAME-SUPPLY-SOURCES-20261027 · AI 做游戏实例与素材供给原始证据
 id: B-AI-GAME-SUPPLY-SOURCES-20261027
 owner: dot-B
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a613f010cf1ee54610915a5ca3edabaf1f372a7c
 result_branch: relay/b-ai-game-supply-sources-20261027
@@ -32,8 +32,8 @@ result_branch: relay/b-ai-game-supply-sources-20261027
 
 ## 当前结果
 
-- 本单元产出 sources.md：3 个可试候选（Blocks Beyond the Stars、Void Balls、Warpact）、1 个反例（SimCity 2000 克隆）与 indienova 中文同题证据，仓库检查全部通过；但独立复审仍发现两处许可表述矛盾未清，不能作为已审通过交付。
-- 产物：[ee20f38](https://github.com/dbvv1/a1dbv/commit/ee20f387ef3d22c7594643d9d9502a5071e879b2)，分支 `relay/b-ai-game-supply-sources-20261027`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：修正 sources.md 第 8/184/188 行：CC 授权音乐音效单列为可按 CC 条款复用，仅代码生成的 3D／矢量与 GPT Image 2 位图记为无独立许可；改写第 191 行与 Riposte／FM1 的对比句，再跑一次独立复审。
+- 修正了 SimCity 2000 反例的许可表述——CC 授权音乐音效单列为可按 CC 条款复用，代码生成 3D／矢量与 GPT Image 2 位图记为无独立许可，并重写与 Riposte／FM1 的对比句；独立复审通过，check_repo／check_public 通过。
+- 产物：[223aa3e](https://github.com/dbvv1/a1dbv/commit/223aa3e069734b09c5a7acf3ea9139d0f8b184e1)，分支 `relay/b-ai-game-supply-sources-20261027`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交并推送 relay 分支，交 dot-B 试玩 Blocks Beyond the Stars、Void Balls、Warpact 并判断可用制作路线。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
