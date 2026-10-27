@@ -116,6 +116,10 @@ issue #92178 的使用者报告，几处字符串替换被写成 50 多行 Pytho
 
 **用眼前的一次真实修改验收：Agent 是否找对入口、保留那条特殊契约、跑了相关检查？** 漏哪项就补哪项；已过时的内容直接替换，不把旧状态和更正说明越叠越长。
 
-V2EX 的混用讨论同时有导入可用的反馈与重新初始化后规则被改写的自述；Reddit 的文档清理讨论也出现旧状态、矛盾规则长期堆积。可借的教训是**维护一份当前正文，并审初始化或清理产生的 diff**，无需因此安装同步器。当前工具行为以官方契约为准。
+**维护一份当前正文，并审初始化或清理产生的 diff。** V2EX 的重新初始化反馈与 Reddit 的陈旧规则讨论支持这一做法；已有稳定文件不用加同步器。
 
 **依据**：[社区原帖] [V2EX：混用规则与初始化](https://v2ex.com/t/1221900)、[Reddit：陈旧说明与清理](https://www.reddit.com/r/ClaudeAI/comments/1us9hfz/asked_claude_what_in_my_docs_was_hurting_its/)，重核 2026-10-26；[既有语义清理反例](../03-context-engineering.md#23-写什么不写什么官方最佳实践-一手)，原核实 2026-10-24；[官方导入与权限区别](https://code.claude.com/docs/en/memory#import-additional-files)，核实 2026-10-26。
+
+**👀 自己维护指令生成／同步工具时，把已有自定义章节作为回归输入，跑真正的重建路径，再核保留内容。** CataForge 的中文故障记录中，普通更新能保留正文，`deploy --rebuild` 却先删掉 section-merge 的输入文件，再生成占位模板，doctor 仍全绿。修复按合并策略保留目标；新增测试先部署、加入自定义标记、再真实 rebuild 并断言标记仍在。可借这条保留性检查，不必安装整套框架。
+
+**依据**：[作者自用原帖 #340](https://github.com/lync-cyber/CataForge/issues/340)、[已合入修复 #341](https://github.com/lync-cyber/CataForge/pull/341)、[固定回归 L253–328](https://github.com/lync-cyber/CataForge/blob/7826268b08e9f567dc4d1c7f39638afba7198c06/tests/deploy/test_deployer.py#L253-L328)。2026-06-22 的故障与修复，源码核实 2026-10-27；本仓未试用，该回归只直接检查自定义标记保留。
