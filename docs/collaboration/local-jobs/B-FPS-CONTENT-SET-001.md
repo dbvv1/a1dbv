@@ -2,7 +2,7 @@
 id: B-FPS-CONTENT-SET-001
 owner: dot-B
 kind: build
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: a97d57281dd6c6d941c6a6bef732dadf2953f2f4
 result_branch: relay/b-fps-content-set-001
