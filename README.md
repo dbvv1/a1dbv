@@ -17,7 +17,7 @@
 | 该装哪些 Skill 与插件 | [按能力缺口选一项，附配置与起步](docs/decisions/skills-and-plugins.md) | 🟡 |
 | 该接哪些 MCP | [04 MCP](docs/04-mcp.md) | ✅ 既有授权接入查 CI |
 | Codex 过度防御、过度工程怎么治 | [按触发输入与契约收敛改动](docs/decisions/codex-overengineering.md) | ✅ 新读者完成真实脚本修复 |
-| 子代理怎么组织，长任务怎么无人值守 | [委派、整合验收与中断续接](docs/decisions/long-tasks.md) | ✅ 原生委派／接收 |
+| 子代理怎么组织，长任务怎么无人值守 | [委派、整合验收与中断续接](docs/decisions/long-tasks.md) | 🟡 委派已用／持续自动续接待验 |
 | 怎么审 AI 写的代码 | [09 评审](docs/09-review-and-quality.md)、[REVIEW 模板](templates/generic/REVIEW.md) | ✅ 真实补丁评审 |
 | 权限、沙箱与 Hooks 怎么配 | [工作区自主执行与必要边界](docs/decisions/permissions-and-hooks.md) | 🟡 |
 | 调试、Agent 跑偏或谎报完成 | [17 排障](docs/17-troubleshooting.md)、[15 调试](docs/15-task-playbooks.md) | ✅ 因果定位／回归 |
