@@ -1,7 +1,7 @@
 # A-PUBLIC-TLS-DIAGNOSIS-20261027 · 公开网页 TLS 分层只读诊断
 id: A-PUBLIC-TLS-DIAGNOSIS-20261027
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc17d1d2b9983b7e255d03fc7c16ce5fdcf2d68c
