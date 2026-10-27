@@ -2,7 +2,7 @@
 
 id: B-FPS-SHOT-QUALITY-001
 owner: dot-B
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fca31b0f542142b3bbd32c890c7b43a3207b917a
 result_branch: relay/b-fps-shot-quality-001
