@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>模型查看器：浏览器回归</title>
+<style>
+  body { margin: 16px; font: 14px/1.5 system-ui, sans-serif; }
+  iframe { width: 100%; height: 760px; border: 1px solid #aaa; }
+  pre { white-space: pre-wrap; }
+</style>
+<h1>模型查看器：浏览器回归</h1>
+<p>通过本地 HTTP 同源打开。检查原生布局；不修改查看器或快照。</p>
+<button id="run">重新运行</button>
+<pre id="result" role="status">等待页面载入…</pre>
+<iframe id="viewer" title="受测模型查看器"></iframe>
+<script>
+'use strict';
+const frame = document.getElementById('viewer');
+const result = document.getElementById('result');
+const button = document.getElementById('run');
+const expectedHash = '5eb9badc2455dd910aec10a61f7edd551b0ca7bd9bf08370953d5e0d2b5a3a13';
+const fail = message => { throw new Error(message); };
+const check = (condition, message) => { if (!condition) fail(message); };
+function start() {
+  if (!/^https?:$/.test(location.protocol)) {
+    result.textContent = 'FAIL：测试页需要本地 HTTP 同源；请按 README 启动。';
+    return;
+  }
+  button.disabled = true;
+  result.textContent = 'RUNNING';
+  frame.src = 'index.html';
+}
+frame.addEventListener('load', async () => {
+  if (!button.disabled) return;
+  const log = [];
+  try {
+    const response = await fetch('index.html', {cache: 'no-store'});
+    check(response.ok, '无法读取 index.html');
+    const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', await response.arrayBuffer()))]
+      .map(byte => byte.toString(16).padStart(2, '0')).join('');
+    check(hash === expectedHash, 'index.html 与已验收快照不同');
+    const win = frame.contentWindow, doc = frame.contentDocument;
+    const el = id => doc.getElementById(id);
+    check(el('snapshot') && el('view') && el('chart'), 'iframe 未载入完整查看器');
+    const original = el('snapshot').textContent, snapshot = JSON.parse(original).rows;
+    check(snapshot.length === 42 && new Set(snapshot.map(row => row.release)).size === 8, '快照应为 8 模型 / 42 配置');
+    const paint = () => new Promise(resolve => win.requestAnimationFrame(() => win.requestAnimationFrame(resolve)));
+    const change = async (id, value) => {
+      el(id).value = value;
+      el(id).dispatchEvent(new win.Event('change', {bubbles: true}));
+      await paint();
+    };
+    const visible = node => {
+      const box = node.getBoundingClientRect(), style = win.getComputedStyle(node);
+      return style.display !== 'none' && style.visibility !== 'hidden' && box.width > 0 && box.height > 0;
+    };
+    const scatter = (count, label) => {
+      const chart = el('chart'), points = [...chart.querySelectorAll('.point')];
+      check(!chart.hasAttribute('hidden') && visible(chart), label + '：SVG 仍被隐藏或没有布局');
+      check(points.length === count && points.every(visible), label + '：点数／点布局错误');
+      check(win.getComputedStyle(el('bars')).display === 'none', label + '：旧逐行视图未隐藏');
+      const box = chart.getBoundingClientRect();
+      log.push(`${label}: ${count} 点，${Math.round(box.width)}×${Math.round(box.height)}`);
+    };
+    const bars = count => {
+      const chart = el('chart'), box = chart.getBoundingClientRect();
+      check(chart.hasAttribute('hidden') && win.getComputedStyle(chart).display === 'none' && !box.width && !box.height, '逐行视图没有真正隐藏 SVG');
+      check(visible(el('bars')) && el('bars').querySelectorAll('.comparison-row').length === count, '逐行视图布局／行数错误');
+    };
+    const tableUnchanged = count => {
+      const current = [...doc.querySelectorAll('#rows .data-row')];
+      check(current.length === count, '数据表条数错误');
+      for (const row of current) {
+        const source = snapshot[Number(row.dataset.id)], cells = row.cells;
+        const fields = ['index', 'index_cost_per_task_usd', 'tb4_pass_at_1', 'tb4_api_cost_per_task_usd'];
+        check(source && fields.every((key, i) => Number(cells[i + 2].title) === source[key]) && cells[6].querySelector('a').href === source.source, '数据表值或来源改变');
+      }
+      check(el('snapshot').textContent === original, '原始快照改变');
+    };
+    await paint();
+    bars(8);
+    tableUnchanged(8);
+    for (let repeat = 1; repeat <= 3; repeat++) {
+      for (const metric of ['index', 'tb4']) {
+        await change('metric', metric);
+        await change('view', 'scatter');
+        scatter(8, `${metric} 往返 ${repeat}`);
+        check(el('svg-title').textContent.includes(metric === 'index' ? 'Index' : 'TB4'), '指标标签未切换');
+        await change('view', 'bars');
+        bars(8);
+      }
+    }
+    el('all-efforts').click();
+    await paint();
+    bars(42);
+    tableUnchanged(42);
+    for (const metric of ['index', 'tb4']) {
+      await change('metric', metric);
+      await change('view', 'scatter');
+      scatter(42, `${metric} 全部 effort`);
+    }
+    const zeroId = snapshot.findIndex(row => row.tb4_pass_at_1 === 0);
+    check(zeroId >= 0 && visible(el('chart').querySelector(`.point[data-id="${zeroId}"]`)), 'TB4 零分点丢失');
+    for (const input of doc.querySelectorAll('[data-model]')) input.click();
+    await paint();
+    scatter(0, '空态');
+    check(el('chart').textContent.includes('没有匹配配置') && el('rows').textContent.includes('没有匹配配置'), '空态说明缺失');
+    tableUnchanged(0);
+    el('reset').click();
+    await paint();
+    bars(8);
+    tableUnchanged(8);
+    check(el('metric').value === 'index' && el('view').value === 'bars', '重置未恢复默认');
+    await change('view', 'scatter');
+    scatter(8, '空态恢复');
+    result.textContent = 'PASS\n' + log.join('\n') + '\n快照 SHA-256 一致；表中原始数值／来源未变。';
+  } catch (error) {
+    result.textContent = 'FAIL: ' + error.message + '\n' + log.join('\n');
+  } finally {
+    button.disabled = false;
+  }
+});
+button.addEventListener('click', start);
+start();
+</script>
+</html>
