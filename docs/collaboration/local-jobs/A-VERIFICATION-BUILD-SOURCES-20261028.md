@@ -1,7 +1,7 @@
 # A-VERIFICATION-BUILD-SOURCES-20261028 · 测的是哪个构建，哪些验收留成回归
 id: A-VERIFICATION-BUILD-SOURCES-20261028
 owner: dot-A
-status: review_ready
+status: accepted
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5d18be14fb1bde809e0e1f981f9b17463d9b1056
@@ -43,8 +43,8 @@ result_branch: relay/a-verification-build-sources-20261028
 
 ## 当前结果
 
-- 已交付 explore 产物 sources.md：41 条候选全部通过链接与原文核实（41/41），整理为 15 组优先级、八项深挖方向、对验证页的具体增量与覆盖缺口。facts/reader 两路审查经 3 轮修正后通过，openIssues 为空，未运行产品/测试/部署，未作最终推荐。
-- 产物：[c276de9](https://github.com/dbvv1/a1dbv/commit/c276de932874904c39edb59522b1bffb214c82cd)，分支 `relay/a-verification-build-sources-20261028`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：本任务范围已全部完成，等待 dot-A 接收并由接收端推送 relay 分支；后续若要补中文社区反馈或核对 4,944/4,936 等数字差异，见产物“覆盖缺口”节。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- 有限接收 [c276de9](https://github.com/dbvv1/a1dbv/commit/c276de932874904c39edb59522b1bffb214c82cd) 中经负责人复核的 Next.js 产物选择、Playwright 构建／注册表检查和社区反例；事实限公开源码机制与明确归属的作者自报。驳回“41/41 全核、零遗留”的总括结论；未运行产品、测试或部署，未作本仓试用或采用决定。
+- Next.js 的本地包／版本覆盖／已有部署三路成立，但包来源守卫有分支条件、不证明产物新鲜；deploy 须保留矩阵与触发过滤条件，#98353 是同一 suite 的两种模式及临时检查，不是“只跑两个 suite”。
+- Playwright 生成器要求运行前后 diff 相同而非为空；驱动是提交命名缓存、新建时核检出，不以文件名证明内容。固定 registry 为 4,944；不接收 4,936、未计数的 132 或“唯一静默点”。[#3292 精确 head 50b5f0d8](https://api.github.com/repos/microsoft/playwright-python/commits/50b5f0d86fb77209c655b5f5072af0502676bd8a/check-runs?per_page=100) 为 21 success／8 failure，失败原因及归属未核。
+- 社区反例接收为固定代码与作者自报；不把测试配置写成实际执行次数，不把无仓内 Actions 写成没有任何持续 CI。保留中文反馈未检索、未实跑及效果未知；产物核读日期的 UTC／本地时区矛盾不采信。
+- 原产物与历史保留，不覆盖或删除，不要求原任务重跑或重新领取。此状态仅关闭上述来源材料的接收，原调用或进程是否停止仍未知；受限入口、代理／镜像保持停止，不访问私人会话。
