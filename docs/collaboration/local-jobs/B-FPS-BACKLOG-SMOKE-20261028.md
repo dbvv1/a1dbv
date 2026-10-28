@@ -2,7 +2,7 @@
 id: B-FPS-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 4b99b59a6b111c61d4aebd6e659bfb851e9eb736
 result_branch: relay/b-fps-backlog-smoke-20261028
@@ -36,8 +36,4 @@ result_branch: relay/b-fps-backlog-smoke-20261028
 
 ## 当前结果
 
-- 收口核对通过：固定源 tree 与 4b99b59 一致，22 项产物哈希和 14 项构建产物哈希全部复现，197 项测试通过，check_public 文件与提交身份无发现，openIssues 为空；本单元未改文件（工作树 clean、HEAD 777e830），四入口与 capture 结果未变。
-- 本单元没有文件改动。
-- 检查：check_public（文件） 通过；独立审查通过。
-- 下一步：由 dot-B 接收本轮并置 review_ready，按原门槛合入网站旁置入口并核对网站版本。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+已接收 [777e830](https://github.com/dbvv1/FPS-Like/commit/777e8306b5fe92de1fc1492d8960b6fa51125d87)；后续 d03c35b7 只是同一产物的收口回写，无文件变化，恢复 accepted，原单元结束，不再续跑或重新送审。运行源 4b99b59／Site v13 已交付不变，不重测、不重计上线；characters 预览进程未采样仍保留，不代表品质结项或整机 GPU 空闲。
