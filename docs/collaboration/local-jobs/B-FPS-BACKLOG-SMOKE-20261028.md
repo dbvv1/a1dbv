@@ -2,7 +2,7 @@
 id: B-FPS-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 4b99b59a6b111c61d4aebd6e659bfb851e9eb736
 result_branch: relay/b-fps-backlog-smoke-20261028
