@@ -1,7 +1,7 @@
 # A-CI-EXACT-SHA-READER-20261028 · 新发布提交的真实 CI 核验
 id: A-CI-EXACT-SHA-READER-20261028
 owner: dot-A
-status: running
+status: cancelled
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5dd280c04b1a5a79d10724a01ed390f34bb4b5f4
@@ -74,11 +74,7 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 1. 沿既有分支 `relay/a-ci-exact-sha-reader-20261028` 的 `63970ab608bf01b63c777089c0013d30e9769c44` 修订，不重跑或新开读者实测；只从已留存的实际投影补齐 result.md 三来源的 `query_scope`，不新增 CI API 调用。
 2. 独立复核既已指出缺字段，结论须保留“实测做通”与“交付仍需补项”的区别，不再概括为无问题／全部一致；原读者及复核证据保留。
 3. 保留本次实算输入 4,252／投影 924；页面历史输入 4,203 对应另一提交，差值来源尚未核实，不能把 49 字符或 sha 键猜测当作已证原因，不强行统一数字。
-
 ## 当前结果
-
-- 照页实测做通：目标 SHA a0c0d315… 的 statuses/checks/actions 三源均 HTTP 200、total 0，投影 4,252/924 字符、46 项回归通过，独立复核一致，结论为“当前未观测到记录”；但 taskDone=false，交付仍未做成——result.md 仍停在 02:26 UTC 且三来源表缺 query_scope，且本轮 reader-test 重新取数三次 GET，与任务修改要求 #1“不重跑、不新增 CI API 调用”不符。页面卡点：未给 ci-input.json 可复制组装命令（读者自写 node 一行，结果正确）；观察时间在投影输出中无字段、页面未规定记录位置。
-- 产物：[14da3a8](https://github.com/dbvv1/a1dbv/commit/14da3a80e007bf63c5051778d235334d660a73de)，分支 `relay/a-ci-exact-sha-reader-20261028`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：按已留存投影补 docs/collaboration/local-jobs/artifacts/A-CI-EXACT-SHA-READER-20261028/result.md 三源 query_scope 并更新观察时间，保留“实测做通／交付仍需补项”的区分，不重跑、不新增 CI API 调用，保留原读者与复核证据。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- 取消重复修订单元：`5a491838`、`14da3a80` 连续重新取三源 GET、只增读者记录，仍未补 result.md 的 `query_scope`，违背“仅用留存投影、不新增 CI API 调用”的修改要求；实测做通不等于交付补项完成。
+- 保留原结果分支 `relay/a-ci-exact-sha-reader-20261028`，取消时已核尖端为 `14da3a80e007bf63c5051778d235334d660a73de`。
+- 接收端在安全边界停止本任务，不再派发读者或新增 CI API 调用；保留现有结果、原读者与复核记录及仓外原响应／输入／投影，不改页面、不清理证据。后续由负责人改用定点修订接续，不重复原工作流。
