@@ -6,6 +6,13 @@
 
 **🟡 默认保留已能稳定达标的入口与配置；没有既有工作流时，按下面三类起步。** 本页 🟡 是待真实任务验证的选路建议，不是产品出厂默认或效果排名。先用现有仓库的小任务确认客户端能启动、模型能返回并完成验收；`--version`／`--help` 成功不等于模型可用。**[研究：采用判断；模型依据见 [02](../02-models-and-cost.md#1-原则按任务分档而不是追榜单)]**
 
+**编辑器与执行 Agent 可以分开选。** 已在 Cursor 看代码、审 diff，就保留编辑器，在集成终端沿用原有 Codex／Claude Code。确需另一入口时，先让它读取同一份项目规则、跑同一验收，再比较结果与总投入。
+
+- **Claude 面板与终端表现不同**：在扩展列表查看 Claude Code 扩展版本，再运行 `claude --version` 核终端版本。扩展自带一份 CLI，终端使用独立安装，两者版本可能不同；缺 CLI 专属功能时先回终端，核实际模型、权限与必要功能。
+- **云端构建失败**：先核任务实际使用的环境 build、其中的配置与依赖，再在该环境重跑项目原验收。Cursor Cloud 曾修复忽略仓库 `.cursor/environment.json`、指定 build 却使用其他配置的问题；先查这一层，再决定是否换 Agent。
+
+**依据**：[官方：Claude 的两种入口与版本](https://code.claude.com/docs/en/vs-code#vs-code-extension-vs-claude-code-cli)、[Cursor Cloud 10-19 当周环境修复](https://prod.cursor.com/docs/release-notes)；[实际配置：Sentry 共享项目规则](https://github.com/getsentry/sentry/blob/65d8ecc0bd1b4825afbde7bd05e5fd52e3511c4d/AGENTS.md)。[三工具采用讨论](https://www.reddit.com/r/cursor/comments/1wfeim1/claude_code_vs_codex_vs_cursorwhat_are_you/)同时包含偏好 IDE 交互与额度不足的使用者自报，供识别个人缺口；跨入口效果仍待真实任务验证。2026-10-28 核，未运行上述客户端／环境。
+
 | 任务 | 入口与具体配置 | 交给 Agent 的完成目标 |
 |---|---|---|
 | 本机仓库里的日常功能、补测试、小改动 | **Codex CLI**：在项目目录启动 `codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`（只覆盖本次启动）；已有 Claude Code 工作流则用 `claude --model claude-sonnet-5-5 --effort medium`。核会话实际模型／effort，沿用项目权限与检查 | 实现目标、跑相关检查、交回 diff 和真实结果；补一个失败路径或边界用例 |
