@@ -57,9 +57,11 @@ UI：从[原 URL／入口及前置状态]实际输入、点击或键盘操作，
 
 **先确认测到哪份代码，再跑原问题场景。** VS Code 的 UI 验证 Skill 默认启动已安装的 Insiders，找不到才用 Stable；验证未合入修改时则选 `--dev`，使用含该改动的检出，并准备匹配的 Electron 和开发构建。换到自己的项目，也要从运行输出核对实际应用／服务身份，避免把旧安装或另一份工作树的结果交回来。
 
+Next.js 团队也把“仅改 `test/` 时可直接跑测试”的前提写为工作区已准备好、框架构建最新；源码改动、切分支或拉取使产物过时时，先重建受影响部分再测。
+
 **一次性验收复用现有入口，需要长期防回归再接进测试套件。** VS Code 用 issue 场景收集逐步断言、截图和 trace，持续随构建运行的回归则写入 smoke tests。已有测试能覆盖就沿用；临时验收无需先搭一套场景框架。
 
-**依据**：[一手／项目实际配置] [VS Code UI 验证 Skill](https://github.com/microsoft/vscode/blob/6ba33e0ca0954b1ca03607d016f4b90768b32732/.github/skills/validate-ui-scenario/SKILL.md)，核实 2026-10-28；[本仓实际采用佐证] [并行检查候选接收](https://github.com/dbvv1/a1dbv/commit/144409dcd3e507520157d9e3a939c6ccd50f4218)，同日核对被测提交、离线结果与发布内容。实测范围为 Linux 离线检查，VS Code 场景未运行。
+**依据**：[一手／项目实际配置] [VS Code UI 验证 Skill](https://github.com/microsoft/vscode/blob/6ba33e0ca0954b1ca03607d016f4b90768b32732/.github/skills/validate-ui-scenario/SKILL.md)、[Next.js 构建前提](https://github.com/vercel/next.js/blob/f922205f9e860de24673269f81dea51e9e33b0cb/AGENTS.md#L73-L107)，核实 2026-10-28；[本仓实际采用佐证] [并行检查候选接收](https://github.com/dbvv1/a1dbv/commit/144409dcd3e507520157d9e3a939c6ccd50f4218)，同日核对被测提交、离线结果与发布内容。实测范围为 Linux 离线检查，VS Code 场景与 Next.js 均未运行。
 
 ### GitButler：按任务看组件，检查接回项目自己的命令
 
