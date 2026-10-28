@@ -110,7 +110,7 @@ WP0–WP13 的页面现由[模块与制作链地图](../../domains/game-dev/READ
 | 任务 | `kind` | 按什么做 | 规格必须写清 | 怎样算做成 |
 |---|---|---|---|---|
 | 案例拍摄模式与截图脚本 | `build` | [capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md) | 案例仓库、机位表（位置、朝向、视场角、分辨率）、只改哪些文件；没有固定步长模拟层的案例（如 Star-Rush）写明改成虚拟时钟 | 每个机位连拍两次画面一致；正常游玩不受影响；测试覆盖参数缺失与非法机位 |
-| 网关 3D 生成小样 | `build` | [game-content-production](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md) §3 | 概念图或文字、模型（Tripo P1 或 Hunyuan3D 3.1 Pro）、面数、风格说明、输出目录；调用走本机封装命令，模型不接触网关地址与凭据，日志不回传；Hunyuan 按次计费，每批小样不超过 8 次，扩量先问用户 | 每件有 GLB、生成参数、来源与许可说明和同机位阵容图；只调 API，不在本机跑模型 |
+| 网关 3D 生成小样 | `build` | [game-content-production](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md) §3 | 文字提示、模型（`tripo-p1`／`hunyuan-3.1`）、目标三角面、输出目录；调用和后处理只用本机的 `gen3d`（生成，每批计费调用默认上限 8，中断用 `--resume` 续取）与 `glbprep`（减面、缩贴图），不直接访问网关；图生 3D 暂不支持 | 每件有 `glbprep` 产出的 GLB、`gen3d` 的 manifest、来源与许可说明和同机位阵容图 |
 | 完整 smoke | `build` | 案例的 smoke 脚本，本机 headless Chromium | 候选 SHA、smoke 命令、超时 | smoke 报告、renderer 分类、自己启动进程的退出回执 |
 | 真 GPU 截图与录像 | `build` | 同上，本机 headless Chromium | 版本 SHA 或候选入口、机位、游戏内回放的输入脚本、帧数 | 每轮独占目录，manifest 的 `class` 为 `gpu`；改前／改后齐全（参照图在本地合成，不进结果分支） |
 | 目标效果图候选 | `build` | [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) §2 | 输入截图、品类、美术方向一句话；写死模型、量化与工作流文件（dot 先自己跑通一次再下发） | 每个机位 2–3 张构图未变的候选，dot 选定 |
