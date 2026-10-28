@@ -2,7 +2,7 @@
 id: B-MOBA-DIFFUSE-GPU-001
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 3f89df2bcfcaca1dde86cc1412d1649090a09d60
 result_branch: relay/b-moba-diffuse-gpu-001
@@ -46,8 +46,4 @@ a1 历史卡另转述运行审查员声称两条命令复跑通过，但未经�
 
 ## 当前结果
 
-- 按只读边界完成已发生事实追溯：原归档 15/15 哈希复核一致、原始证据只支持 blocked；审查员“两条命令复跑通过”的声明无可定位原始证据，已标记“声明未经原始证据验证；额外运行及其清理未知”，未补造任何缺失字段；openIssues 为空。新增 review-evidence/README.md 与 traceability.json，未改动原 16 个文件及旧档。
-- 产物：[f533d6f](https://github.com/dbvv1/MOBA-Like/commit/f533d6f3b4b59b61e71369143dac6c150ea08216)，分支 `relay/b-moba-diffuse-gpu-001`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由 dot-B 依据追溯结论验收，并决定是否重新授权 GPU 运行；本单元不再继续。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+已接收 [f533d6f](https://github.com/dbvv1/MOBA-Like/commit/f533d6f3b4b59b61e71369143dac6c150ea08216) 的事实追溯：原 16 文件及旧档不变，原 baseline 失败、stylized-diffuse 未执行；额外两次成功声明及原审查输出无可定位原始证据，额外运行及清理未知。接收限于回溯，不是 GPU／品质通过或全机空闲证明；本单元停止，不自动重派。恢复须明确新的执行范围，并核实际队列、进程／资源及串行安全条件，旧声明不能替代。
