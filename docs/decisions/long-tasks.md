@@ -102,6 +102,8 @@ Codex #40932 的 10 月报告里，子任务完成、独立心跳活着，主线
 
 **接收看产物，续接看实际动作。** 仅有派发回执时记“已派发、执行待确认”；看不到子进程活动时记“进程状态不可观测”，静默时长不能单独用来判定卡死或已停止。请求取消后，须收到可核的终止结果或核实原运行已结束，才把原写入面交给新执行者；期间可继续互不冲突的工作。对于重复做错的任务，保留有效结果，收窄成只补缺项的任务，而不是把整套流程再跑一遍。
 
+**机制对照（开源实现／使用者自报）**：OpenCode [2.1.2 源码](https://github.com/anomalyco/opencode/blob/a517687fde98a7329ada3ae644a01a9fc6c4e99e/packages/core/src/location-activity.ts)按活跃 Session／Job 保活；[原报告者在 2.1.3 实测](https://github.com/anomalyco/opencode/issues/51828#issuecomment-6355936667)称 90 分钟后台 shell 完成、通知送达且输出保留，同版[直接 HTTP shell 仍未覆盖](https://github.com/anomalyco/opencode/issues/51828#issuecomment-6357303882)。本仓仅核来源；不同运行时的案例支持按入口核验，不能证明 dot 已修复。核实 2026-10-28。
+
 **快照检查能筛出已知占位引用，执行状态仍要查原来源。** 本仓 `check_execution_snapshot.py` 当前 19 项单元测试复跑全部通过。对声明 `running` 的单元，合法 `kind`／时点配 `ref: "UNKNOWN"` 已返回 `needs_review` 与 `running_unknown_reference`；普通引用即使带 `verified: true`，仍列入 `source_verification_required`，`execution_evidence_status` 保持 `unknown`。`no_inconsistency_found` 只表示未检出记录矛盾，不能替代原工具结果、进程或产物核验；原证据不足时，不据此判定在跑、暂停或已停止。该工具只离线检查输入快照，不读取引用来源，也不实时监控任务。
 
 **依据**：[当前源码与测试](https://github.com/dbvv1/a1dbv/commit/c315ea665303252f41b36f93d50b9e9e0ccedc0a)，复跑与补测 2026-10-28。[旧版](https://github.com/dbvv1/a1dbv/commit/6b0a44d2906edc56a870cf6b7569e6d7b468d9a4)同日的 17/17 及 `UNKNOWN` 返回无不一致，仅属修正前的历史结果。两版补测均为合成输入，不是任务执行观测。
