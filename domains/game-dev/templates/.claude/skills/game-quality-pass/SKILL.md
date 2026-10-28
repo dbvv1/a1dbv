@@ -31,7 +31,12 @@ argument-hint: "[作品名] [近期目标，如：出生地到首塔的连续战
 
 **一次改一整层；不做单件道具或单个参数的像素级微调。**
 
-1. **灯光、雾与色调**：一盏主光（大场景用级联阴影）＋ HDRI 环境光照，雾色与天空同色系做空气透视，色调映射选定后固定，再用 LUT 调色；补环境光遮蔽。网页：`scene.environment` 用 PMREM 处理的 CC0 HDRI（如 Poly Haven）、ACES 或 AgX、N8AO；用 pmndrs/postprocessing 时渲染器设 `NoToneMapping`、帧缓冲 `HalfFloatType`、`ToneMappingEffect` 放链末，用 three 自带 `EffectComposer` 时由链末 `OutputPass` 读渲染器的色调映射。Unity URP／HDRP：Volume（Tonemapping、Color Lookup、SSAO）＋反射探针与 Light Probe；Unreal：Lumen＋Post Process Volume；Godot：WorldEnvironment（Tonemap、SSAO、SDFGI 或 VoxelGI）。
+1. **灯光、雾与色调**：先核实际材质的直接／间接受光路径，再选光源和遮蔽；不把 HDRI＋AO 当通用起点。一盏主光（大场景用级联阴影）建立明暗结构，雾色与天空同色系做空气透视，色调映射选定后固定，再用 LUT 调色。
+  - 网页 Three.js：`MeshStandardMaterial`／`MeshPhysicalMaterial` 可用 `scene.environment`＋PMREM 处理的 CC0 HDRI（如 Poly Haven）。原生 `MeshToonMaterial` 不接这条环境光路径，先用主光和 `AmbientLight`／`HemisphereLight` 调明暗；方向光阴影先衰减直接光，Toon ramp 不能提亮完全被阴影压零的直接光，暗部需从独立间接光路径处理。混合材质场景分别核对，不为让 HDRI 生效就整体换掉 Toon。
+  - 接触与缝隙层次不足时再选 AO，并检查角色轮廓与地表是否被压黑。材质 `aoMap` 调制间接光，不补光；N8AO 是另一条屏幕空间后处理路径，须实际接入并验图。色调映射可选 ACES 或 AgX；用 pmndrs/postprocessing 时渲染器设 `NoToneMapping`、帧缓冲 `HalfFloatType`、`ToneMappingEffect` 放链末，用 three 自带 `EffectComposer` 时由链末 `OutputPass` 读渲染器的色调映射。
+  - Unity URP／HDRP：按材质与渲染路径选 Volume（Tonemapping、Color Lookup、SSAO）、反射探针与 Light Probe；Unreal：Lumen＋Post Process Volume；Godot：WorldEnvironment（Tonemap、SSAO、SDFGI 或 VoxelGI）。
+
+  **材质边界依据**：Three 0.186.1 固定源码的[环境接入](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/webgl/WebGLPrograms.js#L56-L64)、[直接阴影与间接光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_fragment_begin.glsl.js#L181-L244)、[Toon 合光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_toon_pars_fragment.glsl.js#L10-L25)与 [aoMap](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/aomap_fragment.glsl.js)。原核实 2026-10-27，2026-10-28 与已安装同版源码逐字节复核；这是受光路径核对，视觉收益仍按第 4 步用 gpu 同机位对比和非作者盲判验收。
 2. **空间层次**：近、中、远三层各有连续剪影；视线落点放地标；围合空间的墙、崖、建筑用同一网格的模块化套件拼，交接处有收边，不出现巨型素面方块。
 3. **地表与材质族**：地表混 3–4 种可平铺材质（splat 或顶点色、地形图层），加磨损贴花，打破平涂；墙面和道具用 trim 材质，同一材质族共享粗糙度与色相范围。
 4. **角色与可读性**：角色比环境饱和、对比更高；轮廓靠形状区分（武器、体型、剪影），不只靠颜色；必要时用边缘光或描边。
