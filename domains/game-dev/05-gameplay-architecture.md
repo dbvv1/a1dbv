@@ -99,7 +99,7 @@ flowchart LR
 
 ### 多回合比赛：换边不换队伍，回合结束不等于整场结束
 
-**✅ 用既有规则结算每回合，比赛层只聚合已确定的结果并决定下一步。** 有限比赛不需要重写模拟或引入联网框架；先把稳定的队伍身份、每回合攻守身份和整场生命周期分开。下表对应 FPS 六回合训练候选：两侧各三回合，满六回合可平局；这是该候选的会话设计，不是 CS2 赛制或品质证明。
+**✅ 用既有规则结算每回合，比赛层只聚合已确定的结果并决定下一步。** 有限比赛不需要重写模拟或引入联网框架；先把稳定的队伍身份、每回合攻守身份和整场生命周期分开。下表对应 FPS 网站 v14 的旁置离线训练赛：两侧各三回合，满六回合可平局；这是该模式的会话设计，不是 CS2 赛制或品质证明。
 
 | 边界 | 保留什么 | 必须完成什么；常见错法 |
 |---|---|---|
@@ -117,9 +117,9 @@ flowchart LR
 
 **引擎对照。** Unity 单机场景内可保留普通 C# 比赛记录，由现有流程组件调用；只有确需跨场景时才沿已有常驻所有者传结果，`LoadSceneAsync` 完成后仍要做消费者装配。已使用 NGO 的项目复用上表 Boss Room 的服务端结算／结果传递链，不把客户端 TrainingMatch 当服务器。UE 的 `AGameMode`／`AGameState` 已提供比赛状态分工；联网规则留服务端、公开结果由 GameState 同步。Godot 的 Autoload 可保存跨场景记录，但新比赛仍须显式清空；常驻不是“永不重置”。这里是接入建议，未在三个引擎实跑。
 
-**让 Agent 验真实入口，而非只测新建的记录类。** 本例的 `tests/match.test.ts` 用实际 Game 跑六回合，验证三回合换边、3:3 平局、重复观察只记一次、观察不改模拟哈希和返回摘要不泄漏可变引用；`tests/client-match.test.ts` 执行真实客户端源码，确认第六回合后的按钮回调创建新 Game、比分与记录归零、没有第七回合，也没有偷偷重锁输入。后者替换了 DOM／视图／控制等环境依赖，因此仍需浏览器检查半场提示、结果可读性、暂停与连续点击，不能称已试玩。
+**让 Agent 验真实入口，而非只测新建的记录类。** 本例的 `tests/offline-training-v1/match.test.ts` 用实际 Game 跑六回合，验证三回合换边、3:3 平局、重复观察只记一次、观察不改模拟哈希和返回摘要不泄漏可变引用；`tests/offline-training-v1/client-match.test.ts` 执行真实客户端源码，确认第六回合后的按钮回调创建新 Game、比分与记录归零、没有第七回合，也没有偷偷重锁输入。后者替换了 DOM／视图／控制等环境依赖，因此仍需浏览器检查半场提示、结果可读性、暂停与连续点击，不能称已试玩。
 
-**实现起点与范围**：[固定候选 `485946e`](https://github.com/dbvv1/FPS-Like/tree/485946e401bda462d4bb2d2068b2e1daa924d39d) 的 `src/session/match.ts`、`src/client.ts`、`src/sim/game.ts` 与上述两份测试；本节独立重跑四项 CPU 测试。候选未进入默认分支或网站，模块地图仍保留“可用”，不升为“案例证实”。[UE GameMode／GameState](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-mode-and-game-state-in-unreal-engine)、[Unity LoadSceneAsync](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SceneManagement.SceneManager.LoadSceneAsync.html)、[Godot Autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html)为官方机制对照；PaddleBall／Boss Room 固定源码比较沿本节已有研究，不重复引入整套框架。核实 2026-10-28（UTC）。
+**实现起点与范围**：[已发布源码 `19f718eb`](https://github.com/dbvv1/FPS-Like/tree/19f718ebd5570ed1fb962b30d4ee607dc1ec9f6f/src/candidates/offline-training-v1) 中的 `session/match.ts`、`client.ts`、`sim/game.ts` 与上述两份测试。六回合规则和终局重开已有 CPU 测试，原小节的四项独立重跑记录保留；浏览器证据另看已接收的 [smoke 报告](https://github.com/dbvv1/FPS-Like/blob/1125fc428dcc0f22be976258fb105a0596ef46a3/docs/quality/smoke/B-FPS-OFFLINE-SMOKE-20261028/19f718ebd557-E2mXmf/report.json)：RTX 5070 下核到 9 个机器人／10 名角色、自然首回合结束、下一回合保留记录，以及现有“重新开始”清空整场记录和比分。[网站 v14 旁置入口](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1)已交付，原默认入口保留；六回合整场、半场换边、终局再玩与真人视听手感仍未验，地图维持“可用”。[UE GameMode／GameState](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-mode-and-game-state-in-unreal-engine)、[Unity LoadSceneAsync](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SceneManagement.SceneManager.LoadSceneAsync.html)、[Godot Autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html)为官方机制对照；PaddleBall／Boss Room 固定源码比较沿本节已有研究，不重复引入整套框架。核实 2026-10-28（UTC）。
 
 
 ### 第二次修改：失败快速重试，胜利保留结果
