@@ -2,7 +2,7 @@
 id: B-FPS-OFFLINE-SMOKE-20261028
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 19f718ebd5570ed1fb962b30d4ee607dc1ec9f6f
 result_branch: relay/b-fps-offline-smoke-20261028
@@ -33,3 +33,11 @@ result_branch: relay/b-fps-offline-smoke-20261028
 交实际起止 UTC、npm/runner 退出码、自有 Chromium PID／父链及原始 process did exit 的 exitCode/signal、browserDisconnected、预览 listener 关闭与端口不可达。本脚本 manifest 的 browserExit 与 report.cleanup 都须核，不以 passed 代替退出。记录既有串行条件；无共用锁则如实写无锁，不虚构归还证据。
 smoke 结束并核实自有资源退出后立即先回起止 UTC、退出码、renderer 分类与清理结果；报告整理、公开文件／提交身份扫描和独审随后在同一任务继续，不用 running 标签掩盖已结束的 GPU 阶段。
 全部功能断言与退出证据通过后回 review_ready；失败或超时也早回实际结果、保留原始证据和精确阻塞，不额外重拍。dot-B 决定接收及后续旁置发布，本任务不获默认切换或网站部署权限。
+
+## 当前结果
+
+- 完成固定源离线训练单入口真实 WebGL2 GPU 功能 smoke 实测与脱敏归档：9 个 bot controller／10 名角色、六回合 HUD、首回合自然超时、下一回合保留记录、整场重开清零、浏览器退出码 0 与端口清理均通过，19 个构建文件 hash 与产物一致，7 个公开文件 hash 全部匹配；未关闭审查问题 0 项（taskDone／pageStuck 为读者实测字段，本单元 build 不适用）。
+- 产物：[1125fc4](https://github.com/dbvv1/FPS-Like/commit/1125fc428dcc0f22be976258fb105a0596ef46a3)，分支 `relay/b-fps-offline-smoke-20261028`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：任务全部范围已完成，无剩余单元
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
