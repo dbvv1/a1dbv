@@ -36,8 +36,4 @@ result_branch: relay/b-fps-backlog-smoke-20261028
 
 ## 当前结果
 
-- 本轮已把 7702/75208 的预览归属从 characters 改正为 movement（characters 置空并记未采样），报告、过程证据与 22 项哈希复核一致；三角度独立审查通过，openIssues 为空，未重跑任何浏览器 smoke。
-- 产物：[777e830](https://github.com/dbvv1/FPS-Like/commit/777e8306b5fe92de1fc1492d8960b6fa51125d87)，分支 `relay/b-fps-backlog-smoke-20261028`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由 dot-B 接收本轮文档修正并提交，关闭该审查问题；四入口与 capture 结果不变。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+接收 [777e830](https://github.com/dbvv1/FPS-Like/commit/777e8306b5fe92de1fc1492d8960b6fa51125d87) 的原 smoke 与回执修订：7702／75208 归属改为 movement，characters 预览进程未采样明确保留，22 项哈希一致；只修证据、未重跑。实际运行源仍为 4b99b59，Site v13 不变；不重计新增交付，不据此认定画面／手感品质或整机 GPU 空闲。
