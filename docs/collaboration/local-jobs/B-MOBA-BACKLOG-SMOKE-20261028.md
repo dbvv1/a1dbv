@@ -2,7 +2,7 @@
 id: B-MOBA-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 9df6192f44f91482c3c05ab8014c86d406c48e18
 result_branch: relay/b-moba-backlog-smoke-20261028
@@ -32,3 +32,11 @@ result_branch: relay/b-moba-backlog-smoke-20261028
 公开扫描产物与提交身份后回 review_ready；失败也保留真实输出和精确阻塞，不伪造通过、不额外重拍。smoke 仅是功能合入门槛，不证明画面／手感更好，不据此换默认；由 dot-B 接收后合入旁置入口并另核网站版本。
 
 smoke 命令结束且自有资源退出核完后，先回实际起止 UTC、退出码和清理结果；完整报告整理／独审随后在原任务继续，不用 running 标签掩盖已结束的 GPU 阶段。
+
+## 当前结果
+
+- 真实 headless smoke 已按固定源跑完并留证：默认 v10 入口推进且有非背景像素，候选 v11 通过真实资产、HUD 布局、移动／停止、镜头、技能与两次重开，但在 keyboard-and-resume 阶段 15 秒超时——改键保存后未把指针移回画布，targeting 不显示（固定源推断，任务禁止补跑）；审查通过、openIssues 为空，实际 renderer 为 SwiftShader（software），page/canvas/diffuse 截图未生成，脱敏报告与截图见 docs/quality/smoke/B-MOBA-BACKLOG-SMOKE-20261028/2026-10-28T12-09-36-086Z-68556/。
+- 产物：[02e1aa2](https://github.com/dbvv1/MOBA-Like/commit/02e1aa2be74487cf164fda14cda0424f8545c588)，分支 `relay/b-moba-backlog-smoke-20261028`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：需在新的固定源中修正 smoke runner 改键后的指针移动（或 leavePointer 语义），再按固定命令重跑并补齐 page/canvas/diffuse 截图；本单元受源码与脚本只读限制无法继续。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
