@@ -25,12 +25,12 @@
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；来源按产出调整，候选进收件箱，漏检对照记入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 首轮扫描、周校准与[本周 Top 5](../13-frontier-radar.md#本周-top-5)已做。下一步按 explore-frontier 广扫，同时推进读者地图上仍为 🟡／⏳ 的问题，漏检记进探索证据。 |
 | P81 | **试用与写成选择**：真实编码任务试用，结论进决策页／模板 | dot-A | 脚本／CI 投影已实用；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。 |
-| MOBA | **MOBA-Like 基本战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `9311f43`／Site v12 未变。[GPU 盲评](https://github.com/dbvv1/MOBA-Like/blob/38f36d149a409bb7be0d7ff4323326e34759851c/docs/quality.md)选改前候选 `baecaf5`：`069b74b` 塔身更暗、投影黑硬，不采用，换手段。两版未部署；受光／英雄身份／兵群重叠仍弱。重复拍摄失败、安全回执待补；Q／攻城仍候选，完整 smoke／整局视听待补。 |
+| MOBA | **MOBA-Like 基本战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `9311f43`／Site v12 未变；跨资产排序源 `3f89df2` 已发布。盲评不采用 `069b74b`。B-MOBA-DIFFUSE-GPU-001 已领取，未核实跑；relay `7968512`，待新实跑／清理回执再判受光。英雄身份／兵群重叠弱，Q／攻城仍候选，完整 smoke／整局视听待补。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | Star v7 已用存档；MOBA `ea7a064` 重开／续玩／跨标签实操通过，改键 `89f0831` 仍候选，main／Site 未变。完整 smoke 未启动，Firefox 退出原因未明；Codex 恢复提示 2026-11-02 06:08（时区未给）。[Unity 源准备](../../experiments/unity-encounter/README.md)已接收，未在引擎实跑；原任务暂停。 |
-| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收；角色两件进可玩候选，通路／命中件待接线。Star 标准件已接线、实机未过。MOBA 灯光经验已回正文；开放权重音频未听未采用，3D 仍无 mesh，Nature 恢复未知。 |
+| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收；角色两件进可玩候选，通路仅本地接线，命中件待接线。Star 标准件已接线、实机未过。MOBA 灯光经验已回正文；开放权重音频未听未采用，3D 仍无 mesh，Nature 恢复未知。 |
 | B-实例 | **AI 做游戏实例**：作品、作者过程与社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏、未听音。Warpact 仍未玩到；没有新增整局品质推荐。 |
 | SR | **Star-Rush 完整比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `1dd89d3`／网站 v7 未改驾驶。标准件已接入本地候选 `345f914`，pilot／off 均未获 READY 或图。`dca3409` 软件全弯 frame0 已取得，公开上传原调用已取消、未生成远端产物；恢复待用户决定。车控 `0817aa0` 仅短段观察；普通追尾、完整同弯操控与声音待验。 |
-| FPS | **FPS-Like 完整回合品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | main `a97d572`／网站 v12 未变。[角色候选 `a0c8d52`](https://github.com/dbvv1/FPS-Like/commit/a0c8d52b952f04195c9ae31dca0af092c2418764)已实显，射击／换弹、一败局／续局／重开已观察；场景仍平、品质增益未定。软件前后单帧已导出，多帧 tab 崩溃；完整 smoke、操控及整局视听待验。[旧预览清理](local-jobs/B-FPS-PREVIEW-CLEANUP-001.md)11 个进程已退出并复核。 |
+| FPS | **FPS-Like 完整回合品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | main `a97d572`／网站 v12 未变。本地门洞源 `05471f6` CPU 验收通过、未发布；干净构建来源已纠正，已有实图属旧源。云端可视 Firefox 启动被拒、未执行；完整 smoke／操控／整局视听待验，原上传待批。角色候选 `a0c8d52`已实显，射击／换弹／败局／续局／重开已观察，品质未定。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
 ## 待人工验收（统一查看）
@@ -48,6 +48,7 @@
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
+| FPS 云端浏览器验收 | 可见 Firefox 启动被拒；待用户明确批准后恢复，不换路绕过 | CPU 修正保留，独立工作照常 |
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
 | Actual 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/actualbudget/actual/compare/master...dbvv1:actual:dot-a/load-config-typescript-1483)创建Draft。拟标题：`[AI] Migrate sync server configuration loader to TypeScript`；正文保留官方空模板，人类字段不代填 | 本仓发现、试用与既有PR跟进继续 |
 | 本机模型权重下载 | 开放权重 3D 在本机取权重时 TLS 连接中断（B-OPENWEIGHT-3D-001），可能需要用户检查本机网络或代理 | 音频与其他制作链照常 |
