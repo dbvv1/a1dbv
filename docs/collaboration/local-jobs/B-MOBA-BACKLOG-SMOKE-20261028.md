@@ -2,7 +2,7 @@
 id: B-MOBA-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 935bf8e76929aeeb0af707a1dbf9f98ee3597aef
 result_branch: relay/b-moba-backlog-smoke-20261028
