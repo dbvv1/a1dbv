@@ -63,6 +63,19 @@
 | 愿意自己定制 harness 并维护隔离 | 🧪 **Pi** | 默认启用 4 个工具，可扩展 MCP／codemode；按进程权限运行，隔离需另设，见 [固定来源](../research/2026-10-12-community-source-records.md#2026-10-15-选型补核默认工具不是成本或隔离边界) **[一手；研究]** |
 | 新项目需要持续的模型／接口适配 | ⛔ 暂缓新采用 **Aider** | 既有核查中 main 末次提交为 2026-05-22；较新模型配置不等于稳定版发布。已有稳定工作流可继续用，见 [维护边界](../research/2026-10-12-community-source-records.md#2026-10-15-aider维护节奏与模型兼容分开判断) **[一手；研究]** |
 
+### 团队要统一哪一层？
+
+**🟡 先分清团队瓶颈，再决定是否统一执行入口。** 以下是从团队自报提炼的条件候选，未试用，不是产品排名。
+
+| 团队当前卡在哪里 | 可试的选择 | 真实取舍 |
+|---|---|---|
+| 许可／付款管理分散，共同学习难沉淀 | 试统一编码 Agent 执行入口，保留编辑器选择 | MarsBased 选择 Claude Code，重视统一管理与共享工作方法；CTO 同时承认 Cursor 也能做 agent-centric 工作，差别是其团队的使用摩擦 |
+| 成员已有有效的不同工作流，但 PR 中实现惯例漂移 | 保留多个入口，统一工程标准与验收 | Rootly 自报 Cursor／Claude Code／Codex 并用，选择保留个人工作流；标准整合仍在进行，工具与 Skill 的后续维护仍未解决 |
+
+**统一客户端不等于统一做法。** MarsBased 7 月文章回顾口头传授 RPI 曾出现做法差异，后来写入手册来收敛。迁移时间也有矛盾：5 月 7 日 CTO 称仍在转型中，6 月 14 日 COO 却称已独用 Claude Code 超过半年；范围与时间口径未厘清，不据此认定迁移完成。上述文章未公开可复核的量化净收益或跨入口对照结果。试用时保留现有验收，在正在发生的团队任务中比较管理、返工与维护投入；规则如何分层见[团队落地](../18-team-adoption.md)。
+
+**依据**：作者一手复盘 [MarsBased 5 月决策](https://marsbased.com/blog/2026/05/07/the-strategy-behind-the-shift-why-marsbased-left-cursor-for-claude-code)、[6 月管理取舍](https://marsbased.com/blog/2026/06/14/how-marsbased-integrates-ai-across-development-and-operations)、[7 月做法漂移](https://marsbased.com/blog/2026/07/16/how-we-actually-use-ai-to-build-software)、[Rootly 多入口与维护](https://rootly.com/blog/what-broke-when-engineering-went-fully-agent-based)（5 月 13 日，更新 6 月 23 日）；研究：按瓶颈迁移为本页推论。2026-10-28 核。
+
 ## 对比矩阵（终端 / 通用 Agent）
 
 这里比较**会改变入口选择的条件**。模型名、订阅资格与插件数量回深度页维护，避免用一个功能勾选推定适合所有客户端。**[研究：组织原则]**
