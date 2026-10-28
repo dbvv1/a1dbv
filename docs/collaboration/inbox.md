@@ -4,6 +4,8 @@
 
 ## 待处理
 
+- 👀 2026-10-28 核读：[Max Nardit 的 AGENTS 提示实验](https://max.nardit.com/articles/agents-md-viral-lines-tested)（10-25，Claude Code 2.1.310／Opus 5.5、Sonnet 5.5；两个小任务、90 次运行，每个条件单元 5 次），作者观察到删辅助文案连带删掉输入检查。race／security 防护“先解释再等批准”的提示未被有效检验：任务本已注明单线程、各组很少加锁，且 print 模式无人回应审批；本仓未试用，仅作 Codex 过度工程的来源候选，不新增默认。
+
 <a id="cline-image-token-estimate"></a>
 ### 2026-10-28：Cline 读图后过早压缩，先分清内部估算与服务端用量
 
