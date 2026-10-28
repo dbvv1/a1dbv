@@ -76,5 +76,9 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 3. 保留本次实算输入 4,252／投影 924；页面历史输入 4,203 对应另一提交，差值来源尚未核实，不能把 49 字符或 sha 键猜测当作已证原因，不强行统一数字。
 
 ## 当前结果
-- 已有[产物 63970ab](https://github.com/dbvv1/a1dbv/commit/63970ab608bf01b63c777089c0013d30e9769c44)：目标 SHA 三源均 HTTP 200、无记录，未报绿或排队；46 项回归通过。缺项与历史计数差异待按上节最小修订。
-- 下一步：接收端只修原结果及支撑记录，核对留存投影后沿原 result_branch 交回 `review_ready`，由 dot-A 接收；不改嵌入页面。
+
+- 照页实测做得通：目标 SHA 三源均 HTTP 200、total 0，投影与 46 项回归经独立复核一致，结论应为“当前未观测到记录”（taskDone=false，交付未做成）；未关闭问题：result.md 仍未补三源 query_scope、观察时间仍停在 02:26 UTC，且本轮重跑新增三次 CI API 调用违反“不新增”要求；页面卡点仅一处：未给 ci-input.json 的可复制组装命令，读者自写 node 一行，未影响结果。
+- 产物：[5a49183](https://github.com/dbvv1/a1dbv/commit/5a4918383f8eda6ce1c2fb23c0dc1fe9d0703ad7)，分支 `relay/a-ci-exact-sha-reader-20261028`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：只按已留存投影修 docs/collaboration/local-jobs/artifacts/A-CI-EXACT-SHA-READER-20261028/result.md：补三源 query_scope、更新时间并保留“实测做通／交付仍需补项”的区分，不重跑、不新增 CI API 调用，保留原读者与复核证据。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
