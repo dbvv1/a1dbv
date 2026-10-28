@@ -1,0 +1,801 @@
+{
+  "scope": "Same fixed repository commit, existing 20 offline phases; test counts are executions, not unique tests.",
+  "environment": {
+    "os": "Linux",
+    "python": "3.12.14",
+    "visible_logical_cpus": 9,
+    "cpu_quota": "unknown",
+    "memory_limit": "unknown"
+  },
+  "order": [
+    1,
+    2,
+    2,
+    1
+  ],
+  "serial_median_seconds": 39.610150000000004,
+  "parallel_median_seconds": 21.35775,
+  "reduction_percent": 46.08,
+  "runs": [
+    {
+      "source_sha": "4282fee1684ba2c6a6412f58d6f52a12d913221c",
+      "status": "passed",
+      "jobs": 1,
+      "started_utc": "2026-10-28T10:58:48.613+00:00",
+      "expected_phases": 20,
+      "not_run_phases": [],
+      "mutated_workers": [],
+      "tests": 475,
+      "phases": [
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.5181,
+          "index": 1,
+          "name": "Local document targets and config syntax",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 376,
+          "seconds": 18.3874,
+          "index": 2,
+          "name": "Deterministic tests (Python Hook backend)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 11,
+          "seconds": 16.2687,
+          "index": 3,
+          "name": "Catalog Compare CLI contract matrix",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 33,
+          "seconds": 1.0169,
+          "index": 4,
+          "name": "Hook jq backend regressions",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 10,
+          "seconds": 1.5194,
+          "index": 5,
+          "name": "Evaluation fixtures (no models)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 26,
+          "seconds": 0.1647,
+          "index": 6,
+          "name": "Public result audit (synthetic data)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 19,
+          "seconds": 0.8669,
+          "index": 7,
+          "name": "Recovery outcome probe (no services)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.9169,
+          "index": 8,
+          "name": "Public content scan (credentials, home paths, emails)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0038,
+          "index": 9,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.004,
+          "index": 10,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/skills/unity-compile-check/scripts/compile_check.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 11,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/skills/unity-run-tests/scripts/run_tests.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0044,
+          "index": 12,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0038,
+          "index": 13,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/skills/ue-build/scripts/build.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0049,
+          "index": 14,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/skills/ue-run-tests/scripts/run_tests.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.002,
+          "index": 15,
+          "name": "Shell syntax: experiments/browserless-heap-run.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.004,
+          "index": 16,
+          "name": "Shell syntax: experiments/opencode_review_reproduce.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 17,
+          "name": "Shell syntax: experiments/run-jiti-stateful-trial.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.004,
+          "index": 18,
+          "name": "Shell syntax: experiments/worktrunk-ready.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 19,
+          "name": "Shell syntax: scripts/export-ai-config.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 20,
+          "name": "Shell syntax: templates/generic/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        }
+      ],
+      "finished_utc": "2026-10-28T10:59:28.696+00:00",
+      "setup_seconds": 0.1649,
+      "total_seconds": 40.0833
+    },
+    {
+      "source_sha": "4282fee1684ba2c6a6412f58d6f52a12d913221c",
+      "status": "passed",
+      "jobs": 2,
+      "started_utc": "2026-10-28T10:59:56.167+00:00",
+      "expected_phases": 20,
+      "not_run_phases": [],
+      "mutated_workers": [],
+      "tests": 475,
+      "phases": [
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.5172,
+          "index": 1,
+          "name": "Local document targets and config syntax",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 376,
+          "seconds": 18.7195,
+          "index": 2,
+          "name": "Deterministic tests (Python Hook backend)",
+          "worker": 2
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 11,
+          "seconds": 16.806,
+          "index": 3,
+          "name": "Catalog Compare CLI contract matrix",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 33,
+          "seconds": 1.075,
+          "index": 4,
+          "name": "Hook jq backend regressions",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 10,
+          "seconds": 1.5707,
+          "index": 5,
+          "name": "Evaluation fixtures (no models)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 26,
+          "seconds": 0.1649,
+          "index": 6,
+          "name": "Public result audit (synthetic data)",
+          "worker": 2
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 19,
+          "seconds": 0.8669,
+          "index": 7,
+          "name": "Recovery outcome probe (no services)",
+          "worker": 2
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.9167,
+          "index": 8,
+          "name": "Public content scan (credentials, home paths, emails)",
+          "worker": 2
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.004,
+          "index": 9,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 10,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/skills/unity-compile-check/scripts/compile_check.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 11,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/skills/unity-run-tests/scripts/run_tests.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 12,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 13,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/skills/ue-build/scripts/build.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0038,
+          "index": 14,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/skills/ue-run-tests/scripts/run_tests.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 15,
+          "name": "Shell syntax: experiments/browserless-heap-run.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 16,
+          "name": "Shell syntax: experiments/opencode_review_reproduce.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0015,
+          "index": 17,
+          "name": "Shell syntax: experiments/run-jiti-stateful-trial.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0038,
+          "index": 18,
+          "name": "Shell syntax: experiments/worktrunk-ready.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0039,
+          "index": 19,
+          "name": "Shell syntax: scripts/export-ai-config.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 20,
+          "name": "Shell syntax: templates/generic/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        }
+      ],
+      "finished_utc": "2026-10-28T11:00:17.497+00:00",
+      "setup_seconds": 0.2909,
+      "total_seconds": 21.3296
+    },
+    {
+      "source_sha": "4282fee1684ba2c6a6412f58d6f52a12d913221c",
+      "status": "passed",
+      "jobs": 2,
+      "started_utc": "2026-10-28T11:00:17.551+00:00",
+      "expected_phases": 20,
+      "not_run_phases": [],
+      "mutated_workers": [],
+      "tests": 475,
+      "phases": [
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.5158,
+          "index": 1,
+          "name": "Local document targets and config syntax",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 376,
+          "seconds": 18.5635,
+          "index": 2,
+          "name": "Deterministic tests (Python Hook backend)",
+          "worker": 2
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 11,
+          "seconds": 16.8495,
+          "index": 3,
+          "name": "Catalog Compare CLI contract matrix",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 33,
+          "seconds": 1.0169,
+          "index": 4,
+          "name": "Hook jq backend regressions",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 10,
+          "seconds": 1.6691,
+          "index": 5,
+          "name": "Evaluation fixtures (no models)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 26,
+          "seconds": 0.1648,
+          "index": 6,
+          "name": "Public result audit (synthetic data)",
+          "worker": 2
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 19,
+          "seconds": 0.9675,
+          "index": 7,
+          "name": "Recovery outcome probe (no services)",
+          "worker": 2
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.9668,
+          "index": 8,
+          "name": "Public content scan (credentials, home paths, emails)",
+          "worker": 2
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0081,
+          "index": 9,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 10,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/skills/unity-compile-check/scripts/compile_check.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 11,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/skills/unity-run-tests/scripts/run_tests.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 12,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0039,
+          "index": 13,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/skills/ue-build/scripts/build.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 14,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/skills/ue-run-tests/scripts/run_tests.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0039,
+          "index": 15,
+          "name": "Shell syntax: experiments/browserless-heap-run.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 16,
+          "name": "Shell syntax: experiments/opencode_review_reproduce.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 17,
+          "name": "Shell syntax: experiments/run-jiti-stateful-trial.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 18,
+          "name": "Shell syntax: experiments/worktrunk-ready.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 19,
+          "name": "Shell syntax: scripts/export-ai-config.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0037,
+          "index": 20,
+          "name": "Shell syntax: templates/generic/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        }
+      ],
+      "finished_utc": "2026-10-28T11:00:38.937+00:00",
+      "setup_seconds": 0.3016,
+      "total_seconds": 21.3859
+    },
+    {
+      "source_sha": "4282fee1684ba2c6a6412f58d6f52a12d913221c",
+      "status": "passed",
+      "jobs": 1,
+      "started_utc": "2026-10-28T11:00:38.993+00:00",
+      "expected_phases": 20,
+      "not_run_phases": [],
+      "mutated_workers": [],
+      "tests": 475,
+      "phases": [
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.5665,
+          "index": 1,
+          "name": "Local document targets and config syntax",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 376,
+          "seconds": 18.2301,
+          "index": 2,
+          "name": "Deterministic tests (Python Hook backend)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 11,
+          "seconds": 15.8104,
+          "index": 3,
+          "name": "Catalog Compare CLI contract matrix",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 33,
+          "seconds": 0.9179,
+          "index": 4,
+          "name": "Hook jq backend regressions",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 10,
+          "seconds": 1.4181,
+          "index": 5,
+          "name": "Evaluation fixtures (no models)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 26,
+          "seconds": 0.1144,
+          "index": 6,
+          "name": "Public result audit (synthetic data)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": 19,
+          "seconds": 0.7662,
+          "index": 7,
+          "name": "Recovery outcome probe (no services)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.8665,
+          "index": 8,
+          "name": "Public content scan (credentials, home paths, emails)",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0038,
+          "index": 9,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 10,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/skills/unity-compile-check/scripts/compile_check.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 11,
+          "name": "Shell syntax: domains/game-dev/unity/templates/.claude/skills/unity-run-tests/scripts/run_tests.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 12,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 13,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/skills/ue-build/scripts/build.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 14,
+          "name": "Shell syntax: domains/game-dev/unreal/templates/.claude/skills/ue-run-tests/scripts/run_tests.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0016,
+          "index": 15,
+          "name": "Shell syntax: experiments/browserless-heap-run.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0036,
+          "index": 16,
+          "name": "Shell syntax: experiments/opencode_review_reproduce.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0014,
+          "index": 17,
+          "name": "Shell syntax: experiments/run-jiti-stateful-trial.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0038,
+          "index": 18,
+          "name": "Shell syntax: experiments/worktrunk-ready.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 19,
+          "name": "Shell syntax: scripts/export-ai-config.sh",
+          "worker": 1
+        },
+        {
+          "returncode": 0,
+          "status": "passed",
+          "tests": null,
+          "seconds": 0.0035,
+          "index": 20,
+          "name": "Shell syntax: templates/generic/.claude/hooks/protect-paths.sh",
+          "worker": 1
+        }
+      ],
+      "finished_utc": "2026-10-28T11:01:18.130+00:00",
+      "setup_seconds": 0.1724,
+      "total_seconds": 39.137
+    }
+  ]
+}
