@@ -35,10 +35,10 @@ smoke 命令结束且自有资源退出核完后，先回实际起止 UTC、退�
 
 ## 当前结果
 
-- 真实 headless smoke 已按固定源跑完并留证：默认 v10 入口推进且有非背景像素，候选 v11 通过真实资产、HUD 布局、移动／停止、镜头、技能与两次重开，但在 keyboard-and-resume 阶段 15 秒超时——改键保存后未把指针移回画布，targeting 不显示（固定源推断，任务禁止补跑）；审查通过、openIssues 为空，实际 renderer 为 SwiftShader（software），page/canvas/diffuse 截图未生成，脱敏报告与截图见 docs/quality/smoke/B-MOBA-BACKLOG-SMOKE-20261028/2026-10-28T12-09-36-086Z-68556/。
-- 产物：[02e1aa2](https://github.com/dbvv1/MOBA-Like/commit/02e1aa2be74487cf164fda14cda0424f8545c588)，分支 `relay/b-moba-backlog-smoke-20261028`。
+- 固定源 c1d65ffe 的串行 headless smoke 已实跑并发布独占脱敏证据：默认 v10 推进且有非背景像素，但候选 v11 在 input 阶段 run.mjs:77 "Move must still be active before stop" 断言失败（实际为 SwiftShader 软件渲染），改键回画布、保存续玩与 diffuse 入口仍未验证；审查通过，openIssues 为空。
+- 产物：[5347117](https://github.com/dbvv1/MOBA-Like/commit/5347117d7a4faabbfd937172bb382efbc8eded14)，分支 `relay/b-moba-backlog-smoke-20261028`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：按固定修订 c1d65ffe 复验；仅 runner 在改键保存后用真实 page.mouse.move 回画布再按改键及 CPU 回归，15 项 focused／非作者 3 项通过，修后真实浏览器未验。保留上轮 failed／software 与缺图事实。
+- 下一步：在安静机器（不并行监视器）用同一固定命令重跑一次 smoke；若仍复现，由 dot-B 调整 runner 对 moveGoal 的观测时机（本任务禁改源码/脚本）；接收端保留 02e1aa2 失败记录后合入 c1d65ffe，再提交本轮证据目录。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求
