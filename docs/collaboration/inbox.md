@@ -4,6 +4,17 @@
 
 ## 待处理
 
+<a id="goose-litellm-vision-payload"></a>
+### 2026-10-28：LiteLLM 别名丢图，先验实际请求与配置优先级
+
+🧪 **Goose 经 LiteLLM 代理别名看不到图片时，先让 Agent 核实际 completion HTTP payload，再查 vision 配置如何进入 formatter。** `/model/info` 返回 `supports_vision: true` 不代表图片已经发出：同时检查直接附图和工具返回图片、首次与缓存后的请求。修补应保留传入配置的 `true`／`false`（包括 canonical 已填入的值），只在未定时按精确别名读取布尔元数据，并在格式化前补入；不能只补字段解析。
+
+本仓在 Goose 1.57.0 固定源码上用真实回环 HTTP／Wiremock 调用原 provider：**基线 9 项中，JSON／SSE 别名两项失败、7 项对照通过**，这两项的首次和缓存后请求均丢了直接图和工具图。本地候选扩展到 **18 项全部通过**（含串行复跑），覆盖显式优先级、关闭 prompt cache、错误元数据与无关别名；非作者源码审查未发现必改项。这是本地排障试验，尚未接真实 LiteLLM 代理／模型，不作为性能比较、工具推荐或读者照做通过记录。
+
+**候选的取舍**：未定 vision 且关闭 prompt cache 的纯文本请求也会新增首轮发现等待；沿用源码的 5 秒发现超时、60 秒失败缓存，真实超时／并发未另测。候选仍在本地、未提 PR；上游要求贡献对应 Ready issue，当前 Ready 状态未知。
+
+**依据与范围**：[使用者原始问题 #13158](https://github.com/aaif-goose/goose/issues/13158)、固定基线的[元数据解析](https://github.com/aaif-goose/goose/blob/8a16788137c8af25f9d6d17ee87bbedb53ea9325/crates/goose/src/providers/litellm.rs#L164-L179)、[先格式化后查缓存能力](https://github.com/aaif-goose/goose/blob/8a16788137c8af25f9d6d17ee87bbedb53ea9325/crates/goose/src/providers/litellm.rs#L300-L321)、[formatter 缺省行为](https://github.com/aaif-goose/goose/blob/8a16788137c8af25f9d6d17ee87bbedb53ea9325/crates/goose-provider-types/src/formats/openai.rs#L1714)、[发现缓存与超时](https://github.com/aaif-goose/goose/blob/8a16788137c8af25f9d6d17ee87bbedb53ea9325/crates/goose/src/providers/litellm.rs#L32-L33)及[贡献门槛](https://github.com/aaif-goose/goose/blob/8a16788137c8af25f9d6d17ee87bbedb53ea9325/AGENTS.md#L5-L17)。核实原 issue、固定源码、本地 HTTP 记录与非作者审查：2026-10-28 UTC。✅ 已入 [13 候选表](../13-frontier-radar.md#值得一试近4周的新项目与做法)。
+
 <a id="flutter-native-rule-loading"></a>
 ### 2026-10-27：Flutter 热重载没触发，先核指令有没有加载
 
