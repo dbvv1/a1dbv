@@ -1,7 +1,7 @@
 # A-VERIFICATION-MAP-SOURCES-20261028 · 团队怎样持续维护真实产品验收
 id: A-VERIFICATION-MAP-SOURCES-20261028
 owner: dot-A
-status: ready
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 38c169622bbfeab60969be64607083862bbb6573
