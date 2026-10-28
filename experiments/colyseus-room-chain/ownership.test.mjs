@@ -17,6 +17,47 @@ const disposed = h => waitFor(async () => {
   return s.created === s.disposed && s.listed === 0 ? s : false;
 },'all real rooms disposed');
 
+test('lobby ready cannot queue while disconnected or during reconnect before fresh state', {timeout:15000}, async () => {
+  const h=await setup(), owner=new SessionOwner(), sdk=new Client(h.endpoint);
+  let reconnectBlocked=false;
+  try {
+    await owner.connect(async()=>{
+      const room=await sdk.create('duo',{name:'Alpha',protocol:1});
+      room.reconnection.minUptime=0;
+      room.reconnection.minDelay=room.reconnection.maxDelay=500;
+      room.onReconnect(()=>{
+        assert.throws(()=>owner.ready(),/current connected state/);
+        reconnectBlocked=true;
+      });
+      return room;
+    });
+    const initial=await state(owner,s=>s.initialized,'initial lobby state');
+    const peer=h.client();
+    await peer.call('join',{name:'Bravo',roomId:initial.roomId});
+    const peerState=await inspect(peer,s=>s.initialized,'peer lobby state');
+    await peer.call('ready');
+    await state(owner,s=>s.snapshot.players[peerState.sessionId]?.ready,'peer ready');
+    const room=owner.requireRoom().room;
+    room.connection.close(4010,'controlled loopback interruption');
+    assert.throws(()=>owner.ready(),/current connected state/,'socket close gates before onDrop');
+    await state(owner,s=>!s.initialized&&s.trace.some(e=>e.kind==='drop'),'drop signal');
+    assert.throws(()=>owner.ready(),/current connected state/);
+    assert.throws(()=>owner.ready(false),/current connected state/);
+    assert.equal(room.reconnection.enqueuedMessages.length,0);
+    const resumed=await state(owner,s=>s.initialized&&s.trace.some(e=>e.kind==='reconnected-before-state'),'resumed lobby state');
+    assert.equal(reconnectBlocked,true);
+    assert.equal(resumed.snapshot.phase,'lobby');
+    assert.equal(resumed.snapshot.players[resumed.sessionId].ready,false);
+    assert.equal(resumed.snapshot.players[peerState.sessionId].ready,true);
+    owner.ready(false);
+    owner.ready(true);
+    await state(owner,s=>s.acceptedInput,'explicit ready starts game');
+    owner.activate();
+    await inspect(peer,s=>s.snapshot.score===1,'normal gameplay remains usable');
+    await owner.leave(); await peer.call('leave'); await disposed(h);
+  } finally { await owner.leave(); await h.close(); }
+});
+
 test('same client switches a live duo to trio: old seat released, state and new input sequence owned by new room', {timeout:15000}, async () => {
   const h = await setup();
   try {

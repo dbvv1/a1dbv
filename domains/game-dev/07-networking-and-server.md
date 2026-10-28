@@ -121,6 +121,8 @@ flowchart LR
 
 **恢复连接后，每端等自己的新状态，再允许操作和保存新 token。** 固定 SDK 0.18.6 的 `onReconnect` 早于 token 更新及后续全量 state；自动重试保原 Room，手动 `client.reconnect(token)` 返回新 Room，需要重绑监听。离线队列不是业务日志：本例暂停时换输入 epoch，拒绝旧操作；同 epoch 内客户端本地递增 seq、服务器去重，不从延迟 state 反复取同一 `lastSeq+1`。需要续传的购买／结算另做确认与持久化。
 
+**大厅的“准备”也要过新状态门槛，不只保护移动或技能。** 本例断线会清除 ready，恢复后须玩家重新确认；旧客户端却把断线期间的 ready 放进 SDK 队列，真实重连时断线方未重新确认就自动开局。现有 `SessionOwner.ready()` 改为同时核当前 state 已初始化、本席 connected 和实际连接打开，再发给服务器判阶段；包括取消准备在内的过时意图不排队。不要清掉 SDK 全部消息来代替应用门槛，也不要让 `onReconnect` 直接代按准备。2026-10-28 固定 SDK／真实 loopback 回归覆盖关闭事件前、断线后、重连但未收到 state 三处拒发及恢复后显式准备；这是既有 Node 消费者修复，未进入案例网站或 Unity／UE。
+
 <a id="session-ownership"></a>
 #### 切房与取消恢复：旧连接成功，也不能接管新局
 

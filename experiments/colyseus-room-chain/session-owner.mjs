@@ -116,7 +116,17 @@ export class SessionOwner {
     return this.current;
   }
 
-  ready(ready = true) { this.requireRoom().room.send('ready', {ready}); }
+  ready(ready = true) {
+    const entry = this.requireRoom();
+    // Ready is a current lobby intention, not a durable command to replay after
+    // a disconnect. The server clears it onDrop; wait for this seat's new state.
+    // isOpen also closes the window before the SDK delivers its onDrop signal.
+    if (!entry.initialized || !entry.room.connection.isOpen ||
+        entry.snapshot.players[entry.room.sessionId]?.connected !== true) {
+      throw new Error('wait for current connected state before ready');
+    }
+    entry.room.send('ready', {ready}); // The server still owns legal phases.
+  }
 
   activate({raw = false, data} = {}) {
     const entry = this.requireRoom();
