@@ -1,10 +1,10 @@
 # 任务状态
 
-> [运行手册](LONG-TERM-PLAN.md) · 长期提示词 [A](prompts/dot-a.md)／[B](prompts/dot-b.md) · [归档](archive/README.md)（10-26 前的完整状态见[当日归档](archive/completed-through-2026-10-26.txt)）
+> [手册](LONG-TERM-PLAN.md) · [A](prompts/dot-a.md)／[B](prompts/dot-b.md) · [归档](archive/README.md)（[10-26](archive/completed-through-2026-10-26.txt)）
 
 ## 当前重点
 
-> 每轮纠偏只改本节，最多三条（手册§6）。更新：2026-10-27，Claude 核心方向会话。
+> 纠偏只改本节，最多三条（手册§6）；2026-10-27 Claude 核心方向会话更新。
 
 - **A**：答案页按 [write-task-guide](../../templates/generic/.claude/skills/write-task-guide/SKILL.md) 做：按地图优先级，对使用者最多的页和新页下发本机模型做照做实测，按卡点改页面，状态随结果变化，不单独复评存量。核心推荐没在真实任务上用过的，优先在 dot-B 案例的日常编码里用。前沿候选收集也下发本机模型，你挑最强的深挖；同时跟进上游 PR。
 - **B**：案例要做成内容成套统一的高质量作品。各案按完整一局列清单、定风格标准件；拍摄可用后先做灯光层，操控并行。做法见 Skill：[成套内容](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md)、[质量单元](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)、[模块](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md)、[AI 做游戏实例](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md)。用户 10-27 新决定：云端能做的留在云端；真 GPU 拍摄按[细则§7](game-taskbook.md#7-下发本机模型的游戏任务)写 `kind: build` 交本机，只用 headless（无窗口、不模拟键鼠、不操作桌面），一次一个 GPU 任务。本机后台模型与文件制作照常。候选旁置发布、换默认见细则§6；积压候选逐个过测试和 smoke 后合入，不留在分支上。
@@ -19,12 +19,12 @@
 
 ## 项目板
 
-> 只写当前状态和下一步；过程写进提交说明。规则见[运行手册第 4 节](LONG-TERM-PLAN.md#4-做什么)。
+> 过程见提交说明。[项目规则](LONG-TERM-PLAN.md#4-做什么)。
 
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；来源按产出调整，候选进收件箱，漏检对照记入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 首轮扫描、周校准与[本周 Top 5](../13-frontier-radar.md#本周-top-5)已做。下一步按 explore-frontier 广扫，同时推进读者地图上仍为 🟡／⏳ 的问题，漏检记进探索证据。 |
-| P81 | **试用与写成选择**：真实编码任务试用，结论进决策页／模板 | dot-A | 脚本／CI 投影已实用；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。 |
+| P81 | **试用与写成选择**：真实编码任务试用，结论进决策页／模板 | dot-A | 脚本／CI 投影已实用；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。Qwen [#15741](https://github.com/QwenLM/qwen-code/issues/15741) 本地 `fix/mcp-preserve-discovery-error`／`6099417` 保留真实报错，独审通过；preflight 卡在 core tsc（137），待可构建环境补跑，未达 PR 门槛。 |
 | MOBA | **MOBA-Like 基本战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `9311f43`／Site v12 未变；跨资产排序源 `3f89df2` 已发布。盲评不采用 `069b74b`。B-MOBA-DIFFUSE-GPU-001 已领取，未核实跑；relay `7968512`，待新实跑／清理回执再判受光。英雄身份／兵群重叠弱，Q／攻城仍候选，完整 smoke／整局视听待补。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | Star v7 已用存档；MOBA `ea7a064` 重开／续玩／跨标签实操通过，改键 `89f0831` 仍候选，main／Site 未变。完整 smoke 未启动，Firefox 退出原因未明；Codex 恢复提示 2026-11-02 06:08（时区未给）。[Unity 源准备](../../experiments/unity-encounter/README.md)已接收，未在引擎实跑；原任务暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收；角色两件进可玩候选，通路仅本地接线，命中件待接线。Star 标准件已接线、实机未过。MOBA 灯光经验已回正文；开放权重音频未听未采用，3D 仍无 mesh，Nature 恢复未知。 |
@@ -35,7 +35,7 @@
 
 ## 待人工验收（统一查看）
 
-需要人亲自听、看、玩才能判断的项目集中在这里，由用户择时统一验收；执行者记录后继续其他工作。
+用户择时验收视听与游玩，其他工作照常。
 
 - FPS-Like：原混音与受伤声候选各一段真实交火录音，听能否分清“我命中”与“我受伤”、是否遮掉敌人枪声、连续听是否疲劳；网页 v12 用原混音。
 - MOBA-Like：[可玩入口与操作](https://github.com/dbvv1/MOBA-Like/blob/main/README.md)的硬件 GPU 画面、操作手感与完整对局体验；软件 WebGL2 smoke 已通过。
@@ -44,7 +44,7 @@
 
 ## 需要用户决定
 
-只放锚点红线内的事。等待只停对应动作，其余照常推进。
+锚点红线事项；只暂停对应动作。
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
