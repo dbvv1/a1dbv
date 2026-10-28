@@ -2,7 +2,7 @@
 id: B-GPU-JOB-STATUS-001
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5b531ae6c1e74e78c2359929148e9e4cedb6982e
 result_branch: relay/b-gpu-job-status-001
@@ -21,7 +21,11 @@ result_branch: relay/b-gpu-job-status-001
 
 ## 当前结果
 
-退回 [1ff1630](https://github.com/dbvv1/a1dbv/commit/1ff1630ebe60107768d1886e099ef8563df9a696)：原调用停止元数据可用，但遗漏 MOBA ignored 产物，且把未来重开写成必然；仅按下列要求修原报告，不重新运行诊断或恢复取消任务。FPS 两链清理另已由 [a972bb5](https://github.com/dbvv1/a1dbv/commit/a972bb5f828a5e0af0c48b36714d41ca509185c0) 交回，不能把报告的 14:30Z 旧残留状态当当前状态。
+- 已按退回要求修订 status.md：重开改为条件性风险、补 MOBA ignored 采集（23 段 webm、5364 JPG、1155 PNG，约 878MB）及丢失风险、补 a972bb5 对 11 个 FPS 预览进程的清理复核，Edge 归属与整机 GPU 可用性仍记为未知，三项保持取消。openIssues 为空；本卡为 build 类，无 taskDone/pageStuck 字段。
+- 产物：[6570f85](https://github.com/dbvv1/a1dbv/commit/6570f85720ea1e1d91c1ca3e2508032b260c41ba)，分支 `relay/b-gpu-job-status-001`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无后续单元；由接收端将卡片回写 review_ready 并推送结果分支。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求
 
