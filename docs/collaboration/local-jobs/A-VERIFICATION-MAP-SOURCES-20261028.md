@@ -1,7 +1,7 @@
 # A-VERIFICATION-MAP-SOURCES-20261028 · 团队怎样持续维护真实产品验收
 id: A-VERIFICATION-MAP-SOURCES-20261028
 owner: dot-A
-status: review_ready
+status: accepted
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 38c169622bbfeab60969be64607083862bbb6573
@@ -40,8 +40,4 @@ result_branch: relay/a-verification-map-sources-20261028
 
 ## 当前结果
 
-- 已交付 37 个来源全部核实通过的维护证据清单（explore 类型，无 taskDone/pageStuck 指标），结论是真实维护存在但产出会丢（#18295）、上游 maintain skill 未实跑（#150）、唯一频次样本私有（#334）、已出现按变更缩小（#1914）、成本数据缺失；审查无未关闭问题（openIssues 为空）。
-- 产物：[c5902ec](https://github.com/dbvv1/a1dbv/commit/c5902ece2151e0af0544f6a662d4750df823bbb9)，分支 `relay/a-verification-map-sources-20261028`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：回 review_ready 交 dot-A 接收；按其决定从清单前五项深挖（OpenHands #18971/#18295、Hypertask #1914、pstack #150/#151、OpenHands daily.md/#18317、pstack #573）。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- 有限接收[四条已独立核原 PR 正文的证据](artifacts/A-VERIFICATION-MAP-SOURCES-20261028/sources.md)：OpenHands #18971／#18295、Hypertask #1914、cursor/plugins #150，仅限产物列明的主张；其余未逐项核，数量未知，不计已证实效果或独立消费者。原稿 [c5902ec](https://github.com/dbvv1/a1dbv/commit/c5902ece2151e0af0544f6a662d4750df823bbb9) 与 relay 历史保留。按此范围收口，不补齐清单、不续搜或新派任务；未试用，不代表全面检索或产品验收完成。
