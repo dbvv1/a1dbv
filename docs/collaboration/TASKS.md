@@ -4,11 +4,10 @@
 
 ## 当前重点
 
-> 纠偏只改本节，最多三条（手册§6）；2026-10-27 Claude 核心方向会话更新。
+> 只放带完成条件的临时纠偏，最多三条，做完即删，dot 不改；方向与优先级在长期提示词（手册§6）。
 
-- **A**：首要是 dot 长程质量与并行；真实任务验证接收、续接、补位，已验做法入[长任务](../decisions/long-tasks.md)及模板供两账号，经共同交 B；长期规则交指导层。答案按[Skill](../../templates/generic/.claude/skills/write-task-guide/SKILL.md)实测改卡点；明确单元、候选收集交本机。
 - **B**：案例按阶段做成高质量作品：先离线核心版（对战机器人、完整一局、标杆的核心操作与界面，按联机设计），内容制作与操控并行。做法见 Skill：[成套内容](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md)、[质量单元](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)、[模块](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md)、[AI 做游戏实例](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md)。FPS 已按旁置入口发布 v13；MOBA、Star 的积压整合过 smoke 当轮发布（[细则§6](game-taskbook.md#6-作品案例)），之后的候选同样当轮发布。AI 链路先探索方法：3D 用网关的 Tripo P1／Hunyuan3D 3.1 Pro 与 agent 写 Blender 脚本做小样对比（指导层出结论后你从采用开始），2D 用你自己的图像生成；写成制作链知识再少量采用。
-- **共同**：完成看读者／玩家价值；TASKS、quality.md、正文只记现状／差距／变化，过程入提交说明。仅新默认、模板、作品版本独审。明确单元交本机模型（operations§2.2），并行≤4。B 可评估 `node_modules` 只禁编辑，以读依赖源码／随包 Skill。B 下项帧同步／存档接入任选[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)，沿原入口自然采用，有自然上下文压力才用[原生压缩](../decisions/context-management.md)。B 已确认试用[同轮接收](../decisions/long-tasks.md)并回传首轮真实接收／独审记录；完整美术目标与长期效果待验，过程见提交说明。保留原验收，记漏项／纠正轮次／恢复耗时／接入结果，不为对照重做；R/A/V/N 记实测 UTC 时点，未知=UNKNOWN，不增调度。下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。
+- **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
 
 ## 分工
 
