@@ -2,12 +2,17 @@
 
 id: B-OPENWEIGHT-3D-001
 owner: dot-B
-status: blocked
+status: cancelled
 target_repo: dbvv1/MOBA-Like
 base_ref: 69d1588e62d4530a1eb5e3606b99e764fa9c7db5
 result_branch: relay/b-openweight-3d-001
 
-## 立项
+## 用户取消（2026-10-28 生效）
+
+用户明确取消本任务：不在本机部署模型，暂不付费。不再下载权重、安装依赖或执行推理；下文旧立项、修改要求和恢复条件仅作历史记录，均不再作为续跑授权。既有代码、报告、输入及其他产物原样保留，不删除。
+既有接收端仅回传本任务是否确有活跃原调用及自有资源实际退出事实；无安全可读执行元数据则写未知。不新增 GPU／浏览器调用，不读取或操作无关文件，不恢复本任务；Git cancelled 不是进程已退出的证据。
+
+## 立项（历史，已取消）
 
 读者是没有专职美术、要把开放权重生成用于实际游戏的程序员。
 做成一个与现有暖石建筑／冷绿地面一致的低矮风化岩簇，替换基本战斗已有 `rock` 装饰；不把现成 KayKit 塔误称灰盒，也不为试模型重做已采用建筑。
@@ -60,8 +65,5 @@ result_branch: relay/b-openweight-3d-001
 
 ## 当前结果
 
-- 已闭合独立复审 4 项：权重指纹收嵌套 config.json、README 状态/计数/venv 说明对齐，20 项测试在任务 venv 全通过且复审通过。任务整体仍 blocked：本机无法从官方 Hub 取得权重、缺 CUDA Toolkit 构建 torchmcubes、无 Blender，真实推理、12 GB 峰值与 rock.glb 接入均未开始。
-- 产物：[00fc2f9](https://github.com/dbvv1/MOBA-Like/commit/00fc2f9153a972591e61f9f00f4523de0cfdc44d)，分支 `relay/b-openweight-3d-001`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：待官方 Hub TLS 可握手并取得固定 revision、隔离 CUDA 环境可构建 torchmcubes、补 Blender 采用源后，跑真实推理与 GLB 接入并做旧/新同视角对比。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+- 按用户决定 cancelled。保留 [00fc2f9](https://github.com/dbvv1/MOBA-Like/commit/00fc2f9153a972591e61f9f00f4523de0cfdc44d) 与原分支 `relay/b-openweight-3d-001` 的输入／工具及 20 项测试结果；原回执称真实推理、12 GB 峰值和 rock.glb 接入未开始，不把工具产物称为生成模型。
+- 旧 Hub TLS、CUDA Toolkit／torchmcubes、Blender 等恢复条件失效，不继续解决以恢复本任务。实际原调用是否仍活跃及自有资源退出状态待既有接收端安全元数据回执，未知不写已停止；本次只取消，不删除产物或新增执行。
