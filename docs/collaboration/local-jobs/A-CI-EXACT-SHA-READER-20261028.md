@@ -1,7 +1,7 @@
 # A-CI-EXACT-SHA-READER-20261028 · 新发布提交的真实 CI 核验
 id: A-CI-EXACT-SHA-READER-20261028
 owner: dot-A
-status: revision_requested
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5dd280c04b1a5a79d10724a01ed390f34bb4b5f4
