@@ -22,7 +22,9 @@
 
 命令从当前项目复制并试跑；版本值指向配置，少维护一份会过期的副本。任务导航写“做什么 → 去哪里 → 为什么”，不用展开整棵目录树。更多项目特有项从[现有 AGENTS 模板](../../templates/generic/AGENTS.md)挑选，不整份叠加。
 
-**依据**：[一手／真实项目] 下文 Cloudflare 与 Anthropic 文件；[既有证据与取舍](../03-context-engineering.md#23-写什么不写什么官方最佳实践-一手)，原核实 2026-10-24。这里沿用已有模板的写法，跨任务最优篇幅仍未知。
+**把已知环境条件写进实际命令，不只放在旁注。** Ruff 的维护者发现，已有沙箱限制说明，Codex 仍先照完整命令跑监听测试；随后把 `-E 'not binary(=file_watching)'` 写进 `cargo nextest run` 命令。此过滤只适用于缺少所需 OS 事件的环境，涉及监听行为的改动仍须在支持事件的环境另验。本仓未运行 Ruff。
+
+**依据**：[一手／真实项目] 下文 Cloudflare 与 Anthropic 文件；[既有证据与取舍](../03-context-engineering.md#23-写什么不写什么官方最佳实践-一手)，原核实 2026-10-24。这里沿用已有模板的写法，跨任务最优篇幅仍未知。Ruff 的[维护者反馈 #29190](https://github.com/astral-sh/ruff/pull/29190)与[固定 AGENTS.md L59–96](https://github.com/astral-sh/ruff/blob/c618e8b1382992a27dafe2fc288777792e36ecab/AGENTS.md#L59-L96)，核实 2026-10-28。
 
 ## 要不要同时放两种文件
 
