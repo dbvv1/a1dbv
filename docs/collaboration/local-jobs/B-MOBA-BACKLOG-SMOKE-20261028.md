@@ -2,7 +2,7 @@
 id: B-MOBA-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 935bf8e76929aeeb0af707a1dbf9f98ee3597aef
 result_branch: relay/b-moba-backlog-smoke-20261028
@@ -37,4 +37,8 @@ smoke 命令结束且自有资源退出核完后，先回实际起止 UTC、退�
 
 ## 当前结果
 
-保留失败 [02e1aa2](https://github.com/dbvv1/MOBA-Like/commit/02e1aa2be74487cf164fda14cda0424f8545c588) 与 [5347117](https://github.com/dbvv1/MOBA-Like/commit/5347117d7a4faabbfd937172bb382efbc8eded14)，均为 software／SwiftShader；旧轮缺移动遥测，具体根因未知。固定 935bf8e 的同单元 runner 修复待本轮真实验证，不是已通过；同 ID／原 result_branch、新独占目录，只执行本轮一次，不新编号、不盲重试。
+- 在固定源 935bf8e（tree 7d32cae、clean）上真实跑通 headless smoke：默认 v10、候选 v11、diffuse 三入口均推进且非背景像素，改键回画布、活跃移动/停止位置、两次重开与续玩断言通过，report.passed=true 且清理无残留；openIssues 为空。实际 renderer 仍为 software/SwiftShader，非真 GPU，已如实记录。
+- 产物：[323009c](https://github.com/dbvv1/MOBA-Like/commit/323009cf4578163f0f69c138db1017947666c3df)，分支 `relay/b-moba-backlog-smoke-20261028`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：接收端合并含 c1d65ff 与 935bf8e 的固定分支（或同时挑拣两者）并提交本轮证据目录；本任务无后续单元。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
