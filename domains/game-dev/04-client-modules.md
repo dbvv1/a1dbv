@@ -705,6 +705,12 @@ FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac
 
 **先更新模拟／动作权限再禁输入；系统取消不是松手发射。** Unity 进行中动作 Disable 同步 canceled，须允许重入；战术暂停可保下令，世界继续的菜单仅转本地权限。持续值按恢复政策重读，失效缓冲／蓄力清理，已提交命令另处理；UI 不自动挡 gameplay，timeScale 与音频暂停分开。
 
+**网页 UI 的原生按钮、`summary` 及其后代也持有键盘输入。** 窗口级玩法监听只过滤输入框，会偷走商店 Space 的原生激活或把 QWER 当技能。沿既有输入目标判断补控件归属；转入 UI 焦点、窗口 `blur` 或文档隐藏时取消旧瞄准、指针诊断与过时提示，不额外下发 stop、不改变世界暂停规则。UI 技能按钮仍用原点击回调重新选技能，返回画布重新选目标。
+
+MOBA 的同单元修正已接入原材质候选分支，真实 `createControls` 的 CPU 合成事件先复现穿透／残留再回归通过；全套 235 项与构建通过，非作者另验控件后代、失焦／隐藏恢复和监听释放。浏览器实际键盘／焦点行为尚未验证，未换默认入口。
+
+来源：[源码／CPU 回归] MOBA 固定版本 [输入目标与控件归属](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/src/input/commands.ts)、[失焦与隐藏取消](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/src/input/controls.ts)、[真实消费者测试](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/tests/client/targeting-controls.test.ts)，核实 2026-10-28。
+
 震动短脉冲有时限，旧命中不补播；换设备／退局取消所属玩家旧工作，旧设备可达则发停止。Unity 1.20.1 PauseHaptics 保速度、不挡后写，Reset 清除；UE 按 PlayerController 的 Tag／循环／Play While Paused 管理。先停持续写入者，不误停别人。
 
 来源：[一手] [输入交接](../../docs/research/wp10-content.md#21)、[蓄力计量](05-gameplay-architecture.md#7-战斗与技能先统一结算再决定-gas)、[反馈依据](../../docs/research/wp10-content.md#22)。
