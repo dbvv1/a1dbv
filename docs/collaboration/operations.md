@@ -131,4 +131,6 @@ python3 scripts/check_execution_snapshot.py snapshot.json
 | `receipt_ref` | done 单元链接现有任务回执；本工具不重新核验收，沿原 validate_task／validate_relay 及项目实际证据验收 |
 | `waits[]` | 只录已发生的 `start/end/ref`。检查器合并重叠等待而不外推缺口，输出的净执行时长和并行利用率保持未知 |
 
+对 `running`，已知占位引用（如 `UNKNOWN`）报未知引用；其他非空引用在独立的 `source_verification_required` 清单提示回原来源核验，`execution_evidence_status` 保持 `unknown`；这与 `status` 的记录一致性结果并列，不把真实在跑本身当格式错误。脚本不读取它们，更不接受 `verified: true` 代替核验。接收者须沿原工具结果、进程观察或产物回指，结合既有 task／relay 接收与人工核实；来源不可读取或不能证实时仍记执行未知，不因字段合法就宣称在跑。此检查只筛已知占位和提醒缺口，不验证真实性。
+
 已有观察或检查结果不足时补原证据，而不是为了让检查器返回 0 改标签；检查器不证明已实现长期高效，实际可玩／可采用的交付和独立复核才是检验。

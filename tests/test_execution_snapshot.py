@@ -43,6 +43,23 @@ class SnapshotTests(unittest.TestCase):
     data['units'][0]['execution'] = {'kind': 'tool_result', 'ref': 'test-result-1', 'at': '2026-10-28T07:59:00Z'}
     self.assertNotIn('running_without_observation', self.codes(data))
 
+  def test_placeholder_reference_does_not_establish_observation(self):
+    for ref in ['UNKNOWN',' unknown ','N/A','TBD','未知','待核']:
+      data=sample();data['units']=[unit(state='running',execution={'kind':'tool_result','ref':ref,'at':'2026-10-28T07:59:00Z'})]
+      with self.subTest(ref=ref):
+        self.assertIn('running_unknown_reference',self.codes(data))
+        self.assertEqual(module.inspect(data)['status'],'needs_review')
+
+  def test_plausible_or_unreadable_reference_still_needs_source_verification(self):
+    for ref in ['original-tool-result-1','unreadable-result-2']:
+      data=sample();data['units']=[unit(state='running',execution={'kind':'tool_result','ref':ref,'at':'2026-10-28T07:59:00Z','verified':True})]
+      with self.subTest(ref=ref):
+        result=module.inspect(data)
+        self.assertEqual(result['status'],'no_inconsistency_found')
+        self.assertEqual(result['execution_evidence_status'],'unknown')
+        self.assertEqual(result['source_verification_required'][0]['status'],'unknown')
+        self.assertIsNone(module.inspect(data)['net_execution_seconds'])
+
   def test_old_observation_requests_recheck_not_kill(self):
     data = sample(); data['units'] = [unit(state='running', execution={'kind': 'process', 'ref': 'observed-run-1', 'at': '2026-10-28T07:00:00Z'})]
     self.assertIn('execution_needs_recheck_not_restart', self.codes(data))

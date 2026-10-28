@@ -11,6 +11,7 @@ from validate_relay import relative_path
 LINES = {'core', 'production', 'cases', 'scout'}
 STATES = {'ready', 'queued', 'running', 'blocked', 'done'}
 PHASES = {'implement', 'review', 'rework', 'publish', 'verify'}
+UNKNOWN_REFS = {'unknown', 'n/a', 'none', 'null', 'tbd', 'todo', 'pending', '?', '未知', '待核', '未核', '待确认', '未确认', '不可读取'}
 SHA = re.compile(r'^[0-9a-f]{40}$|^[0-9a-f]{64}$')
 
 
@@ -53,6 +54,7 @@ def inspect(data):
   if not isinstance(units, list) or not isinstance(lines, dict) or set(lines) != LINES:
     raise ValueError('units must be a list; lines must cover core/production/cases/scout')
   findings = []
+  evidence_checks = []
 
   def flag(code, unit=None):
     findings.append({'code': code, **({'unit': unit} if unit else {})})
@@ -73,11 +75,17 @@ def inspect(data):
     repository_identity(unit.get('target_repo'))
     uid = unit['id']
     if unit['state'] == 'running':
+      evidence_checks.append({'unit': uid, 'status': 'unknown',
+                              'required': 'verify_original_tool_process_or_artifact_source'})
       evidence = unit.get('execution')
       if (not isinstance(evidence, dict) or evidence.get('kind') not in {'process', 'tool_result', 'artifact_delta'}
           or not nonempty(evidence.get('ref'))):
         flag('running_without_observation', uid)
       else:
+        # A non-placeholder reference still requires reading the original source.
+        # This offline checker has no source access and accepts no trust-me bypass.
+        if evidence['ref'].strip().casefold() in UNKNOWN_REFS:
+          flag('running_unknown_reference', uid)
         if evidence['kind'] == 'artifact_delta' and (not SHA.fullmatch(str(evidence.get('before', ''))) or not SHA.fullmatch(str(evidence.get('after', ''))) or evidence['before'] == evidence['after']):
           flag('static_artifact_is_not_execution', uid)
         at = timestamp(evidence.get('at'))
@@ -139,6 +147,8 @@ def inspect(data):
       merged.append((start, end))
   return {'status': 'needs_review' if findings else 'no_inconsistency_found',
           'findings': findings, 'declared_ready_units': ready,
+          'execution_evidence_status': 'unknown' if evidence_checks else 'not_assessed',
+          'source_verification_required': evidence_checks,
           'recorded_wait_seconds': sum((end-start).total_seconds() for start, end in merged),
           'recorded_wait_scope': 'recorder only, not global idle',
           'net_execution_seconds': None, 'parallel_utilization': None,
