@@ -1,7 +1,7 @@
 # A-RESUME-CONTRACT-SOURCES-20261028 · 中断恢复先核哪一层
 id: A-RESUME-CONTRACT-SOURCES-20261028
 owner: dot-A
-status: running
+status: blocked
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5505b220259534b7fff39477fa9eeeea5a4821a3
@@ -26,4 +26,6 @@ result_branch: relay/a-resume-contract-sources-20261028
 一个单元约 60–90 分钟，最多两小时；共享最多 4 并行，无 GPU。超时保留已有材料和具体缺口，不继续扩大检索。
 
 ## 当前结果
-已请求先收口现有材料；尚未收到可验产物，实际执行状态待回传。
+
+- 本机接收端连续 2 次未完成第 1 个单元：本机模型调用没有返回有效结果（timeout）。负责人确认任务可以执行后改回 ready，接收端会重新领取。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
