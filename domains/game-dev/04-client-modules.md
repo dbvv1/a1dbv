@@ -689,7 +689,11 @@ FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac
 
 先沿下方[设置草稿与保存](#菜单也是控制的一部分)增加交互键一行：先撤该动作的玩法权限、停用目标 action，再捕获该玩家、目标 binding 与允许的设备／控件类型，UI 保留取消入口。完成或取消都释放 `RebindingOperation`，是否重新启用按当前菜单／玩法模式决定；用 `OnApplyBinding` 截获候选仅存草稿，应用才提交运行绑定；若采用原生临时覆盖，完成取出候选后和取消时都还原进入前的 override。应用后按稳定 binding 身份保存 override JSON、更新提示并实际操作；恢复默认也同步清掉已保存 override，重开不反弹旧键。新增／删除绑定属于配置版本变化，不能只靠恢复旧 JSON 迁移。
 
-**网页实现也沿原动作链，键位、输入消费者与提示共用一份绑定。** [MOBA 键位候选与接线说明](../../experiments/moba-keybindings/README.md)把有效值／草稿接到原 `createControls → SimCommand → Simulation`，保 QWER 默认和逻辑 `key` 语义，冲突先拒绝、明确选择才交换；进入设置释放旧瞄准，应用成功后再更新提示和操作。源码 CPU 已验真实命令消费，设置 UI 尚未接入；不覆盖组合键、非拉丁键、手柄与多人，不据此改变原生引擎选择。
+**网页实现也沿原动作链，键位、输入消费者与提示共用一份绑定。** [MOBA 键位候选与接线说明](../../experiments/moba-keybindings/README.md)把有效值／草稿接到原 `createControls → SimCommand → Simulation`，保 QWER 默认和逻辑 `key` 语义，冲突先拒绝、明确选择才交换；进入设置释放旧瞄准，应用成功后再更新提示和操作。源码 CPU 已验真实命令消费；该原 CPU 示例未接设置 UI，后续作品界面实测见下段；不覆盖组合键、非拉丁键、手柄与多人，不据此改变原生引擎选择。
+
+**网页输入 smoke 同时核真实事件和观测时序。** MOBA v11 关闭改键设置后用 `page.mouse.move` 回到 canvas；`focus()` 不会恢复 `pointerInside`。测右键移动→S 停止时，在真实 S `keydown` 消费前记录仍活跃的 `moveGoal` 与已发生位移，停止后位置须保持在按键时位置；等“已位移”后再异步读状态可能错过停止前窗口，自然到达也不能算 S 生效。pointer 命令在 canvas 业务处理后用 window bubble 采样，不假定 capture＋`queueMicrotask` 晚于业务回调。本例 headless software smoke 已通过改键、移动／停止与保存续玩；仅是这些页面输入功能证据，不代验下节控件归属／失焦场景、人工手感或 GPU／原生引擎。
+
+来源：[固定源码／页面功能实测] MOBA [改键后重新进入画布](https://github.com/dbvv1/MOBA-Like/blob/935bf8e76929aeeb0af707a1dbf9f98ee3597aef/tests/client/browser-smoke/run.mjs#L175-L183)、[事件采样与停止断言](https://github.com/dbvv1/MOBA-Like/blob/935bf8e76929aeeb0af707a1dbf9f98ee3597aef/tests/client/browser-smoke/movement-probe.mjs#L4-L42)、[实际通过报告](https://github.com/dbvv1/MOBA-Like/blob/261034a790c7eec9e493db9745dfcb0dbd66e2c7/docs/quality/smoke/B-MOBA-BACKLOG-SMOKE-20261028/2026-10-28T16-59-50-659Z-192910/report.json)，核实 2026-10-28。
 
 再加第二位玩家时，保原动作定义，给新玩家独立的 PlayerInput／命令缓存／角色绑定；设备分配、改键设置和反馈都跟所属玩家。共享暂停页明确谁操作，确需同时操作两套 uGUI 才接独立 module 与 MultiplayerEventSystem。让 A 改键、开关菜单、断连或退出时 B 仍能移动和确认；不要复制一套全局 `Gamepad.current` 读取或退出时禁掉所有人的 action。
 
