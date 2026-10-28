@@ -2,7 +2,7 @@
 id: B-GPU-JOB-STATUS-001
 owner: dot-B
 kind: build
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5b531ae6c1e74e78c2359929148e9e4cedb6982e
 result_branch: relay/b-gpu-job-status-001
@@ -21,8 +21,11 @@ result_branch: relay/b-gpu-job-status-001
 
 ## 当前结果
 
-- 两项图形任务均已不在执行：FPS 于 12:17:55 被停止、MOBA 于 11:03:18 两小时超时结束，二者远端均无结果分支；未发现可归因的浏览器/GPU 进程，但 11:33Z 起的 Edge 窗口归属未知，FPS 停止前派生的 11 个预览进程（4173/4174）仍存活。审查未通过，openIssues 2 项：第 45 行把『FPS 会重开浏览器/预览』写成必然（应改为条件句）；第 31/48 行漏记 MOBA ignored 的 outputs/qa-session 下 23 段 webm、5364 JPG、1155 PNG（约 878MB），需补入并扩大产物丢失提示。
-- 产物：[1ff1630](https://github.com/dbvv1/a1dbv/commit/1ff1630ebe60107768d1886e099ef8563df9a696)，分支 `relay/b-gpu-job-status-001`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：接收端按任务要求回写本卡为 review_ready 并推送 relay/b-gpu-job-status-001；同时决定 FPS 残留预览进程与 MOBA 未提交产物的处置；建议先按 openIssues 修正 status.md 两处再交付。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+退回 [1ff1630](https://github.com/dbvv1/a1dbv/commit/1ff1630ebe60107768d1886e099ef8563df9a696)：原调用停止元数据可用，但遗漏 MOBA ignored 产物，且把未来重开写成必然；仅按下列要求修原报告，不重新运行诊断或恢复取消任务。FPS 两链清理另已由 [a972bb5](https://github.com/dbvv1/a1dbv/commit/a972bb5f828a5e0af0c48b36714d41ca509185c0) 交回，不能把报告的 14:30Z 旧残留状态当当前状态。
+
+## 修改要求
+
+- 仅修原分支 `docs/collaboration/local-jobs/artifacts/B-GPU-JOB-STATUS-001/status.md`：将恢复条件中“FPS 还会重开浏览器／预览”改为条件性风险，取消任务保持取消，不建议用新编号重开原验证。
+- 用已有审查记录补“已有成果”与丢失风险：MOBA ignored `outputs/qa-session/` 另有 23 段 webm、5364 JPG、1155 PNG，约 878MB；不能只列 16 张 PNG 和 quality.md。记录原核查时点，不能冒称现在重新清点，不能由此授权清理或删除。
+- 保留 14:30Z 历史事实；补链接说明后续 a972bb5 已核两条 FPS 预览链退出。未知 Edge 归属和整机 GPU 可用性仍未知，不改为已释放。
+- 不读取新会话、不查询或停止进程、不启动浏览器／GPU，不改原游戏卡或产物；文档差量、公扫通过后回原卡 review_ready。

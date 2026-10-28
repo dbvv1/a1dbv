@@ -2,7 +2,8 @@
 
 id: B-OPENWEIGHT-AUDIO-001
 owner: dot-B
-status: review_ready
+kind: build
+status: accepted
 target_repo: dbvv1/Star-Rush-Reborn
 base_ref: ecbb4843923b2fe12f994dd9862042c60d40fe5c
 result_branch: relay/dot-b-openweight-audio-001
@@ -43,11 +44,7 @@ result_branch: relay/dot-b-openweight-audio-001
 
 ## 当前结果
 
-- 按 dot-B 反馈修正海岸环境声候选记录：显存改 GiB 并说明峰值为进程累计、生成计时含传输与写盘、删除无依据的显存争用因果；录音范围改为正常菜单自动试驾的 SFX 总线捕获（不含音乐），补记分支外完整双路混音；README 转 LF，6 项单测及频带／处理字节复验通过，未重跑 GPU 与浏览器。
-- 产物：[2bc688a](https://github.com/dbvv1/Star-Rush-Reborn/commit/2bc688a2043b42cd68bd05524861c20a193ccb3b)，分支 `relay/dot-b-openweight-audio-001`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端将任务状态回写 review_ready；人工听辨（单独资源、循环接缝、开关对比及 dot-B 双路混音）仍待 dot-B 决定采用或撤回，默认关闭、未采用。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow。
+接收 [2bc688a](https://github.com/dbvv1/Star-Rush-Reborn/commit/2bc688a2043b42cd68bd05524861c20a193ccb3b) 的开放权重海岸音源、可复跑处理与默认关闭工程候选：本次七文件修正已补 GiB／进程累计峰值、含传输写盘计时与 SFX 总线录音范围，原 WAV 和运行接入未变；人工听辨、循环接缝及完整混音优劣仍待验，未作声音品质采用，案例线按固定候选测试／smoke 门槛接续合入与网站旁置入口。
 
 ## dot-B 接收反馈／修改要求
 

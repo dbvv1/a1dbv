@@ -2,7 +2,7 @@
 id: B-FPS-PREVIEW-CLEANUP-001
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4a3f610b4670522d54de9d0ba80278dbb5a9a615
 result_branch: relay/b-fps-preview-cleanup-001
@@ -24,8 +24,4 @@ result_branch: relay/b-fps-preview-cleanup-001
 
 ## 当前结果
 
-- 按 PID、启动 UTC 与父子链逐一复核后终止 B-FPS-SHOT-QUALITY-001 的两条预览链，11 个进程全部退出，4173/4174 回环监听消失且未被接管，原工作树与 ignored 素材未动，openIssues 为空；本单为 build 型，无 reader-test 的 taskDone/pageStuck 项。
-- 产物：[a972bb5](https://github.com/dbvv1/a1dbv/commit/a972bb5f828a5e0af0c48b36714d41ca509185c0)，分支 `relay/b-fps-preview-cleanup-001`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端回写本卡结果并推送固定分支 relay/b-fps-preview-cleanup-001，转 review_ready 交负责人审查。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+接收 [a972bb5](https://github.com/dbvv1/a1dbv/commit/a972bb5f828a5e0af0c48b36714d41ca509185c0) 的两条 FPS 自有预览链清理：逐 PID／启动 UTC／父链复核，16:23–16:24Z 两次确认 11 个 PID 不存在、4173／4174 无监听，原工作树和 ignored 素材保留；未知 Edge 未触碰，整机 GPU 是否空闲不在本次接收范围，不据此恢复任何取消任务。
