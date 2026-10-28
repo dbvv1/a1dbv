@@ -4,6 +4,17 @@
 
 ## 待处理
 
+<a id="cline-image-token-estimate"></a>
+### 2026-10-28：Cline 读图后过早压缩，先分清内部估算与服务端用量
+
+👀 **Cline 读过截图或 PDF 页面图后提前压缩，先核客户端版本，再按同一次请求对照内部估算与服务端 usage。** 旧版把图片 base64 按文本的 3 字符／token 计入估算；#14520 已修复，并进入 **4.1.24 发布源码**。遇相符症状，优先使用含修复的版本，不凭压缩提示认定窗口耗尽，也不先关闭自动压缩。
+
+修复让请求与消息两处估算排除图片 payload，另加 **1600 token／图的内部定额**；这不是服务端计费上限或所有视觉模型的真实成本。#14512 使用者在 4.1.20 报告的 `288.3k` 压缩前估算，与当时在途请求的 `12,397` 服务端计数没有同请求配对证据，不能直接相除当作实测误差倍数。
+
+**图片修复不等于文本估算已校准。** 仍开放的 #14979 报告来自带图片补丁的自编译 4.1.21；维护者确认字符估算与只向上修正的机制仍会提前触发。自然复现时核同请求、同口径与缓存字段，不能将该报告写成 stock 4.1.24 复测，也不照搬下调预算公式。本条仅作[上下文管理](../decisions/context-management.md)候选；本仓未安装、未试用 Cline，不新增默认做法。
+
+**依据与范围**：[使用者原始报告 #14512](https://github.com/cline/cline/issues/14512)、[已合入 #14520](https://github.com/cline/cline/pull/14520)、[4.1.24 官方发布说明](https://github.com/cline/cline/releases/tag/v4.1.24)、发布提交中的[请求估算](https://github.com/cline/cline/blob/ed469c753a0d7a0d41f906cf3fc75a983cd766ac/sdk/packages/shared/src/llms/tokens.ts)与[消息估算](https://github.com/cline/cline/blob/ed469c753a0d7a0d41f906cf3fc75a983cd766ac/sdk/packages/core/src/extensions/context/compaction-shared.ts#L198-L231)、[后续 #14979](https://github.com/cline/cline/issues/14979)及[维护者说明](https://github.com/cline/cline/issues/14979#issuecomment-6124810061)。仅核公开讨论、合入补丁、发布记录与固定源码；核实：2026-10-28 UTC。
+
 <a id="vscode-terminal-main-memory"></a>
 ### 2026-10-28：VS Code 多 Agent 终端越跑越占内存，先查主进程与修复版本
 
