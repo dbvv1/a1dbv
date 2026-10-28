@@ -1,7 +1,7 @@
 # A-VERIFICATION-BUILD-SOURCES-20261028 · 测的是哪个构建，哪些验收留成回归
 id: A-VERIFICATION-BUILD-SOURCES-20261028
 owner: dot-A
-status: running
+status: review_ready
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5d18be14fb1bde809e0e1f981f9b17463d9b1056
@@ -42,4 +42,9 @@ result_branch: relay/a-verification-build-sources-20261028
 一个 60–90 分钟单元，含整理与审查最多 90 分钟；到时交已有材料和缺口，不继续扩题。按接收端共享最多 4 并行调度，无 GPU，不另起进程抢槽；失败与未知分列并写具体恢复条件。
 
 ## 当前结果
-待接收端领取；尚无采集结果。
+
+- 已交付 explore 产物 sources.md：41 条候选全部通过链接与原文核实（41/41），整理为 15 组优先级、八项深挖方向、对验证页的具体增量与覆盖缺口。facts/reader 两路审查经 3 轮修正后通过，openIssues 为空，未运行产品/测试/部署，未作最终推荐。
+- 产物：[c276de9](https://github.com/dbvv1/a1dbv/commit/c276de932874904c39edb59522b1bffb214c82cd)，分支 `relay/a-verification-build-sources-20261028`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：本任务范围已全部完成，等待 dot-A 接收并由接收端推送 relay 分支；后续若要补中文社区反馈或核对 4,944/4,936 等数字差异，见产物“覆盖缺口”节。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
