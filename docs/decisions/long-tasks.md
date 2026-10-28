@@ -21,8 +21,6 @@
 键盘操作、刷新后偏好、编辑原文和分享图片。未运行项明确列出。
 ```
 
-**做成的标志是最终产物满足原任务验收。** 代码调查交简短结论和 `file:line`；实现支线交完整提交、可应用补丁或可核对的完整工作区差量，检查结果须指向该产物。主线核对差量、修正遗漏，再在最终版本走真实入口。
-
 **来源核查按互不依赖的主张或来源线拆分。** 每条交回支持／不足的判断、原始永久链接、精确段落或短摘录、版本日期与来源类型，未读到原文的列为缺口。主线按原任务逐项回看主张与来源是否对应，区分官方能力、实际使用反馈和推断，再决定采用、修订或保留缺口；这类任务验收证据与结论，不要求代码检查。高风险或已有漏审时加一次独立检查，已有有效审查可复用；交回与整合细节见 [08 §6](../08-multi-agent.md#6-操作手册从一个大任务到并行执行)。
 
 本仓在这项需求中曾漏掉编辑器的 raw Markdown 列表，独立审查用真实组件的失败用例推动修复。这是接收时该追的证据：是否覆盖实际消费者，而非实现者是否说“完成”。实际补丁、运行入口和仍待验收的路径见[采用记录](../../experiments/memos-reading-adoption.md)；原需求见 [Memos #6476](https://github.com/usememos/memos/issues/6476)，实施与组件检查原核实 2026-10-25。
@@ -43,15 +41,23 @@
 
 ## 实施交出去，验收收回来
 
-**借团队实践的机制，不照搬固定角色链。** 以下三项能改变怎么派、怎么收：
+**分工不变，按项目入口分开定向反馈与最终验收。**
 
-- **HumanLayer：短交接，主线验收。** 实施代理实际配置 `model: inherit`；主线传文档路径和范围，收到结果后检查验证证据、先修失败再推进。没有 outline 也可直接实施；借这条接收方式即可，整套 RPI 插件本仓未试用。
-- **Anthropic：共享状态的串行角色合回主循环。** 团队在企业代理部署中发现，路由、规划和领域角色的多次交接会丢信息、增加延迟；把领域程序按需加载为 Skill，保留真正独立的并行工作。其迁移套件以端到端任务完成评价设计，适合借作验收原则。
-- **Cursor：不强迫每次探索都委派。** 团队撤掉强烈鼓励代码探索子代理的提示，让委派更均衡；独立上下文也会带来重复劳动和过期任务，要随结果调整分工。
+| 阶段 | 怎么做 |
+|---|---|
+| 实现中的反馈 | 跑覆盖改动行为的定向检查；依赖图看不到动态消费者时补查，报告遗漏和零测试，不当成行为已验 |
+| 同机重检查 | 并跑时超时或资源紧张，先核争用；确认后用已有队列或错峰，调查、实现继续。独立 runner 或无争用证据时，保现有并行 |
+| 最终交付 | 实现支线交完整产物及对应检查；主线整合后，在最终版本跑项目要求的完整检查与真实入口。定向绿不代替交付通过 |
 
-**社区反馈有分歧，独立评审按实际风险加。** 有使用者认为跨模型评审值得更长等待，也有人自报逐提交评审两周、86 次仅挡住一次注释旧链接后停用。两者都是个人经验；判断是否保留，看新增发现与最终交付的等待、费用和返工，而非代理数量。
+**不要统一降低 workers 或放宽超时。** n8n 的日常入口要求定向测试、单 worker，综合检查留 CI；Inspector 将同机门禁排队后，独跑比较中 cap=4 更慢、两档均零失败，保留默认。检查仍失败就查原因，不以重跑掩盖。本仓未实试该调度。
 
-**依据**：[项目实际配置] [HumanLayer 实施代理](https://github.com/humanlayer/skills/blob/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/rpi/agents/outline-implementer-agent.md)与[接收流程](https://github.com/humanlayer/skills/blob/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/rpi/skills/rpi/references/implement-outline/process.md#L13-L25)，流程原核实 2026-10-26；[团队实践] [Anthropic 10-22 原文](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)及[迁移套件验收规则](https://github.com/anthropics/single-agent-loop-kit/blob/c43796287b83bec847db923f07131d1cc8de750d/skill/steps/01-baseline.md)、[Cursor 9-23 原文](https://cursor.com/blog/improved-token-efficiency)；[社区原评论] [跨模型评审值得等待](https://www.reddit.com/r/ClaudeAI/comments/1xdwquj/comment/19rkaxueg03mo/)、[撤掉逐提交评审](https://www.reddit.com/r/ClaudeAI/comments/1xdwquj/comment/19rk91uae9oip/)。配置与原文复核 2026-10-28；本仓尚无同任务同验收下的提速、节费比较。
+**借团队机制，不搬固定角色链。** HumanLayer 用短交接、由主线核证据并先修失败；Anthropic 将共享状态的串行角色合回主循环、按需加载 Skill；Cursor 撤掉过强的探索委派提示，也要防重复劳动和过期任务。RPI 整套插件本仓未试用。
+
+**独立评审按风险加。** 社区有人认为跨模型评审值得等待，也有人逐提交评审两周、86 次仅挡住一次旧链接后停用；都是个人经验。保留与否看新增发现、等待、费用和返工，不看代理数。
+
+**依据**：[项目实际配置] [HumanLayer 实施代理](https://github.com/humanlayer/skills/blob/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/rpi/agents/outline-implementer-agent.md)与[接收流程](https://github.com/humanlayer/skills/blob/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/rpi/skills/rpi/references/implement-outline/process.md#L13-L25)，流程原核实 2026-10-26；[团队实践] [Anthropic 10-22 原文](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)及[迁移套件验收规则](https://github.com/anthropics/single-agent-loop-kit/blob/c43796287b83bec847db923f07131d1cc8de750d/skill/steps/01-baseline.md)、[Cursor 9-23 原文](https://cursor.com/blog/improved-token-efficiency)；[社区原评论] [跨模型评审值得等待](https://www.reddit.com/r/ClaudeAI/comments/1xdwquj/comment/19rkaxueg03mo/)、[撤掉逐提交评审](https://www.reddit.com/r/ClaudeAI/comments/1xdwquj/comment/19rk91uae9oip/)。配置与原文复核 2026-10-28；本仓尚无同任务提速、节费比较。
+
+**检查调度依据**：[项目实际配置] [n8n 定向入口](https://github.com/n8n-io/n8n/blob/2e85535612dcdf6c641dca981814fba176244146/AGENTS.md#L344-L358)、[Inspector 排队后的 worker 比较](https://github.com/modelcontextprotocol/inspector/blob/e3217388c8590bcf6796fd8d0528a875ade1ac1f/vitest.shared.mts#L81-L139)；[开源实现] [Pinchy 定向测试的覆盖边界](https://github.com/heypinchy/pinchy/blob/e21dacc823039ff61039ec84510a214b58d008de/scripts/test-related.mjs#L1-L14)；[社区原帖] [LINUX DO：多会话门禁超时](https://linux.do/t/topic/2913933)，未见解决后回执。源码与原帖核实 2026-10-28；项目测量为作者自报。
 
 ## 长任务离开前：保留能继续的入口和结果
 
