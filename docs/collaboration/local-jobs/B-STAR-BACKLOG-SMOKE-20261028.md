@@ -2,7 +2,7 @@
 id: B-STAR-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 8dddac2ce5cd7941a2eb64cceeeb04ef1e17831a
 result_branch: relay/b-star-backlog-smoke-20261028
