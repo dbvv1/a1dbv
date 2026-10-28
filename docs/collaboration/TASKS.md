@@ -25,12 +25,12 @@
 |---|---|---|---|
 | P90 | **前沿发现与 M6**：让读者第一时间知道该试什么；来源按产出调整，候选进收件箱，漏检对照记入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 首轮扫描、周校准与[本周 Top 5](../13-frontier-radar.md#本周-top-5)已做。下一步按 explore-frontier 广扫，同时推进读者地图上仍为 🟡／⏳ 的问题，漏检记进探索证据。 |
 | P81 | **试用与写成选择**：真实编码任务试用，结论进决策页／模板 | dot-A | 脚本／CI 投影已实用；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。Qwen [#15741](https://github.com/QwenLM/qwen-code/issues/15741) 本地 `fix/mcp-preserve-discovery-error`／`6099417` 保留真实报错，独审通过；preflight 卡在 core tsc（137），待可构建环境补跑，未达 PR 门槛。 |
-| MOBA | **MOBA-Like 基本战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `f2a1ce3` 仅 brief／Site v12 未变；原候选 `e0d481b` 已保全：离线 1+9、AI 三材质、boot/input、1024 解码契约，273 CPU／构建通过；smoke／真实缩放／GPU／画质／平衡未验。旧 `d0db3d7` 丢失待精确恢复；回溯 `f533d6f` 已接收且停派：基线失败，额外运行／清理未知，恢复须定范围、核串行安全。 |
+| MOBA | **MOBA-Like 基本战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 积压整合 `9df6192`，默认 v10／旁置 v11；[smoke 卡](local-jobs/B-MOBA-BACKLOG-SMOKE-20261028.md) `8755387` 已派，待实际回执，Site v12 未更新。另存 `e0d481b` 离线 1+9／AI 三材质等候选（273 CPU／构建）；画质、手感、平衡待验。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07 ready `a0ea312`、04 boot `a1b149`／input `d55e04e`、05 生命周期 `bb807ab` 已入 main，仅源码／CPU，不升引擎／作品评级。Star v7 存档、MOBA `ea7a064` 实操仍为旧成果；改键 `89f0831` 候选。[Unity 源准备](../../experiments/unity-encounter/README.md)未实跑，原任务暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收，旧通路／命中接线丢失待恢复。MOBA 三材质已接候选、林缘二改；原 PNG 不变，1024 解码约 16 MiB 仅存储估算，非 GPU 实测。开放音频未听未用，3D 无 mesh，Nature 恢复未知。 |
 | B-实例 | **AI 做游戏实例**：作品、作者过程与社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏、未听音。Warpact 仍未玩到；没有新增整局品质推荐。 |
-| SR | **Star-Rush 完整比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `01be21a` 仅 brief／Site v7 未变；候选 `7ad62328` 已保全比赛复盘，142 CPU 通过，smoke／驾驶／视觉未过。旧 `345f914` 未获 READY／图；`dca3409` 软件图上传已取消，恢复待用户决定。`0817aa0` 仅短段观察，完整同弯操控／声音待验。 |
-| FPS | **FPS-Like 完整回合品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | main `ec92bb2` 仅 brief／Site v12 未变；原候选 `101b85b` 已保全离线 1+9／六回合／环境，116 CPU／构建通过；自然 18 回合均歼灭，受控爆破另验，技能／双点／经济未做。旧门洞／命中源丢失待精确恢复，原上传待批；Firefox 被拒，smoke／操控／视听未验，战术未成熟。 |
+| SR | **Star-Rush 完整比赛品质**：地平线公路弯道，保留跑圈 | dot-B | 积压整合 `8dddac2`：比赛内容、旁置驾驶、默认关闭海岸声；headless smoke 待串行派卡，Site v7 未更新。另存 `7ad62328` 比赛复盘（142 CPU）；标准件已接收未接线，操控／视听品质待验。 |
+| FPS | **FPS-Like 完整回合品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | main `4b99b59`／Site **v13 已交付**，[角色＋movement-v2旁置试玩](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=movement-v2&contentSet=characters-v1)，默认入口不变。197 测试、四入口＋capture 通过，14 构建文件与 GPU 被测一致；错误 PID 报告留 relay 修文、不入产品。另存 `101b85b` 离线 1+9／六回合／环境候选（116 CPU）；技能／双点／经济未做，画面／手感未结项。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
 ## 待人工验收（统一查看）
