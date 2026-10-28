@@ -29,7 +29,8 @@ OpenAI 的当前提示实践也把“每次编辑前读完所有文档”改为�
 | 眼前发生了什么 | 现在怎么做 |
 |---|---|
 | 漏了接口约定、拿旧文件说事 | 重读当前权威文件与相关调用方；指出被取代的旧决定。压缩无法补回从未读过的事实 |
-| 读图后 token 占用突然暴涨、很快触发压缩 | 先核客户端版本与数字来源，按下节区分内部估算和服务端 usage；不要仅凭占用提示清空历史 |
+| 搜索为零，却知道相关源码存在 | 核工作树与忽略规则，再用已知符号做下文的阳性对照；先别据此重复实现 |
+| 读图后 token 占用突然暴涨、很快触发压缩 | 先核客户端版本与数字来源，按下文区分内部估算和服务端 usage；不要仅凭占用提示清空历史 |
 | 同一任务还在正常推进，只是历史占空间 | 沿用自动压缩；需要手动腾空间时，指定保留最新约束、失败测试、已排除方案与下一步，压缩后核对 |
 | 压缩完马上又满，或不停全量重读 | 查最大的文件、工具输出和启动加载项，缩小**实际读入范围**；日志保留错误段与原文件位置，不逐轮灌回全文 |
 | 已换成无关任务，或明确纠正后仍不断回到旧方案 | 先保存下节的检查点，再以当前目标和已排除方案写新提示开会话；从当前文件恢复 |
@@ -40,6 +41,14 @@ OpenAI 的当前提示实践也把“每次编辑前读完所有文档”改为�
 社区对两种做法仍有分歧：Reddit 原帖有人每完成一个任务就清空，也有人自报 Opus 5.5 的协调任务靠压缩持续运行；反对压缩者担心丢掉“试过什么、为什么放弃”。可借的是**按下一步是否依赖这些理由来选择**，并在压缩或交接中明确保留它们。原帖没有同条件任务对照，个人百分比和赞数不作为默认配置依据。
 
 **依据**：[官方／团队实践] [Anthropic 长程应用的重开撤回](https://www.anthropic.com/research/harness-design-long-running-apps)、[Claude Code 会话引导](https://code.claude.com/docs/en/best-practices#steer-the-session)；[社区原帖] [clear 与 compact 的正反使用经验](https://www.reddit.com/r/ClaudeCode/comments/1x0jmvm/when_do_you_use_clear_vs_compact_in_your_daily/)，核实 2026-10-28。
+
+### 搜索为零：先确认检索入口看得见
+
+**用同一工作树中已知存在、获准读取的源码做阳性对照。** 记下客户端版本、当前目录与 HEAD，先核忽略规则，再搜索指定文件里的已知符号并直接读取核对。文件可读、搜索却漏掉时，暂停“实现不存在”的判断；确认没有访问限制后，仅对该文件用 shell `grep` 复核，保留结果排查客户端，不先清空历史或重派 Agent。遇权限拒绝或有意排除则先处理授权，不换 shell 绕过。
+
+Cursor 3.3.30／macOS 用户曾报告 worktree 内 Grep／Glob 返回零结果，而 Read 与 shell 搜索可见，子 Agent 也受影响；官方支持确认当时的索引问题。另一个用户起初也认为是客户端故障，最后发现排除 worktree 的 `.cursorignore` 规则才是原因。**零命中要分清工具故障、范围限制与真实不存在。**
+
+**依据**：[历史用户报告与官方确认](https://forum.cursor.com/t/agents-grep-glob-tools-silently-return-zero-results-inside-any-cursor-managed-worktree/160373)、[忽略规则误诊的最终回执](https://forum.cursor.com/t/agent-editing-files-with-shell-python-permission-denied-from-read-and-strreplace-tools-when-using-git-worktrees/155500/10)、[当前官方忽略规则](https://cursor.com/docs/reference/ignore-file)；核实 2026-10-28。本仓未试用该排障流程，也未核实历史故障的修复版本，不据此判断当前客户端受影响。
 
 ### 读图后提前压缩：先查客户端估算
 
