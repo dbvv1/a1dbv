@@ -96,6 +96,10 @@ Codex #40932 的 10 月报告里，子任务完成、独立心跳活着，主线
 沿用已有交接和检查，不另建调度或为测试重复实施。
 ```
 
+**ChatGPT dot 用户可从桌面端 dot 资料页 → Activity 打开任务，检查文件、结果和待处理请求；续接后再核新轮次里的实际动作。** 社区的 #49883 在 10 月 1 日报告：子任务轮次已标 `completed`，产物仍只是未达验收的预览，主线迟迟未续接；#52374 的 10 月 23 日续报则是历史可读，但续接报 `UNKNOWN`，回读未见新轮次。Nigel999 的原帖也报告进度承诺与实际停工不符，支持回复要求核 Activity、阻塞和审批。这些 ChatGPT dot 个案与上文 Codex 子代理报告属于不同场景，都不能估算故障率。
+
+**依据**：[官方] [Activity 与完成后审阅](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)；[社区原帖] [dot #49883](https://github.com/openai/codex/issues/49883)、[dot #52374 的 10-23 续报](https://github.com/openai/codex/issues/52374#issuecomment-6364039681)、[Nigel999 与支持回复](https://community.openai.com/t/dot-repeatedly-reports-progress-but-fails-to-complete-tasks-or-clearly-disclose-that-work-has-stopped/1402528)；核实 2026-10-28，各个案根因未确定。
+
 **接收看产物，续接看实际动作。** 仅有派发回执时记“已派发、执行待确认”；看不到子进程活动时记“进程状态不可观测”，静默时长不能单独用来判定卡死或已停止。请求取消后，须收到可核的终止结果或核实原运行已结束，才把原写入面交给新执行者；期间可继续互不冲突的工作。对于重复做错的任务，保留有效结果，收窄成只补缺项的任务，而不是把整套流程再跑一遍。
 
 ### 下一项真实任务怎样验证这条链
