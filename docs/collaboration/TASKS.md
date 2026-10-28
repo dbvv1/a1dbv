@@ -6,7 +6,7 @@
 
 > 纠偏只改本节，最多三条（手册§6）；2026-10-27 Claude 核心方向会话更新。
 
-- **A**：答案页按 [write-task-guide](../../templates/generic/.claude/skills/write-task-guide/SKILL.md) 做：按地图优先级，对使用者最多的页和新页下发本机模型做照做实测，按卡点改页面，状态随结果变化，不单独复评存量。核心推荐没在真实任务上用过的，优先在 dot-B 案例的日常编码里用。前沿候选收集也下发本机模型，你挑最强的深挖；同时跟进上游 PR。
+- **A**：现阶段首要：优化 dot 长程执行、质量与并行；真实任务验证接收、续接、补位，已验证做法进[长任务页](../decisions/long-tasks.md)及模板供两账号共用。经“共同”交 B 采用，长期规则交指导层。答案页按 [write-task-guide](../../templates/generic/.claude/skills/write-task-guide/SKILL.md) 实测并改卡点；明确单元和候选收集交本机模型，上游 PR 继续跟进。
 - **B**：案例要做成内容成套统一的高质量作品。各案按完整一局列清单、定风格标准件；拍摄可用后先做灯光层，操控并行。做法见 Skill：[成套内容](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md)、[质量单元](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)、[模块](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md)、[AI 做游戏实例](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md)。用户 10-27 新决定：云端能做的留在云端；真 GPU 拍摄按[细则§7](game-taskbook.md#7-下发本机模型的游戏任务)写 `kind: build` 交本机，只用 headless（无窗口、不模拟键鼠、不操作桌面），一次一个 GPU 任务。本机后台模型与文件制作照常。候选旁置发布、换默认见细则§6；积压候选逐个过测试和 smoke 后合入，不留在分支上。
 - **共同**：完成看读者或玩家得到的价值；TASKS、quality.md 和正文只写现状、差距和变化，过程写进提交说明。独立审查只用于新默认做法、模板和作品版本。做法明确的单元下发本机模型（operations§2.2），接收端现在空闲，最多 4 个并行。B 可评估把 `node_modules` 的读取拒绝改为仅编辑拒绝，便于读已安装依赖的源码与随包 Skill。B 在下一项帧同步或存档接入中从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中择一，沿已有入口自然采用，遇自然上下文压力才用[原生压缩](../decisions/context-management.md)；保留原验收，记漏项、纠正轮次、恢复耗时与接入结果，不为对照重复实现。下一次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实际操作补验，不以截图或静态 DOM 代替。
 
