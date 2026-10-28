@@ -14,7 +14,7 @@
 这是只读核查，不修改检查器，也不把“检查通过”写成所有链接均有效。
 ```
 
-这个任务只需沿 `check()` 与 `test_existing_and_external_links` 看清：检查器核本地文件是否存在，**不核 `#锚点` 或外链**。入口、用例和输出足以决定下一步，无需先读所有文档。已运行以下命令，7 项测试通过；这一实例验证的是检查器行为，模型上下文收益未试用。
+这个任务只需沿 `check()` 与 `test_existing_and_external_links` 看清：检查器核本地文件是否存在，**不核 `#锚点` 或外链**。入口、用例和输出足以决定下一步，无需先读所有文档。已运行以下命令，9 项测试通过；这一实例验证的是检查器行为，模型上下文收益未试用。
 
 ```sh
 python3 -m unittest discover -s tests -p 'test_check_repo.py' -v
@@ -22,17 +22,30 @@ python3 -m unittest discover -s tests -p 'test_check_repo.py' -v
 
 OpenAI 的当前提示实践也把“每次编辑前读完所有文档”改为按服务边界、数据库、部署等任务路由。Cursor 团队则撤掉强制鼓励探索委派的提示，保留高频读、搜、改工具。**借的是按需取回，不是把必要约束删光或每次搜索都交给子 Agent。** 常驻项目规则怎么写，见[指令文件](instruction-files.md)；大型独立调查怎么拆，见[长任务](long-tasks.md)。
 
-**依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 的上下文与委派调整](https://cursor.com/blog/improved-token-efficiency)；[本仓实跑] [检查器](../../scripts/check_repo.py)与[7 项测试](../../tests/test_check_repo.py)，核实 2026-10-26。跨任务最优上下文量仍未知；不沿用厂商组合改动的收益数字。
+**依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 的上下文与委派调整](https://cursor.com/blog/improved-token-efficiency)，核实 2026-10-26；[本仓实跑] [检查器](../../scripts/check_repo.py)与[9 项测试](../../tests/test_check_repo.py)，复跑 2026-10-28。跨任务最优上下文量仍未知；不沿用厂商组合改动的收益数字。
 
 ## 已经变笨：按症状选动作
 
 | 眼前发生了什么 | 现在怎么做 |
 |---|---|
 | 漏了接口约定、拿旧文件说事 | 重读当前权威文件与相关调用方；指出被取代的旧决定。压缩无法补回从未读过的事实 |
+| 读图后 token 占用突然暴涨、很快触发压缩 | 先核客户端版本与数字来源，按下节区分内部估算和服务端 usage；不要仅凭占用提示清空历史 |
 | 同一任务还在正常推进，只是历史占空间 | 用原生压缩，保留当前目标、约束、关键决定与未完成检查；压缩后核对这些内容 |
 | 压缩完马上又满，或不停全量重读 | 查最大的文件、工具输出和启动加载项，缩小**实际读入范围**；日志保留错误段与原文件位置，不逐轮灌回全文 |
 | 已换成无关任务，或修正后仍不断回到旧方案 | 先保存下节的检查点，再开新会话；从当前文件和最新目标恢复 |
 | 压缩报错、断流，旧会话无法继续 | 保留原会话与工作区，先核当前 diff、在途操作及已返回结果，再从已核状态接续；别因缺一句完成回复重做写入 |
+
+### 读图后提前压缩：先查客户端估算
+
+**先记实际客户端版本、模型和触发输入，再判断该换版本还是减材料。** Cline 的图片 base64 曾被按文本长度计入压缩估算；相符症状优先核是否含 #14520 修复（已进入 4.1.24 发布源码），保留自动压缩设置。单纯占用数字异常查估算路径；已经漏掉目标、约束或接口契约，则按上表重读当前原文。
+
+本仓直接运行 Cline v4.1.20／v4.1.24 固定源码：相同文本加一张 192×128 合成 PNG，**请求估算从 32,926 变为 1,662**，纯文本保持 45。修复后的正常路径按识别出的图片另加 1,600 token／图内部定额；它验证的是估算算法变化，真实客户端何时压缩、任务恢复质量和服务端用量仍待实跑。
+
+**需要查差额时，只对照同一次请求。** 把客户端估算和服务端返回的 input／缓存字段分开记录，先按该提供方的定义核输入总量；字段或配对缺失就记未知，不拿“当前请求估算”除以“上一请求 usage”调低阈值。费用查服务商账单，1,600 定额只用于客户端估算；文本仍按字符启发式计数。
+
+**依据**：[使用者原帖 #14512](https://github.com/cline/cline/issues/14512)、[官方修复 #14520](https://github.com/cline/cline/pull/14520)与[4.1.24 发布说明](https://github.com/cline/cline/releases/tag/v4.1.24)、[固定请求估算实现](https://github.com/cline/cline/blob/ed469c753a0d7a0d41f906cf3fc75a983cd766ac/sdk/packages/shared/src/llms/tokens.ts)、[后续报告与缓存口径说明](https://github.com/cline/cline/issues/14979)、[本仓离线对照与边界](../collaboration/inbox.md#cline-image-token-estimate)；核实与离线复跑 2026-10-28 UTC。
+
+### 压缩后旧内容回来：核重载行为
 
 **同一长轮次改过 `CLAUDE.md`／`MEMORY.md`，自动压缩后又读到旧内容，先核客户端版本。** Claude Code 2.1.311 已修复这条旧副本路径；旧版显式重读当前文件，含修复的版本在下一次自然压缩后核对新内容，再接原任务。先不叠加记忆注入插件，也不人为降低压缩阈值制造试验。
 
@@ -84,7 +97,7 @@ OpenAI 的当前提示实践也把“每次编辑前读完所有文档”改为�
 证据入口：scripts/check_repo.py 的 check()，以及
 tests/test_check_repo.py 的 test_existing_and_external_links。
 已确认：本地文件存在时，即使 #missing-anchor 不存在也不会报错；外链跳过。
-已验证：test_check_repo.py 的 7 项 unittest 通过。
+已验证：test_check_repo.py 的 9 项 unittest 通过。
 下一步：对需要交付的文档运行 python3 scripts/check_repo.py；
 其中的锚点、外链及事实仍需单独核查，不能只凭 errors=[] 宣布全部有效。
 版本：交接时填写当前 commit 与差量；上述检查只对应实际受检文件。
