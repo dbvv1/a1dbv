@@ -2,7 +2,7 @@
 id: B-STAR-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 8dddac2ce5cd7941a2eb64cceeeb04ef1e17831a
 result_branch: relay/b-star-backlog-smoke-20261028
@@ -33,3 +33,11 @@ result_branch: relay/b-star-backlog-smoke-20261028
 除脚本 browserDisconnected/isConnected、serverListening/address 和 cleanupErrors 外，交实际开始/结束 UTC、独占 run-id、所属浏览器/预览 PID 父链与实际退出事件、端口关闭及接收端再次 preflight 事实；共用锁/槽仅在实际存在时记录释放回执，不存在如实写无，未知写未知。passed 或正常 close 返回不替代底层进程实际退出。
 smoke 实际结束且本次自有进程退出核验完成后，立即先回实际结束 UTC、退出码及已核清理事实，不等完整报告整理；此阶段通知只证明上述事实，不冒充完整验收或源码交付。完整报告、公扫与提交整理随后在原任务继续，不因整理中标签掩盖已经结束的 GPU 阶段；后续任务仍须自行再次 preflight。
 公扫产物和 noreply 提交后回 review_ready。失败亦保留原报告并写精确断点，不伪造通过、不额外重拍。由 dot-B 接收、合入、部署并分别核实。
+
+## 当前结果
+
+- 固定 8dddac2/tree ef27a50 的串行无头验收完成：两处 npm ci 与构建均退出 0，npm run smoke:backlog（run-id 20261028T1322Z-8dddac2）五入口全部 passed、errors=[]，浏览器 PID 49572 退出码 0、相关进程已退出、端口 4009 关闭，公开报告/manifest/截图已脱敏产出；renderer 为 SwiftShader 归 software，不构成 GPU 证据，海岸环境音默认 off 未听辨。审查通过，openIssues 为空。
+- 产物：[2b3e2a4](https://github.com/dbvv1/Star-Rush-Reborn/commit/2b3e2a4a842ab1333b1fc393792e0574547818ea)，分支 `relay/b-star-backlog-smoke-20261028`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由接收端以 noreply 身份提交这 10 个公开产物并进入 review_ready；本卡不含 GPU 结论与手感/听感判断。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
