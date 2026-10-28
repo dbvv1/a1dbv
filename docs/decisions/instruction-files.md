@@ -1,6 +1,6 @@
 # CLAUDE.md／AGENTS.md 怎么写
 
-**🟡 多工具项目先在真实任务里试用共享的 `AGENTS.md`：写清真实命令、任务入口、不可猜的契约和完成标准。** Claude Code 已能直接加载它，就只保留这一份；需要 Claude 专属规则或兼容旧会话时，在同目录 `CLAUDE.md` 导入。只用 Claude、现有 `CLAUDE.md` 已经好用的项目，继续维护原文件。
+**🟡 多工具项目先在真实任务里试用共享的 `AGENTS.md`：写清真实命令、任务入口、不可猜的契约和完成标准。** 确认当前环境的 Claude Code 已直接加载后，只保留这一份；需要 Claude 专属规则或兼容旧会话时，在同目录 `CLAUDE.md` 导入。只用 Claude、现有 `CLAUDE.md` 已经好用的项目，继续维护原文件。
 
 ## 第一步：把四件事填进现有文件
 
@@ -42,15 +42,47 @@
 
 当前 Claude Code 的原生 AGENTS 入口要求 v2.1.277+ 且该能力可用；默认情况下，工作目录或祖先目录里的 `CLAUDE.md`、`.claude/CLAUDE.md`、`CLAUDE.local.md` 会让它改读 CLAUDE 文件。团队有混合版本或这些文件时，保留显式导入最省事。
 
-**写完先确认加载，再看行为。** 从实际任务目录新开会话，按入口检查：
+## 第二步：核对加载入口与当前上下文
+
+**分开核对工具侧的加载信息和 Agent 当前看见的规则。** 从实际任务目录新开会话，按入口检查：
 
 - **Claude 原生 AGENTS**：v2.1.280+ 用 `/memory` 查看 `AGENTS.md` 路径；v2.1.277–279 的 `/memory`、`/context` 不列原生 AGENTS，改为询问 Claude 当前项目规则，并对照文件。
-- **Claude 显式导入**：用 `/context` 查看 **Memory files**，确认 `CLAUDE.md` 在列，并核对其中的 `@AGENTS.md` 指向同目录共享文件。
+- **Claude 显式导入**：用 `/context` 查看 **Memory files**，确认外层 `CLAUDE.md` 在列，并核对其中的 `@AGENTS.md` 指向同目录共享文件；共享内容是否可见，再用下方提问核对。
 - **Codex**：在该目录运行 `codex "Summarize the current instructions."`，核对复述的项目规则。它在启动时读取根到当前目录的指令链；根会话进入子包时，别假定局部规则已自动加入。
+
+核对时选共享文件里已有的一条项目特有契约和一条检查命令，不另加暗号。可以这样问：
+
+```text
+先不要打开文件或运行命令，只根据当前上下文列出本任务的项目约定：
+必须保留的特殊行为、应执行的检查，以及对应指令来源。
+没有看到的项请直说；先停在这里，等我核对后再开始修改。
+```
+
+**把复述当内容核对，把工具信息当加载证据。** 无工具复述答对，记为“规则在当前上下文可见”；先出现 Read／`cat` 再答对，记为“任务中读取后答对”，启动状态仍查工具侧证据。只列外层 `CLAUDE.md` 时，共享文件的启动展开待验。路径确认后仍要核关键契约与下节的实际执行。预期文件缺失就查版本、目录与导入，再开新会话；提问里不要粘贴规则正文。
 
 更多排障见 [03：加载规则](../03-context-engineering.md#21-各工具的加载规则一手)。
 
-**依据**：[官方] [Claude 导入](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools)、[原生加载检查](https://code.claude.com/docs/en/memory#my-agentsmd-isnt-loading)、[旧入口清理与去重](https://code.claude.com/docs/en/memory#remove-an-earlier-agentsmd-workaround)、[Codex 指令发现](https://learn.chatgpt.com/docs/agent-configuration/agents-md)；核实 2026-10-26。加载入口按官方文档核对；共享方案尚待真实多工具任务的加载与行为验收。
+**依据**：[官方] [Claude 导入](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools)、[原生加载检查](https://code.claude.com/docs/en/memory#my-agentsmd-isnt-loading)、[旧入口清理与去重](https://code.claude.com/docs/en/memory#remove-an-earlier-agentsmd-workaround)、[Codex 指令发现](https://learn.chatgpt.com/docs/agent-configuration/agents-md)；加载入口重核 2026-10-28。共享方案尚待真实多工具任务的加载与行为验收。
+
+## 第三步：让规则参与眼前的真实修改
+
+**直接用下一项本来就要做的修复或功能，不为测指令编一道题。** 开始前留下该任务原有的验收条件；规则核对后接着发：
+
+```text
+完成这项真实任务：[粘贴现有需求或 issue，以及原有验收条件]。
+按项目指令选择实现入口，保留相关契约，并运行适用检查。
+结束时给出最终 diff、实际运行的命令和结果；受阻的检查写明原因。
+```
+
+接收时看产物与运行结果，核对三件事：
+
+| 要确认什么 | 去哪里看 |
+|---|---|
+| 入口选择是否符合规则 | 实际读过或修改的入口，是否符合任务导航；例外是否有任务本身的理由 |
+| 特殊契约是否保留 | 最终 diff 与该行为的测试或实际输出，而非只看 Agent 的复述 |
+| 检查是否真正执行 | 实际命令、退出状态和测试／运行结果，是否覆盖原有验收条件 |
+
+有遗漏就修那条规则或执行结果，结论记在现有提交说明里。**多工具共享要分别看 Codex 与 Claude Code 各自的自然任务。** 验收通过可说明这次任务遵守了约定，效率或返工改善另需比较。缺某个工具、共享文件的启动证据或真实任务，就保留对应待验项和原配置；可继续完成手头任务，不把局部通过升级为共享方案已采用。
 
 ## 向强项目借什么，而不是整份照抄
 
