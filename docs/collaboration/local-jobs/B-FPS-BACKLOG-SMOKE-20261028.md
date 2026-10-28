@@ -33,3 +33,11 @@ result_branch: relay/b-fps-backlog-smoke-20261028
 公扫产物与提交身份后回 review_ready；失败也保留真实输出并列精确阻塞，不伪造 passed、不额外重拍。由 dot-B 接收后按原门槛合入旁置入口并核网站版本。
 
 接续回执：保留原调用、不重启，回传实际阶段、实际开始 UTC、最近输出时间、原调用是否活跃及等待原因；若已完成或失败，先交已有报告和自有资源退出证据，不能只留 running。本条不授权另开浏览器或重跑；未知项如实写未知。
+
+## 当前结果
+
+- 固定源 4b99b59a6b11 的四可玩入口（默认、characters-v1、movement-v2、组合）与独立 capture 已在真实 GPU（ANGLE/NVIDIA RTX 5070，D3D11）headless 下串行实测通过，npm test 197/197、产物 22 项哈希全对、公开副本 0 泄漏；但审查未通过，仍开放 1 个问题：process-evidence.json 与 report.md 把 smoke.mjs PID 75208/端口 7702 错记为 characters 的预览（原始快照显示它创建于 characters 浏览器退出之后，应为 movement），需改为 characters 未采样、movement 归 75208 并重算相关 hash。
+- 产物：[05e39b6](https://github.com/dbvv1/FPS-Like/commit/05e39b60640e0879cf9e4016f4de3ac0a19da0dd)，分支 `relay/b-fps-backlog-smoke-20261028`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：按 openIssues 修正预览进程归属（characters 置空、movement 记 75208/7702、finalCleanup 与 unknowns 同步），更新 report.md 第 51/69 行，重算 process-evidence.json 与 report.md 的 bytes/sha256 并复核其余 20 条，再审一轮。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
