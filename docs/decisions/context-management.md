@@ -48,7 +48,7 @@ OpenAI 的当前提示实践也把“每次编辑前读完所有文档”改为�
 
 Cursor 3.3.30／macOS 用户曾报告 worktree 内 Grep／Glob 返回零结果，而 Read 与 shell 搜索可见，子 Agent 也受影响；官方支持确认当时的索引问题。另一个用户起初也认为是客户端故障，最后发现排除 worktree 的 `.cursorignore` 规则才是原因。**零命中要分清工具故障、范围限制与真实不存在。**
 
-**依据**：[历史用户报告与官方确认](https://forum.cursor.com/t/agents-grep-glob-tools-silently-return-zero-results-inside-any-cursor-managed-worktree/160373)、[忽略规则误诊的最终回执](https://forum.cursor.com/t/agent-editing-files-with-shell-python-permission-denied-from-read-and-strreplace-tools-when-using-git-worktrees/155500/10)、[当前官方忽略规则](https://cursor.com/docs/reference/ignore-file)；核实 2026-10-28。本仓未试用该排障流程，也未核实历史故障的修复版本，不据此判断当前客户端受影响。
+**依据**：[历史用户报告与官方确认](https://forum.cursor.com/t/agents-grep-glob-tools-silently-return-zero-results-inside-any-cursor-managed-worktree/160373)、[忽略规则误诊的最终回执](https://forum.cursor.com/t/agent-editing-files-with-shell-python-permission-denied-from-read-and-strreplace-tools-when-using-git-worktrees/155500/10)、[当前官方忽略规则](https://cursor.com/docs/reference/ignore-file)；核实 2026-10-28。本仓已在[公开检查器](../../scripts/check_repo.py)定位中使用 `rg`／`grep` 阳性对照，与直接阅读一致；未遇漏检、未实测 Cursor，历史故障的修复版本仍未核实。
 
 ### 读图后提前压缩：先查客户端估算
 
