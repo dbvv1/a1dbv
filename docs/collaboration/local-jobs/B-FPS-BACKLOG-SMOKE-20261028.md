@@ -31,3 +31,5 @@ result_branch: relay/b-fps-backlog-smoke-20261028
 保留原 renderer 信息并分类 gpu/software/unknown，不把请求 native 当实际 GPU。smoke 通过不代表画面或手感更好，不据此换默认。
 提交本轮 run-id、实际开始/结束UTC、浏览器与预览的自有PID/父链及退出事件、预览端口关闭和共用GPU槽归还证据；未知写未知。passed 或 cleanupErrors=[] 不替代实际退出。
 公扫产物与提交身份后回 review_ready；失败也保留真实输出并列精确阻塞，不伪造 passed、不额外重拍。由 dot-B 接收后按原门槛合入旁置入口并核网站版本。
+
+接续回执：保留原调用、不重启，回传实际阶段、实际开始 UTC、最近输出时间、原调用是否活跃及等待原因；若已完成或失败，先交已有报告和自有资源退出证据，不能只留 running。本条不授权另开浏览器或重跑；未知项如实写未知。
