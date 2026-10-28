@@ -1,7 +1,7 @@
 # A-EDITOR-AGENT-CHOICE-SOURCES-20261028 · 编辑器与编码 Agent：保留、并用还是迁移
 id: A-EDITOR-AGENT-CHOICE-SOURCES-20261028
 owner: dot-A
-status: ready
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b16db432cc2c04a27c58772f2736904099e08926
