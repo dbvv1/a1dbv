@@ -1,7 +1,7 @@
 # A-CI-EXACT-SHA-READER-20261028 · 新发布提交的真实 CI 核验
 id: A-CI-EXACT-SHA-READER-20261028
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5dd280c04b1a5a79d10724a01ed390f34bb4b5f4
@@ -14,7 +14,7 @@ result_branch: relay/a-ci-exact-sha-reader-20261028
 只读公开 API，原响应、输入和 HTTP 分页头均留在 Git 工作树外的任务临时目录至接收完成；不读凭据、环境 token、私人记录或账号用量，不登录、触发／重跑 CI、改仓库设置、开 PR 或合并。不因拒绝换身份；技术失败记具体动作与原错误。
 
 ## 写入范围与验收
-唯一新成果：`docs/collaboration/local-jobs/artifacts/A-CI-EXACT-SHA-READER-20261028/result.md`，另由接收端回写本任务状态；不改页面、代码、既有结果或默认分支。
+本次只修 `docs/collaboration/local-jobs/artifacts/A-CI-EXACT-SHA-READER-20261028/result.md` 及同 ID 支撑记录 `reader-tests/A-CI-EXACT-SHA-READER-20261028-u1.md`（保留读者与独立复核证据），另由接收端回写本任务状态；不删证据，不改页面、代码或默认分支。
 短结果写观察时间、固定完整 SHA、实际命令、三源 HTTP 结果及必要投影字段／说明／链接；逐源核返回数量与总数、分页和查询上限。需后续页时照页推进，页内方法不足就记卡点，不自行补教程；不把第一页完整等同全部必需检查完整，不把无记录或跳过报绿。
 读者以外的验证者核对保留的原响应、实际运行的 projectCI 输出及结果；确认 SHA 同一、状态／description 未丢失、分页与缺失正确，分别写做通、卡点及未验范围。能否合入不在结论内；环境／权限／页面／模型卡点分别记录，不改答案页。
 沿 result_branch 交结果、回 review_ready，由 dot-A 接收，不用 accept: auto；本单元最多两小时，纳入共享四并行，不需 GPU。
@@ -70,10 +70,11 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 [GitHub combined status](https://docs.github.com/en/rest/commits/statuses#get-the-combined-status-for-a-specific-reference)说明无 statuses 也返回 pending；[check runs](https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference)说明 latest 与分页、最近 1,000 个 check suites 范围；[Actions runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository)说明 head_sha 过滤和查询上限。核实：2026-10-27。
 ````
 
-## 当前结果
+## 修改要求
+1. 沿既有分支 `relay/a-ci-exact-sha-reader-20261028` 的 `63970ab608bf01b63c777089c0013d30e9769c44` 修订，不重跑或新开读者实测；只从已留存的实际投影补齐 result.md 三来源的 `query_scope`，不新增 CI API 调用。
+2. 独立复核既已指出缺字段，结论须保留“实测做通”与“交付仍需补项”的区别，不再概括为无问题／全部一致；原读者及复核证据保留。
+3. 保留本次实算输入 4,252／投影 924；页面历史输入 4,203 对应另一提交，差值来源尚未核实，不能把 49 字符或 sha 键猜测当作已证原因，不强行统一数字。
 
-- 读者按页对精确 SHA a0c0d31501b3a86fba85962959da41c0bfb8794d 完成三源核验：三项均 HTTP 200、total/returned/missing 全为 0、page_complete true，结论为 no_records_observed（未报绿、未报排队），独立复核字节一致且 46 项回归通过（taskDone=true）。页面卡点主要是未给三响应组装命令、正文无缩进计数口径与示例缩进命令不一致、观察时间格式未定义、后续页路径未实测；未关闭审查问题为 result.md 漏列 query_scope，以及页面 4,203 与实测 4,252 字符不符（差 49 疑为 sha 键）读者未指出。
-- 产物：[63970ab](https://github.com/dbvv1/a1dbv/commit/63970ab608bf01b63c777089c0013d30e9769c44)，分支 `relay/a-ci-exact-sha-reader-20261028`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端核对产物后按流程提交并推送 result_branch、回写任务状态。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+## 当前结果
+- 已有[产物 63970ab](https://github.com/dbvv1/a1dbv/commit/63970ab608bf01b63c777089c0013d30e9769c44)：目标 SHA 三源均 HTTP 200、无记录，未报绿或排队；46 项回归通过。缺项与历史计数差异待按上节最小修订。
+- 下一步：接收端只修原结果及支撑记录，核对留存投影后沿原 result_branch 交回 `review_ready`，由 dot-A 接收；不改嵌入页面。
