@@ -2,7 +2,7 @@
 id: B-MOBA-DIFFUSE-GPU-001
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 3f89df2bcfcaca1dde86cc1412d1649090a09d60
 result_branch: relay/b-moba-diffuse-gpu-001
@@ -43,4 +43,8 @@ node --import tsx tools/capture.mjs --require-gpu --task-id B-MOBA-DIFFUSE-GPU-0
 
 ## 当前结果
 
-新源码本轮尚未执行；等待既有接收端领取并核实际串行条件。旧 baseline 失败与未执行改后的事实保留，不预报新 GPU 通过。
+- 新源码 3f89df2 的 baseline GPU 拍摄仍失败（两次 frame 0 RGBA 不一致，命令退出 1），按卡面未执行 stylized-diffuse，无改后图与品质结论；归档 revision-3f89df2 共 16 个文件、清理回执齐全，三路审查通过且 openIssues 为空（build 类，无读者实测/页面卡点与候选收集项）。运行审查员另称其复跑两条命令均通过，与归档失败记录不一致，属审查侧补跑、未经接收端独立复核。
+- 产物：[8a82480](https://github.com/dbvv1/MOBA-Like/commit/8a824802f771ab6a18381517c51966a754a20ec0)，分支 `relay/b-moba-diffuse-gpu-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：先由确实修改重复根因的代码卡使同一渲染器逐帧 RGBA 可复现，再从修复后的固定干净提交重跑 baseline→stylized-diffuse 并重做证据归档。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
