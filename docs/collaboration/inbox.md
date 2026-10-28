@@ -4,6 +4,8 @@
 
 ## 待处理
 
+- 👀 **Ruff：让实际命令体现环境前提**——[维护者反馈](https://github.com/astral-sh/ruff/pull/29190)旁注未阻止 Codex 先跑不适用的监听测试，遂[把过滤写进命令](https://github.com/astral-sh/ruff/commit/7c6f8fc8fc5655dfa47e125b05453007b9e7a6c7)；仅不提供所需 OS 事件的环境适用，涉及监听行为的改动须在支持环境另验。本仓只在独立真实发布中预选既有授权的连接器入口以避开已知 CLI 缺写认证（不适用于权限拒绝）；路径依据执行回执而非 Git 提交，Ruff 命令未试用，未作同题对照，作为[共享指令](../decisions/instruction-files.md)候选（核实 2026-10-28）。
+
 - 👀 2026-10-28 核读：[Max Nardit 的 AGENTS 提示实验](https://max.nardit.com/articles/agents-md-viral-lines-tested)（10-25，Claude Code 2.1.310／Opus 5.5、Sonnet 5.5；两个小任务、90 次运行，每个条件单元 5 次），作者观察到删辅助文案连带删掉输入检查。race／security 防护“先解释再等批准”的提示未被有效检验：任务本已注明单线程、各组很少加锁，且 print 模式无人回应审批；本仓未试用，仅作 Codex 过度工程的来源候选，不新增默认。
 
 <a id="cline-image-token-estimate"></a>
