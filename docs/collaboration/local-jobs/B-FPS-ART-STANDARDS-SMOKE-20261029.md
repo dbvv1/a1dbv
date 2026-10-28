@@ -2,7 +2,7 @@
 id: B-FPS-ART-STANDARDS-SMOKE-20261029
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 9a5c02fc6b51c852d567cc0d4d28bf388fc41f4b
 result_branch: relay/b-fps-art-standards-smoke-20261029
