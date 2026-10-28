@@ -96,6 +96,19 @@ Codex #40932 的 10 月报告里，子任务完成、独立心跳活着，主线
 沿用已有交接和检查，不另建调度或为测试重复实施。
 ```
 
+**接收已提交版本时，🧪 可试隔离双 worker 离线检查。** 固定候选提交，让两 worker 各用独立检出目录和 `TMPDIR`，复用原检查与通过门槛；协调者继续不共享写入面的工作，收结果时核 `source_sha`、全部阶段及失败／未运行项。按[试验入口](../../experiments/parallel-offline-validation/README.md)从仓库根目录运行（把 `CANDIDATE_SHA` 替换为候选提交 SHA，输出目录须尚不存在）：
+
+```bash
+python3 experiments/parallel-offline-validation/trial.py \
+  --repo . --revision CANDIDATE_SHA --jobs 2 --output ../offline-two-workers
+```
+
+同一固定源码的两次串行中位 **39.61 秒**、两次双 worker 中位 **21.36 秒**，均通过相同 **20 阶段、475 次测试执行**，计时含副本准备与清理；475 不是独立测试个数。随后协调者在当时真实 `main` 的固定版本独立跑双 worker，**19.9523 秒**通过同样20阶段、475次执行，无未运行阶段或已跟踪文件变动。
+
+**只验已提交版本和本次环境，尚不改默认，本页保持 🟡。** 脏工作树的未提交／未跟踪内容不随副本进入检查，仍按原入口验；源码再变，旧结果不能转作新版本通过。共享 `HOME`、固定端口或外部服务未隔离，不直接套用；完整 dot 任务的接收、返工与吞吐仍按下表自然观察，不由这次离线耗时推算，也不新增调度机制。
+
+**依据**：[已发布试验与操作说明](https://github.com/dbvv1/a1dbv/blob/ee3852d888427390ed3a227e4a7a994ff6a20778/experiments/parallel-offline-validation/README.md)、[四轮原始数据](https://github.com/dbvv1/a1dbv/blob/ee3852d888427390ed3a227e4a7a994ff6a20778/experiments/parallel-offline-validation/results.json)；复跑源码身份为 [`c7647c74`](https://github.com/dbvv1/a1dbv/commit/c7647c740e4488d9dd110e57cce3ed97374d8ac3)，复跑计时与检查来自协调者本地工具输出，本页已核读原始 `result.json`；提交链接不证明该计时。核实 2026-10-28。
+
 **ChatGPT dot 用户可从桌面端 dot 资料页 → Activity 打开任务，检查文件、结果和待处理请求；续接后再核新轮次里的实际动作。** 社区的 #49883 在 10 月 1 日报告：子任务轮次已标 `completed`，产物仍只是未达验收的预览，主线迟迟未续接；#52374 的 10 月 23 日续报则是历史可读，但续接报 `UNKNOWN`，回读未见新轮次。Nigel999 的原帖也报告进度承诺与实际停工不符，支持回复要求核 Activity、阻塞和审批。这些 ChatGPT dot 个案与上文 Codex 子代理报告属于不同场景，都不能估算故障率。
 
 **依据**：[官方] [Activity 与完成后审阅](https://learn.chatgpt.com/docs/dots/tasks-and-memory#assigned-work)；[社区原帖] [dot #49883](https://github.com/openai/codex/issues/49883)、[dot #52374 的 10-23 续报](https://github.com/openai/codex/issues/52374#issuecomment-6364039681)、[Nigel999 与支持回复](https://community.openai.com/t/dot-repeatedly-reports-progress-but-fails-to-complete-tasks-or-clearly-disclose-that-work-has-stopped/1402528)；核实 2026-10-28，各个案根因未确定。
