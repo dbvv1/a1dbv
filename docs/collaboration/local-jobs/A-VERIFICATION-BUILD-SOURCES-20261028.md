@@ -1,7 +1,7 @@
 # A-VERIFICATION-BUILD-SOURCES-20261028 · 测的是哪个构建，哪些验收留成回归
 id: A-VERIFICATION-BUILD-SOURCES-20261028
 owner: dot-A
-status: ready
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5d18be14fb1bde809e0e1f981f9b17463d9b1056
