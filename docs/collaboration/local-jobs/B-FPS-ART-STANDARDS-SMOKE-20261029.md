@@ -2,7 +2,7 @@
 id: B-FPS-ART-STANDARDS-SMOKE-20261029
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 9a5c02fc6b51c852d567cc0d4d28bf388fc41f4b
 result_branch: relay/b-fps-art-standards-smoke-20261029
@@ -26,4 +26,9 @@ result_branch: relay/b-fps-art-standards-smoke-20261029
 六回合整场、半场/终局、完整战斗画面、贴墙/掩体视线、GPU性能、人看听玩、非作者视觉优劣和有意义二改仍待验；初始视角截图不能替代这些。结果回收后由dot判断旁置合入与网站发布。
 
 ## 当前结果
-待既有接收端领取，尚未开始执行；先核原调用与实际串行条件，不能确认则回具体缺口。
+
+- 固定源 9a5c02f 上两路真实 WebGL2 GPU 功能 smoke 均通过，after 的 art.state=ready/active/3 件/2396 tris/4 calls/123604 bytes，重复初始帧像素一致、两路 stateSHA 与渲染器一致，证据包 12 个文件 hash 已独立复核，openIssues 为空；仅剩六回合整场与人工画面/手感待验（首次用默认 chrome-headless-shell 出现软件 WebGL 且 after 路等待 phase=over 超时，改用既有完整 Chromium 后 GPU 通过）。
+- 产物：[18d9a1b](https://github.com/dbvv1/FPS-Like/commit/18d9a1bfaaff1c1594e473ac2e98afd06449f9cc)，分支 `relay/b-fps-art-standards-smoke-20261029`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：本任务范围已无剩余，交 dot-B 判断旁置合入与网站发布；六回合整场、墙角/掩体视线、人看听玩与非作者视觉判断仍待验。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
