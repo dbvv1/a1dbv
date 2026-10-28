@@ -1,0 +1,308 @@
+diff --git a/crates/goose/src/providers/litellm.rs b/crates/goose/src/providers/litellm.rs
+index a9263079b9f73c0a04fbc2945a4069cfee603b7a..c1f34f71ff74dc72b28441974430b0290142a72c 100644
+--- a/crates/goose/src/providers/litellm.rs
++++ b/crates/goose/src/providers/litellm.rs
+@@ -176,6 +176,7 @@ impl LiteLLMProvider {
+                 let mut model_info_obj =
+                     ModelInfo::new(model_name).with_optional_context_limit(context_length);
+                 model_info_obj.supports_cache_control = supports_cache_control;
++                model_info_obj.supports_vision = model_info["supports_vision"].as_bool();
+                 models.push(model_info_obj);
+             }
+         }
+@@ -303,6 +304,17 @@ impl Provider for LiteLLMProvider {
+         messages: &[Message],
+         tools: &[Tool],
+     ) -> Result<MessageStream, ProviderError> {
++        let mut resolved_model_config = model_config.clone();
++        if resolved_model_config.supports_vision.is_none() {
++            if let Ok(models) = self.get_or_fetch_models().await {
++                resolved_model_config.supports_vision = models
++                    .iter()
++                    .find(|info| info.name == resolved_model_config.model_name)
++                    .and_then(|info| info.supports_vision);
++            }
++        }
++        let model_config = &resolved_model_config;
++
+         let mut payload = goose_providers::formats::openai::create_request(
+             model_config,
+             system,
+@@ -462,7 +474,9 @@ mod tests {
+             name: LITELLM_PROVIDER_NAME.to_string(),
+             cached_model_info: tokio::sync::Mutex::new(None),
+         };
+-        let model = ModelConfig::new("litellm-streaming-log-test").with_prompt_cache_disabled();
++        let model = ModelConfig::new("litellm-streaming-log-test")
++            .with_prompt_cache_disabled()
++            .with_vision_support(false);
+ 
+         let mut stream = provider
+             .stream(&model, "", &[], &[])
+@@ -532,7 +546,9 @@ mod tests {
+             name: LITELLM_PROVIDER_NAME.to_string(),
+             cached_model_info: tokio::sync::Mutex::new(None),
+         };
+-        let model = ModelConfig::new("litellm-json-log-test").with_prompt_cache_disabled();
++        let model = ModelConfig::new("litellm-json-log-test")
++            .with_prompt_cache_disabled()
++            .with_vision_support(false);
+ 
+         let mut stream = provider
+             .stream(&model, "", &[], &[])
+diff --git a/crates/goose/tests/litellm_vision.rs b/crates/goose/tests/litellm_vision.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..cac6d64ceb0b321149d14b8ebce02ffbafcb0fe8
+--- /dev/null
++++ b/crates/goose/tests/litellm_vision.rs
+@@ -0,0 +1,250 @@
++use futures::StreamExt;
++use goose::providers::{base::Provider, litellm::LiteLLMProvider};
++use goose_providers::{conversation::message::Message, model::ModelConfig};
++use rmcp::model::{CallToolRequestParams, CallToolResult, ContentBlock};
++use serde_json::{json, Value};
++use wiremock::{
++    matchers::{method, path},
++    Mock, MockServer, ResponseTemplate,
++};
++
++const PNG: &str =
++    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l1sAAAAASUVORK5CYII=";
++
++async fn check_vision_request(
++    metadata: Value,
++    declared: Option<bool>,
++    model_name: &str,
++    streaming: bool,
++    expected: bool,
++) {
++    let mut model = ModelConfig::new(model_name);
++    if let Some(value) = declared {
++        model = model.with_vision_support(value);
++    }
++    let model = model.with_canonical_vision_support("litellm");
++    if model_name == "team-vision" && declared.is_none() {
++        assert_eq!(model.supports_vision, None);
++    }
++    if model_name == "gpt-4o" && declared.is_none() {
++        assert_eq!(model.supports_vision, Some(true));
++    }
++    let response = ResponseTemplate::new(200).set_body_json(json!({
++        "data": [{"model_name": model_name, "model_info": metadata}]
++    }));
++    check_requests(response, model, streaming, expected, 1).await;
++}
++
++async fn check_requests(
++    metadata_response: ResponseTemplate,
++    model: ModelConfig,
++    streaming: bool,
++    expected: bool,
++    expected_discovery_count: u64,
++) {
++    let model_name = &model.model_name;
++    let declared = model.supports_vision;
++    let server = MockServer::start().await;
++    Mock::given(method("GET"))
++        .and(path("/model/info"))
++        .respond_with(metadata_response)
++        .expect(expected_discovery_count)
++        .mount(&server)
++        .await;
++
++    let response = if streaming {
++        let chunk = json!({
++            "id": "test", "object": "chat.completion.chunk", "created": 0,
++            "model": model_name, "choices": [{"index": 0,
++            "delta": {"role": "assistant", "content": "mock response"},
++            "finish_reason": "stop"}]
++        });
++        ResponseTemplate::new(200).set_body_raw(
++            format!("data: {chunk}\n\ndata: [DONE]\n\n"),
++            "text/event-stream",
++        )
++    } else {
++        ResponseTemplate::new(200).set_body_json(json!({
++            "id": "test", "model": model_name,
++            "choices": [{"message": {"role": "assistant", "content": "mock response"},
++                         "finish_reason": "stop"}]
++        }))
++    };
++    Mock::given(method("POST"))
++        .and(path("/v1/chat/completions"))
++        .respond_with(response)
++        .expect(2)
++        .mount(&server)
++        .await;
++
++    let root = tempfile::tempdir().unwrap();
++    let host = server.uri();
++    let _guard = env_lock::lock_env([
++        ("GOOSE_PATH_ROOT", root.path().to_str()),
++        ("GOOSE_DISABLE_KEYRING", Some("1")),
++        ("GOOSE_ADDITIONAL_CONFIG_FILES", None),
++        ("LITELLM_API_KEY", Some("local-test-key")),
++        ("LITELLM_HOST", Some(host.as_str())),
++        ("LITELLM_BASE_PATH", Some("v1/chat/completions")),
++        ("LITELLM_CUSTOM_HEADERS", None),
++        (
++            "LITELLM_SUPPORTS_STREAMING",
++            Some(if streaming { "true" } else { "false" }),
++        ),
++    ]);
++    let provider = LiteLLMProvider::from_env(None).await.unwrap();
++    let messages = [
++        Message::user()
++            .with_text("Describe this image")
++            .with_image(PNG, "image/png"),
++        Message::assistant()
++            .with_tool_request("image1", Ok(CallToolRequestParams::new("read_image"))),
++        Message::user().with_tool_response(
++            "image1",
++            Ok(CallToolResult::success(vec![ContentBlock::image(
++                PNG,
++                "image/png",
++            )])),
++        ),
++    ];
++    for _ in 0..2 {
++        let mut stream = provider
++            .stream(&model, "Describe images", &messages, &[])
++            .await
++            .unwrap();
++        while let Some(item) = stream.next().await {
++            item.unwrap();
++        }
++    }
++
++    let requests = server.received_requests().await.unwrap();
++    assert_eq!(
++        requests
++            .iter()
++            .filter(|r| r.url.path() == "/model/info")
++            .count(),
++        expected_discovery_count as usize
++    );
++    let bodies: Vec<Value> = requests
++        .iter()
++        .filter(|r| r.url.path() == "/v1/chat/completions")
++        .map(|r| r.body_json().unwrap())
++        .collect();
++    assert_eq!(bodies.len(), 2);
++    let mut image_counts = Vec::new();
++    let mut omissions = Vec::new();
++    for (request_number, body) in bodies.iter().enumerate() {
++        let serialized = body.to_string();
++        let image_count = serialized
++            .matches(&format!("data:image/png;base64,{PNG}"))
++            .count();
++        eprintln!("request_number={request_number} model={model_name} declared={declared:?} streaming={streaming} image_count={image_count} payload={body}");
++        image_counts.push(image_count);
++        omissions.push(serialized.contains("image omitted"));
++    }
++    assert_eq!(
++        image_counts,
++        vec![if expected { 2 } else { 0 }; 2],
++        "{bodies:?}"
++    );
++    assert_eq!(omissions, vec![!expected; 2], "{bodies:?}");
++}
++
++#[test_case::test_case(false; "json")]
++#[test_case::test_case(true; "sse")]
++#[tokio::test]
++async fn alias_uses_discovered_vision(streaming: bool) {
++    check_vision_request(
++        json!({"supports_vision": true, "supports_prompt_caching": false}),
++        None,
++        "team-vision",
++        streaming,
++        true,
++    )
++    .await;
++}
++
++#[test_case::test_case(Some(true), false, true; "explicit_true_beats_false")]
++#[test_case::test_case(Some(false), true, false; "explicit_false_beats_true")]
++#[test_case::test_case(None, false, false; "discovered_false")]
++#[tokio::test]
++async fn vision_boolean_controls(declared: Option<bool>, discovered: bool, expected: bool) {
++    check_vision_request(
++        json!({"supports_vision": discovered}),
++        declared,
++        "team-vision",
++        false,
++        expected,
++    )
++    .await;
++}
++
++#[test_case::test_case(json!({}); "missing")]
++#[test_case::test_case(json!({"supports_vision": null}); "null")]
++#[test_case::test_case(json!({"supports_vision": "true"}); "not_boolean")]
++#[tokio::test]
++async fn unspecified_vision_remains_disabled(metadata: Value) {
++    check_vision_request(metadata, None, "team-vision", false, false).await;
++}
++
++#[tokio::test]
++async fn canonical_vision_remains_enabled_without_vision_metadata() {
++    check_vision_request(json!({}), None, "gpt-4o", false, true).await;
++}
++
++#[test_case::test_case(false; "json")]
++#[test_case::test_case(true; "sse")]
++#[tokio::test]
++async fn vision_discovery_does_not_depend_on_prompt_caching(streaming: bool) {
++    let response = ResponseTemplate::new(200).set_body_json(json!({
++        "data": [{"model_name": "team-vision", "model_info": {"supports_vision": true}}]
++    }));
++    check_requests(
++        response,
++        ModelConfig::new("team-vision").with_prompt_cache_disabled(),
++        streaming,
++        true,
++        1,
++    )
++    .await;
++}
++
++#[test_case::test_case(ResponseTemplate::new(403); "forbidden")]
++#[test_case::test_case(ResponseTemplate::new(500); "server_error")]
++#[test_case::test_case(ResponseTemplate::new(200).set_body_string("not JSON"); "malformed_json")]
++#[test_case::test_case(ResponseTemplate::new(200).set_body_json(json!({})); "missing_data")]
++#[tokio::test]
++async fn failed_discovery_is_cached_and_chat_continues(response: ResponseTemplate) {
++    check_requests(
++        response,
++        ModelConfig::new("team-vision").with_prompt_cache_disabled(),
++        false,
++        false,
++        1,
++    )
++    .await;
++}
++
++#[test_case::test_case(true; "enabled")]
++#[test_case::test_case(false; "disabled")]
++#[tokio::test]
++async fn explicit_vision_needs_no_discovery(declared: bool) {
++    check_requests(
++        ResponseTemplate::new(500),
++        ModelConfig::new("team-vision")
++            .with_vision_support(declared)
++            .with_prompt_cache_disabled(),
++        false,
++        declared,
++        0,
++    )
++    .await;
++}
++
++#[tokio::test]
++async fn unrelated_model_cannot_enable_vision() {
++    let response = ResponseTemplate::new(200).set_body_json(json!({
++        "data": [{"model_name": "another-alias", "model_info": {"supports_vision": true}}]
++    }));
++    check_requests(response, ModelConfig::new("team-vision"), false, false, 1).await;
++}

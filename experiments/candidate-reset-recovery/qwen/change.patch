@@ -1,0 +1,271 @@
+diff --git a/docs/users/features/mcp.md b/docs/users/features/mcp.md
+index bbb3b1fdd78c2c28b8fa43e55e703fd0973c6188..bbb9261694b839644b75efd91c3ed3d0cd6680dd 100644
+--- a/docs/users/features/mcp.md
++++ b/docs/users/features/mcp.md
+@@ -436,6 +436,7 @@ Example:
+ 
+ - **Server shows “Disconnected” in `qwen mcp list`**: verify the URL/command is correct, then increase `timeout`.
+ - **Stdio server fails to start**: use an absolute `command` path, and double-check `cwd`/`env`.
++- **Duplicate function name during discovery**: the server returned multiple tools with the same name. Qwen Code reports the underlying discovery error rather than an empty-server error when no prompts or resources remain available. Fix the tool names in the server or filter duplicates through a proxy; `includeTools` and `excludeTools` are applied after conversion and cannot resolve duplicate names.
+ - **Environment variables in JSON don’t resolve**: ensure they exist in the environment where Qwen Code runs (shell vs GUI app environments can differ).
+ 
+ ## Reference
+diff --git a/packages/core/src/tools/mcp-client.test.ts b/packages/core/src/tools/mcp-client.test.ts
+index 5a7e5f45de0c78c9a2059f940b5cb1df178bcd0d..b35ae7125a036583fbc29155dfeb85db932444a4 100644
+--- a/packages/core/src/tools/mcp-client.test.ts
++++ b/packages/core/src/tools/mcp-client.test.ts
+@@ -1705,6 +1705,182 @@ lOTTGqPpwFUbw2EMOOpFYuIyzGMIpUNMBjE2gvJiqFQ=
+ 
+     const EMPTY = 'No prompts, tools, or resources found on the server.';
+ 
++    describe.each(['snapshot', 'standalone'] as const)(
++      '%s discovery errors with the real GenAI converter',
++      (path) => {
++        const serverName = `discovery-error-${path}`;
++        const duplicateError =
++          'Duplicate function name create found in MCP tools. Please ensure function names are unique.';
++        const duplicateTools = ['create', 'create', 'inspect'].map((name) => ({
++          name,
++          inputSchema: { type: 'object', properties: {} },
++        }));
++
++        beforeEach(async () => {
++          const actual =
++            await vi.importActual<typeof GenAiLib>('@google/genai');
++          vi.mocked(GenAiLib.mcpToTool).mockImplementation(actual.mcpToTool);
++        });
++
++        afterEach(() => {
++          vi.mocked(GenAiLib.mcpToTool).mockReset();
++          removeMCPServerStatus(serverName);
++        });
++
++        async function runDiscovery(
++          tools: Obj[],
++          expectedError?: string,
++          extra: Obj = {},
++        ) {
++          const sdkClient = mockStdioClient({
++            getServerCapabilities: vi.fn().mockReturnValue({ tools: {} }),
++            request: vi
++              .fn()
++              .mockRejectedValue(
++                Object.assign(new Error('Method not found'), { code: -32601 }),
++              ),
++            listTools: vi.fn().mockResolvedValue({ tools }),
++            close: vi.fn(),
++            ...extra,
++          });
++          const toolRegistry = toolReg();
++          const promptRegistry = promptReg();
++          const resourceRegistry = { registerResource: vi.fn() };
++          const cliConfig = cfgWithResources(resourceRegistry);
++          let snapshot:
++            | Awaited<ReturnType<McpClient['discoverAndReturn']>>
++            | undefined;
++          if (path === 'snapshot') {
++            const client = await connectedClient(
++              serverName,
++              undefined,
++              toolRegistry,
++              promptRegistry,
++            );
++            const discovery = client.discoverAndReturn(cliConfig);
++            if (expectedError) {
++              await expect(discovery).rejects.toThrow(expectedError);
++              await expect(discovery).rejects.toBeInstanceOf(Error);
++              expect(getMCPServerLastError(serverName)).toBe(expectedError);
++            } else {
++              snapshot = await discovery;
++              expect(snapshot.tools).toEqual([]);
++            }
++            expect(promptRegistry.registerPrompt).not.toHaveBeenCalled();
++            expect(resourceRegistry.registerResource).not.toHaveBeenCalled();
++          } else {
++            await connectAndDiscover(
++              serverName,
++              { command: 'test-command' },
++              toolRegistry,
++              promptRegistry,
++              false,
++              workspace(),
++              cliConfig,
++            );
++            if (expectedError) {
++              expect(mockDebugLogger.error).toHaveBeenCalledWith(
++                `Error connecting to MCP server '${serverName}': ${expectedError}`,
++              );
++              expect(sdkClient.close).toHaveBeenCalledOnce();
++            }
++          }
++          expect(toolRegistry.registerTool).not.toHaveBeenCalled();
++          expect(getMCPServerStatus(serverName)).toBe(
++            expectedError
++              ? MCPServerStatus.DISCONNECTED
++              : MCPServerStatus.CONNECTED,
++          );
++          if (expectedError !== EMPTY) {
++            expect(
++              mockDebugLogger.error.mock.calls.flat().join('\n'),
++            ).not.toContain(EMPTY);
++          }
++          return { snapshot, promptRegistry, resourceRegistry };
++        }
++
++        it('preserves duplicate-name conversion failures instead of reporting an empty server', async () => {
++          await runDiscovery(duplicateTools, duplicateError);
++        });
++
++        it('preserves tools/list failures instead of reporting an empty server', async () => {
++          await runDiscovery([], 'tools/list failed', {
++            listTools: vi
++              .fn()
++              .mockRejectedValue(new Error('tools/list failed')),
++          });
++        });
++
++        it('normalizes a non-Error tools/list rejection without losing its message', async () => {
++          await runDiscovery([], 'plain discovery failure', {
++            listTools: vi.fn().mockRejectedValue('plain discovery failure'),
++          });
++        });
++
++        it('still reports an empty server when tools/list succeeds with no tools', async () => {
++          await runDiscovery([], EMPTY);
++        });
++
++        it('still treats unsupported tools/list as an empty capability', async () => {
++          await runDiscovery([], EMPTY, {
++            listTools: vi
++              .fn()
++              .mockRejectedValue(
++                Object.assign(new Error('Method not found'), { code: -32601 }),
++              ),
++          });
++          expect(mockDebugLogger.error).not.toHaveBeenCalledWith(
++            expect.stringContaining('Error discovering tools'),
++          );
++        });
++
++        it.each(['prompts', 'resources'] as const)(
++          'keeps usable %s when tool conversion fails',
++          async (capability) => {
++            const result = await runDiscovery(duplicateTools, undefined, {
++              getServerCapabilities: vi
++                .fn()
++                .mockReturnValue({ tools: {}, [capability]: {} }),
++              request: vi.fn().mockImplementation(async ({ method }) => {
++                if (method !== `${capability}/list`) {
++                  throw Object.assign(new Error('Method not found'), {
++                    code: -32601,
++                  });
++                }
++                return capability === 'prompts'
++                  ? { prompts: [{ name: 'usable-prompt' }] }
++                  : {
++                      resources: [
++                        { name: 'usable-resource', uri: 'test://resource' },
++                      ],
++                    };
++              }),
++            });
++            const expected = expect.objectContaining({
++              serverName,
++              ...(capability === 'prompts'
++                ? { name: 'usable-prompt' }
++                : { name: 'usable-resource', uri: 'test://resource' }),
++            });
++            if (path === 'snapshot') {
++              expect(result.snapshot?.[capability]).toEqual([expected]);
++              expect(
++                result.snapshot?.[
++                  capability === 'prompts' ? 'resources' : 'prompts'
++                ],
++              ).toEqual([]);
++            } else {
++              const register =
++                capability === 'prompts'
++                  ? result.promptRegistry.registerPrompt
++                  : result.resourceRegistry.registerResource;
++              expect(register).toHaveBeenCalledExactlyOnceWith(expected);
++            }
++          },
++        );
++      },
++    );
++
+     it('discoverAndReturn throws "No prompts or tools found" when both empty', async () => {
+       // Preserves the discover() pre-F2 invariant — the wrapping
+       // McpClientManager / pool entry uses this signal to mark the
+diff --git a/packages/core/src/tools/mcp-client.ts b/packages/core/src/tools/mcp-client.ts
+index 457ad4df4d48674eb1d597e10dcab2b081b46593..0a7604fa95343920563183ef06aaedfbd9448bd5 100644
+--- a/packages/core/src/tools/mcp-client.ts
++++ b/packages/core/src/tools/mcp-client.ts
+@@ -742,9 +742,8 @@ export class McpClient {
+    * `getFailedMcpServerNames()` reflect reality), then re-throws.
+    * `opts.preserveStatusOnFailure` opts out of the flip.
+    *
+-   * Returns the same combined "no prompts or tools" error that `discover()`
+-   * raised previously, so callers that distinguish "server up but empty" from
+-   * "server down" still get the right signal.
++   * Keeps the combined empty-server error for genuinely empty discovery,
++   * but preserves tool discovery failures when no capabilities remain.
+    *
+    * @param opts.applyConfigFilters Whether to apply `includeTools` /
+    *   `excludeTools` filtering and set the `trust` field on returned
+@@ -775,8 +774,8 @@ export class McpClient {
+       // Prompts, resources, and tools are independent reads with no data
+       // dependency; run them concurrently (the SDK client multiplexes
+       // requests by JSON-RPC id) to save round-trips per server at startup.
+-      // Each helper retries transient errors internally, then swallows
+-      // permanent errors and returns [], so Promise.all never rejects here.
++      // Each helper retries transient errors internally, then returns an
++      // empty result on permanent failure, so Promise.all never rejects here.
+       const [prompts, resources, toolDiscovery] = await Promise.all([
+         listMcpPrompts(this.serverName, this.client),
+         listMcpResources(this.serverName, this.client),
+@@ -796,7 +795,10 @@ export class McpClient {
+         resources.length === 0 &&
+         !toolDiscovery.hadVisibilityFilteredTools
+       ) {
+-        throw new Error('No prompts, tools, or resources found on the server.');
++        throw (
++          toolDiscovery.error ??
++          new Error('No prompts, tools, or resources found on the server.')
++        );
+       }
+ 
+       return { tools, prompts, resources };
+@@ -1545,7 +1547,10 @@ export async function connectAndDiscover(
+       tools.length === 0 &&
+       !toolDiscovery.hadVisibilityFilteredTools
+     ) {
+-      throw new Error('No prompts, tools, or resources found on the server.');
++      throw (
++        toolDiscovery.error ??
++        new Error('No prompts, tools, or resources found on the server.')
++      );
+     }
+ 
+     // If we found anything, the server is connected
+@@ -1620,6 +1625,7 @@ export async function discoverTools(
+ type ToolDiscoveryResult = {
+   tools: DiscoveredMCPTool[];
+   hadVisibilityFilteredTools: boolean;
++  error?: Error;
+ };
+ 
+ async function discoverToolsWithMetadata(
+@@ -1770,6 +1776,12 @@ async function discoverToolsWithMetadata(
+           error,
+         )}`,
+       );
++      return {
++        tools: [],
++        hadVisibilityFilteredTools: false,
++        error:
++          error instanceof Error ? error : new Error(getErrorMessage(error)),
++      };
+     }
+     return { tools: [], hadVisibilityFilteredTools: false };
+   }

@@ -22,3 +22,5 @@ experiments/opensrc-ref-integrity/source-ref-integrity.patch whitespace=-blank-a
 experiments/serena-vue-implementation/fix.patch whitespace=-blank-at-eol
 experiments/testmon-outer-coverage/fix.patch whitespace=-blank-at-eol
 experiments/testmon-outer-coverage/coverage-core.patch whitespace=-blank-at-eol
+experiments/candidate-reset-recovery/qwen/change.patch whitespace=-blank-at-eol
+experiments/candidate-reset-recovery/goose/change.patch whitespace=-blank-at-eol

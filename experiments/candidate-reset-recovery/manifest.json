@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "git_object_format": "sha1",
+  "purpose": "Base-dependent environment-reset recovery; not an offline backup.",
+  "cases": [
+    {
+      "name": "qwen",
+      "upstream": "https://github.com/QwenLM/qwen-code.git",
+      "base_commit": "127c2ab9048839c64b806e58e6d7329cbb2d9a8a",
+      "base_tree": "2eaeb6415be4f8ab539637382b054409dcc1c268",
+      "source_candidate_commit": "609941748680555ce2af949ce8085345997de0d5",
+      "candidate_tree": "07bc1f417f595fcb283731aeb747433435bc57b6",
+      "changed_files": [
+        {
+          "path": "docs/users/features/mcp.md",
+          "blob": "bbb9261694b839644b75efd91c3ed3d0cd6680dd",
+          "bytes": 28979,
+          "sha256": "a18916962ad8baba2210efa201386d93fc7814c783694961c6b110a3ee2fac61"
+        },
+        {
+          "path": "packages/core/src/tools/mcp-client.test.ts",
+          "blob": "b35ae7125a036583fbc29155dfeb85db932444a4",
+          "bytes": 126988,
+          "sha256": "d37d093e69003e9ac9d2b49042b6c937ced68610ad3eb83a3f659c2a74a45939"
+        },
+        {
+          "path": "packages/core/src/tools/mcp-client.ts",
+          "blob": "0a7604fa95343920563183ef06aaedfbd9448bd5",
+          "bytes": 100388,
+          "sha256": "18a2882f287e72859a3e5c7bd3116b2951be984b2789ccf8619ca028187460df"
+        }
+      ]
+    },
+    {
+      "name": "goose",
+      "upstream": "https://github.com/aaif-goose/goose.git",
+      "base_commit": "8a16788137c8af25f9d6d17ee87bbedb53ea9325",
+      "base_tree": "0e79564333c5c37152ee9e75f6bdbc6d0e282576",
+      "source_candidate_commit": "af0a78595ad5c2917c667f21e4bbb04710451fcf",
+      "candidate_tree": "19853ad78cbc42dd9d90f37f7e813079ae46a3ec",
+      "changed_files": [
+        {
+          "path": "crates/goose/src/providers/litellm.rs",
+          "blob": "c1f34f71ff74dc72b28441974430b0290142a72c",
+          "bytes": 25269,
+          "sha256": "2136e9131ee579ebdd033ab1b62a993e5d7b9fdd06b21f007f853a1021a05c62"
+        },
+        {
+          "path": "crates/goose/tests/litellm_vision.rs",
+          "blob": "cac6d64ceb0b321149d14b8ebce02ffbafcb0fe8",
+          "bytes": 8420,
+          "sha256": "93b18479db95c49a8b48fad3c7f0a789bfe0c7b4e27630a2cd2b72a80a41f16b"
+        }
+      ]
+    }
+  ],
+  "payloads": [
+    {
+      "path": "goose/LICENSE.upstream",
+      "bytes": 11341,
+      "sha256": "44459b86c2e96fdbfd8a6b5c33d30d4b04b5293fcb2ec96fe4dcc4e0f90b8962"
+    },
+    {
+      "path": "goose/change.patch",
+      "bytes": 11410,
+      "sha256": "9351dcf16600d1aeaa1b98cc27a5b2231ce419119e6543b622d65424a071275e"
+    },
+    {
+      "path": "goose/litellm_vision_baseline.rs",
+      "bytes": 6200,
+      "sha256": "a7835d8bbbb49319788cb58cd5e0b993ba4caae86a73aecf6d95d660a2b250e6",
+      "restore_to": "goose/.local-tools/litellm_vision_baseline.rs"
+    },
+    {
+      "path": "qwen/LICENSE.upstream",
+      "bytes": 11361,
+      "sha256": "55367b61ccd2a016a0159ad886bd66a3ee6cb5e873d0c75c803c897dd245b075"
+    },
+    {
+      "path": "qwen/change.patch",
+      "bytes": 11858,
+      "sha256": "4e41dc3a7e4a09b89e80f87369b6b7295ee994660e75e740e0f8647975a62b31"
+    },
+    {
+      "path": "qwen/repro/duplicate-mcp-fixture.mjs",
+      "bytes": 1037,
+      "sha256": "a6a8a38bcdbcf221d75fbc51b212fe684f2a07c6c498ccc34969e32d51f409cd",
+      "restore_to": "qwen/.qwen/scripts/duplicate-mcp-fixture.mjs"
+    },
+    {
+      "path": "qwen/repro/reproduce-duplicate-mcp-compiled.ts",
+      "bytes": 2243,
+      "sha256": "368a84263a9907aaba0248b84e0b74c9d418deb37f419f79b5c15cfb42f2d1df",
+      "restore_to": "qwen/.qwen/scripts/reproduce-duplicate-mcp-compiled.ts"
+    },
+    {
+      "path": "qwen/repro/reproduce-duplicate-mcp.ts",
+      "bytes": 2233,
+      "sha256": "77d36d8ff9c67f38984d4d22429491362dfef30d9a1f1a954a7f56b645f9f1d4",
+      "restore_to": "qwen/.qwen/scripts/reproduce-duplicate-mcp.ts"
+    }
+  ]
+}
