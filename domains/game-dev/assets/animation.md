@@ -400,6 +400,10 @@ blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pip
 
 小兵死亡会在同逻辑步从模拟集合删除，不能靠下一张快照里的 `alive=false` 接动画：[正式消费者](https://github.com/dbvv1/MOBA-Like/blob/c45c2eb6e9326438753aec8ae74befd54ae13eca/src/render/battlefield.ts)改读 cleanup 在真实死亡移除前发出的 `minionDied`，只给已见存活实例播放原约 1.03 秒 death 与 0.15 秒尾停，立即退出选取和血条，再释放独立 mixer／骨架；不推迟模拟死亡、奖励或碰撞，也不把一般缺实体猜成死亡。每个 fixed step 都消费事件，长帧不能只取最后一批；后台无 draw 时尾段暂停，终局仍可收完，重开立即清理。真实正常群战录像支持“不当帧抹掉”的窄连续性增量，但倒下被英雄、活兵和血条遮挡，死亡辨识仍弱；死亡尾段接入不等于达到战斗品质参照。
 
+**源动作改时长，消费者的结束条件也要读同一份 clip。** FPS 的已接收刚性角色源包能重建、能加载，但旧消费者把 fire／hit 窗口另写成 120／180 ms；仅将实际 GLB 的时间输入改为 240 ms，动作仍在旧时刻被截断。沿原消费者改为读取已加载 clip 的 duration，并拒绝无效／重复 clip 后，真实 Three 加载器采样跟随新时长；非时间 buffer 字节、另一个角色实例与源对象保持不变。动作仍从真实事件年龄采样，不能让视觉时长改写伤害或射击间隔。
+
+改源还须更新批准的产物身份，并核上游事件保留期：本例 Feedback 只留 700 ms，240 ms 二改在范围内；超出该保留期的 hit／death 在启用前拒收，须先改完整事件生命周期才能支持更长动作。此为来源二改与 CPU 消费者验证，正式 GLB 未替换，未新增浏览器、引擎或作品采用证据。来源：[固定源包与动作合同](https://github.com/dbvv1/FPS-Like/tree/b198df62a56f4c520716fbc9cb4afac47dd62213/asset-pipeline/content-set)、[旧消费者](https://github.com/dbvv1/FPS-Like/blob/a0c8d52b952f04195c9ae31dca0af092c2418764/src/render/content-set-assets.ts)、[已修正候选与实源回归](https://github.com/dbvv1/FPS-Like/commit/02d5328cc86deafbc5e789dfb4f76e50efbb914f)；二改核实 2026-10-28 UTC。
+
 **二改“受击仍要走路”时先改掩码，不先重画 GLB。** 默认 `hurtRegion:'upper'` 复用同一 hurt 源的上身轨；用 `motionOptions: {hurtRegion:'full', strike:.3, recovery:17/30}` 可比较旧全身反应或调整视觉出手，实际 resolve／命中时刻不变。活跃 attack/hurt 混合时按变形顶点求本地最低点，只向上补内部 Root，外根仍由模拟独占；这是局部平地接触修正，不是坡地足 IK，开销随角色与顶点数增长。
 
 需要更细的源／分层修改，可复跑[同源实验](../../../experiments/character-animation/README.md)：旧 profile 的视觉接触 `.6s→.35s`、恢复仍 `17/30s`，分段采同一挥击；取消冻结出层采样后淡回移动。另一次倒下 `.8s→1.2s`、尾部保持 `.2s` 保其余四动作；混合穿地约 9.8 mm 的反例促成内部 Root 校正，两版本／四起点 60 Hz 检查达到本例 1 mm 容差。实验的 16 项 Three／GLB、5 项 Blender 检查与复用的 4 项预览检查仍是对应旧样本证据，不能拿来免验当前重塑人物或推广为任意重定向。
