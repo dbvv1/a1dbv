@@ -1,7 +1,7 @@
 # A-MULTIAGENT-CONTEXT-READER-20261028 · 照多代理页核上下文候选
 id: A-MULTIAGENT-CONTEXT-READER-20261028
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 405523084ed59127c27ba7ee7aab3954dbd9e869
