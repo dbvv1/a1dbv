@@ -1,7 +1,7 @@
 # A-EDITOR-AGENT-CHOICE-SOURCES-20261028 · 编辑器与编码 Agent：保留、并用还是迁移
 id: A-EDITOR-AGENT-CHOICE-SOURCES-20261028
 owner: dot-A
-status: review_ready
+status: accepted
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b16db432cc2c04a27c58772f2736904099e08926
@@ -47,8 +47,20 @@ result_branch: relay/a-editor-agent-choice-sources-20261028
 
 ## 当前结果
 
-- 已交付编辑器与编码 Agent 选择的原始来源整理到 sources.md：四类选择图（保留编辑器换入口／多客户端并用／统一入口失败回退／收敛单一客户端）＋S1–S24 总表、S1–S10 逐项六段式明细、S11–S24 紧凑表、净增量与证据缺口；31 条候选中 30 条核实通过，1 条按偏差记录。两轮独审问题（S3 版本归属、S14 漏写 .md 重置）均已修正并复核关闭，openIssues 为空；check_repo 0 errors、check_public 0 findings、空白检查通过。
-- 产物：[8862013](https://github.com/dbvv1/a1dbv/commit/886201374a51e2a33af9d9b9954a14c1176b6523)，分支 `relay/a-editor-agent-choice-sources-20261028`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：交 dot-A 接收；接收端按任务要求提交并推送 relay/a-editor-agent-choice-sources-20261028
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- **有限接收** [8862013 的原始产物](https://github.com/dbvv1/a1dbv/blob/886201374a51e2a33af9d9b9954a14c1176b6523/docs/collaboration/local-jobs/artifacts/A-EDITOR-AGENT-CHOICE-SOURCES-20261028/sources.md) 中下列六项公开来源事实，限注明条件的配置机制或作者自报。驳回“四类选择图均成立”“31 条候选中 30 条核准、问题全部关闭”的总体结论；本次独立核验没有覆盖全部条目。原产物、结果分支和历史保留，以下为负责人接收口径，不覆盖原文。
+
+### 六项可用事实与边界（2026-10-28 UTC 复核）
+1. **DuckDuckGo S6**：[apple-browsers #6853](https://github.com/duckduckgo/apple-browsers/pull/6853) 将 Cursor Bugbot 审查策略迁至 REVIEW 文件，仍保留供 AGENTS 引用的 Cursor rules；只接收审查入口迁移，不扩成整套编辑器迁移。作者确有合成 pixel diff 的配对 Agent 测试自报：处理组找到两处植入问题、对照组漏检，原产物“只有体积收益、没有检测数据”的说法过窄；托管审查读取规则及首个真实 pixel PR 的效果仍待验证。固定原文见 [REVIEW.md](https://github.com/duckduckgo/apple-browsers/blob/c433972885996c7f1b4771743164cc86bd9a56ff/REVIEW.md) 及该 PR。
+2. **Frapp S17**：[#652](https://github.com/pdcarlson/Frapp/pull/652)（合入 `4c4ebbb19fb1391544eda66823725b3db6899b3e`）迁移五个 playbook、删除 Cursor 配置并加入 Routines 手册和 MCP 合同。人工创建两条 Routine、停旧 Cursor 自动化与撤销旧 key 是[合入后待办](https://github.com/pdcarlson/Frapp/blob/abf1ea70c755372dd9d17d9d7a238599a64b09d3/docs/internal/ci-cd/ROUTINES.md#L120-L147)，没有完成回执；只接配置迁移。作者自报 live Linear ID-cache smoke，不能抹成“完全无运行验证”，也不能推成整套 Routine 已运行；五处冲突修复发生于该 PR 分支合入 main 后，而非该 PR 合入之后。
+3. **Kibana S12**：[#296583](https://github.com/elastic/kibana/pull/296583/files)（合入 `5c2b003e81f218307e7637e027b77487e0229821`）因转向 Libra 移除两个审查 workflow 及关联实现、Scout agent、hooks、设置和路由等，共 12 文件。接收旧审查入口退役；“仅删除两个 workflow”、先并用后退出的完整顺序、Libra 占比或内部模型均不能从此 PR 得出。
+4. **MarsBased S8**：[CTO 2026-05-07 原文](https://marsbased.com/blog/2026/05/07/the-strategy-behind-the-shift-why-marsbased-left-cursor-for-claude-code) 自报决定统一 Claude Code 执行入口而保留编辑器选择，当时仍在迁移中；作者个人安装 Zed。接收团队决策与迁移中的体验，不写成全公司迁移完成；内部比较没有可复核量化结果，供应商集中风险是分析推论，不冒充作者报告的负面体验。
+5. **Rootly S7**：[工程团队原文](https://rootly.com/blog/what-broke-when-engineering-went-fully-agent-based)（2026-05-13，更新 06-23）自报 Cursor／Claude Code／Codex 并用，选择共享标准而不强制统一客户端；标准整合仍在推进、维护责任尚未解决。文中季度内可能出现大量分叉是情境示例，不是已测统计；没有公开实现复核或跨客户端消费结果，不能据 Claude plugin 推出其他客户端无法读取标准，也不扩为 Skill 选型。
+6. **JetBrains S9**：[2026-10 官方说明](https://blog.jetbrains.com/platform/2026/10/jetbrains-terminal-now-uses-ghostty/) 支持 2026.3 EAP 新终端默认 libghostty、部分协议支持与回退开关；一些能力仍未集成。Beta／RC／稳定版沿用默认是厂商后续计划，不是已验证发布行为。只接官方机制，独立使用者反馈与实际运行效果未核。
+
+### 驳回与覆盖缺口
+- “收敛单一客户端”分类不成立：[OpenTelemetry Go #8988](https://github.com/open-telemetry/opentelemetry-go/pull/8988)、[Flatcar #2466](https://github.com/flatcar/Flatcar/pull/2466)、[Vendure #5536](https://github.com/vendurehq/vendure/pull/5536) 主要是 Claude Code 支持 AGENTS 后去掉指令桥接或改名，应按任务硬边界排除出客户端选择案例；Angular 固定目录缺少某些配置同样不能证明停用相应客户端。
+- NixOS S1 主要属指令治理，不能作为最强编辑器选择案例；[#534657 反对意见](https://github.com/NixOS/nixpkgs/pull/534657#issuecomment-4982797048)与[关闭说明](https://github.com/NixOS/nixpkgs/pull/534657#issuecomment-5074808692)须保留，核心团队观点不等于正式决定，也不能写成全项目一致拒绝。Home Assistant S2 的 [2025-10-05 撤回](https://github.com/home-assistant/core/pull/153777)仅作历史消费者兼容性边界，不外推为当前能力或完整工具迁移失败。
+- S4／S5／S11／S13–S16／S18–S20／S24 等其余材料未获逐项完整接收；共享指令、Skill 或治理本身不补足编辑器／执行入口选择证据。中文原帖、未公开客户端版本、实际采用范围和迁移后效果仍有缺口，未读即留空，不用可达性或模型审查自报补全。
+
+- 本次未运行候选产品、客户端、迁移或真实编码验收，未形成采用／最终推荐，读者入口不升绿。此 `accepted` 仅关闭上述来源材料的有限接收；原调用或进程是否停止仍未知，不能由 `review_ready`、分支或静态产物推断。
+- 不要求原任务重跑、重新领取或修改原结果分支；不覆盖／删除已有成果。私人会话、账号用量和用户配置保持不访问；受限原入口及代理／镜像保持停止，不再下发取回。后续只可在独立真实任务中另核尚缺的公开采用或效果证据，先确认原写者已停止再交接同一写入面。
