@@ -2,7 +2,7 @@
 id: B-FPS-OFFLINE-SMOKE-20261028
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 19f718ebd5570ed1fb962b30d4ee607dc1ec9f6f
 result_branch: relay/b-fps-offline-smoke-20261028
