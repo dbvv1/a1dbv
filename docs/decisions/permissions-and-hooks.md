@@ -2,7 +2,9 @@
 
 **🟡 日常开发采用「工作区内自主编辑和测试，越界动作另审」；沙箱限制能碰什么，权限决定何时确认，Hook 只补及时反馈。** 先用工具原生能力和项目已有检查，遇到具体缺口再加一条规则，通常比一开始装满安全插件更好维护。 工作区可写也包含删除：先用可恢复的工作副本，不可替代的数据留在可写根之外。
 
-## 第一步：把任务分成两类
+## 第一步：先核现有权限，再划任务范围
+
+**先查看客户端版本、当前权限模式、沙箱边界与审批来源，已有配置能完成任务就沿用。** 分清是 Agent 在聊天里追问、原生工具审批，还是组织／平台审核；下文配置是可自行管理的本机起点，不用来覆盖既有 permission profile 或托管规则。
 
 | 可以连续完成的工作 | 需要单独确定的范围 |
 |---|---|
@@ -20,7 +22,7 @@
 
 ## Codex：先用工作区写入，按需申请越界
 
-**可信仓库的起点是 `workspace-write` + `on-request`。** 合并到个人 `~/.codex/config.toml`；工作区内允许的命令可直接运行，越界申请仍有审核入口。
+**可信仓库的起点是 `workspace-write` + `on-request`。** 先核当前 profile、启动参数与 `approvals_reviewer`；需要配置且未使用 permission profiles 时，再将下例合并到个人 `~/.codex/config.toml`。工作区内允许的命令可直接运行，越界申请仍有审核入口。
 
 ```toml
 approval_policy = "on-request"
@@ -34,13 +36,13 @@ network_access = false
 
 **默认仍可读取工作区外的许多文件；有秘密拒读或域名白名单需求，再选 Beta permission profiles。** 它与上面的旧式沙箱配置二选一；已加载的 `sandbox_mode` 或 `--sandbox` 会使普通配置转用旧机制。域名策略还要启用 `features.network_proxy`，仅填写 domains 不会过滤直连。具体配置见官方 [Permissions](https://learn.chatgpt.com/docs/permissions)。
 
-**想减少越界审批，先看 Auto-review 是否适用。** `approvals_reviewer = "auto_review"` 把适用的请求交给独立审核者；`approval_policy = "never"` 则是不再提问，超出边界的动作可能失败。日常开发优先保留沙箱，不用 Full Access 来修复反复询问。
+**想减少越界审批，先看当前审核者与 Auto-review 是否适用。** `approvals_reviewer = "auto_review"` 把适用的请求交给独立审核者，仍保留沙箱边界；它要求 `on-request` 或会产生相应请求的 granular 审批策略。`approval_policy = "never"` 没有请求可审，超出边界的动作可能失败。托管要求优先于本地设置；日常开发不用 Full Access 来修复反复询问。
 
-**依据**：[一手] [Codex 审批与安全](https://learn.chatgpt.com/docs/agent-approvals-security)、[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)；[本地] Codex CLI 0.163.0 的 `--help` 已核对上述启动参数；配置未部署。核实 2026-10-26。
+**依据**：[一手] [Codex 审批与安全](https://learn.chatgpt.com/docs/agent-approvals-security)（原核实 2026-10-26）、[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)（核实 2026-10-28）；[本地] 2026-10-26 用 Codex CLI 0.163.0 的 `--help` 核对上述启动参数；配置未部署。
 
 ## Claude Code：编辑自动通过，命令留在沙箱
 
-**可信项目可从 `acceptEdits` 加沙箱 auto-allow 开始。** 以下是按官方沙箱示例改编的个人起点：合并到 `~/.claude/settings.json`；团队强制边界由管理员放到 managed settings。
+**可信项目可从 `acceptEdits` 加沙箱 auto-allow 开始。** 先用 `/status` 看加载来源、`claude doctor` 看被拒绝的配置，再到 `/sandbox` 的 Config 页核有效设置；`/status` 只列来源，不逐键显示生效值。确需补配置时，才将下例合并到 `~/.claude/settings.json`；团队强制边界由管理员放到 managed settings。
 
 ```json
 {
@@ -58,11 +60,16 @@ network_access = false
 
 编辑与被沙箱容纳的常规命令可连续执行；缺必需沙箱依赖时退出，命令也不能通过 unsandboxed retry 离开边界。**先检查已有 `excludedCommands`**：它们另行决定哪些命令直接在沙箱外运行，新增上面四项不会清空它们。
 
-- **开始前**：用 `/status` 看加载来源、`claude doctor` 看被拒绝的配置，再到 `/sandbox` 的 Config 页核有效设置；`/status` 只列来源，不逐键显示生效值。
 - **需要访问新服务**：按实际用途批准目标域名。要锁定列表，在用户级或托管配置设 `sandbox.network.strictAllowlist`；文件工具与 WebFetch 另受工具权限约束。
 - **环境里有秘密**：默认命令可读取多数宿主文件，也继承环境变量；同时限制文件工具读取与命令子进程的凭证。`sandbox.credentials` 的 deny 当前可由各设置层收窄；默认没有完整凭证清单。需要把 Hook、MCP 一并限制时，改用整个 Agent 的容器／虚拟机边界。
 
 **依据**：[一手] [权限模式](https://code.claude.com/docs/en/permission-modes)、[沙箱与凭证](https://code.claude.com/docs/en/sandboxing)、[设置来源](https://code.claude.com/docs/en/settings)；[开源示例] [Anthropic 仓库 settings](https://github.com/anthropics/claude-code/tree/main/examples/settings)（仓库注明为社区维护示例）；本段配置未部署、未试用。核实 2026-10-26。
+
+**常规命令仍反复询问，才补与本项目匹配的窄规则。** Anthropic 的 Python Agent SDK 实际允许 `Bash(python -m pytest tests/)` 等具体测试／检查命令，可借其粒度，不照抄为 `Bash(python *)`。测试仍会执行仓库代码；匹配的 `allow` 也会批准 unsandboxed retry，因此保留上面的严格沙箱并核 `excludedCommands`。用户级 `allowUnsandboxedCommands:false` 压过项目级 `true` 需 Claude Code v2.1.285+。
+
+**把团队共享规则与个人审批偏好分开。** Pydantic AI 先从共享 `allow` 移除 `git push`、`gh pr create` 等动作，后来又撤回共享 `ask`；维护者倾向让用户在未提交的 `settings.local.json` 管个人选择。必须人工确认的动作，要核最终有效的具体 `ask`／托管规则；sandbox auto-allow 下裸 `Bash`／`Bash(*)` 的 `ask` 通常被跳过，而 `Bash(git push *)` 这类具体规则仍询问。已获准的日常提交推送沿用原授权，不因借用了他人的配置重新逐条询问。
+
+**依据**：[实际配置] [Anthropic SDK 精确命令](https://github.com/anthropics/claude-agent-sdk-python/blob/2d485201617258867dd0f74b9e7307056f5938fe/.claude/settings.json)；[真实取舍] [Pydantic 收窄 allow #3860](https://github.com/pydantic/pydantic-ai/pull/3860)、[撤回 ask #4396 与维护者说明](https://github.com/pydantic/pydantic-ai/pull/4396#issuecomment-3939631046)；[官方匹配与版本条件](https://code.claude.com/docs/en/sandboxing#auto-allow-mode)。核实 2026-10-28，未在本仓客户端试用。
 
 ## Hooks：先补一种反复出现的漏项
 
@@ -72,12 +79,14 @@ network_access = false
 |---|---|
 | 编辑后立即获得格式化／lint 反馈 | `PostToolUse` 调用项目已有入口；先试一项，观察是否减少返工 |
 | 经常误改生成文件 | 参考本仓 [Claude 配置](../../templates/generic/.claude/settings.json)与[路径 Hook](../../templates/generic/.claude/hooks/protect-paths.sh)，只复制需要的部分；它覆盖编辑工具，不覆盖 Bash 写入或符号链接 |
-| 执行前必须阻止某一动作 | 优先原生权限；必要的同步 `PreToolUse` Hook 分别验正常输入、拒绝、缺脚本与超时，需故障阻止时核 `onFailure: "block"` 的版本要求 |
+| 执行前必须阻止某一动作 | 优先原生权限；必要的同步 `PreToolUse` Hook 分别验正常输入、拒绝、缺脚本与超时；Claude 需故障阻止时核 `onFailure: "block"` 的版本要求 |
 | 完成前总忘记测试 | 先把真实验证入口写进项目约定；确有漏检再试 `Stop`，不要每轮重跑整套检查 |
 
-**只拒绝当前工具调用时，命令型 `PreToolUse` Hook 返回 `hookSpecificOutput.permissionDecision: "deny"`，并把 `hookEventName` 设为 `PreToolUse`；顶层 `continue: false` 会停止整个会话。** 本仓路径 Hook 已采用前者。自定义 Hook 拦下一次编辑后整轮停住时，先核这两个字段；接收时既看目标调用被拒，也看独立的后续任务能否继续。`PostToolUse` 用于已执行后的反馈，阻止写入应放在执行前。
+**Claude Code：只拒绝当前工具调用，用 `PreToolUse` 的 `hookSpecificOutput.permissionDecision: "deny"`，并将同一对象内的 `hookEventName` 设为 `PreToolUse`；顶层 `continue: false` 会停止本轮处理。** 本仓路径 Hook 已采用前者。自定义 Hook 拦下一次编辑后整轮停住时，先核这两个字段；接收时既看目标调用被拒，也看独立的后续任务能否继续。
 
-**依据**：[官方输出契约](https://code.claude.com/docs/en/hooks#json-output)、[PreToolUse 决策](https://code.claude.com/docs/en/hooks#pretooluse-decision-control)；[真实撤换 agent-flow #10](https://github.com/josix/agent-flow/pull/10)与[固定修改](https://github.com/josix/agent-flow/commit/7f8b23ee0a1b2c248a4ab91ae1fd5dc27d9715c6)。维护者因整轮停顿改成单次拒绝，并移除执行后的重复路径拦截；本次核源码与官方契约，未复跑客户端，核实 2026-10-27。
+**Codex 当前 `PreToolUse` 不支持 `continue: false` 或 `permissionDecision: "ask"`：返回它们会报告 Hook 失败，然后继续工具调用，不能用作拒绝或强制审批。** 对支持拦截的工具，使用上述带 `hookEventName` 的 `deny` 形状；需要审批仍走原生权限入口。两种客户端的 `PostToolUse` 都用于执行后的反馈，阻止写入应放在执行前。
+
+**依据**：[Claude 输出契约](https://code.claude.com/docs/en/hooks#json-output)、[Claude PreToolUse 决策](https://code.claude.com/docs/en/hooks#pretooluse-decision-control)、[Codex PreToolUse 契约](https://learn.chatgpt.com/docs/hooks#pretooluse)（核实 2026-10-28）；[真实撤换 agent-flow #10](https://github.com/josix/agent-flow/pull/10)与[固定修改](https://github.com/josix/agent-flow/commit/7f8b23ee0a1b2c248a4ab91ae1fd5dc27d9715c6)（原核实 2026-10-27）。维护者因整轮停顿改成单次拒绝，并移除执行后的重复路径拦截；未复跑客户端。
 
 **PostHog 把确定性检查留给仓库工具，Claude Hook 只做环境引导。** 它的实际 `AGENTS.md` 按 linters＋CI → lint-staged／husky → Skills → 指令的顺序选择自动化，因延迟和脆弱性不添加逐工具 Hook。下面摘取其 `SessionStart` 中的一项：
 
@@ -107,7 +116,10 @@ network_access = false
 
 - **陌生仓库、无人值守任务、带真实数据的 CI**：先选不含无关秘密、受限挂载与网络的独立环境；审过配置来源后再运行代码。上面的本机起点适合可信工作副本。
 - **原生 Windows 上用 Claude Code**：改用 WSL2 或合适的隔离环境；该 Bash 沙箱不支持原生 Windows。Codex 则按自己的 Windows 后端配置。
-- **仍然频繁询问**：先区分“Agent 在聊天里问能否继续”和“平台工具审批”，再查有效配置与具体失败原因。中文社区已有开启“帮我审批”仍频繁停顿的反馈，不能仅凭开关名判断原因。
+- **仍然频繁询问**：回到第一步核审批来源与具体失败原因。中文社区已有开启“帮我审批”仍频繁停顿的反馈，不能仅凭开关名判断原因。
+- **想边做边理解代码**：保留人工审查关键修改，探索阶段再试自动审批。HN 使用者报告探索时逐条批准很烦、切到自动后更顺，但仍选择手审编辑；这是工作方式取舍，不应为了减少提示把所有阶段一并放开。
 - **考虑审批插件**：Dippy 的用途是自动批准其判为安全的命令，方向是减少询问；CC-Monitor 作者则明确当前主要是拦截和告警。两者都不能替代环境隔离，现阶段不作为本页默认安装项。
 
 **依据**：[一手／社区原文] [V2EX 审批反馈与回复](https://v2ex.com/t/1249304)、[Dippy 作者说明](https://github.com/ldayton/Dippy)、[CC-Monitor 作者说明](https://v2ex.com/t/1241604)；插件未试用，作者自报效果不作为提速结论。核实 2026-10-26。完整边界与案例见 [10 安全](../10-security.md)。
+
+**独立使用反馈**：[HN 用户为何手审](https://news.ycombinator.com/item?id=49241276)与[探索阶段改用自动审批的反馈](https://news.ycombinator.com/item?id=49243370)；首次试用自报，核实 2026-10-28。
