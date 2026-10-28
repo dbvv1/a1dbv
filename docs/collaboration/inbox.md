@@ -4,6 +4,17 @@
 
 ## 待处理
 
+<a id="vscode-terminal-main-memory"></a>
+### 2026-10-28：VS Code 多 Agent 终端越跑越占内存，先查主进程与修复版本
+
+👀 **多个编码 Agent 的 TUI 长时间刷新、VS Code 整体崩溃时，先核增长的是主进程（main／browser）还是 Agent 进程，再查实际版本。** 终端输出被主进程缓存的已知泄漏由 #323980 修复，已进入 **1.138.0 稳定版（2026-09-16）**；旧版遇相符症状，优先升级到含修复的版本。衍生编辑器另核是否纳入补丁，不能套用 VS Code 的版本结论。
+
+使用者在 macOS arm64、1.136.1 的多个 tmux／Claude Code 终端中报告：`terminal.integrated.scrollback: 1`、关闭 shell integration 后仍持续增长。其堆快照把终端输出追到 `LocalPty` 中无人消费的 `Event.buffer`；**缩小滚动缓冲不等于限制这层内存**。作者随后撤回了增大 `--max-old-space-size` 的缓解建议；最终合入补丁只取消未消费的进程事件缓冲，保留宿主生命周期事件缓冲。
+
+这是[17 排障](../17-troubleshooting.md#28-在同一个错误上打转)的候选案例：按进程和版本定位，不把编辑器 OOM 当成模型上下文问题。仅凭内存上涨或全部窗口退出仍不能确诊；自然复现时保留相同输出负载，对照主进程增长与堆中保留链。本仓未运行 VS Code、未试用，当前客户端是否受影响未知。
+
+**依据与范围**：[使用者原始报告 #334837](https://github.com/microsoft/vscode/issues/334837)、[作者撤回堆参数建议](https://github.com/microsoft/vscode/issues/334837#issuecomment-5620838511)、[已合入 #323980 的最终改法](https://github.com/microsoft/vscode/pull/323980#issuecomment-5668798568)、[官方 1.138 发布说明](https://code.visualstudio.com/updates/v1_138)。仅核公开讨论、最终补丁与官方发布记录；核实：2026-10-28 UTC。
+
 <a id="goose-litellm-vision-payload"></a>
 ### 2026-10-28：LiteLLM 别名丢图，先验实际请求与配置优先级
 
