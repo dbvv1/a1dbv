@@ -1,7 +1,7 @@
 # A-EDITOR-AGENT-CHOICE-SOURCES-20261028 · 编辑器与编码 Agent：保留、并用还是迁移
 id: A-EDITOR-AGENT-CHOICE-SOURCES-20261028
 owner: dot-A
-status: running
+status: review_ready
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b16db432cc2c04a27c58772f2736904099e08926
@@ -46,4 +46,9 @@ result_branch: relay/a-editor-agent-choice-sources-20261028
 运行 `check_repo`、`check_public` 与空白检查；只留可公开摘要，不复制整篇原文，不含私人路径、会话、凭据或敏感日志。一个 60–90 分钟单元，整理和独审计入预算；到时交已有来源和缺口，不扩题续搜。共享最多四并行由原接收端调度，无 GPU，不另起进程抢槽。
 
 ## 当前结果
-待接收端领取；尚无采集结果。
+
+- 已交付编辑器与编码 Agent 选择的原始来源整理到 sources.md：四类选择图（保留编辑器换入口／多客户端并用／统一入口失败回退／收敛单一客户端）＋S1–S24 总表、S1–S10 逐项六段式明细、S11–S24 紧凑表、净增量与证据缺口；31 条候选中 30 条核实通过，1 条按偏差记录。两轮独审问题（S3 版本归属、S14 漏写 .md 重置）均已修正并复核关闭，openIssues 为空；check_repo 0 errors、check_public 0 findings、空白检查通过。
+- 产物：[8862013](https://github.com/dbvv1/a1dbv/commit/886201374a51e2a33af9d9b9954a14c1176b6523)，分支 `relay/a-editor-agent-choice-sources-20261028`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：交 dot-A 接收；接收端按任务要求提交并推送 relay/a-editor-agent-choice-sources-20261028
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
