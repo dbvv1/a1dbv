@@ -1,7 +1,7 @@
 # A-MULTIAGENT-CONTEXT-READER-20261028 · 照多代理页核上下文候选
 id: A-MULTIAGENT-CONTEXT-READER-20261028
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 405523084ed59127c27ba7ee7aab3954dbd9e869
@@ -79,8 +79,7 @@ result_branch: relay/a-multiagent-context-reader-20261028
 
 ## 当前结果
 
-- reader-test 单元完成：新读者按多代理页独立核验上下文候选 78c63efb 的五条主张（C1–C5），产出主张核查、页面卡点与委派缺口、读者记录三份文件；taskDone=true（读者做成，check_repo/check_public/空白检查均通过）。未关闭问题：remaining=false，无 blocking 项；审查另指出读者记录有 6 处过宽、矛盾或分类不准（如称页面“假设”支持子代理、把研究线说成不可独立派发），需 dot-A 接收时自行取舍。页面卡点共 5 处，根因是本会话无原生子代理工具而页面未写不退路、缺研究类任务的分工维度与核查验收格式。
-- 产物：[a42abed](https://github.com/dbvv1/a1dbv/commit/a42abed8853a9cf0648bfe80d7062fc807aac17e)，分支 `relay/a-multiagent-context-reader-20261028`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：dot-A 按产物逐条决定候选哪些主张可接收、哪些需修；若要修页，优先补“客户端无子代理时的单 Agent 退路”与外部来源核查的交付/验收格式。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- 有限接收 [a42abed](https://github.com/dbvv1/a1dbv/commit/a42abed8853a9cf0648bfe80d7062fc807aac17e) 中已独立核准的 C1／C2／C4 公开来源事实；C5 是综合建议，C3 本次未核。不采纳 C1“必须改成纯个人实验”的返工建议：官方原文明示共同工作，宜称官方工程实作。
+- 原生委派→回收→整合未做成，long-tasks 不升绿；来源核查不能替代多代理照做验收。卡点归因中的矛盾及任务目录外的 reader-tests 记录只保留待核，不据此强改页面；本单元按上述范围收口，不重派，不覆盖或删除原结果。
+- 停止已收到网络安全封锁的 Reddit 原入口及代理／镜像取回，不重新下发该动作；不读取、借用或向无关会话发任务。产物仅自述未向无关会话发消息，实际会话访问及进程停止未获独立回执，不写成已核无越权或已停。
+- 委派补验须先确认原调用结束、原生子代理能力及独立新读者可用，再沿下一真实任务执行；网络取回保持停止，只有限制明确解除且原入口获重新授权才另行评估，不以镜像替代。其余已核材料可独立采用。
