@@ -38,4 +38,9 @@ result_branch: relay/a-parallel-review-sources-20261028
 非作者逐链接核主张、日期、实际动作和因果强度；有无明确改进都交结果。运行 `check_repo`、`check_public` 与空白检查；受阻写具体入口、原因、哪些未完成及恢复条件，失败和未知分开。
 
 ## 当前结果
-任务规格已备，待接收端领取；尚无本任务的采集结果。
+
+- 《并行实现之后怎样接得过来》来源清单已写入 sources.md：45 个候选中 42 个通过链接核实，按 A–E 排序并给出继续派发的四类可观测信号、转独立审查的触发条件和 dot 最小动作；但独立审查仍有 7 个问题未关闭，主要是 Request Changes 清锁漏了仓库 Action 路径、Project 主对话也可发 /review，以及多处数字归因/链接归属不准，需修正后重审。
+- 产物：[cadc4db](https://github.com/dbvv1/a1dbv/commit/cadc4db285f95d52543abe7e3e70118b0dd07238)，分支 `relay/a-parallel-review-sources-20261028`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：按 7 条 openIssues 修正 sources.md（第 3/36/37/55/57/80 行补 Action 清锁路径，第 64/81 行补 Project 主对话入口，第 96/145 行改 Bugbot 误报归因，第 103/143 行注明 swarm 对照非等时，第 125 行挂 pey46d9 链接，第 128 行改分数表述，第 139/148 行改 R/A/V/N 现状），再跑两角度审查。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
