@@ -100,11 +100,11 @@ pnpm -F @gitbutler/lite demos
 | 数据串用或异步竞争 | 隔离夹具，等待明确业务状态；保留首次失败，按 trace 查顺序，不靠持续加重试掩盖 |
 | 需求确实变了、旧断言或视觉基线过时 | 列出变更依据，更新相应预期并检查实际结果；单纯“让 CI 绿”不是依据 |
 
-**特别看 skip／fixme 和被删的前置步骤。** Playwright 官方 healer 的输出允许“通过”或“认为功能坏了而跳过”；进程退出码为 0 时，原任务也可能没执行。交付时核目标用例确实运行、覆盖仍在，跳过项单列；重试才过的测试也保留不稳定状态。已有原问题复现可用来检查修后的测试还能否检出错误。
+**🟡 检查结果可疑时，先用正反样本验检查器，再核预期来源。** 让一个应通过、一个应失败的最小样本走同一真实入口：两者都执行，正例通过，反例因目标断言失败，而非启动或依赖错误。SpiceScript 曾接受“应为空”的 `SELECT 1`；Turso 两条回归又沿用了 SQLite 3.50.4 的错误答案。若对照实现有错，按契约与版本核实，保留产品回归，仅在受影响用例中跳过有缺陷的对照后端，记录版本与原因，升级后复核。此为条件候选，尚待真实开发任务与非作者照做验证；已有检查足够时不加环节。
 
-时序问题先读现有 trace：动作、DOM、截图、console 和网络记录能对上失败窗口。临时诊断用项目已安装的 Playwright 开启 trace，复测后回到项目原配置；trace 可能含页面数据，留在获准的测试环境。更多恢复分流见 [23：自修复边界](../23-browser-verification.md#6-自修复测试的边界)。
+**跳过不是修复。** Playwright healer 可以把坏功能标为跳过；核目标用例实际运行、原触发步骤与断言仍在，跳过及重试才过单列。时序失败用现有 trace 对齐动作、DOM、截图、console 与网络，留在获准环境；恢复分流见 [23：自修复边界](../23-browser-verification.md#6-自修复测试的边界)。
 
-**依据**：[官方] [Playwright healer 的输出](https://playwright.dev/docs/test-agents#-healer)、[Trace Viewer](https://playwright.dev/docs/trace-viewer)，核实 2026-10-26；[既有公开运行与回归研究](../research/2026-10-13-browser-healing-outcomes.md#修后仍走原状态而非只保留结果断言)，原核实 2026-10-21。
+**依据**：[一手／源码与作者复现] [SpiceScript 检查器修正及正反探针](https://github.com/spiceai/spiceai/pull/15674)、[Turso 原问题](https://github.com/tursodatabase/turso/issues/10906)与[定向回归修正](https://github.com/tursodatabase/turso/pull/10942)，核实 2026-10-28；两项目未运行，SQLite 上游未独立复验。[官方] [Playwright healer](https://playwright.dev/docs/test-agents#-healer)、[Trace Viewer](https://playwright.dev/docs/trace-viewer)，原核实 2026-10-26；[既有回归研究](../research/2026-10-13-browser-healing-outcomes.md#修后仍走原状态而非只保留结果断言)，原核实 2026-10-21。
 
 ## 怎样看交付报告，何时需要别的路线
 
