@@ -27,10 +27,10 @@
 | P81 | **试用与写成选择**：真实编码任务试用，结论进决策页／模板 | dot-A | 脚本／CI 投影已实用；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。Qwen [#15741](https://github.com/QwenLM/qwen-code/issues/15741) 本地 `fix/mcp-preserve-discovery-error`／`6099417` 保留真实报错，独审通过；preflight 卡在 core tsc（137），待可构建环境补跑，未达 PR 门槛。 |
 | MOBA | **MOBA-Like 基本战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `9311f43`／Site v12 未变；原卡回溯 `f533d6f` 已接收：baseline 失败，额外运行及清理未知，停止重派；恢复须定范围、核串行安全。本地 `d0db3d7` 400 测试／公扫通过，未 GPU 验证或发布；英雄／兵群可读性、完整 smoke／整局视听待补。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | Star v7 已用存档；MOBA `ea7a064` 重开／续玩／跨标签实操通过，改键 `89f0831` 仍候选，main／Site 未变。完整 smoke 未启动，Firefox 退出原因未明；Codex 恢复提示 2026-11-02 06:08（时区未给）。[Unity 源准备](../../experiments/unity-encounter/README.md)已接收，未在引擎实跑；原任务暂停。 |
-| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收；角色两件进可玩候选，通路仅本地接线，命中件待接线。Star 标准件已接线、实机未过。MOBA 灯光经验已回正文；开放权重音频未听未采用，3D 仍无 mesh，Nature 恢复未知。 |
+| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收；角色两件进候选；通路、命中件仅本地接线。Star 标准件已接线、实机未过。MOBA 灯光已回正文；开放权重音频未听未采用，3D 仍无 mesh，Nature 恢复未知。 |
 | B-实例 | **AI 做游戏实例**：作品、作者过程与社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏、未听音。Warpact 仍未玩到；没有新增整局品质推荐。 |
 | SR | **Star-Rush 完整比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `1dd89d3`／网站 v7 未改驾驶。标准件已接入本地候选 `345f914`，pilot／off 均未获 READY 或图。`dca3409` 软件全弯 frame0 已取得，公开上传原调用已取消、未生成远端产物；恢复待用户决定。车控 `0817aa0` 仅短段观察；普通追尾、完整同弯操控与声音待验。 |
-| FPS | **FPS-Like 完整回合品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | main `a97d572`／网站 v12 未变。本地门洞源 `05471f6` CPU 验收通过、未发布；干净构建来源已纠正，已有实图属旧源。云端可视 Firefox 启动被拒、未执行；完整 smoke／操控／整局视听待验，原上传待批。角色候选 `a0c8d52`已实显，射击／换弹／败局／续局／重开已观察，品质未定。 |
+| FPS | **FPS-Like 完整回合品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | main `a97d572`／网站 v12 未变；门洞 `05471f6`、命中 `3f7499d` 仅本地验收，后者203 CPU测试／干净构建／独审通过，未实跑 smoke。旧实图非新门洞源；角色 `a0c8d52` 实显及射击／换弹／败局／续局／重开已观察，品质未定。云端 Firefox 启动被拒未执行；smoke／操控／整局视听待验，原上传待批。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
 ## 待人工验收（统一查看）
