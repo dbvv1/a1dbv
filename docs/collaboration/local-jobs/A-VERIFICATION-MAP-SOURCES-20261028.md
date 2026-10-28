@@ -1,7 +1,7 @@
 # A-VERIFICATION-MAP-SOURCES-20261028 · 团队怎样持续维护真实产品验收
 id: A-VERIFICATION-MAP-SOURCES-20261028
 owner: dot-A
-status: running
+status: review_ready
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 38c169622bbfeab60969be64607083862bbb6573
@@ -39,4 +39,9 @@ result_branch: relay/a-verification-map-sources-20261028
 非作者按原链接核事实、时间和真实采用，纠正把规范当效果或把文档改动当产品修复的推断；跑 `check_repo`、`check_public` 与空白检查。到时保留已有材料与明确未完成项，由原任务回传，不创建续搜卡。
 
 ## 当前结果
-待接收端领取。
+
+- 已交付 37 个来源全部核实通过的维护证据清单（explore 类型，无 taskDone/pageStuck 指标），结论是真实维护存在但产出会丢（#18295）、上游 maintain skill 未实跑（#150）、唯一频次样本私有（#334）、已出现按变更缩小（#1914）、成本数据缺失；审查无未关闭问题（openIssues 为空）。
+- 产物：[c5902ec](https://github.com/dbvv1/a1dbv/commit/c5902ece2151e0af0544f6a662d4750df823bbb9)，分支 `relay/a-verification-map-sources-20261028`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：回 review_ready 交 dot-A 接收；按其决定从清单前五项深挖（OpenHands #18971/#18295、Hypertask #1914、pstack #150/#151、OpenHands daily.md/#18317、pstack #573）。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
