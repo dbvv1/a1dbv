@@ -4,6 +4,8 @@
 
 ## 待处理
 
+- 👀 **Node `pg` 连接池或约束迁移先查原生文档，Supabase Postgres Skill 按条核对后再试**：固定 `c9be0e93` 的[连接池配方](https://github.com/supabase/agent-skills/blob/c9be0e931b7930f7d02126d04774d904c381e7d7/skills/supabase-postgres-best-practices/references/conn-prepared-statements.md#L42)仍建议不存在的 `{ prepare: false }`，而 [pg 源码](https://github.com/brianc/node-postgres/blob/2a5850fb0db18f5e40a642bbb4a4743de412ab54/packages/pg/lib/query.js#L8-L55)／[官方用法](https://node-postgres.com/features/queries#prepared-statements)以 query `name` 启用命名缓存；[约束配方](https://github.com/supabase/agent-skills/blob/c9be0e931b7930f7d02126d04774d904c381e7d7/skills/supabase-postgres-best-practices/references/schema-constraints.md#L38-L63)后两个存在性检查未限定表，可能因别表同名约束而漏建（[Postgres 目录说明](https://www.postgresql.org/docs/current/catalog-pg-constraint.html)）。[实际采用者 #83](https://github.com/supabase/agent-skills/issues/83)亦报这两项，本仓已核当前源码、未安装 Skill 或运行数据库，其余规则未作全面评价（核实 2026-10-28）。
+
 - 👀 **Ruff：让实际命令体现环境前提**——[维护者反馈](https://github.com/astral-sh/ruff/pull/29190)旁注未阻止 Codex 先跑不适用的监听测试，遂[把过滤写进命令](https://github.com/astral-sh/ruff/commit/7c6f8fc8fc5655dfa47e125b05453007b9e7a6c7)；仅不提供所需 OS 事件的环境适用，涉及监听行为的改动须在支持环境另验。本仓只在独立真实发布中预选既有授权的连接器入口以避开已知 CLI 缺写认证（不适用于权限拒绝）；路径依据执行回执而非 Git 提交，Ruff 命令未试用，未作同题对照，作为[共享指令](../decisions/instruction-files.md)候选（核实 2026-10-28）。
 
 - 👀 2026-10-28 核读：[Max Nardit 的 AGENTS 提示实验](https://max.nardit.com/articles/agents-md-viral-lines-tested)（10-25，Claude Code 2.1.310／Opus 5.5、Sonnet 5.5；两个小任务、90 次运行，每个条件单元 5 次），作者观察到删辅助文案连带删掉输入检查。race／security 防护“先解释再等批准”的提示未被有效检验：任务本已注明单线程、各组很少加锁，且 print 模式无人回应审批；本仓未试用，仅作 Codex 过度工程的来源候选，不新增默认。
