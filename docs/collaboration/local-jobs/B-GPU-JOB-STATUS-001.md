@@ -2,7 +2,7 @@
 id: B-GPU-JOB-STATUS-001
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5b531ae6c1e74e78c2359929148e9e4cedb6982e
 result_branch: relay/b-gpu-job-status-001
@@ -21,11 +21,7 @@ result_branch: relay/b-gpu-job-status-001
 
 ## 当前结果
 
-- 已按退回要求修订 status.md：重开改为条件性风险、补 MOBA ignored 采集（23 段 webm、5364 JPG、1155 PNG，约 878MB）及丢失风险、补 a972bb5 对 11 个 FPS 预览进程的清理复核，Edge 归属与整机 GPU 可用性仍记为未知，三项保持取消。openIssues 为空；本卡为 build 类，无 taskDone/pageStuck 字段。
-- 产物：[6570f85](https://github.com/dbvv1/a1dbv/commit/6570f85720ea1e1d91c1ca3e2508032b260c41ba)，分支 `relay/b-gpu-job-status-001`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：无后续单元；由接收端将卡片回写 review_ready 并推送结果分支。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+接收 [6570f85](https://github.com/dbvv1/a1dbv/commit/6570f85720ea1e1d91c1ca3e2508032b260c41ba) 的原停止核查报告修订：已改条件性重开风险、补 MOBA ignored 采集与丢失风险、分清 14:30Z 历史残留和 a972bb5 后续两链清理；仅接收既有记录修文，未重新核查进程或产物，未知 Edge 归属及当前整机 GPU 可用性仍未知，取消任务不恢复。
 
 ## 修改要求
 
