@@ -2,7 +2,7 @@
 id: B-STAR-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 8dddac2ce5cd7941a2eb64cceeeb04ef1e17831a
 result_branch: relay/b-star-backlog-smoke-20261028
@@ -36,8 +36,4 @@ smoke 实际结束且本次自有进程退出核验完成后，立即先回实�
 
 ## 当前结果
 
-- 固定 8dddac2/tree ef27a50 的串行无头验收完成：两处 npm ci 与构建均退出 0，npm run smoke:backlog（run-id 20261028T1322Z-8dddac2）五入口全部 passed、errors=[]，浏览器 PID 49572 退出码 0、相关进程已退出、端口 4009 关闭，公开报告/manifest/截图已脱敏产出；renderer 为 SwiftShader 归 software，不构成 GPU 证据，海岸环境音默认 off 未听辨。审查通过，openIssues 为空。
-- 产物：[2b3e2a4](https://github.com/dbvv1/Star-Rush-Reborn/commit/2b3e2a4a842ab1333b1fc393792e0574547818ea)，分支 `relay/b-star-backlog-smoke-20261028`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由接收端以 noreply 身份提交这 10 个公开产物并进入 review_ready；本卡不含 GPU 结论与手感/听感判断。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+接收 [2b3e2a4](https://github.com/dbvv1/Star-Rush-Reborn/commit/2b3e2a4a842ab1333b1fc393792e0574547818ea)：固定运行源 8dddac2 五入口 software smoke 通过，10 项产物含 5 PNG 的 bytes／SHA 已核，自有浏览器／预览退出已核；master 已接收，Site v8 的 6 项关键构建 hash 与被测一致，[Rapier 170–740m 旁置试玩](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/rapier/) 已上线，默认驾驶不换、海岸音 off。不是硬件 GPU 或品质通过，未作手感／听感／非作者画面盲判；本单元完成，不重跑。
