@@ -516,6 +516,12 @@ flowchart LR
 
 FPS-Like 已发布的 [a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d57281dd6c6d941c6a6bef732dadf2953f2f4)把 `pagehide` 清理注册移到首个 `await` 之前：离页后迟到的 Game 成功则释放，迟到拒绝不写旧 HUD，重开沿同一资格判断。独立实际资源 CPU 反例与正常 Canvas 结算→下一局→重开已验；渲染源码未变，沿此前 Three 结果，不代表本轮 WebGL 实跑（2026-10-27）。
 
+**离页取消同时撤销“写旧界面”的资格，资源收尾不能代替接收资格。** 在现有启动入口保一份请求代次和本次 lifetime；`pagehide` 先让代次失效，再取消可取消的 fetch、释放已取得资源。每个等待点之后先核本次资格；已经取得的迟到资源仍交原 lifetime 立即释放，不能因为“不再接收”就直接丢掉句柄。异常和 finally 也只修改当前代次的 HUD／按钮，旧请求的失败只清理自己，不调用可能已属于新一局的全局 cleanup。若加载器会在返回前安装 canvas，仅检查返回值仍太晚：给每次进入一个已挂载、尺寸明确的独占容器，旧加载器只允许改自己的容器；退出只移除该容器，新世界不受迟到挂载影响。
+
+返回缓存中的页面时，选择恢复旧对局还是重新进入要明确。MOBA 候选选择重新开局：保留英雄选择和声音设置，`pageshow.persisted` 重新走原 boot；每次离页都清理，不能把 `pagehide` 监听设为 `once`。这没有增加预加载器或通用缓存，也不声称保存了离页前对局。已有续玩工程应把恢复数据接回同一个启动入口，而不是并行创建另一套世界。
+
+该接缝来自 MOBA 默认源 `f2a1ce3` 的实际 `src/client.ts`：导航请求尚未返回就离页，之后拒绝仍会写旧 HUD、清空容器并重新开放 Restart。CPU 入口回归覆盖迟到拒绝、响应与响应体、真实 Detour 导航迟到获取后的单次销毁、缓存恢复事件、新旧请求交错及两次成功进入时旧 canvas 迟到挂载；DOM／画面／音频接缝为测试替身，未运行真实浏览器往返或 GPU，不提升作品采用等级。现有 FPS 首个等待前注册清理的做法与 MOBA lifetime 的逆序收尾均保留，增量只补启动消费者接收资格。实现与回归见候选 [client.ts](https://github.com/dbvv1/MOBA-Like/blob/f56b8cae298a7c74b9864af126a682df6a783fd3/src/client.ts)／[boot-lifetime.test.ts](https://github.com/dbvv1/MOBA-Like/blob/f56b8cae298a7c74b9864af126a682df6a783fd3/tests/client/boot-lifetime.test.ts)（2026-10-28，源码／CPU；未合默认、未部署）。
+
 #### 资源释放：所有权、驻留、总内存分别看
 
 - **跨场景对象另有持有者。** `DontDestroyOnLoad` 不是依赖保活；优先把常驻 UI／角色依赖单独加载并持有，确需保整场景依赖才 Acquire 场景句柄并承担其驻留。加载成功的场景用 `UnloadSceneAsync` 收尾，不能套资产的 `Release` 模板。
