@@ -2,7 +2,7 @@
 id: B-MOBA-DIFFUSE-GPU-001
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 3f89df2bcfcaca1dde86cc1412d1649090a09d60
 result_branch: relay/b-moba-diffuse-gpu-001
@@ -43,3 +43,11 @@ a1 历史卡另转述运行审查员声称两条命令复跑通过，但未经�
 新增产物的唯一写入范围为 docs/quality/captures/B-MOBA-DIFFUSE-GPU-001/revision-3f89df2/review-evidence/；原卡只更新“当前结果”，不改历史证据。原 16 文件及旧档均不得改动。
 接收端可按原工作流向原 result_branch 发布经扫描的脱敏追溯证据，并更新原卡“当前结果”；本草稿的准备本身不触发派发或外部写入。
 本次回传事实、可公开定位、校验结果、缺口和冲突；不宣布 GPU／品质通过，不把审查 pass 或 openIssues 为空当作验收。最终验收、是否重新授权 GPU 运行和产品发布仅由 dot-B 决定；本卡不授予任何重启或发布产品的权限。
+
+## 当前结果
+
+- 按只读边界完成已发生事实追溯：原归档 15/15 哈希复核一致、原始证据只支持 blocked；审查员“两条命令复跑通过”的声明无可定位原始证据，已标记“声明未经原始证据验证；额外运行及其清理未知”，未补造任何缺失字段；openIssues 为空。新增 review-evidence/README.md 与 traceability.json，未改动原 16 个文件及旧档。
+- 产物：[f533d6f](https://github.com/dbvv1/MOBA-Like/commit/f533d6f3b4b59b61e71369143dac6c150ea08216)，分支 `relay/b-moba-diffuse-gpu-001`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由 dot-B 依据追溯结论验收，并决定是否重新授权 GPU 运行；本单元不再继续。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
