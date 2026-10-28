@@ -1,7 +1,7 @@
 # A-PARALLEL-REVIEW-SOURCES-20261028 · 并行实现之后，怎样接得过来
 id: A-PARALLEL-REVIEW-SOURCES-20261028
 owner: dot-A
-status: ready
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4282fee1684ba2c6a6412f58d6f52a12d913221c
