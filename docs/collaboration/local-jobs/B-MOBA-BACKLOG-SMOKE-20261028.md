@@ -2,7 +2,7 @@
 id: B-MOBA-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 935bf8e76929aeeb0af707a1dbf9f98ee3597aef
 result_branch: relay/b-moba-backlog-smoke-20261028
@@ -11,7 +11,7 @@ result_branch: relay/b-moba-backlog-smoke-20261028
 同一任务固定修复后续验已发布；前序 FPS 离线轮 1125fc4 的 smoke 于 2026-10-28 15:58:12.360–15:59:50.767Z 完成 exit 0，Chromium 109884 于15:59:50.092Z exit 0／signal null，预览 TCP ECONNREFUSED，16:05Z 无本任务 smoke／preview Node；其15:56:40Z预检亦核原 MOBA 无活跃 worker／state entry、12765 关闭。上述仅为原轮事实，启动前仍须新 preflight，不能据此断言全局 GPU 空闲。
 验收用户指定积压整合版本的默认与旁置试玩入口，使通过的普攻、攻城兵、地形、改键和续玩可进入网站；只交真实 smoke，不合 main、不部署。
 固定源码 SHA 如上，tree 必须 7d32caebd680f11790d7bf04badcfe2f92dad4f0，不使用移动分支头。38f36d1 否决项未包含；d0db3d7 完整逐帧输入时延包未恢复，本次功能 smoke 不冒充它。
-前序 FPS 原始退出证据见 [05e39b6](https://github.com/dbvv1/FPS-Like/commit/05e39b6)：本任务五个浏览器严格串行，2026-10-28 11:02:03Z 命令 exit 0，11:02:20Z 复查自有脚本／Chromium 无残留、7702／8757 无监听；只证明前序自有链退出，不证明整机 GPU 空闲。启动前仍须再次核实际任务与既有接收端串行条件，不等 FPS 仅修文的 running 标签，也不重跑 FPS 或触碰归属未知 Edge。不恢复旧 B-MOBA-DIFFUSE-GPU-001 或其额外拍摄。保留原失败结果 02e1aa2be74487cf164fda14cda0424f8545c588 与 5347117d7a4faabbfd937172bb382efbc8eded14；两轮实际 renderer 均为 software/SwiftShader。新版真实 smoke 未运行。
+前序 FPS 原始退出证据见 [05e39b6](https://github.com/dbvv1/FPS-Like/commit/05e39b6)：本任务五个浏览器严格串行，2026-10-28 11:02:03Z 命令 exit 0，11:02:20Z 复查自有脚本／Chromium 无残留、7702／8757 无监听；只证明前序自有链退出，不证明整机 GPU 空闲。启动前仍须再次核实际任务与既有接收端串行条件，不等 FPS 仅修文的 running 标签，也不重跑 FPS 或触碰归属未知 Edge。不恢复旧 B-MOBA-DIFFUSE-GPU-001 或其额外拍摄。保留原失败结果 02e1aa2be74487cf164fda14cda0424f8545c588 与 5347117d7a4faabbfd937172bb382efbc8eded14；两轮实际 renderer 均为 software/SwiftShader。修后真实 smoke 的接收结果见下文。
 
 ## 按哪个 Skill／规格
 按 game-quality-pass、游戏细则 §6 第3条／§7 和固定源 tests/client/browser-smoke/run.mjs。仅 headless 浏览器；完整 smoke 允许 Playwright 页面内输入，不打开可见窗口、不控制系统键鼠、不操作桌面。
@@ -37,8 +37,4 @@ smoke 命令结束且自有资源退出核完后，先回实际起止 UTC、退�
 
 ## 当前结果
 
-- 在固定源 935bf8e（tree 7d32cae、clean）上真实跑通 headless smoke：默认 v10、候选 v11、diffuse 三入口均推进且非背景像素，改键回画布、活跃移动/停止位置、两次重开与续玩断言通过，report.passed=true 且清理无残留；openIssues 为空。实际 renderer 仍为 software/SwiftShader，非真 GPU，已如实记录。
-- 产物：[323009c](https://github.com/dbvv1/MOBA-Like/commit/323009cf4578163f0f69c138db1017947666c3df)，分支 `relay/b-moba-backlog-smoke-20261028`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端合并含 c1d65ff 与 935bf8e 的固定分支（或同时挑拣两者）并提交本轮证据目录；本任务无后续单元。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+已接收 [323009c](https://github.com/dbvv1/MOBA-Like/commit/323009cf4578163f0f69c138db1017947666c3df) 的固定源 `935bf8e` 功能 smoke：默认 v10、候选 v11 与 diffuse 三入口推进且有非背景像素，改键回画布、真实 S keydown 当刻活跃移动／停止位置、两次重开及保存刷新续玩断言通过；独立核对 7 项文件 hash、source/tree/clean 与清理证据。实际为 software／SwiftShader，接收不含硬件 GPU、画质、手感或平衡结论；浏览器 exit 0／signal null、预览关闭与自有资源退出已记录，但 Node runner 退出码未采集，外层 wrapper 的 1 只属 bookkeeping 失败，不能补写 runner 0。保留 `02e1aa2`／`5347117` 两次 failed 历史。产品 `935bf8e` 已入 main（包含 `c1d65ff` 改键回画布修复）；[Site v13 旁置入口](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site/candidate.html)已交付，原默认 v10 保留；结果分支不含上述修复代码，不代替产品合入。本任务无后续单元，不自动再跑。
