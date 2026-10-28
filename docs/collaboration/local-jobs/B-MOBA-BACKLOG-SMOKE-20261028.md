@@ -2,10 +2,14 @@
 id: B-MOBA-BACKLOG-SMOKE-20261028
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: c1d65ffe3509cb7899880c3278f89c79b6fd876b
 result_branch: relay/b-moba-backlog-smoke-20261028
+
+## 当前执行边界
+
+本次 blocked 仅阻止下一次启动，不中断任何已活跃原调用。保留 5347117 失败证据；等待 dot-B 诊断 moveGoal 观测竞态／产品状态并固定修复后，才可明确续验。不得以“监视器影响”推测在安静机器盲重试或停止未知监视器；若已有原调用活跃，只回真实进展与自有退出事实，不重复启动。
 
 ## 目标
 验收用户指定积压整合版本的默认与旁置试玩入口，使通过的普攻、攻城兵、地形、改键和续玩可进入网站；只交真实 smoke，不合 main、不部署。
@@ -38,7 +42,7 @@ smoke 命令结束且自有资源退出核完后，先回实际起止 UTC、退�
 - 固定源 c1d65ffe 的串行 headless smoke 已实跑并发布独占脱敏证据：默认 v10 推进且有非背景像素，但候选 v11 在 input 阶段 run.mjs:77 "Move must still be active before stop" 断言失败（实际为 SwiftShader 软件渲染），改键回画布、保存续玩与 diffuse 入口仍未验证；审查通过，openIssues 为空。
 - 产物：[5347117](https://github.com/dbvv1/MOBA-Like/commit/5347117d7a4faabbfd937172bb382efbc8eded14)，分支 `relay/b-moba-backlog-smoke-20261028`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：在安静机器（不并行监视器）用同一固定命令重跑一次 smoke；若仍复现，由 dot-B 调整 runner 对 moveGoal 的观测时机（本任务禁改源码/脚本）；接收端保留 02e1aa2 失败记录后合入 c1d65ffe，再提交本轮证据目录。
+- 下一步：等 dot-B 核 moveGoal 观测竞态／产品状态；禁止自行重跑。若已有调用活跃，只回真实进展与自有退出，不重复启动；不改源码或脚本、不停止未知监视器。新一轮须诊断及固定修复后另获明确续验指示。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求
