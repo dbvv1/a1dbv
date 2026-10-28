@@ -1,7 +1,7 @@
 # A-CI-EXACT-SHA-READER-20261028 · 新发布提交的真实 CI 核验
 id: A-CI-EXACT-SHA-READER-20261028
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5dd280c04b1a5a79d10724a01ed390f34bb4b5f4
@@ -69,3 +69,11 @@ node experiments/ci-result-projection/ci-projection.test.cjs
 
 [GitHub combined status](https://docs.github.com/en/rest/commits/statuses#get-the-combined-status-for-a-specific-reference)说明无 statuses 也返回 pending；[check runs](https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference)说明 latest 与分页、最近 1,000 个 check suites 范围；[Actions runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository)说明 head_sha 过滤和查询上限。核实：2026-10-27。
 ````
+
+## 当前结果
+
+- 读者按页对精确 SHA a0c0d31501b3a86fba85962959da41c0bfb8794d 完成三源核验：三项均 HTTP 200、total/returned/missing 全为 0、page_complete true，结论为 no_records_observed（未报绿、未报排队），独立复核字节一致且 46 项回归通过（taskDone=true）。页面卡点主要是未给三响应组装命令、正文无缩进计数口径与示例缩进命令不一致、观察时间格式未定义、后续页路径未实测；未关闭审查问题为 result.md 漏列 query_scope，以及页面 4,203 与实测 4,252 字符不符（差 49 疑为 sha 键）读者未指出。
+- 产物：[63970ab](https://github.com/dbvv1/a1dbv/commit/63970ab608bf01b63c777089c0013d30e9769c44)，分支 `relay/a-ci-exact-sha-reader-20261028`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端核对产物后按流程提交并推送 result_branch、回写任务状态。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
