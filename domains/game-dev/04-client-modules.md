@@ -531,6 +531,8 @@ FPS-Like 已发布的 [a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d572
 
 **网页案例：释放渲染器资源与终止独占上下文不是同一件事。** MOBA 每次重开拥有一个独立 Three.js renderer；实际连续三次重开后，旧 canvas 已移除、`renderer.dispose()` 已调用，但弱引用观察的旧 WebGL context 仍未 lost。这只证明该时点仍活，不证明无限泄漏，也不能把页面 crash 归因于它。最终退出的[已采用实现](https://github.com/dbvv1/MOBA-Like/blob/eb4a906b8d1cb3ac5f72f2bfba26efb2791bf805/src/render/owned-renderer.ts)在资源清理后依次 dispose、尝试 `forceContextLoss()`、移除 canvas，以 finally 保前序异常不跳过最终出口、弱集合防重复释放；不承诺一个资源抛错后其余场景资源都已清理。Three.js 0.186.1 的该关闭调用依赖 `WEBGL_lose_context` 扩展。真实复测观察三旧上下文 lost、新世界仍渲染，以及模型加载失败时已建上下文关闭；正式重开 smoke 另跑通过，旧 crash 记录仍保留。第二次需求是共享 renderer／设备时，退出只归还本消费者资源，不能沿用“关上下文”：Unity／UE 的设备由引擎管理，更不能按关卡退出直接强制关闭 GPU。
 
+**一组替换先完整准备，再一起安装；不要每载好一件就隐藏一件旧物。** FPS 三件环境标准件沿现有 View 加载，逐件检查尺寸、材质和预算，再确认每个目标槽唯一，全部通过才挂入候选并隐藏旧物；旧物仍由原场景持有。第二件失败、12 秒超时或缺槽时释放已加载候选并保原场景，退出后迟到的结果只释放、不挂入；退出已安装候选时恢复旧物可见。交给 AI 时要求测试真实消费者，而非只测加载函数：固定 [ArtStandards 实现](https://github.com/dbvv1/FPS-Like/blob/9a5c02fc6b51c852d567cc0d4d28bf388fc41f4b/src/candidates/offline-training-v1/render/art-standards.ts)与[9 项回归](https://github.com/dbvv1/FPS-Like/blob/9a5c02fc6b51c852d567cc0d4d28bf388fc41f4b/tests/offline-training-v1/art-standards.test.ts)已读真实 GLB，并用替身 renderer 执行实际 View 构造／退出；证明的是源码与 CPU 接线，不是 GPU 失败路径、内存性能或 Unity／UE 实跑。尺寸与二进制预算见 [3D 制作链](assets/3d.md#减面uvlod与碰撞借成熟工具做小处理)，这里不另建通用资产管理器，也不把保留回退资源说成节省内存。（2026-10-28 UTC）
+
 #### 二改：提前准备下一关，或让同一角色跨关
 
 **沿同一套 Prepare→Enter 增量修改，不另建“预加载器”。** 若只想减少下载等待，提前下载依赖后仍要正常载入／初始化；磁盘缓存不是内存保活，也不保证首绘已准备。若要把下一关完整留在内存，就以另一个仍关闭玩法的关卡准备它，并明确旧关＋预备关＋共享源＋临时上传的峰值预算；不再用 `activateOnLoad=false` 挂住队列。离开候选路线便卸掉未使用关卡，同一时刻只保约定数量的候选。
