@@ -6,7 +6,7 @@
 
 > 只放带完成条件的临时纠偏，最多三条，做完即删，dot 不改；方向与优先级在长期提示词（手册§6）。
 
-- **B**：案例按阶段做成高质量作品：先离线核心版（对战机器人、完整一局、标杆的核心操作与界面，按联机设计），内容制作与操控并行。做法见 Skill：[成套内容](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md)、[质量单元](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)、[模块](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md)、[AI 做游戏实例](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md)。FPS 已按旁置入口发布 v13；MOBA、Star 的积压整合过 smoke 当轮发布（[细则§6](game-taskbook.md#6-作品案例)），之后的候选同样当轮发布。AI 链路先探索方法：3D 用网关的 Tripo P1／Hunyuan3D 3.1 Pro 与 agent 写 Blender 脚本做小样对比（指导层出结论后你从采用开始），2D 用你自己的图像生成；写成制作链知识再少量采用。
+- **B**：MOBA 积压整合（`c1d65ff`）smoke 复验通过后当轮旁置发布并更新网站，之后的候选同样当轮发布（[细则§6](game-taskbook.md#6-作品案例)）。MOBA 网站版本更新后删除本行。
 - **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
 
 ## 分工
@@ -26,7 +26,7 @@
 | P81 | **试用与选择**：真实编码试用，结论进决策页／模板 | dot-A | 脚本／CI 投影已用；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。Qwen [#15741](https://github.com/QwenLM/qwen-code/issues/15741) 本地 `fix/mcp-preserve-discovery-error`／`6099417` 保留报错、独审通过；core 通过，CLI 被杀／堆耗尽；待更大内存或降内存路径补验，未达 PR 门槛。Skill reader-test 全文超80行未派；建议指导层将页面输入另计，获准且协议／检查一致后恢复。 |
 | MOBA | **MOBA-Like 基本战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | 积压修订 `c1d65ff`，默认 v10／旁置 v11；[原 smoke 卡](local-jobs/B-MOBA-BACKLOG-SMOKE-20261028.md) 修后复验已派，旧轮 `02e1aa2` failed／software 保留，Site v12 未更新。另存 `e0d481b` 离线 1+9／AI 三材质等候选（273 CPU／构建）；画质、手感、平衡待验。 |
 | B-模块 | **核心模块**：客户端、gameplay、引擎、部分服务端（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07 ready `a0ea312`、04 boot `a1b149`／input `d55e04e`、05 生命周期 `bb807ab` 已入 main，仅源码／CPU，不升引擎／作品评级。Star v7 存档、MOBA `ea7a064` 实操仍为旧成果；改键 `89f0831` 候选。[Unity 源准备](../../experiments/unity-encounter/README.md)未实跑，原任务暂停。 |
-| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收，旧通路／命中接线丢失待恢复。MOBA 三材质已接候选、林缘二改；原 PNG 不变，1024 解码约 16 MiB 仅存储估算，非 GPU 实测。开放音频未听未用，3D 无 mesh，Nature 恢复未知。 |
+| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收，旧通路／命中接线丢失待恢复。MOBA 三材质已接候选、林缘二改；原 PNG 不变，1024 解码约 16 MiB 仅存储估算，非 GPU 实测。开放音频未听未用，Nature 恢复未知。3D：网关三源同提示实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机 `gen3d`／`glbprep` 可用；下一步各案例 3–5 件标准件按实测分工采用。 |
 | B-实例 | **AI 做游戏实例**：作品、作者过程与社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏、未听音。Warpact 仍未玩到；没有新增整局品质推荐。 |
 | SR | **Star-Rush 完整比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `2b3e2a4`（运行源 `8dddac2`）／Site **v8 已交付**，[Rapier 170–740m 旁置](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/rapier/)，默认驾驶不换、海岸音 off。五入口 software smoke 通过，非 GPU／品质结项；另存 `7ad62328` 复盘（142 CPU），标准件未接线，操控／视听待验。 |
 | FPS | **FPS-Like 完整回合品质**，按 [brief](https://github.com/dbvv1/FPS-Like/blob/main/docs/brief.md) | dot-B | main `777e830`（运行源 `4b99b59`）／Site **v13 已交付**，[角色＋movement-v2旁置试玩](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=movement-v2&contentSet=characters-v1)，默认入口不变。197 测试、四入口＋capture 通过，14 构建文件与 GPU 被测一致；PID 回执修订已接收，characters 未采样保留。另存 `101b85b` 离线 1+9／六回合／环境候选（116 CPU）；技能／双点／经济未做，画面／手感未结项。 |
