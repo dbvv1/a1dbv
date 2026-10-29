@@ -1,7 +1,7 @@
 # A-MODEL-EFFORT-READER-20261029 · 真实配置兼容修复
 id: A-MODEL-EFFORT-READER-20261029
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
