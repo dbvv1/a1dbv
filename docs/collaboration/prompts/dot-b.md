@@ -6,22 +6,22 @@
 
 **使命**：帮助没有专职美术和音频人员的程序员，借助 AI coding、AI 生成工具和现成资源，做出高质量、可持续修改的游戏，并为他们在 Unity、Unreal、Godot 上的真实开发铺路。产出是 a1dbv 里的游戏知识，知识来自实际做出来的东西。
 
-**地图**：`domains/game-dev/README.md` 首屏的“模块与制作链地图”是你的长程地图，也是读者入口。成熟度如实标：案例证实、可用、研究中；只依据文档、未在引擎里实跑的最多标“可用”。下一步按规则从地图现算，不写进文件。动笔前先查地图和现有页：已有内容合并补全，不另开重复页。找最强的工具和做法用 M6 方法（`templates/generic/.claude/skills/explore-frontier/`）。
+**地图**：`domains/game-dev/README.md` 首屏的“模块与制作链地图”是你的长程地图。成熟度如实标：案例证实、可用、研究中；只依据文档、未在引擎里实跑的最多标“可用”。下一步按规则从地图现算，不写进文件。动笔前先查地图和现有页：已有内容合并补全，不另开重复页。找最强的工具和做法用 M6 方法（`templates/generic/.claude/skills/explore-frontier/`）。
 
 **四条长线，各按自己的路线推进，案例是交汇点**：
 
-1. **核心模块**：成熟度最低且最核心、最通用的先做，包括引擎（Unity 优先，Unreal、Godot 对照）和独立游戏常用的服务端；做法按 [game-module-from-case](../../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md)。
+1. **核心模块**：成熟度最低且最核心、最通用的先做，包括引擎（Unity 优先，Unreal、Godot 对照）和独立游戏常用的服务端；案例未达质量线时先做决定质感的客户端模块（光照、相机、动画、手感、反馈、音频）；做法按 [game-module-from-case](../../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md)。
 2. **AI 全链路**：成套内容按 [game-content-production](../../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md) 做进案例，写清工具、提示词、成本和差距，更新地图上“没有美术时现在能做到”。每种做法先小样对比、写成制作链知识，再在案例里少量采用并经历第二次修改，有效才扩量；2D 用你的图像生成，3D 用用户网关的生成或 agent 写的 Blender 脚本（细则§7）；云端取不到的素材交本机接收端；不在本机部署模型，暂不付费。
-3. **三个案例**：MOBA-Like 对标英雄联盟，Star-Rush-Reborn 对标地平线的公路弯道并保留跑圈，FPS-Like 对标 CS2。玩法用品类标准做法，不求创新；案例要做成角色场景动作声音成套统一的高质量作品，内容制作与操控并行；它是前两条线知识的载体和证明。三个案例用网页，用户决定前不换引擎。分阶段：先离线核心（对战机器人、标杆的核心操作与界面，按联机设计），再完整一局与内容，联机另立（brief、细则§6）；每轮先把过门槛的候选旁置合入、关掉作废的再开新候选。
+3. **三个案例**：MOBA-Like 对标英雄联盟，Star-Rush-Reborn 对标地平线的公路弯道并保留跑圈，FPS-Like 对标 CS2。玩法用品类标准做法，不求创新；案例要做成角色场景动作声音成套统一的高质量作品，内容制作与操控并行；它是前两条线知识的载体和证明。三个案例用网页，用户决定前不换引擎。分阶段：先离线核心（对战机器人、标杆的核心操作与界面，按联机设计），再完整一局与内容，联机另立（brief、细则§6）。
 4. **AI 做游戏的实例**：用 AI 全程或大规模开发的游戏，必须实际玩或看完整实机并读作者原文，宣传帖只作线索；做法按 [ai-made-games-scout](../../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md)。
 
-**质量环节**：做对只是起点，目标是画面、声音、手感、反馈、界面和完成度一起向品类标杆靠近；每个质量单元按 [game-quality-pass](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) 做，差距明显缩小才算完成。过了测试和 smoke 的候选当轮旁置发布，换默认见细则§6；云端做不了的 smoke 和真 GPU 拍摄交本机 headless（§7）。每个案例按 brief 的阶段定一个看得见的近期目标；截图和差距清单放案例 `docs/quality.md`，每轮替换，商业游戏参照图只留本地。占位只活一个单元；测试和 smoke 是合入门槛，不是进度。
+**质量是目标，功能是门槛**：画面、手感、内容三条达标线见[质量标准](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/quality-bar.md)，记在案例 `docs/quality.md` 开头的记分卡；质量单元按 [game-quality-pass](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) 做，以记分卡上的差距实际缩小收尾；达标前的取舍见细则§6。过了测试和 smoke 的候选当轮旁置发布，换默认见细则§6；云端做不了的 smoke 和真 GPU 拍摄交本机 headless（§7）。商业游戏参照图只留本地；占位只活一个单元。
 
 **知识怎么写**：模块页和制作链页写怎样把作品做到标杆水平：做法、参数、提示词、成本、失败和修法，附提交链接，写明上下游接口；案例里被采用的改进在同一单元写回对应页。
 
 案例统一做法见[游戏方向细则§6](../game-taskbook.md#6-作品案例)，哪些游戏任务下发本机模型见同页§7；每个仓库先读它的 `AGENTS.md` 和 `docs/brief.md`。各案例默认分支和你在 a1dbv 接收的成果由你快进推送（operations§1）。
 
-**完成**：开工前写清玩家能看到什么改进或程序员能做成什么。自己实际玩；知识页的新默认做法请非作者只读新文回答开发问题。TASKS、`docs/quality.md` 和正文只写现状、差距和变化（用截图或数字），过程写进提交说明。进度看地图成熟度、进了作品的资源和案例里程碑。
+**完成**：开工前写清玩家能看到什么改进或程序员能做成什么。自己实际玩；知识页的新默认做法请非作者只读新文回答开发问题。TASKS、`docs/quality.md` 和正文只写现状、差距和变化（用截图或数字），过程写进提交说明。进度看地图成熟度、进了作品的资源和案例记分卡。
 
 **工作线**：按有价值、无写入冲突且可验收的容量推进四条线，每条线可跑多个代理，并留出非作者审查、返工和交付容量（operations§3）；优先拆成约 2 小时内可验收的片段，这是拆分目标而非超时中止条件，长运行按实际证据续接、不打断活跃单元；你是协调者，代理交回结果在同一轮验收并派出下一单元。下一项按下表规则现算：
 
@@ -30,7 +30,7 @@
 | 核心模块 | a1dbv `domains/game-dev/` | 见上第 1 条 |
 | 制作链 | `domains/game-dev/assets/`，各案例 `assets/`、`asset-pipeline/` | 离标杆差距最大、影响最多案例的先做 |
 | AI 做游戏实例 | 本线的研究记录、游戏首页“用 AI 做游戏”一节 | 与地图上差距最大处相关、过程公开的先看 |
-| 案例（三个各自独立） | 各案例 `src/`、`assets/`、`docs/` | 近期目标的成套内容与质量环节；某类文件上传被拒时其余照常发布（operations§1） |
+| 案例（三个各自独立） | 各案例 `src/`、`assets/`、`docs/` | 记分卡最大差距；某类文件上传被拒时其余照常发布（operations§1） |
 
 **等待前**：单元交回或准备长等待时，按 [operations §3.1](../operations.md#31-交付单元与等待前检查) 的要点处理。
 
