@@ -2,7 +2,7 @@
 id: B-MOBA-COMMAND-ENVELOPE-SMOKE-20261029
 owner: dot-B
 kind: build
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 9777b84044e19dd297be1675195cfe41d0152159
 result_branch: relay/b-moba-command-envelope-smoke-20261029
@@ -32,10 +32,11 @@ result_branch: relay/b-moba-command-envelope-smoke-20261029
 - 出错即保留本次独占原目录、失败 manifest 和本地原始日志；未能确认退出则本卡 blocked/failed，不追加任务抢占串行槽。
 - 完成只交回 review_ready 由 dot 接收，不自行判视觉品质通过；候选合 main、网站更新由 dot 后续核验后执行。
 
-## 当前结果
+## 修改要求（本轮唯一执行范围，替代上文初次运行步骤）
+只核原记录并补退出／清理说明，不重跑任何 smoke／CPU／GPU，不补拍，不启动新浏览器或预览服务，不改源码、构建、截图或原功能断言。原始证据全部保留，不用新执行覆盖历史。
+1. 读取原额外 bot snapshot 观察调用日志，补调用标识、实际开始／结束、浏览器／预览／父链及退出事实、与原 smoke 的串行关系；公开仅脱敏摘要，不公开原始日志、路径、PID。14.467单位推进属于另次只读观察，不是原 run.mjs 断言；不得把原 smoke 的退出事实套给额外调用。
+2. 核原 head.exe 的创建时点、所属命令、父链与任务归属：是 tower 旧管道、自本轮派生还是无关已有进程。仅在确认是本执行端自有残留且身份仍一致后正常清理，并保存真实退出回执；不清锁、不杀未知或他人进程。归属／退出无法证实就明确未知，不以“不占GPU”代替全部清理事实，不为缺失日志重跑。
+3. 原固定9777功能 smoke及37包hash匹配可独立用于代码／网站交付；本次缺口只阻塞后续本机串行调度，不宣告整卡合规。只更新本结果分支原证据目录的历史／退出说明及必要hash索引、原卡当前结果，交回review_ready供限定接收。
 
-- 固定候选 9777b84/8b3a239 的软件渲染功能 smoke 全通过：默认入口仍 v10 且 tick 12→18，v11 玩家移动/停止、Q/E 施法、bot 真实推进 14.467 单位（只读快照观测，非 run.mjs 直接断言）、改键、Save→reload→Continue（27→37）、diffuse 入口均通过，console/page/http/request 与 cleanupErrors 全空，浏览器 exit 0、预览已关闭；审查 openIssues 为空，taskDone=true，页面卡点不适用，证据状态 review_ready，另有一个不占浏览器/预览/串行槽的惰性 Git head.exe 残留已记录。
-- 产物：[03df8ad](https://github.com/dbvv1/MOBA-Like/commit/03df8ad09cfc9ab189c687a041b4c3afd080859b)，分支 `relay/b-moba-command-envelope-smoke-20261029`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：交 dot-B 接收核验后决定是否合入 main 与更新网站；本机未提交、未推送、未切分支。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+## 当前结果
+已核 [03df8ad](https://github.com/dbvv1/MOBA-Like/commit/03df8ad09cfc9ab189c687a041b4c3afd080859b)：固定9777b84/tree8b3a239 clean，37/37构建文件与云端实际bytes/hash一致、9/9公开证据hash通过，三入口原功能smoke通过且software分类真实，原浏览器退出0、预览关闭；此范围可用于交付。head.exe具体归属／退出与另次bot快照调用的独立时序／退出仍缺证，14.467不是原runner断言；仅退回上述历史／自有窄清理，不重跑、不阻塞已验代码交付，后续本机串行调度等待缺口核实。
