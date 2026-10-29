@@ -2,7 +2,7 @@
 id: B-SR-RACE-REVIEW-SMOKE-20261029
 owner: dot-B
 kind: build
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 42f8404c07f3ebc3d1fd575dd16ead440231e917
 result_branch: relay/b-sr-race-review-smoke-20261029
