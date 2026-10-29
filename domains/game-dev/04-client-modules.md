@@ -314,6 +314,23 @@ AI 可拆读写与补规则，先定按住式／定时式，人验连锁 boost�
 
 来源：[研究] 十一模块交付线与拒绝边界；作者工具依据见 [WP10 内容工具](../../docs/research/wp10-content.md#104)。
 
+### 世界光照与玩法提示：后处理只改世界，不把提示一起压暗
+
+**🧪 Web 案例已采用：保留 Standard／PBR 受光，先以半球填光＋世界专用 AO／调色改善层次。** MOBA 的 [Site v16 旁置试玩](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site/candidate.html?commands=buffer-v1&lighting=forest-light-v1)已接入正常可玩路径；不带 `lighting` 参数仍为 baseline，网站默认入口仍是 v10。适合已有 PBR 资产、场景显平而提示必须稳定的项目；不是更换成 Toon 材质，也不是加一层覆盖全屏的暗色滤镜。实现基于 Three 0.186.1；AO／输出及额外深度重绘增加 pass 成本，未测目标硬件实时帧时间；升级 Three 时重核 `SSAOPass` 可见性覆写与资源释放，不能把内部方法当稳定接口。
+
+| 接入顺序 | 本例实现与可交给 Agent 的验收点 |
+|---|---|
+| 明确所有权 | 对象由拥有者标 `renderRole=world/cue` 并由子对象继承，不靠材质类型猜身份。程序化地面用 `MeshStandardMaterial`，glTF 保源材质；技能圈、血条和目标标记保原 shader。 |
+| 受光起点 | 半球 sky `#b9ddd8`／ground `#243e32`、强度 1.35，环境填光 0.08；暖色主光 `#fff0cf`、强度 2.8。候选 ACES 曝光 1.08。这是本场景起点，换资产尺度或颜色后需重新看暗部。 |
+| 世界后处理 | `RenderPass → world-only SSAOPass → 线性空间 ShaderPass 调色 → OutputPass`；HalfFloat 中间缓冲、请求 MSAA 4 samples。AO 固定 16 样本，半径 1.4、距离 0.001–0.015；采样与噪声不借模拟随机源。冷暗部／暖亮部调色在输出转换前执行。 |
+| 提示合成 | 世界完成后清默认帧缓冲深度，用源材质关闭 `colorWrite` 重建世界深度，保 alpha test／蒙皮，再画 cue。提示不吃世界 AO／调色，但仍保自身 `depthTest`、`depthWrite`、`toneMapped`，不是全部强制置顶。临时可见性与材质状态在 `finally` 恢复，resize／dispose 随世界生命周期。 |
+
+**先核实际路径，再凭同状态图调整。** 本例 baseline 请求 `PCFSoftShadowMap`，运行实际回退为 `PCFShadowMap`；候选直接用 PCF。配置名不证明实际阴影算法，manifest 要保 renderer 与实际质量参数。两个独立非作者在四个同状态机位对照中都选候选“小幅改善”，但冷灰感和局部暗部偏黑仍在；道路／草缘／塔基过渡生硬、稀疏树形和细碎地纹这些结构性差距也尚未解决；后续按机位最大差距改整层，不以继续加 AO 强度代替配光与场景组织。
+
+给 Agent 的回归输入应同时固定 gameplay、spawn、first-tower、spawn-to-tower 四机位，seed 1、模拟 tick 300（10 秒）、`march` 输入、1280×720／DPR 1／FOV 45，每组重复两次；核状态、相机、RGBA 重复一致，并核 baseline 与原图 hash 一致。正常可玩入口还要分别 smoke 灯光＋缓冲 v12、baseline＋缓冲 v12、baseline v11 与默认 v10。本次 475 项测试通过，3 局模拟回放零差异，四路 WebGL2 非空且无页面错误；构建 37 项 hash 与 Site v16 包逐项一致。
+
+实现起点：[main 固定提交 `27a40be`](https://github.com/dbvv1/MOBA-Like/commit/27a40bedaab6bd8bf737885afe952ef6db403f2c)的 `src/render/lighting-style.ts`（参数／角色）、`lighting-post.ts`（分层合成）、`world.ts`（可玩接线），以及 [quality.md](https://github.com/dbvv1/MOBA-Like/blob/27a40bedaab6bd8bf737885afe952ef6db403f2c/docs/quality.md)的四机位差距。以上为本 Web 案例采用与 SwiftShader **software** 图证；两人选择不等于目标图锚定的正式评分，亦未证明硬件 GPU 性能或目标画质达标。Unity／UE 的环境光、AO 与输出策略仍沿[场景光照页](unity/07-scene-rendering-and-lighting.md)按引擎管线接入，本次没有运行引擎。核实：2026-10-30（UTC+8）。
+
 <a id="audio-lifecycle"></a>
 <a id="声音事件播完以后谁解除让位"></a>
 ### 声音事件：从玩法事实接到声源、混音和退出
