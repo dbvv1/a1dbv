@@ -297,6 +297,22 @@ MiMo、DeepSeek、MiniMax、百炼仍是可另行比较的候选；其当前套�
 
 **依据**：[一手] [Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B)、[原始仓库](https://huggingface.co/Qwen/Qwen3.8-27B/tree/main)、[API usage](https://huggingface.co/Qwen/Qwen3.8-27B#api-usage)、[Qwen3.6-35B-A3B](https://huggingface.co/Qwen/Qwen3.6-35B-A3B)、[Gemma4-26B-A4B-it](https://huggingface.co/google/gemma-4-26B-A4B-it)、[Ollama FAQ](https://docs.ollama.com/faq#how-does-ollama-handle-concurrent-requests)、[local-only 设置](https://docs.ollama.com/faq#how-do-i-disable-ollamas-cloud-features)；[研究] 候选与条件（2026-10-15，未实测）；核实 2026-10-15。
 
+### 工具调用只打印成正文时
+
+**🟡 先定位调用断在哪一层，再修适配或换模型。** 针对原任务需要工具却未执行的失败，固定请求、模型／量化、服务端／模板及客户端版本；先核请求确有 `tools` 且未禁用调用，流式响应要收齐各块，不能只看聊天窗口或最后一块。
+
+| 观察到什么 | 先查哪里 |
+|---|---|
+| **文本 → 结构化调用**：正文有调用样式，响应却无 `tool_calls` | 核模型格式与服务端 parser／chat template 是否匹配、该形状是否有已发行修复；不能仅凭现象判模型能力不足 |
+| **结构化调用 → 客户端**：服务端已返回调用，客户端没收到完整调用 | 核流式累积、接口转换与客户端兼容，不先换模型 |
+| **客户端 → 工具结果**：客户端已有合法调用，仍未执行或未回传结果 | 核工具注册、分发、权限、运行错误和结果回填，不再改 parser |
+
+**不要把正常正文兜底执行。** 代码、引用或无需工具的回答仍是正文；不能因为含 XML／JSON 就当调用。llama.cpp 曾因过宽触发器误伤 `#include <functional>`，修复把裸 `<function=…>` 入口收窄为已声明工具的完整标记；已核 `b10380` 含此实现，不表示它是首个修复版。Ollama `0.34.2` 搭配 `qwen3-coder:30b` 的 OpenCode 用户报告缺开头标记后调用变正文，关联补丁仍未合入，不能承诺升级即解决。
+
+**只接收原失败的端到端恢复**：每次改一个已定位因素，确认正确调用、工具返回及后续轮次消费结果，普通代码／引用仍保持正文。只让 XML 消失不够；修复版本不明就不按“已修复”接收，仍不稳定或误判正常正文时撤回这次适配改动，再比较受支持的组合。本建议未做真实模型任务或本机读者实测。
+
+**依据**：[一手] [Ollama 调用与流式累积](https://docs.ollama.com/capabilities/tool-calling)、[llama.cpp 固定修复 `ba360ef`](https://github.com/ggml-org/llama.cpp/commit/ba360efe1f574ebae727aad64112d18ecedca85a)、[b10380 源码](https://github.com/ggml-org/llama.cpp/blob/b10380/common/chat.cpp)；[社区单例] [误触发 #26787](https://github.com/ggml-org/llama.cpp/issues/26787)、[Ollama #18530](https://github.com/ollama/ollama/issues/18530)及未合入补丁 [#18538](https://github.com/ollama/ollama/pull/18538)、[#18532](https://github.com/ollama/ollama/pull/18532)；[经验：采用判断] 三层分流与撤回条件。核读 2026-10-29。
+
 ## 6. 基准测试：怎么看才不被误导
 
 **看榜单先核更新时间、数据集版本与预算，不用历史分数推当前排名。** 下表是 2026-10-05 的记录（未复核），仅供定位原来源，不作为当前排名或跨模型成本比较。
