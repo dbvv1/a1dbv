@@ -7,6 +7,7 @@
 > 只放带完成条件的临时纠偏，最多三条，做完即删，dot 不改；方向与优先级在长期提示词（手册§6）。
 
 - **B**：三个案例各在 `docs/quality.md` 开头建[质量记分卡](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/quality-bar.md)：画面每个命名机位的目标图与首轮盲评分、手感规格表与首轮实测、当前阶段内容清单与覆盖率；之后按细则§6 第 3 条只追记分卡最大差距。三张记分卡都建好后删除本行。
+- **B**：画面与 smoke 都在 dot 云电脑里跑（10-29 用户：不占本机）：先让云电脑 headless Chromium 软件渲染跑通一次截图（10-29 dot-A 实测启动即报环境错误，见[探索证据](../research/2026-10-15-exploration-evidence.md)“社区入口实测 2026-10-29”；先修环境，A／B 谁先修好在 TASKS 写一行，不重复修；不开可见浏览器，被平台拒绝则只停此动作并记入“需要用户决定”），再每案一条命令出同机位图，补齐目标图与首轮盲评；再按 [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)§3 第 1 层逐案核材质受光路径做灯光层旁置候选（三案缺环境光照、AO 与调色，FPS 另缺色调映射与投射阴影）。本机已排的截图与 smoke 卡不再续跑；浏览器修好前，候选按单元测试与无画面模拟先过门槛、浏览器 smoke 补跑后再旁置发布。Star 按 10-29 用户决定把 brief 改为风格化，重做目标图并重核记分卡。三案出图命令可用、灯光候选双盲结果已记、Star brief 已改后删除本行。
 - **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
 
 ## 分工
