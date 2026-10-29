@@ -2,7 +2,7 @@
 id: B-THREE-CASE-QUALITY-CAPTURE-20261029
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: d70fd59b59231d7eb7a0dce07d58580c7f9fcb09
 result_branch: relay/b-three-case-quality-capture-20261029
