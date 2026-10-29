@@ -2,7 +2,7 @@
 id: B-SR-RACE-REVIEW-SMOKE-20261029
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 42f8404c07f3ebc3d1fd575dd16ead440231e917
 result_branch: relay/b-sr-race-review-smoke-20261029
@@ -26,4 +26,9 @@ backlog覆盖默认、road、legacy、Rapier与旧capture入口；focused覆盖�
 每条原调用分别保 Node、外层 wrapper 实际开始/结束/退出码，DEBUG=pw:browser原日志在本地；回所属browser PID实际退出、预览端口拒绝连接及自有父链退出事实。首脚本清理完成后才能起第二脚本；最终核本轮自有链消失，没测写未知，不能以Git状态替代。任何失败/超时保独占目录manifest与原报告，只关确定本轮归属资源，不扩大清理。未试玩听感、GPU画面优劣、驾驶手感与其他赛道浏览器全流程仍待验。
 
 ## 当前结果
-固定候选 [42f8404](https://github.com/dbvv1/Star-Rush-Reborn/commit/42f8404c07f3ebc3d1fd575dd16ead440231e917) 的 CPU 与 runner 独审已过；本卡仅排队，smoke 未运行。等待MOBA原卡一次当前全量只读核验及启动前fresh复核；历史缺码保持未知，只有当前调用／资源／串行事实真实满足才可执行，未知即blocked。网站仍 v8，后续旁置交付由 dot 验收决定。
+
+- 本单元未起 smoke：前序 MOBA 遗留的三次 bot snapshot 调用缺浏览器退出回执、两个 head.exe 退出时刻与码未知且其中一个父链未核实，MOBA 窄返工仍在途、串行槽空闲无法证实，故按卡写 blocked 报告（审查无开放问题）。恢复条件：接收端书面接受这些缺失退出/父链事实或取得真实回执，待 MOBA 返工结束并核实串行槽空闲后，用新 run-id 先跑 backlog 再跑 review。
+- 产物：[4407db6](https://github.com/dbvv1/Star-Rush-Reborn/commit/4407db657d6bc1c245c2b4e608399ea8b9c37086)，分支 `relay/b-sr-race-review-smoke-20261029`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：接收端处理上述 release condition 后，以新 run-id 重跑本单元：先 node tests/backlog-smoke.mjs <run-dir>/backlog，确认浏览器/预览链退出后再跑 node tests/race-review-smoke.mjs <run-dir>/review
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
