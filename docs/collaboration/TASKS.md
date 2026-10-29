@@ -48,7 +48,7 @@
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
-| 云端截图 | MOBA：`NET::ERR_CERT_AUTHORITY_INVALID`；浏览器退出 0，WebGL2 未验；待可信证书链 | CPU 继续 |
+| 云端截图 | MOBA 线上仍报 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链 | 10-30 03:43（上海）云端本地 `8fcab371` 全新干净构建的 `/candidate.html?commands=buffer-v1` 已跑出 v12 非空游戏图（1280×757，`three-webgl2`，tick 8→76；ANGLE／SwiftShader Subzero，software）；按授权使用 `--no-sandbox`，参数与原始 renderer 已留存，进程退出 0、服务端口已关闭；完整 smoke、固定机位盲评与线上验收仍待补，不重复修已通的本地通路。 |
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
 | Serena／testmon 上游贡献 | 待对应可写 fork；Serena CLA 须本人决定 | 已审补丁：[Serena #2218](../../experiments/serena-vue-implementation/README.md)、[testmon #270](../../experiments/testmon-outer-coverage/README.md) |
 
