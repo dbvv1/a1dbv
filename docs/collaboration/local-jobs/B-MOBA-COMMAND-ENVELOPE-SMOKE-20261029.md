@@ -2,7 +2,7 @@
 id: B-MOBA-COMMAND-ENVELOPE-SMOKE-20261029
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 9777b84044e19dd297be1675195cfe41d0152159
 result_branch: relay/b-moba-command-envelope-smoke-20261029
