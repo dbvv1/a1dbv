@@ -2,7 +2,7 @@
 id: B-MOBA-COMMAND-ENVELOPE-SMOKE-20261029
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 9777b84044e19dd297be1675195cfe41d0152159
 result_branch: relay/b-moba-command-envelope-smoke-20261029
@@ -39,4 +39,9 @@ result_branch: relay/b-moba-command-envelope-smoke-20261029
 若本次实际记录证明所有相关调用已settled、自有资源不存在且串行槽空闲，可按现有授权继续已排Star原单元；Star启动前仍须fresh复核，Star实际结束／退出后才可接已排FPS，FPS启动前也须fresh复核。不得自动宣称现在已空闲。只更新本结果分支历史／当前核验说明和必要hash索引及本卡结果，不改源码、原九文件、TASKS或其他产物，不新建单元；交回review_ready。
 
 ## 当前结果
-已接收 [bb6a62c](https://github.com/dbvv1/MOBA-Like/commit/bb6a62c5431416d53fc3ccb466221cd93688023c) 的限定历史补证，原九文件未改、补证hash通过；固定9777功能与37包已验范围仍有效。两head归属tower旧管道，04:39:43已无，但三观察及两head历史退出码未知；额外review重跑及删除临时产物不合原单次／保全范围，第三观察renderer未知。当前材料不足以断言全部自有资源已无：04:39只核head、browser／端口核验停在04:13。仅退回上述一次当前全量只读核验，不重跑，不以历史不可恢复码无限阻塞；核验真实满足后按Star→FPS串行，尚未放行实际启动。
+
+- 已完成对固定候选 9777b84 的一次性全量只读核验（2026-10-29T06:02:49Z–06:08:27Z：0 浏览器、0 smoke preview Node、0 preview 监听、无 GPU 任务；记录 PID 及父进程缺席且无创建窗复用；本卡调用与子代理均已 settled），并仅更新本卡 status.json 与 history-exit-notes.json 至 review_ready。openIssues 为空；审查含读者测试判通过、无页面卡点；三次观察及两 head 历史退出码与第三观察 renderer 仍保留 unknown，未重跑 CPU/smoke/GPU、未开浏览器、未杀进程、未清锁、未提交。
+- 产物：[395687d](https://github.com/dbvv1/MOBA-Like/commit/395687dc9555b9ade03915ff693b1c3085e569bb)，分支 `relay/b-moba-command-envelope-smoke-20261029`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：交 dot 接收；Star 启动前须 fresh 复核，Star 实际结束退出后才可接 FPS（两个已排单元已由接收端并行启动，不在本卡写入范围）。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
