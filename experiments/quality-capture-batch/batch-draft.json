@@ -1,0 +1,299 @@
+{
+  "status": "DRAFT-NOT-DISPATCHED-NOT-RUN",
+  "policySource": "a1dbv@f4b4e801",
+  "games": [
+    {
+      "game": "moba",
+      "sourceCommit": "8ade2d1012370692de31f3883a85338171dbcab3",
+      "sourceTree": "0726ec1cd61176d4dc1e9d5335485e8c801e9fdc",
+      "files": [
+        {
+          "path": "docs/capture.md",
+          "sha256": "f848e659b5b47032b314bf629f3a4314ed26f4780bb88cdc53b5310fe2ebf1ea"
+        },
+        {
+          "path": "src/capture/config.ts",
+          "sha256": "60549590869ecd779afc41d54f673bf874d0e839dd5cf691611e8b249a7b634e"
+        },
+        {
+          "path": "src/capture/cameras.ts",
+          "sha256": "3d7d5ebcb130133ccab1639ae3a0ca48aa61b30f556505a344fc3912577bd12d"
+        },
+        {
+          "path": "src/capture/session.ts",
+          "sha256": "e810a4982598efbbddec864b9121f1b6f0523eafa2fd978940a2d1b583a620a6"
+        },
+        {
+          "path": "src/capture/client.ts",
+          "sha256": "3d670ca6eb14076fa1e96497615fb9043faf6aefb89a9e259f09c553d4ec2d8f"
+        },
+        {
+          "path": "tools/capture.mjs",
+          "sha256": "d6a247474ef5db09b1453f1d7006c3243d745b684124106e2bdcfa3a2720c21c"
+        },
+        {
+          "path": "package-lock.json",
+          "sha256": "edefefba9571006039cd9ff4035b180fbb1a11c7bdfa6fa558ed5a98a4556b3a"
+        }
+      ],
+      "shots": [
+        {
+          "query": {
+            "shot": "gameplay",
+            "seed": 1,
+            "t": 10,
+            "input": "march",
+            "frames": 1,
+            "lighting": "baseline"
+          },
+          "presentationStartTick": 600,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "3dea1bafbf7b50e17be609a3e38ce73030de2f9a6d03568d8af4aa6d6ede130b"
+        },
+        {
+          "query": {
+            "shot": "spawn",
+            "seed": 1,
+            "t": 10,
+            "input": "march",
+            "frames": 1,
+            "lighting": "baseline"
+          },
+          "presentationStartTick": 600,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "f1a8ddaac8ca921bfff21dec06fc3a10b3cd511856b571ebac2842dcbeae85db"
+        },
+        {
+          "query": {
+            "shot": "first-tower",
+            "seed": 1,
+            "t": 10,
+            "input": "march",
+            "frames": 1,
+            "lighting": "baseline"
+          },
+          "presentationStartTick": 600,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "a2f1154e6629e9f8c5a0fb0e022dc3eda8ad5babfd1f02828c168837a8032be8"
+        },
+        {
+          "query": {
+            "shot": "spawn-to-tower",
+            "seed": 1,
+            "t": 10,
+            "input": "march",
+            "frames": 1,
+            "lighting": "baseline"
+          },
+          "presentationStartTick": 600,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "6e81113a035af83d41f61c45c07de9e8911ecb9f0f5b69fb86aea30e5252d323"
+        }
+      ],
+      "bundle": "FRESH-CLEAN-BUILD-IN-RECEIVER; hash inventory before and after; never reuse author dirty tree",
+      "renderer": "preserve raw renderer/vendor/version and native classification; no relabel",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1
+      },
+      "warmup": {
+        "frames": 12,
+        "advancesSimulation": false
+      }
+    },
+    {
+      "game": "fps",
+      "sourceCommit": "abc139f6e2ba2b95b2fc0bc50c351aa3bd1d4be6",
+      "sourceTree": "30e133c9ead1cf2fbae31828c5dd447f0174410c",
+      "files": [
+        {
+          "path": "docs/capture.md",
+          "sha256": "58dffab7bb674939f5ed9528158d817d63f9ad6578b253a854469876b5530531"
+        },
+        {
+          "path": "src/boot.ts",
+          "sha256": "d68606dbebcdb874c3b4070dffa6506a5517dc19d88f45c65bffee73edf4c23c"
+        },
+        {
+          "path": "src/capture/config.ts",
+          "sha256": "033d43f3fd66432dae3e347b6f767ce70d4563dbfcb65cd37a0cb455ba609f04"
+        },
+        {
+          "path": "src/capture/cameras.ts",
+          "sha256": "7493dd281ea844b6e977ae5482bc68b87dc5c8547c33caeae6d2ea0a15280f9a"
+        },
+        {
+          "path": "src/candidates/offline-training-v1/capture/quality-route.ts",
+          "sha256": "553d6951d5fe0a5243b6cb5343cdac2b9d9e4c7313f35472f7e1321ff8e1a775"
+        },
+        {
+          "path": "src/candidates/offline-training-v1/capture/quality-client.ts",
+          "sha256": "c0ae9de2dba83f245ba48bd23d1a437a344da8913953fd58585cf65b8f53642b"
+        },
+        {
+          "path": "src/candidates/offline-training-v1/capture/replay.ts",
+          "sha256": "d2ad7d1296bed44fd13dcacc71c741e067657bb08c348f2756c5701f85982835"
+        },
+        {
+          "path": "tools/capture.mjs",
+          "sha256": "d0d39c0f0757ec2f73b4e90c4304d24556e15f8ff1059c27dba7f44ef6e7533a"
+        },
+        {
+          "path": "package-lock.json",
+          "sha256": "390c5619c464e5b164be3bf472bb41d0bfd3cc63d0309e21909026addf7f5e3c"
+        }
+      ],
+      "shots": [
+        {
+          "query": {
+            "gameplay": "offline-training-v1",
+            "match": "complete-v1",
+            "squads": "offline-v1",
+            "environment": "courtyard-v1",
+            "art": "standards-v1",
+            "qualityCapture": "gameplay"
+          },
+          "presentationStartTick": 120,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "38efec3fd132e22d23380200377670bd0819b9576084789839e59d21ca508d4e"
+        },
+        {
+          "query": {
+            "gameplay": "offline-training-v1",
+            "match": "complete-v1",
+            "squads": "offline-v1",
+            "environment": "courtyard-v1",
+            "art": "standards-v1",
+            "qualityCapture": "courtyard-gap"
+          },
+          "presentationStartTick": 120,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "41feb321f2cc72232b2ac05d34353f96ff53fb675aed46045baaaae14e06867e"
+        },
+        {
+          "query": {
+            "gameplay": "offline-training-v1",
+            "match": "complete-v1",
+            "squads": "offline-v1",
+            "environment": "courtyard-v1",
+            "art": "standards-v1",
+            "qualityCapture": "cross-lane"
+          },
+          "presentationStartTick": 120,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "8e36792c4e5d03f6db8b76b7a94f365e19f6e32deb41edaa007e03a0b8e702de"
+        }
+      ],
+      "bundle": "FRESH-CLEAN-BUILD-IN-RECEIVER; hash inventory before and after; never reuse author dirty tree",
+      "renderer": "preserve raw renderer/vendor/version and native classification; no relabel",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1
+      },
+      "warmup": {
+        "frames": 12,
+        "advancesSimulation": false
+      },
+      "sourceBlobReadCommit": "e37095784e8315b125617a930511152d11799bcc",
+      "bindingEvidence": "Author verified remote tree 30e133c9ead1cf2fbae31828c5dd447f0174410c equals local e370; receiver must verify tree and source files before launch"
+    },
+    {
+      "game": "star",
+      "sourceCommit": "f1da86c551ee3ff8541912974823dca07a9509ad",
+      "sourceTree": "31b1140dfa634f3263143b09af880bab74f69e40",
+      "files": [
+        {
+          "path": "docs/capture.md",
+          "sha256": "aadcda765107b77e78322e7f10a257afe251b55c3f23da8f701253e07fe51c66"
+        },
+        {
+          "path": "capture-presets.mjs",
+          "sha256": "41408547ecf80c58e7382e52da39b39550378656ac3c3281f12dedac7a961c84"
+        },
+        {
+          "path": "capture-mode.mjs",
+          "sha256": "3819bbe1cc38b8d1932af4f015a38aaf2f73b5635edf8ff5bce0548039283092"
+        },
+        {
+          "path": "capture-client.js",
+          "sha256": "3eb1ce02561405b5d5ca0a6e5f3ac4dacc528426be0d5705f75d8370b9a7f897"
+        },
+        {
+          "path": "tests/capture.mjs",
+          "sha256": "91b33eccda64f95f5e2830dba3c1838f3eb04a94a477e5f358e8dafd7dfac10b"
+        },
+        {
+          "path": "tests/smoke-server.mjs",
+          "sha256": "425fbc286c538b0bebcc1a17f108339b4a8c01aad31496084b51d021beb29b05"
+        },
+        {
+          "path": "package-lock.json",
+          "sha256": "4bfa549f6b3b5b17f4dce128a9b087660bd04210de9cfe9b9cc87c44dc06c83d"
+        }
+      ],
+      "shots": [
+        {
+          "query": {
+            "shot": "coast-chase",
+            "seed": 73121,
+            "t": 28,
+            "input": "road-tour",
+            "frames": 1
+          },
+          "presentationStartTick": 1680,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "4a2d4b2d4fee461446b16c6241636a7dc6052b0f665cfd44e0f1cca1bd193bc3"
+        },
+        {
+          "query": {
+            "shot": "coast-full-bend",
+            "seed": 73121,
+            "t": 28,
+            "input": "road-tour",
+            "frames": 1
+          },
+          "presentationStartTick": 1680,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "6fad353f96028a14a759cdeb80b71502e50686814ab0fffe5d29240a3ac4dd11"
+        },
+        {
+          "query": {
+            "shot": "academy-depth",
+            "seed": 95276,
+            "t": 14,
+            "input": "road-tour",
+            "frames": 1
+          },
+          "presentationStartTick": 840,
+          "repetitions": 2,
+          "stateHash": "MEASURE-NOT-FABRICATE",
+          "inputIdentitySha256": "4632d6992c148c9a805f19e878147b3cae01deb5fa7e1e18dbcc51eaaab16281"
+        }
+      ],
+      "bundle": "FRESH-CLEAN-BUILD-IN-RECEIVER; hash inventory before and after; never reuse author dirty tree",
+      "renderer": "preserve raw renderer/vendor/version and native classification; no relabel",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1
+      },
+      "warmup": {
+        "frames": 12,
+        "advancesSimulation": false
+      }
+    }
+  ],
+  "launchGate": "root verifies MOBA fresh census and actual queue; no overlap with Star functional/FPS observer",
+  "allShots": 10
+}

@@ -1,0 +1,10 @@
+{
+  "batch-draft.json": "566118aa8087e8efabe851b9ed831e09aa41be4df9d136c05285d94f7ad24acb",
+  "fps-worker.mjs": "fe1e7f2a015c71662b525e7ca4849a2dda3e73a34f6aad7eb3f68de7a2798ae3",
+  "lease-holder.mjs": "931a3a6c910ec256272d2612074d3ccf83e801006513b90a0ba21f7795249684",
+  "moba-adapter.mjs": "9933f8b11919dd5b5440d59acc1c99d99e3e133227247688fec523669a5b2531",
+  "receiver-config.example.json": "98337440f02abce3e75354369faec2b7f5cb914592f328a215cb6751ac307779",
+  "run-batch.py": "76b26b3c7b435313153f65df749a2f796a38b183daeb114504aa47a4a3f78a6c",
+  "star-adapter.mjs": "9313b36427e4b3d7a76fd8cc92f78e46ff135aa8d75688790f3df63f5c7ecfa9",
+  "test-preparation.py": "eee29b5af5afff325426be21a50f0bc83387c11d8413044723122a43dc932fec"
+}

@@ -1,0 +1,52 @@
+{
+  "serialGateEvidence": "ROOT supplies actual MOBA fresh census + Star/FPS existing queue clear evidence before approved launch",
+  "outputRoot": "ABSOLUTE_NEW_BATCH_PARENT",
+  "leaseRoot": "EXISTING_SHARED_CAPTURE_LEASE_ROOT",
+  "taskId": "ROOT_APPROVED_SINGLE_GPU_TASK_ID",
+  "moba": {
+    "root": "CLEAN_FIXED_MOBA_CHECKOUT",
+    "browser": {
+      "path": "EXACT_ORIGINAL_SUCCESSFUL_FULL_CHROMIUM_PATH",
+      "sha256": "ORIGINAL_FILE_SHA256",
+      "version": "ORIGINAL_VERSION",
+      "successfulReceipt": "ACTUAL_LOCAL_RECEIPT",
+      "receiptFields": {
+        "path": "/launch/executablePath",
+        "sha256": "/browserFile/sha256",
+        "version": "/browserVersion",
+        "passed": "/passed"
+      }
+    }
+  },
+  "fps": {
+    "root": "CLEAN_abc139f6e2ba2b95b2fc0bc50c351aa3bd1d4be6_CHECKOUT",
+    "browser": {
+      "path": "EXACT_ORIGINAL_SUCCESSFUL_FULL_CHROMIUM_PATH",
+      "sha256": "ORIGINAL_FILE_SHA256",
+      "version": "ORIGINAL_VERSION",
+      "successfulReceipt": "ACTUAL_LOCAL_RECEIPT",
+      "receiptFields": {
+        "path": "/launch/executablePath",
+        "sha256": "/browserFile/sha256",
+        "version": "/browserVersion",
+        "passed": "/passed"
+      }
+    }
+  },
+  "star": {
+    "root": "CLEAN_FIXED_STAR_CHECKOUT",
+    "hardwareEvidence": "ACTUAL_GPU_DIAGNOSTIC_JSON_WITH_EXACT_RENDERER",
+    "browser": {
+      "path": "EXACT_ORIGINAL_SUCCESSFUL_FULL_CHROMIUM_PATH",
+      "sha256": "ORIGINAL_FILE_SHA256",
+      "version": "ORIGINAL_VERSION",
+      "successfulReceipt": "ACTUAL_LOCAL_RECEIPT",
+      "receiptFields": {
+        "path": "/launch/executablePath",
+        "sha256": "/browserFile/sha256",
+        "version": "/browserVersion",
+        "passed": "/passed"
+      }
+    }
+  }
+}
