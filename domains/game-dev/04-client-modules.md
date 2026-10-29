@@ -331,6 +331,10 @@ AI 可拆读写与补规则，先定按住式／定时式，人验连锁 boost�
 
 实现起点：[main 固定提交 `27a40be`](https://github.com/dbvv1/MOBA-Like/commit/27a40bedaab6bd8bf737885afe952ef6db403f2c)的 `src/render/lighting-style.ts`（参数／角色）、`lighting-post.ts`（分层合成）、`world.ts`（可玩接线），以及 [quality.md](https://github.com/dbvv1/MOBA-Like/blob/27a40bedaab6bd8bf737885afe952ef6db403f2c/docs/quality.md)的四机位差距。以上为本 Web 案例采用与 SwiftShader **software** 图证；两人选择不等于目标图锚定的正式评分，亦未证明硬件 GPU 性能或目标画质达标。Unity／UE 的环境光、AO 与输出策略仍沿[场景光照页](unity/07-scene-rendering-and-lighting.md)按引擎管线接入，本次没有运行引擎。核实：2026-10-30（UTC+8）。
 
+**FPS 复用时先预算额外 pass，不照抄 MOBA 的 AO 尺度。** [Site v17 旁置](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1&art=standards-v1&feel=ground-v1&lighting=courtyard-light-v1)可直接比较，默认入口保留。 [FPS 固定采用源 `72356e2`](https://github.com/dbvv1/FPS-Like/tree/72356e28d7ab8850fddc422638894d6838145d1c/src/candidates/offline-training-v1/render)的 `lighting-post.ts`／`lighting-style.ts`／`scene.ts` 使用同类分层合成，但 AO 固定为物理输出宽高各一半、16 样本、半径 0.65、距离 0.001–0.008；ACES 曝光 1.05，方向光 2048² PCF 阴影。世界颜色通道每帧只更新一次阴影；世界深度重建仅在所有表面满足受限的不透明 Standard 契约（含无 alpha、位移、裁切或自定义 shader 等）时走等几何深度 shader，否则保留源 shader。玩法提示圈与相机武器独立合成，保自身深度／材质路径，Basic 提示不被 ACES 压淡；此例将 Basic 也归为 cue，复制到其他项目应先核其是否真是提示，不能把所有无光照场景物件都排除出世界层。
+
+实际返工先减 AO 分辨率、去重复阴影更新，再收窄深度快路径；软件 smoke 仍未通过 180 秒窗口。最终只把工具每路等待延至 300 秒，baseline／lighting × 有／无 feel 四路仍须各完成两轮 144 tick（共 288 tick）和真实重开，同组回放 hash 必须一致，未降低这些门槛。这证明功能与模拟隔离，不证明实时流畅；正常玩法长帧保护保留。两非作者接受为旁置，但人物暗面黑块和阴影颗粒仍在，合格目标 **0/3**，不作正式达标结论。依据：[实际优化、失败与最终复测](https://github.com/dbvv1/FPS-Like/blob/72356e28d7ab8850fddc422638894d6838145d1c/docs/quality.md)，2026-10-30（UTC+8）[Web 案例／software 实测]。
+
 <a id="audio-lifecycle"></a>
 <a id="声音事件播完以后谁解除让位"></a>
 ### 声音事件：从玩法事实接到声源、混音和退出
