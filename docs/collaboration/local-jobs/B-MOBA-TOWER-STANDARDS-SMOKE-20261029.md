@@ -2,7 +2,7 @@
 id: B-MOBA-TOWER-STANDARDS-SMOKE-20261029
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b7687337231df4d275800643472c7f878a885211
 result_branch: relay/b-moba-tower-standards-smoke-20261029
@@ -24,9 +24,4 @@ result_branch: relay/b-moba-tower-standards-smoke-20261029
 复用首轮已过完整smoke功能证据；本次标准件manifest passed，actual models两项candidate且road candidate（fallback不算采用）。同机位两次PNG hash一致，前后source/bundle/stateHash/时间/相机/viewport一致，原始renderer信息完整且class=gpu；非gpu/unknown保结果并停止，不换renderer重跑。所有自己启动浏览器和服务有真实退出回执；清理错误即失败。交回review_ready供dot独审，不自动接收、不宣称品质优于当前或完成有意义二改。
 
 ## 当前结果
-
-- 已在固定源 b768733 上以真实 GPU（完整 Chromium 156.0.8078.4，ANGLE NVIDIA D3D11）完成 standards 拍摄：manifest passed、8 张固定机位 PNG、同 variant 重复字节一致，tower-teal/barracks-teal 与 road 三件均为 candidate，无 fallback；三视角独立审查通过，openIssues 为空（build 单元无 taskDone/pageStuck 项），仅作为加载与固定机位对比证据，需 dot-B 非作者独审接收。
-- 产物：[bed1d2c](https://github.com/dbvv1/MOBA-Like/commit/bed1d2cda5cb2b5b0fe8cf606c658d11e2b723dc)，分支 `relay/b-moba-tower-standards-smoke-20261029`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：dot-B 独立独审并决定是否接收本轮 standards 证据（接收端负责 Git 与任务状态）；本单元范围已无剩余。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+已接收 [bed1d2c](https://github.com/dbvv1/MOBA-Like/commit/bed1d2cda5cb2b5b0fe8cf606c658d11e2b723dc) 的 GPU 加载与双机位8图证据（固定 b768733/tree bc48db5，PNG hash及重复一致；命令退出0、清理无错，单独浏览器退出码未记录）；非作者四图盲判 view1选B、view2选A，揭盲均为baseline：新塔浅色圆柱宝石与兵营绿顶盒子更像占位，道路大片浅色平铺不搭原环境，负责人复看兵营同意此差距。因此否决 b768733 美术候选，不合main、不上网站、不换默认；accepted仅接收拍摄证据，原候选由dot同单元返工，保留原建筑丰富度并统一整层风格，不扩量。本卡拍摄已结束，不要求接收端重跑或改资产。
