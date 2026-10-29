@@ -2,7 +2,7 @@
 id: B-FPS-ART-STANDARDS-SMOKE-20261029
 owner: dot-B
 kind: build
-status: running
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 9a5c02fc6b51c852d567cc0d4d28bf388fc41f4b
 result_branch: relay/b-fps-art-standards-smoke-20261029
@@ -29,5 +29,4 @@ result_branch: relay/b-fps-art-standards-smoke-20261029
 5. 修正“openIssues为空／仅剩六回合与人工验收”：过程缺口之外，墙角/掩体/选定灯具/正常战斗机位、非作者视觉优劣、有意义二改、GPU性能仍待验；初始部署菜单遮挡截图不能验三件品质。本次只修记录，不新增这些拍摄或测试。
 
 ## 当前结果
-- [18d9a1b](https://github.com/dbvv1/FPS-Like/commit/18d9a1bfaaff1c1594e473ac2e98afd06449f9cc) 的第二轮固定源两路功能证据已核实，可供旁置交付技术判断；未将整卡执行合规或三件美术品质判通过。
-- review 返工：仅补历史记录与纠正文案，按修改要求1–5处理；无须且禁止重跑浏览器/GPU/smoke。首次失败留档和两轮之间清理/串行证据未齐，缺失如实未知。
+- 已接收 [4207752](https://github.com/dbvv1/FPS-Like/commit/42077527057dc68ecc561893b13bced2dc7beb2e) 的历史说明返工与第二轮固定源功能证据：13项公开文件hash通过，原功能报告和截图未改；首次manifest已补，原报告/raw字段、端口与完整父链退出、重跑前末段采样缺失仍未知，公开摘要未替代本机原始日志独立复核。accepted仅指上述接收，不代表首次执行合规、跨任务全局GPU串行或画面品质通过；停止边界违背保留，不再要求补不可恢复记录或重跑，完整机位、非作者判优及二改仍待验。
