@@ -39,7 +39,8 @@ class PublicScanTests(unittest.TestCase):
 
   def test_clean_and_placeholder_content_passes(self):
     text = ("Use noreply@anthropic.com, dev@example.com, x@users.noreply.github.com.\n"
-            "Paths: /Users/Shared/Epic Games/, /home/user/repo, C:\\Users\\foo\\x, ~/.claude\n")
+            "Paths: /Users/Shared/Epic Games/, /home/user/repo, C:\\Users\\foo\\x, ~/.claude\n"
+            "Words: task-gpu-exclusive-capture-window, desk-gpu-exclusive-render-lock\n")
     count, findings = self.run_fixture({"a.md": text})
     self.assertEqual((1, []), (count, findings))
 
