@@ -2,7 +2,7 @@
 id: B-THREE-CASE-QUALITY-CAPTURE-20261029
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: d70fd59b59231d7eb7a0dce07d58580c7f9fcb09
 result_branch: relay/b-three-case-quality-capture-20261029
@@ -29,3 +29,11 @@ MOBA四机位gameplay/spawn/first-tower/spawn-to-tower：seed1,march,t10,baselin
 10机位各2张，source/tree与本次fresh构建、输入/状态/图像摘要、同机位重复比较、原始gpu分类齐全；Star含真实独立GPU证据匹配。原生renderer/software/unknown不得改名；任一非gpu或不一致即失败。
 每个子Node真实exit、BrowserServer主进程exit0/null、自有preview closed/refused、精确owner租约释放均有回执；unknown不能写通过。批次总manifest逐例记录passed/failed/not_run、源tree、runId、结果commit与产物hash，总卡通过不能覆盖单例失败。
 可回传失败前已完成的部分结果，但保留failed/not_run和恢复条件，后例不执行；不能复用同目录或另起重试。只有完整20张与全部证据通过才标review_ready；图片仍交dot作目标图和双盲，当前任务不作视觉提升或手感验收。
+
+## 当前结果
+
+- 修复了唯一阻塞 check_repo 的链接缺失（把 origin/main 已发布的同任务卡原样落地，blob 3a13927b，check_repo 554 文件 0 错误），审查无未关闭问题；但本批拍摄仍未开跑——B-SR 42f8404 原调用仍存活、GPU 被 Unity/nshm 占用、私有配置与成功收据缺失、FPS abc139f6 本机缺失，硬前置未过，未生成任何实图、manifest 或虚假通过记录。
+- 产物：[3e32746](https://github.com/dbvv1/a1dbv/commit/3e327461dce9bdc5e10e17e5c5eb77bdf87cd243)，分支 `relay/b-three-case-quality-capture-20261029`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：待 SR 原调用真实结束且自有退出链齐全、无其他 GPU 任务、补齐 private-receiver-config.json/成功收据并让 FPS 固定提交 abc139f6 可见后，在原目录重试本单元拍摄
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
