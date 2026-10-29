@@ -2,7 +2,7 @@
 id: B-FPS-ART-OBSERVER-CAPTURE-20261029
 owner: dot-B
 kind: build
-status: blocked
+status: cancelled
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 723d910e291b1dfac2ed72086cc4adfc0803cf6f
 result_branch: relay/b-fps-art-observer-capture-20261029
@@ -28,9 +28,4 @@ game-quality-pass，最新版 capture.md 与细则 §7；仅既有接收端单�
 只在结果分支 docs/quality/capture/B-FPS-ART-OBSERVER-CAPTURE-20261029/<run-id>/ 发布八张原图、脱敏报告／manifest、完整构建及公开产物 hash、独占和实际退出摘要；失败轮同样保留，原始日志留本地。公开去除绝对路径、用户名、PID、完整 argv、wsEndpoint、nonce、凭据与内部对话，标明脱敏；原始 renderer/vendor/version/unmaskedRenderer/unmaskedVendor 字符串和实际 gpu/software/unknown 分类不改写。不合 main、不部署、不触碰待批目标 PNG。
 
 ## 当前结果
-
-- 八图未生成：本单元按卡判定三项启动硬前置未过（MOBA 原窄补退出证据仍缺、SR 原调用交付时在途、GPU 串行槽须启动时 fresh 复核）且实机缺 11 个依赖，停在 blocked、未产生任何改动。审查仍有 4 项开放问题，均为报告对上游 MOBA status.json 版本（bb6a62c/395687d）与日志时点的表述过时，不改变结论。
-- 本单元没有文件改动。
-- 检查：check_public（文件） 通过；独立审查未通过或未完成。
-- 下一步：等 dot/接收端确认串行槽空闲、核实 MOBA/SR 退出回执并补齐依赖（npm ci --offline）后重新派发，届时 fresh 复核三项前置再一次运行 node tools/capture-art-observers.mjs。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+旧723d910两机位observer逻辑任务已被用户新的三案例品质基线取代：FPS采用 [abc139f6](https://github.com/dbvv1/FPS-Like/commit/abc139f6) 当前5v5三机位（gameplay＋两observer）。取消仅关闭本卡，不启动／安装／重跑旧任务；原 [0493b9ca阻塞记录](https://github.com/dbvv1/a1dbv/commit/0493b9cad3dcf618236017da3866a44df494949a) 保留，接收端报告未运行、无八图并缺11项依赖，但缺项名单及原工具调用／资源状态尚未独立核实，不据源码推猜。cancelled不代表实际进程退出。新批次必须等待Star原调用实际结束／退出，并在启动前fresh核旧723无活动调用、无自有浏览器／preview／父链残留及串行槽空闲；若实际仍活跃，不打断、不重复启动，未知不放行。
