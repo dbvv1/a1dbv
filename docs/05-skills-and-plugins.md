@@ -1,42 +1,32 @@
 # 05 · Agent Skills 与插件
 
-> 核实时间：2026-10-22；同装 Skill 分验补核 2026-10-23；原生预设入口 2026-10-24（UTC+8）。固定版本与未测范围随节标注；历史局部探测与当前模型收益分开，不冒充全页客户端重测。
+> 核实时间：项目采用主依据 2026-10-29；机制原核实 2026-10-22，同装 Skill 2026-10-23、原生预设 2026-10-24（UTC+8）。其余固定版本与验证范围随节标注，本轮未重跑客户端。
 
 <a id="30-秒结论"></a>
 
 ## 先做什么
 
-**第一步先盘点现有资源：资料、模板或生成器够用就沿用；只有缺执行顺序、领域配方或产品质量依据时再试窄 Skill；要共同分发多个组件才打包成插件。** 按实际任务结果保留，不按安装量或市场数量；以上是本仓采用判断，每个小任务不必先建评测框架。当前跨模型净收益仍未知。
+**🟡 按当前任务调用项目已有 Skill，把项目特有的操作配方、领域判断和检查命令一起用上；缺工具能力再补 MCP，插件按其中实际需要的组件选择。** 不必先经历失败才使用合适的配方，也不把所有任务送进同一套流程。具体首步与选择见[该装哪些 Skill 与插件](decisions/skills-and-plugins.md)。这条主路线仍待本仓新读者完成真实任务验收。
 
-| 你的情况 | 做法 | 保留或撤回条件 |
+| 当前需要 | 借用强项目的做法 | 不照搬的部分 |
 |---|---|---|
-| 已有资料、模板或生成器够用 | ✅ 先沿用 | 模型升级后重查原来补的缺口；直接资料已稳定交付时，撤去重复 Skill，不重建同一套流程。 |
-| 缺执行顺序、领域配方或产品质量依据 | 🧪 试窄 Skill：补“为什么这样选、适用范围、反例”，不补通用思考仪式；可机械判断的规则交已有 lint／测试 | 只增加执行步骤而不改善产物时缩减或撤回；新产品标准由人决定。 |
-| 想沿用旧模型的全套读文档、评审和求批准流程 | ⛔ 不默认移给新模型；缩窄触发、按需取资料 | 必要验收、真实授权边界和已证实的领域约束保留。Astra 2026-09 确认，其他模型待各自验证。 |
-| 需要共同分发多个组件 | 🧪 才用插件，按实际工具、Hook、进程与权限核查 | 只需一份资料就不引入整包维护。 |
-| 想判断某个扩展是否值得保留 | ✅ 看实际任务结果，不按安装量 | 比较同题有／无补充的质量、必要行为、等待与人工处理；收益抵不过新增成本就撤回。当前跨模型净收益未知。 |
+| 项目检查、文档同步、迁移或发布准备 | 根指令按任务指向 Skill；正文保存操作顺序、必要引用和真命令 | 别人的审批、发布权限、分支与环境约定 |
+| 产品或领域质量判断 | 保存已接受的选择理由、适用范围、现成组件和已交付实例；机械规则交 lint／测试 | 只有外观描述、缺原项目资源的整包移植 |
+| 多人或多客户端共享 | 将选定 Skill 与资源纳入版本管理；确有分发维护问题再用插件／管理器 | 为单份资料引入额外 Hook、服务或全局流程 |
 
-**依据**：[经验] 本仓 2026-09／10 强模型代际复核（前两条为确认与修订，保留判断为确认）；插件一条为 2026-10 宿主工程默认，非模型效果结论；核实 2026-10-24。
+## 主依据：项目怎样用，而不是装了多少
 
-## 当前最高水平：补决策知识，还是给强模型多加流程？
+- **OpenAI Agents SDK：按改动触发。** [根指令](https://github.com/openai/openai-agents-python/blob/cd26bbbc52847845fde73b9952b51e62e2bcbdc0/AGENTS.md#L25-L34)分别选择策略、审查、检查和知识 Skill；报告任务不进入实施审查。[docs-sync](https://github.com/openai/openai-agents-python/blob/cd26bbbc52847845fde73b9952b51e62e2bcbdc0/.agents/skills/docs-sync/SKILL.md#L12-L59)按请求区分审计与修改，核代码和文档的对应关系，再按改动等级检查。[CI 配置](https://github.com/openai/openai-agents-python/blob/cd26bbbc52847845fde73b9952b51e62e2bcbdc0/.github/workflows/repo-skills.yml)还检查 Skill 自身。
+- **Next.js：深操作知识按需加载。** [编写规范](https://github.com/vercel/next.js/blob/7fd2d0a69534e26cfa10c7c11acc7c8450bf7cd5/.agents/skills/README.md#L5-L17)把任务特定流程与诊断放进 Skill，普遍约束留在根指令。但其 [update-docs](https://github.com/vercel/next.js/blob/7fd2d0a69534e26cfa10c7c11acc7c8450bf7cd5/.agents/skills/update-docs/SKILL.md#L72-L92)要求逐处修改确认；已有实施授权的项目可借文档映射，不继承这套审批。
+- **Sentry JavaScript：项目配方入 Git。** [agents.toml](https://github.com/getsentry/sentry-javascript/blob/b722d3cfde2f4484ff8928bdd166f7afc3cadb25/agents.toml#L1-L19)让协作者取得已提交的 Skill，无需先运行安装器；[框架更新 workflow](https://github.com/getsentry/sentry-javascript/blob/b722d3cfde2f4484ff8928bdd166f7afc3cadb25/.github/workflows/track-framework-updates.yml#L44-L64)已接入具体 Skill、脚本和输出约束。本轮核到工作流配置，未取得其成功运行结果。
 
-**当前最高水平整体未知；近期领先实践是把领域判断、执行检查和流程指导拆开，只补模型真正缺的那一层。** OpenAI Eric Provencher 的 9 月 11 日 Astra 复盘指出，旧的详细配方可能过度约束新模型，描述过宽还会误触发；建议精确触发与最小路由。它讨论模型迁移，并非所有 Skill 的消融实验。
+Vercel 团队的 [product-design](https://vercel.com/blog/teaching-agents-product-design-at-vercel)保存代码里没有的产品决策；[后续实践](https://vercel.com/blog/how-our-agents-build-on-brand-pages-with-design-md)发现，把它直接压成公共提示会丢失组件与实例环境，改用指导、共享 CSS 和产物反馈。值得借的是领域知识与可执行资源的组合，不是“提示越短越好”。
 
-Vercel John Phamous 的 6 月 25 日产品设计实践补代码里没有的产品决策理由：按界面与任务读取依据，机械规则交给 lint，用留出界面和无 Skill 条件检查行为；规则正确与模仿已发版外观分开评分。新产品标准仍由人接受。这是近四个月的团队实践；文中 copywriting-eval 只覆盖文案，不是整套设计流程成绩，模型与完整成本也未披露。
+**真实使用反馈决定触发范围。** [Luca 的 9 月实践](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)推荐 Superpowers 和实际技术栈 Skill，并报告用它们完成 Apple Health 功能；同时清理闲置插件，把直接修改、只做计划和完整流程分开。[V2EX 的 7 月讨论](https://v2ex.com/t/1227194)既有小任务被流程拖慢的自报，也认可详细计划便于交给另一模型实施；同帖还质疑耗时归因，并指出 6.1.1 已简化流程。借用任务分流，不按不同版本的个人耗时给当前插件排序。
 
-**同题比较后，保留“先用现有资料”，修订“窄 Skill”的内容选择：**
+**官方配方仍要核接口。** [Supabase 使用者 #83](https://github.com/supabase/agent-skills/issues/83)转贴引入 Skill 时的 CodeRabbit 审查报告，未见维护者确认；本仓对照固定源码核了驱动选项与约束检查两项，见[收件记录](collaboration/inbox.md)。采用到哪一条，就按实际依赖和任务验证到哪一条。
 
-| 对照路线 | 解决的实际问题 | 本仓取舍 |
-|---|---|---|
-| 版本匹配的文档入口／现有生成器 | 模型不知道当前 API 或已有正确实现 | ✅ 作为可行基线先复用；领域知识可由资料提供，不必包装 Skill。 |
-| Vercel 产品判断 + 窄路由 + 机械检查 | 代码没留下选择理由，界面能跑但决策不对 | 🧪 借领域理由、例外和结果标准；不照搬其全部团队更新流程。 |
-| Astra 去过度指导 | 较旧流程在新模型上增加无关阅读和约束 | ✅ 删除与当前缺口无关的流程；不连带删除领域依据或安全边界。 |
-
-**反例也影响默认。** Vercel 1 月的 Next.js 同题评测曾出现可用 Skill 不触发，而常驻文档索引更可靠。它超过近期窗口，不能用其旧胜率给十月模型排序；但提醒采用者分别检查“没读到”和“读到了仍没做好”，不要把漏触发直接修成所有任务强制加载。
-
-本仓推荐属于**比较后的条件默认**，不是“少装必胜”或“领域 Skill 必胜”。主流参照是知识／脚本打包与按需读取，采纳率未知；当前跨模型、跨产品的质量与总成本最佳组合仍未知，故差距保留 1 而非 0。Agent 负责按任务取资料并实现，人判断产品标准和实际使用结果；若错误来自运行能力缺失，先修环境，文字配方不能替代工具。历史机制证据继续见 §2.5；[本次来源与回执](research/2026-10-13-domain-skill-contract.md#p52技能代际复核)。
-
-**依据**：[一手] OpenAI 9 月 11 日 [Astra 复盘](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、Vercel 6 月 25 日[产品设计实践](https://vercel.com/blog/teaching-agents-product-design-at-vercel)、Vercel 1 月 [Next.js 同题评测](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)；[研究] 迁移判断；[经验] 比较后的条件默认；核实 2026-10-21。
+**依据与范围**：以上为一手项目配置、团队实践及使用者自报，2026-10-29 核实；没有统一的当前模型净收益比较，整体最高水平仍未知。本仓 TanStack、Serena 等窄试用保留在对应节作操作与边界佐证，主推荐的真实读者验收尚待完成。模型迁移的历史证据见[代际复核](research/2026-10-13-domain-skill-contract.md#p52技能代际复核)，不再用它代替项目采用证据。
 
 ## 1. Agent Skills 规范要点
 
@@ -190,6 +180,58 @@ Cloudflare 官方 Durable Objects Skill 指向休眠、状态恢复与测试资�
 开发导出功能时，先找项目已有生成器或目标应用验证过的模板；没有时才🧪试用对应格式／版本的窄参考，并在目标客户端验收实际操作。若只需静态结果，或原生 Agent 加一条资料链接即可稳定交付，就撤回额外 Skill。**局限：文件结构往返不证明客户端功能；历史模型成绩也不证明当前强模型比直接查文档更省时。**
 
 **依据**：[一手] SkillsBench 任务与源码；[研究] 原生对象程序实测；[经验] 本仓库采用判断；核实 2026-10-22。
+
+### 先定位实际依赖，再选文档或源码
+
+**✅ 查实际行为，从调用方追到已解析包、项目补丁和具体模块；查版本用法，再看官方文档或 Context7。** Zed 的 `reqwest` 实际是重命名 fork，Vite 也有依赖 alias／patch，同名版本不能替代实现定位。
+
+在已准备依赖的 opensrc 根目录，用 Bash、Cargo、jq、realpath 沿消费包的普通直接依赖边查询。换项目时改前三项，并给 metadata 带上与构建相同的 feature 参数：
+
+```bash
+set -o pipefail
+manifest=packages/opensrc/cli/Cargo.toml
+dep=reqwest
+target=x86_64-unknown-linux-gnu
+cargo metadata --format-version 1 --locked --offline \
+  --manifest-path "$manifest" --filter-platform "$target" |
+  jq -e --arg manifest "$(realpath "$manifest")" --arg dep "$dep" '
+    . as $m
+    | $m.packages[] | select(.manifest_path == $manifest)
+    | .id as $consumer
+    | $m.resolve.nodes[] | select(.id == $consumer)
+    | .deps[] | select(.name == $dep)
+    | select(any(.dep_kinds[]; .kind == null))
+    | .pkg as $id
+    | $m.packages[] | select(.id == $id)
+    | {name, version, source, manifest_path,
+       lib_src: [.targets[] | select(.kind | index("lib")) | .src_path]}
+  '
+```
+
+读取返回的 `manifest_path`、`lib_src`，沿调用进入实际模块。缺包先补齐锁定依赖；无结果先查消费包与依赖类别。本仓 opensrc 0.7.3 修复中定位到 reqwest 0.12.28，发现 blocking 与异步客户端的同名 `timeout` 签名不同。API 接收仍跑消费包当前 target／feature 的检查；metadata 可能合并其他工作区成员的 feature。
+
+**依据**：[Cargo metadata](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)、[Zed fork](https://github.com/zed-industries/zed/blob/57c7b10ece671185a8863515667ee5248c6f0d53/Cargo.toml#L864-L872)、[Vite alias／patch](https://github.com/vitejs/vite/blob/e954a9cda0b5254be495a937333a0be1b8503d8f/pnpm-workspace.yaml#L13-L22)、[feature 合并反馈](https://github.com/rust-lang/cargo/issues/7754)；[本仓 opensrc 入口](../experiments/opensrc-ref-integrity/README.md)。原核实 2026-10-26，验证范围为离线定位与源码阅读。
+
+### 领域配方：先读安装包，不为一项知识装整套流程
+
+**已有 TanStack Router，要让筛选在详情、返回和分享链接后保留，先读包内 `search-params`。** 在声明 `@tanstack/react-router` 且已安装依赖的应用目录运行；npm／pnpm 均可，无需传递依赖提升到根目录：
+
+```sh
+node --input-type=commonjs <<'NODE'
+const { createRequire } = require('node:module')
+const { dirname, join } = require('node:path')
+const { readFileSync, existsSync } = require('node:fs')
+const router = createRequire(require.resolve('@tanstack/react-router'))
+const core = router.resolve('@tanstack/router-core/package.json')
+const file = join(dirname(core), 'skills/router-core/search-params/SKILL.md')
+console.log('router-core', JSON.parse(readFileSync(core, 'utf8')).version)
+console.log(existsSync(file) ? readFileSync(file, 'utf8') : '该版本未附此 Skill，请查对应版本官方指南。')
+NODE
+```
+
+预期看到实际 core 版本和正文；找不到 Router 先查消费包，包内无 Skill 就回对应版本指南。配方组合 `retainSearchParams` 与 `stripSearchParams`：已应用条件从 URL 读，未提交输入另存草稿，清空时显式给默认值。沿现有路由验详情／返回／清空／历史前进后退／分享恢复；[可复制任务与实现](../experiments/tanstack-url-state/README.md#窄-skill-的复制入口)无需新增 schema 库或全局 hooks。
+
+**依据**：[TanStack 作者 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)，2026-10-28 重核固定源码。本仓 10-23～24 手动加载 core 1.171.39 的配方，在上述示例通过测试、构建与真实 Chrome 操作；Skill 元数据仍标 1.171.15，兼容性按当前源码和测试接收。自动触发与收益对照未测。
 
 ## 3. 插件与市场
 
