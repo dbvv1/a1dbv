@@ -7,6 +7,8 @@ target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 32e2f2cbb9e457c11c9b30373bb970d68527f753
 result_branch: relay/a-storybook-adoption-001
 
+**2026-10-29 投稿收口：本轮不再推进 Maka 上游投稿或追发 #4495 评论，不再等待真人贡献审阅／CLA 决定。** 原组件测试、4 个 fixture play、补丁及审查证据保留；真实后端／Electron 仍未验，不据此升级为完整应用验收或 Storybook MCP 采用。原评论因集成 403 未发出，不重试、不换路；未关闭或改动他人的 issue／PR。
+
 ## 目标与选择
 
 恢复前沿发现，同时把候选放回真实开发：为已有 Storybook 的公开产品交付一个自然未决的 UI 功能，判断「当前组件源码＋按需组件资料＋可执行 stories／交互测试」是否补足原生 Agent 的信息或反馈缺口。不是工具接通演示、正式方法对照，也不为试工具新装整套设施或制造需求。
