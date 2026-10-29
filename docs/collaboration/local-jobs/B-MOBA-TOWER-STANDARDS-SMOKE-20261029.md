@@ -2,7 +2,7 @@
 id: B-MOBA-TOWER-STANDARDS-SMOKE-20261029
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b7687337231df4d275800643472c7f878a885211
 result_branch: relay/b-moba-tower-standards-smoke-20261029
