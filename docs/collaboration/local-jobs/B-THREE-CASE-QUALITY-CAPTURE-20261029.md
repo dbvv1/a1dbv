@@ -38,7 +38,7 @@ MOBA四机位gameplay/spawn/first-tower/spawn-to-tower：seed1,march,t10,baselin
 - 下一步：待 SR 原调用真实结束且自有退出链齐全、无其他 GPU 任务、补齐 private-receiver-config.json/成功收据并让 FPS 固定提交 abc139f6 可见后，在原目录重试本单元拍摄
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
-- 已取消（2026-10-29）：用户决定游戏画面拍摄和浏览器 smoke 全部改在 dot 云端用 headless 浏览器跑（6de4e11a），本机不再续跑；已有结果保留，后续由 dot-B 在云端接续。
+- 已取消（2026-10-29）：用户决定游戏画面拍摄和浏览器 smoke 全部改在 dot 云端用 headless 浏览器跑（6de4e11a），本机不再续跑；已有结果保留，后续由 dot-B 在云端接续。取消标签不是进程退出；下方及此前旧领取／恢复／重试条件不再授权本机执行。在途原调用按原停止条件于安全边界停止后续，仅安全收尾可确证本任务自有资源并回传实际调用／进程／监听退出证据；不杀未知或他人进程、不清不明锁、不新建浏览器或补跑，保留未知退出事实。
 
 ## dot 同单元停止条件反馈（2026-10-29）
 
