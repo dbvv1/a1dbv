@@ -254,6 +254,16 @@ AI 可拆读写与补规则，先定按住式／定时式，人验连锁 boost�
 
 来源：[研究] 两底座与生产取舍见 [WP10 街机车辆](../../docs/research/wp10-motion.md#arcade-vehicles)；未实测。
 
+#### 公路候选：加速上不去，先查阻力吃掉多少抓地
+
+**🧪 把动力、阻力和轮载放在同一力预算里诊断，别只抬最高速度配置。** Star-Rush 的旧模型在 100 km/h 时，线性阻力 `0.18 × v` 已约为 5 m/s²，接近后轴整个静态抓地预算；提高目标速度救不了这处平衡。候选将阻力改为 `0.012u + 0.0007u|u|`，并用上一步实际受力加速度驱动下一步准静态载荷，而非用油门请求冒充加速度。
+
+`RoadVehicleModel.step(p, controls, dt, { powerTires: true })` 保留原道路／碰撞消费者；`p.roadAx/roadAy` 提供前一步反馈，`p.roadLoads` 输出四轮载荷和前后轴容量。纵向转移按 `m·ax·h/L`，横向按 `m·ay·h/track`，各轮非负且合计 `mg`；每轮抓地取归一化载荷的 `0.9` 次幂，轴内分布改变也会影响总抓地，纵横力仍共享抓地圆。`h=0.45m`、轮距 `1.5m` 为游戏假设；无悬挂、轮速滑移和峰后轮胎曲线，不称完整车辆物理。
+
+同一 `tests/fixtures/feel-inputs.json`、同一 `tests/feel-measure.mjs` 仅用 `--power-tires` 切模型：隔离平地 0–100 从 **60 秒未到 → 6.2583 秒**；真实道路客户端为 **6.6083 秒**，道路／接触条件不可混为平地成绩。60 km/h 松油 1 秒末速 **49.5789 → 58.6045 km/h**，但刹车 1 秒末速也从 **25.8417 → 32.0221 km/h**：旧阻力曾帮忙制动，修动力后制动变长，不能宣布全面更好。下一次修改应量刹车／入弯，而非先扩漂移；回归同时核载荷守恒、不同步长、旧模型轨迹和真实道路消费者。
+
+实现起点：[固定 Star 候选的原模型](https://github.com/dbvv1/Star-Rush-Reborn/blob/ac2461ac736d3bbb69a31d973efdf0cf9176adec/road-vehicle-core.js)与[前后实测、量级来源和复跑入口](https://github.com/dbvv1/Star-Rush-Reborn/blob/ac2461ac736d3bbb69a31d973efdf0cf9176adec/docs/feel.md)。`/?handling=power-tires-v1` 选择独立 road-v3 存档／成绩，旧 road-v2 保持。2026-10-29 [源码／CPU 实跑／非作者复核]：待 headless，未主干采用或网站发布；未实测标杆屏幕手感。Unity／UE 移植时沿现有物理力与接触入口，不再叠一份本例平面积分器；引擎移植未验证。
+
 ### 呈现节奏：动作已执行，画面仍不顺
 
 **原生同步先建立基线，帧间隔和响应一起验。** Unity 6.3 桌面先比较 VSync（非零时忽略 targetFrameRate）；Android 用 Optimized Frame Pacing／UE Swappy（UE 5.2 起默认）。UE 排队确为热点才试 low-latency syncing，缩 pipeline 减少长帧余量；掉帧或发黏就退回。
@@ -396,6 +406,22 @@ flowchart LR
 Penny’s Big Breakaway 的 GDC 2025 作者复盘强调动量与动作组合；Celeste64 则把地面低速修正、高速转向、急反向 skid 和空控分别实现。**两者支持“按目标分曲线”，不支持照抄某个加速度或宽限秒数。** Holden 的 2026 模型进一步分离加减速、方向性加速、转向和速度平滑，适合确需更多轮廓的项目；简单线性响应仍是更易解释的起点。
 
 **先画三个尺度：常速停距、反向轨迹、空中可达落点带。** 在无坡、无碰撞、常速 `v`、恒定制动 `b>0` 的理想模型，`停时=v/b`、`停距=v²/(2b)`。例如仅作设计算例：`v=6 m/s`、希望松手后约 `0.6 m` 停住，起算 `b=30 m/s²`、停时 `0.2 s`；这不是最佳手感参数，实际离散步、摩擦或弹簧须重新测。把速度翻倍而不改制动，理想停距变四倍——“加个冲刺”同时改变道路宽度与镜头预判需求。
+
+#### 候选实证：先换运动模型，再分开测规则与呈现
+
+**🧪 松键瞬停不是“低延迟”，滑行也不自动等于好手感。** FPS-Like 的训练赛候选把速度赋值换成 `groundMovement(initial, input, dt)`：先减 `max(speed, stopSpeed) × friction × dt`，再沿期望方向补速度差，最后把位移交给既有碰撞层。`friction=5.2`、`stopSpeed=2.032`、`acceleration=5.5`、跑速 `4.5` 是本作起算值，不是 CS2 实测参数；玩家和机器人共用此入口。
+
+| 同一输入脚本的测项 | 原训练赛 | `ground-v1` 候选 | 能说明什么 |
+|---|---:|---:|---|
+| 松键到停止／继续前行距离 | 首个 60 Hz tick 内／0 | 350 ms／0.612458 世界单位 | 开始保留动量；不是输入到屏幕延迟 |
+| 按反向键到速度首次非正 | — | 116.67 ms，前冲 0.202625 单位 | 反向比自然滑停快；未证明达到商业标杆 |
+| 起步首次达到 4.49 单位/s | 16.67 ms | 566.67 ms | 仍可能偏慢，需继续按同口径比较 |
+
+**仅给 View 插值副本；射击、交互、声音和 HUD 读当前权威模拟状态。** 鼠标事件更新 controls 并排入带朝向的 aim／shoot；每固定步由 `controls.commands` 交 `game.step`，射击不读取渲染相机。 客户端在每次模拟步保存 previous/current，以余量比例调用 `interpolateState(previous, current, alpha)`；位置及角色显示朝向插值，玩家相机仍每渲染帧直接读 `controls.yaw/pitch`。不同回合／阶段、tick 不相邻、死亡或位置跳变超过 1 单位时回当前状态，避免复活／重开拖影。插值可能带来一逻辑步的位置显示滞后，不能当作“降低鼠标延迟”的证据。
+
+**AI 初改容易漏掉依赖速度的旧规则。** 原拆装目标只看“是否按移动键”，换成惯性后松键仍在滑，却能继续交互；修法是在新模型下检查实际速度，而不是缩短滑行来遮错。二改同时测松键滑行拒绝交互、真正停稳可交互、重开清旧快照；开关外原轨迹仍须一致。
+
+实现起点：[固定 FPS 候选](https://github.com/dbvv1/FPS-Like/tree/41b696743f021efa8ddcbc1efd2c9cdf7153ed28/src/candidates/offline-training-v1)的 `sim/movement.ts`、`sim/game.ts`、`render/interpolation.ts`、`client.ts`；[同输入规格与结果](https://github.com/dbvv1/FPS-Like/blob/41b696743f021efa8ddcbc1efd2c9cdf7153ed28/docs/feel.md)。入口是在原离线训练赛参数后加 `feel=ground-v1`，不替换默认模式。2026-10-29 [源码／CPU 实跑／非作者代码复核]：仍待 headless 功能门槛，未合入默认分支或发布网站；屏幕响应、标杆录像、主观手感未验。引擎接入沿下节原 motor，不能把此 Web View 插值复制成第二个写物理 Transform 的系统。
 
 #### 六组参数一起构成控制，而不是一个 smooth 数
 
