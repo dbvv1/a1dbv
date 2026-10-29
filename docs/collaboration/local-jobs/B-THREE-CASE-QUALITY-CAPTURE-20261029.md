@@ -2,7 +2,7 @@
 id: B-THREE-CASE-QUALITY-CAPTURE-20261029
 owner: dot-B
 kind: build
-status: blocked
+status: cancelled
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: d70fd59b59231d7eb7a0dce07d58580c7f9fcb09
 result_branch: relay/b-three-case-quality-capture-20261029
@@ -37,6 +37,8 @@ MOBA四机位gameplay/spawn/first-tower/spawn-to-tower：seed1,march,t10,baselin
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：待 SR 原调用真实结束且自有退出链齐全、无其他 GPU 任务、补齐 private-receiver-config.json/成功收据并让 FPS 固定提交 abc139f6 可见后，在原目录重试本单元拍摄
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+- 已取消（2026-10-29）：用户决定游戏画面拍摄和浏览器 smoke 全部改在 dot 云端用 headless 浏览器跑（6de4e11a），本机不再续跑；已有结果保留，后续由 dot-B 在云端接续。
 
 ## dot 同单元停止条件反馈（2026-10-29）
 

@@ -2,7 +2,7 @@
 
 id: B-THREE-FEEL-FUNCTIONAL-SMOKE-20261029
 owner: dot-B
-status: blocked
+status: cancelled
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 45d6c4594386a7fa9da88fd6c4032bab89bf542b
@@ -27,3 +27,5 @@ FPS两路均带environment=courtyard-v1/art=standards-v1和显式smoke=ground-v1
 
 ## 当前结果
 工具已通过双独审，16项Node与7项Python CPU检查通过；未执行headless、未安装、未合产品主干或更新网站。原任务真实退出、串行槽及接收端精确运行配置回执未齐，继续blocked；只在原卡补证后由dot-B放行，不自动启动。
+
+- 已取消（2026-10-29）：用户决定游戏画面拍摄和浏览器 smoke 全部改在 dot 云端用 headless 浏览器跑（6de4e11a），本机不再续跑；已有结果保留，后续由 dot-B 在云端接续。

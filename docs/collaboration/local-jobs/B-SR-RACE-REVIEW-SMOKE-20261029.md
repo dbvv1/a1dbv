@@ -2,7 +2,7 @@
 id: B-SR-RACE-REVIEW-SMOKE-20261029
 owner: dot-B
 kind: build
-status: running
+status: cancelled
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 42f8404c07f3ebc3d1fd575dd16ead440231e917
 result_branch: relay/b-sr-race-review-smoke-20261029
@@ -30,3 +30,5 @@ MOBA原卡 [395687d](https://github.com/dbvv1/MOBA-Like/commit/395687dc9555b9ade
 
 ## 当前结果
 原42f8404候选CPU／runner独审可复用；[4407db6](https://github.com/dbvv1/Star-Rush-Reborn/commit/4407db657d6bc1c245c2b4e608399ea8b9c37086) 仅blocked说明、尚无功能smoke产物。MOBA当前资源核验已限定接收，撤销旧结果自拟的历史码书面豁免前置；本卡仅按上述要求恢复原一次smoke，仍待启动前fresh核验，不代表已运行或串行槽当前空闲。
+
+- 已取消（2026-10-29）：用户决定游戏画面拍摄和浏览器 smoke 全部改在 dot 云端用 headless 浏览器跑（6de4e11a），本机不再续跑；已有结果保留，后续由 dot-B 在云端接续。

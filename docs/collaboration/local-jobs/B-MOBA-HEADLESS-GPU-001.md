@@ -2,7 +2,7 @@
 id: B-MOBA-HEADLESS-GPU-001
 owner: dot-B
 kind: build
-status: blocked
+status: cancelled
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 069b74bc410eec318a1effb0a05a7acc619b5bcc
 result_branch: relay/b-moba-headless-gpu-001
@@ -47,3 +47,5 @@ a1dbv 只回写本卡状态／当前结果；不改 TASKS、其他任务、游�
 - 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
 - 下一步：先修正 result.md 第114、151行对预检 #1/#2 锁证据的区分；再另派代码卡修复逐文档初始化/绘制顺序并核对 stateHash 基线后按原命令重跑拍摄。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+- 已取消（2026-10-29）：用户决定游戏画面拍摄和浏览器 smoke 全部改在 dot 云端用 headless 浏览器跑（6de4e11a），本机不再续跑；已有结果保留，后续由 dot-B 在云端接续。
