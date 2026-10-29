@@ -6,8 +6,8 @@
 
 > 只放带完成条件的临时纠偏，最多三条，做完即删，dot 不改；方向与优先级在长期提示词（手册§6）。
 
-- **B**：三个案例各在 `docs/quality.md` 开头建[质量记分卡](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/quality-bar.md)：画面每个命名机位的目标图与首轮盲评分、手感规格表与首轮实测、当前阶段内容清单与覆盖率；之后按细则§6 第 3 条只追记分卡最大差距。三张记分卡都建好后删除本行。
-- **B**：画面与 smoke 都在 dot 云电脑里跑（10-29 用户：不占本机）：先让云电脑 headless Chromium 软件渲染跑通一次截图（10-29 dot-A 实测启动即报环境错误，见[探索证据](../research/2026-10-15-exploration-evidence.md)“社区入口实测 2026-10-29”；先修环境，A／B 谁先修好在 TASKS 写一行，不重复修；不开可见浏览器，被平台拒绝则只停此动作并记入“需要用户决定”），再每案一条命令出同机位图，补齐目标图与首轮盲评；再按 [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)§3 第 1 层逐案核材质受光路径做灯光层旁置候选（三案缺环境光照、AO 与调色，FPS 另缺色调映射与投射阴影）。本机已排的截图与 smoke 卡不再续跑；浏览器修好前，候选按单元测试与无画面模拟先过门槛、浏览器 smoke 补跑后再旁置发布。Star 按 10-29 用户决定把 brief 改为风格化，重做目标图并重核记分卡。三案出图命令可用、灯光候选双盲结果已记、Star brief 已改后删除本行。
+- **B**：手感三项不依赖浏览器，立即做成候选：FPS 训练赛移动换成加速度＋摩擦并补渲染插值；MOBA 前摇与施法中的下一条指令排队、结束当帧执行；Star 轮胎侧滑曲线补峰后下降与载荷转移，并先定动力范围的测法。过单元测试、无画面模拟与云端浏览器 smoke 后旁置发布。三项候选已发布，且同一输入脚本的前后值已写进各案 feel.md 与记分卡（FPS 滑停／反向／插值；MOBA 施法中的下一技能在结束当 tick 执行；Star 侧滑曲线）后删除本行；是否落进范围由记分卡继续追。
+- **B**：画面与 smoke 在 dot 云电脑跑，不占本机。云 headless Chromium 因容器不支持其沙箱而崩溃：用户 10-30 允许加 `--no-sandbox`，只用于打开三个案例的页面（本地预览与案例网站）做截图和 smoke，不访问其他网站，dot 平台外层沙箱不动。跑通以非空 WebGL2 软件图、记下启动参数与 renderer、进程正常退出为准；加参数后仍失败，只停此动作并把报错写回“需要用户决定”。跑通后每案一条命令出同机位图，补齐目标图与首轮盲评，再按 [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)§3 第 1 层逐案核受光路径做灯光层旁置候选（三案缺环境光照、AO 与调色，FPS 另缺色调映射与投射阴影）。三案出图命令可用、灯光候选双盲结果已记后删除本行。
 - **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
 
 ## 分工
@@ -48,7 +48,6 @@
 
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
-| 云headless | EPERM(-6)／bwrap失败；Chromium154因沙箱配置SIGABRT(-6)，非重装可修；无图/WebGL2。Firefox未装无候选，拒读未绕过、可见路线停。待平台支持sandbox，非空WebGL2软件图＋退出实证恢复；不关sandbox/加unsafe/转本机；不需再授权，恢复未知 | CPU/模拟/brief照常；smoke后发布 |
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
 | Serena／testmon 上游贡献 | 待对应可写 fork；Serena CLA 须本人决定 | 已审补丁：[Serena #2218](../../experiments/serena-vue-implementation/README.md)、[testmon #270](../../experiments/testmon-outer-coverage/README.md) |
 
