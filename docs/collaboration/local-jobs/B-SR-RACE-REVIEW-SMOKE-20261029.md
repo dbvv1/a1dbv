@@ -2,7 +2,7 @@
 id: B-SR-RACE-REVIEW-SMOKE-20261029
 owner: dot-B
 kind: build
-status: blocked
+status: revision_requested
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 42f8404c07f3ebc3d1fd575dd16ead440231e917
 result_branch: relay/b-sr-race-review-smoke-20261029
@@ -25,10 +25,8 @@ backlog覆盖默认、road、legacy、Rapier与旧capture入口；focused覆盖�
 两脚本passed且无错误、预期流程断言全部通过；manifest包含固定HEAD/tree/clean、完整构建hash和全部公开产物hash，前后source与产物不变。保默认／legacy隔离和真实复盘数据证据，不把只有页面打开称验收通过。
 每条原调用分别保 Node、外层 wrapper 实际开始/结束/退出码，DEBUG=pw:browser原日志在本地；回所属browser PID实际退出、预览端口拒绝连接及自有父链退出事实。首脚本清理完成后才能起第二脚本；最终核本轮自有链消失，没测写未知，不能以Git状态替代。任何失败/超时保独占目录manifest与原报告，只关确定本轮归属资源，不扩大清理。未试玩听感、GPU画面优劣、驾驶手感与其他赛道浏览器全流程仍待验。
 
-## 当前结果
+## 修改要求（同单元恢复，不重复已完成工作）
+MOBA原卡 [395687d](https://github.com/dbvv1/MOBA-Like/commit/395687dc9555b9ade03915ff693b1c3085e569bb) 当前全量资源核验已限定接收；历史缺码／第三renderer未知／额外重跑与删产物事实保留，不要求历史豁免或重做历史核验。原 [4407db6](https://github.com/dbvv1/Star-Rush-Reborn/commit/4407db657d6bc1c245c2b4e608399ea8b9c37086) 仅启动前blocked报告，未执行smoke。现仅恢复原固定42f8404/tree5386d5c单元的一次既定 backlog→review 两脚本，CPU及原独审复用，所有原安全／失败停止／产物保留门槛不变。启动前须重新fresh核原调用身份／实际状态与当前自有进程、父链、动态preview监听及接收端串行槽；未知blocked不启，不把06:08快照当现在空闲。若同单元实际已活跃则读取进展不重启。首脚本实际退出后才起第二脚本，本Star全部实际退出后FPS才可fresh核后执行；不新卡、不新调度、不复跑MOBA或追补历史exitCode。
 
-- 本单元未起 smoke：前序 MOBA 遗留的三次 bot snapshot 调用缺浏览器退出回执、两个 head.exe 退出时刻与码未知且其中一个父链未核实，MOBA 窄返工仍在途、串行槽空闲无法证实，故按卡写 blocked 报告（审查无开放问题）。恢复条件：接收端书面接受这些缺失退出/父链事实或取得真实回执，待 MOBA 返工结束并核实串行槽空闲后，用新 run-id 先跑 backlog 再跑 review。
-- 产物：[4407db6](https://github.com/dbvv1/Star-Rush-Reborn/commit/4407db657d6bc1c245c2b4e608399ea8b9c37086)，分支 `relay/b-sr-race-review-smoke-20261029`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端处理上述 release condition 后，以新 run-id 重跑本单元：先 node tests/backlog-smoke.mjs <run-dir>/backlog，确认浏览器/预览链退出后再跑 node tests/race-review-smoke.mjs <run-dir>/review
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+## 当前结果
+原42f8404候选CPU／runner独审可复用；[4407db6](https://github.com/dbvv1/Star-Rush-Reborn/commit/4407db657d6bc1c245c2b4e608399ea8b9c37086) 仅blocked说明、尚无功能smoke产物。MOBA当前资源核验已限定接收，撤销旧结果自拟的历史码书面豁免前置；本卡仅按上述要求恢复原一次smoke，仍待启动前fresh核验，不代表已运行或串行槽当前空闲。
