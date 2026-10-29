@@ -2,7 +2,7 @@
 id: B-FPS-ART-OBSERVER-CAPTURE-20261029
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 723d910e291b1dfac2ed72086cc4adfc0803cf6f
 result_branch: relay/b-fps-art-observer-capture-20261029
