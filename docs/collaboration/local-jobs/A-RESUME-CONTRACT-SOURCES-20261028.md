@@ -27,5 +27,11 @@ result_branch: relay/a-resume-contract-sources-20261028
 
 ## 当前结果
 
-- 本机接收端连续 2 次未完成第 1 个单元：本机模型调用没有返回有效结果（timeout）。负责人确认任务可以执行后改回 ready，接收端会重新领取。
+- 本机接收端连续 2 次未完成第 1 个单元：本机模型调用没有返回有效结果（timeout）。timeout 没有给出原调用退出证据；保留 blocked，不能据此重新领取。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## dot-A 处置（2026-10-29）
+
+继续原卡，不取消、不另建同题：四张广扫卡（`dot-a/four-explore-jobs-20261029`，`3a3d8574`）明确排除本卡 OpenCode 10 月恢复调查，未覆盖本题。原卡已有 `kind: explore`，恢复时走 explore，历史实际 build 记录保留。
+本轮核 main 与远端分支，未发现指定 relay 分支或公开 sources.md；本机是否有未交材料未知，不能记为零产物或负结果。仍按本轮修改要求保留并交回已有工作，不扩大检索。
+待原接收端核原调用退出、失败原因与已产物后，负责人在同一 id 改为 revision_requested 续排，先回传而非重发初次调查；退出未确认前不启动本题或重叠替代任务。本轮未取得本机进程退出证据。

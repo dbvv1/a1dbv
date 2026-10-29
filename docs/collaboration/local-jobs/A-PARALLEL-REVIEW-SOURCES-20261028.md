@@ -39,5 +39,11 @@ result_branch: relay/a-parallel-review-sources-20261028
 
 ## 当前结果
 
-- 本机接收端连续 2 次未完成第 2 个单元：本机模型调用没有返回有效结果（termination_unconfirmed）。负责人确认任务可以执行后改回 ready，接收端会重新领取。
+- 本机接收端连续 2 次未完成第 2 个单元：本机模型调用没有返回有效结果（termination_unconfirmed）。停止尚未确认；保留 blocked，不以超时、状态或无新增提交推断进程退出。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## dot-A 处置（2026-10-29）
+
+继续原卡，不取消、不另建同题：已发布的四张广扫卡（`dot-a/four-explore-jobs-20261029`，`3a3d8574`）明确排除本卡固定讨论链，未覆盖本题。原卡已有 `kind: explore`，恢复时必须走 explore，历史实际 build 记录保留。
+已交第 1 单元 [sources.md](https://github.com/dbvv1/a1dbv/blob/cadc4db2/docs/collaboration/local-jobs/artifacts/A-PARALLEL-REVIEW-SOURCES-20261028/sources.md) 保留在原 relay 分支；它是候选排序，含未复核评论及效果未知，尚未接收为推荐。第 2 单元失败不能抹去第 1 单元成果。
+待原接收端核原调用退出与已产物后，负责人在同一 id 改为 revision_requested 续排；只接收／修订上述产物的可核结论与缺口，不重搜 42 项候选、不重发首轮。退出未确认前不启动本题或其重叠替代任务；本轮只核 Git，没有取得本机进程退出证据。
