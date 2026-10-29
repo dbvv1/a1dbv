@@ -11,7 +11,7 @@ result_branch: relay/b-fps-art-observer-capture-20261029
 为现有三件美术同一单元补齐两个明确标记 observer 固定机位的真实 GPU 原图对照；art off/on 各独立重复两次，共八张。不是新美术二改、手感/玩家可达性或品质结项。
 
 ## 按哪个 Skill／规格
-game-quality-pass，最新版 capture.md 与细则 §7；仅既有接收端单个 headless 浏览器任务，启动硬前置依次为：① B-MOBA-COMMAND-ENVELOPE-SMOKE-20261029 原窄补完成，原 smoke 与额外 bot snapshot 观察调用、全部自有浏览器／preview／父链实际退出已核，旧 head.exe 归属已核且自有残留正常退出；② B-SR-RACE-REVIEW-SMOKE-20261029 这一次原调用完成，其全部自有 Node／浏览器／preview／父链已真实退出；③ 接收端实际 GPU 串行槽空闲。本卡 ready 只表示排队，任一前置未知即 blocked、不启动；Star ready／claimed／running／accepted、Git、锁、超时或未回结果都不是完成／退出证据。不清锁、不杀未知或他人进程、不重跑 MOBA 或 Star，不并发浏览器任务，不恢复旧 cancelled 观察卡。不得桌面/可见窗口/键鼠。失败、非 GPU、未知 renderer 立即停，不换浏览器或试别的通道。
+game-quality-pass，最新版 capture.md 与细则 §7；仅既有接收端单个 headless 浏览器任务。启动硬前置依次为：① MOBA原卡一次当前全量只读核验实际证明原及额外观察／fullsmoke调用settled，按精确PID＋创建时点／父链核全部自有Node／浏览器／动态preview监听及已归属两head当前不存在；② B-SR-RACE-REVIEW-SMOKE-20261029 原调用实际结束且全部自有资源退出；③ 本FPS启动前fresh复核串行槽空闲。历史三观察及两head退出码保持unknown、第三renderer unknown、额外重跑／删产物不合规，不要求补不存在的历史码、不采纳来源自拟书面豁免。排队／认领不是容量，任何当前前置未知即blocked、不启动；标签／Git／锁／超时不代表退出。不清锁、不杀未知或他人进程、不重跑MOBA或Star、不并发浏览器、不恢复旧cancelled卡；不得桌面／可见窗口／OS键鼠。失败、非GPU或renderer未知立即停，不换浏览器／通道。
 
 首次启动前的浏览器选择（2026-10-29 固定，仅排队未运行）：
 - 已核 runner 源码 tools/capture-art-observers-worker.mjs 第 22 行支持 FPS_CAPTURE_CHROMIUM → launch.executablePath，外层 runner 通过继承 env 传入 worker。首次启动就必须设置该环境变量，禁止留空走 channel=chromium 默认 headless-shell。
@@ -28,4 +28,4 @@ game-quality-pass，最新版 capture.md 与细则 §7；仅既有接收端单�
 只在结果分支 docs/quality/capture/B-FPS-ART-OBSERVER-CAPTURE-20261029/<run-id>/ 发布八张原图、脱敏报告／manifest、完整构建及公开产物 hash、独占和实际退出摘要；失败轮同样保留，原始日志留本地。公开去除绝对路径、用户名、PID、完整 argv、wsEndpoint、nonce、凭据与内部对话，标明脱敏；原始 renderer/vendor/version/unmaskedRenderer/unmaskedVendor 字符串和实际 gpu/software/unknown 分类不改写。不合 main、不部署、不触碰待批目标 PNG。
 
 ## 当前结果
-固定候选 [723d910](https://github.com/dbvv1/FPS-Like/commit/723d910e291b1dfac2ed72086cc4adfc0803cf6f) 已有 CPU／独审证据；仅排队，八图未运行。先等 MOBA 原窄补与 Star 原调用的实际退出证据，再核真实串行空闲；未知即 blocked，完成后交回 review_ready 供 dot 判定，不自行作视觉验收。
+固定候选 [723d910](https://github.com/dbvv1/FPS-Like/commit/723d910e291b1dfac2ed72086cc4adfc0803cf6f) 已有 CPU／独审证据；仅排队，八图未运行。先等MOBA本次全量只读当前核验实际满足、Star原调用实际退出，再于启动前fresh核真实串行空闲；未知即 blocked，完成后交回 review_ready 供 dot 判定，不自行作视觉验收。

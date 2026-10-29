@@ -2,7 +2,7 @@
 id: B-MOBA-COMMAND-ENVELOPE-SMOKE-20261029
 owner: dot-B
 kind: build
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 9777b84044e19dd297be1675195cfe41d0152159
 result_branch: relay/b-moba-command-envelope-smoke-20261029
@@ -33,15 +33,10 @@ result_branch: relay/b-moba-command-envelope-smoke-20261029
 - 完成只交回 review_ready 由 dot 接收，不自行判视觉品质通过；候选合 main、网站更新由 dot 后续核验后执行。
 
 ## 修改要求（本轮唯一执行范围，替代上文初次运行步骤）
-只核原记录并补退出／清理说明，不重跑任何 smoke／CPU／GPU，不补拍，不启动新浏览器或预览服务，不改源码、构建、截图或原功能断言。原始证据全部保留，不用新执行覆盖历史。
-1. 读取原额外 bot snapshot 观察调用日志，补调用标识、实际开始／结束、浏览器／预览／父链及退出事实、与原 smoke 的串行关系；公开仅脱敏摘要，不公开原始日志、路径、PID。14.467单位推进属于另次只读观察，不是原 run.mjs 断言；不得把原 smoke 的退出事实套给额外调用。
-2. 核原 head.exe 的创建时点、所属命令、父链与任务归属：是 tower 旧管道、自本轮派生还是无关已有进程。仅在确认是本执行端自有残留且身份仍一致后正常清理，并保存真实退出回执；不清锁、不杀未知或他人进程。归属／退出无法证实就明确未知，不以“不占GPU”代替全部清理事实，不为缺失日志重跑。
-3. 原固定9777功能 smoke及37包hash匹配可独立用于代码／网站交付；本次缺口只阻塞后续本机串行调度，不宣告整卡合规。只更新本结果分支原证据目录的历史／退出说明及必要hash索引、原卡当前结果，交回review_ready供限定接收。
+只做一次当前全量只读状态核验，不重跑CPU／smoke／GPU，不补拍，不开新浏览器或预览，不杀进程、不清锁，不重复追索不可恢复的历史退出码。核验进程所需只读命令不属于重新执行游戏任务。
+以原始本地记录的精确PID＋创建时点核身份，覆盖已知父链／后代、三次额外观察脚本Node、原及额外fullsmoke、所有相关浏览器、preview服务和动态监听端口；并核原调用、子代理和后台工具实际结束／settled，当前无其他接收端浏览器／GPU任务，不能只查固定端口或进程名称。保存本轮实际时间、逐项检查与脱敏结论，原始身份／路径／日志仅本地留存。任何归属、调用状态或当前残留未知即blocked，不执行后续任务。
+三观察浏览器退出码和两head历史退出码保持unknown；第三观察实际renderer为unknown，不沿用前两次software。review阶段额外fullsmoke重跑不符合原单次范围且临时产物已删除，历史事实和不合规记录永久保留。当前无残留的证据不倒推历史exitCode，不豁免历史行为，不采纳来源自拟“书面接受缺码”作为授权。
+若本次实际记录证明所有相关调用已settled、自有资源不存在且串行槽空闲，可按现有授权继续已排Star原单元；Star启动前仍须fresh复核，Star实际结束／退出后才可接已排FPS，FPS启动前也须fresh复核。不得自动宣称现在已空闲。只更新本结果分支历史／当前核验说明和必要hash索引及本卡结果，不改源码、原九文件、TASKS或其他产物，不新建单元；交回review_ready。
 
 ## 当前结果
-
-- 已按修订范围补齐历史与退出说明：新增 history-exit-notes.json（19192 B，sha256 329a947c…），更新 status.json 的 result、serialScheduling、historyAndExit 与 addenda；原九文件 run 目录逐字节未变，9/9 hash 复核一致，审查未关闭问题为空（openIssues 无）；本单元为文档修订、非照做实测，taskDone/pageStuck 不适用，候选收集不涉及。
-- 产物：[bb6a62c](https://github.com/dbvv1/MOBA-Like/commit/bb6a62c5431416d53fc3ccb466221cd93688023c)，分支 `relay/b-moba-command-envelope-smoke-20261029`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：交回 review_ready 供 dot 限定接收；后续本机串行 smoke 须先满足 releaseCondition（接收方书面接受缺失的浏览器退出回执，或取得真实退出回执），点时刻 census 不算退出回执。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+已接收 [bb6a62c](https://github.com/dbvv1/MOBA-Like/commit/bb6a62c5431416d53fc3ccb466221cd93688023c) 的限定历史补证，原九文件未改、补证hash通过；固定9777功能与37包已验范围仍有效。两head归属tower旧管道，04:39:43已无，但三观察及两head历史退出码未知；额外review重跑及删除临时产物不合原单次／保全范围，第三观察renderer未知。当前材料不足以断言全部自有资源已无：04:39只核head、browser／端口核验停在04:13。仅退回上述一次当前全量只读核验，不重跑，不以历史不可恢复码无限阻塞；核验真实满足后按Star→FPS串行，尚未放行实际启动。
