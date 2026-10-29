@@ -246,7 +246,11 @@ Unity RC 4.2.5／runtime 4.0.4 的接线是：初始化时选环境，登录已�
 
 改成更即时的手感时评估现成预测／回滚栈及可恢复状态，不只把等待删除。浏览器接入换成匹配项目的传输适配，保留帧与状态合同；Node TCP 不直接成为浏览器 API。
 
-实际结果与范围：[WP10 同例](../../docs/research/wp10-content.md#server-input-frames)。代码／导航固定源：[MOBA Simulation](https://github.com/dbvv1/MOBA-Like/tree/3bcda00fb35361cc5a25ee74e3768a2f3678c563/src/sim)，2026-10-26；不修改其当前非联网里程碑，也不称可玩客户端已经采用。
+实际结果与范围：[WP10 同例](../../docs/research/wp10-content.md#server-input-frames)。上述 TCP 两端实验仍固定 [MOBA `3bcda00f`](https://github.com/dbvv1/MOBA-Like/tree/3bcda00fb35361cc5a25ee74e3768a2f3678c563/src/sim)，不代表浏览器已经联网。
+
+**✅ 本地命令接缝已进入可玩案例。** [MOBA 主线采用](https://github.com/dbvv1/MOBA-Like/commit/8ade2d1012370692de31f3883a85338171dbcab3)把旁置试玩 `candidate.html` 的玩家与机器人输入送入同一个 `Simulation.commandFrame` → `sim.step`：模拟层按队伍／阵容分配稳定席位，信封包含目标 `tick` 与各席 `commands`，按席位升序消费，保留席内操作次序，空席也显式提交空数组。乱序到达不改变结果；同批同席相同输入只消费一次，冲突／缺席／错席／旧帧／未来帧在推进前拒绝。它不复用上述 TCP 实验的跨帧重送 ledger。
+
+`npm run sim` 的完整局与回放哈希一致，原 `formatVersion: 1/2` 存档可恢复并续演；新回放标记 `stable-seats-v1`，旧无标记回放仍按原输入顺序重演（2026-10-29 [源码／离线实跑]）。冻结的默认入口 `default-src` 尚未采用；这次接入的是旁置可玩版本的本地输入合同，不是 TCP 服务端、双端浏览器、Unity／Unreal 或公网联机。
 
 ## 5. 给 AI 的实施材料与验收
 
