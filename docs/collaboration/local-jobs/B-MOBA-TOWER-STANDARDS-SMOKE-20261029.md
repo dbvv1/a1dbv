@@ -2,7 +2,7 @@
 id: B-MOBA-TOWER-STANDARDS-SMOKE-20261029
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b7687337231df4d275800643472c7f878a885211
 result_branch: relay/b-moba-tower-standards-smoke-20261029
@@ -23,4 +23,9 @@ result_branch: relay/b-moba-tower-standards-smoke-20261029
 完整smoke通过，标准件manifest passed，actual models两项candidate且road candidate（fallback不算采用）。同机位两次PNG hash一致，前后source/bundle/stateHash/时间/相机/viewport一致，原始renderer信息完整且class=gpu；非gpu/unknown保结果并停止，不换renderer重跑。所有自己启动浏览器和服务有真实退出回执；清理错误即失败。交回review_ready供dot独审，不自动接收、不宣称品质优于当前或完成有意义二改。
 
 ## 当前结果
-待领取，未执行；实际串行预检尚未知，由既有接收端按上述要求核实后才能启动。
+
+- 固定源 b768733 上完整 smoke 功能通过并已留下脱敏证据，但本机 WebGL 原始 renderer 为 SwiftShader（class=software），按任务规则停在 GPU 门槛、未进 standards 拍摄，8 张同机位 PNG 与 standards manifest 未产出；审查无未关闭问题。恢复条件：在 class=gpu 的 headless GPU 配置上以同一固定 SHA 重跑 smoke 与 standards 两条命令。
+- 产物：[2f24dab](https://github.com/dbvv1/MOBA-Like/commit/2f24dabee5279df798a079e3501b134f5311fd95)，分支 `relay/b-moba-tower-standards-smoke-20261029`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：在原始 renderer 为硬件 GPU（class=gpu）的无头 GPU 环境，用固定 SHA b768733/tree bc48db5 重跑 MOBA_SMOKE_RENDERER=gpu smoke 与 capture 构建后的 standards.mjs，补两个独占输出目录、manifest 与 8 张 PNG
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
