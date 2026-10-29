@@ -2,7 +2,7 @@
 id: B-MOBA-COMMAND-ENVELOPE-SMOKE-20261029
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 9777b84044e19dd297be1675195cfe41d0152159
 result_branch: relay/b-moba-command-envelope-smoke-20261029
@@ -33,4 +33,9 @@ result_branch: relay/b-moba-command-envelope-smoke-20261029
 - 完成只交回 review_ready 由 dot 接收，不自行判视觉品质通过；候选合 main、网站更新由 dot 后续核验后执行。
 
 ## 当前结果
-待领取，未运行。固定候选 SHA/tree 已读回；原 tower 拍摄实际退出及上述串行条件是启动前置，未知即 blocked、不启动；本卡排队不代表放行并发或实际执行。
+
+- 固定候选 9777b84/8b3a239 的软件渲染功能 smoke 全通过：默认入口仍 v10 且 tick 12→18，v11 玩家移动/停止、Q/E 施法、bot 真实推进 14.467 单位（只读快照观测，非 run.mjs 直接断言）、改键、Save→reload→Continue（27→37）、diffuse 入口均通过，console/page/http/request 与 cleanupErrors 全空，浏览器 exit 0、预览已关闭；审查 openIssues 为空，taskDone=true，页面卡点不适用，证据状态 review_ready，另有一个不占浏览器/预览/串行槽的惰性 Git head.exe 残留已记录。
+- 产物：[03df8ad](https://github.com/dbvv1/MOBA-Like/commit/03df8ad09cfc9ab189c687a041b4c3afd080859b)，分支 `relay/b-moba-command-envelope-smoke-20261029`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：交 dot-B 接收核验后决定是否合入 main 与更新网站；本机未提交、未推送、未切分支。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
