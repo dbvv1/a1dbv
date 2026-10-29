@@ -1,6 +1,6 @@
 id: A-CONTEXT-PAGE-CONTRACT-READER-20261029
 owner: dot-A
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5847ea532dbf7437ca8c4865af031ce0d862a153
 result_branch: relay/a-context-page-contract-reader-20261029
