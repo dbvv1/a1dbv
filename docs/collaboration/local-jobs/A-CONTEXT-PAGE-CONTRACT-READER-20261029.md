@@ -32,8 +32,8 @@ page: docs/decisions/context-management.md@dot-a/context-concise-reader-20261029
 
 ## 当前结果
 
-- 读者按页面方法完成了仓库侧静态验收：确认接收端附入全文与 page 固定版本 d0b9651b 的页面对象逐字节一致，复跑 9 项单测与 check_repo 通过（562 文件、0 错误），11 条合成探针按预期复现；但 taskDone=false——任务写域要求的 artifacts/A-CONTEXT-PAGE-CONTRACT-READER-20261029/result.md 未新建或更新，只留下未跟踪的 reader-tests 记录。页面卡点是页面第 7 行“沿实现与检查补足信息”未给出“附入全文 vs page 固定 ref”的 ref→commit 解析与摘要对照步骤；仍有 7 条未关闭审查问题（记录误称任务卡当前结果含 d0b9651b、卡点行号 76 应为 78、检查点缺最新约束与禁改范围、未说明分支 ref 可变，只有 40 位提交固定、卡点放在 reader-tests 而非 result.md、卡点 1 非独立发现、未记录读者独立性前提）。
-- 产物：[51d4dbd](https://github.com/dbvv1/a1dbv/commit/51d4dbd8a26db193978ddb69ac134004a719eacb)，分支 `relay/a-context-page-contract-reader-20261029`。
+- 读者按页面完成六条验收：附入全文与 page 固定提交 d0b9651b 逐字节一致，9 项单测与 check_repo（0 错误）复跑通过，最小合成卡实跑未入队，默认 main、固定 ref、缺失目标边界已核（缺失目标接收端行为未知）；页面卡点在第 7 行缺『附入全文 vs ref』核对方法、第 10–13 行示例难直接迁移、第 66–74 行检查点未区分 base_ref 与 HEAD。仍有 6 条未关闭审查问题：result.md 结论漏 TASKS.md ≤10KB 检查、562/563 计数未按最终状态更新、未补记首次 FileNotFoundError 与重试、base_ref／HEAD 歧义卡点未写进 result.md、开头受检版本仍写错、附入字节切片措辞不精确。
+- 产物：[5087a91](https://github.com/dbvv1/a1dbv/commit/5087a91180b06f6af505261d4eea8bbba88952b0)，分支 `relay/a-context-page-contract-reader-20261029`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：按任务卡“下一步”修 docs/collaboration/local-jobs/artifacts/A-CONTEXT-PAGE-CONTRACT-READER-20261029/result.md：补记首次 FileNotFoundError 与重试、卡点改用页面行号并写入 result.md、补 TASKS.md 超 10KB 检查、澄清 page@提交 与 blob/sha256 的区别，并处理上述 7 条审查问题；改后复跑 check_repo.py 与 test_check_repo.py，同时决定未跟踪的 reader-tests 记录是否保留。
+- 下一步：修正 result.md 上述 6 条：补 TASKS.md 10KB、最终 563 计数、FileNotFoundError 与重试记录、把 base_ref/HEAD 卡点写入 result.md、更正开头受检版本与字节切片措辞，然后复跑 check_repo.py 与 test_check_repo.py
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
