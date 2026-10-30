@@ -1,7 +1,7 @@
 # A-INSTRUCTION-DIRECTORY-ENTRY-20261030 · 把共享指令的跨目录入口讲清
 id: A-INSTRUCTION-DIRECTORY-ENTRY-20261030
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8f01eeee1f931cfd48390658906a42cc5148e084
@@ -33,8 +33,4 @@ result_branch: relay/a-instruction-directory-entry-20261030
 
 ## 当前结果
 
-- 在 docs/decisions/instruction-files.md 第二步落实单包新任务、Codex 根会话跨兄弟包、Claude 附加仓库三行分流与可复制启动示例，并写 result.md；经三视角审查修正 1 轮，openIssues 为空，check_repo/check_public/git diff --check 均 exit 0。
-- 产物：[baa9252](https://github.com/dbvv1/a1dbv/commit/baa9252202aa933cf73cb9b129d0453ce1dd1e05)，分支 `relay/a-instruction-directory-entry-20261030`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：无剩余工作；接收端按任务要求审查并发布 result_branch。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+接收 [baa9252](https://github.com/dbvv1/a1dbv/commit/baa9252202aa933cf73cb9b129d0453ce1dd1e05) 的三类目录入口修补，并明确 Bash／Zsh、占位路径和外部导入批准；文档独审与适用检查通过，真实多工具加载与行为采用仍待验。
