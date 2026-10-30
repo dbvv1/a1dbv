@@ -17,6 +17,21 @@
 
 **依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 按需取回及撤掉强制探索委派](https://cursor.com/blog/improved-token-efficiency)，核实 2026-10-26；[检查器](../../scripts/check_repo.py)与[测试](../../tests/test_check_repo.py)，复跑 2026-10-28。常驻规则见[指令文件](instruction-files.md)，委派与在途任务见[长任务](long-tasks.md)。
 
+### 指定了页面版本：读取那一版，不用工作树同名文件替代
+
+**任务指定文档版本，或附入正文应与某版一致时，先核内容版本，再按它行动。** 分支／标签会移动，先用 `git rev-parse --verify '<ref>^{commit}'` 得到提交；克隆后若没有同名本地分支，确认仓库与远端后改查 `refs/remotes/origin/<分支>`（远端不叫 origin 时替换名称）。需要当前远端版本时，先按已有权限 fetch，再固定提交；只读已有跟踪 ref 就保留这一观察范围。随后用 `git show '<提交>:<文件路径>'` 读该版。工作树 HEAD 与页面版本可以不同，保留两者；普通任务只需当前文件时，不增加这一步。
+
+例如，本仓一次上下文读者任务引用的页面分支解析到下列提交，而任务工作树使用另一提交。已有实际附入正文文件 `received-page.md` 时，可在同一仓库比较内容标识：
+
+```bash
+git rev-parse 'd0b9651b5db9039975d1abde4efe8f0cfd3a43b8:docs/decisions/context-management.md'
+git hash-object --no-filters received-page.md
+```
+
+两值相同表示文件字节一致；不同则对照固定原文，分清换行／消息包装变化与正文版本变化。`received-page.md` 应从实际收到的正文保存；拿不到附入内容就记“输入版本未核”，保留继续所需的输入。仅在工作树找到同名文件，不能确认附入的是它；引用位置也按所读页面计算，不拿整张任务卡的行号指代页面行号。
+
+**依据**：[Git 固定版本与对象定位](https://git-scm.com/docs/git-rev-parse)、[不经过过滤器的内容标识](https://git-scm.com/docs/git-hash-object)；[固定页面](https://github.com/dbvv1/a1dbv/blob/d0b9651b5db9039975d1abde4efe8f0cfd3a43b8/docs/decisions/context-management.md)。2026-10-30 实跑同版／异版文件对照；检查只确认提供的文件内容，接收端附文与模型实际加载仍按可观察证据判断。
+
 ## 已经变笨：按症状选动作
 
 | 眼前发生了什么 | 现在怎么做 |
