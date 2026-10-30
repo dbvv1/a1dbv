@@ -2,7 +2,7 @@
 id: B-EXACT-ARTIFACT-RECOVERY-20261030
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b79cd6a04da5a7ed6ccf224a481c8f79b2ef118d
 result_branch: relay/b-exact-artifact-recovery-20261030
@@ -32,8 +32,4 @@ result_branch: relay/b-exact-artifact-recovery-20261030
 
 ## 当前结果
 
-- 已核实 FPS-Like guard 目标（提交 4ff5202a…/tree 9b104237…）与 MOBA-Like feel 目标（提交 d5b5c151…/tree b29bb338…）在接收端登记范围内全部 not_found：两处克隆对象库、全部 ref、13 个任务工作树及 runs 下 before/after 独立克隆均无目标对象，登记范围内 git bundle 为 0，已知 SHA256/list-heads/verify 因无 bundle 无前提未执行并如实写明；审查 pass、openIssues 为空，check_repo 568 文件 0 错误、check_public 995 文件 0 发现。
-- 产物：[9cb1cd5](https://github.com/dbvv1/a1dbv/commit/9cb1cd52bac3bc5725417f92dd45686ef87f5d7a)，分支 `relay/b-exact-artifact-recovery-20261030`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端提交本单元新增的 result.md；如需继续恢复，须取得原始 bundle 或 origin 取该提交的授权，按 SHA256→list-heads→verify→cat-file 顺序复核。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+已接收 [9cb1cd5](https://github.com/dbvv1/a1dbv/commit/9cb1cd52bac3bc5725417f92dd45686ef87f5d7a) 的[登记范围查找报告](artifacts/B-EXACT-ARTIFACT-RECOVERY-20261030/result.md)：FPS guard 与 MOBA feel 均 not_found，未取回原件；无 bundle 故 SHA256/list-heads/verify 未运行。报告内恢复条件已按既有授权修正，等原 bundle 可达；接收端未提供 PID／exit 证据，实际进程退出、全局停止与空闲槽仍未知，不重派本卡。
