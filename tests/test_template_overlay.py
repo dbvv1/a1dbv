@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -23,6 +24,16 @@ def rules(path):
 def snapshot(path):
   return {str(file.relative_to(path)): file.read_bytes()
           for file in path.rglob("*") if file.is_file()}
+
+
+def bash_target(target):
+  """Hand native Python paths to the same Git Bash used by the recipe."""
+  target = str(target)
+  if sys.platform != "win32":
+    return target
+  result = subprocess.run(["bash", "-c", 'cygpath -u -- "$1"', "template-target", target],
+                          cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True)
+  return result.stdout.removesuffix("\n")
 
 
 class TemplateOverlayTests(unittest.TestCase):
@@ -65,7 +76,7 @@ class TemplateOverlayTests(unittest.TestCase):
     return match.group(1)
 
   def install(self, name, target):
-    env = dict(os.environ, TARGET=str(target))
+    env = dict(os.environ, TARGET=bash_target(target))
     return subprocess.run(["bash", "-c", self.recipe(name)], cwd=ROOT,
                           env=env, capture_output=True, text=True, encoding="utf-8")
 
@@ -143,7 +154,9 @@ class TemplateOverlayTests(unittest.TestCase):
           file.parent.mkdir(parents=True, exist_ok=True)
           file.write_text("custom settings must survive\n", encoding="utf-8")
           before = snapshot(target)
-          self.assertNotEqual(0, self.install(name, target).returncode)
+          result = self.install(name, target)
+          self.assertNotEqual(0, result.returncode)
+          self.assertIn("目标非空", result.stderr)
           self.assertEqual(before, snapshot(target))
 
   def test_symlink_target_is_rejected(self):
@@ -155,17 +168,59 @@ class TemplateOverlayTests(unittest.TestCase):
           target = Path(directory) / "link"
           target.symlink_to(real, target_is_directory=True)
           # Keep the raw string: Path would discard the trailing separators.
-          self.assertNotEqual(0, self.install(name, str(target) + suffix).returncode)
+          result = self.install(name, str(target) + suffix)
+          self.assertNotEqual(0, result.returncode)
+          self.assertIn("拒绝符号链接目标或父目录", result.stderr)
           self.assertEqual([], list(real.iterdir()), "Do not even create directories through the link")
 
   def test_failed_directory_check_stops_before_copy(self):
     for name in DOMAINS:
       with self.subTest(domain=name), tempfile.TemporaryDirectory() as directory:
-        env = dict(os.environ, TARGET=directory)
-        result = subprocess.run(["bash", "-c", "find() { return 1; };\n" + self.recipe(name)],
+        env = dict(os.environ, TARGET=bash_target(directory))
+        result = subprocess.run(["bash", "-c", "find() { printf 'FIND_FAILURE\\n' >&2; return 73; };\n" + self.recipe(name)],
                                 cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8")
-        self.assertNotEqual(0, result.returncode)
+        self.assertEqual(73, result.returncode)
+        self.assertIn("FIND_FAILURE", result.stderr)
         self.assertEqual({}, snapshot(Path(directory)))
+
+  def test_native_windows_target_is_converted_before_recipe(self):
+    # Stub only cygpath's output; run the actual recipe and read its files.
+    # This exercises the handoff on POSIX too, not a native Windows runtime.
+    native = r"C:\synthetic work\中文 project"
+    original_run = subprocess.run
+    for name in DOMAINS:
+      with self.subTest(domain=name), tempfile.TemporaryDirectory() as directory:
+        target = Path(directory) / "new project"
+        converted = bash_target(target)
+
+        def run(args, **kwargs):
+          if args[:3] == ["bash", "-c", 'cygpath -u -- "$1"']:
+            self.assertEqual(["template-target", native], args[3:])
+            self.assertTrue(kwargs["check"])
+            self.assertEqual("utf-8", kwargs["encoding"])
+            return subprocess.CompletedProcess(args, 0, converted + "\n", "")
+          return original_run(args, **kwargs)
+
+        with patch.object(sys, "platform", "win32"), patch("subprocess.run", side_effect=run):
+          result = self.install(name, native)
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual((BASE / "REVIEW.md").read_bytes(), (target / "REVIEW.md").read_bytes())
+        self.assertTrue((target / "AGENTS.md").is_file())
+
+  def test_failed_or_missing_converter_does_not_run_recipe(self):
+    for code in (1, 127):
+      with self.subTest(exit_code=code):
+        failure = subprocess.CalledProcessError(code, "cygpath", stderr="conversion unavailable")
+        with patch.object(sys, "platform", "win32"), patch("subprocess.run", side_effect=failure) as run:
+          with self.assertRaises(subprocess.CalledProcessError):
+            self.install("unity", r"C:\synthetic work\project")
+        self.assertEqual(1, run.call_count, "Do not run the recipe with an unconverted target")
+
+  def test_posix_target_is_preserved_without_converter(self):
+    target = "../new project/./child/"
+    with patch.object(sys, "platform", "linux"), patch("subprocess.run") as run:
+      self.assertEqual(target, bash_target(target))
+    run.assert_not_called()
 
   def test_windows_path_syntax_is_rejected_before_any_write(self):
     targets = ("C:/work/new project", r"C:\work\new project", "C:relative",
