@@ -1,7 +1,7 @@
 # A-VERIFICATION-PUBLIC-SCAN-READER-20261029 · 真正运行公开扫描器
 id: A-VERIFICATION-PUBLIC-SCAN-READER-20261029
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5847ea532dbf7437ca8c4865af031ce0d862a153
@@ -28,4 +28,9 @@ page: docs/decisions/verification.md@dot-a/verification-page-candidate-20261029
 - 一个 60–90 分钟单元，达到原时限就交已有结果和缺口，不再扩题；完成回 review_ready。
 
 ## 当前结果
-已准备排队，尚无领取或执行证据；页面分支核对为 `2c55a5a54aec7f1410e2e0368468eb26250efe39`。接收端领取时记录实际页面提交；若与上列核对值不同，先回输入卡点、不静默换版。按共享最多四任务、最多一 GPU 调度，本任务不用 GPU；同题旧调用未明先核状态，不重复执行。
+
+- 读者照页面做成（taskDone=true）：候选 5f8b0b10 的 `check_public.py` 文件扫描 CLI 可接收——正常任务词在父版误报 exit 1、修后 exit 0，两版都仍检出并脱敏合成 sk-/ghp_ 凭据，新增回归在父实现 FAILED、候选通过；审查无未关闭问题（openIssues 为空）。页面造成 3 处卡点（pageStuck）：未说明扫描器按 git 索引取文件时如何做提交级仓外检出、未提醒 TMP 不能落在任何 git 仓内、未覆盖“回归与修复在同一提交”时如何做修复前应失败的对照。记录见 reader-tests/A-VERIFICATION-PUBLIC-SCAN-READER-20261029-u1.md。
+- 产物：[c6f6ffc](https://github.com/dbvv1/a1dbv/commit/c6f6ffcb7b1d4a2eec987f61b128f0cd12de60cb)，分支 `relay/a-verification-public-scan-reader-20261029`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：本单元已全部完成，等待接收端做公开扫描、提交并发布结果分支。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
