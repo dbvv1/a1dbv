@@ -1,7 +1,7 @@
 # A-TEAM-AI-CONTRIBUTION-SOURCES-20261030 · 维护团队如何接纳或拒绝 AI 贡献
 id: A-TEAM-AI-CONTRIBUTION-SOURCES-20261030
 owner: dot-A
-status: ready
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 9dcbd58307cfb193a5983e4a3dc5e511682b24ff
