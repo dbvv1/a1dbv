@@ -1,7 +1,7 @@
 # A-SKILL-TEMPLATE-READER-20261029 · 将已定路线同步到通用模板入口
 id: A-SKILL-TEMPLATE-READER-20261029
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 017a3363db3294f11e6f4965869bfac426569c44
