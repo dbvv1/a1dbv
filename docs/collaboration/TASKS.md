@@ -30,7 +30,7 @@
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收，旧通路／命中接线丢失待恢复。MOBA 三材质已接候选、林缘二改；原 PNG 不变，1024 解码约 16 MiB 仅存储估算，非 GPU 实测。开放音频未听未用，Nature 恢复未知。3D：网关三源同提示实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机 `gen3d`／`glbprep` 可用；下一步各案例 3–5 件标准件按实测分工采用。 |
 | B-实例 | **AI 做游戏实例**：作品、作者过程与社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏、未听音。Warpact 仍未玩到；没有新增整局品质推荐。 |
 | SR | **Star-Rush 完整比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `f1da86c`（运行源 `8dddac2`）／Site **v8 已交付**，[Rapier 170–740m 旁置](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/rapier/)，默认驾驶不换、海岸音 off。五入口 software smoke 通过，非 GPU／品质结项；复盘候选已发布，原上传阻塞解除；游戏内容基线 `c4e6dd1` 与已审源码一致，runner补齐原始renderer记录后固定为 [`42f8404`](https://github.com/dbvv1/Star-Rush-Reborn/commit/42f8404c07f3ebc3d1fd575dd16ead440231e917)。CPU／独审已过，待既有接收端串行 headless smoke 后旁置交付；网站仍 v8。标准件未接线，操控／视听待验。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `2b7ac87`／Site **v21 已交付**；默认训练赛＋标准件＋灯光，AI 材质与 ground 手感仍旁置，材质采用已回写。新腰腿候选 [`5c05113`](https://github.com/dbvv1/FPS-Like/commit/5c051130d27b8dfd3986cc64c046a4aad2e4974f)：云 CPU 393/393、类型／构建、200 局与三 seed 六回合回放通过，hash 与基线一致；原卡仍在途。云 smoke 导航前 EPERM／SIGABRT，无新图／盲评，不合入发布。旧 guard 原件仍待取回。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `2b7ac87`／Site **v21 已交付**；默认训练赛＋标准件＋灯光，AI 材质与 ground 手感仍旁置，材质采用已回写。新腰腿候选 [`fc64c2b`](https://github.com/dbvv1/FPS-Like/commit/fc64c2b568be4bc15250447b3959bf50957684fe)：云 CPU 393/393、类型／构建、200 局与三 seed 六回合回放通过，hash 与基线一致；CPU 已接收，原卡 blocked，原执行端退出未知。云 smoke 导航前 EPERM／SIGABRT，无新图／盲评，不合入发布。旧 guard 原件仍待取回。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材、木筏与旧档的客户端验收欠项保留。 |
 
 ## 待人工验收（统一查看）
@@ -49,7 +49,7 @@
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 WebGL2：`27a40be`／Site v16，四路 smoke、四机位双重复通过；两非作者仅判小幅改善，正式评分待补。限定授权 `--no-sandbox`；原始 renderer／参数已留存（SwiftShader software），进程 exit 0、端口关闭。 |
-| FPS 新候选云端 smoke | `5c05113` 已用获准 `--no-sandbox`，导航前报 `socket() failed: Operation not permitted (1)`、SIGABRT；待云环境支持既有启动，外层沙箱不改，不重试／重复要许可 | 无新图／WebGL2证据，preview 已关闭；CPU 已验，本机不接浏览器。 |
+| FPS 新候选云端 smoke | `fc64c2b` 复用原 CPU；已用获准 `--no-sandbox`，导航前报 `socket() failed: Operation not permitted (1)`、SIGABRT；待云环境支持既有启动，外层沙箱不改，不重试／重复要许可 | 无新图／WebGL2证据，preview 已关闭；CPU 已验，本机不接浏览器。 |
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
 | Serena／testmon 上游贡献 | 待对应可写 fork；Serena CLA 须本人决定 | 已审补丁：[Serena #2218](../../experiments/serena-vue-implementation/README.md)、[testmon #270](../../experiments/testmon-outer-coverage/README.md) |
 

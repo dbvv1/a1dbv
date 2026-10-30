@@ -2,7 +2,7 @@
 id: B-FPS-GUARD-CONTINUOUS-20261030
 owner: dot-B
 kind: build
-status: review_ready
+status: blocked
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 2b7ac87288f9595d3b1346b521a7eb456db108c9
 result_branch: relay/b-fps-guard-continuous-20261030
@@ -36,12 +36,12 @@ CPU 测试覆盖：语义分区边界与重叠优先级；开关缺失／非法�
 
 ## 当前结果
 
-- continuous-v2 guard-materials 候选核实为已完整交付，本单元完成 review_ready 交接核查；审查通过、无未关闭问题（openIssues 为空），工作树仅 docs/quality.md 有 13 增 1 删的入口说明修正，其余与 relay 分支 HEAD 41c0b0a 一致。
-- 产物：[fc64c2b](https://github.com/dbvv1/FPS-Like/commit/fc64c2b568be4bc15250447b3959bf50957684fe)，分支 `relay/b-fps-guard-continuous-20261030`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：交回接收端走 review_ready 与 Git/任务状态流转；云端同机位前后图、正常生命周期 smoke 和两名非作者盲评属 dot 侧未验项。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 接收端 2026-10-30 19:12:06 UTC 已交回 review_ready；dot 只接收 CPU 范围，当前 blocked 为云验证缺口，不是品质验收全过。
+- 最终产物：[fc64c2b568be4bc15250447b3959bf50957684fe](https://github.com/dbvv1/FPS-Like/commit/fc64c2b568be4bc15250447b3959bf50957684fe)，tree `64792942b92a0f6bf1e14004b96cd43593aa4371`，分支 `relay/b-fps-guard-continuous-20261030`。
+- 与已独立验收 `5c051130d27b8dfd3986cc64c046a4aad2e4974f` 相比仅 docs/quality.md 入口说明有差量；src、tests、tools、依赖完全相同。复用云 CPU 393/393 测试、typecheck、build、200 局模拟与三 seed 六回合回放证据，hash 与基线一致；未无改动复跑。最终文档差量、公开扫描及身份检查已核。
+- 云 headless 已用获准 `--no-sandbox`，但导航前 `socket() failed: Operation not permitted (1)`，浏览器 SIGABRT；preview 已关闭，无新图／WebGL2／正常生命周期 smoke／新盲评，停止该动作，不合入游戏 main 或发布网站。
+- 原本机执行端 PID、退出时间及 exit code 未提供，实际退出仍未知；review_ready 与本卡 blocked 均不是退出回执。不重复派发，不终止未知进程，不续跑无改动 CPU 复核或本机浏览器。
 
-## dot 接收要求（当前调用正常完成后交回）
+## 恢复条件
 
-`5c051130d27b8dfd3986cc64c046a4aad2e4974f` 的 CPU 范围已由 dot 独立验收，亦已收到第 2 单元无改动复核。请原执行端在当前调用正常完成后按原范围交 `review_ready`，附本次完成及进程退出回执；尚无证据的退出项明确写未知。不再继续无改动复跑，不启动本机浏览器；云端截图／smoke／新盲评由 dot 处理，仍未通过。本说明不重派、不强改状态、不终止进程；原卡保持 running，直到接收端实际交回。
+当前云环境支持既有获准 headless 启动后，由 dot 补正常生命周期 smoke、同机位同状态图及新两名非作者盲评；外层沙箱不改，不重复索取同一许可。接收端另补原调用真正的进程退出回执。保留本卡与既有产物续接，不新建同题卡；全部发布门槛实际通过前保持未发布，不沿用旧候选盲评。
