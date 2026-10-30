@@ -1,7 +1,7 @@
 # A-TEAM-AI-CONTRIBUTION-SOURCES-20261030 · 维护团队如何接纳或拒绝 AI 贡献
 id: A-TEAM-AI-CONTRIBUTION-SOURCES-20261030
 owner: dot-A
-status: running
+status: cancelled
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 9dcbd58307cfb193a5983e4a3dc5e511682b24ff
@@ -31,4 +31,4 @@ result_branch: relay/a-team-ai-contribution-sources-20261030
 按“政策与实际接收／拒绝案例 → 后续维护与相反反馈 → 跨项目对照及覆盖缺口”的顺序推进，每单元 60–90 分钟，含核链接、整理和非作者审查；到时交可审材料与未覆盖项，不以时间到声称饱和。未完成范围写回本卡下一步，由 dot 决定是否原卡接续，不自行重跑或另建卡。接收端若提前停止，按实际停点交已有材料，不改脚本／超时设置。既有八任务不重排，仅原接收端按实际共享最多 4 并行调度，不另起调用抢槽。
 
 ## 当前结果
-待接收端领取；尚无采集结果。领取前按共享四并行及同题单写者再核，不以 ready 标签声称实际执行。
+原单元已超过用户要求的两小时上限，尚无可交回的 sources.md 或结束回执；现按原取消协议请求停止本卡自有调用并保留已有任务输出。cancelled 仅表示停止请求，不证明进程已退出；不改接收器超时、不重派、不公开原始日志，实际退出核实后再由负责人决定是否在原卡收窄接续，Legacy 等其他任务照常。
