@@ -33,3 +33,11 @@ CPU 测试覆盖：语义分区边界与重叠优先级；开关缺失／非法�
 云端同机位图、正常生命周期 smoke、新两名非作者盲评都仍待验，只有完整发布门槛通过后由 dot 旁置发布；本机 CPU 通过不宣称可见改善、达到标杆或已发布。旧 4ff5202a 的原字节及旧附件恢复另待，不能用本新候选替代。
 
 单次最多两小时；超时／失败／终止不明按接收端协议保存已有结果并 blocked，不盲重试、不另开同题卡。只对已确认本卡自有调用按既有停止协议收尾，不杀未知进程。结果注明实际开始／最后进展／退出回执缺口；排队、认领不是执行证据。
+
+## 当前结果
+
+- 在训练赛渲染层新增显式开关 guard-materials=continuous-v2，按三角形的平均高度与源材质色把腰臀/腿甲/装备/布料划分为语义分区，默认颜色数组、几何与姿态逐字节保持不变；npm test 393/393、typecheck、build 均通过，sim 入口在 Windows 静默空转后改用 runBatch/runSquadMatch 复跑并与 HEAD 基线 hash 一致。尚未关闭的审查问题：无（openIssues 为空）；云端同机位前后图、正常生命周期 smoke 与两名非作者盲评仍待验，未宣称可见改善。
+- 产物：[5c05113](https://github.com/dbvv1/FPS-Like/commit/5c051130d27b8dfd3986cc64c046a4aad2e4974f)，分支 `relay/b-fps-guard-continuous-20261030`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：推送 result_branch 至 review_ready，并安排云端同机位出图与两名非作者盲评。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
