@@ -1,7 +1,7 @@
 # A-HOOK-NATIVE-ACCEPTANCE-20261030 · 路径 Hook 的真实客户端接收
 id: A-HOOK-NATIVE-ACCEPTANCE-20261030
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 9dcbd58307cfb193a5983e4a3dc5e511682b24ff
