@@ -1,7 +1,7 @@
 # A-SKILL-PACKAGE-ENTRY-20261030 · 修通现有 TanStack 包内 Skill 的复制入口
 id: A-SKILL-PACKAGE-ENTRY-20261030
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8f01eeee1f931cfd48390658906a42cc5148e084
@@ -33,4 +33,9 @@ result_branch: relay/a-skill-package-entry-20261030
 负责人入队前核 A 自身实际活跃少于 2 且共享有空余；原接收端按共享最多 4 并行调度，ready／running 标签与真正派发分开报告，不另起调度器抢槽。
 
 ## 当前结果
-待原接收端领取；交回两处一致的只读配方与运行入口，保留历史采用范围和实际未验分支。
+
+- 把 TanStack 包内 Skill 的读取入口改为从消费包自身解析 router-core（不再假设顶层 hoist），补全工作目录、版本确认、exit 2/3/4/0 分支与 Intent 可选回退，并在真实 npm ci 与 pnpm 11.21.0 布局实测；审查 pass，openIssues 为空，修正轮次 2，任务无剩余。
+- 产物：[b5f5f3f](https://github.com/dbvv1/a1dbv/commit/b5f5f3ff744f562aa2f8cd51088fe959af06f44e)，分支 `relay/a-skill-package-entry-20261030`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无；由负责人处理与并行草稿 017a3363 的同页合并顺序
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
