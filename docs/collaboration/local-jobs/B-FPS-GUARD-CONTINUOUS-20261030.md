@@ -36,10 +36,10 @@ CPU 测试覆盖：语义分区边界与重叠优先级；开关缺失／非法�
 
 ## 当前结果
 
-- 第 2 单元独立复核 continuous-v2 腰腿材质候选：语义分区、开关精确匹配、敌友色家族与默认逐字节一致均复核通过，npm test 393/393、typecheck、build 与 sim 替代复跑一致，openIssues 为空，本单元无代码改动。任务剩余云端同机位出图、smoke 与盲评未验。
-- 本单元没有文件改动。
-- 检查：check_public（文件） 通过；独立审查通过。
-- 下一步：确认 result_branch 推送至 review_ready，并安排云端同机位前后图、正常生命周期 smoke 与两名非作者盲评。
+- 本单元完成最终 CPU 与仓库状态核验：npm test 393/393、typecheck、build 通过，等价批量 200 局与 3 个训练赛种子零停滞/异常/无视线射击且回放 hash 与基线一致，公开扫描与空白检查通过；工作树仅新增 docs/quality.md「入口与生效确认」段，openIssues 为空。云端同机位前后图、正常生命周期 smoke 与两名非作者盲评仍未验（本机边界不允许），不宣称可见改善。
+- 产物：[41c0b0a](https://github.com/dbvv1/FPS-Like/commit/41c0b0abe53f8206d48578786e2d69932794ebc0)，分支 `relay/b-fps-guard-continuous-20261030`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：接收端安排云端同机位前后图、正常生命周期 smoke 与两名新非作者盲评；候选代码无需再改，全部发布门槛通过后由 dot 旁置发布。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## dot 接收要求（当前调用正常完成后交回）
