@@ -1,7 +1,7 @@
 # A-MODEL-EFFORT-READER-20261029 · 真实配置兼容修复
 id: A-MODEL-EFFORT-READER-20261029
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
@@ -34,5 +34,8 @@ page: docs/decisions/model-roles.md@dot-a/model-effort-reader-dispatch-20261029
 
 ## 当前结果
 
-- 本机接收端连续 2 次未完成第 1 个单元：公开扫描有发现（email CODE_OF_CONDUCT.md:62，email SECURITY.md:3，email SECURITY.md:3，local-path jrnl/args.py:440，email pyproject.toml:8），未推送。负责人确认任务可以执行后改回 ready，接收端会重新领取。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 读者照页面完成 jrnl #1908：现代 JSON 风格 YAML 配置不再误触发 1.x 升级，真正旧版仍升级，无 version 配置保留原回退；taskDone=true，非读者独立复跑通过（新增单测 20 passed，临时回退生产代码 11 项新回归失败，全量 unit 214、BDD 499、tox 713 passed，ruff/black 通过，隔离 HOME 手工 CLI 重放符合预期）。页面卡点：页面型号表未给本会话可见 deepseek-v4.1-flash[1m] 的 effort 核对办法；派发前置未提供可用 poetry/poe，读者自建隔离 .venv 并按 poetry.lock 钉版本；记录路径两处要求不一致。未关闭审查问题：version 存在但不可解析（如 source）时被当作无 version 回退，与维护者验收原文不符；is_old_version() 重复加载配置可能重复告警；两份读者记录实际内容不一致，正式结果文档宜补齐卡点条目。
+- 产物：[a669481](https://github.com/dbvv1/jrnl/commit/a6694817f531b6ef20fe5c18ca9f33f1da37613b)，分支 `relay/a-model-effort-reader-20261029`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：本单元为任务唯一单元，接收端按既有流程公开扫描并推送结果分支。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
