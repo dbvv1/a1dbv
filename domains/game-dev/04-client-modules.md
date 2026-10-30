@@ -442,7 +442,11 @@ Penny’s Big Breakaway 的 GDC 2025 作者复盘强调动量与动作组合；C
 
 **AI 初改容易漏掉依赖速度的旧规则。** 原拆装目标只看“是否按移动键”，换成惯性后松键仍在滑，却能继续交互；修法是在新模型下检查实际速度，而不是缩短滑行来遮错。二改同时测松键滑行拒绝交互、真正停稳可交互、重开清旧快照；开关外原轨迹仍须一致。
 
-实现起点：[固定 FPS 候选](https://github.com/dbvv1/FPS-Like/tree/41b696743f021efa8ddcbc1efd2c9cdf7153ed28/src/candidates/offline-training-v1)的 `sim/movement.ts`、`sim/game.ts`、`render/interpolation.ts`、`client.ts`；[同输入规格与结果](https://github.com/dbvv1/FPS-Like/blob/41b696743f021efa8ddcbc1efd2c9cdf7153ed28/docs/feel.md)。入口是在原离线训练赛参数后加 `feel=ground-v1`，不替换默认模式。2026-10-29 [源码／CPU 实跑／非作者代码复核]：仍待 headless 功能门槛，未合入默认分支或发布网站；屏幕响应、标杆录像、主观手感未验。引擎接入沿下节原 motor，不能把此 Web View 插值复制成第二个写物理 Transform 的系统。
+**跑步通过后，还要把跑／走／蹲的纯模型与真实碰撞运动分开测。** AI 若只测跑步，会漏掉最低摩擦吞掉低速加速的组合缺陷：旧蹲走每个 60 Hz tick 加速 `5.5×1.7/60=0.155833`，低于固定最低摩擦 `5.2×2.032/60=0.176107`，上一帧速度被清零，纯函数跑 180 tick 仍只有 `0.155833`。修法不是提高所有姿态的加速度，而是仅在有移动输入时令 `stopSpeed = 2.032 × wishSpeed / 4.5`，再用原摩擦公式；满幅跑步和无输入的停止摩擦不变，慢走、蹲走及低幅输入才缩小最低摩擦参考速度。严格零输入与微小非零输入仍有差别，摇杆死区需另定；切换姿态不瞬间截断既有动量。
+
+给 Agent 同一输入脚本：纯函数跑 180 tick，真实 `Game` 从三个合法出生点各跑 60 tick，交叉跑／走／蹲、前向／对角，并记录期望位移、碰撞后实际位移及回写速度。修后纯模型分别达到 `4.5／2.3／1.7`，真实 `(0,0,-16)` 蹲走一秒位移 `0.145950→1.197071`、末速 `0.155834→1.697655`；跑步起步 `566.67 ms`、松键滑停 `350 ms`、反向 `116.67 ms` 的原脚本结果不变。**纯模型达速不能证明碰撞后稳定达速：** 另一个出生点 `(8,0,-12)` 修后蹲走一秒末速仍只有 `0.156317`；日志显示地板接触损失位移，实际速度回写进一步放大损失，这项独立缺口尚未修好。不要继续加大加速度掩盖接触问题。
+
+实现起点：[FPS 固定采用源](https://github.com/dbvv1/FPS-Like/tree/dfdcc47f966e816bbbcda6cca3c2043c544152cb/src/candidates/offline-training-v1)的 `sim/movement.ts`、`sim/game.ts`、`render/interpolation.ts`、`client.ts`；[同输入规格、复跑命令与前后数据](https://github.com/dbvv1/FPS-Like/blob/dfdcc47f966e816bbbcda6cca3c2043c544152cb/docs/feel.md)。2026-10-30 [源码／CPU 实跑／非作者代码复核／可玩采用]：已合入 main，经 362 项测试、构建、默认模拟和四路 WebGL2 软件 smoke 后发布 [Site v18 旁置训练赛](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1&art=standards-v1&feel=ground-v1&lighting=courtyard-light-v1)，默认入口保留。这些是本作实测，不是 CS2 同输入标杆；屏幕响应、标杆录像、主观手感仍待验。引擎接入沿下节原 motor，不能把此 Web View 插值复制成第二个写物理 Transform 的系统。
 
 #### 六组参数一起构成控制，而不是一个 smooth 数
 
