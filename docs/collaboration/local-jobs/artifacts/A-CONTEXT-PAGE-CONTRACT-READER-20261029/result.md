@@ -99,3 +99,91 @@ page: docs/decisions/context-management.md@d0b9651b5db9039975d1abde4efe8f0cfd3a4
 4. **已运行**：见上节，均记录退出结果。
 5. **在途与外部**：无在途调用。接收端行为未知。
 6. **下一步**：非读者验证者复跑本记录的两条命令与合成探针；若要补强，由接收端在领取时记录解析到的页面提交（最好再记 blob／sha256），并明确缺省 main、ref 不存在、页面缺失时的回卡点规则；这些都不应由检查器假装覆盖。
+
+## 单元 3 独立复核（新上下文读者，2026-10-30）
+
+本节由未读过本页、未参与前两单元的新读者独立完成：先做完所有实跑探针，之后才打开本文件追加，未改写上文章节。与上文重复的结论保留，下列数字为本单元实测。
+
+### 实际受检版本
+
+- 工作树 HEAD（开始与结束一致）：`51d4dbd8a26db193978ddb69ac134004a719eacb`；任务卡 `base_ref` 是 `5847ea532dbf7437ca8c4865af031ce0d862a153`。上文第 11 行把 base_ref 写成 HEAD，不准确。
+- page 引用：`docs/decisions/context-management.md@dot-a/context-concise-reader-20261029`。`git ls-remote --heads origin` 得 `d0b9651b5db9039975d1abde4efe8f0cfd3a43b8`，与本地 `origin/dot-a/context-concise-reader-20261029` 一致。该 ref 是**分支**，可变；只有写 40 位提交 `d0b9651b…` 才不可变。
+- 页面对象：`d0b9651b:docs/decisions/context-management.md`，blob `8a9cbae46f165b9f723f8cec960d1a20742ec9ce`，82 行、9971 字节，sha256 `700df4b6d6e9a3fa85610b2f58bf042be663e2f1fa2a9527fb4f9efbe58d4599`。
+
+### 附入全文核对（字节级）
+
+取任务文件里“页面全文（docs/decisions/context-management.md@dot-a/context-concise-reader-20261029，接收端附上）”标记之后的剩余字节，与 `git cat-file -p d0b9651b:docs/decisions/context-management.md` 直接比较：长度同为 9971、逐字节相等、无多余尾字节，sha256 相同。结论：本单元收到的附入全文等于该分支当时尖端。接收端内部解析步骤仍不可观察（未知）。
+
+**注意**：工作树磁盘上的 `docs/decisions/context-management.md` 是另一版（149 行，blob `ecb9e2336803948b788f5b66b4fc43ecb7f1a654`，sha256 `35cff5a013701ef0d4aa52f8b80c85dc30edaaf425c1dea8ca4bcb4bd716d2c3`），与附入页不同；以磁盘文件或 HEAD 版当“页面”会核错对象。本单元第一次就是这样比对，得到 82 vs 149 不一致，改用 `d0b9651b` 后一致。
+
+### 检查器实际行为（本单元重跑）
+
+- 仓库根 `python3 scripts/check_repo.py`：`checked_files=562`、`errors=[]`、退出 0。
+- `python3 -m unittest discover -s tests -p 'test_check_repo.py' -v`：9 项通过，退出 0；与页面第 16 行“已验证 9 项通过”一致。
+- 合成探针（仓外临时根，输入明确标为合成，不代表接收端故障）：
+
+| 输入 | 结果 |
+|---|---|
+| 合法 20 行卡，`page` 用固定 branch ref | exit 0 |
+| 合法 20 行卡，`page` 省略 `@ref`（默认 main） | exit 0 |
+| `page: docs/decisions/does-not-exist.md@dot-a/missing` | exit 0（不检查 page） |
+| `page: ../../../etc/passwd@main`（路径逃逸） | exit 0（不检查 page） |
+| `kind: explore` 用在 reader-test 卡上 | exit 0（不检查 kind） |
+| 正文内联链接指向不存在文件 | exit 1，`missing link target` |
+| 80 行 + `status: running` | exit 0 |
+| 81 行 + `status: running` | exit 1，`active job file has 81 lines (max 80)` |
+| 81 行 + `status：ready`（全角冒号） | exit 1（status 正则接受全角冒号） |
+| 81 行 + `status: accepted` | exit 0（终态豁免） |
+| `docs/collaboration/TASKS.md` 10240 字节 | exit 0 |
+| `docs/collaboration/TASKS.md` 10241 字节 | exit 1，`over 10 KB` |
+
+失败、未运行、未知分开：以上无失败；接收端行为（ref 解析、缺省 main、缺失目标时回卡点还是静默换版）仓内无实现，未运行，记未知。
+
+### 最小可公开 reader-test 卡（合成，未入队）
+
+```text
+id: A-SYNTH-PAGE-CARD-001
+owner: dot-A
+status: ready
+target_repo: https://github.com/dbvv1/a1dbv
+base_ref: 5847ea532dbf7437ca8c4865af031ce0d862a153
+result_branch: relay/a-synth-page-card-001
+kind: reader-test
+page: docs/decisions/context-management.md@d0b9651b5db9039975d1abde4efe8f0cfd3a43b8
+
+## 目标
+读者按所附页面完成一项真实任务，并只记录卡点。
+
+## 依据
+照 `page` 指向的页面全文与项目指令做，从仓库根目录按页面给出的入口开始。
+
+## 写域
+只新增 `docs/collaboration/local-jobs/artifacts/A-SYNTH-PAGE-CARD-001/result.md`。
+
+## 做成标准
+产物存在；每个卡点标到页面的具体句子；页面本身不改。
+```
+
+该卡只在仓外临时根的 `--root` 下被 `check_repo.py` 读过（20 行、`errors=[]`、exit 0），没有写入 `docs/collaboration/local-jobs/`，没有置 `ready`、没有入队。验证范围仅限行数与内联链接；字段语义、page 解析不在检查范围。
+
+### page 的默认 ref、固定 ref、缺失目标
+
+- **默认 ref = main**：文档规定（README 第 5 行）缺省 main，无代码落实。`origin/main` 上同一页面 blob 为 `ecb9e233…`（149 行），与固定分支 `8a9cbae4…`（82 行）不同；省略 `@ref` 会附入另一版页面。
+- **固定 ref**：`@<分支或提交>`。本次 page 用的是分支，当前指向 `d0b9651b`；分支可移动，要真正固定须写 40 位提交。上文表里四张卡也全是分支 ref。
+- **缺失目标**：README 未写，`check_repo.py` 不查（上表已证），接收端行为未知。
+- **`page@提交` 与 blob／sha256 的区别**：`page: <路径>@<分支或提交>` 只说明“去哪取、取哪一版标识”，不是内容指纹；要证明“附入的就是那一版”，必须另算该提交下文件的 blob 或 sha256。任务卡本身不携带、检查器也不校验这个指纹。
+
+### 检查点（按页面第 66–74 行六项）
+
+1. 目标与完成条件：验收 reader-test 的 `page` 输入合同——现行写法如何提交合法任务、哪些保证仍须接收端验证。最新约束／禁改范围：不改页面、检查器、任务协议、长期规则、接收端与本机设置；不建／不发 `ready` 任务；不提交不推送；只用仓外合成输入。
+2. 仓库、分支、基线：worktree 分支 `receiver/A-CONTEXT-PAGE-CONTRACT-READER-20261029`，`base_ref=5847ea53…`，实际 HEAD `51d4dbd8…`；未提交修改：本 `result.md` 追加节与 `reader-tests/A-CONTEXT-PAGE-CONTRACT-READER-20261029-u3.md`。
+3. 已确认事实与入口：协议在 `README` 第 5、13 行；`check_repo.py` 只查直属于 local-jobs 的未结束卡 80 行、TASKS.md 10 KB、JSON／TOML 语法、内联本地链接；附入全文与 `d0b9651b` 字节一致；磁盘页面是另一版。
+4. 已运行命令与结果：见上节，无失败；接收端未运行。
+5. 在途／外部操作：无；接收端状态未知。
+6. 下一步：非读者验证者复跑 `check_repo.py`、9 项测试与合成探针，独立重算附入全文 sha256；若要补强，由接收端在领取时落盘解析到的页面提交（最好连 blob／sha256），并写明缺省 main、ref 不存在、页面缺失时的回卡点规则。
+
+### 页面让我卡住或需补查的位置
+
+- **页面第 7 行“沿实现与检查补足信息”**：对“附入全文是否等于 page 固定版本”没有给 ref→提交解析与 blob／sha256 对照步骤。页面第 16 行指向的 `scripts/check_repo.py`、`tests/test_check_repo.py` 完全不涉及 `page` 字段；照页面入口走只会得到“检查通过”，那只说明行数／语法／链接，不说明页面已附或版本正确。
+- **页面第 10–13 行**的示例任务是“检查 Markdown 链接 #锚点”，与本任务的 page 输入合同不是同一对象；页面没说明如何把“检查器实际检查什么”迁移到任务卡头部字段。
+- **页面第 16 行“已验证 9 项通过”**：本单元可复现（9 项、退出 0），但没给适用 Python／平台版本；本机为 Python 3.13.5、Windows。
