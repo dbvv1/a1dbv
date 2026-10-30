@@ -167,6 +167,23 @@ class TemplateOverlayTests(unittest.TestCase):
         self.assertNotEqual(0, result.returncode)
         self.assertEqual({}, snapshot(Path(directory)))
 
+  def test_windows_path_syntax_is_rejected_before_any_write(self):
+    targets = ("C:/work/new project", r"C:\work\new project", "C:relative",
+               r"\\server\share\project", r"new\project")
+    for name in DOMAINS:
+      for target in targets:
+        with self.subTest(domain=name, target=target), tempfile.TemporaryDirectory() as directory:
+          # Spy before the first write: even a native Windows run must not touch
+          # the drive or share named in these synthetic inputs.
+          env = dict(os.environ, TARGET=target)
+          command = "mkdir() { printf 'UNEXPECTED_MKDIR\\n' >&2; return 91; };\n" + self.recipe(name)
+          result = subprocess.run(["bash", "-c", command], cwd=directory,
+                                  env=env, capture_output=True, text=True, encoding="utf-8")
+          self.assertNotEqual(0, result.returncode)
+          self.assertIn("POSIX", result.stderr)
+          self.assertNotIn("UNEXPECTED_MKDIR", result.stderr)
+          self.assertEqual({}, snapshot(Path(directory)))
+
   def test_unset_target_is_rejected(self):
     for name in DOMAINS:
       with self.subTest(domain=name):
