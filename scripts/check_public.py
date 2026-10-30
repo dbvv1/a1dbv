@@ -16,6 +16,13 @@ import sys
 
 PATTERNS = [
   ("credential", re.compile(
+    # Recognizable provider shapes survive concatenation; the broad sk- fallback
+    # keeps its word edge to avoid task-/desk- false positives. Shape, not validity.
+    # Formats: gitleaks/gitleaks@5f6ec56c, cmd/generate/config/rules/{openai,anthropic}.go.
+    r"sk-(?:proj|svcacct|admin)-(?:[A-Za-z0-9_-]{74}|[A-Za-z0-9_-]{58})"
+    r"T3BlbkFJ(?:[A-Za-z0-9_-]{74}|[A-Za-z0-9_-]{58})"
+    r"|sk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{20}"
+    r"|sk-ant-(?:api03|admin01)-[A-Za-z0-9_-]{93}AA|"
     r"(?<![A-Za-z0-9])sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}"
     r"|glpat-[A-Za-z0-9_-]{20,}|xox[abprs]-[A-Za-z0-9-]{10,}|(?:AKIA|ASIA)[A-Z0-9]{16}"
     r"|AIza[A-Za-z0-9_-]{35}|eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}")),
