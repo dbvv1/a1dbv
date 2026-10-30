@@ -383,6 +383,19 @@ flowchart LR
 
 来源：[一手／研究] 正常接线与 Unity 6.3 加载／声源 API 于 2026-10-25 核；默认、参数和二改为项目建议，未运行引擎或听验。[WP10 同节](../../docs/research/wp10-motion.md#audio-normal-production)集中实现入口；既有 Unity 增益、FMOD／Wwise／Howler 差异、制作案例及窄控制实证见[事件生命周期研究](../../docs/research/wp10-motion.md#p117-audio-lifecycle)，原日期与范围保持。[并发](../../docs/research/wp10-motion.md#45)、[持续声](../../docs/research/wp10-motion.md#50)、[响应](../../docs/research/wp10-motion.md#96)、[警报语义](../../docs/research/wp10-motion.md#51)按对应症状查。
 
+#### 网页案例：同帧关键声音被吞，先改有界调度而非增益
+
+**🧪 当下一技能已成功执行却没有独立声音，先对照确认事件与原生起播计划。** MOBA 的旧消费者每批只选一个最高权重声音，再用全局 25 ms 间隔限流；同一 tick 释放的 Q/W 留下一声，慢回调中的后续命中也可能被吞。模拟和回放哈希一致只能证明战斗正确，不能证明声音完整。旁置 `audio=critical-v1` 保留原最高权重前景声，并为玩家技能释放、涉及玩家的命中保留独立事件键；其他 NPC 密集声仍合并，不为施法开始、取消或死亡虚构事件，不提高混音增益。
+
+- **预算在原生声源提交时确定。** 同一批按既有权重稳定排序，起播间隔仍为 25 ms，总活动／已排声部最多 8，未来计划最多 4、距离当前 AudioContext 时间最多 100 ms；超限丢新事件并留原因，不抢占旧计划、不用 JS 定时器积压补播。事件年龄另按所附快照限制 3 tick；逐 tick 追帧提供自己的快照，不能拿这个限制声称测到了接收前的墙钟延迟。
+- **暂停取消已提交的未来声音。** 真正游戏暂停、静音、设备离开 running 和销毁都停止当前／未来声源并清空调度计划，声部由 onended 释放；恢复不重播已消费键，重开换所有者与去重游标。仅失焦清输入不等于游戏暂停。把“禁止新的 play”当静音会漏掉已经提交的未来起播。
+- **同脚本复测计划，再验真实音频 API。** v12 Q/W 在 tick 5 从一声变两计划、间隔 25 ms；命中与 W 同批从只留命中变命中在先、W 延后 25 ms；慢回调三关键声为 0/25/50 ms。真实 Web Audio 复现两计划与关闭候选的一计划，普通暂停／恢复／静音／重开及旧 AudioContext 关闭通过。同步 UI 取消测试在起播前 25 ms 调到原生 stop；慢软件渲染下普通点击更晚，不能据此宣称操作延迟达标。
+- **把波形证据与听感分开。** 48 kHz OfflineAudioContext 重建的能量起点为 0/1200 样本，混合绝对峰值 0.23021，非空且无裁剪；浏览器仍启用 `--mute-audio`，这不是扬声器录音或设备延迟。Q/W 仍用同一音色，两计划不能证明技能可辨；计划最多延迟 100 ms、样本可能交叠，须听节奏、威胁遮蔽与疲劳并核实际音画同步后再决定是否换默认。
+
+该候选已接入可玩网页的旁置入口，默认关闭；496 项测试、v11/v12 各 3 局模拟与回放一致、软件 WebGL2 smoke 通过，最终构建 38 文件与云端逐字节一致。采用证明限于网页事件消费者与机器检查，不提升 Unity／UE 实跑评级，也不作声音品质结项。
+
+案例依据：[实现与验收提交](https://github.com/dbvv1/MOBA-Like/commit/dea84c4fde58ec7ebb05dc0adae70f4ee2dce45c)、[有界调度与机器证据](https://github.com/dbvv1/MOBA-Like/blob/dea84c4fde58ec7ebb05dc0adae70f4ee2dce45c/docs/audio-critical.md)；Site v18 [旁置试玩](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site/candidate.html?commands=buffer-v1&audio=critical-v1)。核实 2026-10-30；实际试听与实时音画同步待人工验收。
+
 ### 墙门后的声音：先选可听规则，再选遮挡
 
 **直达／被挡先低通＋音量，经开门可听则复用房间连接。** Unity 用目标 AudioSource／Mixer 滤波，必要时 Linecast；Listener 会影响全部声音。UE 先 Attenuation Occlusion，simple 误挡才比 complex。门边跳变、开门仍闷／起音丢失先查几何和过渡，明确复杂传播需求才升级。
