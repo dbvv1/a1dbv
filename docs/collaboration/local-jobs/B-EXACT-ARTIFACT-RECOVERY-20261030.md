@@ -2,7 +2,7 @@
 id: B-EXACT-ARTIFACT-RECOVERY-20261030
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b79cd6a04da5a7ed6ccf224a481c8f79b2ef118d
 result_branch: relay/b-exact-artifact-recovery-20261030
@@ -29,3 +29,11 @@ result_branch: relay/b-exact-artifact-recovery-20261030
 每个目标分别返回 found／not_found／blocked：found 必须核提交真实 tree 与表格相符，说明对象完整性检查范围；bundle 须同时比对 SHA256、list-heads 和 verify 结果，缺前提如实列出，不冒称完整。只给接收端管理根下的安全相对位置以便后续 dot 接收；not_found 写已核项目范围而非断言整机不存在；blocked 写具体缺项、错误类别和恢复条件。报告由非作者核对，脚本跑 check_repo、check_public、空白与 noreply 身份检查，推指定结果分支并回 review_ready；不用 accept: auto，不合入游戏默认分支或部署，不沿用旧验收。
 
 这是一次有限清点，不循环等待原件出现。单次最多两小时；遇超时、失败或终止不明停止后续并按原协议 blocked，不重发、不自建续搜卡。保留已完成报告，只有本卡自有且归属确认的调用可按接收端原停止协议收尾；未知进程不杀。ready／running 标签与排队不算执行，报告须区分实际检查、未检查与等待。
+
+## 当前结果
+
+- 已核实 FPS-Like guard 目标（提交 4ff5202a…/tree 9b104237…）与 MOBA-Like feel 目标（提交 d5b5c151…/tree b29bb338…）在接收端登记范围内全部 not_found：两处克隆对象库、全部 ref、13 个任务工作树及 runs 下 before/after 独立克隆均无目标对象，登记范围内 git bundle 为 0，已知 SHA256/list-heads/verify 因无 bundle 无前提未执行并如实写明；审查 pass、openIssues 为空，check_repo 568 文件 0 错误、check_public 995 文件 0 发现。
+- 产物：[9cb1cd5](https://github.com/dbvv1/a1dbv/commit/9cb1cd52bac3bc5725417f92dd45686ef87f5d7a)，分支 `relay/b-exact-artifact-recovery-20261030`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交本单元新增的 result.md；如需继续恢复，须取得原始 bundle 或 origin 取该提交的授权，按 SHA256→list-heads→verify→cat-file 顺序复核。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
