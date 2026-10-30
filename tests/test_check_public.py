@@ -1,8 +1,10 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -22,6 +24,12 @@ FAKE_WORKSPACE = WORKSPACE_PREFIX + "ab12" * 3
 
 
 class PublicScanTests(unittest.TestCase):
+  def run_cli(self, root, *args):
+    # Pin both sides of the pipe, independent of the host locale or Python alias.
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    return subprocess.run([sys.executable, str(SCRIPT), "--root", str(root), *args],
+                          capture_output=True, text=True, encoding="utf-8", env=env)
+
   def run_fixture(self, files, git=False):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
@@ -77,8 +85,7 @@ class PublicScanTests(unittest.TestCase):
       (root / "evidence.md").write_text(f"Evidence: `{FAKE_WORKSPACE}/report.md`\n", encoding="utf-8")
       subprocess.run(["git", "init", "-q", str(root)], check=True)
       subprocess.run(["git", "-C", str(root), "add", "evidence.md"], check=True)
-      result = subprocess.run(["python3", str(SCRIPT), "--root", str(root)],
-                              capture_output=True, text=True)
+      result = self.run_cli(root)
       self.assertEqual(1, result.returncode)
       report = json.loads(result.stdout)
       self.assertEqual(1, report["checked_files"])
@@ -111,10 +118,10 @@ class PublicScanTests(unittest.TestCase):
       root.mkdir()
       target = fixture / FAKE_KEY
       target.write_text("clean target", encoding="utf-8")
-      (root / "flagged-link").symlink_to(target)
+      (root / "flagged-link").symlink_to(Path("..") / target.name)
       content_target = fixture / "content-target"
       content_target.write_text(FAKE_KEY, encoding="utf-8")
-      (root / "clean-link").symlink_to(content_target)
+      (root / "clean-link").symlink_to(Path("..") / content_target.name)
       subprocess.run(["git", "init", "-q", str(root)], check=True)
       subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
       with mock.patch.object(Path, "read_text", side_effect=AssertionError("symlink target read")):
@@ -128,7 +135,7 @@ class PublicScanTests(unittest.TestCase):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
       (root / "dangling").symlink_to(FAKE_KEY)
-      (root / "directory").symlink_to(root, target_is_directory=True)
+      (root / "directory").symlink_to(".", target_is_directory=True)
       count, findings = module.scan_files(root)
       self.assertEqual(2, count)
       self.assertEqual([("credential", "dangling")],
@@ -142,6 +149,17 @@ class PublicScanTests(unittest.TestCase):
       with mock.patch.object(module, "PATTERNS", [("link-text", re.compile(re.escape(target)))]):
         self.assertEqual((1, [{"kind": "link-text", "file": "link", "line": 1,
                               "match": target}]), module.scan_files(root))
+
+  def test_symlink_fixtures_do_not_leak_the_temporary_parent(self):
+    with tempfile.TemporaryDirectory() as directory:
+      # Detect accidental absolute fixture paths without needing a real home
+      # directory or a Windows-shaped filename on the host filesystem.
+      patterns = module.PATTERNS + [("local-path", re.compile(re.escape(directory)))]
+      with mock.patch.object(tempfile, "tempdir", directory), \
+           mock.patch.object(module, "PATTERNS", patterns):
+        self.test_tracked_symlink_scans_link_text_not_target_content()
+        self.test_dangling_and_directory_symlinks_scan_link_text()
+        self.test_symlink_allowlist_is_scanned_not_loaded()
 
   def test_core_symlinks_false_scans_plain_link_file(self):
     with tempfile.TemporaryDirectory() as directory:
@@ -166,7 +184,7 @@ class PublicScanTests(unittest.TestCase):
       (root / "tracked.txt").write_text(FAKE_KEY, encoding="utf-8")
       target = fixture / FAKE_KEY
       target.write_text(f"tracked.txt\t{FAKE_KEY}\n", encoding="utf-8")
-      (root / module.ALLOW_FILE).symlink_to(target)
+      (root / module.ALLOW_FILE).symlink_to(Path("../..") / target.name)
       subprocess.run(["git", "init", "-q", str(root)], check=True)
       subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
       self.assertEqual(set(), module.load_allow(root))
@@ -179,15 +197,19 @@ class PublicScanTests(unittest.TestCase):
       with self.subTest(target_text=target_text), tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
         (root / "scripts").mkdir()
-        (root / "scripts" / target_text).write_text("synthetic clean target", encoding="utf-8")
-        (root / module.ALLOW_FILE).symlink_to(target_text)
         (root / "tracked.txt").write_text(FAKE_KEY, encoding="utf-8")
         subprocess.run(["git", "init", "-q", str(root)], check=True)
-        subprocess.run(["git", "-C", str(root), "add", "tracked.txt", module.ALLOW_FILE], check=True)
-        (root / module.ALLOW_FILE).unlink()
+        subprocess.run(["git", "-C", str(root), "add", "tracked.txt"], check=True)
+        # Model a real 120000 index entry without creating a tab-containing
+        # target filename, which native Windows cannot represent.
+        blob = subprocess.run(["git", "-C", str(root), "hash-object", "-w", "--stdin"],
+                              input=target_text.encode("utf-8"), capture_output=True, check=True)
+        subprocess.run(["git", "-C", str(root), "update-index", "--add", "--cacheinfo",
+                        "120000", blob.stdout.decode("ascii").strip(), module.ALLOW_FILE], check=True)
         subprocess.run(["git", "-C", str(root), "-c", "core.symlinks=false",
                         "checkout-index", "-f", module.ALLOW_FILE], check=True)
         self.assertFalse((root / module.ALLOW_FILE).is_symlink())
+        self.assertEqual(target_text, (root / module.ALLOW_FILE).read_text(encoding="utf-8"))
         self.assertEqual(set(), module.load_allow(root))
         count, findings = module.scan_files(root)
         self.assertEqual(2, count)
@@ -212,8 +234,7 @@ class PublicScanTests(unittest.TestCase):
         (root / name).rename(fixture / ("original-" + name))
         (root / name).symlink_to(target, target_is_directory=True)
       self.assertEqual(set(), module.load_allow(root))
-      result = subprocess.run(["python3", str(SCRIPT), "--root", str(root)],
-                              capture_output=True, text=True)
+      result = self.run_cli(root)
       self.assertEqual(1, result.returncode)
       report = json.loads(result.stdout)
       self.assertEqual(1, report["checked_files"])
@@ -222,13 +243,23 @@ class PublicScanTests(unittest.TestCase):
                        [(f["kind"], f["file"]) for f in report["findings"]])
       self.assertEqual("", result.stderr)
 
+  def test_index_symlink_fixture_needs_no_control_character_filename(self):
+    write_text = Path.write_text
+
+    def reject_tab_filename(path, *args, **kwargs):
+      if "\t" in path.name:
+        raise OSError("control character in filename is not supported")
+      return write_text(path, *args, **kwargs)
+
+    with mock.patch.object(Path, "write_text", reject_tab_filename):
+      self.test_core_symlinks_false_allowlist_text_is_scanned_not_loaded()
+
   def test_binary_and_missing_root(self):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
       (root / "x.bin").write_bytes(b"\xff\xfe\x00")
       self.assertEqual((0, []), module.scan_files(root))
-    result = subprocess.run(["python3", str(SCRIPT), "--root", "/nonexistent-root-for-test"],
-                            capture_output=True, text=True)
+    result = self.run_cli("/nonexistent-root-for-test")
     self.assertEqual(2, result.returncode)
 
   def scan_identity(self, author, committer):
@@ -278,13 +309,27 @@ class PublicScanTests(unittest.TestCase):
 
   def test_cli_rejects_explicit_empty_commit_range(self):
     with tempfile.TemporaryDirectory() as directory:
-      command = ["python3", str(SCRIPT), "--root", directory]
-      omitted = subprocess.run(command, capture_output=True, text=True)
+      omitted = self.run_cli(directory)
       self.assertEqual(0, omitted.returncode)
-      empty = subprocess.run(command + ["--commits", ""], capture_output=True, text=True)
+      empty = self.run_cli(directory, "--commits", "")
       self.assertEqual(2, empty.returncode)
       self.assertIn("--commits must not be empty", empty.stderr)
       self.assertEqual("", empty.stdout)
+
+  def test_cli_unicode_output_ignores_parent_locale(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      name = "测试-🧪.txt"
+      (root / name).write_text(FAKE_KEY, encoding="utf-8")
+      with mock.patch.object(subprocess, "_text_encoding", return_value="gbk"), \
+           mock.patch.dict(os.environ, {"PYTHONIOENCODING": "gbk"}):
+        result = self.run_cli(root)
+      self.assertEqual(1, result.returncode)
+      report = json.loads(result.stdout)
+      self.assertEqual(1, report["checked_files"])
+      self.assertEqual([(name, "credential")], [(f["file"], f["kind"]) for f in report["findings"]])
+      self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
+      self.assertEqual("", result.stderr)
 
   def test_commit_identity(self):
     with tempfile.TemporaryDirectory() as directory:
