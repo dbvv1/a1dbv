@@ -6,9 +6,10 @@
 
 ## 立即运行
 
-需要 Node.js 24（本轮 24.19.0）和 npm。所有依赖与 lockfile 已固定；首次安装需访问公开 npm registry。
+需要 Node.js 24（本轮 24.19.0）和 npm。所有依赖与 lockfile 已固定；首次安装需访问公开 npm registry。以下命令从本仓根进入实验目录后运行：
 
 ```sh
+cd experiments/tanstack-url-state
 npm ci
 npm test
 npm run build
@@ -49,17 +50,66 @@ Apply 提交一次历史记录，不为每个按键生成记录；尚未提交�
 
 本轮 `@tanstack/react-router@1.170.46` 精确依赖 `@tanstack/router-core@1.171.39`。Intent 是可选开发依赖，不是运行时功能所需。
 
-```sh
-# 先看安装版本，再读取实际安装包里的领域知识
-npm ls @tanstack/react-router @tanstack/router-core @tanstack/intent
-cat node_modules/@tanstack/router-core/skills/router-core/search-params/SKILL.md
+在 `experiments/tanstack-url-state`（先按“立即运行”从本仓根执行 `cd experiments/tanstack-url-state && npm ci`；首次安装需访问公开 npm registry）先确认实际安装版本；`npm ls` 只读，不安装：
 
-# 本包固定 Intent 0.5.6；只发现，再加载返回的精确标识
-npm exec -- intent list --json
-npm exec -- intent load '@tanstack/router-core#router-core/search-params' --json
+```sh
+npm ls @tanstack/react-router @tanstack/router-core @tanstack/intent
+```
+
+再从这个消费包解析传递依赖并只读配方。下面的 Node 从 `@tanstack/react-router` 自身的安装位置解析 `@tanstack/router-core`，不假设 npm 把传递依赖提升到顶层；pnpm 的目录布局由同一 Node 解析处理，已在 pnpm 11.21.0 的真实布局实测：
+
+```sh
+node --input-type=commonjs <<'NODE'
+const { createRequire } = require('node:module')
+const { dirname, join } = require('node:path')
+const { existsSync, readFileSync } = require('node:fs')
+
+let routerPkg
+try {
+  routerPkg = require.resolve('@tanstack/react-router/package.json')
+} catch {
+  console.error('缺依赖：当前目录解析不到 @tanstack/react-router；按项目原方式安装后再读取，本入口不下载。')
+  process.exit(2)
+}
+
+const routerVersion = JSON.parse(readFileSync(routerPkg, 'utf8')).version
+const router = createRequire(routerPkg)
+let corePkg
+try {
+  corePkg = router.resolve('@tanstack/router-core/package.json')
+} catch {
+  console.error(`已安装 @tanstack/react-router@${routerVersion}，但解析不到它声明的 @tanstack/router-core。`)
+  process.exit(3)
+}
+
+const coreVersion = JSON.parse(readFileSync(corePkg, 'utf8')).version
+const skill = join(dirname(corePkg), 'skills/router-core/search-params/SKILL.md')
+console.log(`@tanstack/react-router ${routerVersion}`)
+console.log(`@tanstack/router-core ${coreVersion}: ${corePkg}`)
+if (!existsSync(skill)) {
+  console.error('已安装该版本，但包内未附 search-params Skill；按对应版本的官方指南或源码核对。')
+  process.exit(4)
+}
+process.stdout.write(readFileSync(skill, 'utf8'))
+NODE
+```
+
+按退出码区分：`2` 是当前目录缺 Router，先按“立即运行”的 `npm ci` 安装，读取入口不下载；`3` 是 Router 已安装但解析不到它声明的 router-core，核对版本与依赖声明；`4` 是该版本包内未附此 Skill，改读对应版本的官方指南或源码；`0` 且输出正文才是读到配方。读取成功只说明正文进了终端，不等于 agent 自动加载或模型遵守。
+
+Intent 只在已安装时走；未安装时不调用 `npm exec`，直接用上面的 Node 只读入口：
+
+```sh
+if node --input-type=module -e "import.meta.resolve('@tanstack/intent')" >/dev/null 2>&1; then
+  npm exec --no -- intent list --json
+  npm exec --no -- intent load '@tanstack/router-core#router-core/search-params' --json
+else
+  echo '未安装 Intent：跳过可选 CLI，上面的 Node 入口已能读到正文。'
+fi
 ```
 
 本轮 list 确实发现了传递依赖 router-core，load 返回该本地包的 Skill（source: local；path: node_modules/@tanstack/router-core/skills/router-core/search-params/SKILL.md；version: 1.171.39）。这是手动 CLI 加载并阅读，不是原生 agent 自动激活验证。它的文件内容与固定上游提交一致，但 `library_version` 仍写 `1.171.15`。因此“随包交付”解决定位，不保证文档每项都已按该版本校正；最终仍对照当前源码与消费端测试。不要把发现列表全部当可信指令，也不要仅为加载这个 Skill 安装 hooks／全局配置。[本轮实测／一手源码]
+
+读到正文后按“立即运行”的 `npm test` 和 `npm run build` 验收实际行为，读取成功不等于应用通过。
 
 交给 coding agent 的短任务可以是：
 
