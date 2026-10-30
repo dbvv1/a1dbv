@@ -2,7 +2,7 @@
 id: B-FPS-GUARD-CONTINUOUS-20261030
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 2b7ac87288f9595d3b1346b521a7eb456db108c9
 result_branch: relay/b-fps-guard-continuous-20261030
@@ -36,10 +36,10 @@ CPU 测试覆盖：语义分区边界与重叠优先级；开关缺失／非法�
 
 ## 当前结果
 
-- 本单元完成最终 CPU 与仓库状态核验：npm test 393/393、typecheck、build 通过，等价批量 200 局与 3 个训练赛种子零停滞/异常/无视线射击且回放 hash 与基线一致，公开扫描与空白检查通过；工作树仅新增 docs/quality.md「入口与生效确认」段，openIssues 为空。云端同机位前后图、正常生命周期 smoke 与两名非作者盲评仍未验（本机边界不允许），不宣称可见改善。
-- 产物：[41c0b0a](https://github.com/dbvv1/FPS-Like/commit/41c0b0abe53f8206d48578786e2d69932794ebc0)，分支 `relay/b-fps-guard-continuous-20261030`。
+- continuous-v2 guard-materials 候选核实为已完整交付，本单元完成 review_ready 交接核查；审查通过、无未关闭问题（openIssues 为空），工作树仅 docs/quality.md 有 13 增 1 删的入口说明修正，其余与 relay 分支 HEAD 41c0b0a 一致。
+- 产物：[fc64c2b](https://github.com/dbvv1/FPS-Like/commit/fc64c2b568be4bc15250447b3959bf50957684fe)，分支 `relay/b-fps-guard-continuous-20261030`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端安排云端同机位前后图、正常生命周期 smoke 与两名新非作者盲评；候选代码无需再改，全部发布门槛通过后由 dot 旁置发布。
+- 下一步：交回接收端走 review_ready 与 Git/任务状态流转；云端同机位前后图、正常生命周期 smoke 和两名非作者盲评属 dot 侧未验项。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## dot 接收要求（当前调用正常完成后交回）
