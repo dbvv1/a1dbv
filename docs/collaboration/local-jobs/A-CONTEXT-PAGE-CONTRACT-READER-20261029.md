@@ -1,6 +1,6 @@
 id: A-CONTEXT-PAGE-CONTRACT-READER-20261029
 owner: dot-A
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5847ea532dbf7437ca8c4865af031ce0d862a153
 result_branch: relay/a-context-page-contract-reader-20261029
@@ -32,8 +32,8 @@ page: docs/decisions/context-management.md@dot-a/context-concise-reader-20261029
 
 ## 当前结果
 
-- u4 独立读者按页面完成仓库侧验收：附入全文与 page 固定提交 d0b9651b 逐字节一致，9 项单测与 check_repo（565 文件 0 错误）复跑通过；非读者复跑确认 taskDone=true，未关闭审查问题 0（remaining=false，审查者另记读者表述超出核验范围若干条）；页面卡点为任务卡未规定同名 reader-test 后续单元产物命名，读者另写 result-u4.md。
-- 产物：[0e18010](https://github.com/dbvv1/a1dbv/commit/0e18010fa6fd78983cf2c915d55dab518dc819ef)，分支 `relay/a-context-page-contract-reader-20261029`。
+- u5 独立读者完成仓库侧验收：接收端附入的页面全文与 page 固定提交 d0b9651b 逐字节一致，9 项单测、check_repo（567 文件 0 错误）与 check_public（993 文件 0 发现）复跑通过，最小卡/缺页/80 行边界探针符合预期；非读者确认 taskDone=true，未关闭审查问题 0（remaining=false，另记 5 条读者记录的表述与完整性偏差，如把分支当固定 ref、行号引用错位、漏记 TASKS.md 大小检查）；页面造成的卡点为 0（pageStuck 为空），但读者自报开工时读过遗留旧产物，独立性不合格，干净结论需换未读旧产物的读者重跑。
+- 产物：[fe4774b](https://github.com/dbvv1/a1dbv/commit/fe4774ba7c800b17ec095c24a964ec1f57d5ed9d)，分支 `relay/a-context-page-contract-reader-20261029`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端按任务卡「当前结果/下一步」处理 result.md 的 6 条遗留修正或派发下一单元；本单元两处产物待接收端提交。
+- 下一步：接收端提交本单元两处产物；若需要干净的 reader-test 信号，派未读过 result.md/result-u4.md/result-u5.md 的新读者复跑。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
