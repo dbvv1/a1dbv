@@ -1,7 +1,7 @@
 # A-VERIFY-REVIEW-WIDE-20261029 · 验证与代码审查广扫
 id: A-VERIFY-REVIEW-WIDE-20261029
 owner: dot-A
-status: blocked
+status: ready
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b5f8666bec70933196c1286995afd386a6a935d9
