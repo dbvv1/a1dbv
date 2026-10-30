@@ -1,7 +1,7 @@
 # A-INSTRUCTION-DIRECTORY-ENTRY-20261030 · 把共享指令的跨目录入口讲清
 id: A-INSTRUCTION-DIRECTORY-ENTRY-20261030
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8f01eeee1f931cfd48390658906a42cc5148e084
@@ -32,4 +32,9 @@ result_branch: relay/a-instruction-directory-entry-20261030
 负责人入队前核 A 自身实际活跃少于 2 且共享有空余；原接收端按共享最多 4 并行调度，ready／running 标签与真正派发分开报告，不另起调度器抢槽。
 
 ## 当前结果
-待原接收端领取；交回跨目录入口修订和简短检查结果，真实多工具采用仍待验。
+
+- 在 docs/decisions/instruction-files.md 第二步落实单包新任务、Codex 根会话跨兄弟包、Claude 附加仓库三行分流与可复制启动示例，并写 result.md；经三视角审查修正 1 轮，openIssues 为空，check_repo/check_public/git diff --check 均 exit 0。
+- 产物：[baa9252](https://github.com/dbvv1/a1dbv/commit/baa9252202aa933cf73cb9b129d0453ce1dd1e05)，分支 `relay/a-instruction-directory-entry-20261030`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无剩余工作；接收端按任务要求审查并发布 result_branch。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
