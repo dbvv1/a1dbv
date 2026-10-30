@@ -1,7 +1,7 @@
 # A-LEGACY-MIGRATION-GUIDE-20261030 · 从既有迁移实证写出可照做的候选页
 id: A-LEGACY-MIGRATION-GUIDE-20261030
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 97b7092c9b32ae4128855a89e9c7de022ec5b26a
@@ -36,9 +36,4 @@ result_branch: relay/a-legacy-migration-guide-20261030
 负责人入队前核 A 自身实际活跃少于 2 且共享有空余；实际领取仍由原接收端按共享最多 4 并行调度。卡片 ready／running 与真正派发分开报告，不另起调度器抢槽。
 
 ## 当前结果
-
-- 已按固定输入写成候选操作页 candidate.md：用一张选择表区分重复语法变换、跨文件类型/引用、依赖版本升级与含持久数据的结构变化，并给出 Actual/Memoh/SQLite 三例的起步命令、真实消费者验收、停止扩量/局部补丁/保留旧实现及回退边界，三例已验范围与未验项分别保留；非作者三视角审查通过、修正两轮，openIssues 为空，无未关闭问题。本轮为 build 单元，不适用 taskDone/pageStuck 字段，未启动真实读者实做（文末已列最小实做缺口）；工作树仅新增该文件。
-- 产物：[4119325](https://github.com/dbvv1/a1dbv/commit/411932581f6459284f3cb1da27b8715ec0e44534)，分支 `relay/a-legacy-migration-guide-20261030`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端提交并推送 result_branch 后转 review_ready，由 dot 决定最终推荐与发布；真实读者实做需另立新卡（本次只识别缺口，不重开旧取消任务）。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+接收[迁移选择候选](artifacts/A-LEGACY-MIGRATION-GUIDE-20261030/candidate.md)，已修正历史安装／统计外推、通用取样门槛、规则用途和命令前置／回退边界；静态独审通过，原调用已核正常退出。新读者真实任务实做仍待验，不重开旧取消任务、不升级地图或替换现有推荐。
