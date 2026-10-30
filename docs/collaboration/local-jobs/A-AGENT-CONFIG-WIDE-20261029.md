@@ -1,7 +1,7 @@
 # A-AGENT-CONFIG-WIDE-20261029 · 编码 Agent 与项目配置广扫
 id: A-AGENT-CONFIG-WIDE-20261029
 owner: dot-A
-status: running
+status: blocked
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b5f8666bec70933196c1286995afd386a6a935d9
@@ -33,3 +33,8 @@ result_branch: relay/a-agent-config-wide-20261029
 非作者核链接支持的一句主张、日期／版本、真实消费者与宣传的区别、仓内／跨卡去重及五类真实覆盖。未饱和与社区原文缺口保留，不能写全面完成或实测／采用通过；发现新价值优先，不以任务数或候选数量充进度。
 每单元约 60–90 分钟、单次最多两小时；共享最多 4 并行由原接收端调度，不另起进程抢槽。时限到保存结果与未覆盖项，已有可审产物才回 `review_ready` 由 dot 决定是否需原卡接续；调用超时或连续失败按协议记 `blocked`，不当作来源负结果；不自建续搜卡、不重复初始调用。
 接收脚本运行 check_repo、check_public、空白及提交身份检查，只推指定 result_branch；不用 accept: auto，不合入 main 或部署。阻塞写入口、实际错误、已有结果及恢复条件；状态不等于调用已停止。
+
+## 当前结果
+
+- 本机接收端连续 2 次未完成第 1 个单元：本机模型调用没有返回有效结果（termination_unconfirmed）。负责人确认任务可以执行后改回 ready，接收端会重新领取。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
