@@ -24,6 +24,13 @@ FAKE_WORKSPACE = WORKSPACE_PREFIX + "ab12" * 3
 
 
 class PublicScanTests(unittest.TestCase):
+  def setUp(self):
+    # Receivers may place TEMP inside a checkout. All fixture roots below this
+    # boundary must discover only their own .git, never the enclosing checkout.
+    directory = self.enterContext(tempfile.TemporaryDirectory())
+    self.enterContext(mock.patch.object(tempfile, "tempdir", directory))
+    self.enterContext(mock.patch.dict(os.environ, {"GIT_CEILING_DIRECTORIES": directory}))
+
   def run_cli(self, root, *args):
     # Pin both sides of the pipe, independent of the host locale or Python alias.
     env = dict(os.environ, PYTHONIOENCODING="utf-8")
@@ -110,6 +117,29 @@ class PublicScanTests(unittest.TestCase):
       subprocess.run(["git", "-C", str(root), "add", "tracked.md"], check=True)
       (root / "scratch.md").write_text(FAKE_EMAIL, encoding="utf-8")
       self.assertEqual((1, []), module.scan_files(root))
+
+  def test_fixture_suite_under_parent_git_keeps_its_own_scan_scope(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      (root / "parent.txt").write_text("keep the enclosing checkout unchanged\n", encoding="utf-8")
+      subprocess.run(["git", "-C", str(root), "add", "parent.txt"], check=True)
+      index = (root / ".git/index").read_bytes()
+      scratch = root / "scratch"
+      scratch.mkdir()
+      env = dict(os.environ, TMPDIR=str(scratch), TEMP=str(scratch), TMP=str(scratch),
+                 PYTHONIOENCODING="utf-8")
+      env.pop("GIT_CEILING_DIRECTORIES", None)
+      cases = ("test_clean_and_placeholder_content_passes", "test_flags_credential_key_path_and_email",
+               "test_dangling_and_directory_symlinks_scan_link_text", "test_cli_unicode_output_ignores_parent_locale",
+               "test_untracked_files_are_ignored_in_git_checkout")
+      result = subprocess.run([sys.executable, str(Path(__file__)), *[f"PublicScanTests.{name}" for name in cases]],
+                              env=env, capture_output=True, text=True, encoding="utf-8")
+      self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+      self.assertIn("Ran 5 tests", result.stderr)
+      self.assertNotIn("skipped", result.stderr)
+      self.assertEqual(index, (root / ".git/index").read_bytes())
+      self.assertEqual([], list(scratch.iterdir()))
 
   def test_tracked_symlink_scans_link_text_not_target_content(self):
     with tempfile.TemporaryDirectory() as directory:
