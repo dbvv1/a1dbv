@@ -1,0 +1,81 @@
+{
+  "captured_on_utc": "2026-10-29",
+  "source_commit": "14c213405669414492bda0f8d52cc6531d062c45",
+  "archive_sha256": "fcd21410d817ce4829bb028824d54e5288dc036d21ad2076a3f9ef72f58ba539",
+  "source_url": "https://github.com/Panniantong/Agent-Reach/archive/14c213405669414492bda0f8d52cc6531d062c45.tar.gz",
+  "python": "3.12.14",
+  "resolved_dependencies": [
+    "brotli==1.2.1",
+    "certifi==2026.10.23",
+    "charset-normalizer==3.5.2",
+    "idna==3.20",
+    "loguru==0.7.3",
+    "mutagen==1.48.1",
+    "pycryptodomex==3.24.1",
+    "pyyaml==6.0.3",
+    "requests==2.34.2",
+    "urllib3==2.8.0",
+    "websockets==17.3",
+    "yt-dlp==2026.8.19",
+    "yt-dlp-ejs==0.8.0"
+  ],
+  "invocation": "python -m agent_reach.cli",
+  "isolation": {
+    "separate_home_and_xdg": true,
+    "credential_environment_supplied": false,
+    "browser_session_imported": false,
+    "browser_started": false,
+    "setup_or_update_executed": false,
+    "filesystem": "bubblewrap: host root read-only; home, workspace and temporary trees masked; only trial directory writable",
+    "environment": "allowlisted proxy/certificate settings plus interpreter configuration; no account credential variables"
+  },
+  "records": [
+    {
+      "query": [
+        "github",
+        "search",
+        "Agent-Reach",
+        "--limit",
+        "5",
+        "--backend",
+        "github-api",
+        "--timeout",
+        "30"
+      ],
+      "elapsed_seconds": 4.583,
+      "exit_code": 0,
+      "stdout": "{\"schema_version\": 1, \"ok\": true, \"channel\": \"github\", \"action\": \"search\", \"backend\": \"github-api\", \"items\": [{\"title\": \"Panniantong/Agent-Reach\", \"url\": \"https://github.com/Panniantong/Agent-Reach\", \"author\": \"Panniantong\", \"published_at\": \"2026-02-24T02:10:24Z\", \"text\": \"Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees.\", \"raw\": {\"description\": \"Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees.\", \"stargazers_count\": 105756, \"forks_count\": 9379, \"language\": \"Python\", \"topics\": [\"agent-infrastructure\", \"ai-agent\", \"ai-search\", \"automation\", \"bilibili\", \"claude-code\", \"cli\", \"cursor\", \"free-api\", \"llm-tools\", \"mcp\", \"python\", \"reddit-scraper\", \"twitter-scraper\", \"web-scraper\", \"xiaohongshu\", \"youtube-transcript\"], \"pushed_at\": \"2026-10-25T04:37:26Z\", \"open_issues_count\": 259, \"archived\": false, \"license\": \"MIT\"}}, {\"title\": \"EdisonChenAI/agent-reach\", \"url\": \"https://github.com/EdisonChenAI/agent-reach\", \"author\": \"EdisonChenAI\", \"published_at\": \"2026-03-07T08:33:00Z\", \"text\": \"Use the internet: search, read, and interact with 13+ platforms including Twitter/X, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu (小红书), Douyin (抖音)\", \"raw\": {\"description\": \"Use the internet: search, read, and interact with 13+ platforms including Twitter/X, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu (小红书), Douyin (抖音)\", \"stargazers_count\": 166, \"forks_count\": 36, \"language\": null, \"topics\": [], \"pushed_at\": \"2026-03-07T08:39:38Z\", \"open_issues_count\": 0, \"archived\": false, \"license\": \"MIT\"}}, {\"title\": \"headroomlabs-ai/headroom\", \"url\": \"https://github.com/headroomlabs-ai/headroom\", \"author\": \"headroomlabs-ai\", \"published_at\": \"2026-01-07T19:58:51Z\", \"text\": \"Compress tool outputs, logs, files, and RAG chunks before they reach the LLM. 20% fewer tokens for coding agents, 60-95% fewer tokens for JSON, same answers. Library, proxy, MCP server.\", \"raw\": {\"description\": \"Compress tool outputs, logs, files, and RAG chunks before they reach the LLM. 20% fewer tokens for coding agents, 60-95% fewer tokens for JSON, same answers. Library, proxy, MCP server.\", \"stargazers_count\": 78172, \"forks_count\": 6087, \"language\": \"Python\", \"topics\": [\"agent\", \"ai\", \"anthropic\", \"claude-code\", \"compression\", \"context-engineering\", \"context-window\", \"cursor\", \"fastapi\", \"langchain\", \"llm\", \"mcp\", \"openai\", \"prompt-engineering\", \"proxy\", \"python\", \"rag\", \"token-optimization\", \"tokens\", \"typescript\"], \"pushed_at\": \"2026-10-29T04:52:09Z\", \"open_issues_count\": 484, \"archived\": false, \"license\": \"Apache-2.0\"}}, {\"title\": \"LilMGenius/paperthin\", \"url\": \"https://github.com/LilMGenius/paperthin\", \"author\": \"LilMGenius\", \"published_at\": \"2026-06-19T02:03:18Z\", \"text\": \"Low-level agentic design patterns. Turning old engineering wisdom into reflexes your agent reaches for on its own—on any agent.\", \"raw\": {\"description\": \"Low-level agentic design patterns. Turning old engineering wisdom into reflexes your agent reaches for on its own—on any agent.\", \"stargazers_count\": 1354, \"forks_count\": 118, \"language\": \"JavaScript\", \"topics\": [\"anti-slop\", \"clean-code\", \"design-patterns\", \"docs\", \"evals\", \"fable\", \"hygiene\", \"markdown\", \"plugin\", \"skills\", \"ssot\"], \"pushed_at\": \"2026-10-29T02:44:36Z\", \"open_issues_count\": 3, \"archived\": false, \"license\": \"MIT\"}}, {\"title\": \"vibe-with-me-tools/agent-reachout\", \"url\": \"https://github.com/vibe-with-me-tools/agent-reachout\", \"author\": \"vibe-with-me-tools\", \"published_at\": \"2026-01-10T07:05:32Z\", \"text\": \"Let Claude Code reach you on Telegram when it finishes work or needs decisions\", \"raw\": {\"description\": \"Let Claude Code reach you on Telegram when it finishes work or needs decisions\", \"stargazers_count\": 58, \"forks_count\": 11, \"language\": \"TypeScript\", \"topics\": [\"agentic-ai\", \"claude-code\", \"claude-code-plugin\", \"llm\", \"mcp\", \"messaging\", \"notifications\", \"productivity\", \"telegram\", \"vibe-coding\"], \"pushed_at\": \"2026-03-30T03:18:17Z\", \"open_issues_count\": 0, \"archived\": false, \"license\": \"MIT\"}}], \"meta\": {\"elapsed_ms\": 4362, \"attempts\": [{\"backend\": \"github-api\", \"result\": \"ok\"}]}, \"error\": null}\n",
+      "stderr": "",
+      "credential_env_supplied": false,
+      "source_commit": "14c213405669414492bda0f8d52cc6531d062c45"
+    },
+    {
+      "query": [
+        "github",
+        "read",
+        "https://github.com/Panniantong/Agent-Reach/issues/868",
+        "--backend",
+        "github-api",
+        "--timeout",
+        "30"
+      ],
+      "elapsed_seconds": 1.698,
+      "exit_code": 1,
+      "stdout": "{\"schema_version\": 1, \"ok\": false, \"channel\": \"github\", \"action\": \"read\", \"backend\": null, \"items\": [], \"meta\": {\"elapsed_ms\": 1477, \"attempts\": [{\"backend\": \"github-api\", \"result\": \"UPSTREAM_BROKEN\", \"message\": \"network error: Tunnel connection failed: 403 Forbidden\"}]}, \"error\": {\"code\": \"UPSTREAM_BROKEN\", \"message\": \"network error: Tunnel connection failed: 403 Forbidden\", \"hint\": \"This channel is temporarily not working; `message` is what was reported. Tell the user in plain words which platform has a problem, without naming tools; suggest `agent-reach update` only if the message points to an outdated tool; do not retry in a loop.\"}}\n",
+      "stderr": "",
+      "credential_env_supplied": false,
+      "source_commit": "14c213405669414492bda0f8d52cc6531d062c45"
+    }
+  ],
+  "orchestration_note": "The tool reported network approval cancelled before a decision; subsequent inspection confirmed both result files and no remaining CLI process. The denied read was not retried.",
+  "preparation_failures": [
+    "Default dependency cache was read-only; moved cache to the authorized trial directory.",
+    "First sandbox mount destination could not be created beneath read-only root; changed to the isolated temporary tree before product execution."
+  ],
+  "comparison": {
+    "baseline": "Earlier ordinary web search located the official repository and read issue 868; GitHub connector read implementation files.",
+    "new_decision_relevant_original_documents": 0,
+    "latency_comparison_performed": false,
+    "blind_discovery_test": false
+  }
+}

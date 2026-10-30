@@ -52,8 +52,8 @@ writeFileSync(join(runDir, 'manifest.json'), JSON.stringify(shots, null, 2));
 await browser.close();
 ```
 
-- 对比只用 manifest 里同一 `class` 的结果，定稿用 `gpu`。`outRoot` 要先存在。
-- 只有软件渲染的环境加 `--use-angle=swiftshader`；能出图但慢，适合查构图和回归，不适合定光照和材质。
+- 对比只用 manifest 里同一 `class` 的结果。`outRoot` 要先存在。
+- 只有软件渲染的环境加 `--use-angle=swiftshader`（新版 Chromium 可能还要 `--enable-unsafe-swiftshader`）；画质档固定、关闭按帧率降级后，静帧可用于迭代和盲评，口径见 SKILL §1。
 - 录像：循环“等 `frame` 递增 → `screenshot` → `__shotNext()`”写进同一个运行目录，再 `ffmpeg -framerate 60 -i %05d.png -c:v libx264 -pix_fmt yuv420p out.mp4`。
 - 拍摄模式由虚拟时钟推进，不依赖帧率，也不需要窗口在前台。
 

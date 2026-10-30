@@ -13,9 +13,9 @@
 | **4 · 同一 API 改法要重复几十处** | 🧪 **ast-grep 的“例子→规则→只读清单→改写”**：先借维护者 codemod，让 Agent 交正反例及命中范围，再批量修改、跑原项目检查。 | [0.51.0 复跑 Pinia Colada 规则](research/2026-10-22-frontier-trials.md#ast-grep先验规则再批量定位)：发现负例漏跑，修正规则后 27 例通过；整应用迁移未试用。涉及符号身份或 `this` 绑定时改用语义重构／手改。 |
 | **5 · Agent 总把库的新旧 API 混用** | 🧪 **Context7 精确版本查询**：`resolve-library-id` 选实际存在的版本 ID → `query-docs` → 核同 tag 原文；[已试入口](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)可照用。 | 两次匿名查询分别取回 Pydantic v1 的 `dict()`、v2 的 `model_dump()`，源链接匹配版本；只验检索，生成代码未试。只查一次或所需版本未索引，直接读官方对应版文档。 |
 
-**为什么选它们：** 前两项已接住真实修复；后三项分别把库配方、重复改法和版本差异变成 Agent 可检查的输入。GitButler 已把全任务设计／MCP 清单收成按需 UI Skill；中文批量改码翻车反馈与 Context7 过期片段修复则提醒：选对工具后，仍要核实际改动与源版本。
+**为什么本周继续选这五项：** 前两项已接住真实修复；后三项分别把库配方、重复改法和版本差异变成 Agent 可检查的输入。10-29 回扫后暂不换榜：新候选有值得借的机制，但还不足以替代这些已试入口。缺平台原文可看下文候选表的 [Agent-Reach](#agent-reach-public-trial)，无人值守任务被旧测试规则卡住可看[测试保护的适用边界](#test-protection-contract-change)；按自己的缺口选，不为追新装齐。
 
-**依据**：[一手：源码／实际配置] [GitButler 按需 Skill 修订](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)、[TanStack 随包 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)、[Pinia Colada 固定迁移规则](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rules/migration-0-21-to-1-0.yaml)；[社区：真实问题与回执] [jrnl 原问题](https://github.com/jrnl-org/jrnl/issues/1422)、[TanStack 状态保留讨论](https://www.reddit.com/r/reactjs/comments/1to7tcj/tanstack_router_and_query/)、[LINUX DO 批量改码反馈](https://linux.do/t/topic/3004044)、[Context7 修复回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)。选择周为 2026-10-26～11-01，定向回核 10-26；表内复用 10-23～26 的原试用，具体范围见各入口。
+**依据**：[一手：源码／实际配置] [GitButler 按需 Skill 修订](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)、[TanStack 随包 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)、[Pinia Colada 固定迁移规则](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rules/migration-0-21-to-1-0.yaml)；[社区：真实问题与回执] [jrnl 原问题](https://github.com/jrnl-org/jrnl/issues/1422)、[TanStack 状态保留讨论](https://www.reddit.com/r/reactjs/comments/1to7tcj/tanstack_router_and_query/)、[LINUX DO 批量改码反馈](https://linux.do/t/topic/3004044)、[Context7 修复回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)。选择周为 2026-10-26～11-01，10-29 与本轮新候选比较后保留；原五项来源定向回核 10-26，表内复用 10-23～26 的试用，具体范围见各入口。
 
 ## 工具入口与代表做法
 
@@ -97,6 +97,8 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| <a id="agent-reach-public-trial"></a>[Agent-Reach：按平台动作补读取缺口](research/2026-10-29-agent-reach-trial.md) | 现有入口取不到中文平台／视频原文时，按具体 search、read 动作试，不以渠道总体正常代替验收 | 官方 1.6.0 与 Reddit #868、HN／LINUX DO 真实反馈；从官方 GitHub 安装，避开 PyPI 同名包 | 隔离安装固定源码：公开 GitHub 搜索返回5条，issue读取遭代理403；新增决定性原文0篇，中文平台／视频未试 | 🧪 保现有搜索默认；遇访问拒绝停止对应入口。此前漏项由外部带入，[时间窗与目录漏检复盘](research/2026-10-29-agent-reach-trial.md#漏项归因窗口漏掉旧项目目录也不保证收录)可直接核对 |
+| <a id="test-protection-contract-change"></a>[测试保护：给合法规格变更留接收路径](https://secondtimeisabug.com/blog/coding-agent-guardrails-270-runs/) | 规格改变旧断言时，先明确哪些测试须保留、哪些须随契约更新及由谁接收；不要把“测试只读”直接复制为无人值守默认 | 作者公开270次运行；[固定任务计划](https://github.com/second-time-is-a-bug-book/book-companion/blob/b0a04d5b584b7d1c6afc8b9c365c19073929b570/experiment/tasks/BATCH-2.md)的T4明确需要修改旧测试 | 本仓未试用；只读复算[公开记录](https://github.com/second-time-is-a-bug-book/book-companion/tree/b0a04d5b584b7d1c6afc8b9c365c19073929b570/experiment/results)：有规则的T4中23/30次留下旧单测失败；三条件首过率未见清晰提高 | 👀 作者同一小项目，未公开轨迹／补丁，遗留失败计入了停下等人；不据此撤掉测试保护或宣称门禁无效 |
 | [Goose／LiteLLM 别名丢图](collaboration/inbox.md#goose-litellm-vision-payload) | 元数据说支持图片却看不到图时，查真实 HTTP payload 与配置优先级，在格式化前解析能力 | #13158 使用者报告、固定源码与非作者审查，来源见入口 | 回环 HTTP／Wiremock：基线 2 失败＋7 对照通过，本地候选扩展 18 项通过 | 🧪 排障试验；真实代理未验，候选未提 PR、Ready 未知，不作工具推荐 |
 | [Flutter 原生指令加载排障](collaboration/inbox.md#flutter-native-rule-loading) | 代码已改、运行应用没更新时，先核原生规则／MCP instructions 实际加载，再考虑长 Skill | #498 维护者尝试、8-19 用户复测与 #228 固定规则，来源见入口 | 2026-10-27 只读核实；未安装、未试用 | 👀 成功原因未隔离；reload／restart 仅限适用 Flutter 项目，不新增通用默认 |
 | [Stryker／Vitest 5 测试选择](collaboration/inbox.md#stryker-vitest5-test-selection) | 已有 mutation 流水线、升级后分数骤降时，先让 Agent 核 `testsCompleted` 与 errors，保阈值修兼容栈，再决定是否补断言 | 上游 #6214／10.1.1 与 openclaw-atif #35 真实采用，来源见入口 | 2026-10-27 核原文与补丁；未安装、未试用 | 👀 零测试 survivor 先查 runner；11 killed＋17 errors 不是 28 killed，其他故障另诊断 |
@@ -142,6 +144,8 @@
 **已知交付入口先用 `rg`／词法，不为一次接收临时建混合索引。** 本次 QMD 在 CPU 上为 11 份完整文档建向量耗时 33m26s，带重排首问 349.906s，仍把旧过程排第一。已有索引时，可按版本 Skill 写 `intent`／`lex`／`vec`，CPU 不值得等重排则显式 `--no-rerank`；结果仍按补丁、实际验证、当前约定分别取原文。原文更新后还要看 pending，不能由“有向量”推成“新内容已嵌入”。[实试范围、来源与撤回条件](research/2026-10-22-frontier-trials.md#qmd-hybrid-intake)，核实 2026-10-25 UTC。
 
 **中文长资料先用关键词找原块，漏关键条件就缩到指定来源。** context-mode 的本次组件实试能保存并返回原文，但两条完整问句零命中，跨来源前三块还漏了“同源正文”的决定性限制；单个关键词或限定来源后补回。已知路径继续 `rg`，反复查询多份长资料才考虑临时索引；索引时间不能替代原文核实日期。[实际问题、入口与取舍](../experiments/context-mode-retrieval.md)，核实 2026-10-26 UTC。
+
+**新候选只补当前缺口：** Agent-Reach 的增量是逐动作核路由与真实正文，当前试验未补回新原文；测试保护反例的增量是识别合法规格更新和等待人的成本。两项均不支持替换本周 Top 5。Agent-Reach 原运行与来源核实为 2026-10-29；测试保护原实验为 10-13～14，本轮 10-29 核固定规则、任务、方法及记录并复算计数，未重跑模型。
 
 **候选里值得记住的两点**：Graphicle的可用导航与错误作用域边可以同时存在；Taste的安装不等于保留旧instructions的有效性。其余候选先保发现价值，未试用不写成推荐默认。用户新链接优先放[收件箱](collaboration/inbox.md)，每条处理结果回到本表，是否已试用以本表结果为准。
 

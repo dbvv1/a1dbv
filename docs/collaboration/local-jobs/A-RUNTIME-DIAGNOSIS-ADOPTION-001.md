@@ -3,7 +3,6 @@
 id: A-RUNTIME-DIAGNOSIS-ADOPTION-001
 owner: dot-A
 status: blocked
-accept: auto
 target_repo: https://github.com/jrnl-org/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
 product_ref: 07b19a3e8d242a85fa7afa42b32cc6526b4afa3f
@@ -18,3 +17,8 @@ result_branch: dot-a/runtime-adoption-20261026-0233
 ## 接收与停止条件
 
 非作者已复核 UTC 语义、旧期望依据、原输入、补丁应用与测试差量，方法和补丁已接收；创建上游 Draft 的连接器动作返回403，回读确认未创建；只停该动作，不重试或换路绕过，本端方法工作继续。补丁获接收或明确拒绝后收口，不扩展为 jrnl 修复系列；真实 Day One 客户端不作为本单元验收。
+
+## dot-A 处置（2026-10-29）
+
+继续仅剩的上游贡献收口，维持 blocked；方法采用与补丁已经接收，不再派实施、复测或广扫替代。依据是当前 TASKS 仍保留 jrnl compare 入口与用户决定项，尚无关闭这项承诺的新决定。
+创建 Draft 的集成 403 保持停止，不重试、不换通道。恢复条件是用户经既有 compare 入口创建 PR 后给出链接，或明确关闭投稿；届时沿本卡核上游结果后收口。现有 fork、补丁、22 条回归与全套基线失败／跳过事实均保留；本轮没有新建 PR 或取得新的上游接收结果。

@@ -1,0 +1,81 @@
+{
+  "approved": false,
+  "blockers": [
+    "Original Star42 and prior capture process exits unknown",
+    "Receiver exact browser/dependency/build/serial-slot receipts required"
+  ],
+  "existingSerialSlotReceipt": null,
+  "node": "RECEIVER_EXISTING_NODE",
+  "tsxLoader": "RECEIVER_EXISTING_TSX_LOADER",
+  "installedDependencyRoot": "RECEIVER_EXISTING_DEPENDENCIES",
+  "executablePath": "RECEIVER_EXISTING_CHROMIUM",
+  "mobaToolsRoot": "RECEIVER_PINNED_MOBA_CHECKOUT",
+  "output": "RECEIVER_NEW_EXCLUSIVE_OUTPUT",
+  "supervisorOutput": "RECEIVER_NEW_EXCLUSIVE_SUPERVISOR_OUTPUT",
+  "jobs": [
+    {
+      "name": "fps",
+      "source": "41b696743f021efa8ddcbc1efd2c9cdf7153ed28",
+      "tree": "df48c2174d4040c417d075743234fabd531e1a7f",
+      "repo": "RECEIVER_FPS_CHECKOUT",
+      "root": "RECEIVER_FPS_WEB_DIST",
+      "buildManifest": "RECEIVER_FPS_VERIFIED_BUILD_MANIFEST",
+      "routes": [
+        {
+          "label": "candidate",
+          "path": "/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&feel=ground-v1&smoke=ground-v1&environment=courtyard-v1&art=standards-v1"
+        },
+        {
+          "label": "baseline",
+          "path": "/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&smoke=ground-v1&environment=courtyard-v1&art=standards-v1"
+        }
+      ]
+    },
+    {
+      "name": "moba",
+      "source": "8fcab371108f23b8be659eef1db0466561e3b597",
+      "tree": "e72877d4db44e49eea3f177d3a4977055022234d",
+      "repo": "RECEIVER_MOBA_CHECKOUT",
+      "root": "RECEIVER_MOBA_WEB_DIST",
+      "buildManifest": "RECEIVER_MOBA_VERIFIED_BUILD_MANIFEST",
+      "routes": [
+        {
+          "label": "buffer-candidate",
+          "path": "/candidate.html?commands=buffer-v1",
+          "version": 12
+        },
+        {
+          "label": "unbuffered-candidate",
+          "path": "/candidate.html",
+          "version": 11
+        },
+        {
+          "label": "default",
+          "path": "/",
+          "version": 10
+        }
+      ]
+    },
+    {
+      "name": "star",
+      "source": "ac2461ac736d3bbb69a31d973efdf0cf9176adec",
+      "reviewedLocalSource": "a6566948a2c868f0f22f2963c8432251fe92f1b6",
+      "tree": "fa721aaff7577705d689fc6392e1b79398e87b7f",
+      "repo": "RECEIVER_STAR_CHECKOUT",
+      "root": "RECEIVER_STAR_DIST_CLIENT",
+      "buildManifest": "RECEIVER_STAR_VERIFIED_BUILD_MANIFEST",
+      "routes": [
+        {
+          "label": "candidate",
+          "path": "/road/?handling=power-tires-v1&shot=academy-depth&input=accelerate-brake&t=4&frames=2",
+          "revision": "road-v3"
+        },
+        {
+          "label": "baseline",
+          "path": "/road/?shot=academy-depth&input=accelerate-brake&t=4&frames=2",
+          "revision": "road-v2"
+        }
+      ]
+    }
+  ]
+}

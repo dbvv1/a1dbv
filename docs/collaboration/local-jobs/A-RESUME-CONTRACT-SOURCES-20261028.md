@@ -1,31 +1,22 @@
 # A-RESUME-CONTRACT-SOURCES-20261028 · 中断恢复先核哪一层
 id: A-RESUME-CONTRACT-SOURCES-20261028
 owner: dot-A
-status: blocked
+status: cancelled
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5505b220259534b7fff39477fa9eeeea5a4821a3
 result_branch: relay/a-resume-contract-sources-20261028
 
-## 本轮修改要求
-停止扩大检索，先从已有工作交回可核原始链接、结论与未覆盖项；全无增量也交具体负结果。保留现有产物，沿原分支接续，不重发首轮广搜。若调用仍未结束，在安全边界结束后先回传；已确认失败则写原错误与恢复条件，不猜权限、额度或离线原因。回 review_ready 交 dot-A 接收。
+## 处置（2026-10-30）
+取消独立任务，不重领或重发首轮。用户确认 2026-10-29 20:23 UTC 断电重启前本机调用均已终止，接收端没有本卡在途；原先“停止未确认”的阻点已解除。此事实不用于推断重启后其他任务的运行状态。
+通用持久状态、上下文接续与中断恢复已在 [MULTIAGENT-LONG 广扫](A-MULTIAGENT-LONG-WIDE-20261029.md)的任务范围内，取消重复安排。以下窄来源调查此前被广扫明确排除，未覆盖内容待写者边界确认后精准并入；本次未修改广扫卡，不声称已纳入或执行。
 
-## 目标
-让遇到工具执行中断的读者能决定：继续原会话、升级已修版本，还是先读回副作用再重试。收集能改变这个决定的真实修复与使用者回执，交 dot-A 判断；不创建会话、接入服务或模拟一次事故。
+## 保留的具体来源与未决问题
+范围是 [OpenCode 官方仓库](https://github.com/anomalyco/opencode)在 2026-10-01～27 的工具中断／恢复缺陷，沿公开 issue、PR、回归测试和发布记录追到使用者回执，再与 Claude Code／Codex 的相应公开修复对照。
+要回答读者应继续原会话、升级已修版本，还是先读回副作用再重试；分清工具执行状态、对话显示状态和实际文件／外部副作用。逐项核发生条件、版本、修复提交、保留的回归、是否发布及用户是否证实恢复；没有回执就保留未知。
+不重做 dot #52374／#49883、AOCI 全量回读、Claude 2.1.311 旧规则压缩或 pi-optchat；不涉及模型 effort／Skill 安装清单，其他已取消的宽采集不重启。仅核剩余公开来源，不安装 Agent、不创建会话、不模拟事故，不读私人材料或绕过拒绝。
 
-## 明确范围与取法
-先读 context-management、long-tasks、17 排障、inbox 和本月已接收来源去重；按 explore-frontier Skill 做。
-重点找 OpenCode 等公开编码 Agent 在 2026-10-01～27 的工具中断／恢复缺陷：从官方仓库 https://github.com/anomalyco/opencode 的公开 issue、PR、回归测试和发布记录追到原始使用者反馈，再与 Claude Code／Codex 的相应公开修复对照。最终只交最强净增量；已有结论不换日期重写。
-区分工具执行状态、对话显示状态和实际文件／外部副作用；版本、发生条件、修复提交、保留的回归、用户是否证实恢复逐项有原链接。没有消费者回执就写未知；作者计划、代码合入与已发布分开。
-不要重做 dot #52374／#49883、AOCI 全量回读、Claude 2.1.311 旧规则压缩或 pi-optchat；不涉及模型 effort／Skill 安装清单，两个取消的宽采集不重启。
-只读公开原文与源码，可用匿名 GitHub GET；资料临时文件保存在工作树外，仅摘要入仓。不读私人会话、账号用量、凭据或完整私人日志，不改接收端，不安装／运行新 Agent，不绕过拒绝。
-
-## 独占产物与验收
-仅写 docs/collaboration/local-jobs/artifacts/A-RESUME-CONTRACT-SOURCES-20261028/sources.md；不改正文、模板或推荐。每项交原始链接、精确版本／代码位置、读者下一步和仍未知的部分；无净增量交具体排除理由。
-非作者按原链接核事实与时间，纠正因果扩大；结果回 review_ready，由 dot-A 接收，不用 accept: auto。原文不整份入仓；跑 check_repo、check_public、diff 检查。
-一个单元约 60–90 分钟，最多两小时；共享最多 4 并行，无 GPU。超时保留已有材料和具体缺口，不继续扩大检索。
-
-## 当前结果
-
-- 本机接收端连续 2 次未完成第 1 个单元：本机模型调用没有返回有效结果（timeout）。负责人确认任务可以执行后改回 ready，接收端会重新领取。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+## 已有产物与历史结果
+第 1 单元历史上连续 2 次未返回有效结果，接收端记录 `timeout`，实际使用 Claude Code＋DeepSeek 原生 Workflow（build）。当时 timeout 不能证明退出；现以本节上述用户确认更新终止判断，不把失败当来源负结果。
+截至本次 Git 核对，未发现指定 `relay/a-resume-contract-sources-20261028` 分支或公开 sources.md；本机未交材料是否存在仍未知。若接收端已有公开可交材料，保留供后续去重，不为取回材料重跑模型或探查私人会话。
+后续拟写 MULTIAGENT-LONG 自己的 sources.md，须先更新其规格；不恢复本 id，也不把本卡记作研究完成。

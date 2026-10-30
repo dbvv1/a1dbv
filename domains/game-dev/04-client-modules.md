@@ -254,6 +254,16 @@ AI 可拆读写与补规则，先定按住式／定时式，人验连锁 boost�
 
 来源：[研究] 两底座与生产取舍见 [WP10 街机车辆](../../docs/research/wp10-motion.md#arcade-vehicles)；未实测。
 
+#### 公路候选：加速上不去，先查阻力吃掉多少抓地
+
+**🧪 把动力、阻力和轮载放在同一力预算里诊断，别只抬最高速度配置。** Star-Rush 的旧模型在 100 km/h 时，线性阻力 `0.18 × v` 已约为 5 m/s²，接近后轴整个静态抓地预算；提高目标速度救不了这处平衡。候选将阻力改为 `0.012u + 0.0007u|u|`，并用上一步实际受力加速度驱动下一步准静态载荷，而非用油门请求冒充加速度。
+
+`RoadVehicleModel.step(p, controls, dt, { powerTires: true })` 保留原道路／碰撞消费者；`p.roadAx/roadAy` 提供前一步反馈，`p.roadLoads` 输出四轮载荷和前后轴容量。纵向转移按 `m·ax·h/L`，横向按 `m·ay·h/track`，各轮非负且合计 `mg`；每轮抓地取归一化载荷的 `0.9` 次幂，轴内分布改变也会影响总抓地，纵横力仍共享抓地圆。`h=0.45m`、轮距 `1.5m` 为游戏假设；无悬挂、轮速滑移和峰后轮胎曲线，不称完整车辆物理。
+
+同一 `tests/fixtures/feel-inputs.json`、同一 `tests/feel-measure.mjs` 仅用 `--power-tires` 切模型：隔离平地 0–100 从 **60 秒未到 → 6.2583 秒**；真实道路客户端为 **6.6083 秒**，道路／接触条件不可混为平地成绩。60 km/h 松油 1 秒末速 **49.5789 → 58.6045 km/h**，但刹车 1 秒末速也从 **25.8417 → 32.0221 km/h**：旧阻力曾帮忙制动，修动力后制动变长，不能宣布全面更好。下一次修改应量刹车／入弯，而非先扩漂移；回归同时核载荷守恒、不同步长、旧模型轨迹和真实道路消费者。
+
+实现起点：[固定 Star 候选的原模型](https://github.com/dbvv1/Star-Rush-Reborn/blob/ac2461ac736d3bbb69a31d973efdf0cf9176adec/road-vehicle-core.js)与[前后实测、量级来源和复跑入口](https://github.com/dbvv1/Star-Rush-Reborn/blob/ac2461ac736d3bbb69a31d973efdf0cf9176adec/docs/feel.md)。`/?handling=power-tires-v1` 选择独立 road-v3 存档／成绩，旧 road-v2 保持。2026-10-29 [源码／CPU 实跑／非作者复核]：待 headless，未主干采用或网站发布；未实测标杆屏幕手感。Unity／UE 移植时沿现有物理力与接触入口，不再叠一份本例平面积分器；引擎移植未验证。
+
 ### 呈现节奏：动作已执行，画面仍不顺
 
 **原生同步先建立基线，帧间隔和响应一起验。** Unity 6.3 桌面先比较 VSync（非零时忽略 targetFrameRate）；Android 用 Optimized Frame Pacing／UE Swappy（UE 5.2 起默认）。UE 排队确为热点才试 low-latency syncing，缩 pipeline 减少长帧余量；掉帧或发黏就退回。
@@ -304,6 +314,27 @@ AI 可拆读写与补规则，先定按住式／定时式，人验连锁 boost�
 
 来源：[研究] 十一模块交付线与拒绝边界；作者工具依据见 [WP10 内容工具](../../docs/research/wp10-content.md#104)。
 
+### 世界光照与玩法提示：后处理只改世界，不把提示一起压暗
+
+**🧪 Web 案例已采用：保留 Standard／PBR 受光，先以半球填光＋世界专用 AO／调色改善层次。** MOBA 的 [Site v16 旁置试玩](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site/candidate.html?commands=buffer-v1&lighting=forest-light-v1)已接入正常可玩路径；不带 `lighting` 参数仍为 baseline，网站默认入口仍是 v10。适合已有 PBR 资产、场景显平而提示必须稳定的项目；不是更换成 Toon 材质，也不是加一层覆盖全屏的暗色滤镜。实现基于 Three 0.186.1；AO／输出及额外深度重绘增加 pass 成本，未测目标硬件实时帧时间；升级 Three 时重核 `SSAOPass` 可见性覆写与资源释放，不能把内部方法当稳定接口。
+
+| 接入顺序 | 本例实现与可交给 Agent 的验收点 |
+|---|---|
+| 明确所有权 | 对象由拥有者标 `renderRole=world/cue` 并由子对象继承，不靠材质类型猜身份。程序化地面用 `MeshStandardMaterial`，glTF 保源材质；技能圈、血条和目标标记保原 shader。 |
+| 受光起点 | 半球 sky `#b9ddd8`／ground `#243e32`、强度 1.35，环境填光 0.08；暖色主光 `#fff0cf`、强度 2.8。候选 ACES 曝光 1.08。这是本场景起点，换资产尺度或颜色后需重新看暗部。 |
+| 世界后处理 | `RenderPass → world-only SSAOPass → 线性空间 ShaderPass 调色 → OutputPass`；HalfFloat 中间缓冲、请求 MSAA 4 samples。AO 固定 16 样本，半径 1.4、距离 0.001–0.015；采样与噪声不借模拟随机源。冷暗部／暖亮部调色在输出转换前执行。 |
+| 提示合成 | 世界完成后清默认帧缓冲深度，用源材质关闭 `colorWrite` 重建世界深度，保 alpha test／蒙皮，再画 cue。提示不吃世界 AO／调色，但仍保自身 `depthTest`、`depthWrite`、`toneMapped`，不是全部强制置顶。临时可见性与材质状态在 `finally` 恢复，resize／dispose 随世界生命周期。 |
+
+**先核实际路径，再凭同状态图调整。** 本例 baseline 请求 `PCFSoftShadowMap`，运行实际回退为 `PCFShadowMap`；候选直接用 PCF。配置名不证明实际阴影算法，manifest 要保 renderer 与实际质量参数。两个独立非作者在四个同状态机位对照中都选候选“小幅改善”，但冷灰感和局部暗部偏黑仍在；道路／草缘／塔基过渡生硬、稀疏树形和细碎地纹这些结构性差距也尚未解决；后续按机位最大差距改整层，不以继续加 AO 强度代替配光与场景组织。
+
+给 Agent 的回归输入应同时固定 gameplay、spawn、first-tower、spawn-to-tower 四机位，seed 1、模拟 tick 300（10 秒）、`march` 输入、1280×720／DPR 1／FOV 45，每组重复两次；核状态、相机、RGBA 重复一致，并核 baseline 与原图 hash 一致。正常可玩入口还要分别 smoke 灯光＋缓冲 v12、baseline＋缓冲 v12、baseline v11 与默认 v10。本次 475 项测试通过，3 局模拟回放零差异，四路 WebGL2 非空且无页面错误；构建 37 项 hash 与 Site v16 包逐项一致。
+
+实现起点：[main 固定提交 `27a40be`](https://github.com/dbvv1/MOBA-Like/commit/27a40bedaab6bd8bf737885afe952ef6db403f2c)的 `src/render/lighting-style.ts`（参数／角色）、`lighting-post.ts`（分层合成）、`world.ts`（可玩接线），以及 [quality.md](https://github.com/dbvv1/MOBA-Like/blob/27a40bedaab6bd8bf737885afe952ef6db403f2c/docs/quality.md)的四机位差距。以上为本 Web 案例采用与 SwiftShader **software** 图证；两人选择不等于目标图锚定的正式评分，亦未证明硬件 GPU 性能或目标画质达标。Unity／UE 的环境光、AO 与输出策略仍沿[场景光照页](unity/07-scene-rendering-and-lighting.md)按引擎管线接入，本次没有运行引擎。核实：2026-10-30（UTC+8）。
+
+**FPS 复用时先预算额外 pass，不照抄 MOBA 的 AO 尺度。** [Site v17 旁置](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1&art=standards-v1&feel=ground-v1&lighting=courtyard-light-v1)可直接比较；v20 已把不含 ground 手感的灯光训练赛设为默认，旧 1v1 留旁置，正常开始门槛见[前台时钟采用](#web-foreground-clock)。 [FPS 固定采用源 `72356e2`](https://github.com/dbvv1/FPS-Like/tree/72356e28d7ab8850fddc422638894d6838145d1c/src/candidates/offline-training-v1/render)的 `lighting-post.ts`／`lighting-style.ts`／`scene.ts` 使用同类分层合成，但 AO 固定为物理输出宽高各一半、16 样本、半径 0.65、距离 0.001–0.008；ACES 曝光 1.05，方向光 2048² PCF 阴影。世界颜色通道每帧只更新一次阴影；世界深度重建仅在所有表面满足受限的不透明 Standard 契约（含无 alpha、位移、裁切或自定义 shader 等）时走等几何深度 shader，否则保留源 shader。玩法提示圈与相机武器独立合成，保自身深度／材质路径，Basic 提示不被 ACES 压淡；此例将 Basic 也归为 cue，复制到其他项目应先核其是否真是提示，不能把所有无光照场景物件都排除出世界层。
+
+实际返工先减 AO 分辨率、去重复阴影更新，再收窄深度快路径；软件 smoke 仍未通过 180 秒窗口。最终只把工具每路等待延至 300 秒，baseline／lighting × 有／无 feel 四路仍须各完成两轮 144 tick（共 288 tick）和真实重开，同组回放 hash 必须一致，未降低这些门槛。这证明功能与模拟隔离，不证明实时流畅；该轮尚未验普通开始；其后修复正常玩法慢帧误暂停，见[前台时钟采用](#web-foreground-clock)。两非作者当时接受为旁置，但人物暗面黑块和阴影颗粒仍在，合格目标 **0/3**，不作正式达标结论。依据：[实际优化、失败与最终复测](https://github.com/dbvv1/FPS-Like/blob/72356e28d7ab8850fddc422638894d6838145d1c/docs/quality.md)，2026-10-30（UTC+8）[Web 案例／software 实测]。
+
 <a id="audio-lifecycle"></a>
 <a id="声音事件播完以后谁解除让位"></a>
 ### 声音事件：从玩法事实接到声源、混音和退出
@@ -352,6 +383,19 @@ flowchart LR
 
 来源：[一手／研究] 正常接线与 Unity 6.3 加载／声源 API 于 2026-10-25 核；默认、参数和二改为项目建议，未运行引擎或听验。[WP10 同节](../../docs/research/wp10-motion.md#audio-normal-production)集中实现入口；既有 Unity 增益、FMOD／Wwise／Howler 差异、制作案例及窄控制实证见[事件生命周期研究](../../docs/research/wp10-motion.md#p117-audio-lifecycle)，原日期与范围保持。[并发](../../docs/research/wp10-motion.md#45)、[持续声](../../docs/research/wp10-motion.md#50)、[响应](../../docs/research/wp10-motion.md#96)、[警报语义](../../docs/research/wp10-motion.md#51)按对应症状查。
 
+#### 网页案例：同帧关键声音被吞，先改有界调度而非增益
+
+**🧪 当下一技能已成功执行却没有独立声音，先对照确认事件与原生起播计划。** MOBA 的旧消费者每批只选一个最高权重声音，再用全局 25 ms 间隔限流；同一 tick 释放的 Q/W 留下一声，慢回调中的后续命中也可能被吞。模拟和回放哈希一致只能证明战斗正确，不能证明声音完整。旁置 `audio=critical-v1` 保留原最高权重前景声，并为玩家技能释放、涉及玩家的命中保留独立事件键；其他 NPC 密集声仍合并，不为施法开始、取消或死亡虚构事件，不提高混音增益。
+
+- **预算在原生声源提交时确定。** 同一批按既有权重稳定排序，起播间隔仍为 25 ms，总活动／已排声部最多 8，未来计划最多 4、距离当前 AudioContext 时间最多 100 ms；超限丢新事件并留原因，不抢占旧计划、不用 JS 定时器积压补播。事件年龄另按所附快照限制 3 tick；逐 tick 追帧提供自己的快照，不能拿这个限制声称测到了接收前的墙钟延迟。
+- **暂停取消已提交的未来声音。** 真正游戏暂停、静音、设备离开 running 和销毁都停止当前／未来声源并清空调度计划，声部由 onended 释放；恢复不重播已消费键，重开换所有者与去重游标。仅失焦清输入不等于游戏暂停。把“禁止新的 play”当静音会漏掉已经提交的未来起播。
+- **同脚本复测计划，再验真实音频 API。** v12 Q/W 在 tick 5 从一声变两计划、间隔 25 ms；命中与 W 同批从只留命中变命中在先、W 延后 25 ms；慢回调三关键声为 0/25/50 ms。真实 Web Audio 复现两计划与关闭候选的一计划，普通暂停／恢复／静音／重开及旧 AudioContext 关闭通过。同步 UI 取消测试在起播前 25 ms 调到原生 stop；慢软件渲染下普通点击更晚，不能据此宣称操作延迟达标。
+- **把波形证据与听感分开。** 48 kHz OfflineAudioContext 重建的能量起点为 0/1200 样本，混合绝对峰值 0.23021，非空且无裁剪；浏览器仍启用 `--mute-audio`，这不是扬声器录音或设备延迟。Q/W 仍用同一音色，两计划不能证明技能可辨；计划最多延迟 100 ms、样本可能交叠，须听节奏、威胁遮蔽与疲劳并核实际音画同步后再决定是否换默认。
+
+该候选已接入可玩网页的旁置入口，默认关闭；496 项测试、v11/v12 各 3 局模拟与回放一致、软件 WebGL2 smoke 通过，最终构建 38 文件与云端逐字节一致。采用证明限于网页事件消费者与机器检查，不提升 Unity／UE 实跑评级，也不作声音品质结项。
+
+案例依据：[实现与验收提交](https://github.com/dbvv1/MOBA-Like/commit/dea84c4fde58ec7ebb05dc0adae70f4ee2dce45c)、[有界调度与机器证据](https://github.com/dbvv1/MOBA-Like/blob/dea84c4fde58ec7ebb05dc0adae70f4ee2dce45c/docs/audio-critical.md)；Site v18 [旁置试玩](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site/candidate.html?commands=buffer-v1&audio=critical-v1)。核实 2026-10-30；实际试听与实时音画同步待人工验收。
+
 ### 墙门后的声音：先选可听规则，再选遮挡
 
 **直达／被挡先低通＋音量，经开门可听则复用房间连接。** Unity 用目标 AudioSource／Mixer 滤波，必要时 Linecast；Listener 会影响全部声音。UE 先 Attenuation Occlusion，simple 误挡才比 complex。门边跳变、开门仍闷／起音丢失先查几何和过渡，明确复杂传播需求才升级。
@@ -396,6 +440,30 @@ flowchart LR
 Penny’s Big Breakaway 的 GDC 2025 作者复盘强调动量与动作组合；Celeste64 则把地面低速修正、高速转向、急反向 skid 和空控分别实现。**两者支持“按目标分曲线”，不支持照抄某个加速度或宽限秒数。** Holden 的 2026 模型进一步分离加减速、方向性加速、转向和速度平滑，适合确需更多轮廓的项目；简单线性响应仍是更易解释的起点。
 
 **先画三个尺度：常速停距、反向轨迹、空中可达落点带。** 在无坡、无碰撞、常速 `v`、恒定制动 `b>0` 的理想模型，`停时=v/b`、`停距=v²/(2b)`。例如仅作设计算例：`v=6 m/s`、希望松手后约 `0.6 m` 停住，起算 `b=30 m/s²`、停时 `0.2 s`；这不是最佳手感参数，实际离散步、摩擦或弹簧须重新测。把速度翻倍而不改制动，理想停距变四倍——“加个冲刺”同时改变道路宽度与镜头预判需求。
+
+#### 候选实证：先换运动模型，再分开测规则与呈现
+
+**🧪 松键瞬停不是“低延迟”，滑行也不自动等于好手感。** FPS-Like 的训练赛候选把速度赋值换成 `groundMovement(initial, input, dt)`：先减 `max(speed, stopSpeed) × friction × dt`，再沿期望方向补速度差，最后把位移交给既有碰撞层。`friction=5.2`、`stopSpeed=2.032`、`acceleration=5.5`、跑速 `4.5` 是本作起算值，不是 CS2 实测参数；玩家和机器人共用此入口。
+
+| 同一输入脚本的测项 | 原训练赛 | `ground-v1` 候选 | 能说明什么 |
+|---|---:|---:|---|
+| 松键到停止／继续前行距离 | 首个 60 Hz tick 内／0 | 350 ms／0.612458 世界单位 | 开始保留动量；不是输入到屏幕延迟 |
+| 按反向键到速度首次非正 | — | 116.67 ms，前冲 0.202625 单位 | 反向比自然滑停快；未证明达到商业标杆 |
+| 起步首次达到 4.49 单位/s | 16.67 ms | 566.67 ms | 仍可能偏慢，需继续按同口径比较 |
+
+**仅给 View 插值副本；射击、交互、声音和 HUD 读当前权威模拟状态。** 鼠标事件更新 controls 并排入带朝向的 aim／shoot；每固定步由 `controls.commands` 交 `game.step`，射击不读取渲染相机。 客户端在每次模拟步保存 previous/current，以余量比例调用 `interpolateState(previous, current, alpha)`；位置及角色显示朝向插值，玩家相机仍每渲染帧直接读 `controls.yaw/pitch`。不同回合／阶段、tick 不相邻、死亡或位置跳变超过 1 单位时回当前状态，避免复活／重开拖影。插值可能带来一逻辑步的位置显示滞后，不能当作“降低鼠标延迟”的证据。
+
+**AI 初改容易漏掉依赖速度的旧规则。** 原拆装目标只看“是否按移动键”，换成惯性后松键仍在滑，却能继续交互；修法是在新模型下检查实际速度，而不是缩短滑行来遮错。二改同时测松键滑行拒绝交互、真正停稳可交互、重开清旧快照；开关外原轨迹仍须一致。
+
+**跑步通过后，还要把跑／走／蹲的纯模型与真实碰撞运动分开测。** AI 若只测跑步，会漏掉最低摩擦吞掉低速加速的组合缺陷：旧蹲走每个 60 Hz tick 加速 `5.5×1.7/60=0.155833`，低于固定最低摩擦 `5.2×2.032/60=0.176107`，上一帧速度被清零，纯函数跑 180 tick 仍只有 `0.155833`。修法不是提高所有姿态的加速度，而是仅在有移动输入时令 `stopSpeed = 2.032 × wishSpeed / 4.5`，再用原摩擦公式；满幅跑步和无输入的停止摩擦不变，慢走、蹲走及低幅输入才缩小最低摩擦参考速度。严格零输入与微小非零输入仍有差别，摇杆死区需另定；切换姿态不瞬间截断既有动量。
+
+给 Agent 同一输入脚本：纯函数跑 180 tick，真实 `Game` 从三个合法出生点各跑 60 tick，交叉跑／走／蹲、前向／对角，并记录期望位移、碰撞后实际位移及回写速度。摩擦修正后纯模型分别达到 `4.5／2.3／1.7`，真实 `(0,0,-16)` 蹲走一秒位移 `0.145950→1.197071`、末速 `0.155834→1.697655`；跑步起步 `566.67 ms`、松键滑停 `350 ms`、反向 `116.67 ms` 的原脚本结果不变。**纯模型达速不能证明碰撞后稳定达速：** 当时另一个出生点 `(8,0,-12)` 蹲走一秒末速仍只有 `0.156317`；日志显示持续向下的斜向 cast 在碰地时丢掉剩余水平位移，实际速度回写进一步放大失速。应修接触路径，不继续加大加速度掩盖它，也不能据此断言是 Rapier 已知缺陷。
+
+**已接地才分离水平移动与向下约束，不全局把 y 清零。** 后继采用的 `Physics.move` 仅由 `ground-v1` 开启：有水平位移且请求向下时，用原向下量重查当前角色的支撑；已接地才水平 cast，保留 autostep 产生的高度，更新位置及碰撞空间后再在目的地应用原向下约束。离地、向上或纯竖直请求走原组合路径；每个 actor 每次重查，不共用上一角色的 grounded 缓存。`Game` 仍按最终真实位移回写速度，墙后不积蓄虚假速度。三个出生点×三姿态×前向／对角的 60 tick 末速与目标误差均小于 `0.02`，明显水平位移损失 `13→0`，上述异常点蹲走末速 `0.156317→1.699997`；低阶跨越、高阶阻挡、下阶／离地下降、贴墙转向、多角色支撑隔离和逐 tick 快照回放均有回归。
+
+**把接触查询成本与适用地图一起交付。** 此例已接地水平移动最多从一次 cast／一次 world.step 增至三次 cast／两次 step；本云 CPU 上 10 个实际移动角色、180 tick、预热后五次交错测量，`Game.step` 单步中位 `0.333→0.678 ms`，约翻倍，排除快照克隆与渲染。它不是硬件 FPS 或整帧性能；当前世界只有固定 collider 与 sensor，增加动态刚体须重新核验。原 `y≥0` 世界边界保留，不支持任意负高度地形。修后真实滑停仍为 `350 ms`、反向首次非正仍为 `116.67 ms`，滑停距离为 `0.608700` 世界单位；上表 `0.612458` 是分离接触前的测量，不用纯模型或旧距离替代当前物理结果。
+
+实现起点：[FPS 固定采用源](https://github.com/dbvv1/FPS-Like/tree/bd47655676d79061ff4be54cbedad111053c5af3/src/candidates/offline-training-v1)的 `sim/movement.ts`、`sim/physics.ts`、`sim/game.ts`、`render/interpolation.ts`、`client.ts`；[同输入规格、复跑命令与前后数据](https://github.com/dbvv1/FPS-Like/blob/bd47655676d79061ff4be54cbedad111053c5af3/docs/feel.md)。2026-10-30 [源码／CPU 实跑／非作者代码复核／可玩采用]：已合入 main，经 368 项测试、构建、默认模拟和四路 WebGL2 软件 smoke 后发布 [Site v19 旁置训练赛](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1&art=standards-v1&feel=ground-v1&lighting=courtyard-light-v1)，默认入口保留。这些是本作实测，不是 CS2 同输入标杆；屏幕响应、标杆录像、主观手感仍待验。引擎接入沿下节原 motor，不能把此 Web View 插值复制成第二个写物理 Transform 的系统。
 
 #### 六组参数一起构成控制，而不是一个 smooth 数
 
@@ -682,6 +750,23 @@ Unity／UE 保存恢复路线仍是文档、固定源码与设计推导（正常
 **按住自动连发等定时重复动作，跨步补算时要保留按下／松开边沿，而不只读最新 held 值。** 在每次发射截止点恢复当时的 held 与视角：随后才发生的松开不能抹掉此前合法的尾发，松开之后的模拟时刻也不能继续发射；切枪、换弹、弹药与冷却仍交原规则。暂停、失焦或重开清掉未消费的输入历史，内部边沿不必改成新的回放命令。
 
 FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac5264b186498716f849aec3325ab41d29f4aa)（网站 v11）提供了失败反例：同样在 10 ms 按下、120 ms 松开，60／30／20 fps 修复后均保留 10／110 ms 两发；该例规定 109 ms 或恰在 110 ms 松开只发首发。正常 Chromium 软件 WebGL2 实按六次短连发，原版五次丢尾发，候选六次均保留。这里使用浏览器回调的 `performance.now()`，不是硬件采样时间或网络 sub-tick 等价实现；验证范围为浏览器输入层与原模拟，不是 Unity 实跑（2026-10-27）。
+
+<a id="web-foreground-clock"></a>
+**✅ Web 可玩采用：慢帧不等于失焦，恢复事件也不能直接重置渲染帧时钟。** 前台软件渲染的 333–483 ms 帧曾触发 FPS-Like 原来的 `now - simStart > 250` 暂停条件：点击开始、成功锁定鼠标后仍不推进，或旧版入口停在 tick 12。修复保留 60 Hz 固定步，每个可见前台帧最多追赶 15 步；超过 250 ms 的墙钟债务直接丢弃，不把旧输入积压到下一帧。丢弃区间内的移动、瞄准、交互与扳机折叠为末状态，过期射击、装弹、切枪等一次性动作不补发，区间之后的松键边沿保留。持续低帧率会让模拟变慢，这不是性能达标方案，也不能直接套到必须追上服务器时间的联机模拟。
+
+恢复时只在 `pointerlockchange` 记 `performance.now()` 墙钟；下一次 rAF 用自己的时间戳建立模拟起点，首恢复帧不推进。实测出现恢复事件墙钟 **16810.6 ms** 晚于随后交付的 rAF 时间戳 **16747.2 ms**，混着比较会把有效回调误判成时钟倒退。真正失焦、隐藏、失锁仍暂停并清输入；恢复等待或后续单帧间隔达到 **2 s**、后续 rAF 时间戳倒退也暂停。15 步／250 ms 与 2 s 是本案例的保守调度策略，不是商业手感标杆。首次 Esc 后再次暂停的日志不足以唯一归因，后继修复消除了已观测的时序风险，再以完整正常操作复验。
+
+**固定步 smoke 与正常开始必须分别验。** 内置 tape 的一帧一步能核模拟 hash，却会绕过真实前台调度，不能代替无参数首页的锁鼠标、移动、Esc、继续与重开。`1183340` 的三个普通入口各走两轮真实操作：
+
+| 入口 | 第一轮 tick：开始→移动→暂停→恢复→重开 | 第二轮 |
+|---|---|---|
+| 无参数首页（训练赛＋标准件＋灯光，原移动） | 14→42→88→103→0 | 15→30→75→89→0 |
+| `?gameplay=legacy-v1` 旧版 | 4→22→58→62→0 | 4→19→52→55→0 |
+| 显式 `feel=ground-v1` 旁置 | 14→42→84→99→0 | 15→30→90→104→0 |
+
+每轮真实 W 位移大于零，暂停期间 tick 保持，页面与控制台无错误；没有注入 smoke 参数、时钟或游戏状态。Chromium 154／SwiftShader **software**、960×540，浏览器实际正常退出且预览端口关闭。源码 380 项测试、构建、10 局模拟通过；网站 **v20** 已采用相同运行源，31 个发布文件逐 SHA-256 匹配被测构建。原移动仍为默认，ground 手感候选不借视觉盲评升级；这些证据属于 Web 功能与生命周期采用，不提升 GPU、真人手感或原生引擎评级。
+
+依据：[固定帧预算与恢复时钟](https://github.com/dbvv1/FPS-Like/blob/118334050209b3bb314f6dce673ef008f3e5e7f4/src/candidates/offline-training-v1/frame-budget.ts)、[训练客户端](https://github.com/dbvv1/FPS-Like/blob/118334050209b3bb314f6dce673ef008f3e5e7f4/src/candidates/offline-training-v1/client.ts)、[旧版输入折叠](https://github.com/dbvv1/FPS-Like/blob/118334050209b3bb314f6dce673ef008f3e5e7f4/src/input/controls.ts)、[旧版生命周期回归](https://github.com/dbvv1/FPS-Like/blob/118334050209b3bb314f6dce673ef008f3e5e7f4/tests/client-frame-lifecycle.test.ts)及同源云端普通入口实测；[网站默认入口](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/)，Site v20 发布于 2026-10-30 02:45:23 UTC，核实 2026-10-30。
 
 已采用的 [MOBA 输入适配器](https://github.com/dbvv1/MOBA-Like/blob/a7d66054ae5885e38af43f88c4472a58cb765d89/src/input/controls.ts)直接把实际拾取到的可攻击敌人交给既有 `Attack` 命令，地面交给 `Move`；菜单事件留在 UI，不穿透到场景。正常操作已走通点敌追击至真实普攻、点地移动和菜单阻断，目标选择与攻击资格仍由原规则分工；实现与画面见[案例质量页](https://github.com/dbvv1/MOBA-Like/blob/a7d66054ae5885e38af43f88c4472a58cb765d89/docs/quality.md)（2026-10-26）。
 
