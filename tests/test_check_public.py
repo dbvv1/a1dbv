@@ -1,8 +1,10 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -21,7 +23,32 @@ WORKSPACE_PREFIX = "/workspace/" + "scratch/"
 FAKE_WORKSPACE = WORKSPACE_PREFIX + "ab12" * 3
 
 
+def fake_provider_keys():
+  """Deterministic shape fixtures, never issued or sent to a provider."""
+  keys = ["sk-" + "A1" * 10 + "T3BlbkFJ" + "b2" * 10]
+  for scope in ("proj", "svcacct", "admin"):
+    for left, right in ((58, 58), (74, 74), (58, 74), (74, 58)):
+      keys.append("sk-" + scope + "-" + "A1" * (left // 2)
+                  + "T3BlbkFJ" + "b2" * (right // 2))
+  for scope in ("api03", "admin01"):
+    keys.append("sk-ant-" + scope + "-" + "A1_" * 31 + "AA")
+  return keys
+
+
 class PublicScanTests(unittest.TestCase):
+  def setUp(self):
+    # Receivers may place TEMP inside a checkout. All fixture roots below this
+    # boundary must discover only their own .git, never the enclosing checkout.
+    directory = self.enterContext(tempfile.TemporaryDirectory())
+    self.enterContext(mock.patch.object(tempfile, "tempdir", directory))
+    self.enterContext(mock.patch.dict(os.environ, {"GIT_CEILING_DIRECTORIES": directory}))
+
+  def run_cli(self, root, *args):
+    # Pin both sides of the pipe, independent of the host locale or Python alias.
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    return subprocess.run([sys.executable, str(SCRIPT), "--root", str(root), *args],
+                          capture_output=True, text=True, encoding="utf-8", env=env)
+
   def run_fixture(self, files, git=False):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
@@ -77,8 +104,7 @@ class PublicScanTests(unittest.TestCase):
       (root / "evidence.md").write_text(f"Evidence: `{FAKE_WORKSPACE}/report.md`\n", encoding="utf-8")
       subprocess.run(["git", "init", "-q", str(root)], check=True)
       subprocess.run(["git", "-C", str(root), "add", "evidence.md"], check=True)
-      result = subprocess.run(["python3", str(SCRIPT), "--root", str(root)],
-                              capture_output=True, text=True)
+      result = self.run_cli(root)
       self.assertEqual(1, result.returncode)
       report = json.loads(result.stdout)
       self.assertEqual(1, report["checked_files"])
@@ -89,6 +115,55 @@ class PublicScanTests(unittest.TestCase):
   def test_credential_is_redacted_in_output(self):
     findings = self.run_fixture({"a.md": FAKE_KEY})[1]
     self.assertNotIn(FAKE_KEY, str(findings))
+
+  def test_provider_shapes_detected_after_all_ascii_letters_and_digits(self):
+    prefixes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    keys = fake_provider_keys()
+    text = "\n".join(prefix + key for prefix in prefixes for key in keys)
+    count, findings = self.run_fixture({"a.md": text})
+    self.assertEqual(1, count)
+    self.assertEqual(len(prefixes) * len(keys), len(findings))
+    self.assertTrue(all(f["kind"] == "credential" for f in findings))
+    self.assertEqual(list(range(1, len(findings) + 1)), [f["line"] for f in findings])
+    for key in keys:
+      self.assertNotIn(key, str(findings))
+
+  def test_cli_rejects_adjacent_provider_shapes_and_redacts_output(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      keys = fake_provider_keys()
+      text = "\n".join("https://example.com/x" + key + "suffix" for key in keys)
+      (root / "synthetic.txt").write_text(text, encoding="utf-8")
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      subprocess.run(["git", "-C", str(root), "add", "synthetic.txt"], check=True)
+      result = self.run_cli(root)
+      self.assertEqual(1, result.returncode)
+      report = json.loads(result.stdout)
+      self.assertEqual(1, report["checked_files"])
+      self.assertEqual(len(keys), len(report["findings"]))
+      self.assertTrue(all(f["kind"] == "credential" and len(f["match"]) == 13
+                          and f["match"].endswith("…") for f in report["findings"]))
+      self.assertEqual("", result.stderr)
+      for key in keys:
+        self.assertNotIn(key, result.stdout + result.stderr)
+
+  def test_weak_sk_shape_still_requires_word_edge(self):
+    # Unknown embedded sk- strings remain ambiguous with ordinary hyphenated words.
+    self.assertEqual((1, []), self.run_fixture({"a.md": "x" + FAKE_KEY + "\n1" + FAKE_KEY}))
+
+  def test_provider_cli_output_encoding_is_independent_of_parent(self):
+    with mock.patch.dict(os.environ, {"PYTHONIOENCODING": "gbk"}):
+      self.test_cli_rejects_adjacent_provider_shapes_and_redacts_output()
+
+  def test_embedded_provider_shapes_require_their_distinguishing_structure(self):
+    variants = []
+    for key in fake_provider_keys():
+      variants.append("x" + key.replace("sk-", "zz-", 1))
+      if "T3BlbkFJ" in key:
+        variants.append("x" + key.replace("T3BlbkFJ", "T3BlbkF0"))
+      else:
+        variants.append("x" + key[:-2] + "BB")
+    self.assertEqual((1, []), self.run_fixture({"a.md": "\n".join(variants)}))
 
   def test_allowlist_needs_exact_file_and_match(self):
     allow = f"# reviewed\na.md\t{FAKE_EMAIL}\n"
@@ -104,6 +179,29 @@ class PublicScanTests(unittest.TestCase):
       (root / "scratch.md").write_text(FAKE_EMAIL, encoding="utf-8")
       self.assertEqual((1, []), module.scan_files(root))
 
+  def test_fixture_suite_under_parent_git_keeps_its_own_scan_scope(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      (root / "parent.txt").write_text("keep the enclosing checkout unchanged\n", encoding="utf-8")
+      subprocess.run(["git", "-C", str(root), "add", "parent.txt"], check=True)
+      index = (root / ".git/index").read_bytes()
+      scratch = root / "scratch"
+      scratch.mkdir()
+      env = dict(os.environ, TMPDIR=str(scratch), TEMP=str(scratch), TMP=str(scratch),
+                 PYTHONIOENCODING="utf-8")
+      env.pop("GIT_CEILING_DIRECTORIES", None)
+      cases = ("test_clean_and_placeholder_content_passes", "test_flags_credential_key_path_and_email",
+               "test_dangling_and_directory_symlinks_scan_link_text", "test_cli_unicode_output_ignores_parent_locale",
+               "test_untracked_files_are_ignored_in_git_checkout")
+      result = subprocess.run([sys.executable, str(Path(__file__)), *[f"PublicScanTests.{name}" for name in cases]],
+                              env=env, capture_output=True, text=True, encoding="utf-8")
+      self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+      self.assertIn("Ran 5 tests", result.stderr)
+      self.assertNotIn("skipped", result.stderr)
+      self.assertEqual(index, (root / ".git/index").read_bytes())
+      self.assertEqual([], list(scratch.iterdir()))
+
   def test_tracked_symlink_scans_link_text_not_target_content(self):
     with tempfile.TemporaryDirectory() as directory:
       fixture = Path(directory)
@@ -111,10 +209,10 @@ class PublicScanTests(unittest.TestCase):
       root.mkdir()
       target = fixture / FAKE_KEY
       target.write_text("clean target", encoding="utf-8")
-      (root / "flagged-link").symlink_to(target)
+      (root / "flagged-link").symlink_to(Path("..") / target.name)
       content_target = fixture / "content-target"
       content_target.write_text(FAKE_KEY, encoding="utf-8")
-      (root / "clean-link").symlink_to(content_target)
+      (root / "clean-link").symlink_to(Path("..") / content_target.name)
       subprocess.run(["git", "init", "-q", str(root)], check=True)
       subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
       with mock.patch.object(Path, "read_text", side_effect=AssertionError("symlink target read")):
@@ -128,7 +226,7 @@ class PublicScanTests(unittest.TestCase):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
       (root / "dangling").symlink_to(FAKE_KEY)
-      (root / "directory").symlink_to(root, target_is_directory=True)
+      (root / "directory").symlink_to(".", target_is_directory=True)
       count, findings = module.scan_files(root)
       self.assertEqual(2, count)
       self.assertEqual([("credential", "dangling")],
@@ -142,6 +240,17 @@ class PublicScanTests(unittest.TestCase):
       with mock.patch.object(module, "PATTERNS", [("link-text", re.compile(re.escape(target)))]):
         self.assertEqual((1, [{"kind": "link-text", "file": "link", "line": 1,
                               "match": target}]), module.scan_files(root))
+
+  def test_symlink_fixtures_do_not_leak_the_temporary_parent(self):
+    with tempfile.TemporaryDirectory() as directory:
+      # Detect accidental absolute fixture paths without needing a real home
+      # directory or a Windows-shaped filename on the host filesystem.
+      patterns = module.PATTERNS + [("local-path", re.compile(re.escape(directory)))]
+      with mock.patch.object(tempfile, "tempdir", directory), \
+           mock.patch.object(module, "PATTERNS", patterns):
+        self.test_tracked_symlink_scans_link_text_not_target_content()
+        self.test_dangling_and_directory_symlinks_scan_link_text()
+        self.test_symlink_allowlist_is_scanned_not_loaded()
 
   def test_core_symlinks_false_scans_plain_link_file(self):
     with tempfile.TemporaryDirectory() as directory:
@@ -166,7 +275,7 @@ class PublicScanTests(unittest.TestCase):
       (root / "tracked.txt").write_text(FAKE_KEY, encoding="utf-8")
       target = fixture / FAKE_KEY
       target.write_text(f"tracked.txt\t{FAKE_KEY}\n", encoding="utf-8")
-      (root / module.ALLOW_FILE).symlink_to(target)
+      (root / module.ALLOW_FILE).symlink_to(Path("../..") / target.name)
       subprocess.run(["git", "init", "-q", str(root)], check=True)
       subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
       self.assertEqual(set(), module.load_allow(root))
@@ -179,15 +288,19 @@ class PublicScanTests(unittest.TestCase):
       with self.subTest(target_text=target_text), tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
         (root / "scripts").mkdir()
-        (root / "scripts" / target_text).write_text("synthetic clean target", encoding="utf-8")
-        (root / module.ALLOW_FILE).symlink_to(target_text)
         (root / "tracked.txt").write_text(FAKE_KEY, encoding="utf-8")
         subprocess.run(["git", "init", "-q", str(root)], check=True)
-        subprocess.run(["git", "-C", str(root), "add", "tracked.txt", module.ALLOW_FILE], check=True)
-        (root / module.ALLOW_FILE).unlink()
+        subprocess.run(["git", "-C", str(root), "add", "tracked.txt"], check=True)
+        # Model a real 120000 index entry without creating a tab-containing
+        # target filename, which native Windows cannot represent.
+        blob = subprocess.run(["git", "-C", str(root), "hash-object", "-w", "--stdin"],
+                              input=target_text.encode("utf-8"), capture_output=True, check=True)
+        subprocess.run(["git", "-C", str(root), "update-index", "--add", "--cacheinfo",
+                        "120000", blob.stdout.decode("ascii").strip(), module.ALLOW_FILE], check=True)
         subprocess.run(["git", "-C", str(root), "-c", "core.symlinks=false",
                         "checkout-index", "-f", module.ALLOW_FILE], check=True)
         self.assertFalse((root / module.ALLOW_FILE).is_symlink())
+        self.assertEqual(target_text, (root / module.ALLOW_FILE).read_text(encoding="utf-8"))
         self.assertEqual(set(), module.load_allow(root))
         count, findings = module.scan_files(root)
         self.assertEqual(2, count)
@@ -212,8 +325,7 @@ class PublicScanTests(unittest.TestCase):
         (root / name).rename(fixture / ("original-" + name))
         (root / name).symlink_to(target, target_is_directory=True)
       self.assertEqual(set(), module.load_allow(root))
-      result = subprocess.run(["python3", str(SCRIPT), "--root", str(root)],
-                              capture_output=True, text=True)
+      result = self.run_cli(root)
       self.assertEqual(1, result.returncode)
       report = json.loads(result.stdout)
       self.assertEqual(1, report["checked_files"])
@@ -222,13 +334,23 @@ class PublicScanTests(unittest.TestCase):
                        [(f["kind"], f["file"]) for f in report["findings"]])
       self.assertEqual("", result.stderr)
 
+  def test_index_symlink_fixture_needs_no_control_character_filename(self):
+    write_text = Path.write_text
+
+    def reject_tab_filename(path, *args, **kwargs):
+      if "\t" in path.name:
+        raise OSError("control character in filename is not supported")
+      return write_text(path, *args, **kwargs)
+
+    with mock.patch.object(Path, "write_text", reject_tab_filename):
+      self.test_core_symlinks_false_allowlist_text_is_scanned_not_loaded()
+
   def test_binary_and_missing_root(self):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
       (root / "x.bin").write_bytes(b"\xff\xfe\x00")
       self.assertEqual((0, []), module.scan_files(root))
-    result = subprocess.run(["python3", str(SCRIPT), "--root", "/nonexistent-root-for-test"],
-                            capture_output=True, text=True)
+    result = self.run_cli("/nonexistent-root-for-test")
     self.assertEqual(2, result.returncode)
 
   def scan_identity(self, author, committer):
@@ -278,13 +400,27 @@ class PublicScanTests(unittest.TestCase):
 
   def test_cli_rejects_explicit_empty_commit_range(self):
     with tempfile.TemporaryDirectory() as directory:
-      command = ["python3", str(SCRIPT), "--root", directory]
-      omitted = subprocess.run(command, capture_output=True, text=True)
+      omitted = self.run_cli(directory)
       self.assertEqual(0, omitted.returncode)
-      empty = subprocess.run(command + ["--commits", ""], capture_output=True, text=True)
+      empty = self.run_cli(directory, "--commits", "")
       self.assertEqual(2, empty.returncode)
       self.assertIn("--commits must not be empty", empty.stderr)
       self.assertEqual("", empty.stdout)
+
+  def test_cli_unicode_output_ignores_parent_locale(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      name = "测试-🧪.txt"
+      (root / name).write_text(FAKE_KEY, encoding="utf-8")
+      with mock.patch.object(subprocess, "_text_encoding", return_value="gbk"), \
+           mock.patch.dict(os.environ, {"PYTHONIOENCODING": "gbk"}):
+        result = self.run_cli(root)
+      self.assertEqual(1, result.returncode)
+      report = json.loads(result.stdout)
+      self.assertEqual(1, report["checked_files"])
+      self.assertEqual([(name, "credential")], [(f["file"], f["kind"]) for f in report["findings"]])
+      self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
+      self.assertEqual("", result.stderr)
 
   def test_commit_identity(self):
     with tempfile.TemporaryDirectory() as directory:

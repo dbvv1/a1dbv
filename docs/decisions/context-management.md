@@ -1,149 +1,97 @@
 # 上下文怎么管，会话越聊越笨怎么办
 
-**🟡 同题正常推进，沿用原生压缩；换成无关任务或旧方案纠正后仍反复出现，带短检查点新开；恢复先核最新约束与下一步。** 缺信息先按当前任务重读必要原文，别把所有退化都当成“上下文太多”。自动压缩正常时沿用默认，不按固定轮数或百分比清空，也不先装记忆服务。
+**🟡 同题正常推进，沿用原生压缩；换成无关任务或旧方案纠正后仍反复出现，带短检查点新开；恢复先核最新约束与下一步。** 缺信息先重读必要原文，环境和权限缺口先解决；不按固定轮数或百分比清空，也不先装记忆服务。原生压缩与新会话接续仍待真实本机读者验证。
 
-## 第一步：给任务入口，不给整仓资料包
+## 第一步：给任务入口，让 Agent 按需找原文
 
-**说清要解决什么、保留什么，以及从哪里开始；让 Agent 沿实现和检查补足上下文。** 例如下面这段可直接用于本仓，换项目时替换目标和入口：
+**说清目标、保留行为和起点，沿实现与检查补足信息。** 下面这项本仓任务可直接照做；换项目时换目标与入口。
 
 ```text
-请核对文档检查器是否检查 Markdown 链接里的 #锚点。
-遵守项目指令，从 scripts/check_repo.py 和 tests/test_check_repo.py 入手，
-先读链接解析实现与相关用例；遇到缺失依赖再扩大搜索。
-交回支持范围、决定性源码位置，以及实际运行的验证命令和结果。
-这是只读核查，不修改检查器，也不把“检查通过”写成所有链接均有效。
+核对本仓文档检查器是否检查 Markdown 链接里的 #锚点；不修改检查器。
+遵守项目指令，从 scripts/check_repo.py 和 tests/test_check_repo.py 入手。
+先看链接解析实现与相关用例，缺信息再扩大搜索。
+交回支持范围、源码位置、实际验证命令和结果，不把检查通过报成所有链接均有效。
 ```
 
-这个任务只需沿 `check()` 与 `test_existing_and_external_links` 看清：检查器核本地文件是否存在，**不核 `#锚点` 或外链**。入口、用例和输出足以决定下一步，无需先读所有文档。已运行以下命令，9 项测试通过；这一实例验证的是检查器行为，模型上下文收益未试用。
+从仓库根目录运行 `python3 -m unittest discover -s tests -p 'test_check_repo.py' -v`，已验证 9 项通过。`check()` 与 `test_existing_and_external_links` 表明：本地链接仍检查文件路径是否存在，但不验证 `#` 后的锚点；纯 `#锚点` 和外链跳过。这个实例验证检查器行为，未测上下文收益；全量迁移或审查仍须按依赖扩大覆盖。
 
-```sh
-python3 -m unittest discover -s tests -p 'test_check_repo.py' -v
+**依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 按需取回及撤掉强制探索委派](https://cursor.com/blog/improved-token-efficiency)，核实 2026-10-26；[检查器](../../scripts/check_repo.py)与[测试](../../tests/test_check_repo.py)，复跑 2026-10-28。常驻规则见[指令文件](instruction-files.md)，委派与在途任务见[长任务](long-tasks.md)。
+
+### 指定了页面版本：读取那一版，不用工作树同名文件替代
+
+**任务指定文档版本，或附入正文应与某版一致时，先核内容版本，再按它行动。** 分支／标签会移动，先用 `git rev-parse --verify '<ref>^{commit}'` 得到提交；克隆后若没有同名本地分支，确认仓库与远端后改查 `refs/remotes/origin/<分支>`（远端不叫 origin 时替换名称）。需要当前远端版本时，先按已有权限 fetch，再固定提交；只读已有跟踪 ref 就保留这一观察范围。随后用 `git show '<提交>:<文件路径>'` 读该版。工作树 HEAD 与页面版本可以不同，保留两者；普通任务只需当前文件时，不增加这一步。
+
+例如，本仓一次上下文读者任务引用的页面分支解析到下列提交，而任务工作树使用另一提交。已有实际附入正文文件 `received-page.md` 时，可在同一仓库比较内容标识：
+
+```bash
+git rev-parse 'd0b9651b5db9039975d1abde4efe8f0cfd3a43b8:docs/decisions/context-management.md'
+git hash-object --no-filters received-page.md
 ```
 
-OpenAI 的当前提示实践也把“每次编辑前读完所有文档”改为按服务边界、数据库、部署等任务路由。Cursor 团队则撤掉强制鼓励探索委派的提示，保留高频读、搜、改工具。**借的是按需取回，不是把必要约束删光或每次搜索都交给子 Agent。** 常驻项目规则怎么写，见[指令文件](instruction-files.md)；大型独立调查怎么拆，见[长任务](long-tasks.md)。
+两值相同表示文件字节一致；不同则对照固定原文，分清换行／消息包装变化与正文版本变化。`received-page.md` 应从实际收到的正文保存；拿不到附入内容就记“输入版本未核”，保留继续所需的输入。仅在工作树找到同名文件，不能确认附入的是它；引用位置也按所读页面计算，不拿整张任务卡的行号指代页面行号。
 
-**依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 的上下文与委派调整](https://cursor.com/blog/improved-token-efficiency)，核实 2026-10-26；[本仓实跑] [检查器](../../scripts/check_repo.py)与[9 项测试](../../tests/test_check_repo.py)，复跑 2026-10-28。跨任务最优上下文量仍未知；不沿用厂商组合改动的收益数字。
+**依据**：[Git 固定版本与对象定位](https://git-scm.com/docs/git-rev-parse)、[不经过过滤器的内容标识](https://git-scm.com/docs/git-hash-object)；[固定页面](https://github.com/dbvv1/a1dbv/blob/d0b9651b5db9039975d1abde4efe8f0cfd3a43b8/docs/decisions/context-management.md)。2026-10-30 实跑同版／异版文件对照；检查只确认提供的文件内容，接收端附文与模型实际加载仍按可观察证据判断。
 
 ## 已经变笨：按症状选动作
 
 | 眼前发生了什么 | 现在怎么做 |
 |---|---|
-| 漏了接口约定、拿旧文件说事 | 重读当前权威文件与相关调用方；指出被取代的旧决定。压缩无法补回从未读过的事实 |
-| 搜索为零，却知道相关源码存在 | 核工作树与忽略规则，再用已知符号做下文的阳性对照；先别据此重复实现 |
-| 读图后 token 占用突然暴涨、很快触发压缩 | 先核客户端版本与数字来源，按下文区分内部估算和服务端 usage；不要仅凭占用提示清空历史 |
-| 同一任务还在正常推进，只是历史占空间 | 沿用自动压缩；需要手动腾空间时，指定保留最新约束、失败测试、已排除方案与下一步，压缩后核对 |
-| 压缩完马上又满，或不停全量重读 | 查最大的文件、工具输出和启动加载项，缩小**实际读入范围**；日志保留错误段与原文件位置，不逐轮灌回全文 |
-| 已换成无关任务，或明确纠正后仍不断回到旧方案 | 先保存下节的检查点，再以当前目标和已排除方案写新提示开会话；从当前文件恢复 |
-| 压缩报错、断流，旧会话无法继续 | 保留原会话与工作区，先核当前 diff、在途操作及已返回结果，再从已核状态接续；别因缺一句完成回复重做写入 |
+| 漏约定、引用旧文件 | 重读当前权威文件与调用方，指出被取代的决定；压缩不能补回从未读过的事实 |
+| 搜索为零，却知道源码存在 | 核客户端版本、工作树／HEAD 和忽略规则；搜索已知文件里的符号，与直接读取对照。确认获准读取且没有有意排除后，才对该文件用 shell `grep` 复核；权限拒绝不换入口绕过 |
+| 同题正常推进，历史占空间 | 沿用自动压缩；手动压缩时保留最新约束、失败测试、已排除方案与下一步，压缩后核对 |
+| 压缩完又满、不停全量重读 | 查大文件、工具输出与启动加载项，缩小实际纳入范围；日志保留错误段和文件入口。只分块却仍读全量，不能减少总量；必要的全量审查仍须覆盖 |
+| 无关新任务，或纠正后仍回到旧方案 | 保存下节检查点，用当前目标和已排除方案写新提示，开新会话 |
+| 读图后占用突增、提前压缩 | 先记客户端版本、模型和触发输入；Cline 相符症状核是否含 #14520 修复（4.1.24 已含）。只对照同一请求，按提供方定义核客户端估算与服务端 input／缓存口径；配不齐就记未知；费用查账单，不凭估算调低阈值 |
+| 同轮改过规则，压缩后又读旧内容 | Claude Code 2.1.311 修复了 `CLAUDE.md`／`MEMORY.md` 旧副本路径；旧版显式重读，含修复版在下次自然压缩后核新内容，不降低阈值造试验 |
+| 压缩报错或断流，旧会话无法继续 | 保留原会话与工作区；先核 diff、在途操作和已返回结果，再接剩余步骤，别因缺完成回复重做写入 |
 
-**重开用来摆脱持续误导的旧思路，不是每个模型都需要的固定仪式。** Anthropic 团队的长程应用实践中，Sonnet 4.5 会因自认为接近窗口上限而提前收尾，压缩不足以解决，团队采用检查点加重开；换到 Opus 4.5 后撤掉重开，整次构建改用 Agent SDK 自动压缩。当前 Claude Code 官方也建议：同一错误纠正两次仍复发时，用吸收教训的新提示重开。前者是团队实作报告，后者是操作建议，不能据此为其他模型设统一阈值。
+**压缩还是重开，取决于下一步需要的事实与理由。** Anthropic 团队曾为 Sonnet 4.5 的提前收尾采用检查点重开，换到 Opus 4.5 后撤掉重开、沿用 SDK 自动压缩；Claude 官方建议同一错误两次纠正仍复发时改用新提示重开。社区同时存在清空和持续压缩的成功自述，没有同条件对照，不设跨模型统一阈值。
 
-社区对两种做法仍有分歧：Reddit 原帖有人每完成一个任务就清空，也有人自报 Opus 5.5 的协调任务靠压缩持续运行；反对压缩者担心丢掉“试过什么、为什么放弃”。可借的是**按下一步是否依赖这些理由来选择**，并在压缩或交接中明确保留它们。原帖没有同条件任务对照，个人百分比和赞数不作为默认配置依据。
+**依据**：[团队实作](https://www.anthropic.com/research/harness-design-long-running-apps)、[Claude 会话引导](https://code.claude.com/docs/en/best-practices#steer-the-session)、[社区 clear／compact 正反经验](https://www.reddit.com/r/ClaudeCode/comments/1x0jmvm/when_do_you_use_clear_vs_compact_in_your_daily/)，核实 2026-10-28。
 
-**依据**：[官方／团队实践] [Anthropic 长程应用的重开撤回](https://www.anthropic.com/research/harness-design-long-running-apps)、[Claude Code 会话引导](https://code.claude.com/docs/en/best-practices#steer-the-session)；[社区原帖] [clear 与 compact 的正反使用经验](https://www.reddit.com/r/ClaudeCode/comments/1x0jmvm/when_do_you_use_clear_vs_compact_in_your_daily/)，核实 2026-10-28。
+**检索依据**：[Cursor 历史漏检及官方确认](https://forum.cursor.com/t/agents-grep-glob-tools-silently-return-zero-results-inside-any-cursor-managed-worktree/160373)、[忽略规则误诊](https://forum.cursor.com/t/agent-editing-files-with-shell-python-permission-denied-from-read-and-strreplace-tools-when-using-git-worktrees/155500/10)与[忽略规则](https://cursor.com/docs/reference/ignore-file)，核实 2026-10-28；本仓 `rg`／`grep` 阳性对照与直接阅读一致，未实测 Cursor，历史故障修复版本未知。
 
-### 搜索为零：先确认检索入口看得见
+**重载依据**：[Claude 旧副本修复](https://github.com/anthropics/claude-code/blob/08c6a4f5121ae140d3c1b5c96e3e5ae53587b54b/CHANGELOG.md#L12)与[旧版反馈](https://github.com/anthropics/claude-code/issues/92949#issuecomment-6119121589)，核实 2026-10-27、未实跑；[AOCI 全量重读核查](../research/2026-10-26-context-reload-scope.md)与[断流反馈](https://github.com/openai/codex/issues/53653)，核实 2026-10-26、未复现客户端故障。
 
-**用同一工作树中已知存在、获准读取的源码做阳性对照。** 记下客户端版本、当前目录与 HEAD，先核忽略规则，再搜索指定文件里的已知符号并直接读取核对。文件可读、搜索却漏掉时，暂停“实现不存在”的判断；确认没有访问限制后，仅对该文件用 shell `grep` 复核，保留结果排查客户端，不先清空历史或重派 Agent。遇权限拒绝或有意排除则先处理授权，不换 shell 绕过。
+**图片估算依据**：[Cline 修复](https://github.com/cline/cline/pull/14520)、[4.1.24 发布](https://github.com/cline/cline/releases/tag/v4.1.24)、[同请求与缓存口径](https://github.com/cline/cline/issues/14979)、[本仓固定源码离线对照](../collaboration/inbox.md#cline-image-token-estimate)，核实 2026-10-28。v4.1.20／v4.1.24 相同文本加一张 192×128 合成 PNG 的请求估算为 32,926／1,662；正常路径的 1,600 token／图是内部定额，文本仍按字符估算。真实压缩时机、恢复质量及服务端用量待验。
 
-Cursor 3.3.30／macOS 用户曾报告 worktree 内 Grep／Glob 返回零结果，而 Read 与 shell 搜索可见，子 Agent 也受影响；官方支持确认当时的索引问题。另一个用户起初也认为是客户端故障，最后发现排除 worktree 的 `.cursorignore` 规则才是原因。**零命中要分清工具故障、范围限制与真实不存在。**
+## CLI 命令：压缩、新开和恢复分开用
 
-**依据**：[历史用户报告与官方确认](https://forum.cursor.com/t/agents-grep-glob-tools-silently-return-zero-results-inside-any-cursor-managed-worktree/160373)、[忽略规则误诊的最终回执](https://forum.cursor.com/t/agent-editing-files-with-shell-python-permission-denied-from-read-and-strreplace-tools-when-using-git-worktrees/155500/10)、[当前官方忽略规则](https://cursor.com/docs/reference/ignore-file)；核实 2026-10-28。本仓已在[公开检查器](../../scripts/check_repo.py)定位中使用 `rg`／`grep` 阳性对照，与直接阅读一致；未遇漏检、未实测 Cursor，历史故障的修复版本仍未核实。
-
-### 读图后提前压缩：先查客户端估算
-
-**先记实际客户端版本、模型和触发输入，再判断该换版本还是减材料。** Cline 的图片 base64 曾被按文本长度计入压缩估算；相符症状优先核是否含 #14520 修复（已进入 4.1.24 发布源码），保留自动压缩设置。单纯占用数字异常查估算路径；已经漏掉目标、约束或接口契约，则按上表重读当前原文。
-
-本仓直接运行 Cline v4.1.20／v4.1.24 固定源码：相同文本加一张 192×128 合成 PNG，**请求估算从 32,926 变为 1,662**，纯文本保持 45。修复后的正常路径按识别出的图片另加 1,600 token／图内部定额；它验证的是估算算法变化，真实客户端何时压缩、任务恢复质量和服务端用量仍待实跑。
-
-**需要查差额时，只对照同一次请求。** 把客户端估算和服务端返回的 input／缓存字段分开记录，先按该提供方的定义核输入总量；字段或配对缺失就记未知，不拿“当前请求估算”除以“上一请求 usage”调低阈值。费用查服务商账单，1,600 定额只用于客户端估算；文本仍按字符启发式计数。
-
-**依据**：[使用者原帖 #14512](https://github.com/cline/cline/issues/14512)、[官方修复 #14520](https://github.com/cline/cline/pull/14520)与[4.1.24 发布说明](https://github.com/cline/cline/releases/tag/v4.1.24)、[固定请求估算实现](https://github.com/cline/cline/blob/ed469c753a0d7a0d41f906cf3fc75a983cd766ac/sdk/packages/shared/src/llms/tokens.ts)、[后续报告与缓存口径说明](https://github.com/cline/cline/issues/14979)、[本仓离线对照与边界](../collaboration/inbox.md#cline-image-token-estimate)；核实与离线复跑 2026-10-28 UTC。
-
-### 压缩后旧内容回来：核重载行为
-
-**同一长轮次改过 `CLAUDE.md`／`MEMORY.md`，自动压缩后又读到旧内容，先核客户端版本。** Claude Code 2.1.311 已修复这条旧副本路径；旧版显式重读当前文件，含修复的版本在下一次自然压缩后核对新内容，再接原任务。先不叠加记忆注入插件，也不人为降低压缩阈值制造试验。
-
-**依据**：[官方修复](https://github.com/anthropics/claude-code/blob/08c6a4f5121ae140d3c1b5c96e3e5ae53587b54b/CHANGELOG.md#L12)、[旧版用户对照 #92949](https://github.com/anthropics/claude-code/issues/92949#issuecomment-6119121589)；核实 2026-10-27，本仓未实跑该客户端修复，保留现有原生压缩待验状态。
-
-**全量资料读不完时，切小块可能仍无效。** AOCI 的公开故障中，压缩后合同要求重读整份索引，分块只改每次响应大小，总量没变。遇到这类工具，要沿其范围配置减少实际纳入材料；任务不需要全量索引时，明确改走源码定位。仍要求全量审查的任务则保留完整覆盖，不能把局部读取报成全量完成。
-
-**依据**：[官方] [Claude 压缩循环排障](https://code.claude.com/docs/en/troubleshooting#auto-compaction-stops-with-a-thrashing-error)；[社区原帖] [AOCI #114 与维护者回复](https://github.com/aoci-spec/aoci-code/issues/114)、[Codex 长会话断流／已改文件但回复失败](https://github.com/openai/codex/issues/53653)；[既有证据] [17 排障分流](../17-troubleshooting.md#26-越聊越笨上下文腐化与压缩丢失)、[全量重读源码核查](../research/2026-10-26-context-reload-scope.md)，核实 2026-10-26。公开故障是特定环境的自述，本文未复现这些客户端故障。
-
-## Claude Code 与 Codex：别把命令和加载语义混用
-
-以下是 **CLI 会话内命令**，不是 shell 命令；其他客户端以其 `/` 菜单为准。
+以下在 **CLI 会话内**输入，不是 shell 命令；其他客户端看其 `/` 菜单。
 
 | 目的 | Claude Code | Codex CLI |
 |---|---|---|
-| 看当前上下文 | `/context` 看分类与加载来源 | `/status` 看当前上下文／token 使用信息 |
-| 同题腾空间 | `/compact 保留当前目标、兼容与禁改约束、已撤回要求、已验证结果、未完成检查、已排除方案和下一步；省略长日志` | `/compact`；需要指定接续内容时，先用普通消息要求写出下节检查点，再压缩 |
-| 开干净会话 | `/clear` | `/new`；`/clear` 也开新聊天，同时清终端显示 |
-| 回原来的会话 | `/resume` | `/resume` 或终端 `codex resume` |
+| 看上下文 | `/context` 看分类与加载来源 | `/status` 看上下文／token 信息 |
+| 同题腾空间 | `/compact 保留目标、最新约束、撤回要求、已验结果、失败测试、已排除方案和下一步` | 先用普通消息写下节检查点，再 `/compact` |
+| 开干净会话 | `/clear` | `/new`；`/clear` 也开新聊天并清终端显示 |
+| 回旧会话 | `/resume` | `/resume`，或 shell 的 `codex resume` |
 
-**新会话不等于干净工作区。** 文件修改与外部操作仍要核对；resume 会取回旧历史，fork 也会带旧历史，二者都不适合用来丢掉旧假设。Codex `/recap` 是回顾摘要，要腾上下文用 `/compact`。
+新会话保留工作区改动；resume 和 fork 带旧历史，不能借它们丢掉旧假设。Codex `/recap` 只回顾摘要。
 
-**先保留自动压缩默认值。** 已经手动调乱时再恢复：
+**默认自动压缩够用就不调；确曾手改时再恢复：**
+- Claude 支持 `/autocompact` 的版本可用 `/autocompact auto`（v2.1.221 起，会保存设置）；被环境变量或更高优先级设置覆盖时，先核覆盖来源。
+- Codex 撤回随意添加的 `model_auto_compact_token_limit`，未设置时用模型默认；`model_context_window` 须与实际服务能力一致。
 
-- **Claude Code**：支持 `/autocompact` 的版本可运行 `/autocompact auto` 回到模型调优窗口（命令自 v2.1.221 起提供）。它会保存设置；若提示被环境变量或更高优先级设置覆盖，先核覆盖来源。
-- **Codex**：`model_auto_compact_token_limit` 未设置时使用模型默认。检查实际生效配置，撤回自己为“防变笨”随意加入的阈值；不要把 `model_context_window` 填大当成获得了服务端更大容量。确有网关／模型容量差异时，按实际能力配置。
+**依据**：[Claude 命令](https://code.claude.com/docs/en/commands)与[压缩配置](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window)、[Codex 命令](https://learn.chatgpt.com/docs/developer-commands)与[配置](https://learn.chatgpt.com/docs/config-file/config-reference)，核实 2026-10-26；命令按文档核对，原生压缩与重开尚未在真实编码任务实跑。
 
-**依据**：[官方] [Claude 命令](https://code.claude.com/docs/en/commands)、[自动压缩窗口及覆盖关系](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window)、[Codex 命令](https://learn.chatgpt.com/docs/developer-commands)、[Codex 配置](https://learn.chatgpt.com/docs/config-file/config-reference)，核实 2026-10-26。命令与配置按文档核对；本页的原生压缩和换会话步骤尚未在真实编码任务中运行，暂列候选。
+## 跨压缩或新会话：检查点保留下一步用得上的内容
 
-## 要跨压缩或新会话：保存下一步能用的检查点
-
-**复用现有任务记录，保留当前事实与理由，而不是整段聊天。** 只在确实需要跨会话继续时保存；短任务直接把内容放在交接消息里即可。可复制给当前 Agent：
-
-```text
-请在现有任务记录中更新一份简短检查点，供下一次继续：
-1. 当前目标与完成条件；最新约束（尤其禁改范围）、取消或已取代的要求。
-2. 仓库、分支、基线 commit；尚未提交的修改及其位置。
-3. 已确认事实、关键决定及排除旧方案的理由；已有记录只给文件／符号／结果入口。
-4. 已运行检查、实际结果及适用版本；失败与未运行项分开。
-5. 在途任务／外部操作的 ID 和状态；结果未知的先标记待查询。
-6. 下一步具体动作，以及尚缺的输入或授权。
-只写已有证据，不补造成功结果，不保存密钥或私人对话全文。
-```
-
-比如上面的只读核查，可以留成这样一段，而不是“研究完成，继续优化”：
+复用现有任务记录，短任务直接留交接消息；只写已有事实，不保存密钥或私人对话全文。
 
 ```text
-目标：确认 check_repo.py 的链接验证范围；不修改检查器。
-证据入口：scripts/check_repo.py 的 check()，以及
-tests/test_check_repo.py 的 test_existing_and_external_links。
-已确认：本地文件存在时，即使 #missing-anchor 不存在也不会报错；外链跳过。
-已验证：test_check_repo.py 的 9 项 unittest 通过。
-下一步：对需要交付的文档运行 python3 scripts/check_repo.py；
-其中的锚点、外链及事实仍需单独核查，不能只凭 errors=[] 宣布全部有效。
-版本：交接时填写当前 commit 与差量；上述检查只对应实际受检文件。
-在途写入：无，本例只读。
+请更新检查点，供下一次继续：
+1. 当前目标、完成条件、最新约束（尤其禁改范围）、取消或被取代的要求。
+2. 仓库、分支、基线 commit；未提交修改及位置。
+3. 已确认事实、关键决定与排除旧方案的理由；可重读的文件／符号／结果入口。
+4. 已运行命令、结果与适用版本；失败、未运行分别列明。
+5. 在途任务／外部操作的 ID 和状态；未知结果先标待查询。
+6. 下一步具体动作，尚缺输入或授权。
 ```
 
-**恢复先核最新约束，尤其禁改范围与撤回要求，再核当前进度；明确要求“读内容”，不能只留下文件名。** 代码和测试能重读，临时说过的限制若只剩旧摘要，可能再也找不回来。在压缩后或新会话贴入检查点，或把下面的路径换成实际任务记录：
+**恢复时要求实际读取检查点与当前项目指令，先核最新约束和撤回项，再核 Git 状态、diff、产物与在途结果。** 冲突先查变化，未知写入先查状态。接续合格看三件事：限制仍遵守；下一步有证据入口；没有重复已完成或结果未知的写入。
 
-```text
-请实际读取 [任务记录路径] 中的最新检查点与当前项目指令。
-先核当前目标、最新约束（尤其禁改范围）、已取消或替代的要求，再查看 Git 状态与相关 diff。
-从源码／结果入口核对已完成项、在途操作和下一步；结果未知的操作先查状态。
-若记录与当前文件冲突，先查明变化；沿剩余动作继续，不重做已确认的写入。
-```
+普通 Markdown 不会自动加载：Claude `@文件` 可引入内容，Codex `@` 文件选择主要加入路径，仍要明确要求读取；Claude 压缩后也可能只留下大文件的 `Referenced file` 路径，应核实际内容。检查点并不保证摘要无损。
 
-**接续成功要看三件事：** 最新限制仍被遵守；能指出下一步及其证据入口；没有重复已完成或结果未知的写入。10 月的压缩研究发现，部分任务分数保持平稳时，摘要仍会丢掉工作方法和禁改范围。任务实验使用改造版 OpenCode、少量任务及 Opus 4.6、GPT-5.3-Codex、GPT-5.4 等模型，1M 模型仅测到窗口的 16%–38%；另以 LLM 判分检查 44 条真实会话，未测约束缺失对最终结果的影响。这支持优先核限制，通用最佳压缩阈值仍未知。
+**依据**：[Codex 固定压缩提示](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/compact/prompt.md)、[Claude 引用](https://code.claude.com/docs/en/best-practices#provide-rich-content)与[压缩重载](https://code.claude.com/docs/en/context-window#what-survives-compaction)、[Codex 文件入口](https://learn.chatgpt.com/docs/developer-commands#interactive-shortcuts)、[既有恢复包](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)，核实 2026-10-26。
 
-**依据**：[原始研究] [Benchmarks Are Surprisingly Compaction-Friendly](https://arxiv.org/html/2610.31778v1) §4.2、§5；[公开实现] [研究用 OpenCode 配置](https://github.com/aisa-group/compaction/blob/main/docs/COMPACTION.md)，核实 2026-10-28；本仓未复现该研究，真实本机读者的跨压缩／新会话接续待验。
-
-普通 Markdown 检查点没有自动加载特权。Claude 的提示中 `@文件` 可引入文件；Codex 的 `@` 文件选择主要把路径加到提示，仍应明确要求读取。Claude 压缩后也可能只保留大文件的 `Referenced file` 路径；关键契约是否仍可见，要按实际内容核对。常驻规则及导入写法留在[指令文件页](instruction-files.md)，不把临时任务状态塞进根规则。
-
-这与 Codex 开源压缩提示的做法一致：它要求保留进度、决定、约束、下一步和关键资料。可借其中的 **“What remains to be done (clear next steps)”**，无需替换内建压缩提示或安装同步器。
-
-**依据**：[一手／开源实现] [Codex 固定压缩提示](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/compact/prompt.md)，与当日 main 正文一致；[官方] [Claude 文件引用](https://code.claude.com/docs/en/best-practices#provide-rich-content)、[压缩后重载范围](https://code.claude.com/docs/en/context-window#what-survives-compaction)、[Codex 文件引用入口](https://learn.chatgpt.com/docs/developer-commands#interactive-shortcuts)；[既有做法] [20 恢复包](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)，核实 2026-10-26。检查点是本仓做法的简化，不是保证摘要无损的产品功能。
-
-## 何时不适用
-
-- **缺的是环境、权限或明确需求**：先补真实缺口；换会话不会让缺失的依赖或授权出现。
-- **必须看全量才能判断的迁移、架构或审查**：按依赖扩大阅读。按需读取的目标是读对资料，不是固定少读几份。
-- **当前会话工作正常**：继续完成即可；已有任务记录能恢复，就不另建长期记忆层。真正需要委派、接回在途任务或检查 CI，转到[长任务页](long-tasks.md)。
-
-V2EX 有使用者报告频繁压缩，随后同时禁用意外加载的 Skills／Plugins 并更换大窗口模型，体验改善。这里最有用的提醒是**先查实际装入了什么**；因为同时改了多项，不能据此判断是哪项有效，更不能推出“都换大窗口”。
-
-**依据**：[社区原帖] [V2EX：频繁压缩与实际加载项](https://v2ex.com/t/1241320)，核实 2026-10-26；更广的上下文量、检索与记忆比较见 [03](../03-context-engineering.md)。
+**优先核限制：任务得分稳定，摘要仍可能丢掉工作方法和禁改范围。** [10 月压缩研究](https://arxiv.org/html/2610.31778v1) §4.2／§5 与[改造版 OpenCode](https://github.com/aisa-group/compaction/blob/main/docs/COMPACTION.md)，核实 2026-10-28。该研究的任务实验仅含少量任务及 Opus 4.6、GPT-5.3-Codex、GPT-5.4 等模型，1M 模型只用到窗口的 16%–38%；44 条真实会话用 LLM 判分，未测约束丢失对最终结果的影响。本仓未复现，不据此设通用阈值。

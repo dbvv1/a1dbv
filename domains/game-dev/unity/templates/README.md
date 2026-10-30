@@ -30,11 +30,19 @@ templates/
 
 在知识库根目录运行，先把环境变量 `TARGET` 设为选定的**空目录**。命令会拒绝未设置的目标、目标或父目录中的符号链接和任何非空目录（含已有 `.git` 的项目）；重复执行会拒绝写入，保留第一次生成的内容。先读命令与源文件；只想预览时不要执行，改为比较 generic 与领域文件。
 
+**`TARGET` 用 Bash 的 POSIX 样式路径**，如 `../new-project`，Git Bash 中可用 `/c/work/new-project`。从 Windows 程序复制的路径先转换：`TARGET=$(cygpath -u 'C:\work\new-project') && export TARGET`，再用 `printf '%s\n' "$TARGET"` 核对目标。配方拒绝未转换的盘符／反斜线路径，避免在当前目录误建同名文件夹。[路径转换依据](https://www.msys2.org/docs/filesystem-paths/)，核实 2026-10-30；路径拒绝与原复制流程已在 POSIX 回归，Git Bash 原生执行待验。
+
 <!-- empty-project-recipe -->
 ```bash
 (
   set -eu
   : "${TARGET:?请先设置 TARGET 为新的空目录路径}"
+  case "$TARGET" in
+    [A-Za-z]:*|*\\*)
+      printf '%s\n' '请先将 TARGET 转为 POSIX 路径；Git Bash 可用 cygpath -u，不直接传入盘符或反斜线路径' >&2
+      exit 1
+      ;;
+  esac
   # 去掉末尾分隔符，再检查每个现有路径分量；不解析或穿过符号链接。
   case "$TARGET" in /*) ;; *) TARGET="./$TARGET" ;; esac
   while [ "$TARGET" != / ] && [ "${TARGET%/}" != "$TARGET" ]; do

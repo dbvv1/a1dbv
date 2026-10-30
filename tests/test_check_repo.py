@@ -1,5 +1,9 @@
 import importlib.util
+import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -69,6 +73,50 @@ class RepoCheckTests(unittest.TestCase):
     self.assertEqual([], self.run_fixture({"docs/collaboration/local-jobs/README.md": long_body})["errors"])
     self.assertEqual(1, len(self.run_fixture({"docs/collaboration/TASKS.md": "x" * 11000})["errors"]))
     self.assertEqual([], self.run_fixture({"docs/collaboration/TASKS.md": "x" * 9000})["errors"])
+
+
+class RepoCheckCLITests(unittest.TestCase):
+  def run_cli(self, *args, encoding="gbk"):
+    # Exercise redirected stdout encoding, not a native Windows filesystem.
+    return subprocess.run([sys.executable, str(Path(module.__file__)), *map(str, args)],
+                          env=dict(os.environ, PYTHONIOENCODING=f"{encoding}:strict"),
+                          capture_output=True)
+
+  def assert_report(self, root, code):
+    expected = module.check(root)
+    for encoding in ("utf-8", "gbk", "ascii"):
+      with self.subTest(encoding=encoding):
+        result = self.run_cli("--root", root, encoding=encoding)
+        self.assertEqual(code, result.returncode)
+        self.assertEqual(b"", result.stderr)
+        self.assertEqual(expected, json.loads(result.stdout.decode("ascii")))
+
+  def test_clean_root_retains_success(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      (root / "clean-\uf03a.md").write_text("普通文本\n", encoding="utf-8")
+      self.assert_report(root, 0)
+
+  def test_unicode_errors_survive_legacy_stdout_encoding(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      (root / "C\uf03a").mkdir()
+      (root / "C\uf03a/README.md").write_text("[link](missing-\U0001f9ea.md)\n", encoding="utf-8")
+      (root / "中文.json").write_text("{", encoding="utf-8")
+      (root / "bad-\uf03a.md").write_bytes(b"\xff")
+      self.assertEqual(3, len(module.check(root)["errors"]))
+      self.assert_report(root, 1)
+
+  def test_missing_root_and_argument_remain_usage_errors(self):
+    with tempfile.TemporaryDirectory() as directory:
+      for args in (("--root", Path(directory) / "missing"), ("--root",)):
+        with self.subTest(args=args):
+          result = self.run_cli(*args)
+          self.assertEqual(2, result.returncode)
+          self.assertEqual(b"", result.stdout)
+          self.assertIn(b"error:", result.stderr)
+          self.assertNotIn(b"Traceback", result.stderr)
+
 
 if __name__ == "__main__":
   unittest.main()
