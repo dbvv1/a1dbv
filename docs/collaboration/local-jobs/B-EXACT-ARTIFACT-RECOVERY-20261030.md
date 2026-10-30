@@ -2,7 +2,7 @@
 id: B-EXACT-ARTIFACT-RECOVERY-20261030
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b79cd6a04da5a7ed6ccf224a481c8f79b2ef118d
 result_branch: relay/b-exact-artifact-recovery-20261030
