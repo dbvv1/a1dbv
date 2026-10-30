@@ -4,6 +4,22 @@
 
 ## 待处理
 
+### 2026-10-30：四领域云端来源补充（供自然续接与接收时参考）
+
+这份材料不改四张广扫卡的状态、范围或已启动输入，也不另派任务。仅后续 fetch 并实际读取时可见；当前调用是否已读，须由结果引用或回执确认。未被本机自然续接采用的，云端接收结果时补核，不为读材料重跑整轮。两张已取消旧卡的未覆盖来源仍[待纳入 MULTIAGENT-LONG](local-jobs/A-PARALLEL-REVIEW-SOURCES-20261028.md)，其 [OpenCode 恢复调查](local-jobs/A-RESUME-CONTRACT-SOURCES-20261028.md)同样保留待办，本节不替代任务规格更新。
+
+- **AGENT-CONFIG｜历史反例，不计近期发现**：[2026-03-03 HN 评论](https://news.ycombinator.com/item?id=47230336)自报 deny list 曾被绕过、未跟踪目录被删除；加“不要绕过”提示后暂未再遇到。缺故障轨迹、版本与受控比较，只作核对权限约束究竟在哪层执行的线索，不据此推荐提示词可替代执行层限制。
+- **SKILL-MCP｜已有基线，不重复入候选**：[V2EX 2026-07-14 首帖](https://www.v2ex.com/t/1227194)的[第 7 楼](https://www.v2ex.com/t/1227194#r_17864294)自报小任务流程成本过高，[第 28 楼](https://www.v2ex.com/t/1227194#r_17865748)质疑归因；[第 18 楼](https://www.v2ex.com/t/1227194#r_17864982)和[第 22 楼](https://www.v2ex.com/t/1227194#r_17865165)主张先明确大功能边界。沿用[已有按需流程判断](../research/2026-10-22-frontier-trials.md#代表机制的采用证据与边界)，不把跨任务、模型与流程的自报耗时写成插件胜负。
+- **MULTIAGENT-LONG｜历史取舍＋未试用候选**：[2026-03-02 使用者](https://news.ycombinator.com/item?id=47222472)因集成漂移、冲突和审查负担退回以单 Agent 为主；[原作者回复](https://news.ycombinator.com/item?id=47222888)承认代价但仍选择并行，双方都是自报。近期另有 [Foremerge 09-21 作者实践](https://news.ycombinator.com/item?id=49789356)：编辑前声明意图与操作范围，提前暴露冲突；[09-22 限制说明](https://news.ycombinator.com/item?id=49795854)须与下述固定源码一起读，不作最新版结论。
+- **VERIFY-REVIEW｜已有事故自报＋历史意见**：[linux.do 2026-07-10 首帖](https://linux.do/t/topic/2560865/1)称调用 Playwright CLI 后角色仍不能移动，已在 [13](../13-frontier-radar.md)用作“工具调用后仍须验实际行为”的反例；没有公开补丁，不计新增运行验证。[HN 2025-03-20 评论](https://news.ycombinator.com/item?id=43422232)担忧修复循环删断言或改测试输入，是观点而非已发生事故，也不计近期发现。
+
+**Foremerge 候选的准确边界**：固定 `553d252d`（源码包版本 0.6.0）已记录真实 base→candidate 的二进制 diff 哈希，并在接收时核干净工作树、受验指纹、HEAD 与依赖祖先；不能再笼统写“不读实际 diff”。这些检查固定的是受验版本；最终代码是否兑现原意图，仍要对照实际 diff、项目检查和消费者结果。符号提示只作轻量线索，意图声明仍可能漏项；已有最终 diff／消费者验收要保留。CLI 有显式 `work watch` 轮询事件，不等于向已运行的 Agent 主动注入通知。
+
+**怎么取舍**：在已经并行编辑、经常出现“同一契约被替换与扩展”冲突的仓库，可把 Foremerge 列为编辑前协调的未试用候选，先比较原有 worktree＋明确写域是否足够；它不用于替换本仓接收端，也不解决当前调用是否读到补充材料的问题。单项命名检查能证什么仍由项目原验收决定；本轮只读源码，未安装、未运行模型或候选测试。
+
+**依据与核读范围**：[固定 Git 差异记录](https://github.com/naw103/foremerge/blob/553d252d113b773ae31433818b0db987cc9385b4/docs/git-integration.md#L97-L145)、[接收时的版本核对](https://github.com/naw103/foremerge/blob/553d252d113b773ae31433818b0db987cc9385b4/src/service.rs#L2184-L2224)、[事件轮询实现](https://github.com/naw103/foremerge/blob/553d252d113b773ae31433818b0db987cc9385b4/src/cli.rs#L1318-L1334)。本轮以云端 curl 读取 HN Algolia 原始条目、V2EX 正文／四条回复和 linux.do 首帖 JSON，并核 Foremerge 官方源码；核实 2026-10-30。X 前次 curl 只有 JS 壳，无正文，本轮未重试；Reddit 已知访问拦截未重试，保留原帖缺口。
+
+
 - 👀 **Node `pg` 连接池或约束迁移先查原生文档，Supabase Postgres Skill 按条核对后再试**：固定 `c9be0e93` 的[连接池配方](https://github.com/supabase/agent-skills/blob/c9be0e931b7930f7d02126d04774d904c381e7d7/skills/supabase-postgres-best-practices/references/conn-prepared-statements.md#L42)仍建议不存在的 `{ prepare: false }`，而 [pg 源码](https://github.com/brianc/node-postgres/blob/2a5850fb0db18f5e40a642bbb4a4743de412ab54/packages/pg/lib/query.js#L8-L55)／[官方用法](https://node-postgres.com/features/queries#prepared-statements)以 query `name` 启用命名缓存；[约束配方](https://github.com/supabase/agent-skills/blob/c9be0e931b7930f7d02126d04774d904c381e7d7/skills/supabase-postgres-best-practices/references/schema-constraints.md#L38-L63)后两个存在性检查未限定表，可能因别表同名约束而漏建（[Postgres 目录说明](https://www.postgresql.org/docs/current/catalog-pg-constraint.html)）。[实际采用者 #83](https://github.com/supabase/agent-skills/issues/83)亦报这两项，本仓已核当前源码、未安装 Skill 或运行数据库，其余规则未作全面评价（核实 2026-10-28）。
 
 - 👀 **Ruff：让实际命令体现环境前提**——[维护者反馈](https://github.com/astral-sh/ruff/pull/29190)旁注未阻止 Codex 先跑不适用的监听测试，遂[把过滤写进命令](https://github.com/astral-sh/ruff/commit/7c6f8fc8fc5655dfa47e125b05453007b9e7a6c7)；仅不提供所需 OS 事件的环境适用，涉及监听行为的改动须在支持环境另验。本仓只在独立真实发布中预选既有授权的连接器入口以避开已知 CLI 缺写认证（不适用于权限拒绝）；路径依据执行回执而非 Git 提交，Ruff 命令未试用，未作同题对照，作为[共享指令](../decisions/instruction-files.md)候选（核实 2026-10-28）。
