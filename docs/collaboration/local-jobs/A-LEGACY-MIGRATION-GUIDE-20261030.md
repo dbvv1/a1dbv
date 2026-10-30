@@ -1,7 +1,7 @@
 # A-LEGACY-MIGRATION-GUIDE-20261030 · 从既有迁移实证写出可照做的候选页
 id: A-LEGACY-MIGRATION-GUIDE-20261030
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 97b7092c9b32ae4128855a89e9c7de022ec5b26a
