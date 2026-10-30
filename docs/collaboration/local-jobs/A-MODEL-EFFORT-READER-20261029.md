@@ -1,7 +1,7 @@
 # A-MODEL-EFFORT-READER-20261029 · 真实配置兼容修复
 id: A-MODEL-EFFORT-READER-20261029
 owner: dot-A
-status: running
+status: blocked
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
@@ -33,4 +33,6 @@ page: docs/decisions/model-roles.md@dot-a/model-effort-reader-dispatch-20261029
 原日志留任务仓外至接收结束，回传只含脱敏摘要，不提交私人路径、会话或用量日志。仅由接收端按既有流程公开扫描并推本任务结果分支，回 `review_ready`，不用 `accept: auto`；若输入或权限不足，回 `blocked` 和精确恢复条件。共享最多四并行、无 GPU，单元通常 60–90 分钟、最多两小时，不重复派发。
 
 ## 当前结果
-已准备排队，尚无领取或执行证据；页面分支核对为 `a666f3fc0507affa26dfbe50da767eb28ad4137a`。接收端领取时记录实际页面提交；若与上列核对值不同，先回输入卡点、不静默换版。按共享最多四任务、最多一 GPU 调度，本任务不用 GPU；同题旧调用未明先核状态，不重复执行。
+
+- 本机接收端连续 2 次未完成第 1 个单元：公开扫描有发现（email CODE_OF_CONDUCT.md:62，email SECURITY.md:3，email SECURITY.md:3，local-path jrnl/args.py:440，email pyproject.toml:8），未推送。负责人确认任务可以执行后改回 ready，接收端会重新领取。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
