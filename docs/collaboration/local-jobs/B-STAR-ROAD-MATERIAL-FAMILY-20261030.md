@@ -2,7 +2,7 @@
 id: B-STAR-ROAD-MATERIAL-FAMILY-20261030
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: ab69388d8fe7e30c025e3d8ead5e1923adb1794b
 result_branch: relay/b-star-road-material-family-20261030
