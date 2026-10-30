@@ -69,24 +69,60 @@ cargo metadata --format-version 1 --locked --offline \
 
 ## 领域配方：先读安装包，不为一项知识装整套流程
 
-**已有 TanStack Router，要让筛选在详情、返回和分享链接后保留，先读包内 `search-params`。** 在声明 `@tanstack/react-router` 且已安装依赖的应用目录运行；npm／pnpm 均可，无需传递依赖提升到根目录：
+**已有 TanStack Router，要让筛选在详情、返回和分享链接后保留，先读包内 `search-params`。** 以下 Bash／Zsh 命令都在你自己的应用目录执行：该目录的 `package.json` 声明了 `@tanstack/react-router` 且已安装依赖，不是本仓的 `experiments/tanstack-url-state`。Node 解析从消费包出发，不要求传递依赖提升到根目录。
+
+先在应用目录确认实际安装版本，只读、不安装。`pnpm list` 默认只列直接依赖，看不到传递依赖 `router-core`，pnpm 项目要加 `--depth Infinity`（或改用 `pnpm why @tanstack/router-core`）：
+
+```sh
+# npm 项目
+npm ls @tanstack/react-router @tanstack/router-core
+# pnpm 项目
+pnpm list --depth Infinity @tanstack/react-router @tanstack/router-core
+```
+
+再从消费包解析传递依赖并只读配方。Node 从 `@tanstack/react-router` 自身的安装位置解析 `@tanstack/router-core`，不假设顶层 hoist：
 
 ```sh
 node --input-type=commonjs <<'NODE'
 const { createRequire } = require('node:module')
 const { dirname, join } = require('node:path')
-const { readFileSync, existsSync } = require('node:fs')
-const router = createRequire(require.resolve('@tanstack/react-router'))
-const core = router.resolve('@tanstack/router-core/package.json')
-const file = join(dirname(core), 'skills/router-core/search-params/SKILL.md')
-console.log('router-core', JSON.parse(readFileSync(core, 'utf8')).version)
-console.log(existsSync(file) ? readFileSync(file, 'utf8') : '该版本未附此 Skill，请查对应版本官方指南。')
+const { existsSync, readFileSync } = require('node:fs')
+
+let routerPkg
+try {
+  routerPkg = require.resolve('@tanstack/react-router/package.json')
+} catch {
+  console.error('缺依赖：当前目录解析不到 @tanstack/react-router；按项目原方式安装后再读取，本入口不下载。')
+  process.exit(2)
+}
+
+const routerVersion = JSON.parse(readFileSync(routerPkg, 'utf8')).version
+const router = createRequire(routerPkg)
+let corePkg
+try {
+  corePkg = router.resolve('@tanstack/router-core/package.json')
+} catch {
+  console.error(`已安装 @tanstack/react-router@${routerVersion}，但解析不到它声明的 @tanstack/router-core。`)
+  process.exit(3)
+}
+
+const coreVersion = JSON.parse(readFileSync(corePkg, 'utf8')).version
+const skill = join(dirname(corePkg), 'skills/router-core/search-params/SKILL.md')
+console.log(`@tanstack/react-router ${routerVersion}`)
+console.log(`@tanstack/router-core ${coreVersion}: ${corePkg}`)
+if (!existsSync(skill)) {
+  console.error('已安装该版本，但包内未附 search-params Skill；按对应版本的官方指南或源码核对。')
+  process.exit(4)
+}
+process.stdout.write(readFileSync(skill, 'utf8'))
 NODE
 ```
 
-预期看到实际 core 版本和正文；找不到 Router 先查消费包，包内无 Skill 就回对应版本指南。配方组合 `retainSearchParams` 与 `stripSearchParams`：已应用条件从 URL 读，未提交输入另存草稿，清空时显式给默认值。沿现有路由验详情／返回／清空／历史前进后退／分享恢复；[可复制任务与实现](../../experiments/tanstack-url-state/README.md#窄-skill-的复制入口)无需新增 schema 库或全局 hooks。
+按退出码区分：`2` 是应用目录缺 Router，先按项目原方式安装，读取入口不下载；`3` 是 Router 已安装但解析不到它声明的 router-core，核对版本与依赖声明；`4` 是该版本包内未附此 Skill，改读对应版本的官方指南或源码；`0` 且输出正文才是读到。读取成功只说明正文进了终端，不等于 agent 自动加载或模型遵守，也不会触发下载或执行配方。
 
-**依据**：[TanStack 作者 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)，2026-10-28 重核固定源码。本仓 10-23～24 手动加载 core 1.171.39 的配方，在上述示例通过测试、构建与真实 Chrome 操作；Skill 元数据仍标 1.171.15，兼容性按当前源码和测试接收。自动触发与收益对照未测。
+配方组合 `retainSearchParams` 与 `stripSearchParams`：已应用条件从 URL 读，未提交输入另存草稿，清空时显式给默认值。沿应用原有的测试／构建命令验收详情／返回／清空／历史前进后退／分享恢复；本仓同题的[可复制任务与实现](../../experiments/tanstack-url-state/README.md#窄-skill-的复制入口)无需新增 schema 库或全局 hooks。
+
+**依据**：[TanStack 作者 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)，2026-10-28 重核固定源码。本仓 10-23～24 手动加载 core 1.171.39 的配方，在上述示例通过测试、构建与真实 Chrome 操作；Skill 元数据仍标 1.171.15，兼容性按当前源码和测试接收。本次入口独立复核覆盖合成提升、嵌套、符号链接布局和缺失分支；真实 pnpm 安装未独立复验。自动触发与收益对照未测。
 
 ## 符号编辑与完整流程：只为实际增量留下它们
 

@@ -1,7 +1,7 @@
 # A-SKILL-PACKAGE-ENTRY-20261030 · 修通现有 TanStack 包内 Skill 的复制入口
 id: A-SKILL-PACKAGE-ENTRY-20261030
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8f01eeee1f931cfd48390658906a42cc5148e084
@@ -34,8 +34,4 @@ result_branch: relay/a-skill-package-entry-20261030
 
 ## 当前结果
 
-- 把 TanStack 包内 Skill 的读取入口改为从消费包自身解析 router-core（不再假设顶层 hoist），补全工作目录、版本确认、exit 2/3/4/0 分支与 Intent 可选回退，并在真实 npm ci 与 pnpm 11.21.0 布局实测；审查 pass，openIssues 为空，修正轮次 2，任务无剩余。
-- 产物：[b5f5f3f](https://github.com/dbvv1/a1dbv/commit/b5f5f3ff744f562aa2f8cd51088fe959af06f44e)，分支 `relay/a-skill-package-entry-20261030`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：无；由负责人处理与并行草稿 017a3363 的同页合并顺序
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+接收 [b5f5f3f](https://github.com/dbvv1/a1dbv/commit/b5f5f3ff744f562aa2f8cd51088fe959af06f44e) 的消费目录与包内配方入口，独审后改为直接调用本地 Intent CLI；合成布局和缺失／失败分支通过，真实 npm／pnpm 安装报告未独立接收，应用／浏览器沿用原验收，读者真实任务采用仍待验。
