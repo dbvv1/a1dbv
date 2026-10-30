@@ -13,7 +13,7 @@
 交回支持范围、源码位置、实际验证命令和结果，不把检查通过报成所有链接均有效。
 ```
 
-从仓库根目录运行 `python3 -m unittest discover -s tests -p 'test_check_repo.py' -v`，已验证 9 项通过。`check()` 与 `test_existing_and_external_links` 表明：检查本地文件存在，跳过 `#锚点` 与外链。这个实例验证检查器行为，未测上下文收益；全量迁移或审查仍须按依赖扩大覆盖。
+从仓库根目录运行 `python3 -m unittest discover -s tests -p 'test_check_repo.py' -v`，已验证 9 项通过。`check()` 与 `test_existing_and_external_links` 表明：本地链接仍检查文件路径是否存在，但不验证 `#` 后的锚点；纯 `#锚点` 和外链跳过。这个实例验证检查器行为，未测上下文收益；全量迁移或审查仍须按依赖扩大覆盖。
 
 **依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 按需取回及撤掉强制探索委派](https://cursor.com/blog/improved-token-efficiency)，核实 2026-10-26；[检查器](../../scripts/check_repo.py)与[测试](../../tests/test_check_repo.py)，复跑 2026-10-28。常驻规则见[指令文件](instruction-files.md)，委派与在途任务见[长任务](long-tasks.md)。
 
