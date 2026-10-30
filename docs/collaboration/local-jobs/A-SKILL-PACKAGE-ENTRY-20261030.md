@@ -1,7 +1,7 @@
 # A-SKILL-PACKAGE-ENTRY-20261030 · 修通现有 TanStack 包内 Skill 的复制入口
 id: A-SKILL-PACKAGE-ENTRY-20261030
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8f01eeee1f931cfd48390658906a42cc5148e084
