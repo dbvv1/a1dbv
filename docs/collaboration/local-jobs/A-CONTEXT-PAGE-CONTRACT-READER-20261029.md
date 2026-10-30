@@ -31,4 +31,9 @@ page: docs/decisions/context-management.md@dot-a/context-concise-reader-20261029
 没有自然跨压缩或新会话时，只记按需取回与检查点准备的结果，原生接续效果仍待验。单元最多两小时；接收端公开扫描与适用检查后推指定结果分支、回 review_ready，不用 accept: auto，不合默认分支。
 
 ## 当前结果
-已准备排队，尚无领取或执行证据；页面分支核对为 `d0b9651b5db9039975d1abde4efe8f0cfd3a43b8`。接收端领取时记录实际页面提交；若与上列核对值不同，先回输入卡点、不静默换版。按共享最多四任务、最多一 GPU 调度，本任务不用 GPU；同题旧调用未明先核状态，不重复执行。
+
+- 仓库侧验收已完成：README 规定任务卡格式，check_repo.py 只查直属卡 80 行、内联链接与 JSON/TOML（另有 TASKS.md 超 10KB 检查），page 缺省 main、缺目标及接收端解析/落盘不可观察记未知；合成探针、9 项单测与 561 文件复跑均通过（taskDone=true）。页面卡点是第 7 行“沿实现与检查补足信息”未给核对接收端附入内容是否等于固定 ref 的步骤；未关闭审查问题 7 条：卡点行号误用 job.md 行号（页面仅 82 行）、result.md 称“没有命令失败”与首次 FileNotFoundError 矛盾、卡点写在 reader-tests 而非 result.md、检查器概述漏 TASKS.md 10KB 检查、第 80 行 page@提交 措辞不精确等。
+- 产物：[0b5d66d](https://github.com/dbvv1/a1dbv/commit/0b5d66dec1eda98c4eaabd2ee982788a53c96951)，分支 `relay/a-context-page-contract-reader-20261029`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：按 verify.missed 修正 result.md：补记首次 FileNotFoundError 与重试、把卡点行号改为页面行号、将卡点写入 result.md、补 TASKS.md 超 10KB 检查、澄清 page@提交 与 blob/sha256 的区别；改后复跑 check_repo.py 与 test_check_repo.py。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
