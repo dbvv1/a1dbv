@@ -1,7 +1,7 @@
 # A-INSTRUCTION-DIRECTORY-ENTRY-20261030 · 把共享指令的跨目录入口讲清
 id: A-INSTRUCTION-DIRECTORY-ENTRY-20261030
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8f01eeee1f931cfd48390658906a42cc5148e084
