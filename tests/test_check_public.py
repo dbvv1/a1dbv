@@ -21,6 +21,18 @@ WORKSPACE_PREFIX = "/workspace/" + "scratch/"
 FAKE_WORKSPACE = WORKSPACE_PREFIX + "ab12" * 3
 
 
+def fake_provider_keys():
+  """Deterministic shape fixtures, never issued or sent to a provider."""
+  keys = ["sk-" + "A1" * 10 + "T3BlbkFJ" + "b2" * 10]
+  for scope in ("proj", "svcacct", "admin"):
+    for left, right in ((58, 58), (74, 74), (58, 74), (74, 58)):
+      keys.append("sk-" + scope + "-" + "A1" * (left // 2)
+                  + "T3BlbkFJ" + "b2" * (right // 2))
+  for scope in ("api03", "admin01"):
+    keys.append("sk-ant-" + scope + "-" + "A1_" * 31 + "AA")
+  return keys
+
+
 class PublicScanTests(unittest.TestCase):
   def run_fixture(self, files, git=False):
     with tempfile.TemporaryDirectory() as directory:
@@ -89,6 +101,52 @@ class PublicScanTests(unittest.TestCase):
   def test_credential_is_redacted_in_output(self):
     findings = self.run_fixture({"a.md": FAKE_KEY})[1]
     self.assertNotIn(FAKE_KEY, str(findings))
+
+  def test_provider_shapes_detected_after_all_ascii_letters_and_digits(self):
+    prefixes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    keys = fake_provider_keys()
+    text = "\n".join(prefix + key for prefix in prefixes for key in keys)
+    count, findings = self.run_fixture({"a.md": text})
+    self.assertEqual(1, count)
+    self.assertEqual(len(prefixes) * len(keys), len(findings))
+    self.assertTrue(all(f["kind"] == "credential" for f in findings))
+    self.assertEqual(list(range(1, len(findings) + 1)), [f["line"] for f in findings])
+    for key in keys:
+      self.assertNotIn(key, str(findings))
+
+  def test_cli_rejects_adjacent_provider_shapes_and_redacts_output(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      keys = fake_provider_keys()
+      text = "\n".join("https://example.com/x" + key + "suffix" for key in keys)
+      (root / "synthetic.txt").write_text(text, encoding="utf-8")
+      subprocess.run(["git", "init", "-q", str(root)], check=True)
+      subprocess.run(["git", "-C", str(root), "add", "synthetic.txt"], check=True)
+      result = subprocess.run(["python3", str(SCRIPT), "--root", str(root)],
+                              capture_output=True, text=True, encoding="utf-8")
+      self.assertEqual(1, result.returncode)
+      report = json.loads(result.stdout)
+      self.assertEqual(1, report["checked_files"])
+      self.assertEqual(len(keys), len(report["findings"]))
+      self.assertTrue(all(f["kind"] == "credential" and len(f["match"]) == 13
+                          and f["match"].endswith("…") for f in report["findings"]))
+      self.assertEqual("", result.stderr)
+      for key in keys:
+        self.assertNotIn(key, result.stdout + result.stderr)
+
+  def test_weak_sk_shape_still_requires_word_edge(self):
+    # Unknown embedded sk- strings remain ambiguous with ordinary hyphenated words.
+    self.assertEqual((1, []), self.run_fixture({"a.md": "x" + FAKE_KEY + "\n1" + FAKE_KEY}))
+
+  def test_embedded_provider_shapes_require_their_distinguishing_structure(self):
+    variants = []
+    for key in fake_provider_keys():
+      variants.append("x" + key.replace("sk-", "zz-", 1))
+      if "T3BlbkFJ" in key:
+        variants.append("x" + key.replace("T3BlbkFJ", "T3BlbkF0"))
+      else:
+        variants.append("x" + key[:-2] + "BB")
+    self.assertEqual((1, []), self.run_fixture({"a.md": "\n".join(variants)}))
 
   def test_allowlist_needs_exact_file_and_match(self):
     allow = f"# reviewed\na.md\t{FAKE_EMAIL}\n"
