@@ -1,7 +1,7 @@
 # A-HOOK-NATIVE-ACCEPTANCE-20261030 · 路径 Hook 的真实客户端接收
 id: A-HOOK-NATIVE-ACCEPTANCE-20261030
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 9dcbd58307cfb193a5983e4a3dc5e511682b24ff
@@ -36,9 +36,4 @@ result_branch: relay/a-hook-native-acceptance-20261030
 本单元含证据整理与非作者审查最多 90 分钟、无 GPU；到时交已有结果，不补起另一模型调用。由原接收端按实际共享最多 4 并行调度，不另起调度器或抢槽；八项旧任务不重排。合格结果推指定 relay 并回 review_ready，由 dot 决定正文回流；受阻保原卡，不换编号重试。
 
 ## 当前结果
-
-- 在真实 Claude Code 2.1.281（Windows 原生、base_ref 9dcbd583 模板）单次调用中，正常编辑与拒绝后继续两条路径通过；dist/generated.txt 的写入确被拒且目标仍不存在，但拒绝来自模板自带原生 Read(dist/**) 规则、该调用无 PreToolUse Hook 事件，故按任务口径只交准确部分结果并记 Hook 归因未确认。openIssues 为空，非作者三视角审查通过（fixRounds 2，剩余问题 0）。
-- 产物：[c562746](https://github.com/dbvv1/a1dbv/commit/c562746c8468c6c64455af2ba6dd55e4b934e0b1)，分支 `relay/a-hook-native-acceptance-20261030`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端按运行细则§1 换白名单提交身份后提交并推送 relay/a-hook-native-acceptance-20261030，回 review_ready；②的 Hook deny 归因需在能进入 PreToolUse 的客户端或经负责人批准改固定输入后另测。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+接收[准确部分结果](artifacts/A-HOOK-NATIVE-ACCEPTANCE-20261030/result.md)：执行端报告正常编辑与拒绝后继续成功，dist 写入由原生 Read deny 拒绝，Hook deny 仍未确认；原调用已核退出，负责人未独立重读原事件流，不外推 build／.env、不改模板或评级、不重新派发。
