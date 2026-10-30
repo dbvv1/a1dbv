@@ -100,7 +100,7 @@ def main():
   if not args.root.is_dir():
     parser.error("--root must be an existing directory")
   result = check(args.root)
-  print(json.dumps(result, ensure_ascii=False, indent=2))
+  print(json.dumps(result, ensure_ascii=True, indent=2))
   return bool(result["errors"])
 
 
