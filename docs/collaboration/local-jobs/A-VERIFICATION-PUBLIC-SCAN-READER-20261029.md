@@ -1,7 +1,7 @@
 # A-VERIFICATION-PUBLIC-SCAN-READER-20261029 · 真正运行公开扫描器
 id: A-VERIFICATION-PUBLIC-SCAN-READER-20261029
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5847ea532dbf7437ca8c4865af031ce0d862a153
