@@ -32,8 +32,8 @@ page: docs/decisions/context-management.md@dot-a/context-concise-reader-20261029
 
 ## 当前结果
 
-- 读者按页面完成六条验收：附入全文与 page 固定提交 d0b9651b 逐字节一致，9 项单测与 check_repo（0 错误）复跑通过，最小合成卡实跑未入队，默认 main、固定 ref、缺失目标边界已核（缺失目标接收端行为未知）；页面卡点在第 7 行缺『附入全文 vs ref』核对方法、第 10–13 行示例难直接迁移、第 66–74 行检查点未区分 base_ref 与 HEAD。仍有 6 条未关闭审查问题：result.md 结论漏 TASKS.md ≤10KB 检查、562/563 计数未按最终状态更新、未补记首次 FileNotFoundError 与重试、base_ref／HEAD 歧义卡点未写进 result.md、开头受检版本仍写错、附入字节切片措辞不精确。
-- 产物：[5087a91](https://github.com/dbvv1/a1dbv/commit/5087a91180b06f6af505261d4eea8bbba88952b0)，分支 `relay/a-context-page-contract-reader-20261029`。
+- u4 独立读者按页面完成仓库侧验收：附入全文与 page 固定提交 d0b9651b 逐字节一致，9 项单测与 check_repo（565 文件 0 错误）复跑通过；非读者复跑确认 taskDone=true，未关闭审查问题 0（remaining=false，审查者另记读者表述超出核验范围若干条）；页面卡点为任务卡未规定同名 reader-test 后续单元产物命名，读者另写 result-u4.md。
+- 产物：[0e18010](https://github.com/dbvv1/a1dbv/commit/0e18010fa6fd78983cf2c915d55dab518dc819ef)，分支 `relay/a-context-page-contract-reader-20261029`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：修正 result.md 上述 6 条：补 TASKS.md 10KB、最终 563 计数、FileNotFoundError 与重试记录、把 base_ref/HEAD 卡点写入 result.md、更正开头受检版本与字节切片措辞，然后复跑 check_repo.py 与 test_check_repo.py
+- 下一步：接收端按任务卡「当前结果/下一步」处理 result.md 的 6 条遗留修正或派发下一单元；本单元两处产物待接收端提交。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
