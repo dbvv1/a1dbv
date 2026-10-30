@@ -331,9 +331,9 @@ AI 可拆读写与补规则，先定按住式／定时式，人验连锁 boost�
 
 实现起点：[main 固定提交 `27a40be`](https://github.com/dbvv1/MOBA-Like/commit/27a40bedaab6bd8bf737885afe952ef6db403f2c)的 `src/render/lighting-style.ts`（参数／角色）、`lighting-post.ts`（分层合成）、`world.ts`（可玩接线），以及 [quality.md](https://github.com/dbvv1/MOBA-Like/blob/27a40bedaab6bd8bf737885afe952ef6db403f2c/docs/quality.md)的四机位差距。以上为本 Web 案例采用与 SwiftShader **software** 图证；两人选择不等于目标图锚定的正式评分，亦未证明硬件 GPU 性能或目标画质达标。Unity／UE 的环境光、AO 与输出策略仍沿[场景光照页](unity/07-scene-rendering-and-lighting.md)按引擎管线接入，本次没有运行引擎。核实：2026-10-30（UTC+8）。
 
-**FPS 复用时先预算额外 pass，不照抄 MOBA 的 AO 尺度。** [Site v17 旁置](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1&art=standards-v1&feel=ground-v1&lighting=courtyard-light-v1)可直接比较，默认入口保留。 [FPS 固定采用源 `72356e2`](https://github.com/dbvv1/FPS-Like/tree/72356e28d7ab8850fddc422638894d6838145d1c/src/candidates/offline-training-v1/render)的 `lighting-post.ts`／`lighting-style.ts`／`scene.ts` 使用同类分层合成，但 AO 固定为物理输出宽高各一半、16 样本、半径 0.65、距离 0.001–0.008；ACES 曝光 1.05，方向光 2048² PCF 阴影。世界颜色通道每帧只更新一次阴影；世界深度重建仅在所有表面满足受限的不透明 Standard 契约（含无 alpha、位移、裁切或自定义 shader 等）时走等几何深度 shader，否则保留源 shader。玩法提示圈与相机武器独立合成，保自身深度／材质路径，Basic 提示不被 ACES 压淡；此例将 Basic 也归为 cue，复制到其他项目应先核其是否真是提示，不能把所有无光照场景物件都排除出世界层。
+**FPS 复用时先预算额外 pass，不照抄 MOBA 的 AO 尺度。** [Site v17 旁置](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1&art=standards-v1&feel=ground-v1&lighting=courtyard-light-v1)可直接比较；v20 已把不含 ground 手感的灯光训练赛设为默认，旧 1v1 留旁置，正常开始门槛见[前台时钟采用](#web-foreground-clock)。 [FPS 固定采用源 `72356e2`](https://github.com/dbvv1/FPS-Like/tree/72356e28d7ab8850fddc422638894d6838145d1c/src/candidates/offline-training-v1/render)的 `lighting-post.ts`／`lighting-style.ts`／`scene.ts` 使用同类分层合成，但 AO 固定为物理输出宽高各一半、16 样本、半径 0.65、距离 0.001–0.008；ACES 曝光 1.05，方向光 2048² PCF 阴影。世界颜色通道每帧只更新一次阴影；世界深度重建仅在所有表面满足受限的不透明 Standard 契约（含无 alpha、位移、裁切或自定义 shader 等）时走等几何深度 shader，否则保留源 shader。玩法提示圈与相机武器独立合成，保自身深度／材质路径，Basic 提示不被 ACES 压淡；此例将 Basic 也归为 cue，复制到其他项目应先核其是否真是提示，不能把所有无光照场景物件都排除出世界层。
 
-实际返工先减 AO 分辨率、去重复阴影更新，再收窄深度快路径；软件 smoke 仍未通过 180 秒窗口。最终只把工具每路等待延至 300 秒，baseline／lighting × 有／无 feel 四路仍须各完成两轮 144 tick（共 288 tick）和真实重开，同组回放 hash 必须一致，未降低这些门槛。这证明功能与模拟隔离，不证明实时流畅；正常玩法长帧保护保留。两非作者接受为旁置，但人物暗面黑块和阴影颗粒仍在，合格目标 **0/3**，不作正式达标结论。依据：[实际优化、失败与最终复测](https://github.com/dbvv1/FPS-Like/blob/72356e28d7ab8850fddc422638894d6838145d1c/docs/quality.md)，2026-10-30（UTC+8）[Web 案例／software 实测]。
+实际返工先减 AO 分辨率、去重复阴影更新，再收窄深度快路径；软件 smoke 仍未通过 180 秒窗口。最终只把工具每路等待延至 300 秒，baseline／lighting × 有／无 feel 四路仍须各完成两轮 144 tick（共 288 tick）和真实重开，同组回放 hash 必须一致，未降低这些门槛。这证明功能与模拟隔离，不证明实时流畅；该轮尚未验普通开始；其后修复正常玩法慢帧误暂停，见[前台时钟采用](#web-foreground-clock)。两非作者当时接受为旁置，但人物暗面黑块和阴影颗粒仍在，合格目标 **0/3**，不作正式达标结论。依据：[实际优化、失败与最终复测](https://github.com/dbvv1/FPS-Like/blob/72356e28d7ab8850fddc422638894d6838145d1c/docs/quality.md)，2026-10-30（UTC+8）[Web 案例／software 实测]。
 
 <a id="audio-lifecycle"></a>
 <a id="声音事件播完以后谁解除让位"></a>
@@ -737,6 +737,23 @@ Unity／UE 保存恢复路线仍是文档、固定源码与设计推导（正常
 **按住自动连发等定时重复动作，跨步补算时要保留按下／松开边沿，而不只读最新 held 值。** 在每次发射截止点恢复当时的 held 与视角：随后才发生的松开不能抹掉此前合法的尾发，松开之后的模拟时刻也不能继续发射；切枪、换弹、弹药与冷却仍交原规则。暂停、失焦或重开清掉未消费的输入历史，内部边沿不必改成新的回放命令。
 
 FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac5264b186498716f849aec3325ab41d29f4aa)（网站 v11）提供了失败反例：同样在 10 ms 按下、120 ms 松开，60／30／20 fps 修复后均保留 10／110 ms 两发；该例规定 109 ms 或恰在 110 ms 松开只发首发。正常 Chromium 软件 WebGL2 实按六次短连发，原版五次丢尾发，候选六次均保留。这里使用浏览器回调的 `performance.now()`，不是硬件采样时间或网络 sub-tick 等价实现；验证范围为浏览器输入层与原模拟，不是 Unity 实跑（2026-10-27）。
+
+<a id="web-foreground-clock"></a>
+**✅ Web 可玩采用：慢帧不等于失焦，恢复事件也不能直接重置渲染帧时钟。** 前台软件渲染的 333–483 ms 帧曾触发 FPS-Like 原来的 `now - simStart > 250` 暂停条件：点击开始、成功锁定鼠标后仍不推进，或旧版入口停在 tick 12。修复保留 60 Hz 固定步，每个可见前台帧最多追赶 15 步；超过 250 ms 的墙钟债务直接丢弃，不把旧输入积压到下一帧。丢弃区间内的移动、瞄准、交互与扳机折叠为末状态，过期射击、装弹、切枪等一次性动作不补发，区间之后的松键边沿保留。持续低帧率会让模拟变慢，这不是性能达标方案，也不能直接套到必须追上服务器时间的联机模拟。
+
+恢复时只在 `pointerlockchange` 记 `performance.now()` 墙钟；下一次 rAF 用自己的时间戳建立模拟起点，首恢复帧不推进。实测出现恢复事件墙钟 **16810.6 ms** 晚于随后交付的 rAF 时间戳 **16747.2 ms**，混着比较会把有效回调误判成时钟倒退。真正失焦、隐藏、失锁仍暂停并清输入；恢复等待或后续单帧间隔达到 **2 s**、后续 rAF 时间戳倒退也暂停。15 步／250 ms 与 2 s 是本案例的保守调度策略，不是商业手感标杆。首次 Esc 后再次暂停的日志不足以唯一归因，后继修复消除了已观测的时序风险，再以完整正常操作复验。
+
+**固定步 smoke 与正常开始必须分别验。** 内置 tape 的一帧一步能核模拟 hash，却会绕过真实前台调度，不能代替无参数首页的锁鼠标、移动、Esc、继续与重开。`1183340` 的三个普通入口各走两轮真实操作：
+
+| 入口 | 第一轮 tick：开始→移动→暂停→恢复→重开 | 第二轮 |
+|---|---|---|
+| 无参数首页（训练赛＋标准件＋灯光，原移动） | 14→42→88→103→0 | 15→30→75→89→0 |
+| `?gameplay=legacy-v1` 旧版 | 4→22→58→62→0 | 4→19→52→55→0 |
+| 显式 `feel=ground-v1` 旁置 | 14→42→84→99→0 | 15→30→90→104→0 |
+
+每轮真实 W 位移大于零，暂停期间 tick 保持，页面与控制台无错误；没有注入 smoke 参数、时钟或游戏状态。Chromium 154／SwiftShader **software**、960×540，浏览器实际正常退出且预览端口关闭。源码 380 项测试、构建、10 局模拟通过；网站 **v20** 已采用相同运行源，31 个发布文件逐 SHA-256 匹配被测构建。原移动仍为默认，ground 手感候选不借视觉盲评升级；这些证据属于 Web 功能与生命周期采用，不提升 GPU、真人手感或原生引擎评级。
+
+依据：[固定帧预算与恢复时钟](https://github.com/dbvv1/FPS-Like/blob/118334050209b3bb314f6dce673ef008f3e5e7f4/src/candidates/offline-training-v1/frame-budget.ts)、[训练客户端](https://github.com/dbvv1/FPS-Like/blob/118334050209b3bb314f6dce673ef008f3e5e7f4/src/candidates/offline-training-v1/client.ts)、[旧版输入折叠](https://github.com/dbvv1/FPS-Like/blob/118334050209b3bb314f6dce673ef008f3e5e7f4/src/input/controls.ts)、[旧版生命周期回归](https://github.com/dbvv1/FPS-Like/blob/118334050209b3bb314f6dce673ef008f3e5e7f4/tests/client-frame-lifecycle.test.ts)及同源云端普通入口实测；[网站默认入口](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/)，Site v20 发布于 2026-10-30 02:45:23 UTC，核实 2026-10-30。
 
 已采用的 [MOBA 输入适配器](https://github.com/dbvv1/MOBA-Like/blob/a7d66054ae5885e38af43f88c4472a58cb765d89/src/input/controls.ts)直接把实际拾取到的可攻击敌人交给既有 `Attack` 命令，地面交给 `Move`；菜单事件留在 UI，不穿透到场景。正常操作已走通点敌追击至真实普攻、点地移动和菜单阻断，目标选择与攻击资格仍由原规则分工；实现与画面见[案例质量页](https://github.com/dbvv1/MOBA-Like/blob/a7d66054ae5885e38af43f88c4472a58cb765d89/docs/quality.md)（2026-10-26）。
 
