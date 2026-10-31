@@ -1,7 +1,7 @@
 # A-UPSTREAM-QWEN-GATE-READER-20261031 · 用真实 Qwen 候选验证投稿前判断入口
 id: A-UPSTREAM-QWEN-GATE-READER-20261031
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8da233c89e9bd92d4f3bb4f0d6b5fa11ebba5275
