@@ -1,0 +1,156 @@
+{
+  "acceptance": {
+    "preservationFailures": 2,
+    "passed": false
+  },
+  "sourceCommit": "d80696aa854803f6224f2da7cf6eebb6de8f09ad",
+  "node": "v24.22.1",
+  "platform": "linux",
+  "sources": {
+    "ledger": {
+      "path": "packages/memory/src/engine/telemetry/observe-ledger.ts",
+      "sha256": "749d13cc84a3adc40b3d67707ac6cc7552fd25c984fbddc48d51a766157b3939",
+      "ranges": [
+        [
+          41,
+          67
+        ],
+        [
+          84,
+          140
+        ]
+      ],
+      "functionTextSha256": "f5bb1892f42293b8f0a4676e1859b897b41b772b7c39b7f5202f106821aa8d1c"
+    },
+    "audit": {
+      "path": "packages/memory/src/engine/operations/runtime-audit-log.ts",
+      "sha256": "07418176e3bf3f2379bc58bd9c34962cec64eea73d9c48c7008223e9d111b08e",
+      "ranges": [
+        [
+          341,
+          404
+        ],
+        [
+          412,
+          414
+        ]
+      ],
+      "functionTextSha256": "e4d563cab83ec0d5dc66efbe0abac6e35efe7b1f3f9fe52b03ec42d1512b5d6d"
+    }
+  },
+  "scope": "exact extracted production functions; controlled separate-process append schedule; no full plugin, sidecar, model or network",
+  "results": [
+    {
+      "kind": "ledger",
+      "timing": "none",
+      "childAppendsCompleted": 0,
+      "appendReceipt": null,
+      "statCallCount": 2,
+      "markerReturnedByCompactor": false,
+      "markerOnDisk": false,
+      "markerReadableNext": false,
+      "acceptedRowLost": false
+    },
+    {
+      "kind": "ledger",
+      "timing": "before-final-check",
+      "childAppendsCompleted": 1,
+      "appendReceipt": {
+        "exitCode": 0,
+        "appendedBytes": 102,
+        "tailVisibleImmediatelyAfterAppend": true
+      },
+      "statCallCount": 3,
+      "markerReturnedByCompactor": false,
+      "markerOnDisk": true,
+      "markerReadableNext": true,
+      "acceptedRowLost": false
+    },
+    {
+      "kind": "ledger",
+      "timing": "after-final-check",
+      "childAppendsCompleted": 1,
+      "appendReceipt": {
+        "exitCode": 0,
+        "appendedBytes": 102,
+        "tailVisibleImmediatelyAfterAppend": true
+      },
+      "statCallCount": 2,
+      "markerReturnedByCompactor": false,
+      "markerOnDisk": false,
+      "markerReadableNext": false,
+      "acceptedRowLost": true
+    },
+    {
+      "kind": "ledger",
+      "timing": "after-operation",
+      "childAppendsCompleted": 1,
+      "appendReceipt": {
+        "exitCode": 0,
+        "appendedBytes": 102,
+        "tailVisibleImmediatelyAfterAppend": true
+      },
+      "statCallCount": 2,
+      "markerReturnedByCompactor": false,
+      "markerOnDisk": true,
+      "markerReadableNext": true,
+      "acceptedRowLost": false
+    },
+    {
+      "kind": "audit",
+      "timing": "none",
+      "childAppendsCompleted": 0,
+      "appendReceipt": null,
+      "statCallCount": 3,
+      "markerReturnedByCompactor": false,
+      "markerOnDisk": false,
+      "markerReadableNext": false,
+      "acceptedRowLost": false
+    },
+    {
+      "kind": "audit",
+      "timing": "before-final-check",
+      "childAppendsCompleted": 1,
+      "appendReceipt": {
+        "exitCode": 0,
+        "appendedBytes": 102,
+        "tailVisibleImmediatelyAfterAppend": true
+      },
+      "statCallCount": 3,
+      "markerReturnedByCompactor": false,
+      "markerOnDisk": true,
+      "markerReadableNext": true,
+      "acceptedRowLost": false
+    },
+    {
+      "kind": "audit",
+      "timing": "after-final-check",
+      "childAppendsCompleted": 1,
+      "appendReceipt": {
+        "exitCode": 0,
+        "appendedBytes": 102,
+        "tailVisibleImmediatelyAfterAppend": true
+      },
+      "statCallCount": 3,
+      "markerReturnedByCompactor": false,
+      "markerOnDisk": false,
+      "markerReadableNext": false,
+      "acceptedRowLost": true
+    },
+    {
+      "kind": "audit",
+      "timing": "after-operation",
+      "childAppendsCompleted": 1,
+      "appendReceipt": {
+        "exitCode": 0,
+        "appendedBytes": 102,
+        "tailVisibleImmediatelyAfterAppend": true
+      },
+      "statCallCount": 3,
+      "markerReturnedByCompactor": false,
+      "markerOnDisk": true,
+      "markerReadableNext": true,
+      "acceptedRowLost": false
+    }
+  ]
+}
