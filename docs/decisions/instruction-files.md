@@ -26,6 +26,10 @@
 
 **依据**：[一手／真实项目] 下文 Cloudflare 与 Anthropic 文件；[既有证据与取舍](../03-context-engineering.md#23-写什么不写什么官方最佳实践-一手)，原核实 2026-10-24。这里沿用已有模板的写法，跨任务最优篇幅仍未知。Ruff 的[维护者反馈 #29190](https://github.com/astral-sh/ruff/pull/29190)与[固定 AGENTS.md L59–96](https://github.com/astral-sh/ruff/blob/c618e8b1382992a27dafe2fc288777792e36ecab/AGENTS.md#L59-L96)，核实 2026-10-28。
 
+## 静态检查先拿本仓样本试
+
+**先试两份实际使用的指令，再决定是否把检查器接入 CI；核对检查数量，不只看退出码。** `agents-md-lint` 0.1.0 在本仓根文件检查了 26 个引用，4 条报警全部是占位目录／无协议头 API 示例误报；指定不存在的文件时还会 exit 0。本仓暂缓将它设为默认门禁，不为消报警改正确说明。需要检查反引号路径或命令入口时，可先按[固定版本的两条命令](../../experiments/instruction-file-lint/README.md#在自己的真实任务里先试两份)试你的文件；它不执行命令，不能替代已有链接检查与实际试跑。依据：[本仓实测与范围](../../experiments/instruction-file-lint/README.md)，2026-10-31。
+
 ## 要不要同时放两种文件
 
 | 项目情况 | 最简单的选择 |

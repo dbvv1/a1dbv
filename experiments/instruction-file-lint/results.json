@@ -1,0 +1,88 @@
+{
+  "tool": {
+    "name": "agents-md-lint",
+    "version": "0.1.0",
+    "source_sha": "9f852cf5b970cd9f283a61ef4ae6308cb4aeb047"
+  },
+  "consumer": {
+    "repository": "dbvv1/a1dbv",
+    "commit": "01375e508f3b4a5fb5564aa9c6bf91a83f606302",
+    "files": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "platform": "Linux"
+  },
+  "reports": [
+    {
+      "exit_code": 0,
+      "file": "AGENTS.md",
+      "checked": 6,
+      "findings": []
+    },
+    {
+      "exit_code": 1,
+      "file": "CLAUDE.md",
+      "checked": 20,
+      "findings": [
+        {
+          "kind": "path",
+          "value": "domains/<领域>/",
+          "line": 15,
+          "reason": "path does not exist",
+          "suggestion": null,
+          "context": "- `domains/<领域>/`：领域分支，只写相对主干的增量"
+        },
+        {
+          "kind": "path",
+          "value": "hn.algolia.com/api/v1/items/<id>",
+          "line": 30,
+          "reason": "path does not exist",
+          "suggestion": null,
+          "context": "- 社区反馈要读原帖，不要只看搜索摘要：HN 用 Algolia API（`hn.algolia.com/api/v1/items/<id>` 可拿到评论），Lobsters 和 V2EX 有 JSON 接口；arXiv 用 `export.arxiv.org/api/query?id_list=` 拿摘要，用 `arxiv.org/html/<id>` 读正文。"
+        },
+        {
+          "kind": "path",
+          "value": "export.arxiv.org/api/query?id_list=",
+          "line": 30,
+          "reason": "path does not exist",
+          "suggestion": null,
+          "context": "- 社区反馈要读原帖，不要只看搜索摘要：HN 用 Algolia API（`hn.algolia.com/api/v1/items/<id>` 可拿到评论），Lobsters 和 V2EX 有 JSON 接口；arXiv 用 `export.arxiv.org/api/query?id_list=` 拿摘要，用 `arxiv.org/html/<id>` 读正文。"
+        },
+        {
+          "kind": "path",
+          "value": "arxiv.org/html/<id>",
+          "line": 30,
+          "reason": "path does not exist",
+          "suggestion": null,
+          "context": "- 社区反馈要读原帖，不要只看搜索摘要：HN 用 Algolia API（`hn.algolia.com/api/v1/items/<id>` 可拿到评论），Lobsters 和 V2EX 有 JSON 接口；arXiv 用 `export.arxiv.org/api/query?id_list=` 拿摘要，用 `arxiv.org/html/<id>` 读正文。"
+        }
+      ]
+    }
+  ],
+  "manual_classification": {
+    "true_stale_references": 0,
+    "embedded_placeholder_false_positive": 1,
+    "scheme_less_api_examples_false_positive": 3
+  },
+  "missing_input_probe": {
+    "kind": "synthetic missing input",
+    "target": "missing-instructions-for-probe.md",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "no context files found under [repo]/missing-instructions-for-probe.md\n"
+  },
+  "upstream_tests": {
+    "runner": "pytest 9.2.0",
+    "passed": 48
+  },
+  "existing_check_repo": {
+    "exit_code": 0,
+    "checked_files": 582,
+    "errors": []
+  },
+  "normalization": "Absolute consumer paths in tool output replaced with repository-relative names or [repo]. All counts and finding values retained."
+}
