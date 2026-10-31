@@ -1,0 +1,851 @@
+{
+  "schema_version": 1,
+  "scope": "Static graph CLI evidence on the exact public two-file report, not execution coverage, actual React/Vitest testing, model effect, or local-reader acceptance.",
+  "public_projection": {
+    "path_replacement": "Trial directory replaced by <trial>; all final records and snapshots otherwise unchanged.",
+    "final_raw_results_sha256": "32838b2ff7153a5c6ef98fc5f72f04c8888d674d67259c9ead856c2a5abe734c",
+    "environment_raw_sha256": "dac3aca6fec7a7c863d8e716a970a0f27632f457bee8d9ee460697f06774d02e",
+    "environment_selection": "Both installed distributions, dependency lists and original source-file hashes selected unchanged; excludes earlier qualified-query hash.",
+    "input_json_sha256": "dde9430447f3b1a045984835af1865eea9e948ad508599a0493d45474ad3464b"
+  },
+  "source": {
+    "issue": "https://github.com/tirth8205/code-review-graph/issues/1109",
+    "input": "Exact two original reporter code blocks; not a private monorepo.",
+    "controlled_change": "Only add subtitle?: string to WidgetProps and change h1 to h2 in src/widget.tsx. Test source unchanged.",
+    "test_assertion": "Text Hi is present; no explicit heading-level or subtitle assertion.",
+    "baseline_commit_in_consumer_repositories": "b649b63cb4661e07728ef3e0c2a5e029215070aa"
+  },
+  "invocation_context": {
+    "note": "Per-record args are CLI arguments after the executable, as recorded. Executable labels and working directories below are recovered from the executed replay script, not newly measured invocation timestamps.",
+    "release": {
+      "executable": "<release-install>/.venv/bin/code-review-graph",
+      "cwd": "<trial>/release/consumer"
+    },
+    "staging": {
+      "executable": "<trial>/staging/.venv/bin/code-review-graph",
+      "cwd": "<trial>/staging/consumer"
+    },
+    "replay_script_sha256": "7965f632f8a3aa95938a5ad4c0e44a425ae868075f484014feded6d22bbd0464"
+  },
+  "environment": {
+    "release": {
+      "version": "2.3.9",
+      "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "direct_url": null,
+      "source_sha256": {
+        "cli.py": "2b51da88f9e125269356f4a8d67dc7f40052555280e2605ed920922148952b0e",
+        "graph.py": "2993b425595ab2ae2c000750d708b82bda7a6f3dda0b9eb009194715c5480fb2",
+        "parser.py": "42fcb0968bba5627d28878e02fb8449cf376ecc7888a337129cf5dbea2cfbb80",
+        "changes.py": "6fe47847ba0a184ad98d846e191468992b139bdb19f08af1f9c8278663333604"
+      },
+      "dependencies": [
+        "Authlib==1.9.1",
+        "PyJWT==2.15.1",
+        "PyYAML==6.0.3",
+        "Pygments==2.21.0",
+        "SecretStorage==3.5.0",
+        "aiofile==3.12.3",
+        "annotated-types==0.8.0",
+        "anyio==4.15.1",
+        "attrs==26.1.0",
+        "beartype==0.23.1",
+        "cachetools==7.2.7",
+        "caio==0.12.10",
+        "certifi==2026.10.23",
+        "cffi==2.1.1",
+        "click==8.5.0",
+        "code-review-graph==2.3.9",
+        "cryptography==50.0.2",
+        "cyclopts==5.3.2",
+        "dnspython==2.9.1",
+        "docstring_parser==0.18.0",
+        "email-validator==2.3.0",
+        "exceptiongroup==1.3.1",
+        "fastmcp-slim==3.4.11",
+        "fastmcp==3.4.11",
+        "griffelib==2.4.1",
+        "h11==0.16.0",
+        "httpcore==1.0.9",
+        "httpx-sse==0.4.3",
+        "httpx==0.28.1",
+        "idna==3.20",
+        "jaraco.classes==3.4.0",
+        "jaraco.context==6.1.2",
+        "jaraco.functools==4.6.0",
+        "jeepney==0.9.0",
+        "joserfc==1.7.7",
+        "jsonref==1.1.0",
+        "jsonschema-path==0.5.0",
+        "jsonschema-specifications==2025.9.1",
+        "jsonschema==4.26.0",
+        "keyring==25.7.0",
+        "markdown-it-py==4.2.0",
+        "mcp==1.30.0",
+        "mdurl==0.1.2",
+        "more-itertools==11.2.1",
+        "networkx==3.7",
+        "openapi-pydantic==0.6.0",
+        "opentelemetry-api==1.45.2",
+        "packaging==26.3",
+        "pathable==0.6.0",
+        "platformdirs==4.14.0",
+        "py-key-value-aio==0.4.6",
+        "pycparser==3.12",
+        "pydantic-settings==2.16.2",
+        "pydantic==2.14.2",
+        "pydantic_core==2.50.2",
+        "pyperclip==1.11.0",
+        "python-dotenv==1.2.4",
+        "python-multipart==0.0.32",
+        "referencing==0.37.0",
+        "rich-rst==2.2.0",
+        "rich==15.0.0",
+        "rpds-py==2026.9.1",
+        "sse-starlette==3.6.0",
+        "starlette==1.10.0",
+        "tree-sitter-c-sharp==0.23.5",
+        "tree-sitter-embedded-template==0.25.0",
+        "tree-sitter-language-pack==0.13.0",
+        "tree-sitter-yaml==0.7.2",
+        "tree-sitter==0.26.0",
+        "typing-inspection==0.4.4",
+        "typing_extensions==4.16.0",
+        "uncalled-for==0.4.1",
+        "uvicorn==0.54.0",
+        "watchdog==6.0.0",
+        "watchfiles==1.3.0",
+        "websockets==17.4"
+      ]
+    },
+    "staging": {
+      "version": "2.3.9",
+      "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "direct_url": "{\"url\":\"https://github.com/tirth8205/code-review-graph.git\",\"vcs_info\":{\"vcs\":\"git\",\"commit_id\":\"d72e8fbf7ef571b668c26a4222a284bf7792e7a1\",\"requested_revision\":\"d72e8fbf7ef571b668c26a4222a284bf7792e7a1\"}}",
+      "source_sha256": {
+        "cli.py": "2b51da88f9e125269356f4a8d67dc7f40052555280e2605ed920922148952b0e",
+        "graph.py": "2993b425595ab2ae2c000750d708b82bda7a6f3dda0b9eb009194715c5480fb2",
+        "parser.py": "6d4cb477ff957f1135bca564b77a4723eae281f9c991cde3bfb9de3ac77d345a",
+        "changes.py": "33c646d2f4c1d9d274668e28046a02ec03b7c21a08baefee8de434b8ef7ea927"
+      },
+      "dependencies": [
+        "Authlib==1.9.1",
+        "PyJWT==2.15.1",
+        "PyYAML==6.0.3",
+        "Pygments==2.21.0",
+        "SecretStorage==3.5.0",
+        "aiofile==3.12.3",
+        "annotated-types==0.8.0",
+        "anyio==4.15.1",
+        "attrs==26.1.0",
+        "beartype==0.23.1",
+        "cachetools==7.2.7",
+        "caio==0.12.10",
+        "certifi==2026.10.23",
+        "cffi==2.1.1",
+        "click==8.5.0",
+        "code-review-graph==2.3.9",
+        "cryptography==50.0.2",
+        "cyclopts==5.3.2",
+        "dnspython==2.9.1",
+        "docstring_parser==0.18.0",
+        "email-validator==2.3.0",
+        "exceptiongroup==1.3.1",
+        "fastmcp-slim==3.4.11",
+        "fastmcp==3.4.11",
+        "griffelib==2.4.1",
+        "h11==0.16.0",
+        "httpcore==1.0.9",
+        "httpx-sse==0.4.3",
+        "httpx==0.28.1",
+        "idna==3.20",
+        "jaraco.classes==3.4.0",
+        "jaraco.context==6.1.2",
+        "jaraco.functools==4.6.0",
+        "jeepney==0.9.0",
+        "joserfc==1.7.7",
+        "jsonref==1.1.0",
+        "jsonschema-path==0.5.0",
+        "jsonschema-specifications==2025.9.1",
+        "jsonschema==4.26.0",
+        "keyring==25.7.0",
+        "markdown-it-py==4.2.0",
+        "mcp==1.30.0",
+        "mdurl==0.1.2",
+        "more-itertools==11.2.1",
+        "networkx==3.7",
+        "openapi-pydantic==0.6.0",
+        "opentelemetry-api==1.45.2",
+        "packaging==26.3",
+        "pathable==0.6.0",
+        "platformdirs==4.14.0",
+        "py-key-value-aio==0.4.6",
+        "pycparser==3.12",
+        "pydantic-settings==2.16.2",
+        "pydantic==2.14.2",
+        "pydantic_core==2.50.2",
+        "pyperclip==1.11.0",
+        "python-dotenv==1.2.4",
+        "python-multipart==0.0.32",
+        "referencing==0.37.0",
+        "rich-rst==2.2.0",
+        "rich==15.0.0",
+        "rpds-py==2026.9.1",
+        "sse-starlette==3.6.0",
+        "starlette==1.10.0",
+        "tree-sitter-c-sharp==0.23.5",
+        "tree-sitter-embedded-template==0.25.0",
+        "tree-sitter-language-pack==0.13.0",
+        "tree-sitter-yaml==0.7.2",
+        "tree-sitter==0.26.0",
+        "typing-inspection==0.4.4",
+        "typing_extensions==4.16.0",
+        "uncalled-for==0.4.1",
+        "uvicorn==0.54.0",
+        "watchdog==6.0.0",
+        "watchfiles==1.3.0",
+        "websockets==17.4"
+      ]
+    },
+    "verified_at_utc": "2026-10-31T12:18:43.329162+00:00",
+    "reporter_input_sha256": {
+      "src/widget.tsx": "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201",
+      "src/widget.spec.tsx": "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+    }
+  },
+  "observations": {
+    "release": {
+      "records": [
+        {
+          "name": "baseline-build",
+          "args": [
+            "build"
+          ],
+          "started_at_utc": "2026-10-31T12:21:49.605689+00:00",
+          "exit_code": 0,
+          "stdout": "Full build: 2 files, 7 nodes, 18 edges (postprocess=full)\n",
+          "stderr": "INFO: Progress: 2/2 files parsed\nINFO: Spring event resolver: indexed 0 events and emitted 0 CALLS edges\nINFO: FTS index rebuilt: 7 rows indexed\nINFO: Loaded 5 unique nodes, 18 edges\nINFO: igraph not available, using file-based community detection\n"
+        },
+        {
+          "name": "baseline-status",
+          "args": [
+            "status",
+            "--json"
+          ],
+          "started_at_utc": "2026-10-31T12:21:49.904759+00:00",
+          "exit_code": 0,
+          "stdout": "{\"nodes\": 7, \"edges\": 18, \"files\": 2, \"languages\": [\"tsx\"], \"last_updated\": \"2026-10-31T12:21:49\", \"vcs\": \"git\", \"built_on_branch\": \"main\", \"built_at_commit\": \"b649b63cb4661e07728ef3e0c2a5e029215070aa\", \"current_branch\": \"main\", \"current_sha\": \"b649b63cb4661e07728ef3e0c2a5e029215070aa\", \"svn_branch\": null, \"svn_revision\": null, \"build_incomplete\": false}\n",
+          "stderr": ""
+        },
+        {
+          "name": "baseline-tests-for",
+          "args": [
+            "query",
+            "tests_for",
+            "<trial>/release/consumer/src/widget.tsx::Widget"
+          ],
+          "started_at_utc": "2026-10-31T12:21:50.109962+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"tests_for\",\n  \"target\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n  \"description\": \"Find all tests for a given function or class\",\n  \"summary\": \"Found 0 result(s) for tests_for('<trial>/release/consumer/src/widget.tsx::Widget')\",\n  \"result_count\": 0,\n  \"results_omitted\": 0,\n  \"results\": [],\n  \"edges\": [],\n  \"confidence\": \"js/ts callbacks land on REFERENCES not CALLS, and obj[name]() is unresolved, so callers can be missing\"\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "baseline-callers-widget",
+          "args": [
+            "query",
+            "callers_of",
+            "<trial>/release/consumer/src/widget.tsx::Widget"
+          ],
+          "started_at_utc": "2026-10-31T12:21:50.288218+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"callers_of\",\n  \"target\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n  \"description\": \"Find all functions that call a given function\",\n  \"summary\": \"Found 1 call site(s) across 1 node(s) for callers_of('<trial>/release/consumer/src/widget.tsx::Widget')\",\n  \"result_count\": 1,\n  \"results_omitted\": 0,\n  \"results\": [\n    {\n      \"id\": 18,\n      \"kind\": \"Function\",\n      \"name\": \"view\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.spec.tsx::view\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.spec.tsx\",\n      \"line_start\": 5,\n      \"line_end\": 5,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": true,\n      \"call_site\": {\n        \"line\": 5\n      }\n    }\n  ],\n  \"edges\": [\n    {\n      \"id\": 32,\n      \"kind\": \"CALLS\",\n      \"source\": \"<trial>/release/consumer/src/widget.spec.tsx::view\",\n      \"target\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.spec.tsx\",\n      \"line\": 5,\n      \"confidence\": 1.0,\n      \"confidence_tier\": \"EXTRACTED\"\n    }\n  ],\n  \"distinct_nodes\": 1,\n  \"resolution_split\": {\n    \"direct\": 1,\n    \"unresolved\": 0\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "baseline-callers-view",
+          "args": [
+            "query",
+            "callers_of",
+            "<trial>/release/consumer/src/widget.spec.tsx::view"
+          ],
+          "started_at_utc": "2026-10-31T12:21:50.476008+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"callers_of\",\n  \"target\": \"<trial>/release/consumer/src/widget.spec.tsx::view\",\n  \"description\": \"Find all functions that call a given function\",\n  \"summary\": \"Found 1 call site(s) across 1 node(s) for callers_of('<trial>/release/consumer/src/widget.spec.tsx::view')\",\n  \"result_count\": 1,\n  \"results_omitted\": 0,\n  \"results\": [\n    {\n      \"id\": 20,\n      \"kind\": \"Test\",\n      \"name\": \"it:renders the title@L8\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.spec.tsx::it:renders the title@L8\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.spec.tsx\",\n      \"line_start\": 8,\n      \"line_end\": 11,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": true,\n      \"call_site\": {\n        \"line\": 9\n      }\n    }\n  ],\n  \"edges\": [\n    {\n      \"id\": 35,\n      \"kind\": \"CALLS\",\n      \"source\": \"<trial>/release/consumer/src/widget.spec.tsx::it:renders the title@L8\",\n      \"target\": \"<trial>/release/consumer/src/widget.spec.tsx::view\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.spec.tsx\",\n      \"line\": 9,\n      \"confidence\": 1.0,\n      \"confidence_tier\": \"EXTRACTED\"\n    }\n  ],\n  \"distinct_nodes\": 1,\n  \"resolution_split\": {\n    \"direct\": 1,\n    \"unresolved\": 0\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-build",
+          "args": [
+            "build"
+          ],
+          "started_at_utc": "2026-10-31T12:21:51.770444+00:00",
+          "exit_code": 0,
+          "stdout": "Full build: 2 files, 7 nodes, 18 edges (postprocess=full)\n",
+          "stderr": "INFO: Progress: 2/2 files parsed\nINFO: Spring event resolver: indexed 0 events and emitted 0 CALLS edges\nINFO: FTS index rebuilt: 7 rows indexed\nINFO: Loaded 5 unique nodes, 18 edges\nINFO: igraph not available, using file-based community detection\n"
+        },
+        {
+          "name": "changed-status",
+          "args": [
+            "status",
+            "--json"
+          ],
+          "started_at_utc": "2026-10-31T12:21:52.074480+00:00",
+          "exit_code": 0,
+          "stdout": "{\"nodes\": 7, \"edges\": 18, \"files\": 2, \"languages\": [\"tsx\"], \"last_updated\": \"2026-10-31T12:21:51\", \"vcs\": \"git\", \"built_on_branch\": \"main\", \"built_at_commit\": \"b649b63cb4661e07728ef3e0c2a5e029215070aa\", \"current_branch\": \"main\", \"current_sha\": \"b649b63cb4661e07728ef3e0c2a5e029215070aa\", \"svn_branch\": null, \"svn_revision\": null, \"build_incomplete\": false}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-tests-for",
+          "args": [
+            "query",
+            "tests_for",
+            "<trial>/release/consumer/src/widget.tsx::Widget"
+          ],
+          "started_at_utc": "2026-10-31T12:21:52.293997+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"tests_for\",\n  \"target\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n  \"description\": \"Find all tests for a given function or class\",\n  \"summary\": \"Found 0 result(s) for tests_for('<trial>/release/consumer/src/widget.tsx::Widget')\",\n  \"result_count\": 0,\n  \"results_omitted\": 0,\n  \"results\": [],\n  \"edges\": [],\n  \"confidence\": \"js/ts callbacks land on REFERENCES not CALLS, and obj[name]() is unresolved, so callers can be missing\"\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-callers-widget",
+          "args": [
+            "query",
+            "callers_of",
+            "<trial>/release/consumer/src/widget.tsx::Widget"
+          ],
+          "started_at_utc": "2026-10-31T12:21:52.481710+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"callers_of\",\n  \"target\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n  \"description\": \"Find all functions that call a given function\",\n  \"summary\": \"Found 1 call site(s) across 1 node(s) for callers_of('<trial>/release/consumer/src/widget.tsx::Widget')\",\n  \"result_count\": 1,\n  \"results_omitted\": 0,\n  \"results\": [\n    {\n      \"id\": 25,\n      \"kind\": \"Function\",\n      \"name\": \"view\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.spec.tsx::view\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.spec.tsx\",\n      \"line_start\": 5,\n      \"line_end\": 5,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": true,\n      \"call_site\": {\n        \"line\": 5\n      }\n    }\n  ],\n  \"edges\": [\n    {\n      \"id\": 50,\n      \"kind\": \"CALLS\",\n      \"source\": \"<trial>/release/consumer/src/widget.spec.tsx::view\",\n      \"target\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.spec.tsx\",\n      \"line\": 5,\n      \"confidence\": 1.0,\n      \"confidence_tier\": \"EXTRACTED\"\n    }\n  ],\n  \"distinct_nodes\": 1,\n  \"resolution_split\": {\n    \"direct\": 1,\n    \"unresolved\": 0\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-callers-view",
+          "args": [
+            "query",
+            "callers_of",
+            "<trial>/release/consumer/src/widget.spec.tsx::view"
+          ],
+          "started_at_utc": "2026-10-31T12:21:52.700334+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"callers_of\",\n  \"target\": \"<trial>/release/consumer/src/widget.spec.tsx::view\",\n  \"description\": \"Find all functions that call a given function\",\n  \"summary\": \"Found 1 call site(s) across 1 node(s) for callers_of('<trial>/release/consumer/src/widget.spec.tsx::view')\",\n  \"result_count\": 1,\n  \"results_omitted\": 0,\n  \"results\": [\n    {\n      \"id\": 27,\n      \"kind\": \"Test\",\n      \"name\": \"it:renders the title@L8\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.spec.tsx::it:renders the title@L8\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.spec.tsx\",\n      \"line_start\": 8,\n      \"line_end\": 11,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": true,\n      \"call_site\": {\n        \"line\": 9\n      }\n    }\n  ],\n  \"edges\": [\n    {\n      \"id\": 53,\n      \"kind\": \"CALLS\",\n      \"source\": \"<trial>/release/consumer/src/widget.spec.tsx::it:renders the title@L8\",\n      \"target\": \"<trial>/release/consumer/src/widget.spec.tsx::view\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.spec.tsx\",\n      \"line\": 9,\n      \"confidence\": 1.0,\n      \"confidence_tier\": \"EXTRACTED\"\n    }\n  ],\n  \"distinct_nodes\": 1,\n  \"resolution_split\": {\n    \"direct\": 1,\n    \"unresolved\": 0\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-gaps",
+          "args": [
+            "detect-changes",
+            "--base",
+            "HEAD"
+          ],
+          "started_at_utc": "2026-10-31T12:21:52.903663+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"summary\": \"Analyzed 1 changed file(s):\\n  - 2 changed function(s)/class(es)\\n  - 0 affected flow(s)\\n  - 2 test gap(s)\\n  - Overall risk score: 0.40\\n  - Untested: WidgetProps, Widget\",\n  \"risk_score\": 0.4,\n  \"changed_functions\": [\n    {\n      \"id\": 29,\n      \"kind\": \"Class\",\n      \"name\": \"WidgetProps\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.tsx::WidgetProps\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.tsx\",\n      \"line_start\": 2,\n      \"line_end\": 2,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": false,\n      \"risk_score\": 0.3\n    },\n    {\n      \"id\": 30,\n      \"kind\": \"Function\",\n      \"name\": \"Widget\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.tsx\",\n      \"line_start\": 3,\n      \"line_end\": 5,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": false,\n      \"risk_score\": 0.4\n    }\n  ],\n  \"affected_flows\": [],\n  \"test_gaps\": [\n    {\n      \"name\": \"WidgetProps\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.tsx::WidgetProps\",\n      \"file\": \"<trial>/release/consumer/src/widget.tsx\",\n      \"line_start\": 2,\n      \"line_end\": 2,\n      \"coverage\": \"none\"\n    },\n    {\n      \"name\": \"Widget\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n      \"file\": \"<trial>/release/consumer/src/widget.tsx\",\n      \"line_start\": 3,\n      \"line_end\": 5,\n      \"coverage\": \"none\"\n    }\n  ],\n  \"test_gaps_total\": 2,\n  \"test_gaps_uncovered\": 2,\n  \"test_gaps_indirect\": 0,\n  \"review_priorities\": [\n    {\n      \"id\": 30,\n      \"kind\": \"Function\",\n      \"name\": \"Widget\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.tsx::Widget\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.tsx\",\n      \"line_start\": 3,\n      \"line_end\": 5,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": false,\n      \"risk_score\": 0.4\n    },\n    {\n      \"id\": 29,\n      \"kind\": \"Class\",\n      \"name\": \"WidgetProps\",\n      \"qualified_name\": \"<trial>/release/consumer/src/widget.tsx::WidgetProps\",\n      \"file_path\": \"<trial>/release/consumer/src/widget.tsx\",\n      \"line_start\": 2,\n      \"line_end\": 2,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": false,\n      \"risk_score\": 0.3\n    }\n  ],\n  \"functions_truncated\": false,\n  \"diff_ranges_unavailable\": \"\",\n  \"churn_status\": \"off\",\n  \"context_savings\": {\n    \"estimated\": true,\n    \"saved_tokens\": 0,\n    \"saved_percent\": 0\n  }\n}\n",
+          "stderr": ""
+        }
+      ],
+      "snapshots": {
+        "baseline": {
+          "metadata": {
+            "schema_version": "13",
+            "last_updated": "2026-10-31T12:21:49",
+            "last_build_type": "full",
+            "cpp_identity_version": "1",
+            "cpp_identity_pending": "{\"version\": \"1\", \"files\": []}",
+            "repo_root": "<trial>/release/consumer",
+            "git_branch": "main",
+            "git_head_sha": "b649b63cb4661e07728ef3e0c2a5e029215070aa",
+            "fts_state_synced": "2",
+            "last_postprocessed_at": "2026-10-31T12:21:49",
+            "postprocess_level": "full",
+            "build_state": "complete"
+          },
+          "files": {
+            "src/widget.tsx": {
+              "mtime": 1793449308.503593,
+              "mtime_utc": "2026-10-31T12:21:48.503593+00:00",
+              "sha256": "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201",
+              "stored_nodes": [
+                [
+                  "File",
+                  "<trial>/release/consumer/src/widget.tsx",
+                  "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201"
+                ],
+                [
+                  "Class",
+                  "WidgetProps",
+                  "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201"
+                ],
+                [
+                  "Function",
+                  "Widget",
+                  "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201"
+                ]
+              ]
+            },
+            "src/widget.spec.tsx": {
+              "mtime": 1793449308.5054607,
+              "mtime_utc": "2026-10-31T12:21:48.505461+00:00",
+              "sha256": "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e",
+              "stored_nodes": [
+                [
+                  "File",
+                  "<trial>/release/consumer/src/widget.spec.tsx",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Function",
+                  "view",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Test",
+                  "describe:Widget@L7",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Test",
+                  "it:renders the title@L8",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ]
+              ]
+            }
+          }
+        },
+        "changed": {
+          "metadata": {
+            "schema_version": "13",
+            "last_updated": "2026-10-31T12:21:51",
+            "last_build_type": "full",
+            "cpp_identity_version": "1",
+            "cpp_identity_pending": "{\"version\": \"1\", \"files\": []}",
+            "repo_root": "<trial>/release/consumer",
+            "git_branch": "main",
+            "git_head_sha": "b649b63cb4661e07728ef3e0c2a5e029215070aa",
+            "fts_state_synced": "2",
+            "last_postprocessed_at": "2026-10-31T12:21:52",
+            "postprocess_level": "full",
+            "build_state": "complete"
+          },
+          "files": {
+            "src/widget.tsx": {
+              "mtime": 1793449310.6702259,
+              "mtime_utc": "2026-10-31T12:21:50.670226+00:00",
+              "sha256": "9a99f8252b936026b61009cc5d5d3f9682acb4c886e332616ad26b3f06d61f38",
+              "stored_nodes": [
+                [
+                  "File",
+                  "<trial>/release/consumer/src/widget.tsx",
+                  "9a99f8252b936026b61009cc5d5d3f9682acb4c886e332616ad26b3f06d61f38"
+                ],
+                [
+                  "Class",
+                  "WidgetProps",
+                  "9a99f8252b936026b61009cc5d5d3f9682acb4c886e332616ad26b3f06d61f38"
+                ],
+                [
+                  "Function",
+                  "Widget",
+                  "9a99f8252b936026b61009cc5d5d3f9682acb4c886e332616ad26b3f06d61f38"
+                ]
+              ]
+            },
+            "src/widget.spec.tsx": {
+              "mtime": 1793449308.5054607,
+              "mtime_utc": "2026-10-31T12:21:48.505461+00:00",
+              "sha256": "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e",
+              "stored_nodes": [
+                [
+                  "File",
+                  "<trial>/release/consumer/src/widget.spec.tsx",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Function",
+                  "view",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Test",
+                  "describe:Widget@L7",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Test",
+                  "it:renders the title@L8",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "staging": {
+      "records": [
+        {
+          "name": "baseline-build",
+          "args": [
+            "build"
+          ],
+          "started_at_utc": "2026-10-31T12:21:54.202012+00:00",
+          "exit_code": 0,
+          "stdout": "Full build: 2 files, 7 nodes, 18 edges (postprocess=full)\n",
+          "stderr": "INFO: Progress: 2/2 files parsed\nINFO: Spring event resolver: indexed 0 events and emitted 0 CALLS edges\nINFO: FTS index rebuilt: 7 rows indexed\nINFO: Loaded 5 unique nodes, 18 edges\nINFO: igraph not available, using file-based community detection\n"
+        },
+        {
+          "name": "baseline-status",
+          "args": [
+            "status",
+            "--json"
+          ],
+          "started_at_utc": "2026-10-31T12:21:54.496437+00:00",
+          "exit_code": 0,
+          "stdout": "{\"nodes\": 7, \"edges\": 18, \"files\": 2, \"languages\": [\"tsx\"], \"last_updated\": \"2026-10-31T12:21:54\", \"vcs\": \"git\", \"built_on_branch\": \"main\", \"built_at_commit\": \"b649b63cb4661e07728ef3e0c2a5e029215070aa\", \"current_branch\": \"main\", \"current_sha\": \"b649b63cb4661e07728ef3e0c2a5e029215070aa\", \"svn_branch\": null, \"svn_revision\": null, \"build_incomplete\": false}\n",
+          "stderr": ""
+        },
+        {
+          "name": "baseline-tests-for",
+          "args": [
+            "query",
+            "tests_for",
+            "<trial>/staging/consumer/src/widget.tsx::Widget"
+          ],
+          "started_at_utc": "2026-10-31T12:21:54.702177+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"tests_for\",\n  \"target\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n  \"description\": \"Find all tests for a given function or class\",\n  \"summary\": \"Found 0 result(s) for tests_for('<trial>/staging/consumer/src/widget.tsx::Widget')\",\n  \"result_count\": 0,\n  \"results_omitted\": 0,\n  \"results\": [],\n  \"edges\": [],\n  \"confidence\": \"js/ts callbacks land on REFERENCES not CALLS, and obj[name]() is unresolved, so callers can be missing\"\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "baseline-callers-widget",
+          "args": [
+            "query",
+            "callers_of",
+            "<trial>/staging/consumer/src/widget.tsx::Widget"
+          ],
+          "started_at_utc": "2026-10-31T12:21:54.923575+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"callers_of\",\n  \"target\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n  \"description\": \"Find all functions that call a given function\",\n  \"summary\": \"Found 1 call site(s) across 1 node(s) for callers_of('<trial>/staging/consumer/src/widget.tsx::Widget')\",\n  \"result_count\": 1,\n  \"results_omitted\": 0,\n  \"results\": [\n    {\n      \"id\": 18,\n      \"kind\": \"Function\",\n      \"name\": \"view\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.spec.tsx::view\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.spec.tsx\",\n      \"line_start\": 5,\n      \"line_end\": 5,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": true,\n      \"call_site\": {\n        \"line\": 5\n      }\n    }\n  ],\n  \"edges\": [\n    {\n      \"id\": 32,\n      \"kind\": \"CALLS\",\n      \"source\": \"<trial>/staging/consumer/src/widget.spec.tsx::view\",\n      \"target\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.spec.tsx\",\n      \"line\": 5,\n      \"confidence\": 1.0,\n      \"confidence_tier\": \"EXTRACTED\"\n    }\n  ],\n  \"distinct_nodes\": 1,\n  \"resolution_split\": {\n    \"direct\": 1,\n    \"unresolved\": 0\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "baseline-callers-view",
+          "args": [
+            "query",
+            "callers_of",
+            "<trial>/staging/consumer/src/widget.spec.tsx::view"
+          ],
+          "started_at_utc": "2026-10-31T12:21:55.140135+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"callers_of\",\n  \"target\": \"<trial>/staging/consumer/src/widget.spec.tsx::view\",\n  \"description\": \"Find all functions that call a given function\",\n  \"summary\": \"Found 1 call site(s) across 1 node(s) for callers_of('<trial>/staging/consumer/src/widget.spec.tsx::view')\",\n  \"result_count\": 1,\n  \"results_omitted\": 0,\n  \"results\": [\n    {\n      \"id\": 20,\n      \"kind\": \"Test\",\n      \"name\": \"it:renders the title@L8\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.spec.tsx::it:renders the title@L8\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.spec.tsx\",\n      \"line_start\": 8,\n      \"line_end\": 11,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": true,\n      \"call_site\": {\n        \"line\": 9\n      }\n    }\n  ],\n  \"edges\": [\n    {\n      \"id\": 35,\n      \"kind\": \"CALLS\",\n      \"source\": \"<trial>/staging/consumer/src/widget.spec.tsx::it:renders the title@L8\",\n      \"target\": \"<trial>/staging/consumer/src/widget.spec.tsx::view\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.spec.tsx\",\n      \"line\": 9,\n      \"confidence\": 1.0,\n      \"confidence_tier\": \"EXTRACTED\"\n    }\n  ],\n  \"distinct_nodes\": 1,\n  \"resolution_split\": {\n    \"direct\": 1,\n    \"unresolved\": 0\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-build",
+          "args": [
+            "build"
+          ],
+          "started_at_utc": "2026-10-31T12:21:56.465350+00:00",
+          "exit_code": 0,
+          "stdout": "Full build: 2 files, 7 nodes, 18 edges (postprocess=full)\n",
+          "stderr": "INFO: Progress: 2/2 files parsed\nINFO: Spring event resolver: indexed 0 events and emitted 0 CALLS edges\nINFO: FTS index rebuilt: 7 rows indexed\nINFO: Loaded 5 unique nodes, 18 edges\nINFO: igraph not available, using file-based community detection\n"
+        },
+        {
+          "name": "changed-status",
+          "args": [
+            "status",
+            "--json"
+          ],
+          "started_at_utc": "2026-10-31T12:21:56.840538+00:00",
+          "exit_code": 0,
+          "stdout": "{\"nodes\": 7, \"edges\": 18, \"files\": 2, \"languages\": [\"tsx\"], \"last_updated\": \"2026-10-31T12:21:56\", \"vcs\": \"git\", \"built_on_branch\": \"main\", \"built_at_commit\": \"b649b63cb4661e07728ef3e0c2a5e029215070aa\", \"current_branch\": \"main\", \"current_sha\": \"b649b63cb4661e07728ef3e0c2a5e029215070aa\", \"svn_branch\": null, \"svn_revision\": null, \"build_incomplete\": false}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-tests-for",
+          "args": [
+            "query",
+            "tests_for",
+            "<trial>/staging/consumer/src/widget.tsx::Widget"
+          ],
+          "started_at_utc": "2026-10-31T12:21:57.091259+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"tests_for\",\n  \"target\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n  \"description\": \"Find all tests for a given function or class\",\n  \"summary\": \"Found 0 result(s) for tests_for('<trial>/staging/consumer/src/widget.tsx::Widget')\",\n  \"result_count\": 0,\n  \"results_omitted\": 0,\n  \"results\": [],\n  \"edges\": [],\n  \"confidence\": \"js/ts callbacks land on REFERENCES not CALLS, and obj[name]() is unresolved, so callers can be missing\"\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-callers-widget",
+          "args": [
+            "query",
+            "callers_of",
+            "<trial>/staging/consumer/src/widget.tsx::Widget"
+          ],
+          "started_at_utc": "2026-10-31T12:21:57.310846+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"callers_of\",\n  \"target\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n  \"description\": \"Find all functions that call a given function\",\n  \"summary\": \"Found 1 call site(s) across 1 node(s) for callers_of('<trial>/staging/consumer/src/widget.tsx::Widget')\",\n  \"result_count\": 1,\n  \"results_omitted\": 0,\n  \"results\": [\n    {\n      \"id\": 25,\n      \"kind\": \"Function\",\n      \"name\": \"view\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.spec.tsx::view\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.spec.tsx\",\n      \"line_start\": 5,\n      \"line_end\": 5,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": true,\n      \"call_site\": {\n        \"line\": 5\n      }\n    }\n  ],\n  \"edges\": [\n    {\n      \"id\": 50,\n      \"kind\": \"CALLS\",\n      \"source\": \"<trial>/staging/consumer/src/widget.spec.tsx::view\",\n      \"target\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.spec.tsx\",\n      \"line\": 5,\n      \"confidence\": 1.0,\n      \"confidence_tier\": \"EXTRACTED\"\n    }\n  ],\n  \"distinct_nodes\": 1,\n  \"resolution_split\": {\n    \"direct\": 1,\n    \"unresolved\": 0\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-callers-view",
+          "args": [
+            "query",
+            "callers_of",
+            "<trial>/staging/consumer/src/widget.spec.tsx::view"
+          ],
+          "started_at_utc": "2026-10-31T12:21:57.526076+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"status\": \"ok\",\n  \"pattern\": \"callers_of\",\n  \"target\": \"<trial>/staging/consumer/src/widget.spec.tsx::view\",\n  \"description\": \"Find all functions that call a given function\",\n  \"summary\": \"Found 1 call site(s) across 1 node(s) for callers_of('<trial>/staging/consumer/src/widget.spec.tsx::view')\",\n  \"result_count\": 1,\n  \"results_omitted\": 0,\n  \"results\": [\n    {\n      \"id\": 27,\n      \"kind\": \"Test\",\n      \"name\": \"it:renders the title@L8\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.spec.tsx::it:renders the title@L8\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.spec.tsx\",\n      \"line_start\": 8,\n      \"line_end\": 11,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": true,\n      \"call_site\": {\n        \"line\": 9\n      }\n    }\n  ],\n  \"edges\": [\n    {\n      \"id\": 53,\n      \"kind\": \"CALLS\",\n      \"source\": \"<trial>/staging/consumer/src/widget.spec.tsx::it:renders the title@L8\",\n      \"target\": \"<trial>/staging/consumer/src/widget.spec.tsx::view\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.spec.tsx\",\n      \"line\": 9,\n      \"confidence\": 1.0,\n      \"confidence_tier\": \"EXTRACTED\"\n    }\n  ],\n  \"distinct_nodes\": 1,\n  \"resolution_split\": {\n    \"direct\": 1,\n    \"unresolved\": 0\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "name": "changed-gaps",
+          "args": [
+            "detect-changes",
+            "--base",
+            "HEAD"
+          ],
+          "started_at_utc": "2026-10-31T12:21:57.741304+00:00",
+          "exit_code": 0,
+          "stdout": "{\n  \"summary\": \"Analyzed 1 changed file(s):\\n  - 2 changed function(s)/class(es)\\n  - 0 affected flow(s)\\n  - 1 test gap(s)\\n  - Overall risk score: 0.40\\n  - Untested: Widget\",\n  \"risk_score\": 0.4,\n  \"changed_functions\": [\n    {\n      \"id\": 29,\n      \"kind\": \"Class\",\n      \"name\": \"WidgetProps\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.tsx::WidgetProps\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.tsx\",\n      \"line_start\": 2,\n      \"line_end\": 2,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": false,\n      \"risk_score\": 0.3\n    },\n    {\n      \"id\": 30,\n      \"kind\": \"Function\",\n      \"name\": \"Widget\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.tsx\",\n      \"line_start\": 3,\n      \"line_end\": 5,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": false,\n      \"risk_score\": 0.4\n    }\n  ],\n  \"affected_flows\": [],\n  \"test_gaps\": [\n    {\n      \"name\": \"Widget\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n      \"file\": \"<trial>/staging/consumer/src/widget.tsx\",\n      \"line_start\": 3,\n      \"line_end\": 5,\n      \"coverage\": \"none\"\n    }\n  ],\n  \"test_gaps_total\": 1,\n  \"test_gaps_uncovered\": 1,\n  \"test_gaps_indirect\": 0,\n  \"review_priorities\": [\n    {\n      \"id\": 30,\n      \"kind\": \"Function\",\n      \"name\": \"Widget\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.tsx::Widget\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.tsx\",\n      \"line_start\": 3,\n      \"line_end\": 5,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": false,\n      \"risk_score\": 0.4\n    },\n    {\n      \"id\": 29,\n      \"kind\": \"Class\",\n      \"name\": \"WidgetProps\",\n      \"qualified_name\": \"<trial>/staging/consumer/src/widget.tsx::WidgetProps\",\n      \"file_path\": \"<trial>/staging/consumer/src/widget.tsx\",\n      \"line_start\": 2,\n      \"line_end\": 2,\n      \"language\": \"tsx\",\n      \"parent_name\": null,\n      \"is_test\": false,\n      \"risk_score\": 0.3\n    }\n  ],\n  \"functions_truncated\": false,\n  \"diff_ranges_unavailable\": \"\",\n  \"churn_status\": \"off\",\n  \"context_savings\": {\n    \"estimated\": true,\n    \"saved_tokens\": 0,\n    \"saved_percent\": 0\n  }\n}\n",
+          "stderr": ""
+        }
+      ],
+      "snapshots": {
+        "baseline": {
+          "metadata": {
+            "schema_version": "13",
+            "last_updated": "2026-10-31T12:21:54",
+            "last_build_type": "full",
+            "cpp_identity_version": "1",
+            "cpp_identity_pending": "{\"version\": \"1\", \"files\": []}",
+            "repo_root": "<trial>/staging/consumer",
+            "git_branch": "main",
+            "git_head_sha": "b649b63cb4661e07728ef3e0c2a5e029215070aa",
+            "fts_state_synced": "2",
+            "last_postprocessed_at": "2026-10-31T12:21:54",
+            "postprocess_level": "full",
+            "build_state": "complete"
+          },
+          "files": {
+            "src/widget.tsx": {
+              "mtime": 1793449313.1001823,
+              "mtime_utc": "2026-10-31T12:21:53.100182+00:00",
+              "sha256": "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201",
+              "stored_nodes": [
+                [
+                  "File",
+                  "<trial>/staging/consumer/src/widget.tsx",
+                  "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201"
+                ],
+                [
+                  "Class",
+                  "WidgetProps",
+                  "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201"
+                ],
+                [
+                  "Function",
+                  "Widget",
+                  "502b0bdbd26aadef3c20b7e162b8c837fab542c552165b4bc53ae2fbc21c1201"
+                ]
+              ]
+            },
+            "src/widget.spec.tsx": {
+              "mtime": 1793449313.1018047,
+              "mtime_utc": "2026-10-31T12:21:53.101805+00:00",
+              "sha256": "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e",
+              "stored_nodes": [
+                [
+                  "File",
+                  "<trial>/staging/consumer/src/widget.spec.tsx",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Function",
+                  "view",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Test",
+                  "describe:Widget@L7",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Test",
+                  "it:renders the title@L8",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ]
+              ]
+            }
+          }
+        },
+        "changed": {
+          "metadata": {
+            "schema_version": "13",
+            "last_updated": "2026-10-31T12:21:56",
+            "last_build_type": "full",
+            "cpp_identity_version": "1",
+            "cpp_identity_pending": "{\"version\": \"1\", \"files\": []}",
+            "repo_root": "<trial>/staging/consumer",
+            "git_branch": "main",
+            "git_head_sha": "b649b63cb4661e07728ef3e0c2a5e029215070aa",
+            "fts_state_synced": "2",
+            "last_postprocessed_at": "2026-10-31T12:21:56",
+            "postprocess_level": "full",
+            "build_state": "complete"
+          },
+          "files": {
+            "src/widget.tsx": {
+              "mtime": 1793449315.3651702,
+              "mtime_utc": "2026-10-31T12:21:55.365170+00:00",
+              "sha256": "9a99f8252b936026b61009cc5d5d3f9682acb4c886e332616ad26b3f06d61f38",
+              "stored_nodes": [
+                [
+                  "File",
+                  "<trial>/staging/consumer/src/widget.tsx",
+                  "9a99f8252b936026b61009cc5d5d3f9682acb4c886e332616ad26b3f06d61f38"
+                ],
+                [
+                  "Class",
+                  "WidgetProps",
+                  "9a99f8252b936026b61009cc5d5d3f9682acb4c886e332616ad26b3f06d61f38"
+                ],
+                [
+                  "Function",
+                  "Widget",
+                  "9a99f8252b936026b61009cc5d5d3f9682acb4c886e332616ad26b3f06d61f38"
+                ]
+              ]
+            },
+            "src/widget.spec.tsx": {
+              "mtime": 1793449313.1018047,
+              "mtime_utc": "2026-10-31T12:21:53.101805+00:00",
+              "sha256": "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e",
+              "stored_nodes": [
+                [
+                  "File",
+                  "<trial>/staging/consumer/src/widget.spec.tsx",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Function",
+                  "view",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Test",
+                  "describe:Widget@L7",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ],
+                [
+                  "Test",
+                  "it:renders the title@L8",
+                  "68f24ba8b90606c0aacb5c38ed59d82bf808dc441b7a132a311a1cfd06e7ae0e"
+                ]
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "summary": [
+    {
+      "version": "release",
+      "input": "baseline",
+      "tests_for": 0,
+      "confidence": "js/ts callbacks land on REFERENCES not CALLS, and obj[name]() is unresolved, so callers can be missing",
+      "caller_widget": [
+        "view"
+      ],
+      "caller_view": [
+        "it:renders the title@L8"
+      ],
+      "test_gaps": null
+    },
+    {
+      "version": "release",
+      "input": "changed",
+      "tests_for": 0,
+      "confidence": "js/ts callbacks land on REFERENCES not CALLS, and obj[name]() is unresolved, so callers can be missing",
+      "caller_widget": [
+        "view"
+      ],
+      "caller_view": [
+        "it:renders the title@L8"
+      ],
+      "test_gaps": [
+        "WidgetProps",
+        "Widget"
+      ]
+    },
+    {
+      "version": "staging",
+      "input": "baseline",
+      "tests_for": 0,
+      "confidence": "js/ts callbacks land on REFERENCES not CALLS, and obj[name]() is unresolved, so callers can be missing",
+      "caller_widget": [
+        "view"
+      ],
+      "caller_view": [
+        "it:renders the title@L8"
+      ],
+      "test_gaps": null
+    },
+    {
+      "version": "staging",
+      "input": "changed",
+      "tests_for": 0,
+      "confidence": "js/ts callbacks land on REFERENCES not CALLS, and obj[name]() is unresolved, so callers can be missing",
+      "caller_widget": [
+        "view"
+      ],
+      "caller_view": [
+        "it:renders the title@L8"
+      ],
+      "test_gaps": [
+        "Widget"
+      ]
+    }
+  ],
+  "earlier_attempts": [
+    {
+      "case": "Bare Widget target",
+      "result": "Ambiguous lookup; not accepted as a successful zero-result query."
+    },
+    {
+      "case": "Rapid write/update qualified queries",
+      "result": "Four empty tests_for results carried stale confidence. These were not used as final fresh-graph evidence."
+    },
+    {
+      "case": "Two captured changed-state freshness snapshots",
+      "result": "Node file hashes matched disk; file mtime fell after a same-second whole-second last_updated value. Supports a precision-related warning for these two captured states, not all earlier baseline states."
+    },
+    {
+      "case": "Final result preparation",
+      "result": "Stable input interval of 1.1 seconds followed by normal full build. No file/DB timestamp manipulation or warning suppression. All four final status snapshots complete; JS/TS parser-limit confidence remains, stale marker absent."
+    }
+  ],
+  "upstream_check": {
+    "checked_date_utc": "2026-10-31",
+    "latest_release": "v2.3.9",
+    "staging_sha": "d72e8fbf7ef571b668c26a4222a284bf7792e7a1",
+    "pr_1112": {
+      "state": "closed",
+      "merged": true,
+      "merged_at": "2026-10-15T12:56:35Z",
+      "old_graphs_require_rebuild_for_declaration_metadata": true
+    },
+    "pr_1128": {
+      "state": "open",
+      "merged": false,
+      "head": "82099953824de8f7bafaa99b9f96a8fe2b6b5b83",
+      "executed": false
+    }
+  },
+  "limits": [
+    "Both installed distributions print version 2.3.9; staging VCS identity is independently retained in direct_url.",
+    "No Vitest, React runtime, private full project, Windows, model call, or MCP/HTTP server was run.",
+    "CALLS association is static reachability, not assertion strength or execution coverage.",
+    "This evidence does not accept the separate operational guide or change radar ranking."
+  ]
+}
