@@ -50,12 +50,12 @@
 | **Haiku 5.5**（默认 Haiku，v2.1.293） | `claude-haiku-5-5` | 1M | $0.10 / $0.50（超过 10 万 token 的请求为 $0.50 / $2.50） | $0.01（总输入 >100K：$0.05） |
 
 - `/model` 切换模型，`/effort` 调推理强度（low → max），`maxEffortLevel` 可设上限。
-- 订阅用户（Pro/Max）受 5 小时与每周额度限制，是否够用应按实际任务与账户用量判断，社区个案不能代表普遍可用时长（详见 [11](../11-community-pulse.md)）。
+- Pro／Max 有 5 小时与周额度；**Ultra（原 Max 20x）的已验证账户无 5 小时限制，仍有周限制**。按实际任务与账户用量判断是否够用，验证方式和档位比较见 [02](../02-models-and-cost.md#3-订阅额度与成本控制)。
 - 用 `/usage` 的 Session 区查主会话缓存命中与重建原因（原因提示需 v2.1.260+），不代表子 Agent 合计；更多诊断见 §6。
 - **子 Agent 可以单独指定 effort**（v2.1.292，Agent 工具的 `effort` 参数）：目标清楚、结果可检查且有成本或等待缺口时，可试轻量模型；不因任务叫“检索”就固定低 effort。模型与 effort 按[02 的任务选择](../02-models-and-cost.md#1-原则按任务分档而不是追榜单)调整，跨文件代码质量审查可直接比较high；协调、实现与其他审查角色分别选档，复杂调查、漏约束或验证不足时保留较强配置。
-- Max 和 Team 订阅开始每月附带 API 额度（Max 5x 100 美元、Max 20x 200 美元、Team 最多 500 美元）；须领取并按运行入口核资格，不能抵所有 Code 用量，详见 [18 成本治理](../18-team-adoption.md#5-成本治理)。
+- Max／Ultra／Team 附带的 API 额度须领取并按运行入口核资格，不抵交互 Code 的订阅额度；金额与超额规则见 [18 成本治理](../18-team-adoption.md#5-成本治理)。
 
-**依据**：[一手] [官方价格](https://platform.claude.com/docs/en/about-claude/pricing)、[费用与缓存文档](https://code.claude.com/docs/en/costs#prompt-cache-statistics)、官方 changelog（v2.1.280–2.1.293、v2.1.292 子 Agent effort）、Anthropic 额度公告及资格说明（2026-10-15 补核）；[研究] 分档与采用边界（2026-10-17 补核）；核实 2026-10-17。
+**依据**：[一手] [官方价格](https://platform.claude.com/docs/en/about-claude/pricing)、[费用与缓存文档](https://code.claude.com/docs/en/costs#prompt-cache-statistics)、官方 changelog（v2.1.280–2.1.293、v2.1.292 子 Agent effort）、[订阅与 API 赠额核对](../02-models-and-cost.md#3-订阅额度与成本控制)；[研究] 分档与采用边界；模型 API 价表核实 2026-10-17，订阅规则补核 2026-10-31。
 
 ## 3. 能力全景
 

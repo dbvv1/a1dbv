@@ -129,13 +129,13 @@ TeamRetro 五人团队自报的反例很具体：仓库基线 lint 未清干净�
 | **按任务算成本** | 衡量“完成一个任务花多少”，而不是单次请求的价格 |
 | **先定位负担** | 查缓存、无用指令／工具；明确且可验任务再比轻量模型分流，worker 计入全任务质量、等待与总成本（见 [02](02-models-and-cost.md#3-订阅额度与成本控制)、[17 第 2.9 节](17-troubleshooting.md#29-成本暴涨)） |
 
-**订阅赠额按运行入口核算（2026-10-15，UTC+8 核对）**：官方资格说明保留 Max 5x／20x 每月 100／200 美元、Team 按席位共享最多 500 美元；须合资格订阅满七天、关联单个 Console 组织；该组织 key 自行运行的 `claude -p`／Agent SDK 可覆盖，交互 Code、GitHub Action、IDE／桌面 Code 及第三方云不覆盖。**局限：赠额不结转，也不是账单上限；耗尽后仍可能消耗已购余额、自动充值或按发票计费。** 记录保存具体条件与反证。
+**订阅赠额按运行入口核算**：Max／Ultra 每月 100／200 美元；Team 标准／高级席位各 20／100 美元，团队共享最多 500 美元。须合资格订阅满七天、领取并关联单个 Console 组织；该组织 API key 自行运行的 `claude -p`／Agent SDK 可覆盖，订阅登录仍消耗套餐额度。交互 Code、GitHub Action、IDE／桌面 Code 及第三方云不覆盖。**赠额不结转，也不是账单上限；耗尽后仍可能消耗已购余额、自动充值或按发票计费。** 套餐更名与交互额度见 [02](02-models-and-cost.md#3-订阅额度与成本控制)。
 
 **云预算要区分产品与范围**（2026-10-13 核对）：AWS 新体验 Paid Plan 项目的 spend limit 提供月度税前费用上限；GCP 原生 spend cap 在单个项目的合资格服务上阻止新增用量。采用前确认覆盖范围、停用后果和恢复安排，详见官方来源核对。
 
 **局限**：这些能力不能推广为所有账户和服务通用的账单封顶；尤其 GCP 的延迟超额、执行中请求和持续固定费用仍可能计费。
 
-**依据**：[一手] [官方资格说明](https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-and-team-plans)、AWS 与 Google Cloud 预算契约；[研究] [记录](research/2026-10-13-cloud-spend-boundaries.md#补充地区策略交付与订阅赠额)、[官方来源核对](research/2026-10-13-cloud-spend-boundaries.md)、计费与停用边界；核实 2026-10-15（UTC+8，订阅赠额）。
+**依据**：[一手] [官方资格说明](https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans)、AWS 与 Google Cloud 预算契约；[研究] [记录](research/2026-10-13-cloud-spend-boundaries.md#补充地区策略交付与订阅赠额)、[官方来源核对](research/2026-10-13-cloud-spend-boundaries.md)、计费与停用边界；核实 2026-10-31（UTC，订阅赠额）；未领取或实跑计费。
 
 ## 6. 怎么衡量效果
 

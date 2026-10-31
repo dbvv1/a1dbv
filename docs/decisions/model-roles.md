@@ -69,10 +69,10 @@ Cloudflare 的生产代码评审链在 10 月复盘中公布了按角色取舍�
 | 你用的入口 | 现在看哪里 | 怎样读数字 |
 |---|---|---|
 | Codex 的 ChatGPT 订阅 | CLI `/status` 或用量面板 | 看剩余额度与重置时间；credits 单价不能直接换算订阅能用几天 |
-| Claude Code 的 Pro／Max 订阅 | `/usage` 的套餐用量条 | Session 美元数是按 token 估算的 API 成本；订阅支出看套餐与实际额外用量 |
+| Claude Code 的 Pro／Max／Ultra 订阅 | `/usage` 的套餐用量条 | Session 美元数是按 token 估算的 API 成本；订阅支出看套餐与实际额外用量 |
 | API key 或已开启的额外 credits | 对应服务的账单／用量入口 | 核实际模型、缓存、输出和速度档；API 与 credits 分开计。Codex credits 没有独立缓存写入费，API 按 API 价表 |
 
-**依据**：[官方计费与查看入口] [OpenAI Work／Codex](https://learn.chatgpt.com/docs/pricing)、[Claude Code `/usage`](https://code.claude.com/docs/en/costs#using-the-usage-command)；核读 2026-10-28，未读取账户用量。
+**依据**：[官方计费与查看入口] [OpenAI Work／Codex](https://learn.chatgpt.com/docs/pricing)、[Claude Code `/usage`](https://code.claude.com/docs/en/costs#using-the-usage-command)；查看入口核读 2026-10-28，套餐名称按 [02](../02-models-and-cost.md#3-订阅额度与成本控制)补核 2026-10-31；未读取账户用量。
 
 - **重复读长材料、重复派同一调查**：先收窄输入与分工；长会话中途只换 effort 时，核对[保缓存入口](../02-models-and-cost.md#同模型换推理档保留缓存前缀)。
 - **质量已达标，只是等得太久**：再比较提速选项；模型、effort、速度模式分开选择。

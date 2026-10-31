@@ -209,7 +209,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 
 **先按使用方式选计费：个人交互开发可用订阅，CI、批处理、团队计费与自建工具用 API 按量。**
 
-| | 订阅（Claude Pro/Max、ChatGPT Plus/Pro…） | API 按量 |
+| | 订阅（Claude Pro/Max/Ultra、ChatGPT Plus/Pro…） | API 按量 |
 |---|---|---|
 | 成本 | 固定订阅费覆盖一定用量；额外 credits 另计，是否划算取决于实际任务 | 按适用 token 类别、速度及工具等用量计费 |
 | 限制 | 按产品和计划区分；当前 Codex/Work Pro 无 5 小时限制，Plus 等有时间窗口额度，周限制也可能适用 | 速率限制及适用的账户/项目开销控制 |
@@ -224,12 +224,23 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 
 API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅内可做任务数。Codex credits 无独立缓存写入收费，API 的缓存写入规则不能移植到 credits。Work 与 Codex 共享用量，任务上下文、推理、工具和缓存都会影响消耗；这里没有读取任何用户账户额度。
 
-**Claude 订阅附带的 API 额度另有边界**：Max 5x $100、Max 20x $200、Team 最多 $500／月（团队共享）；须领取且只覆盖合资格运行入口，不能抵所有 Code 用量，见 [18 成本治理](18-team-adoption.md#5-成本治理)。
+**Claude：先分清 5 小时与周额度，再判断是否要升级。** 旧 Max 20x 已自动改名 Ultra，月费不变；不能把旧名称里的“20x”和当前“每周 10x”直接相除，得出额度减半。
+
+| 网页订阅（月付、税前） | 5 小时窗口 | 每周额度（相对 Pro） |
+|---|---|---|
+| Pro：$20 | 有 | 基准 |
+| Max：$100 | Pro 的 5 倍 | 5 倍 |
+| Ultra：$200 | **已验证账户无此限制**；未验证仍有临时限制 | 10 倍 |
+
+Ultra 是否已验证，看 **Settings → Usage**：没有 `Current session` 条即已验证；结账时的手机号验证不等于此项验证，后者由平台自动完成。无 5 小时限制仍有周额度与 Fable 的独立周限制；Max／Ultra 的 Fable 最多使用周额度的一半。按任务查看实际剩余额度，不换算成固定工作天数。
+
+**API 赠额是另一笔额度**：当前 Max 每月 $100、Ultra $200、Team 共享最多 $500；不能充值交互 Code 的订阅额度。价格卡的“比 Max 多 $100”是在比较当前档位，不能据此推出同一套餐的赠额翻倍；领取、运行入口和超额计费见 [18 成本治理](18-team-adoption.md#5-成本治理)。
+
+**依据**：[一手] [订阅价表](https://claude.com/pricing)、[Ultra 更名、额度与验证说明](https://support.claude.com/en/articles/17728952-what-is-the-ultra-plan)、[API 赠额](https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans)；[社区：问题线索] [读者把更名视为减半的讨论](https://news.ycombinator.com/item?id=50314228)；[研究] 对齐计量窗口后选择，未试用套餐、未读取账户；核实 2026-10-31（UTC）。
 
 **2026 下半年的变化**：
 
-- **Pro 200：未取得旧额度资格的新订／重订者按较低额度预算，不要按旧“20 倍”购买。** 当前 Pro 为 $100/$200/$500 月费档；$500 档有 Ultrafast 访问资格，并非无限用量。官方 Pro 说明已确认 $200 档新旧订户的额度过渡条件。历史“Plus 20 倍降至 10 倍”的精确倍率仍未核实，但不影响“未取得旧额度资格的新订／重订者可能适用较低额度”已获官方确认。
-  - **旧额度资格**：2026-09-22 至 09-29 上午 10 点（Pacific Time）期间任一时刻有有效 Pro 200 订阅者，在该订阅有效时可沿用旧额度至 10-29，此后转较低额度、月费仍为 $200。同账号重订也按该窗口判断，不能仅凭“曾订过 Pro”认定适用。10-29 结束的具体时刻／时区未注明；官方也未列出新旧精确倍率。[完整核查范围](research/2026-10-10-audit.md#pro-200-新旧订户条件2026-10-17-补核)另列。“体感六折”与相反体验仍仅是 [11 的社区自述](11-community-pulse.md#7-中文社区额度与交付自述)，不能用于换算统一降幅。
+- **Pro 200：购买时查当前套餐与用量，不再沿用 10-17 的过渡说明。** 当前官方定价页列出 $100／$200／$500 月费档、Pro 无 5 小时限制、$500 档可用 Ultrafast；这些不是无限用量承诺。旧“10-29 后转较低额度”的条件只保留在[历史核查](research/2026-10-10-audit.md#pro-200-新旧订户条件2026-10-17-补核)，不作为现行购买建议。本轮未核实后续额度调整，不能据此断言旧安排仍执行或已取消；“20 倍降 10 倍”与[社区体感](11-community-pulse.md#7-中文社区额度与交付自述)也不能代替当前限额。依据：[官方 Pricing](https://learn.chatgpt.com/docs/pricing)，核实 2026-10-31（UTC）。
 - **GPT-5.5 已从 ChatGPT 登录的 Codex 退役**：2026-10-14 19:00 UTC 起生效；OpenAI API 和 API-key 登录的 Codex 不受影响。受影响配置按当前可用模型与任务需要替换，不统一指定继任型号，见 [Codex 选择](01-agents/codex.md#2-模型按任务与实际用量选择)。
 - **Claude 订阅耗尽速度只有历史个案**：版本、任务与套餐不同，不能据此推定当前普遍可用天数；范围见 [Claude](01-agents/claude-code.md#6-已知问题与社区反馈)。
 
@@ -243,7 +254,7 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 
 **路由对照要包含本来会用的固定模型，即使它不在路由候选池。** 让 Agent 比较同题质量及含分类、切换缓存、失败重试的总投入；人按实际替代方案决定是否保留。9-26 公布的试验中，比最贵模型便宜的路由仍输给固定中价模型；这是单轮文本反例，仓库修改还要另验。见[原生路由、开源正反例与计费范围](research/2026-10-12-community-source-records.md#p82动态路由先选对固定基线)。
 
-**依据**：[一手] [Codex Pricing](https://learn.chatgpt.com/docs/pricing)（2026-10-10 UTC）、[官方 Pro 说明](https://help.openai.com/en/articles/9793128-about-chatgpt-pro-tiers)（2026-10-17）、当前模型文档（2026-10-15）、[Claude 价格](https://platform.claude.com/docs/en/about-claude/pricing)（2026-10-11／2026-10-15）；[社区：原帖] [Claude 订阅耗尽报告](https://github.com/anthropics/claude-code/issues/26271)（2026-10-15）；[一手：作者报告] Spotify／Scrouting 分流实验；[研究] 购买边界、成本控制与路由采用（2026-10-18／2026-10-22，未实测净省）；核实 2026-10-22。
+**依据**：[一手] [Codex Pricing](https://learn.chatgpt.com/docs/pricing)（2026-10-10 UTC）、[Pro 历史核查](research/2026-10-10-audit.md#pro-200-新旧订户条件2026-10-17-补核)（2026-10-17，非现行购买依据）、当前模型文档（2026-10-15）、[Claude 价格](https://platform.claude.com/docs/en/about-claude/pricing)（2026-10-11／2026-10-15）；[社区：原帖] [Claude 订阅耗尽报告](https://github.com/anthropics/claude-code/issues/26271)（2026-10-15）；[一手：作者报告] Spotify／Scrouting 分流实验；[研究] 购买边界、成本控制与路由采用（2026-10-18／2026-10-22，未实测净省）；核实 2026-10-22。
 
 ### 3.1 查异常消耗：ccusage 只补历史诊断
 
