@@ -91,11 +91,13 @@
 <a id="stryker-vitest5-test-selection"></a>
 ### 2026-10-27：mutation 分数骤降，先核 runner 是否真的执行测试
 
-👀 **已有 Stryker、升级到 Vitest 5 后分数骤降时，先让 Agent 查报告里的 `coveredBy`、`testsCompleted` 和状态，再决定补断言。** 若旧 runner 10.0.0 把有覆盖的变异报为 `Survived`，却完成零测试，优先核测试名过滤：旧版用空格连接名称，Vitest 5 用 ` > `。保留原覆盖率与 mutation 阈值，将已用的 Stryker core／Vitest runner／TypeScript checker 一起升级到含修复的 10.1.1，Vitest 与覆盖率包保持配套，再跑同范围验证。
+🧪 **已有 Stryker、升级到 Vitest 5 后分数骤降时，先让 Agent 查逐项状态、`testsCompleted` 和诊断，再决定补断言。** 若旧 runner 10.0.0 把有覆盖的变异报为 `Survived`，却完成零测试，优先核测试名过滤：旧版用空格连接名称，Vitest 5 用 ` > `。保留原覆盖率与 mutation 阈值，将已用的 Stryker core／Vitest runner／TypeScript checker 一起升级到含修复的 10.1.1，Vitest 与覆盖率包保持配套，再跑同范围验证。
 
-真实采用者 openclaw-atif 的 #35 于 10-24 合入。**作者报告**早先 Vitest 5.0.5＋Stryker 10.0.0 的 354 项普通测试通过，但十个 survivor 执行零测试；升级后的 CI 报告为 **11 killed＋17 errors**，不是 28 killed。接收时须另查 errors，100 分不证明所有变异均被断言检出。#6210 还含静态变异误归类和 DEBUG 配置序列化故障的反馈，不能把所有异常都归因于名称分隔符。
+真实采用者 openclaw-atif 的 #35 于 10-24 合入。**作者报告**早先 Vitest 5.0.5＋Stryker 10.0.0 的 354 项普通测试通过，但十个 survivor 执行零测试；升级后的 CI 报告为 **11 killed＋17 errors**，不是 28 killed。#6210 还含静态变异误归类和 DEBUG 配置序列化故障的反馈，不能把所有异常都归因于名称分隔符。
 
-**依据与范围**：[真实采用 PR #35](https://github.com/openclaw/openclaw-atif/pull/35)；[上游 #6214](https://github.com/stryker-mutator/stryker-js/pull/6214)于 10-23 合入，补丁让覆盖键与测试 ID 共用分隔符；[10.1.0 发布说明](https://github.com/stryker-mutator/stryker-js/releases/tag/v10.1.0)列出该修复，[10.1.1](https://github.com/stryker-mutator/stryker-js/releases/tag/v10.1.1)因发布 provenance 问题重发；[其他使用者反馈 #6210](https://github.com/stryker-mutator/stryker-js/issues/6210)。本仓仅核原文、补丁与发布记录，未安装、未试用，也未独立复跑采用者 CI。核实：2026-10-27 UTC。✅ 已入 [13 候选表](../13-frontier-radar.md#值得一试近4周的新项目与做法)。
+**10-30 已补[真实项目重放与 errors 分类](../../experiments/stryker-report-triage.md)。** 固定当前源码的 358 项普通测试通过；原 mutation 范围得到 11 Killed、17 CompileError，后者均用原 TypeScript 编译器单独重现，分母是 11 而非 28。无需为这 17 项关 checker 或硬补断言；`testsCompleted` 缺失不能当零测试 survivor，静态变异 `coveredBy` 为空也可能已执行并被杀。新文给出原命令＋JSON 查看入口，未复跑旧错误组合。
+
+**依据与范围**：[真实采用 PR #35](https://github.com/openclaw/openclaw-atif/pull/35)；[上游 #6214](https://github.com/stryker-mutator/stryker-js/pull/6214)于 10-23 合入，补丁让覆盖键与测试 ID 共用分隔符；[10.1.0 发布说明](https://github.com/stryker-mutator/stryker-js/releases/tag/v10.1.0)列出该修复，[10.1.1](https://github.com/stryker-mutator/stryker-js/releases/tag/v10.1.1)因发布 provenance 问题重发；[其他使用者反馈 #6210](https://github.com/stryker-mutator/stryker-js/issues/6210)。原文与补丁核实：2026-10-27；10-30 定向回核 #35／#6214 并完成上述云端 Linux 实测，未独立复跑 hosted CI 或完整发布门禁。✅ 已入 [13 候选表](../13-frontier-radar.md#值得一试近4周的新项目与做法)。
 
 ### 2026-10-28：Vitest 先选原生 reporter，不叠两份终端输出
 
