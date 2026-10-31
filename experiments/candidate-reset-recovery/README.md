@@ -2,7 +2,7 @@
 
 **这份小包保存两份未发布候选的差量与四个复现文件；环境重置后，只要固定上游基线仍可取得，就能重建相同源码树。** 它沿用 [opensrc 补丁](../opensrc-ref-integrity/README.md)的分发形式，不包含上游完整源码、Git 历史、依赖、工具链或构建结果，**不是完整离线备份，也不单独满足运行细则 §3.1 的完整源码保全要求**。
 
-先看 [Goose 当前状态](#goose-旧候选已被上游替代)；下面的命令仍恢复原历史源码。
+先看 [Qwen 固定基线补验](#qwen-2026-10-30-固定基线补验)与 [Goose 当前状态](#goose-旧候选已被上游替代)；下面的命令仍恢复原历史源码。
 
 | 候选 | 保存的变化 | 固定输入与原候选 |
 |---|---|---|
@@ -92,7 +92,7 @@ GOOSE_DISABLE_KEYRING=1 cargo test -p goose --test litellm_vision --locked -- --
 
 原基线记录为 7 个控制通过、JSON / SSE 两个别名视觉用例按预期失败；该命令预期非零，不是恢复错误。这里的 `local-test-key`、内嵌 1×1 PNG 和 MCP 工具名均为合成夹具，不含真实凭据或用户内容。
 
-## 已核验与未完成
+## 2026-10-28 归档核验与边界
 
 - 2026-10-28 08:28:19–08:28:56 UTC，从远端 [a1dbv `9e15026`](https://github.com/dbvv1/a1dbv/commit/9e15026e28fb16396e8c0005b1a61ba8000f9a2b) 取回此包，在同一云电脑的新目录、独立 Git 对象库中实际恢复，耗时 36.445 秒。10 项包内校验通过；两个完整候选树、五个变更文件 blob 和四个复现文件均一致。原候选 commit、工作区依赖和生成文件不是恢复输入；这不是独立机器或实际重置后的验收。
 - 归档性质更正：`9e15026` 提交说明把四个复现文件统称为 ignored；实际仅 Qwen 的三个文件原被 Git 忽略，Goose 的基线复现文件原为 untracked（未跟踪、未被忽略）。四个文件的包内内容与恢复位置不变。
@@ -100,6 +100,27 @@ GOOSE_DISABLE_KEYRING=1 cargo test -p goose --test litellm_vision --locked -- --
 - 恢复仍依赖上游基线可取得、此包已另存到持久位置；仅在临时电脑里生成本目录或 commit 不能抵御该电脑丢失。依赖、工具链与运行环境另行恢复，离线完整备份仍缺。
 
 来源：固定基线 [QwenLM/qwen-code](https://github.com/QwenLM/qwen-code/tree/127c2ab9048839c64b806e58e6d7329cbb2d9a8a)、[aaif-goose/goose](https://github.com/aaif-goose/goose/tree/8a16788137c8af25f9d6d17ee87bbedb53ea9325)及原本地候选；源码与恢复核实：2026-10-28。issue 链接只标识来源，不表示重新核查了当前状态。
+
+## Qwen 2026-10-30 固定基线补验
+
+**旧候选的 CLI 构建和类型检查现已补验通过；完整测试仍卡在环境的 Unix socket 权限。** 在上游 `3a4a07736299dc2cfa002346dbc4eaf8fd519625` 上复用原补丁，三个变更文件的字节与原候选完全一致，保全为本地候选 `3061743ae5943b770c1c3e530a819de44a5240e5`。上面的恢复包仍固定旧基线和原候选树，没有被新基线悄悄替换。
+
+| 检查 | 该固定基线的实测结果 |
+|---|---|
+| 原完整 `npm run build` | 通过，包含 CLI；pnpm 工作区并发设为 1 |
+| 格式化／`lint:ci` | 通过；格式化用 `npm run format -- --parallel-workers 1` |
+| 原完整 `npm run typecheck` | 通过，包含 integration；设置 `NODE_OPTIONS=--max-old-space-size=6144` |
+| 受影响单元测试 | core 的 client、status、manager、transport-pool、v2 五文件共 362 项；CLI reconnect／list 两文件共 47 项，均通过、无跳过，含新增 14 项回归 |
+| `check:serve-fast-path-bundle` | 原命令通过，完成重新构建、bundle 和静态依赖闭包检查 |
+| 原完整 `test:ci` | 未通过：ACP 2,861 项与 audio-capture 2 项通过后，browser-use 的临时 Unix socket 创建返回 `listen EPERM`；发现后中断，退出 130，未换路径或传输重试 |
+
+本轮使用 Node 24.22.1、pnpm 11.24.0 和原锁文件；pnpm 11 的工作区并发变量是 `pnpm_config_workspace_concurrency=1`，旧 `npm_config_` 前缀在本轮读回为未设置。测试使用仓库 PR 策略 `CI=true`（不收覆盖率），Vitest 原有 `VITEST_MAX_FORKS`／`MIN_FORKS`／`MAX_THREADS`／`MIN_THREADS` 均设为 1。原样 `preflight` 先在格式化默认并行度下退出 137；默认约 2 GiB 堆的 CLI typecheck 也曾 OOM、退出 134。表中是保留原范围、调整资源后逐阶段补验的结果，**完整 preflight 尚未通过，仍未达 PR 门槛**。
+
+非作者按相同本地 stdio 入口对照基线与候选：实际源码和重新编译的 core 都把 duplicate 的真实原因保留到抛出信息、lastError 和 standalone 日志，真正 empty 与 unique 两工具控制不变。独审核了错误字段的下游、清理和部分成功路径，以及上述运行证据；尚无完整 CLI／Unity／模型或用户本机验收。
+
+**合入前先看另一作者的 [#15757](https://github.com/QwenLM/qwen-code/pull/15757)。** 该 PR 拟丢弃重名组、保留唯一工具；本候选的 `create/create/inspect` 用例则按该固定基线预期报错。即使文本能干净合并，测试语义也不能直接叠加：保留其唯一工具／分页策略，再用失败的 `tools/list` 与确实仍会失败的非重名转换验证错误保留，并更新 duplicate 说明。
+
+来源与核实：上游 [固定基线](https://github.com/QwenLM/qwen-code/tree/3a4a07736299dc2cfa002346dbc4eaf8fd519625)、[#15741](https://github.com/QwenLM/qwen-code/issues/15741) 及 #15757 的作者说明；该固定基线实测、非作者代码与证据复核：2026-10-30。源码已做含完整 Git 历史的云端本地 bundle，并在同一云电脑的新目录核恢复；完整源码 bundle 仍仅保存在云端本地，依赖、工具链和运行环境须另行恢复。
 
 ## Goose 旧候选已被上游替代
 
