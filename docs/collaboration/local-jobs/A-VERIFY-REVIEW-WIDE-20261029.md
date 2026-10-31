@@ -1,7 +1,7 @@
 # A-VERIFY-REVIEW-WIDE-20261029 · 验证与代码审查广扫
 id: A-VERIFY-REVIEW-WIDE-20261029
 owner: dot-A
-status: running
+status: cancelled
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: b5f8666bec70933196c1286995afd386a6a935d9
@@ -36,5 +36,4 @@ result_branch: relay/a-verify-review-wide-20261029
 
 ## 当前结果
 
-- 本机接收端连续 2 次未完成第 1 个单元：本机模型调用没有返回有效结果（worker_exited_without_result）。负责人确认任务可以执行后改回 ready，接收端会重新领取。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+本单元已达到用户要求的两小时上限，尚无正式回传的 sources.md 或结束回执；现按原取消协议请求停止本卡自有调用并保留已有任务输出。cancelled 仅表示停止请求，不证明进程已退出；不改接收器超时、不重派、不公开原始日志，实际退出核实后再由负责人决定是否在原卡收窄接续。其他任务按各自时限继续。
