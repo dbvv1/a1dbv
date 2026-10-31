@@ -4,6 +4,16 @@
 
 ## 待处理
 
+### 2026-10-31：AGENT-CONFIG 已回线索的核源与取舍
+
+先看两个真实项目的维护机制：**Zeppelin 按完整指令链减重，Next.js 将生成内容与团队正文分开管理**。本轮只核已返回目录中的少量线索，未把全目录接收为已核成果；SKILL-MCP、MULTIAGENT-LONG、VERIFY-REVIEW 尚无正式回传、可接收的来源产物，下面的四领域补充仍等各卡结果回来后去重合并，不重开采集。
+
+- **累计预算看整链，不看每份文件是否合格。** Zeppelin 已把架构、通信与 E2E 详情移到 `.agents/` 引用页，加载入口留下必要规则与按需阅读指向；本轮按固定源码复算最长根→E2E 链为 **29,026 UTF-8 bytes**（文件内容之和，未计加载器分隔符）。这是本仓已有 32 KiB 说明的实际采用样本，不是新的预算发现；可供长指令仓库试用，尚未运行 Codex 验证遵守效果。依据：[已合入 PR #5531](https://github.com/apache/zeppelin/pull/5531)、[固定改动 a46011e9](https://github.com/apache/zeppelin/commit/a46011e93e41d899a180644ee01fd226d3fc71bf)，合入 2026-10-05，核实 2026-10-31。
+- **生成器只拥有托管块，团队保留块外正文。** Next.js 已将自动维护入口统一到 AGENTS.md；固定生成器只替换标记块，保留前后正文，没有标记时追加。这比人工同步两份说明更值得借鉴，但项目删除 CLAUDE 兼容入口的决定不能替其他环境证明加载已生效；本仓仍沿用[共享指令页](../decisions/instruction-files.md)的实读确认。依据：[已合入 PR #99043](https://github.com/vercel/next.js/pull/99043)、[固定生成器 L252–292](https://github.com/vercel/next.js/blob/43f54d52f8092499d2e9b57e93651129cce5f0d3/packages/next/src/server/lib/generate-agent-files.ts#L252-L292)，合入 2026-09-22，核实 2026-10-31；本轮未运行生成器。
+- **Claude 的旧 Bash-first 报告要按版本和命令形态读。** 官方 changelog 已记录 2.1.288 的 Edit/Write 加载修复及 2.1.293 的单文件 Bash 读取修复，不能沿用“只有 Read 能加载”。#90450 后续仍有复杂 Bash 的缺口自报；#92271 是报告者自行关闭，不是厂商修复证明。规则加载与匹配工具名的 Hook 是不同机制，加载修复不能证明 Hook 已覆盖所有文件操作。依据：[固定 CHANGELOG](https://github.com/anthropics/claude-code/blob/d4dfed4e1c578cfea8bd6e64873e4f5e5b7e36f0/CHANGELOG.md)、[原报告及后续 #90450](https://github.com/anthropics/claude-code/issues/90450)、[#92271](https://github.com/anthropics/claude-code/issues/92271)，核实 2026-10-31；未独立复现复杂命令。
+- **Skill 的参考文件也可能被客户端当全局规则加载。** Cursor 官方支持人员确认，Skill 目录中的 AGENTS.md 会自动应用，符号链接还会重复带入；建议将仅供 Skill 引用的文件改为 REFERENCE.md 并同步 SKILL.md。另一建议 `.cursorignore` 可能同时阻碍 Skill 读取，不宜盲用。公开报告环境是 Cursor 3.27.14／macOS，尚无本轮独立复现或已发版修复证据。依据：[原帖](https://forum.cursor.com/t/176473)、[10-28 官方回复](https://forum.cursor.com/t/176473/8)，核实 2026-10-31。
+- **两种静态检查只适合补盲点，不能替实际加载和命令试跑。** `agents-md-lint` v0.1.0 能核路径和首个可执行程序，但不执行命令、也不验证参数；`dropped` 固定版逐文件对照静态字节上限，不重建 Codex 的根→cwd 累计链，也不读取项目预算配置。后者全部通过仍可能漏掉上面的整链超限。两项均未试用，先保留为检查器候选，不加入默认门禁。依据：[agents-md-lint 固定检查实现](https://github.com/openintelligence-labs/agents-md-lint/blob/9f852cf5b970cd9f283a61ef4ae6308cb4aeb047/src/agents_md_lint/check.py#L130-L155)、[命令提取](https://github.com/openintelligence-labs/agents-md-lint/blob/9f852cf5b970cd9f283a61ef4ae6308cb4aeb047/src/agents_md_lint/refs.py#L132-L174)、[dropped 逐文件循环](https://github.com/phrypy/dropped/blob/06536a1ee332f14073df87fdd0a628a61c6ebf5c/main.go#L73-L117)、[静态限额](https://github.com/phrypy/dropped/blob/06536a1ee332f14073df87fdd0a628a61c6ebf5c/limits.toml#L12-L20)，核实 2026-10-31。
+
 ### 2026-10-30：四领域云端来源补充（供自然续接与接收时参考）
 
 这份材料不改四张广扫卡的状态、范围或已启动输入，也不另派任务。仅后续 fetch 并实际读取时可见；当前调用是否已读，须由结果引用或回执确认。未被本机自然续接采用的，云端接收结果时补核，不为读材料重跑整轮。两张已取消旧卡的未覆盖来源仍[待纳入 MULTIAGENT-LONG](local-jobs/A-PARALLEL-REVIEW-SOURCES-20261028.md)，其 [OpenCode 恢复调查](local-jobs/A-RESUME-CONTRACT-SOURCES-20261028.md)同样保留待办，本节不替代任务规格更新。
