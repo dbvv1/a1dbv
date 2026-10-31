@@ -2,6 +2,8 @@
 
 **这份小包保存两份未发布候选的差量与四个复现文件；环境重置后，只要固定上游基线仍可取得，就能重建相同源码树。** 它沿用 [opensrc 补丁](../opensrc-ref-integrity/README.md)的分发形式，不包含上游完整源码、Git 历史、依赖、工具链或构建结果，**不是完整离线备份，也不单独满足运行细则 §3.1 的完整源码保全要求**。
 
+先看 [Goose 当前状态](#goose-旧候选已被上游替代)；下面的命令仍恢复原历史源码。
+
 | 候选 | 保存的变化 | 固定输入与原候选 |
 |---|---|---|
 | Qwen Code [#15741](https://github.com/QwenLM/qwen-code/issues/15741) | MCP 工具发现失败时保留真实原因，避免被空服务器提示覆盖；含回归测试和说明 | 基线 `127c2ab9048839c64b806e58e6d7329cbb2d9a8a`；原本地提交 `609941748680555ce2af949ce8085345997de0d5` |
@@ -98,6 +100,14 @@ GOOSE_DISABLE_KEYRING=1 cargo test -p goose --test litellm_vision --locked -- --
 - 恢复仍依赖上游基线可取得、此包已另存到持久位置；仅在临时电脑里生成本目录或 commit 不能抵御该电脑丢失。依赖、工具链与运行环境另行恢复，离线完整备份仍缺。
 
 来源：固定基线 [QwenLM/qwen-code](https://github.com/QwenLM/qwen-code/tree/127c2ab9048839c64b806e58e6d7329cbb2d9a8a)、[aaif-goose/goose](https://github.com/aaif-goose/goose/tree/8a16788137c8af25f9d6d17ee87bbedb53ea9325)及原本地候选；源码与恢复核实：2026-10-28。issue 链接只标识来源，不表示重新核查了当前状态。
+
+## Goose 旧候选已被上游替代
+
+**保留本包作为历史恢复与回归样例，不再提交旧实现。** 另一作者的 [#13239](https://github.com/aaif-goose/goose/pull/13239) 已于 2026-10-30 08:48 UTC 合入 `f131ff7e9bba223686b1d5e2243d6c1e07685097`，并完成 #13158。固定主干 `090dedb7` 已覆盖旧候选的核心语义：解析布尔元数据、只补未指定值、精确匹配别名、先补配置再格式化；共用 helper 与旧补丁不同，不能再直接叠加旧 patch。
+
+**当前最新正式版 v1.57.0 尚未包含修复。** 该标签的 provider Git blob 仍为旧基线的 `a9263079b9f73c0a04fbc2945a4069cfee603b7a`；读者应核实际安装版本是否包含合入提交。旧候选的 18 项 HTTP 通过仍只属于原固定源码，本轮只读核上游源码与测试，未编译或运行新主干、真实 LiteLLM／模型。原 patch、manifest、基线与复现文件全部保留不变。
+
+依据与核实：[合并记录](https://github.com/aaif-goose/goose/pull/13239)、[当前固定 provider](https://github.com/aaif-goose/goose/blob/090dedb7625c8aadb9bb05d68028fd00f36b429e/crates/goose/src/providers/litellm.rs)、[正式版 v1.57.0](https://github.com/aaif-goose/goose/releases/tag/v1.57.0)及[标签源码](https://github.com/aaif-goose/goose/blob/v1.57.0/crates/goose/src/providers/litellm.rs)；2026-10-30。更完整的[原控制与当前取舍](../../docs/collaboration/inbox.md#goose-litellm-vision-payload)沿原入口阅读。
 
 ## 许可与修改通知
 
