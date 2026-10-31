@@ -296,6 +296,8 @@ Agent沿同名适配器的真实声明追到hook身份分流，读者需核实�
 
 **清 lint 先核真实调用契约。** 无 `await` 仍可能需要异步上下文／Promise 拒绝处理：有需要则保留、说明并窄豁免，否则改同步并验证，不机械删 `async` 或凑等待。Ruff／ESLint 反例见[契约边界](research/2026-10-12-development-conditions.md#清-lint保留异步调用契约还是删除-async)。豁免不能替代行为验证。
 
+**实测反例**：Biome 2.6.4 的 safe-fix 在显式针对 cubing.js vendor 的隔离配置中成功退出，却让原生导入测试与公共 4×4 API 都报构造错误；原项目默认排除该目录。保留项目已有单行 suppression 后，两入口恢复，但其余改写未获全面安全证明。见 [2026-10-31 六场消费者对照](../experiments/biome-safe-fix/README.md)；不改变本节默认做法。
+
 **局限**：GitClear 重复／移动信号只提示抽查复用／结构，不设配额或推断当前 Agent 复制倾向／维护成本；正确性看本项目行为对照。见 [09](09-review-and-quality.md)。
 
 **依据**：[经验] 本节重构默认；[社区／一手；经验] 清 lint 与异步契约边界；[一手：厂商材料；研究] GitClear 重复／移动信号；核实 2026-10-25。

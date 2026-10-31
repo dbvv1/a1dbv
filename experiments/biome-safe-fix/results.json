@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "scope": "Observed consumer results, not an accepted answer-page procedure or a complete fix.",
+  "public_projection": {
+    "path_replacements": [
+      "Trial directory replaced by <trial>.",
+      "Node executable location replaced by <node>."
+    ],
+    "output_policy": "Exit codes, commands, timestamps, stdout/stderr and hashes otherwise retained in full for the final six consumer runs and two lint commands.",
+    "raw_consumer_results_sha256": "05377bb58fce0269dd254d12b52d531a47cf2d7a5a4eea758e3320d291331097",
+    "raw_environment_receipt_sha256": "547e343da607951d5993b192d3258bfa69598da2b8c698f5124a02935d1e18f9",
+    "environment_projection": "Omitted npm signatures/attestations/fileCount/unpackedSize; all tested versions, package integrity values, binary hash and tree state retained."
+  },
+  "source": {
+    "issue": "https://github.com/biomejs/biome/issues/12372",
+    "cubing_base": "559907da3f67ac4e516767c475ee7d7612e7ef57",
+    "solver_path": "src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts",
+    "native_test_path": "script/test/src-cubing/import-all.ts",
+    "suppression_source_commit": "5133dc49698e9911466cebb8bb1826c73fd4e5ba",
+    "original_project_excludes_target_vendor_directory": true,
+    "pr_12729": {
+      "checked_date_utc": "2026-10-31",
+      "state": "open",
+      "merged": false,
+      "head": "3c55c3d137bc973c5b3d6e823730f08b24672a02",
+      "implementation_executed": false
+    }
+  },
+  "environment": {
+    "created_at_utc": "2026-10-31T16:14:28.810137+00:00",
+    "node": "v24.22.1",
+    "platform": "Linux x86_64",
+    "cubing_base": "559907da3f67ac4e516767c475ee7d7612e7ef57",
+    "biome_version": "2.6.4",
+    "biome_dist": {
+      "tarball": "https://registry.npmjs.org/@biomejs/biome/-/biome-2.6.4.tgz",
+      "integrity": "sha512-8sKKwaNW4ot22awZ3lBjwWLHnUFXgXnrBPYS2gNlBAXRbDC++7kqjK2H7dR/FgCDtPvO1xfKpgEhJkGxAKYkxA==",
+      "shasum": "4f190d1cfa3003a6649db9197b34e47937420179"
+    },
+    "biome_native_sha256": "eb9afd5af3c04bd242be6db39fb812a025b42469af8c6a621535036dbd9b0c63",
+    "BIOME_BINARY_override_present": false,
+    "consumer_dependencies": {
+      "@cubing/lazy-promise": {
+        "version": "0.1.3",
+        "matches_source_bun_lock": true,
+        "integrity": "sha512-WVnnVWnmX2W4GvBTk496JP4EHi9JLxtVT2WpdbgRuUN8OXpEu5AMCY1AJPj2NTeiUe/hf8bit8Y6QAyXjMorZw=="
+      },
+      "@cubing/comlink-everywhere": {
+        "version": "0.1.3",
+        "matches_source_bun_lock": true,
+        "integrity": "sha512-YeKXMzP2BChbKfwI6EXKU/KrfQ3arV+lFDdJTwZhl/rcGTza31w7KjYfMYKIuXlC43l18YNYJsXmiscnFemINQ=="
+      },
+      "random-uint-below": {
+        "version": "3.3.0",
+        "matches_source_bun_lock": true,
+        "integrity": "sha512-5x3lft1bn5gev9qA9iVFcmd0+t10j3eDl/QKB56T/3v/bdrM7WsfO2D0rb1JYcQdkcV0/Bs5iydgQmkTE6rczA=="
+      },
+      "three": {
+        "version": "0.170.0",
+        "matches_source_bun_lock": true,
+        "integrity": "sha512-FQK+LEpYc0fBD+J8g6oSEyyNzjp+Q7Ks1C568WWaoMRLW+TkNNWmenWeGgJjV105Gd+p/2ql1ZcjYvNiPZBhuQ=="
+      },
+      "path-class": {
+        "version": "0.16.0",
+        "matches_source_bun_lock": true,
+        "integrity": "sha512-w3gcQQfzUIYPcYNWB/wpwjD8rATrdib/wTw4ZpQsN6JrCOm7Evt+dtmuxf2BqGnvoSEIFGoAy4qe3wwODx8hdQ=="
+      }
+    },
+    "package_lock_sha256": "c6b3a538ed13ffffc3abfce7429b945c2e153ad261123627a8dab764a04d5df3",
+    "worktrees": {
+      "source": {
+        "head": "559907da3f67ac4e516767c475ee7d7612e7ef57",
+        "changed_tracked_files": [],
+        "diff_check_exit": 0
+      },
+      "fixed": {
+        "head": "559907da3f67ac4e516767c475ee7d7612e7ef57",
+        "changed_tracked_files": [
+          "src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts"
+        ],
+        "diff_check_exit": 0
+      },
+      "protected": {
+        "head": "559907da3f67ac4e516767c475ee7d7612e7ef57",
+        "changed_tracked_files": [
+          "src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts"
+        ],
+        "diff_check_exit": 0
+      }
+    },
+    "unused_installed_package": "esbuild 0.28.1 was prepared but never used; actual consumers used native Node TypeScript support"
+  },
+  "isolated_biome_config": {
+    "vcs": {
+      "enabled": false
+    },
+    "linter": {
+      "enabled": true,
+      "rules": {
+        "recommended": false,
+        "complexity": {
+          "useArrowFunction": "warn"
+        }
+      }
+    },
+    "formatter": {
+      "enabled": false
+    },
+    "assist": {
+      "enabled": false
+    }
+  },
+  "public_api_consumer_source": "\nimport assert from \"node:assert/strict\";\nimport {resolve} from \"node:path\";\nimport {pathToFileURL} from \"node:url\";\nconst {randomScrambleForEvent} = await import(pathToFileURL(resolve(\"src/cubing/scramble/index.ts\")));\nconst {Alg} = await import(pathToFileURL(resolve(\"src/cubing/alg/index.ts\")));\nconst alg = await randomScrambleForEvent(\"444\");\nconst text = alg.toString();\nassert(text.trim().length > 0);\nassert.equal(Alg.fromString(text).toString(), text);\nconsole.log(JSON.stringify({event: \"444\", algorithm: text, leafMoves: [...alg.experimentalLeafMoves()].length}));\n",
+  "conditions": {
+    "source": {
+      "edit": "none",
+      "biome_transform_sites": 0
+    },
+    "fixed": {
+      "edit": "Biome useArrowFunction --write; no --unsafe",
+      "biome_transform_sites": 4
+    },
+    "protected": {
+      "edit": "Added only the current upstream suppression before defineSeed seed constructor; then same Biome command",
+      "biome_transform_sites": 3,
+      "suppression": "// biome-ignore lint/complexity/useArrowFunction: https://github.com/biomejs/biome/issues/12372"
+    }
+  },
+  "lint_runs": [
+    {
+      "recorded_at_utc": "2026-10-31T16:16:06.394384+00:00",
+      "note": "argv retained from the executed tool command; lint start time was not separately instrumented",
+      "kind": "fixed",
+      "cwd": "<trial>/fixed",
+      "args": [
+        "node",
+        "<trial>/packages/node_modules/@biomejs/biome/bin/biome",
+        "lint",
+        "--write",
+        "--only=complexity/useArrowFunction",
+        "--config-path=<trial>/config",
+        "src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "<trial>/config/biome.json:1:35 deserialize  DEPRECATED  ━━━━━━━━━━\n\n  i The use of the recommended field has been deprecated, and will removed in the next major version of Biome. Use preset instead.\n  \n  > 1 │ {\"vcs\":{\"enabled\":false},\"linter\":{\"enabled\":true,\"rules\":{\"recommended\":false,\"complexity\":{\"useArrowFunction\":\"warn\"}}},\"formatter\":{\"enabled\":false},\"assist\":{\"enabled\":false}}\n      │                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    2 │ \n  \n  i Migrate the configuration with the proper command\n  \n  $ biome migrate\n  \n\nChecked 1 file in 26ms. Fixed 1 file.\n"
+    },
+    {
+      "recorded_at_utc": "2026-10-31T16:16:06.394469+00:00",
+      "note": "argv retained from the executed tool command; lint start time was not separately instrumented",
+      "kind": "protected",
+      "cwd": "<trial>/protected",
+      "args": [
+        "node",
+        "<trial>/packages/node_modules/@biomejs/biome/bin/biome",
+        "lint",
+        "--write",
+        "--only=complexity/useArrowFunction",
+        "--config-path=<trial>/config",
+        "src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "<trial>/config/biome.json:1:35 deserialize  DEPRECATED  ━━━━━━━━━━\n\n  i The use of the recommended field has been deprecated, and will removed in the next major version of Biome. Use preset instead.\n  \n  > 1 │ {\"vcs\":{\"enabled\":false},\"linter\":{\"enabled\":true,\"rules\":{\"recommended\":false,\"complexity\":{\"useArrowFunction\":\"warn\"}}},\"formatter\":{\"enabled\":false},\"assist\":{\"enabled\":false}}\n      │                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    2 │ \n  \n  i Migrate the configuration with the proper command\n  \n  $ biome migrate\n  \n\nChecked 1 file in 23ms. Fixed 1 file.\n"
+    }
+  ],
+  "consumer_runs": [
+    {
+      "kind": "source",
+      "consumer": "native-imports",
+      "started_at_utc": "2026-10-31T16:12:06.408530+00:00",
+      "args": [
+        "<node>",
+        "script/test/src-cubing/import-all.ts"
+      ],
+      "cwd": "<trial>/source",
+      "exit_code": 0,
+      "stdout": "Number of runtime exports for `./puzzle-geometry/index.ts`: 11\nNumber of runtime exports for `./puzzles/implementations/dynamic/unofficial/puzzles-dynamic-unofficial.ts`: 7\nNumber of runtime exports for `./twisty/heavy-code-imports/dynamic-entries/twisty-dynamic-3d.ts`: 13\nNumber of runtime exports for `./search/index.ts`: 9\nNumber of runtime exports for `./alg/index.ts`: 19\nNumber of runtime exports for `./puzzles/index.ts`: 7\nNumber of runtime exports for `./stream/index.ts`: 3\nNumber of runtime exports for `./puzzles/implementations/dynamic/3x3x3/puzzles-dynamic-3x3x3.ts`: 3\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/3x3x3/search-dynamic-solve-3x3x3.ts`: 2\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/kilominx/search-dynamic-solve-kilominx.ts`: 1\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/4x4x4/search-dynamic-solve-4x4x4.ts`: 2\nNumber of runtime exports for `./puzzles/implementations/dynamic/side-events/puzzles-dynamic-side-events.ts`: 12\nNumber of runtime exports for `./puzzles/implementations/dynamic/megaminx/puzzles-dynamic-megaminx.ts`: 1\nNumber of runtime exports for `./scramble/index.ts`: 2\nNumber of runtime exports for `./kpuzzle/index.ts`: 3\nNumber of runtime exports for `./protocol/index.ts`: 6\nNumber of runtime exports for `./puzzles/implementations/dynamic/4x4x4/puzzles-dynamic-4x4x4.ts`: 1\nNumber of runtime exports for `./bluetooth/index.ts`: 9\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/sq1/search-dynamic-solve-sq1.ts`: 1\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/fto/search-dynamic-solve-fto.ts`: 1\nNumber of runtime exports for `./twisty/index.ts`: 10\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/sgs-unofficial/search-dynamic-sgs-unofficial.ts`: 2\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/sgs-side-events/search-dynamic-sgs-side-events.ts`: 8\nNumber of runtime exports for `./notation/index.ts`: 6\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/master_tetraminx/search-dynamic-solve-master_tetraminx.ts`: 1\nAlg { Symbol(startCharIndex): 0, Symbol(endCharIndex): 30 } F2 R' F U2 F' U' L2 F2 U' L U'\n",
+      "stderr": "wasmRandomScrambleForEvent(\"222\"): 32ms\n",
+      "solver_sha256": "abc83ade24f55208d815405acdff282d03a1b2680975df49668108e80933bba8",
+      "native_import_test_sha256": "76935d287a41b3078ae3494a8ef43a86714bd8e0c662357ba849406515aa4b94",
+      "runtime_import_lines": 25
+    },
+    {
+      "kind": "source",
+      "consumer": "public-444",
+      "started_at_utc": "2026-10-31T16:12:06.984398+00:00",
+      "args": [
+        "<node>",
+        "<trial>/public444-consumer.mjs"
+      ],
+      "cwd": "<trial>/source",
+      "exit_code": 0,
+      "stdout": "{\"event\":\"444\",\"algorithm\":\"L2 B2 L2 U B2 L2 D B2 D F2 D2 F L' U R D2 L2 B' F R' Fw2 L Fw2 D2 L F' Uw2 B' L2 B L' U2 R Uw R2 F U' Rw' D' Rw' Fw U2 Rw2 B2 U'\",\"leafMoves\":45}\n",
+      "stderr": "random444Scramble: 2132ms\n",
+      "solver_sha256": "abc83ade24f55208d815405acdff282d03a1b2680975df49668108e80933bba8",
+      "native_import_test_sha256": "76935d287a41b3078ae3494a8ef43a86714bd8e0c662357ba849406515aa4b94",
+      "runtime_import_lines": 0
+    },
+    {
+      "kind": "fixed",
+      "consumer": "native-imports",
+      "started_at_utc": "2026-10-31T16:12:09.441120+00:00",
+      "args": [
+        "<node>",
+        "script/test/src-cubing/import-all.ts"
+      ],
+      "cwd": "<trial>/fixed",
+      "exit_code": 1,
+      "stdout": "Number of runtime exports for `./scramble/index.ts`: 2\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/master_tetraminx/search-dynamic-solve-master_tetraminx.ts`: 1\nNumber of runtime exports for `./puzzle-geometry/index.ts`: 11\nNumber of runtime exports for `./protocol/index.ts`: 6\nNumber of runtime exports for `./search/index.ts`: 9\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/fto/search-dynamic-solve-fto.ts`: 1\nNumber of runtime exports for `./puzzles/implementations/dynamic/megaminx/puzzles-dynamic-megaminx.ts`: 1\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/sq1/search-dynamic-solve-sq1.ts`: 1\nNumber of runtime exports for `./puzzles/implementations/dynamic/4x4x4/puzzles-dynamic-4x4x4.ts`: 1\nNumber of runtime exports for `./puzzles/implementations/dynamic/side-events/puzzles-dynamic-side-events.ts`: 12\nNumber of runtime exports for `./puzzles/index.ts`: 7\nNumber of runtime exports for `./puzzles/implementations/dynamic/3x3x3/puzzles-dynamic-3x3x3.ts`: 3\nNumber of runtime exports for `./alg/index.ts`: 19\nNumber of runtime exports for `./notation/index.ts`: 6\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/sgs-side-events/search-dynamic-sgs-side-events.ts`: 8\nNumber of runtime exports for `./stream/index.ts`: 3\nNumber of runtime exports for `./twisty/index.ts`: 10\n",
+      "stderr": "file://<trial>/fixed/src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts:33\n  return new seedTable[id]();\n         ^\n\nTypeError: seedTable[id] is not a constructor\n    at newSeed (file://<trial>/fixed/src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts:33:10)\n    at defineSeed (file://<trial>/fixed/src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts:47:47)\n    at file://<trial>/fixed/src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts:119:1\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async node:internal/modules/esm/loader:647:26\n    at async file://<trial>/fixed/script/test/src-cubing/import-all.ts:39:20\n\nNode.js v24.22.1\n",
+      "solver_sha256": "9d62f754d2276f857f55818abe96c09ea7101de9c47ff4289e72ee710a65b907",
+      "native_import_test_sha256": "76935d287a41b3078ae3494a8ef43a86714bd8e0c662357ba849406515aa4b94",
+      "runtime_import_lines": 17
+    },
+    {
+      "kind": "fixed",
+      "consumer": "public-444",
+      "started_at_utc": "2026-10-31T16:12:09.719516+00:00",
+      "args": [
+        "<node>",
+        "<trial>/public444-consumer.mjs"
+      ],
+      "cwd": "<trial>/fixed",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nError [TypeError]: seedTable[id] is not a constructor\n    at newSeed (file://<trial>/fixed/src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts:33:10)\n    at defineSeed (file://<trial>/fixed/src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts:47:47)\n    at file://<trial>/fixed/src/cubing/vendor/mit/cs0x7f/cstimer/src/js/scramble/444-solver.ts:119:1\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async random444Scramble (file://<trial>/fixed/src/cubing/search/inside/solve/puzzles/4x4x4.ts:17:11)\n    at async measurePerf (file://<trial>/fixed/src/cubing/search/inside/api.ts:68:5)\n\nNode.js v24.22.1\n",
+      "solver_sha256": "9d62f754d2276f857f55818abe96c09ea7101de9c47ff4289e72ee710a65b907",
+      "native_import_test_sha256": "76935d287a41b3078ae3494a8ef43a86714bd8e0c662357ba849406515aa4b94",
+      "runtime_import_lines": 0
+    },
+    {
+      "kind": "protected",
+      "consumer": "native-imports",
+      "started_at_utc": "2026-10-31T16:12:10.032935+00:00",
+      "args": [
+        "<node>",
+        "script/test/src-cubing/import-all.ts"
+      ],
+      "cwd": "<trial>/protected",
+      "exit_code": 0,
+      "stdout": "Number of runtime exports for `./search/inside/solve/puzzles/dynamic/sgs-unofficial/search-dynamic-sgs-unofficial.ts`: 2\nNumber of runtime exports for `./stream/index.ts`: 3\nNumber of runtime exports for `./puzzles/implementations/dynamic/unofficial/puzzles-dynamic-unofficial.ts`: 7\nNumber of runtime exports for `./scramble/index.ts`: 2\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/4x4x4/search-dynamic-solve-4x4x4.ts`: 2\nNumber of runtime exports for `./puzzles/implementations/dynamic/megaminx/puzzles-dynamic-megaminx.ts`: 1\nNumber of runtime exports for `./twisty/heavy-code-imports/dynamic-entries/twisty-dynamic-3d.ts`: 13\nNumber of runtime exports for `./twisty/index.ts`: 10\nNumber of runtime exports for `./puzzles/implementations/dynamic/3x3x3/puzzles-dynamic-3x3x3.ts`: 3\nNumber of runtime exports for `./puzzle-geometry/index.ts`: 11\nNumber of runtime exports for `./bluetooth/index.ts`: 9\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/3x3x3/search-dynamic-solve-3x3x3.ts`: 2\nNumber of runtime exports for `./puzzles/index.ts`: 7\nNumber of runtime exports for `./alg/index.ts`: 19\nNumber of runtime exports for `./puzzles/implementations/dynamic/4x4x4/puzzles-dynamic-4x4x4.ts`: 1\nNumber of runtime exports for `./notation/index.ts`: 6\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/sq1/search-dynamic-solve-sq1.ts`: 1\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/fto/search-dynamic-solve-fto.ts`: 1\nNumber of runtime exports for `./kpuzzle/index.ts`: 3\nNumber of runtime exports for `./search/index.ts`: 9\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/sgs-side-events/search-dynamic-sgs-side-events.ts`: 8\nNumber of runtime exports for `./protocol/index.ts`: 6\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/master_tetraminx/search-dynamic-solve-master_tetraminx.ts`: 1\nNumber of runtime exports for `./puzzles/implementations/dynamic/side-events/puzzles-dynamic-side-events.ts`: 12\nNumber of runtime exports for `./search/inside/solve/puzzles/dynamic/kilominx/search-dynamic-solve-kilominx.ts`: 1\nAlg { Symbol(startCharIndex): 0, Symbol(endCharIndex): 30 } L2 U' R' U F2 R2 F' L U' L' U2\n",
+      "stderr": "wasmRandomScrambleForEvent(\"222\"): 30ms\n",
+      "solver_sha256": "3b5ca4990d17e25563850f836189cceaad23f95131949a01a0f7aaf1a51ecd69",
+      "native_import_test_sha256": "76935d287a41b3078ae3494a8ef43a86714bd8e0c662357ba849406515aa4b94",
+      "runtime_import_lines": 25
+    },
+    {
+      "kind": "protected",
+      "consumer": "public-444",
+      "started_at_utc": "2026-10-31T16:12:10.588842+00:00",
+      "args": [
+        "<node>",
+        "<trial>/public444-consumer.mjs"
+      ],
+      "cwd": "<trial>/protected",
+      "exit_code": 0,
+      "stdout": "{\"event\":\"444\",\"algorithm\":\"U' D L2 F R2 B2 R U' D2 L2 B2 U2 B' D2 B' R2 L2 F D2 Uw2 Fw2 D R Uw2 D' L2 F2 U Fw2 Rw2 Fw F' D F R Fw2 Rw Fw Rw' F' D' Rw'\",\"leafMoves\":42}\n",
+      "stderr": "random444Scramble: 1890ms\n",
+      "solver_sha256": "3b5ca4990d17e25563850f836189cceaad23f95131949a01a0f7aaf1a51ecd69",
+      "native_import_test_sha256": "76935d287a41b3078ae3494a8ef43a86714bd8e0c662357ba849406515aa4b94",
+      "runtime_import_lines": 0
+    }
+  ],
+  "excluded_setup_attempts": [
+    {
+      "failure": "ERR_MODULE_NOT_FOUND: path-class",
+      "interpretation": "Initial test ran before dependency preparation completed. Not a product failure; final runs use lock-matched path-class 0.16.0."
+    },
+    {
+      "failure": "ERR_INPUT_TYPE_NOT_ALLOWED",
+      "interpretation": "Initial public API wrapper used node --input-type=module -e; workers inherited this flag. All three conditions were affected. Final six runs use the normal .mjs consumer file."
+    }
+  ],
+  "limits": [
+    "Two actual consumer entry points, not the full project test suite.",
+    "Original vendor exclusion retained; this was an explicitly targeted isolated configuration, not the default repository lint.",
+    "One 444 random sample per successful condition; no claim about distribution, full solver correctness, performance, or browser behavior.",
+    "Three other rewrites remain in protected; their complete safety is not established.",
+    "No model or local non-author answer-page task was run."
+  ]
+}
