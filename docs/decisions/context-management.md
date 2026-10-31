@@ -43,7 +43,7 @@ git hash-object --no-filters received-page.md
 | RTK 的 uv 失败只剩 warn，却没有恢复提示 | 先核程序日志、产物与操作状态；短输出可能根本没留档。下一次确需执行时用原生输出，已用自动改写者可[只排除外层 uv](../03-context-engineering.md#rtk-uv-short-failure)，不盲目重跑 |
 | Repomix 分块包每次重打都变大 | 核包内是否收入自己的旧编号分片；正式版 1.18.1 有这条回流路径。用干净输入并把产物放树外，已有旧分片先确认再精确排除；[CLI 实跑与版本选择](../../experiments/repomix-split-input/README.md) |
 | 无关新任务，或纠正后仍回到旧方案 | 保存下节检查点，用当前目标和已排除方案写新提示，开新会话 |
-| 读图后占用突增、提前压缩 | 先记客户端版本、模型和触发输入；Cline 相符症状核是否含 #14520 修复（4.1.24 已含）。只对照同一请求，按提供方定义核客户端估算与服务端 input／缓存口径；配不齐就记未知；费用查账单，不凭估算调低阈值 |
+| 读图后占用突增、提前压缩 | 先分扩展／CLI 并记版本、模型和触发输入；Cline 相符症状核是否含 #14520 修复（扩展 4.1.24 已含）。只对照同一请求，按提供方定义核客户端估算与服务端 input／缓存口径；配不齐就记未知；费用查账单，不凭估算调低阈值 |
 | 同轮改过规则，压缩后又读旧内容 | Claude Code 2.1.311 修复了 `CLAUDE.md`／`MEMORY.md` 旧副本路径；旧版显式重读，含修复版在下次自然压缩后核新内容，不降低阈值造试验 |
 | 压缩报错或断流，旧会话无法继续 | 保留原会话与工作区；先核 diff、在途操作和已返回结果，再接剩余步骤，别因缺完成回复重做写入 |
 
@@ -55,7 +55,7 @@ git hash-object --no-filters received-page.md
 
 **重载依据**：[Claude 旧副本修复](https://github.com/anthropics/claude-code/blob/08c6a4f5121ae140d3c1b5c96e3e5ae53587b54b/CHANGELOG.md#L12)与[旧版反馈](https://github.com/anthropics/claude-code/issues/92949#issuecomment-6119121589)，核实 2026-10-27、未实跑；[AOCI 全量重读核查](../research/2026-10-26-context-reload-scope.md)与[断流反馈](https://github.com/openai/codex/issues/53653)，核实 2026-10-26、未复现客户端故障。
 
-**图片估算依据**：[Cline 修复](https://github.com/cline/cline/pull/14520)、[4.1.24 发布](https://github.com/cline/cline/releases/tag/v4.1.24)、[同请求与缓存口径](https://github.com/cline/cline/issues/14979)、[本仓固定源码离线对照](../collaboration/inbox.md#cline-image-token-estimate)，核实 2026-10-28。v4.1.20／v4.1.24 相同文本加一张 192×128 合成 PNG 的请求估算为 32,926／1,662；正常路径的 1,600 token／图是内部定额，文本仍按字符估算。真实压缩时机、恢复质量及服务端用量待验。
+**图片估算依据**：[Cline 修复](https://github.com/cline/cline/pull/14520)、[4.1.24 发布](https://github.com/cline/cline/releases/tag/v4.1.24)、[同请求与缓存口径](https://github.com/cline/cline/issues/14979)、[本仓固定源码离线对照](../collaboration/inbox.md#cline-image-token-estimate)，核实 2026-10-28。v4.1.20／v4.1.24 相同文本加一张 192×128 合成 PNG 的请求估算为 32,926／1,662；正常路径的 1,600 token／图是内部定额，文本仍按字符估算。真实压缩时机、恢复质量及服务端用量待验。10-31 补核[原使用者后续回执](https://github.com/cline/cline/issues/14979#issuecomment-6473972321)：旧扩展的 1.2–1.5 倍报告不能套到 CLI；CLI 3.0.73 两次自报约 1.08／1.04 倍，非同负载比较。
 
 ## CLI 命令：压缩、新开和恢复分开用
 
