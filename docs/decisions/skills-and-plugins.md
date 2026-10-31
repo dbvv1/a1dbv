@@ -24,6 +24,23 @@
 
 **依据**：[一手项目配置] [OpenAI Agents SDK](https://github.com/openai/openai-agents-python/blob/cd26bbbc52847845fde73b9952b51e62e2bcbdc0/AGENTS.md)、[Sentry JavaScript](https://github.com/getsentry/sentry-javascript/blob/c125a5da2e6b7d916a5880f65876cddfee96c56d/agents.toml)；2026-10-28 核实，这两套项目流程未在本仓试用。
 
+<a id="openspec-pi-discovery"></a>
+## Pi 与 Codex 共用 OpenSpec：保留生成文件，只限定 Pi 的加载
+
+**🧪 已同时配置 Pi 与 Codex、启动时出现 OpenSpec 同名 Skill 警告，在 Pi 的项目设置里只排除共享副本。** 保留 `.pi/skills` 的 Pi 版和 `.pi/prompts` 命令模板，`.agents/skills` 继续供其他客户端使用；两份都由 OpenSpec 更新。先确认它们是同一安装生成的副本，自定义过的同名内容须先比较取舍。
+
+将这一项合并到项目 `.pi/settings.json` 的既有 `skills` 数组，不覆盖其他设置：
+
+```json
+{
+  "skills": ["!**/.agents/skills/openspec-*/SKILL.md"]
+}
+```
+
+**重新加载后，同时核有效 Skill 与 `/opsx-*` prompts，不能只看警告消失。** OpenSpec 1.15.0／1.16.0＋Pi 1.4.0 的[实际生成、加载与更新](../../experiments/openspec-pi-discovery/README.md)均保留 6 个原生 Skill、6 个 prompts，冲突从 6 降为 0，更新后内容与设置不变。宽排除 `!skills/openspec-*` 却把两目录的 OpenSpec Skill 全排掉；仅装共享目标又不生成 Pi prompts。`disable-model-invocation` 只隐藏自动描述，冲突仍在。这里验证资源加载，未测模型采用或工作流收益；本页评级不变。
+
+**依据**：[真实使用者 #2180](https://github.com/Fission-AI/OpenSpec/issues/2180)、[维护者迁移计划](https://github.com/Fission-AI/OpenSpec/issues/2180#issuecomment-6535807358)、[Pi 资源配置](https://pi.dev/docs/latest/settings#resources)与[Skill 加载约定](https://pi.dev/docs/latest/skills)。本仓 Linux CLI／SDK 实跑及非作者独立复跑：2026-10-31；macOS 原报告与原生 Windows 未复现。此配置只适用于上述重复安装场景，不是通用禁用共享 Skills 的规则。
+
 ## 先定位实际依赖，再选文档或源码
 
 **✅ 查实际行为，从调用方追到已解析包、项目补丁和具体模块；查版本用法，再看官方文档或 Context7。** Zed 的 `reqwest` 实际是重命名 fork，Vite 也有依赖 alias／patch，同名版本不能替代实现定位。

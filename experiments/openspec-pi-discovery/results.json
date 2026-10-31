@@ -1,0 +1,597 @@
+{
+  "observed_utc_date": "2026-10-31",
+  "natural_report": "https://github.com/Fission-AI/OpenSpec/issues/2180",
+  "runtime": {
+    "node": "v24.22.1",
+    "npm": "11.9.0",
+    "platform": "Linux",
+    "pi_coding_agent": "1.4.0"
+  },
+  "scope": "Official npm packages, actual CLI generation/update and DefaultResourceLoader; no model, TUI, macOS or Windows run.",
+  "sources_read_not_built": {
+    "openspec": "27c0515724decc633818c735ee596481eec78a8b",
+    "pi": "35dfa757378bd7a8570670e99c2687bdd1039a06"
+  },
+  "probe_sha256": "735f65a8f9fd0d4e900b8c6ede3099d9ddfb3ff858555a9861f557bb40842a1d",
+  "installed_pi_modules_sha256": {
+    "resource-loader": "ad50235884ea6d5ee14cdae1efcfe6afef58b22b18ce574e81886d57ca9f4642",
+    "package-manager": "14176c5f6a8ba9df57fb2bae52eebb1823b3bd96453200be52978715308ee9eb",
+    "skills": "0e20ec500ed9783d5b01b5399e6600134fc3fdd10e6dc46c9113bc01565c9aa5"
+  },
+  "versions": {
+    "1.15.0": {
+      "cases": [
+        {
+          "case": "dual-baseline",
+          "skills": 6,
+          "collisions": 6,
+          "prompts": 6,
+          "automatic_descriptions": 6
+        },
+        {
+          "case": "after-missing-native-update",
+          "skills": 6,
+          "collisions": 6,
+          "prompts": 6,
+          "automatic_descriptions": 6
+        },
+        {
+          "case": "disable-native-model-invocation",
+          "skills": 6,
+          "collisions": 6,
+          "prompts": 6,
+          "automatic_descriptions": 0
+        },
+        {
+          "case": "overbroad-exclusion",
+          "skills": 0,
+          "collisions": 0,
+          "prompts": 6,
+          "automatic_descriptions": 0
+        },
+        {
+          "case": "narrow-shared-exclusion",
+          "skills": 6,
+          "collisions": 0,
+          "prompts": 6,
+          "automatic_descriptions": 6
+        },
+        {
+          "case": "narrow-after-update",
+          "skills": 6,
+          "collisions": 0,
+          "prompts": 6,
+          "automatic_descriptions": 6
+        },
+        {
+          "case": "narrow-with-unrelated-skill",
+          "skills": 7,
+          "collisions": 0,
+          "prompts": 6,
+          "automatic_descriptions": 7
+        },
+        {
+          "case": "shared-only",
+          "skills": 6,
+          "collisions": 0,
+          "prompts": 0,
+          "automatic_descriptions": 6
+        }
+      ],
+      "commands": [
+        {
+          "label": "git-init-dual",
+          "exit_code": 0
+        },
+        {
+          "label": "init-dual",
+          "exit_code": 0
+        },
+        {
+          "label": "dual-baseline",
+          "exit_code": 0
+        },
+        {
+          "label": "update-missing-native",
+          "exit_code": 0
+        },
+        {
+          "label": "after-missing-native-update",
+          "exit_code": 0
+        },
+        {
+          "label": "disable-native-model-invocation",
+          "exit_code": 0
+        },
+        {
+          "label": "overbroad-exclusion",
+          "exit_code": 0
+        },
+        {
+          "label": "narrow-shared-exclusion",
+          "exit_code": 0
+        },
+        {
+          "label": "update-narrow-force",
+          "exit_code": 0
+        },
+        {
+          "label": "narrow-after-update",
+          "exit_code": 0
+        },
+        {
+          "label": "narrow-with-unrelated-skill",
+          "exit_code": 0
+        },
+        {
+          "label": "git-init-shared",
+          "exit_code": 0
+        },
+        {
+          "label": "init-shared-only",
+          "exit_code": 0
+        },
+        {
+          "label": "shared-only",
+          "exit_code": 0
+        }
+      ],
+      "baseline_effective_skills": [
+        {
+          "name": "openspec-apply-change",
+          "path": ".pi/skills/openspec-apply-change/SKILL.md",
+          "sha256": "18ae032eb9337e7c4172da25647915234af58c05c9b57fdd628f475a4165d2f8",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-archive-change",
+          "path": ".pi/skills/openspec-archive-change/SKILL.md",
+          "sha256": "1fbd39925e80be0481a89bf2976f59ae43974b991346475dab1e47f5a30524e8",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-explore",
+          "path": ".pi/skills/openspec-explore/SKILL.md",
+          "sha256": "b3bb9dda386a526270026da4d5566373378ef23e097b88065a01de5fb36a8e23",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-propose",
+          "path": ".pi/skills/openspec-propose/SKILL.md",
+          "sha256": "d17546961d0e4ccd0445e253e39668fa080355c300ebeec7b98b1bcb737e92be",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-sync-specs",
+          "path": ".pi/skills/openspec-sync-specs/SKILL.md",
+          "sha256": "372af7ec3b433e35d629f5c6fed545fae20993cdf0182db474f7d2056c28060d",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-update-change",
+          "path": ".pi/skills/openspec-update-change/SKILL.md",
+          "sha256": "10bb77b8caf47bca15e357d9fae624189fb0e12c273bd7761eb59a3aa15cfcea",
+          "disableModelInvocation": false
+        }
+      ],
+      "baseline_prompts": [
+        {
+          "name": "opsx-apply",
+          "path": ".pi/prompts/opsx-apply.md",
+          "sha256": "2c93287d0e7176ab6fdc3b0fe4f84b9395e8cb0d08aa0867cd6dfebdece46183"
+        },
+        {
+          "name": "opsx-archive",
+          "path": ".pi/prompts/opsx-archive.md",
+          "sha256": "282068522bf3a47e0aeec82118ff5c504543a4926cd37c8302a0c09dfda31d04"
+        },
+        {
+          "name": "opsx-explore",
+          "path": ".pi/prompts/opsx-explore.md",
+          "sha256": "7d9702adba40ef3a980463e23515a661c0cee12dfeab726ce05ef64fa7336ddd"
+        },
+        {
+          "name": "opsx-propose",
+          "path": ".pi/prompts/opsx-propose.md",
+          "sha256": "f28f8a8e2aa7784dbeceea6b5551641cbc5d78dc112c23757711fe5a2d674c84"
+        },
+        {
+          "name": "opsx-sync",
+          "path": ".pi/prompts/opsx-sync.md",
+          "sha256": "26b507b941059c77d85a7a02cddc5d4f511b95b03f9de144b30247055f1acd12"
+        },
+        {
+          "name": "opsx-update",
+          "path": ".pi/prompts/opsx-update.md",
+          "sha256": "0a7b01d1037931ccb744ca09a97f93affb8d4807fc97560e38987bd5d11189e3"
+        }
+      ],
+      "baseline_collisions": [
+        {
+          "type": "collision",
+          "message": "name \"openspec-apply-change\" collision",
+          "path": ".agents/skills/openspec-apply-change/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-apply-change",
+            "winnerPath": ".pi/skills/openspec-apply-change/SKILL.md",
+            "loserPath": ".agents/skills/openspec-apply-change/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-archive-change\" collision",
+          "path": ".agents/skills/openspec-archive-change/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-archive-change",
+            "winnerPath": ".pi/skills/openspec-archive-change/SKILL.md",
+            "loserPath": ".agents/skills/openspec-archive-change/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-explore\" collision",
+          "path": ".agents/skills/openspec-explore/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-explore",
+            "winnerPath": ".pi/skills/openspec-explore/SKILL.md",
+            "loserPath": ".agents/skills/openspec-explore/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-propose\" collision",
+          "path": ".agents/skills/openspec-propose/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-propose",
+            "winnerPath": ".pi/skills/openspec-propose/SKILL.md",
+            "loserPath": ".agents/skills/openspec-propose/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-sync-specs\" collision",
+          "path": ".agents/skills/openspec-sync-specs/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-sync-specs",
+            "winnerPath": ".pi/skills/openspec-sync-specs/SKILL.md",
+            "loserPath": ".agents/skills/openspec-sync-specs/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-update-change\" collision",
+          "path": ".agents/skills/openspec-update-change/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-update-change",
+            "winnerPath": ".pi/skills/openspec-update-change/SKILL.md",
+            "loserPath": ".agents/skills/openspec-update-change/SKILL.md"
+          }
+        }
+      ],
+      "settings_sha256_before_after_update": "cd1b4e6b5354ddb91c9ea82a01c86cd44207f9c16262fa5265429dbf3ecd52c7",
+      "generated_markdown_unchanged_after_update": true
+    },
+    "1.16.0": {
+      "cases": [
+        {
+          "case": "dual-baseline",
+          "skills": 6,
+          "collisions": 6,
+          "prompts": 6,
+          "automatic_descriptions": 6
+        },
+        {
+          "case": "after-missing-native-update",
+          "skills": 6,
+          "collisions": 6,
+          "prompts": 6,
+          "automatic_descriptions": 6
+        },
+        {
+          "case": "disable-native-model-invocation",
+          "skills": 6,
+          "collisions": 6,
+          "prompts": 6,
+          "automatic_descriptions": 0
+        },
+        {
+          "case": "overbroad-exclusion",
+          "skills": 0,
+          "collisions": 0,
+          "prompts": 6,
+          "automatic_descriptions": 0
+        },
+        {
+          "case": "narrow-shared-exclusion",
+          "skills": 6,
+          "collisions": 0,
+          "prompts": 6,
+          "automatic_descriptions": 6
+        },
+        {
+          "case": "narrow-after-update",
+          "skills": 6,
+          "collisions": 0,
+          "prompts": 6,
+          "automatic_descriptions": 6
+        },
+        {
+          "case": "narrow-with-unrelated-skill",
+          "skills": 7,
+          "collisions": 0,
+          "prompts": 6,
+          "automatic_descriptions": 7
+        },
+        {
+          "case": "shared-only",
+          "skills": 6,
+          "collisions": 0,
+          "prompts": 0,
+          "automatic_descriptions": 6
+        }
+      ],
+      "commands": [
+        {
+          "label": "git-init-dual",
+          "exit_code": 0
+        },
+        {
+          "label": "init-dual",
+          "exit_code": 0
+        },
+        {
+          "label": "dual-baseline",
+          "exit_code": 0
+        },
+        {
+          "label": "update-missing-native",
+          "exit_code": 0
+        },
+        {
+          "label": "after-missing-native-update",
+          "exit_code": 0
+        },
+        {
+          "label": "disable-native-model-invocation",
+          "exit_code": 0
+        },
+        {
+          "label": "overbroad-exclusion",
+          "exit_code": 0
+        },
+        {
+          "label": "narrow-shared-exclusion",
+          "exit_code": 0
+        },
+        {
+          "label": "update-narrow-force",
+          "exit_code": 0
+        },
+        {
+          "label": "narrow-after-update",
+          "exit_code": 0
+        },
+        {
+          "label": "narrow-with-unrelated-skill",
+          "exit_code": 0
+        },
+        {
+          "label": "git-init-shared",
+          "exit_code": 0
+        },
+        {
+          "label": "init-shared-only",
+          "exit_code": 0
+        },
+        {
+          "label": "shared-only",
+          "exit_code": 0
+        }
+      ],
+      "baseline_effective_skills": [
+        {
+          "name": "openspec-apply-change",
+          "path": ".pi/skills/openspec-apply-change/SKILL.md",
+          "sha256": "dc3c6d593c8db682565eece514bbdaf6a6ef658add40f38dbac60b767bac6900",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-archive-change",
+          "path": ".pi/skills/openspec-archive-change/SKILL.md",
+          "sha256": "efdecdfd8b073227db6e0059b4e7b44c6a7393ffd809404beaa2a823ddaa21ee",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-explore",
+          "path": ".pi/skills/openspec-explore/SKILL.md",
+          "sha256": "2a8931149d0eec0d23d2e02c0a040e75fb7a4a17b144a61856b691182be86468",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-propose",
+          "path": ".pi/skills/openspec-propose/SKILL.md",
+          "sha256": "d17c337f4127ff0e5e6193e9d4461db1d3ee2b2f9374baa4c462f123c193bf1b",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-sync-specs",
+          "path": ".pi/skills/openspec-sync-specs/SKILL.md",
+          "sha256": "a3dc3d87701259befe269848f92ce048e07e572233aa12f5e06da1d641e32872",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "openspec-update-change",
+          "path": ".pi/skills/openspec-update-change/SKILL.md",
+          "sha256": "b02ce8058a1b224fd47aa5bde9a4fbfe9abbd9378615597b6fe3fcedb22f225d",
+          "disableModelInvocation": false
+        }
+      ],
+      "baseline_prompts": [
+        {
+          "name": "opsx-apply",
+          "path": ".pi/prompts/opsx-apply.md",
+          "sha256": "2c93287d0e7176ab6fdc3b0fe4f84b9395e8cb0d08aa0867cd6dfebdece46183"
+        },
+        {
+          "name": "opsx-archive",
+          "path": ".pi/prompts/opsx-archive.md",
+          "sha256": "282068522bf3a47e0aeec82118ff5c504543a4926cd37c8302a0c09dfda31d04"
+        },
+        {
+          "name": "opsx-explore",
+          "path": ".pi/prompts/opsx-explore.md",
+          "sha256": "7d9702adba40ef3a980463e23515a661c0cee12dfeab726ce05ef64fa7336ddd"
+        },
+        {
+          "name": "opsx-propose",
+          "path": ".pi/prompts/opsx-propose.md",
+          "sha256": "f28f8a8e2aa7784dbeceea6b5551641cbc5d78dc112c23757711fe5a2d674c84"
+        },
+        {
+          "name": "opsx-sync",
+          "path": ".pi/prompts/opsx-sync.md",
+          "sha256": "26b507b941059c77d85a7a02cddc5d4f511b95b03f9de144b30247055f1acd12"
+        },
+        {
+          "name": "opsx-update",
+          "path": ".pi/prompts/opsx-update.md",
+          "sha256": "0a7b01d1037931ccb744ca09a97f93affb8d4807fc97560e38987bd5d11189e3"
+        }
+      ],
+      "baseline_collisions": [
+        {
+          "type": "collision",
+          "message": "name \"openspec-apply-change\" collision",
+          "path": ".agents/skills/openspec-apply-change/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-apply-change",
+            "winnerPath": ".pi/skills/openspec-apply-change/SKILL.md",
+            "loserPath": ".agents/skills/openspec-apply-change/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-archive-change\" collision",
+          "path": ".agents/skills/openspec-archive-change/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-archive-change",
+            "winnerPath": ".pi/skills/openspec-archive-change/SKILL.md",
+            "loserPath": ".agents/skills/openspec-archive-change/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-explore\" collision",
+          "path": ".agents/skills/openspec-explore/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-explore",
+            "winnerPath": ".pi/skills/openspec-explore/SKILL.md",
+            "loserPath": ".agents/skills/openspec-explore/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-propose\" collision",
+          "path": ".agents/skills/openspec-propose/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-propose",
+            "winnerPath": ".pi/skills/openspec-propose/SKILL.md",
+            "loserPath": ".agents/skills/openspec-propose/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-sync-specs\" collision",
+          "path": ".agents/skills/openspec-sync-specs/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-sync-specs",
+            "winnerPath": ".pi/skills/openspec-sync-specs/SKILL.md",
+            "loserPath": ".agents/skills/openspec-sync-specs/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"openspec-update-change\" collision",
+          "path": ".agents/skills/openspec-update-change/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "openspec-update-change",
+            "winnerPath": ".pi/skills/openspec-update-change/SKILL.md",
+            "loserPath": ".agents/skills/openspec-update-change/SKILL.md"
+          }
+        }
+      ],
+      "settings_sha256_before_after_update": "cd1b4e6b5354ddb91c9ea82a01c86cd44207f9c16262fa5265429dbf3ecd52c7",
+      "generated_markdown_unchanged_after_update": true
+    }
+  },
+  "independent": {
+    "openspec": "1.16.0",
+    "pi": "1.4.0",
+    "scope": "Separate temporary Git project, own probe and isolated HOME; existing official dependencies reused; no installation or model call.",
+    "cases": [
+      {
+        "case": "baseline-with-unrelated-skill",
+        "skills": 7,
+        "collisions": 6,
+        "prompts": 6
+      },
+      {
+        "case": "narrow-exclusion",
+        "skills": 7,
+        "collisions": 0,
+        "prompts": 6
+      },
+      {
+        "case": "after-force-update",
+        "skills": 7,
+        "collisions": 0,
+        "prompts": 6
+      },
+      {
+        "case": "overbroad-exclusion",
+        "skills": 1,
+        "collisions": 0,
+        "prompts": 6
+      }
+    ],
+    "native_wins_all_six": true,
+    "effective_resource_hashes_unchanged": true,
+    "settings_bytes_unchanged_after_update": true,
+    "canonical_effective_resources_sha256": "ae39ed63f35855b58aaa8e966d194564942ebe4cceac06b65f72291871f39778"
+  },
+  "reader_recipe_replay": {
+    "fresh_official_package_install": true,
+    "baseline_collisions": 6,
+    "after_collisions": 0,
+    "effective_skills": 6,
+    "prompts": 6,
+    "automatic_descriptions": 6,
+    "full_after_result_equals_updated": true
+  },
+  "probe_checks": [
+    {
+      "case": "missing-argument",
+      "exit_code": 2
+    },
+    {
+      "case": "non-git-boundary",
+      "exit_code": 2
+    },
+    {
+      "case": "node-syntax",
+      "exit_code": 0
+    }
+  ]
+}
