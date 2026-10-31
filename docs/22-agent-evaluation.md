@@ -170,6 +170,42 @@ Agent 可整理哪些意见被处理、被拒或仍不可验证；人抽核它�
 
 **依据**：[一手：公开运行记录；研究：采用] [公开两臂与判定](research/2026-10-10-codex-continuity.md#p44公开同模型对照先核指标与实际配置)（160/159/158 与异常行）；[研究] 同模型对照的配置差异与保留旧入口条件；核实 2026-10-22。
 
+### `passed: true`，也要读实际执行数
+
+**接收公开评测时，把“测试进程退出 0”与“必需测试全部执行并通过”分开。** Agent 可以先核逐题结果与测试摘要；出现 skip 时追原测试是否必需，不能把未运行项当通过，也不能反过来把答案直接判错。完整输入和必要结果不齐，先保留现有工具，不凭汇总分数换 harness。
+
+Porcupine 在 8-11 发布的 Polyglot 结果自报采用 DeepSeek V4 Flash。本仓读取固定公开 JSONL，核到 **49 条 JavaScript 记录、49 个唯一题名、36 条 `passed=true`**；其中三条实际测试摘要如下：
+
+| 题目 | 已通过测试 | skipped | 记录中的总测试数 |
+|---|---:|---:|---:|
+| `grep` | 2 | 23 | 25 |
+| `palindrome-products` | 11 | 1 | 12 |
+| `robot-name` | 8 | 1 | 9 |
+
+该项目说明要求全部测试绿；当前固定 driver 的 `passed` 只检查未超时且测试返回码全为 0，恢复测试后只将 `xtest(` 换成 `test(`，仍漏掉 `xit(`／`test.skip(`。历史运行未附源码指纹，这里只核现源码的同类缺口。Aider #5898 已报告测试激活遗漏，#5905 的候选补丁已补激活规则及回归，尚未合入。**修好测试激活，不等于已重评旧答案。** 当前公开结果目录保留输出尾部和 `diff_stat`，没有对应完整答案；不能从这些材料重算三题或总分。Agent 尾部自述另跑过压力测试，也不能替代可重放的答案和独立测试产物。
+
+已有 `curl`、`jq` 时，可在一次性目录复核原记录；不运行 Agent、模型或题目代码：
+
+```bash
+set -eu
+work=$(mktemp -d)
+result="$work/results-javascript.jsonl"
+curl --fail --location --silent --show-error \
+  https://raw.githubusercontent.com/Abd0r/porcupineai/af7a2a9dd991136b6c2e54073ec8a66988e504ba/benchmarks/polyglot/results/results-javascript.jsonl \
+  --output "$result"
+jq -s '{records:length, uniqueNames:(map(.name)|unique|length), reportedPassed:(map(select(.passed == true))|length)}' "$result"
+jq -r '
+  select(.passed == true) | . as $row |
+  .test[] | .tail | split("\n")[] |
+  select(test("^Tests:.*[1-9][0-9]* skipped")) |
+  [$row.name, .] | @tsv
+' "$result"
+```
+
+预期汇总为 **49／49／36**，随后输出上表三题。此查询只找现有 Jest 摘要中的正例；记录只保留测试输出尾部，**没有命中不证明其余题完整执行**。读者接收新报告时，应要求记录实际执行／跳过／失败数与原始结果位置，并保留完整候选代码以便修正判定器后重评；不靠删 skip 标记后的一次文本扫描宣称分数已经校准。
+
+**依据与范围：2026-10-31。** [作者评测说明](https://github.com/Abd0r/porcupineai/blob/af7a2a9dd991136b6c2e54073ec8a66988e504ba/benchmarks/polyglot/README.md)、[公开结果](https://github.com/Abd0r/porcupineai/blob/af7a2a9dd991136b6c2e54073ec8a66988e504ba/benchmarks/polyglot/results/results-javascript.jsonl)、[固定公开 driver](https://github.com/Abd0r/porcupineai/blob/af7a2a9dd991136b6c2e54073ec8a66988e504ba/benchmarks/rig/run-polyglot.py#L192-L224)、[原报告与独立标记复核](https://github.com/Aider-AI/aider/issues/5898)、[未合候选 #5905](https://github.com/Aider-AI/aider/pull/5905)。本仓实跑上述记录查询；文件 SHA256 为 `5851a27bf736fdc01a75b7a26ef40754faa2d76eddd90d0ffa72640d673d6394`。未运行题目、候选补丁或模型。
+
 ### 两种实现都能用：用下一项确定修改决定保留谁
 
 **✅ 默认保留能沿现有公共路径承接下一项确定修改、并保住必要旧行为的实现。** 先确认对照真走两个实现入口，再追同一新需求要改哪些规则、错误定位和消费者。CPython 的旧新解析器对照曾误测新实现自身；后续 f-string 并入公共语法，又须补公开 tokenize 消费链，说明通过旧测试并未替维护取舍作答。
