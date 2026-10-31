@@ -1,7 +1,7 @@
 # A-MODEL-EFFORT-READER-20261029 · 真实配置兼容修复
 id: A-MODEL-EFFORT-READER-20261029
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
@@ -45,8 +45,8 @@ page: docs/decisions/model-roles.md@dot-a/model-effort-reader-dispatch-20261029
 
 ## 当前结果
 
-- 读者照页面完成 jrnl #1908：现代 JSON 风格 YAML 配置不再误触发 1.x 升级，真正旧版仍升级，无 version 配置保留原回退；taskDone=true，非读者独立复跑通过（新增单测 20 passed，临时回退生产代码 11 项新回归失败，全量 unit 214、BDD 499、tox 713 passed，ruff/black 通过，隔离 HOME 手工 CLI 重放符合预期）。页面卡点：页面型号表未给本会话可见 deepseek-v4.1-flash[1m] 的 effort 核对办法；派发前置未提供可用 poetry/poe，读者自建隔离 .venv 并按 poetry.lock 钉版本；记录路径两处要求不一致。未关闭审查问题：version 存在但不可解析（如 source）时被当作无 version 回退，与维护者验收原文不符；is_old_version() 重复加载配置可能重复告警；两份读者记录实际内容不一致，正式结果文档宜补齐卡点条目。
-- 产物：[a669481](https://github.com/dbvv1/jrnl/commit/a6694817f531b6ef20fe5c18ca9f33f1da37613b)，分支 `relay/a-model-effort-reader-20261029`。
+- 返工已修正 version 判定：version 键存在即权威，source/空串/null 不再回退旧 JSON 判断，仅缺键才回退；install.py 复用已加载配置避免二次解析，新增回归在基线失败、修后通过（临时桩环境 27 passed，HEAD 7 failed, 20 passed）。未关闭审查问题（missed）：记录仍有 4 处不准确——'dev' 在基线同样失败而非仅作守卫、重复加载修复未端到端验证且旧版仍会二次加载、临时配置会被 upgrade_config 重写未记录、'另一任务 venv 无 pytest' 表述过宽。照做实测 taskDone=true；页面卡点：任务第 2/5 条要求跑官方 unit/BDD/lint 与真实 CLI，但第 6 条禁止安装依赖且本机无任务隔离环境（缺 ruamel 等），相关检查与四类 CLI 重放未执行，另有记录路径/只读保留冲突、页面型号表不含本会话可见后端。
+- 产物：[46e2560](https://github.com/dbvv1/jrnl/commit/46e2560429d515101375fe48420d345ccea202ad)，分支 `relay/a-model-effort-reader-20261029`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：原执行残留已核实退出；接收端续原分支完成上述返工和非作者复核，再按既有流程公开扫描并推送结果；不合入默认分支。
+- 下一步：接收端按既有流程公开扫描并推送结果分支回 review_ready；本单元无剩余工作项。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
