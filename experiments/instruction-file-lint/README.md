@@ -30,6 +30,11 @@
 
 新增回归在原实现上为 54 通过／6 失败；候选及从补丁新应用的副本均为 60 通过，Ruff 0.17.3 通过。独审另跑 60 项并核实际消费者；新构建安装后的 `agents-md-lint` 入口也得到表中结果。检查的计数、输入 hash 与集合差量见 [candidate-results.json](candidate-results.json)；这些证明窄修复，不证明常驻依赖收益。
 
+**投稿前还要对照项目实际 CI，不把一句“Ruff 通过”当成所有步骤通过。** 按[固定 CI 源码](https://github.com/openintelligence-labs/agents-md-lint/blob/9f852cf5b970cd9f283a61ef4ae6308cb4aeb047/.github/workflows/ci.yml)补核 `ruff format --check src tests`（7 文件通过），再补 Linux／Python 3.11.17、3.13.5：各 60 项回归及 Ruff check／format 通过，安装入口复现表中结果（含 CLAUDE 仍 exit 1），不是指令检查全绿；Python 3.12.14 的已有有效测试复用，没有重跑凑数。上游配置了 Ubuntu／macOS／Windows × 3.11／3.12／3.13；本地 Linux 结果不是 hosted 矩阵通过，macOS、Windows 与远端 CI 尚未核验。
+
+三个本地版本执行上游 `agents-md-lint check` 自检均 exit 0，但固定上游没有指令文件，实际是 **0 文件的 no-op**。它不能替代本次真实 a1dbv 文件的检查；不要因自检绿就忽略实际输入与检查数量。
+
+
 复跑补丁：Python ≥3.11、Git、uv，在另一个空工作目录执行，替换 `/path/to/a1dbv` 为本仓绝对路径；首次构建／安装开发依赖需要网络与可写缓存。
 
 ```sh

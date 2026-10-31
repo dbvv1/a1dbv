@@ -114,8 +114,67 @@
       "passed": 60,
       "failed": 0
     },
-    "ruff": "passed",
+    "ruff": {
+      "check": "passed",
+      "format_check": "passed",
+      "version": "0.17.3"
+    },
     "installed_console_entrypoint_matches_reports": true
   },
-  "scope": "Unmerged candidate; missing-input and embedded-placeholder fixes only. Ambiguous scheme-less address remains a false positive. No default CI integration or model-effectiveness claim."
+  "scope": "Unmerged candidate; missing-input and embedded-placeholder fixes only. Ambiguous scheme-less address remains a false positive. No default CI integration or model-effectiveness claim.",
+  "local_python_coverage": [
+    {
+      "platform": "Linux",
+      "python": "3.11.17",
+      "pytest_passed": 60,
+      "pytest_failed": 0,
+      "ruff_check": "passed",
+      "ruff_format_check": "passed",
+      "installed_consumer_matches_report": true
+    },
+    {
+      "platform": "Linux",
+      "python": "3.12.14",
+      "pytest_passed": 60,
+      "pytest_failed": 0,
+      "ruff_check": "passed",
+      "ruff_format_check": "passed",
+      "installed_consumer_matches_report": true
+    },
+    {
+      "platform": "Linux",
+      "python": "3.13.5",
+      "pytest_passed": 60,
+      "pytest_failed": 0,
+      "ruff_check": "passed",
+      "ruff_format_check": "passed",
+      "installed_consumer_matches_report": true
+    }
+  ],
+  "upstream_self_check": {
+    "tested_python_versions": [
+      "3.11.17",
+      "3.12.14",
+      "3.13.5"
+    ],
+    "exit_code": 0,
+    "context_files_found": 0,
+    "classification": "successful no-op, not a checked-reference pass"
+  },
+  "upstream_ci_scope": {
+    "definition": "https://github.com/openintelligence-labs/agents-md-lint/blob/9f852cf5b970cd9f283a61ef4ae6308cb4aeb047/.github/workflows/ci.yml",
+    "configured_os": [
+      "ubuntu-latest",
+      "macos-latest",
+      "windows-latest"
+    ],
+    "configured_python": [
+      "3.11",
+      "3.12",
+      "3.13"
+    ],
+    "hosted_runs_verified": false,
+    "macos_and_windows_executed": false,
+    "local_results_not_a_hosted_matrix_pass": true
+  }
 }
