@@ -1,0 +1,287 @@
+diff --git a/testmon/configure.py b/testmon/configure.py
+index dc1c1dd130130785a3ca71b9fe1f6e4a490a7862..52eb245382456c6822088f213eb6e3b69c729db5 100644
+--- a/testmon/configure.py
++++ b/testmon/configure.py
+@@ -1,6 +1,8 @@
+ import sys
+ import re
+ 
++from coverage import Coverage
++
+ try:
+     from coverage.tracer import CTracer as Tracer  # pylint: disable=no-name-in-module
+ except ImportError:
+@@ -18,7 +20,7 @@ def _is_debugger():
+ 
+ 
+ def _is_coverage():
+-    return False
++    return Coverage.current() is not None
+ 
+ 
+ def _get_notestmon_reasons(options):
+diff --git a/testmon/testmon_core.py b/testmon/testmon_core.py
+index 699449a74038851d5c2a826c5a5f398fd0889cc4..147d065cc88e41f34f568307729a5510d58822ef 100644
+--- a/testmon/testmon_core.py
++++ b/testmon/testmon_core.py
+@@ -17,7 +17,7 @@ except ImportError:
+     pass
+ import pytest
+ from coverage import Coverage, CoverageData
+-from coverage.exceptions import CoverageException
++from coverage.exceptions import ConfigError
+ 
+ from testmon import db
+ from testmon import TESTMON_VERSION as TM_CLIENT_VERSION
+@@ -458,8 +458,8 @@ COVERAGE_CORE = "ctrace"
+ def force_context_capable_core(cov: Coverage):
+     try:
+         cov.set_option("run:core", COVERAGE_CORE)
+-    except CoverageException:
+-        # coverage < 7.10 has no core option and never defaults to sys.monitoring.
++    except ConfigError:
++        # coverage < 7.9 has no core option and never defaults to sys.monitoring.
+         pass
+ 
+ 
+diff --git a/tests/test_coverage_core.py b/tests/test_coverage_core.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..16422afe88cd2cf738c9d9d0812a320fca57dcfd
+--- /dev/null
++++ b/tests/test_coverage_core.py
+@@ -0,0 +1,94 @@
++import os
++import subprocess
++import sys
++
++import pytest
++from coverage import Coverage
++from coverage.exceptions import ConfigError, CoverageException
++
++from testmon.testmon_core import force_context_capable_core
++
++
++def test_real_coverage_core():
++    cov = Coverage(config_file=False)
++    if hasattr(cov.config, "core"):
++        cov.set_option("run:core", "sysmon")
++    force_context_capable_core(cov)
++    # Older coverage versions have no configurable core; newer ones must use
++    # the context-capable tracer even if their default is sys.monitoring.
++    if hasattr(cov.config, "core"):
++        assert cov.get_option("run:core") == "ctrace"
++
++
++def test_missing_core_option(monkeypatch):
++    cov = Coverage(config_file=False)
++
++    def missing_option(name, value):
++        assert (name, value) == ("run:core", "ctrace")
++        raise ConfigError("No such option: 'run:core'")
++
++    monkeypatch.setattr(cov, "set_option", missing_option)
++    force_context_capable_core(cov)
++
++
++@pytest.mark.parametrize("error", [RuntimeError, CoverageException])
++def test_unrelated_error_is_not_hidden(monkeypatch, error):
++    cov = Coverage(config_file=False)
++
++    def broken_option(name, value):
++        raise error("unexpected failure")
++
++    monkeypatch.setattr(cov, "set_option", broken_option)
++    with pytest.raises(error, match="unexpected failure"):
++        force_context_capable_core(cov)
++
++
++def run_testmon(path, *args):
++    env = os.environ.copy()
++    env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
++    env.pop("PYTEST_ADDOPTS", None)
++    env.pop("TESTMON_DATAFILE", None)
++    command = [sys.executable, "-m", "pytest", "-p", "testmon.pytest_testmon"]
++    if "-n" in args:
++        pytest.importorskip("xdist")
++        command += ["-p", "xdist.plugin"]
++    if "--cov=dependency" in args:
++        pytest.importorskip("pytest_cov")
++        command += ["-p", "pytest_cov.plugin"]
++    result = subprocess.run(
++        command + ["--testmon", "-q", *args],
++        cwd=path,
++        env=env,
++        text=True,
++        stdout=subprocess.PIPE,
++        stderr=subprocess.STDOUT,
++    )
++    print(result.stdout)
++    return result
++
++
++@pytest.mark.parametrize("args", [(), ("-n", "2"), ("--cov=dependency",)])
++def test_collect_select_and_preserve_failure(tmp_path, args):
++    (tmp_path / "pytest.ini").write_text("[pytest]\n")
++    dependency = tmp_path / "dependency.py"
++    dependency.write_text("def value():\n    return 1\n")
++    (tmp_path / "test_value.py").write_text(
++        "from dependency import value\n\ndef test_value():\n    assert value() == 1\n"
++    )
++    (tmp_path / "test_unaffected.py").write_text("def test_unaffected():\n    pass\n")
++    first = run_testmon(tmp_path, *args)
++    assert first.returncode == 0, first.stdout
++    assert "2 passed" in first.stdout
++    assert (tmp_path / ".testmondata").is_file()
++    if "--cov=dependency" not in args:
++        unchanged = run_testmon(tmp_path, *args)
++        assert unchanged.returncode == 0, unchanged.stdout
++        assert "no tests ran" in unchanged.stdout
++    # Changing the dependency should select its test, not an unrelated file.
++    dependency.write_text("def value():\n    return 100\n")
++    changed = run_testmon(tmp_path, *args)
++    assert changed.returncode == 1, changed.stdout
++    assert "1 failed" in changed.stdout
++    assert "1 passed" not in changed.stdout
++    assert "INTERNALERROR" not in changed.stdout
++    assert "AssertionError" in changed.stdout
+diff --git a/tests/test_coverage_detection.py b/tests/test_coverage_detection.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..bae7db27e7802a890ef2978708c8724fad49ed8d
+--- /dev/null
++++ b/tests/test_coverage_detection.py
+@@ -0,0 +1,120 @@
++import os
++import subprocess
++import sys
++
++import coverage
++import pytest
++
++from testmon import configure
++
++
++def test_detects_active_coverage(tmp_path):
++    cov = coverage.Coverage(data_file=str(tmp_path / ".coverage"))
++    cov.start()
++    try:
++        assert configure._is_coverage()
++    finally:
++        cov.stop()
++
++
++def test_no_active_coverage(tmp_path):
++    result = run_python(
++        tmp_path,
++        "-c",
++        "from testmon import configure; assert not configure._is_coverage()",
++    )
++    assert result.returncode == 0, result.stdout + result.stderr
++
++
++@pytest.fixture
++def sample(tmp_path):
++    (tmp_path / "pytest.ini").write_text("[pytest]\n")
++    (tmp_path / "mod.py").write_text(
++        "def classify(x):\n"
++        "    if x > 0:\n"
++        '        return "positive"\n'
++        "    if x < 0:\n"
++        '        return "negative"\n'
++        '    return "zero"\n'
++    )
++    (tmp_path / "test_mod.py").write_text(
++        "from mod import classify\n"
++        "def test_positive():\n"
++        '    assert classify(1) == "positive"\n'
++        "def test_negative():\n"
++        '    assert classify(-1) == "negative"\n'
++        "def test_zero():\n"
++        '    assert classify(0) == "zero"\n'
++    )
++    return tmp_path
++
++
++def run_python(sample, *args):
++    return subprocess.run(
++        [sys.executable, *args],
++        cwd=sample,
++        capture_output=True,
++        text=True,
++        env={**os.environ, "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"},
++        timeout=60,
++    )
++
++
++@pytest.mark.parametrize("with_testmon", [False, True])
++@pytest.mark.parametrize("failing", [False, True])
++def test_outer_coverage_keeps_test_execution(sample, with_testmon, failing):
++    if failing:
++        test_file = sample / "test_mod.py"
++        test_file.write_text(test_file.read_text().replace('== "zero"', '== "wrong"'))
++    command = [
++        "-m",
++        "coverage",
++        "run",
++        "--branch",
++        "-m",
++        "pytest",
++        "-p",
++        "testmon.pytest_testmon",
++        "test_mod.py",
++    ]
++    if with_testmon:
++        command.append("--testmon")
++    result = run_python(sample, *command)
++    assert result.returncode == (1 if failing else 0), result.stdout + result.stderr
++    assert ("1 failed, 2 passed" if failing else "3 passed") in result.stdout
++    cov = coverage.Coverage(data_file=str(sample / ".coverage"))
++    cov.load()
++    percent = cov.report(include=[str(sample / "mod.py")])
++    assert cov.analysis2(str(sample / "mod.py"))[3] == []
++    assert percent == 100
++    if with_testmon:
++        assert "coverage.py was detected" in result.stdout
++
++
++def test_plain_testmon_still_collects_and_selects(sample):
++    command = ["-m", "pytest", "-p", "testmon.pytest_testmon", "--testmon"]
++    first = run_python(sample, *command)
++    assert first.returncode == 0, first.stdout + first.stderr
++    assert "3 passed" in first.stdout
++    second = run_python(sample, *command)
++    assert second.returncode == 0, second.stdout + second.stderr
++    assert "no tests ran" in second.stdout
++
++
++def test_pytest_cov_still_collects(sample):
++    pytest.importorskip("pytest_cov")
++    result = run_python(
++        sample,
++        "-m",
++        "pytest",
++        "-p",
++        "testmon.pytest_testmon",
++        "-p",
++        "pytest_cov.plugin",
++        "--cov=mod",
++        "--testmon",
++    )
++    assert result.returncode == 0, result.stdout + result.stderr
++    assert "3 passed" in result.stdout
++    assert "100%" in result.stdout
++    assert "coverage.py was detected" not in result.stdout
+diff --git a/tests/test_testmon.py b/tests/test_testmon.py
+index 70417be3b9fe4ba7c008b649debb1180ddb3ef7e..daab661767d22d31edc54155599e599d1fb73350 100644
+--- a/tests/test_testmon.py
++++ b/tests/test_testmon.py
+@@ -190,10 +190,6 @@ class TestPytestReportHeader:
+             ]
+         )
+ 
+-    @pytest.mark.xfail(
+-        strict=True,
+-        reason="an enclosing `coverage run` is not detected; testmon starts collecting anyway",
+-    )
+     def test_deactivated_bc_coverage(self, testdir, test_a):
+         result = testdir.run("coverage", "run", "-m", "pytest", "--testmon")
+         result.stdout.fnmatch_lines(
