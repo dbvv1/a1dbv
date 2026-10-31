@@ -9,7 +9,7 @@ result_branch: relay/a-datasette-typed-params-001
 
 ## 当前结果
 
-原型及编辑器续改已接收，按用户10-26指示收口，不再扩展。已提交 [Datasette Draft PR #3015](https://github.com/simonw/datasette/pull/3015)，head `cae9014efb7e6a8d076df3e88e557976b02e87e7`，六文件 +1233/-29；每项目仅此一个开放 PR。
+原型及编辑器续改已接收，按用户 10-26 指示收口，不再扩展。原六文件实现提交为 `cae9014efb7e6a8d076df3e88e557976b02e87e7`；用户文档已通过[文档跟进卡](A-DATASETTE-UPSTREAM-DOCS-001.md)接入同一 [Draft PR #3015](https://github.com/simonw/datasette/pull/3015)，当前 head 为 `a6f3ade873fbe91d3c6a58a76a50d359217b5c90`，原六文件未变。每项目仅此一个开放 PR。
 
 显式 `_typed_params=1`＋`age::int` 使用整数绑定，保留普通参数语义；编辑 SQL 保留 typed 名与当前 DOM 值。完整 patch SHA256：`f2adf787966185eec3ca453653a3e32651bcc5e386505914f40b1faf5b01fb58`。原四文件未变，服务端／POSIX有效检查复用；编辑器六项真实浏览器回归由旧2败4过变为6过，已有非作者独审。
 
@@ -22,6 +22,6 @@ result_branch: relay/a-datasette-typed-params-001
 
 Linux最终非serial为2856过／1败（基线同败），serial39过；AF_UNIX被平台拒绝后未重试，原insecure HTTPS脚本未跑，仅显式CA变体验过。完整门禁未绿，版本／浏览器矩阵不作通过声明。具体命令、原始失败与树映射见固定历史及接收提交说明。
 
-按[上游贡献规范](https://github.com/simonw/datasette/blob/main/docs/contributing.rst)提交研究草稿：如实披露AI实施／AI独审，未称人审或语法获准；用户文档仍缺。2026-10-26 02:09核PR开放、draft且可合并，六项PR工作流为`action_required`，未记作CI通过。
+已按[上游贡献规范](https://github.com/simonw/datasette/blob/main/docs/contributing.rst)披露 AI 实施／AI 独审，未称人审或语法获准。用户文档已补齐并完成定向验收，范围见文档跟进卡；原型完整门禁仍保留上述缺口。2026-10-31 核 PR 仍开放 Draft，无维护者 review；精确 head 六项 Actions 为 `action_required`，仅 Read the Docs 构建成功。
 
 下一步跟进维护者对设计、文档与测试的评审，在此PR内回应；合并或被拒后收口，不另开同项目PR，不扩原型。历史过程保留在Git，不再累积到本任务。
