@@ -1,6 +1,6 @@
 # Anthropic SDK 从 0.x 升到 2.x：别只删采样参数
 
-**🧪 先让 Agent 跑项目真实客户端构造与请求边界，再接收依赖升级。** 固定 Hermes 当前源码仍使用 SDK 0.125.0；只换成 2.3.0，构造器先失败，单独查后续请求还会发现采样参数错误和认证头丢失。应把跨过的 **v1 HTTP 层迁移**与 **v2 API 契约迁移**一起处理，暂缓“只改版本号”的补丁。
+**🧪 先让 Agent 跑项目真实客户端构造与请求边界，再接收依赖升级。** 固定试用的 Hermes 源码使用 SDK 0.125.0；只换成 2.3.0，构造器先失败，单独查后续请求还会发现采样参数错误和认证头丢失。应把跨过的 **v1 HTTP 层迁移**与 **v2 API 契约迁移**一起处理，暂缓“只改版本号”的补丁。
 
 ## 实际发现了什么
 
@@ -24,6 +24,14 @@
 3. **将实际请求作为接收依据。** 断言每次是否到达 transport、使用的 API 版本、移除的字段，以及恰好一个符合该路由要求的认证头；只记头名／布尔状态，不记录真实值。
 
 完成本地契约检查后，还需按应用原门禁验其他消费者，再在获准环境验目标服务。本例没有运行模型、网关或 Hermes 完整应用；stream、async、辅助调用、OAuth 刷新、Bedrock／Foundry 和真实日志链仍需各自验证。无需为这次检查新接迁移平台或模型服务。
+
+## Hermes 当前升级路线：先核在途修复
+
+**先对照已有 v1 迁移，不重复实现，也不把它当作 v2 已兼容。** 本轮 main `f30105a0` 仍 pin `0.125.0`；开放、未合并的 #118652（head `40f03bd6`）提出升到 `1.7.0`，并将 SDK-bound timeout 与 bearer HTTP client 改用 `httpx2`。它覆盖本例涉及的 HTTP 类型迁移部分，不代表 2.x 的采样参数、认证及其他消费者契约已完成。
+
+真正需要升到 2.x 时，先协调／对照这项在途实现，再验未覆盖路径。#142796 是升级准备清单，升级时机的表述来自报告者，本轮未见维护者已决定启动 2.x 迁移的证据；本例换新版本时测出的失效，不等于验证了当前 pin 下的故障，也不是立即改 pin 的理由。本轮只读核源，未运行该 PR、改变依赖或新增迁移实验。
+
+**依据**：[固定 main 依赖](https://github.com/NousResearch/hermes-agent/blob/f30105a0b4b3d0c1baa6c464189755ccdbc1ac7f/pyproject.toml#L236)、[开放 PR #118652](https://github.com/NousResearch/hermes-agent/pull/118652)及其 [固定 head](https://github.com/KoNit-K/hermes-agent/commit/40f03bd6e086ab7573ba216c1d6c802882cf5293)、[升级准备 #142796](https://github.com/NousResearch/hermes-agent/issues/142796)；源码与状态核实 2026-10-31，不刷新下面原实验的验证范围。
 
 ## 重放
 
@@ -55,4 +63,4 @@ python3 test_probe.py hermes .sdk-old/bin/python .sdk-new/bin/python
 | 用户反例：[Bedrock #2031](https://github.com/anthropics/anthropic-sdk-python/issues/2031)与[开放补丁 #2032](https://github.com/anthropics/anthropic-sdk-python/pull/2032) | 平台／模型兼容性须另验；本例没有重做已有补丁，也没有跑 Bedrock |
 | 英文／中文社区：[HN API 迁移工具作者帖](https://news.ycombinator.com/item?id=50273438)、[LINUX DO 代码评审复盘](https://linux.do/t/topic/3004044) | 云端 curl 已读正文／回复；前者为商业工具自报、后者未提供本题 SDK 证据，新增兼容性证据 0 项，不据此装工具或下效果结论 |
 
-核实与实测：2026-10-30，Linux、Python 3.12.14；原依赖路径可用，新版纯替换路径不通过。当前已部署 Hermes 是否遇到问题不在本次结论内。
+原实验核实与实测：2026-10-30，Linux、Python 3.12.14；原依赖路径可用，新版纯替换路径不通过。当前已部署 Hermes 是否遇到问题不在本次结论内。
