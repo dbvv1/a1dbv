@@ -1,6 +1,6 @@
 # AI 辅助补丁怎样交给开源项目
 
-**🟡 先确认项目愿意接这项贡献，再做实现和投稿；测试通过后仍要核当前上游、作者准入与人的责任。** 适合已有真实问题或候选补丁、准备向别人的仓库贡献的开发者。下列入口只做投稿前判断，不替贡献者签协议或承诺后续维护；本仓已有候选核查，完整投稿闭环仍待照做验证。
+**🟡 先按项目现行规则确认贡献范围，再决定实现和投稿；测试通过后仍要核当前上游、作者准入与人的责任。** 适合已有真实问题或候选补丁、准备向别人的仓库贡献的开发者。下列入口只做投稿前判断，不替贡献者签协议或承诺后续维护；本仓已有候选核查，完整投稿闭环仍待照做验证。
 
 ## 第一步：让 Agent 查清现在该做哪一步
 
@@ -30,17 +30,17 @@ CLA／DCO／vouch 等个人步骤、验证要求、后续响应，以及当前�
 | **Ghostty**：提交 PR 前须获 vouch，AI 使用须披露工具与参与程度；Vouch Request 须本人写 | 先查自己的准入状态，再按该请求模板由本人表达；普通讨论允许什么，不能代替 Vouch Request 的专门规则 |
 | **Linux**：移除了强制 `Assisted-by` 标签，仍保留提交者责任与透明说明；AI 不加 `Signed-off-by` | 不替人做 DCO 声明。按其 AI 查找并修复 bug 流程准备材料，交报告者审阅与发送，不从“取消标签”推出“无需披露／可自动代投” |
 
-**项目要求本人写的材料，就由本人写。** Agent 可在允许范围内收集复现、源码位置和测试结果；不能把生成稿换个署名当成本人完成。项目未要求统一披露标签时，按它实际需要的方式说明工具怎样参与，不自行套用别的项目政策。
+**准入按项目规则，不额外设置通用预审批。** issue 的 bot 标签不等于实现获准；项目允许小修直投时，也不必等维护者逐项批准。**项目要求本人写的材料，就由本人写。** Agent 可在允许范围内收集复现、源码位置和测试结果；不能把生成稿换个署名当成本人完成。项目未要求统一披露标签时，按它实际需要的方式说明工具怎样参与，不自行套用别的项目政策。
 
 **依据**：[Goose 固定贡献规则](https://github.com/aaif-goose/goose/blob/6ec4e9a2abc0fdb13f8af2676ceaf848a1df716f/CONTRIBUTING.md)及[探索例外](https://github.com/aaif-goose/goose/blob/6ec4e9a2abc0fdb13f8af2676ceaf848a1df716f/AGENTS.md#contribution-workflow)；[Serena 固定贡献规则](https://github.com/oraios/serena/blob/ede329aaf0c824bea75455a2926f01420d7aa620/CONTRIBUTING.md)。[Ghostty 固定贡献规则](https://github.com/ghostty-org/ghostty/blob/fbed180a5f181915c92a8f2f561903a6e4645b5a/CONTRIBUTING.md#first-time-contributors)与[AI 政策](https://github.com/ghostty-org/ghostty/blob/fbed180a5f181915c92a8f2f561903a6e4645b5a/AI_POLICY.md)；Linux 的[规则修订](https://github.com/torvalds/linux/commit/1e035297ffdadf2184c3c773b8c098e372324aaf)、[生成内容要求](https://github.com/torvalds/linux/blob/1e035297ffdadf2184c3c773b8c098e372324aaf/Documentation/process/generated-content.rst)和[助手提交流程](https://github.com/torvalds/linux/blob/1e035297ffdadf2184c3c773b8c098e372324aaf/Documentation/process/coding-assistants.rst)。上述为项目规则，不是政策效果比较；核实 2026-10-30。
 
 ## 有旧补丁时：先核上游，再决定续做
 
-**查关闭原因和关联实现，不只看 issue 颜色。** 已合并的实现覆盖了同一行为，就收起重复实现；仍有独立失败路径时，说明剩余差量，按项目要求讨论。标题相似、issue 关闭或搜索没结果，都不能单独证明代码已经修好。
+**查关闭原因和关联实现，不只看 issue 颜色。** 已合并的实现覆盖了同一行为，就收起重复实现；关联 PR 尚未合并时，分清它拟覆盖与明确不覆盖的行为，避免重复实现，先就重叠和剩余差量协调。仍有独立失败路径时按项目要求推进，不把开放 PR 当成已修复，也不当成排他占用。标题相似、issue 关闭或搜索没结果，都不能单独证明代码已经修好。
 
 本仓 Goose LiteLLM 候选原来缺的是：给代理别名补视觉能力，并在请求格式化前生效、保留显式布尔配置。10 月 30 日核到上游 [#13239](https://github.com/aaif-goose/goose/pull/13239) 已合入相应实现，因而停止重投旧修复，保留历史补丁与回归结果。当前分支已修与用户安装的 release 已修要分别核；旧测试也只对应当时的候选。
 
-**依据**：[原问题 #13158](https://github.com/aaif-goose/goose/issues/13158)、[固定合入差量](https://github.com/aaif-goose/goose/commit/f131ff7e9bba223686b1d5e2243d6c1e07685097)、[本仓旧候选](../../experiments/candidate-reset-recovery/README.md)；来源及实现核对 2026-10-30，未运行当前 Goose。
+**依据**：[原问题 #13158](https://github.com/aaif-goose/goose/issues/13158)、[固定合入差量](https://github.com/aaif-goose/goose/commit/f131ff7e9bba223686b1d5e2243d6c1e07685097)、[本仓旧候选](../../experiments/candidate-reset-recovery/README.md)；Goose 来源及实现核对 2026-10-30，未运行当前 Goose。开放 PR 的部分覆盖见 [Qwen #15757](https://github.com/QwenLM/qwen-code/pull/15757)及[读者核查与纠正](../collaboration/local-jobs/artifacts/A-UPSTREAM-QWEN-GATE-READER-20261031/result.md)（2026-10-31）；本机附页／新读者隔离尚未独立证实，修改后照做验收仍待。
 
 ## 条件满足后：交可审结果，继续负责回应
 
