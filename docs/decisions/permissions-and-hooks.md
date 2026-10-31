@@ -71,6 +71,14 @@ network_access = false
 
 **依据**：[实际配置] [Anthropic SDK 精确命令](https://github.com/anthropics/claude-agent-sdk-python/blob/2d485201617258867dd0f74b9e7307056f5938fe/.claude/settings.json)；[真实取舍] [Pydantic 收窄 allow #3860](https://github.com/pydantic/pydantic-ai/pull/3860)、[撤回 ask #4396 与维护者说明](https://github.com/pydantic/pydantic-ai/pull/4396#issuecomment-3939631046)；[官方匹配与版本条件](https://code.claude.com/docs/en/sandboxing#auto-allow-mode)。核实 2026-10-28，未在本仓客户端试用。
 
+## Copilot CLI：共享配置不能代替成员的批准
+
+**团队或工作坊可共享命令说明，但不能把 Claude 的 `permissions.allow`／`ask`／`deny` 数组搬进 Copilot 的仓库设置。** 当前 `.github/copilot/settings.json` 不支持这些键，`settings.local.json` 也使用同一 schema；能读取部分 `.claude/settings.json`，不代表继承其中的权限规则。
+
+**把项目测试、lint 等具体命令和用途入库，让成员按自己的原生权限入口审阅采用。** `~/.copilot/permissions-config.json` 是按本机绝对项目位置保存的批准记录，不支持 deny、ask 或仓库共享策略，不宜复制给全队；同一用户配置下，linked worktrees 按主仓位置共享批准，不是独立权限边界。需要统一强制规则时，由管理员配置 managed permissions，不能拿仓库文件或 `--allow-all` 补缺。
+
+**依据**：[真实工作坊需求 #5297](https://github.com/github/copilot-cli/issues/5297)（仍开放）；[官方仓库设置](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#repository-settings-githubcopilotsettingsjson)、[个人批准记录](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#permissions-configjson)、[托管权限](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#managed-permission-rules)。核实 2026-10-31；本仓未运行 Copilot CLI 或部署这些策略。
+
 ## Hooks：先补一种反复出现的漏项
 
 **✅ 已有测试、格式化和 CI 能覆盖，就继续用原入口；🧪 只有编辑期反馈确实有用时才加窄 Hook。**
