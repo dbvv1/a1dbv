@@ -1,0 +1,870 @@
+{
+  "checked_on": "2026-10-31 UTC",
+  "issue": "https://github.com/microsoft/agent-framework/issues/9454",
+  "source_main": "b7884ad88eb85c27b2a7bf40c0e15948e7ccc28d",
+  "scope": "Real framework loop; scripted client and in-memory proxy, no network/model/service. Expected defect and fallback observations are passing assertions, not fixes.",
+  "consumer_probe_sha256": "d690fdbc8cd7916d0222ab3262a8eeef267bb4b2514fd7e301ca7b5cce45153c",
+  "author_runs": [
+    {
+      "import_source": "PyPI agent-framework-core==1.22.0",
+      "raw_stdout_sha256": "a710031ebf44b1ead0ab2b9667df15f5f5054992dcc16ff04dc63e9aeb4dacdd",
+      "python": "3.12.14",
+      "platform": "Linux",
+      "installed_distribution_version": "1.22.0",
+      "imported_source_sha256": {
+        "_tools.py": "65e06630ed9178dbd74cd4348f96d9818c71790dcb384d4d33a567c208dc7ca0",
+        "_middleware.py": "c0b1da9ad919dafc67f719859c039222ed6843237acc222d5893f96976e8568b",
+        "_clients.py": "5d54ecb2987aef2f33bebb39ff969ecf057b3310f6112d9ac90b9848c571fb32",
+        "_types.py": "910e899e555b7a46ecdb4265795b76a680b6360d6e6964fa3eac7f01536eb58e"
+      },
+      "pair_scenarios": [
+        {
+          "middleware_scope": "none",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "client",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "none",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "client",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        }
+      ],
+      "guarded_dispatch_scenarios": [
+        {
+          "middleware_scope": "none",
+          "dispatches": [],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "Error: Function failed."
+            },
+            {
+              "call_id": "call-b",
+              "result": "Error: Function failed."
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same"
+            }
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "accepted:call-a"
+            },
+            {
+              "call_id": "call-b",
+              "result": "accepted:call-b"
+            }
+          ],
+          "assertions": "passed"
+        }
+      ],
+      "empty_provider_id_counterexample": {
+        "raw_provider_ids": [
+          "",
+          ""
+        ],
+        "nonempty_metadata_guard_accepted": 2,
+        "metadata_ids_equal_generated_occurrence_ids": true,
+        "fallback_warnings": 2,
+        "assertions": "passed"
+      },
+      "manual_and_guard": {
+        "invoke_tool_call_id_visible": null,
+        "invalid_ids_rejected": 4
+      },
+      "all_assertions": "passed"
+    },
+    {
+      "import_source": "PyPI agent-framework-core==1.24.0",
+      "raw_stdout_sha256": "233e80ddb3c2ee0187295fa32c33cccb5d4d7428288c259f6d43d81dcd85c2df",
+      "python": "3.12.14",
+      "platform": "Linux",
+      "installed_distribution_version": "1.24.0",
+      "imported_source_sha256": {
+        "_tools.py": "c24d37208ac7f5f17c63f98c9a57132a6a442f1e959a317126c691ee20ec5fad",
+        "_middleware.py": "c0b1da9ad919dafc67f719859c039222ed6843237acc222d5893f96976e8568b",
+        "_clients.py": "92aab5e94f1423832c0ff4bf7d80ff224c5d5973ac2ea82cbbca54323fc71005",
+        "_types.py": "ed4198537bf0b71cd8f7e22ecc32d3c8e07436f4f1c66cbba4923e4019087a64"
+      },
+      "pair_scenarios": [
+        {
+          "middleware_scope": "none",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "client",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "none",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "client",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        }
+      ],
+      "guarded_dispatch_scenarios": [
+        {
+          "middleware_scope": "none",
+          "dispatches": [],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "Error: Function failed."
+            },
+            {
+              "call_id": "call-b",
+              "result": "Error: Function failed."
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same"
+            }
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "accepted:call-a"
+            },
+            {
+              "call_id": "call-b",
+              "result": "accepted:call-b"
+            }
+          ],
+          "assertions": "passed"
+        }
+      ],
+      "empty_provider_id_counterexample": {
+        "raw_provider_ids": [
+          "",
+          ""
+        ],
+        "nonempty_metadata_guard_accepted": 2,
+        "metadata_ids_equal_generated_occurrence_ids": true,
+        "fallback_warnings": 2,
+        "assertions": "passed"
+      },
+      "manual_and_guard": {
+        "invoke_tool_call_id_visible": null,
+        "invalid_ids_rejected": 4
+      },
+      "all_assertions": "passed"
+    },
+    {
+      "import_source": "Fixed main source via PYTHONPATH; dependencies from core 1.24.0 environment",
+      "raw_stdout_sha256": "e7de00481d0b2f5d65a0368f1d23f12e25634a0c8fcde0261e0a1f51d11ebacb",
+      "python": "3.12.14",
+      "platform": "Linux",
+      "installed_distribution_version": "1.24.0",
+      "imported_source_sha256": {
+        "_tools.py": "c24d37208ac7f5f17c63f98c9a57132a6a442f1e959a317126c691ee20ec5fad",
+        "_middleware.py": "c0b1da9ad919dafc67f719859c039222ed6843237acc222d5893f96976e8568b",
+        "_clients.py": "1ef38e4295847283099012f82914c46b8e07b520a62901d532436bd49de9ae27",
+        "_types.py": "a3925d8c1b12829e6c957ce463e2a85e34ad078270a30da94219fe7bee13625f"
+      },
+      "pair_scenarios": [
+        {
+          "middleware_scope": "none",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "client",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "stream": false,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "none",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": null,
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "client",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "stream": true,
+          "schema_properties": [
+            "q"
+          ],
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same",
+              "receipt": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same",
+              "receipt": "receipt-2"
+            }
+          ],
+          "completion_order": [
+            "receipt-2",
+            "receipt-1"
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "receipt-1"
+            },
+            {
+              "call_id": "call-b",
+              "result": "receipt-2"
+            }
+          ],
+          "assertions": "passed"
+        }
+      ],
+      "guarded_dispatch_scenarios": [
+        {
+          "middleware_scope": "none",
+          "dispatches": [],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "Error: Function failed."
+            },
+            {
+              "call_id": "call-b",
+              "result": "Error: Function failed."
+            }
+          ],
+          "assertions": "passed"
+        },
+        {
+          "middleware_scope": "agent",
+          "dispatches": [
+            {
+              "call_id": "call-a",
+              "q": "same"
+            },
+            {
+              "call_id": "call-b",
+              "q": "same"
+            }
+          ],
+          "next_model_request_results": [
+            {
+              "call_id": "call-a",
+              "result": "accepted:call-a"
+            },
+            {
+              "call_id": "call-b",
+              "result": "accepted:call-b"
+            }
+          ],
+          "assertions": "passed"
+        }
+      ],
+      "empty_provider_id_counterexample": {
+        "raw_provider_ids": [
+          "",
+          ""
+        ],
+        "nonempty_metadata_guard_accepted": 2,
+        "metadata_ids_equal_generated_occurrence_ids": true,
+        "fallback_warnings": 2,
+        "assertions": "passed"
+      },
+      "manual_and_guard": {
+        "invoke_tool_call_id_visible": null,
+        "invalid_ids_rejected": 4
+      },
+      "all_assertions": "passed"
+    }
+  ],
+  "independent_review": {
+    "scope": "Separate non-author code and documentation review plus actual reruns; not zero-context reader acceptance or real proxy-service validation.",
+    "runs": [
+      {
+        "source": "1.22",
+        "raw_stdout_sha256": "a710031ebf44b1ead0ab2b9667df15f5f5054992dcc16ff04dc63e9aeb4dacdd",
+        "imported_files_and_behavior_match_author": true,
+        "framework_scenarios": 9,
+        "manual_and_four_invalid_metadata_checks": "passed"
+      },
+      {
+        "source": "1.24",
+        "raw_stdout_sha256": "233e80ddb3c2ee0187295fa32c33cccb5d4d7428288c259f6d43d81dcd85c2df",
+        "imported_files_and_behavior_match_author": true,
+        "framework_scenarios": 9,
+        "manual_and_four_invalid_metadata_checks": "passed"
+      },
+      {
+        "source": "main",
+        "raw_stdout_sha256": "e7de00481d0b2f5d65a0368f1d23f12e25634a0c8fcde0261e0a1f51d11ebacb",
+        "imported_files_and_behavior_match_author": true,
+        "framework_scenarios": 9,
+        "manual_and_four_invalid_metadata_checks": "passed"
+      }
+    ],
+    "required_corrections_applied": [
+      "Check raw provider ID before automatic loop; metadata fallback can pass a nonempty guard.",
+      "Describe guard failure as blocked dispatch and a tool error, not termination of the entire Agent."
+    ]
+  },
+  "readme_command_replay": {
+    "environment": "Fresh Python 3.12 venv; pip install from committed requirements.txt",
+    "all_assertions": "passed",
+    "output_matches_release_1_24_run": true,
+    "raw_stdout_sha256": "233e80ddb3c2ee0187295fa32c33cccb5d4d7428288c259f6d43d81dcd85c2df"
+  }
+}

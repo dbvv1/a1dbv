@@ -120,6 +120,14 @@ OpenAI 的对应划分（developers.openai.com）：
 
 **依据**：[一手] [OpenAI SandboxAgent](https://developers.openai.com/api/docs/guides/agents/sandboxes)、[Agents API Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)、[app-server 当前契约](https://learn.chatgpt.com/docs/app-server)、Claude／Codex SDK 固定文档、Claude Agent SDK 安装文档（未运行验证）；[研究] [S6a 选型补核](research/2026-10-10-audit.md#s6a--2026-10-15-sdk托管选型补核)；核实 2026-10-22。
 
+### 工具外派时，分别验证框架回传与服务端关联
+
+**🧪 已用 Python Agent Framework 且外部服务按 provider ID 存结果时，先核原始 ID，再用函数中间件取得调用上下文。** Core 1.22.0／1.24.0 无函数中间件时，工具 context 没有 ID，框架回传结果却仍带 ID；按工具名、参数或完成顺序配对会漏掉同参并发调用。先跑[可复制对照与临时取值入口](../experiments/agent-framework-call-id/README.md)，不为这个缺口重写整个循环。
+
+本次真框架、脚本模型与内存代理的 9 场景在三个版本都符合预期，包含流式、逆序完成和失败路径。特别是空 provider ID 会被框架回填，**metadata 非空不能证明 ID 来自 provider**；须在适配器边界先核来源。只有框架内执行的工具无需加这层，跨会话回放与真实服务尚未验收。
+
+**依据**：[真实使用者 #9454](https://github.com/microsoft/agent-framework/issues/9454)、[固定源码与实际输出](../experiments/agent-framework-call-id/README.md#真框架脚本模型的对照结果)；核实 2026-10-31。临时键尚非公共 API 保证，升级重测。
+
 ## 4. 设计要点（不管用哪家）
 
 **先按工具面、上下文、组合调用、质量评判、安全与成本的顺序补缺口，每一层都先复用现成机制。**
