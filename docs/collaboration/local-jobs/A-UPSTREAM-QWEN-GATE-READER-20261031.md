@@ -1,7 +1,7 @@
 # A-UPSTREAM-QWEN-GATE-READER-20261031 · 用真实 Qwen 候选验证投稿前判断入口
 id: A-UPSTREAM-QWEN-GATE-READER-20261031
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8da233c89e9bd92d4f3bb4f0d6b5fa11ebba5275
@@ -18,3 +18,11 @@ page: docs/decisions/upstream-contributions.md@8da233c89e9bd92d4f3bb4f0d6b5fa11e
 ## 验收与节奏
 非读者核完整页面实际附入、当前项目规则与代码、读者结论对应证据；页面卡点与模型失误分列。仅验投稿前判断，不当完整投稿闭环、最新代码验证或四广扫完成；check_repo、check_public、空白和提交身份检查须通过。
 单元 60–90 分钟、最多 2 小时；到时交实际结果与缺口并按原协议收尾，不靠重复调用凑时。按 receiver 共享最多 4 调度；新 ID 与旧 sources 写域独立，未知历史调用不计为已退出，异常沿原调用核查，不另起重试任务。
+
+## 当前结果
+
+- 读者照附入页完成 Qwen #15741 旧候选的投稿前判断（taskDone=true）：附入页与 8da233c8 逐字一致，选定“在 #15741 发范围确认评论、不投当前补丁”的下一步。页面卡点 3 处（未合并但已覆盖部分行为的开放 PR 无处置指引、无“项目愿意接”的可判定信号、必跑 preflight 被环境阻断时无记录规则）；未关闭审查问题 1 项：result.md 的 check-runs 统计只取接口第一页 100 条（14 cancelled／83 skipped／3 success），全量为 15／157／21，定性结论不变。
+- 产物：[6eef910](https://github.com/dbvv1/a1dbv/commit/6eef9104add31c392ec8727d7a0a42d101e2b87d)，分支 `relay/a-upstream-qwen-gate-reader-20261031`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无剩余工作单元；接收端回写本卡、推送 result_branch 并回 review_ready。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
