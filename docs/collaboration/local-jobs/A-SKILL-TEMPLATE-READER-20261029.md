@@ -1,7 +1,7 @@
 # A-SKILL-TEMPLATE-READER-20261029 · 将已定路线同步到通用模板入口
 id: A-SKILL-TEMPLATE-READER-20261029
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 017a3363db3294f11e6f4965869bfac426569c44
@@ -20,8 +20,7 @@ result_branch: relay/a-skill-template-reader-20261029
 
 ## 当前结果
 
-- 读者按页面完成剩余同步：在通用 AGENTS.md 和模板 README 补上按任务复用已有 Skill／MCP 的入口，并回写读者记录。照做实测 taskDone=true，两份 Markdown 通过 check_repo、check_public 与 diff 检查；页面卡点是「第一轮怎么做」未给“当前启用能力”的检查清单（次要、不阻塞，同节已有“没有匹配项”分支）。仍未关闭的审查问题（均为非阻塞）：把 check_repo 的 UnicodeEncodeError 归因于本机 stdout 编码，实际与测试残留目录同源；新入口未逐句覆盖“说明路径与选择理由”和不额外复制外部配方的审批说明。
-- 产物：[47d969c](https://github.com/dbvv1/a1dbv/commit/47d969cb8b806e9b81c2fce48cf84bbf222dabcc)，分支 `relay/a-skill-template-reader-20261029`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：无剩余单元，接收端可提交本单元结果
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- 接收（2026-10-31）：接收已经进入 main 的两份模板入口同步及“无匹配 Skill 时沿原工具完成”的实际路径；保留原 Windows 测试失败、当前修订页的新读者与安装／加载分支待验，不升级 Skills 地图评级、不重排旧任务。
+- [固定产物与复核](https://github.com/dbvv1/a1dbv/blob/47d969cb8b806e9b81c2fce48cf84bbf222dabcc/reader-tests/A-SKILL-TEMPLATE-READER-20261029-u1.md)：读者完成同步，非读者核实两份模板 diff、权限不扩张和 task-decisions 仅显式调用；当前 main 的两文件与该产物一致。手动读取模板正文不计客户端加载成功。
+- 原本机 10 项测试为 25 failures／4 errors；测试残留目录同时触发链接报错与 GBK 输出异常，不能归为单纯 stdout 问题。POSIX 目标的手工配方通过只支持该入口，不抹去原失败。2026-10-31 当前 main 的 14 项 overlay 回归在云端 POSIX 通过，不是原生 Windows 补验。
+- 非阻塞页缺口仍保留：未给“当前启用能力”检查清单；模板非逐句复制“路径／理由”和外部配方审批说明。原入口已经保留无匹配分支及不新增安装、联网、外部写入或发布权限，无需为逐句一致扩写模板。

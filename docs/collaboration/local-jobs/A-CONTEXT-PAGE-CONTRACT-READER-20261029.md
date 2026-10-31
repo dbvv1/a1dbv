@@ -1,6 +1,6 @@
 id: A-CONTEXT-PAGE-CONTRACT-READER-20261029
 owner: dot-A
-status: review_ready
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5847ea532dbf7437ca8c4865af031ce0d862a153
 result_branch: relay/a-context-page-contract-reader-20261029
@@ -32,8 +32,7 @@ page: docs/decisions/context-management.md@dot-a/context-concise-reader-20261029
 
 ## 当前结果
 
-- u5 独立读者完成仓库侧验收：接收端附入的页面全文与 page 固定提交 d0b9651b 逐字节一致，9 项单测、check_repo（567 文件 0 错误）与 check_public（993 文件 0 发现）复跑通过，最小卡/缺页/80 行边界探针符合预期；非读者确认 taskDone=true，未关闭审查问题 0（remaining=false，另记 5 条读者记录的表述与完整性偏差，如把分支当固定 ref、行号引用错位、漏记 TASKS.md 大小检查）；页面造成的卡点为 0（pageStuck 为空），但读者自报开工时读过遗留旧产物，独立性不合格，干净结论需换未读旧产物的读者重跑。
-- 产物：[fe4774b](https://github.com/dbvv1/a1dbv/commit/fe4774ba7c800b17ec095c24a964ec1f57d5ed9d)，分支 `relay/a-context-page-contract-reader-20261029`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端提交本单元两处产物；若需要干净的 reader-test 信号，派未读过 result.md/result-u4.md/result-u5.md 的新读者复跑。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- 处置（2026-10-31）：保留仓库侧可复跑检查，拒收 u5 为独立新读者证据；原卡暂停，不自动重跑或重派，地图保持原评级。恢复须有自然真实任务、未读旧产物的新上下文与符合当前协议的页面输入，并先核实际共享容量。
+- [固定记录与非读者复核](https://github.com/dbvv1/a1dbv/blob/fe4774ba7c800b17ec095c24a964ec1f57d5ed9d/reader-tests/A-CONTEXT-PAGE-CONTRACT-READER-20261029-u5.md)：附入文本与当时 d0b9651b 文件一致；原 9 项单测、文档／公开扫描及独立边界探针可复跑。接收端如何解析 ref、处理缺页仍未知，未验证原生压缩／续接。
+- u5 开工读过旧 result／u4／u5 产物，独立性不合格；`taskDone=true` 只支持所核仓库结果，不能抵消此缺口。分支名会移动，d0b9651b 是当时解析结果；行号曾误用 job.md，检查器概述漏 TASKS 大小限制，最小卡所在目录也未触发行数检查；这些不得原样当作正确说明引用。
+- 原页“跳过锚点”的精度反馈仍保留：带 fragment 的本地文件路径仍检查是否存在，不是整条链接跳过；不以结构化 `pageStuck` 为空覆盖这条文字反馈。

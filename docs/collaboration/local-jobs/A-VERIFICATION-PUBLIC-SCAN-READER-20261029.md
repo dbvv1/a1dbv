@@ -1,7 +1,7 @@
 # A-VERIFICATION-PUBLIC-SCAN-READER-20261029 · 真正运行公开扫描器
 id: A-VERIFICATION-PUBLIC-SCAN-READER-20261029
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5847ea532dbf7437ca8c4865af031ce0d862a153
@@ -29,8 +29,7 @@ page: docs/decisions/verification.md@dot-a/verification-page-candidate-20261029
 
 ## 当前结果
 
-- 读者照页面做成（taskDone=true）：候选 5f8b0b10 的 `check_public.py` 文件扫描 CLI 可接收——正常任务词在父版误报 exit 1、修后 exit 0，两版都仍检出并脱敏合成 sk-/ghp_ 凭据，新增回归在父实现 FAILED、候选通过；审查无未关闭问题（openIssues 为空）。页面造成 3 处卡点（pageStuck）：未说明扫描器按 git 索引取文件时如何做提交级仓外检出、未提醒 TMP 不能落在任何 git 仓内、未覆盖“回归与修复在同一提交”时如何做修复前应失败的对照。记录见 reader-tests/A-VERIFICATION-PUBLIC-SCAN-READER-20261029-u1.md。
-- 产物：[c6f6ffc](https://github.com/dbvv1/a1dbv/commit/c6f6ffcb7b1d4a2eec987f61b128f0cd12de60cb)，分支 `relay/a-verification-public-scan-reader-20261029`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：本单元已全部完成，等待接收端做公开扫描、提交并发布结果分支。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- 接收（2026-10-31）：接收固定候选的正常词误报、带分隔符合成凭据检出／脱敏与同回归旧失败新通过的 CLI 证据，以及三处页面卡点；不等于原 Windows 全套通过或修订页完成新读者验收，不重排旧任务。
+- [固定记录与非作者复核](https://github.com/dbvv1/a1dbv/blob/c6f6ffcb7b1d4a2eec987f61b128f0cd12de60cb/reader-tests/A-VERIFICATION-PUBLIC-SCAN-READER-20261029-u1.md)支持上述范围。读者另读了其他任务的 reader-test 格式，超出允许材料，不能称完全合规的干净读者；它不是本题旧答案，真实 CLI 对照另经非读者复跑。
+- 原两版各 22 项均为 3 failures／2 errors：三失败来自临时用户目录触发扫描规则，移出后通过；两错误为 Windows 非法文件名与默认 GBK 解码，不是五项都不支持符号链接。完整 offline 入口预检 rc=2、未运行阶段。紧邻字母／数字的弱 sk 形状不再检出，是原候选词边界取舍，安全结论只覆盖实测输入。
+- 三项页面缺口已在[当前补丁验收入口](../../decisions/verification.md#已有补丁同一条回归要真正跑到旧新两份实现)落实：有索引的固定检出、候选回归放到旧实现、核夹具是否处于其他 Git 仓。后续脚本修订及 2026-10-31 云端 POSIX 的 31 项回归通过不替代原生 Windows／完整离线入口或修订页本机新读者补验。
