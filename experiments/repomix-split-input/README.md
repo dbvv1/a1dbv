@@ -68,3 +68,5 @@ node ../repomix-release/bin/repomix.cjs . --style json --split-output 200kb \
 连续三次读取结果；另一个干净输入目录改用 `../repomix-fixed/bin/repomix.cjs` 验修复。把 `-o` 改为输入树外路径验证处理方法，去掉 `--split-output 200kb` 验单文件对照。不要在同一副本中混跑后把旧产物带入另一条件。默认安全扫描保留；本轮没有发现可疑文件，也没有据此宣称任意仓库都可直接外发。
 
 **依据与范围**：[使用者复现 #1920](https://github.com/yamadashy/repomix/issues/1920)、[v1.18.1 发布](https://github.com/yamadashy/repomix/releases/tag/v1.18.1)、[正式版输入排除](https://github.com/yamadashy/repomix/blob/80b4280a9196feace092fc672dfe2b5fac62ef08/src/core/file/fileSearch.ts#L460-L481)、[固定主干修复](https://github.com/yamadashy/repomix/blob/7d7b28bf3e651e2f34a284ca9c91074edfe1b88d/src/core/file/fileSearch.ts#L493-L512)、[维护者保留非编号文件的说明](https://github.com/yamadashy/repomix/pull/1921#issuecomment-6399383357)。官方源码、使用者原帖和本轮 CLI 对照均于 **2026-10-31 UTC** 核实；这是输入打包的窄诊断，不改变本仓按需取回原文的默认，也不补齐上下文页的原生压缩／新读者接续验收。
+
+**相关实测：成功打包也可能缺文件。** [旧编码文本对照](../repomix-encoding/README.md)中，1.18.1 把报告者五份输入里的三份旧编码文本判成 binary；独立 UTF-8 副本才全部入包。它不是本节分片回流问题，也不证明未知编码可自动转换。
