@@ -1,0 +1,942 @@
+{
+  "schema_version": 1,
+  "scope": "Cloud CLI and generated-Skill text evidence only; no model, actual login implementation, or local-reader acceptance.",
+  "public_projection": {
+    "path_replacements": [
+      "Trial directory replaced by <trial>.",
+      "Node executable path replaced by <node>."
+    ],
+    "summary": "Complete original six-condition summary, including before/after project hashes, retained except path replacements. Its warnings array is normalized; raw query JSON below preserves field absence.",
+    "queries": "All 18 status/apply/validate receipts retained including args, cwd, timestamps, exit, stdout and stderr, except path replacements. Init/new-change preparation logs remain outside this public projection.",
+    "environment": "Original environment receipt retained except npm distribution signatures, attestations, file count and unpacked size. No independent signature verification is claimed.",
+    "raw_summary_sha256": "ea71fb14068cc3490d5e9d9999bb3190bfce1633db30a5d38938a7e1235604ca",
+    "raw_environment_sha256": "183e3394fb860cb76d65470bfc2b8fb79831bd71a564d89b53ae6b38b27d322a",
+    "replay_script_sha256": "9043f0141f0952c29a98ada0133eb1583a430541fa69f7c9dc46ad37016ee3cd",
+    "project_hash_scope": "All files under each fixture project except paths containing .git, as implemented by the executed digest_tree function."
+  },
+  "source": {
+    "issue": "https://github.com/Fission-AI/OpenSpec/issues/2166",
+    "input_provenance": "Report provides CLI commands and proposal/design/tasks shape with one unchecked task, not document bodies. The short document bodies in fixtures are authored for this trial.",
+    "changed_application": false
+  },
+  "environment": {
+    "created_at_utc": "2026-10-31T15:09:45.497471+00:00",
+    "node": "v24.22.1",
+    "python": "Python 3.12.14",
+    "packages": [
+      {
+        "version": "1.14.3",
+        "npm_dist": {
+          "shasum": "bf083ea41e0d2c0dbbef00ca0e4f8ca1fdd84881",
+          "tarball": "https://registry.npmjs.org/@fission-ai/openspec/-/openspec-1.14.3.tgz",
+          "integrity": "sha512-ALFW1d5bSm6t27Kmcle93SDFuqUc8fLwy5ZdBfIiNffo0Yk9AEOJxw6xDqBv38eMM7l7TeOZBB/7C08luxYGfg=="
+        },
+        "lockfile_sha256": "577238df7cdf3cbc797e88acdd00c483f960d33cfd003049a113638725618a7d",
+        "installed_manifest_sha256": "f1ec4479b28e107da8bf7a7963d01a0ebb664061cbc2e5fd9c3bca70f18814af",
+        "metadata_lock_integrity_match": true
+      },
+      {
+        "version": "1.16.0",
+        "npm_dist": {
+          "shasum": "580efe69fa63b5678ca9b9fc9d94de139df68915",
+          "tarball": "https://registry.npmjs.org/@fission-ai/openspec/-/openspec-1.16.0.tgz",
+          "integrity": "sha512-WQVhZoIR5PoacH/H0qh84VKMcXFbKCIKuAI96arHS3KiKYhJStlRrjUKGxLqLYKLym0j+2hAAY5MZUrPE5qXIA=="
+        },
+        "lockfile_sha256": "9d3a76572a73e5e6a82691ee6b1d080e0eba8d063735b2d5bb387836413434d1",
+        "installed_manifest_sha256": "6ab8588ba1416c194f5d44103b6ae1649a272c3ae09f71be5283df432c3d3f69",
+        "metadata_lock_integrity_match": true
+      }
+    ],
+    "telemetry_env": {
+      "CI": "1",
+      "OPENSPEC_TELEMETRY": "0",
+      "DO_NOT_TRACK": "1"
+    },
+    "commands": [
+      "git init -q",
+      "openspec init --tools claude --no-animation",
+      "openspec new change add-login",
+      "openspec status --change add-login --json",
+      "openspec instructions apply --change add-login --json",
+      "openspec validate add-login --json"
+    ],
+    "no_model_invocation": true,
+    "no_application_implementation": true
+  },
+  "summary": [
+    {
+      "version": "1.14.3",
+      "case": "no-deltas",
+      "apply_exit": 0,
+      "state": "ready",
+      "warnings": [
+        "This change has no delta specs and does not declare `skip_specs: true`, so `openspec validate add-login` fails on it. Write the delta specs before implementing (`openspec instructions specs --change add-login`), or add `skip_specs: true` to <trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/.openspec.yaml if this change really changes no specified behavior."
+      ],
+      "progress": {
+        "total": 1,
+        "complete": 0,
+        "remaining": 1
+      },
+      "validate_exit": 1,
+      "status_exit": 0,
+      "skill_sha256": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+      "skill_mentions_warnings": false,
+      "skill_has_proceed_fallthrough": true,
+      "project_unchanged_by_queries": true,
+      "project_hashes_before": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+        ".claude/skills/openspec-archive-change/SKILL.md": "b66442ad0d1a226dbd46a2e36a50ced6bcaaf11b172d9f505e7d6fa7fdf4879b",
+        ".claude/skills/openspec-explore/SKILL.md": "87a5fd0b430b73fb63d2736396f22ca27ac48c032746958d33eb06bcbca88ce3",
+        ".claude/skills/openspec-propose/SKILL.md": "c8179809e950cac132faf29d27ae059e72115148695585552814fed376353ac1",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "a9d36b7395f16c3566d078ca2c162a0ee8022bcdd9aff035a560fb9e98685ed0",
+        ".claude/skills/openspec-update-change/SKILL.md": "792a830a5cbd64145c9c3dfd82ff6879d87a8bc2d71dc9246823c193842186b9",
+        "openspec/changes/add-login/.openspec.yaml": "c6ab3a95d8d0fd469ca8750ef79234025bf4a8356d5d57856e97d7e47fc8b6c2",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "project_hashes_after": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+        ".claude/skills/openspec-archive-change/SKILL.md": "b66442ad0d1a226dbd46a2e36a50ced6bcaaf11b172d9f505e7d6fa7fdf4879b",
+        ".claude/skills/openspec-explore/SKILL.md": "87a5fd0b430b73fb63d2736396f22ca27ac48c032746958d33eb06bcbca88ce3",
+        ".claude/skills/openspec-propose/SKILL.md": "c8179809e950cac132faf29d27ae059e72115148695585552814fed376353ac1",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "a9d36b7395f16c3566d078ca2c162a0ee8022bcdd9aff035a560fb9e98685ed0",
+        ".claude/skills/openspec-update-change/SKILL.md": "792a830a5cbd64145c9c3dfd82ff6879d87a8bc2d71dc9246823c193842186b9",
+        "openspec/changes/add-login/.openspec.yaml": "c6ab3a95d8d0fd469ca8750ef79234025bf4a8356d5d57856e97d7e47fc8b6c2",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "warnings_field_present": true
+    },
+    {
+      "version": "1.14.3",
+      "case": "valid-delta",
+      "apply_exit": 0,
+      "state": "ready",
+      "warnings": [],
+      "progress": {
+        "total": 1,
+        "complete": 0,
+        "remaining": 1
+      },
+      "validate_exit": 0,
+      "status_exit": 0,
+      "skill_sha256": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+      "skill_mentions_warnings": false,
+      "skill_has_proceed_fallthrough": true,
+      "project_unchanged_by_queries": true,
+      "project_hashes_before": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+        ".claude/skills/openspec-archive-change/SKILL.md": "b66442ad0d1a226dbd46a2e36a50ced6bcaaf11b172d9f505e7d6fa7fdf4879b",
+        ".claude/skills/openspec-explore/SKILL.md": "87a5fd0b430b73fb63d2736396f22ca27ac48c032746958d33eb06bcbca88ce3",
+        ".claude/skills/openspec-propose/SKILL.md": "c8179809e950cac132faf29d27ae059e72115148695585552814fed376353ac1",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "a9d36b7395f16c3566d078ca2c162a0ee8022bcdd9aff035a560fb9e98685ed0",
+        ".claude/skills/openspec-update-change/SKILL.md": "792a830a5cbd64145c9c3dfd82ff6879d87a8bc2d71dc9246823c193842186b9",
+        "openspec/changes/add-login/.openspec.yaml": "c6ab3a95d8d0fd469ca8750ef79234025bf4a8356d5d57856e97d7e47fc8b6c2",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/specs/user-auth/spec.md": "91ead27dffb7ca6429fb28b0993ce9f5ee1173bee27632f856ef3589d71f6382",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "project_hashes_after": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+        ".claude/skills/openspec-archive-change/SKILL.md": "b66442ad0d1a226dbd46a2e36a50ced6bcaaf11b172d9f505e7d6fa7fdf4879b",
+        ".claude/skills/openspec-explore/SKILL.md": "87a5fd0b430b73fb63d2736396f22ca27ac48c032746958d33eb06bcbca88ce3",
+        ".claude/skills/openspec-propose/SKILL.md": "c8179809e950cac132faf29d27ae059e72115148695585552814fed376353ac1",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "a9d36b7395f16c3566d078ca2c162a0ee8022bcdd9aff035a560fb9e98685ed0",
+        ".claude/skills/openspec-update-change/SKILL.md": "792a830a5cbd64145c9c3dfd82ff6879d87a8bc2d71dc9246823c193842186b9",
+        "openspec/changes/add-login/.openspec.yaml": "c6ab3a95d8d0fd469ca8750ef79234025bf4a8356d5d57856e97d7e47fc8b6c2",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/specs/user-auth/spec.md": "91ead27dffb7ca6429fb28b0993ce9f5ee1173bee27632f856ef3589d71f6382",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "warnings_field_present": false
+    },
+    {
+      "version": "1.14.3",
+      "case": "explicit-skip",
+      "apply_exit": 0,
+      "state": "ready",
+      "warnings": [],
+      "progress": {
+        "total": 1,
+        "complete": 0,
+        "remaining": 1
+      },
+      "validate_exit": 0,
+      "status_exit": 0,
+      "skill_sha256": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+      "skill_mentions_warnings": false,
+      "skill_has_proceed_fallthrough": true,
+      "project_unchanged_by_queries": true,
+      "project_hashes_before": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+        ".claude/skills/openspec-archive-change/SKILL.md": "b66442ad0d1a226dbd46a2e36a50ced6bcaaf11b172d9f505e7d6fa7fdf4879b",
+        ".claude/skills/openspec-explore/SKILL.md": "87a5fd0b430b73fb63d2736396f22ca27ac48c032746958d33eb06bcbca88ce3",
+        ".claude/skills/openspec-propose/SKILL.md": "c8179809e950cac132faf29d27ae059e72115148695585552814fed376353ac1",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "a9d36b7395f16c3566d078ca2c162a0ee8022bcdd9aff035a560fb9e98685ed0",
+        ".claude/skills/openspec-update-change/SKILL.md": "792a830a5cbd64145c9c3dfd82ff6879d87a8bc2d71dc9246823c193842186b9",
+        "openspec/changes/add-login/.openspec.yaml": "a2388f7f2e8033f3e9cc7c648738f7ff3d462b6c8eea8267f8ff598cd1149831",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "project_hashes_after": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+        ".claude/skills/openspec-archive-change/SKILL.md": "b66442ad0d1a226dbd46a2e36a50ced6bcaaf11b172d9f505e7d6fa7fdf4879b",
+        ".claude/skills/openspec-explore/SKILL.md": "87a5fd0b430b73fb63d2736396f22ca27ac48c032746958d33eb06bcbca88ce3",
+        ".claude/skills/openspec-propose/SKILL.md": "c8179809e950cac132faf29d27ae059e72115148695585552814fed376353ac1",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "a9d36b7395f16c3566d078ca2c162a0ee8022bcdd9aff035a560fb9e98685ed0",
+        ".claude/skills/openspec-update-change/SKILL.md": "792a830a5cbd64145c9c3dfd82ff6879d87a8bc2d71dc9246823c193842186b9",
+        "openspec/changes/add-login/.openspec.yaml": "a2388f7f2e8033f3e9cc7c648738f7ff3d462b6c8eea8267f8ff598cd1149831",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "warnings_field_present": false
+    },
+    {
+      "version": "1.16.0",
+      "case": "no-deltas",
+      "apply_exit": 0,
+      "state": "ready",
+      "warnings": [
+        "This change has no delta specs and does not declare `skip_specs: true`, so `openspec validate add-login` fails on it. Write the delta specs before implementing (`openspec instructions specs --change add-login`), or add `skip_specs: true` to <trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/.openspec.yaml if this change really changes no specified behavior."
+      ],
+      "progress": {
+        "total": 1,
+        "complete": 0,
+        "remaining": 1
+      },
+      "validate_exit": 1,
+      "status_exit": 0,
+      "skill_sha256": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+      "skill_mentions_warnings": false,
+      "skill_has_proceed_fallthrough": true,
+      "project_unchanged_by_queries": true,
+      "project_hashes_before": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/add-login/.openspec.yaml": "c6ab3a95d8d0fd469ca8750ef79234025bf4a8356d5d57856e97d7e47fc8b6c2",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "project_hashes_after": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/add-login/.openspec.yaml": "c6ab3a95d8d0fd469ca8750ef79234025bf4a8356d5d57856e97d7e47fc8b6c2",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "warnings_field_present": true
+    },
+    {
+      "version": "1.16.0",
+      "case": "valid-delta",
+      "apply_exit": 0,
+      "state": "ready",
+      "warnings": [],
+      "progress": {
+        "total": 1,
+        "complete": 0,
+        "remaining": 1
+      },
+      "validate_exit": 0,
+      "status_exit": 0,
+      "skill_sha256": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+      "skill_mentions_warnings": false,
+      "skill_has_proceed_fallthrough": true,
+      "project_unchanged_by_queries": true,
+      "project_hashes_before": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/add-login/.openspec.yaml": "c6ab3a95d8d0fd469ca8750ef79234025bf4a8356d5d57856e97d7e47fc8b6c2",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/specs/user-auth/spec.md": "91ead27dffb7ca6429fb28b0993ce9f5ee1173bee27632f856ef3589d71f6382",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "project_hashes_after": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/add-login/.openspec.yaml": "c6ab3a95d8d0fd469ca8750ef79234025bf4a8356d5d57856e97d7e47fc8b6c2",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/specs/user-auth/spec.md": "91ead27dffb7ca6429fb28b0993ce9f5ee1173bee27632f856ef3589d71f6382",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "warnings_field_present": false
+    },
+    {
+      "version": "1.16.0",
+      "case": "explicit-skip",
+      "apply_exit": 0,
+      "state": "ready",
+      "warnings": [],
+      "progress": {
+        "total": 1,
+        "complete": 0,
+        "remaining": 1
+      },
+      "validate_exit": 0,
+      "status_exit": 0,
+      "skill_sha256": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+      "skill_mentions_warnings": false,
+      "skill_has_proceed_fallthrough": true,
+      "project_unchanged_by_queries": true,
+      "project_hashes_before": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/add-login/.openspec.yaml": "a2388f7f2e8033f3e9cc7c648738f7ff3d462b6c8eea8267f8ff598cd1149831",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "project_hashes_after": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/add-login/.openspec.yaml": "a2388f7f2e8033f3e9cc7c648738f7ff3d462b6c8eea8267f8ff598cd1149831",
+        "openspec/changes/add-login/design.md": "c9513ef75f7209c6a219ba30be089e3fc9ad1d2ab323fec46e4bcabf796aa0c9",
+        "openspec/changes/add-login/proposal.md": "0495af4be649bf7dc9515cf392dc53ebd5db5fd9ef0dc6bf60269340bd7efb12",
+        "openspec/changes/add-login/tasks.md": "6d68e4c462b2c0db1377628bda70edf6143f94eafda17dfc70ec6f87e64b5328",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "f0082e9c22e8ce1d611c0f3b4d4915ce445e7ff2553cda6b713b6c25f390984c",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "warnings_field_present": false
+    }
+  ],
+  "queries": [
+    {
+      "version": "1.14.3",
+      "case": "no-deltas",
+      "command": "status",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "status",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/no-deltas/project",
+        "started_at_utc": "2026-10-31T15:07:44.432467+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<trial>/runs/1.14.3/no-deltas/project\",\n    \"changesDir\": \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/proposal.md\"\n      ]\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/specs/**/*.md\",\n      \"existingOutputPaths\": []\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/design.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": false,\n  \"isComplete\": false,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"Run openspec instructions specs --change \\\"add-login\\\" --json before writing that artifact.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<trial>/runs/1.14.3/no-deltas/project\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"ready\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/no-deltas/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "no-deltas",
+      "command": "instructions-apply",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "instructions",
+          "apply",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/no-deltas/project",
+        "started_at_utc": "2026-10-31T15:07:44.690243+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"changeDir\": \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"contextFiles\": {\n    \"proposal\": [\n      \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/proposal.md\"\n    ],\n    \"design\": [\n      \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/design.md\"\n    ],\n    \"tasks\": [\n      \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/tasks.md\"\n    ]\n  },\n  \"progress\": {\n    \"total\": 1,\n    \"complete\": 0,\n    \"remaining\": 1\n  },\n  \"tasks\": [\n    {\n      \"id\": \"1\",\n      \"description\": \"1.1 Implement password login.\",\n      \"done\": false,\n      \"sourcePath\": \"<trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/tasks.md\",\n      \"line\": 3\n    }\n  ],\n  \"taskTrackingConfigured\": true,\n  \"state\": \"ready\",\n  \"missingPrerequisites\": [\n    \"specs\"\n  ],\n  \"warnings\": [\n    \"This change has no delta specs and does not declare `skip_specs: true`, so `openspec validate add-login` fails on it. Write the delta specs before implementing (`openspec instructions specs --change add-login`), or add `skip_specs: true` to <trial>/runs/1.14.3/no-deltas/project/openspec/changes/add-login/.openspec.yaml if this change really changes no specified behavior.\"\n  ],\n  \"instruction\": \"Read context files, work through pending tasks, mark complete as you go.\\nPause if you hit blockers or need clarification.\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/no-deltas/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "no-deltas",
+      "command": "validate",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "validate",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/no-deltas/project",
+        "started_at_utc": "2026-10-31T15:07:44.952167+00:00",
+        "exit_code": 1,
+        "stdout": "{\n  \"items\": [\n    {\n      \"id\": \"add-login\",\n      \"type\": \"change\",\n      \"valid\": false,\n      \"issues\": [\n        {\n          \"level\": \"ERROR\",\n          \"path\": \"file\",\n          \"message\": \"Change must have at least one delta. No deltas found. Ensure your change has a specs/ directory with capability folders (e.g. specs/http-server/spec.md) containing .md files that use delta headers (## ADDED/MODIFIED/REMOVED/RENAMED Requirements) and that each requirement includes at least one \\\"#### Scenario:\\\" block. If this change intentionally modifies no specs (pure refactor, tooling, docs), set \\\"skip_specs: true\\\" in the change's .openspec.yaml instead. Tip: run \\\"openspec change show <change-id> --json --deltas-only\\\" to inspect parsed deltas.\"\n        }\n      ],\n      \"durationMs\": 19\n    }\n  ],\n  \"summary\": {\n    \"totals\": {\n      \"items\": 1,\n      \"passed\": 0,\n      \"failed\": 1\n    },\n    \"byType\": {\n      \"change\": {\n        \"items\": 1,\n        \"passed\": 0,\n        \"failed\": 1\n      }\n    }\n  },\n  \"version\": \"1.0\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/no-deltas/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "valid-delta",
+      "command": "status",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "status",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/valid-delta/project",
+        "started_at_utc": "2026-10-31T15:07:45.708574+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<trial>/runs/1.14.3/valid-delta/project\",\n    \"changesDir\": \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/proposal.md\"\n      ]\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/specs/**/*.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/specs/user-auth/spec.md\"\n      ]\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/design.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-login\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<trial>/runs/1.14.3/valid-delta/project\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/valid-delta/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "valid-delta",
+      "command": "instructions-apply",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "instructions",
+          "apply",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/valid-delta/project",
+        "started_at_utc": "2026-10-31T15:07:46.026616+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"changeDir\": \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"contextFiles\": {\n    \"proposal\": [\n      \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/proposal.md\"\n    ],\n    \"specs\": [\n      \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/specs/user-auth/spec.md\"\n    ],\n    \"design\": [\n      \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/design.md\"\n    ],\n    \"tasks\": [\n      \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/tasks.md\"\n    ]\n  },\n  \"progress\": {\n    \"total\": 1,\n    \"complete\": 0,\n    \"remaining\": 1\n  },\n  \"tasks\": [\n    {\n      \"id\": \"1\",\n      \"description\": \"1.1 Implement password login.\",\n      \"done\": false,\n      \"sourcePath\": \"<trial>/runs/1.14.3/valid-delta/project/openspec/changes/add-login/tasks.md\",\n      \"line\": 3\n    }\n  ],\n  \"taskTrackingConfigured\": true,\n  \"state\": \"ready\",\n  \"instruction\": \"Read context files, work through pending tasks, mark complete as you go.\\nPause if you hit blockers or need clarification.\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/valid-delta/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "valid-delta",
+      "command": "validate",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "validate",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/valid-delta/project",
+        "started_at_utc": "2026-10-31T15:07:46.273674+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"items\": [\n    {\n      \"id\": \"add-login\",\n      \"type\": \"change\",\n      \"valid\": true,\n      \"issues\": [],\n      \"durationMs\": 25\n    }\n  ],\n  \"summary\": {\n    \"totals\": {\n      \"items\": 1,\n      \"passed\": 1,\n      \"failed\": 0\n    },\n    \"byType\": {\n      \"change\": {\n        \"items\": 1,\n        \"passed\": 1,\n        \"failed\": 0\n      }\n    }\n  },\n  \"version\": \"1.0\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/valid-delta/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "explicit-skip",
+      "command": "status",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "status",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/explicit-skip/project",
+        "started_at_utc": "2026-10-31T15:07:47.042526+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<trial>/runs/1.14.3/explicit-skip/project\",\n    \"changesDir\": \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/proposal.md\"\n      ]\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/specs/**/*.md\",\n      \"existingOutputPaths\": []\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/design.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-login\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<trial>/runs/1.14.3/explicit-skip/project\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"skipped\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/explicit-skip/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "explicit-skip",
+      "command": "instructions-apply",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "instructions",
+          "apply",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/explicit-skip/project",
+        "started_at_utc": "2026-10-31T15:07:47.311415+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"changeDir\": \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"contextFiles\": {\n    \"proposal\": [\n      \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/proposal.md\"\n    ],\n    \"design\": [\n      \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/design.md\"\n    ],\n    \"tasks\": [\n      \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/tasks.md\"\n    ]\n  },\n  \"progress\": {\n    \"total\": 1,\n    \"complete\": 0,\n    \"remaining\": 1\n  },\n  \"tasks\": [\n    {\n      \"id\": \"1\",\n      \"description\": \"1.1 Implement password login.\",\n      \"done\": false,\n      \"sourcePath\": \"<trial>/runs/1.14.3/explicit-skip/project/openspec/changes/add-login/tasks.md\",\n      \"line\": 3\n    }\n  ],\n  \"taskTrackingConfigured\": true,\n  \"state\": \"ready\",\n  \"instruction\": \"Read context files, work through pending tasks, mark complete as you go.\\nPause if you hit blockers or need clarification.\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/explicit-skip/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "explicit-skip",
+      "command": "validate",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.14.3/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "validate",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.14.3/explicit-skip/project",
+        "started_at_utc": "2026-10-31T15:07:47.563200+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"items\": [\n    {\n      \"id\": \"add-login\",\n      \"type\": \"change\",\n      \"valid\": true,\n      \"issues\": [\n        {\n          \"level\": \"INFO\",\n          \"path\": \"file\",\n          \"message\": \"skip_specs is set in .openspec.yaml: change declares no spec-level behavior changes, zero deltas accepted\"\n        }\n      ],\n      \"durationMs\": 25\n    }\n  ],\n  \"summary\": {\n    \"totals\": {\n      \"items\": 1,\n      \"passed\": 1,\n      \"failed\": 0\n    },\n    \"byType\": {\n      \"change\": {\n        \"items\": 1,\n        \"passed\": 1,\n        \"failed\": 0\n      }\n    }\n  },\n  \"version\": \"1.0\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.14.3/explicit-skip/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "no-deltas",
+      "command": "status",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "status",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/no-deltas/project",
+        "started_at_utc": "2026-10-31T15:07:48.308547+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<trial>/runs/1.16.0/no-deltas/project\",\n    \"changesDir\": \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/proposal.md\"\n      ]\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/specs/**/*.md\",\n      \"existingOutputPaths\": []\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/design.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": false,\n  \"isComplete\": false,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"Run openspec instructions specs --change \\\"add-login\\\" --json before writing that artifact.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<trial>/runs/1.16.0/no-deltas/project\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"ready\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/no-deltas/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "no-deltas",
+      "command": "instructions-apply",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "instructions",
+          "apply",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/no-deltas/project",
+        "started_at_utc": "2026-10-31T15:07:48.498222+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"changeDir\": \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"contextFiles\": {\n    \"proposal\": [\n      \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/proposal.md\"\n    ],\n    \"design\": [\n      \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/design.md\"\n    ],\n    \"tasks\": [\n      \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/tasks.md\"\n    ]\n  },\n  \"progress\": {\n    \"total\": 1,\n    \"complete\": 0,\n    \"remaining\": 1\n  },\n  \"tasks\": [\n    {\n      \"id\": \"1\",\n      \"description\": \"1.1 Implement password login.\",\n      \"done\": false,\n      \"sourcePath\": \"<trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/tasks.md\",\n      \"line\": 3\n    }\n  ],\n  \"taskTrackingConfigured\": true,\n  \"state\": \"ready\",\n  \"missingPrerequisites\": [\n    \"specs\"\n  ],\n  \"warnings\": [\n    \"This change has no delta specs and does not declare `skip_specs: true`, so `openspec validate add-login` fails on it. Write the delta specs before implementing (`openspec instructions specs --change add-login`), or add `skip_specs: true` to <trial>/runs/1.16.0/no-deltas/project/openspec/changes/add-login/.openspec.yaml if this change really changes no specified behavior.\"\n  ],\n  \"instruction\": \"Read context files, work through pending tasks, mark complete as you go.\\nPause if you hit blockers or need clarification.\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/no-deltas/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "no-deltas",
+      "command": "validate",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "validate",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/no-deltas/project",
+        "started_at_utc": "2026-10-31T15:07:48.694167+00:00",
+        "exit_code": 1,
+        "stdout": "{\n  \"items\": [\n    {\n      \"id\": \"add-login\",\n      \"type\": \"change\",\n      \"valid\": false,\n      \"issues\": [\n        {\n          \"level\": \"ERROR\",\n          \"path\": \"file\",\n          \"message\": \"Change must have at least one delta. No deltas found. Ensure your change has a specs/ directory with capability folders (e.g. specs/http-server/spec.md) containing .md files that use delta headers (## ADDED/MODIFIED/REMOVED/RENAMED Requirements) and that each requirement includes at least one \\\"#### Scenario:\\\" block. If this change intentionally modifies no specs (pure refactor, tooling, docs), set \\\"skip_specs: true\\\" in the change's .openspec.yaml instead. Tip: run \\\"openspec change show <change-id> --json --deltas-only\\\" to inspect parsed deltas.\"\n        }\n      ],\n      \"durationMs\": 21\n    }\n  ],\n  \"summary\": {\n    \"totals\": {\n      \"items\": 1,\n      \"passed\": 0,\n      \"failed\": 1\n    },\n    \"byType\": {\n      \"change\": {\n        \"items\": 1,\n        \"passed\": 0,\n        \"failed\": 1\n      }\n    }\n  },\n  \"version\": \"1.0\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/no-deltas/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "valid-delta",
+      "command": "status",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "status",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/valid-delta/project",
+        "started_at_utc": "2026-10-31T15:07:49.402927+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<trial>/runs/1.16.0/valid-delta/project\",\n    \"changesDir\": \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/proposal.md\"\n      ]\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/specs/**/*.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/specs/user-auth/spec.md\"\n      ]\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/design.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-login\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<trial>/runs/1.16.0/valid-delta/project\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/valid-delta/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "valid-delta",
+      "command": "instructions-apply",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "instructions",
+          "apply",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/valid-delta/project",
+        "started_at_utc": "2026-10-31T15:07:49.601690+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"changeDir\": \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"contextFiles\": {\n    \"proposal\": [\n      \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/proposal.md\"\n    ],\n    \"specs\": [\n      \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/specs/user-auth/spec.md\"\n    ],\n    \"design\": [\n      \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/design.md\"\n    ],\n    \"tasks\": [\n      \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/tasks.md\"\n    ]\n  },\n  \"progress\": {\n    \"total\": 1,\n    \"complete\": 0,\n    \"remaining\": 1\n  },\n  \"tasks\": [\n    {\n      \"id\": \"1\",\n      \"description\": \"1.1 Implement password login.\",\n      \"done\": false,\n      \"sourcePath\": \"<trial>/runs/1.16.0/valid-delta/project/openspec/changes/add-login/tasks.md\",\n      \"line\": 3\n    }\n  ],\n  \"taskTrackingConfigured\": true,\n  \"state\": \"ready\",\n  \"instruction\": \"Read context files, work through pending tasks, mark complete as you go.\\nPause if you hit blockers or need clarification.\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/valid-delta/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "valid-delta",
+      "command": "validate",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "validate",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/valid-delta/project",
+        "started_at_utc": "2026-10-31T15:07:49.808211+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"items\": [\n    {\n      \"id\": \"add-login\",\n      \"type\": \"change\",\n      \"valid\": true,\n      \"issues\": [],\n      \"durationMs\": 25\n    }\n  ],\n  \"summary\": {\n    \"totals\": {\n      \"items\": 1,\n      \"passed\": 1,\n      \"failed\": 0\n    },\n    \"byType\": {\n      \"change\": {\n        \"items\": 1,\n        \"passed\": 1,\n        \"failed\": 0\n      }\n    }\n  },\n  \"version\": \"1.0\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/valid-delta/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "explicit-skip",
+      "command": "status",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "status",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/explicit-skip/project",
+        "started_at_utc": "2026-10-31T15:07:50.492714+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<trial>/runs/1.16.0/explicit-skip/project\",\n    \"changesDir\": \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/proposal.md\"\n      ]\n    },\n    \"specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/specs/**/*.md\",\n      \"existingOutputPaths\": []\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/design.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-login\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<trial>/runs/1.16.0/explicit-skip/project\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"skipped\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/explicit-skip/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "explicit-skip",
+      "command": "instructions-apply",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "instructions",
+          "apply",
+          "--change",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/explicit-skip/project",
+        "started_at_utc": "2026-10-31T15:07:50.694168+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"changeName\": \"add-login\",\n  \"changeDir\": \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login\",\n  \"schemaName\": \"spec-driven\",\n  \"contextFiles\": {\n    \"proposal\": [\n      \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/proposal.md\"\n    ],\n    \"design\": [\n      \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/design.md\"\n    ],\n    \"tasks\": [\n      \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/tasks.md\"\n    ]\n  },\n  \"progress\": {\n    \"total\": 1,\n    \"complete\": 0,\n    \"remaining\": 1\n  },\n  \"tasks\": [\n    {\n      \"id\": \"1\",\n      \"description\": \"1.1 Implement password login.\",\n      \"done\": false,\n      \"sourcePath\": \"<trial>/runs/1.16.0/explicit-skip/project/openspec/changes/add-login/tasks.md\",\n      \"line\": 3\n    }\n  ],\n  \"taskTrackingConfigured\": true,\n  \"state\": \"ready\",\n  \"instruction\": \"Read context files, work through pending tasks, mark complete as you go.\\nPause if you hit blockers or need clarification.\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/explicit-skip/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "explicit-skip",
+      "command": "validate",
+      "record": {
+        "args": [
+          "<node>",
+          "<trial>/packages/1.16.0/node_modules/@fission-ai/openspec/bin/openspec.js",
+          "validate",
+          "add-login",
+          "--json"
+        ],
+        "cwd": "<trial>/runs/1.16.0/explicit-skip/project",
+        "started_at_utc": "2026-10-31T15:07:50.882527+00:00",
+        "exit_code": 0,
+        "stdout": "{\n  \"items\": [\n    {\n      \"id\": \"add-login\",\n      \"type\": \"change\",\n      \"valid\": true,\n      \"issues\": [\n        {\n          \"level\": \"INFO\",\n          \"path\": \"file\",\n          \"message\": \"skip_specs is set in .openspec.yaml: change declares no spec-level behavior changes, zero deltas accepted\"\n        }\n      ],\n      \"durationMs\": 23\n    }\n  ],\n  \"summary\": {\n    \"totals\": {\n      \"items\": 1,\n      \"passed\": 1,\n      \"failed\": 0\n    },\n    \"byType\": {\n      \"change\": {\n        \"items\": 1,\n        \"passed\": 1,\n        \"failed\": 0\n      }\n    }\n  },\n  \"version\": \"1.0\",\n  \"root\": {\n    \"path\": \"<trial>/runs/1.16.0/explicit-skip/project\",\n    \"source\": \"nearest\"\n  }\n}\n",
+        "stderr": ""
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "version": "1.14.3",
+      "case": "no-deltas",
+      "authorship": "Trial-authored document bodies following the reporter-supplied shape; not reporter files or a real login implementation.",
+      "change_files": {
+        ".openspec.yaml": "schema: spec-driven\ncreated: 2026-10-31\n",
+        "design.md": "# Design\n\nUse the existing authentication entry point for password login.\n",
+        "proposal.md": "# Add login\n\n## Why\nUsers need password login.\n\n## What Changes\n- Add password login.\n\n## Capabilities\n### New Capabilities\n- `user-auth`: Password login.\n\n### Modified Capabilities\nNone.\n\n## Impact\nAuthentication entry point.\n",
+        "tasks.md": "## 1. Implementation\n\n- [ ] 1.1 Implement password login.\n"
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "valid-delta",
+      "authorship": "Trial-authored document bodies following the reporter-supplied shape; not reporter files or a real login implementation.",
+      "change_files": {
+        ".openspec.yaml": "schema: spec-driven\ncreated: 2026-10-31\n",
+        "design.md": "# Design\n\nUse the existing authentication entry point for password login.\n",
+        "proposal.md": "# Add login\n\n## Why\nUsers need password login.\n\n## What Changes\n- Add password login.\n\n## Capabilities\n### New Capabilities\n- `user-auth`: Password login.\n\n### Modified Capabilities\nNone.\n\n## Impact\nAuthentication entry point.\n",
+        "specs/user-auth/spec.md": "## ADDED Requirements\n\n### Requirement: Password Login\nThe system SHALL allow a user to log in with a valid password.\n\n#### Scenario: Valid password\n- **WHEN** a user submits a valid password\n- **THEN** the user is authenticated\n",
+        "tasks.md": "## 1. Implementation\n\n- [ ] 1.1 Implement password login.\n"
+      }
+    },
+    {
+      "version": "1.14.3",
+      "case": "explicit-skip",
+      "authorship": "Trial-authored document bodies following the reporter-supplied shape; not reporter files or a real login implementation.",
+      "change_files": {
+        ".openspec.yaml": "schema: spec-driven\ncreated: 2026-10-31\nskip_specs: true\n",
+        "design.md": "# Design\n\nUse the existing authentication entry point for password login.\n",
+        "proposal.md": "# Add login\n\n## Why\nUsers need password login.\n\n## What Changes\n- Add password login.\n\n## Capabilities\n### New Capabilities\n- `user-auth`: Password login.\n\n### Modified Capabilities\nNone.\n\n## Impact\nAuthentication entry point.\n",
+        "tasks.md": "## 1. Implementation\n\n- [ ] 1.1 Implement password login.\n"
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "no-deltas",
+      "authorship": "Trial-authored document bodies following the reporter-supplied shape; not reporter files or a real login implementation.",
+      "change_files": {
+        ".openspec.yaml": "schema: spec-driven\ncreated: 2026-10-31\n",
+        "design.md": "# Design\n\nUse the existing authentication entry point for password login.\n",
+        "proposal.md": "# Add login\n\n## Why\nUsers need password login.\n\n## What Changes\n- Add password login.\n\n## Capabilities\n### New Capabilities\n- `user-auth`: Password login.\n\n### Modified Capabilities\nNone.\n\n## Impact\nAuthentication entry point.\n",
+        "tasks.md": "## 1. Implementation\n\n- [ ] 1.1 Implement password login.\n"
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "valid-delta",
+      "authorship": "Trial-authored document bodies following the reporter-supplied shape; not reporter files or a real login implementation.",
+      "change_files": {
+        ".openspec.yaml": "schema: spec-driven\ncreated: 2026-10-31\n",
+        "design.md": "# Design\n\nUse the existing authentication entry point for password login.\n",
+        "proposal.md": "# Add login\n\n## Why\nUsers need password login.\n\n## What Changes\n- Add password login.\n\n## Capabilities\n### New Capabilities\n- `user-auth`: Password login.\n\n### Modified Capabilities\nNone.\n\n## Impact\nAuthentication entry point.\n",
+        "specs/user-auth/spec.md": "## ADDED Requirements\n\n### Requirement: Password Login\nThe system SHALL allow a user to log in with a valid password.\n\n#### Scenario: Valid password\n- **WHEN** a user submits a valid password\n- **THEN** the user is authenticated\n",
+        "tasks.md": "## 1. Implementation\n\n- [ ] 1.1 Implement password login.\n"
+      }
+    },
+    {
+      "version": "1.16.0",
+      "case": "explicit-skip",
+      "authorship": "Trial-authored document bodies following the reporter-supplied shape; not reporter files or a real login implementation.",
+      "change_files": {
+        ".openspec.yaml": "schema: spec-driven\ncreated: 2026-10-31\nskip_specs: true\n",
+        "design.md": "# Design\n\nUse the existing authentication entry point for password login.\n",
+        "proposal.md": "# Add login\n\n## Why\nUsers need password login.\n\n## What Changes\n- Add password login.\n\n## Capabilities\n### New Capabilities\n- `user-auth`: Password login.\n\n### Modified Capabilities\nNone.\n\n## Impact\nAuthentication entry point.\n",
+        "tasks.md": "## 1. Implementation\n\n- [ ] 1.1 Implement password login.\n"
+      }
+    }
+  ],
+  "generated_skill_checks": [
+    {
+      "version": "1.14.3",
+      "case": "no-deltas",
+      "sha256": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+      "contains_warnings_case_insensitive": false,
+      "proceed_branch_present": true,
+      "general_pause_guard_present": true
+    },
+    {
+      "version": "1.14.3",
+      "case": "valid-delta",
+      "sha256": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+      "contains_warnings_case_insensitive": false,
+      "proceed_branch_present": true,
+      "general_pause_guard_present": true
+    },
+    {
+      "version": "1.14.3",
+      "case": "explicit-skip",
+      "sha256": "5c1792e226e0a5ef2c42296d7c549c0379a5ebdd721284f9869968687f7d000b",
+      "contains_warnings_case_insensitive": false,
+      "proceed_branch_present": true,
+      "general_pause_guard_present": true
+    },
+    {
+      "version": "1.16.0",
+      "case": "no-deltas",
+      "sha256": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+      "contains_warnings_case_insensitive": false,
+      "proceed_branch_present": true,
+      "general_pause_guard_present": true
+    },
+    {
+      "version": "1.16.0",
+      "case": "valid-delta",
+      "sha256": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+      "contains_warnings_case_insensitive": false,
+      "proceed_branch_present": true,
+      "general_pause_guard_present": true
+    },
+    {
+      "version": "1.16.0",
+      "case": "explicit-skip",
+      "sha256": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+      "contains_warnings_case_insensitive": false,
+      "proceed_branch_present": true,
+      "general_pause_guard_present": true
+    }
+  ],
+  "upstream": {
+    "checked_date_utc": "2026-10-31",
+    "main_sha": "27c0515724decc633818c735ee596481eec78a8b",
+    "latest_release": "v1.16.0",
+    "pr_2170": {
+      "state": "open",
+      "merged": false,
+      "head": "ae501b27c5595ad7b9b63eef4117adcfcb07118a",
+      "executed": false
+    },
+    "runtime": "Only official npm 1.14.3 and 1.16.0 packages executed; main source inspected, not built."
+  },
+  "limits": [
+    "explicit-skip is a marker-mechanism control on the same login fixture, not a legitimate repair for changed specified login behavior.",
+    "Missing explicit warnings-field handling in generated text does not prove model behavior; generic pause-on-error/blocker instructions remain.",
+    "No model session, archive, sync, application test/build, Windows/macOS reproduction, or local second-reader task.",
+    "No new default, template or answer-page acceptance is established."
+  ]
+}

@@ -520,6 +520,8 @@ python3 experiments/replay_astgrep_migration.py \
 
 **两个“成功”最容易误读。** 四份计划文件存在时 `status` 返回 `isPlanningComplete=true`、`isComplete=true`，但 `instructions apply` 仍显示 `complete: 0, remaining: 2`；`archive --yes --json` 又能把这两个未完成任务归档并更新规格。未带 `--yes` 时，同一分支会以 `archive_tasks_incomplete` 拒绝。因此计划齐备、归档完成，都不等于实现通过。[经验；[固定 archive 实现](https://github.com/Fission-AI/OpenSpec/blob/c794978f4f8845ce59693373c9dd882ee776588c/src/core/archive.ts)]
 
+**另一个已实测的 ready 分歧**：[1.14.3／1.16.0 六条件对照](../../experiments/openspec-apply-warning/README.md)中，没有 delta 时 apply 返回 ready＋warning，但 validate 失败；生成 Skill 未显式处理 warnings 字段，仍保留一般遇阻暂停指令。文档正文是按使用者报告形状编写的夹具，未运行模型，不能称 Claude 实际忽略警告。此为 2026-10-31 新增 CLI／文本证据，不替代本节原归档实试或答案页读者验收。
+
 **归档也可能只收走差量，留下旧规格。** 同一二改用 `--skip-specs` 后 exit 0，返回 `specsUpdated:false`，当前规格逐字未变。另一个分支保留场景标题、把空数组输出从 `[]` 改成 `null`，验证和归档都通过：丢失场景检查不是语义回归测试。初次自动创建的 Purpose 也仍是 TBD，严格验证会报占位警告；直接补齐当前 spec 的 Purpose 后才通过。[经验]
 
 可复制的接手顺序（既有项目中执行）：
