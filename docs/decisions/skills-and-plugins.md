@@ -41,6 +41,37 @@
 
 **依据**：[真实使用者 #2180](https://github.com/Fission-AI/OpenSpec/issues/2180)、[维护者迁移计划](https://github.com/Fission-AI/OpenSpec/issues/2180#issuecomment-6535807358)、[Pi 资源配置](https://pi.dev/docs/latest/settings#resources)与[Skill 加载约定](https://pi.dev/docs/latest/skills)。本仓 Linux CLI／SDK 实跑及非作者独立复跑：2026-10-31；macOS 原报告与原生 Windows 未复现。此配置只适用于上述重复安装场景，不是通用禁用共享 Skills 的规则。
 
+<a id="intent-pnpm-global"></a>
+## pnpm 全局装过 CLI，Intent 却找不到 Skill
+
+**🧪 已用 pnpm 11 全局包时，先核真实安装根，再让 Intent 一次读取一根；空列表不等于包里没有 Skill。** 只用项目依赖的读者仍沿用下文的本地解析，不需要改成全局安装。项目已有 `intent.skills`／exclude 策略时也先核策略，不为试通删除它们。
+
+在现有 pnpm 项目、已安装的 `intent` 可执行文件所在环境，用 Bash／Zsh 获取目标包的实际根。下面选 Playwright；换包时同时更换包名和 load 的 Skill 标识：
+
+```sh
+(
+set -eu
+ROOT=$(pnpm ls -g --json --depth 0 | node -e '
+const fs = require("node:fs"), path = require("node:path");
+const name = process.argv[1];
+const entries = JSON.parse(fs.readFileSync(0, "utf8"));
+const paths = [...new Set(entries.flatMap(e =>
+  Object.entries(e.dependencies ?? {}).filter(([n]) => n === name).map(([, p]) => p.path)))];
+const suffix = path.sep + "node_modules" + path.sep + name.split("/").join(path.sep);
+if (paths.length !== 1 || !paths[0]?.endsWith(suffix)) {
+  console.error("未找到唯一的目标安装路径；先核 pnpm 全局包列表。"); process.exit(2);
+}
+console.log(paths[0].slice(0, -name.split("/").join(path.sep).length - 1));
+' '@playwright/cli')
+INTENT_GLOBAL_NODE_MODULES="$ROOT" intent list --global-only --json
+INTENT_GLOBAL_NODE_MODULES="$ROOT" intent load '@playwright/cli#playwright-cli' --global-only --json
+)
+```
+
+先核列表中的包名、版本和 `source=global`，再核 load 的路径与非空正文。**每次 load 都带相同的单根覆盖，不把两根用冒号拼在一起。** [真实 pnpm 11.17.0 安装](../../experiments/intent-global-discovery/README.md)中，Intent 0.3.6／0.5.6 默认均为零；逐根找到 TanStack CLI 的五个和 Playwright CLI 的一个 Skill，六份正文均能加载，拼根仍为零。这里只恢复当前命令读取，不持久修改配置或保证 Agent 自动发现已恢复。
+
+**依据**：[Intent 全局扫描契约](https://tanstack.com/intent/latest/docs/overview)、[使用者 #206](https://github.com/TanStack/intent/issues/206)、[单根检测源码](https://github.com/TanStack/intent/blob/248c6f02605b12f9a31be069fabd945361f701bf/packages/intent/src/shared/utils.ts#L294-L342)。2026-10-31 Linux 正式包实跑及非作者复跑；[多根修复 PR #207](https://github.com/TanStack/intent/pull/207)仍未合并。未执行两个 CLI 的工作流或模型，不据此上调 Skill 采用评级。
+
 ## 先定位实际依赖，再选文档或源码
 
 **✅ 查实际行为，从调用方追到已解析包、项目补丁和具体模块；查版本用法，再看官方文档或 Context7。** Zed 的 `reqwest` 实际是重命名 fork，Vite 也有依赖 alias／patch，同名版本不能替代实现定位。

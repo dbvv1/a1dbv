@@ -1,0 +1,219 @@
+{
+  "checkedAt": "2026-10-31",
+  "probeSha256": "beda6a7154b03d1d211f0ffe1e6b622c192ad1e551ca81e4d308c9d59db5cdea",
+  "runs": [
+    {
+      "node": "v24.22.1",
+      "platform": "linux",
+      "pnpm": "11.17.0",
+      "intent": "0.3.6",
+      "baseline": {
+        "packages": 0,
+        "skills": 0
+      },
+      "singleRoot": [
+        {
+          "package": "@playwright/cli",
+          "version": "0.1.22",
+          "source": "global",
+          "listed": {
+            "packages": 1,
+            "skills": 1
+          },
+          "loadedSkills": [
+            {
+              "use": "@playwright/cli#playwright-cli",
+              "pathWithinPackage": "skills/playwright-cli/SKILL.md",
+              "sourceBytes": 15428,
+              "sourceSha256": "9bba755285a4c9ad72a4a41b9c7baef6fb516d329c0b44ed0573715f4479b906",
+              "normalizedLoadedBytes": 15835,
+              "normalizedLoadedSha256": "9323ecb92c19c7fa046b55a532885f50510554998d12d8a9a2e257fd1c66c75d"
+            }
+          ]
+        },
+        {
+          "package": "@tanstack/cli",
+          "version": "0.70.0",
+          "source": "global",
+          "listed": {
+            "packages": 1,
+            "skills": 5
+          },
+          "loadedSkills": [
+            {
+              "use": "@tanstack/cli#add-addons-existing-app",
+              "pathWithinPackage": "skills/add-addons-existing-app/SKILL.md",
+              "sourceBytes": 2668,
+              "sourceSha256": "62bab4e0d208bfc6931b337c297b6d7b0c0554ef85456837a1c938b6bf2101c1",
+              "normalizedLoadedBytes": 2668,
+              "normalizedLoadedSha256": "62bab4e0d208bfc6931b337c297b6d7b0c0554ef85456837a1c938b6bf2101c1"
+            },
+            {
+              "use": "@tanstack/cli#choose-ecosystem-integrations",
+              "pathWithinPackage": "skills/choose-ecosystem-integrations/SKILL.md",
+              "sourceBytes": 3928,
+              "sourceSha256": "1b9efea8329a10ae1dcdcd24eb48474b6b2859edcdef4a965b708df76987db05",
+              "normalizedLoadedBytes": 4084,
+              "normalizedLoadedSha256": "34c5be1737cb17deb9f80c6df90634152be44273a670edf1bc0c300b443f5a54"
+            },
+            {
+              "use": "@tanstack/cli#create-app-scaffold",
+              "pathWithinPackage": "skills/create-app-scaffold/SKILL.md",
+              "sourceBytes": 4672,
+              "sourceSha256": "c408fcb5772dbaea2ccde00f184c49bb888835ded51547dbc1d0d06b0d5c149e",
+              "normalizedLoadedBytes": 4840,
+              "normalizedLoadedSha256": "48f55052933784b27f74165033a59a5506ae408fafa897f0cf49efa9dcf9d050"
+            },
+            {
+              "use": "@tanstack/cli#maintain-custom-addons-dev-watch",
+              "pathWithinPackage": "skills/maintain-custom-addons-dev-watch/SKILL.md",
+              "sourceBytes": 3066,
+              "sourceSha256": "4bf93187664f8b4722421bb9f5c35eeeab911ab1713be57aee8b68aa39cd1382",
+              "normalizedLoadedBytes": 3066,
+              "normalizedLoadedSha256": "4bf93187664f8b4722421bb9f5c35eeeab911ab1713be57aee8b68aa39cd1382"
+            },
+            {
+              "use": "@tanstack/cli#query-docs-library-metadata",
+              "pathWithinPackage": "skills/query-docs-library-metadata/SKILL.md",
+              "sourceBytes": 2704,
+              "sourceSha256": "b327a87af5809bedaa4f8349881491a5214e7e952495b0602ccbc465c5472cad",
+              "normalizedLoadedBytes": 2754,
+              "normalizedLoadedSha256": "78de843d092833ebcc2906a0e49299c71f59fd069f0755ec7d9336226c4dc67f"
+            }
+          ]
+        }
+      ],
+      "delimiterJoinedRoots": {
+        "packages": 0,
+        "skills": 0
+      },
+      "nonexistentOverride": {
+        "packages": 0,
+        "skills": 0
+      },
+      "expectedNonzero": {
+        "loadWithoutOverride": 1,
+        "unknownSkill": 1,
+        "missingSkillArgument": 1
+      }
+    },
+    {
+      "node": "v24.22.1",
+      "platform": "linux",
+      "pnpm": "11.17.0",
+      "intent": "0.5.6",
+      "baseline": {
+        "packages": 0,
+        "skills": 0
+      },
+      "singleRoot": [
+        {
+          "package": "@playwright/cli",
+          "version": "0.1.22",
+          "source": "global",
+          "listed": {
+            "packages": 1,
+            "skills": 1
+          },
+          "loadedSkills": [
+            {
+              "use": "@playwright/cli#playwright-cli",
+              "pathWithinPackage": "skills/playwright-cli/SKILL.md",
+              "sourceBytes": 15428,
+              "sourceSha256": "9bba755285a4c9ad72a4a41b9c7baef6fb516d329c0b44ed0573715f4479b906",
+              "normalizedLoadedBytes": 15835,
+              "normalizedLoadedSha256": "9323ecb92c19c7fa046b55a532885f50510554998d12d8a9a2e257fd1c66c75d"
+            }
+          ]
+        },
+        {
+          "package": "@tanstack/cli",
+          "version": "0.70.0",
+          "source": "global",
+          "listed": {
+            "packages": 1,
+            "skills": 5
+          },
+          "loadedSkills": [
+            {
+              "use": "@tanstack/cli#add-addons-existing-app",
+              "pathWithinPackage": "skills/add-addons-existing-app/SKILL.md",
+              "sourceBytes": 2668,
+              "sourceSha256": "62bab4e0d208bfc6931b337c297b6d7b0c0554ef85456837a1c938b6bf2101c1",
+              "normalizedLoadedBytes": 2668,
+              "normalizedLoadedSha256": "62bab4e0d208bfc6931b337c297b6d7b0c0554ef85456837a1c938b6bf2101c1"
+            },
+            {
+              "use": "@tanstack/cli#choose-ecosystem-integrations",
+              "pathWithinPackage": "skills/choose-ecosystem-integrations/SKILL.md",
+              "sourceBytes": 3928,
+              "sourceSha256": "1b9efea8329a10ae1dcdcd24eb48474b6b2859edcdef4a965b708df76987db05",
+              "normalizedLoadedBytes": 4084,
+              "normalizedLoadedSha256": "34c5be1737cb17deb9f80c6df90634152be44273a670edf1bc0c300b443f5a54"
+            },
+            {
+              "use": "@tanstack/cli#create-app-scaffold",
+              "pathWithinPackage": "skills/create-app-scaffold/SKILL.md",
+              "sourceBytes": 4672,
+              "sourceSha256": "c408fcb5772dbaea2ccde00f184c49bb888835ded51547dbc1d0d06b0d5c149e",
+              "normalizedLoadedBytes": 4840,
+              "normalizedLoadedSha256": "48f55052933784b27f74165033a59a5506ae408fafa897f0cf49efa9dcf9d050"
+            },
+            {
+              "use": "@tanstack/cli#maintain-custom-addons-dev-watch",
+              "pathWithinPackage": "skills/maintain-custom-addons-dev-watch/SKILL.md",
+              "sourceBytes": 3066,
+              "sourceSha256": "4bf93187664f8b4722421bb9f5c35eeeab911ab1713be57aee8b68aa39cd1382",
+              "normalizedLoadedBytes": 3066,
+              "normalizedLoadedSha256": "4bf93187664f8b4722421bb9f5c35eeeab911ab1713be57aee8b68aa39cd1382"
+            },
+            {
+              "use": "@tanstack/cli#query-docs-library-metadata",
+              "pathWithinPackage": "skills/query-docs-library-metadata/SKILL.md",
+              "sourceBytes": 2704,
+              "sourceSha256": "b327a87af5809bedaa4f8349881491a5214e7e952495b0602ccbc465c5472cad",
+              "normalizedLoadedBytes": 2754,
+              "normalizedLoadedSha256": "78de843d092833ebcc2906a0e49299c71f59fd069f0755ec7d9336226c4dc67f"
+            }
+          ]
+        }
+      ],
+      "delimiterJoinedRoots": {
+        "packages": 0,
+        "skills": 0
+      },
+      "nonexistentOverride": {
+        "packages": 0,
+        "skills": 0
+      },
+      "expectedNonzero": {
+        "loadWithoutOverride": 1,
+        "unknownSkill": 1,
+        "missingSkillArgument": 1
+      }
+    }
+  ],
+  "independentReplay": {
+    "sameInstallationReused": true,
+    "separateProjectAndProbe": true,
+    "intentVersions": [
+      "0.3.6",
+      "0.5.6"
+    ],
+    "skillCounts": {
+      "baseline": 0,
+      "playwrightRoot": 1,
+      "tanstackRoot": 5,
+      "colonJoinedRoots": 0
+    },
+    "loadedSkillsPerVersion": [
+      "@playwright/cli#playwright-cli",
+      "@tanstack/cli#create-app-scaffold"
+    ],
+    "packageVersionSourceAndPathAssertionsPassed": true
+  },
+  "readmeFreshInstallation": {
+    "sameNormalizedResults": true,
+    "bothIntentVersions": true
+  }
+}

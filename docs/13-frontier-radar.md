@@ -97,6 +97,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [Intent 的 pnpm 全局漏发现](decisions/skills-and-plugins.md#intent-pnpm-global) | 已全局装过 CLI 却列不出 Skill：按实际包根逐个读取，不重装、不拼根 | 真实使用者 #206；已有 PR #207 未合并 | pnpm 11.17.0 实际安装；Intent 0.3.6／0.5.6 默认 0，逐根 5＋1，六份正文均加载；2026-10-31 | 🧪 只修单次读取，不恢复自动多根；非作者复跑，消费者工作流／模型未验 |
 | [OpenSpec／Pi 同名 Skill](decisions/skills-and-plugins.md#openspec-pi-discovery) | 已混用 Pi 与 Codex：保留生成目录，仅在 Pi 窄排除共享副本 | 真实用户 #2180；Pi 官方资源排除与实际加载器 | 1.15.0／1.16.0 各8个条件：6冲突→0，6 skills＋6 prompts及更新后内容保留；2026-10-31 | 🧪 宽排除会吞掉两份 Skill，零警告不够；独立1.16复跑，未调模型 |
 | [Knip 活测试入口误报](09-review-and-quality.md#knip-live-test-entry) | Agent 清理 unused 前，先核框架入口；已用 workspace 项目精确补测试 entry | 真实用户 #2247；现有修复 PR 仍被要求处理否定模式回归 | 6.43.0／6.44.0 两误报→0，原1项测试仍过，真正未用控制仍报告；2026-10-31 | 🧪 不把测试归安全删除，不用 ignore 压绿；独立6.44复跑，未验模型／完整产品 |
 | [Agent Framework 工具调用 ID](../experiments/agent-framework-call-id/README.md) | 已用 Python SDK 且工具外派需 provider ID：先核原始 ID，再用函数中间件临时取值 | 真实用户 #9454 的代理／回放需求；公共 API 尚待规划 | 1.22.0／1.24.0／固定主干各 9 场景；无中间件缺 context ID，但框架结果 ID 保留；2026-10-31 | 🧪 metadata 非空可能来自框架回填；脚本模型＋内存代理，真实服务与跨会话回放未验 |
