@@ -1,0 +1,253 @@
+{
+  "source_commit": "30dadb4b8ce8e00ae1fa088ecbf31ffa2653e4e5",
+  "input_sha256": {
+    "scripts/check_repo.py": "6a31df4fd3e72d9edf6965ab3fc3a5663a53c5d39623208f1d07c61562b0308c",
+    "tests/test_check_repo.py": "78eb316a1a3b6818ec8d273e7ca9a1981199b0b2f0e5af3671c27a8b29feda40"
+  },
+  "records": [
+    {
+      "case": "release-inside-1",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-inside-2",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "mycustom.1.json",
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 3,
+      "tokens": 6781,
+      "bytes": 24320,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-inside-3",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "mycustom.1.json",
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 3,
+      "tokens": 10814,
+      "bytes": 38860,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-single-1",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-single-2",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-single-3",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "fixed-inside-1",
+      "version": "fixed",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "fixed-inside-2",
+      "version": "fixed",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "fixed-inside-3",
+      "version": "fixed",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-outside-1",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-outside-2",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-outside-3",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3149,
+      "bytes": 11665,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-move-existing",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "mycustom.1.json",
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 3,
+      "tokens": 15783,
+      "bytes": 57169,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "release-exact-exclusion",
+      "version": "release",
+      "exit_code": 0,
+      "paths": [
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 2,
+      "tokens": 3181,
+      "bytes": 11831,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "fixed-controls-1",
+      "version": "fixed",
+      "exit_code": 0,
+      "paths": [
+        "mycustom.0.json",
+        "mycustom.01.json",
+        "mycustom.notes.json",
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 5,
+      "tokens": 3222,
+      "bytes": 11972,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    },
+    {
+      "case": "fixed-controls-2",
+      "version": "fixed",
+      "exit_code": 0,
+      "paths": [
+        "mycustom.0.json",
+        "mycustom.01.json",
+        "mycustom.notes.json",
+        "scripts/check_repo.py",
+        "tests/test_check_repo.py"
+      ],
+      "file_count": 5,
+      "tokens": 3222,
+      "bytes": 11972,
+      "inputs_unchanged": true,
+      "code_preserved_except_final_newline": true
+    }
+  ],
+  "repomix_commits": {
+    "release": "80b4280a9196feace092fc672dfe2b5fac62ef08",
+    "fixed": "7d7b28bf3e651e2f34a284ca9c91074edfe1b88d"
+  },
+  "environment": {
+    "platform": "Linux",
+    "node": "24.22.1",
+    "npm": "11.9.0",
+    "date_utc": "2026-10-31"
+  },
+  "scope": "Local CLI packing of two public repository files; no model calls, upload, or production adoption."
+}
