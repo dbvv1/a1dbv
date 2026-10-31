@@ -27,6 +27,7 @@
 | 新模型、工具或流程值得换吗 | [用真实任务比较质量与总投入](docs/decisions/tool-adoption.md) | ✅ exporter 同题比较／保留 |
 | 已有产品正常工作，还应怎样改 | [按具体问题选择后续改进](docs/decisions/product-improvement.md) | ✅ exporter 输入校验改进 |
 | 团队怎么推广 | [18 团队落地](docs/18-team-adoption.md) | 🟡 |
+| AI 辅助补丁怎样贡献给开源项目 | [先核准入、上游现状与投稿主体](docs/decisions/upstream-contributions.md) | 🟡 准入核查／投稿待验 |
 | 本周值得试什么 | [本周 Top 5：按当前编码任务选](docs/13-frontier-radar.md#本周-top-5) | ✅ Top 1 真实 CLI 实做 |
 | 用 AI 做游戏 | [游戏分支](domains/game-dev/README.md) | 🟡 |
 
