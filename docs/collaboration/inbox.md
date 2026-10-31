@@ -176,7 +176,7 @@ Git 来源的 `ref` 填已审完整 commit SHA，每条项目命令都保留 `--
 
 ### 2026-10-27：SDK 迁移与按改动构建
 
-- 👀 **升级 Anthropic SDK 主版本时，把依赖升级和 API 契约修正一起交付。** 10-21 发布的 Python SDK 2.0／TypeScript SDK 1.0 默认使用 API 版本 `2026-10-21`，迁移时从 Messages 请求移除 `temperature/top_p/top_k`，并按实际客户端核认证头变化及既有网关、日志脱敏的兼容性（`AnthropicFoundry` 仍用 `x-api-key`）；Bedrock 用户已报告旧模型版本拒绝，Hermes 的开放 issue 仅列出待迁移路径，需要旧采样行为时暂保相应旧调用链，本仓未试用，待真实 SDK 升级任务采用。
+- 🧪 **Anthropic SDK 从 0.x 升 2.x，要同时迁移 HTTP 类型与实际请求契约。** [真实 Hermes adapter 对照](../../experiments/anthropic-sdk-migration/README.md)：0.125.0 原依赖通过；只换 2.3.0，构造先因 `httpx`／`httpx2.Timeout` 不兼容失败；独立检查后续调用，采样参数在发送前抛错，删参数后旧 `Authorization: Omit()` 又使 API-key 路由两种认证头都没有。用对应 SDK 的原生内存 transport 捕获当次请求，七项回归覆盖复制客户端与正对照。暂缓只改依赖的补丁，先核 v1、v2 两份迁移；应用源码／pin 未改，模型与真实网关未调用（实测 2026-10-30）。
 
   **依据**：[官方迁移指南](https://platform.claude.com/docs/en/api/migration-2026-10-21)、[Python 2.0 发布](https://github.com/anthropics/anthropic-sdk-python/releases/tag/v2.0.0)、[Bedrock 用户对照](https://github.com/anthropics/anthropic-sdk-python/issues/2031)、[Hermes 迁移待办](https://github.com/NousResearch/hermes-agent/issues/142796)；核实 2026-10-27。
 
