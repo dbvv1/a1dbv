@@ -4,27 +4,37 @@
 
 ## 怎么选、怎么试
 
-| 读者遇到的问题 | 当前选择 | 成功与撤回条件 |
+| 所缺材料 | 当前选择 | 动作、依赖与不适用 |
 |---|---|---|
 | 网页或 GitHub 原文已经能读 | ✅ 保留现有工具 | 不为统一命令新增安装；确有批处理／结构化输出需要再比较 |
-| B站、YouTube、小红书等内容缺口 | 🧪 按缺的渠道与动作试 Agent-Reach | 用一个真实目标链接或查询，核返回正文、来源和覆盖范围；这些平台本仓尚未实测 |
-| 想把 Reddit／X 查询设成无人值守默认 | ⛔ 暂缓 | 先验目标动作及登录／限流条件，不能用渠道总体正常替代 search、read 分验 |
-| 只是缺候选，不知道有哪些强工具 | ✅ 先做跨渠道广扫 | 访问适配器不会自动补齐采样窗口、查询词和候选选择；别把装工具当发现覆盖 |
+| HN、linux.do 等讨论 | ✅ 原站 API／JSON 与现有搜索 | 1.6.0 没有专用渠道；通用网页搜索／读取依赖 Exa／Jina，不能据此认定评论树完整 |
+| V2EX 正文与回复 | ✅ 先用公开 API | Agent-Reach 封装 `hot/node/read/user`，没有关键词搜索动作；热帖／节点只作发现线索，跨时段查找仍用搜索 |
+| B站视频内容 | 🧪 按缺口试 `read` 或 `subtitle` | `read` 是元数据；字幕走 bili-cli、只读第一分P，可能复用已有站点登录。没有评论动作；本仓未跑该适配器 |
+| YouTube 视频内容 | 🧪 先分字幕与转写 | `read` 只取元数据，字幕走 yt-dlp；转写另需 ffmpeg＋Groq/OpenAI Key，并向服务方发送音频。没有评论动作；本仓未跑该适配器 |
+| 小红书站内正文／评论 | 🧪 按缺口试 `read/comments` | OpenCLI、Node、专用浏览器及登录；首次使用可能复用已有站点会话，无账号授权就不走此路径 |
+| 想把 Reddit／X 查询设成无人值守默认 | ⛔ 暂缓 | 先验目标动作及登录／限流条件；原生站内路径需 OpenCLI、Node、浏览器，公开搜索结果另按摘要接收 |
+| 只是缺候选，不知道有哪些强工具 | ✅ 先做跨渠道广扫 | 访问适配器不会自动补齐采样窗口、查询词和候选选择 |
 
-第一次试只读公开材料，固定官方源码版本，使用独立环境，不导入已有账号。已有 Agent 能运行 CLI 时，可以从以下两种动作开始；参数尾部的 `--backend github-api` 将调用限定到公开 GitHub API，不走 `gh` 登录或浏览器路径。**该参数本身不保证匿名**：实现仍会读 `GH_TOKEN`／`GITHUB_TOKEN` 和配置中的 `github_token`；本次靠清空凭据环境与独立 HOME 保证没有提供账号凭据：
+**评论要单独验收：核原站回复总数、返回条数及所引用的楼层正文。** V2EX适配器只请求回复 `page=1`，不能只凭请求成功判断完整；小红书 `comments` 明标 `loaded_comments`／`exhaustive=false`，只覆盖已加载评论。视频描述、字幕与观众反馈是三种不同材料。
+
+源码依据：[Web后端](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/agent_reach/channels/web.py#L153-L230)、[转写外发](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/agent_reach/transcribe.py#L355-L443)、[渠道注册](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/agent_reach/channels/__init__.py)、[V2EX](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/agent_reach/channels/v2ex.py#L168-L238)、[B站](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/agent_reach/channels/bilibili.py#L157-L238)、[YouTube](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/agent_reach/channels/youtube.py#L92-L221)、[小红书评论](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/agent_reach/channels/xiaohongshu.py#L116-L129)、[会话复用](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/agent_reach/skill/references/sessions.md)；[一手：1.6.0固定源码，未新增适配器运行]，核实2026-10-30。
+
+**先用真实资料验证缺口。** 例如要核[这篇V2EX讨论](https://www.v2ex.com/t/1227194)的小任务成本、大任务边界及归因质疑，在新的临时目录执行下列命令，再让Agent核 `topic.json` 首项的 `replies` 与 `replies.json` 数组长度，定位第7／18／22／28楼原句：
 
 ```sh
-agent-reach github search "Agent-Reach" --limit 5 --backend github-api --timeout 30
-agent-reach github read https://github.com/Panniantong/Agent-Reach/issues/868 --backend github-api --timeout 30
+curl -q --silent --show-error --max-time 30 'https://www.v2ex.com/api/topics/show.json?id=1227194' -o topic.json -w 'HTTP %{http_code}\n'
+curl -q --silent --show-error --max-time 30 'https://www.v2ex.com/api/replies/show.json?topic_id=1227194&page=1' -o replies.json -w 'HTTP %{http_code}\n'
 ```
 
-这是命令形状，不是要求重试本次被拒的入口。先检查返回的 `ok`、`items`、`meta.attempts` 和 `error`，再判断资料是否回答问题。失败或空正文不能记为已读；明确访问拒绝就停该入口。需要登录、Key 或付费时先确认该路径的授权，不复制主账号会话来“补通”。
+本次两次HTTP200，正文声明40回复，实际返回40条且ID唯一，四个关键楼层正文均在；本帖未观察到分页漏取。这里运行的是原站curl，没有运行Agent-Reach或比较性能。读者换成自己的目标帖后，先核HTTP与正文，再核数量／楼层；失败、空正文或缺回复就保留缺口，明确访问拒绝则停止该入口。来源：[原站正文API](https://www.v2ex.com/api/topics/show.json?id=1227194)、[回复API](https://www.v2ex.com/api/replies/show.json?topic_id=1227194&page=1)；[本仓实测]，2026-10-30。
+
+确需试Agent-Reach时，固定官方版本、独立环境，先核动作依赖，不导入已有账号。检查 `ok`、`items`、`meta.attempts`、`error` 及返回的覆盖标记；需要登录、Key或付费时先确认该路径的授权。
 
 **从官方 GitHub 安装，不安装 PyPI 的同名 `agent-reach` 包。** 项目本体是 MIT；配套浏览器二进制另有许可证。公开读取成功也不授权访问私人内容或绕过平台限制。来源：[官方说明](https://github.com/Panniantong/Agent-Reach)、[固定浏览器说明](https://github.com/Panniantong/Agent-Reach/blob/14c213405669414492bda0f8d52cc6531d062c45/docs/cloakbrowser.md)；[一手／经验：采用条件]，核实2026-10-29。
 
-## 本仓实际运行：1项成功、1项失败，新增决定性原文为0
+## 10-29 Agent-Reach实际运行：1项成功、1项失败，新增决定性原文为0
 
-目标是核对这个新候选及其 Reddit 失败反馈。先前普通网页工具已找到官方仓库、读到 #868；连接器已取得实现文件。随后从官方 archive 取得固定 `14c213405669414492bda0f8d52cc6531d062c45`（包版本1.6.0），在临时 Python 3.12.14 venv 中安装清单依赖，以 `python -m agent_reach.cli` 调用未修改的项目源码，未运行项目 setup／update 或自动安装脚本。
+目标是核对这个新候选及其 Reddit 失败反馈。先前普通网页工具已找到官方仓库、读到 #868；连接器已取得实现文件。随后从官方 archive 取得固定 `14c213405669414492bda0f8d52cc6531d062c45`（包版本1.6.0），在临时 Python 3.12.14 venv 中安装清单依赖，以 `python -m agent_reach.cli` 调用未修改的项目源码，未运行项目 setup／update 或自动安装脚本。两动作均指定 `--backend github-api`，不走 `gh` 或浏览器；该参数仍会读取 `GH_TOKEN`／`GITHUB_TOKEN` 和配置中的 `github_token`，本次靠清空凭据环境与独立 HOME 保证没有提供账号凭据。
 
 | 同题动作 | 实际结果 | 进程退出码 | 本次墙钟耗时 |
 |---|---|---:|---:|
@@ -51,6 +61,7 @@ Reddit 是具体反例：其 `search`／`read` 声明公开网页路线和 OpenC
 
 | 原始反馈 | 能支持的取舍 |
 |---|---|
+| [#858，10-26](https://github.com/Panniantong/Agent-Reach/issues/858)：1.6.0用户报告B站search/read/hot通过，扫码显示成功但凭据为空、subtitle失败 | 用原字幕动作验收，不把登录提示当成功，也不废弃已通的其他动作；用户根因推测未复现，本条核实2026-10-30 |
 | [#868，10-28](https://github.com/Panniantong/Agent-Reach/issues/868)：1.6.0用户的 subreddit 通过，search 返回HTML，未尝试public-web | 验具体动作，不只看渠道总体状态；上节源码可支持此路由风险，本仓未复现其登录环境 |
 | [HN，8-07](https://news.ycombinator.com/item?id=49207806)：有人疑问为何默认Exa，另有人称不适用自己的场景 | 保留原搜索基线，核实际后端；没有任务分母，不推普遍成功率 |
 | [LINUX DO，6-16第11楼](https://linux.do/t/topic/2415670?tl=en)：用户自报封装成Skill做多平台检索，需配置 | 有真实使用入口，适合把访问缺口列入候选；未提供受控提效结果 |
@@ -75,7 +86,7 @@ GitHub topics 当时只看更新时间第一页，weekly拿到过期缓存；没
 
 来源：[固定M6回执](https://github.com/dbvv1/a1dbv/blob/a0191795567fddf93e3f9829aee9e02a9b9b5098/docs/research/2026-10-15-exploration-evidence.md#2026-10-26固定来源覆盖)、[HN时间API](https://hn.algolia.com/api/v1/items/49207806)、[PR关闭理由](https://github.com/hesreallyhim/awesome-claude-code/pull/841#issuecomment-3956557182)；[研究：记录与时间窗对照]，核实2026-10-29。
 
-## 本轮覆盖与未完成范围
+## 10-29覆盖与未完成范围
 
 本条是对已带入漏项的定向深挖和最小运行，不宣称完成ce391d探索Skill要求的全领域广扫或达到饱和。
 
