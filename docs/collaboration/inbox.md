@@ -137,6 +137,10 @@
 
 👀 **已经使用 Pi、且长任务反复丢失必要旧细节时，可评估 pi-optchat 的摘要树＋`zoom`；普通 Claude Code／Codex 使用者继续原生压缩。** [0.10.0 固定实现](https://github.com/jonaslsaa/pi-optchat/tree/2714a3f4167ba41ea1868b51d715e680ac5f095d)用额外模型构建摘要视图，保留原文供回读，是替换主代理压缩而非“不压缩”。已有[非作者集成反馈](https://github.com/jonaslsaa/pi-optchat/issues/165)，[作者的 40 对摘要评估](https://github.com/jonaslsaa/pi-optchat/issues/153)未公开完整数据，也不是与原生压缩对照；选择时要计摘要调用、回读、质量和总成本。本仓未安装、未试用；[原帖反馈与源码核对](local-jobs/artifacts/A-CONTEXT-COMMUNITY-FOLLOWTHROUGH-20261027/sources.md)未支持固定 token 数重开或只给目标。核实：2026-10-27。
 
+**同时使用 pi-subagents 时，先核“后台完成通知能否启动父回合”。** [使用者 #225](https://github.com/jonaslsaa/pi-optchat/pull/225)报告成功通知以隐藏消息发出，OptChat 却报 `OptChat has no current user message`，父回合中断。当前 [pi-subagents 通知生产路径](https://github.com/nicobailon/pi-subagents/blob/a37a28853822d470d15ae1764c97aed258087699/src/runs/background/notify.ts#L674-L699)仍对普通异步成功使用 `display: false`；[OptChat 0.11.0](https://github.com/jonaslsaa/pi-optchat/blob/45585d215694a49f489c5cf38e85d37a8496e649/src/transcript.ts)仍用当前 user 输入作判断。已有 [PR #256](https://github.com/jonaslsaa/pi-optchat/pull/256)按真正触发消息的身份区分通知与补充上下文，尚未合并；作者的真实 Pi／确定性 provider 回归用的是通知夹具，未加载真实 pi-subagents，不能视作两扩展已兼容。
+
+本仓尝试接真实通知模块与父回合包装到 Pi 1.4.0／OptChat 0.11.0，固定源码与官方依赖已准备；隔离 profile 的 `lock.sock` 在启动时返回 `listen EPERM`，因而**尚未投递通知或验证该兼容问题**，PR 对照也未运行。运行已停止，未绕开锁或移除原生生命周期；该组合验收未完成，不推荐为了摘要树改变现有稳定入口。源码与 PR 核实、启动尝试：2026-10-31；没有调用付费模型、导入个人历史或另提重复补丁。
+
 ### 2026-10-27：沿真实启动链补测试，而非叠加审查轮次
 
 👀 **接入外部程序时，先跑真实宿主的最短路径，再让回归覆盖宿主的启动包装和环境差异。** Calyx 作者在 [DEV 复盘](https://dev.to/yuu1ch13/seven-rounds-of-ai-code-review-in-one-day-2048-tests-green-and-the-feature-had-never-started-once-1lb8)中自报多轮 AI 审查与大量绿测仍漏掉无法启动的窗格；[公开修复](https://github.com/yuuichieguchi/Calyx/commit/cd89aab20be8ac34d342e852d646d6fd88a7f267)可核：真实 Ghostty 会再包一层 `exec`，原测试只执行裸命令，修复去掉自身多余的 `exec`，测试改为经过宿主包装，并用不同的环境 HOME 检查显式配置确实生效。本仓只读核实、未在 macOS 运行；保留这个实际失效机制，不据作者轮次或测试数量推荐更多审查。核实：2026-10-27。
