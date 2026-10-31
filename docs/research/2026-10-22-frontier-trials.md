@@ -586,6 +586,8 @@ timeout 60s .venv/bin/python experiments/replay_pwasm_consumer.py
 **没有本轮Skill实跑或收益比较。** 中文使用者给出具体接手失败，但未公开原ADR、对话或使用版本；不能证明确定性软件缺陷。[社区／范围]
 **最小建议是复用已有规格核原回答，不安装新流程。** 已确认、暂定和未决分清即可；这项工程判断留待真实后续接手验证，不制造对照题。[经验]
 
+同仓库另一项可执行 Skill 的[实际消费者证据：wizard 写入与 dotenv 读回](../../experiments/wizard-dotenv/README.md)：原向导能正确保留 `a'b`，Bun／Node 应用读取却失配，手工双引号对照在原向导重写后也再次失配。这是 2026-10-31 的原函数／解析器实跑，不补齐本节 grill-with-docs 的未实跑范围。
+
 ### 固定源码与相反证据
 
 读取固定于 `5beb35b040e3de97e54fa9e386d7e42d15c295c2`（提交2026-10-19 UTC）。[domain-modeling L62–74](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/domain-modeling/SKILL.md#L62-L74)不让词汇表承担规格，并要求ADR同时满足难逆转、缺背景会困惑、真实权衡三个条件；不满足就跳过。它是选择性记录设计，而非保存失败。[一手]

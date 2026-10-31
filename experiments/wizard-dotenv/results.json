@@ -1,0 +1,531 @@
+{
+  "timestamp_utc": "2026-10-31T21:11:16.697677+00:00",
+  "upstream_commit": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
+  "template_git_blob": "081ed3da860729c5e6fb1e7126c86b07b0ed56f0",
+  "template_sha256": "6566f147299bc6f1d941e64591ed04385416d543e11f96f564c7228f5018d0ed",
+  "library_prefix_sha256": "513ef818f9b8a97209e51658b25ea9de2cec4ebaaf1f67823c89f7dca9d5ac19",
+  "versions": {
+    "bun": "1.4.4",
+    "bun_revision": "1.4.4+38afee6c8",
+    "node": "v24.22.1",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)",
+    "dotenv": "18.0.9"
+  },
+  "cases": [
+    {
+      "name": "plain-control",
+      "input": "ab",
+      "initial_file_authored_manually": false,
+      "shell_value": "ab",
+      "existing_value": "ab",
+      "rerun_existing": "ab",
+      "rerun_kept_value": "ab",
+      "file_before": "KEY='ab'\n",
+      "file_after": "KEY='ab'\n",
+      "file_mode": "0o600",
+      "file_unchanged_on_rerun": true,
+      "before": {
+        "bun": "ab",
+        "node_dotenv": "ab",
+        "node_native": "ab"
+      },
+      "after": {
+        "bun": "ab",
+        "node_dotenv": "ab",
+        "node_native": "ab"
+      }
+    },
+    {
+      "name": "reporter-apostrophe",
+      "input": "a'b",
+      "initial_file_authored_manually": false,
+      "shell_value": "a'b",
+      "existing_value": "a'b",
+      "rerun_existing": "a'b",
+      "rerun_kept_value": "a'b",
+      "file_before": "KEY='a'\\''b'\n",
+      "file_after": "KEY='a'\\''b'\n",
+      "file_mode": "0o600",
+      "file_unchanged_on_rerun": true,
+      "before": {
+        "bun": "a",
+        "node_dotenv": "a'\\''b",
+        "node_native": "a"
+      },
+      "after": {
+        "bun": "a",
+        "node_dotenv": "a'\\''b",
+        "node_native": "a"
+      }
+    },
+    {
+      "name": "manual-double-quote-control",
+      "input": "a'b",
+      "initial_file_authored_manually": true,
+      "shell_value": null,
+      "existing_value": null,
+      "rerun_existing": "a'b",
+      "rerun_kept_value": "a'b",
+      "file_before": "KEY=\"a'b\"\n",
+      "file_after": "KEY='a'\\''b'\n",
+      "file_mode": "0o600",
+      "file_unchanged_on_rerun": false,
+      "before": {
+        "bun": "a'b",
+        "node_dotenv": "a'b",
+        "node_native": "a'b"
+      },
+      "after": {
+        "bun": "a",
+        "node_dotenv": "a'\\''b",
+        "node_native": "a"
+      }
+    }
+  ],
+  "records": [
+    {
+      "name": "bun-version",
+      "argv": [
+        "<trial>/tooling/node_modules/@oven/bun-linux-x64/bin/bun",
+        "--version"
+      ],
+      "cwd": "<trial>",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "1.4.4\n",
+      "stderr": ""
+    },
+    {
+      "name": "bun-revision",
+      "argv": [
+        "<trial>/tooling/node_modules/@oven/bun-linux-x64/bin/bun",
+        "--revision"
+      ],
+      "cwd": "<trial>",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "1.4.4+38afee6c8\n",
+      "stderr": ""
+    },
+    {
+      "name": "node-version",
+      "argv": [
+        "<node-executable>",
+        "--version"
+      ],
+      "cwd": "<trial>",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "v24.22.1\n",
+      "stderr": ""
+    },
+    {
+      "name": "bash-version",
+      "argv": [
+        "/bin/bash",
+        "--version"
+      ],
+      "cwd": "<trial>",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n",
+      "stderr": ""
+    },
+    {
+      "name": "original-syntax",
+      "argv": [
+        "/bin/bash",
+        "-n",
+        "<trial>/sources/template.sh"
+      ],
+      "cwd": "<trial>",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "extracted-library-syntax",
+      "argv": [
+        "/bin/bash",
+        "-n",
+        "<trial>/library.sh"
+      ],
+      "cwd": "<trial>",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "plain-control/write",
+      "argv": [
+        "/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "source \"$1\"; write_env KEY \"$2\"; printf \"%s\" \"$KEY\" > shell-value.txt; _existing KEY > existing-value.txt",
+        "wizard-test",
+        "<trial>/library.sh",
+        "ab"
+      ],
+      "cwd": "<trial>/cases/plain-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "  ✓ wrote KEY → .env\n",
+      "stderr": ""
+    },
+    {
+      "name": "plain-control/before-rerun/bun",
+      "argv": [
+        "<trial>/tooling/node_modules/@oven/bun-linux-x64/bin/bun",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/plain-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"ab\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "plain-control/before-rerun/node-dotenv",
+      "argv": [
+        "<node-executable>",
+        "-e",
+        "const r=require(\"<trial>/tooling/node_modules/dotenv\").config({quiet:true}); if(r.error) throw r.error; console.log(JSON.stringify(process.env.KEY));"
+      ],
+      "cwd": "<trial>/cases/plain-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"ab\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "plain-control/before-rerun/node-native",
+      "argv": [
+        "<node-executable>",
+        "--env-file=.env",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/plain-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"ab\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "plain-control/rerun",
+      "argv": [
+        "/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "source \"$1\"; _existing KEY > rerun-existing.txt; ask_secret KEY \"Public test value\"; printf \"%s\" \"$KEY\" > rerun-value.txt; write_env KEY \"$KEY\"",
+        "wizard-test",
+        "<trial>/library.sh"
+      ],
+      "cwd": "<trial>/cases/plain-control",
+      "stdin": "\n",
+      "exit": 0,
+      "stdout": "  Public test value [Enter keeps current] \n  ✓ wrote KEY → .env\n",
+      "stderr": ""
+    },
+    {
+      "name": "plain-control/after-rerun/bun",
+      "argv": [
+        "<trial>/tooling/node_modules/@oven/bun-linux-x64/bin/bun",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/plain-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"ab\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "plain-control/after-rerun/node-dotenv",
+      "argv": [
+        "<node-executable>",
+        "-e",
+        "const r=require(\"<trial>/tooling/node_modules/dotenv\").config({quiet:true}); if(r.error) throw r.error; console.log(JSON.stringify(process.env.KEY));"
+      ],
+      "cwd": "<trial>/cases/plain-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"ab\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "plain-control/after-rerun/node-native",
+      "argv": [
+        "<node-executable>",
+        "--env-file=.env",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/plain-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"ab\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "reporter-apostrophe/write",
+      "argv": [
+        "/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "source \"$1\"; write_env KEY \"$2\"; printf \"%s\" \"$KEY\" > shell-value.txt; _existing KEY > existing-value.txt",
+        "wizard-test",
+        "<trial>/library.sh",
+        "a'b"
+      ],
+      "cwd": "<trial>/cases/reporter-apostrophe",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "  ✓ wrote KEY → .env\n",
+      "stderr": ""
+    },
+    {
+      "name": "reporter-apostrophe/before-rerun/bun",
+      "argv": [
+        "<trial>/tooling/node_modules/@oven/bun-linux-x64/bin/bun",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/reporter-apostrophe",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "reporter-apostrophe/before-rerun/node-dotenv",
+      "argv": [
+        "<node-executable>",
+        "-e",
+        "const r=require(\"<trial>/tooling/node_modules/dotenv\").config({quiet:true}); if(r.error) throw r.error; console.log(JSON.stringify(process.env.KEY));"
+      ],
+      "cwd": "<trial>/cases/reporter-apostrophe",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a'\\\\''b\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "reporter-apostrophe/before-rerun/node-native",
+      "argv": [
+        "<node-executable>",
+        "--env-file=.env",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/reporter-apostrophe",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "reporter-apostrophe/rerun",
+      "argv": [
+        "/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "source \"$1\"; _existing KEY > rerun-existing.txt; ask_secret KEY \"Public test value\"; printf \"%s\" \"$KEY\" > rerun-value.txt; write_env KEY \"$KEY\"",
+        "wizard-test",
+        "<trial>/library.sh"
+      ],
+      "cwd": "<trial>/cases/reporter-apostrophe",
+      "stdin": "\n",
+      "exit": 0,
+      "stdout": "  Public test value [Enter keeps current] \n  ✓ wrote KEY → .env\n",
+      "stderr": ""
+    },
+    {
+      "name": "reporter-apostrophe/after-rerun/bun",
+      "argv": [
+        "<trial>/tooling/node_modules/@oven/bun-linux-x64/bin/bun",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/reporter-apostrophe",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "reporter-apostrophe/after-rerun/node-dotenv",
+      "argv": [
+        "<node-executable>",
+        "-e",
+        "const r=require(\"<trial>/tooling/node_modules/dotenv\").config({quiet:true}); if(r.error) throw r.error; console.log(JSON.stringify(process.env.KEY));"
+      ],
+      "cwd": "<trial>/cases/reporter-apostrophe",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a'\\\\''b\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "reporter-apostrophe/after-rerun/node-native",
+      "argv": [
+        "<node-executable>",
+        "--env-file=.env",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/reporter-apostrophe",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "manual-double-quote-control/before-rerun/bun",
+      "argv": [
+        "<trial>/tooling/node_modules/@oven/bun-linux-x64/bin/bun",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/manual-double-quote-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a'b\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "manual-double-quote-control/before-rerun/node-dotenv",
+      "argv": [
+        "<node-executable>",
+        "-e",
+        "const r=require(\"<trial>/tooling/node_modules/dotenv\").config({quiet:true}); if(r.error) throw r.error; console.log(JSON.stringify(process.env.KEY));"
+      ],
+      "cwd": "<trial>/cases/manual-double-quote-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a'b\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "manual-double-quote-control/before-rerun/node-native",
+      "argv": [
+        "<node-executable>",
+        "--env-file=.env",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/manual-double-quote-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a'b\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "manual-double-quote-control/rerun",
+      "argv": [
+        "/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "source \"$1\"; _existing KEY > rerun-existing.txt; ask_secret KEY \"Public test value\"; printf \"%s\" \"$KEY\" > rerun-value.txt; write_env KEY \"$KEY\"",
+        "wizard-test",
+        "<trial>/library.sh"
+      ],
+      "cwd": "<trial>/cases/manual-double-quote-control",
+      "stdin": "\n",
+      "exit": 0,
+      "stdout": "  Public test value [Enter keeps current] \n  ✓ wrote KEY → .env\n",
+      "stderr": ""
+    },
+    {
+      "name": "manual-double-quote-control/after-rerun/bun",
+      "argv": [
+        "<trial>/tooling/node_modules/@oven/bun-linux-x64/bin/bun",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/manual-double-quote-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "manual-double-quote-control/after-rerun/node-dotenv",
+      "argv": [
+        "<node-executable>",
+        "-e",
+        "const r=require(\"<trial>/tooling/node_modules/dotenv\").config({quiet:true}); if(r.error) throw r.error; console.log(JSON.stringify(process.env.KEY));"
+      ],
+      "cwd": "<trial>/cases/manual-double-quote-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a'\\\\''b\"\n",
+      "stderr": ""
+    },
+    {
+      "name": "manual-double-quote-control/after-rerun/node-native",
+      "argv": [
+        "<node-executable>",
+        "--env-file=.env",
+        "-e",
+        "console.log(JSON.stringify(process.env.KEY))"
+      ],
+      "cwd": "<trial>/cases/manual-double-quote-control",
+      "stdin": null,
+      "exit": 0,
+      "stdout": "\"a\"\n",
+      "stderr": ""
+    }
+  ],
+  "boundary": "Only unmodified library prefix loaded. Never executed STAGES/run_wizard, gh, browser, remote account operations, real credentials, model, MCP, or web server.",
+  "public_projection": {
+    "source_results_sha256": "3aaaf6e9ed4af3daf7302f52cb408a36b26443c41f496ff5cc6a4b5d5d8607a6",
+    "path_placeholders": [
+      "<trial>",
+      "<node-executable>"
+    ],
+    "method": "Only literal execution-root and Node-executable strings replaced recursively; all original result fields otherwise unchanged. package_identity is added for the three installed packages from the original lockfile."
+  },
+  "package_identity": {
+    "node_modules/@oven/bun-linux-x64": {
+      "version": "1.4.4",
+      "resolved": "https://registry.npmjs.org/@oven/bun-linux-x64/-/bun-linux-x64-1.4.4.tgz",
+      "integrity": "sha512-CHbbkmHVM28T1GFq+6GL4Ao4ujwwYwj1CxFFwEFzLanPfNsId9AhbIP0Q4reWuWBkGimUkoQygrK7Rgjtj3vog==",
+      "os": [
+        "linux"
+      ],
+      "cpu": [
+        "x64"
+      ]
+    },
+    "node_modules/bun": {
+      "version": "1.4.4",
+      "resolved": "https://registry.npmjs.org/bun/-/bun-1.4.4.tgz",
+      "integrity": "sha512-hj0ASdG6PNjLZGFAXktWb3Uaj/dcv/1wCsIttoEXADNIQBsGjTr+5uLKYbrDkuc7NT0Tkj4yPIqJI2jDxXdvVg==",
+      "os": [
+        "darwin",
+        "linux",
+        "android",
+        "freebsd",
+        "win32"
+      ],
+      "cpu": [
+        "arm64",
+        "x64"
+      ]
+    },
+    "node_modules/dotenv": {
+      "version": "18.0.9",
+      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-18.0.9.tgz",
+      "integrity": "sha512-3fVOW4cB02R066PUSwn8O4TJyz9NckQl7F81blIbaq9jKBm2tSmOKky7ZHIXzGvkVPXCSn6jkpziBPZdGFs8Tw=="
+    }
+  }
+}
