@@ -191,7 +191,9 @@ Git 来源的 `ref` 填已审完整 commit SHA，每条项目命令都保留 `--
 <a id="portless-worktree-urls"></a>
 ### 2026-10-27：Portless 命名开发入口
 
-👀 **多个 worktree 频繁切换时，可试 Portless，让 Agent 和浏览器引用稳定 URL；现有端口安排已清楚就沿用。** 运行现有开发命令时用 `portless run --name myapp <原开发命令>`，再在同一 worktree 用 `portless get myapp` 取得入口，交给已有测试配置；`get` 只构造 URL，就绪仍须请求应用的真实路由。试用选择高端口 HTTP：代理与应用统一设置 `PORTLESS_PORT=1355`、`PORTLESS_HTTPS=0`、`PORTLESS_SYNC_HOSTS=0`、`PORTLESS_LAN=0`、`PORTLESS_TLD=localhost`，先确认既有代理配置一致；默认 HTTPS／443 与 hosts 路径涉及系统配置，先不选。**本仓未安装、未试用**，等真实 UI 任务需要这类入口时再选；已核源码 0.15.12，Apache-2.0、Node.js 24+。
+🧪 **多个 worktree 频繁切换时，可试 Portless，让 Agent 和浏览器引用稳定 URL；现有端口安排已清楚就沿用。** 运行现有开发命令时用 `portless run --name myapp <原开发命令>`，再在同一 worktree 用 `portless get myapp` 取得入口，交给已有测试配置；`get` 只构造 URL，就绪仍须请求应用的真实路由。试用选择高端口 HTTP：代理与应用统一设置 `PORTLESS_PORT=1355`、`PORTLESS_HTTPS=0`、`PORTLESS_SYNC_HOSTS=0`、`PORTLESS_LAN=0`、`PORTLESS_TLD=localhost`，先确认既有代理配置一致；默认 HTTPS／443 与 hosts 路径涉及系统配置，先不选。10-27 仅核源码 0.15.12，Apache-2.0、Node.js 24+；真实 UI 工作流仍待采用。
+
+**10-31 已完成 [#521 原 CLI 实试与隔离做法](../../experiments/portless-state-isolation/README.md)。** 正式包与固定主干都会在同目录显式启第二端口时覆盖 PID，随后停止 A 却停到 B；独立状态目录的停止控制通过。多 worktree 通常共用一个代理，确需独立代理才分开 `PORTLESS_STATE_DIR`；窄补丁仅本地验证，不当成上游已修或完整并发安全。
 
 **实际采用提醒：稳定 URL 也要接进测试。** state-in-url 已用 0.15.5 承载八个示例应用与 CI，但 E2E 仍写死主检出的 URL，工作树前缀会令测试找错入口；不复制其 `--force`，该选项会终止同名路由的现有进程。其脚本采用高端口 HTTP，却没有关闭 hosts 同步，不能据说明认定不改系统文件。浏览器会话仍按 Cookie 与存储作用域分别验收。
 

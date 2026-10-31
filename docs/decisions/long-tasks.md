@@ -35,6 +35,8 @@
 
 **先定共享决定，再并行写入。** 接口、数据契约和失败行为未定时，先并行调查；涉及同一决定的实现先收敛。worktree 解决检出隔离，服务和数据库仍需分别安排。中文使用者遇到研究资料、项目 Skill 未被 Git 跟踪，因而没有随 worktree 带过去；准备这些输入比增加代理更先要紧。
 
+**已经用 Portless 时，把代理启停交给一个协调者；独立代理须同时分开端口和状态目录。** worktree 子域已能区分应用，不必每个 Agent 各启一个代理。正式包 0.15.12 与当前固定主干的[真实 CLI 实试](../../experiments/portless-state-isolation/README.md)发现：同一 `PORTLESS_STATE_DIR` 下先启 A 再启 B，`stop -p A` 会停掉 B；独立目录的停止控制通过。入口给出当前版本的隔离做法和本地窄补丁，不把端口分开当成进程归属已隔离，也不保证并发启停安全。核实与 Linux 实试：2026-10-31。
+
 **按协调缺口选 Teams，不把“能互发消息”当唯一分界。** Claude Code 当前的普通子代理在工具集保留 `SendMessage` 且知道有效目标时也能通信；具体入口与限制看官方文档。Teams 仍属实验功能，默认关闭，`/resume`、`/rewind` 当前不能恢复 in-process 队员。
 
 **依据**：[官方] [Codex 子代理](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Claude Code 子代理通信](https://code.claude.com/docs/en/sub-agents#resume-subagents)及 [Teams 比较与限制](https://code.claude.com/docs/en/agent-teams#compare-with-subagents)；[社区原帖] [V2EX：worktree 资料缺失](https://v2ex.com/t/1243449)。选型与资料缺失原核实 2026-10-26，通信边界复核 2026-10-28。

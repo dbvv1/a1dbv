@@ -1,0 +1,103 @@
+{
+  "date_utc": "2026-10-31",
+  "purpose": "Verify Portless issue 521 through its real CLI and isolate proxy state",
+  "upstream_commit": "96a3bbb353e5a2bcc223ed014102737160e7f983",
+  "upstream_package_version": "0.15.13",
+  "release_package_version": "0.15.12",
+  "environment": {
+    "os": "Linux",
+    "node": "24.22.1",
+    "pnpm": "11.25.0"
+  },
+  "lockfile_sha256": "cd0852b7ef62e6d4e01f4098266ea842a613fce9cfd4b4dfe7f9b0125d1b8cf1",
+  "cli_replay": {
+    "mode": "foreground children, HTTP on free loopback ports, hosts sync and LAN disabled",
+    "probe": "GET / returns 404 with X-Portless: 1 when each proxy is alive",
+    "release_0_15_12": {
+      "start_a": "A responds; state records A",
+      "start_b": "A and B respond; shared state now records B",
+      "stop_requested_a": {
+        "exit_code": 0,
+        "a_responds": true,
+        "b_responds": false
+      },
+      "final_child_exit_codes": {
+        "A": 0,
+        "B": 0
+      }
+    },
+    "original_main": {
+      "start_a": "A responds; state records A",
+      "start_b": "A and B respond; shared state now records B",
+      "stop_requested_a": {
+        "exit_code": 0,
+        "a_responds": true,
+        "b_responds": false
+      },
+      "final_child_exit_codes": {
+        "A": 0,
+        "B": 0
+      }
+    },
+    "local_candidate": {
+      "start_a": "A responds; state records A",
+      "start_b": {
+        "exit_code": 1,
+        "a_responds": true,
+        "b_responds": false,
+        "state_records": "A"
+      },
+      "stop_requested_a": {
+        "exit_code": 0,
+        "a_responds": false,
+        "b_responds": false
+      },
+      "final_child_exit_codes": {
+        "A": 0,
+        "B": 1
+      }
+    }
+  },
+  "checks": {
+    "new_regressions_on_original_main": {
+      "passed": 4,
+      "failed": 3
+    },
+    "new_regressions_on_candidate": {
+      "passed": 7,
+      "failed": 0
+    },
+    "independent_candidate_replay": {
+      "passed": 7,
+      "failed": 0
+    },
+    "original_daemon_lifecycle_subset": {
+      "passed": 4,
+      "not_selected": 154
+    },
+    "mcp_contract_tests": {
+      "passed": 25,
+      "failed": 0
+    },
+    "build": "passed",
+    "type_check": "passed",
+    "lint": "passed",
+    "changed_file_format": "passed",
+    "diff_whitespace": "passed"
+  },
+  "tested_state_snapshot_fields": [
+    "proxy.pid",
+    "proxy.port",
+    "proxy.tls",
+    "proxy.tld"
+  ],
+  "not_verified": [
+    "Windows execution",
+    "complete upstream CLI suite and hosted CI",
+    "TLS, system hosts, CA trust, OS service installation",
+    "business app readiness or browser behavior",
+    "simultaneous starts, fast restart cleanup races, same-port incorrect PID, corrupt state files",
+    "model quality or whole-task efficiency"
+  ],
+  "patch_sha256": "fbf6aa7d534154bc6c2264c6ab4f4b9774a4bc1aac4e2b0b2a97e1b292832a41"
+}

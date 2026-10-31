@@ -1,0 +1,283 @@
+diff --git a/README.md b/README.md
+index e1f8d3d..d581941 100644
+--- a/README.md
++++ b/README.md
+@@ -460,0 +461,2 @@ portless service uninstall       # Remove the startup service
++Run proxy start and stop sequentially within each state directory. Starting on another port is refused while the recorded port still has a listener. Stop the recorded proxy before changing its port, or set a separate `PORTLESS_STATE_DIR` for an independent proxy. An explicit `proxy stop -p` must match the port recorded in that directory.
++
+diff --git a/packages/portless/src/cli.ts b/packages/portless/src/cli.ts
+index 287aad6..27b5748 100644
+--- a/packages/portless/src/cli.ts
++++ b/packages/portless/src/cli.ts
+@@ -93,0 +94 @@ import {
++  readPortFromDir,
+@@ -1034,0 +1036,11 @@ async function stopProxy(store: RouteStore, proxyPort: number, _tls: boolean): P
++  const recordedPort = readPortFromDir(store.dir);
++  if (recordedPort !== null && recordedPort !== proxyPort) {
++    console.error(
++      colors.red(
++        `Error: This state directory records port ${recordedPort}, not ${proxyPort}. Refusing to stop a different proxy.`
++      )
++    );
++    console.error(colors.blue("Use the state directory and port of the proxy you intend to stop."));
++    process.exitCode = 1;
++    return;
++  }
+@@ -3171,0 +3184,6 @@ ${colors.bold("Usage:")}
++${colors.bold("State directory:")}
++  Run start and stop sequentially within each PORTLESS_STATE_DIR.
++  Stop the recorded proxy before changing its port, or use a separate
++  state directory for another proxy. An explicit stop port must match
++  the port recorded in that directory.
++
+@@ -3338,0 +3357,19 @@ ${colors.bold("LAN mode (--lan):")}
++  const recordedPort = readPortFromDir(stateDir);
++  if (
++    recordedPort !== null &&
++    recordedPort !== proxyPort &&
++    (await isPortListening(recordedPort))
++  ) {
++    console.error(
++      colors.red(
++        `Error: This state directory already has a listener on port ${recordedPort}. Refusing to replace it with port ${proxyPort}.`
++      )
++    );
++    console.error(
++      colors.blue(
++        "Stop the recorded proxy first, or use a separate PORTLESS_STATE_DIR for another proxy."
++      )
++    );
++    process.exit(1);
++  }
++
+diff --git a/packages/portless/src/mcp.ts b/packages/portless/src/mcp.ts
+index 511821b..79d7cc6 100644
+--- a/packages/portless/src/mcp.ts
++++ b/packages/portless/src/mcp.ts
+@@ -192 +192 @@ export const TOOLS: ToolDef[] = [
+-    'Start the shared portless proxy as a background daemon. Without port, HTTPS uses 443 which may need sudo; MCP cannot answer a sudo prompt, so pass unprivileged for a port below 1024 without sudo, or port (for example 1355). HTTPS may show an OS dialog to trust the local CA; pass extraArgs ["--skip-trust"] to skip it.',
++    'Start the shared portless proxy as a background daemon. Run lifecycle commands sequentially in each state directory. Stop the recorded proxy before changing its port, or use a separate PORTLESS_STATE_DIR. Without port, HTTPS uses 443 which may need sudo; MCP cannot answer a sudo prompt, so pass unprivileged for a port below 1024 without sudo, or port (for example 1355). HTTPS may show an OS dialog to trust the local CA; pass extraArgs ["--skip-trust"] to skip it.',
+@@ -224 +224 @@ export const TOOLS: ToolDef[] = [
+-    "Stop the shared portless proxy. Pass port when the proxy runs on a non-default port.",
++    "Stop the shared portless proxy. An explicit port must match the port recorded in this state directory; a mismatch is refused without stopping it.",
+diff --git a/skills/portless/SKILL.md b/skills/portless/SKILL.md
+index 0157718..86300cb 100644
+--- a/skills/portless/SKILL.md
++++ b/skills/portless/SKILL.md
+@@ -187,0 +188,2 @@ Portless stores its state (routes, PID file, port file) in `~/.portless`. When t
++Run proxy start and stop sequentially within each state directory. Starting on another port is refused while the recorded port still has a listener. Stop the recorded proxy before changing its port, or use a separate `PORTLESS_STATE_DIR` for an independent proxy. An explicit `proxy stop -p` must match the port recorded in that directory.
++
+diff --git a/packages/portless/src/proxy-state.test.ts b/packages/portless/src/proxy-state.test.ts
+new file mode 100644
+index 0000000..e66cad0
+--- /dev/null
++++ b/packages/portless/src/proxy-state.test.ts
+@@ -0,0 +1,208 @@
++import { afterEach, describe, expect, it } from "vitest";
++import { spawn, spawnSync, type ChildProcess } from "node:child_process";
++import * as fs from "node:fs";
++import * as http from "node:http";
++import * as net from "node:net";
++import * as os from "node:os";
++import * as path from "node:path";
++import { fileURLToPath } from "node:url";
++import { setTimeout as delay } from "node:timers/promises";
++
++const cli = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
++const children: ChildProcess[] = [];
++const directories: string[] = [];
++
++function stateDirectory(): string {
++  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "portless-state-"));
++  directories.push(dir);
++  return dir;
++}
++
++function environment(dir: string): NodeJS.ProcessEnv {
++  const env = {
++    ...process.env,
++    PORTLESS_STATE_DIR: dir,
++    PORTLESS_SYNC_HOSTS: "0",
++    PORTLESS_LAN: "0",
++    PORTLESS_HTTPS: "0",
++    PORTLESS_UNPRIVILEGED: "0",
++    NO_COLOR: "1",
++  };
++  for (const key of ["PORTLESS_PORT", "PORTLESS_TLD", "PNPM_SCRIPT_SRC_DIR", "npm_command"]) {
++    delete (env as NodeJS.ProcessEnv)[key];
++  }
++  return env;
++}
++
++async function freePort(): Promise<number> {
++  const server = net.createServer();
++  await new Promise<void>((resolve, reject) => {
++    server.once("error", reject);
++    server.listen(0, "127.0.0.1", resolve);
++  });
++  const port = (server.address() as net.AddressInfo).port;
++  await new Promise<void>((resolve) => server.close(() => resolve()));
++  return port;
++}
++
++async function differentPort(existing: number): Promise<number> {
++  let port = await freePort();
++  while (port === existing) port = await freePort();
++  return port;
++}
++
++function responds(port: number): Promise<boolean> {
++  return new Promise((resolve) => {
++    const req = http.get({ host: "127.0.0.1", port, path: "/", timeout: 200 }, (res) => {
++      res.resume();
++      resolve(res.headers["x-portless"] === "1");
++    });
++    req.on("error", () => resolve(false));
++    req.on("timeout", () => req.destroy());
++  });
++}
++
++async function start(dir: string, port: number): Promise<ChildProcess> {
++  const child = spawn(
++    process.execPath,
++    [cli, "proxy", "start", "-p", String(port), "--no-tls", "--foreground"],
++    { env: environment(dir), stdio: "ignore" }
++  );
++  children.push(child);
++  for (let n = 0; n < 50; n += 1) {
++    if (await responds(port)) return child;
++    if (child.exitCode !== null) throw new Error(`Proxy exited with ${child.exitCode}`);
++    await delay(20);
++  }
++  throw new Error("Proxy did not become ready");
++}
++
++function run(dir: string, args: string[]) {
++  return spawnSync(process.execPath, [cli, ...args], {
++    env: environment(dir),
++    encoding: "utf-8",
++    timeout: 2000,
++  });
++}
++
++function markers(dir: string) {
++  return ["proxy.pid", "proxy.port", "proxy.tls", "proxy.tld"].map((name) => {
++    const file = path.join(dir, name);
++    return fs.existsSync(file) ? fs.readFileSync(file, "utf-8") : null;
++  });
++}
++
++async function stopChild(child: ChildProcess) {
++  if (child.exitCode !== null || child.signalCode !== null) return;
++  child.kill("SIGTERM");
++  await new Promise<void>((resolve, reject) => {
++    const timeout = setTimeout(() => reject(new Error("Proxy did not exit")), 2000);
++    child.once("exit", () => {
++      clearTimeout(timeout);
++      resolve();
++    });
++  });
++}
++
++afterEach(async () => {
++  for (const child of children.splice(0)) await stopChild(child);
++  for (const dir of directories.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
++});
++
++describe("proxy state port ownership", () => {
++  it("refuses a second port without overwriting the active state", async () => {
++    const dir = stateDirectory();
++    const first = await freePort();
++    const second = await differentPort(first);
++    await start(dir, first);
++    const before = markers(dir);
++    // Foreground keeps a broken baseline's extra process under test ownership.
++    const child = spawn(
++      process.execPath,
++      [cli, "proxy", "start", "-p", String(second), "--no-tls", "--foreground"],
++      { env: environment(dir), stdio: "ignore" }
++    );
++    children.push(child);
++    for (let n = 0; n < 50 && child.exitCode === null; n += 1) await delay(20);
++    expect(child.exitCode).toBe(1);
++    expect(markers(dir)).toEqual(before);
++    expect(await responds(first)).toBe(true);
++    expect(await responds(second)).toBe(false);
++  });
++
++  it("refuses to stop a different port without signaling the recorded proxy", async () => {
++    const firstDir = stateDirectory();
++    const secondDir = stateDirectory();
++    const first = await freePort();
++    const second = await differentPort(first);
++    await start(firstDir, first);
++    await start(secondDir, second);
++    const before = markers(secondDir);
++    const stop = run(secondDir, ["proxy", "stop", "-p", String(first)]);
++    expect(stop.status).toBe(1);
++    expect(markers(secondDir)).toEqual(before);
++    expect(await responds(first)).toBe(true);
++    expect(await responds(second)).toBe(true);
++  });
++
++  it("refuses a mismatched stop even when the recorded PID file is missing", async () => {
++    const dir = stateDirectory();
++    const active = await freePort();
++    const other = await differentPort(active);
++    await start(dir, active);
++    fs.unlinkSync(path.join(dir, "proxy.pid"));
++    const before = markers(dir);
++    expect(run(dir, ["proxy", "stop", "-p", String(other)]).status).toBe(1);
++    expect(markers(dir)).toEqual(before);
++    expect(await responds(active)).toBe(true);
++  });
++
++  it("keeps same-port repeated start and implicit stop working", async () => {
++    const dir = stateDirectory();
++    const port = await freePort();
++    await start(dir, port);
++    const before = markers(dir);
++    const repeat = run(dir, ["proxy", "start", "-p", String(port), "--no-tls"]);
++    expect(repeat.status).toBe(0);
++    expect(repeat.stdout).toContain("already running");
++    expect(markers(dir)).toEqual(before);
++    expect(run(dir, ["proxy", "stop"]).status).toBe(0);
++    expect(await responds(port)).toBe(false);
++    expect(run(dir, ["proxy", "stop", "-p", String(port)]).status).toBe(0);
++  });
++
++  it("keeps independent state directories independently stoppable", async () => {
++    const firstDir = stateDirectory();
++    const secondDir = stateDirectory();
++    const first = await freePort();
++    const second = await differentPort(first);
++    await start(firstDir, first);
++    await start(secondDir, second);
++    const before = markers(secondDir);
++    expect(run(firstDir, ["proxy", "stop", "-p", String(first)]).status).toBe(0);
++    expect(await responds(first)).toBe(false);
++    expect(await responds(second)).toBe(true);
++    expect(markers(secondDir)).toEqual(before);
++  });
++
++  it("allows a new port after the previous foreground proxy has exited", async () => {
++    const dir = stateDirectory();
++    const first = await freePort();
++    const second = await differentPort(first);
++    await stopChild(await start(dir, first));
++    await start(dir, second);
++    expect(await responds(first)).toBe(false);
++    expect(await responds(second)).toBe(true);
++    expect(fs.readFileSync(path.join(dir, "proxy.port"), "utf-8")).toBe(String(second));
++  });
++
++  it("does not treat a stale port marker as a running proxy", async () => {
++    const dir = stateDirectory();
++    const stale = await freePort();
++    const port = await differentPort(stale);
++    fs.writeFileSync(path.join(dir, "proxy.port"), String(stale));
++    await start(dir, port);
++    expect(fs.readFileSync(path.join(dir, "proxy.port"), "utf-8")).toBe(String(port));
++    expect(await responds(port)).toBe(true);
++  });
++});
