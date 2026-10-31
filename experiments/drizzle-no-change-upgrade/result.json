@@ -1,0 +1,61 @@
+{
+  "sourceCommit": "f82ce2201728d56b34cbf43cd21c88b6b001da02",
+  "node": "v24.22.1",
+  "platform": "linux",
+  "schemaSha256": "c21b32de5702bf85640acc48ca82c1adfebda1d7ea8e5e144be20b3d5a27f7be",
+  "configSha256": "4706ee54b3b357f6a72b3e39777a7054c3b43cc4ea3a44c924b777c82db97a6c",
+  "results": [
+    {
+      "version": "1.0.0-rc.4",
+      "cliSha256": "b455c9030d98c9a42936d22c11c0657dbdf1670c6776c2ac27c2e6c83db396ba",
+      "cliExitCodes": [
+        0,
+        0,
+        0
+      ],
+      "schemaAndConfigUnchanged": true,
+      "historicalSqlPreserved": true,
+      "upSnapshotVersions": [
+        "8"
+      ],
+      "firstGenerate": {
+        "newMigrations": 1,
+        "statements": 4,
+        "typeAlter": 1,
+        "indexDrop": 1,
+        "indexCreate": 1,
+        "checkReplace": 1,
+        "viewDDL": 0
+      },
+      "secondGenerateUnchanged": true
+    },
+    {
+      "version": "1.0.0-rc.5",
+      "cliSha256": "23ceb36aa5057cc09f602751794e9d5652994c88b6a44dc012d9ea8deac12990",
+      "cliExitCodes": [
+        0,
+        0,
+        0
+      ],
+      "schemaAndConfigUnchanged": true,
+      "historicalSqlPreserved": true,
+      "upSnapshotVersions": [
+        "9"
+      ],
+      "firstGenerate": {
+        "newMigrations": 1,
+        "statements": 4,
+        "typeAlter": 1,
+        "indexDrop": 1,
+        "indexCreate": 1,
+        "checkReplace": 1,
+        "viewDDL": 0
+      },
+      "secondGenerateUnchanged": true
+    }
+  ],
+  "acceptance": {
+    "noChangeUpgradeFailures": 2,
+    "passed": false
+  }
+}
