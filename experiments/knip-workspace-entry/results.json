@@ -1,0 +1,731 @@
+{
+  "checked_on": "2026-10-31 UTC",
+  "consumer_commit": "d4a049103d9c30db13f2c228e14499fe982ccb4f",
+  "upstream_main_source_checked": "3c84cafb68b2fa3d419b03a3a5e564d60aaeef30",
+  "node": "v24.22.1",
+  "npm": "11.9.0",
+  "scope": "Reporter public reproduction plus synthetic unused/absent-file controls. No real Agent deletion, product cleanup, upstream patch, Relay, production mode or full Knip suite.",
+  "author_runs": [
+    {
+      "knip": "6.43.0",
+      "vitest": "5.0.3",
+      "source_sha256_before_and_after": {
+        "vitest.config.mjs": "28918be358efbb30ec0d34503655c6259a9fa8490cc9dce9278825bd2ebbc1b3",
+        "packages/lib/src/check.ts": "cc175ea4fea714c96be9bd6abb44a4eb0f36a32477565756a3ed7757ad732f41",
+        "packages/lib/src/value.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29"
+      },
+      "package_lock_sha256": "51d965ec8dc11080c4f1c4e6f89e9a197849b9dd65ce3fa476b44086dbd499da",
+      "records": [
+        {
+          "case": "baseline",
+          "tool": "knip",
+          "args": [
+            "node",
+            "node_modules/knip/bin/knip.js",
+            "--reporter=json"
+          ],
+          "exit_code": 1,
+          "report": {
+            "issues": [
+              {
+                "file": "packages/lib/src/check.ts",
+                "binaries": [],
+                "catalog": [],
+                "catalogReferences": [],
+                "dependencies": [],
+                "devDependencies": [],
+                "duplicates": [],
+                "enumMembers": [],
+                "exports": [],
+                "files": [
+                  {
+                    "name": "packages/lib/src/check.ts"
+                  }
+                ],
+                "namespaceMembers": [],
+                "optionalPeerDependencies": [],
+                "types": [],
+                "unlisted": [],
+                "unresolved": []
+              },
+              {
+                "file": "packages/lib/src/value.ts",
+                "binaries": [],
+                "catalog": [],
+                "catalogReferences": [],
+                "dependencies": [],
+                "devDependencies": [],
+                "duplicates": [],
+                "enumMembers": [],
+                "exports": [],
+                "files": [
+                  {
+                    "name": "packages/lib/src/value.ts"
+                  }
+                ],
+                "namespaceMembers": [],
+                "optionalPeerDependencies": [],
+                "types": [],
+                "unlisted": [],
+                "unresolved": []
+              }
+            ]
+          },
+          "reported_files": [
+            "packages/lib/src/check.ts",
+            "packages/lib/src/value.ts"
+          ]
+        },
+        {
+          "case": "baseline",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "numTotalTests": 1,
+            "numPassedTests": 1,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 0,
+            "success": true
+          },
+          "failure_messages": []
+        },
+        {
+          "case": "precise_entry",
+          "tool": "knip",
+          "args": [
+            "node",
+            "node_modules/knip/bin/knip.js",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "issues": []
+          },
+          "reported_files": []
+        },
+        {
+          "case": "precise_entry",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "numTotalTests": 1,
+            "numPassedTests": 1,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 0,
+            "success": true
+          },
+          "failure_messages": []
+        },
+        {
+          "case": "unused_control",
+          "tool": "knip",
+          "args": [
+            "node",
+            "node_modules/knip/bin/knip.js",
+            "--reporter=json"
+          ],
+          "exit_code": 1,
+          "report": {
+            "issues": [
+              {
+                "file": "packages/lib/src/unused-control.ts",
+                "binaries": [],
+                "catalog": [],
+                "catalogReferences": [],
+                "dependencies": [],
+                "devDependencies": [],
+                "duplicates": [],
+                "enumMembers": [],
+                "exports": [],
+                "files": [
+                  {
+                    "name": "packages/lib/src/unused-control.ts"
+                  }
+                ],
+                "namespaceMembers": [],
+                "optionalPeerDependencies": [],
+                "types": [],
+                "unlisted": [],
+                "unresolved": []
+              }
+            ]
+          },
+          "reported_files": [
+            "packages/lib/src/unused-control.ts"
+          ]
+        },
+        {
+          "case": "unused_control",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "numTotalTests": 1,
+            "numPassedTests": 1,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 0,
+            "success": true
+          },
+          "failure_messages": []
+        },
+        {
+          "case": "absent_value.ts",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 1,
+          "report": {
+            "numTotalTests": 0,
+            "numPassedTests": 0,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 1,
+            "success": false
+          },
+          "failure_messages": [
+            "Cannot find module './value' imported from <consumer>/packages/lib/src/check.ts"
+          ]
+        },
+        {
+          "case": "absent_check.ts",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 1,
+          "report": {
+            "numTotalTests": 0,
+            "numPassedTests": 0,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 0,
+            "numFailedTestSuites": 0,
+            "success": false
+          },
+          "failure_messages": []
+        },
+        {
+          "case": "restored",
+          "tool": "knip",
+          "args": [
+            "node",
+            "node_modules/knip/bin/knip.js",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "issues": []
+          },
+          "reported_files": []
+        },
+        {
+          "case": "restored",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "numTotalTests": 1,
+            "numPassedTests": 1,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 0,
+            "success": true
+          },
+          "failure_messages": []
+        }
+      ],
+      "all_assertions": "passed"
+    },
+    {
+      "knip": "6.44.0",
+      "vitest": "5.0.3",
+      "source_sha256_before_and_after": {
+        "vitest.config.mjs": "28918be358efbb30ec0d34503655c6259a9fa8490cc9dce9278825bd2ebbc1b3",
+        "packages/lib/src/check.ts": "cc175ea4fea714c96be9bd6abb44a4eb0f36a32477565756a3ed7757ad732f41",
+        "packages/lib/src/value.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29"
+      },
+      "package_lock_sha256": "aa3a76ce32ab48bbda227f4ec465f1bfea66672188ba4584fc1ce385aaf2dd81",
+      "records": [
+        {
+          "case": "baseline",
+          "tool": "knip",
+          "args": [
+            "node",
+            "node_modules/knip/bin/knip.js",
+            "--reporter=json"
+          ],
+          "exit_code": 1,
+          "report": {
+            "issues": [
+              {
+                "file": "packages/lib/src/check.ts",
+                "binaries": [],
+                "catalog": [],
+                "catalogReferences": [],
+                "dependencies": [],
+                "devDependencies": [],
+                "duplicates": [],
+                "enumMembers": [],
+                "exports": [],
+                "files": [
+                  {
+                    "name": "packages/lib/src/check.ts"
+                  }
+                ],
+                "namespaceMembers": [],
+                "optionalPeerDependencies": [],
+                "types": [],
+                "unlisted": [],
+                "unresolved": []
+              },
+              {
+                "file": "packages/lib/src/value.ts",
+                "binaries": [],
+                "catalog": [],
+                "catalogReferences": [],
+                "dependencies": [],
+                "devDependencies": [],
+                "duplicates": [],
+                "enumMembers": [],
+                "exports": [],
+                "files": [
+                  {
+                    "name": "packages/lib/src/value.ts"
+                  }
+                ],
+                "namespaceMembers": [],
+                "optionalPeerDependencies": [],
+                "types": [],
+                "unlisted": [],
+                "unresolved": []
+              }
+            ]
+          },
+          "reported_files": [
+            "packages/lib/src/check.ts",
+            "packages/lib/src/value.ts"
+          ]
+        },
+        {
+          "case": "baseline",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "numTotalTests": 1,
+            "numPassedTests": 1,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 0,
+            "success": true
+          },
+          "failure_messages": []
+        },
+        {
+          "case": "precise_entry",
+          "tool": "knip",
+          "args": [
+            "node",
+            "node_modules/knip/bin/knip.js",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "issues": []
+          },
+          "reported_files": []
+        },
+        {
+          "case": "precise_entry",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "numTotalTests": 1,
+            "numPassedTests": 1,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 0,
+            "success": true
+          },
+          "failure_messages": []
+        },
+        {
+          "case": "unused_control",
+          "tool": "knip",
+          "args": [
+            "node",
+            "node_modules/knip/bin/knip.js",
+            "--reporter=json"
+          ],
+          "exit_code": 1,
+          "report": {
+            "issues": [
+              {
+                "file": "packages/lib/src/unused-control.ts",
+                "binaries": [],
+                "catalog": [],
+                "catalogReferences": [],
+                "dependencies": [],
+                "devDependencies": [],
+                "duplicates": [],
+                "enumMembers": [],
+                "exports": [],
+                "files": [
+                  {
+                    "name": "packages/lib/src/unused-control.ts"
+                  }
+                ],
+                "namespaceMembers": [],
+                "optionalPeerDependencies": [],
+                "types": [],
+                "unlisted": [],
+                "unresolved": []
+              }
+            ]
+          },
+          "reported_files": [
+            "packages/lib/src/unused-control.ts"
+          ]
+        },
+        {
+          "case": "unused_control",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "numTotalTests": 1,
+            "numPassedTests": 1,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 0,
+            "success": true
+          },
+          "failure_messages": []
+        },
+        {
+          "case": "absent_value.ts",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 1,
+          "report": {
+            "numTotalTests": 0,
+            "numPassedTests": 0,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 1,
+            "success": false
+          },
+          "failure_messages": [
+            "Cannot find module './value' imported from <consumer>/packages/lib/src/check.ts"
+          ]
+        },
+        {
+          "case": "absent_check.ts",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 1,
+          "report": {
+            "numTotalTests": 0,
+            "numPassedTests": 0,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 0,
+            "numFailedTestSuites": 0,
+            "success": false
+          },
+          "failure_messages": []
+        },
+        {
+          "case": "restored",
+          "tool": "knip",
+          "args": [
+            "node",
+            "node_modules/knip/bin/knip.js",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "issues": []
+          },
+          "reported_files": []
+        },
+        {
+          "case": "restored",
+          "tool": "vitest",
+          "args": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--reporter=json"
+          ],
+          "exit_code": 0,
+          "report": {
+            "numTotalTests": 1,
+            "numPassedTests": 1,
+            "numFailedTests": 0,
+            "numTotalTestSuites": 1,
+            "numFailedTestSuites": 0,
+            "success": true
+          },
+          "failure_messages": []
+        }
+      ],
+      "all_assertions": "passed"
+    }
+  ],
+  "independent_review": {
+    "knip": "6.44.0",
+    "scope": "Separate source copy with existing node_modules symlink; no install or download. Knip ran with --no-config-hints in addition to JSON reporter; author runs retain config hints. Not zero-context reader acceptance or real Agent deletion.",
+    "source_files_restored_exactly": true,
+    "raw_receipt_sha256": "976184b1a9eb1a484393bf44628175857965e8b54f512c82c21fee1181df5f49",
+    "records": [
+      {
+        "case": "baseline",
+        "tool": "vitest",
+        "exit_code": 0,
+        "report": {
+          "numTotalTests": 1,
+          "numPassedTests": 1,
+          "numFailedTests": 0,
+          "numTotalTestSuites": 1,
+          "numFailedTestSuites": 0,
+          "success": true
+        }
+      },
+      {
+        "case": "baseline",
+        "tool": "knip",
+        "exit_code": 1,
+        "report": {
+          "issues": [
+            {
+              "file": "packages/lib/src/check.ts",
+              "binaries": [],
+              "catalog": [],
+              "catalogReferences": [],
+              "dependencies": [],
+              "devDependencies": [],
+              "duplicates": [],
+              "enumMembers": [],
+              "exports": [],
+              "files": [
+                {
+                  "name": "packages/lib/src/check.ts"
+                }
+              ],
+              "namespaceMembers": [],
+              "optionalPeerDependencies": [],
+              "types": [],
+              "unlisted": [],
+              "unresolved": []
+            },
+            {
+              "file": "packages/lib/src/value.ts",
+              "binaries": [],
+              "catalog": [],
+              "catalogReferences": [],
+              "dependencies": [],
+              "devDependencies": [],
+              "duplicates": [],
+              "enumMembers": [],
+              "exports": [],
+              "files": [
+                {
+                  "name": "packages/lib/src/value.ts"
+                }
+              ],
+              "namespaceMembers": [],
+              "optionalPeerDependencies": [],
+              "types": [],
+              "unlisted": [],
+              "unresolved": []
+            }
+          ]
+        }
+      },
+      {
+        "case": "precise_entry",
+        "tool": "knip",
+        "exit_code": 0,
+        "report": {
+          "issues": []
+        }
+      },
+      {
+        "case": "precise_entry",
+        "tool": "vitest",
+        "exit_code": 0,
+        "report": {
+          "numTotalTests": 1,
+          "numPassedTests": 1,
+          "numFailedTests": 0,
+          "numTotalTestSuites": 1,
+          "numFailedTestSuites": 0,
+          "success": true
+        }
+      },
+      {
+        "case": "unused_control",
+        "tool": "knip",
+        "exit_code": 1,
+        "report": {
+          "issues": [
+            {
+              "file": "packages/lib/src/unused-control.ts",
+              "binaries": [],
+              "catalog": [],
+              "catalogReferences": [],
+              "dependencies": [],
+              "devDependencies": [],
+              "duplicates": [],
+              "enumMembers": [],
+              "exports": [],
+              "files": [
+                {
+                  "name": "packages/lib/src/unused-control.ts"
+                }
+              ],
+              "namespaceMembers": [],
+              "optionalPeerDependencies": [],
+              "types": [],
+              "unlisted": [],
+              "unresolved": []
+            }
+          ]
+        }
+      },
+      {
+        "case": "unused_control",
+        "tool": "vitest",
+        "exit_code": 0,
+        "report": {
+          "numTotalTests": 1,
+          "numPassedTests": 1,
+          "numFailedTests": 0,
+          "numTotalTestSuites": 1,
+          "numFailedTestSuites": 0,
+          "success": true
+        }
+      },
+      {
+        "case": "absent_value.ts",
+        "tool": "vitest",
+        "exit_code": 1,
+        "report": {
+          "numTotalTests": 0,
+          "numPassedTests": 0,
+          "numFailedTests": 0,
+          "numTotalTestSuites": 1,
+          "numFailedTestSuites": 1,
+          "success": false
+        }
+      },
+      {
+        "case": "absent_check.ts",
+        "tool": "vitest",
+        "exit_code": 1,
+        "report": {
+          "numTotalTests": 0,
+          "numPassedTests": 0,
+          "numFailedTests": 0,
+          "numTotalTestSuites": 0,
+          "numFailedTestSuites": 0,
+          "success": false
+        }
+      },
+      {
+        "case": "restored",
+        "tool": "vitest",
+        "exit_code": 0,
+        "report": {
+          "numTotalTests": 1,
+          "numPassedTests": 1,
+          "numFailedTests": 0,
+          "numTotalTestSuites": 1,
+          "numFailedTestSuites": 0,
+          "success": true
+        }
+      },
+      {
+        "case": "restored",
+        "tool": "knip",
+        "exit_code": 0,
+        "report": {
+          "issues": []
+        }
+      }
+    ],
+    "all_observations_match_author": true
+  },
+  "readme_command_replay": {
+    "fresh_clone_at_fixed_commit": true,
+    "knip": "6.44.0",
+    "vitest": "5.0.3",
+    "installation": "npm install --save-dev --save-exact knip@6.44.0 --ignore-scripts with an isolated cache",
+    "baseline_reported_files": [
+      "packages/lib/src/check.ts",
+      "packages/lib/src/value.ts"
+    ],
+    "after_report": {
+      "issues": []
+    },
+    "vitest_one_test_passes_before_and_after": true,
+    "package_lock_sha256": "aa3a76ce32ab48bbda227f4ec465f1bfea66672188ba4584fc1ce385aaf2dd81"
+  }
+}

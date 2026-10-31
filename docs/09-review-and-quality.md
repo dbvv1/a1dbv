@@ -286,6 +286,15 @@ rsync 的已接收提交 a55ab05c 明确保留名称过滤语义，而非把过�
 
 **依据**：[经验] 告警保护判断；[一手：维护者提交／固定源码，2026-10-24 核读] [rsync 提交 a55ab05c](https://github.com/RsyncProject/rsync/commit/a55ab05c1922f5cba915f203ec51e0ae15a57d3a)、[Codex-reported 用例](https://github.com/RsyncProject/rsync/blob/a55ab05c1922f5cba915f203ec51e0ae15a57d3a/testsuite/symlink-exclude-leaf_test.py#L43-L49)、[配套契约用例](https://github.com/RsyncProject/rsync/blob/a55ab05c1922f5cba915f203ec51e0ae15a57d3a/testsuite/daemon-exclude-namebased_test.py)；[研究] 验证范围；[一手：固定文档与实现；经验：采用判断] API 兼容性采用与反例 [官方范围、成熟项目两种采用与反例](research/2026-10-12-development-conditions.md#api修改声明差异消费者契约与真实集成)；[本仓 CLI 实试／一手：固定修复，2026-10-24，未验上游运行服务或模型收益] oasdiff 实试；[研究] CRBugBench 比较与人的负担 [比较、人的负担与边界](research/2026-10-12-baml-and-review.md#额外评审的增量与人的负担)；[一手：自用复盘；研究：条件采用] [Claude Code 团队 2026-10-15 复盘](https://claude.dev/blog/solving-code-review-at-anthropic/)；核实 2026-10-24。
 
+<a id="knip-live-test-entry"></a>
+### 清理 unused 前，先保住真实测试入口
+
+**🧪 已用 Knip 时，让 Agent 先核可达图和框架入口，再交删除候选。** 真实用户的 Vitest 根配置运行子工作区 `check.ts`，它导入 `value.ts`；Knip 6.43.0／6.44.0 却把两份活文件都报为 unused。给所属 workspace 精确补 `entry: ["src/check.ts"]` 后，误报消失、原测试仍 1／1 通过，另加的真正未引用文件也仍被检出；具体配置和复跑见[可用入口](../experiments/knip-workspace-entry/README.md)。
+
+不要按“测试文件”判安全删除，也不要用 `ignore` 或全源码入口压绿。本仓暂时移走两份被误报文件中的任一份，消费者均失败，原件已恢复；这是合成误删对照，不是已发生的 Agent 事故。只看静态报告或测试退出成功不够，还要核原测试仍实际运行。已有识别准确时保留原配置，不为本例新增全仓清理门禁。
+
+**依据**：[使用者 #2247](https://github.com/webpro-nl/knip/issues/2247)、[本仓两正式版／非作者复跑](../experiments/knip-workspace-entry/README.md#实际对照不仅看报告是否归零)、[官方 workspace 入口](https://knip.dev/features/monorepos-and-workspaces)。已有 PR 尚被要求修正其他否定模式回归，本次不重复补丁；核实 2026-10-31。
+
 <a id="griffe-api-feedback"></a>
 ### 🧪 Python 库改公开接口：先取 Griffe 兼容差量
 

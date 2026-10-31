@@ -1,0 +1,9 @@
+{
+  "workspaces": {
+    "packages/lib": {
+      "entry": [
+        "src/check.ts"
+      ]
+    }
+  }
+}
