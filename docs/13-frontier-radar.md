@@ -97,6 +97,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [Vitest 升级后跨文件漏 env](15-task-playbooks.md#vitest-reused-worker-env) | Agent 修连片失败前先核 worker 状态：默认隔离对照，必要时每文件入口复位 | 真实后端测试用户 #11423；官方 setup／env 语义与未合并 PR | 4.1.11／5.0.5、同 Node／Vite 七组：新版8文件2worker漏值；setup与默认隔离全过，两版单worker均漏；2026-10-31 | 🧪 unstubEnvs 不恢复直接赋值；独立新目录复跑，字符串哨兵，非数据库／模型验收 |
 | [RTK 的 uv 短失败无恢复](03-context-engineering.md#rtk-uv-short-failure) | 已用过滤器但失败丢诊断：先核已发生结果，下一次保留原生输出 | 真实用户 #4860；已有 500-byte 源码门槛补实际执行 | OSS 1.1.0、tee／SQLite 各6条件：499无记录、500完整取回且不重跑；2026-10-31 | 🧪 排除外层 uv 不排除内层 pytest；独立门槛复跑，未验模型／Windows |
 | [Intent 的 pnpm 全局漏发现](decisions/skills-and-plugins.md#intent-pnpm-global) | 已全局装过 CLI 却列不出 Skill：按实际包根逐个读取，不重装、不拼根 | 真实使用者 #206；已有 PR #207 未合并 | pnpm 11.17.0 实际安装；Intent 0.3.6／0.5.6 默认 0，逐根 5＋1，六份正文均加载；2026-10-31 | 🧪 只修单次读取，不恢复自动多根；非作者复跑，消费者工作流／模型未验 |
 | [OpenSpec／Pi 同名 Skill](decisions/skills-and-plugins.md#openspec-pi-discovery) | 已混用 Pi 与 Codex：保留生成目录，仅在 Pi 窄排除共享副本 | 真实用户 #2180；Pi 官方资源排除与实际加载器 | 1.15.0／1.16.0 各8个条件：6冲突→0，6 skills＋6 prompts及更新后内容保留；2026-10-31 | 🧪 宽排除会吞掉两份 Skill，零警告不够；独立1.16复跑，未调模型 |

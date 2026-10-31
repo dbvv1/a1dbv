@@ -372,6 +372,11 @@ Agent容易漏动态引用、间接消费者和故障时才启用的保护；人
 
 缓存以“代码未变”跳过原生环境检查就撤掉短路；配置、锁文件或共享设施使映射失效时，核已有扩大运行／重建路径及过滤范围后再恢复增量。见 [Vitest 与 Polylogue](research/2026-10-12-development-conditions.md#增量验证已有回归测试是否真的被选中)；选中通过不证明未表达的兼容要求。
 
+<a id="vitest-reused-worker-env"></a>
+**🧪 Vitest 升级后单文件过、整套连片失败，先核复用 worker 的入口状态，再让 Agent 改业务。** 已关 `isolate` 的 `forks` 项目，先恢复默认隔离作对照；必须复用时，在每文件 `setupFiles` 顶层恢复项目确认过的环境键，而不是等 `beforeEach` 才改。默认隔离与每文件 setup 在 5.0.5 的 8 文件对照均通过；仅开 `unstubEnvs` 仍漏直接写入的 `process.env`。2 文件／1 worker 在 4.1.11 和 5.0.5 都漏值，因此降级或串行不是通用修法。setup 不重置已缓存模块／客户端；回真实资源生命周期验收，不先删断言或加重试求绿。
+
+**依据**：[社区：真实后端集成测试](https://github.com/vitest-dev/vitest/issues/11423)、官方配置及[本仓七组 CLI 实跑与复用脚本](../experiments/vitest-worker-env/README.md)；同 Node 24.22.1、Vite 8.3.5，纯字符串哨兵／非作者新目录复跑，未验数据库与模型；核实 2026-10-31。
+
 **🧪 测试仍是瓶颈时**，先比修慢夹具／重复扫描和已有安全并行；常见改动能缩范围，计入映射维护与漏选补跑成本后再决定是否加选测。[remote-store 暂缓引入的试验](research/2026-10-12-development-conditions.md#新增选测能力先比较改动类型与完整运行成本)的种子试验不代表日常改动，也不授权撤检查、放宽隐私或全并行。
 
 **可直接试的Python入口**：已有pytest／unittest项目可在隔离副本用 `python -m pytest --testmon` 建全绿映射，再让Agent沿同一入口取得改动反馈。[实际历史重放](../experiments/testmon-feedback.md)中，18项选出11项并抓到同一个旧版回归；恢复后通过。目标文件本来明确且廉价时直接跑该文件，别为本例引入长期映射维护；本仓未改正式检查器，也未测模型提效。

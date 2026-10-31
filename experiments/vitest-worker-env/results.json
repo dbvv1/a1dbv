@@ -1,0 +1,329 @@
+{
+  "schema": 1,
+  "scope": "synthetic-string-only-forks",
+  "runtime": {
+    "4.1.11": {
+      "node": "v24.22.1",
+      "vitest": "4.1.11",
+      "vite": "8.3.5"
+    },
+    "5.0.5": {
+      "node": "v24.22.1",
+      "vitest": "5.0.5",
+      "vite": "8.3.5"
+    }
+  },
+  "cases": [
+    {
+      "vitest": "4.1.11",
+      "mode": "reuse",
+      "files": 8,
+      "maxWorkers": 2,
+      "actualWorkers": 2,
+      "exit": 0,
+      "passed": 8,
+      "failed": 0,
+      "receiptCoverageValid": true,
+      "observations": [
+        {
+          "file": "f01",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f02",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f03",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f04",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f05",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f06",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f07",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f08",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        }
+      ]
+    },
+    {
+      "vitest": "5.0.5",
+      "mode": "reuse",
+      "files": 8,
+      "maxWorkers": 2,
+      "actualWorkers": 2,
+      "exit": 1,
+      "passed": 2,
+      "failed": 6,
+      "receiptCoverageValid": true,
+      "observations": [
+        {
+          "file": "f01",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f02",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f03",
+          "worker": "worker-1",
+          "seen": "private-sentinel-f01"
+        },
+        {
+          "file": "f04",
+          "worker": "worker-2",
+          "seen": "private-sentinel-f02"
+        },
+        {
+          "file": "f05",
+          "worker": "worker-2",
+          "seen": "private-sentinel-f04"
+        },
+        {
+          "file": "f06",
+          "worker": "worker-1",
+          "seen": "private-sentinel-f03"
+        },
+        {
+          "file": "f07",
+          "worker": "worker-2",
+          "seen": "private-sentinel-f05"
+        },
+        {
+          "file": "f08",
+          "worker": "worker-1",
+          "seen": "private-sentinel-f06"
+        }
+      ]
+    },
+    {
+      "vitest": "5.0.5",
+      "mode": "setup",
+      "files": 8,
+      "maxWorkers": 2,
+      "actualWorkers": 2,
+      "exit": 0,
+      "passed": 8,
+      "failed": 0,
+      "receiptCoverageValid": true,
+      "observations": [
+        {
+          "file": "f01",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f02",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f03",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f04",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f05",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f06",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f07",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f08",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        }
+      ]
+    },
+    {
+      "vitest": "5.0.5",
+      "mode": "unstub",
+      "files": 8,
+      "maxWorkers": 2,
+      "actualWorkers": 2,
+      "exit": 1,
+      "passed": 2,
+      "failed": 6,
+      "receiptCoverageValid": true,
+      "observations": [
+        {
+          "file": "f01",
+          "worker": "worker-1",
+          "seen": "private-sentinel-f06"
+        },
+        {
+          "file": "f02",
+          "worker": "worker-2",
+          "seen": "private-sentinel-f03"
+        },
+        {
+          "file": "f03",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f04",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f05",
+          "worker": "worker-2",
+          "seen": "private-sentinel-f07"
+        },
+        {
+          "file": "f06",
+          "worker": "worker-1",
+          "seen": "private-sentinel-f08"
+        },
+        {
+          "file": "f07",
+          "worker": "worker-2",
+          "seen": "private-sentinel-f02"
+        },
+        {
+          "file": "f08",
+          "worker": "worker-1",
+          "seen": "private-sentinel-f04"
+        }
+      ]
+    },
+    {
+      "vitest": "5.0.5",
+      "mode": "default-isolation",
+      "files": 8,
+      "maxWorkers": 2,
+      "actualWorkers": 8,
+      "exit": 0,
+      "passed": 8,
+      "failed": 0,
+      "receiptCoverageValid": true,
+      "observations": [
+        {
+          "file": "f01",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f02",
+          "worker": "worker-2",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f03",
+          "worker": "worker-3",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f04",
+          "worker": "worker-4",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f05",
+          "worker": "worker-5",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f06",
+          "worker": "worker-6",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f07",
+          "worker": "worker-7",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f08",
+          "worker": "worker-8",
+          "seen": "shared-sentinel"
+        }
+      ]
+    },
+    {
+      "vitest": "4.1.11",
+      "mode": "reuse",
+      "files": 2,
+      "maxWorkers": 1,
+      "actualWorkers": 1,
+      "exit": 1,
+      "passed": 1,
+      "failed": 1,
+      "receiptCoverageValid": true,
+      "observations": [
+        {
+          "file": "f01",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        },
+        {
+          "file": "f02",
+          "worker": "worker-1",
+          "seen": "private-sentinel-f01"
+        }
+      ]
+    },
+    {
+      "vitest": "5.0.5",
+      "mode": "reuse",
+      "files": 2,
+      "maxWorkers": 1,
+      "actualWorkers": 1,
+      "exit": 1,
+      "passed": 1,
+      "failed": 1,
+      "receiptCoverageValid": true,
+      "observations": [
+        {
+          "file": "f01",
+          "worker": "worker-1",
+          "seen": "private-sentinel-f02"
+        },
+        {
+          "file": "f02",
+          "worker": "worker-1",
+          "seen": "shared-sentinel"
+        }
+      ]
+    }
+  ]
+}
