@@ -37,6 +37,8 @@
 
 **已经用 Portless 时，把代理启停交给一个协调者；独立代理须同时分开端口和状态目录。** worktree 子域已能区分应用，不必每个 Agent 各启一个代理。正式包 0.15.12 与当前固定主干的[真实 CLI 实试](../../experiments/portless-state-isolation/README.md)发现：同一 `PORTLESS_STATE_DIR` 下先启 A 再启 B，`stop -p A` 会停掉 B；独立目录的停止控制通过。入口给出当前版本的隔离做法和本地窄补丁，不把端口分开当成进程归属已隔离，也不保证并发启停安全。核实与 Linux 实试：2026-10-31。
 
+**子任务依赖未合入的父层时，再试 gh-stack；含子模块的栈先看恢复限制。** 独立任务无需换工具。0.3.0 中 trunk 更新 pin 可使 rebase／abort 部分完成后报错；Agent 不能据退出码重复操作，也不要设 `ignore=all`，它在独立 Git 对照中会跳过 pin-only 提交。按[实际状态诊断与重放](../../experiments/gh-stack-submodule/README.md)检查 refs、index、子模块 HEAD 和本地工作，只有已证实的纯 checkout 偏差才窄路径对齐。依据为 #556 使用者报告、固定实现和本仓 Linux 实试；核实 2026-10-31。
+
 **按协调缺口选 Teams，不把“能互发消息”当唯一分界。** Claude Code 当前的普通子代理在工具集保留 `SendMessage` 且知道有效目标时也能通信；具体入口与限制看官方文档。Teams 仍属实验功能，默认关闭，`/resume`、`/rewind` 当前不能恢复 in-process 队员。
 
 **依据**：[官方] [Codex 子代理](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Claude Code 子代理通信](https://code.claude.com/docs/en/sub-agents#resume-subagents)及 [Teams 比较与限制](https://code.claude.com/docs/en/agent-teams#compare-with-subagents)；[社区原帖] [V2EX：worktree 资料缺失](https://v2ex.com/t/1243449)。选型与资料缺失原核实 2026-10-26，通信边界复核 2026-10-28。

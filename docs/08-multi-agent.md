@@ -156,6 +156,8 @@ claude --agents '{"focused-reviewer":{"description":"核对指定文件与验收
 
 **本仓实试跑通了“父契约更新→子层冲突→换目录恢复→消费者检查”。** 0.2.1 在子层所属树产生冲突；从另一个有在制文件的目录过早 continue 仍失败并保留恢复状态，解决所属树冲突后再从该目录 continue 成功。最终消费者接受新契约、父层成为其祖先，另一目录的已跟踪改动和未跟踪文件均逐字保留。[重放与记录](research/2026-10-22-frontier-trials.md#gh-stack依赖分支与跨目录恢复)是隔离合成试用，未验证远端 PR／合并队列或模型提效。
 
+**带子模块时，不要用 `ignore=all` 压掉 dirty 检查。** [0.3.0 实试与恢复入口](../experiments/gh-stack-submodule/README.md)复现 trunk 更新 pin 后第一层已改写、第二层失败，abort 也可能失败却已恢复部分 refs。先核 journal、实际 refs、index 与子模块 HEAD；仅确认纯 checkout 偏差且无本地工作时，按当前 index 窄路径对齐，再单次 abort 并复查。独立 Git 对照中 `ignore=all` 虽 exit 0，却跳过 pin-only 提交；不能用成功退出替代最终 gitlink 验收。依据为使用者 [#556](https://github.com/github/gh-stack/issues/556)、固定源码和本仓隔离 CLI/Git 实试；核实 2026-10-31。
+
 **先暂停受影响分支的写入者，再重排依赖。** 栈状态与恢复日志在同一 clone 共享；worktree 不是各自独立的栈管理器。若只是独立成果汇总或只有一次小合并，普通 Git 和明确交接通常足够；恢复目录不存在、状态不明时保留现场，不用自动 stash/reset 掩盖问题。
 
 **依据**：[一手] [gh-stack 固定版本命令与实现](https://github.com/github/gh-stack/tree/29a36d314be664583705f18e41cebdf2b61ad514)、[GitHub 工作树契约](https://docs.github.com/en/pull-requests/reference/stacked-prs-cli-commands#worktree-support)；[研究] 依赖分支接续；[本仓实试／范围] [重放与记录](research/2026-10-22-frontier-trials.md#gh-stack依赖分支与跨目录恢复)；[经验] 采用与撤回；核实 2026-10-24。

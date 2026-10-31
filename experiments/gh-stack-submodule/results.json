@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "scope": "synthetic issue-driven local CLI/Git; not production recovery acceptance",
+  "gh_stack": "0.3.0",
+  "binary_sha256": "957e822cfa7e435cd84a297cd96c419b58e51e3ac58be249762c24bd9e45099b",
+  "source_commit": "2a49e6751238633db504655d8a8eba3e433e827d",
+  "git": "git version 2.47.3",
+  "rebase_exit": 1,
+  "first_layer_changed_on_failure": true,
+  "second_layer_unchanged": true,
+  "initial_abort_exit": 1,
+  "initial_abort_snapshot_unchanged": true,
+  "after_first_alignment_abort_exit": 1,
+  "refs_restored_but_checkout_still_mismatched": true,
+  "after_second_alignment_abort_exit": 0,
+  "original_layers_and_branch_restored": true,
+  "submodule_matches_index_and_clean": true,
+  "journal_removed": true,
+  "trunk_stays_advanced": true,
+  "guards": [
+    {
+      "case": "tracked_edit",
+      "alignment_allowed": false,
+      "reason": "submodule_work_present",
+      "content_head_refs_journal_preserved": true,
+      "submodule_status_clean": false
+    },
+    {
+      "case": "untracked_file",
+      "alignment_allowed": false,
+      "reason": "submodule_work_present",
+      "content_head_refs_journal_preserved": true,
+      "submodule_status_clean": false
+    },
+    {
+      "case": "local_commit",
+      "alignment_allowed": false,
+      "reason": "unrecognized_submodule_head",
+      "content_head_refs_journal_preserved": true,
+      "submodule_status_clean": true
+    },
+    {
+      "case": "ignored_file",
+      "alignment_allowed": false,
+      "reason": "ignored_files_present",
+      "content_head_refs_journal_preserved": true,
+      "submodule_status_clean": true
+    }
+  ],
+  "network_observation": "not dynamically verified; isolated config, local remotes, file-only Git and fail-closed proxy are preventive controls"
+}

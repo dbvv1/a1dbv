@@ -1,0 +1,28 @@
+{
+  "git": "git version 2.47.3",
+  "fixture": "fresh mkdtemp; local submodule S0 -> S1 -> S2; main pin S1; topic pin S2 plus ordinary control",
+  "rows": [
+    {
+      "mode": "normal",
+      "patchIdRelation": "different",
+      "cherryMarkRelation": "distinct",
+      "rebaseExit": 0,
+      "skippedCommitWarning": false,
+      "beforePin": "S2",
+      "afterPin": "S2",
+      "pinPreserved": true,
+      "ordinaryControlPreserved": true
+    },
+    {
+      "mode": "ignore_all",
+      "patchIdRelation": "both empty output",
+      "cherryMarkRelation": "equivalent",
+      "rebaseExit": 0,
+      "skippedCommitWarning": true,
+      "beforePin": "S2",
+      "afterPin": "S1",
+      "pinPreserved": false,
+      "ordinaryControlPreserved": true
+    }
+  ]
+}

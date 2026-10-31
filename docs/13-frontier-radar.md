@@ -53,7 +53,7 @@
 | **并行写入：Git worktree** | 每个独立写入任务保留自己的目录、分支和未提交现场 | 先用原生入口或Git，跨树管理成为瓶颈再评估管理器 | 事故后采用与集成后收缩并发支持条件使用 | ✅ 借用机制，[隔离／合入／脏树保护与截图](research/2026-10-22-frontier-trials.md#git-worktree不装编排器也能隔离写入)已验 |
 | **环境准备：Worktrunk** | 同步复制所选依赖副本，完成后才启动测试／Agent | 多棵树反复准备环境时试；已有原生入口／脚本够用就不换 | 使用者复制慢反馈提醒不能承诺零成本；大树复制失败已有修复 | 🧪 [0.81.0双树依赖与立即测试](../experiments/worktrunk-ready.md)已试并独立重放，未测模型／性能收益 |
 | **增量测试反馈：pytest-testmon** | 用执行关系从既有测试选择本次反馈 | 测试昂贵且相关目标不易列全时试；小套件先直接跑文件 | Polylogue 采用与[暂缓的成本比较](research/2026-10-12-development-feedback.md#新增选测能力先比较改动类型与完整运行成本)并存 | 🧪 [2.2.0历史改动重放](../experiments/testmon-feedback.md)已试；成熟工具，未测模型／净提速 |
-| **依赖接续：GitHub gh-stack** | 父层修订后在所属工作树重排子层，按恢复日志继续 | 子任务依赖未合入父层时用；独立任务仍用普通worktree | 多Agent使用者的旧版缺口与官方0.2.0工作树支持 | 🧪 [0.2.1冲突与跨树恢复实试](08-multi-agent.md#有依赖的分支更新父层再接续消费者)，未测远端PR／模型收益 |
+| **依赖接续：GitHub gh-stack** | 父层修订后在所属工作树重排子层，按恢复日志继续 | 子任务依赖未合入父层时用；独立任务仍用普通worktree | 多Agent使用者的旧版缺口与官方0.2.0工作树支持 | 🧪 [依赖接续与跨树恢复](08-multi-agent.md#有依赖的分支更新父层再接续消费者)；[0.3.0 子模块故障实试](../experiments/gh-stack-submodule/README.md)：失败可能部分完成，勿用 ignore=all 掩盖；未测远端PR／模型收益 |
 | **网页验收：Playwright CLI＋Skill** | 用短命令观察网页、操作元素并检查结果 | 已有Playwright先复用项目入口，现有浏览器已够用就不另装 | 实践者由MCP转CLI与调用后仍漏验收支持按目标选用 | 🧪 [预装1.62.0探针与截图](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)已核，浏览器流程未验 |
 | **组件反馈：Storybook stories／MCP** | 复用真实组件，用 story 状态和交互断言接回 Agent | 已有 Storybook、状态交互难以只靠源码判断时用；MCP 资料工具另按缺口选择 | GitButler 接入后改按需使用；本仓 Maka 续改实际跑通 4 个目标 play | 🧪 [真实组件续改路线](23-browser-verification.md#先让真实组件接住续改再验完整应用)；MCP／docs toolset 未试 |
 
