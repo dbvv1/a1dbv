@@ -2,7 +2,7 @@
 id: B-STAR-ROAD-MATERIAL-FAMILY-20261030
 owner: dot-B
 kind: build
-status: running
+status: cancelled
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: ab69388d8fe7e30c025e3d8ead5e1923adb1794b
 result_branch: relay/b-star-road-material-family-20261030
@@ -33,3 +33,6 @@ CPU测试必须覆盖参数缺省/未知/重复/legacy关闭、开关off原顶�
 标准件脚本可重跑，导出尺寸/轴心/三角面/材质引用有机器核对，第二次统一修改只改变声明的材质/UV，不改原游戏几何/碰撞。缺Blender时保存精确脚本与可跑CPU部分，标明未导出，不声称做成。
 非作者代码审查、公开扫描、适用门禁通过后推结果分支、回 review_ready，固定提交与可复跑命令。只一份验收结论；模型自报、排队与状态不是执行证据。
 真实浏览器smoke、全部三机位前后图/标准件同框和两名非作者评判由dot后续做，本机不代跑。完整门槛后旁置交付；两非作者均选新版且可读性不退才换默认、旧版旁置；本卡CPU通过不等于画面判优或品质结项。
+
+## 当前结果
+认领后已超过两小时，尚无可核产物或实际执行心跳；真实执行时长与退出状态未知。现按原取消协议请求接收端安全停止本卡自有调用，保留已有输出，并回传实际退出、残留资源清理及已有产物。cancelled 仅表示停止请求，不证明进程退出，不是品质结项；不自动恢复 ready、不重派、不触碰其他任务或待确认上传，待原回执后由负责人决定本卡如何续接。
