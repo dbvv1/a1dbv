@@ -25,3 +25,4 @@ experiments/testmon-outer-coverage/coverage-core.patch whitespace=-blank-at-eol
 experiments/testmon-outer-coverage/current-main.patch whitespace=-blank-at-eol
 experiments/candidate-reset-recovery/qwen/change.patch whitespace=-blank-at-eol
 experiments/candidate-reset-recovery/goose/change.patch whitespace=-blank-at-eol
+experiments/instruction-file-lint/change.patch whitespace=-blank-at-eol

@@ -1,0 +1,121 @@
+{
+  "tool_base": "9f852cf5b970cd9f283a61ef4ae6308cb4aeb047",
+  "patch_sha256": "2cf8558e427ecc89a046b1aa6f5a64f60b90f5c7a0ae625b173d8612ed808cd1",
+  "candidate_tree": "eb9fe607d900f5c279929ca0bea4f83ff172731d",
+  "consumer_commit": "01375e508f3b4a5fb5564aa9c6bf91a83f606302",
+  "consumer_hashes": {
+    "AGENTS.md": "9f96ba35c2cb38e79acf6cb4eee4bfa6147364629a0e066fadcdd15ff4b8cded",
+    "CLAUDE.md": "3f785e078c8bbb493cb60d441f4c0eacb24c8d43bb3d7d4aa126b63925856bc4"
+  },
+  "consumer_tracked_files_changed": false,
+  "runtime": {
+    "platform": "Linux",
+    "python": "3.12.14",
+    "ruff": "0.17.3"
+  },
+  "reports": [
+    {
+      "tool": "before",
+      "input": "AGENTS.md",
+      "exit_code": 0,
+      "checked": 6,
+      "findings": [],
+      "no_report": false
+    },
+    {
+      "tool": "before",
+      "input": "CLAUDE.md",
+      "exit_code": 1,
+      "checked": 20,
+      "findings": [
+        "domains/<领域>/",
+        "hn.algolia.com/api/v1/items/<id>",
+        "export.arxiv.org/api/query?id_list=",
+        "arxiv.org/html/<id>"
+      ],
+      "no_report": false
+    },
+    {
+      "tool": "before",
+      "input": "missing-instructions-for-probe.md",
+      "exit_code": 0,
+      "checked": null,
+      "findings": [],
+      "no_report": true
+    },
+    {
+      "tool": "candidate",
+      "input": "AGENTS.md",
+      "exit_code": 0,
+      "checked": 6,
+      "findings": [],
+      "no_report": false
+    },
+    {
+      "tool": "candidate",
+      "input": "CLAUDE.md",
+      "exit_code": 1,
+      "checked": 17,
+      "findings": [
+        "export.arxiv.org/api/query?id_list="
+      ],
+      "no_report": false
+    },
+    {
+      "tool": "candidate",
+      "input": "missing-instructions-for-probe.md",
+      "exit_code": 2,
+      "checked": null,
+      "findings": [],
+      "no_report": true
+    }
+  ],
+  "reference_set_delta": {
+    "AGENTS.md": {
+      "removed": [],
+      "added": []
+    },
+    "CLAUDE.md": {
+      "removed": [
+        {
+          "kind": "path",
+          "value": "arxiv.org/html/<id>",
+          "line": 30
+        },
+        {
+          "kind": "path",
+          "value": "domains/<领域>/",
+          "line": 15
+        },
+        {
+          "kind": "path",
+          "value": "hn.algolia.com/api/v1/items/<id>",
+          "line": 30
+        }
+      ],
+      "added": []
+    }
+  },
+  "regressions": {
+    "baseline_with_new_tests": {
+      "passed": 54,
+      "failed": 6
+    },
+    "candidate": {
+      "passed": 60,
+      "failed": 0
+    },
+    "fresh_patch_replay": {
+      "passed": 60,
+      "failed": 0,
+      "tree_matches": true
+    },
+    "independent_review": {
+      "passed": 60,
+      "failed": 0
+    },
+    "ruff": "passed",
+    "installed_console_entrypoint_matches_reports": true
+  },
+  "scope": "Unmerged candidate; missing-input and embedded-placeholder fixes only. Ambiguous scheme-less address remains a false positive. No default CI integration or model-effectiveness claim."
+}

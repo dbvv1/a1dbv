@@ -1,0 +1,186 @@
+diff --git a/README.md b/README.md
+index 97403bdcf61e2ea2f4030709b373af22fa4ae3fc..448f6fae8fb082f379bfa673e8e2731adcfb12c0 100644
+--- a/README.md
++++ b/README.md
+@@ -36,9 +36,11 @@ matching the code.
+ |---|---|
+ | Paths in backticks — `` `src/api/` `` | Does it exist? If it moved, where to? |
+ | Commands in shell fences | Does the executable resolve? |
+ 
+-Non-zero exit past a threshold, so it drops into CI or a pre-commit hook:
++Non-zero exit past a threshold, so it drops into CI or a pre-commit hook.
++An input path that does not exist exits 2; an existing directory without any
++context files remains a successful no-op (reported on stderr):
+ 
+ ```yaml
+ - run: pipx install agents-md-lint && agents-md-lint check
+ ```
+diff --git a/src/agents_md_lint/cli.py b/src/agents_md_lint/cli.py
+index 6e28bdc9c5d1276c9323c70beaadbda61f6290cd..65fb698bf3c098fe480ea6332c77ecf91b324609 100644
+--- a/src/agents_md_lint/cli.py
++++ b/src/agents_md_lint/cli.py
+@@ -39,8 +39,12 @@ def _as_dict(report: Report) -> dict:
+ 
+ def cmd_check(args: argparse.Namespace) -> int:
+     target = Path(args.path).resolve()
+ 
++    if not target.exists():
++        print(f"input path does not exist: {target}", file=sys.stderr)
++        return 2
++
+     if target.is_file():
+         files = [target]
+         root = find_repo_root(target.parent)
+     else:
+diff --git a/src/agents_md_lint/refs.py b/src/agents_md_lint/refs.py
+index a8603c4f7af2e3e95272351112ab66f6091fc629..3e66e65cc2dec654418b3078ad378c14ccf8ca00 100644
+--- a/src/agents_md_lint/refs.py
++++ b/src/agents_md_lint/refs.py
+@@ -61,8 +61,12 @@ _NOT_A_PATH = re.compile(
+   """,
+     re.VERBOSE,
+ )
+ 
++# A template segment is not a concrete repo path, including when nested in a
++# longer path. Keep this path-only: command extraction has its own contract.
++_PLACEHOLDER = re.compile(r"<[^<>/\s]+>")
++
+ # Extensions that indicate a file reference even without a separator.
+ _FILE_EXT = re.compile(
+     r"\.(?:py|js|ts|tsx|jsx|rs|go|java|rb|c|h|cpp|hpp|sh|bash|zsh|fish"
+     r"|toml|yaml|yml|json|md|txt|cfg|ini|env|lock|sql|proto|graphql"
+@@ -80,9 +84,9 @@ _UNCHECKABLE_COMMANDS = frozenset(
+ def _looks_like_path(token: str) -> bool:
+     """Is this token a claim that a repo path exists?"""
+     if not token or token.isspace():
+         return False
+-    if _NOT_A_PATH.search(token):
++    if _NOT_A_PATH.search(token) or _PLACEHOLDER.search(token):
+         return False
+     if " " in token.strip():
+         # Multi-word backtick content is prose or a command, not a path.
+         return False
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..cb975e25617f91d8a3d3dc01778a9a78197959d8
+--- /dev/null
++++ b/tests/test_cli.py
+@@ -0,0 +1,79 @@
++"""CLI input contracts: no input is different from a valid empty directory."""
++
++from __future__ import annotations
++
++import json
++import os
++import subprocess
++import sys
++from pathlib import Path
++
++import pytest
++
++
++@pytest.fixture
++def run_cli(tmp_path):
++    # Isolate root discovery from any Git marker in the system temp ancestors.
++    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
++
++    def run(*args):
++        env = os.environ.copy()
++        env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1] / "src")
++        return subprocess.run(
++            [sys.executable, "-m", "agents_md_lint.cli", "check", *map(str, args)],
++            env=env,
++            capture_output=True,
++            text=True,
++            check=False,
++            timeout=10,
++        )
++
++    return run
++
++
++@pytest.mark.parametrize("json_output", [False, True])
++@pytest.mark.parametrize("target", ["MISSING.md", "missing-directory/"])
++def test_missing_explicit_input_is_an_error(tmp_path, run_cli, target, json_output):
++    args = [tmp_path / target]
++    if json_output:
++        args.append("--json")
++    result = run_cli(*args)
++    assert result.returncode == 2
++    assert "input path does not exist:" in result.stderr
++    assert str(tmp_path / target) in result.stderr
++    assert not result.stdout
++
++
++@pytest.mark.parametrize("json_output", [False, True])
++def test_existing_empty_directory_keeps_success_contract(tmp_path, run_cli, json_output):
++    args = [tmp_path]
++    if json_output:
++        args.append("--json")
++    result = run_cli(*args)
++    assert result.returncode == 0
++    assert "no context files found under" in result.stderr
++    assert not result.stdout
++
++
++def test_existing_file_returns_a_real_json_report(tmp_path, run_cli):
++    (tmp_path / "src").mkdir()
++    (tmp_path / "src" / "main.py").write_text("", encoding="utf-8")
++    target = tmp_path / "AGENTS.md"
++    target.write_text("`src/main.py`", encoding="utf-8")
++    result = run_cli(target, "--json")
++    assert result.returncode == 0
++    report = json.loads(result.stdout)["reports"][0]
++    assert report["checked"] == 1
++    assert report["findings"] == []
++    assert not result.stderr
++
++
++def test_missing_reference_and_threshold_contract_remain(tmp_path, run_cli):
++    target = tmp_path / "AGENTS.md"
++    target.write_text("`src/gone.py`", encoding="utf-8")
++    result = run_cli(target, "--json")
++    assert result.returncode == 1
++    report = json.loads(result.stdout)["reports"][0]
++    assert report["checked"] == 1
++    assert report["findings"][0]["value"] == "src/gone.py"
++    assert run_cli(target, "--threshold", "1").returncode == 0
+diff --git a/tests/test_refs.py b/tests/test_refs.py
+index 8530cd7b8c93d47ebe27cf419159ec34ced4dfab..e7d498d40782ab3d98e2f7e3562a5bf3656054eb 100644
+--- a/tests/test_refs.py
++++ b/tests/test_refs.py
+@@ -55,8 +55,34 @@ class TestPathFalsePositives:
+ 
+     def test_placeholders_are_ignored(self):
+         assert values("run in `<your-repo>`", RefKind.PATH) == []
+ 
++    def test_embedded_placeholders_are_not_concrete_paths(self):
++        tokens = [
++            "domains/<领域>/",
++            "src/<module>/config.py",
++            "docs/<name>.md",
++            "hn.algolia.com/api/v1/items/<id>",
++            "arxiv.org/html/<id>",
++        ]
++        for token in tokens:
++            assert values(f"see `{token}`", RefKind.PATH) == []
++
++    def test_placeholder_does_not_hide_an_adjacent_real_reference(self):
++        refs = extract_paths("intro\n`domains/<领域>/` and `src/missing.py`")
++        assert [(ref.value, ref.line_no) for ref in refs] == [("src/missing.py", 2)]
++
++    def test_dotted_directories_and_relative_paths_remain_checkable(self):
++        tokens = ["src.v2/missing.py", "example.com/config.py", "./src/gone.py", "../x.py"]
++        for token in tokens:
++            assert values(f"see `{token}`", RefKind.PATH) == [token]
++
++    def test_ambiguous_scheme_less_address_remains_visible(self):
++        # Without a scheme or placeholder this is also a legal repo-relative
++        # filename. Do not erase it merely because the first component has dots.
++        token = "export.arxiv.org/api/query?id_list="
++        assert values(f"see `{token}`", RefKind.PATH) == [token]
++
+     def test_shell_variables_are_ignored(self):
+         assert values("set `$HOME/bin`", RefKind.PATH) == []
+ 
+     def test_prose_in_backticks_is_not_a_path(self):
