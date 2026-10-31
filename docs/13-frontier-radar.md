@@ -97,6 +97,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [Skill 安装成功却断链](decisions/skills-and-plugins.md#skills-linked-parent) | dotfiles＋多客户端时验实际路径，确认断链再对单个 Skill 用 copy | skills #481 与既有未合并 PR；[本轮发现范围](../experiments/skills-linked-parent/README.md#这轮来源发现为什么选它) | 1.7.4 四布局六步：双客户端断链、重装无效、copy恢复；单客户端／共享根别名正常；2026-10-31 | 🧪 非作者复跑；只验正文读取，非模型采用。另有 [Cursor 同步存储／Automation 提醒](decisions/skills-and-plugins.md#cursor-synced-skill-owner)，未试用 |
 | [Vitest 升级后跨文件漏 env](15-task-playbooks.md#vitest-reused-worker-env) | Agent 修连片失败前先核 worker 状态：默认隔离对照，必要时每文件入口复位 | 真实后端测试用户 #11423；官方 setup／env 语义与未合并 PR | 4.1.11／5.0.5、同 Node／Vite 七组：新版8文件2worker漏值；setup与默认隔离全过，两版单worker均漏；2026-10-31 | 🧪 unstubEnvs 不恢复直接赋值；独立新目录复跑，字符串哨兵，非数据库／模型验收 |
 | [RTK 的 uv 短失败无恢复](03-context-engineering.md#rtk-uv-short-failure) | 已用过滤器但失败丢诊断：先核已发生结果，下一次保留原生输出 | 真实用户 #4860；已有 500-byte 源码门槛补实际执行 | OSS 1.1.0、tee／SQLite 各6条件：499无记录、500完整取回且不重跑；2026-10-31 | 🧪 排除外层 uv 不排除内层 pytest；独立门槛复跑，未验模型／Windows |
 | [Intent 的 pnpm 全局漏发现](decisions/skills-and-plugins.md#intent-pnpm-global) | 已全局装过 CLI 却列不出 Skill：按实际包根逐个读取，不重装、不拼根 | 真实使用者 #206；已有 PR #207 未合并 | pnpm 11.17.0 实际安装；Intent 0.3.6／0.5.6 默认 0，逐根 5＋1，六份正文均加载；2026-10-31 | 🧪 只修单次读取，不恢复自动多根；非作者复跑，消费者工作流／模型未验 |

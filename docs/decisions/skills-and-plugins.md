@@ -11,6 +11,7 @@
 | 经常替换完整方法，宿主没有符号编辑 | 🧪 Serena：读取当前方法，再按文件＋符号编辑 | 原生 IDE／LSP 已够用，或多人同时写同一方法 |
 | 需求或架构未定 | 🧪 Superpowers：Claude Code 按下文 local scope 在当前仓库试用；已装者按任务分流 | 别只为清楚的小 bug 新装整套；⛔ 暂缓全局强制完整流程 |
 | 团队反复做项目检查、发布准备或迁移 | 先复用项目 Skill：按 `AGENTS.md` 的触发条件读对应 `SKILL.md`，选定流程入 Git | 一次性小修；别照搬其他项目整套规则 |
+| 跨客户端共用 Skill，安装成功却读不到 | 🧪 先核目标路径；dotfiles 父链接断链时，对单个 Skill 用 copy | 健康链接不改；copy 副本须另行更新 |
 
 **第一步先查已有能力，避免重复安装。** 把方括号换成当前任务：
 
@@ -23,6 +24,28 @@
 团队流程借用 OpenAI Agents SDK 的按改动触发和 Sentry JavaScript 的入 Git 共享，不复制整包。跨客户端分发确有维护负担，再看 [dotagents 候选](../collaboration/inbox.md#2026-10-27dotagents-的项目级-skill-分发)。
 
 **依据**：[一手项目配置] [OpenAI Agents SDK](https://github.com/openai/openai-agents-python/blob/cd26bbbc52847845fde73b9952b51e62e2bcbdc0/AGENTS.md)、[Sentry JavaScript](https://github.com/getsentry/sentry-javascript/blob/c125a5da2e6b7d916a5880f65876cddfee96c56d/agents.toml)；2026-10-28 核实，这两套项目流程未在本仓试用。
+
+<a id="skills-linked-parent"></a>
+## 共用 Skill：安装成功，还要读到客户端那份
+
+**🧪 用 dotfiles 链接管理 `~/.claude/skills`、同时给 Claude Code 与 Codex 安装时，先核目标文件；确认断链后，对该 Skill 改用 `--copy`。** 不整目录替换，不靠重复安装求恢复；先保留自定义内容及来源版本。
+
+在已有可信 `skills` CLI 上，将已审阅的单个本地 Skill 目录传给 `skills add <该Skill目录> --global --agent claude-code codex --copy`，保留交互确认。随后用 `skills use <实际Claude安装路径>` 对照完整正文，并在 `skills list --global --agent claude-code --json` 中核 Claude 关联；最后回客户端验实际任务。**copy 会留下独立副本，继续只维护一个源，再显式更新各副本。** 健康链接不必改成 copy。
+
+[正式包 1.7.4 实跑](../../experiments/skills-linked-parent/README.md)中，双客户端＋深层 dotfiles 父链接的安装、原命令重装都 exit 0，却留下悬空子链接，实际 `use` exit 1；加 copy 后正文恢复。列表三次都有名称，但失败时 `agents` 为空。普通目录、仅装 Claude（自动 copy）、父链接直指共享根三个对照都成功，故不是“所有软链接坏了”。此处验文件资源消费，尚未验 Claude／Codex 模型采用。
+
+**依据**：[真实使用者 #481](https://github.com/vercel-labs/skills/issues/481)、[官方固定版用法与安装模式](https://github.com/vercel-labs/skills/blob/a80e4c9d12d607631249d4d7d059f835d4b2f13a/README.md)、[既有修复 PR #2283](https://github.com/vercel-labs/skills/pull/2283)。2026-10-31 Linux CLI 实跑及非作者新目录复跑；PR 仍未合并，未验原生 Windows／macOS。本页采用评级不变。
+
+<a id="cursor-synced-skill-owner"></a>
+## Cursor 云端 Skill：同步会搬位置，Automation 是另一入口
+
+**👀 同一份 Skill 还要供 Claude 使用时，先保现有本地来源；需要项目云任务的部分可放项目 `.cursor/skills/<名称>/SKILL.md`，不要把个人同步当作原目录的镜像。** 入库前检查权限与内容，项目成员会读到它，且作用域只在该项目。本项未试用，仅据当前官方说明与真实用户回执。
+
+个人同步开启后，Cursor 将内容迁入 synced storage，使用的是那里的一份；完成后从 `Customize → Skills` 打开并编辑。继续编辑原同名目录可能不生效，原目录被迁走也会让指向它的 Claude 链接失效。**已卡住且改过文件时，先保全现存副本并比较，不通过反复开关恢复。** 关闭会把存储中的版本搬回，不只是停止上传。原报告中 macOS Trash 留有被替换版本，用户据此补齐恢复；这不是产品已修复或通用云备份保证。
+
+**Automation 不加载个人 synced Skills，即使选 `Run as Me`。** 为 Automation 提供 Skill，应把它放在该任务选定仓库的 `.cursor/skills/`，再在实际运行中验证。手输名称或等 `/` 菜单显示不能补上运行时缺失；官方帖先前“只是自动补全”的回答已撤回。
+
+**依据**：[官方同步与 Automation 契约](https://cursor.com/docs/skills)、[十月共享 Skill／覆盖旧副本报告及员工澄清](https://forum.cursor.com/t/sync-skills-for-cloud-agents-overwrote-local-cursor-skills-with-an-old-snapshot-then-hung-at-50-of-50/174945)、[Automation 原反馈与纠正](https://forum.cursor.com/t/cursor-automations-dont-see-custom-user-skills/174578)。2026-10-31 核原文；覆盖报告为 Cursor 3.24.18／macOS 15.7.9，未找到已修版本，不据单例断言所有版本都会覆盖。
 
 <a id="openspec-pi-discovery"></a>
 ## Pi 与 Codex 共用 OpenSpec：保留生成文件，只限定 Pi 的加载

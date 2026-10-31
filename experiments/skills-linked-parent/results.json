@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "skills": "1.7.4",
+  "node": "v24.22.1",
+  "skillSha256": "c00eeea0e13e74fe4a9d84ba0a8542205a1b736d65f13134fe1a6647eb14976f",
+  "scope": "local-file-resource-consumer-no-model",
+  "cases": [
+    {
+      "layout": "ordinary",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "steps": [
+        {
+          "step": "install",
+          "installExit": 0,
+          "reportedMode": "symlink",
+          "installedSkillReadable": true,
+          "useExit": 0,
+          "useHasFullSkill": true,
+          "filteredListEntries": 1,
+          "listedAgents": [
+            "Claude Code"
+          ],
+          "parentAndUnrelatedFilePreserved": true
+        }
+      ]
+    },
+    {
+      "layout": "dotfiles",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "steps": [
+        {
+          "step": "install",
+          "installExit": 0,
+          "reportedMode": "symlink",
+          "installedSkillReadable": false,
+          "useExit": 1,
+          "useHasFullSkill": false,
+          "filteredListEntries": 1,
+          "listedAgents": [],
+          "parentAndUnrelatedFilePreserved": true
+        },
+        {
+          "step": "reinstall",
+          "installExit": 0,
+          "reportedMode": "symlink",
+          "installedSkillReadable": false,
+          "useExit": 1,
+          "useHasFullSkill": false,
+          "filteredListEntries": 1,
+          "listedAgents": [],
+          "parentAndUnrelatedFilePreserved": true
+        },
+        {
+          "step": "copy-repair",
+          "installExit": 0,
+          "reportedMode": "copy",
+          "installedSkillReadable": true,
+          "useExit": 0,
+          "useHasFullSkill": true,
+          "filteredListEntries": 1,
+          "listedAgents": [
+            "Claude Code"
+          ],
+          "parentAndUnrelatedFilePreserved": true
+        }
+      ]
+    },
+    {
+      "layout": "dotfiles-single",
+      "agents": [
+        "claude-code"
+      ],
+      "steps": [
+        {
+          "step": "install",
+          "installExit": 0,
+          "reportedMode": "copy",
+          "installedSkillReadable": true,
+          "useExit": 0,
+          "useHasFullSkill": true,
+          "filteredListEntries": 1,
+          "listedAgents": [
+            "Claude Code"
+          ],
+          "parentAndUnrelatedFilePreserved": true
+        }
+      ]
+    },
+    {
+      "layout": "canonical-alias",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "steps": [
+        {
+          "step": "install",
+          "installExit": 0,
+          "reportedMode": "symlink",
+          "installedSkillReadable": true,
+          "useExit": 0,
+          "useHasFullSkill": true,
+          "filteredListEntries": 1,
+          "listedAgents": [
+            "Claude Code"
+          ],
+          "parentAndUnrelatedFilePreserved": true
+        }
+      ]
+    }
+  ]
+}
