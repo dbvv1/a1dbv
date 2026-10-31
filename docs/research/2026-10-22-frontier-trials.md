@@ -450,6 +450,8 @@ Quickstart与Code Basics的部署下一步都指向 `docs_typescript/running-in-
 
 **取舍：这个unittest命令不默认加通用过滤；过滤后的失败缺原因时先recall，而不是bypass重跑。** 摘要加完整回读共285,418字节，比直接读取多280字节，未计调用开销；这不是token／费用测量，也不能由此否定其他生态的专用过滤。pytest的参数改写结论仍只有源码证据，不随此次回放升级。[本仓实试／经验]
 
+**2026-10-31 另补当前真实执行：** [RTK OSS 1.1.0 的 uv 短失败](../../experiments/rtk-uv-recovery/README.md)按使用者 #4860 运行原帖程序，不重放旧日志。普通结果可能被诊断筛选过滤，而小于 500 bytes 的捕获 raw 没有恢复记录，即使 legacy tee always；换行完整的 499／500-byte 对照与非作者复跑验证了上述已有源码门槛。原生退出码保留，不能泛称所有 stdout 或错误状态都丢失。读者动作回流 [03](../03-context-engineering.md#rtk-uv-short-failure)，不改旧试验结果或宣称模型收益。
+
 ## ast-grep：先验规则，再批量定位
 
 **选择：重复 API 迁移先借维护者规则，核对匹配集合与回调语义，再批量应用。** [经验]

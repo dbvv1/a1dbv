@@ -236,7 +236,7 @@ Code2Skill §5.5 压缩的是代码 Skill，不是文档摘要，也不证明编
 
 **✅ 保留项目已有命令；重复日志确实妨碍定位时，再定向试输出过滤，而非全局套一层“省 token”插件。** RTK 能把测试输出整理成计数与失败摘要，适合评估高噪声回归场景；是否值得保留，要看完成同一任务的质量、回读与总投入。详见[采用与对照](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)。
 
-**失败只剩计数时，先取回日志，不先让 Agent 重跑。** 本仓用 RTK OSS 1.0.1 回放一次真实的历史测试失败输出：通用 `rtk test` 将约 285KB 缩成 280 字节，却藏掉了“磁盘已满”这个根因；返回的 `rtk recall HASH --full` 无需重跑便完整取回净化后的输入。本例不采用通用包装器作为 unittest 默认，保留项目原命令；已使用过滤器时，把“先 recall 定位，再决定是否重跑”交给 Agent。详见[回放范围与记录](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)，这是非模型收益比较。
+**失败只剩计数且有恢复提示时，先取回日志，不先让 Agent 重跑。** 本仓用 RTK OSS 1.0.1 回放一次真实的历史测试失败输出：通用 `rtk test` 将约 285KB 缩成 280 字节，却藏掉了“磁盘已满”这个根因；返回的 `rtk recall HASH --full` 无需重跑便完整取回净化后的输入。本例不采用通用包装器作为 unittest 默认，保留项目原命令；已使用过滤器时，把“先 recall 定位，再决定是否重跑”交给 Agent。详见[回放范围与记录](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)，这是非模型收益比较。
 
 | 已安装 RTK 后的动作 | 实际得到什么 | 选择时注意 |
 |---|---|---|
@@ -249,6 +249,22 @@ Code2Skill §5.5 压缩的是代码 Skill，不是文档摘要，也不证明编
 Agent 交回实际命令、退出状态和所用恢复记录；人核本题需要的失败细节是否还在。需要完整诊断的下一次运行先选原生输出；反复回读或重试抵消收益，就撤回该命令的过滤。`rtk gain` 只是工具侧输出估计，不是整项费用或订阅额度的实测节省。详见[同题对照与当前版本边界](research/2026-10-22-frontier-trials.md#rtk输出变短与恢复能力分开选)。
 
 **依据**：[本仓工具实试] RTK OSS 1.0.1 历史失败回放（约 285KB→280 字节；非模型收益比较）；[一手] RTK 固定源码与 pytest 封装（未运行）：[pytest封装](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/cmds/python/pytest_cmd.rs#L21-L74)、[恢复分支](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/tee.rs#L17-L105)、[recall实现](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/retriever.rs#L637-L727)、[bypass定义](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/lib.rs#L812-L842)、[退出码](https://github.com/rtk-ai/rtk/blob/4ef8730cf3a0dea11c8d64a9b90bc0616fe52100/src/core/runner.rs#L284-L367)；[经验] 采用判断；核实 2026-10-24。
+
+<a id="rtk-uv-short-failure"></a>
+**🧪 已用 RTK 的 `uv run` 失败却没有恢复提示，先核落盘结果；下一次确需执行时保留原生输出。** 真实用户 #4860 的 Linux 重现中，OSS 1.1.0 把普通结果与 `warn` 合并后只选中后者；24／499-byte 的短失败没有 tee 或 recall，500-byte 对照才完整留档，读取记录不增加执行次数。门槛看 RTK 捕获的合并 raw，本例输入均有完整换行；不是把所有非零退出都丢掉 stdout——只有普通结果、没有诊断关键词的控制仍保留结果，退出码也保留。
+
+有当次恢复提示就沿提示读取；没有时先查程序自己的日志、产物与操作状态，不能靠反复 `recall` 补回从未保存的内容。准备下一次已确认可重做的执行时，沿用原生 `uv run …`，或使用 `rtk bypass uv run …` 取消这一层过滤；后者会真正再次执行命令。`tee=always` 也不能补上短失败的保存门槛。
+
+若已装 RTK 自动改写，在其既有 `config.toml` 的 `[hooks].exclude_commands` 数组**加入** `"uv"`，不覆盖其他项：
+
+```toml
+[hooks]
+exclude_commands = ["uv"]
+```
+
+这只排除普通 `uv run script.py` 的外层改写；实际 Hook JSON 对照中，`uv run pytest …` 仍变成 `uv run rtk pytest …`，显式 `rtk uv …` 也不受该设置影响。完整命令、有效配置、反例及恢复记录见[实际执行入口](../experiments/rtk-uv-recovery/README.md)；需要保留完整 traceback 的任务仍选原生输出，不把这一项排除当成关闭全部过滤。
+
+**依据**：[真实使用者 #4860](https://github.com/rtk-ai/rtk/issues/4860)、[1.1.0 uv 实现](https://github.com/rtk-ai/rtk/blob/753a3b0e939f2e4490fc24e3a1984010f40a103c/src/cmds/python/uv_cmd.rs)、[保存前门槛](https://github.com/rtk-ai/rtk/blob/753a3b0e939f2e4490fc24e3a1984010f40a103c/src/core/tee.rs#L60-L66)。本仓 Linux 实跑与非作者独立复跑：2026-10-31；原用户 Windows／Claude 会话和模型收益未验。此处补充 1.1.0 的当前执行边界，不改变上面 1.0.1 历史回放的原日期与结果。
 
 ### 2.8 外部文档：先沿索引选页，不默认整站灌入
 
