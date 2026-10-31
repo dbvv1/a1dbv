@@ -1,7 +1,7 @@
 # A-MODEL-EFFORT-READER-20261029 · 真实配置兼容修复
 id: A-MODEL-EFFORT-READER-20261029
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
@@ -32,10 +32,21 @@ page: docs/decisions/model-roles.md@dot-a/model-effort-reader-dispatch-20261029
 
 原日志留任务仓外至接收结束，回传只含脱敏摘要，不提交私人路径、会话或用量日志。仅由接收端按既有流程公开扫描并推本任务结果分支，回 `review_ready`，不用 `accept: auto`；若输入或权限不足，回 `blocked` 和精确恢复条件。共享最多四并行、无 GPU，单元通常 60–90 分钟、最多两小时，不重复派发。
 
+## 修改要求
+
+仅在原 MODEL 残留树身份核对及退出确证完成后续接；此前保持 `review_ready`，不启动返工。本轮以本节为准，只续接现有 `a669481` 结果与原任务分支，不重新派发初次 reader，不另建第三套实现。仅为核对允许读取本任务两份既有记录，不扩大写域；原安装许可本轮不适用。原页面如作为输入，接收端仍须将全文附入实际任务正文，不以摘要、链接或旧长度安排替代。
+
+1. 修正“version 存在但不可解析”等同“version 不存在”的判断。`source` 是项目源码构建可能保存的版本值，不应因此落入旧 JSON 格式回退；仅缺少键时保留原回退。保留真正旧版、现代版本与非 JSON 配置行为；空串/null 不可解析不等于配置整体有效。
+2. 补回归先证实原结果失败、修后通过，并重放实际 CLI：source、现代、旧版、无 version 四类临时配置。隔离 HOME/XDG，核 journal 内容未变；临时配置正常升级须照实记录，不宣称 CLI 完全只读。
+3. 实测重复 `load_config` 是否产生重复警告，不能把两处调用直接当作已复现警告。只在原允许文件范围内解决；若必需修改其他生产文件，报告理由与最小扩展，不静默扩大范围。
+4. 只向正式 `docs/reader-tests/A-MODEL-EFFORT-READER-20261029.md` 追加遗漏的页面卡点、修正及页外帮助，并说明与原 `reader-tests/A-MODEL-EFFORT-READER-20261029-u1.md` 的差异；旧 u1 记录只读保留。不改写原读者历史，不将本次返工称为新盲读；未知模型/effort/计时/费用仍写未知。
+5. 按原项目检查及非作者复核回传。云端对既有候选曾得到 focused 29 passed，全套 716 passed/40 skipped/4 failed；同四个 multiline-with-tags BDD 失败可在干净基线复现，但不是本机通过或完整基线等价。本机须按实际结果分别报告，不继承该云端数字。
+6. 本轮不得在用户电脑安装或更新软件/依赖，只用该任务已有隔离环境；缺依赖则回报精确入口及缺项。不得触碰真实配置、journal、凭据、其他任务、接收器、DayOne 分支或上游投稿。
+
 ## 当前结果
 
 - 读者照页面完成 jrnl #1908：现代 JSON 风格 YAML 配置不再误触发 1.x 升级，真正旧版仍升级，无 version 配置保留原回退；taskDone=true，非读者独立复跑通过（新增单测 20 passed，临时回退生产代码 11 项新回归失败，全量 unit 214、BDD 499、tox 713 passed，ruff/black 通过，隔离 HOME 手工 CLI 重放符合预期）。页面卡点：页面型号表未给本会话可见 deepseek-v4.1-flash[1m] 的 effort 核对办法；派发前置未提供可用 poetry/poe，读者自建隔离 .venv 并按 poetry.lock 钉版本；记录路径两处要求不一致。未关闭审查问题：version 存在但不可解析（如 source）时被当作无 version 回退，与维护者验收原文不符；is_old_version() 重复加载配置可能重复告警；两份读者记录实际内容不一致，正式结果文档宜补齐卡点条目。
 - 产物：[a669481](https://github.com/dbvv1/jrnl/commit/a6694817f531b6ef20fe5c18ca9f33f1da37613b)，分支 `relay/a-model-effort-reader-20261029`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：本单元为任务唯一单元，接收端按既有流程公开扫描并推送结果分支。
+- 下一步：原执行残留已核实退出；接收端续原分支完成上述返工和非作者复核，再按既有流程公开扫描并推送结果；不合入默认分支。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
