@@ -1,7 +1,7 @@
 # A-MIGRATION-EXTRUCT-READER-20261101 · 接收真实 pytest 测试迁移
 id: A-MIGRATION-EXTRUCT-READER-20261101
 owner: dot-A
-status: running
+status: cancelled
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 949374f4f5ec40deb189a1bc1545ebd039324df7
@@ -33,4 +33,5 @@ page: docs/collaboration/local-jobs/artifacts/A-LEGACY-MIGRATION-GUIDE-20261030/
 跑本仓适用 check_repo、check_public、空白和身份检查，交固定提交供负责人当轮接收；任务单次最多两小时，受阻保留具体动作、目标、原因、已做部分和恢复条件。
 
 ## 当前结果
-任务与环境前提已独审，待原接收器按周期领取。未执行迁移；只接收本卡新任务，不重用旧卡，历史脱链后代未知继续单列。
+
+- 负责人紧急停止请求：仅停止本卡当前 run u1-a0-2026-11-01T211135194Z，禁止收集、提交或推送当前工作树；已发现任务私有目录及嵌套仓库未被排除在现有全量暂存范围之外。保全全部输入、补丁、环境、日志和结果，不删除、不搬移、不重派；本 cancelled 为停止请求，实际调用与工具退出待原接收端核证。
