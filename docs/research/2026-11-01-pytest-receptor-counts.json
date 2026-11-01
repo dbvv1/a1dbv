@@ -1,0 +1,1589 @@
+{
+  "kind": "field excerpts from local trial, not original JSONL artifacts",
+  "verified_on": "2026-11-01",
+  "scope": "Linux, Python 3.12.14, pytest 9.1.1, serial; consumer-derived controlled reproductions",
+  "versions": [
+    {
+      "source_commit": "531bafde5d48ddd8974e29ac91ae53ecae0fd787",
+      "installed_metadata_version": "1.2.2",
+      "upstream_39_serial": {
+        "passed": 2,
+        "deselected_xdist": 2,
+        "exit": 0
+      },
+      "scenarios": [
+        {
+          "case": "syntax",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 0,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.13s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.14s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "syntax_x",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 0,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.17s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.16s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "import",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 0,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "import_x",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 0,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.07s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "partial_syntax",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 1,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.12s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.12s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "partial_syntax_x",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 1,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.12s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.12s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "partial_import",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 1,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "partial_import_x",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 1,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.09s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "pass",
+          "native": {
+            "exit": 0,
+            "collection_errors": 0,
+            "collected": 1,
+            "started_items": 1,
+            "call_items": 1,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "PASS exit=0 | 1 passed | 0.02s",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 1,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "PASS exit=0 | 1 passed | 0.02s",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 1,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        },
+        {
+          "case": "assertion",
+          "native": {
+            "exit": 1,
+            "collection_errors": 0,
+            "collected": 2,
+            "started_items": 2,
+            "call_items": 2,
+            "failed_calls": 1
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 failed, 1 passed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 2,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 2,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 1,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 failed, 1 passed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 2,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 2,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 1,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        },
+        {
+          "case": "assertion_x",
+          "native": {
+            "exit": 1,
+            "collection_errors": 0,
+            "collected": 2,
+            "started_items": 1,
+            "call_items": 1,
+            "failed_calls": 1
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 failed | incomplete (maxfail): 1 of 2 executed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 2,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 1,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 failed | incomplete (maxfail): 1 of 2 executed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 2,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 1,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        },
+        {
+          "case": "setup",
+          "native": {
+            "exit": 1,
+            "collection_errors": 0,
+            "collected": 1,
+            "started_items": 1,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 errors | 0.04s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 1,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 errors | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 1,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        },
+        {
+          "case": "setup_x",
+          "native": {
+            "exit": 1,
+            "collection_errors": 0,
+            "collected": 1,
+            "started_items": 1,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 errors | incomplete (maxfail): 1 of 1 executed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 1,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 errors | incomplete (maxfail): 1 of 1 executed | 0.04s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 1,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        }
+      ]
+    },
+    {
+      "source_commit": "acd8897f593fd11ec676c2b960fe53b9e699f5e6",
+      "installed_metadata_version": "0.0.0",
+      "upstream_39_serial": {
+        "passed": 2,
+        "deselected_xdist": 2,
+        "exit": 0
+      },
+      "scenarios": [
+        {
+          "case": "syntax",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 0,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.13s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.14s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "syntax_x",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 0,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.13s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.13s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "import",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 0,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "import_x",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 0,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.09s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 0 executed | 0.10s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 0,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "partial_syntax",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 1,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.14s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.14s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "partial_syntax_x",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 1,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.13s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.14s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "partial_import",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 1,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.07s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "partial_import_x",
+          "native": {
+            "exit": 2,
+            "collection_errors": 1,
+            "collected": 1,
+            "started_items": 0,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "COLLECTION_ERROR exit=2 | 1 failed | incomplete: 1 of 1 executed | 0.08s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": true
+          }
+        },
+        {
+          "case": "pass",
+          "native": {
+            "exit": 0,
+            "collection_errors": 0,
+            "collected": 1,
+            "started_items": 1,
+            "call_items": 1,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "PASS exit=0 | 1 passed | 0.02s",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 1,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "PASS exit=0 | 1 passed | 0.02s",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 1,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        },
+        {
+          "case": "assertion",
+          "native": {
+            "exit": 1,
+            "collection_errors": 0,
+            "collected": 2,
+            "started_items": 2,
+            "call_items": 2,
+            "failed_calls": 1
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 failed, 1 passed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 2,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 2,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 1,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 failed, 1 passed | 0.02s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 2,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 2,
+              "failed": 1,
+              "not_executed": 0,
+              "passed": 1,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        },
+        {
+          "case": "assertion_x",
+          "native": {
+            "exit": 1,
+            "collection_errors": 0,
+            "collected": 2,
+            "started_items": 1,
+            "call_items": 1,
+            "failed_calls": 1
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 failed | incomplete (maxfail): 1 of 2 executed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 2,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 1,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 failed | incomplete (maxfail): 1 of 2 executed | 0.02s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 2,
+              "deselected": 0,
+              "errors": 0,
+              "executed": 1,
+              "failed": 1,
+              "not_executed": 1,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        },
+        {
+          "case": "setup",
+          "native": {
+            "exit": 1,
+            "collection_errors": 0,
+            "collected": 1,
+            "started_items": 1,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 errors | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 1,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 errors | 0.02s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": true,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 1,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        },
+        {
+          "case": "setup_x",
+          "native": {
+            "exit": 1,
+            "collection_errors": 0,
+            "collected": 1,
+            "started_items": 1,
+            "call_items": 0,
+            "failed_calls": 0
+          },
+          "human": {
+            "independent_events_match_native": true
+          },
+          "llm": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 errors | incomplete (maxfail): 1 of 1 executed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 1,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          },
+          "ci": {
+            "independent_events_match_native": true,
+            "terminal_header": "FAIL exit=1 | 1 errors | incomplete (maxfail): 1 of 1 executed | 0.03s | 1 root cause",
+            "artifact_reader_complete": true,
+            "artifact_integrity_valid": true,
+            "session_finish_complete": false,
+            "session_finish_counts": {
+              "collected": 1,
+              "deselected": 0,
+              "errors": 1,
+              "executed": 1,
+              "failed": 0,
+              "not_executed": 0,
+              "passed": 0,
+              "reruns": 0,
+              "skipped": 0,
+              "subtests": {},
+              "warnings": 0,
+              "xfailed": 0,
+              "xpassed": 0
+            },
+            "collect_phase_retained": false
+          }
+        }
+      ]
+    }
+  ]
+}

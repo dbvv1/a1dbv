@@ -80,6 +80,8 @@ test "$old_exit" -eq 1
 
 报告写清：**最终提交／工作树差量；实际被测构建；命令、数量和结果；走过的路径与报告／截图；失败、跳过、未运行及恢复条件。** 构建、组件、真实后端、部署分别报告；部署成功盖不过同版本尚未解释的失败。现有浏览器入口有具体能力缺口时，再试 CLI、MCP 或诊断工具，保留原验收路径。
 
+**摘要完整，不等于测试已经执行。** pytest-receptor 1.2.2 及固定 main 的实测中，收集期的 SyntaxError／ImportError 没有执行测试，compact 终端和完整、哈希有效的 JSONL 却都计为 `executed=1, failed=1`；已有一项被收集时，还会显示貌似合理的 `1 of 1 executed`。pytest 仍返回 exit 2、保留 collect 阶段，不是假绿。核交付数量时沿用原生输出与实际运行阶段，不把“已收集”写成“已执行”；[实测字段与原复现入口](../research/2026-11-01-pytest-receptor-counts.md)（2026-11-01；Linux／Python 3.12.14／pytest 9.1.1，未测模型收益）。
+
 ## 依据与实试
 
 - [项目方法与实际入口](../07-workflows.md#2-标准节奏探索--计划--实现--提交-)、[Willison 的实际运行实践](https://simonwillison.net/guides/agentic-engineering-patterns/agentic-manual-testing/)；沿用 2026-10-25 选择，原文重核 10-26。任务片段是机制整理，未做提示词收益对照。
