@@ -79,6 +79,16 @@ Path("search-parameters.md").write_text("# Page: " + matches[0])
 - **服务要登录或涉及写入**：本例不覆盖；停止匿名路线，回该动作所需授权，不用自动登录或其他凭据“让测试通过”。[经验]
 - **内容要支持代码修改**：wiki先指路，Agent再核当前代码与版本；不要将工具调用成功等同于答案正确。[经验]
 
+## 生成 CLI 的失败退出与通用调用不同
+
+**MCPorter 0.16.0 生成的 CLI 会把一种工具失败报告为进程成功。** 以使用者 #480 提供的原始 stdio 服务器和配置为输入，本仓在隔离云端 Linux／Node 24.22.1 用官方同一发布包实际生成 Node bundle，再分别执行通用 `call` 与生成命令。`text`、`markdown`、`json`、`raw` 四种格式共 8 次调用，通用调用均退出 **1**，生成命令均退出 **0**；每次 stdout 都保留 `Synthetic tool failure.`，stderr 均为空。这是返回 `isError: true` 的工具结果，不是 JSON-RPC 协议错误。
+
+两路 `json` 都保留了 `isError: true`；`raw` 的格式也有区别：通用调用输出对象检查文本，生成命令输出 JSON。当前页面的通用调用成功读取记录保留，不能把其退出契约直接套到生成 CLI 的自动化脚本。
+
+本次只验证原报告的失败输入，未测成功分支、原生 Windows／Node 26、模型或远程服务。现有修复 PR #481 仍未合入，其效果未在本轮验证。
+
+**依据**：[使用者原输入 #480](https://github.com/openclaw/mcporter/issues/480)、[固定 main 的生成模板](https://github.com/openclaw/mcporter/blob/8ba0ef967805b8d3fca7a9bc47c725a476e1282b/src/cli/generate/template.ts#L182)、[现有修复 #481](https://github.com/openclaw/mcporter/pull/481)；本仓实际运行官方 0.16.0，包哈希与上文一致；核实 2026-11-01 UTC。
+
 ## 来源与验证范围
 
 [MCPorter临时连接](https://mcporter.sh/adhoc.html)、[配置](https://mcporter.sh/config.html)、[0.16.0配置实现](https://github.com/openclaw/mcporter/blob/v0.16.0/src/config.ts)与[窄Skill模式](https://mcporter.sh/agent-skills.html)说明入口；[DeepWiki官方接口](https://docs.devin.ai/work-with-devin/deepwiki-mcp)说明公开仓库的免认证访问。[一手]
