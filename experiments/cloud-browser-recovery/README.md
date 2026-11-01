@@ -60,6 +60,8 @@ node tools/smoke.mjs
 
 ## 已检查的范围
 
+**dot 云接收（2026-11-01）：** 实际探针为 Unix stream 创建 EPERM，socketpair／TCP 通过，未在同条件重复启动浏览器。四文件修复及 lighting 精确组合已快进原 FPS 候选分支 [`8e66087e`](https://github.com/dbvv1/FPS-Like/commit/8e66087e45393c5dc9d00bb3a7a72d9c5e697b6e)（基线 `67ae83a7`）；非 main、未部署，完整 smoke／同机位图仍未验。
+
 补丁在上述固定源码的隔离副本通过 apply／反向检查和两脚本语法检查。受控启动失败检查覆盖默认 sandbox、显式例外、无效开关、全场材质路由及失败配置留存；原版丢配置并拒绝目标路由，补丁版通过对应检查。材质断言检出了 fallback、缺墙和缺替换件；capture 的 headed／外部 base 组合被拒。没有在本机启动浏览器，也没有在 dot 的云端运行这份补丁，云端恢复与作品效果尚待 dot-B 验证。
 
 探针的成功、EPERM、缺失能力分支已检查；本机仅用于标准库与输出检查，不作为云端结果。核实：2026-11-02。
