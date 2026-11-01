@@ -51,6 +51,6 @@
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 WebGL2：`27a40be`／Site v16，四路 smoke、四机位双重复通过；两非作者仅判小幅改善，正式评分待补。限定授权 `--no-sandbox`；原始 renderer／参数已留存（SwiftShader software），进程 exit 0、端口关闭。 |
 | FPS 新候选云端 smoke | `fc64c2b` 复用原 CPU；已用获准 `--no-sandbox`，导航前报 `socket() failed: Operation not permitted (1)`、SIGABRT；待云环境支持既有启动，外层沙箱不改，不重试／重复要许可 | 无新图／WebGL2证据，preview 已关闭；CPU 已验，本机不接浏览器。 |
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
-| Serena／testmon 上游贡献 | 待对应可写 fork；Serena CLA 须本人决定 | 已审补丁：[Serena #2218](../../experiments/serena-vue-implementation/README.md)、[testmon #270](../../experiments/testmon-outer-coverage/README.md) |
+| testmon 上游贡献 | 待可写 fork | [已审补丁 #270](../../experiments/testmon-outer-coverage/README.md)；Serena [改为跟进已有 PR #2242](../../experiments/serena-vue-implementation/README.md)，不重复投稿 |
 
 **停止的动作**：Maka #4495 评论因集成 403 未发出，本轮不再推进投稿或追发；MOBA 第三方素材官方取回 HTTP 403，改由本机接收端代取；P107 与 Action 调试 10f6a6db 被平台拒绝，补齐命令和用途后请用户在 Dot 里批准。

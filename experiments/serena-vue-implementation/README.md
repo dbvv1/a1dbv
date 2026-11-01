@@ -7,7 +7,8 @@
 - 上游基线：[773a77e19f0da348f505640c33a8b4e1d7817dc2](https://github.com/oraios/serena/commit/773a77e19f0da348f505640c33a8b4e1d7817dc2)。补丁 5 文件、55 行新增，其中生产改动 12 行；没有改依赖或 hover。
 - 补丁 SHA-256：`3a803ea2a23f783bbbe802c5d3a1be3eb48143d9e8d0730ba11d8a69cd31ca26`。可在该固定基线应用 `fix.patch` 后复跑下方检查。
 - 本地候选提交：`195392e55503f44804995028de325c1506d7b446`，尚未在上游或 fork 发布；公开可恢复产物是本目录补丁。
-- 独立新上下文审查通过。等待可写 fork；发表前重查上游是否已有修复，保留每项目最多一个开放 PR。[CLA](https://github.com/oraios/serena/blob/773a77e19f0da348f505640c33a8b4e1d7817dc2/CLA.md)须贡献者本人审阅决定，尚未代为接受。
+- 独立新上下文审查通过。**暂停旧候选投稿，跟进已有同题 [PR #2242](https://github.com/oraios/serena/pull/2242)。** 另一作者已提交相同的 Vue→TypeScript 实现查询委派，并补充跨文件、多实现、Vue SFC、工具入口与路由检查；截至 2026-11-01，该 PR 仍开放、未合并。
+- 本轮只读核对其固定 [head `c5cd0949`](https://github.com/oraios/serena/commit/c5cd0949ed32b23b4294da32181f2f64b7c57bc5) 与本补丁的生产差异，没有运行该 PR。下面仍是原候选的历史实测；不再为重复投稿推进 fork／CLA，原补丁保持不变。
 
 ## 真实验证
 
