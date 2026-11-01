@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-FOREMERGE-READER-20261101 · 接回真实已返回结果
 id: A-LONG-ROUTE-FOREMERGE-READER-20261101
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0004f093a86d277aebeb2f8eee4590d5e8b9c46f
@@ -30,8 +30,7 @@ page: docs/decisions/long-tasks.md@0004f093a86d277aebeb2f8eee4590d5e8b9c46f
 
 ## 当前结果
 
-- reader-test 单轮观察完成，内容层结论成立：Foremerge 0.6.0 对实际落地 c735c8ed 按内容核为 COMMITTED（integration.method=content，2 路径），0.5.1 对同一落地返回 TARGET_DIVERGED 属假阴性；页面全文与 docs/decisions/long-tasks.md@0004f093 逐字节一致。产出 docs/collaboration/local-jobs/artifacts/A-LONG-ROUTE-FOREMERGE-READER-20261101/result.md（101 行）与 reader-tests/A-LONG-ROUTE-FOREMERGE-READER-20261101-u1.md（95 行），均为未跟踪文件；check_repo（643 文件、0 错误）、check_public（1099 文件、0 findings）、git diff --check 通过。taskDone=false（外层禁止提交/推送/切分支，固定提交与 result_branch 交付未完成）。pageStuck 两处轻量缺口：页面未写去哪里核同项结果与当前写者；未给同一工具两版结果不同的现成写法（均不阻塞）。openIssues：替换文案把 0.5.1 与 0.6.0 并列写成两版都识别缺文件，但 0.5.1 实为祖先检查拒绝；新依据行若整段替换会丢 HN/V2EX/linux.do 核读记录；回读事件的远端观测仍来自记录，不能用本地一致性宣称独立验证。未运行验收：hosted CI、完整测试套件、消费者验收、并发多写者案例、候选 53cc161e 对象本体独立复核。未提交、未推送、未切换分支，未改任务文件和页面。
-- 产物：[0d7b82a](https://github.com/dbvv1/a1dbv/commit/0d7b82a98680d485d07d3d218ed630276965c9e1)，分支 `relay/a-long-route-foremerge-reader-20261101`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：负责人处理：在允许提交的环境补固定提交并按 result_branch 交付、核 hosted CI；按 openIssues 修正 inbox 替换文案（区分 0.5.1 祖先拒绝、保留原来源记录、弱化回读独立性表述）；如需把 0.6.0 提升为默认，补真实并发多写者案例与消费者验收。reader-test 不自动重读。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- 已接收[结果与负责人纠正](artifacts/A-LONG-ROUTE-FOREMERGE-READER-20261101/result.md)及[原读者卡点](../../../reader-tests/A-LONG-ROUTE-FOREMERGE-READER-20261101-u1.md)；原产物固定 [0d7b82a](https://github.com/dbvv1/a1dbv/commit/0d7b82a98680d485d07d3d218ed630276965c9e1)，接收器已提交指定结果分支，不再重复模型阶段的“未提交”动作。
+- 接收范围：按完整页面接回真实已返回结果，区分两版行为、失败控制与远端记录，保留 0.6.0 为限定试用候选，不改协调默认。负责人纠正 0.5.1 祖先拒绝／0.6.0 缺文件检测的差异、保留原社区来源、区分本地内容一致与远端观测。
+- 路线页补项目任务／写者入口；两版本不同无需工具特例。页面继续 🟡：本单元不覆盖完整实施、整合、消费者验收或自动无人值守，本次入口补文未再做新盲读；handoff 自动加载亦未验。
+- 原 run 已正常退出，结果分支 head 与两产物已回读；该 head check-runs／workflows／statuses 均 0，CI 未确认。无需重派或重跑既有实验；后续完整路线采用随真实任务补验，不把缺项改成通过。

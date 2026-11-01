@@ -25,7 +25,13 @@
 
 **Foremerge 候选的准确边界**：固定 `553d252d`（源码包版本 0.6.0）已记录真实 base→candidate 的二进制 diff 哈希，并在接收时核干净工作树、受验指纹、HEAD 与依赖祖先；不能再笼统写“不读实际 diff”。这些检查固定的是受验版本；最终代码是否兑现原意图，仍要对照实际 diff、项目检查和消费者结果。符号提示只作轻量线索，意图声明仍可能漏项；已有最终 diff／消费者验收要保留。CLI 有显式 `work watch` 轮询事件，不等于向已运行的 Agent 主动注入通知。
 
-**怎么取舍**：在已经并行编辑、经常出现“同一契约被替换与扩展”冲突的仓库，可把 Foremerge 列为编辑前协调的未试用候选，先比较原有 worktree＋明确写域是否足够；它不用于替换本仓接收端，也不解决当前调用是否读到补充材料的问题。单项命名检查能证什么仍由项目原验收决定；本轮只读源码，未安装、未运行模型或候选测试。
+**怎么取舍｜🧪 0.6.0 仅试用落地内容核对，默认仍用 worktree＋明确写域。** 对已有受验候选、实际发布生成了非后代新提交的任务，可试用 0.6.0 记录落地；0.5.1 不适用于本例。编辑前的意图声明与冲突暴露仍是未试用候选，不替换本仓接收端，也不能解决当前调用是否读到补充材料的问题。
+
+**实际接收结果**：Linux 上用本仓刚交付的两文件重放 CLI，受验候选与连接器实际落地提交同树、同父但互不为祖先。0.5.1 对实际落地返回 `TARGET_DIVERGED`；0.6.0 按内容核为 `COMMITTED`，`integration.method=content`、核 2 个路径。部分落地只保留 README 时，0.6.0 明确报告缺 `results.json`；0.5.1 也拒绝，但只因非祖先，不代表它检查了缺文件。首次驱动漏 claim／start 导致的 `INVALID_TRANSITION` 及修正经过保留在输入中。新读者接回这份已完成试验，未重跑有效实验，判断不足以改变现有协调默认。
+
+Foremerge 核对的是调用方给定提交包含已接受内容，**不验证目标分支或远端状态**；发布后仍独立回读。本例云端原记录已回读 main 和两文件，读者本地只另核内容、blob 与祖先一致。回放不是实际 GitHub squash／rebase 操作，只覆盖单写者、两文件与 `check_repo` 命名检查；并发协调、消费者行为、其他 OS 与 hosted CI 均未验证，不据此宣称协作收益。
+
+**试验依据**：[issue #38](https://github.com/naw103/foremerge/issues/38)、[修复 #51](https://github.com/naw103/foremerge/pull/51)、[0.6.0 固定落地契约](https://github.com/naw103/foremerge/blob/364319f968ccb3ee56ce316331ba0f5945655913/docs/git-integration.md)、[真实输入与结果](local-jobs/artifacts/A-LONG-ROUTE-FOREMERGE-READER-20261101/result.md)、[实际落地](https://github.com/dbvv1/a1dbv/commit/c735c8ed27334f2d4cc9218fece214fa8f83c41b)，试验与接收 2026-11-01。
 
 **依据与核读范围**：[固定 Git 差异记录](https://github.com/naw103/foremerge/blob/553d252d113b773ae31433818b0db987cc9385b4/docs/git-integration.md#L97-L145)、[接收时的版本核对](https://github.com/naw103/foremerge/blob/553d252d113b773ae31433818b0db987cc9385b4/src/service.rs#L2184-L2224)、[事件轮询实现](https://github.com/naw103/foremerge/blob/553d252d113b773ae31433818b0db987cc9385b4/src/cli.rs#L1318-L1334)。本轮以云端 curl 读取 HN Algolia 原始条目、V2EX 正文／四条回复和 linux.do 首帖 JSON，并核 Foremerge 官方源码；核实 2026-10-30。X 前次 curl 只有 JS 壳，无正文，本轮未重试；Reddit 已知访问拦截未重试，保留原帖缺口。
 
