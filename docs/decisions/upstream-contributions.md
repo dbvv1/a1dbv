@@ -57,6 +57,10 @@ CLA／DCO／vouch 等个人步骤、验证要求、后续响应，以及当前�
 
 **工具拒绝与项目准入分开处理。** `403` 先读响应和已知权限范围；结果未知先查远端，明确拒绝不换账号或通道绕过。项目允许投稿也不赋予工具写权限；技术检查失败则修技术问题，不用新 PR 或减少检查掩盖。被挡住只停相应动作，可继续准备允许的只读材料。
 
+本仓 `agents-md-lint` 的实际尝试中，已审补丁成功发布到自己的公开 fork，回读确认父提交、完整文件树与既有 Linux 验证对应；创建上游 Draft PR 却返回 `403 Resource not accessible by integration`，随后查询确认没有 PR。这是**“补丁已保全、投稿未发出”**，不是维护者拒收，也不是测试失败。该精确 head 的 workflow run、check run 都为 0；上游工作流只由 `main` 推送、PR 或手动触发，因此不能把空检查列表当成“CI 正在跑”，也不靠补跑 Linux 测试解除投稿权限。macOS、Windows 和 hosted 矩阵仍未验；完整投稿闭环仍待验证。
+
+**实测依据**：[fork 固定提交与五文件差量](https://github.com/dbvv1/agents-md-lint/commit/54313ea9007f22b582991d9023a75c282b5606cf)、[原补丁与 Linux 结果](../../experiments/instruction-file-lint/README.md)、[上游 CI 触发条件](https://github.com/openintelligence-labs/agents-md-lint/blob/9f852cf5b970cd9f283a61ef4ae6308cb4aeb047/.github/workflows/ci.yml)。拒绝响应、PR 查询及精确 head 检查为本次执行观察，核实于 2026-11-01 18:05 UTC。
+
 ## 何时不走这条路线
 
 **项目明确不接这类贡献、已有同等修复，或没人愿意理解与承担后续时，就不要把更多生成代码塞进评审队列。** 已有产品任务则先交自己的可用结果；内部团队推广另看 [18 团队落地](../18-team-adoption.md)，这里不制定组织政策，也不保证贡献一定获准或合并。
