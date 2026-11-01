@@ -1,0 +1,1106 @@
+{
+  "normalization": "Only the literal trial HOME parent and trial root replaced with <trial-home> and <trial>; recorded fields retained.",
+  "parts": {
+    "raw-results.json": {
+      "raw_sha256": "c0a2986dc753f36a463a89f1208cff865c8c4283d8af29e52a3537d0cc72a3cb",
+      "content": {
+        "records": [
+          {
+            "name": "0.5.6-original-report",
+            "version": "0.5.6",
+            "variant": "original-report",
+            "configuration": "repos: [{repo: meta, hooks: [{id: identity}]}]\n",
+            "filter": "grep -v SECRET",
+            "setup_git": [
+              {
+                "args": [
+                  "git",
+                  "init",
+                  "-q",
+                  "-b",
+                  "main",
+                  "."
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "config",
+                  "--local",
+                  "filter.strip.clean",
+                  "grep -v SECRET"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--all"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "commit",
+                  "-q",
+                  "-m",
+                  "Synthetic public reproduction baseline"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              }
+            ],
+            "before": {
+              "files": {
+                "f": {
+                  "text": "a\nSECRET=1\n",
+                  "sha256": "af195fc75ea1edddf0749dcca366053b67f7a5107f9a93d51291a6c67657bb6c"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M f\n M h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "started_utc": "2026-11-01T19:11:09.072995+00:00",
+            "run": {
+              "args": [
+                "<trial>/bin/0.5.6/prek-x86_64-unknown-linux-gnu/prek",
+                "run"
+              ],
+              "exit_code": 0,
+              "stdout": "identity.............................................(no files to check)Skipped\n",
+              "stderr": "Unstaged changes detected. Temporarily saving them to `<trial-home>/0.5.6-original-report/prek/patches/1793560269094-31.patch`\nRestored unstaged changes from `<trial-home>/0.5.6-original-report/prek/patches/1793560269094-31.patch`\n"
+            },
+            "completed_utc": "2026-11-01T19:11:09.102655+00:00",
+            "after": {
+              "files": {
+                "f": {
+                  "text": "a\n",
+                  "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "saved_patches": [
+              {
+                "relative_path": "prek/patches/1793560269094-31.patch",
+                "sha256": "faff93543c09e4428547cb09f69c8610b953bbff718aaf159ac2ed534d026299",
+                "text": "# prek pre-hook index tree: 978a06d2b29627638956c1ab56d6bf58c68a06cb\ndiff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n"
+              }
+            ],
+            "hook_ran": false
+          },
+          {
+            "name": "0.5.6-no-stash-trigger",
+            "version": "0.5.6",
+            "variant": "no-stash-trigger",
+            "configuration": "repos: [{repo: meta, hooks: [{id: identity}]}]\n",
+            "filter": "grep -v SECRET",
+            "setup_git": [
+              {
+                "args": [
+                  "git",
+                  "init",
+                  "-q",
+                  "-b",
+                  "main",
+                  "."
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "config",
+                  "--local",
+                  "filter.strip.clean",
+                  "grep -v SECRET"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--all"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "commit",
+                  "-q",
+                  "-m",
+                  "Synthetic public reproduction baseline"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              }
+            ],
+            "before": {
+              "files": {
+                "f": {
+                  "text": "a\nSECRET=1\n",
+                  "sha256": "af195fc75ea1edddf0749dcca366053b67f7a5107f9a93d51291a6c67657bb6c"
+                },
+                "h": {
+                  "text": "h1\n",
+                  "sha256": "bca117e409063f4c18bda5113cba607ffba3b412328a606c453142304acf54fb"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M f\n?? untracked.txt\n",
+                "unstaged": "",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "started_utc": "2026-11-01T19:11:09.178563+00:00",
+            "run": {
+              "args": [
+                "<trial>/bin/0.5.6/prek-x86_64-unknown-linux-gnu/prek",
+                "run"
+              ],
+              "exit_code": 0,
+              "stdout": "identity.............................................(no files to check)Skipped\n",
+              "stderr": ""
+            },
+            "completed_utc": "2026-11-01T19:11:09.192997+00:00",
+            "after": {
+              "files": {
+                "f": {
+                  "text": "a\nSECRET=1\n",
+                  "sha256": "af195fc75ea1edddf0749dcca366053b67f7a5107f9a93d51291a6c67657bb6c"
+                },
+                "h": {
+                  "text": "h1\n",
+                  "sha256": "bca117e409063f4c18bda5113cba607ffba3b412328a606c453142304acf54fb"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M f\n?? untracked.txt\n",
+                "unstaged": "",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "saved_patches": [],
+            "hook_ran": false
+          },
+          {
+            "name": "0.5.6-visible-only-control",
+            "version": "0.5.6",
+            "variant": "visible-only-control",
+            "configuration": "repos: [{repo: meta, hooks: [{id: identity}]}]\n",
+            "filter": "grep -v SECRET",
+            "setup_git": [
+              {
+                "args": [
+                  "git",
+                  "init",
+                  "-q",
+                  "-b",
+                  "main",
+                  "."
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "config",
+                  "--local",
+                  "filter.strip.clean",
+                  "grep -v SECRET"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--all"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "commit",
+                  "-q",
+                  "-m",
+                  "Synthetic public reproduction baseline"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              }
+            ],
+            "before": {
+              "files": {
+                "f": {
+                  "text": "a\n",
+                  "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "started_utc": "2026-11-01T19:11:09.259290+00:00",
+            "run": {
+              "args": [
+                "<trial>/bin/0.5.6/prek-x86_64-unknown-linux-gnu/prek",
+                "run"
+              ],
+              "exit_code": 0,
+              "stdout": "identity.............................................(no files to check)Skipped\n",
+              "stderr": "Unstaged changes detected. Temporarily saving them to `<trial-home>/0.5.6-visible-only-control/prek/patches/1793560269272-179.patch`\nRestored unstaged changes from `<trial-home>/0.5.6-visible-only-control/prek/patches/1793560269272-179.patch`\n"
+            },
+            "completed_utc": "2026-11-01T19:11:09.283849+00:00",
+            "after": {
+              "files": {
+                "f": {
+                  "text": "a\n",
+                  "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "saved_patches": [
+              {
+                "relative_path": "prek/patches/1793560269272-179.patch",
+                "sha256": "faff93543c09e4428547cb09f69c8610b953bbff718aaf159ac2ed534d026299",
+                "text": "# prek pre-hook index tree: 978a06d2b29627638956c1ab56d6bf58c68a06cb\ndiff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n"
+              }
+            ],
+            "hook_ran": false
+          },
+          {
+            "name": "0.5.6-hook-conflict-control",
+            "version": "0.5.6",
+            "variant": "hook-conflict-control",
+            "configuration": "repos:\n  - repo: local\n    hooks:\n      - id: conflict\n        name: conflict\n        language: system\n        entry: python3 .git/conflict.py\n        files: ^h$\n        pass_filenames: false\n",
+            "filter": "grep -v SECRET",
+            "setup_git": [
+              {
+                "args": [
+                  "git",
+                  "init",
+                  "-q",
+                  "-b",
+                  "main",
+                  "."
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "config",
+                  "--local",
+                  "filter.strip.clean",
+                  "grep -v SECRET"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--all"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "commit",
+                  "-q",
+                  "-m",
+                  "Synthetic public reproduction baseline"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--",
+                  "h"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              }
+            ],
+            "before": {
+              "files": {
+                "f": {
+                  "text": "a\n",
+                  "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "8e3ec1c0baa57e846930ed5715d352e7be398d12\n",
+                "index_tree": "7fa03be33c00961ca24b6acb370022199bf01b8e\n",
+                "status": "MM h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex c161aff..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h-stage\n+h2\n",
+                "staged": "diff --git a/h b/h\nindex 73505ed..c161aff 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h-stage\n",
+                "index_f": "a\n",
+                "index_h": "h-stage\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "started_utc": "2026-11-01T19:11:09.368552+00:00",
+            "run": {
+              "args": [
+                "<trial>/bin/0.5.6/prek-x86_64-unknown-linux-gnu/prek",
+                "run"
+              ],
+              "exit_code": 1,
+              "stdout": "conflict.................................................................Failed\n- hook id: conflict\n- files were modified by this hook\n",
+              "stderr": "Unstaged changes detected. Temporarily saving them to `<trial-home>/0.5.6-hook-conflict-control/prek/patches/1793560269385-271.patch`\nHook changes conflicted with the saved unstaged changes. Reverting the hook changes\nRestored unstaged changes from `<trial-home>/0.5.6-hook-conflict-control/prek/patches/1793560269385-271.patch`\n"
+            },
+            "completed_utc": "2026-11-01T19:11:09.442202+00:00",
+            "after": {
+              "files": {
+                "f": {
+                  "text": "a\n",
+                  "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "8e3ec1c0baa57e846930ed5715d352e7be398d12\n",
+                "index_tree": "7fa03be33c00961ca24b6acb370022199bf01b8e\n",
+                "status": "MM h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex c161aff..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h-stage\n+h2\n",
+                "staged": "diff --git a/h b/h\nindex 73505ed..c161aff 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h-stage\n",
+                "index_f": "a\n",
+                "index_h": "h-stage\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "saved_patches": [
+              {
+                "relative_path": "prek/patches/1793560269385-271.patch",
+                "sha256": "b3ed50ccd7743e00001ab593cc70ecbaac1644ada5c931461edf9c755f4df773",
+                "text": "# prek pre-hook index tree: 7fa03be33c00961ca24b6acb370022199bf01b8e\ndiff --git a/h b/h\nindex c161aff..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h-stage\n+h2\n"
+              }
+            ],
+            "hook_ran": true
+          },
+          {
+            "name": "0.5.9-original-report",
+            "version": "0.5.9",
+            "variant": "original-report",
+            "configuration": "repos: [{repo: meta, hooks: [{id: identity}]}]\n",
+            "filter": "grep -v SECRET",
+            "setup_git": [
+              {
+                "args": [
+                  "git",
+                  "init",
+                  "-q",
+                  "-b",
+                  "main",
+                  "."
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "config",
+                  "--local",
+                  "filter.strip.clean",
+                  "grep -v SECRET"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--all"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "commit",
+                  "-q",
+                  "-m",
+                  "Synthetic public reproduction baseline"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              }
+            ],
+            "before": {
+              "files": {
+                "f": {
+                  "text": "a\nSECRET=1\n",
+                  "sha256": "af195fc75ea1edddf0749dcca366053b67f7a5107f9a93d51291a6c67657bb6c"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M f\n M h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "started_utc": "2026-11-01T19:11:09.503301+00:00",
+            "run": {
+              "args": [
+                "<trial>/bin/0.5.9/prek-x86_64-unknown-linux-gnu/prek",
+                "run"
+              ],
+              "exit_code": 0,
+              "stdout": "identity.............................................(no files to check)Skipped\n",
+              "stderr": "Unstaged changes detected. Temporarily saving them to `<trial-home>/0.5.9-original-report/prek/patches/1793560269527-361.patch`\nRestored unstaged changes from `<trial-home>/0.5.9-original-report/prek/patches/1793560269527-361.patch`\n"
+            },
+            "completed_utc": "2026-11-01T19:11:09.537648+00:00",
+            "after": {
+              "files": {
+                "f": {
+                  "text": "a\nSECRET=1\n",
+                  "sha256": "af195fc75ea1edddf0749dcca366053b67f7a5107f9a93d51291a6c67657bb6c"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M f\n M h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "saved_patches": [
+              {
+                "relative_path": "prek/patches/1793560269527-361.patch",
+                "sha256": "faff93543c09e4428547cb09f69c8610b953bbff718aaf159ac2ed534d026299",
+                "text": "# prek pre-hook index tree: 978a06d2b29627638956c1ab56d6bf58c68a06cb\ndiff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n"
+              }
+            ],
+            "hook_ran": false
+          },
+          {
+            "name": "0.5.9-no-stash-trigger",
+            "version": "0.5.9",
+            "variant": "no-stash-trigger",
+            "configuration": "repos: [{repo: meta, hooks: [{id: identity}]}]\n",
+            "filter": "grep -v SECRET",
+            "setup_git": [
+              {
+                "args": [
+                  "git",
+                  "init",
+                  "-q",
+                  "-b",
+                  "main",
+                  "."
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "config",
+                  "--local",
+                  "filter.strip.clean",
+                  "grep -v SECRET"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--all"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "commit",
+                  "-q",
+                  "-m",
+                  "Synthetic public reproduction baseline"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              }
+            ],
+            "before": {
+              "files": {
+                "f": {
+                  "text": "a\nSECRET=1\n",
+                  "sha256": "af195fc75ea1edddf0749dcca366053b67f7a5107f9a93d51291a6c67657bb6c"
+                },
+                "h": {
+                  "text": "h1\n",
+                  "sha256": "bca117e409063f4c18bda5113cba607ffba3b412328a606c453142304acf54fb"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M f\n?? untracked.txt\n",
+                "unstaged": "",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "started_utc": "2026-11-01T19:11:09.600841+00:00",
+            "run": {
+              "args": [
+                "<trial>/bin/0.5.9/prek-x86_64-unknown-linux-gnu/prek",
+                "run"
+              ],
+              "exit_code": 0,
+              "stdout": "identity.............................................(no files to check)Skipped\n",
+              "stderr": ""
+            },
+            "completed_utc": "2026-11-01T19:11:09.616640+00:00",
+            "after": {
+              "files": {
+                "f": {
+                  "text": "a\nSECRET=1\n",
+                  "sha256": "af195fc75ea1edddf0749dcca366053b67f7a5107f9a93d51291a6c67657bb6c"
+                },
+                "h": {
+                  "text": "h1\n",
+                  "sha256": "bca117e409063f4c18bda5113cba607ffba3b412328a606c453142304acf54fb"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M f\n?? untracked.txt\n",
+                "unstaged": "",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "saved_patches": [],
+            "hook_ran": false
+          },
+          {
+            "name": "0.5.9-visible-only-control",
+            "version": "0.5.9",
+            "variant": "visible-only-control",
+            "configuration": "repos: [{repo: meta, hooks: [{id: identity}]}]\n",
+            "filter": "grep -v SECRET",
+            "setup_git": [
+              {
+                "args": [
+                  "git",
+                  "init",
+                  "-q",
+                  "-b",
+                  "main",
+                  "."
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "config",
+                  "--local",
+                  "filter.strip.clean",
+                  "grep -v SECRET"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--all"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "commit",
+                  "-q",
+                  "-m",
+                  "Synthetic public reproduction baseline"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              }
+            ],
+            "before": {
+              "files": {
+                "f": {
+                  "text": "a\n",
+                  "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "started_utc": "2026-11-01T19:11:09.694503+00:00",
+            "run": {
+              "args": [
+                "<trial>/bin/0.5.9/prek-x86_64-unknown-linux-gnu/prek",
+                "run"
+              ],
+              "exit_code": 0,
+              "stdout": "identity.............................................(no files to check)Skipped\n",
+              "stderr": "Unstaged changes detected. Temporarily saving them to `<trial-home>/0.5.9-visible-only-control/prek/patches/1793560269709-488.patch`\nRestored unstaged changes from `<trial-home>/0.5.9-visible-only-control/prek/patches/1793560269709-488.patch`\n"
+            },
+            "completed_utc": "2026-11-01T19:11:09.718046+00:00",
+            "after": {
+              "files": {
+                "f": {
+                  "text": "a\n",
+                  "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "d582506a21504d70f95b567657cb698db49ded13\n",
+                "index_tree": "978a06d2b29627638956c1ab56d6bf58c68a06cb\n",
+                "status": " M h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n",
+                "staged": "",
+                "index_f": "a\n",
+                "index_h": "h1\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "saved_patches": [
+              {
+                "relative_path": "prek/patches/1793560269709-488.patch",
+                "sha256": "faff93543c09e4428547cb09f69c8610b953bbff718aaf159ac2ed534d026299",
+                "text": "# prek pre-hook index tree: 978a06d2b29627638956c1ab56d6bf58c68a06cb\ndiff --git a/h b/h\nindex 73505ed..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h2\n"
+              }
+            ],
+            "hook_ran": false
+          },
+          {
+            "name": "0.5.9-hook-conflict-control",
+            "version": "0.5.9",
+            "variant": "hook-conflict-control",
+            "configuration": "repos:\n  - repo: local\n    hooks:\n      - id: conflict\n        name: conflict\n        language: system\n        entry: python3 .git/conflict.py\n        files: ^h$\n        pass_filenames: false\n",
+            "filter": "grep -v SECRET",
+            "setup_git": [
+              {
+                "args": [
+                  "git",
+                  "init",
+                  "-q",
+                  "-b",
+                  "main",
+                  "."
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "config",
+                  "--local",
+                  "filter.strip.clean",
+                  "grep -v SECRET"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--all"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "commit",
+                  "-q",
+                  "-m",
+                  "Synthetic public reproduction baseline"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "args": [
+                  "git",
+                  "add",
+                  "--",
+                  "h"
+                ],
+                "exit_code": 0,
+                "stdout": "",
+                "stderr": ""
+              }
+            ],
+            "before": {
+              "files": {
+                "f": {
+                  "text": "a\n",
+                  "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "8e3ec1c0baa57e846930ed5715d352e7be398d12\n",
+                "index_tree": "7fa03be33c00961ca24b6acb370022199bf01b8e\n",
+                "status": "MM h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex c161aff..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h-stage\n+h2\n",
+                "staged": "diff --git a/h b/h\nindex 73505ed..c161aff 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h-stage\n",
+                "index_f": "a\n",
+                "index_h": "h-stage\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "started_utc": "2026-11-01T19:11:09.788739+00:00",
+            "run": {
+              "args": [
+                "<trial>/bin/0.5.9/prek-x86_64-unknown-linux-gnu/prek",
+                "run"
+              ],
+              "exit_code": 1,
+              "stdout": "conflict.................................................................Failed\n- hook id: conflict\n- files were modified by this hook\n",
+              "stderr": "Unstaged changes detected. Temporarily saving them to `<trial-home>/0.5.9-hook-conflict-control/prek/patches/1793560269805-568.patch`\nHook changes conflicted with the saved unstaged changes. Reverting the hook changes\nRestored unstaged changes from `<trial-home>/0.5.9-hook-conflict-control/prek/patches/1793560269805-568.patch`\n"
+            },
+            "completed_utc": "2026-11-01T19:11:09.854778+00:00",
+            "after": {
+              "files": {
+                "f": {
+                  "text": "a\nSECRET=1\n",
+                  "sha256": "af195fc75ea1edddf0749dcca366053b67f7a5107f9a93d51291a6c67657bb6c"
+                },
+                "h": {
+                  "text": "h2\n",
+                  "sha256": "1e2ba5c7c2b12368c550cd5d1bbf8265e4643b78f9d0c07008b1b7e95aeafa42"
+                },
+                "untracked.txt": {
+                  "text": "not owned by hook\n",
+                  "sha256": "d3ea3ffcc74da7a9c26ef632dd19c0d89f53c10e69b62373889c1ec22f0ca181"
+                }
+              },
+              "git": {
+                "head": "8e3ec1c0baa57e846930ed5715d352e7be398d12\n",
+                "index_tree": "7fa03be33c00961ca24b6acb370022199bf01b8e\n",
+                "status": " M f\nMM h\n?? untracked.txt\n",
+                "unstaged": "diff --git a/h b/h\nindex c161aff..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h-stage\n+h2\n",
+                "staged": "diff --git a/h b/h\nindex 73505ed..c161aff 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h1\n+h-stage\n",
+                "index_f": "a\n",
+                "index_h": "h-stage\n",
+                "head_f": "a\n",
+                "head_h": "h1\n"
+              }
+            },
+            "saved_patches": [
+              {
+                "relative_path": "prek/patches/1793560269805-568.patch",
+                "sha256": "b3ed50ccd7743e00001ab593cc70ecbaac1644ada5c931461edf9c755f4df773",
+                "text": "# prek pre-hook index tree: 7fa03be33c00961ca24b6acb370022199bf01b8e\ndiff --git a/h b/h\nindex c161aff..c48b563 100644\n--- a/h\n+++ b/h\n@@ -1 +1 @@\n-h-stage\n+h2\n"
+              }
+            ],
+            "hook_ran": true
+          }
+        ],
+        "runtime": {
+          "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+          "git": "git version 2.47.3\n"
+        },
+        "source": "https://github.com/j178/prek/issues/2912",
+        "scope": "Official Linux release CLIs on original public minimal input plus synthetic controls. No hooks installed, no real local configuration or secrets, no original WSL runtime, no full upstream suite or model effects."
+      }
+    },
+    "downloads.json": {
+      "raw_sha256": "a040a4b2fba3f858d3111499b7ca744b8abc7e35781d208dca05083aeb2028fe",
+      "content": [
+        {
+          "version": "0.5.6",
+          "url": "https://github.com/j178/prek/releases/download/v0.5.6/prek-x86_64-unknown-linux-gnu.tar.gz",
+          "expected_sha256": "b0c1a9fdaf0f379c1c2809481a1e1560a4a233777ecd3c38d3e7459d77a59398",
+          "started_utc": "2026-11-01T19:09:58.895072+00:00",
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:06 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0\n\n  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:09 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:10 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0\n100 5785k  100 5785k    0     0   472k      0  0:00:12  0:00:12 --:--:-- 1507k\n",
+          "binary": "bin/0.5.6/prek-x86_64-unknown-linux-gnu/prek",
+          "actual_sha256": "b0c1a9fdaf0f379c1c2809481a1e1560a4a233777ecd3c38d3e7459d77a59398",
+          "version_output": "prek 0.5.6\n"
+        },
+        {
+          "version": "0.5.9",
+          "url": "https://github.com/j178/prek/releases/download/v0.5.9/prek-x86_64-unknown-linux-gnu.tar.gz",
+          "expected_sha256": "2fee13923018dd517c19dba032ddcae8010cadfb81bc47e742ad5e8981a3f126",
+          "started_utc": "2026-11-01T19:10:11.313444+00:00",
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0\n\n  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:06 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0\n100 5576k  100 5576k    0     0   634k      0  0:00:08  0:00:08 --:--:-- 1596k\n",
+          "binary": "bin/0.5.9/prek-x86_64-unknown-linux-gnu/prek",
+          "actual_sha256": "2fee13923018dd517c19dba032ddcae8010cadfb81bc47e742ad5e8981a3f126",
+          "version_output": "prek 0.5.9\n"
+        }
+      ]
+    },
+    "metadata.json": {
+      "raw_sha256": "27d90a481910b66db6065e11aaabe4552ac5092c932ce9815817a3cbbe450e7f",
+      "content": {
+        "source_issue": "https://github.com/j178/prek/issues/2912",
+        "merged_fix": "https://github.com/j178/prek/pull/2915",
+        "fix_merge_commit": "16564b3d1ed647ae4b129d1c6e486f6b3b329149",
+        "runtime_supplement": {
+          "hook_python": "Python 3.13.5",
+          "note": "Metadata read after valid trials; no trial rerun."
+        },
+        "fixture_script": {
+          "fixtures/0.5.9-hook-conflict-control/.git/conflict.py": "from pathlib import Path\nPath('f').write_bytes(b'a\\nSECRET=1\\n')\nPath('h').write_bytes(b'HOOK\\n')\nPath('.git/hook-observed').write_text('ran\\n')\n",
+          "fixtures/0.5.6-hook-conflict-control/.git/conflict.py": "from pathlib import Path\nPath('f').write_bytes(b'a\\nSECRET=1\\n')\nPath('h').write_bytes(b'HOOK\\n')\nPath('.git/hook-observed').write_text('ran\\n')\n"
+        },
+        "runner_sha256": "9c80ee8cca957508811b166f3c3c73f0aae496dd7daa1078dc4836b673f566e0"
+      }
+    }
+  }
+}
