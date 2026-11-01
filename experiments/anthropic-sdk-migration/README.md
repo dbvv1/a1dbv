@@ -23,17 +23,63 @@
 2. **保留真实调用链，按路由核请求。** 验构造、body、认证头，以及客户端复制后再次请求。原参数不兼容要从实际生成点修；API-key／token／第三方网关各有契约，别全局删认证处理，也别靠放宽 mock 接收所有参数。
 3. **将实际请求作为接收依据。** 断言每次是否到达 transport、使用的 API 版本、移除的字段，以及恰好一个符合该路由要求的认证头；只记头名／布尔状态，不记录真实值。
 
-完成本地契约检查后，还需按应用原门禁验其他消费者，再在获准环境验目标服务。本例没有运行模型、网关或 Hermes 完整应用；stream、async、辅助调用、OAuth 刷新、Bedrock／Foundry 和真实日志链仍需各自验证。无需为这次检查新接迁移平台或模型服务。
+完成本地契约检查后，还需按应用原门禁验其他消费者，再在获准环境验目标服务。原 2.x 探针没有运行模型、网关或 Hermes 完整应用；stream、async、辅助调用、OAuth 刷新、Bedrock／Foundry 和真实日志链仍需各自验证。无需为这次检查新接迁移平台或模型服务。
 
-## Hermes 当前升级路线：先核在途修复
+## Hermes v1 在途迁移：接收旧 PR 时保住新主干
 
-**先对照已有 v1 迁移，不重复实现，也不把它当作 v2 已兼容。** 本轮 main `f30105a0` 仍 pin `0.125.0`；开放、未合并的 #118652（head `40f03bd6`）提出升到 `1.7.0`，并将 SDK-bound timeout 与 bearer HTTP client 改用 `httpx2`。它覆盖本例涉及的 HTTP 类型迁移部分，不代表 2.x 的采样参数、认证及其他消费者契约已完成。
+**🧪 需要 SDK 1.x 时，先接已有实现的必要差量，不整份覆盖新主干；只升 1.x 不能解决上面的 2.x 契约问题。** #118652 仍开放、未合并，head `40f03bd6` 已将 Anthropic 升到 `1.7.0`，改用 SDK 所需的 `httpx2.Timeout` 和 bearer-hook client。本轮先在它自己的源码／锁文件上验收，再移植到仍 pin `0.125.0` 的 main `c7da41dd`；没有另开重复 PR。
 
-真正需要升到 2.x 时，先协调／对照这项在途实现，再验未覆盖路径。#142796 是升级准备清单，升级时机的表述来自报告者，本轮未见维护者已决定启动 2.x 迁移的证据；本例换新版本时测出的失效，不等于验证了当前 pin 下的故障，也不是立即改 pin 的理由。本轮只读核源，未运行该 PR、改变依赖或新增迁移实验。
+| 接收步骤 | 实际结果 | 对读者的选择有什么影响 |
+|---|---|---|
+| 旧实现＋新 SDK，放入 PR 的两个构造回归 | 两项均因旧 `httpx` 类型失败 | 确认补丁解决真实边界，不拿安装成功代替迁移 |
+| 固定 PR，按项目 runner 验认证／Azure 辅助及相关消费者 | 7 文件 160 passed，0 failed／skip | 可以接收所测 v1 工程差量，尚非全产品兼容 |
+| 原 PR 整份应用到新 main | `pyproject.toml`、`uv.lock` 冲突 | 保留 main 更新后的 Bedrock timeout 参数与其他依赖，只转移必要源码／pin，再用当前 PM 生成锁文件 |
+| 适配后 main，加真实 SDK 内存请求与 Bedrock 构造验收 | 9 文件 178 passed，0 failed／skip；原生静态入口 14 项通过 | 所测 API-key、bearer 刷新、copy 后认证及 Bedrock timeout 保留，候选可供项目继续验收 |
 
-**依据**：[固定 main 依赖](https://github.com/NousResearch/hermes-agent/blob/f30105a0b4b3d0c1baa6c464189755ccdbc1ac7f/pyproject.toml#L236)、[开放 PR #118652](https://github.com/NousResearch/hermes-agent/pull/118652)及其 [固定 head](https://github.com/KoNit-K/hermes-agent/commit/40f03bd6e086ab7573ba216c1d6c802882cf5293)、[升级准备 #142796](https://github.com/NousResearch/hermes-agent/issues/142796)；源码与状态核实 2026-10-31，不刷新下面原实验的验证范围。
+新增五例使用实际 SDK client，替换外部传输后断言请求头，而不是让 mock 接受任何调用；Bedrock 只替换凭据查询并构造实际 SDK。copy 测试核第二次请求和认证，未覆盖完整关闭生命周期。测试全用合成键；原有用例含 localhost 或 mock，未调用真实 Anthropic／Azure／AWS／网关，也未跑整个 Hermes、跨 OS／发布矩阵或 SDK 2。维护者尚未确认 #142796 的 2.x 升级时机，不据此替项目改默认。
 
-## 重放
+### 固定候选怎样重放
+
+补丁来自 #118652 的源码／测试改动，再适配上述 main，并新增五例行为测试；原项目为 MIT，许可见 [HERMES-LICENSE.txt](HERMES-LICENSE.txt)。准备 Git、能启动项目 PM 的 Python 及官方依赖网络；按 Hermes 自带指南由 PM 准备测试解释器，不用裸 pip／uv 修改 Hermes 环境。以下从 **a1dbv 根目录**开始，在新的独立 clone 操作：
+
+```bash
+(
+set -e
+A1DBV="$PWD"
+trial_root="$(mktemp -d)"
+cd "$trial_root"
+git clone https://github.com/NousResearch/hermes-agent.git hermes-v1
+cd hermes-v1
+git checkout --detach c7da41dd522dc19cc08bbfcfa69d4b078224b45d
+git apply --check "$A1DBV/experiments/anthropic-sdk-migration/hermes-v1-current-main.patch"
+git apply "$A1DBV/experiments/anthropic-sdk-migration/hermes-v1-current-main.patch"
+git add -N tests/agent/test_anthropic_sdk_migration_boundary.py
+trial_home="$(mktemp -d)"
+export HOME="$trial_home" HERMES_HOME="$trial_home/data" HERMES_RUNTIME_DIR="$trial_home/runtime"
+export HERMES_DISABLE_LAZY_INSTALLS=1
+python -m pm.build_env --source . --out ../hermes-v1-test-env --group dev --group test --extra bedrock
+export HERMES_PYTHON="$(cd ../hermes-v1-test-env && pwd)/bin/python"
+bash scripts/run_tests.sh -j 2 --file-retries 0 --file-timeout 120 \
+  tests/agent/test_anthropic_client_auth.py \
+  tests/agent/test_azure_identity_adapter.py \
+  tests/agent/test_auxiliary_client_azure_foundry.py \
+  tests/agent/test_anthropic_adapter.py \
+  tests/agent/test_bedrock_guardrail_claude_route.py \
+  tests/agent/test_bedrock_1m_context.py \
+  tests/agent/test_nous_portal_anthropic_wire.py \
+  tests/agent/test_bedrock_request_timeout.py \
+  tests/agent/test_anthropic_sdk_migration_boundary.py
+"$HERMES_PYTHON" scripts/check --base c7da41dd522dc19cc08bbfcfa69d4b078224b45d
+)
+```
+
+预期是所列测试无失败／skip、静态检查通过；首次运行的环境和命令见[脱敏结果](hermes-v1-result.json)。PM 构建需要新输出目录；本轮首次隔离错误地丢弃了云环境已有的代理／证书设置，导致下载失败，保留已配置的传输设置后正常成功，不需要改凭据或降低 TLS。复用项目隔离 runner 清除测试凭据，不把环境准备故障当迁移红灯。
+
+只要目标主干不是这个固定提交，就先核差量，不能机械套补丁。回退也只在独立 clone 没有后续修改时核 `git apply --check -R` 再反向应用，并由 PM 另建旧依赖环境；这不恢复任何业务数据。
+
+**依据**：[固定 main](https://github.com/NousResearch/hermes-agent/commit/c7da41dd522dc19cc08bbfcfa69d4b078224b45d)、[PR #118652](https://github.com/NousResearch/hermes-agent/pull/118652)及[固定 head](https://github.com/KoNit-K/hermes-agent/commit/40f03bd6e086ab7573ba216c1d6c802882cf5293)、[原类型不兼容报告 #118648](https://github.com/NousResearch/hermes-agent/issues/118648)、[SDK 1.7 依赖声明](https://github.com/anthropics/anthropic-sdk-python/blob/v1.7.0/pyproject.toml)、[2.x 准备 #142796](https://github.com/NousResearch/hermes-agent/issues/142796)；2026-11-01 核实与 Linux 实测，适配 main 环境为 Python 3.14.9、Anthropic 1.7.0、httpx2 2.15.1。以下 2.x 探针仍是原 10-30 的独立实验。
+
+## 原 0.x→2.x 失效探针重放
 
 Python 3.12、Git；两个独立 venv 分别安装本目录的锁定依赖。以下命令在本目录运行：
 
@@ -54,7 +100,7 @@ python3 test_probe.py hermes .sdk-old/bin/python .sdk-new/bin/python
 
 ## 来源与适用范围
 
-本轮把既有收件箱的迁移提示补成真实消费者结果，未判断整体 SDK／模型优劣，也没有提交 Hermes 升级补丁。
+原 10-30 实验把既有收件箱的迁移提示补成真实消费者结果，未判断整体 SDK／模型优劣；11-01 的 v1 适配仅作为上述本地候选，没有向 Hermes 提交升级补丁。
 
 | 覆盖（2026-10-30） | 有效增量／取舍 |
 |---|---|

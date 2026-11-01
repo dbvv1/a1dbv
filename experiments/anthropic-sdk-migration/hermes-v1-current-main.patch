@@ -1,0 +1,265 @@
+diff --git a/agent/anthropic_adapter.py b/agent/anthropic_adapter.py
+index 2b368f33..010a3e5a 100644
+--- a/agent/anthropic_adapter.py
++++ b/agent/anthropic_adapter.py
+@@ -377,6 +377,6 @@ def _attribution_headers() -> dict[str, str]:
+
+ def _client_timeout(timeout):
+-    """httpx.Timeout with the caller's read timeout (default 900s) and a 10s connect."""
+-    from httpx import Timeout
++    """httpx2.Timeout with the caller's read timeout (default 900s) and a 10s connect."""
++    from httpx2 import Timeout
+     read = timeout if (isinstance(timeout, (int, float)) and timeout > 0) else 900.0
+     return Timeout(timeout=float(read), connect=10.0)
+@@ -403,5 +403,5 @@ def _build_anthropic_client_with_bearer_hook(
+     """Anthropic-on-Foundry Entra ID variant of :func:`build_anthropic_client`. The SDK stores
+     ``api_key``/``auth_token`` as static strings, so per-request bearer refresh (Microsoft's
+-    documented Foundry pattern) uses a custom ``httpx.Client`` whose request hook mints a fresh JWT
++    documented Foundry pattern) uses a custom ``httpx2.Client`` whose request hook mints a fresh JWT
+     and rewrites ``Authorization``; the SDK skips its own auth when ``http_client`` is given. The
+     placeholder ``auth_token`` is still required at construction and makes any leak diagnosable."""
+diff --git a/agent/azure_identity_adapter.py b/agent/azure_identity_adapter.py
+index 52768568..feea394e 100644
+--- a/agent/azure_identity_adapter.py
++++ b/agent/azure_identity_adapter.py
+@@ -314,5 +314,5 @@ def build_bearer_http_client(
+     token_provider: Callable[[], str], *, sends_as_api_key: Callable[[str], bool] | None = None, **httpx_kwargs: Any
+ ) -> Any:
+-    """``httpx.Client`` minting a fresh Entra bearer JWT per outbound request. The Anthropic SDK computes
++    """``httpx2.Client`` minting a fresh Entra bearer JWT per outbound request. The Anthropic SDK computes
+     ``Authorization`` once at construction, so per-request refresh needs a ``request`` hook: mint (cheap —
+     azure-identity caches), strip pre-set auth headers, set ``Authorization: Bearer``. ``httpx_kwargs`` are
+@@ -321,7 +321,7 @@ def build_bearer_http_client(
+     if not is_token_provider(token_provider):
+         raise ValueError("build_bearer_http_client requires a zero-arg callable token provider")
+-    import httpx
++    import httpx2
+
+-    def _inject_auth(request: httpx.Request) -> None:
++    def _inject_auth(request: httpx2.Request) -> None:
+         try:
+             token = materialize_bearer_for_http(token_provider)
+@@ -341,5 +341,5 @@ def build_bearer_http_client(
+             request.headers["Authorization"] = f"Bearer {token}"
+
+-    return httpx.Client(event_hooks={"request": [_inject_auth]}, **httpx_kwargs)
++    return httpx2.Client(event_hooks={"request": [_inject_auth]}, **httpx_kwargs)
+
+
+diff --git a/pyproject.toml b/pyproject.toml
+index 83af45fb..c926c58e 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -234,5 +234,5 @@ uvloop = [
+ # Native Anthropic provider — only needed when provider=anthropic (not via
+ # OpenRouter or other aggregators).
+-anthropic = ["anthropic==0.125.0"] # CVE-2026-34450, CVE-2026-34452
++anthropic = ["anthropic==1.7.0"] # CVE-2026-34450, CVE-2026-34452
+ # Web search backends — each only loaded when the user picks it as their
+ # search provider (configured via `hermes tools` or config.yaml).
+@@ -573,5 +573,5 @@ dev = [
+ test = [
+   "distlib==0.4.4; sys_platform == 'win32'",
+-  "anthropic==0.125.0",
++  "anthropic==1.7.0",
+ ]
+
+diff --git a/tests/agent/test_anthropic_client_auth.py b/tests/agent/test_anthropic_client_auth.py
+index 37bb8e2a..f4ae96f7 100644
+--- a/tests/agent/test_anthropic_client_auth.py
++++ b/tests/agent/test_anthropic_client_auth.py
+@@ -68,4 +68,25 @@ def test_third_party_request_on_the_wire_carries_no_foreign_bearer(monkeypatch):
+
+
++def test_standard_client_uses_the_anthropic_httpx2_timeout():
++    """Anthropic 1.x rejects timeout objects from Hermes's separate httpx package."""
++    pytest.importorskip("anthropic")
++
++    client = build_anthropic_client("sk-ant-api03-test")
++
++    assert client is not None
++
++
++def test_bearer_client_uses_the_anthropic_httpx2_client():
++    """The per-request Entra hook must use the HTTP client type Anthropic 1.x accepts."""
++    pytest.importorskip("anthropic")
++
++    client = build_anthropic_client(
++        lambda: "entra-test-token",
++        base_url="https://example.openai.azure.com/anthropic",
++    )
++
++    assert type(client._client).__module__.startswith("httpx2")
++
++
+ @pytest.mark.parametrize(("family", "oauth"), [("api03", False), ("usr01", False), ("svc01", False), ("admin01", False), ("oat01", True)])
+ def test_console_key_families_carry_x_api_key_without_claude_code_identity(monkeypatch, family, oauth):
+@@ -91,10 +112,10 @@ def test_key_cmd_token_lands_in_the_header_its_family_needs(monkeypatch, base_ur
+     prints must go out as x-api-key like the static path; OAuth tokens and non-native gateways keep Bearer."""
+     pytest.importorskip("anthropic")
+-    import httpx
++    import httpx2
+
+     monkeypatch.setattr("agent.anthropic_adapter._claude_code_version_cache", "0.0.0")
+     key = "sk-" + "ant-" + family + "-" + "X" * 24
+     client = build_anthropic_client(lambda: key, base_url)
+-    request = httpx.Request("POST", (base_url or "https://api.anthropic.com") + "/v1/messages", headers={"Authorization": "Bearer entra-id-bearer-via-http-hook"})
++    request = httpx2.Request("POST", (base_url or "https://api.anthropic.com") + "/v1/messages", headers={"Authorization": "Bearer entra-id-bearer-via-http-hook"})
+     client._client.event_hooks["request"][0](request)
+     sent = {"x-api-key": request.headers.get("x-api-key"), "bearer": request.headers.get("authorization")}
+diff --git a/tests/agent/test_anthropic_sdk_migration_boundary.py b/tests/agent/test_anthropic_sdk_migration_boundary.py
+new file mode 100644
+index 00000000..303cdb01
+--- /dev/null
++++ b/tests/agent/test_anthropic_sdk_migration_boundary.py
+@@ -0,0 +1,108 @@
++"""Local acceptance for the existing Anthropic 1.x migration (#118652).
++
++Exercise actual clients without any provider IO; all credentials and responses
++are synthetic. The Bedrock cases preserve the newer main timeout contract.
++"""
++from unittest.mock import patch
++
++import httpx2
++import pytest
++
++from agent import anthropic_adapter as adapter
++
++
++@pytest.fixture(autouse=True)
++def _no_provider_network(monkeypatch):
++    import socket
++
++    def refuse(*args, **kwargs):
++        raise AssertionError("This acceptance uses only the in-memory transport")
++
++    monkeypatch.setattr(socket.socket, "connect", refuse)
++    monkeypatch.setattr(socket.socket, "connect_ex", refuse)
++
++
++def _memory_wire(client, captured):
++    def receive(request):
++        captured.append(dict(request.headers))
++        return httpx2.Response(200, json={
++            "id": "msg_synthetic", "type": "message", "role": "assistant",
++            "model": "test-model", "content": [{"type": "text", "text": "ok"}],
++            "stop_reason": "end_turn", "stop_sequence": None,
++            "usage": {"input_tokens": 1, "output_tokens": 1},
++        })
++
++    # Keep the real client's auth hooks; replace only the external IO boundary.
++    client._client._transport.close()
++    client._client._transport = httpx2.MockTransport(receive)
++
++
++def _message(client):
++    reply = client.messages.create(model="test-model", max_tokens=8,
++                                   messages=[{"role": "user", "content": "synthetic"}])
++    assert reply.content[0].text == "ok"
++
++
++@pytest.mark.parametrize("base_url", [None, "https://gateway.invalid/anthropic"])
++def test_api_key_wire_and_copy_keep_one_auth_header(base_url):
++    captured = []
++    client = adapter.build_anthropic_client("sk-ant-api03-synthetic", base_url, timeout=123)
++    try:
++        assert isinstance(client.timeout, httpx2.Timeout)
++        assert (client.timeout.read, client.timeout.connect, client.max_retries) == (123, 10, 0)
++        _memory_wire(client, captured)
++        _message(client)
++        copied = client.with_options(timeout=30)
++        try:
++            _message(copied)
++        finally:
++            copied.close()
++    finally:
++        client.close()
++    assert len(captured) == 2
++    for headers in captured:
++        assert headers["x-api-key"] == "sk-ant-api03-synthetic"
++        assert "authorization" not in headers
++
++
++def test_bearer_hook_refreshes_through_real_client_and_copy():
++    minted = []
++
++    def provider():
++        token = f"synthetic-bearer-{len(minted) + 1}"
++        minted.append(token)
++        return token
++
++    captured = []
++    client = adapter.build_anthropic_client(provider, "https://example.openai.azure.com/anthropic")
++    try:
++        assert isinstance(client._client, httpx2.Client)
++        _memory_wire(client, captured)
++        _message(client)
++        copied = client.with_options(timeout=30)
++        try:
++            _message(copied)
++        finally:
++            copied.close()
++    finally:
++        client.close()
++    assert len(captured) == 2
++    assert len(minted) >= 2
++    assert captured[0]["authorization"] != captured[1]["authorization"]
++    assert captured[1]["authorization"] == "Bearer " + minted[-1]
++    for headers in captured:
++        assert "x-api-key" not in headers and "api-key" not in headers
++        assert "entra-id-bearer-via-http-hook" not in headers["authorization"]
++
++
++@pytest.mark.parametrize("timeout, expected", [(None, 900), (123, 123)])
++def test_real_bedrock_constructor_retains_current_main_timeout(timeout, expected):
++    credentials = {"aws_access_key_id": "synthetic-access", "aws_secret_access_key": "synthetic-secret"}
++    with patch("agent.bedrock_adapter.scoped_aws_session_kwargs", return_value=credentials), \
++         patch("agent.bedrock_adapter.bedrock_guardrail_headers", return_value={}):
++        client = adapter.build_anthropic_bedrock_client("us-east-2", timeout=timeout)
++    try:
++        assert isinstance(client.timeout, httpx2.Timeout)
++        assert (client.timeout.read, client.timeout.connect, client.max_retries) == (expected, 10, 0)
++    finally:
++        client.close()
+diff --git a/uv.lock b/uv.lock
+index 6d341455..dd0d1a10 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -368,11 +368,10 @@ wheels = [
+ [[package]]
+ name = "anthropic"
+-version = "0.125.0"
++version = "1.7.0"
+ source = { registry = "https://pypi.org/simple" }
+ dependencies = [
+     { name = "anyio" },
+-    { name = "distro" },
+     { name = "docstring-parser" },
+-    { name = "httpx" },
++    { name = "httpx2" },
+     { name = "jiter" },
+     { name = "pydantic" },
+@@ -380,7 +379,7 @@ dependencies = [
+     { name = "typing-extensions" },
+ ]
+-sdist = { url = "https://files.pythonhosted.org/packages/62/f8/6f0560884b5363848347bd640b6c1d04abc25e7aa61787a232f790c6b60a/anthropic-0.125.0.tar.gz", hash = "sha256:e0cdd336580cb7411c1cdab69f80973e9bf4bff7f8e08141811d46307d45c682", size = 1112593, upload-time = "2026-08-19T22:00:42.837Z" }
++sdist = { url = "https://files.pythonhosted.org/packages/a4/8b/4210dd090000ba35d07cee9105530794911d955788c3992b4882df49eaac/anthropic-1.7.0.tar.gz", hash = "sha256:0ab1b04668606ba1ae93f6d9e8dcc2e0c4f0debebd4eea4773a3a595f0836db1", size = 1181035, upload-time = "2026-09-18T16:13:05.262Z" }
+ wheels = [
+-    { url = "https://files.pythonhosted.org/packages/2f/1a/b1bd30cda3790557e8791bec5922a6ec8fabb6fa8b008c76a39cf7be6152/anthropic-0.125.0-py3-none-any.whl", hash = "sha256:3486013602eca76d8b12540764e53654f02cf4951110bca86cf06e67428a9f21", size = 1184067, upload-time = "2026-08-19T22:00:44.596Z" },
++    { url = "https://files.pythonhosted.org/packages/c0/dc/74995efda028421917f4caabd24db1373ee0742573a2363fff1a21191441/anthropic-1.7.0-py3-none-any.whl", hash = "sha256:6b681b6ee00f232bb54f50f9a0d6d30e7be368c1b6f754bfd470c8385b8b6058", size = 1255606, upload-time = "2026-09-18T16:13:03.725Z" },
+ ]
+
+@@ -2619,5 +2618,5 @@ requires-dist = [
+     { name = "aiosqlite", marker = "sys_platform == 'linux' and extra == 'matrix'", specifier = "==0.22.1" },
+     { name = "alibabacloud-dingtalk", marker = "extra == 'dingtalk'", specifier = "==2.2.65" },
+-    { name = "anthropic", marker = "extra == 'anthropic'", specifier = "==0.125.0" },
++    { name = "anthropic", marker = "extra == 'anthropic'", specifier = "==1.7.0" },
+     { name = "asyncpg", marker = "sys_platform == 'linux' and extra == 'matrix'", specifier = "==0.32.0" },
+     { name = "azure-identity", marker = "extra == 'azure-identity'", specifier = "==1.26.0" },
+@@ -2791,5 +2790,5 @@ dev = [
+ ]
+ test = [
+-    { name = "anthropic", specifier = "==0.125.0" },
++    { name = "anthropic", specifier = "==1.7.0" },
+     { name = "distlib", marker = "sys_platform == 'win32'", specifier = "==0.4.4" },
+ ]
