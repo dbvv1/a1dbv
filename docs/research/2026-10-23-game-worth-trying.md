@@ -157,3 +157,7 @@
 **LOB 提供了生成文件落盘之后仍须混音的反例。** [官方 devlog](https://zerodev.games/devlog/)记载 v43（2026-08-16）将 AI 生成画面和声音离线保存、自托管，保留原静音控制；同日 v45 把过响的通关声调低，v47 又换通关声。离线交付只解决供给，不证明提示音层级、音色或完整听感已达标；日志未给模型、提示词、成本与处理配方，尚不能复现声音制作链。[一手日志／研究]
 
 以上截至 2026-11-01 UTC 仅完成原文核读；Pawbound 网页可提取到界面文字，Steel Maiden 商店有 demo 入口，均未实玩、未试听、未完整观看实机，不进入首页品质推荐，也不迁移本仓默认管线。
+
+**Robo Open 的可借点是保留生成表面，返工绑定与动作，而不是一看动作差就重新买模型。** 固定源码 `6672cc12` 的[绑定脚本](https://github.com/az9713/gpt-6-astra-tennis-game/blob/6672cc12c63bddddeb4e51d8bc7deea0dde81336/setup/rig_robot_blender.py)将已存 Meshy GLB 归一尺寸，按骨段距离配权并同步重合 UV 缝顶点权重；[导入回执](https://github.com/az9713/gpt-6-astra-tennis-game/blob/6672cc12c63bddddeb4e51d8bc7deea0dde81336/docs/evidence/motion/robot-import.json)记载 16 骨与 idle／run／正手／反手／扣杀／发球六段动画，Unity 场景生成器和 RobotActor 有实际加载与接触帧采样入口。回执是作者记录，本端只静读、未重跑；脚本骨位与姿势针对该机器人的比例，不是任意角色自动绑定器。对无美术用户，可借的是用明确的准备／接触／恢复姿势指导 Agent 改同一资产；仍需人辨认动作与手感问题，作者也保留关节拉伸未修完、辅助导向点并非成熟可拖拽控制 rig 的边界。[源码／研究]
+
+[作者返工过程](https://github.com/az9713/gpt-6-astra-tennis-game/blob/6672cc12c63bddddeb4e51d8bc7deea0dde81336/DEVELOPMENT-JOURNEY-V1.md)还记录自动回合通过后真人仍接不到球，不能以测试数替代可玩性。该树未见仓库级许可，README 也未给生成资产统一授权：仅研究方法，不复制代码或资产。公开比赛录像为 56.5／94.2 秒静音预览，另有 12 秒动作展示；未完成本端实玩、试听或完整实机审看，不升品质推荐或本仓采用。核读于 2026-11-01 UTC；公开 Windows release 仍为 v0.3.0，README 展示的本地 v0.5.1 不等同已发布下载版。
