@@ -1,0 +1,1040 @@
+{
+  "schema_version": 1,
+  "purpose": "Independent cloud consumer verification of existing upstream PR #593; no new implementation or reader-acceptance claim",
+  "observed_utc": "2026-11-01T07:12:11Z",
+  "sources": [
+    {
+      "label": "gitingest-baseline",
+      "commit": "4e259a02fe72115bee538271622f1234a81c8e1a",
+      "tree": "d6b6b5945e5dab869935b3db4971aa18e3e6e0a7",
+      "tracked_files": 125,
+      "archive": "archives/gitingest-baseline.tar.gz",
+      "archive_bytes": 228704,
+      "archive_sha256": "e95a4cb7f1e5876b698eb272c75d567a46ae8bb3c916ed6b000ac5727033b220"
+    },
+    {
+      "label": "gitingest-pr593",
+      "commit": "4859bc41e30833349ab1d3f0decf0003a4c982bc",
+      "tree": "1be1d8458db6b6bf96d4a3eb17da044485a7a43a",
+      "tracked_files": 125,
+      "archive": "archives/gitingest-pr593.tar.gz",
+      "archive_bytes": 229143,
+      "archive_sha256": "d1c4c6ce998a51e30b102a8f1ca4c6c7334e32e228560ce25ebabf8492aa446f"
+    },
+    {
+      "label": "termux-input",
+      "commit": "03964fb52853ed4acc37637e27e74aca76cfa789",
+      "tree": "1fc627fd7411a39f2228409a6fa3a7e24c16acf2",
+      "tracked_files": 10766,
+      "archive": "archives/termux-input.tar.gz",
+      "archive_bytes": 9608775,
+      "archive_sha256": "087a6d515dbaee4e6881ec8bc4c5d641b9cc4e268811b5b216c327f6fc7810f6"
+    }
+  ],
+  "issue": "https://github.com/coderamp-labs/gitingest/issues/585",
+  "existing_pr": "https://github.com/coderamp-labs/gitingest/pull/593",
+  "pr_status": "closed by stale bot, not merged; no new patch or PR created",
+  "python": "3.12.14",
+  "input_symlinks": {
+    "total": 228,
+    "directory_targets": 14,
+    "dangling": 3
+  },
+  "scope": [
+    "Cloud Linux fixed full public Termux repository; no Termux scripts executed",
+    "Fixed trial file-size ceiling 243 KiB; reporter omitted setting. Current Web UI slider position 243 maps to 50 KiB, not 243 KiB; all 16 desired files combined are 18,554 bytes, below either ceiling",
+    "Web matching/ingestion core and public Python API with include_gitignored=True; no WebUI, HTTP route, cache, remote clone through Gitingest, or upload",
+    "Source archive is complete tracked source, not an offline dependency environment",
+    "No model call, token supplied, inherited credential, native Windows or new local reader acceptance",
+    "Only symlink path/target-basename metadata was ingested; target content is not read",
+    "Focused tests only, not whole suite, server sanity check, lint, CI, contribution acceptance or release qualification"
+  ],
+  "metadata_corrections": [
+    "Independent read-only review identified two repository-requested CRLF checkouts, scripts/run-docker.ps1 and scripts/update-docker.ps1; both canonical Git blobs verified",
+    "runs.json separates common environment keys from per-process PYTHONPATH; this corrects metadata, not a new execution",
+    "Source review corrected the initial UI-default inference: 243 is slider position, not KiB. The executed value remains transparently recorded as 243 KiB; no rerun is implied",
+    "run_trial.py is retained exactly as executed; its common-key receipt field was corrected in runs.json to include per-process PYTHONPATH explicitly, without executing again"
+  ],
+  "consumer_runs": {
+    "runs": [
+      {
+        "label": "baseline",
+        "mode": "web-core",
+        "returncode": 0,
+        "command": [
+          "<trial>/.venv/bin/python",
+          "<trial>/run_trial.py",
+          "baseline",
+          "web-core"
+        ],
+        "log_sha256": "c0b44807fafa36f5c01ec7ee2e600373751819b4aff56e646fc77f0fb9167b0d"
+      },
+      {
+        "label": "baseline",
+        "mode": "public-api",
+        "returncode": 0,
+        "command": [
+          "<trial>/.venv/bin/python",
+          "<trial>/run_trial.py",
+          "baseline",
+          "public-api"
+        ],
+        "log_sha256": "56e2dcc79dc5b5590db6e9f1ca329f6b3e9ba4281b21e12be882adbbdca8fc91"
+      },
+      {
+        "label": "candidate",
+        "mode": "web-core",
+        "returncode": 0,
+        "command": [
+          "<trial>/.venv/bin/python",
+          "<trial>/run_trial.py",
+          "candidate",
+          "web-core"
+        ],
+        "log_sha256": "859191b7d4dc5bdcab3c7fbd147263860db7b7812ddf801eaa398148590b30a2"
+      },
+      {
+        "label": "candidate",
+        "mode": "public-api",
+        "returncode": 0,
+        "command": [
+          "<trial>/.venv/bin/python",
+          "<trial>/run_trial.py",
+          "candidate",
+          "public-api"
+        ],
+        "log_sha256": "127d8809aff2adda0bb64c716d7997ceba48a8065e2b8b8f56bfaa5cfd09bc1a"
+      }
+    ],
+    "common_environment_keys": [
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "PATH",
+      "PYTHONDONTWRITEBYTECODE",
+      "PYTHONIOENCODING",
+      "TIKTOKEN_CACHE_DIR",
+      "TMPDIR"
+    ],
+    "per_process_additions": {
+      "PYTHONPATH": "<selected tool or candidate>/src"
+    }
+  },
+  "consumer_results": {
+    "baseline-public-api": {
+      "label": "baseline",
+      "mode": "public-api",
+      "source": "<trial>/tool/src/gitingest/__init__.py",
+      "elapsed_seconds": 13.79320417100007,
+      "include_pattern": "packages/golang/",
+      "max_file_size_bytes": 248832,
+      "summary": "Directory: <trial>/input\nFiles analyzed: 30\n\nEstimated tokens: 7.4k",
+      "files": [
+        "packages/golang/build.sh",
+        "packages/golang/golang-doc.subpackage.sh",
+        "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+        "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+        "packages/golang/src-crypto-x509-root_linux.go.patch",
+        "packages/golang/src-os-file_unix.go.patch",
+        "packages/golang/src-runtime-cgo-cgo.go.patch",
+        "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+        "packages/golang/patch-script/fix-android-netlink.diff",
+        "packages/golang/patch-script/fix-android-netlink.sh",
+        "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+        "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+        "packages/golang/patch-script/remove-futex_time64.diff",
+        "packages/golang/patch-script/remove-futex_time64.sh",
+        "packages/golang/patch-script/remove-pidfd.diff",
+        "packages/golang/patch-script/remove-pidfd.sh"
+      ],
+      "symlinks": [
+        "packages/cabal-install/splitmix-patches",
+        "packages/darcs/basement-patches",
+        "packages/darcs/cborg-patches",
+        "packages/darcs/memory-patches",
+        "packages/darcs/splitmix-patches",
+        "packages/git-annex/splitmix-patches",
+        "packages/hledger-ui/splitmix-patches",
+        "packages/pandoc/splitmix-patches",
+        "packages/procps/hsearch",
+        "packages/shellcheck/splitmix-patches",
+        "packages/zig/0.14.1",
+        "packages/zig/0.15.1",
+        "packages/zig/0.15.2",
+        "x11-packages/qemu-system-x86-64/setjmp-aarch64"
+      ],
+      "all_source_checks": [
+        {
+          "path": "packages/golang/build.sh",
+          "sha256": "be8de1d3f77b5eb143f3c97f7ad8065dac1f32e2a704289c550dfdd9b9c47e76",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/golang-doc.subpackage.sh",
+          "sha256": "5ad9c29d4ecb7a2aa5a7e3e75aeb14ef116453568bfd7f509fd3de912ac70caf",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+          "sha256": "220e7d7a926daea4afb62fa09e7f035a92057a543fa385994a1adc667116a880",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+          "sha256": "6f4e462eacd69a9ccacc3b1e342b76e85f6772b9745e6f3b7d3283986e0d550a",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-crypto-x509-root_linux.go.patch",
+          "sha256": "d3fab8742eb8738d4ddf456d66e82aa2a818718192aa96eccc1761df0ceceea5",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-os-file_unix.go.patch",
+          "sha256": "e84a320e022754ca027041b7d85db1189b3d8d47174cea4291126f488acef325",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-runtime-cgo-cgo.go.patch",
+          "sha256": "21aaf7d29e3cd80a88103a478119a9625addc99626257af328034a5624e8ccfc",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+          "sha256": "456795f0e74936dc01667b162d6707da31f0676fbbfd08e2d3a63d0895eb5277",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-android-netlink.diff",
+          "sha256": "aac8f44df4bd06ed1466ba5f0369fac666bb2a60aac8805d8629f2d0cde28c3f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-android-netlink.sh",
+          "sha256": "063935a82e0d236ce1dd892f08dba652cb5bb578ba69db1abca364fb4c494b8f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+          "sha256": "f9379880162bb743b26f7588492932bf5b71c68f8937f7daa8e8f80d02922b15",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+          "sha256": "89cc53b45da1e811ba9151d16402994afa863685a9de73398977e41fd9a20207",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-futex_time64.diff",
+          "sha256": "9360d1a816c7ea3c7532b11e4375c8a969f3256d2efb568764e15653b4757d5f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-futex_time64.sh",
+          "sha256": "2c866fe7aabfc4944014dbeb874c2e13716c22bf08eb3877a32c62ccf7bc86a2",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-pidfd.diff",
+          "sha256": "a673dc274d6dd5ef0fd48fc21b576ca41de19d49832c43afae28f0e3c37c17a2",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-pidfd.sh",
+          "sha256": "018109ef2f8520af12b744203640e0aab849470eb8d393c82d5e622d692e4438",
+          "full_text_preserved": true
+        }
+      ],
+      "content_bytes": 23339,
+      "content_sha256": "2d2ce83b6194814c71f37f05037a15bb8c77d4c2cede154b98aaada94a3b453b",
+      "tree_sha256": "57c61b1b6157492b142f9a9838364b8a64bdbf0bb7dfb2b972e686da723e58dd",
+      "tracked_input_files": 10766,
+      "input_unchanged": true
+    },
+    "baseline-web-core": {
+      "label": "baseline",
+      "mode": "web-core",
+      "source": "<trial>/tool/src/gitingest/__init__.py",
+      "elapsed_seconds": 13.452588490999915,
+      "include_pattern": "packages/golang/",
+      "max_file_size_bytes": 248832,
+      "summary": "Directory: <trial>/input\nFiles analyzed: 30\n\nEstimated tokens: 7.4k",
+      "files": [
+        "packages/golang/build.sh",
+        "packages/golang/golang-doc.subpackage.sh",
+        "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+        "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+        "packages/golang/src-crypto-x509-root_linux.go.patch",
+        "packages/golang/src-os-file_unix.go.patch",
+        "packages/golang/src-runtime-cgo-cgo.go.patch",
+        "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+        "packages/golang/patch-script/fix-android-netlink.diff",
+        "packages/golang/patch-script/fix-android-netlink.sh",
+        "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+        "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+        "packages/golang/patch-script/remove-futex_time64.diff",
+        "packages/golang/patch-script/remove-futex_time64.sh",
+        "packages/golang/patch-script/remove-pidfd.diff",
+        "packages/golang/patch-script/remove-pidfd.sh"
+      ],
+      "symlinks": [
+        "packages/cabal-install/splitmix-patches",
+        "packages/darcs/basement-patches",
+        "packages/darcs/cborg-patches",
+        "packages/darcs/memory-patches",
+        "packages/darcs/splitmix-patches",
+        "packages/git-annex/splitmix-patches",
+        "packages/hledger-ui/splitmix-patches",
+        "packages/pandoc/splitmix-patches",
+        "packages/procps/hsearch",
+        "packages/shellcheck/splitmix-patches",
+        "packages/zig/0.14.1",
+        "packages/zig/0.15.1",
+        "packages/zig/0.15.2",
+        "x11-packages/qemu-system-x86-64/setjmp-aarch64"
+      ],
+      "all_source_checks": [
+        {
+          "path": "packages/golang/build.sh",
+          "sha256": "be8de1d3f77b5eb143f3c97f7ad8065dac1f32e2a704289c550dfdd9b9c47e76",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/golang-doc.subpackage.sh",
+          "sha256": "5ad9c29d4ecb7a2aa5a7e3e75aeb14ef116453568bfd7f509fd3de912ac70caf",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+          "sha256": "220e7d7a926daea4afb62fa09e7f035a92057a543fa385994a1adc667116a880",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+          "sha256": "6f4e462eacd69a9ccacc3b1e342b76e85f6772b9745e6f3b7d3283986e0d550a",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-crypto-x509-root_linux.go.patch",
+          "sha256": "d3fab8742eb8738d4ddf456d66e82aa2a818718192aa96eccc1761df0ceceea5",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-os-file_unix.go.patch",
+          "sha256": "e84a320e022754ca027041b7d85db1189b3d8d47174cea4291126f488acef325",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-runtime-cgo-cgo.go.patch",
+          "sha256": "21aaf7d29e3cd80a88103a478119a9625addc99626257af328034a5624e8ccfc",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+          "sha256": "456795f0e74936dc01667b162d6707da31f0676fbbfd08e2d3a63d0895eb5277",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-android-netlink.diff",
+          "sha256": "aac8f44df4bd06ed1466ba5f0369fac666bb2a60aac8805d8629f2d0cde28c3f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-android-netlink.sh",
+          "sha256": "063935a82e0d236ce1dd892f08dba652cb5bb578ba69db1abca364fb4c494b8f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+          "sha256": "f9379880162bb743b26f7588492932bf5b71c68f8937f7daa8e8f80d02922b15",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+          "sha256": "89cc53b45da1e811ba9151d16402994afa863685a9de73398977e41fd9a20207",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-futex_time64.diff",
+          "sha256": "9360d1a816c7ea3c7532b11e4375c8a969f3256d2efb568764e15653b4757d5f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-futex_time64.sh",
+          "sha256": "2c866fe7aabfc4944014dbeb874c2e13716c22bf08eb3877a32c62ccf7bc86a2",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-pidfd.diff",
+          "sha256": "a673dc274d6dd5ef0fd48fc21b576ca41de19d49832c43afae28f0e3c37c17a2",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-pidfd.sh",
+          "sha256": "018109ef2f8520af12b744203640e0aab849470eb8d393c82d5e622d692e4438",
+          "full_text_preserved": true
+        }
+      ],
+      "content_bytes": 23339,
+      "content_sha256": "2d2ce83b6194814c71f37f05037a15bb8c77d4c2cede154b98aaada94a3b453b",
+      "tree_sha256": "57c61b1b6157492b142f9a9838364b8a64bdbf0bb7dfb2b972e686da723e58dd",
+      "tracked_input_files": 10766,
+      "input_unchanged": true
+    },
+    "candidate-public-api": {
+      "label": "candidate",
+      "mode": "public-api",
+      "source": "<trial>/candidate/src/gitingest/__init__.py",
+      "elapsed_seconds": 14.41521170299984,
+      "include_pattern": "packages/golang/",
+      "max_file_size_bytes": 248832,
+      "summary": "Directory: <trial>/input\nFiles analyzed: 16\n\nEstimated tokens: 6.6k",
+      "files": [
+        "packages/golang/build.sh",
+        "packages/golang/golang-doc.subpackage.sh",
+        "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+        "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+        "packages/golang/src-crypto-x509-root_linux.go.patch",
+        "packages/golang/src-os-file_unix.go.patch",
+        "packages/golang/src-runtime-cgo-cgo.go.patch",
+        "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+        "packages/golang/patch-script/fix-android-netlink.diff",
+        "packages/golang/patch-script/fix-android-netlink.sh",
+        "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+        "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+        "packages/golang/patch-script/remove-futex_time64.diff",
+        "packages/golang/patch-script/remove-futex_time64.sh",
+        "packages/golang/patch-script/remove-pidfd.diff",
+        "packages/golang/patch-script/remove-pidfd.sh"
+      ],
+      "symlinks": [],
+      "all_source_checks": [
+        {
+          "path": "packages/golang/build.sh",
+          "sha256": "be8de1d3f77b5eb143f3c97f7ad8065dac1f32e2a704289c550dfdd9b9c47e76",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/golang-doc.subpackage.sh",
+          "sha256": "5ad9c29d4ecb7a2aa5a7e3e75aeb14ef116453568bfd7f509fd3de912ac70caf",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+          "sha256": "220e7d7a926daea4afb62fa09e7f035a92057a543fa385994a1adc667116a880",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+          "sha256": "6f4e462eacd69a9ccacc3b1e342b76e85f6772b9745e6f3b7d3283986e0d550a",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-crypto-x509-root_linux.go.patch",
+          "sha256": "d3fab8742eb8738d4ddf456d66e82aa2a818718192aa96eccc1761df0ceceea5",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-os-file_unix.go.patch",
+          "sha256": "e84a320e022754ca027041b7d85db1189b3d8d47174cea4291126f488acef325",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-runtime-cgo-cgo.go.patch",
+          "sha256": "21aaf7d29e3cd80a88103a478119a9625addc99626257af328034a5624e8ccfc",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+          "sha256": "456795f0e74936dc01667b162d6707da31f0676fbbfd08e2d3a63d0895eb5277",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-android-netlink.diff",
+          "sha256": "aac8f44df4bd06ed1466ba5f0369fac666bb2a60aac8805d8629f2d0cde28c3f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-android-netlink.sh",
+          "sha256": "063935a82e0d236ce1dd892f08dba652cb5bb578ba69db1abca364fb4c494b8f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+          "sha256": "f9379880162bb743b26f7588492932bf5b71c68f8937f7daa8e8f80d02922b15",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+          "sha256": "89cc53b45da1e811ba9151d16402994afa863685a9de73398977e41fd9a20207",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-futex_time64.diff",
+          "sha256": "9360d1a816c7ea3c7532b11e4375c8a969f3256d2efb568764e15653b4757d5f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-futex_time64.sh",
+          "sha256": "2c866fe7aabfc4944014dbeb874c2e13716c22bf08eb3877a32c62ccf7bc86a2",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-pidfd.diff",
+          "sha256": "a673dc274d6dd5ef0fd48fc21b576ca41de19d49832c43afae28f0e3c37c17a2",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-pidfd.sh",
+          "sha256": "018109ef2f8520af12b744203640e0aab849470eb8d393c82d5e622d692e4438",
+          "full_text_preserved": true
+        }
+      ],
+      "content_bytes": 21128,
+      "content_sha256": "2899f0ed8456febb68291183b3d1b93e885e2651329894159e51a17c7a33c8b5",
+      "tree_sha256": "3cea317e62bde6f7f3b3eb7da76f2623fa43dd6ff6cd9f2ecd870d68a9c86973",
+      "tracked_input_files": 10766,
+      "input_unchanged": true
+    },
+    "candidate-web-core": {
+      "label": "candidate",
+      "mode": "web-core",
+      "source": "<trial>/candidate/src/gitingest/__init__.py",
+      "elapsed_seconds": 13.330157572999724,
+      "include_pattern": "packages/golang/",
+      "max_file_size_bytes": 248832,
+      "summary": "Directory: <trial>/input\nFiles analyzed: 16\n\nEstimated tokens: 6.6k",
+      "files": [
+        "packages/golang/build.sh",
+        "packages/golang/golang-doc.subpackage.sh",
+        "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+        "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+        "packages/golang/src-crypto-x509-root_linux.go.patch",
+        "packages/golang/src-os-file_unix.go.patch",
+        "packages/golang/src-runtime-cgo-cgo.go.patch",
+        "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+        "packages/golang/patch-script/fix-android-netlink.diff",
+        "packages/golang/patch-script/fix-android-netlink.sh",
+        "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+        "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+        "packages/golang/patch-script/remove-futex_time64.diff",
+        "packages/golang/patch-script/remove-futex_time64.sh",
+        "packages/golang/patch-script/remove-pidfd.diff",
+        "packages/golang/patch-script/remove-pidfd.sh"
+      ],
+      "symlinks": [],
+      "all_source_checks": [
+        {
+          "path": "packages/golang/build.sh",
+          "sha256": "be8de1d3f77b5eb143f3c97f7ad8065dac1f32e2a704289c550dfdd9b9c47e76",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/golang-doc.subpackage.sh",
+          "sha256": "5ad9c29d4ecb7a2aa5a7e3e75aeb14ef116453568bfd7f509fd3de912ac70caf",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+          "sha256": "220e7d7a926daea4afb62fa09e7f035a92057a543fa385994a1adc667116a880",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+          "sha256": "6f4e462eacd69a9ccacc3b1e342b76e85f6772b9745e6f3b7d3283986e0d550a",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-crypto-x509-root_linux.go.patch",
+          "sha256": "d3fab8742eb8738d4ddf456d66e82aa2a818718192aa96eccc1761df0ceceea5",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-os-file_unix.go.patch",
+          "sha256": "e84a320e022754ca027041b7d85db1189b3d8d47174cea4291126f488acef325",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-runtime-cgo-cgo.go.patch",
+          "sha256": "21aaf7d29e3cd80a88103a478119a9625addc99626257af328034a5624e8ccfc",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+          "sha256": "456795f0e74936dc01667b162d6707da31f0676fbbfd08e2d3a63d0895eb5277",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-android-netlink.diff",
+          "sha256": "aac8f44df4bd06ed1466ba5f0369fac666bb2a60aac8805d8629f2d0cde28c3f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-android-netlink.sh",
+          "sha256": "063935a82e0d236ce1dd892f08dba652cb5bb578ba69db1abca364fb4c494b8f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+          "sha256": "f9379880162bb743b26f7588492932bf5b71c68f8937f7daa8e8f80d02922b15",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+          "sha256": "89cc53b45da1e811ba9151d16402994afa863685a9de73398977e41fd9a20207",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-futex_time64.diff",
+          "sha256": "9360d1a816c7ea3c7532b11e4375c8a969f3256d2efb568764e15653b4757d5f",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-futex_time64.sh",
+          "sha256": "2c866fe7aabfc4944014dbeb874c2e13716c22bf08eb3877a32c62ccf7bc86a2",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-pidfd.diff",
+          "sha256": "a673dc274d6dd5ef0fd48fc21b576ca41de19d49832c43afae28f0e3c37c17a2",
+          "full_text_preserved": true
+        },
+        {
+          "path": "packages/golang/patch-script/remove-pidfd.sh",
+          "sha256": "018109ef2f8520af12b744203640e0aab849470eb8d393c82d5e622d692e4438",
+          "full_text_preserved": true
+        }
+      ],
+      "content_bytes": 21128,
+      "content_sha256": "2899f0ed8456febb68291183b3d1b93e885e2651329894159e51a17c7a33c8b5",
+      "tree_sha256": "3cea317e62bde6f7f3b3eb7da76f2623fa43dd6ff6cd9f2ecd870d68a9c86973",
+      "tracked_input_files": 10766,
+      "input_unchanged": true
+    }
+  },
+  "checks": [
+    {
+      "label": "baseline-focused",
+      "source_directory": "<trial>/tool/src",
+      "cwd": "<trial>/tool",
+      "command": [
+        "<trial>/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "pythonpath=<trial>/tool/src",
+        "-o",
+        "cache_dir=<trial>/pytest-cache/baseline-focused",
+        "tests/test_ingestion.py",
+        "tests/test_pattern_utils.py",
+        "tests/test_gitignore_feature.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "elapsed_seconds": 1.5297039310003129,
+      "log_sha256": "aeb912f89b98673809b8ebc17c075e1a008ce2560e8186d672ab2b1f92686e18",
+      "summary_tail": ".12/site-packages/pathspec/pathspec.py:326: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    patterns = [use_factory(__line) for __line in lines if __line]  # type: ignore[arg-type]\n\ntests/test_ingestion.py: 180 warnings\ntests/test_gitignore_feature.py: 801 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pattern.py:125: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    raw_regex, include = self.pattern_to_regex(pattern)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n13 passed, 1962 warnings in 0.39s\n"
+    },
+    {
+      "label": "candidate-focused",
+      "source_directory": "<trial>/candidate/src",
+      "cwd": "<trial>/candidate",
+      "command": [
+        "<trial>/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "pythonpath=<trial>/candidate/src",
+        "-o",
+        "cache_dir=<trial>/pytest-cache/candidate-focused",
+        "tests/test_ingestion.py",
+        "tests/test_pattern_utils.py",
+        "tests/test_gitignore_feature.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "elapsed_seconds": 1.745444046999637,
+      "log_sha256": "239ff6011ba97bdc19e407615075082489cccf1e8026bb9d89b35239b9aa7975",
+      "summary_tail": ".12/site-packages/pathspec/pathspec.py:326: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    patterns = [use_factory(__line) for __line in lines if __line]  # type: ignore[arg-type]\n\ntests/test_ingestion.py: 235 warnings\ntests/test_gitignore_feature.py: 801 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pattern.py:125: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    raw_regex, include = self.pattern_to_regex(pattern)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n14 passed, 2072 warnings in 0.40s\n"
+    },
+    {
+      "label": "existing-pr-regression-on-baseline",
+      "source_directory": "<trial>/tool/src",
+      "cwd": "<trial>/candidate",
+      "command": [
+        "<trial>/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "pythonpath=<trial>/tool/src",
+        "-o",
+        "cache_dir=<trial>/pytest-cache/existing-pr-regression-on-baseline",
+        "tests/test_ingestion.py::test_include_pattern_excludes_symlink_to_directory"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "elapsed_seconds": 1.617326945000059,
+      "log_sha256": "aef93fc49aa6b8e05c4c01ebe330158e747062b364baf347454d9efa19d0b0bf",
+      "summary_tail": " Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    patterns = [use_factory(__line) for __line in lines if __line]  # type: ignore[arg-type]\n\ntests/test_ingestion.py: 54 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pattern.py:125: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    raw_regex, include = self.pattern_to_regex(pattern)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_ingestion.py::test_include_pattern_excludes_symlink_to_directory\n1 failed, 108 warnings in 0.32s\n"
+    }
+  ],
+  "selected_input_manifest": [
+    {
+      "path": "packages/cabal-install/splitmix-patches",
+      "mode": "120000",
+      "git_blob": "161e180ae138b0575fc7272fca2c5efdfb50a22d",
+      "checkout_blob": "161e180ae138b0575fc7272fca2c5efdfb50a22d",
+      "bytes": 28,
+      "sha256": "73ace6d5980f7d78d5ee221f87bdd55509b92823468131e6b6f536d671401473",
+      "checkout_conversion": null,
+      "target": "../hledger/splitmix-patches/",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/darcs/basement-patches",
+      "mode": "120000",
+      "git_blob": "7b07262e9f29def9b261ed360ef76a93cd973c3a",
+      "checkout_blob": "7b07262e9f29def9b261ed360ef76a93cd973c3a",
+      "bytes": 29,
+      "sha256": "ad9c14ecb0791a0d9d113fc1afb283ec2a307980ecb8ed223ee6167087fd3b7c",
+      "checkout_conversion": null,
+      "target": "../git-annex/basement-patches",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/darcs/cborg-patches",
+      "mode": "120000",
+      "git_blob": "04b53c7966e0896dce34a0ebef62b80cac92cc67",
+      "checkout_blob": "04b53c7966e0896dce34a0ebef62b80cac92cc67",
+      "bytes": 26,
+      "sha256": "0b07e1e9ae5adee24ce20c3560fc3b0bef1efd9f4ba4b7213a72d8ef1e3e0614",
+      "checkout_conversion": null,
+      "target": "../git-annex/cborg-patches",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/darcs/memory-patches",
+      "mode": "120000",
+      "git_blob": "d1e85381f2aa7648055534a93753a64339f867ca",
+      "checkout_blob": "d1e85381f2aa7648055534a93753a64339f867ca",
+      "bytes": 27,
+      "sha256": "70865aeea2c2f72e27a13fea40ea45ae41f6a21b7e066b5989a611f860654767",
+      "checkout_conversion": null,
+      "target": "../git-annex/memory-patches",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/darcs/splitmix-patches",
+      "mode": "120000",
+      "git_blob": "8ce1d9dbfcc2f5c486236a22dcf8cc9210bd4cd0",
+      "checkout_blob": "8ce1d9dbfcc2f5c486236a22dcf8cc9210bd4cd0",
+      "bytes": 27,
+      "sha256": "e85f6baf5fb1cb6a0f3fde3b915851c03c5e0275e68b9c415910546843c9f432",
+      "checkout_conversion": null,
+      "target": "../hledger/splitmix-patches",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/git-annex/splitmix-patches",
+      "mode": "120000",
+      "git_blob": "8ce1d9dbfcc2f5c486236a22dcf8cc9210bd4cd0",
+      "checkout_blob": "8ce1d9dbfcc2f5c486236a22dcf8cc9210bd4cd0",
+      "bytes": 27,
+      "sha256": "e85f6baf5fb1cb6a0f3fde3b915851c03c5e0275e68b9c415910546843c9f432",
+      "checkout_conversion": null,
+      "target": "../hledger/splitmix-patches",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/golang/build.sh",
+      "mode": "100644",
+      "git_blob": "a83b9bbd0352678bde9ce2c1c2aa59706138b324",
+      "checkout_blob": "a83b9bbd0352678bde9ce2c1c2aa59706138b324",
+      "bytes": 2422,
+      "sha256": "be8de1d3f77b5eb143f3c97f7ad8065dac1f32e2a704289c550dfdd9b9c47e76",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/golang-doc.subpackage.sh",
+      "mode": "100644",
+      "git_blob": "20b65d15a335c8ade8a8cdf2bd27445c663f2f41",
+      "checkout_blob": "20b65d15a335c8ade8a8cdf2bd27445c663f2f41",
+      "bytes": 103,
+      "sha256": "5ad9c29d4ecb7a2aa5a7e3e75aeb14ef116453568bfd7f509fd3de912ac70caf",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/patch-script/fix-android-netlink.diff",
+      "mode": "100644",
+      "git_blob": "9b3b704bc28b5f48e62bac1c847e11c6ca1a69a4",
+      "checkout_blob": "9b3b704bc28b5f48e62bac1c847e11c6ca1a69a4",
+      "bytes": 6166,
+      "sha256": "aac8f44df4bd06ed1466ba5f0369fac666bb2a60aac8805d8629f2d0cde28c3f",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/patch-script/fix-android-netlink.sh",
+      "mode": "100644",
+      "git_blob": "bbb575bf224b80b22052213105b9258145107a04",
+      "checkout_blob": "bbb575bf224b80b22052213105b9258145107a04",
+      "bytes": 428,
+      "sha256": "063935a82e0d236ce1dd892f08dba652cb5bb578ba69db1abca364fb4c494b8f",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff",
+      "mode": "100644",
+      "git_blob": "8f2d0b211b4d91a1c579448c03e497f08b9e42e9",
+      "checkout_blob": "8f2d0b211b4d91a1c579448c03e497f08b9e42e9",
+      "bytes": 2316,
+      "sha256": "f9379880162bb743b26f7588492932bf5b71c68f8937f7daa8e8f80d02922b15",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh",
+      "mode": "100644",
+      "git_blob": "29d390df98dfb7f6169fe8b730e1fa979cf6bcf1",
+      "checkout_blob": "29d390df98dfb7f6169fe8b730e1fa979cf6bcf1",
+      "bytes": 410,
+      "sha256": "89cc53b45da1e811ba9151d16402994afa863685a9de73398977e41fd9a20207",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/patch-script/remove-futex_time64.diff",
+      "mode": "100644",
+      "git_blob": "6909f4e44eee91d581bbb30131ef86e2d2e69643",
+      "checkout_blob": "6909f4e44eee91d581bbb30131ef86e2d2e69643",
+      "bytes": 613,
+      "sha256": "9360d1a816c7ea3c7532b11e4375c8a969f3256d2efb568764e15653b4757d5f",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/patch-script/remove-futex_time64.sh",
+      "mode": "100644",
+      "git_blob": "fc771477c48458f8d083032439da9fb8c9e54ee9",
+      "checkout_blob": "fc771477c48458f8d083032439da9fb8c9e54ee9",
+      "bytes": 144,
+      "sha256": "2c866fe7aabfc4944014dbeb874c2e13716c22bf08eb3877a32c62ccf7bc86a2",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/patch-script/remove-pidfd.diff",
+      "mode": "100644",
+      "git_blob": "386e8f3ee34ec849123f76a19b5273f955f292d8",
+      "checkout_blob": "386e8f3ee34ec849123f76a19b5273f955f292d8",
+      "bytes": 2768,
+      "sha256": "a673dc274d6dd5ef0fd48fc21b576ca41de19d49832c43afae28f0e3c37c17a2",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/patch-script/remove-pidfd.sh",
+      "mode": "100644",
+      "git_blob": "bc40d382aab6f077b3547e648c9e645a66b968e0",
+      "checkout_blob": "bc40d382aab6f077b3547e648c9e645a66b968e0",
+      "bytes": 137,
+      "sha256": "018109ef2f8520af12b744203640e0aab849470eb8d393c82d5e622d692e4438",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch",
+      "mode": "100644",
+      "git_blob": "060d0ef5da1df22647e038d5cec58cb02f69b94e",
+      "checkout_blob": "060d0ef5da1df22647e038d5cec58cb02f69b94e",
+      "bytes": 585,
+      "sha256": "220e7d7a926daea4afb62fa09e7f035a92057a543fa385994a1adc667116a880",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch",
+      "mode": "100644",
+      "git_blob": "6364a9166fca4fc3090de42e4987d42cce60762f",
+      "checkout_blob": "6364a9166fca4fc3090de42e4987d42cce60762f",
+      "bytes": 528,
+      "sha256": "6f4e462eacd69a9ccacc3b1e342b76e85f6772b9745e6f3b7d3283986e0d550a",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/src-crypto-x509-root_linux.go.patch",
+      "mode": "100644",
+      "git_blob": "5fbc9dcabbb3358e57120935a337c52f129162d9",
+      "checkout_blob": "5fbc9dcabbb3358e57120935a337c52f129162d9",
+      "bytes": 619,
+      "sha256": "d3fab8742eb8738d4ddf456d66e82aa2a818718192aa96eccc1761df0ceceea5",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/src-os-file_unix.go.patch",
+      "mode": "100644",
+      "git_blob": "f9069c9b68ef339731631592a74edc28f8a0afb3",
+      "checkout_blob": "f9069c9b68ef339731631592a74edc28f8a0afb3",
+      "bytes": 381,
+      "sha256": "e84a320e022754ca027041b7d85db1189b3d8d47174cea4291126f488acef325",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/src-runtime-cgo-cgo.go.patch",
+      "mode": "100644",
+      "git_blob": "30bfce272f1f070a67cc89e874129adab9c27591",
+      "checkout_blob": "30bfce272f1f070a67cc89e874129adab9c27591",
+      "bytes": 473,
+      "sha256": "21aaf7d29e3cd80a88103a478119a9625addc99626257af328034a5624e8ccfc",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/golang/src-runtime-cgo-gcc_fatalf.c.patch",
+      "mode": "100644",
+      "git_blob": "e3ad3b65a041b1420aa4426994962c8414e46e09",
+      "checkout_blob": "e3ad3b65a041b1420aa4426994962c8414e46e09",
+      "bytes": 461,
+      "sha256": "456795f0e74936dc01667b162d6707da31f0676fbbfd08e2d3a63d0895eb5277",
+      "checkout_conversion": null
+    },
+    {
+      "path": "packages/hledger-ui/splitmix-patches",
+      "mode": "120000",
+      "git_blob": "161e180ae138b0575fc7272fca2c5efdfb50a22d",
+      "checkout_blob": "161e180ae138b0575fc7272fca2c5efdfb50a22d",
+      "bytes": 28,
+      "sha256": "73ace6d5980f7d78d5ee221f87bdd55509b92823468131e6b6f536d671401473",
+      "checkout_conversion": null,
+      "target": "../hledger/splitmix-patches/",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/pandoc/splitmix-patches",
+      "mode": "120000",
+      "git_blob": "161e180ae138b0575fc7272fca2c5efdfb50a22d",
+      "checkout_blob": "161e180ae138b0575fc7272fca2c5efdfb50a22d",
+      "bytes": 28,
+      "sha256": "73ace6d5980f7d78d5ee221f87bdd55509b92823468131e6b6f536d671401473",
+      "checkout_conversion": null,
+      "target": "../hledger/splitmix-patches/",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/procps/hsearch",
+      "mode": "120000",
+      "git_blob": "4ec257892a06624510e48cc25808e9bf85f3cc48",
+      "checkout_blob": "4ec257892a06624510e48cc25808e9bf85f3cc48",
+      "bytes": 37,
+      "sha256": "55d933973778abd6c32b6edd3dc3b0aaf4b269b76b70e5183d0c3b3450976b9e",
+      "checkout_conversion": null,
+      "target": "../../root-packages/arp-scan/hsearch/",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/shellcheck/splitmix-patches",
+      "mode": "120000",
+      "git_blob": "8ce1d9dbfcc2f5c486236a22dcf8cc9210bd4cd0",
+      "checkout_blob": "8ce1d9dbfcc2f5c486236a22dcf8cc9210bd4cd0",
+      "bytes": 27,
+      "sha256": "e85f6baf5fb1cb6a0f3fde3b915851c03c5e0275e68b9c415910546843c9f432",
+      "checkout_conversion": null,
+      "target": "../hledger/splitmix-patches",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/zig/0.14.1",
+      "mode": "120000",
+      "git_blob": "0548fb4e9b2f22de01ed7f8dbe07fc0829ca5abc",
+      "checkout_blob": "0548fb4e9b2f22de01ed7f8dbe07fc0829ca5abc",
+      "bytes": 6,
+      "sha256": "514f2a7b05a1ef2ad45a3b4321cf452aee6fe7b50d0be86fd33ffe9a1990db1d",
+      "checkout_conversion": null,
+      "target": "0.14.0",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/zig/0.15.1",
+      "mode": "120000",
+      "git_blob": "0548fb4e9b2f22de01ed7f8dbe07fc0829ca5abc",
+      "checkout_blob": "0548fb4e9b2f22de01ed7f8dbe07fc0829ca5abc",
+      "bytes": 6,
+      "sha256": "514f2a7b05a1ef2ad45a3b4321cf452aee6fe7b50d0be86fd33ffe9a1990db1d",
+      "checkout_conversion": null,
+      "target": "0.14.0",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "packages/zig/0.15.2",
+      "mode": "120000",
+      "git_blob": "0548fb4e9b2f22de01ed7f8dbe07fc0829ca5abc",
+      "checkout_blob": "0548fb4e9b2f22de01ed7f8dbe07fc0829ca5abc",
+      "bytes": 6,
+      "sha256": "514f2a7b05a1ef2ad45a3b4321cf452aee6fe7b50d0be86fd33ffe9a1990db1d",
+      "checkout_conversion": null,
+      "target": "0.14.0",
+      "target_exists": true,
+      "target_is_directory": true
+    },
+    {
+      "path": "x11-packages/qemu-system-x86-64/setjmp-aarch64",
+      "mode": "120000",
+      "git_blob": "3c94ec85c11e108acd4b3e999f6ed09dd1845528",
+      "checkout_blob": "3c94ec85c11e108acd4b3e999f6ed09dd1845528",
+      "bytes": 58,
+      "sha256": "5843855a10598c700c127054174c554f95af35d4eb158f3a9a12559422929bdb",
+      "checkout_conversion": null,
+      "target": "../../packages/qemu-system-x86-64-headless/setjmp-aarch64/",
+      "target_exists": true,
+      "target_is_directory": true
+    }
+  ],
+  "logs": {
+    "baseline-focused.log": {
+      "sha256": "aeb912f89b98673809b8ebc17c075e1a008ce2560e8186d672ab2b1f92686e18",
+      "text": ".............                                                            [100%]\n=============================== warnings summary ===============================\ntests/test_ingestion.py: 180 warnings\ntests/test_gitignore_feature.py: 801 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pathspec.py:326: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    patterns = [use_factory(__line) for __line in lines if __line]  # type: ignore[arg-type]\n\ntests/test_ingestion.py: 180 warnings\ntests/test_gitignore_feature.py: 801 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pattern.py:125: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    raw_regex, include = self.pattern_to_regex(pattern)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n13 passed, 1962 warnings in 0.39s\n"
+    },
+    "baseline-public-api.log": {
+      "sha256": "56e2dcc79dc5b5590db6e9f1ca329f6b3e9ba4281b21e12be882adbbdca8fc91",
+      "text": "{\"label\": \"baseline\", \"mode\": \"public-api\", \"elapsed_seconds\": 13.79320417100007, \"files\": [\"packages/golang/build.sh\", \"packages/golang/golang-doc.subpackage.sh\", \"packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch\", \"packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch\", \"packages/golang/src-crypto-x509-root_linux.go.patch\", \"packages/golang/src-os-file_unix.go.patch\", \"packages/golang/src-runtime-cgo-cgo.go.patch\", \"packages/golang/src-runtime-cgo-gcc_fatalf.c.patch\", \"packages/golang/patch-script/fix-android-netlink.diff\", \"packages/golang/patch-script/fix-android-netlink.sh\", \"packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff\", \"packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh\", \"packages/golang/patch-script/remove-futex_time64.diff\", \"packages/golang/patch-script/remove-futex_time64.sh\", \"packages/golang/patch-script/remove-pidfd.diff\", \"packages/golang/patch-script/remove-pidfd.sh\"], \"symlinks\": [\"packages/cabal-install/splitmix-patches\", \"packages/darcs/basement-patches\", \"packages/darcs/cborg-patches\", \"packages/darcs/memory-patches\", \"packages/darcs/splitmix-patches\", \"packages/git-annex/splitmix-patches\", \"packages/hledger-ui/splitmix-patches\", \"packages/pandoc/splitmix-patches\", \"packages/procps/hsearch\", \"packages/shellcheck/splitmix-patches\", \"packages/zig/0.14.1\", \"packages/zig/0.15.1\", \"packages/zig/0.15.2\", \"x11-packages/qemu-system-x86-64/setjmp-aarch64\"], \"input_unchanged\": true}\n2026-11-01 00:10:36.804 | INFO     | gitingest.entrypoint:ingest_async:89 | Starting ingestion process | {\"source\":\"<trial>/input\"}\n2026-11-01 00:10:36.805 | INFO     | gitingest.entrypoint:ingest_async:105 | Processing local directory | {\"source\":\"<trial>/input\"}\n2026-11-01 00:10:36.806 | INFO     | gitingest.entrypoint:ingest_async:134 | Starting local directory processing\n2026-11-01 00:10:36.806 | INFO     | gitingest.entrypoint:ingest_async:140 | Processing files and generating output\n2026-11-01 00:10:36.806 | INFO     | gitingest.ingestion:ingest_query:44 | Starting file ingestion | {\"slug\":\"<trial>/input\",\"subpath\":\"/\",\"local_path\":\"<trial>/input\",\"max_file_size\":248832}\n2026-11-01 00:10:36.806 | INFO     | gitingest.ingestion:ingest_query:96 | Processing directory | {\"directory_path\":\"<trial>/input\"}\n2026-11-01 00:10:50.353 | INFO     | gitingest.ingestion:ingest_query:109 | Directory processing completed | {\"total_files\":30,\"total_directories\":13,\"total_size_bytes\":18554,\"stats_total_files\":30,\"stats_total_size\":18554}\n2026-11-01 00:10:50.596 | INFO     | gitingest.entrypoint:ingest_async:147 | Ingestion completed successfully\n"
+    },
+    "baseline-web-core.log": {
+      "sha256": "c0b44807fafa36f5c01ec7ee2e600373751819b4aff56e646fc77f0fb9167b0d",
+      "text": "{\"label\": \"baseline\", \"mode\": \"web-core\", \"elapsed_seconds\": 13.452588490999915, \"files\": [\"packages/golang/build.sh\", \"packages/golang/golang-doc.subpackage.sh\", \"packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch\", \"packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch\", \"packages/golang/src-crypto-x509-root_linux.go.patch\", \"packages/golang/src-os-file_unix.go.patch\", \"packages/golang/src-runtime-cgo-cgo.go.patch\", \"packages/golang/src-runtime-cgo-gcc_fatalf.c.patch\", \"packages/golang/patch-script/fix-android-netlink.diff\", \"packages/golang/patch-script/fix-android-netlink.sh\", \"packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff\", \"packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh\", \"packages/golang/patch-script/remove-futex_time64.diff\", \"packages/golang/patch-script/remove-futex_time64.sh\", \"packages/golang/patch-script/remove-pidfd.diff\", \"packages/golang/patch-script/remove-pidfd.sh\"], \"symlinks\": [\"packages/cabal-install/splitmix-patches\", \"packages/darcs/basement-patches\", \"packages/darcs/cborg-patches\", \"packages/darcs/memory-patches\", \"packages/darcs/splitmix-patches\", \"packages/git-annex/splitmix-patches\", \"packages/hledger-ui/splitmix-patches\", \"packages/pandoc/splitmix-patches\", \"packages/procps/hsearch\", \"packages/shellcheck/splitmix-patches\", \"packages/zig/0.14.1\", \"packages/zig/0.15.1\", \"packages/zig/0.15.2\", \"x11-packages/qemu-system-x86-64/setjmp-aarch64\"], \"input_unchanged\": true}\n2026-11-01 00:10:22.181 | INFO     | gitingest.ingestion:ingest_query:44 | Starting file ingestion | {\"slug\":\"<trial>/input\",\"subpath\":\"/\",\"local_path\":\"<trial>/input\",\"max_file_size\":248832}\n2026-11-01 00:10:22.181 | INFO     | gitingest.ingestion:ingest_query:96 | Processing directory | {\"directory_path\":\"<trial>/input\"}\n2026-11-01 00:10:35.408 | INFO     | gitingest.ingestion:ingest_query:109 | Directory processing completed | {\"total_files\":30,\"total_directories\":13,\"total_size_bytes\":18554,\"stats_total_files\":30,\"stats_total_size\":18554}\n"
+    },
+    "candidate-focused.log": {
+      "sha256": "239ff6011ba97bdc19e407615075082489cccf1e8026bb9d89b35239b9aa7975",
+      "text": "..............                                                           [100%]\n=============================== warnings summary ===============================\ntests/test_ingestion.py: 235 warnings\ntests/test_gitignore_feature.py: 801 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pathspec.py:326: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    patterns = [use_factory(__line) for __line in lines if __line]  # type: ignore[arg-type]\n\ntests/test_ingestion.py: 235 warnings\ntests/test_gitignore_feature.py: 801 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pattern.py:125: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    raw_regex, include = self.pattern_to_regex(pattern)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n14 passed, 2072 warnings in 0.40s\n"
+    },
+    "candidate-public-api.log": {
+      "sha256": "127d8809aff2adda0bb64c716d7997ceba48a8065e2b8b8f56bfaa5cfd09bc1a",
+      "text": "{\"label\": \"candidate\", \"mode\": \"public-api\", \"elapsed_seconds\": 14.41521170299984, \"files\": [\"packages/golang/build.sh\", \"packages/golang/golang-doc.subpackage.sh\", \"packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch\", \"packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch\", \"packages/golang/src-crypto-x509-root_linux.go.patch\", \"packages/golang/src-os-file_unix.go.patch\", \"packages/golang/src-runtime-cgo-cgo.go.patch\", \"packages/golang/src-runtime-cgo-gcc_fatalf.c.patch\", \"packages/golang/patch-script/fix-android-netlink.diff\", \"packages/golang/patch-script/fix-android-netlink.sh\", \"packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff\", \"packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh\", \"packages/golang/patch-script/remove-futex_time64.diff\", \"packages/golang/patch-script/remove-futex_time64.sh\", \"packages/golang/patch-script/remove-pidfd.diff\", \"packages/golang/patch-script/remove-pidfd.sh\"], \"symlinks\": [], \"input_unchanged\": true}\n2026-11-01 00:11:06.131 | INFO     | gitingest.entrypoint:ingest_async:89 | Starting ingestion process | {\"source\":\"<trial>/input\"}\n2026-11-01 00:11:06.131 | INFO     | gitingest.entrypoint:ingest_async:105 | Processing local directory | {\"source\":\"<trial>/input\"}\n2026-11-01 00:11:06.132 | INFO     | gitingest.entrypoint:ingest_async:134 | Starting local directory processing\n2026-11-01 00:11:06.132 | INFO     | gitingest.entrypoint:ingest_async:140 | Processing files and generating output\n2026-11-01 00:11:06.132 | INFO     | gitingest.ingestion:ingest_query:44 | Starting file ingestion | {\"slug\":\"<trial>/input\",\"subpath\":\"/\",\"local_path\":\"<trial>/input\",\"max_file_size\":248832}\n2026-11-01 00:11:06.132 | INFO     | gitingest.ingestion:ingest_query:96 | Processing directory | {\"directory_path\":\"<trial>/input\"}\n2026-11-01 00:11:20.327 | INFO     | gitingest.ingestion:ingest_query:109 | Directory processing completed | {\"total_files\":16,\"total_directories\":3,\"total_size_bytes\":18554,\"stats_total_files\":16,\"stats_total_size\":18554}\n2026-11-01 00:11:20.545 | INFO     | gitingest.entrypoint:ingest_async:147 | Ingestion completed successfully\n"
+    },
+    "candidate-web-core.log": {
+      "sha256": "859191b7d4dc5bdcab3c7fbd147263860db7b7812ddf801eaa398148590b30a2",
+      "text": "{\"label\": \"candidate\", \"mode\": \"web-core\", \"elapsed_seconds\": 13.330157572999724, \"files\": [\"packages/golang/build.sh\", \"packages/golang/golang-doc.subpackage.sh\", \"packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_fcntl.go.patch\", \"packages/golang/src-cmd-go-internal-lockedfile-internal-filelock-filelock_unix.go.patch\", \"packages/golang/src-crypto-x509-root_linux.go.patch\", \"packages/golang/src-os-file_unix.go.patch\", \"packages/golang/src-runtime-cgo-cgo.go.patch\", \"packages/golang/src-runtime-cgo-gcc_fatalf.c.patch\", \"packages/golang/patch-script/fix-android-netlink.diff\", \"packages/golang/patch-script/fix-android-netlink.sh\", \"packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.diff\", \"packages/golang/patch-script/fix-hardcoded-etc-resolv-conf.sh\", \"packages/golang/patch-script/remove-futex_time64.diff\", \"packages/golang/patch-script/remove-futex_time64.sh\", \"packages/golang/patch-script/remove-pidfd.diff\", \"packages/golang/patch-script/remove-pidfd.sh\"], \"symlinks\": [], \"input_unchanged\": true}\n2026-11-01 00:10:51.710 | INFO     | gitingest.ingestion:ingest_query:44 | Starting file ingestion | {\"slug\":\"<trial>/input\",\"subpath\":\"/\",\"local_path\":\"<trial>/input\",\"max_file_size\":248832}\n2026-11-01 00:10:51.710 | INFO     | gitingest.ingestion:ingest_query:96 | Processing directory | {\"directory_path\":\"<trial>/input\"}\n2026-11-01 00:11:04.809 | INFO     | gitingest.ingestion:ingest_query:109 | Directory processing completed | {\"total_files\":16,\"total_directories\":3,\"total_size_bytes\":18554,\"stats_total_files\":16,\"stats_total_size\":18554}\n"
+    },
+    "existing-pr-regression-on-baseline.log": {
+      "sha256": "aef93fc49aa6b8e05c4c01ebe330158e747062b364baf347454d9efa19d0b0bf",
+      "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______________ test_include_pattern_excludes_symlink_to_directory ______________\n\ntemp_directory = PosixPath('<trial>/tmp/pytest-of-agent/pytest-2/test_include_pattern_excludes_0/test_repo')\nsample_query = IngestionQuery(host=None, user_name='test_user', repo_name='test_repo', local_path=PosixPath('<trial-prefix>...nore_patterns={'*.pyc', '.git', '__pycache__'}, include_patterns={'real_dir/*'}, include_submodules=False, s3_url=None)\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f8b9556f0b0>\n\n    def test_include_pattern_excludes_symlink_to_directory(\n        temp_directory: Path,\n        sample_query: IngestionQuery,\n        monkeypatch: pytest.MonkeyPatch,\n    ) -> None:\n        \"\"\"Verify directory symlinks are filtered by include patterns.\"\"\"\n        real_dir = temp_directory / \"real_dir\"\n        real_dir.mkdir()\n        (real_dir / \"real_file.txt\").write_text(\"real content\")\n    \n        symlink_path = temp_directory / \"should_exclude_me\"\n        try:\n            symlink_path.symlink_to(real_dir, target_is_directory=True)\n        except (NotImplementedError, OSError):\n            symlink_path.mkdir()\n            # Fall back to simulating a directory symlink on platforms that require symlink privileges.\n            original_is_symlink = type(symlink_path).is_symlink\n    \n            def fake_is_symlink(self: Path) -> bool:\n                return self == symlink_path or original_is_symlink(self)\n    \n            original_readlink = output_formatter.readlink\n    \n            def fake_readlink(path: Path) -> Path:\n                if path == symlink_path:\n                    return real_dir\n                return original_readlink(path)\n    \n            monkeypatch.setattr(type(symlink_path), \"is_symlink\", fake_is_symlink)\n            monkeypatch.setattr(output_formatter, \"readlink\", fake_readlink)\n            monkeypatch.setattr(filesystem, \"readlink\", fake_readlink)\n    \n        sample_query.local_path = temp_directory\n        sample_query.subpath = \"/\"\n        sample_query.type = None\n        sample_query.include_patterns = {\"real_dir/*\"}\n    \n        _, structure, content = ingest_query(sample_query)\n    \n>       assert \"should_exclude_me\" not in structure\nE       AssertionError: assert 'should_exclude_me' not in 'Directory s...> real_dir\\n'\nE         \nE         'should_exclude_me' is contained here:\nE           t\nE               └── should_exclude_me -> real_dir\n\ntests/test_ingestion.py:279: AssertionError\n----------------------------- Captured stderr call -----------------------------\n2026-11-01 07:11:11.612 | INFO     | gitingest.ingestion:ingest_query:44 | Starting file ingestion | {\"slug\":\"test_user/test_repo\",\"subpath\":\"/\",\"local_path\":\"<trial>/tmp/pytest-of-agent/pytest-2/test_include_pattern_excludes_0/test_repo\",\"max_file_size\":1000000}\n2026-11-01 07:11:11.612 | INFO     | gitingest.ingestion:ingest_query:96 | Processing directory | {\"directory_path\":\"<trial>/tmp/pytest-of-agent/pytest-2/test_include_pattern_excludes_0/test_repo\"}\n2026-11-01 07:11:11.619 | INFO     | gitingest.ingestion:ingest_query:109 | Directory processing completed | {\"total_files\":2,\"total_directories\":1,\"total_size_bytes\":12,\"stats_total_files\":2,\"stats_total_size\":12}\n=============================== warnings summary ===============================\ntests/test_ingestion.py: 54 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pathspec.py:326: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    patterns = [use_factory(__line) for __line in lines if __line]  # type: ignore[arg-type]\n\ntests/test_ingestion.py: 54 warnings\n  <trial>/.venv/lib/python3.12/site-packages/pathspec/pattern.py:125: DeprecationWarning: GitWildMatchPattern ('gitwildmatch') is deprecated. Use 'gitignore' for GitIgnoreBasicPattern or GitIgnoreSpecPattern instead.\n    raw_regex, include = self.pattern_to_regex(pattern)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_ingestion.py::test_include_pattern_excludes_symlink_to_directory\n1 failed, 108 warnings in 0.32s\n"
+    }
+  },
+  "dependencies": "annotated-types==0.8.0\nanyio==4.15.1\ncertifi==2026.10.23\ncfgv==3.5.0\ncharset-normalizer==3.5.2\nclick==8.5.0\ndistlib==0.4.4\neval-type-backport==0.4.0\nfilelock==4.2.6\ngitdb==4.0.12\n-e file://<trial>/tool\ngitpython==3.2.1\nh11==0.16.0\nhttpcore==1.0.9\nhttpx==0.28.1\nidentify==2.6.20\nidna==3.20\niniconfig==2.3.1\nloguru==0.7.3\nnodeenv==1.12.0\npackaging==26.3\npathspec==1.1.1\nplatformdirs==4.14.2\npluggy==1.7.0\npre-commit==4.7.0\npydantic==2.14.2\npydantic-core==2.50.2\npygments==2.21.0\npytest==9.2.0\npytest-asyncio==1.4.1\npytest-mock==3.17.0\npython-discovery==1.9.0\npython-dotenv==1.2.4\npyyaml==6.0.3\nregex==2026.9.29\nrequests==2.34.2\nsmmap==5.0.3\nstarlette==1.10.0\ntiktoken==0.14.0\ntyping-extensions==4.16.0\ntyping-inspection==0.4.4\nurllib3==2.8.0\nvirtualenv==21.15.2\n",
+  "original_artifact_sha256": {
+    "receipt.json": "a0557ffc71d9f3b18f86b43ec172e206a77b12e2bacae1768d2a9ebe90bfceb1",
+    "runs.json": "5e0f7943b12a6d9684a6b93cc8c068aa42496a486024f0d2f8eed50e65c8a0d6",
+    "checks.json": "3ea0a66e3f3ff6e058b64b1ec48d60fcec41df2fe84d4dd5d28aa5f58789914b",
+    "input-manifest.json": "190e315a64ebebb434810200662a777484d0f6a22d532fdd46c315ffe1130edc",
+    "run_trial.py": "12aedb3b3dc8418384954cf966f8aae6d0a07a449997ee909f3768b24f7435bf",
+    "run_checks.py": "d35776456384605e8ca83adf71ea0256df40b9ed039300276fa42078cbeb4373"
+  },
+  "archive_availability": "The listed complete source archives and raw input manifest are retained in the current cloud workspace, not uploaded or guaranteed durable. Public upstream commit/tree identities above are authoritative. No dependency environment is included.",
+  "public_projection": "Trial path prefixes, their slashless slug form, the pytest-truncated trial prefix and default cache path are replaced by labeled placeholders. Source/result hashes refer to original files; no assertions or outcomes changed.",
+  "clock_note": "Consumer log timestamps lack a UTC offset and use the executor local clock; observed_utc is a separate UTC observation. Do not interpret every log timestamp as UTC. Focused test launcher explicitly set TZ=UTC."
+}
