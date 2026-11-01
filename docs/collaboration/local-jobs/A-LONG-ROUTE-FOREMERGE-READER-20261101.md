@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-FOREMERGE-READER-20261101 · 接回真实已返回结果
 id: A-LONG-ROUTE-FOREMERGE-READER-20261101
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0004f093a86d277aebeb2f8eee4590d5e8b9c46f
