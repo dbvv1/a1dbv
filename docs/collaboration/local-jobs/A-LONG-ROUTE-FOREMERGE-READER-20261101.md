@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-FOREMERGE-READER-20261101 · 接回真实已返回结果
 id: A-LONG-ROUTE-FOREMERGE-READER-20261101
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0004f093a86d277aebeb2f8eee4590d5e8b9c46f
@@ -29,4 +29,9 @@ page: docs/decisions/long-tasks.md@0004f093a86d277aebeb2f8eee4590d5e8b9c46f
 按 reader-test 原流程做非作者结果核查：核实际结果与证据，不靠读者自报；有遗漏保留未通过，不自动再派新盲读。跑适用 check_repo、check_public、提交身份与空白检查，回固定提交供负责人本轮接收。单次最多两小时，阻塞保留具体动作、原因和恢复条件。
 
 ## 当前结果
-待既定接收周期领取。页面与实验均未参与的新读者才能执行；本文状态不能证明实际运行或完成。
+
+- reader-test 单轮观察完成，内容层结论成立：Foremerge 0.6.0 对实际落地 c735c8ed 按内容核为 COMMITTED（integration.method=content，2 路径），0.5.1 对同一落地返回 TARGET_DIVERGED 属假阴性；页面全文与 docs/decisions/long-tasks.md@0004f093 逐字节一致。产出 docs/collaboration/local-jobs/artifacts/A-LONG-ROUTE-FOREMERGE-READER-20261101/result.md（101 行）与 reader-tests/A-LONG-ROUTE-FOREMERGE-READER-20261101-u1.md（95 行），均为未跟踪文件；check_repo（643 文件、0 错误）、check_public（1099 文件、0 findings）、git diff --check 通过。taskDone=false（外层禁止提交/推送/切分支，固定提交与 result_branch 交付未完成）。pageStuck 两处轻量缺口：页面未写去哪里核同项结果与当前写者；未给同一工具两版结果不同的现成写法（均不阻塞）。openIssues：替换文案把 0.5.1 与 0.6.0 并列写成两版都识别缺文件，但 0.5.1 实为祖先检查拒绝；新依据行若整段替换会丢 HN/V2EX/linux.do 核读记录；回读事件的远端观测仍来自记录，不能用本地一致性宣称独立验证。未运行验收：hosted CI、完整测试套件、消费者验收、并发多写者案例、候选 53cc161e 对象本体独立复核。未提交、未推送、未切换分支，未改任务文件和页面。
+- 产物：[0d7b82a](https://github.com/dbvv1/a1dbv/commit/0d7b82a98680d485d07d3d218ed630276965c9e1)，分支 `relay/a-long-route-foremerge-reader-20261101`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人处理：在允许提交的环境补固定提交并按 result_branch 交付、核 hosted CI；按 openIssues 修正 inbox 替换文案（区分 0.5.1 祖先拒绝、保留原来源记录、弱化回读独立性表述）；如需把 0.6.0 提升为默认，补真实并发多写者案例与消费者验收。reader-test 不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
