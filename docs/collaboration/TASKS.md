@@ -49,7 +49,7 @@
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 WebGL2：`27a40be`／Site v16，四路 smoke、四机位双重复通过；两非作者仅判小幅改善，正式评分待补。限定授权 `--no-sandbox`；原始 renderer／参数已留存（SwiftShader software），进程 exit 0、端口关闭。 |
-| FPS 新候选云端 smoke | `fc64c2b` 复用原 CPU；已用获准 `--no-sandbox`，导航前报 `socket() failed: Operation not permitted (1)`、SIGABRT；待云环境支持既有启动，外层沙箱不改，不重试／重复要许可 | 无新图／WebGL2证据，preview 已关闭；CPU 已验，本机不接浏览器。 |
+| FPS 新候选云端 smoke | 2026-11-01 17:29 UTC 按新指令恢复现有全场材质 `67ae83a7`（tree `796642f3`）验收；获准 headless `--no-sandbox` 仍在导航前报 `socket() failed: Operation not permitted (1)`、SIGABRT。缺的是云端创建 socket 的执行能力，不是该参数授权；待环境恢复既有启动能力后续同候选，外层沙箱不改 | 无 WebGL2／新图／smoke／盲评；runner exit 1，Chromium PID 37 已 SIGABRT 退出，无残留 Chromium／Vite，preview 与临时目录已清。原候选保留，未作品质退回；本机不接浏览器。 |
 | jrnl 上游 PR | 集成创建PR返回403，已审分支就绪；由用户决定是否打开[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建Draft。拟标题：`Fix DayOne UTC conversion across daylight saving transitions`，说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 本仓发现、试用与既有PR跟进继续 |
 | testmon 上游贡献 | 待可写 fork | [已审补丁 #270](../../experiments/testmon-outer-coverage/README.md)；Serena [改为跟进已有 PR #2242](../../experiments/serena-vue-implementation/README.md)，不重复投稿 |
 
