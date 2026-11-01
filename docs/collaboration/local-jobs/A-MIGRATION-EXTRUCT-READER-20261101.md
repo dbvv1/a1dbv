@@ -1,7 +1,7 @@
 # A-MIGRATION-EXTRUCT-READER-20261101 · 接收真实 pytest 测试迁移
 id: A-MIGRATION-EXTRUCT-READER-20261101
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 949374f4f5ec40deb189a1bc1545ebd039324df7
