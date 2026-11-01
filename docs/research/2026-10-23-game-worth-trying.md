@@ -147,3 +147,13 @@
 **体验缺口与恢复条件。** 本轮 Riposte／FM1 官方 HTTPS 返回连接拒绝；Riposte 本地文件入口另受浏览器管理员策略阻断；之后支持浏览器退出，候选录像未加载出游戏帧。DragonScape 与原生 demo 未启动。这是访问／观察失败；待合法入口恢复或取得同版完整实机后，再比较完整局部的视听、操作与反馈。
 
 **探索回执。** 回源 Reddit 作者／玩家原帖、Riposte 固定代码与许可；中文反馈沿第 3 节，本次未新增检索。未重做 Battle Drones 或用宣传截帧补体验；完整成本与品质排名未知。[研究]
+
+### 下一段制作线索：动作源与混音仍有人工环节
+
+**Pawbound 的可借点是保留同一骨架和部件约定，而非为每套装备重生成整张动画表。** [原作者](https://www.reddit.com/r/aigamedev/comments/1vbe1jr/i_vibecoded_an_aipowered_tool_to_adjust_rigs_and/)称以五套 Spine JSON 动作、骨架说明和格式约束给 Agent 生成新时间线；新衣物遵守比例、挂点和层序。但他也明确承认拆件后仍手工清理、补关节覆盖、定位和微调时间线，工具未公开。它是固定源动作二改的线索，不是零手修角色流水线。评论中的 `compsmart/ai-spine-animator` 属于另一位作者，不能借其开源身份替 Pawbound 补复现或许可。[作者自述／研究]
+
+**Steel Maiden 先由作者在 Photoshop 人工确定风格与姿势，再生成中间素材。** [作者流程](https://www.reddit.com/r/aigamedev/comments/1wt1faf/steel_maiden_im_building_a_2button_action/)是先做首尾姿势图、生成运动视频，再在 After Effects 剪接为 sprite；音效先自录声音，再处理或交 Firefly 转换。其背景同时有分层图片和 Blender 场景路线。作者有美术指导经验，玩家仍指出物品图与整体不一致，作者确认正在换掉旧像素图。[Steam 披露](https://store.steampowered.com/app/4827950/Steel_Maiden/)也只称生成源素材经开发者精修。可借的是控制姿势／节奏和跨类别统一，不能据宣传动作推导本项目可无人工剪辑复现。[作者／玩家原帖；研究]
+
+**LOB 提供了生成文件落盘之后仍须混音的反例。** [官方 devlog](https://zerodev.games/devlog/)记载 v43（2026-08-16）将 AI 生成画面和声音离线保存、自托管，保留原静音控制；同日 v45 把过响的通关声调低，v47 又换通关声。离线交付只解决供给，不证明提示音层级、音色或完整听感已达标；日志未给模型、提示词、成本与处理配方，尚不能复现声音制作链。[一手日志／研究]
+
+以上截至 2026-11-01 UTC 仅完成原文核读；Pawbound 网页可提取到界面文字，Steel Maiden 商店有 demo 入口，均未实玩、未试听、未完整观看实机，不进入首页品质推荐，也不迁移本仓默认管线。
