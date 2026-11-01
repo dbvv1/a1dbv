@@ -19,7 +19,7 @@ argument-hint: "[作品名] [近期目标，如：出生地到首塔的连续战
 - 拍摄模式：注入虚拟时钟，按种子开局，用固定 dt 反复调用主循环推进到指定时刻，摆到命名机位，渲染几帧预热（让 TAA、自适应曝光、阴影收敛）后截一帧。拍摄不依赖帧率和真实时间，软件渲染慢也能出图。主循环直接吃真实 dt 的作品同样适用，只要 dt 从虚拟时钟取。网页契约和脚本见 [references/capture.md](references/capture.md)；Unity 用 `Time.captureFramerate` 固定每帧时间，Unreal 用固定帧率启动参数（`-benchmark -fps=60`）或 Movie Render Queue，Godot 用 `--fixed-fps` 配合 `--write-movie`。
 - 每个作品固定 3–4 个命名机位，对应参照里最有代表性的画面：正常游玩视角至少一个，另加一个“最大差距”视角。机位从参照图量出来（主角占屏高、地平线位置、视场角），不凭感觉摆。
 - 手感看录像（即“操控证据”，测法见 [references/feel.md](references/feel.md) §5）：游戏内回放同一段输入脚本，按固定 dt 逐帧渲染成序列，ffmpeg 合成 60 fps。数“输入到第一处可见反馈”的帧数、反馈幅度和持续时间，与参照录像的同一动作逐帧对照。声音同段录下，听反馈是否和画面同帧到达。
-- 每轮拍摄写进新建的独占目录，同时记下源码版本、机位、输入和渲染器原始字符串；渲染器分为 gpu／software／unknown，只有认得出硬件厂商的才算 gpu。固定画质档、关闭按帧率自动降级时，软件渲染（如 SwiftShader）静帧与 gpu 大体一致，日常迭代、目标图和盲评都用它；manifest 记 `MAX_SAMPLES`、各向异性上限、纹理格式和实际画质档。有 gpu 的环境可补一次核对，有可见差异时以 gpu 重评；没有 gpu 不阻塞（a1dbv 的画面拍摄在 dot 云端做，不占本机）。
+- 每轮拍摄写进新建的独占目录，记下源码版本、机位、输入和渲染器原始字符串；渲染器分为 gpu／software／unknown，只有认得出硬件厂商的才算 gpu。固定画质档、关闭按帧率自动降级，manifest 记 `MAX_SAMPLES`、各向异性上限、纹理格式和实际画质档。云端软件图（如 SwiftShader）可用于迭代、目标图、盲评及第 4 步的默认版本验收；发现硬件画面有可见差异时针对性复核。画面拍摄在 dot 云端做，不占本机，不因没有硬件 GPU 停止验收。
 - **看图回路要快**：改一处到看到同机位前后图，一轮应在几分钟内。超过约半小时就先修回路：在自己的开发环境用 headless 浏览器软件渲染就地出图，拍摄做成一条可重复执行的命令，不把日常看图变成要排队、等独占 GPU 的任务。
 
 ## 2. 改之前先查别人怎么解决
@@ -39,7 +39,7 @@ argument-hint: "[作品名] [近期目标，如：出生地到首塔的连续战
   - 接触与缝隙层次不足时再选 AO，并检查角色轮廓与地表是否被压黑。材质 `aoMap` 调制间接光，不补光；N8AO 是另一条屏幕空间后处理路径，须实际接入并验图。色调映射可选 ACES 或 AgX；用 pmndrs/postprocessing 时渲染器设 `NoToneMapping`、帧缓冲 `HalfFloatType`、`ToneMappingEffect` 放链末，用 three 自带 `EffectComposer` 时由链末 `OutputPass` 读渲染器的色调映射。
   - Unity URP／HDRP：按材质与渲染路径选 Volume（Tonemapping、Color Lookup、SSAO）、反射探针与 Light Probe；Unreal：Lumen＋Post Process Volume；Godot：WorldEnvironment（Tonemap、SSAO、SDFGI 或 VoxelGI）。
 
-  **材质边界依据**：Three 0.186.1 固定源码的[环境接入](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/webgl/WebGLPrograms.js#L56-L64)、[直接阴影与间接光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_fragment_begin.glsl.js#L181-L244)、[Toon 合光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_toon_pars_fragment.glsl.js#L10-L25)与 [aoMap](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/aomap_fragment.glsl.js)。原核实 2026-10-27，2026-10-28 与已安装同版源码逐字节复核；这是受光路径核对，视觉收益仍按第 4 步用 gpu 同机位对比和非作者盲判验收。
+  **材质边界依据**：Three 0.186.1 固定源码的[环境接入](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/webgl/WebGLPrograms.js#L56-L64)、[直接阴影与间接光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_fragment_begin.glsl.js#L181-L244)、[Toon 合光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_toon_pars_fragment.glsl.js#L10-L25)与 [aoMap](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/aomap_fragment.glsl.js)。原核实 2026-10-27，2026-10-28 与已安装同版源码逐字节复核；这是受光路径核对，视觉收益按第 4 步验收。
 2. **空间层次**：近、中、远三层各有连续剪影；视线落点放地标；围合空间的墙、崖、建筑用同一网格的模块化套件拼，交接处有收边，不出现巨型素面方块。
 3. **地表与材质族**：地表混 3–4 种可平铺材质（splat 或顶点色、地形图层），加磨损贴花，打破平涂；墙面和道具用 trim 材质，同一材质族共享粗糙度与色相范围。
 4. **角色与可读性**：角色比环境饱和、对比更高；轮廓靠形状区分（武器、体型、剪影），不只靠颜色；必要时用边缘光或描边。
@@ -53,7 +53,7 @@ argument-hint: "[作品名] [近期目标，如：出生地到首塔的连续战
 
 - 同一命名机位拼三联图：改前 ｜ 改后 ｜ 参照（或目标效果图）。缩到 320 像素宽还看得出差别，才算大差距有进展。商业游戏参照图只在本地用；公开的 `docs/quality.md` 放改前、改后和自己做的目标效果图，参照只给链接。
 - 交给没参与这次改动的审查者（新上下文的子代理或另一会话），只给三联图和一句品类说明，不给代码和提交说明。先问“玩家第一眼、第一分钟最大的三处差距”，再盲选改前／改后哪张更接近参照（左右顺序随机）。
-- 发布分两步：功能门槛（测试、smoke）通过的候选当轮就以旁置的试玩入口合入默认分支并更新网站，默认入口不变，候选不留在分支上。换默认要有证据再经非作者盲判更好：画面类（光照、材质、特效、内容）用 gpu 拍摄的同机位对比，手感类用第 1 步的操控证据，其余只需盲判。换默认后 `docs/quality.md` 换成新图和新的三处差距；判定不更好的候选从旁置入口撤下，回到第 2 步换手段，不在同一手段上继续调参。
+- 发布分两步：功能门槛（测试、完整 smoke）通过的候选当轮以旁置试玩入口合入默认分支并更新网站。换默认须通过拟发布入口的完整 smoke，再经非作者盲判更好：画面类（光照、材质、特效、内容）可用第 1 步固定画质的云端软件图做同机位对比，硬件 GPU 不是前置；手感类仍用第 1 步的操控证据，声音仍需实际试听，其余只需盲判。换默认后 `docs/quality.md` 更新图和三处差距；判定不更好的候选撤下旁置入口，回到第 2 步换手段。
 - 下一个单元从审查者给出的第一处差距开始；大差距没补上之前不做细节打磨。
 
 ## 5. 写回知识

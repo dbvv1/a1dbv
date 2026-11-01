@@ -53,7 +53,7 @@ await browser.close();
 ```
 
 - 对比只用 manifest 里同一 `class` 的结果。`outRoot` 要先存在。
-- 只有软件渲染的环境加 `--use-angle=swiftshader`（新版 Chromium 可能还要 `--enable-unsafe-swiftshader`）；画质档固定、关闭按帧率降级后，静帧可用于迭代和盲评，口径见 SKILL §1。
+- 软件渲染参数按环境已有授权启用；固定画质、关闭按帧率降级后，云端软件图可用于迭代、盲评和默认版本验收，完整 smoke 与同机位对比要求见 [SKILL §4](../SKILL.md#4-同机位对比非作者判定)。
 - 录像：循环“等 `frame` 递增 → `screenshot` → `__shotNext()`”写进同一个运行目录，再 `ffmpeg -framerate 60 -i %05d.png -c:v libx264 -pix_fmt yuv420p out.mp4`。
 - 拍摄模式由虚拟时钟推进，不依赖帧率，也不需要窗口在前台。
 

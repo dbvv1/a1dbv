@@ -7,7 +7,7 @@
 > 只放带完成条件的临时纠偏，最多三条，做完即删，dot 不改；方向与优先级在长期提示词（手册§6）。
 
 - **B**：手感三项不依赖浏览器，立即做成候选：FPS 训练赛移动换成加速度＋摩擦并补渲染插值；MOBA 前摇与施法中的下一条指令排队、结束当帧执行；Star 轮胎侧滑曲线补峰后下降与载荷转移，并先定动力范围的测法。过单元测试、无画面模拟与云端浏览器 smoke 后旁置发布。三项候选已发布，且同一输入脚本的前后值已写进各案 feel.md 与记分卡（FPS 滑停／反向／插值；MOBA 施法中的下一技能在结束当 tick 执行；Star 侧滑曲线）后删除本行；是否落进范围由记分卡继续追。
-- **B**：画面与 smoke 在 dot 云电脑跑，不占本机。云 headless Chromium 因容器不支持其沙箱而崩溃：用户 10-30 允许加 `--no-sandbox`，只用于打开三个案例的页面（本地预览与案例网站）做截图和 smoke，不访问其他网站，dot 平台外层沙箱不动。跑通以非空 WebGL2 软件图、记下启动参数与 renderer、进程正常退出为准；加参数后仍失败，只停此动作并把报错写回“需要用户决定”。跑通后每案一条命令出同机位图，补齐目标图与首轮盲评，再按 [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md)§3 第 1 层逐案核受光路径做灯光层旁置候选（三案缺环境光照、AO 与调色，FPS 另缺色调映射与投射阴影）。三案出图命令可用、灯光候选双盲结果已记后删除本行。
+- **B**：按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)接续三案现有画面候选：云端软件图可用于默认版本验收，保留固定画质同机位对比、拟发布入口的完整 smoke 和非作者盲评，不再等硬件 GPU。画面与 smoke 都在 dot 云端跑，不占本机；`--no-sandbox` 只限三个案例的本地预览与网站，平台外层沙箱不动。非空 WebGL2 图、启动参数、renderer 与正常退出仍须核实；EPERM 等失败只阻塞对应验收，其余独立工作继续。核原候选和回传、复用未变证据，补缺失图与 smoke 后按盲评决定换默认或撤下；三案出图命令可用且现有画面候选已接收或退回后删除本行。
 - **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
 
 ## 分工
