@@ -238,6 +238,12 @@ Ultra 是否已验证，看 **Settings → Usage**：没有 `Current session` �
 
 **依据**：[一手] [订阅价表](https://claude.com/pricing)、[Ultra 更名、额度与验证说明](https://support.claude.com/en/articles/17728952-what-is-the-ultra-plan)、[API 赠额](https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans)；[社区：问题线索] [读者把更名视为减半的讨论](https://news.ycombinator.com/item?id=50314228)；[研究] 对齐计量窗口后选择，未试用套餐、未读取账户；核实 2026-10-31（UTC）。
 
+**`Usage limit reached · wrapping up` 是有限收尾，不是整项完成保证。** 达到 5 小时限额时，已在进行的响应才可能获得小额、有上限的收尾用量；限额后新发的消息不适用，收尾仍计入周额度。已开启 usage credits 时，先用收尾额度，再依原费率、用量设置与开销上限继续付费；此功能不会自动开通 credits。
+
+资格要求 Claude 账户登录、Code v2.1.277+，并受账户／组织存续时间和分批开放限制；API key、第三方云和 Claude 普通聊天不适用。Pro 每周最多一次；Max、仍有临时 5 小时限制的 Ultra、Team Premium 可在周额度内触发。它不是保证权益，不能作为无人值守任务必能收尾的前提。
+
+**依据**：[一手] [Wrap-Up Allowance 的条件与计费顺序](https://support.claude.com/en/articles/17040437-claude-code-wrap-up-allowance)、[订阅使用说明](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-max-or-ultra-plan)；[社区：问题线索] [收尾提示不再出现的原帖](https://www.reddit.com/r/ClaudeCode/comments/1xa1dxc/was_graceful_ending_of_the_session_silently_killed/)。仅核公开说明，未运行客户端或读取账户；核实 2026-11-01（UTC）。
+
 **2026 下半年的变化**：
 
 - **Pro 200：购买时查当前套餐与用量，不再沿用 10-17 的过渡说明。** 当前官方定价页列出 $100／$200／$500 月费档、Pro 无 5 小时限制、$500 档可用 Ultrafast；这些不是无限用量承诺。旧“10-29 后转较低额度”的条件只保留在[历史核查](research/2026-10-10-audit.md#pro-200-新旧订户条件2026-10-17-补核)，不作为现行购买建议。本轮未核实后续额度调整，不能据此断言旧安排仍执行或已取消；“20 倍降 10 倍”与[社区体感](11-community-pulse.md#7-中文社区额度与交付自述)也不能代替当前限额。依据：[官方 Pricing](https://learn.chatgpt.com/docs/pricing)，核实 2026-10-31（UTC）。
