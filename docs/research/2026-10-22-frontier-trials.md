@@ -639,6 +639,10 @@ npm install --prefix tool --ignore-scripts --omit=optional --no-audit --no-fund 
 
 英文使用者[#976](https://github.com/tobi/qmd/issues/976)报告2.8.3在大量中文笔记中的长CJK查询零结果，不能据此推断所有中文查询失败；[#331](https://github.com/tobi/qmd/issues/331)的正面体验属于旧版混合路线，不证明本次纯词法效果。[LINUX DO原帖与评论](https://linux.do/t/topic/1562457)有人关心模型资源，也有人仅安装尚未验证节省，本次不采用节省百分比。探索覆盖官方发布／实现、GitHub真实使用报告和中文社区，止于一个实际资料定位问题，不扩中文边界矩阵。[社区／探索回执]
 
+**发布边界：主干的分隔符修复尚未进入 npm 安装版。** npm `latest` 仍是 2.8.3，使用者报告查询 `1,031,369` 零命中、改查带引号的空格词组才命中。通用分隔符修复 #939 已合入主干，但核验官方发布包的完整性及 `dist/store.js` 后，包内仍是旧连字符／点号分支；发布 `gitHead` 为 `facd35e`，早于该修复。本轮只读核包与源码，未运行此查询或验证 Windows；也未验证带逗号查询能同时匹配无逗号写法 `1031369`，不把主干改法当作这些结果已通过。
+
+依据：[社区原始报告 #1087](https://github.com/tobi/qmd/issues/1087)、[官方 npm 2.8.3 元数据](https://registry.npmjs.org/@tobilu%2fqmd/2.8.3)、[已合修复 #939](https://github.com/tobi/qmd/pull/939)、[固定主干查询实现](https://github.com/tobi/qmd/blob/86d2365d17fc682e491c2c53d1e4a884aee8682a/src/store.ts#L4526-L4653)；发布包与源码核实 2026-11-01 UTC。
+
 
 **实际续接：改稿后更新索引。** 本轮后续主干确实增加QMD说明并停用简报，未改造测试夹具；旧索引查询仍返回旧简报标题／要求，找不到新增QMD入口。确认两个公开集合没有update命令钩子后，执行一次普通 `qmd update`：更新7份docs，154份docs与46份experiments未变。再次检索／取回得到“简报已停用”和运行手册当前停止要求，也能找到QMD读者入口。没有执行模型、向量或Git更新命令。[本仓工具实试]
 
