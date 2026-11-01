@@ -489,6 +489,26 @@ python3 experiments/replay_astgrep_migration.py \
 [0.50 的 outline 更新](https://ast-grep.github.io/blog/new-ver-50)是既有能力来源，不是本次安装版本；[outline](https://ast-grep.github.io/guide/outline-code)不解析类型或调用图。探索续接既有 HN、linux.do 与作者原帖，新增正式迁移文档、固定源码和实际 CLI 检查；未发上游 issue，未运行模型。保持 🧪 按任务试用，不据这一例宣称最高水平。[一手／研究]
 
 
+### 补验：语言行不等于文件已被搜索
+
+**正式 0.51.0 对混合 GBK／UTF-8 输入成功退出，仍可能漏掉同文文件；`--inspect entity` 的语言行不是读取成功证明。** 真实使用者 #2990 提供了同一 Rust 文本的两种编码。本轮保持原 CRLF、无末尾换行和 UTF-8 无 BOM，用 Python 生成对应字节后在 Linux 实跑两个原查询，分别匹配 `fn main` 和纯 ASCII `let` 声明。
+
+| 输入／控制 | 实际命中与退出 | `--inspect entity` 的观察 |
+|---|---|---|
+| 同文 GBK＋UTF-8 | 只命中 UTF-8，exit 0；普通 run 的 stderr 空 | 两文件均标语言；scanned=2、skipped=1 |
+| 单独 GBK | 无匹配，exit 1 | scanned=1、skipped=1 |
+| 真正无匹配 UTF-8 | 无匹配，exit 1 | scanned=1、skipped=0 |
+| 已知 GBK 的独立 UTF-8 副本＋原 UTF-8 | 两查询均各命中两文件，exit 0 | scanned=2、skipped=0 |
+
+**汇总能暴露本例的覆盖缺口，但不能逐文件定位原因。** scanned 包含已跳过文件；空文件控制也 skipped=1，缺失路径则有独立 ERROR、skipped=0。因此退出码、语言行或 skip=0 都不能单独证明完整搜索。原报告的混合目录 exit 0，也不能外推单独 GBK 文件的退出码。
+
+副本只转换来源已明确的 GBK 文件：严格解码后重新编码与原字节相同，才写到另一目录，行尾保持；原输入及控制文件的运行前后 hash 全部不变。这不是未知编码检测、就地修改或整应用迁移。完整命令、匹配内容、stdout／stderr 与 hash 见[实测结果](2026-11-01-astgrep-input-coverage.json)。
+
+维护者 #3044 拟为 inspect 增加 `invalidUtf8` 等逐文件原因，并将语言行移到读取成功后；本轮所核 head `6bf5ad8a` 仍 open、未合入，仅核源码，未编译运行。正式包来自官方 Linux x86_64 发布资产且已核 SHA-256；未重跑报告者 0.45.3、Windows、MCP、候选修复或模型效果，不提升现有 reader 状态。
+
+**依据**：[公开原输入 #2990](https://github.com/ast-grep/ast-grep/issues/2990)、[正式 0.51.0](https://github.com/ast-grep/ast-grep/releases/tag/0.51.0)、[未合入诊断 PR #3044](https://github.com/ast-grep/ast-grep/pull/3044)。核实／实跑：2026-11-01 UTC。
+
+
 ## OpenSpec：规格接力与协作落点
 
 **选择：需要跨角色接手与连续二改时，试用当前规格＋本次差量；协作者主要依赖工作项系统时，不强迁仓库。** [研究]

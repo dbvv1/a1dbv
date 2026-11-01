@@ -1,0 +1,1089 @@
+{
+  "source": "https://github.com/ast-grep/ast-grep/issues/2990",
+  "source_environment": "Reporter: ast-grep0.45.3/Windows11; this run is official0.51.0/Linux",
+  "generation": "Exact reported text with CRLF, no terminal newline, GBK(cp936) and UTF-8(no BOM). Python generator, not PowerShell runtime. No original file rewritten.",
+  "runtime": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "platform": "linux"
+  },
+  "binary_sha256": "99b5aeab1f47536789482b4517595b759de910f7f1f1d1f80c752824e894e38e",
+  "release_zip_sha256": "a7eead5552d3a8daad70f5d50d935da44bd0c138e946b5b0a96b1d38169fa639",
+  "strict_gbk_roundtrip": true,
+  "source_content_equal": true,
+  "input_hashes_before": {
+    "inputs/converted/utf8.rs": "9a3b329c98de05f5e8a9f64961c9f9615b4e6e9ae69224d4774ba99e62e48ff6",
+    "inputs/converted/gbk.rs": "9a3b329c98de05f5e8a9f64961c9f9615b4e6e9ae69224d4774ba99e62e48ff6",
+    "inputs/controls/no-match.rs": "d1364d670ff6865459ff378d167ee6f4f01f1810815800d81bb0f49584c4f9f4",
+    "inputs/controls/empty.rs": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "inputs/pair/utf8.rs": "9a3b329c98de05f5e8a9f64961c9f9615b4e6e9ae69224d4774ba99e62e48ff6",
+    "inputs/pair/gbk.rs": "febfdcf2e59014ff25a1cc8b45ceea3607ae56154c6c7eb1a57fb7b016cde78d"
+  },
+  "input_hashes_after": {
+    "inputs/converted/utf8.rs": "9a3b329c98de05f5e8a9f64961c9f9615b4e6e9ae69224d4774ba99e62e48ff6",
+    "inputs/converted/gbk.rs": "9a3b329c98de05f5e8a9f64961c9f9615b4e6e9ae69224d4774ba99e62e48ff6",
+    "inputs/controls/no-match.rs": "d1364d670ff6865459ff378d167ee6f4f01f1810815800d81bb0f49584c4f9f4",
+    "inputs/controls/empty.rs": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "inputs/pair/utf8.rs": "9a3b329c98de05f5e8a9f64961c9f9615b4e6e9ae69224d4774ba99e62e48ff6",
+    "inputs/pair/gbk.rs": "febfdcf2e59014ff25a1cc8b45ceea3607ae56154c6c7eb1a57fb7b016cde78d"
+  },
+  "records": [
+    {
+      "label": "version",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "--version"
+      ],
+      "cwd": "<trial>",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.765989+00:00",
+      "exit_code": 0,
+      "stdout": "ast-grep 0.51.0\n",
+      "stderr": "",
+      "stdout_sha256": "ee6b201d2ea072503359dc7084e14eb372b27ffe889ce5b0fcff8ee14e5d8164",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completed_utc": "2026-11-01T19:01:13.768021+00:00"
+    },
+    {
+      "label": "original-function",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "."
+      ],
+      "cwd": "<trial>/inputs/pair",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.768062+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"range\":{\"byteOffset\":{\"start\":0,\"end\":46},\"start\":{\"line\":0,\"column\":0},\"end\":{\"line\":2,\"column\":1}},\"file\":\"utf8.rs\",\"lines\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"charCount\":{\"leading\":0,\"trailing\":0},\"language\":\"Rust\"}\n",
+      "stderr": "",
+      "stdout_sha256": "214f1070838e619baf8b2b52439afd72182a3f2ee38bd7d7d0ddd25116f717f8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completed_utc": "2026-11-01T19:01:13.772635+00:00",
+      "matches": [
+        {
+          "text": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "range": {
+            "byteOffset": {
+              "start": 0,
+              "end": 46
+            },
+            "start": {
+              "line": 0,
+              "column": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 1
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "charCount": {
+            "leading": 0,
+            "trailing": 0
+          },
+          "language": "Rust"
+        }
+      ]
+    },
+    {
+      "label": "original-function-inspect",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "."
+      ],
+      "cwd": "<trial>/inputs/pair",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.772750+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"range\":{\"byteOffset\":{\"start\":0,\"end\":46},\"start\":{\"line\":0,\"column\":0},\"end\":{\"line\":2,\"column\":1}},\"file\":\"utf8.rs\",\"lines\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"charCount\":{\"leading\":0,\"trailing\":0},\"language\":\"Rust\"}\n",
+      "stderr": "sg: summary|project: isProject=false\nsg: entity|file|gbk.rs: language=Rust\nsg: entity|file|utf8.rs: language=Rust\nsg: summary|file: scannedFileCount=2,skippedFileCount=1\n",
+      "stdout_sha256": "214f1070838e619baf8b2b52439afd72182a3f2ee38bd7d7d0ddd25116f717f8",
+      "stderr_sha256": "bec07192b9cdb8ce90502c310addaf6d953b6ce41a5042cf960c06c9a7c3b69c",
+      "completed_utc": "2026-11-01T19:01:13.776992+00:00",
+      "matches": [
+        {
+          "text": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "range": {
+            "byteOffset": {
+              "start": 0,
+              "end": 46
+            },
+            "start": {
+              "line": 0,
+              "column": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 1
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "charCount": {
+            "leading": 0,
+            "trailing": 0
+          },
+          "language": "Rust"
+        }
+      ]
+    },
+    {
+      "label": "converted-function",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "."
+      ],
+      "cwd": "<trial>/inputs/converted",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.777054+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"range\":{\"byteOffset\":{\"start\":0,\"end\":46},\"start\":{\"line\":0,\"column\":0},\"end\":{\"line\":2,\"column\":1}},\"file\":\"gbk.rs\",\"lines\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"charCount\":{\"leading\":0,\"trailing\":0},\"language\":\"Rust\"}\n{\"text\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"range\":{\"byteOffset\":{\"start\":0,\"end\":46},\"start\":{\"line\":0,\"column\":0},\"end\":{\"line\":2,\"column\":1}},\"file\":\"utf8.rs\",\"lines\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"charCount\":{\"leading\":0,\"trailing\":0},\"language\":\"Rust\"}\n",
+      "stderr": "",
+      "stdout_sha256": "e6c17d29423c96240742b70b35d37ad0eb099a61d9ac24e69d8fc84188c91b08",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completed_utc": "2026-11-01T19:01:13.781451+00:00",
+      "matches": [
+        {
+          "text": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "range": {
+            "byteOffset": {
+              "start": 0,
+              "end": 46
+            },
+            "start": {
+              "line": 0,
+              "column": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 1
+            }
+          },
+          "file": "gbk.rs",
+          "lines": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "charCount": {
+            "leading": 0,
+            "trailing": 0
+          },
+          "language": "Rust"
+        },
+        {
+          "text": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "range": {
+            "byteOffset": {
+              "start": 0,
+              "end": 46
+            },
+            "start": {
+              "line": 0,
+              "column": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 1
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "charCount": {
+            "leading": 0,
+            "trailing": 0
+          },
+          "language": "Rust"
+        }
+      ]
+    },
+    {
+      "label": "converted-function-inspect",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "."
+      ],
+      "cwd": "<trial>/inputs/converted",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.781509+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"range\":{\"byteOffset\":{\"start\":0,\"end\":46},\"start\":{\"line\":0,\"column\":0},\"end\":{\"line\":2,\"column\":1}},\"file\":\"gbk.rs\",\"lines\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"charCount\":{\"leading\":0,\"trailing\":0},\"language\":\"Rust\"}\n{\"text\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"range\":{\"byteOffset\":{\"start\":0,\"end\":46},\"start\":{\"line\":0,\"column\":0},\"end\":{\"line\":2,\"column\":1}},\"file\":\"utf8.rs\",\"lines\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"charCount\":{\"leading\":0,\"trailing\":0},\"language\":\"Rust\"}\n",
+      "stderr": "sg: summary|project: isProject=false\nsg: entity|file|gbk.rs: language=Rust\nsg: entity|file|utf8.rs: language=Rust\nsg: summary|file: scannedFileCount=2,skippedFileCount=0\n",
+      "stdout_sha256": "e6c17d29423c96240742b70b35d37ad0eb099a61d9ac24e69d8fc84188c91b08",
+      "stderr_sha256": "bb2c32dd7ae4fd50d9ecb2317b9a033f9f13337018ae29d949f12f61f0cbec2b",
+      "completed_utc": "2026-11-01T19:01:13.787580+00:00",
+      "matches": [
+        {
+          "text": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "range": {
+            "byteOffset": {
+              "start": 0,
+              "end": 46
+            },
+            "start": {
+              "line": 0,
+              "column": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 1
+            }
+          },
+          "file": "gbk.rs",
+          "lines": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "charCount": {
+            "leading": 0,
+            "trailing": 0
+          },
+          "language": "Rust"
+        },
+        {
+          "text": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "range": {
+            "byteOffset": {
+              "start": 0,
+              "end": 46
+            },
+            "start": {
+              "line": 0,
+              "column": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 1
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "charCount": {
+            "leading": 0,
+            "trailing": 0
+          },
+          "language": "Rust"
+        }
+      ]
+    },
+    {
+      "label": "original-let",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "let $V = $E;",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "."
+      ],
+      "cwd": "<trial>/inputs/pair",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.787657+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"let x = 1;\",\"range\":{\"byteOffset\":{\"start\":33,\"end\":43},\"start\":{\"line\":1,\"column\":4},\"end\":{\"line\":1,\"column\":14}},\"file\":\"utf8.rs\",\"lines\":\"    let x = 1;\\r\",\"charCount\":{\"leading\":4,\"trailing\":1},\"language\":\"Rust\",\"metaVariables\":{\"single\":{\"E\":{\"text\":\"1\",\"range\":{\"byteOffset\":{\"start\":41,\"end\":42},\"start\":{\"line\":1,\"column\":12},\"end\":{\"line\":1,\"column\":13}}},\"V\":{\"text\":\"x\",\"range\":{\"byteOffset\":{\"start\":37,\"end\":38},\"start\":{\"line\":1,\"column\":8},\"end\":{\"line\":1,\"column\":9}}}},\"multi\":{},\"transformed\":{}}}\n",
+      "stderr": "",
+      "stdout_sha256": "68d83420382465cd60e3f4aa259db905b46562cd5c5b00f043456996f106ff9d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completed_utc": "2026-11-01T19:01:13.791899+00:00",
+      "matches": [
+        {
+          "text": "let x = 1;",
+          "range": {
+            "byteOffset": {
+              "start": 33,
+              "end": 43
+            },
+            "start": {
+              "line": 1,
+              "column": 4
+            },
+            "end": {
+              "line": 1,
+              "column": 14
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "    let x = 1;\r",
+          "charCount": {
+            "leading": 4,
+            "trailing": 1
+          },
+          "language": "Rust",
+          "metaVariables": {
+            "single": {
+              "E": {
+                "text": "1",
+                "range": {
+                  "byteOffset": {
+                    "start": 41,
+                    "end": 42
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 13
+                  }
+                }
+              },
+              "V": {
+                "text": "x",
+                "range": {
+                  "byteOffset": {
+                    "start": 37,
+                    "end": 38
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 9
+                  }
+                }
+              }
+            },
+            "multi": {},
+            "transformed": {}
+          }
+        }
+      ]
+    },
+    {
+      "label": "original-let-inspect",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "let $V = $E;",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "."
+      ],
+      "cwd": "<trial>/inputs/pair",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.791946+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"let x = 1;\",\"range\":{\"byteOffset\":{\"start\":33,\"end\":43},\"start\":{\"line\":1,\"column\":4},\"end\":{\"line\":1,\"column\":14}},\"file\":\"utf8.rs\",\"lines\":\"    let x = 1;\\r\",\"charCount\":{\"leading\":4,\"trailing\":1},\"language\":\"Rust\",\"metaVariables\":{\"single\":{\"E\":{\"text\":\"1\",\"range\":{\"byteOffset\":{\"start\":41,\"end\":42},\"start\":{\"line\":1,\"column\":12},\"end\":{\"line\":1,\"column\":13}}},\"V\":{\"text\":\"x\",\"range\":{\"byteOffset\":{\"start\":37,\"end\":38},\"start\":{\"line\":1,\"column\":8},\"end\":{\"line\":1,\"column\":9}}}},\"multi\":{},\"transformed\":{}}}\n",
+      "stderr": "sg: summary|project: isProject=false\nsg: entity|file|gbk.rs: language=Rust\nsg: entity|file|utf8.rs: language=Rust\nsg: summary|file: scannedFileCount=2,skippedFileCount=1\n",
+      "stdout_sha256": "68d83420382465cd60e3f4aa259db905b46562cd5c5b00f043456996f106ff9d",
+      "stderr_sha256": "bec07192b9cdb8ce90502c310addaf6d953b6ce41a5042cf960c06c9a7c3b69c",
+      "completed_utc": "2026-11-01T19:01:13.796565+00:00",
+      "matches": [
+        {
+          "text": "let x = 1;",
+          "range": {
+            "byteOffset": {
+              "start": 33,
+              "end": 43
+            },
+            "start": {
+              "line": 1,
+              "column": 4
+            },
+            "end": {
+              "line": 1,
+              "column": 14
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "    let x = 1;\r",
+          "charCount": {
+            "leading": 4,
+            "trailing": 1
+          },
+          "language": "Rust",
+          "metaVariables": {
+            "single": {
+              "E": {
+                "text": "1",
+                "range": {
+                  "byteOffset": {
+                    "start": 41,
+                    "end": 42
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 13
+                  }
+                }
+              },
+              "V": {
+                "text": "x",
+                "range": {
+                  "byteOffset": {
+                    "start": 37,
+                    "end": 38
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 9
+                  }
+                }
+              }
+            },
+            "multi": {},
+            "transformed": {}
+          }
+        }
+      ]
+    },
+    {
+      "label": "converted-let",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "let $V = $E;",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "."
+      ],
+      "cwd": "<trial>/inputs/converted",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.796654+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"let x = 1;\",\"range\":{\"byteOffset\":{\"start\":33,\"end\":43},\"start\":{\"line\":1,\"column\":4},\"end\":{\"line\":1,\"column\":14}},\"file\":\"utf8.rs\",\"lines\":\"    let x = 1;\\r\",\"charCount\":{\"leading\":4,\"trailing\":1},\"language\":\"Rust\",\"metaVariables\":{\"single\":{\"V\":{\"text\":\"x\",\"range\":{\"byteOffset\":{\"start\":37,\"end\":38},\"start\":{\"line\":1,\"column\":8},\"end\":{\"line\":1,\"column\":9}}},\"E\":{\"text\":\"1\",\"range\":{\"byteOffset\":{\"start\":41,\"end\":42},\"start\":{\"line\":1,\"column\":12},\"end\":{\"line\":1,\"column\":13}}}},\"multi\":{},\"transformed\":{}}}\n{\"text\":\"let x = 1;\",\"range\":{\"byteOffset\":{\"start\":33,\"end\":43},\"start\":{\"line\":1,\"column\":4},\"end\":{\"line\":1,\"column\":14}},\"file\":\"gbk.rs\",\"lines\":\"    let x = 1;\\r\",\"charCount\":{\"leading\":4,\"trailing\":1},\"language\":\"Rust\",\"metaVariables\":{\"single\":{\"E\":{\"text\":\"1\",\"range\":{\"byteOffset\":{\"start\":41,\"end\":42},\"start\":{\"line\":1,\"column\":12},\"end\":{\"line\":1,\"column\":13}}},\"V\":{\"text\":\"x\",\"range\":{\"byteOffset\":{\"start\":37,\"end\":38},\"start\":{\"line\":1,\"column\":8},\"end\":{\"line\":1,\"column\":9}}}},\"multi\":{},\"transformed\":{}}}\n",
+      "stderr": "",
+      "stdout_sha256": "a48189036895ad7683e4336952c053a818039c9c6889776be7a424096590674d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completed_utc": "2026-11-01T19:01:13.801199+00:00",
+      "matches": [
+        {
+          "text": "let x = 1;",
+          "range": {
+            "byteOffset": {
+              "start": 33,
+              "end": 43
+            },
+            "start": {
+              "line": 1,
+              "column": 4
+            },
+            "end": {
+              "line": 1,
+              "column": 14
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "    let x = 1;\r",
+          "charCount": {
+            "leading": 4,
+            "trailing": 1
+          },
+          "language": "Rust",
+          "metaVariables": {
+            "single": {
+              "V": {
+                "text": "x",
+                "range": {
+                  "byteOffset": {
+                    "start": 37,
+                    "end": 38
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 9
+                  }
+                }
+              },
+              "E": {
+                "text": "1",
+                "range": {
+                  "byteOffset": {
+                    "start": 41,
+                    "end": 42
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 13
+                  }
+                }
+              }
+            },
+            "multi": {},
+            "transformed": {}
+          }
+        },
+        {
+          "text": "let x = 1;",
+          "range": {
+            "byteOffset": {
+              "start": 33,
+              "end": 43
+            },
+            "start": {
+              "line": 1,
+              "column": 4
+            },
+            "end": {
+              "line": 1,
+              "column": 14
+            }
+          },
+          "file": "gbk.rs",
+          "lines": "    let x = 1;\r",
+          "charCount": {
+            "leading": 4,
+            "trailing": 1
+          },
+          "language": "Rust",
+          "metaVariables": {
+            "single": {
+              "E": {
+                "text": "1",
+                "range": {
+                  "byteOffset": {
+                    "start": 41,
+                    "end": 42
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 13
+                  }
+                }
+              },
+              "V": {
+                "text": "x",
+                "range": {
+                  "byteOffset": {
+                    "start": 37,
+                    "end": 38
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 9
+                  }
+                }
+              }
+            },
+            "multi": {},
+            "transformed": {}
+          }
+        }
+      ]
+    },
+    {
+      "label": "converted-let-inspect",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "let $V = $E;",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "."
+      ],
+      "cwd": "<trial>/inputs/converted",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.801398+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"let x = 1;\",\"range\":{\"byteOffset\":{\"start\":33,\"end\":43},\"start\":{\"line\":1,\"column\":4},\"end\":{\"line\":1,\"column\":14}},\"file\":\"utf8.rs\",\"lines\":\"    let x = 1;\\r\",\"charCount\":{\"leading\":4,\"trailing\":1},\"language\":\"Rust\",\"metaVariables\":{\"single\":{\"E\":{\"text\":\"1\",\"range\":{\"byteOffset\":{\"start\":41,\"end\":42},\"start\":{\"line\":1,\"column\":12},\"end\":{\"line\":1,\"column\":13}}},\"V\":{\"text\":\"x\",\"range\":{\"byteOffset\":{\"start\":37,\"end\":38},\"start\":{\"line\":1,\"column\":8},\"end\":{\"line\":1,\"column\":9}}}},\"multi\":{},\"transformed\":{}}}\n{\"text\":\"let x = 1;\",\"range\":{\"byteOffset\":{\"start\":33,\"end\":43},\"start\":{\"line\":1,\"column\":4},\"end\":{\"line\":1,\"column\":14}},\"file\":\"gbk.rs\",\"lines\":\"    let x = 1;\\r\",\"charCount\":{\"leading\":4,\"trailing\":1},\"language\":\"Rust\",\"metaVariables\":{\"single\":{\"V\":{\"text\":\"x\",\"range\":{\"byteOffset\":{\"start\":37,\"end\":38},\"start\":{\"line\":1,\"column\":8},\"end\":{\"line\":1,\"column\":9}}},\"E\":{\"text\":\"1\",\"range\":{\"byteOffset\":{\"start\":41,\"end\":42},\"start\":{\"line\":1,\"column\":12},\"end\":{\"line\":1,\"column\":13}}}},\"multi\":{},\"transformed\":{}}}\n",
+      "stderr": "sg: summary|project: isProject=false\nsg: entity|file|utf8.rs: language=Rust\nsg: entity|file|gbk.rs: language=Rust\nsg: summary|file: scannedFileCount=2,skippedFileCount=0\n",
+      "stdout_sha256": "a9463a49f126fed05f683a20e54d33ff890fa5607512e0e14bd1189b32935341",
+      "stderr_sha256": "1e54cd476babd02604393e0d912a7506557fef02a572a71f6e76259751d7c4ee",
+      "completed_utc": "2026-11-01T19:01:13.806743+00:00",
+      "matches": [
+        {
+          "text": "let x = 1;",
+          "range": {
+            "byteOffset": {
+              "start": 33,
+              "end": 43
+            },
+            "start": {
+              "line": 1,
+              "column": 4
+            },
+            "end": {
+              "line": 1,
+              "column": 14
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "    let x = 1;\r",
+          "charCount": {
+            "leading": 4,
+            "trailing": 1
+          },
+          "language": "Rust",
+          "metaVariables": {
+            "single": {
+              "E": {
+                "text": "1",
+                "range": {
+                  "byteOffset": {
+                    "start": 41,
+                    "end": 42
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 13
+                  }
+                }
+              },
+              "V": {
+                "text": "x",
+                "range": {
+                  "byteOffset": {
+                    "start": 37,
+                    "end": 38
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 9
+                  }
+                }
+              }
+            },
+            "multi": {},
+            "transformed": {}
+          }
+        },
+        {
+          "text": "let x = 1;",
+          "range": {
+            "byteOffset": {
+              "start": 33,
+              "end": 43
+            },
+            "start": {
+              "line": 1,
+              "column": 4
+            },
+            "end": {
+              "line": 1,
+              "column": 14
+            }
+          },
+          "file": "gbk.rs",
+          "lines": "    let x = 1;\r",
+          "charCount": {
+            "leading": 4,
+            "trailing": 1
+          },
+          "language": "Rust",
+          "metaVariables": {
+            "single": {
+              "V": {
+                "text": "x",
+                "range": {
+                  "byteOffset": {
+                    "start": 37,
+                    "end": 38
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 9
+                  }
+                }
+              },
+              "E": {
+                "text": "1",
+                "range": {
+                  "byteOffset": {
+                    "start": 41,
+                    "end": 42
+                  },
+                  "start": {
+                    "line": 1,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 1,
+                    "column": 13
+                  }
+                }
+              }
+            },
+            "multi": {},
+            "transformed": {}
+          }
+        }
+      ]
+    },
+    {
+      "label": "single-gbk.rs",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "gbk.rs"
+      ],
+      "cwd": "<trial>/inputs/pair",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.806822+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completed_utc": "2026-11-01T19:01:13.811573+00:00",
+      "matches": []
+    },
+    {
+      "label": "single-gbk.rs-inspect",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "gbk.rs"
+      ],
+      "cwd": "<trial>/inputs/pair",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.811611+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "sg: summary|project: isProject=false\nsg: entity|file|gbk.rs: language=Rust\nsg: summary|file: scannedFileCount=1,skippedFileCount=1\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "9620f9bc46f7e479bac1b196ca9cfd1e56927afbf3bdc4d4dd2cf00eb1074453",
+      "completed_utc": "2026-11-01T19:01:13.815549+00:00",
+      "matches": []
+    },
+    {
+      "label": "single-utf8.rs",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "utf8.rs"
+      ],
+      "cwd": "<trial>/inputs/pair",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.815581+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"range\":{\"byteOffset\":{\"start\":0,\"end\":46},\"start\":{\"line\":0,\"column\":0},\"end\":{\"line\":2,\"column\":1}},\"file\":\"utf8.rs\",\"lines\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"charCount\":{\"leading\":0,\"trailing\":0},\"language\":\"Rust\"}\n",
+      "stderr": "",
+      "stdout_sha256": "214f1070838e619baf8b2b52439afd72182a3f2ee38bd7d7d0ddd25116f717f8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completed_utc": "2026-11-01T19:01:13.820155+00:00",
+      "matches": [
+        {
+          "text": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "range": {
+            "byteOffset": {
+              "start": 0,
+              "end": 46
+            },
+            "start": {
+              "line": 0,
+              "column": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 1
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "charCount": {
+            "leading": 0,
+            "trailing": 0
+          },
+          "language": "Rust"
+        }
+      ]
+    },
+    {
+      "label": "single-utf8.rs-inspect",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "utf8.rs"
+      ],
+      "cwd": "<trial>/inputs/pair",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.820213+00:00",
+      "exit_code": 0,
+      "stdout": "{\"text\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"range\":{\"byteOffset\":{\"start\":0,\"end\":46},\"start\":{\"line\":0,\"column\":0},\"end\":{\"line\":2,\"column\":1}},\"file\":\"utf8.rs\",\"lines\":\"fn main() { // 中文注释\\r\\n    let x = 1;\\r\\n}\",\"charCount\":{\"leading\":0,\"trailing\":0},\"language\":\"Rust\"}\n",
+      "stderr": "sg: summary|project: isProject=false\nsg: entity|file|utf8.rs: language=Rust\nsg: summary|file: scannedFileCount=1,skippedFileCount=0\n",
+      "stdout_sha256": "214f1070838e619baf8b2b52439afd72182a3f2ee38bd7d7d0ddd25116f717f8",
+      "stderr_sha256": "3d0869c13a980f8178fb91fdec54768040e9897526cfcab5ea330e5af8611f7c",
+      "completed_utc": "2026-11-01T19:01:13.825520+00:00",
+      "matches": [
+        {
+          "text": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "range": {
+            "byteOffset": {
+              "start": 0,
+              "end": 46
+            },
+            "start": {
+              "line": 0,
+              "column": 0
+            },
+            "end": {
+              "line": 2,
+              "column": 1
+            }
+          },
+          "file": "utf8.rs",
+          "lines": "fn main() { // 中文注释\r\n    let x = 1;\r\n}",
+          "charCount": {
+            "leading": 0,
+            "trailing": 0
+          },
+          "language": "Rust"
+        }
+      ]
+    },
+    {
+      "label": "control-no-match.rs",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "no-match.rs"
+      ],
+      "cwd": "<trial>/inputs/controls",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.825585+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "sg: summary|project: isProject=false\nsg: entity|file|no-match.rs: language=Rust\nsg: summary|file: scannedFileCount=1,skippedFileCount=0\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "2f9884e3839efef53a1ad8d4999a9b2504b980856868a5c417519a52983bd77d",
+      "completed_utc": "2026-11-01T19:01:13.830216+00:00",
+      "matches": []
+    },
+    {
+      "label": "control-empty.rs",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "empty.rs"
+      ],
+      "cwd": "<trial>/inputs/controls",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.830252+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "sg: summary|project: isProject=false\nsg: entity|file|empty.rs: language=Rust\nsg: summary|file: scannedFileCount=1,skippedFileCount=1\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "033ee00fd19815c08daf4de83f7ecbefc6bd57f68de6a743ffd47197c6ce9255",
+      "completed_utc": "2026-11-01T19:01:13.834659+00:00",
+      "matches": []
+    },
+    {
+      "label": "control-missing.rs",
+      "args": [
+        "<trial>/bin/ast-grep",
+        "run",
+        "--pattern",
+        "fn main() { $$$ }",
+        "--lang",
+        "rust",
+        "--json=stream",
+        "--inspect",
+        "entity",
+        "missing.rs"
+      ],
+      "cwd": "<trial>/inputs/controls",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "<trial>/home",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1"
+      },
+      "started_utc": "2026-11-01T19:01:13.834698+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "sg: summary|project: isProject=false\nERROR: missing.rs: No such file or directory (os error 2)\nsg: summary|file: scannedFileCount=0,skippedFileCount=0\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "87d7b9304cee9ef076695f0b2acd677b478e95c2e3b1bb8549fd5f7fa5b01f14",
+      "completed_utc": "2026-11-01T19:01:13.837028+00:00",
+      "matches": []
+    }
+  ],
+  "normalization": {
+    "method": "Only the literal trial root replaced; all observed fields retained.",
+    "raw_sha256": "d76f191a048fdd2fad6b08feb7628cd7f04534f7b86dc6c255912cfed7e773bf"
+  },
+  "runner_sha256": "1efd608172d7b32023bff791fde47585628f8025c0b61a8e080b1fa5a7d43609",
+  "upstream_candidate": {
+    "url": "https://github.com/ast-grep/ast-grep/pull/3044",
+    "head": "6bf5ad8adf47d57675564966f1c03ab941006379",
+    "state": "open",
+    "merged": false,
+    "execution": "not run",
+    "checked_utc": "2026-11-01"
+  }
+}
