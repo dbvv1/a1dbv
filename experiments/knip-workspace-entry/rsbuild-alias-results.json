@@ -1,0 +1,625 @@
+{
+  "scope": "Actual public Rsbuild alias reproduction; official Knip 6.44.0 versus 6.44.1, not original reporter 6.43.0. No new default or fresh-reader claim.",
+  "runtime": {
+    "node": "v24.22.1",
+    "npm": "11.9.0",
+    "platform": "Linux"
+  },
+  "source": {
+    "source_repo": "https://github.com/drewbitt/knip-repros",
+    "source_commit": "d4a049103d9c30db13f2c228e14499fe982ccb4f",
+    "subdirectory": "rsbuild-alias",
+    "files": {
+      "README.md": "4e60ae032d672885be54a878a55bb7ff4d212deb5ebdc83d5a15b4c0f4f67476",
+      "package.json": "3d8bd24a20310b10815f5772f249bf46960088562240a4755066b00c1cd44e35",
+      "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+      "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+      "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4"
+    },
+    "controlled_change": "Only package.json devDependencies.knip changes from reporter 6.43.0 to tested 6.44.0 or 6.44.1; application/config bytes unchanged."
+  },
+  "installation": {
+    "6.44.0": {
+      "package_lock_sha256": "83b5a0102d11e855e79ad79182f8315abec7fea3cf87675f4c477eed94876e37",
+      "knip": {
+        "version": "6.44.0",
+        "resolved": "https://registry.npmjs.org/knip/-/knip-6.44.0.tgz",
+        "integrity": "sha512-mT0fl71Mqrko91azUO2Jw/uhYKwldORKT4liRq6yV0ZAtt6G2eYusdnvx8eBSQJDjvhRGKkpKUUx+vUG6syV4w==",
+        "dev": true,
+        "funding": [
+          {
+            "type": "github",
+            "url": "https://github.com/sponsors/webpro"
+          },
+          {
+            "type": "opencollective",
+            "url": "https://opencollective.com/knip"
+          }
+        ],
+        "license": "ISC",
+        "dependencies": {
+          "formatly": "^0.11.4",
+          "get-tsconfig": "4.14.3",
+          "jiti": "^2.7.0",
+          "oxc-parser": "^0.155.0",
+          "oxc-resolver": "11.24.2",
+          "picomatch": "^4.0.7",
+          "smol-toml": "^1.9.0",
+          "strip-json-comments": "5.0.3",
+          "tinyglobby": "^0.2.17",
+          "unbash": "^6.0.1",
+          "yaml": "^2.9.1",
+          "zod": "^4.6.5"
+        },
+        "bin": {
+          "knip": "bin/knip.js",
+          "knip-bun": "bin/knip-bun.js"
+        },
+        "engines": {
+          "node": "^20.19.0 || >=22.12.0"
+        }
+      },
+      "rsbuild": {
+        "version": "2.2.12",
+        "resolved": "https://registry.npmjs.org/@rsbuild/core/-/core-2.2.12.tgz",
+        "integrity": "sha512-SnJ81Jf9ZGms8hUq0FGxrqlUxdHKV76VK9gxrEdtWLbTic+qRt0SIAsk5NdIr1tXFzqzQ6Fqeffs+K1EUuZEHw==",
+        "dev": true,
+        "license": "MIT",
+        "dependencies": {
+          "@rspack/core": "~2.2.8",
+          "@swc/helpers": "^0.5.23"
+        },
+        "bin": {
+          "rsbuild": "bin/rsbuild.js"
+        },
+        "engines": {
+          "node": "^20.19.0 || >=22.12.0"
+        },
+        "peerDependencies": {
+          "core-js": ">= 3.0.0"
+        },
+        "peerDependenciesMeta": {
+          "core-js": {
+            "optional": true
+          }
+        }
+      },
+      "rspack": {
+        "version": "2.2.9",
+        "resolved": "https://registry.npmjs.org/@rspack/core/-/core-2.2.9.tgz",
+        "integrity": "sha512-Tp6/ZdM5UrGB3BeLfvh69l1iX03PZ46IgXjKqubVEuJVAhnOjpshooH/YAxcxR0AymcBLKA997Z4v+LV2aXzCw==",
+        "dev": true,
+        "license": "MIT",
+        "dependencies": {
+          "@rspack/binding": "2.2.9"
+        },
+        "engines": {
+          "node": "^20.19.0 || >=22.12.0"
+        },
+        "peerDependencies": {
+          "@module-federation/runtime-tools": "^0.24.1 || ^2.0.0",
+          "@swc/helpers": "^0.5.23"
+        },
+        "peerDependenciesMeta": {
+          "@module-federation/runtime-tools": {
+            "optional": true
+          },
+          "@swc/helpers": {
+            "optional": true
+          }
+        }
+      },
+      "rsbuild_plugin_sha256": "328dc46516d89a7ca8d591c4fc496fd695fdb2205eeb1d48fb81ae42ced69e9c"
+    },
+    "6.44.1": {
+      "package_lock_sha256": "2d30239765cbf2cea10d97a96db084e4164e423fe5a4d9181021a5ce16ee9f3e",
+      "knip": {
+        "version": "6.44.1",
+        "resolved": "https://registry.npmjs.org/knip/-/knip-6.44.1.tgz",
+        "integrity": "sha512-Hbd8nvkIsNgFfXgC7Jsb5LHv7jj6VwA3tmfHd53XPX2z9Vc9RnAZqV0BIiP4OrtYqKwCoLseFHQZerb1bNlbSw==",
+        "dev": true,
+        "funding": [
+          {
+            "type": "github",
+            "url": "https://github.com/sponsors/webpro"
+          },
+          {
+            "type": "opencollective",
+            "url": "https://opencollective.com/knip"
+          }
+        ],
+        "license": "ISC",
+        "dependencies": {
+          "formatly": "^0.11.4",
+          "get-tsconfig": "4.14.3",
+          "jiti": "^2.7.0",
+          "oxc-parser": "^0.155.0",
+          "oxc-resolver": "11.24.2",
+          "picomatch": "^4.0.7",
+          "smol-toml": "^1.9.0",
+          "strip-json-comments": "5.0.3",
+          "tinyglobby": "^0.2.17",
+          "unbash": "^6.0.1",
+          "yaml": "^2.9.1",
+          "zod": "^4.6.5"
+        },
+        "bin": {
+          "knip": "bin/knip.js",
+          "knip-bun": "bin/knip-bun.js"
+        },
+        "engines": {
+          "node": "^20.19.0 || >=22.12.0"
+        }
+      },
+      "rsbuild": {
+        "version": "2.2.12",
+        "resolved": "https://registry.npmjs.org/@rsbuild/core/-/core-2.2.12.tgz",
+        "integrity": "sha512-SnJ81Jf9ZGms8hUq0FGxrqlUxdHKV76VK9gxrEdtWLbTic+qRt0SIAsk5NdIr1tXFzqzQ6Fqeffs+K1EUuZEHw==",
+        "dev": true,
+        "license": "MIT",
+        "dependencies": {
+          "@rspack/core": "~2.2.8",
+          "@swc/helpers": "^0.5.23"
+        },
+        "bin": {
+          "rsbuild": "bin/rsbuild.js"
+        },
+        "engines": {
+          "node": "^20.19.0 || >=22.12.0"
+        },
+        "peerDependencies": {
+          "core-js": ">= 3.0.0"
+        },
+        "peerDependenciesMeta": {
+          "core-js": {
+            "optional": true
+          }
+        }
+      },
+      "rspack": {
+        "version": "2.2.9",
+        "resolved": "https://registry.npmjs.org/@rspack/core/-/core-2.2.9.tgz",
+        "integrity": "sha512-Tp6/ZdM5UrGB3BeLfvh69l1iX03PZ46IgXjKqubVEuJVAhnOjpshooH/YAxcxR0AymcBLKA997Z4v+LV2aXzCw==",
+        "dev": true,
+        "license": "MIT",
+        "dependencies": {
+          "@rspack/binding": "2.2.9"
+        },
+        "engines": {
+          "node": "^20.19.0 || >=22.12.0"
+        },
+        "peerDependencies": {
+          "@module-federation/runtime-tools": "^0.24.1 || ^2.0.0",
+          "@swc/helpers": "^0.5.23"
+        },
+        "peerDependenciesMeta": {
+          "@module-federation/runtime-tools": {
+            "optional": true
+          },
+          "@swc/helpers": {
+            "optional": true
+          }
+        }
+      },
+      "rsbuild_plugin_sha256": "9cd64674b06c17f220d7b95f6378aa2cd633bf3e56a630a0ad8c4f0fdca38226"
+    }
+  },
+  "package_version_differences": {
+    "node_modules/knip": {
+      "6.44.0": "6.44.0",
+      "6.44.1": "6.44.1"
+    }
+  },
+  "original_root_gitignore": "node_modules/\npackage-lock.json\ndist/\n.nx/\n.swc/\n",
+  "normalization": {
+    "method": "Only literal trial root and Node binary directory replaced. All recorded fields retained.",
+    "raw_sha256": {
+      "results": "48723863af504e25e4e56bd6c7a08b3b4d6cce94f84f495433afdd0f8bc2822b",
+      "corrected-results": "ac661436d2e6eb586fb1dfe70d6d73663a0c4f6089b7d618004292fbdaeb332a"
+    }
+  },
+  "initial_layout": {
+    "limitation": "Subproject copy omitted original repository-root .gitignore. Dist findings are fixture-context effects, not product defects. Original and control Rsbuild builds remain valid evidence for the unchanged application/config and same dependency versions; not a rebuild in corrected layout.",
+    "records": [
+      {
+        "label": "6.44.0-original-build",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/knip-6.44.0/node_modules/@rsbuild/core/bin/rsbuild.js",
+          "build"
+        ],
+        "cwd": "<trial>/knip-6.44.0",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/results/6.44.0-original-build-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:41:28.134403+00:00",
+        "exit_code": 0,
+        "timed_out": false,
+        "stdout": "Rsbuild v2.2.12\n\ninfo    build started...\nready   built in 0.04s\n\nFile (web)                           Size      Gzip   \ndist/static/js/index.8020bd252a.js   0.04 kB   0.06 kB\ndist/index.html                      0.25 kB   0.20 kB\n\n                            Total:   0.29 kB   0.26 kB\n\n",
+        "stderr": "",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4"
+        },
+        "build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.0-original-knip",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/knip-6.44.0/node_modules/knip/bin/knip.js",
+          "--no-config-hints",
+          "--reporter=json"
+        ],
+        "cwd": "<trial>/knip-6.44.0",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/results/6.44.0-original-knip-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:41:28.354528+00:00",
+        "exit_code": 1,
+        "timed_out": false,
+        "stdout": "{\"issues\":[{\"file\":\"src/env.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"src/env.ts\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"dist/static/js/index.8020bd252a.js\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"dist/static/js/index.8020bd252a.js\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"src/main.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[{\"name\":\"@env\",\"line\":1,\"col\":23,\"pos\":22}],\"unresolved\":[]}]}\n",
+        "stderr": "",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4"
+        },
+        "build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.0-control-build",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/knip-6.44.0/node_modules/@rsbuild/core/bin/rsbuild.js",
+          "build"
+        ],
+        "cwd": "<trial>/knip-6.44.0",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/results/6.44.0-control-build-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:41:28.881275+00:00",
+        "exit_code": 0,
+        "timed_out": false,
+        "stdout": "Rsbuild v2.2.12\n\ninfo    build started...\nready   built in 0.04s\n\nFile (web)                           Size      Gzip   \ndist/static/js/index.8020bd252a.js   0.04 kB   0.06 kB\ndist/index.html                      0.25 kB   0.20 kB\n\n                            Total:   0.29 kB   0.26 kB\n\n",
+        "stderr": "",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4",
+          "src/unused-control.ts": "be8d1413bb9640413471b99d8f78684fe7d764a0b0b6b24fc65ad9ef23d1a637"
+        },
+        "build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.0-control-knip",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/knip-6.44.0/node_modules/knip/bin/knip.js",
+          "--no-config-hints",
+          "--reporter=json"
+        ],
+        "cwd": "<trial>/knip-6.44.0",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/results/6.44.0-control-knip-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:41:29.062641+00:00",
+        "exit_code": 1,
+        "timed_out": false,
+        "stdout": "{\"issues\":[{\"file\":\"src/env.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"src/env.ts\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"src/unused-control.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"src/unused-control.ts\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"dist/static/js/index.8020bd252a.js\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"dist/static/js/index.8020bd252a.js\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"src/main.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[{\"name\":\"@env\",\"line\":1,\"col\":23,\"pos\":22}],\"unresolved\":[]}]}\n",
+        "stderr": "",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4",
+          "src/unused-control.ts": "be8d1413bb9640413471b99d8f78684fe7d764a0b0b6b24fc65ad9ef23d1a637"
+        },
+        "build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.1-original-build",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/knip-6.44.1/node_modules/@rsbuild/core/bin/rsbuild.js",
+          "build"
+        ],
+        "cwd": "<trial>/knip-6.44.1",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/results/6.44.1-original-build-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:41:29.544717+00:00",
+        "exit_code": 0,
+        "timed_out": false,
+        "stdout": "Rsbuild v2.2.12\n\ninfo    build started...\nready   built in 0.06s\n\nFile (web)                           Size      Gzip   \ndist/static/js/index.8020bd252a.js   0.04 kB   0.06 kB\ndist/index.html                      0.25 kB   0.20 kB\n\n                            Total:   0.29 kB   0.26 kB\n\n",
+        "stderr": "",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4"
+        },
+        "build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.1-original-knip",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/knip-6.44.1/node_modules/knip/bin/knip.js",
+          "--no-config-hints",
+          "--reporter=json"
+        ],
+        "cwd": "<trial>/knip-6.44.1",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/results/6.44.1-original-knip-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:41:29.772352+00:00",
+        "exit_code": 1,
+        "timed_out": false,
+        "stdout": "{\"issues\":[{\"file\":\"dist/static/js/index.8020bd252a.js\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"dist/static/js/index.8020bd252a.js\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]}]}\n",
+        "stderr": "",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4"
+        },
+        "build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.1-control-build",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/knip-6.44.1/node_modules/@rsbuild/core/bin/rsbuild.js",
+          "build"
+        ],
+        "cwd": "<trial>/knip-6.44.1",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/results/6.44.1-control-build-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:41:30.282058+00:00",
+        "exit_code": 0,
+        "timed_out": false,
+        "stdout": "Rsbuild v2.2.12\n\ninfo    build started...\nready   built in 0.04s\n\nFile (web)                           Size      Gzip   \ndist/static/js/index.8020bd252a.js   0.04 kB   0.06 kB\ndist/index.html                      0.25 kB   0.20 kB\n\n                            Total:   0.29 kB   0.26 kB\n\n",
+        "stderr": "",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4",
+          "src/unused-control.ts": "be8d1413bb9640413471b99d8f78684fe7d764a0b0b6b24fc65ad9ef23d1a637"
+        },
+        "build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.1-control-knip",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/knip-6.44.1/node_modules/knip/bin/knip.js",
+          "--no-config-hints",
+          "--reporter=json"
+        ],
+        "cwd": "<trial>/knip-6.44.1",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/results/6.44.1-control-knip-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:41:30.512419+00:00",
+        "exit_code": 1,
+        "timed_out": false,
+        "stdout": "{\"issues\":[{\"file\":\"src/unused-control.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"src/unused-control.ts\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"dist/static/js/index.8020bd252a.js\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"dist/static/js/index.8020bd252a.js\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]}]}\n",
+        "stderr": "",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4",
+          "src/unused-control.ts": "be8d1413bb9640413471b99d8f78684fe7d764a0b0b6b24fc65ad9ef23d1a637"
+        },
+        "build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      }
+    ]
+  },
+  "corrected_layout": {
+    "method": "Full local clones of the exact original repository, preserving parent .gitignore. Reused installed packages and copied unchanged build artifacts; reran only affected Knip analysis. cwd remains rsbuild-alias.",
+    "records": [
+      {
+        "label": "6.44.0-original",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/full-6.44.0/rsbuild-alias/node_modules/knip/bin/knip.js",
+          "--no-config-hints",
+          "--reporter=json"
+        ],
+        "cwd": "<trial>/full-6.44.0/rsbuild-alias",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/corrected-results/6.44.0-original-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:43:54.408045+00:00",
+        "exit_code": 1,
+        "stdout": "{\"issues\":[{\"file\":\"src/env.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"src/env.ts\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"src/main.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[{\"name\":\"@env\",\"line\":1,\"col\":23,\"pos\":22}],\"unresolved\":[]}]}\n",
+        "stderr": "",
+        "git_head": "d4a049103d9c30db13f2c228e14499fe982ccb4f",
+        "gitignore_sha256": "31b62707fd4edf90221cf95a081ca8bc99b14d8b97bd049506bf798630ea0e68",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4"
+        },
+        "copied_build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.0-control",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/full-6.44.0/rsbuild-alias/node_modules/knip/bin/knip.js",
+          "--no-config-hints",
+          "--reporter=json"
+        ],
+        "cwd": "<trial>/full-6.44.0/rsbuild-alias",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/corrected-results/6.44.0-control-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:43:54.883456+00:00",
+        "exit_code": 1,
+        "stdout": "{\"issues\":[{\"file\":\"src/env.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"src/env.ts\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"src/unused-control.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"src/unused-control.ts\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]},{\"file\":\"src/main.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[{\"name\":\"@env\",\"line\":1,\"col\":23,\"pos\":22}],\"unresolved\":[]}]}\n",
+        "stderr": "",
+        "git_head": "d4a049103d9c30db13f2c228e14499fe982ccb4f",
+        "gitignore_sha256": "31b62707fd4edf90221cf95a081ca8bc99b14d8b97bd049506bf798630ea0e68",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4",
+          "src/unused-control.ts": "be8d1413bb9640413471b99d8f78684fe7d764a0b0b6b24fc65ad9ef23d1a637"
+        },
+        "copied_build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.1-original",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/full-6.44.1/rsbuild-alias/node_modules/knip/bin/knip.js",
+          "--no-config-hints",
+          "--reporter=json"
+        ],
+        "cwd": "<trial>/full-6.44.1/rsbuild-alias",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/corrected-results/6.44.1-original-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:43:55.327471+00:00",
+        "exit_code": 0,
+        "stdout": "{\"issues\":[]}\n",
+        "stderr": "",
+        "git_head": "d4a049103d9c30db13f2c228e14499fe982ccb4f",
+        "gitignore_sha256": "31b62707fd4edf90221cf95a081ca8bc99b14d8b97bd049506bf798630ea0e68",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4"
+        },
+        "copied_build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      },
+      {
+        "label": "6.44.1-control",
+        "args": [
+          "<node-bin>/node",
+          "<trial>/full-6.44.1/rsbuild-alias/node_modules/knip/bin/knip.js",
+          "--no-config-hints",
+          "--reporter=json"
+        ],
+        "cwd": "<trial>/full-6.44.1/rsbuild-alias",
+        "environment": {
+          "PATH": "<node-bin>:/usr/bin:/bin",
+          "HOME": "<trial>/corrected-results/6.44.1-control-home",
+          "LC_ALL": "C.UTF-8",
+          "CI": "1",
+          "DO_NOT_TRACK": "1",
+          "NO_COLOR": "1"
+        },
+        "started_utc": "2026-11-01T18:43:55.794717+00:00",
+        "exit_code": 1,
+        "stdout": "{\"issues\":[{\"file\":\"src/unused-control.ts\",\"binaries\":[],\"catalog\":[],\"catalogReferences\":[],\"dependencies\":[],\"devDependencies\":[],\"duplicates\":[],\"enumMembers\":[],\"exports\":[],\"files\":[{\"name\":\"src/unused-control.ts\"}],\"namespaceMembers\":[],\"optionalPeerDependencies\":[],\"types\":[],\"unlisted\":[],\"unresolved\":[]}]}\n",
+        "stderr": "",
+        "git_head": "d4a049103d9c30db13f2c228e14499fe982ccb4f",
+        "gitignore_sha256": "31b62707fd4edf90221cf95a081ca8bc99b14d8b97bd049506bf798630ea0e68",
+        "application_hashes": {
+          "rsbuild.config.mjs": "cd2dc24c2fb6d794eb53609ca628b391436fe589191420126fcfb337c164dafc",
+          "src/env.ts": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29",
+          "src/main.ts": "baa62749723cce2ed041945617828a8c5ab4aa4dc3f782594a3146eb768df1a4",
+          "src/unused-control.ts": "be8d1413bb9640413471b99d8f78684fe7d764a0b0b6b24fc65ad9ef23d1a637"
+        },
+        "copied_build_hashes": {
+          "dist/index.html": "2ca1bd69f490f512855f9b5b87aedb206d01f8498d64023a9f94cbf67ce0855a",
+          "dist/static/js/index.8020bd252a.js": "171a0b4b1b80f9304264e3a359cbe451012bca8b924b41512bb35a30ff2c77c7"
+        }
+      }
+    ]
+  },
+  "runner_sha256": {
+    "run_trial.py": "f5dfa67ccdc9f9231cd4fec592f678aea2ce45b98f1d4521657bc3fdc661c1df",
+    "run_corrected.py": "17bebec068f9d6e8d0bc8ddcfc0bb17a3aea790296a90675a0776a56863b88e7"
+  }
+}

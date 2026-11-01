@@ -2,7 +2,9 @@
 
 **🧪 让 Agent 根据 Knip 清理代码前，先把报告与项目真正运行的入口对齐。** 已用 Knip 的 workspace 项目若误报根测试配置纳入的子包文件，在所属 workspace 精确补测试入口；不要先删文件，也不要用 `ignore` 或把所有源码设为入口来清空报告。已有分析准确时保留原配置，不为本例新装工具。
 
-真实使用者 [#2247](https://github.com/webpro-nl/knip/issues/2247) 的 Vitest 根配置显式运行 `packages/lib/src/check.ts`；它导入 `value.ts` 并检查值。**测试确实运行通过，两份活文件却都被 Knip 报为 unused。** 本次在报告者原版 Knip **6.43.0** 和最新正式版 **6.44.0** 均复现，Vitest 固定 5.0.3。
+真实使用者 [#2247](https://github.com/webpro-nl/knip/issues/2247) 的 Vitest 根配置显式运行 `packages/lib/src/check.ts`；它导入 `value.ts` 并检查值。**测试确实运行通过，两份活文件却都被 Knip 报为 unused。** 本次在报告者原版 Knip **6.43.0** 和当时最新正式版 **6.44.0** 均复现，Vitest 固定 5.0.3。
+
+另一类 Rsbuild alias 误报已有正式修复，见[6.44.1 补验](#rsbuild-alias-release)；不与下文 workspace 入口问题混用。
 
 ## 只补真正缺失的入口
 
@@ -82,6 +84,26 @@ npm test
 本轮所核主干 `3c84cafb` 和 6.44.0 的相关实现仍整批处理插件 glob；主干这里只读核源码，实际 CLI 对照使用上述两个正式包。升级后再核自动发现，若已覆盖真实入口，就重新评估是否还需要这条显式配置。
 
 **依据**：固定主干 [glob 分组调用](https://github.com/webpro-nl/knip/blob/3c84cafb68b2fa3d419b03a3a5e564d60aaeef30/packages/knip/src/graph/build.ts)、[#2260 维护者审查](https://github.com/webpro-nl/knip/pull/2260#pullrequestreview-5714750121)、[否定模式反例](https://github.com/webpro-nl/knip/pull/2260#discussion_r4425462564)、[ignored workspace 反例](https://github.com/webpro-nl/knip/pull/2260#discussion_r4425462576)、[正式版发布](https://github.com/webpro-nl/knip/releases/tag/knip%406.44.0)。核实：2026-10-31 UTC。
+
+<a id="rsbuild-alias-release"></a>
+
+## 正式版补验：Rsbuild alias 不必先改活代码
+
+**🧪 在 #2248 的静态绝对路径 `resolve.alias` 工程中，6.44.1 已消除两条误报，仍能发现真正未引用的文件。** 遇到同因问题可评估正式修复，不必先删活的 `env.ts`、添加 ignore 或把所有源码设为入口；这不是上文 #2247 已修的证据。
+
+原公开工程固定于 `drewbitt/knip-repros@d4a04910` 的 `rsbuild-alias`。保留原 Rsbuild 2.2.12、配置和源码，只把 Knip 换成 6.44.0／6.44.1；两份实际锁文件的包版本差异也只有 Knip，均解析 Rspack 2.2.9。环境为 Linux、Node 24.22.1、npm 11.9.0。
+
+| 输入／控制 | 6.44.0 | 6.44.1 |
+|---|---|---|
+| 原应用的真实 Rsbuild build | exit 0 | exit 0，HTML／JS hash 与左侧相同 |
+| 原仓完整布局的 Knip 分析 | exit 1：活 `env.ts` 被报 unused，`@env` 被报 unlisted | exit 0，`issues` 为空 |
+| 新增合成未引用文件 | 原两条误报加控制文件 | exit 1，仅控制文件 |
+
+首次只复制子工程，漏了原仓根 `.gitignore` 的 `dist/`，额外报了构建产物；这是试验布局遗漏，不是 Knip 新缺陷。恢复完整原仓布局后，只重跑受影响的 Knip 分析，未新增 ignore 压绿。已成功的 build 仍对应相同应用／配置和依赖，产物复制到新布局，**不是在新布局重新构建**。控制文件随后移出并保留，原应用／配置已恢复原字节。
+
+修复在缺少 `tools.rspack` 的提前返回前处理顶层 alias，函数 alias 仍被跳过。本次只验静态绝对路径；报告者 6.43.0、其他 alias 形态、Windows 和整体准确率未验。JS 产物包含 `console.log(1)`，不是浏览器运行结果。不改默认或提升 reader 状态。完整首次／纠正输出、命令、版本与 hash 见 [rsbuild-alias-results.json](rsbuild-alias-results.json)。
+
+**依据**：[真实问题 #2248](https://github.com/webpro-nl/knip/issues/2248)、[固定原工程](https://github.com/drewbitt/knip-repros/tree/d4a049103d9c30db13f2c228e14499fe982ccb4f/rsbuild-alias)、[已合入 #2251](https://github.com/webpro-nl/knip/pull/2251)、[正式 6.44.1](https://github.com/webpro-nl/knip/releases/tag/knip%406.44.1)。核实／实跑：2026-11-01 UTC。
 
 ## 来源覆盖
 
