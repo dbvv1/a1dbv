@@ -81,6 +81,29 @@ Linux／Python 3.11.17 实测；两组均安装 pytest-xdist 3.8.0：
 
 **依据**：[原输入 #270](https://github.com/tarpas/pytest-testmon/issues/270)、[共享函数输入 #277](https://github.com/tarpas/pytest-testmon/issues/277)、[固定 Git 辅助实现](https://github.com/tarpas/pytest-testmon/blob/6a7fa71d06e47f54f6c0e3c6f52f0f0fe230d349/testmon/common.py#L101-L109)及本轮实际运行；核实／实跑 2026-11-01 UTC。
 
+<a id="sysmon-candidate-choice"></a>
+
+## 是否切换到保留 sysmon 的 #278 候选
+
+**已经用当前 main 的 CTracer 方案保住共享函数选测时，不凭这轮结果改用未合并的 #278。** 候选确实能保留 SysMonitor，并在本例中重新选中两个受影响测试；但没有速度收益证据，仍未修复本页的外层 coverage 漏计，格式检查也未通过。这里保留当前默认，不提供新的安装或切换指南。
+
+本轮独立检出 [#278](https://github.com/tarpas/pytest-testmon/pull/278) 的 `0f9852e61323920ba9bad0114f8cc97edf86216e`，未改源码、未叠加本仓 #270 补丁。Linux／CPython 3.14.8，按候选 `uv.lock` 安装 pytest 9.0.3、coverage 7.17.0、pytest-cov 7.1.0、xdist 3.8.0；不是报告者的 Python 3.14.9／pytest 9.2.0。既有 main 结果复用上一节，没有重跑。
+
+| 原真实输入／检查 | sysmon 候选结果 | ctrace 对照 |
+|---|---|---|
+| #277 两测试调用共享函数，串行及单 worker | 两种方式初次各 2 passed；未改时 0 执行；等价修改后两项均重跑通过；错误返回时两项均失败、exit 1 | 相同 |
+| #270 三项分类断言，外层 `coverage run --branch` 加 `--testmon` | 3 passed，但外层只记第 1 行，漏 2–6 行；综合覆盖率仍 10% | 相同 |
+| 候选完整 pytest 套件 | 248 passed／1 failed／1 skipped／7 xfailed | 247 passed／1 failed／1 skipped／8 xfailed |
+| Ruff 0.17.3 check／format | check 通过；format 失败，3 个修改文件需换行 | 同一源码检查，不重复执行 |
+
+环境探针确认默认及显式 sysmon 的 testmon 采集器均为 `SysMonitor`。候选通过每测试单独采集、把无 context 的记录归到该测试来保住依赖；**不是 sysmon 新增了动态 contexts**。原报告说多 worker 可能遮住漏选，本轮保留串行和单 worker，不用两测试恰好分到不同进程的绿结果代替。
+
+两套唯一失败都是 `test_failed_git_utilities` 对祖先无 `.git` 的假设，与上一节 main 的既有失败相同；未删目录、改断言或跳过测试。format 是[上游 CI](https://github.com/tarpas/pytest-testmon/blob/0f9852e61323920ba9bad0114f8cc97edf86216e/.github/workflows/ci.yml)也执行的锁定环境检查，不是额外门禁；pre-commit 另锁 Ruff 0.14.7，不能混作本轮结果。尚未核 hosted 运行，不把本地失败说成远端 CI 已失败。
+
+[完整输入与结果投影](sysmon-candidate-results.json)保留命令、stdout／stderr、实际环境、源码与输入 hash，仅归一化试验路径；独审接受这些窄范围事实。未验 Windows、完整 tox 矩阵、全部依赖映射精度或性能；两套运行时长不是受控对照，也没有升级旧读者验收。
+
+**依据**：[#277 原始共享函数输入](https://github.com/tarpas/pytest-testmon/issues/277)、[#270 原始外层测量输入](https://github.com/tarpas/pytest-testmon/issues/270)、[候选固定实现](https://github.com/tarpas/pytest-testmon/blob/0f9852e61323920ba9bad0114f8cc97edf86216e/testmon/testmon_core.py)与本轮实际运行；核实／实跑 2026-11-01 UTC。
+
 ## 历史实验与旧补丁
 
 同一真实子进程中，三个分类断言原本全部执行，外层报告却漏记第 2–6 行。修后恢复这五行及其分支记录，报告从 10% 回到 100%；改变的是测量完整性，测试代码没有因此覆盖更多行为。
@@ -94,7 +117,7 @@ Linux／Python 3.11.17 实测；两组均安装 pytest-xdist 3.8.0：
 | 两补丁，Python 3.12.14／pytest 9.1.1／coverage 7.17.0／pytest-cov 7.1.0 | 相关 29 passed |
 | 两补丁全套，coverage 6.5 与 7.17 | 各 59 passed／2 failed；两项缺失 fixture 在原基线也失败 |
 
-上述为 2026-10-27 旧基线 `94150742345d0bc3fb00a10c19c0ae26a0064c4e` 的实测，两份补丁分别经过新上下文审查者重放；负责人验过最终组合树与表中三组依赖。正常／xdist／pytest-cov 的依赖选测与真实失败退出码保留；新版本仍强制使用 ctrace，RuntimeError 与普通 CoverageException 继续抛出。Python 3.14.8 的后续补验见上节；没有运行保留 sysmon 的候选。
+上述为 2026-10-27 旧基线 `94150742345d0bc3fb00a10c19c0ae26a0064c4e` 的实测，两份补丁分别经过新上下文审查者重放；负责人验过最终组合树与表中三组依赖。正常／xdist／pytest-cov 的依赖选测与真实失败退出码保留；新版本仍强制使用 ctrace，RuntimeError 与普通 CoverageException 继续抛出。原整合补丁的 Python 3.14.8 结果见“Python 3.14 的现有候选补验”；该轮未运行 sysmon 方案，后续独立试用见 [#278 候选](#sysmon-candidate-choice)。
 
 旧资产保留供恢复，不适用于当前基线：[fix.patch](fix.patch)，SHA-256 `5298e99c0fe08f0d3571572f00f8cc1cf9c57da144b7b94d1cecc483f178f1e2`；[coverage-core.patch](coverage-core.patch)，SHA-256 `67d6960051fde31c2f5a905d292bc00a725c931d5213e0986f4ee2cdcb0231ed`。旧组合索引树为 `2264b6155ff3e9d908c7d5d5894b2e13ec038168`。
 

@@ -1,0 +1,1298 @@
+{
+  "scope": "Unmodified PR #278 candidate; issue #277 actual input; Linux Python 3.14.8. Not the old #270 patch, no speed or default recommendation.",
+  "projection": {
+    "normalization": "Only literal trial root and known ancestor .git replaced. All recorded fields retained. Timings are execution receipts, not a performance comparison.",
+    "original_sha256": "c22188adc869d6d217f54b8632d3305eab7dccb563156863ccfc9bc7c93f5f0c"
+  },
+  "manifest": {
+    "source_commit": "0f9852e61323920ba9bad0114f8cc97edf86216e",
+    "source_tree": "0c3f5f3e6f7e54c97fd8c2ceb9b6453a3b6a2a01",
+    "source_status": "",
+    "source_file_hashes": {
+      "pyproject.toml": "9e71bc3b0c5ed875b391f7a5e8874ea269ce3982510cf90e19907cf8f516163b",
+      "uv.lock": "2f81ae2e12832f7465267040b5e2fdff7482e0bb3720916ed7dcb7e564e11ecf",
+      "testmon/testmon_core.py": "5a61c8a9206fa13d78f70bdbb4d0ab7b89e1615ae1fa0f0ac22133066141a55e",
+      "tests/test_core.py": "22890b6dcc148ad19819283620c4003e88aaa2d64e17a3df9c3153eb6cd6a955",
+      "tests/test_subprocess.py": "f3f9c5a8d4cf98bd2bc0a2f9ae36934b4ecc57fe11aaf703e584be5c902d837b",
+      "tests/test_testmon.py": "5457c02cfa34496ee1911cbc891879b9951f3c9b5f34fda06fba0d9c54d53f93"
+    },
+    "runner_sha256": "a5f27ca0ed51a32ec6f4f8c4cec458083ffec74819525833c81c724f75cbaf4d",
+    "source_url": "https://github.com/tarpas/pytest-testmon/pull/278",
+    "issue_input": "https://github.com/tarpas/pytest-testmon/issues/277",
+    "setup": "uv sync --locked; Python 3.14.8; no production change; no #270 patch applied"
+  },
+  "inputs": {
+    "original": {
+      "text": "def shared():\n    return 1\n",
+      "sha256": "e05162f4fa455e4f61d27fbfab1fa114d0013f132fcd2cb142ade4b4daa0010c"
+    },
+    "equivalent": {
+      "text": "def shared():\n    return 0 + 1\n",
+      "sha256": "c113da23d0963dbe50f927e040c61bd69ce124f77f633a2fd6673e6eb718da8f"
+    },
+    "broken": {
+      "text": "def shared():\n    return 0\n",
+      "sha256": "f3a4d4c679b7bbf59ac8bd4d52a3b6d5f58a016110137472192c018ae59cac7b"
+    },
+    "tests": {
+      "text": "from lib import shared\ndef test_one():\n    assert shared() == 1\ndef test_two():\n    assert shared() == 1\n",
+      "sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+    }
+  },
+  "records": [
+    {
+      "label": "probe-default",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-c",
+        "import json,os,sys,importlib.metadata as m,coverage,testmon\nfrom testmon.testmon_core import TestmonCollector,supports_contexts\nc=coverage.Coverage(data_file=None,config_file=False);c.start()\ndefault=c._collector.tracer_name();c.stop()\nt=TestmonCollector(rootdir=os.getcwd());t.setup_coverage()\nd={'python':sys.version,'source':testmon.__file__,'packages':{n:m.version(n) for n in ['pytest','coverage','pytest-testmon','pytest-xdist','pytest-cov','ruff']},'coverage_core':default,'testmon_core':t.cov._collector.tracer_name(),'supports_contexts':supports_contexts(t.cov)}\nt.close();print(json.dumps(d))\n"
+      ],
+      "cwd": "<trial>/source",
+      "environment": {
+        "HOME": "<trial>/homes/probe-default",
+        "TMPDIR": "<trial>/temps/probe-default",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T18:20:37.656108+00:00",
+      "elapsed_seconds": 0.6445269100004225,
+      "exit_code": 0,
+      "stdout": "{\"python\": \"3.14.8 (main, Oct 14 2026, 01:04:34) [Clang 23.1.3 ]\", \"source\": \"<trial>/source/testmon/__init__.py\", \"packages\": {\"pytest\": \"9.0.3\", \"coverage\": \"7.17.0\", \"pytest-testmon\": \"2.3.0b0\", \"pytest-xdist\": \"3.8.0\", \"pytest-cov\": \"7.1.0\", \"ruff\": \"0.17.3\"}, \"coverage_core\": \"SysMonitor\", \"testmon_core\": \"SysMonitor\", \"supports_contexts\": false}\n",
+      "stderr": ""
+    },
+    {
+      "label": "probe-sysmon",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-c",
+        "import json,os,sys,importlib.metadata as m,coverage,testmon\nfrom testmon.testmon_core import TestmonCollector,supports_contexts\nc=coverage.Coverage(data_file=None,config_file=False);c.start()\ndefault=c._collector.tracer_name();c.stop()\nt=TestmonCollector(rootdir=os.getcwd());t.setup_coverage()\nd={'python':sys.version,'source':testmon.__file__,'packages':{n:m.version(n) for n in ['pytest','coverage','pytest-testmon','pytest-xdist','pytest-cov','ruff']},'coverage_core':default,'testmon_core':t.cov._collector.tracer_name(),'supports_contexts':supports_contexts(t.cov)}\nt.close();print(json.dumps(d))\n"
+      ],
+      "cwd": "<trial>/source",
+      "environment": {
+        "HOME": "<trial>/homes/probe-sysmon",
+        "TMPDIR": "<trial>/temps/probe-sysmon",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:38.301145+00:00",
+      "elapsed_seconds": 0.6264300160000857,
+      "exit_code": 0,
+      "stdout": "{\"python\": \"3.14.8 (main, Oct 14 2026, 01:04:34) [Clang 23.1.3 ]\", \"source\": \"<trial>/source/testmon/__init__.py\", \"packages\": {\"pytest\": \"9.0.3\", \"coverage\": \"7.17.0\", \"pytest-testmon\": \"2.3.0b0\", \"pytest-xdist\": \"3.8.0\", \"pytest-cov\": \"7.1.0\", \"ruff\": \"0.17.3\"}, \"coverage_core\": \"SysMonitor\", \"testmon_core\": \"SysMonitor\", \"supports_contexts\": false}\n",
+      "stderr": ""
+    },
+    {
+      "label": "probe-ctrace",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-c",
+        "import json,os,sys,importlib.metadata as m,coverage,testmon\nfrom testmon.testmon_core import TestmonCollector,supports_contexts\nc=coverage.Coverage(data_file=None,config_file=False);c.start()\ndefault=c._collector.tracer_name();c.stop()\nt=TestmonCollector(rootdir=os.getcwd());t.setup_coverage()\nd={'python':sys.version,'source':testmon.__file__,'packages':{n:m.version(n) for n in ['pytest','coverage','pytest-testmon','pytest-xdist','pytest-cov','ruff']},'coverage_core':default,'testmon_core':t.cov._collector.tracer_name(),'supports_contexts':supports_contexts(t.cov)}\nt.close();print(json.dumps(d))\n"
+      ],
+      "cwd": "<trial>/source",
+      "environment": {
+        "HOME": "<trial>/homes/probe-ctrace",
+        "TMPDIR": "<trial>/temps/probe-ctrace",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:20:38.928125+00:00",
+      "elapsed_seconds": 0.6417645119981898,
+      "exit_code": 0,
+      "stdout": "{\"python\": \"3.14.8 (main, Oct 14 2026, 01:04:34) [Clang 23.1.3 ]\", \"source\": \"<trial>/source/testmon/__init__.py\", \"packages\": {\"pytest\": \"9.0.3\", \"coverage\": \"7.17.0\", \"pytest-testmon\": \"2.3.0b0\", \"pytest-xdist\": \"3.8.0\", \"pytest-cov\": \"7.1.0\", \"ruff\": \"0.17.3\"}, \"coverage_core\": \"CTracer\", \"testmon_core\": \"CTracer\", \"supports_contexts\": true}\n",
+      "stderr": ""
+    },
+    {
+      "label": "sysmon-serial-initial",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon"
+      ],
+      "cwd": "<trial>/consumers/sysmon-serial",
+      "environment": {
+        "HOME": "<trial>/homes/sysmon-serial-initial",
+        "TMPDIR": "<trial>/temps/sysmon-serial-initial",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:39.571312+00:00",
+      "elapsed_seconds": 1.0324715260030644,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: new DB, environment: default\nWe'd like to hear from testmon users! Please go to https://testmon.org/survey to leave feedback.\nrootdir: <trial>/consumers/sysmon-serial\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncollecting ... collected 2 items\n\ntest_a.py::test_one PASSED                                               [ 50%]\ntest_a.py::test_two PASSED                                               [100%]\n\n============================== 2 passed in 0.04s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "sysmon-serial-unchanged",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon"
+      ],
+      "cwd": "<trial>/consumers/sysmon-serial",
+      "environment": {
+        "HOME": "<trial>/homes/sysmon-serial-unchanged",
+        "TMPDIR": "<trial>/temps/sysmon-serial-unchanged",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:40.604456+00:00",
+      "elapsed_seconds": 0.9884699549984362,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: 0, unchanged files: 2, environment: default\nrootdir: <trial>/consumers/sysmon-serial\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncollecting ... collected 0 items\n\n============================ no tests ran in 0.00s =============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "sysmon-serial-equivalent",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon"
+      ],
+      "cwd": "<trial>/consumers/sysmon-serial",
+      "environment": {
+        "HOME": "<trial>/homes/sysmon-serial-equivalent",
+        "TMPDIR": "<trial>/temps/sysmon-serial-equivalent",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:42.694718+00:00",
+      "elapsed_seconds": 1.0213164249980764,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/sysmon-serial\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncollecting ... collected 2 items\n\ntest_a.py::test_two PASSED                                               [ 50%]\ntest_a.py::test_one PASSED                                               [100%]\n\n============================== 2 passed in 0.04s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "sysmon-serial-broken",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon"
+      ],
+      "cwd": "<trial>/consumers/sysmon-serial",
+      "environment": {
+        "HOME": "<trial>/homes/sysmon-serial-broken",
+        "TMPDIR": "<trial>/temps/sysmon-serial-broken",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:44.817284+00:00",
+      "elapsed_seconds": 0.9974386920002871,
+      "exit_code": 1,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/sysmon-serial\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncollecting ... collected 2 items\n\ntest_a.py::test_one FAILED                                               [ 50%]\ntest_a.py::test_two FAILED                                               [100%]\n\n=================================== FAILURES ===================================\n___________________________________ test_one ___________________________________\n\n    def test_one():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:3: AssertionError\n___________________________________ test_two ___________________________________\n\n    def test_two():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:5: AssertionError\n=========================== short test summary info ============================\nFAILED test_a.py::test_one - assert 0 == 1\nFAILED test_a.py::test_two - assert 0 == 1\n============================== 2 failed in 0.03s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "sysmon-xdist1-initial",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon",
+        "-n",
+        "1"
+      ],
+      "cwd": "<trial>/consumers/sysmon-xdist1",
+      "environment": {
+        "HOME": "<trial>/homes/sysmon-xdist1-initial",
+        "TMPDIR": "<trial>/temps/sysmon-xdist1-initial",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:45.815641+00:00",
+      "elapsed_seconds": 1.9983229339995887,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: new DB, environment: default\nWe'd like to hear from testmon users! Please go to https://testmon.org/survey to leave feedback.\nrootdir: <trial>/consumers/sysmon-xdist1\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncreated: 1/1 worker\n1 worker [2 items]\n\nscheduling tests via LoadScheduling\n\ntest_a.py::test_one \n[gw0] [ 50%] PASSED test_a.py::test_one \ntest_a.py::test_two \n[gw0] [100%] PASSED test_a.py::test_two \n\n============================== 2 passed in 0.99s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "sysmon-xdist1-unchanged",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon",
+        "-n",
+        "1"
+      ],
+      "cwd": "<trial>/consumers/sysmon-xdist1",
+      "environment": {
+        "HOME": "<trial>/homes/sysmon-xdist1-unchanged",
+        "TMPDIR": "<trial>/temps/sysmon-xdist1-unchanged",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:47.815133+00:00",
+      "elapsed_seconds": 1.9745504040001833,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: 0, unchanged files: 2, environment: default\nrootdir: <trial>/consumers/sysmon-xdist1\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncreated: 1/1 worker\n1 worker [0 items]\n\nscheduling tests via LoadScheduling\n\n============================ no tests ran in 0.97s =============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "sysmon-xdist1-equivalent",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon",
+        "-n",
+        "1"
+      ],
+      "cwd": "<trial>/consumers/sysmon-xdist1",
+      "environment": {
+        "HOME": "<trial>/homes/sysmon-xdist1-equivalent",
+        "TMPDIR": "<trial>/temps/sysmon-xdist1-equivalent",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:50.891177+00:00",
+      "elapsed_seconds": 2.097924912999588,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/sysmon-xdist1\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncreated: 1/1 worker\n1 worker [2 items]\n\nscheduling tests via LoadScheduling\n\ntest_a.py::test_two \n[gw0] [ 50%] PASSED test_a.py::test_two \ntest_a.py::test_one \n[gw0] [100%] PASSED test_a.py::test_one \n\n============================== 2 passed in 1.07s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "sysmon-xdist1-broken",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon",
+        "-n",
+        "1"
+      ],
+      "cwd": "<trial>/consumers/sysmon-xdist1",
+      "environment": {
+        "HOME": "<trial>/homes/sysmon-xdist1-broken",
+        "TMPDIR": "<trial>/temps/sysmon-xdist1-broken",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:20:54.090797+00:00",
+      "elapsed_seconds": 2.147547840999323,
+      "exit_code": 1,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/sysmon-xdist1\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncreated: 1/1 worker\n1 worker [2 items]\n\nscheduling tests via LoadScheduling\n\ntest_a.py::test_one \n[gw0] [ 50%] FAILED test_a.py::test_one \ntest_a.py::test_two \n[gw0] [100%] FAILED test_a.py::test_two \n\n=================================== FAILURES ===================================\n___________________________________ test_one ___________________________________\n[gw0] linux -- Python 3.14.8 <trial>/source/.venv/bin/python\n\n    def test_one():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:3: AssertionError\n___________________________________ test_two ___________________________________\n[gw0] linux -- Python 3.14.8 <trial>/source/.venv/bin/python\n\n    def test_two():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:5: AssertionError\n=========================== short test summary info ============================\nFAILED test_a.py::test_one - assert 0 == 1\nFAILED test_a.py::test_two - assert 0 == 1\n============================== 2 failed in 1.13s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "ctrace-serial-initial",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon"
+      ],
+      "cwd": "<trial>/consumers/ctrace-serial",
+      "environment": {
+        "HOME": "<trial>/homes/ctrace-serial-initial",
+        "TMPDIR": "<trial>/temps/ctrace-serial-initial",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:20:56.239909+00:00",
+      "elapsed_seconds": 1.1151120869981241,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: new DB, environment: default\nWe'd like to hear from testmon users! Please go to https://testmon.org/survey to leave feedback.\nrootdir: <trial>/consumers/ctrace-serial\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncollecting ... collected 2 items\n\ntest_a.py::test_one PASSED                                               [ 50%]\ntest_a.py::test_two PASSED                                               [100%]\n\n============================== 2 passed in 0.04s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "ctrace-serial-unchanged",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon"
+      ],
+      "cwd": "<trial>/consumers/ctrace-serial",
+      "environment": {
+        "HOME": "<trial>/homes/ctrace-serial-unchanged",
+        "TMPDIR": "<trial>/temps/ctrace-serial-unchanged",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:20:57.355998+00:00",
+      "elapsed_seconds": 1.0898576430008688,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: 0, unchanged files: 2, environment: default\nrootdir: <trial>/consumers/ctrace-serial\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncollecting ... collected 0 items\n\n============================ no tests ran in 0.01s =============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "ctrace-serial-equivalent",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon"
+      ],
+      "cwd": "<trial>/consumers/ctrace-serial",
+      "environment": {
+        "HOME": "<trial>/homes/ctrace-serial-equivalent",
+        "TMPDIR": "<trial>/temps/ctrace-serial-equivalent",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:20:59.547481+00:00",
+      "elapsed_seconds": 1.0458189860000857,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/ctrace-serial\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncollecting ... collected 2 items\n\ntest_a.py::test_two PASSED                                               [ 50%]\ntest_a.py::test_one PASSED                                               [100%]\n\n============================== 2 passed in 0.03s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "ctrace-serial-broken",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon"
+      ],
+      "cwd": "<trial>/consumers/ctrace-serial",
+      "environment": {
+        "HOME": "<trial>/homes/ctrace-serial-broken",
+        "TMPDIR": "<trial>/temps/ctrace-serial-broken",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:21:01.695233+00:00",
+      "elapsed_seconds": 1.0823114539998642,
+      "exit_code": 1,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/ctrace-serial\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncollecting ... collected 2 items\n\ntest_a.py::test_one FAILED                                               [ 50%]\ntest_a.py::test_two FAILED                                               [100%]\n\n=================================== FAILURES ===================================\n___________________________________ test_one ___________________________________\n\n    def test_one():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:3: AssertionError\n___________________________________ test_two ___________________________________\n\n    def test_two():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:5: AssertionError\n=========================== short test summary info ============================\nFAILED test_a.py::test_one - assert 0 == 1\nFAILED test_a.py::test_two - assert 0 == 1\n============================== 2 failed in 0.05s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "ctrace-xdist1-initial",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon",
+        "-n",
+        "1"
+      ],
+      "cwd": "<trial>/consumers/ctrace-xdist1",
+      "environment": {
+        "HOME": "<trial>/homes/ctrace-xdist1-initial",
+        "TMPDIR": "<trial>/temps/ctrace-xdist1-initial",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:21:02.778795+00:00",
+      "elapsed_seconds": 2.165480925999873,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: new DB, environment: default\nWe'd like to hear from testmon users! Please go to https://testmon.org/survey to leave feedback.\nrootdir: <trial>/consumers/ctrace-xdist1\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncreated: 1/1 worker\n1 worker [2 items]\n\nscheduling tests via LoadScheduling\n\ntest_a.py::test_one \n[gw0] [ 50%] PASSED test_a.py::test_one \ntest_a.py::test_two \n[gw0] [100%] PASSED test_a.py::test_two \n\n============================== 2 passed in 1.06s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "ctrace-xdist1-unchanged",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon",
+        "-n",
+        "1"
+      ],
+      "cwd": "<trial>/consumers/ctrace-xdist1",
+      "environment": {
+        "HOME": "<trial>/homes/ctrace-xdist1-unchanged",
+        "TMPDIR": "<trial>/temps/ctrace-xdist1-unchanged",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:21:04.945299+00:00",
+      "elapsed_seconds": 1.9693762739989324,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: 0, unchanged files: 2, environment: default\nrootdir: <trial>/consumers/ctrace-xdist1\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncreated: 1/1 worker\n1 worker [0 items]\n\nscheduling tests via LoadScheduling\n\n============================ no tests ran in 0.99s =============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "ctrace-xdist1-equivalent",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon",
+        "-n",
+        "1"
+      ],
+      "cwd": "<trial>/consumers/ctrace-xdist1",
+      "environment": {
+        "HOME": "<trial>/homes/ctrace-xdist1-equivalent",
+        "TMPDIR": "<trial>/temps/ctrace-xdist1-equivalent",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:21:08.016177+00:00",
+      "elapsed_seconds": 2.0238652170010027,
+      "exit_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/ctrace-xdist1\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncreated: 1/1 worker\n1 worker [2 items]\n\nscheduling tests via LoadScheduling\n\ntest_a.py::test_two \n[gw0] [ 50%] PASSED test_a.py::test_two \ntest_a.py::test_one \n[gw0] [100%] PASSED test_a.py::test_one \n\n============================== 2 passed in 1.00s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "ctrace-xdist1-broken",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cov",
+        "--testmon",
+        "-n",
+        "1"
+      ],
+      "cwd": "<trial>/consumers/ctrace-xdist1",
+      "environment": {
+        "HOME": "<trial>/homes/ctrace-xdist1-broken",
+        "TMPDIR": "<trial>/temps/ctrace-xdist1-broken",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:21:11.141566+00:00",
+      "elapsed_seconds": 2.2040402650018223,
+      "exit_code": 1,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/source/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/ctrace-xdist1\nconfigfile: pytest.ini\nplugins: mock-3.17.0, xdist-3.8.0, testmon-2.3.0b0, platformdirs-4.13.6\ncreated: 1/1 worker\n1 worker [2 items]\n\nscheduling tests via LoadScheduling\n\ntest_a.py::test_one \n[gw0] [ 50%] FAILED test_a.py::test_one \ntest_a.py::test_two \n[gw0] [100%] FAILED test_a.py::test_two \n\n=================================== FAILURES ===================================\n___________________________________ test_one ___________________________________\n[gw0] linux -- Python 3.14.8 <trial>/source/.venv/bin/python\n\n    def test_one():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:3: AssertionError\n___________________________________ test_two ___________________________________\n[gw0] linux -- Python 3.14.8 <trial>/source/.venv/bin/python\n\n    def test_two():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:5: AssertionError\n=========================== short test summary info ============================\nFAILED test_a.py::test_one - assert 0 == 1\nFAILED test_a.py::test_two - assert 0 == 1\n============================== 2 failed in 1.14s ===============================\n",
+      "stderr": ""
+    },
+    {
+      "label": "full-sysmon",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-c",
+        "tox.ini",
+        "-q",
+        "tests"
+      ],
+      "cwd": "<trial>/source",
+      "environment": {
+        "HOME": "<trial>/homes/full-sysmon",
+        "TMPDIR": "<trial>/temps/full-sysmon",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "sysmon"
+      },
+      "started_utc": "2026-11-01T18:21:13.347089+00:00",
+      "elapsed_seconds": 147.02619736400084,
+      "exit_code": 1,
+      "stdout": ".................F...................................................... [ 28%]\n...................................s...x......x......................... [ 56%]\n........xx...........................................................x.. [ 84%]\n.....x....x..............................                                [100%]\n=================================== FAILURES ===================================\n______________________ TestMisc.test_failed_git_utilities ______________________\n\nself = <tests.test_core.TestMisc object at 0x7ff5277a29f0>\ntestdir = <Testdir local('<trial>/temps/full-sysmon/pytest-of-agent/pytest-0/test_failed_git_utilities0')>\n\n    def test_failed_git_utilities(self, testdir):\n>       assert git_path() == None\nE       AssertionError: assert '<ancestor-dot-git>' == None\nE        +  where '<ancestor-dot-git>' = git_path()\n\n<trial>/source/tests/test_core.py:201: AssertionError\n=============================== warnings summary ===============================\ntests/test_cov_assumptions.py::TestPytestCovAssumptions::test_active\n  <trial>/source/.venv/lib/python3.14/site-packages/coverage/control.py:967: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-no-data-collected\n    self._warn(\"No data was collected.\", slug=\"no-data-collected\")\n\ntests/test_cov_assumptions.py::TestPytestCovAssumptions::test_active\n  <trial>/source/.venv/lib/python3.14/site-packages/pytest_cov/plugin.py:366: CovReportWarning: Failed to generate report: No data to report.\n  \n    warnings.warn(CovReportWarning(message), stacklevel=1)\n\ntests/test_cov_assumptions.py::TestCovAssumptions::test_2_coverages1\n  <trial>/source/.venv/lib/python3.14/site-packages/coverage/control.py:803: CoverageWarning: Dynamic contexts aren't supported with core=sysmon; context data may be incomplete (no-sysmon-context); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-no-sysmon-context\n    self._warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_core.py::TestMisc::test_failed_git_utilities - AssertionErr...\n1 failed, 248 passed, 1 skipped, 7 xfailed, 3 warnings in 145.67s (0:02:25)\n",
+      "stderr": ""
+    },
+    {
+      "label": "full-ctrace",
+      "args": [
+        "<trial>/source/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-c",
+        "tox.ini",
+        "-q",
+        "tests"
+      ],
+      "cwd": "<trial>/source",
+      "environment": {
+        "HOME": "<trial>/homes/full-ctrace",
+        "TMPDIR": "<trial>/temps/full-ctrace",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        "COVERAGE_CORE": "ctrace"
+      },
+      "started_utc": "2026-11-01T18:23:40.374390+00:00",
+      "elapsed_seconds": 141.04707407299793,
+      "exit_code": 1,
+      "stdout": ".................F...................................................... [ 28%]\n...................................s...x......x......................... [ 56%]\n........xx........x..................................................x.. [ 84%]\n.....x....x..............................                                [100%]\n=================================== FAILURES ===================================\n______________________ TestMisc.test_failed_git_utilities ______________________\n\nself = <tests.test_core.TestMisc object at 0x7f4699ba29f0>\ntestdir = <Testdir local('<trial>/temps/full-ctrace/pytest-of-agent/pytest-0/test_failed_git_utilities0')>\n\n    def test_failed_git_utilities(self, testdir):\n>       assert git_path() == None\nE       AssertionError: assert '<ancestor-dot-git>' == None\nE        +  where '<ancestor-dot-git>' = git_path()\n\n<trial>/source/tests/test_core.py:201: AssertionError\n=============================== warnings summary ===============================\ntests/test_cov_assumptions.py::TestPytestCovAssumptions::test_active\n  <trial>/source/.venv/lib/python3.14/site-packages/coverage/control.py:967: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-no-data-collected\n    self._warn(\"No data was collected.\", slug=\"no-data-collected\")\n\ntests/test_cov_assumptions.py::TestPytestCovAssumptions::test_active\n  <trial>/source/.venv/lib/python3.14/site-packages/pytest_cov/plugin.py:366: CovReportWarning: Failed to generate report: No data to report.\n  \n    warnings.warn(CovReportWarning(message), stacklevel=1)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_core.py::TestMisc::test_failed_git_utilities - AssertionErr...\n1 failed, 247 passed, 1 skipped, 8 xfailed, 2 warnings in 139.89s (0:02:19)\n",
+      "stderr": ""
+    },
+    {
+      "label": "ruff-check",
+      "args": [
+        "<trial>/source/.venv/bin/ruff",
+        "check",
+        "testmon",
+        "tests"
+      ],
+      "cwd": "<trial>/source",
+      "environment": {
+        "HOME": "<trial>/homes/ruff-check",
+        "TMPDIR": "<trial>/temps/ruff-check",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T18:26:01.422465+00:00",
+      "elapsed_seconds": 0.01157558800332481,
+      "exit_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "label": "ruff-format",
+      "args": [
+        "<trial>/source/.venv/bin/ruff",
+        "format",
+        "--check",
+        "testmon",
+        "tests"
+      ],
+      "cwd": "<trial>/source",
+      "environment": {
+        "HOME": "<trial>/homes/ruff-format",
+        "TMPDIR": "<trial>/temps/ruff-format",
+        "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "VIRTUAL_ENV": "<trial>/source/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T18:26:01.435223+00:00",
+      "elapsed_seconds": 0.012405073997797444,
+      "exit_code": 1,
+      "stdout": "unformatted: File would be reformatted\n   --> testmon/testmon_core.py:615:17\n    |\n614 |         only_test = (\n    -             None if supports_contexts(self.cov) else next(iter(self.batched_test_names), None)\n615 +             None\n616 +             if supports_contexts(self.cov)\n617 +             else next(iter(self.batched_test_names), None)\n618 |         )\n    |\n\nunformatted: File would be reformatted\n   --> tests/test_core.py:230:59\n    |\n229 |     @pytest.mark.parametrize(\"core\", [\"ctrace\", \"sysmon\"])\n    -     def test_shared_line_recorded_for_every_test_in_batch(self, testdir, monkeypatch, core):\n230 +     def test_shared_line_recorded_for_every_test_in_batch(\n231 +         self, testdir, monkeypatch, core\n232 +     ):\n233 |         # coverage's sys.monitoring core (its default on CPython 3.14+) records a\n    |\n\nunformatted: File would be reformatted\n  --> tests/test_testmon.py:46:20\n   |\n45 | CORE_HAS_CONTEXTS = (\n   -     os.environ.get(\"COVERAGE_CORE\", \"sysmon\" if coverage_env.SYSMON_DEFAULT else \"ctrace\")\n46 +     os.environ.get(\n47 +         \"COVERAGE_CORE\", \"sysmon\" if coverage_env.SYSMON_DEFAULT else \"ctrace\"\n48 +     )\n49 |     != \"sysmon\"\n   |\n\n3 files would be reformatted, 23 files already formatted\n",
+      "stderr": ""
+    }
+  ],
+  "outer_coverage": {
+    "scope": "Same unchanged #278 candidate, original #270 classify input; no #270 patch applied. Prior base/control results reused, not rerun.",
+    "source": "https://github.com/tarpas/pytest-testmon/issues/270",
+    "original_sha256": "9b32aecff1fafc60a049f035498c7c17057760bbd22263028da95227c4659a81",
+    "runner_sha256": "5eb982b8d80cc3888996320ebdcdd15e746583bd88788c877b198e8caeb5bb78",
+    "inputs": {
+      "mod.py": "def classify(x):\n    if x > 0:\n        return \"positive\"\n    if x < 0:\n        return \"negative\"\n    return \"zero\"\n",
+      "test_mod.py": "from mod import classify\n\ndef test_positive():\n    assert classify(1) == \"positive\"\n\ndef test_negative():\n    assert classify(-1) == \"negative\"\n\ndef test_zero():\n    assert classify(0) == \"zero\"\n"
+    },
+    "records": [
+      {
+        "label": "sysmon-run",
+        "args": [
+          "<trial>/source/.venv/bin/python",
+          "-m",
+          "coverage",
+          "run",
+          "--branch",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cov",
+          "--testmon",
+          "test_mod.py"
+        ],
+        "cwd": "<trial>/outer-consumers/sysmon",
+        "environment": {
+          "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/outer-results/sysmon-home",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "LC_ALL": "C.UTF-8",
+          "COVERAGE_CORE": "sysmon"
+        },
+        "observed_utc": "2026-11-01T18:29:59.481004+00:00",
+        "exit_code": 0,
+        "stdout": "...                                                                      [100%]\n3 passed in 0.03s\n",
+        "stderr": ""
+      },
+      {
+        "label": "sysmon-report",
+        "args": [
+          "<trial>/source/.venv/bin/python",
+          "-m",
+          "coverage",
+          "report",
+          "-m",
+          "--include=mod.py"
+        ],
+        "cwd": "<trial>/outer-consumers/sysmon",
+        "environment": {
+          "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/outer-results/sysmon-home",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "LC_ALL": "C.UTF-8",
+          "COVERAGE_CORE": "sysmon"
+        },
+        "observed_utc": "2026-11-01T18:29:59.708948+00:00",
+        "exit_code": 0,
+        "stdout": "Name     Stmts   Miss Branch BrPart  Cover   Missing\n----------------------------------------------------\nmod.py       6      5      4      0    10%   2-6\n----------------------------------------------------\nTOTAL        6      5      4      0    10%\n",
+        "stderr": ""
+      },
+      {
+        "label": "sysmon-json",
+        "args": [
+          "<trial>/source/.venv/bin/python",
+          "-m",
+          "coverage",
+          "json",
+          "--include=mod.py",
+          "-o",
+          "coverage.json"
+        ],
+        "cwd": "<trial>/outer-consumers/sysmon",
+        "environment": {
+          "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/outer-results/sysmon-home",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "LC_ALL": "C.UTF-8",
+          "COVERAGE_CORE": "sysmon"
+        },
+        "observed_utc": "2026-11-01T18:29:59.945454+00:00",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "Wrote JSON report to coverage.json\n"
+      },
+      {
+        "label": "ctrace-run",
+        "args": [
+          "<trial>/source/.venv/bin/python",
+          "-m",
+          "coverage",
+          "run",
+          "--branch",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cov",
+          "--testmon",
+          "test_mod.py"
+        ],
+        "cwd": "<trial>/outer-consumers/ctrace",
+        "environment": {
+          "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/outer-results/ctrace-home",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "LC_ALL": "C.UTF-8",
+          "COVERAGE_CORE": "ctrace"
+        },
+        "observed_utc": "2026-11-01T18:30:01.036287+00:00",
+        "exit_code": 0,
+        "stdout": "...                                                                      [100%]\n3 passed in 0.04s\n",
+        "stderr": ""
+      },
+      {
+        "label": "ctrace-report",
+        "args": [
+          "<trial>/source/.venv/bin/python",
+          "-m",
+          "coverage",
+          "report",
+          "-m",
+          "--include=mod.py"
+        ],
+        "cwd": "<trial>/outer-consumers/ctrace",
+        "environment": {
+          "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/outer-results/ctrace-home",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "LC_ALL": "C.UTF-8",
+          "COVERAGE_CORE": "ctrace"
+        },
+        "observed_utc": "2026-11-01T18:30:01.261942+00:00",
+        "exit_code": 0,
+        "stdout": "Name     Stmts   Miss Branch BrPart  Cover   Missing\n----------------------------------------------------\nmod.py       6      5      4      0    10%   2-6\n----------------------------------------------------\nTOTAL        6      5      4      0    10%\n",
+        "stderr": ""
+      },
+      {
+        "label": "ctrace-json",
+        "args": [
+          "<trial>/source/.venv/bin/python",
+          "-m",
+          "coverage",
+          "json",
+          "--include=mod.py",
+          "-o",
+          "coverage.json"
+        ],
+        "cwd": "<trial>/outer-consumers/ctrace",
+        "environment": {
+          "PATH": "<trial>/source/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/outer-results/ctrace-home",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "LC_ALL": "C.UTF-8",
+          "COVERAGE_CORE": "ctrace"
+        },
+        "observed_utc": "2026-11-01T18:30:01.483223+00:00",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "Wrote JSON report to coverage.json\n"
+      }
+    ],
+    "coverage_json": {
+      "sysmon": {
+        "meta": {
+          "format": 3,
+          "version": "7.17.0",
+          "timestamp": "2026-11-01T10:29:59.923735",
+          "branch_coverage": true,
+          "show_contexts": false
+        },
+        "files": {
+          "mod.py": {
+            "executed_lines": [
+              1
+            ],
+            "summary": {
+              "covered_lines": 1,
+              "num_statements": 6,
+              "percent_covered": 10.0,
+              "percent_covered_display": "10",
+              "missing_lines": 5,
+              "excluded_lines": 0,
+              "percent_statements_covered": 16.666666666666668,
+              "percent_statements_covered_display": "17",
+              "num_branches": 4,
+              "num_partial_branches": 0,
+              "covered_branches": 0,
+              "missing_branches": 4,
+              "percent_branches_covered": 0.0,
+              "percent_branches_covered_display": "0"
+            },
+            "missing_lines": [
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "excluded_lines": [],
+            "executed_branches": [],
+            "missing_branches": [
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                4,
+                5
+              ],
+              [
+                4,
+                6
+              ]
+            ],
+            "functions": {
+              "classify": {
+                "executed_lines": [],
+                "summary": {
+                  "covered_lines": 0,
+                  "num_statements": 5,
+                  "percent_covered": 0.0,
+                  "percent_covered_display": "0",
+                  "missing_lines": 5,
+                  "excluded_lines": 0,
+                  "percent_statements_covered": 0.0,
+                  "percent_statements_covered_display": "0",
+                  "num_branches": 4,
+                  "num_partial_branches": 0,
+                  "covered_branches": 0,
+                  "missing_branches": 4,
+                  "percent_branches_covered": 0.0,
+                  "percent_branches_covered_display": "0"
+                },
+                "missing_lines": [
+                  2,
+                  3,
+                  4,
+                  5,
+                  6
+                ],
+                "excluded_lines": [],
+                "start_line": 1,
+                "executed_branches": [],
+                "missing_branches": [
+                  [
+                    2,
+                    3
+                  ],
+                  [
+                    2,
+                    4
+                  ],
+                  [
+                    4,
+                    5
+                  ],
+                  [
+                    4,
+                    6
+                  ]
+                ]
+              },
+              "": {
+                "executed_lines": [
+                  1
+                ],
+                "summary": {
+                  "covered_lines": 1,
+                  "num_statements": 1,
+                  "percent_covered": 100.0,
+                  "percent_covered_display": "100",
+                  "missing_lines": 0,
+                  "excluded_lines": 0,
+                  "percent_statements_covered": 100.0,
+                  "percent_statements_covered_display": "100",
+                  "num_branches": 0,
+                  "num_partial_branches": 0,
+                  "covered_branches": 0,
+                  "missing_branches": 0,
+                  "percent_branches_covered": 100.0,
+                  "percent_branches_covered_display": "100"
+                },
+                "missing_lines": [],
+                "excluded_lines": [],
+                "start_line": 1,
+                "executed_branches": [],
+                "missing_branches": []
+              }
+            },
+            "classes": {
+              "": {
+                "executed_lines": [
+                  1
+                ],
+                "summary": {
+                  "covered_lines": 1,
+                  "num_statements": 6,
+                  "percent_covered": 10.0,
+                  "percent_covered_display": "10",
+                  "missing_lines": 5,
+                  "excluded_lines": 0,
+                  "percent_statements_covered": 16.666666666666668,
+                  "percent_statements_covered_display": "17",
+                  "num_branches": 4,
+                  "num_partial_branches": 0,
+                  "covered_branches": 0,
+                  "missing_branches": 4,
+                  "percent_branches_covered": 0.0,
+                  "percent_branches_covered_display": "0"
+                },
+                "missing_lines": [
+                  2,
+                  3,
+                  4,
+                  5,
+                  6
+                ],
+                "excluded_lines": [],
+                "start_line": 1,
+                "executed_branches": [],
+                "missing_branches": [
+                  [
+                    2,
+                    3
+                  ],
+                  [
+                    2,
+                    4
+                  ],
+                  [
+                    4,
+                    5
+                  ],
+                  [
+                    4,
+                    6
+                  ]
+                ]
+              }
+            }
+          }
+        },
+        "totals": {
+          "covered_lines": 1,
+          "num_statements": 6,
+          "percent_covered": 10.0,
+          "percent_covered_display": "10",
+          "missing_lines": 5,
+          "excluded_lines": 0,
+          "percent_statements_covered": 16.666666666666668,
+          "percent_statements_covered_display": "17",
+          "num_branches": 4,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 4,
+          "percent_branches_covered": 0.0,
+          "percent_branches_covered_display": "0"
+        }
+      },
+      "ctrace": {
+        "meta": {
+          "format": 3,
+          "version": "7.17.0",
+          "timestamp": "2026-11-01T10:30:01.464711",
+          "branch_coverage": true,
+          "show_contexts": false
+        },
+        "files": {
+          "mod.py": {
+            "executed_lines": [
+              1
+            ],
+            "summary": {
+              "covered_lines": 1,
+              "num_statements": 6,
+              "percent_covered": 10.0,
+              "percent_covered_display": "10",
+              "missing_lines": 5,
+              "excluded_lines": 0,
+              "percent_statements_covered": 16.666666666666668,
+              "percent_statements_covered_display": "17",
+              "num_branches": 4,
+              "num_partial_branches": 0,
+              "covered_branches": 0,
+              "missing_branches": 4,
+              "percent_branches_covered": 0.0,
+              "percent_branches_covered_display": "0"
+            },
+            "missing_lines": [
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "excluded_lines": [],
+            "executed_branches": [],
+            "missing_branches": [
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                4,
+                5
+              ],
+              [
+                4,
+                6
+              ]
+            ],
+            "functions": {
+              "classify": {
+                "executed_lines": [],
+                "summary": {
+                  "covered_lines": 0,
+                  "num_statements": 5,
+                  "percent_covered": 0.0,
+                  "percent_covered_display": "0",
+                  "missing_lines": 5,
+                  "excluded_lines": 0,
+                  "percent_statements_covered": 0.0,
+                  "percent_statements_covered_display": "0",
+                  "num_branches": 4,
+                  "num_partial_branches": 0,
+                  "covered_branches": 0,
+                  "missing_branches": 4,
+                  "percent_branches_covered": 0.0,
+                  "percent_branches_covered_display": "0"
+                },
+                "missing_lines": [
+                  2,
+                  3,
+                  4,
+                  5,
+                  6
+                ],
+                "excluded_lines": [],
+                "start_line": 1,
+                "executed_branches": [],
+                "missing_branches": [
+                  [
+                    2,
+                    3
+                  ],
+                  [
+                    2,
+                    4
+                  ],
+                  [
+                    4,
+                    5
+                  ],
+                  [
+                    4,
+                    6
+                  ]
+                ]
+              },
+              "": {
+                "executed_lines": [
+                  1
+                ],
+                "summary": {
+                  "covered_lines": 1,
+                  "num_statements": 1,
+                  "percent_covered": 100.0,
+                  "percent_covered_display": "100",
+                  "missing_lines": 0,
+                  "excluded_lines": 0,
+                  "percent_statements_covered": 100.0,
+                  "percent_statements_covered_display": "100",
+                  "num_branches": 0,
+                  "num_partial_branches": 0,
+                  "covered_branches": 0,
+                  "missing_branches": 0,
+                  "percent_branches_covered": 100.0,
+                  "percent_branches_covered_display": "100"
+                },
+                "missing_lines": [],
+                "excluded_lines": [],
+                "start_line": 1,
+                "executed_branches": [],
+                "missing_branches": []
+              }
+            },
+            "classes": {
+              "": {
+                "executed_lines": [
+                  1
+                ],
+                "summary": {
+                  "covered_lines": 1,
+                  "num_statements": 6,
+                  "percent_covered": 10.0,
+                  "percent_covered_display": "10",
+                  "missing_lines": 5,
+                  "excluded_lines": 0,
+                  "percent_statements_covered": 16.666666666666668,
+                  "percent_statements_covered_display": "17",
+                  "num_branches": 4,
+                  "num_partial_branches": 0,
+                  "covered_branches": 0,
+                  "missing_branches": 4,
+                  "percent_branches_covered": 0.0,
+                  "percent_branches_covered_display": "0"
+                },
+                "missing_lines": [
+                  2,
+                  3,
+                  4,
+                  5,
+                  6
+                ],
+                "excluded_lines": [],
+                "start_line": 1,
+                "executed_branches": [],
+                "missing_branches": [
+                  [
+                    2,
+                    3
+                  ],
+                  [
+                    2,
+                    4
+                  ],
+                  [
+                    4,
+                    5
+                  ],
+                  [
+                    4,
+                    6
+                  ]
+                ]
+              }
+            }
+          }
+        },
+        "totals": {
+          "covered_lines": 1,
+          "num_statements": 6,
+          "percent_covered": 10.0,
+          "percent_covered_display": "10",
+          "missing_lines": 5,
+          "excluded_lines": 0,
+          "percent_statements_covered": 16.666666666666668,
+          "percent_statements_covered_display": "17",
+          "num_branches": 4,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 4,
+          "percent_branches_covered": 0.0,
+          "percent_branches_covered_display": "0"
+        }
+      }
+    }
+  }
+}
