@@ -14,11 +14,13 @@ codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'
 claude --model claude-sonnet-5-5 --effort medium
 ```
 
-Codex 的 `-c`、Claude 的 `--effort` 都只覆盖本次启动；型号与档位须在当前账号和客户端可用。Sonnet 5.5 要求 Claude Code v2.1.284+，下表的 Haiku 5.5 要求 v2.1.293+。第三方 Claude 提供方用其实际模型 ID。
+Codex 的 `-c`、Claude 的 `--effort` 都只覆盖本次启动；型号与档位须在当前账号和客户端可用。Sonnet 5.5 要求 Claude Code v2.1.284+，下表的 Haiku 5.5 要求 v2.1.293+。第三方提供方或表外模型沿用当前获准入口，记录本次可见的实际模型 ID 与 effort；无法确认就记未知，不由客户端名称或其他模型的同名档位推断。
 
-**按原标准接收，再决定是否沿用配置。** 看实际 diff 是否完成目标并保留约束，运行相关检查；修 bug 要重放触发路径。比较漏项、纠正轮次和等待，把主 Agent、子 Agent、重试、检查与返工的投入一起算。
+**按原标准接收，再决定是否沿用配置。** 看实际 diff 是否完成目标并保留约束，运行相关检查；修 bug 要重放触发路径。检查缺依赖且当前不允许安装时，列明未跑项，保留验收缺口；不能据此判为模型能力不足，`taskDone` 或审查标签也不能替代实际结果。比较漏项、纠正轮次和等待，把主 Agent、子 Agent、重试、检查与返工的投入一起算。
 
 **依据**：[官方配置] [Codex 单次覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude CLI 参数](https://code.claude.com/docs/en/cli-reference)、[Claude 型号与版本要求](https://code.claude.com/docs/en/model-config#model-aliases)；原核实 2026-10-26，Haiku 版本要求补核 2026-10-28。命令参数已核文档与本地 Codex 帮助，未启动模型任务。
+
+**读者反馈**：[jrnl 配置修复](../collaboration/local-jobs/A-MODEL-EFFORT-READER-20261029.md)：读者沿用表外后端、effort 未知；返工的本机真实 CLI／官方测试仍缺，未完整验收。记录核读 2026-11-01，不新增模型优劣结论或修订页照做验收。
 
 ## 按任务分配，而不是全员一起升档
 

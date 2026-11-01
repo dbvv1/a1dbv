@@ -45,8 +45,12 @@ page: docs/decisions/model-roles.md@dot-a/model-effort-reader-dispatch-20261029
 
 ## 当前结果
 
-- 返工已修正 version 判定：version 键存在即权威，source/空串/null 不再回退旧 JSON 判断，仅缺键才回退；install.py 复用已加载配置避免二次解析，新增回归在基线失败、修后通过（临时桩环境 27 passed，HEAD 7 failed, 20 passed）。未关闭审查问题（missed）：记录仍有 4 处不准确——'dev' 在基线同样失败而非仅作守卫、重复加载修复未端到端验证且旧版仍会二次加载、临时配置会被 upgrade_config 重写未记录、'另一任务 venv 无 pytest' 表述过宽。照做实测 taskDone=true；页面卡点：任务第 2/5 条要求跑官方 unit/BDD/lint 与真实 CLI，但第 6 条禁止安装依赖且本机无任务隔离环境（缺 ruamel 等），相关检查与四类 CLI 重放未执行，另有记录路径/只读保留冲突、页面型号表不含本会话可见后端。
-- 产物：[46e2560](https://github.com/dbvv1/jrnl/commit/46e2560429d515101375fe48420d345ccea202ad)，分支 `relay/a-model-effort-reader-20261029`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端按既有流程公开扫描并推送结果分支回 review_ready；本单元无剩余工作项。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+**接收结论：保全代码候选，整张 reader 卡未完成验收。** `taskDone=true`、公开扫描或“独立审查通过”均不替代原任务的真实 CLI、官方测试与执行边界核验；本卡保持 `review_ready`，不据此重派。
+
+- 产物：[46e2560](https://github.com/dbvv1/jrnl/commit/46e2560429d515101375fe48420d345ccea202ad)，分支 `relay/a-model-effort-reader-20261029`。version 键存在即不回退旧 JSON 判断；`install.py` 把已加载配置交给 `is_old_version()`。本机临时桩环境的定向测试为修后 27 passed、原结果 7 failed／20 passed；不是原依赖下的 pytest 或真实 CLI。
+- **四处记录仍须纠正**：① `dev` 与 source／空串／null 一样不可解析，在原结果上暴露错误，并非仅作守卫；② 只消除了 `is_old_version()` 的二次读取，旧版仍由 `upgrade_jrnl()` 再读，本机真实重复告警未实测；③ `upgrade_config()` 可能补默认键、改版本并保存临时配置，journal 字节不变不等于 CLI 完全只读；④ 同一 u1 末尾核对已记载其他既有 venv 有 pytest，“均无 pytest”过宽，准确缺口是任务所需的 jrnl 依赖／检查环境不可用。
+- **未完成验证**：返工未在本机跑四类真实 CLI、相关 unit／BDD、原测试入口及 lint；AST／依赖桩不能补齐。此前云端验证与初轮 Windows 结果仅属各自固定版本、环境和范围，不继承为此次本机通过；本次接收未新增运行证据。
+- **执行边界另列**：`install.py` 一行是后来确认必要的最小扩域，不追认原执行合规；旧 u1 被追加亦违反只读保留。须先确认原写者安全停止，再保全追加内容、恢复旧 u1 原字节，并仅在正式记录纠正事实；目前不改该结果分支。
+- **页面与派发问题分开**：模型页补清表外后端／effort 不可核时记未知，以及缺检查不能完整接收。缺依赖、派发正文与正式记录路径冲突属于环境／交接；version 语义遗漏属于实现／验收，不向模型页塞入 jrnl 特例。已有模型与 effort 收益仍未知，不提升页面评级；修订页未获新读者照做验收。
+
+依据：[原结果](https://github.com/dbvv1/jrnl/commit/a6694817f531b6ef20fe5c18ca9f33f1da37613b)、[返工正式记录](https://github.com/dbvv1/jrnl/blob/46e2560429d515101375fe48420d345ccea202ad/docs/reader-tests/A-MODEL-EFFORT-READER-20261029.md)、[u1 与非读者核对](https://github.com/dbvv1/jrnl/blob/46e2560429d515101375fe48420d345ccea202ad/reader-tests/A-MODEL-EFFORT-READER-20261029-u1.md)及固定源码；2026-11-01 核读。记录纠正与原验收缺口未关闭前，不标 accepted 或“无剩余工作项”。
