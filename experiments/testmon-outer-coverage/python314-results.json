@@ -1,0 +1,1892 @@
+{
+  "scope": "Existing outer-coverage candidate on CPython 3.14.8; no code changes, native Windows or model test.",
+  "upstream_commit": "6a7fa71d06e47f54f6c0e3c6f52f0f0fe230d349",
+  "candidate_tree": "468804f7017eda3415bf425907372796de90cc19",
+  "candidate_patch_sha256": "ddeec4f289ed869bb9c6e983225503c5d27ef3210b1ef8ecc6546a328d3a3461",
+  "sources": {
+    "outer_coverage": "https://github.com/tarpas/pytest-testmon/issues/270",
+    "shared_function": "https://github.com/tarpas/pytest-testmon/issues/277",
+    "unexecuted_sysmon_candidate": "https://github.com/tarpas/pytest-testmon/pull/278"
+  },
+  "public_projection": {
+    "method": "All parsed JSON fields in four source receipts retained; only literal trial root, per-run temporary roots and ancestor .git path replaced. Timings are receipts, not a performance comparison.",
+    "original_sha256": {
+      "checks.json": "ca74d1a4ddaafdac8279b33ab077f8206e7a3afc379dffa770f4fa2413e88c86",
+      "consumer-results.json": "9390b483be06910c9fc822671c3f50e91d2ded3aceac9bae6f243eeaf06d0f39",
+      "environment.json": "d5551bf316060ddcf9a43f41aac5108d4c15f66353bdd9560d3eed8c1399d122",
+      "ceiling-results.json": "97b6d4613ec904e93cd722a93605a0810ad92227c392aaf89f2ab1bb546fa6d8"
+    },
+    "runner_sha256": {
+      "run_checks.py": "cdaa3c5befe9e6611726ef7976a9fa69fabd3df03671edd0d04805e245e1f76f",
+      "run_consumers.py": "f89dcb77a7776a59a923201a8d21a1235b44d9440ad58d6f71af70ca0de6534e",
+      "run_ceiling.py": "0dbb9ade63c71d22f680654cfbff10ae0256776bced7d1d24386cb8425991de9"
+    },
+    "path_placeholder_kinds": [
+      "<trial>",
+      "<temporary-root:label>",
+      "<ancestor-dot-git>"
+    ]
+  },
+  "setup": {
+    "python": "3.14.8",
+    "unavailable_exact_reporter_version": "uv 0.13.4 reported no download for CPython 3.14.9; selected listed 3.14.8 with no-bin/no-registry and workspace-local installation/cache.",
+    "dependencies": "uv sync --locked for both source copies, without changing pyproject.toml or uv.lock. Same installed distribution names/versions, different editable source paths.",
+    "execution_env": "Whitelisted HOME/PATH/TMPDIR; no inherited TMNET_API_KEY, PYTEST_ADDOPTS, COVERAGE_CORE or user configuration; no --tmnet or remote xdist gateway."
+  },
+  "checks": [
+    {
+      "label": "base-environment",
+      "variant": "base",
+      "args": [
+        "<trial>/base/.venv/bin/python",
+        "-c",
+        "import sys,json,importlib.metadata as m,coverage; c=coverage.Coverage(data_file=None,config_file=False);c.start(); x={'python':sys.version,'packages':{n:m.version(n) for n in ['coverage','pytest','pytest-testmon','pytest-xdist','pytest-cov','ruff','tox']},'default_active_core':c._collector.tracer_name()};c.stop(); print(json.dumps(x))"
+      ],
+      "cwd": "<trial>/base",
+      "environment": {
+        "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+        "HOME": "<trial>/home/base-environment",
+        "TMPDIR": "<temporary-root:base-environment>",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "VIRTUAL_ENV": "<trial>/base/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T03:00:27.360171+00:00",
+      "temporary_root": "<temporary-root:base-environment>",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2645180619997518,
+      "stdout": "{\"python\": \"3.14.8 (main, Oct 14 2026, 01:04:34) [Clang 23.1.3 ]\", \"packages\": {\"coverage\": \"7.17.0\", \"pytest\": \"9.0.3\", \"pytest-testmon\": \"2.3.0b0\", \"pytest-xdist\": \"3.8.0\", \"pytest-cov\": \"7.1.0\", \"ruff\": \"0.17.3\", \"tox\": \"4.67.3\"}, \"default_active_core\": \"SysMonitor\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-full",
+      "variant": "base",
+      "args": [
+        "<trial>/base/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-c",
+        "tox.ini",
+        "-q",
+        "tests"
+      ],
+      "cwd": "<trial>/base",
+      "environment": {
+        "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+        "HOME": "<trial>/home/base-full",
+        "TMPDIR": "<temporary-root:base-full>",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "VIRTUAL_ENV": "<trial>/base/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T03:00:27.625414+00:00",
+      "temporary_root": "<temporary-root:base-full>",
+      "exit_code": 1,
+      "elapsed_seconds": 70.13392473099975,
+      "stdout": ".................F...................................................... [ 28%]\n..................................s...x......x.......................... [ 56%]\n.......xx........x..................................................x... [ 84%]\n....x....x..............................                                 [100%]\n=================================== FAILURES ===================================\n______________________ TestMisc.test_failed_git_utilities ______________________\n\nself = <tests.test_core.TestMisc object at 0x7f644b6da210>\ntestdir = <Testdir local('<temporary-root:base-full>/pytest-of-agent/pytest-0/test_failed_git_utilities0')>\n\n    def test_failed_git_utilities(self, testdir):\n>       assert git_path() == None\nE       AssertionError: assert '<ancestor-dot-git>' == None\nE        +  where '<ancestor-dot-git>' = git_path()\n\n<trial>/base/tests/test_core.py:198: AssertionError\n=============================== warnings summary ===============================\ntests/test_cov_assumptions.py::TestPytestCovAssumptions::test_active\n  <trial>/base/.venv/lib/python3.14/site-packages/coverage/control.py:967: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-no-data-collected\n    self._warn(\"No data was collected.\", slug=\"no-data-collected\")\n\ntests/test_cov_assumptions.py::TestPytestCovAssumptions::test_active\n  <trial>/base/.venv/lib/python3.14/site-packages/pytest_cov/plugin.py:366: CovReportWarning: Failed to generate report: No data to report.\n  \n    warnings.warn(CovReportWarning(message), stacklevel=1)\n\ntests/test_cov_assumptions.py::TestCovAssumptions::test_2_coverages1\n  <trial>/base/.venv/lib/python3.14/site-packages/coverage/control.py:803: CoverageWarning: Dynamic contexts aren't supported with core=sysmon; context data may be incomplete (no-sysmon-context); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-no-sysmon-context\n    self._warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_core.py::TestMisc::test_failed_git_utilities - AssertionErr...\n1 failed, 246 passed, 1 skipped, 8 xfailed, 3 warnings in 69.16s (0:01:09)\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-environment",
+      "variant": "candidate",
+      "args": [
+        "<trial>/candidate/.venv/bin/python",
+        "-c",
+        "import sys,json,importlib.metadata as m,coverage; c=coverage.Coverage(data_file=None,config_file=False);c.start(); x={'python':sys.version,'packages':{n:m.version(n) for n in ['coverage','pytest','pytest-testmon','pytest-xdist','pytest-cov','ruff','tox']},'default_active_core':c._collector.tracer_name()};c.stop(); print(json.dumps(x))"
+      ],
+      "cwd": "<trial>/candidate",
+      "environment": {
+        "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+        "HOME": "<trial>/home/candidate-environment",
+        "TMPDIR": "<temporary-root:candidate-environment>",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "VIRTUAL_ENV": "<trial>/candidate/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T03:01:37.759998+00:00",
+      "temporary_root": "<temporary-root:candidate-environment>",
+      "exit_code": 0,
+      "elapsed_seconds": 0.21491788900038955,
+      "stdout": "{\"python\": \"3.14.8 (main, Oct 14 2026, 01:04:34) [Clang 23.1.3 ]\", \"packages\": {\"coverage\": \"7.17.0\", \"pytest\": \"9.0.3\", \"pytest-testmon\": \"2.3.0b0\", \"pytest-xdist\": \"3.8.0\", \"pytest-cov\": \"7.1.0\", \"ruff\": \"0.17.3\", \"tox\": \"4.67.3\"}, \"default_active_core\": \"SysMonitor\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-full",
+      "variant": "candidate",
+      "args": [
+        "<trial>/candidate/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-c",
+        "tox.ini",
+        "-q",
+        "tests"
+      ],
+      "cwd": "<trial>/candidate",
+      "environment": {
+        "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+        "HOME": "<trial>/home/candidate-full",
+        "TMPDIR": "<temporary-root:candidate-full>",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "VIRTUAL_ENV": "<trial>/candidate/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T03:01:37.975855+00:00",
+      "temporary_root": "<temporary-root:candidate-full>",
+      "exit_code": 1,
+      "elapsed_seconds": 79.01030944400009,
+      "stdout": ".................F...................................................... [ 26%]\n.................................................s...x.................. [ 53%]\n......................xx........x....................................... [ 79%]\n...........x.......x....x..............................                  [100%]\n=================================== FAILURES ===================================\n______________________ TestMisc.test_failed_git_utilities ______________________\n\nself = <tests.test_core.TestMisc object at 0x7f9adb7a1a30>\ntestdir = <Testdir local('<temporary-root:candidate-full>/pytest-of-agent/pytest-0/test_failed_git_utilities0')>\n\n    def test_failed_git_utilities(self, testdir):\n>       assert git_path() == None\nE       AssertionError: assert '<ancestor-dot-git>' == None\nE        +  where '<ancestor-dot-git>' = git_path()\n\n<trial>/candidate/tests/test_core.py:198: AssertionError\n=============================== warnings summary ===============================\ntests/test_cov_assumptions.py::TestPytestCovAssumptions::test_active\n  <trial>/candidate/.venv/lib/python3.14/site-packages/coverage/control.py:967: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-no-data-collected\n    self._warn(\"No data was collected.\", slug=\"no-data-collected\")\n\ntests/test_cov_assumptions.py::TestPytestCovAssumptions::test_active\n  <trial>/candidate/.venv/lib/python3.14/site-packages/pytest_cov/plugin.py:366: CovReportWarning: Failed to generate report: No data to report.\n  \n    warnings.warn(CovReportWarning(message), stacklevel=1)\n\ntests/test_cov_assumptions.py::TestCovAssumptions::test_2_coverages1\n  <trial>/candidate/.venv/lib/python3.14/site-packages/coverage/control.py:803: CoverageWarning: Dynamic contexts aren't supported with core=sysmon; context data may be incomplete (no-sysmon-context); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-no-sysmon-context\n    self._warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_core.py::TestMisc::test_failed_git_utilities - AssertionErr...\n1 failed, 262 passed, 1 skipped, 7 xfailed, 3 warnings in 78.26s (0:01:18)\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-focused",
+      "variant": "candidate",
+      "args": [
+        "<trial>/candidate/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-c",
+        "tox.ini",
+        "-q",
+        "tests/test_configure.py",
+        "tests/test_coverage_detection.py",
+        "tests/test_coverage_core.py",
+        "tests/test_xdist_select.py",
+        "tests/test_db_fingerprints.py",
+        "tests/test_testmon.py::TestPytestReportHeader::test_deactivated_bc_coverage"
+      ],
+      "cwd": "<trial>/candidate",
+      "environment": {
+        "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+        "HOME": "<trial>/home/candidate-focused",
+        "TMPDIR": "<temporary-root:candidate-focused>",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "VIRTUAL_ENV": "<trial>/candidate/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T03:02:56.986849+00:00",
+      "temporary_root": "<temporary-root:candidate-focused>",
+      "exit_code": 0,
+      "elapsed_seconds": 8.085136095000053,
+      "stdout": "..............................                                           [100%]\n30 passed in 7.73s\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-ruff",
+      "variant": "candidate",
+      "args": [
+        "<trial>/candidate/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "testmon/",
+        "tests/"
+      ],
+      "cwd": "<trial>/candidate",
+      "environment": {
+        "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+        "HOME": "<trial>/home/candidate-ruff",
+        "TMPDIR": "<temporary-root:candidate-ruff>",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "VIRTUAL_ENV": "<trial>/candidate/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T03:03:05.073201+00:00",
+      "temporary_root": "<temporary-root:candidate-ruff>",
+      "exit_code": 0,
+      "elapsed_seconds": 0.03202545000021928,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-format",
+      "variant": "candidate",
+      "args": [
+        "<trial>/candidate/.venv/bin/python",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "testmon/",
+        "tests/"
+      ],
+      "cwd": "<trial>/candidate",
+      "environment": {
+        "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+        "HOME": "<trial>/home/candidate-format",
+        "TMPDIR": "<temporary-root:candidate-format>",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "VIRTUAL_ENV": "<trial>/candidate/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "started_utc": "2026-11-01T03:03:05.105942+00:00",
+      "temporary_root": "<temporary-root:candidate-format>",
+      "exit_code": 0,
+      "elapsed_seconds": 0.03184394800018708,
+      "stdout": "28 files already formatted\n",
+      "stderr": ""
+    }
+  ],
+  "consumers": {
+    "recorded_utc": "2026-11-01T03:01:30.896897+00:00",
+    "fixtures": {
+      "mod.py": "def classify(x):\n    if x > 0:\n        return \"positive\"\n    if x < 0:\n        return \"negative\"\n    return \"zero\"\n",
+      "test_mod.py": "from mod import classify\n\ndef test_positive():\n    assert classify(1) == \"positive\"\n\ndef test_negative():\n    assert classify(-1) == \"negative\"\n\ndef test_zero():\n    assert classify(0) == \"zero\"\n",
+      "lib.py": "def shared():\n    return 1\n",
+      "test_a.py": "from lib import shared\ndef test_one():\n    assert shared() == 1\ndef test_two():\n    assert shared() == 1\n"
+    },
+    "records": [
+      {
+        "label": "base-outer-False",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-m",
+          "coverage",
+          "run",
+          "--branch",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "-p",
+          "no:cov",
+          "-q",
+          "test_mod.py"
+        ],
+        "cwd": "<trial>/consumers/base-outer-False",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-outer-False",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.4071911280002496,
+        "stdout": "...                                                                      [100%]\n3 passed in 0.01s\n",
+        "stderr": ""
+      },
+      {
+        "label": "base-report-False",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-m",
+          "coverage",
+          "json",
+          "--include=mod.py",
+          "-o",
+          "report.json"
+        ],
+        "cwd": "<trial>/consumers/base-outer-False",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-report-False",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.0965648040000815,
+        "stdout": "",
+        "stderr": "Wrote JSON report to report.json\n",
+        "coverage_report": {
+          "meta": {
+            "format": 3,
+            "version": "7.17.0",
+            "timestamp": "2026-10-31T20:01:24.462392",
+            "branch_coverage": true,
+            "show_contexts": false
+          },
+          "files": {
+            "mod.py": {
+              "executed_lines": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "summary": {
+                "covered_lines": 6,
+                "num_statements": 6,
+                "percent_covered": 100.0,
+                "percent_covered_display": "100",
+                "missing_lines": 0,
+                "excluded_lines": 0,
+                "percent_statements_covered": 100.0,
+                "percent_statements_covered_display": "100",
+                "num_branches": 4,
+                "num_partial_branches": 0,
+                "covered_branches": 4,
+                "missing_branches": 0,
+                "percent_branches_covered": 100.0,
+                "percent_branches_covered_display": "100"
+              },
+              "missing_lines": [],
+              "excluded_lines": [],
+              "executed_branches": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  2,
+                  4
+                ],
+                [
+                  4,
+                  5
+                ],
+                [
+                  4,
+                  6
+                ]
+              ],
+              "missing_branches": [],
+              "functions": {
+                "classify": {
+                  "executed_lines": [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ],
+                  "summary": {
+                    "covered_lines": 5,
+                    "num_statements": 5,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 4,
+                    "num_partial_branches": 0,
+                    "covered_branches": 4,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [
+                    [
+                      2,
+                      3
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      4,
+                      5
+                    ],
+                    [
+                      4,
+                      6
+                    ]
+                  ],
+                  "missing_branches": []
+                },
+                "": {
+                  "executed_lines": [
+                    1
+                  ],
+                  "summary": {
+                    "covered_lines": 1,
+                    "num_statements": 1,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 0,
+                    "num_partial_branches": 0,
+                    "covered_branches": 0,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [],
+                  "missing_branches": []
+                }
+              },
+              "classes": {
+                "": {
+                  "executed_lines": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ],
+                  "summary": {
+                    "covered_lines": 6,
+                    "num_statements": 6,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 4,
+                    "num_partial_branches": 0,
+                    "covered_branches": 4,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [
+                    [
+                      2,
+                      3
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      4,
+                      5
+                    ],
+                    [
+                      4,
+                      6
+                    ]
+                  ],
+                  "missing_branches": []
+                }
+              }
+            }
+          },
+          "totals": {
+            "covered_lines": 6,
+            "num_statements": 6,
+            "percent_covered": 100.0,
+            "percent_covered_display": "100",
+            "missing_lines": 0,
+            "excluded_lines": 0,
+            "percent_statements_covered": 100.0,
+            "percent_statements_covered_display": "100",
+            "num_branches": 4,
+            "num_partial_branches": 0,
+            "covered_branches": 4,
+            "missing_branches": 0,
+            "percent_branches_covered": 100.0,
+            "percent_branches_covered_display": "100"
+          }
+        }
+      },
+      {
+        "label": "base-outer-True",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-m",
+          "coverage",
+          "run",
+          "--branch",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "-p",
+          "no:cov",
+          "-q",
+          "test_mod.py",
+          "--testmon"
+        ],
+        "cwd": "<trial>/consumers/base-outer-True",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-outer-True",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.38500891800003956,
+        "stdout": "...                                                                      [100%]\n3 passed in 0.03s\n",
+        "stderr": ""
+      },
+      {
+        "label": "base-report-True",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-m",
+          "coverage",
+          "json",
+          "--include=mod.py",
+          "-o",
+          "report.json"
+        ],
+        "cwd": "<trial>/consumers/base-outer-True",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-report-True",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.08955352800012406,
+        "stdout": "",
+        "stderr": "Wrote JSON report to report.json\n",
+        "coverage_report": {
+          "meta": {
+            "format": 3,
+            "version": "7.17.0",
+            "timestamp": "2026-10-31T20:01:24.939284",
+            "branch_coverage": true,
+            "show_contexts": false
+          },
+          "files": {
+            "mod.py": {
+              "executed_lines": [
+                1
+              ],
+              "summary": {
+                "covered_lines": 1,
+                "num_statements": 6,
+                "percent_covered": 10.0,
+                "percent_covered_display": "10",
+                "missing_lines": 5,
+                "excluded_lines": 0,
+                "percent_statements_covered": 16.666666666666668,
+                "percent_statements_covered_display": "17",
+                "num_branches": 4,
+                "num_partial_branches": 0,
+                "covered_branches": 0,
+                "missing_branches": 4,
+                "percent_branches_covered": 0.0,
+                "percent_branches_covered_display": "0"
+              },
+              "missing_lines": [
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "excluded_lines": [],
+              "executed_branches": [],
+              "missing_branches": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  2,
+                  4
+                ],
+                [
+                  4,
+                  5
+                ],
+                [
+                  4,
+                  6
+                ]
+              ],
+              "functions": {
+                "classify": {
+                  "executed_lines": [],
+                  "summary": {
+                    "covered_lines": 0,
+                    "num_statements": 5,
+                    "percent_covered": 0.0,
+                    "percent_covered_display": "0",
+                    "missing_lines": 5,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 0.0,
+                    "percent_statements_covered_display": "0",
+                    "num_branches": 4,
+                    "num_partial_branches": 0,
+                    "covered_branches": 0,
+                    "missing_branches": 4,
+                    "percent_branches_covered": 0.0,
+                    "percent_branches_covered_display": "0"
+                  },
+                  "missing_lines": [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [],
+                  "missing_branches": [
+                    [
+                      2,
+                      3
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      4,
+                      5
+                    ],
+                    [
+                      4,
+                      6
+                    ]
+                  ]
+                },
+                "": {
+                  "executed_lines": [
+                    1
+                  ],
+                  "summary": {
+                    "covered_lines": 1,
+                    "num_statements": 1,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 0,
+                    "num_partial_branches": 0,
+                    "covered_branches": 0,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [],
+                  "missing_branches": []
+                }
+              },
+              "classes": {
+                "": {
+                  "executed_lines": [
+                    1
+                  ],
+                  "summary": {
+                    "covered_lines": 1,
+                    "num_statements": 6,
+                    "percent_covered": 10.0,
+                    "percent_covered_display": "10",
+                    "missing_lines": 5,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 16.666666666666668,
+                    "percent_statements_covered_display": "17",
+                    "num_branches": 4,
+                    "num_partial_branches": 0,
+                    "covered_branches": 0,
+                    "missing_branches": 4,
+                    "percent_branches_covered": 0.0,
+                    "percent_branches_covered_display": "0"
+                  },
+                  "missing_lines": [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [],
+                  "missing_branches": [
+                    [
+                      2,
+                      3
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      4,
+                      5
+                    ],
+                    [
+                      4,
+                      6
+                    ]
+                  ]
+                }
+              }
+            }
+          },
+          "totals": {
+            "covered_lines": 1,
+            "num_statements": 6,
+            "percent_covered": 10.0,
+            "percent_covered_display": "10",
+            "missing_lines": 5,
+            "excluded_lines": 0,
+            "percent_statements_covered": 16.666666666666668,
+            "percent_statements_covered_display": "17",
+            "num_branches": 4,
+            "num_partial_branches": 0,
+            "covered_branches": 0,
+            "missing_branches": 4,
+            "percent_branches_covered": 0.0,
+            "percent_branches_covered_display": "0"
+          }
+        }
+      },
+      {
+        "label": "base-select-initial",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "--testmon",
+          "-v",
+          "test_a.py"
+        ],
+        "cwd": "<trial>/consumers/base-select",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-select-initial",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.3107470300001296,
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/base/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: new DB, environment: default\nWe'd like to hear from testmon users! Please go to https://testmon.org/survey to leave feedback.\nrootdir: <trial>/consumers/base-select\nconfigfile: pytest.ini\ncollecting ... collected 2 items\n\ntest_a.py::test_one PASSED                                               [ 50%]\ntest_a.py::test_two PASSED                                               [100%]\n\n============================== 2 passed in 0.04s ===============================\n",
+        "stderr": "",
+        "library_input": "def shared():\n    return 1\n",
+        "test_input_sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+      },
+      {
+        "label": "base-select-unchanged",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "--testmon",
+          "-v",
+          "test_a.py"
+        ],
+        "cwd": "<trial>/consumers/base-select",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-select-unchanged",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.28570120599988513,
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/base/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: 0, unchanged files: 2, environment: default\nrootdir: <trial>/consumers/base-select\nconfigfile: pytest.ini\ncollecting ... collected 2 items / 2 deselected / 0 selected\n\n============================ 2 deselected in 0.00s =============================\n",
+        "stderr": "",
+        "library_input": "def shared():\n    return 1\n",
+        "test_input_sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+      },
+      {
+        "label": "base-select-equivalent",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "--testmon",
+          "-v",
+          "test_a.py"
+        ],
+        "cwd": "<trial>/consumers/base-select",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-select-equivalent",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.33136843799957205,
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/base/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/base-select\nconfigfile: pytest.ini\ncollecting ... collected 2 items\n\ntest_a.py::test_two PASSED                                               [ 50%]\ntest_a.py::test_one PASSED                                               [100%]\n\n============================== 2 passed in 0.04s ===============================\n",
+        "stderr": "",
+        "library_input": "def shared():\n    return 0 + 1\n",
+        "test_input_sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+      },
+      {
+        "label": "base-select-failure",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "--testmon",
+          "-v",
+          "test_a.py"
+        ],
+        "cwd": "<trial>/consumers/base-select",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-select-failure",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 1,
+        "elapsed_seconds": 0.2978911270001845,
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/base/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/base-select\nconfigfile: pytest.ini\ncollecting ... collected 2 items\n\ntest_a.py::test_one FAILED                                               [ 50%]\ntest_a.py::test_two FAILED                                               [100%]\n\n=================================== FAILURES ===================================\n___________________________________ test_one ___________________________________\n\n    def test_one():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:3: AssertionError\n___________________________________ test_two ___________________________________\n\n    def test_two():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:5: AssertionError\n=========================== short test summary info ============================\nFAILED test_a.py::test_one - assert 0 == 1\nFAILED test_a.py::test_two - assert 0 == 1\n============================== 2 failed in 0.04s ===============================\n",
+        "stderr": "",
+        "library_input": "def shared():\n    return 0 + 0\n",
+        "test_input_sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+      },
+      {
+        "label": "base-core",
+        "variant": "base",
+        "argv": [
+          "<trial>/base/.venv/bin/python",
+          "-c",
+          "import os,json;from testmon.testmon_core import TestmonCollector;c=TestmonCollector(os.getcwd());c.setup_coverage();print(json.dumps({'actual_testmon_collector_core':c.cov._collector.tracer_name(),'config_run_core':c.cov.get_option('run:core')}));c.close()"
+        ],
+        "cwd": "<trial>/consumers/base-core",
+        "environment": {
+          "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/base-core",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.22660187000019505,
+        "stdout": "{\"actual_testmon_collector_core\": \"CTracer\", \"config_run_core\": \"ctrace\"}\n",
+        "stderr": ""
+      },
+      {
+        "label": "candidate-outer-False",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-m",
+          "coverage",
+          "run",
+          "--branch",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "-p",
+          "no:cov",
+          "-q",
+          "test_mod.py"
+        ],
+        "cwd": "<trial>/consumers/candidate-outer-False",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-outer-False",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.6113451719998011,
+        "stdout": "...                                                                      [100%]\n3 passed in 0.01s\n",
+        "stderr": ""
+      },
+      {
+        "label": "candidate-report-False",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-m",
+          "coverage",
+          "json",
+          "--include=mod.py",
+          "-o",
+          "report.json"
+        ],
+        "cwd": "<trial>/consumers/candidate-outer-False",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-report-False",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.16922263700007534,
+        "stdout": "",
+        "stderr": "Wrote JSON report to report.json\n",
+        "coverage_report": {
+          "meta": {
+            "format": 3,
+            "version": "7.17.0",
+            "timestamp": "2026-10-31T20:01:27.178991",
+            "branch_coverage": true,
+            "show_contexts": false
+          },
+          "files": {
+            "mod.py": {
+              "executed_lines": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "summary": {
+                "covered_lines": 6,
+                "num_statements": 6,
+                "percent_covered": 100.0,
+                "percent_covered_display": "100",
+                "missing_lines": 0,
+                "excluded_lines": 0,
+                "percent_statements_covered": 100.0,
+                "percent_statements_covered_display": "100",
+                "num_branches": 4,
+                "num_partial_branches": 0,
+                "covered_branches": 4,
+                "missing_branches": 0,
+                "percent_branches_covered": 100.0,
+                "percent_branches_covered_display": "100"
+              },
+              "missing_lines": [],
+              "excluded_lines": [],
+              "executed_branches": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  2,
+                  4
+                ],
+                [
+                  4,
+                  5
+                ],
+                [
+                  4,
+                  6
+                ]
+              ],
+              "missing_branches": [],
+              "functions": {
+                "classify": {
+                  "executed_lines": [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ],
+                  "summary": {
+                    "covered_lines": 5,
+                    "num_statements": 5,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 4,
+                    "num_partial_branches": 0,
+                    "covered_branches": 4,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [
+                    [
+                      2,
+                      3
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      4,
+                      5
+                    ],
+                    [
+                      4,
+                      6
+                    ]
+                  ],
+                  "missing_branches": []
+                },
+                "": {
+                  "executed_lines": [
+                    1
+                  ],
+                  "summary": {
+                    "covered_lines": 1,
+                    "num_statements": 1,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 0,
+                    "num_partial_branches": 0,
+                    "covered_branches": 0,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [],
+                  "missing_branches": []
+                }
+              },
+              "classes": {
+                "": {
+                  "executed_lines": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ],
+                  "summary": {
+                    "covered_lines": 6,
+                    "num_statements": 6,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 4,
+                    "num_partial_branches": 0,
+                    "covered_branches": 4,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [
+                    [
+                      2,
+                      3
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      4,
+                      5
+                    ],
+                    [
+                      4,
+                      6
+                    ]
+                  ],
+                  "missing_branches": []
+                }
+              }
+            }
+          },
+          "totals": {
+            "covered_lines": 6,
+            "num_statements": 6,
+            "percent_covered": 100.0,
+            "percent_covered_display": "100",
+            "missing_lines": 0,
+            "excluded_lines": 0,
+            "percent_statements_covered": 100.0,
+            "percent_statements_covered_display": "100",
+            "num_branches": 4,
+            "num_partial_branches": 0,
+            "covered_branches": 4,
+            "missing_branches": 0,
+            "percent_branches_covered": 100.0,
+            "percent_branches_covered_display": "100"
+          }
+        }
+      },
+      {
+        "label": "candidate-outer-True",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-m",
+          "coverage",
+          "run",
+          "--branch",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "-p",
+          "no:cov",
+          "-q",
+          "test_mod.py",
+          "--testmon"
+        ],
+        "cwd": "<trial>/consumers/candidate-outer-True",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-outer-True",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.6544056359998649,
+        "stdout": "...                                                                      [100%]\n3 passed in 0.01s\n",
+        "stderr": ""
+      },
+      {
+        "label": "candidate-report-True",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-m",
+          "coverage",
+          "json",
+          "--include=mod.py",
+          "-o",
+          "report.json"
+        ],
+        "cwd": "<trial>/consumers/candidate-outer-True",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-report-True",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.1429810960003124,
+        "stdout": "",
+        "stderr": "Wrote JSON report to report.json\n",
+        "coverage_report": {
+          "meta": {
+            "format": 3,
+            "version": "7.17.0",
+            "timestamp": "2026-10-31T20:01:27.981502",
+            "branch_coverage": true,
+            "show_contexts": false
+          },
+          "files": {
+            "mod.py": {
+              "executed_lines": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "summary": {
+                "covered_lines": 6,
+                "num_statements": 6,
+                "percent_covered": 100.0,
+                "percent_covered_display": "100",
+                "missing_lines": 0,
+                "excluded_lines": 0,
+                "percent_statements_covered": 100.0,
+                "percent_statements_covered_display": "100",
+                "num_branches": 4,
+                "num_partial_branches": 0,
+                "covered_branches": 4,
+                "missing_branches": 0,
+                "percent_branches_covered": 100.0,
+                "percent_branches_covered_display": "100"
+              },
+              "missing_lines": [],
+              "excluded_lines": [],
+              "executed_branches": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  2,
+                  4
+                ],
+                [
+                  4,
+                  5
+                ],
+                [
+                  4,
+                  6
+                ]
+              ],
+              "missing_branches": [],
+              "functions": {
+                "classify": {
+                  "executed_lines": [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ],
+                  "summary": {
+                    "covered_lines": 5,
+                    "num_statements": 5,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 4,
+                    "num_partial_branches": 0,
+                    "covered_branches": 4,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [
+                    [
+                      2,
+                      3
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      4,
+                      5
+                    ],
+                    [
+                      4,
+                      6
+                    ]
+                  ],
+                  "missing_branches": []
+                },
+                "": {
+                  "executed_lines": [
+                    1
+                  ],
+                  "summary": {
+                    "covered_lines": 1,
+                    "num_statements": 1,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 0,
+                    "num_partial_branches": 0,
+                    "covered_branches": 0,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [],
+                  "missing_branches": []
+                }
+              },
+              "classes": {
+                "": {
+                  "executed_lines": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ],
+                  "summary": {
+                    "covered_lines": 6,
+                    "num_statements": 6,
+                    "percent_covered": 100.0,
+                    "percent_covered_display": "100",
+                    "missing_lines": 0,
+                    "excluded_lines": 0,
+                    "percent_statements_covered": 100.0,
+                    "percent_statements_covered_display": "100",
+                    "num_branches": 4,
+                    "num_partial_branches": 0,
+                    "covered_branches": 4,
+                    "missing_branches": 0,
+                    "percent_branches_covered": 100.0,
+                    "percent_branches_covered_display": "100"
+                  },
+                  "missing_lines": [],
+                  "excluded_lines": [],
+                  "start_line": 1,
+                  "executed_branches": [
+                    [
+                      2,
+                      3
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      4,
+                      5
+                    ],
+                    [
+                      4,
+                      6
+                    ]
+                  ],
+                  "missing_branches": []
+                }
+              }
+            }
+          },
+          "totals": {
+            "covered_lines": 6,
+            "num_statements": 6,
+            "percent_covered": 100.0,
+            "percent_covered_display": "100",
+            "missing_lines": 0,
+            "excluded_lines": 0,
+            "percent_statements_covered": 100.0,
+            "percent_statements_covered_display": "100",
+            "num_branches": 4,
+            "num_partial_branches": 0,
+            "covered_branches": 4,
+            "missing_branches": 0,
+            "percent_branches_covered": 100.0,
+            "percent_branches_covered_display": "100"
+          }
+        }
+      },
+      {
+        "label": "candidate-select-initial",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "--testmon",
+          "-v",
+          "test_a.py"
+        ],
+        "cwd": "<trial>/consumers/candidate-select",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-select-initial",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.5446228410000913,
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/candidate/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: new DB, environment: default\nWe'd like to hear from testmon users! Please go to https://testmon.org/survey to leave feedback.\nrootdir: <trial>/consumers/candidate-select\nconfigfile: pytest.ini\ncollecting ... collected 2 items\n\ntest_a.py::test_one PASSED                                               [ 50%]\ntest_a.py::test_two PASSED                                               [100%]\n\n============================== 2 passed in 0.03s ===============================\n",
+        "stderr": "",
+        "library_input": "def shared():\n    return 1\n",
+        "test_input_sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+      },
+      {
+        "label": "candidate-select-unchanged",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "--testmon",
+          "-v",
+          "test_a.py"
+        ],
+        "cwd": "<trial>/consumers/candidate-select",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-select-unchanged",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.6105637050000041,
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/candidate/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: 0, unchanged files: 2, environment: default\nrootdir: <trial>/consumers/candidate-select\nconfigfile: pytest.ini\ncollecting ... collected 2 items / 2 deselected / 0 selected\n\n============================ 2 deselected in 0.01s =============================\n",
+        "stderr": "",
+        "library_input": "def shared():\n    return 1\n",
+        "test_input_sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+      },
+      {
+        "label": "candidate-select-equivalent",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "--testmon",
+          "-v",
+          "test_a.py"
+        ],
+        "cwd": "<trial>/consumers/candidate-select",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-select-equivalent",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.598278100999778,
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/candidate/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/candidate-select\nconfigfile: pytest.ini\ncollecting ... collected 2 items\n\ntest_a.py::test_two PASSED                                               [ 50%]\ntest_a.py::test_one PASSED                                               [100%]\n\n============================== 2 passed in 0.03s ===============================\n",
+        "stderr": "",
+        "library_input": "def shared():\n    return 0 + 1\n",
+        "test_input_sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+      },
+      {
+        "label": "candidate-select-failure",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "testmon.pytest_testmon",
+          "--testmon",
+          "-v",
+          "test_a.py"
+        ],
+        "cwd": "<trial>/consumers/candidate-select",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-select-failure",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 1,
+        "elapsed_seconds": 0.6641443779999463,
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.8, pytest-9.0.3, pluggy-1.7.0 -- <trial>/candidate/.venv/bin/python\ncachedir: .pytest_cache\ntestmon: changed files: test_a.py, unchanged files: 1, environment: default\nrootdir: <trial>/consumers/candidate-select\nconfigfile: pytest.ini\ncollecting ... collected 2 items\n\ntest_a.py::test_one FAILED                                               [ 50%]\ntest_a.py::test_two FAILED                                               [100%]\n\n=================================== FAILURES ===================================\n___________________________________ test_one ___________________________________\n\n    def test_one():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:3: AssertionError\n___________________________________ test_two ___________________________________\n\n    def test_two():\n>       assert shared() == 1\nE       assert 0 == 1\nE        +  where 0 = shared()\n\ntest_a.py:5: AssertionError\n=========================== short test summary info ============================\nFAILED test_a.py::test_one - assert 0 == 1\nFAILED test_a.py::test_two - assert 0 == 1\n============================== 2 failed in 0.04s ===============================\n",
+        "stderr": "",
+        "library_input": "def shared():\n    return 0 + 0\n",
+        "test_input_sha256": "8bf18ef7618af6ffefaabba88d8e2c9e3bdc1c0ef1e70d2305f60e90566f839f"
+      },
+      {
+        "label": "candidate-core",
+        "variant": "candidate",
+        "argv": [
+          "<trial>/candidate/.venv/bin/python",
+          "-c",
+          "import os,json;from testmon.testmon_core import TestmonCollector;c=TestmonCollector(os.getcwd());c.setup_coverage();print(json.dumps({'actual_testmon_collector_core':c.cov._collector.tracer_name(),'config_run_core':c.cov.get_option('run:core')}));c.close()"
+        ],
+        "cwd": "<trial>/consumers/candidate-core",
+        "environment": {
+          "PATH": "<trial>/candidate/.venv/bin:/usr/bin:/bin",
+          "HOME": "<trial>/home/candidate-core",
+          "LC_ALL": "C.UTF-8",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+          "GIT_CONFIG_NOSYSTEM": "1",
+          "GIT_CONFIG_GLOBAL": "/dev/null"
+        },
+        "exit": 0,
+        "elapsed_seconds": 0.4742329850000715,
+        "stdout": "{\"actual_testmon_collector_core\": \"CTracer\", \"config_run_core\": \"ctrace\"}\n",
+        "stderr": ""
+      }
+    ]
+  },
+  "environment": {
+    "base": {
+      "executable": "<trial>/base/.venv/bin/python",
+      "source": "<trial>/base/testmon/__init__.py",
+      "distributions": [
+        [
+          "PyYAML",
+          "6.0.3"
+        ],
+        [
+          "Pygments",
+          "2.21.0"
+        ],
+        [
+          "cachetools",
+          "7.2.6"
+        ],
+        [
+          "cfgv",
+          "3.5.0"
+        ],
+        [
+          "colorama",
+          "0.4.6"
+        ],
+        [
+          "coverage",
+          "7.17.0"
+        ],
+        [
+          "distlib",
+          "0.4.4"
+        ],
+        [
+          "execnet",
+          "2.1.2"
+        ],
+        [
+          "filelock",
+          "4.2.4"
+        ],
+        [
+          "identify",
+          "2.6.20"
+        ],
+        [
+          "iniconfig",
+          "2.3.1"
+        ],
+        [
+          "nodeenv",
+          "1.11.0"
+        ],
+        [
+          "packaging",
+          "26.3"
+        ],
+        [
+          "platformdirs",
+          "4.13.6"
+        ],
+        [
+          "pluggy",
+          "1.7.0"
+        ],
+        [
+          "pre_commit",
+          "4.7.0"
+        ],
+        [
+          "pyproject-api",
+          "1.12.2"
+        ],
+        [
+          "pytest",
+          "9.0.3"
+        ],
+        [
+          "pytest-cov",
+          "7.1.0"
+        ],
+        [
+          "pytest-mock",
+          "3.17.0"
+        ],
+        [
+          "pytest-testmon",
+          "2.3.0b0"
+        ],
+        [
+          "pytest-testmon",
+          "2.3.0b0"
+        ],
+        [
+          "pytest-xdist",
+          "3.8.0"
+        ],
+        [
+          "python-discovery",
+          "1.6.6"
+        ],
+        [
+          "ruff",
+          "0.17.3"
+        ],
+        [
+          "tomli_w",
+          "1.2.0"
+        ],
+        [
+          "tox",
+          "4.67.3"
+        ],
+        [
+          "tox-gh-actions",
+          "3.5.0"
+        ],
+        [
+          "virtualenv",
+          "21.15.1"
+        ]
+      ],
+      "source_files": {
+        "testmon/configure.py": "4a8f2c4e495a4d90d29b8c06c00fd5f2aabb315773cd585a3a151b5cdb06f621",
+        "testmon/testmon_core.py": "bd34caa1b121cd9ef4c542489592e902b8f3ef778112f21c392582490f37ecaf",
+        "testmon/common.py": "716cbba8204b98eaab8650b59666cb2f6a8cba2efa57d51a5435b6c448620c2f",
+        "pyproject.toml": "9e71bc3b0c5ed875b391f7a5e8874ea269ce3982510cf90e19907cf8f516163b",
+        "uv.lock": "2f81ae2e12832f7465267040b5e2fdff7482e0bb3720916ed7dcb7e564e11ecf"
+      }
+    },
+    "candidate": {
+      "executable": "<trial>/candidate/.venv/bin/python",
+      "source": "<trial>/candidate/testmon/__init__.py",
+      "distributions": [
+        [
+          "PyYAML",
+          "6.0.3"
+        ],
+        [
+          "Pygments",
+          "2.21.0"
+        ],
+        [
+          "cachetools",
+          "7.2.6"
+        ],
+        [
+          "cfgv",
+          "3.5.0"
+        ],
+        [
+          "colorama",
+          "0.4.6"
+        ],
+        [
+          "coverage",
+          "7.17.0"
+        ],
+        [
+          "distlib",
+          "0.4.4"
+        ],
+        [
+          "execnet",
+          "2.1.2"
+        ],
+        [
+          "filelock",
+          "4.2.4"
+        ],
+        [
+          "identify",
+          "2.6.20"
+        ],
+        [
+          "iniconfig",
+          "2.3.1"
+        ],
+        [
+          "nodeenv",
+          "1.11.0"
+        ],
+        [
+          "packaging",
+          "26.3"
+        ],
+        [
+          "platformdirs",
+          "4.13.6"
+        ],
+        [
+          "pluggy",
+          "1.7.0"
+        ],
+        [
+          "pre_commit",
+          "4.7.0"
+        ],
+        [
+          "pyproject-api",
+          "1.12.2"
+        ],
+        [
+          "pytest",
+          "9.0.3"
+        ],
+        [
+          "pytest-cov",
+          "7.1.0"
+        ],
+        [
+          "pytest-mock",
+          "3.17.0"
+        ],
+        [
+          "pytest-testmon",
+          "2.3.0b0"
+        ],
+        [
+          "pytest-testmon",
+          "2.3.0b0"
+        ],
+        [
+          "pytest-xdist",
+          "3.8.0"
+        ],
+        [
+          "python-discovery",
+          "1.6.6"
+        ],
+        [
+          "ruff",
+          "0.17.3"
+        ],
+        [
+          "tomli_w",
+          "1.2.0"
+        ],
+        [
+          "tox",
+          "4.67.3"
+        ],
+        [
+          "tox-gh-actions",
+          "3.5.0"
+        ],
+        [
+          "virtualenv",
+          "21.15.1"
+        ]
+      ],
+      "source_files": {
+        "testmon/configure.py": "f2f2e362308e822494158674c2c4ecb2c537e8d92ac55cdb91a3f7e05606b860",
+        "testmon/testmon_core.py": "41be2aefc0e4dd3d522e133b9942b855c301c4667f906b6d2503fa32ab92761a",
+        "testmon/common.py": "716cbba8204b98eaab8650b59666cb2f6a8cba2efa57d51a5435b6c448620c2f",
+        "pyproject.toml": "9e71bc3b0c5ed875b391f7a5e8874ea269ce3982510cf90e19907cf8f516163b",
+        "uv.lock": "2f81ae2e12832f7465267040b5e2fdff7482e0bb3720916ed7dcb7e564e11ecf"
+      }
+    }
+  },
+  "abandoned_ceiling_probe": [
+    {
+      "label": "base-ceiling-targeted-ancestor-visible",
+      "command": [
+        "git",
+        "rev-parse",
+        "--git-dir"
+      ],
+      "cwd": "<temporary-root:base-ceiling-targeted>/probe",
+      "environment": {
+        "PATH": "<trial>/base/.venv/bin:/usr/bin:/bin",
+        "HOME": "<trial>/home/base-ceiling-targeted",
+        "TMPDIR": "<temporary-root:base-ceiling-targeted>",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONIOENCODING": "utf-8",
+        "VIRTUAL_ENV": "<trial>/base/.venv",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "utc": "2026-11-01T03:03:41.304767+00:00",
+      "exit": 128,
+      "seconds": 0.0015807039999344852,
+      "stdout": "",
+      "stderr": "fatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\n"
+    }
+  ],
+  "probe_disposition": "The first Git probe exited 128 before any ceiling variable or pytest control was run. Source inspection found common.git_path() walks parent directories itself and accepts any .git directory. The proposed Git ceiling control was abandoned, not used to obtain green results. Original baseline/candidate failure retained; no mount, production code or test assertion was modified.",
+  "limits": [
+    "Full native pytest suite has one identical failed test in both variants, plus skipped/expected-failing tests.",
+    "Shared-function input is from #277 but executed on current 2.3.0b0 main and its unchanged candidate, not reporter 2.2.0; both already force CTracer.",
+    "Separate runtime probes started default coverage as SysMonitor and TestmonCollector as CTracer; #278 was not applied or benchmarked.",
+    "No complete tox version matrix, Python 3.15, native Windows, reader acceptance, upstream contribution or performance claim."
+  ]
+}

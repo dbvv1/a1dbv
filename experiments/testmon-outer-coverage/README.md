@@ -58,7 +58,28 @@ Linux／Python 3.11.17 实测；两组均安装 pytest-xdist 3.8.0：
 | 整合版完整套件，coverage 7.8.2 组 | 2 failed／261 passed／1 skipped／7 xfailed |
 | Ruff check／format check | 均通过，未改上游格式配置 |
 
-当前锁定依赖的唯一失败与原基线相同：`test_failed_git_utilities` 假设临时目录的祖先没有 `.git`，此工作区不满足；未删改目录或跳过测试。7.8.2 组另有 `test_subprocess_testmon` 没有生成子进程采集文件：该环境缺少处理 `COVERAGE_PROCESS_START` 的启动 hook，而 7.17 环境安装包自带；这里未增装 hook，相关上游代码保持不变。**两个完整套件都不是全绿**；完整 tox 矩阵、Python 3.14／3.15 与原生 Windows 未验证。
+当前锁定依赖的唯一失败与原基线相同：`test_failed_git_utilities` 假设临时目录的祖先没有 `.git`，此工作区不满足；未删改目录或跳过测试。7.8.2 组另有 `test_subprocess_testmon` 没有生成子进程采集文件：该环境缺少处理 `COVERAGE_PROCESS_START` 的启动 hook，而 7.17 环境安装包自带；这里未增装 hook，相关上游代码保持不变。**两个完整套件都不是全绿**；当轮未跑完整 tox 矩阵、Python 3.14／3.15 与原生 Windows，Python 3.14 后续补验见下节。
+
+## Python 3.14 的现有候选补验
+
+**现有补丁在 Python 3.14.8 保住外层测量与变更选测，但完整套件仍有同一基线失败。** 2026-11-01 沿上述固定 main 和原补丁实跑，补丁及索引树未变；两组均按上游锁文件安装 pytest 9.0.3、coverage 7.17.0、pytest-cov 7.1.0、xdist 3.8.0。报告者的 3.14.9 不在本轮 uv 可下载列表中，实际使用 3.14.8。表内百分比是启用 `--branch` 后的综合覆盖率；原 main 加 testmon 的纯语句覆盖率为 1/6。
+
+| 原生检查／真实输入 | 原 main | 现有候选 |
+|---|---|---|
+| 完整 `pytest -c tox.ini -q tests` | 246 passed／1 failed／1 skipped／8 xfailed | 262 passed／1 failed／1 skipped／7 xfailed |
+| 上文候选定向命令 | 本轮未跑该组合 | 30 passed |
+| #270 三项分类断言，不加 testmon | 3 passed；外层记录 100% | 相同 |
+| 同输入加 `--testmon` | 3 passed；外层只记第 1 行，10% | 3 passed；第 1–6 行及分支完整，100% |
+| #277 两测试调用共享函数，改为等价实现 | 两项均重新执行并通过 | 相同 |
+| 再将共享函数改成错误返回值 | 两项均失败，exit 1 | 相同 |
+
+共享函数未改时，两组均明确 deselect 两项；错误返回是本轮追加的失败控制。独立启动探针读到默认 coverage 为 `SysMonitor`、原 `TestmonCollector` 为 `CTracer`：当前 main 已强制使用后者，本补丁保留该行为，**不是试用了上游 [#278](https://github.com/tarpas/pytest-testmon/pull/278) 的保留 sysmon 方案**。候选 Ruff check／format 也通过。
+
+唯一完整套件失败仍是 `test_failed_git_utilities`：本轮临时目录的祖先存在 `.git` 目录，`common.git_path()` 自行向上扫描并返回它；原生 Git 在探针中却报“不是仓库”。拟用 Git ceiling 隔离的控制在这个前提检查即收口，没有用它重跑 pytest、删除挂载或修改断言，首次失败完整保留。
+
+[原始结果的公开投影](python314-results.json)保存 7 条检查、18 条消费者命令、实际导入源／包版本及未继续的 Git 探针，只替换执行路径并附原文件哈希。此项补的是既有代码候选的云端版本验收；完整 tox 矩阵、Python 3.15、原生 Windows 与本机新读者仍待验，不新增操作指南或性能结论。
+
+**依据**：[原输入 #270](https://github.com/tarpas/pytest-testmon/issues/270)、[共享函数输入 #277](https://github.com/tarpas/pytest-testmon/issues/277)、[固定 Git 辅助实现](https://github.com/tarpas/pytest-testmon/blob/6a7fa71d06e47f54f6c0e3c6f52f0f0fe230d349/testmon/common.py#L101-L109)及本轮实际运行；核实／实跑 2026-11-01 UTC。
 
 ## 历史实验与旧补丁
 
@@ -73,7 +94,7 @@ Linux／Python 3.11.17 实测；两组均安装 pytest-xdist 3.8.0：
 | 两补丁，Python 3.12.14／pytest 9.1.1／coverage 7.17.0／pytest-cov 7.1.0 | 相关 29 passed |
 | 两补丁全套，coverage 6.5 与 7.17 | 各 59 passed／2 failed；两项缺失 fixture 在原基线也失败 |
 
-上述为 2026-10-27 旧基线 `94150742345d0bc3fb00a10c19c0ae26a0064c4e` 的实测，两份补丁分别经过新上下文审查者重放；负责人验过最终组合树与表中三组依赖。正常／xdist／pytest-cov 的依赖选测与真实失败退出码保留；新版本仍强制使用 ctrace，RuntimeError 与普通 CoverageException 继续抛出。Python 3.14 的默认 sysmon 路径待实际环境验证。
+上述为 2026-10-27 旧基线 `94150742345d0bc3fb00a10c19c0ae26a0064c4e` 的实测，两份补丁分别经过新上下文审查者重放；负责人验过最终组合树与表中三组依赖。正常／xdist／pytest-cov 的依赖选测与真实失败退出码保留；新版本仍强制使用 ctrace，RuntimeError 与普通 CoverageException 继续抛出。Python 3.14.8 的后续补验见上节；没有运行保留 sysmon 的候选。
 
 旧资产保留供恢复，不适用于当前基线：[fix.patch](fix.patch)，SHA-256 `5298e99c0fe08f0d3571572f00f8cc1cf9c57da144b7b94d1cecc483f178f1e2`；[coverage-core.patch](coverage-core.patch)，SHA-256 `67d6960051fde31c2f5a905d292bc00a725c931d5213e0986f4ee2cdcb0231ed`。旧组合索引树为 `2264b6155ff3e9d908c7d5d5894b2e13ec038168`。
 
