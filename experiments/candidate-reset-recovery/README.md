@@ -126,9 +126,13 @@ GOOSE_DISABLE_KEYRING=1 cargo test -p goose --test litellm_vision --locked -- --
 
 **保留本包作为历史恢复与回归样例，不再提交旧实现。** 另一作者的 [#13239](https://github.com/aaif-goose/goose/pull/13239) 已于 2026-10-30 08:48 UTC 合入 `f131ff7e9bba223686b1d5e2243d6c1e07685097`，并完成 #13158。固定主干 `090dedb7` 已覆盖旧候选的核心语义：解析布尔元数据、只补未指定值、精确匹配别名、先补配置再格式化；共用 helper 与旧补丁不同，不能再直接叠加旧 patch。
 
-**当前最新正式版 v1.57.0 尚未包含修复。** 该标签的 provider Git blob 仍为旧基线的 `a9263079b9f73c0a04fbc2945a4069cfee603b7a`；读者应核实际安装版本是否包含合入提交。旧候选的 18 项 HTTP 通过仍只属于原固定源码，本轮只读核上游源码与测试，未编译或运行新主干、真实 LiteLLM／模型。原 patch、manifest、基线与复现文件全部保留不变。
+**截至 2026-11-01，最新正式版 v1.57.0 仍未包含修复。** 该标签的 provider Git blob 仍为旧基线的 `a9263079b9f73c0a04fbc2945a4069cfee603b7a`；读者应核实际安装版本是否包含合入提交。原 patch、manifest、基线与复现文件全部保留不变。
 
-依据与核实：[合并记录](https://github.com/aaif-goose/goose/pull/13239)、[当前固定 provider](https://github.com/aaif-goose/goose/blob/090dedb7625c8aadb9bb05d68028fd00f36b429e/crates/goose/src/providers/litellm.rs)、[正式版 v1.57.0](https://github.com/aaif-goose/goose/releases/tag/v1.57.0)及[标签源码](https://github.com/aaif-goose/goose/blob/v1.57.0/crates/goose/src/providers/litellm.rs)；2026-10-30。更完整的[原控制与当前取舍](../../docs/collaboration/inbox.md#goose-litellm-vision-payload)沿原入口阅读。
+**新主干补验通过：相同的 18 项 HTTP 控制已在固定上游 `b23d21ca` 全部通过。** 只从原 patch 取出测试文件，逐字核对后加入该上游 checkout，没有叠加旧 provider 修改。Linux 云端使用仓库固定 Rust 1.99.0 与未改的 Cargo.lock，格式检查和锁定依赖编译通过；运行时清除继承代理与凭据，实际读取本地 Wiremock 收到的 36 个 completion body。JSON／SSE、含直接图与工具图的消息、即时第二次缓存请求、显式布尔值和错误元数据控制均通过，另跑上游 LiteLLM provider 单测 **7 项通过**；完整输出见[回执](goose/upstream-results.json)。
+
+本次只补上游实现的这组回归，未重跑旧基线对照、完整工作区或 Clippy，也未接真实 LiteLLM／模型、正式客户端或本机读者。原图片断言核相同 data URI 的总数与省略标记；这 18 项不覆盖逐消息图片身份、最终流文本或缓存 TTL／并发；上游单测另含失败缓存过期重试。
+
+依据与核实：[合并记录](https://github.com/aaif-goose/goose/pull/13239)、[此前固定 provider](https://github.com/aaif-goose/goose/blob/090dedb7625c8aadb9bb05d68028fd00f36b429e/crates/goose/src/providers/litellm.rs)、[正式版 v1.57.0](https://github.com/aaif-goose/goose/releases/tag/v1.57.0)及[标签源码](https://github.com/aaif-goose/goose/blob/v1.57.0/crates/goose/src/providers/litellm.rs)；2026-10-30。2026-11-01 实跑固定[上游主干](https://github.com/aaif-goose/goose/tree/b23d21cabd9b4de0c045dcdd731821a3a15c2bfc)，并复核最新正式版。更完整的[原控制与当前取舍](../../docs/collaboration/inbox.md#goose-litellm-vision-payload)沿原入口阅读。
 
 ## 许可与修改通知
 
