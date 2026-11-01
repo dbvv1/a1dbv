@@ -6,8 +6,8 @@
 
 > 只放带完成条件的临时纠偏，最多三条，做完即删，dot 不改；方向与优先级在长期提示词（手册§6）。
 
-- **A**：沿主线核实实际唤醒、交回接收与下一项启动，先处理已回结果，把高价值发现做成可采用的答案或模板。保留原任务和欠项，四张已取消广扫不重派；沿 Activity／心跳与产物核证，缺入口报具体缺口，不新填表。真实交付后自然接续，再删本行；长期可靠性按细则§3观察。
-- **B**：先恢复原允许的云端浏览器，用现有 FPS 画面候选走通完整验收、发布或退回、知识回写；其他独立长线继续。三案画面按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)：固定画质同机位软件图、拟发布入口完整 smoke、非作者盲评；不等硬件 GPU、不占本机。`--no-sandbox` 只限三案本地预览与网站，外层沙箱不动；核非空 WebGL2 图、参数、renderer 和正常退出，EPERM 只阻塞对应验收。手感三项继续：FPS 加速度＋摩擦＋渲染插值，MOBA 前摇／施法下一指令排队且结束当 tick 执行，Star 轮胎峰后下降＋载荷转移并定动力测法；过单测、无画面模拟和云 smoke 后旁置发布。同输入前后值写入 feel.md／记分卡（FPS 滑停／反向／插值、MOBA 下一技能执行、Star 侧滑曲线），范围差距继续追。三案出图命令可用、现有画面候选已接收或退回、三项手感候选已发布且前后值已记录后删除本行。
+- **A**：在途按原边界安全收尾，同时收口窄工具考证，将强源、替代和反例合成[长程开发路线](../decisions/long-tasks.md)及模板，在真实主线任务采用并修正卡点；交付后自然接续，以 Activity／心跳核证后删本行。其他核心问题与未知前沿并行，保留欠项，不重派四张已取消广扫；长期可靠性继续观察。
+- **B**：按[恢复入口与补丁](../../experiments/cloud-browser-recovery/README.md)先区分失败 shell 的 IPC／loopback 与已有获准云浏览器能力，接续 FPS `67ae83a7` 的精确材料路由和 `qualityCapture`，不拿旧入口通过替代；其他独立长线继续。三案画面按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)：固定画质同机位软件图、拟发布入口完整 smoke、非作者盲评；不等硬件 GPU、不占本机。`--no-sandbox` 只限三案自有页面，外层沙箱不动，明确拒绝不换路；核非空 WebGL2 图、参数、renderer 与正常退出。手感三项继续：FPS 加速度／摩擦／插值，MOBA 前摇／施法下一指令排队且结束当 tick 执行，Star 轮胎峰后下降／载荷转移及动力测法；过单测、无画面模拟和云 smoke 后旁置发布。同输入前后值写入 feel.md／记分卡（FPS 滑停／反向／插值、MOBA 下一技能、Star 侧滑），差距继续追。三案出图命令可用、画面候选已接收或退回、三项手感候选已发布且前后值已记录后删除本行。
 - **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
 
 ## 分工
@@ -47,7 +47,7 @@
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 `27a40be`／Site v16：WebGL2 四路 smoke、四机位双重复通过；两非作者判小幅改善，正式评分待补。获准 `--no-sandbox`；已留 renderer／参数（SwiftShader software），exit 0、端口关闭。 |
-| FPS 新候选云端 smoke | [11-01 17:29 UTC 复验](https://github.com/dbvv1/a1dbv/commit/20b095d76fd62586bc942af0258cceede4a54c5a)：全场材质 `67ae83a7`／tree `796642f3`，获准 headless `--no-sandbox` 仍在导航前 socket EPERM／SIGABRT。待云端恢复 socket 能力续同候选，不重复要参数授权、不改外层沙箱 | 无 WebGL2／新图／smoke／盲评；runner exit 1，Chromium 已退出，无残留 Chromium／Vite，preview／临时目录已清。保留候选，未作品质退回；本机不接浏览器。 |
+| FPS 新候选云端 smoke | [11-01 17:29 UTC 复验](https://github.com/dbvv1/a1dbv/commit/20b095d76fd62586bc942af0258cceede4a54c5a)：`67ae83a7` 获准 headless `--no-sandbox` 仍在导航前 EPERM／SIGABRT。按上方恢复入口区分 shell／浏览器能力；不重复要参数授权、不改外层沙箱 | 无新图／smoke／盲评；runner exit 1，浏览器与 preview 已退出、临时目录已清。候选保留待验，本机不接浏览器。 |
 | jrnl 上游 PR | 创建 Draft 被集成 403 拒绝；已审分支保留，由用户决定是否从[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建 Draft。说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 继续本仓发现、试用与既有 PR 跟进 |
 | agents-md-lint 上游 PR | Draft 创建遭集成 403；该 head 回读无 PR，head check-runs／workflows 均 0。待用户从 [compare](https://github.com/openintelligence-labs/agents-md-lint/compare/main...dbvv1:agents-md-lint:fix/input-contract-and-placeholder-paths?expand=1) 建 Draft 并给链接，或终止投稿；不重试／换路 | 保留 fork `fix/input-contract-and-placeholder-paths`（`54313ea`）；[本地测试范围](../../experiments/instruction-file-lint/README.md)，投稿／hosted CI 未完成 |
 | testmon 上游贡献 | 待可写 fork | [已审补丁 #270](../../experiments/testmon-outer-coverage/README.md)；Serena [改为跟进已有 PR #2242](../../experiments/serena-vue-implementation/README.md)，不重复投稿 |

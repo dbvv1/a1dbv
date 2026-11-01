@@ -20,7 +20,7 @@
 
 ## 3. 怎么探索
 
-**按 M6 方法探索**：方法写成了 [explore-frontier Skill](../../templates/generic/.claude/skills/explore-frontier/SKILL.md)，所有会话共用：有具体决定时定向找，没有时广扫；做事的人自己的仓库与文章、GitHub 头部、中英文技术社区、真实用户反馈每类都看，顺藤追到饱和，读代码和设计；最后转化成可直接用的做法。来源名册见[探索证据](../research/2026-10-15-exploration-evidence.md#p46按团队追踪来源与漏检校准)。交付附覆盖表：每类来源看了什么、得到几项、截止日期、哪些读不到。
+**按 M6 方法探索**：共用 [explore-frontier Skill](../../templates/generic/.claude/skills/explore-frontier/SKILL.md)，有具体决定时定向找，没有时广扫。强团队的仓库与文章、GitHub 头部、中英文社区和真实反馈持续覆盖，读代码、设计与正反实践；重要候选及时转化，未覆盖项继续补。来源名册见[探索证据](../research/2026-10-15-exploration-evidence.md#p46按团队追踪来源与漏检校准)。交付附实际覆盖与缺口，不把阶段成果称作完整广扫。
 
 **收件箱**：用户在 X、linux.do 等处看到的链接贴进 [inbox.md](inbox.md)，dot-A 24 小时内处理。用户贴来、本仓此前没发现的，记一次漏检，并把它的原始渠道补进来源名册。dot-A 每周再拿一份外部参照（当周社区热门讨论、主要 newsletter）对照一次，漏检数和发现时差记进[探索证据](../research/2026-10-15-exploration-evidence.md)的校准记录，25 只保留方法结论。
 

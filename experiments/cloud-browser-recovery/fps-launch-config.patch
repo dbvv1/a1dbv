@@ -1,0 +1,105 @@
+--- a/tools/smoke.mjs
++++ b/tools/smoke.mjs
+@@ -12,7 +12,8 @@
+ if (query && !query.startsWith('?')) throw new Error('Smoke query must start with ?');
+ await mkdir(output, { recursive: true });
+ const report = { passed: false, errors: [], warnings: [], stages: [] };
+-const artStandards = query === OFFLINE_QUERY + '&art=standards-v1';
++const fullMaterials = query === OFFLINE_QUERY + '&art=standards-v1&materials=ai-courtyard-full-v1';
++const artStandards = query === OFFLINE_QUERY + '&art=standards-v1' || fullMaterials;
+ const offline = query === OFFLINE_QUERY || artStandards;
+ if (new URLSearchParams(query).get('gameplay') === 'offline-training-v1' && !offline) throw new Error('Offline smoke requires the exact complete entry');
+ if (offline) report.offlineCoverage = { fullMatchPlaythrough: false, completedRounds: [], restartScope: 'whole match via existing restart UI; no separate round-restart control', unverified: ['six-round completion UI', 'halftime transition', 'end-of-match replay', 'human visual/audio quality'] };
+@@ -25,11 +26,13 @@
+   const origin = `http://127.0.0.1:${address.port}`;
+   const executablePath = process.env.FPS_SMOKE_CHROMIUM;
+   // Playwright 1.64 also inserts this switch in its defaults. Omitting it from
+-  // args alone is insufficient; preserve every other default and the sandbox.
++  // args alone is insufficient; preserve every other default. The cloud exception is explicit.
+   const ignoreDefaultArgs = ['--enable-unsafe-swiftshader'];
+-  browser = await chromium.launch({ headless: true, chromiumSandbox: true, ignoreDefaultArgs, ...(executablePath ? { executablePath } : {}), args: process.env.FPS_SMOKE_RENDERER === 'native' ? [] : ['--use-angle=swiftshader'] });
+-  report.requestedLaunch = { headless: true, chromiumSandbox: true, executablePath, ignoreDefaultArgs, args: process.env.FPS_SMOKE_RENDERER === 'native' ? [] : ['--use-angle=swiftshader'], browserVersion: browser.version() };
++  const launch = { headless: true, chromiumSandbox: process.env.FPS_CLOUD_NO_SANDBOX !== '1', ignoreDefaultArgs, ...(executablePath ? { executablePath } : {}), args: process.env.FPS_SMOKE_RENDERER === 'native' ? [] : ['--use-angle=swiftshader'] };
++  report.requestedLaunch = { ...launch };
+   report.launchEvidence = 'Requested options only; verify final argv in DEBUG=pw:browser output.';
++  browser = await chromium.launch(launch);
++  report.requestedLaunch.browserVersion = browser.version();
+   page = await browser.newPage({ viewport: { width: 1365, height: 900 } });
+   page.on('pageerror', e => report.errors.push(String(e)));
+   page.on('console', e => { if (e.type() === 'error') report.errors.push(e.text()); else if (e.type() === 'warning') report.warnings.push(e.text()); });
+@@ -52,6 +55,15 @@
+     report.artStandards = await page.evaluate(() => window.fpsClient.state().art);
+     assert.equal(report.artStandards.pieces, 3);
+     assert.deepEqual(report.artStandards.budget, {triangles:2396,calls:4,bytes:123604});
++  }
++  if (fullMaterials) {
++    await page.waitForFunction(() => ['ready', 'fallback'].includes(window.fpsClient.state().materials?.state));
++    report.materials = await page.evaluate(() => window.fpsClient.state().materials);
++    assert.equal(report.materials.id, 'ai-courtyard-full-v1');
++    assert.equal(report.materials.state, 'ready');
++    assert.equal(report.materials.scope, 'floor-and-all-courtyard-walls');
++    assert.equal(new Set(report.materials.wallIds).size, 10);
++    assert.deepEqual([...report.materials.authoredIds].sort(), ['center-dogleg', 'site-cover']);
+   }
+   if (offline) {
+     await page.waitForFunction(() => window.fpsClient.state().environment?.active === true);
+--- a/tools/capture.mjs
++++ b/tools/capture.mjs
+@@ -26,6 +26,8 @@
+ const repeat = Number(values.repeat);
+ assert.ok(Number.isInteger(repeat) && repeat >= 1 && repeat <= 5, '--repeat must be 1–5');
+ assert.ok(!(values.software && values['require-gpu']), '--software and --require-gpu are contradictory');
++const cloudNoSandbox = process.env.FPS_CLOUD_NO_SANDBOX === '1';
++assert.ok(!cloudNoSandbox || (!values.headed && !values.base), 'Cloud sandbox exception is limited to headless capture of this runner own preview');
+ for (const shot of names) parseCaptureConfig(new URLSearchParams({ shot, seed: values.seed, t: values.t, input: values.input, frames: values.frames }).toString());
+ const outputRoot = resolve(values.out);
+ const root = fileURLToPath(new URL('..', import.meta.url));
+@@ -51,9 +53,9 @@
+   if (values.base) report.sourceBinding = 'unverified external base; local sourceCommit does not attest served content';
+   const allowedOrigin = new URL(base).origin;
+   const args = ['--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows', ...(values.software ? ['--use-angle=swiftshader'] : [])];
+-  const launch = { headless: !values.headed, chromiumSandbox: true, ignoreDefaultArgs: ['--enable-unsafe-swiftshader'], args,
++  const launch = { headless: !values.headed, chromiumSandbox: !cloudNoSandbox, ignoreDefaultArgs: ['--enable-unsafe-swiftshader'], args,
+     ...(process.env.FPS_CAPTURE_CHROMIUM ? { executablePath: process.env.FPS_CAPTURE_CHROMIUM } : { channel: 'chromium' }) };
+-  report.launch = launch; report.launchEvidence = 'Requested options; retain DEBUG=pw:browser log to verify actual argv. Sandbox remains enabled.';
++  report.launch = launch; report.launchEvidence = 'Requested options; retain DEBUG=pw:browser log to verify actual argv.';
+   browser = await chromium.launch(launch); report.browserVersion = browser.version();
+   const context = await browser.newContext({ viewport: CAPTURE_SIZE, deviceScaleFactor: 1, locale: 'en-US', timezoneId: 'UTC' });
+   await context.route('**/*', route => new URL(route.request().url()).origin === allowedOrigin ? route.continue() : route.abort('blockedbyclient'));
+--- a/docs/capture.md
++++ b/docs/capture.md
+@@ -64,18 +64,20 @@
+ # 默认本次重建再起本地 preview，不复用来源未知的旧 web-dist。
+ # DEBUG 日志保存实际 argv；不在脚本里关闭 sandbox。
+ DEBUG=pw:browser node --import tsx tools/capture.mjs \
+-  --shot all --seed 1 --t 10 --repeat 2 --headed --require-gpu --check-live
++  --shot all --seed 1 --t 10 --repeat 2 --software --check-live
+
+-# 云端没有 GPU，只能做构图与回归。不能用它决定光照／材质。
++# 云端软件图可按 a1dbv game-quality-pass §4 验收画面；仍须同机位对比、完整 smoke 和非作者盲评。
+ DEBUG=pw:browser node --import tsx tools/capture.mjs \
+   --shot all --seed 1 --t 10 --repeat 2 --software
+
+ # 连续射击片段；每帧等消费者截取后再推进，输出 00000.png 起的序列。
+ node --import tsx tools/capture.mjs --shot gameplay --seed 1 \
+-  --input advance-fire --t 3 --frames 240 --repeat 2 --headed --require-gpu
++  --input advance-fire --t 3 --frames 240 --repeat 2 --software
+ ffmpeg -framerate 60 -i 'outputs/capture/<本次run目录>/<本次序列目录>/%05d.png' \
+   -c:v libx264 -pix_fmt yuv420p capture.mp4
+ ```
++
++仅在用户已批准的云端自有案例预览中，可显式设 `FPS_CLOUD_NO_SANDBOX=1` 使用 `--no-sandbox`；默认保留浏览器 sandbox，不启用 unsafe 标志，不改外层沙箱。该开关在本拍摄入口仅支持它自起的 headless preview，不能与 `--headed` 或外部 `--base` 组合。当前 `qualityCapture` 材质候选另走其已有入口；本脚本的旧 `shot` 路径不能替代全场材质验收。
+
+ Windows shell 可直接执行 `node --import tsx …` 并按该 shell 语法设置 DEBUG。本地构建在 Windows 通过显式 `cmd.exe /d /s /c` 调固定的 `npm.cmd run build`（`/d` 禁用 AutoRun），不把输出路径或用户参数拼进命令；其它平台仍直接执行 npm。依据 [Node 官方 .cmd 契约](https://nodejs.org/api/child_process.html#spawning-bat-and-cmd-files-on-windows)，不能直接用无 shell 的 execFile 启动 npm.cmd。Windows 分派已有 mock 回归，真实 Windows 构建仍待本机验证。可用 `FPS_CAPTURE_CHROMIUM` 指定已安装的 Chromium；不填则使用 Playwright `channel: chromium`。`--out` 改输出目录；`--base` 可连已有服务，但报告会明确标为**外部服务源 SHA 未证实**，不能用本地 SHA 冒充服务器版本。不要把私有服务地址、完整本机路径或浏览器启动日志提交公开仓库。
+
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -34,7 +34,7 @@
+ ## 验收
+
+ 1. **自动**：`npm test` 通过；改动涉及武器、数值或 AI 时，跑 `npm run sim` 并对照 brief 的目标区间。
+-2. **浏览器**：`npm run smoke` 通过：开一局后无控制台错误，画布内有非背景像素，页面暴露的调试状态显示对局在推进。云端没有 GPU 时保留 sandbox，仅以 `--use-angle=swiftshader` 走软件 WebGL；用 `ignoreDefaultArgs` 精确移除 Playwright 默认注入的 `--enable-unsafe-swiftshader`，不能只检查显式 `args`。报告启动配置与浏览器版本，实际 argv 通过 `DEBUG=pw:browser` 核对，仍断言真实 WebGL2 上下文。不可关闭 sandbox 或启用 unsafe 标志绕过阻断；失败保留具体原因，CPU 回退另验。
++2. **浏览器**：`npm run smoke` 通过：开一局后无控制台错误，画布内有非背景像素，页面暴露的调试状态显示对局在推进。云端软件 WebGL 默认保留 sandbox；自起的 headless 案例 preview 可在用户既有授权下显式设 `FPS_CLOUD_NO_SANDBOX=1`，仅关闭该 Chromium 自身的 sandbox。以 `--use-angle=swiftshader` 选择软件渲染；用 `ignoreDefaultArgs` 精确移除 Playwright 默认注入的 `--enable-unsafe-swiftshader`，不能只检查显式 `args`。报告启动配置与浏览器版本，实际 argv 通过 `DEBUG=pw:browser` 核对，仍断言真实 WebGL2 上下文。外层沙箱和 unsafe 标志保持原限制；明确拒绝不绕过，启动失败保留具体阶段与原因，CPU 回退另验。
+ 3. **人工**：手感、画面、声音需要人判断的，记入 a1dbv TASKS“待人工验收”，然后继续做其他工作。
+
+ 汇报只写实际跑过的结果；没跑的写“未验证”，一句即可。
