@@ -1,7 +1,7 @@
 # A-AGENT-CHOICE-FACTS-20261102 · Agent 选择页的当前官方事实核查
 id: A-AGENT-CHOICE-FACTS-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/01-agents/README.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -27,4 +27,9 @@ result_branch: relay/a-agent-choice-facts-20261102
 本单元最多两小时，共享最多 4 并行只由原接收端调度；不自建调用。跑 check_repo、check_public、git diff --check 和提交身份扫描后推指定 result_branch，回 review_ready 供负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；输出待回传。
+
+- 完成 Agent 选择页官方事实核查并写入 facts.md（80 行）。主要差量：Codex Cloud 的“模型仍按上两行”无官方依据（官方明确 cloud 不支持改默认模型），建议更正；gpt-6.1-sol 需账号有 Sol 访问（Free/Go 为 Luna）；Claude Sonnet 5.5 需 v2.1.284+、Opus 5.5 需 v2.1.280+，页面未写；Astra 的 CLI ID 为 gpt-6-astra，页面缺；扩展/终端“版本可能不同”与 Cursor“修复”应降为推断或行为概括；medium 在 Claude Code 是默认档而非升档。check_repo 709 文件 0 错误、check_public 1170 文件 0 发现、git diff --check 通过、未检出本机绝对路径或内网地址。openIssues 为空，但真实采用未验证（未启动客户端/模型、未核账号额度）、Reddit 帖本机不可读标未核、OpenAI Help Center 403 已改用官方 learn.chatgpt.com 页面；接收端提交时必须按 operations §1 用 -c user.email=noreply@... 覆盖，本机默认 user.email 为内网邮箱。
+- 产物：[6f36b1c](https://github.com/dbvv1/a1dbv/commit/6f36b1c75c3f1f04c281b33554913ab948b5e186)，分支 `relay/a-agent-choice-facts-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交 facts.md 并更新任务状态；页面 owner 依 facts.md 决定是否采纳 6 项差量（尤其 Codex Cloud 模型句与 Claude 最低版本）；真实采用与账号可用性仍待负责人另行验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
