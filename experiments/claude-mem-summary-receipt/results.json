@@ -1,0 +1,179 @@
+{
+  "date": "2026-11-02",
+  "repository": "thedotmack/claude-mem",
+  "license": "Apache-2.0",
+  "version": "15.8.3",
+  "discovery_stars": 109946,
+  "stars_are_effectiveness_evidence": false,
+  "baseline": "b50ee1ee8edae3544655356e7511dc8230133ff2",
+  "candidate": "7cd1528702dcdfcfbbb653742b7866dcbbcf4582",
+  "actual_merge_base": "b50ee1ee8edae3544655356e7511dc8230133ff2",
+  "issue": 5225,
+  "existing_pr": 5228,
+  "new_patch_created": false,
+  "upstream_action": false,
+  "environment": {
+    "os": "Linux",
+    "bun": "1.4.4",
+    "official_bun_package": "@oven/bun-linux-x64@1.4.4",
+    "runtime_auto_install": false,
+    "data": "synthetic only",
+    "real_hook_or_worker_started": false,
+    "telemetry_and_account_readiness": "repository test preload isolated",
+    "sqlite_query_render_mocked": false,
+    "private_sessions_read": false,
+    "installer_run": false
+  },
+  "consumer": {
+    "identical_input_snapshots": true,
+    "baseline": {
+      "repeated_turn_ids": [
+        3,
+        4,
+        5
+      ],
+      "project_rows": 6,
+      "all_project_rows": 7,
+      "two_historical_titles_in_final_context": false,
+      "empty_fields_retained_in_repeated_stop_render": false,
+      "old_next_steps_fts_ids": [
+        3
+      ],
+      "new_next_steps_fts_ids": [
+        4,
+        5
+      ]
+    },
+    "candidate": {
+      "repeated_turn_ids": [
+        3,
+        3,
+        3
+      ],
+      "project_rows": 4,
+      "all_project_rows": 5,
+      "two_historical_titles_in_final_context": true,
+      "empty_fields_retained_in_repeated_stop_render": true,
+      "old_next_steps_fts_ids": [],
+      "new_next_steps_fts_ids": [
+        3
+      ],
+      "local_sync_rev_change": [
+        1,
+        3
+      ],
+      "synthetic_synced_at_cleared": true,
+      "file_lists_unioned": true
+    },
+    "both": {
+      "reopen_all_row_fields_exact": true,
+      "reopen_render_exact": true,
+      "cross_project_leak": false,
+      "post_reopen_fts_terms_requeried": false
+    },
+    "context_scope": "Final historical titles/IDs are retained; old full summary prose is not all injected. Empty-field render observation is before subsequent new turn.",
+    "initial_harness_error": "Both first runs missed ModeManager initialization; original DB/logs retained, fixed public code mode snapshot in new output directories."
+  },
+  "semantic_boundaries": {
+    "nonempty_shorter_update": "candidate replaces detailed learned with Brief, prior term disappears from FTS",
+    "legacy_duplicates": {
+      "before": 2,
+      "baseline_after": 3,
+      "candidate_after": 2
+    },
+    "next_steps": "latest value including empty clears old value",
+    "storeSummary_entrypoint": "unchanged by PR",
+    "zero_or_missing_prompt": "not consumer-tested; static insert behavior",
+    "remote_origin": "upstream targeted test only",
+    "chroma_cloud_roundtrip": false
+  },
+  "cache_supplement": {
+    "real_ContextCacheService": true,
+    "worker_process_started": false,
+    "both_immediate_cache_stale": true,
+    "both_direct_render_fresh": true,
+    "both_flushed_cache_equals_direct_bytes": true,
+    "both_invalidation_generation": [
+      0,
+      1
+    ],
+    "both_removal_generation": [
+      0,
+      0
+    ],
+    "default_debounce_ms": 2000,
+    "host_delay_measured": false,
+    "new_regression_attributed": false,
+    "both_fetch_tripwire_calls": 0
+  },
+  "checks": {
+    "transaction": {
+      "baseline_passed": 9,
+      "candidate_passed": 15
+    },
+    "three_additional_audited_files": {
+      "baseline_passed": 31,
+      "candidate_passed": 31
+    },
+    "candidate_notes_only_context_passed": 4,
+    "full_fast_integration": "not run",
+    "local_typecheck_build_and_sync": "not run",
+    "consumer_both_exit": 0,
+    "independent_verifier_exit": 0,
+    "cache_both_exit": 0
+  },
+  "upstream_ci_snapshot": {
+    "observed_utc": "2026-11-02T08:43:40Z",
+    "head": "7cd1528702dcdfcfbbb653742b7866dcbbcf4582",
+    "checks_success": 13,
+    "checks_in_progress": 1,
+    "pending_check": "Installed decoder · macos-15",
+    "workflows_success": 2,
+    "workflows_in_progress": 1,
+    "pr_state": "open",
+    "merged": false
+  },
+  "installation_context": {
+    "historical_issue": 5176,
+    "reported_version": "15.5.0 and earlier affected installer versions",
+    "current_15_8_3_source": "awaiting-consent and confirmUpload branches statically inspected",
+    "actual_installer_ui_upload": "not run or verified"
+  },
+  "decision": "Conditional reception of new same-turn local summary writes through direct SQLite/FTS/query/render and eventual cache refresh. Not lossless memory, legacy cleanup or whole-product adoption.",
+  "new_default_or_reader_upgrade": false,
+  "retention": {
+    "file": "claude-mem-summary-retained-20261102.tar.gz",
+    "bytes": 23169216,
+    "sha256": "2803826d5bd506ea3fbca275064d3042a73fffa921500ae3b49454755d5e76bd",
+    "verified_files": 489,
+    "verified_source_git_blobs": 2874
+  },
+  "source_archive": {
+    "source": "b50ee1ee8edae3544655356e7511dc8230133ff2",
+    "verified_git_blobs": 2874,
+    "bytes": 21114680,
+    "sha256": "20bd1cf0a8eb238531dcae7b836e13dbfcfa3f37273d2ef6e9764d35fdd659a4"
+  },
+  "actual_runs": {
+    "source-attempt2": {
+      "start": "2026-11-02T08:36:44.270018+00:00",
+      "end": "2026-11-02T08:36:44.418715+00:00",
+      "exit": 0
+    },
+    "candidate-attempt2": {
+      "start": "2026-11-02T08:36:44.419306+00:00",
+      "end": "2026-11-02T08:36:44.557192+00:00",
+      "exit": 0
+    },
+    "cache-source": {
+      "start": "2026-11-02T08:42:17.639715+00:00",
+      "end": "2026-11-02T08:42:17.809362+00:00",
+      "exit": 0
+    },
+    "cache-candidate": {
+      "start": "2026-11-02T08:42:17.809755+00:00",
+      "end": "2026-11-02T08:42:17.941373+00:00",
+      "exit": 0
+    }
+  }
+}
