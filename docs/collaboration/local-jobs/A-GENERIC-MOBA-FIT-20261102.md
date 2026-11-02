@@ -1,7 +1,7 @@
 # A-GENERIC-MOBA-FIT-20261102 · 通用模板到 MOBA 现有任务的最小映射
 id: A-GENERIC-MOBA-FIT-20261102
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ac16eea5bd1cb3e46e8676173a2c364a09474868
