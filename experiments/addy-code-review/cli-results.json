@@ -1,0 +1,418 @@
+{
+  "started_utc": "2026-11-02T06:59:00.667263+00:00",
+  "ended_utc": "2026-11-02T06:59:18.194149+00:00",
+  "consumer": "real python -m llm subprocess; no model response or API used; temporary user directory and explicit plugin isolation",
+  "passed": 26,
+  "results": [
+    {
+      "version": "base",
+      "entry": "prompt",
+      "option": "max_token",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "max_token",
+        "100",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: max_token\n  Extra inputs are not permitted\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "chat",
+      "option": "max_token",
+      "argv": [
+        "chat",
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "max_token",
+        "100"
+      ],
+      "exit": 1,
+      "output": "Error: max_token\n  Extra inputs are not permitted\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "save",
+      "option": "max_token",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "max_token",
+        "100",
+        "--save",
+        "review-example",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: max_token\n  Extra inputs are not permitted\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "defaults",
+      "option": "max_token",
+      "argv": [
+        "models",
+        "options",
+        "set",
+        "gpt-4o-mini",
+        "max_token",
+        "100"
+      ],
+      "exit": 1,
+      "output": "Error: max_token\n  Extra inputs are not permitted\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "prompt",
+      "option": "banana",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "banana",
+        "100",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: banana\n  Extra inputs are not permitted\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "chat",
+      "option": "banana",
+      "argv": [
+        "chat",
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "banana",
+        "100"
+      ],
+      "exit": 1,
+      "output": "Error: banana\n  Extra inputs are not permitted\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "save",
+      "option": "banana",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "banana",
+        "100",
+        "--save",
+        "review-example",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: banana\n  Extra inputs are not permitted\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "defaults",
+      "option": "banana",
+      "argv": [
+        "models",
+        "options",
+        "set",
+        "gpt-4o-mini",
+        "banana",
+        "100"
+      ],
+      "exit": 1,
+      "output": "Error: banana\n  Extra inputs are not permitted\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "prompt",
+      "option": "temperature",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "temperature",
+        "bad",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: temperature\n  Input should be a valid number, unable to parse string as a number\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "chat",
+      "option": "temperature",
+      "argv": [
+        "chat",
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "temperature",
+        "bad"
+      ],
+      "exit": 1,
+      "output": "Error: temperature\n  Input should be a valid number, unable to parse string as a number\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "save",
+      "option": "temperature",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "temperature",
+        "bad",
+        "--save",
+        "review-example",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: temperature\n  Input should be a valid number, unable to parse string as a number\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "defaults",
+      "option": "temperature",
+      "argv": [
+        "models",
+        "options",
+        "set",
+        "gpt-4o-mini",
+        "temperature",
+        "bad"
+      ],
+      "exit": 1,
+      "output": "Error: temperature\n  Input should be a valid number, unable to parse string as a number\n",
+      "passed": true
+    },
+    {
+      "version": "base",
+      "entry": "suggested-help",
+      "exit": 0,
+      "supported_max_tokens": true,
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "prompt",
+      "option": "max_token",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "max_token",
+        "100",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: max_token\n  'max_token' is not a valid option for model 'gpt-4o-mini'\n  Did you mean 'max_tokens'?\n  Run 'llm models --options -m gpt-4o-mini' to see supported options\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "chat",
+      "option": "max_token",
+      "argv": [
+        "chat",
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "max_token",
+        "100"
+      ],
+      "exit": 1,
+      "output": "Error: max_token\n  'max_token' is not a valid option for model 'gpt-4o-mini'\n  Did you mean 'max_tokens'?\n  Run 'llm models --options -m gpt-4o-mini' to see supported options\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "save",
+      "option": "max_token",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "max_token",
+        "100",
+        "--save",
+        "review-example",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: max_token\n  'max_token' is not a valid option for model 'gpt-4o-mini'\n  Did you mean 'max_tokens'?\n  Run 'llm models --options -m gpt-4o-mini' to see supported options\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "defaults",
+      "option": "max_token",
+      "argv": [
+        "models",
+        "options",
+        "set",
+        "gpt-4o-mini",
+        "max_token",
+        "100"
+      ],
+      "exit": 1,
+      "output": "Error: max_token\n  'max_token' is not a valid option for model 'gpt-4o-mini'\n  Did you mean 'max_tokens'?\n  Run 'llm models --options -m gpt-4o-mini' to see supported options\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "prompt",
+      "option": "banana",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "banana",
+        "100",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: banana\n  'banana' is not a valid option for model 'gpt-4o-mini'\n  Run 'llm models --options -m gpt-4o-mini' to see supported options\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "chat",
+      "option": "banana",
+      "argv": [
+        "chat",
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "banana",
+        "100"
+      ],
+      "exit": 1,
+      "output": "Error: banana\n  'banana' is not a valid option for model 'gpt-4o-mini'\n  Run 'llm models --options -m gpt-4o-mini' to see supported options\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "save",
+      "option": "banana",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "banana",
+        "100",
+        "--save",
+        "review-example",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: banana\n  'banana' is not a valid option for model 'gpt-4o-mini'\n  Run 'llm models --options -m gpt-4o-mini' to see supported options\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "defaults",
+      "option": "banana",
+      "argv": [
+        "models",
+        "options",
+        "set",
+        "gpt-4o-mini",
+        "banana",
+        "100"
+      ],
+      "exit": 1,
+      "output": "Error: banana\n  'banana' is not a valid option for model 'gpt-4o-mini'\n  Run 'llm models --options -m gpt-4o-mini' to see supported options\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "prompt",
+      "option": "temperature",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "temperature",
+        "bad",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: temperature\n  Input should be a valid number, unable to parse string as a number\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "chat",
+      "option": "temperature",
+      "argv": [
+        "chat",
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "temperature",
+        "bad"
+      ],
+      "exit": 1,
+      "output": "Error: temperature\n  Input should be a valid number, unable to parse string as a number\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "save",
+      "option": "temperature",
+      "argv": [
+        "-m",
+        "gpt-4o-mini",
+        "-o",
+        "temperature",
+        "bad",
+        "--save",
+        "review-example",
+        "hi"
+      ],
+      "exit": 1,
+      "output": "Error: temperature\n  Input should be a valid number, unable to parse string as a number\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "defaults",
+      "option": "temperature",
+      "argv": [
+        "models",
+        "options",
+        "set",
+        "gpt-4o-mini",
+        "temperature",
+        "bad"
+      ],
+      "exit": 1,
+      "output": "Error: temperature\n  Input should be a valid number, unable to parse string as a number\n",
+      "passed": true
+    },
+    {
+      "version": "candidate",
+      "entry": "suggested-help",
+      "exit": 0,
+      "supported_max_tokens": true,
+      "passed": true
+    }
+  ]
+}
