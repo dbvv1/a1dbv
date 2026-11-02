@@ -13,7 +13,7 @@
 
 ## 一、最小映射：任务 → 实现／测试入口 → 必要检查 → 不能覆盖的规则
 
-目标仓没有 `.github/`，即**没有托管 CI**；现有门禁就是 `AGENTS.md` 的命令与验收、`package.json` 脚本和 `vitest.config.ts`。下表中的命令均来自这些文件，只有标注“派生、未运行”的细粒度测试命令是按 npm／vitest 透传推导的。
+受检固定树 `dea84c4` 未见 `.github/workflows`，仓外托管 CI 本次未验证；独立审者于 2026-11-02 23:00 UTC 查 MOBA `7710c4a` 得 `check_runs=0`、`statuses=0`，该结果只覆盖该提交与该时点，不能泛称所有托管 CI 不存在。现有可核门禁是 `AGENTS.md` 的命令与验收、`package.json` 脚本和 `vitest.config.ts`。下表中的命令均来自这些文件，只有标注“派生、未运行”的细粒度测试命令是按 npm／vitest 透传推导的。
 
 | 任务 | 实现入口 | 现有测试入口 | 必要检查 | 不能覆盖的规则 |
 |---|---|---|---|---|
@@ -30,13 +30,13 @@
 | 模板内容 | 判断 | 理由 |
 |---|---|---|
 | `AGENTS.md` 的项目、命令、架构、约定、Git/PR 占位骨架 | 不合并 | MOBA 已有真实项目说明、命令表、结构、验收和发布规则；模板里是 TODO 和通用示例，会与 `package.json`／`AGENTS.md` 现有入口重复或冲突 |
-| `AGENTS.md` 的“先按项目指令查已有 Skill／MCP” | 不合并 | 目标仓树内没有 `.claude/skills`，也没有 MCP 配置；照抄会指向不存在的入口 |
+| `AGENTS.md` 的“先按项目指令查已有 Skill／MCP” | 暂不合并 | 本次只读仓库检查未见 `.claude/skills` 或 MCP 配置，但这只说明本次未确认新增这条根规则的收益；未查看 MOBA 客户端当前已启用的 Skill／MCP 能力，不能据此判定该检查无效或指向不存在的入口——模板本身也把这步写成按“当前启用能力”查找。现有 `@AGENTS.md` 已覆盖必要约束，因此暂不新增，也不整份复制模板正文 |
 | `AGENTS.md` 的通用“新增依赖前说明理由”“批量转换用脚本” | 暂不合并 | 与本次帧同步／存档任务无直接关系，现有代码和提交约定已能覆盖；没有失败场景证明需要写进根指令 |
 | `AGENTS.md` 的“验证”节（先确认相关检查、行为改动先跑最小相关基线、修 bug 保留失败用例、不为通过删断言） | 部分承接／暂不合并 | “先确认相关检查入口、行为改动先跑最小相关基线”由片段 1 的单个测试入口承接；“保留失败用例、不删断言”是通用测试纪律，目标仓验收未明确写出，标为暂不合并、另行评估；其余不整节照搬 |
-| `CLAUDE.md` 的 Claude 专属流程（Plan、`/spec-interview`、`/handoff`、`task-decisions`） | 不合并 | 目标仓的 `CLAUDE.md` 只有 `@AGENTS.md`；引用目标仓不存在的 Skill 会形成悬空入口。Claude 的通用行为也不应替代 `AGENTS.md` 的领域契约 |
-| `REVIEW.md` 的 TODO 占位、“Always check”里的 `TODO: repo-specific invariants` | 不合并 | 目标仓没有 `REVIEW.md`，也没有 AI 评审入口；未填的 TODO 不能当规则。若将来引入 AI 评审，只借证据栏和下方最小片段 |
+| `CLAUDE.md` 的 Claude 专属流程（Plan、`/spec-interview`、`/handoff`、`task-decisions`） | 不合并 | 目标仓的 `CLAUDE.md` 只有 `@AGENTS.md`；这些 Skill 入口不在本次只读仓库核对范围，未查看客户端当前已启用能力，不据此判定可用或不可用。Claude 的通用行为不应替代 `AGENTS.md` 的领域契约 |
+| `REVIEW.md` 的 TODO 占位、“Always check”里的 `TODO: repo-specific invariants` | 不合并 | 本次只读仓库检查未见 `REVIEW.md` 或仓库内 AI 评审入口；未填的 TODO 不能当规则。若将来引入 AI 评审，只借证据栏和下方最小片段 |
 | 模板的 `@AGENTS.md` 导入 | 不合并 | 目标仓 `CLAUDE.md` 第 1 行已经是 `@AGENTS.md`。再次复制导入不是增量，也不能算本轮采用 |
-| 通用 CI、lint、格式化和“全部测试”示例 | 不合并 | 目标仓没有 `.github/`、lint 或 formatter 脚本；不要为凑栏目新增假门禁。现有 `npm test`／`build`／`smoke`／`sim` 才是真实入口 |
+| 通用 CI、lint、格式化和“全部测试”示例 | 不合并 | 受检固定树未见 `.github/workflows`，也没有 lint 或 formatter 脚本；仓外 CI 本次未验证。不要为凑栏目新增假门禁。现有 `npm test`／`build`／`smoke`／`sim` 才是真实入口 |
 
 ## 三、可选最小合并片段（供 B 审选，未落地）
 
@@ -61,24 +61,29 @@
 ```markdown
 ## What Important means here
 
-Reserve Important for findings that break saved-match compatibility, replay
-determinism, input-seat ordering, or a rollback path. Style and naming are Nit.
+Reserve Important for findings that would break behavior, leak data, or
+block a rollback: incorrect logic, missing authorization checks, secrets or
+PII in logs, data migrations that are not backward compatible. In this repo,
+saved-match compatibility, replay determinism, stable-seat ordering, and the
+single-writer save path are examples of such breakage, not an exclusive list.
+Style, naming, and refactoring suggestions are Nit at most.
 
 ## Evidence bar
 
 - Every behavior claim cites `file:line` in the source.
-- Save, replay, or command-envelope changes must name the failing test or
-  fixture and state whether historical bytes and hashes stay unchanged.
+- For each Important finding, say how to show it fails: an input, command, or
+  test. Save, replay, or command-envelope findings should name the failing
+  test or fixture and state whether historical bytes and hashes stay unchanged.
 ```
 
-理由：借 `REVIEW.md` 的证据栏和 Important 定义，补上目标仓没有的评审入口；不照搬其中的 TODO、“最多五条 Nit”、生成文件排除等与当前单维护者流程无关的模板段落。没有 AI 评审需求时不要新建此文件。
+理由：借 `REVIEW.md` 的证据栏和 Important 定义，补上仓库内尚缺的评审规则入口；通用行为破坏、数据泄露、回滚受阻按原模板保留，MOBA 的存档／回放／席位只作例子，不是排他清单。不照搬其中的 TODO、“最多五条 Nit”、生成文件排除等与当前单维护者流程无关的模板段落。没有 AI 评审需求时不要新建此文件。
 
 ### 不建议的合并
 
 - 上述片段只改指令或评审入口，不改变 `src/save`、`src/sim`、测试或兼容 ID 的行为、范围和验收契约；不能拿它们替代存档、帧同步和回放的既有规则。
 - 不新增 `AGENTS.md` 的完整“推进与撤回”“禁区”“坑”章节；现有 `AGENTS.md` 的“负责与发布”“验收”“写作”已经足够，扩写会稀释确定性和兼容契约。
 - 不把模板的“全部测试”“类型检查／Lint”照抄成目标仓命令；目标仓有 `npm test` 与 `npm run typecheck:web`（`npm run build:web` 已包含后者），没有 lint／formatter 脚本；不要照抄模板的 TODO 行或新增假门禁。
-- 不把 `templates/generic/CLAUDE.md` 整份复制到 MOBA；当前 `@AGENTS.md` 是正确形态，Claude 专属内容若需要，应按真实任务另加，不引入悬空 Skill 路径。
+- 不把 `templates/generic/CLAUDE.md` 整份复制到 MOBA；当前 `@AGENTS.md` 是正确形态，Claude 专属内容若需要，应按真实任务另加，并按客户端实际启用能力核对 Skill 入口，不按模板路径假定已加载。
 
 ## 四、已有规则覆盖、无需改动
 
@@ -119,7 +124,7 @@ determinism, input-seat ordering, or a rollback path. Style and naming are Nit.
 
 - 只读源码核对：上述固定链接的文件、行号和入口均按 `dea84c4` 读取；未修改 MOBA 工作树，只 fetch 公开 `main` 用于确认版本差异。
 - 默认入口核对：`dea84c4` 的 `index.html` 加载 `/src/client.ts`，`legacy-v10.html` 加载 `/default-src/client.ts`；README L3 写明主页 v11 含本机 Continue 与稳定席位 next-tick 输入，`tests/client/default-entry.test.ts` 断言同一入口与 `default-src/client.ts` 的 `contentVersion=10`。`docs/brief.md` L167 的入口表述由 `9777b840` 引入，`0a1d60b` 提主页时未同步。
-- 命令核对：`package.json` 的 `scripts`、`AGENTS.md` 的命令表、`vitest.config.ts` 的 include 相互对应；目标树内没有 `.github/`，所以没有可核的 hosted CI。
+- 命令核对：`package.json` 的 `scripts`、`AGENTS.md` 的命令表、`vitest.config.ts` 的 include 相互对应；受检固定树未见 `.github/workflows`，仓外 CI 本次未验证。独立审者于 2026-11-02 23:00 UTC 查 `7710c4a` 的 `check_runs=0`、`statuses=0`；该证据按原时间和范围复用，只覆盖该提交与该时点，不能泛称所有托管 CI 不存在。
 - 未运行：`npm ci`、`npm test`、`npm run sim`、`npm run build`、`npm run build:web`、`npm run smoke`、任何游戏或浏览器。命令是否在真实环境通过未验证。
 - 未采用：没有改 MOBA 任何文件或分支，没有向 B 发消息，没有把模板片段写入目标仓。
 - 归属核对：已 fetch a1dbv `main` 与各负责人分支；除本任务的领取提交外，没有发现同题映射或在途实现。MOBA 侧只读固定版，未碰 dot-B 的其他工作。
@@ -133,3 +138,13 @@ determinism, input-seat ordering, or a rollback path. Style and naming are Nit.
 5. **采用后再改源文件**：片段只落在 MOBA 的真实任务提交里，并同步该任务的“当前结果”；不要在 a1dbv 另存一份 MOBA 指令副本，也不要把本映射当成已采用结论。
 
 **已有规则覆盖、不需要改的项**：项目与结构、命令与验收、存档契约、输入信封契约、`CLAUDE.md` 的 `@AGENTS.md` 形态、汇报与发布，均见第四节。本次不需要修改 MOBA 的 `AGENTS.md`、`CLAUDE.md`、`docs/local-save.md` 或 `docs/brief.md`；只有 B 在真实任务中审选片段 1–3 时，才在该任务的提交里做对应的小幅更新。
+
+## 修订说明（2026-11-03）
+
+本轮按独立接收意见定点修订原 `mapping.md`；原提交 `016cdff8`、固定比较版本 `dea84c4` 与模板输入 `ac16eea5` 均保留，原结论与三处可选片段的结构不变，下面只记修订点。
+
+- **REVIEW 片段的 Important**：恢复模板原文的通用范围（行为破坏、数据泄露、回滚受阻），MOBA 的存档兼容、回放确定性、席位次序与单写者存档只作例子，不再作为排他清单；仍只保留极简两节，未扩展成整套评审流程。
+- **Skill／MCP 一条**：删去“树内没有配置即指向不存在入口”的推断。改为本次只读仓库检查未见相关配置、未确认新增根规则的收益；未查看客户端当前已启用能力，因此暂不新增根规则，保留 `@AGENTS.md` 已覆盖与不整份复制的结论。
+- **CI 表述**：只写受检固定树未见 `.github/workflows`、仓外 CI 本次未验证；复用独立审者 2026-11-02 23:00 UTC 对 `7710c4a` 的 `check_runs=0`、`statuses=0` 结果，并保留其时间与提交范围。该项来自既有独立核对，按原时间和范围复用，未倒填为首轮已核，也不能泛称所有托管 CI 不存在。本轮未重试已失败的 workflows API，未读取本机配置或账号设置，未绕过任何拒绝。
+
+以上修订未改 MOBA、模板、TASKS 或其他文件，未运行目标项目命令，也未采用任何模板片段。
