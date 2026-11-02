@@ -1,6 +1,6 @@
 # 保留外层 coverage 的真实执行记录
 
-**同时使用 `coverage run --branch -m pytest --testmon` 时，先确认外层报告仍记录测试实际执行的代码。** 当前固定 main 仍会暂停外层采集器；[整合补丁](current-main.patch)恢复已有的检测与提示分支，并修正旧版 coverage 缺少 `run:core` 时的异常捕获。上游已自行修好配置测试，不要再把旧补丁整份叠上去。候选尚待可写 fork；完整测试仍有下述未通过项。
+**同时使用 `coverage run --branch -m pytest --testmon` 时，先确认外层报告仍记录测试实际执行的代码。** 当前固定 main 仍会暂停外层采集器；[整合补丁](current-main.patch)恢复已有的检测与提示分支，并修正旧版 coverage 缺少 `run:core` 时的异常捕获。上游已自行修好配置测试，不要再把旧补丁整份叠上去。未取得可写 fork，现已停止投稿；保留补丁与实测，完整测试仍有下述未通过项。
 
 ## 在当前基线上复用
 
