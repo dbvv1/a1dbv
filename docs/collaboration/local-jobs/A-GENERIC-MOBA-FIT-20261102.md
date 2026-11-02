@@ -1,7 +1,7 @@
 # A-GENERIC-MOBA-FIT-20261102 · 通用模板到 MOBA 现有任务的最小映射
 id: A-GENERIC-MOBA-FIT-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ac16eea5bd1cb3e46e8676173a2c364a09474868
@@ -27,4 +27,9 @@ result_branch: relay/a-generic-moba-fit-20261102
 最多两小时，共享最多 4 并行由原接收端调度，不另起模型；只运行本仓文档与公开安全检查，不运行目标项目。check_repo、check_public、git diff --check 与提交身份检查通过后仅推 result_branch，回 review_ready 供 dot-A／dot-B 接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；只读适配映射待回传，真实采用尚未发生。
+
+- 完成 MOBA-Like 通用模板↔帧同步/存档的只读适配映射，唯一产物为 mapping.md：结论是不引入 templates/generic 正文，仅列三处可选小补充（单测入口、按任务导航 local-save/brief、AI 评审时的极简 REVIEW 片段），并给出任务→入口→测试→必要检查→不可覆盖规则表、已有存档/本机帧同步范围与缺口、固定提交 dea84c4 与当前 main 7710c4a 的差异。未修改 MOBA-Like、模板或 TASKS，未采用任何模板片段；未运行 npm ci/test/sim/build/smoke、游戏或浏览器；openIssues 为空。
+- 产物：[016cdff](https://github.com/dbvv1/a1dbv/commit/016cdff8e8e5caa56481d752443dd12ec82b478f)，分支 `relay/a-generic-moba-fit-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无未关闭缺口；负责人可直接按映射结论安排后续 MOBA 帧同步/存档自然任务，无需引入模板正文；非阻塞提示：a1dbv docs/decisions/instruction-files.md L114 仍有旧句“默认可玩入口不切换”，本产物未复述。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
