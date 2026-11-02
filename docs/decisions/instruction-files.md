@@ -73,7 +73,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir "<外部仓库�
 
 内联开关只对本次启动生效，不改用户设置。若采用显式导入：项目 `CLAUDE.md` 的外部 `@` 导入首次会弹批准框，拒绝后保持禁用且不再弹；Claude 原生读取的 `AGENTS.md` 内部导入外部文件，则只在该项目此前已批准外部导入时加载，运行时不弹框。缺少批准就保留待验，不绕过。
 
-按各工具入口核对：
+**交互式客户端按下列入口核对；API、SDK 或子代理若不提供这些入口，就不要硬套斜杠命令。** 有宿主提供的加载回执时核对文件来源；没有则把启动加载标为待验，继续核当前可见内容与真实任务结果。手动读文件不能补出启动证据，也不必为补证另开未授权客户端。[一次非交互读者实做](https://github.com/dbvv1/jrnl/blob/bfd477e78238243ec019b423623ea434d3226189/reader-tests/A-INSTRUCTION-FILES-READER-20261103-u1.md#第二步加载入口与当前上下文按当前接口能做到的程度)遇到了这个入口差异；它完成了参数探针，但文档产物仍有待修问题，不计为页面通过（2026-11-02）。
 
 - **Claude 原生 AGENTS**：v2.1.280+ 用 `/memory` 查看 `AGENTS.md` 路径；v2.1.277–279 的 `/memory`、`/context` 不列原生 AGENTS，改为询问 Claude 当前项目规则，并对照文件。
 - **Claude 显式导入**：用 `/context` 查看 **Memory files**，确认外层 `CLAUDE.md` 在列，并核对其中的 `@AGENTS.md` 指向同目录共享文件；共享内容是否可见，再用下方提问核对。
