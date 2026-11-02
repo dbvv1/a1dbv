@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repository": "Graphify-Labs/graphify",
+    "branch": "v8",
+    "commit": "32e5efe935e6844ef39a5e33409e4efe848f2172",
+    "version": "0.9.100",
+    "license": "Apache-2.0",
+    "source_tar_sha256": "975f5a99e0a58bc61498b53520d9ec118b8780cc234443f0125dd0dafe51fe18",
+    "stars_observed": 140688,
+    "stars_observed_on": "2026-11-02",
+    "stars_used_as": "discovery signal only; not quality or benefit"
+  },
+  "input": {
+    "repository": "dbvv1/a1dbv",
+    "commit": "840b177ea1bcd0841ad68f6f4000e85017b1660a",
+    "source_tar_sha256": "52fba30bb1cb2d361eafbb4741c0fb0437a4bc7b57bbbb80ce5320881cbdfc03",
+    "task": "Evaluate whether a code relationship graph can reliably locate and establish the repository's actual delivery-gate behavior; no new rule or code change was requested"
+  },
+  "execution": {
+    "python": "3.12.14",
+    "graphify": "0.9.100",
+    "tree_sitter": "0.25.2",
+    "networkx": "3.7",
+    "install": {
+      "scope": "isolated cloud venv",
+      "start_utc": "2026-11-02T06:47:55Z",
+      "end_utc": "2026-11-02T06:48:26Z",
+      "exit_code": 0
+    },
+    "extract": {
+      "command": "python -m graphify extract <fixed-checkout> --code-only --no-cluster --max-workers 1",
+      "start_utc": "2026-11-02T06:50:03Z",
+      "end_utc": "2026-11-02T06:50:12Z",
+      "exit_code": 0
+    },
+    "query_consumer": {
+      "first_command_start_utc": "2026-11-02T06:51:29Z",
+      "last_command_start_utc": "2026-11-02T06:52:25Z",
+      "command_receipts": 23,
+      "all_process_exit_codes": 0,
+      "note": "Exit 0 did not mean useful output: help-like free-text inputs included no-match/missing-graph results. Counts are retention details, not effectiveness metrics."
+    }
+  },
+  "graph": {
+    "bytes": 3113190,
+    "sha256_before_and_after_queries": "9ffff054ba4708af9e3bffa51b64f4248dea010f0af61ef76735ca0ebd9e43a9",
+    "nodes": 3721,
+    "edges": 7569,
+    "code_files_considered": 421,
+    "code_only_noncode_skipped": {
+      "total": 606,
+      "docs": 552,
+      "papers": 9,
+      "images": 45
+    },
+    "unclassified_skipped": 132,
+    "missing_optional_grammar": {
+      "file_count": 1,
+      "extension": ".lisp",
+      "dependency": "tree-sitter-commonlisp"
+    },
+    "reported_code_files_with_no_symbols": 18,
+    "no_symbol_file_causes_individually_verified": false,
+    "clustering": false,
+    "reported_input_tokens": 0,
+    "reported_output_tokens": 0,
+    "token_counts_mean": "Graphify extraction counters, not total agent token usage or measured savings"
+  },
+  "questions": [
+    {
+      "id": "offline_to_public",
+      "retrieved": [
+        "scripts/check_offline.py::main() L95",
+        "scripts/check_offline.py::phases() L18",
+        "scripts/check_offline.py::run_process() L56",
+        "subprocess module"
+      ],
+      "retrieved_edge_tag": "EXTRACTED",
+      "path_query": "scripts/check_offline.py::main() -> scripts/check_public.py::main(), directed",
+      "path_result": "No directed path found",
+      "source_truth": [
+        "phases constructs argv containing scripts/check_public.py at L35",
+        "run_process invokes subprocess.Popen at L58",
+        "new process enters check_public main L170-171 and calls scan_files at L157"
+      ],
+      "missing": "argv data to child-script entry; absence of a graph path is not absence of execution",
+      "verdict": "useful starting locations, behavior not established by graph"
+    },
+    {
+      "id": "skip_is_failure",
+      "retrieved": [
+        "scripts/check_offline.py::run_suite() L81",
+        "rationale note L82",
+        "tests/test_check_offline.py::.test_strict_suite_rejects_skip() L181",
+        "tests/test_check_offline.py::.assert_strict_result() L195",
+        "partition regression L161"
+      ],
+      "source_truth": [
+        "run_suite returns 1 for not result.testsRun or result.skipped at L87-91",
+        "main propagates subprocess failure at L125-127",
+        "test_strict_suite_rejects_skip asserts exit 1 via helper; the helper dynamically calls runner.run_suite"
+      ],
+      "missing": "actual branch expression, exit-code propagation and dynamic test helper to implementation edge",
+      "verdict": "correct candidate implementation/tests, assertions still require source"
+    },
+    {
+      "id": "symlink_text",
+      "retrieved": [
+        "scripts/check_public.py::scan_files() L97",
+        "main -> scan_files at L157",
+        "scan_files -> symlink_parent at L103",
+        "scan_files -> os module at L111",
+        "tests/test_check_public.py::.test_tracked_symlink_scans_link_text_not_target_content() L205",
+        "dangling/directory regression L225",
+        "core.symlinks=false allowlist regression L286"
+      ],
+      "source_truth": [
+        "os.readlink reads link text at L111 before ordinary read_text branch",
+        "symlink-parent causes finding/continue at L103-107",
+        "allowlist also checks Git index mode 120000",
+        "regression tests distinguish link text from target content"
+      ],
+      "missing": "specific readlink API and branch order; selected dynamic test calls are not linked to scanner",
+      "verdict": "local call sites and test names located, filesystem behavior not proved"
+    }
+  ],
+  "consumer_separation": {
+    "query_consumer": "Saw graph and CLI only until initial answer; did not read repository source or source-golden result",
+    "source_golden": "Read fixed Git source only, no graph or queries",
+    "acceptance": "Owner compared initial answer and original CLI outputs to independent source truth; no new full-route reader status"
+  },
+  "retained_first_attempts": [
+    {
+      "input": "query --help --graph <graph.json>",
+      "result": "treated --help as query text"
+    },
+    {
+      "input": "explain --help --graph <graph.json>",
+      "result": "no exact name match"
+    },
+    {
+      "input": "path --help --graph <graph.json>",
+      "result": "reported missing default graph; exit 0"
+    }
+  ],
+  "safety": {
+    "empty_environment": true,
+    "isolated_home": true,
+    "GRAPHIFY_BACKEND": "none",
+    "GRAPHIFY_NO_AUTO_REFRESH": "1",
+    "global_skills_or_hooks_installed": false,
+    "real_accounts_connected": false,
+    "upstream_tracked_changes": false,
+    "consumer_tree_clean_after": true,
+    "isolated_home_files_after": 0,
+    "active_nonsample_git_hooks_after": 0,
+    "graph_content_unchanged_after_queries": true
+  },
+  "limitations": [
+    "Code-only raw graph, no clustering or semantic document pass",
+    "Missing optional grammar and no-symbol files retained, not repaired or hidden",
+    "No upstream full test suite, production agent adoption, model comparison, benchmark replication or cost/speed measurement",
+    "Graph is a locator supplement, not a source-of-truth replacement or behavior verifier",
+    "No default or existing reader-status upgrade"
+  ],
+  "retained_evidence": {
+    "archive": "graphify-code-map-retained-20261102.tar.gz",
+    "bytes": 36416896,
+    "sha256": "48bb3210466cac15c25ae566bfd3ebdf6b54b3e6eba3ef8b20b4bca26360a235",
+    "files_verified": 420,
+    "source_blobs_verified": {
+      "upstream": 1140,
+      "consumer": 1167
+    }
+  }
+}

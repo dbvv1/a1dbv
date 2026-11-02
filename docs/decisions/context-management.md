@@ -17,6 +17,8 @@
 
 **依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 按需取回及撤掉强制探索委派](https://cursor.com/blog/improved-token-efficiency)，核实 2026-10-26；[检查器](../../scripts/check_repo.py)与[测试](../../tests/test_check_repo.py)，复跑 2026-10-28。常驻规则见[指令文件](instruction-files.md)，委派与在途任务见[长任务](long-tasks.md)。
 
+**代码关系图给阅读起点，不替代源码验收。** [Graphify 本仓实试](../../experiments/graphify-code-map/README.md)能定位交付门禁的实现和测试，但没连出 argv 到子进程脚本的关系，也不能证明 skip／symlink 分支的行为；无路径不等于无执行。此次 code-only 图跳过 606 个非代码文件，不能当知识库全文索引。它只补充按需定位，不改变原生上下文默认或本页 🟡；核实 2026-11-02。
+
 ### 指定了页面版本：读取那一版，不用工作树同名文件替代
 
 **任务指定文档版本，或附入正文应与某版一致时，先核内容版本，再按它行动。** 分支／标签会移动，先用 `git rev-parse --verify '<ref>^{commit}'` 得到提交；克隆后若没有同名本地分支，确认仓库与远端后改查 `refs/remotes/origin/<分支>`（远端不叫 origin 时替换名称）。需要当前远端版本时，先按已有权限 fetch，再固定提交；只读已有跟踪 ref 就保留这一观察范围。随后用 `git show '<提交>:<文件路径>'` 读该版。工作树 HEAD 与页面版本可以不同，保留两者；普通任务只需当前文件时，不增加这一步。
