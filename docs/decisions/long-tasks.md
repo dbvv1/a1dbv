@@ -86,6 +86,7 @@ Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind
 | 流式事件／审批生命周期 | 一次回答、回合完成、下一轮新请求、正常退出与会话落地 | [Goose ACP](../../experiments/goose-acp-receipt/README.md) 基线重复旧卡后退出；候选合成 Allow／Reject 两轮继续，SQLite 与 `/exit` 均通过，真实 provider 与取消恢复未验 |
 | 持久化迁移／分批清理 | 中途与检查点失败后新进程恢复，再用真实读取接口核历史、重跑及后续新数据 | [OpenCode](../../experiments/opencode-migration-receipt/README.md) 原候选保留已提交清理批次，两版均恢复可读历史；仅合成 SQLite／SessionStore，未验原大库与服务启动 |
 | 文档树／工作记录迁移 | 核每个源文件的去向、转换和备份，再让下一位生产工具读写读回 | [BMAD](../../experiments/bmad-migration-receipt/README.md) 预览版 exit 0 仍丢隐藏／tmp；窄修后完整保全并经 tickets 消费，冲突须读 JSON，完整 Python 套件仍有 7 个失败子例 |
+| 审查回复／汇总判断 | 回到原回复逐条核 finding，再读缺失覆盖；保留独立接收记录 | [gstack](../../experiments/gstack-review-receipt/README.md) 候选挡住汇总改写、缺原回复和换文件；整条事件连同 finding 删除仍可 clean，只作一致性补充 |
 | worktree 交接／测试摘要 | 核代码实际落点与包的净 diff，再读 runner 原输出、locale、零测试和失败路径 | [Superpowers](../../experiments/superpowers-worktree-receipt/README.md) 旧 main 正确 cwd 与候选 `-C` 均能接包；真实摘要补丁在 C.UTF-8 仍失败 3 项，误用 C 诊断写出的 complete 已纠正，修复未获接收 |
 
 这些实测支持按风险选择消费者验收，不改变整套工具默认或本页读者状态；核实 2026-11-02。

@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "verified_date": "2026-11-02",
+  "project": "garrytan/gstack",
+  "license": "MIT",
+  "scope": "Existing PR #3717 received through isolated synthetic native CLI; no model, account, whole Skill installation or upstream modification.",
+  "sources": {
+    "main": "7762c39a4ecdba8268c1ffc2b0384bccc04b3fa6",
+    "base": "0c84f4ee14c32734313e68b700417e0748ad1d55",
+    "candidate": "5d2ba4f6f2b4e97f9ede69f6f1d9e4c747b7c81a",
+    "candidate_state": "open, unmerged",
+    "issue_3719": "open",
+    "base_to_main_selected_files_identical": [
+      "bin/gstack-review-dispatch",
+      "lib/review-brief.ts",
+      "lib/review-ledger.ts",
+      "test/review-dispatch.test.ts",
+      "test/review-pass.test.ts",
+      "test/review-targeted.test.ts"
+    ]
+  },
+  "runtime": {
+    "platform": "Linux x86_64",
+    "bun": "1.4.4",
+    "dependencies_installed": false,
+    "isolation": "Owned HOME, XDG, TMPDIR, GSTACK_HOME; Git global/system config disabled; hooks disabled; Bun no-env-file and config=/dev/null."
+  },
+  "consumer": {
+    "source_read_start_utc": "2026-11-02T09:50:46Z",
+    "first_product_command_start_utc": "2026-11-02T09:51:47.210692+00:00",
+    "completed_utc": "2026-11-02T09:53:18.210431+00:00",
+    "flow": [
+      "render",
+      "sent",
+      "collect",
+      "judge",
+      "verify"
+    ],
+    "synthetic_fixture": "Independent committed Git tree; synthetic specialist/security findings and refusal replies.",
+    "cases": [
+      {
+        "arm": "base",
+        "case": "critical",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "base",
+        "case": "clean",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239\nOUTPUT specialist/security MATCH sha=f2cf9b4bd2d6 findings=0\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "base",
+        "case": "tamper_severity",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "base",
+        "case": "tamper_raw",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "base",
+        "case": "missing_output",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "base",
+        "case": "copy_merged",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "base",
+        "case": "retry_wrongtree",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239,7f1a17ea5239\nOUTPUT specialist/security VOIDED sha=e9b3d92e3488 findings=0 replaced_by_a_review\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=2 voided=1\n"
+      },
+      {
+        "arm": "base",
+        "case": "retry_refusal",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239,7f1a17ea5239\nOUTPUT specialist/security VOIDED sha=444b36b6c29e findings=0 replaced_by_a_review\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=2 voided=1\n"
+      },
+      {
+        "arm": "base",
+        "case": "promote",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239\nOUTPUT specialist/security MATCH sha=d5ba4a74a097 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=1 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "base",
+        "case": "downgrade",
+        "judge_exit": 1,
+        "verify_exit": 1,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - REJECTED dropped=[] downgraded=[\"specialist/security#1\"] added=0 promoted=0 folded=0 rerun_rejects dropped=[] downgraded=[\"specialist/security#1\"]\nVERIFY: dirty briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "base",
+        "case": "delete_whole_output_event",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=7f1a17ea5239 sent=7f1a17ea5239,7f1a17ea5239\nOUTPUT specialist/security MATCH sha=f2cf9b4bd2d6 findings=0\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "critical",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "clean",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892\nOUTPUT specialist/security MATCH sha=f2cf9b4bd2d6 findings=0\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "tamper_severity",
+        "judge_exit": 0,
+        "verify_exit": 1,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892\nOUTPUT specialist/security MISMATCH sha=aa671d40c244 findings=1 merged_line_differs=[\"specialist/security#1\"]\nJUDGE - MISMATCH dropped=[] downgraded=[] added=0 promoted=0 folded=0 merged_line_differs=[\"specialist/security#1\"]\nVERIFY: dirty briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "tamper_raw",
+        "judge_exit": 0,
+        "verify_exit": 1,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892\nOUTPUT specialist/security MISMATCH sha=aa671d40c244 findings=1 merged_line_differs=[\"specialist/security#1\"]\nJUDGE - MISMATCH dropped=[] downgraded=[] added=0 promoted=0 folded=0 merged_line_differs=[\"specialist/security#1\"]\nVERIFY: dirty briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "missing_output",
+        "judge_exit": 0,
+        "verify_exit": 1,
+        "verify_stdout": "BRIEF specialist/security NOT_COLLECTED rendered=0122f44c3892 sent=0122f44c3892 not_reviewed\nOUTPUT specialist/security MISMATCH sha=aa671d40c244 findings=1 output_file_missing\nJUDGE - MISMATCH dropped=[] downgraded=[] added=0 promoted=0 folded=0 merged_line_differs=[\"specialist/security#1\"]\nVERIFY: dirty briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "copy_merged",
+        "judge_exit": 0,
+        "verify_exit": 1,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - MISMATCH dropped=[] downgraded=[] added=0 promoted=0 folded=0 judge_merged_not_collected\nVERIFY: dirty briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "retry_wrongtree",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892,0122f44c3892\nOUTPUT specialist/security VOIDED sha=e9b3d92e3488 findings=0 replaced_by_a_review\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=2 voided=1\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "retry_refusal",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892,0122f44c3892\nOUTPUT specialist/security VOIDED sha=444b36b6c29e findings=0 replaced_by_a_review\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=2 voided=1\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "promote",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892\nOUTPUT specialist/security MATCH sha=d5ba4a74a097 findings=1\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=1 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "downgrade",
+        "judge_exit": 1,
+        "verify_exit": 1,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892\nOUTPUT specialist/security MATCH sha=aa671d40c244 findings=1\nJUDGE - REJECTED dropped=[] downgraded=[\"specialist/security#1\"] added=0 promoted=0 folded=0 rerun_rejects dropped=[] downgraded=[\"specialist/security#1\"]\nVERIFY: dirty briefs=1 outputs=1 voided=0\n"
+      },
+      {
+        "arm": "candidate",
+        "case": "delete_whole_output_event",
+        "judge_exit": 0,
+        "verify_exit": 0,
+        "verify_stdout": "BRIEF specialist/security MATCH rendered=0122f44c3892 sent=0122f44c3892,0122f44c3892\nOUTPUT specialist/security MATCH sha=f2cf9b4bd2d6 findings=0\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0\n"
+      }
+    ],
+    "negative_control": "Retain first output event, remove only its merged row: judge=1 and verify=1 on both arms.",
+    "outside_unavailable": {
+      "arm": "candidate",
+      "judge_exit": 0,
+      "verify_exit": 0,
+      "verify_stdout": "BRIEF outside-voice UNAVAILABLE rendered=f719f3e0e049 sent=f719f3e0e049\nOUTPUT outside-voice UNAVAILABLE sha=142452f5bd3c findings=0 reason=\"Synthetic timeout; no model invoked\"\nJUDGE - OK dropped=[] downgraded=[] added=0 promoted=0 folded=0\nVERIFY: clean briefs=1 outputs=1 voided=0 unavailable=1\n"
+    },
+    "harness_failures": 0
+  },
+  "focused_tests": [
+    {
+      "arm": "base",
+      "start_utc": "2026-11-02T09:50:57.636089+00:00",
+      "end_utc": "2026-11-02T09:52:31.982691+00:00",
+      "exit": 0,
+      "timeout": false,
+      "passed": 117,
+      "failed": 0,
+      "files": [
+        "test/review-dispatch.test.ts",
+        "test/review-pass.test.ts",
+        "test/review-targeted.test.ts"
+      ],
+      "scope": "fake host/subagents; native local Git and CLI; local bare-origin push only"
+    },
+    {
+      "arm": "candidate",
+      "start_utc": "2026-11-02T09:52:31.983490+00:00",
+      "end_utc": "2026-11-02T09:54:04.782351+00:00",
+      "exit": 0,
+      "timeout": false,
+      "passed": 119,
+      "failed": 0,
+      "files": [
+        "test/review-dispatch.test.ts",
+        "test/review-pass.test.ts",
+        "test/review-targeted.test.ts"
+      ],
+      "scope": "fake host/subagents; native local Git and CLI; local bare-origin push only"
+    }
+  ],
+  "upstream_ci": {
+    "head": "5d2ba4f6f2b4e97f9ede69f6f1d9e4c747b7c81a",
+    "observed_utc": "2026-11-02T09:51:38.497Z",
+    "checks_total": 49,
+    "checks_success": 37,
+    "checks_skipped": 12,
+    "workflows_success": 7,
+    "free_tests_url": "https://github.com/garrytan/gstack/actions/runs/41416670517"
+  },
+  "not_run": [
+    "complete free suite",
+    "whole Skill or /ship acceptance",
+    "local typecheck",
+    "paid or real-model evals",
+    "native macOS or Windows"
+  ],
+  "limits": [
+    "Whole-event deletion #3719 remains reproducible when surviving records are self-consistent.",
+    "Mutable ledger and output hashes are not independent trust anchors; coordinated rewrite remains outside guarantee.",
+    "REVIEWED_TREE is an output declaration; no proof of actual code review or coverage of uncommitted content.",
+    "Hash normalizes CRLF and trailing whitespace; not byte-exact identity.",
+    "verify uses installed parser version.",
+    "verify clean may include unavailable coverage."
+  ],
+  "raw_artifacts": {
+    "complete-results.json": "5d7ac6256bff843784c2578e4b04128a42dd3bad8df4ba7d32ffa7e62a6cd828",
+    "commands.json": "d6929a7cf4a544558b1c5a891693e5a4978b4f28590fcb9bc63e68ec6acc41b2",
+    "REPORT.txt": "1db362b2f617a1d58641bb0c819d37800bb9b58661907c05c183a51d32391ab2",
+    "artifact-sha256.json": "bba9abfcb223fef75853b976ba6d7d0e7f2273d03dab1d6875f2b499662b60b7"
+  },
+  "decision": "Trial the bounded consistency check; do not adopt a whole stack default or upgrade reader status.",
+  "retention": {
+    "created_utc": "2026-11-02T09:55:09.977600+00:00",
+    "sha256": "53734d04fd2308b8a2ea37b842a5aa7ebf58df0a244e2c96cd751be425c9ff61",
+    "bytes": 28836659,
+    "source_object_count": 4986,
+    "restored_commit_trees": {
+      "7762c39a4ecdba8268c1ffc2b0384bccc04b3fa6": "ae5da93b3d6e10a4ac345f98f767ff280f428642",
+      "0c84f4ee14c32734313e68b700417e0748ad1d55": "9f4f2c9d868eacc7e870eb7f5c707c32b25a78b9",
+      "5d2ba4f6f2b4e97f9ede69f6f1d9e4c747b7c81a": "80a2eb808922aceffb72d1510ad5f317f37f5d95"
+    },
+    "source_pack_sha256": "8d433007df70fcb00b2ad05ade3bd91161f1e86e196e532616e9f9535f449509",
+    "archive_public_upload_cleared": false,
+    "file_count": 14466
+  },
+  "raw_report_timing_note": "The preserved REPORT.txt header predates supplemental checks. Use command timestamps and consumer fields above, not the old report header, for actual execution times."
+}
