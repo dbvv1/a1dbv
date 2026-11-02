@@ -1,10 +1,10 @@
 # A-AGENT-CHOICE-READER-20261103 · 选入口完成真实 CLI 小任务
 id: A-AGENT-CHOICE-READER-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
-base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
+base_ref: 655d8a9f69028a4b0accdb55adce1babbf86d07c
 result_branch: relay/a-agent-choice-reader-20261103
 page: docs/01-agents/README.md@main
 
@@ -32,11 +32,12 @@ page: docs/01-agents/README.md@main
 保留首轮结果，不自动再派盲读或换页重做；通常一个 60–90 分钟单元，最多两小时，未完成写清恢复条件。
 
 ## 修改要求
-本次仅恢复原单元的扫描阻塞，不是新读者或重新做题。接收端先核原调用、工具及登记进程全部退出；缺证则保持本地隔离，不启动任何新调用、不修改旧文件，也不以本状态或 blocked 推断退出。
-确认退出后保留原本机候选和首轮记录，先对照真实命中内容与固定上游／基线，再做最小脱敏：jrnl/args.py:456 若确为已有 work_config.yaml 帮助占位，只替换为通用 `/home/user/work_config.yaml`，不改参数逻辑；reader-tests/A-AGENT-CHOICE-READER-20261103-u1.md:318 尚无公开原文，只对实际私人路径精确替换为合成占位／相对路径，不猜内容。
-受控本地保留原输出与扫描失败，公开产物保原页面解析信息、正文指纹、真实命令／结果和首轮失败；不把新页回填为原输入，不重跑 fresh reader。未能定位同字节命中就继续 blocked，交具体缺证，不删整段证据求通过。
-不修改扫描器、白名单、依赖或检查标准，不泄露原私人路径；若认定误报且不能在原写域安全更正，保留 blocked 交负责人，不绕过检查。原 no-install、合成数据、独占 worktree 与结果分支限制不变。
-最小修订后跑原范围适用检查、公开扫描和提交身份检查，只推原 result_branch，由非读者核脱敏没有改变行为；发布通过仅解决扫描，不代替业务任务或页面验收。
+本次沿原 result_branch 从 655d8a9f69028a4b0accdb55adce1babbf86d07c 定点修复，不是新读者实测。先确认原调用、工具及登记进程全部退出，原 worktree 单一写者；缺证保持隔离，不启动新调用或改旧文件。保留原提交、u1 首轮记录与失败，修订追加，不回填首轮。
+1. 按实际 CLI 语义修互斥检测，不能以和 #2120 一致豁免已复现问题：--imp／--impo／--impor、--form 与隐藏别名 --export 必须走同一规则；保留 --help／--version 的原有优先级；`-- --import --format json` 是合法正文，`--format json -- --import` 是合法检索，不能把 `--` 后文本再当选项。补以上回归并保原 5 错误组合及 5 正常路径，按原套件验证修前失败、修后通过。
+2. 仅原卡写域内修实现、消息与相关测试，保留原 CLI 兼容行为，不修改依赖、扫描器、白名单、全局配置或权限。no-install／合成数据／私有路径脱敏约束不变；poetry／tox 等缺依赖继续记未跑，不安装或隐式下载补门槛。
+3. 原接收端只从当时保留的输入回执补实际 page 解析提交和全文指纹；原件没有就明确无法恢复，不拿当前页面回填、不重跑 fresh reader。页面、输入与实际采用分开报告。
+4. #2120 已由负责人于 2026-11-02 22:17 UTC 核公开 API：仍 open／未合，head f4c6e2db、base 90de4948；保该观察时间，不要求本机绕过受限网络再查。后续主张以实际修订及 CLI 检查为据，不以 PR 状态代替验收。
+非读者核最终 diff、原正确路径、缩写／别名、help/version 与 `--` 边界。只推原 result_branch，回 review_ready；整体 taskDone 不能盖过残余反例，分别写有限通过、失败、跳过与未运行。
 
 ## 当前结果
 
@@ -45,3 +46,7 @@ page: docs/01-agents/README.md@main
 - 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
 - 下一步：交负责人：决定是否补页面两句（工作树已有未提交候选且无写者信息时的处置、缺依赖且禁装时如何发现已有隔离环境）；评估 --imp/--impo/--impor、--form、--export 残余边界与 --help/--version 优先级副作用是否按 #2120 原样接受；核对 #2120 open/merged 状态并补跑 poe lint（需 poetry）。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
+## 独立接收结论
+2026-11-02 负责人在隔离云端对基线 90de4948 与候选 655d8a9 分别运行 19 组真实 CLI。原 5 错误组合及 5 正常路径符合有限预期；另确认 5 个缩写／别名漏拦、help/version 优先级由 exit 0 变 2，以及两条 `--` 后合法输入由 exit 0 变 2。故本轮不 accepted，原报告 taskDone=true 不代表完整验收；按上方返工，原记录保留。
+原 u1 只见 page@main 和片段引用，没有可独立核对的实际解析 SHA／全文指纹；当前页面变化不用于倒推首轮输入。poetry／tox 缺依赖继续保留，真实客户端模型身份及未验路径不由源码一致或测试总数补齐。
