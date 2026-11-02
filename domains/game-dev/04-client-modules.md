@@ -227,6 +227,10 @@ flowchart LR
 
 单一无中断入口保简单状态即可，不必搭通用锁框架；允许边走边观察的模式不因混合一律停控。新增成本是交接身份与终止分支，不能靠更长混合掩盖错目标。
 
+**🧪 临时跟随要分开保存偏好、物理键持有和最终镜头模式。** 按住回看自己不应把存档里的永久锁定改成 `true`；最终跟随由 `locked || held` 决定，松开清 `held`、保当前画面位置，再交回自由滚屏。按下时记录物理键，松开不再按当前绑定重新解析，也不能套用 keydown 的输入框过滤，否则改键或焦点转入 UI 后会卡住。失焦、暂停、重开和输入交权清除临时持有；按住期间手动改永久模式，应撤销临时跟随并拒绝同次长按的 repeat，等下一次真正按下；固定捕获机位不接受临时跟随。
+
+实现起点：[MOBA 候选状态](https://github.com/dbvv1/MOBA-Like/blob/cb818773da66e6a8ee77a4576339f33457fba32d/src/render/camera-follow.ts)、[按键所有权与释放](https://github.com/dbvv1/MOBA-Like/blob/cb818773da66e6a8ee77a4576339f33457fba32d/src/input/controls.ts)及 [world 消费](https://github.com/dbvv1/MOBA-Like/blob/cb818773da66e6a8ee77a4576339f33457fba32d/src/render/world.ts)。仅 `camera=hold-follow-v1` 启用；源码、CPU／DOM 回归与替身 renderer 下的相机轨迹已检查，实际浏览器镜头与手感未验，未改可玩默认。[源码／CPU 候选，2026-11-02]
+
 #### 交给 AI 的实施与二改验收
 
 以下可作任务清单，未执行。AI 交配置、绑定与轨迹检查，人接收预判、操控、可读性和舒适度。

@@ -107,6 +107,10 @@ flowchart LR
 [rail-tests]: https://github.com/dbvv1/Star-Rush-Reborn/blob/af569f88309a31c9000965eb879b079ff9955631/tests/impact-audio.mjs
 [rail-readme]: https://github.com/dbvv1/Star-Rush-Reborn/blob/5266703f3302410a994c69ec15345edf11edc455/README.md
 
+**🧪 区分同族技能释放时，先改共同源的起音与频谱，不只错开播放时间。** MOBA 的 Q/W 候选沿同一 CC0 布料源和可编辑合成配方：Q 用 3ms 起音、高通纹理与下降音，W 用 14ms 起音、低通纹理与低频上行层；保原调度间隔、去重和暂停／重开合同。A/B 小样使用相同的 25ms Q→W 间隔，只比较素材变化；峰值和 RMS 约束是工程检查，不证明可听辨识改善。
+
+运行映射从真实 `castResolved.slot` 选择 Q/W 两片，只表达释放槽位，不把 Q 固定解释为攻击、W 解释为护盾，也不推断命中；同一 W 在不同英雄可以是冲刺或护盾。沿 `audio=critical-v1` 旁置，baseline 仍加载原四片、不额外请求两片衍生音，E/R 保原 cast。可复用入口：[源与许可说明](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/assets/audio/battle/README.md)、[可重建配方及同间隔 A/B](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/tools/build-skill-audio.py)、[真实事件映射](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/src/audio/battle.ts)。仅源码、离线 PCM 与 CPU 消费回归已核；该二改未试听、未过浏览器验收，仍是默认关闭的声音设计候选。[源码／离线候选，2026-11-02]
+
 ## 先让声音成为好玩的反馈，再增加素材数量
 
 **✅ 先给核心动作一套可学习的声音语言：起手、落空、命中、格挡、成功各有含义，奖励与危险有不同性格。** 声音不只是确认按钮已按下；起音、力度、尾音和留白要配合动作的重量、节奏与情绪。命中音跟随实际命中结果，不能按下攻击就提前播放；音乐可以等乐句，关键动作反馈不应为等节拍延迟。这是设计建议，需用实际玩法判断是否更舒服。[研究]
