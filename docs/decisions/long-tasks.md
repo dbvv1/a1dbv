@@ -79,6 +79,8 @@ Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind
 
 本仓接收 Repomix 的大范围测试替身迁移时，另让非作者从默认 stdio 入口完成打包、同连接读搜、错误后恢复与正常退出，再逐文件核保存结果；没有只凭迁移后的 doubles 判定装配可用。两版该文件链一致，但本云完整套件仍有 1 项失败，候选托管检查为 52 成功、2 跳过，分别保留。这个[真实接收单元](../../experiments/repomix-mcp-receipt/README.md)验证上述接产物与消费者的方法，不把 DI 定为通用默认；核实 2026-11-02。
 
+接回 Aider 的路径修复时，真实 CLI 又复现“界面目标是 A、exit 0，却暂存了 B”。[该接收单元](../../experiments/aider-git-receipt/README.md)因此逐仓核 index 和既有暂存内容；候选修正了这条路径，但完整套件仍失败，不能由局部消费者通过升级成完整版本通过。核实 2026-11-02。
+
 **同机检查争用要测出来再调度。** 实现中跑定向反馈，交付时按项目要求验整合结果；只有观察到资源争用才错峰或排队，不统一降低 workers、放宽超时。n8n 的单 worker 定向入口与 Inspector 的排队比较是各自项目取舍，不能当所有仓库的配置默认。
 
 **依据**：[强团队与项目] [Anthropic：共享状态的步骤留在主循环](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)、[Cognition：并行判断与单线写入](https://cognition.com/blog/multi-agents-working)、[HumanLayer：先核验证证据、修失败再标通过](https://github.com/humanlayer/skills/blob/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/rpi/skills/rpi/references/implement-outline/process.md#L17-L39)、[Cursor：撤掉过强探索委派提示](https://cursor.com/blog/improved-token-efficiency)，原文复核 2026-11-01。这些支持减少无益交接、明确写入和验收责任；本页连续接收与交付路线是本仓采用组合，不是各家共同规定。项目检查取舍见 [n8n](https://github.com/n8n-io/n8n/blob/2e85535612dcdf6c641dca981814fba176244146/AGENTS.md#L344-L358) 与 [Inspector](https://github.com/modelcontextprotocol/inspector/blob/e3217388c8590bcf6796fd8d0528a875ade1ac1f/vitest.shared.mts#L81-L139)，原核实 2026-10-28。

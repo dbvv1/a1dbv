@@ -1,0 +1,1999 @@
+{
+  "scope": "Actual source CLI /git consumer; synthetic repositories. No upstream source edit or publication. Not an entire-version acceptance.",
+  "verified_date_utc": "2026-11-02",
+  "source": {
+    "repository": "https://github.com/Aider-AI/aider",
+    "pull_request": "https://github.com/Aider-AI/aider/pull/5846",
+    "baseline_commit": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+    "baseline_tree": "3a8257195db51e5c5cd3680dfd2022027f9c7904",
+    "candidate_commit": "fc41b0bd581145ad10ac2aedba24093796dc75b1",
+    "candidate_tree": "0abcee39b194b2ee31e2b0b144b5f88bf218d8fd",
+    "changed_files": [
+      "aider/commands.py",
+      "tests/basic/test_git_command_cwd.py"
+    ],
+    "production_change": "subprocess.run in cmd_git gains cwd=self.coder.root",
+    "requirements_sha256": "5b340fe0a8830196dbfc18098edd73c379eeae05f752ab47979e96cb542f095f",
+    "upstream_patch_sha256": "a7a784eefe3def2c941ff49bcee6e49d395a29c24537a192f8a5b0a10f3e590b",
+    "baseline_source_archive_sha256": "fd87ae4a98dca40f74dc7e10a22349f94106291fb48b5644bfb2585ae67d93be"
+  },
+  "environment": {
+    "os": "Linux 6.18.57",
+    "python": "3.12.14",
+    "git": "2.52.0",
+    "cli_version_display": "0.86.3.dev+import",
+    "pytest": "9.0.2",
+    "pytest_env": "1.6.0",
+    "litellm": "1.82.3",
+    "boto3_added_after_consumers": "1.43.123"
+  },
+  "input": {
+    "fresh_fixture_per_case_and_version": true,
+    "repositories": {
+      "A": {
+        "change.txt_initial": "A original\n",
+        "change.txt_modified": "A modified target\n",
+        "sentinel.txt": "A sentinel original\n",
+        "nested/keep.txt": "A nested\n"
+      },
+      "B": {
+        "change.txt_initial": "B original\n",
+        "change.txt_modified": "B modified target\n",
+        "sentinel.txt_initial": "B sentinel original\n",
+        "sentinel.txt_pre_staged": "B already staged sentinel\n",
+        "nested/keep.txt": "B nested\n"
+      }
+    },
+    "no_provider_credentials_supplied": true,
+    "new_home_env_allowlist_histories_per_case": true,
+    "local_model_metadata_is_synthetic_not_price_facts": {
+      "gpt-4o-mini": {
+        "max_input_tokens": 128000,
+        "max_output_tokens": 16384,
+        "max_tokens": 16384,
+        "input_cost_per_token": 0,
+        "output_cost_per_token": 0,
+        "litellm_provider": "openai",
+        "mode": "chat"
+      }
+    },
+    "preparation": "Official tokenizer cl100k_base/o200k_base preloaded and checked by tiktoken; LITELLM_LOCAL_MODEL_COST_MAP=True. No product monkeypatch."
+  },
+  "consumer_cases": [
+    {
+      "version": "baseline",
+      "case": "nested",
+      "finished_at": "2026-11-02T05:05:21.130593+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.543,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:05:15.587963+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git add change.txt"
+      ],
+      "cwd": "${FIXTURE}/A/nested",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "77c778f99e453f28d39ae219fdf24e36d9e29e47",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "77c778f99e453f28d39ae219fdf24e36d9e29e47",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "a934d8623bb65e872cc4eac0f3a1a06456179fec",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "a934d8623bb65e872cc4eac0f3a1a06456179fec",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "fcfec14474fa28a45a31de01ed7349b70222020484848b0a0bc2c18e08bf0627",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "candidate",
+      "case": "nested",
+      "finished_at": "2026-11-02T05:05:26.629426+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.452,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": false,
+          "sentinel_stage_unchanged": true,
+          "change_staged": true
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:05:21.177163+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git add change.txt"
+      ],
+      "cwd": "${FIXTURE}/A/nested",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "8911d1423eef866d3b7011302a0d4871c6282061",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "8911d1423eef866d3b7011302a0d4871c6282061",
+            "index_tree": "2e564c0c39e54466e6b030756ff6faadbf2e3779",
+            "index_change_content": "A modified target\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "a515bef80294d0ed7fd11c3c8f9587f419883695",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "a515bef80294d0ed7fd11c3c8f9587f419883695",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "00d9a380d75e515161f4848f2fad0da84a1de5267cb0140dfff84c307fc4a535",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "baseline",
+      "case": "foreign",
+      "finished_at": "2026-11-02T05:05:32.467550+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.746,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": false,
+          "sentinel_stage_unchanged": true,
+          "change_staged": true
+        }
+      },
+      "started_at": "2026-11-02T05:05:26.720520+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git add change.txt",
+        "${FIXTURE}/A"
+      ],
+      "cwd": "${FIXTURE}/B",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "58475d2b69a270fd87a27bd54e4536501888facf",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "58475d2b69a270fd87a27bd54e4536501888facf",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "9e11c806c1a3434a4f39d6d5614a91934fe69783",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "9e11c806c1a3434a4f39d6d5614a91934fe69783",
+            "index_tree": "6a3cc90ecaade980ae48869628769f14536718da",
+            "index_change_content": "B modified target\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "6e108de16cbbca7f7198919b342597b5db9c3d742a8ed09d4b3827a5d8bec0b9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "candidate",
+      "case": "foreign",
+      "finished_at": "2026-11-02T05:05:37.265383+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 4.742,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": false,
+          "sentinel_stage_unchanged": true,
+          "change_staged": true
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:05:32.522979+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git add change.txt",
+        "${FIXTURE}/A"
+      ],
+      "cwd": "${FIXTURE}/B",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "455b6bf24d89c209f2820ca6ba01efac9f7ff411",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "455b6bf24d89c209f2820ca6ba01efac9f7ff411",
+            "index_tree": "2e564c0c39e54466e6b030756ff6faadbf2e3779",
+            "index_change_content": "A modified target\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "c41b9c6b7d57e9fc3c568c6fb8682d7e3af6a87c",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "c41b9c6b7d57e9fc3c568c6fb8682d7e3af6a87c",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "b87e3398bf81ba224075bef399739f0af9a5f7c2d4b279090e55bcb35f6bd8d3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "baseline",
+      "case": "root",
+      "finished_at": "2026-11-02T05:05:42.460031+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.142,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": false,
+          "sentinel_stage_unchanged": true,
+          "change_staged": true
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:05:37.317584+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git add change.txt"
+      ],
+      "cwd": "${FIXTURE}/A",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "85b1858d323621a7a34ae6c643f26c48334ce895",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "85b1858d323621a7a34ae6c643f26c48334ce895",
+            "index_tree": "2e564c0c39e54466e6b030756ff6faadbf2e3779",
+            "index_change_content": "A modified target\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "b0751031600036e36dafd27dac637b5f737e9d3f",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "b0751031600036e36dafd27dac637b5f737e9d3f",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "5033cedd8ed2c8fc7374206e3b4e8f0aa74b294159f6c02477d4e00d62e1fe1f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "candidate",
+      "case": "root",
+      "finished_at": "2026-11-02T05:05:47.659442+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.147,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": false,
+          "sentinel_stage_unchanged": true,
+          "change_staged": true
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:05:42.511870+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git add change.txt"
+      ],
+      "cwd": "${FIXTURE}/A",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "9e4405f54b58bcc5240e7cd473065cd8eb411b9f",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "9e4405f54b58bcc5240e7cd473065cd8eb411b9f",
+            "index_tree": "2e564c0c39e54466e6b030756ff6faadbf2e3779",
+            "index_change_content": "A modified target\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "136fdb0e2161db146bb27ec491d23dd46d2ece7f",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "136fdb0e2161db146bb27ec491d23dd46d2ece7f",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "5033cedd8ed2c8fc7374206e3b4e8f0aa74b294159f6c02477d4e00d62e1fe1f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "baseline",
+      "case": "absolute_c",
+      "finished_at": "2026-11-02T05:05:52.856500+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.142,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": false,
+          "sentinel_stage_unchanged": true,
+          "change_staged": true
+        }
+      },
+      "started_at": "2026-11-02T05:05:47.714282+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git -C ${FIXTURE}/B add change.txt"
+      ],
+      "cwd": "${FIXTURE}/A",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "a6ea3cdfeb63318db7cea48edf3af0049ca514b9",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "a6ea3cdfeb63318db7cea48edf3af0049ca514b9",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "dbd72dbbd89b84171f9d03294b853943069a9899",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "dbd72dbbd89b84171f9d03294b853943069a9899",
+            "index_tree": "6a3cc90ecaade980ae48869628769f14536718da",
+            "index_change_content": "B modified target\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "5033cedd8ed2c8fc7374206e3b4e8f0aa74b294159f6c02477d4e00d62e1fe1f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "candidate",
+      "case": "absolute_c",
+      "finished_at": "2026-11-02T05:05:58.271361+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.36,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": false,
+          "sentinel_stage_unchanged": true,
+          "change_staged": true
+        }
+      },
+      "started_at": "2026-11-02T05:05:52.911274+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git -C ${FIXTURE}/B add change.txt"
+      ],
+      "cwd": "${FIXTURE}/A",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "970e87d92cc9533f1694466011dc33eb5fc93ef9",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "970e87d92cc9533f1694466011dc33eb5fc93ef9",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "f41c4f8d850ab5ee8c3484545a3ebad1f4ba401e",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "f41c4f8d850ab5ee8c3484545a3ebad1f4ba401e",
+            "index_tree": "6a3cc90ecaade980ae48869628769f14536718da",
+            "index_change_content": "B modified target\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "5033cedd8ed2c8fc7374206e3b4e8f0aa74b294159f6c02477d4e00d62e1fe1f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "baseline",
+      "case": "revparse_nested",
+      "finished_at": "2026-11-02T05:06:03.368579+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.043,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:05:58.325804+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git rev-parse --show-toplevel"
+      ],
+      "cwd": "${FIXTURE}/A/nested",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "4ffccedd3b6fbcc8eb7b52788f4c55af3d51e164",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "4ffccedd3b6fbcc8eb7b52788f4c55af3d51e164",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "11a2ab57e05a4df442b7c0af4091b13904dfe172",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "11a2ab57e05a4df442b7c0af4091b13904dfe172",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "8e05ebd84612c612054e107130d842e9356d47557ed3669612ac98f4df868454",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "candidate",
+      "case": "revparse_nested",
+      "finished_at": "2026-11-02T05:06:08.465955+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.043,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:06:03.423267+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git rev-parse --show-toplevel"
+      ],
+      "cwd": "${FIXTURE}/A/nested",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "df680f4ac24134442c0c70d0d0cc717a22b2f110",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "df680f4ac24134442c0c70d0d0cc717a22b2f110",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "1a63dd6020c4d27fbeb160d4275833e4a6663778",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "1a63dd6020c4d27fbeb160d4275833e4a6663778",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "a76b1aede4ce955c1340f2ecc326f8875b05f46a75d800e87cba859e39ad071f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "baseline",
+      "case": "revparse_foreign",
+      "finished_at": "2026-11-02T05:06:13.765482+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 5.246,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:06:08.518981+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git rev-parse --show-toplevel",
+        "${FIXTURE}/A"
+      ],
+      "cwd": "${FIXTURE}/B",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "fafc06e5799a7187d77f40b24f796419fae58d58",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "fafc06e5799a7187d77f40b24f796419fae58d58",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "a87918cb874c50be005eaa186995d8a73c75cfb7",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "a87918cb874c50be005eaa186995d8a73c75cfb7",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "c4d72ff18dfd573e1b69fe7dd5967391c84d8021b83d7c387908806efddc4df7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    },
+    {
+      "version": "candidate",
+      "case": "revparse_foreign",
+      "finished_at": "2026-11-02T05:06:18.773193+00:00",
+      "cli_exit": 0,
+      "stop_reason": null,
+      "seconds": 4.947,
+      "observed": {
+        "A": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        },
+        "B": {
+          "head_unchanged": true,
+          "source_bytes_unchanged": true,
+          "index_tree_unchanged": true,
+          "sentinel_stage_unchanged": true,
+          "change_staged": false
+        }
+      },
+      "started_at": "2026-11-02T05:06:13.825683+00:00",
+      "argv": [
+        "${PYTHON}",
+        "-m",
+        "aider",
+        "--model",
+        "gpt-4o-mini",
+        "--weak-model",
+        "gpt-4o-mini",
+        "--editor-model",
+        "gpt-4o-mini",
+        "--model-metadata-file",
+        "${FIXTURE}/model-metadata.json",
+        "--config",
+        "${FIXTURE}/empty.yml",
+        "--env-file",
+        "${FIXTURE}/empty.env",
+        "--input-history-file",
+        "${FIXTURE}/input-history.txt",
+        "--chat-history-file",
+        "${FIXTURE}/chat-history.md",
+        "--no-restore-chat-history",
+        "--no-analytics",
+        "--no-check-update",
+        "--no-show-release-notes",
+        "--no-show-model-warnings",
+        "--no-fancy-input",
+        "--no-pretty",
+        "--no-gitignore",
+        "--no-auto-commits",
+        "--no-dirty-commits",
+        "--no-auto-lint",
+        "--no-auto-test",
+        "--map-tokens",
+        "0",
+        "--message",
+        "/git rev-parse --show-toplevel",
+        "${FIXTURE}/A"
+      ],
+      "cwd": "${FIXTURE}/B",
+      "environment_keys": [
+        "GIT_CONFIG_GLOBAL",
+        "GIT_CONFIG_NOSYSTEM",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LITELLM_LOCAL_MODEL_COST_MAP",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONNOUSERSITE",
+        "PYTHONPATH",
+        "TERM",
+        "TIKTOKEN_CACHE_DIR",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "git_state": {
+        "A": {
+          "before": {
+            "head": "9c0f35dfc467636cf20e1f20836b5fda89a02f39",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          },
+          "after": {
+            "head": "9c0f35dfc467636cf20e1f20836b5fda89a02f39",
+            "index_tree": "df29b3ab000315a4003bf7138a4065298eab1ce6",
+            "index_change_content": "A original\n",
+            "index_sentinel_content": "A sentinel original\n",
+            "working_file_sha256": {
+              "change.txt": "a9d1b0f4089ef23bb8183a87c063ef633fe8f140047ea157fcebb6bc2601b9f1",
+              "nested/keep.txt": "ee65d785d479570717652729155457a0c2d672aa31c258a217ef9be124bbac05",
+              "sentinel.txt": "10916476433b99a5c56b080366dca593e3dee6a045882094a1cf8f7405a8c211"
+            }
+          }
+        },
+        "B": {
+          "before": {
+            "head": "920409bb564f75525054113e7ed5a1fb374d8623",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          },
+          "after": {
+            "head": "920409bb564f75525054113e7ed5a1fb374d8623",
+            "index_tree": "672d1b3f4b5b90088a5304e9a2c5f5e56ffb759e",
+            "index_change_content": "B original\n",
+            "index_sentinel_content": "B already staged sentinel\n",
+            "working_file_sha256": {
+              "change.txt": "70ad631da4e4a2f0f5a9aaa135e18746e67aad1ded82682577cb624152920d08",
+              "nested/keep.txt": "c071965ad93f9e97c2724ac98791e5945be1d67ff6d286fd935da449f3f566a4",
+              "sentinel.txt": "14f2c56774a7d841a301c9701269fee9da1d8416f01f09e16611347877b7ef7b"
+            }
+          }
+        }
+      },
+      "stdout_sha256": "9148011a20465177c0ba9ef3de9784fed9811c0355fef27ac9ea936b6030b1aa",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_outcome_note": "Baseline nested/foreign intentionally reproduce the existing defect; exit 0 does not imply the Git task succeeded."
+    }
+  ],
+  "owner_readback": {
+    "read_current_git_heads_stage_entries_stage_blobs_and_working_bytes_again": true,
+    "all_12_snapshots_match_actual_fixtures": true,
+    "baseline_and_candidate_tracked_source_bytes_unchanged": true
+  },
+  "project_checks": [
+    {
+      "label": "baseline-regression",
+      "started": "2026-11-02T05:04:19.845356+00:00",
+      "finished": "2026-11-02T05:04:21.513754+00:00",
+      "returncode": 0,
+      "log_sha256": "beaf6608b19ad2d85bc14e3beb41d879318e72c73ea2f25378f7225699c76452",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "${CANDIDATE_SOURCE}/tests/basic/test_git_command_cwd.py"
+      ],
+      "cwd": "${BASELINE_SOURCE}",
+      "valid_as_baseline": false
+    },
+    {
+      "label": "candidate-regression",
+      "started": "2026-11-02T05:04:21.515000+00:00",
+      "finished": "2026-11-02T05:04:23.083645+00:00",
+      "returncode": 0,
+      "log_sha256": "09ec87ffc728c7e7ad7c0a249533e19640512b1eafb8a62472faf6ce24697e22",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "${CANDIDATE_SOURCE}/tests/basic/test_git_command_cwd.py"
+      ],
+      "cwd": "${CANDIDATE_SOURCE}"
+    },
+    {
+      "label": "candidate-commands",
+      "started": "2026-11-02T05:04:23.084825+00:00",
+      "finished": "2026-11-02T05:04:31.177638+00:00",
+      "returncode": 0,
+      "log_sha256": "b18071a06c5b3ef08c05ffe7815a082cbab82212df7331b7e3f9e5cda2f94e53",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "tests/basic/test_commands.py"
+      ],
+      "cwd": "${CANDIDATE_SOURCE}"
+    },
+    {
+      "label": "baseline-regression-isolated",
+      "started": "2026-11-02T05:04:56.456933+00:00",
+      "finished": "2026-11-02T05:04:58.176227+00:00",
+      "returncode": 1,
+      "log_sha256": "edba24650d037cc2cfdff26594b75c55ca777556e0540bb82ff1e4992d48feca",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "--import-mode=importlib",
+        "-q",
+        "${EVIDENCE}/upstream-test/test_git_command_cwd.py"
+      ],
+      "cwd": "${BASELINE_SOURCE}"
+    },
+    {
+      "label": "candidate-full",
+      "started": "2026-11-02T05:04:58.177659+00:00",
+      "finished": "2026-11-02T05:08:58.199935+00:00",
+      "timed_out": true,
+      "log_sha256": "cef920263cac16f9a1ef7ddc39368f65feaa166f937db169692dc211537ae14e",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q"
+      ],
+      "cwd": "${CANDIDATE_SOURCE}"
+    },
+    {
+      "label": "candidate-stall-diagnosis",
+      "started": "2026-11-02T05:09:28.486034+00:00",
+      "finished": "2026-11-02T05:10:03.494560+00:00",
+      "timed_out": true,
+      "log_sha256": "888f5320e950cb1a98605072516e383192639a29ea9082e355017e3b8ab694ef",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-vv",
+        "-o",
+        "faulthandler_timeout=15",
+        "tests/basic/test_deprecated.py::TestDeprecated::test_deprecated_args_show_warnings"
+      ],
+      "cwd": "${CANDIDATE_SOURCE}"
+    },
+    {
+      "label": "baseline-stall-diagnosis",
+      "started": "2026-11-02T05:10:03.496300+00:00",
+      "finished": "2026-11-02T05:10:38.522056+00:00",
+      "timed_out": true,
+      "log_sha256": "c195eb3cb9bbf7e9497c9f99ea3fdb9ea4949f26e8fb78b9738ed150fcbffe73",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-vv",
+        "-o",
+        "faulthandler_timeout=15",
+        "tests/basic/test_deprecated.py::TestDeprecated::test_deprecated_args_show_warnings"
+      ],
+      "cwd": "${BASELINE_SOURCE}"
+    },
+    {
+      "label": "candidate-deprecated-with-boto3",
+      "started": "2026-11-02T05:11:34.201869+00:00",
+      "finished": "2026-11-02T05:11:46.901943+00:00",
+      "returncode": 0,
+      "log_sha256": "734efa989c356f28778ecd05727b94bf08b8c95f6fe2232b7dd0a34d319cd5fa",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "tests/basic/test_deprecated.py::TestDeprecated::test_deprecated_args_show_warnings"
+      ],
+      "cwd": "${CANDIDATE_SOURCE}"
+    },
+    {
+      "label": "baseline-deprecated-with-boto3",
+      "started": "2026-11-02T05:11:46.904103+00:00",
+      "finished": "2026-11-02T05:11:59.406543+00:00",
+      "returncode": 0,
+      "log_sha256": "41f7e0f51182f34f83bc0b5512796d2366d6632e094cd13bc131dd2992d29a69",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "tests/basic/test_deprecated.py::TestDeprecated::test_deprecated_args_show_warnings"
+      ],
+      "cwd": "${BASELINE_SOURCE}"
+    },
+    {
+      "label": "candidate-full-with-boto3",
+      "started": "2026-11-02T05:11:59.408004+00:00",
+      "finished": "2026-11-02T05:13:52.610018+00:00",
+      "returncode": 1,
+      "log_sha256": "54b01166ae3350e4b923b00225a48bc28de0d6ba75d5a72bbe2e91ae3264e76b",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "-o",
+        "faulthandler_timeout=30"
+      ],
+      "cwd": "${CANDIDATE_SOURCE}"
+    },
+    {
+      "label": "baseline-sendchat",
+      "started": "2026-11-02T05:14:38.723563+00:00",
+      "finished": "2026-11-02T05:14:44.005727+00:00",
+      "returncode": 0,
+      "log_sha256": "feaa228f1a58c9829605064fc451e608332619577506f07b3a9a58939ad125d2",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "tests/basic/test_sendchat.py"
+      ],
+      "cwd": "${BASELINE_SOURCE}"
+    },
+    {
+      "label": "candidate-sendchat-isolated",
+      "started": "2026-11-02T05:15:27.184802+00:00",
+      "finished": "2026-11-02T05:15:32.362439+00:00",
+      "returncode": 0,
+      "log_sha256": "dbc4ed4fa5fb47b915cb8736c84ce2f530dbec13cfb285247aad2a01074feeae",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "pytest",
+        "-p",
+        "pytest_env",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "tests/basic/test_sendchat.py"
+      ],
+      "cwd": "${CANDIDATE_SOURCE}"
+    }
+  ],
+  "limitations": [
+    "No system-call-level zero-network proof: initial ptrace observation was denied before product execution and not retried.",
+    "Full pytest attempted public network and optional installs; the consumer isolation description does not apply to the full suite.",
+    "Relative -C, Windows/macOS, real provider sessions, general shell isolation, complete pre-commit and release build unverified.",
+    "The baseline entire test suite was not run; no zero full-suite difference claim."
+  ],
+  "retained_corrections": [
+    "Initial baseline pytest using the candidate absolute test path imported candidate code; its 2 passed is invalid as a baseline. Same test bytes copied outside the source with importlib isolation then failed both cases on baseline.",
+    "Initial full candidate pytest timed out at 240 seconds. Both versions reproduced the deprecated Model mock / optional boto3 installer wait; adding boto3 made that exact point pass on both. Final full-suite failures remain recorded.",
+    "Initial consumer verifier treated wrapped output paths as mismatches; corrected only the final-output paragraph normalization, with original verifier/error retained and no product rerun.",
+    "Tokenizer prefetch under an empty environment first failed DNS; preparation with the normal configured network environment succeeded. This was preparation, not a CLI consumer result."
+  ],
+  "full_suite_outcome": {
+    "candidate_after_boto3": {
+      "passed": 475,
+      "failed": 14,
+      "skipped": 1,
+      "setup_errors": 5,
+      "subtests_passed": 67
+    },
+    "failure_groups": {
+      "print_call_count_unresolved": 2,
+      "dns_url_or_http_error_callback": 2,
+      "portaudio_library_missing": 5,
+      "browser_extra_unready": 1,
+      "playwright_unready": 4
+    },
+    "help_setup_errors": 5,
+    "sendchat_isolated": {
+      "baseline_passed": 12,
+      "candidate_passed": 12,
+      "does_not_erase_full_suite_failures": true
+    },
+    "baseline_full_suite": "not run",
+    "original_full_timeout_seconds": 240,
+    "static": {
+      "flake8_7_3_0_changed_files_exit": 0,
+      "patch_whitespace_exit": 0
+    }
+  },
+  "upstream_status": {
+    "observed_at_utc": "2026-11-02T05:04:27.833Z",
+    "open": true,
+    "merged": false,
+    "draft": false,
+    "comment_count": 0,
+    "review_comment_count": 0,
+    "check_runs": 0,
+    "workflows": [
+      {
+        "id": 38430832927,
+        "name": "Windows Python Tests",
+        "head_sha": "fc41b0bd581145ad10ac2aedba24093796dc75b1",
+        "status": "completed",
+        "conclusion": "action_required",
+        "html_url": "https://github.com/Aider-AI/aider/actions/runs/38430832927"
+      },
+      {
+        "id": 38430832959,
+        "name": "pre-commit",
+        "head_sha": "fc41b0bd581145ad10ac2aedba24093796dc75b1",
+        "status": "completed",
+        "conclusion": "action_required",
+        "html_url": "https://github.com/Aider-AI/aider/actions/runs/38430832959"
+      },
+      {
+        "id": 38430832933,
+        "name": "Docker Build Test",
+        "head_sha": "fc41b0bd581145ad10ac2aedba24093796dc75b1",
+        "status": "completed",
+        "conclusion": "action_required",
+        "html_url": "https://github.com/Aider-AI/aider/actions/runs/38430832933"
+      },
+      {
+        "id": 38430832984,
+        "name": "Ubuntu Python Tests",
+        "head_sha": "fc41b0bd581145ad10ac2aedba24093796dc75b1",
+        "status": "completed",
+        "conclusion": "action_required",
+        "html_url": "https://github.com/Aider-AI/aider/actions/runs/38430832984"
+      }
+    ],
+    "statuses": [
+      {
+        "context": "license/cla",
+        "state": "success",
+        "description": "Contributor License Agreement is signed.",
+        "target_url": "https://cla-assistant.io/Aider-AI/aider?pullRequest=5846"
+      }
+    ],
+    "assessment": "Four action_required workflows; no successful test CI evidence. CLA success is not test success or maintainer approval.",
+    "review_list_observed_at_utc": "2026-11-02T05:19:44.439Z",
+    "reviews": []
+  }
+}
