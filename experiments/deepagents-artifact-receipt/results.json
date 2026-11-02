@@ -1,0 +1,120 @@
+{
+  "observed_date": "2026-11-02",
+  "project": "langchain-ai/deepagents",
+  "license": "MIT",
+  "stars_observed": 30899,
+  "issue": 3897,
+  "pull_request": 7431,
+  "state": "open",
+  "sources": {
+    "base": "3a217cec7183b601f2b33e0144e09bb50ad44f01",
+    "candidate": "2f5d477c4dc01af5deb9493b213a02cc986c4518",
+    "upstream_main": "311ed7fb0e496b93ca56fb0b8e46ed0e5355600f",
+    "base_main_sdk_tree": "85daa89e42f1faa79ee4babf08f878e0c67f1cdd"
+  },
+  "scope": {
+    "sdk_diff_files": 3,
+    "whole_repository_diff_files": 13,
+    "sdk_base_equals_current_main": true,
+    "package_version_both": "0.7.32",
+    "python": "3.12.14",
+    "runtime": "Linux; synchronous StateGraph ToolNode -> FilesystemMiddleware -> FilesystemBackend virtual root; no model",
+    "external_dependencies_each": 54,
+    "dependency_versions_equal": true,
+    "source_installed_built_wheel_python_files_equal_each": 57
+  },
+  "consumer": {
+    "base": {
+      "start_utc": "2026-11-02T12:53:00.362246+00:00",
+      "end_utc": "2026-11-02T12:53:02.850065+00:00",
+      "process_exit": 0,
+      "task_completed": false,
+      "reason": "JSONDecodeError on model-oriented content with @@ lines header; no summary generated"
+    },
+    "candidate": {
+      "start_utc": "2026-11-02T12:53:02.850352+00:00",
+      "end_utc": "2026-11-02T12:53:05.154599+00:00",
+      "process_exit": 0,
+      "task_completed": true,
+      "input_bytes": 224,
+      "output": {
+        "project": "owned-basket",
+        "currency": "USD",
+        "item_count": 5,
+        "total_cents": 3700,
+        "skus": [
+          "A",
+          "B"
+        ]
+      }
+    },
+    "calls_each": 11,
+    "fixtures_unchanged": true,
+    "wrong_id_and_no_request_text_equal_to_base": true,
+    "cap_exact_bytes": 224,
+    "cap_reject_bytes": 223,
+    "oversize_artifact": {
+      "code": "file_too_large"
+    },
+    "binary_bytes_exact": 20,
+    "missing_then_valid_same_graph": true,
+    "denied_path_and_owned_symlink_no_file_bytes": true,
+    "typed_ls_glob_only_permitted_paths": true,
+    "glob_truncated": false,
+    "harness_exceptions": 0,
+    "reruns": 0
+  },
+  "local_checks": {
+    "candidate_raw": {
+      "passed": 45,
+      "exit": 0
+    },
+    "base_neighbors": {
+      "passed": 249,
+      "exit": 0
+    },
+    "candidate_neighbors": {
+      "passed": 249,
+      "exit": 0
+    },
+    "candidate_changed_file_lint_format": {
+      "files": 3,
+      "exit": 0
+    },
+    "candidate_sdk_ty": {
+      "exit": 0
+    }
+  },
+  "hosted_ci": {
+    "head": "2f5d477c4dc01af5deb9493b213a02cc986c4518",
+    "checks": {
+      "success": 71,
+      "skipped": 5
+    },
+    "workflows": {
+      "success": 14,
+      "skipped": 3
+    }
+  },
+  "boundaries": [
+    "No full SDK/monorepo test suite",
+    "Independent consumer is synchronous and not a full model agent loop",
+    "No QuickJS, execution tool, external backend, real account or private data",
+    "No HITL or tracing/checkpoint privacy validation",
+    "max_bytes applies after whole-file backend download",
+    "raw offset/limit bypass covered by candidate author test, not this independent consumer",
+    "No universal compatibility or reader-status promotion"
+  ],
+  "retained_evidence": {
+    "consumer_summary_sha256": "45080e065b20a067c294385345a09af4c06997daed78078958eb275b0c06c176",
+    "consumer_manifest_sha256": "f821d71eef20bebf674b17f91b75c01276cfa93bc4e77d161ffab46c710ee033",
+    "consumer_manifest_items_verified": 38,
+    "archive_sha256": "7fb00fe25c92eb25f6699e7289e49322c8047cb11182f3501b101c4a68fe102d",
+    "archive_bytes": 25249125,
+    "archive_entries": 53,
+    "source_pack_sha256": "9494bf7e6f1e07537c8bfee389635a941ba6a50d993072e9db4b1c8416b9a8ed",
+    "source_commit_objects": 3,
+    "source_restore_fsck_exit": 0,
+    "note": "Local evidence archive, not published here. Two original fixture symlink targets retained as metadata; remap into the restored owned fixture root before replay."
+  }
+}

@@ -87,7 +87,7 @@ Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind
 | 持久化迁移／分批清理 | 中途与检查点失败后新进程恢复，再用真实读取接口核历史、重跑及后续新数据 | [OpenCode](../../experiments/opencode-migration-receipt/README.md) 原候选保留已提交清理批次，两版均恢复可读历史；仅合成 SQLite／SessionStore，未验原大库与服务启动 |
 | 文档树／工作记录迁移 | 核每个源文件的去向、转换和备份，再让下一位生产工具读写读回 | [BMAD](../../experiments/bmad-migration-receipt/README.md) 预览版 exit 0 仍丢隐藏／tmp；窄修后完整保全并经 tickets 消费，冲突须读 JSON，完整 Python 套件仍有 7 个失败子例 |
 | 审查回复／汇总判断 | 回到原回复逐条核 finding，再读缺失覆盖；保留独立接收记录 | [gstack](../../experiments/gstack-review-receipt/README.md) 候选挡住汇总改写、缺原回复和换文件；整条事件连同 finding 删除仍可 clean，只作一致性补充 |
-| 后台检查／结构化报告 | 分开核转后台、真实退出与完整输出；机器解析回到完整 artifact | [Gemini CLI](../../experiments/gemini-background-output/README.md) 候选恢复了超长单行尾部诊断，但两版尾窗均不能解析完整 JSON；完整 artifact 才接住 501 项诊断并走到真实复测 0 错误 |
+| 后台报告／程序读文件 | 分开核转后台、真实退出、展示窗口与机器原件；解析后读回产物 | [Gemini CLI](../../experiments/gemini-background-output/README.md) 修复尾部诊断后，两版尾窗仍不能解析完整 JSON；原件接住 501 项并复测 0 错误。[Deep Agents](../../experiments/deepagents-artifact-receipt/README.md) 基线窗口标题使 JSON 解析失败，候选 raw 原件生成并读回正确汇总；限额在全读后检查，artifact 不等于不留存 |
 | 同一工作分支连续交付 | 连跑多轮，核源提交、过滤产物与目标接收；未合并旧分支须在写入前停止 | [GSD](../../experiments/gsd-pr-replay/README.md) 候选三轮各接住新 1 个代码提交、目标规划为 0；基线第二轮冲突并删旧 `-pr` 引用，原工作历史保留。仅原 Bash＋真实工具的 local bare 消费，非完整 slash command |
 | worktree 交接／测试摘要 | 核代码实际落点与包的净 diff，再读 runner 原输出、locale、零测试和失败路径 | [Superpowers](../../experiments/superpowers-worktree-receipt/README.md) 旧 main 正确 cwd 与候选 `-C` 均能接包；真实摘要补丁在 C.UTF-8 仍失败 3 项，误用 C 诊断写出的 complete 已纠正，修复未获接收 |
 
