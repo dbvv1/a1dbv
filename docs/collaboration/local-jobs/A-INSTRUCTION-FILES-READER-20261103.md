@@ -1,10 +1,10 @@
 # A-INSTRUCTION-FILES-READER-20261103 · 用已有项目指令完成文档小任务
 id: A-INSTRUCTION-FILES-READER-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
-base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
+base_ref: bfd477e78238243ec019b423623ea434d3226189
 result_branch: relay/a-instruction-files-reader-20261103
 page: docs/decisions/instruction-files.md@main
 
@@ -31,6 +31,14 @@ PowerShell 中实际运行文档给出的引用／转义形式，核传入参数
 非读者独立核示例、指令改动必要性和真实结果：入口／检查来自项目，关键原约定保留，规则实际怎样帮助完成这次修改有具体证据。
 结果记录做成没有、页面采用步骤、具体卡点与补读内容，区分页面缺信息、环境限制和读者误解；保留首次失败，不替作者改页面。
 单元通常 60–90 分钟、最多两小时；不能继续时交回已做部分和精确恢复条件，不自动重开旧读者任务。
+
+## 修改要求
+本次是原读者结果的定点返工，不是新读者首次实测；沿原 result_branch 从 bfd477e78238243ec019b423623ea434d3226189 继续，保留原提交和 u1 首轮记录，只追加修订结果，不覆盖失败、未知与原始证据。先核原调用、工具及登记进程已结束；仍可能写该分支时保留隔离，不启动第二个调用。
+1. 修 docs/usage.md 的 PowerShell 整句示例：用字面单引号，说明内容含 apostrophe 时双写；用合成的 $、反引号、apostrophe 与 @/#/& 组合，实际复测 PowerShell 5.1／7 的 argv。保留此前有效的单标签单引号／双引号／反引号形式，不把双引号描述成一律错误。
+2. 将 Composing Entries 旧反斜杠转义说明限定为 POSIX／Bash 类 shell，并交叉引用 PowerShell 说明，避免同页前后矛盾。
+3. CLAUDE.md 文档检查说明指向实际 CI 入口，并列已有 Python／Poetry 文档环境、Node 依赖、匹配的 Puppeteer Chrome 和 docs server 前提。不把 npm install 写成每次检查必做；不安装、不下载，不运行可能隐式安装的 npx。缺前提只静态核 CI，并保留未运行。
+原写域、no-install、合成数据和只推结果分支限制不变。非读者核最终 diff、示例与 argv 边界；完整 jrnl／MkDocs 仅已有工具时实际跑，缺依赖仍记未验。三项未修前 reviewed=false；返工通过也不能冒充完整 CLI／文档构建或共享 AGENTS 全验。
+原输入保存内容已与 21b5f4ab 页逐字节核对，但接收端实际解析提交回执仍未知；不回填或改写首次加载记录。任务产物“已完成”与页面／环境欠项分别接收。
 
 ## 当前结果
 
