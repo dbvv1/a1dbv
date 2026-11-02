@@ -1,7 +1,7 @@
 # A-MULTIAGENT-LONG-WIDE-20261029 · 多代理与长程任务广扫
 id: A-MULTIAGENT-LONG-WIDE-20261029
 owner: dot-A
-status: running
+status: blocked
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 74be0d09b201cc0aacf925625899cf2d9bd03d3d
@@ -40,4 +40,5 @@ result_branch: relay/a-multiagent-long-wide-20261029
 先交最强的新发现及可实际试用入口，供负责人从两卡总产物选 3 项真实试用并更新 13；本卡仅收集，不提前宣布采用或地图升级。
 
 ## 当前结果
-本卡尚无正式回传的 `sources.md`；现已提交 4 小时探索恢复请求。原调用与登记进程退出仍待接收端核实，核清后沿本卡继续；未知不算空槽或已启动。
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
