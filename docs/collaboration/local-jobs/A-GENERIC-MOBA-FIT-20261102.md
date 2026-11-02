@@ -1,7 +1,7 @@
 # A-GENERIC-MOBA-FIT-20261102 · 通用模板到 MOBA 现有任务的最小映射
 id: A-GENERIC-MOBA-FIT-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 016cdff8e8e5caa56481d752443dd12ec82b478f
@@ -35,10 +35,10 @@ result_branch: relay/a-generic-moba-fit-20261102
 
 ## 当前结果
 
-- 完成 MOBA-Like 通用模板↔帧同步/存档的只读适配映射，唯一产物为 mapping.md：结论是不引入 templates/generic 正文，仅列三处可选小补充（单测入口、按任务导航 local-save/brief、AI 评审时的极简 REVIEW 片段），并给出任务→入口→测试→必要检查→不可覆盖规则表、已有存档/本机帧同步范围与缺口、固定提交 dea84c4 与当前 main 7710c4a 的差异。未修改 MOBA-Like、模板或 TASKS，未采用任何模板片段；未运行 npm ci/test/sim/build/smoke、游戏或浏览器；openIssues 为空。
-- 产物：[016cdff](https://github.com/dbvv1/a1dbv/commit/016cdff8e8e5caa56481d752443dd12ec82b478f)，分支 `relay/a-generic-moba-fit-20261102`。
+- 完成 A-GENERIC-MOBA-FIT-20261102 单元 1 定点修订：REVIEW 片段 Important 恢复通用范围（MOBA 存档/回放/席位/单写者仅作例子）；删除“树内无配置即指向不存在入口”的 Skill/MCP 推断，改为未查看客户端已启用能力、暂不新增根规则；CI 表述改为受检固定树未见 .github/workflows 且仓外未验证，并限定复用独立审者 2026-11-02 23:00 UTC 对 7710c4a 的 check_runs=0/statuses=0；结尾追加 2026-11-03 修订说明，保留 016cdff8/dea84c4/ac16eea5 与三片段结构。仓库检查 check_repo.py（715 文件）、check_public.py（1177 文件）及 git diff --check 均通过；未运行目标项目验收命令，未提交推送。openIssues=[]。
+- 产物：[677a8ce](https://github.com/dbvv1/a1dbv/commit/677a8cea6c246f6efda9a4191021c736cded69c6)，分支 `relay/a-generic-moba-fit-20261102`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：无未关闭缺口；负责人可直接按映射结论安排后续 MOBA 帧同步/存档自然任务，无需引入模板正文；非阻塞提示：a1dbv docs/decisions/instruction-files.md L114 仍有旧句“默认可玩入口不切换”，本产物未复述。
+- 下一步：由接收端提交本单元交付；任务无剩余范围，可按负责人安排进入验收或其他任务。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 独立接收结论
