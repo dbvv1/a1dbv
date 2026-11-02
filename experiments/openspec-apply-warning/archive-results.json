@@ -1,0 +1,762 @@
+{
+  "verified_utc": "2026-11-02T04:17:02.672479+00:00",
+  "scope": "Synthetic public-issue reproduction; two independent cloud Agent consumers read generated workflows once each; one direct CLI comparison. Not a business app, native Claude Code/OpenCode host test, answer-page reader or reliability benchmark.",
+  "source": {
+    "baseline_commit": "27c0515724decc633818c735ee596481eec78a8b",
+    "version": "1.16.0",
+    "candidate_origin_pr": "https://github.com/Fission-AI/OpenSpec/pull/2168",
+    "candidate_origin_head": "8b9bb1302b13b5cec50adb520fceaac3c9c2e5cf",
+    "candidate_origin_base": "6d04a1b58dedc95729d34e4f223d9d483aae210a",
+    "candidate_local_tree": "703a892ea8fba654ce7b6d176d1ca292aa0d2c46",
+    "candidate_local_tree_is_not_a_commit": true,
+    "source_patch_published_here": false,
+    "pr_state_at_check": "open; unmerged",
+    "integration_review": "All added/deleted line sequences equal original 8-file PR diff; no other tracked edits.",
+    "baseline-source.tar.gz_sha256": "2231413960686ff2a25dbfd16a664be310f08e2629cb3d3a3473183c1eaf88b5",
+    "candidate-source.tar.gz_sha256": "defeb5bcb7d563e8a8166466ab103fcf31d55270dc276ffbf8e42732751ea3af",
+    "candidate.patch_sha256": "aad004bcaae498eccc0008d32bacbfe451e304c2d02717e278c29c7f3dbebe94",
+    "baseline-source.tar.gz_verified_git_blobs": 1312,
+    "candidate-source.tar.gz_verified_git_blobs": 1313
+  },
+  "environment": {
+    "os": "Linux",
+    "node": "24.22.1",
+    "pnpm": "10.34.5",
+    "install": "pnpm install --frozen-lockfile --ignore-scripts",
+    "OPENSPEC_TELEMETRY": "0",
+    "DO_NOT_TRACK": "1",
+    "CI": "1",
+    "cli_origin": "Built separately from fixed baseline main and candidate source, not npm-package execution in this continuation."
+  },
+  "inputs": {
+    "input_file_count": 26,
+    "baseline_and_direct_cli_byte_identical": true,
+    "baseline_vs_candidate_changed_input_files": [
+      ".claude/commands/opsx/archive.md",
+      ".claude/commands/opsx/sync.md",
+      ".claude/skills/openspec-archive-change/SKILL.md",
+      ".claude/skills/openspec-sync-specs/SKILL.md"
+    ],
+    "planning_tasks_mean": "Prepare and validate synthetic archive-reproduction artifacts; not implement a login application.",
+    "sync_confirmation": "Sync now preapproved for both generated-workflow consumers; direct CLI --yes only on this disposable fixture.",
+    "before_files_sha256": {
+      "baseline": {
+        "openspec/config.yaml": "415354ac15bb0d9fdabae7f8af8b7e7ed650a27c019c33c641ca2fa31f8faf0b",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/changes/add-logout/design.md": "7172823b239d519c5ac754241ad02d89862b0731b6fcb21d636ddacf09db4aee",
+        "openspec/changes/add-logout/proposal.md": "6bab980bb571b165c037d126ddc3c12e2ab3fe4ce06aeac3ec77efeae4344f63",
+        "openspec/changes/add-logout/.openspec.yaml": "0ae093d09a9f76f2c88ef732cd534ce8df44a49a3668afbd46d6de37f803b3ed",
+        "openspec/changes/add-logout/tasks.md": "9a243ecafff53cda191b52d4584ed738dd67bd4a80f6a7f7260f6840ffb8ab06",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/changes/add-logout/specs/user-auth/spec.md": "1e47b2aa6dddc0010d819630723ad6d88168cfa89300f42b97d9930cc3d91e72",
+        "openspec/specs/user-auth/spec.md": "31c4f4e61e010e63ce09b17fbbaa29e755b8c8768842ed64327d887e60e8069f",
+        "openspec/schemas/receipt-flow/schema.yaml": "741a6e253f0639d0c75bb810baaa8f3d3885b773e90a9cb7aff5dbffbcec9402",
+        "openspec/schemas/receipt-flow/templates/design.md": "6ccc87f5017fb190e69e8759dd4e20d5ac3320cc4dabf152708bf8f2aa5205f8",
+        "openspec/schemas/receipt-flow/templates/proposal.md": "0dd70e35db5c696ba8ac3cc3a53e2d6561865c1e4e7d49db5a1eaa3e4a6ad86e",
+        "openspec/schemas/receipt-flow/templates/tasks.md": "fa67d99fb4a93b12d702f89ea83e1838219d1cad1c90a4192c402278001cd30e",
+        "openspec/schemas/receipt-flow/templates/spec.md": "1cccfb573f031c6352bed2a879b7035ff710bc909112fc23d10bdcfcdd8d4318"
+      },
+      "candidate": {
+        "openspec/config.yaml": "415354ac15bb0d9fdabae7f8af8b7e7ed650a27c019c33c641ca2fa31f8faf0b",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-archive-change/SKILL.md": "764902e2828050fb384a9aa96fb42b83c8602dfc116e86668b25ef282685322a",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "72f083222ba580d3527e0ab9a0b10fdda72c34b2c4b76ae3a9b77fdb4a034b9b",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/sync.md": "4e6c75a89a64aa0622a207c1a448911b722ca3ce3530a2e1faae3ac53eeb1b3b",
+        ".claude/commands/opsx/archive.md": "b49872f75546abdc5e7f2efee8f8bd909135f420052390e14baa84648d7c1901",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/changes/add-logout/design.md": "7172823b239d519c5ac754241ad02d89862b0731b6fcb21d636ddacf09db4aee",
+        "openspec/changes/add-logout/proposal.md": "6bab980bb571b165c037d126ddc3c12e2ab3fe4ce06aeac3ec77efeae4344f63",
+        "openspec/changes/add-logout/.openspec.yaml": "0ae093d09a9f76f2c88ef732cd534ce8df44a49a3668afbd46d6de37f803b3ed",
+        "openspec/changes/add-logout/tasks.md": "9a243ecafff53cda191b52d4584ed738dd67bd4a80f6a7f7260f6840ffb8ab06",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/changes/add-logout/specs/user-auth/spec.md": "1e47b2aa6dddc0010d819630723ad6d88168cfa89300f42b97d9930cc3d91e72",
+        "openspec/specs/user-auth/spec.md": "31c4f4e61e010e63ce09b17fbbaa29e755b8c8768842ed64327d887e60e8069f",
+        "openspec/schemas/receipt-flow/schema.yaml": "741a6e253f0639d0c75bb810baaa8f3d3885b773e90a9cb7aff5dbffbcec9402",
+        "openspec/schemas/receipt-flow/templates/design.md": "6ccc87f5017fb190e69e8759dd4e20d5ac3320cc4dabf152708bf8f2aa5205f8",
+        "openspec/schemas/receipt-flow/templates/proposal.md": "0dd70e35db5c696ba8ac3cc3a53e2d6561865c1e4e7d49db5a1eaa3e4a6ad86e",
+        "openspec/schemas/receipt-flow/templates/tasks.md": "fa67d99fb4a93b12d702f89ea83e1838219d1cad1c90a4192c402278001cd30e",
+        "openspec/schemas/receipt-flow/templates/spec.md": "1cccfb573f031c6352bed2a879b7035ff710bc909112fc23d10bdcfcdd8d4318"
+      }
+    },
+    "fixture_text": {
+      "openspec/config.yaml": "schema: receipt-flow\ncontext: Isolated archive reproduction. These are synthetic spec artifacts, not a\n  shipped login application.\nrules:\n  delta-specs:\n  - Retain the existing Keep signed-in session scenario unchanged. Use SHALL in each\n    added requirement.\n",
+      "openspec/schemas/receipt-flow/schema.yaml": "name: receipt-flow\nversion: 1\ndescription: Default OpenSpec workflow - proposal → specs → design → tasks\nartifacts:\n- id: proposal\n  generates: proposal.md\n  description: Initial proposal document outlining the change\n  template: proposal.md\n  instruction: \"Create the proposal document that establishes WHY this change is needed.\\n\\\n    \\nSections:\\n- **Why**: 1-2 sentences on the problem or opportunity. What problem\\\n    \\ does this solve? Why now?\\n- **What Changes**: Bullet list of changes. Be specific\\\n    \\ about new capabilities, modifications, or removals. Mark breaking changes with\\\n    \\ **BREAKING**.\\n- **Capabilities**: Identify which specs will be created or modified:\\n\\\n    \\  - **New Capabilities**: List capabilities being introduced. Each becomes a\\\n    \\ new `specs/<capability-path>/spec.md`. Name each capability for a durable system\\\n    \\ behavior (for example, `user-auth`), not the work in this change (for example,\\\n    \\ `add-login-endpoint`). Choose a cohesive boundary that can own related requirements\\\n    \\ as the system evolves; avoid broad catch-all capabilities. Use kebab-case for\\\n    \\ path segments you introduce (e.g., `user-auth` or `identity/user-auth`) and\\\n    \\ follow the project's existing spec organization.\\n  - **Modified Capabilities**:\\\n    \\ List existing capabilities whose REQUIREMENTS are changing. Only include if\\\n    \\ spec-level behavior changes (not just implementation details). Each needs a\\\n    \\ delta spec file. Use the exact existing path under `openspec/specs/`. Leave\\\n    \\ empty if no requirement changes.\\n- **Impact**: Affected code, APIs, dependencies,\\\n    \\ or systems.\\n\\nIMPORTANT: The Capabilities section is critical. It creates the\\\n    \\ contract between\\nproposal and specs phases. Research existing specs before\\\n    \\ filling this in:\\nrun `openspec list --specs` for the project's capability inventory,\\\n    \\ then\\n`openspec show \\\"<spec-id>\\\" --type spec --json --no-scenarios` for any\\\n    \\ that\\nlook related - that returns a capability's purpose and requirement texts\\n\\\n    without pulling whole spec files into context. Append `--store \\\"<id>\\\"` to\\n\\\n    both commands only for a registered standalone store, and keep `--type\\nspec`:\\\n    \\ a change and a spec sharing a name is otherwise an ambiguous-item\\nerror. `openspec\\\n    \\ list` without `--specs` lists in-flight changes, not\\nspecs - it never shows\\\n    \\ what the project already covers. Reuse an existing\\ncapability's exact path\\\n    \\ instead of introducing a near-duplicate name.\\nThe filtered read is only an\\\n    \\ overview. Before deciding what is already\\ncovered or what should change, read\\\n    \\ each relevant spec in full, including\\nscenarios, with `openspec show \\\"<spec-id>\\\"\\\n    \\ --type spec` (same `--store` rule).\\nEach capability listed here will need a\\\n    \\ corresponding spec file.\\n\\nEvery change must either declare at least one capability\\\n    \\ (new or\\nmodified) or explicitly opt out of specs: `openspec validate` rejects\\\n    \\ a\\nchange with zero deltas unless the change's `.openspec.yaml` sets\\n`skip_specs:\\\n    \\ true`. Use `skip_specs: true` only when no spec-level\\nbehavior changes (pure\\\n    \\ refactor, tooling, docs) - specs describe\\nbehavior, so if behavior does not\\\n    \\ change, no spec should change either.\\nDo not invent a requirement just to satisfy\\\n    \\ validation.\\n\\nKeep it concise (1-2 pages). Focus on the \\\"why\\\" not the \\\"\\\n    how\\\" -\\nimplementation details belong in design.md.\\n\\nThis is the foundation\\\n    \\ - specs, design, and tasks all build on this.\\n\"\n  requires: []\n- id: delta-specs\n  generates: specs/**/*.md\n  description: Detailed specifications for the change\n  template: spec.md\n  instruction: \"Create specification files that define WHAT the system should do.\\n\\\n    \\nA spec is a behavior contract, not an implementation plan.\\n\\nGood spec content:\\n\\\n    - Observable behavior users or downstream systems rely on\\n- Inputs, outputs,\\\n    \\ and error conditions\\n- External constraints (security, privacy, reliability,\\\n    \\ compatibility)\\n- Scenarios that can be tested or explicitly validated\\n\\nAvoid\\\n    \\ in specs:\\n- Internal class/function names\\n- Library or framework choices\\n\\\n    - Step-by-step implementation details\\n- Detailed execution plans (those belong\\\n    \\ in design.md or tasks.md)\\n\\nQuick test: if the implementation can change without\\\n    \\ changing externally\\nvisible behavior, it likely does not belong in the spec.\\n\\\n    \\nCreate one spec file per capability listed in the proposal's Capabilities section.\\n\\\n    `<capability-path>` is the spec directory relative to `specs/` (for example,\\n\\\n    `user-auth` or `identity/user-auth`). Preserve the full path:\\n- New capabilities:\\\n    \\ use the exact path from the proposal at `specs/<capability-path>/spec.md`. Any\\\n    \\ path segment newly introduced in the proposal must be kebab-case. Follow the\\\n    \\ project's existing organization; do not add a new domain level when the project\\\n    \\ uses a flat layout.\\n- Modified capabilities: use the exact existing path from\\\n    \\ `openspec/specs/<capability-path>/` when creating the delta at `specs/<capability-path>/spec.md`.\\\n    \\ Run `openspec list --specs` to confirm that path before writing the delta, appending\\\n    \\ `--store \\\"<id>\\\"` only for a registered standalone store - a mistyped or invented\\\n    \\ path targets a capability that does not exist rather than the one you meant.\\\n    \\ Do not move or rename the capability.\\n\\nWrite the spec files one at a time,\\\n    \\ so the user sees progress and an\\ninterrupted run keeps the files it already\\\n    \\ wrote:\\n- Before writing anything, compare the capabilities the proposal lists\\n\\\n    \\  with the `specs/<capability-path>/spec.md` files that already exist,\\n  and\\\n    \\ start with the first capability that has no file. Do not rewrite\\n  an existing\\\n    \\ file unless the user asks you to.\\n- Before each file, say in one line which\\\n    \\ capability you are writing.\\n- Write each file as soon as you have drafted it.\\\n    \\ Do not plan every file\\n  before writing the first.\\n- Stop when every capability\\\n    \\ the proposal lists has its file.\\n\\nThere must be at least one spec file unless\\\n    \\ the change's `.openspec.yaml`\\nsets `skip_specs: true` (no spec-level behavior\\\n    \\ change) - `openspec validate`\\nrejects a zero-delta change without that marker.\\\n    \\ If the proposal lists no\\ncapabilities and `skip_specs` is not set, revisit\\\n    \\ the proposal first.\\n\\nDelta operations (use ## headers):\\n- **ADDED Requirements**:\\\n    \\ New capabilities\\n- **MODIFIED Requirements**: Changed behavior - MUST include\\\n    \\ full updated content\\n- **REMOVED Requirements**: Deprecated features - MUST\\\n    \\ include **Reason** and **Migration**\\n- **RENAMED Requirements**: Name changes\\\n    \\ only - use FROM:/TO: format\\n\\nFormat requirements:\\n- Each requirement: `###\\\n    \\ Requirement: <name>` followed by description\\n- Use SHALL/MUST for normative\\\n    \\ requirements (avoid should/may)\\n- Each scenario: `#### Scenario: <name>` with\\\n    \\ WHEN/THEN format\\n- **CRITICAL**: Scenarios MUST use exactly 4 hashtags (`####`).\\\n    \\ Using 3 hashtags or bullets will fail silently.\\n- Every requirement MUST have\\\n    \\ at least one scenario.\\n- Every scenario MUST have a WHEN/GIVEN step (its trigger)\\\n    \\ and a THEN step (its outcome). A scenario with only AND lines or plain prose\\\n    \\ still counts as a scenario, but `openspec validate` flags it as a warning: normal\\\n    \\ validation still passes, but `openspec validate --strict` fails on it.\\n- Keep\\\n    \\ each requirement's description (the text between `### Requirement:` and its\\\n    \\ first scenario) to 500 characters or fewer. `openspec validate` flags longer\\\n    \\ descriptions in ADDED requirements and in the main spec. This is a warning:\\\n    \\ normal validation still passes, but `openspec validate --strict` fails on it.\\\n    \\ When writing a new requirement, state one behavior per requirement: move examples\\\n    \\ and edge cases into scenarios, and split a requirement that covers several behaviors\\\n    \\ into separate `### Requirement:` blocks, each with its own scenarios. Under\\\n    \\ MODIFIED, keep the existing requirement block whole; never split, trim or rewrite\\\n    \\ existing text just to meet the length. Split an existing long requirement only\\\n    \\ when the user asks for it, in a change made for that purpose: under MODIFIED,\\\n    \\ keep its header and every scenario and cut its description down to one behavior\\\n    \\ without changing its meaning, then add each behavior you removed as its own\\\n    \\ ADDED requirement with its own scenarios.\\n\\nNew capabilities only: the delta\\\n    \\ spec's first section is `## Purpose` -\\none or two sentences (50+ characters,\\\n    \\ or `openspec validate --strict`\\nreports it as too brief) describing what the\\\n    \\ capability is for. Archive\\ncopies it into the main spec it creates; without\\\n    \\ it the new main spec is\\nleft with a `TBD ... Update Purpose after archive`\\\n    \\ placeholder to fill in\\nby hand. Do NOT add `## Purpose` to a delta for an existing\\\n    \\ capability -\\nthat spec already has one and the delta's is ignored. To change\\\n    \\ an\\nexisting capability's Purpose - including a leftover `TBD` placeholder -\\n\\\n    edit `<planningHome.root>/openspec/specs/<capability-path>/spec.md`\\ndirectly.\\\n    \\ `planningHome.root` comes from the `openspec instructions ...\\n--json` response.\\\n    \\ Always use it rather than a repo-relative path: it\\nresolves to the store whenever\\\n    \\ the change lives in one - whether that\\ncame from `--store`, a project `store:`\\\n    \\ pointer, or a global default\\nstore - and to the current repository otherwise.\\\n    \\ Do not try to work out\\nwhich case applies; the field already has.\\n\\nMODIFIED\\\n    \\ requirements workflow:\\n1. Locate the existing requirement in `<planningHome.root>/openspec/specs/<capability-path>/spec.md`\\\n    \\ (the same store-aware root as above)\\n2. Copy the ENTIRE requirement block (from\\\n    \\ `### Requirement:` through all scenarios)\\n3. Paste under `## MODIFIED Requirements`\\\n    \\ and edit to reflect new behavior\\n4. Ensure header text matches exactly (whitespace-insensitive)\\n\\\n    \\nCommon pitfall: Using MODIFIED with partial content loses detail at archive\\\n    \\ time.\\nIf adding new concerns without changing existing behavior, use ADDED\\\n    \\ instead.\\n\\nExample (a new capability, so its first section is `## Purpose`):\\n\\\n    ```\\n# Spec Delta\\n\\n## Purpose\\n\\nLets users take their data out of the product\\\n    \\ in a portable format.\\n\\n## ADDED Requirements\\n\\n### Requirement: User can\\\n    \\ export data\\nThe system SHALL allow users to export their data in CSV format.\\n\\\n    \\n#### Scenario: Successful export\\n- **WHEN** user clicks \\\"Export\\\" button\\n\\\n    - **THEN** system downloads a CSV file with all user data\\n\\n## REMOVED Requirements\\n\\\n    \\n### Requirement: Legacy export\\n**Reason**: Replaced by new export system\\n\\\n    **Migration**: Use new export endpoint at /api/v2/export\\n```\\n\\nSpecs should\\\n    \\ be testable - each scenario is a potential test case.\\n\"\n  requires:\n  - proposal\n- id: design\n  generates: design.md\n  description: Technical design document with implementation details\n  template: design.md\n  instruction: \"Create the design document that explains HOW to implement the change.\\n\\\n    \\nWhen to include design.md (create only if any apply):\\n- Cross-cutting change\\\n    \\ (multiple services/modules) or new architectural pattern\\n- New external dependency\\\n    \\ or significant data model changes\\n- Security, performance, or migration complexity\\n\\\n    - Ambiguity that benefits from technical decisions before coding\\n\\nSections:\\n\\\n    - **Context**: Only the current state and constraints needed to explain the approach.\\\n    \\ Reference the proposal for motivation instead of restating it (e.g., \\\"See proposal.md\\\n    \\ - Why\\\").\\n- **Goals / Non-Goals**: What this design achieves and explicitly\\\n    \\ excludes. Don't restate the proposal's scope - add only design-level boundaries.\\n\\\n    - **Decisions**: Key technical choices with rationale (why X over Y?). Include\\\n    \\ alternatives considered for each decision.\\n- **Risks / Trade-offs**: Known\\\n    \\ limitations, things that could go wrong. Format: [Risk] → Mitigation\\n- **Migration\\\n    \\ Plan**: Steps to deploy, rollback strategy (if applicable)\\n- **Open Questions**:\\\n    \\ Unknowns that can safely be answered later without\\n  changing the specs, the\\\n    \\ approach, or the task breakdown. Omit if none.\\n\\nOpen questions are for genuinely\\\n    \\ deferrable unknowns, not decisions you\\nskipped. If a question would change\\\n    \\ the specs, the chosen approach, or\\nthe task breakdown, resolve it now - ask\\\n    \\ the user instead of guessing.\\n\\nFocus on architecture and approach, not line-by-line\\\n    \\ implementation.\\nThe proposal covers why and what; design covers how. Reference\\\n    \\ the\\nproposal for motivation and, once written, the specs for requirements -\\n\\\n    if a section would only restate them, point to them instead.\\n\\nGood design docs\\\n    \\ explain the \\\"why\\\" behind technical decisions.\\n\"\n  requires:\n  - proposal\n- id: tasks\n  generates: tasks.md\n  description: Implementation checklist with trackable tasks\n  template: tasks.md\n  instruction: \"Create the task list that breaks down the implementation work.\\n\\n\\\n    Before writing tasks, check design.md for Open Questions. If any of them\\nwould\\\n    \\ change what gets built, resolve them with the user first - do not\\nbake an unstated\\\n    \\ assumption into the task list.\\n\\n**IMPORTANT: Follow the template below for\\\n    \\ tracked tasks.** The apply phase parses\\ncheckbox format to track progress.\\\n    \\ A box holding only `x` counts as done,\\nupper or lower case and with any spacing,\\\n    \\ so `- [ x]` is done too. Every\\nother marker, including `- [~]`, `- [-]` and\\\n    \\ an empty `- []`, reads as\\nunfinished. A line with no checkbox is not tracked\\\n    \\ at all.\\n\\nGuidelines:\\n- Group related tracked tasks under ## numbered headings\\n\\\n    - Each tracked task MUST be a checkbox: `- [ ] X.Y Task description`\\n- Tasks\\\n    \\ should be small enough to complete in one session\\n- Order tasks by dependency\\\n    \\ (what must be done first?)\\n- Track implementation and verification work that\\\n    \\ can be completed before\\n  archive. If the requested workflow includes archive\\\n    \\ or work that requires\\n  this change to be archived, preserve those steps as\\\n    \\ plain bullets in an\\n  optional `## Workflow follow-up` section at the end of\\\n    \\ tasks.md. These\\n  bullets are reference information outside tracked task progress.\\n\\\n    - Each task MUST state how to verify completion (a test, command,\\n  observable\\\n    \\ behavior, or delivered artifact). Put the verification in\\n  that task's checkbox\\\n    \\ description. Use a separate verification task only\\n  when it checks broader\\\n    \\ integration or system behavior that spans\\n  multiple implementation tasks.\\n\\\n    - Each task group MUST land the tests and documentation its own work\\n  calls\\\n    \\ for. Do NOT collect testing or documentation into a final group -\\n  when a\\\n    \\ late group first exercises work from an early one, the failures\\n  cascade back\\\n    \\ through every group in between and force rework. A group\\n  whose work calls\\\n    \\ for neither, such as scaffolding or dependency setup,\\n  carries neither. A\\\n    \\ final group is for integration checks only, not for\\n  the tests and docs an\\\n    \\ earlier group owed.\\n\\nExample:\\n```\\n# Tasks\\n\\n## 1. Setup\\n\\n- [ ] 1.1 Create\\\n    \\ new module structure and verify expected files are present\\n- [ ] 1.2 Add dependencies\\\n    \\ to package.json and verify package installation succeeds\\n\\n## 2. Core Implementation\\n\\\n    \\n- [ ] 2.1 Implement data export function and verify the export test passes\\n\\\n    - [ ] 2.2 Add CSV formatting utilities and verify unit tests cover quoting and\\\n    \\ delimiters\\n- [ ] 2.3 Document the export API in docs/export.md and verify the\\\n    \\ documented command runs as written\\n```\\n\\nWhen applicable, append workflow\\\n    \\ follow-up as plain bullets, for example:\\n```\\n## Workflow follow-up\\n\\n- Archive\\\n    \\ the change after the project's review requirements are satisfied.\\n- Verify\\\n    \\ the archived result.\\n```\\n\\nReference specs for what needs to be built, design\\\n    \\ for how to build it.\\n\"\n  requires:\n  - delta-specs\n  - design\napply:\n  requires:\n  - tasks\n  tracks: tasks.md\n  instruction: 'Read context files, work through pending tasks, mark complete as you\n    go.\n\n    Pause if you hit blockers or need clarification.\n\n    '\n",
+      "openspec/specs/user-auth/spec.md": "# User authentication\n\n## Purpose\n\nDescribes the synthetic session behavior used to exercise specification synchronization and archive preservation in an isolated consumer fixture.\n\n## Requirements\n\n### Requirement: Preserve signed-in sessions\n\nThe fixture SHALL retain a signed-in session until the user requests logout.\n\n#### Scenario: Keep signed-in session\n\n- **WHEN** the user makes no logout request\n- **THEN** the current session remains signed in\n",
+      "openspec/changes/add-logout/.openspec.yaml": "schema: receipt-flow\ncreated: 2026-11-01\n",
+      "openspec/changes/add-logout/proposal.md": "# Proposal\n\n## Why\n\nThis isolated reproduction checks that completing a custom-schema archive preserves existing main-spec content while syncing the named capability delta. It represents the public custom artifact discovery problem, not a shipped application.\n\n## What Changes\n\nAdd a Logout requirement to the synthetic user-auth capability and retain the existing sign-in scenario.\n\n## Capabilities\n\n### New Capabilities\n\n### Modified Capabilities\n\n- `user-auth`: Add Logout to the synthetic capability.\n\n## Impact\n\nOnly synthetic planning artifacts in this disposable project are involved.\n",
+      "openspec/changes/add-logout/design.md": "# Design\n\n## Context\n\nThis is an isolated archive-consumer fixture for custom artifact discovery.\n\n## Decisions\n\nKeep delta requirements under specs/user-auth/spec.md, with the schema artifact named delta-specs. No application code is claimed complete.\n",
+      "openspec/changes/add-logout/tasks.md": "# Tasks\n\n## 1. Reproduction preparation\n\n- [x] 1.1 Prepare the synthetic valid delta and existing main-spec scenario for the archive reproduction; verify with openspec validate add-logout.\n\n## Workflow follow-up\n\n- Sync the delta and archive this change using the installed archive workflow.\n",
+      "openspec/changes/add-logout/specs/user-auth/spec.md": "## ADDED Requirements\n\n### Requirement: Logout\n\nThe fixture SHALL clear the active session when the user requests logout.\n\n#### Scenario: Explicit logout\n\n- **WHEN** a signed-in user requests logout\n- **THEN** the active session is cleared\n"
+    }
+  },
+  "consumers": {
+    "baseline_generated_workflow": {
+      "outcome": "blocked_safely",
+      "preparation_cli": [
+        {
+          "argv": [
+            "init",
+            "--tools",
+            "claude",
+            "--profile",
+            "core",
+            "--no-animation"
+          ],
+          "started_utc": "2026-11-02T04:04:36.229662+00:00",
+          "exit": 0,
+          "stdout": "- Creating OpenSpec structure...\n▌ OpenSpec structure created\n\nOpenSpec Setup Complete\n\nCreated: Claude Code\n6 skills and 6 commands in .claude/\nConfig: openspec/config.yaml (schema: spec-driven)\n\nGetting started:\n  Start your first change: /opsx:propose \"your idea\"\n\nNote: 6 more workflows are available (new, continue, ff, bulk-archive, verify, onboard).\nAdd them with `openspec config profile`.\n\nLearn more: https://github.com/Fission-AI/OpenSpec\nFeedback:   https://github.com/Fission-AI/OpenSpec/issues\n\n",
+          "stderr": "- Setting up Claude Code...\n✔ Setup complete for Claude Code\n"
+        },
+        {
+          "argv": [
+            "schema",
+            "fork",
+            "spec-driven",
+            "receipt-flow"
+          ],
+          "started_utc": "2026-11-02T04:04:36.516988+00:00",
+          "exit": 0,
+          "stdout": "\nSource: <baseline-source>/schemas/spec-driven (package)\nDestination: <project>/openspec/schemas/receipt-flow\n\nYou can now customize the schema at:\n  <project>/openspec/schemas/receipt-flow/schema.yaml\n",
+          "stderr": "Note: Schema commands are experimental and may change.\n- Forking 'spec-driven' to 'receipt-flow'...\n✔ Forked 'spec-driven' to 'receipt-flow'\n"
+        },
+        {
+          "argv": [
+            "new",
+            "change",
+            "add-logout",
+            "--schema",
+            "receipt-flow"
+          ],
+          "started_utc": "2026-11-02T04:04:36.742288+00:00",
+          "exit": 0,
+          "stdout": "Created change 'add-logout' at openspec/changes/add-logout/\nSchema: receipt-flow\nNext: openspec status --change add-logout\n",
+          "stderr": "- Creating change 'add-logout' with schema 'receipt-flow'...\n"
+        },
+        {
+          "argv": [
+            "status",
+            "--change",
+            "add-logout",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:04:36.961736+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changeName\": \"add-logout\",\n  \"schemaName\": \"receipt-flow\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<project>\",\n    \"changesDir\": \"<project>/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<project>/openspec/changes/add-logout\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/proposal.md\"\n      ]\n    },\n    \"delta-specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/specs/**/*.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/specs/user-auth/spec.md\"\n      ]\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/design.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-logout\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"delta-specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<project>\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"delta-specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"delta-specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "validate",
+            "add-logout"
+          ],
+          "started_utc": "2026-11-02T04:04:37.153008+00:00",
+          "exit": 0,
+          "stdout": "Change 'add-logout' is valid\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "validate",
+            "user-auth",
+            "--type",
+            "spec"
+          ],
+          "started_utc": "2026-11-02T04:04:37.344839+00:00",
+          "exit": 0,
+          "stdout": "Specification 'user-auth' is valid\n",
+          "stderr": ""
+        }
+      ],
+      "consumer_cli": [
+        {
+          "argv": [
+            "list",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:05:59.633376+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changes\": [\n    {\n      \"name\": \"add-logout\",\n      \"completedTasks\": 1,\n      \"totalTasks\": 1,\n      \"lastModified\": \"2026-11-02T04:04:36.962Z\",\n      \"status\": \"complete\"\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "instructions",
+            "archive",
+            "--change",
+            "add-logout",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:05:59.920338+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changeName\": \"add-logout\",\n  \"context\": \"Isolated archive reproduction. These are synthetic spec artifacts, not a shipped login application.\",\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "status",
+            "--change",
+            "add-logout",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:06:00.199843+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changeName\": \"add-logout\",\n  \"schemaName\": \"receipt-flow\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<project>\",\n    \"changesDir\": \"<project>/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<project>/openspec/changes/add-logout\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/proposal.md\"\n      ]\n    },\n    \"delta-specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/specs/**/*.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/specs/user-auth/spec.md\"\n      ]\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/design.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-logout\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"delta-specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<project>\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"delta-specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"delta-specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "list",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:06:08.154055+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changes\": [\n    {\n      \"name\": \"add-logout\",\n      \"completedTasks\": 1,\n      \"totalTasks\": 1,\n      \"lastModified\": \"2026-11-02T04:04:36.962Z\",\n      \"status\": \"complete\"\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        }
+      ],
+      "all_observed_cli_exit_zero": true,
+      "project_unchanged": true,
+      "active_change_exists": true,
+      "archive_directories": [],
+      "archived_files": {},
+      "main_spec_after": "# User authentication\n\n## Purpose\n\nDescribes the synthetic session behavior used to exercise specification synchronization and archive preservation in an isolated consumer fixture.\n\n## Requirements\n\n### Requirement: Preserve signed-in sessions\n\nThe fixture SHALL retain a signed-in session until the user requests logout.\n\n#### Scenario: Keep signed-in session\n\n- **WHEN** the user makes no logout request\n- **THEN** the current session remains signed in\n",
+      "old_title_purpose_requirement_and_scenario_preserved": true,
+      "logout_present": false,
+      "after_files_sha256": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/add-logout/.openspec.yaml": "0ae093d09a9f76f2c88ef732cd534ce8df44a49a3668afbd46d6de37f803b3ed",
+        "openspec/changes/add-logout/design.md": "7172823b239d519c5ac754241ad02d89862b0731b6fcb21d636ddacf09db4aee",
+        "openspec/changes/add-logout/proposal.md": "6bab980bb571b165c037d126ddc3c12e2ab3fe4ce06aeac3ec77efeae4344f63",
+        "openspec/changes/add-logout/specs/user-auth/spec.md": "1e47b2aa6dddc0010d819630723ad6d88168cfa89300f42b97d9930cc3d91e72",
+        "openspec/changes/add-logout/tasks.md": "9a243ecafff53cda191b52d4584ed738dd67bd4a80f6a7f7260f6840ffb8ab06",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/config.yaml": "415354ac15bb0d9fdabae7f8af8b7e7ed650a27c019c33c641ca2fa31f8faf0b",
+        "openspec/schemas/receipt-flow/schema.yaml": "741a6e253f0639d0c75bb810baaa8f3d3885b773e90a9cb7aff5dbffbcec9402",
+        "openspec/schemas/receipt-flow/templates/design.md": "6ccc87f5017fb190e69e8759dd4e20d5ac3320cc4dabf152708bf8f2aa5205f8",
+        "openspec/schemas/receipt-flow/templates/proposal.md": "0dd70e35db5c696ba8ac3cc3a53e2d6561865c1e4e7d49db5a1eaa3e4a6ad86e",
+        "openspec/schemas/receipt-flow/templates/spec.md": "1cccfb573f031c6352bed2a879b7035ff710bc909112fc23d10bdcfcdd8d4318",
+        "openspec/schemas/receipt-flow/templates/tasks.md": "fa67d99fb4a93b12d702f89ea83e1838219d1cad1c90a4192c402278001cd30e",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/specs/user-auth/spec.md": "31c4f4e61e010e63ce09b17fbbaa29e755b8c8768842ed64327d887e60e8069f"
+      }
+    },
+    "candidate_generated_workflow": {
+      "outcome": "completed",
+      "preparation_cli": [
+        {
+          "argv": [
+            "init",
+            "--tools",
+            "claude",
+            "--profile",
+            "core",
+            "--no-animation"
+          ],
+          "started_utc": "2026-11-02T04:04:37.495999+00:00",
+          "exit": 0,
+          "stdout": "- Creating OpenSpec structure...\n▌ OpenSpec structure created\n\nOpenSpec Setup Complete\n\nCreated: Claude Code\n6 skills and 6 commands in .claude/\nConfig: openspec/config.yaml (schema: spec-driven)\n\nGetting started:\n  Start your first change: /opsx:propose \"your idea\"\n\nNote: 6 more workflows are available (new, continue, ff, bulk-archive, verify, onboard).\nAdd them with `openspec config profile`.\n\nLearn more: https://github.com/Fission-AI/OpenSpec\nFeedback:   https://github.com/Fission-AI/OpenSpec/issues\n\n",
+          "stderr": "- Setting up Claude Code...\n✔ Setup complete for Claude Code\n"
+        },
+        {
+          "argv": [
+            "schema",
+            "fork",
+            "spec-driven",
+            "receipt-flow"
+          ],
+          "started_utc": "2026-11-02T04:04:37.764544+00:00",
+          "exit": 0,
+          "stdout": "\nSource: <candidate-source>/schemas/spec-driven (package)\nDestination: <project>/openspec/schemas/receipt-flow\n\nYou can now customize the schema at:\n  <project>/openspec/schemas/receipt-flow/schema.yaml\n",
+          "stderr": "Note: Schema commands are experimental and may change.\n- Forking 'spec-driven' to 'receipt-flow'...\n✔ Forked 'spec-driven' to 'receipt-flow'\n"
+        },
+        {
+          "argv": [
+            "new",
+            "change",
+            "add-logout",
+            "--schema",
+            "receipt-flow"
+          ],
+          "started_utc": "2026-11-02T04:04:37.976765+00:00",
+          "exit": 0,
+          "stdout": "Created change 'add-logout' at openspec/changes/add-logout/\nSchema: receipt-flow\nNext: openspec status --change add-logout\n",
+          "stderr": "- Creating change 'add-logout' with schema 'receipt-flow'...\n"
+        },
+        {
+          "argv": [
+            "status",
+            "--change",
+            "add-logout",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:04:38.179314+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changeName\": \"add-logout\",\n  \"schemaName\": \"receipt-flow\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<project>\",\n    \"changesDir\": \"<project>/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<project>/openspec/changes/add-logout\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/proposal.md\"\n      ]\n    },\n    \"delta-specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/specs/**/*.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/specs/user-auth/spec.md\"\n      ]\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/design.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-logout\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"delta-specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<project>\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"delta-specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"delta-specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "validate",
+            "add-logout"
+          ],
+          "started_utc": "2026-11-02T04:04:38.374231+00:00",
+          "exit": 0,
+          "stdout": "Change 'add-logout' is valid\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "validate",
+            "user-auth",
+            "--type",
+            "spec"
+          ],
+          "started_utc": "2026-11-02T04:04:38.561996+00:00",
+          "exit": 0,
+          "stdout": "Specification 'user-auth' is valid\n",
+          "stderr": ""
+        }
+      ],
+      "consumer_cli": [
+        {
+          "argv": [
+            "list",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:06:05.760163+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changes\": [\n    {\n      \"name\": \"add-logout\",\n      \"completedTasks\": 1,\n      \"totalTasks\": 1,\n      \"lastModified\": \"2026-11-02T04:04:38.179Z\",\n      \"status\": \"complete\"\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "instructions",
+            "archive",
+            "--change",
+            "add-logout",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:06:06.020801+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changeName\": \"add-logout\",\n  \"context\": \"Isolated archive reproduction. These are synthetic spec artifacts, not a shipped login application.\",\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "status",
+            "--change",
+            "add-logout",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:06:06.280471+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changeName\": \"add-logout\",\n  \"schemaName\": \"receipt-flow\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<project>\",\n    \"changesDir\": \"<project>/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<project>/openspec/changes/add-logout\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/proposal.md\"\n      ]\n    },\n    \"delta-specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/specs/**/*.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/specs/user-auth/spec.md\"\n      ]\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/design.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-logout\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"delta-specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<project>\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"delta-specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"delta-specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "list",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:06:10.696686+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changes\": [\n    {\n      \"name\": \"add-logout\",\n      \"completedTasks\": 1,\n      \"totalTasks\": 1,\n      \"lastModified\": \"2026-11-02T04:04:38.179Z\",\n      \"status\": \"complete\"\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "instructions",
+            "delta-specs",
+            "--change",
+            "add-logout",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:06:15.649753+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changeName\": \"add-logout\",\n  \"artifactId\": \"delta-specs\",\n  \"schemaName\": \"receipt-flow\",\n  \"changeDir\": \"<project>/openspec/changes/add-logout\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<project>\",\n    \"changesDir\": \"<project>/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"outputPath\": \"specs/**/*.md\",\n  \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/specs/**/*.md\",\n  \"existingOutputPaths\": [\n    \"<project>/openspec/changes/add-logout/specs/user-auth/spec.md\"\n  ],\n  \"description\": \"Detailed specifications for the change\",\n  \"instruction\": \"Create specification files that define WHAT the system should do.\\n\\nA spec is a behavior contract, not an implementation plan.\\n\\nGood spec content:\\n- Observable behavior users or downstream systems rely on\\n- Inputs, outputs, and error conditions\\n- External constraints (security, privacy, reliability, compatibility)\\n- Scenarios that can be tested or explicitly validated\\n\\nAvoid in specs:\\n- Internal class/function names\\n- Library or framework choices\\n- Step-by-step implementation details\\n- Detailed execution plans (those belong in design.md or tasks.md)\\n\\nQuick test: if the implementation can change without changing externally\\nvisible behavior, it likely does not belong in the spec.\\n\\nCreate one spec file per capability listed in the proposal's Capabilities section.\\n`<capability-path>` is the spec directory relative to `specs/` (for example,\\n`user-auth` or `identity/user-auth`). Preserve the full path:\\n- New capabilities: use the exact path from the proposal at `specs/<capability-path>/spec.md`. Any path segment newly introduced in the proposal must be kebab-case. Follow the project's existing organization; do not add a new domain level when the project uses a flat layout.\\n- Modified capabilities: use the exact existing path from `openspec/specs/<capability-path>/` when creating the delta at `specs/<capability-path>/spec.md`. Run `openspec list --specs` to confirm that path before writing the delta, appending `--store \\\"<id>\\\"` only for a registered standalone store - a mistyped or invented path targets a capability that does not exist rather than the one you meant. Do not move or rename the capability.\\n\\nWrite the spec files one at a time, so the user sees progress and an\\ninterrupted run keeps the files it already wrote:\\n- Before writing anything, compare the capabilities the proposal lists\\n  with the `specs/<capability-path>/spec.md` files that already exist,\\n  and start with the first capability that has no file. Do not rewrite\\n  an existing file unless the user asks you to.\\n- Before each file, say in one line which capability you are writing.\\n- Write each file as soon as you have drafted it. Do not plan every file\\n  before writing the first.\\n- Stop when every capability the proposal lists has its file.\\n\\nThere must be at least one spec file unless the change's `.openspec.yaml`\\nsets `skip_specs: true` (no spec-level behavior change) - `openspec validate`\\nrejects a zero-delta change without that marker. If the proposal lists no\\ncapabilities and `skip_specs` is not set, revisit the proposal first.\\n\\nDelta operations (use ## headers):\\n- **ADDED Requirements**: New capabilities\\n- **MODIFIED Requirements**: Changed behavior - MUST include full updated content\\n- **REMOVED Requirements**: Deprecated features - MUST include **Reason** and **Migration**\\n- **RENAMED Requirements**: Name changes only - use FROM:/TO: format\\n\\nFormat requirements:\\n- Each requirement: `### Requirement: <name>` followed by description\\n- Use SHALL/MUST for normative requirements (avoid should/may)\\n- Each scenario: `#### Scenario: <name>` with WHEN/THEN format\\n- **CRITICAL**: Scenarios MUST use exactly 4 hashtags (`####`). Using 3 hashtags or bullets will fail silently.\\n- Every requirement MUST have at least one scenario.\\n- Every scenario MUST have a WHEN/GIVEN step (its trigger) and a THEN step (its outcome). A scenario with only AND lines or plain prose still counts as a scenario, but `openspec validate` flags it as a warning: normal validation still passes, but `openspec validate --strict` fails on it.\\n- Keep each requirement's description (the text between `### Requirement:` and its first scenario) to 500 characters or fewer. `openspec validate` flags longer descriptions in ADDED requirements and in the main spec. This is a warning: normal validation still passes, but `openspec validate --strict` fails on it. When writing a new requirement, state one behavior per requirement: move examples and edge cases into scenarios, and split a requirement that covers several behaviors into separate `### Requirement:` blocks, each with its own scenarios. Under MODIFIED, keep the existing requirement block whole; never split, trim or rewrite existing text just to meet the length. Split an existing long requirement only when the user asks for it, in a change made for that purpose: under MODIFIED, keep its header and every scenario and cut its description down to one behavior without changing its meaning, then add each behavior you removed as its own ADDED requirement with its own scenarios.\\n\\nNew capabilities only: the delta spec's first section is `## Purpose` -\\none or two sentences (50+ characters, or `openspec validate --strict`\\nreports it as too brief) describing what the capability is for. Archive\\ncopies it into the main spec it creates; without it the new main spec is\\nleft with a `TBD ... Update Purpose after archive` placeholder to fill in\\nby hand. Do NOT add `## Purpose` to a delta for an existing capability -\\nthat spec already has one and the delta's is ignored. To change an\\nexisting capability's Purpose - including a leftover `TBD` placeholder -\\nedit `<planningHome.root>/openspec/specs/<capability-path>/spec.md`\\ndirectly. `planningHome.root` comes from the `openspec instructions ...\\n--json` response. Always use it rather than a repo-relative path: it\\nresolves to the store whenever the change lives in one - whether that\\ncame from `--store`, a project `store:` pointer, or a global default\\nstore - and to the current repository otherwise. Do not try to work out\\nwhich case applies; the field already has.\\n\\nMODIFIED requirements workflow:\\n1. Locate the existing requirement in `<planningHome.root>/openspec/specs/<capability-path>/spec.md` (the same store-aware root as above)\\n2. Copy the ENTIRE requirement block (from `### Requirement:` through all scenarios)\\n3. Paste under `## MODIFIED Requirements` and edit to reflect new behavior\\n4. Ensure header text matches exactly (whitespace-insensitive)\\n\\nCommon pitfall: Using MODIFIED with partial content loses detail at archive time.\\nIf adding new concerns without changing existing behavior, use ADDED instead.\\n\\nExample (a new capability, so its first section is `## Purpose`):\\n```\\n# Spec Delta\\n\\n## Purpose\\n\\nLets users take their data out of the product in a portable format.\\n\\n## ADDED Requirements\\n\\n### Requirement: User can export data\\nThe system SHALL allow users to export their data in CSV format.\\n\\n#### Scenario: Successful export\\n- **WHEN** user clicks \\\"Export\\\" button\\n- **THEN** system downloads a CSV file with all user data\\n\\n## REMOVED Requirements\\n\\n### Requirement: Legacy export\\n**Reason**: Replaced by new export system\\n**Migration**: Use new export endpoint at /api/v2/export\\n```\\n\\nSpecs should be testable - each scenario is a potential test case.\\n\",\n  \"context\": \"Isolated archive reproduction. These are synthetic spec artifacts, not a shipped login application.\",\n  \"rules\": [\n    \"Retain the existing Keep signed-in session scenario unchanged. Use SHALL in each added requirement.\"\n  ],\n  \"template\": \"# Spec Delta\\n\\n## Purpose\\n<!-- New capabilities only: one or two sentences (50+ characters) on what this capability is for. Delete this section for an existing capability. -->\\n\\n## ADDED Requirements\\n\\n### Requirement: <!-- requirement name -->\\n<!-- requirement text -->\\n\\n#### Scenario: <!-- scenario name -->\\n- **WHEN** <!-- condition -->\\n- **THEN** <!-- expected outcome -->\\n\",\n  \"dependencies\": [\n    {\n      \"id\": \"proposal\",\n      \"done\": true,\n      \"path\": \"proposal.md\",\n      \"description\": \"Initial proposal document outlining the change\"\n    }\n  ],\n  \"unlocks\": [\n    \"tasks\"\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "validate",
+            "--specs"
+          ],
+          "started_utc": "2026-11-02T04:06:21.860047+00:00",
+          "exit": 0,
+          "stdout": "✓ spec/user-auth\nTotals: 1 passed, 0 failed (1 items)\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "list",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:06:31.875264+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changes\": [],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        }
+      ],
+      "all_observed_cli_exit_zero": true,
+      "project_unchanged": false,
+      "active_change_exists": false,
+      "archive_directories": [
+        "openspec/changes/archive/2026-11-02-add-logout"
+      ],
+      "archived_files": {
+        "openspec/changes/add-logout/design.md": {
+          "archived_path": "openspec/changes/archive/2026-11-02-add-logout/design.md",
+          "sha256": "7172823b239d519c5ac754241ad02d89862b0731b6fcb21d636ddacf09db4aee",
+          "equals_original": true
+        },
+        "openspec/changes/add-logout/proposal.md": {
+          "archived_path": "openspec/changes/archive/2026-11-02-add-logout/proposal.md",
+          "sha256": "6bab980bb571b165c037d126ddc3c12e2ab3fe4ce06aeac3ec77efeae4344f63",
+          "equals_original": true
+        },
+        "openspec/changes/add-logout/.openspec.yaml": {
+          "archived_path": "openspec/changes/archive/2026-11-02-add-logout/.openspec.yaml",
+          "sha256": "0ae093d09a9f76f2c88ef732cd534ce8df44a49a3668afbd46d6de37f803b3ed",
+          "equals_original": true
+        },
+        "openspec/changes/add-logout/tasks.md": {
+          "archived_path": "openspec/changes/archive/2026-11-02-add-logout/tasks.md",
+          "sha256": "9a243ecafff53cda191b52d4584ed738dd67bd4a80f6a7f7260f6840ffb8ab06",
+          "equals_original": true
+        },
+        "openspec/changes/add-logout/specs/user-auth/spec.md": {
+          "archived_path": "openspec/changes/archive/2026-11-02-add-logout/specs/user-auth/spec.md",
+          "sha256": "1e47b2aa6dddc0010d819630723ad6d88168cfa89300f42b97d9930cc3d91e72",
+          "equals_original": true
+        }
+      },
+      "main_spec_after": "# User authentication\n\n## Purpose\n\nDescribes the synthetic session behavior used to exercise specification synchronization and archive preservation in an isolated consumer fixture.\n\n## Requirements\n\n### Requirement: Preserve signed-in sessions\n\nThe fixture SHALL retain a signed-in session until the user requests logout.\n\n#### Scenario: Keep signed-in session\n\n- **WHEN** the user makes no logout request\n- **THEN** the current session remains signed in\n\n### Requirement: Logout\n\nThe fixture SHALL clear the active session when the user requests logout.\n\n#### Scenario: Explicit logout\n\n- **WHEN** a signed-in user requests logout\n- **THEN** the active session is cleared\n",
+      "old_title_purpose_requirement_and_scenario_preserved": true,
+      "logout_present": true,
+      "after_files_sha256": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "b49872f75546abdc5e7f2efee8f8bd909135f420052390e14baa84648d7c1901",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "4e6c75a89a64aa0622a207c1a448911b722ca3ce3530a2e1faae3ac53eeb1b3b",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "764902e2828050fb384a9aa96fb42b83c8602dfc116e86668b25ef282685322a",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "72f083222ba580d3527e0ab9a0b10fdda72c34b2c4b76ae3a9b77fdb4a034b9b",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/changes/archive/2026-11-02-add-logout/.openspec.yaml": "0ae093d09a9f76f2c88ef732cd534ce8df44a49a3668afbd46d6de37f803b3ed",
+        "openspec/changes/archive/2026-11-02-add-logout/design.md": "7172823b239d519c5ac754241ad02d89862b0731b6fcb21d636ddacf09db4aee",
+        "openspec/changes/archive/2026-11-02-add-logout/proposal.md": "6bab980bb571b165c037d126ddc3c12e2ab3fe4ce06aeac3ec77efeae4344f63",
+        "openspec/changes/archive/2026-11-02-add-logout/specs/user-auth/spec.md": "1e47b2aa6dddc0010d819630723ad6d88168cfa89300f42b97d9930cc3d91e72",
+        "openspec/changes/archive/2026-11-02-add-logout/tasks.md": "9a243ecafff53cda191b52d4584ed738dd67bd4a80f6a7f7260f6840ffb8ab06",
+        "openspec/config.yaml": "415354ac15bb0d9fdabae7f8af8b7e7ed650a27c019c33c641ca2fa31f8faf0b",
+        "openspec/schemas/receipt-flow/schema.yaml": "741a6e253f0639d0c75bb810baaa8f3d3885b773e90a9cb7aff5dbffbcec9402",
+        "openspec/schemas/receipt-flow/templates/design.md": "6ccc87f5017fb190e69e8759dd4e20d5ac3320cc4dabf152708bf8f2aa5205f8",
+        "openspec/schemas/receipt-flow/templates/proposal.md": "0dd70e35db5c696ba8ac3cc3a53e2d6561865c1e4e7d49db5a1eaa3e4a6ad86e",
+        "openspec/schemas/receipt-flow/templates/spec.md": "1cccfb573f031c6352bed2a879b7035ff710bc909112fc23d10bdcfcdd8d4318",
+        "openspec/schemas/receipt-flow/templates/tasks.md": "fa67d99fb4a93b12d702f89ea83e1838219d1cad1c90a4192c402278001cd30e",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/specs/user-auth/spec.md": "0ac9cf710cd4c6734ba80e5b67716c6f1b1e7bd4550cb0f16695c1b3899a8149"
+      }
+    },
+    "baseline_direct_cli": {
+      "outcome": "completed",
+      "preparation_cli": [
+        {
+          "argv": [
+            "init",
+            "--tools",
+            "claude",
+            "--profile",
+            "core",
+            "--no-animation"
+          ],
+          "started_utc": "2026-11-02T04:12:04.857630+00:00",
+          "exit": 0,
+          "stdout": "- Creating OpenSpec structure...\n▌ OpenSpec structure created\n\nOpenSpec Setup Complete\n\nCreated: Claude Code\n6 skills and 6 commands in .claude/\nConfig: openspec/config.yaml (schema: spec-driven)\n\nGetting started:\n  Start your first change: /opsx:propose \"your idea\"\n\nNote: 6 more workflows are available (new, continue, ff, bulk-archive, verify, onboard).\nAdd them with `openspec config profile`.\n\nLearn more: https://github.com/Fission-AI/OpenSpec\nFeedback:   https://github.com/Fission-AI/OpenSpec/issues\n\n",
+          "stderr": "- Setting up Claude Code...\n✔ Setup complete for Claude Code\n"
+        },
+        {
+          "argv": [
+            "schema",
+            "fork",
+            "spec-driven",
+            "receipt-flow"
+          ],
+          "started_utc": "2026-11-02T04:12:05.129869+00:00",
+          "exit": 0,
+          "stdout": "\nSource: <baseline-source>/schemas/spec-driven (package)\nDestination: <project>/openspec/schemas/receipt-flow\n\nYou can now customize the schema at:\n  <project>/openspec/schemas/receipt-flow/schema.yaml\n",
+          "stderr": "Note: Schema commands are experimental and may change.\n- Forking 'spec-driven' to 'receipt-flow'...\n✔ Forked 'spec-driven' to 'receipt-flow'\n"
+        },
+        {
+          "argv": [
+            "new",
+            "change",
+            "add-logout",
+            "--schema",
+            "receipt-flow"
+          ],
+          "started_utc": "2026-11-02T04:12:05.347645+00:00",
+          "exit": 0,
+          "stdout": "Created change 'add-logout' at openspec/changes/add-logout/\nSchema: receipt-flow\nNext: openspec status --change add-logout\n",
+          "stderr": "- Creating change 'add-logout' with schema 'receipt-flow'...\n"
+        },
+        {
+          "argv": [
+            "status",
+            "--change",
+            "add-logout",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:12:05.557434+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changeName\": \"add-logout\",\n  \"schemaName\": \"receipt-flow\",\n  \"planningHome\": {\n    \"kind\": \"repo\",\n    \"root\": \"<project>\",\n    \"changesDir\": \"<project>/openspec/changes\",\n    \"defaultSchema\": \"spec-driven\"\n  },\n  \"changeRoot\": \"<project>/openspec/changes/add-logout\",\n  \"artifactPaths\": {\n    \"proposal\": {\n      \"outputPath\": \"proposal.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/proposal.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/proposal.md\"\n      ]\n    },\n    \"delta-specs\": {\n      \"outputPath\": \"specs/**/*.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/specs/**/*.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/specs/user-auth/spec.md\"\n      ]\n    },\n    \"design\": {\n      \"outputPath\": \"design.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/design.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/design.md\"\n      ]\n    },\n    \"tasks\": {\n      \"outputPath\": \"tasks.md\",\n      \"resolvedOutputPath\": \"<project>/openspec/changes/add-logout/tasks.md\",\n      \"existingOutputPaths\": [\n        \"<project>/openspec/changes/add-logout/tasks.md\"\n      ]\n    }\n  },\n  \"isPlanningComplete\": true,\n  \"isComplete\": true,\n  \"applyRequires\": [\n    \"tasks\"\n  ],\n  \"nextSteps\": [\n    \"All planning artifacts are complete. Run openspec instructions apply --change \\\"add-logout\\\" --json to inspect implementation progress.\"\n  ],\n  \"actionContext\": {\n    \"mode\": \"repo-local\",\n    \"sourceOfTruth\": \"repo\",\n    \"planningArtifacts\": [\n      \"proposal\",\n      \"delta-specs\",\n      \"design\",\n      \"tasks\"\n    ],\n    \"linkedContext\": [],\n    \"allowedEditRoots\": [\n      \"<project>\"\n    ],\n    \"requiresAffectedAreaSelection\": false,\n    \"constraints\": [\n      \"Repo-local change artifacts and implementation edits are scoped to this project.\"\n    ]\n  },\n  \"artifacts\": [\n    {\n      \"id\": \"proposal\",\n      \"outputPath\": \"proposal.md\",\n      \"status\": \"done\",\n      \"requires\": []\n    },\n    {\n      \"id\": \"delta-specs\",\n      \"outputPath\": \"specs/**/*.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"design\",\n      \"outputPath\": \"design.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"proposal\"\n      ]\n    },\n    {\n      \"id\": \"tasks\",\n      \"outputPath\": \"tasks.md\",\n      \"status\": \"done\",\n      \"requires\": [\n        \"delta-specs\",\n        \"design\"\n      ]\n    }\n  ],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "validate",
+            "add-logout"
+          ],
+          "started_utc": "2026-11-02T04:12:05.762441+00:00",
+          "exit": 0,
+          "stdout": "Change 'add-logout' is valid\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "validate",
+            "user-auth",
+            "--type",
+            "spec"
+          ],
+          "started_utc": "2026-11-02T04:12:05.980566+00:00",
+          "exit": 0,
+          "stdout": "Specification 'user-auth' is valid\n",
+          "stderr": ""
+        }
+      ],
+      "consumer_cli": [
+        {
+          "argv": [
+            "archive",
+            "--help"
+          ],
+          "started_utc": "2026-11-02T04:12:06.189304+00:00",
+          "exit": 0,
+          "stdout": "Usage: openspec archive [options] [change-name]\n\nArchive a completed change and update main specs\n\nOptions:\n  -y, --yes      Skip confirmation prompts\n  --skip-specs   Skip spec update operations (useful for infrastructure,\n                 tooling, or doc-only changes)\n  --no-validate  Skip validation (not recommended, requires confirmation)\n  --json         Output as JSON (non-interactive)\n  --store <id>   Store id to use as the OpenSpec root (a store is a standalone\n                 OpenSpec repo you've registered)\n  -h, --help     display help for command\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "archive",
+            "add-logout",
+            "--yes"
+          ],
+          "started_utc": "2026-11-02T04:12:06.274532+00:00",
+          "exit": 0,
+          "stdout": "Task status: ✓ Complete\n\nSpecs to update:\n  user-auth: update\nApplying changes to openspec/specs/user-auth/spec.md:\n  + 1 added\nTotals: + 1, ~ 0, - 0, → 0\nSpecs updated successfully.\nChange 'add-logout' archived as '2026-11-01-add-logout'.\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "validate",
+            "--specs"
+          ],
+          "started_utc": "2026-11-02T04:15:15.817661+00:00",
+          "exit": 0,
+          "stdout": "✓ spec/user-auth\nTotals: 1 passed, 0 failed (1 items)\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "list",
+            "--json"
+          ],
+          "started_utc": "2026-11-02T04:15:16.089387+00:00",
+          "exit": 0,
+          "stdout": "{\n  \"changes\": [],\n  \"root\": {\n    \"path\": \"<project>\",\n    \"source\": \"nearest\"\n  }\n}\n",
+          "stderr": ""
+        }
+      ],
+      "all_observed_cli_exit_zero": true,
+      "project_unchanged": false,
+      "active_change_exists": false,
+      "archive_directories": [
+        "openspec/changes/archive/2026-11-01-add-logout"
+      ],
+      "archived_files": {
+        "openspec/changes/add-logout/design.md": {
+          "archived_path": "openspec/changes/archive/2026-11-01-add-logout/design.md",
+          "sha256": "7172823b239d519c5ac754241ad02d89862b0731b6fcb21d636ddacf09db4aee",
+          "equals_original": true
+        },
+        "openspec/changes/add-logout/proposal.md": {
+          "archived_path": "openspec/changes/archive/2026-11-01-add-logout/proposal.md",
+          "sha256": "6bab980bb571b165c037d126ddc3c12e2ab3fe4ce06aeac3ec77efeae4344f63",
+          "equals_original": true
+        },
+        "openspec/changes/add-logout/.openspec.yaml": {
+          "archived_path": "openspec/changes/archive/2026-11-01-add-logout/.openspec.yaml",
+          "sha256": "0ae093d09a9f76f2c88ef732cd534ce8df44a49a3668afbd46d6de37f803b3ed",
+          "equals_original": true
+        },
+        "openspec/changes/add-logout/tasks.md": {
+          "archived_path": "openspec/changes/archive/2026-11-01-add-logout/tasks.md",
+          "sha256": "9a243ecafff53cda191b52d4584ed738dd67bd4a80f6a7f7260f6840ffb8ab06",
+          "equals_original": true
+        },
+        "openspec/changes/add-logout/specs/user-auth/spec.md": {
+          "archived_path": "openspec/changes/archive/2026-11-01-add-logout/specs/user-auth/spec.md",
+          "sha256": "1e47b2aa6dddc0010d819630723ad6d88168cfa89300f42b97d9930cc3d91e72",
+          "equals_original": true
+        }
+      },
+      "main_spec_after": "# User authentication\n\n## Purpose\n\nDescribes the synthetic session behavior used to exercise specification synchronization and archive preservation in an isolated consumer fixture.\n\n## Requirements\n\n### Requirement: Preserve signed-in sessions\n\nThe fixture SHALL retain a signed-in session until the user requests logout.\n\n#### Scenario: Keep signed-in session\n\n- **WHEN** the user makes no logout request\n- **THEN** the current session remains signed in\n\n### Requirement: Logout\n\nThe fixture SHALL clear the active session when the user requests logout.\n\n#### Scenario: Explicit logout\n\n- **WHEN** a signed-in user requests logout\n- **THEN** the active session is cleared\n",
+      "old_title_purpose_requirement_and_scenario_preserved": true,
+      "logout_present": true,
+      "after_files_sha256": {
+        ".claude/commands/opsx/apply.md": "9a980fe310f04f662f8426c89a69c286cf764a73191c2541f0f281c11d97dbe0",
+        ".claude/commands/opsx/archive.md": "0c48963c41c06b12553b405cd87b0ce0af09b3a8d93dce27a8505fe32d8d88e6",
+        ".claude/commands/opsx/explore.md": "e00d9352b42e9ff02ef262c132ccbd02ff36e7e6c4e038d3d8540ea7efc709d6",
+        ".claude/commands/opsx/propose.md": "2680d809cd4dcfceafa2614acaff4adf8522d6899f34bdc62ece7b7cb1c79359",
+        ".claude/commands/opsx/sync.md": "a946e1a29b7421e1a6fd1fe1008f23c8b3739b8345f8487bbe1ffcf934fd0bec",
+        ".claude/commands/opsx/update.md": "9a7db84558012013c5556bec4caf7e4ac890b84695de391902feb46d9254e233",
+        ".claude/skills/openspec-apply-change/SKILL.md": "f16785aa35a86296d78d8907f30a548c5f3764d17762558311d25e9b01cc3836",
+        ".claude/skills/openspec-archive-change/SKILL.md": "6cacaaa57799336cfb04873c30f5594a5c507920bc052ab18330a6f04e6fea41",
+        ".claude/skills/openspec-explore/SKILL.md": "a9d3068326c8b0b8bf77527f15c96e8251ab1738cf27e168ef837dc019eccf97",
+        ".claude/skills/openspec-propose/SKILL.md": "d1ef3fa5df779220a7d5770b3368810b2c82e285231c812a4a73ba87076efd73",
+        ".claude/skills/openspec-sync-specs/SKILL.md": "f83f4d04930d68ea46a0fddd51c75127cb0a603d559d43d9e9d1a2bef66dd83e",
+        ".claude/skills/openspec-update-change/SKILL.md": "3de674a9b7ba2735dc0584ba0f8ffd0df4fb0c550e5e9caba0e16a1bff0a373c",
+        "openspec/changes/archive/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/changes/archive/2026-11-01-add-logout/.openspec.yaml": "0ae093d09a9f76f2c88ef732cd534ce8df44a49a3668afbd46d6de37f803b3ed",
+        "openspec/changes/archive/2026-11-01-add-logout/design.md": "7172823b239d519c5ac754241ad02d89862b0731b6fcb21d636ddacf09db4aee",
+        "openspec/changes/archive/2026-11-01-add-logout/proposal.md": "6bab980bb571b165c037d126ddc3c12e2ab3fe4ce06aeac3ec77efeae4344f63",
+        "openspec/changes/archive/2026-11-01-add-logout/specs/user-auth/spec.md": "1e47b2aa6dddc0010d819630723ad6d88168cfa89300f42b97d9930cc3d91e72",
+        "openspec/changes/archive/2026-11-01-add-logout/tasks.md": "9a243ecafff53cda191b52d4584ed738dd67bd4a80f6a7f7260f6840ffb8ab06",
+        "openspec/config.yaml": "415354ac15bb0d9fdabae7f8af8b7e7ed650a27c019c33c641ca2fa31f8faf0b",
+        "openspec/schemas/receipt-flow/schema.yaml": "741a6e253f0639d0c75bb810baaa8f3d3885b773e90a9cb7aff5dbffbcec9402",
+        "openspec/schemas/receipt-flow/templates/design.md": "6ccc87f5017fb190e69e8759dd4e20d5ac3320cc4dabf152708bf8f2aa5205f8",
+        "openspec/schemas/receipt-flow/templates/proposal.md": "0dd70e35db5c696ba8ac3cc3a53e2d6561865c1e4e7d49db5a1eaa3e4a6ad86e",
+        "openspec/schemas/receipt-flow/templates/spec.md": "1cccfb573f031c6352bed2a879b7035ff710bc909112fc23d10bdcfcdd8d4318",
+        "openspec/schemas/receipt-flow/templates/tasks.md": "fa67d99fb4a93b12d702f89ea83e1838219d1cad1c90a4192c402278001cd30e",
+        "openspec/specs/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openspec/specs/user-auth/spec.md": "0ac9cf710cd4c6734ba80e5b67716c6f1b1e7bd4550cb0f16695c1b3899a8149"
+      }
+    }
+  },
+  "tests": {
+    "build_baseline": {
+      "exit": 0
+    },
+    "build_candidate": {
+      "exit": 0
+    },
+    "candidate_template_parity": {
+      "exit": 0,
+      "passed": 38
+    },
+    "candidate_tsc_no_emit": {
+      "exit": 0
+    },
+    "candidate_eslint_src": {
+      "exit": 0
+    },
+    "candidate_full": {
+      "exit": 1,
+      "files": 234,
+      "failed_files": 5,
+      "passed": 6790,
+      "failed": 19
+    },
+    "baseline_affected_files": {
+      "full_suite_run": false,
+      "runs": [
+        {
+          "files": 3,
+          "passed": 55,
+          "failed": 9,
+          "exit": 1
+        },
+        {
+          "files": 2,
+          "passed": 15,
+          "failed": 10,
+          "exit": 1
+        }
+      ],
+      "total_passed": 70,
+      "total_failed": 19,
+      "first_selection_error": "First command named two nonexistent cli-e2e paths and actually ran only 3 files. Remaining 2 real commands/store files ran separately.",
+      "all_19_failure_names_match_candidate": true
+    },
+    "shared_failure_names": [
+      "test/cli-e2e/store-lifecycle.test.ts > standalone store lifecycle journey > machine A: setup produces a committed, clonable repo",
+      "test/cli-e2e/store-lifecycle.test.ts > standalone store lifecycle journey > machine A: doctor and list see a healthy store with git facts",
+      "test/cli-e2e/store-lifecycle.test.ts > standalone store lifecycle journey > machine A: works a change through archive from the project repo",
+      "test/cli-e2e/store-lifecycle.test.ts > standalone store lifecycle journey > machine B: a clone registers without ceremony and reads promoted specs",
+      "test/cli-e2e/store-lifecycle.test.ts > standalone store lifecycle journey > machine B: completes its own change through archive in the clone",
+      "test/cli-e2e/store-lifecycle.test.ts > standalone store lifecycle journey > end state is just normal OpenSpec files in both checkouts",
+      "test/cli-e2e/store-lifecycle.test.ts > standalone store lifecycle journey > setup fails before creating anything when Git identity is missing",
+      "test/commands/store-git.test.ts > store git lifecycle > defaults to Git without prompting in interactive setup",
+      "test/commands/store-git.test.ts > store git lifecycle > commits the full store shape when initializing Git on an existing root",
+      "test/commands/store-git.test.ts > store git lifecycle > keeps pre-staged user files out of the setup commit",
+      "test/commands/store-remote.test.ts > store canonical remote (3.3) > setup > records --remote in store.yaml inside the initial commit",
+      "test/commands/store-remote.test.ts > store canonical remote (3.3) > setup > refuses --remote when store.yaml already exists, naming the hand-edit",
+      "test/commands/store-remote.test.ts > store canonical remote (3.3) > setup > produces byte-identical store.yaml without --remote",
+      "test/commands/store-remote.test.ts > store canonical remote (3.3) > setup > prints the canonical remote in the sharing guidance",
+      "test/commands/store-remote.test.ts > store canonical remote (3.3) > rerun and refresh reporting > keeps setup reruns as no-ops that preserve the observed remote",
+      "test/commands/store-remote.test.ts > store canonical remote (3.3) > rerun and refresh reporting > reports already_registered when a later origin merely backfills the record",
+      "test/commands/store-remote.test.ts > store canonical remote (3.3) > doctor and resolution > shows no Remote noise for stores without remotes",
+      "test/commands/store.test.ts > store command > reports repeated setup and register as no-op success",
+      "test/core/store/registry.test.ts > store registry facade > commits prepared setup against the latest registry state"
+    ],
+    "diagnosis": "Both runs hit store setup ancestry detection: a read-only .git directory exists in the host temporary parent although git rev-parse says that parent is not a repository. Source fallback treats .git existence as a repository; setup and dependent assertions fail. Some later missing-directory errors are downstream observations, not proof that Git is missing. Host directory untouched; no full-suite pass claimed.",
+    "not_verified": [
+      "hosted CI",
+      "baseline full suite",
+      "macOS",
+      "Windows",
+      "native Claude Code/OpenCode integration",
+      "business implementation",
+      "notes.md case #2173",
+      "mixed schemas/reserved artifact IDs",
+      "complex MODIFIED/RENAMED delta semantics"
+    ]
+  },
+  "projection": "Includes all recorded OpenSpec preparation/consumer CLI calls with stdout/stderr; absolute workspace/project roots normalized. Agent filesystem edits are checked by before/after SHA256, not represented as CLI calls. Install/build/full-suite logs and full generated files are retained locally, not embedded here.",
+  "date_boundary": "CLI selected archive date 2026-11-01 from host local calendar; cloud Agent selected 2026-11-02. Command observation times are UTC. Do not infer the archive directory from a UTC timestamp."
+}
