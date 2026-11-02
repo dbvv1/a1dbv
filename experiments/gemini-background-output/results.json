@@ -1,0 +1,634 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-11-02",
+  "decision": "Keep complete structured report artifacts for machine acceptance. Candidate restores tail visibility and honest truncation labels, not complete JSON. No tool default or reader-status promotion.",
+  "upstream": {
+    "repository": "https://github.com/google-gemini/gemini-cli",
+    "stars_observed": 108666,
+    "license": "Apache-2.0",
+    "issue": 29944,
+    "pull_request": 29978,
+    "state": "open/unmerged",
+    "main": "6814e00d6b148c3a1d57244d5d7040f7c541009d",
+    "base": "363a13119a57354f469732577518b9d6b319d1d6",
+    "candidate": "40e67bf26995100ca55bc5c762fb28f07f27b266",
+    "changed_files": [
+      "packages/core/src/tools/shellBackgroundTools.ts",
+      "packages/core/src/tools/shellBackgroundTools.test.ts"
+    ],
+    "main_read_tool_equals_base": true,
+    "checks": [
+      {
+        "name": "Evaluate Steering & Regressions",
+        "status": "waiting",
+        "conclusion": null
+      },
+      {
+        "name": "zizmor-upload",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "zizmor-output",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "zizmor-config",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "zizmor-scan",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "docs-pr-check (gemini-cli-extensions)",
+        "status": "completed",
+        "conclusion": "neutral"
+      },
+      {
+        "name": "Detect Steering Changes",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "size-label",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "check-changes",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "cla/google",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "workflows": [
+      {
+        "name": "Testing: CI",
+        "status": "completed",
+        "conclusion": "action_required"
+      },
+      {
+        "name": "Trigger E2E",
+        "status": "completed",
+        "conclusion": "action_required"
+      },
+      {
+        "name": "Links",
+        "status": "completed",
+        "conclusion": "action_required"
+      },
+      {
+        "name": "Evals: PR Evaluation & Regression",
+        "status": "waiting",
+        "conclusion": null
+      },
+      {
+        "name": "PR Size Labeler",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "GitHub Actions Scan",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "environment": {
+    "platform": "Linux",
+    "node": "24.22.1",
+    "npm": "11.9.0",
+    "eslint": "9.24.0",
+    "dependencies": "npm ci --ignore-scripts --no-audit --no-fund; existing configured CA preserved; no TLS disable",
+    "isolation": "own HOME/GEMINI_CLI_HOME/TMP/XDG and whitelisted environment; default child_process; no model/account/network service",
+    "entry": "compiled internal ShellExecutionService -> real ESLint JSON formatter -> real background PID/history/log -> ReadBackgroundOutputTool; minimal context supplies own session ID; actual default MessageBus and PolicyEngine",
+    "not_public_sdk_or_cli": true
+  },
+  "input": {
+    "source": "501 no-undef references in a synthetic owned JavaScript project",
+    "rule": {
+      "no-undef": "error"
+    },
+    "formatter": "actual ESLint json formatter; same produced bytes saved as artifact and stdout",
+    "repair": "extract names from actual no-undef report, add declarations, rerun real ESLint",
+    "not_business_semantics_or_model_quality": true,
+    "path_length_difference_bytes": 5,
+    "fs_or_process_mocks": false,
+    "private_history_mutation": false
+  },
+  "consumer": {
+    "base": {
+      "process_start_utc": "2026-11-02T10:54:29.574276+00:00",
+      "process_end_utc": "2026-11-02T10:54:30.824079+00:00",
+      "process_exit": 0,
+      "stderr_empty": true,
+      "cases": [
+        {
+          "name": "long",
+          "start_utc": "2026-11-02T10:54:29.941Z",
+          "end_utc": "2026-11-02T10:54:30.283Z",
+          "terminal": {
+            "exitCode": 1,
+            "at": "2026-11-02T10:54:30.235Z"
+          },
+          "serviceActiveAfterExit": false,
+          "log_bytes": 102811,
+          "log_sha256": "7f9f9e9683ec8e4c77cd0e9f5f0740fe2b4db5f8c0c33bfe6e2c767673b17e8f",
+          "artifact_sha256": "7f9f9e9683ec8e4c77cd0e9f5f0740fe2b4db5f8c0c33bfe6e2c767673b17e8f",
+          "flush_proof": "post-onExit log bytes equal complete producer artifact",
+          "tool_header": "Full Log Output:",
+          "tool_payload_bytes": 0,
+          "tail_diagnostic_visible": false,
+          "tool_json_parse_ok": false,
+          "tool_error_count": null,
+          "artifact_json_parse_ok": true,
+          "artifact_error_count": 501,
+          "initial_result_backgrounded": true,
+          "execution_method": "child_process",
+          "history_status": "exited",
+          "history_exit_code": 1,
+          "wait_start_through_tool_receipt_ms": 46
+        },
+        {
+          "name": "short",
+          "start_utc": "2026-11-02T10:54:30.288Z",
+          "end_utc": "2026-11-02T10:54:30.489Z",
+          "terminal": {
+            "exitCode": 1,
+            "at": "2026-11-02T10:54:30.484Z"
+          },
+          "serviceActiveAfterExit": false,
+          "log_bytes": 488,
+          "log_sha256": "2fcccdedbc5f2e176da591f21e4216834a3c1465da79bda0750a3c86476841d4",
+          "artifact_sha256": "2fcccdedbc5f2e176da591f21e4216834a3c1465da79bda0750a3c86476841d4",
+          "flush_proof": "post-onExit log bytes equal complete producer artifact",
+          "tool_header": "Full Log Output:",
+          "tool_payload_bytes": 487,
+          "tail_diagnostic_visible": false,
+          "tool_json_parse_ok": true,
+          "tool_error_count": 1,
+          "artifact_json_parse_ok": true,
+          "artifact_error_count": 1,
+          "initial_result_backgrounded": true,
+          "execution_method": "child_process",
+          "history_status": "exited",
+          "history_exit_code": 1,
+          "wait_start_through_tool_receipt_ms": 4
+        },
+        {
+          "name": "empty",
+          "start_utc": "2026-11-02T10:54:30.490Z",
+          "end_utc": "2026-11-02T10:54:30.529Z",
+          "terminal": {
+            "exitCode": 0,
+            "at": "2026-11-02T10:54:30.525Z"
+          },
+          "serviceActiveAfterExit": false,
+          "log_bytes": 0,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "artifact_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "flush_proof": "post-onExit log bytes equal complete producer artifact",
+          "tool_header": "Log is empty.",
+          "tool_payload_bytes": 0,
+          "tail_diagnostic_visible": false,
+          "tool_json_parse_ok": false,
+          "tool_error_count": null,
+          "artifact_json_parse_ok": false,
+          "artifact_error_count": null,
+          "initial_result_backgrounded": true,
+          "execution_method": "child_process",
+          "history_status": "exited",
+          "history_exit_code": 0,
+          "wait_start_through_tool_receipt_ms": 3
+        },
+        {
+          "name": "repaired",
+          "start_utc": "2026-11-02T10:54:30.538Z",
+          "end_utc": "2026-11-02T10:54:30.807Z",
+          "terminal": {
+            "exitCode": 0,
+            "at": "2026-11-02T10:54:30.801Z"
+          },
+          "serviceActiveAfterExit": false,
+          "log_bytes": 279,
+          "log_sha256": "44e48eb9b14cd5f17734beb76a2f8828d6951402734e228e2cce727832459d39",
+          "artifact_sha256": "44e48eb9b14cd5f17734beb76a2f8828d6951402734e228e2cce727832459d39",
+          "flush_proof": "post-onExit log bytes equal complete producer artifact",
+          "tool_header": "Full Log Output:",
+          "tool_payload_bytes": 278,
+          "tail_diagnostic_visible": false,
+          "tool_json_parse_ok": true,
+          "tool_error_count": 0,
+          "artifact_json_parse_ok": true,
+          "artifact_error_count": 0,
+          "initial_result_backgrounded": true,
+          "execution_method": "child_process",
+          "history_status": "exited",
+          "history_exit_code": 0,
+          "wait_start_through_tool_receipt_ms": 6
+        }
+      ],
+      "synthetic_wrong_session": {
+        "error_type": "execution_failed",
+        "display": "Access denied."
+      },
+      "source_before_sha256": "f879f5a6b9c990c135574bd2d6a3fb4251e53098300a3e38a4c149de6e93caab",
+      "source_after_sha256": "65d360d588d8dacf83a694d7becef00af5857376f7e3417de332b287acdd7ae0",
+      "repair_identifiers_count": 501
+    },
+    "candidate": {
+      "process_start_utc": "2026-11-02T10:54:30.824919+00:00",
+      "process_end_utc": "2026-11-02T10:54:31.951349+00:00",
+      "process_exit": 0,
+      "stderr_empty": true,
+      "cases": [
+        {
+          "name": "long",
+          "start_utc": "2026-11-02T10:54:31.176Z",
+          "end_utc": "2026-11-02T10:54:31.458Z",
+          "terminal": {
+            "exitCode": 1,
+            "at": "2026-11-02T10:54:31.427Z"
+          },
+          "serviceActiveAfterExit": false,
+          "log_bytes": 102816,
+          "log_sha256": "09576c1b096bdd683e15856dd27ca3c8cccf65f8e3c7529dde60815f59602056",
+          "artifact_sha256": "09576c1b096bdd683e15856dd27ca3c8cccf65f8e3c7529dde60815f59602056",
+          "flush_proof": "post-onExit log bytes equal complete producer artifact",
+          "tool_header": "Showing the end of a line longer than the 64KB read limit (earlier output truncated):",
+          "tool_payload_bytes": 65535,
+          "tail_diagnostic_visible": true,
+          "tool_json_parse_ok": false,
+          "tool_error_count": null,
+          "artifact_json_parse_ok": true,
+          "artifact_error_count": 501,
+          "initial_result_backgrounded": true,
+          "execution_method": "child_process",
+          "history_status": "exited",
+          "history_exit_code": 1,
+          "wait_start_through_tool_receipt_ms": 30
+        },
+        {
+          "name": "short",
+          "start_utc": "2026-11-02T10:54:31.462Z",
+          "end_utc": "2026-11-02T10:54:31.655Z",
+          "terminal": {
+            "exitCode": 1,
+            "at": "2026-11-02T10:54:31.651Z"
+          },
+          "serviceActiveAfterExit": false,
+          "log_bytes": 493,
+          "log_sha256": "58ec977031e8fd679d5d92acb52d908a1170ae5afa2223aabaabacf21c30a6c8",
+          "artifact_sha256": "58ec977031e8fd679d5d92acb52d908a1170ae5afa2223aabaabacf21c30a6c8",
+          "flush_proof": "post-onExit log bytes equal complete producer artifact",
+          "tool_header": "Full Log Output:",
+          "tool_payload_bytes": 492,
+          "tail_diagnostic_visible": false,
+          "tool_json_parse_ok": true,
+          "tool_error_count": 1,
+          "artifact_json_parse_ok": true,
+          "artifact_error_count": 1,
+          "initial_result_backgrounded": true,
+          "execution_method": "child_process",
+          "history_status": "exited",
+          "history_exit_code": 1,
+          "wait_start_through_tool_receipt_ms": 3
+        },
+        {
+          "name": "empty",
+          "start_utc": "2026-11-02T10:54:31.656Z",
+          "end_utc": "2026-11-02T10:54:31.691Z",
+          "terminal": {
+            "exitCode": 0,
+            "at": "2026-11-02T10:54:31.687Z"
+          },
+          "serviceActiveAfterExit": false,
+          "log_bytes": 0,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "artifact_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "flush_proof": "post-onExit log bytes equal complete producer artifact",
+          "tool_header": "Log is empty.",
+          "tool_payload_bytes": 0,
+          "tail_diagnostic_visible": false,
+          "tool_json_parse_ok": false,
+          "tool_error_count": null,
+          "artifact_json_parse_ok": false,
+          "artifact_error_count": null,
+          "initial_result_backgrounded": true,
+          "execution_method": "child_process",
+          "history_status": "exited",
+          "history_exit_code": 0,
+          "wait_start_through_tool_receipt_ms": 3
+        },
+        {
+          "name": "repaired",
+          "start_utc": "2026-11-02T10:54:31.694Z",
+          "end_utc": "2026-11-02T10:54:31.941Z",
+          "terminal": {
+            "exitCode": 0,
+            "at": "2026-11-02T10:54:31.935Z"
+          },
+          "serviceActiveAfterExit": false,
+          "log_bytes": 284,
+          "log_sha256": "b8c33046472f4ee5f58c3bfaf839443ff411f13e2952b3c6eae8d2e726239ee2",
+          "artifact_sha256": "b8c33046472f4ee5f58c3bfaf839443ff411f13e2952b3c6eae8d2e726239ee2",
+          "flush_proof": "post-onExit log bytes equal complete producer artifact",
+          "tool_header": "Full Log Output:",
+          "tool_payload_bytes": 283,
+          "tail_diagnostic_visible": false,
+          "tool_json_parse_ok": true,
+          "tool_error_count": 0,
+          "artifact_json_parse_ok": true,
+          "artifact_error_count": 0,
+          "initial_result_backgrounded": true,
+          "execution_method": "child_process",
+          "history_status": "exited",
+          "history_exit_code": 0,
+          "wait_start_through_tool_receipt_ms": 5
+        }
+      ],
+      "synthetic_wrong_session": {
+        "error_type": "execution_failed",
+        "display": "Access denied."
+      },
+      "source_before_sha256": "f879f5a6b9c990c135574bd2d6a3fb4251e53098300a3e38a4c149de6e93caab",
+      "source_after_sha256": "65d360d588d8dacf83a694d7becef00af5857376f7e3417de332b287acdd7ae0",
+      "repair_identifiers_count": 501
+    }
+  },
+  "checks_local": {
+    "tests": {
+      "base": {
+        "passed": 123,
+        "failed": 0,
+        "skipped": 0,
+        "files": 3
+      },
+      "candidate": {
+        "passed": 129,
+        "failed": 0,
+        "skipped": 0,
+        "files": 3
+      }
+    },
+    "fixed_builds": "npm run generate, core build, test-utils build passed in both arms",
+    "candidate_eslint_and_prettier": {
+      "files": 2,
+      "exit": 0
+    },
+    "receipts": [
+      {
+        "arm": "base",
+        "argv": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--root",
+          "packages/core",
+          "src/tools/shellBackgroundTools.test.ts",
+          "src/services/shellExecutionService.test.ts",
+          "src/services/executionLifecycleService.test.ts",
+          "--coverage.enabled=false",
+          "--maxWorkers=2",
+          "--minWorkers=1"
+        ],
+        "start": "2026-11-02T10:54:42.060214+00:00",
+        "end": "2026-11-02T10:54:44.650746+00:00",
+        "exit": 0,
+        "log": "checks-base-0.log"
+      },
+      {
+        "arm": "candidate",
+        "argv": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--root",
+          "packages/core",
+          "src/tools/shellBackgroundTools.test.ts",
+          "src/services/shellExecutionService.test.ts",
+          "src/services/executionLifecycleService.test.ts",
+          "--coverage.enabled=false",
+          "--maxWorkers=2",
+          "--minWorkers=1"
+        ],
+        "start": "2026-11-02T10:54:44.651235+00:00",
+        "end": "2026-11-02T10:54:47.452182+00:00",
+        "exit": 0,
+        "log": "checks-candidate-0.log"
+      },
+      {
+        "arm": "candidate",
+        "argv": [
+          "node",
+          "node_modules/eslint/bin/eslint.js",
+          "packages/core/src/tools/shellBackgroundTools.ts",
+          "packages/core/src/tools/shellBackgroundTools.test.ts",
+          "--max-warnings",
+          "0"
+        ],
+        "start": "2026-11-02T10:54:47.452593+00:00",
+        "end": "2026-11-02T10:54:53.925730+00:00",
+        "exit": 0,
+        "log": "checks-candidate-1.log"
+      },
+      {
+        "arm": "candidate",
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "packages/core/src/tools/shellBackgroundTools.ts",
+          "packages/core/src/tools/shellBackgroundTools.test.ts"
+        ],
+        "start": "2026-11-02T10:54:53.926099+00:00",
+        "end": "2026-11-02T10:54:54.242282+00:00",
+        "exit": 0,
+        "log": "checks-candidate-2.log"
+      }
+    ]
+  },
+  "setup_history": {
+    "initial_tls_attempt": {
+      "start_utc": "2026-11-02T10:49:05.550879+00:00",
+      "terminal_observed_utc": "2026-11-02T10:51:40Z",
+      "tool_exit": 130,
+      "reason": "npm TLS SELF_SIGNED_CERT_IN_CHAIN; initial environment whitelist omitted preconfigured NODE_EXTRA_CA_CERTS",
+      "next_action": "preserve preconfigured NODE_EXTRA_CA_CERTS in environment; certificate verification remains enabled",
+      "installer_exit": "interrupted, no natural completion",
+      "source_changed": false
+    },
+    "corrected_install_and_wrong_order": [
+      {
+        "arm": "base",
+        "argv": [
+          "npm",
+          "ci",
+          "--ignore-scripts",
+          "--no-audit",
+          "--no-fund"
+        ],
+        "start": "2026-11-02T10:52:04.442030+00:00",
+        "end": "2026-11-02T10:52:31.740430+00:00",
+        "exit": 0,
+        "log": "corrected-base-0.log"
+      },
+      {
+        "arm": "base",
+        "argv": [
+          "npm",
+          "run",
+          "build",
+          "--workspace",
+          "@google/gemini-cli-test-utils"
+        ],
+        "start": "2026-11-02T10:52:31.741104+00:00",
+        "end": "2026-11-02T10:52:39.330706+00:00",
+        "exit": 1,
+        "log": "corrected-base-1.log"
+      }
+    ],
+    "correct_order": [
+      {
+        "arm": "base",
+        "argv": [
+          "npm",
+          "run",
+          "generate"
+        ],
+        "start": "2026-11-02T10:52:55.816782+00:00",
+        "end": "2026-11-02T10:52:56.021490+00:00",
+        "exit": 0,
+        "log": "ordered-base-0.log"
+      },
+      {
+        "arm": "base",
+        "argv": [
+          "npm",
+          "run",
+          "build",
+          "--workspace",
+          "@google/gemini-cli-core"
+        ],
+        "start": "2026-11-02T10:52:56.021872+00:00",
+        "end": "2026-11-02T10:53:17.889215+00:00",
+        "exit": 0,
+        "log": "ordered-base-1.log"
+      },
+      {
+        "arm": "base",
+        "argv": [
+          "npm",
+          "run",
+          "build",
+          "--workspace",
+          "@google/gemini-cli-test-utils"
+        ],
+        "start": "2026-11-02T10:53:17.889522+00:00",
+        "end": "2026-11-02T10:53:20.122109+00:00",
+        "exit": 0,
+        "log": "ordered-base-2.log"
+      },
+      {
+        "arm": "candidate",
+        "argv": [
+          "npm",
+          "ci",
+          "--ignore-scripts",
+          "--no-audit",
+          "--no-fund"
+        ],
+        "start": "2026-11-02T10:53:20.122654+00:00",
+        "end": "2026-11-02T10:53:34.214532+00:00",
+        "exit": 0,
+        "log": "ordered-candidate-0.log"
+      },
+      {
+        "arm": "candidate",
+        "argv": [
+          "npm",
+          "run",
+          "generate"
+        ],
+        "start": "2026-11-02T10:53:34.215053+00:00",
+        "end": "2026-11-02T10:53:34.403381+00:00",
+        "exit": 0,
+        "log": "ordered-candidate-1.log"
+      },
+      {
+        "arm": "candidate",
+        "argv": [
+          "npm",
+          "run",
+          "build",
+          "--workspace",
+          "@google/gemini-cli-core"
+        ],
+        "start": "2026-11-02T10:53:34.403845+00:00",
+        "end": "2026-11-02T10:53:57.379337+00:00",
+        "exit": 0,
+        "log": "ordered-candidate-2.log"
+      },
+      {
+        "arm": "candidate",
+        "argv": [
+          "npm",
+          "run",
+          "build",
+          "--workspace",
+          "@google/gemini-cli-test-utils"
+        ],
+        "start": "2026-11-02T10:53:57.379662+00:00",
+        "end": "2026-11-02T10:53:59.552630+00:00",
+        "exit": 0,
+        "log": "ordered-candidate-3.log"
+      }
+    ],
+    "wrong_order_diagnosis": "test-utils was incorrectly built before generate/core, pulling core sources under ES2021. Followed repository build.js generate -> core -> dependents; no source/lock/config fix."
+  },
+  "review_correction": "Initial reviewer inspected current main boolean background() contract; independent consumer caught fixed base/candidate use void before execution. Corrected to backgrounded result + real terminal + byte equality; did not rerun a valid consumer.",
+  "consumer_receipt_recovery": "Model capacity error occurred after both processes completed. Read existing receipts and completed independent review without rerunning.",
+  "limits": [
+    "No full preflight or full CLI/model-backed test",
+    "Not PTY, Windows/macOS, active/truncated log or short-read validation",
+    "Process exit does not by itself prove log flush; compared owned log bytes to complete producer artifact after terminal",
+    "No direct observation of stream close or global descendant cleanup",
+    "Wrong-session negative control uses only owned synthetic session IDs",
+    "Fixed snapshots are shallow but include complete source trees/blobs; no full upstream history claim",
+    "Upstream functional hosted CI action_required, evaluation waiting; other checks are not functional pass"
+  ],
+  "evidence_hashes": {
+    "summary.json": "098541b797a06dc8bf5910bdbed710c662b1715bc52c65bf89fc68702191acea",
+    "REPORT.txt": "33d277987827ae8186667bc2463284856d5fa697cc41deee1a177f2c7f407867",
+    "manifest-sha256.json": "59b6369109358ca6c0f8dac26523c7855098209e82f9168b50efe03a4dc9d5bc",
+    "launch-receipts.json": "47fd944f54cfec35b4980f2f9951d11bbdfd00a8c42f7f475b8a0a3a697f82c8",
+    "consumer.mjs": "a32f42050463d50d85097a8cd4ad40bf904a63c662148e63c5b957c0893480e5",
+    "lint-project.mjs": "5d3dad8c83c3c3986245a45eb4295ab7161875cb012a14205a51c3523008574b",
+    "launch.py": "9d281273c55ae775bb24745cdad798c37c6fb9d6dc4c8f4316103816351349ba"
+  },
+  "retention": {
+    "completed_utc": "2026-11-02T10:58:06.556941+00:00",
+    "archive": "gemini-background-retained-20261102.tar.gz",
+    "bytes": 29646432,
+    "sha256": "ff7931ae277415b159e0d1c9fe16e61314cee4ac43fe3df30457ed903ca059fe",
+    "files": 3181,
+    "source_pack_sha256": "c690a111f9991128d739b70e9327c392630dce518caa3e6569e9d06bdb8952a7",
+    "source_objects": 3508,
+    "trees": {
+      "6814e00d6b148c3a1d57244d5d7040f7c541009d": "50edf407d8afd110d726e56eb68a05d56d16100f",
+      "363a13119a57354f469732577518b9d6b319d1d6": "885e4eb69730b142e9895a68fc8a97ef1ea75374",
+      "40e67bf26995100ca55bc5c762fb28f07f27b266": "61f3d9094168c7297902c32ba7023bfa8ec9fc50"
+    },
+    "restored_fsck_exit": 0,
+    "public_upload": false
+  },
+  "timing_field_note": "wait_start_through_tool_receipt_ms projects raw flush_wait_ms: from start of waiting for byte equality through tool read/parse and receipt construction, not isolated flush latency or a performance result."
+}
