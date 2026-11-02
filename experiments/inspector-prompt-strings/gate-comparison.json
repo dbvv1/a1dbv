@@ -1,0 +1,32 @@
+{
+  "upstream_base": "4fe3d9cc5db17367e9e645ee05f707daf154267e",
+  "candidate_tree": "9a699418c95a1659e349eb770d3200a20c2cf68b",
+  "baseline": {
+    "command": "npm test --prefix clients/cli -- cli.test.ts",
+    "files": 2,
+    "passed": 55,
+    "failed": 8,
+    "exit_code": 1,
+    "modified_tracked_files": 0
+  },
+  "candidate": {
+    "command": "npm run coverage:cli",
+    "files": 41,
+    "passed": 786,
+    "failed": 8,
+    "skipped": 2,
+    "exit_code": 1,
+    "coverage_gate_passed": false
+  },
+  "matching_failed_test_names": [
+    "__tests__/cli.test.ts > CLI Tests > Roots capability (#1797) > answers a server's roots/list instead of -32601",
+    "__tests__/cli.test.ts > CLI Tests > Roots capability (#1797) > answers with the roots configured for the server in the config file",
+    "__tests__/cli.test.ts > CLI Tests > Config-file settings lifting (#1482) > applies a config file's custom header on a tools/call over HTTP",
+    "__tests__/cli.test.ts > CLI Tests > Config-file settings lifting (#1482) > overrides a config file's header with --header",
+    "__tests__/cli.test.ts > CLI Tests > Logging Options > should set log level",
+    "__tests__/cli.test.ts > CLI Tests > HTTP Transport > should infer HTTP transport from URL ending with /mcp",
+    "__tests__/cli.test.ts > CLI Tests > HTTP Transport > should work with explicit --transport http flag",
+    "__tests__/cli.test.ts > CLI Tests > HTTP Transport > should work with explicit transport flag and URL suffix"
+  ],
+  "root_cause": "not established"
+}

@@ -1,0 +1,630 @@
+{
+  "scope": "Linux built one-shot CLI to stdio MCP; sanitized synthetic wire observations, not full-suite success",
+  "upstream_base": "4fe3d9cc5db17367e9e645ee05f707daf154267e",
+  "local_candidate_tree": "9a699418c95a1659e349eb770d3200a20c2cf68b",
+  "runs": {
+    "baseline": {
+      "build_sha256": "3a5eeb88a94257f768b147e257b759c574f99863374dda1444034becb2e8c576",
+      "server_sha256": "e45304fd546027293664cac8956814169c067e74f682db60afc37b48dfcec8ce",
+      "runner_sha256": "bcbea0992609df59c44cea90d36ab783f04ed06cf28c07b5ea5b9635f5accce9",
+      "cases": [
+        {
+          "surface": "cli",
+          "name": "raw-0",
+          "expected": {
+            "price": "1.50"
+          },
+          "actual_wire": {
+            "price": "1.5"
+          },
+          "echoed": [
+            {
+              "price": "1.5"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-1",
+          "expected": {
+            "price": "1e3"
+          },
+          "actual_wire": {
+            "price": "1000"
+          },
+          "echoed": [
+            {
+              "price": "1000"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-2",
+          "expected": {
+            "price": "0.10"
+          },
+          "actual_wire": {
+            "price": "0.1"
+          },
+          "echoed": [
+            {
+              "price": "0.1"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-3",
+          "expected": {
+            "price": "9007199254740993"
+          },
+          "actual_wire": {
+            "price": "9007199254740992"
+          },
+          "echoed": [
+            {
+              "price": "9007199254740992"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-4",
+          "expected": {
+            "price": "1e400"
+          },
+          "actual_wire": null,
+          "echoed": [],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-5",
+          "expected": {
+            "price": "-0"
+          },
+          "actual_wire": {
+            "price": "0"
+          },
+          "echoed": [
+            {
+              "price": "0"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-6",
+          "expected": {
+            "price": "true"
+          },
+          "actual_wire": {
+            "price": "true"
+          },
+          "echoed": [
+            {
+              "price": "true"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-7",
+          "expected": {
+            "price": "null"
+          },
+          "actual_wire": {
+            "price": "null"
+          },
+          "echoed": [
+            {
+              "price": "null"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-8",
+          "expected": {
+            "price": "{\"n\": 1.50}"
+          },
+          "actual_wire": {
+            "price": "{\"n\":1.5}"
+          },
+          "echoed": [
+            {
+              "price": "{\"n\":1.5}"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-9",
+          "expected": {
+            "price": "\"quoted\""
+          },
+          "actual_wire": {
+            "price": "quoted"
+          },
+          "echoed": [
+            {
+              "price": "quoted"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-10",
+          "expected": {
+            "price": ""
+          },
+          "actual_wire": null,
+          "echoed": [],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-11",
+          "expected": {
+            "price": "  padded  "
+          },
+          "actual_wire": {
+            "price": "  padded  "
+          },
+          "echoed": [
+            {
+              "price": "  padded  "
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-12",
+          "expected": {
+            "price": "领域🙂"
+          },
+          "actual_wire": {
+            "price": "领域🙂"
+          },
+          "echoed": [
+            {
+              "price": "领域🙂"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-13",
+          "expected": {
+            "price": "a=b=c"
+          },
+          "actual_wire": {
+            "price": "a=b=c"
+          },
+          "echoed": [
+            {
+              "price": "a=b=c"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "multi-duplicate",
+          "expected": {
+            "price": "1.50",
+            "other": "a=b"
+          },
+          "actual_wire": {
+            "price": "1.5",
+            "other": "a=b"
+          },
+          "echoed": [
+            {
+              "price": "1.5",
+              "other": "a=b"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "own-property-names",
+          "expected": {
+            "__proto__": "1.50",
+            "constructor": "0.10"
+          },
+          "actual_wire": {
+            "constructor": "0.1"
+          },
+          "echoed": [
+            {
+              "constructor": "0.1"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "missing-separator",
+          "expected": {},
+          "actual_wire": null,
+          "echoed": [],
+          "expect_rejection": true,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "missing-key",
+          "expected": {},
+          "actual_wire": null,
+          "echoed": [],
+          "expect_rejection": true,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "tool-typed-control",
+          "actual_wire": {
+            "n": 1.5,
+            "b": true
+          },
+          "status": "passed"
+        }
+      ],
+      "summary": {
+        "passed": 8,
+        "failed": 11
+      }
+    },
+    "candidate": {
+      "build_sha256": "8b50fb2f37a16e6bab0a3b6ba043b62542d987c6d78da9cb5031b7ee906b6234",
+      "server_sha256": "e45304fd546027293664cac8956814169c067e74f682db60afc37b48dfcec8ce",
+      "runner_sha256": "bcbea0992609df59c44cea90d36ab783f04ed06cf28c07b5ea5b9635f5accce9",
+      "cases": [
+        {
+          "surface": "cli",
+          "name": "raw-0",
+          "expected": {
+            "price": "1.50"
+          },
+          "actual_wire": {
+            "price": "1.50"
+          },
+          "echoed": [
+            {
+              "price": "1.50"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-1",
+          "expected": {
+            "price": "1e3"
+          },
+          "actual_wire": {
+            "price": "1e3"
+          },
+          "echoed": [
+            {
+              "price": "1e3"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-2",
+          "expected": {
+            "price": "0.10"
+          },
+          "actual_wire": {
+            "price": "0.10"
+          },
+          "echoed": [
+            {
+              "price": "0.10"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-3",
+          "expected": {
+            "price": "9007199254740993"
+          },
+          "actual_wire": {
+            "price": "9007199254740993"
+          },
+          "echoed": [
+            {
+              "price": "9007199254740993"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-4",
+          "expected": {
+            "price": "1e400"
+          },
+          "actual_wire": {
+            "price": "1e400"
+          },
+          "echoed": [
+            {
+              "price": "1e400"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-5",
+          "expected": {
+            "price": "-0"
+          },
+          "actual_wire": {
+            "price": "-0"
+          },
+          "echoed": [
+            {
+              "price": "-0"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-6",
+          "expected": {
+            "price": "true"
+          },
+          "actual_wire": {
+            "price": "true"
+          },
+          "echoed": [
+            {
+              "price": "true"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-7",
+          "expected": {
+            "price": "null"
+          },
+          "actual_wire": {
+            "price": "null"
+          },
+          "echoed": [
+            {
+              "price": "null"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-8",
+          "expected": {
+            "price": "{\"n\": 1.50}"
+          },
+          "actual_wire": {
+            "price": "{\"n\": 1.50}"
+          },
+          "echoed": [
+            {
+              "price": "{\"n\": 1.50}"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-9",
+          "expected": {
+            "price": "\"quoted\""
+          },
+          "actual_wire": {
+            "price": "\"quoted\""
+          },
+          "echoed": [
+            {
+              "price": "\"quoted\""
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-10",
+          "expected": {
+            "price": ""
+          },
+          "actual_wire": {
+            "price": ""
+          },
+          "echoed": [
+            {
+              "price": ""
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-11",
+          "expected": {
+            "price": "  padded  "
+          },
+          "actual_wire": {
+            "price": "  padded  "
+          },
+          "echoed": [
+            {
+              "price": "  padded  "
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-12",
+          "expected": {
+            "price": "领域🙂"
+          },
+          "actual_wire": {
+            "price": "领域🙂"
+          },
+          "echoed": [
+            {
+              "price": "领域🙂"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "raw-13",
+          "expected": {
+            "price": "a=b=c"
+          },
+          "actual_wire": {
+            "price": "a=b=c"
+          },
+          "echoed": [
+            {
+              "price": "a=b=c"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "multi-duplicate",
+          "expected": {
+            "price": "1.50",
+            "other": "a=b"
+          },
+          "actual_wire": {
+            "price": "1.50",
+            "other": "a=b"
+          },
+          "echoed": [
+            {
+              "price": "1.50",
+              "other": "a=b"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "own-property-names",
+          "expected": {
+            "__proto__": "1.50",
+            "constructor": "0.10"
+          },
+          "actual_wire": {
+            "constructor": "0.10"
+          },
+          "echoed": [
+            {
+              "constructor": "0.10"
+            }
+          ],
+          "expect_rejection": false,
+          "status": "failed"
+        },
+        {
+          "surface": "cli",
+          "name": "missing-separator",
+          "expected": {},
+          "actual_wire": null,
+          "echoed": [],
+          "expect_rejection": true,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "missing-key",
+          "expected": {},
+          "actual_wire": null,
+          "echoed": [],
+          "expect_rejection": true,
+          "status": "passed"
+        },
+        {
+          "surface": "cli",
+          "name": "tool-typed-control",
+          "actual_wire": {
+            "n": 1.5,
+            "b": true
+          },
+          "status": "passed"
+        }
+      ],
+      "summary": {
+        "passed": 18,
+        "failed": 1
+      }
+    }
+  },
+  "mcpdo_consumer": {
+    "status": "blocked",
+    "action": "connect via own isolated Unix socket",
+    "exit_code": 4,
+    "error": "listen EPERM",
+    "retry_performed": false
+  }
+}
