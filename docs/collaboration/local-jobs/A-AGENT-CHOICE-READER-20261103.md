@@ -1,7 +1,7 @@
 # A-AGENT-CHOICE-READER-20261103 · 选入口完成真实 CLI 小任务
 id: A-AGENT-CHOICE-READER-20261103
 owner: dot-A
-status: running
+status: blocked
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
@@ -30,3 +30,8 @@ page: docs/01-agents/README.md@main
 非读者另核 diff、CLI 输出及回归，区分任务是否做成与页面能否指导选路，不凭入口名称或自报成功判通过。
 在结果记录页面具体哪一步被采用、哪里卡住／做错、额外读了什么、实际命令与结果；将页面缺口、环境缺失和读者误解分开，无卡点则写无。
 保留首轮结果，不自动再派盲读或换页重做；通常一个 60–90 分钟单元，最多两小时，未完成写清恢复条件。
+
+## 当前结果
+
+- 本机接收端连续 2 次未完成第 1 个单元：公开扫描有发现（local-path jrnl/args.py:456，local-path reader-tests/A-AGENT-CHOICE-READER-20261103-u1.md:318），未推送。负责人确认任务可以执行后改回 ready，接收端会重新领取。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
