@@ -22,6 +22,12 @@ python3 scripts/probe_cloud_sockets.py
 
 读取当前会话提供的浏览器／预览工具说明，确认其实际存在、目标页面和动作已有授权、能够访问本次候选构建后，才使用该受支持入口。工具缺失就回报缺哪项能力；同一动作被平台明确拒绝时保持停止，不换入口绕过。完整原件留私有工作区，公开摘要只写阶段、errno、版本与参数，不提交私人路径、登录信息或原始敏感日志。
 
+### 已提供托管预览时，先用其受支持入口
+
+仅在当前环境实际提供 `SITES_MANAGED_LINUX_CONTAINER=1` 与 `sites-preview` 时使用；不要自行设置该标志来假装具备能力。按该入口文档，把准确候选的已构建静态目录放入独立包装，`.openai/hosting.json` 指定 `{"static":{"directory":"web-dist"}}`，逐文件核对包装与候选输出一致，再执行 `sites-preview start <包装目录>`。使用命令实际返回的 URL，不猜另一个 shell 的 localhost；结束用 `sites-preview stop` 和 `sites-preview status` 核停止。包装只服务已有构建，不重编或替换文件，也不是部署。
+
+**可达只过一关：还要核实际渲染后端和固定 viewport。** 本次托管入口能被原生云浏览器访问，但页面仍回退 Canvas；这不能验 AI 材质、WebGL2 帧或同机位效果。固定 `qualityCapture` 要求 1280×720／DPR 1，缺受支持的 viewport 设置就保留该阻塞，不降门槛。诊断协议被工具策略拒绝时停止该动作，不换工具绕过；本次没有开隧道、改网络／安全设置或重启 shell Chromium。
+
 ## 2. FPS 正式入口的已确认问题与补丁
 
 基线为 [FPS `67ae83a7`](https://github.com/dbvv1/FPS-Like/commit/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26)：
@@ -62,9 +68,11 @@ node tools/smoke.mjs
 
 **dot 云接收（2026-11-01）：** 实际探针为 Unix stream 创建 EPERM，socketpair／TCP 通过，未在同条件重复启动浏览器。四文件修复及 lighting 精确组合已快进原 FPS 候选分支 [`8e66087e`](https://github.com/dbvv1/FPS-Like/commit/8e66087e45393c5dc9d00bb3a7a72d9c5e697b6e)（基线 `67ae83a7`）；非 main、未部署，完整 smoke／同机位图仍未验。
 
-**跨入口复验（2026-11-02）：** 完整 CUA 文档与实际状态确认原生云端 CDP 浏览器存在，纠正先前仅凭工具摘要误判无云浏览器入口。上述 `8e66087e` 构建成功，同进程 preview HTTP 200、index 哈希匹配构建；但跨 exec 与原生云浏览器访问该候选 preview 均连接拒绝，尚未载入页面。Unix stream 创建仍 EPERM，socketpair／TCP 通过；本次没有重启 shell Chromium。当前缺口是准确候选预览的跨入口可达性，不是缺参数授权，也不是候选品质失败；完整六回合、半场换边、终局重开、同机位图与盲评均未跑。两个自有 preview 收到 SIGINT 后退出 130，未获正常 close／全资源清理回执；云浏览器错误页已关闭。待原授权云浏览器可达该构建后续验，不以旧网站代验。
+**早先原始 preview 复验（2026-11-02）：** 完整 CUA 文档与实际状态确认原生云端 CDP 浏览器存在，纠正先前仅凭工具摘要误判无云浏览器入口。上述 `8e66087e` 构建成功，同进程 preview HTTP 200、index 哈希匹配构建；但跨 exec 与原生云浏览器访问该候选 preview 均连接拒绝，尚未载入页面。Unix stream 创建仍 EPERM，socketpair／TCP 通过；本次没有重启 shell Chromium。当时缺口是准确候选预览的跨入口可达性，不是缺参数授权，也不是候选品质失败；完整六回合、半场换边、终局重开、同机位图与盲评均未跑。两个自有 preview 收到 SIGINT 后退出 130，未获正常 close／全资源清理回执；云浏览器错误页已关闭。这份原始 shell 结果保留；后续托管入口结果见下，不以旧网站代验。
 
-补丁在上述固定源码的隔离副本通过 apply／反向检查和两脚本语法检查。受控启动失败检查覆盖默认 sandbox、显式例外、无效开关、全场材质路由及失败配置留存；原版丢配置并拒绝目标路由，补丁版通过对应检查。材质断言检出了 fallback、缺墙和缺替换件；capture 的 headed／外部 base 组合被拒。没有在本机启动浏览器，也没有在 dot 的云端运行这份补丁，云端恢复与作品效果尚待 dot-B 验证。
+**托管入口复验（2026-11-02）：** 从远端逐 blob 核回 [`8c29cec8`](https://github.com/dbvv1/FPS-Like/commit/8c29cec8e1e0feb5e45ccbf51a96e02aa31b5ee7) 的四个验收文件，恢复准确 tree `e09b056c89037835e12b353a5c231b7b3ee4c88e`；构建后 33 个文件与静态包装逐字节一致。`sites-preview` 的实际 URL 已由原生云浏览器载入完整 lighting＋materials 入口，跨入口可达性阻塞解除。但页面明确报告 WebGL2 不可用，调试 backend 为 `canvas2d-cpu`；`qualityCapture` 另因固定 viewport 前提不满足停止。浏览器内部 GPU 诊断页被协议策略拒绝，未再尝试。当前须补的是获准浏览器的 WebGL2 与固定 viewport 能力；六回合／换边／终局重开、同机位图与盲评仍未通过，无部署。自有页已关闭，托管预览 stop／status 确认停止、exit 0；不将这次清理回执套给早先两个原始 preview。
+
+补丁在上述固定源码的隔离副本通过 apply／反向检查和两脚本语法检查。受控启动失败检查覆盖默认 sandbox、显式例外、无效开关、全场材质路由及失败配置留存；原版丢配置并拒绝目标路由，补丁版通过对应检查。材质断言检出了 fallback、缺墙和缺替换件；capture 的 headed／外部 base 组合被拒。这些是补丁交接前的检查，不等于后续云端浏览器验收；实际接收与剩余阻塞以上述复验为准。
 
 探针的成功、EPERM、缺失能力分支已检查；本机仅用于标准库与输出检查，不作为云端结果。核实：2026-11-02。
 

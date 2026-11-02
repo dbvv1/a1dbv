@@ -47,7 +47,7 @@
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 `27a40be`／Site v16：WebGL2 四路 smoke、四机位双重复通过；两非作者判小幅改善，正式评分待补。获准 `--no-sandbox`；已留 renderer／参数（SwiftShader software），exit 0、端口关闭。 |
-| FPS 新候选云端 smoke | 11-02 已实核原生云端 CDP 浏览器存在；原候选 `8e66087e` 构建成功、preview 同进程 HTTP 200 且 index 哈希匹配，但跨 exec 与云浏览器访问该候选 preview 均连接拒绝。shell Unix stream 创建仍 EPERM，socketpair／TCP 通过；当前缺候选预览跨入口可达性，非参数授权或品质失败，不改外层沙箱 | 无页面／WebGL2／新图；完整六回合、换边、终局重开与盲评未跑。两个自有 preview 已 SIGINT 退出 130，未获正常 close／全资源清理回执；云错误页已关闭。候选保留，待原授权云浏览器可访问准确构建后续验，本机不接浏览器。 |
+| FPS 新候选云端 smoke | 11-02 托管 `sites-preview` 已让原生云浏览器载入准确 `8c29cec8`／tree `e09b056c`，跨入口可达性恢复；页面仍报 WebGL2 不可用、`canvas2d-cpu` 回退。`qualityCapture` 未满足 1280×720／DPR 1，缺受支持 viewport 设置；不降门槛 | 六回合、换边、终局重开、同机位图与盲评均未通过，无部署。自有页已关闭，托管 preview stop／status 确认停止、exit 0。原 shell IPC 与早先清理缺口仍保留，详见[复验](../../experiments/cloud-browser-recovery/README.md#已检查的范围)。待获准入口具备 WebGL2／固定 viewport 续验。 |
 
 ## 已停止的动作
 
