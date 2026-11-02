@@ -1,10 +1,10 @@
 # A-AGENT-CHOICE-READER-20261103 · 选入口完成真实 CLI 小任务
 id: A-AGENT-CHOICE-READER-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
-base_ref: 655d8a9f69028a4b0accdb55adce1babbf86d07c
+base_ref: 787513136a7ad83441f376d4a08960d2197ef19e
 result_branch: relay/a-agent-choice-reader-20261103
 page: docs/01-agents/README.md@main
 
@@ -32,12 +32,13 @@ page: docs/01-agents/README.md@main
 保留首轮结果，不自动再派盲读或换页重做；通常一个 60–90 分钟单元，最多两小时，未完成写清恢复条件。
 
 ## 修改要求
-本次沿原 result_branch 从 655d8a9f69028a4b0accdb55adce1babbf86d07c 定点修复，不是新读者实测。先确认原调用、工具及登记进程全部退出，原 worktree 单一写者；缺证保持隔离，不启动新调用或改旧文件。保留原提交、u1 首轮记录与失败，修订追加，不回填首轮。
-1. 按实际 CLI 语义修互斥检测，不能以和 #2120 一致豁免已复现问题：--imp／--impo／--impor、--form 与隐藏别名 --export 必须走同一规则；保留 --help／--version 的原有优先级；`-- --import --format json` 是合法正文，`--format json -- --import` 是合法检索，不能把 `--` 后文本再当选项。补以上回归并保原 5 错误组合及 5 正常路径，按原套件验证修前失败、修后通过。
-2. 仅原卡写域内修实现、消息与相关测试，保留原 CLI 兼容行为，不修改依赖、扫描器、白名单、全局配置或权限。no-install／合成数据／私有路径脱敏约束不变；poetry／tox 等缺依赖继续记未跑，不安装或隐式下载补门槛。
-3. 原接收端只从当时保留的输入回执补实际 page 解析提交和全文指纹；原件没有就明确无法恢复，不拿当前页面回填、不重跑 fresh reader。页面、输入与实际采用分开报告。
-4. #2120 已由负责人于 2026-11-02 22:17 UTC 核公开 API：仍 open／未合，head f4c6e2db、base 90de4948；保该观察时间，不要求本机绕过受限网络再查。后续主张以实际修订及 CLI 检查为据，不以 PR 状态代替验收。
-非读者核最终 diff、原正确路径、缩写／别名、help/version 与 `--` 边界。只推原 result_branch，回 review_ready；整体 taskDone 不能盖过残余反例，分别写有限通过、失败、跳过与未运行。
+沿原 result_branch 从 787513136a7ad83441f376d4a08960d2197ef19e 定点修订；先确认原调用、工具和登记进程全部退出且原 worktree 单写者。缺证维持隔离，不启动第二个调用或改旧文件；不新派 reader。保留首轮和第二轮提交／记录，只追加修订与更正。
+1. 按真实参数消费和最终 postconfig_cmd 优先级修互斥检测，不再靠忽略值消费的 raw token 预扫描叠例外。以下三个 nargs=2 值场景在基线 90de4948 均 exit 0，655d8a9 与 7875131 均误报 exit 2：`--import --config-override editor --format`、同句末值 `--format=json`、`--config-override editor --import --format json`。其中 --format／--import 是 config_override 的值，不能当独立选项。
+2. `--import --list --format json` 与 `--import --ls --format json` 应保留基线的后置 list 覆盖、exit 0；反向 `--list --import --format json` 基线失败，候选应明确拒绝，不能用“含 list 就跳过”绕过互斥。以实际解析／命令选择语义实现，并补正反向回归。
+3. 继续保住上轮已修的原 5 错误组合、5 正常路径、5 缩写／别名、help/version 的基线参数顺序与优先级，以及两条 `--` 后合法正文／检索；同一套回归对照原基线／修前候选／新候选，失败原因不能是启动或缺依赖。
+4. 原 u1 把部分“基线 exit 0”误标为 655d8a9，追加更正：真正基线是 90de4948，655d8a9 和 7875131 已有相同残余反例。不得写成 7875131 新引入，不覆盖原记录。分别列真实通过、失败、跳过、未运行，不以 taskDone 或测试总数概括通过。
+原 page 解析 SHA／全文指纹原件已确认缺失且无法恢复，停止索求，不读私人会话或当前页回填，也不重跑首次阅读。当前页已有未知写者处置及缺依赖禁装指引，不追加同义页面要求；这不能倒推首轮读过哪些内容。#2120 沿用负责人 22:17 UTC 的 open／未合观察，不绕网络复查。
+原写域、no-install、禁全局／权限变更、合成数据、公开扫描和单写者限制不变；poetry／tox 缺依赖继续保留未跑。只修原任务实现与回归、仅推原结果分支，交非读者定点复验后回 review_ready；不扩新实验或模板。
 
 ## 当前结果
 
@@ -50,3 +51,6 @@ page: docs/01-agents/README.md@main
 ## 独立接收结论
 2026-11-02 负责人在隔离云端对基线 90de4948 与候选 655d8a9 分别运行 19 组真实 CLI。原 5 错误组合及 5 正常路径符合有限预期；另确认 5 个缩写／别名漏拦、help/version 优先级由 exit 0 变 2，以及两条 `--` 后合法输入由 exit 0 变 2。故本轮不 accepted，原报告 taskDone=true 不代表完整验收；按上方返工，原记录保留。
 原 u1 只见 page@main 和片段引用，没有可独立核对的实际解析 SHA／全文指纹；当前页面变化不用于倒推首轮输入。poetry／tox 缺依赖继续保留，真实客户端模型身份及未验路径不由源码一致或测试总数补齐。
+
+## 后续独立接收补充
+2026-11-02 23:25 UTC，负责人在隔离云端对 90de4948、655d8a9、7875131 三树分别运行同一 26 组真实 CLI：原 19 组在 7875131 已符合有限预期，但以上值消费与后置 list 兼容反例仍在；它们并非本轮新引入。原输入无法恢复仍是证据缺口，故不整体验收、不升级地图，沿原单元修订。
