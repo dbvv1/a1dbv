@@ -1,0 +1,103 @@
+# A-DEPENDENCY-LOCATOR-FACTS-20261102 · Cargo 依赖定位字段的官方边界
+
+**范围**：`docs/decisions/skills-and-plugins.md@2bddaaf7b5ed7f9bd151315cab6b67e2a9e97709`「先定位实际依赖，再选文档或源码」一节（第 105–134 行）及其页内 Cargo 官方链接。页面原核实 2026-10-26；本表读取 2026-11-03。Cargo 事实按 The Cargo Book stable（当日 rust-lang.org 显示 Rust 1.99.1；读取 2026-11-03）与 `rust-lang/cargo@5f94df4789f005f9a352888e8355ffc645b7ed0e`（0.100.0 稳定 tag，Rust 1.99 稳定线，tag commit 2026-08-27）的源码、官方测试核对。未安装或运行 Cargo；命令行为取自官方文档、源码和官方测试，不代表任何真实项目已采用或本仓 opensrc 已重新验收。本卡只覆盖该节的 Cargo 字段与构建边界，不涉及 A-SKILL-PAGE-FACTS 的 Context7/Serena/Superpowers、Node/TanStack 或 opensrc 修复。
+
+## 读者入口
+
+只拿本卡找操作入口时，按这个顺序做：
+
+1. 用与构建相同的 manifest、target、features、锁文件和本地缓存跑一次 `cargo metadata`；`--manifest-path`、`--filter-platform`、`--locked`／`--offline` 按构建条件取舍。`$target` 必须写实际 triple：`dep_kinds[].target` 只会是 manifest 里的字面量 triple、`cfg(...)` 或表示不限平台的 null，不会出现 `--filter-platform` 接受的 `host-tuple`。要少写一次 host triple，先取 `target=$(rustc -vV | sed -n 's/^host: //p')`，再让 `--filter-platform`、jq 和 `rustc --print cfg` 用同一实际 triple；或只在 `--filter-platform` 传 `host-tuple`，jq 与 rustc 用实际 triple。
+2. `$dep` 用 crate 名：lib target 的 `-` 换成 `_`，重命名依赖用新名，不是包名。
+3. 读结果的 `manifest_path` 和 lib target 的 `src_path`，沿调用进入实际模块。
+4. metadata 只解析、不编译；API 兼容性仍要跑消费包当前 target／feature 的 `cargo check`／`cargo build`／测试。
+5. 无结果按 feature、crate 名、普通边是否在当前 target 激活（逐条核 `dep_kinds[].target`）、`manifest_path` 匹配排查；另核 `--filter-platform` 与 jq 的 `$target` 是否为同一实际 triple（`host-tuple` 只在 Cargo 内部替换，JSON 不会出现，传错会丢掉所有字面量 triple 的边）。
+
+修正后的 jq，关键差别是加 `dep_kinds[].target` 检查，不再只看 `kind`：
+
+```bash
+set -o pipefail
+manifest=packages/opensrc/cli/Cargo.toml
+dep=reqwest
+target=x86_64-unknown-linux-gnu
+cargo metadata --format-version 1 --locked --offline \
+  --manifest-path "$manifest" --filter-platform "$target" |
+  jq -e --arg manifest "$(realpath "$manifest")" --arg dep "$dep" --arg target "$target" '
+    . as $m
+    | $m.packages[] | select(.manifest_path == $manifest)
+    | .id as $consumer
+    | $m.resolve.nodes[] | select(.id == $consumer)
+    | .deps[] | select(.name == $dep)
+    | select(any(.dep_kinds[];
+        .kind == null and (.target == null or .target == $target)))
+    | .pkg as $id
+    | $m.packages[] | select(.id == $id)
+    | {name, version, source, manifest_path,
+       lib_src: [.targets[] | select(.kind | index("lib")) | .src_path]}
+  '
+```
+
+`$target` 必须是实际 triple：`--filter-platform` 只在 Cargo 内部把 `host-tuple` 替换成 host triple，JSON 的 `dep_kinds[].target` 仍是 manifest 里的实际 triple、`cfg(...)` 或无平台限制的 null，不会写 `host-tuple`。要少写一次时先 `target=$(rustc -vV | sed -n 's/^host: //p')`，再让 `--filter-platform`、jq 和 `rustc --print cfg --target "$target"` 用同一实际 triple；或只在 `--filter-platform` 传 `host-tuple`，jq 与 `rustc --print cfg` 仍用实际 triple（rustc 不接受 `host-tuple`）。`target: null` 表示不限平台，字面量 triple 可直接与 `$target` 比较；`cfg(...)` 不能由 jq 求值，需按 `rustc --print cfg --target "$target"` 逐条核对，否则会漏掉真实激活的 cfg 边。复现构建 feature 时，`--features` 可用 `member/feature` 按工作区成员指定，也可用 `dep/feature` 开所选成员直接依赖的 feature（可选依赖会一并激活）；`--all-features`／`--no-default-features` 都是全局开关，不能只对单个成员开关：`--all-features` 作用于全部选中成员，`--no-default-features` 在 resolver v2/v3 或虚拟工作区下作用于全部选中成员，resolver v1 非虚拟工作区只作用于当前 manifest 所在成员（源码见 [workspace.rs 第 1715–1800 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/workspace/workspace.rs#L1715-L1800)，关键 1780–1794）。若构建只对某个成员用了 `--no-default-features`，metadata 无法精确复现：需用 `--features <其他成员>/default` 显式补回其默认 feature（该成员定义了 `default` 时），或把结果当近似并用实际构建复核。
+
+## 会改变读者操作的差量
+
+**1. `dep` 传的是 Rust 里的 crate 名，不是包名。** `resolve.nodes[].deps[].name` 是依赖的库 target 名；lib target 的 `-` 会换成 `_`，重命名依赖则用重命名后的名字（源码把 rename 里的 `-` 也换成 `_`）。页面的 `dep=reqwest` 能命中，是因为它无连字符；改成 `tokio-util` 会零结果，应传 `tokio_util`。要按包名查，应从 `.pkg` 到 `packages[]` 比较 `name`，或看 `packages[].dependencies[]` 的 `name`（包名）与 `rename`（新名），不要混用两个命名空间。Zed 例：manifest 键是 `reqwest`，包名是 `zed-reqwest`；`.deps[].name` 是 `reqwest`，`packages[].name` 才是 `zed-reqwest`。页面命令输出的 `{name,version,source}` 取自 `packages[]`，所以能看到 fork 的真实包名。
+
+**2. 可选依赖未激活时完全不在 `resolve.deps`，而命令块没有 feature 参数。** 官方写明 “Inactivated optional dependencies are not listed”；不给 feature 选项时，所选工作区成员按 `default` feature 解析，依赖的 feature 仍由各 manifest 的 `features`／`default-features` 合并启用。页面正文说“给 metadata 带上与构建相同的 feature 参数”，但代码块没有 `--features` / `--all-features` / `--no-default-features`，照抄只能看到默认 feature 的图。
+
+复现某次构建时按 flag 的作用域传：`--features` 可给 `package/feature` 按工作区成员指定，也接受 `<所选成员的直接依赖声明名>/<feature>`（重命名依赖用新名；依赖为可选时会一并激活），构建里用了这种写法就要同样传给 metadata；`--all-features`／`--no-default-features` 是不可按成员拆分的全局开关，对每个选中的工作区成员生效，不会开启依赖自己的全部/默认 feature（resolver v1 非虚拟工作区例外，`--no-default-features` 只对当前 manifest 所在成员生效）。单成员 `--no-default-features` 无法精确复现，补回办法见上文；否则可选依赖可能整条不出现。“无结果”应按四件事排查：feature 是否激活、`$dep` 是否用了 crate 名、该普通边是否在当前 target 激活（逐条看 `dep_kinds[].target`：null 或与目标平台匹配的 cfg，不能只看条目存在）、`manifest_path` 是否匹配；`--filter-platform` 与 jq 的 `$target` 是否为同一实际 triple（`host-tuple` 只在 Cargo 内部替换，JSON 的 `dep_kinds[].target` 不会出现它）。
+
+**3. metadata 的 feature 是全工作区并集，且包含 dev 依赖，不等于这次 build 的 feature 集。** 实现把 `Packages::All`（全部 workspace 成员）和 `HasDevUnits::Yes` 交给 resolver，后者把各成员的 feature 求并集；Cargo Book 的字段注释却写 “based on the enabled features for the 'current' package”，两者不一致。issue #7754（仍在 open，标签含 `S-needs-design`）记录的正是 `cargo metadata` 按工作区解析 feature。因此 `resolve.nodes[].features` 与“某个可选依赖是否出现”可能是消费包实际构建集的超集：别用它判断某 feature 在本次 build 中是否生效；`--locked` 也不锁定 feature 选择。
+
+**4. `--filter-platform` 只筛解析图，而且不会替你读 `build.target`。** 不给该 flag 时，resolve 默认包含所有 target 平台的依赖；给了才按该 triplet 的 rustc cfg 过滤。过滤是**包对级**的：`(pkg, dep_pkg)` 中任一条 `Dependency` 对目标平台激活就保留整个包对，`dep_kinds` 仍写入该包对的全部 `Dependency` 并保留各自原始 `target`；所以条目存在只说明该包对至少一条边对目标激活，`dep_kinds` 可能含其他 target 的边。例如同一 manifest 写 `[target.'cfg(unix)'.dependencies] foo = "1"` 和 `[dev-dependencies] foo = "1"`，在 `--filter-platform x86_64-pc-windows-msvc` 下，包对因 dev 边被保留，`foo` 的 `dep_kinds` 仍是 `{kind:null, target:"cfg(unix)"}` 与 `{kind:"dev", target:null}`；页面的 `select(any(.dep_kinds[]; .kind == null))` 会把 `foo` 误选为 Windows 的普通依赖。`packages` 数组也随解析图收窄，但每个包的 `dependencies` 字段仍是 manifest 的全量声明。实现用 `CompileKindFallback::JustHost`，故意不读 `$CARGO_BUILD_TARGET` / `build.target`，所以必须显式传 target。它还会改变 feature 解析：无 flag 时 `ForceAllTargets::Yes` 让各 target 的 feature 也合并；有 flag 时关闭，resolver v2/v3（2021/2024 edition 默认）下 target 不活跃的 feature 不启用（resolver v1 本来就不区分 target 与 cfg feature）。cfg 表达式按 rustc 的 cfg 求值，官方测试显示 `RUSTFLAGS=--cfg=foobar` 会让 `cfg(foobar)` 依赖进入过滤结果，因此 metadata 要和构建跑在同一 RUSTFLAGS 下。`cfg(feature = ...)`、`cfg(test)` 等本来就不能用于依赖条件。即使过滤正确，也没有安装 target、运行 build script 或检查链接器。
+
+**5. `--locked --offline` 只保证“不联网且不改锁文件”，前提是锁和本地缓存都齐。** `--locked` 在锁文件缺失或解析需要改动时直接报错（exit 101）；`--offline` 只用本地已下载的 crate，官方明确可能得到与在线不同的解析，缺包时失败。在线运行 metadata 会下载依赖（官方测试会显示 `DOWNLOADING`/`DOWNLOADED`），离线时不会。“缺包先补齐锁定依赖”应理解为先用有网方式 `cargo fetch` 或 vendored source 备齐，再离线运行；`--locked` 校验的是依赖与版本解析，不校验 feature、profile、RUSTFLAGS 或构建目标。
+
+**6. `source` / `manifest_path` 定位来源，不证明 API；`lib_src` 是页面自拼的字段。** `source` 对 path 依赖和 workspace 成员都为 null（两者不能只靠它区分），其余为 `registry+` / `git+` / `sparse+URL`；官方说明 `+` 后的值未定义、可能随 Cargo 版本变化，不能当稳定解析规则。`manifest_path` 是解析后包在本机的 manifest 绝对路径（registry 解包目录、git checkout 或 path 目录），`[patch]` 生效时指向 patch 源；它给出“Cargo 实际会编译的那份源码”的入口，不是上游仓库根。`lib_src` 不是 Cargo 字段，而是从 `targets[].src_path`（target 根源文件）拼出来的；`targets[].kind` 对 lib 列的是 crate-type（默认 `["lib"]`），`index("lib")` 会漏 `proc-macro`、纯 `cdylib`/`staticlib`/`rlib` 等非默认 crate-type。且 `src_path` 是 crate 根（通常 `lib.rs`），不是被调用的模块；`mod`/`#[path]`/`include!`、`#[cfg]` 分支和 build.rs 写入 `OUT_DIR` 的生成代码都可能让实际实现不在这份源文件里。`manifest_path` 官方只承诺“绝对路径”，未承诺 canonical；页面用 `realpath` 做字符串相等，在符号链接路径下可能对不上（源码的路径处理不保证 canonical）。
+
+**7. 找到已解析包 ≠ 目标筛选 ≠ 验证真实调用兼容。** 三层分别回答不同问题，不能互相替代：
+
+| 层次 | 能拿到什么 | 仍缺什么 |
+|---|---|---|
+| 找到已解析包 | 精确的包 ID、版本、`source`、`manifest_path`、库根 `src_path`、依赖边类别 | 只说明“这次解析选中了谁”；不说明该包在当前 target/feature 下实际编译哪些代码 |
+| 目标筛选 | `--filter-platform` 按 rustc cfg 收窄解析图（包对级：任一条边激活即保留整对，`dep_kinds` 仍含其他 target 的边），并让 target 不活跃的 feature 不参与 | 没有 build；不读 `build.target` 配置；RUSTFLAGS/custom cfg 要对齐；host 侧 build-dependencies 的判定与 target 过滤不完全一致（见未知项）；target 工具链、链接器、build script 都未检查 |
+| 验证调用兼容 | 读 `manifest_path` / `src_path` 指向的源码，沿调用查实现 | 不编译、不做类型检查；feature/cfg 分支、模块路径、宏与生成代码会改变实际实现；符号是否存在、签名是否匹配只能由消费包当前的 `cargo check` / `cargo build` / 测试接收 |
+
+## 核实表
+
+| 位置 | 页面原句／命令 | 官方事实（2026-11-03 读取） | 来源 | 结论 |
+|---|---|---|---|---|
+| L116–117 | `cargo metadata --format-version 1 --locked --offline --manifest-path "$manifest" --filter-platform "$target"` | `--format-version 1` 是当前唯一格式；不带 `--filter-platform` 时 resolve 含所有 target 平台；`resolve` 是整个 workspace 的图；`--no-deps` 时 resolve 为 null | [cargo-metadata stable](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)；[源码 `src/ops/cargo_metadata.rs`](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/cargo_metadata.rs) | 命令有效；需补 feature 参数，且 `$dep` 用 crate 名 |
+| L123 | `.deps[] \| select(.name == $dep)` | `deps[].name` 是依赖库 target 的名字；重命名依赖用新名字；lib target 的 `-` 换成 `_`。`packages[].dependencies[]` 则用 `name`=包名、`rename`=新名 | [metadata 输出格式](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)；[`src/resolver/resolve.rs` 第 409–436 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/resolver/resolve.rs)；[`rename_dependency` 测试](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/tests/testsuite/metadata.rs) | **需更正用法**：`$dep` 不是包名；带连字符时改用下划线形式，重命名依赖用 rename 键 |
+| L124 | `select(any(.dep_kinds[]; .kind == null))` | `dep_kinds[].kind` 为 `null`（普通）/`"dev"`/`"build"`，`target` 为 null 表示不限平台；同一包对的多种边合并在一个 `deps` 条目里，`any` 只能判断“该包对里至少有一条普通边”，不能判断这条边是否对目标平台激活；`nodes[].dependencies` 只是同一组边的包 ID 列表，不含 rename 与 `dep_kinds`，页面用 `.deps` 是对的；`resolve.nodes.deps` 自 Cargo 1.30 起有（changelog #5871），`dep_kinds` 自 Cargo 1.41 起有（changelog #7132） | [metadata 输出格式](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)；[`filter_platform` 测试](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/tests/testsuite/metadata.rs)；[源码包对级过滤](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/cargo_metadata.rs#L234-L285)；[Cargo 1.30 changelog #5871](https://github.com/rust-lang/cargo/blob/rust-1.41.0/CHANGELOG.md#cargo-130-2018-10-25)、[Cargo 1.41 changelog #7132](https://github.com/rust-lang/cargo/blob/rust-1.42.0/CHANGELOG.md#cargo-141-2020-01-30) | **需更正判定**：条目存在只说明该包对至少一条边对目标激活，`dep_kinds` 仍可能含其他 target 的边；须逐条核 `dep_kinds[].target`（null 或与目标匹配的 cfg），不能只看 `kind` |
+| L116 | `--locked` | 断言依赖和版本与现有 `Cargo.lock` 完全一致；锁缺失或解析会改动时报错 | [cargo-metadata stable](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html) | 确认；不锁定 feature/profile |
+| L116 | `--offline` | 禁止访问网络；只使用本地已下载的 crate；可能与在线解析不同；缺包会失败。在线 metadata 会下载依赖，离线不会，需先 `cargo fetch` | [cargo-metadata stable](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)、[cargo-fetch](https://doc.rust-lang.org/cargo/commands/cargo-fetch.html) | 确认；“缺包先补齐锁定依赖”成立，离线运行时 metadata 不会下载 |
+| L117 | `--filter-platform "$target"` | 把 resolve 收窄到给定 target 的依赖；支持字面量 `host-tuple`，但只在 Cargo 内部替换成 host triple，输出仍保留 manifest 原值，`dep_kinds[].target` 不会写 `host-tuple`；不带该 flag 时包含所有 target；过滤按包对进行：包对中任一条边对目标激活即保留整对，`dep_kinds` 仍写该包对全部边及原 `target`；`packages` 数组也随图收窄，但每个包的 `dependencies` 仍是 manifest 全量 | [cargo-metadata stable](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)；[`filter_platform` 测试](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/tests/testsuite/metadata.rs)；[源码 `src/ops/cargo_metadata.rs` 第 234–285 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/cargo_metadata.rs#L234-L285) | 确认，并补：不读 `build.target`，必须显式传；不能把 `dep_kinds` 条目存在当作该边已激活；`host-tuple` 不能直接用作 jq／`rustc` 的 `$target` |
+| L117 | 同上（feature 影响） | 实现中无 filter 时 `ForceAllTargets::Yes`（所有 target 的 feature 合并）；有 filter 时为 `No`（resolver v2/v3 下 target 不活跃的 feature 不启用；v1 本来不区分） | [`src/ops/cargo_metadata.rs` 第 135–154 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/cargo_metadata.rs)、[`src/resolver/features.rs` 第 208–210 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/resolver/features.rs) | **源码补充**：命令文档只写筛依赖，未写 feature 变化 |
+| L109（页面要求带 feature 参数）／本卡旧版 L45 | “给 metadata 带上与构建相同的 feature 参数”／本卡旧版表述（非页面原句）：“给对应工作区成员传这些 flag” | `cargo metadata` 无按包选择参数：`output_metadata` 以 `Packages::All` 取全部成员规格，再经 `resolve_ws_with_opts` 调 `members_with_features`。resolver v2/v3 或虚拟工作区下，`collect_matching_features` 对每个选中成员原样保留 `all_features`／`uses_default_features`，只有 `package/feature` 能按成员分流；resolver v1 非虚拟工作区沿用旧行为，非当前成员的 `uses_default_features` 强制为 true。`--features` 同时接受所选成员直接依赖声明名的 `dep/feature`（`dependencies.contains_key(dep_name)`；重命名用新名，可选依赖一并激活） | [cargo-metadata stable](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)；[`src/ops/cargo_metadata.rs` 第 149–166 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/cargo_metadata.rs#L149-L166)；[`src/workspace/workspace.rs` 第 1386–1413 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/workspace/workspace.rs#L1386-L1413)、[第 1668–1677 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/workspace/workspace.rs#L1668-L1677)、[第 1015–1021 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/workspace/workspace.rs#L1015-L1021)；[`slash_optional_enables`](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/tests/testsuite/features.rs#L2151-L2205)、[`required_features_host_dep`](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/tests/testsuite/features2.rs#L868-L923)、[`src/workspace/workspace.rs` 第 1715–1800 行（关键 1780–1794）](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/workspace/workspace.rs#L1715-L1800) | **需更正作用域**：`--features` 可开依赖 feature；`--all-features`／`--no-default-features` 不能只对单成员；单成员 `--no-default-features` 无法精确复现 |
+| L109／L114 | “沿消费包的普通直接依赖边查询”／`dep=reqwest` | 重命名依赖的解析条目保留 manifest 键；Zed 在固定提交第 865 行写的是 `reqwest = { …, package = "zed-reqwest", version = "0.12.15-zed" }`，所以 `.deps[].name` 是 `reqwest`，包名是 `zed-reqwest` | [Zed `Cargo.toml` 固定 SHA 第 864–872 行](https://github.com/zed-industries/zed/blob/57c7b10ece671185a8863515667ee5248c6f0d53/Cargo.toml#L864-L872)；[zed-reqwest 固定 rev 第 2 行](https://github.com/zed-industries/reqwest/blob/33bc764aa15ff7b200bf7c93bd96e24878d53e14/Cargo.toml#L2) | 确认示例；但读者不能据此用包名当 `$dep` |
+| L118–129 | `.packages[] \| select(.manifest_path == $manifest)` → `.id` → `.resolve.nodes[]` → `.deps[].pkg` → `.packages[]` | cargo 在 metadata 中输出的是完全限定的 Package ID；`id`/`pkg` 用于在文档内唯一引用包；源码会把 packages 与 resolve 的 ID 归一化后输出 | [Package ID Specifications](https://doc.rust-lang.org/cargo/reference/pkgid-spec.html)；[`src/ops/cargo_metadata.rs` 第 204–354 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/cargo_metadata.rs) | 确认；按 `id` 相等匹配是对的，不要按 name+version 猜 |
+| L132 | “无结果先查消费包与依赖类别” | 还要查 feature 是否激活（未激活的可选依赖不列出）、`$dep` 是否是 crate 名、该普通边是否在当前 target 激活（逐条核 `dep_kinds[].target`，不能只看条目存在）；`--filter-platform` 与构建 target 不一致时也会无结果 | [metadata 输出格式](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)；[源码 `src/ops/cargo_metadata.rs` 第 234–285 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/cargo_metadata.rs#L234-L285) | **补充排查项** |
+| L132 | “metadata 可能合并其他工作区成员的 feature” | 实现解析全部 workspace 成员并设 `HasDevUnits::Yes`；Cargo Book 注释却写“当前包”；issue #7754 以 “cargo-metadata always resolves features at the workspace level” 保持 open | [issue #7754](https://github.com/rust-lang/cargo/issues/7754)（2019-12-29 创建，读取时 open）；[`src/ops/resolve.rs` 第 162–166 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/resolve.rs)；[features 文档](https://doc.rust-lang.org/cargo/reference/features.html) | **确认并加强**：不是偶发合并，而是按全工作区求并集；文档与行为仍有冲突 |
+| L132 | “API 接收仍跑消费包当前 target／feature 的检查” | metadata 只解析，不编译；无法证明某符号/签名在该版本、该 feature、该 target 下存在或可用 | [cargo-metadata stable](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)；[`src/ops/cargo_metadata.rs`](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/ops/cargo_metadata.rs) | 确认；这是页面最关键的边界，保留 |
+| L128 | `lib_src: [.targets[] \| select(.kind \| index("lib")) \| .src_path]` | `targets[].src_path` 是 target 的根源文件绝对路径；lib target 的 `kind` 是 crate-type 列表（默认 `["lib"]`，也可是 `rlib`/`dylib`/`cdylib`/`staticlib`/`proc-macro`）；`lib_src` 不是 Cargo 字段，是派生键 | [metadata 输出格式](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)；[`src/workspace/manifest.rs` 第 217–257 行](https://github.com/rust-lang/cargo/blob/5f94df4789f005f9a352888e8355ffc645b7ed0e/src/workspace/manifest.rs) | **需补充**：`index("lib")` 漏非默认 crate-type；`src_path` 只是根文件 |
+| L127–128 | 输出 `{name, version, source, manifest_path, lib_src}` | `name`=包名，`version`=解析版本，`source`=来源（null 表示 path/workspace），`manifest_path`=该包 manifest 的本地绝对路径；均不等于“实际 API”或“可编译” | [metadata 输出格式](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html) | 确认字段含义；需补 `source` 的不透明性与 null 覆盖范围 |
+| L107 | “Zed 的 `reqwest` 实际是重命名 fork，Vite 也有依赖 alias／patch” | Zed 固定提交第 865 行确为 `package = "zed-reqwest"` 的 git fork；Vite 固定提交第 13–22 行有 `overrides`（`debug: 'npm:obug@^1.0.2'`）与 `patchedDependencies`（sirv/chokidar/dotenv-expand） | [Zed 固定 SHA](https://github.com/zed-industries/zed/blob/57c7b10ece671185a8863515667ee5248c6f0d53/Cargo.toml#L864-L872)；[Vite 固定 SHA](https://github.com/vitejs/vite/blob/e954a9cda0b5254be495a937333a0be1b8503d8f/pnpm-workspace.yaml#L13-L22) | 确认；Vite 只核了所引行，不展开 pnpm 语义 |
+| L134 | “原核实 2026-10-26，验证范围为离线定位与源码阅读” | 与本轮读取日 2026-11-03 分开记录；本轮没有新增真实项目采用或模型收益证据 | 本表范围声明 | 保留原日期，不刷新成“已通过” |
+
+## 不确定项与未保证
+
+- **工作区级 feature 解析是否算预期行为未定。** Cargo Book 的字段注释写“当前包”，实现和 issue #7754 显示按整个 workspace 解析；issue 仍 open 且标 `S-needs-design`。在维护者定论前，把 `resolve.nodes[].features` 当作可能偏大的并集，不要当本次 build 的精确 feature 集。
+- **直接依赖的 `--features dep/feature` 只在源码与官方测试中有据。** `cargo metadata`／`build` 的命令文档只写 `package-name/feature-name` 用于工作区成员；固定 SHA 的 `collect_matching_features` 与官方测试 `slash_optional_enables`、`required_features_host_dep` 证明所选成员的直接依赖也接受该写法（可选依赖一并激活），但命令文档未承诺，后续版本需复核。
+- **`source` 的具体字符串不是稳定接口。** 官方明确说 `+` 后的值未定义、可能变化、可能不直接对应配置或索引定义；`source=null` 同时覆盖 path 依赖与 workspace 成员。要稳定区分来源，用 `id` 与 `manifest_path`，不要解析字符串。
+- **`manifest_path` 未承诺 canonical 路径。** 页面用 `realpath` 做字符串相等；源码的路径处理不保证 canonical（parser 明确 path 依赖返回的路径不 canonicalize），符号链接目录下可能不相等。本轮未实跑验证这一边界。
+- **build-dependencies 的平台过滤与 target 过滤不完全同构。** Cargo Book 说 target-specific build-dependencies 只在 host 匹配时构建；metadata 的实现对同一条边按请求的 target 统一调用 `dep_platform_activated`。因此别用同一张过滤图判断 build-dependency 在构建时是否激活；这是源码与文档交叉推出，未实跑。
+- **没有本地 Cargo 运行。** 本机无 `cargo`/`rustc`，任务也要求不安装；命令边界依据官方 stable 文档、固定稳定 tag SHA 源码与 Cargo 官方测试，不等于在真实项目上复现。`lib_src` 漏 `proc-macro`/`cdylib` 的结论来自 target-kind 文档与源码，未在真实 crate 上验证。
+- **页面引用的 opensrc 实试未复核。** `reqwest 0.12.28`、blocking 与异步 `timeout` 签名差异是本仓既有实试记录；本轮按任务要求不重做 opensrc 修复，也不把它当 Cargo 字段能自动证明的事实。
+- **Vite 部分只核引用行。** 未展开 pnpm alias/patch 的解析与构建语义，也不与 Cargo 的 `[patch]` 做等价性结论。
+
+## 本轮核过但无需改页面的部分
+
+- `dep_kinds` 的 `kind`/`target` 字段语义：成立，`dep_kinds` 自 Cargo 1.41 起可用（[1.41 changelog #7132](https://github.com/rust-lang/cargo/blob/rust-1.42.0/CHANGELOG.md#cargo-141-2020-01-30)；1.40 的 [`struct Dep`](https://github.com/rust-lang/cargo/blob/rust-1.40.0/src/cargo/ops/cargo_output_metadata.rs#L84-L88) 只有 `name`/`pkg`，[1.41 源码](https://github.com/rust-lang/cargo/blob/rust-1.41.0/src/cargo/ops/cargo_output_metadata.rs#L84-L95) 才加入）；`resolve.nodes.deps` 自 Cargo 1.30 起有（[changelog #5871](https://github.com/rust-lang/cargo/blob/rust-1.41.0/CHANGELOG.md#cargo-130-2018-10-25)）；但 `any(... .kind == null)` 只能说明该包对存在普通边，是否对当前 target 激活仍要逐条看 `target`（见差量 4）。
+- 用 `id`/`pkg` 在 `packages` 与 `resolve` 间做相等匹配：符合 Package ID 规范，且源码会归一化两边的 ID。
+- `--locked` 与 `--offline` 的核心语义、`--format-version 1`、`packages[].dependencies` 保持 manifest 全量：与官方一致。
+- Zed 的 `reqwest` 重命名 fork、Vite 的 alias/patch、页面“查实际行为先于查文档”的路线：引用行均能在固定 SHA 找到；示例结论本身未重新跑构建。
