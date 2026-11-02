@@ -1,10 +1,10 @@
 # A-SKILL-MCP-WIDE-20261029 · Skill、MCP 与插件广扫
 id: A-SKILL-MCP-WIDE-20261029
 owner: dot-A
-status: cancelled
+status: revision_requested
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: b5f8666bec70933196c1286995afd386a6a935d9
+base_ref: 74be0d09b201cc0aacf925625899cf2d9bd03d3d
 result_branch: relay/a-skill-mcp-wide-20261029
 
 ## 目标
@@ -12,7 +12,7 @@ result_branch: relay/a-skill-mcp-wide-20261029
 
 ## 按哪个 Skill 与规格做
 严格按 `templates/generic/.claude/skills/explore-frontier/SKILL.md` 第 1–2 步广扫；接收端使用 `kind: explore` 三路收集、核链接、整理再审，不退成 build。读最新 AGENTS、CLAUDE、LONG-TERM-PLAN、operations §2.2／§3、local-jobs README 与 TASKS。
-开工 fetch main 和负责人分支，核队列及已回产物，再读 docs/decisions/skills-and-plugins.md、docs/05-skills-and-plugins.md、docs/04-mcp.md、13、inbox 与相关 research。旧分支 ready 不能覆盖 main 的终态；相同工作在途只报告归属与差异，不重复执行；旧同题调用未确认停止时，不启动重叠工作，也不以 blocked／cancelled 推断已退出。
+开工 fetch main 和负责人分支，核队列、原调用隔离与已回产物，再读 docs/decisions/skills-and-plugins.md、docs/05-skills-and-plugins.md、docs/04-mcp.md、13、inbox 与相关 research。旧分支 ready 不能覆盖 main 的终态；相同工作在途只报告归属与差异，不重复执行；旧同题调用未确认停止时，不启动重叠工作，也不以 blocked／cancelled 推断已退出。
 分工：关注能力入口、真实调用与消费者；通用指令配置交 AGENT-CONFIG，长程协调交 MULTIAGENT-LONG，验证／审查类工具交 VERIFY-REVIEW。只读公开材料，不安装或调用插件。
 去重：A-SKILL-ADOPTION-PRACTICE-20261027 cancelled 且停止未确认，禁止取回未交材料或复制重派其窄采用调查；本卡扫未覆盖能力及新项目，不补其原候选清单。TanStack Intent、GitButler、dotagents、pr-review-toolkit、Humanizer、PostHog 既有材料只作基线。
 三路是并行取材分工，不是减少来源类别：一路看做事的人代码／设计与实际配置，一路看头部覆盖与没人点名的新东西，一路看公开使用反馈和可读社区线索；整理时交叉核验、顺藤追替代品和反例。
@@ -31,9 +31,13 @@ result_branch: relay/a-skill-mcp-wide-20261029
 
 ## 怎样算做成
 非作者核链接支持的一句主张、日期／版本、真实消费者与宣传的区别、仓内／跨卡去重及五类真实覆盖。未饱和与社区原文缺口保留，不能写全面完成或实测／采用通过；发现新价值优先，不以任务数或候选数量充进度。
-每单元约 60–90 分钟、单次最多两小时；共享最多 4 并行由原接收端调度，不另起进程抢槽。时限到保存结果与未覆盖项，已有可审产物才回 `review_ready` 由 dot 决定是否需原卡接续；调用超时或连续失败按协议记 `blocked`，不当作来源负结果；不自建续搜卡、不重复初始调用。
+本探索单元单次最多 4 小时，依更新后的原生探索流程批量核链接；不在两小时处取消。共享最多 4 并行由原接收端调度，不另起进程抢槽；未确认原调用、工具和已登记进程结束前保留本地隔离。时限到保存已有候选与缺口；已有可审产物才回 `review_ready`，超时或连续失败按协议记 `blocked`；不当作来源负结果，不自建续搜卡、不重复初始调用。
 接收脚本运行 check_repo、check_public、空白及提交身份检查，只推指定 result_branch；不用 accept: auto，不合入 main 或部署。阻塞写入口、实际错误、已有结果及恢复条件；状态不等于调用已停止。
 
-## 当前结果
+## 修改要求
+2026-11-02 用户明确重新安排本卡，撤销本卡原两小时取消安排；其余已取消单元不因此恢复。输入变化是本单元时限改为 4 小时、按新流程批量核链接，以及对照最新 main 去重；广扫问题和独占产物不变，停止新增“接收上游补丁并用调用方验证”的同类小实验。
+先核本卡原调用、工具及登记进程确已结束；不能确认则维持隔离并报告具体缺证，不启动第二个调用。确认后沿原卡、原结果分支接续；按现行接收协议复用已有完成的收集，重核日期／链接并按本轮分组追踪，不把已完成候选重新从零搜一遍。不读取私人会话或账号用量。
+先交最强的新发现及可实际试用入口，供负责人从两卡总产物选 3 项真实试用并更新 13；本卡仅收集，不提前宣布采用或地图升级。
 
-本单元已达到用户要求的两小时上限，尚无正式回传的 sources.md 或结束回执；现按原取消协议请求停止本卡自有调用并保留已有任务输出。cancelled 仅表示停止请求，不证明进程已退出；不改接收器超时、不重派、不公开原始日志，实际退出核实后再由负责人决定是否在原卡收窄接续。其他任务按各自时限继续。
+## 当前结果
+本卡尚无正式回传的 `sources.md`；现已提交 4 小时探索恢复请求。原调用与登记进程退出仍待接收端核实，核清后沿本卡继续；未知不算空槽或已启动。
