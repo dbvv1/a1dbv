@@ -1,0 +1,498 @@
+{
+  "scope": "Receive an existing downstream approval-lifecycle patch through real Goose CLI/ACP/SQLite. Synthetic provider, no real tools. Not upstream submission or whole-version acceptance.",
+  "verified_date_utc": "2026-11-02",
+  "source": {
+    "repository": "https://github.com/aaif-goose/goose",
+    "issue": "https://github.com/aaif-goose/goose/issues/13273",
+    "issue_state": "open",
+    "issue_board_status_observed": "Inbox",
+    "baseline_commit": "30bba95105e59bc3e7df624cf6b4d433690cfe12",
+    "baseline_tree": "0e79564333c5c37152ee9e75f6bdbc6d0e282576",
+    "latest_main_observed": "0909288ed4a2053b10540bfcf6dbee3b0de66126",
+    "downstream_repository": "https://github.com/action-state-group/devcon-workshop",
+    "downstream_pull_request": 17,
+    "downstream_merge_commit": "c951beea403485d0e0017545b5f8b69fb0bc9fcd",
+    "downstream_merged_at": "2026-11-01T23:25:31Z",
+    "downstream_patch_path": "patches/goose-acp-approval-card-once.patch",
+    "candidate_tree": "b57518e771f4942f0f6c85d2b5003dbf75a6bfa5",
+    "local_changed_files": [
+      "crates/goose/src/agents/state_machine/session.rs"
+    ],
+    "change": "Original inference.is_none guard plus two cfg(test) persistence/emission regressions; formatting only otherwise.",
+    "patch_with_tests_sha256": "93cde303d56884df7281c2758e5ce4eabb7f7c516668bc7a29d49d213940dcce",
+    "cargo_lock_sha256": "00aa358d5ecbbe10092c2c3d821cfc7687c21bbfe5b0a57d999f37b45a797868",
+    "candidate_source_file_sha256": "52dfa0f225731ed45fc5e9c57e378c7a3e543deb17bc5341c0ee00024a138333",
+    "baseline_source_archive_sha256": "12e208bf766d89f6a44aaae22dc20b5e182911631aef8953cc3b3e3d5ec49054",
+    "original_downstream_patch_sha256": "60d70e01af06948df0ba2cc4e729a573de3fbd8276db4f35841a1939375f77dd"
+  },
+  "environment": {
+    "os": "Linux 6.18.57 x86_64",
+    "rustc": "1.99.0 (b940084d7 2026-09-28)",
+    "cargo": "1.99.0 (5f94df478 2026-08-27)",
+    "python": "3.12.14",
+    "cc": "Debian 14.2.0-19",
+    "libclang": "18.1.1",
+    "cmake": "4.2.3",
+    "features": "default, unchanged",
+    "profile": "dev/test debug=0; jobs=2; baseline official release, candidate locally built dev",
+    "dependency_scope": "Official Hermit/Rust toolchain, Cargo.lock dependencies and PyPI libclang in isolated cloud workspace.",
+    "bindgen_recovery": "BINDGEN_EXTRA_CLANG_ARGS points to existing cc -print-file-name=include as a system include; no dependency source edits."
+  },
+  "binary": {
+    "official_archive_sha256": "10eb96cb6a159b6e1d38eeedbef6ab64cd28168aad91948f1fa5c34eefdf98e3",
+    "official_executable_sha256": "28fdc727834cf9df430c4ed8325897afe41a0efaa7cd7f6c2ed13d75a0296dee",
+    "candidate_executable_sha256": "35beee0d4a138d1a4d8e40779994c46ec1370f2a4c968aa3951151cda62e144d"
+  },
+  "consumer": {
+    "entry": [
+      "goose",
+      "run",
+      "--recipe",
+      "<isolated recipe>",
+      "--interactive",
+      "--no-profile"
+    ],
+    "first_turn_permissions": 2,
+    "second_turn_permissions": 1,
+    "normal_completion": "Both ACP end_turn responses, both visible completions, second input and completions in SQLite, actual /exit and natural exit 0.",
+    "isolation": "Fresh HOME/XDG/config/state per run; environment whitelist; synthetic ACP on PATH; no credentials, prior sessions, actual provider or real tool execution; native telemetry/keyring disabled.",
+    "network_boundary": "Default CLI attempts public models.dev GET without prompt/account body; actual request failed. No full traffic inspection or zero-network claim.",
+    "script_sha256": {
+      "drive.py": "5e9828ef523f009e3775b9baf00d9c61d27a08f5611b99b984c82e47d1ac1d20",
+      "claude-agent-acp": "f1f6f23cdd3e16273642f18f260bd36d3a09ee617cd9ff2b5030fa945a2457b3",
+      "assess.py": "4f540770d13bdc2d97d30b866372767479dbda3a93797efb6978b870ff72cd2f"
+    },
+    "cases": [
+      {
+        "case": "baseline-approve",
+        "start_utc": "2026-11-02T05:30:41.348707+00:00",
+        "end_utc": "2026-11-02T05:30:42.532779+00:00",
+        "binary_sha256": "28fdc727834cf9df430c4ed8325897afe41a0efaa7cd7f6c2ed13d75a0296dee",
+        "result": {
+          "exit_code": 1,
+          "failure": null,
+          "cards_rendered": 3,
+          "answers_sent": 3,
+          "second_turn_sent": false,
+          "normal_exit_sent": false,
+          "turn_1_complete": false,
+          "turn_2_complete": false,
+          "already_answered": true,
+          "end_utc": "2026-11-02T05:30:42.532779+00:00"
+        },
+        "permissions": {
+          "9011": "turn-1-tool-1",
+          "9012": "turn-1-tool-2"
+        },
+        "permission_answers": {
+          "9011": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "allow"
+              }
+            }
+          ],
+          "9012": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "allow"
+              }
+            }
+          ]
+        },
+        "visible_card_identities": [
+          "Synthetic approval turn-1-tool-1",
+          "Synthetic approval turn-1-tool-2",
+          "Synthetic approval turn-1-tool-1"
+        ],
+        "acp_prompt_count": 1,
+        "acp_end_turn_count": 1,
+        "persisted_messages": 9,
+        "checks": {
+          "exactly_three_unique_requests": false,
+          "one_reply_per_permission": true,
+          "one_card_per_permission": false,
+          "both_acp_turns_end": false,
+          "both_ui_turns_complete": false,
+          "normal_cli_exit_zero": false,
+          "no_duplicate_error": false,
+          "second_user_turn_persisted": false,
+          "both_assistant_completions_persisted": false
+        },
+        "acceptance": false,
+        "raw_sha256": {
+          "pty.raw": "328eb374c4cf62f6d906187aaf6db44c2730c6cc48be19e19ffb93e7742468f3",
+          "pty-events.jsonl": "0ecf31e87e1c737da4094cad95fe0f2f18c853b7bbc63663a22312aa1d85f949",
+          "acp.jsonl": "9f636b9ada1cf1918b73932508b637babef11ee5963054e677c99f06411935a4",
+          "result.json": "dbfa6a5975e1c2257581e1e0161a555dbd9334049393939e13d0aee262f6441b",
+          "assessment.json": "24f19e6e76c4353e8ca137e38794b5333cdf557960d3a6f1dbe44853a54e510e"
+        }
+      },
+      {
+        "case": "baseline-final",
+        "start_utc": "2026-11-02T05:31:22.155561+00:00",
+        "end_utc": "2026-11-02T05:31:23.320222+00:00",
+        "binary_sha256": "28fdc727834cf9df430c4ed8325897afe41a0efaa7cd7f6c2ed13d75a0296dee",
+        "result": {
+          "exit_code": 1,
+          "failure": null,
+          "cards_rendered": 3,
+          "answers_sent": 3,
+          "second_turn_sent": false,
+          "normal_exit_sent": false,
+          "turn_1_complete": true,
+          "turn_2_complete": false,
+          "already_answered": true,
+          "end_utc": "2026-11-02T05:31:23.320222+00:00"
+        },
+        "permissions": {
+          "9011": "turn-1-tool-1",
+          "9012": "turn-1-tool-2"
+        },
+        "permission_answers": {
+          "9011": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "allow"
+              }
+            }
+          ],
+          "9012": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "allow"
+              }
+            }
+          ]
+        },
+        "visible_card_identities": [
+          "Synthetic approval turn-1-tool-1",
+          "Synthetic approval turn-1-tool-2",
+          "Synthetic approval turn-1-tool-1"
+        ],
+        "acp_prompt_count": 1,
+        "acp_end_turn_count": 1,
+        "persisted_messages": 9,
+        "checks": {
+          "exactly_three_unique_requests": false,
+          "one_reply_per_permission": true,
+          "one_card_per_permission": false,
+          "both_acp_turns_end": false,
+          "both_ui_turns_complete": false,
+          "normal_cli_exit_zero": false,
+          "no_duplicate_error": false,
+          "second_user_turn_persisted": false,
+          "both_assistant_completions_persisted": false,
+          "all_answers_match_requested_option": true,
+          "mock_terminal_status_matches_answers": true
+        },
+        "acceptance": false,
+        "raw_sha256": {
+          "pty.raw": "d7520dc22f0981e1d635ca8de7b485367d1f5f691ec551d7cc255a81f5e0a5a5",
+          "pty-events.jsonl": "83649017778cd332e37c96a5bd41e7c01aa42a6a1aab1d4333753dc3796ddaef",
+          "acp.jsonl": "299a9516aca988905f7f483ea5b7baebace1780604ad5a48d2d696013e64e01b",
+          "result.json": "74dd839d6c9130a22f64a9dd214310a70b0e31f7f0d7c3e5529c316bac9764a0",
+          "assessment.json": "3214e12da50c66d4db278e3ae9ce3dbe886001e87ded8f26532c5ac639332535"
+        }
+      },
+      {
+        "case": "baseline-reject",
+        "start_utc": "2026-11-02T05:31:57.077217+00:00",
+        "end_utc": "2026-11-02T05:31:58.233780+00:00",
+        "binary_sha256": "28fdc727834cf9df430c4ed8325897afe41a0efaa7cd7f6c2ed13d75a0296dee",
+        "result": {
+          "exit_code": 1,
+          "failure": null,
+          "cards_rendered": 3,
+          "answers_sent": 3,
+          "second_turn_sent": false,
+          "normal_exit_sent": false,
+          "turn_1_complete": true,
+          "turn_2_complete": false,
+          "already_answered": true,
+          "end_utc": "2026-11-02T05:31:58.233780+00:00"
+        },
+        "permissions": {
+          "9011": "turn-1-tool-1",
+          "9012": "turn-1-tool-2"
+        },
+        "permission_answers": {
+          "9011": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "reject"
+              }
+            }
+          ],
+          "9012": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "reject"
+              }
+            }
+          ]
+        },
+        "visible_card_identities": [
+          "Synthetic approval turn-1-tool-1",
+          "Synthetic approval turn-1-tool-2",
+          "Synthetic approval turn-1-tool-1"
+        ],
+        "acp_prompt_count": 1,
+        "acp_end_turn_count": 1,
+        "persisted_messages": 9,
+        "checks": {
+          "exactly_three_unique_requests": false,
+          "one_reply_per_permission": true,
+          "one_card_per_permission": false,
+          "both_acp_turns_end": false,
+          "both_ui_turns_complete": false,
+          "normal_cli_exit_zero": false,
+          "no_duplicate_error": false,
+          "second_user_turn_persisted": false,
+          "both_assistant_completions_persisted": false,
+          "all_answers_match_requested_option": true,
+          "mock_terminal_status_matches_answers": true
+        },
+        "acceptance": false,
+        "raw_sha256": {
+          "pty.raw": "51623f382cad4c0f883c08643fe0d010e13170722cb9aca1465cfee9b7156a92",
+          "pty-events.jsonl": "de19d0d40194359a5b6887d75b41e0d09c78d5b1c684c585201b8c9115aa869e",
+          "acp.jsonl": "ef77730a2abcf612439b617d6158cc25310de8785114a22af2d10e025a57d6a5",
+          "result.json": "721f3a963f920b6d58ce93fb3a9839951d07b2b5c71c538b949132c49ffb91da",
+          "assessment.json": "d3a9f70546ec583845f2497d2b7933996a27b4d5d68dead3dc16bdde0748232c"
+        }
+      },
+      {
+        "case": "candidate-allow",
+        "start_utc": "2026-11-02T05:48:03.536744+00:00",
+        "end_utc": "2026-11-02T05:48:09.241695+00:00",
+        "binary_sha256": "35beee0d4a138d1a4d8e40779994c46ec1370f2a4c968aa3951151cda62e144d",
+        "result": {
+          "exit_code": 0,
+          "failure": null,
+          "cards_rendered": 3,
+          "answers_sent": 3,
+          "second_turn_sent": true,
+          "normal_exit_sent": true,
+          "turn_1_complete": true,
+          "turn_2_complete": true,
+          "already_answered": false,
+          "end_utc": "2026-11-02T05:48:09.241695+00:00"
+        },
+        "permissions": {
+          "9011": "turn-1-tool-1",
+          "9012": "turn-1-tool-2",
+          "9021": "turn-2-tool-1"
+        },
+        "permission_answers": {
+          "9011": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "allow"
+              }
+            }
+          ],
+          "9012": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "allow"
+              }
+            }
+          ],
+          "9021": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "allow"
+              }
+            }
+          ]
+        },
+        "visible_card_identities": [
+          "Synthetic approval turn-1-tool-1",
+          "Synthetic approval turn-1-tool-2",
+          "Synthetic approval turn-2-tool-1"
+        ],
+        "acp_prompt_count": 2,
+        "acp_end_turn_count": 2,
+        "persisted_messages": 15,
+        "checks": {
+          "all_rendered_cards_have_identity": true,
+          "exactly_three_unique_requests": true,
+          "one_reply_per_permission": true,
+          "one_card_per_permission": true,
+          "both_acp_turns_end": true,
+          "both_ui_turns_complete": true,
+          "normal_cli_exit_zero": true,
+          "no_duplicate_error": true,
+          "second_user_turn_persisted": true,
+          "both_assistant_completions_persisted": true,
+          "all_answers_match_requested_option": true,
+          "mock_terminal_status_matches_answers": true
+        },
+        "acceptance": true,
+        "raw_sha256": {
+          "pty.raw": "163774ac74d6f1f1b757b217139479dbfd290d659de1e2bc0796442b07ffbc43",
+          "pty-events.jsonl": "ec9650ed4bc30afd5b54d1fb793a68342b8a907fd141d5b429c56f9e698f6741",
+          "acp.jsonl": "7bc97749d734b844b5f90f64671bf1d3a96beb8e5eab84e06a38f8beef36ac0b",
+          "result.json": "5431d8106f4a55efa894b62d65b404312f9e45acbeae517b9cbc8aec3d60b897",
+          "assessment.json": "a983159d0148aabe42a210a765fb17c8710519899bc5d7edc835e974d78f4b73"
+        }
+      },
+      {
+        "case": "candidate-reject",
+        "start_utc": "2026-11-02T05:48:15.302482+00:00",
+        "end_utc": "2026-11-02T05:48:21.199176+00:00",
+        "binary_sha256": "35beee0d4a138d1a4d8e40779994c46ec1370f2a4c968aa3951151cda62e144d",
+        "result": {
+          "exit_code": 0,
+          "failure": null,
+          "cards_rendered": 3,
+          "answers_sent": 3,
+          "second_turn_sent": true,
+          "normal_exit_sent": true,
+          "turn_1_complete": true,
+          "turn_2_complete": true,
+          "already_answered": false,
+          "end_utc": "2026-11-02T05:48:21.199176+00:00"
+        },
+        "permissions": {
+          "9011": "turn-1-tool-1",
+          "9012": "turn-1-tool-2",
+          "9021": "turn-2-tool-1"
+        },
+        "permission_answers": {
+          "9011": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "reject"
+              }
+            }
+          ],
+          "9012": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "reject"
+              }
+            }
+          ],
+          "9021": [
+            {
+              "outcome": {
+                "outcome": "selected",
+                "optionId": "reject"
+              }
+            }
+          ]
+        },
+        "visible_card_identities": [
+          "Synthetic approval turn-1-tool-1",
+          "Synthetic approval turn-1-tool-2",
+          "Synthetic approval turn-2-tool-1"
+        ],
+        "acp_prompt_count": 2,
+        "acp_end_turn_count": 2,
+        "persisted_messages": 15,
+        "checks": {
+          "all_rendered_cards_have_identity": true,
+          "exactly_three_unique_requests": true,
+          "one_reply_per_permission": true,
+          "one_card_per_permission": true,
+          "both_acp_turns_end": true,
+          "both_ui_turns_complete": true,
+          "normal_cli_exit_zero": true,
+          "no_duplicate_error": true,
+          "second_user_turn_persisted": true,
+          "both_assistant_completions_persisted": true,
+          "all_answers_match_requested_option": true,
+          "mock_terminal_status_matches_answers": true
+        },
+        "acceptance": true,
+        "raw_sha256": {
+          "pty.raw": "c9ade82cfe8b4708d72fc19cc755ab211ad201c5c3278b9cc26ca7cb11f5834a",
+          "pty-events.jsonl": "fe0b5a52a2f687d4818ac56115a70b4a05f8f26447c8234f6ff43f1240bfd9ee",
+          "acp.jsonl": "cbf2aba2197328256dcf371e958b0dd5a2e8ea3a0d56575a7ad0b63b0bfd346b",
+          "result.json": "17982e2aabbbc8ee6af555343bdd3d8577e8af36c7babc061e39e0097f9a687d",
+          "assessment.json": "c7f3bdff408f6d11bba2e2d954c5757e783e47b1f2c5ad37749668ddb183e334"
+        }
+      }
+    ],
+    "initial_harness_failure": "baseline-approve completion marker had underscores and was partially rendered; baseline-final used a plain-text marker. Original baseline retained.",
+    "parser_correction": {
+      "case": "candidate-reject",
+      "initial_assertion": "one_card_per_permission=false; two recognized identities for three visible cards",
+      "cause": "Literal arrow-key echo between header and JSON was not whitespace.",
+      "change": "Bound parsing to each card header/prompt section, extract identity and require identity for every rendered card.",
+      "product_rerun": false,
+      "raw_pty_modified": false,
+      "original_failed_assessment_sha256": "9d2664b08098fdce9a79daaf86d6041ab3399817daf304aa2f7c0d2c26c339bc"
+    }
+  },
+  "checks": {
+    "cargo_fmt": {
+      "status": "passed"
+    },
+    "initial_build": {
+      "command": "cargo build -p goose-cli --bin goose --locked --message-format=json",
+      "status": "failed",
+      "exit": 101,
+      "cause": "bindgen could not locate stdbool.h"
+    },
+    "recovered_build": {
+      "status": "passed",
+      "exit": 0,
+      "start_utc": "2026-11-02T05:41:33Z",
+      "end_utc": "2026-11-02T05:47:38Z"
+    },
+    "session_tests": {
+      "command": "cargo test -p goose --lib --locked agents::state_machine::session::tests -- --nocapture",
+      "status": "passed",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 2188,
+      "start_utc": "2026-11-02T05:48:07Z",
+      "end_utc": "2026-11-02T05:51:29Z"
+    },
+    "clippy_goose_all_targets": {
+      "status": "passed",
+      "command": "cargo clippy -p goose --all-targets --locked -- -D warnings",
+      "exit": 0,
+      "start_utc": "2026-11-02T05:52:22Z",
+      "end_utc": "2026-11-02T05:54:33Z"
+    },
+    "full_workspace_tests": "not run",
+    "real_provider_tools": "not run",
+    "cancellation_recovery": "not run",
+    "other_operating_systems": "not run",
+    "candidate_hosted_ci": "not submitted; no candidate commit CI"
+  },
+  "retained_failure_events": [
+    "Default home cache creation failed with read-only filesystem; that directory was not retried. Authorized independent workspace cache/venv used after scope clarification.",
+    "Initial bindgen build failure preserved.",
+    "Initial reject parser false preserved alongside revised assessment."
+  ],
+  "review": {
+    "source_guard_and_tests": "Non-author static review found no narrow blocker; tests use actual session manager/SQLite/emitter.",
+    "consumer_evidence": "Non-author read raw PTY bytes, protocol messages and SQLite; allow and synthetic reject accepted.",
+    "limits": "Internal tests observe persisted state after apply_effects, not instant database visibility at first emit."
+  },
+  "retained_evidence": {
+    "archive": "goose-acp-retained-20261102.tar.gz",
+    "bytes": 315092917,
+    "sha256": "c7f05c46dd8af0c088336200d459cabc96f33b35315801ae439e9cb418194316",
+    "verified_files": 129,
+    "baseline_source_verified_blobs": 2530,
+    "contents": "Complete fixed baseline source, received patch plus tests, toolchain/build/test/clippy logs, synthetic PTY/ACP/SQLite evidence and drivers. Local archive, not uploaded to the public repository."
+  }
+}
