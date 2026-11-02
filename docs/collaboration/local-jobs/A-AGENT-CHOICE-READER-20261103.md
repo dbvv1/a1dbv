@@ -1,7 +1,7 @@
 # A-AGENT-CHOICE-READER-20261103 · 选入口完成真实 CLI 小任务
 id: A-AGENT-CHOICE-READER-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 655d8a9f69028a4b0accdb55adce1babbf86d07c
