@@ -23,12 +23,12 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择**：实作回流决策页／模板 | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md) 待接收；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。Qwen [旧基线](../../experiments/candidate-reset-recovery/README.md)构建／类型／409 测试通过。#15757 已合、#15741 关闭；静读 `dd020ddf`：旧14例中6例过时／8例待验，保留已合分页／重名策略。全套 socket 仍被拒，原动作获准后补 PR 门槛。Skills 待新读者实做，任务正文附全文；先核写者退出／空槽；本机禁安装，[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交 Claude 核心。 |
-| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `dea84c4`／Site **v18 不变**。镜头＋Q/W [整合候选 `7a2234e7`](https://github.com/dbvv1/MOBA-Like/blob/7a2234e7dd2a1e9fe6aaf0a8cadfaadc346f7b08/docs/feel.md#镜头与-qw-整合候选正常操作验收)已保全；源审、41 项相关回归与准确构建通过，两功能默认关闭。原协调按该段四路对照验自由观察→按住回看→松开→移动／连招及同段交战听感；实际整合行为、音色／掩蔽均待验，不算采用。前摇／v12 排队保留；原手感截图仍待原回执。 |
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main [`7710c4a6`](https://github.com/dbvv1/MOBA-Like/blob/7710c4a60d61764f617efbd0426a8429ef4aa232/docs/side-release-acceptance.md)已合镜头＋Q/W 旁置及固定出图；Site **v19 已保存、v18 在线**。511 测试／构建／关闭开关回放相同；浏览器默认 344／组合 3033 tick、Q/W 扣蓝冷却与 Canvas2D 恢复通过，无未捕获错误（有 caught THREE 错误）。前摇／v12 排队保留；网站更新、实际镜头与听感判优待办。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07 ready `a0ea312`、04 boot `a1b149`／input `d55e04e`、05 生命周期 `bb807ab` 已入 main；原实验仅源码／CPU；04 [FPS 前台时钟与输入折叠](../../domains/game-dev/04-client-modules.md#web-foreground-clock)已接可玩 v20（`1183340`），三入口各两轮普通生命周期通过（software，不升原生引擎评级）。Star v7 存档、MOBA `ea7a064` 实操为旧成果；改键 `89f0831` 候选。[Unity 源准备](../../experiments/unity-encounter/README.md)未实跑，原任务暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收，旧通路／命中接线待恢复。MOBA 三材质已接候选、林缘二改；PNG 未改；1024 解码约 16 MiB 为存储估算，非 GPU 实测。开放音频未听未用，Nature 恢复未知。3D：网关三源同提示实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机 `gen3d`／`glbprep` 可用；各案例采用 3–5 件标准件，按实测分工。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏／听音；Warpact 未玩，无新增整局品质推荐。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ab69388d`／Site **v8 不变**，[Rapier 170–740m 旁置](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/rapier/)保留。连续空间 tree `37b83112`、峰后二改轮胎 tree `e600812c` 分别保全；空间图审不代驾驶或组合验收。原上传结果与已取消材质卡的实际退出／清理仍未知；接续先收原产物回执，不重传、不重派。标准件未接线，操控／视听待验。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `2b7ac87`／Site **v21 不变**。全场材质 [`8c29cec8`](https://github.com/dbvv1/FPS-Like/commit/8c29cec8e1e0feb5e45ccbf51a96e02aa31b5ee7)待准确入口六回合／换边／终局重开、同机位图与盲评；同树 ground 组合另验操控反馈，不能套材料 runner 结果（[覆盖边界](../../experiments/cloud-browser-recovery/README.md#已检查的范围)）。腰腿 `fc64c2b` CPU 已收，原执行退出未知；无新品质通过。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ab69388d`／Site **v8 仍在线**；连续空间＋峰后轮胎整合 `853a3c3` 171 测试／构建／整局与曲线／浏览器门槛通过，Git 上传待回读。默认／空间／动力／组合实际推进 867／839／837／839 tick，Canvas2D 回退通过，3D／驾驶待判优；含 Rapier 共三项旁置。旧取消任务退出／清理未知，不重派。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main [`8ac82f2`](https://github.com/dbvv1/FPS-Like/commit/8ac82f291ef5724e2599a7fdbb517fabcc3d5955)已合全场材质／ground 旁置及固定出图；Site **v22 已保存、v21 仍在线**。412 测试／构建及既有模拟／浏览器四路 2×144 tick 门槛通过，Canvas2D 自然回退、提示和重开通过。六回合／换边／终局重开完整 smoke、图／ground 手感与盲评待验。腰腿 `fc64c2b` CPU 已收，原执行退出未知。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收
@@ -47,7 +47,8 @@
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 `27a40be`／Site v16：WebGL2 四路 smoke、四机位双重复通过；两非作者判小幅改善，正式评分待补。获准 `--no-sandbox`；已留 renderer／参数（SwiftShader software），exit 0、端口关闭。 |
-| FPS 新候选云端 smoke | 11-02 托管 `sites-preview` 已让原生云浏览器载入准确 `8c29cec8`／tree `e09b056c`，跨入口可达性恢复；页面仍报 WebGL2 不可用、`canvas2d-cpu` 回退。`qualityCapture` 未满足 1280×720／DPR 1，缺受支持 viewport 设置；不降门槛 | 六回合、换边、终局重开、同机位图与盲评均未通过，无部署。自有页已关闭，托管 preview stop／status 确认停止、exit 0。原 shell IPC 与早先清理缺口仍保留，详见[复验](../../experiments/cloud-browser-recovery/README.md#已检查的范围)。待获准入口具备 WebGL2／固定 viewport 续验。 |
+| 三案固定出图与完整验收 | 固定 1280×720／dpr 1 代码整合／测试／构建通过；普通路径 FPS 两路 2×144、MOBA 默认 397／组合 352、Star 默认 1491／组合 1065 tick 复验通过，均 Canvas。Star 实拍需 WebGL2、无 PNG；FPS／MOBA 未实拍。 | 旁置不等硬件 GPU；捕获无 WebGL2 显式报错。FPS／Star 只导画布无 DOM HUD；参数／renderer 待核，不绕过 IPC 限制。完整 smoke／同机位／盲评卡换默认。 |
+| 三案现有公共网站部署 | FPS v22 部署两次被拒；待用户确认向既有三公共 Sites 部署本批旁置，保持受众／默认玩法 | 仅停部署，Git／验收／知识照常；恢复后核 live，不把保存计上线。 |
 
 ## 已停止的动作
 

@@ -109,7 +109,7 @@ flowchart LR
 
 **🧪 区分同族技能释放时，先改共同源的起音与频谱，不只错开播放时间。** MOBA 的 Q/W 候选沿同一 CC0 布料源和可编辑合成配方：Q 用 3ms 起音、高通纹理与下降音，W 用 14ms 起音、低通纹理与低频上行层；保原调度间隔、去重和暂停／重开合同。A/B 小样使用相同的 25ms Q→W 间隔，只比较素材变化；峰值和 RMS 约束是工程检查，不证明可听辨识改善。
 
-运行映射从真实 `castResolved.slot` 选择 Q/W 两片，只表达释放槽位，不把 Q 固定解释为攻击、W 解释为护盾，也不推断命中；同一 W 在不同英雄可以是冲刺或护盾。沿 `audio=critical-v1` 旁置，baseline 仍加载原四片、不额外请求两片衍生音，E/R 保原 cast。可复用入口：[源与许可说明](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/assets/audio/battle/README.md)、[可重建配方及同间隔 A/B](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/tools/build-skill-audio.py)、[真实事件映射](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/src/audio/battle.ts)。仅源码、离线 PCM 与 CPU 消费回归已核；该二改未试听、未过浏览器验收，仍是默认关闭的声音设计候选。[源码／离线候选，2026-11-02]
+运行映射从真实 `castResolved.slot` 选择 Q/W 两片，只表达释放槽位，不把 Q 固定解释为攻击、W 解释为护盾，也不推断命中；同一 W 在不同英雄可以是冲刺或护盾。沿 `audio=critical-v1` 旁置，baseline 仍加载原四片、不额外请求两片衍生音，E/R 保原 cast。可复用入口：[源与许可说明](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/assets/audio/battle/README.md)、[可重建配方及同间隔 A/B](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/tools/build-skill-audio.py)、[真实事件映射](https://github.com/dbvv1/MOBA-Like/blob/3b8275cdf46ec848dfa8a3b4cc8e5ae20595079e/src/audio/battle.ts)。该二改已随 [镜头＋Q/W 整合](https://github.com/dbvv1/MOBA-Like/blob/d563b78f4f0b68f589421bb57e7d0c3fb1cb45df/docs/side-release-acceptance.md)进入 main 旁置：实际浏览器默认 Q、组合 W 的扣蓝／冷却和持续运行通过；这是玩法与事件入口接通，不是听觉消费者验收。仍需在同段真实交战中试听清晰度、关键反馈掩蔽与动作语义，听后沿共同源调整或放弃，不预设每英雄各做一套。声音未实际试听，Site v19 仅保存、v18 仍在线，默认音色未换。[源码／离线与浏览器功能门槛，2026-11-03 Asia/Shanghai]
 
 ## 先让声音成为好玩的反馈，再增加素材数量
 
