@@ -1,0 +1,349 @@
+{
+  "checked_on": "2026-11-02",
+  "repository": "https://github.com/cline/cline",
+  "stars_observed": 71200,
+  "license": "Apache-2.0",
+  "issue": "https://github.com/cline/cline/issues/15417",
+  "pull_request": "https://github.com/cline/cline/pull/15419",
+  "state": "open, unmerged at observation",
+  "base": "51f63e4fd63aeeb74d708b9c3d1f8b800aff9b3e",
+  "candidate": "7e2755275539fcdf77eaf1882642cc3d0afe36c4",
+  "observed_main": "a6507a62a147db4a35e27f4294589742ccac5060",
+  "current_main_two_executor_sources_match_base": true,
+  "diff": {
+    "files": 5,
+    "additions": 647,
+    "deletions": 43
+  },
+  "environment": {
+    "os": "Linux x86_64",
+    "node": "24.22.1",
+    "bun": "1.4.2",
+    "vitest": "4.1.11",
+    "core_package": "0.2.0",
+    "install": "original frozen lock, lifecycle scripts disabled",
+    "entry": "compiled public @cline/core exports, main-thread Node; default executor options"
+  },
+  "consumer": {
+    "base": {
+      "start_utc": "2026-11-02T10:35:37.562823+00:00",
+      "end_utc": "2026-11-02T10:35:42.152240+00:00",
+      "harness_exit": 0,
+      "business_pass": 5,
+      "business_total": 30,
+      "groups": {
+        "editor-same": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 0,
+          "totals": {
+            "132": 5
+          }
+        },
+        "editor-distinct": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 0,
+          "totals": {
+            "132": 2,
+            "99": 3
+          }
+        },
+        "patch-same": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 0,
+          "totals": {
+            "132": 4,
+            "99": 1
+          }
+        },
+        "patch-distinct": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 0,
+          "totals": {
+            "99": 1,
+            "132": 4
+          }
+        },
+        "mixed": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 0,
+          "totals": {
+            "99": 4,
+            "132": 1
+          }
+        }
+      },
+      "controls": {
+        "sequential-editor": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "fulfilled",
+            "fulfilled"
+          ]
+        },
+        "sequential-patch": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "fulfilled",
+            "fulfilled"
+          ]
+        },
+        "failure-recovery-editor": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "rejected",
+            "fulfilled",
+            "fulfilled"
+          ]
+        },
+        "failure-recovery-patch": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "rejected",
+            "fulfilled",
+            "fulfilled"
+          ]
+        },
+        "different-files": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "fulfilled",
+            "fulfilled"
+          ]
+        }
+      },
+      "raw_results_sha256": "2993088f9d06a94341162ee8678cc7b3cf24e4e3a7b1a711aeb3743da2d8cc76",
+      "raw_commands_sha256": "275cd434772107cae11d6e77563109beb37cb529dabba6768ab44531a7a918b5"
+    },
+    "candidate": {
+      "start_utc": "2026-11-02T10:35:42.153125+00:00",
+      "end_utc": "2026-11-02T10:35:45.523515+00:00",
+      "harness_exit": 0,
+      "business_pass": 30,
+      "business_total": 30,
+      "groups": {
+        "editor-same": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 5,
+          "totals": {
+            "108": 5
+          }
+        },
+        "editor-distinct": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 5,
+          "totals": {
+            "108": 5
+          }
+        },
+        "patch-same": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 5,
+          "totals": {
+            "108": 5
+          }
+        },
+        "patch-distinct": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 5,
+          "totals": {
+            "108": 5
+          }
+        },
+        "mixed": {
+          "trials": 5,
+          "both_tools_success": 5,
+          "business_pass": 5,
+          "totals": {
+            "108": 5
+          }
+        }
+      },
+      "controls": {
+        "sequential-editor": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "fulfilled",
+            "fulfilled"
+          ]
+        },
+        "sequential-patch": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "fulfilled",
+            "fulfilled"
+          ]
+        },
+        "failure-recovery-editor": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "rejected",
+            "fulfilled",
+            "fulfilled"
+          ]
+        },
+        "failure-recovery-patch": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "rejected",
+            "fulfilled",
+            "fulfilled"
+          ]
+        },
+        "different-files": {
+          "business_exit": 0,
+          "tool_statuses": [
+            "fulfilled",
+            "fulfilled"
+          ]
+        }
+      },
+      "raw_results_sha256": "f1ce581635bd11718f9055801497721d219998bd92f72e365fe544c36334a115",
+      "raw_commands_sha256": "c7c43f5cb9e6f1678ca82592d0c133756428c9ad3e71a95f0a1f5bb3693bdafc"
+    }
+  },
+  "checks": {
+    "runs": [
+      {
+        "label": "base",
+        "name": "executors",
+        "start_utc": "2026-11-02T10:34:56.305548+00:00",
+        "end_utc": "2026-11-02T10:35:08.165245+00:00",
+        "exit": 0
+      },
+      {
+        "label": "base",
+        "name": "core-typecheck",
+        "start_utc": "2026-11-02T10:35:08.165615+00:00",
+        "end_utc": "2026-11-02T10:35:41.849465+00:00",
+        "exit": 0
+      },
+      {
+        "label": "candidate",
+        "name": "executors",
+        "start_utc": "2026-11-02T10:35:41.850756+00:00",
+        "end_utc": "2026-11-02T10:35:53.859204+00:00",
+        "exit": 0
+      },
+      {
+        "label": "candidate",
+        "name": "core-typecheck",
+        "start_utc": "2026-11-02T10:35:53.859587+00:00",
+        "end_utc": "2026-11-02T10:36:26.384439+00:00",
+        "exit": 0
+      }
+    ],
+    "base_executors": {
+      "passed": 87,
+      "failed": 0,
+      "skipped": 105,
+      "files_passed": 6,
+      "files_skipped": 1
+    },
+    "candidate_executors": {
+      "passed": 102,
+      "failed": 0,
+      "skipped": 105,
+      "files_passed": 6,
+      "files_skipped": 1
+    },
+    "both_core_typecheck": "passed, including smoke types",
+    "both_sdk_build": "shared/llms/agents/core passed",
+    "biome_changed_five_files": "passed; no fixes",
+    "not_run": [
+      "full SDK suite",
+      "CLI or hub",
+      "model calls",
+      "VS Code/desktop",
+      "Windows/macOS consumer"
+    ]
+  },
+  "upstream_ci": {
+    "check_runs": [
+      {
+        "name": "strip",
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/cline/cline/actions/runs/41032813790/job/123986419697"
+      },
+      {
+        "name": "Socket Security: Pull Request Alerts",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/cline/cline/runs/123986381407"
+      },
+      {
+        "name": "Socket Security: Project Report",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/cline/cline/runs/123986281008"
+      },
+      {
+        "name": "Mintlify Preview (fork)",
+        "status": "completed",
+        "conclusion": "neutral",
+        "url": "https://github.com/cline/cline/runs/123986266180"
+      }
+    ],
+    "workflows": [
+      {
+        "name": "repo-strip-agent-badges",
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/cline/cline/actions/runs/41032813790"
+      },
+      {
+        "name": "sdk-test",
+        "status": "completed",
+        "conclusion": "action_required",
+        "url": "https://github.com/cline/cline/actions/runs/41032786855"
+      },
+      {
+        "name": "ext-vscode-test-e2e",
+        "status": "completed",
+        "conclusion": "action_required",
+        "url": "https://github.com/cline/cline/actions/runs/41032786683"
+      },
+      {
+        "name": "ext-vscode-test",
+        "status": "completed",
+        "conclusion": "action_required",
+        "url": "https://github.com/cline/cline/actions/runs/41032786596"
+      }
+    ]
+  },
+  "boundaries": [
+    "one loaded SDK module instance; normalized path keys",
+    "symlinks, hardlinks, case aliases, duplicate module copies and external writers not tested",
+    "multi-file patch remains non-transactional",
+    "queue waiting has no cancellation; outer timeout does not cancel underlying edit",
+    "executor consumer, not model, CLI, hub, full SDK or UI acceptance"
+  ],
+  "setup_correction": "Initial filtered install omitted development dependencies; first build failed for missing shared dist/tsc. Full frozen ignore-scripts install and sequential shared/llms/agents/core build succeeded. Original failure retained.",
+  "retention": {
+    "archive": "cline-parallel-retained-20261102.tar.gz",
+    "bytes": 43414789,
+    "sha256": "052551fd6c7c397880aae308420ef00eae0e83bae7259c65a5b82aa6ef6fae96",
+    "files": 1906,
+    "source_pack_sha256": "7d27b6c63b1393cf073698e95c8faedc3fd31ed4b59e66b1186c153967ded403",
+    "git_objects": 5148,
+    "restored_trees": {
+      "a6507a62a147db4a35e27f4294589742ccac5060": "bc5a136bdebb43b1dce50408b5751814fbf63f8c",
+      "51f63e4fd63aeeb74d708b9c3d1f8b800aff9b3e": "195649868fa20492b9a6c10c96d039d120efafdf",
+      "7e2755275539fcdf77eaf1882642cc3d0afe36c4": "e0550ac1087125327a25249433b1f2c85d6f5f2a"
+    },
+    "completed_utc": "2026-11-02T10:37:19.357688+00:00",
+    "scope": "Retained locally; archive is not published or cleared for public upload."
+  },
+  "consumer_summary_sha256": "10df81f760837a57d50dccba9997d757287e7aa285e49e4ba0b546dc49fd0cd5",
+  "consumer_report_sha256": "24375552e86b88c938d7b58f20a6ccc9a2a4af300c84e21e4d0089562a56b5d2",
+  "consumer_manifest_sha256": "668e0e9e24f540092adcf6ddd095a8ed8168fb37db927fe9b08e6d4c00410d50"
+}
