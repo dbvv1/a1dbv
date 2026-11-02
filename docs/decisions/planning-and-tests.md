@@ -102,6 +102,14 @@ python3 experiments/replay_oil_ui_css.py /path/to/oil-ui-checkout
 
 **依据**：[官方] [Spec Kit existing-project 指南](https://github.github.com/spec-kit/guides/existing-projects.html)、[OpenSpec 工作流](https://github.com/Fission-AI/OpenSpec/blob/main/docs/workflows.md)，核实 2026-10-26；[本仓实际采用](../../experiments/openspec-mdx-adoption.md)，沿用 [07 的 2026-10-25 核查](../07-workflows.md#从规格到实际消费者原生-agent-完成一次扩展及二改)；[社区原帖](https://linux.do/t/topic/2099475)，2026-05 使用经验、2026-10-26 重读。更多可借机制见 [21](../21-agent-patterns.md#1-选择依据)。
 
+### Spec Kit 的真实反例：解析链已变，Skill 仍旧
+
+本仓的 preset 撤层实测把上面的“沿真实入口验收”落到了 **agent 真正读取的 `SKILL.md`**：基线的 remove 和 resolver 都正常返回，Claude／Codex 文件却仍含已撤层指令；已有修复候选在同输入下恢复 core＋剩余层，并让无 base 的孤儿在再次生成后保持缺席。Gemini 非 Skill 输出在基线与候选的对应三个阶段逐字相同，且都正确撤层，问题不应泛化为所有集成。
+
+**手改是否保留，取决于 source marker。** 去掉 `metadata.source` 的文件完整保留，旧文字也留下；只改正文而保留 marker，重组仍会覆盖它，受管孤儿目录连附带文件一起删除。既有项目接收这类配置变化时，可据此区分“应重组的产物”和“应保全的自有内容”，而不是把命令退出 0 当完成。
+
+**依据**：[实际 CLI 对照、测试失败与适用边界](../../experiments/speckit-preset-recomposition/README.md)、[上游开放修复 #5013](https://github.com/github/spec-kit/pull/5013)，核实 2026-11-02。只补原验收路线的真实反例；框架选择和本页评级不变。
+
 ## 何时不适用：看补上的能力，不看流程是否齐全
 
 - **已有可靠测试、范围和行为都明确**：直接实施；计划和规格若不增加决定，就省去。

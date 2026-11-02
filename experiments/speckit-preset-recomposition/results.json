@@ -1,0 +1,328 @@
+{
+  "status": "received_bounded_cli_behavior_full_suite_not_green",
+  "observed_date": "2026-11-02",
+  "upstream": {
+    "repository": "https://github.com/github/spec-kit",
+    "license": "MIT",
+    "main": "7370e592f3cd9c06e5b698983957e227c75b30e2",
+    "pull_request": "https://github.com/github/spec-kit/pull/5013",
+    "pr_base": "c6a4c18f1d01a8bec241c618eb6dfea952508744",
+    "pr_head": "a9a200021188d2c2b9e921bba8533bdbbdac4718",
+    "application": "Original PR base-to-head diff applied to the fixed newer main; upstream source patch not published by this experiment."
+  },
+  "environment": {
+    "os": "Linux",
+    "python": "3.12.14",
+    "package": "specify-cli 1.2.6.dev0",
+    "independent_venvs": true,
+    "equal_installed_package_versions": true,
+    "package_count": 48,
+    "production_sha256": {
+      "baseline": "c07c72ec88fc9a7ba48af8ed6d0066f4c6070961dcf0001f549f147eaff902a2",
+      "candidate": "5487141c19441b6fd51eafc1c74deef79a1dd416cf261483e6d3209e5b554761"
+    }
+  },
+  "tests": {
+    "same_regression_file": {
+      "baseline": {
+        "passed": 70,
+        "failed": 14,
+        "warnings": 6
+      },
+      "candidate": {
+        "passed": 84,
+        "failed": 0,
+        "warnings": 6
+      }
+    },
+    "full_suite": {
+      "status": "failed",
+      "passed": 13668,
+      "failed": 10,
+      "skipped": 436,
+      "warnings": 68,
+      "seconds": 538.29,
+      "ended_at": "2026-11-02T07:33:23Z",
+      "failure_parity": {
+        "scope": "Only the same 10 failing node IDs; not a second complete baseline suite.",
+        "baseline_failed": 10,
+        "candidate_failed": 10,
+        "nodeids": [
+          "tests/integrations/test_cli.py::TestInitIntegrationFlag::test_unknown_integration_rejected",
+          "tests/specify_cli/bundles/test_command_validate.py::test_validate_rejects_broken_reference",
+          "tests/specify_cli/bundles/test_references.py::test_community_step_is_not_treated_as_bundled",
+          "tests/specify_cli/bundles/test_references.py::test_unknown_reference_errors_online",
+          "tests/specify_cli/integrations/test_command_install.py::TestIntegrationInstall::test_install_unknown_integration",
+          "tests/specify_cli/integrations/test_command_switch.py::TestIntegrationSwitch::test_switch_unknown_target",
+          "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddCLI::test_archive_cleanup_failure_preserves_primary_install_error",
+          "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddCLI::test_catalog_cleanup_failure_adds_note_to_primary_error",
+          "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddSources::test_archive_temp_directory_cleanup_failure_warns_after_commit",
+          "tests/test_workflows.py::TestInitStep::test_failed_init_surfaces_inits_own_message"
+        ],
+        "groups": {
+          "catalog_dns_diagnostic_mismatch": 4,
+          "bundle_reference_assertions": 3,
+          "cleanup_path_line_wrapping_assertions": 3
+        },
+        "baseline_receipt": {
+          "start": "2026-11-02T07:34:19.250026+00:00",
+          "observed_end": "2026-11-02T07:34:23.445165+00:00",
+          "exit": 1,
+          "nodeids": [
+            "tests/integrations/test_cli.py::TestInitIntegrationFlag::test_unknown_integration_rejected",
+            "tests/specify_cli/bundles/test_command_validate.py::test_validate_rejects_broken_reference",
+            "tests/specify_cli/bundles/test_references.py::test_community_step_is_not_treated_as_bundled",
+            "tests/specify_cli/bundles/test_references.py::test_unknown_reference_errors_online",
+            "tests/specify_cli/integrations/test_command_install.py::TestIntegrationInstall::test_install_unknown_integration",
+            "tests/specify_cli/integrations/test_command_switch.py::TestIntegrationSwitch::test_switch_unknown_target",
+            "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddCLI::test_archive_cleanup_failure_preserves_primary_install_error",
+            "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddCLI::test_catalog_cleanup_failure_adds_note_to_primary_error",
+            "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddSources::test_archive_temp_directory_cleanup_failure_warns_after_commit",
+            "tests/test_workflows.py::TestInitStep::test_failed_init_surfaces_inits_own_message"
+          ]
+        },
+        "candidate_receipt": {
+          "start": "2026-11-02T07:34:19.250497+00:00",
+          "observed_end": "2026-11-02T07:34:23.445570+00:00",
+          "exit": 1,
+          "nodeids": [
+            "tests/integrations/test_cli.py::TestInitIntegrationFlag::test_unknown_integration_rejected",
+            "tests/specify_cli/bundles/test_command_validate.py::test_validate_rejects_broken_reference",
+            "tests/specify_cli/bundles/test_references.py::test_community_step_is_not_treated_as_bundled",
+            "tests/specify_cli/bundles/test_references.py::test_unknown_reference_errors_online",
+            "tests/specify_cli/integrations/test_command_install.py::TestIntegrationInstall::test_install_unknown_integration",
+            "tests/specify_cli/integrations/test_command_switch.py::TestIntegrationSwitch::test_switch_unknown_target",
+            "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddCLI::test_archive_cleanup_failure_preserves_primary_install_error",
+            "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddCLI::test_catalog_cleanup_failure_adds_note_to_primary_error",
+            "tests/specify_cli/workflows/step/test_command_add.py::TestWorkflowStepAddSources::test_archive_temp_directory_cleanup_failure_warns_after_commit",
+            "tests/test_workflows.py::TestInitStep::test_failed_init_surfaces_inits_own_message"
+          ]
+        }
+      }
+    },
+    "ruff": {
+      "version": "0.15.0",
+      "scope": "src tests",
+      "exit": 0,
+      "initial_attempt": "Minimal environment omitted configured proxy; package fetch failed DNS before lint. Normal authorized transport then installed the same version and lint passed."
+    }
+  },
+  "actual_cli": {
+    "matrix_start": "2026-11-02T07:25:24.967629Z",
+    "matrix_end": "2026-11-02T07:26:17.967627Z",
+    "gemini_start": "2026-11-02T07:26:59.627636Z",
+    "gemini_end": "2026-11-02T07:27:06.981742Z",
+    "inputs": {
+      "priority": {
+        "base": 10,
+        "middle": 7,
+        "top": 5
+      },
+      "strategy": {
+        "base": "replace",
+        "middle": "append",
+        "top": "append"
+      },
+      "commands": [
+        "speckit.specify",
+        "speckit.custom",
+        "speckit.unowned",
+        "speckit.edited"
+      ]
+    },
+    "skill_cases": [
+      {
+        "label": "baseline",
+        "flavor": "claude",
+        "directory": ".claude/skills",
+        "middle_removed_from_owned_skill": false,
+        "base_removed_from_owned_skill": false,
+        "core_fallback_present": false,
+        "surviving_top_present": true,
+        "orphan_retired": false,
+        "orphan_stays_retired_after_rescaffold": false,
+        "unowned_exactly_preserved_after_removals": true,
+        "unowned_exactly_preserved_after_rescaffold": false,
+        "owned_body_edit_preserved_after_middle": true,
+        "owned_companion_survives_orphan_retirement": true
+      },
+      {
+        "label": "baseline",
+        "flavor": "codex",
+        "directory": ".agents/skills",
+        "middle_removed_from_owned_skill": false,
+        "base_removed_from_owned_skill": false,
+        "core_fallback_present": false,
+        "surviving_top_present": true,
+        "orphan_retired": false,
+        "orphan_stays_retired_after_rescaffold": false,
+        "unowned_exactly_preserved_after_removals": true,
+        "unowned_exactly_preserved_after_rescaffold": false,
+        "owned_body_edit_preserved_after_middle": true,
+        "owned_companion_survives_orphan_retirement": true
+      },
+      {
+        "label": "baseline",
+        "flavor": "historical",
+        "directory": ".claude/skills",
+        "middle_removed_from_owned_skill": true,
+        "base_removed_from_owned_skill": false,
+        "core_fallback_present": false,
+        "surviving_top_present": true,
+        "orphan_retired": false,
+        "orphan_stays_retired_after_rescaffold": false,
+        "unowned_exactly_preserved_after_removals": true,
+        "unowned_exactly_preserved_after_rescaffold": true,
+        "owned_body_edit_preserved_after_middle": false,
+        "owned_companion_survives_orphan_retirement": false
+      },
+      {
+        "label": "baseline",
+        "flavor": "historical",
+        "directory": ".agents/skills",
+        "middle_removed_from_owned_skill": false,
+        "base_removed_from_owned_skill": false,
+        "core_fallback_present": false,
+        "surviving_top_present": true,
+        "orphan_retired": false,
+        "orphan_stays_retired_after_rescaffold": false,
+        "unowned_exactly_preserved_after_removals": true,
+        "unowned_exactly_preserved_after_rescaffold": false,
+        "owned_body_edit_preserved_after_middle": true,
+        "owned_companion_survives_orphan_retirement": true
+      },
+      {
+        "label": "candidate",
+        "flavor": "claude",
+        "directory": ".claude/skills",
+        "middle_removed_from_owned_skill": true,
+        "base_removed_from_owned_skill": true,
+        "core_fallback_present": true,
+        "surviving_top_present": true,
+        "orphan_retired": true,
+        "orphan_stays_retired_after_rescaffold": true,
+        "unowned_exactly_preserved_after_removals": true,
+        "unowned_exactly_preserved_after_rescaffold": true,
+        "owned_body_edit_preserved_after_middle": false,
+        "owned_companion_survives_orphan_retirement": false
+      },
+      {
+        "label": "candidate",
+        "flavor": "codex",
+        "directory": ".agents/skills",
+        "middle_removed_from_owned_skill": true,
+        "base_removed_from_owned_skill": true,
+        "core_fallback_present": true,
+        "surviving_top_present": true,
+        "orphan_retired": true,
+        "orphan_stays_retired_after_rescaffold": true,
+        "unowned_exactly_preserved_after_removals": true,
+        "unowned_exactly_preserved_after_rescaffold": true,
+        "owned_body_edit_preserved_after_middle": false,
+        "owned_companion_survives_orphan_retirement": false
+      },
+      {
+        "label": "candidate",
+        "flavor": "historical",
+        "directory": ".claude/skills",
+        "middle_removed_from_owned_skill": true,
+        "base_removed_from_owned_skill": true,
+        "core_fallback_present": true,
+        "surviving_top_present": true,
+        "orphan_retired": true,
+        "orphan_stays_retired_after_rescaffold": true,
+        "unowned_exactly_preserved_after_removals": true,
+        "unowned_exactly_preserved_after_rescaffold": true,
+        "owned_body_edit_preserved_after_middle": false,
+        "owned_companion_survives_orphan_retirement": false
+      },
+      {
+        "label": "candidate",
+        "flavor": "historical",
+        "directory": ".agents/skills",
+        "middle_removed_from_owned_skill": true,
+        "base_removed_from_owned_skill": true,
+        "core_fallback_present": true,
+        "surviving_top_present": true,
+        "orphan_retired": true,
+        "orphan_stays_retired_after_rescaffold": true,
+        "unowned_exactly_preserved_after_removals": true,
+        "unowned_exactly_preserved_after_rescaffold": true,
+        "owned_body_edit_preserved_after_middle": false,
+        "owned_companion_survives_orphan_retirement": false
+      }
+    ],
+    "gemini_toml_equal_by_stage": {
+      "installed": true,
+      "removed_middle": true,
+      "removed_base": true
+    },
+    "unexpected_case_failures": [],
+    "nonzero_commands": 0,
+    "copilot_commands": "Thin dispatcher artifacts captured; substantive non-skill output comparison uses Gemini TOML instead.",
+    "static_full_body_and_provenance": {
+      "core_sha256": "e3e7595ef13e1f05fd8dd72f794f1f46fe6074beb6abb0602c6ab036312c5a02",
+      "artifact_checks": [
+        {
+          "case": "candidate-claude",
+          "directory": ".claude/skills",
+          "middle_body_exact_base_then_top": true,
+          "base_body_exact_rendered_core_then_top": true,
+          "cache_exact_raw_core_then_top": true,
+          "source_marker_surviving_top": true,
+          "survivor_registered_skill_provenance": true
+        },
+        {
+          "case": "candidate-codex",
+          "directory": ".agents/skills",
+          "middle_body_exact_base_then_top": true,
+          "base_body_exact_rendered_core_then_top": true,
+          "cache_exact_raw_core_then_top": true,
+          "source_marker_surviving_top": true,
+          "survivor_registered_skill_provenance": true
+        },
+        {
+          "case": "candidate-historical",
+          "directory": ".claude/skills",
+          "middle_body_exact_base_then_top": true,
+          "base_body_exact_rendered_core_then_top": true,
+          "cache_exact_raw_core_then_top": true,
+          "source_marker_surviving_top": true,
+          "survivor_registered_skill_provenance": true
+        },
+        {
+          "case": "candidate-historical",
+          "directory": ".agents/skills",
+          "middle_body_exact_base_then_top": true,
+          "base_body_exact_rendered_core_then_top": true,
+          "cache_exact_raw_core_then_top": true,
+          "source_marker_surviving_top": true,
+          "survivor_registered_skill_provenance": true
+        }
+      ],
+      "write_scope_checks": {
+        "all_homes_within_consumer": true,
+        "all_caches_within_consumer": true,
+        "all_cwds_within_consumer": true,
+        "bytecode_disabled": true,
+        "no_inherited_environment": true,
+        "limit": "Configuration/argv and source-diff audit; not syscall tracing or proof of every OS write."
+      }
+    }
+  },
+  "upstream_ci": {
+    "head": "a9a200021188d2c2b9e921bba8533bdbbdac4718",
+    "checks_success": 1,
+    "workflow_runs_action_required": 5,
+    "green_full_ci": false
+  },
+  "boundaries": [
+    "Ownership uses metadata.source rather than a body-content hash.",
+    "An unowned file is preserved, including any stale text inside it.",
+    "An owned orphan skill directory and its companion files are removed.",
+    "CLI exit zero and resolver trace did not prove artifact correctness.",
+    "No agent/model invocation, global installation, user-computer change, or external submission.",
+    "No Windows/macOS, file-symlink safety, rollback fault injection, extension fallback, or concurrent-edit validation.",
+    "No framework-efficiency or model-quality comparison; reader status/defaults unchanged."
+  ]
+}
