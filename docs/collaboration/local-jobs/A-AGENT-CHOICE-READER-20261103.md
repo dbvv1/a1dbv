@@ -1,7 +1,7 @@
 # A-AGENT-CHOICE-READER-20261103 · 选入口完成真实 CLI 小任务
 id: A-AGENT-CHOICE-READER-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
@@ -40,5 +40,8 @@ page: docs/01-agents/README.md@main
 
 ## 当前结果
 
-- 本机接收端连续 2 次未完成第 1 个单元：公开扫描有发现（local-path jrnl/args.py:456，local-path reader-tests/A-AGENT-CHOICE-READER-20261103-u1.md:318），未推送。负责人确认任务可以执行后改回 ready，接收端会重新领取。
+- 首轮 reader-test 完成：读者按页选择保留现有会话，核对并本地验证既有候选 #2120（与 head f4c6e2d 逐行一致，仅帮助示例路径脱敏）；CLI 实测 --import --format 五种错误组合均 exit 2 并提示 not allowed with argument --import，正常 --import（stdin/--file）与单独 --format 导出 exit 0；基线加新回归 4 例失败、候选 55 passed；单测 199 passed/27 skipped，BDD 全量 497 passed/17 skipped，ruff 与 black 通过；poe 的 poetry check 与 tox 因本机无 poetry 未跑。非读者核 taskDone=true，但 reviewed=false：openIssues 含 --imp/--impo/--impor 缩写、--form 与隐藏别名 --export 绕过检查，--help/--version 与 --import --format 同现的优先级副作用，#2120 open/merged 状态未核；pageStuck 2 条为页面未写已有未提交候选无写者时的处置、未说明缺依赖时如何发现已有隔离环境。未提交、未推送。
+- 产物：[655d8a9](https://github.com/dbvv1/jrnl/commit/655d8a9f69028a4b0accdb55adce1babbf86d07c)，分支 `relay/a-agent-choice-reader-20261103`。
+- 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：交负责人：决定是否补页面两句（工作树已有未提交候选且无写者信息时的处置、缺依赖且禁装时如何发现已有隔离环境）；评估 --imp/--impo/--impor、--form、--export 残余边界与 --help/--version 优先级副作用是否按 #2120 原样接受；核对 #2120 open/merged 状态并补跑 poe lint（需 poetry）。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
