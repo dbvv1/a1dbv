@@ -1,7 +1,7 @@
 # A-INSTRUCTION-FILES-READER-20261103 · 用已有项目指令完成文档小任务
 id: A-INSTRUCTION-FILES-READER-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
@@ -31,3 +31,11 @@ PowerShell 中实际运行文档给出的引用／转义形式，核传入参数
 非读者独立核示例、指令改动必要性和真实结果：入口／检查来自项目，关键原约定保留，规则实际怎样帮助完成这次修改有具体证据。
 结果记录做成没有、页面采用步骤、具体卡点与补读内容，区分页面缺信息、环境限制和读者误解；保留首次失败，不替作者改页面。
 单元通常 60–90 分钟、最多两小时；不能继续时交回已做部分和精确恢复条件，不自动重开旧读者任务。
+
+## 当前结果
+
+- taskDone=true（核对者独立复算：docs/usage.md 在首次标签说明处新增 PowerShell 引用/转义说明，CLAUDE.md 新增 Editing Documentation，另有读者记录；diff +22/+9，Markdown 链接、fence 配对、git diff --check 及 PowerShell 7.6.9/5.1 argv 探针均通过）。pageStuck=6 项均为 cause=page（输入缺解析提交 SHA 与内容指纹；子代理无 /memory、/context 入口；issue #1977 表述不精确；缺 poetry/mkdocs 依赖；mkdocs 未启用 superfences；CLAUDE.md 的 main+PR 规则与任务限制冲突）。未运行验收：完整 jrnl 写入/标签读取、MkDocs 构建、poe test/docs-run/docs-check（依赖缺失且任务禁装），读者已明确标为待验、未写成通过。openIssues：1) 整句双引号示例会静默吞掉 $ 和反引号，应改用单引号示例或注明转义；2) Composing Entries 旧 note 仍称保留字符可用反斜杠转义，未限定 POSIX shell 且与新增说明无交叉引用；3) CLAUDE.md 的 docs-check 前提遗漏 CI 的 npx puppeteer browsers install chrome，属未验证风险。reviewed=false 表示本轮观察尚未通过验收，仅完成一轮读者测试。
+- 产物：[bfd477e](https://github.com/dbvv1/jrnl/commit/bfd477e78238243ec019b423623ea434d3226189)，分支 `relay/a-instruction-files-reader-20261103`。
+- 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：交负责人接收：确认上述 3 个 openIssues 是否修正（尤其双引号整句示例），并在具备 poetry/mkdocs 与可运行 jrnl 的环境补跑 docs-check、MkDocs 构建及临时 journal 的写入/标签读取。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
