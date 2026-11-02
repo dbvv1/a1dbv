@@ -1,0 +1,289 @@
+{
+  "status": "received_with_explicit_scope",
+  "observed_date": "2026-11-02",
+  "method_source": {
+    "repository": "https://github.com/mattpocock/skills",
+    "commit": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
+    "license": "MIT",
+    "stars_observed": 309488,
+    "stars_observed_at": "2026-11-02T07:50:31Z",
+    "stars_meaning": "Discovery signal only, not quality or adoption evidence.",
+    "skill": "skills/engineering/diagnosing-bugs/SKILL.md",
+    "invocation": "Explicit manual read in a fresh agent context; no package installation or automatic activation trial.",
+    "included_asset": "scripts/hitl-loop.template.sh was read but not executed."
+  },
+  "control": {
+    "repository": "https://github.com/dbvv1/a1dbv",
+    "commit": "fb1723fec69a71bf115b3fc1507d869cb453f036",
+    "source": "docs/15-task-playbooks.md section 2 existing debugging route",
+    "fresh_context": true
+  },
+  "real_task": {
+    "issue": "https://github.com/pytest-dev/pytest/issues/15295",
+    "main": "afac7979e3d0d30914aa986192dcbbc48379cb86",
+    "baseline_version": "10.0.0.dev12+gafac7979e",
+    "reported_release": "9.2.0; this release was not separately installed",
+    "cause_disclosed_in_issue": true,
+    "python": "3.12.14",
+    "platform": "Linux",
+    "pr15321": {
+      "head": "e7b5ef874264f20fcaed743236471db6bd706933",
+      "merge_base": "0212785e34eb635b3359e4eccc757de95bf39036",
+      "scope": "AUTHORS, changelog, cacheprovider.py, test_cacheprovider.py"
+    },
+    "pr15299": {
+      "head": "5376587b91e41e7d602227c9d8409161632ddb0d",
+      "merge_base": "a7b2446ee41a7298d3a0bc22c52f3b8bacae1566",
+      "scope": "changelog, cacheprovider.py, test_cacheprovider.py"
+    }
+  },
+  "outcome": {
+    "both_routes": "Conditionally receive existing PR15299 for ordinary-directory cache consumers; PR15321 is insufficient because cache-show omits stored entries.",
+    "attribution": "Cache-show was requested after separate source review; not a discovery uniquely attributable to the Skill.",
+    "blind_diagnosis": false,
+    "new_reader_or_default_upgrade": false
+  },
+  "skill_route": {
+    "first_cli_utc": "2026-11-02T07:48:15.125299Z",
+    "results": {
+      "pass2-baseline-relative": {
+        "initial_exit": 3,
+        "symptom": true
+      },
+      "pass2-baseline-tox": {
+        "initial_exit": 3,
+        "symptom": true
+      },
+      "pass2-15321-relative": {
+        "initial_exit": 1,
+        "symptom": false,
+        "lastfailed_before": {
+          "test_contract.py::test_failure": true
+        },
+        "cache_show": {
+          "exit": 0,
+          "plugin_value_visible": false,
+          "lastfailed_visible": false
+        },
+        "lf_and_sentinels_pass": true,
+        "clear_rebuild_and_sentinels_pass": true
+      },
+      "pass2-15321-tox": {
+        "initial_exit": 1,
+        "symptom": false,
+        "lastfailed_before": {
+          "test_contract.py::test_failure": true
+        },
+        "cache_show": {
+          "exit": 0,
+          "plugin_value_visible": false,
+          "lastfailed_visible": false
+        },
+        "lf_and_sentinels_pass": true,
+        "clear_rebuild_and_sentinels_pass": true
+      },
+      "pass2-15299-relative": {
+        "initial_exit": 1,
+        "symptom": false,
+        "lastfailed_before": {
+          "test_contract.py::test_failure": true
+        },
+        "cache_show": {
+          "exit": 0,
+          "plugin_value_visible": true,
+          "lastfailed_visible": true
+        },
+        "lf_and_sentinels_pass": true,
+        "clear_rebuild_and_sentinels_pass": true
+      },
+      "pass2-15299-tox": {
+        "initial_exit": 1,
+        "symptom": false,
+        "lastfailed_before": {
+          "test_contract.py::test_failure": true
+        },
+        "cache_show": {
+          "exit": 0,
+          "plugin_value_visible": true,
+          "lastfailed_visible": true
+        },
+        "lf_and_sentinels_pass": true,
+        "clear_rebuild_and_sentinels_pass": true
+      }
+    },
+    "phase_limits": [
+      "New ranked hypotheses and instrumentation explicitly skipped because cause and candidate patches were supplied.",
+      "Further minimization removing all test bodies happened after initial candidate comparison, not strict phase ordering."
+    ],
+    "harness_corrections": [
+      "Initially checked stdout only; original diagnostic was stderr.",
+      "A helper named inspect.py shadowed stdlib inspect; stalled import probe interrupted, helper renamed, no successful verdict assigned to the aborted probe.",
+      "Literal deselected-count expectation replaced by actual selected-node and persistent-cache checks."
+    ],
+    "field_notes": "Candidate initial_exit=1 is the intentionally failing test that seeds lastfailed, not startup failure. Original one-passing-test reproductions separately exited 0. Baseline initial_exit=3 is the reported startup INTERNALERROR."
+  },
+  "existing_route": {
+    "first_cli_utc": "2026-11-02T07:48:47.339553Z",
+    "results": [
+      {
+        "tree": "baseline",
+        "mode": "ini",
+        "startup_reproduced": true
+      },
+      {
+        "tree": "baseline",
+        "mode": "tox",
+        "startup_reproduced": true
+      },
+      {
+        "tree": "pr15321",
+        "mode": "ini",
+        "cache_show_exit": 0,
+        "cache_show_has_lastfailed": false
+      },
+      {
+        "tree": "pr15321",
+        "mode": "ini",
+        "startup": true,
+        "failure_persisted": {
+          "test_a.py::test_retry": true
+        },
+        "lf_selected_only_previous_failure": true,
+        "lastfailed_after": {}
+      },
+      {
+        "tree": "pr15321",
+        "mode": "tox",
+        "cache_show_exit": 0,
+        "cache_show_has_lastfailed": false
+      },
+      {
+        "tree": "pr15321",
+        "mode": "tox",
+        "startup": true,
+        "failure_persisted": {
+          "test_a.py::test_retry": true
+        },
+        "lf_selected_only_previous_failure": true,
+        "lastfailed_after": {}
+      },
+      {
+        "tree": "pr15321",
+        "cache_consumer_passed": true,
+        "upstream_exit": 0,
+        "upstream_summary": ".....................................................................    [100%]\n69 passed in 3.76s\n"
+      },
+      {
+        "tree": "pr15299",
+        "mode": "ini",
+        "cache_show_exit": 0,
+        "cache_show_has_lastfailed": true
+      },
+      {
+        "tree": "pr15299",
+        "mode": "ini",
+        "startup": true,
+        "failure_persisted": {
+          "test_a.py::test_retry": true
+        },
+        "lf_selected_only_previous_failure": true,
+        "lastfailed_after": {}
+      },
+      {
+        "tree": "pr15299",
+        "mode": "tox",
+        "cache_show_exit": 0,
+        "cache_show_has_lastfailed": true
+      },
+      {
+        "tree": "pr15299",
+        "mode": "tox",
+        "startup": true,
+        "failure_persisted": {
+          "test_a.py::test_retry": true
+        },
+        "lf_selected_only_previous_failure": true,
+        "lastfailed_after": {}
+      },
+      {
+        "tree": "pr15299",
+        "cache_consumer_passed": true,
+        "upstream_exit": 0,
+        "upstream_summary": "......................................................................   [100%]\n70 passed in 3.82s\n"
+      }
+    ],
+    "supplement": [
+      {
+        "tree": "pr15321",
+        "ordinary_value_visible": false,
+        "ordinary_file_visible": false
+      },
+      {
+        "tree": "pr15299",
+        "ordinary_value_visible": true,
+        "ordinary_file_visible": true
+      },
+      {
+        "tree": "pr15299",
+        "clear_removed_old_value_and_ordinary_file": true,
+        "normal_run_rebuilt_value": true,
+        "external_sentinel_unchanged": true
+      }
+    ],
+    "harness_corrections": [
+      "Initially checked stdout only; used preserved stderr without rerunning that reproduction.",
+      "Literal deselected-count expectation replaced by intentionally failing nonselected test and cache readback."
+    ]
+  },
+  "checks": {
+    "pr15321_cacheprovider": {
+      "passed": 69,
+      "failed": 0
+    },
+    "pr15299_cacheprovider": {
+      "passed": 70,
+      "failed": 0
+    },
+    "pr15299_full": {
+      "command_scope": "python -m pytest testing; not the complete tox/version/plugin/docs matrix",
+      "exit": 0,
+      "passed": 4714,
+      "skipped": 50,
+      "xfailed": 13,
+      "xpassed": 7,
+      "warnings": 2,
+      "seconds": 231.1,
+      "ended_at": "2026-11-02T07:54:54Z",
+      "received_at": "2026-11-02T07:56:53Z"
+    },
+    "ruff": {
+      "version": "0.17.2",
+      "check_exit": 0,
+      "format_check_exit": 0,
+      "scope": [
+        "src/_pytest/cacheprovider.py",
+        "testing/test_cacheprovider.py"
+      ]
+    }
+  },
+  "upstream_exact_head_checks": {
+    "pr15321": {
+      "success": 32,
+      "failure": 2
+    },
+    "pr15299": {
+      "success": 34,
+      "failure": 0
+    },
+    "scope": "GitHub check-runs at captured upstream head; not the newer-main local applied tree."
+  },
+  "preparation_correction": "First PR15321 diff used current API base rather than merge-base and included an unrelated pytest-asyncio downgrade. It was preserved, reversed and replaced by the merge-base diff before consumer execution; final candidate contains no dependency downgrade.",
+  "source_document_drift": "At the same fixed commit, human-facing diagnosing-bugs docs still describe missing redaction/open issue674; actual SKILL.md has Redact and issue674 is closed as shipped in1.2.3.",
+  "limits": [
+    "Known-root single task, not a performance, token-cost, cross-model or blind-diagnosis comparison.",
+    "TOX_ENV_DIR directly supplied to actual pytest CLI; actual tox runner was not executed.",
+    "Ordinary directories and lexical key containment only; no symlink physical-boundary guarantee.",
+    "No Windows/macOS or other Python-version matrix.",
+    "No third production patch, upstream comments/submissions, global/user-computer installation or account changes."
+  ]
+}
