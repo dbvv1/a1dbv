@@ -1,7 +1,7 @@
 # A-AGENT-CHOICE-FACTS-20261102 · Agent 选择页的当前官方事实核查
 id: A-AGENT-CHOICE-FACTS-20261102
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/01-agents/README.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
