@@ -25,7 +25,7 @@ result_branch: relay/b-fps-content-set-001
 
 ## 当前结果
 
-- **已接收标准件源包**：[b198df6](https://github.com/dbvv1/FPS-Like/commit/b198df62a56f4c520716fbc9cb4afac47dd62213)，分支 `relay/b-fps-content-set-001`。四件 GLB 合计 296,144 B；来源、许可与确定性配方已复核。尚未进入可玩客户端，未取得真 GPU 阵容图或整局品质验收，不计作案例采用／品质定稿。
+- **已接收标准件源包**：[b198df6](https://github.com/dbvv1/FPS-Like/commit/b198df62a56f4c520716fbc9cb4afac47dd62213)，分支 `relay/b-fps-content-set-001`。四件 GLB 合计 296,144 B；来源、许可与确定性配方已复核。其中手臂武器与敌人两件原字节 GLB 已在旧 1v1／movement-v2 旁置采用，历史 v13 GPU smoke 核到 ready／active；通路与命中件未接。当前 offline-training 六回合路径明确不兼容该角色入口，本轮完整回合功能验收不改变此范围，整套内容与视觉品质仍未通过。此为既有采用范围校正，不计新增成果；依据：[当前消费者与历史记录](https://github.com/dbvv1/FPS-Like/blob/885a53c542f42c4349c6e1d190f1ea8f4423c459/docs/quality.md)。
 - **格式修复复核通过**：NORMAL 已声明 `KHR_mesh_quantization` 为 used／required，NORMAL／COLOR_0 使用 4 字节 stride。云端对四件实际字节重跑 Khronos validator 2.0.0-dev.3.10，均 0 errors／0 warnings；唯一 info 是通路预留纹理槽的 `TEXCOORD_0`。来源文件及许可未变，四个来源 SHA 与 spec 相符。
 - **可重建与加载通过**：云端 15/15 内容测试（含确定性重建和调色／0.95 缩放二改）、3/3 官方 validator 回归通过；另以 16 个仅内存的扩展缺失／stride 复发负例确认拒收。Three 0.186.1 实际加载四件并采样 13 段动作，无加载警告。制作端原报根测试 93/93 与 build 通过，本轮未重跑根套件。
 - **接线要点**：静止挂点取 `gltf.scene.userData.restMount`，`weaponPose` 仍由运行时计算；通路的 13 个碰撞盒、modules、dimensions 只在 scene userData，加载后网格组名为 `passage-cover_1`。命中件加载后根名为 `hit-feedback_1`。敌方仍是五个刚性组、无蒙皮／独立弹匣；手臂袖子、反馈时钟、通路坐标转换与离线寻路烘焙由消费者接续，不能据解析通过认定接线完成。

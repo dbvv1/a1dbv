@@ -28,7 +28,7 @@
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收，旧通路／命中接线待恢复。MOBA 三材质已接候选、林缘二改；PNG 未改；1024 解码约 16 MiB 为存储估算，非 GPU 实测。开放音频未听未用，Nature 恢复未知。3D：网关三源同提示实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机 `gen3d`／`glbprep` 可用；各案例采用 3–5 件标准件，按实测分工。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏／听音；Warpact 未玩，无新增整局品质推荐。 |
 | SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ab69388d`／Site **v8 仍在线**；连续空间＋峰后轮胎整合 `853a3c3` 171 测试／构建／整局与曲线／浏览器门槛通过，Git 上传待回读。默认／空间／动力／组合实际推进 867／839／837／839 tick，Canvas2D 回退通过，3D／驾驶待判优；含 Rapier 共三项旁置。旧取消任务退出／清理未知，不重派。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main [`8ac82f2`](https://github.com/dbvv1/FPS-Like/commit/8ac82f291ef5724e2599a7fdbb517fabcc3d5955)已合全场材质／ground 旁置及固定出图；Site **v22 已保存、v21 仍在线**。412 测试／构建及既有模拟／浏览器四路 2×144 tick 门槛通过，Canvas2D 自然回退、提示和重开通过。六回合／换边／终局重开完整 smoke、图／ground 手感与盲评待验。腰腿 `fc64c2b` CPU 已收，原执行退出未知。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main [`885a53c5`](https://github.com/dbvv1/FPS-Like/blob/885a53c542f42c4349c6e1d190f1ea8f4423c459/docs/quality.md)已合全场材质／ground 旁置及固定出图；Site **v22 已保存、v21 仍在线**。412 测试／构建／四路 2×144 tick 通过；默认与材质＋ground 两路 Canvas 自然六回合、换边、终局重开／暂停通过。WebGL smoke、图／ground 手感与盲评待验。腰腿 `fc64c2b` CPU 已收，原执行退出未知。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收
