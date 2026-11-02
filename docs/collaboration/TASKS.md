@@ -47,7 +47,7 @@
 | 事项 | 等什么 | 期间照常做 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 `27a40be`／Site v16：WebGL2 四路 smoke、四机位双重复通过；两非作者判小幅改善，正式评分待补。获准 `--no-sandbox`；已留 renderer／参数（SwiftShader software），exit 0、端口关闭。 |
-| FPS 新候选云端 smoke | [11-01 17:29 UTC 复验](https://github.com/dbvv1/a1dbv/commit/20b095d76fd62586bc942af0258cceede4a54c5a)：基线 `67ae83a7` 获准 headless `--no-sandbox` 仍在导航前 EPERM／SIGABRT。原候选分支已接入口修复 `8e66087e`；实际 Unix stream 创建 EPERM，socketpair／TCP 通过，按上方恢复入口区分 shell／浏览器能力；不重复要参数授权、不改外层沙箱 | 无新图／smoke／盲评；runner exit 1，浏览器与 preview 已退出、临时目录已清。候选保留待验，本机不接浏览器。 |
+| FPS 新候选云端 smoke | 11-02 已实核原生云端 CDP 浏览器存在；原候选 `8e66087e` 构建成功、preview 同进程 HTTP 200 且 index 哈希匹配，但跨 exec 与云浏览器访问该候选 preview 均连接拒绝。shell Unix stream 创建仍 EPERM，socketpair／TCP 通过；当前缺候选预览跨入口可达性，非参数授权或品质失败，不改外层沙箱 | 无页面／WebGL2／新图；完整六回合、换边、终局重开与盲评未跑。两个自有 preview 已 SIGINT 退出 130，未获正常 close／全资源清理回执；云错误页已关闭。候选保留，待原授权云浏览器可访问准确构建后续验，本机不接浏览器。 |
 | jrnl 上游 PR | 创建 Draft 被集成 403 拒绝；已审分支保留，由用户决定是否从[compare页](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)创建 Draft。说明与测试见[采用记录](../../experiments/jrnl-dayone-runtime-diagnosis.md) | 继续本仓发现、试用与既有 PR 跟进 |
 | agents-md-lint 上游 PR | Draft 创建遭集成 403；该 head 回读无 PR，check-runs／workflows 均 0。待用户从 [compare](https://github.com/openintelligence-labs/agents-md-lint/compare/main...dbvv1:agents-md-lint:fix/input-contract-and-placeholder-paths?expand=1) 建 Draft 并给链接，或终止投稿；不重试／换路 | 保留 fork `fix/input-contract-and-placeholder-paths`（`54313ea`）；[本地测试范围](../../experiments/instruction-file-lint/README.md)，投稿／hosted CI 未完成 |
 | testmon 上游贡献 | 待可写 fork | [已审补丁 #270](../../experiments/testmon-outer-coverage/README.md)；Serena [改为跟进已有 PR #2242](../../experiments/serena-vue-implementation/README.md)，不重复投稿 |
