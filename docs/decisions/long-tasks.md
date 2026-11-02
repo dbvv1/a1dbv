@@ -88,6 +88,7 @@ Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind
 | 文档树／工作记录迁移 | 核每个源文件的去向、转换和备份，再让下一位生产工具读写读回 | [BMAD](../../experiments/bmad-migration-receipt/README.md) 预览版 exit 0 仍丢隐藏／tmp；窄修后完整保全并经 tickets 消费，冲突须读 JSON，完整 Python 套件仍有 7 个失败子例 |
 | 审查回复／汇总判断 | 回到原回复逐条核 finding，再读缺失覆盖；保留独立接收记录 | [gstack](../../experiments/gstack-review-receipt/README.md) 候选挡住汇总改写、缺原回复和换文件；整条事件连同 finding 删除仍可 clean，只作一致性补充 |
 | 后台检查／结构化报告 | 分开核转后台、真实退出与完整输出；机器解析回到完整 artifact | [Gemini CLI](../../experiments/gemini-background-output/README.md) 候选恢复了超长单行尾部诊断，但两版尾窗均不能解析完整 JSON；完整 artifact 才接住 501 项诊断并走到真实复测 0 错误 |
+| 同一工作分支连续交付 | 连跑多轮，核源提交、过滤产物与目标接收；未合并旧分支须在写入前停止 | [GSD](../../experiments/gsd-pr-replay/README.md) 候选三轮各接住新 1 个代码提交、目标规划为 0；基线第二轮冲突并删旧 `-pr` 引用，原工作历史保留。仅原 Bash＋真实工具的 local bare 消费，非完整 slash command |
 | worktree 交接／测试摘要 | 核代码实际落点与包的净 diff，再读 runner 原输出、locale、零测试和失败路径 | [Superpowers](../../experiments/superpowers-worktree-receipt/README.md) 旧 main 正确 cwd 与候选 `-C` 均能接包；真实摘要补丁在 C.UTF-8 仍失败 3 项，误用 C 诊断写出的 complete 已纠正，修复未获接收 |
 
 **路径带符号链接时，还要跑真正依赖目标的消费者。** [OpenHands FileEditor](../../experiments/openhands-symlink-receipt/README.md) 基线编辑报成功、第一个应用也通过，却把链接换成普通文件，第二应用和共享目标仍错；既有候选在三入口读回、同路径撤销中修正。其 `close()` 仍留下历史，托管功能 CI 仍待运行，保全责任不能省略。

@@ -1,0 +1,259 @@
+{
+  "verified_date": "2026-11-02",
+  "scope": "Extracted shipped Bash blocks and real gsd-tools in synthetic local Git repositories, not full agent slash command or GitHub publishing",
+  "source": {
+    "repository": "https://github.com/open-gsd/gsd-core",
+    "issue": 5469,
+    "pull_request": 5486,
+    "version": "1.19.0",
+    "base": "7d68e2b7267a45af9d987b19f172bb55b3a9379f",
+    "candidate": "9dc4069dab5752c8cc9dfa24524ea8668ed49759",
+    "current_next": "bfab82492374a847a01417707a1a38e9e7cf097e",
+    "current_next_workflow_equals_base": true,
+    "base_workflow_blob": "f00cfdeeebe84f6d8f832f1462d1f7b6da7b6433",
+    "candidate_workflow_blob": "e93a306600075a4fe256a1ea8b798c537533e0cc",
+    "changed_files": 11,
+    "license": "MIT"
+  },
+  "environment": {
+    "os": "Linux x86_64",
+    "node": "24.22.1",
+    "npm": "11.9.0",
+    "git": "2.52.0",
+    "bash": "5.2.37",
+    "real_gh_available_to_consumer": false,
+    "global_install": false,
+    "synthetic_only": true
+  },
+  "setup": {
+    "check_env": "both exit 0",
+    "install": "both npm ci --ignore-scripts exit 0",
+    "build": "both build:lib exit 0"
+  },
+  "consumer": [
+    {
+      "arm": "candidate",
+      "case": "round-1",
+      "workflow_exit": 0,
+      "start_utc": "2026-11-02T11:19:38.861406+00:00",
+      "end_utc": "2026-11-02T11:19:39.514220+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 1,
+      "pr_commits": 1,
+      "forbidden_planning_paths": 0,
+      "planning_deletions": 0,
+      "pending_verdict": null,
+      "target_node_exit": 0,
+      "target_node_json": {
+        "round": 1
+      },
+      "target_planning_paths": 0,
+      "local_bare_fast_forward": true
+    },
+    {
+      "arm": "candidate",
+      "case": "round-2",
+      "workflow_exit": 0,
+      "start_utc": "2026-11-02T11:19:39.735781+00:00",
+      "end_utc": "2026-11-02T11:19:40.547562+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 1,
+      "pr_commits": 1,
+      "forbidden_planning_paths": 0,
+      "planning_deletions": 0,
+      "pending_verdict": "promote",
+      "target_node_exit": 0,
+      "target_node_json": {
+        "round": 2
+      },
+      "target_planning_paths": 0,
+      "local_bare_fast_forward": true
+    },
+    {
+      "arm": "candidate",
+      "case": "round-3",
+      "workflow_exit": 0,
+      "start_utc": "2026-11-02T11:19:40.911205+00:00",
+      "end_utc": "2026-11-02T11:19:41.631643+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 1,
+      "pr_commits": 1,
+      "forbidden_planning_paths": 0,
+      "planning_deletions": 0,
+      "pending_verdict": "promote",
+      "target_node_exit": 0,
+      "target_node_json": {
+        "round": 3
+      },
+      "target_planning_paths": 0,
+      "local_bare_fast_forward": true
+    },
+    {
+      "arm": "candidate",
+      "case": "first-build",
+      "workflow_exit": 0,
+      "start_utc": "2026-11-02T11:19:42.146654+00:00",
+      "end_utc": "2026-11-02T11:19:42.862620+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 1,
+      "pr_commits": 1,
+      "forbidden_planning_paths": 0,
+      "planning_deletions": 0,
+      "pending_verdict": null
+    },
+    {
+      "arm": "candidate",
+      "case": "refuse-unmerged",
+      "workflow_exit": 1,
+      "start_utc": "2026-11-02T11:19:43.035996+00:00",
+      "end_utc": "2026-11-02T11:19:43.421948+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 0,
+      "pr_commits": null,
+      "forbidden_planning_paths": null,
+      "planning_deletions": null,
+      "pending_verdict": null,
+      "all_refs_tree_branch_head_status_unchanged": true
+    },
+    {
+      "arm": "base",
+      "case": "round-1",
+      "workflow_exit": 0,
+      "start_utc": "2026-11-02T11:20:44.987147+00:00",
+      "end_utc": "2026-11-02T11:20:45.562795+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 1,
+      "pr_commits": 1,
+      "forbidden_planning_paths": 0,
+      "planning_deletions": 0,
+      "pending_verdict": null,
+      "target_node_exit": 0,
+      "target_node_json": {
+        "round": 1
+      },
+      "target_planning_paths": 0,
+      "local_bare_fast_forward": true
+    },
+    {
+      "arm": "base",
+      "case": "round-2",
+      "workflow_exit": 1,
+      "start_utc": "2026-11-02T11:20:45.854990+00:00",
+      "end_utc": "2026-11-02T11:20:46.382153+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 2,
+      "pr_commits": null,
+      "forbidden_planning_paths": null,
+      "planning_deletions": null,
+      "pending_verdict": null,
+      "observed_failure": "existing work-pr checkout failed; continued old commit replay conflicted; work-pr ref deleted; working history retained"
+    },
+    {
+      "arm": "base",
+      "case": "first-build",
+      "workflow_exit": 0,
+      "start_utc": "2026-11-02T11:20:46.628909+00:00",
+      "end_utc": "2026-11-02T11:20:47.227064+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 1,
+      "pr_commits": 1,
+      "forbidden_planning_paths": 0,
+      "planning_deletions": 0,
+      "pending_verdict": null
+    },
+    {
+      "arm": "base",
+      "case": "refuse-unmerged",
+      "workflow_exit": 1,
+      "start_utc": "2026-11-02T11:20:47.353066+00:00",
+      "end_utc": "2026-11-02T11:20:47.938827+00:00",
+      "working_history_unchanged": true,
+      "included_code_commits": 2,
+      "pr_commits": null,
+      "forbidden_planning_paths": null,
+      "planning_deletions": null,
+      "pending_verdict": null,
+      "all_refs_tree_branch_head_status_unchanged": false,
+      "observed_failure": "existing work-pr checkout failed; continued old commit replay conflicted; work-pr ref deleted; working history retained"
+    }
+  ],
+  "invalid_observations_retained": {
+    "harness_syntax_error": "Before product execution; original retained; corrected observation trap syntax",
+    "initial_base_adapter": "Three initial records had empty included list because base prose enumeration was omitted; excluded from product comparison; only invalid base rerun after correction",
+    "candidate_rerun": false
+  },
+  "targeted_checks": {
+    "base": {
+      "tests": 197,
+      "pass": 197,
+      "fail": 0,
+      "skipped": 0
+    },
+    "candidate_initial": {
+      "tests": 242,
+      "pass": 241,
+      "fail": 1,
+      "skipped": 0,
+      "failure": "Minimal PATH omitted external true required by GIT_EDITOR=true"
+    },
+    "candidate_corrected_path_failed_case_only": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0
+    },
+    "candidate_entire_batch_rerun": false,
+    "pattern_drift_lint": "both exit 0",
+    "full_suite": "not run locally"
+  },
+  "upstream_ci": {
+    "observed_at": "2026-11-02T11:18:13.116Z",
+    "exact_head": "9dc4069dab5752c8cc9dfa24524ea8668ed49759",
+    "check_runs": {
+      "total": 51,
+      "success": 45,
+      "failure": 3,
+      "skipped": 3
+    },
+    "workflow_runs": {
+      "total": 23,
+      "success": 19,
+      "failure": 3,
+      "skipped": 1
+    },
+    "tests_workflow": "success",
+    "tests_workflow_url": "https://github.com/open-gsd/gsd-core/actions/runs/41103381795",
+    "remaining_review_gate": "Reviewed or maintainer failed; Self-test report has historical failure and newer success; PR still open"
+  },
+  "not_tested": [
+    "model-driven slash command",
+    "global installation or hooks",
+    "real GitHub PR or credentials",
+    "squash/rebase/fork merge consumer",
+    "Windows or macOS consumer",
+    "target already tracking planning",
+    "full GSD suite"
+  ],
+  "evidence_sha256": {
+    "commands.json": "29463f44c887fc0ee9a9c5569c62cc1d8197fd014cb2b533d8acb6fc4ebbf6f1",
+    "results.json": "f7db4cf7b1f15e590a1b1d83625b048fc0f4f2f611858dcbf416a7b79a7518dd",
+    "run.py": "343f74355de29afd7f17d417857c049b2bcbb9c253e08f3147664a778c14eb6c",
+    "run-base-corrected.py": "ead44f4e11e289e000aaa042781f55589fc83d1ff490cdde9dbc142922d5a308",
+    "setup.json": "dbe9fa6344f48cd1d211fc86420c032a2a408b025aed7704a9f9f953d6735bdc",
+    "checks.json": "97ac324456c407cac6a34f4ccab88903787454e441cb2c833a53a17aa595a609",
+    "checks-corrected-path.json": "e8914472d93d5411ba3e2b35c0bcdac4be4e8535fb803f8fb9d70940f4a79ad6",
+    "summary.json": "68dc11f88919ee96ff501c770c833a1bea515cf732a858c1349403a395647004",
+    "REPORT.txt": "17c25831e9251419b06cdcc69ff3232199331f8e6463d42c292fe001f7be458d",
+    "manifest-sha256.json": "8ea9cade47ffb0b281829afe62ce9edc5b3a2fb43a6a9728a6868ce3e952162a"
+  },
+  "retention": {
+    "completed_utc": "2026-11-02T11:24:32.833138+00:00",
+    "bytes": 23673688,
+    "sha256": "63b302175eb1042c2ec02175225477d7c68c7766a54e14d0b51f90e0dbaa330b",
+    "files": 2869,
+    "source_pack_sha256": "cc76a54c4773474eadc3ce05a24b2660214fbbedc1eb63159200107c5b26ec3a",
+    "source_objects": 4903,
+    "restored_fsck_exit": 0,
+    "public_upload": false
+  }
+}
