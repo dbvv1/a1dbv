@@ -7,7 +7,7 @@
 > 只放带完成条件的临时纠偏，最多三条，做完即删，dot 不改；方向与优先级在长期提示词（手册§6）。
 
 - **A**：在途按原边界安全收尾，同时收口窄工具考证，将强源、替代和反例合成[长程开发路线](../decisions/long-tasks.md)及模板，在真实主线任务采用并修正卡点；交付后自然接续，以 Activity／心跳核证后删本行。其他核心问题与未知前沿并行，保留欠项，不重派四张已取消广扫；长期可靠性继续观察。
-- **B**：按[恢复入口与补丁](../../experiments/cloud-browser-recovery/README.md)先区分失败 shell 的 IPC／loopback 与已有获准云浏览器能力，接续 FPS `67ae83a7` 的精确材料路由和 `qualityCapture`，不拿旧入口通过替代；其他独立长线继续。三案画面按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)：固定画质同机位软件图、拟发布入口完整 smoke、非作者盲评；不等硬件 GPU、不占本机。`--no-sandbox` 只限三案自有页面，外层沙箱不动，明确拒绝不换路；核非空 WebGL2 图、参数、renderer 与正常退出。手感三项继续：FPS 加速度／摩擦／插值，MOBA 前摇／施法下一指令排队且结束当 tick 执行，Star 轮胎峰后下降／载荷转移及动力测法；过单测、无画面模拟和云 smoke 后旁置发布。同输入前后值写入 feel.md／记分卡（FPS 滑停／反向／插值、MOBA 下一技能、Star 侧滑），差距继续追。三案出图命令可用、画面候选已接收或退回、三项手感候选已发布且前后值已记录后删除本行。
+- **B**：三案默认分支自 10-30 未更新，已保全的 FPS 全场材质 `8c29cec8`、MOBA 镜头＋Q/W `7a2234e7`、Star 连续空间与峰后轮胎按[细则§6](game-taskbook.md#6-作品案例)第 3 条新旁置门槛先发布，再按其轮转派单（Star 最久未发布，先派）。云浏览器：用户 10-30、11-03 允许 `--no-sandbox`、`--enable-unsafe-swiftshader` 与 `--use-angle=swiftshader`，只用于打开三案自有页面，外层沙箱不动；按[恢复入口](../../experiments/cloud-browser-recovery/README.md)验到非空 WebGL2 图、参数、renderer 与正常退出后，补跑积压候选的完整 smoke、同机位图与盲评。手感三项（FPS 加速度／摩擦／插值，MOBA 施法中下一技能结束当 tick 执行，Star 轮胎峰后下降／载荷转移及动力测法）按同一门槛发布，前后值写入 feel.md 与记分卡。三案各有新的旁置发布、出图命令可用、三项手感候选已发布后删除本行。
 - **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
 
 ## 分工

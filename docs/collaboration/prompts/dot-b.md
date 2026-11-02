@@ -15,7 +15,7 @@
 3. **三个案例**：MOBA-Like 对标英雄联盟，Star-Rush-Reborn 以风格化对标地平线的公路弯道并保留跑圈，FPS-Like 对标 CS2。玩法用品类标准做法，不求创新；案例要做成角色场景动作声音成套统一的高质量作品，内容制作与操控并行；它是前两条线知识的载体和证明。三个案例用网页，用户决定前不换引擎。分阶段：先离线核心（对战机器人、标杆的核心操作与界面，按联机设计），再完整一局与内容，联机另立（brief、细则§6）。
 4. **AI 做游戏的实例**：用 AI 全程或大规模开发的游戏，必须实际玩或看完整实机并读作者原文，宣传帖只作线索；做法按 [ai-made-games-scout](../../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md)。
 
-**质量是目标，功能是门槛**：画面、手感、内容三条达标线见[质量标准](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/quality-bar.md)，记在案例 `docs/quality.md` 开头的记分卡；质量单元按 [game-quality-pass](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) 做，以记分卡上的差距实际缩小收尾；达标前的取舍与换默认见细则§6。候选过了测试和 smoke 当轮旁置发布；画面拍摄与 smoke 都在云端 headless 浏览器跑，不占本机。商业游戏参照图只留本地；占位只活一个单元。
+**质量是目标，功能是门槛**：画面、手感、内容三条达标线见[质量标准](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/quality-bar.md)，记在案例 `docs/quality.md` 开头的记分卡；质量单元按 [game-quality-pass](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) 做，以记分卡上的差距实际缩小收尾；达标前的取舍与换默认见细则§6。候选过了旁置门槛当轮发布（细则§6）；画面拍摄与 smoke 都在云端 headless 浏览器跑，不占本机。商业游戏参照图只留本地；占位只活一个单元。
 
 **知识怎么写**：模块页和制作链页写怎样把作品做到标杆水平：做法、参数、提示词、成本、失败和修法，附提交链接，写明上下游接口；案例里被采用的改进在同一单元写回对应页。
 
