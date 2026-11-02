@@ -1,7 +1,7 @@
 # A-INSTRUCTION-FACTS-20261102 · 共享指令页官方事实复核
 id: A-INSTRUCTION-FACTS-20261102
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/decisions/instruction-files.md@21b5f4ab0d4c78c73a2ef57502a4a49ba70fb991
 target_repo: https://github.com/dbvv1/a1dbv
