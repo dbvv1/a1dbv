@@ -1,7 +1,7 @@
 # A-GENERIC-MOBA-FIT-20261102 · 通用模板到 MOBA 现有任务的最小映射
 id: A-GENERIC-MOBA-FIT-20261102
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 016cdff8e8e5caa56481d752443dd12ec82b478f
@@ -43,3 +43,7 @@ result_branch: relay/a-generic-moba-fit-20261102
 
 ## 独立接收结论
 原只读映射可作为候选，但上述三处会缩窄评审或夸大否定结论，故保留原报告并请求定点修订，不以 openIssues 为空或独审通过直接 accepted。模板没有被真实采用；是否在 MOBA 下一自然任务采用及实际收益仍由 dot-B 决定和回报。
+
+## 修订独立接收
+2026-11-02 23:45 UTC，原独立审者回读 677a8cea6c246f6efda9a4191021c736cded69c6（父 016cdff8，仅 mapping.md），确认三项原阻塞已关闭：Important 保留一般行为／泄露／回滚并以 MOBA 项作非排他例子；Skill／MCP 只述本次仓内检查与未核客户端能力；CI 限定固定树、7710c4a 的 23:00 UTC 检查快照及未验证仓外范围。无新阻塞，首轮判断与修订记录保留。
+本卡 accepted 仅指这份只读适配映射，可供 TASKS 共同入口的下一自然任务审选；未合入模板或 MOBA，未重跑目标测试，不代表 dot-B 已采用。真实采用、实际省时／返工及不适用反馈仍由 dot-B 在原共同任务回报，不接管其写域或另开调用。
