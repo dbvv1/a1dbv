@@ -84,8 +84,9 @@ Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind
 | 大范围依赖注入／装配迁移 | 打包后同连接读搜、错误后恢复、正常退出与保存内容 | [Repomix](../../experiments/repomix-mcp-receipt/README.md) 两版链路一致；本云完整套件仍有 1 失败，候选托管检查 52 成功、2 跳过 |
 | 路径或持久化目标 | 回读目标及邻接对象，核既有状态是否保留 | [Aider](../../experiments/aider-git-receipt/README.md) 基线界面目标 A、exit 0 却暂存 B；候选实际核两仓 index 修正了该路径，完整套件仍失败 |
 | 流式事件／审批生命周期 | 一次回答、回合完成、下一轮新请求、正常退出与会话落地 | [Goose ACP](../../experiments/goose-acp-receipt/README.md) 基线重复旧卡后退出；候选合成 Allow／Reject 两轮继续，SQLite 与 `/exit` 均通过，真实 provider 与取消恢复未验 |
+| 持久化迁移／分批清理 | 中途与检查点失败后新进程恢复，再用真实读取接口核历史、重跑及后续新数据 | [OpenCode](../../experiments/opencode-migration-receipt/README.md) 原候选保留已提交清理批次，两版均恢复可读历史；仅合成 SQLite／SessionStore，未验原大库与服务启动 |
 
-这三项支持按风险选择消费者验收，不改变整套工具默认或本页读者状态；核实 2026-11-02。
+这些实测支持按风险选择消费者验收，不改变整套工具默认或本页读者状态；核实 2026-11-02。
 
 **同机检查争用要测出来再调度。** 实现中跑定向反馈，交付时按项目要求验整合结果；只有观察到资源争用才错峰或排队，不统一降低 workers、放宽超时。n8n 的单 worker 定向入口与 Inspector 的排队比较是各自项目取舍，不能当所有仓库的配置默认。
 

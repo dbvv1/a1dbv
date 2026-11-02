@@ -1,0 +1,257 @@
+{
+  "verified_date": "2026-11-02",
+  "scope": "Existing upstream PR receipt through real synthetic SQLite migration and independent-process SessionStore consumers; not a full product migration or new answer-page reader pass.",
+  "project": {
+    "repository": "anomalyco/opencode",
+    "license": "MIT",
+    "stars_observed": 223944,
+    "stars_purpose": "discovery only",
+    "base": "ff90ed91607cabf420a369e9009539c1aa0932af",
+    "candidate": "fb1cd27d8e624e962ef7ad95160edae9906071dd",
+    "version": "2.2.5",
+    "pr": 56929,
+    "pr_state": "open, unmerged",
+    "issue": 41739,
+    "issue_state": "closed after current startup timeout was not reproduced; does not establish cleanup fix"
+  },
+  "input": {
+    "projects": 2,
+    "sessions": 3,
+    "messages": 6,
+    "parts": 9,
+    "stored_tool_results": 3,
+    "actual_tool_execution": false,
+    "legacy_events": [
+      2501,
+      2000
+    ],
+    "synthetic_only": true
+  },
+  "consumer": {
+    "start_utc": "2026-11-02T08:59:34.854210+00:00",
+    "end_utc": "2026-11-02T08:59:51.189382+00:00",
+    "phase_processes": 22,
+    "all_expected_assertions_and_exits_passed": true,
+    "production_apis": [
+      "V1Migration.run",
+      "SessionStore.get",
+      "SessionStore.messages",
+      "SessionStore.list"
+    ],
+    "phases": [
+      "seed",
+      "expected SQL ABORT except boundary scenario",
+      "new-process reopen and resume",
+      "new-process consume and repeat"
+    ],
+    "scenarios": [
+      {
+        "scenario": "middle",
+        "identicalSeedSHA256": "79f4644eee5ef2f7a24cef93d28a10ec480218427487f5ad6001d574088bcdb7",
+        "baseline": {
+          "eventsBeforeResume": 2501,
+          "eventRange": {
+            "first": "event_0001",
+            "last": "event_2501"
+          },
+          "checkpoint": null,
+          "consumerPassed": true
+        },
+        "candidate": {
+          "eventsBeforeResume": 1501,
+          "eventRange": {
+            "first": "event_1001",
+            "last": "event_2501"
+          },
+          "checkpoint": null,
+          "consumerPassed": true
+        }
+      },
+      {
+        "scenario": "boundary",
+        "identicalSeedSHA256": "478729eb5b2be7e2372e948312647403608c565033280bd1e1e2fbc19f7df289",
+        "baseline": {
+          "eventsBeforeResume": 2000,
+          "eventRange": {
+            "first": "event_0001",
+            "last": "event_2000"
+          },
+          "checkpoint": null,
+          "consumerPassed": true
+        },
+        "candidate": {
+          "eventsBeforeResume": 2000,
+          "eventRange": {
+            "first": "event_0001",
+            "last": "event_2000"
+          },
+          "checkpoint": null,
+          "consumerPassed": true
+        }
+      },
+      {
+        "scenario": "checkpoint",
+        "identicalSeedSHA256": "79f4644eee5ef2f7a24cef93d28a10ec480218427487f5ad6001d574088bcdb7",
+        "baseline": {
+          "eventsBeforeResume": 2501,
+          "eventRange": {
+            "first": "event_0001",
+            "last": "event_2501"
+          },
+          "checkpoint": null,
+          "consumerPassed": true
+        },
+        "candidate": {
+          "eventsBeforeResume": 501,
+          "eventRange": {
+            "first": "event_2001",
+            "last": "event_2501"
+          },
+          "checkpoint": null,
+          "consumerPassed": true
+        }
+      }
+    ],
+    "final_integrity_and_foreign_keys": "all six final databases pass",
+    "after_completion_new_event_preserved": true,
+    "legacy_session_message_parts_unchanged": true,
+    "v2_message_parent_id_claim": false
+  },
+  "tests": {
+    "source": {
+      "selected_five": {
+        "pass": 72,
+        "fail": 0,
+        "files": [
+          "v1-migration.test.ts",
+          "database.test.ts",
+          "database-drizzle.test.ts",
+          "database-migration.test.ts",
+          "session-store.test.ts"
+        ],
+        "start": "2026-11-02T08:59:57.857829+00:00",
+        "end": "2026-11-02T09:00:01.872519+00:00",
+        "exit": 0
+      },
+      "core_typecheck_tsc": {
+        "start": "2026-11-02T08:59:16.930601+00:00",
+        "end": "2026-11-02T08:59:35.482683+00:00",
+        "exit": 0
+      }
+    },
+    "candidate": {
+      "selected_five": {
+        "pass": 73,
+        "fail": 0,
+        "files": [
+          "v1-migration.test.ts",
+          "database.test.ts",
+          "database-drizzle.test.ts",
+          "database-migration.test.ts",
+          "session-store.test.ts"
+        ],
+        "start": "2026-11-02T09:00:01.873220+00:00",
+        "end": "2026-11-02T09:00:05.902586+00:00",
+        "exit": 0
+      },
+      "core_typecheck_tsc": {
+        "start": "2026-11-02T08:59:35.483563+00:00",
+        "end": "2026-11-02T08:59:52.820347+00:00",
+        "exit": 0
+      }
+    }
+  },
+  "failed_preparation_preserved": [
+    "consumer attempt1 overwrote seed snapshot with phase report; six recovery assertions failed before recovery",
+    "attempt2 passed without phase DB backups",
+    "attempt3 passed but overlapped same-lock dependency linking; replaced by stable attempt4",
+    "first related suites: both 35 pass / 1 fail because nested Bun not on PATH",
+    "schema-only rerun: both failed because root prettier not linked by core-only filtered install",
+    "initial typecheck: both exit 127 because root tsc not linked"
+  ],
+  "environment": {
+    "os": "Linux x64",
+    "bun": "1.4.4",
+    "install": "fixed lock; root and core filters; ignore-scripts; workspace-only",
+    "runtime": "HOME/USERPROFILE/XDG/TMP and full Global paths isolated before consumer imports",
+    "network_boundary": "No HTTP, listener, provider or model invoked; not an OS network sandbox",
+    "fixtures": "non-global synthetic projects, explicitly nonexistent nextDatabasePath"
+  },
+  "upstream_ci": {
+    "observed_utc_minute": "2026-11-02T08:56Z",
+    "head": "fb1cd27d8e624e962ef7ad95160edae9906071dd",
+    "check_runs": [
+      {
+        "name": "check-standards",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/anomalyco/opencode/actions/runs/41399997037/job/125129555654"
+      },
+      {
+        "name": "check-compliance",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/anomalyco/opencode/actions/runs/41399997037/job/125129555407"
+      }
+    ],
+    "workflows": [
+      {
+        "name": "check-test",
+        "status": "completed",
+        "conclusion": "action_required",
+        "html_url": "https://github.com/anomalyco/opencode/actions/runs/41399997094"
+      },
+      {
+        "name": "check-nix",
+        "status": "completed",
+        "conclusion": "action_required",
+        "html_url": "https://github.com/anomalyco/opencode/actions/runs/41399997128"
+      },
+      {
+        "name": "triage-pr-standards",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/anomalyco/opencode/actions/runs/41399997037"
+      },
+      {
+        "name": "check-bot-scope",
+        "status": "completed",
+        "conclusion": "action_required",
+        "html_url": "https://github.com/anomalyco/opencode/actions/runs/41399996944"
+      },
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "action_required",
+        "html_url": "https://github.com/anomalyco/opencode/actions/runs/41399996978"
+      }
+    ],
+    "fully_passed": false
+  },
+  "unrun": [
+    "complete monorepo check",
+    "all core tests",
+    "product build",
+    "HTTP/TUI/CLI service startup",
+    "real private sessions, accounts or model calls",
+    "original huge database and WAL/performance",
+    "Windows",
+    "power loss or hard kill",
+    "concurrent migration"
+  ],
+  "retention": {
+    "name": "opencode-migration-retained-20261102.tar.gz",
+    "bytes": 89812740,
+    "sha256": "00667b215137153f5bcceb456eabcd8c56997cb07227061b607143ef5e7b998f",
+    "verified_files": 418,
+    "source_git_blobs": 9275,
+    "public_upload_reviewed": false
+  },
+  "source_retention": {
+    "sha256": "f8e2d06354dd266d71a39e40547e5f756c18731f6a0071d8b1f1c8eae3165588",
+    "bytes": 83313692,
+    "verified_git_blobs": 9275,
+    "time": "2026-11-02T09:02:11.128337+00:00"
+  },
+  "adoption": "Scoped PR behavior accepted; default and answer-page reader status unchanged"
+}
