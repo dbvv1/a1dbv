@@ -1,0 +1,261 @@
+{
+  "verified_date": "2026-11-02",
+  "scope": "Actual deterministic helper reception of existing PR #2348 in linked worktrees; not Skill/model evaluation or new answer-page reader pass.",
+  "project": {
+    "repository": "obra/superpowers",
+    "license": "MIT",
+    "stars_observed": 310861,
+    "stars_observed_utc_minute": "2026-11-02T09:07Z",
+    "stars_purpose": "discovery only",
+    "refs": {
+      "main": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "base": "b58deb3b948d4c305feeac122700100419ee2777",
+      "code": "8b0eefc87b26530a71f0912af09af023fa3008fc",
+      "stack": "402cfdeed9665ada0b220be12f6ddbd417fb956c"
+    },
+    "release": "v7.0.1",
+    "path_prs": [
+      2606,
+      2607
+    ],
+    "path_pr_state": "open and unmerged",
+    "target_pr": 2348,
+    "target_pr_head": "e3d48d2145827d7d29e2aacfc52c3ebce9dc4c78",
+    "target_pr_base": "0f9581f6c1525b51dc1600b14d24f3db1f601446",
+    "target_pr_state": "open and unmerged"
+  },
+  "consumer": {
+    "start_utc": "2026-11-02T09:14:39.173502+00:00",
+    "end_utc": "2026-11-02T09:16:36.475253+00:00",
+    "process_records": 100,
+    "record_count_purpose": "raw trace inventory, not progress or benefit",
+    "routes": {
+      "main": {
+        "base": "0f9581f6c1525b51dc1600b14d24f3db1f601446",
+        "head": "ca10f985a98dfe78b6fd03dbe1365cf87241d788",
+        "tree": "46d8d54559d223bd87f448e590f7034b67565e1b",
+        "original_patch_sha256": "8b3767b05d99ed5d56a34f743ab4a9d82363128fe5c11babdf746d611715e5ae",
+        "package_diff_exact": true,
+        "original_diff_exact": true,
+        "main_and_prior_sibling_unchanged": true,
+        "acceptance": "BLOCKED: C.UTF-8 regressions fail 3 assertions; C-only comparison is not acceptance",
+        "final_failed_task1_does_not_append": true,
+        "final_main_and_sibling_unchanged": true
+      },
+      "stack": {
+        "base": "0f9581f6c1525b51dc1600b14d24f3db1f601446",
+        "head": "458740b536eb8ef885207d17d5bc78bd53ba0601",
+        "tree": "46d8d54559d223bd87f448e590f7034b67565e1b",
+        "original_patch_sha256": "8b3767b05d99ed5d56a34f743ab4a9d82363128fe5c11babdf746d611715e5ae",
+        "package_diff_exact": true,
+        "original_diff_exact": true,
+        "main_and_prior_sibling_unchanged": true,
+        "acceptance": "BLOCKED: C.UTF-8 regressions fail 3 assertions; C-only comparison is not acceptance",
+        "final_failed_task1_does_not_append": true,
+        "final_main_and_sibling_unchanged": true
+      }
+    },
+    "non_author_review": "Packages read first; independently compared exact Git diff, source scope, raw logs, locale and final BLOCKED decision.",
+    "no_repository": {
+      "main": {
+        "exit": 0,
+        "created_default_workspace": true
+      },
+      "stack": {
+        "exit": 2,
+        "created_new_default_workspace": false
+      }
+    },
+    "main_correct_cwd_alternative": true,
+    "supported_C_helpers": [
+      "sdd-workspace",
+      "task-brief",
+      "review-package"
+    ],
+    "task_start_and_done_require_target_cwd": true,
+    "task_brief_explicit_outfile_bypasses_repository_gate": true
+  },
+  "framework_tests": {
+    "main": [
+      {
+        "test": "tests/claude-code/test-sdd-workspace.sh",
+        "start": "2026-11-02T09:13:56.462127+00:00",
+        "end": "2026-11-02T09:13:56.877607+00:00",
+        "exit": 0
+      },
+      {
+        "test": "tests/claude-code/test-executing-plans-scripts.sh",
+        "start": "2026-11-02T09:13:56.878387+00:00",
+        "end": "2026-11-02T09:13:57.043218+00:00",
+        "exit": 0
+      }
+    ],
+    "base": [
+      {
+        "test": "tests/claude-code/test-sdd-workspace.sh",
+        "start": "2026-11-02T09:13:57.043981+00:00",
+        "end": "2026-11-02T09:13:57.509770+00:00",
+        "exit": 0
+      },
+      {
+        "test": "tests/claude-code/test-executing-plans-scripts.sh",
+        "start": "2026-11-02T09:13:57.510488+00:00",
+        "end": "2026-11-02T09:13:57.675491+00:00",
+        "exit": 0
+      }
+    ],
+    "code": [
+      {
+        "test": "tests/claude-code/test-sdd-workspace.sh",
+        "start": "2026-11-02T09:13:57.676210+00:00",
+        "end": "2026-11-02T09:13:58.392141+00:00",
+        "exit": 0
+      },
+      {
+        "test": "tests/claude-code/test-executing-plans-scripts.sh",
+        "start": "2026-11-02T09:13:58.392657+00:00",
+        "end": "2026-11-02T09:13:58.657787+00:00",
+        "exit": 0
+      }
+    ],
+    "stack": [
+      {
+        "test": "tests/claude-code/test-sdd-workspace.sh",
+        "start": "2026-11-02T09:13:58.658601+00:00",
+        "end": "2026-11-02T09:13:59.425634+00:00",
+        "exit": 0
+      },
+      {
+        "test": "tests/claude-code/test-executing-plans-scripts.sh",
+        "start": "2026-11-02T09:13:59.426292+00:00",
+        "end": "2026-11-02T09:13:59.691861+00:00",
+        "exit": 0
+      },
+      {
+        "test": "tests/sdd-helper-paths/test-sdd-helper-paths.sh",
+        "start": "2026-11-02T09:13:59.692598+00:00",
+        "end": "2026-11-02T09:13:59.807940+00:00",
+        "exit": 0
+      }
+    ]
+  },
+  "target_tests": {
+    "both_routes_C_UTF8": {
+      "exit": 1,
+      "failed_assertions": 3,
+      "failures": [
+        "spec test count",
+        "excluding duration",
+        "zero-test spec"
+      ]
+    },
+    "whole_suite_C_locale": {
+      "exit": 0,
+      "purpose": "diagnosis only; does not supersede C.UTF-8 failure"
+    },
+    "child_Node_C_parser_C_UTF8": "still duration; not a C parser comparison",
+    "node_observations": [
+      {
+        "reporter": "TAP",
+        "input": "two passing tests",
+        "exit": 0,
+        "summary": "2/2 pass"
+      },
+      {
+        "reporter": "default and spec",
+        "input": "two passing tests",
+        "exit": 0,
+        "summary": "duration (incorrect)"
+      },
+      {
+        "reporter": "TAP",
+        "input": "unmatched glob, zero tests",
+        "exit": 0,
+        "summary": "0 tests ran",
+        "complete": true
+      },
+      {
+        "reporter": "TAP",
+        "input": "skip only",
+        "exit": 0,
+        "summary": "0/1 pass",
+        "complete": true
+      },
+      {
+        "reporter": "spec",
+        "input": "zero tests and skip only",
+        "exit": 0,
+        "summary": "duration (incorrect)",
+        "complete": true
+      },
+      {
+        "reporter": "TAP",
+        "input": "intentional assertion failure",
+        "exit": 1,
+        "appended_complete": false
+      }
+    ]
+  },
+  "environment": {
+    "os": "Linux x64",
+    "bash": "5.2.37",
+    "git": "2.52.0",
+    "sed": "GNU sed 4.9",
+    "node": "24.22.1",
+    "parser_locale": "C.UTF-8",
+    "isolation": "Whitelisted environment; owned HOME/XDG/TMP; Git system/global configs and hooks disabled. No network listener/model invoked; not an OS sandbox."
+  },
+  "mistakes_preserved": [
+    "Local clone missed fixed target base object; fetched that object locally before checkout.",
+    "Initial expectation that target regressions passed C.UTF-8 was wrong; failure retained.",
+    "Empty explicit Node file counted as one passing test; unmatched glob used for actual zero-test probe.",
+    "Empty diff.external attempted empty executable; first package exit 128 retained, whitelist corrected before package generation.",
+    "C diagnostic mistakenly reused Task1 and appended complete; original ledger plus correction retained. Task7 repeated C diagnosis separately; final Task1 C.UTF-8 failed without appending."
+  ],
+  "upstream_ci": {
+    "observed_utc": "2026-11-02T09:20:49.311Z",
+    "heads": {
+      "2348": {
+        "head": "e3d48d2145827d7d29e2aacfc52c3ebce9dc4c78",
+        "check_runs": 0,
+        "workflow_runs": 0,
+        "statuses": 0,
+        "combined_status": "pending"
+      },
+      "2606": {
+        "head": "8b0eefc87b26530a71f0912af09af023fa3008fc",
+        "check_runs": 0,
+        "workflow_runs": 0,
+        "statuses": 0,
+        "combined_status": "pending"
+      },
+      "2607": {
+        "head": "402cfdeed9665ada0b220be12f6ddbd417fb956c",
+        "check_runs": 0,
+        "workflow_runs": 0,
+        "statuses": 0,
+        "combined_status": "pending"
+      }
+    },
+    "fully_passed": false
+  },
+  "unrun": [
+    "Skill auto-trigger and model behavior",
+    "entire Claude integration suite",
+    "other operating systems",
+    "malicious symlink or concurrent writers",
+    "private sessions/accounts",
+    "upstream submission"
+  ],
+  "retention": {
+    "name": "superpowers-worktree-retained-20261102.tar.gz",
+    "bytes": 5955787,
+    "sha256": "841adf81ede5e9903e68f59c0acef12bbd959f59b4e22c13662ba66ab2764a67",
+    "verified_files": 894,
+    "source_git_blobs": 927,
+    "git_bundles_restored_objects": 8,
+    "public_upload_reviewed": false,
+    "utc": "2026-11-02T09:21:48.773818+00:00"
+  },
+  "adoption": "Target summary fix BLOCKED. Existing main correct-cwd path usable for this controlled task; scoped -C path supported. No new default or reader-status upgrade."
+}
