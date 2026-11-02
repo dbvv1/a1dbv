@@ -1,0 +1,241 @@
+{
+  "verified_date": "2026-11-02",
+  "repository": "https://github.com/charmbracelet/crush",
+  "pull_request": 4215,
+  "license": "FSL-1.1-MIT; MIT Future License, not current plain MIT",
+  "observed_stars": 28910,
+  "scope": "Actual compiled tools + native normal permission service + SQLite history/filetracker; isolated synthetic project, no TUI/model/LSP/rewind",
+  "heads": {
+    "base": "d391cee20d1942794aec5ea6faff07170444211f",
+    "candidate": "49aad8b7748c2bdfae1459897a7d7ed15fe6249e"
+  },
+  "versions": {
+    "go": "1.27.3",
+    "node": "24.22.1",
+    "PyYAML": "6.0.3",
+    "platform": "Linux amd64",
+    "CGO_ENABLED": "0",
+    "GOEXPERIMENT": "greenteagc"
+  },
+  "consumer": {
+    "base": {
+      "launch": {
+        "start_utc": "2026-11-02T11:56:35.687581+00:00",
+        "end_utc": "2026-11-02T11:56:35.796683+00:00",
+        "exit": 0
+      },
+      "verified_utc": "2026-11-02T11:57:27.567438+00:00",
+      "independent_line_count_oracle": "Python difflib.ndiff before/after full file lines, not production unified diff helper",
+      "observations": [
+        {
+          "id": "synthetic-call-4",
+          "tool": "edit",
+          "actual_additions": 0,
+          "actual_removals": 1,
+          "reported_additions": 0,
+          "reported_removals": 0,
+          "matches": false
+        },
+        {
+          "id": "synthetic-call-5",
+          "tool": "write",
+          "actual_additions": 0,
+          "actual_removals": 1,
+          "reported_additions": 0,
+          "reported_removals": 0,
+          "matches": false
+        },
+        {
+          "id": "synthetic-call-6",
+          "tool": "multiedit",
+          "actual_additions": 1,
+          "actual_removals": 1,
+          "reported_additions": 0,
+          "reported_removals": 1,
+          "matches": false
+        },
+        {
+          "id": "synthetic-call-9",
+          "tool": "edit",
+          "actual_additions": 1,
+          "actual_removals": 1,
+          "reported_additions": 1,
+          "reported_removals": 1,
+          "matches": true
+        }
+      ],
+      "sql_execution_result": 42,
+      "yaml_result": {
+        "value": 42
+      },
+      "node_checks": [
+        {
+          "label": "prefix-increment-real-file",
+          "exit": 0,
+          "output": "{\"value\":1}\n"
+        },
+        {
+          "label": "ordinary-edit-after-error",
+          "exit": 0,
+          "output": "{\"value\":2}\n"
+        }
+      ],
+      "sqlite_integrity": "ok",
+      "persisted_history_versions": 10,
+      "persisted_file_reads": 3,
+      "history_unchanged_on_error": true,
+      "normal_mode_one_shot_grants": 4
+    },
+    "candidate": {
+      "launch": {
+        "start_utc": "2026-11-02T11:56:38.412057+00:00",
+        "end_utc": "2026-11-02T11:56:38.504999+00:00",
+        "exit": 0
+      },
+      "verified_utc": "2026-11-02T11:57:27.569707+00:00",
+      "independent_line_count_oracle": "Python difflib.ndiff before/after full file lines, not production unified diff helper",
+      "observations": [
+        {
+          "id": "synthetic-call-4",
+          "tool": "edit",
+          "actual_additions": 0,
+          "actual_removals": 1,
+          "reported_additions": 0,
+          "reported_removals": 1,
+          "matches": true
+        },
+        {
+          "id": "synthetic-call-5",
+          "tool": "write",
+          "actual_additions": 0,
+          "actual_removals": 1,
+          "reported_additions": 0,
+          "reported_removals": 1,
+          "matches": true
+        },
+        {
+          "id": "synthetic-call-6",
+          "tool": "multiedit",
+          "actual_additions": 1,
+          "actual_removals": 1,
+          "reported_additions": 1,
+          "reported_removals": 1,
+          "matches": true
+        },
+        {
+          "id": "synthetic-call-9",
+          "tool": "edit",
+          "actual_additions": 1,
+          "actual_removals": 1,
+          "reported_additions": 1,
+          "reported_removals": 1,
+          "matches": true
+        }
+      ],
+      "sql_execution_result": 42,
+      "yaml_result": {
+        "value": 42
+      },
+      "node_checks": [
+        {
+          "label": "prefix-increment-real-file",
+          "exit": 0,
+          "output": "{\"value\":1}\n"
+        },
+        {
+          "label": "ordinary-edit-after-error",
+          "exit": 0,
+          "output": "{\"value\":2}\n"
+        }
+      ],
+      "sqlite_integrity": "ok",
+      "persisted_history_versions": 10,
+      "persisted_file_reads": 3,
+      "history_unchanged_on_error": true,
+      "normal_mode_one_shot_grants": 4
+    }
+  },
+  "permissions": "Normal throughout; before Grant matched synthetic session/callID/tool/exact affected file; action and content correspondence verified after run, not a pre-approval content check; no persistent grant",
+  "checks": {
+    "candidate_diff_cases_passed": 4,
+    "base_diff_package": "0 tests; not a passing test suite",
+    "candidate_diff_and_tools_vet": "exit 0",
+    "both_full_cli_builds": "exit 0; packaged CLI not run",
+    "both_wrapper_builds": "exit 0",
+    "full_repository_tests": "not run",
+    "initial_setup_failure": "First dependency fetch failed because harness omitted existing platform proxy variables; preserved original error, restored inherited transport configuration and completed; no platform permission denial"
+  },
+  "upstream_ci": {
+    "observed_utc": "2026-11-02T11:55:20.435Z",
+    "sha": "49aad8b7748c2bdfae1459897a7d7ed15fe6249e",
+    "checks": [
+      {
+        "name": "CLAAssistant",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "triage",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "workflows": [
+      {
+        "name": "labeler",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "security",
+        "status": "completed",
+        "conclusion": "action_required"
+      },
+      {
+        "name": "lint",
+        "status": "completed",
+        "conclusion": "action_required"
+      },
+      {
+        "name": "CLA Assistant",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "build",
+        "status": "completed",
+        "conclusion": "action_required"
+      }
+    ],
+    "commit_status": "pending"
+  },
+  "limits": [
+    "No full CLI/TUI permission interaction or session net-diff consumer",
+    "No model/LSP/Hook/account/private session",
+    "No native rewind/restore/crash recovery or cross-platform test",
+    "No new default or reader-rating upgrade",
+    "No upstream patch/comment/source publication"
+  ],
+  "evidence_sha256": {
+    "summary.json": "093dcdd1c60d34fe65d67763512f7faa8cccfb057c901c20be1723ce6b265ba9",
+    "manifest-sha256.json": "13789fd8e658f0b7f3288685871c17cb0bd17e473ffdc43e84065f564b597095",
+    "commands.json": "51c12a384809130101be1417c6da0065d93fa1ccd359594511c0eb5bb5022b2a",
+    "independent-summary.json": "66ca98222d1e0583caae8e79684b27fb354fa4e2b0059cefc0ff171aef26914f",
+    "REPORT.txt": "820bba9546e6e7a00b3d1b0443866fd91dee4e30401d8f353415701282f8f982"
+  },
+  "retention": {
+    "completed_utc": "2026-11-02T11:59:54.667217+00:00",
+    "bytes": 2680994,
+    "sha256": "0dce4bba71ad793d0bb19aa28d350bf1e1960430f7ac2d6fc583da60acd73713",
+    "files": 70,
+    "source_pack_sha256": "dffd0f11eda0668c7eb47f2dc9c9a4acf698e5f04bb7a2d480de6a11d8d8639b",
+    "source_objects": 1473,
+    "trees": {
+      "d391cee20d1942794aec5ea6faff07170444211f": "7fa93a0b5d499a254330497461f57aa965caed44",
+      "49aad8b7748c2bdfae1459897a7d7ed15fe6249e": "bf9145a0efc38894ffc256247b259b248a7218b3"
+    },
+    "restored_fsck_exit": 0,
+    "public_upload": false,
+    "omitted_rebuildable": "Toolchain/dependency/build caches and binaries; official version/hash and source preserved"
+  }
+}
