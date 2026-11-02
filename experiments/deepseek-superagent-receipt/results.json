@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repository": "deepseek-ai/dsh-superagent-prototype",
+    "commit": "6337fc823ce20251c8de8085948165c81aaa701e",
+    "source_tar_sha256": "d299c4f495e22b60c4e2e064151232dd6ccdab24d6dbc3912a0afc91aff85901",
+    "tracked_source_changes": false,
+    "license": "MIT"
+  },
+  "consumer_input": {
+    "repository": "dbvv1/a1dbv",
+    "commit": "39d883da5f49ec5b80402d84a6c2c2f103ee570d",
+    "task": "Validate the fixed repository delivery checks and retain their actual receipts; no external side effects",
+    "assessment": "Fixed manual assessment; no model decision",
+    "identities_and_followups": "Synthetic inputs; source authentication not tested",
+    "final_checkout_clean": true
+  },
+  "environment": {
+    "node": "24.22.1",
+    "platform": "linux",
+    "arch": "x64",
+    "execution": "Node --experimental-transform-types, official Engine and SQLite Store; bounded local adapter",
+    "dependencies": {
+      "zod": "4.4.3",
+      "@deepseek-ai/schemastery": "3.18.5-alpha.1",
+      "vitest": "4.1.8"
+    },
+    "install_scripts": false,
+    "dsh_runtime_started": false,
+    "real_account_connected": false
+  },
+  "upstream_tests": [
+    {
+      "modules": [
+        "core-engine",
+        "store"
+      ],
+      "passed": 130,
+      "exit_code": 0,
+      "start_utc": "2026-11-02T06:27:40Z",
+      "end_utc": "2026-11-02T06:27:41Z"
+    },
+    {
+      "modules": [
+        "policy",
+        "admission-context"
+      ],
+      "passed": 332,
+      "exit_code": 0,
+      "start_utc": "2026-11-02T06:28:12Z",
+      "end_utc": "2026-11-02T06:28:13Z"
+    }
+  ],
+  "consumer_phases": [
+    {
+      "phase": "before",
+      "start_utc": "2026-11-02T06:29:00.099Z",
+      "end_utc": "2026-11-02T06:29:01.905Z",
+      "exit_code": 0
+    },
+    {
+      "phase": "after",
+      "start_utc": "2026-11-02T06:29:15.007Z",
+      "end_utc": "2026-11-02T06:29:15.533Z",
+      "exit_code": 0
+    },
+    {
+      "phase": "verify",
+      "start_utc": "2026-11-02T06:30:41.922Z",
+      "end_utc": "2026-11-02T06:30:41.927Z",
+      "exit_code": 0
+    }
+  ],
+  "actual_commands": [
+    {
+      "command": "python3 scripts/check_repo.py",
+      "control": "fixed repository",
+      "checked_files": 662,
+      "exit_code": 0,
+      "stdout_sha256": "23b97368bfd844d28bdf32009cf39afbae8dc554c9cf4fd8fe834a0356db7b74"
+    },
+    {
+      "command": "python3 scripts/check_public.py",
+      "control": "fixed repository",
+      "checked_files": 1120,
+      "findings": 0,
+      "exit_code": 0,
+      "stdout_sha256": "5e78a191efdd5cd6ecd73b9a387896ad1c3740a115100d166a59a3fb0c709a02"
+    },
+    {
+      "command": "python3 scripts/check_repo.py",
+      "control": "isolated synthetic invalid JSON",
+      "checked_files": 663,
+      "errors": 1,
+      "exit_code": 1,
+      "not_original_main_defect": true
+    }
+  ],
+  "observed": {
+    "same_trigger_intakes": 3,
+    "main_tickets": 1,
+    "main_assignments_after_injected_interruption": 2,
+    "context_only_input_kept_mandate": true,
+    "context_text_command_not_executed": true,
+    "owned_followup_main_accept_rejected": true,
+    "candidate_created_after_handback": true,
+    "delivered_but_unread_preserved": true,
+    "turn_ended_ticket_still_open": true,
+    "reopened_sqlite_in_new_process": true,
+    "interruption_reported_by_adapter": true,
+    "replayed_trigger_inputs": [
+      "unread-followup"
+    ],
+    "already_read_trigger_not_replayed": true,
+    "recovery_note_also_delivered": true,
+    "prior_successful_check_commands_repeated": 0,
+    "prior_outputs_hash_revalidated_by_adapter": true,
+    "main_outcome": "completed",
+    "negative_report": "failed",
+    "negative_ticket_ended": false,
+    "failed_ticket_result_reply_rejected": true,
+    "successful_local_outbox_pending_records": 1,
+    "external_sends": 0,
+    "sqlite_integrity": "ok",
+    "all_database_handles_closed": true
+  },
+  "corrections": [
+    {
+      "kind": "static adapter interface correction",
+      "detail": "An unused first-version outbox call used enqueue instead of Store.receipts.add; original executed v1 retained, corrected path exercised in third process without rerunning successful checks."
+    }
+  ],
+  "limitations": [
+    "Core trusts the Executor report. The adapter, not Engine, verifies real check output and chooses failed/ready.",
+    "No claim that context classification authenticates identities, prevents prompt injection, or is an OS security boundary.",
+    "Recovery is orderly SQLite close/reopen plus explicit assignmentInterrupted injection, not real DSH host crash or power-loss validation.",
+    "Not repeating commands is adapter receipt reuse, not automatic core external-side-effect exactly-once.",
+    "The full pnpm check, DSH sessions/runtime, model/provider, accounts, remote sources, worker slots, concurrent hosts, external outbox send and other platforms were not tested.",
+    "No cost, speed, model quality, production reliability, or default/reader-status upgrade is inferred."
+  ],
+  "retained_evidence": {
+    "archive": "deepseek-superagent-retained-20261102.tar.gz",
+    "bytes": 739409,
+    "sha256": "c998dac766638418a5a275462594763d33234072de43ac653400ad2b23edcfe8",
+    "files_verified": 52,
+    "source_blobs_verified": 216,
+    "consumer_final_sha256": "c6c8f79df7106e271e5505e187ffff76a845e00e18e744cb31b724083bffe677",
+    "sqlite_final_sha256": "58340a01da73a2bf897c3100eb9558eee0c116d33d97c43e06e076e7c8ff2482"
+  }
+}
