@@ -14,7 +14,7 @@
 
 - [分工](../../AGENTS.md)：A：AI coding／M6；B：游戏 AI 全链路／核心模块；[案例](game-taskbook.md#6-作品案例)。
 - 本机由 [local-jobs](local-jobs/README.md) 固定接收器领取；旧 Codex 接收器退役，两项清理按收窄范围接续。
-- 指导层（手册§6）：Claude 核心管方向／原则／A／整体，游戏指导管 B；Codex 审计管增量审计／整理。
+- 指导层（手册§6）：Claude 核心管方向／优化／A、B 指导；Codex 会话执行明确子项（含本机接收端）；本机模型做已定单元。
 - 10-26 历史已获准改写：开工 `git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune`，按远端重建分支，不推旧历史。
 
 ## 项目板
