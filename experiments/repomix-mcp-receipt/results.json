@@ -1,0 +1,2359 @@
+{
+  "scope": "Receive maintainer MCP/shared tests migration from module mocks to optional deps injection; no SDK or protocol version migration, no new source patch.",
+  "source": {
+    "baseline": {
+      "commit": "fe02ab760f14cc2b22123597cb46b37fc52144e7",
+      "tree": "b8e5efd865beada18a6077ac1b2828de823b3367",
+      "archive_sha256": "8545ae93e5d4d870d30b6866eafd92e81cef9831c77cbcb070b76be7d7706fcc",
+      "verified_git_blobs": 1202,
+      "lock_sha256": "8a15e0b59d56ea6b90890255cbfc91b19e474b3cad94178b8b4368fa9523bb59",
+      "tracked_changes": false,
+      "working_status": "?? node_modules"
+    },
+    "candidate": {
+      "commit": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+      "tree": "7b4bb98ba7378ccbcaa71aa82c821ebd9cecf5b9",
+      "archive_sha256": "d69c51e4d1135744cb153e85d85f88d85cf5fc5c12cc1ca69cf3b39b21767def",
+      "verified_git_blobs": 1202,
+      "lock_sha256": "8a15e0b59d56ea6b90890255cbfc91b19e474b3cad94178b8b4368fa9523bb59",
+      "tracked_changes": false,
+      "working_status": ""
+    },
+    "patch_sha256": "0b4f24a715ac70928cb2652c407746ab26671a4933f069e88149d2a40919d024"
+  },
+  "environment": {
+    "os": "Linux",
+    "node": "24.22.1",
+    "npm": "11.9.0",
+    "client": "@modelcontextprotocol/client 2.4.0",
+    "server": "@modelcontextprotocol/server 2.4.0",
+    "protocol_negotiated": "2025-11-25"
+  },
+  "checks": {
+    "both_build_exit": 0,
+    "candidate_full": {
+      "passed": 1982,
+      "failed": 1,
+      "files": 158,
+      "exit": 1
+    },
+    "baseline_affected_file_only": {
+      "passed": 10,
+      "failed": 1,
+      "exit": 1,
+      "full_suite": false
+    },
+    "candidate_lint_exit": 0,
+    "lint_warning": "unicorn(no-new-array) in existing src/core/git/gitMetadataEndpoint.ts; no fixes applied.",
+    "failure_name": "tests/core/file/fileSearch.gitignoreSpec.test.ts > fileSearch gitignore spec > does not apply a parent .gitignore outside a git repository",
+    "expected": [
+      "should_ignore1.py",
+      "valid.py"
+    ],
+    "actual": [
+      "valid.py"
+    ],
+    "diagnosis": "Both sources hit the same assertion. Test assumes no ancestor .git, but host workspace has a read-only .git directory and Git does not recognize a repo. Locked globby16.2.4 findGitRootInChain checks existence. Host directories untouched; no skipped assertion or full-green claim."
+  },
+  "verified_date_utc": "2026-11-02",
+  "upstream": {
+    "pr": "https://github.com/yamadashy/repomix/pull/1988",
+    "state": "open",
+    "merged": false,
+    "head": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+    "author_role": "project maintainer",
+    "scope_files": 24,
+    "production_files": 10,
+    "package_and_lock_unchanged": true,
+    "source_patch_published_here": false
+  },
+  "projection": "Selected receipt, actual tool-call args/times/isError and canonical response hashes, relevant decoded outputs, real file hashes and terminal states; not full raw protocol. Concrete roots/Node executable replaced; synthetic token bytes omitted. Full driver, initial failed input and logs retained locally.",
+  "input_files": {
+    "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;\n",
+    "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA\n",
+    "excluded.txt": "EXCLUDED_PUBLIC_MARKER\n"
+  },
+  "input_file_sha256": {
+    "src/main.js": "b1d79e23e3cf036791dae8a37610ba6f7c5105e5985ded1b13934eb0e2546987",
+    "docs/readme.md": "c7cba4e212eac0fe8be0fe6d280258f8f8797210c1ee9bec20e44bc6cb86ee1f",
+    "excluded.txt": "d5807da313f7dbbd3b9704bb700481eaae4162ab4439eaeec475e7b3c124e9c1"
+  },
+  "consumer_runs": [
+    {
+      "label": "baseline-normal",
+      "start": "2026-11-02T04:35:26.475Z",
+      "end": "2026-11-02T04:35:27.225Z",
+      "command": [
+        "<node>",
+        "<baseline-source>/bin/repomix.cjs",
+        "--mcp"
+      ],
+      "cwd": "<project>",
+      "checks": [
+        "exact tool set",
+        "pack returns two files and outputId",
+        "exact packaged file map and text",
+        "grep exact two matches",
+        "read_repomix_output unknown ID is tool error",
+        "grep_repomix_output unknown ID is tool error",
+        "missing pack path is tool error",
+        "attached clean output readable"
+      ],
+      "success": false,
+      "exit": {
+        "utc": "2026-11-02T04:35:27.224Z",
+        "code": 0,
+        "signal": null
+      },
+      "eof": "2026-11-02T04:35:27.200Z",
+      "round": "initial",
+      "client": "official SDK, unmodified production dependencies, actual Node stdio child",
+      "environment_keys": [
+        "HOME",
+        "LANG",
+        "NO_COLOR",
+        "PATH",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "protocol_versions": [
+        "2025-11-25"
+      ],
+      "tool_names": [
+        "attach_packed_output",
+        "generate_skill",
+        "grep_repomix_output",
+        "pack_codebase",
+        "pack_remote_repository",
+        "read_repomix_output"
+      ],
+      "full_tool_entries_sha256": "3553cebd47f8687b0e8119eb7a98c63ec467dc19210a147ddd638fa1189a5c09",
+      "source_hashes_unchanged_owner_verified": true,
+      "stdout_all_jsonrpc": true,
+      "stdout_raw_sha256": "d8106d307665b08437323b3906bdf10aae2ae177997b3d8ac28f1e7448cf7549",
+      "events_raw_sha256": "c273d3be1e0ff3a431296920b04f25fc40aa7d4709f0f1b49d590a0b8dced945",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "consumer_error_summary": "Expected attached-file re-scan rejection, but isError was absent. Synthetic token was preceded by literal n from encoded newline; detector did not match. Driver input corrected, not product.",
+      "tool_calls": [
+        {
+          "started_utc": "2026-11-02T04:35:26.714Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "<project>",
+            "style": "json",
+            "includePatterns": "src/**,docs/**",
+            "ignorePatterns": "excluded.txt"
+          },
+          "returned_utc": "2026-11-02T04:35:27.164Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "66a6d7249bf5707248282896e69c5c62c9b00e6e026172e6d9aa4a6f3ee4bbaf",
+          "observed": {
+            "totalFiles": 2,
+            "outputId": "2f4c8250b09845c8",
+            "outputFilePath": "<consumer-run>/tmp/repomix/mcp-outputs/HoAJ25/repomix-output.json"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.164Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "2f4c8250b09845c8"
+          },
+          "returned_utc": "2026-11-02T04:35:27.167Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "0490504d0636fc62ab79cbce2902764bb8f47726bf121c86c33d54502f13c64b",
+          "observed_files": {
+            "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA",
+            "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.167Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "2f4c8250b09845c8",
+            "pattern": "PUBLIC_RECEIPT_(ALPHA|BETA)"
+          },
+          "returned_utc": "2026-11-02T04:35:27.170Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "b44988a267dc60b042e21ac1801488d6280aa3394ca624e4f1ccdd489f8944cb",
+          "observed": {
+            "totalMatches": 2,
+            "matches": [
+              {
+                "lineNumber": 11,
+                "line": "    \"docs/readme.md\": \"# Synthetic receipt\\nPUBLIC_RECEIPT_BETA\",",
+                "matchedText": "PUBLIC_RECEIPT_BETA"
+              },
+              {
+                "lineNumber": 12,
+                "line": "    \"src/main.js\": \"export const receipt = \\\"PUBLIC_RECEIPT_ALPHA\\\";\\nexport const sum = (a,b) => a+b;\"",
+                "matchedText": "PUBLIC_RECEIPT_ALPHA"
+              }
+            ]
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.171Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist"
+          },
+          "returned_utc": "2026-11-02T04:35:27.172Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "4ccaa22c8db564bf80affd9abca1bc6bdbebb43eb71b5e10f5deeec989671073",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.172Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist",
+            "pattern": "PUBLIC"
+          },
+          "returned_utc": "2026-11-02T04:35:27.173Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e0af69637798f62c9cb3e7a850d6762dc6671efedec6e4154988b9341ebb5039",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\",\n  \"details\": {\n    \"outputId\": \"consumer-does-not-exist\",\n    \"reason\": \"FILE_NOT_FOUND\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.173Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "<project>/missing"
+          },
+          "returned_utc": "2026-11-02T04:35:27.179Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "a4c73f1eb172aa89de361dca50854ff82991fd0107fadf8674ac3322cdeac9f3",
+          "error_text": "{\n  \"errorMessage\": \"Target path does not exist: <project>/missing\",\n  \"details\": {\n    \"stack\": \"RepomixError: Target path does not exist: <project>/missing\\n    at Object.searchFiles (file://<baseline-source>/lib/core/file/fileSearch.js:101:23)\\n    at async file://<baseline-source>/lib/core/packager.js:51:24\\n    at async Promise.all (index 0)\\n    at async withMemoryLogging (file://<baseline-source>/lib/shared/memoryUtils.js:35:24)\\n    at async pack (file://<baseline-source>/lib/core/packager.js:50:32)\\n    at async runDefaultAction (file://<baseline-source>/lib/cli/actions/defaultAction.js:96:22)\\n    at async runCli (file://<baseline-source>/lib/cli/cliRun.js:286:12)\\n    at async runCliPreservingLogLevel (file://<baseline-source>/lib/mcp/tools/mcpToolRuntime.js:91:16)\\n    at async withMcpProgress (file://<baseline-source>/lib/mcp/tools/mcpProgress.js:64:16)\\n    at async file://<baseline-source>/lib/mcp/tools/packCodebaseTool.js:107:28\",\n    \"name\": \"RepomixError\",\n    \"timestamp\": \"2026-11-02T04:35:27.179Z\",\n    \"type\": \"Error\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.180Z",
+          "name": "attach_packed_output",
+          "arguments": {
+            "path": "<consumer-run>/attached.json"
+          },
+          "returned_utc": "2026-11-02T04:35:27.183Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dadb527014cea637920411e140657946709a3cd5c03a4e010b9062963af2cc17"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.183Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "2695c3b090289e2e"
+          },
+          "returned_utc": "2026-11-02T04:35:27.194Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "5d1d1df46008a939609f441306a692b6056bc7f32223fe7feaf4489b728043d8"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.194Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "2695c3b090289e2e"
+          },
+          "returned_utc": "2026-11-02T04:35:27.199Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "853e1a12b3e6120865ca243f6abb87ab6326e3dd995d2de217dd6944db7fb375"
+        }
+      ]
+    },
+    {
+      "label": "baseline-sandbox",
+      "start": "2026-11-02T04:35:27.226Z",
+      "end": "2026-11-02T04:35:27.885Z",
+      "command": [
+        "<node>",
+        "<baseline-source>/bin/repomix.cjs",
+        "--mcp",
+        "--sandbox",
+        "<project>"
+      ],
+      "cwd": "<project>",
+      "checks": [
+        "exact tool set",
+        "pack returns two files and outputId",
+        "exact packaged file map and text",
+        "grep exact two matches",
+        "read_repomix_output unknown ID is tool error",
+        "grep_repomix_output unknown ID is tool error",
+        "missing pack path is tool error",
+        "actual directory list",
+        "actual file read exact",
+        "own outside sentinel refused",
+        "missing file is tool error",
+        "same connection still reads after errors",
+        "source hashes unchanged"
+      ],
+      "success": true,
+      "exit": {
+        "utc": "2026-11-02T04:35:27.885Z",
+        "code": 0,
+        "signal": null
+      },
+      "eof": "2026-11-02T04:35:27.863Z",
+      "round": "initial",
+      "client": "official SDK, unmodified production dependencies, actual Node stdio child",
+      "environment_keys": [
+        "HOME",
+        "LANG",
+        "NO_COLOR",
+        "PATH",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "protocol_versions": [
+        "2025-11-25"
+      ],
+      "tool_names": [
+        "file_system_read_directory",
+        "file_system_read_file",
+        "grep_repomix_output",
+        "pack_codebase",
+        "read_repomix_output"
+      ],
+      "full_tool_entries_sha256": "3117a4e80c941f8c870ffd5ec50009047f995df4bf90801395884ebe7840b599",
+      "source_hashes_unchanged_owner_verified": true,
+      "stdout_all_jsonrpc": true,
+      "stdout_raw_sha256": "ae9874d60d779a61dcefb14c2e3ebcdde980593aa165f8e76ff397e59a366069",
+      "events_raw_sha256": "00f0d667837bcdfad427656db1a6fd55cb736964dddde6103c7c70336c50b622",
+      "stderr_sha256": "9e7c50bc481a0b16868eba5d59133ae776750eeb20f113b86daa0443a48ebff0",
+      "stdout_no_concrete_workspace_root": true,
+      "tool_calls": [
+        {
+          "started_utc": "2026-11-02T04:35:27.448Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": ".",
+            "style": "json",
+            "includePatterns": "src/**,docs/**",
+            "ignorePatterns": "excluded.txt"
+          },
+          "returned_utc": "2026-11-02T04:35:27.834Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "c0eeca771a86181525d1c6ab094b807a25462ad4df5d5bb3a74a5db1dd5554cb",
+          "observed": {
+            "totalFiles": 2,
+            "outputId": "c7ef4ae6e6308bba",
+            "outputFilePath": ""
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.835Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "c7ef4ae6e6308bba"
+          },
+          "returned_utc": "2026-11-02T04:35:27.838Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dc14946f2c35ef90ccd71ec253fb1ab99618f619b6181a38d5138dbf1e61a9f1",
+          "observed_files": {
+            "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA",
+            "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.838Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "c7ef4ae6e6308bba",
+            "pattern": "PUBLIC_RECEIPT_(ALPHA|BETA)"
+          },
+          "returned_utc": "2026-11-02T04:35:27.841Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "ccedb8ecafc8b28c421186ac25e4f3f190192de47499c7296eb14ac26c3b0221",
+          "observed": {
+            "totalMatches": 2,
+            "matches": [
+              {
+                "lineNumber": 11,
+                "line": "    \"docs/readme.md\": \"# Synthetic receipt\\nPUBLIC_RECEIPT_BETA\",",
+                "matchedText": "PUBLIC_RECEIPT_BETA"
+              },
+              {
+                "lineNumber": 12,
+                "line": "    \"src/main.js\": \"export const receipt = \\\"PUBLIC_RECEIPT_ALPHA\\\";\\nexport const sum = (a,b) => a+b;\"",
+                "matchedText": "PUBLIC_RECEIPT_ALPHA"
+              }
+            ]
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.841Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist"
+          },
+          "returned_utc": "2026-11-02T04:35:27.842Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "4ccaa22c8db564bf80affd9abca1bc6bdbebb43eb71b5e10f5deeec989671073",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.842Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist",
+            "pattern": "PUBLIC"
+          },
+          "returned_utc": "2026-11-02T04:35:27.843Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e0af69637798f62c9cb3e7a850d6762dc6671efedec6e4154988b9341ebb5039",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\",\n  \"details\": {\n    \"outputId\": \"consumer-does-not-exist\",\n    \"reason\": \"FILE_NOT_FOUND\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.843Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "missing"
+          },
+          "returned_utc": "2026-11-02T04:35:27.844Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e7b66b91e658eab66ce0ba34e91a1c19cd8cc4071e085d380721a4fa97ccabb3",
+          "error_text": "{\n  \"errorMessage\": \"Error: directory not found: missing\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.844Z",
+          "name": "file_system_read_directory",
+          "arguments": {
+            "path": "src"
+          },
+          "returned_utc": "2026-11-02T04:35:27.846Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "f15a115427bbb10afa7c9a63e933baa890a7921908313ff61225dedea0d09020",
+          "observed": {
+            "path": "src",
+            "contents": [
+              "[FILE] main.js"
+            ],
+            "totalItems": 1,
+            "fileCount": 1,
+            "directoryCount": 0
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.846Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "src/main.js"
+          },
+          "returned_utc": "2026-11-02T04:35:27.858Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "921ae28f1de7c256b208820c30c9de602b2efeee81690c072d255a38feea7a56",
+          "observed": {
+            "path": "src/main.js",
+            "content": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;\n",
+            "size": 80,
+            "encoding": "utf8",
+            "lines": 3
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.858Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "../sentinel.txt"
+          },
+          "returned_utc": "2026-11-02T04:35:27.860Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "ac50dc3257ef3eb7f464241b2cb0bac85d5fb17006b82e9d925df29541823397",
+          "error_text": "{\n  \"errorMessage\": \"Error: Path \\\"../sentinel.txt\\\" must be relative to workspace root — no \\\"/\\\", \\\"~/\\\", \\\"../\\\", drive, or \\\"..\\\" segment. Use e.g. \\\"src/index.ts\\\" or \\\".\\\" for whole workspace.: ../sentinel.txt\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.860Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "absent.txt"
+          },
+          "returned_utc": "2026-11-02T04:35:27.861Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "b0d45e9d63dc35e6b590f15b701c10e22d5fb7595ceccd9ccaaf1407840ab830",
+          "error_text": "{\n  \"errorMessage\": \"Error: File not found at path: absent.txt\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:27.861Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "c7ef4ae6e6308bba"
+          },
+          "returned_utc": "2026-11-02T04:35:27.862Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dc14946f2c35ef90ccd71ec253fb1ab99618f619b6181a38d5138dbf1e61a9f1"
+        }
+      ]
+    },
+    {
+      "label": "candidate-normal",
+      "start": "2026-11-02T04:35:27.886Z",
+      "end": "2026-11-02T04:35:28.568Z",
+      "command": [
+        "<node>",
+        "<candidate-source>/bin/repomix.cjs",
+        "--mcp"
+      ],
+      "cwd": "<project>",
+      "checks": [
+        "exact tool set",
+        "pack returns two files and outputId",
+        "exact packaged file map and text",
+        "grep exact two matches",
+        "read_repomix_output unknown ID is tool error",
+        "grep_repomix_output unknown ID is tool error",
+        "missing pack path is tool error",
+        "attached clean output readable"
+      ],
+      "success": false,
+      "exit": {
+        "utc": "2026-11-02T04:35:28.568Z",
+        "code": 0,
+        "signal": null
+      },
+      "eof": "2026-11-02T04:35:28.542Z",
+      "round": "initial",
+      "client": "official SDK, unmodified production dependencies, actual Node stdio child",
+      "environment_keys": [
+        "HOME",
+        "LANG",
+        "NO_COLOR",
+        "PATH",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "protocol_versions": [
+        "2025-11-25"
+      ],
+      "tool_names": [
+        "attach_packed_output",
+        "generate_skill",
+        "grep_repomix_output",
+        "pack_codebase",
+        "pack_remote_repository",
+        "read_repomix_output"
+      ],
+      "full_tool_entries_sha256": "3553cebd47f8687b0e8119eb7a98c63ec467dc19210a147ddd638fa1189a5c09",
+      "source_hashes_unchanged_owner_verified": true,
+      "stdout_all_jsonrpc": true,
+      "stdout_raw_sha256": "485f1df6ee5176d5722f4dd4358fc9788cf880b7c62f928d63437136f5d43ea4",
+      "events_raw_sha256": "ef0a1e03b213877faa1eb67078ae028cde65499b80af2d3f7795d696a36bb9c6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "consumer_error_summary": "Expected attached-file re-scan rejection, but isError was absent. Synthetic token was preceded by literal n from encoded newline; detector did not match. Driver input corrected, not product.",
+      "tool_calls": [
+        {
+          "started_utc": "2026-11-02T04:35:28.120Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "<project>",
+            "style": "json",
+            "includePatterns": "src/**,docs/**",
+            "ignorePatterns": "excluded.txt"
+          },
+          "returned_utc": "2026-11-02T04:35:28.508Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "314d90fdf3409f6bd3edc77d485471ad7ba2b959eb60b2e1450ef9038d4f0f69",
+          "observed": {
+            "totalFiles": 2,
+            "outputId": "70fa0ead1398986d",
+            "outputFilePath": "<consumer-run>/tmp/repomix/mcp-outputs/zBWtAv/repomix-output.json"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:28.509Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "70fa0ead1398986d"
+          },
+          "returned_utc": "2026-11-02T04:35:28.511Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "0490504d0636fc62ab79cbce2902764bb8f47726bf121c86c33d54502f13c64b",
+          "observed_files": {
+            "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA",
+            "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:28.511Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "70fa0ead1398986d",
+            "pattern": "PUBLIC_RECEIPT_(ALPHA|BETA)"
+          },
+          "returned_utc": "2026-11-02T04:35:28.514Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "c3ae640086bf9e410b7e5bdf2ba86c611682ee0e82c065ba89b31c3b0b399df2",
+          "observed": {
+            "totalMatches": 2,
+            "matches": [
+              {
+                "lineNumber": 11,
+                "line": "    \"docs/readme.md\": \"# Synthetic receipt\\nPUBLIC_RECEIPT_BETA\",",
+                "matchedText": "PUBLIC_RECEIPT_BETA"
+              },
+              {
+                "lineNumber": 12,
+                "line": "    \"src/main.js\": \"export const receipt = \\\"PUBLIC_RECEIPT_ALPHA\\\";\\nexport const sum = (a,b) => a+b;\"",
+                "matchedText": "PUBLIC_RECEIPT_ALPHA"
+              }
+            ]
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:28.515Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist"
+          },
+          "returned_utc": "2026-11-02T04:35:28.516Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "4ccaa22c8db564bf80affd9abca1bc6bdbebb43eb71b5e10f5deeec989671073",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:28.516Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist",
+            "pattern": "PUBLIC"
+          },
+          "returned_utc": "2026-11-02T04:35:28.516Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e0af69637798f62c9cb3e7a850d6762dc6671efedec6e4154988b9341ebb5039",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\",\n  \"details\": {\n    \"outputId\": \"consumer-does-not-exist\",\n    \"reason\": \"FILE_NOT_FOUND\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:28.516Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "<project>/missing"
+          },
+          "returned_utc": "2026-11-02T04:35:28.523Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "65276fcc637912125acbc06a9958dbf0091c85a649878666ee65e39101ac4df8",
+          "error_text": "{\n  \"errorMessage\": \"Target path does not exist: <project>/missing\",\n  \"details\": {\n    \"stack\": \"RepomixError: Target path does not exist: <project>/missing\\n    at Object.searchFiles (file://<candidate-source>/lib/core/file/fileSearch.js:101:23)\\n    at async file://<candidate-source>/lib/core/packager.js:51:24\\n    at async Promise.all (index 0)\\n    at async withMemoryLogging (file://<candidate-source>/lib/shared/memoryUtils.js:35:24)\\n    at async pack (file://<candidate-source>/lib/core/packager.js:50:32)\\n    at async runDefaultAction (file://<candidate-source>/lib/cli/actions/defaultAction.js:96:22)\\n    at async Object.runCli (file://<candidate-source>/lib/cli/cliRun.js:286:12)\\n    at async Object.runCliPreservingLogLevel (file://<candidate-source>/lib/mcp/tools/mcpToolRuntime.js:95:16)\\n    at async withMcpProgress (file://<candidate-source>/lib/mcp/tools/mcpProgress.js:64:16)\\n    at async file://<candidate-source>/lib/mcp/tools/packCodebaseTool.js:112:28\",\n    \"name\": \"RepomixError\",\n    \"timestamp\": \"2026-11-02T04:35:28.523Z\",\n    \"type\": \"Error\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:28.523Z",
+          "name": "attach_packed_output",
+          "arguments": {
+            "path": "<consumer-run>/attached.json"
+          },
+          "returned_utc": "2026-11-02T04:35:28.526Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "97de1bf9c40bbaf6045bd7b92c004d94d589c39fdc0e94054b98b91f7064d81b"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:28.527Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "00998706552dc991"
+          },
+          "returned_utc": "2026-11-02T04:35:28.537Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "5d1d1df46008a939609f441306a692b6056bc7f32223fe7feaf4489b728043d8"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:28.537Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "00998706552dc991"
+          },
+          "returned_utc": "2026-11-02T04:35:28.541Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "853e1a12b3e6120865ca243f6abb87ab6326e3dd995d2de217dd6944db7fb375"
+        }
+      ]
+    },
+    {
+      "label": "candidate-sandbox",
+      "start": "2026-11-02T04:35:28.570Z",
+      "end": "2026-11-02T04:35:29.263Z",
+      "command": [
+        "<node>",
+        "<candidate-source>/bin/repomix.cjs",
+        "--mcp",
+        "--sandbox",
+        "<project>"
+      ],
+      "cwd": "<project>",
+      "checks": [
+        "exact tool set",
+        "pack returns two files and outputId",
+        "exact packaged file map and text",
+        "grep exact two matches",
+        "read_repomix_output unknown ID is tool error",
+        "grep_repomix_output unknown ID is tool error",
+        "missing pack path is tool error",
+        "actual directory list",
+        "actual file read exact",
+        "own outside sentinel refused",
+        "missing file is tool error",
+        "same connection still reads after errors",
+        "source hashes unchanged"
+      ],
+      "success": true,
+      "exit": {
+        "utc": "2026-11-02T04:35:29.262Z",
+        "code": 0,
+        "signal": null
+      },
+      "eof": "2026-11-02T04:35:29.239Z",
+      "round": "initial",
+      "client": "official SDK, unmodified production dependencies, actual Node stdio child",
+      "environment_keys": [
+        "HOME",
+        "LANG",
+        "NO_COLOR",
+        "PATH",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "protocol_versions": [
+        "2025-11-25"
+      ],
+      "tool_names": [
+        "file_system_read_directory",
+        "file_system_read_file",
+        "grep_repomix_output",
+        "pack_codebase",
+        "read_repomix_output"
+      ],
+      "full_tool_entries_sha256": "3117a4e80c941f8c870ffd5ec50009047f995df4bf90801395884ebe7840b599",
+      "source_hashes_unchanged_owner_verified": true,
+      "stdout_all_jsonrpc": true,
+      "stdout_raw_sha256": "1bd6e342f9bf4e2d38f23e42a0e61ef3e313ae8b1b87635b0471001ae623d023",
+      "events_raw_sha256": "76b0e4f4d07c2cf8c3273a72acd14e32aa006d17ee894ae5487e31f770efb941",
+      "stderr_sha256": "9e7c50bc481a0b16868eba5d59133ae776750eeb20f113b86daa0443a48ebff0",
+      "stdout_no_concrete_workspace_root": true,
+      "tool_calls": [
+        {
+          "started_utc": "2026-11-02T04:35:28.811Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": ".",
+            "style": "json",
+            "includePatterns": "src/**,docs/**",
+            "ignorePatterns": "excluded.txt"
+          },
+          "returned_utc": "2026-11-02T04:35:29.205Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "71ee0aa4009494297d38fc8afd96ad81b5a2804edbe4065ae17301e713fd8b2e",
+          "observed": {
+            "totalFiles": 2,
+            "outputId": "3fbb88ace794b5b6",
+            "outputFilePath": ""
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.206Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "3fbb88ace794b5b6"
+          },
+          "returned_utc": "2026-11-02T04:35:29.208Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dc14946f2c35ef90ccd71ec253fb1ab99618f619b6181a38d5138dbf1e61a9f1",
+          "observed_files": {
+            "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA",
+            "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.213Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "3fbb88ace794b5b6",
+            "pattern": "PUBLIC_RECEIPT_(ALPHA|BETA)"
+          },
+          "returned_utc": "2026-11-02T04:35:29.216Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "2d7b0193721b2f71453d485bf3b1f49fb21a8073f4002fc78db8f513c7e99fe9",
+          "observed": {
+            "totalMatches": 2,
+            "matches": [
+              {
+                "lineNumber": 11,
+                "line": "    \"docs/readme.md\": \"# Synthetic receipt\\nPUBLIC_RECEIPT_BETA\",",
+                "matchedText": "PUBLIC_RECEIPT_BETA"
+              },
+              {
+                "lineNumber": 12,
+                "line": "    \"src/main.js\": \"export const receipt = \\\"PUBLIC_RECEIPT_ALPHA\\\";\\nexport const sum = (a,b) => a+b;\"",
+                "matchedText": "PUBLIC_RECEIPT_ALPHA"
+              }
+            ]
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.216Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist"
+          },
+          "returned_utc": "2026-11-02T04:35:29.217Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "4ccaa22c8db564bf80affd9abca1bc6bdbebb43eb71b5e10f5deeec989671073",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.217Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist",
+            "pattern": "PUBLIC"
+          },
+          "returned_utc": "2026-11-02T04:35:29.218Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e0af69637798f62c9cb3e7a850d6762dc6671efedec6e4154988b9341ebb5039",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\",\n  \"details\": {\n    \"outputId\": \"consumer-does-not-exist\",\n    \"reason\": \"FILE_NOT_FOUND\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.218Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "missing"
+          },
+          "returned_utc": "2026-11-02T04:35:29.220Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e7b66b91e658eab66ce0ba34e91a1c19cd8cc4071e085d380721a4fa97ccabb3",
+          "error_text": "{\n  \"errorMessage\": \"Error: directory not found: missing\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.220Z",
+          "name": "file_system_read_directory",
+          "arguments": {
+            "path": "src"
+          },
+          "returned_utc": "2026-11-02T04:35:29.223Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "f15a115427bbb10afa7c9a63e933baa890a7921908313ff61225dedea0d09020",
+          "observed": {
+            "path": "src",
+            "contents": [
+              "[FILE] main.js"
+            ],
+            "totalItems": 1,
+            "fileCount": 1,
+            "directoryCount": 0
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.223Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "src/main.js"
+          },
+          "returned_utc": "2026-11-02T04:35:29.235Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "921ae28f1de7c256b208820c30c9de602b2efeee81690c072d255a38feea7a56",
+          "observed": {
+            "path": "src/main.js",
+            "content": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;\n",
+            "size": 80,
+            "encoding": "utf8",
+            "lines": 3
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.236Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "../sentinel.txt"
+          },
+          "returned_utc": "2026-11-02T04:35:29.237Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "ac50dc3257ef3eb7f464241b2cb0bac85d5fb17006b82e9d925df29541823397",
+          "error_text": "{\n  \"errorMessage\": \"Error: Path \\\"../sentinel.txt\\\" must be relative to workspace root — no \\\"/\\\", \\\"~/\\\", \\\"../\\\", drive, or \\\"..\\\" segment. Use e.g. \\\"src/index.ts\\\" or \\\".\\\" for whole workspace.: ../sentinel.txt\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.237Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "absent.txt"
+          },
+          "returned_utc": "2026-11-02T04:35:29.238Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "b0d45e9d63dc35e6b590f15b701c10e22d5fb7595ceccd9ccaaf1407840ab830",
+          "error_text": "{\n  \"errorMessage\": \"Error: File not found at path: absent.txt\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:35:29.238Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "3fbb88ace794b5b6"
+          },
+          "returned_utc": "2026-11-02T04:35:29.239Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dc14946f2c35ef90ccd71ec253fb1ab99618f619b6181a38d5138dbf1e61a9f1"
+        }
+      ]
+    },
+    {
+      "label": "baseline-normal",
+      "start": "2026-11-02T04:36:16.121Z",
+      "end": "2026-11-02T04:36:16.961Z",
+      "command": [
+        "<node>",
+        "<baseline-source>/bin/repomix.cjs",
+        "--mcp"
+      ],
+      "cwd": "<project>",
+      "checks": [
+        "exact tool set",
+        "pack returns two files and outputId",
+        "exact packaged file map and text",
+        "grep exact two matches",
+        "read_repomix_output unknown ID is tool error",
+        "grep_repomix_output unknown ID is tool error",
+        "missing pack path is tool error",
+        "attached clean output readable",
+        "read_repomix_output rescans mutated attachment and rejects",
+        "grep_repomix_output rescans mutated attachment and rejects",
+        "same connection still reads after errors",
+        "source hashes unchanged"
+      ],
+      "success": true,
+      "exit": {
+        "utc": "2026-11-02T04:36:16.960Z",
+        "code": 0,
+        "signal": null
+      },
+      "eof": "2026-11-02T04:36:16.922Z",
+      "round": "corrected_input",
+      "client": "official SDK, unmodified production dependencies, actual Node stdio child",
+      "environment_keys": [
+        "HOME",
+        "LANG",
+        "NO_COLOR",
+        "PATH",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "protocol_versions": [
+        "2025-11-25"
+      ],
+      "tool_names": [
+        "attach_packed_output",
+        "generate_skill",
+        "grep_repomix_output",
+        "pack_codebase",
+        "pack_remote_repository",
+        "read_repomix_output"
+      ],
+      "full_tool_entries_sha256": "3553cebd47f8687b0e8119eb7a98c63ec467dc19210a147ddd638fa1189a5c09",
+      "source_hashes_unchanged_owner_verified": true,
+      "stdout_all_jsonrpc": true,
+      "stdout_raw_sha256": "c6cd1adc6d2281847b17472ca983b7aaf1236c7510af6bc318a718c9e6352cfb",
+      "events_raw_sha256": "42c71fa58e15db0f06e99dd355c1af3bfc24b7656c99e0b449ebe1561060d7e0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool_calls": [
+        {
+          "started_utc": "2026-11-02T04:36:16.391Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "<project>",
+            "style": "json",
+            "includePatterns": "src/**,docs/**",
+            "ignorePatterns": "excluded.txt"
+          },
+          "returned_utc": "2026-11-02T04:36:16.870Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "3a5399513475945d043236ecbac5463477148d01f47c2bdde799f0408521c571",
+          "observed": {
+            "totalFiles": 2,
+            "outputId": "22ae792e945143e1",
+            "outputFilePath": "<consumer-run>/tmp/repomix/mcp-outputs/qDjw1H/repomix-output.json"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.870Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "22ae792e945143e1"
+          },
+          "returned_utc": "2026-11-02T04:36:16.875Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "0490504d0636fc62ab79cbce2902764bb8f47726bf121c86c33d54502f13c64b",
+          "observed_files": {
+            "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA",
+            "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.875Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "22ae792e945143e1",
+            "pattern": "PUBLIC_RECEIPT_(ALPHA|BETA)"
+          },
+          "returned_utc": "2026-11-02T04:36:16.880Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "ce5761029e0cbeb74095b7cef72a6646014b62c26022ce35a6ef6799f551435a",
+          "observed": {
+            "totalMatches": 2,
+            "matches": [
+              {
+                "lineNumber": 11,
+                "line": "    \"docs/readme.md\": \"# Synthetic receipt\\nPUBLIC_RECEIPT_BETA\",",
+                "matchedText": "PUBLIC_RECEIPT_BETA"
+              },
+              {
+                "lineNumber": 12,
+                "line": "    \"src/main.js\": \"export const receipt = \\\"PUBLIC_RECEIPT_ALPHA\\\";\\nexport const sum = (a,b) => a+b;\"",
+                "matchedText": "PUBLIC_RECEIPT_ALPHA"
+              }
+            ]
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.880Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist"
+          },
+          "returned_utc": "2026-11-02T04:36:16.881Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "4ccaa22c8db564bf80affd9abca1bc6bdbebb43eb71b5e10f5deeec989671073",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.881Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist",
+            "pattern": "PUBLIC"
+          },
+          "returned_utc": "2026-11-02T04:36:16.883Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e0af69637798f62c9cb3e7a850d6762dc6671efedec6e4154988b9341ebb5039",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\",\n  \"details\": {\n    \"outputId\": \"consumer-does-not-exist\",\n    \"reason\": \"FILE_NOT_FOUND\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.883Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "<project>/missing"
+          },
+          "returned_utc": "2026-11-02T04:36:16.893Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "965994312597ab6f0fbf54e2cd9aebc783e814e88d42303f1a136a5f188ca699",
+          "error_text": "{\n  \"errorMessage\": \"Target path does not exist: <project>/missing\",\n  \"details\": {\n    \"stack\": \"RepomixError: Target path does not exist: <project>/missing\\n    at Object.searchFiles (file://<baseline-source>/lib/core/file/fileSearch.js:101:23)\\n    at async file://<baseline-source>/lib/core/packager.js:51:24\\n    at async Promise.all (index 0)\\n    at async withMemoryLogging (file://<baseline-source>/lib/shared/memoryUtils.js:35:24)\\n    at async pack (file://<baseline-source>/lib/core/packager.js:50:32)\\n    at async runDefaultAction (file://<baseline-source>/lib/cli/actions/defaultAction.js:96:22)\\n    at async runCli (file://<baseline-source>/lib/cli/cliRun.js:286:12)\\n    at async runCliPreservingLogLevel (file://<baseline-source>/lib/mcp/tools/mcpToolRuntime.js:91:16)\\n    at async withMcpProgress (file://<baseline-source>/lib/mcp/tools/mcpProgress.js:64:16)\\n    at async file://<baseline-source>/lib/mcp/tools/packCodebaseTool.js:107:28\",\n    \"name\": \"RepomixError\",\n    \"timestamp\": \"2026-11-02T04:36:16.891Z\",\n    \"type\": \"Error\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.893Z",
+          "name": "attach_packed_output",
+          "arguments": {
+            "path": "<consumer-run>/attached.json"
+          },
+          "returned_utc": "2026-11-02T04:36:16.897Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "0b231dec7b2ddf1345c0248ed295f31a83428f284162824b9b5114ee2719234b"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.897Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "be0fb5db1d164b42"
+          },
+          "returned_utc": "2026-11-02T04:36:16.911Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "5d1d1df46008a939609f441306a692b6056bc7f32223fe7feaf4489b728043d8"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.911Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "be0fb5db1d164b42"
+          },
+          "returned_utc": "2026-11-02T04:36:16.917Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "df1aa970bd4e6686f795ae5db852aabd266e9874552a3825bac5699a4122cb11",
+          "error_text": "{\n  \"errorMessage\": \"Error: Security check failed. The file at <consumer-run>/attached.json may contain sensitive information.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.918Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "be0fb5db1d164b42",
+            "pattern": "PUBLIC_ATTACH_MARKER"
+          },
+          "returned_utc": "2026-11-02T04:36:16.920Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "cfce68a306968c465c40601d390f9fc432258e4ef6b0ba7bc30c24d1482cf62e",
+          "error_text": "{\n  \"errorMessage\": \"Error: Security check failed. The file at <consumer-run>/attached.json may contain sensitive information.\",\n  \"details\": {\n    \"outputId\": \"be0fb5db1d164b42\",\n    \"reason\": \"SECURITY_CHECK_FAILED\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:16.920Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "22ae792e945143e1"
+          },
+          "returned_utc": "2026-11-02T04:36:16.921Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "0490504d0636fc62ab79cbce2902764bb8f47726bf121c86c33d54502f13c64b"
+        }
+      ]
+    },
+    {
+      "label": "baseline-sandbox",
+      "start": "2026-11-02T04:36:16.962Z",
+      "end": "2026-11-02T04:36:17.692Z",
+      "command": [
+        "<node>",
+        "<baseline-source>/bin/repomix.cjs",
+        "--mcp",
+        "--sandbox",
+        "<project>"
+      ],
+      "cwd": "<project>",
+      "checks": [
+        "exact tool set",
+        "pack returns two files and outputId",
+        "exact packaged file map and text",
+        "grep exact two matches",
+        "read_repomix_output unknown ID is tool error",
+        "grep_repomix_output unknown ID is tool error",
+        "missing pack path is tool error",
+        "actual directory list",
+        "actual file read exact",
+        "own outside sentinel refused",
+        "missing file is tool error",
+        "same connection still reads after errors",
+        "source hashes unchanged"
+      ],
+      "success": true,
+      "exit": {
+        "utc": "2026-11-02T04:36:17.692Z",
+        "code": 0,
+        "signal": null
+      },
+      "eof": "2026-11-02T04:36:17.661Z",
+      "round": "corrected_input",
+      "client": "official SDK, unmodified production dependencies, actual Node stdio child",
+      "environment_keys": [
+        "HOME",
+        "LANG",
+        "NO_COLOR",
+        "PATH",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "protocol_versions": [
+        "2025-11-25"
+      ],
+      "tool_names": [
+        "file_system_read_directory",
+        "file_system_read_file",
+        "grep_repomix_output",
+        "pack_codebase",
+        "read_repomix_output"
+      ],
+      "full_tool_entries_sha256": "3117a4e80c941f8c870ffd5ec50009047f995df4bf90801395884ebe7840b599",
+      "source_hashes_unchanged_owner_verified": true,
+      "stdout_all_jsonrpc": true,
+      "stdout_raw_sha256": "9182d4f58ed9cde859df397caec3341b1dce2172dfb264da094a496f38c7a375",
+      "events_raw_sha256": "6ad032a49b355313673a65f94f9c3462dabe7d2d95fe308666393ca42bc64942",
+      "stderr_sha256": "9e7c50bc481a0b16868eba5d59133ae776750eeb20f113b86daa0443a48ebff0",
+      "stdout_no_concrete_workspace_root": true,
+      "tool_calls": [
+        {
+          "started_utc": "2026-11-02T04:36:17.210Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": ".",
+            "style": "json",
+            "includePatterns": "src/**,docs/**",
+            "ignorePatterns": "excluded.txt"
+          },
+          "returned_utc": "2026-11-02T04:36:17.626Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "043202c5b74d8223a7cef1de38362aa6d8c70e1a8822868c5516c176ce354122",
+          "observed": {
+            "totalFiles": 2,
+            "outputId": "c180a155d9d8dcea",
+            "outputFilePath": ""
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.626Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "c180a155d9d8dcea"
+          },
+          "returned_utc": "2026-11-02T04:36:17.630Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dc14946f2c35ef90ccd71ec253fb1ab99618f619b6181a38d5138dbf1e61a9f1",
+          "observed_files": {
+            "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA",
+            "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.630Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "c180a155d9d8dcea",
+            "pattern": "PUBLIC_RECEIPT_(ALPHA|BETA)"
+          },
+          "returned_utc": "2026-11-02T04:36:17.634Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "6d0cd8d3519deabc65a377bfa6355e0bab49a0ea5406537815ef7dfe3eb1cd70",
+          "observed": {
+            "totalMatches": 2,
+            "matches": [
+              {
+                "lineNumber": 11,
+                "line": "    \"docs/readme.md\": \"# Synthetic receipt\\nPUBLIC_RECEIPT_BETA\",",
+                "matchedText": "PUBLIC_RECEIPT_BETA"
+              },
+              {
+                "lineNumber": 12,
+                "line": "    \"src/main.js\": \"export const receipt = \\\"PUBLIC_RECEIPT_ALPHA\\\";\\nexport const sum = (a,b) => a+b;\"",
+                "matchedText": "PUBLIC_RECEIPT_ALPHA"
+              }
+            ]
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.634Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist"
+          },
+          "returned_utc": "2026-11-02T04:36:17.635Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "4ccaa22c8db564bf80affd9abca1bc6bdbebb43eb71b5e10f5deeec989671073",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.635Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist",
+            "pattern": "PUBLIC"
+          },
+          "returned_utc": "2026-11-02T04:36:17.636Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e0af69637798f62c9cb3e7a850d6762dc6671efedec6e4154988b9341ebb5039",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\",\n  \"details\": {\n    \"outputId\": \"consumer-does-not-exist\",\n    \"reason\": \"FILE_NOT_FOUND\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.636Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "missing"
+          },
+          "returned_utc": "2026-11-02T04:36:17.637Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e7b66b91e658eab66ce0ba34e91a1c19cd8cc4071e085d380721a4fa97ccabb3",
+          "error_text": "{\n  \"errorMessage\": \"Error: directory not found: missing\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.637Z",
+          "name": "file_system_read_directory",
+          "arguments": {
+            "path": "src"
+          },
+          "returned_utc": "2026-11-02T04:36:17.640Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "f15a115427bbb10afa7c9a63e933baa890a7921908313ff61225dedea0d09020",
+          "observed": {
+            "path": "src",
+            "contents": [
+              "[FILE] main.js"
+            ],
+            "totalItems": 1,
+            "fileCount": 1,
+            "directoryCount": 0
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.640Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "src/main.js"
+          },
+          "returned_utc": "2026-11-02T04:36:17.657Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "921ae28f1de7c256b208820c30c9de602b2efeee81690c072d255a38feea7a56",
+          "observed": {
+            "path": "src/main.js",
+            "content": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;\n",
+            "size": 80,
+            "encoding": "utf8",
+            "lines": 3
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.657Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "../sentinel.txt"
+          },
+          "returned_utc": "2026-11-02T04:36:17.658Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "ac50dc3257ef3eb7f464241b2cb0bac85d5fb17006b82e9d925df29541823397",
+          "error_text": "{\n  \"errorMessage\": \"Error: Path \\\"../sentinel.txt\\\" must be relative to workspace root — no \\\"/\\\", \\\"~/\\\", \\\"../\\\", drive, or \\\"..\\\" segment. Use e.g. \\\"src/index.ts\\\" or \\\".\\\" for whole workspace.: ../sentinel.txt\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.658Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "absent.txt"
+          },
+          "returned_utc": "2026-11-02T04:36:17.659Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "b0d45e9d63dc35e6b590f15b701c10e22d5fb7595ceccd9ccaaf1407840ab830",
+          "error_text": "{\n  \"errorMessage\": \"Error: File not found at path: absent.txt\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:17.659Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "c180a155d9d8dcea"
+          },
+          "returned_utc": "2026-11-02T04:36:17.660Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dc14946f2c35ef90ccd71ec253fb1ab99618f619b6181a38d5138dbf1e61a9f1"
+        }
+      ]
+    },
+    {
+      "label": "candidate-normal",
+      "start": "2026-11-02T04:36:17.693Z",
+      "end": "2026-11-02T04:36:18.459Z",
+      "command": [
+        "<node>",
+        "<candidate-source>/bin/repomix.cjs",
+        "--mcp"
+      ],
+      "cwd": "<project>",
+      "checks": [
+        "exact tool set",
+        "pack returns two files and outputId",
+        "exact packaged file map and text",
+        "grep exact two matches",
+        "read_repomix_output unknown ID is tool error",
+        "grep_repomix_output unknown ID is tool error",
+        "missing pack path is tool error",
+        "attached clean output readable",
+        "read_repomix_output rescans mutated attachment and rejects",
+        "grep_repomix_output rescans mutated attachment and rejects",
+        "same connection still reads after errors",
+        "source hashes unchanged"
+      ],
+      "success": true,
+      "exit": {
+        "utc": "2026-11-02T04:36:18.459Z",
+        "code": 0,
+        "signal": null
+      },
+      "eof": "2026-11-02T04:36:18.424Z",
+      "round": "corrected_input",
+      "client": "official SDK, unmodified production dependencies, actual Node stdio child",
+      "environment_keys": [
+        "HOME",
+        "LANG",
+        "NO_COLOR",
+        "PATH",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "protocol_versions": [
+        "2025-11-25"
+      ],
+      "tool_names": [
+        "attach_packed_output",
+        "generate_skill",
+        "grep_repomix_output",
+        "pack_codebase",
+        "pack_remote_repository",
+        "read_repomix_output"
+      ],
+      "full_tool_entries_sha256": "3553cebd47f8687b0e8119eb7a98c63ec467dc19210a147ddd638fa1189a5c09",
+      "source_hashes_unchanged_owner_verified": true,
+      "stdout_all_jsonrpc": true,
+      "stdout_raw_sha256": "dd3fb766686da107a55fde993ec6a10805490d8b0433c48d80881d7c8bfce76e",
+      "events_raw_sha256": "a99c468164a5fc7a5df2930aa210859a417733e307fddd15497d5c1841387485",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool_calls": [
+        {
+          "started_utc": "2026-11-02T04:36:17.936Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "<project>",
+            "style": "json",
+            "includePatterns": "src/**,docs/**",
+            "ignorePatterns": "excluded.txt"
+          },
+          "returned_utc": "2026-11-02T04:36:18.383Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "1938082386de563cf4cd7c21b8abdefe979536f2bf838130dfe32e816fd42a5e",
+          "observed": {
+            "totalFiles": 2,
+            "outputId": "3f571af3eb3bbc3f",
+            "outputFilePath": "<consumer-run>/tmp/repomix/mcp-outputs/9Qi9DK/repomix-output.json"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.383Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "3f571af3eb3bbc3f"
+          },
+          "returned_utc": "2026-11-02T04:36:18.386Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "0490504d0636fc62ab79cbce2902764bb8f47726bf121c86c33d54502f13c64b",
+          "observed_files": {
+            "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA",
+            "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.386Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "3f571af3eb3bbc3f",
+            "pattern": "PUBLIC_RECEIPT_(ALPHA|BETA)"
+          },
+          "returned_utc": "2026-11-02T04:36:18.389Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "bf0e7bee31f28e8222c4ba0c72e3767856ff48addac00e0ebbccbf373bc946fd",
+          "observed": {
+            "totalMatches": 2,
+            "matches": [
+              {
+                "lineNumber": 11,
+                "line": "    \"docs/readme.md\": \"# Synthetic receipt\\nPUBLIC_RECEIPT_BETA\",",
+                "matchedText": "PUBLIC_RECEIPT_BETA"
+              },
+              {
+                "lineNumber": 12,
+                "line": "    \"src/main.js\": \"export const receipt = \\\"PUBLIC_RECEIPT_ALPHA\\\";\\nexport const sum = (a,b) => a+b;\"",
+                "matchedText": "PUBLIC_RECEIPT_ALPHA"
+              }
+            ]
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.389Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist"
+          },
+          "returned_utc": "2026-11-02T04:36:18.390Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "4ccaa22c8db564bf80affd9abca1bc6bdbebb43eb71b5e10f5deeec989671073",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.390Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist",
+            "pattern": "PUBLIC"
+          },
+          "returned_utc": "2026-11-02T04:36:18.391Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e0af69637798f62c9cb3e7a850d6762dc6671efedec6e4154988b9341ebb5039",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\",\n  \"details\": {\n    \"outputId\": \"consumer-does-not-exist\",\n    \"reason\": \"FILE_NOT_FOUND\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.391Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "<project>/missing"
+          },
+          "returned_utc": "2026-11-02T04:36:18.398Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "02512afee7ffa7675bd74c04b6b978203347587cba1f83733ef4666ef3b65326",
+          "error_text": "{\n  \"errorMessage\": \"Target path does not exist: <project>/missing\",\n  \"details\": {\n    \"stack\": \"RepomixError: Target path does not exist: <project>/missing\\n    at Object.searchFiles (file://<candidate-source>/lib/core/file/fileSearch.js:101:23)\\n    at async file://<candidate-source>/lib/core/packager.js:51:24\\n    at async Promise.all (index 0)\\n    at async withMemoryLogging (file://<candidate-source>/lib/shared/memoryUtils.js:35:24)\\n    at async pack (file://<candidate-source>/lib/core/packager.js:50:32)\\n    at async runDefaultAction (file://<candidate-source>/lib/cli/actions/defaultAction.js:96:22)\\n    at async Object.runCli (file://<candidate-source>/lib/cli/cliRun.js:286:12)\\n    at async Object.runCliPreservingLogLevel (file://<candidate-source>/lib/mcp/tools/mcpToolRuntime.js:95:16)\\n    at async withMcpProgress (file://<candidate-source>/lib/mcp/tools/mcpProgress.js:64:16)\\n    at async file://<candidate-source>/lib/mcp/tools/packCodebaseTool.js:112:28\",\n    \"name\": \"RepomixError\",\n    \"timestamp\": \"2026-11-02T04:36:18.398Z\",\n    \"type\": \"Error\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.399Z",
+          "name": "attach_packed_output",
+          "arguments": {
+            "path": "<consumer-run>/attached.json"
+          },
+          "returned_utc": "2026-11-02T04:36:18.402Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "c6547f554e3fa477c94050e8d6f62c2d76a28e7f1e8a015b25d7d4ab9aa4519c"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.402Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "762b9d1df274cda9"
+          },
+          "returned_utc": "2026-11-02T04:36:18.414Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "5d1d1df46008a939609f441306a692b6056bc7f32223fe7feaf4489b728043d8"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.415Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "762b9d1df274cda9"
+          },
+          "returned_utc": "2026-11-02T04:36:18.420Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "07591dd6dddc9a3091755aadb933142b0d020e78899cf0992cb8cbc891d4961c",
+          "error_text": "{\n  \"errorMessage\": \"Error: Security check failed. The file at <consumer-run>/attached.json may contain sensitive information.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.420Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "762b9d1df274cda9",
+            "pattern": "PUBLIC_ATTACH_MARKER"
+          },
+          "returned_utc": "2026-11-02T04:36:18.422Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "0d22370cb49334e9b492f0b21f58f12b09cbb761a6899a17430a23edb10f3665",
+          "error_text": "{\n  \"errorMessage\": \"Error: Security check failed. The file at <consumer-run>/attached.json may contain sensitive information.\",\n  \"details\": {\n    \"outputId\": \"762b9d1df274cda9\",\n    \"reason\": \"SECURITY_CHECK_FAILED\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:18.422Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "3f571af3eb3bbc3f"
+          },
+          "returned_utc": "2026-11-02T04:36:18.423Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "0490504d0636fc62ab79cbce2902764bb8f47726bf121c86c33d54502f13c64b"
+        }
+      ]
+    },
+    {
+      "label": "candidate-sandbox",
+      "start": "2026-11-02T04:36:18.461Z",
+      "end": "2026-11-02T04:36:19.191Z",
+      "command": [
+        "<node>",
+        "<candidate-source>/bin/repomix.cjs",
+        "--mcp",
+        "--sandbox",
+        "<project>"
+      ],
+      "cwd": "<project>",
+      "checks": [
+        "exact tool set",
+        "pack returns two files and outputId",
+        "exact packaged file map and text",
+        "grep exact two matches",
+        "read_repomix_output unknown ID is tool error",
+        "grep_repomix_output unknown ID is tool error",
+        "missing pack path is tool error",
+        "actual directory list",
+        "actual file read exact",
+        "own outside sentinel refused",
+        "missing file is tool error",
+        "same connection still reads after errors",
+        "source hashes unchanged"
+      ],
+      "success": true,
+      "exit": {
+        "utc": "2026-11-02T04:36:19.191Z",
+        "code": 0,
+        "signal": null
+      },
+      "eof": "2026-11-02T04:36:19.167Z",
+      "round": "corrected_input",
+      "client": "official SDK, unmodified production dependencies, actual Node stdio child",
+      "environment_keys": [
+        "HOME",
+        "LANG",
+        "NO_COLOR",
+        "PATH",
+        "TMPDIR",
+        "XDG_CACHE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "protocol_versions": [
+        "2025-11-25"
+      ],
+      "tool_names": [
+        "file_system_read_directory",
+        "file_system_read_file",
+        "grep_repomix_output",
+        "pack_codebase",
+        "read_repomix_output"
+      ],
+      "full_tool_entries_sha256": "3117a4e80c941f8c870ffd5ec50009047f995df4bf90801395884ebe7840b599",
+      "source_hashes_unchanged_owner_verified": true,
+      "stdout_all_jsonrpc": true,
+      "stdout_raw_sha256": "4289928c33eacbc8032b0613fc56bfb80c6febc712f7537d8b2cfecdf324359e",
+      "events_raw_sha256": "198a51c8fa72990a596bcf989fd6258f8ee47ae13af4f794a988cb65c889f818",
+      "stderr_sha256": "9e7c50bc481a0b16868eba5d59133ae776750eeb20f113b86daa0443a48ebff0",
+      "stdout_no_concrete_workspace_root": true,
+      "tool_calls": [
+        {
+          "started_utc": "2026-11-02T04:36:18.702Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": ".",
+            "style": "json",
+            "includePatterns": "src/**,docs/**",
+            "ignorePatterns": "excluded.txt"
+          },
+          "returned_utc": "2026-11-02T04:36:19.138Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "4f430717699ff08bebcbecabe8c3450ceb0e56a5735789a2397526d1fc9e94f1",
+          "observed": {
+            "totalFiles": 2,
+            "outputId": "5f8c4623e5b52336",
+            "outputFilePath": ""
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.138Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "5f8c4623e5b52336"
+          },
+          "returned_utc": "2026-11-02T04:36:19.142Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dc14946f2c35ef90ccd71ec253fb1ab99618f619b6181a38d5138dbf1e61a9f1",
+          "observed_files": {
+            "docs/readme.md": "# Synthetic receipt\nPUBLIC_RECEIPT_BETA",
+            "src/main.js": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;"
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.142Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "5f8c4623e5b52336",
+            "pattern": "PUBLIC_RECEIPT_(ALPHA|BETA)"
+          },
+          "returned_utc": "2026-11-02T04:36:19.145Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "5395ae9d495a731733e43da83686a0df509027d5d410b713abc6cea9b95fec27",
+          "observed": {
+            "totalMatches": 2,
+            "matches": [
+              {
+                "lineNumber": 11,
+                "line": "    \"docs/readme.md\": \"# Synthetic receipt\\nPUBLIC_RECEIPT_BETA\",",
+                "matchedText": "PUBLIC_RECEIPT_BETA"
+              },
+              {
+                "lineNumber": 12,
+                "line": "    \"src/main.js\": \"export const receipt = \\\"PUBLIC_RECEIPT_ALPHA\\\";\\nexport const sum = (a,b) => a+b;\"",
+                "matchedText": "PUBLIC_RECEIPT_ALPHA"
+              }
+            ]
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.145Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist"
+          },
+          "returned_utc": "2026-11-02T04:36:19.146Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "4ccaa22c8db564bf80affd9abca1bc6bdbebb43eb71b5e10f5deeec989671073",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.146Z",
+          "name": "grep_repomix_output",
+          "arguments": {
+            "outputId": "consumer-does-not-exist",
+            "pattern": "PUBLIC"
+          },
+          "returned_utc": "2026-11-02T04:36:19.147Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e0af69637798f62c9cb3e7a850d6762dc6671efedec6e4154988b9341ebb5039",
+          "error_text": "{\n  \"errorMessage\": \"Error: Output file with ID consumer-does-not-exist not found. The output file may have been deleted or the ID is invalid.\",\n  \"details\": {\n    \"outputId\": \"consumer-does-not-exist\",\n    \"reason\": \"FILE_NOT_FOUND\"\n  }\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.147Z",
+          "name": "pack_codebase",
+          "arguments": {
+            "directory": "missing"
+          },
+          "returned_utc": "2026-11-02T04:36:19.148Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "e7b66b91e658eab66ce0ba34e91a1c19cd8cc4071e085d380721a4fa97ccabb3",
+          "error_text": "{\n  \"errorMessage\": \"Error: directory not found: missing\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.148Z",
+          "name": "file_system_read_directory",
+          "arguments": {
+            "path": "src"
+          },
+          "returned_utc": "2026-11-02T04:36:19.151Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "f15a115427bbb10afa7c9a63e933baa890a7921908313ff61225dedea0d09020",
+          "observed": {
+            "path": "src",
+            "contents": [
+              "[FILE] main.js"
+            ],
+            "totalItems": 1,
+            "fileCount": 1,
+            "directoryCount": 0
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.151Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "src/main.js"
+          },
+          "returned_utc": "2026-11-02T04:36:19.162Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "921ae28f1de7c256b208820c30c9de602b2efeee81690c072d255a38feea7a56",
+          "observed": {
+            "path": "src/main.js",
+            "content": "export const receipt = \"PUBLIC_RECEIPT_ALPHA\";\nexport const sum = (a,b) => a+b;\n",
+            "size": 80,
+            "encoding": "utf8",
+            "lines": 3
+          }
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.162Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "../sentinel.txt"
+          },
+          "returned_utc": "2026-11-02T04:36:19.164Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "ac50dc3257ef3eb7f464241b2cb0bac85d5fb17006b82e9d925df29541823397",
+          "error_text": "{\n  \"errorMessage\": \"Error: Path \\\"../sentinel.txt\\\" must be relative to workspace root — no \\\"/\\\", \\\"~/\\\", \\\"../\\\", drive, or \\\"..\\\" segment. Use e.g. \\\"src/index.ts\\\" or \\\".\\\" for whole workspace.: ../sentinel.txt\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.164Z",
+          "name": "file_system_read_file",
+          "arguments": {
+            "path": "absent.txt"
+          },
+          "returned_utc": "2026-11-02T04:36:19.165Z",
+          "isError_present": true,
+          "isError": true,
+          "canonical_response_sha256": "b0d45e9d63dc35e6b590f15b701c10e22d5fb7595ceccd9ccaaf1407840ab830",
+          "error_text": "{\n  \"errorMessage\": \"Error: File not found at path: absent.txt\"\n}"
+        },
+        {
+          "started_utc": "2026-11-02T04:36:19.165Z",
+          "name": "read_repomix_output",
+          "arguments": {
+            "outputId": "5f8c4623e5b52336"
+          },
+          "returned_utc": "2026-11-02T04:36:19.166Z",
+          "isError_present": false,
+          "isError": false,
+          "canonical_response_sha256": "dc14946f2c35ef90ccd71ec253fb1ab99618f619b6181a38d5138dbf1e61a9f1"
+        }
+      ]
+    }
+  ],
+  "schema_comparison": {
+    "normal": true,
+    "sandbox": true
+  },
+  "input_correction": "JSON.stringify encoded newline left a literal n before synthetic token, while detector excludes preceding letters. Separator changed to space, not product code. First errors preserved. Four corrected connections had already repeated before narrow-rerun request arrived; no more processes ran.",
+  "not_verified": [
+    "newest protocol era",
+    "remote fetch",
+    "generate_skill/install",
+    "mid-pack cancellation",
+    "concurrent requests",
+    "symlink traversal",
+    "other output formats",
+    "other OS/native clients",
+    "general secret detection/sandbox safety",
+    "baseline full suite"
+  ],
+  "review": "Non-author source review found no required production fix. Fresh-context stdio consumer and owner raw/file readback complete. Not answer-page reader acceptance.",
+  "source_ci": {
+    "head": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+    "checks": {
+      "count": 54,
+      "items": [
+        {
+          "name": "claude",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41325231105/job/124903667862"
+        },
+        {
+          "name": "Comment Results",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552252/job/124902278374"
+        },
+        {
+          "name": "codecov/patch",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/runs/124902004066"
+        },
+        {
+          "name": "codecov/project",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/runs/124901999860"
+        },
+        {
+          "name": "CodeQL",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/runs/124901894799"
+        },
+        {
+          "name": "CodeRabbit",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/runs/124901719186"
+        },
+        {
+          "name": "label",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552272/job/124901647278"
+        },
+        {
+          "name": "Memory Test (Full Analysis)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552207/job/124901646764"
+        },
+        {
+          "name": "Test Website Server",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552380/job/124901646735"
+        },
+        {
+          "name": "Bundle Website Server",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552380/job/124901646722"
+        },
+        {
+          "name": "Check typos",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552414/job/124901646638"
+        },
+        {
+          "name": "Lint Website Server",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552380/job/124901646627"
+        },
+        {
+          "name": "Test with Bun (ubuntu-latest, latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646597"
+        },
+        {
+          "name": "Lint GitHub Actions (actionlint)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552414/job/124901646532"
+        },
+        {
+          "name": "Lint GitHub Actions (zizmor)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552414/job/124901646454"
+        },
+        {
+          "name": "Benchmark (ubuntu-latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552252/job/124901646453"
+        },
+        {
+          "name": "Benchmark (windows-latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552252/job/124901646433"
+        },
+        {
+          "name": "Lint Website Client",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552380/job/124901646427"
+        },
+        {
+          "name": "Benchmark (macos-latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552252/job/124901646373"
+        },
+        {
+          "name": "Build and run (ubuntu-latest, 22.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646331"
+        },
+        {
+          "name": "Test (ubuntu-latest, 24.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646304"
+        },
+        {
+          "name": "Test (windows-latest, 22.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646239"
+        },
+        {
+          "name": "Build and run (windows-latest, 24.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646229"
+        },
+        {
+          "name": "Build and run (windows-latest, 22.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646228"
+        },
+        {
+          "name": "Test (windows-latest, 26.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646226"
+        },
+        {
+          "name": "Build and run (macos-latest, 26.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646218"
+        },
+        {
+          "name": "Build and run with Bun (ubuntu-latest, latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646215"
+        },
+        {
+          "name": "Build and run (ubuntu-latest, 26.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646211"
+        },
+        {
+          "name": "Build and run (macos-latest, 24.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646200"
+        },
+        {
+          "name": "Build and run (macos-latest, 22.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646196"
+        },
+        {
+          "name": "Test (macos-latest, 24.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646187"
+        },
+        {
+          "name": "Test (macos-latest, 26.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646164"
+        },
+        {
+          "name": "Test (windows-latest, 24.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646146"
+        },
+        {
+          "name": "Post Pending Comment",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552252/job/124901646141"
+        },
+        {
+          "name": "Lint TypeScript",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646140"
+        },
+        {
+          "name": "Build and run (ubuntu-latest, 24.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646139"
+        },
+        {
+          "name": "Test (macos-latest, 22.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646126"
+        },
+        {
+          "name": "Build and run (windows-latest, 26.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646112"
+        },
+        {
+          "name": "Build and run with Bun (windows-latest, latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646108"
+        },
+        {
+          "name": "claude-review",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552198/job/124901646087"
+        },
+        {
+          "name": "Build and run with Bun (macos-latest, latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646074"
+        },
+        {
+          "name": "Test coverage",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646064"
+        },
+        {
+          "name": "Test with Bun (macos-latest, latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646060"
+        },
+        {
+          "name": "pack-repo",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552291/job/124901646056"
+        },
+        {
+          "name": "Lint Secretlint",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646030"
+        },
+        {
+          "name": "Test (ubuntu-latest, 26.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646024"
+        },
+        {
+          "name": "Test (ubuntu-latest, 22.x)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901646019"
+        },
+        {
+          "name": "Lint Biome",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901645951"
+        },
+        {
+          "name": "Test with Bun (windows-latest, latest)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901645863"
+        },
+        {
+          "name": "autofix",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552155/job/124901645756"
+        },
+        {
+          "name": "Lint oxlint",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248/job/124901645710"
+        },
+        {
+          "name": "Memory Test",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552207/job/124901645702"
+        },
+        {
+          "name": "pinact",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552164/job/124901645491"
+        },
+        {
+          "name": "Analyze (javascript-typescript)",
+          "head_sha": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552138/job/124901645423"
+        }
+      ]
+    },
+    "workflows": {
+      "count": 12,
+      "items": [
+        {
+          "name": "Claude Code",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41325231105",
+          "run_started_at": "2026-11-01T16:13:45Z"
+        },
+        {
+          "name": "Pack repository with Repomix",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552291",
+          "run_started_at": "2026-11-01T16:06:03Z"
+        },
+        {
+          "name": "Jev PR Labeler",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552272",
+          "run_started_at": "2026-11-01T16:06:03Z"
+        },
+        {
+          "name": "CI Quality",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552414",
+          "run_started_at": "2026-11-01T16:06:03Z"
+        },
+        {
+          "name": "CI Website",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552380",
+          "run_started_at": "2026-11-01T16:06:03Z"
+        },
+        {
+          "name": "Memory Benchmark",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552207",
+          "run_started_at": "2026-11-01T16:06:02Z"
+        },
+        {
+          "name": "autofix.ci",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552155",
+          "run_started_at": "2026-11-01T16:06:02Z"
+        },
+        {
+          "name": "Pinact",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552164",
+          "run_started_at": "2026-11-01T16:06:02Z"
+        },
+        {
+          "name": "Claude Code Review",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552198",
+          "run_started_at": "2026-11-01T16:06:02Z"
+        },
+        {
+          "name": "CodeQL",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552138",
+          "run_started_at": "2026-11-01T16:06:02Z"
+        },
+        {
+          "name": "CI",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552248",
+          "run_started_at": "2026-11-01T16:06:02Z"
+        },
+        {
+          "name": "Performance Benchmark",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/yamadashy/repomix/actions/runs/41324552252",
+          "run_started_at": "2026-11-01T16:06:02Z"
+        }
+      ]
+    },
+    "statuses": {
+      "count": 1,
+      "state": "success",
+      "items": [
+        {
+          "state": "success"
+        }
+      ]
+    },
+    "pr": {
+      "state": "open",
+      "merged": false,
+      "head": "0415873b28abade93c4f18a7b785ab9b0f1b9d27",
+      "updated_at": "2026-11-01T16:12:40Z"
+    },
+    "observed_utc": "2026-11-02T04:42:25.239Z"
+  },
+  "retained_evidence": {
+    "filename": "repomix-mcp-retained-20261102.tar.gz",
+    "bytes": 8739960,
+    "sha256": "184fe90939cd8bc861408fe5a9d679800402c1255fbf198b7e9a9b923f28d51c",
+    "files_verified": 125,
+    "location": "Retained in authorized cloud workspace; archive is not published here."
+  }
+}
