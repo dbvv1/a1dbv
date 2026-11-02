@@ -1,0 +1,1409 @@
+{
+  "schema_version": 1,
+  "base_commit": "aebaca27f9acb6cc56ba4b33ab81e08d6dcb3bc3",
+  "candidate_tree": "2db99cdfaa60d7affa5dbe86500480d41eaf19c3",
+  "candidate_identity_note": "Local Git tree, not an upstream commit. Both CLI runs use the same consumer source and fresh SQLite databases.",
+  "candidate_policy_note": "Omitted store/metadata clear previous values under PR #1513 semantics; not a maintainer-approved default.",
+  "runs": [
+    {
+      "label": "baseline",
+      "checks": [
+        {
+          "name": "batch backfill",
+          "passed": false
+        },
+        {
+          "name": "batch no recompute",
+          "passed": true
+        },
+        {
+          "name": "batch vector/hash preserved",
+          "passed": true
+        },
+        {
+          "name": "metadata refresh",
+          "passed": false
+        },
+        {
+          "name": "other row unchanged",
+          "passed": true
+        },
+        {
+          "name": "new ID inserts and computes",
+          "passed": false
+        },
+        {
+          "name": "changed ID computes",
+          "passed": true
+        },
+        {
+          "name": "model and collection isolation",
+          "passed": true
+        },
+        {
+          "name": "typed attachment backfill",
+          "passed": false
+        },
+        {
+          "name": "typed attachment no recompute",
+          "passed": true
+        },
+        {
+          "name": "PR clearing semantics",
+          "passed": false
+        }
+      ],
+      "steps": [
+        {
+          "name": "batch-seed",
+          "command_path_projection": [
+            "llm",
+            "embed-multi",
+            "docs",
+            "items.json",
+            "-m",
+            "receipt-a",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 2,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "batch-store",
+          "command_path_projection": [
+            "llm",
+            "embed-multi",
+            "docs",
+            "items.json",
+            "--store",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 2,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "metadata",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "1",
+            "-c",
+            "alpha",
+            "--store",
+            "--metadata",
+            "{\"stage\":2}",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 2,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "new-id",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "3",
+            "-c",
+            "alpha",
+            "--store",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 2,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "changed-id",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "1",
+            "-c",
+            "gamma",
+            "--store",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 3,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "model-b",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "other",
+            "1",
+            "-c",
+            "gamma",
+            "--store",
+            "-m",
+            "receipt-b",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 4,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "same-model-other-collection",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "third",
+            "1",
+            "-c",
+            "gamma",
+            "--store",
+            "-m",
+            "receipt-a",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 5,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "refresh-isolation",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "1",
+            "-c",
+            "gamma",
+            "--store",
+            "--metadata",
+            "{\"scope\":\"docs\"}",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 5,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "attachment-seed",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "assets",
+            "x",
+            "--at",
+            "blob.bin",
+            "application/octet-stream",
+            "-m",
+            "receipt-a",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 6,
+          "rows_read_back": [
+            {
+              "name": "assets",
+              "model": "receipt-a",
+              "id": "x",
+              "embedding": "0000803f0000c04100208d44",
+              "content": null,
+              "content_blob": null,
+              "content_type": "application/octet-stream",
+              "content_hash": "039853377a5e3b8f009bdc4890fb5879",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "attachment-store",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "assets",
+            "x",
+            "--at",
+            "blob.bin",
+            "application/octet-stream",
+            "--store",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 6,
+          "rows_read_back": [
+            {
+              "name": "assets",
+              "model": "receipt-a",
+              "id": "x",
+              "embedding": "0000803f0000c04100208d44",
+              "content": null,
+              "content_blob": null,
+              "content_type": "application/octet-stream",
+              "content_hash": "039853377a5e3b8f009bdc4890fb5879",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "clear-observation",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "1",
+            "-c",
+            "gamma",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 6,
+          "rows_read_back": [
+            {
+              "name": "assets",
+              "model": "receipt-a",
+              "id": "x",
+              "embedding": "0000803f0000c04100208d44",
+              "content": null,
+              "content_blob": null,
+              "content_type": "application/octet-stream",
+              "content_hash": "039853377a5e3b8f009bdc4890fb5879",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "candidate",
+      "checks": [
+        {
+          "name": "batch backfill",
+          "passed": true
+        },
+        {
+          "name": "batch no recompute",
+          "passed": true
+        },
+        {
+          "name": "batch vector/hash preserved",
+          "passed": true
+        },
+        {
+          "name": "metadata refresh",
+          "passed": true
+        },
+        {
+          "name": "other row unchanged",
+          "passed": true
+        },
+        {
+          "name": "new ID inserts and computes",
+          "passed": true
+        },
+        {
+          "name": "changed ID computes",
+          "passed": true
+        },
+        {
+          "name": "model and collection isolation",
+          "passed": true
+        },
+        {
+          "name": "typed attachment backfill",
+          "passed": true
+        },
+        {
+          "name": "typed attachment no recompute",
+          "passed": true
+        },
+        {
+          "name": "PR clearing semantics",
+          "passed": true
+        }
+      ],
+      "steps": [
+        {
+          "name": "batch-seed",
+          "command_path_projection": [
+            "llm",
+            "embed-multi",
+            "docs",
+            "items.json",
+            "-m",
+            "receipt-a",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 2,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "batch-store",
+          "command_path_projection": [
+            "llm",
+            "embed-multi",
+            "docs",
+            "items.json",
+            "--store",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 2,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "metadata",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "1",
+            "-c",
+            "alpha",
+            "--store",
+            "--metadata",
+            "{\"stage\":2}",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 2,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": "{\"stage\": 2}"
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "new-id",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "3",
+            "-c",
+            "alpha",
+            "--store",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 3,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": "{\"stage\": 2}"
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "3",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "changed-id",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "1",
+            "-c",
+            "gamma",
+            "--store",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 4,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "3",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "model-b",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "other",
+            "1",
+            "-c",
+            "gamma",
+            "--store",
+            "-m",
+            "receipt-b",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 5,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "3",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "same-model-other-collection",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "third",
+            "1",
+            "-c",
+            "gamma",
+            "--store",
+            "-m",
+            "receipt-a",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 6,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "3",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "refresh-isolation",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "1",
+            "-c",
+            "gamma",
+            "--store",
+            "--metadata",
+            "{\"scope\":\"docs\"}",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 6,
+          "rows_read_back": [
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": "{\"scope\": \"docs\"}"
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "3",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "attachment-seed",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "assets",
+            "x",
+            "--at",
+            "blob.bin",
+            "application/octet-stream",
+            "-m",
+            "receipt-a",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 7,
+          "rows_read_back": [
+            {
+              "name": "assets",
+              "model": "receipt-a",
+              "id": "x",
+              "embedding": "0000803f0000c04100208d44",
+              "content": null,
+              "content_blob": null,
+              "content_type": "application/octet-stream",
+              "content_hash": "039853377a5e3b8f009bdc4890fb5879",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": "{\"scope\": \"docs\"}"
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "3",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "attachment-store",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "assets",
+            "x",
+            "--at",
+            "blob.bin",
+            "application/octet-stream",
+            "--store",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 7,
+          "rows_read_back": [
+            {
+              "name": "assets",
+              "model": "receipt-a",
+              "id": "x",
+              "embedding": "0000803f0000c04100208d44",
+              "content": null,
+              "content_blob": "6c6f63616c206174746163686d656e74007061796c6f6164",
+              "content_type": "application/octet-stream",
+              "content_hash": "039853377a5e3b8f009bdc4890fb5879",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": "{\"scope\": \"docs\"}"
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "3",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        },
+        {
+          "name": "clear-observation",
+          "command_path_projection": [
+            "llm",
+            "embed",
+            "docs",
+            "1",
+            "-c",
+            "gamma",
+            "-d",
+            "db.sqlite"
+          ],
+          "exit_code": 0,
+          "model_items_computed": 7,
+          "rows_read_back": [
+            {
+              "name": "assets",
+              "model": "receipt-a",
+              "id": "x",
+              "embedding": "0000803f0000c04100208d44",
+              "content": null,
+              "content_blob": "6c6f63616c206174746163686d656e74007061796c6f6164",
+              "content_type": "application/octet-stream",
+              "content_hash": "039853377a5e3b8f009bdc4890fb5879",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": null,
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "2",
+              "embedding": "0000803f00008040004e7447",
+              "content": "beta",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "987bcab01b929eb2c07877b224215c92",
+              "metadata": null
+            },
+            {
+              "name": "docs",
+              "model": "receipt-a",
+              "id": "3",
+              "embedding": "0000803f0000a04000d30e47",
+              "content": "alpha",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "2c1743a391305fbf367df8e4f069f9f9",
+              "metadata": null
+            },
+            {
+              "name": "other",
+              "model": "receipt-b",
+              "id": "1",
+              "embedding": "000000400000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            },
+            {
+              "name": "third",
+              "model": "receipt-a",
+              "id": "1",
+              "embedding": "0000803f0000a040009d3e47",
+              "content": "gamma",
+              "content_blob": null,
+              "content_type": null,
+              "content_hash": "05b048d7242cb7b8b57cfa3b1d65ecea",
+              "metadata": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    "real CLI subprocess and reopened SQLite; synthetic deterministic plugins, no provider",
+    "clearing is PR proposed semantics, not maintainer-approved",
+    "no concurrent-writer, whole-suite or performance claims",
+    "Batch metadata is not a CLI option; covered only in product regression tests.",
+    "Computation totals are not speed, cost, or semantic-quality metrics."
+  ],
+  "model_items_computed_note": "Cumulative number of input items computed by the local models up to and including this step, not a per-step count."
+}
