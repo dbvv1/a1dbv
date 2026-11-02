@@ -1,6 +1,6 @@
 # 04 · MCP（Model Context Protocol）
 
-> 核实时间：2026-10-21；schema 接入验收补核 2026-10-26。新增证据见[P55统一研究](research/2026-10-13-context-tool-choice.md#p55能力接入纠偏与授权边界)；服务未安装实测。
+> 核实时间：2026-10-21；schema 接入验收补核 2026-10-26。新增证据见[P55统一研究](research/2026-10-13-context-tool-choice.md#p55能力接入纠偏与授权边界)；服务的实际试用范围见对应小节。
 
 ## 1. 先决定是否需要新增连接
 
@@ -161,6 +161,8 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 用同一个低风险读任务，对照目标客户端的省略调用与显式 `null` 调用（仅对确实接受 `null` 的字段）。若与裸调用结果不同，回查实际发布的 schema 与参数解码，确认省略规则不一致后再修 schema 生成源，而不是清空 `required`、放宽类型、枚举或数值边界。anymd 8.5.3 是这项 schema 的历史修复点；实际升级按当前安全公告选版本，还须包含 8.5.5 的后续安全修复，再在目标客户端重新发现工具并验最小调用和返回内容。显式 `null` 只作定位线索；仍不兼容就停用这条连接，保留原有 CLI／资料入口。
 
 **依据**：[社区：用户修前单例] [anymd #881](https://github.com/SylphxAI/anymd/issues/881)；[一手] [8.5.3 发布](https://github.com/SylphxAI/anymd/releases/tag/v8.5.3)、[后续安全公告](https://github.com/SylphxAI/anymd/security/advisories/GHSA-xrc8-gj3q-m8vm)、[MCP 工具契约](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#tool)、[JSON Schema required](https://json-schema.org/understanding-json-schema/reference/object#required-properties)；[固定源码与回归定义](research/2026-10-13-context-tool-choice.md#接入验收nullable与optional分开核对)，未运行上游或 OpenCode；核实 2026-10-26。
+
+**参数转换还要保住原值。** [Continue 三版真实 stdio 对照](../experiments/continue-mcp-args/README.md)中，两个既有补丁都让字符串化数组／布尔参数完成文件修复、错误恢复与再次修改；较短方案却改变合法 `string | array` 输入并舍入大整数，较保守方案仍把数组内的 `9007199254740993` 变为 `9007199254740992`。这支持保留已有原生类型入口，而非把“报错消失”当作可采用通用转换器；也不能把顶层整数保护扩大为嵌套安全。范围是固定 core TypeScript → SDK stdio → 官方文件服务及自有 schema 服务，未验 IDE／模型生成，两个 PR 的托管检查仍有失败；现有默认与读者状态不变。依据：[用户 #13350](https://github.com/continuedev/continue/issues/13350)、[候选 #13416](https://github.com/continuedev/continue/pull/13416)、[对照 #13386](https://github.com/continuedev/continue/pull/13386)及上述实测；核实 2026-11-02。
 
 ## 来源
 

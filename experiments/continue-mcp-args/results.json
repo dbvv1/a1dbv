@@ -1,0 +1,374 @@
+{
+  "verified_date": "2026-11-02",
+  "repository": "https://github.com/continuedev/continue",
+  "license": "Apache-2.0",
+  "issue": 13350,
+  "candidate_pr": 13416,
+  "alternative_pr": 13386,
+  "scope": "Actual core TypeScript via vite-node, callTool/manager/connection/stdio; not packaged IDE extension, CLI or model generation",
+  "versions": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "vite-node": "3.2.4",
+    "vitest": "3.2.6",
+    "sqlite3": "5.1.7",
+    "typescript": "5.9.3",
+    "server-filesystem": "2.1.0",
+    "node": "24.22.1",
+    "npm": "11.9.0",
+    "os": "Linux x86_64"
+  },
+  "consumer": {
+    "base": {
+      "source_head": "5522c6f44ca0ac3528b37244818fbfa39b5af470",
+      "serialized_task_complete": false,
+      "typed_control_complete": true,
+      "source_hashes": {
+        "core/tools/callTool.ts": "b2c9184b466a131625b37af8f2f335cedb294fe03adf7a545294a38cfd7f3cb8",
+        "core/tools/parseArgs.ts": "949afbfa61112af5d75a7a8f92708b66780ee3721e6e0b319fcc5dbd2a971ebc",
+        "core/context/mcp/MCPManagerSingleton.ts": "920f596de91e099387d7551b0eaf277ca1c8176864f263801f11b8efe5c2b1e9",
+        "core/context/mcp/MCPConnection.ts": "fe169f9a13d29be6fe61fc983b96624b06b66f82bf1fda28165ea77681e7c165"
+      },
+      "string_or_array_observed": {
+        "accepted": true,
+        "type": "string",
+        "value": "[\"invoice\"]",
+        "safeInteger": null
+      },
+      "unsafe_integer_result": {
+        "contextItems": [],
+        "errorMessage": "[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"type\\\":\\\"string\\\",\\\"value\\\":\\\"9007199254740993\\\",\\\"safeInteger\\\":null}\"}]"
+      },
+      "node_assertions": [
+        {
+          "label": "typed/first-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":9,\"total\":99}\n"
+        },
+        {
+          "label": "typed/second-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":18,\"total\":108}\n"
+        }
+      ],
+      "launch": {
+        "start_utc": "2026-11-02T11:37:40.965250+00:00",
+        "end_utc": "2026-11-02T11:37:45.131659+00:00",
+        "exit": 0
+      },
+      "integrity_checks": [
+        {
+          "label": "typed/preview-integrity",
+          "before_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "after_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "unchanged": true
+        },
+        {
+          "label": "typed/error-integrity",
+          "errorPresent": true,
+          "unchanged": true
+        }
+      ],
+      "server_connections": [
+        {
+          "id": "official-filesystem",
+          "final_status": "not-connected",
+          "pid_absent": true
+        },
+        {
+          "id": "synthetic-schema",
+          "final_status": "not-connected",
+          "pid_absent": true
+        }
+      ]
+    },
+    "candidate": {
+      "source_head": "9da7044f0e6019439e9da62473517671540542e6",
+      "serialized_task_complete": true,
+      "typed_control_complete": true,
+      "source_hashes": {
+        "core/tools/callTool.ts": "b2c9184b466a131625b37af8f2f335cedb294fe03adf7a545294a38cfd7f3cb8",
+        "core/tools/parseArgs.ts": "1f092b89317688bc5f25d4c39a15fd5454480f2086a4303ae8a0da0a0b175d2d",
+        "core/context/mcp/MCPManagerSingleton.ts": "920f596de91e099387d7551b0eaf277ca1c8176864f263801f11b8efe5c2b1e9",
+        "core/context/mcp/MCPConnection.ts": "fe169f9a13d29be6fe61fc983b96624b06b66f82bf1fda28165ea77681e7c165"
+      },
+      "string_or_array_observed": {
+        "accepted": true,
+        "type": "string",
+        "value": "[\"invoice\"]",
+        "safeInteger": null
+      },
+      "unsafe_integer_result": {
+        "contextItems": [],
+        "errorMessage": "[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"type\\\":\\\"string\\\",\\\"value\\\":\\\"9007199254740993\\\",\\\"safeInteger\\\":null}\"}]"
+      },
+      "node_assertions": [
+        {
+          "label": "serialized/first-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":9,\"total\":99}\n"
+        },
+        {
+          "label": "serialized/second-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":18,\"total\":108}\n"
+        },
+        {
+          "label": "typed/first-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":9,\"total\":99}\n"
+        },
+        {
+          "label": "typed/second-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":18,\"total\":108}\n"
+        }
+      ],
+      "launch": {
+        "start_utc": "2026-11-02T11:37:45.132864+00:00",
+        "end_utc": "2026-11-02T11:37:49.318361+00:00",
+        "exit": 0
+      },
+      "integrity_checks": [
+        {
+          "label": "serialized/preview-integrity",
+          "before_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "after_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "unchanged": true
+        },
+        {
+          "label": "serialized/error-integrity",
+          "errorPresent": true,
+          "unchanged": true
+        },
+        {
+          "label": "typed/preview-integrity",
+          "before_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "after_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "unchanged": true
+        },
+        {
+          "label": "typed/error-integrity",
+          "errorPresent": true,
+          "unchanged": true
+        }
+      ],
+      "server_connections": [
+        {
+          "id": "official-filesystem",
+          "final_status": "not-connected",
+          "pid_absent": true
+        },
+        {
+          "id": "synthetic-schema",
+          "final_status": "not-connected",
+          "pid_absent": true
+        }
+      ]
+    },
+    "alternative": {
+      "source_head": "75367f352dafdd5f8913c7de3c0f63857640abf4",
+      "serialized_task_complete": true,
+      "typed_control_complete": true,
+      "source_hashes": {
+        "core/tools/callTool.ts": "2a4b3721fbc8b82352f9e2e7f61d5e1fd4bc3cc1019e29790bd2b0efecd877b1",
+        "core/tools/parseArgs.ts": "0049930f0276215eceaf6a9f71de5825bfaaf0427d7bbe4617e3a090a852369b",
+        "core/context/mcp/MCPManagerSingleton.ts": "920f596de91e099387d7551b0eaf277ca1c8176864f263801f11b8efe5c2b1e9",
+        "core/context/mcp/MCPConnection.ts": "fe169f9a13d29be6fe61fc983b96624b06b66f82bf1fda28165ea77681e7c165"
+      },
+      "string_or_array_observed": {
+        "accepted": true,
+        "type": "array",
+        "value": [
+          "invoice"
+        ],
+        "safeInteger": null
+      },
+      "unsafe_integer_result": {
+        "contextItems": [
+          {
+            "name": "integer_value",
+            "description": "Tool output",
+            "content": "{\"accepted\":true,\"type\":\"number\",\"value\":9007199254740992,\"safeInteger\":false}"
+          }
+        ]
+      },
+      "node_assertions": [
+        {
+          "label": "serialized/first-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":9,\"total\":99}\n"
+        },
+        {
+          "label": "serialized/second-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":18,\"total\":108}\n"
+        },
+        {
+          "label": "typed/first-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":9,\"total\":99}\n"
+        },
+        {
+          "label": "typed/second-real-node",
+          "exit": 0,
+          "stdout": "{\"net\":90,\"tax\":18,\"total\":108}\n"
+        }
+      ],
+      "launch": {
+        "start_utc": "2026-11-02T11:37:49.320445+00:00",
+        "end_utc": "2026-11-02T11:37:52.892178+00:00",
+        "exit": 0
+      },
+      "integrity_checks": [
+        {
+          "label": "serialized/preview-integrity",
+          "before_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "after_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "unchanged": true
+        },
+        {
+          "label": "serialized/error-integrity",
+          "errorPresent": true,
+          "unchanged": true
+        },
+        {
+          "label": "typed/preview-integrity",
+          "before_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "after_sha256": "2c9d7340446e2a6f99be7a4f5c4aea654fa6e4bb68c6f9050c89eab557bfecd6",
+          "unchanged": true
+        },
+        {
+          "label": "typed/error-integrity",
+          "errorPresent": true,
+          "unchanged": true
+        }
+      ],
+      "server_connections": [
+        {
+          "id": "official-filesystem",
+          "final_status": "not-connected",
+          "pid_absent": true
+        },
+        {
+          "id": "synthetic-schema",
+          "final_status": "not-connected",
+          "pid_absent": true
+        }
+      ]
+    }
+  },
+  "supplement": {
+    "arm": "candidate",
+    "original_input": {
+      "values": "[9007199254740993]"
+    },
+    "server_observed": {
+      "accepted": true,
+      "receivedValues": [
+        9007199254740992
+      ],
+      "types": [
+        "number"
+      ],
+      "safeIntegers": [
+        false
+      ]
+    },
+    "start_utc": "2026-11-02T11:39:43.668015+00:00",
+    "end_utc": "2026-11-02T11:39:47.448985+00:00",
+    "exit": 0,
+    "pid_absent": true,
+    "status": "not-connected",
+    "original_three_arm_evidence_unchanged": true,
+    "one_new_call_only": true
+  },
+  "schema_controls": "Self-owned SDK stdio server with handler validation/echo; not SDK automatic JSON Schema validator or modified official filesystem schema",
+  "checks": {
+    "targeted_tests": {
+      "base": 50,
+      "candidate": 67,
+      "alternative": 55
+    },
+    "targeted_failures": 0,
+    "targeted_skips": 0,
+    "core_typecheck": "all three exit 0",
+    "changed_file_prettier_and_eslint": "candidate and alternative exit 0",
+    "full_local_suite": "not run",
+    "setup": "locked official npm installs with lifecycle scripts disabled; seven local packages built; official sqlite3 rebuild for actual import; identical dependency manifests reused across three arms"
+  },
+  "upstream_ci": {
+    "candidate": {
+      "observed_at": "2026-11-02T11:37:45.835Z",
+      "sha": "9da7044f0e6019439e9da62473517671540542e6",
+      "checks": {
+        "failure": 2,
+        "success": 44,
+        "skipped": 3
+      },
+      "check_count": 49,
+      "workflows": {
+        "success": 3,
+        "failure": 1
+      },
+      "workflow_count": 4,
+      "status": "failure",
+      "failure_names": [
+        "require-all-checks-to-pass",
+        "jetbrains-tests"
+      ]
+    },
+    "alternative": {
+      "observed_at": "2026-11-02T11:37:48.082Z",
+      "sha": "75367f352dafdd5f8913c7de3c0f63857640abf4",
+      "checks": {
+        "failure": 2,
+        "success": 42,
+        "skipped": 3,
+        "cancelled": 2
+      },
+      "check_count": 49,
+      "workflows": {
+        "success": 2,
+        "cancelled": 1,
+        "failure": 1
+      },
+      "workflow_count": 4,
+      "status": "failure",
+      "failure_names": [
+        "require-all-checks-to-pass",
+        "jetbrains-tests"
+      ]
+    }
+  },
+  "limits": [
+    "No full IDE UI/CLI/model/provider path",
+    "Original issue model vs client stringification source not attributed",
+    "No Windows/macOS consumer",
+    "No general lossless conversion: nested integer-array candidate failure observed",
+    "No upstream patch/comment/PR sent",
+    "No installed Skill/Hook/global config"
+  ],
+  "evidence_sha256": {
+    "summary.json": "de1847e4be473e53990af29876b38dd03145b116a7d4be063d23c2a1d5e8e4ce",
+    "manifest-sha256.json": "95ae715dc5d90fb9ea8ff9af6e62c435beadb1e69f8aa623563c955658002615",
+    "REPORT.txt": "15ba23792f7133fa2bc2eb9936226e435a69689e8c125b740ab76344cb7c5717",
+    "launch-receipts.json": "739c74279165f443b033e11fe379dabb59b39f866379e62b0a0be0528bf385fb",
+    "supplement/summary.json": "c4ac3c98573f21c5ff33888dc0785ebe3d67900cbca700dc5f2edab095cfe1a6",
+    "supplement/manifest-sha256.json": "20f86bc8475fca7c1c6e0a6b246c738187684ed1ce29d39bcdc4bc33010a08e9"
+  },
+  "retention": {
+    "completed_utc": "2026-11-02T11:42:20.723407+00:00",
+    "bytes": 192715874,
+    "sha256": "6d9f615ba9081d6e640999b7f881537aa5ed27585b7c2a88ab98711fe508d434",
+    "files": 720,
+    "source_pack_sha256": "2513151da9bce55c72436761928edbe43b874989c851b40f4876dece2c007014",
+    "source_objects": 3419,
+    "trees": {
+      "5522c6f44ca0ac3528b37244818fbfa39b5af470": "bbcc2608abd0c2794cc01084ca5bad376f2e731a",
+      "9da7044f0e6019439e9da62473517671540542e6": "b49d94637cb280f56c570fcf3a0775e1c06ff840",
+      "75367f352dafdd5f8913c7de3c0f63857640abf4": "669f93ec0a546a351ce4d50775a4338556e491e4"
+    },
+    "restored_fsck_exit": 0,
+    "public_upload": false
+  }
+}
