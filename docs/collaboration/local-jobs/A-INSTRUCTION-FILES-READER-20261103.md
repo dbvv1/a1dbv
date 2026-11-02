@@ -1,7 +1,7 @@
 # A-INSTRUCTION-FILES-READER-20261103 · 用已有项目指令完成文档小任务
 id: A-INSTRUCTION-FILES-READER-20261103
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
