@@ -1,7 +1,7 @@
 # A-CONTEXT-SOURCES-FACTS-20261102 · 上下文页文件与检索来源事实核查
 id: A-CONTEXT-SOURCES-FACTS-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/context-management.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -27,4 +27,9 @@ result_branch: relay/a-context-sources-facts-20261102
 本单元最多两小时，共享最多 4 并行只由原接收端调度，不另起模型。运行 check_repo、check_public、git diff --check 和提交身份检查后推指定 result_branch，回 review_ready 给负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；事实产物待回传。
+
+- 已写入 facts.md（55 行），核对固定页输入版本与 74be0d09 blob 字节一致；确认 Claude @ 的 25,000 token/256KB/目录/二进制/禁用变量条件、压缩后最多重读 5 个文件且超过 5,000 token 只留 Referenced file、Codex @ 官方仅说明加入路径、Cursor 两帖症状区分且修复版本未知、Git 契约成立；发现 best-practices#provide-rich-content 锚点失效应改指 #write-a-specific-prompt。check_repo/check_public/git diff --check 均 exit 0；未启动客户端实测，未复跑页面提到的 rg/grep 阳性对照，GitHub 远端页面未能取回。openIssues: []
+- 产物：[1803ea2](https://github.com/dbvv1/a1dbv/commit/1803ea20df306698a4d9fb702085c2fb482a4c72)，分支 `relay/a-context-sources-facts-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交 facts.md、推送 relay/a-context-sources-facts-20261102 并回 review_ready；正文更正（锚点与阈值精度）需负责人另行决定，本卡不改正文
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
