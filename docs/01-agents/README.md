@@ -1,6 +1,6 @@
 # 01 · Coding Agent 对比与选型
 
-> 编辑更新：2026-10-22（UTC+8）；本次比较交互界面、工具／harness 与执行环境，产品配置保留各项原核实日期。
+> 编辑更新：2026-11-03（UTC+8）；本次比较交互界面、工具／harness 与执行环境，产品配置保留各项原核实日期。
 
 ## 30 秒结论
 
@@ -26,18 +26,20 @@
 
 **编辑器与执行 Agent 可以分开选。** 已在 Cursor 看代码、审 diff，就保留编辑器，在集成终端沿用原有 Codex／Claude Code。确需另一入口时，先让它读取同一份项目规则、跑同一验收，再比较结果与总投入。
 
-- **Claude 面板与终端表现不同**：在扩展列表查看 Claude Code 扩展版本，再运行 `claude --version` 核终端版本。扩展自带一份 CLI，终端使用独立安装，两者版本可能不同；缺 CLI 专属功能时先回终端，核实际模型、权限与必要功能。
-- **云端构建失败**：先核任务实际使用的环境 build、其中的配置与依赖，再在该环境重跑项目原验收。Cursor Cloud 曾修复忽略仓库 `.cursor/environment.json`、指定 build 却使用其他配置的问题；先查这一层，再决定是否换 Agent。
+- **Claude 面板与终端表现不同**：扩展列表中的版本即面板内置 CLI 版本；终端已有独立 CLI 时，再用 `claude --version` 核终端版本。只装扩展不会把 `claude` 加到 PATH，不能把命令不存在当成模型不可用；缺 CLI 专属功能时先核独立 CLI、实际模型与权限。
+- **云端构建失败**：先核实际环境 build、配置与依赖，再重跑原验收。Cursor Cloud 10-19 当周变更：单仓库任务无环境时，新建环境读取仓库已提交的 `.cursor/environment.json`；指定 build 时用该 build 记录的配置，而非仓库当前文件或父 Agent 的更新配置。先查这一层，再决定是否换 Agent。
 
-**依据**：[官方：Claude 的两种入口与版本](https://code.claude.com/docs/en/vs-code#vs-code-extension-vs-claude-code-cli)、[Cursor Cloud 10-19 当周环境修复](https://prod.cursor.com/docs/release-notes)；[实际配置：Sentry 共享项目规则](https://github.com/getsentry/sentry/blob/65d8ecc0bd1b4825afbde7bd05e5fd52e3511c4d/AGENTS.md)。[三工具采用讨论](https://www.reddit.com/r/cursor/comments/1wfeim1/claude_code_vs_codex_vs_cursorwhat_are_you/)同时包含偏好 IDE 交互与额度不足的使用者自报，供识别个人缺口；跨入口效果仍待真实任务验证。2026-10-28 核，未运行上述客户端／环境。
+**依据**：[官方：Claude 的两种入口与版本](https://code.claude.com/docs/en/vs-code#vs-code-extension-vs-claude-code-cli)、[Cursor Cloud 10-19 当周环境变更](https://prod.cursor.com/docs/release-notes)；[实际配置：Sentry 共享项目规则](https://github.com/getsentry/sentry/blob/65d8ecc0bd1b4825afbde7bd05e5fd52e3511c4d/AGENTS.md)。[三工具采用讨论](https://www.reddit.com/r/cursor/comments/1wfeim1/claude_code_vs_codex_vs_cursorwhat_are_you/)同时包含偏好 IDE 交互与额度不足的使用者自报，供识别个人缺口；跨入口效果仍待真实任务验证。2026-10-28 核；两条官方入口／环境说明于 2026-11-03（UTC+8）复核，未运行上述客户端／环境。
+
+**先核可用性，再复制命令。** 下列型号须获当前账号与客户端支持；Claude 第三方服务商可能要求不同模型 ID／部署名，`sonnet`／`opus` 别名也不保证指向 5.5。没有对应访问时保留可用配置，不改账户来追型号。
 
 | 任务 | 入口与具体配置 | 交给 Agent 的完成目标 |
 |---|---|---|
-| 本机仓库里的日常功能、补测试、小改动 | **Codex CLI**：在项目目录启动 `codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`（只覆盖本次启动）；已有 Claude Code 工作流则用 `claude --model claude-sonnet-5-5 --effort medium`。核会话实际模型／effort，沿用项目权限与检查 | 实现目标、跑相关检查、交回 diff 和真实结果；补一个失败路径或边界用例 |
-| 困难跨模块重构、疑难 bug，或明确要求旧调用方兼容、边界覆盖 | 保留上述本机入口；**Codex 选 GPT-6 Astra + Light（CLI 配置值 `low`）**，或 **Claude Code 选 Opus 5.5 + `medium`**，验证要求高可从 `high` 起。只有检查深度不足时，先试原模型 `medium` → `high` | 复现问题、查受影响调用方、保持旧契约；再做一次代表性的后续修改，检查改动是否仍局部可控 |
-| 不依赖本机资源，希望关机后继续的仓库任务 | **Codex Cloud**：选择已发布环境；没有就先准备仓库、依赖和检查并核结果后发布。模型仍按上两行，不因“长任务”升最高档 | 在云环境实际跑同一验收，再交回可审改动；本机 VPN、浏览器登录或设备是必要条件时，留本机入口 |
+| 本机仓库里的日常功能、补测试、小改动 | **Codex CLI**：在项目目录启动 `codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'`（只覆盖本次启动）；已有 Claude Code 工作流则用 `claude --model claude-sonnet-5-5 --effort medium`（Sonnet 5.5 需 Claude Code v2.1.284+）。核会话实际模型／effort，沿用项目权限与检查 | 实现目标、跑相关检查、交回 diff 和真实结果；补一个失败路径或边界用例 |
+| 困难跨模块重构、疑难 bug，或明确要求旧调用方兼容、边界覆盖 | 保留上述本机入口；**Astra + Light**：`codex --model gpt-6-astra -c 'model_reasoning_effort="low"'`；或 **Opus 5.5**：`claude --model claude-opus-5-5 --effort medium`（需 Claude Code v2.1.280+）。验证要求高可从 `high` 起；原模型检查深度不足时先试提高 effort | 复现问题、查受影响调用方、保持旧契约；再做一次代表性的后续修改，检查改动是否仍局部可控 |
+| 不依赖本机资源，希望关机后继续的仓库任务 | **Codex Cloud**：选择已发布环境；没有就先准备仓库、依赖和检查并核结果后发布。模型可用性取决于托管工作流与登录身份；官方不支持更改 Cloud 的默认模型，不能直接套用上两行本机配置 | 在云环境实际跑同一验收，再交回可审改动；本机 VPN、浏览器登录或设备是必要条件时，留本机入口 |
 
-**[一手：[Codex 模型](https://learn.chatgpt.com/docs/models)、[单次 CLI 覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude 模型／effort](https://code.claude.com/docs/en/model-config)、[云环境与本机边界](https://learn.chatgpt.com/docs/environments/modes)；研究：任务分流与质量目标，2026-10-20 核，未运行客户端／模型]** 已有 IDE、桌面或 Claude 云端路径能完整验收，就继续用，不为统一入口迁移；其他具体入口见下表。
+**依据**：[Codex 模型与 ID](https://learn.chatgpt.com/docs/models)、[单次 CLI 覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Cloud 默认与可用性](https://learn.chatgpt.com/docs/enterprise/workspace-model-availability)、[Claude 版本／effort](https://code.claude.com/docs/en/model-config)、[Claude 模型 ID](https://platform.claude.com/docs/en/models/overview)、[CLI 参数](https://code.claude.com/docs/en/cli-reference)。配置事实于 2026-11-03（UTC+8）复核，未启动这些配置或核账号权限；任务分流与[环境边界](https://learn.chatgpt.com/docs/environments/modes)保留 2026-10-20 研究判断。已有 IDE、桌面或 Claude 云端路径能完整验收，就继续用，不为统一入口迁移。
 
 **一个目标先在原生入口内完成。** 修复检查中发现的问题并复验，不以交回首版代替完成；多个独立目标的排队、归属和接续成为瓶颈时，再考虑外层派发。缺必要用户决定、授权或资源时暂停依赖动作，不自行放宽边界。见[Codex持续责任](codex.md#长时运行与-dots按能力缺口增加任务)及[Claude Code](claude-code.md)。[研究：P67／P68既有判断回流主入口]
 
