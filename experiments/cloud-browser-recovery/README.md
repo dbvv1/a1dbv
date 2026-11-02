@@ -77,3 +77,5 @@ node tools/smoke.mjs
 探针的成功、EPERM、缺失能力分支已检查；本机仅用于标准库与输出检查，不作为云端结果。核实：2026-11-02。
 
 依据：[OpenAI 云电脑与浏览器](https://learn.chatgpt.com/docs/dots/computers-and-apps)、[云浏览器与 shell 网络的独立边界](https://learn.chatgpt.com/docs/enterprise/chatgpt-work-cloud-security)；[FPS smoke 源码](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/tools/smoke.mjs)、[目标拍摄路由](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/capture/quality-route.ts)、[目标消费者与可读状态](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/capture/quality-client.ts)。
+
+**交给原协调的组合覆盖边界：** 准确 `8c29cec8` 同树保留 `feel=ground-v1`，但[材料六回合 runner 的严格 query 合同](https://github.com/dbvv1/FPS-Like/blob/8c29cec8e1e0feb5e45ccbf51a96e02aa31b5ee7/tools/smoke.mjs#L15-L19)不接受该参数；材料路线通过也不能代称 ground＋材料组合已验。本轮未修改 runner；组合正常游玩与完整覆盖交原协调接续，不降低原门槛。
