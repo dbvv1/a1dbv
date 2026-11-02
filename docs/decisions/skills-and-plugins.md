@@ -25,6 +25,13 @@
 
 **依据**：[一手项目配置] [OpenAI Agents SDK](https://github.com/openai/openai-agents-python/blob/cd26bbbc52847845fde73b9952b51e62e2bcbdc0/AGENTS.md)、[Sentry JavaScript](https://github.com/getsentry/sentry-javascript/blob/c125a5da2e6b7d916a5880f65876cddfee96c56d/agents.toml)；2026-10-28 核实，这两套项目流程未在本仓试用。
 
+<a id="ecc-search-first"></a>
+## ECC search-first：复用提醒，不是整包安装理由
+
+**🧪 这份窄 Skill 把“先查仓内、核可用渠道、再决定复用或小改”集中在一起；已有项目方法能做到，就继续原流程。** [同一 Inspector 真实问题的事后对照](../../experiments/ecc-search-first/README.md)中，ECC 与本仓方法都找到了现有字符串解析器，也都发现空值契约不兼容；选择相同，没有新增被采用候选。离线函数探针复核了这一个反例，不是前瞻效率或模型收益实验。
+
+它适合提醒总是先造新组件的 Agent 检查已有能力；本轮未安装整套 ECC／hooks，也不据 Star 数或单例对照改本页核心推荐。官方 [search-first](https://github.com/affaan-m/ECC/blob/b38be6a7f6350964d59328b52f0624e1d1d552d1/skills/search-first/SKILL.md) 与[使用者复用反馈](https://github.com/affaan-m/ECC/issues/3680)均已读；后者明确没有证明原轮 ECC 激活或因果作用。核实与只读对照：2026-11-02；原生读者验收及评级不变。
+
 <a id="skills-linked-parent"></a>
 ## 共用 Skill：安装成功，还要读到客户端那份
 

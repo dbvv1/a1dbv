@@ -1,0 +1,246 @@
+{
+  "node": "v24.22.1",
+  "commit": "4fe3d9cc5db17367e9e645ee05f707daf154267e",
+  "path": "core/mcp/node/config.ts",
+  "source_sha256": "87973b193a3251ed824c65461854fdbddedf5818c56489d2738f464b19a5af23",
+  "scope": "Extracted upstream environment parser against prompt-string requirements; not module, CLI, wire or model validation.",
+  "total": 17,
+  "passed": 16,
+  "mismatches": [
+    "value:\"\""
+  ],
+  "observations": [
+    {
+      "id": "value:\"1.50\"",
+      "args": [
+        "price=1.50"
+      ],
+      "expected": {
+        "price": "1.50"
+      },
+      "actual": {
+        "price": "1.50"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"0.10\"",
+      "args": [
+        "price=0.10"
+      ],
+      "expected": {
+        "price": "0.10"
+      },
+      "actual": {
+        "price": "0.10"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"1e3\"",
+      "args": [
+        "price=1e3"
+      ],
+      "expected": {
+        "price": "1e3"
+      },
+      "actual": {
+        "price": "1e3"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"9007199254740993\"",
+      "args": [
+        "price=9007199254740993"
+      ],
+      "expected": {
+        "price": "9007199254740993"
+      },
+      "actual": {
+        "price": "9007199254740993"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"1e400\"",
+      "args": [
+        "price=1e400"
+      ],
+      "expected": {
+        "price": "1e400"
+      },
+      "actual": {
+        "price": "1e400"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"-0\"",
+      "args": [
+        "price=-0"
+      ],
+      "expected": {
+        "price": "-0"
+      },
+      "actual": {
+        "price": "-0"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"true\"",
+      "args": [
+        "price=true"
+      ],
+      "expected": {
+        "price": "true"
+      },
+      "actual": {
+        "price": "true"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"null\"",
+      "args": [
+        "price=null"
+      ],
+      "expected": {
+        "price": "null"
+      },
+      "actual": {
+        "price": "null"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"{ \\\"a\\\": 1 }\"",
+      "args": [
+        "price={ \"a\": 1 }"
+      ],
+      "expected": {
+        "price": "{ \"a\": 1 }"
+      },
+      "actual": {
+        "price": "{ \"a\": 1 }"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"[1, 2]\"",
+      "args": [
+        "price=[1, 2]"
+      ],
+      "expected": {
+        "price": "[1, 2]"
+      },
+      "actual": {
+        "price": "[1, 2]"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"\\\"quoted\\\"\"",
+      "args": [
+        "price=\"quoted\""
+      ],
+      "expected": {
+        "price": "\"quoted\""
+      },
+      "actual": {
+        "price": "\"quoted\""
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"\"",
+      "args": [
+        "price="
+      ],
+      "expected": {
+        "price": ""
+      },
+      "actual": null,
+      "error": "Invalid parameter format: price=. Use key=value format.",
+      "pass": false
+    },
+    {
+      "id": "value:\"  spaced  \"",
+      "args": [
+        "price=  spaced  "
+      ],
+      "expected": {
+        "price": "  spaced  "
+      },
+      "actual": {
+        "price": "  spaced  "
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "value:\"城市=東京\"",
+      "args": [
+        "price=城市=東京"
+      ],
+      "expected": {
+        "price": "城市=東京"
+      },
+      "actual": {
+        "price": "城市=東京"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "repeat_key_and_equals",
+      "args": [
+        "price=first",
+        "state=sentinel",
+        "price=a=b=c"
+      ],
+      "expected": {
+        "price": "a=b=c",
+        "state": "sentinel"
+      },
+      "actual": {
+        "price": "a=b=c",
+        "state": "sentinel"
+      },
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "missing_separator",
+      "args": [
+        "missing-separator"
+      ],
+      "rejects": true,
+      "actual": null,
+      "error": "Invalid parameter format: missing-separator. Use key=value format.",
+      "pass": true
+    },
+    {
+      "id": "empty_key",
+      "args": [
+        "=empty-key"
+      ],
+      "rejects": true,
+      "actual": null,
+      "error": "Invalid parameter format: =empty-key. Use key=value format.",
+      "pass": true
+    }
+  ]
+}
