@@ -1,0 +1,176 @@
+{
+  "verified": "2026-11-02",
+  "project": "microsoft/markitdown",
+  "observed_stars": 193499,
+  "license": "MIT",
+  "issue": 2804,
+  "received_existing_pr": 2810,
+  "base": "7482c092d9c0074a89803c9fdb63a969e7fe17fc",
+  "candidate": "aaf26e76dbb8b98010318a4e523aa8591e4aae96",
+  "source_modified": false,
+  "environment": {
+    "os": "Linux",
+    "python": "3.12.14",
+    "package": "markitdown 0.1.9",
+    "installed": "Separate non-editable source-built wheels; 41 installed production Python files per arm match fixed source",
+    "matching_dependency_lines": 70,
+    "dependency_sha256": "246789853a6f5e58a285a8ea2b9e6bee7a85e8b7bba18f91e097f21b16baca1c",
+    "consumer_inputs": "Owned synthetic local files only; plugins disabled; no provider credentials or LLM"
+  },
+  "consumer": {
+    "base": {
+      "start_utc": "2026-11-02T12:11:21.650037+00:00",
+      "end_utc": "2026-11-02T12:11:27.081670+00:00",
+      "runner_exit": 0,
+      "marker_json_characters": 0,
+      "marker_json_all_fields_preserved": false
+    },
+    "candidate": {
+      "start_utc": "2026-11-02T12:11:27.081933+00:00",
+      "end_utc": "2026-11-02T12:11:32.580417+00:00",
+      "runner_exit": 0,
+      "marker_json_characters": 313,
+      "marker_json_all_fields_preserved": true
+    },
+    "per_arm": {
+      "cli_invocations": 5,
+      "api_invocations": 8,
+      "cli_all_exit_zero": true,
+      "ordinary_json_without_markers_characters": 117,
+      "notebook_characters": 108,
+      "markdown_characters": 79,
+      "broken_notebook_characters": 66,
+      "broken_notebook_exact_raw_fallback": true,
+      "owned_exact_arithmetic_result": 42,
+      "original_input_hashes_unchanged": true
+    },
+    "marker_json_methods": [
+      "installed CLI",
+      "convert_local",
+      "same instance repeat after malformed notebook",
+      "convert_stream"
+    ],
+    "json_oracle": "json.loads output then equality of all 4 top-level fields and nested values; empty output fails",
+    "execution_boundary": "Execute only the exact known authored arithmetic constant after exact equality; no arbitrary converted notebook code, no model task"
+  },
+  "missing_file_recovery": {
+    "base": {
+      "start_utc": "2026-11-02T12:12:51.928828+00:00",
+      "end_utc": "2026-11-02T12:12:53.132451+00:00",
+      "product_exit": 0
+    },
+    "candidate": {
+      "start_utc": "2026-11-02T12:12:53.132551+00:00",
+      "end_utc": "2026-11-02T12:12:54.308857+00:00",
+      "product_exit": 0
+    },
+    "exception": "FileNotFoundError",
+    "same_instance_next_valid_config_fields_equal": true,
+    "input_hash_unchanged": true,
+    "other_exception_recovery": "not established"
+  },
+  "checks": {
+    "base": {
+      "scope": "Entire core package tests directory; upstream CI remote skips enabled",
+      "passed": 1118,
+      "skipped": 57,
+      "failed": 0,
+      "warnings": 7,
+      "exit": 0,
+      "start_utc": "2026-11-02T12:11:47.827390+00:00",
+      "end_utc": "2026-11-02T12:13:35.226865+00:00",
+      "skip_reasons": {
+        "do not run tests that query external urls": 44,
+        "do not run if exiftool is not installed": 1,
+        "do not run remotely run speech transcription tests": 1,
+        "do not run llm tests without a key": 1,
+        "Requires native Windows path conversion": 10
+      }
+    },
+    "candidate": {
+      "scope": "Entire core package tests directory; upstream CI remote skips enabled",
+      "passed": 1124,
+      "skipped": 57,
+      "failed": 0,
+      "warnings": 7,
+      "exit": 0,
+      "start_utc": "2026-11-02T12:13:35.227537+00:00",
+      "end_utc": "2026-11-02T12:15:19.433022+00:00",
+      "skip_reasons": {
+        "do not run tests that query external urls": 44,
+        "do not run if exiftool is not installed": 1,
+        "do not run remotely run speech transcription tests": 1,
+        "do not run llm tests without a key": 1,
+        "Requires native Windows path conversion": 10
+      }
+    },
+    "candidate_changed_files_black": {
+      "exit": 0,
+      "files": 2,
+      "end_utc": "2026-11-02T12:15:19.918179+00:00"
+    }
+  },
+  "hosted_ci": {
+    "observed_utc": "2026-11-02T12:12:48.133Z",
+    "head": "aaf26e76dbb8b98010318a4e523aa8591e4aae96",
+    "checks": [
+      {
+        "name": "license/cla",
+        "conclusion": "success"
+      }
+    ],
+    "workflows": [
+      {
+        "name": "tests",
+        "conclusion": "action_required"
+      },
+      {
+        "name": "pre-commit",
+        "conclusion": "action_required"
+      }
+    ],
+    "combined_status": "pending"
+  },
+  "harness_corrections": [
+    {
+      "phase": "first post-run seal",
+      "error": "Used rstrip input for malformed notebook fallback comparison; output actually equals input byte-for-byte",
+      "correction": "Fixed postprocessing only; original summary retained; product not rerun"
+    },
+    {
+      "phase": "supplement post-run launcher",
+      "exit": 1,
+      "error": "Whole-manifest immutability assertion included two mutable ONNX runtime cache databases",
+      "product_children_exit": [
+        0,
+        0
+      ],
+      "changed_files": 2,
+      "correction": "Recorded before/after hashes; decisive inputs/outputs/commands unchanged; no product rerun",
+      "old_cache_bytes": "Not retained; old hashes do not prove old bytes preserved"
+    }
+  ],
+  "retention": {
+    "completed_utc": "2026-11-02T12:19:38.239409+00:00",
+    "archive": "markitdown-json-retained-20261102.tar.gz",
+    "bytes": 5110673,
+    "sha256": "ba2dc2d2d3cdcc1a11642d4c50682ca668bb6cc4e07dbe38fe6112c6f8996f2f",
+    "files": 129,
+    "source_pack_sha256": "b94a185a4dd7daf1dd7d10b732d2070f6039d1d88a44abb26c5c6ffa9234c625",
+    "source_objects": 229,
+    "trees": {
+      "7482c092d9c0074a89803c9fdb63a969e7fe17fc": "7bd5b0bad600ad0e7a68a3ebcc90908b75fccb7f",
+      "aaf26e76dbb8b98010318a4e523aa8591e4aae96": "c134cecde2261954809c1537221e3c455eaa9092"
+    },
+    "restored_fsck_exit": 0,
+    "public_upload": false,
+    "omitted_rebuildable": "Toolchain/dependency/build caches and binaries; official version/hash and source preserved",
+    "consumer_summary_sha256": "bfd860de66ad94c6039843b5c7d25b9c6f7a5ea287d6b749ed5bbf08115e8a98",
+    "supplement_summary_sha256": "21a4e18315f1458f91931a333bd5a8e4f01ec42aabf072926402803ab7b2e378"
+  },
+  "limitations": [
+    "Structural notebook sniffing heuristic, not full notebook schema validation",
+    "No full OCR/MCP subpackage suite, native Windows, remote conversion, model, or indexing-quality validation",
+    "No default or reader-status upgrade; upstream PR not merged; no external comment or patch submission"
+  ]
+}
