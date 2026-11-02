@@ -1,0 +1,139 @@
+{
+  "date": "2026-11-02",
+  "repository": "OthmanAdi/planning-with-files",
+  "license": "MIT",
+  "discovery_stars": 27822,
+  "stars_are_effectiveness_evidence": false,
+  "fixed_master": "b6580cd24af1d8a95ab268794456e05608a1afd3",
+  "skill_version": "3.27.0",
+  "issue": 352,
+  "existing_pr": 353,
+  "pr_head": "819aeb9b61714c73ecdff7e10a997a7d2fc9bbac",
+  "actual_merge_base": "5d29800bf8b919ca9a88ee7885b90050b5cb64ed",
+  "changed_files": [
+    "tests/test_planning_disabled_optout.py",
+    "tests/test_skill_frontmatter_valid.py"
+  ],
+  "environment": {
+    "os": "Linux",
+    "python": "3.12.14",
+    "pytest": "9.2.0",
+    "pyyaml": "6.0.3",
+    "runtime": "isolated cloud venv",
+    "real_host_hook_registration": false,
+    "private_sessions_read": false
+  },
+  "method": {
+    "manual_body_and_helpers": true,
+    "native_initialization_utc": "2026-11-02T08:15:35Z",
+    "consumer_first_read_approximate_utc": "2026-11-02T08:17:15Z",
+    "consumer_first_raw_resolver_utc": "2026-11-02T08:18:27.685268Z",
+    "fresh_context_consumer": true,
+    "checkpoint_three_files_unchanged_by_consumer": true,
+    "owner_preparation_preceded_native_initialization": true,
+    "comparative_efficacy_trial": false,
+    "new_reader_or_default_upgrade": false
+  },
+  "native_helpers": {
+    "correct_pin_from_other_cwd": "exact selected directory",
+    "invalid_explicit_pin": {
+      "exit": 0,
+      "stdout": ""
+    },
+    "incomplete_advisory": {
+      "exit": 0,
+      "complete_phases": 3,
+      "total_phases": 5
+    },
+    "invalid_pin_validate_exit": 1,
+    "no_mode_or_attestation_created": true
+  },
+  "initial_reproduction": {
+    "baseline": {
+      "passed": 5,
+      "failed": 2
+    },
+    "candidate": {
+      "passed": 8,
+      "failed": 0
+    },
+    "ignored_fixture_hashes_preserved": true
+  },
+  "consumer": {
+    "tracked_helper_bad_guard": "1 expected failure, restored exact hash",
+    "tracked_hidden_skill_bad_yaml": "1 expected failure, restored exact hash",
+    "archive_git_probe_exit": 128,
+    "archive": {
+      "passed": 7,
+      "skipped": 1,
+      "skip": "Git inventory only"
+    },
+    "archive_helper_negative": "1 expected failure",
+    "archive_hidden_skill_negative": "1 expected failure",
+    "bad_clawhub_staging": {
+      "baseline_validators_same_archive": {
+        "failed": 2
+      },
+      "candidate_git": {
+        "passed": 8
+      },
+      "candidate_archive": {
+        "passed": 7,
+        "skipped": 1
+      }
+    },
+    "decision": "Not directly acceptable against broad original criteria. Conditional for tracked-source ignored-scratch fix only; optional staging coverage narrowed. No new patch."
+  },
+  "full_python_suite": {
+    "baseline": {
+      "passed": 1085,
+      "failed": 2,
+      "skipped": 356,
+      "subtests_passed": 1073,
+      "exit": 1,
+      "start_utc": "2026-11-02T08:18:48.598996+00:00",
+      "end_utc": "2026-11-02T08:20:36.589041+00:00"
+    },
+    "candidate": {
+      "passed": 1089,
+      "failed": 0,
+      "skipped": 356,
+      "subtests_passed": 1073,
+      "exit": 0,
+      "start_utc": "2026-11-02T08:20:36.589737+00:00",
+      "end_utc": "2026-11-02T08:22:28.660395+00:00"
+    }
+  },
+  "upstream_ci": {
+    "exact_head": "819aeb9b61714c73ecdff7e10a997a7d2fc9bbac",
+    "success": 5,
+    "cancelled": 1,
+    "cancelled_check": "vitest (Pi extension)",
+    "workflow_conclusion": "cancelled",
+    "pr_open": true,
+    "merged": false
+  },
+  "unverified": [
+    "native automatic recovery and compaction",
+    "cross-model or comparative efficiency",
+    "arbitrary archive nested inside another Git repository",
+    "ClawHub staging build and verify",
+    "local Windows/macOS suites",
+    "native Pi/OpenCode/DSH plugin suites"
+  ],
+  "retention": {
+    "file": "planning-with-files-retained-20261102.tar.gz",
+    "bytes": 24829655,
+    "sha256": "060e797c3b52bf5dafc7a7202ce7830cf766d1ebedf37cc826a9ae2e55914ef1",
+    "verified_files": 53,
+    "source_git_blobs": 789,
+    "scope": "Exact upstream Git blob archive, patch, source metadata, raw runs, initial checkpoint, consumer harness/reports/fixtures; duplicate source archive trees represented by per-file hash manifests plus fixed raw source and exact patch. Original eol-converting git archive retained separately locally."
+  },
+  "source_archive": {
+    "source": "b6580cd24af1d8a95ab268794456e05608a1afd3",
+    "verified_git_blobs": 789,
+    "archive_bytes": 24729578,
+    "archive_sha256": "53364ae6ff11c93a81e44d79739f66fff305215eff0820760078d46cc245be30"
+  },
+  "stars_observed_utc": "2026-11-02T08:25:28Z"
+}
