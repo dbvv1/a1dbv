@@ -89,6 +89,8 @@ Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind
 | 审查回复／汇总判断 | 回到原回复逐条核 finding，再读缺失覆盖；保留独立接收记录 | [gstack](../../experiments/gstack-review-receipt/README.md) 候选挡住汇总改写、缺原回复和换文件；整条事件连同 finding 删除仍可 clean，只作一致性补充 |
 | worktree 交接／测试摘要 | 核代码实际落点与包的净 diff，再读 runner 原输出、locale、零测试和失败路径 | [Superpowers](../../experiments/superpowers-worktree-receipt/README.md) 旧 main 正确 cwd 与候选 `-C` 均能接包；真实摘要补丁在 C.UTF-8 仍失败 3 项，误用 C 诊断写出的 complete 已纠正，修复未获接收 |
 
+**路径带符号链接时，还要跑真正依赖目标的消费者。** [OpenHands FileEditor](../../experiments/openhands-symlink-receipt/README.md) 基线编辑报成功、第一个应用也通过，却把链接换成普通文件，第二应用和共享目标仍错；既有候选在三入口读回、同路径撤销中修正。其 `close()` 仍留下历史，托管功能 CI 仍待运行，保全责任不能省略。
+
 这些实测支持按风险选择消费者验收，不改变整套工具默认或本页读者状态；核实 2026-11-02。
 
 **同机检查争用要测出来再调度。** 实现中跑定向反馈，交付时按项目要求验整合结果；只有观察到资源争用才错峰或排队，不统一降低 workers、放宽超时。n8n 的单 worker 定向入口与 Inspector 的排队比较是各自项目取舍，不能当所有仓库的配置默认。

@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "verified_date": "2026-11-02",
+  "repository": "OpenHands/software-agent-sdk",
+  "parent_project": "OpenHands/OpenHands",
+  "parent_project_stars_snapshot": 92486,
+  "stars_are_not_sdk_component_effect_evidence": true,
+  "license": "MIT",
+  "package_version": "1.59.0",
+  "base_and_current_main": "98849457621881ae2414719b82b8bc1cf535b4ab",
+  "candidate": "f11d44c29cb28ca92705468513231b1e7562482e",
+  "candidate_pr": "https://github.com/OpenHands/software-agent-sdk/pull/6358",
+  "candidate_state": "open, unmerged",
+  "scope": "Public FileEditorExecutor(FileEditorAction) and synthetic downstream Python applications; no Agent loop, model, server or UI.",
+  "runtime": {
+    "platform": "Linux x86_64",
+    "python": "3.12.14",
+    "install": "uv sync --frozen --package openhands-tools --group dev; two owned venvs; lock unchanged; no Hook installation",
+    "first_install": "exit 2, DNS failure caused by omitted preconfigured proxy/certificate environment; original logs preserved",
+    "resumed_install": "restored existing transport environment only; base and candidate sync exit 0",
+    "product_import": "isolated HOME/XDG/TMPDIR and local LiteLLM model-cost map; no inherited credentials"
+  },
+  "consumer": {
+    "base": {
+      "process_start_utc": "2026-11-02T10:04:31Z",
+      "first_tool_input_utc": "2026-11-02T10:04:39.585555+00:00",
+      "process_end_utc": "2026-11-02T10:04:41Z",
+      "process_exit": 0,
+      "checks": {
+        "initial_business_fails_all": true,
+        "replace_reports_success": true,
+        "all_business_pass_after_replace": false,
+        "all_business_pass_after_insert": false,
+        "all_business_pass_after_undo_insert": false,
+        "relative_alias_preserved": false,
+        "target_permission_preserved": true,
+        "neighbor_unchanged": true,
+        "undo_insert_restores_post_replace": true,
+        "undo_replace_restores_initial": false,
+        "missing_string_error_and_unchanged": true,
+        "missing_file_error_and_unchanged": true,
+        "restricted_sentinel_error_and_unchanged": true
+      },
+      "business": {
+        "initial_unfixed": {
+          "checkout": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "invoice": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "canonical": {
+            "exit": 1,
+            "stdout": "10\n"
+          }
+        },
+        "after_replace": {
+          "checkout": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "invoice": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "canonical": {
+            "exit": 1,
+            "stdout": "10\n"
+          }
+        },
+        "after_insert": {
+          "checkout": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "invoice": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "canonical": {
+            "exit": 1,
+            "stdout": "10\n"
+          }
+        },
+        "after_undo_insert": {
+          "checkout": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "invoice": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "canonical": {
+            "exit": 1,
+            "stdout": "10\n"
+          }
+        },
+        "after_undo_replace": {
+          "checkout": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "invoice": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "canonical": {
+            "exit": 1,
+            "stdout": "10\n"
+          }
+        }
+      },
+      "git_diff_after_replace": "diff --git a/checkout/pricing.py b/checkout/pricing.py\ndeleted file mode 120000\nindex 8219939..0000000\n--- a/checkout/pricing.py\n+++ /dev/null\n@@ -1 +0,0 @@\n-../shared/pricing.py\n\\ No newline at end of file\ndiff --git a/checkout/pricing.py b/checkout/pricing.py\nnew file mode 100644\nindex 0000000..33d0d82\n--- /dev/null\n+++ b/checkout/pricing.py\n@@ -0,0 +1,2 @@\n+def total(unit_price, quantity):\n+    return unit_price * quantity\n",
+      "close": {
+        "history_directories_remaining": 2,
+        "temporary_history_empty": false,
+        "after_same_as_before": true,
+        "consumer_archived_history_separately": true,
+        "product_cleanup_claimed": false
+      }
+    },
+    "candidate": {
+      "process_start_utc": "2026-11-02T10:04:41Z",
+      "first_tool_input_utc": "2026-11-02T10:04:49.966820+00:00",
+      "process_end_utc": "2026-11-02T10:04:51Z",
+      "process_exit": 0,
+      "checks": {
+        "initial_business_fails_all": true,
+        "replace_reports_success": true,
+        "all_business_pass_after_replace": true,
+        "all_business_pass_after_insert": true,
+        "all_business_pass_after_undo_insert": true,
+        "relative_alias_preserved": true,
+        "target_permission_preserved": true,
+        "neighbor_unchanged": true,
+        "undo_insert_restores_post_replace": true,
+        "undo_replace_restores_initial": true,
+        "missing_string_error_and_unchanged": true,
+        "missing_file_error_and_unchanged": true,
+        "restricted_sentinel_error_and_unchanged": true
+      },
+      "business": {
+        "initial_unfixed": {
+          "checkout": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "invoice": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "canonical": {
+            "exit": 1,
+            "stdout": "10\n"
+          }
+        },
+        "after_replace": {
+          "checkout": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "invoice": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "canonical": {
+            "exit": 0,
+            "stdout": "21\n"
+          }
+        },
+        "after_insert": {
+          "checkout": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "invoice": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "canonical": {
+            "exit": 0,
+            "stdout": "21\n"
+          }
+        },
+        "after_undo_insert": {
+          "checkout": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "invoice": {
+            "exit": 0,
+            "stdout": "21\n"
+          },
+          "canonical": {
+            "exit": 0,
+            "stdout": "21\n"
+          }
+        },
+        "after_undo_replace": {
+          "checkout": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "invoice": {
+            "exit": 1,
+            "stdout": "10\n"
+          },
+          "canonical": {
+            "exit": 1,
+            "stdout": "10\n"
+          }
+        }
+      },
+      "git_diff_after_replace": "diff --git a/shared/pricing.py b/shared/pricing.py\nindex 35f267b..33d0d82 100644\n--- a/shared/pricing.py\n+++ b/shared/pricing.py\n@@ -1,2 +1,2 @@\n def total(unit_price, quantity):\n-    return unit_price + quantity\n+    return unit_price * quantity\n",
+      "close": {
+        "history_directories_remaining": 2,
+        "temporary_history_empty": false,
+        "after_same_as_before": true,
+        "consumer_archived_history_separately": true,
+        "product_cleanup_claimed": false
+      }
+    }
+  },
+  "tests": [
+    {
+      "label": "regression-red",
+      "start_utc": "2026-11-02T10:05:12.173089+00:00",
+      "end_utc": "2026-11-02T10:05:24.129388+00:00",
+      "exit": 1,
+      "timeout": false
+    },
+    {
+      "label": "base-file-editor",
+      "start_utc": "2026-11-02T10:05:24.130163+00:00",
+      "end_utc": "2026-11-02T10:05:38.689580+00:00",
+      "exit": 0,
+      "timeout": false
+    },
+    {
+      "label": "candidate-file-editor",
+      "start_utc": "2026-11-02T10:05:38.690618+00:00",
+      "end_utc": "2026-11-02T10:05:58.515661+00:00",
+      "exit": 0,
+      "timeout": false
+    },
+    {
+      "label": "candidate-ruff",
+      "start_utc": "2026-11-02T10:05:58.516810+00:00",
+      "end_utc": "2026-11-02T10:05:58.588276+00:00",
+      "exit": 0,
+      "timeout": false
+    },
+    {
+      "label": "candidate-format",
+      "start_utc": "2026-11-02T10:05:58.589474+00:00",
+      "end_utc": "2026-11-02T10:05:58.653943+00:00",
+      "exit": 0,
+      "timeout": false
+    }
+  ],
+  "test_counts": {
+    "regression_against_base": {
+      "failed": 1,
+      "deselected": 52
+    },
+    "base_file_editor": {
+      "passed": 168,
+      "failed": 0,
+      "skipped": 0
+    },
+    "candidate_file_editor": {
+      "passed": 169,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "upstream_ci": {
+    "head": "f11d44c29cb28ca92705468513231b1e7562482e",
+    "observed_utc": "2026-11-02T10:08:05.165Z",
+    "checks_success": 2,
+    "checks_scope": [
+      "PR artifacts",
+      "PR description"
+    ],
+    "workflows_success": 2,
+    "workflows_action_required": 12,
+    "functional_ci_complete": false
+  },
+  "not_run": [
+    "whole repository suite",
+    "complete pre-commit and Pyright",
+    "model behavior eval",
+    "native Windows/macOS",
+    "packaged agent server",
+    "parent-directory symlink consumer",
+    "hardlinks",
+    "concurrent link retargeting",
+    "undo through different alias or a new executor"
+  ],
+  "limits": [
+    "workspace_root is path context, not a sandbox.",
+    "allowed_edits_files rejection tested with a nonempty allowlist; empty list is not deny-all.",
+    "History uses original path keys; only same-executor, same-alias undo was consumed.",
+    "Inherited close() leaves temporary histories in both versions; harness archival is not product cleanup."
+  ],
+  "raw_artifacts": {
+    "REPORT.md": "4b72004dc529a100f44d6ffa3cf1cd4ffe890595bb3d275e254384cf878093bd",
+    "summary.json": "912debdeac5ff5cdc33cfab07f27165668541a71382fdd2d6250cc9cdbd198b3",
+    "SHA256SUMS.json": "f17e84f98d96148c1a6414a704c0f70ccb7bb0e42bb495bbbabce95944b64b82",
+    "base/events.jsonl": "0f34b5e0e29f943a4c31d0fbb2920589af85c7b1609664af4ae8ce86f24ba3c1",
+    "candidate/events.jsonl": "8f5d88f8d8e0972753f16eb6690f19f3ab34f25152613b2828b11065cbafbc44"
+  },
+  "decision": "Bounded candidate receipt for stable final-component symlink editing; reader state and whole-stack default unchanged.",
+  "retention": {
+    "created_utc": "2026-11-02T10:08:44.450418+00:00",
+    "sha256": "ff44ef2c766b724024548d257e004e3b942d5d87336438173d5ce3a8200a26b7",
+    "bytes": 5933553,
+    "source_object_count": 2271,
+    "restored_commit_trees": {
+      "98849457621881ae2414719b82b8bc1cf535b4ab": "6f88d5a6bce77ec953303f5d0ba2e670a8b57561",
+      "f11d44c29cb28ca92705468513231b1e7562482e": "b67a8f1c1e1666ca1f2c5b99454976a097b7734a"
+    },
+    "source_pack_sha256": "a494a8c5e5a26f94744314040da88d7ccfd345c7a85237e7b27fd54034fa3d91",
+    "archive_public_upload_cleared": false,
+    "file_count": 2466
+  }
+}
