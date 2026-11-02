@@ -1,0 +1,1221 @@
+{
+  "scope": "Public SDK disk/InMemorySessionStore fork→read on synthetic compacted transcripts; no private sessions, CLI/model, remote store services or upstream submission.",
+  "verified_date_utc": "2026-11-02",
+  "source": {
+    "repository": "https://github.com/anthropics/claude-agent-sdk-python",
+    "baseline_commit": "2146f9d8985513053e904b13200c8f744b36785a",
+    "package_version": "0.2.176",
+    "fork_issue": 1419,
+    "read_issue": 1411,
+    "fork_pr": {
+      "number": 1420,
+      "base": "2d485201617258867dd0f74b9e7307056f5938fe",
+      "head": "c9fd2015343128825b4903414b8dc541885b070f",
+      "state": "open",
+      "merged": false,
+      "workflow_conclusions": [
+        "action_required",
+        "action_required",
+        "action_required"
+      ]
+    },
+    "read_pr": {
+      "number": 1412,
+      "base": "f93e29cc951cd5fddcaaed9f3c49c3c38dedd6ab",
+      "head": "7e532db9d8bd1aa2a36261261ab1f25237e657f7",
+      "state": "open",
+      "merged": false,
+      "workflow_conclusions": [
+        "action_required",
+        "action_required",
+        "action_required"
+      ]
+    },
+    "integration": "Apply original base-to-head diffs onto current main, preserving newer parallel-tool recovery. No new production changes.",
+    "combined_files": [
+      "src/claude_agent_sdk/_internal/session_mutations.py",
+      "src/claude_agent_sdk/_internal/sessions.py",
+      "tests/test_fork_compaction.py",
+      "tests/test_session_helpers_store.py",
+      "tests/test_session_mutations.py",
+      "tests/test_sessions.py"
+    ],
+    "baseline_archive_sha256": "975e303da491b03a76d727716f4a11ab27a71e0161e6ed1168b1de96668cdbaa",
+    "combined_patch_sha256": "9b5f52bcf1393bfdc6224f5741338f81bf22244169f9557668c117cc114d19a6"
+  },
+  "environment": {
+    "os": "Linux 6.18.57 x86_64",
+    "python": "3.12.14",
+    "mcp": "2.3.0",
+    "pytest": "9.2.0",
+    "ruff": "0.17.3",
+    "mypy": "2.4.1",
+    "dependencies_freeze_sha256": "fa7c16677fbfa13f7139659ffe15fd58a075e507468b6f4d47ba3fd784325caf",
+    "shared_dependencies_across_snapshots": true,
+    "isolation": "Each consumer in separate process, whitelisted environment, fresh HOME and CLAUDE_CONFIG_DIR; explicit project and source paths; actual imports asserted and hashed."
+  },
+  "consumer": {
+    "driver_sha256": "2129be4569f9f39922ce008936933d3c37dd3d0158fed61821bb0081e6f419dd",
+    "matrix_driver_sha256": "441b790d5654988d816f9cd56d7e63f9a1860428d8d4ca4976da7c9a747664d9",
+    "fixture_layout": [
+      "u1",
+      "a1",
+      "u2",
+      "a2",
+      "compact_boundary",
+      "S",
+      "u3",
+      "a3"
+    ],
+    "expected_full_read": [
+      "S",
+      "u2",
+      "a2",
+      "u3",
+      "a3"
+    ],
+    "meaning": "S is summary; u2/a2 are explicitly preserved messages; u3/a3 are follow-up. Earlier u1/a1 intentionally excluded from consumption.",
+    "partial_pressure_case": "preservedMessages also names u3 after cutoff S; trim that deliberately excluded ref. Forward-reference stress fixture, not observed CLI prevalence.",
+    "missing_anchor_control": "String UUID points to record absent from source; preserve absent reference, do not claim repair.",
+    "snapshots": [
+      {
+        "label": "baseline",
+        "start_utc": "2026-11-02T06:07:40.659402+00:00",
+        "end_utc": "2026-11-02T06:07:41.526195+00:00",
+        "observation_process_exit": 0,
+        "tree": "bb6b61cba4b545dacfecd14eb016f747eb86a980",
+        "source_sha256": {
+          "src/claude_agent_sdk/__init__.py": "1582188cfc10ce1eb3892a6e7c6d5639cdb0cca5e9e6ef1a1f5ebf68b75a072b",
+          "src/claude_agent_sdk/_internal/sessions.py": "5faa6011b0559bb2ccbe0e54ec9dea029418001da04013a67c6d107ebd192419",
+          "src/claude_agent_sdk/_internal/session_mutations.py": "16653fb5dbb6e9963e05ef1522e43ba4b8e28fd0b037e4749dde865ca9e4e675"
+        },
+        "all_consumer_contracts_accepted": false,
+        "cases": [
+          {
+            "kind": "plain",
+            "backend": "disk",
+            "source_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "fork_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "48cd910bf151710fce856432711662ee31a59d0227110308af4ca268dbeed67a",
+            "fork_sha256": "3f0a073ba4717ce4f70b5746fd63732017c89d0d28a7a536a34dc99e01054988",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "plain",
+            "backend": "store",
+            "source_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "fork_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "48cd910bf151710fce856432711662ee31a59d0227110308af4ca268dbeed67a",
+            "fork_sha256": "fe79567fe2a2bb41ca5371e73051918a24075410a1d9efc54932f931f462b96e",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "list",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "d4be4b2d4ae7c83b78ac7c666090911fea34fd0abce186e53afd12df40709ea7",
+            "fork_sha256": "53ac62ed6f92b0261f3525e28ee101003288c154cb8204581d80540b617f1783",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "list",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "d4be4b2d4ae7c83b78ac7c666090911fea34fd0abce186e53afd12df40709ea7",
+            "fork_sha256": "3b8ff5a080a553ea21d6f4a657e4b924386c4995f508ac06d5fbb57f76d07d8e",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "segment",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "5ca8d87a97e715de76594f7dad8d1d04ad32afc0882834073ac832f6d7cfedd2",
+            "fork_sha256": "2f49679914b43bb9b2cf7e7766ded3408bad86b1cdea0105e77d10d81c2d2ba4",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "segment",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "5ca8d87a97e715de76594f7dad8d1d04ad32afc0882834073ac832f6d7cfedd2",
+            "fork_sha256": "8403f031caba379714dd99c75c2b7a9fc5840aa9520f77e801c54a382f4fb451",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "both",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "df281245d137068eed2f1836c7d9e8ccc8b7b50be4b21a9c4032bf6f629ea5fd",
+            "fork_sha256": "bd89dffc8061643055d7a57696067d4b38ef6df7fb1f58833e5db7a5dd4f9ae3",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "both",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "df281245d137068eed2f1836c7d9e8ccc8b7b50be4b21a9c4032bf6f629ea5fd",
+            "fork_sha256": "1464d1830cd0b8393464d8f4d237a4f282ec9cc41417c35b6487169a8a65783c",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "partial-list",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S"
+            ],
+            "input_sha256": "c4316a35b8d21b2c23cdc3dcdc8ec55ffe5eb08c722ea83e3030cefb4a9c37f8",
+            "fork_sha256": "6ce1e6bd18575bcd09168228f6321e37534fd2ff3a018eb567b8722497bd1aaf",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "partial-list",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S"
+            ],
+            "input_sha256": "c4316a35b8d21b2c23cdc3dcdc8ec55ffe5eb08c722ea83e3030cefb4a9c37f8",
+            "fork_sha256": "9830af258e8b51c561e519a1a03e6ed03ce1e2dd3d26cc781f7591f5571aec59",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "missing-anchor",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "92375d1cd3846f9e66616b586cd8d00efdb8e879f419daf67accda0d0384984d",
+            "fork_sha256": "6c770265c9e39b022e6f16b7c5568c75c93fbdeaaba71718be726c37bcc002a7",
+            "accepted": false,
+            "failed_checks": [
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "missing-anchor",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "92375d1cd3846f9e66616b586cd8d00efdb8e879f419daf67accda0d0384984d",
+            "fork_sha256": "20035a6d1268abf056505d379a330445fc3d11dba0eeb652a65fe839f24aa154",
+            "accepted": false,
+            "failed_checks": [
+              "known_compaction_references_resolve"
+            ]
+          }
+        ],
+        "source_immutability_all_cases": true,
+        "content_preservation_all_cases": true,
+        "fresh_unique_ids_all_cases": true,
+        "copied_record_set_all_cases": true,
+        "unknown_metadata_preserved_all_cases": true
+      },
+      {
+        "label": "fork-only",
+        "start_utc": "2026-11-02T06:07:41.526503+00:00",
+        "end_utc": "2026-11-02T06:07:42.292373+00:00",
+        "observation_process_exit": 0,
+        "tree": "86bc0b356a09710325dc9cec993c11e6122bdd9c",
+        "source_sha256": {
+          "src/claude_agent_sdk/__init__.py": "1582188cfc10ce1eb3892a6e7c6d5639cdb0cca5e9e6ef1a1f5ebf68b75a072b",
+          "src/claude_agent_sdk/_internal/sessions.py": "5faa6011b0559bb2ccbe0e54ec9dea029418001da04013a67c6d107ebd192419",
+          "src/claude_agent_sdk/_internal/session_mutations.py": "eb949c6b87a127077b2a5054b2729c494a669bdfb11949f0652ffef315221f9e"
+        },
+        "all_consumer_contracts_accepted": false,
+        "cases": [
+          {
+            "kind": "plain",
+            "backend": "disk",
+            "source_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "fork_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "48cd910bf151710fce856432711662ee31a59d0227110308af4ca268dbeed67a",
+            "fork_sha256": "7af4fd0c40074fc4428861db397addeaa9b9026973ae70834368ec7478f39999",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "plain",
+            "backend": "store",
+            "source_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "fork_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "48cd910bf151710fce856432711662ee31a59d0227110308af4ca268dbeed67a",
+            "fork_sha256": "f5e9e0facfa88e4133108df830ccd8e72e3998fefc804663b6d98ef231d508d9",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "list",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "d4be4b2d4ae7c83b78ac7c666090911fea34fd0abce186e53afd12df40709ea7",
+            "fork_sha256": "6dccc1ad4ff8404d56e331243b4e009372ab2be7047c2b75f478edc1718c3b85",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete"
+            ]
+          },
+          {
+            "kind": "list",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "d4be4b2d4ae7c83b78ac7c666090911fea34fd0abce186e53afd12df40709ea7",
+            "fork_sha256": "7ef291d8ca7a0add226e5e4dedaa9117e86b9dc0dfd5135c72b93b4e793a1cf4",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete"
+            ]
+          },
+          {
+            "kind": "segment",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "5ca8d87a97e715de76594f7dad8d1d04ad32afc0882834073ac832f6d7cfedd2",
+            "fork_sha256": "150147c4f0aedc2a4e875c4771cc2ae35f5aa4edc1fcf1ed091d1b6af3d870b2",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete"
+            ]
+          },
+          {
+            "kind": "segment",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "5ca8d87a97e715de76594f7dad8d1d04ad32afc0882834073ac832f6d7cfedd2",
+            "fork_sha256": "637fa4afc3913444b517324afa0872294a1b0041267c67e298ffd39818102cdf",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete"
+            ]
+          },
+          {
+            "kind": "both",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "df281245d137068eed2f1836c7d9e8ccc8b7b50be4b21a9c4032bf6f629ea5fd",
+            "fork_sha256": "512bef0bf75f27dbc0c7a08b5a6ac5191395953698e606b6f09db48c7fbe5156",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete"
+            ]
+          },
+          {
+            "kind": "both",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "df281245d137068eed2f1836c7d9e8ccc8b7b50be4b21a9c4032bf6f629ea5fd",
+            "fork_sha256": "c4c9518e612ce8a027314bc428c82587235580b676e76a2a91fc9a90ebaab9b1",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete"
+            ]
+          },
+          {
+            "kind": "partial-list",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S"
+            ],
+            "input_sha256": "c4316a35b8d21b2c23cdc3dcdc8ec55ffe5eb08c722ea83e3030cefb4a9c37f8",
+            "fork_sha256": "a975bfc4043530a3e3301596556a7c4c8ba5dc0107c8daef48f679465b978409",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete"
+            ]
+          },
+          {
+            "kind": "partial-list",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S"
+            ],
+            "input_sha256": "c4316a35b8d21b2c23cdc3dcdc8ec55ffe5eb08c722ea83e3030cefb4a9c37f8",
+            "fork_sha256": "d43a3271c00c43485de3171233057ecd3f1cd332de65e6e568292af36fd605d6",
+            "accepted": false,
+            "failed_checks": [
+              "source_read_complete",
+              "fork_read_complete"
+            ]
+          },
+          {
+            "kind": "missing-anchor",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "92375d1cd3846f9e66616b586cd8d00efdb8e879f419daf67accda0d0384984d",
+            "fork_sha256": "3166e0c7ec7f1c481099ddd4474478ff849d2d3d7e61f0768d02487b41130083",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "missing-anchor",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "92375d1cd3846f9e66616b586cd8d00efdb8e879f419daf67accda0d0384984d",
+            "fork_sha256": "af05f911c3048f281057ecdcf18ae460cd13cb6703b6a43b025beacdb072641b",
+            "accepted": true,
+            "failed_checks": []
+          }
+        ],
+        "source_immutability_all_cases": true,
+        "content_preservation_all_cases": true,
+        "fresh_unique_ids_all_cases": true,
+        "copied_record_set_all_cases": true,
+        "unknown_metadata_preserved_all_cases": true
+      },
+      {
+        "label": "read-only",
+        "start_utc": "2026-11-02T06:07:42.292654+00:00",
+        "end_utc": "2026-11-02T06:07:43.008329+00:00",
+        "observation_process_exit": 0,
+        "tree": "7cdaaae0d4c3953ec5462e10cbd50bfe1f8ca2ce",
+        "source_sha256": {
+          "src/claude_agent_sdk/__init__.py": "1582188cfc10ce1eb3892a6e7c6d5639cdb0cca5e9e6ef1a1f5ebf68b75a072b",
+          "src/claude_agent_sdk/_internal/sessions.py": "32965500a20433f64a3210bc4322608dd5323361a99ca7f0642d496bd281e59d",
+          "src/claude_agent_sdk/_internal/session_mutations.py": "16653fb5dbb6e9963e05ef1522e43ba4b8e28fd0b037e4749dde865ca9e4e675"
+        },
+        "all_consumer_contracts_accepted": false,
+        "cases": [
+          {
+            "kind": "plain",
+            "backend": "disk",
+            "source_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "fork_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "48cd910bf151710fce856432711662ee31a59d0227110308af4ca268dbeed67a",
+            "fork_sha256": "4861f138aef4d4ef22553350fa1da73f229b0f6d5493f779759255cd75dd39fe",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "plain",
+            "backend": "store",
+            "source_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "fork_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "48cd910bf151710fce856432711662ee31a59d0227110308af4ca268dbeed67a",
+            "fork_sha256": "9297611de87f29bb6d64d126fd99ec0935a3e55377f3b7b87dc7f49be89e83cf",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "list",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "d4be4b2d4ae7c83b78ac7c666090911fea34fd0abce186e53afd12df40709ea7",
+            "fork_sha256": "5858f2700ec7cc130c60ae33e0fed85609d3721c16528b95601b26d5f7a95cc3",
+            "accepted": false,
+            "failed_checks": [
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "list",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "d4be4b2d4ae7c83b78ac7c666090911fea34fd0abce186e53afd12df40709ea7",
+            "fork_sha256": "f97aefc3584a8906571de9e55bd514e530d6191ed0e49f0bb20210667f2ab48f",
+            "accepted": false,
+            "failed_checks": [
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "segment",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "5ca8d87a97e715de76594f7dad8d1d04ad32afc0882834073ac832f6d7cfedd2",
+            "fork_sha256": "83088a9abd1d3127965c798be5a8cbb8d41e46603d399a8f2b1dabcede43d41b",
+            "accepted": false,
+            "failed_checks": [
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "segment",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "5ca8d87a97e715de76594f7dad8d1d04ad32afc0882834073ac832f6d7cfedd2",
+            "fork_sha256": "4888b1c48f6b2e35f4e43c97f8c8052b6c10e04cad7632a39e6675e9f9bcca18",
+            "accepted": false,
+            "failed_checks": [
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "both",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "df281245d137068eed2f1836c7d9e8ccc8b7b50be4b21a9c4032bf6f629ea5fd",
+            "fork_sha256": "717fb09514ea258812c722d04b60e172e2ab5f4f7f58b141a098dc0341bf2429",
+            "accepted": false,
+            "failed_checks": [
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "both",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "df281245d137068eed2f1836c7d9e8ccc8b7b50be4b21a9c4032bf6f629ea5fd",
+            "fork_sha256": "43671a185740e4090c9bc424eca14d05c3ba19007960991fc6a87368d7a03df7",
+            "accepted": false,
+            "failed_checks": [
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "partial-list",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S"
+            ],
+            "input_sha256": "c4316a35b8d21b2c23cdc3dcdc8ec55ffe5eb08c722ea83e3030cefb4a9c37f8",
+            "fork_sha256": "4608080765673387e183d2bbbb81c0082416fa19a0e5e072e2971acf96f58415",
+            "accepted": false,
+            "failed_checks": [
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "partial-list",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S"
+            ],
+            "input_sha256": "c4316a35b8d21b2c23cdc3dcdc8ec55ffe5eb08c722ea83e3030cefb4a9c37f8",
+            "fork_sha256": "8646c33d08f18b14f16301868bbce961d1ed0d985d8fe7f094ac63fcecbe1034",
+            "accepted": false,
+            "failed_checks": [
+              "fork_read_complete",
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "missing-anchor",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "92375d1cd3846f9e66616b586cd8d00efdb8e879f419daf67accda0d0384984d",
+            "fork_sha256": "a0c7253c3499384f2359507ed9dae56eefc44a488b5ef21fff094b6a64b8b798",
+            "accepted": false,
+            "failed_checks": [
+              "known_compaction_references_resolve"
+            ]
+          },
+          {
+            "kind": "missing-anchor",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "92375d1cd3846f9e66616b586cd8d00efdb8e879f419daf67accda0d0384984d",
+            "fork_sha256": "195c7e4df4811ed1706ee25bb4da4f3a7140ec8385e47e57063480cc5f03baa5",
+            "accepted": false,
+            "failed_checks": [
+              "known_compaction_references_resolve"
+            ]
+          }
+        ],
+        "source_immutability_all_cases": true,
+        "content_preservation_all_cases": true,
+        "fresh_unique_ids_all_cases": true,
+        "copied_record_set_all_cases": true,
+        "unknown_metadata_preserved_all_cases": true
+      },
+      {
+        "label": "combined",
+        "start_utc": "2026-11-02T06:07:43.008605+00:00",
+        "end_utc": "2026-11-02T06:07:43.724305+00:00",
+        "observation_process_exit": 0,
+        "tree": "0179c2da32c309230dc52dbef159443cc23387ce",
+        "source_sha256": {
+          "src/claude_agent_sdk/__init__.py": "1582188cfc10ce1eb3892a6e7c6d5639cdb0cca5e9e6ef1a1f5ebf68b75a072b",
+          "src/claude_agent_sdk/_internal/sessions.py": "32965500a20433f64a3210bc4322608dd5323361a99ca7f0642d496bd281e59d",
+          "src/claude_agent_sdk/_internal/session_mutations.py": "eb949c6b87a127077b2a5054b2729c494a669bdfb11949f0652ffef315221f9e"
+        },
+        "all_consumer_contracts_accepted": true,
+        "cases": [
+          {
+            "kind": "plain",
+            "backend": "disk",
+            "source_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "fork_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "48cd910bf151710fce856432711662ee31a59d0227110308af4ca268dbeed67a",
+            "fork_sha256": "5b629bca64c4d88421ff2ef11eeea2ea73c79ff422c304bca8da5237926aaf62",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "plain",
+            "backend": "store",
+            "source_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "fork_labels": [
+              "u1",
+              "a1",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "48cd910bf151710fce856432711662ee31a59d0227110308af4ca268dbeed67a",
+            "fork_sha256": "23d1c856d9d04dd50a76b2db7d162215a9296c6bfc1188e4e0a60f8470770d43",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "list",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "d4be4b2d4ae7c83b78ac7c666090911fea34fd0abce186e53afd12df40709ea7",
+            "fork_sha256": "841c27810806982af7d3c92c86dd3fd472803ac6e2165810fa74d216dbcc98e5",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "list",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "d4be4b2d4ae7c83b78ac7c666090911fea34fd0abce186e53afd12df40709ea7",
+            "fork_sha256": "0eb70b14528099ed9d442ecd1586fb3b42827b9d2799d5f8f3052e41b19387b4",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "segment",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "5ca8d87a97e715de76594f7dad8d1d04ad32afc0882834073ac832f6d7cfedd2",
+            "fork_sha256": "f151e4eced9105b080acbb0189350c98c7fa5252b136762b397ca225e9b6a48b",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "segment",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "5ca8d87a97e715de76594f7dad8d1d04ad32afc0882834073ac832f6d7cfedd2",
+            "fork_sha256": "df35137f1f9ac28ebd973bea8dc43656eaaa97cb49ffedcad86edd4b48893521",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "both",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "df281245d137068eed2f1836c7d9e8ccc8b7b50be4b21a9c4032bf6f629ea5fd",
+            "fork_sha256": "2bcd16986809da98521e08b0431bf0059506d5675a818c468fd302174b78d8dc",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "both",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "df281245d137068eed2f1836c7d9e8ccc8b7b50be4b21a9c4032bf6f629ea5fd",
+            "fork_sha256": "4bf3301bb0a61e581478d19d234a2c9fb7503e78e8fa60d159f26f9bcd8f6498",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "partial-list",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "c4316a35b8d21b2c23cdc3dcdc8ec55ffe5eb08c722ea83e3030cefb4a9c37f8",
+            "fork_sha256": "8eb4b05baee1b0f4e7fa10d4334d35ef9c812821bd5ea67ae87a784ce55a5ff2",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "partial-list",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u2",
+              "a2",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u2",
+              "a2"
+            ],
+            "input_sha256": "c4316a35b8d21b2c23cdc3dcdc8ec55ffe5eb08c722ea83e3030cefb4a9c37f8",
+            "fork_sha256": "d415763329aa7c6c571d598ec8ed5715df3bf420e594249fe7c3cc8826c4b7d7",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "missing-anchor",
+            "backend": "disk",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "92375d1cd3846f9e66616b586cd8d00efdb8e879f419daf67accda0d0384984d",
+            "fork_sha256": "c911267054c2a6d0e6bafa2e9e2a38ed9deb5333d8683adcf73e7f6f242d68b0",
+            "accepted": true,
+            "failed_checks": []
+          },
+          {
+            "kind": "missing-anchor",
+            "backend": "store",
+            "source_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "fork_labels": [
+              "S",
+              "u3",
+              "a3"
+            ],
+            "input_sha256": "92375d1cd3846f9e66616b586cd8d00efdb8e879f419daf67accda0d0384984d",
+            "fork_sha256": "c13a7a7692b11a30dd9c6f44eaa4cde9f5d1c045fd38799e8104f1cecc991fd0",
+            "accepted": true,
+            "failed_checks": []
+          }
+        ],
+        "source_immutability_all_cases": true,
+        "content_preservation_all_cases": true,
+        "fresh_unique_ids_all_cases": true,
+        "copied_record_set_all_cases": true,
+        "unknown_metadata_preserved_all_cases": true
+      }
+    ]
+  },
+  "checks": {
+    "affected-tests": {
+      "command": "python -m pytest tests/test_session_mutations.py tests/test_session_helpers_store.py tests/test_sessions.py tests/test_fork_compaction.py -q",
+      "exit": 0,
+      "start_utc": "2026-11-02T06:06:29Z",
+      "end_utc": "2026-11-02T06:06:33Z",
+      "log_sha256": "39ee535b03e696a53de92c2017bdaa7c70aca912218519f0793604c4559ea868",
+      "passed": 356
+    },
+    "full-tests": {
+      "command": "python -m pytest tests/ -q",
+      "exit": 0,
+      "start_utc": "2026-11-02T06:07:32Z",
+      "end_utc": "2026-11-02T06:07:54Z",
+      "log_sha256": "341600f5882e26247562b2319b7c192c61b218c987d6b3b03be20b2fb8bfaa81",
+      "passed": 1719,
+      "skipped": 6
+    },
+    "ruff-check": {
+      "command": "python -m ruff check src/ tests/ scripts/",
+      "exit": 0,
+      "start_utc": "2026-11-02T06:07:54Z",
+      "end_utc": "2026-11-02T06:07:54Z",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "ruff-format": {
+      "command": "python -m ruff format --check src/ tests/ scripts/",
+      "exit": 0,
+      "start_utc": "2026-11-02T06:07:54Z",
+      "end_utc": "2026-11-02T06:07:54Z",
+      "log_sha256": "ea2969fd741733e33c490fb6696583f5d6e29e16cae5e536952236a31cf615b1"
+    },
+    "mypy": {
+      "command": "python -m mypy src/ scripts/",
+      "exit": 0,
+      "start_utc": "2026-11-02T06:07:54Z",
+      "end_utc": "2026-11-02T06:07:58Z",
+      "log_sha256": "81b8a767756bd649de91d7b0c104614fe1e706bce451b754a92161491825cfde"
+    },
+    "candidate_hosted_ci": "Combined local tree not submitted; no hosted CI run."
+  },
+  "boundaries": [
+    "Not full pre-compaction archive recovery.",
+    "No CLI normalization or model resume evidence.",
+    "No cancellation, other OS or external store service test.",
+    "Observation process exit 0 also occurred for semantically failing snapshots.",
+    "Malformed input not generally repaired; known absent references and unknown metadata remain preserved.",
+    "Entire tests suite has six skips; no complete CI pass claimed."
+  ],
+  "review": "Non-author source review and independent raw consumer verification accepted the bounded fork/read composition.",
+  "retained_evidence": {
+    "archive": "claude-session-retained-20261102.tar.gz",
+    "bytes": 632097,
+    "sha256": "7478706cce4f888e5e958d1041e0658a35e06b94a6da5c1ea89984fee16eed45",
+    "verified_files": 255,
+    "baseline_source_verified_blobs": 160,
+    "public_upload": false
+  }
+}
