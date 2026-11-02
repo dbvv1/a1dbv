@@ -144,6 +144,8 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 **依据**：[一手] Anthropic《Writing effective tools for agents》（2025-09）、[Epic 官方插件](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)、[引擎侧核实与局限](../domains/game-dev/01-engine-integration.md#22-unreal几百个工具藏在工具搜索后面)；[经验：采用判断] 新建服务的接入顺序；核实 2026-10-21。
 
+**组合服务还要实际跟随工具返回的资源链接。** [FastMCP 当前主干对照](../experiments/fastmcp-resource-receipt/README.md)中，两个 namespace 的资源目录可读，工具却返回旧 URI，客户端跟链均失败；本地整合候选才读回配置并完成两个真实代码消费。首版虽有 157 项相关测试通过，独审仍发现 raw 结果类型及子类字段丢失，补修后再验为 158 项通过并重新完成候选消费。范围是外层 stdio、内层 in-process mount；原 PR 仍 Draft、历史 CI 失败，本地候选没有托管 CI，不升级默认或读者状态。依据：[用户与维护者 #4154](https://github.com/PrefectHQ/fastmcp/issues/4154)、[既有 #4845](https://github.com/PrefectHQ/fastmcp/pull/4845)及上述实测；核实 2026-11-02。
+
 ## 5. 在 Claude Code 中接入与撤回
 
 **✅ 先在 `/mcp` 看已有连接；已有插件提供同一服务时不要再手工加一份。** 确有缺口再按[官方 MCP 配置](https://code.claude.com/docs/en/mcp)选择远程 HTTP 或本地 stdio。项目级 `.mcp.json` 可共享，但只提交环境变量引用，不提交 token；安装命令、服务器地址和工具权限都要评审。插件能自启它打包的服务器，不能只看名称。

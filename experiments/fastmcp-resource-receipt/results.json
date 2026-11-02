@@ -1,0 +1,222 @@
+{
+  "verified": "2026-11-02",
+  "project": "PrefectHQ/fastmcp",
+  "observed_stars": 28272,
+  "license": "Apache-2.0",
+  "issue": 4154,
+  "received_existing_draft_pr": 4845,
+  "original_pr_base": "c9cf23779e2cf7c3273165736b5defcdbd19738f",
+  "original_pr_head": "6602ed4bdae5801e7da877aeea17f96ccfa66812",
+  "current_base": "588297eb53c00d8a60291b05d4315fe753355c10",
+  "local_v1_tree": "1f1544b876697af05a5974eaddb8e66459e2b520",
+  "local_v2_tree": "fe48f76f7bda7861ee4a65281f710ccedf8b9a32",
+  "local_v2_patch_sha256": "57aa9d08819af63c90a0982b84fe39f8c465276bf64b297f4412b31845317010",
+  "original_patch_apply_check": "Failed in server.py and namespace.py against current main; source unchanged; inner exit not separately captured",
+  "changed_files": 7,
+  "source_published_upstream": false,
+  "environment": {
+    "os": "Linux",
+    "python": "3.12.14",
+    "source_build_version": "0.0.1.dev1+588297e",
+    "installation": "uv sync --frozen --no-editable in separate workspace environments; rebuild local packages after changes",
+    "external_dependency_lines_equal": 149,
+    "external_dependencies_sha256": "b67b1660b6dc8a50410197dc481ccfad802e32abd0f487f9922de687b9e8f514",
+    "final_installed_source_files_match": 292,
+    "consumer_inputs": "Owned synthetic JSON configuration and fixed JS template; no private inputs, account or LLM"
+  },
+  "consumer": {
+    "current": {
+      "start_utc": "2026-11-02T12:29:45.584606+00:00",
+      "end_utc": "2026-11-02T12:29:49.149250+00:00",
+      "client_process_exit": 0,
+      "protocol_calls": 11,
+      "directory_reads_success": 2,
+      "link_reads_success": 0,
+      "node_outputs": [],
+      "node_process_exits": [],
+      "missing_resource_error_then_continue": true,
+      "server_pid_absent": true,
+      "server_exit_code": "Not exposed by SDK; not inferred",
+      "installed_fastmcp_files_match": 274
+    },
+    "integrated": {
+      "start_utc": "2026-11-02T12:31:48.382980+00:00",
+      "end_utc": "2026-11-02T12:31:51.479638+00:00",
+      "client_process_exit": 0,
+      "protocol_calls": 11,
+      "directory_reads_success": 2,
+      "link_reads_success": 2,
+      "node_outputs": [
+        42,
+        63
+      ],
+      "node_process_exits": [
+        0,
+        0
+      ],
+      "missing_resource_error_then_continue": true,
+      "server_pid_absent": true,
+      "server_exit_code": "Not exposed by SDK; not inferred",
+      "installed_fastmcp_files_match": 274
+    },
+    "integrated-v2": {
+      "start_utc": "2026-11-02T12:36:22.877382+00:00",
+      "end_utc": "2026-11-02T12:36:25.180418+00:00",
+      "client_process_exit": 0,
+      "protocol_calls": 11,
+      "directory_reads_success": 2,
+      "link_reads_success": 2,
+      "node_outputs": [
+        42,
+        63
+      ],
+      "node_process_exits": [
+        0,
+        0
+      ],
+      "missing_resource_error_then_continue": true,
+      "server_pid_absent": true,
+      "server_exit_code": "Not exposed by SDK; not inferred",
+      "installed_fastmcp_files_match": 274
+    },
+    "capture_scope": "Decoded protocol results and server stderr; no raw wire stdout tee",
+    "reruns": "No baseline/v1 reruns; v2 consumer necessary after production change; original script and fixtures unchanged"
+  },
+  "independent_review": {
+    "v1": "Normal namespace and tool transform paths pass; raw CallToolResult result_type and declared subclass field lost after namespace projection",
+    "v2": "Raw model copy changes content only; original input, result_type, explicit subclass field and remaining wire fields preserved",
+    "other_probes": [
+      "nested Namespace and real memory Client list/read",
+      "ToolTransform rename",
+      "normal text, structured, error and meta",
+      "no-link and InputRequired direct identity"
+    ],
+    "not_covered": "Full MRTR lifecycle, independent task worker or HTTP proxy consumer"
+  },
+  "checks": {
+    "v1_red": {
+      "failed": 3,
+      "reason": "Expected namespaced ResourceLink URI remained old URI"
+    },
+    "v1_owning": {
+      "passed": 41,
+      "exit": 0
+    },
+    "v1_neighbors": {
+      "passed": 116,
+      "exit": 0
+    },
+    "v2_red": {
+      "failed": 1,
+      "reason": "Original v1 drops raw envelope fields"
+    },
+    "v2_related": {
+      "passed": 158,
+      "exit": 0
+    },
+    "v2_after_format": {
+      "new_regression_passed": 1,
+      "exit": 0
+    },
+    "v2_ruff_lint": {
+      "files": 7,
+      "exit": 0
+    },
+    "v2_ruff_format": {
+      "files": 7,
+      "exit": 0
+    },
+    "v2_ty_workspace_paths": {
+      "files": 7,
+      "exit": 0
+    },
+    "initial_ty": {
+      "diagnostics": 29,
+      "exit": 1,
+      "reason": "Mixed installed and source resolution including pre-rebuild package"
+    },
+    "ty_after_v1_rebuild_without_source_paths": {
+      "diagnostics": 23,
+      "exit": 1,
+      "reason": "Source and installed nominal types are resolved as different types; corrected by explicit workspace search paths"
+    },
+    "loq_current": {
+      "violations": 36,
+      "exit": 1
+    },
+    "loq_candidate": {
+      "violations": 36,
+      "exit": 1,
+      "changed_over_limit_files": {
+        "server.py": {
+          "base": 2594,
+          "candidate": 2595,
+          "limit": 2410
+        },
+        "tool_transform.py": {
+          "base": 1057,
+          "candidate": 1058,
+          "limit": 1004
+        }
+      },
+      "thresholds_modified": false
+    },
+    "not_run": [
+      "Full suite/platform matrix",
+      "Complete prek hooks",
+      "gitleaks"
+    ]
+  },
+  "upstream_ci": {
+    "observed_utc": "2026-11-02T12:31:01.671Z",
+    "head": "6602ed4bdae5801e7da877aeea17f96ccfa66812",
+    "checks_success": 1,
+    "checks_skipped": 6,
+    "workflow_tests": "failure",
+    "workflow_static": "failure",
+    "failed_run_jobs_returned": 0,
+    "failure_reason": "Unknown; jobs response empty",
+    "combined_status": "pending",
+    "local_integrated_tree_ci": "No hosted CI"
+  },
+  "retention": {
+    "completed_utc": "2026-11-02T12:39:53.949421+00:00",
+    "archive": "fastmcp-resource-retained-final-20261102.tar.gz",
+    "bytes": 30489760,
+    "sha256": "4b6472a36bdf513617fff9ce8e1232c4215cae97a539e257dcada50318eb0715",
+    "files": 122,
+    "source_pack_sha256": "8dd59eaa740119654885500136d601f048d65f25245d7d190372b63d284e38ac",
+    "source_objects": 2814,
+    "trees": {
+      "c9cf23779e2cf7c3273165736b5defcdbd19738f": "f2e90798a8e75c5e4f7d04aa7e94b7df971025d2",
+      "6602ed4bdae5801e7da877aeea17f96ccfa66812": "d2aae8be305387d5fc646cd6cd27b9275f0fd629",
+      "588297eb53c00d8a60291b05d4315fe753355c10": "8fae7dae34358aa5898e6a9666699285bdd49533",
+      "1f1544b876697af05a5974eaddb8e66459e2b520": "1f1544b876697af05a5974eaddb8e66459e2b520",
+      "fe48f76f7bda7861ee4a65281f710ccedf8b9a32": "fe48f76f7bda7861ee4a65281f710ccedf8b9a32"
+    },
+    "restored_fsck_exit": 0,
+    "public_upload": false,
+    "omitted": "Dependency environments, build/runtime caches, temp files; fixed source trees, inputs, outputs, commands, errors and review evidence retained",
+    "v1_consumer_summary_sha256": "5a3f3f4ff0dc08e135b70185a8abd2da22f19487c8b76cdd9983549be060c91b",
+    "v2_consumer_summary_sha256": "4d26eb85361631159af8956f541af3484028a0d065f0f2cf2e8d3ebc94d4082e",
+    "v2_consumer_manifest_sha256": "2cd80dce6105e306464213af490972336695a14ff8a41835021a9ed3f763b099",
+    "consumer_manifest_verification": {
+      "manifest-sha256.json": {
+        "entries": 31,
+        "included": 31,
+        "omitted": []
+      },
+      "manifest-v2.json": {
+        "entries": 17,
+        "included": 17,
+        "omitted": []
+      }
+    }
+  },
+  "reader_status": "Unchanged",
+  "limitations": [
+    "Only outer transport is real stdio; child servers are in-process mounts",
+    "Ordinary resource-link projection only; EmbeddedResource and arbitrary structured-content URI rewriting not added",
+    "No model-quality comparison or general MCP compatibility claim"
+  ]
+}
