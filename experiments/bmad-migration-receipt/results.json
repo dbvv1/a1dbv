@@ -1,0 +1,313 @@
+{
+  "verified_date": "2026-11-02",
+  "scope": "Local implementation and independent real CLI consumer of issue 3142 only; no new default, answer-page reader pass, whole v6-to-v7 migration or model delivery claim.",
+  "project": {
+    "repository": "bmad-code-org/BMAD-METHOD",
+    "license": "MIT plus trademark notice",
+    "stars_observed": 54876,
+    "stars_purpose": "discovery only",
+    "line": "v7 preview alpha",
+    "module_version": "6.13.0-next",
+    "stable_v6_12_tested": false,
+    "main": "bd70c643a7ec85d1ec2e88076b3fbdd8e4517f41",
+    "base": "499008ea97c53436e7c7fa598a4a25e7bb869e07",
+    "main_and_dev_migration_script_identical": true,
+    "local_candidate": "72e15e1083454d4fd52de83c7535d99fead50adc",
+    "candidate_tree": "f7d66bf176e2e9a46063e0e526ab43620d2a1435",
+    "candidate_source_sha256": "7927c1621447781f8c471a1181043b44104501d3dc882b3be01b526cadd0d332",
+    "candidate_patch_sha256": "7247e8ebc3b83e79fbac09156da7693ae6b1c6f1a1d7679a5274304376c85ceb",
+    "changed_files": [
+      "skills/bmad/scripts/migrate_v6.py",
+      "tools/tests/test_migrate_v6.py"
+    ],
+    "upstream_issue": 3142,
+    "issue_state": "open",
+    "upstream_submission": false
+  },
+  "consumer": {
+    "result": "ACCEPT scoped flow",
+    "synthetic_only": true,
+    "source_files_accounted_for": 17,
+    "baseline_silent_loss": [
+      ".draft-notes.md",
+      ".working/mock.html",
+      ".working/deep/.cache/blob.bin",
+      "plan.md.tmp"
+    ],
+    "baseline_exit": 0,
+    "baseline_problems": [],
+    "candidate_source_backup_unchanged": true,
+    "candidate_transformations": [
+      "CAP-1 to R2; pre-existing R1 retained",
+      "hidden and ordinary Markdown spec links rewritten to actual destination",
+      "memory merged in order",
+      "HTML/binary/tmp byte-identical"
+    ],
+    "production_cli_flow": [
+      "migrate_v6 --fold-specs",
+      "tickets status",
+      "tickets next",
+      "tickets find",
+      "tickets mark in-progress",
+      "tickets find",
+      "tickets status"
+    ],
+    "only_joined_plan_changed_by_mark": true,
+    "other_entry_and_archives_unchanged": true,
+    "second_fold_no_changes": true,
+    "collision": {
+      "hidden": {
+        "exit": 0,
+        "problems_nonempty": true,
+        "full_tree_unchanged": true
+      },
+      "tmp": {
+        "exit": 0,
+        "problems_nonempty": true,
+        "full_tree_unchanged": true
+      }
+    },
+    "missing_store_exit": 1,
+    "raw_cli_records": 13,
+    "record_count_purpose": "evidence inventory, not benefit metric",
+    "supplemental_harness_error": "Initially assumed optional status.problems always present; corrected accessor only, first flow and product unchanged.",
+    "start_utc": "2026-11-02T09:34:42.854818+00:00",
+    "end_utc": "2026-11-02T09:34:43.977177+00:00",
+    "supplemental_final_verification_utc": "2026-11-02T09:35:14.702541+00:00"
+  },
+  "tests": {
+    "migration_unittest": {
+      "baseline_passed": 29,
+      "regression_red": {
+        "failures": 2,
+        "errors": 1
+      },
+      "candidate_passed": 32
+    },
+    "changed_files_ruff_lint_and_format": "passed",
+    "full_python": {
+      "base": {
+        "start_utc": "2026-11-02T09:32:44.137385+00:00",
+        "end_utc": "2026-11-02T09:32:59.724609+00:00",
+        "command": [
+          "python",
+          "-B",
+          "-m",
+          "pytest"
+        ],
+        "exit": 1,
+        "stdout_sha256": "943d0b8e55cb8685169c29b97dc561394c328fcc6e20b21f8977bbf2c37c3163",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cpu_count": 9,
+        "passed": 1063,
+        "renderer_subcases_failed": 7,
+        "skipped": 1,
+        "subtests_passed": 167
+      },
+      "candidate": {
+        "start_utc": "2026-11-02T09:33:52.231329+00:00",
+        "end_utc": "2026-11-02T09:34:07.076598+00:00",
+        "command": [
+          "python",
+          "-B",
+          "-m",
+          "pytest"
+        ],
+        "exit": 1,
+        "stdout_sha256": "8620675862a2de3878fc5bc870fc1d5cbd7c4aeb5723bbe738454ec3928b1da0",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cpu_count": 9,
+        "passed": 1066,
+        "renderer_subcases_failed": 7,
+        "skipped": 1,
+        "subtests_passed": 167
+      }
+    },
+    "full_failure_reason": "Seven rendered Skill shell entry subcases use uv --no-cache; offline script environment cannot resolve Jinja2. No network retry or renderer patch.",
+    "skip_reason": "optional tiktoken not installed",
+    "static_validators": [
+      {
+        "name": "file-refs",
+        "start": "2026-11-02T09:35:09.159945+00:00",
+        "end": "2026-11-02T09:35:09.293769+00:00",
+        "exit": 0
+      },
+      {
+        "name": "skills",
+        "start": "2026-11-02T09:35:09.293832+00:00",
+        "end": "2026-11-02T09:35:09.412547+00:00",
+        "exit": 0
+      },
+      {
+        "name": "manifests",
+        "start": "2026-11-02T09:35:09.412589+00:00",
+        "end": "2026-11-02T09:35:09.533528+00:00",
+        "exit": 0
+      }
+    ]
+  },
+  "environment": {
+    "os": "Linux x64",
+    "python": "3.12.14",
+    "pytest": "9.1.1",
+    "ruff": "0.16.6",
+    "dependency_source": "official PyPI; frozen lock; owned venv/cache",
+    "runtime": "owned HOME/XDG/TMP; Git global/system/hooks disabled; UV_OFFLINE=1; UV_PYTHON_DOWNLOADS=never",
+    "initial_dependency_error": "Default Python 3.11 unavailable. Explicit existing >=3.11 interpreter selected; no permission denial."
+  },
+  "reviews": {
+    "source": "non-author scoped approval; no rerun",
+    "consumer": "independent fixtures and production interfaces; no author test import"
+  },
+  "limits": [
+    "JSON problems may be nonempty despite exit 0",
+    "rmdir failure can follow partial writes/moves and spec unlink; not rollback or restart-safe transaction",
+    "late leftover tested by local move fault injection, not real concurrency",
+    "issue 3143 multiple loose spec histories/companions not fixed",
+    "single loose-spec consumer not exercised; existing unittest remains",
+    "symlinks and arbitrary hidden metadata semantics not generally validated",
+    "no Windows, docs-site aggregate, model/Skill integration or real project migration"
+  ],
+  "upstream_ci": {
+    "observed_utc": "2026-11-02T09:34:39.314Z",
+    "heads": {
+      "bd70c643a7ec85d1ec2e88076b3fbdd8e4517f41": {
+        "count": 9,
+        "runs": [
+          {
+            "name": "pull_request",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41290707350/job/124801181508"
+          },
+          {
+            "name": "issues",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41290707350/job/124801180490"
+          },
+          {
+            "name": "update-pip-graph",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41251347787/job/124685345736"
+          },
+          {
+            "name": "python (ubuntu-latest)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41251343633/job/124685331965"
+          },
+          {
+            "name": "python (windows-latest)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41251343633/job/124685331879"
+          },
+          {
+            "name": "docs-site",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41251343633/job/124685331663"
+          },
+          {
+            "name": "docs-site",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41251176974/job/124684826789"
+          },
+          {
+            "name": "python (ubuntu-latest)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41251176974/job/124684826696"
+          },
+          {
+            "name": "python (windows-latest)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41251176974/job/124684826528"
+          }
+        ]
+      },
+      "499008ea97c53436e7c7fa598a4a25e7bb869e07": {
+        "count": 5,
+        "runs": [
+          {
+            "name": "deploy",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41267440968/job/124733142118"
+          },
+          {
+            "name": "build",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41267440968/job/124733078375"
+          },
+          {
+            "name": "python (windows-latest)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41267440908/job/124733078156"
+          },
+          {
+            "name": "docs-site",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41267440908/job/124733078123"
+          },
+          {
+            "name": "python (ubuntu-latest)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/bmad-code-org/BMAD-METHOD/actions/runs/41267440908/job/124733077937"
+          }
+        ]
+      }
+    }
+  },
+  "local_candidate_hosted_ci": "not run; local only",
+  "retention": {
+    "name": "bmad-migration-retained-20261102.tar.gz",
+    "bytes": 6611197,
+    "sha256": "c4ca44b8e2cf6dba615347203cff7151b17389757e283b14cddf5845ed57d5bb",
+    "verified_files": 157,
+    "source_git_blobs": 1836,
+    "bundle_restored_objects": 3,
+    "public_upload_reviewed": false,
+    "utc": "2026-11-02T09:38:34.304374+00:00"
+  },
+  "source_retention": {
+    "utc": "2026-11-02T09:38:06.978641+00:00",
+    "sources": {
+      "main": {
+        "sha": "bd70c643a7ec85d1ec2e88076b3fbdd8e4517f41",
+        "tree": "80de29ac0469caaf301f77fedcc7713b3f6356ff",
+        "blobs_verified": 584,
+        "bytes": 5171200,
+        "sha256": "e9de82d9f24783e7dcf0e1f8bee7b8adfbadfe482dcb3807a5be1818b3c9b117"
+      },
+      "base": {
+        "sha": "499008ea97c53436e7c7fa598a4a25e7bb869e07",
+        "tree": "be501f8a5c55f332bdd4af2008f8c1864de19e4e",
+        "blobs_verified": 626,
+        "bytes": 5478400,
+        "sha256": "c521ebc85d0232fc23d2dd37204073443da95fb777a6f61e35a6ed02ab0a99fa"
+      },
+      "candidate": {
+        "sha": "72e15e1083454d4fd52de83c7535d99fead50adc",
+        "tree": "f7d66bf176e2e9a46063e0e526ab43620d2a1435",
+        "blobs_verified": 626,
+        "bytes": 5478400,
+        "sha256": "750bfd440596a4e8aab21cf50554689d82fe9c85b48e2c560c20ce26ca82e8c4"
+      }
+    },
+    "bundle_restored_objects": [
+      "bd70c643a7ec85d1ec2e88076b3fbdd8e4517f41",
+      "499008ea97c53436e7c7fa598a4a25e7bb869e07",
+      "72e15e1083454d4fd52de83c7535d99fead50adc"
+    ]
+  },
+  "adoption": "Scoped candidate accepted for this synthetic consumer flow. Direct current preview fold with hidden/tmp data should not be adopted as-is; defaults and reader ratings unchanged."
+}
