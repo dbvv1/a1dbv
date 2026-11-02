@@ -1,10 +1,10 @@
 **先试需求／检索与小代码切片，已有 IDE 不为热度换栈；资产生成只从局部候选开始。** [研究]
 **旧调查支持选题，新案例支持试法；目前没有足以排出 2026 年 10 月全行业质量冠军的同题证据。** [研究]
-**本端做过精确版本检索和 Battle Drones v4 公开产物短试玩，未试用 AI 制作工具，未复现制作或测得净收益。** [经验]
+**本端做过精确版本检索和 Battle Drones v4 公开产物两局败局与重开实玩，未复现该作的 AI 制作流程或测得净收益。** [经验]
 
 # 游戏版值得一试与 AI 做游戏实例
 
-第 1–7 节核实：2026-10-23（UTC+8）；试玩于 10-22 UTC，未指定模型版本不补猜。第 8 节补入 10-27 的作品过程核查。读者入口：[值得一试](../../domains/game-dev/README.md#游戏版值得一试)／[用 AI 做游戏](../../domains/game-dev/README.md#用-ai-做游戏)。[研究]
+第 1–7 节核实：2026-10-23（UTC+8）；试玩于 10-22 UTC，未指定模型版本不补猜。第 4 节补入 11-02 两局实玩；第 8 节补入 10-27 的作品过程核查。读者入口：[值得一试](../../domains/game-dev/README.md#游戏版值得一试)／[用 AI 做游戏](../../domains/game-dev/README.md#用-ai-做游戏)。[研究]
 
 ## 1. “用得多”能回答到哪一步
 
@@ -34,13 +34,15 @@
 
 [Simon Willison 2026-10-20 原文](https://simonwillison.net/2026/Oct/20/battledrones/)描述主要由 Claude Code 制作的 TypeScript RTS，从 Phaser 到 Three.js，多轮输入与人工试玩迭代；v4 的乐趣改进和 v5 的 3D 移植各经历通宵 Agent 工作。作者感觉“好玩”属于其体验，不证明一句话就设计好，也没有给出可与 Codex 比较的主动工时、人工修复和费用账本。[一手：作者自述／研究]
 
-**本端运行：** 2026-10-22 22:35–22:40 UTC，自身云 Chrome、1180×757 视口，先访问[当前版](https://simonw.github.io/battledrones/)。菜单与帮助可见，启动后空白；控制台为 `THREE.WebGLRenderer` 无法创建 context，`GL_VENDOR`／`GL_RENDERER=Disabled`。这是本端云图形环境故障，当前版核心玩法未观察到，不能据此判定游戏逻辑坏了。[经验]
+**本端实玩（2026-11-02）：战后建议确实改变了下一局操作，但两局都失败。** 在[历史 v4](https://simonw.github.io/battledrones/v4/)选 Normal／Riverlands／Industry，对手 Boom。实际走过采集→Stinger／Flak 生产→中央 Uplink，并建造 Tech、排队 Mortar／Titan，随后空袭摧毁科技与工厂，HQ 于 **2:34** 被毁。结算显示 7 杀、12 损、采集 3,214，并指出敌方有 10 架飞机，给出补防空的建议。[经验]
 
-作者链接的[历史 v4](https://simonw.github.io/battledrones/v4/)可运行：Easy／Proving Grounds／Blitz 玩至游戏内 **1:38**，观察到自动采集、3 辆坦克移动、Airpad 建造与放置、Wasp 排队完成；建筑拟放位置被单位挡住时提示 `Unit in the way`，换到空地后成功。暂停、恢复、退出菜单及重开可用，重开回到 0:00／600 scrap 与开局选择。没有打完一局，不能评价胜负、平衡和长期乐趣。[经验]
+随后点 **Rematch**，设置相同、对手变为 AirSwarm；按上一局复盘先造 3 辆 Flak，加 SAM／炮塔。实见 Elite 与 TRIPLEKILL 提示，仍在 **3:31** 败北；结算为 24 杀、10 损、采集 4,700，损失 5 辆采集车，建议转为保护采集。两局游戏时间合计 **6:05**，实际操作观察约 8 分钟；静音，未验声音、胜利流程或长期平衡。对手与操作均不同，击杀变化不能归因于防空策略或视作平衡改善；当前 3D 版也不在此次验收内。[经验]
 
-![Battle Drones v4 实际试玩，Airpad 建成后正在生产 Wasp，资源与部队可见](../img/2026-10-23-game-battledrones-v4.jpg)
+**可迁移的是“关键事件＋一条具体建议→真实重开后的决策”，不是统计数字越多越好。** 本次从防空转向护矿的注意变化，与作者发布说明中的经济／损失／关键战斗摘要及一条 `Next time` 建议相符；作者称模拟 1,200 场是其自述，本端未复现。MOBA／FPS 可试从真实失败事件提出一条可执行的下局调整，再观察玩家重开后是否采用；这是未采用的迁移建议，不能只生成复盘文字就算闭环。依据：[作者 v4 说明](https://simonwillison.net/2026/Oct/20/battledrones/#v4-the-fun-update)、[After-action report 发布说明](https://github.com/simonw/battledrones/blob/main/Battle%20Drones%20The%20Fun%20Update%20%E2%80%94%20Release%20Notes.md#the-after-action-report)与上述实际操作，核实 2026-11-02。[一手／经验／研究]
 
-桌面资源、计时、建造价格、选中圈与进度反馈在此视口可读，建筑分类主要靠图标，需要学习；静音运行，未测手机／触摸、声音、无障碍、帧率、长局或离线。[经验] **截图只证明公开产物在该环境下的这段流程，不证明 Claude Code 制作效果、二改效率或当前 3D 质量。** [研究]
+![2026-10-22 历史窄试玩截图：Airpad 建成后生产 Wasp，非本次两局画面](../img/2026-10-23-game-battledrones-v4.jpg)
+
+旧图摄于 2026-10-22 UTC，原 Easy／Proving Grounds／Blitz 试玩至 1:38；不是本次两局截图，也不证明 AI 制作效率。当时当前 3D 版仅到菜单，启动因 WebGL context 创建失败而空白，未进入玩法；这是该次环境结果，不判游戏逻辑有错。手机／触摸、无障碍、帧率与离线仍未验。[经验]
 
 [公开仓库](https://github.com/simonw/battledrones)的 v4 标签指向 `2afb7cb953cb1bafa8dbecceb4c39aa3c9220c5e`；以下是该固定源码核读，网页部署的构建 SHA 未独立核实。[GameScene](https://github.com/simonw/battledrones/blob/2afb7cb953cb1bafa8dbecceb4c39aa3c9220c5e/src/game/GameScene.ts)调用 `tickAi`，其 [commander](https://github.com/simonw/battledrones/blob/2afb7cb953cb1bafa8dbecceb4c39aa3c9220c5e/src/sim/ai/commander.ts)为明确的建造、采集、进攻和骚扰策略，返回命令；[依赖](https://github.com/simonw/battledrones/blob/2afb7cb953cb1bafa8dbecceb4c39aa3c9220c5e/package.json)中运行时为 Phaser。此处查看的内置对手是固定策略，未运行生成模型、多人或麦克风；只读这些文件不构成全仓安全审计。[一手：源码核读／经验]
 

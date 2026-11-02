@@ -46,18 +46,18 @@
 
 ## 用 AI 做游戏
 
-**待试制作线索：真实尺度与空间布局、混合资产供给、图标分类与二改保留。** 下表新增三例核到了作者过程、公开源码或玩家反馈，尚未完成本端实玩或完整实机观看；作品品质待验。这组实例仅 Battle Drones 历史 v4 有 1:38 窄试玩记录。[研究]
+**待试制作线索：真实尺度与空间布局、混合资产供给、图标分类与二改保留。** 下表新增三例核到了作者过程、公开源码或玩家反馈，尚未完成本端实玩或完整实机观看；作品品质待验。其中 Battle Drones 历史 v4 已实际玩完两局败局并通过 Rematch 调整下一局决策；不扩为当前 3D 或整体品质验收。[研究]
 
 | 作品与入口 | AI 与人做了什么 | 待试制作线索 |
 |---|---|---|
 | 🧪 [Riposte: Frontline](https://www.playriposte.com/)：网页 FPS | 作者用 Claude Code 写 Three.js 几何与玩法，人提供参考、逐件调整并试玩；照片贴图、动画和声音另有来源。 | 先核真实尺度、建筑体量与通行／视线布局，再试立面构造；给旧盒子贴百叶不等于完整场景。代码 MIT 不覆盖整包资产，详见[作者、源码与排除项](../../docs/research/2026-10-23-game-worth-trying.md#riposte建筑先有构造再加材质)。 |
 | 🧪 [Formula Minus One](https://fm1.app/)：反重力赛车 | 作者持续六个月迭代；草图→图像生成→Tripo 3D→Blender 清理，另有现成声音、人工音乐草稿与风格指南。 | 待试整条赛道的主题与资产组合，而非坚持全程序几何。流程含 Blender 清理，未证实无需手修；[过程与成本](../../docs/research/2026-10-23-game-worth-trying.md#formula-minus-one混合供给仍需设计与清理)。 |
 | 🧪 [DragonScape Idle](https://dragonscapeidle.com/)：网页 idle RPG | 作者用游戏数据生成分类风格静图，人选图与重生成。 | 待试暗底小图标与二改保留，详见[作者原文](../../docs/research/2026-10-23-game-worth-trying.md#dragonscape-idle分类风格与保留已验图片)。 |
-| 🧪 [Battle Drones v4](https://simonw.github.io/battledrones/v4/)：历史 2D RTS | 作者用 Claude Code 多轮开发并亲自试玩；本端跑到采集→建造→造飞机、暂停重开。 | 保留小回路试玩线索，不把功能数当乐趣。未打完一局，当前 3D 版未进入玩法；[原作者与既有记录](../../docs/research/2026-10-23-game-worth-trying.md#4-battle-drones确实玩到了什么)。 |
+| 🧪 [Battle Drones v4](https://simonw.github.io/battledrones/v4/)：历史 2D RTS | 作者用 Claude Code 多轮开发并亲自试玩；本端完成两局败局与一次 Rematch，按首局建议先补防空。 | 可试战后关键事件＋一条具体建议，让下一局操作发生改变；不从不同对手下的数字推策略因果。静音、未验胜利／长期平衡／当前 3D；[原作者与实玩范围](../../docs/research/2026-10-23-game-worth-trying.md#4-battle-drones确实玩到了什么)。 |
 
-![Battle Drones v4 实际窄试玩：资源栏、部队、Airpad 与 Wasp 生产队列](../../docs/img/2026-10-23-game-battledrones-v4.jpg)
+![Battle Drones v4 2026-10-22 历史窄试玩：Airpad 与 Wasp 生产队列，非两局新画面](../../docs/img/2026-10-23-game-battledrones-v4.jpg)
 
-图摄于 2026-10-22 UTC，记录的是公开产物，不是 AI 制作复现。新增实例原文与固定源码核实于 2026-10-27 UTC；[制作边界、未验与来源](../../docs/research/2026-10-23-game-worth-trying.md#8-用-ai-做游戏制作过程与采用边界)。资产选择仍沿 [2D](assets/2d.md)／[3D](assets/3d.md)／[音频](assets/audio.md)核许可与规格。[经验／研究]
+图摄于 2026-10-22 UTC，记录的是公开产物，不是 AI 制作复现；上述两局实玩于 2026-11-02 完成。新增实例原文与固定源码核实于 2026-10-27 UTC；[制作边界、未验与来源](../../docs/research/2026-10-23-game-worth-trying.md#8-用-ai-做游戏制作过程与采用边界)。资产选择仍沿 [2D](assets/2d.md)／[3D](assets/3d.md)／[音频](assets/audio.md)核许可与规格。[经验／研究]
 
 ## 游戏版值得一试
 
