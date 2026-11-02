@@ -1,7 +1,7 @@
 # A-MULTIAGENT-LONG-WIDE-20261029 · 多代理与长程任务广扫
 id: A-MULTIAGENT-LONG-WIDE-20261029
 owner: dot-A
-status: revision_requested
+status: running
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 74be0d09b201cc0aacf925625899cf2d9bd03d3d
