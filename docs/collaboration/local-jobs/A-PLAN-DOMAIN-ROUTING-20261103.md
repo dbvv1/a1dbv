@@ -1,7 +1,7 @@
 # A-PLAN-DOMAIN-ROUTING-20261103 · 规划时保留实现领域知识
 id: A-PLAN-DOMAIN-ROUTING-20261103
 owner: dot-A
-status: running
+status: blocked
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ec246c5d314e9280edb221695bd3ab71f3ad7a8f
@@ -35,3 +35,7 @@ result_branch: relay/a-plan-domain-routing-20261103
 非作者独立核旧/新路由与fixture，回答“计划改Button外观”和“只写外观需求契约”分别用什么入口、哪些资料不能省、哪些动作仍禁止；再核修后token数字只属作者单次报告。
 候选应保Plan/Spec/测试原选择和权限边界，不把静态审稿称模型采用、原生加载或组件实现成功；若现有页已覆盖同一决策，回负结果不硬加段落。
 一个45–75分钟单元，最多2小时；共享最多4并行由原接收端调度。按既有Workflow非作者审查、check_repo、check_public、git diff --check与身份检查，仅推result_branch回review_ready；不用accept:auto，不合main。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
