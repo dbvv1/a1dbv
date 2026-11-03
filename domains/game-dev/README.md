@@ -38,7 +38,7 @@
 
 | 制作链 | 没有美术时现在能做到 | 离品类标杆还差 |
 |---|---|---|
-| [2D](assets/2d.md) | AI 插画用于菜单选卡；图标为手写 SVG | 角色、地表与 UI 套件的风格一致性 |
+| [2D](assets/2d.md) | AI 插画用于菜单选卡；源图标沿配方导出，[成套二改失败保旧批](assets/2d.md#icon-family-rebuild) | 角色、地表与 UI 套件的风格一致性 |
 | [3D 角色与场景](assets/3d.md) | CC0 低模包加脚本改色、重塑；[成套重导出失败保旧批](assets/3d.md#asset-family-rebuild) | 角色精度与场景丰富度；AI 生成 3D 尚未进作品 |
 | [动画](assets/animation.md) | CC0 成熟动作源重采样、实际左右校正到既有骨架＋脚本动作 | 文生动作与动捕清理 |
 | [材质、特效与光照](assets/materials.md) | 共享渐变图集、局部地表边簇、[quiet 材质复用与失败清理](assets/materials.md#quiet-material-family)（旁置已接，画面未验）、程序特效与卡通／Lambert 光照 | 光照氛围、后处理与技能特效 |
