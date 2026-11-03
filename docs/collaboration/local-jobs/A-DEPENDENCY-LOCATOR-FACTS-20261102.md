@@ -1,11 +1,11 @@
 # A-DEPENDENCY-LOCATOR-FACTS-20261102 · 实际依赖定位的 Cargo 官方边界
 id: A-DEPENDENCY-LOCATOR-FACTS-20261102
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 page: docs/decisions/skills-and-plugins.md@2bddaaf7b5ed7f9bd151315cab6b67e2a9e97709
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 995376da8ce002ef7c9c2a0683d5877742271a16
+base_ref: 378f9667af8110be1838170e1faf44c076bf2496
 result_branch: relay/a-dependency-locator-facts-20261102
 
 ## 目标
@@ -25,6 +25,13 @@ result_branch: relay/a-dependency-locator-facts-20261102
 ## 怎样算做成
 非作者核每个更正是否有原文直接支持、命令适用范围是否准确、与已有事实卡及 reader 是否独立。事实核查不等于真实 Cargo 项目采用或模型收益通过。
 单元最多两小时，共享最多 4 并行只由原接收端调度；不另起调用。运行 check_repo、check_public、git diff --check 与提交身份扫描后仅推 result_branch，回 review_ready 给负责人接收；不用 accept: auto。
+
+## 修改要求
+沿原 result_branch 从 378f9667af8110be1838170e1faf44c076bf2496 只修 facts 中两处规则及对应重复表述。先核原调用、工具／登记进程均已退出且该产物单写，缺证保持隔离、不启动续接或改旧文件。保原提交／首轮及 unit 2 回传；不新任务，不运行 Cargo／rustc／jq、不安装或改页面／模板。
+1. L26 flags 优先序统一为 CARGO_ENCODED_RUSTFLAGS > RUSTFLAGS > 匹配 target 配置 > build.rustflags；另设 RUSTFLAGS 只能遮蔽后两类，不能盖过 ENCODED，ENCODED 已设置为空时也优先。对照官方 config 的 build.rustflags 与 `rust-lang/cargo@5f94df4789f005f9a352888e8355ffc645b7ed0e` 的 `src/compiler/build_context/target_info.rs:781–834`，不保留与 L11／58 矛盾的注释。
+2. host cfg 按实际构建方式分支，不能只看 triple 是否不同：stable 未指定 --target 且无 build.target 才共享上述 flags 来源；任一显式指定 target（即使等于 host triple），host build script／proc-macro 不接这些环境／target／build 附加 flags。host.* 是 nightly host-config／target-applies-to-host 门控，不能当稳定版操作入口，也不为本卡开启。
+同时统一第 3／5 步、L58 与差量 2：metadata 无 --filter-platform 时用 JustHost 且忽略 build.target；带 filter 即使 host triple 也用 Target(host)。无 filter 的 metadata 在这里仅供取得 build 候选边，再按真实构建的 host 生效 flags 核 cfg，不拿它自身 cfg 代替交叉构建条件。出处为同固定源码 target_info.rs:774–790／914–940、src/context/target.rs:83–111、src/ops/cargo_metadata.rs:130–147、src/compiler/compile_kind.rs:83–128 及官方 unstable host-config 文档。
+保留前次已核 cfg 候选边、dep_kinds 历史冲突与路径边界，不扩教程／生态或重做实验；非作者按上述固定源核改句后回 review_ready。全部仍是来源材料，未实跑命令、项目采用与旧页写者退出未知保持。
 
 ## 当前结果
 
