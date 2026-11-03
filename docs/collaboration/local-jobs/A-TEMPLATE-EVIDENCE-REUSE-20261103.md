@@ -1,7 +1,7 @@
 # A-TEMPLATE-EVIDENCE-REUSE-20261103 · 最小包的证据复用一致性
 id: A-TEMPLATE-EVIDENCE-REUSE-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/long-tasks.md@b1427c5e4bfb172d1dd9e39b424c05514115444d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -44,3 +44,6 @@ result_branch: relay/a-template-evidence-reuse-20261103
 
 ## 负责人独立接收补充（2026-11-03）
 非作者已逐字核六来源的原句、行号和 blob，至 main 36bdd0d4 来源未变；017a3363 的未合差量仅在同一 Skill 的 §3，§7 冲突真实。2a50a9e6 只新增 69 行 proposal，模板未改。来源与冲突判断可保留，候选 L32 漏相关输入／检查命令、第二例 L48 把任何变化概括为必重跑，故先作上方最小返工，不原样 accepted 或应用；旧模板写者退出仍未知。
+
+## 返工限定接收（2026-11-03）
+5348f7bc 经非作者定点复审，两项阻断已关闭：候选句／摘要／三例已补相关输入与检查命令，第二例按影响已确认或不明才复验，保已核实无影响的原范围复用与不冒充新运行。六固定来源的逐字核实仍适用；只接收独占建议材料，首轮及返工提交、未采纳前提保留，不宣告全部模板一致性通过。旧 017a3363 写者退出仍未知，模板未改、未安装、未采用，真实采用效果未验证；未派发的 verifier 范围不在本次接收中，不据 accepted 解开旧写域或启动新调用。
