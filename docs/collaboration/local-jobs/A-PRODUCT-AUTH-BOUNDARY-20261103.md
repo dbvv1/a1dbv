@@ -1,7 +1,7 @@
 # A-PRODUCT-AUTH-BOUNDARY-20261103 · 核对自建产品的认证复用边界
 id: A-PRODUCT-AUTH-BOUNDARY-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 08068d7808ca9b57fd899c3acd224882b3ef86d1
@@ -48,3 +48,7 @@ result_branch: relay/a-product-auth-boundary-20261103
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端提交 facts.md、仅推 result_branch 后回 review_ready，并在提交后执行身份检查；16 页正文是否采用最小修订稿及具体写者与差量由负责人另定。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+0da50b97 经非作者沿 08068d78 定点复核，仅 facts.md 两句 2+/2-，已去掉把 partner approved 泛化为全部 OSS 统一事前审批的误述，改按当前应用开放范围、selected private／商业路径资格、用户 plan／workspace 与实际 scopes 判断。其余已核认证用途与 harness 分界、个人 VM／多用户托管区别、model/list 与 hosted 工具／HTTP／WebSocket 条件保留；接收为有限官方事实和最小修订稿，不证明任何具体用户／产品获资格、法律合规或实际请求可用。
+原模型阶段“未提交／待身份检查”的描述保留；独审已另核产物父链、单文件范围、noreply 作者／提交者、空白，以及 07:30:51 UTC 原 relay 精确指向 0da50b97。此实际发布证据不证明本机原调用、工具或登记进程已退出；不改写旧阶段记录。无客户端、SDK、模型、认证或账号实跑，不改 16 页或评级；未知旧页写者仍隔离，后续正文采用另核具体写域。
