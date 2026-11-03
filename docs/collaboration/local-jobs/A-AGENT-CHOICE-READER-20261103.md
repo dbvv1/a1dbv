@@ -1,7 +1,7 @@
 # A-AGENT-CHOICE-READER-20261103 · 选入口完成真实 CLI 小任务
 id: A-AGENT-CHOICE-READER-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 787513136a7ad83441f376d4a08960d2197ef19e
@@ -42,10 +42,10 @@ page: docs/01-agents/README.md@main
 
 ## 当前结果
 
-- reader-test 第二轮按页仍选保留现有会话，在 655d8a9 定点返工：args.py 按 argparse 唯一前缀/别名识别互斥、保留 help/version 优先级、在裸 -- 处截断；测试扩到 11 个错误组合并新增 version/help 优先级与 -- 边界用例。taskDone=true：修前 12 failed/56 passed，修后 68 passed；单测 212 passed/27 skipped，BDD 497 passed/17 skipped，ruff 与 black 通过；CLI 原 5 错误组合、5 正常路径及缩写/别名/help/version/-- 边界实测符合预期。openIssues：--config-override（nargs=2）把 --format/--import 当值时误报 exit 2（上游 90de4948 为 exit 0），--import --list --format json 上游 exit 0 且 --list 生效而候选误报，读者只记一例且把基线写成 655d8a9（实为 90de4948）；读者称页面未给未提交候选处置与缺依赖处置，实为漏读/部分漏读。pageStuck 3 条：缺依赖且禁装时如何发现已有隔离环境、页面解析回执与全文指纹原件缺失无法恢复、#2120 沿用负责人 2026-11-02 22:17 UTC 观察。未运行：poe lint 的 poetry check 与 tox（本机无 poetry），#2120 未联网复核。未提交、未推送。
-- 产物：[7875131](https://github.com/dbvv1/jrnl/commit/787513136a7ad83441f376d4a08960d2197ef19e)，分支 `relay/a-agent-choice-reader-20261103`。
+- reader-test 第三轮定点返工完成，taskDone=true，reviewed=false（按 Workflow 返回照抄）。jrnl/args.py 删除 raw token 预扫描，改为 argparse 实际解析后按最终 postconfig_cmd 判定互斥并用 ExportFormatAction 逐次校验格式值；新增值消费 3 例、后置 list 2 例、反向 list+import 拒绝 1 例、单独未知格式 1 例回归。三树各 31 组真实 CLI：新候选错误组合均 exit 2 且文案明确，正常导入/单独导出、缩写别名、help/version 优先级、两条 -- 边界均符合预期；值消费 3 例与后置 list 2 例 exit 0，反向 exit 2。tests/unit 219 passed/27 skipped，BDD 497 passed/17 skipped，定向 31 passed/1 skipped，ruff 与 black 通过；poe lint 的 poetry check、tox、#2120 联网复核未运行。未提交、未推送。openIssues：--format whatformats --help 由基线 exit 2 变 exit 0 且与 --format whatformats --version 的 exit 2 不一致；--format whatformats --badoption 由 invalid choice 变为 unrecognized arguments（同 exit 2），均属校验后移的错误优先级变化。pageStuck 3 条：缺依赖且禁装时页面未写如何发现已有隔离环境；页面解析 SHA/全文指纹原件缺失无法恢复；#2120 按任务沿用负责人 2026-11-02 22:17 UTC 观察、未联网复核。
+- 产物：[9340d81](https://github.com/dbvv1/jrnl/commit/9340d813714bd9aa761de602a9cfcc3a2004a036)，分支 `relay/a-agent-choice-reader-20261103`。
 - 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：交负责人：确认 --config-override 值消费与 --list 后置覆盖两条兼容回归是否必修（按 argparse 语义预扫描需跳过值消费并尊重后置命令优先级），并核 #2120 实际状态；页面可考虑补一句“缺依赖且禁装时如何发现已有隔离环境”。
+- 下一步：交负责人接收：判定两条校验后移残留（--format whatformats --help、--format whatformats --badoption）是否需修，核 #2120 实际状态，并考虑页面补一句缺依赖且禁装时如何发现已有隔离环境；receiver 负责提交与任务状态。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
 
 ## 独立接收结论
