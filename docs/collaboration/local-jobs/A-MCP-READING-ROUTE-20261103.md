@@ -43,8 +43,8 @@ result_branch: relay/a-mcp-reading-route-20261103
 
 ## 当前结果
 
-- Workflow completed implement plus reader/facts/run three-lens review with pass=true, fixRounds=0, openIssues=[]; only one new file docs/collaboration/local-jobs/artifacts/A-MCP-READING-ROUTE-20261103/proposal.md (101 lines) was added, containing the bounded 04-mcp §2 proposal with exact insertion point, paste-ready paragraphs, merge rationale, fixed-fact table and natural-reader conditions. I re-ran check_repo.py (734 files, 0 errors), check_public.py (1200 files after git add -N, 0 findings, index reset afterward) and git diff --check (pass); no changes to docs/04-mcp.md, 03, 13, templates, experiments or dependencies, and nothing was committed or pushed. Reader-test was not run by design; the candidate stays experimental pending an uninvolved natural reader.
-- 产物：[04f31d0](https://github.com/dbvv1/a1dbv/commit/04f31d0c534cb674546e7a1771f3278b8636ea92)，分支 `relay/a-mcp-reading-route-20261103`。
+- 已按负责人三组事实反馈修订 docs/04-mcp.md §2 有限操作建议稿：尾部缺口改为逐项对照固定报告（保留 §5 开头与 §6 整句，实际缺失 L805 括注、L808、L809）；schema 改为按需取一次并复用于 4/5 次 invoke，971 字符元数据限定为后端 read_text_file 结果，实际版本为 Python 3.12.14；full=true 限定于启用 shrinkfit 的 *_invoke_tool 包装入口且须保持原工具/参数/context，恢复 SHA 一致不证明缓存命中、不适用于写工具。检查通过（check_repo 734 文件 0 错误、check_public 1200 文件 0 发现、git diff --check 通过），仅改动 proposal.md，未提交未推送。openIssues：reader-test 未运行、候选保持 🧪；旧 04 写者退出与写域未核实，正文未动。
+- 产物：[e4f37ec](https://github.com/dbvv1/a1dbv/commit/e4f37eccc5899fd9c62c91d23f942f9a9e24be4c)，分支 `relay/a-mcp-reading-route-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：Owner verifies the write domain and then accepts/merges the proposal; later an uninvolved reader must run a natural task against the candidate paragraphs before any 🟡/map upgrade.
+- 下一步：负责人核清 04 写者退出与写域后接收/合并本候选稿；随后由未参与写作的新读者带独立自然任务照候选段实做（含真实写操作或状态未知调用的边界处理），通过后才可升级 🟡/地图。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
