@@ -1,7 +1,7 @@
 # A-REVIEW-RUBRIC-FACTS-20261103 · 审查尺度的真实来源与装配
 id: A-REVIEW-RUBRIC-FACTS-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/codex-overengineering.md@5ebecac1ffe2501301699d518fd8b61acb82163f
 target_repo: https://github.com/dbvv1/a1dbv
@@ -40,3 +40,7 @@ result_branch: relay/a-review-rubric-facts-20261103
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：Owner commits result_branch and updates task status; optionally evaluate the facts.md candidate sentence if page scope wording is wanted (page itself not modified in this unit).
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+12a2828e 经非作者按官方原文定点复核，970 的默认／Inline 与 Detached 路由、稳定版及两个 main 快照的直接 Op::Review 路径，以及实际 developer 角色均已正确区分；三个核心文件相同不再被用来推出路由相同。后续版本的协议 enum 仅 Inline 亦已核；Custom 不替换 rubric 文本但可影响范围／规则的边界保留。仅接收静态来源材料，父 2d67cac、facts 单文件 21+/19-，原稿与回传不覆盖。
+未运行 Codex／模型／客户端／构建／测试／Hook，不证明提示词效果、运行隔离或所有产品入口。现有页面“基础指令／本页改写”未发现本轮必须修正的错误，不应用可选长补句、不新增审查轮次或升级评级；本轮未改页面／模板。

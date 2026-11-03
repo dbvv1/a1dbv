@@ -1,7 +1,7 @@
 # A-DEPENDENCY-LOCATOR-FACTS-20261102 · 实际依赖定位的 Cargo 官方边界
 id: A-DEPENDENCY-LOCATOR-FACTS-20261102
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/skills-and-plugins.md@2bddaaf7b5ed7f9bd151315cab6b67e2a9e97709
 target_repo: https://github.com/dbvv1/a1dbv
@@ -40,3 +40,7 @@ result_branch: relay/a-dependency-locator-facts-20261102
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：交负责人接收；本单元无待处理 openIssue，后续是否合入页面或追加真实项目验收由负责人决定。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+4f67e17e 经非作者逐固定官方源码复核，指定两项规则及重复表述已一致：ENCODED 含空值仍优先，target 配置为匹配项合并；stable 无显式 target 才共享 host flags，指定 target 即使等于 host triple 也隔离，host.* 不作为 stable 入口；metadata 的候选边不充当实际交叉构建 host cfg 证据。仅接收这些静态事实纠正；父 378f9667、facts 单文件 11+/9-，保原回传及此前范围，不把旧材料包装为全量新验证。
+没有运行 Cargo／rustc／jq、构建、测试或真实项目，不据此升级地图／读者状态。旧 Skills 页作者退出仍未知，本轮不改页面／模板；既有 dep_kinds 历史冲突和路径未实跑等边界继续保留，不以来源材料接收代替使用环境验证。
