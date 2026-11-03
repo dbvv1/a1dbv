@@ -42,20 +42,19 @@
 
 ## 需要用户决定
 
-锚点红线事项，仅停对应动作。
+仅停对应动作；原审批待答，心跳照常。
 
-| 事项 | 等什么 | 期间照常做 |
+| 事项 | 等什么 | 期间照常做／批准后首步 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 `27a40be`／Site v16：WebGL2 四路 smoke、四机位双重复通过；两非作者判小幅改善，正式评分待补。获准 `--no-sandbox`；已留 renderer／参数（SwiftShader software），exit 0、端口关闭。 |
 | 三案固定出图与完整验收 | 固定 1280×720／dpr 1 代码整合／测试／构建通过；普通路径 FPS 两路 2×144、MOBA 默认 397／组合 352、Star 默认 1491／组合 1065 tick 复验通过，均 Canvas。Star 实拍需 WebGL2、无 PNG；FPS／MOBA 未实拍。 | 旁置不等硬件 GPU；捕获无 WebGL2 显式报错。FPS／Star 只导画布无 DOM HUD；参数／renderer 待核，不绕过 IPC 限制。完整 smoke／同机位／盲评卡换默认。 |
-| 三案现有公共网站部署 | FPS v22 部署两次被拒；待用户确认向既有三公共 Sites 部署本批旁置，保持受众／默认玩法 | 仅停部署，Git／验收／知识照常；恢复后核 live，不把保存计上线。 |
+| FPS／MOBA 网站部署 | 分别批准向既有公共 Sites 部署已保存的 **FPS v22／MOBA v19**；FPS 两次被拒 | 先核原审批与各保存版本，再部署并回读 live；保持受众／默认玩法。 |
+| Star 网站部署 | 批准将连续空间＋峰后轮胎旁置保存、部署至既有公共 Site；未保存 | 先核 Git 写入及准确版本，再保存、部署并回读 live；保持受众／默认玩法，仓库审批另计。 |
+| Star 仓库写入 | 待答原 Git blob 创建审批；目标 `dbvv1/Star-Rush-Reborn` 的 `master`，已有 30 个 blob 确认 | 先核原调用／远端，按批准范围续传余项；准确 tree 验收后非强制更新 `master` 并回读。单次批准不代表全部放行。 |
+| LOB 外部试玩 | 批准从[原入口](https://zerodev.games/lob/?src=home)继续试玩；七关局部实证；第八关页已关，继续试玩被拒 | 先核平台审批允许，再按原入口重新体验、记录完成边界；不换通道。 |
 
 ## 已停止的动作
 
-三项投稿不再待用户决定，不卡主线；保留补丁与实测，明确拒绝不重试／换入口。
-
-- jrnl：Draft 创建被集成 403 拒绝，无 PR；保留[已审分支 compare](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)及[说明与测试](../../experiments/jrnl-dayone-runtime-diagnosis.md)。
-- agents-md-lint：Draft 创建被集成 403 拒绝；`54313ea` 回读无 PR、check-runs／workflows 均 0；保留[分支 compare](https://github.com/openintelligence-labs/agents-md-lint/compare/main...dbvv1:agents-md-lint:fix/input-contract-and-placeholder-paths?expand=1)及[本地测试范围](../../experiments/instruction-file-lint/README.md)，投稿／hosted CI 未完成。
-- testmon：未取得可写 fork，无 PR；保留[已审补丁 #270 与实测](../../experiments/testmon-outer-coverage/README.md)。Serena 仍[跟进已有 PR #2242](../../experiments/serena-vue-implementation/README.md)，不重复投稿。
+jrnl／agents-md-lint／testmon 已停止，见[原文](archive/completed-through-2026-11-03.txt)；拒绝不重试／换入口。Serena 仍[跟进已有 PR #2242](../../experiments/serena-vue-implementation/README.md)，不重复投稿。
 
 其他：Maka #4495 评论因集成 403 未发出，停止投稿／追发；MOBA 第三方素材官方取回 HTTP 403，改由本机接收端代取；P107 与 Action 调试 10f6a6db 被平台拒绝，待补齐命令／用途，由用户在 Dot 批准。

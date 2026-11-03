@@ -1,0 +1,9 @@
+# 2026-11-03 TASKS 续存
+
+来源：c5d20c19ba7ba8d58e7143f08a58e3f67cb17964 的 docs/collaboration/TASKS.md「已停止的动作」。以下原文保留，链接仍相对原位置。
+
+三项投稿不再待用户决定，不卡主线；保留补丁与实测，明确拒绝不重试／换入口。
+
+- jrnl：Draft 创建被集成 403 拒绝，无 PR；保留[已审分支 compare](https://github.com/jrnl-org/jrnl/compare/main...dbvv1:jrnl:dot-a/dayone-dst-1422)及[说明与测试](../../experiments/jrnl-dayone-runtime-diagnosis.md)。
+- agents-md-lint：Draft 创建被集成 403 拒绝；`54313ea` 回读无 PR、check-runs／workflows 均 0；保留[分支 compare](https://github.com/openintelligence-labs/agents-md-lint/compare/main...dbvv1:agents-md-lint:fix/input-contract-and-placeholder-paths?expand=1)及[本地测试范围](../../experiments/instruction-file-lint/README.md)，投稿／hosted CI 未完成。
+- testmon：未取得可写 fork，无 PR；保留[已审补丁 #270 与实测](../../experiments/testmon-outer-coverage/README.md)。Serena 仍[跟进已有 PR #2242](../../experiments/serena-vue-implementation/README.md)，不重复投稿。
