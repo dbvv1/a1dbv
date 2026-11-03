@@ -1,7 +1,7 @@
 # A-DEPENDENCY-LOCATOR-FACTS-20261102 · 实际依赖定位的 Cargo 官方边界
 id: A-DEPENDENCY-LOCATOR-FACTS-20261102
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 page: docs/decisions/skills-and-plugins.md@2bddaaf7b5ed7f9bd151315cab6b67e2a9e97709
 target_repo: https://github.com/dbvv1/a1dbv
@@ -28,4 +28,8 @@ result_branch: relay/a-dependency-locator-facts-20261102
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- unit 2 已完成对上次 3 个 openIssue 的修正并落盘 facts.md（+44/−24）：jq 保留 target=null/字面量 triple/cfg(...) 三类普通边并输出 cfg_to_check；补 dep_kinds 1.40/1.41 文档与 tag 源码冲突；补 Git Bash /c/... 与 Windows C:\... 路径处理（cygpath -w、Resolve-Path、盘符大小写、\\?\ 前缀）。check_repo 714 文件 0 error、check_public 0 finding、git diff --check 通过；未提交未推送。taskDone 仅限文档产物，pageStuck 否；未运行验收：本机无 cargo/rustc/jq，jq 与 rustc 命令未实跑。最终独立审查仍 pass=false，残留 2 个 openIssues：1) facts.md:26 注释仍写 RUSTFLAGS 优先覆盖，与 CARGO_ENCODED_RUSTFLAGS 优先级更高及第 11/58 行矛盾；2) facts.md:11 第 3 步未限定 host cfg 的 rustflags 规则，跨编译 host 产物只受 host.*.rustflags 影响，现表述可能让读者把 RUSTFLAGS 的自定义 cfg 算进 build 边判断。
+- 产物：[378f966](https://github.com/dbvv1/a1dbv/commit/378f9667af8110be1838170e1faf44c076bf2496)，分支 `relay/a-dependency-locator-facts-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：负责人决定是否追加一轮修正上述 2 项（改第 26 行互斥顺序措辞、在第 3/5 步与差量 2 明确跨编译 host cfg 不追加 RUSTFLAGS/target/build rustflags，仅本机构建追加同一组）后再复核 reviewed；或接受当前产物并记录限制。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
