@@ -1,7 +1,7 @@
 # A-VERIFICATION-FACTS-20261102 · 验证反馈页的 Playwright 官方边界
 id: A-VERIFICATION-FACTS-20261102
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/verification.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -41,3 +41,7 @@ result_branch: relay/a-verification-facts-20261102
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端提交并推送 relay/a-verification-facts-20261102 后回 review_ready；项目级 trace/reporter 配置是否另立任务由负责人决定。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+7b77255b 经非作者定点复审，四组修订与官方来源相符：内置报告器已有 flaky／skipped 分类而项目自定义情况未知；flaky 默认不单独导致失败及配置 1.52／CLI 1.45 分开；官方发布日期与历史 latest 推断分开；快照按动作类型、后端状态不自动采集但可附加日志。已重读固定 cfe490d941f992655948eee8fd4fd94e1c4234bf 的相关源码与官方 release／trace 原文，仅接收来源材料，不把原“独立审查通过”当浏览器验收。
+修订仅 facts 一文件 11+/8-，父 7e66401c；原稿与回传保留。709／1171 是原接收端检查回执，不是本轮独立复跑；浏览器／healer、项目 trace／reporter／console 及请求断言仍未验，不因此另造任务。旧页面作者退出未知，本轮未改页或扩大写域，不升级评级或声称真实采用效果。
