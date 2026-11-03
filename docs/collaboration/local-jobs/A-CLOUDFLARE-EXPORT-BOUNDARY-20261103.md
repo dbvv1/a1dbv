@@ -1,7 +1,7 @@
 # A-CLOUDFLARE-EXPORT-BOUNDARY-20261103 · 试用文件边界审计 Skill
 id: A-CLOUDFLARE-EXPORT-BOUNDARY-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: cfb9240ac56e56c84e72706d1a5cda5e0b29637b
@@ -31,8 +31,8 @@ result_branch: relay/a-cloudflare-export-boundary-20261103
 
 ## 当前结果
 
-- 已产出 result.md（137 行）：在 POSIX 路径语义与运行期单写者前提下回答四项承诺各自依赖的目录控制权、并发前提、失效后果与选目录建议，区分源码足以裁定的已有控制、被既有控制阻断的失效和多类 needs_validation 候选（Windows junction、检查与打开间 TOCTOU、输出父目录替换、网络/同步盘语义等），0 confirmed、无 severity；未运行目标代码或测试，已跑 check_repo 725 文件 0 错误、check_public 1189 文件 0 命中、git diff --check 通过，并说明未跑 check_offline 的原因。未关闭缺口：任务卡要求的非作者独立源码反读未执行，result.md 已列出 9 条反证问题与精确 file:line 入口；另记录先读目标源码后取 Skill 正文的顺序偏差。openIssues 为空。
-- 产物：[678f2d3](https://github.com/dbvv1/a1dbv/commit/678f2d3ad9ad659cb3e4f93e7e52663225c7397a)，分支 `relay/a-cloudflare-export-boundary-20261103`。
+- 第 2 单元完成：非作者独立源码反读三个目标文件，按任务卡 9 个问题逐题给出源码答案与 file:line 证据，确认 0 confirmed、无 severity、四项承诺前提不变；收紧 4 处表述（read_text 的 stat/read_bytes 按路径重解析、os.walk 对 junction 不设防、rmtree 对最终链接的拒绝、overlaps 词法比较），新增一条无 severity 的 overlaps() 词法比较 needs_validation 线索并落到选目录操作第 2 条；三项目标文件 blob 哈希与只读参考副本一致。复核通过：check_repo 725 文件 0 错误、check_public 1189 文件 0 命中、git diff --check 通过。openIssues 为空；未导入目标模块、未运行 CLI/unittest/fixture/目标脚本，未运行 check_offline（其基础测试会执行导出器测试），不声称运行型安全验证或六阶段完整审计。
+- 产物：[bbfcbf7](https://github.com/dbvv1/a1dbv/commit/bbfcbf76561a89c65f21bfb8affec9ef4b7ee806)，分支 `relay/a-cloudflare-export-boundary-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：请负责人安排未参与本单元的非作者，按 result.md 第 99-109 行的 9 个问题先独立反读三个目标文件再对照作者结论；其余交付已完成，无需重跑实施。
+- 下一步：无待补缺口；交负责人按 review_ready 接收并回写本卡状态与结果，无需重跑实施或独立反读。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
