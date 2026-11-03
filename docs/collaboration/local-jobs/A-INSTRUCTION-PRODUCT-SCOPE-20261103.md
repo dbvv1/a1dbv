@@ -1,7 +1,7 @@
 # A-INSTRUCTION-PRODUCT-SCOPE-20261103 · 产品例外只覆盖那条共享约定
 id: A-INSTRUCTION-PRODUCT-SCOPE-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0bc25d91bc1e0f1b0570262f7ddf2a30ee52c1b7
@@ -46,8 +46,8 @@ L29／L108 可保未读负责方独立记录，但未见不代表上游未获产
 
 ## 当前结果
 
-- 完成单元 1：新增 proposal.md，给出 instruction-files 局部产品例外的最小正文候选、与现有页面的增量判断、固定提交 4e1d31b2 逐字对照、条款合入/入口加载/功能行为证据表与不可覆盖反例；确认 #126338、#126769 均仍 OPEN，不能证明手机要求完成，且根 AGENTS.md 的同义复述存在覆盖范围缺口。openIssues 为空；未运行上游构建、模型或浏览器实测，静态审稿不等于加载与行为验收通过。
-- 产物：[0bc25d9](https://github.com/dbvv1/a1dbv/commit/0bc25d91bc1e0f1b0570262f7ddf2a30ee52c1b7)，分支 `relay/a-instruction-product-scope-20261103`。
+- 按任务第 41–45 行完成 proposal.md 修订：改为先核仓库／宿主已有作用域与优先约定；覆盖依据合并根 AGENTS.md L9 本地优先、L250 全前端引用、frontend/src/AGENTS.md 首段与局部文件精确例外；删除“必须逐句点名覆盖根同义复述”和“根 L253 未点名＝已证范围缺口”的结论；保留兄弟路径不因深度自然继承、显式引用不证明原生加载、未验加载／模型／手机行为及 520/420 不足证明 390/tap 的边界。check_repo、check_public、git diff --check 均通过；仅 proposal.md 变更，无本机路径或私人信息；未运行模型、浏览器或上游构建。openIssues 为空。
+- 产物：[f9a3d91](https://github.com/dbvv1/a1dbv/commit/f9a3d9110e377d0d47645ab929fb5342eb4f7955)，分支 `relay/a-instruction-product-scope-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：由接收端做非作者审查并按 result_branch 发布；后续如需可补核根 AGENTS.md 同义复述的覆盖缺口是否需上游澄清。
+- 下一步：接收端按 operations §1 用公开提交身份（勿用当前 corp 邮箱）提交并发布到 result_branch，再做非作者审查；如需可另行补核根 AGENTS.md L253 同义复述是否需上游澄清。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
