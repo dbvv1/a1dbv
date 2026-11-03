@@ -1,7 +1,7 @@
 # A-M6-DISCOVERY-ENTRY-20261103 · 分清定向查询与未知发现入口
 id: A-M6-DISCOVERY-ENTRY-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6aafeae958f4e839051866fae1c52c8aabfa2c89
@@ -33,3 +33,11 @@ result_branch: relay/a-m6-discovery-entry-20261103
 第三问核“模板已存在是否表示方法效果已验证或可自动调用”；答案必须区分存在、显式调用与收益验证。不能把审稿问答称实际发现成功、原生客户端采用或新的真实模型实验。
 如最小原句比对证明没有缺口，只回负结果不制造改写；遇未知旧写者不试探写入。通过仅表示正文候选可供负责人接收，不升级地图实做状态或整卡探索完成度。
 一个 45–75 分钟单元，最多两小时；共享最多 4 并行由原接收端调度，不另起调用。经既有 Workflow 非作者审查、check_repo、check_public、git diff --check 与身份检查，仅推 result_branch 后回 review_ready；不用 accept:auto，不合 main。
+
+## 当前结果
+
+- 仅新增 proposal.md，交付 25 首屏/§1/§2 过渡/§5 与 12 首表 L11 的最小替换稿及原句→资产依据表；保留 L16/L158 阴性结果与收益待验边界，准确链接 explore-frontier 并保留显式调用与宿主适配条件；未改任何正文/模板/配置，未运行广扫或模型实验。openIssues 为空；非阻断观察：12 L11 写“API／版本问题”、25 写“API、版本或许可问题”，不影响两条入口与读者动作。
+- 产物：[55d4e2a](https://github.com/dbvv1/a1dbv/commit/55d4e2a7b009ccc3e65e94d12913da4656f81a49)，分支 `relay/a-m6-discovery-entry-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人核具体写者与差量，决定是否采用 25/12 替换稿；同步 templates/README L57 摘要；非作者页面采用与读者验收另办。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
