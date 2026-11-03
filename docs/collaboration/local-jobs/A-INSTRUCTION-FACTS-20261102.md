@@ -1,7 +1,7 @@
 # A-INSTRUCTION-FACTS-20261102 · 共享指令页官方事实复核
 id: A-INSTRUCTION-FACTS-20261102
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/instruction-files.md@21b5f4ab0d4c78c73a2ef57502a4a49ba70fb991
 target_repo: https://github.com/dbvv1/a1dbv
@@ -33,3 +33,7 @@ result_branch: relay/a-instruction-facts-20261102
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：负责人需推送结果分支 relay/a-instruction-facts-20261102 并回 review_ready；本机 git user.email 非公开安全身份，提交须沿用既有 noreply 身份。另 origin/main 已推进到 3ce1dad1，facts.md 记录的读取时 tip 为 0c40c25d，不影响实质论断。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 独立有限接收
+2026-11-03，负责人逐源核 404466ad5fcf494edff0f8146c3e7baac37c7167，仅采纳官方 memory／changelog 支持的 Claude 版本与配置层级、Codex 官方单目录／大小／根配置及 0.166 固定源码的 untrusted 条件；必要修订已发布并逐字回读 76c4da63604db543c2a22d07e7e1e1129b966f42。以上是文档与源码依据，不是客户端实际加载或采用通过，原未知项保留。
+不采纳报告把共享 AGENTS 的 CLAUDE 导入位置限定为主项目的过窄断言；两个 memory 新 HTML ID 因原文读取 403 未独立验证，未重试或换路，答案页只改为官方 memory 根链接，不称替换锚点已验。accepted 仅限上述事实材料，不无条件采纳报告全部论断，不接收其他 reader，不升级页面评级或替代原输入／启动证据。
