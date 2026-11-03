@@ -1,7 +1,7 @@
 # A-REVIEW-RUBRIC-FACTS-20261103 · 审查尺度的真实来源与装配
 id: A-REVIEW-RUBRIC-FACTS-20261103
 owner: dot-A
-status: running
+status: blocked
 kind: build
 page: docs/decisions/codex-overengineering.md@5ebecac1ffe2501301699d518fd8b61acb82163f
 target_repo: https://github.com/dbvv1/a1dbv
@@ -28,4 +28,5 @@ result_branch: relay/a-review-rubric-facts-20261103
 最多两小时，共享最多 4 并行由原接收端调度，不另开调用。跑 check_repo、check_public、git diff --check 与提交身份检查，仅推 result_branch，回 review_ready 供负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；只核已有审查来源及装配主张，尚无更正结论。
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
