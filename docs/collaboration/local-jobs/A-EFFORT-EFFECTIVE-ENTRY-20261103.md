@@ -1,7 +1,7 @@
 # A-EFFORT-EFFECTIVE-ENTRY-20261103 · 分清所选档位与当轮生效档位
 id: A-EFFORT-EFFECTIVE-ENTRY-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: cc1c1ce59a9dbfcca52024b0e5c0ee6db7c4c37e
@@ -48,3 +48,7 @@ L71 正确引文及 unit2 L96 取用后按新档的修正保留；已核优先�
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端按 noreply 身份将工作区版本提交到 relay/a-effort-effective-entry-20261103 回 review_ready；勿用本机 corp 邮箱提交，不自动重跑模型。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+fee0b22c 经非作者沿 cc1c1ce5 及当前官方两节定点复核，可接收为未执行的有限诊断／操作建议稿。实际只改 proposal.md L9／19／53／71／73 五行 5+/5-，已区分 `/effort` 下一条消息保证与 `/model` 最迟生效边界，不由排队取用时机反推整轮档位；L71 原引文逐字节前缀保留，L96 完全未变。原已核优先序、持久、cap、Skill 与历史已修条件保留，不接管旧 MODEL reader。
+10:16:18–21 UTC 原 relay 回读 fee0b22c，父 cc1c1ce5、单文件范围、noreply 身份及空白已核；原“待提交”等模型阶段描述保留，不能据接收器实际发布推断原调用／工具／登记进程退出。独审未重跑原 repo/public 检查，未执行 `/effort`、`/model`、CLI、SDK 或模型，未读用户设置、环境变量、账户或私人记录。只接 artifact，不证明实际请求 effort、用户资格、产品实跑、自然读者或地图完成；页面与原实证评级不动。
