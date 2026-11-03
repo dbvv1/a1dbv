@@ -1,7 +1,7 @@
 # A-API-CREDIT-ROUTING-20261103 · 按自动化入口核对赠额与计费
 id: A-API-CREDIT-ROUTING-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fef85514a8f512bac7f5cc059115870f1bb2a533
@@ -41,3 +41,8 @@ result_branch: relay/a-api-credit-routing-20261103
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端用合规公开身份（-c user.email）提交，整合最新 origin/main 后推送 result_branch，再跑提交后非作者审查并回 review_ready；页面正文采用由负责人核写者与任务卡决定。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+8ea0d895 经非作者按当前官方主文／FAQ、usage credits、认证／bare、SDK／Action 与额度条款反读，可接收为有限事实和修订建议稿。两笔 credits、运行入口／认证／资金资格分开；主 FAQ 仍点名排除 Claude Code GitHub Action，不把该限制扩成所有自定义 workflow，也不因主清单省略某入口推定全面覆盖。桌面认证列的“默认”与同行计费条件一起理解，第三方推理另核；九项官方未明组合保持未知，不据此判断用户资格、真实扣费或法律合规。
+原三单元仅同一 facts.md 连续修改：e383977b 建立 318 行，ea022eb8 交叉引用 2+/2-，8ea0d895 收敛 12+/8-，最终 322 行；父链、单域、noreply 身份、空白与原 relay 精确指向均已独核。原“未提交／待检查”保模型阶段记录，另有接收器后续实际发布，不由 commit 推断原调用／进程退出。两篇帮助中心精确秒级 lastUpdatedDate 的独立直取遇 403 已停止；仅保作者报告，不称本轮独核，已读当前正文与政策生效日另分。
+本次未读账号、账单、用量、凭据或私人日志，未运行客户端／SDK／模型、登录、领取／充值或付费请求；原 repo/public 检查为回传，独审未重跑。只收 artifact，不改 02／18／历史研究，不升级地图或读者实做；旧页面写者退出未知，正文采用须另核归属。
