@@ -1,7 +1,7 @@
 # A-SKILLS-PLUGINS-READER-20261103 · 按能力缺口完成配置小修
 id: A-SKILLS-PLUGINS-READER-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 6b57614aa0cbcb6a52800717d0df22566de7cdf1
@@ -42,10 +42,10 @@ page: docs/decisions/skills-and-plugins.md@main
 
 ## 当前结果
 
-- 已按 reader-test 完成一轮：把公开 PR #2110 的补丁应用到 jrnl/config.py（make_yaml_valid_dict 捕获 YAMLError 回退字面字符串），并补 tests/unit/test_parse_args.py 回归（%d、%Y-%m-%d %H:%M、colors.body、结构化 mapping），另写 reader-tests 卡点报告；函数层/静态核对通过（git diff --check、py_compile、补丁与 PR diff 逐字比对、用未安装的 ruamel.yaml wheel 直接加载验证 ScannerError 为 YAMLError 子类且基线与补丁行为差异符合预期）。taskDone=false：真实 CLI 复现、pytest、ruff 均未运行，环境缺 ruamel.yaml、cryptography、keyring、parsedatetime、pyxdg、tzlocal 及 poetry/pytest/pytest-bdd/pytest-xdist/tox/ruff/black/poe，无 .venv，任务禁止安装依赖，故未留下原失败/候选通过的运行证据。pageStuck：1) 页面只写用项目原测试命令，未写运行前置；2) 页面只给 Rust/Cargo、Node 依赖定位配方，缺 Python/pip/poetry 等价入口；3) 输入未附页面解析提交 SHA，@main 无法固定版本（正文指纹 15191 字符/24162 字节/SHA-256 e3cb8f3a… 与参考副本逐字节一致，正文完整）。openIssues：嵌套键用例只测 make_yaml_valid_dict 中间层，未走 apply_overrides 实际 config 树；吞掉全部 YAMLError 的口径变化（坏结构化值由解析期报错变为静默字符串）未评估；恢复条件漏 pytest-bdd 与 pytest-xdist；补丁注释“% starts a YAML directive”表述不准确。
-- 产物：[6b57614](https://github.com/dbvv1/jrnl/commit/6b57614aa0cbcb6a52800717d0df22566de7cdf1)，分支 `relay/a-skills-plugins-reader-20261103`。
+- reader-test 一轮观察完成：jrnl/config.py 修正 make_yaml_valid_dict docstring/注释（% 为保留指示符、解析失败回退字面字符串，保留 #2110 修法）；tests/unit/test_override.py 新增嵌套 journal timeformat 覆盖测试；reader-tests/A-SKILLS-PLUGINS-READER-20261103-u1.md 追加 R1–R8 修订与核对节。最终 diff 3 文件 +194/−5，py_compile 与 git diff --check 通过。taskDone=false：本机缺 ruamel.yaml 与 pytest/pytest-bdd/pytest-xdist/ruff/black，且禁止安装，真实 CLI、pytest、ruff/black 均未运行。pageStuck：页面未写验收运行前置；依赖定位配方只有 Cargo/Node 缺 Python/pip/poetry；引用 @main 未附解析 SHA；坏输入边界无真实 CLI 无法复现；Skill/插件安装与自动加载未验证（非本轮缺陷）。openIssues：记录写“5 个案例、4 个测试函数”实际为 3 个测试函数；记录写本文件 +112/+114 行而最终 numstat 为 +151（含核对节）；“已运行”块中 PY_COMPILE_OK/DIFF_CHECK_OK 是归一化标注而非原样输出；嵌套测试与坏输入结论均为代码路径推导或引用负责人云端补验，非本机实跑。
+- 产物：[0408832](https://github.com/dbvv1/jrnl/commit/04088329cd93bd8330fdcf4b4c69b76db702272a)，分支 `relay/a-skills-plugins-reader-20261103`。
 - 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：负责人需在可运行 jrnl 环境跑真实 CLI 复现与 pytest/ruff 验收，评估 YAMLError 影响面并补嵌套键端到端用例、修正注释，再决定是否接回并推进 PR #2110；reader-test 不自动重读。
+- 下一步：负责人需在具备项目运行时（ruamel.yaml 等）及 pytest/pytest-bdd/pytest-xdist、ruff/black 的环境补跑 test_override_nested_journal_timeformat_with_percent、TestDeserialization 与真实 CLI 10 个输入（含合法嵌套 strftime 由 exit 1 变 exit 0），并跑 ruff/black；同时补齐页面运行前置与 Python 依赖定位配方、固定页面解析提交 SHA，并更正读者记录中的测试计数、行数与输出标注。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
 
 ## 负责人独立接收补充（2026-11-03）
