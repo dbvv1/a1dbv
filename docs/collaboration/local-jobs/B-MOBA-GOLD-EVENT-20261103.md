@@ -2,7 +2,7 @@
 id: B-MOBA-GOLD-EVENT-20261103
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 0811894da59740bdc10e0a2318174f3dbb0530d1
 result_branch: relay/b-moba-gold-event-20261103
@@ -30,3 +30,11 @@ result_branch: relay/b-moba-gold-event-20261103
 - 固定基线 0811894 与修改版分别创建真实 Simulation，按现有支持版本逐项运行同 seed、同正常 bot 输入至少 600 tick；比较每 tick 状态 hash 和序列化 state 相同。将新事件过滤后，旧事件 payload／顺序相同（比较时仅去掉 ordinal）；不以两次新版互比替代基线。
 - 新用例必须能在基线暴露缺失接口；原 presentation-events 测试保留既有事件断言，只为有新增事件的场景补精确预期。全量 CPU 测试、sim／web／capture 类型及构建、公开内容／提交身份和空白检查通过，不能用 skip 或降低门槛消除失败。
 - 交固定 commit、实际测试命令与结果及基线比较输出；明确尚未接可见金币提示、浏览器或主观可读性验收。只交一份接收结论，不另写退出或历史更正提交。
+
+## 当前结果
+
+- taskDone=true。新增 goldAwarded 表现事件（recipientId/targetId/amount/position/reason 五类原因），在 awardDeathRewards 四类实际金币加法后逐次发事件，快照深复制 position，不进入 SimState/finalHash/RNG；新增 7 个行为用例并给 3 个既有事件场景补精确预期。openIssues：(1) 超范围接缝 src/audio/battle.ts 含音频加载行为改写，建议接收端复核；(2) 超范围接缝 tools/save-compatibility.ts 新增指纹映射，已有 3600 tick 基线等价证据；(3) 零额记账不发事件，已披露；(4) 未接可见金币提示，未跑浏览器/smoke/GPU/主观验收。实测：npm test 86 files/557 tests 全过；基线 0811894 对比工具 --ticks 3600 --seed 1 passed=true，8 版本状态 hash/序列化 state/旧事件全匹配；build/web/capture 类型检查均通过；git diff --check 干净。
+- 产物：[a295da7](https://github.com/dbvv1/MOBA-Like/commit/a295da7e491c644ce2f42389740132d01d238534)，分支 `relay/b-moba-gold-event-20261103`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：接收端按清单提交并决定是否保留两处范围外接缝；后续需接可见金币反馈并做浏览器/主观可读性验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
