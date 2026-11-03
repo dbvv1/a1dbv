@@ -1,7 +1,7 @@
 # A-M6-WEEKLY-CALIBRATION-20261103 · 上个完整自然周的发现校准
 id: A-M6-WEEKLY-CALIBRATION-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2c3287bab9306010137bc99088a251c21feb4669
