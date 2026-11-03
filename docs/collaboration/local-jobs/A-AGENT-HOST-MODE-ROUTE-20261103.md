@@ -1,10 +1,10 @@
 # A-AGENT-HOST-MODE-ROUTE-20261103 · Agent shell 独有失败先查被测 CLI 模式
 id: A-AGENT-HOST-MODE-ROUTE-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 6570693e880bf629b1fbb511f98080b99575455d
+base_ref: 20b695b7b2364afafe0fed2d2126ffa8beffb1c8
 result_branch: relay/a-agent-host-mode-route-20261103
 
 ## 目标
@@ -32,6 +32,13 @@ result_branch: relay/a-agent-host-mode-route-20261103
 核没有把已有上游修复当新待修代码、人工批准当独立复跑、操作建议当本仓实测或自然读者通过。不存在该模式差异的项目能明确不采用；当前正文默认、原日期与 Vitest 机制不被覆盖。
 本单元只交有据操作稿，不新实验、不升级地图／评级；完成即回 review_ready。按手册§7做非作者来源／实际diff审查、check_repo、check_public、diff空白与身份检查，只推 result_branch，不用accept:auto、不合main。
 通常45–75分钟，最多两小时；由原接收端按共享最多4并行调度，不另起调用。遇同题在制、原写者未知或明确拒绝停对应动作并记录具体缺项，不换入口／身份。
+
+## 修改要求
+沿原 result_branch 从 20b695b7b2364afafe0fed2d2126ffa8beffb1c8 仅补 proposal.md 的测试隔离范围，固定页面输入与两份 gcx 源码版本不变；保首轮提交和未运行记录，不新任务／新读者。先由原接收端核原调用、工具及登记进程均已退出、产物单写；缺证保持隔离，不启动续接或改旧文件，公开提交不代退出证明。
+L19 的任何显式 falsy／`GCX_AGENT_MODE=false` 对照，必须先限定在独立、隔离、无真实服务／数据副作用且使用合成确认输入／测试替身的测试夹具中，不能只写“原测试命令”而省略前提。无法确认隔离就保全已有失败／结果并停止该对照，不在真实业务命令或用户全局 shell 降模式，不用 `--force`／`GCX_AUTO_APPROVE` 求绿。
+L22 的反向 Agent 拒绝控制只通过合成确认输入／测试替身验证受控测试分支，不执行真实破坏性命令；仍须保原拒绝断言。L39／L44／L61 有相同范围描述时最小同步，不能扩大成新实验／通用安全教程或更改原源码／页面。
+其余已核 init 缓存／重读入口、精确 truthy／falsy、叶子任务 env、宿主标识清单、与 Vitest 的区别及作者自报保持；本次只精修文稿，不运行 gcx／Go／mise／测试／模型，不读用户环境、配置或日志。非作者定点核差量后回 review_ready，不把静态建议当实际采用。
+原稿已于 2026-11-03 12:05 UTC 公开为接收端 noreply 提交；卡中“未提交／待置 review_ready”保留为产出阶段描述，不重做已发表动作。原检查数与三路审查是回传，原调用退出与旧页面写者仍未知，不因此解锁写域。
 
 ## 当前结果
 

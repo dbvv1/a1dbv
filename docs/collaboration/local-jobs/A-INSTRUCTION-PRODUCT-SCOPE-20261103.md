@@ -1,10 +1,10 @@
 # A-INSTRUCTION-PRODUCT-SCOPE-20261103 · 产品例外只覆盖那条共享约定
 id: A-INSTRUCTION-PRODUCT-SCOPE-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: ec246c5d314e9280edb221695bd3ab71f3ad7a8f
+base_ref: 0bc25d91bc1e0f1b0570262f7ddf2a30ee52c1b7
 result_branch: relay/a-instruction-product-scope-20261103
 
 ## 目标
@@ -36,6 +36,13 @@ result_branch: relay/a-instruction-product-scope-20261103
 非作者逐源核：覆盖的是哪条及哪个目录；哪些原约束仍保留；条款合入、入口加载、功能行为各有什么证据；126338/126769能否证明手机要求完成。至少给“未获产品决定”和“系统/安全禁令”两个不可直接覆盖反例。
 候选须对比既有局部文件建议给出实际新增判断，保持用户授权与外部内容之别；如只有已有结论或源不支持就回明确负结论，不硬凑建议，不把静态审稿升级为真实模型/浏览器采用。
 一个45–75分钟单元，最多2小时；共享最多4并行由原接收端调度。按既有Workflow非作者审查、check_repo、check_public、git diff --check与身份检查，仅推result_branch回review_ready；不用accept:auto，不合main。
+
+## 修改要求
+沿原 result_branch 从 0bc25d91bc1e0f1b0570262f7ddf2a30ee52c1b7 仅修 proposal.md 对根文件与局部优先的判断，固定输入仍为 ec246c5d 与 PostHog 4e1d31b2；保首轮提交／未验记录，不新任务／新读者。先由原接收端核原调用、工具、登记进程均已退出及产物单写；缺证保持隔离，不启动续接或改旧文件，不能由公开提交补认退出。
+重新连读固定 [根 AGENTS.md](https://github.com/PostHog/posthog/blob/4e1d31b2e1a18ea43f20bf278d8ac5463a1d11f4/AGENTS.md) L9、L250／L253，frontend/src/AGENTS.md 首段及 products/signals/frontend/AGENTS.md 全文。根 L9 已明确目录可带本地优先的 AGENTS.md；L13 候选不应据漏读该约定强制再点名覆盖根同义复述，L30／L68 也不得仅因局部没有逐句点名根 L253 就断言已证“实际范围缺口”。
+最小改为先核已有仓库／宿主的作用域与优先约定；本例根已声明局部文件本地优先，local 明确只覆盖 Rule 6 手机禁令这一条并引用其余规则。删除必加根复述覆盖的要求和已证 BUG／必需上游澄清的结论，L31 的覆盖依据须同时纳入根 L9、根 L250 的全前端引用、shared 首段与 local 精确例外，不仅凭局部正文自称覆盖；L104 只保实际加载／模型／手机行为未验，不把未验写成文本作用域已失败。有未解冲突先请负责方明确，不凭“同义”自定覆盖权，不另造上游澄清、投稿或开发任务。
+仍保两兄弟路径不因深度自然继承、显式引用不证明任意客户端原生加载的区别；不把根的书面优先约定改写为所有宿主已加载或遵守。原真实产品决定、系统／安全／用户权限边界、其余共享条款、条款合入／入口加载／功能行为分层、520／420 不足证明 390／tap 的证据限制均保留。
+L29／L108 可保未读负责方独立记录，但未见不代表上游未获产品决定。不读私人 Slack／inbox／会话，不运行模型／UI，不审整套上游补丁或联系上游，不改页面／模板／其他卡／接收器。非作者只核本次差量及固定原文后回 review_ready；实际已发布与原“待审／待推”阶段分列，不重做已发表动作，不由建议稿升级采用或地图。
 
 ## 当前结果
 
