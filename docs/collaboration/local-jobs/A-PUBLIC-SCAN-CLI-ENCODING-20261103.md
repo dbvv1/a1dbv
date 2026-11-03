@@ -1,7 +1,7 @@
 # A-PUBLIC-SCAN-CLI-ENCODING-20261103 · 非 UTF-8 输出环境仍交完整扫描 JSON
 id: A-PUBLIC-SCAN-CLI-ENCODING-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 76011c6b861b2d3f2a54c1171bb98d8057b40dbc
@@ -32,3 +32,11 @@ result_branch: relay/a-public-scan-cli-encoding-20261103
 跑 tests/test_check_public.py 的完整现有回归；本机 symlink／Git 能力或平台检查失败如实保留，禁止安装、调权限、删断言、skip 或降门槛。按手册§7运行本机可用检查与真实 CLI；POSIX 完整 offline 门槛可后由负责人在云端接收，不能称未运行的 native／hosted CI 通过。
 非作者独立审两文件最小 diff、旧新直调回执及检测／脱敏保持；check_repo、check_public、git diff --check 和新增提交身份通过后，仅原接收端推 result_branch，回 review_ready，不用 accept:auto、不合 main。
 一个 60–90 分钟单元，最多两小时；仅原接收端按共享最多4并行调度，不另起调用。遇明确拒绝停该动作、不换入口；没有原写者／工具条件就报具体阻塞。不得把新 build 当旧页 reader 或升级地图。
+
+## 当前结果
+
+- 已修正 check_public.py 的 stdout 序列化：整份 JSON 报告先 dump 再以 UTF-8 字节写 sys.stdout.buffer，GBK/ASCII 宿主编码不再抛 UnicodeEncodeError 丢诊断；检测、脱敏、文件覆盖与退出码语义不变。新增 3 个直接调用生产 CLI 的回归（run_cli_bytes 按 PYTHONIOENCODING=utf-8/gbk/ascii 设子进程编码、父侧原始 bytes 严格 UTF-8 解码），覆盖干净 Unicode 文件 exit 0/空 findings、含运行时拼接合成 key 的 测试-🧪.txt exit 1/原脱敏 finding/无 traceback/不泄漏 key、缺失 root 仍 exit 2。旧实现下 gbk/ascii 两子用例确认失败，修复后通过。本机实跑：tests/test_check_public.py 34 项全过；真实 CLI 在 utf-8/gbk/ascii 均 exit 0、有效 JSON、stderr 空；check_repo.py exit 0；git diff --check 通过；UTF-8 下新旧对象一致（checked_files、finding 数、文件名、脱敏内容均不变）。未关闭问题：无（openIssues 为空）。未运行验收：scripts/check_offline.py 因本机缺 POSIX /bin/bash 与 jq 被预检阻断，POSIX 完整 offline 门槛需负责人在云端接收；不能视为 native/hosted CI 通过。
+- 产物：[7deb5bc](https://github.com/dbvv1/a1dbv/commit/7deb5bc8f206e1a28e7e6dde0a6432fcffe2044a)，分支 `relay/a-public-scan-cli-encoding-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人在云端跑 POSIX 完整 offline 门槛，通过后仅由原接收端提交并推送 result_branch，回 review_ready（不改 main、不用 accept:auto）。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
