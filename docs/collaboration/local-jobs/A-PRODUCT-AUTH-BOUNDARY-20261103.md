@@ -1,7 +1,7 @@
 # A-PRODUCT-AUTH-BOUNDARY-20261103 · 核对自建产品的认证复用边界
 id: A-PRODUCT-AUTH-BOUNDARY-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 08068d7808ca9b57fd899c3acd224882b3ef86d1
