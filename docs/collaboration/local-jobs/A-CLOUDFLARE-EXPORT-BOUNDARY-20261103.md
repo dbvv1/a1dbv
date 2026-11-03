@@ -1,7 +1,7 @@
 # A-CLOUDFLARE-EXPORT-BOUNDARY-20261103 · 试用文件边界审计 Skill
 id: A-CLOUDFLARE-EXPORT-BOUNDARY-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbfcbf76561a89c65f21bfb8affec9ef4b7ee806
