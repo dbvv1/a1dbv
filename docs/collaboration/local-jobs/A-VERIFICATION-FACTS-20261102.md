@@ -1,11 +1,11 @@
 # A-VERIFICATION-FACTS-20261102 · 验证反馈页的 Playwright 官方边界
 id: A-VERIFICATION-FACTS-20261102
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 page: docs/decisions/verification.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 21b5f4ab0d4c78c73a2ef57502a4a49ba70fb991
+base_ref: 7e66401cbd90430756e0f2e45af113245d9818ec
 result_branch: relay/a-verification-facts-20261102
 
 ## 目标
@@ -25,6 +25,14 @@ result_branch: relay/a-verification-facts-20261102
 ## 怎样算做成
 非作者核每个更正是否有原文直接支持、作用域是否准确、读者该改什么，以及与广扫／原生 reader 没有重复。事实已核不代表流程实际采用或页面评级通过。
 本单元最多两小时，共享最多 4 并行只由原接收端调度，不另起模型。运行 check_repo、check_public、git diff --check 和提交身份检查后推指定 result_branch，回 review_ready 给负责人接收；不用 accept: auto。
+
+## 修改要求
+沿原 result_branch 从 7e66401cbd90430756e0f2e45af113245d9818ec 仅定点修同一 facts 的来源误述。先核原调用、工具和登记进程确已退出、产物单写；缺证保持隔离，不启动续接或改旧文件。保原提交／首轮报告，不新任务、不重扫、不运行浏览器／healer／模型，不改页面或解除未知旧页写者隔离。
+1. L41 的“单列不是 Playwright 默认替你做的”改为内置报告器已区分 flaky／skipped；验收结论须保留这些分类，不能只凭退出码 0 宣称全部首跑通过，具体项目 reporter 未核。依据 v1.64.1 固定 cfe490d9 的 `packages/playwright/src/reporters/base.ts:274–280` 与 `common/config.ts:311`（默认本地 list、CI dot），不能把项目是否采用与产品能力混为一谈。
+2. flaky 默认 exit 0 收窄为无其他失败／错误时，默认不会仅因 flaky 失败；`failOnFlakyTests` 配置自 1.52、CLI 选项自 1.45，分别按官方文档／release 原文归属，不把加入版本混同。
+3. L45 发布日期改引官方 `releases/tag/v1.64.1`、`releases/tag/v1.64.0`；10-26 的 latest 只能按发布日期推断，未保存当日 dist-tag 证据，不能写成已核历史 latest，也不以当前 npm latest 倒推过去。
+4. L25／L40 的“每个 action 的 Before／Action／After”改为按动作类型采集相应快照，保官方 depending on type 条件；“两者都不包含后端内部状态”改为不会自动采集后端内部状态，仍需定向日志／独立读回，不能排除用户自行附加后端日志（TestOptions.trace.attachments 默认 true）。
+原核心机制和已核来源可保留；非作者定点复核上述改句及其原出处后回 review_ready。项目 trace／reporter 配置与浏览器、healer 实跑仍未验，不新增检查任务、不扩大页面或升级评级。
 
 ## 当前结果
 
