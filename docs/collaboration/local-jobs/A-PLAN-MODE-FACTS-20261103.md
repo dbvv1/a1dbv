@@ -1,7 +1,7 @@
 # A-PLAN-MODE-FACTS-20261103 · 计划模式的实际只读与执行边界
 id: A-PLAN-MODE-FACTS-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/planning-and-tests.md@3ce1dad1ecd7ea676b4a492b5e586b4bddcfa03a
 target_repo: https://github.com/dbvv1/a1dbv
@@ -28,4 +28,9 @@ result_branch: relay/a-plan-mode-facts-20261103
 最多两小时，共享最多 4 并行由原接收端调度，不另开调用。跑 check_repo、check_public、git diff --check 与提交身份检查，仅推 result_branch，回 review_ready 供负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；仅核规划页已有 Plan 主张与官方出处。
+
+- taskDone=true。已在 facts.md 先列 6 条读者操作相关事实差量，再逐项核对 planning-and-tests 页「先 Plan」段三处主张的官方出处：入口 `claude --permission-mode plan` 准确；Plan 并非只读，auto 可用且 useAutoModeDuringPlan 默认开启时 shell 由分类器逐条审（2.1.218 起含不能静态判定只读的 Bash）；bypass 例外仅限交互终端且同时放行计划阶段的文件编辑，-p/SDK/VS Code 聊天面板不适用；批准计划只切换到 auto/Manual/bypass，不等于外部写授权；严格只读属页面作者安全建议而非官方保证。另标出同页 L14 best-practices 锚点当前不可达（附项，页面未改），官方文档无内容日期、changelog 发布日期因 GitHub API 限流未取到。check_repo（719 files, 0 errors）、check_public（1181 files, 0 findings）、check_public --commits（0 findings）、git diff --check、编码与提交身份检查均通过；未运行客户端/交互 shell/模型/浏览器/探针，方法结论为文档契约核对而非本机 Plan 实跑或安全保证。pageStuck 不适用（非 reader-test）。openIssues 无。
+- 产物：[a2b2fa0](https://github.com/dbvv1/a1dbv/commit/a2b2fa012f73902bd2472195001290559591f2ef)，分支 `relay/a-plan-mode-facts-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人决定是否据 facts.md 修订页面（含同页 L14 锚点不可达与来源日期缺口）；接收端负责提交并推送 result_branch。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
