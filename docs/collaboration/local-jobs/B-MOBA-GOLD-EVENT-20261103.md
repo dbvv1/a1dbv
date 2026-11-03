@@ -2,7 +2,7 @@
 id: B-MOBA-GOLD-EVENT-20261103
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 0811894da59740bdc10e0a2318174f3dbb0530d1
 result_branch: relay/b-moba-gold-event-20261103
@@ -33,8 +33,7 @@ result_branch: relay/b-moba-gold-event-20261103
 
 ## 当前结果
 
-- taskDone=true。新增 goldAwarded 表现事件（recipientId/targetId/amount/position/reason 五类原因），在 awardDeathRewards 四类实际金币加法后逐次发事件，快照深复制 position，不进入 SimState/finalHash/RNG；新增 7 个行为用例并给 3 个既有事件场景补精确预期。openIssues：(1) 超范围接缝 src/audio/battle.ts 含音频加载行为改写，建议接收端复核；(2) 超范围接缝 tools/save-compatibility.ts 新增指纹映射，已有 3600 tick 基线等价证据；(3) 零额记账不发事件，已披露；(4) 未接可见金币提示，未跑浏览器/smoke/GPU/主观验收。实测：npm test 86 files/557 tests 全过；基线 0811894 对比工具 --ticks 3600 --seed 1 passed=true，8 版本状态 hash/序列化 state/旧事件全匹配；build/web/capture 类型检查均通过；git diff --check 干净。
-- 产物：[a295da7](https://github.com/dbvv1/MOBA-Like/commit/a295da7e491c644ce2f42389740132d01d238534)，分支 `relay/b-moba-gold-event-20261103`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端按清单提交并决定是否保留两处范围外接缝；后续需接可见金币反馈并做浏览器/主观可读性验收。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 已接收并发布 [5b925f37](https://github.com/dbvv1/MOBA-Like/commit/5b925f372e68232cd3bf88727a55116909b3be2d)，原结果为 a295da7e。云端独审后撤无关音频加载改写，保 goldAwarded 忽略分支与精确存档指纹映射；删除未核身份的 --baseline 选项，补真实零赏金基地击杀／队友 60／自然终局测试。
+- 558 项测试及 sim/web/capture 检查与构建通过；8 个版本各 3600 tick 对比固定旧 Git 源，state/hash、bot 输入及旧事件一致。新增 8 测试旧源 7 失败／1 通过，修后全过；公开内容与提交身份检查通过。
+- 默认／原镜头 Q/W 入口实际从零推进 469／445 tick，均自然 Canvas 恢复，未见额外未捕获应用错误。完整范围与清理事实只见产品[单份验收](https://github.com/dbvv1/MOBA-Like/blob/5b925f372e68232cd3bf88727a55116909b3be2d/docs/side-release-acceptance.md#权威赏金派生接口cpu-与普通入口门槛通过)。未接可见金币提示、未部署；后续消费者与可读性验收不计本接口已完成。
+- 执行：本机接收端原生 build Workflow；dot 云端返工、独立审查及接收发布。本卡无待重跑单元。

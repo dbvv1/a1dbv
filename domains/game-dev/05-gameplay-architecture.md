@@ -713,6 +713,10 @@ GAS 已提供叠加、到期等配置就用原生策略；`None` 是独立实例
 
 **表现接三类不同事实，不用一个“攻击中”布尔值统管。** `castStarted` 带一次施放的 `castId`；`castResolved` 是实际 delivery 提交，不证明命中；`castCancelled` 来自真实中断／失效点。普攻即时结算不走施法实例，另由真实消耗攻击冷却处发 `basicAttack`，不从伤害猜出手。`heroDamaged` 分开实际 HP 损失和护盾吸收，受伤动作只消费 `hpDamage>0`；死亡读存活状态变化。v9 已承诺的后续空挥可以有攻击事件但没有尸体伤害，源动作的视觉接触帧也不再扣血。
 
+**金币反馈读奖励事件，不从余额差猜补刀。** MOBA 的 `goldAwarded` 在原奖励记账后给出领取者、死亡目标、金额、目标位置和五类原因：英雄击杀、无英雄击杀者时的全队奖励、小兵补刀、建筑最后一击与建筑队友奖励；这两类团队奖励不是助攻。零赏金不发，被动收入和购物也不发，避免把同 tick 的收入／支出抵消误读成没有奖励。位置随快照复制，事件仍不进权威状态、存档或 RNG；消费者逐逻辑步收取，并明确忽略自己不处理的新事件类型。
+
+本次只接权威接口，尚无可见金币提示。固定旧源与新版在 8 个支持版本各跑 3600 tick，state/hash 与旧事件相对顺序一致；真实零赏金基地击杀仍给队友原 60 奖励，终局保留最后批。精确源指纹映射保旧存档身份，不放开任意版本。普通默认／原镜头 Q/W 入口通过 Canvas 功能门槛，不据此判断奖励提示的可读性。[接收源码与单份验收](https://github.com/dbvv1/MOBA-Like/blob/5b925f372e68232cd3bf88727a55116909b3be2d/docs/side-release-acceptance.md#权威赏金派生接口cpu-与普通入口门槛通过)，2026-11-03。[案例源码／CPU／浏览器功能实测]
+
 **收取频率是接口的一部分。** 当前 `snapshot().events` 仅保一个逻辑 tick 的深拷贝批，按 `tick+ordinal` 排序／去重；它不进权威状态哈希，不是历史补发服务。客户端每次 `step` 后同步消费者，同一渲染帧推进多个逻辑步也逐步收取。消费者只保当前施放／受伤阶段，不无界累计；重开清空游标与动作，倒序快照要求先 reset。只按 render 取最后快照会漏掉中间的零前摇施法与伤害，增加 EventBus 不能补回漏读。
 
 接入时保留原输入、模拟和资源所有者：技能定义／实例仍在 `src/content`、`src/sim`，逐步消费在 `src/client.ts`，动作阶段在 `asset-pipeline/presentation/motion-state.js`。可运行 `npx vitest run tests/presentation-events.test.ts` 看零前摇、取消、护盾／过量、v8／v9 与重复读取反例，再运行 `npm --prefix asset-pipeline/presentation test` 看真实 GLB／阶段消费；`npm run dev` 体验输入→施法→动作／场景反馈。复用当前仓库入口，不另建一套技能框架或日志平台。
