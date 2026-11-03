@@ -1,7 +1,7 @@
 # A-PLAN-MODE-FACTS-20261103 · 计划模式的实际只读与执行边界
 id: A-PLAN-MODE-FACTS-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/planning-and-tests.md@3ce1dad1ecd7ea676b4a492b5e586b4bddcfa03a
 target_repo: https://github.com/dbvv1/a1dbv
@@ -34,3 +34,8 @@ result_branch: relay/a-plan-mode-facts-20261103
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：负责人决定是否据 facts.md 修订页面（含同页 L14 锚点不可达与来源日期缺口）；接收端负责提交并推送 result_branch。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+- 接收 [a2b2fa01](https://github.com/dbvv1/a1dbv/commit/a2b2fa012f73902bd2472195001290559591f2ef) 的官方文档事实：CLI Plan 入口、auto／`useAutoModeDuringPlan` 的 shell 审核、仅交互终端 bypass 的编辑与 shell 例外、`-p`／SDK／VS Code 区分、默认计划目录、批准后的模式切换。页面负责人逐源独核并经非作者审查，将必要修订发布且逐字回读为 [6a82ac9a](https://github.com/dbvv1/a1dbv/commit/6a82ac9a2b352a8bb2a3fda151cde849a947de7b)；文档、公开内容、提交身份和空白检查通过，保留原推荐、评级和实证范围。
+- 保留原报告，另作两处收窄：best-practices 页面可达，当前可见正文没有原引用章节；未核隐藏 HTML 兼容 ID 或历史版本，不将其概括为整个页面不可达。批准计划切换权限模式是官方事实，操作范围仍须符合本次任务授权是作者原则，不据此声称官方绝对否认用户对具体计划的有效授权。
+- 接收不等于当前客户端实跑或安全保证；严格只读建议由工具、MCP／hook 和实际挂载边界推导。未验客户端、只读挂载失败行为、未批准退出 Plan 的模式去向及所有宿主／历史版本；来源发布日期缺口保留。原 `taskDone`／审查通过不替代上述限定，不新增 reader，不改变权限或配置，不升级地图。
