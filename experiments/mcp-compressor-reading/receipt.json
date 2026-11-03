@@ -1,0 +1,562 @@
+{
+  "started_utc": "2026-11-03T04:22:25Z",
+  "external_models_or_native_coding_clients_activated": false,
+  "custom_stdio_mcp_client_used": true,
+  "script_sha256": "1e88582c16a5e4db8835d25a78a66243cdc1757505ccad4f3cf00e6fe798c7a0",
+  "modes": {
+    "direct": {
+      "initialize_result_size": {
+        "unicode_chars": 145,
+        "utf8_bytes": 145
+      },
+      "protocol": "2025-11-25",
+      "tool_count": 14,
+      "tool_names": [
+        "read_file",
+        "read_text_file",
+        "read_media_file",
+        "read_multiple_files",
+        "write_file",
+        "edit_file",
+        "create_directory",
+        "list_directory",
+        "list_directory_with_sizes",
+        "directory_tree",
+        "move_file",
+        "search_files",
+        "get_file_info",
+        "list_allowed_directories"
+      ],
+      "tools_list_size": {
+        "unicode_chars": 12579,
+        "utf8_bytes": 12579
+      },
+      "results": {
+        "small": {
+          "envelope_size": {
+            "unicode_chars": 1976,
+            "utf8_bytes": 4050
+          },
+          "isError": false,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": true,
+          "serialized_sha256": "87f6710b02c7d9674ba1965349b1e772e95a4aa2192428ecd88e177b8d6310e3"
+        },
+        "large": {
+          "envelope_size": {
+            "unicode_chars": 282368,
+            "utf8_bytes": 447908
+          },
+          "isError": false,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": true,
+          "serialized_sha256": "7abd763195deaf055e39512d4a3e1f6f3cda80ea882810188ed7c4228e21049b"
+        },
+        "missing": {
+          "envelope_size": {
+            "unicode_chars": 170,
+            "utf8_bytes": 170
+          },
+          "isError": true,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": false,
+          "serialized_sha256": "6c28ca33cf1ac29b006e5ca478d81f5ad681d4a3cfa8df2acc13ebc482e16a8e"
+        },
+        "outside": {
+          "envelope_size": {
+            "unicode_chars": 221,
+            "utf8_bytes": 221
+          },
+          "isError": true,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": false,
+          "serialized_sha256": "7e6f324dafd4ea410f566b4219d84b3f4e70908f2ee87c5298a74f534886fa92"
+        }
+      },
+      "read_schema_size": {
+        "unicode_chars": 1109,
+        "utf8_bytes": 1109
+      },
+      "shutdown": {
+        "method": "stdin-eof",
+        "exit_code": 0
+      }
+    },
+    "medium": {
+      "initialize_result_size": {
+        "unicode_chars": 194,
+        "utf8_bytes": 194
+      },
+      "protocol": "2025-11-25",
+      "tool_count": 2,
+      "tool_names": [
+        "server_get_tool_schema",
+        "server_invoke_tool"
+      ],
+      "tools_list_size": {
+        "unicode_chars": 2331,
+        "utf8_bytes": 2331
+      },
+      "results": {
+        "small": {
+          "envelope_size": {
+            "unicode_chars": 2947,
+            "utf8_bytes": 5021
+          },
+          "isError": false,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": true,
+          "serialized_sha256": "dd8877a1245ee447b3a265ee7ec47b71cabd95bd1889cec282671ced1cf05671"
+        },
+        "large": {
+          "envelope_size": {
+            "unicode_chars": 283339,
+            "utf8_bytes": 448879
+          },
+          "isError": false,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": true,
+          "serialized_sha256": "bc0e1a65d1417ee083671e219ee293f448d3f16393757354420a997bb924b97b"
+        },
+        "missing": {
+          "envelope_size": {
+            "unicode_chars": 1141,
+            "utf8_bytes": 1141
+          },
+          "isError": true,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": false,
+          "serialized_sha256": "d9ac58a65b497123c7c5155ff066ddf3ce14c3dcc356c974f493f6472b6eaddb"
+        },
+        "outside": {
+          "envelope_size": {
+            "unicode_chars": 1192,
+            "utf8_bytes": 1192
+          },
+          "isError": true,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": false,
+          "serialized_sha256": "11a822fec4737355c8e51e9a910e78c212e57e44b6ae6eb2460c50d230c53153"
+        }
+      },
+      "read_schema_size": {
+        "unicode_chars": 2021,
+        "utf8_bytes": 2021
+      },
+      "shutdown": {
+        "method": "stdin-eof",
+        "exit_code": 0
+      },
+      "preservation": {
+        "small": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        },
+        "large": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        },
+        "missing": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        },
+        "outside": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        }
+      }
+    },
+    "medium-shrink": {
+      "initialize_result_size": {
+        "unicode_chars": 194,
+        "utf8_bytes": 194
+      },
+      "protocol": "2025-11-25",
+      "tool_count": 2,
+      "tool_names": [
+        "server_get_tool_schema",
+        "server_invoke_tool"
+      ],
+      "tools_list_size": {
+        "unicode_chars": 2712,
+        "utf8_bytes": 2712
+      },
+      "results": {
+        "small": {
+          "envelope_size": {
+            "unicode_chars": 2947,
+            "utf8_bytes": 5021
+          },
+          "isError": false,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": true,
+          "serialized_sha256": "dd8877a1245ee447b3a265ee7ec47b71cabd95bd1889cec282671ced1cf05671"
+        },
+        "large": {
+          "envelope_size": {
+            "unicode_chars": 152111,
+            "utf8_bytes": 240734
+          },
+          "isError": false,
+          "content_types": [
+            "text",
+            "text"
+          ],
+          "has_structured_content": true,
+          "serialized_sha256": "58a57ca803e8efad6f72a7c08c746b08686c019fa2fe3023af375a1def38a1e5"
+        },
+        "large_recovered": {
+          "envelope_size": {
+            "unicode_chars": 283339,
+            "utf8_bytes": 448879
+          },
+          "serialized_sha256": "bc0e1a65d1417ee083671e219ee293f448d3f16393757354420a997bb924b97b"
+        },
+        "missing": {
+          "envelope_size": {
+            "unicode_chars": 1141,
+            "utf8_bytes": 1141
+          },
+          "isError": true,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": false,
+          "serialized_sha256": "d9ac58a65b497123c7c5155ff066ddf3ce14c3dcc356c974f493f6472b6eaddb"
+        },
+        "outside": {
+          "envelope_size": {
+            "unicode_chars": 1192,
+            "utf8_bytes": 1192
+          },
+          "isError": true,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": false,
+          "serialized_sha256": "11a822fec4737355c8e51e9a910e78c212e57e44b6ae6eb2460c50d230c53153"
+        }
+      },
+      "read_schema_size": {
+        "unicode_chars": 2021,
+        "utf8_bytes": 2021
+      },
+      "shutdown": {
+        "method": "stdin-eof",
+        "exit_code": 0
+      },
+      "recovery": {
+        "raw_envelope_equal": false,
+        "upstream_fields_exact": true,
+        "only_added_display_metadata": true
+      },
+      "unchanged_small_errors": {
+        "small": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        },
+        "missing": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        },
+        "outside": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        }
+      },
+      "bounded_text_not_envelope": {
+        "budget": 10000,
+        "text_chars": 9072,
+        "serialized_envelope_chars": 152111,
+        "structured_content_exact": true,
+        "truncation_report": {
+          "message": "This tool response has been automatically shrunk to limit token consumption. An attempt has been made to retain important information. Only if the fully hydrated response is required, recall this compressor invocation with the same tool_name and tool_input and full=true (outside tool_input). A cached original is used when available; otherwise the backend runs again without shrinking. Do not repeat a write unless safe.",
+          "report": {
+            "pruned": true,
+            "fits": true,
+            "items_omitted": 0,
+            "keys_omitted": 0,
+            "strings_truncated": 1
+          }
+        },
+        "original_text_sha256": "008ecd0741bc9bd27675ca46acdcc79953172fdd2551820610b606ae1b86c618",
+        "recovered_text_sha256": "008ecd0741bc9bd27675ca46acdcc79953172fdd2551820610b606ae1b86c618",
+        "source_file_sha256": "008ecd0741bc9bd27675ca46acdcc79953172fdd2551820610b606ae1b86c618"
+      }
+    },
+    "max": {
+      "initialize_result_size": {
+        "unicode_chars": 194,
+        "utf8_bytes": 194
+      },
+      "protocol": "2025-11-25",
+      "tool_count": 3,
+      "tool_names": [
+        "server_get_tool_schema",
+        "server_invoke_tool",
+        "server_list_tools"
+      ],
+      "tools_list_size": {
+        "unicode_chars": 1384,
+        "utf8_bytes": 1384
+      },
+      "results": {
+        "small": {
+          "envelope_size": {
+            "unicode_chars": 2947,
+            "utf8_bytes": 5021
+          },
+          "isError": false,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": true,
+          "serialized_sha256": "dd8877a1245ee447b3a265ee7ec47b71cabd95bd1889cec282671ced1cf05671"
+        },
+        "large": {
+          "envelope_size": {
+            "unicode_chars": 283339,
+            "utf8_bytes": 448879
+          },
+          "isError": false,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": true,
+          "serialized_sha256": "bc0e1a65d1417ee083671e219ee293f448d3f16393757354420a997bb924b97b"
+        },
+        "missing": {
+          "envelope_size": {
+            "unicode_chars": 1141,
+            "utf8_bytes": 1141
+          },
+          "isError": true,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": false,
+          "serialized_sha256": "d9ac58a65b497123c7c5155ff066ddf3ce14c3dcc356c974f493f6472b6eaddb"
+        },
+        "outside": {
+          "envelope_size": {
+            "unicode_chars": 1192,
+            "utf8_bytes": 1192
+          },
+          "isError": true,
+          "content_types": [
+            "text"
+          ],
+          "has_structured_content": false,
+          "serialized_sha256": "11a822fec4737355c8e51e9a910e78c212e57e44b6ae6eb2460c50d230c53153"
+        }
+      },
+      "deferred_list_size": {
+        "unicode_chars": 661,
+        "utf8_bytes": 661
+      },
+      "read_schema_size": {
+        "unicode_chars": 2021,
+        "utf8_bytes": 2021
+      },
+      "shutdown": {
+        "method": "stdin-eof",
+        "exit_code": 0
+      },
+      "preservation": {
+        "small": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        },
+        "large": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        },
+        "missing": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        },
+        "outside": {
+          "raw_envelope_equal": false,
+          "upstream_fields_exact": true,
+          "only_added_display_metadata": true
+        }
+      }
+    }
+  },
+  "inputs": {
+    "sources.md": {
+      "sha256": "008ecd0741bc9bd27675ca46acdcc79953172fdd2551820610b606ae1b86c618",
+      "bytes": 223099
+    }
+  },
+  "measurement": "Compact ensure_ascii=False JSON of MCP result objects; Unicode characters and UTF-8 bytes, not model tokens, bills or complete-session cost.",
+  "runtime": {
+    "compressor_version": "0.40.0",
+    "filesystem_version": "2.1.0",
+    "node_version": "v24.22.1",
+    "python_version": "3.12.14",
+    "lock_sha256": "af51b30fe667e3e735c94fb822e5335561e8011e24d3f895a0e5f64757687df6"
+  },
+  "upstream_input": {
+    "repo": "dbvv1/a1dbv",
+    "commit": "9f905b0166278975f9831e7d142b9ca4cae423c5",
+    "path": "docs/collaboration/local-jobs/artifacts/A-SKILL-MCP-WIDE-20261029/sources.md",
+    "sha256": "008ecd0741bc9bd27675ca46acdcc79953172fdd2551820610b606ae1b86c618"
+  },
+  "completed_utc": "2026-11-03T04:22:26Z",
+  "status": "pass",
+  "preliminary_attempt": {
+    "script_sha256": "e0ecd46c6488c38090f65d4912b7a96182140db801c904a05bd55d29a40aea26",
+    "result": "failed",
+    "assertion": "assert all(summary[\"modes\"][label][\"exact_results_equal_direct\"].values()), label",
+    "stderr_last_line": "AssertionError: medium",
+    "diagnosis": "Strict whole-envelope equality rejected the documented additional client display metadata. The corrected comparison requires every original upstream field to match exactly, and validates the sole added metadata key against the directly discovered tool definition. No body or error field is ignored."
+  },
+  "installation_history": [
+    {
+      "stage": "npm config parsing",
+      "result": "failed",
+      "error": "double-loading config \"/dev/null\" as \"global\", previously loaded as \"user\"",
+      "correction": "Use two distinct new empty config files."
+    },
+    {
+      "stage": "npm registry fetch",
+      "result": "failed",
+      "error": "EAI_AGAIN",
+      "correction": "Preserve only the platform-provided credential-free npm transport proxy during installation."
+    },
+    {
+      "stage": "npm registry TLS verification",
+      "result": "failed",
+      "error": "SELF_SIGNED_CERT_IN_CHAIN",
+      "correction": "Preserve the platform existing trust-bundle environment during installation; never disable certificate verification or add a new CA."
+    },
+    {
+      "stage": "npm fixed dependency install",
+      "result": "passed",
+      "registry_packages": 12,
+      "ignore_scripts": true,
+      "install_script_markers": 0
+    }
+  ],
+  "distribution_sources": {
+    "compressor": {
+      "repo": "atlassian-labs/mcp-compressor",
+      "tag": "v0.40.0",
+      "commit": "7efc49552101005e93e12588c669d68b9b3c5f7c",
+      "metadata": "https://pypi.org/pypi/mcp-compressor/0.40.0/json",
+      "wheel_sha256": "2e2c6d61244f25f6aa3712cea5594399d243ebef75be13db084f950d19cb1b2a",
+      "runtime_dependencies": 0
+    },
+    "filesystem": {
+      "repo": "modelcontextprotocol/servers",
+      "package": "@modelcontextprotocol/server-filesystem",
+      "version": "2.1.0",
+      "metadata": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/2.1.0",
+      "tarball_integrity": "sha512-BMihuyTNi975iQTQDsZ6x+JVg99CAiX83jBV0wGMyc/0DcBO55ulCQqEzwx7lbG5U9/97XiPP9n0sK/iUtSsEg==",
+      "dist_files_equal_verified_tarball": true
+    }
+  },
+  "public_script_preflight_checks": [
+    {
+      "case": "missing-source",
+      "exit_code": 1,
+      "result": "refused before subprocess startup or output mutation",
+      "output_before": {
+        "exists": false
+      },
+      "output_after": {
+        "exists": false
+      },
+      "first_child_executable_sentinel_started": false
+    },
+    {
+      "case": "wrong-source",
+      "exit_code": 1,
+      "result": "refused before subprocess startup or output mutation",
+      "output_before": {
+        "exists": false
+      },
+      "output_after": {
+        "exists": false
+      },
+      "first_child_executable_sentinel_started": false
+    },
+    {
+      "case": "wrong-lock",
+      "exit_code": 1,
+      "result": "refused before subprocess startup or output mutation",
+      "output_before": {
+        "exists": false
+      },
+      "output_after": {
+        "exists": false
+      },
+      "first_child_executable_sentinel_started": false
+    },
+    {
+      "case": "wrong-runtime",
+      "exit_code": 1,
+      "result": "refused before subprocess startup or output mutation",
+      "output_before": {
+        "exists": false
+      },
+      "output_after": {
+        "exists": false
+      },
+      "first_child_executable_sentinel_started": false
+    },
+    {
+      "case": "existing-output",
+      "exit_code": 1,
+      "result": "refused before subprocess startup or output mutation",
+      "output_before": {
+        "exists": true,
+        "files": {
+          "sentinel": "fc4a3226367a020f6b61b3e3b7988058dadb207cfef6d7fda3dca11bf934ccbf"
+        }
+      },
+      "output_after": {
+        "exists": true,
+        "files": {
+          "sentinel": "fc4a3226367a020f6b61b3e3b7988058dadb207cfef6d7fda3dca11bf934ccbf"
+        }
+      },
+      "first_child_executable_sentinel_started": false
+    }
+  ],
+  "public_script_preflight_recorded_repeat": {
+    "completed_utc": "2026-11-03T04:26:31Z",
+    "script_sha256": "1e88582c16a5e4db8835d25a78a66243cdc1757505ccad4f3cf00e6fe798c7a0",
+    "status": "pass",
+    "reason": "Original five guard outcomes were observed in process results but separate stderr receipts were not retained. These are newly recorded repetitions, not reconstructed original evidence."
+  }
+}
