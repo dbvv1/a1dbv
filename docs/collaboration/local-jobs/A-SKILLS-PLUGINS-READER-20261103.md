@@ -1,7 +1,7 @@
 # A-SKILLS-PLUGINS-READER-20261103 · 按能力缺口完成配置小修
 id: A-SKILLS-PLUGINS-READER-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 6b57614aa0cbcb6a52800717d0df22566de7cdf1
