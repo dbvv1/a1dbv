@@ -1,7 +1,7 @@
 # A-INSTRUCTION-LIVE-STATE-20261103 · 指令依赖外部状态时先核入口
 id: A-INSTRUCTION-LIVE-STATE-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ec246c5d314e9280edb221695bd3ab71f3ad7a8f
@@ -36,3 +36,11 @@ result_branch: relay/a-instruction-live-state-20261103
 非作者逐源回答：文件/静态检查正确能否证明队列工作；无bot回执能否证明暂停；8-03合并证明什么；查到暂停是否授权换合并路径。至少核“仍有效的安全/审批要求”和“实际服务状态未知”两个反例。
 候选须保现有代码/说明双向取舍，不把历史暂停或文档恢复说成现状、不把只读审稿称部署/队列或模型实跑；缺关键源就标未知，不以摘要替代。
 一个45–75分钟单元，最多2小时；共享最多4并行由原接收端调度。按既有Workflow非作者审查、check_repo、check_public、git diff --check与身份检查，仅推result_branch回review_ready；不用accept:auto，不合main。
+
+## 当前结果
+
+- 已完成 artifact-only 提案 docs/collaboration/local-jobs/artifacts/A-INSTRUCTION-LIVE-STATE-20261103/proposal.md（124 行）：含并入 instruction-files.md 的最小正文候选（权威来源与适用条件、未启用/暂停/排队/失败/未知五态表、无回执先查状态、授权边界、根约定与窄 Skill 停用范围、何时不适用）、原句缺口、两阶段固定证据（PR 75873/提交 1057b672 暂停；PR 76456/提交 d9e41684 恢复）、作者自报与未知边界，并逐题回答四问与两个反例。三视角独立审查 3 轮修正后 pass=true、issues=[]、openIssues=[]。check_repo 744 文件 0 错误、check_public 1209 文件 0 findings、编码/空白检查通过；git status 仅新增该未跟踪文件，无其他改动。未关闭限制：暂停起止与覆盖范围、作者查询是否仍成立、当前服务是否仍启用均未知（按卡片不调查）；45 分钟为作者自报未复算；desktop 上传门控未展开；未提交/推送、未做读者实测。
+- 产物：[0c53793](https://github.com/dbvv1/a1dbv/commit/0c53793f5e91e1241f33ce5489cfac37071ca5b6)，分支 `relay/a-instruction-live-state-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端用 noreply 身份只将 proposal.md 提交到 result_branch（当前 git user.email 为公司邮箱，勿沿用），更新本卡状态与 review_ready；原页采用、读者实测与推送由负责人/接收端完成。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
