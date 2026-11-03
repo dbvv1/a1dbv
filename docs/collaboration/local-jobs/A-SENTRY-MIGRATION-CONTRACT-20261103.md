@@ -1,7 +1,7 @@
 # A-SENTRY-MIGRATION-CONTRACT-20261103 · 分清迁移阶段并撤除临时规则
 id: A-SENTRY-MIGRATION-CONTRACT-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 147f3353dfaf0640f9e9a129da3bd9b6f82ae152
