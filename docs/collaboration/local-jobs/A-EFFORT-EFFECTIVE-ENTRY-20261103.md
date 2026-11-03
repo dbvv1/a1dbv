@@ -1,7 +1,7 @@
 # A-EFFORT-EFFECTIVE-ENTRY-20261103 · 分清所选档位与当轮生效档位
 id: A-EFFORT-EFFECTIVE-ENTRY-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7be93247a8a9d5b55375c2eb87a4f62c3a7b15b9
