@@ -1,7 +1,7 @@
 # A-TEMPLATE-EVIDENCE-REUSE-20261103 · 最小包的证据复用一致性
 id: A-TEMPLATE-EVIDENCE-REUSE-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/decisions/long-tasks.md@b1427c5e4bfb172d1dd9e39b424c05514115444d
 target_repo: https://github.com/dbvv1/a1dbv
