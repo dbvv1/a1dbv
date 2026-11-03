@@ -1,7 +1,7 @@
 # A-INSTRUCTION-FILES-READER-20261103 · 用已有项目指令完成文档小任务
 id: A-INSTRUCTION-FILES-READER-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 7572c1183a382d3792641e428935ee178223783f
@@ -41,10 +41,10 @@ CLAUDE.md 的 “Do not install or download anything just to run this check” �
 
 ## 当前结果
 
-- 三项返工已落地并核对：docs/usage.md 将 PowerShell 整句示例改为字面单引号、补单引号内 apostrophe 双写示例，保留单标签反引号/单引号/双引号三种写法且未称双引号一律错误，Composing Entries 旧反斜杠转义说明限定为 POSIX/Bash-like shell 并交叉引用 #using-tags；CLAUDE.md 文档检查说明改指 .github/workflows/docs.yaml，列 Python/Poetry 文档环境、Node/pa11y-ci、匹配 Puppeteer Chrome、运行中的 docs server 四项前提，npm install 仅在 node_modules 缺失时使用，未安装/下载/跑 npx；reader-tests 记录追加第二轮并保留首轮证据。taskDone=true（核对者独立复算 diff 与 PowerShell 5.1/7.6 argv 探针，Git Bash 复核工作树一致），但 reviewed=false，仅完成一轮 reader-test 观察，不代表目标验收通过。pageStuck=7 项（均 cause=page：输入无独立解析提交字段且把提交号写成页指纹；子代理无 /memory、/context 工具侧入口；缺 poetry/mkdocs/Node/Puppeteer/docs server 属环境与禁装边界；jrnl 未安装缺 ruamel 属任务条件；PowerShell 文案位置无页面规定；main+PR 规则与任务限制冲突；agents-md-lint 非项目依赖）。未运行验收：MkDocs 构建、poe docs-check/Pa11y、完整 jrnl 写入/标签读取，均已标为待验未写成通过。openIssues：读者把任务文件中的 21b5f4ab 当成内容指纹，得出三个指纹不一致且无法映射上游的结论不成立——21b5f4ab 是提交号，其页面为 19,328 bytes/sha256 7b8c59ff（首轮附文），当前页面为提交 684e5bcf、20,025 bytes/sha256 c4e5a91d（含 bfd477e 链接），任务文件第 41 行「相符」判断正确；另有锚点检查脚本首版误报下划线链接、已自纠未影响文档。
-- 产物：[7572c11](https://github.com/dbvv1/jrnl/commit/7572c1183a382d3792641e428935ee178223783f)，分支 `relay/a-instruction-files-reader-20261103`。
+- 第三轮定点修订已落地：CLAUDE.md 的 docs-check 说明把永久禁装改为按当前任务授权的条件分支，删除『仅 node_modules 缺失才安装』的固化条件，保留 .github/workflows/docs.yaml 入口及 Python/Poetry、Node/pa11y-ci、Puppeteer Chrome、运行中 docs server 四项前提；docs/usage.md 未改；u1 记录追加第三轮说明与核对。实测 git status 仅两文件改动，numstat 为 CLAUDE.md +10/−7、u1 +101/−0，git diff --check 退出 0；HEAD 仍为 7572c118，未提交、未推送、未切分支。taskDone=true（仅指本轮修订）。pageStuck=3：任务只给方向未给可直接替换措辞且页面无安装授权模板；子代理无 /memory、/context 工具侧入口；任务无独立解析提交字段。未运行验收：MkDocs 构建、poe docs-check/Pa11y、完整 jrnl 写入/标签读取，因本机缺 poetry/mkdocs/Node 依赖/Puppeteer Chrome/docs server 且本轮禁装，均未写成通过；云端已验范围不代表本机 Windows 或全门禁。openIssues：u1 第17节自报 CLAUDE.md +7/−5，实际为 +10/−7，核对者已指出，本轮未在 Workflow 外修改；上述 pageStuck 缺口保留。reviewed=false，仅完成一轮 reader-test 观察，不代表目标验收通过。
+- 产物：[8d98952](https://github.com/dbvv1/jrnl/commit/8d9895233ae9c8f1e6c878eb5461c0be13b0d0fd)，分支 `relay/a-instruction-files-reader-20261103`。
 - 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：交负责人接收：裁决 21b5f4ab/页指纹措辞这一 openIssue 并决定是否更正读者记录，同时在具备 poetry/mkdocs、Node+Puppeteer Chrome 与可运行 jrnl 的环境补跑 MkDocs 构建、poe docs-check/Pa11y 及临时 journal 写入/标签读取。
+- 下一步：交负责人接收：更正 u1 第17节 diff 统计；裁决并处理 3 项 pageStuck 与缺独立解析提交回执；在具备 Poetry/mkdocs、Node+Puppeteer Chrome、运行中 docs server 与可启动 jrnl 的环境补跑 MkDocs 构建、poe docs-check/Pa11y 及临时 journal 写入/标签读取。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
 
 ## 独立接收核验补充
