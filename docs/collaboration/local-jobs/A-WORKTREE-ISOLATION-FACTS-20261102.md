@@ -1,7 +1,7 @@
 # A-WORKTREE-ISOLATION-FACTS-20261102 · 长程路线的 worktree 隔离边界
 id: A-WORKTREE-ISOLATION-FACTS-20261102
 owner: dot-A
-status: running
+status: blocked
 kind: build
 page: docs/decisions/long-tasks.md@0c40c25d470d6df7e00f41c967e3de5cfa3a3465
 target_repo: https://github.com/dbvv1/a1dbv
@@ -28,4 +28,5 @@ result_branch: relay/a-worktree-isolation-facts-20261102
 最多两小时，共享最多 4 并行由原接收端调度，不另起调用。跑 check_repo、check_public、git diff --check 与提交身份检查，仅推 result_branch，回 review_ready 由负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；既有路线的官方事实边界待核，不影响两张广扫原调用的隔离与接收。
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
