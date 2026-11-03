@@ -1,7 +1,7 @@
 # A-REVIEW-RUBRIC-FACTS-20261103 · 审查尺度的真实来源与装配
 id: A-REVIEW-RUBRIC-FACTS-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 page: docs/decisions/codex-overengineering.md@5ebecac1ffe2501301699d518fd8b61acb82163f
 target_repo: https://github.com/dbvv1/a1dbv
