@@ -1,7 +1,7 @@
 # A-DEPENDENCY-LOCATOR-FACTS-20261102 · 实际依赖定位的 Cargo 官方边界
 id: A-DEPENDENCY-LOCATOR-FACTS-20261102
 owner: dot-A
-status: running
+status: blocked
 kind: build
 page: docs/decisions/skills-and-plugins.md@2bddaaf7b5ed7f9bd151315cab6b67e2a9e97709
 target_repo: https://github.com/dbvv1/a1dbv
@@ -28,8 +28,4 @@ result_branch: relay/a-dependency-locator-facts-20261102
 
 ## 当前结果
 
-- facts.md 已生成并通过仓库检查（check_repo 714 文件 0 error、check_public 0 finding、git diff --check 通过，未提交/未推送；taskDone 仅限文档产物，pageStuck 否，未运行验收：本机无 cargo/rustc，Cargo 命令边界来自官方文档、固定 SHA 源码与官方测试，未实跑）。三路独立审查未全通过，残留 3 个 openIssues：1) 修正 jq 仅保留 target=null 或字面量 triple 的普通边，会静默丢掉真实激活的 cfg(...) 边，与第 39/47 行“逐条核 dep_kinds[].target”的指引矛盾；2) 第 71/100 行写 dep_kinds 自 Cargo 1.41 起，但所引 Cargo Book 页面写 1.40，未说明该官方注释与 1.40/1.41 tag 源码的冲突；3) “无结果”排查与 realpath 说明未覆盖原生 Windows 的 C:\ 与 /c/ 路径格式差异，按文照跑会零结果。
-- 产物：[e58228a](https://github.com/dbvv1/a1dbv/commit/e58228a0b80f7d9ccb0b87149172fb4a0e092141)，分支 `relay/a-dependency-locator-facts-20261102`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：负责人决定是否追加一轮修正上述 3 项：jq 保留 cfg 边供人工判定、补 dep_kinds 1.40/1.41 来源冲突说明、补 Windows 路径规范化（cygpath -w / Resolve-Path）后再复核 reviewed。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
