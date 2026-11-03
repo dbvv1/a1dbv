@@ -1,7 +1,7 @@
 # A-SKILL-PAGE-FACTS-20261102 · Skill 页核心推荐的来源事实核查
 id: A-SKILL-PAGE-FACTS-20261102
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/decisions/skills-and-plugins.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
