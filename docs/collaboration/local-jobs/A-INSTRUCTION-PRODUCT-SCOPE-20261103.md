@@ -1,7 +1,7 @@
 # A-INSTRUCTION-PRODUCT-SCOPE-20261103 · 产品例外只覆盖那条共享约定
 id: A-INSTRUCTION-PRODUCT-SCOPE-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ec246c5d314e9280edb221695bd3ab71f3ad7a8f
@@ -36,3 +36,11 @@ result_branch: relay/a-instruction-product-scope-20261103
 非作者逐源核：覆盖的是哪条及哪个目录；哪些原约束仍保留；条款合入、入口加载、功能行为各有什么证据；126338/126769能否证明手机要求完成。至少给“未获产品决定”和“系统/安全禁令”两个不可直接覆盖反例。
 候选须对比既有局部文件建议给出实际新增判断，保持用户授权与外部内容之别；如只有已有结论或源不支持就回明确负结论，不硬凑建议，不把静态审稿升级为真实模型/浏览器采用。
 一个45–75分钟单元，最多2小时；共享最多4并行由原接收端调度。按既有Workflow非作者审查、check_repo、check_public、git diff --check与身份检查，仅推result_branch回review_ready；不用accept:auto，不合main。
+
+## 当前结果
+
+- 完成单元 1：新增 proposal.md，给出 instruction-files 局部产品例外的最小正文候选、与现有页面的增量判断、固定提交 4e1d31b2 逐字对照、条款合入/入口加载/功能行为证据表与不可覆盖反例；确认 #126338、#126769 均仍 OPEN，不能证明手机要求完成，且根 AGENTS.md 的同义复述存在覆盖范围缺口。openIssues 为空；未运行上游构建、模型或浏览器实测，静态审稿不等于加载与行为验收通过。
+- 产物：[0bc25d9](https://github.com/dbvv1/a1dbv/commit/0bc25d91bc1e0f1b0570262f7ddf2a30ee52c1b7)，分支 `relay/a-instruction-product-scope-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：由接收端做非作者审查并按 result_branch 发布；后续如需可补核根 AGENTS.md 同义复述的覆盖缺口是否需上游澄清。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
