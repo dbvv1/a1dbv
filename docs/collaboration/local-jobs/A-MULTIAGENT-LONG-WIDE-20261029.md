@@ -1,7 +1,7 @@
 # A-MULTIAGENT-LONG-WIDE-20261029 · 多代理与长程任务广扫
 id: A-MULTIAGENT-LONG-WIDE-20261029
 owner: dot-A
-status: running
+status: blocked
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a37326182cd65de837101d68d2596cbe8042a119
@@ -52,8 +52,4 @@ result_branch: relay/a-multiagent-long-wide-20261029
 
 ## 当前结果
 
-- 探索单元 1 交付 docs/collaboration/local-jobs/artifacts/A-MULTIAGENT-LONG-WIDE-20261029/sources.md（951 行，661 候选/654 已核链接）：五类渠道覆盖表、34 条不可读渠道与原因、前 15 项深挖（Anthropic 多代理失败实测、Stripe Minions、Factory Missions、Cockroach MOLT Sinai、Qwen Code Agent Team、AgentScope 2.0、dsh-superagent、Vals AI、Polylane、Anthropic 长任务四件套等）、A–J 十组 454 行候选、去重排除与缺口转交。未安装/未运行任何候选，未做实测或采用判断，也未宣称饱和；中文社区、Reddit/linux.do/V2EX、arXiv 全文等缺口已附链接转 dot 云端。openIssues：最终审查 pass=false，第 922 行把 Entire CLI 误记为旧扫描已排除项（旧卡实为保留候选，inbox 已有 ⛔ 条目），需负责人更正；Workflow 未在最后一轮修复。
-- 产物：[a373261](https://github.com/dbvv1/a1dbv/commit/a37326182cd65de837101d68d2596cbe8042a119)，分支 `relay/a-multiagent-long-wide-20261029`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：修正 sources.md 第 922 行 Entire CLI 的去重归属（改为旧扫描保留、inbox 已有 ⛔ 条目，或从排除名单移除），再交负责人从本卡与并行卡总产物中选 3 项真实试用并更新 13。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
