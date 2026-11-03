@@ -1,7 +1,7 @@
 # A-M6-DISCOVERY-ENTRY-20261103 · 分清定向查询与未知发现入口
 id: A-M6-DISCOVERY-ENTRY-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6aafeae958f4e839051866fae1c52c8aabfa2c89
@@ -41,3 +41,7 @@ result_branch: relay/a-m6-discovery-entry-20261103
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：负责人核具体写者与差量，决定是否采用 25/12 替换稿；同步 templates/README L57 摘要；非作者页面采用与读者验收另办。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+55d4e2a7 经非作者对固定 6aafeae9 的 25／12、explore-frontier 与 templates/README 逐项反读，可接收为定向／未知发现入口的最小正文建议稿：没有具体决定时不必虚构决定；已定位 API 等问题保留短路径，不被迫广扫；模板存在、显式调用／宿主适配与方法收益验证分开。仅新增 proposal.md 149 行，父链为固定输入；四份依据与领取时 2292eba1 及接收时 95037528 的 blob 相同，历史阴性结果和原核实日期未改。四种相对链接按未来 docs/25／docs/12 落点核实存在；本轮独审仅核静态来源、差量、编码／空白与身份，原 738／1204 检查为接收端回传，不追认为独审新运行。
+本次只收 artifact-only 候选及限定来源核查，不是已应用到 25／12／模板，也不是新自然读者、广扫、客户端或模型实跑；不升级地图／方法效果结论。原首轮记录保留；12“API／版本”与 25“API、版本或许可”的文字范围差别不改变两条入口，属非阻断观察。正文及模板旧写者退出仍未知，保持原隔离；后续采用须另核具体归属，不凭本卡 accepted 授权改页或重派探索。
