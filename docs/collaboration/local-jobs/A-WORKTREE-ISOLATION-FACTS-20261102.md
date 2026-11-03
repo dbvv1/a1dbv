@@ -1,7 +1,7 @@
 # A-WORKTREE-ISOLATION-FACTS-20261102 · 长程路线的 worktree 隔离边界
 id: A-WORKTREE-ISOLATION-FACTS-20261102
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/decisions/long-tasks.md@0c40c25d470d6df7e00f41c967e3de5cfa3a3465
 target_repo: https://github.com/dbvv1/a1dbv
