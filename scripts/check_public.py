@@ -160,10 +160,15 @@ def main():
       findings += scan_commits(root, args.commits)
     except ValueError as exc:
       parser.error(str(exc))
-  print(json.dumps({"checked_files": count, "findings": findings,
-                    "limits": ["pattern scan only; read the diff before publishing",
-                               "does not detect company code, private text or internal hosts"]},
-                   ensure_ascii=False, indent=2))
+  report = json.dumps({"checked_files": count, "findings": findings,
+                       "limits": ["pattern scan only; read the diff before publishing",
+                                  "does not detect company code, private text or internal hosts"]},
+                      ensure_ascii=False, indent=2) + "\n"
+  # Emit UTF-8 bytes rather than text: a host stdout codec such as GBK or ASCII
+  # must not replace a complete scan with UnicodeEncodeError and lost findings.
+  sys.stdout.flush()
+  sys.stdout.buffer.write(report.encode("utf-8"))
+  sys.stdout.flush()
   return bool(findings)
 
 

@@ -49,6 +49,13 @@ class PublicScanTests(unittest.TestCase):
     return subprocess.run([sys.executable, str(SCRIPT), "--root", str(root), *args],
                           capture_output=True, text=True, encoding="utf-8", env=env)
 
+  def run_cli_bytes(self, root, io_encoding):
+    # Keep the child's stdout encoding as the condition under test and read the
+    # pipe as raw bytes; run_cli above pins UTF-8 and would hide the failure.
+    env = dict(os.environ, PYTHONIOENCODING=io_encoding)
+    return subprocess.run([sys.executable, str(SCRIPT), "--root", str(root)],
+                          capture_output=True, env=env)
+
   def run_fixture(self, files, git=False):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
@@ -421,6 +428,47 @@ class PublicScanTests(unittest.TestCase):
       self.assertEqual([(name, "credential")], [(f["file"], f["kind"]) for f in report["findings"]])
       self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
       self.assertEqual("", result.stderr)
+
+  def test_cli_clean_unicode_file_output_parses_in_any_stdout_encoding(self):
+    name = "测试-🧪.txt"
+    for io_encoding in ("utf-8", "gbk", "ascii"):
+      with self.subTest(io_encoding=io_encoding), tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / name).write_text("clean documentation\n", encoding="utf-8")
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
+        subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
+        result = self.run_cli_bytes(root, io_encoding)
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual(b"", result.stderr)
+        report = json.loads(result.stdout.decode("utf-8"))
+        self.assertEqual(1, report["checked_files"])
+        self.assertEqual([], report["findings"])
+
+  def test_cli_unicode_finding_output_parses_in_any_stdout_encoding(self):
+    name = "测试-🧪.txt"
+    for io_encoding in ("utf-8", "gbk", "ascii"):
+      with self.subTest(io_encoding=io_encoding), tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / name).write_text(f"token {FAKE_KEY}\n", encoding="utf-8")
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
+        subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
+        result = self.run_cli_bytes(root, io_encoding)
+        self.assertEqual(1, result.returncode, result.stderr)
+        self.assertNotIn(b"Traceback", result.stderr)
+        self.assertEqual(b"", result.stderr)
+        report = json.loads(result.stdout.decode("utf-8"))
+        self.assertEqual(1, report["checked_files"])
+        self.assertEqual([{"kind": "credential", "file": name, "line": 1,
+                           "match": FAKE_KEY[:12] + "…"}], report["findings"])
+        self.assertNotIn(FAKE_KEY.encode("utf-8"), result.stdout + result.stderr)
+
+  def test_cli_usage_error_keeps_exit_2_in_any_stdout_encoding(self):
+    for io_encoding in ("utf-8", "gbk", "ascii"):
+      with self.subTest(io_encoding=io_encoding):
+        result = self.run_cli_bytes("/nonexistent-root-for-test", io_encoding)
+        self.assertEqual(2, result.returncode)
+        self.assertEqual(b"", result.stdout)
+        self.assertIn(b"--root must be an existing directory", result.stderr)
 
   def test_commit_identity(self):
     with tempfile.TemporaryDirectory() as directory:
