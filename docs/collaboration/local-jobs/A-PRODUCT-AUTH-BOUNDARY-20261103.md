@@ -1,7 +1,7 @@
 # A-PRODUCT-AUTH-BOUNDARY-20261103 · 核对自建产品的认证复用边界
 id: A-PRODUCT-AUTH-BOUNDARY-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0efa86a814bdde56eaecb9ef7ef8d609ba1e05f2
@@ -33,3 +33,11 @@ result_branch: relay/a-product-auth-boundary-20261103
 读者仅看稿件应能回答“自制收费服务能否直接照搬既有 app-server 登录”“身份登录成功是否就获模型额度权限”“model/list 有模型、或本地 MCP 可用是否证明托管工具也可用”，并知道未明确的资格该到哪个官方入口核查；不要求登录或试跑来完成文稿。
 通过仅表示有限官方事实与修订稿可接收，不证明用户／第三方项目有资格、实际运行成功、法律合规或模型收益，不升级地图实做状态；无证据的变化不制造修订。
 一个 60–90 分钟单元，最多两小时；共享最多 4 并行由原接收端调度，不另起调用。经既有 Workflow 非作者审查、check_repo、check_public、git diff --check 与身份检查，仅推 result_branch 后回 review_ready；不用 accept:auto，不合 main。
+
+## 当前结果
+
+- 已完成 facts.md：给出读者结论、最小修订稿（L117 替换及 L9/L113/L95 连接句）、四处固定原句→官方位置→处置对照、五类入口选择表、会改变选择的接口限制、读者三问与官方核查入口、日期与事实层级、去重与执行范围。核心边界为：既有本地/开源 app-server 认证可继续且建议迁移 SIWC；app-server authentication 从未允许 commercial/hosted；身份登录不等于 plan usage；个人自托管 VM 指南不构成多用户托管授权；model/list 与普通 API/hosted 工具不能直接套用。三视角审查（reader/facts/run）全部通过，openIssues 为空；check_repo 0 errors、check_public 0 findings、git diff --check 通过。只读官方文档，未运行客户端/SDK/模型，未登录或申请资格；仅写 facts.md，未提交、未推送。
+- 产物：[08068d7](https://github.com/dbvv1/a1dbv/commit/08068d7808ca9b57fd899c3acd224882b3ef86d1)，分支 `relay/a-product-auth-boundary-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交 facts.md 并更新本卡状态，按任务要求仅推 result_branch 后回 review_ready；16 页正文是否采用最小修订稿及具体写者与差量由负责人另定。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
