@@ -17,7 +17,7 @@ codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'
 claude --model claude-sonnet-5-5 --effort medium
 ```
 
-Codex 入口说明见本节依据；Claude 的起步方式详见 [Claude 起步](01-agents/claude-code.md#7-推荐起步先原生扩展按需选择)。 **〔当前入口〕**
+上面的 Sonnet 5.5 命令要求 Claude Code v2.1.284+。Codex 入口说明见本节依据；Claude 的起步方式详见 [Claude 起步](01-agents/claude-code.md#7-推荐起步先原生扩展按需选择)。 **〔当前入口〕**
 
 **何时撤回：先辨缺口，再看整项投入。**
 
@@ -30,7 +30,7 @@ Codex 入口说明见本节依据；Claude 的起步方式详见 [Claude 起步]
 
 **Agent 做实现、调查与检查，人核对目标和检查覆盖。** 它可能漏读约束、漏测边界或自报完成；更强模型与更高 effort 也不替代实际验收。风险与把关详见 [09](09-review-and-quality.md)。 **〔跨代保留〕**
 
-**依据**：[研究：采用判断] 默认与角色分档（2026-10-21 核对，未实测）；[一手：独立团队复盘] 审查与协调分档比较（2026-10-22）；[一手：配置入口] [Codex 单次覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)（2026-10-20，未执行）；[研究] 撤回条件与风险把关；核实 2026-10-22。
+**依据**：[研究：采用判断] 默认与角色分档（2026-10-21 核对，未实测）；[一手：独立团队复盘] 审查与协调分档比较（2026-10-22）；[一手：配置入口] [Codex 单次覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)（2026-10-20，未执行）；[一手：客户端版本] [Claude 型号与最低版本](https://code.claude.com/docs/en/model-config#model-aliases)（2026-11-03 复核，未运行验证）；[研究] 撤回条件与风险把关；原核实 2026-10-22。
 
 ## 当前最高水平：为质量缺口分配投入，而不是统一加档
 

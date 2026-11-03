@@ -160,15 +160,17 @@
 
 ## 3.5 DevDay 2026（2026-09-29）的变化 **[一手：learn.chatgpt.com]**
 
-**只按当前任务采用云环境、持续 Agent 或安全扫描。** DevDay 的发布背景见官方记录；模型按 §2，持续任务按 §6，不把发布清单当配置清单。
+**只按当前任务采用云环境、持续 Agent 或安全扫描。** DevDay 的发布背景见官方记录；本地 Codex CLI 的模型配置见 §2，持续任务见 §6。
 
 - **云环境**：发布后，新任务在其文件系统的隔离工作区启动，适合不依赖本机在线的仓库工作
 - **Dots**：有云端电脑、浏览器，也可连接本地电脑；先核套餐、地区、年龄和工作区资格，符合资格仍可能等待 rollout
 - **安全扫描**：先区分 PR Security Review 与 Security Cloud。后者另需扫描资格、GitHub 仓库及兼容云环境
 
+**模型设置按入口区分。** Codex Cloud 不支持修改默认模型；企业模型控件与默认设置不作用于主 dot，dot 委派的 Work／Codex 任务按各自产品的权限与控件核对。
+
 **扫描前核费用。** PR Security Review 消耗所含 Codex 用量或 credits；新建 Security Cloud 仓库／连续扫描按 token 计费，不在套餐所含用量内，免费扫描另有条件；入口记录详见[入口记录](../research/2026-10-10-codex-continuity.md#8-客户端入口资格与安全评审边界)。
 
-**依据**：[一手] [DevDay 官方记录](https://learn.chatgpt.com/docs/whats-new/devday-2026)、[Dots 资格](https://learn.chatgpt.com/docs/dots#access)、[Security Cloud 资格](https://learn.chatgpt.com/docs/security#codex-security-cloud-access-and-prerequisites)、[计费规则](https://learn.chatgpt.com/docs/security/faq#billing)（2026-10-15）；[研究] 采用判断；核实 2026-10-15。
+**依据**：[一手] [DevDay 官方记录](https://learn.chatgpt.com/docs/whats-new/devday-2026)、[Dots 资格](https://learn.chatgpt.com/docs/dots#access)、[Security Cloud 资格](https://learn.chatgpt.com/docs/security#codex-security-cloud-access-and-prerequisites)、[计费规则](https://learn.chatgpt.com/docs/security/faq#billing)（2026-10-15）；[一手：模型边界] [Cloud 默认模型](https://learn.chatgpt.com/docs/enterprise/workspace-model-availability#set-a-clear-starting-experience-for-employees)、[主 dot 与委派任务](https://learn.chatgpt.com/docs/enterprise/dots-admin-guide#models-and-usage)（2026-11-03 复核，未运行验证）；[研究] 采用判断；原核实 2026-10-15。
 
 ## 3.6 从说明到可验证配置（2026-10-11 增补）
 
