@@ -1,7 +1,7 @@
 # A-API-CREDIT-ROUTING-20261103 · 按自动化入口核对赠额与计费
 id: A-API-CREDIT-ROUTING-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fef85514a8f512bac7f5cc059115870f1bb2a533
