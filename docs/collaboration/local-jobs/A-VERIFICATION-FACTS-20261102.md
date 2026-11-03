@@ -1,7 +1,7 @@
 # A-VERIFICATION-FACTS-20261102 · 验证反馈页的 Playwright 官方边界
 id: A-VERIFICATION-FACTS-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/verification.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -36,8 +36,8 @@ result_branch: relay/a-verification-facts-20261102
 
 ## 当前结果
 
-- 完成 A-VERIFICATION-FACTS-20261102 unit 1 官方证据核查：以 @playwright/test 1.64.1（npm latest，v1.64.1 tag cfe490d9，2026-10-14）核 Playwright 用户可见断言、trace 记录范围与失败分析边界，产出 facts.md（差量、证据分层、核实表、关键原文、未核边界、去重关系）。核心发现：trace 默认 off、on-first-retry 只录首次重试且需 retries>0、retain-on-failure 才保留首跑失败、context.tracing 不记录 expect 断言、flaky 默认 exit 0、web-first 断言替代泛化等待、role+可访问名称优先、healer 断言/fixme 细节在 agent 定义源码、DOM 快照按 action 记录。openIssues 为空；未运行浏览器/Playwright/healer/本仓测试，官方机制核查不证明本仓浏览器路径或真实用户任务通过；项目级 playwright.config trace、reporter 单列与 console/请求断言策略未核。
-- 产物：[7e66401](https://github.com/dbvv1/a1dbv/commit/7e66401cbd90430756e0f2e45af113245d9818ec)，分支 `relay/a-verification-facts-20261102`。
+- 按修改要求完成 facts.md 四处定点修正（报告器区分 flaky/skipped、flaky 退出码收窄与配置/CLI 版本归属、发布日改引官方 tag 并限定 10-26 latest 为推断、trace 快照按动作类型且后端状态改为不自动采集）。review pass，issues 为空；check_repo 709 文件 errors []、check_public 1171 文件 findings []、git diff --check 均通过。未运行浏览器/Playwright/healer/本仓测试；openIssues：项目级 playwright.config trace、自定义 reporter 是否保留分类、console/请求断言策略未核。
+- 产物：[7b77255](https://github.com/dbvv1/a1dbv/commit/7b77255b4a11a5edcf7d6923c62759c4984e7178)，分支 `relay/a-verification-facts-20261102`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端提交并以 -c user.name/-c user.email 指定 noreply 提交身份，推送 relay/a-verification-facts-20261102 后回 review_ready；项目级 trace/reporter 配置是否需要另立任务由负责人决定。
+- 下一步：接收端提交并推送 relay/a-verification-facts-20261102 后回 review_ready；项目级 trace/reporter 配置是否另立任务由负责人决定。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
