@@ -1,7 +1,7 @@
 # A-TEMPLATE-EVIDENCE-REUSE-20261103 · 最小包的证据复用一致性
 id: A-TEMPLATE-EVIDENCE-REUSE-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/long-tasks.md@b1427c5e4bfb172d1dd9e39b424c05514115444d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -29,4 +29,9 @@ result_branch: relay/a-template-evidence-reuse-20261103
 最多两小时，共享最多 4 并行由原接收端调度，不另起调用。check_repo、check_public、git diff --check 与提交身份检查通过后仅推 result_branch，回 review_ready；不用 accept: auto。
 
 ## 当前结果
-尚未领取；独立建议任务输入齐备，产物待交；同文件旧写者归属仍未解除。
+
+- 提交独占建议 proposal.md：把 task-decisions §7“旧版通过不沿用”改为有条件复用判定（原验收条件仍适用且受检代码、直接消费者、相关依赖环境可核对、未变或变化已核实不影响结论时复用并注明原版本与受检范围；受影响或影响不明须复验；不把复用记为新运行），附三个语义例子、固定来源与归属前提。check_repo 722 文件 0 错误、check_public 1183 文件 0 finding、git diff --check 通过，产物 UTF-8/LF、无本机路径与外链。openIssues 为空；模板未改、未安装、未采用，旧写者是否退出仍未知，该归属前提写于产物中。
+- 产物：[2a50a9e](https://github.com/dbvv1/a1dbv/commit/2a50a9e65c0cd5fcb251500a05ffbe5fc3aef78f)，分支 `relay/a-template-evidence-reuse-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：待负责人核清旧写者（dot-a/skills-round-20261029@017a3363）归属并决定是否采用；模板与页面的实际修改不由本单元执行。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
