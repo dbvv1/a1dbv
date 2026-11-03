@@ -1,7 +1,7 @@
 # A-MODEL-ENTRY-CONSISTENCY-20261102 · 已接收入口事实的跨页一致性
 id: A-MODEL-ENTRY-CONSISTENCY-20261102
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 99c1c1fc6114188d9a18d05f628f6f08e368ac00
