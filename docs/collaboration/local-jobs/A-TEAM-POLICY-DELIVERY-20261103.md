@@ -1,7 +1,7 @@
 # A-TEAM-POLICY-DELIVERY-20261103 · 判断团队策略是否实际到达
 id: A-TEAM-POLICY-DELIVERY-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 17c984ae31ac532fe69bce0f89e72572f6651545
