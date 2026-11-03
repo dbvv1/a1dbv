@@ -56,7 +56,7 @@
 | 首次失败 | 初版脚本 `e0ecd46…` 断言整包相等，在 medium 失败：`AssertionError: medium`；改为“所有上游字段精确相等＋唯一新增 `_meta` 与工具定义一致”后通过 | `receipt.json` 的 `preliminary_attempt` |
 | 安装准备 | 3 次失败：npm 将 `/dev/null` 同时当 global/user 配置、清空代理后 `EAI_AGAIN`、缺平台信任链时 `SELF_SIGNED_CERT_IN_CHAIN`；最终 12 个 registry 包，`--ignore-scripts`，未执行安装脚本，TLS 校验始终开启 | 同上 `installation_history` |
 | 官方恢复语义 | 预算只覆盖 `content` 文本与恢复提示，不含 structured output；`full` 是包装入口的布尔参数，位于 `tool_input` 外；缓存命中不调后端，未命中会带原参数重执行后端并跳过压缩，可能重复副作用；缓存为会话内 5 分钟／32 条／32 MiB，不保证仍可用；写操作不得盲重试；字符不是字节或 token | `atlassian-labs/mcp-compressor` commit `7efc49552101005e93e12588c669d68b9b3c5f7c` 的 `docs/usage/shrinkfit.md` |
-| 报告尾部缺口 | 缩短文本仍完整保留 §5 开头“本轮未饱和，以下缺口按‘未读到’处理”与 §6“不安装／不运行／不登录候选”整句；实际缺失为 L805 括注“URL 未保留，无法补读”（该行仅保开头）、L808“528 项均未安装、未运行、未调用”、L809“摘要／作者自报不能当机制或独立结论”（后两行被省略标记替代） | 固定报告 §5／§6 及缩短文本 |
+| 报告尾部缺口 | 缩短文本仍完整保留 §5 开头“本轮未饱和，以下缺口按‘未读到’而非‘没有内容’处理”与 §6“不安装、不运行、不登录任何候选；不调用模型网关；不使用凭据；不启动浏览器”整句；实际缺失为 L805 括注“URL 未保留，无法补读”（该行仅保开头）、L808“528 项均未安装、未运行、未调用”、L809“标‘摘要’的条目不能当当前机制；标‘作者自报’的数字不能当独立结论”（后两行被省略标记替代） | 固定报告 §5／§6 及缩短文本 |
 | 未验范围 | 缓存命中／驱逐、写工具、原生宿主实际交给模型的字段、模型选工具成功率、token／费用／耗时、2026 协议、动态工具、多后端、媒体、TOON；单服务／单文件／单版本，不能外推所有 MCP 收益 | `README.md`、`receipt.json` |
 
 读取范围：固定 commit 的五份实验文件（`README.md`、`receipt.json`、`trial.py`、`runtime/package.json`、`runtime/package-lock.json`）只读核对；未执行 `trial.py` 或其子进程，未下载／安装／改 MCP 配置。官方源码只读固定 commit 的 `docs/usage/shrinkfit.md`。
@@ -93,8 +93,9 @@
 
 - `python3 scripts/check_repo.py`：通过，`checked_files=734`、`errors=[]`。
 - `python3 scripts/check_public.py`：通过，`checked_files=1200`、`findings=[]`。新文件先用 `git add -N` 纳入 `git ls-files` 再扫描，扫描后已 `git reset` 撤回，不改变工作树。
-- `git diff --check`：通过；本文件 100 行、UTF-8／LF、无 BOM。
+- `git diff --check`：通过；本文件 101 行、UTF-8／LF、无 BOM。
 - 关键数字复核：用只读脚本对照固定 `receipt.json` 与 `trial.py`，14 工具／12,579、2 工具／2,331、schema 2,021（medium／max 各一次供 4 次 invoke，medium-shrink 一次供 5 次含 full 恢复，direct 无额外 schema 调用）、初始化 145→194、shrinkfit 目录 2,712、文本 9,072、整包 152,111、后端 `read_text_file` 显示元数据 971（不含初始化、目录与 schema）、Python 3.12.14、恢复 SHA-256 等断言全部一致。
 - 尾部缺口复核：按负责人反馈逐项对照固定报告 L805／L808／L809；缩短文本保留 §5 开头与 §6 整句，L805 括注、L808、L809 为实际缺失，L805 仅保开头、后两行由省略标记替代。未重跑 shrinkfit，未把仍保留的事实写成丢失。
+- 二次非作者只读核对：固定 `receipt.json`／`trial.py`／`sources.md`／官方 `shrinkfit.md` 与本文数字、schema 调用次数、元数据对象、缓存与恢复语义逐项一致；只把 §5 表内两处截断引文补全，未改其他事实。
 - 实际 diff 审查：只改本文件，未改 `docs/04-mcp.md`、`docs/03`、`docs/13`、实验、模板或依赖；未提交、未推送，无提交身份变更。
 - 首轮 101 行产物与审查自报保留在原提交历史；本次按负责人三组事实修订后重新核对，不把 `pass=true`／`fixRounds=0` 当完整验收。
