@@ -1,7 +1,7 @@
 # A-MODEL-ENTRY-CONSISTENCY-20261102 · 已接收入口事实的跨页一致性
 id: A-MODEL-ENTRY-CONSISTENCY-20261102
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 99c1c1fc6114188d9a18d05f628f6f08e368ac00
@@ -33,3 +33,8 @@ result_branch: relay/a-model-entry-consistency-20261102
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
 - 下一步：页面负责人按 2 条未关闭审查意见调整候选后验收；接收端提交时须用合规的 -c user.name/-c user.email 身份。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+- 接收 [2d096b3](https://github.com/dbvv1/a1dbv/commit/2d096b3591347758d80a4a1f754af06e2efcae31) 的两项事实差量：Codex 深页本地／Cloud 模型入口歧义、02 中 Sonnet 5.5 命令的 Claude Code v2.1.284+ 前提。页面负责人逐项回核官方来源、经非作者独立审查后，将最小修订发布并逐字回读为 [c1aa6a48](https://github.com/dbvv1/a1dbv/commit/c1aa6a4802a9d8ce87bdeb8542c66277d1fb3381)；model-roles 已有相应前提，不改。
+- 原报告的两条 openIssues 属实；不采纳由子命令参数表未列 `--model`／`-c` 推导的全局不支持断言，也不复制冗长依据链。最终正文分清本地 CLI、Cloud 默认模型与主 dot／委派 Work／Codex 控件；主 dot 分界由官方管理文档补强。此为负责人另行最小修订，不称原候选全量审查通过。
+- 上述原回传记录保留；其中“未提交未推送”是原模型阶段自述，正式产物已由接收端发布到所列结果提交。页面修订的文档、公开内容、身份及空白检查通过；接收仅限所核官方事实与跨页一致性，未运行客户端、模型或账号验证，不变更默认模型／effort 推荐，不接收旧 MODEL-EFFORT 或 Agent reader 任务，不升级地图。
