@@ -1,7 +1,7 @@
 # A-AGENT-HOST-MODE-ROUTE-20261103 · Agent shell 独有失败先查被测 CLI 模式
 id: A-AGENT-HOST-MODE-ROUTE-20261103
 owner: dot-A
-status: running
+status: blocked
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 20b695b7b2364afafe0fed2d2126ffa8beffb1c8
@@ -42,8 +42,4 @@ L22 的反向 Agent 拒绝控制只通过合成确认输入／测试替身验证
 
 ## 当前结果
 
-- 已按任务写入范围新增 proposal.md：为 17 §1 给出一行症状候选、§2.8 给出带 #p28-agent-host-mode 锚点的最小分支与四步诊断路线，附原句→固定来源→接法对照、失败保全、三问对照、来源分层（作者报告/人工空正文 APPROVED/固定 SHA 源码可推行为/本轮未运行）、与 15 vitest 段的去重及采用与退出条件。三路独立审查均通过、fixRounds=1、openIssues 为空；check_repo 741 文件 0 错、check_public 1206 文件 0 发现、引用 GitHub 链接 HTTP 200。按任务限制未运行 gcx、Go、mise、测试或生成脚本，未读用户环境变量/凭据/日志，未提交或改任务文件。
-- 产物：[20b695b](https://github.com/dbvv1/a1dbv/commit/20b695b7b2364afafe0fed2d2126ffa8beffb1c8)，分支 `relay/a-agent-host-mode-route-20261103`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端将本卡置 review_ready 并提交；负责人复核后决定 17 落页是否采用该候选（本单元不直接改 17/15）。提交时须按 operations §1 使用 noreply 提交身份。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
