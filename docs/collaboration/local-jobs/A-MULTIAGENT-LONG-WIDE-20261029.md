@@ -1,10 +1,10 @@
 # A-MULTIAGENT-LONG-WIDE-20261029 · 多代理与长程任务广扫
 id: A-MULTIAGENT-LONG-WIDE-20261029
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 74be0d09b201cc0aacf925625899cf2d9bd03d3d
+base_ref: a37326182cd65de837101d68d2596cbe8042a119
 result_branch: relay/a-multiagent-long-wide-20261029
 
 ## 目标
@@ -38,6 +38,17 @@ result_branch: relay/a-multiagent-long-wide-20261029
 2026-11-02 用户明确重新安排本卡，撤销本卡原两小时取消安排；其余已取消单元不因此恢复。输入变化是本单元时限改为 4 小时、按新流程批量核链接，以及对照最新 main 去重；广扫问题和独占产物不变，停止新增“接收上游补丁并用调用方验证”的同类小实验。
 先核本卡原调用、工具及登记进程确已结束；不能确认则维持隔离并报告具体缺证，不启动第二个调用。确认后沿原卡、原结果分支接续；按现行接收协议复用已有完成的收集，重核日期／链接并按本轮分组追踪，不把已完成候选重新从零搜一遍。不读取私人会话或账号用量。
 先交最强的新发现及可实际试用入口，供负责人从两卡总产物选 3 项真实试用并更新 13；本卡仅收集，不提前宣布采用或地图升级。
+
+### 已交 sources 的定点订正
+本次沿原 result_branch 从 a37326182cd65de837101d68d2596cbe8042a119 仅订正已交 sources；先核原调用、工具与登记进程均已结束且该产物单写，缺证保持隔离、不启动调用或改旧文件。保留首轮提交／未读来源／未实跑与审查失败记录，不重跑广扫、不续新一轮四小时、不另派任务、不改页面／模板或运行候选。
+1. L922 的 Entire 归属改为旧扫描保留候选、inbox 后列 ⛔（Git 交接保留、不导入真实会话）；Omnara 只有同一 HN 114 分而无新讨论链接，不能写因新讨论重现。保原取舍边界，不试装。
+2. T8 不再声称本仓无 Ticket／Mandate 或推荐作第三个全新试用：对照 `docs/decisions/long-tasks.md` 与 `experiments/deepseek-superagent-receipt/README.md`，已有核心／SQLite、462 官方核心测试与真实仓库消费；未启动 DSH／真实模型、账号或外发的边界保留。
+3. T3 的独立验收契约、T11 的返回单代理条件不是本仓首次缺口：分别对照 `templates/long-task/README.md`、`docs/08-multi-agent.md` 和 `long-tasks.md` 已有做法。Factory／Polylane 可保具体产品实践，不把同一方法包装成新增；Qwen、Beads、Cockroach 同样只保可核的新数据／具体实现。
+4. T10 的“同预算”标题与正文改为同 50 任务、相同环境／评分但不同费用。按 [Vals 原文](https://www.vals.ai/blogs/multi-agent-vibe-code-bench)，Sol max 单代理 $4.82/app 与 medium 团队 $3.07/app，89.0%／84.9% 跨 effort 差异 p=.08 不显著，各配置一次；不据此推出等预算单代理优势或任意开发任务结论。
+5. T13／速试表的 CWC 仅是教学源码参考：固定 `anthropics/cwc-long-running-agents@ad107a974bced5244f74dd283dbf2bfd3baee3a1` 的 README、`claude-code-config/.claude/settings.json`、同目录 hooks/verify-gate.sh／track-read.sh 和 agents/evaluator.md 表明，verify-gate 仅拦 Write/Edit、不核结果内容／passes／验收 ID，任意匹配读取可解锁其他结果；track-read 是 PreToolUse，路径入记录不等于读取成功／理解；evaluator 有 Bash，非硬只读。独立 all-true 要 wrapper 在 PASS 后更新，示例仍允许 builder 更新，不能称强制业务验收门。
+6. T6 与速试表统一为 AgentScope Java 集成设计，不能把最小 HarnessAgent＋task_id 写成默认双节点互斥、杀 worker 自动移机和业务验收达标才 COMPLETED。按 `agentscope-ai/agentscope-java@55013a429380e91f8b498a31d0e948b38af1e7c1` 的博客任务编排 §2.4.2／§2.6.4、WorkspaceTaskRepository、TaskRecord 与 SessionTurnGate 源码，列共享状态／工作区、调度租约、业务幂等与验收的前提；分清本地 sticky／孤儿 FAILED 与远程协议恢复、future 正常结束与业务完成。保留已存在的持久元数据／游标和分布式锁扩展，不反写框架没有这些能力，也不无条件保证故障下互斥。
+7. 统计改为可复算口径或明确原执行者自报：951 行、15 优先组、34 条不可读渠道；§4 有 623 数据行（含重复／旧来源），全文 679 次显式 URL／663 精确唯一 URL，§4 为 638 唯一 URL。“661 候选／654 已核链接”缺定义及逐链接回执，不能当全量正文核实；不为补数字重扫全部入口。
+仅逐字回核上述受影响段及其原出处，保原来源日期／版本和未验证范围；非作者定点核七组纠错后回 review_ready。最终接收仍不等于全部 15 组、全部记录正文、产品可靠性或真实采用通过。
 
 ## 当前结果
 
