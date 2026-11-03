@@ -1,7 +1,7 @@
 # A-INSTRUCTION-FILES-READER-20261103 · 用已有项目指令完成文档小任务
 id: A-INSTRUCTION-FILES-READER-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 7572c1183a382d3792641e428935ee178223783f
@@ -57,3 +57,8 @@ CLAUDE.md 的 “Do not install or download anything just to run this check” �
 2026-11-03，负责人回读 7572c118 仅含三个授权文件，首轮 u1 的 23046 字节完整前缀保留。云端隔离环境复核 MkDocs 1.6.1 build exit 0，生成 usage 中两条整句、单标签及 #using-tags 互链正确；已有 jrnl 4.6 依赖、未新安装，临时 config／journal 且 HOME／XDG 全部隔离，两条文案分别写入及 @beach／@cafe JSON 查询均 exit 0，$5、反引号、apostrophe、#／& 字面保留，查询未改 journal／配置。此为云端静态文档与 CLI 链路，不是本机 Windows／Poetry 锁环境／Pa11y 完整验收。
 21b5f4ab 是页面提交，不是全文 SHA-256；其 19328 字节／7b8c59ff 指纹与公开回传报告相符，684e5bcf 页为 20025 字节／c4e5a91d，是后续版本而非首轮输入。负责人分别独算页面，但未拿到本机输入原件；实际解析提交与启动加载仍缺独立回执，不倒填原记录。不能由版本不同推成原指纹冲突。
 七项 cause 不能统算页面缺陷：缺输入回执属证据，依赖缺失／禁装属环境与授权，目标项目规则冲突属优先级处理，agents-md-lint 非项目依赖及具体文案位置需按实际任务判断；非交互工具入口的旧页缺口已另修，不能据后页倒推首读。已验文档与行为范围保留，但永久禁装条件句仍须上方定点返工，当前不整体验收、不升级地图。
+
+## 最终有限接收
+2026-11-03 负责人独立回读 8d9895233ae9c8f1e6c878eb5461c0be13b0d0fd：仅 CLAUDE.md 与 u1 两授权文件，CLAUDE 实际 +10／−7，读者自报 +7／−5 不准确，以本补充纠正、原文保留；前两轮 u1 的 41222 字节精确保留，纯追加 12347 字节。永久禁装改成当前任务授权条件，删去 node_modules 目录存在性的硬条件，保留四项检查前提，本轮实际未安装。
+usage、运行代码、锁文件、MkDocs 配置与主题对象未变，可复用 7572c118 的云端两次合成写入／查询与 MkDocs build exit 0。accepted 仅限本次真实文档修订和既有 CLAUDE 维护；本机 Windows 完整 CLI／Pa11y、独立宿主启动加载仍未验，原输入指纹缺口和返工记录保留，不等于新读者、共享 AGENTS 全验或地图升级。
+末轮三项卡点另分类：未提供可直接替换成稿属于正常写作判断，不是页面必须补模板；无 slash 已有非交互分支但宿主加载仍待验；解析字段缺失属输入回执。无需为这些事项再派 reader；后续自然任务补真实采用与未验路径，不以 accepted 扩大验证范围。

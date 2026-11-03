@@ -1,10 +1,10 @@
 # A-AGENT-CHOICE-READER-20261103 · 选入口完成真实 CLI 小任务
 id: A-AGENT-CHOICE-READER-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
-base_ref: 787513136a7ad83441f376d4a08960d2197ef19e
+base_ref: 9340d813714bd9aa761de602a9cfcc3a2004a036
 result_branch: relay/a-agent-choice-reader-20261103
 page: docs/01-agents/README.md@main
 
@@ -32,13 +32,11 @@ page: docs/01-agents/README.md@main
 保留首轮结果，不自动再派盲读或换页重做；通常一个 60–90 分钟单元，最多两小时，未完成写清恢复条件。
 
 ## 修改要求
-沿原 result_branch 从 787513136a7ad83441f376d4a08960d2197ef19e 定点修订；先确认原调用、工具和登记进程全部退出且原 worktree 单写者。缺证维持隔离，不启动第二个调用或改旧文件；不新派 reader。保留首轮和第二轮提交／记录，只追加修订与更正。
-1. 按真实参数消费和最终 postconfig_cmd 优先级修互斥检测，不再靠忽略值消费的 raw token 预扫描叠例外。以下三个 nargs=2 值场景在基线 90de4948 均 exit 0，655d8a9 与 7875131 均误报 exit 2：`--import --config-override editor --format`、同句末值 `--format=json`、`--config-override editor --import --format json`。其中 --format／--import 是 config_override 的值，不能当独立选项。
-2. `--import --list --format json` 与 `--import --ls --format json` 应保留基线的后置 list 覆盖、exit 0；反向 `--list --import --format json` 基线失败，候选应明确拒绝，不能用“含 list 就跳过”绕过互斥。以实际解析／命令选择语义实现，并补正反向回归。
-3. 继续保住上轮已修的原 5 错误组合、5 正常路径、5 缩写／别名、help/version 的基线参数顺序与优先级，以及两条 `--` 后合法正文／检索；同一套回归对照原基线／修前候选／新候选，失败原因不能是启动或缺依赖。
-4. 原 u1 把部分“基线 exit 0”误标为 655d8a9，追加更正：真正基线是 90de4948，655d8a9 和 7875131 已有相同残余反例。不得写成 7875131 新引入，不覆盖原记录。分别列真实通过、失败、跳过、未运行，不以 taskDone 或测试总数概括通过。
-原 page 解析 SHA／全文指纹原件已确认缺失且无法恢复，停止索求，不读私人会话或当前页回填，也不重跑首次阅读。当前页已有未知写者处置及缺依赖禁装指引，不追加同义页面要求；这不能倒推首轮读过哪些内容。#2120 沿用负责人 22:17 UTC 的 open／未合观察，不绕网络复查。
-原写域、no-install、禁全局／权限变更、合成数据、公开扫描和单写者限制不变；poetry／tox 缺依赖继续保留未跑。只修原任务实现与回归、仅推原结果分支，交非读者定点复验后回 review_ready；不扩新实验或模板。
+沿原 result_branch 从 9340d813714bd9aa761de602a9cfcc3a2004a036 只修一个已复现的 help 参数顺序回归；先确认本次原调用、工具及登记进程全部退出且原 worktree 单写者。缺证保持隔离，不另开并发调用或新任务，不新派 reader。保留全部原提交与首轮／返工记录，仅追加本次修订与纠正。
+必修：`--format whatformats --help` 在原基线 90de4948 与修前 7875131 为 exit 2，9340d8 变成 exit 0；恢复按真实参数顺序处理此前已消费的非法格式。反序 `--help --format whatformats` 应保持 exit 0，未知格式在 version 前仍 exit 2；--help 与 -h 用同一语义。保住 `--import --format json --help` 的原有 help 优先级，不能在 help action 里直接套用包含最终互斥的完整检查。
+保留当前按 argparse 实际解析／action／最终 postconfig_cmd 的修法，将格式值检查与最终命令互斥分开；只校验 help 之前实际消费并记录的格式值，不恢复 raw token 预扫描。复用本轮已有 31 场景、旧 26 项与正反序控制，不无限扩反例池或同义页面指引。
+`--format whatformats --badoption` 及反序均仍 exit 2 且无 journal 改动，只是诊断选择不同，本轮列非阻断差异，不要求逐字还原。任务不能以该项来掩盖上面的 exit 2→0 兼容回归，也不把两类差异都算必修。
+原写域、no-install、禁全局／权限变更、合成数据、公开扫描和仅推原结果分支不变；poetry／tox 未跑保留。实际 page 解析 SHA／全文指纹原件无法恢复，停止索求、当前页回填或重跑首次阅读；#2120 保原 22:17 UTC 观察，不绕网络重查。非读者定点复验后回 review_ready，分开有限通过、非阻断差异、失败与未验，不用 taskDone 概括整体验收。
 
 ## 当前结果
 
@@ -54,3 +52,6 @@ page: docs/01-agents/README.md@main
 
 ## 后续独立接收补充
 2026-11-02 23:25 UTC，负责人在隔离云端对 90de4948、655d8a9、7875131 三树分别运行同一 26 组真实 CLI：原 19 组在 7875131 已符合有限预期，但以上值消费与后置 list 兼容反例仍在；它们并非本轮新引入。原输入无法恢复仍是证据缺口，故不整体验收、不升级地图，沿原单元修订。
+
+## 第三轮独立接收补充
+2026-11-03 负责人独立在 90de4948、7875131、9340d8 三树各跑同一 31 场景：旧 26 项在 9340d8 均符合有限预期，值消费与后置 list 已修。新暴露的非法格式在 help 前 exit 2→0 是唯一阻断；两个 badoption 顺序只改错误诊断，均 exit 2、无 journal 改动，非阻断披露。非作者独审同意上述分级；原卡继续定点返工，不 accepted，不新增页面差量或 reader。
