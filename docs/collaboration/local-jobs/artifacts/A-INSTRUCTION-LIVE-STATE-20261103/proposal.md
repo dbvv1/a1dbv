@@ -13,12 +13,12 @@
 | 可见状态 | 判断依据 | 下一步 |
 |---|---|---|
 | 未启用 | 权威来源显示该服务或入口从未开启，预期位置也没有对应检查 | 按说明中已确认有效的入口执行；说明未写明或需要改换合并方式时，交负责人确认，不自行改用旁路；不伪造该服务的提交动作 |
-| 暂停 | 权威来源显示该入口曾被启用且现已关闭，例如具名规则集 `enforcement: disabled` 且有此前启用的记录；单独 `mergeQueue` 返回 `null` 只说明原生队列未配置，不能判定暂停 | 在说明中标注暂停范围；由负责人修正说明或确认原授权内仍有效的路径。原入口的评论／标签此时通常不产生队列检查，但无检查不能反过来证明暂停 |
+| 暂停 | 该服务／入口的直接权威状态或负责维护者的明确说明显示其曾启用、现已关闭，并写明时间与范围；具名规则集 `enforcement: disabled` 只说明该规则集不强制，GitHub 原生 `mergeQueue` 返回 `null` 只说明原生队列未配置，两者都不能单独推出第三方队列暂停 | 在说明中标注暂停的时间、范围；由负责人修正说明或确认原授权内仍有效的路径。原入口的评论／标签此时通常不产生队列检查，但无检查不能反过来证明暂停 |
 | 排队 | 有该服务的排队记录或队列检查 | 按已有说明等待或跟踪；不重复提交 |
 | 失败 | 有失败记录或错误回执 | 先区分瞬时失败与权限、审批或保护规则拒绝；只有能确认可重试的瞬时失败才重试 |
 | 未知 | 读不到状态、无权限或来源不可读 | 保留未知和阻塞，记录已查入口，交负责人；不反复执行，也不自选有副作用的替代路径 |
 
-**`mergeQueue` 返回 `null` 只证明没有原生队列，不能单独作为暂停证据。** 它只说明原生合并队列未配置，无法区分“从未启用”和“曾启用后关闭”；使用 Trunk 等第三方队列时它也始终为 `null`。它可作为“未启用／未知”的补充证据，暂停则需权威来源显示入口曾被启用且现已关闭（如具名规则集 `enforcement: disabled` 且有此前启用的记录）。
+**一个查询只回答它自己的对象，不能拼成外部服务的启停结论。** 具名规则集的 `enforcement` 只说明该规则集当前是否强制；GitHub 原生 `repository.mergeQueue` 返回 `null` 只说明原生队列未配置，既不能区分“从未启用”和“曾启用后关闭”，也不能判定 Trunk 等第三方队列的启停。第三方服务的暂停要看该服务／入口的直接权威状态或负责维护者的明确说明，并写明时间与范围。
 
 **入口无回执时先查状态，不把沉默当暂停。** 预期检查没有出现、评论或标签没有反应，可能是未启用、暂停、排队、失败或入口本身不对；只有权威状态能区分。无法区分就记未知，不靠等待时间、文档措辞或反复执行来“试出来”。
 
@@ -32,7 +32,7 @@
 
 现页已有“代码与说明冲突”和“命令失效”的处理，但都假定问题能从仓库内观察到。补充分支缺的正是另一种情况：**代码和文件都没变，仓库外的活动状态变了。**
 
-- 第一步写“先看项目的 CI、包配置和已有指令，填入实际能用的入口”，随后是“命令从当前项目复制并试跑；版本值指向配置，少维护一份会过期的副本。”试跑能发现报错，但发现不了“命令成功返回却无人处理”的暂停态；从 CI／包配置也读不出队列或规则集的活动状态。
+- 第一步写“先看项目的 CI、包配置和已有指令，填入实际能用的入口”，随后是“命令从当前项目复制并试跑；版本值指向配置，少维护一份会过期的副本。”试跑能发现报错，但发现不了“命令成功返回却无人处理”的暂停态；从 CI／包配置也读不出队列、规则集或第三方服务的活动状态。
 - “何时不适用，怎么知道该改了”写“代码与说明冲突：先核当前任务、版本配置和相关验收。路径或命令的旧描述已失效，就修说明；仍有效的目标、兼容或安全契约未被实现，就修代码。不要把‘代码总优先’设成全局规则……”这只覆盖代码与说明之间的偏差，没有覆盖两者都与外部现状不符。
 - 同节“已有稳定配置：只修具体缺口。命令失效、模块边界变化或新任务暴露遗漏时，同次更新……”没有区分“命令写错”和“入口被暂停”；“稳定配置”也可以在服务暂停时保持文本稳定。
 - [`docs/18-team-adoption.md`](../../../../18-team-adoption.md) 的“仓库级……进版本控制，像代码一样评审”和“托管下发不等于安全边界”已经说明文本评审不等于执行状态，但没有给出单次操作前怎样读状态、读不到怎么办。
@@ -52,7 +52,7 @@
 
 ### 暂停稿：三处改的是入口说明，安全限制仍在正文
 
-75873 正文标题为“chore: Document Trunk pause”，说明根指令原先要求“所有合入 `master` 都走 Trunk 合并队列、禁止 `gh pr merge`”，但作者称“Neither is true right now”，Trunk 使用已暂停且“Trunk merge”规则集已禁用。三处修改与恢复稿一一对应：
+75873 正文标题为“chore: Document Trunk pause”。维护者在正文明确写 “We've paused our use of Trunk, and the "Trunk merge" ruleset is disabled.”（2026-07-31；范围是 PostHog 对 Trunk 的使用，具体分支与执行者覆盖未说明）。这是对第三方服务状态的直接说明；本卡只读该公开正文，没有独立运行核验。同正文另列规则集、原生队列与合并方法三类观察，它们各回答自己的对象，不能互相替代。三处修改与恢复稿一一对应：
 
 | 位置 | 暂停稿写成 | 恢复稿恢复为 |
 |---|---|---|
@@ -70,20 +70,20 @@
 
 Skill 文件仍未改动。恢复稿写：“`.agents/skills/merging-prs/SKILL.md` needs nothing. #75873 deliberately left it alone and only flagged it stale inline, so reverting drops the stale note and the skill is already written for the Trunk flow.” 所以“Skill 注释移除”指根文件里那条过时说明随 revert 移除，不是另改了 Skill 正文。作者说明为“ahead of the re-enable”而 revert，并称 `AGENTS.md` 回到“byte-identical known-good state”；按提交比较，被 revert 的三处 hunk 与暂停提交的父提交 `0fed8417` 相同；整份文件并非 byte-identical——同期其他提交在 `AGENTS.md` 第 181 行改过 Frontend quill／LemonUI 一段，`d9e41684` 保留了那处差异。
 
-**76456 的合并记录能说明什么、不能说明什么。** 该 PR 的 `merged_by` 是 `trunk-io[bot]`，作者在讨论中评论过 `/trunk merge`，这说明这次合入本身由队列路径处理；但正文把恢复定位为“提前为重新启用队列恢复指令”，文档合入是仓库文本变化，不等于规则集在所有分支、所有执行者上已持续生效，更不等于今天仍是这样。该 PR 还改了 desktop 上传门控，那是第二题，本卡不展开，也不审其 CI 收益。
+**76456 的合并记录只说明这一次历史合入所走的路径。** 该 PR 的 `merged_by` 是 `trunk-io[bot]`；[官方 bot 评论](https://github.com/PostHog/posthog/pull/76456#issuecomment-5160877534)报告合并成功并链接其队列页面（该评论 `created_at` 为 2026-08-02T23:32:55Z，`updated_at` 为 2026-08-03T01:22:28Z，与记录的 `merged_at` 2026-08-03T01:22:27Z 对齐；本卡不访问所链 `app.trunk.io`）。这两项可作该次合入经 Trunk 路径的旁证。它们都不证明规则集或服务在合并前后持续启用，更不证明当前状态。正文把恢复定位为“tied to re-enabling Trunk”“ahead of the re-enable”；文档合入是仓库文本变化，与实际服务启停分开。该 PR 还改了 desktop 上传门控，那是第二题，本卡不展开，也不审其 CI 收益。
 
 ## 四、作者自报与未知边界
 
 **作者自报（只按自报记录，不复算）：** Twixes 写自己在当天一个 PR 上“burned about 45 minutes on the documented path: two `/trunk merge` comments and the `trunk-merge-queue-submit` label, all silently ignored. No `Trunk Merge Queue (master)` check run ever appeared and the bot never replied. `gh pr merge --squash` then merged it immediately.” 这只能说明作者当时的操作与观察；本卡没有复跑，也没有把 45 分钟当作可复核的测量值。
 
-**“无回执”不是暂停的证据，“作者查到的状态”才是。** 同一正文列出的核查是：`gh api repos/PostHog/posthog/rulesets` 显示“Trunk merge”为 `enforcement: disabled`，其余规则集仍 active；`repository.mergeQueue(branch: "master")` 返回 `null`；仓库设置为 `allow_squash_merge=true`、`allow_merge_commit=false`、`allow_rebase_merge=false`；`gh pr merge --squash` 当天合入了一个 PR。这些是作者自报的查询结果，写在公开 PR 正文中，本卡没有调用这些接口独立复核。即使如此，判断暂停也应指向具名规则集的 `enforcement: disabled`，而不是原生 `mergeQueue` 为 `null` 或“机器人没回复”。
+**“无回执”不是暂停的证据；本例的暂停依据是维护者对服务的明确说明。** 同一正文把几类信息分开列出：[PR 75873](https://github.com/PostHog/posthog/pull/75873) 维护者关于 Trunk 的明确说明——“We've paused our use of Trunk”；规则集查询——`gh api repos/PostHog/posthog/rulesets` 显示“Trunk merge”为 `enforcement: disabled`，其余规则集仍 active；GitHub 原生队列查询——`repository.mergeQueue(branch: "master")` 返回 `null`；合并设置——`allow_squash_merge=true`、`allow_merge_commit=false`、`allow_rebase_merge=false`；以及 `gh pr merge --squash` 当天合入了一个 PR。这些是作者自报的查询结果，写在公开 PR 正文中，本卡没有调用这些接口独立复核；维护者说明同样只是公开正文中的自述，本卡没有独立运行核验。三类状态对象不能互换：`enforcement: disabled` 只说明该具名规则集不强制；原生 `mergeQueue` 为 `null` 只说明原生队列未配置，不能判定 Trunk 等第三方队列启停；作者报告原生 `mergeQueue` 为 `null` 这一点也只是本例的自报。暂停依据取维护者的直接说明，不取规则集状态、原生队列返回值或“机器人没回复”；当前状态未知。
 
 **保留未知，不拿静态文案、时间经过或沉默代替：**
 
 - 暂停的起止时间、覆盖的分支与执行者范围未知；本卡只固定了两份 PR 的合并时间，未还原完整时间线。
 - 作者列出的规则集、原生队列与合并方法状态是否仍成立未知；本卡未调用规则集、mergeQueue 或仓库设置接口。
 - 45 分钟、两次评论和一次贴标是否为完整操作记录未知；未复算，也不据此推断团队影响。
-- 76456 合并后规则集 enforcement 是否持续开启、当前是否仍启用未知；按任务边界，本卡不调查现在 PostHog 该怎样合并。
+- 76456 合入后 Trunk 服务与规则集 enforcement 是否持续启用、当前状态未知；按任务边界，本卡不调查现在 PostHog 该怎样合并。
 - `AGENTS.md` 在各类客户端中的加载与缓存行为未核；文档合入只证明仓库文本改变，不证明每个会话已读到新文本。
 - desktop 上传门控是否正确、是否带来 CI 收益未审；它是 76456 的第二题。
 - 没有读者实测、没有页面采用、没有部署或队列实跑。
@@ -92,22 +92,22 @@ Skill 文件仍未改动。恢复稿写：“`.agents/skills/merging-prs/SKILL.m
 
 ## 五、逐题回答（供非作者复核）
 
-1. **文件与静态检查正确，能否证明队列在工作？** 不能。75873 明确是“Docs only. No behavior change, no code touched.”，测试栏写“Nothing to test automatically, this is a markdown-only change.”，通过的是 `hogli ci:preflight --fix`（以及 pre-push 的 `--strict`）这类文本与格式检查，不会查询队列、规则集或合并设置。真正指向状态的是作者另行列出的规则集与合并设置查询（`mergeQueue` 只说明原生队列未配置）；静态检查只证明文本和工具链，不证明外部服务。
-2. **没有机器人回执，能否证明暂停？** 不能。没有检查出现、评论或标签无反应，可能是未启用、暂停、排队、失败、标签未被处理、权限不足或机器人故障，单凭沉默区分不了。本例的暂停依据是作者自报的 `enforcement: disabled`（`mergeQueue` 为 `null` 只说明原生队列未配置，`gh pr merge --squash` 能合入说明该规则当时未拦截），而不是“机器人没回复”。
-3. **8-03 的合并证明了什么？** 证明恢复文档已合入仓库，`AGENTS.md` 的三处 hunk 回到暂停前文本（整份文件并非 byte-identical，见上）；合并记录为 `trunk-io[bot]`，作者评论过 `/trunk merge`，说明这次合入走了队列路径。它不证明规则集对所有执行者、所有分支持续生效，也不证明当前远端开关仍开启，更不证明 desktop 门控正确。恢复稿正文自己把这次改动定位为“tied to re-enabling Trunk”和“ahead of the re-enable”。
+1. **文件与静态检查正确，能否证明队列在工作？** 不能。75873 明确是“Docs only. No behavior change, no code touched.”，测试栏写“Nothing to test automatically, this is a markdown-only change.”，通过的是 `hogli ci:preflight --fix`（以及 pre-push 的 `--strict`）这类文本与格式检查，不查询任何外部状态。作者另列了规则集、原生队列、合并设置三类查询，但它们各回答自己的对象：规则集 `enforcement` 说明该规则集是否强制，原生 `mergeQueue` 说明原生队列是否配置，都不能判定 Trunk 第三方队列启停；本例的暂停依据是维护者明确说明“We've paused our use of Trunk”。静态检查只证明文本和工具链，不证明外部服务。
+2. **没有机器人回执，能否证明暂停？** 不能。没有检查出现、评论或标签无反应，可能是未启用、暂停、排队、失败、标签未被处理、权限不足或机器人故障，单凭沉默区分不了。本例的暂停依据是维护者在 PR 75873 正文的明确说明“We've paused our use of Trunk”（2026-07-31；范围是 PostHog 对 Trunk 的使用，具体分支与执行者覆盖未说明），不是“机器人没回复”，也不是 `enforcement: disabled`、原生 `mergeQueue` 为 `null` 或某次 `gh pr merge --squash` 能合入；后三者分别只说明该规则集不强制、原生队列未配置、当时这条规则未拦截该合并。本卡没有独立运行核验，当前状态未知。
+3. **8-03 的合并证明了什么？** 证明恢复文档已合入仓库，`AGENTS.md` 的三处 hunk 回到暂停前文本（整份文件并非 byte-identical，见上）。恢复证据只限本次历史合入：`merged_by=trunk-io[bot]` 与[官方 bot 评论](https://github.com/PostHog/posthog/pull/76456#issuecomment-5160877534)报告合并成功并链接队列，可作为该次合入走 Trunk 路径的旁证。它不证明规则集或服务在合并前后持续启用，不证明当前远端开关仍开启，更不证明 desktop 门控正确。恢复稿正文自己把这次改动定位为“tied to re-enabling Trunk”和“ahead of the re-enable”，文档合入与实际服务启停是两件事。
 4. **查到暂停，是否授权换合并路径？** 不授权。暂停只说明原入口当前不可用；改组织设置、绕过审批或分支保护、发评论、贴标、合并，以及替读者选择有副作用的替代路径，都需要负责人在现有授权内确认。只读调查不等于排错执行授权，也不等于可以改入口重试。
 
 ## 六、两个反例
 
-- **仍有效的安全／审批要求：** 暂停稿把“approving review、code owner review、required status checks、signed commits”明确留在正文，并称 branch protection “unchanged and still enforced”、`gh pr merge` 在这些条件满足前会拒绝。这是暂停稿的作者说明；本卡未查仓库设置接口，能确认的是入口说明与安全契约在文本上被分开处理。不能因队列暂停就绕过审批或保护。
-- **实际服务状态未知：** 文档仍是 markdown、作者自述的测试只有 `hogli ci:preflight` 这类文档／格式检查、8-03 还有一次队列合入记录，都不能证明当前规则集仍在执行或队列仍可用。没有可读状态时保留“未知”，不把历史暂停或文档恢复写成现状。
+- **安全／审批要求不随队列暂停失效：** 暂停稿把“approving review、code owner review、required status checks、signed commits”明确留在正文，并称 branch protection “unchanged and still enforced”、`gh pr merge` 在这些条件满足前会拒绝。这是暂停稿的作者说明；本卡未查仓库设置接口，能确认的是入口说明与安全契约在文本上被分开处理。不能因队列暂停就绕过审批或保护。
+- **实际服务状态未知：** 文档仍是 markdown、作者自述的测试只有 `hogli ci:preflight` 这类文档／格式检查、8-03 的记录只是一次历史合入（`merged_by=trunk-io[bot]`），都不能证明当前规则集仍在执行或 Trunk 队列仍可用。没有可读状态时保留“未知”，不把历史暂停或文档恢复写成现状。
 
 ## 七、去重与未做
 
 - 原卡 [A-TEAM-POLICY-DELIVERY-20261103](../../A-TEAM-POLICY-DELIVERY-20261103.md) 仍为 `blocked`，只作边界去重：它问的是组织托管策略是否送达，本题问的是操作依赖外部活动状态时怎样核状态；不接其 blocked 调用，不复用其未完成结论。
 - 在本卡基线工作树检索 `75873`、`76456`、`1057b672`、`d9e41684`，未见同题产物；两广扫不在本单元重跑，旧共享指令页写者是否退出仍未证，本卡只交 artifact，不接页面写权。
 - gcx 宿主模式、Sentry 依赖迁移与本题不同，不重做。
-- 只读公开 PR 正文、提交 patch、PR 元数据与讨论；未调用账户、组织、规则集权限或当前仓库设置接口，未运行上游命令，未发评论、贴标或合并。
+- 只读公开 PR 正文、提交 patch、PR 元数据与讨论；未访问 bot 评论所链的 `app.trunk.io`，未调用账户、组织、规则集权限或当前仓库设置接口，未运行上游命令，未发评论、贴标或合并。
 - 未改 `docs/decisions/instruction-files.md`、`docs/18-team-adoption.md`、README、模板、13、TASKS、其他卡或接收器；未做读者实测。
 
 ## 八、来源
@@ -116,7 +116,8 @@ Skill 文件仍未改动。恢复稿写：“`.agents/skills/merging-prs/SKILL.m
 |---|---|---|
 | [PostHog PR #75873](https://github.com/PostHog/posthog/pull/75873) | merged_at `2026-07-31T13:15:36Z`；body、comments 与 REST 元数据 | 暂停稿的三处修改、作者自报、作者列出的状态查询 |
 | [提交 1057b672](https://github.com/PostHog/posthog/commit/1057b672e4d195f3d1c2229f9bbda82238f0e2a5) | 2026-07-31T13:15:35Z；仅 `AGENTS.md` | 三处 diff、保留的安全限制、Skill 过时注记 |
-| [PostHog PR #76456](https://github.com/PostHog/posthog/pull/76456) | merged_at `2026-08-03T01:22:27Z`；body、comments 与 REST 元数据 | 恢复说明、三处恢复、Skill 未改、提前恢复的定位 |
+| [PostHog PR #76456](https://github.com/PostHog/posthog/pull/76456) | merged_at `2026-08-03T01:22:27Z`；`merged_by=trunk-io[bot]`；body、comments 与 REST 元数据 | 恢复说明、三处恢复、Skill 未改、提前恢复的定位、该次合入路径 |
+| [trunk-io bot 评论 #5160877534](https://github.com/PostHog/posthog/pull/76456#issuecomment-5160877534) | created_at `2026-08-02T23:32:55Z`；updated_at `2026-08-03T01:22:28Z`；报告合并成功并链接队列 | 该次合入的旁证；不访问所链 `app.trunk.io`，不充当服务状态证据 |
 | [提交 d9e41684](https://github.com/PostHog/posthog/commit/d9e416841117402b20ee91dd98cbd35921239a6a) | 2026-08-03T01:22:26Z；`AGENTS.md` 与 `desktop-test.yml` | 三处反向 diff、被移除的安全／缓存说明、与 `0fed8417` 的比对、第二题边界 |
 | [`docs/decisions/instruction-files.md`](../../../../decisions/instruction-files.md) | 工作树 `ec246c5d` 基线 | 现有“第一步”“代码与说明冲突”“已有稳定配置”原句 |
 | [`docs/18-team-adoption.md`](../../../../18-team-adoption.md) | 工作树 `ec246c5d` 基线 | “进版本控制、像代码一样评审”与“托管下发不等于安全边界” |
