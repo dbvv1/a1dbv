@@ -1,7 +1,7 @@
 # A-INSTRUCTION-LIVE-STATE-20261103 · 指令依赖外部状态时先核入口
 id: A-INSTRUCTION-LIVE-STATE-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0c53793f5e91e1241f33ce5489cfac37071ca5b6
@@ -52,3 +52,10 @@ result_branch: relay/a-instruction-live-state-20261103
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端用 noreply 身份只将 proposal.md 提交到 result_branch 并更新本卡状态为 review_ready；原页采用、读者实测与推送由负责人完成。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+仅接收 12a730567e55a39a51400ee72e1125969011ade2 的静态操作建议稿：已分开具名规则集强制、原生队列查询与第三方服务状态，暂停归于维护者当时明确说明，bot 证据限该次历史合入；状态不扩大授权，保安全／审批要求和当前服务未知。不是页面采用、真实服务／模型／自然读者验收，不升级地图。
+非作者定点核原 0c53793f 到新稿：仅 proposal 125 行、15 增 14 删，直接父链保留首轮；三项原定纠正已落实。两 PR 固定历史与此前成功读到的 bot 作者／成功合入内容／队列链接／created_at 及 merged_by／merged_at 可支持有限历史旁证，不证明持续或当前启用。
+新增 bot updated_at 秒级值仅按回传记录保留：本轮单独读该公开评论 API 返回 HTTP 403 后已停止，不换入口；该字段未独立核实，不称全部元数据逐项通过。L95 预检未审实现，本次只接“作者报告文本／格式检查，未提供服务状态验证”，不追认“预检不查询任何外部状态”的泛化；无需为这两处再派模型。
+实际已于 2026-11-03 12:24:54 UTC 公开为接收端 noreply 提交；原“待提交／推送”保留为模型产出阶段描述，不是尚需重推。独立核身份、UTF-8／LF、空白与有限文本模式；744／1210 和三视角通过是原回传，不当负责人本轮重跑。
+原调用、工具、登记进程退出仍未知，正式提交与此静态接收不代退出证明；旧页／模板写者隔离不解除。本卡不新增服务调用或恢复其他任务，后续正文采用与自然任务验证沿获准原流程进行，未知当前状态、未运行客户端／服务和未做读者实测均保留。
