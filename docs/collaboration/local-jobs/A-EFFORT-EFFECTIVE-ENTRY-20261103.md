@@ -1,7 +1,7 @@
 # A-EFFORT-EFFECTIVE-ENTRY-20261103 · 分清所选档位与当轮生效档位
 id: A-EFFORT-EFFECTIVE-ENTRY-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7be93247a8a9d5b55375c2eb87a4f62c3a7b15b9
@@ -36,8 +36,8 @@ result_branch: relay/a-effort-effective-entry-20261103
 
 ## 当前结果
 
-- 完成 proposal.md 实施并跑过 3 轮修正与检查（check_repo 739 文件 0 errors，check_public 1205 文件 0 findings，git diff --check 通过），但审查未通过：第 96 行来源表仍写 model-config 的 When a new effort level starts '未说明同一轮后半段与下一轮的归属'，与官方原文及正文第 19/73 行结论相反；openIssues 其余为同一问题重复项。未实跑客户端，未提交。
-- 产物：[cc861d2](https://github.com/dbvv1/a1dbv/commit/cc861d25f1f3c2c807cc3486999e36e54cdf0e23)，分支 `relay/a-effort-effective-entry-20261103`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：修正第 96 行括号注记（删去该句或改为'轮中取用则同一轮后半段按新档，轮末取用则下一轮按新档'），重新走非作者审查并在接收端提交前 git add 工作区版本。
+- 修正 proposal.md 来源表第96行注记，删去与官方原文相反的“未说明同一轮后半段与下一轮的归属”，改为“轮中取用则同一轮后半段按新档，轮末取用则下一轮按新档”；非作者三视角审查通过（0 issues、0 fix rounds），check_repo 739 文件 0 errors、check_public 1205 文件 0 findings、git diff --check 通过。未实跑客户端，请求档位、API 默认、账户与组织上限仍为未知；openIssues 为空。
+- 产物：[cc1c1ce](https://github.com/dbvv1/a1dbv/commit/cc1c1ce59a9dbfcca52024b0e5c0ee6db7c4c37e)，分支 `relay/a-effort-effective-entry-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端按 noreply 身份 git add 工作区版本并提交到 relay/a-effort-effective-entry-20261103，回 review_ready；勿用本机 corp 邮箱提交。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
