@@ -46,7 +46,9 @@
 
 **新建最小文件时只放这一行，不带代码围栏或行内反引号；已有 `CLAUDE.md` 则加上导入，保留仍有效的原有规则，不用示例覆盖整份文件。** 自然语言“请阅读 AGENTS.md”要靠模型再去打开文件；`@AGENTS.md` 才是 Claude 的导入语法。公共正文只维护一份；同文件的显式导入会去重。清理旧方案时，移除已由原生加载替代的 `SessionStart` 打印 Hook 和手工复制的正文，保留有用的导入。
 
-当前 Claude Code 的原生 AGENTS 入口要求 v2.1.277+ 且该能力可用；默认情况下，工作目录或祖先目录里的 `CLAUDE.md`、`.claude/CLAUDE.md`、`CLAUDE.local.md` 会让它改读 CLAUDE 文件。团队有混合版本或这些文件时，保留显式导入最省事。
+当前 Claude Code 的原生 AGENTS 入口要求 v2.1.277+ 且内置能力可用；Bedrock、Vertex、Foundry、LLM 网关或关闭遥测的会话须用 v2.1.281+。插件被停用、从 v2.1.276 或更早升级后的首个会话，也可能只读 CLAUDE 文件。默认情况下，工作目录或祖先目录里的 `CLAUDE.md`、`.claude/CLAUDE.md`、`CLAUDE.local.md` 会让它改读 CLAUDE 文件；团队有混合版本或这些文件时，保留显式导入最省事。
+
+已有合法配置把 **Project instructions** 设为 `claude-md-and-agents-md` 时，两种文件也可同时加载并去重；该设置只从用户、`--settings` 或 managed 层读取，写进项目／本地设置会被忽略。不要把个人设置当作团队克隆仓库后就具备的条件。
 
 ## 第二步：核对加载入口与当前上下文
 
@@ -73,11 +75,11 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir "<外部仓库�
 
 内联开关只对本次启动生效，不改用户设置。若采用显式导入：项目 `CLAUDE.md` 的外部 `@` 导入首次会弹批准框，拒绝后保持禁用且不再弹；Claude 原生读取的 `AGENTS.md` 内部导入外部文件，则只在该项目此前已批准外部导入时加载，运行时不弹框。缺少批准就保留待验，不绕过。
 
-**交互式客户端按下列入口核对；API、SDK 或子代理若不提供这些入口，就不要硬套斜杠命令。** 有宿主提供的加载回执时核对文件来源；没有则把启动加载标为待验，继续核当前可见内容与真实任务结果。手动读文件不能补出启动证据，也不必为补证另开未授权客户端。[一次非交互读者实做](https://github.com/dbvv1/jrnl/blob/bfd477e78238243ec019b423623ea434d3226189/reader-tests/A-INSTRUCTION-FILES-READER-20261103-u1.md#第二步加载入口与当前上下文按当前接口能做到的程度)遇到了这个入口差异；它完成了参数探针，但文档产物仍有待修问题，不计为页面通过（2026-11-02）。
+**交互式客户端按下列入口核对；API、SDK 或子代理若不提供这些入口，就不要硬套斜杠命令。** 有宿主提供的加载回执时核对文件来源；没有则把启动加载标为待验，继续核当前可见内容与真实任务结果。手动读文件不能补出启动证据，也不必为补证另开未授权客户端。[一次非交互读者实做](https://github.com/dbvv1/jrnl/blob/8d9895233ae9c8f1e6c878eb5461c0be13b0d0fd/reader-tests/A-INSTRUCTION-FILES-READER-20261103-u1.md#第二步加载入口与当前上下文按当前接口能做到的程度)遇到了这个入口差异；其文档产物已沿原卡完成定点修订，启动加载仍待独立回执，不计为共享方案通过（2026-11-03）。
 
-- **Claude 原生 AGENTS**：v2.1.280+ 用 `/memory` 查看 `AGENTS.md` 路径；v2.1.277–279 的 `/memory`、`/context` 不列原生 AGENTS，改为询问 Claude 当前项目规则，并对照文件。
+- **Claude 原生 AGENTS**：先用 `claude --version` 与 `/config` 确认上述版本条件及 **Project instructions** 入口；该项不可见或设为 `claude-md`／`managed-only` 时，不按原生 AGENTS 已加载处理。v2.1.280+ 用 `/memory` 查看 `AGENTS.md` 路径；v2.1.277–279 不列原生 AGENTS，改问当前项目规则并对照文件。
 - **Claude 显式导入**：用 `/context` 查看 **Memory files**，确认外层 `CLAUDE.md` 在列，并核对其中的 `@AGENTS.md` 指向同目录共享文件；共享内容是否可见，再用下方提问核对。
-- **Codex**：在目标目录运行 `codex "Summarize the current instructions."`，核对复述的项目规则。它在启动时读取根到当前目录的指令链。
+- **Codex**：在目标目录运行 `codex "Summarize the current instructions."`，核对复述的项目规则。它从项目根到当前目录每层最多取一份，优先 `AGENTS.override.md`、再取 `AGENTS.md`／配置的备用文件名，默认合计上限 32 KiB。缺规则时核实际项目根（默认 `.git`，可由 `project_root_markers` 改变）、覆盖文件和长度，不只看文件是否存在。
 
 核对时选共享文件里已有的一条项目特有契约和一条检查命令，不另加暗号。可以这样问：
 
@@ -91,7 +93,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir "<外部仓库�
 
 更多排障见 [03：加载规则](../03-context-engineering.md#21-各工具的加载规则一手)。
 
-**依据**：[官方] [Claude 导入](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools)、[原生加载检查](https://code.claude.com/docs/en/memory#my-agentsmd-isnt-loading)、[旧入口清理与去重](https://code.claude.com/docs/en/memory#remove-an-earlier-agentsmd-workaround)、[Codex 指令发现](https://learn.chatgpt.com/docs/agent-configuration/agents-md)；加载入口重核 2026-10-28。共享方案尚待真实多工具任务的加载与行为验收。
+**依据**：[官方] [Claude 导入、原生加载与去重](https://code.claude.com/docs/en/memory)、[2.1.281 条目的后续发布记录](https://github.com/anthropics/claude-code/blob/v2.1.285/CHANGELOG.md#21281)、[Codex 指令发现](https://learn.chatgpt.com/docs/agent-configuration/agents-md)与[项目根配置](https://learn.chatgpt.com/docs/config-file/config-advanced#project-root-detection)；文档／源码重核 2026-11-03，未据此重跑客户端。项目信任状态也会影响 Codex 加载：[0.166.0 源码](https://github.com/openai/codex/blob/rust-v0.166.0/codex-rs/core/src/agents_md.rs)保留跳过未信任项目的逻辑，但 [0.150.1 相反报告](https://github.com/openai/codex/issues/41499)仍未关闭，当前运行行为待验，不把它当访问控制。共享方案尚待真实多工具任务的加载与行为验收。
 
 ## 第三步：让规则参与眼前的真实修改
 
