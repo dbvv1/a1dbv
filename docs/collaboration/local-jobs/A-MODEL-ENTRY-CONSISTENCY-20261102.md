@@ -1,7 +1,7 @@
 # A-MODEL-ENTRY-CONSISTENCY-20261102 · 已接收入口事实的跨页一致性
 id: A-MODEL-ENTRY-CONSISTENCY-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 99c1c1fc6114188d9a18d05f628f6f08e368ac00
@@ -27,4 +27,9 @@ result_branch: relay/a-model-entry-consistency-20261102
 最多两小时，共享最多 4 并行只由原接收端调度；不另起模型。跑 check_repo、check_public、git diff --check 与提交身份检查后仅推 result_branch，回 review_ready，由负责人决定是否修改页面；不用 accept: auto。
 
 ## 当前结果
-尚未领取；跨页一致性更正候选待回传。
+
+- 已交付 proposed-changes.md，列出两处实质差量（codex.md §3.5 的 Cloud/Dots 模型入口限定；02 的 Claude Sonnet 5.5 客户端最低版本 v2.1.284+）；check_repo 717 文件 0 errors、check_public 0 findings、git diff --check 通过。reviewed=false：3 轮修正后仍有 2 条 openIssues——第 39 行建议句把依据链塞进正文且层级不清，第 27/43/103 行把命令参数表未列 --model/-c 写成绝对断言。三页正文、模板、TASKS 未改，未提交未推送，不替代页面负责人验收。
+- 产物：[2d096b3](https://github.com/dbvv1/a1dbv/commit/2d096b3591347758d80a4a1f754af06e2efcae31)，分支 `relay/a-model-entry-consistency-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：页面负责人按 2 条未关闭审查意见调整候选后验收；接收端提交时须用合规的 -c user.name/-c user.email 身份。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
