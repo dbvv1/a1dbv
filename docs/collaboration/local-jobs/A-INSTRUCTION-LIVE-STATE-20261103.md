@@ -1,7 +1,7 @@
 # A-INSTRUCTION-LIVE-STATE-20261103 · 指令依赖外部状态时先核入口
 id: A-INSTRUCTION-LIVE-STATE-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0c53793f5e91e1241f33ce5489cfac37071ca5b6
