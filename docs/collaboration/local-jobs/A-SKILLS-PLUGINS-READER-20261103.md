@@ -1,7 +1,7 @@
 # A-SKILLS-PLUGINS-READER-20261103 · 按能力缺口完成配置小修
 id: A-SKILLS-PLUGINS-READER-20261103
 owner: dot-A
-status: review_ready
+status: blocked
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 6b57614aa0cbcb6a52800717d0df22566de7cdf1
@@ -52,3 +52,9 @@ page: docs/decisions/skills-and-plugins.md@main
 - 02:23:35–38 UTC，在隔离云端用既有 Python 3.12.14／jrnl 运行时对 90de4948 与 6b57614a 各跑同一 10 个真实 CLI 输入。三种 strftime（含合法嵌套 timeformat）从基线 exit 1 变候选 exit 0、输出两条预期记录；布尔、数值、mapping、嵌套颜色与基线相同，20 次配置／journal 均逐字保留。坏 mapping 的差异如上，不夸大为受支持输入回归。两次此前探针错误保留、不计通过；未安装依赖，pytest／ruff／black 和完整项目门槛仍未跑。这是负责人消费者补验，不是原读者成功或本机实跑。
 - 缺依赖属于环境／任务前置，项目指令已有相关要求；Python 配方只是非阻断可用性建议，不新增页面必修或任务。缺实际解析 SHA 属输入回执；公开页面现有 24162 字节、SHA256 `e3cb8f3a7d81e54a49614d7713ab084ce2a2cfeab31d200301d1ffac2139c353` 与回传报告相符，只能锚定同内容，不能回填派发时提交。wheel 是否原有缓存缺公开原始证据，不以未用 pip 判合规，也不据摘要判越界；不为补证探查私人材料。
 - 非作者核源码与原输出后认为上述定点测试／说明仍需修；合法配置的功能已得到有限补验，不 accepted 整卡。旧 Skills 页写者退出未知，本轮不改页或升级 🟡，不重复已完成实验／广扫，不新增投稿。
+
+## 返工独立接收与恢复条件（2026-11-03）
+- 04088329 的三文件差量经非作者逐字核对：新增合法嵌套测试经过 `apply_overrides` 与 `scope_config`、保其他键；YAML plain scalar／字面回退说明已修，生产可执行分支未变。这些测试编写与说明可有限接收，但原任务依赖前提仍缺，故维持 blocked，不整体 accepted；原 taskDone=false 与 CLI／pytest／ruff／black 未运行不改。
+- 首轮 u1 的 223 行逐字保留为最终 374 行的前缀；累计新增 5 个案例、3 个测试函数，报告最终 +151 行，+112／+114 属中间快照。归一化成功标注不是原样 stdout。R1 应为在 `apply_overrides` 内解析失败、尚未递归／scope，R3 的坏输入失败位置是后移；这些由本补充纠正，不覆盖原报告或再派文案返工。
+- 不采纳末表把环境和回执都归 page：缺运行时／禁装及坏输入未实跑属环境前置，缺解析 SHA 属输入回执，未装 Skill／自动加载仅为未测范围；Python 配方是非阻断建议，不作页面必修。旧页写者退出仍未知，不改页、不升 🟡。原 wheel 来源与派发时解析提交仍缺证，不补造或扩大私人材料读取。
+- 可复用的云端消费者证据仅是前述 90de4948／6b57614a、Python 3.12.14／ruamel.yaml 0.19.1 的每树 10 场景；本次注释和测试写法修订不构成新运行或新增测试通过。本机完整门槛仍未验；不因依赖未变重复同一调用。后续仅在原授权范围内有实际可用的运行时、pytest／pytest-bdd／pytest-xdist、ruff／black，并核原调用／工具／登记进程退出与单写后，沿原卡恢复缺项；no-install 不变，未满足前保持隔离和 blocked，不新 reader／新任务。
