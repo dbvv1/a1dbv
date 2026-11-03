@@ -1,7 +1,7 @@
 # A-PERMISSION-BOUNDARY-FACTS-20261102 · 通用项目规则与原生权限的边界
 id: A-PERMISSION-BOUNDARY-FACTS-20261102
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/decisions/permissions-and-hooks.md@d66e8d6179fecc36c9497283a6171be0895cf02c
 target_repo: https://github.com/dbvv1/a1dbv
