@@ -1,7 +1,7 @@
 # A-PLAN-DOMAIN-ROUTING-20261103 · 规划时保留实现领域知识
 id: A-PLAN-DOMAIN-ROUTING-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ec246c5d314e9280edb221695bd3ab71f3ad7a8f
@@ -43,3 +43,10 @@ result_branch: relay/a-plan-domain-routing-20261103
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端按既有 Workflow 做非作者审查并推送 result_branch 至 review_ready；提交身份需改用仓库要求的 noreply 邮箱。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+仅接收 2759d3d514e31a9720cf0d43a0dbb938aef87713 的静态操作建议稿：计划改 Button 外观仍走领域 authoring 并保契约／实现参考／验证计划，但不编辑；只交需求契约走 contract-authoring，不因此实施组件。不是自然读者、模型执行、原生加载或页面采用通过，不升级地图。
+非作者已核固定修复 5e183ce7 与父 958f787、合并 4f45ad9 的路由／Skill，fixture 的五项必读／禁 edit-files／两断言，以及 41768dac 的单次报告；+22% 仅该作者该案例单次 token 变化，不算独立效果。现状 06b458f 仍为 steps 1–4 不编辑，三条旧路径演进不等于缺文件。
+补充来源精度而保留原稿：官方修复明确点名跳过 authoring 与 types-and-slots；styles-and-tokens 只确认是 fixture 必读且修后读齐，未取得逐文件修前轨迹，不单独追认它修前漏读。不为此重复原调用；拟采用的最小正文未含该过强断言。
+实际提交已公开，作者／提交者为接收端 GitHub noreply；原“下一步审查／推送／改邮箱”保留为模型产出阶段描述，不是仍需再推同一结果。独立核仅 proposal 新增 148 行、父 ec246c5d，目标正文／模板未动，UTF-8／LF、空白、身份与有限文本扫描通过；744／1210 为原回传检查数，不冒称本轮重跑仓库检查。
+剩余：原调用、工具及登记进程退出仍未知，提交和静态接收不代替退出证明；旧页／模板写者隔离继续。本卡不启动新调用或接管旧写域，未来经获准原流程采用正文后，仍需自然任务检验，不把建议稿当实现结果。
