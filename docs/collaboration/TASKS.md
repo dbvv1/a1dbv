@@ -23,12 +23,12 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择**：实作回流决策页／模板 | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md) 待接收；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。Qwen [旧基线](../../experiments/candidate-reset-recovery/README.md)构建／类型／409 测试通过。#15757 已合、#15741 关闭；静读 `dd020ddf`：旧14例中6例过时／8例待验，保留已合分页／重名策略。全套 socket 仍被拒，原动作获准后补 PR 门槛。Skills 待新读者实做，任务正文附全文；先核写者退出／空槽；本机禁安装，[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交 Claude 核心。 |
-| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main [`5b925f37`](https://github.com/dbvv1/MOBA-Like/blob/5b925f372e68232cd3bf88727a55116909b3be2d/docs/side-release-acceptance.md)quiet 替换旧 stylized，总候选 3；镜头＋Q/W、v12 前摇排队及出图保留。赏金事件已接、无可见提示；558 测试／构建／旧回放一致，默认 469／镜头 QW 445 tick，Canvas 恢复通过。Site **v19 已保存、v18 在线**，未含本次；画面／听感／盲评待验。 |
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main [`26d26c7`](https://github.com/dbvv1/MOBA-Like/blob/26d26c7af4a2824ac6c977aafe55f943c9814319/docs/brief.md)quiet 替换旧 stylized，总候选 3；镜头＋Q/W、v12 前摇排队及出图保留。赏金事件已接、无可见提示；558 测试／构建／旧回放一致，默认 469／镜头 QW 445 tick，Canvas 恢复通过。Site **v20 已部署**；线上默认／quiet／QW 实际 432／353／513 tick 通过；画面／听感／盲评待验。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07 ready `a0ea312`、04 boot `a1b149`／input `d55e04e`、05 生命周期 `bb807ab` 已入 main；原实验仅源码／CPU；04 [FPS 前台时钟与输入折叠](../../domains/game-dev/04-client-modules.md#web-foreground-clock)已接可玩 v20（`1183340`），三入口各两轮普通生命周期通过（software，不升原生引擎评级）。Star v7 存档、MOBA `ea7a064` 实操为旧成果；改键 `89f0831` 候选。[Unity 源准备](../../experiments/unity-encounter/README.md)未实跑，原任务暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | FPS [四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)已接收，旧通路／命中接线待恢复。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，复用三图／保护区／标准件，画面未验。开放音频未听未用，Nature 恢复未知。3D：网关三源同提示实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机 `gen3d`／`glbprep` 可用；各案例采用 3–5 件标准件，按实测分工。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Void Balls 制作线索](local-jobs/B-AI-GAME-SUPPLY-SOURCES-20261027.md)已接收；启动遇 WebGL 不支持／连接失败，未进游戏／听音；Warpact 未玩，无新增整局品质推荐。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ab69388d`／Site **v8 仍在线**；连续空间＋峰后轮胎整合 `853a3c3` 171 测试／构建／整局与曲线／浏览器门槛通过，Git 上传待回读。默认／空间／动力／组合实际推进 867／839／837／839 tick，Canvas2D 回退通过，3D／驾驶待判优；含 Rapier 共三项旁置。旧取消任务退出／清理未知，不重派。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main [`885a53c5`](https://github.com/dbvv1/FPS-Like/blob/885a53c542f42c4349c6e1d190f1ea8f4423c459/docs/quality.md)已合全场材质／ground 旁置及固定出图；Site **v22 已保存、v21 仍在线**。412 测试／构建／四路 2×144 tick 通过；默认与材质＋ground 两路 Canvas 自然六回合、换边、终局重开／暂停通过。WebGL smoke、图／ground 手感与盲评待验。腰腿 `fc64c2b` CPU 已收，原执行退出未知。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `b43a938`／Site **v9 已部署**；连续空间＋峰后轮胎整合 `853a3c3` 171 测试／构建／整局与曲线／浏览器门槛通过，Git 已写入，含固定出图；线上仅默认菜单到达，shell HTTP 403，完整线上验收未通过、不绕过。默认／空间／动力／组合实际推进 867／839／837／839 tick，Canvas2D 回退通过，3D／驾驶待判优；含 Rapier 共三项旁置。旧取消任务退出／清理未知，不重派。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main [`885a53c5`](https://github.com/dbvv1/FPS-Like/blob/885a53c542f42c4349c6e1d190f1ea8f4423c459/docs/quality.md)已合全场材质／ground 旁置及固定出图；Site **v23 已部署**；线上仅默认菜单到达，shell HTTP 403，完整线上验收未通过、不绕过。412 测试／构建／四路 2×144 tick 通过；默认与材质＋ground 两路 Canvas 自然六回合、换边、终局重开／暂停通过。WebGL smoke、图／ground 手感与盲评待验。腰腿 `fc64c2b` CPU 已收，原执行退出未知。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收
@@ -42,15 +42,12 @@
 
 ## 需要用户决定
 
-仅停对应动作；原审批待答，心跳照常。
+仅停对应动作；三站部署已获授权并完成，Star 原 blob 调用已成功，不再列待批；LOB 确认仍待答，心跳照常。
 
 | 事项 | 等什么 | 期间照常做／批准后首步 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 `27a40be`／Site v16：WebGL2 四路 smoke、四机位双重复通过；两非作者判小幅改善，正式评分待补。获准 `--no-sandbox`；已留 renderer／参数（SwiftShader software），exit 0、端口关闭。 |
 | 三案固定出图与完整验收 | 固定 1280×720／dpr 1 代码整合／测试／构建通过；普通路径 FPS 两路 2×144、MOBA 默认 397／组合 352、Star 默认 1491／组合 1065 tick 复验通过，均 Canvas。Star 实拍需 WebGL2、无 PNG；FPS／MOBA 未实拍。 | 旁置不等硬件 GPU；捕获无 WebGL2 显式报错。FPS／Star 只导画布无 DOM HUD；参数／renderer 待核，不绕过 IPC 限制。完整 smoke／同机位／盲评卡换默认。 |
-| FPS／MOBA 网站部署 | 分别批准向既有公共 Sites 部署已保存的 **FPS v22／MOBA v19**；FPS 两次被拒 | 先核原审批与各保存版本，再部署并回读 live；保持受众／默认玩法。 |
-| Star 网站部署 | 批准将连续空间＋峰后轮胎旁置保存、部署至既有公共 Site；未保存 | 先核 Git 写入及准确版本，再保存、部署并回读 live；保持受众／默认玩法，仓库审批另计。 |
-| Star 仓库写入 | 待答原 Git blob 创建审批；目标 `dbvv1/Star-Rush-Reborn` 的 `master`，已有 30 个 blob 确认 | 先核原调用／远端，按批准范围续传余项；准确 tree 验收后非强制更新 `master` 并回读。单次批准不代表全部放行。 |
 | LOB 外部试玩 | 批准从[原入口](https://zerodev.games/lob/?src=home)继续试玩；七关局部实证；第八关页已关，继续试玩被拒 | 先核平台审批允许，再按原入口重新体验、记录完成边界；不换通道。 |
 
 ## 已停止的动作

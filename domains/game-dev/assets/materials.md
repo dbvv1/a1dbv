@@ -165,7 +165,7 @@
 
 **实际替换件通过原校验后才注册，退出时恢复原消费者。** GLB 原验证仍禁止外来贴图，不能为接新材质放宽源件检查；验证后的对象由场景所有者绑定候选纹理，卸载时恢复原 shader hook／属性，再释放自有纹理。原网格与替换 GLB 有不同采样契约，但共用同一对纹理；部分注册失败须还原已经修改的对象，超时或销毁后的迟到对象不得复活旧场景。先解决这些真实接线，再谈扩量，避免只改了被隐藏的替身。
 
-固定实现：[区域与采样合同](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/ai-surface.ts)、[族所有者与恢复](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/ai-materials.ts)、[真实 GLB 接线](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/art-standards.ts)。整层扩展已随 [`97f28f2` 合入 main 旁置](https://github.com/dbvv1/FPS-Like/commit/97f28f2cfabcca47d7a343af7c311b6f3c2137f5)。CPU 接线／失败恢复、构建与关闭开关的跨基线回放一致通过；实际云浏览器默认与全场材质各完成 2×144 tick、hash 同为 `2d7ad50c`，ground 与组合各为 `bc7ad7c8`，并自然回退 Canvas2D、显示恢复提示。它证明失败时仍可玩，不证明全场 Three 材质实际显示或比小样好。`materials=ai-courtyard-full-v1` 保持显式候选；Site v22 仅保存、v21 仍在线，真实 shader／完整六回合 smoke、同机位图与非作者盲评待补，不能沿用旧小样判优。（旁置门槛核实 2026-11-03 Asia/Shanghai）
+固定实现：[区域与采样合同](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/ai-surface.ts)、[族所有者与恢复](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/ai-materials.ts)、[真实 GLB 接线](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/art-standards.ts)。整层扩展已随 [`97f28f2` 合入 main 旁置](https://github.com/dbvv1/FPS-Like/commit/97f28f2cfabcca47d7a343af7c311b6f3c2137f5)。CPU 接线／失败恢复、构建与关闭开关的跨基线回放一致通过；实际云浏览器默认与全场材质各完成 2×144 tick、hash 同为 `2d7ad50c`，ground 与组合各为 `bc7ad7c8`，并自然回退 Canvas2D、显示恢复提示。它证明失败时仍可玩，不证明全场 Three 材质实际显示或比小样好。`materials=ai-courtyard-full-v1` 保持显式候选；Site v23（885a53c）已部署；本地 Canvas 已验自然六回合，但线上仅默认菜单到达，shell HTTP 403，完整线上验收未通过且不绕过。真实 shader、同机位图与非作者盲评待补，不能沿用旧小样判优。（旁置门槛核实 2026-11-03 Asia/Shanghai）
 
 ### 叶片与毛发重叠出错：先分覆盖与半透明
 
@@ -203,7 +203,7 @@
 
 **🧪 同族材质已有可复用源时，先接入既有保护区域与消费者，不为接线重生成资源。** MOBA 的 quiet 旁置复用三张 WebP、六建筑受保护石材区与五个标准件，以 `materials=quiet-family-v1` 选择；旧 `stylized-diffuse` 公开入口退休，普通页提示后恢复默认，固定出图入口直接报错。新候选替换旧单元而非继续叠加；默认仍保原 forest 渲染。
 
-**接收重点包括失败后的资源归属。** 五标准件若在缺少动作 clip 等后半构造时失败，已分配的路肩几何、材质和克隆骨架仍须释放，共享 GLB 源不能一起销毁；取消也不能再启动一轮默认资产请求。真实 GLB 故障测试与非作者审查验证了这些分支。550 项测试、构建、关闭开关的同输入回放通过；浏览器默认／quiet 从零推进 653／470 tick，但均自然回退 Canvas2D，没有呈现 quiet 材质。此处接收的是复用接线与失败恢复，WebGL 材质、同机位盲评及硬件成本仍待验，尚未部署或换默认。[单份验收与固定源](https://github.com/dbvv1/MOBA-Like/blob/0811894da59740bdc10e0a2318174f3dbb0530d1/docs/side-release-acceptance.md#quiet-材质已有候选重放旁置门槛通过)，2026-11-03。[案例源码／CPU／浏览器功能实测]
+**接收重点包括失败后的资源归属。** 五标准件若在缺少动作 clip 等后半构造时失败，已分配的路肩几何、材质和克隆骨架仍须释放，共享 GLB 源不能一起销毁；取消也不能再启动一轮默认资产请求。真实 GLB 故障测试与非作者审查验证了这些分支。550 项测试、构建、关闭开关的同输入回放通过；浏览器默认／quiet 从零推进 653／470 tick，但均自然回退 Canvas2D，没有呈现 quiet 材质。此处接收的是复用接线与失败恢复，WebGL 材质、同机位盲评及硬件成本仍待验，已随 Site v20（26d26c7）部署，线上默认／quiet／QW 分别实际推进 432／353／513 tick；这不补成材质显示或换默认的依据。[单份验收与固定源](https://github.com/dbvv1/MOBA-Like/blob/0811894da59740bdc10e0a2318174f3dbb0530d1/docs/side-release-acceptance.md#quiet-材质已有候选重放旁置门槛通过)，2026-11-03。[案例源码／CPU／浏览器功能实测]
 
 | 玩家需要读懂什么 | 最小可复用做法 | 何时增加；何时撤回 |
 |---|---|---|
