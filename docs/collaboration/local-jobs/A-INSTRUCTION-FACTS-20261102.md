@@ -1,7 +1,7 @@
 # A-INSTRUCTION-FACTS-20261102 · 共享指令页官方事实复核
 id: A-INSTRUCTION-FACTS-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/instruction-files.md@21b5f4ab0d4c78c73a2ef57502a4a49ba70fb991
 target_repo: https://github.com/dbvv1/a1dbv
@@ -27,4 +27,9 @@ result_branch: relay/a-instruction-facts-20261102
 本单元最多两小时，共享最多 4 并行只由原接收端调度，不自建调用。跑 check_repo、check_public、git diff --check 和提交身份扫描后推指定 result_branch，回 review_ready 供负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；输出待回传。
+
+- 完成共享指令页官方事实复核并写入 facts.md：确认页面现有 Claude/Codex 加载推荐不需反转，补出 v2.1.281 前 Bedrock/Vertex/Foundry/LLM gateways/关闭遥测的适用范围、claude-md-and-agents-md 仅在用户/--settings/managed 层生效、Codex 每目录单文件（AGENTS.override.md 优先）/32 KiB 上限/project_root_markers/0.150.0 起 untrusted 不加载项目级 AGENTS，并更正两个已失效的 memory 锚点；openIssues 为空。未启动客户端实测，0.166.0 的 untrusted 行为仍记为未知。
+- 产物：[404466a](https://github.com/dbvv1/a1dbv/commit/404466ad5fcf494edff0f8146c3e7baac37c7167)，分支 `relay/a-instruction-facts-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人需推送结果分支 relay/a-instruction-facts-20261102 并回 review_ready；本机 git user.email 非公开安全身份，提交须沿用既有 noreply 身份。另 origin/main 已推进到 3ce1dad1，facts.md 记录的读取时 tip 为 0c40c25d，不影响实质论断。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
