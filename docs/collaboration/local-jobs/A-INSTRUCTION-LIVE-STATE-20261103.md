@@ -1,10 +1,10 @@
 # A-INSTRUCTION-LIVE-STATE-20261103 · 指令依赖外部状态时先核入口
 id: A-INSTRUCTION-LIVE-STATE-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: ec246c5d314e9280edb221695bd3ab71f3ad7a8f
+base_ref: 0c53793f5e91e1241f33ce5489cfac37071ca5b6
 result_branch: relay/a-instruction-live-state-20261103
 
 ## 目标
@@ -36,6 +36,14 @@ result_branch: relay/a-instruction-live-state-20261103
 非作者逐源回答：文件/静态检查正确能否证明队列工作；无bot回执能否证明暂停；8-03合并证明什么；查到暂停是否授权换合并路径。至少核“仍有效的安全/审批要求”和“实际服务状态未知”两个反例。
 候选须保现有代码/说明双向取舍，不把历史暂停或文档恢复说成现状、不把只读审稿称部署/队列或模型实跑；缺关键源就标未知，不以摘要替代。
 一个45–75分钟单元，最多2小时；共享最多4并行由原接收端调度。按既有Workflow非作者审查、check_repo、check_public、git diff --check与身份检查，仅推result_branch回review_ready；不用accept:auto，不合main。
+
+## 修改要求
+沿原 result_branch 从 0c53793f5e91e1241f33ce5489cfac37071ca5b6 仅修 proposal.md 的状态对象与证据强度，固定本仓页面输入仍为 ec246c5d；保原首轮提交和未验记录，不新任务／新读者。先由原接收端核原调用、工具、登记进程均已退出及产物单写；缺证保持隔离，不启动续接或改旧文件，公开提交不补作退出证明。
+1. L16／L21／L79／L95–96 及同义摘要须分清具名规则集是否强制、GitHub 原生队列查询、第三方服务启停三个对象。暂停依据改为该服务／入口的直接权威状态或负责维护者明确说明，注明时间与范围；`enforcement: disabled` 只说明所指规则集不强制，连同历史启用也不能单独推出 Trunk 等第三方队列暂停。
+2. 删除 L21“使用 Trunk 等第三方队列时也始终为 null”的普适断言，以及把 `null` 直接等同第三方状态的说法。只保本例作者报告原生 `mergeQueue` 为 `null`，该原生查询不能判定 Trunk 等第三方队列启停；不为补证去查设置／账户或新服务接口。
+3. 本例历史暂停依据须写明 [PR 75873](https://github.com/PostHog/posthog/pull/75873) 维护者明确自述“We've paused our use of Trunk”，与其规则集／原生队列／合并观察分列；本轮没有独立运行核验，当前状态未知。L73／L97／L103 的恢复证据仅限本次历史合入：`merged_by=trunk-io[bot]` 及 [官方 bot 评论](https://github.com/PostHog/posthog/pull/76456#issuecomment-5160877534) 报告合并成功并链接队列可作该次路径旁证，不证明规则集或服务持续／当前启用；文档 ahead-of-reenable 与实际服务启停仍分开，不访问评论所链 app.trunk.io。
+其余已核两 PR 日期、固定提交差量、CLAUDE 符号链接、三 hunk 恢复与整文件另一段差量、Skill 未改和保留审批／安全边界、45 分钟仅自报均保留。不扩审 desktop 门控，不运行目标／模型或调用账户、组织、规则集、当前设置接口，不改页面／模板／其他卡／接收器。
+非作者只反读本次差量与以上固定出处后回 review_ready；通过仅表示静态操作建议可接。首轮实际已公开为接收端 noreply 提交，原“待推送／改身份”保留为模型产出阶段描述，不再推同一结果或复述私人身份信息；原 744／1209 与三轮审查是回传，非负责人新跑。原页采用、自然任务实测与旧写者退出仍未验。
 
 ## 当前结果
 
