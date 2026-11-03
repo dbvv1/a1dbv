@@ -33,3 +33,11 @@ result_branch: relay/a-api-credit-routing-20261103
 读者仅看稿件应能判断“买了Max能否把赠额用到交互Code”“同一CI脚本换认证是否仍走同一余额”“赠额耗尽是否一定停机”，并知道官方尚未说明的组合要查什么；不是要求读者登录或付费试跑。
 通过仅表示有限事实与修订稿可接收，不证明任何用户资格、真实扣费、产品收益或地图实做通过。原已核金额无变化就保留，不为交差制造改动。
 一个 60–90 分钟单元、最多两小时；共享最多 4 并行由原接收端调度，不另起调用。经既有 Workflow 非作者审查、check_repo、check_public、git diff --check 与身份检查，仅推 result_branch 后回 review_ready；不用 accept:auto，不合 main。
+
+## 当前结果
+
+- 已产出唯一交付 facts.md（318 行，UTF-8/LF，无行尾空白；check_repo 735 文件 0 errors、check_public 1200 文件 0 findings、未跟踪文件同组 PATTERNS 扫描 0 findings）；五组入口的认证/计费归属、赠额覆盖原句对照、来源冲突与未知项齐备，仅新增该文件，未改 02/18/研究页/任务文件，未提交未推送。未关闭问题：§1 第 20 行“见 §3 第 2 行”交叉引用指向错误，实际支撑句在 §3 组 2 的 claude -p＋关联组织 API key 行（第 79 行），第 81 行“同第 2 行”同为易误读简称；Workflow 因此 reviewed=false。另：工作树提交邮箱为内网公司地址，接收端提交前须用 -c user.email 覆盖为 noreply；origin/main 在本单元期间前进，提交前应整合最新 main。
+- 产物：[e383977](https://github.com/dbvv1/a1dbv/commit/e383977b2aaff14696b8879975eba5a2ad25cf26)，分支 `relay/a-api-credit-routing-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：修正 facts.md §1 第 20 行及第 81 行同类“第 2 行”简称为语义引用后复核；接收端以 -c user.email 覆盖为公开合规身份、整合最新 origin/main 后再提交推送。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
