@@ -1,7 +1,7 @@
 # A-PERMISSION-BOUNDARY-FACTS-20261102 · 通用项目规则与原生权限的边界
 id: A-PERMISSION-BOUNDARY-FACTS-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/permissions-and-hooks.md@d66e8d6179fecc36c9497283a6171be0895cf02c
 target_repo: https://github.com/dbvv1/a1dbv
@@ -27,4 +27,9 @@ result_branch: relay/a-permission-boundary-facts-20261102
 本单元最多两小时，共享最多 4 并行只由原接收端调度；不启动客户端、模型、Hook、浏览器或安装任何内容。跑 check_repo、check_public、git diff --check 和提交身份检查后仅推 result_branch，回 review_ready 供负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；只读官方事实输入待回传。
+
+- facts.md 已交付并通过三视角独立审查（3 轮修正后 reviewed=true，openIssues 为空）：含 10 项影响操作的差量与 25 行核实表，覆盖 Codex permission profiles/旧 sandbox/network proxy/on-request-granular-never/auto-review/托管层级/Windows 后端与 Claude acceptEdits/sandbox auto-allow/excludedCommands/allowUnsandboxedCommands/failIfUnavailable/设置层级/原生 Windows 与 WSL2；check_repo、check_public、git diff --check 通过；未启动客户端、模型、Hook 或浏览器，未运行或改动任何真实权限配置，未提交未推送；未运行客户端验收，官方契约不等于本机配置或授权。
+- 产物：[89e9140](https://github.com/dbvv1/a1dbv/commit/89e9140629cd7c3844fb3f4f8cb4bbad17a5d1fe)，分支 `relay/a-permission-boundary-facts-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交并推送 result_branch，将任务置 review_ready 交负责人接收；剩余缺口仅为官方未承诺项已在未知条目中记录，无需模型重跑。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
