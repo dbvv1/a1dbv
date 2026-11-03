@@ -1,7 +1,7 @@
 # A-SKILL-PAGE-FACTS-20261102 · Skill 页核心推荐的来源事实核查
 id: A-SKILL-PAGE-FACTS-20261102
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/skills-and-plugins.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -33,3 +33,9 @@ result_branch: relay/a-skill-page-facts-20261102
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：负责人决定三处记录精度是否回写页面，并安排页面读者采用验证；本单元范围已完成，无剩余工作单元。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+- 接收 [03fd2e24](https://github.com/dbvv1/a1dbv/commit/03fd2e24cbb3c59f56c425872dfd1a2e2c83aa7f) 对固定页面六处核心推荐的窄来源核查；负责人逐源复核支持 Context7 版本入口／作用域、TanStack 包内配方、Serena 接口前提、Superpowers 任务分流、项目 Skill 与链接副本条件。仅接来源材料，不把原报告全部措辞或 `openIssues: []` 视为已完成采用。
+- Context7 提交日期的时区换算正确，但提交日期不是查询日期，不据此把页面 10-27 改为 10-28；只保留“当时返回未列出所需版本”，原 resolve 返回未公开，不能补造或外推当前覆盖。Serena 2.1.0 实试与 2.1.1.dev0 模板事实分列；V2EX 本轮 TLS 受阻仅沿旧记录，不声称重新读到原帖。
+- pnpm 11.21.0 安装只是旧回传报告；此前负责人已记超范围及未独立复验，不据此扩大运行结论。OpenAI Agents SDK 的本仓后续受限采用须与旧页快照分开，不能全盘沿用“本仓未试用两套项目流程”的概括；也不将局部采用升级为整套流程或 Skill 收益。
+- Skills 页仍有 017a3363 的三处未合差量，旧写者退出未知，本次未修改页面或接管其写域。原报告保留，当前原 Skill reader 已领取，继续沿原卡接收，不重派；事实接收不代替真实 reader、客户端加载或核心推荐采用，页面 🟡 保持。
