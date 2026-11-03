@@ -25,7 +25,7 @@
 落到操作的五条：
 
 1. 对源目录、暂存父目录、输出父目录逐级查看权限（POSIX 用 `ls -ld`，Windows 看 ACL）；任何一级组／其他人可写就换位置。
-2. 用 `os.path.samefile`（或 `Path.resolve()` 后比较）复核源目录与输出父目录不是同一物理位置，并逐级检查挂载点、绑定挂载、目录硬链接（Windows reparse 点见第 4 条）。`overlaps()`（`export_ai_config.py:50-51`）只做词法比较，不能替代这步。
+2. 逐级检查源目录与输出父目录路径上的挂载点、绑定挂载、目录硬链接（Windows reparse 点见第 4 条），并确认两棵树都在已知由你独占的本地目录。`os.path.samefile` 只比较两个现存对象的设备号／inode，不检查树嵌套；`Path.resolve()` 提供路径规范化与链接解析，不能排除 POSIX bind-mount 别名。二者任一为阴性都不能单独证明两棵树不重叠；`overlaps()`（`export_ai_config.py:50-51`）只做词法比较，同样不能替代这步。不确定就换目录，不为此新增系统扫描或探针。
 3. 暂存父目录用 `$HOME` 下自建的 0700 目录再 `mktemp -d`；输出每次用没出现过的新名字。
 4. Windows 上逐级确认没有 junction／reparse 点：Python 3.12+ 可用 `Path.is_junction()` 查 junction，但它只识别 junction、不覆盖其他非符号链接 reparse 点；要覆盖全部用 `fsutil reparsepoint query`（或 PowerShell `Get-Item` 看 Attributes）；Python 3.11 直接用 fsutil。
 5. 从审阅到 `promote` 之间不跑同步客户端，不让其他 agent／脚本写暂存；审阅完整内容后才记录哈希。
@@ -54,10 +54,10 @@
 ### 3. 人工审阅后精确提升
 
 - 三段绑定，强度不同：
-  1. **源→暂存**：没有哈希；只靠源目录权限和你执行的 `stage` 命令。审阅标识不证明字节来自你预期的源文件。
+  1. **源→暂存**：manifest 对实际写出的内容逐文件哈希（`export_ai_config.py:188`）；`claude/settings.json` 先经 `filter_settings` 按白名单重建并重新规范化（184-185），manifest 与快照里的哈希都是这份构造结果，不是原始源文件字节。这里没有独立源身份（路径／inode／mtime）或外部预期内容哈希绑定，只能靠源目录权限和你执行的 `stage` 命令。审阅标识不证明字节来自你预期的源文件。
   2. **暂存→审阅标识**：`stage` 写出 `canonical(manifest)` 并打印其 SHA-256（188-191）；`promote` 重算并比对（199-201），逐文件比对哈希（210-213），`settings.json` 重建后必须等于自身（214-215），文件集合必须恰好等于清单加清单文件（217-226），最后重新扫描（227）。
   3. **审阅字节→输出**：输出写的是内存里已比对过的字节（206-216、228 进入 142-162），**不会二次读盘**；每次读取之后的修改无法改变本次输出。
-- 目录控制前提：暂存目录树在"审阅完成到 `promote` 执行"之间只有你写。内容或文件集合变化会被哈希／集合检查发现；若有人同时改内容和清单，只有你重新暂存并采用新打印的哈希才会命中，这需要你可见的重新操作。
+- 目录控制前提：暂存目录树在"审阅完成到 `promote` 执行"之间只有你写。若 `--reviewed` 仍保持原审阅值，内容或文件集合变化会被哈希／集合检查拒绝；但代码只把 `--reviewed` 与暂存目录里的 manifest 比对（`export_ai_config.py:199-213`），不要求这个哈希来自再次 `stage`，也不证明有人工审阅。调用者若同时改文件与 manifest、再按新 manifest 重算并传入哈希，同样能通过。"重新暂存并审阅"是既有操作流程，不是唯一能通过哈希比较的代码路径。
 - 关键限制：脚本无法证明"人真的看过"。任何人都能在能运行 CLI 的地方重算暂存清单的哈希并传给 `--reviewed`；真正的权限是"谁能运行 `promote`"。这是同一 principal 的授权问题，按 Skill 第 140 行和反模式第 5 条不算跨边界缺陷；它说明"人工审阅"是流程控制，不是技术控制。
 - 边界细节：集合检查用 `os.walk`（218），默认不报告遍历错误；多出的空目录不算进文件集合，也不会被提升（`write_snapshot` 只迭代清单文件）。暂存由脚本建为 0700，这些情形需要同用户或 root 先改权限才会出现。
 
@@ -92,6 +92,7 @@
 - 导出指南：`ai-config/README.md:11-21`（契约与单写者边界）、`55`（物理路径）、`57-72`（审阅与旧快照）。
 - 既有测试：`tests/test_config_export.py:51-65`（合法流程）、`67-94`（敏感内容与不回显）、`96-148`（大小与 settings）、`157-179`（缺失源、旧目标、重复提升）、`181-208`（静态符号链接、Git 内暂存）、`210-241`（穿越、二进制、暂存篡改）、`243-259`（缺依赖与缺参数）。这些是**阅读到的基线，本次未运行**，不计为本次通过。
 - 平台事实：在临时目录用标准库创建 junction 后，Python 3.13.5 返回 `is_symlink=False`、`is_junction=True`、`is_dir=True`。这只是标准库行为核对，不是目标代码执行。
+- 路径同一性依据（CPython v3.13.5 源码，2026-11-03 按 tag 读取）：`Lib/genericpath.py:123-138` 的 `samestat`／`samefile` 只比较 `st_dev`／`st_ino`；`Lib/pathlib/_local.py:664-670` 的 `resolve()` 提供绝对化、链接解析与规范化；`Lib/posixpath.py:391-393` 的 `realpath()` 只消除路径中的符号链接。同一对象的绑定挂载别名会因同 `st_dev`／`st_ino` 被 `samefile` 判为相同；但阴性结果无法排除绑定挂载在比较路径之下引入的树重叠，`resolve()`／`realpath()` 也不解析挂载。
 - 三个目标文件在 `cfb9240a` 与只读参考副本中的 blob 哈希一致（`daaa0c6b…`、`37bda6a2…`、`2a4cf45e…`），确认基线无漂移。
 - 官方正文按固定 SHA 取回：`SKILL.md`（192 行）、`RECONNAISSANCE.md`（156 行）、`ATTACK-CLASSES.md`（130 行）、`VALIDATION-AND-REPORTING.md`（186 行），2026-11-03 读取。入口：`https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c1471069fb0e188eeaff69b8e8db6564a8/skills/security-audit/SKILL.md`。
 
@@ -133,13 +134,13 @@
 
 **一致项：** 第 1 单元给出的源码行号区间逐段核对无误；三个目标文件的 blob 哈希（`daaa0c6b…`、`37bda6a2…`、`2a4cf45e…`）与只读参考副本一致；四项承诺的前提、被既有控制阻断的失效和 needs_validation 分类均与源码相符。未发现应改判为 confirmed 的项目。
 
-**新增待验项：** `overlaps()` 只做词法比较（`50-51`、`58-61`），可能被 junction／挂载点／绑定挂载／目录硬链接绕过；缺失事实与核对方式已补进下面未验证项表的最后一行，并落到选目录操作第 2 条的同物理位置复核。
+**新增待验项：** `overlaps()` 只做词法比较（`50-51`、`58-61`），可能被 junction／挂载点／绑定挂载／目录硬链接绕过；缺失事实与核对方式已补进下面未验证项表的最后一行，并落到选目录操作第 2 条的逐级挂载／绑定挂载与目录独占核对。
 
 ### 方法与限度
 
 第 2 单元新增读取：三个目标文件全文（约 528 行）、`ai-config/README.md` 相关节、固定 SHA 的 `SKILL.md`、`ATTACK-CLASSES.md:50,54`、`VALIDATION-AND-REPORTING.md:5,87`；另核对 CPython `pathlib`／`os.path`／`shutil` 文档中 `is_junction` 与 `is_symlink` 的区别、`rmtree` 对符号链接的拒绝。未执行目标代码，未跑 unittest；修正时重跑了标准库 junction／`rmtree`／`rename` 行为探针（见第 6、7 题）。反读覆盖 9 个问题与 4 处表述核对，没有可量化的节省；主要收益是把第 1 单元的 9 个问题转为源码答案，并补出 `overlaps()` 的词法比较盲点。
 
-来源（2026-11-03 读取，三个文档链接复核返回 200）：CPython 3.13 文档 `https://docs.python.org/3.13/library/pathlib.html`、`https://docs.python.org/3.13/library/os.path.html`、`https://docs.python.org/3.13/library/shutil.html`，以及 `os.walk` 实现 `https://github.com/python/cpython/blob/3.13/Lib/os.py`。
+来源（2026-11-03 读取，三个文档链接复核返回 200）：CPython 3.13 文档 `https://docs.python.org/3.13/library/pathlib.html`、`https://docs.python.org/3.13/library/os.path.html`、`https://docs.python.org/3.13/library/shutil.html`，以及 `os.walk` 实现 `https://github.com/python/cpython/blob/3.13/Lib/os.py`；路径同一性按 v3.13.5 tag 复核：`https://github.com/python/cpython/blob/v3.13.5/Lib/genericpath.py`、`https://github.com/python/cpython/blob/v3.13.5/Lib/pathlib/_local.py`、`https://github.com/python/cpython/blob/v3.13.5/Lib/posixpath.py`。
 
 ## 未验证项（needs_validation，无 severity）
 
@@ -148,10 +149,10 @@
 | Windows junction／reparse 被当作普通目录跟随 | `export_ai_config.py:41-47`；平台标准库行为 | 所选路径祖先是否含 junction，以及是否有低信任方可创建／替换它 | 对每一级祖先查 reparse 标记（Python 3.12+ 可用 `Path.is_junction()`，但它只认 junction；覆盖全部 reparse 点用 `fsutil reparsepoint query` 或 PowerShell `Get-Item` 看 Attributes；Python 3.11 直接用 fsutil）；换物理路径重跑 `stage` 并比对快照 |
 | 检查与打开之间的 TOCTOU | `79-91`、`144`、`154`、`156-157`、`210` | 是否存在可写祖先目录的低信任写者、能赢得竞态，且结果内容通过检测与人工审阅 | 审计每级目录的属主／ACL；在独占私有目录重跑；对比源与快照字节 |
 | 输出父目录被替换 | `142-162` | 父目录是否非 sticky 且他人可写，是否有并发改名者 | 审计父目录权限；改用仅自己可写的本地目录 |
-| 源→暂存没有哈希绑定 | `176-189` | `stage` 前源是否被他人改过，且审阅是否漏看 | 保持源单写者；记录 `stage` 时刻的源文件哈希并与快照比对 |
+| 源→暂存没有独立源身份绑定（manifest 对实际写出内容哈希；`settings.json` 为白名单过滤后的构造内容） | `176-189` | `stage` 前源是否被他人改过，且审阅是否漏看 | 保持源单写者；记录 `stage` 时刻的源文件哈希并与快照比对。`claude/settings.json` 例外：先按同一白名单过滤源文件再算哈希，或直接比对导出的 settings 内容／manifest 哈希，不要拿原始 `settings.json` 的哈希直接比快照 |
 | 网络盘／overlay／同步盘语义 | `142-162` | 独占 `mkdir`、`rename`、ACL 可见性是否符合假设 | 只用本地盘；在目标文件系统上做一次合成目录的创建／改名核对 |
 | `os.walk` 遍历错误不报告，集合检查只比较文件 | `217-226` | 暂存树是否有不可读的多余目录（不会被提升） | 保持暂存 0700 且单写者；审阅时列一次完整目录树 |
-| `overlaps()` 只做词法比较 | `50-51`、`58-61` | 路径上是否有 junction／挂载点／绑定挂载／目录硬链接，且能由非操作者创建 | 用 `Path.resolve()`／`os.path.samefile` 复核；逐级查挂载与 reparse 标记 |
+| `overlaps()` 只做词法比较 | `50-51`、`58-61` | 路径上是否有 junction／挂载点／绑定挂载／目录硬链接，且能由非操作者创建 | 逐级查挂载点、绑定挂载、目录硬链接与 reparse 标记，确认两棵树都在已知独占的本地目录；`samefile`／`resolve` 的阴性结果不能单独证明树不重叠，不确定就换目录 |
 
 以上均无 severity；缺少上述任一事实时，结论只到"源码足以说明的已有控制"。
 
