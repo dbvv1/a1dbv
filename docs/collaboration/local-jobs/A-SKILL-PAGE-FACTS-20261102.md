@@ -1,7 +1,7 @@
 # A-SKILL-PAGE-FACTS-20261102 · Skill 页核心推荐的来源事实核查
 id: A-SKILL-PAGE-FACTS-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/skills-and-plugins.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -27,4 +27,9 @@ result_branch: relay/a-skill-page-facts-20261102
 本单元最多两小时，共享最多 4 并行只由原接收端调度；不自建调用。跑 check_repo、check_public、git diff --check 和提交身份扫描后推指定 result_branch，回 review_ready 供负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；输出待回传。
+
+- 新增 facts.md 核查页面‘现在选什么’六处核心推荐，未发现需改写推荐、版本号或作用域的公开事实错误；保留三处记录精度缺口（Context7 10-27 复核日期时区与原始 resolve 返回未入库、Serena 实试 2.1.0 而当前模板为 2.1.1.dev0、V2EX 1227194 本轮 TLS 直连受阻沿用仓内记录）；check_repo（709 文件、errors []）与 check_public（1170 文件、findings []）均通过。页面仍为 🟡，本单元事实核查不等于新读者采用通过，未安装或运行任何插件/MCP/Hook。openIssues：[]
+- 产物：[03fd2e2](https://github.com/dbvv1/a1dbv/commit/03fd2e24cbb3c59f56c425872dfd1a2e2c83aa7f)，分支 `relay/a-skill-page-facts-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人决定三处记录精度是否回写页面，并安排页面读者采用验证；本单元范围已完成，无剩余工作单元。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
