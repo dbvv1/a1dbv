@@ -199,6 +199,12 @@
 
 本例由 MOBA 源 `9549ed7` 的原尺寸对照与非作者复评接收，已合入[固定成果 `9311f43e`](https://github.com/dbvv1/MOBA-Like/tree/9311f43e1b396827bf27caebc8ab715f5cb2cc84/asset-pipeline/ground-surfaces)，原件、布局与重建入口随源保存。资源来自[Kenney 官方 CC0 包](https://kenney.nl/assets/nature-kit)。选型同时核过 [Quaternius Nature MegaKit](https://quaternius.com/packs/stylizednaturemegakit.html)与[作者问答](https://www.reddit.com/r/gameassets/comments/1eiazah/)：免费模型不包含 Source 版的定制草／树 shader，预览效果不能直接算作当前引擎的免费交付质量。核实：2026-10-26。
 
+<a id="quiet-material-family"></a>
+
+**🧪 同族材质已有可复用源时，先接入既有保护区域与消费者，不为接线重生成资源。** MOBA 的 quiet 旁置复用三张 WebP、六建筑受保护石材区与五个标准件，以 `materials=quiet-family-v1` 选择；旧 `stylized-diffuse` 公开入口退休，普通页提示后恢复默认，固定出图入口直接报错。新候选替换旧单元而非继续叠加；默认仍保原 forest 渲染。
+
+**接收重点包括失败后的资源归属。** 五标准件若在缺少动作 clip 等后半构造时失败，已分配的路肩几何、材质和克隆骨架仍须释放，共享 GLB 源不能一起销毁；取消也不能再启动一轮默认资产请求。真实 GLB 故障测试与非作者审查验证了这些分支。550 项测试、构建、关闭开关的同输入回放通过；浏览器默认／quiet 从零推进 653／470 tick，但均自然回退 Canvas2D，没有呈现 quiet 材质。此处接收的是复用接线与失败恢复，WebGL 材质、同机位盲评及硬件成本仍待验，尚未部署或换默认。[单份验收与固定源](https://github.com/dbvv1/MOBA-Like/blob/0811894da59740bdc10e0a2318174f3dbb0530d1/docs/side-release-acceptance.md#quiet-材质已有候选重放旁置门槛通过)，2026-11-03。[案例源码／CPU／浏览器功能实测]
+
 | 玩家需要读懂什么 | 最小可复用做法 | 何时增加；何时撤回 |
 |---|---|---|
 | 我在哪里、面朝哪边、与环境是什么空间关系 | ✅ 共用少量主材质与光照预设，先让主体轮廓和地面层次清楚；不靠每件资产独立补光 | 🧪 只给确实被遮住的重要对象加原生 Render Objects 遮挡显示；它能提示位置，不能代替看清脚下危险或通路。全场描边压平层次、暗示本不该知道的敌人信息时收窄范围 [研究] |
