@@ -79,6 +79,7 @@ def main():
             body = link / "SKILL.md"
             entries[name] = {
                 "directory_exists": (cwd / name).exists(), "link_exists": link.exists(),
+                "path_occupied": os.path.lexists(link),
                 "symlink": link.is_symlink(), "body_sha256": digest(body.read_bytes()) if body.is_file() else None,
                 "target": os.readlink(link) if link.is_symlink() else None,
             }
@@ -139,7 +140,25 @@ def main():
         return all(snapshot["entries"][d]["symlink"] and snapshot["entries"][d]["body_sha256"] == hashes[version] for d in DIRS)
 
     def unlinked(snapshot):
-        return all(not snapshot["entries"][d]["link_exists"] for d in DIRS)
+        return all(not snapshot["entries"][d]["path_occupied"] for d in DIRS)
+
+    # exists() follows links: a dangling link must not count as removed.
+    receipt["path_presence_regression"] = []
+    for index, directory in enumerate(DIRS):
+        probe = consumer(f"path-presence-{index}", DIRS)
+        absent = state(probe)
+        assert unlinked(absent)
+        dangling = probe / directory / SKILL_LINK
+        dangling.symlink_to("missing-skill-target", target_is_directory=True)
+        occupied = state(probe)
+        entry = occupied["entries"][directory]
+        assert not entry["link_exists"] and entry["symlink"] and entry["path_occupied"]
+        assert not unlinked(occupied), "A dangling Skill link must count as an occupied path"
+        receipt["path_presence_regression"].append({
+            "directory": directory, "absent": absent, "dangling": occupied,
+            "result": "Missing path accepted; dangling symlink rejected as still present.",
+        })
+    save()
 
     cwd = consumer("consumer", DIRS)
     sentinel = cwd / ".claude/skills/manual-skill/SKILL.md"

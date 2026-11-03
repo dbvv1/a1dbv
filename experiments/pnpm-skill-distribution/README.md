@@ -1,6 +1,6 @@
 # pnpm Agent Skills：审批、链接与失败后的实际状态
 
-**🧪 已有 pnpm 项目确需把同一份 Skill 随包分发到多个客户端目录时，可考虑原生分发；只手工读取一个 Skill，不为此引入包管理链。** 2026-11-03 在云端 Linux x64 用官方 pnpm 12.11.0，实际完成离线安装、审批、两目录链接、换来源、撤回、冲突和缺目录恢复。消费者是临时合成包，正文来自本仓固定模板；没有启动客户端或模型，不算模板真实任务采用或收益验证。
+**🧪 已有 pnpm 项目确需把同一份 Skill 随包分发到多个客户端目录时，可考虑原生分发；只手工读取一个 Skill，不为此引入包管理链。** 2026-11-03 在云端 Linux x64/glibc 用官方 pnpm 12.11.0，实际完成离线安装、审批、两目录链接、换来源、撤回、冲突和缺目录恢复。消费者是临时合成包，正文来自本仓固定模板；没有启动客户端或模型，不算模板真实任务采用或收益验证。
 
 候选来自 [Skill/MCP 广扫的部分产物 9f905b0](https://github.com/dbvv1/a1dbv/blob/9f905b0166278975f9831e7d142b9ca4cae423c5/docs/collaboration/local-jobs/artifacts/A-SKILL-MCP-WIDE-20261029/sources.md)。该广扫超时且终审未完，本次只独立核并试此分发机制，不表示整卡或其他候选通过。
 
@@ -38,23 +38,30 @@
 
 首轮分步调查使用 gzip tarball，上述路径成立。整理公开复现脚本时，第一版错误地生成未压缩 `.tar`，pnpm 报 `Failed to decode gzip: Corrupt data`；随后改用确定性 gzip `.tgz`。该失败的原始命令、输出和脚本哈希保留在 receipt 的 `preliminary_public_harness_attempt`，不把复现夹具错误算成产品缺陷。最终公开脚本实际重跑 13 个 pnpm 命令，其中两次预期错误退出，全部分发断言成立；不是 13 个独立采用任务。
 
+独立审查又发现旧脚本用 `exists()` 判断移除会漏掉悬空符号链接，以及复核示例的固定临时文件可能被重定向覆盖。修订版按 `lexists()` 判断路径占位，并在两个目标目录分别构造悬空链接，确认它们不能算已移除；随后重跑全部分发步骤。原候选与两项修订记录见 receipt 的 `review_revision`，此前 gzip 失败历史仍保留。
+
 ## 怎样复核
 
-先在独立临时目录取得上述官方发行，校验归档完整性；不要执行未经检查的安装脚本。脚本不会替你下载或安装 pnpm，且拒绝二进制或 Skill 哈希不匹配的输入。需要 Python 3 标准库与 Linux x64，输出目录必须不存在。
+先在独立临时目录取得上述官方发行，校验归档完整性；不要执行未经检查的安装脚本。脚本不会替你下载或安装 pnpm，且拒绝二进制或 Skill 哈希不匹配的输入。需要 Python 3 标准库与 Linux x64/glibc，输出目录必须不存在。
 
 ```bash
-git show cf1bacf6daaab1211231bd4cb4a59351aaabfff9:templates/generic/.claude/skills/task-decisions/SKILL.md > /tmp/a1dbv-task-decisions-fixed.md
-python3 experiments/pnpm-skill-distribution/trial.py \
-  --pnpm /path/to/verified/pnpm \
-  --source-skill /tmp/a1dbv-task-decisions-fixed.md \
-  --output /tmp/pnpm-skill-fresh-run
+(
+  set -euC
+  scratch="$(mktemp -d "${TMPDIR:-/tmp}/a1dbv-pnpm-skill.XXXXXXXX")"
+  git show cf1bacf6daaab1211231bd4cb4a59351aaabfff9:templates/generic/.claude/skills/task-decisions/SKILL.md > "$scratch/task-decisions-fixed.md"
+  python3 experiments/pnpm-skill-distribution/trial.py \
+    --pnpm /path/to/verified/pnpm \
+    --source-skill "$scratch/task-decisions-fixed.md" \
+    --output "$scratch/run"
+  printf 'Artifacts: %s\n' "$scratch"
+)
 ```
 
-脚本保留临时包和配置，不自动清理、不覆盖已有输出。输出目录含有 Skill 的字节副本，但没有客户端或模型读取调用。若版本、平台或来源变了，应记录新的试验，不能沿用本次通过。
+示例用 `mktemp -d` 新建独立目录，并启用 `noclobber`，不向固定临时文件重定向。脚本保留临时包和配置，不自动清理、不覆盖已有输出。输出目录含有 Skill 的字节副本，但没有客户端或模型读取调用。若版本、平台或来源变了，应记录新的试验，不能沿用本次通过。
 
 ## 一手说明与未验证范围
 
-- [pnpm Agent Skills](https://pnpm.io/agent-skills)：v12.11.0 起支持，默认只使用已有目录及当前 Agent 可识别目录，不是无条件创建所有客户端目录；也不覆盖 global install、dlx、deploy。官方说明 registry 包批准覆盖后续版本，git／tarball 可按具体来源或仓库批准；本次只实测不同本地 tarball 来源。
+- [pnpm Agent Skills](https://pnpm.io/agent-skills)：v12.11.0 起支持，默认只使用已有目录及当前 Agent 可识别目录，不是无条件创建所有客户端目录；也不覆盖 global install、dlx、deploy。官方说明 registry 包批准覆盖后续版本，git／tarball 按具体来源批准，仅 git 另可按仓库批准；本次只实测不同本地 tarball 来源。
 - [pnpm permissions](https://pnpm.io/cli/permissions)：批准会先记录决定，再执行允许的构建与 Skill 链接；按名称批准不在待批列表中的包会决定全部能力。实际使用先核包请求什么，本次无脚本，不能据此给第三方包整体放行。
 - [构建设置与 skills.dirs](https://pnpm.io/settings/build)：`ignoreScripts` 不阻止 pnpmfile，故本次另禁 pnpmfile；明确目录会创建缺失目录，空列表关闭分发。本次没有验证空列表分支。
 

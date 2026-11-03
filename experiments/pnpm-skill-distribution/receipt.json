@@ -1,5 +1,5 @@
 {
-  "started_utc": "2026-11-03T03:12:57.353415+00:00",
+  "started_utc": "2026-11-03T03:23:11.113697+00:00",
   "source": {
     "repo": "dbvv1/a1dbv",
     "commit": "cf1bacf6daaab1211231bd4cb4a59351aaabfff9",
@@ -9,9 +9,12 @@
   "runtime": {
     "package": "@pnpm/exe.linux-x64",
     "version": "12.11.0",
-    "binary_sha256": "79957904276d2e00848c6ce8c875c472b465c6bdc6454a65469162b9b85f1dde"
+    "binary_sha256": "79957904276d2e00848c6ce8c875c472b465c6bdc6454a65469162b9b85f1dde",
+    "os": "linux",
+    "cpu": "x64",
+    "libc": "glibc"
   },
-  "script_sha256": "4dbad9dd0d1bd9f89988e005ab5b29d826e3267c39f8961909641f070bae1776",
+  "script_sha256": "196b95e98d166eab31c115107da3997f2cace99d917ea668d3eaabc97b0583c9",
   "normalization": "Only the scratch-root path (including diagnostic line wrapping within it) and binary path are replaced with <TRIAL_ROOT> and pnpm. Outputs otherwise retained.",
   "scope": "Synthetic local package and consumers; real pnpm commands and filesystem results. No client or model adoption.",
   "runs": [
@@ -29,6 +32,7 @@
           ".claude/skills": {
             "directory_exists": false,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -36,6 +40,7 @@
           ".agents/skills": {
             "directory_exists": false,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -64,6 +69,7 @@
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -71,6 +77,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -95,6 +102,7 @@
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": true,
             "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
             "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
@@ -102,6 +110,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": true,
             "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
             "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
@@ -124,13 +133,14 @@
         "--frozen-lockfile"
       ],
       "exit_code": 0,
-      "stdout": "✓ Lockfile passes supply-chain policies (verified 35ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 11ms using pnpm v12.11.0\n",
+      "stdout": "✓ Lockfile passes supply-chain policies (verified 37ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 12ms using pnpm v12.11.0\n",
       "stderr": "",
       "state": {
         "entries": {
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": true,
             "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
             "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
@@ -138,6 +148,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": true,
             "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
             "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
@@ -160,13 +171,14 @@
         "--no-frozen-lockfile"
       ],
       "exit_code": 0,
-      "stdout": "✓ Lockfile passes supply-chain policies (verified 58ms ago)\nPackages: +1 -1\n+-\nProgress: resolved 1, reused 0, downloaded 1, added 1, done\nAgent skills awaiting approval: a1dbv-template-trial@file:../package/template-v2.tgz.\nRun \"pnpm approve\" to review them.\n\ndependencies:\n- a1dbv-template-trial file:../package/template-v1.tgz\n+ a1dbv-template-trial 2.0.0\n\nDone in 15ms using pnpm v12.11.0\n",
+      "stdout": "✓ Lockfile passes supply-chain policies (verified 62ms ago)\nPackages: +1 -1\n+-\nProgress: resolved 1, reused 0, downloaded 1, added 1, done\nAgent skills awaiting approval: a1dbv-template-trial@file:../package/template-v2.tgz.\nRun \"pnpm approve\" to review them.\n\ndependencies:\n- a1dbv-template-trial file:../package/template-v1.tgz\n+ a1dbv-template-trial 2.0.0\n\nDone in 14ms using pnpm v12.11.0\n",
       "stderr": "",
       "state": {
         "entries": {
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -174,6 +186,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -198,6 +211,7 @@
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": true,
             "body_sha256": "899ab8462ac04e78e9285776250d07850914e2866bbfbe2b459eeffb1241a48b",
             "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v2.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
@@ -205,6 +219,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": true,
             "body_sha256": "899ab8462ac04e78e9285776250d07850914e2866bbfbe2b459eeffb1241a48b",
             "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v2.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
@@ -229,6 +244,7 @@
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -236,6 +252,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -264,6 +281,7 @@
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": false,
             "body_sha256": "5b970c8d550d7dfe2486cbf21370a8e39a2513bf416b344abbb9c39f6f040b47",
             "target": null
@@ -271,6 +289,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -289,12 +308,13 @@
       ],
       "exit_code": 1,
       "stdout": "",
-      "stderr": "Error: ERR_PNPM_AGENT_SKILL_PATH_OCCUPIED\n\n  × Cannot link an agent skill at \"<TRIAL_ROOT>/consumer-conflict/.claude/skills/pnpm-a1dbv-template-trial-task-\n  │ decisions\", because pnpm did not create the entry already there\n  help: Remove the entry, or name other agent skill directories in the\n        skills.dirs setting.\n\n",
+      "stderr": "Error: ERR_PNPM_AGENT_SKILL_PATH_OCCUPIED\n\n  × Cannot link an agent skill at \"<TRIAL_ROOT>/consumer-conflict/.claude/skills/pnpm-a1dbv-template-\n  │ trial-task-decisions\", because pnpm did not create the entry already there\n  help: Remove the entry, or name other agent skill directories in the\n        skills.dirs setting.\n\n",
       "state": {
         "entries": {
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": false,
             "body_sha256": "5b970c8d550d7dfe2486cbf21370a8e39a2513bf416b344abbb9c39f6f040b47",
             "target": null
@@ -302,6 +322,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -324,13 +345,14 @@
         "--frozen-lockfile"
       ],
       "exit_code": 0,
-      "stdout": "✓ Lockfile passes supply-chain policies (verified 41ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 14ms using pnpm v12.11.0\n",
+      "stdout": "✓ Lockfile passes supply-chain policies (verified 38ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 10ms using pnpm v12.11.0\n",
       "stderr": "",
       "state": {
         "entries": {
           ".claude/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": false,
             "body_sha256": "5b970c8d550d7dfe2486cbf21370a8e39a2513bf416b344abbb9c39f6f040b47",
             "target": null
@@ -338,6 +360,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": true,
             "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
             "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
@@ -359,13 +382,14 @@
         "append-only"
       ],
       "exit_code": 0,
-      "stdout": "Progress: resolved 1, reused 0, downloaded 0, added 0\nPackages are hard linked from the content-addressable store to the virtual store.\n  Content-addressable store is at: <TRIAL_ROOT>/store/v11\n  Virtual store is at:             node_modules/.pnpm\nPackages: +1\n+\nProgress: resolved 1, reused 1, downloaded 0, added 1, done\nAgent skills awaiting approval: a1dbv-template-trial@file:../package/template-v1.tgz.\nRun \"pnpm approve\" to review them.\n\ndependencies:\n+ a1dbv-template-trial 1.0.0\n\nDone in 14ms using pnpm v12.11.0\n",
+      "stdout": "Progress: resolved 1, reused 0, downloaded 0, added 0\nPackages are hard linked from the content-addressable store to the virtual store.\n  Content-addressable store is at: <TRIAL_ROOT>/store/v11\n  Virtual store is at:             node_modules/.pnpm\nPackages: +1\n+\nProgress: resolved 1, reused 1, downloaded 0, added 1, done\nAgent skills awaiting approval: a1dbv-template-trial@file:../package/template-v1.tgz.\nRun \"pnpm approve\" to review them.\n\ndependencies:\n+ a1dbv-template-trial 1.0.0\n\nDone in 15ms using pnpm v12.11.0\n",
       "stderr": "",
       "state": {
         "entries": {
           ".claude/skills": {
             "directory_exists": false,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -373,6 +397,7 @@
           ".agents/skills": {
             "directory_exists": false,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -397,6 +422,7 @@
           ".claude/skills": {
             "directory_exists": false,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -404,6 +430,7 @@
           ".agents/skills": {
             "directory_exists": false,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -426,13 +453,14 @@
         "--frozen-lockfile"
       ],
       "exit_code": 0,
-      "stdout": "✓ Lockfile passes supply-chain policies (verified 39ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 12ms using pnpm v12.11.0\n",
+      "stdout": "✓ Lockfile passes supply-chain policies (verified 52ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 11ms using pnpm v12.11.0\n",
       "stderr": "",
       "state": {
         "entries": {
           ".claude/skills": {
             "directory_exists": false,
             "link_exists": false,
+            "path_occupied": false,
             "symlink": false,
             "body_sha256": null,
             "target": null
@@ -440,6 +468,7 @@
           ".agents/skills": {
             "directory_exists": true,
             "link_exists": true,
+            "path_occupied": true,
             "symlink": true,
             "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
             "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
@@ -450,7 +479,105 @@
       }
     }
   ],
-  "completed_utc": "2026-11-03T03:12:57.624254+00:00",
+  "path_presence_regression": [
+    {
+      "directory": ".claude/skills",
+      "absent": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "path_occupied": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "path_occupied": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\n",
+        "lock_sha256": null
+      },
+      "dangling": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "path_occupied": true,
+            "symlink": true,
+            "body_sha256": null,
+            "target": "missing-skill-target"
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "path_occupied": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\n",
+        "lock_sha256": null
+      },
+      "result": "Missing path accepted; dangling symlink rejected as still present."
+    },
+    {
+      "directory": ".agents/skills",
+      "absent": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "path_occupied": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "path_occupied": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\n",
+        "lock_sha256": null
+      },
+      "dangling": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "path_occupied": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "path_occupied": true,
+            "symlink": true,
+            "body_sha256": null,
+            "target": "missing-skill-target"
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\n",
+        "lock_sha256": null
+      },
+      "result": "Missing path accepted; dangling symlink rejected as still present."
+    }
+  ],
+  "completed_utc": "2026-11-03T03:23:11.406845+00:00",
   "assertions": "All specified distribution assertions passed, including two expected error exits and preserved approval state.",
   "unverified": [
     "Client discovery/loading",
@@ -562,5 +689,56 @@
       "sha512_verified_before_execution": true,
       "install_scripts_executed": false
     }
+  },
+  "review_revision": {
+    "previous_candidate_commit": "f31d13103c345f1cc1fb86d7872e09a96a80e075",
+    "previous_script_sha256": "4dbad9dd0d1bd9f89988e005ab5b29d826e3267c39f8961909641f070bae1776",
+    "previous_receipt_sha256": "343e2bab4d453bb2e422d6c7e2d26bd6bbd49bc078f758cb0709759ebd24f878",
+    "findings": [
+      "exists() alone accepts dangling symlinks as removed.",
+      "README fixed temporary-file redirection could overwrite an existing file."
+    ],
+    "fixes": [
+      "Use lexists() for path_occupied and unlinked(); preserve exists() and symlink() observations separately.",
+      "Use a unique mktemp -d directory and noclobber in the README shell example."
+    ],
+    "rerun": "README shell executed twice in distinct fresh directories; each completed 13 pnpm commands, both expected approval errors, and both dangling-link counterexamples.",
+    "safety_regressions": [
+      {
+        "case": "existing output",
+        "exit_code": 1,
+        "result": "Refused; existing receipt bytes unchanged."
+      },
+      {
+        "case": "binary-hash",
+        "exit_code": 1,
+        "result": "Refused before creating output."
+      },
+      {
+        "case": "source-hash",
+        "exit_code": 1,
+        "result": "Refused before creating output."
+      },
+      {
+        "case": "missing-source",
+        "exit_code": 1,
+        "result": "Refused before creating output."
+      },
+      {
+        "case": "README noclobber",
+        "exit_code": 1,
+        "result": "Existing file redirection refused; original bytes preserved."
+      },
+      {
+        "case": "old-predicate mutation",
+        "exit_code": 1,
+        "result": "Rejected at dangling-link regression before distribution commands; expected regression failure."
+      }
+    ],
+    "history": "Previous candidate remains in Git history. preliminary_public_harness_attempt and distribution_source are retained unchanged.",
+    "documentation_corrections": [
+      "The verified native package is Linux x64/glibc, as declared by its package metadata.",
+      "Git and tarball dependencies support exact-source approval; repository-wide approval applies only to git, per the official Agent Skills documentation."
+    ]
   }
 }
