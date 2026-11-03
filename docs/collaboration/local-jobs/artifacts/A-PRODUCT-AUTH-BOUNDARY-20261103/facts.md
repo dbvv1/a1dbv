@@ -47,7 +47,7 @@
 |---|---|---|---|---|---|
 | ① 既有本地／开源 app-server 认证 | 已用 Codex app-server 认证的本地或开源应用 | "you can continue using it"；建议迁 SIWC；"never been permitted for commercial or hosted services" | 是否确属 local／open-source；账号或 workspace 的模型访问；迁移后的 plan usage 资格 | 可保留 app-server 运行面（本地 shell、MCP、子代理、审批、事件）；限制在认证入口，不是 harness 代码 | "local" 未定义（局域网、远程终端、他人机器）；未按 `apikey`／`chatgpt`／`chatgptAuthTokens` 等模式细分；未标明引入版本 |
 | ② Sign in with ChatGPT 身份登录 | 网站、ChatGPT plugin、开源客户端的登录步骤 | 身份 scope 为 `openid profile email`，返回 ID token；"Identity-only integration is currently offered to a select group of commercial partners" | 客户端类型是否受邀；身份登录只证明身份，不含 API 或 plan 访问 | 应用自有会话、账号体系与业务 harness 不变 | 选定商业伙伴的标准未公布；身份-only 受邀名单与开源 plan usage 流程的适用边界未逐项说明 |
-| ③ 明确获准的 plan usage | 开源项目、个人本地项目、selected private apps／clients；合格 ChatGPT Plus／Pro 用户 | 可选能力；需单独 Responses API scope；"available to all open-source partners and selected private clients"；受 preview 限制 | 应用是否获批；用户 plan 与 workspace 政策；`chatgpt.tokens.use.direct` scope；所选模型的实际访问 | app-server harness 可留；推理走 Responses API；hosted 工具受限（见下节） | "selected private" 的标准、per-app 配额与审批时点未公布；quickstart 写 "open-source partners"，cookbook 写 "open-source projects, personal projects that run locally"，是否需先登记为 partner 未说明 |
+| ③ 明确获准的 plan usage | 开源项目、个人本地项目、selected private apps／clients；合格 ChatGPT Plus／Pro 用户 | 可选能力；需单独 Responses API scope；"available to all open-source partners and selected private clients"；受 preview 限制 | 应用是否属于当前开放范围；selected private／商业合作路径是否获得相应资格；用户 plan 与 workspace 政策；`chatgpt.tokens.use.direct` scope；所选模型的实际访问 | app-server harness 可留；推理走 Responses API；hosted 工具受限（见下节） | "selected private" 的标准、per-app 配额与审批时点未公布；quickstart 写 "open-source partners"，cookbook 写 "open-source projects, personal projects that run locally"，是否需先登记为 partner 未说明 |
 | ④ 个人自托管 VM | 同一用户／workspace 的开源应用运行在远程 VM | 官方 VM 指南：先建 host ID、在本地以 `127.0.0.1` 完成 OAuth、经安全通道转移凭据、由 VM 刷新 token | 仍按②／③的客户端与 plan 资格；必须本机完成 OAuth；保护 `client_id`、`access_token`、`refresh_token` 等凭据文件 | 本地 shell／MCP／子代理在 VM 上运行；hosted 工具同样受限 | 原文写明 "Host-specific usage attribution and revocation of ChatGPT plan access for transferred sessions are not yet available"；多用户、代人托管未覆盖；非开源个人应用是否同样适用未说明 |
 | ⑤ 付费或面向他人的托管服务 | 收费应用、远程托管给他人使用的服务 | 不在上述 OSS／本地文档范围；app-server auth 从未允许；走 SIWC partner waitlist／interest form；商业伙伴目前为 limited trial | 是否获 partner 资格；条款与计费另定 | 技术代码可复用，但不产生认证资格；认证与计费须另行安排 | 审批标准、时间、plan usage 是否可用、commercial 与 hosted 的完整边界均未公布 |
 
@@ -68,7 +68,7 @@
 | 读者问题 | 结论 | 该查哪个官方入口 |
 |---|---|---|
 | 自制收费服务能否直接照搬既有 app-server 登录 | 不能按 app-server 认证直接照搬；官方把 commercial／hosted 排除在外，指向 SIWC 合作名单 | app-server #auth-endpoints 的范围段；SIWC quickstart 的资格段；[interest form](https://openai.com/form/sign-in-with-chatgpt-interest/)（本卡未打开或提交） |
-| 身份登录成功是否就获模型额度权限 | 不；身份 scope 只给登录身份，plan usage 要单独 scope、应用获批且用户为合格 Plus／Pro | quickstart 的 "Understand scopes"；cookbook 的 `sharing` 标志与 plan usage 段；preview limitations |
+| 身份登录成功是否就获模型额度权限 | 不；身份登录不够；plan usage 要另授相应 scope，并满足应用开放范围及用户资格，不能仅凭身份登录成功判断 | quickstart 的 "Understand scopes"；cookbook 的 `sharing` 标志与 plan usage 段；preview limitations |
 | `model/list` 有模型、或本地 MCP 可用，是否证明托管工具也可用 | 不；`model/list` 只是目录，本地工具与 hosted 工具分开，preview 明确列出不支持的 hosted 能力 | SIWC codex-app-server 的 `model/list` 段；preview limitations 的 tools 段 |
 
 ## 日期、版本与事实层级
