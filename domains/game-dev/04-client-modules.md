@@ -786,7 +786,7 @@ FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac
 
 先沿下方[设置草稿与保存](#菜单也是控制的一部分)增加交互键一行：先撤该动作的玩法权限、停用目标 action，再捕获该玩家、目标 binding 与允许的设备／控件类型，UI 保留取消入口。完成或取消都释放 `RebindingOperation`，是否重新启用按当前菜单／玩法模式决定；用 `OnApplyBinding` 截获候选仅存草稿，应用才提交运行绑定；若采用原生临时覆盖，完成取出候选后和取消时都还原进入前的 override。应用后按稳定 binding 身份保存 override JSON、更新提示并实际操作；恢复默认也同步清掉已保存 override，重开不反弹旧键。新增／删除绑定属于配置版本变化，不能只靠恢复旧 JSON 迁移。
 
-**网页实现也沿原动作链，键位、输入消费者与提示共用一份绑定。** [MOBA 键位候选与接线说明](../../experiments/moba-keybindings/README.md)把有效值／草稿接到原 `createControls → SimCommand → Simulation`，保 QWER 默认和逻辑 `key` 语义，冲突先拒绝、明确选择才交换；进入设置释放旧瞄准，应用成功后再更新提示和操作。源码 CPU 已验真实命令消费；该原 CPU 示例未接设置 UI，后续作品界面实测见下段；不覆盖组合键、非拉丁键、手柄与多人，不据此改变原生引擎选择。
+**✅ 网页键鼠采用：动作身份固定，操作键和所有提示一起更新。** [MOBA 完整改键接线](../../experiments/moba-keybindings/README.md)已进入作品 main：设置行显示草稿，输入与 HUD／帮助／英雄提示读同一个 bindings 的有效值；把 Q 改为 F 后，按钮写 F、发送的仍是技能槽 Q，规则和回放无需改键迁移。冲突明确选择交换后才同时改两行动作；保存成功才更新操作与提示。当前固定源复跑 45 项 CPU／DOM 回归与网页类型检查通过，覆盖新键真实施法、旧键无效、同步提示与重开读取（2026-11-03）；下段保留历史浏览器实测范围。它保 QWER 默认和逻辑 `key` 语义，组合键、非拉丁键、手柄与多人仍需扩明确模型。
 
 **网页输入 smoke 同时核真实事件和观测时序。** MOBA v11 关闭改键设置后用 `page.mouse.move` 回到 canvas；`focus()` 不会恢复 `pointerInside`。测右键移动→S 停止时，在真实 S `keydown` 消费前记录仍活跃的 `moveGoal` 与已发生位移，停止后位置须保持在按键时位置；等“已位移”后再异步读状态可能错过停止前窗口，自然到达也不能算 S 生效。pointer 命令在 canvas 业务处理后用 window bubble 采样，不假定 capture＋`queueMicrotask` 晚于业务回调。本例 headless software smoke 已通过改键、移动／停止与保存续玩；仅是这些页面输入功能证据，不代验下节控件归属／失焦场景、人工手感或 GPU／原生引擎。
 

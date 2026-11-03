@@ -17,7 +17,7 @@
 |---|---|---|
 | 游戏循环、固定步长与确定性回放 | [05 游戏循环](05-gameplay-architecture.md) | 案例证实（网页） |
 | 流程与场景状态机（启动、菜单、加载、对局、结算） | [05](05-gameplay-architecture.md)、[04 场景切换](04-client-modules.md) | 可用 |
-| 输入与操作手感 | [04 输入](04-client-modules.md) | 可用 |
+| 输入与操作手感 | [04 输入](04-client-modules.md#input-production) | 案例证实（网页键鼠接线）；原生手柄／多人方案可用、未实测，手感待评 |
 | 相机 | [05 相机](05-gameplay-architecture.md)、[04](04-client-modules.md) | 可用 |
 | 战斗、技能与命中反馈 | [05 战斗与技能](05-gameplay-architecture.md) | 案例证实（网页） |
 | AI 行为与寻路 | [05](05-gameplay-architecture.md) | 案例证实（网页） |
