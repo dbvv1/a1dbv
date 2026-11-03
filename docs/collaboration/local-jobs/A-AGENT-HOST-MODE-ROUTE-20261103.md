@@ -1,7 +1,7 @@
 # A-AGENT-HOST-MODE-ROUTE-20261103 · Agent shell 独有失败先查被测 CLI 模式
 id: A-AGENT-HOST-MODE-ROUTE-20261103
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 20b695b7b2364afafe0fed2d2126ffa8beffb1c8
@@ -42,4 +42,8 @@ L22 的反向 Agent 拒绝控制只通过合成确认输入／测试替身验证
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 按修改要求仅精修 proposal.md 的测试隔离范围：显式 falsy 对照与反向 agent 拒绝控制均限定在独立、隔离、无真实服务/数据副作用且使用合成确认输入或测试替身的测试夹具中，无法确认隔离则保留已有失败并停止对照；失败保全、三问第 2 问与采用/退出条件同步收口，保留了叶子任务 env、init 缓存/ResetForTesting、精确 truthy/falsy、与 Vitest 段的去重及作者自报分层；固定页面输入与两份 gcx 源码版本不变。三路独立审查通过，check_repo 741 文件 0 错、check_public 1207 文件 0 发现，外链 200，diff 为 6 增 6 删仅 proposal.md；按任务未运行 gcx/Go/mise/测试，未读用户环境/凭据/日志，未提交或改任务文件。
+- 产物：[001e43f](https://github.com/dbvv1/a1dbv/commit/001e43f323cf5f18bb334dbb00c81489e38f1700)，分支 `relay/a-agent-host-mode-route-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端置 review_ready 并按 operations §1 用 noreply 身份提交本工作树改动（当前 user.email 非 noreply）；负责人复核后决定 17 落页是否采用，本单元不直接改 17/15；任务文件状态与当前结果由接收端更新。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
