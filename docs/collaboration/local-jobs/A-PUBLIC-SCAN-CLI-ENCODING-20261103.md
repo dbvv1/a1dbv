@@ -1,7 +1,7 @@
 # A-PUBLIC-SCAN-CLI-ENCODING-20261103 · 非 UTF-8 输出环境仍交完整扫描 JSON
 id: A-PUBLIC-SCAN-CLI-ENCODING-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 76011c6b861b2d3f2a54c1171bb98d8057b40dbc
