@@ -1,7 +1,7 @@
 # A-SENTRY-MIGRATION-CONTRACT-20261103 · 分清迁移阶段并撤除临时规则
 id: A-SENTRY-MIGRATION-CONTRACT-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 147f3353dfaf0640f9e9a129da3bd9b6f82ae152
@@ -33,3 +33,11 @@ result_branch: relay/a-sentry-migration-contract-20261103
 非作者从固定原文和源码独立回答：V8导入是否足以允许V8行为；阶段二哪些环境运行哪个major/adapter；切完后哪些临时验证和规则应撤、哪些行为仍保留。逐问给证据与候选位置，至少核一个反例。
 候选不得把历史V6写成现状，不承诺普适收益，不把静态审稿升为真实迁移/新读者通过；若现有15实际已覆盖同一选择，返回负结果而非硬添一段。
 一个45–75分钟单元，最多两小时；原接收端共享最多4并行调度，不另起调用。按既有Workflow非作者审查、check_repo、check_public、git diff --check与身份检查，仅推result_branch回review_ready；不用accept:auto，不合main。
+
+## 当前结果
+
+- 新增 proposal.md，给出可直接合入 docs/15-task-playbooks.md §5 的最小补充候选（并行主版本迁移按实际解析到的 runtime/adapter 写规则与验证，完成切换后清理双版本与兼容指令），并附原句缺口、阶段→固定来源、三问证据与三个反例、反馈取舍、指令示例和不适用边界。openIssues 为空；check_repo（742 文件）与 check_public（1208 文件）均无错误，git diff --check 通过。本单元仅产静态审稿，未运行 Sentry/未复跑其 85/121/427 项测试、未做新读者实测，历史 V6 未写成现状。
+- 产物：[60be529](https://github.com/dbvv1/a1dbv/commit/60be529be34a7fc6f30e8ad3ae9458b44dd29430)，分支 `relay/a-sentry-migration-contract-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端更新本卡状态并把 proposal.md 提交后推 result_branch 回 review_ready；无遗留缺口。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
