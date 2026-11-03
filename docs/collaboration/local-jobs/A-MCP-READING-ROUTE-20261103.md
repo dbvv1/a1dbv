@@ -1,10 +1,10 @@
 # A-MCP-READING-ROUTE-20261103 · 把真实长报告消费接入 MCP 选择路线
 id: A-MCP-READING-ROUTE-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 17c984ae31ac532fe69bce0f89e72572f6651545
+base_ref: 04f31d0c534cb674546e7a1771f3278b8636ea92
 result_branch: relay/a-mcp-reading-route-20261103
 
 ## 目标
@@ -33,6 +33,13 @@ result_branch: relay/a-mcp-reading-route-20261103
 计数、预算对象、元数据额外成本、原失败与当前未验范围逐项保真；当前默认/原实例不被覆盖，候选不称新实跑或完整可照做验收。没有独立自然读者任务时明确保待验，不创建替身任务。
 这是纯文档建议，适用check_repo.py、check_public.py、git diff --check及身份/实际diff审查；不跑check_offline、无关实验或目标运行。缺检查依赖则如实报告，不安装或修改接收器。
 完成上述建议即回传，不为填满时长扩题；通常60–90分钟，最多两小时。原接收端核退出/单写并按共享最多4并行领取，同一id不重复派发；碰到同题在制或明确拒绝停对应动作并保现状。
+
+## 修改要求
+沿原 result_branch 从 04f31d0c534cb674546e7a1771f3278b8636ea92 仅修 proposal.md 的三组事实与必要同步；原受检输入仍为 9f905b0／25faf672，不随续接 base_ref 改变。先核原调用、工具和登记进程均已结束及原产物单写；缺证保持隔离，不启动续接或改旧文件。不重跑实验、不新读者／新任务，不改 04、其他页、模板、既有实验或接收器。
+1. L8–14 的尾部缺失必须逐项对照原公开输入与缩短 content，不称只留节名或把仍保留的事实列为丢失：缩短文本仍完整包含“本轮未饱和，以下缺口按未读到…”及 §6 不安装／运行／登录的整句；实际缺失可定位到固定 sources.md L805 括注“URL 未保留，无法补读”、L808“528 项均未安装、未运行、未调用”及 L809“标‘摘要’的条目不能当当前机制；标‘作者自报’的数字不能当独立结论”；L805 仅保开头，后两行被省略标记替代。保恢复完整正文的真实用途，不将部分内容缺失夸成整组事实全部消失。
+2. L28／57 的调用与计数收窄：本轮按需取一次 schema 并复用于后续调用，不是每次调用都另取；medium／max 各一次供四次 invoke，medium-shrink 一次供五次 invoke（含 full 恢复），direct 无额外 schema 调用；971 字符额外 metadata 只适用于本轮后端 read_text_file 结果，不含 initialize、tools/list 或 schema。L30 写实际 Python 3.12.14；3.11+ 仅是复现前提，不能当本轮运行版本。保已核目录 12579→2331、schema 2021、text 9072／整包 152111 等原值及其对象，不扩为所有服务固定开销。
+3. full=true 限定为已启用 shrinkfit 的标准 MCP *_invoke_tool 包装入口，参数位于 tool_input 外，须保持原 tool、参数与 context；缓存命中取原响应，未命中可能重执行后端而产生新的完整结果。故只沿既有只读请求恢复，不把恢复 SHA 一致泛化为缓存命中证明或写工具安全重试；保未测缓存命中／驱逐／写工具及原字段外新增 display_meta 的边界。§7 第四项“解释写风险”须伴随独立自然任务的真实操作，解释本身不能替代新读者照做实测。
+非作者只读固定回执、公开脚本／源码与本次差量逐项核对，之后回 review_ready；保首轮 101 行产物和审查自报于原历史，不将 pass=true／fixRounds=0 当完整验收。不据此次建议稿升级🟡／地图；旧 04 写者退出仍未知，正文不动。
 
 ## 当前结果
 
