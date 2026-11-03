@@ -34,15 +34,17 @@ network_access = false
 
 这是官方常用组合的显式写法；也可单次用 `codex --sandbox workspace-write --ask-for-approval on-request`。需要联网装依赖时，为所需动作申请访问，或在环境准备阶段先安装。读代码而不改文件时将沙箱改为 `read-only`。
 
-**默认仍可读取工作区外的许多文件；有秘密拒读或域名白名单需求，再选 Beta permission profiles。** 它与上面的旧式沙箱配置二选一；已加载的 `sandbox_mode` 或 `--sandbox` 会使普通配置转用旧机制。域名策略还要启用 `features.network_proxy`，仅填写 domains 不会过滤直连。具体配置见官方 [Permissions](https://learn.chatgpt.com/docs/permissions)。
+**有秘密拒读或域名白名单需求，再选 Beta permission profiles。** 普通配置中它不与旧式沙箱组合；已加载的 `sandbox_mode`、`--sandbox` 或所选 config profile 中的 `sandbox_mode` 会使配置转用旧机制。托管 `allowed_permission_profiles` 是例外，排查前先核托管要求。
+
+要允许联网并按域名过滤，需同时有 profile 的 `network.enabled = true` 与已启用的代理：本地看 `features.network_proxy`，托管环境看管理员配置的 `[experimental_network]`。仅填 domains 不过滤直连，只开代理也不自动放通网络。配置与平台范围见官方 [Permissions](https://learn.chatgpt.com/docs/permissions)。
 
 **想减少越界审批，先看当前审核者与 Auto-review 是否适用。** `approvals_reviewer = "auto_review"` 把适用的请求交给独立审核者，仍保留沙箱边界；它要求 `on-request` 或会产生相应请求的 granular 审批策略。`approval_policy = "never"` 没有请求可审，超出边界的动作可能失败。托管要求优先于本地设置；日常开发不用 Full Access 来修复反复询问。
 
-**依据**：[一手] [Codex 审批与安全](https://learn.chatgpt.com/docs/agent-approvals-security)（原核实 2026-10-26）、[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)（核实 2026-10-28）；[本地] 2026-10-26 用 Codex CLI 0.163.0 的 `--help` 核对上述启动参数；配置未部署。
+**依据**：[一手] [Codex 审批与安全](https://learn.chatgpt.com/docs/agent-approvals-security)（原核实 2026-10-26）、[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review)（核实 2026-10-28）；[本地] 2026-10-26 用 Codex CLI 0.163.0 的 `--help` 核对上述启动参数；配置未部署。2026-11-03 补核 profiles 的托管例外与网络前提，仅核官方文档，未运行客户端。
 
 ## Claude Code：编辑自动通过，命令留在沙箱
 
-**可信项目可从 `acceptEdits` 加沙箱 auto-allow 开始。** 先用 `/status` 看加载来源、`claude doctor` 看被拒绝的配置，再到 `/sandbox` 的 Config 页核有效设置；`/status` 只列来源，不逐键显示生效值。确需补配置时，才将下例合并到 `~/.claude/settings.json`；团队强制边界由管理员放到 managed settings。
+**可信项目可从 `acceptEdits` 加沙箱 auto-allow 开始。** 先用 `/status` 看加载来源、`claude doctor` 看被拒绝的配置，再到 `/sandbox` 的 Config 页核有效设置；`/status` 只列来源，不逐键显示生效值。确需补配置时，才将下例合并到 `~/.claude/settings.json`；团队强制边界由管理员放到 managed settings。**下例用于 macOS、Linux 或 WSL2；原生 Windows 先进入受支持环境，否则 `failIfUnavailable: true` 会让客户端启动退出。**
 
 ```json
 {
@@ -58,12 +60,12 @@ network_access = false
 }
 ```
 
-编辑与被沙箱容纳的常规命令可连续执行；缺必需沙箱依赖时退出，命令也不能通过 unsandboxed retry 离开边界。**先检查已有 `excludedCommands`**：它们另行决定哪些命令直接在沙箱外运行，新增上面四项不会清空它们。
+`acceptEdits` 也会自动批准工作目录及 `additionalDirectories` 内的 `rm`、`mv` 等常用文件系统命令；写受保护路径或被识别的 `rm`／`rmdir` 关键路径删除仍需询问。上例在缺必需沙箱依赖时退出，并禁止 unsandboxed retry。**先检查已有 `excludedCommands` 及其设置层**：有效条目可让命令直接在沙箱外运行，新增上面四项不会清空它们；沙箱为 admin-required 时，仓库设置里的排除项会被忽略，不能据此推断用户或托管层也没有排除项。
 
-- **需要访问新服务**：按实际用途批准目标域名。要锁定列表，在用户级或托管配置设 `sandbox.network.strictAllowlist`；文件工具与 WebFetch 另受工具权限约束。
-- **环境里有秘密**：默认命令可读取多数宿主文件，也继承环境变量；同时限制文件工具读取与命令子进程的凭证。`sandbox.credentials` 的 deny 当前可由各设置层收窄；默认没有完整凭证清单。需要把 Hook、MCP 一并限制时，改用整个 Agent 的容器／虚拟机边界。
+- **需要访问新服务**：按实际用途批准目标域名。要锁定列表，在用户级、托管配置或 `--settings` 设 `sandbox.network.strictAllowlist`（v2.1.219+）；项目／本地设置中的该键无效。文件工具与 WebFetch 另受工具权限约束。
+- **环境里有秘密**：默认命令可读取多数宿主文件，也继承环境变量；同时限制文件工具读取与命令子进程的凭证。`sandbox.credentials` 的 deny 条目合并，其他设置层不能撤销已有 deny；默认没有内建凭证拒绝清单。需要把 Hook、MCP 一并限制时，改用整个 Agent 的容器／虚拟机边界。
 
-**依据**：[一手] [权限模式](https://code.claude.com/docs/en/permission-modes)、[沙箱与凭证](https://code.claude.com/docs/en/sandboxing)、[设置来源](https://code.claude.com/docs/en/settings)；[开源示例] [Anthropic 仓库 settings](https://github.com/anthropics/claude-code/tree/main/examples/settings)（仓库注明为社区维护示例）；本段配置未部署、未试用。核实 2026-10-26。
+**依据**：[一手] [权限模式](https://code.claude.com/docs/en/permission-modes)、[沙箱与凭证](https://code.claude.com/docs/en/sandboxing)、[设置来源](https://code.claude.com/docs/en/settings)；[开源示例] [Anthropic 仓库 settings](https://github.com/anthropics/claude-code/tree/main/examples/settings)（仓库注明为社区维护示例）；本段配置未部署、未试用。原核实 2026-10-26；2026-11-03 补核平台、自动批准范围与设置层级，仅核官方文档。
 
 **常规命令仍反复询问，才补与本项目匹配的窄规则。** Anthropic 的 Python Agent SDK 实际允许 `Bash(python -m pytest tests/)` 等具体测试／检查命令，可借其粒度，不照抄为 `Bash(python *)`。测试仍会执行仓库代码；匹配的 `allow` 也会批准 unsandboxed retry，因此保留上面的严格沙箱并核 `excludedCommands`。用户级 `allowUnsandboxedCommands:false` 压过项目级 `true` 需 Claude Code v2.1.285+。
 
