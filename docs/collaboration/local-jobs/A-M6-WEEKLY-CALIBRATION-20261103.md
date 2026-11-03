@@ -1,7 +1,7 @@
 # A-M6-WEEKLY-CALIBRATION-20261103 · 上个完整自然周的发现校准
 id: A-M6-WEEKLY-CALIBRATION-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2c3287bab9306010137bc99088a251c21feb4669
@@ -33,3 +33,11 @@ HN 入口只用目前允许的 hn.algolia.com search／items API。本轮尚未�
 非作者从固定 sample.json 逐项核ID、顺序、窗口、两个样本去重、基线实际命中与原文支持；能复查本次到底漏了什么／已知什么／为什么无需动作，未取得证据的仍为未知。验收原稿而不重新查询一份排名替换冻结名单。
 有价值的缺口须交读者下一步；允许没有新增选择。缺失或无效来源不能计成成功、完整覆盖或零遗漏。保留旧周结果和两广扫状态，不把本次叫新自然读者、工具采用或方法效果验证。
 一个60–90分钟单元，最多两小时；共享调度由原接收端执行，不另起调用。按原Workflow非作者审查、check_repo/check_public、空白及身份检查，仅推 result_branch 回 review_ready，不用 accept:auto；输入、权限或连通性不足就交材料和确切恢复条件，不启动重复调用。
+
+## 当前结果
+
+- 完成 2026-10-26～11-01 周校准：主样本 "Claude Code"（nbHits 93，返回 10）与补充样本 "coding agent"（nbHits 40，返回 10）冻结为 20 个唯一 HN ID，逐项读取分级并与 base_ref 2c3287ba 及两份已交正式稿去重；结论为无已确认、可直接改变读者动作的新遗漏，保留 10-26 路线，另列两项待核线索（Compaction Laundering，仅读 arXiv 摘要；账号邮箱进入模型上下文 issue #81138，单一 issue 未独立复现）；限制：X/Reddit 不可读、doublepulsar 403、arXiv 全文未读、大帖仅读顶层评论；openIssues 为空。未提交未推送，接收端需按 operations §1 以允许身份提交并推送 result_branch。
+- 产物：[536b86d](https://github.com/dbvv1/a1dbv/commit/536b86d44f5649af78bc3cc37b65e799fc330112)，分支 `relay/a-m6-weekly-calibration-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人核实两项待核线索是否需沿原内容流程回流；接收端提交本卡两个产物并推 relay 分支回 review_ready。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
