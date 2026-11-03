@@ -1,7 +1,7 @@
 # A-API-CREDIT-ROUTING-20261103 · 按自动化入口核对赠额与计费
 id: A-API-CREDIT-ROUTING-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: fef85514a8f512bac7f5cc059115870f1bb2a533
@@ -36,8 +36,8 @@ result_branch: relay/a-api-credit-routing-20261103
 
 ## 当前结果
 
-- 单元 2 已修复 facts.md 中两处易误读的行号式交叉引用（§1 第 20 行与 §3 bare 行），改为指向 §3‘claude -p（非 bare）＋关联组织 API key’行的语义引用；全文已无“第 N 行”“同第”及「」混用，其余结论、金额、来源与链接未动。git diff 为 2 insertions/2 deletions，仅 facts.md 变更；git diff --check 通过，check_repo 735 文件 0 errors，check_public 0 findings。Workflow 三视角非作者审查 reviewed=true、remaining=false、openIssues=[]。未提交、未推送、未改任务文件。
-- 产物：[ea022eb](https://github.com/dbvv1/a1dbv/commit/ea022eb8ac43c5730d6f810fe568ffc55ed18f91)，分支 `relay/a-api-credit-routing-20261103`。
+- 单元 3 在既有 facts.md 上仅做有官方直接依据的收敛修正：将 §6 的 usage credits 表述改为“两笔额度”并在 §5.7 补入帮助中心原文（usage credits 与 monthly API credits 分开，且该文只列 Pro／Max／Ultra，Team／Enterprise 未列）；§5.4 与 §3 补 bare 模式不读 profiles／federation 变量；§5.1 补“无 Console 组织可在领取流程或 platform.claude.com 新建”、把相同邮箱写明为 Tip 而非硬性要求；§1、§8 同步。金额、覆盖清单、入口分类和结论未变。实际改动 12 insertions/8 deletions，仅 facts.md。检查：check_repo.py 735 文件 0 errors，check_public.py 1201 文件 0 findings，git diff --check 通过；Workflow 三视角非作者审查 reviewed=true、remaining=false、openIssues=[]。未关闭问题：§7 九项官方未说明组合（apiKeyHelper、ANTHROPIC_AUTH_TOKEN／网关、keyless Console 登录、WIF 记账、Claude Platform on AWS、IDE 集成终端、第三方代跑、Managed Agents sandbox 账期、Team 席位增减）保持未知，未以认证成功推定赠额覆盖。未提交、未推送、未改任务文件。
+- 产物：[8ea0d89](https://github.com/dbvv1/a1dbv/commit/8ea0d895278a06973e87b9ec9839fba11d75bc01)，分支 `relay/a-api-credit-routing-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端用合规公开身份（-c user.email）提交并整合最新 origin/main 后推送 result_branch，再跑提交后非作者审查并回 review_ready。
+- 下一步：接收端用合规公开身份（-c user.email）提交，整合最新 origin/main 后推送 result_branch，再跑提交后非作者审查并回 review_ready；页面正文采用由负责人核写者与任务卡决定。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
