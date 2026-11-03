@@ -1,7 +1,7 @@
 # A-MCP-READING-ROUTE-20261103 · 把真实长报告消费接入 MCP 选择路线
 id: A-MCP-READING-ROUTE-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 04f31d0c534cb674546e7a1771f3278b8636ea92
