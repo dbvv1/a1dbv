@@ -1,10 +1,10 @@
 # A-EFFORT-EFFECTIVE-ENTRY-20261103 · 分清所选档位与当轮生效档位
 id: A-EFFORT-EFFECTIVE-ENTRY-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 7be93247a8a9d5b55375c2eb87a4f62c3a7b15b9
+base_ref: cc1c1ce59a9dbfcca52024b0e5c0ee6db7c4c37e
 result_branch: relay/a-effort-effective-entry-20261103
 
 ## 目标
@@ -33,6 +33,13 @@ result_branch: relay/a-effort-effective-entry-20261103
 非作者逐源复核后，只读稿件回答三问：①已有环境变量时 --effort 能否保证新档？②当前轮未结束、标题已变，能否认定正在按新档执行？③保存 max、选择 max 与 API／客户端默认是否等价？给准确条件、可见证据和仍未知范围，不要求真实账户试验。
 核所给查看入口没有暗含改配置或发模型请求，历史已修故障未当当前问题，旧 reader 的未知保持未知。通过只表示有限操作稿可接收，不证明客户端实跑、请求档位、模型效果、用户资格或地图实做完成。
 一个 45–75 分钟单元，最多两小时；共享最多 4 并行由原接收端调度，不另起调用。经既有 Workflow 非作者审查、check_repo、check_public、git diff --check 与身份检查，仅推 result_branch 后回 review_ready；不用 accept:auto，不合 main。
+
+## 修改要求
+沿原 result_branch 从 cc1c1ce59a9dbfcca52024b0e5c0ee6db7c4c37e 仅修原 proposal.md 的生效时点推断，固定页面输入仍为 7be93247；保首轮 cc861d25 与 unit2 历史，不新任务／新读者。先由原接收端核调用、工具、登记进程均已退出及产物单写；缺证保持隔离，不启动续接或改旧文件，不用公开 commit 补认退出。
+L19／L53／L73 及确有同义绝对断言的摘要，须区分保证与可能性：`/effort` 确认后，下一条消息按新档处理；`/model` 选择器换档最迟从下一条消息起生效，当前轮仍可能按旧档工作。不能把二者一概写成“必须等下一条才生效”。排队消息取用后按新档继续，但不能仅凭取用时机认定此前每个请求的档位，因而不保证轮末取用就是整轮全旧，轮中取用也须前段确实旧档才可称混合。
+保可照做的比较步骤：等本轮结束再发下一条；实际请求值仍按获准可见证据记录，无法确认则未知。依据是 https://code.claude.com/docs/en/model-config#set-the-effort-level 与 https://code.claude.com/docs/en/interactive-mode#when-claude-code-sends-what-you-queued ；后者模型选择的下次请求规则不直接移作 effort 精确切换证明。这是原文不支持绝对推断，不称本次实跑发现实现反例。
+L71 正确引文及 unit2 L96 取用后按新档的修正保留；已核优先序／持久／cap／Skill／auto／历史已修范围不重做。只作上述一组必要精修，不因长度或措辞扩题；不读设置、环境变量、账户或私人日志，不运行客户端／模型，不改页面、模板、旧 MODEL reader 或接收器。
+非作者仅反读本次差量与固定来源后回 review_ready；保原模型阶段与接收器发布记录分列。通过也只表示有限操作建议可接，不证明实际请求 effort、用户资格、客户端／自然读者实做或地图升级。
 
 ## 当前结果
 
