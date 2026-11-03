@@ -1,0 +1,677 @@
+{
+  "schema_version": 1,
+  "task": "A-M6-WEEKLY-CALIBRATION-20261103",
+  "base_ref": "2c3287bab9306010137bc99088a251c21feb4669",
+  "generated_at_utc": "2026-11-03T12:03:27Z",
+  "window": {
+    "timezone": "Asia/Shanghai",
+    "start_local": "2026-10-26T00:00:00+08:00",
+    "end_local": "2026-11-02T00:00:00+08:00",
+    "start_utc": "2026-10-25T16:00:00Z",
+    "end_utc": "2026-11-01T16:00:00Z",
+    "created_at_i_gte": 1792944000,
+    "created_at_i_lt": 1793548800
+  },
+  "samples": [
+    {
+      "sample": "main",
+      "query": "\"Claude Code\"",
+      "method": "HN Algolia search；tags=story；默认相关性顺序；hitsPerPage=10",
+      "request_url": "https://hn.algolia.com/api/v1/search?query=%22Claude+Code%22&tags=story&numericFilters=created_at_i%3E%3D1792944000%2Ccreated_at_i%3C1793548800&hitsPerPage=10",
+      "http_status": 200,
+      "read_at_utc": "2026-11-03T11:26:48Z",
+      "nbHits": 93,
+      "nbPages": 10,
+      "hitsPerPage": 10,
+      "returned_count": 10,
+      "members": [
+        {
+          "rank": 1,
+          "objectID": "50300683",
+          "title": "Backdoor in Claude Code for VS Code extension on the Cursor Marketplace",
+          "url": "https://phorion.io/blog/offical-claude-code-vsx-compromise/",
+          "created_at": "2026-10-30T07:09:12Z",
+          "points": 1008,
+          "num_comments": 553
+        },
+        {
+          "rank": 2,
+          "objectID": "50302334",
+          "title": "Backdoors in official Claude Code extensions",
+          "url": "https://cyberplace.social/@GossiTheDog/117528831681803563",
+          "created_at": "2026-10-30T11:05:53Z",
+          "points": 662,
+          "num_comments": 17
+        },
+        {
+          "rank": 3,
+          "objectID": "50284255",
+          "title": "Claude Code regularly sends each background agent’s transcript to its model",
+          "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+          "created_at": "2026-10-29T03:33:42Z",
+          "points": 589,
+          "num_comments": 236
+        },
+        {
+          "rank": 4,
+          "objectID": "50301983",
+          "title": "Claude Code VS Code extension with backdoor released on Cursor marketplace",
+          "url": "https://doublepulsar.com/anthropic-hacked-to-deliver-remote-access-trojan-to-claude-developer-laptops-worldwide-1148a92baae2",
+          "created_at": "2026-10-30T10:22:51Z",
+          "points": 399,
+          "num_comments": 1
+        },
+        {
+          "rank": 5,
+          "objectID": "50286306",
+          "title": "Tell HN: Claude Code adds your email to the prompt, the LLM sends it to websites",
+          "url": null,
+          "created_at": "2026-10-29T09:06:12Z",
+          "points": 35,
+          "num_comments": 5
+        },
+        {
+          "rank": 6,
+          "objectID": "50300112",
+          "title": "Trojanized Claude Code Extension Plants an SSH Backdoor",
+          "url": "https://opensourcemalware.com/blog/trojanized-claude-code-extension-plants-persistent-ssh-backdoor",
+          "created_at": "2026-10-30T05:20:20Z",
+          "points": 19,
+          "num_comments": 2
+        },
+        {
+          "rank": 7,
+          "objectID": "50278101",
+          "title": "Claude Code found 14,219 photos of my face on my Android that I never took",
+          "url": "https://twitter.com/coolerwave/status/2115393243458207755",
+          "created_at": "2026-10-28T18:00:40Z",
+          "points": 17,
+          "num_comments": 1
+        },
+        {
+          "rank": 8,
+          "objectID": "50301004",
+          "title": "Malicious Claude Code Extension Found in Cursor Marketplace",
+          "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+          "created_at": "2026-10-30T08:04:26Z",
+          "points": 12,
+          "num_comments": 1
+        },
+        {
+          "rank": 9,
+          "objectID": "50300097",
+          "title": "A Claude Code agent's test escaped into my Mac. I only noticed because it talked",
+          "url": "https://www.marutpandya.com/posts/2026/10/my-mac-started-reading-json-aloud/",
+          "created_at": "2026-10-30T05:16:33Z",
+          "points": 9,
+          "num_comments": 6
+        },
+        {
+          "rank": 10,
+          "objectID": "50256421",
+          "title": "Linus Torvalds let Claude Code fix the Linux page cache. Reviewers found a race",
+          "url": "https://thenewstack.io/torvalds-claude-code-kernel/",
+          "created_at": "2026-10-27T09:15:00Z",
+          "points": 6,
+          "num_comments": 3
+        }
+      ],
+      "response_params": "query=%22Claude+Code%22&tags=story&numericFilters=created_at_i%3E%3D1792944000%2Ccreated_at_i%3C1793548800&hitsPerPage=10&advancedSyntax=true&analyticsTags=backend",
+      "processing_time_ms": 4
+    },
+    {
+      "sample": "supplement",
+      "query": "\"coding agent\"",
+      "method": "同一窗口与取法；非单客户端补充样本，不是独立渠道或随机样本",
+      "request_url": "https://hn.algolia.com/api/v1/search?query=%22coding+agent%22&tags=story&numericFilters=created_at_i%3E%3D1792944000%2Ccreated_at_i%3C1793548800&hitsPerPage=10",
+      "http_status": 200,
+      "read_at_utc": "2026-11-03T11:26:49Z",
+      "nbHits": 40,
+      "nbPages": 4,
+      "hitsPerPage": 10,
+      "returned_count": 10,
+      "members": [
+        {
+          "rank": 1,
+          "objectID": "50316116",
+          "title": "DeepSeek open-sources dsh-superagent, a coding agent largely built by agents",
+          "url": "https://github.com/deepseek-ai/dsh-superagent-prototype",
+          "created_at": "2026-10-31T13:41:11Z",
+          "points": 11,
+          "num_comments": 0
+        },
+        {
+          "rank": 2,
+          "objectID": "50246778",
+          "title": "Compaction Laundering: Provenance Destruction in Context-Compacting Coding Agent",
+          "url": "https://arxiv.org/abs/2610.29869",
+          "created_at": "2026-10-26T16:42:20Z",
+          "points": 9,
+          "num_comments": 2
+        },
+        {
+          "rank": 3,
+          "objectID": "50261185",
+          "title": "Show HN: Trama, Meta Vibe Coding Agent 0.1.1 Released",
+          "url": "https://nicchia-code.github.io/trama/",
+          "created_at": "2026-10-27T15:56:02Z",
+          "points": 7,
+          "num_comments": 1
+        },
+        {
+          "rank": 4,
+          "objectID": "50320501",
+          "title": "Show HN: Winch – App Store optimization run by your own coding agent",
+          "url": "https://getwinch.app/",
+          "created_at": "2026-10-31T21:39:37Z",
+          "points": 5,
+          "num_comments": 1
+        },
+        {
+          "rank": 5,
+          "objectID": "50290899",
+          "title": "Give your coding agent a verification harness to check its code",
+          "url": "https://www.heal.dev/verification-harness",
+          "created_at": "2026-10-29T15:44:16Z",
+          "points": 5,
+          "num_comments": 1
+        },
+        {
+          "rank": 6,
+          "objectID": "50274593",
+          "title": "Show HN: Parley – coding-agent sessions that collaborate over IRC",
+          "url": "https://github.com/colinsurprenant/parley",
+          "created_at": "2026-10-28T14:48:16Z",
+          "points": 4,
+          "num_comments": 5
+        },
+        {
+          "rank": 7,
+          "objectID": "50323814",
+          "title": "DeepSeek launches advanced coding agent to rival Claude Code",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-01/deepseek-drops-enhanced-coding-agent-with-aim-to-rival-anthropic",
+          "created_at": "2026-11-01T09:07:49Z",
+          "points": 4,
+          "num_comments": 4
+        },
+        {
+          "rank": 8,
+          "objectID": "50259515",
+          "title": "Smelt: An open-source, Neovim-like coding agent in Rust and Lua",
+          "url": "https://smeltagent.dev/",
+          "created_at": "2026-10-27T14:01:45Z",
+          "points": 4,
+          "num_comments": 2
+        },
+        {
+          "rank": 9,
+          "objectID": "50282481",
+          "title": "A Lisp coding agent is beating Codex in token efficiency by 10x",
+          "url": "https://twitter.com/techfren/status/2115583260919202187",
+          "created_at": "2026-10-28T23:38:44Z",
+          "points": 4,
+          "num_comments": 0
+        },
+        {
+          "rank": 10,
+          "objectID": "50316721",
+          "title": "DiffNotes: Lets your coding agent explain its PRs inline",
+          "url": "https://github.com/igorkasyanchuk/diffnotes",
+          "created_at": "2026-10-31T14:52:18Z",
+          "points": 3,
+          "num_comments": 0
+        }
+      ],
+      "response_params": "query=%22coding+agent%22&tags=story&numericFilters=created_at_i%3E%3D1792944000%2Ccreated_at_i%3C1793548800&hitsPerPage=10&advancedSyntax=true&analyticsTags=backend",
+      "processing_time_ms": 2
+    }
+  ],
+  "joint_dedupe": {
+    "unique_hn_ids": 20,
+    "duplicate_ids": [],
+    "note": "两样本成员无交集；分别记录，联合按 HN ID 去重"
+  },
+  "member_review": [
+    {
+      "sample": "main",
+      "objectID": "50300683",
+      "entry_read": "partial",
+      "comments_read": "partial",
+      "comments_total": 553,
+      "read_sources": [
+        "https://phorion.io/blog/offical-claude-code-vsx-compromise/",
+        "https://cursor.com/blog/claude-code-extension-security-notice",
+        "https://hn.algolia.com/api/v1/items/50300683"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "phorion",
+        "cursor marketplace",
+        "claude-code-extension-security-notice"
+      ],
+      "draft_overlap": {
+        "path": "docs/collaboration/local-jobs/artifacts/A-SKILL-MCP-WIDE-20261029/sources.md",
+        "commit": "9f905b0166278975f9831e7d142b9ca4cae423c5",
+        "lines": [
+          105,
+          107,
+          117,
+          227,
+          242
+        ],
+        "note": "已交线索／未全接收；行 105／117 明确说 docs/10 尚无这批 Skill／插件市场案例"
+      },
+      "classification": "新来源但旧机制",
+      "note": "与 50302334／50301983／50300112／50301004 同一 Cursor Marketplace 扩展事件；插件市场供应链机制 docs/10 已覆盖，事件细节在两稿已交"
+    },
+    {
+      "sample": "main",
+      "objectID": "50302334",
+      "entry_read": "unreadable",
+      "comments_read": "partial",
+      "comments_total": 17,
+      "read_sources": [
+        "https://hn.algolia.com/api/v1/items/50302334"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "GossiTheDog",
+        "cyberplace"
+      ],
+      "draft_overlap": {
+        "path": "docs/collaboration/local-jobs/artifacts/A-SKILL-MCP-WIDE-20261029/sources.md",
+        "commit": "9f905b0166278975f9831e7d142b9ca4cae423c5",
+        "lines": [
+          107,
+          227,
+          242
+        ],
+        "note": "同一事件，已交线索／未全接收"
+      },
+      "classification": "新来源但旧机制",
+      "note": "Mastodon 原帖未取；HN 评论仅读前几层。标题的“official”不等于 Anthropic 发布，Cursor 公告称非 Anthropic 开发"
+    },
+    {
+      "sample": "main",
+      "objectID": "50284255",
+      "entry_read": "partial",
+      "comments_read": "partial",
+      "comments_total": 236,
+      "read_sources": [
+        "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "https://hn.algolia.com/api/v1/items/50284255"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "agent_summary",
+        "flamerix"
+      ],
+      "draft_overlap": {
+        "path": "docs/collaboration/local-jobs/artifacts/A-MULTIAGENT-LONG-WIDE-20261029/sources.md",
+        "commit": "a37326182cd65de837101d68d2596cbe8042a119",
+        "lines": [
+          674
+        ],
+        "note": "#86879 计量回执已在稿中：agent_summary 占 22.7% 请求、约 18% 加权 token；本 gist 的 preload 修法未收录"
+      },
+      "classification": "已交线索／未全接收",
+      "note": "gist 自报 16.4% 花费、每 30 秒重发后台 agent transcript；作者 preload 未验证，本卡不安装不运行"
+    },
+    {
+      "sample": "main",
+      "objectID": "50301983",
+      "entry_read": "unreadable",
+      "comments_read": "full",
+      "comments_total": 1,
+      "read_sources": [
+        "https://hn.algolia.com/api/v1/items/50301983"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "doublepulsar"
+      ],
+      "draft_overlap": {
+        "path": "docs/collaboration/local-jobs/artifacts/A-SKILL-MCP-WIDE-20261029/sources.md",
+        "commit": "9f905b0166278975f9831e7d142b9ca4cae423c5",
+        "lines": [
+          107,
+          227,
+          242
+        ],
+        "note": "同一事件；已交线索／未全接收"
+      },
+      "classification": "新来源但旧机制",
+      "note": "原文 403；唯一 HN 评论指评论已移到 50300683"
+    },
+    {
+      "sample": "main",
+      "objectID": "50286306",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 5,
+      "read_sources": [
+        "https://github.com/anthropics/claude-code/issues/81138",
+        "https://hn.algolia.com/api/v1/items/50286306"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "userEmail",
+        "81138"
+      ],
+      "draft_overlap": null,
+      "classification": "发现未记录（上下文注入面）",
+      "note": "issue 正文给出构造点与既往重复报告；10-26 校准已记出站 HTTP 带邮箱 HN 50219875（评论指向 #53231，当时未核实）为待核线索，本条新增系统提示／上下文注入面；Reddit 原帖本机不可读；未独立复现，未核当前版本"
+    },
+    {
+      "sample": "main",
+      "objectID": "50300112",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 2,
+      "read_sources": [
+        "https://opensourcemalware.com/blog/trojanized-claude-code-extension-plants-persistent-ssh-backdoor",
+        "https://hn.algolia.com/api/v1/items/50300112"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "opensourcemalware"
+      ],
+      "draft_overlap": {
+        "path": "docs/collaboration/local-jobs/artifacts/A-SKILL-MCP-WIDE-20261029/sources.md",
+        "commit": "9f905b0166278975f9831e7d142b9ca4cae423c5",
+        "lines": [
+          107,
+          227,
+          242
+        ],
+        "note": "同一事件；已交线索／未全接收"
+      },
+      "classification": "新来源但旧机制",
+      "note": "文章可读（浏览器 UA 重取）：2.1.313 在 Cursor Marketplace 被植入恶意 loader；UPDATE 引 Cursor 称是 Cursor Marketplace 被攻陷、非 Open VSX；HN 评论的“非官方插件”只是转述，按 UPDATE 为准"
+    },
+    {
+      "sample": "main",
+      "objectID": "50278101",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 1,
+      "read_sources": [
+        "https://twitter.com/coolerwave/status/2115393243458207755",
+        "https://hn.algolia.com/api/v1/items/50278101"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "coolerwave"
+      ],
+      "draft_overlap": null,
+      "classification": "证据不足",
+      "note": "X 原帖可读（浏览器 UA 重取）：称 14,219 张前摄照片来自 /data/system/users/0/faceunlock/cache 等目录；唯一 HN 评论称视频取自 LiveBoot 演示，仍不能把数量当已证实"
+    },
+    {
+      "sample": "main",
+      "objectID": "50301004",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 1,
+      "read_sources": [
+        "https://cursor.com/blog/claude-code-extension-security-notice",
+        "https://hn.algolia.com/api/v1/items/50301004"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "cursor.com/blog/claude-code-extension-security-notice"
+      ],
+      "draft_overlap": {
+        "path": "docs/collaboration/local-jobs/artifacts/A-SKILL-MCP-WIDE-20261029/sources.md",
+        "commit": "9f905b0166278975f9831e7d142b9ca4cae423c5",
+        "lines": [
+          242
+        ],
+        "note": "一手处置细节已交线索／未全接收"
+      },
+      "classification": "已交线索／未全接收",
+      "note": "2.1.312／2.1.313、约 11 小时分发窗口、移除并重建市场、轮换密钥、卸载不足；公告未列受影响用户数"
+    },
+    {
+      "sample": "main",
+      "objectID": "50300097",
+      "entry_read": "partial",
+      "comments_read": "partial",
+      "comments_total": 6,
+      "read_sources": [
+        "https://www.marutpandya.com/posts/2026/10/my-mac-started-reading-json-aloud/",
+        "https://hn.algolia.com/api/v1/items/50300097"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "marutpandya"
+      ],
+      "draft_overlap": null,
+      "classification": "新来源但旧机制",
+      "note": "七个子代理、无沙箱、测试误启动真实进程；作者结论是默认沙箱，docs/10 已有环境边界优先"
+    },
+    {
+      "sample": "main",
+      "objectID": "50256421",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 3,
+      "read_sources": [
+        "https://thenewstack.io/torvalds-claude-code-kernel/",
+        "https://hn.algolia.com/api/v1/items/50256421"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "Linus",
+        "Torvalds",
+        "page cache"
+      ],
+      "draft_overlap": null,
+      "classification": "证据不足",
+      "note": "文章可读（浏览器 UA 重取）：23x 是 Torvalds 提示的合成基准，真实负载收益更小；reviewers 在合并前发现 race condition；评论指向 10-14 旧帖。是真实项目案例，不构成新做法"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50316116",
+      "entry_read": "partial",
+      "comments_read": "none",
+      "comments_total": 0,
+      "read_sources": [
+        "experiments/deepseek-superagent-receipt/README.md",
+        "docs/decisions/long-tasks.md"
+      ],
+      "baseline": "hit",
+      "baseline_paths": [
+        "experiments/deepseek-superagent-receipt/README.md",
+        "experiments/deepseek-superagent-receipt/results.json",
+        "docs/decisions/long-tasks.md"
+      ],
+      "draft_overlap": {
+        "path": "docs/collaboration/local-jobs/artifacts/A-MULTIAGENT-LONG-WIDE-20261029/sources.md",
+        "commit": "a37326182cd65de837101d68d2596cbe8042a119",
+        "lines": [
+          81,
+          149
+        ],
+        "note": "T8 已收项目与机制"
+      },
+      "classification": "已记录（仓内验证）",
+      "note": "HN 10-31 刊出；仓内首次登记 2026-11-02 UTC，两日间隔；仓内只运行领域核心与存储，未启动 DSH 宿主、模型、来源账号或后台调度；本卡不重做"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50246778",
+      "entry_read": "summary",
+      "comments_read": "full",
+      "comments_total": 2,
+      "read_sources": [
+        "https://arxiv.org/abs/2610.29869",
+        "https://hn.algolia.com/api/v1/items/50246778"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "2610.29869",
+        "Compaction Laundering"
+      ],
+      "draft_overlap": null,
+      "classification": "发现未记录",
+      "note": "只读摘要与 2 条评论；全文与源码未读，Claude Code 不在论文测试的 harness 列表内"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50261185",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 1,
+      "read_sources": [
+        "https://nicchia-code.github.io/trama/",
+        "https://hn.algolia.com/api/v1/items/50261185"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "Trama",
+        "nicchia-code"
+      ],
+      "draft_overlap": null,
+      "classification": "不适用",
+      "note": "只支持 VS Code 1.106+ 与 omp；提案/审批/漂移流程是产品形态，不是当前默认的增量"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50320501",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 1,
+      "read_sources": [
+        "https://getwinch.app/",
+        "https://hn.algolia.com/api/v1/items/50320501"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "Winch",
+        "getwinch"
+      ],
+      "draft_overlap": null,
+      "classification": "不适用",
+      "note": "macOS 付费 ASO 产品，Agent 驱动 GUI；与 AI coding 主线无关"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50290899",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 1,
+      "read_sources": [
+        "https://www.heal.dev/verification-harness",
+        "https://hn.algolia.com/api/v1/items/50290899"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "heal.dev",
+        "verification harness"
+      ],
+      "draft_overlap": null,
+      "classification": "新来源但旧机制",
+      "note": "工具/上下文/不受 Agent 控制的判定器三件套；厂商自述，无独立回执，本卡未试用"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50274593",
+      "entry_read": "partial",
+      "comments_read": "full",
+      "comments_total": 5,
+      "read_sources": [
+        "https://github.com/colinsurprenant/parley",
+        "https://hn.algolia.com/api/v1/items/50274593"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "parley"
+      ],
+      "draft_overlap": null,
+      "classification": "新来源但旧机制",
+      "note": "IRC 频道＋peer 消息不带用户授权＋人留在频道；与 docs/10 案例四、docs/08 的人工中转／人介入重叠，未试用"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50323814",
+      "entry_read": "unreadable",
+      "comments_read": "full",
+      "comments_total": 4,
+      "read_sources": [
+        "https://hn.algolia.com/api/v1/items/50323814"
+      ],
+      "baseline": "hit",
+      "baseline_paths": [
+        "experiments/deepseek-superagent-receipt/README.md",
+        "docs/decisions/long-tasks.md"
+      ],
+      "draft_overlap": {
+        "path": "docs/collaboration/local-jobs/artifacts/A-MULTIAGENT-LONG-WIDE-20261029/sources.md",
+        "commit": "a37326182cd65de837101d68d2596cbe8042a119",
+        "lines": [
+          81,
+          149
+        ],
+        "note": "同一 DeepSeek 项目"
+      },
+      "classification": "已记录（仓内验证）",
+      "note": "Bloomberg 付费墙未读；与 50316116 同一项目，评论质疑第一个 harness 不完整；仓内验证范围同 50316116（只运行领域核心与存储）"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50259515",
+      "entry_read": "summary",
+      "comments_read": "full",
+      "comments_total": 2,
+      "read_sources": [
+        "https://smeltagent.dev/",
+        "https://hn.algolia.com/api/v1/items/50259515"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "smeltagent",
+        "Smelt"
+      ],
+      "draft_overlap": null,
+      "classification": "证据不足",
+      "note": "站点只返回重定向；作者回复称编译性能、无运行时、<50MB。是客户端替代，不是新协作机制"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50282481",
+      "entry_read": "partial",
+      "comments_read": "none",
+      "comments_total": 0,
+      "read_sources": [
+        "https://twitter.com/techfren/status/2115583260919202187",
+        "https://hn.algolia.com/api/v1/items/50282481"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "Lisp coding agent",
+        "techfren"
+      ],
+      "draft_overlap": null,
+      "classification": "证据不足",
+      "note": "X 原帖可读（浏览器 UA 重取）：NODECODE 对比 Codex CLI，作者自报少 7–14x 输入 token、快 2.5x，但承认更早停、产出更简单，并注明 One run each；单次自报，证据不足"
+    },
+    {
+      "sample": "supplement",
+      "objectID": "50316721",
+      "entry_read": "partial",
+      "comments_read": "none",
+      "comments_total": 0,
+      "read_sources": [
+        "https://github.com/igorkasyanchuk/diffnotes"
+      ],
+      "baseline": "no_hit",
+      "baseline_queries": [
+        "diffnotes"
+      ],
+      "draft_overlap": null,
+      "classification": "证据不足",
+      "note": "README 只读前段；MIT、自托管、PR 内联注释；无试用与独立反馈"
+    }
+  ]
+}
