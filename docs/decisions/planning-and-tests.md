@@ -11,7 +11,7 @@
 
 **“不知道怎么实现”和“不知道要什么”分开处理。** API、目录、调用链和现有默认值先让 Agent 查；默认是否开启、是否修改原数据、兼容到哪一版等缺少依据的产品取舍，才需要澄清。跨多个文件会增加规划收益，但文件数不是流程开关。
 
-**依据**：[官方] [Claude Code 最佳实践](https://code.claude.com/docs/en/best-practices#explore-first-then-plan-then-code)，核实 2026-10-26；[既有选择与实证](../07-workflows.md#2-标准节奏探索--计划--实现--提交-)，原核实 2026-10-25。表格是条件推荐；原生、窄辅助与完整框架在同一真实维护任务上的整体最优仍未知。
+**依据**：[官方] [Claude Code 最佳实践](https://code.claude.com/docs/en/best-practices)，原核实 2026-10-26、现行入口复核 2026-11-03；[既有选择与实证](../07-workflows.md#2-标准节奏探索--计划--实现--提交-)，原核实 2026-10-25。表格是条件推荐；原生、窄辅助与完整框架在同一真实维护任务上的整体最优仍未知。
 
 ## 第一步：在现有任务里补这几句话
 
@@ -45,7 +45,9 @@ claude --permission-mode plan
 把“代码里能查到的事实”和“仍需我决定的取舍”分开；只问后者。
 ```
 
-Plan 是先讨论再执行的工作方式。**需要严格只读时，只给读工具，或使用只读挂载且无外部写凭据的调查环境。** 当前 Claude Code Plan 可运行获准的 shell；可用 bypass permissions 的交互会话另有例外。涉及真实数据或外部写操作时，应核有效权限与隔离，不能靠模式名承担保护。
+**Plan 用来先审方案，不提供严格只读隔离。** 它会写计划文件，默认在 `~/.claude/plans`；除下述 bypass 例外外，auto 可用且 `useAutoModeDuringPlan` 开启（默认）时，shell（关键路径删除除外）由分类器审核，否则超出内置只读集合的命令需批准。交互终端若已启用可切换的 bypass permissions，计划阶段的文件编辑和 shell 不受 Plan 本身拦截；`-p`、SDK、VS Code 聊天面板保留该拦截。显式权限规则和关键路径删除仍另行处理。
+
+**需要严格只读时，核实际工具与隔离。** CLI 的 `--tools` 只控制内置工具，MCP 写工具、可执行 hook 也要处理；仅将项目目录挂为只读，不代表项目外的默认计划目录也只读；自定义计划目录按实际挂载判断。涉及真实数据或外部服务时，核对隔离和写凭据。批准计划会退出 Plan、切到选项指定的权限模式，操作范围仍以本次任务授权为准。
 
 **计划只记录实施者不能自行决定的内容。** Superpowers 当前 `writing-plans` 的原句是：
 
@@ -53,7 +55,7 @@ Plan 是先讨论再执行的工作方式。**需要严格只读时，只给读�
 
 值得借的是具体文件、接口、需求值、测试断言和验证命令；函数体留给实现者，确有歧义的算法再展开。若修改了接口，同次更新尚未执行的计划与调用方。当前 Skill 已提供 Native 与逐任务子 Agent 两种执行选择；无需把整包的审批、拆分和评审节奏复制到每个小改。
 
-**依据**：[官方] [Plan 行为与权限例外](https://code.claude.com/docs/en/permission-modes#analyze-before-you-edit-with-plan-mode)；[真实配置] [Superpowers writing-plans 固定版本](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/writing-plans/SKILL.md)；[社区反例] [接口已改、后续计划仍用旧调用的报告](https://github.com/obra/superpowers/issues/2450)，单例未独立复现；核实 2026-10-26。配置已读，未运行该 Skill；[既有计划产物比较](../07-workflows.md#2-标准节奏探索--计划--实现--提交-)保留原实测范围。
+**依据**：[官方] [Plan 行为、批准与权限例外](https://code.claude.com/docs/en/permission-modes#analyze-before-you-edit-with-plan-mode)、[工具范围](https://code.claude.com/docs/en/cli-reference)、[计划目录](https://code.claude.com/docs/en/settings-reference#plansdirectory)与[非交互配置加载](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode)，文档重核 2026-11-03；隔离建议由这些边界推导，未运行客户端验证。[真实配置] [Superpowers writing-plans 固定版本](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/writing-plans/SKILL.md)；[社区反例] [接口已改、后续计划仍用旧调用的报告](https://github.com/obra/superpowers/issues/2450)，单例未独立复现；核实 2026-10-26。配置已读，未运行该 Skill；[既有计划产物比较](../07-workflows.md#2-标准节奏探索--计划--实现--提交-)保留原实测范围。
 
 ## 先测试：正确行为已知，才把它锁成断言
 
