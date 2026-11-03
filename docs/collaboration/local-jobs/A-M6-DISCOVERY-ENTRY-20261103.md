@@ -1,7 +1,7 @@
 # A-M6-DISCOVERY-ENTRY-20261103 · 分清定向查询与未知发现入口
 id: A-M6-DISCOVERY-ENTRY-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6aafeae958f4e839051866fae1c52c8aabfa2c89
