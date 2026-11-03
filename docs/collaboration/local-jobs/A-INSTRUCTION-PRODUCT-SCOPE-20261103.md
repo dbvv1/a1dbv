@@ -1,7 +1,7 @@
 # A-INSTRUCTION-PRODUCT-SCOPE-20261103 · 产品例外只覆盖那条共享约定
 id: A-INSTRUCTION-PRODUCT-SCOPE-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0bc25d91bc1e0f1b0570262f7ddf2a30ee52c1b7
