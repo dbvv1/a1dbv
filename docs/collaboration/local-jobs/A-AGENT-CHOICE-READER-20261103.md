@@ -1,7 +1,7 @@
 # A-AGENT-CHOICE-READER-20261103 · 选入口完成真实 CLI 小任务
 id: A-AGENT-CHOICE-READER-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 9340d813714bd9aa761de602a9cfcc3a2004a036
@@ -40,10 +40,10 @@ page: docs/01-agents/README.md@main
 
 ## 当前结果
 
-- reader-test 第三轮定点返工完成，taskDone=true，reviewed=false（按 Workflow 返回照抄）。jrnl/args.py 删除 raw token 预扫描，改为 argparse 实际解析后按最终 postconfig_cmd 判定互斥并用 ExportFormatAction 逐次校验格式值；新增值消费 3 例、后置 list 2 例、反向 list+import 拒绝 1 例、单独未知格式 1 例回归。三树各 31 组真实 CLI：新候选错误组合均 exit 2 且文案明确，正常导入/单独导出、缩写别名、help/version 优先级、两条 -- 边界均符合预期；值消费 3 例与后置 list 2 例 exit 0，反向 exit 2。tests/unit 219 passed/27 skipped，BDD 497 passed/17 skipped，定向 31 passed/1 skipped，ruff 与 black 通过；poe lint 的 poetry check、tox、#2120 联网复核未运行。未提交、未推送。openIssues：--format whatformats --help 由基线 exit 2 变 exit 0 且与 --format whatformats --version 的 exit 2 不一致；--format whatformats --badoption 由 invalid choice 变为 unrecognized arguments（同 exit 2），均属校验后移的错误优先级变化。pageStuck 3 条：缺依赖且禁装时页面未写如何发现已有隔离环境；页面解析 SHA/全文指纹原件缺失无法恢复；#2120 按任务沿用负责人 2026-11-02 22:17 UTC 观察、未联网复核。
-- 产物：[9340d81](https://github.com/dbvv1/jrnl/commit/9340d813714bd9aa761de602a9cfcc3a2004a036)，分支 `relay/a-agent-choice-reader-20261103`。
+- reader-test 单轮观察与定点返工完成，按 Workflow 返回 taskDone=true、reviewed=false。实际改动仅 3 个文件：jrnl/args.py 拆出 validate_export_format_values 并新增 ExportHelpAction（--help/-h 共用），恢复 --format <非法值> --help/-h 在 9340d81 上由 exit 2 退化为 exit 0 的回归，同时保持反序 --help --format whatformats exit 0、--format whatformats --version exit 2、--import --format json --help 的 help 优先级、badoption 两序 exit 2 且 journal 不变；tests/unit/test_parse_args.py 新增 4 个 case；记录追加第四轮修订与非读者核对。工作流实测：tests/unit 223 passed/27 skipped、BDD 497 passed/17 skipped、定向 31 passed/1 skipped、ruff/black 通过；新测试在 9340d81 上 2 failed/2 passed、修复后 4 passed。未提交/推送/切分支/改任务文件。openIssues：(1) 页面《第一步》未写缺依赖且禁装时如何发现已有隔离环境（页面小缺口+环境缺失，本轮复用遗留隔离环境、未安装依赖）；(2) 读者首遍回归参照树选错（先只跑 90de4948/7875131 得 4 passed），改用 git archive 9340d81 后自纠，无残余影响；(3) 页面解析 SHA/全文指纹原件缺失，按任务停止索求；(4) #2120 沿用负责人 2026-11-02 22:17 UTC 观察未联网复核。pageStuck 3 条（隔离环境发现、解析回执缺失、#2120 观察沿用）。未运行验收：poe lint 的 poetry check、tox（本机无 poetry/tox/poe，no-install 约束）、#2120 联网状态；均保留为未验。另记录内一处自述行数 +99/−0 与实际 +130 不符，属记录粒度小瑕疵。
+- 产物：[7f3368b](https://github.com/dbvv1/jrnl/commit/7f3368bad7f40221e0a6a76b45dc60670ea827cf)，分支 `relay/a-agent-choice-reader-20261103`。
 - 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：交负责人接收：判定两条校验后移残留（--format whatformats --help、--format whatformats --badoption）是否需修，核 #2120 实际状态，并考虑页面补一句缺依赖且禁装时如何发现已有隔离环境；receiver 负责提交与任务状态。
+- 下一步：交负责人接收：1) 决定是否补页面“缺依赖且禁装时如何发现已有隔离环境”一句；2) 核 #2120 实际状态；3) 决定是否修记录内 +99/−0 与实际 +130 的表述（仓库文件本轮不应在 Workflow 外再改）；4) 由接收端提交 3 个交付文件并回 review_ready。taskDone=true 仅表示本轮必修项做成，不表示整体验收或页面选路通过。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
 
 ## 独立接收结论
