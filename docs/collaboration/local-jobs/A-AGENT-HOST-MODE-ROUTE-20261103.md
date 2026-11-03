@@ -1,7 +1,7 @@
 # A-AGENT-HOST-MODE-ROUTE-20261103 · Agent shell 独有失败先查被测 CLI 模式
 id: A-AGENT-HOST-MODE-ROUTE-20261103
 owner: dot-A
-status: running
+status: blocked
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6570693e880bf629b1fbb511f98080b99575455d
@@ -32,3 +32,7 @@ result_branch: relay/a-agent-host-mode-route-20261103
 核没有把已有上游修复当新待修代码、人工批准当独立复跑、操作建议当本仓实测或自然读者通过。不存在该模式差异的项目能明确不采用；当前正文默认、原日期与 Vitest 机制不被覆盖。
 本单元只交有据操作稿，不新实验、不升级地图／评级；完成即回 review_ready。按手册§7做非作者来源／实际diff审查、check_repo、check_public、diff空白与身份检查，只推 result_branch，不用accept:auto、不合main。
 通常45–75分钟，最多两小时；由原接收端按共享最多4并行调度，不另起调用。遇同题在制、原写者未知或明确拒绝停对应动作并记录具体缺项，不换入口／身份。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
