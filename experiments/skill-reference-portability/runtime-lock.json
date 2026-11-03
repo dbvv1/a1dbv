@@ -1,0 +1,281 @@
+{
+  "reference_repo": "agentskills/agentskills",
+  "reference_commit": "69ef37e9424c0a7ea9dd2293b559e43ec8176379",
+  "reference_version": "0.1.0",
+  "reference_files": {
+    "LICENSE": {
+      "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+      "git_blob": "7a4a3ea2424c09fbe48d455aed1eaa94d9124835",
+      "bytes": 11357
+    },
+    "README.md": {
+      "sha256": "23945a45bd15d18d7da3652cd4ea6ea66950db464613c4810d7026bd0921eb9f",
+      "git_blob": "9ba700189a98da8fb4433af067aa1ea5a6dbdc33",
+      "bytes": 2166
+    },
+    "pyproject.toml": {
+      "sha256": "4333dea52ff4a4fe87f96e5a25f2517a57127bbabb09cb30f3d9057da77a5967",
+      "git_blob": "26f0bd339ff79a1f51a9dbeb10c424fd9c09cb73",
+      "bytes": 571
+    },
+    "src/skills_ref/__init__.py": {
+      "sha256": "a3da705c4847ac19c016f67e3a6c56a94e160986a823d148c21dca4c9b312b4a",
+      "git_blob": "43776daaf113e072d0e3cd7bed8d898ba4e12939",
+      "bytes": 449
+    },
+    "src/skills_ref/cli.py": {
+      "sha256": "cdcc2cc418cac2e47340455b406e39a73c0906d6184e0920d12e8c341ce5b139",
+      "git_blob": "9af9fc3068a6420d8d0715616b11d2628e10a86a",
+      "bytes": 2697
+    },
+    "src/skills_ref/errors.py": {
+      "sha256": "5780d314db735400c3959d20ed19a8c59445786d35a1a1b7cf368f01576d91f4",
+      "git_blob": "e9b49b50a02f27a08df2d9561c7d1973974ab17f",
+      "bytes": 572
+    },
+    "src/skills_ref/models.py": {
+      "sha256": "c6645fcfc04c78e773657856e8c6058e43951ce283e9b303ca721df1acac6a7b",
+      "git_blob": "77fa89ed2ccce99b10068fccd2ca26a2db24b1b1",
+      "bytes": 1461
+    },
+    "src/skills_ref/parser.py": {
+      "sha256": "9a74c9a90eb217b82bec27570332eab74547acfbee2973c0a8bcd23f6c7bc211",
+      "git_blob": "690c14e27b61405e3b1346dc22c8678cd3e79b35",
+      "bytes": 3413
+    },
+    "src/skills_ref/prompt.py": {
+      "sha256": "8ed90a61685b84050a8fde32e63d5f3f04c205b05bfc5f8ef4bb2f101cc9cf15",
+      "git_blob": "3a7d714bf60745a04e025764e724e9043791b6e9",
+      "bytes": 1724
+    },
+    "src/skills_ref/validator.py": {
+      "sha256": "b5ee3d8537c83c959c31c2cb080a5227646ede5aea545f1ac835ed3c4645f6c5",
+      "git_blob": "22cf6f8ae5f905d780cb097c0938711cc37016a9",
+      "bytes": 5154
+    },
+    "uv.lock": {
+      "sha256": "c2d1b9a8638e81f763f04928e8107741886160b6bda2b8cb9784336bebeec94a",
+      "git_blob": "747fa032b08b110b164d54d82d247bba2a38c9fd",
+      "bytes": 13991
+    }
+  },
+  "dependency_packages": [
+    {
+      "name": "click",
+      "version": "8.3.1",
+      "filename": "click-8.3.1-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/98/78/01c019cdb5d6498122777c1a43056ebb3ebfeef2076d9d026bfe15583b2b/click-8.3.1-py3-none-any.whl",
+      "sha256": "981153a64e25f12d547d3426c367a4857371575ee7ad18df2a6183ab0545b2a6",
+      "bytes": 108274,
+      "requires_dist": [
+        "colorama; platform_system == \"Windows\""
+      ],
+      "files": {
+        "click/__init__.py": "e98c92d5a7b29276742d8c1e5a8ccd672d00f6767fd75c2660886fddc6d0ad8a",
+        "click/_compat.py": "bf7c4166415bbc0d415cf46415f04973afa92303c8ef7e399be910127a5502ce",
+        "click/_termui_impl.py": "ae009bdce9fc5f9038db4d2b0392fa8b5deee626a99857abeecaeee7b272eb30",
+        "click/_textwrap.py": "04e69ed1143abe0dc590d8122723a81b31b599e18cc49fee9165592b1feffb4a",
+        "click/_utils.py": "919c2d4dfe6032e0a294925c792da24c2bd1bc263ed1a379ac9abc80ac3ba7c8",
+        "click/_winconsole.py": "fefc54b946b1c01868474bd458236e1d8f1551e7e231d088c94d925cfaa817e0",
+        "click/core.py": "53a05fc6df06923343ab22741ea5ef96e247b72678b18e54480bccd4276aee64",
+        "click/decorators.py": "e4feda6e126d010629fca1e08d4be132fe3ae044703b3aefd9e9cd9279701f24",
+        "click/exceptions.py": "f2eb5ff30e95e612573273bf89cd4536bb5bc2e127d4d52ed5a0f057c52a9c6e",
+        "click/formatting.py": "4557f0c2bd2bc16369806afc35a1e874fce422beffb54c9587f9c375a9cb30d7",
+        "click/globals.py": "80cf8d87a0383341c1fd2824685e4ce2770618c0c773f7e51d7bbdfe88781845",
+        "click/parser.py": "437d691f416541912af945c4fc0051ce5ca011fbf13d3b996d6361e317d79b3c",
+        "click/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "click/shell_completion.py": "09ce0641416e5a97d005af6c179a9779e608ee7ded23fd64e997529f80596d3d",
+        "click/termui.py": "86a0848cd9dd53e9f35b4f2744090169581f669fc574203d2b17c85a529868c7",
+        "click/testing.py": "10445bcdc9756ebd265b4a814bd12a9249df35f5c1f564045b410b22992fb92b",
+        "click/types.py": "7a4e7804d485c0f2acaad7d3ee3b2a71ce161ee8bc00815530a338a156485e17",
+        "click/utils.py": "8025287b0740840f902c15141f1acb878ba3ea6ed3d568d964c34fbd1d08ed80",
+        "click-8.3.1.dist-info/licenses/LICENSE.txt": "9a8ad106a394e853bfe21f42f4e72d592819a22805d991b5f3275029292b658d",
+        "click-8.3.1.dist-info/WHEEL": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db",
+        "click-8.3.1.dist-info/METADATA": "5d9781acc004d2085313cf128dfad20ee4b2342a413e9971251d6d6f00fda198",
+        "click-8.3.1.dist-info/RECORD": "5bfa7aa423fff77916f0cbe388ba5b4c8eeb54124962f75542517102294ead39"
+      }
+    },
+    {
+      "name": "strictyaml",
+      "version": "1.7.3",
+      "filename": "strictyaml-1.7.3-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/96/7c/a81ef5ef10978dd073a854e0fa93b5d8021d0594b639cc8f6453c3c78a1d/strictyaml-1.7.3-py3-none-any.whl",
+      "sha256": "fb5c8a4edb43bebb765959e420f9b3978d7f1af88c80606c03fb420888f5d1c7",
+      "bytes": 123917,
+      "requires_dist": [
+        "python-dateutil (>=2.6.0)"
+      ],
+      "files": {
+        "strictyaml/__init__.py": "935589a6976242bd95d8d1a1b231b269ac959528913fca91a8bbb002cf1d48b7",
+        "strictyaml/any_validator.py": "58ae5d65bebd4c12282c4d04453d634b176ae323d4cde123f9ba5adf69e9d00c",
+        "strictyaml/compound.py": "666fdf8c9aca746ef045e2f0ffa15aa72a6e8ea619dc67f95fcd6d9bdb77c469",
+        "strictyaml/constants.py": "45563446bb50d53449b6d2a6c29e633de56a9eb4b1212c087439544dc782e73c",
+        "strictyaml/dumper.py": "a78e7c67497a7b98b85e5755f9c79a0cac90b08d70751d0a0b1cbec265fc46a6",
+        "strictyaml/exceptions.py": "e6a384f3e3a12c56584522c635b296caa67be5f93c656bccb805a464526758b9",
+        "strictyaml/parser.py": "575e11c0126e48af7fcf6c61301541876a0ee70393189206ebd19b64b60d0d95",
+        "strictyaml/representation.py": "ef3d8ca22a398249d7c3f54a20d3bee9231df09e7e2edb0717e651ce48c78829",
+        "strictyaml/scalar.py": "a07f7daaf7da30ae6ec2151ae962e1ed718a6ce2bd1ffb7e9b46c2ae270ba60a",
+        "strictyaml/utils.py": "daa648c74ddc1465a09b295b0cfb176d4372fdc9daa476dfe1596b84dd72db01",
+        "strictyaml/validators.py": "5a1a8cf113c6d94c8b3b41ad4b3866750a27ac495b5ac9a2a3c1ba2132edfa09",
+        "strictyaml/yamllocation.py": "f10a73641224effd1b56f5bbcf02a8dda50648221f6b1fb385c74f174886654b",
+        "strictyaml/yamlpointer.py": "513e412be60d3d8df8305b6caa325572c312acf0d70064d5f0c0c954319c2067",
+        "strictyaml/ruamel/__init__.py": "6b0e2ca2684106054cf6ba2b212876e9dadfb2ed6e36ec71581c1119cb4f821a",
+        "strictyaml/ruamel/anchor.py": "3ae49d5d996492c1dc1b390cf76d9ed1d5030be5c2ed92f24b4413c388c0cacf",
+        "strictyaml/ruamel/comments.py": "643a4c25600bbd5897e50ff74754048ef9e747e2eac629572aec31c1793d7e55",
+        "strictyaml/ruamel/compat.py": "8c1c5a8876f5e94c040cee652f47ae7eaba96156abd9b313c3441415e0fcafa3",
+        "strictyaml/ruamel/composer.py": "67e06a574bb3b5322535753d1ef487552c0ff47bea4f611e352e869ed91c7131",
+        "strictyaml/ruamel/configobjwalker.py": "580a9fddab013e8ee0cfbfe7459cbb516a5f03d52905b1e804077f5a51a3bfc8",
+        "strictyaml/ruamel/constructor.py": "aad3d45719def09e6fbd5102df27ef1d33449da9a11786704c4c824df701bb42",
+        "strictyaml/ruamel/cyaml.py": "a21a4eb246fc8b92002cef9c1377d32cdb1fff74c49c8469d9ff3abda81b5c69",
+        "strictyaml/ruamel/dumper.py": "46cb0bba4c8e06db16a0ab3d5cf7aeb4bfff8f0dd868720a6a7648e00dd91da6",
+        "strictyaml/ruamel/emitter.py": "c2e423203053637a7ef3d8c6adceb6b4a106208b26cae1c5c2547eef634613f5",
+        "strictyaml/ruamel/error.py": "96d00d088856cbc35546a3c7ba1213d6f5bfbcd2a893b1dcaebe53fdad71f1e0",
+        "strictyaml/ruamel/events.py": "c9d2a76d61cf394610b9a147800c94cf1549668b78e3d018eaef2469147959e2",
+        "strictyaml/ruamel/loader.py": "8cef2af48de80ff4dbfe02763def638924d294978780f146b0e676be718a5975",
+        "strictyaml/ruamel/main.py": "952a51225c85e3e25415135d447a4581c1383d8687ebb3d870087cebe9c4c193",
+        "strictyaml/ruamel/nodes.py": "13b99f72b950b4806805b149c4d7e2f34044ae13c4f2095a9497e071db8c9b64",
+        "strictyaml/ruamel/parser.py": "c67dbe91cab75cff57a6478c9637e09c10aa5cddec67316c7e963e7392300a5c",
+        "strictyaml/ruamel/reader.py": "0b56285f07ee78bd8dca45a75e8cb56b02a3d020ac3200373b485f7d35a38d60",
+        "strictyaml/ruamel/representer.py": "d35f9273af04478b231841b54d306d43efc56fdc49306f46c10ef471c1fdc4c5",
+        "strictyaml/ruamel/resolver.py": "177368a4fa79197b345cfabeb3fba8570cfa78bf4b9c7396dd5fd120010f1923",
+        "strictyaml/ruamel/scalarbool.py": "361f0f4e702c25f0f1c2b0039a240a73abd120e9eb66d934582ad392797cb6df",
+        "strictyaml/ruamel/scalarfloat.py": "4475dfd58b3dfb218e93fdb5753804d66ba62c0e09d0f1a0c049a09783fe2922",
+        "strictyaml/ruamel/scalarint.py": "ee32f00427a3762731b6605f376e0429ca2ee3dbb3f69e0d04eca95c23da2db1",
+        "strictyaml/ruamel/scalarstring.py": "f061c5a1964ef93a73982eeb3f4caa8692b6323a639ec3244e2118e0da7c48a2",
+        "strictyaml/ruamel/scanner.py": "e51b0598005eb1531b358ee027184e866f37ed2a214f1478452d0e6a2a3ab8a2",
+        "strictyaml/ruamel/serializer.py": "182d755737a48e99901725e528e6190f50586c35dd45938214994b21f8d8b602",
+        "strictyaml/ruamel/timestamp.py": "ad72a34535b988659c58b869a8cd592c2f70f5baa87d9c3bb7f1acd0198dad39",
+        "strictyaml/ruamel/tokens.py": "8b05909a657d7572b33223ac794dcfc51282a23d99065a76f6b3c04c8fc1adcf",
+        "strictyaml/ruamel/util.py": "e31a4c5eb289dbb58a4df29be06633792f62cf582d6e4bb0d6b26b203064db11",
+        "strictyaml-1.7.3.dist-info/LICENSE.txt": "288b0b2d89e16908047eb4d8b37c03da5895808920deddc381ae02b319f79d19",
+        "strictyaml-1.7.3.dist-info/METADATA": "51c995e7c523254c387c2602e152ab2e6a504244105e02b7db239ba533736ac6",
+        "strictyaml-1.7.3.dist-info/WHEEL": "db07a93359e4e034b8785a58ad6d534ea3dca0635f1e184efe2e66e1c3a299ba",
+        "strictyaml-1.7.3.dist-info/top_level.txt": "6a61308b2b0c6e6f5ae958ee7f7337bbad96602117991b22142db2692272b281",
+        "strictyaml-1.7.3.dist-info/RECORD": "5e30e5d171744274629a019ca34ebaa6a7d0bd870729d4f02a3261d74889a7cd"
+      }
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "filename": "python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+      "bytes": 229892,
+      "requires_dist": [
+        "six >=1.5"
+      ],
+      "files": {
+        "dateutil/__init__.py": "32a6a6ebb58ef4891399417223aeaf4ba2284974e9f46dfcf0369d1f62c230b6",
+        "dateutil/_common.py": "efbc34cb2b64af19586d29fefa50d53d431a6d45d147d237941bffbd0454a946",
+        "dateutil/_version.py": "055d37d4ec430c09b2e7c9de520e72caa2e42daa88c3b89b2bd02cde388c89bd",
+        "dateutil/easter.py": "772062fa52af8a61f5bbf93aa7b6742492bbd9086a56d541b2a072be910f2af7",
+        "dateutil/relativedelta.py": "218fe6825323a196d87ebbe5a1363671ed366a25633c892265faa03536517ee0",
+        "dateutil/rrule.py": "289cca95a09dd6311bbb8037f1996db256a801487d9d26dd6ce15d8e9ef429ec",
+        "dateutil/tzwin.py": "ec0af8bdd4029e733498a4773148db20ab19ac155f1e0770b0965cfe619845ec",
+        "dateutil/utils.py": "74a09c844c3c78e6e2d25a064f1f75ba70719bfed41a5537bff16314c76ac183",
+        "dateutil/parser/__init__.py": "c1693a185bb14e98e8820086b6091c789a2d8b8a558e5e3f7c7417a4d39a4988",
+        "dateutil/parser/_parser.py": "ee494377289c92c401fd7825fb7500981c33098a2bd40219aa4948713e9d1fff",
+        "dateutil/parser/isoparser.py": "f05cbdf7d6e709dd5fad274e62e3ab6967c94ed7795bba90e7537036e1ff8573",
+        "dateutil/tz/__init__.py": "17e333d77bfa8d8b1e92541ff537bd27a9f370b0e6ab8ee03916bad4adf9fc50",
+        "dateutil/tz/_common.py": "720cc34c036c397bc473ce9c605efb12c962b9269bf0fbb0a6c979f9b5f7fd2e",
+        "dateutil/tz/_factories.py": "ba76fa5d0357acf32f7a4b13094f8083c8e6559b384a88e83d47001e95a7aef5",
+        "dateutil/tz/tz.py": "1149c474c7de4e15e263a978b21f7205a6d9eb7fcf3b3cb4d734ac87db619f5a",
+        "dateutil/tz/win.py": "c49b335a04b0135c4fc7f1c98f86647a9cae902fe1372d35e9631c5e16d1681f",
+        "dateutil/zoneinfo/__init__.py": "298834a6d842323729e4c5d21220499f79cc8d978d65abfbae5270e7eb73d52e",
+        "dateutil/zoneinfo/dateutil-zoneinfo.tar.gz": "d3ea52e7b6e968de0d884df1288193596fa95b803db4f92a18279a7398004475",
+        "dateutil/zoneinfo/rebuild.py": "322a98cc2207bcd6cc1fe2dd4582effb84f410803b8432ade462d1d084532dd2",
+        "python_dateutil-2.9.0.post0.dist-info/LICENSE": "ba00f51a0d92823b5a1cde27d8b5b9d2321e67ed8da9bc163eff96d5e17e577e",
+        "python_dateutil-2.9.0.post0.dist-info/METADATA": "a9d436da322be808332f98d88325998e87cb693a678a9969feb4cfad729a6e93",
+        "python_dateutil-2.9.0.post0.dist-info/WHEEL": "f86fedd281ae13b503d03ad2a55667ab584730157d0c3d97912e6fed7a664e79",
+        "python_dateutil-2.9.0.post0.dist-info/top_level.txt": "e2d8dd5a485166f17b2c0fc161efcbf60076c3fa766becf9cba02b8da464a2df",
+        "python_dateutil-2.9.0.post0.dist-info/zip-safe": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "python_dateutil-2.9.0.post0.dist-info/RECORD": "fc7aa54068c354d522c07153aad6d77b2d8625ec21e45442dc6056682ef3c74a"
+      }
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "filename": "six-1.17.0-py2.py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl",
+      "sha256": "4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274",
+      "bytes": 11050,
+      "requires_dist": null,
+      "files": {
+        "six.py": "c51c91f703d3d4b3696c923cb5fec213e05e75d9215393befac7f2fa6a3904df",
+        "six-1.17.0.dist-info/LICENSE": "4375ba20e2b9c6c4e7cad2940a628fd90e95cc3d50ee92aae755715d8ba1fbd0",
+        "six-1.17.0.dist-info/METADATA": "562042078c2752549f6d8a7c86dbc5dd708088a7be6d80672ec7b07100b72468",
+        "six-1.17.0.dist-info/WHEEL": "a7178d5f925db427b9f0f51260ff6ea6673b8dd44f82f4f41a6f646f5487955c",
+        "six-1.17.0.dist-info/top_level.txt": "fe2547fe2604b445e70fc9d819062960552f9145bdb043b51986e478a4806a2b",
+        "six-1.17.0.dist-info/RECORD": "5067d83422e8d7118fdca18230fc735d9f9afabf72647606bacc7a70d5f6901d"
+      }
+    }
+  ],
+  "target_repo": "dbvv1/a1dbv",
+  "target_commit": "7425f72dd791c49c82758e69dbbd812130d1f84e",
+  "skills": {
+    "explore-frontier": {
+      "path": "templates/generic/.claude/skills/explore-frontier/SKILL.md",
+      "git_blob": "e7cdd0f42b4a5c3f82fd55dc2b31b3ca56c7988c",
+      "original_sha256": "ffab572c39962ae88c73772e9511a93cdd4dcd4f236c53b11c3c82322c77dbe7",
+      "projected_sha256": "5cb7f395f67718e5956e050c7506d31de9862041b255932c375cc5a2bce936c9",
+      "body_sha256": "e340c1cd5014498f82f8bf3b6ca712f64693326fd0b1b5f7c5edbe1605e60d6b",
+      "removed_fields": [
+        "disable-model-invocation: true",
+        "argument-hint: \"[要做的决定，或要广扫的领域]\""
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 1
+    },
+    "handoff": {
+      "path": "templates/generic/.claude/skills/handoff/SKILL.md",
+      "git_blob": "020c4eb94e2db7857caee635134b11f28dc67d99",
+      "original_sha256": "9221b51f65ababef3aabbb7ff4f85dede82deaacfe79e0a86116bd9bc33a3fe7",
+      "projected_sha256": "667b621a9c713e075f08019fcb610c03a6459956a64a1c373c189189f7f9b823",
+      "body_sha256": "1c15c30eb390dd281be9e5732bcef03bcc348662c60f2e501d38f7e8a54694ff",
+      "removed_fields": [
+        "disable-model-invocation: true"
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 0
+    },
+    "spec-interview": {
+      "path": "templates/generic/.claude/skills/spec-interview/SKILL.md",
+      "git_blob": "be665a2bc13bf1cb56bfc5382d1d498ffe4206b7",
+      "original_sha256": "607c9bca9cb5fa11411f4f8ce2a0af5ddd0f961b99823ba9d641eea3426682a6",
+      "projected_sha256": "2e8d15032499638c5840f0593a69d9dc3e78fdb49e1a9fe783c660b250c15b5d",
+      "body_sha256": "792aefb754f7084e4e62e14284c24a51bd840c1c41c86ec63eeb5fd4c556aad2",
+      "removed_fields": [
+        "disable-model-invocation: true",
+        "argument-hint: \"[功能简述]\""
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 1
+    },
+    "task-decisions": {
+      "path": "templates/generic/.claude/skills/task-decisions/SKILL.md",
+      "git_blob": "7dcc987f3a40ed303467f060f8852dfbb1555d0b",
+      "original_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
+      "projected_sha256": "c7209e43bb41ed97028118caf3d46e562e23fcdb639873fa8cee0b8d59f9f256",
+      "body_sha256": "b76e227a5c6145632a0a3c0d508a3720190e6f13fd9a809fa80ad7b9fd386441",
+      "removed_fields": [
+        "disable-model-invocation: true",
+        "argument-hint: \"[当前任务与要改变的选择]\""
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 0
+    },
+    "write-task-guide": {
+      "path": "templates/generic/.claude/skills/write-task-guide/SKILL.md",
+      "git_blob": "0a99be9b38299d48bb6936d35010f2d81cf5f7bf",
+      "original_sha256": "13b198449e452500fd5c855cc31066497222cfb7f740ccf4b00a8a7d607a41d0",
+      "projected_sha256": "e27ed5b6640a932acf895c2472c978e2d7e25a5eb69b732480ebeb5e852cfeac",
+      "body_sha256": "553110de2a769af9b22b3943fc626bcc4894ca3381c14ef0aa05f368c3e2f894",
+      "removed_fields": [
+        "disable-model-invocation: true",
+        "argument-hint: \"[读者问题]\""
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 1
+    }
+  }
+}
