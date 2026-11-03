@@ -1,7 +1,7 @@
 # A-PLAN-MODE-FACTS-20261103 · 计划模式的实际只读与执行边界
 id: A-PLAN-MODE-FACTS-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/decisions/planning-and-tests.md@3ce1dad1ecd7ea676b4a492b5e586b4bddcfa03a
 target_repo: https://github.com/dbvv1/a1dbv
