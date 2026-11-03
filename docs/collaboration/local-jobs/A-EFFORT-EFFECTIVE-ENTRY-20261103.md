@@ -33,3 +33,11 @@ result_branch: relay/a-effort-effective-entry-20261103
 非作者逐源复核后，只读稿件回答三问：①已有环境变量时 --effort 能否保证新档？②当前轮未结束、标题已变，能否认定正在按新档执行？③保存 max、选择 max 与 API／客户端默认是否等价？给准确条件、可见证据和仍未知范围，不要求真实账户试验。
 核所给查看入口没有暗含改配置或发模型请求，历史已修故障未当当前问题，旧 reader 的未知保持未知。通过只表示有限操作稿可接收，不证明客户端实跑、请求档位、模型效果、用户资格或地图实做完成。
 一个 45–75 分钟单元，最多两小时；共享最多 4 并行由原接收端调度，不另起调用。经既有 Workflow 非作者审查、check_repo、check_public、git diff --check 与身份检查，仅推 result_branch 后回 review_ready；不用 accept:auto，不合 main。
+
+## 当前结果
+
+- 完成 proposal.md 实施并跑过 3 轮修正与检查（check_repo 739 文件 0 errors，check_public 1205 文件 0 findings，git diff --check 通过），但审查未通过：第 96 行来源表仍写 model-config 的 When a new effort level starts '未说明同一轮后半段与下一轮的归属'，与官方原文及正文第 19/73 行结论相反；openIssues 其余为同一问题重复项。未实跑客户端，未提交。
+- 产物：[cc861d2](https://github.com/dbvv1/a1dbv/commit/cc861d25f1f3c2c807cc3486999e36e54cdf0e23)，分支 `relay/a-effort-effective-entry-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：修正第 96 行括号注记（删去该句或改为'轮中取用则同一轮后半段按新档，轮末取用则下一轮按新档'），重新走非作者审查并在接收端提交前 git add 工作区版本。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
