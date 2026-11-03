@@ -1,7 +1,7 @@
 # A-AGENT-HOST-MODE-ROUTE-20261103 · Agent shell 独有失败先查被测 CLI 模式
 id: A-AGENT-HOST-MODE-ROUTE-20261103
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 20b695b7b2364afafe0fed2d2126ffa8beffb1c8
