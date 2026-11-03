@@ -1,7 +1,7 @@
 # A-GH-AW-APIDIFF-FACTS-20261103 · Agentic Workflows 的真实维护闭环
 id: A-GH-AW-APIDIFF-FACTS-20261103
 owner: dot-A
-status: running
+status: blocked
 kind: build
 page: docs/13-frontier-radar.md@6bed4fd4075157e40fa2960613b05fcbd57f32b8
 target_repo: https://github.com/dbvv1/a1dbv
@@ -29,8 +29,4 @@ result_branch: relay/a-gh-aw-apidiff-facts-20261103
 
 ## 当前结果
 
-- facts.md 已写入并覆盖 GA 公告、gh-aw 文档、dotnet/core@5f99c19c 固定源码与 PR #10482/#10487/#10493 闭环；check_repo 721 文件 0 errors、check_public 1183 文件 0 findings、git diff --check 通过；3 轮修正后复核仍未通过，openIssues 2 条：create_report_incomplete_issue 的 job/默认 max 表述错误（应为 safe_outputs 处理器 max 1），20 分钟超时为 agentic step 级而非 job 级；未安装或运行 gh-aw/Actions/dotnet，未做实际编译与工作流验收；另索引中 facts.md 为旧的暂存版本，工作树为最终版本
-- 产物：[7e06057](https://github.com/dbvv1/a1dbv/commit/7e06057d5109a7c68399bdc32ba2c145f979faba)，分支 `relay/a-gh-aw-apidiff-facts-20261103`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：按复核意见修正 facts.md 两处（create_report_incomplete_issue 机制与默认 max、20 分钟超时的 step/job 层级），重跑 check_repo/check_public 后在提交前重新 stage 工作树版本；再由负责人提交推送 result_branch
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
