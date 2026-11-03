@@ -1,7 +1,7 @@
 # A-CLOUDFLARE-EXPORT-BOUNDARY-20261103 · 试用文件边界审计 Skill
 id: A-CLOUDFLARE-EXPORT-BOUNDARY-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbfcbf76561a89c65f21bfb8affec9ef4b7ee806
@@ -38,8 +38,8 @@ result_branch: relay/a-cloudflare-export-boundary-20261103
 
 ## 当前结果
 
-- 第 2 单元完成：非作者独立源码反读三个目标文件，按任务卡 9 个问题逐题给出源码答案与 file:line 证据，确认 0 confirmed、无 severity、四项承诺前提不变；收紧 4 处表述（read_text 的 stat/read_bytes 按路径重解析、os.walk 对 junction 不设防、rmtree 对最终链接的拒绝、overlaps 词法比较），新增一条无 severity 的 overlaps() 词法比较 needs_validation 线索并落到选目录操作第 2 条；三项目标文件 blob 哈希与只读参考副本一致。复核通过：check_repo 725 文件 0 错误、check_public 1189 文件 0 命中、git diff --check 通过。openIssues 为空；未导入目标模块、未运行 CLI/unittest/fixture/目标脚本，未运行 check_offline（其基础测试会执行导出器测试），不声称运行型安全验证或六阶段完整审计。
-- 产物：[bbfcbf7](https://github.com/dbvv1/a1dbv/commit/bbfcbf76561a89c65f21bfb8affec9ef4b7ee806)，分支 `relay/a-cloudflare-export-boundary-20261103`。
+- 按 revision 要求修正 result.md 两处行为表述：路径同一性区分 samefile（仅比 st_dev/st_ino、不查树嵌套）与 resolve（规范化/链接解析、不排除 bind-mount 别名），二者阴性均不能单独证明树不重叠；哈希表述区分 manifest 对实际写出内容的哈希与独立源身份，说明 --reviewed 仅与暂存 manifest 比对（export_ai_config.py:199-213），不要求再次 stage、不证明人工审阅。同步未验证项两行与 CPython v3.13.5 源码依据。实际改动仅 docs/collaboration/local-jobs/artifacts/A-CLOUDFLARE-EXPORT-BOUNDARY-20261103/result.md 一个文件（8+/7-），与返回一致；check_repo 725 文件 0 错误、check_public 1189 文件 0 命中、git diff --check 通过。openIssues 为空；未运行目标代码、CLI、unittest、fixture、标准库探针或 check_offline（其基础测试会执行导出器测试），不声称运行型安全验证或六阶段完整审计。
+- 产物：[a00717a](https://github.com/dbvv1/a1dbv/commit/a00717ac69d4c07abf4b0e23136c0a6483c4d73f)，分支 `relay/a-cloudflare-export-boundary-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：无待补缺口；交负责人按 review_ready 接收并回写本卡状态与结果，无需重跑实施或独立反读。
+- 下一步：交负责人按 review_ready 提交并回写本卡状态与结果；无需重跑实施或独立反读。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
