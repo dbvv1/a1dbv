@@ -1,0 +1,83 @@
+{
+  "kind": "separate_public_wrapper_replay_not_original_exit_backfill",
+  "execution": {
+    "started_at_utc": "2026-11-03T13:08:49.803401+00:00",
+    "finished_at_utc": "2026-11-03T13:08:50.771366+00:00",
+    "exit_code": 0,
+    "script_sha256": "262797f9216c34bcfa9af4da5a3b1208809fa07e6a8c7f5fa4853fffce02b586",
+    "stdout_sha256": "095003705a790f72777e0c2817be2a913b518d3b7ca0cc889f62c5b1686833b3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "python_tested": "3.12.14",
+  "setup": "Existing dependencies; pinned source extracted into an independent directory; no package installation.",
+  "original_evidence_unchanged": true,
+  "source_files_unchanged": true,
+  "original_evidence_sha256": {
+    "results.json": "4975d783c3f610584982d4c0402ba125b191849d847eb23dcaf4fc899f8e5160",
+    "verify_confirm.py": "4730b2f495956f957d17eee084a5710eaf03e4762a6e49e72138a46cfe18e47a",
+    "unittest-output.txt": "66221b66d572e6eb3213db1ac12aa31f8625fe3ac62171ac413d846fa6cf2ee0"
+  },
+  "private_execution_receipt_sha256": "13384b9593a996f8524cb1d3f9321724f1545b1db84c3b89b984d5dc981c79fb",
+  "result": {
+    "revision": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+    "observed_started_at_utc": "2026-11-03T13:08:49.938030+00:00",
+    "observed_finished_at_utc": "2026-11-03T13:08:50.665562+00:00",
+    "source_hashes": {
+      "aider/io.py": "7f62a79c8202f2a3793410bac4c983e417fb886513b90faf0e0579d5bb7d047b",
+      "tests/basic/test_io.py": "f5c41cb4b8df04ec6d575a1fdfe1f433ae04ef6501ac08f967dc6004e23d848a"
+    },
+    "original_test": "tests.basic.test_io.TestInputOutput.test_confirm_ask_explicit_yes_required",
+    "original_test_four_assertion_paths": [
+      "yes=True,explicit=True -> False",
+      "yes=False,explicit=True -> False",
+      "yes=None,input=y,explicit=True -> True",
+      "yes=True,explicit=False -> True"
+    ],
+    "additional_cases": [
+      {
+        "case": "empty_default_yes",
+        "observed": true,
+        "expected": true,
+        "input_calls": 1,
+        "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [Yes]: "
+      },
+      {
+        "case": "eof_default_yes",
+        "observed": true,
+        "expected": true,
+        "input_calls": 1,
+        "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [Yes]: "
+      },
+      {
+        "case": "empty_explicit_default_no",
+        "observed": false,
+        "expected": false,
+        "input_calls": 1,
+        "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [No]: "
+      },
+      {
+        "case": "eof_explicit_default_no",
+        "observed": false,
+        "expected": false,
+        "input_calls": 1,
+        "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [No]: "
+      },
+      {
+        "case": "explicit_no",
+        "observed": false,
+        "expected": false,
+        "input_calls": 1,
+        "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [Yes]: "
+      }
+    ],
+    "unittest_methods_run": 2,
+    "failures": 0,
+    "errors": 0,
+    "success": true,
+    "source_unchanged": true,
+    "blocked_side_effect_attempts": [],
+    "scope": "Direct native IO confirmation function with injected input only; no shell execution, CLI, model or compaction execution; does not establish whole-product safety."
+  },
+  "unittest_output": "test_confirm_ask_explicit_yes_required (tests.basic.test_io.TestInputOutput.test_confirm_ask_explicit_yes_required) ... Detected dumb terminal, disabling fancy input and pretty output.\nok\ntest_missing_inputs_and_negative_controls (__main__.BoundaryCharacterization.test_missing_inputs_and_negative_controls) ... Detected dumb terminal, disabling fancy input and pretty output.\n\nsynthetic non-executable subject\nDetected dumb terminal, disabling fancy input and pretty output.\n\nsynthetic non-executable subject\nDetected dumb terminal, disabling fancy input and pretty output.\n\nsynthetic non-executable subject\nDetected dumb terminal, disabling fancy input and pretty output.\n\nsynthetic non-executable subject\nDetected dumb terminal, disabling fancy input and pretty output.\n\nsynthetic non-executable subject\nok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.003s\n\nOK\n",
+  "unittest_output_sha256": "66221b66d572e6eb3213db1ac12aa31f8625fe3ac62171ac413d846fa6cf2ee0"
+}

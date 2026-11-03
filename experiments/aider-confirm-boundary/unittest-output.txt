@@ -1,0 +1,23 @@
+test_confirm_ask_explicit_yes_required (tests.basic.test_io.TestInputOutput.test_confirm_ask_explicit_yes_required) ... Detected dumb terminal, disabling fancy input and pretty output.
+ok
+test_missing_inputs_and_negative_controls (__main__.BoundaryCharacterization.test_missing_inputs_and_negative_controls) ... Detected dumb terminal, disabling fancy input and pretty output.
+
+synthetic non-executable subject
+Detected dumb terminal, disabling fancy input and pretty output.
+
+synthetic non-executable subject
+Detected dumb terminal, disabling fancy input and pretty output.
+
+synthetic non-executable subject
+Detected dumb terminal, disabling fancy input and pretty output.
+
+synthetic non-executable subject
+Detected dumb terminal, disabling fancy input and pretty output.
+
+synthetic non-executable subject
+ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.003s
+
+OK

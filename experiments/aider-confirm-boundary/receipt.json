@@ -1,0 +1,80 @@
+{
+  "revision": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+  "observed_started_at_utc": "2026-11-03T12:56:20.393170+00:00",
+  "observed_finished_at_utc": "2026-11-03T12:56:21.095348+00:00",
+  "source_hashes": {
+    "aider/io.py": "7f62a79c8202f2a3793410bac4c983e417fb886513b90faf0e0579d5bb7d047b",
+    "tests/basic/test_io.py": "f5c41cb4b8df04ec6d575a1fdfe1f433ae04ef6501ac08f967dc6004e23d848a"
+  },
+  "original_test": "tests.basic.test_io.TestInputOutput.test_confirm_ask_explicit_yes_required",
+  "original_test_four_assertion_paths": [
+    "yes=True,explicit=True -> False",
+    "yes=False,explicit=True -> False",
+    "yes=None,input=y,explicit=True -> True",
+    "yes=True,explicit=False -> True"
+  ],
+  "additional_cases": [
+    {
+      "case": "empty_default_yes",
+      "observed": true,
+      "expected": true,
+      "input_calls": 1,
+      "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [Yes]: "
+    },
+    {
+      "case": "eof_default_yes",
+      "observed": true,
+      "expected": true,
+      "input_calls": 1,
+      "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [Yes]: "
+    },
+    {
+      "case": "empty_explicit_default_no",
+      "observed": false,
+      "expected": false,
+      "input_calls": 1,
+      "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [No]: "
+    },
+    {
+      "case": "eof_explicit_default_no",
+      "observed": false,
+      "expected": false,
+      "input_calls": 1,
+      "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [No]: "
+    },
+    {
+      "case": "explicit_no",
+      "observed": false,
+      "expected": false,
+      "input_calls": 1,
+      "prompt": "Run shell command? (Y)es/(N)o/(D)on't ask again [Yes]: "
+    }
+  ],
+  "unittest_methods_run": 2,
+  "failures": 0,
+  "errors": 0,
+  "success": true,
+  "source_unchanged": true,
+  "blocked_side_effect_attempts": [],
+  "scope": "Direct native IO confirmation function with injected input only; no shell execution, CLI, model or compaction execution; does not establish whole-product safety.",
+  "provenance": {
+    "type": "sanitized_original_run_extract",
+    "removed_fields": [
+      "source",
+      "python",
+      "imported_source",
+      "dependency_versions"
+    ],
+    "original_result_sha256": "4975d783c3f610584982d4c0402ba125b191849d847eb23dcaf4fc899f8e5160",
+    "original_probe_sha256": "4730b2f495956f957d17eee084a5710eaf03e4762a6e49e72138a46cfe18e47a",
+    "unittest_output_sha256": "66221b66d572e6eb3213db1ac12aa31f8625fe3ac62171ac413d846fa6cf2ee0",
+    "public_trial_adaptations": [
+      "source/output CLI arguments and source hash preflight",
+      "no absolute paths or runtime-environment fields in result",
+      "output must be new; disable bytecode writes"
+    ],
+    "outer_process_exit_code": null,
+    "outer_exit_evidence": "Not present in retained files; do not infer from intended sys.exit.",
+    "public_trial_executed_when_extract_prepared": false
+  }
+}
