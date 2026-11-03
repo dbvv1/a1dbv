@@ -1,7 +1,7 @@
 # A-INSTRUCTION-LIVE-STATE-20261103 · 指令依赖外部状态时先核入口
 id: A-INSTRUCTION-LIVE-STATE-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0c53793f5e91e1241f33ce5489cfac37071ca5b6
@@ -47,8 +47,8 @@ result_branch: relay/a-instruction-live-state-20261103
 
 ## 当前结果
 
-- 已完成 artifact-only 提案 docs/collaboration/local-jobs/artifacts/A-INSTRUCTION-LIVE-STATE-20261103/proposal.md（124 行）：含并入 instruction-files.md 的最小正文候选（权威来源与适用条件、未启用/暂停/排队/失败/未知五态表、无回执先查状态、授权边界、根约定与窄 Skill 停用范围、何时不适用）、原句缺口、两阶段固定证据（PR 75873/提交 1057b672 暂停；PR 76456/提交 d9e41684 恢复）、作者自报与未知边界，并逐题回答四问与两个反例。三视角独立审查 3 轮修正后 pass=true、issues=[]、openIssues=[]。check_repo 744 文件 0 错误、check_public 1209 文件 0 findings、编码/空白检查通过；git status 仅新增该未跟踪文件，无其他改动。未关闭限制：暂停起止与覆盖范围、作者查询是否仍成立、当前服务是否仍启用均未知（按卡片不调查）；45 分钟为作者自报未复算；desktop 上传门控未展开；未提交/推送、未做读者实测。
-- 产物：[0c53793](https://github.com/dbvv1/a1dbv/commit/0c53793f5e91e1241f33ce5489cfac37071ca5b6)，分支 `relay/a-instruction-live-state-20261103`。
+- 按修改要求 1–3 重写 proposal.md 的状态对象与证据强度：暂停依据改为 PR 75873 维护者明确自述“We've paused our use of Trunk”，并与具名规则集 enforcement、GitHub 原生 mergeQueue、允许合并方法三类观察分列，删除“第三方队列始终为 null”的普适断言；恢复证据限定为本次历史合入的 merged_by=trunk-io[bot] 与 bot 评论（新增来源行），不证明服务持续/当前启用；同步改写逐题回答与两个反例。check_repo 744 文件 0 错误、check_public 1210 文件 0 findings、git diff --check 通过；三视角独立审查 pass=true、issues=[]、fixRounds=0。openIssues 为空；仍未知：暂停起止与覆盖范围、作者查询是否仍成立、Trunk/规则集当前状态（按卡片不调查），45 分钟仅作者自报，未做读者实测、未部署或队列实跑。
+- 产物：[12a7305](https://github.com/dbvv1/a1dbv/commit/12a730567e55a39a51400ee72e1125969011ade2)，分支 `relay/a-instruction-live-state-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端用 noreply 身份只将 proposal.md 提交到 result_branch（当前 git user.email 为公司邮箱，勿沿用），更新本卡状态与 review_ready；原页采用、读者实测与推送由负责人/接收端完成。
+- 下一步：接收端用 noreply 身份只将 proposal.md 提交到 result_branch 并更新本卡状态为 review_ready；原页采用、读者实测与推送由负责人完成。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
