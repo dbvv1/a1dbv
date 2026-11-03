@@ -1,7 +1,7 @@
 # A-DEPENDENCY-LOCATOR-FACTS-20261102 · 实际依赖定位的 Cargo 官方边界
 id: A-DEPENDENCY-LOCATOR-FACTS-20261102
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 page: docs/decisions/skills-and-plugins.md@2bddaaf7b5ed7f9bd151315cab6b67e2a9e97709
 target_repo: https://github.com/dbvv1/a1dbv
