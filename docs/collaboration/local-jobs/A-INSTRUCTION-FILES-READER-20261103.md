@@ -1,10 +1,10 @@
 # A-INSTRUCTION-FILES-READER-20261103 · 用已有项目指令完成文档小任务
 id: A-INSTRUCTION-FILES-READER-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
-base_ref: bfd477e78238243ec019b423623ea434d3226189
+base_ref: 7572c1183a382d3792641e428935ee178223783f
 result_branch: relay/a-instruction-files-reader-20261103
 page: docs/decisions/instruction-files.md@main
 
@@ -33,12 +33,11 @@ PowerShell 中实际运行文档给出的引用／转义形式，核传入参数
 单元通常 60–90 分钟、最多两小时；不能继续时交回已做部分和精确恢复条件，不自动重开旧读者任务。
 
 ## 修改要求
-本次是原读者结果的定点返工，不是新读者首次实测；沿原 result_branch 从 bfd477e78238243ec019b423623ea434d3226189 继续，保留原提交和 u1 首轮记录，只追加修订结果，不覆盖失败、未知与原始证据。先核原调用、工具及登记进程已结束；仍可能写该分支时保留隔离，不启动第二个调用。
-1. 修 docs/usage.md 的 PowerShell 整句示例：用字面单引号，说明内容含 apostrophe 时双写；用合成的 $、反引号、apostrophe 与 @/#/& 组合，实际复测 PowerShell 5.1／7 的 argv。保留此前有效的单标签单引号／双引号／反引号形式，不把双引号描述成一律错误。
-2. 将 Composing Entries 旧反斜杠转义说明限定为 POSIX／Bash 类 shell，并交叉引用 PowerShell 说明，避免同页前后矛盾。
-3. CLAUDE.md 文档检查说明指向实际 CI 入口，并列已有 Python／Poetry 文档环境、Node 依赖、匹配的 Puppeteer Chrome 和 docs server 前提。不把 npm install 写成每次检查必做；不安装、不下载，不运行可能隐式安装的 npx。缺前提只静态核 CI，并保留未运行。
-原写域、no-install、合成数据和只推结果分支限制不变。非读者核最终 diff、示例与 argv 边界；完整 jrnl／MkDocs 仅已有工具时实际跑，缺依赖仍记未验。三项未修前 reviewed=false；返工通过也不能冒充完整 CLI／文档构建或共享 AGENTS 全验。
-回传记录报告的首轮附文指纹与负责人独立计算的 21b5f4ab 页指纹相符；未取得本机原始输入文件，接收端实际解析提交及加载仍未独立验证，不回填或改写首次记录。任务产物“已完成”与页面／环境欠项分别接收。
+本轮只沿原 result_branch 从 7572c1183a382d3792641e428935ee178223783f 定点修项目指令的授权范围，不是新读者首次实测。先核本次旧调用、工具及登记进程全部结束并确认原 worktree 单写者；缺证继续隔离，不启动第二个调用或接管旧文件。保留首轮、二轮提交及 u1 全部原记录，只追加本项修订与独立核对。
+CLAUDE.md 的 “Do not install or download anything just to run this check” 把本轮禁装固化为永久规则，与同页正常 setup 冲突。改成条件分支：当前任务禁止安装／下载时不执行 setup，缺前提则记录未验；正常项目使用若获得安装授权，可按实际 CI setup 准备环境。本轮实际 no-install 不变，不执行 setup 或可能隐式安装的 npx。
+同时不要把“仅 node_modules 不存在才可安装”固化为永久条件：目录存在也可能依赖不全。表述应是检查前需要对应依赖、匹配浏览器与 docs server，不要求每次重装；安装是否允许以当前任务授权为准。保留 Python／Poetry、Node／pa11y-ci、Puppeteer Chrome、docs server 与 CI 入口的准确前提。
+只改必要的 CLAUDE.md 条件措辞，并在原 u1 追加本轮说明。已核通过的 usage 单引号、apostrophe 双写、单标签有效形式及 POSIX 限定／互链保持不变；不重跑 Windows 探针、不改答案页、不为指纹误读再造输入或重读首次流程。指纹误读由下方负责人接收结论更正，保留读者原文。
+原写域、no-install、合成数据、公开扫描、只推原结果分支限制均保留；非读者核最终 diff 与任务范围，不扩其他页，不得另开并发调用或另派新任务。缺依赖的本机完整 jrnl／MkDocs／Pa11y 仍如实未验；云端已验范围不能冒充 Windows 宿主或全门禁。修订后回 review_ready，不以 taskDone 概括完整验收。
 
 ## 当前结果
 
@@ -53,3 +52,8 @@ PowerShell 中实际运行文档给出的引用／转义形式，核传入参数
 公开回传记录报告首轮附文为 19328 bytes、SHA-256 为 7b8c59ff80cb8361d7ab958a8c9436ab690090d4fac7e9735dc6b2686b0a72e5，与负责人独立计算的 21b5f4ab0d4c78c73a2ef57502a4a49ba70fb991 页面指纹相符。未取得本机原始输入文件，不能称独立验证了实际附入内容；接收端解析提交及加载仍待独立回执，不回填首次输入记录。
 读者先 Read 后复述，不计无工具复述；“启动已注入全文”目前只是读者自述，缺独立宿主回执仍待验。完整 jrnl／MkDocs 未运行继续保留为环境缺口。
 三项产物修订和未运行验收仍按上方修改要求处理；页面缺口、环境限制、读者误解和实际任务完成分别接收，不用 taskDone 或首次 cause 标签替代独立判断。
+
+## 二轮独立接收补充
+2026-11-03，负责人回读 7572c118 仅含三个授权文件，首轮 u1 的 23046 字节完整前缀保留。云端隔离环境复核 MkDocs 1.6.1 build exit 0，生成 usage 中两条整句、单标签及 #using-tags 互链正确；已有 jrnl 4.6 依赖、未新安装，临时 config／journal 且 HOME／XDG 全部隔离，两条文案分别写入及 @beach／@cafe JSON 查询均 exit 0，$5、反引号、apostrophe、#／& 字面保留，查询未改 journal／配置。此为云端静态文档与 CLI 链路，不是本机 Windows／Poetry 锁环境／Pa11y 完整验收。
+21b5f4ab 是页面提交，不是全文 SHA-256；其 19328 字节／7b8c59ff 指纹与公开回传报告相符，684e5bcf 页为 20025 字节／c4e5a91d，是后续版本而非首轮输入。负责人分别独算页面，但未拿到本机输入原件；实际解析提交与启动加载仍缺独立回执，不倒填原记录。不能由版本不同推成原指纹冲突。
+七项 cause 不能统算页面缺陷：缺输入回执属证据，依赖缺失／禁装属环境与授权，目标项目规则冲突属优先级处理，agents-md-lint 非项目依赖及具体文案位置需按实际任务判断；非交互工具入口的旧页缺口已另修，不能据后页倒推首读。已验文档与行为范围保留，但永久禁装条件句仍须上方定点返工，当前不整体验收、不升级地图。
