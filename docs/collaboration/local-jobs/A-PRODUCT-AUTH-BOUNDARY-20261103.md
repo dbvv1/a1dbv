@@ -1,10 +1,10 @@
 # A-PRODUCT-AUTH-BOUNDARY-20261103 · 核对自建产品的认证复用边界
 id: A-PRODUCT-AUTH-BOUNDARY-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 0efa86a814bdde56eaecb9ef7ef8d609ba1e05f2
+base_ref: 08068d7808ca9b57fd899c3acd224882b3ef86d1
 result_branch: relay/a-product-auth-boundary-20261103
 
 ## 目标
@@ -33,6 +33,13 @@ result_branch: relay/a-product-auth-boundary-20261103
 读者仅看稿件应能回答“自制收费服务能否直接照搬既有 app-server 登录”“身份登录成功是否就获模型额度权限”“model/list 有模型、或本地 MCP 可用是否证明托管工具也可用”，并知道未明确的资格该到哪个官方入口核查；不要求登录或试跑来完成文稿。
 通过仅表示有限官方事实与修订稿可接收，不证明用户／第三方项目有资格、实际运行成功、法律合规或模型收益，不升级地图实做状态；无证据的变化不制造修订。
 一个 60–90 分钟单元，最多两小时；共享最多 4 并行由原接收端调度，不另起调用。经既有 Workflow 非作者审查、check_repo、check_public、git diff --check 与身份检查，仅推 result_branch 后回 review_ready；不用 accept:auto，不合 main。
+
+## 修改要求
+沿原 result_branch 从 08068d7808ca9b57fd899c3acd224882b3ef86d1 仅修 facts.md 下列同类两处及必要同步，固定受检 16 页仍为 0efa86a8；原首轮产物和自报结果保留在历史。先由原接收端核调用、工具及登记进程均已结束、原产物单写；缺证保隔离，不启动续接或改旧文件。不新任务／新读者，不登录、申请、执行认证或模型，不改 16 页、配置、其他卡或正文。
+1. L50 资格列“应用是否获批”改为“应用是否属于当前开放范围；selected private／商业合作路径是否获得相应资格”；未知列仍保留文档措辞差别，不给所有 OSS plan usage 增加统一事前人工审批步骤。
+2. L71“应用获批”改为“身份登录不够；plan usage 要另授相应 scope，并满足应用开放范围及用户资格，不能仅凭身份登录成功判断”。保 selected private、商业 limited trial、用户 plan／workspace 和实际 scopes 的条件，不反向宣称任意应用或账号都无条件可用。
+依据为官方 https://developers.openai.com/siwc/quickstart 首段及 understand-scopes、https://developers.openai.com/siwc/token-sharing-open-source#introduction 与 https://developers.openai.com/cookbook/articles/sign-in-with-chatgpt ：partner apps 的 approved 限定不能泛化，OSS 指南描述登录时动态注册。只反读已给原文，不扩查申请标准或执行流程。
+其余已核核心保留：harness 复用不等于认证用途开放、个人自托管 VM 不等于多用户托管授权、model/list 目录不证明可用、hosted 工具与本地工具／HTTP／WebSocket 边界；不为这两句扩写整页。非作者定点核差量后回 review_ready，仅接有限官方事实与建议稿，不凭 Workflow pass 认定真实产品资格、法律合规或客户端运行通过。
 
 ## 当前结果
 
