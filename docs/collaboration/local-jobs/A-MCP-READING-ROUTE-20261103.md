@@ -1,7 +1,7 @@
 # A-MCP-READING-ROUTE-20261103 · 把真实长报告消费接入 MCP 选择路线
 id: A-MCP-READING-ROUTE-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 04f31d0c534cb674546e7a1771f3278b8636ea92
@@ -43,8 +43,8 @@ result_branch: relay/a-mcp-reading-route-20261103
 
 ## 当前结果
 
-- 已按负责人三组事实反馈修订 docs/04-mcp.md §2 有限操作建议稿：尾部缺口改为逐项对照固定报告（保留 §5 开头与 §6 整句，实际缺失 L805 括注、L808、L809）；schema 改为按需取一次并复用于 4/5 次 invoke，971 字符元数据限定为后端 read_text_file 结果，实际版本为 Python 3.12.14；full=true 限定于启用 shrinkfit 的 *_invoke_tool 包装入口且须保持原工具/参数/context，恢复 SHA 一致不证明缓存命中、不适用于写工具。检查通过（check_repo 734 文件 0 错误、check_public 1200 文件 0 发现、git diff --check 通过），仅改动 proposal.md，未提交未推送。openIssues：reader-test 未运行、候选保持 🧪；旧 04 写者退出与写域未核实，正文未动。
-- 产物：[e4f37ec](https://github.com/dbvv1/a1dbv/commit/e4f37eccc5899fd9c62c91d23f942f9a9e24be4c)，分支 `relay/a-mcp-reading-route-20261103`。
+- 按负责人三组事实反馈完成 proposal.md 修订：尾部缺口逐项对照固定 sources.md（保留 §5 开头与 §6 整句，缺失 L805 括注／L808／L809），schema 为按需一次复用 4/5 次 invoke，971 字符元数据限定于后端 read_text_file 结果，Python 3.12.14，full=true 限定于 shrinkfit 的 *_invoke_tool 包装入口且缓存未命中可能重执行；非作者只读复核固定回执／脚本／源码后仅补全三处截断引文。check_repo 734 文件 0 错误、check_public 1200 文件 0 发现、git diff --check 通过；仅改 proposal.md，未提交未推送。openIssues：reader-test 未运行、候选保持 🧪；旧 04 写者退出与写域未核实，正文未动。
+- 产物：[df59fc3](https://github.com/dbvv1/a1dbv/commit/df59fc3a28031f7b7aec01718514f2168b4af750)，分支 `relay/a-mcp-reading-route-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：负责人核清 04 写者退出与写域后接收/合并本候选稿；随后由未参与写作的新读者带独立自然任务照候选段实做（含真实写操作或状态未知调用的边界处理），通过后才可升级 🟡/地图。
+- 下一步：负责人核清 docs/04-mcp.md 旧写者退出与写域后接收／合并本候选稿；随后由未参与写作的新读者带独立自然任务照候选段实做（含真实写操作或状态未知调用），通过后才可升级 🟡／地图。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
