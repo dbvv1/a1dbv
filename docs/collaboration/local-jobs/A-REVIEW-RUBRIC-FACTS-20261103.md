@@ -1,11 +1,11 @@
 # A-REVIEW-RUBRIC-FACTS-20261103 · 审查尺度的真实来源与装配
 id: A-REVIEW-RUBRIC-FACTS-20261103
 owner: dot-A
-status: review_ready
+status: revision_requested
 kind: build
 page: docs/decisions/codex-overengineering.md@5ebecac1ffe2501301699d518fd8b61acb82163f
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: 5ebecac1ffe2501301699d518fd8b61acb82163f
+base_ref: 2d67cac1c22a67002c5c33e7d5204bf051b73118
 result_branch: relay/a-review-rubric-facts-20261103
 
 ## 目标
@@ -26,6 +26,12 @@ result_branch: relay/a-review-rubric-facts-20261103
 ## 怎样算做成
 非作者核每项主张的直接源码依据、版本与运行条件，防止将“读取该文件”升级为所有宿主均采用或实际收益。只接事实材料，不升级过度工程页评级，不据此增加评审轮次或默认流程。
 最多两小时，共享最多 4 并行由原接收端调度，不另开调用。跑 check_repo、check_public、git diff --check 与提交身份检查，仅推 result_branch，回 review_ready 供负责人接收；不用 accept: auto。
+
+## 修改要求
+沿原 result_branch 从 2d67cac1c22a67002c5c33e7d5204bf051b73118 只修同一 facts 的两处事实与相应总括。先核原调用、工具与登记进程已退出、该产物单写；缺证保持隔离、不启动续接或改旧文件。保原提交／首次回传，不新任务、不重扫、不运行任何客户端／模型／测试，不改页面／模板。
+1. 入口须分版本与 delivery：固定 970111f6 的 CLI `exec/src/lib.rs:1272–1286` 发送 None，默认／Inline 在 `app-server/src/request_processors/turn_processor.rs:1454–1619` 走 Op::Review；Detached 则构造 review-agent 提示交 AgentRunner，不是同一 ReviewTask 路径。稳定 rust-v0.166.0 解到 6ff1e1ca3b30fc8b914720681fcf5fe62e95f856（同文件 332–355）与负责人 main 快照 fbf5f0d3a716d08c254d3e4941d5b12eaff5afe7（383–407）已直接提交 Op::Review。三核心文件一致不代表入口路由一直一致；保原 036e1601 的实际取样时间，不当此刻最新，也不把旧 Detached 分流写成当前版本现状。
+2. “基础指令”不直接等于协议 system 消息：970 的 `core/src/context/base_instructions.rs:41–60` 实际 role 为 developer，`core/tests/common/responses.rs:230–247` 的 instructions_text helper 也是读取 developer input，而非 API instructions 字段；注释称 system prompt 不能替代实际装配证据。只说已核 Op::Review 路径由 ReviewTask 装配，不无证断言全仓唯一；Custom 不替换 rubric 文本，不等于不影响审查规则／范围。测试名也不当作完整隔离效果已实跑。
+已逐字独核的三核心文件、原 finding 规则与页面“基础指令／本页改写”主张可保留；不应用候选长补句或增加审查轮次。定点复核上述官方固定来源后回 review_ready，只接事实材料，未运行与未知宿主范围保持。
 
 ## 当前结果
 
