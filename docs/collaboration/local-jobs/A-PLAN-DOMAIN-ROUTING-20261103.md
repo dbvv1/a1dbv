@@ -1,7 +1,7 @@
 # A-PLAN-DOMAIN-ROUTING-20261103 · 规划时保留实现领域知识
 id: A-PLAN-DOMAIN-ROUTING-20261103
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ec246c5d314e9280edb221695bd3ab71f3ad7a8f
@@ -38,4 +38,8 @@ result_branch: relay/a-plan-domain-routing-20261103
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 新增 proposal.md（148 行）：为 planning-and-tests『先 Plan』补最小入口选择段与可复制短请求，含缺口表、958f787→5e183ce 路由差量、『计划改 Button 外观』与『只写外观需求契约』两个入口答案、资料不可省项与权限边界、不适用与去重。已核 4f45ad9 fixture 的 prompt/5 项 required_reads/禁用 edit-files/2 条断言、41768da L149–159 作者报告与 06b458f 现状；check_repo 744 files/0 errors、check_public 1209→1210 files/0 findings、无空白错误、UTF-8/LF。openIssues 为空；未重跑上游 fixture 或探针，token +22% 仅为作者单次报告，当前树 3/5 fixture 路径已演进不代表缺文件。
+- 产物：[2759d3d](https://github.com/dbvv1/a1dbv/commit/2759d3d514e31a9720cf0d43a0dbb938aef87713)，分支 `relay/a-plan-domain-routing-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端按既有 Workflow 做非作者审查并推送 result_branch 至 review_ready；提交身份需改用仓库要求的 noreply 邮箱。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
