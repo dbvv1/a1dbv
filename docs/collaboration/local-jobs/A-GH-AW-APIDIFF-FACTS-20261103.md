@@ -1,7 +1,7 @@
 # A-GH-AW-APIDIFF-FACTS-20261103 · Agentic Workflows 的真实维护闭环
 id: A-GH-AW-APIDIFF-FACTS-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/13-frontier-radar.md@6bed4fd4075157e40fa2960613b05fcbd57f32b8
 target_repo: https://github.com/dbvv1/a1dbv
