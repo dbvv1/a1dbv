@@ -1,7 +1,7 @@
 # A-VERIFICATION-FACTS-20261102 · 验证反馈页的 Playwright 官方边界
 id: A-VERIFICATION-FACTS-20261102
 owner: dot-A
-status: revision_requested
+status: running
 kind: build
 page: docs/decisions/verification.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
