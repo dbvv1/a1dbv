@@ -2,7 +2,7 @@
 id: B-MOBA-GOLD-EVENT-20261103
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 0811894da59740bdc10e0a2318174f3dbb0530d1
 result_branch: relay/b-moba-gold-event-20261103
