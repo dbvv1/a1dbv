@@ -1,7 +1,7 @@
 # A-PERMISSION-BOUNDARY-FACTS-20261102 · 通用项目规则与原生权限的边界
 id: A-PERMISSION-BOUNDARY-FACTS-20261102
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/permissions-and-hooks.md@d66e8d6179fecc36c9497283a6171be0895cf02c
 target_repo: https://github.com/dbvv1/a1dbv
@@ -33,3 +33,8 @@ result_branch: relay/a-permission-boundary-facts-20261102
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端提交并推送 result_branch，将任务置 review_ready 交负责人接收；剩余缺口仅为官方未承诺项已在未知条目中记录，无需模型重跑。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+- 接收 [89e91406](https://github.com/dbvv1/a1dbv/commit/89e9140629cd7c3844fb3f4f8cb4bbad17a5d1fe) 中逐源核实且影响操作的事实：Codex profiles 的托管例外、联网与代理双前提；Claude 原生 Windows 的严格沙箱启动退出、`acceptEdits` 文件命令与保护询问、排除项层级、`strictAllowlist` 版本／设置层以及已加载设置层中凭证 deny 的合并边界。页面负责人经非作者独立审查，将必要修订发布并逐字回读为 [9e2423c4](https://github.com/dbvv1/a1dbv/commit/9e2423c4c109509802b3bcbcc328560f40ec6b8a)；文档、公开内容、身份与空白检查通过。
+- 不全盘采纳 10 项／25 行报告：保留 `never` 下越界动作“可能失败”的原有谨慎表述；缺直接原文不等于证明工作区外读取不存在；仅所选 config profile 中存在 `sandbox_mode` 才是相应旧机制条件，不能说任意 config profile 都触发。凭证 deny 结论以实际加载层为前提，不把未加载的用户配置纳入有效合并。
+- 原报告与自述保留；“未提交未推送”是模型阶段记录，正式产物已由接收端发布。接收只限官方事实与上述页面修订，配置块和 🟡 保持；未部署、未实跑权限／沙箱／客户端，不改变真实设置或当前授权，不接收原 Context 候选，不把 reviewed=true 当成全部结论或模板采用通过。
