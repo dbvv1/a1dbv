@@ -1,7 +1,7 @@
 # A-EFFORT-EFFECTIVE-ENTRY-20261103 · 分清所选档位与当轮生效档位
 id: A-EFFORT-EFFECTIVE-ENTRY-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: cc1c1ce59a9dbfcca52024b0e5c0ee6db7c4c37e
@@ -43,8 +43,8 @@ L71 正确引文及 unit2 L96 取用后按新档的修正保留；已核优先�
 
 ## 当前结果
 
-- 修正 proposal.md 来源表第96行注记，删去与官方原文相反的“未说明同一轮后半段与下一轮的归属”，改为“轮中取用则同一轮后半段按新档，轮末取用则下一轮按新档”；非作者三视角审查通过（0 issues、0 fix rounds），check_repo 739 文件 0 errors、check_public 1205 文件 0 findings、git diff --check 通过。未实跑客户端，请求档位、API 默认、账户与组织上限仍为未知；openIssues 为空。
-- 产物：[cc1c1ce](https://github.com/dbvv1/a1dbv/commit/cc1c1ce59a9dbfcca52024b0e5c0ee6db7c4c37e)，分支 `relay/a-effort-effective-entry-20261103`。
+- 修订 proposal.md 生效时点推断：L9/L19/L53/L71/L73 区分 /effort 确认后下一条消息按新档的保证与 /model 最迟从下一条消息起、当前轮可能仍按旧档；排队消息取用后按新档继续但不能反推此前请求（轮末取用不保证整轮全旧，轮中取用须前段确实旧档才称混合轮）；L71 官方原引文与 L96 unit2 来源注记保留。非作者三视角审查通过（0 issues、0 fix rounds）；check_repo 739 文件 0 errors、check_public 1205 文件 0 findings、git diff --check 通过；git status 仅该文件 5 增 5 删。openIssues 为空。未实跑客户端，未执行 /effort、/model、--effort，请求档位、API 默认、账户与组织上限仍为未知。
+- 产物：[fee0b22](https://github.com/dbvv1/a1dbv/commit/fee0b22c88ab10df3aa04b6ba9dab09080eb1671)，分支 `relay/a-effort-effective-entry-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：接收端按 noreply 身份 git add 工作区版本并提交到 relay/a-effort-effective-entry-20261103，回 review_ready；勿用本机 corp 邮箱提交。
+- 下一步：接收端按 noreply 身份将工作区版本提交到 relay/a-effort-effective-entry-20261103 回 review_ready；勿用本机 corp 邮箱提交，不自动重跑模型。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
