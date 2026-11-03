@@ -1,7 +1,7 @@
 # A-SKILLS-PLUGINS-READER-20261103 · 按能力缺口完成配置小修
 id: A-SKILLS-PLUGINS-READER-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
@@ -31,3 +31,11 @@ page: docs/decisions/skills-and-plugins.md@main
 结果分别写开发任务做到哪步、页面怎样支持能力选择、所选资料／能力是否真正用上，以及具体卡点和页外帮助；页面缺口、环境限制、读者误解分开，无卡点写无。
 本卡不要求试装整包，也不声称产品间优劣；真实安装／自动加载未走到就保留待验。首轮结果不覆盖、不自动再派新读者。
 通常一个 60–90 分钟单元，最多两小时；受阻保全成果和恢复条件，由 dot-A 后续接收。
+
+## 当前结果
+
+- 已按 reader-test 完成一轮：把公开 PR #2110 的补丁应用到 jrnl/config.py（make_yaml_valid_dict 捕获 YAMLError 回退字面字符串），并补 tests/unit/test_parse_args.py 回归（%d、%Y-%m-%d %H:%M、colors.body、结构化 mapping），另写 reader-tests 卡点报告；函数层/静态核对通过（git diff --check、py_compile、补丁与 PR diff 逐字比对、用未安装的 ruamel.yaml wheel 直接加载验证 ScannerError 为 YAMLError 子类且基线与补丁行为差异符合预期）。taskDone=false：真实 CLI 复现、pytest、ruff 均未运行，环境缺 ruamel.yaml、cryptography、keyring、parsedatetime、pyxdg、tzlocal 及 poetry/pytest/pytest-bdd/pytest-xdist/tox/ruff/black/poe，无 .venv，任务禁止安装依赖，故未留下原失败/候选通过的运行证据。pageStuck：1) 页面只写用项目原测试命令，未写运行前置；2) 页面只给 Rust/Cargo、Node 依赖定位配方，缺 Python/pip/poetry 等价入口；3) 输入未附页面解析提交 SHA，@main 无法固定版本（正文指纹 15191 字符/24162 字节/SHA-256 e3cb8f3a… 与参考副本逐字节一致，正文完整）。openIssues：嵌套键用例只测 make_yaml_valid_dict 中间层，未走 apply_overrides 实际 config 树；吞掉全部 YAMLError 的口径变化（坏结构化值由解析期报错变为静默字符串）未评估；恢复条件漏 pytest-bdd 与 pytest-xdist；补丁注释“% starts a YAML directive”表述不准确。
+- 产物：[6b57614](https://github.com/dbvv1/jrnl/commit/6b57614aa0cbcb6a52800717d0df22566de7cdf1)，分支 `relay/a-skills-plugins-reader-20261103`。
+- 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人需在可运行 jrnl 环境跑真实 CLI 复现与 pytest/ruff 验收，评估 YAMLError 影响面并补嵌套键端到端用例、修正注释，再决定是否接回并推进 PR #2110；reader-test 不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
