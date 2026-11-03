@@ -1,7 +1,7 @@
 # A-MCP-READING-ROUTE-20261103 · 把真实长报告消费接入 MCP 选择路线
 id: A-MCP-READING-ROUTE-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 17c984ae31ac532fe69bce0f89e72572f6651545
@@ -33,3 +33,11 @@ result_branch: relay/a-mcp-reading-route-20261103
 计数、预算对象、元数据额外成本、原失败与当前未验范围逐项保真；当前默认/原实例不被覆盖，候选不称新实跑或完整可照做验收。没有独立自然读者任务时明确保待验，不创建替身任务。
 这是纯文档建议，适用check_repo.py、check_public.py、git diff --check及身份/实际diff审查；不跑check_offline、无关实验或目标运行。缺检查依赖则如实报告，不安装或修改接收器。
 完成上述建议即回传，不为填满时长扩题；通常60–90分钟，最多两小时。原接收端核退出/单写并按共享最多4并行领取，同一id不重复派发；碰到同题在制或明确拒绝停对应动作并保现状。
+
+## 当前结果
+
+- Workflow completed implement plus reader/facts/run three-lens review with pass=true, fixRounds=0, openIssues=[]; only one new file docs/collaboration/local-jobs/artifacts/A-MCP-READING-ROUTE-20261103/proposal.md (101 lines) was added, containing the bounded 04-mcp §2 proposal with exact insertion point, paste-ready paragraphs, merge rationale, fixed-fact table and natural-reader conditions. I re-ran check_repo.py (734 files, 0 errors), check_public.py (1200 files after git add -N, 0 findings, index reset afterward) and git diff --check (pass); no changes to docs/04-mcp.md, 03, 13, templates, experiments or dependencies, and nothing was committed or pushed. Reader-test was not run by design; the candidate stays experimental pending an uninvolved natural reader.
+- 产物：[04f31d0](https://github.com/dbvv1/a1dbv/commit/04f31d0c534cb674546e7a1771f3278b8636ea92)，分支 `relay/a-mcp-reading-route-20261103`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：Owner verifies the write domain and then accepts/merges the proposal; later an uninvolved reader must run a natural task against the candidate paragraphs before any 🟡/map upgrade.
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
