@@ -17,7 +17,7 @@
 | 同一 CI 脚本换认证，是否仍走同一余额？ | 不一定。关联组织 API key 的 `claude -p` 走赠额；订阅登录走套餐；Claude Code GitHub Action 即使 `-p` 也不走赠额。 | `claude -p` FAQ；认证优先级；GitHub Actions 文档 |
 | 赠额耗尽是否一定停机？ | 不一定。有已购余额或自动充值则继续；按销售发票的组织照常计费；两者都没有才停 API 请求。 | “What happens when your credits run out” |
 
-**给读者的最小操作判断**：要让赠额抵扣，入口应是“自己运行的 `claude -p`／Agent SDK，或直接调 Messages／Batches／Managed Agents”＋关联 Console 组织的 API key，且不要用 `--bare` 配订阅令牌；走 `claude -p`／Agent SDK 时先用 `/status` 或配置确认 `ANTHROPIC_API_KEY` 是实际生效凭据——云 provider 凭据、`ANTHROPIC_AUTH_TOKEN` 或已登录的 Claude apps gateway 会话会覆盖它（见 §3 第 2 行、§5.4、§7.2）；要让订阅承担，需确认没有高于订阅 `/login` 的凭据：云 provider 凭据、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_API_KEY`、`apiKeyHelper`、高于 `/login` 的 Anthropic profile／federation 凭据（命名 profile、已设置的 federation 变量或 `oidc_federation` active profile），且没有已登录的 Claude apps gateway 会话（完整顺序与条件见 §5.4）。实际是否抵扣，最终看 Console Billing 的该次用量与额度条目；成功认证本身不证明赠额可用。
+**给读者的最小操作判断**：要让赠额抵扣，入口应是“自己运行的 `claude -p`／Agent SDK，或直接调 Messages／Batches／Managed Agents”＋关联 Console 组织的 API key，且不要用 `--bare` 配订阅令牌；走 `claude -p`／Agent SDK 时先用 `/status` 或配置确认 `ANTHROPIC_API_KEY` 是实际生效凭据——云 provider 凭据、`ANTHROPIC_AUTH_TOKEN` 或已登录的 Claude apps gateway 会话会覆盖它（见 §3“`claude -p`（非 bare）＋关联组织 API key”行、§5.4、§7.2）；要让订阅承担，需确认没有高于订阅 `/login` 的凭据：云 provider 凭据、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_API_KEY`、`apiKeyHelper`、高于 `/login` 的 Anthropic profile／federation 凭据（命名 profile、已设置的 federation 变量或 `oidc_federation` active profile），且没有已登录的 Claude apps gateway 会话（完整顺序与条件见 §5.4）。实际是否抵扣，最终看 Console Billing 的该次用量与额度条目；成功认证本身不证明赠额可用。
 
 ## 2. 必要最小替换稿
 
@@ -78,7 +78,7 @@
 | 1 | Managed Agents | API key／Console 组织 | 同上 | 是：覆盖清单明列 | 否 | 托管与自托管 sandbox 是否同账期未核；只按 API 用量处理 |
 | 2 | `claude -p`（非 bare）＋关联组织 API key | `ANTHROPIC_API_KEY`；`-p` 下直接采用（云凭据、`ANTHROPIC_AUTH_TOKEN` 与已登录 gateway 会话均高于它，完整顺序见 §5.4） | 按 Agent SDK 用量计入该组织 | 是：FAQ 逐字 | 否 | `apiKeyHelper`、`ANTHROPIC_AUTH_TOKEN`／网关、无 key 的 Console OAuth 概况未明；查账单或问支持 |
 | 2 | `claude -p`（非 bare）＋订阅登录或 `CLAUDE_CODE_OAUTH_TOKEN` | claude.ai 订阅 | 套餐额度 | 否：FAQ 逐字 | 是 | 具体 5 小时／周窗口见 02 §3，本卡不展开 |
-| 2 | `claude --bare -p` | 不读 OAuth、系统钥匙串和 `CLAUDE_CODE_OAUTH_TOKEN`；文档列出的路径是 API key、`apiKeyHelper` 或云凭据 | 由所用凭据决定 | 用关联组织 API key 时同第 2 行；订阅令牌不可用 | 不适用（无法用订阅登录） | 云凭据走云账单，不抵赠额；`apiKeyHelper` 是否抵赠额未明（见 §7.1） |
+| 2 | `claude --bare -p` | 不读 OAuth、系统钥匙串和 `CLAUDE_CODE_OAUTH_TOKEN`；文档列出的路径是 API key、`apiKeyHelper` 或云凭据 | 由所用凭据决定 | 用关联组织 API key 时同“`claude -p`（非 bare）＋关联组织 API key”行；订阅令牌不可用 | 不适用（无法用订阅登录） | 云凭据走云账单，不抵赠额；`apiKeyHelper` 是否抵赠额未明（见 §7.1） |
 | 3 | Agent SDK（Python／TypeScript）＋关联组织 API key | API key | 该组织 API | 是：覆盖清单与 FAQ | 否 | 第三方厂商代跑是否算原文的 “run them yourself” 未明 |
 | 3 | Agent SDK＋订阅登录 | claude.ai 订阅 | 套餐额度 | 否：FAQ 逐字 | 是 | SDK 采用哪种订阅凭据未在 overview 明写；第三方产品不得提供 claude.ai 登录 |
 | 4 | `claude-code-action`：`anthropic_api_key` | 该 key 所属 Console 组织 | 按 Claude Code 用量计 | 否：FAQ 明写 “even with `-p`” | 否（API 计费） | 无 |
