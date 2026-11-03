@@ -6,7 +6,7 @@
 
 **缺口成立，补一段诊断即可，不需要改原命令或默认档位。** L14 给单次启动命令，L17 给“记录本次可见的实际模型 ID 与 effort；无法确认就记未知”，L30 建议同模型试 `high`，但都没有说明档位来源的优先级、设置显示与当轮执行的区别，以及 `max` 与默认值的不同范围。读者最容易把“标题已变”或“启动时带了 `--effort`”当成换档成功，再把结果差异记到模型能力或成本上。
 
-**若只采用一处，优先放“标题和 `/effort status` 显示设置，当前轮可能仍按旧档；新档从下一条消息开始”。** 它直接挡住最常见的错误比较；其余来源优先级和持久范围放在同一段里，避免读者反查整张设置表。
+**若只采用一处，优先放“标题和 `/effort status` 显示设置，当前轮可能仍按旧档；`/effort` 确认后下一条消息按新档，`/model` 最迟从下一条消息起”。** 它直接挡住最常见的错误比较；其余来源优先级和持久范围放在同一段里，避免读者反查整张设置表。
 
 ## 可直接采用的增补稿
 
@@ -16,7 +16,7 @@
 
 ---
 
-**已选档位不等于这一轮已按该档运行。** 会话标题里的档位提示（如 “with low effort”）和 `/effort status` 显示的是设置值；当前轮可能仍按旧档运行。终端里用 `/effort` 或 `/model` 选择器确认新档后，要等下一条消息才按新档处理。做比较时应等当前轮结束，从下一条完整消息开始算新档。排队消息有两种取用时机：若在当前工具调用结束时被取用，同一轮后半段按新档，是混合轮；若本轮结束时才被取用，本轮全按旧档，下一轮才按新档。两种都不能把本轮当纯新档样本；要纯样本就等当前轮结束再发下一条。排队消息用 “keep going” 这类不改变任务内容的话，避免把任务变化混进比较。
+**已选档位不等于这一轮已按该档运行。** 会话标题里的档位提示（如 “with low effort”）和 `/effort status` 显示的是设置值；当前轮可能仍按旧档运行。终端里用 `/effort` 确认新档后，下一条消息按新档处理；用 `/model` 选择器换档，新档最迟从下一条消息起生效，当前轮仍可能按旧档工作。做比较时等当前轮结束，从下一条完整消息开始算新档；也可以在本轮工作时发一条排队消息，不必打断当前轮：Claude 会在当前工具调用结束时取用，最迟在本轮结束时取用，之后按新档继续。不能仅凭取用时机认定此前每个请求的档位——轮末取用不保证整轮全旧，轮中取用也要前段确实按旧档才称得上混合轮。排队消息用 “keep going” 这类不改变任务内容的话，避免把任务变化混进比较。
 
 **`--effort` 只设置本次启动的档位，不写入设置，也不保证最终生效。** 档位来源按顺序取第一个：`CLAUDE_CODE_EFFORT_LEVEL` 环境变量（含 settings.json 的 `env` 块）→ 会话内 `/effort` 或 `/model` 选择 → `--effort` → 设置文件里该模型已存的档位（`modelSettings`）或顶层 `effortLevel` → 模型默认档。用户设置里的顶层 `effortLevel` 只对 Opus 5／Fable 5.1 及更早模型生效；Opus 5.5 及之后要用 `/effort` 存下的按模型 `modelSettings`，否则按模型默认档；project／local／managed／`--settings` 的顶层键对所有模型生效。已有环境变量时，`--effort` 会被覆盖；没有环境变量时，启动后再在会话里选档也会覆盖它。`maxEffortLevel` 或组织上限会把超过上限的结果压低，模型不支持的档会退到其支持的、不高于所设档的最高档。设置值看会话标题／页脚；要确认是否发送档位，用 `/effort status`（`Effort level: auto`＝不发；`auto (currently <level>)`＝仍发）；一般档位输出以实际为准，无法确认就记未知。
 
@@ -50,7 +50,7 @@
 |---|---|---|---|
 | 1 设置来源 | 哪一层在设档位：环境变量、会话内选择、`--effort`、设置文件，还是模型默认 | 自己的启动命令；是否设了 `CLAUDE_CODE_EFFORT_LEVEL`（含 settings.json 的 `env` 块）；`/effort status` | 只得到“设置值”，不是本轮实际值 |
 | 2 模型与上限 | 这个模型支持该档吗；有没有 `maxEffortLevel` 或组织上限 | 官方模型表；设置参考 | 不支持或超上限会被降档，`--effort` 写了也不等于按原档运行 |
-| 3 当前轮或下一轮 | 当前轮结束了吗；新档从哪条消息开始 | 会话是否仍在工作；标题、页脚 | 当前轮可能仍是旧档，下一条消息才按新档 |
+| 3 当前轮或下一轮 | 当前轮结束了吗；新档从哪条消息开始 | 会话是否仍在工作；标题、页脚 | `/effort` 确认后下一条消息按新档；`/model` 最迟从下一条消息起，当前轮可能仍按旧档；纯样本等本轮结束 |
 | 4 可见证据 | 有没有能证明“请求按该档执行”的可见信息 | 官方没有通用的逐轮请求值入口；除设置显示外，仅以 `--effort` 启动且超 cap 时，plain-text `--print` 的 stderr（其他会话写 debug log）报启动时的 requested／applied levels；`/effort` 超 cap 官方只说按 cap 运行 | 启动警告只能证明启动时的应用值；不能证明每轮实际值，无法判断就保留未知 |
 
 ## 三问逐条
@@ -68,9 +68,9 @@
 
 ### ② 当前轮未结束、标题已变，能否认定正在按新档执行？
 
-**不能。** 官方原文说：标题里的档位“comes from your effort setting, even if Claude is still working at the old level”。`/model` 选择器换档时，“The new level starts with your next message at the latest. Until then, Claude can keep working at the old level, even on a new model.”终端里 `/effort` 确认后，“the next message you send runs at that level”；当前轮“it's expected if the turn finishes at the old level”。
+**不能。** 官方原文说：标题里的档位“comes from your effort setting, even if Claude is still working at the old level”。`/model` 选择器换档时，“The new level starts with your next message at the latest. Until then, Claude can keep working at the old level, even on a new model.”终端里 `/effort` 确认后，“the next message you send runs at that level”；当前轮“it's expected if the turn finishes at the old level”。两者不能一概写成“必须等下一条消息才生效”：`/model` 只保证最迟从下一条消息起，当前轮也可能已按新档、也可能仍按旧档；`/effort` 的新档从下一条消息开始，但这条消息可以在本轮中排队送入。
 
-- 可以等当前轮结束再发下一条消息，从下一条完整消息开始算新档；也可以在它工作时发一条消息排队，不必打断当前轮。排队消息若在当前工具调用结束时被取用，同一轮后半段按新档，是混合轮；若本轮结束时才被取用，本轮全按旧档，下一轮才按新档。两种都不能把本轮当纯新档样本；要纯样本就等当前轮结束再发下一条。
+- 可以等当前轮结束再发下一条消息，从下一条完整消息开始算新档；也可以在它工作时发一条消息排队，不必打断当前轮。排队消息被取用后按新档继续：通常在当前工具调用结束时取用，最迟在本轮结束时取用。但取用时机不能反推此前每个请求的档位：轮末取用不保证整轮全旧，`/model` 的新档可能更早生效；轮中取用也要前段确实按旧档，才称得上混合轮。要纯样本就等当前轮结束再发下一条。
 - 版本条件：v2.1.242 之前，`/effort` 可能被排到本轮结束；不获取 feature flags 的会话（如第三方 provider）在当时总是如此。旧客户端上“确认后立刻生效”的预期不成立。
 - 自动模型 fallback 换模型时，会沿用触发请求的档位；模型 ID 变了不代表 effort 变成新模型的默认档。
 
