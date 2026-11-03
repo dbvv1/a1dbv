@@ -1,0 +1,750 @@
+{
+  "started_utc": "2026-11-03T05:07:46Z",
+  "script_sha256": "a9e678497dbfcee8dbfa82976a807da99e83737ec3be2854985003886e6d46ef",
+  "runtime_lock_sha256": "a3049de91cd89752867b8b78f00bd6e882eb7d276b9ff67e91c11c03359ebcb8",
+  "target_repo": "dbvv1/a1dbv",
+  "target_commit": "7425f72dd791c49c82758e69dbbd812130d1f84e",
+  "reference_repo": "agentskills/agentskills",
+  "reference_commit": "69ef37e9424c0a7ea9dd2293b559e43ec8176379",
+  "reference_version": "0.1.0",
+  "inputs": {
+    "explore-frontier": {
+      "path": "templates/generic/.claude/skills/explore-frontier/SKILL.md",
+      "git_blob": "e7cdd0f42b4a5c3f82fd55dc2b31b3ca56c7988c",
+      "original_sha256": "ffab572c39962ae88c73772e9511a93cdd4dcd4f236c53b11c3c82322c77dbe7",
+      "projected_sha256": "5cb7f395f67718e5956e050c7506d31de9862041b255932c375cc5a2bce936c9",
+      "body_sha256": "e340c1cd5014498f82f8bf3b6ca712f64693326fd0b1b5f7c5edbe1605e60d6b",
+      "removed_fields": [
+        "disable-model-invocation: true",
+        "argument-hint: \"[要做的决定，或要广扫的领域]\""
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 1
+    },
+    "handoff": {
+      "path": "templates/generic/.claude/skills/handoff/SKILL.md",
+      "git_blob": "020c4eb94e2db7857caee635134b11f28dc67d99",
+      "original_sha256": "9221b51f65ababef3aabbb7ff4f85dede82deaacfe79e0a86116bd9bc33a3fe7",
+      "projected_sha256": "667b621a9c713e075f08019fcb610c03a6459956a64a1c373c189189f7f9b823",
+      "body_sha256": "1c15c30eb390dd281be9e5732bcef03bcc348662c60f2e501d38f7e8a54694ff",
+      "removed_fields": [
+        "disable-model-invocation: true"
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 0
+    },
+    "spec-interview": {
+      "path": "templates/generic/.claude/skills/spec-interview/SKILL.md",
+      "git_blob": "be665a2bc13bf1cb56bfc5382d1d498ffe4206b7",
+      "original_sha256": "607c9bca9cb5fa11411f4f8ce2a0af5ddd0f961b99823ba9d641eea3426682a6",
+      "projected_sha256": "2e8d15032499638c5840f0593a69d9dc3e78fdb49e1a9fe783c660b250c15b5d",
+      "body_sha256": "792aefb754f7084e4e62e14284c24a51bd840c1c41c86ec63eeb5fd4c556aad2",
+      "removed_fields": [
+        "disable-model-invocation: true",
+        "argument-hint: \"[功能简述]\""
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 1
+    },
+    "task-decisions": {
+      "path": "templates/generic/.claude/skills/task-decisions/SKILL.md",
+      "git_blob": "7dcc987f3a40ed303467f060f8852dfbb1555d0b",
+      "original_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
+      "projected_sha256": "c7209e43bb41ed97028118caf3d46e562e23fcdb639873fa8cee0b8d59f9f256",
+      "body_sha256": "b76e227a5c6145632a0a3c0d508a3720190e6f13fd9a809fa80ad7b9fd386441",
+      "removed_fields": [
+        "disable-model-invocation: true",
+        "argument-hint: \"[当前任务与要改变的选择]\""
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 0
+    },
+    "write-task-guide": {
+      "path": "templates/generic/.claude/skills/write-task-guide/SKILL.md",
+      "git_blob": "0a99be9b38299d48bb6936d35010f2d81cf5f7bf",
+      "original_sha256": "13b198449e452500fd5c855cc31066497222cfb7f740ccf4b00a8a7d607a41d0",
+      "projected_sha256": "e27ed5b6640a932acf895c2472c978e2d7e25a5eb69b732480ebeb5e852cfeac",
+      "body_sha256": "553110de2a769af9b22b3943fc626bcc4894ca3381c14ef0aa05f368c3e2f894",
+      "removed_fields": [
+        "disable-model-invocation: true",
+        "argument-hint: \"[读者问题]\""
+      ],
+      "body_equal": true,
+      "body_argument_tokens": 1
+    }
+  },
+  "original": {
+    "explore-frontier": {
+      "validate_exit": 1,
+      "validation_error": [
+        "  - Unexpected fields in frontmatter: argument-hint, disable-model-invocation. Only ['allowed-tools', 'compatibility', 'description', 'license', 'metadata', 'name'] are allowed."
+      ],
+      "properties_exit": 0,
+      "properties": {
+        "name": "explore-frontier",
+        "description": "在动手选工具、做法或方案之前，先找到当前最强的做法并转化成能直接用的东西；也用于不带具体问题的广扫，发现本项目还不知道的东西。适用于任何领域：选 AI coding 工具与配置、解决 Agent 反复出现的问题、为游戏制作链选生成工具与管线、为某类任务定默认做法，或用户说“看看现在最好的做法是什么”“我们是不是漏了什么”时使用。"
+      }
+    },
+    "handoff": {
+      "validate_exit": 1,
+      "validation_error": [
+        "  - Unexpected fields in frontmatter: disable-model-invocation. Only ['allowed-tools', 'compatibility', 'description', 'license', 'metadata', 'name'] are allowed."
+      ],
+      "properties_exit": 0,
+      "properties": {
+        "name": "handoff",
+        "description": "把当前任务的进度、决策和下一步写进 PROGRESS.md，方便清空上下文或换会话后继续。上下文快满、要 /clear、要结束当天工作，或用户说“交接一下”时使用。"
+      }
+    },
+    "spec-interview": {
+      "validate_exit": 1,
+      "validation_error": [
+        "  - Unexpected fields in frontmatter: argument-hint, disable-model-invocation. Only ['allowed-tools', 'compatibility', 'description', 'license', 'metadata', 'name'] are allowed."
+      ],
+      "properties_exit": 0,
+      "properties": {
+        "name": "spec-interview",
+        "description": "通过结构化访谈把模糊需求整理成自包含的 SPEC.md。用户要做一个较大的功能、需求还不清楚，或说“先帮我理清需求”时使用。"
+      }
+    },
+    "task-decisions": {
+      "validate_exit": 1,
+      "validation_error": [
+        "  - Unexpected fields in frontmatter: argument-hint, disable-model-invocation. Only ['allowed-tools', 'compatibility', 'description', 'license', 'metadata', 'name'] are allowed."
+      ],
+      "properties_exit": 0,
+      "properties": {
+        "name": "task-decisions",
+        "description": "当用户要选择或调整编码工作方式（规格、验证、配置、并行、评审、恢复），或诊断返工与流程负担时，给出当前默认、改变条件和撤回点。不是每次编辑的必经流程。"
+      }
+    },
+    "write-task-guide": {
+      "validate_exit": 1,
+      "validation_error": [
+        "  - Unexpected fields in frontmatter: argument-hint, disable-model-invocation. Only ['allowed-tools', 'compatibility', 'description', 'license', 'metadata', 'name'] are allowed."
+      ],
+      "properties_exit": 0,
+      "properties": {
+        "name": "write-task-guide",
+        "description": "写“遇到某个问题该怎么做”的答案页或操作指南时使用：从一个真实任务出发，用当前最强的做法实际做一遍，把有效的写成推荐，再让没读过的人照着做，按卡点改页面。适用于 AI coding 决策页、团队内部指南、README 的上手部分。"
+      }
+    }
+  },
+  "projected": {
+    "explore-frontier": {
+      "validate_exit": 0,
+      "validation_error": [],
+      "properties_exit": 0,
+      "properties": {
+        "name": "explore-frontier",
+        "description": "在动手选工具、做法或方案之前，先找到当前最强的做法并转化成能直接用的东西；也用于不带具体问题的广扫，发现本项目还不知道的东西。适用于任何领域：选 AI coding 工具与配置、解决 Agent 反复出现的问题、为游戏制作链选生成工具与管线、为某类任务定默认做法，或用户说“看看现在最好的做法是什么”“我们是不是漏了什么”时使用。"
+      }
+    },
+    "handoff": {
+      "validate_exit": 0,
+      "validation_error": [],
+      "properties_exit": 0,
+      "properties": {
+        "name": "handoff",
+        "description": "把当前任务的进度、决策和下一步写进 PROGRESS.md，方便清空上下文或换会话后继续。上下文快满、要 /clear、要结束当天工作，或用户说“交接一下”时使用。"
+      }
+    },
+    "spec-interview": {
+      "validate_exit": 0,
+      "validation_error": [],
+      "properties_exit": 0,
+      "properties": {
+        "name": "spec-interview",
+        "description": "通过结构化访谈把模糊需求整理成自包含的 SPEC.md。用户要做一个较大的功能、需求还不清楚，或说“先帮我理清需求”时使用。"
+      }
+    },
+    "task-decisions": {
+      "validate_exit": 0,
+      "validation_error": [],
+      "properties_exit": 0,
+      "properties": {
+        "name": "task-decisions",
+        "description": "当用户要选择或调整编码工作方式（规格、验证、配置、并行、评审、恢复），或诊断返工与流程负担时，给出当前默认、改变条件和撤回点。不是每次编辑的必经流程。"
+      }
+    },
+    "write-task-guide": {
+      "validate_exit": 0,
+      "validation_error": [],
+      "properties_exit": 0,
+      "properties": {
+        "name": "write-task-guide",
+        "description": "写“遇到某个问题该怎么做”的答案页或操作指南时使用：从一个真实任务出发，用当前最强的做法实际做一遍，把有效的写成推荐，再让没读过的人照着做，按卡点改页面。适用于 AI coding 决策页、团队内部指南、README 的上手部分。"
+      }
+    }
+  },
+  "negative": {
+    "missing-name": {
+      "exit_code": 1,
+      "error_lines": [
+        "Validation failed for $RUN/negative/missing-name/handoff:",
+        "  - Missing required field in frontmatter: name"
+      ]
+    },
+    "missing-description": {
+      "exit_code": 1,
+      "error_lines": [
+        "Validation failed for $RUN/negative/missing-description/handoff:",
+        "  - Missing required field in frontmatter: description"
+      ]
+    },
+    "name-directory-mismatch": {
+      "exit_code": 1,
+      "error_lines": [
+        "Validation failed for $RUN/negative/name-directory-mismatch/handoff:",
+        "  - Directory name 'handoff' must match skill name 'different-name'"
+      ]
+    },
+    "malformed-yaml": {
+      "exit_code": 1,
+      "error_lines": [
+        "Validation failed for $RUN/negative/malformed-yaml/handoff:",
+        "  - Invalid YAML in frontmatter: while scanning a quoted scalar",
+        "  in \"<unicode string>\", line 2, column 7:",
+        "    name: \"unterminated",
+        "          ^ (line: 2)",
+        "found unexpected end of stream",
+        "  in \"<unicode string>\", line 4, column 1:",
+        "    ",
+        "    ^ (line: 4)"
+      ]
+    },
+    "missing-skill-file": {
+      "exit_code": 1,
+      "error_lines": [
+        "Validation failed for $RUN/negative/missing-skill-file/handoff:",
+        "  - Missing required file: SKILL.md"
+      ]
+    },
+    "missing-path": {
+      "exit_code": 2,
+      "error_lines": [
+        "Usage: python -m skills_ref.cli validate [OPTIONS] SKILL_PATH",
+        "Try 'python -m skills_ref.cli validate --help' for help.",
+        "",
+        "Error: Invalid value for 'SKILL_PATH': Path '$RUN/negative/missing-path/handoff' does not exist."
+      ]
+    }
+  },
+  "external_model_or_native_client": false,
+  "source_instructions_executed": false,
+  "original_discovery": {
+    "exit_code": 0,
+    "skills": [
+      {
+        "name": "explore-frontier",
+        "description": "在动手选工具、做法或方案之前，先找到当前最强的做法并转化成能直接用的东西；也用于不带具体问题的广扫，发现本项目还不知道的东西。适用于任何领域：选 AI coding 工具与配置、解决 Agent 反复出现的问题、为游戏制作链选生成工具与管线、为某类任务定默认做法，或用户说“看看现在最好的做法是什么”“我们是不是漏了什么”时使用。",
+        "location": "original/explore-frontier/SKILL.md"
+      },
+      {
+        "name": "handoff",
+        "description": "把当前任务的进度、决策和下一步写进 PROGRESS.md，方便清空上下文或换会话后继续。上下文快满、要 /clear、要结束当天工作，或用户说“交接一下”时使用。",
+        "location": "original/handoff/SKILL.md"
+      },
+      {
+        "name": "spec-interview",
+        "description": "通过结构化访谈把模糊需求整理成自包含的 SPEC.md。用户要做一个较大的功能、需求还不清楚，或说“先帮我理清需求”时使用。",
+        "location": "original/spec-interview/SKILL.md"
+      },
+      {
+        "name": "task-decisions",
+        "description": "当用户要选择或调整编码工作方式（规格、验证、配置、并行、评审、恢复），或诊断返工与流程负担时，给出当前默认、改变条件和撤回点。不是每次编辑的必经流程。",
+        "location": "original/task-decisions/SKILL.md"
+      },
+      {
+        "name": "write-task-guide",
+        "description": "写“遇到某个问题该怎么做”的答案页或操作指南时使用：从一个真实任务出发，用当前最强的做法实际做一遍，把有效的写成推荐，再让没读过的人照着做，按卡点改页面。适用于 AI coding 决策页、团队内部指南、README 的上手部分。",
+        "location": "original/write-task-guide/SKILL.md"
+      }
+    ],
+    "unicode_chars": 1372
+  },
+  "projected_discovery": {
+    "exit_code": 0,
+    "skills": [
+      {
+        "name": "explore-frontier",
+        "description": "在动手选工具、做法或方案之前，先找到当前最强的做法并转化成能直接用的东西；也用于不带具体问题的广扫，发现本项目还不知道的东西。适用于任何领域：选 AI coding 工具与配置、解决 Agent 反复出现的问题、为游戏制作链选生成工具与管线、为某类任务定默认做法，或用户说“看看现在最好的做法是什么”“我们是不是漏了什么”时使用。",
+        "location": "projected/explore-frontier/SKILL.md"
+      },
+      {
+        "name": "handoff",
+        "description": "把当前任务的进度、决策和下一步写进 PROGRESS.md，方便清空上下文或换会话后继续。上下文快满、要 /clear、要结束当天工作，或用户说“交接一下”时使用。",
+        "location": "projected/handoff/SKILL.md"
+      },
+      {
+        "name": "spec-interview",
+        "description": "通过结构化访谈把模糊需求整理成自包含的 SPEC.md。用户要做一个较大的功能、需求还不清楚，或说“先帮我理清需求”时使用。",
+        "location": "projected/spec-interview/SKILL.md"
+      },
+      {
+        "name": "task-decisions",
+        "description": "当用户要选择或调整编码工作方式（规格、验证、配置、并行、评审、恢复），或诊断返工与流程负担时，给出当前默认、改变条件和撤回点。不是每次编辑的必经流程。",
+        "location": "projected/task-decisions/SKILL.md"
+      },
+      {
+        "name": "write-task-guide",
+        "description": "写“遇到某个问题该怎么做”的答案页或操作指南时使用：从一个真实任务出发，用当前最强的做法实际做一遍，把有效的写成推荐，再让没读过的人照着做，按卡点改页面。适用于 AI coding 决策页、团队内部指南、README 的上手部分。",
+        "location": "projected/write-task-guide/SKILL.md"
+      }
+    ],
+    "unicode_chars": 1377
+  },
+  "integrity": {
+    "original_source_files_unchanged": true,
+    "original_unchanged": true,
+    "projected_unchanged": true,
+    "reference_source_unchanged": true,
+    "dependency_files_unchanged": true
+  },
+  "commands": [
+    {
+      "id": "original-explore-frontier-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:46Z",
+      "completed_utc": "2026-11-03T05:07:46Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "b8cd0de1392560bc4c41d3f16f3aa64d505fdac69bf6b700565d6235b23ea801",
+      "targets": [
+        "original/explore-frontier"
+      ]
+    },
+    {
+      "id": "original-explore-frontier-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:46Z",
+      "completed_utc": "2026-11-03T05:07:47Z",
+      "exit_code": 0,
+      "stdout_sha256": "d35441fe9cebf1f850cc75659aacd1243443d584c8c9f7a8268940b81336a281",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "original/explore-frontier"
+      ]
+    },
+    {
+      "id": "original-handoff-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:47Z",
+      "completed_utc": "2026-11-03T05:07:47Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "ddd0def264d18ed61da77118619afe29066feff42c6ece9669474df763c3a07c",
+      "targets": [
+        "original/handoff"
+      ]
+    },
+    {
+      "id": "original-handoff-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:47Z",
+      "completed_utc": "2026-11-03T05:07:47Z",
+      "exit_code": 0,
+      "stdout_sha256": "63d7685f47dd6c70dda84ca392798bff4972f03ade0717b97138c57f214fa9db",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "original/handoff"
+      ]
+    },
+    {
+      "id": "original-spec-interview-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:47Z",
+      "completed_utc": "2026-11-03T05:07:47Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "4bb14cb7e2c664fc72f9c971d367ac1c2d344f7c02af58b2439dd53bbebea284",
+      "targets": [
+        "original/spec-interview"
+      ]
+    },
+    {
+      "id": "original-spec-interview-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:47Z",
+      "completed_utc": "2026-11-03T05:07:47Z",
+      "exit_code": 0,
+      "stdout_sha256": "4be4fed264ec72260e66ed95e6edbc548b0069778232b6e2b8bc2eacd4c5ef3f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "original/spec-interview"
+      ]
+    },
+    {
+      "id": "original-task-decisions-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:47Z",
+      "completed_utc": "2026-11-03T05:07:48Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "ad8ce04f4dc1e63b31cb2e2aff715da512f21a8b34dae9d792d2a8b28927edd1",
+      "targets": [
+        "original/task-decisions"
+      ]
+    },
+    {
+      "id": "original-task-decisions-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:48Z",
+      "completed_utc": "2026-11-03T05:07:48Z",
+      "exit_code": 0,
+      "stdout_sha256": "ce1867753926bed16dd3cbca6d13c450ef68874c3a2bec76f71dd9b15786831c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "original/task-decisions"
+      ]
+    },
+    {
+      "id": "original-write-task-guide-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:48Z",
+      "completed_utc": "2026-11-03T05:07:48Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "0d6628e5590f381959a7e615980d91f3aafc5f3b306b0621a888941cf527f5a1",
+      "targets": [
+        "original/write-task-guide"
+      ]
+    },
+    {
+      "id": "original-write-task-guide-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:48Z",
+      "completed_utc": "2026-11-03T05:07:48Z",
+      "exit_code": 0,
+      "stdout_sha256": "00d9b4dc6c8f6dc8a5eedfc8a968a97b0759726d00f6ae88f67785514bc73afb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "original/write-task-guide"
+      ]
+    },
+    {
+      "id": "original-to-prompt",
+      "command": "to-prompt",
+      "started_utc": "2026-11-03T05:07:48Z",
+      "completed_utc": "2026-11-03T05:07:49Z",
+      "exit_code": 0,
+      "stdout_sha256": "f50c69228d6a92f572c116967644e11b6f8bdc8c234dc9b97c67e19e719c4829",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "original/explore-frontier",
+        "original/handoff",
+        "original/spec-interview",
+        "original/task-decisions",
+        "original/write-task-guide"
+      ]
+    },
+    {
+      "id": "projected-explore-frontier-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:49Z",
+      "completed_utc": "2026-11-03T05:07:49Z",
+      "exit_code": 0,
+      "stdout_sha256": "2e2a8d1957a8843d18a0e0ad91e80ff0661c4e0a1cc86a1227cd78aa09706cda",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/explore-frontier"
+      ]
+    },
+    {
+      "id": "projected-explore-frontier-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:49Z",
+      "completed_utc": "2026-11-03T05:07:49Z",
+      "exit_code": 0,
+      "stdout_sha256": "d35441fe9cebf1f850cc75659aacd1243443d584c8c9f7a8268940b81336a281",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/explore-frontier"
+      ]
+    },
+    {
+      "id": "projected-handoff-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:49Z",
+      "completed_utc": "2026-11-03T05:07:49Z",
+      "exit_code": 0,
+      "stdout_sha256": "7d7196892125706bd38ed9346be5cfbd3913670eb1f9a7c82f805e2ef9ce3496",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/handoff"
+      ]
+    },
+    {
+      "id": "projected-handoff-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:49Z",
+      "completed_utc": "2026-11-03T05:07:49Z",
+      "exit_code": 0,
+      "stdout_sha256": "63d7685f47dd6c70dda84ca392798bff4972f03ade0717b97138c57f214fa9db",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/handoff"
+      ]
+    },
+    {
+      "id": "projected-spec-interview-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:49Z",
+      "completed_utc": "2026-11-03T05:07:49Z",
+      "exit_code": 0,
+      "stdout_sha256": "8718a3479b2ec5abfa5727c6d3c091cc7f0edce39e4a90b4acadc5ebb3d78af2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/spec-interview"
+      ]
+    },
+    {
+      "id": "projected-spec-interview-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:49Z",
+      "completed_utc": "2026-11-03T05:07:50Z",
+      "exit_code": 0,
+      "stdout_sha256": "4be4fed264ec72260e66ed95e6edbc548b0069778232b6e2b8bc2eacd4c5ef3f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/spec-interview"
+      ]
+    },
+    {
+      "id": "projected-task-decisions-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:50Z",
+      "completed_utc": "2026-11-03T05:07:50Z",
+      "exit_code": 0,
+      "stdout_sha256": "cf5b0f3385347be510ba199cd6ed22a529b331ea3c018b272ca099114b2ad934",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/task-decisions"
+      ]
+    },
+    {
+      "id": "projected-task-decisions-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:50Z",
+      "completed_utc": "2026-11-03T05:07:50Z",
+      "exit_code": 0,
+      "stdout_sha256": "ce1867753926bed16dd3cbca6d13c450ef68874c3a2bec76f71dd9b15786831c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/task-decisions"
+      ]
+    },
+    {
+      "id": "projected-write-task-guide-validate",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:50Z",
+      "completed_utc": "2026-11-03T05:07:50Z",
+      "exit_code": 0,
+      "stdout_sha256": "d5bf23a21d2026421f0976f29ee4d0e1379eeade61728135ecee7a3e0c799332",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/write-task-guide"
+      ]
+    },
+    {
+      "id": "projected-write-task-guide-properties",
+      "command": "read-properties",
+      "started_utc": "2026-11-03T05:07:50Z",
+      "completed_utc": "2026-11-03T05:07:50Z",
+      "exit_code": 0,
+      "stdout_sha256": "00d9b4dc6c8f6dc8a5eedfc8a968a97b0759726d00f6ae88f67785514bc73afb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/write-task-guide"
+      ]
+    },
+    {
+      "id": "projected-to-prompt",
+      "command": "to-prompt",
+      "started_utc": "2026-11-03T05:07:50Z",
+      "completed_utc": "2026-11-03T05:07:51Z",
+      "exit_code": 0,
+      "stdout_sha256": "c0a0f5eddfe9c99c290f94033ac1965980135ebd4a10f2a9eaa7d222ec594be2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "targets": [
+        "projected/explore-frontier",
+        "projected/handoff",
+        "projected/spec-interview",
+        "projected/task-decisions",
+        "projected/write-task-guide"
+      ]
+    },
+    {
+      "id": "negative-missing-name",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:51Z",
+      "completed_utc": "2026-11-03T05:07:51Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "16cd5284c8b3d0f0e92c6cefa6ad3a26fe9b77fc9da9b58bf0018f03b3c511c3",
+      "targets": [
+        "negative/missing-name/handoff"
+      ]
+    },
+    {
+      "id": "negative-missing-description",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:51Z",
+      "completed_utc": "2026-11-03T05:07:51Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "2b6c8d00e8a3865559b8f10ab265ba0d52eb7ec0f74d5ceeb24c498379074463",
+      "targets": [
+        "negative/missing-description/handoff"
+      ]
+    },
+    {
+      "id": "negative-name-directory-mismatch",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:51Z",
+      "completed_utc": "2026-11-03T05:07:51Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d6c650e0e72faac372bcef54e4254a9757e17a3b5fafc910765de9b8a6366b53",
+      "targets": [
+        "negative/name-directory-mismatch/handoff"
+      ]
+    },
+    {
+      "id": "negative-malformed-yaml",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:51Z",
+      "completed_utc": "2026-11-03T05:07:51Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "6b594be8aabdf68635da7bf5e9833b1fde609c43e9eda1c5844922c8bdc702f3",
+      "targets": [
+        "negative/malformed-yaml/handoff"
+      ]
+    },
+    {
+      "id": "negative-missing-skill-file",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:51Z",
+      "completed_utc": "2026-11-03T05:07:51Z",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "a02900cf5ecb99a59aa206de7319e5654aae9defa2ccf5d6a4b6521547808919",
+      "targets": [
+        "negative/missing-skill-file/handoff"
+      ]
+    },
+    {
+      "id": "negative-missing-path",
+      "command": "validate",
+      "started_utc": "2026-11-03T05:07:51Z",
+      "completed_utc": "2026-11-03T05:07:52Z",
+      "exit_code": 2,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "4d7dd9bc10dee44d8dfd0bb69e498266d975e6abb61ad09bad2a8d1124dccd46",
+      "targets": [
+        "negative/missing-path/handoff"
+      ]
+    }
+  ],
+  "runtime": {
+    "python": "3.12.14",
+    "process_environment_keys": [
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "PATH",
+      "PYTHONDONTWRITEBYTECODE",
+      "PYTHONNOUSERSITE",
+      "PYTHONPATH",
+      "TMPDIR",
+      "XDG_CACHE_HOME",
+      "XDG_CONFIG_HOME"
+    ],
+    "site_initialization_disabled": true,
+    "package_build_or_install_scripts": false,
+    "os_network_sandbox_claimed": false
+  },
+  "completed_utc": "2026-11-03T05:07:52Z",
+  "status": "pass",
+  "outer_process": {
+    "started_utc": "2026-11-03T05:07:46Z",
+    "completed_utc": "2026-11-03T05:07:52Z",
+    "exit_code": 0
+  },
+  "harness_preflight": {
+    "completed_utc": "2026-11-03T05:08:13Z",
+    "script_sha256": "a9e678497dbfcee8dbfa82976a807da99e83737ec3be2854985003886e6d46ef",
+    "status": "pass",
+    "cases": [
+      {
+        "case": "missing-skill",
+        "exit_code": 1,
+        "output_before": {
+          "exists": false
+        },
+        "output_after": {
+          "exists": false
+        }
+      },
+      {
+        "case": "wrong-skill",
+        "exit_code": 1,
+        "output_before": {
+          "exists": false
+        },
+        "output_after": {
+          "exists": false
+        }
+      },
+      {
+        "case": "wrong-reference",
+        "exit_code": 1,
+        "output_before": {
+          "exists": false
+        },
+        "output_after": {
+          "exists": false
+        }
+      },
+      {
+        "case": "wrong-dependency",
+        "exit_code": 1,
+        "output_before": {
+          "exists": false
+        },
+        "output_after": {
+          "exists": false
+        }
+      },
+      {
+        "case": "unexpected-module",
+        "exit_code": 1,
+        "output_before": {
+          "exists": false
+        },
+        "output_after": {
+          "exists": false
+        }
+      },
+      {
+        "case": "existing-output",
+        "exit_code": 1,
+        "output_before": {
+          "exists": true,
+          "files": {
+            "sentinel": "fc4a3226367a020f6b61b3e3b7988058dadb207cfef6d7fda3dca11bf934ccbf"
+          }
+        },
+        "output_after": {
+          "exists": true,
+          "files": {
+            "sentinel": "fc4a3226367a020f6b61b3e3b7988058dadb207cfef6d7fda3dca11bf934ccbf"
+          }
+        }
+      }
+    ]
+  },
+  "scope": "Only this fixed reference implementation, fixed five templates, parser/validation/XML behavior and six malformed-input cases. No native client, model invocation, permission bypass, argument replacement or production gate conclusion.",
+  "evidence_limits": "File hashes and recorded before/after equality cover the named inputs/source/dependencies, not system-wide forensics. Isolated process environment is not an OS sandbox or independent network audit. Outer process records corroborate child output, not an independent system execution trace."
+}
