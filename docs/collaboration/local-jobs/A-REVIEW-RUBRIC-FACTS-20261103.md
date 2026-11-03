@@ -1,7 +1,7 @@
 # A-REVIEW-RUBRIC-FACTS-20261103 · 审查尺度的真实来源与装配
 id: A-REVIEW-RUBRIC-FACTS-20261103
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/codex-overengineering.md@5ebecac1ffe2501301699d518fd8b61acb82163f
 target_repo: https://github.com/dbvv1/a1dbv
@@ -35,8 +35,8 @@ result_branch: relay/a-review-rubric-facts-20261103
 
 ## 当前结果
 
-- 新增 facts.md：核对固定 SHA 970111f6 下 Codex review rubric 原句、review_request.rs 的 include_str! 读入与 core/src/tasks/review.rs 的 ReviewTask 基础指令装配，三项页面主张成立；固定 SHA、rust-v0.166.0 与当日 main 上三文件逐字节相同，原链接与结论无需改。差量是范围精度：rubric 是 Op::Review 一次性审查子线程的基础指令，非所有审查入口共用；guardian 用 GuardianPolicyInstructions，.github PR 提示为独立文件；引用句是 finding 判定门槛而非实现规则。未运行 Codex、模型、审查客户端、构建、测试、Hook 或浏览器；托管版/IDE/云端是否复用 rubric 未知；未改页面，候选补句仅存于 artifact。openIssues 为空。
-- 产物：[2d67cac](https://github.com/dbvv1/a1dbv/commit/2d67cac1c22a67002c5c33e7d5204bf051b73118)，分支 `relay/a-review-rubric-facts-20261103`。
+- completed unit 1: facts.md corrected on two points — entry routing differs by version/delivery (970: CLI sends delivery None, Inline goes Op::Review, Detached goes AgentRunner; stable 6ff1e1ca and main fbf5f0d3 commit Op::Review directly, Inline only), and rubric is assembled as a developer-role base_instructions message, not protocol system; claims limited to the verified Op::Review path, Custom noted as not replacing rubric text but still able to narrow scope, and unrun test assertions not treated as proven runtime isolation. No page, template or other files changed; openIssues empty. Not run: Codex, model, review client, build, tests, hooks, browser; hosted/IDE/cloud rubric reuse remains unknown.
+- 产物：[12a2828](https://github.com/dbvv1/a1dbv/commit/12a2828e97a6611798f94875699048f3351a23c6)，分支 `relay/a-review-rubric-facts-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：负责人提交 result_branch 并更新任务状态；如需限定页面范围，可评估 facts.md 第 60 行候选补句，本单元未写入页面。
+- 下一步：Owner commits result_branch and updates task status; optionally evaluate the facts.md candidate sentence if page scope wording is wanted (page itself not modified in this unit).
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
