@@ -1,7 +1,7 @@
 # A-VERIFICATION-FACTS-20261102 · 验证反馈页的 Playwright 官方边界
 id: A-VERIFICATION-FACTS-20261102
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 page: docs/decisions/verification.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -27,4 +27,9 @@ result_branch: relay/a-verification-facts-20261102
 本单元最多两小时，共享最多 4 并行只由原接收端调度，不另起模型。运行 check_repo、check_public、git diff --check 和提交身份检查后推指定 result_branch，回 review_ready 给负责人接收；不用 accept: auto。
 
 ## 当前结果
-尚未领取；事实产物待回传。
+
+- 完成 A-VERIFICATION-FACTS-20261102 unit 1 官方证据核查：以 @playwright/test 1.64.1（npm latest，v1.64.1 tag cfe490d9，2026-10-14）核 Playwright 用户可见断言、trace 记录范围与失败分析边界，产出 facts.md（差量、证据分层、核实表、关键原文、未核边界、去重关系）。核心发现：trace 默认 off、on-first-retry 只录首次重试且需 retries>0、retain-on-failure 才保留首跑失败、context.tracing 不记录 expect 断言、flaky 默认 exit 0、web-first 断言替代泛化等待、role+可访问名称优先、healer 断言/fixme 细节在 agent 定义源码、DOM 快照按 action 记录。openIssues 为空；未运行浏览器/Playwright/healer/本仓测试，官方机制核查不证明本仓浏览器路径或真实用户任务通过；项目级 playwright.config trace、reporter 单列与 console/请求断言策略未核。
+- 产物：[7e66401](https://github.com/dbvv1/a1dbv/commit/7e66401cbd90430756e0f2e45af113245d9818ec)，分支 `relay/a-verification-facts-20261102`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：接收端提交并以 -c user.name/-c user.email 指定 noreply 提交身份，推送 relay/a-verification-facts-20261102 后回 review_ready；项目级 trace/reporter 配置是否需要另立任务由负责人决定。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
