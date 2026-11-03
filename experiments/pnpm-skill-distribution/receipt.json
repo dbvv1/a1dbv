@@ -1,0 +1,566 @@
+{
+  "started_utc": "2026-11-03T03:12:57.353415+00:00",
+  "source": {
+    "repo": "dbvv1/a1dbv",
+    "commit": "cf1bacf6daaab1211231bd4cb4a59351aaabfff9",
+    "path": "templates/generic/.claude/skills/task-decisions/SKILL.md",
+    "sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f"
+  },
+  "runtime": {
+    "package": "@pnpm/exe.linux-x64",
+    "version": "12.11.0",
+    "binary_sha256": "79957904276d2e00848c6ce8c875c472b465c6bdc6454a65469162b9b85f1dde"
+  },
+  "script_sha256": "4dbad9dd0d1bd9f89988e005ab5b29d826e3267c39f8961909641f070bae1776",
+  "normalization": "Only the scratch-root path (including diagnostic line wrapping within it) and binary path are replaced with <TRIAL_ROOT> and pnpm. Outputs otherwise retained.",
+  "scope": "Synthetic local package and consumers; real pnpm commands and filesystem results. No client or model adoption.",
+  "runs": [
+    {
+      "label": "version",
+      "command": [
+        "pnpm",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "12.11.0\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": false,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": false,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": null,
+        "lock_sha256": null
+      }
+    },
+    {
+      "label": "unapproved",
+      "command": [
+        "pnpm",
+        "install",
+        "--offline",
+        "--ignore-scripts",
+        "--ignore-pnpmfile",
+        "--reporter",
+        "append-only"
+      ],
+      "exit_code": 0,
+      "stdout": "Progress: resolved 1, reused 0, downloaded 0, added 0\nPackages are hard linked from the content-addressable store to the virtual store.\n  Content-addressable store is at: <TRIAL_ROOT>/store/v11\n  Virtual store is at:             node_modules/.pnpm\nPackages: +1\n+\nProgress: resolved 1, reused 0, downloaded 1, added 1, done\nAgent skills awaiting approval: a1dbv-template-trial@file:../package/template-v1.tgz.\nRun \"pnpm approve\" to review them.\n\ndependencies:\n+ a1dbv-template-trial 1.0.0\n\nDone in 16ms using pnpm v12.11.0\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    },
+    {
+      "label": "approved",
+      "command": [
+        "pnpm",
+        "approve",
+        "a1dbv-template-trial@file:../package/template-v1.tgz"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": true,
+            "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
+            "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": true,
+            "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
+            "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    },
+    {
+      "label": "frozen-repeat",
+      "command": [
+        "pnpm",
+        "install",
+        "--offline",
+        "--ignore-scripts",
+        "--ignore-pnpmfile",
+        "--reporter",
+        "append-only",
+        "--frozen-lockfile"
+      ],
+      "exit_code": 0,
+      "stdout": "✓ Lockfile passes supply-chain policies (verified 35ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 11ms using pnpm v12.11.0\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": true,
+            "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
+            "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": true,
+            "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
+            "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    },
+    {
+      "label": "new-tar-source-awaits-approval",
+      "command": [
+        "pnpm",
+        "install",
+        "--offline",
+        "--ignore-scripts",
+        "--ignore-pnpmfile",
+        "--reporter",
+        "append-only",
+        "--no-frozen-lockfile"
+      ],
+      "exit_code": 0,
+      "stdout": "✓ Lockfile passes supply-chain policies (verified 58ms ago)\nPackages: +1 -1\n+-\nProgress: resolved 1, reused 0, downloaded 1, added 1, done\nAgent skills awaiting approval: a1dbv-template-trial@file:../package/template-v2.tgz.\nRun \"pnpm approve\" to review them.\n\ndependencies:\n- a1dbv-template-trial file:../package/template-v1.tgz\n+ a1dbv-template-trial 2.0.0\n\nDone in 15ms using pnpm v12.11.0\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\n",
+        "lock_sha256": "eb70a3c417a34b5243ac7d7f9ea2efd44372f1f0cbad93bbe26201cefb55b7cb"
+      }
+    },
+    {
+      "label": "approve-new-source",
+      "command": [
+        "pnpm",
+        "approve",
+        "a1dbv-template-trial@file:../package/template-v2.tgz"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": true,
+            "body_sha256": "899ab8462ac04e78e9285776250d07850914e2866bbfbe2b459eeffb1241a48b",
+            "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v2.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": true,
+            "body_sha256": "899ab8462ac04e78e9285776250d07850914e2866bbfbe2b459eeffb1241a48b",
+            "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v2.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\n  a1dbv-template-trial@file:../package/template-v2.tgz:\n    skills: true\n",
+        "lock_sha256": "eb70a3c417a34b5243ac7d7f9ea2efd44372f1f0cbad93bbe26201cefb55b7cb"
+      }
+    },
+    {
+      "label": "revoke-new-source",
+      "command": [
+        "pnpm",
+        "approve",
+        "!a1dbv-template-trial@file:../package/template-v2.tgz"
+      ],
+      "exit_code": 0,
+      "stdout": "[WARN] The following packages are not awaiting approval: a1dbv-template-trial@file:../package/template-v2.tgz\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\n  a1dbv-template-trial@file:../package/template-v2.tgz:\n    build: false\n    skills: false\n",
+        "lock_sha256": "eb70a3c417a34b5243ac7d7f9ea2efd44372f1f0cbad93bbe26201cefb55b7cb"
+      }
+    },
+    {
+      "label": "conflict-install",
+      "command": [
+        "pnpm",
+        "install",
+        "--offline",
+        "--ignore-scripts",
+        "--ignore-pnpmfile",
+        "--reporter",
+        "append-only"
+      ],
+      "exit_code": 0,
+      "stdout": "Progress: resolved 1, reused 0, downloaded 0, added 0\nPackages are hard linked from the content-addressable store to the virtual store.\n  Content-addressable store is at: <TRIAL_ROOT>/store/v11\n  Virtual store is at:             node_modules/.pnpm\nPackages: +1\n+\nProgress: resolved 1, reused 1, downloaded 0, added 1, done\nAgent skills awaiting approval: a1dbv-template-trial@file:../package/template-v1.tgz.\nRun \"pnpm approve\" to review them.\n\ndependencies:\n+ a1dbv-template-trial 1.0.0\n\nDone in 15ms using pnpm v12.11.0\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": false,
+            "body_sha256": "5b970c8d550d7dfe2486cbf21370a8e39a2513bf416b344abbb9c39f6f040b47",
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    },
+    {
+      "label": "conflict-approve",
+      "command": [
+        "pnpm",
+        "approve",
+        "a1dbv-template-trial@file:../package/template-v1.tgz"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Error: ERR_PNPM_AGENT_SKILL_PATH_OCCUPIED\n\n  × Cannot link an agent skill at \"<TRIAL_ROOT>/consumer-conflict/.claude/skills/pnpm-a1dbv-template-trial-task-\n  │ decisions\", because pnpm did not create the entry already there\n  help: Remove the entry, or name other agent skill directories in the\n        skills.dirs setting.\n\n",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": false,
+            "body_sha256": "5b970c8d550d7dfe2486cbf21370a8e39a2513bf416b344abbb9c39f6f040b47",
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    },
+    {
+      "label": "conflict-explicit-target",
+      "command": [
+        "pnpm",
+        "install",
+        "--offline",
+        "--ignore-scripts",
+        "--ignore-pnpmfile",
+        "--reporter",
+        "append-only",
+        "--frozen-lockfile"
+      ],
+      "exit_code": 0,
+      "stdout": "✓ Lockfile passes supply-chain policies (verified 41ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 14ms using pnpm v12.11.0\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": false,
+            "body_sha256": "5b970c8d550d7dfe2486cbf21370a8e39a2513bf416b344abbb9c39f6f040b47",
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": true,
+            "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
+            "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\nskills:\n  dirs:\n    - .agents/skills\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    },
+    {
+      "label": "no-target-dirs-install",
+      "command": [
+        "pnpm",
+        "install",
+        "--offline",
+        "--ignore-scripts",
+        "--ignore-pnpmfile",
+        "--reporter",
+        "append-only"
+      ],
+      "exit_code": 0,
+      "stdout": "Progress: resolved 1, reused 0, downloaded 0, added 0\nPackages are hard linked from the content-addressable store to the virtual store.\n  Content-addressable store is at: <TRIAL_ROOT>/store/v11\n  Virtual store is at:             node_modules/.pnpm\nPackages: +1\n+\nProgress: resolved 1, reused 1, downloaded 0, added 1, done\nAgent skills awaiting approval: a1dbv-template-trial@file:../package/template-v1.tgz.\nRun \"pnpm approve\" to review them.\n\ndependencies:\n+ a1dbv-template-trial 1.0.0\n\nDone in 14ms using pnpm v12.11.0\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": false,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": false,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    },
+    {
+      "label": "no-target-dirs-approve",
+      "command": [
+        "pnpm",
+        "approve",
+        "a1dbv-template-trial@file:../package/template-v1.tgz"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Error: ERR_PNPM_NO_AGENT_SKILLS_DIR\n\n  × There is no agent skill directory to link the approved skills of a1dbv-\n  │ template-trial@file:../package/template-v1.tgz into\n  help: Name the directories in pnpm-workspace.yaml, for example:\n        skills:\n          dirs:\n            - .claude/skills\n\n",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": false,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": false,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    },
+    {
+      "label": "no-target-dirs-explicit-target",
+      "command": [
+        "pnpm",
+        "install",
+        "--offline",
+        "--ignore-scripts",
+        "--ignore-pnpmfile",
+        "--reporter",
+        "append-only",
+        "--frozen-lockfile"
+      ],
+      "exit_code": 0,
+      "stdout": "✓ Lockfile passes supply-chain policies (verified 39ms ago)\nLockfile is up to date, resolution step is skipped\nDone in 12ms using pnpm v12.11.0\n",
+      "stderr": "",
+      "state": {
+        "entries": {
+          ".claude/skills": {
+            "directory_exists": false,
+            "link_exists": false,
+            "symlink": false,
+            "body_sha256": null,
+            "target": null
+          },
+          ".agents/skills": {
+            "directory_exists": true,
+            "link_exists": true,
+            "symlink": true,
+            "body_sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f",
+            "target": "../../node_modules/.pnpm/a1dbv-template-trial@file+..+package+template-v1.tgz/node_modules/a1dbv-template-trial/skills/task-decisions"
+          }
+        },
+        "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\npermissions:\n  a1dbv-template-trial@file:../package/template-v1.tgz:\n    skills: true\nskills:\n  dirs:\n    - .agents/skills\n",
+        "lock_sha256": "933ac60b0ea9e3a82d2f6fd440f745c118cb36529e04bfc9db020b05ba07bb5a"
+      }
+    }
+  ],
+  "completed_utc": "2026-11-03T03:12:57.624254+00:00",
+  "assertions": "All specified distribution assertions passed, including two expected error exits and preserved approval state.",
+  "unverified": [
+    "Client discovery/loading",
+    "Model behavior or benefit",
+    "Windows/macOS",
+    "Registry-version upgrade approval",
+    "monorepos/multiple package versions",
+    "prod/dev filtering"
+  ],
+  "preliminary_public_harness_attempt": {
+    "started_utc": "2026-11-03T03:09:09.696660+00:00",
+    "source": {
+      "repo": "dbvv1/a1dbv",
+      "commit": "cf1bacf6daaab1211231bd4cb4a59351aaabfff9",
+      "path": "templates/generic/.claude/skills/task-decisions/SKILL.md",
+      "sha256": "c11c13e9d5890e2c44bf147fbc195996f069561f2ff093a924720c6bbb813d1f"
+    },
+    "runtime": {
+      "package": "@pnpm/exe.linux-x64",
+      "version": "12.11.0",
+      "binary_sha256": "79957904276d2e00848c6ce8c875c472b465c6bdc6454a65469162b9b85f1dde"
+    },
+    "script_sha256": "b2696cb1089f31ec45d0091ed6c1a9780ad213ff181cacd35713d511a4018300",
+    "normalization": "Only the scratch-root path and binary path are replaced with <TRIAL_ROOT> and pnpm. Outputs otherwise retained.",
+    "scope": "Synthetic local package and consumers; real pnpm commands and filesystem results. No client or model adoption.",
+    "runs": [
+      {
+        "label": "version",
+        "command": [
+          "pnpm",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "12.11.0\n",
+        "stderr": "",
+        "state": {
+          "entries": {
+            ".claude/skills": {
+              "directory_exists": false,
+              "link_exists": false,
+              "symlink": false,
+              "body_sha256": null,
+              "target": null
+            },
+            ".agents/skills": {
+              "directory_exists": false,
+              "link_exists": false,
+              "symlink": false,
+              "body_sha256": null,
+              "target": null
+            }
+          },
+          "policy": null,
+          "lock_sha256": null
+        }
+      },
+      {
+        "label": "unapproved",
+        "command": [
+          "pnpm",
+          "install",
+          "--offline",
+          "--ignore-scripts",
+          "--ignore-pnpmfile",
+          "--reporter",
+          "append-only"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Error:   × installing dependencies\n  ├─▶ Failed to resolve dependency tree: Failed to resolve dependency: Failed\n  │   to decode gzip: Corrupt data\n  │   \n  │   \n  │   \n  │   \n  │   Failed to resolve a1dbv-template-trial@file:../package/template-v1.tar\n  ╰─▶ Failed to resolve dependency: Failed to decode gzip: Corrupt data\n      \n      \n      \n\n",
+        "state": {
+          "entries": {
+            ".claude/skills": {
+              "directory_exists": true,
+              "link_exists": false,
+              "symlink": false,
+              "body_sha256": null,
+              "target": null
+            },
+            ".agents/skills": {
+              "directory_exists": true,
+              "link_exists": false,
+              "symlink": false,
+              "body_sha256": null,
+              "target": null
+            }
+          },
+          "policy": "ignoreScripts: true\nignorePnpmfile: true\nupdateNotifier: false\nstoreDir: \"<TRIAL_ROOT>/store\"\n",
+          "lock_sha256": null
+        }
+      }
+    ],
+    "diagnosis": "The first public harness generated an uncompressed .tar. pnpm rejected it with Failed to decode gzip: Corrupt data. The corrected harness uses deterministic gzip .tgz; the failed attempt is retained, not counted as a product defect."
+  },
+  "distribution_source": {
+    "pnpm": {
+      "version": "12.11.0",
+      "repository": "https://github.com/pnpm/pnpm",
+      "tarball": "https://registry.npmjs.org/pnpm/-/pnpm-12.11.0.tgz",
+      "integrity": "sha512-Kcy01B+twbOJBgyn4FuzABLKBLHRUCx1vAkwQh6ibYz7lKZ04YwA3E6BzAZhqxDTDQJZvr0SK8wEz/ahL2gs+w==",
+      "sha512_verified_before_execution": true,
+      "install_scripts_executed": false
+    },
+    "@pnpm/exe.linux-x64": {
+      "version": "12.11.0",
+      "repository": "https://github.com/pnpm/pnpm",
+      "tarball": "https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.11.0.tgz",
+      "integrity": "sha512-H78vY3QwTjPjj45Jke9XC4zcwDTBVVJHjvYbvh36xsG9Lz/UDtzUaHgIc6V3xZd5N4eWVldAETjHWPKe0lWpnQ==",
+      "sha512_verified_before_execution": true,
+      "install_scripts_executed": false
+    }
+  }
+}
