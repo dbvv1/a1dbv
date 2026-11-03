@@ -1,7 +1,7 @@
 # A-CLOUDFLARE-EXPORT-BOUNDARY-20261103 · 试用文件边界审计 Skill
 id: A-CLOUDFLARE-EXPORT-BOUNDARY-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbfcbf76561a89c65f21bfb8affec9ef4b7ee806
@@ -43,3 +43,7 @@ result_branch: relay/a-cloudflare-export-boundary-20261103
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：交负责人按 review_ready 提交并回写本卡状态与结果；无需重跑实施或独立反读。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人限定接收（2026-11-03）
+a00717ac 经非作者按原固定目标 cfb9240 定点复审，两处已正确收窄：samefile／resolve 的阴性结果不单独排除树重叠；内容哈希、源身份与固定 reviewed 比较分开，调用者可改传新清单哈希而非代码强制再次 stage。settings 过滤后的写出字节语义同步正确；父 bbfcbf7，仅 result.md 8+/7-，目标三文件和指南字节未变。接收为真实导出器问题上的有限手工 guidance 问答及源码分析，不是完整六阶段审计或动态安全验证。
+首轮先目标后 Skill、二轮非盲读和探针仅报告自述的缺口保留，不追认为原顺序要求全部满足。原两单元及返工记录不覆盖；本次未运行目标、标准库探针或测试，原 725／1189 为接收端报告值。0 confirmed／无 severity 不等于安全证明，needs_validation 不是漏洞计数；无方法收益对照，不据本次接收升级地图、Top5 或默认审查流程，不扩目标写域。
