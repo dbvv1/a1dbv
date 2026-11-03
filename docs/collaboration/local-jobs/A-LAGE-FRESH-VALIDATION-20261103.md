@@ -1,7 +1,7 @@
 # A-LAGE-FRESH-VALIDATION-20261103 · 核清中断后新执行与缓存命中
 id: A-LAGE-FRESH-VALIDATION-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: f26173752175fb2ff9d2c56cc87398b7ad72fb4a
