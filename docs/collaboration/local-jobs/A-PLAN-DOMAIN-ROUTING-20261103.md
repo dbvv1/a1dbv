@@ -1,7 +1,7 @@
 # A-PLAN-DOMAIN-ROUTING-20261103 · 规划时保留实现领域知识
 id: A-PLAN-DOMAIN-ROUTING-20261103
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ec246c5d314e9280edb221695bd3ab71f3ad7a8f
