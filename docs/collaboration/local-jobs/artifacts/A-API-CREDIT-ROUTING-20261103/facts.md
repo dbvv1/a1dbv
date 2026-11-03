@@ -17,7 +17,7 @@
 | 同一 CI 脚本换认证，是否仍走同一余额？ | 不一定。关联组织 API key 的 `claude -p` 走赠额；订阅登录走套餐；Claude Code GitHub Action 即使 `-p` 也不走赠额。 | `claude -p` FAQ；认证优先级；GitHub Actions 文档 |
 | 赠额耗尽是否一定停机？ | 不一定。有已购余额或自动充值则继续；按销售发票的组织照常计费；两者都没有才停 API 请求。 | “What happens when your credits run out” |
 
-**给读者的最小操作判断**：要让赠额抵扣，入口应是“自己运行的 `claude -p`／Agent SDK，或直接调 Messages／Batches／Managed Agents”＋关联 Console 组织的 API key，且不要用 `--bare` 配订阅令牌；走 `claude -p`／Agent SDK 时先用 `/status` 或配置确认 `ANTHROPIC_API_KEY` 是实际生效凭据——云 provider 凭据、`ANTHROPIC_AUTH_TOKEN` 或已登录的 Claude apps gateway 会话会覆盖它（见 §3“`claude -p`（非 bare）＋关联组织 API key”行、§5.4、§7.2）；要让订阅承担，需确认没有高于订阅 `/login` 的凭据：云 provider 凭据、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_API_KEY`、`apiKeyHelper`、高于 `/login` 的 Anthropic profile／federation 凭据（命名 profile、已设置的 federation 变量或 `oidc_federation` active profile），且没有已登录的 Claude apps gateway 会话（完整顺序与条件见 §5.4）。实际是否抵扣，最终看 Console Billing 的该次用量与额度条目；成功认证本身不证明赠额可用。
+**给读者的最小操作判断**：要让赠额抵扣，入口应是“自己运行的 `claude -p`／Agent SDK，或直接调 Messages／Batches／Managed Agents”＋关联 Console 组织的 API key，且不要用 `--bare` 配订阅令牌或 profile／federation 凭据；走 `claude -p`／Agent SDK 时先用 `/status` 或配置确认 `ANTHROPIC_API_KEY` 是实际生效凭据——云 provider 凭据、`ANTHROPIC_AUTH_TOKEN` 或已登录的 Claude apps gateway 会话会覆盖它（见 §3“`claude -p`（非 bare）＋关联组织 API key”行、§5.4、§7.2）；要让订阅承担，需确认没有高于订阅 `/login` 的凭据：云 provider 凭据、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_API_KEY`、`apiKeyHelper`、高于 `/login` 的 Anthropic profile／federation 凭据（命名 profile、已设置的 federation 变量或 `oidc_federation` active profile），且没有已登录的 Claude apps gateway 会话（完整顺序与条件见 §5.4）。实际是否抵扣，最终看 Console Billing 的该次用量与额度条目；成功认证本身不证明赠额可用。
 
 ## 2. 必要最小替换稿
 
@@ -78,7 +78,7 @@
 | 1 | Managed Agents | API key／Console 组织 | 同上 | 是：覆盖清单明列 | 否 | 托管与自托管 sandbox 是否同账期未核；只按 API 用量处理 |
 | 2 | `claude -p`（非 bare）＋关联组织 API key | `ANTHROPIC_API_KEY`；`-p` 下直接采用（云凭据、`ANTHROPIC_AUTH_TOKEN` 与已登录 gateway 会话均高于它，完整顺序见 §5.4） | 按 Agent SDK 用量计入该组织 | 是：FAQ 逐字 | 否 | `apiKeyHelper`、`ANTHROPIC_AUTH_TOKEN`／网关、无 key 的 Console OAuth 概况未明；查账单或问支持 |
 | 2 | `claude -p`（非 bare）＋订阅登录或 `CLAUDE_CODE_OAUTH_TOKEN` | claude.ai 订阅 | 套餐额度 | 否：FAQ 逐字 | 是 | 具体 5 小时／周窗口见 02 §3，本卡不展开 |
-| 2 | `claude --bare -p` | 不读 OAuth、系统钥匙串和 `CLAUDE_CODE_OAUTH_TOKEN`；文档列出的路径是 API key、`apiKeyHelper` 或云凭据 | 由所用凭据决定 | 用关联组织 API key 时同“`claude -p`（非 bare）＋关联组织 API key”行；订阅令牌不可用 | 不适用（无法用订阅登录） | 云凭据走云账单，不抵赠额；`apiKeyHelper` 是否抵赠额未明（见 §7.1） |
+| 2 | `claude --bare -p` | 不读 OAuth、系统钥匙串、`CLAUDE_CODE_OAUTH_TOKEN`、profiles／federation 变量；文档列出的路径是 API key、`apiKeyHelper` 或云凭据 | 由所用凭据决定 | 用关联组织 API key 时同“`claude -p`（非 bare）＋关联组织 API key”行；订阅令牌不可用 | 不适用（无法用订阅登录） | 云凭据走云账单，不抵赠额；`apiKeyHelper` 是否抵赠额未明（见 §7.1） |
 | 3 | Agent SDK（Python／TypeScript）＋关联组织 API key | API key | 该组织 API | 是：覆盖清单与 FAQ | 否 | 第三方厂商代跑是否算原文的 “run them yourself” 未明 |
 | 3 | Agent SDK＋订阅登录 | claude.ai 订阅 | 套餐额度 | 否：FAQ 逐字 | 是 | SDK 采用哪种订阅凭据未在 overview 明写；第三方产品不得提供 claude.ai 登录 |
 | 4 | `claude-code-action`：`anthropic_api_key` | 该 key 所属 Console 组织 | 按 Claude Code 用量计 | 否：FAQ 明写 “even with `-p`” | 否（API 计费） | 无 |
@@ -137,7 +137,7 @@ Team 说明原文：`credits for all seats are pooled into one monthly balance, 
 - `Mobile subscriptions.` 可在 web、iOS、Android 订阅；领取须在 claude.ai 网页端。
 - `No payment method needed.` 领取或使用不要求在 Claude Platform 绑卡。
 
-领取角色原文：Max／Ultra 须为订阅者本人；Team 须为 Primary Owner 或 Owner；Console 组织须有 Owner、Admin 或 Billing 角色。限制原文：只能关联一个 Console 组织；每个 Console 组织只能接收一个计划的赠额；不能自行更换关联组织，需联系支持；Console 登录建议使用与 claude.ai 相同的邮箱。Team 段另说明：组织内每位持有 API key 的人都能使用余额，可用 Console 的 workspace spend limits 按项目或成员限制花费。
+领取角色原文：Max／Ultra 须为订阅者本人；Team 须为 Primary Owner 或 Owner；Console 组织须有 Owner、Admin 或 Billing 角色。限制原文：只能关联一个 Console 组织；每个 Console 组织只能接收一个计划的赠额；不能自行更换关联组织，需联系支持；若尚无 Console 组织，可在领取流程中或 platform.claude.com 新建；领取步骤提示以与 claude.ai 相同的邮箱登录 Console（原文标为 Tip，非硬性要求）。Team 段另说明：组织内每位持有 API key 的人都能使用余额，可用 Console 的 workspace spend limits 按项目或成员限制花费。
 
 **依据**：[一手：帮助中心](https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans)，页面可见“Updated this week”，精确时间取自元数据 `lastUpdatedDate`＝2026-10-30T17:08:22Z；核读 2026-11-03。
 
@@ -188,6 +188,8 @@ Team 说明原文：`credits for all seats are pooled into one monthly balance, 
 
 > Bare mode does not read `CLAUDE_CODE_OAUTH_TOKEN`. If your script passes `--bare`, authenticate with `ANTHROPIC_API_KEY` or an `apiKeyHelper` instead.
 
+> Claude Code doesn’t read profiles or federation variables in bare mode, in Claude Desktop, or in cloud sessions.
+
 > Cloud sessions always use your subscription credentials. If you set `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` in the cloud environment, it doesn't override your subscription credentials.
 
 > A signed-in Claude apps gateway session sits outside this list: it is a provider selection like Amazon Bedrock or Google Cloud's Agent Platform, and it outranks them. When a gateway session exists, the CLI authenticates with the gateway token even if `CLAUDE_CODE_USE_BEDROCK`, `CLAUDE_CODE_USE_VERTEX`, or `CLAUDE_CODE_USE_FOUNDRY` is set, and credential sources above such as the bearer token, API key, `apiKeyHelper`, and profiles are not used.
@@ -198,7 +200,7 @@ Headless 文档补充：
 
 > In bare mode, Claude Code never reads OAuth credentials or the system keychain.
 
-**判断**：在 `-p` 下，若没有更高优先级的云凭据、`ANTHROPIC_AUTH_TOKEN` 或已登录的 Claude apps gateway 会话，`ANTHROPIC_API_KEY` 会被直接采用且不询问；它优先于订阅登录、`CLAUDE_CODE_OAUTH_TOKEN` 与 profile／federation 凭据。CI 里同时存在 API key 和 OAuth token 时，key 优先；若已有 gateway 会话，则 bearer token、API key、`apiKeyHelper` 与 profiles 均不使用。`--bare` 下订阅令牌不生效，这不是赠额政策，而是 bare 的认证设计。
+**判断**：在 `-p` 下，若没有更高优先级的云凭据、`ANTHROPIC_AUTH_TOKEN` 或已登录的 Claude apps gateway 会话，`ANTHROPIC_API_KEY` 会被直接采用且不询问；它优先于订阅登录、`CLAUDE_CODE_OAUTH_TOKEN` 与 profile／federation 凭据。CI 里同时存在 API key 和 OAuth token 时，key 优先；若已有 gateway 会话，则 bearer token、API key、`apiKeyHelper` 与 profiles 均不使用。`--bare` 下订阅令牌、profiles／federation 都不生效，这不是赠额政策，而是 bare 的认证设计。
 
 **依据**：[一手：Authentication](https://code.claude.com/docs/en/authentication)（Authentication precedence［含 Cloud sessions、Claude apps gateway］、Anthropic profiles and federation credentials、Credential management、Generate a long-lived token）；[一手：Headless](https://code.claude.com/docs/en/headless)（Start faster with bare mode）；核读 2026-11-03。
 
@@ -252,9 +254,11 @@ SDK 的 cost-tracking 文档另提醒：`total_cost_usd` 与 `costUSD` 是客户
 
 计划变更原文：取消、降级到不合资格计划或退款后，新赠额停止，已有赠额可用到过期；Max 升 Ultra 立即按比例补发，之后每周期 $200；Max／Ultra 转 Team 后原关联结束，Team Owner 或 Primary Owner 可在 Team 计划满七天后领取团队赠额。
 
+个人付费订阅（Pro／Max／Ultra）达到套餐限额后的额外用量另称 `usage credits`。帮助中心明确 `Usage credits are separate from the monthly API credits included with Max and Ultra plans.`，且 `Monthly API credits don’t apply to usage credits in Claude, Claude Code, or Claude Cowork.` 该帮助中心文章未列 Team／Enterprise；团队额外用量是否同名未核。
+
 **判断**：“耗尽”不是单一停机：已购余额／自动充值／销售发票是三条不同后续。赠额金额只是抵扣额度，不是账单上限；周期按计费周期，不是自然月。
 
-**依据**：[一手：帮助中心](https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans)（How the credits work、What happens when your credits run out、If your plan changes）；核读 2026-11-03。
+**依据**：[一手：帮助中心](https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans)（How the credits work、What happens when your credits run out、If your plan changes）；[一手：Manage usage credits for paid Claude plans](https://support.claude.com/en/articles/12429409-manage-usage-credits-for-paid-claude-plans)（Usage credits separate from monthly API credits；元数据 `lastUpdatedDate`＝2026-10-30T17:08:58Z）；核读 2026-11-03。
 
 ### 5.8 六月的 Agent SDK 赠额
 
@@ -288,7 +292,7 @@ FAQ 原文：
 - **“Agent SDK 不得提供 claude.ai 登录”与“订阅登录的 SDK 用量”范围不同。** 前者约束第三方对外产品，后者说明你自己运行时的套餐计费；两句可以同时成立。
 - **Claude Code Action 直连 Claude API，但赠额仍不覆盖。** GitHub Actions 文档描述默认用 API key 调用 Claude API；赠额 FAQ 仍按“该 Action 发起＝Claude Code 用量”排除。两者不矛盾：前者说请求路径，后者说产品分类与资金来源；不能由“直连 API”推出可用赠额，也不能把这个排除扩到自定义 Action。
 - **Claude Code Action 的 OAuth 路径与赠额 FAQ 不冲突。** 前者说 OAuth 令牌让 Action 用订阅代替 API 计费；后者说该 Action 用量不抵 API 赠额。订阅计费与 API 赠额是两笔资金来源。
-- **`usage credits` 与 `monthly API credits` 同名不同物。** 前者是订阅超限后的额外用量额度，后者是计划每月发放到 Console 组织的 API 赠额；文章明确“Extra usage in Claude, Claude Code, or Claude Cowork”不被月度赠额覆盖。
+- **`usage credits` 与 `monthly API credits` 是两笔额度。** 前者是个人付费订阅（Pro／Max／Ultra）达到套餐限额后的额外用量（该帮助中心文章未列 Team／Enterprise，团队额外用量是否同名未核），后者是每月发放到关联 Console 组织的 API 赠额；帮助中心明确两者分开（见 §5.7），主文章另把 `Extra usage in Claude, Claude Code, or Claude Cowork` 列在月度赠额不覆盖范围。
 - **条款页与帮助中心不是同一层。** Supplemental Credit Terms 生效 2024-03-04，未提月度赠额的产品范围与组织关联；不要用条款页的“一年到期”覆盖文章写的“计费周期末过期”。
 - **账期不是自然月。** 赠额随计费周期刷新；年付计划按月到账。Team 池按每次发放时的席位数重算。不要把“每月”写成“每月 1 日”，也不要把周期金额当账单上限。
 
@@ -310,9 +314,9 @@ FAQ 原文：
 
 ## 8. 边界与验证
 
-- **只核公开官方页面**：帮助中心赠额文章、Authentication、Headless、GitHub Actions、Agent SDK overview／quickstart／cost-tracking、Manage costs、Supplemental Credit Terms。未读用户／公司代码、账户、账单、额度、凭据或私人日志；未登录、未领取、未关联组织、未调用模型。
+- **只核公开官方页面**：帮助中心赠额文章、Manage usage credits for paid Claude plans、Authentication、Headless、GitHub Actions、Agent SDK overview／quickstart／cost-tracking、Manage costs、Supplemental Credit Terms。未读用户／公司代码、账户、账单、额度、凭据或私人日志；未登录、未领取、未关联组织、未调用模型。
 - **不证明任何用户资格或真实扣费**：金额、角色、七天门槛是政策原文；某位读者是否合资格、是否已领取、某次请求实际扣了哪笔额度，均未验证。
 - **不重做模型价格表、effort 比较、云预算全题、数据驻留或 ZDR**：这些不在本卡范围；02／18 的既有金额和推荐保持不变。
 - **不改正文**：本卡只交 `facts.md`；18、02、研究页、13、地图、模板、TASKS、其他卡、接收器均未改。页面采用由负责人核写者与实际差量决定。
 - **历史日期不刷新**：研究页仍保留 2026-10-15（UTC+8；UTC 2026-10-14）的核实记录；本文 2026-11-03 的核读只用于新增事实与替换候选。
-- **检查（本单元实际运行）**：`python3 scripts/check_repo.py` 735 文件 0 errors；`python3 scripts/check_public.py` 对已跟踪文件 0 findings，新增 `facts.md` 另用同组模式扫描 0 findings；`git diff --check` 通过。公开扫描通过不等于无泄露，提交前仍需读一遍 diff；提交后的 `--commits origin/main..HEAD` 与身份检查由接收端执行。
+- **检查（本单元实际运行）**：`python3 scripts/check_repo.py` 735 文件 0 errors；`python3 scripts/check_public.py` 1201 文件 0 findings；`git diff --check` 通过。公开扫描通过不等于无泄露，提交前仍需读一遍 diff；提交后的 `--commits origin/main..HEAD` 与身份检查由接收端执行。
