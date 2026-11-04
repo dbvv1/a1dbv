@@ -2,12 +2,12 @@
 id: B-MOBA-UI-EVENT-CUES-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-ui-event-cues-20261104
 
-工作线：MOBA-Like。本卡为独立排队单元，尚未认领。
+工作线：MOBA-Like。沿原任务与结果分支窄返工，只修已复现的配方校验缺口。
 
 ## 目标
 给现有购买成功／失败、升级、复活四种已存在事件准备可编辑短音源，补内容清单的局内提示缺口，不替换战斗混音。
@@ -30,8 +30,13 @@ result_branch: relay/b-moba-ui-event-cues-20261104
 
 ## 当前结果
 
-- 已新增 asset-pipeline/ui-event-audio/ 下确定性纯 Python 发生器与配方，生成四段 48kHz mono PCM16 WAV（0.220/0.220/0.550/0.500 s，峰值 −9.1003 dBFS，首末采样 0，SHA-256 互异），配套 manifest（事件映射、r1→r2 主频比例 0.9 重建结果）、13 项单元测试与 README；实测 generate.py --check 通过、unittest 13 项全过、git status 仅此 9 个新文件。openIssues：level-up/respawn 尚未以 PresentationEvent 暴露，接线前需先在模拟层补正式提交事件；真实试听、四声可辨、重叠遮挡与采用决定未验；npm test 未运行（无 node_modules 且本批不改 TS）。
-- 产物：[08d9627](https://github.com/dbvv1/MOBA-Like/commit/08d9627c4a7f7fa935c9fbefe710b1d61c064043)，分支 `relay/b-moba-ui-event-cues-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：交负责人接收：进行真实试听与采用决定；如后续接线，先在模拟层为升级/复活补正式 PresentationEvent（本卡按范围未接线）。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 候选：[08d9627](https://github.com/dbvv1/MOBA-Like/commit/08d9627c4a7f7fa935c9fbefe710b1d61c064043)，直接基于产品 main `b489ed3`，仅新增限定目录 9 文件。负责人独立重跑 `generate.py --check`、13 项测试、四 WAV 解码／哈希／首末采样与公开扫描，均通过；时长 0.220／0.220／0.550／0.500 s，峰值均 −9.1003 dBFS。现有波形合规，但编辑后的非法滑音泛音与超预算峰值仍被接受，决定返工。
+- 原 Workflow、CLI、工具与登记进程已只读核实结束；CLI exit 0、工具 settled 且 pending 为空，登记进程无存活匹配。外层 worker 独立退出事件仍未知，不补推为 exit 0；续接前仍按恢复合同核实际写者，不重启原调用。
+- 未验：真实试听、四声可辨、混音遮挡与采用；未接线、未运行 npm／浏览器检查。升级／复活尚无 PresentationEvent，是后续接入前置项，本次不补模拟事件。不得据此宣称游戏声音改善。
+- 下一步：按下列修改要求在原结果分支续接，原生 build 独立复核后回 `review_ready`；不合产品 main、不部署。
+
+## 修改要求
+
+1. **滑音全程泛音拒收。** `validate_cue()` 当前仅核起频乘泛音倍数；将复活段 `glideToHz` 改为 15000 后，二次泛音在 r1 达 30000 Hz、r2 达 27000 Hz，超过 48kHz 采样的 24000 Hz Nyquist，仍通过并生成。对每个版本比例、每个泛音，检查滑音两端的最高频率乘倍数，达到或超过 Nyquist 即拒收；固定音同样保留检查。加合法邻界、恰达边界、越界和比例导致越界的回归，先证明原实现失败。
+2. **保持本批峰值硬预算。** 同时改 `peakCeilingDbfs=-1.0`、`peakTargetDbfs=-1.1`，当前可生成 −1.1004 dBFS。校验必须拒绝放宽到高于 −9 dBFS 的 ceiling／target，允许更保守值并保留 target 不高于 ceiling 的关系；补默认通过、放宽拒收、边界与保守值测试。
+3. **只修校验与直接回归。** 不重设计音色，不接线；保留当前 recipe、四 WAV 与 manifest 的逐字节结果，确需改变时先说明与这两处缺陷的直接关系。复跑原 13 项及新增测试、`--check`、字节比对、公开文件／提交扫描和差异检查；报告实际结果。真实试听与采用仍由负责人另验。
