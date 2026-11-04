@@ -4,6 +4,18 @@
 
 ## 待处理
 
+### 2026-11-04：让 Agent 优化真实瓶颈，不追另一个指标
+
+👀 **已有可复现慢场景时，给 Agent 同一输入、正确性要求和目标指标，先读 profile、一次改一个主要热点，再回原场景验收。** 可直接交办：`记录版本、输入、工具链、线程配置与指标；定位热点后提出一项修改，保留正确性与其他受影响场景。计量版本或执行条件变了，先重建可比基线；最终用原先用户关心的指标复核。` 已有 profiler 就借方法，不必迁移服务；没有已确认瓶颈，不启动全仓优化。
+
+**CodSpeed 官方 Skill 的可借部分是优化闭环，不是统一换工具。** 固定源码 `229413f0` 提供 MIT／Apache-2.0 许可文件，要求 benchmark、profile、单项修改和正确性检查，并用 walltime 复核；SWC 确实提交同名 Skill，但文件存在不证明采用收益。该 Skill 要求 CodSpeed 认证、上传和 MCP，本轮未安装或调用。其 Go simulation 示例与当前 CPU 文档仅支持 Go walltime 的说明存在冲突，语言命令须按当前支持矩阵核实，不照抄。
+
+**稳定分数可能换了测量对象。** CPU simulation 的总分不含系统调用耗时，不能单独验收 I/O、接口延迟或游戏帧时间；v5 改过周期估计公式，旧结果不可直接比较，应重建基线。真实 pixtuoid #1843 为处理内存波动给 memory 场景绑单核，`available_parallelism()` 随之为 1、映射改走 inline，simulation 仍多线程。此为源码／配置支持的机制判断；该 PR 同时改工具链等多项设置，不能据此断言波动消失或单因归因，更不能证明生产并行路径变快。其内存工作流还关闭物理 RSS 跟踪，不把报告等同实际驻留内存。
+
+**试用范围：未试用。** 当前没有具体慢场景，未制造合成性能数字，也未跑模型、计量引擎或真实优化对照。游戏开发者原帖与回复支持“具体场景＋引擎 profiler”这一需求，其自报加速缺可复跑产物，不作本方法效果证据。只作为下一次真实性能任务的候选，不新增模板或默认门禁，当前最佳未知。
+
+**依据**：[一手：官方优化 Skill](https://github.com/CodSpeedHQ/codspeed/blob/229413f0ff5e8c4dfbac6b397ed89971d064dc9f/skills/codspeed-optimize/SKILL.md)、[CPU 指标与语言支持](https://codspeed.io/docs/instruments/cpu)、[2026-08-03 v5 计量变更](https://codspeed.io/changelog)；[真实配置：SWC](https://github.com/swc-project/swc/blob/c5ad386b65b9607a53c4626244c66d10bccbccaa/.agents/skills/codspeed-optimize/SKILL.md)、[pixtuoid 原 PR](https://github.com/pixtuoid/pixtuoid/pull/1843)及[固定工作流](https://github.com/pixtuoid/pixtuoid/blob/70b393be9192489a909952a7fcac3511b6cc36b5/.github/workflows/codspeed.yml)；[社区原帖与回复](https://www.reddit.com/r/aigamedev/comments/1vi9fwz/tips_on_getting_your_agent_to_make_your_game/)。定向核实：2026-11-04 UTC；未完成领域广扫。
+
 ### 2026-11-04：连续 UI 改版交可运行原型和本轮变化
 
 👀 **已有可运行界面、设计与实现分开维护时，可试把原型、设计规则、角色／状态入口及逐版 changelog 一起交给 Agent。** 指定已确认的原型版本和生产代码基线，列出本轮要改与保留的行为，让 Agent 对应到已有组件、真实路由，再用相同角色、数据和视口核对实现。原型缺失的异常、空、加载状态要先澄清，不能让模型凭截图补意图。若生产组件已能直接评审，沿用该入口；小改动不另建平行原型，精细素材与资产库也不必离开现有设计工具。
