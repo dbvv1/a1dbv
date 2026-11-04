@@ -2,7 +2,7 @@
 id: B-FPS-TRAINING-CHARACTER-ADAPTER-20261104
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-training-character-adapter-20261104
@@ -27,3 +27,11 @@ result_branch: relay/b-fps-training-character-adapter-20261104
 用 Three 实际加载原 GLB 验站立／移动／蹲／射击／受击／死亡／重置，事件过期不重复、相同模拟时间与同一既有呈现年龄在不同呈现频率下姿势一致，终局停tick后的原死亡尾段仍推进、默认与几何哈希不变、加载失败／迟到／销毁各自只释放自有资源。交可导入 adapter、接线位置与缺少的 reload/switch 动作说明；不是新角色制作或训练赛已上线。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 已完成训练赛角色源 CPU 合同：新增可导入离线 adapter，用真实 enemy-relay-guard.glb 与 offline-training-v1 真实 Game/Feedback 实现 read-only 状态采样（position/yaw/hp/crouch/移动量与 Feedback 事件年龄，rest TRS 重置，death>hit>fire>walk>idle，settled-tail ≤700ms，无新增墙钟/计时器/模拟写入），含资源所有权与迟到/失败/销毁处理、17 个真实 CPU 测试、接线与缺失 reload/switch 动作 README。taskDone：单元范围完成（remaining=false）。pageStuck：不适用（build 类型，无页面）。已运行：adapter 测试 17/17、adapter tsc、npm run typecheck、npm test 430/430、npm run build 均通过。未运行验收：按卡约束未跑浏览器/headless、GPU、截图及人工观感；未接入 src（写入范围禁改）。openIssues：无；Node v22 低于 engines >=24 仅警告。
+- 产物：[f5eacd9](https://github.com/dbvv1/FPS-Like/commit/f5eacd9d9cc251e20c28529be430ae29db1a20ec)，分支 `relay/b-fps-training-character-adapter-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由负责人接收本单元并在后续卡把 TrainingCharacterSet 接到 src/candidates/offline-training-v1/render/scene.ts 的 actor 循环（保留 procedural fallback），再按仓库规则跑 headless 浏览器 smoke 与人工机位评审；源 GLB 本身无 reload/switch 动作。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
