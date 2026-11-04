@@ -2,7 +2,7 @@
 id: B-MOBA-UI-EVENT-CUES-20261104
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-ui-event-cues-20261104
@@ -30,10 +30,11 @@ result_branch: relay/b-moba-ui-event-cues-20261104
 
 ## 当前结果
 
-- 候选：[08d9627](https://github.com/dbvv1/MOBA-Like/commit/08d9627c4a7f7fa935c9fbefe710b1d61c064043)，直接基于产品 main `b489ed3`，仅新增限定目录 9 文件。负责人独立重跑 `generate.py --check`、13 项测试、四 WAV 解码／哈希／首末采样与公开扫描，均通过；时长 0.220／0.220／0.550／0.500 s，峰值均 −9.1003 dBFS。现有波形合规，但编辑后的非法滑音泛音与超预算峰值仍被接受，决定返工。
-- 原 Workflow、CLI、工具与登记进程已只读核实结束；CLI exit 0、工具 settled 且 pending 为空，登记进程无存活匹配。外层 worker 独立退出事件仍未知，不补推为 exit 0；续接前仍按恢复合同核实际写者，不重启原调用。
-- 未验：真实试听、四声可辨、混音遮挡与采用；未接线、未运行 npm／浏览器检查。升级／复活尚无 PresentationEvent，是后续接入前置项，本次不补模拟事件。不得据此宣称游戏声音改善。
-- 下一步：按下列修改要求在原结果分支续接，原生 build 独立复核后回 `review_ready`；不合产品 main、不部署。
+- 修复 ui-event-audio 两处校验缺口：滑音段按两端最高基频对每个泛音及每版 fundamentalRatio 检查 Nyquist，固定音同样检查；peakCeilingDbfs/peakTargetDbfs 不得高于 -9 dBFS，保留 target<=ceiling 并允许更保守值。新增回归先在 HEAD 版复现失败，再于修复版跑通；--check 与 15 项单元测试通过，四段 WAV、manifest.json、recipe.json 与 HEAD 逐字节一致，公开文件/路径扫描无命中，diff 仅限三个文件。openIssues 为空；真实试听、四声可辨、混音遮挡、设备解码与采用未验证，升级/复活 PresentationEvent 接入前置项未改动。
+- 产物：[0b3d85d](https://github.com/dbvv1/MOBA-Like/commit/0b3d85d47b184ac48450e0a9d039fd3e0143c273)，分支 `relay/b-moba-ui-event-cues-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由负责人进行真实试听、重叠遮挡与采用决定，并处理升级/复活尚无 PresentationEvent 的后续接入；本单元无需继续返工。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求
 
