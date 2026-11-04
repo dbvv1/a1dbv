@@ -1,7 +1,7 @@
 # A-WORKTREE-IMPORT-GUIDE-20261104 · 核对 Python worktree 的实际导入来源
 id: A-WORKTREE-IMPORT-GUIDE-20261104
 owner: dot-A
-status: running
+status: blocked
 kind: build
 page: docs/decisions/long-tasks.md@4502d0471e073f8fddb065b0dd4ed6e2a14f144f
 target_repo: https://github.com/dbvv1/a1dbv
@@ -38,3 +38,7 @@ namespace package 的顶层 __file__ 可能为空且有多个位置，改核实�
 这是内容与操作语义审查，不冒充 write-task-guide 的第二个真实任务盲读或新生产采用；完整真实读者实做仍待具备任务时补验。按 build Workflow 并行核读者可用、事实链接和已有运行证据，不能由作者自评替代。
 运行 python3 scripts/check_repo.py、python3 scripts/check_public.py 与 git diff --check；核实际 diff、原始来源和声称范围。只写实际通过／失败／未运行，检查结论留提交说明和本卡简短当前结果。
 一个 45–75 分钟单元，最多两小时。模型不提交推送；接收端完成公开扫描与身份检查，仅推 result_branch、回 review_ready，由负责人接收。不用 accept: auto，不合 main，不发上游或部署。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
