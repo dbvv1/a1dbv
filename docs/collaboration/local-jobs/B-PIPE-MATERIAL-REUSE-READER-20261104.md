@@ -2,7 +2,7 @@
 id: B-PIPE-MATERIAL-REUSE-READER-20261104
 owner: dot-B
 kind: reader-test
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-pipe-material-reuse-reader-20261104
@@ -28,3 +28,7 @@ page: domains/game-dev/assets/materials.md@463b4b9a95a8e6eadb98b730d8aa373a05dcb
 每路记录实际被调用的加载次数、释放所有者和回退结果，明确模拟依赖与真实 CPU 消费边界；按页面回答“为何不是每楼一纹理、何时可释放、失败后玩家保留什么”。返回第一处照做卡点或无卡点，不靠阅读者经验补文后称成功。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
