@@ -2,7 +2,7 @@
 id: B-PIPE-ICON-BATCH-READER-20261104
 owner: dot-B
 kind: reader-test
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-pipe-icon-batch-reader-20261104
@@ -28,3 +28,11 @@ page: domains/game-dev/assets/2d.md@463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 既有 36 个运行文件与预览的完整产物清单；正常二改、缺源失败、首次无旧批失败三个真实结果；旧批哈希和 exit code。记录页面是否提供足够操作及遇到的第一处卡点。依赖不可用写具体缺项，不声称照做成功。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- reader-test 一轮观察完成。已按 icon-family-rebuild 节取固定消费者 MOBA-Like@b489ed38 的 asset-pipeline/icons，核到六类图标、36 个运行文件（12 SVG+24 PNG）及 SHA-256 清单，聚合 8efcb6680f0ad1a65fb99d325020fc76653124e39773a9b26df45f39fb792a47；dark.accent 由 #70E6E1 改 #086E85 后 validate 通过，原配方复现 12/12 已入库 SVG，改后 bright 6/6 不变、dark 6/6 变化且 MIT 通知保留；test_export.py 15 项 3 过 12 错 exit 1。真实 CLI 三个场景均被缺 CairoSVG 阻塞（正常二改、缺源、首次无旧批皆 exit 1），另用显式标注 stub 复核控制流：缺 self-shield.svg exit 2、旧批 36 文件哈希不变、首次失败无最终目录。taskDone=false：PNG 与 preview 未生成，36 运行图逐字节一致未验。pageStuck 共 6 条：页面未写 Python/Cairo/CairoSVG 运行前提且本机缺依赖无法安装；固定 commit 无 preview.png 且被 gitignore；PNG/预览逐字节一致无法核；真实缺源分支被 render() 首行 import cairosvg 提前挡住；节内未给六类图标名、配方键、颜色值与最后一个源；安装运行命令只在被链 MOBA README。openIssues：Windows 下 Path.write_text 将 SVG 写为 CRLF，用同一 stub 完整成功导出 0/12 与入库字节相同，故页面逐字节一致在 Windows 不成立，且在装好 CairoSVG 后 test_export.py 的 read_bytes 断言仍会失败；读者把本地 main 落后误述为固定 commit 不在默认分支，实际上游 main 即 b489ed38；result.md 只给 16 位哈希前缀，完整 64 位留在未提交 scratch，交付物自身无法复核完整清单。本轮不自动重读，交负责人接收，不代表目标验收通过。
+- 产物：[dcba386](https://github.com/dbvv1/a1dbv/commit/dcba386ed2005b8da84d798851863850be286922)，分支 `relay/b-pipe-icon-batch-reader-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人处理：(1) 提供或预装 CairoSVG 2.8.2 与系统 Cairo 后按同两只场景重跑 export.py，先核 36 文件哈希与 preview 960x400，再核缺源失败时旧批原字节保持；(2) 在 icon-family-rebuild 节补运行前提、六类图标名/配方键/色值/最后一个源、安装运行命令及 Windows CRLF 对逐字节一致的影响；(3) 修正读者记录中固定 commit 与上游 main 关系的误述。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
