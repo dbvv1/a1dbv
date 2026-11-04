@@ -1,7 +1,7 @@
 # A-RECEIVER-EXIT-EVIDENCE-20261104 · 核五项原调用退出证据
 id: A-RECEIVER-EXIT-EVIDENCE-20261104
 owner: dot-A
-status: running
+status: blocked
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbf7128ea7c8808f4a3ab33dca014f3cb4765833
@@ -37,3 +37,7 @@ result_branch: relay/a-receiver-exit-evidence-20261104
 核对公开报告每个肯定判断均有本次直接观察或完整可核的原退出证据；未做的检查明确写未运行。旧记录只写原时点，不改写为当前重新核实。
 现有 build Workflow 非作者审查报告的证据边界与公开安全；模型不提交或推送。接收端运行适用的 check_repo、check_public 与 git diff --check，仅推本卡 result_branch，回 review_ready；无安全可读证据则回 blocked，并保留能核实的部分与精确缺口。不用 accept:auto，不合 main。
 这是单次只读核查，得到可核结果或明确缺口即交回，不循环等待、不为凑时长重复查询；最多两小时。Git 文件和本卡完成都不证明原五项已退出，负责人只按实际回传证据接续。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
