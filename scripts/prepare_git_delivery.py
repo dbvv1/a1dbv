@@ -129,7 +129,9 @@ def main(argv=None):
     print(f'error: {exc}', file=sys.stderr)
     return 2
   # Emit only after every object has been read; errors never leave partial JSON.
-  print(json.dumps(manifest, ensure_ascii=False, indent=2))
+  # ASCII-only JSON keeps stdout encodable under UTF-8, gbk, ascii and other
+  # locale codecs; json.loads restores paths verbatim from the escapes.
+  print(json.dumps(manifest, ensure_ascii=True, indent=2))
   return 0
 
 
