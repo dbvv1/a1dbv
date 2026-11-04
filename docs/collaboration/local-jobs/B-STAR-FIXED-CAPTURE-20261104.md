@@ -2,7 +2,7 @@
 id: B-STAR-FIXED-CAPTURE-20261104
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-fixed-capture-20261104
@@ -46,4 +46,5 @@ manifest 逐机位列实际完整 URL、固定 commit/tree、构建 hash、seed/
 发布前对实际新增文件做公开扫描、diff 空白和 noreply 身份检查；扫描通过后只推 result_branch，回 review_ready。失败保留原失败证据。dot 按图接收；本卡 smoke 不等于完整整局、硬件性能、驾驶手感或画面判优。
 
 ## 当前结果
-等待原接收端领取。三机位尚未执行，交回图与真实退出情况后由 dot 接收，再排下一案例。
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
