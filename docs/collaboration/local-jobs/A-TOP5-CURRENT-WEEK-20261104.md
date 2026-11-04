@@ -1,7 +1,7 @@
 # A-TOP5-CURRENT-WEEK-20261104 · 更新本周五项试用入口
 id: A-TOP5-CURRENT-WEEK-20261104
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ac55b5473fcc6e387efa435ad02a56228deaa093
@@ -34,4 +34,9 @@ result_branch: relay/a-top5-current-week-20261104
 一个60–90分钟单元，最多两小时；沿原接收端共享调度，不另起调用。经Workflow非作者审查与修正，仅推result_branch回review_ready，负责人判断最终推荐后接收；不用accept:auto，不合main。
 
 ## 当前结果
-待领取。直接交13首屏完整改动、固定提交及实际检查结果，不造新试用回执。
+
+- 完成 docs/13-frontier-radar.md 首屏本周 Top 5 更新：标题改为稳定标题并保留 #本周-top-5 锚点，导语与依据行写明本周选择窗口 2026-11-02～11-08，五项补历史试用日期 10-23～26，并按原记录复核 jrnl 22 项定向通过/4 项基线失败、Maka 82 项受影响测试/4 个 Chrome play、Intent 0.5.6 的 8 项测试+构建+真实 Chrome、ast-grep 0.51.0 的 27 例、Context7 两次匿名查询的 Pydantic v1/v2；对照 ECC search-first 与 diff-cover 后保留五项不换榜，依据行分开编辑对照日 2026-11-04 与原来源回核日 2026-10-26 并注明未重核外部来源。实测 check_repo.py 0 错误（770 文件）、check_public.py 0 命中（1240 文件）、git diff --check 通过，自写校验确认首屏 9 条相对链接及锚点（含 #本周-top-5、#ecc-search-first、#条件推荐）均命中。三视角审查通过、0 个未关闭问题（openIssues=[]），未提交未推送。
+- 产物：[a2793db](https://github.com/dbvv1/a1dbv/commit/a2793db01b0037eec02ba68b906b2eb6e6bb00fa)，分支 `relay/a-top5-current-week-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：无待修缺口；接收端可提交本单元改动。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
