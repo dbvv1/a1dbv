@@ -2,7 +2,7 @@
 id: B-MOBA-UI-EVENT-CUES-20261104
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-ui-event-cues-20261104
@@ -27,3 +27,11 @@ result_branch: relay/b-moba-ui-event-cues-20261104
 实际四段 WAV 可解码，时长／峰值／首尾边界/重复字节、缺参数／非法频率拒收测试与二改结果；给事件映射和待听问题。非作者核源和数字，不以波形证明四声可辨；真实试听、重叠遮挡与采用由 dot 另验。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 已新增 asset-pipeline/ui-event-audio/ 下确定性纯 Python 发生器与配方，生成四段 48kHz mono PCM16 WAV（0.220/0.220/0.550/0.500 s，峰值 −9.1003 dBFS，首末采样 0，SHA-256 互异），配套 manifest（事件映射、r1→r2 主频比例 0.9 重建结果）、13 项单元测试与 README；实测 generate.py --check 通过、unittest 13 项全过、git status 仅此 9 个新文件。openIssues：level-up/respawn 尚未以 PresentationEvent 暴露，接线前需先在模拟层补正式提交事件；真实试听、四声可辨、重叠遮挡与采用决定未验；npm test 未运行（无 node_modules 且本批不改 TS）。
+- 产物：[08d9627](https://github.com/dbvv1/MOBA-Like/commit/08d9627c4a7f7fa935c9fbefe710b1d61c064043)，分支 `relay/b-moba-ui-event-cues-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：交负责人接收：进行真实试听与采用决定；如后续接线，先在模拟层为升级/复活补正式 PresentationEvent（本卡按范围未接线）。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
