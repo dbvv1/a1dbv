@@ -1,8 +1,10 @@
 """Synthetic record tests; no model, network, or evidence commands are used."""
 
 import copy
+import errno
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -139,6 +141,75 @@ class ValidationTests(unittest.TestCase):
     self.report["command"] = "do not execute"
     with self.assertRaises(validator.InvalidInput):
       self.codes()
+
+  def assert_cli_json(self, spec, report, encoding, code):
+    proc = subprocess.run([sys.executable, str(ROOT / "scripts/validate_task.py"),
+                           str(spec), str(report)], capture_output=True, check=False,
+                          env=dict(os.environ, PYTHONIOENCODING=encoding))
+    self.assertEqual(proc.returncode, code, proc.stderr)
+    self.assertEqual(proc.stderr, b"")
+    # Inspect raw bytes so the parent's locale cannot hide an encoding failure.
+    result = json.loads(proc.stdout.decode("ascii"))
+    self.assertEqual(result["scope"], "record_consistency_only")
+    return result
+
+  def test_cli_complete_unicode_input_is_ascii_safe(self):
+    self.spec["task_id"] = self.report["task_id"] = "任务-🧪"
+    with tempfile.TemporaryDirectory() as tmp:
+      spec = Path(tmp) / "规格-🧪.json"
+      report = Path(tmp) / "报告-🧪.json"
+      spec.write_text(json.dumps(self.spec, ensure_ascii=False), encoding="utf-8")
+      report.write_text(json.dumps(self.report, ensure_ascii=False), encoding="utf-8")
+      for encoding in ("utf-8", "gbk", "ascii"):
+        with self.subTest(encoding=encoding):
+          result = self.assert_cli_json(spec, report, encoding, 0)
+          self.assertEqual(result, {"result": "complete", "issues": [],
+                                    "scope": "record_consistency_only"})
+
+  def test_cli_incomplete_unicode_diagnostic_is_ascii_safe(self):
+    check_id = "检查-🧪"
+    self.spec["acceptance"][0]["checks"][0] = check_id
+    self.report["checks"][0].update(id=check_id, status="failed")
+    with tempfile.TemporaryDirectory() as tmp:
+      spec = Path(tmp) / "规格-🧪.json"
+      report = Path(tmp) / "报告-🧪.json"
+      spec.write_text(json.dumps(self.spec, ensure_ascii=False), encoding="utf-8")
+      report.write_text(json.dumps(self.report, ensure_ascii=False), encoding="utf-8")
+      for encoding in ("utf-8", "gbk", "ascii"):
+        with self.subTest(encoding=encoding):
+          result = self.assert_cli_json(spec, report, encoding, 1)
+          self.assertEqual(result["result"], "incomplete")
+          self.assertEqual(result["issues"], [{"code": "check_not_passed",
+                           "path": "report.checks[0].status",
+                           "message": f"Check {check_id} is failed"}])
+
+  def test_cli_invalid_unicode_diagnostic_is_ascii_safe(self):
+    field = "未知-🧪"
+    with tempfile.TemporaryDirectory() as tmp:
+      missing = Path(tmp) / "缺失-🧪.json"
+      invalid = Path(tmp) / "无效-🧪.json"
+      invalid.write_text(json.dumps({**self.spec, field: True}, ensure_ascii=False),
+                         encoding="utf-8")
+      duplicate = Path(tmp) / "重复-🧪.json"
+      duplicate.write_text(f'{{"{field}": 1, "{field}": 2}}', encoding="utf-8")
+      spec = FIXTURES / "task.example.json"
+      report = FIXTURES / "fixtures/report.passing.json"
+      cases = [(missing, report, None), (spec, missing, None),
+               (invalid, report, f"spec: unknown fields {field}"),
+               (duplicate, report, f"JSON: duplicate object key {field!r}")]
+      for encoding in ("utf-8", "gbk", "ascii"):
+        for spec_path, report_path, message in cases:
+          with self.subTest(encoding=encoding, spec=spec_path, report=report_path):
+            result = self.assert_cli_json(spec_path, report_path, encoding, 2)
+            self.assertEqual(result["result"], "invalid")
+            self.assertEqual(len(result["issues"]), 1)
+            issue = result["issues"][0]
+            self.assertEqual((issue["code"], issue["path"]), ("invalid_input", "input"))
+            if message is None:
+              self.assertIn(repr(str(missing)), issue["message"])
+              self.assertIn(os.strerror(errno.ENOENT), issue["message"])
+            else:
+              self.assertEqual(issue["message"], message)
 
   def test_cli_exit_codes_and_json(self):
     for name, code, result in [("report.passing.json", 0, "complete"),
