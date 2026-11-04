@@ -1,7 +1,7 @@
 # A-WORKTREE-IMPORT-GUIDE-20261104 · 核对 Python worktree 的实际导入来源
 id: A-WORKTREE-IMPORT-GUIDE-20261104
 owner: dot-A
-status: ready
+status: running
 kind: build
 page: docs/decisions/long-tasks.md@4502d0471e073f8fddb065b0dd4ed6e2a14f144f
 target_repo: https://github.com/dbvv1/a1dbv
