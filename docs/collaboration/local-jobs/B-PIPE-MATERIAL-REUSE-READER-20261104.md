@@ -31,4 +31,4 @@ page: domains/game-dev/assets/materials.md@463b4b9a95a8e6eadb98b730d8aa373a05dcb
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- check_repo 有本单元新增错误或检查结果未知，未推送
