@@ -376,6 +376,13 @@ Agent容易漏动态引用、间接消费者和故障时才启用的保护；人
 
 缓存以“代码未变”跳过原生环境检查就撤掉短路；配置、锁文件或共享设施使映射失效时，核已有扩大运行／重建路径及过滤范围后再恢复增量。见 [Vitest 与 Polylogue](research/2026-10-12-development-conditions.md#增量验证已有回归测试是否真的被选中)；选中通过不证明未表达的兼容要求。
 
+**验收要求全图新执行时，中断后的普通绿灯不够。** 以 Lage 2.14.19 的一次性 `lage buildci` 为例：`--no-cache` 旁路本轮任务缓存读写，不删除历史条目；失败后改回普通运行，先前没跑到的任务仍可能命中历史缓存。`--reset-cache` 则跳过读取、执行后写回，也不是清空全部旧条目。没有新执行要求的普通迭代，继续用可信增量，不额外清缓存。
+
+- **优先重跑完整的 `lage buildci --no-cache` 到结束。** 先核目标图覆盖验收范围，再核全部成功、0 skipped，且没有失败、未运行或中断项。该版本的一次性 CLI 在调度前已过滤 `shouldRun=false` 等不适用目标，不能用“不适用任务也算 skipped”放宽这条门槛；watch／未优化图另核其状态语义。任务被调用仍不等于内部全量重算，`tsc -b` 等自有增量须按真正的验收要求另验。
+- **只有缓存独占、可丢弃且确认无远端回填时，才考虑清本地后普通重跑。** `lage cache --clear` 仅清 Lage 本地层；远端 provider 存在时，本地 miss 仍可能远端命中并回填，因此 `Cache Cleared` 不证明本轮新执行。不要删共享缓存或替他人关远端；无法确认来源就保留缓存，采用完整旁路。清理后同一输入下失败再重跑，可复用清理后已成功的任务；这属于整个恢复过程的覆盖，不是一轮全部新执行。
+
+**依据**：[一次性 CLI 入口](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cli/src/commands/run/runAction.ts#L107-L112)及[目标图过滤](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cli/src/optimizeTargetGraph.ts#L9-L24)、[缓存读写](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/scheduler/src/workers/targetWorker.ts#L61-L112)、[本地清理](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cache/src/providers/BackfillCacheProvider.ts#L94-L128)与[远端回填](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cache/src/providers/RemoteFallbackCacheProvider.ts#L27-L48)。[FURN 历史记录](https://github.com/microsoft/fluentui-react-native/blob/41768dacc889222444c538ce6031fe668f06043f/agent-improvements-plan.md#L111-L125)自报中断后普通重跑164项命中包含原81项未执行任务，最终无缓存171项通过；无原始日志，不据此认定旧缓存错误。2026-11-04 静态核读固定源码与记录；未运行 Lage／FURN、未清缓存，不泛化到其他 runner 或后续版本。
+
 <a id="vitest-reused-worker-env"></a>
 **🧪 Vitest 升级后单文件过、整套连片失败，先核复用 worker 的入口状态，再让 Agent 改业务。** 已关 `isolate` 的 `forks` 项目，先恢复默认隔离作对照；必须复用时，在每文件 `setupFiles` 顶层恢复项目确认过的环境键，而不是等 `beforeEach` 才改。默认隔离与每文件 setup 在 5.0.5 的 8 文件对照均通过；仅开 `unstubEnvs` 仍漏直接写入的 `process.env`。2 文件／1 worker 在 4.1.11 和 5.0.5 都漏值，因此降级或串行不是通用修法。setup 不重置已缓存模块／客户端；回真实资源生命周期验收，不先删断言或加重试求绿。
 
