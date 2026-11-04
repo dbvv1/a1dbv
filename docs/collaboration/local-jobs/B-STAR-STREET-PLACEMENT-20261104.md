@@ -2,7 +2,7 @@
 id: B-STAR-STREET-PLACEMENT-20261104
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-street-placement-20261104
