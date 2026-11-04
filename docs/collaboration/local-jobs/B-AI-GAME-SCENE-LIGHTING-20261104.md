@@ -2,12 +2,12 @@
 id: B-AI-GAME-SCENE-LIGHTING-20261104
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-ai-game-scene-lighting-20261104
 
-工作线：AI 做游戏实例。本卡为独立排队单元，尚未认领。
+工作线：AI 做游戏实例。本卡静态来源已接收，制作机制已并入现有制作链页；实机与品质未验。
 
 ## 目标
 为 案例材质／素材缺少统一场景身份、连续层次和光照氛围。 找 2–3 个有实际游戏和作者制作过程的新作品，供 dot 后续完整试玩和选择。
@@ -32,8 +32,9 @@ result_branch: relay/b-ai-game-scene-lighting-20261104
 
 ## 当前结果
 
-- 完成成套场景光照二改实例的静态来源整理：按 6 类渠道收录 84 项（甲 3／乙 34／丙 33，丁 14 按规则不计），另列 9 条真实光照/资产交接问题证据；甲级为 Capybara、backroad rally、长风 Long Wind，均给出可玩链接、作者过程、静态图、版本日期与 AI/人分工，并附可在现案例验证的四层二改问题。openIssues：作者真实身份、完整游玩回路、帧率手感、逐件资产许可与项目单独成本未核；Reddit／X／Medium／itch.io 等原帖被拦截，部分过程仅有归档或转述；未启动游戏、未看实机。taskDone：本单元静态来源范围完成。pageStuck：不适用（非 reader-test）。未运行验收：实际试玩与完整连续实机未运行。
-- 产物：[b09c12e](https://github.com/dbvv1/a1dbv/commit/b09c12e7f9068ae953e292a6581115a161006940)，分支 `relay/b-ai-game-scene-lighting-20261104`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：负责人接收 result_branch；安排 dot 完整试玩三款甲级样本并核作者身份、许可与实机可达性；后续可补未读原帖与逐件资产许可。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- 接收范围：原结果 `b09c12e` 经窄修后接收为静态来源。3 项待试玩首选为 Capybara、backroad rally、Long Wind；其余 67 项仅为待核线索，14 项按规则排除，84 项不代表通过候选门槛或完成实例研究。
+- 已合入：[材质与特效的场景氛围二改](../../../domains/game-dev/assets/materials.md#scene-atmosphere-revision)提炼 backroad 的公共默认 → 时段 → 赛道覆盖 → 天气与统一单位／色彩映射，并给出现案例的二改与撤回条件；不新增重复页，不改变 Star 代码或拍摄任务。
+- 原始材料与补核：[来源记录](artifacts/B-AI-GAME-SCENE-LIGHTING-20261104/sources.md)。已分清作者自述、固定源码、成本口径与资产许可；代码许可不覆盖音频／模型，完整成本未知。
+- 未接收：三款的实际游玩、完整连续实机、画面／手感／听感与零人工美术生产质量。Capybara 视频原页被网络安全拦截，Long Wind 原页播放器无法播放，已停止；不据静态材料作整款推荐。日后原实例线取得可用实机再续接，不重派来源收集、不抢占既有串行拍摄。
+- 检查：整合最新 main 后重新运行全文档、公开文件／新提交身份和差异检查，结果写入本次提交说明；原 6 项 main 文档失败已由 `f2771632` 修复，不沿用旧失败或原卡自报通过。
+- 执行回执：原 Workflow 已完成，工具与登记进程已结束；外层 worker 独立退出码仍未知。这不补成游戏运行或品质验收。
