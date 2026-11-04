@@ -2,12 +2,12 @@
 id: B-MOBA-UI-EVENT-CUES-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-ui-event-cues-20261104
 
-工作线：MOBA-Like。沿原任务与结果分支窄返工，只修已复现的配方校验缺口。
+工作线：MOBA-Like。原单元返工已复验，离线源包工程部分接收；运行接线与听感另验。
 
 ## 目标
 给现有购买成功／失败、升级、复活四种已存在事件准备可编辑短音源，补内容清单的局内提示缺口，不替换战斗混音。
@@ -30,13 +30,14 @@ result_branch: relay/b-moba-ui-event-cues-20261104
 
 ## 当前结果
 
-- 修复 ui-event-audio 两处校验缺口：滑音段按两端最高基频对每个泛音及每版 fundamentalRatio 检查 Nyquist，固定音同样检查；peakCeilingDbfs/peakTargetDbfs 不得高于 -9 dBFS，保留 target<=ceiling 并允许更保守值。新增回归先在 HEAD 版复现失败，再于修复版跑通；--check 与 15 项单元测试通过，四段 WAV、manifest.json、recipe.json 与 HEAD 逐字节一致，公开文件/路径扫描无命中，diff 仅限三个文件。openIssues 为空；真实试听、四声可辨、混音遮挡、设备解码与采用未验证，升级/复活 PresentationEvent 接入前置项未改动。
-- 产物：[0b3d85d](https://github.com/dbvv1/MOBA-Like/commit/0b3d85d47b184ac48450e0a9d039fd3e0143c273)，分支 `relay/b-moba-ui-event-cues-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由负责人进行真实试听、重叠遮挡与采用决定，并处理升级/复活尚无 PresentationEvent 的后续接入；本单元无需继续返工。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 决定：离线源包工程部分接收，负责人已将 [0b3d85d](https://github.com/dbvv1/MOBA-Like/commit/0b3d85d47b184ac48450e0a9d039fd3e0143c273) 快进合入 MOBA main，并回读远端 SHA 一致；原结果分支 `relay/b-moba-ui-event-cues-20261104` 保留。不接线、不部署、不计游戏声音品质通过。
+- 返工复验：负责人独立对照旧 `08d9627` 与新版，两处原反例在旧版被接受、新版均拒收；滑音泛音达到／超过 Nyquist、比例导致越界、放宽 −9 dBFS 预算均有回归，合法邻界与更保守预算通过。15 项源测试及 `generate.py --check` 通过，四 WAV、recipe、manifest 相对旧版逐字节不变；返工仅改 generator、测试和 README。
+- 集成检查：568/568 游戏测试、模拟构建、网页类型／生产构建通过；公开文件与两个候选提交身份扫描、差异检查通过。只新增 `asset-pipeline/ui-event-audio/` 9 文件，`src/`、既有运行声与依赖不变；未运行浏览器或音频设备。
+- 接收范围：原创确定性 Python 配方与四段 CC0 WAV 候选，均 48 kHz mono PCM16，时长 0.220／0.220／0.550／0.500 s、峰值 −9.1003 dBFS，首末采样为 0；这些数字不证明四声可辨或混音合格。
+- 延期项：实际试听、战斗叠播遮挡、音量／优先级与设备播放。购买结果已有 CommandResult，升级／复活尚无 PresentationEvent；先听候选与同段战斗，再决定保留、改源或删除，需要接线时另补正式提交事件，禁止从 HUD 变化猜测。不为本次源包自动另开接线任务。
+- 本轮原调用：2026-11-04 19:06–19:09 UTC 本机只读核实 18:35 启动的返工 Workflow completed、CLI 于 18:39:59 UTC 以 0 退出，工具 settled／pending 空，476 个登记身份均记 exited、存活匹配 0；三类非作者各有 15 项测试及 `--check` 的工具回执，HEAD 匹配且工作树干净。外层 worker 独立退出事件／时刻仍未知，不沿用首轮退出证据。
 
-## 修改要求
+## 修改要求（返工已复验）
 
 1. **滑音全程泛音拒收。** `validate_cue()` 当前仅核起频乘泛音倍数；将复活段 `glideToHz` 改为 15000 后，二次泛音在 r1 达 30000 Hz、r2 达 27000 Hz，超过 48kHz 采样的 24000 Hz Nyquist，仍通过并生成。对每个版本比例、每个泛音，检查滑音两端的最高频率乘倍数，达到或超过 Nyquist 即拒收；固定音同样保留检查。加合法邻界、恰达边界、越界和比例导致越界的回归，先证明原实现失败。
 2. **保持本批峰值硬预算。** 同时改 `peakCeilingDbfs=-1.0`、`peakTargetDbfs=-1.1`，当前可生成 −1.1004 dBFS。校验必须拒绝放宽到高于 −9 dBFS 的 ceiling／target，允许更保守值并保留 target 不高于 ceiling 的关系；补默认通过、放宽拒收、边界与保守值测试。
