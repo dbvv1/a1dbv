@@ -35,7 +35,7 @@
 | AUDIT-W1-AI | AI Coding 前沿与 M6 | GPT 专业聊天 01 | [Brief](reviews/audit-workspace/briefs/AI-CODING.md) / [报告](reviews/audit-workspace/reports/WAVE-1-AI-CODING.md) | 待启动 |
 | AUDIT-W1-GAME | 游戏知识与 AI 制作链 | GPT 专业聊天 02 | [Brief](reviews/audit-workspace/briefs/GAME-KNOWLEDGE.md) / [报告](reviews/audit-workspace/reports/WAVE-1-GAME-KNOWLEDGE.md) | 待启动 |
 | AUDIT-W1-FPS | FPS-Like | GPT 专业聊天 03 | [Brief](reviews/audit-workspace/briefs/FPS.md) / [报告](reviews/audit-workspace/reports/WAVE-1-FPS.md) | 待启动 |
-| AUDIT-W1-MOBA | MOBA-Like | GPT 专业聊天 04 | [Brief](reviews/audit-workspace/briefs/MOBA.md) / [报告](reviews/audit-workspace/reviews/WAVE-1-MOBA.md) | 待启动 |
+| AUDIT-W1-MOBA | MOBA-Like | GPT 专业聊天 04 | [Brief](reviews/audit-workspace/briefs/MOBA.md) / [报告](reviews/audit-workspace/reports/WAVE-1-MOBA.md) | 待启动 |
 | AUDIT-W1-STAR | Star-Rush-Reborn | GPT 专业聊天 05 | [Brief](reviews/audit-workspace/briefs/STAR-RUSH.md) / [报告](reviews/audit-workspace/reports/WAVE-1-STAR-RUSH.md) | 待启动 |
 
 五个报告完成后，由总指导整合到 [Wave 1 综合审计](reviews/audit-workspace/synthesis/WAVE-1-SYNTHESIS.md)。领域内容意见由 Dot-A/B 决定；方向、原则和规则意见交 Claude 核心会话。只有接受的建议才转为执行任务；报告本身不自动派工。
