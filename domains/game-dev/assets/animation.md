@@ -368,6 +368,12 @@ blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pip
 
 早期“只改刃长”的小样仍可用来练不变量检查：`0.75→1.05` 米只改 `WeaponBlade` 顶点，握柄／护手随 `Hand_R`，其他网格、材质、骨骼与曲线不变，源→GLB 采样点最大约 0.0032 mm；它没有证明长刀的战斗扫掠已合格。旧三动作配方与 `placeholder/run.sh` 保留在[固定小样](https://github.com/dbvv1/MOBA-Like/tree/c66f250f817b1ad7357088cba12f6ad30c83b8c8/asset-pipeline/placeholder)，不再作为当前游戏角色入口。脚本重生成会覆盖派生 Blend 的手改，持续维护的改动应回到作者配方。
 
+<a id="character-clip-library-revision"></a>
+
+**👀 要补一整套动作时，可比较“每体型独立 clip 库＋明确覆盖顺序”，先保已有专用动作。** World of ClaudeCraft 的源码把两个体型各 23 段动作分别制作在各自 bind rig 上，以无 mesh 的 GLB 补库；idle、walk、run 等指定移动与普攻用新库，施法、侧移等保原库，武器皮肤自己的动作优先。无 mesh 省的是重复几何，不提供跨体型兼容。它的接触表还把双持伤害数字与音效从旧 0.125 秒移至新动作接触时刻，因此不能连时序搬到本例：MOBA 仍保权威命中 tick，再核视觉接触，换动作不改伤害合同。
+
+这里只借组织与检查机制，不采用其角色或动作文件：作者记录动作按 WoW 参照的姿态／时序制作，并明确不主张重新打关键帧即可获得独立权利；代码 MIT 也不覆盖这些媒体资产。固定源码与未验范围见[角色动作来源核查](../../../docs/collaboration/local-jobs/artifacts/B-AI-GAME-CHARACTER-REVISION-20261104/sources.md)；2026-11-04 静态核查，未运行该游戏或重建其资产，尚未升为本仓默认做法。
+
 <a id="multiunit-animation-consumer"></a>
 
 **共享只读资产，隔离每个单位的骨架、混合器和可变外观状态。** 当前 `world.ts` 用 `loadBattleAssets()` 取成套 GLB，以 `hero-teal/hero-rust` 创建 `createPresentation({catalog, assets, heroesOnly:true})`；小兵和建筑由 `createBattlefield` 读同一快照。两条消费者都挂到真实 Three 场景，不再让旧分类几何冒充正式兵／塔。`SkeletonUtils.clone` 后，仅在同一角色内部、骨骼对象序列与逆绑定矩阵相同的 mesh 共用 skeleton，并保各自 bindMatrix；几何和只读 clip 可以跨单位共享，骨架与 mixer 不能共享。

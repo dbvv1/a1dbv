@@ -2,12 +2,12 @@
 id: B-AI-GAME-CHARACTER-REVISION-20261104
 owner: dot-B
 kind: explore
-status: review_ready
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-ai-game-character-revision-20261104
 
-工作线：AI 做游戏实例。本卡为独立排队单元，尚未认领。
+工作线：AI 做游戏实例。部分源码机制已接收；原实例门槛与整包独立审查未完成，不重派来源收集。
 
 ## 目标
 为 成套角色精度、固定骨架动作及二改。 找 2–3 个有实际游戏和作者制作过程的新作品，供 dot 后续完整试玩和选择。
@@ -32,8 +32,8 @@ result_branch: relay/b-ai-game-character-revision-20261104
 
 ## 当前结果
 
-- 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/B-AI-GAME-CHARACTER-REVISION-20261104/sources.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
-- 产物：[addc54f](https://github.com/dbvv1/a1dbv/commit/addc54f31e18ae938fd41e83073ab94d7e9d5a30)，分支 `relay/b-ai-game-character-revision-20261104`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- 部分接收：原稿 [addc54f](https://github.com/dbvv1/a1dbv/commit/addc54f31e18ae938fd41e83073ab94d7e9d5a30) 的 World of ClaudeCraft 固定体型补库、覆盖顺序与接触时序差异，经一手源码核查后进入[动画页](../../../domains/game-dev/assets/animation.md#character-clip-library-revision)；[窄来源记录](artifacts/B-AI-GAME-CHARACTER-REVISION-20261104/sources.md)保留原稿入口与未验范围。
+- 不接整包：原清单的可玩性、作者身份与 2–3 项新实例门槛未独立完成，原整包最终审查未完成。已纠正把 hand-keyed 推成人工工时的说法，并补作者明示的 WoW 参照及媒体许可边界；不复用其模型／动作，不作游戏品质推荐或提高案例评分。
+- 检查：本次按正文范围重跑文档、公开文件／提交身份与差异检查，结果写提交说明；原回交的通过自报不替代本轮核查。
+- 恢复条件：沿原稿补齐选定作品的实际可玩或完整实机、作者原文和许可；再接剩余实例结论。不重复广搜、不重跑原单元、不新增拍摄。
+- 执行证据：原卡仅证明超时前成稿已回交；这里的静态核查不证明原调用／外层进程已退出，未知仍保留。
