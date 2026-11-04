@@ -30,8 +30,8 @@ result_branch: relay/b-moba-veyra-death-contact-20261104
 
 ## 当前结果
 
-- 两队 .blend 源候选与源→GLB 重建已交付：仅改 death Root location Y（16/31 键），61 采样/队复现脚底穿地 −0.051905 m @ frame 13.5 Foot_L；0.01/0.005 容差均通过（body −0.000182 m、foot −0.000127 m、支撑最高 +0.014601 m、focus +0.050518 m），24 个 unittest 与 bpy 源重建/源差检查通过，未改 heroes/battle/渲染/quality.md。openIssues：README 采纳步骤 2 的 heroes recipe 移植分支漏更新 build.py/retarget.py 在 default-source-manifest sharedAssets 的 pinned sha256，按文档采纳后 npm test 仍会失败。未验证：游戏内死亡剪影与同框品质（本卡禁浏览器/GPU，需人工）、npm test/npm run build（无 node_modules）。另：源重建直接使用本机已有 bpy 5.2.3 后台模块，非 gen3d/glbprep 命令，需负责人判定。
-- 产物：[9dfa27a](https://github.com/dbvv1/MOBA-Like/commit/9dfa27a8b6497ec02a9c7f068e5ace073e0f0f43)，分支 `relay/b-moba-veyra-death-contact-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
-- 下一步：负责人处理：(1) 修 README 采纳步骤 2/3：补 heroes recipe 两个脚本的 pinned sha256，或声明只支持 build_source_candidates.py 重建路径；(2) 人工完成游戏内死亡剪影与同框品质验收；(3) 判定直接调用本地 bpy 处理资产是否可接受，再决定采纳与全部 pin 同步。
+- 修复上一单元审查唯一 open issue：README 采纳步骤 2 现区分受支持的 build_source_candidates.py 重建路径与可选的 heroes recipe 移植，并写明移植必须同步 offset 落点、build.py/retarget.py 在 default-source-manifest.json sharedAssets 的 pin 重算、重跑验收；步骤 3 补上两个脚本当前 pin 值及 heroes README 的 pin 说明。新增 AdoptionDocTests 两项防回归检查（采纳表 sha256/bytes 与交付 GLB/manifest 一致；步骤 3 前提到 recipe 脚本时步骤 3 必须列出其 pin），已用修复前文本反证会失败。实测通过：python unittest 26 tests OK、check_contact reproduce 两队 reproduced=true、0.01/0.005 容差 passed=true、build_candidates --check-only exit 0、bpyenv 下 build_source_candidates --check-only 两队 reproduced=true、check_source_bpy 两队 passed=true changedKeys=16、content-set 7 tests OK；审查者另在临时副本完整走通 copy-only 采纳。未运行：npm test / npm run build（工作树无 node_modules，且不安装依赖）；游戏内死亡剪影与同框品质判断（本卡禁浏览器/GPU，需人工）。非阻塞未关闭：README 'Failure paths covered' 仍写 24 tests，实际 26；源重建实际使用本机 bpy 5.2.3，与接收边界仅 gen3d/glbprep 的事实差异需负责人判定；heroes recipe 移植分支仅文档化、未实现未实测。openIssues 为空。
+- 产物：[ad7874b](https://github.com/dbvv1/MOBA-Like/commit/ad7874b72618fb49185f1ad509e39e4336c43055)，分支 `relay/b-moba-veyra-death-contact-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人处理：(1) 人工按 brief 与公开参照并排验收游戏内死亡剪影/同框品质；(2) 在有 node_modules 的环境跑 npm test、npm run build 并跑 sim 对照目标区间；(3) 判定源重建使用 bpy 5.2.3 与接收边界（3D 资产只用 gen3d/glbprep）的差异是否可接受，必要时给出后续约束；(4) 顺手把 README 的 24 tests 文案更新为 26 并补一句采纳文档/哈希一致性检查（非阻塞）。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
