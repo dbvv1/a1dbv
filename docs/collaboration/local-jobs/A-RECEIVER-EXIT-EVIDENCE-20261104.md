@@ -1,7 +1,7 @@
 # A-RECEIVER-EXIT-EVIDENCE-20261104 · 核五项原调用退出证据
 id: A-RECEIVER-EXIT-EVIDENCE-20261104
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbf7128ea7c8808f4a3ab33dca014f3cb4765833
