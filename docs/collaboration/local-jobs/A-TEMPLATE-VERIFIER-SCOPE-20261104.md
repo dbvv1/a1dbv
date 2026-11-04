@@ -1,7 +1,7 @@
 # A-TEMPLATE-VERIFIER-SCOPE-20261104 · 按影响范围接收验证证据
 id: A-TEMPLATE-VERIFIER-SCOPE-20261104
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
@@ -35,4 +35,8 @@ result_branch: relay/a-template-verifier-scope-20261104
 
 ## 当前结果
 
-- check_repo 未通过，未推送
+- verifier 模板已按影响范围验证改写：步骤2 先核目标、改动与已有证据，核实相关代码/输入/消费者/依赖/环境/命令/验收要求不受影响时复用原证据并保留版本与范围，步骤3 只跑缺失、受影响或影响不明的检查，纯文案按链接、格式、内容验证；输出改为通过/失败/受阻/未运行/不适用五态并新增“复用的既有证据”段。openIssues：check_repo.py exit 1，6 个错误均在写入范围外的 docs/collaboration/TASKS.md，未改树 HEAD 同样复现；test_template_overlay.py 14 项中 4 个 Windows/Git Bash 环境既有失败子例，与本次改动无关；两项均需接收端按既有协议记录处理，未据此宣称验收通过。
+- 产物：[7d418cd](https://github.com/dbvv1/a1dbv/commit/7d418cdd737f7482d28513ec81ea01c52f893b2f)，分支 `relay/a-template-verifier-scope-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 662aa5c4 已有问题：docs\collaboration\TASKS.md: over 10 KB; move finished rows to archive/；docs\collaboration\TASKS.md:35: missing link target: reviews/audit-workspace/reports/WAVE-1-AI-CODING.md；docs\collaboration\TASKS.md:36: missing link target: reviews/audit-workspace/reports/WAVE-1-GAME-KNOWLEDGE.md；docs\collaboration\TASKS.md:37: missing link target: reviews/audit-workspace/reports/WAVE-1-FPS.md；docs\collaboration\TASKS.md:38: missing link target: reviews/audit-workspace/reports/WAVE-1-MOBA.md；docs\collaboration\TASKS.md:39: missing link target: reviews/audit-workspace/reports/WAVE-1-STAR-RUSH.md（保留告警，交负责人接收）；独立审查通过。
+- 下一步：负责人接收：按既有自动接收协议处理基线检查失败（TASKS.md 超限与缺失链接、Windows 环境 unittest 子例），并完成发布前非作者审查记录。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
