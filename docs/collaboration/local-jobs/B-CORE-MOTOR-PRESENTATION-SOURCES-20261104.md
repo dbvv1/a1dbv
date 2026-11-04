@@ -2,7 +2,7 @@
 id: B-CORE-MOTOR-PRESENTATION-SOURCES-20261104
 owner: dot-B
 kind: explore
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-core-motor-presentation-sources-20261104
@@ -27,3 +27,7 @@ result_branch: relay/b-core-motor-presentation-sources-20261104
 交三个实现的时序与位置写者清单、五项保持原规则的移植断言和固定源码行链接。分清网页既有 CPU 证明、当前代码阅读与引擎未实跑，不填新性能数。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
