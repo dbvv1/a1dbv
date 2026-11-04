@@ -2,12 +2,12 @@
 id: B-STAR-BANK-CLIP-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-bank-clip-20261104
 
-工作线：Star-Rush-Reborn。本卡为独立排队单元，尚未认领。
+工作线：Star-Rush-Reborn。固定成果已回交，原调用与相关写者已核查；沿原结果分支只修下述测试和换行问题。
 
 ## 目标
 把已接收公路标准件的已知近邻岸坡重叠缺口做成独立 CPU 适配，供后续场景接入；不改当前空间候选或截图基线。
@@ -31,8 +31,10 @@ result_branch: relay/b-star-bank-clip-20261104
 
 ## 当前结果
 
-- 新增 authoring/coast-bank-clip/ 8 个文件：固定源侧带生成脚本、clipOuterBank 适配器、测试、最小 CPU 样本与 README。实测 build-sideband.py --check 通过（192 个外岸三角，重放 road.glb SHA-256 9eb6a584...ebd9a，与固定输出逐字节一致）；node --test clip.test.mjs 7/7 通过；sample.mjs 输出 1658→1614 三角、80 个外岸受影响（56 移除、24 细分出 36）、面积 499.696→358.565 m²；另跑 200-300 组随机走廊压力检查，结果有限、非退化、无反向面。三角度独立审查经 1 轮修正后全部通过，openIssues 为空。未验证：实机岸坡外观、接缝遮挡、海水衔接、碰撞/驾驶，以及正式场景接入；全量 npm test 未运行（未改产品代码），按卡未开浏览器/GUI/GPU。
-- 产物：[471f61b](https://github.com/dbvv1/Star-Rush-Reborn/commit/471f61b3e343506ce6acece94f52a81aeecdbd29)，分支 `relay/b-star-bank-clip-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：待负责人提交并推送 result_branch 回 review_ready；后续场景接入按 README 顺序 decodeStandardPart → verifyBankSideband → bendRoadParts → clipOuterBank，调用者排除当前 24m 标准段与前后紧邻段，并补实机外观/接缝/海面人工验收。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- **负责人决定：窄返工。** 保全 [471f61b](https://github.com/dbvv1/Star-Rush-Reborn/commit/471f61b3e343506ce6acece94f52a81aeecdbd29) 与原结果分支。当前发现的是测试断言失效和 LF 检查失败，不是已证实裁切算法错误。只修下面两项，不合 `master`、不部署，也不碰在途固定拍摄。
+- **原调用核查：** 本机只读回执确认 Workflow completed，原 CLI 有 close/exit 0，工具 settled、pending 为空；相关工具登记 exited，按 PID 与完整创建时间匹配无存活进程，固定 HEAD 为 `471f61b`、工作树干净、无活跃写者。外层 worker 的独立退出事件仍 unknown，不用已复用 PID 补写；这项历史缺口不抹掉，也不混同于已确认的 Workflow/CLI 与工具退出。原“待推送”是过期文案，远端结果已核实。
+- **独立检查已过：** 按最新 main／§7 核差量，仅新增 `authoring/coast-bank-clip/` 8 个文件。按 README 获取固定源后，7/7 CPU 测试、192 个外岸三角侧带与原 road.glb 逐字节重建通过（SHA-256 `9eb6a584f5dfc625680e7dadfaa7c8a66ff155f7c90c95a07de4f1b43feebd9a`）；样本 1658→1614 三角、80 个外岸受影响。另用独立 SAT 交叠判定跑直段与 R80/R150 弯段共 300 组、44046 个输出外岸三角（1e-5 m 容差），未发现残留交叠、退化或反向面，非岸保持。Kenney road、rail 与 CC0 许可哈希核对及公开文件／提交身份扫描通过。
+- **返工 1：修复保护区断言。** `clip.test.mjs:124` 把顶点 ID 传给返回三顶点数组的 `triangleWorld`，随后数组除以 3 得到 NaN，使重心断言假通过。独立负例把完全未裁切的原路段传入该断言，虽有 88 个外岸重心仍在保护区，原断言仍通过。改用正确顶点世界坐标并显式拒绝非有限值；补能拒绝“完全未裁切”和“局部仍有交叠”的负例。用三角与保护带的面积交叠检验，避免只测重心遗漏交叉薄片；保留边界相切通过的用例。
+- **返工 2：统一 LF。** README、bank-triangles.json、build-sideband.py、clip.mjs、clip.test.mjs 共 4218 行 CRLF 使 `git diff --check HEAD^ HEAD` 退出 2。按 UTF-8/LF 约定修正，提交前后重跑差异检查，不改原生成器、固定源或产品代码。
+- **交回要求：** 沿原 `relay/b-star-bank-clip-20261104` 只做上述差量，勿另开同题。修后跑相关 CPU、固定源重建、负例、公开文件／提交扫描与差异检查，经原生 Workflow 非作者核查后快进推原分支并回 `review_ready`，报固定结果与真实退出。全量 `npm test` 未运行，适用的裁切与重建检查如上，不把局部通过写成产品全验通过。
+- **消费者与剩余验收：** 真实消费者仅 CPU 测试和样本，最新 `master` 尚无场景接入。岸坡外观、邻段接缝遮挡、海面相接、碰撞与驾驶均未实看／实玩，不能记作品画面得分。后续场景接入沿原 README 顺序并排除当前及前后紧邻标准段，再补这些验收。本轮未开浏览器／GUI／GPU、未改默认场景或截图基线。
