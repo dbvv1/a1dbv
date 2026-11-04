@@ -2,7 +2,7 @@
 id: B-FPS-RELOAD-SOURCE-20261104
 owner: dot-B
 kind: explore
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-reload-source-20261104
