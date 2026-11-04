@@ -1,7 +1,7 @@
 # A-RECEIVER-EXIT-EVIDENCE-20261104 · 核五项原调用退出证据
 id: A-RECEIVER-EXIT-EVIDENCE-20261104
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbf7128ea7c8808f4a3ab33dca014f3cb4765833
@@ -40,4 +40,8 @@ result_branch: relay/a-receiver-exit-evidence-20261104
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 五项原调用退出核查报告已写入 status.md：五项均正常结束（exit 0、CLI 关闭、turn ended、tools settled、登记进程树全部 exited），按 PID+创建时间复核同身份存活 0。check_repo 791 文件 0 错误、check_public 1261 文件 0 命中、git diff --check 通过。未关闭问题：第 11 行在“13:20:10Z 观察时点”段内引用了 13:28–13:30Z 才生成的 repo-check.json（TASKS.md 超 10 KB＋5 个 Wave 1 报告链接缺失共 6 项），与报告“旧记录只写原时点”的规则不一致，3 轮修正后仍未关闭，故 reviewed=false。
+- 产物：[d950609](https://github.com/dbvv1/a1dbv/commit/d950609731ac194531f3ade98af5f560ed7582d9)，分支 `relay/a-receiver-exit-evidence-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：请负责人修订第 11 行：只保留 bbf7128e 时点可核的“check_repo 未通过、未推送、未列具体条目”，把 6 项细节移入文末“观察后复核”并注明该文件生成于 13:28–13:30Z、本报告未另行重跑；随后重新审查。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
