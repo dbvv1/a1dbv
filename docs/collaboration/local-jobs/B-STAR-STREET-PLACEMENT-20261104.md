@@ -2,7 +2,7 @@
 id: B-STAR-STREET-PLACEMENT-20261104
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-street-placement-20261104
@@ -27,3 +27,11 @@ result_branch: relay/b-star-street-placement-20261104
 三原件实际解析；直线、左右弯、反向side、坏帧与负setback测试；全部矩阵有限、底部pivot高度一致、门朝路、原mesh哈希不变。做setback 4→6m的二改，只按同一站位R轴平移、旋转/尺寸保持；当前海岸320–680m样段只输出CPU放置与净空结果，不生成游戏截图、不声称场景已采用。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 实现了 placeStreet(parts, sampleRoad, centerS, side, setback) 固定源街屋放置合同：实际解析 ab265593 的 street.glb/manifest/upstream adapter，A/G/M 三栋门朝 -Z、脚底 y=0、mesh 哈希放置前后不变；底部 pivot 落在对应 station 的 p[1]，共享基准偏移+pivot.z 保留纵深差；净空按实际网格世界 XZ 包围盒与每 1m 道路折线线段计算、交叉记 0，违规逐栋返回房屋与原因；setback 4→6m 仅按同一站位 R 轴平移、旋转/缩放与高度保持。25 项测试全部通过；生成当前海岸 320–680m 20 行 CPU 放置与净空报告（4m 最小净空 12.010m、6m 14.005m，allOk=true）。git status 实核 14 个新增文件、均在 authoring/coast-street-placement/，无已跟踪改动。openIssues 无。未验证：npm test（缺 node_modules）、Node 24（实际 Node 22.23.2）、浏览器/GPU/实机画面；报告 20 行为每 40m 独立取样、同排存在重叠，不是场景布局也未接入场景。
+- 产物：[c4813e9](https://github.com/dbvv1/Star-Rush-Reborn/commit/c4813e958fe65cc95b02bbe474ebf8ecb30d5d78)，分支 `relay/b-star-street-placement-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：接收端提交本单元清单；下游将显式房屋 ID/矩阵接入场景后做实机视觉与手感验收，并补 npm test 与 Node 24 环境验证。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
