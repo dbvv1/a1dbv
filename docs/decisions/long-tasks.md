@@ -57,6 +57,27 @@ flowchart LR
 
 **写域不同仍要对齐共同契约。** 调查可以先并行，写入前明确接口、数据含义、错误行为和依赖版本；上下游有依赖就按顺序接回，不能因为文件名不同就同时改决定。worktree 只隔离检出，未跟踪资料、依赖、端口、数据库和服务所有权要另行准备。 [Cline 的真实并发编辑](../../experiments/cline-parallel-edits/README.md)中，即使两处区段不重叠，基线两工具都报成功仍丢一项修改；既有候选仅修正同一 SDK 运行时的路径队列，不能代替跨进程单写者分工。
 
+**每个开发 worktree 用自己的 Python 环境，并用运行测试的同一解释器核对受测模块的来源。** uv 项目按 worktree 各建环境：根目录有 `pyproject.toml` 和 `uv.lock` 时运行 `uv sync --locked --project <worktree>`；默认 `.venv` 相对 workspace root 解析，跨项目共用一个绝对 `UV_PROJECT_ENVIRONMENT` 会互相覆盖；不要把 `.venv` 软链回主检出。共享环境里的 editable 安装会把导入指向一个 checkout；任一 worktree 的安装或同步都会改写这份共享 `.pth`，所以从正确 cwd 跑绿测试仍可能导入主检出，缺陷被掩盖。`uv sync` 成功或切对 cwd 都不等于来源正确，装完先核解释器与模块路径归属，再跑行为验收。
+
+```python
+# check_import.py：模块名与源码根换成读者自己的
+import importlib.util
+import pathlib
+import sys
+
+root = pathlib.Path("path/to/worktree/src").resolve()
+spec = importlib.util.find_spec("your_package.your_module")
+origin = pathlib.Path(spec.origin).resolve() if spec and spec.origin else None
+print(sys.executable, origin)
+sys.exit(0 if origin and root in origin.parents else 1)
+```
+
+用运行测试的同一解释器执行，先看 `sys.executable` 是否为本项目环境，再按 `resolve()` 后的路径归属判断模块来源，不看字符串前缀、cwd 或上一条命令是否成功。来源检查只证明测对对象，之后仍要跑项目的行为验收。namespace package 顶层可能没有 `__file__`、`__path__` 又含多个位置，改核实际受测的子模块及 `spec.submodule_search_locations`；多个来源同时命中属于项目契约问题，不能套单文件断言。
+
+**这只适用于 editable 源码开发／测试。** 验收发布 wheel 应在干净环境安装指定构建产物并核其身份；此时导入 `site-packages` 是正常结果，不能要求路径落回源码树，也不能用 `PYTHONPATH` 把 wheel 验收改回源码验收。
+
+**依据**：[本仓窄复现] 2026-11-04，Python 3.12.14、真实 Git main／feature worktree、src 布局与 setuptools PEP 660 editable 安装：共享装有 main editable 的环境时，从 feature cwd 跑的行为断言 exit 0 却由 main/src 导入，同解释器解析 `module.__file__` 的来源断言 exit 1；独立环境装 feature 后来源断言 exit 0、行为断言 exit 1。断言均为 Python 子进程，未用 pytest／uv 或生产应用，也未覆盖 wheel、namespace。[官方环境契约] [uv 项目环境路径](https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path)：默认 `.venv`，相对路径按 workspace root 解析，跨项目共用绝对 `UV_PROJECT_ENVIRONMENT` 会互相覆盖。[开源项目] [y-agent 固定提交](https://github.com/luohy15/y-agent/commit/12d893faa7a9b1c6f3558a5a302fbf9bcc5d2827)（2026-08-07）把共享 `.venv` 改为每个 worktree 本地 `uv sync --locked --project <worktree>`，因共享 editable `.pth` 会让任一 checkout 的同步重定向其他 worktree 的导入；其改动与测试属上游，本仓未运行该产品。[真实使用反馈] [gflow-cli #760](https://github.com/ffroliva/gflow-cli/issues/760)（维护者报告，2026-09-08，已关闭）worktree 的 pytest 因主检出 editable 固定 `src/` 而导入主检出，发布门禁假绿，临时以 `PYTHONPATH` 指向 worktree。以上公开来源本轮核读 2026-11-04。
+
 已有工具出现具体缺口时才补：Worktrunk 可辅助[依赖准备](../../experiments/worktrunk-ready.md)；Portless 的代理要由单一协调者管理，独立实例同时隔离[端口与状态目录](../../experiments/portless-state-isolation/README.md)；gh-stack 适合依赖未合入父层的分支，带子模块先核[恢复状态](../../experiments/gh-stack-submodule/README.md)，失败可能已部分生效，不按退出码盲重试。这些是分支选项，不是整套路线的必装清单。
 
 Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind` 不恢复 in-process 队员。普通具名子代理也能在可用工具与目标明确时传消息；选 Teams 看共享协调需求，不只看能否互发消息。Pi Durable 的中断任务恢复还要区分可安全重跑的调用与应交回中断状态的调用，不能由耐久存储推定外部写入可重做。
