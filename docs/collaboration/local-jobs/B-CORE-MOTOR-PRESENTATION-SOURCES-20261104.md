@@ -2,7 +2,7 @@
 id: B-CORE-MOTOR-PRESENTATION-SOURCES-20261104
 owner: dot-B
 kind: explore
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-core-motor-presentation-sources-20261104
@@ -30,4 +30,8 @@ result_branch: relay/b-core-motor-presentation-sources-20261104
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 已按固定 Workflow 完成 explore 单元：仅新增 sources.md，含 8 类渠道覆盖表（539 链接/488 主题条目）、FPS-Like bd4765/Celeste64 6edfe1/JLPM22 35fc8ee 三份固定 SHA 的时序与位置写者清单、五项移植断言、S0–S6 分级候选及前 6 项深挖理由；明确区分网页既有 CPU 证明、当前源码阅读与引擎未实跑，未填新性能数。检查运行 check_repo.py（0 errors）、check_public.py（0 findings）、git diff --check，571 条外链 curl 复检（524×200，其余反爬/连接受限已标注）。openIssues：无；未运行项为 Unity/Unreal/Godot 引擎实测。
+- 产物：[0815770](https://github.com/dbvv1/a1dbv/commit/0815770928049e027b4727d6d67107f032280af8)，分支 `relay/b-core-motor-presentation-sources-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人接收本单元；后续如需闭环，应在目标引擎最小工程验证 Rigidbody/CharacterController 与 Godot reset_physics_interpolation 的实际置位行为。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
