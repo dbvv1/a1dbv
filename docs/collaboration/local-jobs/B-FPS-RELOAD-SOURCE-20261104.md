@@ -2,7 +2,7 @@
 id: B-FPS-RELOAD-SOURCE-20261104
 owner: dot-B
 kind: explore
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-reload-source-20261104
@@ -30,8 +30,8 @@ result_branch: relay/b-fps-reload-source-20261104
 
 ## 当前结果
 
-- explore 单元已执行完毕并产出 10 个新文件（无已跟踪文件改动，HEAD 36fde4b）：sources.md（23 个来源族、238 项候选逐项有/缺/未知、许可与 Three 0.186.1+固定步长接入判断）、CPU-PARSE.md、LICENSES.md，以及 KayKit 同一候选的 4 个 GLB 小样（5,088,516 B，SHA-256 与来源记录复核一致）与 2 份许可原文。结论：无免费、可商用、可随公开游戏再分发且同时具备 idle/run/crouch/fire/reload/death+独立手臂/枪/弹匣+零改接入的来源；最强候选 KayKit（CC0，Knight.glb 实测 76 clip/41 骨/15 mesh）无枪/弹匣且需新增 skinned 消费者；Mesh2Motion 动作最全但源为 .blend、导出需浏览器；Quaternius 存在 QAL v1.0 再分发冲突。openIssues：审查 pass=false，(1) sources.md 第 17/77/271 行把 Mannequin_F.fbx 写成 GLB 同目录，实际位于 Female Mannequin/Unity/；(2) 第 78/42 行把骨架节点 Reload_end 当作 clip；(3) 第 89 行称 UAL2 43 clip“全是”近战/跑酷/农活/僵尸。未验证：GLTFLoader 实际加载（node_modules 缺失且任务禁止安装依赖）、KayKit itch 免费档是否含 CombatRanged、Quaternius CC0 与 QAL 冲突的最终解释、姿势/接触/镜头质量。未提交、未推送。
-- 产物：[b52037b](https://github.com/dbvv1/FPS-Like/commit/b52037befddfbbaf8962366269fffe521ecef65e)，分支 `relay/b-fps-reload-source-20261104`。
+- 单元达到时限，收集超时前已写出的部分成稿：asset-pipeline/character-action-sources/sources.md、asset-pipeline/character-action-sources/LICENSES.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
+- 产物：[78a892c](https://github.com/dbvv1/FPS-Like/commit/78a892c6cf057ddb63b4fc21daafdd7e4313453a)，分支 `relay/b-fps-reload-source-20261104`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
-- 下一步：负责人先裁定 sources.md §7.2 的 A–F 决策（重点是否批准新增 skinned 第三人称消费者与调整 700 ms 合同），并由人工修正上述 3 处文档错误后再推 review_ready；审查未通过前不应视为验收完成。
+- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
