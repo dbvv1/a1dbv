@@ -1,7 +1,7 @@
 # A-TEMPLATE-CODEX-PORTABILITY-20261104 · 修正独立复制后的来源链接
 id: A-TEMPLATE-CODEX-PORTABILITY-20261104
 owner: dot-A
-status: ready
+status: running
 kind: build
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
