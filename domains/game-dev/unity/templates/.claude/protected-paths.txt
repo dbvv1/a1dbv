@@ -2,6 +2,7 @@
 # 格式：<deny|ask> <glob> [原因]；glob 相对项目根目录，* 可跨目录；第一条命中的规则生效
 # 按项目实际情况增删。
 
+deny  .git              不要直接修改 .git 元数据入口
 deny  .git/*            不要直接修改 .git 目录
 deny  node_modules/*    依赖目录，请通过包管理器修改
 deny  dist/*            构建产物，请修改源文件后重新构建

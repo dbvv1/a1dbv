@@ -100,6 +100,31 @@ exec "$REAL_PARSER" "$@"
         self.assertEqual(generic, (REPO / 'domains/game-dev' / domain /
                                   'templates/.claude/hooks/protect-paths.sh').read_bytes())
 
+  def test_template_rules_protect_gitfile_without_blocking_git_neighbors(self):
+    # A linked worktree has a .git file, not a directory. The Hook only checks
+    # paths; this synthetic pointer is never followed or passed to Git.
+    (self.root / '.git').write_text('gitdir: ../main/.git/worktrees/project\n', encoding='utf-8')
+    templates = [REPO / 'templates/generic'] + [
+      REPO / 'domains/game-dev' / domain / 'templates' for domain in ['unity', 'unreal']]
+    cases = [('.git', 'deny'), ('.git/config', 'deny'),
+             ('.gitignore', None), ('.gitmodules', None),
+             ('.github/workflows/ci.yml', 'ask'), ('src/main.py', None)]
+    for template in templates:
+      # Consume the shipped rules rather than restating them in a fixture.
+      self.env['PROTECTED_PATHS_FILE'] = str(template / '.claude/protected-paths.txt')
+      for relative, expected in cases:
+        for path in [relative, str(self.root / relative)]:
+          with self.subTest(template=str(template.relative_to(REPO)), path=path):
+            p = self.run_hook(self.event(path))
+            self.assertEqual((p.returncode, p.stderr), (0, ''))
+            if expected is None:
+              self.assertEqual(p.stdout, '')
+            else:
+              self.assertTrue(p.stdout, f'{relative} must emit {expected}')
+              data = json.loads(p.stdout)['hookSpecificOutput']
+              self.assertEqual(data['hookEventName'], 'PreToolUse')
+              self.assertEqual(data['permissionDecision'], expected)
+
   def test_canonical_absolute(self):
     self.decision(str(self.root / 'dist' / 'x'))
 
