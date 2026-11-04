@@ -2,7 +2,7 @@
 id: B-FPS-FIXED-CAPTURE-20261104
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-fixed-capture-20261104
@@ -41,3 +41,7 @@ result_branch: relay/b-fps-fixed-capture-20261104
 ## 怎样算做成
 六张真实 PNG 可解码且非背景，每机位双拍像素与上述状态一致；WebGL2、1280×720/DPR1、软件渲染、错误为空，report.passed=true，构建/harness 真正 exit 0。manifest 逐图记录实际完整 URL、commit/tree、源码干净状态、构建与 served bundle 哈希、seed/tick/t/input、机位、画质参数、rendererEvidence、Chromium 完整版本、PNG/RGBA 哈希、起止 UTC 和逐进程退出/清理证据。
 缺 renderer、版本、真实像素或退出证据时明确缺项，不称完整基线；硬件 GPU、完整六回合、声音/手感、参照配准和画面判优仍未验收。公开扫描、diff 空白及 noreply 提交身份检查通过后，只推结果分支并回 review_ready；dot 按真实图接收。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
