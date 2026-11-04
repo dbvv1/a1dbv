@@ -2,7 +2,7 @@
 id: B-STAR-CAPTURE-REPAIR-20261104
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 5962a43d851575220a0a67c6a17b5e7b218a4e9c
 result_branch: relay/b-star-capture-repair-20261104
