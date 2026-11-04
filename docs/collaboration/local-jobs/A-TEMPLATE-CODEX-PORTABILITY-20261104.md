@@ -1,7 +1,7 @@
 # A-TEMPLATE-CODEX-PORTABILITY-20261104 · 修正独立复制后的来源链接
 id: A-TEMPLATE-CODEX-PORTABILITY-20261104
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
@@ -35,4 +35,8 @@ result_branch: relay/a-template-codex-portability-20261104
 
 ## 当前结果
 
-- check_repo 未通过，未推送
+- 将 verify-completion SKILL.md 中越出复制包的相对链接替换为指向基线提交 1421144b 的固定公开地址，链接文字改为“模块实跑来源实例”，保留自包含正文、核实日期 2026-10-10、试用评级及 Codex 未实测说明。核验：基线提交确含 experiments/release-title-roundtrip/README.md 且与当前 blob 一致，公开地址返回 200；仓外仅复制该文件后无相对链接、无 ../，静态核对通过；check_public.py 与 git diff --check 通过。check_repo.py 有 6 项 TASKS.md 既有失败，test_template_overlay.py 有 4 项 Windows 无 POSIX 环境失败，均在未改动 HEAD 上复现，非本次回归；openIssues 为空。未提交、未推送。
+- 产物：[7f3330a](https://github.com/dbvv1/a1dbv/commit/7f3330a1290849f88a98e8c148978c584dad1ad1)，分支 `relay/a-template-codex-portability-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 bb0014b6 已有问题：docs\collaboration\TASKS.md: over 10 KB; move finished rows to archive/；docs\collaboration\TASKS.md:35: missing link target: reviews/audit-workspace/reports/WAVE-1-AI-CODING.md；docs\collaboration\TASKS.md:36: missing link target: reviews/audit-workspace/reports/WAVE-1-GAME-KNOWLEDGE.md；docs\collaboration\TASKS.md:37: missing link target: reviews/audit-workspace/reports/WAVE-1-FPS.md；docs\collaboration\TASKS.md:38: missing link target: reviews/audit-workspace/reports/WAVE-1-MOBA.md；docs\collaboration\TASKS.md:39: missing link target: reviews/audit-workspace/reports/WAVE-1-STAR-RUSH.md（保留告警，交负责人接收）；独立审查通过。
+- 下一步：无本单元剩余工作；接收端处理上述既有基线失败后按协议提交并发布。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
