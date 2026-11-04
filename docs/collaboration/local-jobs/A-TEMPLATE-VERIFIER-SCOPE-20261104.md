@@ -35,8 +35,8 @@ result_branch: relay/a-template-verifier-scope-20261104
 
 ## 当前结果
 
-- verifier 模板已按影响范围验证改写：步骤2 先核目标、改动与已有证据，核实相关代码/输入/消费者/依赖/环境/命令/验收要求不受影响时复用原证据并保留版本与范围，步骤3 只跑缺失、受影响或影响不明的检查，纯文案按链接、格式、内容验证；输出改为通过/失败/受阻/未运行/不适用五态并新增“复用的既有证据”段。openIssues：check_repo.py exit 1，6 个错误均在写入范围外的 docs/collaboration/TASKS.md，未改树 HEAD 同样复现；test_template_overlay.py 14 项中 4 个 Windows/Git Bash 环境既有失败子例，与本次改动无关；两项均需接收端按既有协议记录处理，未据此宣称验收通过。
-- 产物：[7d418cd](https://github.com/dbvv1/a1dbv/commit/7d418cdd737f7482d28513ec81ea01c52f893b2f)，分支 `relay/a-template-verifier-scope-20261104`。
-- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 662aa5c4 已有问题：docs\collaboration\TASKS.md: over 10 KB; move finished rows to archive/；docs\collaboration\TASKS.md:35: missing link target: reviews/audit-workspace/reports/WAVE-1-AI-CODING.md；docs\collaboration\TASKS.md:36: missing link target: reviews/audit-workspace/reports/WAVE-1-GAME-KNOWLEDGE.md；docs\collaboration\TASKS.md:37: missing link target: reviews/audit-workspace/reports/WAVE-1-FPS.md；docs\collaboration\TASKS.md:38: missing link target: reviews/audit-workspace/reports/WAVE-1-MOBA.md；docs\collaboration\TASKS.md:39: missing link target: reviews/audit-workspace/reports/WAVE-1-STAR-RUSH.md（保留告警，交负责人接收）；独立审查通过。
-- 下一步：负责人接收：按既有自动接收协议处理基线检查失败（TASKS.md 超限与缺失链接、Windows 环境 unittest 子例），并完成发布前非作者审查记录。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- **候选接收，尚未发布 main**：原回传 [7d418cdd](https://github.com/dbvv1/a1dbv/commit/7d418cdd737f7482d28513ec81ea01c52f893b2f) 经负责人修订／非作者复核，采用版本为 [1e334d17](https://github.com/dbvv1/a1dbv/commit/1e334d17c853731fa6ddcb3f48c14ab910dcf2a9)；已包含于 `dot-a/integrated-intake-20261104` 的固定提交 `77cdb7cf0aeba93b9605c575783d7044ee384972`。本次逐字核验模板 blob 与已审版本一致。
+- 接收范围：按代码、输入、消费者、依赖、环境、命令与验收要求判断证据影响；只补缺失、受影响或影响不明的检查。复用保留原版本与状态；五种证据状态、必需条件判定及只读边界均保留。
+- 复验：2026-11-04 云端 POSIX 的 template_overlay 14/14、template_portability 4/4 通过；这是本次实际运行，不继承原 Windows 基线结果，也不证明客户端加载或模型收益。原完整离线与公开扫描回执对应已审候选版本。
+- 下一步：main 更新仍受此前平台拒绝限制，不换入口或代发；自动接收合同要求合入 main 后才标 accepted，因此保持 review_ready，仅记录候选已接收。原调用／写者是否退出仍独立核实，不因本回执解除隔离或重派。
+- 历史执行身份、Windows 检查失败及旧 TASKS 六项失败见[接收前固定卡](https://github.com/dbvv1/a1dbv/blob/77cdb7cf0aeba93b9605c575783d7044ee384972/docs/collaboration/local-jobs/A-TEMPLATE-VERIFIER-SCOPE-20261104.md)；本次 POSIX 通过不覆盖或改写这些历史结果。

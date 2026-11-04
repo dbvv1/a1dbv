@@ -35,8 +35,8 @@ result_branch: relay/a-template-spec-reuse-20261104
 
 ## 当前结果
 
-- 改写 spec-interview 模板：访谈先查代码/工单/ADR/API 契约/测试与有效规格，已有规格充分时不重问、不建同义文件，只补会改变实现的决定；优先写入已有契约入口，无合适入口才新建 SPEC.md；新增访谈完成不自动授权实现/提交/发布。diff 为 +9/-6，仅改该模板。check_public 与 git diff --check 通过；check_repo 6 条错误与 unittest 4 个 Windows 路径用例失败均为 HEAD 基线问题、与本次改动无关（文件在禁改范围或不读取本模板）；openIssues 为空。
-- 产物：[cee8a0b](https://github.com/dbvv1/a1dbv/commit/cee8a0b7aa8912555af2b3fce764114e5907ca96)，分支 `relay/a-template-spec-reuse-20261104`。
-- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 d3510107 已有问题：docs\collaboration\TASKS.md: over 10 KB; move finished rows to archive/；docs\collaboration\TASKS.md:35: missing link target: reviews/audit-workspace/reports/WAVE-1-AI-CODING.md；docs\collaboration\TASKS.md:36: missing link target: reviews/audit-workspace/reports/WAVE-1-GAME-KNOWLEDGE.md；docs\collaboration\TASKS.md:37: missing link target: reviews/audit-workspace/reports/WAVE-1-FPS.md；docs\collaboration\TASKS.md:38: missing link target: reviews/audit-workspace/reports/WAVE-1-MOBA.md；docs\collaboration\TASKS.md:39: missing link target: reviews/audit-workspace/reports/WAVE-1-STAR-RUSH.md（保留告警，交负责人接收）；独立审查通过。
-- 下一步：负责人接收并按协议提交发布；合入前确认 TASKS.md 超限/缺失链接与 Windows 平台 unittest 的基线失败，并注意 templates/README.md:54 仍以“输出 SPEC.md”概括本 Skill（属卡外索引，未改）。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- **候选接收，尚未发布 main**：原回传 [cee8a0b7](https://github.com/dbvv1/a1dbv/commit/cee8a0b7aa8912555af2b3fce764114e5907ca96) 经负责人修订／非作者复核，采用版本为 [d891dada](https://github.com/dbvv1/a1dbv/commit/d891dada38d1c73ac1c5f2379652f8317cea4674)；已包含于 `dot-a/integrated-intake-20261104` 的固定提交 `77cdb7cf0aeba93b9605c575783d7044ee384972`。本次逐字核验模板 blob 与已审版本一致。
+- 接收范围：已有规格充分时不重问或另建同义文件；代码可查事实自行核实，仅补影响实现的未知决定。沿用专用规格入口，保留稳定验收 ID、失败路径、变更理由与显式调用／不自动实施发布边界。
+- 复验：2026-11-04 云端 POSIX 的 template_overlay 14/14、template_portability 4/4 通过；这是本次实际运行，不继承原 Windows 基线结果，也不证明客户端加载或模型收益。原完整离线与公开扫描回执对应已审候选版本。
+- 下一步：main 更新仍受此前平台拒绝限制，不换入口或代发；自动接收合同要求合入 main 后才标 accepted，因此保持 review_ready，仅记录候选已接收。原调用／写者是否退出仍独立核实，不因本回执解除隔离或重派。
+- 历史执行身份、Windows 检查失败及旧 TASKS 六项失败见[接收前固定卡](https://github.com/dbvv1/a1dbv/blob/77cdb7cf0aeba93b9605c575783d7044ee384972/docs/collaboration/local-jobs/A-TEMPLATE-SPEC-REUSE-20261104.md)；本次 POSIX 通过不覆盖或改写这些历史结果。
