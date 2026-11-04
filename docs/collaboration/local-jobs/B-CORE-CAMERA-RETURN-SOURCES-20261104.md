@@ -2,7 +2,7 @@
 id: B-CORE-CAMERA-RETURN-SOURCES-20261104
 owner: dot-B
 kind: explore
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-core-camera-return-sources-20261104
@@ -27,3 +27,11 @@ result_branch: relay/b-core-camera-return-sources-20261104
 五个场景逐项交输入、状态所有者、原生回调入口、项目必须保留的条件及固定源码行链接；给出一张时序图与五个后续接线断言。明确代码阅读和引擎未实跑。不得只重复已知相机职责。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/B-CORE-CAMERA-RETURN-SOURCES-20261104/sources.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
+- 产物：[cba4c59](https://github.com/dbvv1/a1dbv/commit/cba4c5953dc31f77ad51693162f8ffd75cdfeff4)，分支 `relay/b-core-camera-return-sources-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
+- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
