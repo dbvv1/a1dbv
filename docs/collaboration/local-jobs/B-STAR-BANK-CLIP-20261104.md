@@ -2,7 +2,7 @@
 id: B-STAR-BANK-CLIP-20261104
 owner: dot-B
 kind: build
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-bank-clip-20261104
