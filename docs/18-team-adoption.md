@@ -111,6 +111,16 @@ TeamRetro 五人团队自报的反例很具体：仓库基线 lint 未清干净�
 
 **托管下发不等于安全边界（2026-10-15，UTC+8 核对）**：Claude 的 server-managed settings 按实际认证的 Team／Enterprise 组织分发，Console API key CI 不继承 claude.ai 策略；强制约束须核入口并落实到受管端点、沙箱和网络（见 [10](10-security.md)）。**局限：服务端分发仍是客户端控制，未受管设备可绕过；第三方入口另核策略交付方式。**
 
+**策略配好了却没生效，先分交付、来源与执行三层。** 先核客户端版本、实际入口和认证所属组织，尤其 CI 的 Console key 不继承 claude.ai 组织策略；只确认凭据类型，不展示值。不要先改个人配置或换认证来绕过限制。
+
+1. **查交付结果。** Claude Code v2.1.248+ 用 `claude doctor` 看 `Managed settings (remote)`：已加载就查来源；组织未配置不代表端点也无策略；抓取失败看原因及缓存是否仍适用；跳过抓取按所报入口原因交管理员处理。仍在抓取就暂不下结论。缓存生效不证明最新策略已送达，首次离线能否启动也不能反推交付成功；组织要求与 fail-closed 配置可能阻止启动。
+2. **查实际来源。** 会话中用 `/status` 的 `Setting sources` 看选中来源，`Skipped sources`（v2.1.242+）分清没收到和收到但未选中。没有托管来源时核部署路径与是否含策略键，不以文件存在作证。管理员文件存在但不可读，且没有任何管理员来源提供策略时：OS 拒读会记录失败并无该来源策略启动；其他读取失败（如 I/O 错误）则每次启动退出。不要据此自行改文件权限，交管理员修复。
+3. **查 Hook 是否注册并执行。** 脚本自测通过后仍用 `/hooks` 核事件和来源，再核 matcher 与组织限制；`allowManagedHooksOnly` 会阻止个人／项目等 Hook，托管强制启用的插件 Hook 有例外。管理员修正后，在获准的合成测试中触发目标事件并核实际效果，不用破坏性动作探测。
+
+只分享必要的脱敏诊断，原始日志留本地。此路线用于定位交付问题，不证明客户端策略能替代受管设备、沙箱或网络边界。
+
+**依据**：[交付诊断](https://code.claude.com/docs/en/server-managed-settings#verify-settings-delivery)、[缓存与启动条件](https://code.claude.com/docs/en/server-managed-settings#fetch-and-caching-behavior)、[实际来源](https://code.claude.com/docs/en/managed-settings#read-the-source-in-status)与[读取失败](https://code.claude.com/docs/en/managed-settings#find-entries-claude-code-dropped)、[Hook 菜单](https://code.claude.com/docs/en/hooks#the-hooks-menu)与[组织限制](https://code.claude.com/docs/en/hooks#hook-locations)，2026-11-04 复核官方文档；未部署、未运行客户端或 Hook，不提升本页团队实用评级。
+
 **配置迁移保住作用范围。** 先用现成分层、优先级与选择性同步：共享格式／检查契约，允许个人编辑体验不同；跨设备偏好与本机衍生值分开，不广播个人覆盖或机器默认。Ruff、Firefox 与 Prettier 的取舍支持按语义选择；局部历史反馈不证明所有配置都应同步或隔离。
 
 **维护节奏**：模型或宿主升级后，只试撤无必要的可选步骤，比较行为、质量与总投入并保留恢复路径；保留稳定契约与必要回归。官方提示审计和 Claude Code `/skill-doctor` 只提供候选／调用／成本线索，少用不等于无效。方法与命令范围见 [09 §3–4](09-review-and-quality.md#3-给自己的-ai-配置做评估)及 [05](05-skills-and-plugins.md)。

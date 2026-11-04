@@ -4,6 +4,22 @@
 
 ## 待处理
 
+### 2026-11-04：常驻 Agent 的冷唤醒，试验从当前文件重建上下文
+
+👀 **自建常驻 Claude Code Agent、经常隔数小时接着工作时，试验在缓存失效后的唤醒边界重建上下文。** Raft 不再把整段历史一直接回：首轮放记忆索引、近期消息、当前文件、最近动作和本次唤醒消息。值得借的是**重新读当前文件，旧文件只留指针；过去的失败不自动成为本次待办**。仍在连续编码、缓存可能未失效或后台工作未结束时，继续原生恢复，不按固定时钟重开。
+
+**先试一条真实续接，再决定是否采用。** 留下当前任务、最新约束、已完成结果与下一步；在自然空闲后比较原生恢复和重建输入，核第一次行动是否接住新消息、是否重复已成功动作、是否把旧状态当现状，并记录总用量与等待时间。状态读不到就恢复原会话。本文是[上下文管理](../decisions/context-management.md)候选，不改现有默认；最佳阈值和本仓真实任务收益未知。
+
+**版本和配置会改变能否生效。** 固定源码 `db5e399f`（release `v1.21.23-source.1`，daemon 1.0.49）要求服务端 `constructedWakeContext=true`；仅设 `RAFT_WAKE_RECYCLE=1` 无效。默认条件是空闲**超过**一小时且上下文**大于** 128K；它来自作者负载，不是通用推荐。runtime 列表虽有 Codex，事实读取只实现 Claude，其他 runtime 仍因未知状态而恢复旧会话。源码还核后台任务及 sidecar 活跃情况。Raft 是 **FSL-1.1-ALv2 source-available**，含竞争用途限制，不把源码当当前 Apache 代码复制进通用模板。
+
+本轮逐字提取固定源码的配置／纯决策函数，**9 个边界断言通过**，包括精确阈值、未知状态、显式恢复、profile 变化及开关优先级；输入渲染为替身，未运行完整 daemon、后台停止或真实模型。作者报告全流量每请求成本下降 29%，属于其团队按标价的前后对照，不是本仓实测；社区原帖反映 Raft 的 Hermes 适配需求，未验证这套重建方法的效果。
+
+**依据**：[一手：作者方法与对照](https://raft.build/resources/blog/constructed-initial-context/)、[固定配置与决策](https://github.com/botiverse/raft-source/blob/db5e399f017d584e49597e3a28757645d6807893/packages/daemon/src/wakeSessionRecycle.ts#L95-L253)、[后台工作筛选](https://github.com/botiverse/raft-source/blob/db5e399f017d584e49597e3a28757645d6807893/packages/daemon/src/wakeSessionRecycle.ts#L359-L406)、[文件与近期动作策略](https://github.com/botiverse/raft-source/blob/db5e399f017d584e49597e3a28757645d6807893/packages/daemon/src/wakeBriefingPanel.ts#L24-L53)、[许可](https://github.com/botiverse/raft-source/blob/db5e399f017d584e49597e3a28757645d6807893/LICENSE)；[社区：真实使用者及回复](https://linux.do/t/topic/2974021)。定向核实与组件试验：2026-11-04 UTC；未完成领域广扫，未找到独立同题效果验证。
+
+**压缩结果也要核实际工具类型。** 同轮直接运行 Python Agent Framework 1.24.0 发布包与固定 main `230a3aa0`：合成 hosted shell 的 stdout／stderr／exit code 在旧组压缩后变成 `no results`，普通 function result 对照仍保留。`keep_last_tool_call_groups=1` 只保护最新组，不是修复。已用该 SDK 的读者，应检查实际 content type 的压缩后结果和下一次请求，不凭函数正常返回判定信息保留。候选修复 #9887 已关闭且未合并，这不排除其他修复；本轮没有验证修复版本，也未跑模型或完整套件。不为此迁移整个框架。
+
+**反例依据**：[真实报告 #9886](https://github.com/microsoft/agent-framework/issues/9886)、[候选修复 #9887](https://github.com/microsoft/agent-framework/pull/9887)、[本轮实际运行的固定源码](https://github.com/microsoft/agent-framework/blob/230a3aa0bba19b6bf5a7b4f427bcb25cb16c7105/python/packages/core/agent_framework/_compaction.py#L1904-L2040)。两个来源各 3 个合成场景断言通过；PR 状态按最新 API 复核，核实：2026-11-04 UTC。
+
 ### 2026-10-31：AGENT-CONFIG 已回线索的核源与取舍
 
 先看两个真实项目的维护机制：**Zeppelin 按完整指令链减重，Next.js 将生成内容与团队正文分开管理**。本轮只核已返回目录中的少量线索，未把全目录接收为已核成果；SKILL-MCP、MULTIAGENT-LONG、VERIFY-REVIEW 尚无正式回传、可接收的来源产物，下面的四领域补充仍等各卡结果回来后去重合并，不重开采集。
