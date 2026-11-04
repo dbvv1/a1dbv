@@ -2,7 +2,7 @@
 id: B-MOBA-EQUIPMENT-ICONS-20261104
 owner: dot-B
 kind: build
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-equipment-icons-20261104
@@ -30,4 +30,8 @@ result_branch: relay/b-moba-equipment-icons-20261104
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 三件装备图标源与导出完成：3 件×2 主题×（SVG+32px+48px）共 18 个运行图加 preview.png，统一 4→4.5 描边，物品 ID/价格/属性未动。实测 node --test 9/9 通过，确定性逐字节重建、PNG 尺寸与四角透明、缺源/非法参数拒收均核过；产物无绝对路径或内网地址。未关闭：非作者与既有技能图标 32px 同框并排复核（胸甲近 self-shield、靴或像容器，README 已列风险）；HUD 接入与玩家识别按卡另案。未运行：npm test/npm run smoke（无 node_modules，且本卡禁浏览器与构建）。
+- 产物：[ed105e5](https://github.com/dbvv1/MOBA-Like/commit/ed105e5ea44e555ad8e1377880a8e916ce3ec2d1)，分支 `relay/b-moba-equipment-icons-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：请非作者把新三图与既有技能图标按 32px 同框并排复核混淆风险并记录；HUD 接入与玩家识别待案例接入。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
