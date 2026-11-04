@@ -349,6 +349,14 @@ Agent容易漏动态引用、间接消费者和故障时才启用的保护；人
 
 - **退役实现**：分开实现选择器与入口禁用，保留必要禁用开关／窄适配；受支持扩展仍依赖旧行为或前置修订未到就延后删除。弃用通知／保留符号不保证兼容。见 [Jetpack 仪表盘开关](research/2026-10-12-development-conditions.md#退役实现选择器保留独立禁用能力)。
 
+- **依赖并行主版本：新导入不等于新运行时。** 先按开发／生产／预览／CI／测试列出实际解析的版本、配套 adapter 与验证入口，再决定能否使用新 API。给 Agent 的阶段指令可写成：`本阶段允许 <导入路径>，但 <环境> 实际运行 <版本>，配套 <adapter>；通过 <检查入口>，并在 <切换完成条件> 满足后撤除临时规则。` 这是据迁移机制归纳的示例；没有并行期就不加双版本矩阵。
+
+  Sentry 的历史迁移先把首方导入改成 V8 路径，仍由兼容模块运行 V6；到 9d75e92 阶段，就构建选择器而言，只有不带 CI／预览／测试标识的本地开发选择 V8，其余所列环境仍选 V6，Nuqs adapter 随运行时切换。该阶段的应用测试与类型检查 runner 在未指定版本时则分别跑 V6／V8，不能从构建选择器推定所有测试只跑 V6。因此只看 import 或 `package.json` 单一版本，不能判断新行为已启用。
+
+  **验解析与消费，再退临时支持。** 按库的契约检查构建产物是否混入不应存在的版本、adapter 是否匹配，需要共享上下文的入口是否实际共享。Sentry 的测试构建并加载产物，比较两入口的 `useLocation` 函数身份，再用内存路由器验证参数、查询串与回退；这不是浏览器或应用端到端导航验收。自己的迁移仍要验证真实业务入口。全部支持环境切到新版且旧消费者退出后，清理双版本 runner、迁移专用检查与旧规则，保留常设门禁和仍需承接的行为；不能仅为减少测试成本提前删旧支持。
+
+  **依据**：[初期导入与运行时分离](https://github.com/getsentry/sentry/blob/8891ab865ca741f83cbcd20349bd21c03ad92ffc/static/AGENTS.md#L31-L40)、[阶段二版本与 adapter 选择](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.ts)、[构建产物与内存路由测试](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.test.ts)、[应用测试 runner](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/scripts/testCi.js#L18-L31)与[类型检查 runner](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/scripts/typecheck.ts#L56-L68)、[完成切换后的清理](https://github.com/getsentry/sentry/commit/de3060f736c6dd55836bfae104336a967ec41d8d)。2026-11-04 静态核读固定源码与差量；本仓未运行 Sentry、浏览器或模型对照，不把上游测试代码或作者自报视为本仓实测。
+
 - **配置回退**：关新格式写入后，用开启前、开启期间和关闭后写入的混合数据，分别验正常服务与导出／恢复命令；同版本关开关不证明旧版可读。见 n8n 的[读写拆分与命令初始化修订](research/2026-10-12-development-conditions.md#n8n配置回退与独立导出入口)。
 
 - **有数据应用**：✅ 保既有受支持迁移器；小表能核实全部停写且落在批准窗口内，先短停写，否则桥接。Agent先只读源码／产物审稿，diff／迁移CLI不等于无副作用；人另定映射语义与运行权限。⛔ seed／reset不替迁移。旧写者或回填未排空并封住重启，不开新状态；不可逆时保状态前进修复。见[两轮继承包与撤回门](research/2026-10-12-development-maintenance.md#p22有数据应用的两轮迁移)。
