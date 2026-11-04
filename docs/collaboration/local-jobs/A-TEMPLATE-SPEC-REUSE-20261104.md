@@ -1,7 +1,7 @@
 # A-TEMPLATE-SPEC-REUSE-20261104 · 复用已有需求与规格入口
 id: A-TEMPLATE-SPEC-REUSE-20261104
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
@@ -35,4 +35,8 @@ result_branch: relay/a-template-spec-reuse-20261104
 
 ## 当前结果
 
-- check_repo 未通过，未推送
+- 改写 spec-interview 模板：访谈先查代码/工单/ADR/API 契约/测试与有效规格，已有规格充分时不重问、不建同义文件，只补会改变实现的决定；优先写入已有契约入口，无合适入口才新建 SPEC.md；新增访谈完成不自动授权实现/提交/发布。diff 为 +9/-6，仅改该模板。check_public 与 git diff --check 通过；check_repo 6 条错误与 unittest 4 个 Windows 路径用例失败均为 HEAD 基线问题、与本次改动无关（文件在禁改范围或不读取本模板）；openIssues 为空。
+- 产物：[cee8a0b](https://github.com/dbvv1/a1dbv/commit/cee8a0b7aa8912555af2b3fce764114e5907ca96)，分支 `relay/a-template-spec-reuse-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 d3510107 已有问题：docs\collaboration\TASKS.md: over 10 KB; move finished rows to archive/；docs\collaboration\TASKS.md:35: missing link target: reviews/audit-workspace/reports/WAVE-1-AI-CODING.md；docs\collaboration\TASKS.md:36: missing link target: reviews/audit-workspace/reports/WAVE-1-GAME-KNOWLEDGE.md；docs\collaboration\TASKS.md:37: missing link target: reviews/audit-workspace/reports/WAVE-1-FPS.md；docs\collaboration\TASKS.md:38: missing link target: reviews/audit-workspace/reports/WAVE-1-MOBA.md；docs\collaboration\TASKS.md:39: missing link target: reviews/audit-workspace/reports/WAVE-1-STAR-RUSH.md（保留告警，交负责人接收）；独立审查通过。
+- 下一步：负责人接收并按协议提交发布；合入前确认 TASKS.md 超限/缺失链接与 Windows 平台 unittest 的基线失败，并注意 templates/README.md:54 仍以“输出 SPEC.md”概括本 Skill（属卡外索引，未改）。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
