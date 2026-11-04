@@ -1,7 +1,7 @@
 # A-TOP5-CURRENT-WEEK-20261104 · 更新本周五项试用入口
 id: A-TOP5-CURRENT-WEEK-20261104
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ac55b5473fcc6e387efa435ad02a56228deaa093
