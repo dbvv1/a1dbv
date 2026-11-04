@@ -9,7 +9,7 @@ import {resolve,sep,extname} from 'node:path';
 import {once} from 'node:events';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
-import {staticPath,fpsPair,launch,assertArgv,assertWebGL,mobaProgress,starProgress,fpsProgress} from './checks.mjs';
+import {staticPath,fpsPair,launch,assertArgv,assertCaseUrl,restrictCaseContext,assertWebGL,mobaProgress,starProgress,fpsProgress} from './checks.mjs';
 const cfg=JSON.parse(readFileSync(process.argv[2],'utf8'));
 assert.equal(cfg.approved,true,'UNRELEASED/BLOCKED: parent must approve exact revised plan after original Star42 and all prior browser/service exit receipts');
 assert.deepEqual(cfg.blockers,[],'Unresolved serial/identity/interface prerequisites');
@@ -42,9 +42,9 @@ for(const job of cfg.jobs){
   launchRequested=true;browserServer=await chromium.launchServer({...launch,...(cfg.executablePath?{executablePath:cfg.executablePath}:{})});child=browserServer.process();processEvidence=observeCaptureProcess(child);row.browserProcess=processEvidence;save();check();
   browser=await chromium.connect(browserServer.wsEndpoint());const session=await browser.newBrowserCDPSession();const argv=(await session.send('Browser.getBrowserCommandLine')).arguments;assertArgv(argv);row.launchVerified=true; // raw DEBUG=pw:browser log remains local, never expose private argv.
   for(const route of job.routes){check();const routeEvidence={route:route.path,label:route.label,observation:null,renderer:null,screenshot:null,errors:[]};row.routes??=[];row.routes.push(routeEvidence);
-   const context=await browser.newContext({viewport:{width:1280,height:720}}),page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+   const context=await browser.newContext({viewport:{width:1280,height:720},serviceWorkers:'block'});await restrictCaseContext(context,'http://127.0.0.1:'+port);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
    try{
-    await page.goto('http://127.0.0.1:'+port+route.path,{waitUntil:'networkidle',timeout:60000});
+    await page.goto(assertCaseUrl('http://127.0.0.1:'+port+route.path).href,{waitUntil:'networkidle',timeout:60000});
     if(job.name==='moba'){
      await page.waitForFunction(()=>window.mobaClient?.state().ready,null,{timeout:60000});const a=await page.evaluate(()=>({snapshot:window.mobaClient.snapshot(),state:window.mobaClient.state()}));await page.waitForFunction(t=>window.mobaClient.snapshot().tick>t,a.snapshot.tick,{timeout:15000});const b=await page.evaluate(()=>({snapshot:window.mobaClient.snapshot(),state:window.mobaClient.state()}));mobaProgress(a,b,route.version);routeEvidence.observation={a,b};
     }else if(job.name==='star'){

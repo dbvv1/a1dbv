@@ -1,6 +1,10 @@
 # 三案例固定基线拍摄
 
-🧪 **只用于本轮已冻结的十个机位，取得真实图，不作画面品质结论。** 接收端按[任务卡](../../docs/collaboration/local-jobs/B-THREE-CASE-QUALITY-CAPTURE-20261029.md)核串行条件，复制本目录到私有执行目录后，填写本地配置并执行一次。配置、启动日志、原始进程路径不提交 Git。
+🧪 **本目录的 `run-batch.py` 保留 2026-10-29 冻结来源和 GPU 合同，不是当前软件 WebGL2 拍摄入口。** 不把新 Star consumer 交给这里的旧 `star-adapter.mjs`，也不改旧收据解除冻结。当前 Star 使用其仓库的 `tests/capture.mjs`。
+
+2026-11-04 已修复独立 `fps-worker.mjs` 启动：保留 Playwright 默认参数，`chromiumSandbox:false`，实际进程必须包含三项必要软件参数；保留原始 renderer 并要求 software 分类。它依赖相邻 `../three-feel-functional-smoke/checks.mjs`，复制执行目录时必须保留此相对路径，相关文件摘要已列入清单。访问仅限本次 loopback 预览，拒绝重定向、跨源与 WebSocket；外层执行沙箱不变。CPU回归与语法检查不代表已取得浏览器帧。
+
+以下为原冻结批次说明，**不作画面品质结论。** 接收端按[任务卡](../../docs/collaboration/local-jobs/B-THREE-CASE-QUALITY-CAPTURE-20261029.md)核串行条件，复制本目录到私有执行目录后，填写本地配置并执行一次。配置、启动日志、原始进程路径不提交 Git。
 
 ```sh
 python test-preparation.py

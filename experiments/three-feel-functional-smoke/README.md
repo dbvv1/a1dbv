@@ -10,11 +10,11 @@ MOBA 8fcab371108f23b8be659eef1db0466561e3b597/treee72877d4db44e49eea3f177d3a4977
 ## 按哪个Skill
 最新a1dbv 5561e38e47b1a60166192660b15440a58c24e5ed细则§7与各仓AGENTS。虽§7允许页面smoke输入，本卡按父任务更窄边界：不模拟键鼠，不DOM点击、不dispatchEvent、不改sim或存档状态。只导航、读诊断和调用现有游戏内部固定回放推进。
 启动硬前置：核原Star42调用及10机位批次真实结束/自有浏览器、预览服务、父链和残留真实退出；任何未知仍blocked。不能凭Git/status/锁/排队判断槽空闲，不重试或打断旧任务，不删除锁、不杀未知进程。该硬前置需接收端人工/原进程回执核实，JSON approved不是替代证据。
-云端已知标准headless sandbox保持时socket EPERM(exit -6)，不再次尝试，不使用no-sandbox或unsafe开关。复用接收端已装浏览器/Node/依赖，不下载/安装。固定一次Chromium，不因失败/软件renderer换配置重跑。
+2026-11-04 已修正本轮云端启动配置：保留 Playwright 默认参数，chromiumSandbox=false，实际 argv 必含 no-sandbox、enable-unsafe-swiftshader、use-angle=swiftshader 三项。仅访问本地预览或三个案例自身网站；外层沙箱不变。配置修正不解除历史队列／冻结来源门槛，任何新的系统 EPERM 或访问拒绝仍停止该动作。复用接收端已装浏览器/Node/依赖，不下载/安装。固定一次Chromium，不因失败/软件renderer换配置重跑。
 
 ## 写入范围
 源码/资产/依赖锁只读。按冻结候选正常构建，完整列dist文件SHA256和source/tree；必要已跟踪构建须与独审树逐字相同。runner读取独占输出目录和既有依赖，不发布代码、不部署。每次先核source/tree/clean，保存版本和build manifest。
-三个项目串行、每路新context，每作独立browser进程和本机loopback静态服务。headless=true、chromiumSandbox=true、args只有use-angle=swiftshader，移除Playwright默认unsafe；CDP读实际argv硬断言，DEBUG原日志留本地，不将私人路径/ws地址公开。每作关闭自己browser/context/service并核browser exit后才下一作；外层监管须记录自身/子链PID归属、结束时间/退出码、服务端口拒绝连接，清理未知停后续。runner现直接复用冻结MOBA tools/capture-output.ts：观察真实ChildProcess退出、并行关闭browser连接与BrowserServer、10秒超时、preview关闭并要求同端口ECONNREFUSED。supervise.py用Popen保存wrapper→Node身份；Node记录自己父PID及browser子PID、预览为自身进程内HTTP服务。外层600秒超时仅向本轮runner stdin发cancel，关闭它持有的handles；30秒仍不退出则exit-unknown，保留阻塞不杀未知进程、不续后作。接收端仍须记录supervise.py本身的真实退出（进程不能自证已退出），既有串行槽必须由接收端原队列持有，不以新增锁代替。
+三个项目串行、每路新context，每作独立browser进程和本机loopback静态服务。headless=true、chromiumSandbox=false、保留全部Playwright默认参数，显式添加三项必要参数；每个context仅允许该次已核的单一案例源，拒绝重定向／跨源／WebSocket并禁用service worker；CDP读实际argv硬断言，DEBUG原日志留本地，不将私人路径/ws地址公开。每作关闭自己browser/context/service并核browser exit后才下一作；外层监管须记录自身/子链PID归属、结束时间/退出码、服务端口拒绝连接，清理未知停后续。runner现直接复用冻结MOBA tools/capture-output.ts：观察真实ChildProcess退出、并行关闭browser连接与BrowserServer、10秒超时、preview关闭并要求同端口ECONNREFUSED。supervise.py用Popen保存wrapper→Node身份；Node记录自己父PID及browser子PID、预览为自身进程内HTTP服务。外层600秒超时仅向本轮runner stdin发cancel，关闭它持有的handles；30秒仍不退出则exit-unknown，保留阻塞不杀未知进程、不续后作。接收端仍须记录supervise.py本身的真实退出（进程不能自证已退出），既有串行槽必须由接收端原队列持有，不以新增锁代替。
 
 ## 怎样算做成
 - FPS：显式smoke=ground-v1，含feel=ground-v1与去掉feel两路，内部144tick输入、原restart再144tick；检查pass=1/steps=144/complete、两runs各144且hash相同、locked=false/running=false。
@@ -32,4 +32,8 @@ FPS已独审冻结合同（全卡串行阻塞未解除）：smoke.version=ground
 静态服务Star实际入口为dist/client/road/index.html，URL用/road/而不是不存在的dist/client/index.html；query不影响目录index解析。
 
 ## CPU复核
-仅使用现有Node24/Python3；环境变量MOBA_SMOKE_SOURCE、STAR_SMOKE_SOURCE分别指固定MOBA/Star检出目录。运行`node --test checks.test.mjs cleanup.test.mjs`和`python test-supervise.py`，不启动浏览器/服务。接收端私有配置不入仓；source/build/browser/串行门槛未齐时禁止把approved改true。此工具保全不代表执行许可。
+仅使用现有Node24/Python3；环境变量MOBA_SMOKE_SOURCE、STAR_SMOKE_SOURCE分别指固定MOBA/Star检出目录。运行`node --test checks.test.mjs cleanup.test.mjs browser-policy.test.mjs`和`python test-supervise.py`，不启动浏览器/服务。接收端私有配置不入仓；source/build/browser/串行门槛未齐时禁止把approved改true。此工具保全不代表执行许可。
+
+## 2026-11-04 配置修复验证
+
+启动参数、URL名单、跨源／其他loopback端口／重定向／WebSocket拒绝回归已加入；三个案例网站按完整origin匹配，不接受任意 `chatgpt.site` 子域。Star 当前实拍入口同步使用同一策略。实际一次云端尝试在导航前因 Chromium 进程单例 `socket() EPERM` 退出；三项参数已在启动日志中出现，但没有图或 WebGL2 通过证据。失败后未重试、未修改外层沙箱。

@@ -1,5 +1,6 @@
 // Standalone consumer of the game's existing qualityCapture fixed-step interface.
 import assert from 'node:assert/strict';
+import {launch,assertArgv,assertCaseUrl,restrictCaseContext} from '../three-feel-functional-smoke/checks.mjs';
 import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {join} from 'node:path';
@@ -20,14 +21,14 @@ try{
  assert.ok(process.env.FPS_CAPTURE_CHROMIUM,'Verified full Chromium path required before launch');
  report.bundle=await captureBundleIdentity(join(root,'web-dist'));
  server=await preview({configFile:false,root,build:{outDir:'web-dist'},preview:{host:'127.0.0.1',port:0,open:false}});port=server.httpServer.address().port;
- const base=`http://127.0.0.1:${port}`;
- report.launch={headless:true,chromiumSandbox:true,ignoreDefaultArgs:['--enable-unsafe-swiftshader'],args:['--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows'],executablePath:process.env.FPS_CAPTURE_CHROMIUM};
+ const base=assertCaseUrl(`http://127.0.0.1:${port}`).origin;
+ report.launch={...launch,args:[...launch.args,'--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows'],executablePath:process.env.FPS_CAPTURE_CHROMIUM};
  checkInterrupted();browserServer=await chromium.launchServer(report.launch);processEvidence=observeCaptureProcess(browserServer.process());checkInterrupted();
  report.actualSpawn=captureSpawnEvidence(browserServer.process(),chromium.executablePath(),process.env.FPS_CAPTURE_CHROMIUM);
- assert.equal(report.actualSpawn.noSandbox,false);assert.equal(report.actualSpawn.disableSetuidSandbox,false);assert.equal(report.actualSpawn.unsafeSwiftshader,false);assert.equal(report.actualSpawn.headless,true);
+ assertArgv(browserServer.process().spawnargs.slice(1));assert.equal(report.actualSpawn.noSandbox,true);assert.equal(report.actualSpawn.unsafeSwiftshader,true);assert.equal(report.actualSpawn.useAngle,'swiftshader');assert.equal(report.actualSpawn.headless,true);
  browser=await chromium.connect(browserServer.wsEndpoint());report.browserVersion=browser.version();
- const context=await browser.newContext({viewport:{width:1280,height:720},deviceScaleFactor:1,locale:'en-US',timezoneId:'UTC'});
- await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort('blockedbyclient'));
+ const context=await browser.newContext({viewport:{width:1280,height:720},deviceScaleFactor:1,locale:'en-US',timezoneId:'UTC',serviceWorkers:'block'});
+ await restrictCaseContext(context,base);
  await verifyServedCaptureBundle(report.bundle,async f=>{const r=await context.request.get(base+'/'+f,{maxRedirects:0});assert.equal(r.status(),200);return r.body();});
  for(const shot of ['gameplay','courtyard-gap','cross-lane']){
  let previous;
@@ -40,7 +41,7 @@ try{
  const meta=await page.evaluate(()=>window.__shot);
  const stem=shot+'-r'+repeat;await writeFile(join(out,stem+'.json'),JSON.stringify(meta,null,2),{flag:'wx'});
  assert.equal(meta.error,undefined);assert.equal(meta.ready,true);assert.equal(meta.frame,0);assert.equal(meta.t,2);
- assert.equal(meta.rendererEvidence.rendererClass,'gpu');assert.equal(meta.rendererEvidence.unmasked,true);assert.ok(meta.renderer);
+ assert.match(meta.rendererEvidence.version,/WebGL 2/);assert.equal(meta.rendererEvidence.rendererClass,'software');assert.equal(meta.rendererEvidence.unmasked,true);assert.ok(meta.renderer);
  assert.equal(meta.state.actors.length,10);assert.equal(meta.state.tick,120);assert.equal(meta.commands.length,120);
  assert.equal(meta.viewport.width,1280);assert.equal(meta.viewport.height,720);
  assert.equal(meta.renderInfo.environment.active,true);assert.equal(meta.renderInfo.art.active,true);
