@@ -2,7 +2,7 @@
 id: B-PIPE-MODEL-BATCH-READER-20261104
 owner: dot-B
 kind: reader-test
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-pipe-model-batch-reader-20261104
@@ -31,4 +31,8 @@ page: domains/game-dev/assets/3d.md@463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- reader-test 一轮完成：读者在固定提交 36fde4bb 的独立临时副本用 bpy 5.2.3 实跑，改 style.json 的 palette.plaster 为同文件 trim 色后墙/掩体 GLB 更新、灯逐字节不变，三角面/包围盒/材质/非目标参数保持；第一、第二、末件导出失败均 exit 1 且 models 整目录逐字节不变、无 .models.build-* 残留，fresh 首次失败不创建输出，恢复后重跑 GLB 一致；test_asset_batch 12/12 通过，test_build_integration 因本机无 blender CLI 在 assertIsNotNone 阻塞。非作者核对独立复现上述结果，taskDone=true；但 6 项 page 卡点未关闭（Blender 4.3.2 逐字节复现不可得、README 的 blender 入口不可执行且未写 bpy 模块与 -- 分隔、页面写『已采用』与 contract.json/manifest adopted:false 及页面自身候选表述冲突、页面只写第二件失败而非任一件/末件、.blend 与 manifest 非逐字节确定且 Windows 产出 CRLF、已提交 manifest inputs 记旧 build.py 哈希且未列 asset_batch.py），另有 3 项读者遗漏（未引用页面自相矛盾与 art-standards-validation/environment-candidate 证据、把缺 style.json 的平凡成立当保旧批证据、复跑命令未写明 bpyenv 解释器），故 reviewed=false。未验：Blender 4.3.2 下与既有产物逐字节相同、真实 SIGKILL/断电、游戏画面/GPU/视觉采用。
+- 产物：[140bbae](https://github.com/dbvv1/a1dbv/commit/140bbae1a241ed0deebc0a187fd1010568e6a4a8)，分支 `relay/b-pipe-model-batch-reader-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人决定 result.md 缺失的处理（固定脚本未产出，按外层要求未额外写文件），并将 6 项 page 卡点与 3 项遗漏交回 3d.md 原页负责人；4.3.2 逐字节复现、真实断电与画面验收需另行安排环境。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
