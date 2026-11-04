@@ -2,7 +2,7 @@
 id: B-STAR-FIXED-CAPTURE-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: blocked
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-fixed-capture-20261104
@@ -47,8 +47,9 @@ manifest 逐机位列实际完整 URL、固定 commit/tree、构建 hash、seed/
 
 ## 当前结果
 
-- 默认构建通过（Worker 3773376e…、road bundle 7e82cffc…），单预览服务与端口清理已确认；首个机位 coast-chase 在启动预检失败：tests/capture.mjs 通过 CDP Browser.getBrowserCommandLine 核 argv，而锁定的 Playwright 1.64.1 默认不再传 --enable-automation，Chromium 156.0.8078.4 拒绝返回命令线，退出码 1、report.passed=false、runs=[]、无 PNG；按规则停止其余两机位，未换参重拍。已保存脱敏失败证据与公开说明（4 个 docs 文件），capture 相关单测 14/14 通过。未验证：任何场景图、WebGL2 renderer/vendor、像素与双拍一致性；环境为 Node 22.23.2 而非要求的 24。openIssues：无审查遗留项；阻塞根因需源码/依赖层决定。
-- 产物：[48d0c34](https://github.com/dbvv1/Star-Rush-Reborn/commit/48d0c34b5ed8da0f30a323fa9048bcc04866cdb4)，分支 `relay/b-star-fixed-capture-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由 dot 决定另开一张改 tests/capture.mjs 的卡，在启动参数显式补 --enable-automation（保持同一 Chromium 与三软件渲染参数），并在 Node 24 环境下用新的输出根先单跑 coast-chase 验证启动、argv 校验与 PNG 落盘，再跑其余两机位；本次失败目录保留为证据，不覆盖、不当作基线。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- dot-B 接收[48d0c34](https://github.com/dbvv1/Star-Rush-Reborn/commit/48d0c34b5ed8da0f30a323fa9048bcc04866cdb4)的四份脱敏失败证据；三机位基线未成，本卡 blocked，不合入为基线。固定 commit/tree 与输入表一致，默认构建 exit 0（Worker `3773376e…`、road bundle `7e82cffc…`）；capture 在 08:57:27–08:57:36 UTC 仅运行首机位，exit 1、`passed=false`、`runs=[]`、0 PNG，另两机位未启动。
+- 失败发生在导航前：Chromium 156.0.8078.4 的 `Browser.getBrowserCommandLine` 报缺 `--enable-automation`。三项 SwiftShader 参数只有启动配置，实际 argv 未取回；页面未加载，served bundle、WebGL2、renderer/vendor、像素与双拍一致性均未验证。Node 22.23.2 不满足本卡 Node 24 前置，不能把构建或报告代替环境符合。
+- 10:15:44–10:18:40 UTC 本机只读核查补齐 Workflow 回执：原 Claude 09:40:36 UTC exit 0，Workflow 返回、tools/process settled，按登记身份复核存活匹配 0；[09:43 未知回执](https://github.com/dbvv1/a1dbv/commit/2124c542c6a1645bf44d431c4f809836ceb39b80)仅这部分已补齐。capture Node 只有命令 exit 1，独立 PID／退出事件未留；capture Chromium 仍无独立退出证据。预览 6519 无监听，但独立退出码／事件仍缺，不能由整体 settled 或 close 返回补推个体退出。
+- capture 后另启过两次无导航诊断，第二次用了 headless shell，两者记有退出；第三份加 `--enable-automation` 的诊断脚本只有文件，没有执行／退出回执。诊断不是补拍或成功修复证据，也不能概括成从未换过浏览器。
+- 接收端原报告单测 14/14；dot 的独立源修复已入 Star master [5962a43](https://github.com/dbvv1/Star-Rush-Reborn/commit/5962a43d851575220a0a67c6a17b5e7b218a4e9c)，共享启动参数显式加 `--enable-automation`，15 项 capture／launch 与 7 项失败／收尾 CPU 测试、独审与公开扫描通过；未启浏览器、未改本机固定源、未复拍或部署，真实 CDP／WebGL2／PNG 仍未验证。
+- 12:58–13:00 UTC 再核 Workflow completed、工具 settled、登记身份存活匹配 0，当前未见相关 capture/probe/preview 或 Playwright headless 根进程、6519 无监听；个体历史退出缺口仍 unknown，不是当前占用证据。已有 Node 24.22.1 可启动（`--version` exit 0，无安装），原轮仍按 Node 22 偏差保留，旧报告“只安装 Node 22”不能代表当前环境。11-04 用户明确另排修复卡，后续唯一入口为 [B-STAR-CAPTURE-REPAIR-20261104](B-STAR-CAPTURE-REPAIR-20261104.md)：固定修复源，先 coast-chase PNG 成功后余机位。本旧卡不再执行，失败目录与个体退出 unknown 原样保留；新卡须核原调用结清、同题资源及独立输出，不清未知锁、不终止未知进程。
