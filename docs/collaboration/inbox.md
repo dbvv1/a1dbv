@@ -4,6 +4,20 @@
 
 ## 待处理
 
+### 2026-11-04：用复制边界检查 Agent 绕过模块接口
+
+🧪 **已经明确实现归属、担心 Agent 复制函数绕开接口时，试 jscpd 5.4.2 的 boundaries；不把全仓重复率变成重构目标。** 导入检查看不到没有 import 的副本，这类规则可指定受保护代码、禁止出现的目标层及明确允许的副本。尚不清楚归属时，先看普通重复报告、读命中两侧，再决定是否共享实现。可复制模板、独立夹具与刻意隔离的代码应保留合理重复。
+
+**有界试用起点。** 在隔离环境从官方 PyPI 安装 `jscpd==5.4.2`（MIT），配置的 `boundaries` 项可从 `{"name":"combat","code":["core"],"notIn":["ui/**"],"disable":["semantic"]}` 改起；从配置所在目录运行 `jscpd --config config.json --no-colors .`，覆盖源和目标。只有明确许可的副本才加入 `allow`。禁用 semantic 后本例不需嵌入模型或远程 API，其他结构比较仍可运行；不等于只查完全相同文本。未安装 Skill 或 MCP，不改本仓默认门禁。
+
+**正式包的 7 个合成场景符合预期，包括成功复现的反例：** 普通报告发现 2 clones、exit 0；禁止 UI 副本得到 1 violation、exit 1；精确 allow 该副本且保留其他目标文件，0 violation、无边界空集警告、exit 0；allow 排空目标、受保护路径不存在、只扫描 core 漏掉 UI，这三项均 exit 0 但警告未覆盖；`notIn: []` 为配置错误、exit 1。夹具是无 import 的 11 行相同函数，显式设 5 行／30 token 只为这个小例，不是推荐阈值；未测改名、语义改写、真实游戏接线或模型编码收益。
+
+**不能只用 exit code 判覆盖完成。** 本轮断言只识别实际见到的 `protects no code of this scan` 和 `keeps copies out of no file of this scan` 两段警告，不是通用 warning 检测器；其他警告、升级后的措辞与扫描范围仍要核对。只读扫描本仓 `49352d7c` 的 generic／Unity／Unreal 三份 `protect-paths.sh` 得到 2 clones、66.7% 重复，但它们需独立复制到项目，未强制抽象。命中只提供位置，不证明行为等价；改代码仍须行为测试。
+
+**外部取舍。** dsh-watcher 把导入 boundaries 与 jscpd duplicates 分开运行，未证明其采用了本次复制边界功能；HN 使用者自报把质量报告交给模型判断、允许保留合理重复；REA 维护者实际停止按指标继续拆分，以免制造跨层抽象。没有跨检测器同题对照，最佳工具未知，当前只收有界试用候选。
+
+**依据**：[官方 5.4.2 发布](https://github.com/kucherenko/jscpd/releases/tag/v5.4.2)、[固定边界实现](https://github.com/kucherenko/jscpd/blob/db415b5d7cc34d72a324fe5eae2147646dc3558b/rust/crates/cpd/src/boundaries/check.rs)、[配置说明](https://github.com/kucherenko/jscpd/blob/db415b5d7cc34d72a324fe5eae2147646dc3558b/docs/rust.md#boundaries)、[官方重构 Skill](https://github.com/kucherenko/jscpd/blob/db415b5d7cc34d72a324fe5eae2147646dc3558b/skills/dry-refactoring/SKILL.md)；[真实项目配置](https://github.com/aa2246740/dsh-watcher/blob/e1fae1057228bc1b449c872da14192bac23daa29/package.json)、[HN 原帖与回复](https://news.ycombinator.com/item?id=49742634)、[REA 维护者取舍](https://github.com/morluto/rea/issues/151)。本轮源码检出 HEAD 为 `cbd5423`，已核相关实现与上述 tag `db415b5` 无差异，不声称整个 checkout 固定在 tag。定向核实与实跑：2026-11-04 UTC，未完成领域广扫。
+
 ### 2026-11-04：常驻 Agent 的冷唤醒，试验从当前文件重建上下文
 
 👀 **自建常驻 Claude Code Agent、经常隔数小时接着工作时，试验在缓存失效后的唤醒边界重建上下文。** Raft 不再把整段历史一直接回：首轮放记忆索引、近期消息、当前文件、最近动作和本次唤醒消息。值得借的是**重新读当前文件，旧文件只留指针；过去的失败不自动成为本次待办**。仍在连续编码、缓存可能未失效或后台工作未结束时，继续原生恢复，不按固定时钟重开。
