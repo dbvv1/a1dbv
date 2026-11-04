@@ -21,7 +21,7 @@
 
 ### 指定了页面版本：读取那一版，不用工作树同名文件替代
 
-**任务指定文档版本，或附入正文应与某版一致时，先核内容版本，再按它行动。** 分支／标签会移动，先用 `git rev-parse --verify '<ref>^{commit}'` 得到提交；克隆后若没有同名本地分支，确认仓库与远端后改查 `refs/remotes/origin/<分支>`（远端不叫 origin 时替换名称）。需要当前远端版本时，先按已有权限 fetch，再固定提交；只读已有跟踪 ref 就保留这一观察范围。随后用 `git show '<提交>:<文件路径>'` 读该版。工作树 HEAD 与页面版本可以不同，保留两者；普通任务只需当前文件时，不增加这一步。
+**任务指定文档版本，或附入正文应与某版一致时，先核内容版本，再按它行动。** 分支／标签会移动，先用 `git rev-parse --verify --end-of-options '<ref>^{commit}'` 得到提交；克隆后若没有同名本地分支，确认仓库与远端后改查 `refs/remotes/origin/<分支>`（远端不叫 origin 时替换名称）。需要当前远端版本时，先按已有权限 fetch，再固定提交；只读已有跟踪 ref 就保留这一观察范围。随后用 `git show '<提交>:<文件路径>'` 读该版。工作树 HEAD 与页面版本可以不同，保留两者；普通任务只需当前文件时，不增加这一步。
 
 例如，本仓一次上下文读者任务引用的页面分支解析到下列提交，而任务工作树使用另一提交。已有实际附入正文文件 `received-page.md` 时，可在同一仓库比较内容标识：
 
@@ -32,7 +32,7 @@ git hash-object --no-filters received-page.md
 
 两值相同表示文件字节一致；不同则对照固定原文，分清换行／消息包装变化与正文版本变化。`received-page.md` 应从实际收到的正文保存；拿不到附入内容就记“输入版本未核”，保留继续所需的输入。仅在工作树找到同名文件，不能确认附入的是它；引用位置也按所读页面计算，不拿整张任务卡的行号指代页面行号。
 
-**依据**：[Git 固定版本与对象定位](https://git-scm.com/docs/git-rev-parse)、[不经过过滤器的内容标识](https://git-scm.com/docs/git-hash-object)；[固定页面](https://github.com/dbvv1/a1dbv/blob/d0b9651b5db9039975d1abde4efe8f0cfd3a43b8/docs/decisions/context-management.md)。2026-10-30 实跑同版／异版文件对照；检查只确认提供的文件内容，接收端附文与模型实际加载仍按可观察证据判断。
+**依据**：[Git 固定版本与对象定位](https://git-scm.com/docs/git-rev-parse)、[不经过过滤器的内容标识](https://git-scm.com/docs/git-hash-object)；[固定页面](https://github.com/dbvv1/a1dbv/blob/d0b9651b5db9039975d1abde4efe8f0cfd3a43b8/docs/decisions/context-management.md)。2026-10-30 实跑同版／异版文件对照；2026-11-04 按 Git 官方建议加入 `--end-of-options`，本仓复验 HEAD／远端跟踪 ref 可解析，缺失 ref／选项形输入拒绝；检查只确认提供的文件内容，接收端附文与模型实际加载仍按可观察证据判断。
 
 ## 已经变笨：按症状选动作
 
@@ -94,10 +94,12 @@ git hash-object --no-filters received-page.md
 
 **恢复时要求实际读取检查点与当前项目指令，先核最新约束和撤回项，再核 Git 状态、diff、产物与在途结果。** 冲突先查变化，未知写入先查状态。接续合格看三件事：限制仍遵守；下一步有证据入口；没有重复已完成或结果未知的写入。
 
-普通 Markdown 不会自动加载：Claude `@文件` 可引入内容，Codex `@` 文件选择主要加入路径，仍要明确要求读取；Claude 压缩后也可能只留下大文件的 `Referenced file` 路径，应核实际内容。检查点并不保证摘要无损。
+普通 Markdown 不会自动加载：Claude `@文件` 只在 Read token 限额内引入内容（默认 25,000 token，文本超过 256KB 不含）；Codex `@` 文件选择主要加入路径，仍要明确要求读取。
+
+**压缩后看到路径，不等于内容已恢复。** Claude 最多重读本会话读过或改过的 5 个文件，按最近修改优先；其中超过 5,000 token 的文件只返回 `Referenced file` 路径，不含正文。把下一步必需的事实与文件入口写进检查点，恢复时实际读取并核对内容，不等自动重读覆盖全部文件。检查点并不保证摘要无损。
 
 自己用 SDK 实现接续时，还要分别核 fork 写出的引用与读取接口实际返回的消息。[Claude Agent SDK 的组合接收](../../experiments/claude-session-receipt/README.md)中，单修 fork 或单修 read 均漏掉压缩明确保留的消息；两项已有补丁组合后，disk／内存 store 的 fork→read 才完整。此为公开合成数据的 SDK 实测，真实 CLI／模型接续未验；核实 2026-11-02。
 
-**依据**：[Codex 固定压缩提示](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/compact/prompt.md)、[Claude 引用](https://code.claude.com/docs/en/best-practices#provide-rich-content)与[压缩重载](https://code.claude.com/docs/en/context-window#what-survives-compaction)、[Codex 文件入口](https://learn.chatgpt.com/docs/developer-commands#interactive-shortcuts)、[既有恢复包](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)，核实 2026-10-26。
+**依据**：[Codex 固定压缩提示](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/compact/prompt.md)、[Claude 引用](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories)与[压缩重载](https://code.claude.com/docs/en/context-window#what-survives-compaction)、[Codex 文件入口](https://learn.chatgpt.com/docs/developer-commands#interactive-shortcuts)、[既有恢复包](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)，核实 2026-10-26。 Claude 文件引用限额与压缩重读范围于 2026-11-04 复核官方文档；未实跑客户端，不据此提升本页评级。
 
 **优先核限制：任务得分稳定，摘要仍可能丢掉工作方法和禁改范围。** [10 月压缩研究](https://arxiv.org/html/2610.31778v1) §4.2／§5 与[改造版 OpenCode](https://github.com/aisa-group/compaction/blob/main/docs/COMPACTION.md)，核实 2026-10-28。该研究的任务实验仅含少量任务及 Opus 4.6、GPT-5.3-Codex、GPT-5.4 等模型，1M 模型只用到窗口的 16%–38%；44 条真实会话用 LLM 判分，未测约束丢失对最终结果的影响。本仓未复现，不据此设通用阈值。
