@@ -2,12 +2,12 @@
 id: B-MOBA-VEYRA-DEATH-CONTACT-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-veyra-death-contact-20261104
 
-工作线：MOBA-Like。本卡为独立排队单元，尚未认领。
+工作线：MOBA-Like。本卡源候选已由负责人接收；实际游戏接线与画面验收仍待完成。
 
 ## 目标
 针对当前 Veyra README 已确认的旧死亡动作脚底穿地，交可重建的两队源候选，保留五动作与职业身份。
@@ -30,8 +30,9 @@ result_branch: relay/b-moba-veyra-death-contact-20261104
 
 ## 当前结果
 
-- 本单元修正 Veyra death-contact README 的测试计数（24→26）并补充 AdoptionDocTests 说明，同时把 pin 检查测试改为从 default-source-manifest.json 读取 sharedAssets sha256 并校验步骤 3 的 64 位 pin（缺失/格式错误/过期均失败）。实测 26 tests OK；审查者复跑 check_contact reproduce 两队 reproduced=true、0.01/0.005 容差 passed=true、build_candidates --check-only exit 0、content-set 7 tests OK；git status 仅 README.md 与 tests/test_checks.py 两处修改。未验证：npm test/build/sim（无 node_modules 且不允许安装）、游戏内死亡剪影与同框品质（禁浏览器/GPU，需人工）、check_source_bpy（本单元未改 source/GLB，默认 python 无 bpy）。openIssues 为空。
-- 产物：[cd5369a](https://github.com/dbvv1/MOBA-Like/commit/cd5369af66732b24622b178eb6bd54b6e3485edf)，分支 `relay/b-moba-veyra-death-contact-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：负责人：1) 按 brief 与公开参照人工并排验收游戏内死亡剪影/同框品质；2) 在有 node_modules 的环境跑 npm test、npm run build 与 npm run sim 对照目标区间；3) 判定源重建使用本机 bpy 5.2.3 与接收边界（3D 资产只用 gen3d/glbprep）的差异是否可接受。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- **接收范围：source candidate accepted。** 原回交 [cd5369a](https://github.com/dbvv1/MOBA-Like/commit/cd5369af66732b24622b178eb6bd54b6e3485edf) 经负责人独立核查与窄修后，已快进合入 MOBA main [7e1986f](https://github.com/dbvv1/MOBA-Like/commit/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64)。只接收 `asset-pipeline/veyra-death-contact/` 源候选包；两队 `.blend`／GLB 与原回交逐字节一致，原 `heroes`、`battle`、运行时、`quality.md` 均未改，原结果分支保留 `cd5369a`。
+- **窄修**：补齐采纳文档中的 recipe／README pin；网格不变量增加 NORMAL 与按骨名识别的非零蒙皮权重，源 Root 曲线检查原 key 时间、插值和 31 项数目；新增 5 项负例和 1 项正例。保留上游 Quaternius UAL1 CC0 攻击动作来源，不再称无第三方内容。文档明确两种采纳路径均未端到端运行，文档检查不等于已采纳。
+- **独立验证**：32 项包内 Python、87 文件／568 项游戏测试、7 项 content-set 测试、`npm run build`、web typecheck／build、公开文件／提交身份扫描和差异检查全部通过，非作者独审通过。原缺陷为两队 frame 13.5 脚底 −0.051905 m；候选在 0.01／0.005 m 容差通过，脚最低 −0.000127 m、身体最低 −0.000182 m、最高支撑最低点 +0.014601 m。Three.js CPU 蒙皮独立对照 baseline／candidate × 两队 × 61 采样，最大顶点 Y 差 1.575e−7 m。该合入提交无 GitHub status／check run，不将本地通过写成远端 CI 通过。
+- **原执行核查**：第 2／3 单元 Workflow 均 completed；CLI 分别于 2026-11-04 19:18:59／19:36:09 UTC 以 0 退出，工具 settled、pending 为空；780／757 个登记身份均 exited，PID 加创建时间存活匹配均为 0，收集回执 live 列表为空且无当前写者。第 3 单元对应 `cd5369a`，不是借用第 1 单元回执。外层 worker 的独立退出事件、退出码及准确时刻仍 unknown，不由 PID 消失补推。
+- **未验证与路线边界**：未接入真实游戏，未看死亡剪影、未做整层场景同框评判，未部署，画面品质计分不变。原交付沿现成后台 bpy 5.2.3 重建；负责人云端未另跑实际 `.blend` 重建／源差检查，不能拿合成曲线测试代替。后台 Blender 属本卡脚本路线；未安装软件、未操作 GUI／浏览器／GPU。此次不改模拟，不新增对局品质结论。
+- **下一步**：在独立采用单元中先固定旧源基线、同步所有 manifest／pin 和真实消费者回归，再于获准的实际游戏环境验整层画面中的死亡剪影与同框品质；通过前不宣称游戏动作已修复或画面改善。本卡不重复派发已收齐的源制作任务。
