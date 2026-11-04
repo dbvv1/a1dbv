@@ -2,7 +2,7 @@
 id: B-STAR-CAR-STANDARD-READER-20261104
 owner: dot-B
 kind: reader-test
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-car-standard-reader-20261104
@@ -28,3 +28,11 @@ page: domains/game-dev/assets/3d.md@463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 四状态的实际节点矩阵／轮触地点、源码合同与真实结果对应、是否可按文接线及第一卡点。必须区分渲染轴距与物理轴距，不能因 CPU 矩阵有限称外观合格；相机遮挡、驾驶手感和新车采用留 dot 判断。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- reader-test 一轮观察完成：按固定源 ab265593 与当前 engine.js CPU Mesh 路径完成五件车四态接线与矩阵采样，触地点 y≈0、两次 states.json 逐字节一致；taskDone=true，pageStuck=4（页面缺运动件姿态/轮轴/触地合同、缺四态夹具、缺运动件 pivot 说明、缺车辆所有者表）；未运行浏览器/GPU/游戏首绘、npm test（缺 node_modules）与 Node 24。openIssues 6 项：以“不是悬浮”否定 1–3.3 mm 采样差有误、夹具来源标注过强、外观轴距漏计 0.97 根缩放与 0.06 m y 偏移、未比较轮胎宽度/外缘、20 m/s 转向上限约 0.041 应为 0.0464 rad、run.mjs 重复 fixture 键导致 states.json 缺 fixture SHA 映射。
+- 产物：[260ce7b](https://github.com/dbvv1/Star-Rush-Reborn/commit/260ce7b8bb16d05cfefe6184eb97ae038dedbf09)，分支 `relay/b-star-car-standard-reader-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人处理 6 项 openIssues 与 4 项页面范围缺口（补运动件 pivot/轴距/触地合同与四态夹具）；外观与画面验收仍需浏览器/GPU 实机。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
