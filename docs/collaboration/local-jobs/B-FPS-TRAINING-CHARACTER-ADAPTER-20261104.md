@@ -2,7 +2,7 @@
 id: B-FPS-TRAINING-CHARACTER-ADAPTER-20261104
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-training-character-adapter-20261104
@@ -30,10 +30,11 @@ result_branch: relay/b-fps-training-character-adapter-20261104
 
 ## 当前结果
 
-- 产物保全：[f5eacd9](https://github.com/dbvv1/FPS-Like/commit/f5eacd9d9cc251e20c28529be430ae29db1a20ec)，分支 `relay/b-fps-training-character-adapter-20261104`，仅 adapter 目录 4 文件；未接训练赛 `src`、未合 FPS main。
-- 负责人独立复核：真实 GLB 原字节与五段 clip、17/17 CPU、adapter tsc、根类型检查、430/430 与构建通过；另验 30/60/144Hz 同 Feedback 年龄姿势一致。公开文件／提交扫描通过。原 CLI 退出 0、Workflow completed、工具 settled、登记进程无存活匹配；外层 worker 独立退出回执未知。
-- 决定：返工文档和真实命令测试。快速回切会重新选中旧 fire；手枪回切与未切枪的最终快照甚至完全相同，当前只读快照不能保证清除所有切枪前事件。见[独立评审与复现](../reviews/2026-11-04-fps-training-character-adapter.md)。
-- 欠项：源 reload/switch 动作和训练赛接线未实现；浏览器及同机位／脚接触／死亡轮廓未验，不声称画面改善。沿原卡小修后再交 review_ready，不新增同题卡，不占 GUI/GPU。
+- taskDone=true；修改要求 1-4 全部完成：README 改正切枪强保证并单列切枪历史缺口，adapter.ts 仅加维护者注释不改行为，新增 4 项真实 Game+Feedback 切枪/换弹 CPU 测试并保留原 17 项。Workflow 实跑 adapter 测试 21/21、adapter tsc 0、npm run typecheck 0、npm test 430/430、npm run build 0、git diff --check 通过、公开材料扫描 0 命中（Node v22.23.2 低于 engines >=24 但检查均通过）。openIssues：快照无切枪历史、回切仍可能重选旧 fire；缺 reload/switch 源片段；adapter 未接训练赛 src；pageStuck 不适用（build 单元）；未运行验收为浏览器/同机位/脚接触/死亡轮廓，本卡禁止浏览器，未声称画面通过。
+- 产物：[411f155](https://github.com/dbvv1/FPS-Like/commit/411f155cf014fa10023f870e68a1c28eab02da8e)，分支 `relay/b-fps-training-character-adapter-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人接收并按原结果分支 relay/b-fps-training-character-adapter-20261104 提交 review_ready；后续卡需补只读切枪事件/代际事实、源 reload/switch clip、训练赛 src 接线及人工/浏览器画面验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求
 
