@@ -1,7 +1,7 @@
 # A-GIT-DELIVERY-CLI-READER-20261104 · 用失败检查修复交付清单输出
 id: A-GIT-DELIVERY-CLI-READER-20261104
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a5f003360aa8491de9038e54e0f5478f357e3d60
@@ -38,4 +38,9 @@ reader记录附入页SHA／指纹、采用步骤、首遍路线、实际命令�
 单元约60–90分钟、最多两小时；达到目标并交回证据即结束，不扩查其他脚本。缺依赖、固定页输入、写者退出证据或所需权限时标blocked并给具体恢复条件；原调用／工具／登记进程结果未知时先核原调用，不启动替代reader或重复任务。只清理本轮明确归属临时资源，不清他人目录或终止未知进程。
 
 ## 当前结果
-待领取。已有缺陷复现只作真实任务输入；尚无新读者、修复或原生Windows验收。
+
+- reader-test 一轮结束：实测复现 gbk/ascii 下 exit 1、stdout 空、UnicodeEncodeError；将 scripts/prepare_git_delivery.py 的 JSON 输出改为 ensure_ascii=True 后同输入 utf-8/gbk/ascii 全部 rc 0 且可解析，entries 的 path/tree/blob SHA/mode/size 与 changes 同 native git ls-tree 独立枚举一致；新增 3 个 CLI 级回归并确认先红后绿，模块 15 例中 12 过、3 例为本机既有 fixture 限制（symlink、chmod mode、非 UTF-8 文件名）。taskDone=true，pageStuck=[]；check_repo、check_public、git diff --check 均 exit 0，check_offline 因缺 POSIX /bin/bash 与 jq 未运行。openIssues：记录中提交身份来源误写为仓库本地（实为全局 ~/.gitconfig）；Unicode 诊断测试未断言原错误原因仍在；native_entries 与生产实现共用 ls-tree 解析方式、独立性有限；Unicode 用例用 by_path 汇合未断言条目数与重复路径。
+- 产物：[9a5ba4b](https://github.com/dbvv1/a1dbv/commit/9a5ba4bca22220171bb6b48b6efc3bd6870ddad6)，分支 `relay/a-git-delivery-cli-reader-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人接收本轮 reader-test 并决定是否提交；如需继续增强，处理 4 个未关闭点（测试断言强度与记录表述），按规则不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
