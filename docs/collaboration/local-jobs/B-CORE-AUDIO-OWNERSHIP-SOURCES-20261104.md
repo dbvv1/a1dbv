@@ -2,7 +2,7 @@
 id: B-CORE-AUDIO-OWNERSHIP-SOURCES-20261104
 owner: dot-B
 kind: explore
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-core-audio-ownership-sources-20261104
@@ -27,3 +27,7 @@ result_branch: relay/b-core-audio-ownership-sources-20261104
 沿 MOBA 真实事件→调度→实例→清理标出责任，逐项说明其他实现在哪一层解决和未解决；五项可直接执行的测试输入与预期断言、每条固定源码链接。未运行音频设备，不将读码写成试听或新默认。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- check_repo 有本单元新增错误或检查结果未知，未推送
