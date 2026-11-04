@@ -1,7 +1,7 @@
 # A-GIT-DELIVERY-CLI-READER-20261104 · 用失败检查修复交付清单输出
 id: A-GIT-DELIVERY-CLI-READER-20261104
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a5f003360aa8491de9038e54e0f5478f357e3d60
