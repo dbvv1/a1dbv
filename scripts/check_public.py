@@ -160,10 +160,12 @@ def main():
       findings += scan_commits(root, args.commits)
     except ValueError as exc:
       parser.error(str(exc))
+  # ASCII JSON preserves Unicode values after parsing and works with both
+  # legacy stdout encodings and text-only streams such as io.StringIO.
   print(json.dumps({"checked_files": count, "findings": findings,
                     "limits": ["pattern scan only; read the diff before publishing",
                                "does not detect company code, private text or internal hosts"]},
-                   ensure_ascii=False, indent=2))
+                   ensure_ascii=True, indent=2))
   return bool(findings)
 
 
