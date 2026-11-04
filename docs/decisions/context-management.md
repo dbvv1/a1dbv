@@ -53,7 +53,11 @@ git hash-object --no-filters received-page.md
 
 **依据**：[团队实作](https://www.anthropic.com/research/harness-design-long-running-apps)、[Claude 会话引导](https://code.claude.com/docs/en/best-practices#steer-the-session)、[社区 clear／compact 正反经验](https://www.reddit.com/r/ClaudeCode/comments/1x0jmvm/when_do_you_use_clear_vs_compact_in_your_daily/)，核实 2026-10-28。
 
-**检索依据**：[Cursor 历史漏检及官方确认](https://forum.cursor.com/t/agents-grep-glob-tools-silently-return-zero-results-inside-any-cursor-managed-worktree/160373)、[忽略规则误诊](https://forum.cursor.com/t/agent-editing-files-with-shell-python-permission-denied-from-read-and-strreplace-tools-when-using-git-worktrees/155500/10)与[忽略规则](https://cursor.com/docs/reference/ignore-file)，核实 2026-10-28；本仓 `rg`／`grep` 阳性对照与直接阅读一致，未实测 Cursor，历史故障修复版本未知。
+**Cursor 的“零结果”和“拒绝读取”分开排查。** 历史 worktree 帖报告 `Read` 能读、`Grep/Glob` 却为零，工作人员确认搜索索引故障；另一帖中，用户移除 `.cursorignore` 的 `worktree/*` 后文件工具恢复，只是该用户的自报。不要据此统一删除忽略规则。先确认同一工作树、同一文件与符号，再核项目、全局及已启用的父目录忽略规则；有意排除或权限拒绝时停下确认，不改用 shell/MCP 绕过。文档说明这些工具未必受 `.cursorignore` 约束，因此 shell 读得到不能证明 Agent 已获准读取。
+
+**`git check-ignore` 只诊断 Git 规则，不证明 Cursor 没有忽略。** 对已跟踪文件核 Git 模式可用 `git check-ignore --no-index -v -- <文件>`；默认会跳过已跟踪文件，且该命令不会自动加载 `.cursorignore` 或 Cursor 全局设置。返回空结果不等于所有客户端规则均放行。2026-11-04 在新建临时 Git 仓库用两份合成文本实跑：已跟踪且匹配 `.gitignore` 的文件默认不报、加 `--no-index` 报规则；仅匹配 `.cursorignore` 的文件仍不报；已获准的显式文件 `grep` 阳性对照成功，4 项断言通过。此实验只验证 Git／shell 诊断边界，未运行 Cursor，也未验证其历史故障是否修复。[Git 命令范围](https://git-scm.com/docs/git-check-ignore)。
+
+**检索依据**：[Cursor 历史漏检及官方确认](https://forum.cursor.com/t/agents-grep-glob-tools-silently-return-zero-results-inside-any-cursor-managed-worktree/160373)、[忽略规则误诊](https://forum.cursor.com/t/agent-editing-files-with-shell-python-permission-denied-from-read-and-strreplace-tools-when-using-git-worktrees/155500/10)与[忽略规则](https://cursor.com/docs/reference/ignore-file)，2026-11-04 重读两帖与忽略规则文档；所读帖子仍无具体修复版本回执，不能据此断言当前版本仍有故障。本仓原有 `rg`／`grep` 阳性对照与直接阅读一致，本次合成诊断见上；未实测 Cursor。
 
 **重载依据**：[Claude 旧副本修复](https://github.com/anthropics/claude-code/blob/08c6a4f5121ae140d3c1b5c96e3e5ae53587b54b/CHANGELOG.md#L12)与[旧版反馈](https://github.com/anthropics/claude-code/issues/92949#issuecomment-6119121589)，核实 2026-10-27、未实跑；[AOCI 全量重读核查](../research/2026-10-26-context-reload-scope.md)与[断流反馈](https://github.com/openai/codex/issues/53653)，核实 2026-10-26、未复现客户端故障。
 
