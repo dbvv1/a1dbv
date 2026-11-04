@@ -2,7 +2,7 @@
 id: B-MOBA-UI-EVENT-CUES-20261104
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-ui-event-cues-20261104
