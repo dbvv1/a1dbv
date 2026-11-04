@@ -10,11 +10,11 @@ MOBA 8fcab371108f23b8be659eef1db0466561e3b597/treee72877d4db44e49eea3f177d3a4977
 ## 按哪个Skill
 最新a1dbv 5561e38e47b1a60166192660b15440a58c24e5ed细则§7与各仓AGENTS。虽§7允许页面smoke输入，本卡按父任务更窄边界：不模拟键鼠，不DOM点击、不dispatchEvent、不改sim或存档状态。只导航、读诊断和调用现有游戏内部固定回放推进。
 启动硬前置：核原Star42调用及10机位批次真实结束/自有浏览器、预览服务、父链和残留真实退出；任何未知仍blocked。不能凭Git/status/锁/排队判断槽空闲，不重试或打断旧任务，不删除锁、不杀未知进程。该硬前置需接收端人工/原进程回执核实，JSON approved不是替代证据。
-2026-11-04 已修正本轮云端启动配置：保留 Playwright 默认参数，chromiumSandbox=false，实际 argv 必含 no-sandbox、enable-unsafe-swiftshader、use-angle=swiftshader 三项。仅访问本地预览或三个案例自身网站；外层沙箱不变。配置修正不解除历史队列／冻结来源门槛，任何新的系统 EPERM 或访问拒绝仍停止该动作。复用接收端已装浏览器/Node/依赖，不下载/安装。固定一次Chromium，不因失败/软件renderer换配置重跑。
+2026-11-04 启动配置增加两档：`renderProfile` 省略或为 `swiftshader` 时保持原三参数；本机 Windows 可显式选 `d3d11`。具体参数与证据见下文。仅访问本地预览或三个案例自身网站；外层沙箱不变。配置修正不解除历史队列／冻结来源门槛，任何新的系统 EPERM 或访问拒绝仍停止该动作。复用接收端已装浏览器/Node/依赖，不下载/安装。固定一次Chromium，不因失败/软件renderer换配置重跑。
 
 ## 写入范围
 源码/资产/依赖锁只读。按冻结候选正常构建，完整列dist文件SHA256和source/tree；必要已跟踪构建须与独审树逐字相同。runner读取独占输出目录和既有依赖，不发布代码、不部署。每次先核source/tree/clean，保存版本和build manifest。
-三个项目串行、每路新context，每作独立browser进程和本机loopback静态服务。headless=true、chromiumSandbox=false、保留全部Playwright默认参数，显式添加三项必要参数；每个context仅允许该次已核的单一案例源，拒绝重定向／跨源／WebSocket并禁用service worker；CDP读实际argv硬断言，DEBUG原日志留本地，不将私人路径/ws地址公开。每作关闭自己browser/context/service并核browser exit后才下一作；外层监管须记录自身/子链PID归属、结束时间/退出码、服务端口拒绝连接，清理未知停后续。runner现直接复用冻结MOBA tools/capture-output.ts：观察真实ChildProcess退出、并行关闭browser连接与BrowserServer、10秒超时、preview关闭并要求同端口ECONNREFUSED。supervise.py用Popen保存wrapper→Node身份；Node记录自己父PID及browser子PID、预览为自身进程内HTTP服务。外层600秒超时仅向本轮runner stdin发cancel，关闭它持有的handles；30秒仍不退出则exit-unknown，保留阻塞不杀未知进程、不续后作。接收端仍须记录supervise.py本身的真实退出（进程不能自证已退出），既有串行槽必须由接收端原队列持有，不以新增锁代替。
+三个项目串行、每路新context，每作独立browser进程和本机loopback静态服务。两档均 headless=true，按所选档核对实际参数；每个context仅允许该次已核的单一案例源，拒绝重定向／跨源／WebSocket并禁用service worker；CDP读实际argv硬断言，DEBUG原日志留本地，不将私人路径/ws地址公开。每作关闭自己browser/context/service并核browser exit后才下一作；外层监管须记录自身/子链PID归属、结束时间/退出码、服务端口拒绝连接，清理未知停后续。runner现直接复用冻结MOBA tools/capture-output.ts：观察真实ChildProcess退出、并行关闭browser连接与BrowserServer、10秒超时、preview关闭并要求同端口ECONNREFUSED。supervise.py用Popen保存wrapper→Node身份；Node记录自己父PID及browser子PID、预览为自身进程内HTTP服务。外层600秒超时仅向本轮runner stdin发cancel，关闭它持有的handles；30秒仍不退出则exit-unknown，保留阻塞不杀未知进程、不续后作。接收端仍须记录supervise.py本身的真实退出（进程不能自证已退出），既有串行槽必须由接收端原队列持有，不以新增锁代替。
 
 ## 怎样算做成
 - FPS：显式smoke=ground-v1，含feel=ground-v1与去掉feel两路，内部144tick输入、原restart再144tick；检查pass=1/steps=144/complete、两runs各144且hash相同、locked=false/running=false。
@@ -25,7 +25,7 @@ MOBA 8fcab371108f23b8be659eef1db0466561e3b597/treee72877d4db44e49eea3f177d3a4977
 
 FPS已独审冻结合同（全卡串行阻塞未解除）：smoke.version=ground-v1，pass=0/1零基轮次；完整第二遍才complete=true；runs=[{ticks:144,hash},{ticks:144,hash}]且hash一致，locked=false/running=false。固定z=-1×60、0×30、+1×24、0×30。checks已更新精确合同；没有执行headless，原Star42/旧批次退出与外层清理证据仍是启动硬前置。
 
-验证：9项游戏/启动合同+7项清理Node CPU测试（包含真实复用关闭器timeout和ChildProcess exit事件）+7项Python外层failure/timeout模拟均通过；未监听实际端口、未生成浏览器进程。当前阻止同轮旁置发布的是headless功能/WebGL2门槛，不是等待10机位品质图。
+验证：9项游戏/启动合同+8项浏览器策略与失败证据+7项清理Node CPU测试（包含真实复用关闭器timeout和ChildProcess exit事件）+7项Python外层failure/timeout模拟均通过；未监听实际端口、未生成浏览器进程。当前阻止同轮旁置发布的是headless功能/WebGL2门槛，不是等待10机位品质图。
 
 每路独立保存完整观测、raw renderer、截图SHA与错误，不让默认路覆盖候选证据。FPS两路均带environment=courtyard-v1&art=standards-v1，并要求各自两次hash相同、候选与旧模型的固定tape终态hash不同，以防两路误选同一模型。
 
@@ -37,3 +37,11 @@ FPS已独审冻结合同（全卡串行阻塞未解除）：smoke.version=ground
 ## 2026-11-04 配置修复验证
 
 启动参数、URL名单、跨源／其他loopback端口／重定向／WebSocket拒绝回归已加入；三个案例网站按完整origin匹配，不接受任意 `chatgpt.site` 子域。Star 当前实拍入口同步使用同一策略。实际一次云端尝试在导航前因 Chromium 进程单例 `socket() EPERM` 退出；三项参数已在启动日志中出现，但没有图或 WebGL2 通过证据。失败后未重试、未修改外层沙箱。
+
+## 本机 D3D11 档
+
+接收端私有配置设置 `"renderProfile": "d3d11"`，整个 smoke 固定使用 `--enable-gpu --use-angle=d3d11`；未填时仍用 `swiftshader`，既有软件档和测试保留。D3D11 保留浏览器沙箱，只移除 Playwright 默认的软件回退 opt-in `--enable-unsafe-swiftshader`，其他默认参数保留。SwiftShader 保持 `chromiumSandbox:false` 与原三参数，外层沙箱不变。未知档名、缺少必要参数、混用后端、D3D11 实际进程含软件回退或关闭沙箱参数都会失败，不自动切档重跑。
+
+同一组前后图必须用同一档、同一浏览器和 renderer。清单记录请求的 `renderProfile`、实际 argv 核验结果、Chromium 版本及每路原始 renderer。D3D11 要求真实 WebGL2、非软件且 unmasked renderer 含 Direct3D11／D3D11；WARP、Microsoft Basic Render Driver 和 SwiftShader 均拒绝。**仅非软件不等于 GPU 已证实**：本 smoke 的分类仍为 `unknown`，不得凭启动参数写成 `gpu`。独立硬件证据及画面判断由后续验收完成。
+
+本次只运行 CPU 合同、适配与失败路径测试，没有启动本机／云端浏览器，没有 D3D11 实拍或 GPU 能力证明。此档不解除本文冻结来源、旧任务退出、串行槽与执行放行条件。

@@ -6,6 +6,15 @@ export function fpsPair(routes){assert.equal(routes.length,2);assert.notEqual(ro
 
 // Dedicated case-only browsers. The outer execution sandbox remains unchanged.
 export const requiredBrowserArgs=Object.freeze(['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader']);
+export const gpuBrowserArgs=Object.freeze(['--enable-gpu','--use-angle=d3d11']);
+export function browserLaunch(profile='swiftshader'){
+ assert(['swiftshader','d3d11'].includes(profile),'Unknown render profile: '+profile);
+ // D3D11 keeps the browser sandbox. Exclude only Playwright's software fallback
+ // opt-in; all other defaults remain. Never retry with a different profile.
+ return profile==='swiftshader'
+  ?{headless:true,chromiumSandbox:false,args:[...requiredBrowserArgs],timeout:30000}
+  :{headless:true,chromiumSandbox:true,ignoreDefaultArgs:['--enable-unsafe-swiftshader'],args:[...gpuBrowserArgs],timeout:30000};
+}
 export const caseOrigins=Object.freeze([
  'https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site',
  'https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site',
@@ -18,11 +27,36 @@ export function assertCaseUrl(value){
  assert(loopback||caseOrigins.includes(url.origin),'Only local previews or the three case sites are allowed');
  return url;
 }
-export function assertArgv(argv,{headless=true}={}){
+export function assertArgv(argv,{headless=true,profile='swiftshader'}={}){
+ const launch=browserLaunch(profile);
  assert(Array.isArray(argv)&&argv.every(a=>typeof a==='string'),'Actual Chromium argv required');
- if(headless)assert(argv.some(a=>/^--headless(?:=|$)/.test(a)),'Headless Chromium required');
- for(const flag of requiredBrowserArgs)assert(argv.includes(flag),'Missing required browser argument: '+flag);
- assert(argv.filter(a=>a.startsWith('--use-angle=')).every(a=>a==='--use-angle=swiftshader'),'Conflicting ANGLE backend');
+ if(headless){
+  const flags=argv.filter(a=>/^--headless(?:=|$)/.test(a));
+  assert(flags.length&&flags.every(a=>/^--headless(?:=(?:new|old|true))?$/.test(a))&&!argv.includes('--headed'),'Headless Chromium required');
+ }
+ for(const flag of launch.args){
+  assert(argv.includes(flag),'Missing required browser argument: '+flag);
+  const key=flag.split('=')[0];
+  assert(argv.filter(a=>a===key||a.startsWith(key+'=')).every(a=>a===flag),'Conflicting browser argument: '+key);
+ }
+ assert(argv.filter(a=>/^--use-angle(?:=|$)/.test(a)).every(a=>a==='--use-angle='+profile),'Conflicting ANGLE backend');
+ const forbidden=profile==='d3d11'
+  ?['--no-sandbox','--disable-setuid-sandbox','--enable-unsafe-swiftshader','--disable-gpu','--use-gl','--software']
+  :['--enable-gpu','--disable-gpu','--use-gl'];
+ for(const flag of forbidden)assert(!argv.some(a=>a===flag||a.startsWith(flag+'=')),'Conflicting browser argument: '+flag);
+}
+// A requested profile is not hardware evidence. Non-software remains unknown
+// unless the existing consumer supplies its own hardware classification.
+export function assertRendererProfile(info,profile='swiftshader'){
+ browserLaunch(profile);
+ const classification=assertWebGL(info);
+ if(profile==='swiftshader')assert.equal(classification,'software','SwiftShader profile requires software renderer evidence');
+ else{
+  assert.notEqual(classification,'software','D3D11 profile fell back to software');
+  assert(info.renderer,'D3D11 requires an unmasked renderer');
+  assert.match(info.renderer,/Direct3D11|D3D11/i,'D3D11 renderer not observed');
+ }
+ return classification;
 }
 export async function restrictCaseContext(context,base){
  const origin=assertCaseUrl(base).origin;
@@ -40,8 +74,8 @@ export async function restrictCaseContext(context,base){
  await context.routeWebSocket('**/*',socket=>socket.close());
 }
 
-export const launch={headless:true,chromiumSandbox:false,args:[...requiredBrowserArgs],timeout:30000};
-export function assertWebGL(info){assert.equal(info?.webgl2,true);assert(info.renderer||info.maskedRenderer);return /swiftshader|llvmpipe|softpipe|software|lavapipe/i.test(info.renderer||info.maskedRenderer)?'software':'unknown';}
+export const launch=browserLaunch();
+export function assertWebGL(info){assert.equal(info?.webgl2,true);assert(info.renderer||info.maskedRenderer);return /swiftshader|llvmpipe|softpipe|software|lavapipe|\bwarp\b|microsoft basic render/i.test(info.renderer||info.maskedRenderer)?'software':'unknown';}
 export function mobaProgress(a,b,version){assert.equal(a.snapshot.contentVersion,version);assert.equal(b.snapshot.contentVersion,version);assert.equal(a.state.backend,'three-webgl2');assert(a.state.ready&&b.state.ready);assert(b.snapshot.tick>a.snapshot.tick);}
 export function starProgress(a,b,revision){assert(a.ready&&b.ready&&!a.error&&!b.error);assert.equal(a.drivingRevision,revision);assert.equal(b.drivingRevision,revision);assert.equal(b.frame,a.frame+1);assert.equal(b.tick,a.tick+1);assert.equal(a.input,'accelerate-brake');assert(b.player.s>a.player.s);assert.equal(b.rendererInfo.api,'webgl2');}
 export function fpsProgress(a){assert(a.state.ready);assert.equal(a.state.backend,'three-webgl2');const s=a.state.smoke;assert.equal(s?.version,'ground-v1');assert.equal(s.pass,1);assert.equal(s.steps,144);assert.equal(s.complete,true);assert.equal(a.state.locked,false);assert.equal(a.state.running,false);assert.equal(s.runs.length,2);for(const run of s.runs){assert.equal(run.ticks,144);assert.equal(typeof run.hash,'string');assert(run.hash.length>0);}assert.equal(s.runs[0].hash,s.runs[1].hash);}

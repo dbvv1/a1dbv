@@ -26,6 +26,18 @@ class Tests(unittest.TestCase):
   r,s,e=self.invoke(0);self.assertIsNone(e);self.assertEqual(r['steps'][0]['state'],'exited');self.assertEqual(r['steps'][0]['exitCode'],0)
  def test_signal_is_not_success(self):
   r,s,e=self.invoke(-15);self.assertIsInstance(e,RuntimeError);self.assertEqual(r['steps'][0]['signal'],15);self.assertIsNone(r['steps'][0]['exitCode'])
+ def test_render_profile_is_gpu_only_for_frozen_batch(self):
+  fn=next(n for n in TREE.body if isinstance(n,ast.FunctionDef) and n.name=='render_profile')
+  ns={};exec(compile(ast.Module(body=[fn],type_ignores=[]),str(FILE),'exec'),ns)
+  self.assertEqual(ns['render_profile']({}),'d3d11')
+  self.assertEqual(ns['render_profile']({'renderProfile':'d3d11'}),'d3d11')
+  for profile in ['swiftshader','gpu','',None,False]:
+   with self.assertRaises(RuntimeError):ns['render_profile']({'renderProfile':profile})
+ def test_batch_passes_profile_to_every_capture_and_checks_each_receipt(self):
+  source=FILE.read_text()
+  self.assertEqual(source.count("env['CAPTURE_RENDER_PROFILE'] = profile"),3)
+  for consumer in ['m','fps_report','star_report']:
+   self.assertIn(consumer+".get('renderProfile') != profile",source)
  def test_no_optimizable_assert_gates(self):
   self.assertFalse(any(isinstance(n,ast.Assert) for n in ast.walk(TREE)))
 if __name__=='__main__':unittest.main()

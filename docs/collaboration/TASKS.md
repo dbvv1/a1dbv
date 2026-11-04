@@ -8,6 +8,7 @@
 
 - **A**：在途按原边界安全收尾，同时收口窄工具考证，将强源、替代和反例合成[长程开发路线](../decisions/long-tasks.md)及模板，在真实主线任务采用并修正卡点；交付后自然接续，以 Activity／心跳核证后删本行。其他核心问题与未知前沿并行，保留欠项，不重派四张已取消广扫；长期可靠性继续观察。心跳每小时；11-02 UTC 14:18、15:25、15:57、17:04、17:56、18:59 均唤醒并派只读查对，但15–19时误以缺新完整目标暂停本机派单、未续独立就绪页与广扫，未交付地图／模板；19:45恢复派发。
 - **B**：三案默认分支自 10-30 未更新，已保全的 FPS 全场材质 `8c29cec8`、MOBA 镜头＋Q/W `7a2234e7`、Star 连续空间与峰后轮胎按[细则§6](game-taskbook.md#6-作品案例)第 3 条新旁置门槛先发布，再按其轮转派单（Star 最久未发布，先派）。云浏览器：用户 10-30、11-03 允许 `--no-sandbox`、`--enable-unsafe-swiftshader` 与 `--use-angle=swiftshader`，只用于打开三案自有页面，外层沙箱不动；按[恢复入口](../../experiments/cloud-browser-recovery/README.md)验到非空 WebGL2 图、参数、renderer 与正常退出后，补跑积压候选的完整 smoke、同机位图与盲评。手感三项（FPS 加速度／摩擦／插值，MOBA 施法中下一技能结束当 tick 执行，Star 轮胎峰后下降／载荷转移及动力测法）按同一门槛发布，前后值写入 feel.md 与记分卡。三案各有新的旁置发布、出图命令可用、三项手感候选已发布后删除本行。
+- **B 出图**：需要 WebGL2 的出图与 smoke 改由本机跑（11-04 用户决定，[细则§7](game-taskbook.md#7-下发本机模型的游戏任务)），一次一张卡；交回后补十机位图、目标图、盲评与材质整层。
 - **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
 
 ## 分工
@@ -48,7 +49,6 @@
 | 事项 | 等什么 | 期间照常做／批准后首步 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 `27a40be`／Site v16：WebGL2 四路 smoke、四机位双重复通过；两非作者判小幅改善，正式评分待补。获准 `--no-sandbox`；已留 renderer／参数（SwiftShader software），exit 0、端口关闭。 |
-| 三案固定出图与完整验收 | 11-04 启动配置已修，三旗／默认参数保留；Star 单次尝试导航前 `socket() EPERM`／SIGABRT，Node exit1、预览退出，无 PNG。 | 等环境允许 Chromium IPC；不重试或绕过。之后补十机位图、目标图、盲评与材质整层。 |
 | LOB 外部试玩 | 已授权；实见原生 checkpoint 续局至第 25 关失败终局及从第一关重开；非连续整局、全程静音 | 第 21 关断连后续局重置分数／弹药／地形，不合并为连续成绩；连续完整一局、胜利与听感未验。详见[实玩范围](../research/2026-10-23-game-worth-trying.md)。 |
 
 ## 已停止的动作

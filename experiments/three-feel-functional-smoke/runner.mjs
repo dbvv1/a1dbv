@@ -9,10 +9,11 @@ import {resolve,sep,extname} from 'node:path';
 import {once} from 'node:events';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
-import {staticPath,fpsPair,launch,assertArgv,assertCaseUrl,restrictCaseContext,assertWebGL,mobaProgress,starProgress,fpsProgress} from './checks.mjs';
+import {staticPath,fpsPair,browserLaunch,assertArgv,assertCaseUrl,restrictCaseContext,assertWebGL,assertRendererProfile,mobaProgress,starProgress,fpsProgress} from './checks.mjs';
 const cfg=JSON.parse(readFileSync(process.argv[2],'utf8'));
 assert.equal(cfg.approved,true,'UNRELEASED/BLOCKED: parent must approve exact revised plan after original Star42 and all prior browser/service exit receipts');
 assert.deepEqual(cfg.blockers,[],'Unresolved serial/identity/interface prerequisites');
+const {renderProfile='swiftshader'}=cfg;const launch=browserLaunch(renderProfile);
 const out=resolve(cfg.output);mkdirSync(out,{recursive:false});
 const require=createRequire(resolve(cfg.installedDependencyRoot,'package.json'));
 const {chromium}=require('playwright'),{PNG}=require('pngjs');
@@ -21,7 +22,7 @@ const {observeCaptureProcess,createCaptureBrowserCloser,captureBrowserExitState,
 let cancelCurrent=()=>{},interrupted=null;
 process.stdin.setEncoding('utf8');let stdinBuffer='';process.stdin.on('data',chunk=>{stdinBuffer+=chunk;let at;while((at=stdinBuffer.indexOf('\n'))>=0){const line=stdinBuffer.slice(0,at);stdinBuffer=stdinBuffer.slice(at+1);try{if(JSON.parse(line).action==='cancel'){interrupted='outer-timeout';cancelCurrent();}}catch{interrupted='invalid-control-message';cancelCurrent();}}});
 for(const signal of ['SIGINT','SIGTERM','SIGHUP'])process.on(signal,()=>{interrupted=signal;cancelCurrent();});
-const manifest={status:'running',started:new Date().toISOString(),jobs:[],qualityAcceptance:false};
+const manifest={status:'running',started:new Date().toISOString(),jobs:[],renderProfile,qualityAcceptance:false};
 const save=()=>writeFileSync(resolve(out,'manifest.json'),JSON.stringify(manifest,null,2));save();
 function staticServer(root){return createServer((req,res)=>{try{const path=staticPath(root,req.url);const bytes=readFileSync(path);res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.wasm':'application/wasm','.png':'image/png','.webp':'image/webp','.glb':'model/gltf-binary','.svg':'image/svg+xml'})[extname(path)]||'application/octet-stream');res.end(bytes);}catch{res.statusCode=404;res.end('not found');}});}
 for(const job of cfg.jobs){
@@ -40,7 +41,7 @@ for(const job of cfg.jobs){
   row.build=build;
   server=staticServer(resolve(job.root));server.listen(0,'127.0.0.1');await once(server,'listening');port=server.address().port;row.preview={pid:process.pid,parentPid:process.ppid,port,kind:'owned-in-process-http-server'};save();check();
   launchRequested=true;browserServer=await chromium.launchServer({...launch,...(cfg.executablePath?{executablePath:cfg.executablePath}:{})});child=browserServer.process();processEvidence=observeCaptureProcess(child);row.browserProcess=processEvidence;save();check();
-  browser=await chromium.connect(browserServer.wsEndpoint());const session=await browser.newBrowserCDPSession();const argv=(await session.send('Browser.getBrowserCommandLine')).arguments;assertArgv(argv);row.launchVerified=true; // raw DEBUG=pw:browser log remains local, never expose private argv.
+  browser=await chromium.connect(browserServer.wsEndpoint());const session=await browser.newBrowserCDPSession();const argv=(await session.send('Browser.getBrowserCommandLine')).arguments;assertArgv(argv,{profile:renderProfile});row.launchVerified=true;row.renderProfile=renderProfile;row.browserVersion=browser.version(); // raw DEBUG=pw:browser log remains local, never expose private argv.
   for(const route of job.routes){check();const routeEvidence={route:route.path,label:route.label,observation:null,renderer:null,screenshot:null,errors:[]};row.routes??=[];row.routes.push(routeEvidence);
    const context=await browser.newContext({viewport:{width:1280,height:720},serviceWorkers:'block'});await restrictCaseContext(context,'http://127.0.0.1:'+port);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
    try{
@@ -50,7 +51,7 @@ for(const job of cfg.jobs){
     }else if(job.name==='star'){
      await page.waitForFunction(()=>window.__shot?.ready||window.__shot?.error,null,{timeout:90000});const a=await page.evaluate(()=>window.__shot);const b=await page.evaluate(()=>window.__shotNext());starProgress(a,b,route.revision);routeEvidence.observation={a,b};
     }else{await page.waitForFunction(()=>window.fpsClient?.state().smoke?.complete,null,{timeout:90000});const result=await page.evaluate(()=>({state:window.fpsClient.state(),snapshot:window.fpsClient.snapshot()}));fpsProgress(result);routeEvidence.observation=result;}
-    const renderer=await page.evaluate(()=>{for(const c of document.querySelectorAll('canvas')){const gl=c.getContext('webgl2');if(gl){const e=gl.getExtension('WEBGL_debug_renderer_info');return {webgl2:true,maskedRenderer:gl.getParameter(gl.RENDERER),version:gl.getParameter(gl.VERSION),renderer:e?gl.getParameter(e.UNMASKED_RENDERER_WEBGL):null,vendor:e?gl.getParameter(e.UNMASKED_VENDOR_WEBGL):gl.getParameter(gl.VENDOR)};}}return {webgl2:false};});routeEvidence.renderer={...renderer,class:assertWebGL(renderer)};
+    const renderer=await page.evaluate(()=>{for(const c of document.querySelectorAll('canvas')){const gl=c.getContext('webgl2');if(gl){const e=gl.getExtension('WEBGL_debug_renderer_info');return {webgl2:true,maskedRenderer:gl.getParameter(gl.RENDERER),version:gl.getParameter(gl.VERSION),renderer:e?gl.getParameter(e.UNMASKED_RENDERER_WEBGL):null,vendor:e?gl.getParameter(e.UNMASKED_VENDOR_WEBGL):gl.getParameter(gl.VENDOR)};}}return {webgl2:false};});routeEvidence.renderer={...renderer,class:null};routeEvidence.renderer.class=assertWebGL(renderer);assertRendererProfile(renderer,renderProfile);if(row.routes.length>1)assert.equal(renderer.renderer||renderer.maskedRenderer,row.routes[0].renderer.renderer||row.routes[0].renderer.maskedRenderer,'Comparison routes require the same renderer');
     const bytes=await page.locator('canvas').first().screenshot(),png=PNG.sync.read(bytes),colors=new Set();for(let i=0;i<png.data.length;i+=64)colors.add(png.data.subarray(i,i+3).toString('hex'));assert(colors.size>16,'No non-background canvas');const filename=job.name+'-'+route.label+'.png';writeFileSync(resolve(out,filename),bytes);routeEvidence.screenshot={path:filename,sha256:createHash('sha256').update(bytes).digest('hex')};assert.deepEqual(errors,[]);
    }finally{routeEvidence.errors=[...errors];row.errors.push(...errors);save();await context.close();}
   }

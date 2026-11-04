@@ -1,18 +1,19 @@
 // Standalone consumer of the game's existing qualityCapture fixed-step interface.
 import assert from 'node:assert/strict';
-import {launch,assertArgv,assertCaseUrl,restrictCaseContext} from '../three-feel-functional-smoke/checks.mjs';
+import {browserLaunch,assertArgv,assertRendererProfile,assertCaseUrl,restrictCaseContext} from '../three-feel-functional-smoke/checks.mjs';
 import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {join} from 'node:path';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 const [root,moba,out]=process.argv.slice(2);
+const renderProfile=process.env.CAPTURE_RENDER_PROFILE??'swiftshader',launch=browserLaunch(renderProfile);
 const require=createRequire(join(root,'package.json'));
 const {chromium}=require('playwright'),{preview}=await import(pathToFileURL(require.resolve('vite')).href),{PNG}=require('pngjs');
 const {observeCaptureProcess,createCaptureBrowserCloser,captureBrowserExitState,captureSpawnEvidence,closeCapturePreview,captureBundleIdentity,verifyServedCaptureBundle}=await import(pathToFileURL(join(moba,'tools/capture-output.ts')).href);
 const h=b=>createHash('sha256').update(b).digest('hex');
 await mkdir(out,{recursive:false});
-const report={passed:false,shots:[],errors:[],scope:'fixed current offline quality frames; not sound or player-input acceptance'};
+const report={passed:false,renderProfile,shots:[],errors:[],scope:'fixed current offline quality frames; not sound or player-input acceptance'};
 let browser,browserServer,server,port,processEvidence,interrupted=null;
 const checkInterrupted=()=>{if(interrupted)throw Error('Interrupted: '+interrupted);};
 const close=createCaptureBrowserCloser(()=>({browser,server:browserServer}));
@@ -25,7 +26,7 @@ try{
  report.launch={...launch,args:[...launch.args,'--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows'],executablePath:process.env.FPS_CAPTURE_CHROMIUM};
  checkInterrupted();browserServer=await chromium.launchServer(report.launch);processEvidence=observeCaptureProcess(browserServer.process());checkInterrupted();
  report.actualSpawn=captureSpawnEvidence(browserServer.process(),chromium.executablePath(),process.env.FPS_CAPTURE_CHROMIUM);
- assertArgv(browserServer.process().spawnargs.slice(1));assert.equal(report.actualSpawn.noSandbox,true);assert.equal(report.actualSpawn.unsafeSwiftshader,true);assert.equal(report.actualSpawn.useAngle,'swiftshader');assert.equal(report.actualSpawn.headless,true);
+ assertArgv(browserServer.process().spawnargs.slice(1),{profile:renderProfile});assert.equal(report.actualSpawn.headless,true);
  browser=await chromium.connect(browserServer.wsEndpoint());report.browserVersion=browser.version();
  const context=await browser.newContext({viewport:{width:1280,height:720},deviceScaleFactor:1,locale:'en-US',timezoneId:'UTC',serviceWorkers:'block'});
  await restrictCaseContext(context,base);
@@ -41,7 +42,7 @@ try{
  const meta=await page.evaluate(()=>window.__shot);
  const stem=shot+'-r'+repeat;await writeFile(join(out,stem+'.json'),JSON.stringify(meta,null,2),{flag:'wx'});
  assert.equal(meta.error,undefined);assert.equal(meta.ready,true);assert.equal(meta.frame,0);assert.equal(meta.t,2);
- assert.match(meta.rendererEvidence.version,/WebGL 2/);assert.equal(meta.rendererEvidence.rendererClass,'software');assert.equal(meta.rendererEvidence.unmasked,true);assert.ok(meta.renderer);
+ assert.match(meta.rendererEvidence.version,/WebGL 2/);assert.equal(meta.rendererEvidence.rendererClass,renderProfile==='d3d11'?'gpu':'software');assertRendererProfile({webgl2:true,renderer:meta.renderer},renderProfile);assert.equal(meta.rendererEvidence.unmasked,true);assert.ok(meta.renderer);
  assert.equal(meta.state.actors.length,10);assert.equal(meta.state.tick,120);assert.equal(meta.commands.length,120);
  assert.equal(meta.viewport.width,1280);assert.equal(meta.viewport.height,720);
  assert.equal(meta.renderInfo.environment.active,true);assert.equal(meta.renderInfo.art.active,true);
