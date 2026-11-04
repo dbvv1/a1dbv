@@ -227,6 +227,14 @@ flowchart LR
 
 单一无中断入口保简单状态即可，不必搭通用锁框架；允许边走边观察的模式不因混合一律停控。新增成本是交接身份与终止分支，不能靠更长混合掩盖错目标。
 
+**接 Cinemachine 时，把通知、覆盖持有和输出关闭分别接准。** 固定源码补充了三处容易接错的边界：
+
+- **完成不是解锁令。** 正常 root blend 的 BlendCreated 先于 Activated；完成更新先处理退出 live 的 Deactivated，再按条件发 Finished。cut 走 Activated 的 IsCut 分支，不等 Finished。事件没有玩家代次／交接 ID，这些仍由项目层核对。
+- **撤自己持有，不猜暂停会清栈。** 保存 SetCameraOverride 返回的 ID，退出只 Release 该 ID；override 按 priority 排序，同 ID 更新不改变原优先级。Timeline mixer 的 OnPlayableDestroy 只撤自己 ID，不能把 Pause 当“释放全部覆盖”。
+- **静音与清理分开。** ImpulseDefinition 可返回活动事件供 Cancel；Listener.Gain=0 只关直接输出，未缩放输入仍能驱动 secondary。全局 Clear 不清 listener 已累积尾震，关闭镜头运动还须处理 ReactionSettings.AmplitudeGain 与已有反应量。
+
+姿态继承、混出快照、同目标 warp 和取消阻尼重算也不是可互换的 reset。各入口、五场景时序与待执行断言见[固定源码接线表](../../docs/collaboration/local-jobs/artifacts/B-CORE-CAMERA-RETURN-SOURCES-20261104/sources.md)。该 ref 为 3.1.8-pre.2，未运行引擎，不替代上文稳定包基线。[源码核实：2026-11-04]
+
 **🧪 临时跟随要分开保存偏好、物理键持有和最终镜头模式。** 按住回看自己不应把存档里的永久锁定改成 `true`；最终跟随由 `locked || held` 决定，松开清 `held`、保当前画面位置，再交回自由滚屏。按下时记录物理键，松开不再按当前绑定重新解析，也不能套用 keydown 的输入框过滤，否则改键或焦点转入 UI 后会卡住。失焦、暂停、重开和输入交权清除临时持有；按住期间手动改永久模式，应撤销临时跟随并拒绝同次长按的 repeat，等下一次真正按下；固定捕获机位不接受临时跟随。
 
 实现起点：[MOBA 候选状态](https://github.com/dbvv1/MOBA-Like/blob/cb818773da66e6a8ee77a4576339f33457fba32d/src/render/camera-follow.ts)、[按键所有权与释放](https://github.com/dbvv1/MOBA-Like/blob/cb818773da66e6a8ee77a4576339f33457fba32d/src/input/controls.ts)及 [world 消费](https://github.com/dbvv1/MOBA-Like/blob/cb818773da66e6a8ee77a4576339f33457fba32d/src/render/world.ts)。仅 `camera=hold-follow-v1` 启用；源码、CPU／DOM 回归与替身 renderer 相机轨迹已检查。整合已进 [main 的旁置单元](https://github.com/dbvv1/MOBA-Like/blob/d563b78f4f0b68f589421bb57e7d0c3fb1cb45df/docs/side-release-acceptance.md)，云浏览器默认／组合推进 344／3033 tick、实际施法可用；当前 Canvas2D 回退不支持临时跟随，故仍未验证“自由观察→按住回看→松开→移动／施法”的视野、连贯性与舒适度，不能据此换默认。[源码／CPU 与浏览器旁置门槛，2026-11-03 Asia/Shanghai]

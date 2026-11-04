@@ -2,12 +2,12 @@
 id: B-CORE-CAMERA-RETURN-SOURCES-20261104
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-core-camera-return-sources-20261104
 
-工作线：核心模块。本卡为独立排队单元，尚未认领。
+工作线：核心模块。五场景固定源码对照经纠正后接收；原调用不重派，接入断言留待真实工程执行。
 
 ## 目标
 把已定镜头归还契约对应到真实 API，让移植者分清 Cinemachine blend 与游戏会话的状态所有权。
@@ -30,8 +30,8 @@ result_branch: relay/b-core-camera-return-sources-20261104
 
 ## 当前结果
 
-- 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/B-CORE-CAMERA-RETURN-SOURCES-20261104/sources.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
-- 产物：[cba4c59](https://github.com/dbvv1/a1dbv/commit/cba4c5953dc31f77ad51693162f8ffd75cdfeff4)，分支 `relay/b-core-camera-return-sources-20261104`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- 接收范围：[五场景源码对照](artifacts/B-CORE-CAMERA-RETURN-SOURCES-20261104/sources.md)已接入[相机完整模块](../../../domains/game-dev/04-client-modules.md#camera-contract)，含所有者／原生入口／项目条件、一张时序图和五项后续接线断言。固定 Cinemachine ref 实为 3.1.8-pre.2，不改稳定包基线。
+- 原稿保留：[cba4c59](https://github.com/dbvv1/a1dbv/commit/cba4c5953dc31f77ad51693162f8ffd75cdfeff4)，分支 `relay/b-core-camera-return-sources-20261104`。不原样接 799 行链接清单；已纠正事件顺序、Timeline 释放时机、override priority、单事件 Cancel 与 Listener 主／次震增益等错误。
+- 检查：两路非作者固定源码核查后修正文；最终读者核查、文档、公开文件／提交身份及差异检查结果写本次提交说明。原回交自报不替代接收检查。
+- 未验：Unity／Celeste64 未实跑，MOBA 未新增运行验证；五项断言待实际接入时执行，不计画面、手感或记分卡提升。本卡源码交付完成，不新派同题收集或拍摄。
+- 执行证据：原卡证明超时前成稿已回交，本轮完成静态接收；不据此断言原调用／外层进程已退出。
