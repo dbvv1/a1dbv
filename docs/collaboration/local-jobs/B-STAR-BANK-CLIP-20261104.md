@@ -2,7 +2,7 @@
 id: B-STAR-BANK-CLIP-20261104
 owner: dot-B
 kind: build
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-bank-clip-20261104
@@ -31,4 +31,8 @@ result_branch: relay/b-star-bank-clip-20261104
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 新增 authoring/coast-bank-clip/ 8 个文件：固定源侧带生成脚本、clipOuterBank 适配器、测试、最小 CPU 样本与 README。实测 build-sideband.py --check 通过（192 个外岸三角，重放 road.glb SHA-256 9eb6a584...ebd9a，与固定输出逐字节一致）；node --test clip.test.mjs 7/7 通过；sample.mjs 输出 1658→1614 三角、80 个外岸受影响（56 移除、24 细分出 36）、面积 499.696→358.565 m²；另跑 200-300 组随机走廊压力检查，结果有限、非退化、无反向面。三角度独立审查经 1 轮修正后全部通过，openIssues 为空。未验证：实机岸坡外观、接缝遮挡、海水衔接、碰撞/驾驶，以及正式场景接入；全量 npm test 未运行（未改产品代码），按卡未开浏览器/GUI/GPU。
+- 产物：[471f61b](https://github.com/dbvv1/Star-Rush-Reborn/commit/471f61b3e343506ce6acece94f52a81aeecdbd29)，分支 `relay/b-star-bank-clip-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：待负责人提交并推送 result_branch 回 review_ready；后续场景接入按 README 顺序 decodeStandardPart → verifyBankSideband → bendRoadParts → clipOuterBank，调用者排除当前 24m 标准段与前后紧邻段，并补实机外观/接缝/海面人工验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
