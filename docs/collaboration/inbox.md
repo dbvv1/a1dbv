@@ -115,7 +115,7 @@ Foremerge 核对的是调用方给定提交包含已接受内容，**不验证�
 
 ### 2026-10-27：灯光 Skill 先核材质受光路径
 
-✅ [game-quality-pass §3.1](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#3-改一整层让整个场景同时变)已补材质边界，不以 HDRI＋AO 为通用起点。Three 0.186.1 原生 MeshToon 不接 scene.environment；方向光阴影先衰减 direct，Ambient／Hemisphere 独立进入 indirect，Toon ramp 保不住全遮挡的直接光。先核 shader 直接／间接受光，再按缺口选环境源与 AO；Toon 不强接 PMREM。源码结论保留；后续候选的视觉收益按 [§4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)验收。
+✅ [game-quality-pass 灯光细则](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/lighting.md)已补材质边界，不以 HDRI＋AO 为通用起点。Three 0.186.1 原生 MeshToon 不接 scene.environment；方向光阴影先衰减 direct，Ambient／Hemisphere 独立进入 indirect，Toon ramp 保不住全遮挡的直接光。先核 shader 直接／间接受光，再按缺口选环境源与 AO；Toon 不强接 PMREM。源码结论保留；后续候选的视觉收益按 [§4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)验收。
 
 **依据**：Three 官方固定源码 [环境接入](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/webgl/WebGLPrograms.js#L56-L64)、[阴影与间接光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_fragment_begin.glsl.js#L181-L244)、[Toon 合光](https://github.com/mrdoob/three.js/blob/9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8/src/renderers/shaders/ShaderChunk/lights_toon_pars_fragment.glsl.js#L10-L25)；与已安装 0.186.1 对应文件逐字节一致，核实 2026-10-27。
 

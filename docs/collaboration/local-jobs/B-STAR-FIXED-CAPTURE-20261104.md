@@ -2,7 +2,7 @@
 id: B-STAR-FIXED-CAPTURE-20261104
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-fixed-capture-20261104
@@ -46,4 +46,9 @@ manifest 逐机位列实际完整 URL、固定 commit/tree、构建 hash、seed/
 发布前对实际新增文件做公开扫描、diff 空白和 noreply 身份检查；扫描通过后只推 result_branch，回 review_ready。失败保留原失败证据。dot 按图接收；本卡 smoke 不等于完整整局、硬件性能、驾驶手感或画面判优。
 
 ## 当前结果
-等待原接收端领取。三机位尚未执行，交回图与真实退出情况后由 dot 接收，再排下一案例。
+
+- 默认构建通过（Worker 3773376e…、road bundle 7e82cffc…），单预览服务与端口清理已确认；首个机位 coast-chase 在启动预检失败：tests/capture.mjs 通过 CDP Browser.getBrowserCommandLine 核 argv，而锁定的 Playwright 1.64.1 默认不再传 --enable-automation，Chromium 156.0.8078.4 拒绝返回命令线，退出码 1、report.passed=false、runs=[]、无 PNG；按规则停止其余两机位，未换参重拍。已保存脱敏失败证据与公开说明（4 个 docs 文件），capture 相关单测 14/14 通过。未验证：任何场景图、WebGL2 renderer/vendor、像素与双拍一致性；环境为 Node 22.23.2 而非要求的 24。openIssues：无审查遗留项；阻塞根因需源码/依赖层决定。
+- 产物：[48d0c34](https://github.com/dbvv1/Star-Rush-Reborn/commit/48d0c34b5ed8da0f30a323fa9048bcc04866cdb4)，分支 `relay/b-star-fixed-capture-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由 dot 决定另开一张改 tests/capture.mjs 的卡，在启动参数显式补 --enable-automation（保持同一 Chromium 与三软件渲染参数），并在 Node 24 环境下用新的输出根先单跑 coast-chase 验证启动、argv 校验与 PNG 落盘，再跑其余两机位；本次失败目录保留为证据，不覆盖、不当作基线。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
