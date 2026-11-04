@@ -2,7 +2,7 @@
 id: B-FPS-MATCH-CUES-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-match-cues-20261104
@@ -30,13 +30,14 @@ result_branch: relay/b-fps-match-cues-20261104
 
 ## 当前结果
 
-- 源链两项缺口已修复：默认配方在输出前拒绝首通峰值加 -3 dB 增益超过 -12 dBFS 上限（-9→-8 反例退出 2），并补齐 batchId/baseRef/license/origin 非空校验；构建改为先全部合成、成功后才创建目录并写 WAV+manifest，拒绝时已有产物字节不变。26 项测试通过，四段 WAV 字节与事件身份未变，manifest 仅 generator.sha256 更新。taskDone=true，pageStuck=false。未验证：实际试听、枪声/换弹/命中掩蔽、运行时优先级、浏览器与设备播放（均属任务延期项）；npm test 未重跑（仅改 asset-pipeline，无 node_modules）。
-- 产物：[ecb53c7](https://github.com/dbvv1/FPS-Like/commit/ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a)，分支 `relay/b-fps-match-cues-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由负责人进行卡级非作者复核并推送 result_branch；后续接线与真实试听另行安排。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 决定：离线源包工程部分接收，负责人已将 `ecb53c7` 快进合入 FPS main，并核远端 SHA 一致；保全分支 `dot-b/accept-match-cues-20261104`。运行接线与听感仍延期，不增加游戏品质通过数。
+- 产物：[ecb53c7](https://github.com/dbvv1/FPS-Like/commit/ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a)，分支 `relay/b-fps-match-cues-20261104`。返工只改 generator、测试、README 和 manifest 的 generator 哈希；四 WAV、recipe 与事件身份相对 `25e6dba` 字节不变。
+- 独立检查：26 项源测试、另行构造 36 种非法输入 × 既有／新输出目录共 72 次 CLI 检查通过。首通峰值 −8 及缺失／空白／错误类型元数据均在写前退出 2，原产物字节和修改时间未变，新目录不创建；后段合成失败同样先拒绝。合法重建、−3 dB 对照和四 WAV 哈希通过；本轮 `npm test` 430/430、类型／生产构建、公开文件与候选提交身份扫描、差异检查通过。
+- 接收范围：仅 `asset-pipeline/match-cues/` 的离线源候选。四 WAV 共 109,616 字节，均 48 kHz mono PCM16，时长 0.130/0.090/0.460/0.460 秒、峰值 −12.0007 dBFS；CC0 声明与既有运行声不变，`runtimeWired=false`，不部署。
+- 延期项：实际试听、枪声／换弹／命中掩蔽、运行时优先级、浏览器与设备播放。恢复时先听四片及同段交战，再决定保留／改源／删除；若接线，补首次菜单解锁、已接受切枪、回合去重／换边／重开及战斗优先级。不为未验源另开自动接线任务，也不把四文件计成四个通过槽。
+- 本轮原调用：2026-11-04 17:59–18:01 UTC 本机只读核实返工 Workflow completed、CLI 于 17:28:24 UTC 以 0 退出，工具 settled／pending 空，1,575 个登记身份均记 exited、存活匹配 0；三类非作者通过且各有 26 项测试工具回执。外层 worker 独立退出事件／时刻仍未知，不复用上一轮回执；无活跃原调用重复派发。
 
-## 修改要求
+## 修改要求（返工已复验）
 
 负责人对 `25e6dbab26fb5a98dc366b942ff84b60234dfb0e` 的独立复核发现两项源链缺口，沿原分支小修，不重新制作四段、不扩大接线范围：
 
