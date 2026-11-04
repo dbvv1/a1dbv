@@ -23,7 +23,7 @@ test('context guard permits only selected origin and blocks external, other loca
 
 test('D3D11 is an explicit isolated headless profile, not a changed software default',()=>{
  const gpu=browserLaunch('d3d11');
- assert.deepEqual(gpu.args,['--enable-gpu','--use-angle=d3d11']);assert.deepEqual(gpu.args,gpuBrowserArgs);
+ assert.deepEqual(gpu.args,['--enable-gpu','--use-angle=d3d11','--enable-automation']);assert.deepEqual(gpu.args,gpuBrowserArgs);
  assert.equal(gpu.headless,true);assert.equal(gpu.chromiumSandbox,true);
  assert.deepEqual(gpu.ignoreDefaultArgs,['--enable-unsafe-swiftshader']);
  assertArgv(['--headless=new',...gpu.args],{profile:'d3d11'});
@@ -86,4 +86,26 @@ test('smoke config selects D3D11 or the existing software default before creatin
   const result=spawnSync(process.execPath,[runner,config],{encoding:'utf8'});
   assert.notEqual(result.status,0);assert.match(result.stderr,/Unknown render profile/);assert.equal(existsSync(output),false);
  }
+});
+
+test('both profiles and FPS capture assembly explicitly enable CDP argv inspection',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const source=readFileSync(new URL('../quality-capture-batch/fps-worker.mjs',import.meta.url),'utf8');
+ const start=source.indexOf('report.launch='),end=source.indexOf('checkInterrupted();',start);
+ assert(start>=0&&end>start);
+ // Only assemble the existing options; no module imports or browser launch.
+ const assemble=Function('report','launch','process',source.slice(start,end)+'return report.launch;');
+ for(const profile of ['swiftshader','d3d11']){
+  const launch=browserLaunch(profile),fps=assemble({},launch,{env:{FPS_CAPTURE_CHROMIUM:'/usr/bin/chromium'}});
+  for(const options of [launch,fps]){
+   assert(options.args.includes('--enable-automation'),'CDP command-line inspection must be enabled explicitly');
+   assertArgv(['--headless',...options.args],{profile});
+   assert.throws(()=>assertArgv(['--headless',...options.args.filter(a=>a!=='--enable-automation')],{profile}),/enable-automation/);
+  }
+  assert.equal(fps.executablePath,'/usr/bin/chromium');assert.equal(fps.chromiumSandbox,launch.chromiumSandbox);
+  assert.deepEqual(fps.ignoreDefaultArgs,launch.ignoreDefaultArgs);
+  for(const flag of ['--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows'])assert(fps.args.includes(flag));
+ }
+ const runner=readFileSync(new URL('./runner.mjs',import.meta.url),'utf8');
+ assert.match(runner,/session\.send\('Browser\.getBrowserCommandLine'\)/);
 });

@@ -5,8 +5,9 @@ export function fpsPair(routes){assert.equal(routes.length,2);assert.notEqual(ro
 
 
 // Dedicated case-only browsers. The outer execution sandbox remains unchanged.
-export const requiredBrowserArgs=Object.freeze(['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader']);
-export const gpuBrowserArgs=Object.freeze(['--enable-gpu','--use-angle=d3d11']);
+// CDP Browser.getBrowserCommandLine requires --enable-automation; do not rely on Playwright defaults.
+export const requiredBrowserArgs=Object.freeze(['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader','--enable-automation']);
+export const gpuBrowserArgs=Object.freeze(['--enable-gpu','--use-angle=d3d11','--enable-automation']);
 export function browserLaunch(profile='swiftshader'){
  assert(['swiftshader','d3d11'].includes(profile),'Unknown render profile: '+profile);
  // D3D11 keeps the browser sandbox. Exclude only Playwright's software fallback

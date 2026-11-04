@@ -2,7 +2,7 @@
 
 🧪 **本目录的 `run-batch.py` 保留 2026-10-29 冻结来源和 GPU 合同，不是当前软件 WebGL2 拍摄入口。** 不把新 Star consumer 交给这里的旧 `star-adapter.mjs`，也不改旧收据解除冻结。当前 Star 使用其仓库的 `tests/capture.mjs`。
 
-2026-11-04 增加本机 Windows D3D11 档。独立 `fps-worker.mjs` 用环境变量 `CAPTURE_RENDER_PROFILE=d3d11` 选择 `--enable-gpu --use-angle=d3d11`；未填时保留 SwiftShader 三参数，`CAPTURE_RENDER_PROFILE=swiftshader` 也可显式选择。D3D11 保留浏览器沙箱、仅排除 Playwright 默认的软件回退 opt-in，软件档保留此前配置。所有实际 argv 都要核验，未知档、混用后端或 D3D11 回退软件会失败，不自动换档重跑。
+2026-11-04 增加本机 Windows D3D11 档。独立 `fps-worker.mjs` 用环境变量 `CAPTURE_RENDER_PROFILE=d3d11` 选择 `--enable-gpu --use-angle=d3d11 --enable-automation`；未填时保留 SwiftShader 三项参数并追加 `--enable-automation`，`CAPTURE_RENDER_PROFILE=swiftshader` 也可显式选择。D3D11 保留浏览器沙箱、仅排除 Playwright 默认的软件回退 opt-in，软件档保留此前配置。所有实际 argv 都要核验，未知档、混用后端或 D3D11 回退软件会失败，不自动换档重跑。
 
 `run-batch.py` 的私有配置新增 `"renderProfile": "d3d11"`（缺省同值），统一传给 MOBA、FPS、Star，并核每份回执的档名。该历史冻结批次仍只收 GPU：MOBA／FPS 保留原 `gpu` 和 unmasked 断言，另核真实 D3D11 renderer；Star 还必须匹配原独立硬件诊断的精确 renderer。软件档可用于独立 FPS worker 和功能 smoke，但不能因此改写旧批次的 GPU 合同或过去结论。新 GPU 档只是请求，GPU 是否可用仍待本机实跑证据。
 
@@ -62,3 +62,5 @@ MOBA→FPS→Star依次执行，一例失败停止后例。MOBA复用原capture.
 `MOBA_CAPTURE_SOURCE` 指向 `8ade2d1` 的冻结检出（带既有依赖），`STAR_CAPTURE_SOURCE` 指向 `f1da86c` 的冻结检出。运行 `node --test render-profile.test.mjs`：真实源消费者只生成、不导入执行；验证生成脚本语法、真实 launch 对象的参数、缺失／改动的 launch 合同和非法档名失败路径。正常与 `python -O` 各跑 `test-preparation.py`，覆盖批次只收 D3D11、三路统一传档与回执核验。共享两档参数和 renderer 检查由相邻 `browser-policy.test.mjs` 覆盖。
 
 历史固定来源、浏览器成功收据、构建摘要、串行队列和租约条件继续生效；本次不安排新的本机出图卡。
+
+共享启动策略为两档显式加 `--enable-automation`，保证 CDP `Browser.getBrowserCommandLine` 的参数前置；保留各档渲染参数、沙箱与现有默认参数处理。CPU 回归覆盖功能 smoke 与独立 FPS capture 的实际参数组装，缺该参数仍失败，不改成跳过 argv 检查。该修复没有真实浏览器／出图通过证据，也不解除旧调用退出、Node 24 和串行启动门槛。协议依据：[Browser.getBrowserCommandLine](https://github.com/ChromeDevTools/devtools-protocol/blob/master/pdl/domains/Browser.pdl)（2026-11-04 核实）。

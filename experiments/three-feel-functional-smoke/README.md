@@ -10,7 +10,7 @@ MOBA 8fcab371108f23b8be659eef1db0466561e3b597/treee72877d4db44e49eea3f177d3a4977
 ## 按哪个Skill
 最新a1dbv 5561e38e47b1a60166192660b15440a58c24e5ed细则§7与各仓AGENTS。虽§7允许页面smoke输入，本卡按父任务更窄边界：不模拟键鼠，不DOM点击、不dispatchEvent、不改sim或存档状态。只导航、读诊断和调用现有游戏内部固定回放推进。
 启动硬前置：核原Star42调用及10机位批次真实结束/自有浏览器、预览服务、父链和残留真实退出；任何未知仍blocked。不能凭Git/status/锁/排队判断槽空闲，不重试或打断旧任务，不删除锁、不杀未知进程。该硬前置需接收端人工/原进程回执核实，JSON approved不是替代证据。
-2026-11-04 启动配置增加两档：`renderProfile` 省略或为 `swiftshader` 时保持原三参数；本机 Windows 可显式选 `d3d11`。具体参数与证据见下文。仅访问本地预览或三个案例自身网站；外层沙箱不变。配置修正不解除历史队列／冻结来源门槛，任何新的系统 EPERM 或访问拒绝仍停止该动作。复用接收端已装浏览器/Node/依赖，不下载/安装。固定一次Chromium，不因失败/软件renderer换配置重跑。
+2026-11-04 启动配置增加两档：`renderProfile` 省略或为 `swiftshader` 时保持原三项参数并追加 `--enable-automation`；本机 Windows 可显式选 `d3d11`。具体参数与证据见下文。仅访问本地预览或三个案例自身网站；外层沙箱不变。配置修正不解除历史队列／冻结来源门槛，任何新的系统 EPERM 或访问拒绝仍停止该动作。复用接收端已装浏览器/Node/依赖，不下载/安装。固定一次Chromium，不因失败/软件renderer换配置重跑。
 
 ## 写入范围
 源码/资产/依赖锁只读。按冻结候选正常构建，完整列dist文件SHA256和source/tree；必要已跟踪构建须与独审树逐字相同。runner读取独占输出目录和既有依赖，不发布代码、不部署。每次先核source/tree/clean，保存版本和build manifest。
@@ -40,8 +40,10 @@ FPS已独审冻结合同（全卡串行阻塞未解除）：smoke.version=ground
 
 ## 本机 D3D11 档
 
-接收端私有配置设置 `"renderProfile": "d3d11"`，整个 smoke 固定使用 `--enable-gpu --use-angle=d3d11`；未填时仍用 `swiftshader`，既有软件档和测试保留。D3D11 保留浏览器沙箱，只移除 Playwright 默认的软件回退 opt-in `--enable-unsafe-swiftshader`，其他默认参数保留。SwiftShader 保持 `chromiumSandbox:false` 与原三参数，外层沙箱不变。未知档名、缺少必要参数、混用后端、D3D11 实际进程含软件回退或关闭沙箱参数都会失败，不自动切档重跑。
+接收端私有配置设置 `"renderProfile": "d3d11"`，整个 smoke 固定使用 `--enable-gpu --use-angle=d3d11 --enable-automation`；未填时仍用 `swiftshader`，既有软件档和测试保留。D3D11 保留浏览器沙箱，只移除 Playwright 默认的软件回退 opt-in `--enable-unsafe-swiftshader`，其他默认参数保留。SwiftShader 保持 `chromiumSandbox:false` 与原三项参数，并追加 `--enable-automation`；外层沙箱不变。未知档名、缺少必要参数、混用后端、D3D11 实际进程含软件回退或关闭沙箱参数都会失败，不自动切档重跑。
 
 同一组前后图必须用同一档、同一浏览器和 renderer。清单记录请求的 `renderProfile`、实际 argv 核验结果、Chromium 版本及每路原始 renderer。D3D11 要求真实 WebGL2、非软件且 unmasked renderer 含 Direct3D11／D3D11；WARP、Microsoft Basic Render Driver 和 SwiftShader 均拒绝。**仅非软件不等于 GPU 已证实**：本 smoke 的分类仍为 `unknown`，不得凭启动参数写成 `gpu`。独立硬件证据及画面判断由后续验收完成。
 
 本次只运行 CPU 合同、适配与失败路径测试，没有启动本机／云端浏览器，没有 D3D11 实拍或 GPU 能力证明。此档不解除本文冻结来源、旧任务退出、串行槽与执行放行条件。
+
+共享启动策略为两档显式加 `--enable-automation`，保证 CDP `Browser.getBrowserCommandLine` 的参数前置；保留各档渲染参数、沙箱与现有默认参数处理。CPU 回归覆盖功能 smoke 与独立 FPS capture 的实际参数组装，缺该参数仍失败，不改成跳过 argv 检查。该修复没有真实浏览器／出图通过证据，也不解除旧调用退出、Node 24 和串行启动门槛。协议依据：[Browser.getBrowserCommandLine](https://github.com/ChromeDevTools/devtools-protocol/blob/master/pdl/domains/Browser.pdl)（2026-11-04 核实）。
