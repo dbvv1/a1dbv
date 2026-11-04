@@ -140,6 +140,14 @@
 
 **依据**：[一手：历史补丁；研究] [BAML 双 PR](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)；[社区／一手；经验] OCRmyPDF 兼容修复按输入机制分流；[经验] 本节调试默认；核实 2026-10-25。
 
+### 跨多次提交的回归：先验判定，再交 Agent 二分定位
+
+**👀 已有稳定复现和已知正常／异常提交时，可让 Agent 在独立 worktree 跑原生 `git bisect run`，不必安装额外 Skill。** 先在两端运行同一复现脚本：0 表示目标症状不存在，1 表示已观察到目标症状，125 表示该版本无法完成测试。缺命令、缺依赖或无关构建失败不能直接当目标回归；Git 会把126／127也判为 bad。若正在查的就是构建失败，对应失败则不能跳过。两端不能可靠区分时，先修复复现或核环境，不开始二分。
+
+把复现脚本放在切换的工作树外，保存逐步输出和 `git bisect log`。找到候选后重验它与相邻可测版本，再解释原因、提出修复；边界附近被跳过时，可能只能给出多个嫌疑版本。只想找“哪次合入使主线坏掉”可用 `--first-parent`，结果可能是 merge，并非分支内具体补丁。独立 worktree 保住原 checkout，但不会隔离外部服务和共享缓存；已有明确 diff 可直接验收时不加此流程。
+
+**依据与范围**：[Git 的退出码、skip 与 first-parent 契约](https://git-scm.com/docs/git-bisect)、[worktree 独立的 HEAD／bisect 状态](https://git-scm.com/docs/git-worktree)；[Sirius 实际 Skill](https://github.com/sirius-db/sirius/blob/2477888eb3059b8993f7ced9d1b0784101cce9ff/.claude/skills/bisect/SKILL.md)要求把无法构建与结果不符分开，但示意脚本仍需补具体分类；[Chromium 实际 Skill](https://github.com/chromium/chromium/blob/c0ae222cd8985cff52f6a010879c82b041709f7f/agents/skills/bisect/SKILL.md)在同步依赖和构建后让用户判设备结果，不能只凭构建成功判 good。方法整理，核实2026-11-04；本仓未在真实回归上试用，不宣称节时收益，也不照搬项目专用构建命令。
+
 ### 命令疑似挂起：用运行证据选择修复，不先重写
 
 **✅ 先让 Agent 跑真实命令、核输出与落库结果，再对卡住的阶段取栈；有上游修复就用同一消费者验证，不另造补丁。** 并发任务可对照原有串行入口：如果单条命令正常、并发收尾异常，优先查线程池和回调，而不是替换业务算法。
