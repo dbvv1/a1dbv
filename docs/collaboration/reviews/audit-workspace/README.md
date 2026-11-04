@@ -1,6 +1,6 @@
 # a1dbv Audit Workspace
 
-本目录是长期审计入口。所有审计聊天先读取最新 main、本 README、AUDIT-PROTOCOL.md、对应 brief 和 WAVE-REGISTER.md，避免反复粘贴背景。
+本目录是长期审计入口。所有审计聊天先读取最新 main、本 README、AUDIT-PROTOCOL.md、对应 brief 和 WAVE-REGISTER.md，并先完成项目定位/当前阶段确认，再审计具体质量，避免反复粘贴背景或套用错误产品模板。
 
 ## 权责
 - 用户：目标、授权红线和重大方向。
@@ -10,7 +10,9 @@
 - 五个 GPT 专业聊天：独立领域内容审计，不形成第二套方向规则。
 
 ## 工作流
-最新 main → protocol + brief → 只读审计 → reports 独立报告 → 现有 docs/collaboration/inbox.md → 责任人决策 → 接受的意见进入现有 TASKS/local-jobs。
+最新 main → 产品目标与阶段确认 → protocol + brief → 只读质量审计 → reports 独立报告 → 现有 docs/collaboration/inbox.md → 责任人决策 → 接受的意见进入现有 TASKS/local-jobs。
+
+审计不能止于“缺少哪些章节/功能”。必须评估已有实现的正确性、体验、稳定性、视觉/音频/交互质量和实际效果，并把当前阶段缺陷与未来阶段路线图差距分开。
 
 不新建第二个收件箱或平行任务系统。报告是证据和建议，不等于已接受的执行任务。
 
