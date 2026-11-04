@@ -2,12 +2,12 @@
 id: B-STAR-STREET-PLACEMENT-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-street-placement-20261104
 
-工作线：Star-Rush-Reborn。本卡为独立排队单元，尚未认领。
+工作线：Star-Rush-Reborn。已接收 CPU 作者工具；场景接线与品质验收另行处理。
 
 ## 目标
 把已接收三栋海岸住宅标准件接到可复用的道路站位合同，准备改善重复建筑与道路关系，不新造房屋或改现行场景。
@@ -30,8 +30,9 @@ result_branch: relay/b-star-street-placement-20261104
 
 ## 当前结果
 
-- 实现了 placeStreet(parts, sampleRoad, centerS, side, setback) 固定源街屋放置合同：实际解析 ab265593 的 street.glb/manifest/upstream adapter，A/G/M 三栋门朝 -Z、脚底 y=0、mesh 哈希放置前后不变；底部 pivot 落在对应 station 的 p[1]，共享基准偏移+pivot.z 保留纵深差；净空按实际网格世界 XZ 包围盒与每 1m 道路折线线段计算、交叉记 0，违规逐栋返回房屋与原因；setback 4→6m 仅按同一站位 R 轴平移、旋转/缩放与高度保持。25 项测试全部通过；生成当前海岸 320–680m 20 行 CPU 放置与净空报告（4m 最小净空 12.010m、6m 14.005m，allOk=true）。git status 实核 14 个新增文件、均在 authoring/coast-street-placement/，无已跟踪改动。openIssues 无。未验证：npm test（缺 node_modules）、Node 24（实际 Node 22.23.2）、浏览器/GPU/实机画面；报告 20 行为每 40m 独立取样、同排存在重叠，不是场景布局也未接入场景。
-- 产物：[c4813e9](https://github.com/dbvv1/Star-Rush-Reborn/commit/c4813e958fe65cc95b02bbe474ebf8ecb30d5d78)，分支 `relay/b-star-street-placement-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端提交本单元清单；下游将显式房屋 ID/矩阵接入场景后做实机视觉与手感验收，并补 npm test 与 Node 24 环境验证。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- **接收范围**：仅 `authoring/coast-street-placement/` 的 14 个固定源、适配器、测试和 CPU 报告文件。原结果 [c4813e9](https://github.com/dbvv1/Star-Rush-Reborn/commit/c4813e958fe65cc95b02bbe474ebf8ecb30d5d78) 经负责人独立核查，与最新 master 合入 [ab2e299](https://github.com/dbvv1/Star-Rush-Reborn/commit/ab2e299aee2e928e7048c138a3428a9975f237a3)。未改变游戏默认、场景或部署。
+- **独立验证**：Node 24.22.1 下模块 25/25、`npm run build`、`npm test`（177/177 加后续客户端／API／入口检查）通过，零 skip；文件与提交公开扫描、差异检查通过。三份固定源文件与 ab265593 原 Git blob 哈希一致；三屋刚体、底部高度、门向、网格不变和 4→6 m 纯 R 平移合同通过。当前真实 `circuitRoad` 参与 CPU 核对；真实消费者为本目录报告与测试，游戏无该接口消费者。
+- **净空边界**：报告每 40 m 独立取样共 20 行，4 m／6 m 最小道路净空为 12.010／14.005 m。另在 320–680 m 每 1 m、双侧共 722 行独立扫完整 280–720 m 道路折线：4 m 全过；6 m 纯 R 平移有 29 行如实返回违规，未发现误报成功，510/-1 为 13.967 m。20 行通过不能推广为整段连续布局。
+- **布局未通过**：同排三屋在 4 m／6 m 各有 12/20 行世界 XZ 包围盒相交，实际顶点凸包相交为 8/20、9/20 行；600/-1 的 G/M 有 217／263 对三角面相交。相邻 640／680、side=+1 在 6 m 也有 19 对三角面相交。原卡只验道路净空，接收不表示房屋避碰合格。
+- **剩余与下一步**：未接入场景，未跑浏览器／GPU／实机画面，也不宣称画面改善。下游接线前先增加同排及相邻行避碰、调整站位／间距，并检查每次 `shiftSetback` 的 `ok`／违规；接线后另做固定机位视觉与手感验收。
+- **执行核对**：原实现调用正常退出，工具已完成且无活跃写者；本次只接收已确认的固定版本，未重开调用。云端复核复用现有同锁文件依赖，仅 CPU 命令行；不操作 FPS 拍摄、GUI 或 GPU。
