@@ -14,7 +14,7 @@
 | W1-GAME | 游戏知识与 AI 制作链 | briefs/GAME-KNOWLEDGE.md | reports/WAVE-1-GAME-KNOWLEDGE.md | 待启动 | — |
 | W1-FPS | FPS-Like | briefs/FPS.md | reports/WAVE-1-FPS.md | 待启动 | — |
 | W1-MOBA | MOBA-Like | briefs/MOBA.md | reports/WAVE-1-MOBA.md | 待启动 | — |
-| W1-STAR | Star-Rush-Reborn | briefs/STAR-RUSH.md | reports/WAVE-1-STAR-RUSH.md | 待启动 | — |
+| W1-STAR | Star-Rush-Reborn | briefs/STAR-RUSH.md | reports/WAVE-1-STAR-RUSH.md | 已完成（独立报告已提交） | b4f2e23002be49e59b9b14d9b53e431b3fb6fd90 |
 
 ## 完成定义
 报告已保存或明确交回；记录审计时 main SHA 和证据；未验证事项明确标记；任务候选与 TASKS/inbox 去重。未被领域负责人接受的建议仍是候选。
