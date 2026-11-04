@@ -2,12 +2,12 @@
 id: B-CORE-MOTOR-PRESENTATION-SOURCES-20261104
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-core-motor-presentation-sources-20261104
 
-工作线：核心模块。本卡为独立排队单元，尚未认领。
+工作线：核心模块。来源单元已回传，负责人窄接收已核时序与移植断言；引擎移植待验。
 
 ## 目标
 让程序员把 FPS motor 和插值迁移到引擎时，只有一个系统拥有位移，暂停／重生不插回旧位置。
@@ -30,8 +30,8 @@ result_branch: relay/b-core-motor-presentation-sources-20261104
 
 ## 当前结果
 
-- 已按固定 Workflow 完成 explore 单元：仅新增 sources.md，含 8 类渠道覆盖表（539 链接/488 主题条目）、FPS-Like bd4765/Celeste64 6edfe1/JLPM22 35fc8ee 三份固定 SHA 的时序与位置写者清单、五项移植断言、S0–S6 分级候选及前 6 项深挖理由；明确区分网页既有 CPU 证明、当前源码阅读与引擎未实跑，未填新性能数。检查运行 check_repo.py（0 errors）、check_public.py（0 findings）、git diff --check，571 条外链 curl 复检（524×200，其余反爬/连接受限已标注）。openIssues：无；未运行项为 Unity/Unreal/Godot 引擎实测。
-- 产物：[0815770](https://github.com/dbvv1/a1dbv/commit/0815770928049e027b4727d6d67107f032280af8)，分支 `relay/b-core-motor-presentation-sources-20261104`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：负责人接收本单元；后续如需闭环，应在目标引擎最小工程验证 Rigidbody/CharacterController 与 Godot reset_physics_interpolation 的实际置位行为。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- **接收范围**：原产物 [0815770](https://github.com/dbvv1/a1dbv/commit/0815770928049e027b4727d6d67107f032280af8) 保留在 `relay/b-core-motor-presentation-sources-20261104`；负责人独立读三份实际源码及直接依赖后，把修订后的时序／位移所有权和五项断言合入[既有角色模块](../../../domains/game-dev/04-client-modules.md#motor-presentation-ownership)。广泛链接清单未整体采用，不以链接数量或原审查自报作为事实通过。
+- **已纠正**：FPS 是 DOM 事件入队、tick 消费，相机位置随显示角色而朝向读 controls；Celeste 在同一模拟 tick 内多次修正 Position，补核显式 60 Hz 与 Foster 0.4.2 固定依赖；JLPM 控制器与动画根为不同对象，改固定步还涉及骨骼速度差分和惯性化。Unity 关闭插值／CC disable 配方不提升为通用默认。
+- **边界**：五项为目标工程待执行断言，新增短距离／纯竖直传送须显式清历史，30／60／120 Hz 按同一 tick 比较。未运行 Unity／Unreal／Godot，未重跑 ground-v1、未填新性能数，模块成熟度不提升。FPS 当前 `36fde4b` 的前台时钟与恢复变更已对照，保留原采用入口。
+- **原执行核查**：Workflow completed、CLI 于 2026-11-04 16:58:05 UTC 以 0 退出，工具已结清、无 pending，登记进程已退出且存活匹配为 0；外层 worker 独立退出事件仍未知。仅接收已确认产物，不重启／重派同题。
+- **下一步**：有获准目标引擎工程时，按模块五项断言实测落位、清历史与根运动时序；本卡不新建工程或排队重采来源。发布检查与非作者读者结论写合入提交说明。

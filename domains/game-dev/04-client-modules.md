@@ -477,6 +477,31 @@ Penny’s Big Breakaway 的 GDC 2025 作者复盘强调动量与动作组合；C
 
 实现起点：[FPS 固定采用源](https://github.com/dbvv1/FPS-Like/tree/bd47655676d79061ff4be54cbedad111053c5af3/src/candidates/offline-training-v1)的 `sim/movement.ts`、`sim/physics.ts`、`sim/game.ts`、`render/interpolation.ts`、`client.ts`；[同输入规格、复跑命令与前后数据](https://github.com/dbvv1/FPS-Like/blob/bd47655676d79061ff4be54cbedad111053c5af3/docs/feel.md)。2026-10-30 [源码／CPU 实跑／非作者代码复核／可玩采用]：已合入 main，经 368 项测试、构建、默认模拟和四路 WebGL2 软件 smoke 后发布 [Site v19 旁置训练赛](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1&art=standards-v1&feel=ground-v1&lighting=courtyard-light-v1)，默认入口保留。这些是本作实测，不是 CS2 同输入标杆；屏幕响应、标杆录像、主观手感仍待验。引擎接入沿下节原 motor，不能把此 Web View 插值复制成第二个写物理 Transform 的系统。
 
+<a id="motor-presentation-ownership"></a>
+#### 移植固定步长 motor：先分模拟位置、显示位置和动画根
+
+**保留一个模拟位移裁决者，允许显示对象有独立姿态。** “一个裁决者”不是全程序只能赋值一次：碰撞解算可以多次修正位置，模型也可以在自己的显示节点上偏移；应禁止的是显示插值、动画和另一套运动脚本各自改同一个权威位置。先画出实际调用链，再决定要搬的是运动政策、碰撞 motor，还是显示平滑。
+
+| 固定实现 | 实际时序与写者 | 可以借什么 |
+|---|---|---|
+| **FPS-Like `bd476556`** | DOM 事件带墙钟时间入队；每个 60 Hz tick 的 `controls.commands(start, end)` 消费到期事件，`Game.step` 按 sub-tick 排序。`groundMovement` 只产位移提案，`Physics.move` 解接触并落位。View 读插值副本；相机位置随显示角色，yaw／pitch 直接读 controls；HUD／声音／命中读权威状态 | 借输入队列与只读呈现边界；输入不是每渲染帧才采样。当前客户端时钟已改，移植生命周期用[前台时钟](#web-foreground-clock)，不要复活旧的 250 ms 累积欠帧判断 |
+| **Celeste64 `6edfe1eb`＋Foster 0.4.2** | `Program` 显式固定 60 Hz，`World.Update` 内先 actor.Update、再 actor.LateUpdate，二者都在模拟 tick。Player 除常规 sweep，还在 pushout、贴地及攀爬等状态写 Position；相机在其后更新 | 借“先完成运动／接触，再跟随”的顺序；不能把其 `LateUpdate` 名称当成 Unity 的渲染帧回调，也不能把一次 sweep 当成全部落位 |
+| **JLPM22 `35fc8ee9`** | Unity 基类 `LateUpdate` 调控制器 OnUpdate，再发 OnUpdated 更新匹配姿态。弹簧用 `Time.deltaTime`；控制器 Transform 与动画 simulation bone 分开，adjustment／距离限制改动画空间原点，随后骨骼求值落位 | 借控制轨迹与动画根的分工；这不是已验证的固定 tick motor。改调度还要核姿态惯性化、速度差分和数据库帧推进，不能只把一个方法搬到 FixedUpdate |
+
+实现入口：[FPS 事件队列](https://github.com/dbvv1/FPS-Like/blob/bd47655676d79061ff4be54cbedad111053c5af3/src/candidates/offline-training-v1/input/controls.ts#L24-L64)／[按 tick 消费](https://github.com/dbvv1/FPS-Like/blob/bd47655676d79061ff4be54cbedad111053c5af3/src/candidates/offline-training-v1/input/controls.ts#L78-L103)、[客户端分流](https://github.com/dbvv1/FPS-Like/blob/bd47655676d79061ff4be54cbedad111053c5af3/src/candidates/offline-training-v1/client.ts#L104-L109)／[显示相机](https://github.com/dbvv1/FPS-Like/blob/bd47655676d79061ff4be54cbedad111053c5af3/src/candidates/offline-training-v1/render/scene.ts#L128-L132)及上面的 motor 文件；[Celeste Program](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Program.cs#L27-L35)／[World](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Scenes/World.cs#L385-L396)／[Player](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Source/Actors/Player.cs#L339-L406)，[依赖版本](https://github.com/EXOK/Celeste64/blob/6edfe1ebd2a21a6134d7675a28e357891025407e/Celeste64.csproj#L17-L21)对应 [Foster 固定循环](https://github.com/FosterFramework/Foster/blob/a5b574f36e5d8928a4d47566c7b924140b653c85/Framework/App.cs#L459-L530)；JLPM [基类时序](https://github.com/JLPM22/MotionMatching/blob/35fc8ee9a0fd97f12de458ea81eaef7c8219d87a/com.jlpm.motionmatching/Runtime/CharacterController/MotionMatchingCharacterController.cs#L24-L31)／[控制器](https://github.com/JLPM22/MotionMatching/blob/35fc8ee9a0fd97f12de458ea81eaef7c8219d87a/com.jlpm.motionmatching/Runtime/CharacterController/SpringCharacterController.cs#L120-L147)／[骨骼写入与速度差分](https://github.com/JLPM22/MotionMatching/blob/35fc8ee9a0fd97f12de458ea81eaef7c8219d87a/com.jlpm.motionmatching/Runtime/Core/MotionMatchingController.cs#L313-L332)。本表为源码核实，2026-11-04；没有运行三套引擎或重测手感。
+
+**交给 Agent 的五项移植断言，先保持原规则，再谈更平滑：**
+
+1. **输入不随呈现漏掉或加倍。** 固定一份带时间戳的按下／松开／瞄准／射击事件带，在同一 tick 边界分配到相同命令集合；一次性边沿消费一次，持续移动状态留给后续 tick 积分。不要把每帧累计的鼠标位移再乘一次 deltaTime。
+2. **根运动只提交一次。** `OnAnimatorMove` 按[原动画契约](unity/04-animation-runtime.md#4-根运动动画可以提议位移但只留一个裁决者)把增量交 motor；动画与物理频率不同时明确累计区间、消费点和剩余量，碰撞后用实际位置。墙前播放同一动作，不得额外叠一份普通速度位移。
+3. **只画不改模拟。** 对同一权威快照多调用显示插值，前后状态哈希与命中结果不变；相机可跟显示位姿，射击方向仍来自命令。给 Rigidbody 开内置插值后，不再让自写 View 插值覆盖它的物理 Transform；模型偏移放独立显示节点。
+4. **不连续位置不插回旧位置。** 暂停恢复、重生、换回合、传送后首帧从新权威姿态开始；清对应显示历史，速度是否保留按动作规则。FPS 的水平距离大于 1 守卫只覆盖部分跳变，新增短距离／纯竖直传送应显式失效历史，而非只加大阈值。JLPM 的 `SetPosAdjustment` 只改动画空间原点，不等于整个角色的传送／弹簧重置。
+5. **按同一 tick 比较 30／60／120 Hz 显示率，固定模拟步长不变。** 固定同一构建、配置、seed 和命令带，在没有暂停／丢时的路径比较逐 tick 哈希、碰撞结果与末位置，不拿同一墙钟秒数或画面平滑作证明；另测长帧与暂停政策。浮点引擎按其可复现保证选哈希或误差容限，不从 Web CPU 测试外推跨平台确定性。
+
+**落位用目标引擎入口，别把通用“清历史”变成未经验证的 API 配方。** Unity kinematic Rigidbody 连续移动用 `MovePosition`，传送用 `Rigidbody.position`；内置插值接管 Transform，确需直接改 Transform 时按官方契约同步，`SyncTransforms` 本身不等于已验证的清历史。CharacterController 走原 motor 的连续移动／传送接口；是否需临时 disable、切 `interpolation=None` 及何时恢复，须在目标版本复现后决定。Godot 先设置新 transform，再 `reset_physics_interpolation()`；UE 沿 CMC 的根运动与传送路径，不另套 Unity 固定步循环，联网传送在服务器按其 teleport 标记协议执行。
+
+依据：[FPS 插值守卫](https://github.com/dbvv1/FPS-Like/blob/bd47655676d79061ff4be54cbedad111053c5af3/src/candidates/offline-training-v1/render/interpolation.ts#L2-L15)、[JLPM adjustment](https://github.com/JLPM22/MotionMatching/blob/35fc8ee9a0fd97f12de458ea81eaef7c8219d87a/com.jlpm.motionmatching/Runtime/Core/MotionMatchingController.cs#L518-L525)；Unity 6.0 [MovePosition](https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/rigidbody/moveposition)／[OnAnimatorMove](https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/monobehaviour/onanimatormove)／[applyRootMotion](https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/animator/applyrootmotion)，6.3 [Rigidbody 插值](https://docs.unity.com/en-us/engine/6000.3/manual/physics-section/physics-overview/rigidbody/rigidbody-interpolation)；[Godot 官方置位顺序](https://docs.godotengine.org/en/stable/tutorials/physics/interpolation/using_physics_interpolation.html#call-reset-physics-interpolation-when-teleporting-objects)、[UE CMC](https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-networked-movement-in-the-character-movement-component-for-unreal-engine)。核实 2026-11-04；五项是待在目标工程执行的验收要求，不是本轮通过记录。网页原有 CPU／软件 smoke 证据保留，Unity／UE／Godot 移植成熟度不提升。
+
 #### 六组参数一起构成控制，而不是一个 smooth 数
 
 | 调校项 | 明确的实现起点 | 看哪条轨迹，怎样改 |
