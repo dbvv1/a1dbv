@@ -2,12 +2,12 @@
 id: B-STAR-BANK-CLIP-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-bank-clip-20261104
 
-工作线：Star-Rush-Reborn。固定成果已回交，原调用与相关写者已核查；沿原结果分支只修下述测试和换行问题。
+工作线：Star-Rush-Reborn。两项返工已独立复验，接收范围为固定源外岸裁切 CPU 工具；场景接入和作品感知验收仍待完成。
 
 ## 目标
 把已接收公路标准件的已知近邻岸坡重叠缺口做成独立 CPU 适配，供后续场景接入；不改当前空间候选或截图基线。
@@ -31,8 +31,8 @@ result_branch: relay/b-star-bank-clip-20261104
 
 ## 当前结果
 
-- 返工1与返工2均完成：保护区断言改用真实三顶点世界坐标和精确凸多边形面积交，并补完全未裁切、局部残留、重心在带外薄片、非有限顶点四个负例；五个文件共4218行CRLF统一为UTF-8/LF。实测 node --test 7/7通过，固定源重放逐字节一致（road.glb SHA-256 9eb6a584…ebd9a），样本1658→1614三角、80个外岸受影响、面积499.696→358.565 m²；git diff --check退出0，五文件CR=0。openIssues为空。未运行全量npm test，未开浏览器/GUI/GPU，岸坡外观、邻段接缝、海面相接、碰撞与驾驶未实看/实玩。taskDone：本单元两项返工已完成；pageStuck：不适用（build，无页面）。
-- 产物：[36fb666](https://github.com/dbvv1/Star-Rush-Reborn/commit/36fb66616a3d3521332202b10e49cb829295c2c3)，分支 `relay/b-star-bank-clip-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：待负责人接收：按任务要求沿 relay/b-star-bank-clip-20261104 提交并推送、回 review_ready；后续场景接入及岸坡外观、接缝、海面、碰撞、驾驶人工验收另行安排。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- **负责人接收 CPU 工具范围：** [36fb666](https://github.com/dbvv1/Star-Rush-Reborn/commit/36fb66616a3d3521332202b10e49cb829295c2c3)，保全于原 `relay/b-star-bank-clip-20261104`。本轮只修失效测试与 LF；裁切算法本体除换行外未变，不把返工记成算法或作品品质改善。不合产品 `master`、不部署、不改在途固定拍摄。
+- **两项返工独立复验通过：** 保护区断言已按正确三角 ID 读取世界坐标并检查有限值，用三角与保护带的面积交叠替代重心采样；完全未裁切、局部残留、重心在带外的交叉薄片和 NaN 顶点四个负例均拒绝，边界相切通过。另独立调用新断言，原未裁切负例拒绝、真实裁切输出的 120 个外岸派生三角通过。8 个文件均无 CR，整单元与本次差量的 `git diff --check` 均退出 0。
+- **适用检查通过：** 7/7 CPU 测试、192 个外岸三角侧带、原 road.glb 逐字节重建（SHA-256 `9eb6a584f5dfc625680e7dadfaa7c8a66ff155f7c90c95a07de4f1b43feebd9a`）；样本 1658→1614 三角、80 个外岸受影响、面积 499.696→358.565 m²。侧带重新生成与提交文件逐字节一致，CRLF 污染和缺文件均被 `--check` 拒绝。独立 SAT 再测直段及 R80/R150 弯段共 300 组、44046 个外岸输出三角（1e-5 m 容差），未见残留交叠、退化或反向面，非岸不变。资源与许可未变，沿用已核对的 Kenney CC0 来源；公开文件与新提交身份扫描通过。全量 `npm test` 未运行。
+- **原返工退出与固定结果：** 本机只读回执确认原返工 Workflow completed，原 CLI 有 close/exit 0，工具 settled、pending 为空，相关登记 exited；按 PID 与完整创建时间匹配无当前存活工具，HEAD 与远端结果同为 `36fb666`，无活跃写者。外层 worker 的独立退出事件仍 unknown，保留该历史缺口，不从状态标签或复用 PID 推定退出。原“待提交并推送”文案已过期，远端结果已核实。
+- **消费者与品质边界：** 当前真实消费者仅 CPU 测试和样本，`master` 尚未接入场景；岸坡外观、邻段接缝遮挡、海面相接、碰撞与驾驶均未实看／实玩，不增加作品画面或驾驶评分。后续需按 README 接入、排除当前及前后紧邻标准段，再补场景与感知验收。本轮未开浏览器／GUI／GPU、未动默认场景或截图基线。
