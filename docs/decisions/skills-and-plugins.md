@@ -21,6 +21,8 @@
 确定采用后，用 [项目原测试命令或操作] 验收任务结果。
 ```
 
+**装扩展前核分发来源，不能只看同名插件或版本号。** 保存取得包的市场／官方入口、版本与可核验标识，更新时也检查来源；遇到安全公告再比对其准确范围。已命中事故的机器不以“升级／卸载成功”结案，先按[分发事故核查](../10-security.md#extension-distribution-incident)处理。这个门槛不要求没有缺口的项目另装扫描器，也不把扫描无报警当安装许可。
+
 团队流程借用 OpenAI Agents SDK 的按改动触发和 Sentry JavaScript 的入 Git 共享，不复制整包。跨客户端分发确有维护负担，再看 [dotagents 候选](../collaboration/inbox.md#2026-10-27dotagents-的项目级-skill-分发)。
 
 **依据**：[一手项目配置] [OpenAI Agents SDK](https://github.com/openai/openai-agents-python/blob/cd26bbbc52847845fde73b9952b51e62e2bcbdc0/AGENTS.md)、[Sentry JavaScript](https://github.com/getsentry/sentry-javascript/blob/c125a5da2e6b7d916a5880f65876cddfee96c56d/agents.toml)；2026-10-28 核实，这两套项目流程未在本仓试用。
