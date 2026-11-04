@@ -1,7 +1,7 @@
 # A-WORKTREE-IMPORT-GUIDE-20261104 · 核对 Python worktree 的实际导入来源
 id: A-WORKTREE-IMPORT-GUIDE-20261104
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 page: docs/decisions/long-tasks.md@4502d0471e073f8fddb065b0dd4ed6e2a14f144f
 target_repo: https://github.com/dbvv1/a1dbv
@@ -41,4 +41,8 @@ namespace package 的顶层 __file__ 可能为空且有多个位置，改核实�
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 在 docs/decisions/long-tasks.md『按依赖决定怎么拆』新增 Python worktree 依赖准备做法：每个 worktree 独立环境、以运行测试的同一解释器按 resolve() 路径归属核对模块来源、附可替换占位的 check_import.py，说明 namespace 顶层无 __file__ 的替代核法与 wheel 验收边界；仅修改该页 +21 行。三项检查实测通过（check_repo 792 文件 0 errors、check_public 1263 文件 0 findings、git diff --check exit 0）；Workflow 三角色审查通过、fixRounds 0、openIssues 空。未运行项：本仓窄复现未覆盖 wheel 与 namespace（页面已如实标注），完整真实读者实做仍待具备任务时补验；本单元非作者读页审查已覆盖。
+- 产物：[06847b0](https://github.com/dbvv1/a1dbv/commit/06847b0aa0ce264a8de5d7dedf506e47225a7a8a)，分支 `relay/a-worktree-import-guide-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人按协议接收本页修改；完整真实读者实做待具备自然任务时补验，wheel/namespace 仍为本仓未实测项。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
