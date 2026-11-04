@@ -2,7 +2,7 @@
 id: B-FPS-FIXED-CAPTURE-20261104
 owner: dot-B
 kind: build
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-fixed-capture-20261104
@@ -44,4 +44,8 @@ result_branch: relay/b-fps-fixed-capture-20261104
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 交付 docs/quality/capture/B-FPS-FIXED-CAPTURE-20261104/ 的 6 张三机位双拍 PNG、6 个逐拍 JSON、manifest、report、harness 与 README；PNG 均 1280x720 DPR1 WebGL2 SwiftShader，双拍字节/状态一致，build exit 0，npm test 430/430。未达成卡片要求：harness/Chromium 实际 exit 1（执行版 browser.close 用法错误后强杀），干净退出基线缺失，report complete=false / status=capture-complete, exit-baseline-incomplete；按卡不得覆盖或换根重跑。reviewed=false，2 个未关闭问题：README 的「目标图怎么拍」缺取图契约、软件渲染启动参数与放开固定 HEAD/tree 断言的说明；README 承诺失败打印原因及 harness-fatal.json，但 main() try 内 catch 仅写 failure.json、stderr 静默。未运行 smoke/sim/音频/可见窗口。
+- 产物：[d75b12e](https://github.com/dbvv1/FPS-Like/commit/d75b12ec2a46e28c46984a9eee16a49e86636889)，分支 `relay/b-fps-fixed-capture-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：负责人决定是否在全新独占输出根安排重跑以取得 harness/Chromium 真正 exit 0（本卡禁止覆盖/换根），或明确接受已记录的退出基线缺项；同时关闭 README 目标图拍摄步骤与失败输出契约两个审查问题。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
