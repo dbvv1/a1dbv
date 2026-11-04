@@ -52,6 +52,26 @@ class DeliveryManifestTests(unittest.TestCase):
     return subprocess.run([sys.executable, str(SCRIPT), '--repo', str(self.root),
                            *args], capture_output=True, text=True)
 
+  def cli_bytes(self, output_encoding, *args):
+    """Run the production CLI and keep stdout as bytes under the real output encoding."""
+    env = {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+    env.update(GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull,
+               PYTHONIOENCODING=output_encoding)
+    return subprocess.run([sys.executable, str(SCRIPT), *args],
+                          capture_output=True, env=env)
+
+  def native_entries(self, rev):
+    # Independent native enumeration; the CLI's own parser is not reused.
+    raw = self.git('ls-tree', '-r', '-t', '-l', '-z', '--full-tree', rev)
+    result = {}
+    for record in filter(None, raw.split(b'\0')):
+      header, path = record.split(b'\t', 1)
+      mode, kind, sha, size = header.decode('ascii').split()
+      name = path.decode('utf-8')
+      result[name] = {'path': name, 'mode': mode, 'type': kind, 'sha': sha,
+                      'size': int(size) if kind == 'blob' else None}
+    return result
+
   def test_noop_has_complete_tree_and_no_changes(self):
     result = self.prepare()
     self.assertEqual([], result['changes'])
@@ -154,6 +174,56 @@ class DeliveryManifestTests(unittest.TestCase):
     newer = self.commit('advance')
     result = module.prepare(self.root, newer, self.base)
     self.assertFalse(result['base_is_ancestor'])
+
+  def test_cli_ascii_manifest_parses_under_non_utf8_output_encoding(self):
+    expected = self.native_entries('HEAD')
+    for encoding in ('utf-8', 'gbk', 'ascii'):
+      with self.subTest(encoding=encoding):
+        result = self.cli_bytes(encoding, '--repo', str(self.root),
+                                '--base', self.base, '--head', self.base, '--full')
+        self.assertEqual(0, result.returncode,
+                         result.stderr.decode('utf-8', 'backslashreplace'))
+        self.assertNotIn(b'Traceback', result.stderr)
+        manifest = json.loads(result.stdout.decode('utf-8'))
+        self.assertEqual([expected[path] for path in sorted(expected)], manifest['entries'])
+        self.assertEqual([], manifest['changes'])
+
+  def test_cli_unicode_paths_parse_under_non_utf8_output_encoding(self):
+    name = '测试-🧪.txt'
+    self.write(name, 'unicode path\n')
+    self.write('plain-ascii.txt', 'ascii\n')
+    head = self.commit('unicode path')
+    old = self.native_entries(self.base)
+    new = self.native_entries(head)
+    expected_changes = sorted(path for path in old.keys() | new.keys()
+                              if old.get(path) != new.get(path))
+    for encoding in ('utf-8', 'gbk', 'ascii'):
+      with self.subTest(encoding=encoding):
+        result = self.cli_bytes(encoding, '--repo', str(self.root),
+                                '--base', self.base, '--head', head, '--full')
+        self.assertEqual(0, result.returncode,
+                         result.stderr.decode('utf-8', 'backslashreplace'))
+        self.assertNotIn(b'Traceback', result.stderr)
+        # Contract: the CLI emits ASCII-only JSON (ensure_ascii), decoded here as UTF-8.
+        manifest = json.loads(result.stdout.decode('utf-8'))
+        by_path = {entry['path']: entry for entry in manifest['entries']}
+        self.assertEqual(new, by_path)
+        self.assertEqual(expected_changes, [change['path'] for change in manifest['changes']])
+        self.assertIn(name, by_path)
+        self.assertEqual(new[name]['mode'], '100644')
+        self.assertEqual(new[name]['sha'], next(
+          blob['sha'] for blob in manifest['changed_blobs'] if name in blob['paths']))
+        self.assertFalse(manifest['remote_presence_checked'])
+
+  def test_unicode_error_diagnostic_is_not_masked_by_output_encoding(self):
+    missing = self.root / '不存在目录'
+    for encoding in ('utf-8', 'gbk', 'ascii'):
+      with self.subTest(encoding=encoding):
+        result = self.cli_bytes(encoding, '--repo', str(missing), '--base', 'HEAD')
+        self.assertEqual(2, result.returncode)
+        self.assertEqual(b'', result.stdout)
+        self.assertIn(b'error:', result.stderr)
+        self.assertNotIn(b'Traceback', result.stderr)
 
   def test_invalid_or_missing_reference_has_no_partial_json(self):
     for args in ([], ['--base', 'missing'], ['--base', self.base, '--known-ref', '-bad'],
