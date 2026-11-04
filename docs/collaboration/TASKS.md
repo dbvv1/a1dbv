@@ -48,7 +48,7 @@
 | 事项 | 等什么 | 期间照常做／批准后首步 |
 |---|---|---|
 | 云端截图 | MOBA 线上 `NET::ERR_CERT_AUTHORITY_INVALID`，待可信证书链后复验 | 本地 `27a40be`／Site v16：WebGL2 四路 smoke、四机位双重复通过；两非作者判小幅改善，正式评分待补。获准 `--no-sandbox`；已留 renderer／参数（SwiftShader software），exit 0、端口关闭。 |
-| 三案固定出图与完整验收 | 固定 1280×720／dpr 1 代码整合／测试／构建通过；普通路径 FPS 两路 2×144、MOBA 默认 397／组合 352、Star 默认 1491／组合 1065 tick 复验通过，均 Canvas。Star 实拍需 WebGL2、无 PNG；FPS／MOBA 未实拍。 | 旁置不等硬件 GPU；捕获无 WebGL2 显式报错。FPS／Star 只导画布无 DOM HUD；参数／renderer 待核，不绕过 IPC 限制。完整 smoke／同机位／盲评卡换默认。 |
+| 三案固定出图与完整验收 | 11-04 启动配置已修，三旗／默认参数保留；Star 单次尝试导航前 `socket() EPERM`／SIGABRT，Node exit1、预览退出，无 PNG。 | 等环境允许 Chromium IPC；不重试或绕过。之后补十机位图、目标图、盲评与材质整层。 |
 | LOB 外部试玩 | 已授权；实见原生 checkpoint 续局至第 25 关失败终局及从第一关重开；非连续整局、全程静音 | 第 21 关断连后续局重置分数／弹药／地形，不合并为连续成绩；连续完整一局、胜利与听感未验。详见[实玩范围](../research/2026-10-23-game-worth-trying.md)。 |
 
 ## 已停止的动作

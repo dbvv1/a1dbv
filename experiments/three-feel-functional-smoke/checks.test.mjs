@@ -1,5 +1,11 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {launch,assertArgv,assertWebGL,mobaProgress,starProgress,fpsProgress} from './checks.mjs';
-test('sandbox and raw argv fail closed',()=>{assert.equal(launch.chromiumSandbox,true);assertArgv(['--headless','--use-angle=swiftshader']);for(const flag of ['--no-sandbox','--disable-setuid-sandbox','--enable-unsafe-swiftshader'])assert.throws(()=>assertArgv(['--headless','--use-angle=swiftshader',flag]));});
+test('case browser keeps Playwright defaults and requires all approved software flags',()=>{
+ assert.equal(launch.chromiumSandbox,false);assert.equal(launch.ignoreDefaultArgs,undefined);
+ const argv=['--headless',...launch.args];assertArgv(argv);
+ for(const flag of launch.args)assert.throws(()=>assertArgv(argv.filter(a=>a!==flag)));
+ for(const argv of [undefined,[],['--headless','--use-angle=swiftshader']])assert.throws(()=>assertArgv(argv));
+ assert.throws(()=>assertArgv(['--headless',...launch.args,'--use-angle=gl']));
+});
 test('software WebGL2 is usable, Canvas is not',()=>{assert.equal(assertWebGL({webgl2:true,renderer:'ANGLE SwiftShader'}),'software');assert.throws(()=>assertWebGL({webgl2:false,renderer:'Canvas2D'}));});
 test('MOBA candidate requires real content12 progression',()=>{const a={state:{backend:'three-webgl2',ready:true},snapshot:{contentVersion:12,tick:1}},b={...a,snapshot:{contentVersion:12,tick:2}};mobaProgress(a,b,12);assert.throws(()=>mobaProgress(a,a,12));assert.throws(()=>mobaProgress(a,b,11));});
 test('Star candidate checks selected road-v3 and real capture advancement',()=>{const a={ready:true,drivingRevision:'road-v3',frame:0,tick:240,input:'accelerate-brake',player:{s:2},rendererInfo:{api:'webgl2'}},b={...a,frame:1,tick:241,player:{s:3}};starProgress(a,b,'road-v3');assert.throws(()=>starProgress(a,a,'road-v3'));assert.throws(()=>starProgress(a,b,'road-v2'));});
