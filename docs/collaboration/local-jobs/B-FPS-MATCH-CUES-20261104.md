@@ -2,7 +2,7 @@
 id: B-FPS-MATCH-CUES-20261104
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-match-cues-20261104
@@ -30,12 +30,11 @@ result_branch: relay/b-fps-match-cues-20261104
 
 ## 当前结果
 
-- 决定：源链返工，保留原四段候选。原 20 项测试虽通过，负责人独立反例检出默认峰值越界及缺少元数据后部分写入，见下方修改要求；未合入 FPS main。
-- 产物：[25e6dba](https://github.com/dbvv1/FPS-Like/commit/25e6dbab26fb5a98dc366b942ff84b60234dfb0e)，分支 `relay/b-fps-match-cues-20261104`。9 文件均在 `asset-pipeline/match-cues/`，包含 generator、recipe、manifest、四 WAV、测试与 README；`runtimeWired=false`。
-- 独立检查：20 项源测试及合法配方字节重建通过，四 WAV 共 109,616 字节，均 48 kHz mono PCM16，时长 0.130/0.090/0.460/0.460 秒、峰值 −12.0007 dBFS、首尾 0；−3 dB 幅度对照、事件绑定与 CC0 声明核对通过。已补跑 `npm test` 430/430、类型／生产构建；公开文件与候选提交身份扫描、差异检查通过。
-- 未验：实际试听、枪声／换弹／命中掩蔽、运行时优先级、浏览器播放与设备。当前四片只补三个语义槽的源候选，不增加游戏品质通过数；现有运行声、模拟、混音默认与 `quality.md` 未变。
-- 下一步：先修下列源链缺口，再收源；接线仍延期。未来真实试听须核切枪与 reload/bolt 区分、菜单／胜负和 hit/head/kill 的混淆、−3 dB 后可辨性与重复耐听，不以波形或 CPU 测试代签。
-- 原调用：2026-11-04 16:55–16:58 UTC 本机只读核实，原 Workflow completed、CLI 于 16:28:19 UTC 以 0 退出，工具 settled／pending 空，登记进程身份存活匹配 0；三类非作者最终 pass，实际测试日志齐全。外层 worker 独立退出事件／时刻未留证，保持未知，不重放旧调用；本次按变化输入沿原分支返工。
+- 源链两项缺口已修复：默认配方在输出前拒绝首通峰值加 -3 dB 增益超过 -12 dBFS 上限（-9→-8 反例退出 2），并补齐 batchId/baseRef/license/origin 非空校验；构建改为先全部合成、成功后才创建目录并写 WAV+manifest，拒绝时已有产物字节不变。26 项测试通过，四段 WAV 字节与事件身份未变，manifest 仅 generator.sha256 更新。taskDone=true，pageStuck=false。未验证：实际试听、枪声/换弹/命中掩蔽、运行时优先级、浏览器与设备播放（均属任务延期项）；npm test 未重跑（仅改 asset-pipeline，无 node_modules）。
+- 产物：[ecb53c7](https://github.com/dbvv1/FPS-Like/commit/ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a)，分支 `relay/b-fps-match-cues-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由负责人进行卡级非作者复核并推送 result_branch；后续接线与真实试听另行安排。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求
 
