@@ -94,10 +94,12 @@ git hash-object --no-filters received-page.md
 
 **恢复时要求实际读取检查点与当前项目指令，先核最新约束和撤回项，再核 Git 状态、diff、产物与在途结果。** 冲突先查变化，未知写入先查状态。接续合格看三件事：限制仍遵守；下一步有证据入口；没有重复已完成或结果未知的写入。
 
-普通 Markdown 不会自动加载：Claude `@文件` 可引入内容，Codex `@` 文件选择主要加入路径，仍要明确要求读取；Claude 压缩后也可能只留下大文件的 `Referenced file` 路径，应核实际内容。检查点并不保证摘要无损。
+普通 Markdown 不会自动加载。Claude 默认内联 `@文件` 时，在 Read 限额内加入内容（默认 25,000 token，超过 256KB 的文本文件不纳入）；目录只加入列表。禁用文件提及时只传路径。Codex `@` 文件选择主要加入路径，仍要明确要求读取。
+
+Claude 压缩后最多重读 5 个读过或编辑过的文件，优先最近修改者；超过 5,000 token 的文件只留下 `Referenced file` 路径。恢复时核所需内容是否真的读入；检查点也不能保证摘要无损。
 
 自己用 SDK 实现接续时，还要分别核 fork 写出的引用与读取接口实际返回的消息。[Claude Agent SDK 的组合接收](../../experiments/claude-session-receipt/README.md)中，单修 fork 或单修 read 均漏掉压缩明确保留的消息；两项已有补丁组合后，disk／内存 store 的 fork→read 才完整。此为公开合成数据的 SDK 实测，真实 CLI／模型接续未验；核实 2026-11-02。
 
-**依据**：[Codex 固定压缩提示](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/compact/prompt.md)、[Claude 引用](https://code.claude.com/docs/en/best-practices#provide-rich-content)与[压缩重载](https://code.claude.com/docs/en/context-window#what-survives-compaction)、[Codex 文件入口](https://learn.chatgpt.com/docs/developer-commands#interactive-shortcuts)、[既有恢复包](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)，核实 2026-10-26。
+**依据**：[Codex 固定压缩提示](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/compact/prompt.md)，核实 2026-10-26；[Claude 引用](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories)与[压缩重载](https://code.claude.com/docs/en/context-window#what-survives-compaction)核实 2026-11-04；[Codex 文件入口](https://learn.chatgpt.com/docs/developer-commands#interactive-shortcuts)、[既有恢复包](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)，核实 2026-10-26。
 
 **优先核限制：任务得分稳定，摘要仍可能丢掉工作方法和禁改范围。** [10 月压缩研究](https://arxiv.org/html/2610.31778v1) §4.2／§5 与[改造版 OpenCode](https://github.com/aisa-group/compaction/blob/main/docs/COMPACTION.md)，核实 2026-10-28。该研究的任务实验仅含少量任务及 Opus 4.6、GPT-5.3-Codex、GPT-5.4 等模型，1M 模型只用到窗口的 16%–38%；44 条真实会话用 LLM 判分，未测约束丢失对最终结果的影响。本仓未复现，不据此设通用阈值。
