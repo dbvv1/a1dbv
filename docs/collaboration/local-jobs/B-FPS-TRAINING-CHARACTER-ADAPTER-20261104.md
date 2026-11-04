@@ -2,12 +2,12 @@
 id: B-FPS-TRAINING-CHARACTER-ADAPTER-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-training-character-adapter-20261104
 
-工作线：FPS-Like。本卡为独立排队单元，尚未认领。
+工作线：FPS-Like。原 CPU 产物已复核，按修改要求沿原结果分支小修。
 
 ## 目标
 把已接受且在旧1v1采用的角色 GLB 接到当前训练赛的只读状态合同，准备解决跑动无步态的内容缺口，不再造角色或改腰腿材质。
@@ -30,8 +30,14 @@ result_branch: relay/b-fps-training-character-adapter-20261104
 
 ## 当前结果
 
-- 已完成训练赛角色源 CPU 合同：新增可导入离线 adapter，用真实 enemy-relay-guard.glb 与 offline-training-v1 真实 Game/Feedback 实现 read-only 状态采样（position/yaw/hp/crouch/移动量与 Feedback 事件年龄，rest TRS 重置，death>hit>fire>walk>idle，settled-tail ≤700ms，无新增墙钟/计时器/模拟写入），含资源所有权与迟到/失败/销毁处理、17 个真实 CPU 测试、接线与缺失 reload/switch 动作 README。taskDone：单元范围完成（remaining=false）。pageStuck：不适用（build 类型，无页面）。已运行：adapter 测试 17/17、adapter tsc、npm run typecheck、npm test 430/430、npm run build 均通过。未运行验收：按卡约束未跑浏览器/headless、GPU、截图及人工观感；未接入 src（写入范围禁改）。openIssues：无；Node v22 低于 engines >=24 仅警告。
-- 产物：[f5eacd9](https://github.com/dbvv1/FPS-Like/commit/f5eacd9d9cc251e20c28529be430ae29db1a20ec)，分支 `relay/b-fps-training-character-adapter-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由负责人接收本单元并在后续卡把 TrainingCharacterSet 接到 src/candidates/offline-training-v1/render/scene.ts 的 actor 循环（保留 procedural fallback），再按仓库规则跑 headless 浏览器 smoke 与人工机位评审；源 GLB 本身无 reload/switch 动作。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 产物保全：[f5eacd9](https://github.com/dbvv1/FPS-Like/commit/f5eacd9d9cc251e20c28529be430ae29db1a20ec)，分支 `relay/b-fps-training-character-adapter-20261104`，仅 adapter 目录 4 文件；未接训练赛 `src`、未合 FPS main。
+- 负责人独立复核：真实 GLB 原字节与五段 clip、17/17 CPU、adapter tsc、根类型检查、430/430 与构建通过；另验 30/60/144Hz 同 Feedback 年龄姿势一致。公开文件／提交扫描通过。原 CLI 退出 0、Workflow completed、工具 settled、登记进程无存活匹配；外层 worker 独立退出回执未知。
+- 决定：返工文档和真实命令测试。快速回切会重新选中旧 fire；手枪回切与未切枪的最终快照甚至完全相同，当前只读快照不能保证清除所有切枪前事件。见[独立评审与复现](../reviews/2026-11-04-fps-training-character-adapter.md)。
+- 欠项：源 reload/switch 动作和训练赛接线未实现；浏览器及同机位／脚接触／死亡轮廓未验，不声称画面改善。沿原卡小修后再交 review_ready，不新增同题卡，不占 GUI/GPU。
+
+## 修改要求
+
+1. 沿 `f5eacd9` 修正 README 的切枪强保证：`shot.weapon === actor.weapon` 只过滤当前另一把枪，回切时仍可能选中旧 fire 尾段。写明事件年龄不会归零，但这不等于切枪后旧开火表现不会重现；不要把缺少 reload/switch 源片段与缺少切枪历史事实混为一项。
+2. 用真实 `Game` 补步枪、手枪开火后「切走→切回」、同 tick 多次切枪及切枪取消换弹的覆盖，不只修改假 Actor。保留无切枪对照，明确每个断言证实什么；手枪反例须保留最终快照相等的证据，不能将支持不了的保证写成通过。
+3. 不在本卡新增模拟状态、墙钟、任意等待或靠看过中间呈现帧记忆切枪。准确清除所有旧 fire 需要后续接线范围提供只读切枪事件／代际事实；当前保持此项未解决，不用单一 nextShot 判断冒称普遍修复，也不改 `src` 或补造源动作。
+4. 保留已验证的 17 项、原 GLB／几何哈希、rest TRS、Feedback 尾段、资源归属与第一人称合同；重跑新增 CPU 测试、adapter tsc、受影响检查、公开文件／提交扫描和差异检查。只推原结果分支，交实际差量与剩余缺项；不合 FPS main、不部署、不启动浏览器。
