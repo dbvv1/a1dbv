@@ -1,7 +1,7 @@
 # A-TEMPLATE-CODEX-PORTABILITY-20261104 · 修正独立复制后的来源链接
 id: A-TEMPLATE-CODEX-PORTABILITY-20261104
 owner: dot-A
-status: ready
+status: blocked
 kind: build
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
@@ -32,3 +32,7 @@ result_branch: relay/a-template-codex-portability-20261104
 运行 `python3 scripts/check_repo.py`、`python3 scripts/check_public.py`、`python3 -m unittest discover -s tests -p test_template_overlay.py -v` 与 `git diff --check`；非作者核直接模板差量、来源、适用范围与权限未扩大。
 只报告实际运行、通过／失败／受阻／未运行；检查结论写现有提交说明及本卡简短当前结果，不另造回执账本。失败修复后复验受影响范围，未知写者先核原调用。
 一个45–75分钟单元、最多2小时，原接收端统一调度；回传模板实际变化与尚缺条件，不用卡片或建议数量代替完成。
+
+## 当前结果
+
+- check_repo 未通过，未推送

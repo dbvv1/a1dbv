@@ -2,7 +2,7 @@
 id: B-AI-GAME-SCENE-LIGHTING-20261104
 owner: dot-B
 kind: explore
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-ai-game-scene-lighting-20261104
@@ -29,3 +29,11 @@ result_branch: relay/b-ai-game-scene-lighting-20261104
 交最有用的制作机制、上述证据及一个可在现案例验证的二改问题。非作者核链接和作者身份、完整实机可达性，候选不足就给实际覆盖与排除原因，不凑数；本机不评水平、不写已玩或品质通过。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 完成成套场景光照二改实例的静态来源整理：按 6 类渠道收录 84 项（甲 3／乙 34／丙 33，丁 14 按规则不计），另列 9 条真实光照/资产交接问题证据；甲级为 Capybara、backroad rally、长风 Long Wind，均给出可玩链接、作者过程、静态图、版本日期与 AI/人分工，并附可在现案例验证的四层二改问题。openIssues：作者真实身份、完整游玩回路、帧率手感、逐件资产许可与项目单独成本未核；Reddit／X／Medium／itch.io 等原帖被拦截，部分过程仅有归档或转述；未启动游戏、未看实机。taskDone：本单元静态来源范围完成。pageStuck：不适用（非 reader-test）。未运行验收：实际试玩与完整连续实机未运行。
+- 产物：[b09c12e](https://github.com/dbvv1/a1dbv/commit/b09c12e7f9068ae953e292a6581115a161006940)，分支 `relay/b-ai-game-scene-lighting-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
+- 下一步：负责人接收 result_branch；安排 dot 完整试玩三款甲级样本并核作者身份、许可与实机可达性；后续可补未读原帖与逐件资产许可。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
