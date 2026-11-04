@@ -1,7 +1,7 @@
 # A-TEMPLATE-SPEC-REUSE-20261104 · 复用已有需求与规格入口
 id: A-TEMPLATE-SPEC-REUSE-20261104
 owner: dot-A
-status: ready
+status: running
 kind: build
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
