@@ -1,6 +1,18 @@
-# FPS 训练赛角色 adapter：CPU 通过，回切承诺需返工
+# FPS 训练赛角色 adapter：离线模块已接收，运行接线待做
 
-**决定：保全 `f5eacd9`，返工文档和真实切枪命令测试；训练赛接线、切枪历史保证及视觉验收延期。** 本次没有合入 FPS main，也没有新增重复本机任务。接收端只读核查已确认原 Workflow completed、CLI 于 17:12:45 UTC 以 exit 0 关闭、工具 settled 且 pending 为空，1,240 个登记进程身份均为 exited、当前存活匹配为 0；三类非作者复核均通过。外层 worker 独立退出事件仍未知，不用 PID 消失推断退出码。现已具备沿原卡返工的依据。
+**当前决定：接收离线 adapter，不接受训练赛已接线或画面已改善的结论。** 返工源 [411f155](https://github.com/dbvv1/FPS-Like/commit/411f155cf014fa10023f870e68a1c28eab02da8e) 已于 2026-11-04 UTC 整合至 FPS main [fa8740d](https://github.com/dbvv1/FPS-Like/commit/fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8)，保留源提交为合入父节点；原卡标 accepted。下面保留首次反例，说明接收的是完整、诚实的 CPU 模块，不是回切状态缺口已经修好。
+
+## 返工复核与接收
+
+- 差量为 README、4 个新增真实 `Game` / `Feedback` 测试及 adapter 的 5 行注释，运行逻辑未改变。文档明确旧 fire 可以在回切后重新被选中，并分别说明缺 reload/switch 源片段与缺只读切枪历史，撤回了原强保证。
+- 新增测试覆盖步枪回切、手枪回切与无切枪对照、同 tick 多次切枪、切枪取消换弹。手枪最终快照完全相等及旧 fire 50 ms 的反例都被保留，不用 `nextShot` 或逐帧观察伪造解决。
+- 独立合并当前 main `ecb53c7` 后，在 Node 24.22.1 重跑 **21/21** adapter、独立 tsc、根类型检查、**430/430** 与构建，全部通过且无跳过。21 项须另跑，不属于根测试数。相较首次候选构建，**34 个 web-dist 文件逐一哈希相同**；`src/`、运行资产、根测试与依赖未变。
+- 本轮原执行另核：Workflow completed；CLI 于 **18:39:09 UTC** 退出 0，工具 settled 且 pending 空；**557** 个登记进程身份均 exited，当前存活匹配 0、无本卡活跃写者。外层 worker 独立退出事件、退出码和时刻仍未知。此处没有复用首次 `f5eacd9` 的旧退出回执。
+- 源 reload/switch 动作、训练赛 `scene.ts` 接线、准确清除切枪前旧 fire 的只读事实仍待补齐；浏览器与同机位、脚接触、死亡轮廓未验。没有改默认渲染、没有部署，不提升品质通过数。公开文件／提交扫描及差异检查通过；发布时该 SHA 未观察到 hosted CI run，不称 CI 已通过。
+
+## 首次复核：返工依据（f5eacd9）
+
+**首次决定：保全 `f5eacd9`，返工文档和真实切枪命令测试；训练赛接线、切枪历史保证及视觉验收延期。** 本次没有合入 FPS main，也没有新增重复本机任务。接收端只读核查已确认原 Workflow completed、CLI 于 17:12:45 UTC 以 exit 0 关闭、工具 settled 且 pending 为空，1,240 个登记进程身份均为 exited、当前存活匹配为 0；三类非作者复核均通过。外层 worker 独立退出事件仍未知，不用 PID 消失推断退出码。当时据此沿原卡返工。
 
 评审对象是 [B-FPS-TRAINING-CHARACTER-ADAPTER-20261104](../local-jobs/B-FPS-TRAINING-CHARACTER-ADAPTER-20261104.md) 的 [固定提交 `f5eacd9`](https://github.com/dbvv1/FPS-Like/commit/f5eacd9d9cc251e20c28529be430ae29db1a20ec)。2026-11-04 UTC 核最新 a1dbv main `94f8a978` 及[手册 §7](../LONG-TERM-PLAN.md#7-交付流程)，FPS main 仍是 `36fde4bb6a2e8f9652528fdea648d0a90190db79`。独立复核只用云端 CPU 和既有依赖，没有占用本机 GUI、浏览器或 GPU。
 

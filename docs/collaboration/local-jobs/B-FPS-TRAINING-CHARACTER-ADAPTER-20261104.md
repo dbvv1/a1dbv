@@ -2,12 +2,12 @@
 id: B-FPS-TRAINING-CHARACTER-ADAPTER-20261104
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-training-character-adapter-20261104
 
-工作线：FPS-Like。原 CPU 产物已复核，按修改要求沿原结果分支小修。
+工作线：FPS-Like。离线 adapter 与回切边界测试已接收；训练赛接线和感知验收仍待后续完成。
 
 ## 目标
 把已接受且在旧1v1采用的角色 GLB 接到当前训练赛的只读状态合同，准备解决跑动无步态的内容缺口，不再造角色或改腰腿材质。
@@ -30,15 +30,8 @@ result_branch: relay/b-fps-training-character-adapter-20261104
 
 ## 当前结果
 
-- taskDone=true；修改要求 1-4 全部完成：README 改正切枪强保证并单列切枪历史缺口，adapter.ts 仅加维护者注释不改行为，新增 4 项真实 Game+Feedback 切枪/换弹 CPU 测试并保留原 17 项。Workflow 实跑 adapter 测试 21/21、adapter tsc 0、npm run typecheck 0、npm test 430/430、npm run build 0、git diff --check 通过、公开材料扫描 0 命中（Node v22.23.2 低于 engines >=24 但检查均通过）。openIssues：快照无切枪历史、回切仍可能重选旧 fire；缺 reload/switch 源片段；adapter 未接训练赛 src；pageStuck 不适用（build 单元）；未运行验收为浏览器/同机位/脚接触/死亡轮廓，本卡禁止浏览器，未声称画面通过。
-- 产物：[411f155](https://github.com/dbvv1/FPS-Like/commit/411f155cf014fa10023f870e68a1c28eab02da8e)，分支 `relay/b-fps-training-character-adapter-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：负责人接收并按原结果分支 relay/b-fps-training-character-adapter-20261104 提交 review_ready；后续卡需补只读切枪事件/代际事实、源 reload/switch clip、训练赛 src 接线及人工/浏览器画面验收。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
-
-## 修改要求
-
-1. 沿 `f5eacd9` 修正 README 的切枪强保证：`shot.weapon === actor.weapon` 只过滤当前另一把枪，回切时仍可能选中旧 fire 尾段。写明事件年龄不会归零，但这不等于切枪后旧开火表现不会重现；不要把缺少 reload/switch 源片段与缺少切枪历史事实混为一项。
-2. 用真实 `Game` 补步枪、手枪开火后「切走→切回」、同 tick 多次切枪及切枪取消换弹的覆盖，不只修改假 Actor。保留无切枪对照，明确每个断言证实什么；手枪反例须保留最终快照相等的证据，不能将支持不了的保证写成通过。
-3. 不在本卡新增模拟状态、墙钟、任意等待或靠看过中间呈现帧记忆切枪。准确清除所有旧 fire 需要后续接线范围提供只读切枪事件／代际事实；当前保持此项未解决，不用单一 nextShot 判断冒称普遍修复，也不改 `src` 或补造源动作。
-4. 保留已验证的 17 项、原 GLB／几何哈希、rest TRS、Feedback 尾段、资源归属与第一人称合同；重跑新增 CPU 测试、adapter tsc、受影响检查、公开文件／提交扫描和差异检查。只推原结果分支，交实际差量与剩余缺项；不合 FPS main、不部署、不启动浏览器。
+- 接收范围：返工源 [411f155](https://github.com/dbvv1/FPS-Like/commit/411f155cf014fa10023f870e68a1c28eab02da8e) 已整合到 FPS main [fa8740d](https://github.com/dbvv1/FPS-Like/commit/fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8)，仅新增 adapter 目录 4 文件；没有接训练赛 `src`、没有改运行资产或部署。
+- 修改要求已完成：README 撤回切枪强保证、区分源片段与切枪历史缺口；保留原 17 项并补 4 项真实 Game/Feedback 场景，明确快切回原枪仍可重选旧 fire、手枪回切最终快照与未切枪对照相同。adapter 仅加注释，未偷加时钟、模拟状态或逐帧记忆。
+- 独立复验：Node 24.22.1 下 21/21 adapter、adapter tsc、根类型检查、430/430 与构建通过，无失败或跳过；相较首次候选构建，34 个 web-dist 文件哈希完全相同。原 GLB／几何、源消费者不变；公开文件／提交扫描及差异检查通过。21 项不在根 `npm test` 内，须单独运行。
+- 本轮退出已核：Workflow completed，CLI 于 2026-11-04 18:39:09 UTC 退出 0，工具 settled、pending 空，557 个登记身份均 exited，存活匹配 0；当前无本卡活跃写者。外层 worker 独立退出事件、退出码和时刻仍未知。
+- 剩余范围：回切后的旧 fire 强清除仍缺只读切枪事件／代际事实；源 reload/switch clip、训练赛接线未实现；浏览器、同机位、脚接触和死亡轮廓未验，不计品质改善。后续从真实状态合同与原 scene.ts 入口接续，不重做角色或重派本卡。详见[复核与接收记录](../reviews/2026-11-04-fps-training-character-adapter.md)。
