@@ -27,3 +27,11 @@ result_branch: relay/b-moba-veyra-death-contact-20261104
 两队实际源→GLB重建、逐帧／半帧蒙皮接触检查、其他四动作与网格／bind不变、源缺失／非法阈值失败路径；再把接触容差从 0.01 调为 0.005 重跑，保可编辑性。独审核不是只动文件名或改断言；CPU 接触通过不代替实际游戏死亡剪影与同框评判。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 两队 .blend 源候选与源→GLB 重建已交付：仅改 death Root location Y（16/31 键），61 采样/队复现脚底穿地 −0.051905 m @ frame 13.5 Foot_L；0.01/0.005 容差均通过（body −0.000182 m、foot −0.000127 m、支撑最高 +0.014601 m、focus +0.050518 m），24 个 unittest 与 bpy 源重建/源差检查通过，未改 heroes/battle/渲染/quality.md。openIssues：README 采纳步骤 2 的 heroes recipe 移植分支漏更新 build.py/retarget.py 在 default-source-manifest sharedAssets 的 pinned sha256，按文档采纳后 npm test 仍会失败。未验证：游戏内死亡剪影与同框品质（本卡禁浏览器/GPU，需人工）、npm test/npm run build（无 node_modules）。另：源重建直接使用本机已有 bpy 5.2.3 后台模块，非 gen3d/glbprep 命令，需负责人判定。
+- 产物：[9dfa27a](https://github.com/dbvv1/MOBA-Like/commit/9dfa27a8b6497ec02a9c7f068e5ace073e0f0f43)，分支 `relay/b-moba-veyra-death-contact-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：负责人处理：(1) 修 README 采纳步骤 2/3：补 heroes recipe 两个脚本的 pinned sha256，或声明只支持 build_source_candidates.py 重建路径；(2) 人工完成游戏内死亡剪影与同框品质验收；(3) 判定直接调用本地 bpy 处理资产是否可接受，再决定采纳与全部 pin 同步。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
