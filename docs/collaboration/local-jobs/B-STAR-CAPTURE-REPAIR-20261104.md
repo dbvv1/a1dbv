@@ -2,7 +2,7 @@
 id: B-STAR-CAPTURE-REPAIR-20261104
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 5962a43d851575220a0a67c6a17b5e7b218a4e9c
 result_branch: relay/b-star-capture-repair-20261104
@@ -45,5 +45,9 @@ manifest 逐机位记完整实际URL、commit/tree、构建hash及servedBundleSh
 公开扫描、diff空白与noreply提交身份检查后，只推结果分支并回 review_ready；dot 按真实图接收。
 
 ## 当前结果
-- 12:58–13:00 UTC 原入口只读复核：原 Workflow completed、CLI 已 exit 0、工具 settled，登记身份存活匹配 0；现未见相关 capture/probe/preview 或 Playwright headless 根进程，原 6519 无监听，无另一张出图卡运行。Node 24.22.1 可启动。本次只读，不是新卡执行；启动时仍须重新核当前串行条件。
-- 新卡按用户11-04决定另排；修复源码已发布，三机位实拍仍待执行与接收。旧轮0PNG及个体历史退出缺口保留，不能算本卡结果。
+
+- 三机位软件 WebGL2 实拍完成：先单独跑 coast-chase 并以 exit 0、report.passed=true、双轮各 1 帧、PNG 可解码 1280×720 非背景、像素哈希与相机/车辆状态逐项一致通过后，再串行拍 coast-full-bend 与 academy-depth，均达到同一门槛；构建前后 tracked clean，Worker/road bundle SHA-256 与 served bundle 一致，预览仅一个 smoke-server（127.0.0.1:4141，内存 SQLite），结束后预览退出且端口无监听、三台浏览器退出 0；交付 24 个脱敏公开文件（场景原图、逐帧 JSON、report、manifest、README、artifact-hashes），artifact-hashes 23 条哈希逐项匹配。openIssues：1) 仅 SwiftShader 软件渲染，不是硬件 GPU 基线；每机位 1 帧×2 次，不代表整局、手感、声音或画面判优；2) 按任务只补跑 capture/smoke-launch 相关 15 项单测，未重跑 npm test；3) 核对浏览器版本时曾误用 chrome.exe --version 触发默认 profile 的短时可见窗口，已立即终止该 PID 及子进程，未参与拍摄也未产生交付物，属对“不开可见窗口”边界的偏离，如实记录；4) 旧卡 48d0c34 的 0 PNG 与旧目录保留未动，未作为本卡基线。taskDone=true，pageStuck=false。
+- 产物：[2b7f948](https://github.com/dbvv1/Star-Rush-Reborn/commit/2b7f948d7c9a8253e5aeb5159821cee736337318)，分支 `relay/b-star-capture-repair-20261104`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人提交 24 个文件并推送结果分支 relay/b-star-capture-repair-20261104，回 review_ready；三张场景原图待 dot-B 按真实图接收，硬件 GPU／整局／手感与声音仍未验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
