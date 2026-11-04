@@ -79,10 +79,15 @@ def check(root):
       # require separate review; do not advertise them as validated here.
       for match in re.finditer(r"\[[^\]\n]*\]\(([^\s)]+)(?:\s+\"[^\"]*\")?\)", line):
         target = match.group(1).strip("<>")
-        parsed = urlsplit(target)
-        if parsed.scheme or parsed.netloc or not parsed.path:
+        try:
+          parsed = urlsplit(target)
+          if parsed.scheme or parsed.netloc or not parsed.path:
+            continue
+          target_path = (path.parent / unquote(parsed.path)).resolve()
+        except ValueError as exc:
+          # Malformed URL/path text is a document error, not a CLI traceback.
+          errors.append(f"{relative}:{line_number}: invalid link target: {target} ({exc})")
           continue
-        target_path = (path.parent / unquote(parsed.path)).resolve()
         if not target_path.is_relative_to(root.resolve()):
           errors.append(f"{relative}:{line_number}: link escapes repository: {target}")
         elif not target_path.exists():

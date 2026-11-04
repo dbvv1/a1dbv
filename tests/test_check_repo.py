@@ -30,6 +30,17 @@ class RepoCheckTests(unittest.TestCase):
     result = self.run_fixture({"a.md": "[a](missing.md) [b](../outside.md)"})
     self.assertEqual(2, len(result["errors"]))
 
+  def test_invalid_targets_report_and_continue(self):
+    result = self.run_fixture({
+      "a.md": "[broken](https://[broken)\n[null](bad%00name.md)\n[missing](missing.md)\n[ok](ok.md)",
+      "ok.md": "ok",
+    })
+    self.assertEqual(2, result["checked_files"])
+    self.assertEqual(3, len(result["errors"]))
+    self.assertTrue(result["errors"][0].startswith("a.md:1: invalid link target:"))
+    self.assertTrue(result["errors"][1].startswith("a.md:2: invalid link target:"))
+    self.assertIn("a.md:3: missing link target: missing.md", result["errors"])
+
   def test_fences_are_not_links(self):
     self.assertEqual([], self.run_fixture({"a.md": "```md\n[x](no.md)\n```\n~~~\n[x](no.md)\n~~~"})["errors"])
 
@@ -90,6 +101,25 @@ class RepoCheckCLITests(unittest.TestCase):
         self.assertEqual(code, result.returncode)
         self.assertEqual(b"", result.stderr)
         self.assertEqual(expected, json.loads(result.stdout.decode("ascii")))
+
+  def test_invalid_link_targets_keep_json_error_contract(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      (root / "README.md").write_text(
+        "[bad](https://[broken)\n[null](bad%00name.md)\n[missing](missing.md)\n",
+        encoding="utf-8",
+      )
+      for encoding in ("utf-8", "gbk", "ascii"):
+        with self.subTest(encoding=encoding):
+          result = self.run_cli("--root", root, encoding=encoding)
+          self.assertEqual(1, result.returncode)
+          self.assertEqual(b"", result.stderr)
+          report = json.loads(result.stdout.decode("ascii"))
+          self.assertEqual(1, report["checked_files"])
+          self.assertEqual(3, len(report["errors"]))
+          self.assertIn("invalid link target", report["errors"][0])
+          self.assertIn("invalid link target", report["errors"][1])
+          self.assertIn("missing link target: missing.md", report["errors"][2])
 
   def test_clean_root_retains_success(self):
     with tempfile.TemporaryDirectory() as directory:
