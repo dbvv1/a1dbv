@@ -1,11 +1,12 @@
 {
   "batch-draft.json": "566118aa8087e8efabe851b9ed831e09aa41be4df9d136c05285d94f7ad24acb",
-  "fps-worker.mjs": "02edf6c7af9f1d38f7fd4917e5a2bf6db9c7bceca9d1c6dc7a0ffd12c50f3bf7",
+  "fps-worker.mjs": "8f58ed79b096df458f53c1c81bd3e5f8a76c33e60d4c3c517a30afe73997a944",
   "lease-holder.mjs": "931a3a6c910ec256272d2612074d3ccf83e801006513b90a0ba21f7795249684",
-  "moba-adapter.mjs": "9933f8b11919dd5b5440d59acc1c99d99e3e133227247688fec523669a5b2531",
-  "receiver-config.example.json": "98337440f02abce3e75354369faec2b7f5cb914592f328a215cb6751ac307779",
-  "run-batch.py": "76b26b3c7b435313153f65df749a2f796a38b183daeb114504aa47a4a3f78a6c",
-  "star-adapter.mjs": "9313b36427e4b3d7a76fd8cc92f78e46ff135aa8d75688790f3df63f5c7ecfa9",
-  "test-preparation.py": "eee29b5af5afff325426be21a50f0bc83387c11d8413044723122a43dc932fec",
-  "../three-feel-functional-smoke/checks.mjs": "f248a6349530c02e3d6eeabd0269058c4b429bee1c1aac8b74b9b6834363f440"
+  "moba-adapter.mjs": "0e43cf8c84ecf197bd331c123108630220ffe8c05e1c419480d418239f02f620",
+  "receiver-config.example.json": "d2be01a36bf980dc0b55772960aaf3c6b716ebec604b1979d8193c6706379554",
+  "run-batch.py": "9b9f9eb20ae66850de1a5d19e45fb637219907afd39903a974a6d5b712a1ca92",
+  "star-adapter.mjs": "3ae3c2439f3c1c1a9dcda4caade7804cd5099aa223f79ac74cd766f78dca2d46",
+  "test-preparation.py": "04d00a7968e6489b6ac68b23f8a2ea9a0c64aae000d6a5d41e46f709ba9983bb",
+  "../three-feel-functional-smoke/checks.mjs": "a7b2ef60f9ffaa7b5b484cbda41126bed796a43eed5837515ca18004216a7342",
+  "render-profile.test.mjs": "5af25ae5c3a46a41baf1de40c3c2705c70b8c15aa224d6482d3b223d961cac35"
 }

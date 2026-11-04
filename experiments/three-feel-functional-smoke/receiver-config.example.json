@@ -1,5 +1,6 @@
 {
   "approved": false,
+  "renderProfile": "swiftshader",
   "blockers": [
     "Original Star42 and prior capture process exits unknown",
     "Receiver exact browser/dependency/build/serial-slot receipts required"

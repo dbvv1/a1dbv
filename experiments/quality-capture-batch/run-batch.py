@@ -51,10 +51,18 @@ def build(root, label):
     args = [os.environ.get('ComSpec', 'cmd.exe'), '/d', '/s', '/c', 'npm.cmd run build'] if os.name == 'nt' else ['npm', 'run', 'build']
     run(args, root, label=label)
 
+def render_profile(config):
+    profile = config.get('renderProfile', 'd3d11')
+    if profile != 'd3d11':
+        raise RuntimeError('Frozen quality batch requires d3d11; use the standalone FPS worker or functional smoke for SwiftShader')
+    return profile
+
 def inventory(root):
     return [{'path': str(p.relative_to(root)).replace('\\', '/'), 'sha256': sha(p)} for p in sorted(root.rglob('*')) if p.is_file()]
 try:
     config = json.loads(pathlib.Path(sys.argv[1]).read_text())
+    profile = render_profile(config)
+    report['renderProfile'] = profile
     target = pathlib.Path(config['outputRoot']).resolve()
     target.mkdir(parents=True, exist_ok=True)
     newout = pathlib.Path(tempfile.mkdtemp(prefix='quality-', dir=target))
@@ -106,12 +114,14 @@ try:
     moba_worker = out / 'moba-worker.mjs'
     run([node, HERE / 'moba-adapter.mjs', roots['moba'], moba_worker], HERE, label='moba-adapter-prepare')
     env = os.environ.copy()
+    env['CAPTURE_RENDER_PROFILE'] = profile
     env['MOBA_CAPTURE_CHROMIUM'] = config['moba']['browser']['path']
     run([node, '--import', loader, moba_worker, '--shot', 'all', '--seed', '1', '--t', '10', '--input', 'march', '--lighting', 'baseline', '--frames', '1', '--repeat', '2', '--lease-root', config['leaseRoot'], '--task-id', config['taskId'], '--out', out / 'moba'], roots['moba'], env, 'moba-capture')
     receipts = list((out / 'moba').glob('run-*/report.json'))
     if not len(receipts) == 1:
         raise RuntimeError('Acceptance check failed')
     m = json.loads(receipts[0].read_text())
+    if m.get('renderProfile') != profile:raise RuntimeError('MOBA actual render profile mismatch')
     if m.get('browserVersion') != config['moba']['browser']['version']:raise RuntimeError('MOBA actual browser version mismatch')
     if not (m['passed'] and m['capturePassed']):
         raise RuntimeError('Acceptance check failed')
@@ -134,20 +144,24 @@ try:
         raise RuntimeError('Shared lease not acquired; stop before FPS')
     lease_acquired = True
     env = os.environ.copy()
+    env['CAPTURE_RENDER_PROFILE'] = profile
     env['FPS_CAPTURE_CHROMIUM'] = config['fps']['browser']['path']
     run([node, '--import', loader, HERE / 'fps-worker.mjs', roots['fps'], roots['moba'], out / 'fps'], roots['fps'], env, 'fps-capture')
     fps_report=json.loads((out / 'fps/report.json').read_text())
+    if fps_report.get('renderProfile') != profile:raise RuntimeError('FPS actual render profile mismatch')
     if fps_report.get('browserVersion') != config['fps']['browser']['version']:raise RuntimeError('FPS actual browser version mismatch')
     if not fps_report['passed']:
         raise RuntimeError('Acceptance check failed')
     worker = out / 'star-worker.mjs'
     run([node, HERE / 'star-adapter.mjs', roots['star'], roots['moba'], worker], HERE, label='star-adapter-prepare')
     env = os.environ.copy()
+    env['CAPTURE_RENDER_PROFILE'] = profile
     env['STAR_RUSH_CAPTURE_CHROMIUM'] = config['star']['browser']['path']
     for shot, seed, t in [('coast-chase', 73121, 28), ('coast-full-bend', 73121, 28), ('academy-depth', 95276, 14)]:
         dest = out / shot
         run([node, '--import', loader, worker, dest, shot, '--seed', seed, '--t', t, '--input', 'road-tour', '--frames', '1', '--repeat', '--hardware-evidence', config['star']['hardwareEvidence']], roots['star'], env, shot)
         star_report=json.loads((dest / 'report.json').read_text())
+        if star_report.get('renderProfile') != profile:raise RuntimeError('Star actual render profile mismatch')
         if star_report.get('browser') != config['star']['browser']['version']:raise RuntimeError('Star actual browser version mismatch')
         if not star_report['passed']:
             raise RuntimeError('Acceptance check failed')
