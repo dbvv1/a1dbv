@@ -1,0 +1,635 @@
+{
+  "task": "B-PIPE-MODEL-BATCH-READER-20261104 reader run",
+  "source": {
+    "repo": "https://github.com/dbvv1/FPS-Like",
+    "commit": "36fde4bb6a2e8f9652528fdea648d0a90190db79",
+    "page": "domains/game-dev/assets/3d.md@463b4b9a95a8e6eadb98b730d8aa373a05dcbec0, asset-family-rebuild section"
+  },
+  "environment": {
+    "platform": "Windows 11, bash (Git Bash)",
+    "python": "3.13.5",
+    "blender_executable_on_path": false,
+    "bpy_module_version": "5.2.3 LTS",
+    "bpy_gltf_io_generator": "Khronos glTF Blender I/O v5.2.41",
+    "checked_in_gltf_io_generator": "Khronos glTF Blender I/O v4.3.47",
+    "notes": "No `blender` executable. Rebuild ran through the preinstalled bpy Python module. Page and README name Blender 4.3.2; that version was not available."
+  },
+  "checked_in_vs_5_2_3_rebuild": {
+    "same_generator_except_asset_field": true,
+    "binary_chunk_identical_for_all_three": true,
+    "json_only_difference": "asset.generator (v4.3.47 -> v5.2.41)",
+    "byte_identical_to_checked_in": false,
+    "structure": {
+      "checked_in": {
+        "wall-center-dogleg.glb": {
+          "bytes": 76776,
+          "sha256": "2ca378155b3c5e7286167b56bbbed307e1f1eb80ac250d026e7a9bc094323a25",
+          "generator": "Khronos glTF Blender I/O v4.3.47",
+          "nodes": [
+            {
+              "name": "wall-center-dogleg-export",
+              "translation": null,
+              "scale": null,
+              "mesh": 0,
+              "children": null
+            }
+          ],
+          "materials": [
+            {
+              "name": "Shared_Matte_VertexPalette",
+              "baseColorFactor": null,
+              "metallicFactor": 0,
+              "roughnessFactor": 0.9100000262260437,
+              "doubleSided": null,
+              "extensions": null
+            }
+          ],
+          "primitives": [
+            {
+              "triangles": 1596,
+              "position_count": 1834,
+              "position_min": [
+                -1.100000023841858,
+                0,
+                -0.6000000238418579
+              ],
+              "position_max": [
+                1.100000023841858,
+                3.4000000953674316,
+                0.6000000238418579
+              ],
+              "attributes": [
+                "COLOR_0",
+                "NORMAL",
+                "POSITION"
+              ],
+              "material": 0
+            }
+          ],
+          "extensionsUsed": null
+        },
+        "low-cover-site.glb": {
+          "bytes": 36492,
+          "sha256": "ca2f7dc220a403fc41905242b957f4110271bb085bcb5c61955d7ed3dc8d1930",
+          "generator": "Khronos glTF Blender I/O v4.3.47",
+          "nodes": [
+            {
+              "name": "low-cover-site-export",
+              "translation": null,
+              "scale": null,
+              "mesh": 0,
+              "children": null
+            }
+          ],
+          "materials": [
+            {
+              "name": "Shared_Matte_VertexPalette",
+              "baseColorFactor": null,
+              "metallicFactor": 0,
+              "roughnessFactor": 0.9100000262260437,
+              "doubleSided": null,
+              "extensions": null
+            }
+          ],
+          "primitives": [
+            {
+              "triangles": 680,
+              "position_count": 868,
+              "position_min": [
+                -1.100000023841858,
+                0,
+                -0.550000011920929
+              ],
+              "position_max": [
+                1.100000023841858,
+                0.800000011920929,
+                0.550000011920929
+              ],
+              "attributes": [
+                "COLOR_0",
+                "NORMAL",
+                "POSITION"
+              ],
+              "material": 0
+            }
+          ],
+          "extensionsUsed": null
+        },
+        "lamp-existing.glb": {
+          "bytes": 10336,
+          "sha256": "09265db770ba91c8f81442c87468ec68b95e689011e8e2d7e2a66de4015500be",
+          "generator": "Khronos glTF Blender I/O v4.3.47",
+          "nodes": [
+            {
+              "name": "lamp-existing-export",
+              "translation": null,
+              "scale": null,
+              "mesh": 0,
+              "children": null
+            }
+          ],
+          "materials": [
+            {
+              "name": "Shared_Matte_VertexPalette",
+              "baseColorFactor": null,
+              "metallicFactor": 0,
+              "roughnessFactor": 0.9100000262260437,
+              "doubleSided": null,
+              "extensions": null
+            },
+            {
+              "name": "Lamp_Unlit_Opaque",
+              "baseColorFactor": null,
+              "metallicFactor": 0,
+              "roughnessFactor": 0.9,
+              "doubleSided": null,
+              "extensions": {
+                "KHR_materials_unlit": {}
+              }
+            }
+          ],
+          "primitives": [
+            {
+              "triangles": 60,
+              "position_count": 112,
+              "position_min": [
+                -0.05999999865889549,
+                0,
+                -0.05999999865889549
+              ],
+              "position_max": [
+                0.05999999865889549,
+                5,
+                0.05999999865889549
+              ],
+              "attributes": [
+                "COLOR_0",
+                "NORMAL",
+                "POSITION"
+              ],
+              "material": 0
+            },
+            {
+              "triangles": 60,
+              "position_count": 112,
+              "position_min": [
+                -0.4000000059604645,
+                4.739999771118164,
+                -0.17499999701976776
+              ],
+              "position_max": [
+                0.4000000059604645,
+                4.860000133514404,
+                0.17499999701976776
+              ],
+              "attributes": [
+                "COLOR_0",
+                "NORMAL",
+                "POSITION"
+              ],
+              "material": 1
+            }
+          ],
+          "extensionsUsed": [
+            "KHR_materials_unlit"
+          ]
+        }
+      },
+      "rebuild_5_2_3": {
+        "wall-center-dogleg.glb": {
+          "bytes": 76776,
+          "sha256": "e55091305ceb5cb5df06d9a3e6a620ebf6962c6581fe901e146653f958266ade",
+          "generator": "Khronos glTF Blender I/O v5.2.41",
+          "nodes": [
+            {
+              "name": "wall-center-dogleg-export",
+              "translation": null,
+              "scale": null,
+              "mesh": 0,
+              "children": null
+            }
+          ],
+          "materials": [
+            {
+              "name": "Shared_Matte_VertexPalette",
+              "baseColorFactor": null,
+              "metallicFactor": 0,
+              "roughnessFactor": 0.9100000262260437,
+              "doubleSided": null,
+              "extensions": null
+            }
+          ],
+          "primitives": [
+            {
+              "triangles": 1596,
+              "position_count": 1834,
+              "position_min": [
+                -1.100000023841858,
+                0,
+                -0.6000000238418579
+              ],
+              "position_max": [
+                1.100000023841858,
+                3.4000000953674316,
+                0.6000000238418579
+              ],
+              "attributes": [
+                "COLOR_0",
+                "NORMAL",
+                "POSITION"
+              ],
+              "material": 0
+            }
+          ],
+          "extensionsUsed": null
+        },
+        "low-cover-site.glb": {
+          "bytes": 36492,
+          "sha256": "983a44d530432efb7d4d9f1ece1148e86abd911b2fd5ddb0390cf84d8a06afa7",
+          "generator": "Khronos glTF Blender I/O v5.2.41",
+          "nodes": [
+            {
+              "name": "low-cover-site-export",
+              "translation": null,
+              "scale": null,
+              "mesh": 0,
+              "children": null
+            }
+          ],
+          "materials": [
+            {
+              "name": "Shared_Matte_VertexPalette",
+              "baseColorFactor": null,
+              "metallicFactor": 0,
+              "roughnessFactor": 0.9100000262260437,
+              "doubleSided": null,
+              "extensions": null
+            }
+          ],
+          "primitives": [
+            {
+              "triangles": 680,
+              "position_count": 868,
+              "position_min": [
+                -1.100000023841858,
+                0,
+                -0.550000011920929
+              ],
+              "position_max": [
+                1.100000023841858,
+                0.800000011920929,
+                0.550000011920929
+              ],
+              "attributes": [
+                "COLOR_0",
+                "NORMAL",
+                "POSITION"
+              ],
+              "material": 0
+            }
+          ],
+          "extensionsUsed": null
+        },
+        "lamp-existing.glb": {
+          "bytes": 10336,
+          "sha256": "6191e41a68a5c78af81b7db75790a992e001d907a4cebca4590a95e5d85a39ac",
+          "generator": "Khronos glTF Blender I/O v5.2.41",
+          "nodes": [
+            {
+              "name": "lamp-existing-export",
+              "translation": null,
+              "scale": null,
+              "mesh": 0,
+              "children": null
+            }
+          ],
+          "materials": [
+            {
+              "name": "Shared_Matte_VertexPalette",
+              "baseColorFactor": null,
+              "metallicFactor": 0,
+              "roughnessFactor": 0.9100000262260437,
+              "doubleSided": null,
+              "extensions": null
+            },
+            {
+              "name": "Lamp_Unlit_Opaque",
+              "baseColorFactor": null,
+              "metallicFactor": 0,
+              "roughnessFactor": 0.9,
+              "doubleSided": null,
+              "extensions": {
+                "KHR_materials_unlit": {}
+              }
+            }
+          ],
+          "primitives": [
+            {
+              "triangles": 60,
+              "position_count": 112,
+              "position_min": [
+                -0.05999999865889549,
+                0,
+                -0.05999999865889549
+              ],
+              "position_max": [
+                0.05999999865889549,
+                5,
+                0.05999999865889549
+              ],
+              "attributes": [
+                "COLOR_0",
+                "NORMAL",
+                "POSITION"
+              ],
+              "material": 0
+            },
+            {
+              "triangles": 60,
+              "position_count": 112,
+              "position_min": [
+                -0.4000000059604645,
+                4.739999771118164,
+                -0.17499999701976776
+              ],
+              "position_max": [
+                0.4000000059604645,
+                4.860000133514404,
+                0.17499999701976776
+              ],
+              "attributes": [
+                "COLOR_0",
+                "NORMAL",
+                "POSITION"
+              ],
+              "material": 1
+            }
+          ],
+          "extensionsUsed": [
+            "KHR_materials_unlit"
+          ]
+        }
+      }
+    }
+  },
+  "determinism_within_5_2_3": {
+    "two_unchanged_rebuilds_glbs_identical": true,
+    "two_unchanged_rebuilds_blend_bytes": [
+      133255,
+      133266
+    ],
+    "two_unchanged_rebuilds_manifest_diff": "only blend.bytes and blend.sha256",
+    "two_edited_rebuilds_glbs_identical": true,
+    "two_edited_rebuilds_blend_bytes": [
+      133065,
+      133117
+    ],
+    "two_edited_rebuilds_manifest_diff": "only blend.bytes and blend.sha256"
+  },
+  "palette_edit": {
+    "style_change": {
+      "key": "palette.plaster",
+      "before": "#d8d5c5",
+      "after": "#c2c6bd",
+      "trim": "#c2c6bd"
+    },
+    "other_style_fields_unchanged": true,
+    "hashes": {
+      "checked_in": {
+        "wall-center-dogleg.glb": "2ca378155b3c5e7286167b56bbbed307e1f1eb80ac250d026e7a9bc094323a25",
+        "low-cover-site.glb": "ca2f7dc220a403fc41905242b957f4110271bb085bcb5c61955d7ed3dc8d1930",
+        "lamp-existing.glb": "09265db770ba91c8f81442c87468ec68b95e689011e8e2d7e2a66de4015500be"
+      },
+      "baseline_5_2_3": {
+        "wall-center-dogleg.glb": "e55091305ceb5cb5df06d9a3e6a620ebf6962c6581fe901e146653f958266ade",
+        "low-cover-site.glb": "983a44d530432efb7d4d9f1ece1148e86abd911b2fd5ddb0390cf84d8a06afa7",
+        "lamp-existing.glb": "6191e41a68a5c78af81b7db75790a992e001d907a4cebca4590a95e5d85a39ac"
+      },
+      "edited_5_2_3": {
+        "wall-center-dogleg.glb": "4351a54b756d6bfa2c225b2f8037e389c240d091c9ed7f41d7ac6d07641f9efe",
+        "low-cover-site.glb": "9fda245fab88ea76633fd6d347dd1ef6c2bf4f501073336be23a030503de4ebd",
+        "lamp-existing.glb": "6191e41a68a5c78af81b7db75790a992e001d907a4cebca4590a95e5d85a39ac"
+      },
+      "final_evidence_batch": {
+        "wall-center-dogleg.glb": "4351a54b756d6bfa2c225b2f8037e389c240d091c9ed7f41d7ac6d07641f9efe",
+        "low-cover-site.glb": "9fda245fab88ea76633fd6d347dd1ef6c2bf4f501073336be23a030503de4ebd",
+        "lamp-existing.glb": "6191e41a68a5c78af81b7db75790a992e001d907a4cebca4590a95e5d85a39ac"
+      }
+    },
+    "change_result": {
+      "wall_glb_changed": true,
+      "cover_glb_changed": true,
+      "lamp_glb_unchanged": true
+    },
+    "bytes": {
+      "wall-center-dogleg.glb": {
+        "baseline": 76776,
+        "edited": 70368
+      },
+      "low-cover-site.glb": {
+        "baseline": 36492,
+        "edited": 35628
+      },
+      "lamp-existing.glb": {
+        "baseline": 10336,
+        "edited": 10336
+      }
+    },
+    "triangles": {
+      "wall-center-dogleg.glb": {
+        "baseline": 1596,
+        "edited": 1596
+      },
+      "low-cover-site.glb": {
+        "baseline": 680,
+        "edited": 680
+      },
+      "lamp-existing.glb": {
+        "baseline": 120,
+        "edited": 120
+      }
+    },
+    "exported_position_vertices": {
+      "wall-center-dogleg.glb": {
+        "baseline": 1834,
+        "edited": 1656
+      },
+      "low-cover-site.glb": {
+        "baseline": 868,
+        "edited": 844
+      },
+      "lamp-existing.glb": {
+        "baseline": 224,
+        "edited": 224
+      }
+    },
+    "bounds_identical": true,
+    "materials_identical": true,
+    "vertex_color_counts": {
+      "wall-center-dogleg.glb": {
+        "plaster_linear_0.6867_0.6654_0.5583": {
+          "before": 424,
+          "after": 0
+        },
+        "trim_linear_0.5395_0.5647_0.5089": {
+          "before": 596,
+          "after": 842
+        },
+        "total_color_entries": {
+          "before": 1834,
+          "after": 1656
+        },
+        "distinct_colors": {
+          "before": 6,
+          "after": 5
+        }
+      },
+      "low-cover-site.glb": {
+        "plaster_linear_0.6867_0.6654_0.5583": {
+          "before": 120,
+          "after": 0
+        },
+        "trim_linear_0.5395_0.5647_0.5089": {
+          "before": 308,
+          "after": 404
+        },
+        "total_color_entries": {
+          "before": 868,
+          "after": 844
+        },
+        "distinct_colors": {
+          "before": 6,
+          "after": 5
+        }
+      },
+      "lamp-existing.glb": {
+        "pole_linear_0.0194_0.0319_0.0437": {
+          "before": 112,
+          "after": 112
+        },
+        "face_linear_1.0_0.7991_0.4179": {
+          "before": 112,
+          "after": 112
+        }
+      }
+    },
+    "manifest_dimensions_unchanged": {
+      "wall-center-dogleg": [
+        2.2,
+        3.4,
+        1.2
+      ],
+      "low-cover-site": [
+        2.2,
+        0.8,
+        1.1
+      ],
+      "lamp-existing": [
+        0.8,
+        5,
+        0.35
+      ]
+    },
+    "manifest_triangles": {
+      "wall-center-dogleg": 1596,
+      "low-cover-site": 680,
+      "lamp-existing": 120
+    },
+    "manifest_source_vertices": {
+      "wall-center-dogleg": 800,
+      "low-cover-site": 342,
+      "lamp-existing": 64
+    },
+    "manifest_materials": {
+      "wall-center-dogleg": [
+        "Shared_Matte_VertexPalette"
+      ],
+      "low-cover-site": [
+        "Shared_Matte_VertexPalette"
+      ],
+      "lamp-existing": [
+        "Lamp_Unlit_Opaque",
+        "Shared_Matte_VertexPalette"
+      ]
+    }
+  },
+  "failure_rollback": {
+    "fault_at_first_piece_wall": {
+      "exit": 1,
+      "batch_unchanged": true,
+      "remnants": []
+    },
+    "fault_at_second_piece_cover": {
+      "exit": 1,
+      "batch_unchanged": true,
+      "remnants": []
+    },
+    "fault_at_last_piece_lamp": {
+      "exit": 1,
+      "batch_unchanged": true,
+      "remnants": []
+    },
+    "missing_style_input": {
+      "exit": 1,
+      "batch_unchanged": true,
+      "remnants": []
+    },
+    "fresh_output_first_export_failure": {
+      "exit": 1,
+      "output_directory_created": false,
+      "remnants": []
+    },
+    "unknown_file_preserved": true,
+    "debug_artifact": "In the last-piece fault, wall and cover GLBs were really written into the staging dir before lamp raised; the published models dir stayed byte-identical, so the staging isolation was exercised."
+  },
+  "tests": {
+    "test_asset_batch": {
+      "ran": 12,
+      "passed": 12,
+      "failed": 0
+    },
+    "test_build_integration": {
+      "ran": false,
+      "blocked_reason": "shutil.which('blender') is None; assertion 'Blender is required for this integration check' failed"
+    }
+  },
+  "page_vs_source": {
+    "adoption_wording": {
+      "page": "FPS 已采用的墙、掩体、灯 / 本次修的是已采用资源的制作可靠性",
+      "source": "contract.json status=engineering-draft-not-adopted; manifest assets[].adopted=false; README says first integration candidate, default/v13 clients do not consume these assets, no visual acceptance yet"
+    },
+    "blender_version": {
+      "page": "Blender 4.3.2 实跑两次重建，三份 GLB 与既有产物逐字节相同",
+      "source": "checked-in GLBs say v4.3.47; local rebuild says v5.2.41; binary chunks identical, JSON differs only in generator string"
+    },
+    "failure_piece": {
+      "page": "第二件注入失败 / 第二件失败和缺少风格输入时，旧整批摘要均不变",
+      "task_card": "末件构建失败",
+      "test_seam": "test_build_integration.py injects at low-cover-site (second piece); last-piece seam had to be added"
+    },
+    "manifest_inputs": {
+      "checked_in_manifest_build_py_sha256": "3219449f7ef19ce644c7cffb97ba9135148ef934a9ba31614b0affdf97ac52b0",
+      "actual_build_py_sha256": "6eb9180b7d3eb21ad9e632de0a2d00dd008576d3a8f0831152b0e8ba666b6877",
+      "checked_in_manifest_lists_asset_batch": false,
+      "rebuilt_manifest_lists_asset_batch": true,
+      "note": "README explains the checked-in manifest records original authoring inputs; still a stale-metadata trap for a reader checking manifest->source before rebuilding."
+    },
+    "manifest_newlines": {
+      "checked_in": {
+        "CR": 0,
+        "LF": 187
+      },
+      "windows_rebuild": {
+        "CR": 192,
+        "LF": 192
+      },
+      "note": "build.py writes manifest with Path.write_text, so Windows rebuilds use CRLF; GLB claim is unaffected, whole-batch digest is. The archived evidence copy is LF-normalized for the repository text convention."
+    }
+  },
+  "unverified": [
+    "Blender 4.3.2 byte-identical reproduction of checked-in GLBs",
+    "real SIGKILL/power-loss behavior across directory replacement",
+    "game runtime consumption, visuals, frame time (no browser/GPU/game run)",
+    "real OS-level rename/rollback failures (only the 12 mocked filesystem tests)"
+  ]
+}

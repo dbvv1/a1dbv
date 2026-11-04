@@ -1,0 +1,17 @@
+test_cancelled_missing_and_empty_blender_results_rejected (test_asset_batch.BatchTests.test_cancelled_missing_and_empty_blender_results_rejected) ... ok
+test_cleanup_failure_reports_committed_batch_and_retains_lock (test_asset_batch.BatchTests.test_cleanup_failure_reports_committed_batch_and_retains_lock) ... ok
+test_concurrent_and_interrupted_lock_rejected_without_touching_owner (test_asset_batch.BatchTests.test_concurrent_and_interrupted_lock_rejected_without_touching_owner) ... ok
+test_dangerous_targets_rejected_before_mutation (test_asset_batch.BatchTests.test_dangerous_targets_rejected_before_mutation) ... ok
+test_failed_publication_restores_old_directory (test_asset_batch.BatchTests.test_failed_publication_restores_old_directory) ... ok
+test_failed_rollback_preserves_recovery_and_blocks_retry (test_asset_batch.BatchTests.test_failed_rollback_preserves_recovery_and_blocks_retry) ... ok
+test_first_build_failure_leaves_no_final_directory (test_asset_batch.BatchTests.test_first_build_failure_leaves_no_final_directory) ... ok
+test_missing_or_empty_output_cannot_reuse_old_generated_files (test_asset_batch.BatchTests.test_missing_or_empty_output_cannot_reuse_old_generated_files) ... ok
+test_second_export_blend_or_manifest_failure_preserves_entire_old_batch (test_asset_batch.BatchTests.test_second_export_blend_or_manifest_failure_preserves_entire_old_batch) ... ok
+test_success_preserves_unknown_files_and_supports_second_build (test_asset_batch.BatchTests.test_success_preserves_unknown_files_and_supports_second_build) ... ok
+test_symlink_target_ancestor_and_output_content_rejected (test_asset_batch.BatchTests.test_symlink_target_ancestor_and_output_content_rejected) ... ok
+test_unsafe_piece_ids_and_existing_nonfile_output_rejected (test_asset_batch.BatchTests.test_unsafe_piece_ids_and_existing_nonfile_output_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.733s
+
+OK

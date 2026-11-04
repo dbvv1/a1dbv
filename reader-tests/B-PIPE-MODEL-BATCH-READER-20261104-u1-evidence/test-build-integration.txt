@@ -1,0 +1,15 @@
+Documented integration test: test_build_integration.py
+
+Command: python -m unittest test_build_integration -v
+Result: FAIL before any Blender run.
+
+Assertion: shutil.which('blender') is None
+Message: AssertionError: unexpectedly None : Blender is required for this integration check
+
+Reason: no `blender` executable is installed/on PATH in this environment. Only the
+preinstalled bpy Python module (Blender 5.2.3 LTS) is available. The test is written
+for Blender 4.3.2 and hard-fails (does not skip) when the executable is absent.
+
+Equivalent steps were run manually with the bpy module in a disposable copy; see
+verification.json and the reader record. They are not a substitute for the documented
+Blender 4.3.2 run.
