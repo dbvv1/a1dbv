@@ -2,7 +2,7 @@
 id: B-MOBA-EQUIPMENT-ICONS-20261104
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-equipment-icons-20261104
@@ -27,3 +27,7 @@ result_branch: relay/b-moba-equipment-icons-20261104
 三件×两主题×32/48px 及 SVG，确定性重建与缺源／非法参数拒收测试；输出实际像素尺寸、透明边缘和许可来源，非作者看实际小尺寸图指出混淆风险。PNG 渲染依赖不足则保留 SVG 与缺项，不称整套完成；HUD 同框与玩家识别尚待案例接入。
 
 按现行原生 Workflow 非作者核查、适用测试与公开文件／提交扫描、差异检查后，只推本卡 result_branch 并回 review_ready；不用 accept:auto，不合产品默认分支、不部署。报告实际产物、检查、未验项与下一步；排队、running 标签和模型自报不算执行证据。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
