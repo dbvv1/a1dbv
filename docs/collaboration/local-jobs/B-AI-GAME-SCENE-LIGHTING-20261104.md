@@ -2,7 +2,7 @@
 id: B-AI-GAME-SCENE-LIGHTING-20261104
 owner: dot-B
 kind: explore
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-ai-game-scene-lighting-20261104
