@@ -2,7 +2,7 @@
 id: B-STAR-STREET-LAYOUT-20261105
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: ab2e299aee2e928e7048c138a3428a9975f237a3
 result_branch: relay/b-star-street-layout-20261105
@@ -32,8 +32,8 @@ result_branch: relay/b-star-street-layout-20261105
 
 ## 当前结果
 
-- build 单元实现完成：新增 CPU 布局筛选器、报告与 29 项测试，20 行在 setback 4/6 及平移复查各接受 10 行；实测新测试 29/29、原街屋测试 25/25 通过，npm test 127/137（10 项因缺 happy-dom/three 失败），npm run build 因缺 esbuild 失败，浏览器/smoke/GPU 未运行。未关闭：test.mjs:786 含本机账户名字面量（用于断言报告不含该名），本身属私人信息，不应进入公开交付物。
-- 产物：[7746cac](https://github.com/dbvv1/Star-Rush-Reborn/commit/7746cac251a4a72d557d389d7d62046e1a0fd659)，分支 `relay/b-star-street-layout-20261105`。
+- 移除 coast-street-layout test.mjs 中的本机账户名字面量，改为基于 node:os 运行时 homedir/username 的通用隐私断言（盘符路径、/Users|/home|/root、路径/地址中的账户名），并同步收窄 README 校验范围说明；重跑布局测试 29/29、原街屋测试 25/25，报告重生成与已提交 JSON 字节一致，check_public 238 文件 0 发现。npm test/build、浏览器、smoke、GPU 未运行（前单元记录 npm test 127/137 缺 happy-dom/three、build 缺 esbuild）。openIssues：HEAD 7746cac 提交历史仍含该账户名字面量，需接收端改写历史才能公开。
+- 产物：[84dd5ff](https://github.com/dbvv1/Star-Rush-Reborn/commit/84dd5ff972fb0a7dc386c09d458b040b3b72db95)，分支 `relay/b-star-street-layout-20261105`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：移除 authoring/coast-street-layout/test.mjs 中的本机账户名字面量并改为通用路径/用户名校验，随后重跑 node --test 与公开扫描；其余无缺口。
+- 下一步：接收端处理 Git：在提交前确认 amend/squash 或重建 relay/b-star-street-layout-20261105，将 7746cac 中的账户名字面量从公开历史移除，再推 review_ready；其余任务范围无缺口。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
