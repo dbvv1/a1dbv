@@ -1,0 +1,1 @@
+{"name":"constraint-scope-consumer","private":true,"type":"module","scripts":{"test":"node --test test-consumer.mjs"},"dependencies":{"@electric-sql/pglite":"0.5.15"}}
