@@ -7,7 +7,7 @@ target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b489ed38592dc184fffe2ab9b3b186441c7dc9bb
 result_branch: relay/b-moba-equipment-icons-20261104
 
-工作线：MOBA-Like。本卡为独立排队单元，尚未认领。
+工作线：MOBA-Like。原结果已交回，本轮只记录独立复核与窄返工条件，不重派原单元。
 
 ## 目标
 给已有三件装备补可二改的同族图标源，解决完整内容清单仍只有装备文字的缺口；本单元不接 HUD。
@@ -30,8 +30,14 @@ result_branch: relay/b-moba-equipment-icons-20261104
 
 ## 当前结果
 
-- 三件装备图标源与导出完成：3 件×2 主题×（SVG+32px+48px）共 18 个运行图加 preview.png，统一 4→4.5 描边，物品 ID/价格/属性未动。实测 node --test 9/9 通过，确定性逐字节重建、PNG 尺寸与四角透明、缺源/非法参数拒收均核过；产物无绝对路径或内网地址。未关闭：非作者与既有技能图标 32px 同框并排复核（胸甲近 self-shield、靴或像容器，README 已列风险）；HUD 接入与玩家识别按卡另案。未运行：npm test/npm run smoke（无 node_modules，且本卡禁浏览器与构建）。
-- 产物：[ed105e5](https://github.com/dbvv1/MOBA-Like/commit/ed105e5ea44e555ad8e1377880a8e916ce3ec2d1)，分支 `relay/b-moba-equipment-icons-20261104`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：请非作者把新三图与既有技能图标按 32px 同框并排复核混淆风险并记录；HUD 接入与玩家识别待案例接入。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 原结果 [ed105e5](https://github.com/dbvv1/MOBA-Like/commit/ed105e5ea44e555ad8e1377880a8e916ce3ec2d1) 与原分支保留；本轮未接 HUD、未合 main、未部署。源与导出合同可用，不等于无文字识别通过。
+- 11-05 非作者将三装备与六类既有技能图标的两主题原始32px图并排实看：胸甲双肩/领口/腰线与单尖底self-shield可区分；靴的短方鞋头与竖筒仍易读成瓶/容器。确认后者为真实返工条件，不以三件彼此不同替代“能读成靴”。这不是玩家识别率或HUD实测。
+- 云端 Node 24.22.1 原测试实际 exit0、9/9 通过、无skip；两次导出与已提交运行图字节一致，缺源保旧批/首次失败无输出通过；源副本检查前后干净。未运行浏览器/声音设备。
+- 原本机调用的最新进程/工具结清本轮未取得，不能从结果分支静止或状态标签推定。当前保持 review_ready，仅记录返工条件，不自动重启/重排旧调用；沿原入口补齐事实后再由负责人改 revision_requested。
+
+## 修改要求（核清原调用后沿原卡续接）
+
+1. 仅窄修 source/wayfarer-boots.svg 的轮廓：显出沿地面向前的鞋头、脚背折线与后跟，使32px时不像直筒瓶/容器。保留64×64 viewBox、原主题、4→4.5描边配方及透明留白，不添加文字或依赖颜色区分；不改剑/胸甲几何、item ID、价格/属性。
+2. 只经原export.mjs完整重出两主题32/48px和preview，不在PNG上人工补画；剑/甲运行文件应逐字节不变。原9项及针对靴几何保留/边缘的回归通过。
+3. 非作者实际看新旧靴与剑/甲及六技能图标的32px同框，分别报告靴的语义和轮廓混淆；仍像容器即返工，不以作者自报或测试代替。HUD与真实玩家识别仍留后续接线。
+4. 写入限原equipment-icons目录，按原Workflow/公开扫描交回原result_branch；不重做其他源，不接产品HUD、不改main、不部署。
