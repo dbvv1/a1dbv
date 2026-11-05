@@ -8,11 +8,11 @@
 
 👀 **让 Agent 修改 npm 包的 `exports`、`types`、`files`、构建或 launcher 时，按实际发布产物接收，不只验工作区。** 先检查项目正式构建与打包脚本；若构建已接入 prepack，由 `npm pack --pack-destination <绝对临时目录>` 触发，否则先运行项目要求的 build 再 pack，避免重复执行 prepack；在仓库外新 consumer 中用 `npm install <返回的 tgz 绝对路径> --no-audit --no-fund` 安装，运行承诺的 CLI、import 或 types 消费。依赖与生命周期脚本沿项目已批准策略，不以 workspace 链接或 `npm link` 代替；声明修复不能用 `skipLibCheck` 掩盖。普通内部逻辑改动继续相关测试，无需统一增加打包门禁。
 
-**已发布版本的报告，先查对应包，不用 main 构建结果代答。** 本轮 `npm pack miniflare@5.20260903.0-alpha --ignore-scripts --json` 取回官方历史包：186 个条目中，`dist/src/index.d.ts` 第 25 行导入 `./shared`，但没有 `dist/src/shared` 前缀文件。包 SHA256 为 `a806aa9dd11a8377f050aba82a2771ad487f9b6ae213e8a6435cc33f80d50008`。这是 tarball 静态检查，未运行 TypeScript、应用或模型，不是编译复现，也不证明最新版仍坏。`--ignore-scripts` 只用于本次取已发布物；本地打包若依赖 prepack，跳过它会改变验收内容。
+**已发布版本的报告，先查对应包，不用 main 构建结果代答。** 本轮 `npm pack miniflare@5.20260903.0-alpha --ignore-scripts --json` 取回官方历史包：186 个条目中，`dist/src/index.d.ts` 第 25 行导入 `./shared`，但没有 `dist/src/shared` 前缀文件。包 SHA256 为 `a806aa9dd11a8377f050aba82a2771ad487f9b6ae213e8a6435cc33f80d50008`。随后在仓库外临时消费者安装同版发布包与 TypeScript 6.0.3，以 `typeof import("miniflare")`、`skipLibCheck:false` 和 `noEmit:true` 执行 `node node_modules/typescript/bin/tsc --pretty false`：安装退出 0，编译退出 2，复现第 25 行找不到 `./shared` 的 TS2307；另 34 条诊断完整保留，未归因。安装声明与该 tgz 逐字节相同，锁文件 integrity 一致；非作者复跑通过。仅验证固定历史包的声明消费，未验最新版、Miniflare 运行时或模型收益。本次下载与声明消费者安装使用 `--ignore-scripts`，未验需要生命周期脚本的运行时；本地打包若依赖 prepack，跳过它会改变验收内容。
 
 **先核脚本测了什么。** QMD 固定 `package-smoke` 构建并运行工作区 dist／wrapper，没有打包安装；这不代表其整套 CI 没有其他检查。pi-quiver 的实际测试则 pack→临时安装→运行已安装 bin，并验版本与文档转换；本仓未运行这两套测试。`--dry-run` 清单与 help 成功都不等于完整消费者验证。候选只补已有测试／交付入口；**第二位未读材料的本机读者按此操作仍待验证，不升默认、不改答案页。**
 
-**依据**：[npm pack 官方契约](https://docs.npmjs.com/cli/v11/commands/npm-pack/)、[生命周期文档](https://docs.npmjs.com/cli/v11/using-npm/scripts/)；[Cloudflare 用户报告与源码构建／发布包复核分歧 #15377](https://github.com/cloudflare/workers-sdk/issues/15377)；[QMD 固定脚本](https://github.com/tobi/qmd/blob/86d2365d17fc682e491c2c53d1e4a884aee8682a/scripts/package-smoke.mjs)、[pi-quiver 固定产物消费测试](https://github.com/jjuraszek/pi-quiver/blob/ec46ad942df2010cf887270a980446b0a513fda3/test/packed-install.test.ts)。核实与固定发布物静态检查：2026-11-05。
+**依据**：[npm pack 官方契约](https://docs.npmjs.com/cli/v11/commands/npm-pack/)、[生命周期文档](https://docs.npmjs.com/cli/v11/using-npm/scripts/)；[Cloudflare 用户报告与源码构建／发布包复核分歧 #15377](https://github.com/cloudflare/workers-sdk/issues/15377)；[QMD 固定脚本](https://github.com/tobi/qmd/blob/86d2365d17fc682e491c2c53d1e4a884aee8682a/scripts/package-smoke.mjs)、[pi-quiver 固定产物消费测试](https://github.com/jjuraszek/pi-quiver/blob/ec46ad942df2010cf887270a980446b0a513fda3/test/packed-install.test.ts)。核实、固定发布物静态检查与真实 TypeScript 消费复现：2026-11-05。
 
 ### 2026-11-05：偶发失败回原环境验收，别提前取消复现
 
