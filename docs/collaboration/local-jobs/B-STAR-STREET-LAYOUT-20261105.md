@@ -2,7 +2,7 @@
 id: B-STAR-STREET-LAYOUT-20261105
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: ab2e299aee2e928e7048c138a3428a9975f237a3
 result_branch: relay/b-star-street-layout-20261105
