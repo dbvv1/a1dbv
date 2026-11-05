@@ -190,10 +190,12 @@ def main(argv=None):
     result = {"result": "invalid", "issues": [
       {"code": "invalid_input", "path": "input", "message": str(exc)}],
       "scope": "record_consistency_only"}
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 2
-  print(json.dumps(result, ensure_ascii=False, indent=2))
-  return 0 if result["result"] == "complete" else 1
+    code = 2
+  else:
+    code = 0 if result["result"] == "complete" else 1
+  # JSON escapes preserve Unicode diagnostics on GBK and ASCII stdout too.
+  print(json.dumps(result, ensure_ascii=True, indent=2))
+  return code
 
 
 if __name__ == "__main__":
