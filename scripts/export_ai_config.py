@@ -34,6 +34,13 @@ def digest(data):
   return hashlib.sha256(data).hexdigest()
 
 
+def print_status(message):
+  # A completed snapshot must not become a reported failure merely because
+  # stdout cannot encode its status text. Keep the review digest ASCII-readable.
+  encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+  print(message.encode(encoding, errors="backslashreplace").decode(encoding))
+
+
 def canonical(data):
   return (json.dumps(data, ensure_ascii=True, sort_keys=True, indent=2) + "\n").encode()
 
@@ -187,8 +194,8 @@ def stage(args):
   validate_files(files)
   manifest = {"version": 1, "files": {name: digest(data) for name, data in sorted(files.items())}}
   write_snapshot(output, files, manifest)
-  print("暂存完成；尚未发布。请人工审阅所有清单文件。")
-  print("审阅标识（manifest SHA-256）：" + digest(canonical(manifest)))
+  print_status("暂存完成；尚未发布。请人工审阅所有清单文件。")
+  print_status("审阅标识（manifest SHA-256）：" + digest(canonical(manifest)))
 
 
 def promote(args):
@@ -226,7 +233,7 @@ def promote(args):
     fail("暂存目录含清单外文件或缺失文件。")
   validate_files(files)
   write_snapshot(output, files, manifest)
-  print("已提升为新快照；未执行 git add、commit 或 push。仍需检查发布差异。")
+  print_status("已提升为新快照；未执行 git add、commit 或 push。仍需检查发布差异。")
 
 
 def main():

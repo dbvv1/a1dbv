@@ -1,9 +1,13 @@
 """Offline tests: all configuration roots are synthetic temporary fixtures."""
+import contextlib
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
 import subprocess
+import runpy
+from types import SimpleNamespace
 import tempfile
 import unittest
 
@@ -63,6 +67,70 @@ class ConfigExportTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     self.assertEqual((self.output / "claude/CLAUDE.md").read_text(), "Public instructions\n")
     self.assertFalse((self.output / "claude/skills/example/ignored.md").exists())
+
+  def test_status_encoding_preserves_stage_promote_outcomes_and_receipt(self):
+    content = "Public instructions: 中文\n"
+    self.put("CLAUDE.md", content)
+    for encoding in ("ascii", "gbk", "utf-8"):
+      with self.subTest(encoding=encoding):
+        stage = self.root / ("stage-" + encoding)
+        output = self.root / ("output-" + encoding)
+        env = dict(os.environ, PYTHONIOENCODING=encoding)
+        def run(*args):
+          return subprocess.run(["/bin/bash", str(SCRIPT), *map(str, args)],
+                                env=env, capture_output=True, text=True, encoding=encoding)
+        result = run("stage", "--source", "claude=" + str(self.source),
+                     "--include", "claude/CLAUDE.md", "--output", stage)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stderr, "")
+        reviewed = hashlib.sha256((stage / "export-manifest.json").read_bytes()).hexdigest()
+        self.assertIn(reviewed, result.stdout)
+        if encoding == "ascii":
+          self.assertTrue(result.stdout.isascii())
+        else:
+          self.assertIn("暂存完成", result.stdout)
+        result = run("promote", "--stage", stage, "--output", output, "--reviewed", reviewed)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stderr, "")
+        self.assertEqual((output / "claude/CLAUDE.md").read_text(encoding="utf-8"), content)
+        self.assertEqual((output / "export-manifest.json").read_bytes(),
+                         (stage / "export-manifest.json").read_bytes())
+        rejected = run("promote", "--stage", stage, "--output", output, "--reviewed", reviewed)
+        self.assertEqual(rejected.returncode, 1)
+        self.assertEqual((output / "claude/CLAUDE.md").read_text(encoding="utf-8"), content)
+
+  def test_ascii_promote_success_is_not_reported_as_failure(self):
+    self.put("CLAUDE.md", "Public instructions\n")
+    self.assertEqual(self.stage_files("CLAUDE.md").returncode, 0)
+    reviewed = hashlib.sha256((self.stage / "export-manifest.json").read_bytes()).hexdigest()
+    result = self.run_export("promote", "--stage", self.stage, "--output", self.output,
+                             "--reviewed", reviewed,
+                             env=dict(os.environ, PYTHONIOENCODING="ascii"))
+    self.assertEqual(result.returncode, 0, result.stderr)
+    self.assertEqual(result.stderr, "")
+    self.assertEqual((self.output / "claude/CLAUDE.md").read_text(), "Public instructions\n")
+
+  def test_status_supports_redirected_text_stream_without_buffer(self):
+    self.put("CLAUDE.md", "Public instructions\n")
+    functions = runpy.run_path(str(SCRIPT.with_name("export_ai_config.py")))
+    output = io.StringIO()
+    args = SimpleNamespace(output=self.stage, source=["claude=" + str(self.source)],
+                           include=["claude/CLAUDE.md"])
+    with contextlib.redirect_stdout(output):
+      functions["stage"](args)
+    self.assertIn("暂存完成", output.getvalue())
+    self.assertIn(hashlib.sha256((self.stage / "export-manifest.json").read_bytes()).hexdigest(),
+                  output.getvalue())
+
+  def test_ascii_status_keeps_scan_failure_redacted_and_without_output(self):
+    self.put("CLAUDE.md", SECRET)
+    result = self.run_export("stage", "--source", "claude=" + str(self.source),
+                             "--include", "claude/CLAUDE.md", "--output", self.stage,
+                             env=dict(os.environ, PYTHONIOENCODING="ascii"))
+    self.assertEqual(result.returncode, 1)
+    self.assertFalse(self.stage.exists())
+    self.assertNotIn(str(self.source), result.stdout + result.stderr)
+    self.assertNotIn("Traceback", result.stderr)
 
   def test_secrets_in_every_supported_text_location_fail_before_write(self):
     for name in ("CLAUDE.md", "skills/nested/README.md", "skills/nested/SKILL.md", "hooks/run.sh"):
