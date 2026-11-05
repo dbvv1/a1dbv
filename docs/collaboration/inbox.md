@@ -4,6 +4,12 @@
 
 ## 待处理
 
+### 2026-11-05：unused export 自动修复，复扫归零还要验消费者
+
+🧪 **已用 Knip 清理导出时，给 Agent 同时交“公开导出”和“局部绑定”的保留边界，修后运行原消费者，不以空报告验收。** [已发布的真实用户最小复现与独立复跑](../../experiments/knip-workspace-entry/export-fix/README.md)：固定 Knip 6.44.1 正确报告 `localOnly` 未被外部导入，但 `--fix --fix-type exports` 删除了仍被模块内部函数使用的解构绑定；修复命令和复扫均退出 0，消费者却退出 1、报 `ReferenceError`。保留局部解构、仅单独导出仍需公开的名称，消费者恢复输出 `44`，Knip 仍为 0、空报告。它与[旧 workspace 入口误报](../../experiments/knip-workspace-entry/README.md)不同，不靠补 entry 或 ignore 解决。
+
+只在确认没有外部调用方需要该导出时采用这项局部改法；公开包的消费者未必在本地分析图中。材料是用户公开最小复现，不是完整产品事故；未验其他解构、Bun、模型收益或上游修复 PR，不新增默认门禁。**依据**：[用户 #2298](https://github.com/webpro-nl/knip/issues/2298)、[固定输入、官方实现与消费者命令](../../experiments/knip-workspace-entry/export-fix/README.md#来源与状态)。实跑及来源核实 2026-11-05；本条接收已有结果，不当作新的试验或答案页读者验收。
+
 ### 2026-11-05：Rust API 变更，用下游编译核 lint，不把 warning 当破坏
 
 🧪 **让 Agent 修改发布库的公开 API 时，先跑 cargo-semver-checks 定位，再用同一消费者对照旧版与新版。** [librouting 固定历史实试与复跑材料](../../experiments/rust-semver-consumer/README.md)：0.51.0 报 1 fail、1 warn；23 分支消费者旧版编译退出 0、新版退出 101（E0004），确认新增枚举分支破坏穷尽匹配。但 PartialOrd 的位置警告没有证明旧值排序改变：全部 278 个旧值的 77,284 个有序对两版输出一致，显式 discriminant 不能按源码位置推断。仅测一个 crate 与固定版本，31 条检查跳过，未验完整工作区、所有 feature 组合或运行时；不升默认。已有来源条目的过强排序结论已纠正，原合成类型变更设想未执行。✅ 实试回流。
