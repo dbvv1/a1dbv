@@ -1,0 +1,64 @@
+{
+  "uv": "0.13.7",
+  "tool": "pycowsay==0.0.0.2",
+  "cold": {
+    "concurrentExits": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "afterConcurrent": {
+      "environments": 4,
+      "indexLinks": 1,
+      "unreferencedEnvironments": 3,
+      "distinctPackageCodeHashes": 1
+    },
+    "sequentialExits": [
+      0,
+      0,
+      0
+    ],
+    "afterSequential": {
+      "environments": 4,
+      "indexLinks": 1,
+      "unreferencedEnvironments": 3,
+      "distinctPackageCodeHashes": 1
+    }
+  },
+  "warmed": {
+    "concurrentExits": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "afterConcurrent": {
+      "environments": 1,
+      "indexLinks": 1,
+      "unreferencedEnvironments": 0,
+      "distinctPackageCodeHashes": 1
+    },
+    "sequentialExits": [
+      0,
+      0,
+      0
+    ],
+    "afterSequential": {
+      "environments": 1,
+      "indexLinks": 1,
+      "unreferencedEnvironments": 0,
+      "distinctPackageCodeHashes": 1
+    }
+  },
+  "coldDuplicationObserved": true,
+  "warmControlSingleEnvironment": true
+}
