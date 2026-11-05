@@ -6,7 +6,7 @@
 
 ### 2026-11-05：改包导出与发布内容，验真正 tarball 的消费者
 
-👀 **让 Agent 修改 npm 包的 `exports`、`types`、`files`、构建或 launcher 时，按实际发布产物接收，不只验工作区。** 先检查并运行项目正式 build／prepack，再执行 `npm pack --pack-destination <绝对临时目录>`；在仓库外新 consumer 中用 `npm install <返回的 tgz 绝对路径> --no-audit --no-fund` 安装，运行承诺的 CLI、import 或 types 消费。依赖与生命周期脚本沿项目已批准策略，不以 workspace 链接或 `npm link` 代替；声明修复不能用 `skipLibCheck` 掩盖。普通内部逻辑改动继续相关测试，无需统一增加打包门禁。
+👀 **让 Agent 修改 npm 包的 `exports`、`types`、`files`、构建或 launcher 时，按实际发布产物接收，不只验工作区。** 先检查项目正式构建与打包脚本；若构建已接入 prepack，由 `npm pack --pack-destination <绝对临时目录>` 触发，否则先运行项目要求的 build 再 pack，避免重复执行 prepack；在仓库外新 consumer 中用 `npm install <返回的 tgz 绝对路径> --no-audit --no-fund` 安装，运行承诺的 CLI、import 或 types 消费。依赖与生命周期脚本沿项目已批准策略，不以 workspace 链接或 `npm link` 代替；声明修复不能用 `skipLibCheck` 掩盖。普通内部逻辑改动继续相关测试，无需统一增加打包门禁。
 
 **已发布版本的报告，先查对应包，不用 main 构建结果代答。** 本轮 `npm pack miniflare@5.20260903.0-alpha --ignore-scripts --json` 取回官方历史包：186 个条目中，`dist/src/index.d.ts` 第 25 行导入 `./shared`，但没有 `dist/src/shared` 前缀文件。包 SHA256 为 `a806aa9dd11a8377f050aba82a2771ad487f9b6ae213e8a6435cc33f80d50008`。这是 tarball 静态检查，未运行 TypeScript、应用或模型，不是编译复现，也不证明最新版仍坏。`--ignore-scripts` 只用于本次取已发布物；本地打包若依赖 prepack，跳过它会改变验收内容。
 
