@@ -1,0 +1,42 @@
+{
+  "environment": {
+    "python": "3.12.14",
+    "pytest": "9.1.1",
+    "pytest-recording": "0.13.4",
+    "vcrpy": "8.2.1",
+    "httpx2": "2.9.1",
+    "openai": "3.0.0",
+    "inline-snapshot": "0.34.2",
+    "ruff": "0.15.19"
+  },
+  "guard_rejection_probes": 2,
+  "upstream": "be329c694aef8be4f55952315611305b06c42c94",
+  "old_provider_commit": "66f10d85fa9d10958b71dc05b908526cae162d70",
+  "scope": "offline current request construction versus prerecorded request data",
+  "results": [
+    {
+      "arm": "fixed_capture",
+      "exit": 0,
+      "passed": 2,
+      "failed": 0,
+      "error": 0,
+      "skipped": 0
+    },
+    {
+      "arm": "old_capture",
+      "exit": 1,
+      "passed": 0,
+      "failed": 2,
+      "error": 1,
+      "skipped": 0
+    },
+    {
+      "arm": "old_recording",
+      "exit": 0,
+      "passed": 2,
+      "failed": 0,
+      "error": 0,
+      "skipped": 0
+    }
+  ]
+}
