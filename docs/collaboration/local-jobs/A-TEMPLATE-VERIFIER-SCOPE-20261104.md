@@ -38,5 +38,5 @@ result_branch: relay/a-template-verifier-scope-20261104
 - **候选接收，尚未发布 main**：原回传 [7d418cdd](https://github.com/dbvv1/a1dbv/commit/7d418cdd737f7482d28513ec81ea01c52f893b2f) 经负责人修订／非作者复核，采用版本为 [1e334d17](https://github.com/dbvv1/a1dbv/commit/1e334d17c853731fa6ddcb3f48c14ab910dcf2a9)；已包含于 `dot-a/integrated-intake-20261104` 的固定提交 `77cdb7cf0aeba93b9605c575783d7044ee384972`。本次逐字核验模板 blob 与已审版本一致。
 - 接收范围：按代码、输入、消费者、依赖、环境、命令与验收要求判断证据影响；只补缺失、受影响或影响不明的检查。复用保留原版本与状态；五种证据状态、必需条件判定及只读边界均保留。
 - 复验：2026-11-04 云端 POSIX 的 template_overlay 14/14、template_portability 4/4 通过；这是本次实际运行，不继承原 Windows 基线结果，也不证明客户端加载或模型收益。原完整离线与公开扫描回执对应已审候选版本。
-- 下一步：main 更新仍受此前平台拒绝限制，不换入口或代发；自动接收合同要求合入 main 后才标 accepted，因此保持 review_ready，仅记录候选已接收。原调用／写者是否退出仍独立核实，不因本回执解除隔离或重派。
+- 下一步：本模板仅完成候选接收，尚未实际合入 main；自动接收合同要求审查、适用检查及合入全部完成后才标 accepted 并写合入提交，因此当前保持 review_ready。此前平台拒绝针对旧提交的特定更新，不据此推定全部 main 更新或本模板发布均被拒；后续仍逐项核对实际操作与适用限制，不换入口绕过具体拒绝。原调用／写者是否退出仍独立核实，不因本回执解除隔离或重派。
 - 历史执行身份、Windows 检查失败及旧 TASKS 六项失败见[接收前固定卡](https://github.com/dbvv1/a1dbv/blob/77cdb7cf0aeba93b9605c575783d7044ee384972/docs/collaboration/local-jobs/A-TEMPLATE-VERIFIER-SCOPE-20261104.md)；本次 POSIX 通过不覆盖或改写这些历史结果。
