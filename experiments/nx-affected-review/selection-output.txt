@@ -1,0 +1,50 @@
+[plugin-worker] "<workspace>/node_modules/.pnpm/nx@24.0.3_@swc-node+register@1.12.1_@swc+core@1.16.21_@swc+helpers@0.5.23__@swc+types@0_f83e839ba10f351133a14a3064db7394/node_modules/nx/dist/src/plugins/js" (pid: 99) failed to listen on <temporary-nx-sockets>/1000/sockets/3520af79/p44-0-1917d0ea.sock: listen EPERM: operation not permitted <temporary-nx-sockets>/1000/sockets/3520af79/p44-0-1917d0ea.sock
+Nx was denied permission to use its unix socket under <temporary-nx-sockets> or ~/.nx.
+To fix this, do one of the following:
+  - In `~/.codex/config.toml`, set `sandbox_workspace_write.network_access` to true and add <temporary-nx-sockets> or ~/.nx to `sandbox_workspace_write.writable_roots`. Codex has no setting that scopes sockets to a path, and `network_access` also grants general network access, so this is a broader grant than the other agents need.
+  - Get permission to create sockets under <temporary-nx-sockets> or ~/.nx, or set NX_SOCKET_DIR to a directory you do have permission for.
+See https://nx.dev/docs/kb/nx-sandbox-unix-sockets for details.
+[plugin-worker] "<workspace>/node_modules/.pnpm/nx@24.0.3_@swc-node+register@1.12.1_@swc+core@1.16.21_@swc+helpers@0.5.23__@swc+types@0_f83e839ba10f351133a14a3064db7394/node_modules/nx/dist/src/plugins/project-json/build-nodes/project-json" (pid: 101) failed to listen on <temporary-nx-sockets>/1000/sockets/3520af79/p44-2-18f45475.sock: listen EPERM: operation not permitted <temporary-nx-sockets>/1000/sockets/3520af79/p44-2-18f45475.sock
+Nx was denied permission to use its unix socket under <temporary-nx-sockets> or ~/.nx.
+To fix this, do one of the following:
+  - In `~/.codex/config.toml`, set `sandbox_workspace_write.network_access` to true and add <temporary-nx-sockets> or ~/.nx to `sandbox_workspace_write.writable_roots`. Codex has no setting that scopes sockets to a path, and `network_access` also grants general network access, so this is a broader grant than the other agents need.
+  - Get permission to create sockets under <temporary-nx-sockets> or ~/.nx, or set NX_SOCKET_DIR to a directory you do have permission for.
+See https://nx.dev/docs/kb/nx-sandbox-unix-sockets for details.
+[plugin-worker] "@nx/playwright/plugin" (pid: 112) failed to listen on <temporary-nx-sockets>/1000/sockets/3520af79/p44-3-a913dce9.sock: listen EPERM: operation not permitted <temporary-nx-sockets>/1000/sockets/3520af79/p44-3-a913dce9.sock
+Nx was denied permission to use its unix socket under <temporary-nx-sockets> or ~/.nx.
+To fix this, do one of the following:
+  - In `~/.codex/config.toml`, set `sandbox_workspace_write.network_access` to true and add <temporary-nx-sockets> or ~/.nx to `sandbox_workspace_write.writable_roots`. Codex has no setting that scopes sockets to a path, and `network_access` also grants general network access, so this is a broader grant than the other agents need.
+  - Get permission to create sockets under <temporary-nx-sockets> or ~/.nx, or set NX_SOCKET_DIR to a directory you do have permission for.
+See https://nx.dev/docs/kb/nx-sandbox-unix-sockets for details.
+[plugin-worker] "<workspace>/node_modules/.pnpm/nx@24.0.3_@swc-node+register@1.12.1_@swc+core@1.16.21_@swc+helpers@0.5.23__@swc+types@0_f83e839ba10f351133a14a3064db7394/node_modules/nx/dist/src/plugins/package-json" (pid: 100) failed to listen on <temporary-nx-sockets>/1000/sockets/3520af79/p44-1-b8c93dd7.sock: listen EPERM: operation not permitted <temporary-nx-sockets>/1000/sockets/3520af79/p44-1-b8c93dd7.sock
+Nx was denied permission to use its unix socket under <temporary-nx-sockets> or ~/.nx.
+To fix this, do one of the following:
+  - In `~/.codex/config.toml`, set `sandbox_workspace_write.network_access` to true and add <temporary-nx-sockets> or ~/.nx to `sandbox_workspace_write.writable_roots`. Codex has no setting that scopes sockets to a path, and `network_access` also grants general network access, so this is a broader grant than the other agents need.
+  - Get permission to create sockets under <temporary-nx-sockets> or ~/.nx, or set NX_SOCKET_DIR to a directory you do have permission for.
+See https://nx.dev/docs/kb/nx-sandbox-unix-sockets for details.
+
+ NX   Nx was denied permission to create a plugin worker socket. Running plugins in the main process instead.
+
+Plugins that expect isolation may misbehave, and this is slower than a worker.
+Nx was denied permission to use its unix socket under <temporary-nx-sockets> or ~/.nx.
+To fix this, do one of the following:
+  - In `~/.codex/config.toml`, set `sandbox_workspace_write.network_access` to true and add <temporary-nx-sockets> or ~/.nx to `sandbox_workspace_write.writable_roots`. Codex has no setting that scopes sockets to a path, and `network_access` also grants general network access, so this is a broader grant than the other agents need.
+  - Get permission to create sockets under <temporary-nx-sockets> or ~/.nx, or set NX_SOCKET_DIR to a directory you do have permission for.
+See https://nx.dev/docs/kb/nx-sandbox-unix-sockets for details.
+
+[plugin-worker] "@nx/eslint/plugin" (pid: 118) failed to listen on <temporary-nx-sockets>/1000/sockets/3520af79/p44-4-6f3d927f.sock: listen EPERM: operation not permitted <temporary-nx-sockets>/1000/sockets/3520af79/p44-4-6f3d927f.sock
+Nx was denied permission to use its unix socket under <temporary-nx-sockets> or ~/.nx.
+To fix this, do one of the following:
+  - In `~/.codex/config.toml`, set `sandbox_workspace_write.network_access` to true and add <temporary-nx-sockets> or ~/.nx to `sandbox_workspace_write.writable_roots`. Codex has no setting that scopes sockets to a path, and `network_access` also grants general network access, so this is a broader grant than the other agents need.
+  - Get permission to create sockets under <temporary-nx-sockets> or ~/.nx, or set NX_SOCKET_DIR to a directory you do have permission for.
+See https://nx.dev/docs/kb/nx-sandbox-unix-sockets for details.
+
+ NX   3 tasks: 3 succeeded
+
+
+Re-run with --output-style=static to inline logs.
+
+  Run duration:      6.8s
+  Cache:             Skipped (--skip-nx-cache)
+  Critical path:     3.0s (1 task)
+  Recoverable time:  3.8s (57% of the run)

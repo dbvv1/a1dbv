@@ -1,0 +1,198 @@
+{
+  "source": "1491f2dfae042ae772bafc64b21f1e6b3cc90add",
+  "base": "f4604361739db3f28e0e3a5a482ed836ba9fa604",
+  "versions": {
+    "node": "24.22.1",
+    "pnpm": "12.8.2",
+    "nx": "24.0.3",
+    "typescript": "6.0.3"
+  },
+  "source_lock_sha256": "6b2ef36c9790e3dfb6f0302e4b64ce135156bbb2ac197433f05c94dfa640dcfc",
+  "affected_projects": [
+    "@capture-workbench/source",
+    "capture-angular",
+    "capture-workbench",
+    "capture-workbench-desktop",
+    "capture-workbench-e2e",
+    "capture-tools",
+    "capture-runtime"
+  ],
+  "graph_dependencies": {
+    "capture-runtime-client-python": [],
+    "capture-sidecar-launcher": [],
+    "capture-runtime-client": [],
+    "capture-workbench-desktop": [
+      {
+        "source": "capture-workbench-desktop",
+        "target": "capture-workbench",
+        "type": "implicit"
+      },
+      {
+        "source": "capture-workbench-desktop",
+        "target": "capture-tools",
+        "type": "static"
+      }
+    ],
+    "capture-angular": [
+      {
+        "source": "capture-angular",
+        "target": "capture-runtime-client",
+        "type": "static"
+      }
+    ],
+    "capture-workbench-e2e": [
+      {
+        "source": "capture-workbench-e2e",
+        "target": "capture-workbench",
+        "type": "implicit"
+      },
+      {
+        "source": "capture-workbench-e2e",
+        "target": "capture-tools",
+        "type": "static"
+      }
+    ],
+    "capture-runtime": [
+      {
+        "source": "capture-runtime",
+        "target": "capture-tools",
+        "type": "static"
+      }
+    ],
+    "capture-workbench": [
+      {
+        "source": "capture-workbench",
+        "target": "capture-angular",
+        "type": "static"
+      },
+      {
+        "source": "capture-workbench",
+        "target": "capture-runtime-client",
+        "type": "static"
+      }
+    ],
+    "capture-tools": [],
+    "@capture-workbench/source": []
+  },
+  "target_inventory": {
+    "@capture-workbench/source": {
+      "has_typecheck": false,
+      "typecheck": null,
+      "other_typecheck_targets": []
+    },
+    "capture-angular": {
+      "has_typecheck": true,
+      "typecheck": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm exec tsc --noEmit -p packages/capture-workbench-ui/tsconfig.lib.json"
+        },
+        "configurations": {},
+        "parallelism": true
+      },
+      "other_typecheck_targets": []
+    },
+    "capture-workbench": {
+      "has_typecheck": true,
+      "typecheck": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm exec tsc --noEmit -p apps/capture-workbench/tsconfig.app.json"
+        },
+        "configurations": {},
+        "parallelism": true
+      },
+      "other_typecheck_targets": []
+    },
+    "capture-workbench-desktop": {
+      "has_typecheck": false,
+      "typecheck": null,
+      "other_typecheck_targets": [
+        "typecheck-scripts"
+      ]
+    },
+    "capture-workbench-e2e": {
+      "has_typecheck": false,
+      "typecheck": null,
+      "other_typecheck_targets": []
+    },
+    "capture-tools": {
+      "has_typecheck": true,
+      "typecheck": {
+        "cache": true,
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm exec tsc -p tools/tsconfig.boundary-doctor.json"
+        },
+        "configurations": {},
+        "parallelism": true
+      },
+      "other_typecheck_targets": [
+        "boundary-doctor-typecheck",
+        "python-candidate-index-typecheck",
+        "release-version-typecheck"
+      ]
+    },
+    "capture-runtime": {
+      "has_typecheck": true,
+      "typecheck": {
+        "cache": true,
+        "executor": "nx:run-commands",
+        "inputs": [
+          "default"
+        ],
+        "options": {
+          "cwd": "packages/capture-runtime",
+          "command": "uv run --python 3.13 mypy src && pnpm exec tsc -p tests/tsconfig.json"
+        },
+        "configurations": {},
+        "parallelism": true
+      },
+      "other_typecheck_targets": []
+    }
+  },
+  "run": {
+    "run": {
+      "command": "nx affected -t typecheck --base=f4604361739db3f28e0e3a5a482ed836ba9fa604 --head=1491f2dfae042ae772bafc64b21f1e6b3cc90add --skip-nx-cache --parallel=1",
+      "startTime": "2026-11-05T11:14:32.306Z",
+      "endTime": "2026-11-05T11:14:39.109Z",
+      "inner": false
+    },
+    "tasks": [
+      {
+        "taskId": "capture-angular:typecheck",
+        "target": "typecheck",
+        "projectName": "capture-angular",
+        "hash": "14768189240262231911",
+        "startTime": "2026-11-05T11:14:32.324Z",
+        "endTime": "2026-11-05T11:14:35.274Z",
+        "params": "",
+        "cacheStatus": "cache-miss",
+        "status": 0
+      },
+      {
+        "taskId": "capture-tools:typecheck",
+        "target": "typecheck",
+        "projectName": "capture-tools",
+        "hash": "7614590349830648659",
+        "startTime": "2026-11-05T11:14:35.276Z",
+        "endTime": "2026-11-05T11:14:36.942Z",
+        "params": "",
+        "cacheStatus": "cache-miss",
+        "status": 0
+      },
+      {
+        "taskId": "capture-workbench:typecheck",
+        "target": "typecheck",
+        "projectName": "capture-workbench",
+        "hash": "15628447224067495007",
+        "startTime": "2026-11-05T11:14:36.944Z",
+        "endTime": "2026-11-05T11:14:39.107Z",
+        "params": "",
+        "cacheStatus": "cache-miss",
+        "status": 0
+      }
+    ]
+  },
+  "exit": 0
+}

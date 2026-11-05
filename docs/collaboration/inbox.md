@@ -258,6 +258,8 @@ Foremerge 核对的是调用方给定提交包含已接受内容，**不验证�
 
 👀 **公共 API 改动先找项目自己的生成与兼容检查，不另搭通用审查框架。** Effect 已用 [`api-diff` 与迁移注解](https://github.com/Effect-TS/effect/pull/9971)持续刷新消费端迁移指导；Biome 把“变更类型→codegen 命令”写进 [AGENTS](https://github.com/biomejs/biome/blob/e2e5a36e1be8581419742a85268ad82f020da62e/AGENTS.md)，[真实规则 PR](https://github.com/biomejs/biome/pull/12580)由 CI 补齐遗漏的生成内容。适合已有多包或生成链的项目，本仓当前没有匹配的自然改动，未试用；不为试工具新造迁移。[四组原始材料与消费者](local-jobs/artifacts/A-FRONTIER-SOURCE-COLLECTION-20261027/sources.md)保留 Nx、Rust 兼容检查的取舍入口。
 
+🧪 **Nx 已有项目，交付受影响项目和实际执行任务两份清单。** [Capture Workbench #291 真实重构复核](../../experiments/nx-affected-review/README.md)：Nx 24.0.3 返回 7 个 affected 项目，实际 `typecheck` 只跑 UI、app、tools 三任务且全部通过；desktop 的目标叫 `typecheck-scripts`，e2e 无同名目标，runtime 虽有同名目标但本次未被任务 inputs 选择。直接反查 UI 也只得 app，不能代替传递下游。独立复跑一致；构建、浏览器 e2e、desktop 和其他 feature 未验，不把绿色命令当全下游验收，也不为此迁移非 Nx 仓库。✅ 实试回流，2026-11-05。
+
 ⛔ **Entire：本仓保留 Git 交接与决策记录，不导入真实会话。** 它将提示与 transcript 放进旁路 Git refs，默认随 push 同步；公开仓采用前必须先决定这些会话是否可以公开，默认脱敏会跳过路径字段和图片/base64 对象。只有确需回看会话且材料允许保存、分享时再评估，当前未安装、未试用。依据：[存储与同步](https://docs.entire.com/guides/checkpoints/checkpoint-storage)、[0.12.2 脱敏实现](https://github.com/entireio/cli/blob/b6900cf9f71bfbebc68b88860892e8ae5bad30b8/redact/redact.go#L2522-L2535)、[HN 使用者采用](https://news.ycombinator.com/item?id=50251718)与[已有规格足够的反馈](https://news.ycombinator.com/item?id=50255682)。
 
 **Cursor Agent SDK 先按当前文档核包名。** [官方 quickstart](https://cursor.com/docs/agent-sdk/quickstart.md)使用 `@grok/agent-sdk`（原 `@cursor/bdk`），[发布博客](https://cursor.com/blog/agent-sdk)的 `@cursor/agent-sdk` 在核实日 registry 返回 404；当前包为 0.3.0。本仓未安装或运行，不新增默认。[广扫来源、正反反馈与未覆盖范围](local-jobs/artifacts/A-FRONTIER-WIDE-SCAN-20261027/sources.md)。本节核实：2026-10-27。

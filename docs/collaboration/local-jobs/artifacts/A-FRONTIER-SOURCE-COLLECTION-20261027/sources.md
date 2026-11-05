@@ -61,7 +61,9 @@
 
 **与已收录的差异。** 仓内 [A-FRONTIER-SELECTION-001](../../A-FRONTIER-SELECTION-001.md) 在 diff-cover 的“强替代”里提过 `nx affected`，用途是 monorepo 测试选择；本项处理的是“Agent 如何反查下游消费者、如何验证生成的 agent 配置”，并把 `nx graph --print` 的具体 jq 命令、`configure-ai-agents` 生成块冲突的作者自报作为新证据，不重跑那项比较。仓内 Graphicle／Serena／LSP 基线解决“找调用者和语义引用”，但不提供项目级 affected 集，也不生成 agent 配置。仓内没有 Nx 下游发现／agent 配置的专门条目；上文 `nx affected` 的比较与 [10 的 Nx 供应链案例](../../../../10-security.md) 都不涉及本机制。
 
-**交给 dot-A 的未决问题。** 在一个临时 Nx workspace 里造 `lib-a`、`lib-b`（b 依赖 a）和 `app-c`（c 依赖 b），让 Agent 只读 `nx-workspace` Skill 回答“c 是否受 a 的改动影响”，把答案与 `nx graph --print`、`nx show projects --affected --base=<基线>` 的输出对照；再运行 `nx configure-ai-agents` 两次，看 `--check=all` 是否稳定、生成块是否只改写标记内内容。gx-capture 的提交已经给出一个待复现的冲突输入。
+**11-05 实试回流。** 未造三包样例，直接复核 Capture Workbench #291 的真实重构：7 个受影响项目、3 个实际类型检查任务均通过，独立复跑一致；项目清单不等于任务清单。见[固定版本、命令与边界](../../../../../experiments/nx-affected-review/README.md)。未运行 configure-ai-agents，原生成块覆盖问题仍待验证。
+
+**原待验证设想（未执行）。** 在一个临时 Nx workspace 里造 `lib-a`、`lib-b`（b 依赖 a）和 `app-c`（c 依赖 b），让 Agent 只读 `nx-workspace` Skill 回答“c 是否受 a 的改动影响”，把答案与 `nx graph --print`、`nx show projects --affected --base=<基线>` 的输出对照；再运行 `nx configure-ai-agents` 两次，看 `--check=all` 是否稳定、生成块是否只改写标记内内容。gx-capture 的提交已经给出一个待复现的冲突输入。
 
 ## 4. cargo-semver-checks：多 crate 工作区的版本兼容闸门
 
