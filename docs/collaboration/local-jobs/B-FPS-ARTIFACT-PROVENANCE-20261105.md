@@ -2,7 +2,7 @@
 id: B-FPS-ARTIFACT-PROVENANCE-20261105
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-artifact-provenance-20261105
