@@ -208,7 +208,7 @@ Foremerge 核对的是调用方给定提交包含已接受内容，**不验证�
 
 👀 **已有 Vitest、测试输出太吵时，先核原生 `minimal`（别名 `agent`），不要在 `default` 旁再叠一个。** 在已安装 5.0.5 的项目可单次试 `pnpm exec vitest run <原测试路径> --reporter=minimal`；保留原 config／project 参数和验证范围。未自定义 reporters 时已有 Agent 自动选择；显式列表会替换默认列表，项目需要的 CI／JUnit 等消费者继续保留。
 
-本仓合成命令探针中，minimal 保留失败断言、退出码和最终 passed／failed／skipped 计数；default＋agent 则重复统计与错误报告。负责人复跑失败输入也观察到一份变两份。尚未在真实编码任务采用；社区有人报告安静输出反而触发 verbose 重跑，下一次自然 Vitest 改动看整个任务的回读与重跑，而非只比一次输出长短。
+本仓合成命令探针中，minimal 保留失败断言、退出码和最终 passed／failed／skipped 计数；default＋agent 则重复统计与错误报告。负责人复跑失败输入也观察到一份变两份。**11-05 已补[真实发布脚本的历史诊断回放](../../experiments/vitest-reporter-release/README.md)**：GenomeSpy 原上游回归在旧源码上12过／2失败，agent 输出给出期待／实际差异及定位行；只补脚本后仍有包级 changelog 折行失败，补齐同提交的格式配置后完整14项通过。全程未换 reporter、未改断言，筛选时12项 skipped单列；成功输出仍含子进程日志。不是原创修复、盲评或 reporter 效率比较，不据此声称省成本；社区关于安静输出导致 verbose 重跑的反馈仍保留。
 
 **依据**：[官方默认选择](https://vitest.dev/guide/reporters#default-configuration)、[5.0.5 固定实现](https://github.com/vitest-dev/vitest/blob/7a825db43e2beca0b219d2eadaec334cb81af0c7/packages/vitest/src/node/reporters/minimal.ts)；[GenomeSpy 实际 Agent 指令](https://github.com/genome-spy/genome-spy/blob/91ce56e30eeb08f30e63fca518935d386e7f00f1/AGENTS.md#L79-L88)；[Cloudflare vinext 的组合配置](https://github.com/cloudflare/vinext/blob/a3b6b4df4f53a66d574ee86f42150e85d250196c/vite.config.ts#L146-L149)是借鉴前须实跑的反例，未运行其业务测试；[Reddit 原帖与正反评论](https://www.reddit.com/r/node/comments/1vrwxw5/should_node_test_runners_have_a_silentonsuccess/)。核实与合成探针：2026-10-27 UTC。
 

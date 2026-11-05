@@ -1,0 +1,58 @@
+
+ RUN  v5.0.5 <baseline-worktree>
+
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 398ms
+ ❯ |release-tools| scripts/release.test.mjs (14 tests | 1 failed | 12 skipped) 6216ms
+   × groups categories independently of bumps, labels direct packages, and accepts release prose 3555ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |release-tools| scripts/release.test.mjs > groups categories independently of bumps, labels direct packages, and accepts release prose
+AssertionError: expected '# @genome-spy/core\n\n## 2.0.0\n\n###…' to contain 'This release improves navigation acro…'
+
+- Expected
++ Received
+
+- This release improves navigation across linked genomic views and keeps
+-   categorical labels readable when the visible data changes.
++ # @genome-spy/core
++
++ ## 2.0.0
++
++ ### Major Changes
++
++ - Replace the old API.
++
++   Migration: rename oldProperty to newProperty.
++
++ ### Minor Changes
++
++ - Add shared controls.
++
++   This release improves navigation across linked genomic views and keeps categorical labels readable when the visible data changes.
++
++ ### Patch Changes
++
++ - Keep axis labels visible.
++
+
+ ❯ scripts/release.test.mjs:352:31
+    350|         expect(changelog).not.toContain("category:");
+    351|         if (name === "core") {
+    352|             expect(changelog).toContain(wrappedDetail);
+       |                               ^
+    353|         }
+    354|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 12 skipped (14)
+   Start at  03:42:11
+   Duration  6.56s (tests 97%, import 2%, transform 1%)

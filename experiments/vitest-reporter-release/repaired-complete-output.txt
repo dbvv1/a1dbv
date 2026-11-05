@@ -1,0 +1,56 @@
+
+ RUN  v5.0.5 <baseline-worktree>
+
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 328ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 458ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 407ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 471ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 308ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 306ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 357ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 404ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  03:42:52
+   Duration  33.48s (tests 99%)

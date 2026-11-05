@@ -1,0 +1,150 @@
+
+ RUN  v5.0.5 <baseline-worktree>
+
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 388ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 322ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 382ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 300ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 433ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 403ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 429ms
+🦋 changeset v3.0.3
+
+All files have been updated. Review them and commit at your leisure
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+up to date in 375ms
+ ❯ |release-tools| scripts/release.test.mjs (14 tests | 2 failed) 36597ms
+   × groups categories independently of bumps, labels direct packages, and accepts release prose 4086ms
+   × GitHub output unwraps reviewed prose, preserves Markdown, and credits all contributors 2980ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |release-tools| scripts/release.test.mjs > groups categories independently of bumps, labels direct packages, and accepts release prose
+AssertionError: expected 'This release improves everyday naviga…' to contain 'This release improves navigation acro…'
+
+- Expected
++ Received
+
+- This release improves navigation across linked genomic views and keeps
+-   categorical labels readable when the visible data changes.
++ This release improves everyday navigation.
++
++ ## [Highlights](https://genomespy.app/)
++
++ Read the migration notes before upgrading.
++
++ ### Breaking changes
++
++ - **Core:** Replace the old API.
++
++   Migration: rename oldProperty to newProperty.
++
++ ### New features
++
++ - **App, Core:** Add shared controls.
++
++   This release improves navigation across linked genomic views and keeps categorical labels readable when the visible data changes.
++
++ ### Improvements
++
++ - **Playground:** Make controls easier to navigate.
++
++ ### Fixes
++
++ - **Core:** Keep axis labels visible.
++
+
+ ❯ scripts/release.test.mjs:342:22
+    340|         "This release improves navigation across linked genomic views …
+    341|         "  categorical labels readable when the visible data changes.";
+    342|     expect(prepared).toContain(wrappedDetail);
+       |                      ^
+    343|     expect(prepared).toContain("Migration: rename oldProperty to newPr…
+    344|     expect(prepared).not.toMatch(/category:|App Agent|Inspector|React/…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |release-tools| scripts/release.test.mjs > GitHub output unwraps reviewed prose, preserves Markdown, and credits all contributors
+AssertionError: expected 'A release\nintroduction.\n\n## [Highl…' to be 'A release introduction.\n\n## [Highli…' // Object.is equality
+
+- Expected
++ Received
+
+@@ -1,6 +1,7 @@
+- A release introduction.
++ A release
++ introduction.
+
+  ## [Highlights](https://genomespy.app/)
+
+  Some editorial context.
+
+@@ -12,13 +13,14 @@
+  - First item.
+  - Second item.
+
+  ### Fixes
+
+- - **Core:** Keep axis labels consistent.
++ - **Core:** Keep axis labels
++   consistent.
+
+  ## New Contributors
+
+- - @new-user made their first contribution in https://github.com/genome-spy/genome-spy/pull/125
++ * @new-user made their first contribution in https://github.com/genome-spy/genome-spy/pull/125
+
+  Thanks to @direct, @new-user, @pr-author, @Returning!
+
+
+ ❯ scripts/release.test.mjs:455:19
+    453|     expect(fetch).not.toHaveBeenCalled();
+    454|     const notes = await releaseNotes(cwd, { github: true });
+    455|     expect(notes).toBe(
+       |                   ^
+    456|         reviewedNotes
+    457|             .trimEnd()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 12 passed (14)
+   Start at  03:41:09
+   Duration  36.92s (tests 100%)
