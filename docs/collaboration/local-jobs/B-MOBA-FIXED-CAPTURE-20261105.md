@@ -2,7 +2,7 @@
 id: B-MOBA-FIXED-CAPTURE-20261105
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-moba-fixed-capture-20261105
@@ -44,3 +44,11 @@ result_branch: relay/b-moba-fixed-capture-20261105
 ## 怎样算做成
 八张真实 PNG 可解码且每机位双拍一致；WebGL2/1280×720/DPR1、软件渲染和错误门槛通过，构建/harness/Chromium 真正 exit 0，逐进程退出缺项明确。manifest 记录固定 commit/tree、干净源、构建/served 哈希、四机位与所有参数、PNG/RGBA 哈希、renderer、Chromium、画质与起止 UTC；report 分列 capturePassed 与 cleanExitBaseline，只有全部必需证据齐全才 passed=true。
 只交图和真实证据，不宣称硬件 GPU、完整整局、声音/手感、参照配准或品质判优通过。失败也先交已有结果与精确断点，不能把旧 exit 缺口补成成功。经既有 Workflow 只读审查、适用公开扫描、diff 空白及 noreply 身份检查，只推结果分支回 review_ready；dot 再看图接收。
+
+## 当前结果
+
+- 四机位八张真实 PNG 与逐拍 JSON 已完成：全部 1280×720/DPR1/WebGL2/软件渲染、双拍一致、55 项校验通过，capturePassed=true；但拍摄 harness 真实 exitCode=1、signal=null（收尾断言引用未定义 buildFiles），cleanExitBaseline=false、passed=false、complete=false，未补写为成功。未关闭审查问题：harness.mjs:243/245 仍用 args.slice(1) 记录命令，丢失 --import 且重跑会带出本机绝对路径；公开 manifest/report/日志的正确命令为发布阶段脱敏改写，按 README 重跑公开 harness 会复现旧形态。仓库仅 docs/quality/capture/B-MOBA-FIXED-CAPTURE-20261105/ 下 34 个未跟踪文件，git diff 为空。
+- 产物：[774ba28](https://github.com/dbvv1/MOBA-Like/commit/774ba2827c19aba7675c13f679a3e4db7793a53e)，分支 `relay/b-moba-fixed-capture-20261105`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：需负责人另开卡或明确授权新的独占输出根，以真实 exit 0 重跑拍摄 harness（本卡禁止就地重拍/覆盖/换根）；同时修复 harness.mjs 第 243/245 行记录完整 argv（含 --import），使重跑产物可直接作为公开证据。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
