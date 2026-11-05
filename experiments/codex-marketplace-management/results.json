@@ -1,0 +1,53 @@
+{
+  "version": "codex-cli 0.167.0-alpha.4",
+  "binary_sha256": "57c94ea520df28beb76955316c5c48f672550fe42c6cff7003badb76e1ee10d8",
+  "commands": [
+    {
+      "step": "market-add",
+      "exit": 0
+    },
+    {
+      "step": "plugin-add",
+      "exit": 0
+    },
+    {
+      "step": "list-before",
+      "exit": 0
+    },
+    {
+      "step": "market-remove",
+      "exit": 0
+    },
+    {
+      "step": "list-after",
+      "exit": 0
+    },
+    {
+      "step": "plugin-remove",
+      "exit": 0
+    },
+    {
+      "step": "list-cleanup",
+      "exit": 0
+    }
+  ],
+  "installed": {
+    "listed": true,
+    "config_entry": true,
+    "config_enabled": true,
+    "cached_skill_files": 1
+  },
+  "marketplace_removed": {
+    "listed": false,
+    "config_entry": true,
+    "config_enabled": true,
+    "cached_skill_files": 1
+  },
+  "plugin_removed": {
+    "listed": false,
+    "config_entry": false,
+    "config_enabled": false,
+    "cached_skill_files": 0
+  },
+  "prompt_or_model_invoked": false
+}
