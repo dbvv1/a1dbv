@@ -1,0 +1,24 @@
+{
+  "version": "5.20261103.0-beta",
+  "install_exit": 0,
+  "tsc_exit": 2,
+  "diagnostics": 35,
+  "shared_diagnostic": [
+    "node_modules/miniflare/dist/src/index.d.ts(27,36): error TS2307: Cannot find module './shared' or its corresponding type declarations."
+  ],
+  "relative_imports": [
+    "import { Plugin as Plugin_2 } from './shared';",
+    "import { ServiceDesignator as ServiceDesignator_2 } from '../..';"
+  ],
+  "declaration_sha256": "d6c0df498a3bc51662e7344157ce2c323fbe3fcdb7497f2d17ab1b47351f3e72",
+  "integrity": "sha512-wghSXG3KHzMbAYvcrHFxN6JNI1Or3LSxpBe1qHdnFXFOPIDIlXCNvsRVF2J97rXsfFSJr7EzxRSjoUCmgVDEUA==",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "peerDependencies": null,
+  "tarball_sha256": "69313f870bea690f25cb2349707f84c375b9d59b6a23a581df3dc52416372050",
+  "tarball_entries": 160,
+  "shared_prefix_files": [],
+  "tarball_declaration_matches_install": true,
+  "tarball_integrity_matches_lock": true
+}

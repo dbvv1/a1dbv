@@ -1,0 +1,42 @@
+{
+  "version": "4.20260730.0",
+  "install_exit": 0,
+  "tsc_exit": 2,
+  "diagnostics": 52,
+  "shared_diagnostic": [
+    "node_modules/miniflare/dist/src/index.d.ts(26,74): error TS2307: Cannot find module './shared' or its corresponding type declarations.",
+    "node_modules/miniflare/dist/src/index.d.ts(36,36): error TS2307: Cannot find module './shared' or its corresponding type declarations.",
+    "node_modules/miniflare/dist/src/index.d.ts(46,78): error TS2307: Cannot find module './shared' or its corresponding type declarations."
+  ],
+  "relative_imports": [
+    "import { Awaitable as Awaitable_2 } from '..';",
+    "import { ExternalServer as ExternalServer_2 } from '../..';",
+    "import { ExternalServer as ExternalServer_3 } from '..';",
+    "import { Json as Json_2 } from '..';",
+    "import { kCurrentWorker as kCurrentWorker_2 } from './core';",
+    "import { kUnsafeEphemeralUniqueKey as kUnsafeEphemeralUniqueKey_2 } from './shared';",
+    "import { Log as Log_2 } from '..';",
+    "import { Miniflare as Miniflare_2 } from '../..';",
+    "import { Miniflare as Miniflare_3 } from '..';",
+    "import { PeriodType as PeriodType_2 } from './ratelimit';",
+    "import { Plugin as Plugin_2 } from './shared';",
+    "import { RemoteProxyConnectionString as RemoteProxyConnectionString_2 } from '..';",
+    "import { RemoteProxyConnectionString as RemoteProxyConnectionString_3 } from './shared';",
+    "import { Request as Request_3 } from '../..';",
+    "import { Request as Request_6 } from '..';",
+    "import { Response as Response_3 } from '../..';",
+    "import { Response as Response_6 } from '..';",
+    "import { WorkerRegistry as WorkerRegistry_2 } from '..';"
+  ],
+  "declaration_sha256": "87ac39f2f429c041f032c81396f97c7b5153a47e7e480e906192b1a5a921d135",
+  "integrity": "sha512-1Z9SB9r/o//80UA02Re3QhtcecSHAyAjf5EcKBfQVlQrCg7Miy79hl2PvtkwFLIaJ5rcrOPdDcRr577okwZPsg==",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "peerDependencies": null,
+  "tarball_sha256": "628eac8ebdbc0c889457676e7ebbbb4a3e46f51c20c19c3325ff6cf3cad4fa43",
+  "tarball_entries": 160,
+  "shared_prefix_files": [],
+  "tarball_declaration_matches_install": true,
+  "tarball_integrity_matches_lock": true
+}

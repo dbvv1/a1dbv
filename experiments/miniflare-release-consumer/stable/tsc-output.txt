@@ -1,0 +1,68 @@
+node_modules/miniflare/dist/src/index.d.ts(2,51): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(3,42): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(4,37): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(7,53): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(8,10): error TS2305: Module '"@cspotcode/source-map-support"' has no exported member 'cspotcodeSourceMapSupport'.
+node_modules/miniflare/dist/src/index.d.ts(9,49): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(10,73): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(12,52): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(13,43): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(14,37): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(15,45): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(18,43): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(21,55): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(23,83): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(24,32): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(25,52): error TS2307: Cannot find module './core' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(26,74): error TS2307: Cannot find module './shared' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(27,51): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(28,65): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(29,30): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(31,42): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(34,34): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(35,44): error TS2307: Cannot find module './ratelimit' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(36,36): error TS2307: Cannot find module './shared' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(37,25): error TS2307: Cannot find module '@puppeteer/browsers' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(38,39): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(39,45): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(42,57): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(45,78): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(46,78): error TS2307: Cannot find module './shared' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(49,43): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(50,38): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(57,51): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(58,75): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(63,45): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(64,40): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(69,77): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(70,49): error TS2307: Cannot find module '@cloudflare/workers-types' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(71,59): error TS2307: Cannot find module '@cloudflare/workers-types' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(72,55): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(76,52): error TS2307: Cannot find module '..' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(77,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(4939,50): error TS2344: Type 'MockAgent<Options>' does not satisfy the constraint 'Options'.
+  Types of property 'enableCallHistory' are incompatible.
+    Type '() => MockAgent<Options>' is not assignable to type 'boolean | undefined'.
+node_modules/miniflare/dist/src/index.d.ts(4939,86): error TS2344: Type 'MockAgent<Options>' does not satisfy the constraint 'Options'.
+  Types of property 'enableCallHistory' are incompatible.
+    Type '() => MockAgent<Options>' is not assignable to type 'boolean | undefined'.
+node_modules/miniflare/dist/src/index.d.ts(5414,27): error TS2344: Type 'MockAgent<Options>' does not satisfy the constraint 'Options'.
+  Types of property 'enableCallHistory' are incompatible.
+    Type '() => MockAgent<Options>' is not assignable to type 'boolean | undefined'.
+node_modules/miniflare/dist/src/index.d.ts(5583,27): error TS2344: Type 'MockAgent<Options>' does not satisfy the constraint 'Options'.
+  Types of property 'enableCallHistory' are incompatible.
+    Type '() => MockAgent<Options>' is not assignable to type 'boolean | undefined'.
+node_modules/miniflare/dist/src/index.d.ts(5761,27): error TS2344: Type 'MockAgent<Options>' does not satisfy the constraint 'Options'.
+  Types of property 'enableCallHistory' are incompatible.
+    Type '() => MockAgent<Options>' is not assignable to type 'boolean | undefined'.
+node_modules/miniflare/dist/src/index.d.ts(5941,27): error TS2344: Type 'MockAgent<Options>' does not satisfy the constraint 'Options'.
+  Types of property 'enableCallHistory' are incompatible.
+    Type '() => MockAgent<Options>' is not assignable to type 'boolean | undefined'.
+node_modules/miniflare/dist/src/index.d.ts(6120,27): error TS2344: Type 'MockAgent<Options>' does not satisfy the constraint 'Options'.
+  Types of property 'enableCallHistory' are incompatible.
+    Type '() => MockAgent<Options>' is not assignable to type 'boolean | undefined'.
+node_modules/miniflare/dist/src/index.d.ts(6315,27): error TS2344: Type 'MockAgent<Options>' does not satisfy the constraint 'Options'.
+  Types of property 'enableCallHistory' are incompatible.
+    Type '() => MockAgent<Options>' is not assignable to type 'boolean | undefined'.
+node_modules/miniflare/dist/src/index.d.ts(8639,434): error TS2370: A rest parameter must be of an array type.
+node_modules/miniflare/dist/src/index.d.ts(9081,126): error TS2552: Cannot find name 'AddEventListenerOptions'. Did you mean 'EventListenerOptions'?

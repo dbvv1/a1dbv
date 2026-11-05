@@ -1,0 +1,11 @@
+{
+  "name": "miniflare-declaration-consumer",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "miniflare": "4.20260730.0",
+    "typescript": "6.0.3",
+    "@types/node": "24.13.3",
+    "@types/ws": "8.18.1"
+  }
+}
