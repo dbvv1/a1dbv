@@ -1,0 +1,63 @@
+{
+  "source": "https://github.com/pallets/click",
+  "base_commit": "2247b35ea1c47c727d7a06e51fa280e12a863ff6",
+  "candidate_tree": "303641d9f26ac4850f4d6291ee9d9382d09c84a6",
+  "platform": "Linux x86_64",
+  "scope": "Real POSIX FIFO and Click API; no upstream submission, no native Windows/macOS testing",
+  "baseline": [
+    {
+      "lazy": true,
+      "reader_timeout": true,
+      "reader_exit": -9,
+      "reader_stdout": "PARSED\n",
+      "writer_exit": 1,
+      "writer_broken_pipe": true
+    },
+    {
+      "lazy": false,
+      "reader_timeout": false,
+      "reader_exit": 0,
+      "reader_stdout": "PARSED\nfifo-payload\n",
+      "writer_exit": 0,
+      "writer_broken_pipe": false
+    }
+  ],
+  "candidate": [
+    {
+      "lazy": true,
+      "reader_timeout": false,
+      "reader_exit": 0,
+      "reader_stdout": "PARSED\nfifo-payload\n",
+      "writer_exit": 0,
+      "writer_broken_pipe": false
+    },
+    {
+      "lazy": false,
+      "reader_timeout": false,
+      "reader_exit": 0,
+      "reader_stdout": "PARSED\nfifo-payload\n",
+      "writer_exit": 0,
+      "writer_broken_pipe": false
+    }
+  ],
+  "pytest": {
+    "targeted": {
+      "passed": 6
+    },
+    "original_production_new_tests": {
+      "failed": 4,
+      "passed": 2,
+      "failure": "TimeoutExpired before starting writer"
+    },
+    "full": {
+      "passed": 2266,
+      "skipped": 24,
+      "deselected": 31000,
+      "xfailed": 1
+    }
+  },
+  "ruff_version": "0.15.9",
+  "ruff_check": "passed",
+  "ruff_format_check": "passed",
+  "patch_sha256": "c83c6a122312bd74dadc3f0f835e492e335bef736ae2d7ea325ae7364d484ac6"
+}

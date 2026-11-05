@@ -1,0 +1,75 @@
+diff --git a/src/click/utils.py b/src/click/utils.py
+index 617ff5e..6935f27 100644
+--- a/src/click/utils.py
++++ b/src/click/utils.py
+@@ -5,0 +6 @@ import re
++import stat
+@@ -137 +138,3 @@ class _LazyFile:
+-            if "r" in mode:
++            if "r" in mode and not stat.S_ISFIFO(os.stat(filename).st_mode):
++                # A FIFO must not be opened and closed before the actual read:
++                # doing so can disconnect its one-shot writer.
+diff --git a/tests/test_types/test_File.py b/tests/test_types/test_File.py
+index 4c67ed1..ba490ea 100644
+--- a/tests/test_types/test_File.py
++++ b/tests/test_types/test_File.py
+@@ -0,0 +1,5 @@
++import os
++import subprocess
++import sys
++from pathlib import Path
++
+@@ -31,0 +37,53 @@ def test_file_surrogates(type, tmp_path):
++
++
++@pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="requires POSIX FIFO")
++@pytest.mark.parametrize("mode", ["r", "rb"])
++@pytest.mark.parametrize("symlink", [False, True])
++def test_lazy_fifo_preserves_one_shot_writer(tmp_path, mode, symlink):
++    fifo = tmp_path / "input.fifo"
++    os.mkfifo(fifo)
++    path = fifo
++    if symlink:
++        path = tmp_path / "input-link"
++        path.symlink_to(fifo)
++
++    # The writer starts after conversion. Lazy conversion must not open the
++    # FIFO early, otherwise it blocks before the command can start its producer.
++    code = """
++import sys
++from pathlib import Path
++from threading import Thread
++import click
++
++path = Path(sys.argv[1])
++mode = sys.argv[2]
++stream = click.File(mode, lazy=True).convert(path, None, None)
++errors = []
++def produce():
++    try:
++        with path.open('wb') as writer:
++            writer.write(b'one-shot payload')
++    except BaseException as error:
++        errors.append(error)
++writer = Thread(target=produce, daemon=True)
++writer.start()
++try:
++    data = stream.read()
++finally:
++    stream.close()
++writer.join(timeout=2)
++assert not writer.is_alive()
++assert not errors
++assert data == (b'one-shot payload' if mode == 'rb' else 'one-shot payload')
++print('read-complete')
++"""
++    env = dict(os.environ, PYTHONPATH=str(Path(click.__file__).resolve().parents[1]))
++    result = subprocess.run(
++        [sys.executable, "-c", code, str(path), mode],
++        env=env,
++        capture_output=True,
++        text=True,
++        timeout=5,
++    )
++    assert result.returncode == 0, result.stderr
++    assert result.stdout == "read-complete\n"
