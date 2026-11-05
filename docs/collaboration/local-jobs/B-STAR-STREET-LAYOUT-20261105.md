@@ -31,4 +31,9 @@ result_branch: relay/b-star-street-layout-20261105
 经既有 Workflow 非作者审查、公开扫描/提交身份与 diff 检查，只推结果分支回 review_ready；不合 master、不部署。
 
 ## 当前结果
-尚未认领。新卡输出独立，不续跑原卡；ready 不是实际运行。
+
+- build 单元实现完成：新增 CPU 布局筛选器、报告与 29 项测试，20 行在 setback 4/6 及平移复查各接受 10 行；实测新测试 29/29、原街屋测试 25/25 通过，npm test 127/137（10 项因缺 happy-dom/three 失败），npm run build 因缺 esbuild 失败，浏览器/smoke/GPU 未运行。未关闭：test.mjs:786 含本机账户名字面量（用于断言报告不含该名），本身属私人信息，不应进入公开交付物。
+- 产物：[7746cac](https://github.com/dbvv1/Star-Rush-Reborn/commit/7746cac251a4a72d557d389d7d62046e1a0fd659)，分支 `relay/b-star-street-layout-20261105`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：移除 authoring/coast-street-layout/test.mjs 中的本机账户名字面量并改为通用路径/用户名校验，随后重跑 node --test 与公开扫描；其余无缺口。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
