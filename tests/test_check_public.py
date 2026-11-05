@@ -179,6 +179,303 @@ class PublicScanTests(unittest.TestCase):
     files = {"a.md": FAKE_EMAIL, "b.md": FAKE_EMAIL, module.ALLOW_FILE: allow}
     self.assertEqual(["b.md"], [f["file"] for f in self.run_fixture(files)[1]])
 
+  def index_fixture(self):
+    root = Path(self.enterContext(tempfile.TemporaryDirectory()))
+    subprocess.run(['git', 'init', '-q', str(root)], check=True)
+    return root
+
+  def index_add(self, root, *names):
+    subprocess.run(['git', '-C', str(root), 'add', '--', *names], check=True)
+
+  def test_staged_scan_uses_index_bytes_in_both_directions(self):
+    for staged, worktree, expected in [(FAKE_KEY, 'clean', 1), ('clean', FAKE_KEY, 0)]:
+      with self.subTest(staged_sensitive=expected):
+        root = self.index_fixture()
+        path = root / 'delivery.txt'
+        path.write_text(staged, encoding='utf-8')
+        self.index_add(root, 'delivery.txt')
+        path.write_text(worktree, encoding='utf-8')
+        index = (root / '.git/index').read_bytes()
+        result = self.run_cli(root, '--staged')
+        self.assertEqual(result.returncode, expected, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report['scope'], 'normal_git_index_blobs_only')
+        self.assertEqual(report['skipped_entries'], [])
+        self.assertEqual(report['checked_files'], 1)
+        self.assertNotIn(FAKE_KEY, result.stdout)
+        self.assertEqual(len(report['findings']), expected)
+        self.assertEqual(self.run_cli(root).returncode, 1 - expected)
+        self.assertEqual(path.read_text(encoding='utf-8'), worktree)
+        self.assertEqual((root / '.git/index').read_bytes(), index)
+
+  def test_staged_allowlist_comes_from_same_index(self):
+    root = self.index_fixture()
+    (root / 'scripts').mkdir()
+    path = root / 'delivery.txt'
+    path.write_text(FAKE_EMAIL, encoding='utf-8')
+    allow = root / module.ALLOW_FILE
+    allow.write_text('# no exemption\n', encoding='utf-8')
+    self.index_add(root, 'delivery.txt', module.ALLOW_FILE)
+    allow.write_text('delivery.txt\t' + FAKE_EMAIL + '\n', encoding='utf-8')
+    self.assertEqual(self.run_cli(root, '--staged').returncode, 1)
+    self.assertEqual(self.run_cli(root).returncode, 0)
+    self.index_add(root, module.ALLOW_FILE)
+    allow.write_text('# removed only in worktree\n', encoding='utf-8')
+    self.assertEqual(self.run_cli(root, '--staged').returncode, 0)
+    self.assertEqual(self.run_cli(root).returncode, 1)
+
+  @unittest.skipUnless(hasattr(os, 'symlink'), 'requires symlink support')
+  def test_staged_symlink_reads_original_link_not_worktree_target(self):
+    root = self.index_fixture()
+    path = root / 'link'
+    path.symlink_to(FAKE_KEY)
+    self.index_add(root, 'link')
+    path.unlink()
+    path.write_text('now clean', encoding='utf-8')
+    result = self.run_cli(root, '--staged')
+    self.assertEqual(result.returncode, 1, result.stderr)
+    self.assertEqual(json.loads(result.stdout)['findings'][0]['file'], 'link')
+    self.assertNotIn(FAKE_KEY, result.stdout)
+    # A clean staged regular file must not follow its replacement symlink.
+    self.index_add(root, 'link')
+    target = root / 'untracked.txt'
+    target.write_text(FAKE_KEY, encoding='utf-8')
+    path.unlink()
+    path.symlink_to(target)
+    self.assertEqual(self.run_cli(root, '--staged').returncode, 0)
+    self.assertEqual(target.read_text(encoding='utf-8'), FAKE_KEY)
+
+  def test_staged_deletion_excludes_surviving_worktree_file(self):
+    root = self.index_fixture()
+    (root / 'removed.txt').write_text(FAKE_KEY, encoding='utf-8')
+    self.index_add(root, 'removed.txt')
+    subprocess.run(['git', '-C', str(root), 'update-index', '--force-remove', 'removed.txt'], check=True)
+    result = self.run_cli(root, '--staged')
+    self.assertEqual(result.returncode, 0, result.stderr)
+    self.assertEqual(json.loads(result.stdout)['checked_files'], 0)
+    self.assertTrue((root / 'removed.txt').exists())
+
+  def test_staged_merge_stages_and_missing_objects_fail(self):
+    root = self.index_fixture()
+    oid = subprocess.run(['git', '-C', str(root), 'hash-object', '-w', '--stdin'],
+                         input=b'clean', capture_output=True, check=True).stdout.strip().decode()
+    for stage in ('1', '2', '3'):
+      subprocess.run(['git', '-C', str(root), 'update-index', '--index-info'],
+                     input=f'100644 {oid} {stage}\tconflict.txt\n'.encode(), check=True)
+    result = self.run_cli(root, '--staged')
+    self.assertEqual(result.returncode, 2)
+    self.assertIn('unresolved merge entries', result.stderr)
+    self.assertEqual(result.stdout, '')
+    root = self.index_fixture()
+    subprocess.run(['git', '-C', str(root), 'update-index', '--add', '--cacheinfo',
+                    '100644', 'a' * 40, 'missing.txt'], check=True)
+    result = self.run_cli(root, '--staged')
+    self.assertEqual(result.returncode, 2)
+    self.assertIn('cannot read selected Git index or local object', result.stderr)
+    self.assertEqual(result.stdout, '')
+
+  def test_staged_reports_non_utf8_and_gitlink_without_clearing_them(self):
+    root = self.index_fixture()
+    (root / 'encoded.txt').write_bytes(FAKE_KEY.encode('utf-16'))
+    self.index_add(root, 'encoded.txt')
+    subprocess.run(['git', '-C', str(root), 'update-index', '--add', '--cacheinfo',
+                    '160000', 'b' * 40, 'submodule'], check=True)
+    result = self.run_cli(root, '--staged')
+    self.assertEqual(result.returncode, 2, result.stderr)
+    report = json.loads(result.stdout)
+    self.assertEqual(report['status'], 'incomplete')
+    self.assertEqual(report['checked_files'], 0)
+    self.assertEqual(report['skipped_entries'], [
+      {'file': 'encoded.txt', 'reason': 'not_utf8_text'},
+      {'file': 'submodule', 'reason': 'gitlink_target_not_scanned'}])
+    self.assertIn('skipped entries are not cleared', ' '.join(report['limits']))
+
+  def test_staged_ignores_ambient_git_redirect_and_preserves_path_bytes(self):
+    root = self.index_fixture()
+    other = self.index_fixture()
+    (other / 'secret.txt').write_text(FAKE_KEY, encoding='utf-8')
+    self.index_add(other, 'secret.txt')
+    name = 'odd\nname with spaces.txt'
+    (root / name).write_text(FAKE_KEY, encoding='utf-8')
+    self.index_add(root, name)
+    with mock.patch.dict(os.environ, {'GIT_DIR': str(other / '.git'),
+                                      'GIT_INDEX_FILE': str(other / '.git/index')}):
+      result = self.run_cli(root, '--staged')
+    self.assertEqual(result.returncode, 1, result.stderr)
+    self.assertEqual(json.loads(result.stdout)['findings'][0]['file'], name)
+    self.assertNotIn(FAKE_KEY, result.stdout)
+
+  def index_tree(self, root):
+    return subprocess.run(['git', '-C', str(root), 'write-tree'],
+                          capture_output=True, text=True, check=True).stdout.strip()
+
+  def test_fixed_tree_and_commit_do_not_follow_dirty_index_or_worktree(self):
+    root = self.index_fixture()
+    path = root / 'delivery.txt'
+    path.write_text(FAKE_KEY, encoding='utf-8')
+    self.index_add(root, 'delivery.txt')
+    sensitive_tree = self.index_tree(root)
+    path.write_text('clean', encoding='utf-8')
+    self.index_add(root, 'delivery.txt')
+    clean_tree = self.index_tree(root)
+    commit = subprocess.run(['git', '-C', str(root), '-c', 'user.name=Fixture',
+      '-c', 'user.email=fixture@example.com', 'commit-tree', clean_tree, '-m', 'fixture'],
+      capture_output=True, text=True, check=True).stdout.strip()
+    path.write_text(FAKE_KEY, encoding='utf-8')
+    index = (root / '.git/index').read_bytes()
+    for ref, tree, expected in [(sensitive_tree, sensitive_tree, 1),
+                                (clean_tree, clean_tree, 0), (commit, clean_tree, 0)]:
+      with self.subTest(ref=ref):
+        result = self.run_cli(root, '--tree', ref)
+        self.assertEqual(result.returncode, expected, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report['tree'], tree)
+        self.assertEqual(report['scope'], 'git_tree_blobs_only')
+        self.assertEqual(report['status'], 'findings' if expected else 'no_findings')
+        self.assertEqual(report['skipped_entries'], [])
+        self.assertNotIn(FAKE_KEY, result.stdout)
+    self.assertEqual(self.run_cli(root, '--staged').returncode, 0)
+    self.assertEqual(self.run_cli(root).returncode, 1)
+    self.assertEqual((root / '.git/index').read_bytes(), index)
+    self.assertEqual(path.read_text(encoding='utf-8'), FAKE_KEY)
+
+  def test_tree_allowlist_is_fixed_and_symlink_is_not_configuration(self):
+    root = self.index_fixture()
+    (root / 'scripts').mkdir()
+    (root / 'delivery.txt').write_text(FAKE_EMAIL, encoding='utf-8')
+    allow = root / module.ALLOW_FILE
+    allow.write_text('# no exemption\n', encoding='utf-8')
+    self.index_add(root, 'delivery.txt', module.ALLOW_FILE)
+    strict = self.index_tree(root)
+    allow.write_text('delivery.txt\t' + FAKE_EMAIL + '\n', encoding='utf-8')
+    self.index_add(root, module.ALLOW_FILE)
+    relaxed = self.index_tree(root)
+    for ref, expected in [(strict, 1), (relaxed, 0)]:
+      result = self.run_cli(root, '--tree', ref)
+      self.assertEqual(result.returncode, expected, result.stderr)
+    allow.unlink()
+    allow.symlink_to(FAKE_KEY)
+    self.index_add(root, module.ALLOW_FILE)
+    linked = self.index_tree(root)
+    result = self.run_cli(root, '--tree', linked)
+    self.assertEqual(result.returncode, 1, result.stderr)
+    self.assertEqual(sorted(f['kind'] for f in json.loads(result.stdout)['findings']),
+                     ['credential', 'email'])
+    self.assertNotIn(FAKE_KEY, result.stdout)
+
+  def test_object_modes_never_clear_skips_or_expose_sensitive_path_values(self):
+    for data in [FAKE_KEY.encode(), b'\xff' + FAKE_KEY.encode(),
+                 FAKE_KEY.encode('utf-16'), b'\xff\xfe\x00']:
+      with self.subTest(data_kind=len(data)):
+        root = self.index_fixture()
+        name = 'export-' + FAKE_KEY + '.txt'
+        (root / name).write_bytes(data)
+        self.index_add(root, name)
+        tree = self.index_tree(root)
+        for args in [('--staged',), ('--tree', tree)]:
+          result = self.run_cli(root, *args)
+          self.assertEqual(result.returncode, 1 if data == FAKE_KEY.encode() else 2)
+          self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
+          report = json.loads(result.stdout)
+          records = report['findings'] or report['skipped_entries']
+          self.assertTrue(records[0]['file'].startswith('[redacted path sha256:'))
+    root = self.index_fixture()
+    subprocess.run(['git', '-C', str(root), 'update-index', '--add', '--cacheinfo',
+                    '160000', 'b' * 40, FAKE_KEY], check=True)
+    tree = self.index_tree(root)
+    for args in [('--staged',), ('--tree', tree)]:
+      result = self.run_cli(root, *args)
+      self.assertEqual(result.returncode, 2)
+      self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
+      self.assertEqual(json.loads(result.stdout)['status'], 'incomplete')
+
+  def test_tree_invalid_refs_modes_and_missing_repository_fail(self):
+    root = self.index_fixture()
+    for args in [('--tree', ''), ('--tree', 'missing'), ('--tree=--help',),
+                 ('--tree', 'a' * 40), ('--staged', '--tree', 'HEAD')]:
+      with self.subTest(args=args):
+        result = self.run_cli(root, *args)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.stdout, '')
+    empty = Path(self.enterContext(tempfile.TemporaryDirectory()))
+    self.assertEqual(self.run_cli(empty, '--staged').returncode, 2)
+    self.assertEqual(self.run_cli(empty, '--tree', 'HEAD').returncode, 2)
+
+  def test_staged_from_subdirectory_still_checks_complete_index(self):
+    root = self.index_fixture()
+    (root / 'sub').mkdir()
+    (root / 'root.txt').write_text(FAKE_KEY, encoding='utf-8')
+    (root / 'sub/child.txt').write_text('clean', encoding='utf-8')
+    self.index_add(root, 'root.txt', 'sub/child.txt')
+    result = self.run_cli(root / 'sub', '--staged')
+    self.assertEqual(result.returncode, 1, result.stderr)
+    report = json.loads(result.stdout)
+    self.assertEqual(report['checked_files'], 2)
+    self.assertEqual(report['findings'][0]['file'], 'root.txt')
+
+  def test_object_modes_keep_identity_checks_in_the_same_repository(self):
+    repos = []
+    for email in ['fixture@example.com', 'fixture@users.noreply.github.com']:
+      root = self.index_fixture()
+      (root / 'clean.txt').write_text('clean', encoding='utf-8')
+      self.index_add(root, 'clean.txt')
+      subprocess.run(['git', '-C', str(root), '-c', 'user.name=Fixture',
+                      '-c', 'user.email=' + email, 'commit', '-qm', 'fixture'], check=True)
+      repos.append(root)
+    for selected, foreign, expected in [(repos[0], repos[1], 1), (repos[1], repos[0], 0)]:
+      for args in [('--staged',), ('--tree', 'HEAD')]:
+        with self.subTest(selected=expected, args=args), mock.patch.dict(
+            os.environ, {'GIT_DIR': str(foreign / '.git'),
+                         'GIT_INDEX_FILE': str(foreign / '.git/index')}):
+          result = self.run_cli(selected, *args, '--commits', 'HEAD')
+        self.assertEqual(result.returncode, expected, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(len(report['findings']), 2 if expected else 0)
+        self.assertTrue(all(f['kind'] == 'commit-email' for f in report['findings']))
+
+  def test_object_mode_identity_checks_ignore_replacement_commits(self):
+    root = self.index_fixture()
+    (root / 'clean.txt').write_text('clean', encoding='utf-8')
+    self.index_add(root, 'clean.txt')
+    tree = self.index_tree(root)
+    commits = []
+    for email in ['fixture@example.com', 'fixture@users.noreply.github.com']:
+      commits.append(subprocess.run(['git', '-C', str(root), '-c', 'user.name=Fixture',
+        '-c', 'user.email=' + email, 'commit-tree', tree, '-m', 'fixture'],
+        capture_output=True, text=True, check=True).stdout.strip())
+    subprocess.run(['git', '-C', str(root), 'replace', commits[0], commits[1]], check=True)
+    for args in [('--staged',), ('--tree', commits[0])]:
+      result = self.run_cli(root, *args, '--commits', commits[0])
+      self.assertEqual(result.returncode, 1, result.stderr)
+      findings = json.loads(result.stdout)['findings']
+      self.assertEqual(len(findings), 2)
+      self.assertTrue(all(f['kind'] == 'commit-email' for f in findings))
+
+  def test_object_mode_commit_range_cannot_override_options_or_be_a_path(self):
+    root = self.index_fixture()
+    (root / 'clean.txt').write_text('clean', encoding='utf-8')
+    self.index_add(root, 'clean.txt')
+    subprocess.run(['git', '-C', str(root), '-c', 'user.name=Fixture',
+                    '-c', 'user.email=fixture@example.com', 'commit', '-qm', 'fixture'], check=True)
+    for args in [('--staged',), ('--tree', 'HEAD')]:
+      for revisions in ['--format=', '--max-count=0', '--all', 'clean.txt', 'missing-ref',
+                        'HEAD^{tree}', 'HEAD:clean.txt', '^HEAD', 'HEAD^!',
+                        'HEAD...', 'HEAD...HEAD', '..HEAD', 'HEAD..', 'HEAD..^HEAD']:
+        with self.subTest(args=args, revisions=revisions):
+          result = self.run_cli(root, *args, '--commits=' + revisions)
+          self.assertEqual(result.returncode, 2)
+          self.assertEqual(result.stdout, '')
+      for revisions, expected in [('HEAD', 1), ('HEAD..HEAD', 0)]:
+        with self.subTest(args=args, revisions=revisions):
+          result = self.run_cli(root, *args, '--commits', revisions)
+          self.assertEqual(result.returncode, expected, result.stderr)
+          report = json.loads(result.stdout)
+          self.assertEqual(len(report['findings']), 2 if expected else 0)
+          self.assertEqual(report['identity_check']['checked_commits'], 1 if expected else 0)
+          self.assertIn('selected commit set only', report['identity_check']['scope'])
+          self.assertRegex(report['identity_check']['selection'],
+                           r'^[0-9a-f]{40}(?:\.\.[0-9a-f]{40})?$')
+
   def test_untracked_files_are_ignored_in_git_checkout(self):
     with tempfile.TemporaryDirectory() as directory:
       root = Path(directory)
