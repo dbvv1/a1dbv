@@ -120,7 +120,7 @@ def scan_text(relative, text, allow):
   return findings
 
 
-def index_git(root, *args):
+def index_git(root, *args, input_data=None):
   # Inspect this repository's normal index and original local objects only.
   env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
   env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull,
@@ -128,12 +128,66 @@ def index_git(root, *args):
              GIT_OPTIONAL_LOCKS="0", GIT_TERMINAL_PROMPT="0")
   try:
     result = subprocess.run(["git", "-C", str(root), *args], env=env,
-                            capture_output=True, timeout=30)
+                            capture_output=True, input=input_data, timeout=30)
   except (OSError, subprocess.TimeoutExpired) as exc:
     raise ValueError("cannot read selected Git index or local object") from exc
   if result.returncode:
     raise ValueError("cannot read selected Git index or local object")
   return result.stdout
+
+
+BLOB_BATCH_BYTES = 4 * 1024 * 1024
+
+
+def blob_size(header, oid):
+  parts = header.split(b" ")
+  if (len(parts) != 3 or parts[0] != oid.encode("ascii")
+      or parts[1] != b"blob" or not parts[2].isdigit() or len(parts[2]) > 20):
+    raise ValueError("cannot read selected Git index or local object")
+  return int(parts[2])
+
+
+def read_blobs(root, object_ids):
+  """Batch fixed IDs within a body-byte budget; oversized single blobs stay whole."""
+  for start in range(0, len(object_ids), 128):
+    chunk = object_ids[start:start + 128]
+    if any(re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", oid) is None for oid in chunk):
+      raise ValueError("invalid Git blob object ID")
+    metadata = index_git(root, "cat-file", "--batch-check",
+                         input_data=("\n".join(chunk) + "\n").encode("ascii"))
+    lines = metadata.split(b"\n")
+    if len(lines) != len(chunk) + 1 or lines[-1] != b"":
+      raise ValueError("cannot read selected Git index or local object")
+    sizes = [blob_size(line, oid) for line, oid in zip(lines[:-1], chunk)]
+    batches, batch, total = [], [], 0
+    for oid, size in zip(chunk, sizes):
+      if batch and total + size > BLOB_BATCH_BYTES:
+        batches.append(batch)
+        batch, total = [], 0
+      batch.append((oid, size))
+      total += size
+    if batch:
+      batches.append(batch)
+    for batch in batches:
+      response = index_git(root, "cat-file", "--batch",
+                           input_data=("\n".join(oid for oid, _ in batch) + "\n").encode("ascii"))
+      offset, blobs = 0, []
+      for oid, size in batch:
+        end = response.find(b"\n", offset)
+        if end < offset or blob_size(response[offset:end], oid) != size:
+          raise ValueError("cannot read selected Git index or local object")
+        offset = end + 1
+        stop = offset + size
+        if stop >= len(response) or response[stop:stop + 1] != b"\n":
+          raise ValueError("cannot read selected Git index or local object")
+        blobs.append(response[offset:stop])
+        offset = stop + 1
+      if offset != len(response):
+        raise ValueError("cannot read selected Git index or local object")
+      # Validate every frame before exposing a body. The budget bounds combined
+      # body bytes, not total process RSS; one large blob is never silently skipped.
+      yield from blobs
+      del response, blobs
 
 
 def scan_index(root):
@@ -189,11 +243,12 @@ def decode_object_text(data):
 
 def scan_objects(root, entries):
   texts, skipped = {}, []
+  blobs = iter(read_blobs(root, [oid for _, mode, oid in entries if mode != b"160000"]))
   for name, mode, oid in entries:
     if mode == b"160000":
       skipped.append({"file": name, "reason": "gitlink_target_not_scanned"})
       continue
-    data = index_git(root, "cat-file", "blob", oid)
+    data = next(blobs)
     try:
       texts[name] = (mode, decode_object_text(data))
     except UnicodeError:

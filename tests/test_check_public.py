@@ -73,6 +73,87 @@ class PublicScanTests(unittest.TestCase):
   def kinds(self, files):
     return sorted(f["kind"] for f in self.run_fixture(files)[1])
 
+  def test_blob_batch_parses_binary_framing_and_bounds_process_count(self):
+    root = self.index_fixture()
+    values = [b'', b'line\nwith\x00binary\xff', b'header-looking blob 3\nabc\n']
+    oids = [subprocess.run(['git', '-C', str(root), 'hash-object', '-w', '--stdin'],
+                          input=value, capture_output=True, check=True).stdout.decode().strip()
+            for value in values]
+    requested = (oids * 86)[:257]
+    with mock.patch.object(module, 'index_git', wraps=module.index_git) as wrapped:
+      actual = list(module.read_blobs(root, requested))
+    self.assertEqual(actual, (values * 86)[:257])
+    self.assertEqual(wrapped.call_count, 6)
+    self.assertTrue(all(call.args[1:] in [('cat-file', '--batch'), ('cat-file', '--batch-check')]
+                        for call in wrapped.call_args_list))
+    self.assertTrue(all(len(call.kwargs['input_data'].splitlines()) <= 128
+                        for call in wrapped.call_args_list))
+    with mock.patch.object(module, 'index_git') as wrapped:
+      self.assertEqual(list(module.read_blobs(root, [])), [])
+      wrapped.assert_not_called()
+
+  def test_blob_batch_rejects_missing_wrong_type_and_malformed_protocol(self):
+    oid = 'a' * 40
+    good = oid.encode() + b' blob 3\nabc\n'
+    broken = [b'', oid.encode() + b' missing\n', good[:-1], good + b'extra',
+              good.replace(b'abc', b'ab'), good.replace(b'blob', b'tree'),
+              good.replace(oid.encode(), b'b' * 40),
+              good.replace(b' 3\n', b' -1\n'), good.replace(b' 3\n', b' +3\n'),
+              good.replace(b' 3\n', b' ' + b'9' * 21 + b'\n')]
+    for response in broken:
+      with self.subTest(response=response[:45]):
+        with mock.patch.object(module, 'index_git', side_effect=[oid.encode() + b' blob 3\n', response]):
+          with self.assertRaisesRegex(ValueError, 'cannot read selected Git'):
+            list(module.read_blobs(Path('.'), [oid]))
+    with mock.patch.object(module, 'index_git', side_effect=[
+        (oid.encode() + b' blob 3\n') * 2, good + good[:-1]]):
+      # A malformed second frame cannot expose an unvalidated first body.
+      with self.assertRaises(ValueError):
+        next(module.read_blobs(Path('.'), [oid, oid]))
+    for invalid in ['HEAD', oid + '\nHEAD', '--help', 'A' * 40]:
+      with mock.patch.object(module, 'index_git') as wrapped:
+        with self.assertRaises(ValueError):
+          list(module.read_blobs(Path('.'), [invalid]))
+        wrapped.assert_not_called()
+    root = self.index_fixture()
+    (root / 'a').write_text('fixture', encoding='utf-8')
+    self.index_add(root, 'a')
+    tree = self.index_tree(root)
+    for invalid in ['f' * 40, tree]:
+      with self.assertRaises(ValueError):
+        list(module.read_blobs(root, [invalid]))
+
+  def test_blob_batch_budget_and_metadata_mismatch_fail_closed(self):
+    root = self.index_fixture()
+    values = [b'abc', b'defg', b'oversized', b'']
+    oids = [subprocess.run(['git', '-C', str(root), 'hash-object', '-w', '--stdin'],
+                          input=value, capture_output=True, check=True).stdout.decode().strip()
+            for value in values]
+    with mock.patch.object(module, 'BLOB_BATCH_BYTES', 5):
+      with mock.patch.object(module, 'index_git', wraps=module.index_git) as wrapped:
+        self.assertEqual(list(module.read_blobs(root, oids)), values)
+    size_by_oid = dict(zip(oids, map(len, values)))
+    calls = [c for c in wrapped.call_args_list if c.args[-1] == '--batch']
+    self.assertGreater(len(calls), 1)
+    for call in calls:
+      requested = call.kwargs['input_data'].decode().splitlines()
+      self.assertTrue(sum(size_by_oid[oid] for oid in requested) <= 5 or len(requested) == 1)
+    oid64 = 'b' * 64
+    with mock.patch.object(module, 'index_git', side_effect=[
+        oid64.encode() + b' blob 1\n', oid64.encode() + b' blob 1\nx\n']):
+      self.assertEqual(list(module.read_blobs(root, [oid64])), [b'x'])
+    oid = oids[0]
+    for metadata in [b'', oid.encode() + b' missing\n',
+                     oid.encode() + b' blob 3\nextra\n', oid.encode() + b' blob 3']:
+      with mock.patch.object(module, 'index_git', return_value=metadata) as wrapped:
+        with self.assertRaises(ValueError):
+          list(module.read_blobs(root, [oid]))
+        self.assertEqual(wrapped.call_count, 1)
+    with mock.patch.object(module, 'index_git', side_effect=[
+        oid.encode() + b' blob 4\n', oid.encode() + b' blob 3\nabcd\n']):
+      with self.assertRaises(ValueError):
+        list(module.read_blobs(root, [oid]))
+
   def test_clean_and_placeholder_content_passes(self):
     text = ("Use noreply@anthropic.com, dev@example.com, x@users.noreply.github.com.\n"
             "Paths: /Users/Shared/Epic Games/, /home/user/repo, C:\\Users\\foo\\x, ~/.claude\n"
