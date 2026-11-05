@@ -1,0 +1,114 @@
+{
+  "2.11.10": {
+    "B": {
+      "packages": [
+        [
+          "//",
+          "ConservativeRootLockfileChanged"
+        ],
+        [
+          "app-a",
+          "DependencyChanged"
+        ],
+        [
+          "pkg-a",
+          "FileChanged"
+        ],
+        [
+          "pkg-b",
+          "LockfileChanged"
+        ]
+      ],
+      "tasks": [
+        "app-a#build",
+        "app-a#prebuild",
+        "pkg-a#build",
+        "pkg-a#prebuild",
+        "pkg-b#build",
+        "pkg-b#prebuild",
+        "tooling-config#build",
+        "tooling-config#prebuild"
+      ]
+    },
+    "A": {
+      "packages": [
+        [
+          "//",
+          "ConservativeRootLockfileChanged"
+        ],
+        [
+          "app-a",
+          "DependencyChanged"
+        ],
+        [
+          "pkg-a",
+          "FileChanged"
+        ]
+      ],
+      "tasks": [
+        "app-a#build",
+        "app-a#prebuild",
+        "pkg-a#build",
+        "pkg-a#prebuild",
+        "tooling-config#build",
+        "tooling-config#prebuild"
+      ]
+    }
+  },
+  "2.11.11-canary.1": {
+    "B": {
+      "packages": [
+        [
+          "//",
+          "ConservativeRootLockfileChanged"
+        ],
+        [
+          "app-a",
+          "DependencyChanged"
+        ],
+        [
+          "pkg-a",
+          "FileChanged"
+        ],
+        [
+          "pkg-b",
+          "LockfileChanged"
+        ]
+      ],
+      "tasks": [
+        "app-a#build",
+        "app-a#prebuild",
+        "pkg-a#build",
+        "pkg-a#prebuild",
+        "pkg-b#build",
+        "pkg-b#prebuild",
+        "tooling-config#build",
+        "tooling-config#prebuild"
+      ]
+    },
+    "A": {
+      "packages": [
+        [
+          "//",
+          "ConservativeRootLockfileChanged"
+        ],
+        [
+          "app-a",
+          "DependencyChanged"
+        ],
+        [
+          "pkg-a",
+          "FileChanged"
+        ]
+      ],
+      "tasks": [
+        "app-a#build",
+        "app-a#prebuild",
+        "pkg-a#build",
+        "pkg-a#prebuild",
+        "tooling-config#build",
+        "tooling-config#prebuild"
+      ]
+    }
+  }
+}
