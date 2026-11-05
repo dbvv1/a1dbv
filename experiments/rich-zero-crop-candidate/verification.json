@@ -1,0 +1,40 @@
+{
+  "upstream": "https://github.com/Textualize/rich",
+  "base": "9d8f9a372cc5916fd4781fec207ced7ddac2f08f",
+  "candidate_tree": "b78ece89ec7b1c3ee0dd2c1c2ecab821b02ceb24",
+  "date_utc": "2026-11-05",
+  "patch_sha256": "0ec7c0c9b784030248e0436198821ed2985ee0c07f005b17476b76d7385fa3e7",
+  "environment": {
+    "os": "Linux",
+    "python": "3.12.14",
+    "poetry": "1.3.1",
+    "pytest": "7.4.4",
+    "mypy": "1.14.1"
+  },
+  "results": {
+    "original_suite": {
+      "passed": 956,
+      "skipped": 25
+    },
+    "fixed_suite": {
+      "passed": 965,
+      "skipped": 25,
+      "warnings": 2
+    },
+    "fixed_text_suite": {
+      "passed": 122
+    },
+    "new_tests_on_original": {
+      "failed": 4,
+      "passed": 5,
+      "deselected": 113
+    },
+    "mypy_files": 100,
+    "black_files_unchanged": 213
+  },
+  "file_sha256": {
+    "rich/text.py": "691ffd46e2cd1a2fbb9f1fa0506f3204ef10c9a2d328214ed3d8819ee036280a",
+    "tests/test_text.py": "36f0ead22fc2ac62f532cb3f3f4dd8d6d338cbe8d3a79600abd67660406706bc"
+  },
+  "status": "Local candidate independently reviewed; not submitted or accepted upstream."
+}

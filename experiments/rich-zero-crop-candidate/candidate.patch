@@ -1,0 +1,59 @@
+diff --git a/rich/text.py b/rich/text.py
+index 7e087a4..bcb6eaf 100644
+--- a/rich/text.py
++++ b/rich/text.py
+@@ -1186,0 +1187,2 @@ class Text(JupyterMixin):
++        if amount == 0:
++            return
+diff --git a/tests/test_text.py b/tests/test_text.py
+index b6d39f5..76c4f26 100644
+--- a/tests/test_text.py
++++ b/tests/test_text.py
+@@ -1129,0 +1130,47 @@ def test_soft_wrap_styled() -> None:
++
++
++@pytest.mark.parametrize("plain", ["", "abc", "界🙂"])
++@pytest.mark.parametrize("method", ["crop", "suffix"])
++def test_zero_crop_preserves_text_and_following_operations(plain, method):
++    text = Text(plain, style="bold")
++    text.stylize("red", 0, len(plain))
++    expected = text.copy()
++    if method == "crop":
++        text.right_crop(0)
++    else:
++        text.remove_suffix("")
++    assert text.plain == expected.plain
++    assert len(text) == len(expected)
++    assert text.spans == expected.spans
++    assert text.cell_len == expected.cell_len
++    text.append("Z", style="italic")
++    expected.append("Z", style="italic")
++    assert text.plain == expected.plain
++    assert len(text) == len(text.plain)
++    assert text.spans == expected.spans
++    assert Text("|").join([text, Text("tail")]) == Text("|").join(
++        [expected, Text("tail")]
++    )
++    actual_output = StringIO()
++    expected_output = StringIO()
++    Console(file=actual_output, color_system=None, width=40).print(text)
++    Console(file=expected_output, color_system=None, width=40).print(expected)
++    assert actual_output.getvalue() == expected_output.getvalue()
++
++
++@pytest.mark.parametrize(
++    "method, argument, expected_plain",
++    [
++        ("right_crop", 1, "ab"),
++        ("remove_suffix", "c", "ab"),
++        ("remove_suffix", "missing", "abc"),
++    ],
++)
++def test_crop_positive_and_nonmatching_suffix_controls(
++    method, argument, expected_plain
++):
++    text = Text("abc", spans=[Span(0, 3, "red")])
++    getattr(text, method)(argument)
++    assert text.plain == expected_plain
++    assert len(text) == len(expected_plain)
++    assert text.spans == [Span(0, len(expected_plain), "red")]
