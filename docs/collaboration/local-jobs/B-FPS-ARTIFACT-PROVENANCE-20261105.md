@@ -2,7 +2,7 @@
 id: B-FPS-ARTIFACT-PROVENANCE-20261105
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-artifact-provenance-20261105
@@ -31,4 +31,9 @@ result_branch: relay/b-fps-artifact-provenance-20261105
 保留原内容/模型字节哈希；不将陈旧manifest修成当前、不宣称重新构建或素材已采用。按原Workflow独立审查后，只推结果分支回 review_ready；不合main、不部署。
 
 ## 当前结果
-尚未认领。ready为独立只读工具实现排队，不代表已运行、重建或验收。
+
+- 新增只读标准库工具 verify_manifest.py 与 27 项 CPU 测试，README 增加用法与状态含义。实测 test_verify_manifest 27 项、原 test_asset_batch 12 项全通过；真实历史 manifest 返回 exit 1，artifactIntegrity 通过而 sourceCurrency 如实报缺 tools/asset_batch.py 与 tools/build.py hash 过时，区分了输出字节完整与输入清单过时；未改模型/manifest/.blend，未运行 Blender 集成测试与无关 npm test。openIssues 为空。
+- 产物：[2a789cc](https://github.com/dbvv1/FPS-Like/commit/2a789cca282b7a1713249650a4259e47ffa6bf4e)，分支 `relay/b-fps-artifact-provenance-20261105`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人接收并合入结果分支；无本单元遗留缺口，无需重跑模型。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
