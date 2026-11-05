@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import axios from 'axios';
+import { client } from './generated/client.gen';
+import { getLoginRoute } from './generated/sdk.gen';
+const captured: unknown[]=[];
+const adapter=async (config:any)=>{captured.push({url:config.url,baseURL:config.baseURL,axiosUri:axios.getUri(config),resolved:new URL(axios.getUri(config),'https://app.example/settings').href});return {data:{ok:true},status:200,statusText:'OK',headers:{},config};};
+const built=client.buildUrl({url:'/api/auth/login'});
+const result=await getLoginRoute({adapter});
+assert.deepEqual(result.data,{ok:true});
+const initialConfig=client.getConfig().baseURL??null;
+await getLoginRoute({adapter,baseURL:''});
+client.setConfig({baseURL:''});
+await getLoginRoute({adapter});
+console.log(JSON.stringify({built,config:initialConfig,captured},null,2));

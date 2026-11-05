@@ -1,0 +1,1 @@
+{"openapi":"3.0.3","info":{"title":"Issue 4382 request route","version":"1.0.0"},"servers":[{"url":"/"}],"paths":{"/api/auth/login":{"get":{"operationId":"getLoginRoute","responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"ok":{"type":"boolean"}}}}}}}}}}}

@@ -1,0 +1,108 @@
+{
+  "old": {
+    "generator": "0.98.2",
+    "default": {
+      "built": "/api/auth/login",
+      "config": null,
+      "captured": [
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        },
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        },
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        }
+      ]
+    },
+    "baseUrlFalse": {
+      "built": "/api/auth/login",
+      "config": null,
+      "captured": [
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        },
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        },
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        }
+      ]
+    },
+    "newConsumerTypecheck": "not run",
+    "clientGenSha256": "b325822184abc7aed91c42bb1ea0697bb8ae178833c3fca97f6ec498398c1377"
+  },
+  "new": {
+    "generator": "0.99.0",
+    "default": {
+      "built": "//api/auth/login",
+      "config": "/",
+      "captured": [
+        {
+          "url": "//api/auth/login",
+          "baseURL": "",
+          "axiosUri": "//api/auth/login",
+          "resolved": "https://api/auth/login"
+        },
+        {
+          "url": "//api/auth/login",
+          "baseURL": "",
+          "axiosUri": "//api/auth/login",
+          "resolved": "https://api/auth/login"
+        },
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        }
+      ]
+    },
+    "baseUrlFalse": {
+      "built": "/api/auth/login",
+      "config": null,
+      "captured": [
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        },
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        },
+        {
+          "url": "/api/auth/login",
+          "baseURL": "",
+          "axiosUri": "/api/auth/login",
+          "resolved": "https://app.example/api/auth/login"
+        }
+      ]
+    },
+    "newConsumerTypecheck": "exit 0",
+    "clientGenSha256": "cc3961c3d7aa47c2923a41ede3ba8e79c9c6849e88db4228df600f90a19476aa"
+  }
+}

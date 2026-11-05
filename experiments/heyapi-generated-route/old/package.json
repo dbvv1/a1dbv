@@ -1,0 +1,1 @@
+{"private":true,"type":"module","dependencies":{"@hey-api/openapi-ts":"0.98.2","axios":"1.13.4","tsx":"4.21.0","typescript":"6.0.3"}}
