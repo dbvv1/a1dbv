@@ -36,8 +36,8 @@ HN 入口只用目前允许的 hn.algolia.com search／items API。本轮尚未�
 
 ## 当前结果
 
-- 完成 2026-10-26～11-01 周校准：主样本 "Claude Code"（nbHits 93，返回 10）与补充样本 "coding agent"（nbHits 40，返回 10）冻结为 20 个唯一 HN ID，逐项读取分级并与 base_ref 2c3287ba 及两份已交正式稿去重；结论为无已确认、可直接改变读者动作的新遗漏，保留 10-26 路线，另列两项待核线索（Compaction Laundering，仅读 arXiv 摘要；账号邮箱进入模型上下文 issue #81138，单一 issue 未独立复现）；限制：X/Reddit 不可读、doublepulsar 403、arXiv 全文未读、大帖仅读顶层评论；openIssues 为空。未提交未推送，接收端需按 operations §1 以允许身份提交并推送 result_branch。
-- 产物：[536b86d](https://github.com/dbvv1/a1dbv/commit/536b86d44f5649af78bc3cc37b65e799fc330112)，分支 `relay/a-m6-weekly-calibration-20261103`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
-- 下一步：负责人核实两项待核线索是否需沿原内容流程回流；接收端提交本卡两个产物并推 relay 分支回 review_ready。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 部分接收为有界周样本，不新增工具推荐；保留 `review_ready`，不等于全稿采纳、零遗漏或旧调用已退出。固定产物：[536b86d](https://github.com/dbvv1/a1dbv/commit/536b86d44f5649af78bc3cc37b65e799fc330112) 的 `sample.json`、`calibration.md`，分支 `relay/a-m6-weekly-calibration-20261103`；原稿记录检查与独立审查通过。
+- 2026-11-05 非作者只读复核：沿冻结 ID 读取 Algolia items，20/20 的 ID、URL、时间及规范化标题一致；两个样本共用同一窗口、各10条的顺序字段、20个唯一成员与固定基线实际命中核对通过。Cursor 事件、agent_summary 与两份旧稿重合，DeepSeek 已有仓内局部验证；不能把重复线索计为新采用。
+- 历史限制：未重新查询排名替换样本；冻结文件有请求、读取时间、rank、nbHits，但没有历史完整响应可独立认证“首次响应”的相关性顺序及总量。本次 items 核验不补足该证据，也未重验所有外链正文、历史评论数量或首次登记日期。保留原稿的部分读取、不可读及未试用边界。
+- 两项安全线索仍待核，不执行原稿配方：Compaction Laundering 的全文／源码和产品适用性未核；邮箱上下文报告未独立复现。不复制真实账号配置，不靠模型自述证明系统实现；若后续确需验证，另用公开源码和隔离合成输入，不接触私人配置。两项均未转成正文建议。
+- 下一步：负责人仅按上述范围接收；旧稿转化缺口沿原任务处理，尚无新增选择需要改答案页或默认路线。原产物不改、不重派；本收据另经非作者审查与适用检查后发布。
