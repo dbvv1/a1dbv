@@ -1,4 +1,8 @@
 """Deterministic contract tests for an original failure model, not OpenHands."""
+import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -23,6 +27,60 @@ class RecoveryProbeTests(unittest.TestCase):
     report = demo()["scenarios"]
     self.assertEqual(report["blind_retry"]["provider_effects"], 2)
     self.assertEqual(report["reconcile"]["provider_effects"], 1)
+
+  def test_cli_retains_effects_with_optimization(self):
+    script = Path(__file__).with_name("outcome_probe.py")
+    reports = []
+    for flags, optimize in [((), None), (("-O",), None), (("-OO",), None), ((), "1")]:
+      with self.subTest(flags=flags, optimize=optimize):
+        env = dict(os.environ)
+        env.pop("PYTHONOPTIMIZE", None)
+        if optimize is not None:
+          env["PYTHONOPTIMIZE"] = optimize
+        result = subprocess.run([sys.executable, *flags, str(script)],
+                                env=env, capture_output=True, text=True, timeout=20)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["scenarios"]["blind_retry"]["provider_effects"], 2)
+        self.assertEqual(report["scenarios"]["reconcile"]["provider_effects"], 1)
+        reports.append(report)
+    self.assertTrue(all(report == reports[0] for report in reports))
+
+  def test_optimized_demo_rejects_invalid_worker_outcomes(self):
+    # Patch only the worker boundary in a fresh interpreter; the demo's own
+    # checks must survive optimization. No assert statement in this harness.
+    harness = r"""
+import sys
+from unittest.mock import patch
+import outcome_probe as probe
+mode = sys.argv[1]
+real = probe.run_worker
+def worker(root, **kwargs):
+  if mode == 'wrong-crash':
+    return 0
+  if mode == 'unexpected-receipt':
+    (root / 'receipt.json').write_text('{}')
+    return probe.CRASH_EXIT
+  if not kwargs:
+    return 1
+  return real(root, **kwargs)
+with patch.object(probe, 'run_worker', side_effect=worker):
+  try:
+    probe.demo()
+  except RuntimeError as exc:
+    print(str(exc))
+  else:
+    sys.exit(9)
+"""
+    for mode, message in [("wrong-crash", "post-commit crash"),
+                          ("unexpected-receipt", "post-commit crash"),
+                          ("retry-failed", "Blind retry worker failed")]:
+      with self.subTest(mode=mode):
+        result = subprocess.run([sys.executable, "-O", "-c", harness, mode],
+                                cwd=Path(__file__).parent, capture_output=True,
+                                text=True, timeout=20)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(message, result.stdout)
 
   def test_crash_before_send_has_no_effect_and_can_retry_when_quiescent(self):
     self.assertEqual(run_worker(self.root, crash="before_send"), CRASH_EXIT)

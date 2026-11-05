@@ -87,13 +87,15 @@ def demo() -> dict:
       root = Path(temp)
       initialize(root)
       code = run_worker(root, crash="after_commit")
-      assert code == CRASH_EXIT and not (root / "receipt.json").exists()
+      if code != CRASH_EXIT or (root / "receipt.json").exists():
+        raise RuntimeError("Expected a post-commit crash without a caller receipt")
       # This probe models business effects, not SDK tool-call matching.
       # Closing an old call does not deduplicate a new business retry.
       decision = "retry" if policy == "blind_retry" else decide(
         "op-1", "release-note-A", Evidence(tuple(effects(root)), True, True), True)
       if decision == "retry":
-        assert run_worker(root) == 0
+        if run_worker(root) != 0:
+          raise RuntimeError("Blind retry worker failed")
       results[policy] = {"decision": decision, "provider_effects": len(effects(root))}
   return {"scope": "synthetic_failure_model_only", "scenarios": results}
 
