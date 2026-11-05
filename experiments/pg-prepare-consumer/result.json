@@ -1,0 +1,78 @@
+[
+  {
+    "scenario": "named-default",
+    "output": [
+      21,
+      22
+    ],
+    "parses": [
+      {
+        "name": "read_value",
+        "text": "select $1::integer as value"
+      }
+    ],
+    "statements": [
+      {
+        "name": "read_value",
+        "statement": "select $1::integer as value",
+        "from_sql": false
+      }
+    ]
+  },
+  {
+    "scenario": "named-prepare-false",
+    "output": [
+      21,
+      22
+    ],
+    "parses": [
+      {
+        "name": "read_value",
+        "text": "select $1::integer as value"
+      }
+    ],
+    "statements": [
+      {
+        "name": "read_value",
+        "statement": "select $1::integer as value",
+        "from_sql": false
+      }
+    ]
+  },
+  {
+    "scenario": "unnamed-default",
+    "output": [
+      21,
+      22
+    ],
+    "parses": [
+      {
+        "name": "",
+        "text": "select $1::integer as value"
+      },
+      {
+        "name": "",
+        "text": "select $1::integer as value"
+      }
+    ],
+    "statements": []
+  },
+  {
+    "scenario": "unnamed-prepare-false",
+    "output": [
+      21,
+      22
+    ],
+    "parses": [
+      {
+        "name": "",
+        "text": "select $1::integer as value"
+      },
+      {
+        "name": "",
+        "text": "select $1::integer as value"
+      }
+    ],
+    "statements": []
+  }
+]

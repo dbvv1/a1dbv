@@ -1,0 +1,12 @@
+{
+  "name": "pg-prepare-consumer",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.15",
+    "pg": "8.23.1"
+  },
+  "scripts": {
+    "test": "node probe.mjs"
+  }
+}
