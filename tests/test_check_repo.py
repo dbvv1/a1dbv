@@ -41,6 +41,15 @@ class RepoCheckTests(unittest.TestCase):
     self.assertTrue(result["errors"][1].startswith("a.md:2: invalid link target:"))
     self.assertIn("a.md:3: missing link target: missing.md", result["errors"])
 
+  def test_skipped_or_invalid_link_keeps_later_target_on_same_line(self):
+    for first in ("https://example.com", "https://[broken"):
+      with self.subTest(first=first):
+        result = self.run_fixture({
+          "a.md": f"[first]({first}) [missing](missing.md)",
+        })
+        self.assertIn("a.md:1: missing link target: missing.md", result["errors"])
+        self.assertEqual(2 if first == "https://[broken" else 1, len(result["errors"]))
+
   def test_fences_are_not_links(self):
     self.assertEqual([], self.run_fixture({"a.md": "```md\n[x](no.md)\n```\n~~~\n[x](no.md)\n~~~"})["errors"])
 
