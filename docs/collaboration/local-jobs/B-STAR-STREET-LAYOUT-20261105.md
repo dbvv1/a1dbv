@@ -2,7 +2,7 @@
 id: B-STAR-STREET-LAYOUT-20261105
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: ab2e299aee2e928e7048c138a3428a9975f237a3
 result_branch: relay/b-star-street-layout-20261105
@@ -32,8 +32,11 @@ result_branch: relay/b-star-street-layout-20261105
 
 ## 当前结果
 
-- 移除 coast-street-layout test.mjs 中的本机账户名字面量，改为基于 node:os 运行时 homedir/username 的通用隐私断言（盘符路径、/Users|/home|/root、路径/地址中的账户名），并同步收窄 README 校验范围说明；重跑布局测试 29/29、原街屋测试 25/25，报告重生成与已提交 JSON 字节一致，check_public 238 文件 0 发现。npm test/build、浏览器、smoke、GPU 未运行（前单元记录 npm test 127/137 缺 happy-dom/three、build 缺 esbuild）。openIssues：HEAD 7746cac 提交历史仍含该账户名字面量，需接收端改写历史才能公开。
-- 产物：[84dd5ff](https://github.com/dbvv1/Star-Rush-Reborn/commit/84dd5ff972fb0a7dc386c09d458b040b3b72db95)，分支 `relay/b-star-street-layout-20261105`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端处理 Git：在提交前确认 amend/squash 或重建 relay/b-star-street-layout-20261105，将 7746cac 中的账户名字面量从公开历史移除，再推 review_ready；其余任务范围无缺口。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 接收：负责人在独立云端修复并接收最终代码快照，[a9e8181](https://github.com/dbvv1/Star-Rush-Reborn/commit/a9e8181c719a85cec72d5ced6fccfdcf7ab1c099) 已快进合入 master。唯一 parent 为 ab2e299；差量仅新增上述五文件，未引入原结果提交的父链；原 relay 分支仍为 84dd5ff，未改写。
+- 修复：逐项校验矩阵全部16槽；每排必须完整匹配传入 parts 的 ID 集合；旋转数值接触在 minGap=0 时也拒收，间距比较不再减去容差。原三项独立复审缺陷均关闭。
+- 实测：布局34/34、原街屋25/25、根 npm test 177/177及后续客户端/API/入口/来源选择检查、npm run build 均退出0；报告两次重生成均与原 JSON 字节一致。复用既有云端依赖，未安装软件。
+- 独立复审：7536组旋转/平移接触无零距离误收，180组不同 yaw 顶点接边全部拒收，36组严格门槛与原12项正常边界通过。
+- 公开检查：五个新增文本0发现、0跳过，提交身份与 diff 检查通过；全树238个文本0发现，但40个既有非文本跳过，不称全仓完整扫描通过。2026-11-05 20:20 UTC 精确接收提交的 Actions/check-runs 均为0，没有远端 CI 通过结论。
+- 未关闭：原本机 Workflow、CLI、工具和登记进程的退出终态仍未知，未触碰或重派。本卡 accepted 仅指独立代码快照已接收，不证明原调用已退出。旧结果历史已公开且仍未清理，不能把当前文件净化或新主线提交称为已撤回暴露。
+- 范围：仅 CPU 保守足印作者工具，未接入游戏场景、未部署；浏览器、画面、GPU、音频及 smoke 未验收。道路净空信任未经篡改的既有 adapter 结果，不重新认证人为改写的值。
+- 后续：旧公开历史风险单独处理；本卡接收不授权改写历史、强推或删除分支。原产出由本机既有 Workflow 执行，本次接收、修复和复验均在独立云端。
