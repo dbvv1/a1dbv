@@ -1,0 +1,23 @@
+{
+  "version": "1.16.0",
+  "plain": {
+    "validateExit": 0,
+    "warnings": 2,
+    "archiveExit": 0,
+    "recognizedRequirementInMain": true,
+    "ignoredRequirementInMain": false,
+    "archivedDeltaUnchanged": true
+  },
+  "mixed": {
+    "gateExit": 1,
+    "filesUnchanged": true,
+    "activeDeltaExists": true,
+    "mainSpecExists": false
+  },
+  "clean": {
+    "gateExit": 0,
+    "filesUnchanged": false,
+    "activeDeltaExists": false,
+    "mainSpecExists": true
+  }
+}
