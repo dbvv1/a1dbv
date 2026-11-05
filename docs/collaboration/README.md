@@ -14,6 +14,7 @@
 | [local-jobs/](local-jobs/README.md) | 交给本机模型的任务与结果 |
 | [inbox.md](inbox.md) | 用户贴来的链接，dot-A 处理 |
 | [reviews/](reviews/) | 阶段审计和抽审记录，绑定精确提交；意见可以被反证推翻 |
+| [drafts/](drafts/) | 尚未批准生效的架构规格与协作方案；v1.4 当前待 Claude/Codex 复核和用户确认 |
 | [prompts/](prompts/) | 当前长期提示词为 [dot-a.md](prompts/dot-a.md)、[dot-b.md](prompts/dot-b.md)（固定文件名，就地更新）；`monthly-top10.md` 是外部十件事对照、`acg-knowledge-comic.md` 是知识漫画短提示词；带日期的为历史存档，不必读 |
 | [archive/](archive/README.md) | TASKS 已完成条目的归档 |
 
