@@ -1,0 +1,34 @@
+{
+  "original": {
+    "theme": "light",
+    "fontSize": 16
+  },
+  "exact": {
+    "theme": "light",
+    "fontSize": 16
+  },
+  "originalMerged": {
+    "theme": "light",
+    "fontSize": 16
+  },
+  "repaired": {
+    "fontSize": 16
+  },
+  "repairedMerged": {
+    "theme": "dark",
+    "fontSize": 16
+  },
+  "explicitRemoval": {
+    "fontSize": 16
+  },
+  "createDefaults": {
+    "theme": "light",
+    "fontSize": 14
+  },
+  "emptyPatch": {},
+  "invalidFontRejected": true,
+  "wrappedHelperResult": {
+    "a": "x",
+    "b": 1
+  }
+}
