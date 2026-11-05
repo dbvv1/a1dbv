@@ -2,7 +2,7 @@
 id: B-FPS-WEAPON-GENERATION-20261105
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-weapon-generation-20261105
@@ -31,4 +31,5 @@ result_branch: relay/b-fps-weapon-generation-20261105
 只交 CPU 合同与可选实现；不宣称训练赛采用、动画完整、画面或手感改善。按既有 Workflow 独立审查、公开文件/提交身份扫描与 diff 检查后只推结果分支，回 review_ready；不合 main、不部署。
 
 ## 当前结果
-尚未认领。ready 仅表示可排队；实际执行须由工具/产物增量与退出回执证明。
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
