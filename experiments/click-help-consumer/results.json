@@ -1,0 +1,98 @@
+{
+  "base": {
+    "python": "3.12.14",
+    "results": [
+      {
+        "case": "usage-35",
+        "tokens_intact": false,
+        "text": "Usage: program --enable-verbose-\n               logging --output-\n               file-path --max-\n               retry-count\n               --disable-cache-mode\n               --config-file-\n               location --auto-\n               update-interval\n               --force-overwrite-\n               existing --network-\n               timeout-seconds\n               --debug-trace-\n               enabled\n"
+      },
+      {
+        "case": "cli-help-35",
+        "exit": 0,
+        "tokens_intact": false,
+        "text": "Usage: cli [OPTIONS] INPUT-\n           ARTIFACT-WITH-LONG-NAME\n\nOptions:\n  --output-file-path TEXT  Write to\n                           the\n                           output-\n                           file-path\n                           without\n                           losing the\n                           hyphenated\n                           -name.\n  --help                   Show this\n                           message\n                           and exit.\n"
+      },
+      {
+        "case": "long-word-35",
+        "tokens_intact": false,
+        "text": "Read a-very-long-artifact-name-\nthat-is-wider-than-the-available-\nline-budget next",
+        "max_line": 33
+      },
+      {
+        "case": "usage-65",
+        "tokens_intact": false,
+        "text": "Usage: program --enable-verbose-logging --output-file-path --max-\n               retry-count --disable-cache-mode --config-file-\n               location --auto-update-interval --force-overwrite-\n               existing --network-timeout-seconds --debug-trace-\n               enabled\n"
+      },
+      {
+        "case": "cli-help-65",
+        "exit": 0,
+        "tokens_intact": true,
+        "text": "Usage: cli [OPTIONS] INPUT-ARTIFACT-WITH-LONG-NAME\n\nOptions:\n  --output-file-path TEXT  Write to the output-file-path without\n                           losing the hyphenated-name.\n  --help                   Show this message and exit.\n"
+      },
+      {
+        "case": "long-word-65",
+        "tokens_intact": false,
+        "text": "Read a-very-long-artifact-name-that-is-wider-than-the-available-\nline-budget next",
+        "max_line": 64
+      },
+      {
+        "case": "real-command",
+        "exit": 0,
+        "result": {
+          "artifact": "input.json",
+          "output": "chosen.json"
+        }
+      }
+    ],
+    "source_commit": "6d34602f4b0668a61873af1c547bfd40cb7deffc"
+  },
+  "head": {
+    "python": "3.12.14",
+    "results": [
+      {
+        "case": "usage-35",
+        "tokens_intact": true,
+        "text": "Usage: program --enable-verbose-logging\n               --output-file-path\n               --max-retry-count\n               --disable-cache-mode\n               --config-file-location\n               --auto-update-interval\n               --force-overwrite-existing\n               --network-timeout-seconds\n               --debug-trace-enabled\n"
+      },
+      {
+        "case": "cli-help-35",
+        "exit": 0,
+        "tokens_intact": true,
+        "text": "Usage: cli [OPTIONS]\n           INPUT-ARTIFACT-WITH-LONG-NAME\n\nOptions:\n  --output-file-path TEXT  Write to\n                           the\n                           output-file-path\n                           without\n                           losing the\n                           hyphenated-name.\n  --help                   Show this\n                           message\n                           and exit.\n"
+      },
+      {
+        "case": "long-word-35",
+        "tokens_intact": true,
+        "text": "Read\na-very-long-artifact-name-that-is-wider-than-the-available-line-budget\nnext",
+        "max_line": 70
+      },
+      {
+        "case": "usage-65",
+        "tokens_intact": true,
+        "text": "Usage: program --enable-verbose-logging --output-file-path\n               --max-retry-count --disable-cache-mode\n               --config-file-location --auto-update-interval\n               --force-overwrite-existing\n               --network-timeout-seconds --debug-trace-enabled\n"
+      },
+      {
+        "case": "cli-help-65",
+        "exit": 0,
+        "tokens_intact": true,
+        "text": "Usage: cli [OPTIONS] INPUT-ARTIFACT-WITH-LONG-NAME\n\nOptions:\n  --output-file-path TEXT  Write to the output-file-path without\n                           losing the hyphenated-name.\n  --help                   Show this message and exit.\n"
+      },
+      {
+        "case": "long-word-65",
+        "tokens_intact": true,
+        "text": "Read\na-very-long-artifact-name-that-is-wider-than-the-available-line-budget\nnext",
+        "max_line": 70
+      },
+      {
+        "case": "real-command",
+        "exit": 0,
+        "result": {
+          "artifact": "input.json",
+          "output": "chosen.json"
+        }
+      }
+    ],
+    "source_commit": "708edcb4844c02d38dba02deab3a78e919abb9f0"
+  }
+}
