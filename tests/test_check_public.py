@@ -276,7 +276,7 @@ class PublicScanTests(unittest.TestCase):
 
   def test_staged_reports_non_utf8_and_gitlink_without_clearing_them(self):
     root = self.index_fixture()
-    (root / 'encoded.txt').write_bytes(FAKE_KEY.encode('utf-16'))
+    (root / 'encoded.txt').write_bytes(b'\xff' + FAKE_KEY.encode())
     self.index_add(root, 'encoded.txt')
     subprocess.run(['git', '-C', str(root), 'update-index', '--add', '--cacheinfo',
                     '160000', 'b' * 40, 'submodule'], check=True)
@@ -286,9 +286,78 @@ class PublicScanTests(unittest.TestCase):
     self.assertEqual(report['status'], 'incomplete')
     self.assertEqual(report['checked_files'], 0)
     self.assertEqual(report['skipped_entries'], [
-      {'file': 'encoded.txt', 'reason': 'not_utf8_text'},
+      {'file': 'encoded.txt', 'reason': 'unsupported_or_malformed_text'},
       {'file': 'submodule', 'reason': 'gitlink_target_not_scanned'}])
     self.assertIn('skipped entries are not cleared', ' '.join(report['limits']))
+
+  def test_object_bom_encodings_scan_exact_blob_and_redact_matches(self):
+    cases = [('utf-8-sig', b''), ('utf-16-le', b'\xff\xfe'),
+             ('utf-16-be', b'\xfe\xff'), ('utf-32-le', b'\xff\xfe\x00\x00'),
+             ('utf-32-be', b'\x00\x00\xfe\xff')]
+    for encoding, bom in cases:
+      for content, expected in [('文档\nclean\n', 0), ('文档\n' + FAKE_KEY + '\n', 1)]:
+        with self.subTest(encoding=encoding, expected=expected):
+          root = self.index_fixture()
+          path = root / 'export.txt'
+          path.write_bytes(bom + content.encode(encoding))
+          self.index_add(root, 'export.txt')
+          tree = self.index_tree(root)
+          path.write_text('different worktree', encoding='utf-8')
+          for args in [('--staged',), ('--tree', tree)]:
+            result = self.run_cli(root, *args)
+            self.assertEqual(result.returncode, expected, result.stderr)
+            report = json.loads(result.stdout)
+            self.assertEqual(report['checked_files'], 1)
+            self.assertEqual(report['skipped_entries'], [])
+            if expected:
+              self.assertEqual(report['findings'][0]['line'], 2)
+            self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
+
+  def test_object_malformed_and_ambiguous_text_is_incomplete(self):
+    cases = [b'\xff\xfe\x00', b'\xfe\xff\x00', b'\xff\xfe\x00\x00x',
+             b'\x00\x00\xfe\xffx', b'\xef\xbb\xbf\xff',
+             b'\xff' + FAKE_KEY.encode(),
+             ('prefix' + FAKE_KEY).encode('utf-16-le'),
+             FAKE_KEY.encode('utf-16-be'), FAKE_KEY.encode('utf-32-le'),
+             b'prefix\x00' + FAKE_KEY.encode(),
+             b'\xff\xfe' + b'\x00\xd8', b'\xff\xfe\x00\x00\x00\x00\x11\x00']
+    for data in cases:
+      with self.subTest(data=data[:8]):
+        root = self.index_fixture()
+        name = 'export-' + FAKE_KEY + '.txt'
+        (root / name).write_bytes(data)
+        self.index_add(root, name)
+        tree = self.index_tree(root)
+        for args in [('--staged',), ('--tree', tree)]:
+          result = self.run_cli(root, *args)
+          self.assertEqual(result.returncode, 2, result.stderr)
+          report = json.loads(result.stdout)
+          self.assertEqual(report['status'], 'incomplete')
+          self.assertEqual(report['checked_files'], 0)
+          self.assertEqual(len(report['skipped_entries']), 1)
+          self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
+
+  def test_object_bom_allowlist_uses_same_view_and_malformed_is_not_cleared(self):
+    root = self.index_fixture()
+    (root / 'scripts').mkdir()
+    (root / 'delivery.txt').write_text(FAKE_KEY, encoding='utf-8')
+    allow = root / module.ALLOW_FILE
+    allow.write_bytes(('delivery.txt\t' + FAKE_KEY + '\n').encode('utf-16'))
+    self.index_add(root, 'delivery.txt', module.ALLOW_FILE)
+    allowed = self.index_tree(root)
+    allow.write_bytes(b'\xff\xfe\x00')
+    self.index_add(root, module.ALLOW_FILE)
+    malformed = self.index_tree(root)
+    for args, expected in [(('--tree', allowed), 0), (('--tree', malformed), 2),
+                           (('--staged',), 2)]:
+      result = self.run_cli(root, *args)
+      self.assertEqual(result.returncode, expected, result.stderr)
+      report = json.loads(result.stdout)
+      if expected:
+        self.assertEqual(report['status'], 'incomplete')
+        self.assertEqual(len(report['findings']), 1)
+        self.assertEqual(report['skipped_entries'][0]['file'], module.ALLOW_FILE)
+      self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
 
   def test_staged_ignores_ambient_git_redirect_and_preserves_path_bytes(self):
     root = self.index_fixture()
@@ -374,7 +443,7 @@ class PublicScanTests(unittest.TestCase):
         tree = self.index_tree(root)
         for args in [('--staged',), ('--tree', tree)]:
           result = self.run_cli(root, *args)
-          self.assertEqual(result.returncode, 1 if data == FAKE_KEY.encode() else 2)
+          self.assertEqual(result.returncode, 1 if data in (FAKE_KEY.encode(), FAKE_KEY.encode('utf-16')) else 2)
           self.assertNotIn(FAKE_KEY, result.stdout + result.stderr)
           report = json.loads(result.stdout)
           records = report['findings'] or report['skipped_entries']

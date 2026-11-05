@@ -3,7 +3,8 @@
 
 Default: scan tracked working-tree files and symlink text, never targets.
 Explicit --staged/--tree scan fixed local Git blobs and the same-view allowlist.
-Those modes return 2 for skipped entries; they are not complete binary scanners.
+Those modes decode UTF-8 or BOM-marked UTF-16/32 strictly, rejecting NUL.
+They return 2 for skipped entries; they are not complete binary scanners.
 --commits adds identity checks only, not history content scanning.
 High-precision patterns only: credentials, private keys, personal home and cloud
 instance paths, and non-placeholder email addresses. A pass does not replace
@@ -169,6 +170,23 @@ def scan_tree(root, ref):
   return tree, scan_objects(root, entries)
 
 
+def decode_object_text(data):
+  """Strict text decoding, never guess legacy or BOM-less wide encodings."""
+  # UTF-32 LE shares UTF-16 LE's prefix, so check the longer BOM first.
+  if data.startswith((b"\xff\xfe\x00\x00", b"\x00\x00\xfe\xff")):
+    encoding = "utf-32"
+  elif data.startswith((b"\xff\xfe", b"\xfe\xff")):
+    encoding = "utf-16"
+  else:
+    encoding = "utf-8-sig"
+  text = data.decode(encoding, errors="strict")
+  if "\x00" in text:
+    # NUL-interleaved ASCII can decode as UTF-8 while hiding a wide-text key.
+    # Binary or ambiguous text is incomplete, not cleared by a missing match.
+    raise ValueError("decoded_text_contains_nul")
+  return text
+
+
 def scan_objects(root, entries):
   texts, skipped = {}, []
   for name, mode, oid in entries:
@@ -177,9 +195,11 @@ def scan_objects(root, entries):
       continue
     data = index_git(root, "cat-file", "blob", oid)
     try:
-      texts[name] = (mode, data.decode("utf-8"))
+      texts[name] = (mode, decode_object_text(data))
     except UnicodeError:
-      skipped.append({"file": name, "reason": "not_utf8_text"})
+      skipped.append({"file": name, "reason": "unsupported_or_malformed_text"})
+    except ValueError:
+      skipped.append({"file": name, "reason": "decoded_text_contains_nul"})
   allow = set()
   entry = texts.get(ALLOW_FILE)
   if entry and entry[0] in (b"100644", b"100755"):
@@ -325,7 +345,7 @@ def main():
       report["tree"] = tree
     if identity_details:
       report["identity_check"] = identity_details
-    report["limits"].append("UTF-8 text only; skipped entries are not cleared; worktree, other trees and later index changes not checked")
+    report["limits"].append("UTF-8 or BOM-marked UTF-16/32 text only, NUL rejected; skipped entries are not cleared; worktree, other trees and later index changes not checked")
   print(json.dumps(report, ensure_ascii=True, indent=2))
   return 2 if skipped else bool(findings)
 
