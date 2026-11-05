@@ -1,6 +1,10 @@
 import copy
 import importlib.util
 import json
+import os
+import io
+from contextlib import redirect_stdout
+from unittest.mock import patch
 from pathlib import Path
 import subprocess
 import sys
@@ -129,6 +133,50 @@ class SnapshotTests(unittest.TestCase):
       with self.subTest(data=data), self.assertRaises(ValueError): module.inspect(data)
     data=sample();data['waits']=[{'start':'2026-10-28T08:01:00Z','end':'2026-10-28T08:02:00Z','ref':'future'}]
     with self.assertRaises(ValueError):module.inspect(data)
+
+  def test_cli_json_roundtrips_unicode_under_output_encodings(self):
+    name = '任务📦'
+    valid = sample(); valid['units'] = [unit(id=name)]
+    review = sample(); review['units'] = [unit(id=name, state='running')]
+    with tempfile.TemporaryDirectory() as folder:
+      path = Path(folder) / '快照📦.json'
+      for encoding in ['ascii', 'gbk', 'utf-8']:
+        for data, expected_code, expected_status in [
+            (valid, 0, 'no_inconsistency_found'),
+            (review, 1, 'needs_review'),
+            (None, 2, 'invalid_input')]:
+          with self.subTest(encoding=encoding, status=expected_status):
+            if data is None:
+              if path.exists(): path.unlink()
+            else:
+              path.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+            result = subprocess.run(
+              [sys.executable, str(ROOT / 'scripts/check_execution_snapshot.py'), str(path)],
+              env={**os.environ, 'PYTHONIOENCODING': encoding + ':strict'},
+              capture_output=True)
+            self.assertEqual(result.returncode, expected_code, result.stderr)
+            self.assertEqual(result.stderr, b'')
+            self.assertTrue(result.stdout.isascii())
+            parsed = json.loads(result.stdout)
+            self.assertEqual(parsed['status'], expected_status)
+            if expected_code == 0:
+              self.assertEqual(parsed['declared_ready_units'], [name])
+            elif expected_code == 1:
+              self.assertEqual(parsed['findings'][0]['unit'], name)
+              self.assertEqual(parsed['execution_evidence_status'], 'unknown')
+            else:
+              self.assertIn(path.name, parsed['error'])
+
+  def test_main_preserves_text_only_stdout(self):
+    with tempfile.TemporaryDirectory() as folder:
+      path = Path(folder) / 'snapshot.json'
+      data = sample(); data['units'] = [unit(id='任务📦')]
+      path.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+      output = io.StringIO()
+      with patch.object(sys, 'argv', ['check_execution_snapshot.py', str(path)]), redirect_stdout(output):
+        self.assertEqual(module.main(), 0)
+      self.assertTrue(output.getvalue().isascii())
+      self.assertEqual(json.loads(output.getvalue())['declared_ready_units'], ['任务📦'])
 
   def test_cli_does_not_create_outputs_or_execute_actions(self):
     with tempfile.TemporaryDirectory() as folder:

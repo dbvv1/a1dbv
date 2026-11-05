@@ -162,9 +162,9 @@ def main():
   try:
     result = inspect(json.loads(args.snapshot.read_text(encoding='utf-8'), object_pairs_hook=no_duplicate_keys, parse_constant=reject_constant))
   except (OSError, ValueError, TypeError, AttributeError) as exc:
-    print(json.dumps({'status': 'invalid_input', 'error': str(exc)}, ensure_ascii=False))
+    print(json.dumps({'status': 'invalid_input', 'error': str(exc)}, ensure_ascii=True))
     return 2
-  print(json.dumps(result, ensure_ascii=False, indent=2))
+  print(json.dumps(result, ensure_ascii=True, indent=2))
   return 1 if result['findings'] else 0
 
 
