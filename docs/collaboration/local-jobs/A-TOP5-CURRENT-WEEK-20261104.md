@@ -1,7 +1,7 @@
 # A-TOP5-CURRENT-WEEK-20261104 · 更新本周五项试用入口
 id: A-TOP5-CURRENT-WEEK-20261104
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: ac55b5473fcc6e387efa435ad02a56228deaa093
@@ -33,10 +33,16 @@ result_branch: relay/a-top5-current-week-20261104
 运行python3 scripts/check_repo.py、python3 scripts/check_public.py及git diff --check；检查正文写域、来源支持、链接、公开提交身份。纯文档不跑全套实验或check_offline。
 一个60–90分钟单元，最多两小时；沿原接收端共享调度，不另起调用。经Workflow非作者审查与修正，仅推result_branch回review_ready，负责人判断最终推荐后接收；不用accept:auto，不合main。
 
-## 当前结果
+## 原回传结果（历史，后续接收见下）
 
 - 完成 docs/13-frontier-radar.md 首屏本周 Top 5 更新：标题改为稳定标题并保留 #本周-top-5 锚点，导语与依据行写明本周选择窗口 2026-11-02～11-08，五项补历史试用日期 10-23～26，并按原记录复核 jrnl 22 项定向通过/4 项基线失败、Maka 82 项受影响测试/4 个 Chrome play、Intent 0.5.6 的 8 项测试+构建+真实 Chrome、ast-grep 0.51.0 的 27 例、Context7 两次匿名查询的 Pydantic v1/v2；对照 ECC search-first 与 diff-cover 后保留五项不换榜，依据行分开编辑对照日 2026-11-04 与原来源回核日 2026-10-26 并注明未重核外部来源。实测 check_repo.py 0 错误（770 文件）、check_public.py 0 命中（1240 文件）、git diff --check 通过，自写校验确认首屏 9 条相对链接及锚点（含 #本周-top-5、#ecc-search-first、#条件推荐）均命中。三视角审查通过、0 个未关闭问题（openIssues=[]），未提交未推送。
 - 产物：[a2793db](https://github.com/dbvv1/a1dbv/commit/a2793db01b0037eec02ba68b906b2eb6e6bb00fa)，分支 `relay/a-top5-current-week-20261104`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：无待修缺口；接收端可提交本单元改动。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 当前结果
+
+- **已接收并合入 main**：采用已审修订 [85d95736](https://github.com/dbvv1/a1dbv/commit/85d95736)，实际合入 [c485ecb4](https://github.com/dbvv1/a1dbv/commit/c485ecb42e5b1d96670db17757136d5e9a7eddd6)。2026-11-05 逐字核对 main 的 13 页 blob 与采用版本一致。
+- 接收范围仅首屏当前周选择与证据日期、范围说明；保留五项及不换榜理由，未把历史试用改成新试用，未重核外部来源、重开旧任务或提升地图评级。非作者核读首屏路线、固定记录及链接后通过。
+- 采用版本的检查与公开扫描已通过；本轮仅改回执，check_repo、公开扫描与空白检查通过，未重复外部研究或历史实验。按负责人接收合同标 accepted，当前周窗口仍为 2026-11-02～11-08；下周选择需按届时证据另判，不自动延用本周日期。

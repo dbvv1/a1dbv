@@ -1,7 +1,7 @@
 # A-GIT-DELIVERY-CLI-READER-20261104 · 用失败检查修复交付清单输出
 id: A-GIT-DELIVERY-CLI-READER-20261104
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a5f003360aa8491de9038e54e0f5478f357e3d60
@@ -37,10 +37,17 @@ page: docs/decisions/planning-and-tests.md@a5f003360aa8491de9038e54e0f5478f357e3
 reader记录附入页SHA／指纹、采用步骤、首遍路线、实际命令／退出码／结果与必要页外帮助；分别记页面卡点、环境限制、读者误解，无卡点写无。保留首轮失败，不用返工抹成一次成功，不升级地图或声称模型／方法收益已证。
 单元约60–90分钟、最多两小时；达到目标并交回证据即结束，不扩查其他脚本。缺依赖、固定页输入、写者退出证据或所需权限时标blocked并给具体恢复条件；原调用／工具／登记进程结果未知时先核原调用，不启动替代reader或重复任务。只清理本轮明确归属临时资源，不清他人目录或终止未知进程。
 
-## 当前结果
+## 原回传结果（历史，后续接收见下）
 
 - reader-test 一轮结束：实测复现 gbk/ascii 下 exit 1、stdout 空、UnicodeEncodeError；将 scripts/prepare_git_delivery.py 的 JSON 输出改为 ensure_ascii=True 后同输入 utf-8/gbk/ascii 全部 rc 0 且可解析，entries 的 path/tree/blob SHA/mode/size 与 changes 同 native git ls-tree 独立枚举一致；新增 3 个 CLI 级回归并确认先红后绿，模块 15 例中 12 过、3 例为本机既有 fixture 限制（symlink、chmod mode、非 UTF-8 文件名）。taskDone=true，pageStuck=[]；check_repo、check_public、git diff --check 均 exit 0，check_offline 因缺 POSIX /bin/bash 与 jq 未运行。openIssues：记录中提交身份来源误写为仓库本地（实为全局 ~/.gitconfig）；Unicode 诊断测试未断言原错误原因仍在；native_entries 与生产实现共用 ls-tree 解析方式、独立性有限；Unicode 用例用 by_path 汇合未断言条目数与重复路径。
 - 产物：[9a5ba4b](https://github.com/dbvv1/a1dbv/commit/9a5ba4bca22220171bb6b48b6efc3bd6870ddad6)，分支 `relay/a-git-delivery-cli-reader-20261104`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；非读者核对有未解决项或未完成，交负责人接收。
 - 下一步：负责人接收本轮 reader-test 并决定是否提交；如需继续增强，处理 4 个未关闭点（测试断言强度与记录表述），按规则不自动重读。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
+## 当前结果
+
+- **已接收并合入 main**：采用已审修订 [2b9cd3c](https://github.com/dbvv1/a1dbv/commit/2b9cd3c)，实际合入 [c485ecb4](https://github.com/dbvv1/a1dbv/commit/c485ecb42e5b1d96670db17757136d5e9a7eddd6)。2026-11-05 逐字核对 main 的实现、测试及 reader 记录三份 blob，均与采用版本一致。
+- 四项回传欠项已在负责人接收中处理：更正身份来源且不保留个人配置值；失败诊断核原错误；期望条目改用显式夹具及独立 Git 对象查询；核总数、唯一键和完整对象身份。另锁定三种编码的 ASCII 输出契约，详情见 [reader 记录](../../../reader-tests/A-GIT-DELIVERY-CLI-READER-20261104-u1.md#负责人固定成果接收2026-11-04)。
+- 非读者复核通过，新增回归在旧实现上确因目标行为失败；已审候选模块 16/16、合入树完整 offline 20/20 与公开／提交扫描通过。2026-11-05 本轮另跑模块 16/16、check_repo、公开扫描与空白检查通过。原 Windows 三项 fixture 限制与首轮失败不被 POSIX 通过覆盖。
+- 按负责人接收合同标 accepted；接受的是该次实际修复与记录，不改页面／地图评级，不声称模型收益或整条方法已验证。未重派原读者，旧调用／登记范围外写者状态仍独立核实。
