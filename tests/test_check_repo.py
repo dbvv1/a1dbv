@@ -26,6 +26,32 @@ class RepoCheckTests(unittest.TestCase):
   def test_existing_and_external_links(self):
     self.assertEqual([], self.run_fixture({"README.md": "[a](docs/a.md#missing-anchor) [web](https://example.com/x)\n", "docs/a.md": "ok"})["errors"])
 
+  def test_installed_dependency_directories_are_not_repository_documents(self):
+    result = self.run_fixture({
+      "README.md": "[guide](docs/guide.md)",
+      "docs/guide.md": "ok",
+      "node_modules/dependency/README.md": "[unshipped](docs/missing.md)",
+      "experiments/app/node_modules/dependency/package.json": "{",
+      "experiments/app/node_modules/dependency/config.toml": "x = [",
+      "experiments/app/package.json": "{}",
+      "experiments/app/package-lock.json": "{}",
+    })
+    self.assertEqual(4, result["checked_files"])
+    self.assertEqual([], result["errors"])
+
+  def test_dependency_exclusion_keeps_project_inputs_and_similar_names(self):
+    files = {
+      "experiments/app/package.json": "{",
+      "experiments/app/package-lock.json": "{",
+      "docs/node_modules.md": "[missing](missing.md)",
+      "node_modules-guide/config.toml": "x = [",
+    }
+    result = self.run_fixture(files)
+    self.assertEqual(4, result["checked_files"])
+    self.assertEqual(4, len(result["errors"]))
+    for name in files:
+      self.assertTrue(any(error.startswith(name + ":") for error in result["errors"]))
+
   def test_missing_and_escape(self):
     result = self.run_fixture({"a.md": "[a](missing.md) [b](../outside.md)"})
     self.assertEqual(2, len(result["errors"]))

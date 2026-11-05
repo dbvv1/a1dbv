@@ -41,7 +41,9 @@ def check(root):
   count = 0
   for path in sorted(root.rglob("*")):
     relative = path.relative_to(root)
-    if any(part in {".git", "__pycache__", ".cache", ".venv"} for part in relative.parts):
+    # Installed packages are not authored repository docs/configs. Keep checking
+    # project manifests and lockfiles outside these dependency directories.
+    if any(part in {".git", "__pycache__", ".cache", ".venv", "node_modules"} for part in relative.parts):
       continue
     if not path.is_file() or path.is_symlink():
       continue
