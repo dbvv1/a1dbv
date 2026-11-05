@@ -49,7 +49,9 @@ Ruff 的 AGENTS 已把生态差异调查路由到对应 Skill，明确从真实�
 
 **稳定分数可能换了测量对象。** CPU simulation 的总分不含系统调用耗时，不能单独验收 I/O、接口延迟或游戏帧时间；v5 改过周期估计公式，旧结果不可直接比较，应重建基线。真实 pixtuoid #1843 为处理内存波动给 memory 场景绑单核，`available_parallelism()` 随之为 1、映射改走 inline，simulation 仍多线程。此为源码／配置支持的机制判断；该 PR 同时改工具链等多项设置，不能据此断言波动消失或单因归因，更不能证明生产并行路径变快。其内存工作流还关闭物理 RSS 跟踪，不把报告等同实际驻留内存。
 
-**试用范围：未试用。** 当前没有具体慢场景，未制造合成性能数字，也未跑模型、计量引擎或真实优化对照。游戏开发者原帖与回复支持“具体场景＋引擎 profiler”这一需求，其自报加速缺可复跑产物，不作本方法效果证据。只作为下一次真实性能任务的候选，不新增模板或默认门禁，当前最佳未知。
+**本仓已在真实固定树扫描中采用“先定位、再按原指标验收”。** [批量读取补丁](https://github.com/dbvv1/a1dbv/commit/0ea64fc93d85326fbafe33e32a8a19663d156ab4)先用 Python cProfile 定位逐对象 Git 子进程开销，再改为有数量和字节预算的批量读取。同一固定 `d247a234` 树、Linux 环境下交替跑旧／新实现各三次，walltime 中位数从 4.074 秒降至 1.585 秒，Git 调用从 1,446 次降至 31 次；六次 JSON 输出逐字相同。观测最大 RSS 从 44,248–44,436 KiB 变为 45,288–45,396 KiB，不能把提速说成更省内存。56 项回归与两位非作者检查通过，补丁已入 main；扫描仍有 43 个跳过项、退出 2，不是全树清关。
+
+这是原生 profiler 与 walltime 的本地实做，不是 CodSpeed 产品试用或模型收益对照，不外推其他负载。游戏开发者原帖与回复支持“具体场景＋引擎 profiler”这一需求，其自报加速缺可复跑产物，不作效果证据。当前最佳未知，不新增模板或默认门禁。实做与接收：2026-11-05。
 
 **依据**：[一手：官方优化 Skill](https://github.com/CodSpeedHQ/codspeed/blob/229413f0ff5e8c4dfbac6b397ed89971d064dc9f/skills/codspeed-optimize/SKILL.md)、[CPU 指标与语言支持](https://codspeed.io/docs/instruments/cpu)、[2026-08-03 v5 计量变更](https://codspeed.io/changelog)；[真实配置：SWC](https://github.com/swc-project/swc/blob/c5ad386b65b9607a53c4626244c66d10bccbccaa/.agents/skills/codspeed-optimize/SKILL.md)、[pixtuoid 原 PR](https://github.com/pixtuoid/pixtuoid/pull/1843)及[固定工作流](https://github.com/pixtuoid/pixtuoid/blob/70b393be9192489a909952a7fcac3511b6cc36b5/.github/workflows/codspeed.yml)；[社区原帖与回复](https://www.reddit.com/r/aigamedev/comments/1vi9fwz/tips_on_getting_your_agent_to_make_your_game/)。定向核实：2026-11-04 UTC；未完成领域广扫。
 
