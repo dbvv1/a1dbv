@@ -1,0 +1,116 @@
+diff --git a/pytest_receptor/model.py b/pytest_receptor/model.py
+index 2eb9797..3d8e182 100644
+--- a/pytest_receptor/model.py
++++ b/pytest_receptor/model.py
+@@ -83,0 +84 @@ class SessionEvidence:
++    collection_errors: set[str] = field(default_factory=set)
+@@ -112,0 +114,6 @@ class SessionEvidence:
++        # Collection failures are diagnostics, not executed test items. Keep
++        # their phase evidence while excluding them from logical outcomes.
++        if event.phase in ("collect", "collection"):
++            if event.outcome == "failed":
++                self.collection_errors.add(nodeid)
++            return
+@@ -169,0 +177,4 @@ class SessionEvidence:
++    @property
++    def error_count(self) -> int:
++        return len(self.errors) + len(self.collection_errors)
++
+diff --git a/pytest_receptor/plugin.py b/pytest_receptor/plugin.py
+index 0b73d52..2428926 100644
+--- a/pytest_receptor/plugin.py
++++ b/pytest_receptor/plugin.py
+@@ -1030 +1030 @@ class ReceptorPlugin:
+-                "errors": len(self._evidence.errors),
++                "errors": self._evidence.error_count,
+@@ -1360,2 +1360,2 @@ class ReceptorPlugin:
+-        if self._evidence.errors:
+-            counts["errors"] = len(self._evidence.errors)
++        if self._evidence.error_count:
++            counts["errors"] = self._evidence.error_count
+diff --git a/tests/test_collection_counts.py b/tests/test_collection_counts.py
+new file mode 100644
+index 0000000..6693135
+--- /dev/null
++++ b/tests/test_collection_counts.py
+@@ -0,0 +1,60 @@
++"""Issue #46: compact counts must preserve actual pytest execution phases."""
++
++import json
++
++import pytest
++
++from pytest_receptor import read_artifact
++
++
++@pytest.mark.parametrize("profile", ["llm", "ci"])
++@pytest.mark.parametrize(
++    "bad_source",
++    ["def test_bad(:\n    pass\n", "import missing_receptor_issue_46_module\n"],
++)
++@pytest.mark.parametrize("partial", [False, True])
++@pytest.mark.parametrize(
++    "stop_args", [[], ["-x"], ["--maxfail=1"], ["--continue-on-collection-errors"]]
++)
++def test_collection_counts_match_native_events(
++    pytester, profile, bad_source, partial, stop_args
++):
++    pytester.makepyfile(test_z_bad=bad_source)
++    if partial:
++        pytester.makepyfile(test_a_good="def test_ok(): pass\n")
++    pytester.makeconftest("""
++import json
++from pathlib import Path
++started = set()
++def pytest_runtest_logstart(nodeid, location):
++    started.add(nodeid)
++def pytest_sessionfinish(session, exitstatus):
++    Path('observed.json').write_text(json.dumps({
++        'started': sorted(started), 'collected': session.testscollected,
++        'exitstatus': int(exitstatus),
++    }))
++""")
++    native = pytester.runpytest_subprocess("--receptor=human", *stop_args)
++    observed_native = json.loads((pytester.path / "observed.json").read_text())
++    result = pytester.runpytest_subprocess(
++        f"--receptor={profile}", "--receptor-events=events.jsonl", *stop_args
++    )
++    observed = json.loads((pytester.path / "observed.json").read_text())
++    assert result.ret == native.ret
++    assert observed == observed_native
++    artifact = read_artifact(pytester.path / "events.jsonl")
++    assert artifact.complete and artifact.integrity_valid
++    counts = artifact.final.data["counts"]
++    assert counts["failed"] == 0
++    assert counts["errors"] == 1
++    assert counts["executed"] == len(observed["started"])
++    assert counts["collected"] == observed["collected"]
++    assert counts["not_executed"] == observed["collected"] - len(observed["started"])
++    assert counts["passed"] == len(observed["started"])
++    assert counts["executed"] <= counts["collected"]
++    assert any(
++        record.type == "phase" and record.data["phase"] == "collect"
++        for record in artifact.events
++    )
++    result.stdout.fnmatch_lines([f"*exit={int(native.ret)} | 1 errors*"])
++    assert "1 failed" not in result.stdout.lines[0]
+diff --git a/tests/test_model.py b/tests/test_model.py
+index 10b6a1b..cd080ee 100644
+--- a/tests/test_model.py
++++ b/tests/test_model.py
+@@ -117,0 +118,15 @@ def test_structured_exception_identity_survives_pytest_xdist_round_trip():
++
++
++def test_collection_errors_do_not_become_executed_test_outcomes():
++    model = SessionEvidence(collected=1)
++    for phase, nodeid in [("collect", "test_bad.py"), ("collection", "fallback.py")]:
++        _phase(model, nodeid, phase, "failed")
++    assert model.outcomes == {}
++    assert model.executed == 0
++    assert model.errors == set()
++    assert model.collection_errors == {"test_bad.py", "fallback.py"}
++    assert model.error_count == 2
++    assert len(model.phases) == 2
++    _phase(model, "test_good.py::test_ok", "call", "passed")
++    assert model.executed == 1
++    assert model.error_count == 2
