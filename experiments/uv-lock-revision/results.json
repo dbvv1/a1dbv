@@ -1,0 +1,69 @@
+{
+  "source_commit": "ec9a6f3b94c0aa856f77e550785a1ddde1993de1",
+  "baseline_lock_sha256": "b92515b2f3f7e94b166ffe61059b0f504c3f50cdfbc631dd345ddb0802595d3c",
+  "downgraded_lock_sha256": "2b9da50f9844f17f4035f80cd59fe72bd365fae262ce3e2b28f055a0702f1642",
+  "recovered_lock_sha256": "b92515b2f3f7e94b166ffe61059b0f504c3f50cdfbc631dd345ddb0802595d3c",
+  "package_identities": 52,
+  "package_identities_unchanged": true,
+  "steps": [
+    {
+      "step": "old-version",
+      "exit": 0
+    },
+    {
+      "step": "new-version",
+      "exit": 0
+    },
+    {
+      "step": "plain-old-lock",
+      "exit": 0
+    },
+    {
+      "step": "old-relock",
+      "exit": 0
+    },
+    {
+      "step": "normal-frozen-with-manifest",
+      "exit": 0
+    },
+    {
+      "step": "lock-only-good",
+      "exit": 0
+    },
+    {
+      "step": "lock-only-downgraded",
+      "exit": 2,
+      "diagnostic_matched": true
+    },
+    {
+      "step": "modern-plain-lock",
+      "exit": 0
+    },
+    {
+      "step": "guard-old-relock",
+      "exit": 2,
+      "diagnostic_matched": true
+    },
+    {
+      "step": "modern-relock",
+      "exit": 0
+    },
+    {
+      "step": "lock-only-recovered",
+      "exit": 0
+    },
+    {
+      "step": "recovered-full-sync",
+      "exit": 0
+    },
+    {
+      "step": "real-specify-init",
+      "exit": 0
+    }
+  ],
+  "limits": [
+    "Linux CLI only; no Docker, Windows or macOS runtime",
+    "No model invocation or second unread native reader",
+    "Project version constraint is absent from lock-only staging directories"
+  ]
+}
