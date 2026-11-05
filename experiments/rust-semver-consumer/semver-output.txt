@@ -1,0 +1,36 @@
+    Building lr-bgp v1.2.0 (current)
+       Built [   4.854s] (current)
+     Parsing lr-bgp v1.2.0 (current)
+      Parsed [   0.026s] (current)
+    Building lr-bgp v1.2.0 (baseline)
+       Built [   4.447s] (baseline)
+     Parsing lr-bgp v1.2.0 (baseline)
+      Parsed [   0.020s] (baseline)
+    Checking lr-bgp v1.2.0 -> v1.2.0 (no change; assume patch)
+     Checked [   0.070s] 229 checks: 227 pass, 1 fail, 1 warn, 31 skip
+
+--- failure enum_variant_added: enum variant added on exhaustive enum ---
+
+Description:
+A publicly-visible enum without #[non_exhaustive] has a new variant.
+        ref: https://doc.rust-lang.org/cargo/reference/semver.html#enum-variant-new
+       impl: https://github.com/obi1kenobi/cargo-semver-checks/tree/v0.51.0/src/lints/enum_variant_added.ron
+
+Failed in:
+  variant AttrType:BgpLsAttribute in <changed-source>/crates/lr-bgp/src/path/mod.rs:114
+
+--- warning partial_ord_enum_variants_reordered: enum variants reordered in #[derive(PartialOrd)] enum ---
+
+Description:
+A public enum that derives PartialOrd had its variants reordered. #[derive(PartialOrd)] uses the enum variant order to set the enum's ordering behavior, so this change may break downstream code that relies on the previous order.
+        ref: https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html#derivable
+       impl: https://github.com/obi1kenobi/cargo-semver-checks/tree/v0.51.0/src/lints/partial_ord_enum_variants_reordered.ron
+
+Failed in:
+  AttrType::LrMplsLabelStack moved from position 21 to 22, in <changed-source>/crates/lr-bgp/src/path/mod.rs:127
+  AttrType::LrExchangePlaneRecords moved from position 22 to 23, in <changed-source>/crates/lr-bgp/src/path/mod.rs:139
+  AttrType::Other moved from position 23 to 24, in <changed-source>/crates/lr-bgp/src/path/mod.rs:143
+
+     Summary semver requires new major version: 1 major and 0 minor checks failed
+     Warning produced 1 major and 0 minor level warnings
+    Finished [  23.433s] lr-bgp

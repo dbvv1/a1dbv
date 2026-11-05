@@ -1,0 +1,7 @@
+[package]
+name = "attr-ordering-consumer"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+lr-bgp = { path = "../changed-source/crates/lr-bgp", features = ["exchange-plane", "long_lived"] }

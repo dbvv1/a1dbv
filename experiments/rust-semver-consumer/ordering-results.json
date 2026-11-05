@@ -1,0 +1,12 @@
+{
+  "baseline-ordering": {
+    "exit": 0,
+    "lines": 77284,
+    "sha256": "80a90e3ed931fc6a1394bd291cc9588aea336924b0e983a20323d5b0622930a1"
+  },
+  "changed-ordering": {
+    "exit": 0,
+    "lines": 77284,
+    "sha256": "80a90e3ed931fc6a1394bd291cc9588aea336924b0e983a20323d5b0622930a1"
+  }
+}

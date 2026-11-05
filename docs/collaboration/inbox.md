@@ -4,6 +4,11 @@
 
 ## 待处理
 
+### 2026-11-05：Rust API 变更，用下游编译核 lint，不把 warning 当破坏
+
+🧪 **让 Agent 修改发布库的公开 API 时，先跑 cargo-semver-checks 定位，再用同一消费者对照旧版与新版。** [librouting 固定历史实试与复跑材料](../../experiments/rust-semver-consumer/README.md)：0.51.0 报 1 fail、1 warn；23 分支消费者旧版编译退出 0、新版退出 101（E0004），确认新增枚举分支破坏穷尽匹配。但 PartialOrd 的位置警告没有证明旧值排序改变：全部 278 个旧值的 77,284 个有序对两版输出一致，显式 discriminant 不能按源码位置推断。仅测一个 crate 与固定版本，31 条检查跳过，未验完整工作区、所有 feature 组合或运行时；不升默认。已有来源条目的过强排序结论已纠正，原合成类型变更设想未执行。✅ 实试回流。
+
+
 ### 2026-11-05：改包导出与发布内容，验真正 tarball 的消费者
 
 👀 **让 Agent 修改 npm 包的 `exports`、`types`、`files`、构建或 launcher 时，按实际发布产物接收，不只验工作区。** 先检查项目正式构建与打包脚本；若构建已接入 prepack，由 `npm pack --pack-destination <绝对临时目录>` 触发，否则先运行项目要求的 build 再 pack，避免重复执行 prepack；在仓库外新 consumer 中用 `npm install <返回的 tgz 绝对路径> --no-audit --no-fund` 安装，运行承诺的 CLI、import 或 types 消费。依赖与生命周期脚本沿项目已批准策略，不以 workspace 链接或 `npm link` 代替；声明修复不能用 `skipLibCheck` 掩盖。普通内部逻辑改动继续相关测试，无需统一增加打包门禁。
