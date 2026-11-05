@@ -21,6 +21,12 @@
 
 > 只用 Codex 可先采用 `AGENTS.md`，再按需读 [Codex 适配说明](codex/README.md)。Skill 核心格式可移植，不代表 `.claude/skills` 发现路径、扩展字段、工具名和权限行为都相同；Hooks 和 settings 也需按运行时验证。
 
+## 复制后先核包内引用
+
+不要只在本知识库中检查链接。将下述三文件最小包或单个 Codex Skill 复制到目标项目后，确认所需本地引用仍随包存在；指向知识库内部的相对路径在原仓可通过，移走后却可能失效。已有配置仍逐项合并，不为检查覆盖目标文件。
+
+本仓回归实际复制到空的临时项目，再从该项目调用现有链接检查器：三文件最小包、两个 Codex Skill 的单独复制通过；移除最小包中的 Skill 或注入仓内相对引用均被拒绝。重跑：`python3 -m unittest discover -s tests -p test_template_portability.py -v`。2026-11-04，云端 POSIX／Python 3.12.14，4 项测试通过。[回归实现](../tests/test_template_portability.py)只查本地 Markdown 链接路径；不验证外链、锚点、任意文字路径、客户端发现／实际加载或模型效果。部署到真实项目后仍按上方第 4 步验目标客户端行为。
+
 ## 核心决策最小包
 
 已有工作流只缺决策建议时，不用复制整个 `generic/`。最小完整包是以下三个文件，无脚本、Hook、MCP 或模型配置依赖：

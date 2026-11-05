@@ -4,6 +4,98 @@
 
 ## 待处理
 
+### 2026-11-05：改包导出与发布内容，验真正 tarball 的消费者
+
+👀 **让 Agent 修改 npm 包的 `exports`、`types`、`files`、构建或 launcher 时，按实际发布产物接收，不只验工作区。** 先检查项目正式构建与打包脚本；若构建已接入 prepack，由 `npm pack --pack-destination <绝对临时目录>` 触发，否则先运行项目要求的 build 再 pack，避免重复执行 prepack；在仓库外新 consumer 中用 `npm install <返回的 tgz 绝对路径> --no-audit --no-fund` 安装，运行承诺的 CLI、import 或 types 消费。依赖与生命周期脚本沿项目已批准策略，不以 workspace 链接或 `npm link` 代替；声明修复不能用 `skipLibCheck` 掩盖。普通内部逻辑改动继续相关测试，无需统一增加打包门禁。
+
+**已发布版本的报告，先查对应包，不用 main 构建结果代答。** 本轮 `npm pack miniflare@5.20260903.0-alpha --ignore-scripts --json` 取回官方历史包：186 个条目中，`dist/src/index.d.ts` 第 25 行导入 `./shared`，但没有 `dist/src/shared` 前缀文件。包 SHA256 为 `a806aa9dd11a8377f050aba82a2771ad487f9b6ae213e8a6435cc33f80d50008`。随后在仓库外临时消费者安装同版发布包与 TypeScript 6.0.3，以 `typeof import("miniflare")`、`skipLibCheck:false` 和 `noEmit:true` 执行 `node node_modules/typescript/bin/tsc --pretty false`：安装退出 0，编译退出 2，复现第 25 行找不到 `./shared` 的 TS2307；另 34 条诊断完整保留，未归因。安装声明与该 tgz 逐字节相同，锁文件 integrity 一致；非作者复跑通过。仅验证固定历史包的声明消费，未验最新版、Miniflare 运行时或模型收益。本次下载与声明消费者安装使用 `--ignore-scripts`，未验需要生命周期脚本的运行时；本地打包若依赖 prepack，跳过它会改变验收内容。
+
+**先核脚本测了什么。** QMD 固定 `package-smoke` 构建并运行工作区 dist／wrapper，没有打包安装；这不代表其整套 CI 没有其他检查。pi-quiver 的实际测试则 pack→临时安装→运行已安装 bin，并验版本与文档转换；本仓未运行这两套测试。`--dry-run` 清单与 help 成功都不等于完整消费者验证。候选只补已有测试／交付入口；**第二位未读材料的本机读者按此操作仍待验证，不升默认、不改答案页。**
+
+**依据**：[npm pack 官方契约](https://docs.npmjs.com/cli/v11/commands/npm-pack/)、[生命周期文档](https://docs.npmjs.com/cli/v11/using-npm/scripts/)；[Cloudflare 用户报告与源码构建／发布包复核分歧 #15377](https://github.com/cloudflare/workers-sdk/issues/15377)；[QMD 固定脚本](https://github.com/tobi/qmd/blob/86d2365d17fc682e491c2c53d1e4a884aee8682a/scripts/package-smoke.mjs)、[pi-quiver 固定产物消费测试](https://github.com/jjuraszek/pi-quiver/blob/ec46ad942df2010cf887270a980446b0a513fda3/test/packed-install.test.ts)。核实、固定发布物静态检查与真实 TypeScript 消费复现：2026-11-05。
+
+### 2026-11-05：偶发失败回原环境验收，别提前取消复现
+
+👀 **本地没复现的偶发失败，不凭本地绿灯验收修补；先保住仍在采集的远端失败证据，再回已复现环境验证。** 可交办：`核版本、平台、目标测试 ID 和失败特征，确认目标测试确实运行完成。记录完成次数与同类失败次数；未复现的修补标为推测。若后续提交或运行会取消尚需的复现任务，先等证据收集完成。` 本地能复现就优先本地迭代；没有取消机制或已有足够证据，不增加等待所有 CI 的门禁。
+
+Chrome DevTools 已落库的 `fix-tests` Skill 按上述环境选择复验，并要求本地未复现时等 stressor 完成再上传，以免提前取消。测试文档提供真实 bot 入口，但重复运行依赖该项目的测试包装，构建模式和平台也须匹配；不照搬双 Agent、三平台、固定分钟数或运行次数。有限次未失败不保证以后不再失败。
+
+**未试用，不升默认。** 本仓当前 workflow 只有 `workflow_dispatch`，同 ref 并发组设有 `cancel-in-progress: true`；普通 push 不会触发这个 workflow，同 ref 再次手动 dispatch 才需注意取消关系。当前没有匹配的远端偶发任务，未运行上游工具、bot 或 hosted CI，不改本仓工作流；落库指导不等于已证明 Agent 收益，当前最佳未知。
+
+**依据**：[一手：DevTools 固定 Skill](https://github.com/ChromeDevTools/devtools-frontend/blob/e1df1f10d345d52b88827564aa71ec3ea8462151/.agents/skills/fix-tests/SKILL.md)、[同版测试文档](https://github.com/ChromeDevTools/devtools-frontend/blob/e1df1f10d345d52b88827564aa71ec3ea8462151/test/README.md)及[扩展至 stressor 的提交](https://chromium.googlesource.com/devtools/devtools-frontend/+/54cb677a3e2e5c905776cefbf165c2a676daa9c2)；[本仓实际配置](../../.github/workflows/repository-checks.yml)。核实：2026-11-05。
+
+### 2026-11-05：缩减真实复现，别换成同报错的另一问题
+
+👀 **让 Agent 处理大型失败输入时，从原样本逐步删减，每步确认仍是原触发原因；回归问题同时重跑固定旧版与新版。** 可直接交办：`保留原件和最近能复现的版本；逐步删除，每步记录目标失败的证据。交付原样本出处、版本与命令、两版实际行为及可读的缩减输入；相同报错文字不能代替同因核对。` 已经短小清楚就直接修；依赖身份、导入路径、并发或平台正是触发条件时，不为自包含而删掉它们，也不要求穷尽所有缩减。
+
+Ruff 的 AGENTS 已把生态差异调查路由到对应 Skill，明确从真实源码约简、每步对照两版，相同诊断或显示类型不代表同因；V8 已落库的 Skill 同样要求保留原件、逐步验证，并选择可读性而非最少行数。**不能照搬 V8 的辅助检测脚本**：它丢弃输出、把任意非零退出计作复现，缺命令也会假阳性，退出 0 的错误输出又会漏检；应按目标诊断、断言或输出判断。有限次重复运行只记命中次数，不照搬“加循环到 100%”的保证。
+
+**未试用，当前最佳未知。** 本轮没有真实待缩减输入，不制造合成案例或新增默认门禁。仓库配置只证明指导已落库；V8 提交作者称多次使用成功，缺逐次独立验证，尚不能量化 Agent 的错因、返工或时间改善。候选去向是已有调试入口，遇到真实大型复现再比较。
+
+**依据**：[一手：Ruff 固定 Skill](https://github.com/astral-sh/ruff/blob/75793d7b70a25ffd95a0089c776180dfdacbff0c/.agents/skills/minimizing-ty-ecosystem-changes/SKILL.md)及[实际路由](https://github.com/astral-sh/ruff/blob/75793d7b70a25ffd95a0089c776180dfdacbff0c/AGENTS.md)；[V8 固定 Skill](https://github.com/v8/v8/blob/e89d4303ebb1706430f6c8d92c989aa7b436b637/agents/skills/minimize-reproducer/SKILL.md)、[辅助脚本](https://github.com/v8/v8/blob/e89d4303ebb1706430f6c8d92c989aa7b436b637/agents/skills/minimize-reproducer/scripts/repro_check.sh)及[作者引入提交](https://chromium.googlesource.com/v8/v8/+/0af8d6c1adcf252ba51be74a222eb50f1a1c9d12)。核实：2026-11-05。
+
+### 2026-11-04：让 Agent 优化真实瓶颈，不追另一个指标
+
+👀 **已有可复现慢场景时，给 Agent 同一输入、正确性要求和目标指标，先读 profile、一次改一个主要热点，再回原场景验收。** 可直接交办：`记录版本、输入、工具链、线程配置与指标；定位热点后提出一项修改，保留正确性与其他受影响场景。计量版本或执行条件变了，先重建可比基线；最终用原先用户关心的指标复核。` 已有 profiler 就借方法，不必迁移服务；没有已确认瓶颈，不启动全仓优化。
+
+**CodSpeed 官方 Skill 的可借部分是优化闭环，不是统一换工具。** 固定源码 `229413f0` 提供 MIT／Apache-2.0 许可文件，要求 benchmark、profile、单项修改和正确性检查，并用 walltime 复核；SWC 确实提交同名 Skill，但文件存在不证明采用收益。该 Skill 要求 CodSpeed 认证、上传和 MCP，本轮未安装或调用。其 Go simulation 示例与当前 CPU 文档仅支持 Go walltime 的说明存在冲突，语言命令须按当前支持矩阵核实，不照抄。
+
+**稳定分数可能换了测量对象。** CPU simulation 的总分不含系统调用耗时，不能单独验收 I/O、接口延迟或游戏帧时间；v5 改过周期估计公式，旧结果不可直接比较，应重建基线。真实 pixtuoid #1843 为处理内存波动给 memory 场景绑单核，`available_parallelism()` 随之为 1、映射改走 inline，simulation 仍多线程。此为源码／配置支持的机制判断；该 PR 同时改工具链等多项设置，不能据此断言波动消失或单因归因，更不能证明生产并行路径变快。其内存工作流还关闭物理 RSS 跟踪，不把报告等同实际驻留内存。
+
+**试用范围：未试用。** 当前没有具体慢场景，未制造合成性能数字，也未跑模型、计量引擎或真实优化对照。游戏开发者原帖与回复支持“具体场景＋引擎 profiler”这一需求，其自报加速缺可复跑产物，不作本方法效果证据。只作为下一次真实性能任务的候选，不新增模板或默认门禁，当前最佳未知。
+
+**依据**：[一手：官方优化 Skill](https://github.com/CodSpeedHQ/codspeed/blob/229413f0ff5e8c4dfbac6b397ed89971d064dc9f/skills/codspeed-optimize/SKILL.md)、[CPU 指标与语言支持](https://codspeed.io/docs/instruments/cpu)、[2026-08-03 v5 计量变更](https://codspeed.io/changelog)；[真实配置：SWC](https://github.com/swc-project/swc/blob/c5ad386b65b9607a53c4626244c66d10bccbccaa/.agents/skills/codspeed-optimize/SKILL.md)、[pixtuoid 原 PR](https://github.com/pixtuoid/pixtuoid/pull/1843)及[固定工作流](https://github.com/pixtuoid/pixtuoid/blob/70b393be9192489a909952a7fcac3511b6cc36b5/.github/workflows/codspeed.yml)；[社区原帖与回复](https://www.reddit.com/r/aigamedev/comments/1vi9fwz/tips_on_getting_your_agent_to_make_your_game/)。定向核实：2026-11-04 UTC；未完成领域广扫。
+
+### 2026-11-04：连续 UI 改版交可运行原型和本轮变化
+
+👀 **已有可运行界面、设计与实现分开维护时，可试把原型、设计规则、角色／状态入口及逐版 changelog 一起交给 Agent。** 指定已确认的原型版本和生产代码基线，列出本轮要改与保留的行为，让 Agent 对应到已有组件、真实路由，再用相同角色、数据和视口核对实现。原型缺失的异常、空、加载状态要先澄清，不能让模型凭截图补意图。若生产组件已能直接评审，沿用该入口；小改动不另建平行原型，精细素材与资产库也不必离开现有设计工具。
+
+**Cisco 的增量是“传本轮变化”，不只是传一张设计图。** 11-02 PubHub 团队复盘：已有端到端 UI，但设计不合要求；HTML 往返 Figma 时丢失部分交互、重建开销大且版本不清，遂直接迭代 HTML，随原型交设计规范、persona 切换与 changelog，再让 Agent 更新实际项目。团队仍保留 Figma 的素材与细节用途。属于内部项目作者自述，不外推为所有 Figma 工作流都慢，也不把可运行原型当生产接线完成。
+
+**指向原型不保证 Agent 真正采用。** Grape Up 10-26 的三个月项目已做浏览器场景检查、截图和人工验收，但从第一周就写入 CLAUDE.md 的原型仓库仍偶有漏用、靠返修补齐；作者计划新增的是**对照原型的视觉检查**，不是已经验证的新机制。本文未提供公开可复跑材料，其耗时数字也明确为估计。本轮未试用：当前没有真实设计改版任务，不为凑验证造新 UI，不增加默认流程。
+
+**依据**：[一手：Cisco 设计交接复盘](https://blogs.cisco.com/cisco-devnet/design-to-code-ai-handoff-workflow)、[独立团队：Grape Up 实践及拟改进项](https://grapeup.com/blog/ai-development-workflow-claude-code)；[实践者与读者反馈：关键状态截图、流程录制及同条件前后对照](https://timdeschryver.dev/blog/let-your-ai-agent-capture-its-changes-with-the-playwright-cli)。最后一项提供评审方式参照，不复制其绕过 CSP／证书校验或身份配置，也不把编辑过等待时间的录像当性能证据。定向核实：2026-11-04 UTC；无同题收益对照，最佳流程未知，未完成领域广扫。
+
+### 2026-11-04：旧规则回放先核任务完成，不自动删提示
+
+👀 **模型或客户端升级后，要清理某条冗余工作提示，可用原失败任务做隔离对照；几次未出错不等于可以删规则。** 固定同一任务、输入与成功验收，只改变待评估提示，并确认两组都完成任务、都经过原失败的触发机会。提前退出、缺少输出和未触发应单列，不能算成功；保留结果供人工判断，不自动删除提示，不借此撤掉安全、权限或保护检查。本仓尚无对应真实回放，现有长期规则不变。
+
+**一手研究给了方法，也给了反例。** 10-23 预印本在一个私人 Markdown 仓库回放五类失败，每条件三次；其中标点场景两组仍有文字禁令，危险命令场景没有走到触发动作，估时场景受宿主日期与旧截止日期干扰而拒绝任务。论文已明确这些限制，不能把“三类未复现”说成三条保护已无用。原仓库及会话不公开，匿名材料需向作者索取；公开 divan 是架构模板，不是原始实验数据。
+
+**本轮只实测公开模板的评分入口，不是模型回放。** 官方 MIT 源码固定 `ada59273`：`judge` 对 exit 124、空答案且被检文件缺失的合成记录返回 `ok`；exit 0 但缺输出也为 `ok`，错误内容阳性对照为 `failed`，明确 focus-guard 且无命令为 `declined`。给 `summary` 两组各 10 条、共 20 条 exit 124 但 verdict=ok 的合成行，它会提出 `RETIRE CANDIDATE`；独立复核仅 10 条 A、没有 B 也可得到该建议。此分支仅针对 kind=rule，lint／hook 保留；建议本身不自动删除文件。**当前汇总不能独立证明任务完成或对照成立**，不直接采用其退役建议，也不以此断言论文原结果错误。没有运行 setup、hooks、完整 runner 或付费模型。
+
+**依据**：[一手：论文方法与有效性限制](https://arxiv.org/html/2610.32578v1)、[作者公开模板评分与汇总](https://github.com/avtak/divan/blob/ada59273da269166eb3854b21db3bf706a76387f/scripts/replay.py)、[模板说明与研究关系](https://github.com/avtak/divan/blob/ada59273da269166eb3854b21db3bf706a76387f/README.md)。定向核实及评分函数合成试验：2026-11-04 UTC；未找到独立使用者的回放效果评价，未完成领域广扫。只补充既有验收方法的研究参照，不新增工具测试系列或通用默认。
+
+### 2026-11-04：用复制边界检查 Agent 绕过模块接口
+
+🧪 **已经明确实现归属、担心 Agent 复制函数绕开接口时，试 jscpd 5.4.2 的 boundaries；不把全仓重复率变成重构目标。** 导入检查看不到没有 import 的副本，这类规则可指定受保护代码、禁止出现的目标层及明确允许的副本。尚不清楚归属时，先看普通重复报告、读命中两侧，再决定是否共享实现。可复制模板、独立夹具与刻意隔离的代码应保留合理重复。
+
+**有界试用起点。** 在隔离环境从官方 PyPI 安装 `jscpd==5.4.2`（MIT），配置的 `boundaries` 项可从 `{"name":"combat","code":["core"],"notIn":["ui/**"],"disable":["semantic"]}` 改起；从配置所在目录运行 `jscpd --config config.json --no-colors .`，覆盖源和目标。只有明确许可的副本才加入 `allow`。禁用 semantic 后本例不需嵌入模型或远程 API，其他结构比较仍可运行；不等于只查完全相同文本。未安装 Skill 或 MCP，不改本仓默认门禁。
+
+**正式包的 7 个合成场景符合预期，包括成功复现的反例：** 普通报告发现 2 clones、exit 0；禁止 UI 副本得到 1 violation、exit 1；精确 allow 该副本且保留其他目标文件，0 violation、无边界空集警告、exit 0；allow 排空目标、受保护路径不存在、只扫描 core 漏掉 UI，这三项均 exit 0 但警告未覆盖；`notIn: []` 为配置错误、exit 1。夹具是无 import 的 11 行相同函数，显式设 5 行／30 token 只为这个小例，不是推荐阈值；未测改名、语义改写、真实游戏接线或模型编码收益。
+
+**不能只用 exit code 判覆盖完成。** 本轮断言只识别实际见到的 `protects no code of this scan` 和 `keeps copies out of no file of this scan` 两段警告，不是通用 warning 检测器；其他警告、升级后的措辞与扫描范围仍要核对。只读扫描本仓 `49352d7c` 的 generic／Unity／Unreal 三份 `protect-paths.sh` 得到 2 clones、66.7% 重复，但它们需独立复制到项目，未强制抽象。命中只提供位置，不证明行为等价；改代码仍须行为测试。
+
+**外部取舍。** dsh-watcher 把导入 boundaries 与 jscpd duplicates 分开运行，未证明其采用了本次复制边界功能；HN 使用者自报把质量报告交给模型判断、允许保留合理重复；REA 维护者实际停止按指标继续拆分，以免制造跨层抽象。没有跨检测器同题对照，最佳工具未知，当前只收有界试用候选。
+
+**依据**：[官方 5.4.2 发布](https://github.com/kucherenko/jscpd/releases/tag/v5.4.2)、[固定边界实现](https://github.com/kucherenko/jscpd/blob/db415b5d7cc34d72a324fe5eae2147646dc3558b/rust/crates/cpd/src/boundaries/check.rs)、[配置说明](https://github.com/kucherenko/jscpd/blob/db415b5d7cc34d72a324fe5eae2147646dc3558b/docs/rust.md#boundaries)、[官方重构 Skill](https://github.com/kucherenko/jscpd/blob/db415b5d7cc34d72a324fe5eae2147646dc3558b/skills/dry-refactoring/SKILL.md)；[真实项目配置](https://github.com/aa2246740/dsh-watcher/blob/e1fae1057228bc1b449c872da14192bac23daa29/package.json)、[HN 原帖与回复](https://news.ycombinator.com/item?id=49742634)、[REA 维护者取舍](https://github.com/morluto/rea/issues/151)。本轮源码检出 HEAD 为 `cbd5423`，已核相关实现与上述 tag `db415b5` 无差异，不声称整个 checkout 固定在 tag。定向核实与实跑：2026-11-04 UTC，未完成领域广扫。
+
+### 2026-11-04：常驻 Agent 的冷唤醒，试验从当前文件重建上下文
+
+👀 **自建常驻 Claude Code Agent、经常隔数小时接着工作时，试验在缓存失效后的唤醒边界重建上下文。** Raft 不再把整段历史一直接回：首轮放记忆索引、近期消息、当前文件、最近动作和本次唤醒消息。值得借的是**重新读当前文件，旧文件只留指针；过去的失败不自动成为本次待办**。仍在连续编码、缓存可能未失效或后台工作未结束时，继续原生恢复，不按固定时钟重开。
+
+**先试一条真实续接，再决定是否采用。** 留下当前任务、最新约束、已完成结果与下一步；在自然空闲后比较原生恢复和重建输入，核第一次行动是否接住新消息、是否重复已成功动作、是否把旧状态当现状，并记录总用量与等待时间。状态读不到就恢复原会话。本文是[上下文管理](../decisions/context-management.md)候选，不改现有默认；最佳阈值和本仓真实任务收益未知。
+
+**版本和配置会改变能否生效。** 固定源码 `db5e399f`（release `v1.21.23-source.1`，daemon 1.0.49）要求服务端 `constructedWakeContext=true`；仅设 `RAFT_WAKE_RECYCLE=1` 无效。默认条件是空闲**超过**一小时且上下文**大于** 128K；它来自作者负载，不是通用推荐。runtime 列表虽有 Codex，事实读取只实现 Claude，其他 runtime 仍因未知状态而恢复旧会话。源码还核后台任务及 sidecar 活跃情况。Raft 是 **FSL-1.1-ALv2 source-available**，含竞争用途限制，不把源码当当前 Apache 代码复制进通用模板。
+
+本轮逐字提取固定源码的配置／纯决策函数，**9 个边界断言通过**，包括精确阈值、未知状态、显式恢复、profile 变化及开关优先级；输入渲染为替身，未运行完整 daemon、后台停止或真实模型。作者报告全流量每请求成本下降 29%，属于其团队按标价的前后对照，不是本仓实测；社区原帖反映 Raft 的 Hermes 适配需求，未验证这套重建方法的效果。
+
+**依据**：[一手：作者方法与对照](https://raft.build/resources/blog/constructed-initial-context/)、[固定配置与决策](https://github.com/botiverse/raft-source/blob/db5e399f017d584e49597e3a28757645d6807893/packages/daemon/src/wakeSessionRecycle.ts#L95-L253)、[后台工作筛选](https://github.com/botiverse/raft-source/blob/db5e399f017d584e49597e3a28757645d6807893/packages/daemon/src/wakeSessionRecycle.ts#L359-L406)、[文件与近期动作策略](https://github.com/botiverse/raft-source/blob/db5e399f017d584e49597e3a28757645d6807893/packages/daemon/src/wakeBriefingPanel.ts#L24-L53)、[许可](https://github.com/botiverse/raft-source/blob/db5e399f017d584e49597e3a28757645d6807893/LICENSE)；[社区：真实使用者及回复](https://linux.do/t/topic/2974021)。定向核实与组件试验：2026-11-04 UTC；未完成领域广扫，未找到独立同题效果验证。
+
+**压缩结果也要核实际工具类型。** 同轮直接运行 Python Agent Framework 1.24.0 发布包与固定 main `230a3aa0`：合成 hosted shell 的 stdout／stderr／exit code 在旧组压缩后变成 `no results`，普通 function result 对照仍保留。`keep_last_tool_call_groups=1` 只保护最新组，不是修复。已用该 SDK 的读者，应检查实际 content type 的压缩后结果和下一次请求，不凭函数正常返回判定信息保留。候选修复 #9887 已关闭且未合并，这不排除其他修复；本轮没有验证修复版本，也未跑模型或完整套件。不为此迁移整个框架。
+
+**反例依据**：[真实报告 #9886](https://github.com/microsoft/agent-framework/issues/9886)、[候选修复 #9887](https://github.com/microsoft/agent-framework/pull/9887)、[本轮实际运行的固定源码](https://github.com/microsoft/agent-framework/blob/230a3aa0bba19b6bf5a7b4f427bcb25cb16c7105/python/packages/core/agent_framework/_compaction.py#L1904-L2040)。两个来源各 3 个合成场景断言通过；PR 状态按最新 API 复核，核实：2026-11-04 UTC。
+
 ### 2026-10-31：AGENT-CONFIG 已回线索的核源与取舍
 
 先看两个真实项目的维护机制：**Zeppelin 按完整指令链减重，Next.js 将生成内容与团队正文分开管理**。本轮只核已返回目录中的少量线索，未把全目录接收为已核成果；SKILL-MCP、MULTIAGENT-LONG、VERIFY-REVIEW 尚无正式回传、可接收的来源产物，下面的四领域补充仍等各卡结果回来后去重合并，不重开采集。

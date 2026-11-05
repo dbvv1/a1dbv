@@ -57,6 +57,29 @@ flowchart LR
 
 **写域不同仍要对齐共同契约。** 调查可以先并行，写入前明确接口、数据含义、错误行为和依赖版本；上下游有依赖就按顺序接回，不能因为文件名不同就同时改决定。worktree 只隔离检出，未跟踪资料、依赖、端口、数据库和服务所有权要另行准备。 [Cline 的真实并发编辑](../../experiments/cline-parallel-edits/README.md)中，即使两处区段不重叠，基线两工具都报成功仍丢一项修改；既有候选仅修正同一 SDK 运行时的路径队列，不能代替跨进程单写者分工。
 
+**每个开发 worktree 用自己的 Python 环境，并用运行测试的同一解释器核对受测模块的来源。** uv 项目按 worktree 各建环境：根目录有 `pyproject.toml` 和 `uv.lock` 时运行 `uv sync --locked --project <worktree>`；默认 `.venv` 相对 workspace root 解析，跨项目共用一个绝对 `UV_PROJECT_ENVIRONMENT` 会互相覆盖；不要把 `.venv` 软链回主检出。共享环境里的 editable 安装可能通过 `.pth` 或构建后端生成的导入映射指向另一个 checkout，所以从正确 cwd 跑绿测试仍可能导入主检出，缺陷被掩盖。`uv sync` 成功或切对 cwd 都不等于来源正确，装完先核解释器与模块路径归属，再跑行为验收。
+
+```python
+# check_import.py：模块名与源码根换成读者自己的
+import importlib
+import pathlib
+import sys
+
+root = pathlib.Path("path/to/worktree/src").resolve()
+module = importlib.import_module("your_package.your_module")
+origin = pathlib.Path(module.__file__).resolve() if module.__file__ else None
+print(sys.executable, origin)
+sys.exit(0 if origin and root in origin.parents else 1)
+```
+
+该示例会实际导入所选模块并执行其初始化代码；只用于你正要测试的可信项目模块。用运行测试的同一解释器执行，先看 `sys.executable` 是否为本项目环境，再按 `resolve()` 后的路径归属判断模块来源，不看字符串前缀、cwd 或上一条命令是否成功。来源检查只证明测对对象，之后仍要跑项目的行为验收。namespace package 顶层可能没有 `__file__`、`__path__` 又含多个位置，改核实际受测的子模块及顶层 `__path__`／`__spec__.submodule_search_locations`；哪些来源合法由项目契约决定，不能套单文件断言。
+
+**这只适用于 editable 源码开发／测试。** 验收发布 wheel 应在干净环境安装指定构建产物并核其身份；此时导入 `site-packages` 是正常结果，不能要求路径落回源码树，也不能用 `PYTHONPATH` 把 wheel 验收改回源码验收。已安装 distribution 的版本正确，也可能被当前目录的同名源码遮住；核实际模块与指定产物的安装位置、内容及行为。
+
+**依据**：[本仓窄复现] 2026-11-04，Python 3.12.14、真实 Git main／feature worktree、src 布局与 setuptools PEP 660 editable 安装：共享装有 main editable 的环境时，从 feature cwd 跑的行为断言 exit 0 却由 main/src 导入，同解释器解析 `module.__file__` 的来源断言 exit 1；独立环境装 feature 后来源断言 exit 0、行为断言 exit 1。断言均为 Python 子进程，未用 pytest／uv 或生产应用，也未覆盖 wheel、namespace。[官方环境契约] [uv 项目环境路径](https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path)：默认 `.venv`，相对路径按 workspace root 解析，跨项目共用绝对 `UV_PROJECT_ENVIRONMENT` 会互相覆盖。[开源项目] [y-agent 固定提交](https://github.com/luohy15/y-agent/commit/12d893faa7a9b1c6f3558a5a302fbf9bcc5d2827)（2026-08-07）把共享 `.venv` 改为每个 worktree 本地 `uv sync --locked --project <worktree>`，因共享 editable `.pth` 会让任一 checkout 的同步重定向其他 worktree 的导入；其改动与测试属上游，本仓未运行该产品。[真实使用反馈] [gflow-cli #760](https://github.com/ffroliva/gflow-cli/issues/760)（维护者报告，2026-09-08，已关闭）worktree 的 pytest 因主检出 editable 固定 `src/` 而导入主检出，发布门禁假绿，临时以 `PYTHONPATH` 指向 worktree。以上公开来源本轮核读 2026-11-04。
+
+[wheel／namespace 可复跑检查](https://github.com/dbvv1/a1dbv/blob/59e2aac70221c2c23d4b4ae611fbf2c946b55da9/experiments/python-import-provenance/README.md)：2026-11-04，Python 3.12.14、云端 POSIX，四项合成消费者检查通过；覆盖 wheel 实际导入与字节一致、同名源码遮蔽被拒、namespace 合法双根和错根子模块被拒。非作者复跑及移除负例断言的变异检查通过。它补的是两类边界的机制证据，未验原生 Windows、真实应用或整条长程路线，不刷新上段 editable 实验的范围。
+
 已有工具出现具体缺口时才补：Worktrunk 可辅助[依赖准备](../../experiments/worktrunk-ready.md)；Portless 的代理要由单一协调者管理，独立实例同时隔离[端口与状态目录](../../experiments/portless-state-isolation/README.md)；gh-stack 适合依赖未合入父层的分支，带子模块先核[恢复状态](../../experiments/gh-stack-submodule/README.md)，失败可能已部分生效，不按退出码盲重试。这些是分支选项，不是整套路线的必装清单。
 
 Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind` 不恢复 in-process 队员。普通具名子代理也能在可用工具与目标明确时传消息；选 Teams 看共享协调需求，不只看能否互发消息。Pi Durable 的中断任务恢复还要区分可安全重跑的调用与应交回中断状态的调用，不能由耐久存储推定外部写入可重做。
@@ -74,6 +97,22 @@ Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind
 | 项目检查、真实消费者与失败路径 | 命令、退出状态、输出及受检版本；零测试、skip、未运行分别处理 |
 | 当前权限、外部动作和停点 | 操作是否已发生、结果是否可读回；不根据“已提交”自报判完成 |
 | 原任务入口与回传位置 | 已回结果先验收；未知运行先查，换人前核旧写者确实退出 |
+
+### 旧写者状态未知时，接收固定成果与接管旧树分开
+
+**已正式交回固定提交、且任务允许独立接收时，可以在新工作树／克隆中审查、整合那一份产物；不要因此接管旧树或重启原调用。** 先固定基线与结果提交，核接收范围和其他在途写域，保留来源，再对新候选做独立复核。后来的分支更新不自动包含在本次接收内；原任务明确要求先核旧执行退出，或授权／产物归属不清时，仍停在该条件，不拿“新目录”绕过。固定对象只解决内容身份，不证明旧进程退出，也不解除发布限制。新树不改变平台已有拒绝，不换入口、账号或执行者绕过。
+
+**复用证据要看检查实际读了什么，不只看检查器代码。** 本仓候选从 [`31d89967`](https://github.com/dbvv1/a1dbv/commit/31d89967d10ba1c5071ab1346508791b63365915) 接到 [`cd9bf4a8`](https://github.com/dbvv1/a1dbv/commit/cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61)，只增加模板携带性测试并改模板说明；公开扫描器及其回归文件未变，但扫描输入、测试集合已变，所以仍重跑完整离线与最终公开扫描，不把上一提交的通过改贴到新版本。
+
+在已有这两个对象的本仓副本中可复核差量（只读已提交内容）：
+
+```sh
+git diff --name-only 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61
+git diff --quiet 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61 -- scripts/check_public.py tests/test_check_public.py
+git diff --quiet 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61 -- tests
+```
+
+第一条列出两个文件；后两条退出码分别为 0（指定代码无差异）、1（测试目录有差异，不是命令故障）。缺对象等错误另查，不能当作“相同”。该命令不核未提交／未跟踪文件、环境、依赖或外部状态；实际任务还要核这些输入。2026-11-04 本仓真实候选接续：上述差量已复核；4 项复制测试由非作者独立复跑通过。执行者的运行回执记录完整 offline 20 阶段与公开扫描通过，这两项未另作非作者全量复跑。这里是本次采用记录，不是模型长时可靠性或节省时间的对照实验。
 
 来源调查则交回主张、原文位置、版本日期及未读到的缺口，主线逐项核“来源支持哪个结论”；无需为纯来源核查跑代码套件。独立审查按风险加，已有有效审查复用，避免固定串行角色反复重读同一材料。
 
