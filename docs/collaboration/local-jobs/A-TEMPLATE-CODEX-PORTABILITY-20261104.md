@@ -1,7 +1,7 @@
 # A-TEMPLATE-CODEX-PORTABILITY-20261104 · 修正独立复制后的来源链接
 id: A-TEMPLATE-CODEX-PORTABILITY-20261104
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 accept: auto
 target_repo: https://github.com/dbvv1/a1dbv
@@ -35,8 +35,8 @@ result_branch: relay/a-template-codex-portability-20261104
 
 ## 当前结果
 
-- **候选接收，尚未发布 main**：原回传 [7f3330a1](https://github.com/dbvv1/a1dbv/commit/7f3330a1290849f88a98e8c148978c584dad1ad1) 经负责人修订／非作者复核，采用版本为 [7fd9eaac](https://github.com/dbvv1/a1dbv/commit/7fd9eaacaab6970897c0b1e9e6fb7644bf085e49)；已包含于 `dot-a/integrated-intake-20261104` 的固定提交 `77cdb7cf0aeba93b9605c575783d7044ee384972`。本次逐字核验模板 blob 与已审版本一致。
+- **已接收并合入 main**：原回传 [7f3330a1](https://github.com/dbvv1/a1dbv/commit/7f3330a1290849f88a98e8c148978c584dad1ad1) 经负责人修订／非作者复核，采用版本为 [7fd9eaac](https://github.com/dbvv1/a1dbv/commit/7fd9eaacaab6970897c0b1e9e6fb7644bf085e49)；已包含于 `dot-a/integrated-intake-20261104` 的固定提交 `77cdb7cf0aeba93b9605c575783d7044ee384972`。2026-11-05 逐字核验 main 中模板 blob 与已审版本一致；实际合入提交为 [c485ecb4](https://github.com/dbvv1/a1dbv/commit/c485ecb42e5b1d96670db17757136d5e9a7eddd6)。
 - 接收范围：仓库相对来源改为固定公开地址，正文可独立使用；只复制 Skill 的静态引用检查通过，未把来源案例冒充 Codex 运行时实测。
 - 复验：2026-11-04 云端 POSIX 的 template_overlay 14/14、template_portability 4/4 通过；这是本次实际运行，不继承原 Windows 基线结果，也不证明客户端加载或模型收益。原完整离线与公开扫描回执对应已审候选版本。
-- 下一步：本模板仅完成候选接收，尚未实际合入 main；自动接收合同要求审查、适用检查及合入全部完成后才标 accepted 并写合入提交，因此当前保持 review_ready。此前记录报告旧提交的一次 main 更新被拒；不据此推定全部 main 更新或本模板发布均被拒。后续仍逐项核对实际操作与适用限制，不换入口绕过具体拒绝。原调用／写者是否退出仍独立核实，不因本回执解除隔离或重派。
+- 接收依据：非作者审查通过，合入树完整 offline 20/20、相关模板回归及公开／提交身份扫描通过，远端 main 的树、父链与文件已核验；按自动接收合同标 accepted。本卡完成范围为所列模板修改，不包括客户端实际加载或模型效果。原调用／写者是否退出仍独立核实，不因本回执解除隔离或重派。
 - 历史执行身份、Windows 检查失败及旧 TASKS 六项失败见[接收前固定卡](https://github.com/dbvv1/a1dbv/blob/77cdb7cf0aeba93b9605c575783d7044ee384972/docs/collaboration/local-jobs/A-TEMPLATE-CODEX-PORTABILITY-20261104.md)；本次 POSIX 通过不覆盖或改写这些历史结果。
