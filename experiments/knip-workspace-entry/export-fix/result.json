@@ -1,0 +1,18 @@
+{
+  "version": "6.44.1",
+  "automatic": {
+    "beforeOutput": "44",
+    "reportExit": 1,
+    "fixExit": 0,
+    "recheckExit": 0,
+    "remainingIssues": 0,
+    "consumerExit": 1,
+    "error": "ReferenceError: localOnly is not defined"
+  },
+  "manual": {
+    "consumerExit": 0,
+    "consumerOutput": "44",
+    "reportExit": 0,
+    "remainingIssues": 0
+  }
+}
