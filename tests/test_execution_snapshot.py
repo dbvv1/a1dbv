@@ -98,6 +98,54 @@ class SnapshotTests(unittest.TestCase):
     data = sample(); data['units'] = [unit(state='running'), unit(id='two', state='running')]
     self.assertIn('concurrent_write_conflict', self.codes(data))
 
+  def test_repeated_write_paths_count_distinct_units_not_declarations(self):
+    path = 'example/src/consumer.py'
+    execution = {'kind': 'tool_result', 'ref': 'synthetic-result',
+                 'at': '2026-10-28T07:59:00Z'}
+    for count in (1, 2, 3):
+      with self.subTest(writers=count):
+        data = sample()
+        data['units'] = [unit(id=str(i), state='running', writes=[path, path],
+                              execution=execution) for i in range(count)]
+        before = copy.deepcopy(data)
+        result = module.inspect(data)
+        conflicts = [item['unit'] for item in result['findings']
+                     if item['code'] == 'concurrent_write_conflict']
+        self.assertEqual(conflicts, [str(i) for i in range(1, count)])
+        self.assertEqual(data, before)
+        self.assertEqual(result['execution_evidence_status'], 'unknown')
+        self.assertEqual(len(result['source_verification_required']), count)
+        self.assertIsNone(result['net_execution_seconds'])
+
+  def test_cli_repeated_write_declarations_preserve_real_conflicts(self):
+    execution = {'kind': 'tool_result', 'ref': 'synthetic-result',
+                 'at': '2026-10-28T07:59:00Z'}
+    path = 'example/src/consumer.py'
+    with tempfile.TemporaryDirectory() as folder:
+      snapshot = Path(folder) / 'snapshot.json'
+      for second_repo, expected in [(None, 0),
+          ('https://github.com/dbvv1/a1dbv', 1),
+          ('https://github.com/dbvv1/MOBA-Like', 0)]:
+        with self.subTest(second_repo=second_repo):
+          data = sample()
+          data['units'] = [unit(state='running', writes=[path, path], execution=execution)]
+          if second_repo:
+            data['units'].append(unit(id='two', state='running', target_repo=second_repo,
+                                      writes=[path, path], execution=execution))
+          snapshot.write_text(json.dumps(data), encoding='utf-8')
+          original = snapshot.read_bytes()
+          result = subprocess.run([sys.executable,
+            str(ROOT / 'scripts/check_execution_snapshot.py'), str(snapshot)],
+            capture_output=True, text=True, timeout=10)
+          self.assertEqual(result.returncode, expected, result.stderr)
+          self.assertEqual(result.stderr, '')
+          parsed = json.loads(result.stdout)
+          self.assertEqual(parsed['findings'],
+            [{'code': 'concurrent_write_conflict', 'unit': 'two'}] if expected else [])
+          self.assertEqual(parsed['execution_evidence_status'], 'unknown')
+          self.assertEqual(snapshot.read_bytes(), original)
+          self.assertEqual(list(Path(folder).iterdir()), [snapshot])
+
   def test_repository_namespace_distinguishes_same_file_names(self):
     data=sample();data['units']=[unit(state='running'),unit(id='two',state='running',target_repo='https://github.com/dbvv1/MOBA-Like')]
     self.assertNotIn('concurrent_write_conflict',self.codes(data))

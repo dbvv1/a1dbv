@@ -116,7 +116,8 @@ def inspect(data):
   owners = {}
   for unit in units:
     if unit['state'] == 'running':
-      for path in unit['writes']:
+      # Repeated declarations by one unit are still one writer.
+      for path in dict.fromkeys(unit['writes']):
         key = (repository_identity(unit['target_repo']), path)
         if key in owners:
           flag('concurrent_write_conflict', unit['id'])
