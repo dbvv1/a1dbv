@@ -1,0 +1,367 @@
+{
+  "python": "3.12.14",
+  "pydantic": "2.14.3",
+  "pydantic_core": "2.50.4",
+  "cases": 22,
+  "normal_and_wrong_type_controls": 16,
+  "results": [
+    {
+      "model": "AllowFirst",
+      "mode": "python",
+      "status": "accepted",
+      "output": {
+        "permissive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        },
+        "restrictive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        }
+      }
+    },
+    {
+      "model": "AllowFirst",
+      "mode": "json",
+      "status": "accepted",
+      "output": {
+        "permissive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        },
+        "restrictive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        }
+      }
+    },
+    {
+      "model": "IgnoreFirst",
+      "mode": "python",
+      "status": "accepted",
+      "output": {
+        "restrictive": {
+          "item": {
+            "name": "abcd"
+          }
+        },
+        "permissive": {
+          "item": {
+            "name": "abcd"
+          }
+        }
+      }
+    },
+    {
+      "model": "IgnoreFirst",
+      "mode": "json",
+      "status": "accepted",
+      "output": {
+        "restrictive": {
+          "item": {
+            "name": "abcd"
+          }
+        },
+        "permissive": {
+          "item": {
+            "name": "abcd"
+          }
+        }
+      }
+    },
+    {
+      "model": "AllowForbid",
+      "mode": "python",
+      "status": "accepted",
+      "output": {
+        "permissive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        },
+        "strict": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        }
+      }
+    },
+    {
+      "model": "AllowForbid",
+      "mode": "json",
+      "status": "accepted",
+      "output": {
+        "permissive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        },
+        "strict": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        }
+      }
+    },
+    {
+      "model": "ForbidAllow",
+      "mode": "python",
+      "status": "rejected",
+      "errors": [
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "strict",
+            "item",
+            "extra"
+          ]
+        },
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "permissive",
+            "item",
+            "extra"
+          ]
+        }
+      ]
+    },
+    {
+      "model": "ForbidAllow",
+      "mode": "json",
+      "status": "rejected",
+      "errors": [
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "strict",
+            "item",
+            "extra"
+          ]
+        },
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "permissive",
+            "item",
+            "extra"
+          ]
+        }
+      ]
+    },
+    {
+      "model": "ConfiguredAllowFirst",
+      "mode": "python",
+      "status": "accepted",
+      "output": {
+        "permissive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        },
+        "restrictive": {
+          "item": {
+            "name": "abcd"
+          }
+        }
+      }
+    },
+    {
+      "model": "ConfiguredAllowFirst",
+      "mode": "json",
+      "status": "accepted",
+      "output": {
+        "permissive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        },
+        "restrictive": {
+          "item": {
+            "name": "abcd"
+          }
+        }
+      }
+    },
+    {
+      "model": "ConfiguredIgnoreFirst",
+      "mode": "python",
+      "status": "accepted",
+      "output": {
+        "restrictive": {
+          "item": {
+            "name": "abcd"
+          }
+        },
+        "permissive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        }
+      }
+    },
+    {
+      "model": "ConfiguredIgnoreFirst",
+      "mode": "json",
+      "status": "accepted",
+      "output": {
+        "restrictive": {
+          "item": {
+            "name": "abcd"
+          }
+        },
+        "permissive": {
+          "item": {
+            "name": "abcd",
+            "extra": 1
+          }
+        }
+      }
+    },
+    {
+      "model": "ConfiguredAllowForbid",
+      "mode": "python",
+      "status": "rejected",
+      "errors": [
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "strict",
+            "item",
+            "extra"
+          ]
+        }
+      ]
+    },
+    {
+      "model": "ConfiguredAllowForbid",
+      "mode": "json",
+      "status": "rejected",
+      "errors": [
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "strict",
+            "item",
+            "extra"
+          ]
+        }
+      ]
+    },
+    {
+      "model": "ConfiguredForbidAllow",
+      "mode": "python",
+      "status": "rejected",
+      "errors": [
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "strict",
+            "item",
+            "extra"
+          ]
+        }
+      ]
+    },
+    {
+      "model": "ConfiguredForbidAllow",
+      "mode": "json",
+      "status": "rejected",
+      "errors": [
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "strict",
+            "item",
+            "extra"
+          ]
+        }
+      ]
+    },
+    {
+      "model": "Permissive",
+      "mode": "python",
+      "status": "accepted",
+      "output": {
+        "item": {
+          "name": "abcd",
+          "extra": 1
+        }
+      }
+    },
+    {
+      "model": "Permissive",
+      "mode": "json",
+      "status": "accepted",
+      "output": {
+        "item": {
+          "name": "abcd",
+          "extra": 1
+        }
+      }
+    },
+    {
+      "model": "Restrictive",
+      "mode": "python",
+      "status": "accepted",
+      "output": {
+        "item": {
+          "name": "abcd"
+        }
+      }
+    },
+    {
+      "model": "Restrictive",
+      "mode": "json",
+      "status": "accepted",
+      "output": {
+        "item": {
+          "name": "abcd"
+        }
+      }
+    },
+    {
+      "model": "Strict",
+      "mode": "python",
+      "status": "rejected",
+      "errors": [
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "item",
+            "extra"
+          ]
+        }
+      ]
+    },
+    {
+      "model": "Strict",
+      "mode": "json",
+      "status": "rejected",
+      "errors": [
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "item",
+            "extra"
+          ]
+        }
+      ]
+    }
+  ]
+}
