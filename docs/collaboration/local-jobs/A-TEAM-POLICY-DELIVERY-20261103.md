@@ -36,8 +36,8 @@ result_branch: relay/a-team-policy-delivery-20261103
 
 ## 当前结果
 
-- 本单元已生成 operation.md（168 行），含 §4 可采用的托管策略交付状态分流四步操作稿、六问逐项回答、原页六项缺口、15 行来源核实表和 issue #88896 撤回说明；check_repo 0 错误、check_public 0 命中、git diff --check 通过，未运行客户端、Hook、模型或真实部署实测。审查未通过，未关闭问题：第 69 行把“文件存在但不可读”写成无条件分支，并弱化 I/O 错误必然退出，需按官方 managed-settings 原文加入“没有其他管理员来源提供策略”前提，并恢复“其他读取失败（如 I/O 错误）则每次会话启动即退出”。
-- 产物：[c198a38](https://github.com/dbvv1/a1dbv/commit/c198a382e2f3089d8fc3a1b1beb5fc329717976a)，分支 `relay/a-team-policy-delivery-20261103`。
-- 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
-- 下一步：负责人安排一次带 retryNote 的 Workflow 修正第 69 行并重审，或人工按审查建议改正后再做非作者审查、提交并推送 result_branch；本产物不应被当作团队推广通过或 README 🟡 升级依据。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- **部分采用，保留 review_ready，不标 accepted。** [18 团队页 §4](../../18-team-adoption.md#4-配置治理)已采用交付、来源与 Hook 注册／执行三层分流；来源提交为 [c485ecb4](https://github.com/dbvv1/a1dbv/commit/c485ecb42e5b1d96670db17757136d5e9a7eddd6)。2026-11-05 核该提交已在 main 父链，当前页面与该提交的文件 blob 相同；原 operation.md 未整份进入 main。
+- 已采用正文修正了原审查指出的不可读文件分支：加入“没有任何管理员来源提供策略”的前提，并区分 OS 拒读与其他 I/O 失败每次启动退出。不能据正文修正反称原稿已改正：结果分支 [c198a382](https://github.com/dbvv1/a1dbv/commit/c198a382e2f3089d8fc3a1b1beb5fc329717976a)的 operation.md 仍保留原第 69 行的过强／弱化表述。
+- **审查证据分开。** 原接收记录为审查未通过；正文采用提交说明记录整合内容已独立审查及完整离线、公开与空白检查通过，但未提供本卡六问逐源复核、只读操作稿答题或原稿重审全部通过的独立明细。因此只确认上述正文采用，不据此关闭本卡全部验收。
+- **未验范围不变。** 未部署托管策略、运行真实客户端／Hook、调用模型或验证团队推广；不提高 18 页或 README 地图评级。正文保持 2026-11-04 来源核实日期，本次只核接收与 Git 证据，不刷新事实核实日。
+- 下一步由负责人决定是否继续接收原稿未采用部分；如继续，先补本卡合同所缺的非作者逐源／读者答题证据，再决定状态，不重派原研究、不因已合正文重复生成稿件。当前不宣称原 Workflow 重试或执行进程已退出。
