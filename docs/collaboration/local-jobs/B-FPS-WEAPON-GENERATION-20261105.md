@@ -2,7 +2,7 @@
 id: B-FPS-WEAPON-GENERATION-20261105
 owner: dot-B
 kind: build
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-weapon-generation-20261105
@@ -32,4 +32,8 @@ result_branch: relay/b-fps-weapon-generation-20261105
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 实现可选 GameOptions.weaponPresentation:'generation-v1'：仅启用时 Actor/Shot 记录切枪代际，stateHash 剥离新字段与选项、默认/启用逐 tick 零差量；adapter 仅双方代际都存在且相等时选 fire，单边不猜测，原年龄/700ms/优先级合同不变。npm test 439/439、typecheck、build、adapter 29/29（保留原 21 项、新增 8 项）、新测试 9/9 通过；三 seed 1/7/923 逐 tick hash 与去字段完整状态一致且断言字段确有差异。openIssues 为空；按范围仅 CPU 与文件处理，未运行浏览器/GPU/音频，未提交/推送/切分支。
+- 产物：[79281f8](https://github.com/dbvv1/FPS-Like/commit/79281f8d5c3d2859b3f051e8bc36f4466f4286f8)，分支 `relay/b-fps-weapon-generation-20261105`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：无待补实现缺口；待负责人接收并按 relay/b-fps-weapon-generation-20261105 提交。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
