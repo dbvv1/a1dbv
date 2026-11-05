@@ -1,0 +1,677 @@
+{
+  "environment": {
+    "python": "3.12.14",
+    "rich": "15.0.0",
+    "shellingham": "1.5.4",
+    "annotated-doc": "0.0.5"
+  },
+  "source_revisions": {
+    "old": "b210c0e2376d99344f79f11fab3ad34cf890cc20",
+    "release": "60af34b60ab2650a74af32c6ce340c5cfbceb3d8",
+    "base": "a80f6e5ecd74f32b983cca336a2f3cba98d9853a",
+    "pr": "09bf9a55a86e88bc3a79b2e63682a599eed4ffc5",
+    "current": "f2183bffb2bae9a79b56e69561cbae32969451a3"
+  },
+  "cases": [
+    {
+      "arm": "old",
+      "version": "0.26.8",
+      "variant": "original",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "old",
+      "version": "0.26.8",
+      "variant": "explicit",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "old",
+      "version": "0.26.8",
+      "variant": "unrelated",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "release",
+      "version": "0.27.0",
+      "variant": "original",
+      "expected_flag": "--FUZZY-MUFFINS",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "release",
+      "version": "0.27.0",
+      "variant": "explicit",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "release",
+      "version": "0.27.0",
+      "variant": "unrelated",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "base",
+      "version": "0.27.2",
+      "variant": "original",
+      "expected_flag": "--FUZZY-MUFFINS",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "base",
+      "version": "0.27.2",
+      "variant": "explicit",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "base",
+      "version": "0.27.2",
+      "variant": "unrelated",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "pr",
+      "version": "0.27.2",
+      "variant": "original",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "pr",
+      "version": "0.27.2",
+      "variant": "explicit",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "pr",
+      "version": "0.27.2",
+      "variant": "unrelated",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "current",
+      "version": "0.27.3",
+      "variant": "original",
+      "expected_flag": "--FUZZY-MUFFINS",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "current",
+      "version": "0.27.3",
+      "variant": "explicit",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    },
+    {
+      "arm": "current",
+      "version": "0.27.3",
+      "variant": "unrelated",
+      "expected_flag": "--fuzzy-muffins",
+      "cases": [
+        {
+          "args": [],
+          "exit": 0,
+          "output": "Hello Very fuzzy\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--fuzzy-muffins",
+            "reader"
+          ],
+          "exit": 0,
+          "output": "Hello reader\n",
+          "help_has_expected_flag": null,
+          "unknown_option": false
+        },
+        {
+          "args": [
+            "--FUZZY-MUFFINS",
+            "reader"
+          ],
+          "exit": 2,
+          "output": "",
+          "help_has_expected_flag": null,
+          "unknown_option": true
+        },
+        {
+          "args": [
+            "--help"
+          ],
+          "exit": 0,
+          "output": null,
+          "help_has_expected_flag": true,
+          "unknown_option": false
+        }
+      ]
+    }
+  ]
+}
