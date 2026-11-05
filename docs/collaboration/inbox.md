@@ -4,6 +4,16 @@
 
 ## 待处理
 
+### 2026-11-05：偶发失败回原环境验收，别提前取消复现
+
+👀 **本地没复现的偶发失败，不凭本地绿灯验收修补；先保住仍在采集的远端失败证据，再回已复现环境验证。** 可交办：`核版本、平台、目标测试 ID 和失败特征，确认目标测试确实运行完成。记录完成次数与同类失败次数；未复现的修补标为推测。若后续提交或运行会取消尚需的复现任务，先等证据收集完成。` 本地能复现就优先本地迭代；没有取消机制或已有足够证据，不增加等待所有 CI 的门禁。
+
+Chrome DevTools 已落库的 `fix-tests` Skill 按上述环境选择复验，并要求本地未复现时等 stressor 完成再上传，以免提前取消。测试文档提供真实 bot 入口，但重复运行依赖该项目的测试包装，构建模式和平台也须匹配；不照搬双 Agent、三平台、固定分钟数或运行次数。有限次未失败不保证以后不再失败。
+
+**未试用，不升默认。** 本仓当前 workflow 只有 `workflow_dispatch`，同 ref 并发组设有 `cancel-in-progress: true`；普通 push 不会触发这个 workflow，同 ref 再次手动 dispatch 才需注意取消关系。当前没有匹配的远端偶发任务，未运行上游工具、bot 或 hosted CI，不改本仓工作流；落库指导不等于已证明 Agent 收益，当前最佳未知。
+
+**依据**：[一手：DevTools 固定 Skill](https://github.com/ChromeDevTools/devtools-frontend/blob/e1df1f10d345d52b88827564aa71ec3ea8462151/.agents/skills/fix-tests/SKILL.md)、[同版测试文档](https://github.com/ChromeDevTools/devtools-frontend/blob/e1df1f10d345d52b88827564aa71ec3ea8462151/test/README.md)及[扩展至 stressor 的提交](https://chromium.googlesource.com/devtools/devtools-frontend/+/54cb677a3e2e5c905776cefbf165c2a676daa9c2)；[本仓实际配置](../../.github/workflows/repository-checks.yml)。核实：2026-11-05。
+
 ### 2026-11-05：缩减真实复现，别换成同报错的另一问题
 
 👀 **让 Agent 处理大型失败输入时，从原样本逐步删减，每步确认仍是原触发原因；回归问题同时重跑固定旧版与新版。** 可直接交办：`保留原件和最近能复现的版本；逐步删除，每步记录目标失败的证据。交付原样本出处、版本与命令、两版实际行为及可读的缩减输入；相同报错文字不能代替同因核对。` 已经短小清楚就直接修；依赖身份、导入路径、并发或平台正是触发条件时，不为自包含而删掉它们，也不要求穷尽所有缩减。
