@@ -19,5 +19,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+          # Absorption tests consume frozen historical pages via git show.
+          fetch-depth: 0
       - name: Offline repository checks (no models or native engines)
         run: python3 scripts/check_offline.py
