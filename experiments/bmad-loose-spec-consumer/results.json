@@ -1,0 +1,36 @@
+{
+  "source_commit": "7687d077f8457bb34a23a6bfa2cc797c0f23b16f",
+  "python": "3.12.14",
+  "first_fold": {
+    "exit_code": 0,
+    "folded": 1,
+    "problems": [
+      {
+        "spec": "_bmad-output/spec-ship",
+        "problem": "DESIGN.md already exist(s) beside the ticket"
+      }
+    ]
+  },
+  "renamed_companion_fold": {
+    "exit_code": 0,
+    "folded": 1,
+    "problems": []
+  },
+  "shared_log": "---\ntopic: pay\n---\n- (idea) pay history\n- (event) folded spec-pay/ into story-pay.md; CAP-1 is R1\n- (idea) ship history\n- (event) folded spec-ship/ into story-ship.md; CAP-1 is R1\n",
+  "consumer_layout": {
+    "flat": {
+      "exit_code": 0,
+      "total": 2,
+      "files": [
+        "story-pay.md",
+        "story-ship.md"
+      ]
+    },
+    "nested": {
+      "exit_code": 0,
+      "total": 0,
+      "files": []
+    }
+  },
+  "scope": "unchanged source, synthetic public issue input, real migration and tickets CLI; no model, production data or accepted layout change"
+}
