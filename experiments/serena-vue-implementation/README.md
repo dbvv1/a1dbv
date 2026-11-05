@@ -7,8 +7,23 @@
 - 上游基线：[773a77e19f0da348f505640c33a8b4e1d7817dc2](https://github.com/oraios/serena/commit/773a77e19f0da348f505640c33a8b4e1d7817dc2)。补丁 5 文件、55 行新增，其中生产改动 12 行；没有改依赖或 hover。
 - 补丁 SHA-256：`3a803ea2a23f783bbbe802c5d3a1be3eb48143d9e8d0730ba11d8a69cd31ca26`。可在该固定基线应用 `fix.patch` 后复跑下方检查。
 - 本地候选提交：`195392e55503f44804995028de325c1506d7b446`，尚未在上游或 fork 发布；公开可恢复产物是本目录补丁。
-- 独立新上下文审查通过。**暂停旧候选投稿，跟进已有同题 [PR #2242](https://github.com/oraios/serena/pull/2242)。** 另一作者已提交相同的 Vue→TypeScript 实现查询委派，并补充跨文件、多实现、Vue SFC、工具入口与路由检查；截至 2026-11-01，该 PR 仍开放、未合并。
-- 本轮只读核对其固定 [head `c5cd0949`](https://github.com/oraios/serena/commit/c5cd0949ed32b23b4294da32181f2f64b7c57bc5) 与本补丁的生产差异，没有运行该 PR。下面仍是原候选的历史实测；不再为重复投稿推进 fork／CLA，原补丁保持不变。
+- 独立新上下文审查通过。**暂停旧候选投稿，跟进已有同题 [PR #2242](https://github.com/oraios/serena/pull/2242)。** 另一作者已提交相同的 Vue→TypeScript 实现查询委派，并补充跨文件、多实现、Vue SFC、工具入口与路由检查；截至 2026-11-05，该 PR 仍开放、未合并。
+- 已在 2026-11-05 实跑其固定 [head `c5cd0949`](https://github.com/oraios/serena/commit/c5cd0949ed32b23b4294da32181f2f64b7c57bc5)，结果见下节。后续“真实验证”与 MCP 入口仍是本仓原候选的历史实测；不再为重复投稿推进 fork／CLA，原补丁保持不变。
+
+## 上游替代候选的真实验收
+
+**该固定 PR 已覆盖原补丁未验的 Vue SFC 内接口及 TS→Vue 跨文件实现查询。** 在隔离 HOME／Serena 配置中，用其锁定开发依赖运行路由测试 8 项、Vue suite 45 项、公开 `FindImplementationsTool` 2 项，共 **55/55 通过**；真实 LS 返回多个实现、跨文件／SFC 内类的准确位置和源码，未实现接口返回空集。路由 8 项含模拟对照，不将全部 55 项都称真实 LS 查询。
+
+同一测试树仅将 Vue adapter 换回父提交 `ede329aa` 版本，新增四组实现查询均以真实 LSP `-32601` 失败；恢复后核源码与 PR 一致、工作树干净。这是既有替代候选的验收，不是新增修复或上游已接受证明。
+
+Linux、Python 3.13.5、Node 24.22.1；Vue LS 3.1.5、TypeScript 5.9.3、TS LS 5.1.3。固定 PR checkout 先按贡献文档运行 `uv sync --frozen --extra dev --python 3.13`，再用独立可写目录作 `HOME`、`SERENA_HOME` 和 `TMPDIR`，设 `SERENA_USAGE_REPORTING=false` 后运行：
+
+```sh
+.venv/bin/python -m pytest test/solidlsp/test_vue_implementation_routing.py \
+  test/solidlsp/vue test/serena/test_vue_implementations.py -q --timeout=180
+```
+
+实际导入 adapter 已核属于该 checkout。未运行整个 Serena 测试库、模型／IDE 或其他平台，也未验证把此 PR 重放到其他基线；这里不增加 MCP 协议验收。核实与运行：2026-11-05。
 
 ## 真实验证
 
