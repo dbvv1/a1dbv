@@ -1,7 +1,7 @@
 # A-WORKTREE-IMPORT-GUIDE-20261104 · 核对 Python worktree 的实际导入来源
 id: A-WORKTREE-IMPORT-GUIDE-20261104
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/long-tasks.md@4502d0471e073f8fddb065b0dd4ed6e2a14f144f
 target_repo: https://github.com/dbvv1/a1dbv
@@ -39,10 +39,16 @@ namespace package 的顶层 __file__ 可能为空且有多个位置，改核实�
 运行 python3 scripts/check_repo.py、python3 scripts/check_public.py 与 git diff --check；核实际 diff、原始来源和声称范围。只写实际通过／失败／未运行，检查结论留提交说明和本卡简短当前结果。
 一个 45–75 分钟单元，最多两小时。模型不提交推送；接收端完成公开扫描与身份检查，仅推 result_branch、回 review_ready，由负责人接收。不用 accept: auto，不合 main，不发上游或部署。
 
-## 当前结果
+## 原回传结果（历史）
 
 - 在 docs/decisions/long-tasks.md『按依赖决定怎么拆』新增 Python worktree 依赖准备做法：每个 worktree 独立环境、以运行测试的同一解释器按 resolve() 路径归属核对模块来源、附可替换占位的 check_import.py，说明 namespace 顶层无 __file__ 的替代核法与 wheel 验收边界；仅修改该页 +21 行。三项检查实测通过（check_repo 792 文件 0 errors、check_public 1263 文件 0 findings、git diff --check exit 0）；Workflow 三角色审查通过、fixRounds 0、openIssues 空。未运行项：本仓窄复现未覆盖 wheel 与 namespace（页面已如实标注），完整真实读者实做仍待具备任务时补验；本单元非作者读页审查已覆盖。
 - 产物：[06847b0](https://github.com/dbvv1/a1dbv/commit/06847b0aa0ce264a8de5d7dedf506e47225a7a8a)，分支 `relay/a-worktree-import-guide-20261104`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：负责人按协议接收本页修改；完整真实读者实做待具备自然任务时补验，wheel/namespace 仍为本仓未实测项。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人接收（2026-11-05 UTC）
+
+- **接收已采用的导入来源指南**。原回传 06847b0 经负责人修订和非作者审阅后进入 [d19a6c79](https://github.com/dbvv1/a1dbv/commit/d19a6c79aebf101f02a12449e91a8c31e9ea2c58)。本次对照 main 934f59c 的 [长任务页](https://github.com/dbvv1/a1dbv/blob/934f59c29057251dc7b8ec55ba19b8dfaaa9d00d/docs/decisions/long-tasks.md)，从“每个开发 worktree”到 wheel／namespace 补验入口的完整段与该已审版本逐字一致；当前整页 blob 为 `81c7808ad1cb32bc44652d4e5f85a2d3fab6ef91`。
+- 接收独立环境、同解释器来源核对、wheel 与 namespace 的适用边界。原单元没有 wheel／namespace 实测；后来 [59e2aac 的四项合成检查](https://github.com/dbvv1/a1dbv/blob/59e2aac70221c2c23d4b4ae611fbf2c946b55da9/experiments/python-import-provenance/README.md)已独立复跑及负例变异复核，属于后续机制证据。真实应用、新读者完整实做及原生 Windows 仍未验，不升级整条路线评级。
+- 本次仅核已发布内容与接收范围，不重跑原调用、不改原产物；旧调用、工具及相关写者的退出未知仍独立保留，accepted 不解除隔离或授权重派。

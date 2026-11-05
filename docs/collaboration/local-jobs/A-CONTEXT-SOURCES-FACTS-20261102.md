@@ -1,7 +1,7 @@
 # A-CONTEXT-SOURCES-FACTS-20261102 · 上下文页文件与检索来源事实核查
 id: A-CONTEXT-SOURCES-FACTS-20261102
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 page: docs/decisions/context-management.md@74be0d09b201cc0aacf925625899cf2d9bd03d3d
 target_repo: https://github.com/dbvv1/a1dbv
@@ -26,10 +26,16 @@ result_branch: relay/a-context-sources-facts-20261102
 非作者核每个更正是否有原文直接支持、作用域是否准确、读者该改什么，以及与广扫／原生 reader 没有重复。事实已核不代表流程实际采用或页面评级通过。
 本单元最多两小时，共享最多 4 并行只由原接收端调度，不另起模型。运行 check_repo、check_public、git diff --check 和提交身份检查后推指定 result_branch，回 review_ready 给负责人接收；不用 accept: auto。
 
-## 当前结果
+## 原回传结果（历史）
 
 - 已写入 facts.md（55 行），核对固定页输入版本与 74be0d09 blob 字节一致；确认 Claude @ 的 25,000 token/256KB/目录/二进制/禁用变量条件、压缩后最多重读 5 个文件且超过 5,000 token 只留 Referenced file、Codex @ 官方仅说明加入路径、Cursor 两帖症状区分且修复版本未知、Git 契约成立；发现 best-practices#provide-rich-content 锚点失效应改指 #write-a-specific-prompt。check_repo/check_public/git diff --check 均 exit 0；未启动客户端实测，未复跑页面提到的 rg/grep 阳性对照，GitHub 远端页面未能取回。openIssues: []
 - 产物：[1803ea2](https://github.com/dbvv1/a1dbv/commit/1803ea20df306698a4d9fb702085c2fb482a4c72)，分支 `relay/a-context-sources-facts-20261102`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查通过。
 - 下一步：接收端提交 facts.md、推送 relay/a-context-sources-facts-20261102 并回 review_ready；正文更正（锚点与阈值精度）需负责人另行决定，本卡不改正文
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人接收（2026-11-05 UTC）
+
+- **接收来源事实与已采用正文更正**。原事实稿 1803ea2 的文件引用、压缩保留和 Git 固定版本边界，经负责人及非作者核对后写入 [e176978](https://github.com/dbvv1/a1dbv/commit/e176978a2ac76a2bf18971fe9317bb4ef13a0763)。本次对照 main 934f59c 的 [上下文页](https://github.com/dbvv1/a1dbv/blob/934f59c29057251dc7b8ec55ba19b8dfaaa9d00d/docs/decisions/context-management.md)，该部分保留；相对 e176978 只有后来已审的 Cursor／Git 忽略诊断补充，当前整页 blob 为 `2614daefa848226fecebc21bc739a93e4b743a95`。
+- 接收静态来源核查及正文更正，不再等待已完成的 facts 回传。后续 Git／shell 四项合成断言与官方文档核对不等于 Claude／Codex／Cursor 客户端实跑；原生压缩与接续、历史 Cursor 故障修复版本及实际收益仍未知。
+- 本次仅核已发布内容与接收范围，不重跑原调用、不改原产物；旧调用、工具及相关写者的退出未知仍独立保留，accepted 不解除隔离或授权重派。

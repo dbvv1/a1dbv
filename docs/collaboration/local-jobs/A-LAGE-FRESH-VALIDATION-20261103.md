@@ -1,7 +1,7 @@
 # A-LAGE-FRESH-VALIDATION-20261103 · 核清中断后新执行与缓存命中
 id: A-LAGE-FRESH-VALIDATION-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: f26173752175fb2ff9d2c56cc87398b7ad72fb4a
@@ -36,10 +36,16 @@ result_branch: relay/a-lage-fresh-validation-20261103
 仅静态接收可用稿，不称新实际运行、模型采用或全部runner通用；原始来源有缺口即标未知，不把注释或团队自述提升为独立日志证据。现有正文若已完全覆盖则回负结果。
 一个45–75分钟单元、最多2小时；原接收端共享最多4并行，不另起调用。经既有Workflow非作者审查、check_repo、check_public、git diff --check与身份检查，仅推result_branch回review_ready；不用accept:auto，不合main。
 
-## 当前结果
+## 原回传结果（历史）
 
 - 已产出 proposal.md（87 行，唯一新增文件；check_repo 743 文件 0 错误、check_public 1208 文件 0 发现，UTF-8/LF，未提交未推送）。未关闭：review 未通过（fixRounds=3，2 条 openIssues 同根因）——正文第 13/51/66 行把一次性 lage buildci 摘要 skipped 解释为含 shouldRun=false 的不适用任务，但固定版 Lage 2.14.19 的 runAction 在调度前经 optimizeTargetGraph 删除这些目标，一次性 CLI 摘要 skipped 只应反映缓存命中；onSkipped 依据只适用于 watch/未优化图。未运行 FURN、Lage 或真实缓存实验，171/0/0 仅作者自报，未独立复算。
 - 产物：[89ac591](https://github.com/dbvv1/a1dbv/commit/89ac591a224f9dc009df2d0c01368b66a9dae92f)，分支 `relay/a-lage-fresh-validation-20261103`。
 - 检查：check_public（文件与新提交身份）、check_repo 通过；独立审查未通过或未完成。
 - 下一步：安排一次修正单元：按 fix 改写 proposal.md 第 13、51、66 行，把普通 lage buildci --no-cache 恢复为 0 skipped 门槛，并把 SimpleScheduler/onSkipped 依据限定到 watch/未优化调度（第 19 行同步补 optimizeTargetGraph.ts L9–24、runAction.ts L107–112），随后重跑三视角审查至 reviewed=true。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人接收（2026-11-05 UTC）
+
+- **接收修订后静态指南**。原稿 89ac591 的 skipped 解释未通过，历史失败保留；采用负责人修订并经非作者核源的 [4e3aebff](https://github.com/dbvv1/a1dbv/commit/4e3aebff06a46eb0cd6e5e82072e53c6d3cefdfc)。本次对照 main 934f59c 的 [playbooks §6](https://github.com/dbvv1/a1dbv/blob/934f59c29057251dc7b8ec55ba19b8dfaaa9d00d/docs/15-task-playbooks.md#6-补测试)，Lage 段与该修订版逐字一致；当前整页 blob 为 `7b1f72f6d5dba67a242ca217cb6dca07e084f92e`。
+- 接收一次性 CLI 的 0 skipped 门槛、watch／未优化图边界及远端缓存回填限制，不再按原失败稿重派修正。未运行 Lage／FURN 或真实缓存实验，171 项结果仍是上游作者自报；原稿本身未改写。
+- 本次仅核已发布内容与接收范围，不重跑原调用、不改原产物；旧调用、工具及相关写者的退出未知仍独立保留，accepted 不解除隔离或授权重派。
