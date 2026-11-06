@@ -2,7 +2,7 @@
 id: B-PIPE-ICON-LF-20261106
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-pipe-icon-lf-20261106
@@ -34,4 +34,9 @@ result_branch: relay/b-pipe-icon-lf-20261106
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- Implemented explicit UTF-8/LF writes for all 12 exported SVG text outputs via new write_text_utf8_lf(); added test_export_text.py reproducing the Windows TextIOWrapper/Path.write_text CRLF default and proving new writer bytes equal themed().encode('utf-8') with no CR, two-theme 12/12 byte match to committed consumer bytes, and dark-accent isolation (dark 6/6 change, bright 6/6 unchanged, MIT notice kept); README documents the text-vs-render reproducibility boundary; manifest pins refreshed and independently re-verified 267/267. Measured: test_export_text.py 5/5 OK, 3 non-Cairo tests in test_export.py OK, py_compile and git diff --check clean. Open/unverified: 12 Cairo-dependent tests and full PNG/preview export not run (cairosvg/system Cairo missing, not installed); non-author visual/quality review not done; local Pillow 12.3.0 differs from requirements 12.0.0; full npm test retains a pre-existing unrelated failure at tests/client/audio-skill.test.ts:45.
+- 产物：[5267080](https://github.com/dbvv1/MOBA-Like/commit/526708097b1c2c72ad826789e277797b1f49d785)，分支 `relay/b-pipe-icon-lf-20261106`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：Receiver commits these files; remaining acceptance needs a CairoSVG/system-Cairo environment for the 12 render tests and PNG/preview export, plus non-author visual review (both unrun).
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
