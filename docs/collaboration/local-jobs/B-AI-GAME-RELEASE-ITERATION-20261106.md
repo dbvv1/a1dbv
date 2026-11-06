@@ -2,7 +2,7 @@
 id: B-AI-GAME-RELEASE-ITERATION-20261106
 owner: dot-B
 kind: explore
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-ai-game-release-iteration-20261106
@@ -36,8 +36,8 @@ result_branch: relay/b-ai-game-release-iteration-20261106
 
 ## 当前结果
 
-- sources.md 新增 §8（第 2 单元 220 条清单链接核实：2 项通过 Enarian、Realm of Eldermyr，18 项第一备选，翡翠经营模拟器因缺作者制作过程降为备选；另修正上轮 6 项事实问题），diff +335/−7，仅此一个交付文件。Workflow 最终审查未通过：3 项未关闭——(1) §8.4 放置地下城『三周内连发 28 条 1.3.x 补丁』实为 1.0.9→1.3.4 共 28 条更新且仅 6 条 1.3.x；(2) §8.4 云灵修仙 changelog 写『0.1.0 到 0.2.7』但当前已到 0.3.8；(3) §8.5 第 124 行骑砍上线日期混用 UTC（10-30/10-19）与页面日期（10-31/10-20）。另返回摘要称『3 项通过』与文件 §8.2/§8.3 实际『2 项通过』不一致，以文件为准。未实玩、未看视频/音频、未登录，itch.io 等渠道仍 TLS 不可达。3 个本单元遗留的 mirror-*.html 临时页已移至本次 scratch/leftover，工作区仅 sources.md 修改。
-- 产物：[bf262fa](https://github.com/dbvv1/a1dbv/commit/bf262fa75ed0a00d77295a0cd7a11299d7bc47f3)，分支 `relay/b-ai-game-release-iteration-20261106`。
-- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
-- 下一步：下一单元按审查修正 3 项事实（放置地下城补丁跨度、云灵修仙 changelog 当前版本、TapTap 日期口径）并重跑事实/读者审查；渠道可达时补读 Monkyupe、Tower of Time 等 itch 页。
+- 第3单元已完成：sources.md 新增 §9（第3单元 u3-a0，196 条已核实链接，排重后 186 条新链接、182 个新对象；本轮 3 项通过：Brickbrag、Permit Pending、哈耶克的文明：市场经济；另 22 项第一备选、48 项其余作品线索、14 项弱闭环、80 项工具/索引/方法、15 项背景/反向样本），并关闭 §8 三项事实问题（放置地下城改为 1.0.9→1.3.4 共 28 条更新且 1.3.x 仅 6 条；云灵修仙 changelog 覆盖 0.1.0→0.3.8；骑砍 TapTap 统一页面口径 2026-10-31 上线/10-20 更新并注明 JSON-LD UTC 原值）。独立审查 reviewed=true、pass=true、issues=[]、missingReviewers=0；check_public 扫描 1412 文件 findings=[]、check_repo 扫描 879 文件 errors=[]、git diff --check 退出 0。实测 git status 仅 sources.md 修改，diff +373/−4（工作流摘要记 +371/−3，差 2 行，内容核对一致）。未关闭/待人工：3 项均未实玩、未看完整实机，许可与总成本多为未知；Brickbrag 无版本号、Permit Pending 无 release notes、哈耶克 TapTap 旧入口 404/知乎原文 403；itch.io、linux.do、Steam 评测区、X/Discord/YouTube 仍读不到。未运行：游戏、视频/音频、浏览器、登录及实机验收，均不计通过。
+- 产物：[08a9128](https://github.com/dbvv1/a1dbv/commit/08a9128ce73e0867f4eb4cf2b2d5d735519af8de)，分支 `relay/b-ai-game-release-iteration-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
+- 下一步：按 §9.7 复测 Brickbrag 三条；将“降级路径＋最低设备回归”四段规格接到现有 FPS/MOBA/Star；补核哈耶克 LICENSE 与 Permit Pending 版本页；渠道可达时补读 itch 相关页。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
