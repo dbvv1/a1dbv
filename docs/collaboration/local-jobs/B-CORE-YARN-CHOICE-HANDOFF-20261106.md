@@ -2,7 +2,7 @@
 id: B-CORE-YARN-CHOICE-HANDOFF-20261106
 owner: dot-B
 kind: explore
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-core-yarn-choice-handoff-20261106
