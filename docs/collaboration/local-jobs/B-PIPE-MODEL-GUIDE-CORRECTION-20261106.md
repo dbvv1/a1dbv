@@ -2,7 +2,7 @@
 id: B-PIPE-MODEL-GUIDE-CORRECTION-20261106
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-pipe-model-guide-correction-20261106
@@ -35,8 +35,8 @@ result_branch: relay/b-pipe-model-guide-correction-20261106
 
 ## 当前结果
 
-- 已按固定脚本完成 build 单元：仅整体重写 domains/game-dev/assets/3d.md 的 asset-family-rebuild 节（+30/-2，锚点保留），给出 build.py 入口与 --/--output 参数边界、palette.plaster→trim 对墙/掩体与灯的影响、失败保旧批、GLB 与 .blend/manifest 稳定性分离、旧 manifest 过时及 2a789cc 未接收，并把状态拆为源候选/默认 home 消费/视觉未验收。实际检查：git diff --check 通过；check_repo 878 文件 errors=[]；check_public 1411 文件 findings=[]。按任务未运行 Blender、未重建/上传模型、未取得游戏画面或视觉验收。openIssues（review.pass=false）：1) 未写明默认 home 的 ART_PIECES 写死三件字节数，改色重建后直接替换 models 会因 asset-size 校验回落 fallback、画面仍是旧件；2) 二改判据未定义同版本基线，bpy 5.2.3 读者拿仓库内 4.3.2 GLB 比较会误判灯也变化；3) --output 只写严格子目录与父目录须存在，未说明相对路径以 standards-v1/ 为基准。原读者卡、其他段落与 TASKS 未改，未提交、未推送。
-- 产物：[534696f](https://github.com/dbvv1/a1dbv/commit/534696face99461f0c087354e01039abbff70538)，分支 `relay/b-pipe-model-guide-correction-20261106`。
-- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
-- 下一步：负责人决定是否补上三条读者缺口后重新审查；固定脚本已达 MAX_FIX=3，本次未自动重跑模型。
+- 按 build 单元补齐 asset-family-rebuild 节三条审阅缺口：--output 以 standards-v1/ 为基准并列出被拒路径；二改判据改为同版本未改配方 GLB 基线，说明 bpy 5.2.3 与仓库 4.3.2 件字节数相同但 sha256 不同；新增 ART_PIECES 写死 76776/36492/10336 字节、loadArt 严格校验、替换 models 不同步消费侧会整批 fallback 的说明。锚点与三状态表、4.3.2/5.2.3 证据分离等既有内容保留。实测 git diff --check 通过；check_repo 878 文件 errors=[]；check_public 1411 文件 findings=[]；UTF-8/CR=0/LF=666。openIssues 为空。未运行 Blender/bpy 重建、模型上传、浏览器/GPU 或视觉验收，画面验收仍未完成。
+- 产物：[0c13e02](https://github.com/dbvv1/a1dbv/commit/0c13e0215b8be53437ec403c42b42ce06a085c9a)，分支 `relay/b-pipe-model-guide-correction-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
+- 下一步：负责人接收本清单并更新任务状态；非作者按新节复查后可安排视觉验收（本轮未做）。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
