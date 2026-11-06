@@ -2,7 +2,7 @@
 id: B-MOBA-QUEUED-SKILLS-20261106
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-moba-queued-skills-20261106
@@ -34,4 +34,9 @@ result_branch: relay/b-moba-queued-skills-20261106
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- 新增 tests/client/queued-skills-sequence.test.ts 与 docs/verification/queued-skills-sequence.md：用生产 createControls 经真实 SimCommand 送入 contentVersion 12 Simulation 与真实 Detour，覆盖普攻前摇中 Q→W→Stop、W 瞄准取消后新 Q、同槽/不同槽重复输入、Stop 后恢复连续带、前摇完成前死亡清队与复活新输入共 6 段；逐 tick 记录命令/CommandResult/castStarted/castResolved/castCancelled/法力/冷却/位置/目标，保存 commandBandSha256 与 fullTraceSha256；全新 Simulation 重放逐 tick 完整玩法 hash 一致，1/2/5 tick 采样不改结果。6 个用例全部通过；未发现按键已受理却漏释放或重复释放的新缺陷，Stop 与死亡属现行 v12 合同明确的“受理但不出手”。npm test 88 文件 574 项：573 通过、1 失败（tests/client/audio-skill.test.ts 既有失败，移除新增文件后仍复现，未改断言）。未修改生产 src、旧测试或夹具。taskDone: 本单元范围完成。pageStuck: 不适用（非 reader-test）。未运行验收：浏览器 smoke、截图、Canvas/WebGL/GPU/音频、真人手感，均未验证，不能以 CPU/DOM 结果替代。
+- 产物：[50fda56](https://github.com/dbvv1/MOBA-Like/commit/50fda5627dd113fe2b4019d766d71309d5c26701)，分支 `relay/b-moba-queued-skills-20261106`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人接收并提交本次两文件；tests/client/audio-skill.test.ts 的既有失败与本单元无关，需另单处理；操作手感与画面/音频验收仍待人工判断。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
