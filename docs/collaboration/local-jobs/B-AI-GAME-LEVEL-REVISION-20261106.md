@@ -36,8 +36,8 @@ result_branch: relay/b-ai-game-level-revision-20261106
 
 ## 当前结果
 
-- explore 第二轮完成：sources.md 扩至 428 行，新增 HollowARK（甲级第 4 项）、Bash Fighter（A-）及第二轮渠道覆盖、近门槛与过程线索；上轮 4 条 open issue 已修正并经审查复核关闭。openIssues：最终事实审查 pass=false，2 条仍未修正——CORO SOLTO 地图误写为 JSON 数据（实为 map_*.js 手写几何＋可选 JSON/编辑器，第 11/189 行）；Kindlefall 已逐版列出 .12/.13/.15/.16 并带对比图，正文却称未逐版列出（第 190 行）。taskDone：候选收集与整理完成；pageStuck：无读者卡点文件；未运行验收：未试玩、未看完整连续实机、未核作者身份与逐件许可/成本。工作区仅 sources.md 被修改（+187/−29），另有 2 个 Workflow 临时 curl 输出未跟踪，未计交付。
-- 产物：[e960960](https://github.com/dbvv1/a1dbv/commit/e9609603c6c95b6059839d28f03febc777548819)，分支 `relay/b-ai-game-level-revision-20261106`。
+- 第三轮 explore 已写入 sources.md（实际 683 行，git diff +273/−18；Workflow 自报 +254/−6/676 行与实际不一致）：新增 §1.3 渠道覆盖、§3.6–3.8 三项甲级（群侠传：幸存者、Fire Field、We're Gonna Need More Fireballs）、§4.6 四项 A-、§4.7 二十项 B、§5.7 三十八项 C、§7.2 约 68 组工具、§8.1 读不到渠道、§9.1 试玩建议、§10 排重；check_public 1412 文件 0 findings、check_repo 879 文件 0 errors 复跑通过。openIssues：独立事实审查 pass=false，4 条未修正——(1) 第 298 行镜之边缘 WEB v10 仍写“又补 44 根攀爬管”，原文为“攀爬管修复为 44 根”；(2) 第 191 行 More Fireballs 仍写“最后一波 25,000→250,000”，旧值 25,000 实为“最大一波”；(3) §3.7/3.8 将 Steam 商店页标为“可玩”但未写需购买（Fire Field 约 HK$61/US$9.99、More Fireballs US$11.99）且无免费 demo，第 13 行“A 级 7 项都有当前可玩入口”过宽；(4) 第 13 行“A- 4 项另计”与“Hora Cero 等补齐后再列 A-”自相矛盾。taskDone：候选收集与整理完成；pageStuck：无读者卡点文件；未运行验收：未试玩、未看完整连续实机、未播视频/音频，作者身份多为个人站/工作室/handle，逐件许可与成本多数未知；Survive the Night 可玩入口 2026-11-06 复检 404。
+- 产物：[7ef80e3](https://github.com/dbvv1/a1dbv/commit/7ef80e36951b5a9c57374b6b0a320accb88f737a)，分支 `relay/b-ai-game-level-revision-20261106`。
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
-- 下一步：修正 CORO SOLTO 地图格式与 Kindlefall 逐版记录两处表述后重跑事实审查；由负责人在实机环境试玩 Voltane 并按同车同输入同机位 3 圈基线验证，再补作者身份与许可/成本核查。
+- 下一步：按审查意见修正上述 4 处表述/口径并重跑事实审查；之后由负责人在实机试玩 Voltane（同车同输入同机位 3 圈基线）并补作者身份与许可/成本核查。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
