@@ -2,7 +2,7 @@
 id: B-MOBA-GOLD-HUD-20261106
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-moba-gold-hud-20261106
@@ -34,4 +34,9 @@ src/ui/gold-receipt.ts、src/ui/hud.ts、src/client.ts；新增 tests/client/gol
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- taskDone=true（本单元实现范围）；pageStuck 不适用（非 reader-test）。已新增 src/ui/gold-receipt.ts（consume/read/reset，按 tick:ordinal 去重，同 tick 合并、混合原因显示「多项奖励」、固定 2 秒模拟时间寿命），client 每个真实 step 后立即 consume，HUD 在 data-gold 旁新增独立 [data-gold-receipt] 文本行，未改模拟/存档/声音/CSS。Workflow 内实测：定向测试 13/13、save-lifecycle 12/12、typecheck:web/build/build:web 均 exit 0、git diff --check 干净；全量 npm test 580/581，唯一失败 tests/client/audio-skill.test.ts 在基线 7e1986f 同环境复现，非本次引入。openIssues：(1) tests/client/save-lifecycle.test.ts 属写入范围外的必要 harness 绑定改动（仅注入 createGoldReceipt，未改断言），请接收端复核；(2) 全量测试因基线既有音频失败未全绿；(3) 未运行浏览器/smoke/GPU/音频与人工可读性验收，<=420px 遮挡、HUD 行高变化与读屏行为未验证。
+- 产物：[4d8408b](https://github.com/dbvv1/MOBA-Like/commit/4d8408bbd04a8d3fc5857721768a340694034464)，分支 `relay/b-moba-gold-hud-20261106`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：接收端按清单提交并复核 save-lifecycle harness 改动；负责人安排浏览器/人工可读性与遮挡验收，并确认基线 audio-skill 失败是否按既有问题处理。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
