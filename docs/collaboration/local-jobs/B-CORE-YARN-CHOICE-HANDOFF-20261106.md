@@ -2,7 +2,7 @@
 id: B-CORE-YARN-CHOICE-HANDOFF-20261106
 owner: dot-B
 kind: explore
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-core-yarn-choice-handoff-20261106
@@ -33,4 +33,9 @@ result_branch: relay/b-core-yarn-choice-handoff-20261106
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- 完成 Yarn 异步选项交接来源清单：从 505 个去重候选中筛出 343 项并按决定排序，含六场景责任表、固定源行级链接、真实调用顺序、最小接口草案与六组可执行输入/期望。两轮非作者审查问题全部关闭，reviewed=true。未运行 Unity/.NET，六组输入/期望未执行；固定基线 3.2.8，3.3 async-vm 另列；部分候选理由与约 20 条不可读链接待复核。
+- 产物：[6c68b98](https://github.com/dbvv1/a1dbv/commit/6c68b982e1b4bf760bba394015b0b968e7acf329)，分支 `relay/b-core-yarn-choice-handoff-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
+- 下一步：在 Unity 工程执行「六组可执行输入/期望」并记录实际结果，执行前按固定提交复核接入者结论中的行号，优先核 P0.0 的 20 项。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
