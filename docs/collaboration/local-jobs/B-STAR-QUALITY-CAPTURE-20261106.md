@@ -2,7 +2,7 @@
 id: B-STAR-QUALITY-CAPTURE-20261106
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 7e87d4c32d5014612fcb7a8af8bc49d266d7238c
 result_branch: relay/b-star-quality-capture-20261106
