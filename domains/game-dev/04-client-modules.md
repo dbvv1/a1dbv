@@ -623,6 +623,17 @@ flowchart LR
 
 FPS-Like 已发布的 [a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d57281dd6c6d941c6a6bef732dadf2953f2f4)把 `pagehide` 清理注册移到首个 `await` 之前：离页后迟到的 Game 成功则释放，迟到拒绝不写旧 HUD，重开沿同一资格判断。独立实际资源 CPU 反例与正常 Canvas 结算→下一局→重开已验；渲染源码未变，沿此前 Three 结果，不代表本轮 WebGL 实跑（2026-10-27）。
 
+
+<a id="client-terminal-exit"></a>
+
+**把“新局没有准备好”和“当前客户端已经失效”分成两个出口。** replacement 创建被拒绝时，只要旧世界尚未交出所有权，就保留旧局、回到暂停菜单并提供继续／重试；不能仅因一个 Promise 失败就销毁可用现场。已经安装新局后的 reset 失败则不能再提供旧局的继续入口。先把 replacement 纳入当前所有者，再释放旧 Game，后半异常清理当前资源。
+
+**致命出口先撤资格，再清资源；故障监听跟资源建立，不跟 ready。** FPS 原入口只显示 fatal，仍保 ready 与排帧资格。修正将启动失败、运行异常、context loss 和永久离开接到同一幂等终态：先令 ready/running 失效、取消 RAF、撤本客户端监听，再分别清输入、表现、Game、导航和声音；单项 dispose 抛错仍尝试其余所有者。旧帧、晚锁回调、pageshow 和未完成的新 Game 都不能复活它。WebGL 上下文在 View 创建时就存在，丢失监听应在最终 canvas 确定后、首个导航／物理 await 前安装，不能等启动成功才注册。
+
+正常缓存返回与终态分开：`pagehide.persisted` 可按项目政策保留原局，但已经失败的客户端没有恢复资格。用户声音设置与原混音不改，资源退出不等于另建一套音频暂停政策；引擎版沿现有场景／世界所有者实现，不把网页独占渲染器的退出做法套到共享引擎设备。
+
+**实现与边界：** FPS [候选 client](https://github.com/dbvv1/FPS-Like/blob/bb8827c4a7d044ed195ad9b44727264f6e11f004/src/candidates/offline-training-v1/client.ts)／[10 项回归](https://github.com/dbvv1/FPS-Like/blob/bb8827c4a7d044ed195ad9b44727264f6e11f004/tests/offline-training-v1/client-terminal.test.ts)直接执行生产编排；其中一项使用真实 Game／Rapier，替换拒绝时旧 hash 不变，继续后 tick 前进。全量 440/440、类型与生产构建通过，独审补齐初始化期间 loss 后通过。其余 DOM／输入／视听与故障为替身；浏览器仅尝试启动即被 socket 权限限制拦住，未到页面、未重试。代码只在候选分支，未合产品 main／部署，真实 WebGL loss、BFCache 和人玩未验，不提升模块采用或品质等级。[复跑与恢复条件](https://github.com/dbvv1/FPS-Like/blob/bb8827c4a7d044ed195ad9b44727264f6e11f004/docs/client-lifecycle.md)，2026-11-06。[源码／CPU 接入候选]
+
 **离页取消同时撤销“写旧界面”的资格，资源收尾不能代替接收资格。** 在现有启动入口保一份请求代次和本次 lifetime；`pagehide` 先让代次失效，再取消可取消的 fetch、释放已取得资源。每个等待点之后先核本次资格；已经取得的迟到资源仍交原 lifetime 立即释放，不能因为“不再接收”就直接丢掉句柄。异常和 finally 也只修改当前代次的 HUD／按钮，旧请求的失败只清理自己，不调用可能已属于新一局的全局 cleanup。若加载器会在返回前安装 canvas，仅检查返回值仍太晚：给每次进入一个已挂载、尺寸明确的独占容器，旧加载器只允许改自己的容器；退出只移除该容器，新世界不受迟到挂载影响。
 
 返回缓存中的页面时，选择恢复旧对局还是重新进入要明确。MOBA 候选选择重新开局：保留英雄选择和声音设置，`pageshow.persisted` 重新走原 boot；每次离页都清理，不能把 `pagehide` 监听设为 `once`。这没有增加预加载器或通用缓存，也不声称保存了离页前对局。已有续玩工程应把恢复数据接回同一个启动入口，而不是并行创建另一套世界。
@@ -1912,4 +1923,3 @@ AI 可整理获准反馈、对齐构建／符号、沿项目代码提出复现�
 按[跨模块矩阵](../../docs/research/2026-10-14-game-wp10-client-modules.md#7-后续真实验证矩阵)验取消、重入、旧档、设备；工具验幂等／撤回，构建验 AOT／裁剪、路径、资源、权限。人验动作、视听与翻译，最低设备及二改仍待实测。
 
 来源：[一手] 许可事实：Unity／包各核条款、UniTask／ink 的 MIT、Input System 的 Unity Companion License、Addressables-Sample 缺 LICENSE、Lyra 的 UE-Only 与 AI 使用限制、Toolkit 6.3 能力；[一手／研究] Agent 输入推论：公开文档可读、商业源码可读不等于获准给 Agent 或复制资源，整包给 Agent／复制资源须核逐文件许可；[研究] 项目验收建议：上段矩阵、工具／构建／人验与最低设备、二改待实测，以及 FMOD 免费／商业条件另核。版本、生产案例与许可以官方文档、固定源码和作者原文核对。
-
