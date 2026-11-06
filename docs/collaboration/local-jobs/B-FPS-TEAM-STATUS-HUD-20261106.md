@@ -2,7 +2,7 @@
 id: B-FPS-TEAM-STATUS-HUD-20261106
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-team-status-hud-20261106
@@ -34,4 +34,9 @@ result_branch: relay/b-fps-team-status-hud-20261106
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- 实现 teamStatus(state,playerId)：按 actor.hp>0 与 player.team 汇总己方/敌方 alive/total，找不到玩家返回 null，不新增 Actor.alive；HUD 仅十人训练赛在现有 topbar 显示「己方 X/Y · 敌方 X/Y」，goal 移除「存活 X:Y」并保留目标/携弹提示，无新 CSS/资产；新增 6 项真实 Game+HUD DOM 测试覆盖回合开始、自然死亡、同帧互杀、安放后进攻方全灭未结算、第三回合换边含混合 side 反例、六回合终局与重开、非 5v5 及信息泄露。本人实跑 npm test 437/437 通过、npm run typecheck 退出 0、npm run build 退出 0；浏览器 smoke 与可读性/窄屏/实战人工验收未运行。openIssues：tools/smoke.mjs、tools/smoke-offline-support.mjs、tests/offline-smoke.test.ts 超出本卡声明写入范围，但新测试依赖更新后的 assertOfflineReady，只交 3 个范围内文件会使 npm test 失败，需负责人裁决。
+- 产物：[7a28c03](https://github.com/dbvv1/FPS-Like/commit/7a28c032f130b226baa79cf06dce40accc84fa30)，分支 `relay/b-fps-team-status-hud-20261106`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人裁决 3 个 smoke 相关文件是否纳入（不纳入需回退其改动并调整/删除依赖 assertOfflineReady 的回归用例）；随后安排浏览器 smoke 与可读性/窄屏/实战人工验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
