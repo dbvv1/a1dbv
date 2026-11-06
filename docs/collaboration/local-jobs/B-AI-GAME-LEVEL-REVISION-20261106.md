@@ -36,8 +36,8 @@ result_branch: relay/b-ai-game-level-revision-20261106
 
 ## 当前结果
 
-- explore 单元完成已定候选收集并写入 sources.md（270 行：渠道覆盖 15 行、甲级 3 项 Voltane/Solhex/时囚 BetweenTicks、乙级 29 项、丙级 50 项、排除转交 9 组、工具线索 13 组，含优先试玩 Voltane 与“可见阻挡清单＋同车同输入同机位 3 圈基线”验证法）；主入口/过程页/截图 10 个链接 curl 200，未启动游戏、浏览器或播放器。openIssues：最终事实审查 pass=false 且未再修正，4 条仍在产物中——第99行 Fallen Citadel 把文档示例坐标写成实际回写项；第110行 Fang the Fox 误称无截图原 URL、且称需站点搜索证 AI 参与（页面已写明 Opus 5.5）；第111行 Blacklight 12 秒与同晚夜报 11 秒来源不一致且未补夜报链接；第127行 Epic Survivors 把正式版 app 3553800 当成 demo（实际 demo 为 4090630）。作者身份、许可/成本、完整实玩均未核。
-- 产物：[6354141](https://github.com/dbvv1/a1dbv/commit/6354141a0509b1fe10d1e02195237aefc03c173b)，分支 `relay/b-ai-game-level-revision-20261106`。
+- explore 第二轮完成：sources.md 扩至 428 行，新增 HollowARK（甲级第 4 项）、Bash Fighter（A-）及第二轮渠道覆盖、近门槛与过程线索；上轮 4 条 open issue 已修正并经审查复核关闭。openIssues：最终事实审查 pass=false，2 条仍未修正——CORO SOLTO 地图误写为 JSON 数据（实为 map_*.js 手写几何＋可选 JSON/编辑器，第 11/189 行）；Kindlefall 已逐版列出 .12/.13/.15/.16 并带对比图，正文却称未逐版列出（第 190 行）。taskDone：候选收集与整理完成；pageStuck：无读者卡点文件；未运行验收：未试玩、未看完整连续实机、未核作者身份与逐件许可/成本。工作区仅 sources.md 被修改（+187/−29），另有 2 个 Workflow 临时 curl 输出未跟踪，未计交付。
+- 产物：[e960960](https://github.com/dbvv1/a1dbv/commit/e9609603c6c95b6059839d28f03febc777548819)，分支 `relay/b-ai-game-level-revision-20261106`。
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
-- 下一步：修正上述 4 条后重跑事实审查；并由负责人在获准实机环境试玩 Voltane，按 Star 现有串行拍摄规则验证固定跑圈基线，再决定是否升级为品质推荐。
+- 下一步：修正 CORO SOLTO 地图格式与 Kindlefall 逐版记录两处表述后重跑事实审查；由负责人在实机环境试玩 Voltane 并按同车同输入同机位 3 圈基线验证，再补作者身份与许可/成本核查。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
