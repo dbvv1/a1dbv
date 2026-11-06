@@ -95,6 +95,40 @@ class OfflineChecksTests(unittest.TestCase):
     self.assertEqual(checks[7][1][-1], 'scripts/check_public.py')
     self.assertEqual(checks[-1][1], ('bash', '-n', 'with spaces.sh'))
 
+  def test_installed_dependency_shell_scripts_are_excluded(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      for relative in ('node_modules/pkg/inc-version.sh',
+                       'app/node_modules/pkg/test/ts/transpile.sh',
+                       'node_modules-guide/example.sh',
+                       'scripts/own.sh',
+                       'node_modules.sh'):
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.touch()
+      checks = runner.phases(root)
+    shell = [Path(check[1][-1]) for check in checks[8:]]
+    self.assertEqual(shell, [Path('node_modules-guide/example.sh'),
+                             Path('node_modules.sh'),
+                             Path('scripts/own.sh')])
+    self.assertEqual(len(checks), 11)
+
+  def test_git_still_excluded_from_shell_discovery(self):
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      (root / '.git/hooks').mkdir(parents=True)
+      (root / '.git/hooks/sample.sh').touch()
+      (root / 'nested/.git/keep.sh').parent.mkdir(parents=True)
+      (root / 'nested/.git/keep.sh').touch()
+      checks = runner.phases(root)
+    self.assertEqual(len(checks), 8)
+
+  def test_no_shell_files_still_returns_base_phases(self):
+    with tempfile.TemporaryDirectory() as directory:
+      checks = runner.phases(Path(directory))
+    self.assertEqual(len(checks), 8)
+    self.assertEqual(checks[7][1][-1], 'scripts/check_public.py')
+
   def test_process_output_is_inherited_and_timeout_kills_group(self):
     with mock.patch.object(runner.subprocess, 'Popen') as popen, \
          mock.patch.object(runner.os, 'killpg') as kill:

@@ -13,6 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 TIMEOUT = 120  # Per phase, including its subprocesses; CI retains its job limit.
 REQUIRED = ('bash', 'python3', 'jq', 'cat', 'mkdir', 'rm', 'grep', 'sort',
             'head', 'sed', 'dirname', 'basename', 'awk', 'find', 'cp')
+# Installed packages are not authored repository scripts. Match exact path
+# components so names such as node_modules-guide stay in the Shell phase.
+IGNORED_PARTS = {'.git', 'node_modules'}
 
 
 def phases(root):
@@ -36,7 +39,7 @@ def phases(root):
   ]
   for path in sorted(root.rglob('*.sh')):
     relative = path.relative_to(root)
-    if '.git' not in relative.parts:
+    if IGNORED_PARTS.isdisjoint(relative.parts):
       checks.append((f'Shell syntax: {relative}', ('bash', '-n', str(relative)), {}))
   return checks
 
