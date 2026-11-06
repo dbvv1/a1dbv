@@ -24,14 +24,14 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune`，按远端重建分支，不推旧历史。
-- 11-03 UTC 10:36–11:16，[Sentry](local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md) 仍 ready 未领取；另四项已领取，当前实际活动／原因未知；已按§3提示检查本机开机、登录。
+- 11-06 main `1af556cd`：A 卡 83 accepted／13 cancelled／8 review_ready（含 [Sentry](local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md)）／5 blocked，0 ready/running。仅 Git 静态状态，本机活动 unknown，非退出证明。
 
 ## 项目板
 
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
-| P81 | **试用与选择**：实作回流决策页／模板 | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md) 待接收；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。Qwen [旧基线](../../experiments/candidate-reset-recovery/README.md)构建／类型／409 测试通过。#15757 已合、#15741 关闭；静读 `dd020ddf`：旧14例中6例过时／8例待验，保留已合分页／重名策略。全套 socket 仍被拒，原动作获准后补 PR 门槛。Skills 待新读者实做，任务正文附全文；先核写者退出／空槽；本机禁安装，[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交 Claude 核心。  A→B FPS 2a789cc Py3.12.14: invalid-structure≠invalid-json;exit2. |
+| P81 | **试用与选择**：实作回流决策页／模板 | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md) 待接收；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)；[Memos #6502](https://github.com/usememos/memos/pull/6502) 有冲突，仅跟反馈，QA cancelled。Qwen [旧基线](../../experiments/candidate-reset-recovery/README.md)构建／类型／409 测试通过。#15757 已合、#15741 关闭；静读 `dd020ddf`：旧14例中6例过时／8例待验，保留已合分页／重名策略。全套 socket 仍被拒，原动作获准后补 PR 门槛。Skills 待新读者实做，任务正文附全文；先核写者退出／空槽；本机禁安装，[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交 Claude 核心。  A→B FPS 2a789cc Py3.12.14: invalid-structure≠invalid-json;exit2. |
 | MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main [`a829005`](https://github.com/dbvv1/MOBA-Like/blob/a8290054f7e1828ff8909a7633ccc3443a282e58/docs/side-release-acceptance.md)quiet 替换旧 stylized，总候选 3；镜头＋Q/W、v12 前摇排队及出图保留。赏金派生事件已接、无可见提示，旧回放一致。Site **v22 已部署**（运行源 002ae06）；新局失败保旧档，568 测试通过；线上默认／QW 398／342 tick、旧档保留通过，破坏性替换未实玩。原恢复遮挡 8px 修复保留；窄屏／长滚动／无档未验；画面／听感／盲评待验。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07 ready／04 boot-input／05 生命周期已入 main（源码／CPU）；[FPS 前台时钟](../../domains/game-dev/04-client-modules.md#web-foreground-clock)已接 v20，三入口两轮通过。Star v7 存档／MOBA `ea7a064` 为旧实操；[完整改键链](../../experiments/moba-keybindings/README.md)已在 MOBA main，45 项 CPU／DOM＋类型检查通过，历史浏览器验改键／刷新保留；原生／手柄／多人未验。[Unity 源准备](../../experiments/unity-encounter/README.md)未实跑，原任务暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [成套重导出](../../domains/game-dev/assets/3d.md#asset-family-rebuild)已接；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)通路／命中未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，复用三图／保护区／标准件，画面未验。开放音频未听未用，Nature 恢复未知。3D：网关三源实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机`gen3d`／`glbprep`可用；按实测采用 3–5 件标准件。 |

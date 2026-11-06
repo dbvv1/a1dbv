@@ -6,7 +6,11 @@
 
 ## 上游交付（2026-10-26）
 
-已提交 [Draft PR #6502](https://github.com/usememos/memos/pull/6502)，head `00d217067504e2b912bfd418199eef69d23a3c6a`；补丁与下文最终导出逐字一致，60 文件 +768/-17。PR 区分旧全量 191/1602、最终定向 7/72 与后续有限匿名 smoke，披露 AI 实施／AI 独审；用户指南仅为 PR 内提案，尚未发布。2026-10-31 核 head 未变、仍为开放 Draft，无真人 review；Frontend Tests 为 `action_required`，CodeRabbit 的 success 实为跳过草稿审核。当前只跟进原 PR 的新反馈。
+已提交 [Draft PR #6502](https://github.com/usememos/memos/pull/6502)，head `00d217067504e2b912bfd418199eef69d23a3c6a`；补丁与下文最终导出逐字一致，60 文件 +768/-17。PR 区分旧全量 191/1602、最终定向 7/72 与后续有限匿名 smoke，披露 AI 实施／AI 独审；用户指南仅为 PR 内提案，尚未发布。当前只跟进原 PR 的新反馈。
+
+**当前 PR 有合并冲突，仍只跟维护者反馈，剩余 QA 保持 cancelled。** PR 仍为开放 Draft，head 未变，无新真人评论／评审；精确 head 的 [Frontend Tests](https://github.com/usememos/memos/actions/runs/40220835403) 仍为 `action_required`。只读合并诊断针对[实际上游 main `88a20fef`](https://github.com/usememos/memos/commit/88a20fefdb20962558aa8db04d5ba068aac201e8)，发现 `MemoContentView.tsx`、`MemoShareImagePreview.tsx` 两处文本冲突；[上游 UI 迁移](https://github.com/usememos/memos/commit/99a7e33e776d5ed79d244f46db9e4c8d8130659f)还删除了 PR 阅读开关仍导入的旧 Switch 模块，编辑器依赖也已更新。只清文本冲突不足以恢复兼容，旧测试不能覆盖新依赖；本轮未编译、修冲突或重启产品 QA。
+
+**依据**：[一手] [PR 元数据](https://api.github.com/repos/usememos/memos/pulls/6502)（`mergeable=false`、`mergeable_state=dirty`）、原讨论／评审、上述 Actions 运行及固定版本只读合并诊断；状态核实 2026-11-06。
 
 ## 结论
 
