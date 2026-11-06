@@ -24,7 +24,7 @@
 - 10-26 历史已获准改写：开工 `git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune`，按远端重建分支，不推旧历史。
 - 11-06 main `1af556cd`：A 卡 83 accepted／13 cancelled／8 review_ready（含 [Sentry](local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md)）／5 blocked，0 ready/running。仅 Git 静态状态，本机活动 unknown，非退出证明。
 
-- **B 出图等待**（11-06 04:23 UTC）：[Star 唯一卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)自03:28入队，ready超40分钟无新回执；请检查开机/登录。调用unknown，不重派。
+- **B 出图等待**（11-06 08:34 UTC）：[Star 唯一卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)自 03:28 仍 ready、无结果分支；其后其他卡持续领取／回交，不能归因整机离线。Star 调用／未领取原因 unknown，不重派。
 
 ## 项目板
 
@@ -32,11 +32,11 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择**：实作回流决策页／模板 | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md) 待接收；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)；[Memos #6502](https://github.com/usememos/memos/pull/6502) 有冲突，仅跟反馈，QA cancelled。Qwen [旧基线](../../experiments/candidate-reset-recovery/README.md)构建／类型／409 测试通过。#15757 已合、#15741 关闭；静读 `dd020ddf`：旧14例中6例过时／8例待验，保留已合分页／重名策略。全套 socket 仍被拒，原动作获准后补 PR 门槛。Skills 待新读者实做，任务正文附全文；先核写者退出／空槽；本机禁安装，[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交 Claude 核心。  A→B FPS 2a789cc Py3.12.14: invalid-structure≠invalid-json;exit2. |
-| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main [`a829005`](https://github.com/dbvv1/MOBA-Like/blob/a8290054f7e1828ff8909a7633ccc3443a282e58/docs/side-release-acceptance.md)quiet 替换旧 stylized，总候选 3；镜头＋Q/W、v12 前摇排队及出图保留。赏金派生事件已接、无可见提示，旧回放一致。Site **v22 已部署**（运行源 002ae06）；新局失败保旧档，568 测试通过；线上默认／QW 398／342 tick、旧档保留通过，破坏性替换未实玩。原恢复遮挡 8px 修复保留；窄屏／长滚动／无档未验；画面／听感／盲评待验。 |
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main [`7e1986f`](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/docs/side-release-acceptance.md)；quiet、镜头＋Q/W 共 3 候选，v12 前摇排队及出图保留。赏金事件已接、无可见提示。Site **v22 已部署**（运行源 002ae06）；新局失败保旧档，568 测试通过；线上默认／QW 398／342 tick、旧档保留通过，破坏性替换未实玩。恢复遮挡 8px 修复保留；窄屏／长滚动／无档、画面／听感／盲评待验。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main（源码／CPU）；[FPS 前台时钟](../../domains/game-dev/04-client-modules.md#web-foreground-clock)接 v20，三入口两轮通过。[改键与六席读者](core-reader-intake-20261106.md)已接正文：改键47项／类型通过；六席9081 tick同构实例一致，共享指令采用未完成。浏览器沿旧证据，原生／设备／新版首次照做未验；Unity 实跑原任务暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [成套重导出](../../domains/game-dev/assets/3d.md#asset-family-rebuild)已接；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)通路／命中未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，复用三图／保护区／标准件，画面未验。开放音频未听未用，Nature 恢复未知。3D：网关三源实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机`gen3d`／`glbprep`可用；按实测采用 3–5 件标准件。 |
-| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [场景光照卡](local-jobs/B-AI-GAME-SCENE-LIGHTING-20261104.md)静态来源已接收，成套氛围配置已入[制作链](../../domains/game-dev/assets/materials.md#scene-atmosphere-revision)；三款未实玩／未看完实机，无新增品质推荐。Void Balls 原启动失败，Warpact 未玩；可用实机恢复后沿原线补验，不重派来源收集。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | [唯一品质出图卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)：两版coast-space-v1三机位双拍→盲评/记分；仍ready、无可读新PNG/分数。旧修复图已交回；Site v9三旁置、手感/听感欠项及原403/旧退出unknown保留。 |
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [三份探索处置](b-work-20261106.md#三份实例探索处置)：仅收 Bichitos 触控识别与 Solhex 章节计时机制，发布迭代本轮不收，不扩表。原场景氛围来源已入[制作链](../../domains/game-dev/assets/materials.md#scene-atmosphere-revision)。均不新增品质推荐；Void Balls 启动失败、Warpact 未玩及原实机欠项保留，不重派。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | Site **v10 已部署**（11-06 02:53 UTC；产品源 811646e／Site 源 5c78194），海岸旁置已见街屋，默认入口不变。[唯一品质出图卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)仍 ready：两版三机位双拍／盲评未交；正式分、手感／听感及原 403／旧退出 unknown 欠项保留。 |
 | FPS | **FPS-Like 完整回合品质** | dot-B | main [`fa8740d`](https://github.com/dbvv1/FPS-Like/commit/fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8) 已接[离线角色 adapter](local-jobs/B-FPS-TRAINING-CHARACTER-ADAPTER-20261104.md)，训练赛未接线；旧 fire 强清除缺切枪历史，reload/switch 源动作及画面验收待补，不计品质。原返工 Workflow／CLI 已退出，外层 worker 独立退出未知。430 测试／构建及另跑 adapter 21/21 通过。全场材质／ground 旁置、固定出图与迟到锁销毁修复保留；Site **v24 已部署**，线上仅默认菜单到达，shell HTTP 403，不绕过。默认／ground 各 2×144、四路暂停恢复及旧 Canvas 六回合证据保留；完整线上、WebGL smoke、图／手感／盲评待验。腰腿 `fc64c2b` CPU 已收，原执行退出未知。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 

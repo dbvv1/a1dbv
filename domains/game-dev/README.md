@@ -7,7 +7,7 @@
 
 **从这里开始：[独立游戏从概念到发布的路线图](06-indie-roadmap.md)。** 按概念、原型、垂直切片、内容生产、打磨、发布和上线后选择下一步；每阶段列质量标准、AI 能做、人必须决定与对应专题。先过许可与真人反馈；扩角色／组合前确认玩家能察觉核心选择差异；切片必须经历第二次需求修改。阶段路线仍是资料比较。G1 的实测范围与未验项见第 5 节。[研究]
 
-**三案例现有交付**：FPS Site v24（297bc04）、MOBA v22（运行源 002ae06）、Star v9（b43a938）已部署；MOBA 线上默认／QW 实际推进 398／342 tick、旧档保留；[新局失败保护](04-client-modules.md#保存同代捕获提交成功才显示已保存)已接真实 client 测试，破坏性替换未作浏览器验收。原恢复提示／存档的 8px 布局与输入隔离保留。FPS [指针锁销毁与接管](04-client-modules.md#web-foreground-clock)修复已过本地输入回归；FPS／Star 线上仅默认菜单到达，shell HTTP 403，完整线上验收未通过且未绕过。部署不代表 WebGL 材质、画面／听感或盲评通过；采用范围与下一步见 [案例状态](../../docs/collaboration/TASKS.md#项目板)。
+**三案例现有交付**：FPS Site v24（297bc04）、MOBA v22（运行源 002ae06）和 **Star v10（产品源 811646e／Site 源 5c78194，11-06 02:53 UTC）** 已部署。Star 现有海岸旁置已接街屋，线上 Canvas 驾驶至 457m 并见 10 排 30 栋；默认入口不变，同机位 WebGL2 评分仍欠。MOBA 线上默认／QW 推进 398／342 tick、旧档保留；[新局失败保护](04-client-modules.md#保存同代捕获提交成功才显示已保存)已接真实 client 测试，破坏性替换未作浏览器验收，恢复提示／存档的 8px 布局修复保留。FPS[指针锁销毁与接管](04-client-modules.md#web-foreground-clock)已过本地输入回归；线上仍仅默认菜单到达，shell HTTP 403 未绕过。部署不代表画面、听感或盲评通过；[Star 接入范围](https://github.com/dbvv1/Star-Rush-Reborn/blob/811646e8a69bf9803a1de2218b882ab28b4b1f42/docs/quality.md)与[案例下一步](../../docs/collaboration/TASKS.md#项目板)。
 
 ## 模块与制作链地图
 

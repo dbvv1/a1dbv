@@ -805,6 +805,13 @@ Unity／UE 保存恢复路线仍是文档、固定源码与设计推导（正常
 
 FPS-Like 已发布实现 [12ac526](https://github.com/dbvv1/FPS-Like/commit/12ac5264b186498716f849aec3325ab41d29f4aa)（网站 v11）提供了失败反例：同样在 10 ms 按下、120 ms 松开，60／30／20 fps 修复后均保留 10／110 ms 两发；该例规定 109 ms 或恰在 110 ms 松开只发首发。正常 Chromium 软件 WebGL2 实按六次短连发，原版五次丢尾发，候选六次均保留。这里使用浏览器回调的 `performance.now()`，不是硬件采样时间或网络 sub-tick 等价实现；验证范围为浏览器输入层与原模拟，不是 Unity 实跑（2026-10-27）。
 
+<a id="wide-touch-detection"></a>
+#### 宽屏触控：先看输入能力，别把宽度当设备
+
+**👀 网页触控首屏先测宽屏手机，不只测窄视口。** Bichitos Rumble 的 v1.8 修复在触摸能力成立时，以粗指针或窄于 900px 作为触控布局条件；旧版对触摸设备仍只按小于 900px 决定布局，横屏 915px 手机会没有摇杆。现有 smoke 用 915×412、移动与触摸设置，进对局后检查摇杆和动作键可见。可借此为项目补“宽屏触控仍能操作”的回归，再检查键鼠设备，不把某个像素阈值当通用标准。
+
+本端核到源码与作者日志，未运行该作品或其浏览器测试；日志称回归在修复前失败，不能算本端红绿实测。代码为专有许可，部分生成资产权利仍待作者核验，只借检查问题，不复制源码或素材。依据与核实（2026-11-06）：固定`784779f`的[输入判定](https://github.com/RuFFuS4/bichitos-rumble/blob/784779f3548d4b21c16c3e4eff5729e2c1619f42/src/input.ts)、[smoke](https://github.com/RuFFuS4/bichitos-rumble/blob/784779f3548d4b21c16c3e4eff5729e2c1619f42/tests/smoke.spec.ts)、[09-24 作者记录](https://github.com/RuFFuS4/bichitos-rumble/blob/784779f3548d4b21c16c3e4eff5729e2c1619f42/BUILD_LOG.md)、[代码许可](https://github.com/RuFFuS4/bichitos-rumble/blob/784779f3548d4b21c16c3e4eff5729e2c1619f42/LICENSE)与[资产权利清单](https://github.com/RuFFuS4/bichitos-rumble/blob/784779f3548d4b21c16c3e4eff5729e2c1619f42/ASSET_LICENSES.md)。
+
 <a id="web-foreground-clock"></a>
 **✅ Web 可玩采用：慢帧不等于失焦，恢复事件也不能直接重置渲染帧时钟。** 前台软件渲染的 333–483 ms 帧曾触发 FPS-Like 原来的 `now - simStart > 250` 暂停条件：点击开始、成功锁定鼠标后仍不推进，或旧版入口停在 tick 12。修复保留 60 Hz 固定步，每个可见前台帧最多追赶 15 步；超过 250 ms 的墙钟债务直接丢弃，不把旧输入积压到下一帧。丢弃区间内的移动、瞄准、交互与扳机折叠为末状态，过期射击、装弹、切枪等一次性动作不补发，区间之后的松键边沿保留。持续低帧率会让模拟变慢，这不是性能达标方案，也不能直接套到必须追上服务器时间的联机模拟。
 
