@@ -1,6 +1,6 @@
 # B-AI-GAME-RELEASE-ITERATION-20261106 · 发布后返工实游戏候选来源
 
-> 原始采集与静态核实日期：2026-11-06 UTC。本页整理两个工作单元的已核实候选：§1–§7 为第 1 单元在册的 89 项，§8 为第 2 单元（u2-a0）2026-11-06 追加核实的 220 条清单链接（其中 18 条为上下文/方法/工具/索引，不计作品；2 项本轮通过）。两节都只整理已核实并交回的候选清单，不新增清单外作品链接。本机只读公开网页、API 与源码；未启动任何游戏、未播放视频或音频、未登录、未发帖、未打开浏览器。链接返回 200 只代表页面可响应，不等于已实玩、已看完整实机或品质通过。商店页的 Recent Reviews 与 All Reviews 分开记，本页默认写 All Reviews，必要时注明 Recent。
+> 原始采集与静态核实日期：2026-11-06 UTC。本页整理三个工作单元的已核实候选：§1–§7 为第 1 单元在册的 89 项，§8 为第 2 单元（u2-a0）2026-11-06 追加核实的 220 条清单链接（其中 18 条为上下文/方法/工具/索引，不计作品；2 项本轮通过），§9 为第 3 单元（u3-a0）2026-11-06 追加核实的 196 条链接（其中 10 条与 §1–§8 在册条目重复，排重后 186 条新链接、182 个新对象；3 项本轮通过：Brickbrag、哈耶克的文明：市场经济、Permit Pending）。三节都只整理已核实并交回的候选清单，不新增清单外作品链接。本机只读公开网页、API 与源码；未启动任何游戏、未播放视频或音频、未登录、未发帖、未打开浏览器。链接返回 200 只代表页面可响应，不等于已实玩、已看完整实机或品质通过。商店页的 Recent Reviews 与 All Reviews 分开记，本页默认写 All Reviews，必要时注明 Recent。
 
 ## 1. 渠道覆盖表
 
@@ -309,9 +309,9 @@
 - **无为修仙传** — <https://store.steampowered.com/app/5070160/>。本线 Steam 中文样本：个人开发者第三款 AI 游戏，2026-09-01 上线、¥9.90，All Reviews 178 条/76%（2026-11-06 复核；Recent 36 条/75%）；ISteamNews 取到 56 条更新（1.0.6→1.7.2），作者称按 QQ 群反馈日均迭代 2–3 版，1.0.9/1.1.0/1.1.1 日志给出宗门任务、杂学显示、无尽海渊与旧存档兼容等具体修复。缺口：Steam 页无 AI 披露、作者未点名 AI 工具，知乎原文本机 403，只读到搜狐转载。 **比通过项少**：商店无 AI 披露、作者未点名 AI 工具，AI 写码只有转载口径（硬条件 1/4）；其余更新与存档修复链可核。
 - **多米诺的子弹工厂** — <https://www.taptap.cn/app/956393>。由《全村最好的剑》开发者页追到：同厂出头喵的 TapTap 制造 AI 游戏，2026-10-09 上线、9.3 分/824 条评价，V0.8.2→V0.9.8 日志含难度重做、设施缓存绘制、误判与崩溃修复，是本批样本最大、版本链最密的新候选。 **比通过项少**：AI 分工只有 TapTap 制造平台标签，作者过程与逐条反馈未披露（硬条件 4）。
 - **越跳越有钱** — <https://www.taptap.cn/app/876002>。同厂 TapTap 制造：2026-07-06 上线、7.8 分/549 条评价，V1.0.04→V1.0.09 连修存档丢失/异常、收集者罚站、卡顿发热并新增帧率选项，直接对应旧存档与性能两类返工。 **比通过项少**：同多米诺，AI 分工只有平台标签，且更新日志未逐条对应玩家报告（硬条件 3/4）。
-- **云灵修仙 / react-xiuxian-game** — <https://github.com/JeasonLoop/react-xiuxian-game>。公开 changelog 从 0.1.0 到 0.2.7（2025-12-05 至 12-21）连续修复战斗卡死、AI 返回畸形 JSON 导致的 NaN、配方识别与存档清空等问题，仓库另有 3 个 issue，是“首次可玩→按真实问题返工”证据最完整的一项。 **比通过项少**：公开 changelog 只证明按问题返工，AI 参与开发的证据未在仓库或页面披露（硬条件 1）。
+- **云灵修仙 / react-xiuxian-game** — <https://github.com/JeasonLoop/react-xiuxian-game>。公开 changelog 覆盖 0.1.0→0.3.8（0.3.8 为 2026-09-17）；其中 2025-12-05 至 12-21 的 0.1.0→0.2.7 一段连续修复战斗卡死、AI 返回畸形 JSON 导致的 NaN、配方识别与存档清空等问题，仓库另有 3 个 issue，是“首次可玩→按真实问题返工”证据最完整的一项。 **比通过项少**：公开 changelog 只证明按问题返工，AI 参与开发的证据未在仓库或页面披露（硬条件 1）。
 - **积案拂尘** — <https://www.gcores.com/games/179823>。单人开发者简律纯据清单口径用 DeepSeek 约 5 天、十余元做出的 AI 盘问游戏；gcores 游戏页本次只读到创建 2026-05-15、更新 2026-06-07、开发状态“持续更新”，未在该页读到评分、逐次更新记录或 DeepSeek 说明，故不写这些细节。**比通过项少**：差评驱动与具体二改未核，硬条件 3/5 缺原文，只保留“2026-06-07 仍在更新”。
-- **放置地下城：无尽远征** — <https://store.steampowered.com/app/5242520/>。由《无为修仙传》作者线追到：同作者（程序员小灰）第四款 AI 游戏，作者原文称 Codex+GPT-6 Astra 七天做出 Demo、再一周打磨后 2026-10-14/15 上线，三周内连发 28 条 1.3.x 补丁（技能排序、批量天赋升级、1,000 层竞技场、标准装备等级规则统一），当前 52 条评价 75%；注意 Steam AI 披露只写美术/文本/翻译，AI 写码仅有作者原文。 **比通过项少**：商店 AI 披露只写美术/文本/翻译，AI 写码仅有作者原文（硬条件 1/4）；28 条补丁未逐条点名玩家报告。
+- **放置地下城：无尽远征** — <https://store.steampowered.com/app/5242520/>。由《无为修仙传》作者线追到：同作者（程序员小灰）第四款 AI 游戏，作者原文称 Codex+GPT-6 Astra 七天做出 Demo、再一周打磨后 2026-10-14/15 上线；自 2026-10-15 的 1.0.9 到 10-31 的 1.3.4 共 28 条更新公告（其中 1.3.x 6 条；含技能排序、批量天赋升级、1,000 层竞技场、标准装备等级规则统一），当前 52 条评价 75%；注意 Steam AI 披露只写美术/文本/翻译，AI 写码仅有作者原文。 **比通过项少**：商店 AI 披露只写美术/文本/翻译，AI 写码仅有作者原文（硬条件 1/4）；28 条补丁未逐条点名玩家报告。
 - **AI战役** — <https://www.taptap.cn/app/960813>。TapTap 制造策略经营，2026-10-06 上线、7.8 分/16 条评价（2026-11-06 复核；app 页无公告区，NUXT `whats_news` 为空）。清单称 10-19 版本公告针对后期十几年没东西可研究加“前沿迭代”、修部分机型教学合同标题不显示、释放插画降内存、存档体积缩约 1/3 并做老存档兼容；本轮未取到该公告的 moment 原文，以上只作未核线索。**比通过项少**：二改原文与旧存档兼容未核，硬条件 3/5 不足。
 - **钓海暗涌** — <https://www.taptap.cn/app/850567>。TapTap 制造 AI 制作，9.0 分/105 条评价。9-18 更新帖（<https://www.taptap.cn/moment/849971383155822473>，2026-09-18）加古卷容量、陈旧坊市限购次数与仓库容量、免广告券概率等；2026-07-07 官方“已优化内容”帖（<https://www.taptap.cn/moment/823544410019989161>）写“旧存档中已经重复持有的唯一真遗物会自动规范为 1 个”，是本批少见的中文 AI 游戏旧档去重迁移证据。另有非官方账号的攻略帖（<https://www.taptap.cn/moment/804988808788446363>，作者雪中看你）写 AI 会“自己偷偷添东西和改名称”、导致“很多东西货不对版”，但不是官方公告，也没有直接说重复遗物由 AI 生成。 **比通过项少**：AI 分工只有 TapTap 制造平台标签，未见作者逐项分工说明；更新帖已核到 9-18 更新（849971383155822473）与 7-07 旧档去重（823544410019989161）两条，其余未逐条核（硬条件 4/5）。
 - **Agents! Please?** — <https://store.steampowered.com/app/5166150/>。披露写代码由 AI agents 写、最后由人审（游戏内 AI 同事的 TTS/对白也是刻意的 diegetic 内容）；2026-09-10 上线（All Reviews 11 条 Positive）后一个月 11 条更新，1.3.1 让“旧存档里的表彰在载入时补发已应得的”（https://store.steampowered.com/news/app/5166150/view/1843481262703623），1.3.2 修 Linux 音频/启动，1.3.3 修语言切换重置当前票据；补丁未点名玩家报告，demo 期主要按外部审计缺陷表修，AI 占比与成本未知。 **比通过项少**：补丁未点名玩家报告（硬条件 3），AI agents 写码后的二改主要由外部审计缺陷表驱动。
@@ -431,7 +431,7 @@ Rogue: Genesia、School of Magic、Future? No Thanks! 等在本轮清单里只�
 | 121 | 再烧一窑（奶思K驴的工作室） | <https://www.taptap.cn/app/972736> | 同厂奶思K驴的建盏烧制模拟，2.68万浏览/22条评价，2026-10-31更新，属于同厂里题材与玩法差异最大的一款。 |
 | 122 | 橘子工坊：增量（飞雷神123工作室） | <https://www.taptap.cn/app/942657> | 飞雷神123作品，页面标注“全新版本0.5”，14条评价，可直接核到已进入可玩版本的版本号。 |
 | 123 | 末世战线-rts（飞雷神123工作室） | <https://www.taptap.cn/app/958696> | 飞雷神123作品，页面标注“新版本0.4”，25条评价/7.2分，是同厂里唯一RTS，适合看发布后系统级返工。 |
-| 124 | 骑砍：从流民到拥军百万 | <https://www.taptap.cn/app/988887> | TapTap制造标签，62条评价/8.3分，2026-10-30上线；页面 update_time 为10-19（早于公开上线日，更新与发布时序需复核），可作“上线前后补丁”线索。 |
+| 124 | 骑砍：从流民到拥军百万 | <https://www.taptap.cn/app/988887> | TapTap制造标签，62条评价/8.3分；页面显示 Android 正式上线日期 2026-10-31、更新时间 2026-10-20（JSON-LD datePublished 2026-10-30T16:01Z、bytedance:updated_time 2026-10-19T16:00Z，均为 UTC；更新时间早于上线日，时序需复核），可作“上线前后补丁”线索。 |
 | 125 | 猫咪放置军团（权哥的工作室） | <https://www.taptap.cn/app/987538> | 权哥工作室新作，8条评价，2026-10-31更新，与猫咖、猫猫翡翠同厂，可补该厂放置品类的版本样本。 |
 | 126 | Enarian Online | <https://store.steampowered.com/app/4218510/> | Enarian: Orbital Command 同一工作室 Enarian Studios 的前作；Steam AI披露写明AI参与coding、客户端/网站图形、音乐与音效，2026-07-13《State of the Game》称上线后已实现“数百条玩家功能请求”，9-25发布资料片 The Depths Below。 |
 | 128 | 回响计划 | <https://www.taptap.cn/app/707782> | TapTap 制造同供应链（供应商上海创巴科技）作品，页面直接给出“版本 18，更新于 2026/9/9，更新 UI 和一些系统优化”与 46 条评价 7.3，可核多版本迭代与玩家反馈的对应关系。 |
@@ -549,3 +549,372 @@ Rogue: Genesia、School of Magic、Future? No Thanks! 等在本轮清单里只�
 - 最大的来源缺口仍是 itch.io 与 linux.do 原帖：前者 TLS 全站拦截，后者只能经镜像读部分楼层；涉及 itch 的 Bash Fighter、Rogue Memory、Afterimage 与涉及 linux.do 的 Achroma/妖潮渡劫，只能给条件性证据。
 - Steam 评测正文、Discord、X、YouTube 均未读，玩家原话与逐条评测缺失；“玩家反馈”本轮只到补丁/公告原文与作者公开回复层。
 - 许可与成本：除少数标注 MIT/GPL 的仓库外，多数条目只写“未知”；不推算。
+
+## 9. 第 3 单元（u3-a0）2026-11-06 追加：新一轮六角度扫描
+
+> 本节是同一任务第 3 个工作单元（u3-a0）的增量报告。按任务 §2 的来源范围（itch devlog＋补丁、Show HN 作者回复＋可玩站、Steam 更新＋作者长文、一个中文作者原帖）与 §6 门槛，本单元用 6 个收集角度并行重扫，再做 3 轮顺链追踪，最后用 curl 并行核对链接（状态码＋页面标题/正文）。保留 **196 条**已核实候选链接；其中 10 条与 §1–§8 在册条目重复（Tiberava、Uncracked City、Quasar Saz、Panache、Emberwick、Quarter Sun Cove、Bash Fighter、Claude Code Game Studios、awesome-ai-built-games、OpenAI Developers Showcase），排重后为 **186 条新链接、182 个新对象**：**3 项本轮新通过门槛**（Brickbrag、哈耶克的文明：市场经济、Permit Pending）、**22 项第一备选**、48 项其余作品线索、14 项弱闭环作品、80 项工具/索引/方法/上下文、15 项行业背景/反向样本；另有 4 组同作品双入口（NeoMud、Snake: Gridbreaker、Rosebud 的 Wesnoth/OpenRA）合并计数。§1–§8 的在册项与结论不被本轮推翻，本节不重复展开。所有候选只读公开页面/API，未启动游戏、未播放视频/音频、未登录、未打开浏览器；“可玩”只到公开入口返回 200 与页面文案，不等于已实玩。
+
+### 9.1 本轮渠道覆盖表
+
+| 渠道 / 收集角度 | 实际看了什么、取法 | 得到 | 读不到及原因 |
+|---|---|---|---|
+| Hacker News（Algolia `/search`、`/search_by_date`、`/items`） | 直连 `news.ycombinator.com` TLS 被拦，全部走 `hn.algolia.com/api/v1`。`tags=show_hn` 2025-11 起 20 组查询（game claude、ai game、browser game、vibe coded game、game update/patch/feedback/v2、multiplayer、roguelike、tycoon、simulation、webgl、three.js、claude code、cursor、codex、indie、launch、released）得 1,194 条游戏帖；另用 `tags=comment` 搜 20 组修复/反馈短语（thanks for the feedback、fixed in the latest、patch notes、v1.1、hotfix、players reported 等）按 story 反查；对约 260 条游戏帖逐条取 `/items/<id>`，抽取 submitter 回复并按 fix/update 词频与 AI 披露词排序；完整读 Brickbrag（50063042）、SimDrive（47954074）、Tiberava（50146401/50147783/50200570）、WorldStrike（50389420）、Hormuz（47729477）、0.space（43726058/43100260）、Permit Pending（50170593）、Uncracked City（50358352）、UK Farming（50287255）、SimCity with Permits 等约 15 个线程的前两层评论 | 约 26 条（Brickbrag、SimDrive、Permit Pending、Tiberava、WorldStrike、Hormuz、0.space、Uncracked City、UK Farming、Aim and Shoot、Refinery Run、Beakdown、Sagorax、Catcopter、Floktoid、Skyline Co-op、City 2026、Cooked、Hyperbubble、Downtime、GameVibe、DailyMetro、Skub、LMAO、Loft Day、Discontinuum 等） | 只读到作者回复与含修复/反馈词的评论，未逐层读完完整评论树；作者身份常只到 handle；部分 2024–2025 帖的时间与当前站点已不一致 |
+| itch.io（主域、`*.itch.io`、devlog、jam `/rate`） | 直连 DNS 解析到拦截域、TLS 握手失败；改走 `<author>-itch-io.translate.goog` 与 Google 翻译代理（配额约每 30–60 秒一次，超出 429）。读到全站 `/devlogs` 最新 50 条补丁帖、`/games/new-and-popular/ai-code` 3 页去重 36 个作品、`/games/top-rated/ai-code` 36 个、Dungeons & Dynasties（页面＋v1.3.1 反馈补丁＋56 篇 devlog 列表）、CatPhish、Neo Forge、Dig Dan Dig、Wander's End、Monkyupe、Sealed Fortress、AI Browser Game Jam 的 entries 与 results | 约 5 条进清单（Azure Flame Dungeon、Rogue Memory、6-bit Vanguard、Ketchup and Doll，以及 Qiita 上的 Spell Cascade 复盘）；其余 itch 页面读到但未过链接核对 | 直连 curl 000/exit 35、WebFetch 返回 Socket is closed；translate.goog 400/429；Monkyupe 的 `/devlog` 404（该作没有 devlog 栏目，不是链接错误）、Tower of Time 的 itch 补丁记录、Wander's End devlog 1717210、Azure Flame 的评论与作者截图原图均未直读；devlog 评论区不可得 |
+| Reddit（直连＋Arctic Shift 归档 API） | `www.reddit.com`/`old.reddit.com` 直连 403/TLS，改用 `arctic-shift.photon-reddit.com` 的 `/api/posts/search`、`/api/posts/ids`、`/api/comments/tree`。r/aigamedev 2026-10-28～11-06 按天翻约 2,000 帖，正文同时含 players/testers/feedback/playtest 与 fix/bug/reported/patch 的 177 帖按评论数排序；读 Hiraeth（1xn2rp5）、Max Every Skills（1xhzjkz）、Kapi Online（1xp6oik，作者长帖）等正文与部分评论；另读 r/gamedev 的 Claude Code Game Studios 帖（1ssodcu）与 AI caught up 帖（1wo5asm）、r/Games 的 PH3 长文（1xcr1au） | 约 7 条（Hiraeth、Max Every Skills、Kapi Online、Uncracked City、Tiberava、r/gamedev 工具帖、r/Games 行业帖） | 直连 403/TLS；redlib/eddrit/safereddit 被 bot 墙；部分评论树 Timeout，未逐层读完；Arctic Shift 偶发 502 |
+| Steam（store HTML、appdetails、ISteamNews v2、storesearch、morelike、开发者页） | ISteamNews `GetNewsForApp/v2`（count=40、maxlength=0）读公告全文；appdetails 核发售日/价格/开发者；store HTML 核 “AI Generated Content Disclosure” 与 All/Recent Reviews；storesearch 定位 appid；`/recommended/morelike` 取 120 个 appid 后逐个抓商店页按 AI 披露过滤出 18 个候选；补读中文区作者的 56 条更新 | 约 9 条（Snake: Gridbreaker、CRETA、Scarred Steel、Primus、Overdrive Breakout、SnekromancY、Teach My Little Sister 的运行时成本公告，以及同厂/同作者的 Steam 页面） | `steamcommunity.com` curl schannel exit 35/WebFetch Socket closed；`appreviews` 302 空；SteamDB 403；news hub 是前端壳（正文改由 API 取）；评测原文与讨论区读不到，只能读商店页与公告 |
+| TapTap（app 页、moment、developer 页、`__NUXT_DATA__`） | curl/WebFetch 直读应用页、moment、开发者页；解 Nuxt `__NUXT_DATA__` 取 title/developer/whats_news/update_time；追同厂开发者页（270778、405060、460317、438722、402163、428865 等）；抓 `/tag/TapTap制造` 列表 | 约 27 条（哈耶克的文明、妹居物语、江南第一主播公司、丧尸危机、翻面、今天也元气满满、王朝崛起、少女终焉契约、战术蹲坑、三国群雄志、下班后的晚餐、世界推演：反应、文明涌现、意识溢出、异星祭坛、无限弹球、江湖余生、二次元氪金模拟器、撒币之旅、恐怖直播、铁骑镇魂曲、开局一只蚁、地穴涌现、小小史莱姆、水彩魔法师等） | `webapiv2` 返回 INVALID_XUA（缺 X-UA 头）；搜索 API 404；评论原文与完整版本历史未取；部分页面只显示“昨天/前天”，绝对日期未核；app 页不展示逐条更新日志 |
+| Bilibili（toy 页、视频 view API、相关推荐） | curl/WebFetch 直读 toy 页；`x/web-interface/view` 读视频标题/UP 主/日期；从「后日时光」BV1Hvu46iEVL 扩两层相关视频，读到丧尸求生 BV1aKt66BEaf、小面包、异星祭坛 BV1WLMG6FEKv | 4 条（后日时光、丧尸求生、异星祭坛、Yu-Gi-Oh! Ruins Duel） | 搜索/space 接口 412；评论详情返回验证码；音频与实机未播放；toy 页有登录提示 |
+| linux.do（直连＋locdd.com 镜像） | 直连 curl schannel TLS exit 35、WebFetch Socket closed、translate.goog 403；只经 locdd 镜像读到部分楼层 | 0 条进入本轮清单（SOULFORGE、Achroma 等帖读到片段但原帖不可达，且已在 §8 记账） | topic 2648361、1537744、2210932、2939052 等原帖与楼中楼未直读；镜像只有部分页；不能据此判定该渠道无内容 |
+| 作者站 / 博客 / 技术社区（Qiita、Zenn、dev.to、iceprosurface、michaelghurston、juliapottinger、simonwillison、kylekukshtel、penguinboisoftware、rosebud.ai、ihca.cn、last-beacon.pjstack.dev、velmoxia.com 等） | curl/WebFetch 抽正文与出链；dev.to 用 `/api/articles` 与 `/api/comments`；Qiita/Zenn 用文章 API；读制作记、release notes、FAQ、价格页 | 约 28 条（Spell Cascade、Void Parry、Choicer Voicer、Padlock、Ave Molech、Growing City、无限弹球复盘、Babyloniain Twins、SANDLINE、MIDWAY、Last Beacon、Velmoxia、Emberwick、Quarter Sun Cove、Rosebud 三个移植复盘等） | Zenn 会员/付费文章不可读；0.space、rastushiy-gorod.ru、avemolech.vercel.app、tetra-jet.vercel.app 等可玩站 TLS/000；部分博客只有摘要或 540 字符正文 |
+| 中文媒体与转载（知乎、头条、掘金、gameres、游戏陀螺、界面、澎湃、腾讯新闻、17173、7k7k） | WebSearch 约 25 组中文查询；curl 读掘金、gameres、游戏陀螺、网易/腾讯转载、界面、澎湃正文；知乎原文多为 403 | 约 12 条线索（我的奶茶屋、一箭又一箭、根本难不倒我、箭头快跑呀、阿珠开蚌、清明上河图、小喵钓鱼、江南第一主播公司等），其中多数只有二手摘要 | 知乎 403/650B 反爬页；微信公众号“环境异常”验证墙；小红书需 App；B站 opus 验证码；TapTap 旧入口 app/800521 已 404 |
+| 目录 / 榜单 / 平台（awesome-ai-built-games、awesome-gpt-6-astra、awesome-gamedev-agent-skills、Vibe Jam、Playgama、OpenAI Showcase、Tesana、Homie、Gauntlet Loop、GameDaily、Player1AI） | 读 README、Vibe Jam 页面缓存数据集（945 条含 final_rank/made_with/award）、`showcase/llms.txt`、Playgama data.json、Tesana 游戏页、Homie 官方页、Gauntlet Loop 目录 | 约 22 条交叉线索（Vibe Metaverse v2、Toon Tank Arena、MOXstrike、Rap Battle、Mana Blade、TAKEN、GRAVECRAWL、RIPCORE、Tesana 系多款、Homie 系多款等） | Playgama 只有聚合 data.json、无单游戏清单；Astrocade/Homie 部分页是 JS 壳；`threecade.games/games/rocketball` 404、`tinyskies.vercel.app` 000；目录条目多为索引声明，未见逐版本更新 |
+| X/Twitter、Discord、YouTube、Bluesky、Newgrounds | 尝试读作者时间线/单条长帖、Discord 邀请、实机/预告片、Bluesky 原帖 | 0 条直接候选 | X 登录墙/402；Discord 未登录；YouTube 未播放；bsky.app 000、attie.bsky.app 无部署；Newgrounds 403；全程未播放视频/音频 |
+| WebSearch 与通用搜索引擎 | 多个子批次共用 200/200 配额；前半程用关键词找作者/作品，后半程改站点 API、HN/GitHub API 与直接抓页 | 0 条直接计数（只作索引入口） | WebSearch 200/200 用尽；Bing 中国版对英文/`site:` 返回无关结果；Google、DuckDuckGo、Mojeek、Startpage、Brave、SearX 被阻断或验证码 |
+| GitHub（REST、raw、HTML、commits atom） | 未认证 `api.github.com` 限流后改用 `raw.githubusercontent.com`、仓库 HTML 与 `commits/master.atom`；读 TheLongSilence、Microverse、awesome-gpt-6-astra（182 条）、awesome-gamedev-agent-skills（77 skills）、civ-game（README/AGENTS.md/CONTRIBUTING_AI.md/CHANGELOG/commits）、OpenGame、GameCraft-Bench、GameDevBench、VibeGame、Noobi.ai、Breakpoint/godot-mcp 系列等约 45 个仓库与 20 余个作者仓库列表 | 约 75 条（游戏仓库约 20 条、工具/索引/MCP 约 55 条） | 代码搜索需登录；未认证 REST 403 rate limit；部分 issue/PR 与分页仓库未取全；`aigamedevs/awesome-ai-tools-for-game-dev` README 404 |
+| 游戏运行 / 视频 / 音频 | 未启动任何游戏、未播放视频/音频、未打开浏览器；可玩性只到 HTTP 200 与页面文案 | 0 项实玩 | 所有候选均缺本端实玩或完整连续实机；帧率、手感、听感、完整游玩回路未验 |
+
+**计数口径。** 表中“得到”为去重前条目数，跨渠道会重复（同一作品可能同时出现在 HN、Steam、作者站与目录），相加高于本轮 196 条；排重后的准确数见本节开头（196 条链接、186 条新链接、182 个新对象）。
+
+**本轮读不到（合并 6 个收集者记录，按渠道归并；与前两单元重复的只列一次）。**
+
+- **itch.io 及 `*.itch.io`**：本机 DNS 指向拦截域，curl 000/exit 35、WebFetch Socket is closed、translate.goog 400/429；Monkyupe 的 devlog、Tower of Time、Wander's End、Azure Flame、Rogue Memory 的评论与作者截图未直读；`/submissions` 与部分 `/rate` 页 429/403。
+- **linux.do**：直连 TLS 失败、translate.goog 403 challenge；topic 2648361、1537744、2210932、2939052 的原帖与楼中楼未读，只有搜索摘要与镜像片段。
+- **知乎、微信公众号、小红书、B站 opus/space/评论**：知乎 403；公众号“环境异常”验证墙；小红书需 App；B站 opus/评论接口验证码、space 412；原文与配图未核。
+- **Reddit 与社交**：直连 403/TLS；Arctic Shift 可读正文与部分评论，深层评论树未逐条读；X/Twitter、Discord、YouTube、Bluesky、Newgrounds 登录墙/402/000/403，作者一手更新串与实机演示未读。
+- **Steam 社区侧**：`steamcommunity.com` 000/TLS、`appreviews` 302 空、SteamDB 403；评测原文、讨论区与补丁历史无法从社区侧交叉核。
+- **可玩站**：`0.space`（ECONNRESET/SSL EOF）、rastushiy-gorod.ru（TLS/RemoteDisconnected）、avemolech.vercel.app（UNEXPECTED_EOF）、tetra-jet.vercel.app（000）、play.arrr.fun（需 indie.fun 登录）、spawn.co（Spawn 客户端门禁）、`www.gravecrawl.com`（约 5KB JS 壳）、`vibegame.tettet.org` 的 `#demos`（JS 动态加载，只显示 Loading）；这些入口未能验证实际可玩与版本。
+- **目录/平台**：Playgama 只有聚合 data.json；AI Transparency Index 的 `?tag=Programming` 是“编程题材游戏”而非“AI 写代码”；Astrocade/Homie 部分页是 JS 壳；genex.games 单款游戏 URL 无法从 HTML 提取。
+- **工具/资产市场**：Unity Asset Store、VS Code Marketplace 无对应游戏候选评价；agentskills.io 只有规范与客户端展示，没有游戏 skills 目录；npmjs.com 的 `@taptap/maker` 包页 403（bot 墙），只读到 registry JSON 与 GitHub。
+
+### 9.2 本轮结论、排重与排序
+
+**先给结论。** 本轮 196 条已核实链接（排重后 182 个新对象）里，按任务 §1/§3 硬条件（AI 大规模开发、已过首次可玩、真实玩家反馈→具体返工、作者/入口/版本可核、一次可复述的二改、许可与成本能分开）挑出 **3 项新通过**：**Brickbrag**（最强）、**哈耶克的文明：市场经济**、**Permit Pending**。Brickbrag、Permit Pending 能把公开帖中的玩家原话对到具体改动：Brickbrag 的 HN 玩家报告对上 10-13 changelog 条目，Permit Pending 的玩家原话在 HN 父评论 50171235/50189362、作者回复 50173404/50202272 可对；哈耶克的文明对到 changelog 致谢点名的测试玩家反馈＋v2.0.0 的 Web Worker/存档迁移改动，但玩家原话未公开，证据是作者转述。三项都不是只有首日演示；AI 参与开发均有作者自述或仓库/补丁证据，不是只做美术或运行时内容。按证据完整度排序：Brickbrag（作者自述＋HN 原话＋逐日 changelog 三方可对）＞哈耶克的文明（版本链、提交署名与 changelog 致谢可核；无公开玩家原话）＞Permit Pending（HN 玩家原话与作者回复可对，但缺版本号与作者长文）。
+
+**与上两轮首推的关系。** 卡级首推仍是 §3.1 的 **Fire Field**（零编程作者＋约 18 万行＋v1.9.1 毒叠层补丁点名玩家报告＋第三方首发周复核）；§8.3 的 **Enarian: Orbital Command** 仍是“近两周刚发生玩家反馈→补丁”的最新 Steam 样本，**Realm of Eldermyr** 仍是免费浏览器首选。本轮 3 项是“新增可深挖池”，不替换它们。**什么情况下改选本轮项**：要免费浏览器、且想看“玩家原话→当天 changelog 条目”的最短闭环，选 **Brickbrag**；要看“AI 写几乎全部代码、人只定玩法/美术/叙事”的分工样本，选 **Permit Pending**；要中文作者、长版本链与旧存档/性能返工，选 **哈耶克的文明**。需要大样本评价时仍优先 §3.3 群侠传（2,347 条）；需要 Steam AI 披露＋补丁原文时仍优先 Fire Field / Enarian。
+
+**排重。** 196 条清单中有 **10 条与 §1–§8 在册条目重复**，不重复建条：§5.3 的 **Uncracked City** 与 §6 的 **Tiberava**（本轮分别补强/重审），以及 §8.5 的 Quasar Saz（<https://github.com/cleak/quasar-saz/releases/tag/v1.1> 与 §8.5 第 4 项仓库同作品）、Panache、Emberwick、Quarter Sun Cove、Bash Fighter、Claude Code Game Studios、awesome-ai-built-games、OpenAI Developers Showcase。**Uncracked City** 本轮补强：作者 2026-11-03 的 Show HN（50358352，127 分）后 11-04 回复 18 条，新增“在游戏里加一句嫌疑人均由语言模型扮演的披露、修无法返回某地点并说 next version、尽快出网页版、预告片以后更仔细审”等承诺，但仍未确认已进入可玩版本，不重复建条。**Tiberava** 本轮重审：2026-10-22 的 Show HN“My vibecoded game got a glow up”（50200570）由 cayodister 发出并以“我的 vibecoded 游戏”自述改版；更早帖（50146401/50147783）玩家报平移卡顿并要 WASD，作者回“Done: 平移更顺、支持方向键/WASD”。但作者仍只到 handle、站点无 AI 披露、AI 分工只有“vibecoded”一词，按“身份已补强、证据仍薄”保留在 §6，不升甲。**其余 182 个对象均为本轮新增**；同作品多入口（NeoMud、Snake: Gridbreaker、Rosebud 的 Wesnoth/OpenRA）在表内合并并注明。
+
+**并列时的优先序**（沿用 §2）：可复述的玩家原话→具体改动 > 有版本号/连续更新 > 玩家样本量大 > 有作者过程长文 > 有第三方复核。排除：任务 §4 名单、pxl 等工具、纯 UI 改动（转 UI 卡）、纯场景局部（转场景光照卡）、AI 只做运行时内容、只有首日演示。
+
+### 9.3 本轮通过门槛的 3 项
+
+#### 9.3.1 Brickbrag（免费浏览器多人积木世界，本轮最强新候选）
+
+- **可玩入口**：<https://brickbrag.com/>（本次 200；免费浏览器，无需登录即可玩）。更新记录：<https://brickbrag.com/changelog.html>（本次 200，游戏内菜单同一份列表）。
+- **作者与制作过程**：Hacker News「Show HN: Brickbrag – A multiplayer brick-building world in the browser」item 50063042（2026-10-12，82 分，14 条顶层评论；作者 handle `neuling`；本机 HN 直连 TLS 不可达，正文经 <https://hn.algolia.com/api/v1/items/50063042> 读取）。作者自述（50063065）：八天前开始做一个浏览器积木建造器，后来扩成可开车/坐公交/开飞机/赛道竞速/买地协作建造的开放世界；技术栈 Claude Code（Opus 5.5）＋three.js＋Node＋SQLite；9 岁孩子是主要试玩者。作者又说（50068156）“大部分时间花在小细节：最后 20% 是 AI 仍需要大量人工引导与迭代的部分”。
+- **AI / 人分工**：AI 写代码与实现（作者原话 “Built with Claude Code (Opus 5.5)”），人负责玩法方向、美术方向、手感细节、反复试玩与发布；作者在 50067116 明确把它当作“没有游戏工作室也能用 AI coding 做游戏”的样本。没有逐项代码占比。
+- **版本与日期**：2026-10-12 上线；changelog 从 10-12 连续更新到 10-24（可见 10-12、10-13、10-14、10-21、10-22、10-23、10-24 的条目），无 semver 版本号，日期即版本。
+- **一次具体二改（玩家原话 → 10-13 changelog 条目）**：玩家 gregsadetsky（50064516）报“教程里买了地却一直提示 no building here”、ChanderG（50066640）与 yardshop（50065486）复现；daef（50067118）报“在砖店菜单里退出又被弹回”；dalemhurley（50068830）报“手机摇杆误双击会放大整个页面且缩不回去”。作者 50067134 回“Will investigate and fix the issues”、50067138 回“会把返回点移到入口外”，并在 50069148 直接给出“Fixed: changelog.html”。changelog 10-13 条目里有对应改动句：`Leaving the Brick Store puts you on the street, a few steps from the door – no more popping straight back in.`（对 50067118 的砖店循环）、`Practice field: bricks go down everywhere – it used to say “no building here”.`、`Phones: a quick double tap on the joystick no longer zooms the whole page in.`；三条都能对上玩家报的问题，且改动就在当前可玩版本（是否彻底修好仍需按 9.7 复测）。同一 10-13 列表另有 `The Resume button at the bottom of the menu works again.`，是菜单按钮修复，不对应 50067118 的砖店循环。
+- **作者静态截图**：<https://brickbrag.com/assets/build/cafe-960.jpg>（本次打开 200、image/jpeg、75,184 字节；清单称页面注明非 mock-up，本次未逐句复核）。
+- **为什么最值得先挖**：它是本轮唯一“玩家在 HN 的原话 → 作者当天回复 → 同一日 changelog 条目 → 当前可玩版本”四段可直接对照的样本；反馈不是“修了很多”，而是能逐条复测的手机/菜单/建造可用性问题。适合回答“发布后第一周怎样把玩家报告变成可复测的补丁条目”，也适合借它的 changelog 写法（玩家能看懂的动作句，不写内部术语）。
+- **缺口**：无版本号（只有日期）；代码/资产许可与总成本未知；本机未启动游戏，多人并发、性能与手感未验；无第三方复核；作者身份到 HN handle `neuling`，未核真实姓名/公司。
+
+#### 9.3.2 哈耶克的文明：市场经济（中文作者，长版本链＋旧存档/性能返工）
+
+- **可玩入口**：<https://hkingauditore.github.io/civ-game/>（本次 200，免费浏览器）。公开仓库：<https://github.com/HkingAuditore/civ-game>（README、AGENTS.md、CONTRIBUTING_AI.md、CHANGELOG_v1.50+.md、CHANGELOG_v2.0.0.md 均可读）。
+- **作者与制作过程**：仓库内是作者自写的开发文档：`AGENTS.md` 是“Codex Agents Guide”，规定自动化编码代理在本仓库的工作方式；`CONTRIBUTING_AI.md` 是 `LLM Collaboration Protocol v1.0`，定义 `[ARCH]/[DEV]/[PM]/[QA]/[TEST]/[DESIGN]/[ART]` 角色、S/A 级决策必须人工确认、B/C 级 AI 自主、每次对话结束必须更新 CONTEXT/CHANGELOG 并 Git commit。提交历史可核：最近 20 条含 v2.3.60、v2.3.61、v2.3.62、v2.3.64，且有 4 条带 `Co-authored-by: Cursor` 的 agent 署名；最新提交 2026-10-22。清单记作者在知乎长文里自述“不写一行代码、Claude 主开发、Codex 审代码、Gemini 出点子”，但该文本机 403（650B 反爬页），只能作清单转述，未在本轮直读。
+- **AI / 人分工**：可核的一半来自仓库：Cursor 提交署名＋Codex AGENTS.md＋CONTRIBUTING_AI 的决策分级（人保留 S/A 级确认与验收）；不可核的一半是“Claude/Codex/Gemini 各做什么”的逐项比例，只在知乎转述里。
+- **版本与日期**：v1.52.11（上一版）→ v2.0.0（CHANGELOG 标注 2026-03-13）→ v2.3.60–62（2026-06-08 提交）→ v2.3.64（2026-10-22 提交）。`CHANGELOG_v2.0.0.md` 末尾写“感谢所有参与测试和反馈的玩家”，并点名“反馈后期卡顿问题的测试玩家”。
+- **一次具体二改（性能＋旧存档）**：v2.0.0 的“8.1 Web Worker 重构”把手动贸易等计算密集任务移出主线程、从 `useGameLoop.js` 移除 656 行，官方文档称后期帧率提升约 40–60%；同一版“存档兼容性”写“完全向后兼容：旧存档加载时自动迁移”“旧存档默认为私产制”。致谢点名“反馈后期卡顿问题的测试玩家”，可证明作者把该版本改动归因于测试玩家反馈；但玩家原话未公开，证据是作者转述，不是可直接引用的公开帖。v2.3.60–62 又修人口冻结、大臣满员扩建、业主岗工资等具体问题。
+- **作者静态截图**：<https://raw.githubusercontent.com/HkingAuditore/civ-game/master/debug_load.png>（本次打开 200、image/png、1280×720、606,824 字节；仓库内发布的游戏状态截图，不是商店 capsule，也不是营销图）。
+- **为什么最值得先挖**：它是本轮中文线里版本链最长、证据最“工程化”的一项：仓库自带 AI 协作协议、决策分级、逐版本 changelog 与提交署名，能把“玩家反馈后期卡顿 → Web Worker 重构 → 旧存档自动迁移”串成一条可复述的返工链。适合回答“中文个人作者怎样用 AI 长期维护一款有真实玩家的游戏”，也适合借它的旧存档迁移与主线程拆分做法。
+- **缺口**：仓库未见 LICENSE（代码/资产许可未知）；TapTap 旧入口 app/800521 已 404，清单记的“8.7 分/391 条评价、3.5 万预约”本次未能复核；作者知乎原文 403，AI 分工的逐项比例只有转述；本机未玩，帧率与存档迁移未实测；无第三方复核。
+
+#### 9.3.3 Permit Pending（免费浏览器城建，AI 写几乎全部代码）
+
+- **可玩入口**：<https://permit.petercai.com/>（本次 200；页面 JSON-LD 标明 free、Web browser、author Peter Cai）。Hacker News「Show HN: SimCity, but with Permits」item 50170593（2026-10-20，941 分，评论数百条，作者 `pcai`；正文经 <https://hn.algolia.com/api/v1/items/50170593> 读取）。
+- **作者与制作过程**：作者 Peter Cai（页面 JSON-LD）在 HN 50202645 自述 “almost all claude, with me focused on gameplay, art direction, mechanics, and storytelling”，并说 Claude 有时让他更早发现“idea was too fuzzy”；50176060 记录他最初按“不隐藏复杂度”的最大化方向打磨细节，试玩后发现“逐步分层/揭示深度”更容易让玩家投入，于是改为渐进揭示；50173599 记录先用一批预写故事弧保证多样性、后为具体城市定制故事时把故事弧回填进引擎。没有独立作者长文与开发时长。
+- **AI / 人分工**：AI 写几乎全部代码；人负责玩法方向、美术方向、机制与叙事（50202645），没有逐项代码占比。
+- **版本与日期**：2026-10-20 上线（Show HN 同日）；作者在 50202272（10-22）说“fixed some of these road issues in the latest release”，但没有版本号或 release notes 页面，版本只能按 HN 回复时间定位。
+- **一次具体二改（两条都可复述，玩家原话可对）**：(1) 玩家 zamadatix（50171235）报加载城市后画面变黑，贴出 WebGL 内存分配失败报错；作者 50173404（10-20）回“the game tried to allocate too much memory. I got claude to fall back to lower resolution textures when this happens, thanks for reporting”——这是“运行时资源崩溃 → 降级回退”的修复，不是只改一行报错；(2) 玩家 noduerme（50189362）列出道路/分区问题，作者 50202272（10-22）回“I fixed some of these road issues in the latest release, and added those zone overlays that were missing. Still ironing out bugs…”，改动进入当前可玩版本。
+- **作者静态截图**：<https://permit.petercai.com/marketing/feature-economy.webp>（官方页面功能图：游戏内 History 窗口与城市画面；本次打开 200、image/webp、1,670,064 字节、1800×1160，目视确认为游戏内界面；不是商店 capsule）。页面 og:image 是 <https://permit.petercai.com/marketing/og.png>（1200×630、1,863,724 字节），不是 hero.webp。
+- **为什么最值得先挖**：它给出“AI 写几乎全部代码后，人到底还做什么”的干净一句话分工，并且两次修复分别覆盖“运行时崩溃的降级路径”和“玩家列出的系统性缺陷”，比单纯的功能增补更接近本卡要的发布后返工能力。
+- **缺口**：无版本号/release notes；代码/资产许可与总成本未知；428 条评论未逐条读；无独立作者长文/开发时长；第三方复核缺失；本机未玩，玩法/帧率/存档未验。
+
+### 9.4 本轮第一备选（乙级，22 项）
+
+这些条目已接近门槛，但按硬条件或并列优先序仍差一步。每项写清“比 9.3 少什么”，不把“许可与成本未披露”单独当降级理由（§2 允许未知写未知）。
+
+1. **SimDrive** — <https://simdrive.xyz/>。手机当手柄的浏览器赛车；Show HN 2026-04-29（item 47954074，21 分，作者 1000xcat；正文经 <https://hn.algolia.com/api/v1/items/47954074> 读取）；页面带 Vibe Jam 2026 widget，vibej.am 2026 规则写明“至少 90% 代码由 AI 写”且参赛数据含 simdrive.xyz。发布后 4-29 至 5-08 作者在帖内连续回复并给出已上线修复：粉树改掉、加横屏提示、把“电脑主屏＋手机手柄”说明改清楚、修一个上线约一天才被朋友发现的回归、Safari 体感权限改为显式按钮。免费浏览器可玩，静态海报 <https://simdrive.xyz/simdrive_poster.png>（200）。**比通过项少**：AI/人分工只有 jam 资格推定、无作者量化；无版本号；样本小；本机未玩。
+
+2. **Choicer Voicer** — <https://dev.to/cherry_yan_871261020c032a/i-got-tired-of-hunting-for-choicer-voice-packs-so-i-vibe-coded-my-own-game-200k-people-played-it-4000>。作者原文 2026-08-26 称写代码时大量用 AI，游戏已 20 万+玩家；玩家要求更多语音包、重试、分数比较与排行，作者加入导演/观众反应与按分数称号，并在评论补充每个包有 Top 100 排行；可玩 <https://choicervoicer.org/>（200）。**比通过项少**：AI 占比/工具未量化；更新是否已进当前版本需核；无版本号。
+
+3. **Coro Solto: Treta Suprema** — <https://www.corosolto.com.br/>。巴西浏览器 FPS，README 明写由 Claude/Kimi/Codex/GLM 等 agent 生成且每个 commit 标 Agent，AGPL-3.0；v2.1.0-alpha.134→137（11-01～11-03）连续发版；issue #1171“反馈来自 Gustavo：TRETA$ 经济、背心、闪光弹”把具名玩家反馈并入改动（<https://github.com/corosolto/client/issues/1171>）。**比通过项少**：多数 issue 仍是内部自测/CI，玩家样本未量化；alpha 版本号不等同对外发布版本；本机未玩。
+
+4. **Snake: Gridbreaker** — <https://store.steampowered.com/app/4828340/>。Steam 抢先体验 2026-11-03，商店 AI 披露写明生成式 AI 参与编程、本地化、UI、图标与美术且逐项由作者审改；11-06 首个上线后补丁 0.5.1 开头写 “several fixes based on early feedback”，含风险合约付不起仍可接受、引导/剧情可读性、秘密房与奖励边界（<https://store.steampowered.com/news/app/4828340/view/1848664643345406>）。**比通过项少**：AI 只是“开发工具之一”，未量化占比；上线时仅 1 条评测；补丁未点名具体玩家报告。
+
+5. **Hiraeth** — <https://hiraeth.my/>。Opus 5.5＋Astra＋Tripo/Midjourney/Suno 制作的 Moebius 风浏览器动作冒险，作者公开视觉 changelog 从 0.1（10-01）到 2.45（11-03）共 242 条；11-03 的 Reddit 原帖（<https://www.reddit.com/r/aigamedev/comments/1xn2rp5/>）下玩家实报 0.5fps、首启卡顿、键鼠被浏览器截获、脚步音难听与谜题卡住。**比通过项少**：changelog 未逐条标注来自玩家；帖子之后无新版本；Reddit 正文经归档 API 读，评论未逐条。
+
+6. **NeoMud** — <https://github.com/roomsmith-games/NeoMud>（入口 <https://neomud.app/>）。自称 100% vibe-coded 的 Kotlin/Android MUD，MIT，v1.0.0（05-14）→v1.2.0（06-12）；6–7 月一批 playtest issue（多人 HP 不同步 #485、1 级法师过弱 #468、战利品不自动拾取 #467 等）多在同日关闭，是发布后按试玩反馈修的窄样本。**比通过项少**：7-18 后停更；测试者是作者家人三人（两名侄子＋女儿）的 co-op beta，不是外部玩家；issue 标签 `playtest` 的 description 写 “Found during AI playtest session”，与 #485–496 正文的三人 co-op 是两回事，真人外部玩家闭环待补。
+
+7. **CRETA: Taskbar Fishing** — <https://store.steampowered.com/app/5064260/CRETA_Taskbar_Fishing/>。PrensCin 自述完全不会编程、由 AI 把想法变成代码，2026-10-06 Steam 1.0；2026-09-01 公告 “Thank You to Our Beta Testers” 逐项列 beta 测试者反馈带来的修复（钓鱼动画/时序、卡牌持久化、Prestige Reset、Card Forge、存档安全、希腊语本地化等）。**比通过项少**：反馈发生在发布前 beta，不是发布后玩家闭环；无发布后补丁记录。
+
+8. **妹居物语** — <https://store.steampowered.com/app/3963620/>。制作人彩奈程序基础几乎为零，花两天自学 AI、约两个月/七八千元用 Claude 做出首个版本；2025-12-18 开启不删档测试、2026-03-26 限量测试（40 万预约、Demo 期间 DAU 破万），B 站 `space.bilibili.com/130645569` 连载开发日志。好游快爆/下载站记录 2.0.4（2026-04-01）到 2.2.2（2026-04-29）连续修复：存档槽位上传错误、记忆丢失/写入错误存档、跨存档复制、微信小程序多篇日记、UI 与自定义人设兼容，均对应测试期玩家反馈。**比通过项少**：仍是测试/预约阶段而非正式发售；AI 同时承担运行时对话，AI 写代码只有作者访谈口径；版本表来自第三方汇总。
+
+9. **江南第一主播公司** — <https://www.taptap.cn/app/647013>。长沙超神网络/木凳子工作室 3 人团队，2025-01-23 上线，TapTap 预约 10 万、好游快爆 9.4 分；AI 生成立绘（MidJourney）、约 70% 角色故事与弹幕文案（DeepSeek/ChatGPT）、约 80% 物品图（SD+LoRA），代码用 Copilot 辅助。上线后玩家集中批评 PK 30 秒冷却，官方已删除；随后接入基于 DeepSeek 的游戏内聊天与好感度，当前 0.5.7（2026-10-13）仍在修 wecat 聊天、加 28 个主播微信聊天。**比通过项少**：AI 写码只到 Copilot 辅助、核心代码仍人工，按严格“AI 大规模开发”口径是乙级；无逐版本更新日志。
+
+10. **丧尸危机：最后的撤离** — <https://www.taptap.cn/app/951647>。开发者“你干嘛哎呦”（TapTap 制造创作者）2026-09-30 上线测试；玩家打 1 星、批内容太少/太卡/兵种少，作者公开道歉并称“基本一天一个大版本”：10.8 大更新加工兵/爆破/电磁/火焰 4 兵种、搜打撤、角色碎片与 4 个天赋，10.10 开发者日志给出剧情 20 关/4 章，10.12 把编队槽从 4 扩到 6，另有撤离品掉率公开。**比通过项少**：AI 分工只有“TapTap 制造创作者”平台标签，无逐项 AI/人说明；版本号缺失；评价仅 11 条/6.9 分，仍带测试标。
+
+11. **一箭又一箭** — <http://www.youxituoluo.com/534534.html>。广州畅想互动/何毅坤，微信小游戏，从立项到首版上线约一周；AI 包办关卡评分、生成、编辑器和难度排序。玩家反馈后期“越玩越简单”→难度从 3 级扩到 5 级并提高困难关出现频率，社区要更爽→加架势条/连击与处决反馈，玩家爱分享极限过关→加动态时间限制；游戏内问卷持续收集需求，团队称 A/B 对留存和 ARPU 有提升。**比通过项少**：AI 做的是关卡内容而非代码；上线日期、版本号和可玩入口未披露。
+
+12. **翻面：FLIPSIDE** — <https://www.taptap.cn/app/1000462>。Mark-Pan 工作室、作者 @s-1mple-_，文科生“不会写代码也不会画画”，0 代码 0 美术靠 AI 完成，2026-10-27 上线 TapTap（8.2 分/60 条评价，热度 9680），B 站制作分享视频约 30 万人围观；作者称仍在打磨地图、枪械、切刀动作并向玩家征集“哪些瞬间有趣/哪些不舒服”。**比通过项少**：尚未找到发布后补丁或更新记录，不能证明玩家反馈已进版本。
+
+13. **后日时光** — <https://www.bilibili.com/video/BV1Hvu46iEVL/>。B 站 UP“玩游戏做游戏的老刘”，40 多岁失业后自学，改用 Codex Agent + Godot，自述人机分工约 5:95（人做创意与质量把控，AI 做约 95%）；Steam 新品节 Demo 首周近 3000 愿望单，从约 4200 款游戏中突围。**比通过项少**：目前只有 Demo，无正式上线与发布后补丁，未达“发布后返工”门槛。
+
+14. **无限弹球（无限弹球复盘）** — <https://iceprosurface.com/thought/building-a-game-with-ai/>，游戏入口 <https://www.taptap.cn/app/879324>。2026-08-05 作者复盘：两人 3 周做出 TapTap 游戏（8.8 分/64 评，7-02 上线、7-22 最后更新），逐条写上线后五类 bug、按问题类型归档玩家反馈、修复后存压力存档、帧预算/规则预算、GDScript 纯计算比 C# 慢 270–480 倍；app 页最新 0.4。**比通过项少**：版本号只到 0.4；AI 写码比例只有博客口径；许可/成本未知。
+
+15. **Growing City（Растущий город）** — <https://dev.to/andrew_perepechay_ee25378/i-launched-an-ai-built-board-game-heres-what-happened-next-504h>。Andrew Perepechay 自述非开发者，3 天用 AI 做浏览器经济桌游；2026-07-02 复盘写真实用户在不同屏幕/浏览器上布局错位后改自适应布局、玩家 SHAM 指出“连续买紫卡”规则缺失后修规则、机器人改为对局内事件发言。清单另记 7-04/7-05/7-18/7-21 有 i18n、按统计改平衡、单日重做移动端的更新（未直读，来源为清单；游戏站 <https://rastushiy-gorod.ru> 本机 TLS 不通，未能核到对应 changelog 页），这些日期不在 2026-07-02 复盘正文内。**比通过项少**：可玩站与上述更新记录未直读；未点名 AI 工具；无版本号。
+
+16. **Void Parry** — <https://dev.to/nightdrivelabs/a-game-portal-told-me-ai-art-gets-rejected-so-i-redrew-15-bosses-in-canvas-code-5c2l>。Nightdrive Labs 2026-09-29 原文：代码由 AI coding assistant 写，原 boss/背景/主视觉用图像模型生成；游戏门户认证警告“AI for code/logic is welcome, but titles with raw AI graphics are rarely approved”（称这类游戏指标差 2 倍以上），作者一晚把 15 个 boss 全改成 Canvas 2D 程序化线稿并加状态反应；Playgama 可玩页 200（167 played）。**比通过项少**：属平台发布可用性驱动的返工，不是直接玩家留言；无版本号。
+
+17. **Scarred Steel** — <https://store.steampowered.com/app/3952140/>。无编程经验的 Ethan Clarke 用 32 篇 AI Devlog 记录以 Cursor/AI 资产做完整战术 RPG，2026-03-15 发售后 3-20、3-25 两次补丁，其中 3-20 清理存档读写并修背包清空问题（原文：Cleaned up saving and loading function；Fixed various issues with inventory clearing）。**比通过项少**：补丁可核，但未找到“由玩家报告触发”的原文；AI 资产/代码占比未量化。
+
+18. **丧尸求生（B 站 toy，小面包 Cat 大王）** — <https://www.bilibili.com/toy/zombie-survivor/index.html>。DeepSeek V4 Flash＋Claude Code＋Godot 做的搜打撤丧尸射击；第二支视频 BV1aKt66BEaf（109 亿 token）按上期观众反馈逐条列出新版本：幸存者营地、武器配件、搜打撤、三存档与手机版，线上页可直接开玩（构建号 v29920）。**比通过项少**：反馈来自视频观众而非游戏内玩家；版本号是构建号；未核评论原文。
+
+19. **异星祭坛** — <https://www.taptap.cn/app/882398>。RobinsLu 一周内只用 AI 做出、全程序化生成视听内容的 3D 卡牌，B 站 BV1WLMG6FEKv 记录制作过程；TapTap 页 89 条评价/9.0 分、上线于 2026-07-10、页面更新于 2026-07-17（JSON-LD datePublished 2026-07-10T02:54Z、dateModified/upDate 2026-07-17T07:17Z）。**比通过项少**：发布后二改记录尚未核实；AI/人分工只有“一周内只用 AI”一句。
+
+20. **Velmoxia** — <https://velmoxia.com/en/games/?s=dev>（本机请求 302 跳到站内英文首页，抓到的 HTML 内无 dev.to 链接）。清单称作者有 dev.to 长文记录开发者社区反馈（页面被缓存 31 天、只有全屏才计一次打开）转成线上修复：加 service worker 每次重校验、改为首次点击/按键计数并补回归用例，站内现称 97 款小游戏；本轮未找到该长文的精确 URL，上述均为清单转述、未直读，不能当作已读的作者原文。**比通过项少**：作者原文链接缺失、修复内容未核；AI 参与开发的程度未量化；修复来自开发者社区而非玩家；无版本号。
+
+21. **Max Every Skills（Roblox）** — <https://www.roblox.com/games/97002479703204/Max-Every-Skills>。Roblox 技能 RPG，作者明说代码/美术/音频/文本都用生成式 AI，原帖征求“首几分钟与技能节奏”的玩家反馈并称会持续改进（<https://www.reddit.com/r/aigamedev/comments/1xhzjkz/>）。**比通过项少**：尚未核到具体玩家报告→修复条目，只有作者意向。
+
+22. **Spell Cascade 的 143 次 Quality Loop** — <https://qiita.com/yurukusa/items/be7602ed68788bb0bd3f>。作者记录 itch.io 浏览器游戏从 v0.3.4 到 v0.8.3 的 143 次单点改进（ClaudeCode 标签），每条“做一个改动→量化→再测”，是发布后连续迭代的强流程样本。**比通过项少**：文章明确没有玩家反馈/报障驱动，属自测质量环，按本卡门槛只能当机制参考。
+
+### 9.5 其余游戏作品与线索
+
+**同作品双入口（不另计）**：Snake: Gridbreaker 的第二个 Steam 入口 <https://store.steampowered.com/app/4828340/Snake_Gridbreaker/>；NeoMud 的站点入口 <https://neomud.app/>；Battle for Wesnoth 与 OpenRA 的可玩页 <https://rosebud.ai/play/battle-for-wesnoth>、<https://rosebud.ai/play/ra-multiplayer-2>。以下分两组，组内按清单原序排列，不代表优先级；每行保留原始链接与清单理由，缺口写在理由内。
+
+#### 9.5.1 有发布/更新/反馈线索、但未达门槛（48 项）
+
+| # | 作品 | 原始链接 | 清单理由 |
+|---|---|---|---|
+| 1 | ARRR（Pirate MMO） | <https://play.arrr.fun/> | AI 开发规模最大的新线索。HN 2026-07-10（48865667，19 分，链 Reddit）作者 m0dE 回帖称“entire game is pretty much built using Claude Code”：程序化世界/物品/船/多人系统全由 Claude Code 写，整包仅 5MB、无图片/模型/音频资产，支持 250 人，免费浏览器。缺口：登录 indie.fun 才能进入，本机无法验证可玩；未找到发布后补丁或玩家反馈→版本的公开记录，因此只作“AI 全代码 MMO”上限样本，不计闭环。 |
+| 2 | The Long Silence | <https://github.com/achimala/TheLongSilence> | GitHub 头部覆盖新发现：522 星，仓库描述“A space exploration game built by Claude Opus 5”，浏览器 WebGL2，星系/行星/星云/残骸全程序化 + 手写 GLSL，仅地面材质/石块/树叶由图像模型与 Blender 经 tools/ 生成；README 还给出 17 条交互断言、逐场景截图/帧率、review set 等验证脚本，是 AI 大规模开发的强证据。缺口：README 只给 localhost 运行方式，未找到托管可玩入口、release 或玩家 issue，无发布后闭环，只作能力上限与“AI 项目自带验证工具”线索。 |
+| 3 | space zero（0.space） | <https://news.ycombinator.com/item?id=43726058> | 作者 stevekwon211 2025-02-19 首发 AI-native 3D 浏览器世界原型，评论区要求免登录与更多玩法；2025-04-18 原帖称按约 100 条 HN 反馈重写，加 guest mode、无尽地形、活系统、V 键视角切换、type-anything crafting，同帖玩家报跳跃时仍有走路音、作者回复已去掉空中走路音。站点本机 ECONNRESET/SSL EOF，当前可玩性未核。 |
+| 4 | Padlock | <https://spin.atomicobject.com/ai-product-launch-shipping/> | Kyle Harris 2026-04-23 复盘：AI 作为辅助做出每日解谜游戏，上线首周约 50 DAU；玩家评论/短信/代码建议促成应用内“提交谜题代码”入口和后台审核，朋友问“我是不是今天最快”促成计时器与成绩追踪；playpadlock.com 200。缺口：AI 规模不足、玩家样本小。 |
+| 5 | Ave Molech | <https://www.michaelghurston.com/2026/05/from-tabletop-rpg-to-browser-game-how-i-vibe-coded-a-dungeon-crawler-in-a-week/> | Michael G. Hurston 2026-05-16 原文：Claude 出设计与架构、Claude Code 写代码、Gemini 生成立绘/场景，约 12 小时做出可玩 Wizardry 式地牢；5-22 更新把 3 层扩到 16 区、6 职业、3 手动存档+自动存档与云存档。缺口：没有玩家反馈驱动的具体二改，属发布后扩内容；avemolech.vercel.app 本机 TLS 不通。 |
+| 6 | Dinomino | <https://dev.to/yasin_emreakmak_1920928/i-built-a-3d-game-for-my-little-cousin-with-ai-its-now-on-the-app-store-pa9> | Yasin Emre Çakmak 2026-10-10 原文：非游戏开发者用 AI/vibe coding 做 3D 恐龙经营，已上 App Store/Google Play；真实测试者（小表弟）30 秒内暴露“摇杆挡住商店按钮”“恐龙浮空”等体验问题。缺口：未给出已发布修复/版本，证据停在测试观察；App Store 页 200。 |
+| 7 | 江湖余生（TapTap） | <https://www.taptap.cn/app/910135> | TapTap 制造 AI 产出只到“简单点击框架”，作者不会编程、充值大几百后仍缺 NPC/宗门/论剑，账户倒欠 3 万多积分，明说不再更新修复（taptap.cn/moment/839798475485874050）；AI 游戏成本与平台积分约束反例。 |
+| 8 | Azure Flame Dungeon (DUNG: Azure Flame) | <https://yurukusa.itch.io/azure-flame-dungeon> | Spell Cascade 同作者在 Qiita 关联文《非エンジニアがPython+Pygameでローグライクを作った全記録》里公开的另一款作品：非工程师用 Claude Code 写出约 1.5–2.2 万行 Python/Pygame 地牢 RPG，已在 itch/Gumroad/BOOTH 以 2 美元发售，可补同作者第二条 AI 全流程与版本记录。 |
+| 9 | Rap Battle (Make a Beat) | <https://make-a-beat.com/rap-battle/> | ARRR 轮播页直链的《Vibe Loaded Games》名单成员：Claude/Codex 构建的实时人声评分说唱对战，2026-01-14 上线并获 Product Hunt 日榜第二，名单称其上线数月仍在持续更新。 |
+| 10 | Tetra Troopers | <https://tetra-jet.vercel.app/> | 同名单的 Tetris×塔防混合，标注 Built with Antigravity 且被列为上线数月仍更新；本机 tetra-jet.vercel.app 直连 000，原页未读，只能先按名单描述建候选。 |
+| 11 | Mana Blade | <https://manablade.com/> | ARRR 同篇《The Weekend MMO》四款 AI-native MMO 之一：作者自建 VoidCore WebGPU 渲染器、约 250 个独立动画角色全由 AI 生成，浏览器免费可玩且仍标 in development，可追上线后的引擎与性能修补。 |
+| 12 | TAKEN (Voidmode Games) | <https://www.taken-game.com/> | 《Built in Public》名单中的浏览器 UFO 恐怖游戏：VOIDMODE 作者用 Claude Code＋Codex 双 agent 加自建交通管制工具并行开发、Suno 做音乐，现 pre-alpha 免费 demo＋£9.99 预购，制作过程与后续版本可追。 |
+| 13 | GRAVECRAWL | <https://www.gravecrawl.com/> | 同名单的四人合作哥特生存 ARPG：四职业、波次与电影化 Boss、浏览器可玩，程序化地牢生成器用 Claude Fable 5 构建，适合追合作平衡与发布后修订。 |
+| 14 | Hollow Night | <https://playgama.ai/play/qwpaherohe> | Void Parry 作者用同一代码库和构建开关发布的万圣节衍生作，标题、5 个新 Boss、商店与存档前缀均不同，正文公开构建脚本与替换校验，可作“同作者第二款已发布作品”对照；无玩家反馈记录。 |
+| 15 | MIDWAY 1942: Air Strike | <https://ihca.cn/midway/> | 同作者另一款可玩 WebGL2 空战，索引条目给出 2026-09-30 的 CC BY / CC BY-NC 资产许可与迭代开发记录，补上代码/资产许可分界；同样没有发布后玩家反馈证据。 |
+| 16 | Last Beacon / 最后的灯塔 | <https://last-beacon.pjstack.dev> | CREATION.md（<https://github.com/stackloomdev/last-beacon/blob/main/docs/CREATION.md>，本次 200、6,695 字节）记录三轮带日期的真实迭代（09-25 Three.js 三维重制、09-29 全屏光束与夜战、09-29 写实画面），每轮列出截图检查后修掉的具体问题并保留 2D 回退，驱动来自创作者要求而非外部玩家。 |
+| 17 | Yu-Gi-Oh! Ruins Duel | <https://www.bilibili.com/toy/astral-duel-game/index.html> | B 站 Toy 已发布页加 2026-10-26 更新分支/预览，新增遗迹大厅、四章十二试炼与墓地控件并通过 200+5 项测试；但正式页仍保留旧版待审核，模型归因和第三方卡图权利也未确认。 |
+| 18 | Pocket Aces | <https://github.com/achimala/pocket-aces> | The Long Silence 同作者的另一款完整浏览器卡牌 roguelike，带 DESIGN.md、151 个 Pip 内容包、测试与 ip-audit，可核其提交是否含发布后修订；README 只给本地运行/自行部署，没有公开可玩入口。 |
+| 19 | Discretionary Review（housing.over.pizza） | <https://housing.over.pizza/> | 《Permit Pending》HN 评论区直接链出的同类浏览器城建游戏（HN 50036864，201 条评论），可补同一 Show HN 圈的发布后反馈样本；AI 参与度仅见评论以 Claude 口吻调侃，需核作者原话。 |
+| 20 | LlamaTale | <https://github.com/neph1/LlamaTale> | 追 NeoMud 的 AI MUD 生态找到的 LLM 驱动 MUD，作者自述 vibe coded，仓库 1,675 commits 且持续发版，发布后迭代证据比 NeoMud 更连续。 |
+| 21 | 二次元氪金模拟器 | <https://www.taptap.cn/app/352583> | 《江南第一主播公司》同厂（超神网络/木凳子）前作，TapTap 开发者说明写明程序/文案用 ChatGPT、美术用 MidJourney，并有续作与版本记录，适合追同一团队 AI 制作链。 |
+| 22 | 箭头快跑呀 | <https://juejin.cn/post/7669058712007147539> | 单人 + AI（Cursor/Claude，AI 生成全部美术）上线的微信小游戏，作者给出三主题 30 关、运营后台和版本迭代闭环；实际发布后玩家反馈改动待核。 |
+| 23 | 今天也元气满满（TapTap 制造） | <https://www.taptap.cn/app/841518> | 与《小小史莱姆》同在 TapTap 制造上的克苏鲁职场文字游戏，作者资源申请帖明确记录 v1.0→v1.2 按周更新、v1.3 核心系统已实装，页面 176 条评价 9.4，是本批同平台发布后迭代链最完整的作品。 |
+| 24 | 王朝崛起（TapTap 制造） | <https://www.taptap.cn/app/844838> | TapTap 制造单人 2D 沙盒骑砍，页面 7.7 分、作者自述“很多人因为 bug 多打差评”并承诺“你报一个，他修一个”持续修 bug，是玩家差评→返工的直接线索（尚未见具体补丁条目）。 |
+| 25 | 战术蹲坑（TapTap 制造） | <https://www.taptap.cn/moment/804110762665575951> | TapTap 制造上的大战场小队指挥新作，发布帖展示微操小队与呼叫轰炸玩法，可补同平台“新作发布入口”，但版本号与玩家反馈未披露。 |
+| 26 | 世界推演：反应 | <https://www.taptap.cn/app/984268> | 页面明确标注“本游戏内含有使用 AI 生成的游戏资产”，2026-10-19 上线后 10-21 就发 1.1.4 修长时游玩与电场多物体卡顿，29 条评价 7.9，AI 披露与短周期返工两项齐全。 |
+| 27 | Battle for Wesnoth 浏览器移植（Rosebud，amnesiac agents） | <https://rosebud.ai/engineering/porting-wesnoth-with-amnesiac-agents> | Rosebud 团队用 AI 代理把约百万行 C++ 的 Battle for Wesnoth 移植到 WebAssembly，复盘了上下文遗忘、约三分之一构建参数被重复尝试和“实验状态保存”框架；与输入 8 的 LLM 移植同题，但无发布后玩家反馈。 |
+| 28 | OpenRA 浏览器移植（Rosebud） | <https://rosebud.ai/engineering/porting-openra-to-the-browser> | 同团队把 20 年历史的 C#/.NET RTS 引擎 OpenRA 编译到 WebAssembly，已有可玩页 rosebud.ai/play/ra-multiplayer-2，文中未描述 AI 用法，可作同团队移植做法对照。 |
+| 29 | GZDoom 浏览器移植（Rosebud） | <https://rosebud.ai/engineering/gzdoom-in-the-browser> | OpenRA 文末引出的同系列复盘：AI agents 完成 GZDoom 的 WebGL/ZScript/音频移植，可玩入口 rosebud.ai/play/gzdoom，文中未给版本节奏与玩家反馈。 |
+| 30 | The Vibe Metaverse v2 | <https://www.thevibemetaverse.com/> | vibej.am API 的 both=games 只返回这一款（2025、2026 两届均提交且 is_up 均为 true），页面自标 v2，是这批线索里最直接的“发布后跨年继续改版”证据。 |
+| 31 | 泡泡坦克大作战 / Toon Tank Arena | <https://toon-tank-arena.jay6697117.deno.net/> | awesome-gpt-6-astra 索引 issue #52 记载“Astra Pro 做首版、Codex 做后续改进”，页面本机实测可打开，有首版→后续改进的两段式记录。 |
+| 32 | MOXstrike | <https://www.moxride.com/home/moxstrike> | 同团队 Moxazza 另有 MoxRide，issue #131 报告作者用 Astra 迭代编码、测试与打磨这款 3D 射击，可对照同作者两款作品的做法。 |
+| 33 | 准点下班，别被发现 / Clock Out Unseen | <https://www.bilibili.com/toy/clockout-unseen/index.html> | B 站 toy，索引与仓库 DEVELOPMENT.md 记录碰撞、视线、玩法设计的迭代式开发，可与现有 5 个 B 站 toy 并列核对作者与版本。 |
+| 34 | collisio.club | <https://www.collisio.club/game> | SimDrive 的 HN 评论区被拿来对照的“手机当手柄 + 浏览器赛车”前作，同机制可做发布后修订对照；AI 参与未获证据。 |
+| 35 | PaperRoute | <https://www.paperroute.lol/play/> | 索引称作者 devlog 记录 Blender 建模与迭代，页面本机可玩（排行榜/周赛机制），发布后修订证据仍待补。 |
+| 36 | Overdrive Breakout / 超载突围 | <https://store.steampowered.com/app/3742920/Overdrive_Breakout/> | AWeekGame 单人作品，Steam 商店页 AI 披露明确写生成式 AI 参与代码、音效、音乐、美术与翻译；2026-05-29 上线后 06-08 补丁写『Thank you for your feedback』并改控制与 UI；06-01 仅补第三方许可，无玩法改动。B站 BV1vZGk62EsU 是作者自述制作过程。 |
+| 37 | 无限弹球（TapTap，输入博客里的实际作品） | <https://www.taptap.cn/app/879324> | 输入博客《拿 AI 写了个游戏谈谈心得》正文链到的游戏原页：2026-07-02 上线、7 月 22 日已更到 0.4，作者在同一篇里逐类复盘玩家报告的无限连锁、对象复用串状态、销毁/奖励时点、动画影响结算与发布包丢资源，并把修复写进可玩版本，是这组里最接近“发布后返工”闭环的新候选。 |
+| 38 | Primus | <https://store.steampowered.com/app/4546430/> | 从种子《Scarred Steel》的同一开发者/发行 Stone & Steel（Ethan Clarke）追到；商店 AI 披露写明视觉、音频、代码全部由 AI 辅助，2026-08-12 发售后 2026-09-13 补丁称按 feedback 增加分辨率/窗口选项并修 UI，是同一作者第二款可核的发布后返工作品。 |
+| 39 | Rogue Memory | <https://quantumcodemonk.itch.io/rogue-memory> | 从《Azure Flame》参加的 AI Browser Game Jam 条目列表追到；页面写“Created entirely using Claude AI”，AI 披露含 Code/Graphics/Sounds，并列出 v1.2.4→v1.3 的移动端可玩性、代码重构与难度改动（上轮只记为 itch 不可达，未列候选）。 |
+| 40 | 6-bit Vanguard (Star Overlord 4.0) | <https://battle-of-the-moon.itch.io/6-bit-vanguard> | 同一 AI Browser Game Jam 总榜并列第 1（AI Usage 第 2）；标题里的 4.0 与 jam 评分说明它是持续版本化的 AI 参赛作，值得补读其 itch 开发记确认发布后改动。 |
+| 41 | Spinlings | <https://github.com/416rehman/spinlings> | Claude Code 内运行的卡牌对战游戏，CHANGELOG 连续记录 0.2.9→0.2.16 及 2026-10-22 服务端/网站更新，含市场、图鉴、对战等玩家可见改动。 |
+| 42 | SnekromancY | <https://store.steampowered.com/app/4314770/> | 与 Snake: Gridbreaker 同属 Steam“Rogue Snake”捆绑包、2026-07-29 上线，作为同类蛇形 roguelite 可核其 AI 参与和补丁记录（Steam 页当前未见 AI 披露）。 |
+| 43 | 撒币之旅（TapTap） | <https://www.taptap.cn/app/887975> | 批内《意识溢出》同开发者 Ray 工作室的另一款（9.1 分/41 评），页面 8/12 更新明确写优化成长曲线、加怪与爆发玩法、修黑屏 bug，并承诺论坛反馈两天内修。 |
+| 44 | 恐怖直播：魔都怪谈实录（TapTap） | <https://www.taptap.cn/app/876938> | 同为 Ray 工作室（8.1 分/83 评），但页面同时显示最新评价分只有 2.0，是可直接追“发布后某版本口碑回落→返工”的候选。 |
+| 45 | 铁骑镇魂曲（TapTap） | <https://www.taptap.cn/app/868246> | 批内《王朝崛起》同开发者大飞馕的另一款机甲清版（9.2 分/14 评），页面有面向先遣测试玩家的长开发说明并公开征集早期反馈。 |
+| 46 | 开局一只蚁（TapTap） | <https://www.taptap.cn/app/954053> | 批内《文明涌现：主不在乎》同开发者单纯鱼工作室的另一款（8.8 分/26 评，页面更新到 2026-10-02），用于核该工作室是否每款都按评价迭代。 |
+| 47 | majidmanzarpour/threejs-procedural-dungeon (Dungeon Forge) | <https://github.com/majidmanzarpour/threejs-procedural-dungeon> | 同作者的确定性种子地牢生成器可玩演示，是该技能生态里可直接打开的成品样本；只有可玩页与仓库，未见发布后补丁记录。 |
+| 48 | RIPCORE — Arena Battler | <https://ripcore.netlify.app/> | 批内 threejs-game-skills README 列出的五个可玩演示之一（同组还有 Neon Ridge Drift/Snooker/Starship Dogfight/Tide Singer），是该技能的直接产出；只有可玩页，未见更新日志。 |
+
+#### 9.5.2 AI 开发规模或入口证据较强、但发布后闭环不足（14 项）
+
+| # | 作品 | 原始链接 | 清单理由 |
+|---|---|---|---|
+| 1 | UK Farming Simulator | <https://butterbean.farm/> | 10-29 Show HN 后玩家贴出 shader link 错误，作者同日回“Should be fixed now”并承诺重做加载与性能（news.ycombinator.com/item?id=50287255）。缺口：AI 使用只有评论者“又一个 Claude 游戏/用 LLM 做的”判断，作者未确认，只作低置信线索。 |
+| 2 | Babylonian Twins：LLM 读 68000 汇编把 1993 Amiga 游戏移植到 Godot | <https://babyloniantwins.com/blog/porting-a-1993-amiga-game-to-godot/> | 2026-09-01（HN 09-03，381 分/133 评）：原作者用 Claude Fable 5 一个晚上得到可跑移植，再用几个周末调手感并发行；有 1993 原盘、2010 手工移植和 2026 新版可对照，是“LLM 读旧汇编→真游戏上架”的完整一手样本（未玩）。 |
+| 3 | SANDLINE / 沙线行动 | <https://ihca.cn/sandline/> | 中文作者“一海千寻的 AI 实验室”的可玩 Three.js 战术 FPS，公开 DEVLOG 逐条记录移动端瞄准丢手势、Bot 对撞死锁、爆炸粒子上限等修复，索引条目称 Codex 多轮迭代开发；devlog 是工程记录而非玩家闭环。 |
+| 4 | AIMUD | <https://github.com/Ghost-Programmer/aimud> | 同一 AI MUD 线索上的 Spring Boot/Angular 项目，作者长文列出 Junie/Gemini/Copilot/Anti-Gravity 多代理分工，仓库 403 commits，可核 AI 与人工边界。 |
+| 5 | Moonlight & Mayhem（Raccoon Heist，Codex + GPT-5.6 Sol Ultra） | <https://github.com/simonw/raccoon-heist-codex> | 与 linux.do 种子同用 GPT-5.6 Sol 的完整生成游戏，仓库附提示词和转录，作者记录两轮追问修复浣熊眼球 bug，属可核的生成后二改。 |
+| 6 | 根本难不倒我 | <https://www.7k7k.com/wxgame/14413.htm> | 《一箭又一箭》演讲明确把它的彩色箭头机制与用户视角调优作为前作来源，17173 复盘记录取消“点错 3 次失败”、微信 AB 测试调难度等改动；该作本身 AI 参与度待核。 |
+| 7 | 少女终焉契约（TapTap 制造） | <https://www.taptap.cn/app/854568> | TapTap 制造放置 RPG，9.2 分；作者在上线约一周的帖子里称这一周主要在做新玩法、交流群活跃但缺曝光，可作“上线一周内加内容”的样本。 |
+| 8 | 下班后的晚餐 | <https://www.taptap.cn/moment/856801821857940925> | 三人零基础小队日志明确写“生成全流程 AI 美术参考，交给美术拉磨”，并区分 AI 参考图与手绘成品；尚未发布，只能作 AI 与人工分工边界的样本。 |
+| 9 | 文明涌现：主不在乎 | <https://www.taptap.cn/app/981439> | 10-18 上线当天发 0.1.3，修返回键/菜单返回、加退出前保存保护、优化后期文明运转性能，89 条评价 7.4；AI 使用未标注，需补核。 |
+| 10 | 意识溢出 | <https://www.taptap.cn/app/958061> | 纽约大学 Game Center 学生团队作品，10-21 上线当天发 1.2.0，50 条评价 8.3；AI 使用未标注，仅作聚光灯试玩期的返工样本。 |
+| 11 | The Crownless | <https://www.spawn.co/@izkimar/the-crownless/play> | 索引称作者在 Spawn 里边玩边迭代动作 roguelike；页面只到 Spawn 客户端门禁，实机与迭代记录均未读到。 |
+| 12 | padlessbox.com | <https://padlessbox.com/> | SimDrive 评论区作者 b4rtaz__ 自荐的同类“手机当手柄”多游戏平台（含 Snake 等），可与 SimDrive 的两屏/单服取舍直接对比；AI 参与未获证据。 |
+| 13 | SandPuzzle | <https://garyxuan.github.io/SandPuzzle-client-publish/index.html> | Cocos 论坛《流沙俄罗斯方块》贴内作者 garyxuan 自荐的同类落沙解谜，页面可玩，但未见 AI 制作说明，只作同类对照线索。 |
+| 14 | Rosebud: Porting Unciv to the Browser | <https://rosebud.ai/engineering/porting-unciv-to-the-browser> | Rosebud 工程博客索引里与批内 Wesnoth/OpenRA/GZDoom 三篇并列的第四个移植（Unciv/Kotlin→TeaVM，核心只改 10 个文件，附可玩页 /play/unciv-base），同一 amnesiac-agent 方法的新案例。 |
+
+### 9.6 工具、索引、方法与上下文（80 项）＋行业背景/反向样本（15 项，均不计候选）
+
+#### 9.6.1 生产、试玩、发布与引擎工具（46 项）
+
+| # | 工具 | 原始链接 | 清单理由 |
+|---|---|---|---|
+| 1 | Claude Code Game Studios issue #34（工具） | <https://github.com/Donchitos/Claude-Code-Game-Studios/issues/34> | 35k star 的 AI 游戏工作室模板下，用户追问“有人做出完成可玩的游戏吗”，跟帖有人称 62 个 sprint、188 个 gdscript 仍只是半可玩 pre-MVP——模板产出与“完成游戏”的落差，非游戏候选。 |
+| 2 | Claude Code Game Studios issue #46（工具） | <https://github.com/Donchitos/Claude-Code-Game-Studios/issues/46> | 用户抱怨 Max×20 跑近三周只做出几个按钮；跟帖称工具只帮写 GDD/脚本、Unity 里仍要大量手工，另一人称 30% 周配额烧在文档与 agent 沟通——工具真实使用成本，非游戏候选。 |
+| 3 | Universal Modder（Claude Code 改任意 PC 游戏） | <https://github.com/rehan-remade/universal-modder> | 2026-09-30 建库、查询时 9,458★（HN 10-01 4 分）：用 Agent Skills + fal MCP + um CLI，让 Claude Code/Codex 自己找游戏、判引擎、读真实代码、做美术/3D/音效、在运行中的游戏里测试并沉淀知识库；是“AI agent 直接改真实发行游戏”这条线近三个月热度最高的新项目，a1dbv 未收（未安装、未跑）。 |
+| 4 | Co-op Anything（给任意单机游戏加联机） | <https://github.com/cranebeaker/coop-anything> | 2026-10-16 建库、1,919★：给 agent 一个仓库，让它调研、逆向引擎、做/修联机、用游戏内 bot 自测并打包成一键安装；把“AI 修改已发售游戏 + 自测”做成可复用流程，与 Universal Modder 同属新出现的 agent 改游戏集群（仅 README 核读）。 |
+| 5 | OhMyGame（开源一人游戏工作室） | <https://github.com/WhiteTowerAI/ohmygame> | 2026-08-11 建库、1,709★、Apache-2.0，README 称基于 Pi、支持 40+ 模型 provider（BYOK），覆盖“做游戏→多平台发布→变现”的桌面应用；是新的端到端 AI 游戏生产入口，非单点资产生成（未下载、未跑）。 |
+| 6 | Genex Desktop（Agent 装引擎、构建并自测） | <https://github.com/genex-games/genex-desktop> | 2026-10-02 建库、798★、MIT：桌面 app 让 agent 自己配置 Unreal/Unity/Godot 或浏览器环境、构建游戏并试玩；正好补 a1dbv 引擎接入页“agent 需要真实引擎验收”的缺口（未装，README 核读）。 |
+| 7 | WAI Play（网页游戏 AI 试玩与质量诊断） | <https://github.com/waiterve/wai-play> | 2026-08-04 建库、255★，中文：把游戏 URL（可选 ZIP 源码）交给 agent 在真实浏览器里玩，输出五维评分、可复现问题卡（截图/≤20 秒录像）与修改建议；把“试玩→证据→改法”串成流程，适合验证发布后修复（未部署试用）。 |
+| 8 | Ziva AI Game Tester（Godot 自动试玩） | <https://ziva.sh/full-game-tester> | HN 2026-08-28（作者 OsrsNeedsf2P）：AI 先读代码、启动 Godot 游戏、按测试目标逐步操作，最后给 pass/fail 并保存视频；页面标 Pro $50/月、仅 Godot。是“AI 试玩闭环”里少见的按引擎做的产品化入口（未购买、未试）。 |
+| 9 | Breakpoint MCP（Godot 确定性试玩，293 工具） | <https://godotengine.org/asset-library/asset/5335> | Godot Asset Library 1.21.0、MIT、2026-11-06 更新：除编辑器/运行时控制外，提供冻结时间、精确帧步进、固定 RNG、状态快照、断言与截图 diff 等确定性试玩能力，280 个高信任工具默认关闭；是 a1dbv 引擎页“Godot 社区 MCP 质量参差”判断的最新反例（未安装）。 |
+| 10 | godot-editor-mcp（194 工具/29 类） | <https://pypi.org/project/godot-editor-mcp/> | PyPI 2026.11.4，项目页 hybridindie/godot-mcp：包说明称 194 工具/29 类、默认只开检查类，支持实时编辑器、headless、输入模拟与导出，HTTP 多客户端需 bearer token；可作为 Godot MCP 选型的另一极（包元数据核读，未装未跑，工具数来自项目说明）。 |
+| 11 | Godot MCP Toolkit（113 工具，可写自定义工具） | <https://godotengine.org/asset-library/asset/5375> | 1.1.2、MIT、2026-10-29：113 个内置 MCP 工具，可用 GDScript 写自定义工具并热重载、read-only 模式、会话 token、无遥测，启动工具面小再按需展开；适合对上下文预算和权限敏感的团队（未装）。 |
+| 12 | VibeGame（prompt→game 多 agent 框架） | <https://github.com/tettethu/VibeGame> | 2026-08-12 建库、367★、Apache-2.0，声称支持 Claude Code/Codex、Phaser 引擎，配“自进化对抗 agent 团队”和技术报告；是研究型多 agent 做游戏的新样本，可对照 a1dbv 的多 agent 章节（未跑、未核实验效果）。 |
+| 13 | Noobi.ai（Codex + Godot 生产 agent） | <https://github.com/Innate-Labs/Noobi.ai> | 2026-08-09 建库、256★：本地优先桌面 agent，用 Codex App Server + Godot 4 把一句想法做成“reviewed, playable”的 Web/Godot 游戏；目前是 macOS developer preview，适合观察“生产 agent 内建审查”这一新形态（未装）。 |
+| 14 | TapTap 官方 instant-games-open-mcp（含玩家反馈工具） | <https://github.com/taptap/instant-games-open-mcp> | TapTap 官方 MCP（仓库 2025-10-11 建、2026-11-06 仍在推、56★）：文档列出的 `get_debug_feedbacks` 可拉玩家报错、真机日志、玩家截图和指定会话服务端/Lua 日志并落盘，另有构建/提交/资产生成工具；是把“玩家反馈→AI 修”接成可调用入口的渠道独有样本（未接、未跑）。 |
+| 15 | Game Decompilation Skill for Claude | <https://github.com/lemiur/Game-Decompilation-Skill-For-Claude> | 2026-10-25 建库、197★：给 Claude 的 byte-matching 反编译 skill；与 artifact 已收的 Popcar 反编译讨论相补——那边是现象，这边是 agent 可执行工具（未跑）。 |
+| 16 | debuff（浏览器游戏试玩/调参 MCP） | <https://github.com/debuffjp/debuff> | 游戏 MCP 目录中少见的“把 agent 接到运行中或 headless 的 2D 浏览器游戏上做试玩、状态检查与调参”的服务器，直接对应本卡的发布后返工场景。 |
+| 17 | antics-mcp（HTML 游戏发布/联机） | <https://github.com/antics-gg/antics-mcp> | 同一游戏 MCP 目录；把单文件 HTML 游戏发布到带房间、同步状态与排行榜的多人 URL，补“发布上线”而不是只做本地原型。 |
+| 18 | Coding-Solo/godot-mcp | <https://github.com/Coding-Solo/godot-mcp> | Godot Asset Library 的 MCP 资产列表与游戏 MCP 目录里星数最高的 Godot MCP（约 13–15 个文件级工具），是本组三个 Godot MCP 的默认对照基线。 |
+| 19 | IvanMurzak/Godot-MCP | <https://github.com/IvanMurzak/Godot-MCP> | 同一 Asset Library MCP 列表（asset 5245）里的 C#/.NET 编辑器插件，与 Unity-MCP 共用 MCP/反射栈和云端或自托管后端，补 C# 项目线。 |
+| 20 | Beckett（AI MCP for Godot） | <https://github.com/beckettlab/beckett-godot-mcp> | 同一 Asset Library MCP 列表（asset 5296）；反射驱动、保存前校验 GDScript/C#、可撤销/批量场景编辑、审计日志与知识包，分 Lite/Full 版，走“先校验再落盘”路线。 |
+| 21 | godot-mcp-pro | <https://github.com/youichi-uda/godot-mcp-pro> | 同一 Asset Library MCP 列表（asset 4961，标 Proprietary）与游戏 MCP 目录；84 个工具覆盖动画、Tilemap、着色器、输入模拟与运行时调试，是该列表里功能面最宽的一档。 |
+| 22 | godot-mcp-runtime | <https://github.com/Erodenn/godot-mcp-runtime> | 游戏 MCP 目录；用 UDP 桥接进入正在运行的 Godot 4 游戏做输入、截图、UI 检查与实时 GDScript，属“运行时试玩”型而非编辑器型。 |
+| 23 | GoPeak | <https://github.com/HaD0Yun/Gopeak-godot-mcp> | 游戏 MCP 目录；110+ 工具但默认 compact 只暴露 33 个核心工具、其余按动态组加载并分页 tools/list，专门压 MCP 工具的上下文成本。 |
+| 24 | IvanMurzak/Unity-MCP | <https://github.com/IvanMurzak/Unity-MCP> | 游戏 MCP 目录星数第二（约 4.6k）；把 AI 接到 Unity 编辑器及 Unity 构建的游戏，与同作者 Godot-MCP 同栈，补 Unity 侧样本。 |
+| 25 | CoderGamester/mcp-unity | <https://github.com/CoderGamester/mcp-unity> | 同一游戏 MCP 目录；另一套 Unity 引擎钩子（约 2k stars），可与 Unity-MCP 对照接口范围与维护活跃度。 |
+| 26 | @taptap/maker | <https://www.npmjs.com/package/@taptap/maker> | TapTap 官方 instant-games-open-mcp README 指向的 Maker CLI/本地控制台，带项目与 Git 历史、图像/视频/3D 资产画布和本地预览，是 MCP 之下的实际执行层。 |
+| 27 | AVP2-Reconstructed | <https://github.com/lemiur/AVP2-Reconstructed> | Game Decompilation Skill 作者的实战目标（Aliens vs Predator 2 重建），可核该 skill 在真实项目里的用法与产出边界。 |
+| 28 | Auto Game Builder（Lifecharger） | <https://github.com/Lifecharger/auto-game-builder> | CCGS issue #46 里 Lifecharger 自荐、r/gamedev 评论区也推荐的替代品：保留 CCGS 模板但加了 Claude Code/Gemini/Codex/Aider 多 agent、构建部署与手机端管理，README 说明它就是从 CCGS 裁剪而来。 |
+| 29 | OpenCode Game Studios（CCGS 的 OpenCode 重写版） | <https://github.com/striderZA/OpenCodeGameStudios> | 同一 r/gamedev 帖里 Important_Tree7914 给出的 CCGS 重写版，宣称 52 agents、78 skills、78 commands、231 个测试，并支持 OpenCode、Pi、Codex 与 Claude Code，是对“工作室式 agent 配置是否过度”的另一条实现线。 |
+| 30 | Couchlink | <https://github.com/cranebeaker/couchlink> | Co-op Anything 同作者的配套工具：同一台 PC 上为每名玩家各跑一份游戏并分屏或分显示器、各给各的手柄键鼠，让 agent 产出的联机 mod 也能客厅同玩。 |
+| 31 | Stacklands Co-op | <https://github.com/Dudiebug/stacklands-coop> | Co-op Anything README 的社区作品列表里已可安装的 Stacklands 联机 mod（host 同步、F8 面板、joiner 存档不动），是该 agent 流程真正落成可玩发行物的样本。 |
+| 32 | Godlink MCP（tomyud1/godot-mcp） | <https://github.com/tomyud1/godot-mcp> | Godot MCP Pro 对比表列为免费轻量竞品，已上 Godot Asset Store，带工程可视化与撤销，可作 Coding-Solo 之外的替代。 |
+| 33 | Dokujaa/Godot-MCP | <https://github.com/Dokujaa/Godot-MCP> | 对比表列为免费 39 工具、TCP Socket 连接，并集成 Meshy API 生成 3D 模型，补“AI 资产生成”路线。 |
+| 34 | ee0pdt/Godot-MCP | <https://github.com/ee0pdt/Godot-MCP> | 对比表列为免费 19 工具的插件式双向通信方案，适合只需节点/脚本/场景编辑的轻量用法。 |
+| 35 | bradypp/godot-mcp | <https://github.com/bradypp/godot-mcp> | 对比表列为免费 10 工具、MIT、TypeScript，主打精简与只读模式，可作最小权限对照。 |
+| 36 | GDAI MCP（3ddelano/gdai-mcp-plugin-godot） | <https://github.com/3ddelano/gdai-mcp-plugin-godot> | Godot MCP Pro 对比表中的 $19 商业竞品，支持自动截图与调试器集成，是付费路线的直接对照。 |
+| 37 | Godot MCP Native（yurineko73） | <https://github.com/yurineko73/Godot-MCP-Native> | 纯 GDScript 原生实现、无需 Node，版本 1.0.8，对应 Beckett 对比表里的 embedded/Native 路线。 |
+| 38 | godot-mcp-native（Cynnar） | <https://github.com/Cynnar/godot-mcp-native> | 内嵌 Godot 4.5+ 编辑器的原生 MCP server，v0.1.0、零 sidecar，适合 4.6+ 新项目试验。 |
+| 39 | CoplayDev/unity-mcp | <https://github.com/CoplayDev/unity-mcp> | SubmitGame 工具清单列的 Unity MCP，可补 Godot 之外 Unity 主引擎的 AI 编辑器控制线。 |
+| 40 | IvanMurzak/Unreal-MCP | <https://github.com/IvanMurzak/Unreal-MCP> | 同作者 UE 5.7 版（C++ 插件 + .NET sidecar），补 Unreal 引擎线。 |
+| 41 | klyo games MCP | <https://github.com/krastranseu-lang/klyo-games-mcp> | 托管式 MCP，发布 HTML5 游戏并带排行榜与玩家录像，是 antics-mcp 的同类替代。 |
+| 42 | deed.page agent skill | <https://github.com/f-o-x11/deed-page-skill> | 一条请求把 HTML5 游戏发布到独立 HTTPS 地址，补 antics/debuff 之外的静态发布链路。 |
+| 43 | hi-godot/godot-ai | <https://github.com/hi-godot/godot-ai> | 由 CoplayDev/unity-mcp 作者团队新开源的 Godot MCP（README 自称 46 工具/120+ 操作、3,200+ stars、21,000+ 月活），补上批内只覆盖 Unity 的引擎缺口。 |
+| 44 | IvanMurzak/GameDev-MCP-Server | <https://github.com/IvanMurzak/GameDev-MCP-Server> | Unity-MCP README 直接链到其 releases 的共享 NuGet MCP 服务器，三引擎插件都靠它，是批内工具的服务端层。 |
+| 45 | IvanMurzak/ai-game-dev-plugin | <https://github.com/IvanMurzak/ai-game-dev-plugin> | 同作者的 Claude Code/Codex 插件与 Agent Skills 总包，把三引擎 MCP 与技能串成一套安装入口，是批内 Unity-MCP 的上游分发层。 |
+| 46 | lemiur/alien-trilogy-decomp | <https://github.com/lemiur/alien-trilogy-decomp> | 同作者另一款 PS1 游戏匹配反编译，README 明写“obscene amount of AI assistance”并给出 byte gate，是 AVP2 之外第二个 AI 反编译样本。 |
+
+#### 9.6.2 资产、美术、音频与 UI skills（19 项）
+
+| # | 工具 | 原始链接 | 清单理由 |
+|---|---|---|---|
+| 1 | h3-game-sprites（视频转 2D sprite sheet） | <https://github.com/gary149/h3-game-sprites> | 2026-08-17 建库、147★：Agent Skill 把 AI 生成视频按 1992 Mortal Kombat 的方法切成关键姿势、抠像、打包图集；README 称 8 个动作约 $5、半天完成，给“视频模型→游戏动画”一个带成本的具体入口（未试用）。 |
+| 2 | Codixel（Claude Code 像素美术 skill） | <https://github.com/mankidev/codixel> | 2026-10-31 建库、126★：强调参考图、骨骼先于像素、逐帧检查和场景内对比；与 a1dbv 已收 pxl（文本 DSL 资产族）是不同路线，可作像素资产生成的新对照（未装）。 |
+| 3 | Blender Game Skills（概念图→可绑定 3D 资产） | <https://github.com/majidmanzarpour/blender-game-skills> | 2026-09-24 建库、173★：Claude Code skill 把参考图/概念图做成绑好骨、可导出 GLB/FBX 的 game-ready 资产，每个阶段要求渲染与测量证据；正好对应 a1dbv 3D 资产页“生成后仍需清理/绑定”的缺口（未装）。 |
+| 4 | Effekseer VFX Skill（实时游戏特效链） | <https://github.com/kanaworksai-hue/effekseer-vfx-skill> | 2026-10-10 建库、154★：agent 走 brief→贴图→Python recipe→EffekseerCore 编译→Godot filmstrip→单点修正→独立复审，补上“AI 做实时 VFX”这条少被覆盖的资产链（未装）。 |
+| 5 | Game UI Design Workflow（游戏 UI Agent Skills） | <https://github.com/guiguiyan930-source/game-ui-design-workflow> | 2026-08-04 建库、399★，中文 Cursor Skills：GDD/PRD→设计令牌→页面延展→组件拆解→雪碧图切片→9-slice/Atlas/Unity/Godot/Cocos JSON，把 UI 资产交付做成有契约的流程；a1dbv 游戏 UI 更多在手工/组件层（未试用）。 |
+| 6 | aigccat（自托管 3D 资产管线） | <https://github.com/RainNameless/aigccat> | 2026-09-16 建库、49★，中文：文/图→3D 模型→贴图/拓扑/UV/绑骨/动画→Unity/Godot GLB + Asset Contract，明确针对“脸型雷同、微调要全量重生成、导出变品红、清理脚本误删、API 成本无感”等真实脏问题；是可自托管的资产生产线候选（未部署）。 |
+| 7 | Blender Copilot（Blender 内 agent 面板） | <https://github.com/XEonAX/blender-copilot> | HN 2026-09-26（仓库 4★）：聊天面板让模型写 Python 直接作用于当前打开的 Blender 场景，每轮包一层 Ctrl+Z，作者自述约 $7 生成；热度低但“在真实 DCC 里可撤销地跑 agent”的做法值得记录（未装）。 |
+| 8 | agent-sprite-forge | <https://github.com/0x0funky/agent-sprite-forge> | VibeGame README 引用；从提示直接产出 sprite sheet、地图、透明 PNG 帧与 GIF 的 agent skill（约 5.3k stars），补 2D 资产供给这一环。 |
+| 9 | pyxel-mcp | <https://github.com/kitao/pyxel-mcp> | 游戏 MCP 目录；Pyxel 作者自己做的 MCP，能启动游戏、抓帧、检查 sprite 与声音，适合小型像素项目的可玩性检查。 |
+| 10 | threejs-game-skills | <https://github.com/majidmanzarpour/threejs-game-skills> | Blender Game Skills 同作者（约 2.7k stars）；面向可玩、打磨过的 Three.js 浏览器游戏，README 挂 5 个在线 demo，可核同一作者的跨资产/代码工作流。 |
+| 11 | audio-studio-mcp | <https://github.com/kanaworksai-hue/audio-studio-mcp> | Effekseer VFX Skill 同作者（596 stars）；本地跑 Stable Audio 3（MLX）生成 BGM/SFX 的 MCP，补音频供给与模型许可边界。 |
+| 12 | KanaWorks SAKUGA VFX | <https://github.com/kanaworksai-hue/kanaworks-sakuga-vfx> | 同作者；90 个手绘风动画 VFX flipbook、9 种元素，支持 Unity/Godot/Web 且免费，是 Effekseer 技能之外的成品资产线。 |
+| 13 | 3dixel | <https://github.com/mankidev/3dixel> | Codixel 同作者；Blockbench 风格的 3D 像素模型 Claude skill（方块预算、贴图与像素尺度规则），补 3D 像素资产。 |
+| 14 | game-ui-page-generator | <https://github.com/guiguiyan930-source/game-ui-page-generator> | Game UI Design Workflow 同作者；单页整屏游戏 UI 生成 skill，与主工作流的逐页延展衔接。 |
+| 15 | game-ui-specification | <https://github.com/guiguiyan930-source/game-ui-specification> | 同作者；把颜色、字体、组件、响应式与切图规则沉淀成可交付设计系统的 skill。 |
+| 16 | game-ui-component-breakdown | <https://github.com/guiguiyan930-source/game-ui-component-breakdown> | 同作者；把整页 UI 拆成透明背景、可合成/可切图的独立组件素材，补“设计稿→开发切图”一段。 |
+| 17 | PixelLab MCP | <https://github.com/pixellab-code/pixellab-mcp> | Auto Game Builder 工具清单里列出的像素美术 MCP（角色、动画、tileset 直出），可作为 Codixel 这类本地像素 skill 的商用 API 对照。 |
+| 18 | guiguiyan930-source/game-skill-vfx-production | <https://github.com/guiguiyan930-source/game-skill-vfx-production> | 同作者的技能特效生产 Skill（Brief→关键帧→Alpha 帧序列→引擎接入/QA），是批内三套 UI 仓库之外的另一条游戏资产管线。 |
+| 19 | kitao/pyxel-skill | <https://github.com/kitao/pyxel-skill> | 批内 pyxel-mcp README 指定由它驱动观测工具（v1.4.3 要求 pyxel-mcp>=1.3.1），并自带 Claude Code 插件市场安装方式，是 MCP 的技能层。 |
+
+#### 9.6.3 索引、榜单与评测基准（15 项）
+
+| # | 索引/基准 | 原始链接 | 清单理由 |
+|---|---|---|---|
+| 1 | awesome-gpt-6-astra（182 款 GPT-6 Astra 游戏索引） | <https://github.com/MartinDelophy/awesome-gpt-6-astra> | 头部索引新来源：433 星，收录 182 款 GPT-6 Astra 游戏，逐条给可玩链接、模型归属证据（issue/X/开发日志）与核验备注，目录更新到 2026-10-28；比 a1dbv 已收的 lappemic/awesome-ai-built-games 更聚焦单一模型且带来源分级，适合后续按“有开发记录/有更新”继续挖。它是目录不是作品，不计候选。 |
+| 2 | awesome-gamedev-agent-skills（游戏开发 Skill 市场） | <https://github.com/gamedev-skills/awesome-gamedev-agent-skills> | 插件/Skill 市场角度新条目：7,056 星，77 个面向 Godot/Unity/Unreal/Phaser/PixiJS/three.js/Bevy/pygame/LÖVE 的 game-dev skill；与本卡“制作链”相关，可看社区把哪些环节交给 agent。属工具索引不是游戏，且未核实际产出效果。 |
+| 3 | awesome-ai-for-games（游戏全生命周期 AI 研究索引） | <https://github.com/Eurekaleo/awesome-ai-for-games> | 2026-09-04 建库、389★：按游戏生命周期整理 AI/基础模型研究的可搜索索引，适合作为后续找“发布后返工/试玩评估”来源的目录（仅 README 核读）。 |
+| 4 | OpenGame（开源 agentic 游戏创作框架） | <https://github.com/leigest519/OpenGame> | VibeGame README 明确致谢引用；CUHK MMLab 的开源端到端网页游戏框架，含会自我积累的 Template Skill、维护已验修复的 Debug Skill、GameCoder-27B 与 OpenGame-Bench，是本组里最接近“生成→修复”闭环的新框架。 |
+| 5 | GameCraft-Bench | <https://github.com/FreedomIntelligence/gamecraft-bench> | 同由 VibeGame 引用；在真实 Godot 引擎里用 140 个任务、可回放轨迹与多模态判分评“agent 能否端到端交出可玩工程”，可直接当返工质量的验收基准。 |
+| 6 | GameDevBench | <https://github.com/waynchi/gamedevbench> | VibeGame README 致谢引用；CMU/Princeton 的 ICML 2026 基准，333 个 Godot 4.4.1 游戏开发任务并带公开排行榜，用于横向比较 agent 的引擎内开发能力。 |
+| 7 | Code2Games | <https://github.com/AIGeeksGroup/Code2Games> | 输入 awesome-ai-for-games 索引 Build-and-Maintain 2026 段列出的官方代码库（arXiv 2610.05033），研究 coding agent 生成可玩游戏世界，可作为新一轮评测基线。 |
+| 8 | Ritmo | <https://github.com/typeonce-dev/ritmo> | 面向编码 agent 的 TypeScript ECS 运行时，错误代码不能编译且提示修法，适合 agent 写 game logic。 |
+| 9 | Qwen Code | <https://github.com/QwenLM/qwen-code> | OpenGame 明确基于它扩展 Game Skill、GameCoder-27B 与 OpenGame-Bench，是上游 agent runtime。 |
+| 10 | Harbor | <https://github.com/harbor-framework/harbor> | GameCraft-Bench 的评测/执行 harness，用于容器化跑 agent 并回放游戏证据。 |
+| 11 | awesome-ai-games（aviaryan） | <https://github.com/aviaryan/awesome-ai-games> | 按复刻/原创分类并标可能上线日期的 AI 游戏清单，可继续扩候选池。 |
+| 12 | awesome-ai-game-dev-tools | <https://github.com/SubmitGame/awesome-ai-game-dev-tools> | 按反编译、MCP、生成、引擎、美术、音频等分节的 AI 游戏开发工具大全，本次 Unity/Unreal MCP 由此补入。 |
+| 13 | game-ai-benchmarks-papers | <https://github.com/zsyverse/game-ai-benchmarks-papers> | 游戏 AI benchmark/论文清单，可补 GameCraft-Bench、GameDevBench 之外的评测对照。 |
+| 14 | GameDaily.ai | <https://gamedaily.ai/> | 每天发布一款全 AI 生成浏览器游戏的目录，适合按日期追更新/返工记录。 |
+| 15 | Player1AI | <https://player1ai.com/> | 500+ AI 浏览器游戏目录，可按手机/手柄/多人筛选，且 Play 链回作者原页。 |
+
+#### 9.6.4 行业背景、方法与反向样本（15 项）
+
+| # | 对象 | 原始链接 | 清单理由 |
+|---|---|---|---|
+| 1 | WorldStrike | <https://worldstrike.fun/> | 发布当天玩家报告→当天修复的最新鲜样本（HN 主帖 2026-11-06，50389420，62 分；标题 “Multiplayer tanks that demolish real buildings from OpenStreetMap”，不带 show_hn 标签，不是 Show HN 帖）。作者 n4ze3m 逐条回复并已改：OSM 署名从角落 ⓘ 改为游戏内与首页常显、重生 5 分钟砍到 30 秒、掉线 bug 修好并自动重连、服务器 tick 落后修掉、定位到碰撞检测扫太多建筑导致回弹；免费浏览器、真实 OSM 城市可拆。缺口：全帖与站点均未披露 AI 参与开发，按本卡硬条件不能算 AI 作品；列出供核实作者是否用了 AI，以及作为“AI 时代同日反馈闭环”的机制参照。 |
+| 2 | Hormuz Havoc（AI 玩家反向改造） | <https://www.hormuz-havoc.com/> | 与任务机制高度相关的反向样本：Show HN 2026-04-11（HN 47729477，54 分）作者说朋友用 AI bot 与 Claude 浏览器扩展直接读 client-side game.js，按评分公式优化，首个 AI 得分是最强人类 2.5 倍；作者把整个游戏引擎搬到服务端、逐个补漏洞、用每局耗时日志识别 bot，并在帖内承诺修 one-time action 的结算复制 bug。游戏本身不是 AI 开发，不能作 AI 作品候选；价值在“客户端逻辑暴露给 AI 玩家后必须服务端化”的发布后返工规格。 |
+| 3 | Microverse | <https://github.com/KsanaDock/Microverse> | topic:ai-game 按 star 排第一的“游戏”仓库（2,510 星，Godot 4 多智能体 AI 社交沙盒，角色有记忆/自主任务/多模型接入）。但 AI 是运行时玩法而非开发主体，仓库也未称 AI 写代码；按本卡 §1 只能作上下文，说明 GitHub 头部“AI 游戏”多为 AI-as-gameplay，不是 AI-as-developer。 |
+| 4 | r/gamedev 对 Claude Code Game Studios 的吐槽帖（工具） | <https://www.reddit.com/r/gamedev/comments/1ssodcu/i_just_tried_claude_code_game_studios_for_the/> | 两小时约 50 万 token 只写完 Flappy Bird 的 GDD、没有一行代码；跟帖多人复现“文档膨胀/零产出”，也有人指出需人持续 steer——AI 游戏工具的真实失败路径，非游戏候选。 |
+| 5 | 《地穴涌现》开发日志 4（AI 过度工程） | <https://www.taptap.cn/moment/859797774919536479> | 2026-10-20，10 天 GameJam 原型一次改动跑了 3 个多小时、2.2 万积分，原因是 AI 自动加了近千行测试、几千帧验收和旧存档迁移；作者总结“AI 做游戏不是免费，给的自由度越大越往正规工程跑”，是给小任务写边界的具体反例（页面已读）。 |
+| 6 | 《小小史莱姆》开发日志 05（TapTap 制造人机协作） | <https://www.taptap.cn/moment/860998185634500437> | 2026-10-20：任务分级用不同引擎（积分差 10 倍以上）、美术微调最贵且最不听指令、逻辑必须自己先整理、音效底噪大而背景音乐可用、帧动画约 400–600 积分；是 TapTap 制造平台侧成本/质量的一手使用记录（页面已读）。 |
+| 7 | 《水彩魔法师·水排序》上线两周复盘 | <https://www.taptap.cn/moment/853728463025082019> | 2026-09-28，一人+AI、100 关已上线：最忙一天连推 9 个版本，后来才知频繁更新不利于系统重新抓数据；作者结论“缺的是分发不是产品”，首发 3 天冷启动窗口被浪费；补的是发布后运营/更新节奏这一层（页面已读）。 |
+| 8 | 《AI 让两个人完成六个人的研发工作，然后呢？》（我的奶茶屋） | <https://zhuanlan.zhihu.com/p/2097746150862353068> | 2026-10-27（原文知乎 403；清单记本次读 gameres 转载，`gameres.com/901203341.html` 本机直连 403，正文以清单转述为准）：两人用 AI 做完原需 6 人的《我的奶茶屋》并上线 TapTap，但新增与商业化不达预期，作者结论“AI 提速是全行业都能拿到的能力”；对“发布后是否继续投入”的判断有直接参考。 |
+| 9 | r/gamedev：AI models have caught up with Unity dev | <https://www.reddit.com/r/gamedev/comments/1wo5asm/ai_models_have_caught_up_with_unity_dev_my/> | 2026-09-23，2,466 赞/1,255 评：30 年经验、Unity 10 年的工作室主称一个月前全员用 Unity CLI 后速度约 5x，仍人工审代码、junior 无处安放、市场变差但“回不去了”；本轮英文社区最大的一手采用讨论（直连 000/TLS，经 Arctic Shift API 读正文）。 |
+| 10 | r/Games：Thoughts on AI in game development (from the trenches) | <https://www.reddit.com/r/Games/comments/1xcr1au/thoughts_on_ai_in_game_development_from_the/> | 2026-10-22，1,537 赞/540 评：移植/优化工作室 PH3 的 CTO 长文，区分实际能力、成本与行业影响，并声明非 AI 写作；适合校准“AI 能替多少”，a1dbv 未收（经 Arctic Shift API 读正文，评论未逐条）。 |
+| 11 | itch.io 删除数 TB AI slop | <https://frvr.com/blog/news/indie-storefront-itch-io-deletes-a-couple-terabytes-of-ai-slop-as-the-marketplace-is-spammed-with-ai-games-and-assets/> | 2026-11-03：itch.io 清理“a couple terabytes” AI 游戏/素材，说明发布环境正在收紧；与 Steam Next Fest、Roblox 供给爆炸并列，是判断“发布后是否值得投入”的平台侧新事实（二手报道，未核 itch 官方公告）。 |
+| 12 | Roblox 5 个月 7 万款 AI 游戏 | <https://www.pcgamer.com/software/ai/ai-powered-game-development-is-leading-to-an-explosion-of-content-roblox-says-as-it-brags-about-70-000-games-published-on-its-platform-in-the-last-5-months-alone/> | 2026-10-30 报道（JSON-LD datePublished 2026-10-30T20:39:57Z，正文写 Published 30 October 2026）：Roblox 自报 5 个月发布 7 万款游戏，同时 Steam 侧质量争议上升；是“供给爆炸”的最新量化，可作为发布后竞争环境的背景（二手报道，未核 Roblox 原报告）。 |
+| 13 | Teach My Little Sister How to Drive：AI 运行时成本与补丁节奏 | <https://store.steampowered.com/news/app/3948460/view/1846651706694978> | Steam 公告 1.3.2（2026-10-20）写“AI improvements and gameplay fixes”并感谢玩家反馈，10-18～20 连发 1.3.0–1.3.2；团队 10-07 公开称 demo 每天 AI 成本 $1,000+、要靠贷款维持。AI 是运行时 NPC 而非开发主体，不计本卡候选，但“运行时成本 + 高频补丁”是 a1dbv 未收的新案例（公告正文已读，游戏未玩）。 |
+| 14 | Rosebud Prompt Atlas（真实游戏 prompt 星系图） | <https://rosebud.ai/prompt-atlas> | 2026-08-18 Show HN：把成千上万条“让 AI 做游戏”的真实请求（脱敏、保留错别字）映射成可探索星系图；补的是需求侧数据，与 Playgama 的供给/游玩数据互补，a1dbv 未收（页面已读，数据只作样本）。 |
+| 15 | 三国群雄志（TapTap 制造作者的上架复盘） | <https://www.taptap.cn/moment/847367330055848312> | 作者辰安的 TapTap 制造 1–6 期上架教程，记录打包、审核、截图驳回及“禁止 AI 自动截图”等发布可用性问题，可对照 AI 游戏从制作到上架的实际卡点。 |
+
+### 9.7 本轮最强 1 项优先试玩建议与可验证机制
+
+**本轮先试玩 Brickbrag**（若按卡级跨轮排序，仍先按 §7 试 Fire Field；两者可并行）。按可执行清单走：
+
+1. 打开 <https://brickbrag.com/>，走完教程，在教程区买一块地并放砖，确认不再出现 “no building here”（50064516/50066640/50065486 报的问题；changelog 10-13 条目称已修）。
+2. 进出砖店菜单，确认不会出现“退出又被弹回”的循环（50067118 报的问题）。
+3. 在手机或浏览器手机模拟下快速双击摇杆，确认页面不再被放大（50068830 报的问题；changelog 10-13 条目只声称这一行为，缩放是否恢复正常不在本次验收内）。
+4. 打开游戏内 “What's new” 与 <https://brickbrag.com/changelog.html>，确认两处列表同源、当前构建包含 10-13 的三条。
+5. 若任一条在当前构建复现，记录“版本日期＋复现步骤＋实际表现”，不因 changelog 写了就判通过。
+
+验收只记“changelog 声称的行为在可玩版本里是否成立”，不把页面文案或 HN 回复当已验；不评价整体品质、手感或留存。
+
+**一个可在现案例验证的具体机制：资源/性能类反馈必须有降级路径与最低设备回归。** 本轮三条独立证据指向同一做法：
+
+1. **Permit Pending**（HN 50173404）：玩家报内存分配崩溃，作者让 Claude 在分配失败时回退到低分辨率纹理——不是只修报错，而是给运行时资源压力准备降级路径。
+2. **Brickbrag**（changelog 10-23/10-24）：手机端条目写 “Phones no longer crash while walking or zooming out”“No more freezes…”“far fewer stutters”“up to four times the frame rate in busy places”，把玩家报的卡顿/崩溃转成可复测的帧率与崩溃条件。
+3. **哈耶克的文明 v2.0.0**（`CHANGELOG_v2.0.0.md`）：致谢点名“反馈后期卡顿问题的测试玩家”，对应 Web Worker 重构（手动贸易等计算密集任务移出主线程、`useGameLoop.js` 移除 656 行、后期帧率约 +40–60%），并同时做旧存档自动迁移。
+
+四段规格：① 玩家报告先写成“设备/场景 ＋ 当前表现 ＋ 期望表现”；② 修复分“正常路径”和“降级路径”（分辨率/画质档/分线程/限帧），并写清降级触发条件；③ 补一条最低设备档的回归（内存上限、帧率下限、长时间运行），不只测开发机；④ 发版说明写清玩家在什么情况下会看到降级。它可以在现有 FPS/MOBA/Star 上直接验：选一个最低设备档，人为制造内存/着色器压力，确认降级真的触发、回归覆盖到、发版说明可复述；这比再加一个 UI 提示更接近本卡要的发布后返工能力。上一轮 §7/§8.6 的“旧存档/旧状态迁移与回归”仍有效，两者可并存：一个管状态兼容，一个管运行时资源。
+
+### 9.8 本轮边界、未做与下一步
+
+**本轮实际核了什么。** 196 条候选链接由收集/核对阶段用 curl 并行检查（按状态码与页面标题判断）；本次写稿又对 3 项通过逐条复核：
+
+- **Brickbrag**：`curl -sSL` 打开 <https://brickbrag.com/>（200、text/html、23,665 字节）、<https://brickbrag.com/changelog.html>（200、14,337 字节）、<https://brickbrag.com/assets/build/cafe-960.jpg>（200、image/jpeg、75,184 字节）；HN Algolia `/items/50063042` 读到 82 分、作者 `neuling`、顶层 14 条评论，并逐条读到 50063065（八天/Claude Code Opus 5.5/9 岁主试玩）、50068156（最后 20% 需人工引导）、50064516/50066640/50065486（no building here）、50067118（砖店循环）、50068830（双击缩放）、50069148（Fixed: changelog）。
+- **Permit Pending**：`curl -sSL` 打开 <https://permit.petercai.com/>（200、text/html、14,077 字节，JSON-LD 作者 Peter Cai、free、Web browser）；作者公开的游戏内截图 <https://permit.petercai.com/marketing/feature-economy.webp>（200、image/webp、1,670,064 字节、1800×1160，页面 History 窗口＋城内画面；og:image 另为 marketing/og.png，1200×630、1,863,724 字节）；HN `/items/50170593` 读到 2026-10-20、941 分、作者 `pcai`，并核到 50202645（almost all claude＋人负责 gameplay/art direction/mechanics/storytelling）、50176060（最初按“不隐藏复杂度”打磨、试玩后改为逐步分层揭示）、50173599（预写故事弧回填引擎）、50171235/50189362（玩家报告）、50173404（低分辨率纹理回退）、50202272（道路修复＋分区覆盖层）。
+- **哈耶克的文明**：`curl -sSL` 打开 <https://hkingauditore.github.io/civ-game/>（200、text/html）、仓库页与 `raw.githubusercontent.com` 的 README/AGENTS.md（22,763 字节，Codex Agents Guide）/CONTRIBUTING_AI.md（20,698 字节，LLM Collaboration Protocol v1.0）/CHANGELOG_v2.0.0.md（36,060 字节）；`commits/master.atom` 读到 v2.3.60–v2.3.64、最新 2026-10-22、4 条带 `Co-authored-by: Cursor` 的 agent 署名；截图 <https://raw.githubusercontent.com/HkingAuditore/civ-game/master/debug_load.png>（200、image/png、1280×720、606,824 字节）。
+- **§8 三项遗留事实**：Steam `ISteamNews/GetNewsForApp/v2?appid=5242520&count=40&maxlength=0` 返回 28 条，时间从 2026-10-15 的 1.0.9 到 10-31 的 1.3.4，其中 1.3.x 6 条；`raw.githubusercontent.com/.../react-xiuxian-game/main/public/CHANGELOG.md` 读到 0.1.0（2025-12-05）→0.2.7（2025-12-21）→0.3.8（2026-09-17），README 写当前版本 v0.3.8；TapTap app/988887 页面显示“Android 正式上线日期 2026-10-31、更新时间 2026-10-20”，JSON-LD `datePublished` 2026-10-30T16:01Z、`bytedance:updated_time` 2026-10-19T16:00Z（均为 UTC）。三项已按上述结果改到 §8.4/§8.5。
+
+**没有做。** 未启动任何游戏、未播放视频/音频、未看完整连续实机、未登录任何站点、未发帖或联系作者。因此本页不能声称任何作品“已玩”“已看完”“手感/帧率/听感通过”，也不作品质排名。所有“可玩”只到公开入口 200 与页面文案。
+
+**仍然缺的硬项。**
+
+- **许可与成本**：除少数仓库标注 MIT/GPL/AGPL 外，多数条目只写“未知”；不推算。Brickbrag、Permit Pending、哈耶克的文明均未找到完整许可或总成本。
+- **静态截图**：3 项通过各给一张并本次打开核过；其余条目大多没有作者公开静态图，不能用商店 capsule 或目录页截图代替。
+- **作者身份**：Brickbrag 只到 HN handle `neuling`；Permit Pending 到 Peter Cai（页面 JSON-LD）；哈耶克的文明到 GitHub 账号 HkingAuditore，知乎原文 403 未能直读。
+- **玩家闭环强度**：Brickbrag 的 HN 只有 82 分/14 条顶层评论，Permit Pending 的 428 条评论未逐条读（已核 50171235/50189362 两条玩家报告与作者回复），哈耶克的文明评价数未能复核（TapTap 旧入口 404）；三项都不是大样本。
+- **渠道缺口**：本页的 HN 直连链接（如 item 43726058）与 Reddit 链接在本机 TLS/403 不可直连：HN 正文经 `hn.algolia.com/api/v1/items/<id>` 读取，Reddit 正文经 Arctic Shift 归档 API 读取；itch.io 与 linux.do 原帖仍 TLS 不可达；Steam 评测正文/讨论区、X/Discord/YouTube 仍未读，玩家原话只到 HN 回复、补丁/公告与页面文案层。
+
+**下一步顺序。**
+
+1. 负责人按 9.7 的三条复测 Brickbrag；只需回答“当前构建是否仍复现”，不评价品质。
+2. 把 9.7 的“降级路径＋最低设备回归”四段规格接到现有 FPS/MOBA/Star 的一条真实卡顿/崩溃报告上；与 §7 的旧存档四段规格一起，形成“状态兼容＋资源降级”两条发布后修复回归。
+3. 中文线用哈耶克的文明核对 v2.0.0→v2.3.64 的版本链与旧存档迁移；补核其 LICENSE 与 TapTap 新入口。
+4. Permit Pending 补核是否有 release notes/版本号；Brickbrag 补核作者站点 About/许可。
+5. 不新增广搜；本轮已把 196 条清单按缺口分好，后续只按缺口逐项补，不再扩大题目。
