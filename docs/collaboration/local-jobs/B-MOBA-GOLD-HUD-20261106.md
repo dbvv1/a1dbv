@@ -2,7 +2,7 @@
 id: B-MOBA-GOLD-HUD-20261106
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-moba-gold-hud-20261106
