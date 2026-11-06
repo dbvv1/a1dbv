@@ -2,17 +2,21 @@
 
 > 采集与静态核实日期：2026-11-06。只读公开网页、API、源码和作者静态图；未启动游戏、浏览器、播放器或音频，未登录、未发帖、未联系作者。链接可达只代表网页响应；未试玩、未看完整连续实机，不作品质结论。
 
-**先给结论。** 本轮只把 **3 项**作为过门槛的新候选交回，按优先试玩排序：
+**先给结论（两轮合并）。** 第一轮 3 项甲级保留；第二轮新增 2 项优先、4 项近门槛、14 项有二改但证据薄、14 项过程线索和 23 组工具/方法（含 3 项不计作品候选的方法/管线证据），另有 2 项按规则排除/转交。按优先深挖排序：
 
-1. **Voltane**（3D 遥控车竞速）——路线与碰撞/隐形墙的二改有日期、有前后变化，开放 beta 可直接玩；最贴近 Star 的公路弯道问题。
-2. **Solhex**（3D 太空工厂探索）——唯一用可重复 test player 量出每章实际时长与空转、再改路线/成本的样本；给的是节奏验收环，不只是“改过布局”。
-3. **时囚 BetweenTicks**（3D 平台跳跃/解谜）——换灰墙灰地为房屋车辆时，用同机位灰模/美术对比和线框叠加保住原跳跃路线；给的是“换美术不改空间语义”的检查法。
+1. **HollowARK**（第二轮新增，浏览器可玩的挖掘/物流基地游戏）——本轮最完整的同时具备当前可玩 v71、逐版 devlog（128 条、带时间戳）、作者静态截图原链、v48/v59/v91 三次空间/物流二改（v71 是美术/第一章观感 pass）、AI 写全部代码而人设计与试玩的样本；最值得先深挖“每版一页记录＋同机位截图＋脚本玩家复跑”的制作过程。
+2. **Bash Fighter**（第二轮新增，2D 联机平台格斗）——二改证据最硬：The Atoll 出生间距 40→28 单位、生产 match 里两 bot 3.3 秒被 KO（4%/11%）后加永久 spawn-clearance 审计，另有 blast-zone 8%、arena-shrink 三版、平台填充对比度 1.19:1；缺版本 tag（package 0.0.1），且是 2D 不是 3D。
+3. **Voltane**（第一轮甲级，3D 遥控车竞速）——仍是最贴近 Star 公路弯道/捷径/隐形墙问题的一项，开放 beta 可玩，更新日志按日期记录路线与碰撞二改；本端未试玩。
 
-三款都有当前可玩入口、作者过程、作者公开静态截图原链、版本/日期、AI/人工分工和一次具体二改；许可与成本均未披露，作者身份只到个人站/工作室页，本端均未试玩。**本卡只做已定候选收集，不替代实际运行、试玩或完整实机观看；恢复实机后按 ai-made-games-scout §2 补 10–15 分钟实玩与同视角截图。**
+另：**Overserved**（塔防，可玩，140 关 bot 调参后人工二改 4 关、Boss 护盾重做）缺作者静态截图原链与版本号（许可/成本另未披露），**CORO SOLTO**（3D FPS，AGPL-3.0，v2.1.0-alpha.137，地图 JSON＋编辑器，Codex 提交的塔楼/通道/碰撞二改）还缺截图原链与 AI/人工分工说明（目前只有提交尾注；版本可查：v2.1.0-alpha.137 已于 2026-11-03 发布 GitHub release，仓库也有对应 tag，缺的是稳定版/正式版），二者列为甲级候选替补、暂不计入现有替补数——补齐截图、版本（Overserved）与 AI/人工分工，并通过人工试玩后再计；**Fang the Fox**（softlock 修复＋地图检查器）是第二梯队；**Peas of Resistance**（整关重建＋测试迁移）只有过程与 Steam 愿望单、无公开可玩 build，移到 §5.6 作过程线索。
 
-其余按缺口分列：**乙级 29 项**（二改证据强，但缺截图原链、版本、许可、作者身份或“节奏仍可玩”中的至少一项）、**丙级 50 项**（只有过程或只有入口，不能进甲）、**排除/转交 9 组**。任务点名排除的 19 项旧候选只在 §6 列名，不重复计数。**最强一项先试 Voltane**；在 Star 现案例可验证的机制是“可见阻挡清单＋固定跑圈基线”，见 §9。
+两轮合计：**甲级 4 项**（HollowARK、Voltane、Solhex、时囚 BetweenTicks）＋**A-/甲级替补 1 项**（Bash Fighter，缺版本 tag，package 0.0.1 已知）；**乙级 29＋18 项**（§4.4 近门槛 4 项中 Overserved、CORO SOLTO 只算乙级，不占甲级替补名额）、**丙级 50＋14 项**、**排除/转交 9 组＋2 项**、**工具/方法 13＋23 组**。上述优先项都有当前可玩入口、作者过程、作者公开静态截图原链（Bash Fighter 为仓库实机图）、版本或日期、AI/人工分工和一次具体二改；许可与成本除个别注明外均未披露，作者身份只到个人站/工作室页，本端均未试玩。**本卡只做已定候选收集，不替代实际运行、试玩或完整实机观看；恢复实机后按 ai-made-games-scout §2 补 10–15 分钟实玩与同视角截图。**
+
+任务点名排除的 19 项旧候选只在 §6 列名，不重复计数。**若只试一项，先试 HollowARK**（第二轮唯一全过门槛的新样本）；**若当前只解决 Star 的公路弯道/捷径，先试 Voltane**（第一轮甲级，问题结构最接近）。在 Star 现案例可验证的机制仍是“可见阻挡清单＋固定跑圈基线”，另加 HollowARK 的“先量开局/单局时长，再改路线”，见 §9。
 
 ## 1. 渠道覆盖表
+
+### 1.1 第一轮（u1）
 
 按首次发现渠道归类，跨渠道重复不重复计；个别条目按主入口归并。各行“得到”是覆盖量，不是品质排名。共记录约 **91 个具名作品/项目条目**、**13 组工具/方法线索**；另 19 项任务既有旧候选只列名。实际逐页读的是作者原文、devlog、仓库、商店/详情页和静态图；摘要只作线索。
 
@@ -22,7 +26,7 @@
 | GitHub（REST、raw、HTML、`commits.atom`、Pages） | Ennui92/pull-the-plug-play、aieo-product/fableDemoGame、nansu0425/nan2026-game-src、Dimava/gensokyo-survivors、3D-Stories/skate-game-opus-5-5、web3dev1337/epic-survivors-architecture、alltomstales-dotcom/oh-shit-zombies、acatovic/gothicvania-codex-demo；另读工具仓库与 `awesome-opus-5.5-games` 的 4,128 条 `games.json` | 8 项（B1 3、B3 4、C 1）＋8 组工具/索引 | 未认证 REST 60 次/时限流（403）；code search 需登录；部分仓库 500/404；commit 历史未逐条读 |
 | 英文作者站、个人博客、devlog | kraigadams.com（Solhex 165 条 devlog、Jumpgate）、x00f.com（Wages/Wreckhold/Graveshift/CAGE/Voidrunner/Polybreak）、dmnshd.gg（Shed Racer、Geobeat）、tinybitadventures.com（Fang/Wheek/Not Pro Skater/Star Circuit）、vibegamesstudio.com（12 款＋2026 夜报）、evolutionaryarcade.com（6 款＋API modelCard）、supertommy.com、slipfacegame.com、fable-katamari.pages.dev＋Zenn、blog.slashie.net、rustyrobozlabs.com、jobyang.cn | 约 46 项（A 1、B 9、C 32、D 4） | slashie.net 根与 `/keep` 被 Mod_Security 406/500；fable-katamari 除地图版权外无作者/社交外链；tinyskies 停放页；hollowlands 只有标题/菜单图 |
 | Reddit（Arctic Shift 归档 API） | r/aigamedev、r/ClaudeAI、r/vibecoding 的 `posts/search`、`posts/ids`、`comments/search`；Voltane 1xgcszc/1xgsgmi、Iron Curtain 1xj88ci/1xk8dp8、Liftbound 1xou4m9、Maskfall 1xmrr9d、OVERSTEER、Schnell、Silent Entry | 2 项（A 1、B3 1） | `www/old/api.reddit.com`、redlib、r.jina.ai 均 403/429/TLS 失败；Arctic Shift 部分查询 Timeout；1xnx3w5 已 `[removed]`；OVERSTEER 被网络策略 block；评论只读到 1xj88ci 约 100 条与 1xgcszc 约 50 条 |
-| Steam / SteamDB / App Store | Iron Curtain Call 商店页与 appdetails、ISteamNews；Epic Survivors app 3553800；Liftbound 的 iTunes lookup | 2 项（B1 1、D 1） | SteamDB 403/Cloudflare；社区公告/讨论页 000；评测 JSON 为空；Stay Dead、亡犬、SweatyPanzer 的试玩与 AI 分工未核；App Store 页重定向到中国区 Today |
+| Steam / SteamDB / App Store | Iron Curtain Call 商店页与 appdetails、ISteamNews；Epic Survivors 正式版 app 3553800 与 demo app 4090630；Liftbound 的 iTunes lookup | 2 项（B1 1、D 1） | SteamDB 403/Cloudflare；社区公告/讨论页 000；评测 JSON 为空；Stay Dead、亡犬、SweatyPanzer 的试玩与 AI 分工未核；App Store 页重定向到中国区 Today |
 | TapTap 聚光灯 2026 / TapTap 制造（网页 SSR、tag 页、moment 页） | app/984399、982445、974354、960864、964250、963039、965247、960144、975005、954910、954051、957599、957390、976181、986579、955070、976321；moment Day14/15/17/20、开发日志 01–07、评价页；`/tag/聚光灯GameJam` 18 个 app；开发者页 468045/479179/450056/292906 | 25 项（A 1、B 10、C 12、D 2） | “打开 APP 试玩”需客户端/登录，未启动；作者主页返回混淆反爬负载；`webapiv2` 搜索 400 `csrf_token_expired`/需 `X-UA`；聚光灯活动页显示“全部作品 0 款”；用户页 JS 空；清漪/考了又考/界门无公开网页试玩 |
 | 中文技术社区与作者页 | agentcaseshare（多米诺人生系列与 15 个案例总表）、juejin（猫咪守卫队、颜色排序）、cnblogs（考了又考）、jobyang.cn（界门）、机核/少数派/知乎/公众号/小红书 | 5 项（B1 1、C 4） | 公众号多篇“环境异常”验证页；小红书 item 页“访问的页面不见了”；知乎 403；少数派/即刻只有摘要；掘金作者文章列表 JS 空页；评论区未展开 |
 | itch.io / AI Jam 4 | AI Jam 4 entries 75 项、results 21 名；A Rock and a Hard Place、Wicklight、DEEP、cwwkeeler/RUINS、r3dm00n/Red Moon、deaddreamer99/Schnell、dystostorm/Silent Entry、echoplayroom/Yanghwa、martinopiaggi/Dungeotto、stuartking84/Wasteland Renegades | 1 组 3 个链接仅搜索摘要线索（D），0 项可核 | 本机 DNS 把 itch.io 解析到内网拦截地址，TLS handshake 失败（curl exit 35、000），WebFetch 报 Socket is closed；站内 devlog 搜索返回 0 字节 |
@@ -31,6 +35,29 @@
 | B 站 / YouTube | 只读标题、简介、作者、日期、时长等元数据；按任务未加载播放器、未播放音频/视频 | 0 项 | 播放器未加载；《星光小队》《翻面》《破境》《夜神 1 人 100 小时》《明末：欲火重生》的连续实机与具体关卡二改无法核 |
 | WebSearch / 通用搜索引擎 | 本会话 200/200 用尽；中英文换词覆盖 level redesign/second pass/playtest、关卡重做/路线/波次/遭遇、site:itch.io、site:taptap.cn 等 | 0 项可直接核（只作发现入口） | Bing 中国站返回无关词典/驱动结果；DuckDuckGo HTML/lite 证书被劫持到 `*.facebook.com`；Mojeek 403；Google/archive.org/r.jina.ai 000；额度耗尽后无法补 site: 查询 |
 | Epic AI MegaJam / 官方 jam 页 | `unrealengine.com/news/2026-epic-ai-megajam`、`itch.io/jam/epic-ai-megajam-2026`、`web.archive.org` 快照 | 0 项 | Unreal 页 403 Cloudflare；itch jam TLS 失败；archive 拒绝抓取/000；规则、提交与获奖名单未读 |
+
+### 1.2 第二轮（u2）
+
+第二轮按 6 个来源角度并行扫，再沿候选引用/被引/评论追 3 轮；链接核对通过的候选池约 200 余项。各行“得到”是本行覆盖量（跨渠道重复计，含非候选索引/工具），不是候选池总量；跨行同一作品只算一次，去重后按本卡门槛收录 57 项（2 项优先、4 项近门槛、14 项二改但证据薄、14 项过程线索、23 组工具/方法，其中 3 组只作方法/管线证据、不计作品候选），另 2 项按规则排除/转交；其余是无二改记录的可玩作品、平台/工具或已在本卡/旧卡的条目。
+
+| 渠道 | 实际看了什么、取法 | 得到（本行覆盖量） | 读不到及原因 |
+|---|---|---|---|
+| 官方团队与高质量项目自述 | GitHub raw/HTML/commits.atom/codeload tar.gz/`git clone --depth`；读 Bash Fighter 的 README、AGENTS.md、docs/ADDING_A_STAGE.md、docs/MEASUREMENT.md 与 340 条提交，GamesByAI 的 catalog 596 个 YAML、Dustlight 的 NOTES.md，OpenAI/skills，Unity agent plugin 的 skills 目录，Dora SSR 的 game-iteration-playbook，eremes81 书稿 Part 7，以及 Donchitos、threejs-game-skills、level-lab-skill、worldbuild-bench、vibejam-starter-pack、ohmygame、godogen、genex 的 README | 15 项＋8 组工具/索引 | OpenAI Codex app 403（Cloudflare，en/hy-AM 均 403；r.jina.ai TLS exit 35；publicnow 转载也 403），只有搜索摘要；unity.com 的 /features/ai、/products/unity-ai 只回通用产品页，没有官方 graybox/level playtest 一手说明；claude.com/code-with-claude 的 Era Online 正文由 JS 渲染，未解析；GitHub API 60 次/时 403，code search 需登录；grep.app 被 Vercel Security Checkpoint 拦截，无法按 AGENTS.md/CLAUDE.md 全站检索 |
+| GitHub 头部覆盖 | `github.com/search` 的 react-app.embeddedData，按 stars 排序；20+ topic 查询（ai-game、ai-generated-games、claude-skills game、vibejam、text-to-game、threejs-game、ai-game jam 等）与 README 短语查询（level redesign、second pass、playtest、devlog）；`github.com/trending?since=weekly`；逐个对照 a1dbv 是否已覆盖 | 12 项（Bash Fighter、Donchitos、threejs-game-skills、level-lab-skill、worldbuild-bench、vibejam-starter-pack、ohmygame、godogen、genex、awesome 列表等）＋8 组索引 | trending 本周 16 条全是 Claude skills/工具，无游戏仓库；API 403；code search 需登录；仓库搜索不支持复杂布尔；部分仓库 404/私有（ts-kyle-on-duty、Covenant of Embers 的 main 分支 README/CLAUDE.md） |
+| GamesByAI / 索引榜 | catalog 的 596 个 YAML 与 games/ 目录 100 个 YAML，过滤出 30 个带 repo 的条目；逐个核 gamesbyai.win 的 play 页、仓库、截图与博客；另读 `awesome-opus-5.5-games` 的 4,128 条 games.json、aibuiltgames 238 条 API、Playgama AI Game Index、claudeslop | 6 项（Dustlight、Bash Fighter、Eyrie、Sunset City、Neon Ridge Drift 等）＋5 组索引 | gamesbyai 目录/部分元数据 API 403；单条 YAML 只记模型/工具/入口，不含关卡二改字段；catalog 100 个 YAML 未逐个打开；aibuiltgames 主页只渲染 1 条；claudeslop 一直 Loading；Playgama 只有聚合统计 |
+| 英文作者站、个人博客、devlog | kraigadams.com（HollowARK 的 128 条逐版日志、已到 v91；Jumpgate）、gamesbyai.win/blog、lewismoten.com 与 GameMaker-SandboxEdition、richardfu.net、kylekukshtel.com、calebleak.com、jeffschomay 博客、blog.sayori.org、butterstack.com、vibearcade.com、stormplay、app.deadsimple.games、furic.github.io、tricks.de、diaryofamadchaos、jams.team | 25 项 | gamesalchemy.substack.com TLS handshake/000；hybridlabs.games TLS 35；benwheatley.github.io 被域名安全策略拦截；indienova 39132/39397 正文在动态组件里；部分 itch 页 000 |
+| Hacker News（Algolia API） | search/search_by_date 多组 query（worldbuild bench、volt nomad、AI browser game jam、AI game level design、Claude Code game dev）；读 item 48865303、44463967、47600002 的评论树 | 0 项作品；3 条边界线索 | news.ycombinator.com 直连 WebFetch Socket closed，改用 Algolia；HN 未出现具体的“AI 游戏第二次改关卡”案例；只留下 ben_w“awful-bordering-useless at level design”、Simon Willison 的 Safari/Chrome 回放不同步、mypalmike 的输入录像/精确复现 |
+| Reddit（Arctic Shift） | r/aigamedev 的 posts/ids 与 comments/tree：1xgtqex、1xmtwht、1xowe1p、1xl9qr5、1xi6kxm、1xnopb2、1xmtel6、1xinzoz、1xn64gt、1xnd1t5、1xhbj22、1xoi8dp | 8 项（Wasteland Renegades、Freight Fright、Daily Dose、Limina、Silent Entry、One More Broadside、Still Hour、Gopher It） | www/old/api.reddit.com 403/429/TLS 失败；eddrit、downdoot、reddit.fsky.io 均被人机挑战/301；Arctic Shift 分页到约 200 帖后 422，部分评论树为空，部分查询 Timeout；1xnx3w5 已 [removed] |
+| TapTap（网页 SSR） | app/moment/tag/developer 页逐个取正文与配图原链：moment 857791875526952608、860623916882724394、858250506848440289、860184092862318690、860634192520678606、861778491811564616、855967114937238417、857701579598334467、859821701528027390、860294180608411729、861023722948003179、861593675556196304、861037896361050801 等；app 954910、960864、963039、964250、972651、978037、957599、982445；tag 聚光灯与开发者日志/全民试玩 hashtag | 25 项 | “打开 APP 试玩”需客户端/登录，未启动；作者主页返回混淆反爬负载；`webapiv2` 搜索 400 `csrf_token_expired`，by-tag/feed 404；评论区与回复未完整渲染；用户页 JS 空；聚光灯活动页只是预约页 |
+| 中文技术社区与作者页 | 掘金（猫咪守卫队、颜色排序）、cnblogs（考了又考）、知乎、少数派（茫室）、机核、微信公众号、小红书、NGA、indienova、kongchang.com | 8 项 | 知乎专栏 403；公众号多篇“当前环境异常”验证页；小红书 item 页空/访问不到；NGA 403；V2EX、linux.do TLS 证书/握手失败；kongchang 429；indienova 部分正文在动态组件 |
+| Steam / SteamDB / App Store | store appdetails、ISteamNews、iTunes lookup：Iron Curtain Call、灵山未至 4944390、无限循环：后室 3690690、Liftbound | 3 项 | Steam 评测 JSON 302/空；steamcommunity 讨论 TLS 握手失败；SteamDB 403；ISteamNews 对灵山未至/翻面返回 newsitems=[]；App Store 重定向中国区 Today |
+| itch.io / game jam | AI Jam 4 的 entries/results、Jamference 提交页、GamesByAI 收录页；VOLT NOMAD、A Rock and a Hard Place、Wicklight、DEEP、Catbot、Silent Entry、Wasteland Renegades 等入口 | 0 项可核（仅 2 组搜索/收录摘要线索） | 本机 DNS 把 itch.io 解析到内网拦截地址，TLS handshake 失败（curl exit 35、HTTP 000），WebFetch Socket closed；itch 游戏子域与 jam submissions/results 均 000；只有 itch.io/jam/jamference-ai-game-jam-hack-1/rate/5119422 一次 200；未启动播放器 |
+| B 站 / YouTube | 只读标题、UP 主、发布日期、简介与关联系列元数据：BV1AimaYxEjh、BV1aN411S7ya、BV1qA3r6rELg、BV1vCxj6MEYC、BV1Go4y1M7Ae、BV1Dm1gBFEk9、BV1nKsX6jE7r、BV1RYxv6oEtw、BV14wga6tEck；YouTube 用 noembed 取标题/作者 | 3 条线索（星光小队、翻面、时囚） | B 站视频页 412，view API 返回验证码/错误页；YouTube 直连 000，Invidious/Piped 全 000；按任务不加载播放器、不播放音频/视频，评论区未读 |
+| 学术与基准 | arXiv export/HTML（2605.07342、2610.05033、2604.07752、2603.07106、2609.39045、2610.02331、2610.08621、2410.01791 等）、J-STAGE 论文 PDF、Zenodo PDF、SSRN、Semantic Scholar references/citations、HuggingFace | 10 组方法/基准 | Semantic Scholar 部分 429；FREYR references 空；GameCode4D 数据集页 000；SSRN 7502203 只有 OpenAlex 元数据；部分论文正文未逐页读 |
+| 新工具/平台（近 3 个月） | Google Playground、Unity Spark、Meta Horizon Create/Studio、Playgama MCP/Sandbox/Bridge 2.2、SoonPlay、GameFactory-3A、game-builder-mcp、Godot Editor/Loop MCP、Ludus、NodeTool、Noobi.ai、game-exa、Game Dev Agentic Skills、Roblox Planning Mode/Playtesting Agent、Razer QA、UE5.8 MCP、GameMaker GM-CLI | 20 组工具/平台 | Playground 302 到 accounts.google.com 登录；Unity Spark waitlist，只有 Space Corridor 一个可玩 demo；Horizon waitlist；SoonPlay 正文由 JS 渲染、公开 API 只有 3 条展示数据；Playgama 博文没有 sandbox 独立原始链接；Epic/Unreal 官方页 403 Cloudflare；Unity Discussions 后续查询非 JSON；Fab 搜索页未提取到评测正文 |
+| WebSearch / 通用搜索引擎 | 本会话 200/200 用尽；中英文换词覆盖 level redesign/second pass/playtest、关卡重做/路线/波次/遭遇、site:itch.io、site:taptap.cn、AI ゲームジャム レベルデザイン 等约 25 组 | 0 项可直接核（只作发现入口） | 额度耗尽后无法补 site: 查询；Bing 中国站返回无关结果；DuckDuckGo 证书被劫持到 `*.facebook.com`；Mojeek 403；Google/archive.org/r.jina.ai 000；WebSearch 对“关卡二改”类短语召回差，多返回教程/工具页 |
+
+**第二轮取法**：先按 6 个来源角度并行扫，再对已收候选做 3 轮“顺着引用/被引/评论区/作者其他作品/收录列表”追踪，直到新增大多已见过；链接核对用脚本并行 curl，按状态码与标题判断，标题看不出时再打开正文。未登录、未发帖、未联系作者、未启动游戏/浏览器/播放器/音频。
 
 ## 2. 筛选口径与等级
 
@@ -45,9 +72,9 @@
 - **门槛 7｜许可与成本**：代码、资产、模型、音乐能分开；未知不推算。
 - **作者门槛**：原作者身份、真实作品入口或二改证据不够就排除，并给具体原因。
 
-**A 级 3 项**全部满足上述硬门槛，仅许可/成本/实玩三项留未知。**B 级 29 项**至少缺一项：截图原链、版本号、许可、作者身份，或“二改后仍保持可玩节奏”尚未验证。**C 级 50 项**只有过程、只有入口或二改未落到路线/遭遇层。**D 级 9 组**按任务规则排除或转交。**工具/方法 13 组**不是作品，只补验证链。
+**A 级 4 项**（HollowARK、Voltane、Solhex、时囚 BetweenTicks）全部满足上述硬门槛，仅许可/成本/实玩三项留未知；另 **A- 1 项**（Bash Fighter，只缺版本 tag）。**B 级 29＋18 项**至少缺一项：截图原链、版本号、许可、作者身份，或“二改后仍保持可玩节奏”尚未验证。**C 级 50＋14 项**只有过程、只有入口或二改未落到路线/遭遇层。**D 级 9 组＋2 项**按任务规则排除或转交。**工具/方法 13＋23 组**不是作品，只补验证链（其中 Dustlight、J-STAGE 论文与 RSD 只作管线/方法证据，不计作品候选）。
 
-## 3. 甲级：3 项过门槛候选
+## 3. 甲级：4 项过门槛候选＋1 项 A-
 
 ### 3.1 Voltane（3D 遥控车竞速）
 
@@ -56,7 +83,7 @@
 - **作者静态图**：关卡截图 <https://playvoltane.com/media/game/site/level-maison-960.webp>（客厅/房屋）与 <https://playvoltane.com/media/game/site/level-jardin-960.webp>（后院）（本次均 200）；另有宣传 key art <https://playvoltane.com/media/hero/maplewood-patrol-1920.webp>（本次 200，不是关卡截图）。
 - **版本与日期**：2026-09-20 左右开工（作者 2026-10-17 帖 1x863xe 原文 “Started working on Voltane … around the 20 September”）；beta 于 2026-10 初上线（2026-10-06 帖已称 early beta，2026-10-17 帖称约十天前上线，2026-10-27 帖称已在 open beta）；更新日志自 2026-10-04 起记录（2026-11-06 页首：261 条、34 天），有 2026-10-21、10-23、10-28、11-03、11-06 等条目；2026-10-28 关卡扩为 47 条赛道变体。
 - **AI/人工分工**：Claude Code/Opus 5.5 写代码、物理、网络与工具；人做设计、手感与试玩。作者分工帖原文称 game feel、level pacing、砍功能都来自数百次试玩和玩家反馈。
-- **一次具体二改**：2026-10-21 的 “The Backyard, a second finishing pass” 是后院第二次收尾，以干砌石墙、约三十件道具的材质和割草机/棚屋/野餐桌为主，可驶入几何只加鸭板/滑梯等小改动；同日另一条 “Maplewood: the big corner walled off” 才是路线级改动：弯道起点用锥桶墙封住、整弯围栅栏，客厅捷径成为替代路线。路线与碰撞二改的主证是 2026-10-23 的客厅捷径穿草坪不再算数、Maplewood 房屋碰撞对齐可见墙面并取消门廊前隐形墙，以及 2026-11-03 的 Moonlight Mart 卸货台隐形墙、14 Oak Street 浴缸跳跃判定与床下切口封堵。作者原帖下有玩家直说 “level design in particular is heavily lacking”，可作为二改后的真实反馈对照。
+- **一次具体二改**：2026-10-21 的 “The Backyard, a second finishing pass” 是后院第二次收尾，以干砌石墙、约三十件道具的材质和割草机/棚屋/野餐桌为主，可驶入几何只加鸭板/滑梯等小改动；同日另一条 “Maplewood: the big corner walled off” 才是路线级改动：弯道起点用锥桶墙封住、整弯围栅栏，客厅捷径成为替代路线；§9 的默认跑圈因此用 Maplewood，The Backyard 只作简单闭环对照。路线与碰撞二改的主证是 2026-10-23 的客厅捷径穿草坪不再算数、Maplewood 房屋碰撞对齐可见墙面并取消门廊前隐形墙，以及 2026-11-03 的 Moonlight Mart 卸货台隐形墙、14 Oak Street 浴缸跳跃判定与床下切口封堵。作者原帖下有玩家直说 “level design in particular is heavily lacking”，可作为二改后的真实反馈对照。
 - **许可与成本**：更新日志与站点版权归 Borderline Games；未见开源许可，成本未披露。这两项未知。
 - **缺口**：本端未启动；开放 beta 的 WebGL/桌面可运行性未验；没有完整连续实机；玩家对关卡设计的负评说明“改过”不等于“已达标”。
 
@@ -78,15 +105,37 @@
 - **作者静态图**：同机位灰模/美术对比 <https://img2-tc.tapimg.com/moment/etag/Fk76uDYogMUNYYhFNjeYd1NTrefL_20261017024700.png/_tap_ugc.jpg>、灰模路线 <https://img2-tc.tapimg.com/moment/etag/FqasbMYDhoEivLvPpTZR140u4t30_20261017024734.png/_tap_ugc.jpg>（本次均 200）。
 - **版本与日期**：2026-10-21 发布；v10.21.755；PC 端试玩。
 - **AI/人工分工**：人搭关卡、定手感并验 AI 输出；Codex 实现玩法/美术并起草日志。
-- **一次具体二改**：Day15 把灰墙灰地换成房屋车辆时，用同机位灰模/美术对比与线框叠加保住原跳跃路线；合并门窗小起伏碰撞、放缓红时坡顶过渡、移开被房屋挤压的压力板。Day17 泳池从平面改为挖池，跳板 2.5→4 m。Day20 把散关连成一段旅程并改加载节奏。
+- **一次具体二改**：Day15 把灰墙灰地换成房屋车辆时，用同机位灰模/美术对比与线框叠加保住原跳跃路线；合并门窗小起伏碰撞、放缓红时坡顶过渡、移开被房屋挤压的压力板。Day17 泳池从平面改为挖池，跳板 2.5→4 m。Day20 把散关连成一段旅程并改加载节奏。Day19（<https://www.taptap.cn/moment/861593675556196304>）又把第三关重点从“等时间切换”挪到“自己安排切换”，自动循环和每秒报时先退场；01–08 号钟表改成可交互、表盘可拆装；压力板/检测器改为信号激活切一次、取消再切一次；绿屋朝上的碰撞面熨平。Day18（<https://www.taptap.cn/moment/861037896361050801>）减弱第一关雾感/提高远处能见度/提亮红时暗部，水面碰撞保持平整，末段复活点保留风车与破坏进度。
 - **许可与成本**：未披露。两项未知。
 - **缺口**：作者只做局部走动/单点测试，完整路线与手机性能未验；本端未启动；许可/成本未知。
 
-**为什么是这三项。** Voltane 回答“路线怎么改、用什么挡住捷径、碰撞是否跟着可见几何走”，且改动有日期和玩家负评；Solhex 回答“先定每段目标窗口，用可重复 test player 量实际时长与空转，再改路线/成本”，是本批唯一把节奏验收写成数字的样本；时囚回答“换美术/几何时怎样不破坏原跳跃路线”，并给出同机位灰模＋线框的检查法。三者分别覆盖路线规则、节奏测量、空间语义保留，不重复同一角度；也都没有把“AI 生成”当作品质证明。
+### 3.4 HollowARK（浏览器挖掘/物流基地，v71）
+
+- **可玩**：<https://kraigadams.com/hollowark/play/>（v71 早期构建，浏览器可玩；本端未启动）。
+- **作者过程**：<https://kraigadams.com/hollowark/>（页面 2026-10-15 更新）；逐版 devlog <https://kraigadams.com/hollowark/devlog/> 共 128 条，按时间戳记录 Kraig 的原话、Claude 的改动和发布版本，最新到 v91。作者自述“a game I'm making with Claude”；同站另有 Jumpgate，但 HollowARK 是不同作品。
+- **作者静态图**：v48 物流线与岩壁 <https://kraigadams.com/hollowark/img/v48-sharp-rock-line.webp>、v36 隧道线 <https://kraigadams.com/hollowark/img/v36-tunnel-line.webp>、v71 洞窟花光 <https://kraigadams.com/hollowark/img/v71-dark-cave-bloom.webp>（本次均 200）。
+- **版本与日期**：可玩主 build v71（2026-10-14 20:01 构建，页面 2026-10-15 更新）；devlog 共 128 条、已到 v91（2026-10-15 08:45）；v48/v59 在 2026-10-14 同日连续发布。无公开发布 tag，版本号来自页面/devlog。
+- **AI/人工分工**：Claude 写全部代码；Kraig 做设计、逐版试玩并给修改意见，devlog 同时保留原始指令时间与 Claude 的改动说明；这就是“人定目标与验收、AI 实现并记录”的分工。
+- **一次具体二改**：v48 “Sharp rock, and lines that keep off it”——作者指出岩石像素化、物流线“cut through rock”，Claude 查到两个原因（岩石按 2 米/像素绘制；物流线走移动网格而手绘墙会鼓出网格），把线改走隧道中心并顺弯；v59 完整开局试玩后，把洞窟改成彼此不相连以保证“每张图第一铲都能开工”（旧版有洞窟贴到起始洞导致开局无法开始），并用脚本化完美玩家把开局从 57 分钟压到 39 分钟；v91 把第一章重做为由“矿工→传送带→熔炉→方舟”组成的单条生产链（物流线改为可放置传送带，目标按顺序教学；原型 test player 约 21 分钟）；v50–v51 让方舟先等无人机切开车道、基岩不可钻；v33 首夜袭击从“几乎团灭”改为 5 只侦察兵且方舟激光必胜。v71 是美术/第一章观感 pass（living caves、bone-and-amber 地表、标题蓝图、暗洞与可读屏幕），不算路线/空间或遭遇节奏二改。v48/v59 有作者原话与静态图；v91 有作者原话与版本号，但该条没有截图（带图的是 v48/v59/v71 等条目）。
+- **许可与成本**：页面未声明代码/资产许可，成本未披露；两项未知。
+- **缺口**：本端未启动；没有完整连续实机；“57→39 分钟”是 v59 主 build 的脚本化完美玩家口径，v91 的约 21 分钟是原型口径，都不是真人首次游玩时长；许可/成本未知。
+
+### 3.5 Bash Fighter（2D 联机平台格斗，A-：只缺版本 tag）
+
+- **可玩**：<https://bashfighter.com/>（200，JS 应用壳；本端未启动）。
+- **作者过程**：<https://github.com/Bash-Entertainment/bash-fighter>（AGPL-3.0；README、AGENTS.md、CI、docs/ADDING_A_STAGE.md、docs/MEASUREMENT.md 齐全）；本次浅克隆的 340 条提交里 328 条作者为 agent-589（agents.andonlabs.com 域），日常开发与 PR 评审由 AI agent 完成。
+- **作者静态图**：仓库内真实比赛截图 <https://raw.githubusercontent.com/Bash-Entertainment/bash-fighter/main/docs/images/gameplay-ffa.png>（200）。
+- **版本与日期**：无版本 tag（package 0.0.1）；提交日期可查：The Atoll 2026-09-10 加入，2026-09-11 两次修复，arena-shrink 09-09/09-10 三版，09-19 平台填充对比度。这是它不进 A 的唯一硬缺口。
+- **AI/人工分工**：AI agent 写代码、开 PR、跑测试；人类负责方向与合并（组织页/README 口径）。docs/MEASUREMENT.md 明确“生产日志是 ground truth，离线 harness 与之冲突就是 harness 错”，把验收锚在真实对局而不是自测。
+- **一次具体二改**：The Atoll 上线后，生产环境两只 bot 在 3.3 秒被 KO（4%/11%），于是两座岛出生间距 40→28 单位，并把同类缺陷做成全舞台审计与永久测试（commit <https://github.com/Bash-Entertainment/bash-fighter/commit/99b53d8>；同批 the-spire 40→30、the-undercroft 38→32、the-foundry 40→27）；同日按生产 match m4（2026-09-11 05:49 UTC，唯一真人 22% 伤害、3.5 秒首个被 KO 于 The Foundry）把 blast-zone 边距改成按地面盒 8% 比例并重排 Foundry 左舱真人出生位（commit <https://github.com/Bash-Entertainment/bash-fighter/commit/0fc9eb7>）；arena-shrink 先阻尼淘汰反馈、终局圈 0.55→0.65（<https://github.com/Bash-Entertainment/bash-fighter/commit/5935991>），再用真实平台包围盒重写（<https://github.com/Bash-Entertainment/bash-fighter/commit/6103f99>），最后把终局圈宽夹到幸存者实际可站平台，修掉 The Undercroft 隔沟两人 36000 tick 无 KO（<https://github.com/Bash-Entertainment/bash-fighter/commit/dc997e3>）；09-19 又把平台填充对比度从 1.19:1 提高，解决“看不见脚下的地”（<https://github.com/Bash-Entertainment/bash-fighter/commit/bb046ed>）。
+- **许可与成本**：代码 AGPL-3.0；素材/音效许可未单独声明，成本未披露。
+- **缺口**：2D 平台格斗，不是 3D 动作/竞速/射击；无版本 tag；本端未试玩；没有完整连续实机；素材许可与成本未知。
+
+**为什么先深挖这几项。** HollowARK 回答“AI 写全部代码、人逐版设计/试玩时，怎样把每次空间/物流改动写成一页可复核记录”，且 57→39 分钟（v59 主 build 的脚本玩家口径）可直接借到 Star 的开局时长基线；Bash Fighter 回答“用生产 match 的真实结果驱动出生间距、blast-zone 和缩圈规则，并把缺陷固化成永久审计”，是二改—验证—防回归最硬的一条链；Voltane 回答“路线怎么改、用什么挡住捷径、碰撞是否跟着可见几何走”，且最贴 Star 的公路弯道；Solhex 回答“先定每段目标窗口，用可重复 test player 量实际时长与空转，再改路线/成本”；时囚回答“换美术/几何时怎样不破坏原跳跃路线”，给出同机位灰模＋线框的检查法。五项分别覆盖逐版记录、生产数据回归、路线规则、节奏测量、空间语义保留，不重复同一角度；Bash Fighter 的品类（2D 格斗）与其余四项不同，所以只作 A- 和工作流参照，不替代 3D 样本。
 
 **为什么不是它们。** Iron Curtain Call、Pull the Plug、Fable Katamari、多米诺人生、The Fallen Citadel 的二改证据同样强，但分别缺“逐版差异”、版本号、逐次二改的前后对照、版本号、许可。它们放在 §4.1，作为 A 级替换项；补齐缺口后可替换 A3。
 
-## 4. 乙级：二改证据强、但缺一项硬门槛（29 项）
+## 4. 乙级：二改证据强、但缺一项或多项硬门槛（29＋18 项）
 
 ### 4.1 最接近甲级的 5 项（优先补核后可替换）
 
@@ -96,7 +145,7 @@
 | [Pull the Plug](https://ennui92.github.io/pull-the-plug-play/)（GitHub Pages 构建，含 Prelude＋mission 1–6） | [Day9](https://ennui92.github.io/ermis-dev/posts/pull-the-plug-day-9.html) 走完 Prelude–Mission 3，按 P 留 9 张截图、约十几个问题→46 commits；Mission 1 天花板按二段跳高度重做四版，Mission 3 危险在待机态可见，Mission 2 水改成从地面向上长；[Day24](https://ennui92.github.io/ermis-dev/posts/pull-the-plug-day-24.html) 六关全通 | 无版本号；Pages 构建只用 `main-*.js` 核到 mission 1–6，未启动；许可/成本未披露；2D 一键攀爬，空间维度比 3D 弱 |
 | [Fable Katamari](https://fable-katamari.pages.dev)（v5，3D 块魂式动作；制作记 <https://github.com/aieo-product/fable-katamari-zenn>、设计书 <https://fable-katamari-docs.pages.dev/design>、MIT 源码 <https://github.com/aieo-product/fableDemoGame>） | v2 撤掉屋内/地形/墙方案；v3 把无限平面改成 3.6×3.8 km 箱庭东京路线（秋叶原→中央通→上野/浅草/丸之内/涩谷→晴空塔），用 DYNAMIC RE-BANDING 修约 370 处 curated 配置（含地标/摆件）的 tier 越级；v4 换 OSM 14,563 栋建筑、0.5 m 导航烘焙（r=1 100%、r=3 96.7%），按实测把 pacing 2.2→2.8；v5 修开场被地表/高架遮挡 | 作者身份只到 Zenn handle；制作记内有截图（`live-v*.png`）但没有逐次二改的前后对照；成本未披露；本端未启动 |
 | [多米诺人生](https://agentcaseshare.cn/articles/article-17jx8bzp)（可玩 <https://domino-life.parkerluxu.space/>，本次 200、标题“多米诺人生·第一块倒下”） | L11 弹簧关因“接触方向与出射方向矛盾”整关重做（小球推牌→越过平台→落缺口→从上方压弹簧→进落地区）；目标从“点蜡烛”改为可见 item-zone 并加 `requiredEvents`；AI 批量产 20 关 JSON＋物理回放，人逐关试玩并决定重做 | 无版本号；许可与金额未提；本端未启动；只有单关重做，不是整章节奏 |
-| [The Fallen Citadel](https://github.com/nansu0425/nan2026-game-src)（可玩 <https://nansu0425.github.io/nan2026-game/>） | Claude Opus 5 经 Unity MCP 生成三关地形/掩体/动线坐标；人改放置后用 `battle-stage-backport` 把 82 处手改写回数据（51 替换、31 移除，含掩体从 (-12.5,-4) 移到 (-10.2,-6.4)）；有可玩 WebGL 与前后对照文档 | 仓库没有 LICENSE，README 明确原仓库因外部资产许可而私有，本仓只放团队代码/文档；外部资产只限该构建；本端未启动 |
+| [The Fallen Citadel](https://github.com/nansu0425/nan2026-game-src)（可玩 <https://nansu0425.github.io/nan2026-game/>） | Claude Opus 5 经 Unity MCP 生成三关地形/掩体/动线坐标；人改放置后用 `battle-stage-backport` 把 82 处手改写回数据（51 替换、31 移除；清单只记汇总数，不把文档示例坐标当实际回写项）；有可玩 WebGL 与前后对照文档 | 仓库没有 LICENSE，README 明确原仓库因外部资产许可而私有，本仓只放团队代码/文档；外部资产只限该构建；本端未启动 |
 
 ### 4.2 二改具体，但缺截图/版本/许可/作者身份之一（15 项）
 
@@ -107,16 +156,16 @@
 | [Skyscrawl](https://evolutionaryarcade.com/g/skyscrawl) | 120 座塔的可攀爬路线由 Node 可解性工具验证；工具找出三处真实问题：横移跳不过、黑洞吸力扫到保证路线、保证链里出现会消失的砖导致回落 soft-lock；修法是消失/碎裂砖只作额外路线、绝不作唯一上行路 | 作者仅 handle；无截图原 URL；无真人长玩；许可/成本未知 |
 | [Keepfall](https://evolutionaryarcade.com/g/keepfall) | 单关三段式城堡；Playwright 逐帧试玩后改掉同侧墙跳可爬塔外壁、骑士巡逻伸进落地区、双链不同步使交接变成计时考试、密室从外侧可见；beam-search solver 证明跳跃与速度各削 12% 仍可无伤通关 | 作者仅 handle；无真人试玩；无截图原 URL；许可/成本未知 |
 | [Sunline GP](https://evolutionaryarcade.com/g/sunline-gp) | Opus 5.5＋Claude Code 生成的卡丁车赛道；第二版写明 AI 车每圈撞墙 48 次降到 1–3 次、跳台起跳 12/32 提高到 31/32，并在桥尾新增第二座跳台 | 作者仅 handle；数据来自自动跑；无截图原 URL；许可/成本未知 |
-| [Fang the Fox](https://tinybitadventures.com/fang-the-fox-rebuilt-with-opus-5-5/) | Claude Code Opus 5.5 重做的 24 区域、5 Boss 浏览器平台游戏；无头 bot 从标题打到 credits，地图检查器证明每扇门/道具/火盆可达；发现最终区“塌陷砖路未点火盆就永久封死 Boss 门”的 softlock，改为会自行拼回的砖并让检查器标出被塌陷路切断的区域；又抓到 Dreamspace 一格进得去出不来的陷阱 | 该页未写明 AI 用量（站点搜索可证 Claude/Opus 参与）；无截图原 URL；版本/成本未知；免费可玩、MIT |
-| [Blacklight](https://www.vibegamesstudio.com/blacklight/) | 按 30 天遥测重做开局两分钟：甲板琥珀色引导带改走位、教学卡从第 5 张提前到第 2 张、开场缩短 12 秒（[2026-09-08 changelog](https://www.vibegamesstudio.com/changelog/blacklight)）、噬人怪延后到光束讲解之后；QA 首轮 7 次冷开有 4 次生成时面壁，二次修复后 7/7 朝向正确 | 工作室自称“零人类”AI 工作室，作者身份是否符合门槛待复核；许可/成本未知 |
+| [Fang the Fox](https://tinybitadventures.com/fang-the-fox-rebuilt-with-opus-5-5/) | Claude Code Opus 5.5 重做的 24 区域、5 Boss 浏览器平台游戏；无头 bot 从标题打到 credits，地图检查器证明每扇门/道具/火盆可达；发现最终区“塌陷砖路未点火盆就永久封死 Boss 门”的 softlock，改为会自行拼回的砖并让检查器标出被塌陷路切断的区域；又抓到 Dreamspace 一格进得去出不来的陷阱 | 页面写明 Claude Code 运行 Opus 5.5；作者静态截图 <https://tinybitadventures.com/content/11/uploads/2026/09/fang-frozen_throne-1024x640.jpg> 与 <https://tinybitadventures.com/content/11/uploads/2026/09/fang-crystal_cave-1024x640.jpg>（本次均 200）；版本/成本未知；免费可玩、MIT |
+| [Blacklight](https://www.vibegamesstudio.com/blacklight/) | 按 30 天遥测重做开局两分钟：甲板琥珀色引导带改走位、教学卡从第 5 张提前到第 2 张、开场更快进入（[2026-09-08 changelog](https://www.vibegamesstudio.com/changelog/blacklight) 原文 twelve seconds sooner，即约 12 秒；同晚夜报 <https://www.vibegamesstudio.com/blog/2026-09-08-the-guard-that-had-never-fired> 记 eleven seconds shorter，两处口径不一致，未统一）、噬人怪延后到光束讲解之后；QA 首轮 7 次冷开有 4 次生成时面壁，二次修复后 7/7 朝向正确 | 工作室自称“零人类”AI 工作室，作者身份是否符合门槛待复核；许可/成本未知 |
 | [密林：危机涌现](https://www.taptap.cn/app/974354) | 开发日志 02：作者试玩后嫌夜间波次张力不足，改成感染者全天进入，并要求围栏外群体先实际攻击围栏、破栏再进；日志 04：救援天数从 10 天→7 天→6 天；页面 2026-10-19，PC 端试玩 | 无作者静态截图原 URL；许可/成本未披露；本端未启动 |
 | [涌忆](https://www.taptap.cn/app/982445) | 人做故事/谜题/关卡/地图标注，AI 写代码、豆包生图并做地图物件适配；AI 先把一个物件识别成多个可触发物、首轮自动适配偏差大，作者手工圈范围与位置做第二轮返工；第二章再加“角色与三角标识重合时标识上移”规则解决遮挡 | 无版本号；许可/成本未披露；本端未启动 |
-| [失控协议：群潮之下](https://www.taptap.cn/app/963039) | 出兵原“首兵与后续两套计时/低供电不拖慢组装/满员伤亡立刻补兵扣钱”，二改为按实际供电效率积累组装进度、断电缺合金时暂停、出口堵塞先等待；布防场地从 144 格扩到 459 格；2026-10-17–18 | 无作者静态截图原 URL；页面声明含 AI 生成资产，许可/成本未提；本端未启动 |
+| [失控协议：群潮之下](https://www.taptap.cn/app/963039) | 出兵原“首兵与后续两套计时/低供电不拖慢组装/满员伤亡立刻补兵扣钱”，二改为按实际供电效率积累组装进度、断电缺合金时暂停、出口堵塞先等待；布防场地从 144 格扩到 459 格（约 3 倍），围墙/闸门改成三格整段，并接入“敌人接近时 AI 主动关门、敌人从某侧突破伤到核心后该侧更早收闸、敌人按受伤/同伴阵亡等实际处境撤退”的触发联动；2026-10-17–18 | 无作者静态截图原 URL；页面声明含 AI 生成资产，许可/成本未提；本端未启动 |
 | [Accomplice](https://www.taptap.cn/app/965247) | 角色斜向移动卡进墙，打补丁越修越多后“推倒重来”，把碰撞箱和地图全部重画（新地图不如原画精致）；AI 写代码但常 context 爆掉，人负责测试/修复决策与美术立绘 | 无截图原 URL；token 成本未给；本端未启动 |
 | [地穴涌现](https://www.taptap.cn/app/960144) | 每关 45 秒改 30 秒、同屏地鼠 3→5 只、削弱一个过强强化道具；页面标“包含 AI 合成内容”，系列日志 4 记录 AI 过度工程，但该篇未写 AI/人工分工 | 该篇 AI/人工分工不足；无截图原 URL；本端未启动 |
 | [重生之我给AI当牛马](https://www.taptap.cn/app/975005) | 让 AI 模拟玩家多轮跑测：难度先高→下调→又太低→把中期考核回调，目标是乱拿资料也能玩、认真搭配有成就感；24 期×4 次训练；AI 只用于模拟测试，关卡/系统由人设计 | 无截图原 URL；许可/成本未披露；本端未启动 |
 | [恶魔庄家今日营业](https://www.taptap.cn/app/954051) | 按剧情重排关卡（删 2 关无剧情、寒暑/先驱对调）；AI 编号重映射把同一数字映射两次，导致收束段错位、寒暑关混入先驱内容；靠剧情 42＋播放交互 15＋关卡可玩性 26 共 83 条验收抓出 | 无截图原 URL；许可/成本未披露；本端未启动 |
-| [璇玑](https://www.taptap.cn/app/964250) | DeepSeek-Flash 设计的第 6–8 关“一眼看穿解法”；作者把这三关改为第 1–3 关、把【极致】模型的复杂关后移；关卡完全由 TapTap Maker 制作，人做筛选重排与误删备份；2026-10-21 | 是关卡顺序/难度曲线二改，不是路线几何；无截图原 URL；许可未提；本端未启动 |
+| [璇玑](https://www.taptap.cn/app/964250) | DeepSeek-Flash 设计的第 6–8 关“一眼看穿解法”；作者把这三关改为第 1–3 关、把【极致】模型的复杂关后移；记录只有强模型才会设计障碍/陷阱与路线选择，13 天完成；关卡完全由 TapTap Maker 制作，人做筛选重排与误删备份；2026-10-21 | 是关卡顺序/难度曲线二改，不是路线几何；无截图原 URL；许可未提；本端未启动 |
 
 ### 4.3 有二改线索，但入口或“节奏仍可玩”未过（9 项）
 
@@ -124,7 +173,7 @@
 |---|---|---|
 | [清漪](https://www.taptap.cn/app/960864) | AI 先产出其中 20 关“里关”并重调此前区别不大的关，逐关改重力/力场/速度（风铃 g 4→1.6、弹珠 g 7→2.2、鼓膜冲量 2.8→5.2）；作者承认部分关“都没法完成目标”；40 关（前 20 关清、后 20 关漪），每关分表里，10/19 | 作者原话“好不好玩另谈了，我准备后面再来调整”，二改后节奏未验；许可未提 |
 | [莉耶伊的魔物娘地牢](https://www.taptap.cn/app/955070) | TapTap 制造；Day8 第一版→第二版测试版才发现“通关目前几层比较无脑”和 UI 遮挡，Day11 又细化地图；2026-10-19 上线 | 作者承认重写移植、后期 Boss 强度仍待打磨；截图/AI 分工/成本未给 |
-| [Epic Survivors](https://web3dev1337.github.io/epic-survivors-architecture/) | 14 个月时间线记录多次关卡/遭遇二改：2024-11-17 Haunted Forest 整关重做与再平衡、2024-12-08 地形生成重做、2024-12-21 移除敌群碰撞、2024-12-27 蛇形刷怪修正、2025-01-17 启动 Level 1 Redesign、2025-02-24 把“只生存”改成五类事件；Steam 有 demo（app 3553800） | “100% AI 编码”是作者声明且被 Jonathan Blow 质疑，AI/人工分工需再核；许可/成本未知 |
+| [Epic Survivors](https://web3dev1337.github.io/epic-survivors-architecture/) | 14 个月时间线记录多次关卡/遭遇二改：2024-11-17 Haunted Forest 整关重做与再平衡、2024-12-08 地形生成重做、2024-12-21 移除敌群碰撞、2024-12-27 蛇形刷怪修正、2025-01-17 启动 Level 1 Redesign、2025-02-24 把“只生存”改成五类事件；Steam 有 demo（app 4090630；3553800 是正式版，不是 demo） | “100% AI 编码”是作者声明且被 Jonathan Blow 质疑，AI/人工分工需再核；许可/成本未知 |
 | [Gensokyo Survivors](https://github.com/Dimava/gensokyo-survivors) | Claude Opus 5.5 写全部代码/美术/音乐；作者用 balance bot 与提交记录改 Boss 弹幕和升级打断节奏到 v2.0.0；浏览器可玩、README/截图完整 | 无 LICENSE；东方同人素材权利需另核 |
 | [Maskfall](https://www.maskfall.games/) | 塔防关卡 blockout→Nano Banana→脚本→Godot；第一次让生成器直接改图导致道路和炮位被改，后用平色 blockout 锁尺寸，并让 bot 跑关卡做平衡；官网有前 3 关浏览器 demo | 作者仅 handle；无截图原 URL；成本/许可未知 |
 | [Liftbound](https://apps.apple.com/us/app/liftbound-cozy-elevator-game/id6827381090) | 20 座手工建筑在固定种子上 bot 分数钉死，每张升级卡在每关跑 100 次回归；Tower 合作层、幼儿园、Bigger Cars 有具体二改前后影响；Claude Code 只按设计文档实现；App Store 可玩 | 商店页重定向，二改证据来自 Reddit 原帖；无截图原 URL；成本/许可未知 |
@@ -132,7 +181,39 @@
 | [Jumpgate](https://kraigadams.com/jumpgate/play/) | 可玩 v8.18（2026-10-16），Claude 写全部 6,362 行代码；第一章在 v4 围绕“垂死电池”重建，v8.2 又主动放慢并加难 | 地图为程序化、敌人未实现，压力来自旅行/碎片/稀缺，不是传统路线关卡；许可/成本未声明 |
 | [GothicVania Codex Demo](https://acatovic.github.io/gothicvania-codex-demo/) | Codex 按 DESIGN-DOCUMENT 与 Playwright 测试做出 2D 平台关卡；2026-02-16 的 `level cleanup` 提交在两个缺少敌人覆盖的平地补 ghoul、把单点硬编码生成改成 placements 列表并补通关流程；README 记录测试发现浮空敌人后回修重力/碰撞；MIT 代码、可玩 | 单关小样本；截图/成本未给；二改是清理级，不是整关重做 |
 
-## 5. 丙级：只有过程或只有入口（50 项）
+### 4.4 第二轮近门槛：二改强，但缺一项或多项硬门槛（4 项；另有 3 项方法/管线证据见 §7.1）
+
+| 作品与入口 | 一次具体二改 | 缺什么，为什么不进甲 |
+|---|---|---|
+| [Overserved](https://overserved.lumiverse.hr/play/)（LumiVerse，可玩；devlog 22 篇） | 140 关全部由 headless bot 逐波推到“刚好能活”；USA 世界 4 关因结果双峰被人工二次改（把 spam 敌人后移到后期、加强该世界半克制塔），重跑后 20 关全过；Boss 从纯血量改为“每秒吸收上限”的护盾。原文 <https://overserved.lumiverse.hr/devlog/designing-levels-by-playing-them/>、<https://overserved.lumiverse.hr/devlog/the-wall-no-knob-could-crack/> | 缺作者静态截图原链、版本号、许可/成本；bot 只能验“可活”不能验“无聊”；本端未试玩。补齐作者静态截图原链与版本号、并通过人工试玩后可作 A- 候选，当前不计入甲级替补。 |
+| [CORO SOLTO: Treta Suprema](https://www.corosolto.com.br/)（免费浏览器 FPS；AGPL-3.0；v2.1.0-alpha.137；代码/地图 <https://github.com/corosolto/client>） | 13 张地图，地图是 JSON 数据＋可视化编辑器；Cidade Invadida（invasao_javaporcos）2026-10-29 出 blockout，10-31 由 Codex 提交“打开塔楼和更多房屋”（1c41cc0）、“修村庄重生点与边缘探针”（3a268b8）、“测量开放窗户与避难所下地形”（0552101），11-01 对齐溪流网格与高度场（f4902c9），11-04 修人行道 z-fighting（45034df）；清单另记同日把入侵收敛到 4–8 名防守者 | 本清单未给作者静态截图原 URL；AI/人工分工只到提交尾注（`Agent:` 约定，README 写明 AI generated & AI friendly），未读到作者对“人定什么、AI 改什么”的说明；a1dbv 资产编辑卡已把该 repo 当角色 GLB 证据，本卡只新增地图二改，需跨卡去重 |
+| [Kindlefall](https://kindlefall.com/)（Rudy Faile） | 浏览器可玩动作 roguelite，作者自述大部分代码由 AI agents 写；devlog 记录同一间第四层熔岩房改了四版，每次旧版都留在 git 里可重新签出对比 | 本清单未给截图原 URL、版本号、许可/成本；四版的具体改动未逐版列出；本端未试玩 |
+| [燎原](https://www.taptap.cn/moment/860184092862318690)（TapTap 聚光灯 2026；游戏页 <https://www.taptap.cn/app/963762>） | 原先把局内关卡全交给 AI 生成，自己完整试玩后发现“太简单、地图太空旷、一瓢水就通关”，于是改机制（树连成墙、铲子只能挖树开路、集装箱可推成移动防火墙）并把难度轴从“资源够不够”改成“路通不通”，之后关卡改由人设计 | 缺作者静态截图原 URL、版本号、许可/成本；改动是机制与难度轴，不是同一路线的第二次几何修改；本端未试玩 |
+
+Dustlight 的确定性 capture bot 与“碰撞不碰 splat”验证、J-STAGE 论文的 A/B 关卡节奏指标、RSD 的单点修复与 level checker 移入 §7.1；三项都不属于“有二改的作品候选”，不计入本节 4 项。
+
+### 4.5 第二轮：可玩且有二改记录，但证据薄一档（14 项）
+
+| 作品与入口 | 一次具体二改 | 缺口 |
+|---|---|---|
+| [Velocity Loop](https://developers.openai.com/showcase/velocity-loop)（OpenAI Showcase，VB Srivastav；可玩 <https://velocity-loop.openai.chatgpt.site/>） | Codex 演示家族里的三维玩具车计时赛，五条赛道；页面明确写到后续 pass 改过赛道布局、镜头与氮气，并做过确定性回放和多次试玩 | 本清单未给截图原 URL、版本、许可/成本；页面是 Showcase 简介，不是逐版 devlog |
+| [Hollowflux](https://developers.openai.com/showcase/hollowflux)（Thomas Ricouard；可玩 <https://tideglass-drowned-vein.openai.chatgpt.site/>） | 程序化地牢动作游戏，七种主题楼层与 Boss；页面写明先打完首场遭遇再调移动/攻击，随后完整通一遍地牢来平滑难度与奖励 | 本清单未给截图原 URL、版本、许可/成本；无逐版前后对照 |
+| [Neon FPS / Rift Vox](https://developers.openai.com/showcase/rift-vox)（Gabriel Chua；可玩 <https://openai-minigames-examples.vercel.app/fps/>） | 体素赛博射击，六轮迭代中包含“把建筑布局改得更可读”和“扩大可探索地图”，最后还有一个合并大关卡与战斗反馈的终轮 | 本清单未给截图原 URL、版本、许可/成本；六轮的具体前后差异未逐轮列出 |
+| [Brick Platformer](https://developers.openai.com/showcase/brick-platformer)（Katia Gil Guzman；可玩 <https://openai-minigames-examples.vercel.app/brick-platformer/>） | Phaser 平台跳跃，页面写明反复调整平台间距，并用 Playwright 浏览器冒烟测试验证顶部宝藏可达 | 本清单未给截图原 URL、版本、许可/成本；单关小样本 |
+| [Deadlock](https://vibearcade.com/games/deadlock)（Vibe Arcade，15 关反向塔防） | 作者 devlog（<https://vibearcade.com/blog/how-we-built-deadlock>）记录一晚连发三版、按不可妥协的“牢笼三胜负”支柱重排房间布局，并复盘 iframe 与集成测试漏掉的关卡 bug | 本清单未给截图原 URL、版本、许可/成本；作者/AI 分工未写清 |
+| [Path Runner](https://vibearcade.com/games/pathrunner)（Vibe Arcade） | AI 生成的浏览器伪 3D 跑酷；devlog 记录首版消失点过高导致整条路像下坡，实际试玩后压低地平线，并重建赛道生成与障碍组合 | 本清单未给截图原 URL、版本、许可/成本；改动是参数与生成器，不是同一路线重排 |
+| [Unmask the City](https://furic.github.io/unmask-the-city/)（Richard Fu / GGJ 2026） | 第一人称 3D 程序化城市收集游戏，Claude Code 写实现、作者定玩法与试玩；出生点净空连续四版从 2→12→20→30 单位，第四版同时放大收集半径。原文 <https://www.richardfu.net/building-unmask-the-city-a-solo-game-jam-journey-with-ai-pair-programming/> | 本清单未给截图原 URL、版本、许可/成本；没有手写路线或遭遇的二改 |
+| [Still Hour](https://app.deadsimple.games/games/stillhour)（Braid 式时间回溯平台解谜） | 作者原帖（<https://www.reddit.com/r/aigamedev/comments/1xgtqex/>）称 20 关全由人设计、Claude 子代理分管引擎/关卡/美术，并用“最大台沿 3 格、最大缺口 5 格”硬约束和每关自动通关脚本保证改关后仍可解 | 帖中没有一次具体的第二次路线重做；本清单未给截图原 URL、版本、许可/成本 |
+| [Familiar](https://github.com/Preponderous-Software/familiar/issues/13)（Preponderous Software；可玩 <https://familiar.play.danielstephenson.dev>；MIT） | 0.1.0 三个 AI agent 试玩报告第 3 条：距灯笼约 1.5 m、准星对准按 E 无效，敲门要反复挪 2–4 次；10-30 提出、10-31 在 PR #23 修复——灯笼 2.3 m、门 1.85 m 可交互，8 m 内显示“come closer”，进入范围物体闪光且准星变橙。[#31](https://github.com/Preponderous-Software/familiar/issues/31) 另记门廊台阶挡住正面走向大门（按住 W 2.5 秒不动，需先左平移），issue 仍开着；0.1.1 汇总（<https://github.com/Preponderous-Software/familiar/blob/main/docs/playtests/0.1.1/ai-playtest/summary.md>）26 条发现、2 条 major 都是路线/空间问题 | 改动集中在交互距离与门廊碰撞，不是路线/遭遇重排；#31 未修；截图未作为原链列出；本端未试玩 |
+| [Kindling](https://github.com/Preponderous-Software/kindling)（Preponderous Software；可玩 <https://kindling.play.danielstephenson.dev>） | 与 Familiar 同作者、同 Playtester harness 的 3D 第一人称修复游戏；docs/playtests 留有 2026-10-22 至 10-29 的四个版本 AI 试玩汇总（0.1.0→0.1.1→0.1.2→0.2.0，major 6→3→1→2），逐版记录“屋内看不见屋顶破洞”“地板缺口无法瞄准”“手持瓦片挡住补洞目标”等空间/可达性问题及改动（<https://github.com/Preponderous-Software/kindling/blob/main/docs/playtests/0.2.0/README.md>） | 0.2.0 仍把屋顶破洞列为 major，属进行中的二改；本清单未给截图原 URL、版本号（只有构建号）、许可/成本 |
+| [Atman](https://github.com/Preponderous-Software/atman)（Preponderous Software；可玩 <https://atman.play.danielstephenson.dev>） | 同一作者的 3D 村庄游戏，docs/playtests/0.2.0 有 7 条 major（含“黄昏路上撞上一整面黑色表面”“村中返程路点似乎在房屋墙后”），0.2.1 仍有 2 major（梦境无提示、睡觉时钟倒走，[summary](https://github.com/Preponderous-Software/atman/blob/main/docs/playtests/0.2.1/ai-playtest/summary.md)），0.3.0 重跑降到 0 major | 改动集中在空间提示、碰撞和可达性，不是路线重排；本清单未给截图原 URL、许可/成本 |
+| [齿轮塔防](https://www.taptap.cn/moment/861866671965474597)（万里草原／方步工作室；游戏页 <https://www.taptap.cn/app/972651>） | 把敌我血量拉平，通关目标从“击败全部士兵”改为占领最右侧敌方家园；删掉全部敌方素材、敌军直接复用我方士兵立绘；每关最后一波改成占领敌方老巢的 Boss 波，并补教程；作者自述教程交给 AI 做，实机测试发现 AI 把正常波次的敌人显示替换掉，已修 | 本清单未给版本、许可/成本；AI/人工分工只到“教程给 AI 做”；塔防非 3D 动作；改后节奏未写；本端未试玩 |
+| [猪能飞 / Pig Can Fly](https://www.taptap.cn/moment/855967114937238417)（我深夜扔垃圾；游戏页 <https://www.taptap.cn/app/978037>） | 作者先让 AI 直接生成关卡，结论是“基本没什么玩头”，随即改为让 AI 做关卡编辑器、自己设计关卡并继续迭代编辑器 | 具体的第二次路线修改没有展开；本清单未给截图原 URL、版本、许可/成本 |
+| [SKY SHIFT](https://playgama.com/blog/main/how-to-make-a-game-with-ai/)（Playgama 第一方 AI 造车竞速；可玩 <https://playgama.ai/play/i66ryvsxgiybqp>） | 教程案例明确记录先问“保留三圈环道还是改赛制”，随后把赛道改成海上冲刺（巨台、峡谷、管道、陡坡）并后补 Harbour Run/Skybridge/Razor Coast 三关，还用录制比赛回放证明玩法未变 | 本清单未给截图原 URL、版本、许可/成本；教程是营销案例，不是逐版 devlog；无“改前/改后”同基线数据 |
+
+去重：失控协议：群潮之下（app 963039）与璇玑（app 964250）已在 §4.2 收录，本节不重复计数；引用时见 §4.2 对应行。
+
+## 5. 丙级：只有过程或只有入口（50＋14 项）
 
 丙级不满足“可玩＋作者过程＋具体二改＋截图原链”的完整门槛；列出来是为了说明覆盖面和缺口，不作为推荐。
 
@@ -141,7 +222,7 @@
 | 作品与入口 | 核到的内容 | 缺口 |
 |---|---|---|
 | [智能涌现](https://www.taptap.cn/app/957390) | 3D 海岛狩猎，AI 图生 3D 14 个模型（约 4.8k 面、4 级 LOD）；每片海三关、第三关 Boss；真机试玩后玩家“不知道干嘛”，加入拖动/开火/回港/倒料/买升级/出港逐步引导与字幕；下轮将按反馈调难度和台词节奏 | 具体第二次关卡修改尚未发生；仅 iPhone 16 Pro/一加 8T 验过；许可未声明 |
-| [蚁SCAPE / 碳酸公司](https://www.taptap.cn/app/957599) | AI 先做格子关卡编辑器（墙/玻璃/深渊/补给/蚁巢、触发器/逻辑门/计数器）和约 100 项调参面板，人拿工具摆关并试玩；日志只记工具迭代与 QA | 没有具体某关第二版路线/遭遇重做；许可/可玩性待验 |
+| [蚁SCAPE / 碳酸公司](https://www.taptap.cn/app/957599)（日志 <https://www.taptap.cn/moment/861395978580658380>） | AI 先做格子关卡编辑器（墙/玻璃/深渊/补给/蚁巢、触发器/逻辑门/计数器）和约 100 项实时调参面板，人拿工具摆关并试玩；日志记录“参数是否生效、保存后是否一致、撤销/复制是否漏属性”都要反复试修 | 没有具体某关第二版路线/遭遇重做；无截图原链、版本、许可；可玩性待验 |
 | [涌·墨卷](https://www.taptap.cn/app/986579) | 代码交给 AI、自己管玩法；一局 12 层、可提前看到后续房间并自选路线；第二轮回调血液演出并重做怪物数版 | 房间与路线扩充仍列在下期计划，二改尚未落到路线层 |
 | [生命涌现：深空集群](https://www.taptap.cn/moment/858099594104409533) | 日志 5 把进度改为周目制并重排遭遇（首周目只单挑、后续才围攻），逐区核对战斗时长与电力消耗来调前期节奏；星图以商栈和中心终点组织路线 | 作者标注 TapTap 制造但正文未写 AI 工具，AI 分工待核 |
 | [灵涌](https://www.taptap.cn/moment/859452781243664191) | 日志 05 明确记录遭遇/地图二改：死斗从拖沓的“守槽位”改为“先到先打”，灵界从环形地图改为向右推进长卷，三十三重天开局即显示分叉云梯 | AI 只在日志 03 以“无敌的AI大人”自述出现、未点名工具；AI/人工分界与可玩入口需补核 |
@@ -190,7 +271,35 @@
 - **Evolutionary Arcade 的 fork/blend（3）**：[Night Shift](https://evolutionaryarcade.com/g/night-shift)（保留山脊防守骨架，加雷暴/发电机燃料/手电引怪）、[Ridge Runner](https://evolutionaryarcade.com/g/ridge-runner)（Starwake＋Last Signal 的 blend，六波爬升敌人）、[Hiring Loop](https://evolutionaryarcade.com/g/hiring-loop)（Haunt Loop 的 fork，改八轮面试关卡并保留地板坍塌/规格变更）。均可直接试玩，但没有作者过程与第二次修改记录。
 - **Vibegames Studio 的 13 款**：工作室自称“零人类”AI 工作室（员工为 agent 人格，changelog 由 agent 生成），作者身份与人类判断边界待复核。逐项改动：<https://www.vibegamesstudio.com/crazycabcity/>（地图扩 2.5 倍、越野速度 38→约 10 m/s、栏杆/树篱从实体墙改为可撞路标）、<https://www.vibegamesstudio.com/theblock/>（最赚钱的 LOUD 抢劫路线此前 100% 失败，改为可玩；生产房 dollars-per-heat 4.3×→2.2×）、<https://www.vibegamesstudio.com/hyperdrift/>（测试脉冲地雷虽过公平性检查，却让 Core 死亡 49→202，删除并写原因）、<https://www.vibegamesstudio.com/cornerkings/>（城市整体重建为宽路和真实楼间距、逐区解锁，9/7 加限时街区工作）、<https://www.vibegamesstudio.com/deadair/>（第 4 区 8 夜后加 Hill Hospital 第 5 区和第 9–10 夜，敌人攻击改前摇可躲）、<https://www.vibegamesstudio.com/shinobi/>（新增 Moonlit Rooftops 场地，修 18 只波次里 15 只自灭）、<https://www.vibegamesstudio.com/projectember/>（首个 Boss 降血、加跳跃预警/落点标记、取消待机接触伤害）、<https://www.vibegamesstudio.com/delvers/>（五个 Boss 各加独有终盘机制，Hollow King 后加三层 Rift）、<https://www.vibegamesstudio.com/kong/>（攀爬 4→16 块，修 75 m 电梯/100 m 铆钉死亡重置）、<https://www.vibegamesstudio.com/molemayhem/>（King Mole/General Gnaw 加第二阶段）、<https://www.vibegamesstudio.com/matchpoint/>（五轮签表改六球场八轮，实测球场弹跳恢复系数 0.533–0.702）、<https://www.vibegamesstudio.com/melda/>（新增 Pale Ossuary 区域，不是二改）、<https://www.vibegamesstudio.com/blog/2026-07-30-the-islands-were-see-through>（Skull Tide 岛屿三角形绕序反了 17 天从内部可见，港口硬编码 0.3 m 被地形埋住，改用同一高度函数生成网格与摆件；当前游戏目录未列该作）。
 
-## 6. 丁级：按任务规则排除或转交（9 组＋19 项旧候选）
+### 5.5 第二轮：中文作者日志/作品，二改线索具体但入口或 AI 分工缺（9 项）
+
+| 作品与入口 | 核到的内容 | 缺口 |
+|---|---|---|
+| [《瓦楞速运》开发者日志 2 / 4](https://www.taptap.cn/moment/860294180608411729)（可燃工作室；日志 4 <https://www.taptap.cn/moment/861023722948003179>） | 日志 2：作者自述被 AI 的十几份关卡策划案唬住；要求“再复杂一点”后，AI 在场景里堆了六七个旋转平台和对应开关，打开关卡“不知道往哪里走，也看不出一条清楚的通行路线”；随后作者自建白模搭建器，先手搭三条传送带的协作路线并自己试玩，再交给 AI 细化，组员试玩后认为比 AI 直接生成的关卡好玩。日志 4 补返工账：关卡初期白盒由 AI 搭建，导入美术场景时“没有分组，而且很多的细节和关卡引导都没有做好”，后续大量精力用于修补；又因 AI 工作流难以大改模型，改走灯光引导（第一关冷白光指主通道、暗暖光指解谜点）并加体积雾 | 只有 moment，没有可玩/商店入口；无版本、许可、成本；AI/人工分工清楚但二改后的完整可玩性未验；无截图原链 |
+| [一声之间](https://www.taptap.cn/moment/857701579598334467)（澄江子） | 关卡布局二改有原文：“这轮重做了七个房间，还删掉了一些让人只能挨个试的落点”；新增“第二份工作”——只回应一次的小怪物唱过后变成通道，同一怪物可在后续段落再次回应；并把“声音折返路径、再次演唱者、让路者”一起设计；10/09 日志，两张运行截图原链本次 200；作者用 Godot，明确“制作中有 AI 辅助” | 没有独立试玩/商店链接（只有聚光灯活动页）；AI 具体做什么未写；无版本、许可、成本；改后是否完整可玩未验 |
+| [牛顿的脑内回响](https://www.taptap.cn/moment/859821701528027390)（狂热信徒） | 放弃“清完怪→弹窗选房→切场景”，改成 A—走廊—B 同一坐标系的连续地图，房间 1920×1080、走廊 220×320、门宽 220，进入下一房间后门洞变成有碰撞和视觉表现的实心墙；未击杀怪物保留血量，跨房间追击列为下期；用“体验标尺”量白怪与地板对比度 1.235:1→加墨色描边后墨色占比 27%→49%，并让几个 AI 各出一版再筛；配图原链本次 200 | 无可玩链接、无版本；AI 工具与人工分工只写“几个 AI 各出一版”；跨房间追击尚未实现 |
+| [AI编年史](https://www.taptap.cn/moment/857791875526952608)（Hunter & Friday） | 第五章核心互动被作者推翻两次：第一版“太无聊”、第二版“不够震撼”、第三版才找到“点一下整张网络同时亮起”，第一章点烟过场因被当成卡死补了提示与跳过；TapTap app/954910 有试玩 DEMO | 页面未披露 AI 工具与人工分工，按门槛只能算丙级线索；无截图原 URL、版本、许可 |
+| [NEURONS](https://www.taptap.cn/moment/860623916882724394)（张溢泽，两人团队） | 初代 3D 原型、第二版 2D 像素原型都不满意后放弃该方案，回头调第一关布局与走近/伸手/搜寻交互并持续试玩；AI 做代码/场景/资产但未点名工具；app/710826 只是聚光灯 jam 页、无当前可玩入口 | 无当前可玩入口；AI/人工分工与工具未写；无版本、许可 |
+| [Infinite Pokémon](https://github.com/Shellishack/infinite-pokemon)（Shellishack） | README 记录 layout v2：启动时升级旧布局，先备份 pre-layout-v2-*.sqlite，训练家若落在新墙里会被移到可达空格，保留进度/同伴/记忆；Codex 驱动、地图模板需通过 schema 与依赖校验；浏览器 demo <https://infinite-pokemon-blond.vercel.app/game/> | 二改更像格式升级而非试玩后重做；demo 本机 curl exit 000；无截图原 URL、许可 |
+| [Song of Larithea](https://larithea.com/devdiary) | Claude 参与工程与模拟试玩，战斗从脚本演出改成漫画分镜序列、并专门做“让敌人不那么有攻击性”的一轮 | 无 demo/商店链接、无具体前后数值；版本/许可未披露；只能当作者过程线索 |
+| [翻面 FLIPSIDE](https://www.taptap.cn/app/1000462)（Mark-Pan 工作室／B站 @s-1mple-） | 中文社区里少见的“AI 做的 3D 第一人称战术射击”可玩样本：作者自称文科生、不会写代码画画，一个人用 Opus 5.5 四天做出 5v5 翻面爆破 FPS；TapTap 测试页有试玩 DEMO，Steam 5520840 为 coming soon；B站 BV1nKsX6jE7r、BV1RYxv6oEtw | 没有找到任何“第二次改路线/地图/掩体”的作者记录，四天工期也不支持；按二改门槛不成立，只能作“AI+3D+可玩”的对照，不建议进甲级 |
+| [灵山未至](https://store.steampowered.com/app/4944390/)（玄一智能） | 3D 西游 Roguelite 割草动作，Steam 2026-09-16 发售、移动端免费；小红书有“用 AI 开发并上架 Steam”的演示，但只讲到龙王 Boss 的 30% 血变身与水球/漩涡技能，未给关卡设计过程；手游历史日志只有 1.0.23（2026-10-08）修发烫/插屏广告/隐私 | 不属关卡二改；AI 证据只有转述；无作者原文与关卡改动记录 |
+
+去重：蚁SCAPE（app 957599）已在 §5.1 收录，此处不重复；《瓦楞速运》日志 2 与日志 4 是同一作品，已并为一行。
+
+### 5.6 第二轮：二改强，但只有过程/文档、无独立可玩入口（5 项）
+
+以下 5 项的二改本身具体，但都没有独立可玩入口或需要自备商业本体/ROM，按门槛 2“只有宣传页、waitlist、下载包承诺的不进 A/B”从严降到丙级；保留是为了说明线索和缺口，不占乙级名额。
+
+| 作品与入口 | 一次具体二改 | 为什么在丙级 / 缺口 |
+|---|---|---|
+| [Peas of Resistance](https://game.stresserbse.de/post/who-is-right-the-test-or-the-game/)（Marco & Claude） | Training Garden 整关重建（旧布局停在 9 月 13 日）；40 多条测试硬编码旧坐标，46 条依赖实时关卡的测试迁到 tests/fixtures 的“冻结测量关”，删掉只钉住可移动物件位置的测试；配套每关一个文本目录的关卡格式与浏览器编辑器（可达性叠加、难度曲线告警、ghost 回放、从光标处试玩，<https://game.stresserbse.de/post/the-editor-as-workshop/>） | 官网只有 Steam 愿望单，无公开可玩 build；截图只有编辑器图；本端未试玩 |
+| [HCT 1.6 – Chile](https://github.com/irregbex/hct16-chile-mod)（Horizon Chase Turbo 智利 mod） | AI 写全部代码、模型、音轨和 164 条智利赛道；CHANGELOG 2.3.8 把 Los Vilos–Illapel 的三个收费站整段撤掉（文件留档待回装）、2.4.0 把 Playa Las Docas/Amarilla 海滩赛道改成可撞岩壁与暗礁、2.3.5 把 Plaza de Illapel 从 5 圈改 3 圈；赛道仍是可编辑 race.json 并带 track editor | 需自备 Horizon Chase Turbo，不是独立可玩入口；本清单未给作者静态截图原 URL；本端未试玩 |
+| [Luv Sense Digital《Game 0》2-15 工厂潜入](https://luv-sense-digital.readthedocs.io/zh-cn/latest/development/game0/factory-infiltration.html) | 第二波遭遇第一版复用全场索敌，两人队伍约 17 秒被远处守卫集火；第二版加 550 单位接敌距离、受击警戒、走近后 prepare/射击，保留失败 JSON，并用 41.7 秒真实鼠标实测与 FirstPatrol 回归 | 无公开可玩入口；AI 只用于守卫图，整关未完成；本端未试玩 |
+| [PrimeGame #593](https://github.com/xperiaroco2/prime-game/issues/593) / [#1035](https://github.com/xperiaroco2/prime-game/issues/1035)（Claude Code 起草 issue/文档、人决策） | #593：MVP 先保留可跑的简单 House 灰盒，第二遍改为 Blender 建模、独立可换件、房间/任务点为独立场景共用门墙尺寸，已合并 35 个灰盒房间、楼梯、出生点、第二张基础模式地图与可读性 pass；#1035：审计现状“7 个环路、12 个死胡同房间”，提出 11 处开口可做到“18 个环路、1 个死胡同”，随后从 hub-and-spoke 改为非线性 estate/dacha 网格，要求“每个房间有机制、每个机制有位置”，10-21 批准室内/附属建筑/隔墙传声规则 | 本清单未给可玩入口、截图原 URL、版本；AI 只起草 issue/文档，设计决策由人；本端未试玩 |
+| [Cart Chase 2P](https://github.com/irregbex/CartChase2P)（约 1.3 万行 C/Python/JS 全由 Claude Code 写，人类只做设计与逐版试玩） | 关卡生成器第二版（2026-10-09）把“轨道高度对齐但景物跳变”改为同景物列＋同高度平轨，编辑器用橙色标剩余接缝，110 关 v2 与无头跑车 bot 都已落地；确认 visible seam 规则与 110 关版本 | 需自备 DKC ROM，非商业同人许可，不是独立可玩入口；本清单未给截图原 URL、成本；本端未试玩 |
+
+## 6. 丁级：按任务规则排除或转交（9 组＋2 项＋19 项旧候选）
 
 **任务点名只可作旧对照、不计新候选的 19 项**（不重复计数）：Riposte、Formula Minus One、DragonScape Idle、Battle Drones、Ascend From Nine Mountains、Remnants of R'lyeh、Codex Mortis、Void Balls、Warpact、Blocks Beyond the Stars、Pawbound、Steel Maiden、LOB、Robo Rally Open、Firefly Lasso、Capybara、backroad rally、Long Wind、World of ClaudeCraft；`pxl` 是工具，不算游戏。上述均已在游戏首页、`docs/research/2026-10-23-game-worth-trying.md` 或场景/角色/音频卡覆盖，本卡不重列。
 
@@ -205,6 +314,8 @@
 | Stay Dead / 亡犬 Dead Dog / SweatyPanzer | 无本清单链接 | 试玩构建与 AI 分工未核，未计入候选 |
 | Wicklight / A Rock and a Hard Place / DEEP | <https://itch.io/jam/ai-jam-4/rate/4885393>、<https://itch.io/jam/ai-jam-4/rate/4874311>、<https://itch.io/jam/ultimate-ai-powered-game-jam-2/rate/4876114> | 本机 itch 直连不可读，只有搜索摘要与 GamesByAI 列表；不当作已核原文。A Rock 的 BFS 自动 playtest 发现两关不可通、Wicklight 的 headless autoplayer 发现 burn 平方衰减与闪避 bot 撞测试上限，都是好线索，恢复 itch 后再核 |
 | Duality | <https://duality-game-vibejam.vercel.app> | Vibe Jam 2026 数据集只有元数据；vercel 页 TLS 000，作者页/实机页未读 |
+| 我是一把枪 | <https://www.taptap.cn/moment/858775746284355947> | 遭遇节奏从“波次无限往上加、没有通关”计划改成“9 波、3 幕、打完通关”，后续日志 04 已按 9 波做、地图改圆形并加传送；但全程未提 AI 参与，按 AI 门槛排除，只留作“波次封口”的节奏改法线索 |
+| GamesByAI / OpenAI Showcase 可玩池（Eyrie、Sunset City、Neon Ridge Drift、Swifty Dungeon） | <https://playeyrie.com>、<https://sunset-city.didof.dev>、<https://ridgedrift.netlify.app>、<https://github.com/Dimillian/SwiftyDungeon> | 均可玩或代码公开，但页面只有作品简介，没有第二次路线/遭遇修改记录；只作“有可玩构建但没过程”的候选池，不计候选 |
 
 ## 7. 工具与方法线索（13 组，不是作品）
 
@@ -224,6 +335,34 @@
 | Old Circle / abagames / game-forge / Godot-Director / harmonist | <https://github.com/Usnul/old-circle> | 同批 GitHub 线索；只给流程规范或引擎/模板，没有具体关卡二改记录，未计入作品 |
 | Turbo Kart Rally / SUNBREAK | <https://github.com/bridge-mind/turbo-kart-rally>、<https://github.com/Imirushik/sunbreak-downhill-3D-game> | 均为单次提交、无二改；只作“有可玩构建但没过程”的对照 |
 
+### 7.1 第二轮新增工具/方法（23 组，不是候选作品）
+
+| 线索 | 链接 | 用途与边界 |
+|---|---|---|
+| 《AI Workflow for Game Designers》Part 7 关卡设计（Minsoo Lee） | <https://github.com/eremes81/game-design-ai-practice-en/blob/main/manuscript/part07-level-design/chapter-1-procedural-level-design-master.md> | 24 年游戏设计师、前《仙境传说 Online》设计组长；7.1 开篇是真实事故：47 号房出口被封，build 和 QA 都过，上线第 3 天才被玩家截图发现；修法是把“起点→Boss 可达、无死路”的图检查做成 build gate，并主张验证必须由代码而不是人的注意力保证；7.3 用 pattern library 管复用与影响面。全文 CC BY-NC-SA，可读 |
+| Dora SSR《When Agents Test Other Agents》 | <https://github.com/ippclub/dora-ssr/blob/main/Docs/blog/2026-08-16-05-agent-accepts-agent/index.mdx> | 让 Codex 当用户、Dora Agent 当开发者，跑出 80+ 个游戏目录（含 v2/v3 修订，一批 24 个游戏 112 个任务 1,855 轮）；验收拆成“能构建 / 引擎能跑 / 玩家看得见能操作能通关”三层；作者明确像素检查只能抓黑屏/缺色，抓不了构图、可读性、动画和手感 |
+| EVEngine 0.6→0.6.1（indienova） | <https://indienova.com/u/magicfuns/blogread/39356> | 中文工具文，主题正是“AI 写出第一版游戏后怎样继续修改”：白盒批量搭景、自动试玩、用 recipe 记录输入与断言，建议选小场景连改三轮并留证；不是作品，是二改验证方法 |
+| Antti Kananen 生产报告（Games Alchemy #77 的转述） | <https://makegamewithai.com/news/ai-game-development-beyond-demo> | 路线审计跑数千采样、控制器走入口/楼梯/长路径，但结构测试通过仍会在玩家视角出现反墙、别扭转角、缺 bypass，流程是规划—生成—走查—取证—人工否决—修正；原文 Substack 本机 TLS 失败，只有转述 |
+| worldbuild-bench | <https://github.com/sebnado/worldbuild-bench> | 同一 harness、三份 brief（Arena Combat、Physics Puzzle、Sunset Apex 三圈赛道）让 10 个模型产出 29 个可玩 3D build（round 页与 README 主文均记 29；README 首屏另一处写本轮 27 个），专门量空间/时间/因果一致性；作者自述自动 gate 几乎全过、人打开仍见不可解关卡/圈数不计。可用来对照“同一赛道要求下生成的关卡是否可读、可跑” |
+| Playtester（pt） | <https://github.com/Preponderous-Software/playtester> | Familiar 的 0.1.x AI 试玩和 Kindling/Atman 的 playtests 都由这套开源 pt 工具产生；README 写明并行 agent 看截图按键、可选 probe 精确操控、多份报告合并成带目标用时的 summary，并自带 Beyond Nations/Kindling/Atman 三个游戏 profile |
+| Strata | <https://github.com/Preponderous-Software/strata> | Familiar、Kindling、Atman 共用的开源引擎，为试玩提供 Drive channel（注入输入、共享帧钟、STRATA_DRIVE_CLOCK/STEP、headless 截图），让 AI 试玩可重复、可 stepped，是关卡二改前后可比的底层能力 |
+| Kiln | <https://github.com/instruktlabs/kiln> | 《One More Broadside》作者点名的 3D 资产工具：agent 写 JS 改几何/材质，Kiln 回渲染视图和结构检查并导出 GLB、保留可编辑源；MIT、MCP/CLI/SDK，已用于 Sheepdog Sim/OBJEKT 62/ski sim——补“改场景几何后用什么验收”的工具链 |
+| game-builder-mcp | <https://github.com/wuisabel-gif/game-builder> | v0.4.1，2026-11-04；提供 plan/scaffold/check/playtest/serve，`playtest_game` 用 headless Chromium 按 Agent 指定按键点击并回传截图、错误、状态变化；覆盖 21 类玩法/品类，技术栈另表列出 2D/3D web、Godot、Unity、Unreal、Bevy/raylib 等。试玩只支持网页游戏，首次运行下载约 150 MB Chromium |
+| Godot Editor MCP | <https://github.com/hybridindie/godot-mcp> | stable 2026.10.20.1 / beta 2026.11.04b2；驱动实时 Godot 编辑器，能改场景/脚本、模拟输入、录回放、截图、profile；默认只开 inspection，其余 28 个工具集按需开启；适合把“改关卡→跑一遍→看状态”接进 Agent |
+| Ludus | <https://registry.npmjs.org/@cosmic-pulse/ludus>（npm 包页 www.npmjs.com 403，改用 registry 元数据） | npm v0.20.0，2026-09-19 发布，MIT，pre-release；以 LUDUS.md 写清 golden path/规则/不变量，经官方 Unity CLI 读真实场景状态、在运行编辑器里执行 C#、驱动 play mode 并确定性判定，可做逐关难度与进度核对，不靠像素；接口 1.0 前可能变 |
+| AgenticPCG | <https://github.com/JiangZehua/AgenticPCG> | 开源研究代码：让 LLM 通过结构化工具调用反复评估并编辑关卡，支持 Binary Maze/Zelda/Sokoban/LodeRunner/Super Mario Bros.，可从空关卡起步、按目标指标优化；适合借它的“评估-编辑”循环做二改 |
+| Lucasartsifier | <https://github.com/katiahayati/lucasartsifier> | 反编译 SCI 脚本→抽象解释成带守卫的房间转移/道具/剧情旗标图，找出“还能操作但已无法通关”的 softlock，再推导、验证、编译并安装守卫；在 LSL2/KQ4/KQ6/Laura Bow 2 四款实测。它把“二改后仍可通关”变成可自动检查的图问题，MIT，HN 2026-08-19 161 分 |
+| Roblox Studio Planning Mode + Playtesting Agent（beta） | <https://www.gamesindustry.biz/roblox-releases-agentic-ai-tools-for-creators-promising-ability-to-build-a-game-with-a-single-prompt> | 2026-04 上线；Planning Mode 先出可编辑多步计划，Playtesting Agent 读日志、截图、模拟键鼠输入，对照设计计划找问题并回流到计划循环。大平台内置的“计划-构建-自测”闭环，但只在 Roblox 生态 |
+| Razer QA Companion-AI | <https://www.razer.com/blog/ai-that-plays-to-test-razer-qa-companion-ai-at-gdc-2026> | GDC 2026 扩展：零接入、基于画面检测渲染/物理/动画/碰撞问题，AI gameplay agent 可自主执行测试序列并比对预期、返回 pass/fail。商业闭源、价格未披露；适合与大厂 QA 流程对照 |
+| Unreal Engine 5.8 实验性 MCP | <https://www.unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show> | **官方页 403 Cloudflare（curl/WebFetch 均未直读），以下仅来自搜索摘要、未核原文**：2026-06-17 State of Unreal 提到 UE5.8 起带实验性 MCP server 插件，Claude/Gemini 等可访问蓝图、资产、关卡、材质、mesh；UE6 计划 2027 下半年 Early Access。只能当线索，等可访问原文再核；若本仓已覆盖 Epic 的 Unreal 插件，可只留作版本/路线确认 |
+| Google Playground | <https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/> | 2026-10-07 上线，美国 18+；用自然语言改物理/规则/角色/环境，可发布到 Explore，创建额度按 Google AI 订阅分层。它把 prompt-to-game 做成可分发产品，是判断 AI 做游戏能力边界与分发变化的现成入口；未公布价格/token 细节，本端未试用 |
+| Unity Spark（闭源 AI 游戏编辑器，closed beta） | <https://unity.com/spark> | Unity 官方页称“带真实编辑器的 AI 游戏制作器”，可 prompt/refine/publish，使用 Unity 资产，示例 Space Corridor，需 waitlist。四个 demo 只有构建入口（config.json 为空对象、game.json 是 10 MB 场景数据），没有关卡二改日志、版本或前后对照 |
+| Playgama MCP + Sandbox + Bridge SDK 2.2 | <https://playgama.com/blog/main/built-a-game-with-ai-get-your-first-players-and-ad-revenue-with-playgama-mcp/> | 官方博客 2026-09-11（10 月更新）：Agent 经 OAuth 把游戏发布到 Sandbox、拉取 playtime/performance/retention 与自定义事件（如第 5 关卡点）、再推新 build，形成“发布→玩家数据→改版→再发布”闭环。450M 是网络潜在覆盖，未公布留存改善证据与价格 |
+| 其他新工具/平台（Noobi.ai、game-exa、NodeTool、Game Dev Agentic Skills、GameFactory-3A、SoonPlay、Meta Horizon、GameMaker GM-CLI、OpenAI Voxel Velocity 线索） | <https://github.com/Innate-Labs/Noobi.ai>、<https://github.com/Ar9av/game-exa>、<https://github.com/nodetool-ai/nodetool>、<https://github.com/thedivergentai/Game-Dev-Agentic-Skills>、<https://github.com/OpenDCAI/GameFactory-3A>、<https://soonjy.com/>、<https://www.gamesindustry.biz/meta-unveils-ai-powered-game-tools-for-mobile-devices-and-browsers-announces-vr-glasses-with-day-one-unity-support>、<https://www.gamedeveloper.com/production/gamemaker-incorporates-claude-code-to-enable-ai-assisted-workflows>、<https://openai.com/index/introducing-the-codex-app/> | Noobi 是 Planner/Implementer/Reviewer＋宿主构建自动试玩；game-exa 以 Phaser 3＋Playwright/pixelmatch/VLM＋BFS 可达性＋输入 fuzzer 做 QA；NodeTool 把 2D/3D 引擎做成 Agent 可操作节点工作区；Game Dev Agentic Skills 是 Godot/Bevy 技能库；GameFactory-3A 用 `agent_skills/setting_overview.md` 路由到 UE5/Unity/Godot/Blender/three.js；SoonPlay 是“视频→可玩内容”的中文平台；Meta Horizon 是 waitlist；GameMaker GM-CLI 内置 Claude Code 查项目/构建；OpenAI Codex app 的 Voxel Velocity 因 403 只有搜索摘要，只作线索。均未核关卡二改记录 |
+| Dustlight（GamesByAI 官方团队；管线证据） | <https://gamesbyai.win/games/dustlight/> | 3D 高斯泼溅探索游戏，2026-10-03 发布；MIT 代码、美术/音频版权保留。Codex 画七件模型双视图参考，Claude Code 写 Blender Python、导出器、约 1,700 行游戏与音效；仓库有确定性 capture bot、按游戏时间精确回放、`?seed=`/`?shot=`，NOTES.md 明确“碰撞完全不碰 splat，行走/相机/摆放都对不可见 collider 网格做射线”，把“看得见”和“能站”分开验证（<https://raw.githubusercontent.com/gamesbyai/dustlight/main/NOTES.md>）；过程页 <https://gamesbyai.win/blog/gaussian-splatting-game-with-blender/>、截图 <https://media.gamesbyai.win/games/dustlight/shot-1-1280.webp>。已读页面未见第二次路线/遭遇修改记录，只作 3D 关卡验证与资产管线线索，不计作品候选 |
+| AI-Assisted Methods for Evaluating and Optimizing Game Level Design（J-STAGE 论文） | <https://www.jstage.jst.go.jp/article/iar/3/0/3_49/_article/-char/en> | Fu Boning、Sato Reika，2025；同一 Souls-like 非线性关卡的 A 版（纯人工）与 B 版（按 AI 诊断改教学、卡点、时长、路径提示）由 5 名中级玩家对比：平均通关 18→13 分钟、死亡 6→3、路线偏离 8→2、满意度 6.2→8.4。没有公开可玩 build，只作“二改后节奏指标”的方法证据，不计作品候选 |
+| RSD Game-Maker Sandbox Edition（Lewis Moten，MIT，可玩） | <https://lewismoten.github.io/GameMaker-SandboxEdition/>；作者原文 <https://lewismoten.com/2026/11/04/how-rsd-game-maker-grew-beyond-the-screen/> | AI agent 改关卡、人试玩报问题：书架上不去→加低木板变成两段短跳（20:06 报、20:12 提交），出口贴在普通墙纸上→加门和灯牌；随后把“出口是否在纯色背景上”做成 level checker，能指出纯色背景上的出口并建议门、灯牌或箭头，设计师仍可决定保留隐藏出口。只是单点修复，不是整关/整段二改；截图原 URL、版本、资产许可/成本未给（代码 MIT），只作方法/管线线索 |
+
 ## 8. 读不到的渠道与原因
 
 以下均为实际尝试后失败，未换身份、未绕过访问控制；摘要只作线索。
@@ -242,9 +381,26 @@
 - **gamedev.net / Unreal / 官方 jam**：`gamedev.net` 的 Against The Mountain Devlog Day 73 返回 403；`unrealengine.com/news/2026-epic-ai-megajam` 403 Cloudflare，换 en-US、浏览器 UA、r.jina.ai 仍 403/000；`itch.io/jam/epic-ai-megajam-2026` 与 `itch.io/jam/ai-jam-4/results` TLS 失败；NAN 2026 站点 Socket closed。
 - **其他站点**：`slashie.net` 根与 `/keep` 被 Mod_Security 406，`/keep/devlog` 与 `www.slashware.games/keep` 500，只能读 `blog.slashie.net`；`fable-katamari.pages.dev` 除 OpenStreetMap 版权外无作者/社交/其他作品外链；`tinyskies.vercel.app` 变成 Dreamhost 停放页；`hollowlands.andreelias.dev` 只有标题与菜单图；`duality-game-vibejam.vercel.app` TLS 000；`vibejam.com/2026` 显示 0 games，results/winners/entries 均 404；`aibuiltgames` 主页只渲染 1 条 featured；`Playgama` 只有聚合统计；`vibey.dev` 是域名出售页。
 
+**第二轮新增读不到（与前节重复的渠道只在有新增事实时列出）**：
+
+- **OpenAI Codex app / Voxel Velocity**：`openai.com/index/introducing-the-codex-app/` 的 WebFetch 与 curl（含浏览器 UA）均 403 Cloudflare，en 与 hy-AM 都 403；`r.jina.ai` 读取 TLS 握手失败（exit 35/000），`ebs.publicnow` 转载页也 403；`developers.openai.com/codex` 308 跳到 `learn.chatgpt.com/docs`，没有 demo 画廊；Showcase 只列 Velocity Loop、没有 Voxel Velocity 条目，无法确认两者是否同一演示。Voxel Velocity 的关卡迭代细节只有搜索摘要，未读到官方原文、可玩链接或 skills 的 GitHub 具体路径，只作线索。
+- **GitHub API / code search / discussions**：未认证 60 次/时限流，后段 403；code search 需登录也 403；Bash Fighter 的 Discussions 41/42/45、逐条 PR diff 与 issue 讨论未逐条读，只读 README/AGENTS.md/docs/提交正文；Donchitos/Claude-Code-Game-Studios #13「Any real game output?」的回复异步加载，未显示；PrimeGame #1035 有 62 条评论，HTML 时间线只显示首屏；ts-kyle-on-duty 404/私有，Covenant of Embers 的 main 分支 README/CLAUDE.md 404，AI 参与与许可未能核实。
+- **代码检索代理**：grep.app 被 Vercel Security Checkpoint 拦截（返回 HTML 检查页），无法按 AGENTS.md/CLAUDE.md 内容做全站代码检索；ungh.cc TLS handshake 失败（curl 35），改用 raw.githubusercontent 逐路径探测；skillsmp.com 的 team-level skill 页 403，只能由搜索结果确认存在。
+- **Unity 官方与资产市场**：`unity.com/features/ai`、`/products/unity-ai` 返回通用产品页，未找到官方一手 graybox/level playtest 说明；相关说法只见第三方俄语/越南语报道，按“厂商案例只作线索”未计入候选。Unity Discussions 首次 `search.json` 返回 JSON，后续查询被改成 HTML/非 JSON；Asset Store 301；Fab 搜索页 200 但未提取到具体评测正文，插件市场评价渠道基本未取到。
+- **GamesByAI / itch.io**：GamesByAI catalog 的 games/ 目录只列出 100 个 YAML 文件名，未逐文件打开；单款是否有二改、版本、许可未核；api.github.com 读目录与部分仓库元数据 403。itch.io 全站（游戏子域、AI Jam 4、Jamference、VOLT NOMAD、A Rock、Wicklight、DEEP、Catbot、MEOWCHA、Wasteland Renegades、Silent Entry、Knuckle Rush）本机 DNS 解析到内网拦截地址、TLS handshake 失败（000），只有 Jamference 一个提交页 200；不当作“那里没有内容”。
+- **Reddit / 镜像**：www/old/api.reddit.com 403/429/TLS 失败；eddrit 返回 Anubis 人机挑战，downdoot 返回 FSKY Forcefield，reddit.fsky.io 301；Arctic Shift posts search 连续 Timeout，分页到约 200 帖后 422，1xmtel6 无评论，1xgtqex/1xmtwht 只读到少量；Voltane、Catbot、Gopher It 的 Reddit 原帖与评论未读全。
+- **Steam / SteamDB**：`store.steampowered.com/appreviews` 对已知 app（413150、5417460、5451220）一律 302 回商店首页，拿不到评测 JSON；steamcommunity.com 讨论区 TLS 握手失败；SteamDB patchnotes 403/Cloudflare；ISteamNews 对灵山未至 4944390、翻面 5520840 返回 `newsitems=[]`；Iron Curtain Call 的 Steam News Hub 只渲染导航和页脚。
+- **TapTap / B 站**：TapTap 试玩 DEMO 需客户端/登录；作者主页返回混淆反爬负载；`webapiv2` 搜索 400 `csrf_token_expired`，`/webapiv2/app-tag/v1/by-tag` 404，`/group/792849` 只返回空壳；moment 页只 SSR 正文与“x 回复”计数，回复正文未渲染；评论区/作者其他作品无法枚举。B 站视频页 curl 412，`api.bilibili.com/x/web-interface/view` 对 BV1AimaYxEjh、BV1aN411S7ya、BV1qA3r6rELg、BV1vCxj6MEYC、BV1Go4y1M7Ae 返回验证码/错误页；按任务不加载播放器、不播放音频，评论区未读。
+- **中文平台**：知乎专栏 `zhuanlan.zhihu.com/p/2059966647797020499`、`p/2069008293343892861`、`p/2081891098419638844`、`p/2098071791726022867` 403；小红书多篇 AI 游戏/关卡日志（69cff43d…、68ebc1bb…、69a1b9c6…）item 页空/访问不到；微信公众号多篇返回“当前环境异常，完成验证后即可继续访问”；NGA `ngabbs.com/read.php?tid=45483804` 403；V2EX、linux.do TLS 证书/握手失败；kongchang.com 429；TapTap 站内搜索只回导航框架。
+- **Substack / 其他作者站**：gamesalchemy.substack.com（含 substack.com）TLS handshake/000，Antti Kananen #77 原文未直读，只能读 makegamewithai 转述；hybridlabs.games TLS 35；benwheatley.github.io 被域名安全策略拦截；Tripo developers 的 Red Scarf / Godot MCP boss 教程 WebFetch Socket closed；web.archive.org / archive.org 拒绝抓取（Unable to fetch）；Lobsters search.json 400 Unpermitted query，tag JSON 非 JSON；Medium/X/Newsletter/Discord/YouTube 有登录墙、000 或需播放器。
+- **新平台**：Google Playground 302 到 accounts.google.com 登录，正文抽取被 CSS 污染；Unity Spark 的 /blog、/demos、/docs、/community 都是同一个 SPA 壳，四个 demo 只有构建入口；Meta Horizon Create/Studio 只有 waitlist；SoonPlay（soonjy.com）只返回标题/JS 壳，公开 API 只有 3 条展示数据；Playgama 博文没有 sandbox 独立原始链接；Epic/Unreal 官方页 403 Cloudflare（含 state-of-unreal-2026-top-news-from-the-show，UE5.8 MCP 只读到搜索摘要）；npm 包页 403（Ludus 改用 registry.npmjs.org 元数据）。
+- **学术与其他**：Semantic Scholar 的 OpenGame、ScriptDoctor、Zero-shot 3D Map citations 429；FREYR references 空（637 字节）；GameCode4D 数据集页 000；SSRN 7502203 只有 OpenAlex 元数据，摘要未读；play.google.com 的 Floor Is Lava 商店页 curl 000；Bilibili/视频页不播放。
+
 ## 9. 交给 dot 的试玩与现案例验证
 
-**最强 1 项先试 Voltane。** 理由：它是本批唯一把“路线二改”写成带日期的可见/碰撞清单、又有开放 beta 和真实玩家负评的 3D 竞速；Star 当前要处理的正是公路弯道、捷径与可读性，问题结构最接近。先在同一赛道（建议 The Backyard；要看二改主证则用 Maplewood 的客厅捷径/门廊与大弯段）、同一车辆、同一机位连续跑 3 圈，对照更新日志看三件事：捷径是否都有可见几何封住或明确保留；碰撞是否贴合可见墙面/路沿；分段用时、撞墙次数与完成性是否退步（无旧 build 时只比同一 build 的改前/改后同基线，不声称比旧版变差；若只是试玩现成 build、无法取改前，则记当前 3 圈供以后复跑）。不要用“改过”代替“节奏仍可玩”。
+**最强新候选先深挖 HollowARK（若只试一项，选它；若目标是补“AI 全写代码、人逐版试玩”的完整过程，也选它）。** 先读 §3.4 的 devlog（<https://kraigadams.com/hollowark/devlog/>，共 128 条、最新到 v91），重点看 v48（岩石/物流线）、v59（洞窟彼此不相连＋开局 57→39 分钟，主 build 口径）、v91（第一章重做为“矿工→传送带→熔炉→方舟”单条生产链，原型 test player 约 21 分钟）三处；v71 只作美术/第一章观感对照，并对照三张作者静态图；恢复实机后在同一起始图跑 10–15 分钟，记录第一铲是否总能开工、物流线是否穿岩、开局资源瓶颈。它的可借机制不是“再改一版”，而是**每版一页记录＋同机位截图＋脚本玩家复跑**：每次只改一组空间/物流参数，立刻用同一脚本玩家跑开局并记时长，版本号与作者原话写在同一页。这个机制可移到 Star 的开局/单段计时，但 HollowARK 是挖掘/物流游戏，不能替代赛车弯道的试玩。
+
+**针对 Star 的最强 1 项先试 Voltane。** 理由：它是本批唯一把“路线二改”写成带日期的可见/碰撞清单、又有开放 beta 和真实玩家负评的 3D 竞速；Star 当前要处理的正是公路弯道、捷径与可读性，问题结构最接近。先在同一赛道（默认 Maplewood 的客厅捷径、门廊碰撞与大弯段；The Backyard 只在需要熟悉车辆/简单闭环时作对照基线）、同一车辆、同一机位连续跑 3 圈，对照更新日志看三件事：捷径是否都有可见几何封住或明确保留；碰撞是否贴合可见墙面/路沿；分段用时、撞墙次数与完成性是否退步（无旧 build 时只比同一 build 的改前/改后同基线，不声称比旧版变差；若只是试玩现成 build、无法取改前，则记当前 3 圈供以后复跑）。不要用“改过”代替“节奏仍可玩”。
 
 **在现案例（Star）可验证的一个机制：可见阻挡清单＋固定跑圈基线。**
 
@@ -253,18 +409,20 @@
 3. 只改清单上的几何/碰撞；改完用同一基线重跑。
 4. 判定：触发捷径次数下降，分段用时与完成性不退；同机位改前/改后截图各一张，确认可见几何与碰撞一致。
 5. 若需要更细的节奏判据，再借 Solhex 的做法：给每段设目标窗口，用可重复 test player 量实际时长与空转，按偏差改路线/成本，而不是先加装饰。
+6. 若问题不是捷径而是整段节奏，借 HollowARK 的计时口径：同一脚本玩家/同一车辆跑同一段，记录开局到第一个目标、单段用时与空转，先量再改；HollowARK 的 57→39 分钟是 v59 主 build 的脚本化完美玩家口径，约 21 分钟是 v91 原型口径，都不是真人首次游玩，引用时必须写清。
 
 **何时不适用。** 问题若只是单段时长/节奏而不是捷径或可见碰撞，改用 Solhex 的目标窗口，不要套跑圈基线；若要换美术/几何且必须保住原跳跃路线，改用 时囚 的同机位灰模/线框；没有旧 build 时，仍可在同一 build 内先跑 3 圈作改前基线、改后同法复跑，只做改前/改后对照，不得声称比旧版变差；只有非闭环赛道、无法固定输入/回放或无法实机运行时，step 2/4 的跑圈基线不可比，才跳过跑圈、只做当前状态的可见几何核对。无法实机运行时同样只核静态几何与作者原文，不替代试玩。
 
-这条机制只借 Voltane 的“可见阻挡＋同基线复跑”和 Solhex 的“目标窗口＋可重复测量”，不在本卡对 Star 实施、出图或改默认；恢复实机后按现有串行拍摄规则另排。
+这条机制只借 Voltane 的“可见阻挡＋同基线复跑”、Solhex 的“目标窗口＋可重复测量”和 HollowARK 的“先量开局/单段时长”，不在本卡对 Star 实施、出图或改默认；恢复实机后按现有串行拍摄规则另排。
 
 ## 10. 排重、已核与未核
 
-- **排重**：对照 `domains/game-dev/README.md` 的“用 AI 做游戏”表、`docs/research/2026-10-23-game-worth-trying.md`、旧场景/角色/音频卡与已交回候选；任务点名的 19 项旧候选与 `pxl` 均未重列。Emberwick、Claude-of-Tanks 按“同一作品只归主要价值最贴合的一卡”转交场景光照卡；Race Evolutions 按作者门槛排除。Vibe Jam／awesome 列表／插件与 Skill 市场与本卡“关卡二改”关联弱，未把榜单条目当候选。
-- **已核**：A 级三项的主入口、作者过程页和静态截图原链本次重新取了 HTTP 状态（Voltane `play` 200、`/en/updates` 200、关卡图 `level-maison-960` 与 `level-jardin-960` 均 200（hero 宣传图另 200，不算关卡截图）；Solhex `play` 200、devlog 200、两张图 200；时囚 app 页 200、三篇 moment 200、两张 tapimg 图 200）；另核 Pull the Plug Pages 200、Pull the Plug Day9/Day24 两篇 devlog 200、Iron Curtain Steam 页与 Demo app 5451220 均 200、Fable 200 及其 Zenn/MIT 源码页 200、多米诺人生 200、Fallen Citadel 200。Fable 的 MIT LICENSE 与 Fallen Citadel 无 LICENSE、README 的资产边界本次实读；Solhex devlog 的 v99/v103/v173 原文、Voltane 更新日志的“second finishing pass/大弯封路/客厅捷径/隐形墙”原文本次实读；Iron Curtain 的 appdetails 显示正式版 2027-03-11、`coming_soon=true`，Demo appdetails 显示 2026-10-23。标题与页面内容只抽查，未逐页核对。
-- **未核**：作者真实身份（多为个人站/工作室页/handle）、完整游玩回路、帧率/手感/听感、手机与低端设备性能、模型/引擎版本逐项、资产逐件许可、跨平台可玩性、完整成本。上述留给 dot 试玩或后续核读，不在本产物里写成已知；本端未启动任何游戏、未看完整连续实机、未播放视频/音频。
-- **版本/许可分界**：Fable 代码 MIT、地图 ODbL；Fang the Fox 免费可玩、MIT；Gensokyo Survivors 无 LICENSE、同人素材需另核；Fallen Citadel 仓库无 LICENSE、原仓库因外部资产私有；Voltane、Solhex、时囚、Pull the Plug、多米诺人生、Iron Curtain Call 的代码/资产许可均未在已读页面声明，不能由“可玩”推定可复用。
+- **上轮 4 条 open issue 已修**：Fallen Citadel 删掉把文档示例坐标当成实际回写项的那句，只保留 82 处（51 替换、31 移除）汇总；Fang the Fox 改回“页面写明 Claude Code 运行 Opus 5.5”并补两张作者截图原链；Blacklight 改成“changelog 原文 twelve seconds sooner（约 12 秒），同晚夜报记 eleven seconds shorter，两处口径不一致，未统一”，并补夜报链接；Epic Survivors 改成 demo app 4090630，并注明 3553800 是正式版。
+- **排重**：对照 `domains/game-dev/README.md` 的“用 AI 做游戏”表、`docs/research/2026-10-23-game-worth-trying.md`、旧场景/角色/音频卡与已交回候选；任务点名的 19 项旧候选与 `pxl` 均未重列。Emberwick、Claude-of-Tanks 按“同一作品只归主要价值最贴合的一卡”转交场景光照卡；Race Evolutions 按作者门槛排除。Vibe Jam／awesome 列表／插件与 Skill 市场与本卡“关卡二改”关联弱，未把榜单条目当候选。第二轮新增的 HollowARK、Bash Fighter、Dustlight、Peas of Resistance、Overserved、Kindlefall 等未在 a1dbv 参考副本或第一轮产物中出现；CORO SOLTO 的 repo 已在资产编辑卡作为角色 GLB 证据，本卡只新增地图二改，跨卡不重复；Fang the Fox 是第一轮乙级条目，本轮只补齐 Opus 5.5 口径、两张截图原链与缺口，不计第二轮新增；失控协议：群潮之下、璇玑、蚁SCAPE 已在前轮表中出现，本轮只做交叉引用，不重复计数；《瓦楞速运》是本轮同一作品日志 2 与日志 4 的两条记录，已合并为一行，不是前轮条目。Sky Shift、Dustlight、Pro Skater 等只有生成/演示或管线、没有逐关前后对照的，按二改门槛降级（Dustlight 移入 §7.1 只作管线线索），不当作甲级证据。
+- **已核**：第一轮 A 级三项的主入口、作者过程页和静态截图原链本次重新取了 HTTP 状态（Voltane `play` 200、`/en/updates` 200、关卡图 `level-maison-960` 与 `level-jardin-960` 均 200（hero 宣传图另 200，不算关卡截图）；Solhex `play` 200、devlog 200、两张图 200；时囚 app 页 200、三篇 moment 200、两张 tapimg 图 200）；第二轮核了 HollowARK 的 `play`/devlog 与 v48/v36/v71 三张图（均 200）、Bash Fighter 仓库/commit 99b53d8/实机图（均 200）、Fang 页面与两张截图（均 200）、Blacklight changelog（200，原文 twelve seconds sooner）、CORO SOLTO 首页（200）；另核 Pull the Plug Pages 200、Pull the Plug Day9/Day24 两篇 devlog 200、Iron Curtain Steam 页与 Demo app 5451220 均 200、Fable 200 及其 Zenn/MIT 源码页 200、多米诺人生 200、Fallen Citadel 200。Fable 的 MIT LICENSE 与 Fallen Citadel 无 LICENSE、README 的资产边界本次实读；Solhex devlog 的 v99/v103/v173 原文、Voltane 更新日志的“second finishing pass/大弯封路/客厅捷径/隐形墙”原文、HollowARK 的 v48/v59/v71/v91 原文本次实读；Iron Curtain 的 appdetails 显示正式版 2027-03-11、`coming_soon=true`，Demo appdetails 显示 2026-10-23。标题与页面内容只抽查，未逐页核对。
+- **未核**：作者真实身份（多为个人站/工作室页/handle）、完整游玩回路、帧率/手感/听感、手机与低端设备性能、模型/引擎版本逐项、资产逐件许可、跨平台可玩性、完整成本。第二轮 HollowARK 的完整游玩、Bash Fighter 的实际手感/联机、Overserved 的 bot 与真人差异、CORO SOLTO 的地图编辑器实际操作均未运行；HollowARK 的 57→39 分钟是脚本化完美玩家口径，不是真人首次游玩。上述留给 dot 试玩或后续核读，不在本产物里写成已知；本端未启动任何游戏、未看完整连续实机、未播放视频/音频。
+- **版本/许可分界**：Fable 代码 MIT、地图 ODbL；Fang the Fox 免费可玩、MIT；Gensokyo Survivors 无 LICENSE、同人素材需另核；Fallen Citadel 仓库无 LICENSE、原仓库因外部资产私有；Bash Fighter 代码 AGPL-3.0，素材/音效许可未单独声明；CORO SOLTO 代码 AGPL-3.0；Dustlight 代码 MIT、美术/音频/配音版权归 GamesByAI 不随 MIT；HCT 1.6 – Chile 的 mod 代码 MIT，但必须自备 Horizon Chase Turbo；Cart Chase 2P 是非商业同人许可且需自备 DKC ROM；Voltane、Solhex、时囚、HollowARK、Overserved、Pull the Plug、多米诺人生、Iron Curtain Call 的代码/资产许可均未在已读页面声明，不能由“可玩”推定可复用。
 
 ## 原始采集回执
 
-实际渠道：Vibe Jam 官方 API/静态缓存、GitHub 网页/raw/`commits.atom`/Pages、作者站与 devlog（kraigadams、x00f、dmnshd、tinybitadventures、vibegamesstudio、evolutionaryarcade、rustyrobozlabs、blog.slashie.net、penguinboisoftware、supertommy、slipfacegame、fable-katamari＋Zenn）、Reddit Arctic Shift、Steam appdetails/ISteamNews、TapTap 网页 SSR/tag/moment/app 页、掘金/cnblogs/agentcaseshare/jobyang、Hacker News Algolia、awesome-opus-5.5-games 的 games.json、aibuiltgames/Playgama 索引、B 站与 YouTube 元数据。搜索词覆盖中英文的 level redesign/second pass/playtest、关卡重做/路线/波次/遭遇、blockout/greybox、second playtest、boss encounter rework、site:itch.io、site:taptap.cn、TapTap 聚光灯 2026、AI Browser Game Jam 4、Vibe Jam 2026 等；WebSearch 200/200 用尽后改直取 URL、API、RSS 与站点内导航。读取截止 2026-11-06；未启动游戏、未看实机、未开浏览器、未登录、未发帖、未评品质。
+实际渠道：第一轮为 Vibe Jam 官方 API/静态缓存、GitHub 网页/raw/`commits.atom`/Pages、作者站与 devlog（kraigadams、x00f、dmnshd、tinybitadventures、vibegamesstudio、evolutionaryarcade、rustyrobozlabs、blog.slashie.net、penguinboisoftware、supertommy、slipfacegame、fable-katamari＋Zenn）、Reddit Arctic Shift、Steam appdetails/ISteamNews、TapTap 网页 SSR/tag/moment/app 页、掘金/cnblogs/agentcaseshare/jobyang、Hacker News Algolia、awesome-opus-5.5-games 的 games.json、aibuiltgames/Playgama 索引、B 站与 YouTube 元数据。第二轮增加了 GitHub 的 `react-app.embeddedData` 搜索/trending/raw/`commits.atom`/浅克隆、GamesByAI catalog 与 gamesbyai.win、OpenAI Showcase、Unity agent plugin/Spark、Google Developers Blog/Antigravity/Playground、Dora SSR、eremes81 书稿、作者站（HollowARK、RSD、Unmask the City、Caleb Leak、Jeff Schomay、ButterStack、Vibe Arcade）、HN Algolia 评论树、Arctic Shift 的 r/aigamedev 帖与评论、TapTap moment/app/tag 页、Steam/App Store、arXiv/J-STAGE/Zenodo/SSRN/Semantic Scholar、Playgama/SoonPlay/Unity Spark/Meta Horizon 与 Godot/Unity MCP 工具仓库。搜索词覆盖中英文的 level redesign/second pass/playtest、关卡重做/路线/波次/遭遇、blockout/greybox、second playtest、boss encounter rework、site:itch.io、site:taptap.cn、TapTap 聚光灯 2026、AI Browser Game Jam 4、Vibe Jam 2026 等；WebSearch 200/200 用尽后改直取 URL、API、RSS 与站点内导航。链接核对用脚本并行 curl，按状态码与页面标题判断；本轮共抽取 250 个唯一链接，235 个返回 200/3xx，其余为已记录的 Reddit、itch.io、HN、OpenAI、Unreal、npm 网页阻断（Ludus 的 registry 元数据可用），未当作已读。读取截止 2026-11-06；未启动游戏、未看实机、未开浏览器、未登录、未发帖、未评品质。
