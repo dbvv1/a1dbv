@@ -1,3 +1,8 @@
 - 11-03 UTC 10:36–11:16，[Sentry](local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md) 仍 ready 未领取；另四项已领取，当前实际活动／原因未知；已按§3提示检查本机开机、登录。
 
 | P81 | **试用与选择**：实作回流决策页／模板 | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md) 待接收；跟进 [Datasette #3015](https://github.com/simonw/datasette/pull/3015)、[Memos #6502](https://github.com/usememos/memos/pull/6502)。Qwen [旧基线](../../experiments/candidate-reset-recovery/README.md)构建／类型／409 测试通过。#15757 已合、#15741 关闭；静读 `dd020ddf`：旧14例中6例过时／8例待验，保留已合分页／重名策略。全套 socket 仍被拒，原动作获准后补 PR 门槛。Skills 待新读者实做，任务正文附全文；先核写者退出／空槽；本机禁安装，[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交 Claude 核心。  A→B FPS 2a789cc Py3.12.14: invalid-structure≠invalid-json;exit2. |
+
+B 临时纠偏更新前原文（待验欠项未取消，当前优先级以 TASKS 为准）：
+
+- **B**：三案当前发布见项目板，后续按[细则§6](game-taskbook.md#6-作品案例)轮转；补齐候选完整验收。手感三项（FPS 加速度／摩擦／插值，MOBA 施法中下一技能结束当 tick 执行，Star 轮胎峰后下降／载荷转移及动力测法）按同一门槛发布，前后值写入 feel.md 与记分卡。三案各有新的旁置发布、出图命令可用、三项手感候选已发布后删除本行。
+- **B 出图**：需要 WebGL2 的出图与 smoke 改由本机跑（11-04 用户决定，[细则§7](game-taskbook.md#7-下发本机模型的游戏任务)），一次一张卡；交回后补十机位图、目标图、盲评与材质整层。
