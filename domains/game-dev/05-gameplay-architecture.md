@@ -715,9 +715,15 @@ GAS 已提供叠加、到期等配置就用原生策略；`None` 是独立实例
 
 **金币反馈读奖励事件，不从余额差猜补刀。** MOBA 的 `goldAwarded` 在原奖励记账后给出领取者、死亡目标、金额、目标位置和五类原因：英雄击杀、无英雄击杀者时的全队奖励、小兵补刀、建筑最后一击与建筑队友奖励；这两类团队奖励不是助攻。零赏金不发，被动收入和购物也不发，避免把同 tick 的收入／支出抵消误读成没有奖励。位置随快照复制，事件仍不进权威状态、存档或 RNG；消费者逐逻辑步收取，并明确忽略自己不处理的新事件类型。
 
-本次只接权威接口，尚无可见金币提示。固定旧源与新版在 8 个支持版本各跑 3600 tick，state/hash 与旧事件相对顺序一致；真实零赏金基地击杀仍给队友原 60 奖励，终局保留最后批。精确源指纹映射保旧存档身份，不放开任意版本。普通默认／原镜头 Q/W 入口通过 Canvas 功能门槛，不据此判断奖励提示的可读性。[接收源码与单份验收](https://github.com/dbvv1/MOBA-Like/blob/5b925f372e68232cd3bf88727a55116909b3be2d/docs/side-release-acceptance.md#权威赏金派生接口cpu-与普通入口门槛通过)，2026-11-03。[案例源码／CPU／浏览器功能实测]
+已发布的权威接口版本尚无可见金币提示。固定旧源与新版在 8 个支持版本各跑 3600 tick，state/hash 与旧事件相对顺序一致；真实零赏金基地击杀仍给队友原 60 奖励，终局保留最后批。精确源指纹映射保旧存档身份，不放开任意版本。普通默认／原镜头 Q/W 入口通过 Canvas 功能门槛，不据此判断奖励提示的可读性。[接收源码与单份验收](https://github.com/dbvv1/MOBA-Like/blob/5b925f372e68232cd3bf88727a55116909b3be2d/docs/side-release-acceptance.md#权威赏金派生接口cpu-与普通入口门槛通过)，2026-11-03。[案例源码／CPU／浏览器功能实测]
 
 **收取频率是接口的一部分。** 当前 `snapshot().events` 仅保一个逻辑 tick 的深拷贝批，按 `tick+ordinal` 排序／去重；它不进权威状态哈希，不是历史补发服务。客户端每次 `step` 后同步消费者，同一渲染帧推进多个逻辑步也逐步收取。消费者只保当前施放／受伤阶段，不无界累计；重开清空游标与动作，倒序快照要求先 reset。只按 render 取最后快照会漏掉中间的零前摇施法与伤害，增加 EventBus 不能补回漏读。
+
+**🧪 短奖励提示分别定义去重、聚合与寿命，不把它做成奖励历史。** MOBA 统一候选的 Gold HUD 沿每个真实逻辑步消费，只展示玩家的正数奖励：同 tick 的增量批合并，重复前缀不重复计数；新 tick 有奖励就替换旧行。`tick+ordinal` 游标依赖源批次单调有序，不能直接用来接乱序网络消息，否则迟到的较小 ordinal 会丢失。界面独立显示收益与胜负公告，不占命令拒绝提示。
+
+**用模拟时间计寿命，就要明确暂停与终局保留。** 该消费者在新奖励到来时设为当前模拟时间后 2 秒，重复批次不续期；隐藏页面暂停、终局不再推进时，未过期提示继续保留。终局基地奖励因此可与胜利公告并存；如果产品要求结算页仍自动淡出，应另选界面时钟，而不是在模拟结束后继续推进玩法。新局换消费者，恢复存档清空历史事件，不补播旧收入。对应回归包含帧内中间步奖励、隐藏暂停、新局清理，以及 v8 双英雄队伍的真实基地团队奖励；浏览器布局、可读性与 v11/v12 终局观感仍待验收，候选尚未合入默认分支或公开站点。
+
+实现起点：[逐步接线](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/src/client.ts)、[奖励消费者](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/src/ui/gold-receipt.ts)；可运行 `npx vitest run tests/client/gold-client.test.ts tests/client/gold-terminal-rewards.test.ts` 检查上述反例，见[客户端 CPU/DOM 回归](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/tests/client/gold-client.test.ts)与[终局／去重回归](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/tests/client/gold-terminal-rewards.test.ts)。核实 2026-11-06；本次为候选源码与既有测试定义复核。
 
 接入时保留原输入、模拟和资源所有者：技能定义／实例仍在 `src/content`、`src/sim`，逐步消费在 `src/client.ts`，动作阶段在 `asset-pipeline/presentation/motion-state.js`。可运行 `npx vitest run tests/presentation-events.test.ts` 看零前摇、取消、护盾／过量、v8／v9 与重复读取反例，再运行 `npm --prefix asset-pipeline/presentation test` 看真实 GLB／阶段消费；`npm run dev` 体验输入→施法→动作／场景反馈。复用当前仓库入口，不另建一套技能框架或日志平台。
 
