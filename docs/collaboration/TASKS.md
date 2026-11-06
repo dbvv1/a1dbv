@@ -12,7 +12,7 @@
 
 - **A 先收旧交付**：核全量review_ready（快照8）：接收／一次补验／部分接收／拒绝。优先账号上下文、Compaction独审、Sentry价值；不重做19fdff08，仅补POSIX／Windows边界。处置前停广扫／Hook／模板新卡，只允一个无依赖正文单元。回报逐项决定、正式采用、恢复条件与唯一下一项；Git状态不证明停工。
 - **B 先收产品**：Star唯一品质槽沿同ID核真实调用、槽位与阻塞；unknown不重派、不清锁、不绕过拒绝，先做独立工作。仅确认原调用不存在、槽空且原合同允许才自然领取。门槛仍12张同机位图、非作者盲评与真实分数变化。
-- **FPS**：接收[9c56ad6训练整合](b-work-20261106.md#fps-训练场整合)，main仍fa8740de；完整角色reload/switch仍缺，真实接线与CPU结果不算品质提升，补合法浏览器门槛。
+- **FPS**：接收[2c963d6训练整合](b-work-20261106.md#fps-训练场整合)，main仍fa8740de；完整角色reload/switch仍缺，真实接线与CPU结果不算品质提升，补合法浏览器门槛。
 - **MOBA**：单线大乱斗按A/B/C；阶段A先赏金HUD、Q/W与死亡的真实可见反馈，沿已有卡依赖／槽位择一，不堆候选。CPU正确不等于玩家可读。
 - **其他B线**：只收能改变正文／案例的差量，停止无采用路径的来源、独立素材与重复工具卡；新工具须明确案例接入及运行／视听／操作验收。回报产品main／采用／最高验证与Star阻塞，不以a1提交数替代。
 - **共同**：阻塞只隔离依赖动作；核当前状态，不无变化重试或绕过权限，其他授权工作继续。每次回报须有新证据、行动或恢复条件。
@@ -45,7 +45,7 @@
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [成套重导出](../../domains/game-dev/assets/3d.md#asset-family-rebuild)已接；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)通路／命中未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，复用三图／保护区／标准件，画面未验。开放音频未听未用，Nature 恢复未知。3D：网关三源实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机`gen3d`／`glbprep`可用；按实测采用 3–5 件标准件。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [三份探索处置](b-work-20261106.md#三份实例探索处置)：仅收 Bichitos 触控识别与 Solhex 章节计时机制，发布迭代本轮不收，不扩表。原场景氛围来源已入[制作链](../../domains/game-dev/assets/materials.md#scene-atmosphere-revision)。均不新增品质推荐；Void Balls 启动失败、Warpact 未玩及原实机欠项保留，不重派。 |
 | SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master [ce7b870](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/quality.md) 仅收12图／双盲评，探索2→2，正式分未建；候选未合，Site **v10** 不变。[原唯一卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md) **review_ready**：六条拍摄exit0，外层待核；候选四路在官方预览读bundle受阻，未开局。纠偏未完成；原403及手感／听感欠项保留。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`、Site **v24** 未变。[9c56ad6交接](b-work-20261106.md#fps-训练场整合)：五动作／步枪源换弹／存活HUD，音频显式开启。492＋29测试、类型／构建／独审过；六回合仅替身Renderer CPU。EPERM与完整角色reload/switch、视听／实玩未过，未合main／部署。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`、Site **v24** 未变。[2c963d6交接](b-work-20261106.md#fps-训练场整合)：角色／换弹／存活HUD及命中受伤接线，音频显式开启。501＋29测试、类型／构建／独审过；六回合仅CPU替身。EPERM、完整角色reload/switch及视听／实玩未过，未合main／部署。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收
