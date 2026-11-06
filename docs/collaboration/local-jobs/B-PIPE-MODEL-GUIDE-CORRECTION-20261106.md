@@ -34,4 +34,9 @@ result_branch: relay/b-pipe-model-guide-correction-20261106
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- 已按固定脚本完成 build 单元：仅整体重写 domains/game-dev/assets/3d.md 的 asset-family-rebuild 节（+30/-2，锚点保留），给出 build.py 入口与 --/--output 参数边界、palette.plaster→trim 对墙/掩体与灯的影响、失败保旧批、GLB 与 .blend/manifest 稳定性分离、旧 manifest 过时及 2a789cc 未接收，并把状态拆为源候选/默认 home 消费/视觉未验收。实际检查：git diff --check 通过；check_repo 878 文件 errors=[]；check_public 1411 文件 findings=[]。按任务未运行 Blender、未重建/上传模型、未取得游戏画面或视觉验收。openIssues（review.pass=false）：1) 未写明默认 home 的 ART_PIECES 写死三件字节数，改色重建后直接替换 models 会因 asset-size 校验回落 fallback、画面仍是旧件；2) 二改判据未定义同版本基线，bpy 5.2.3 读者拿仓库内 4.3.2 GLB 比较会误判灯也变化；3) --output 只写严格子目录与父目录须存在，未说明相对路径以 standards-v1/ 为基准。原读者卡、其他段落与 TASKS 未改，未提交、未推送。
+- 产物：[534696f](https://github.com/dbvv1/a1dbv/commit/534696face99461f0c087354e01039abbff70538)，分支 `relay/b-pipe-model-guide-correction-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
+- 下一步：负责人决定是否补上三条读者缺口后重新审查；固定脚本已达 MAX_FIX=3，本次未自动重跑模型。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
