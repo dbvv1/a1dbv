@@ -40,3 +40,11 @@ result_branch: relay/b-fps-squad-match-census-20261106
 - 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
 - 下一步：负责人处理文档矛盾：把第 9/14 行限定为 observe 本身不改返回值、POSIX 下 CLI 输出不变，并明确 Windows 入口守卫修复属范围偏差；或回退守卫并调整 CLI 入口测试。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 指导层固定接收
+
+2026-11-06，仅采用固定856f707的可选observer与深克隆合同，进入原训练候选[1b70e42](https://github.com/dbvv1/FPS-Like/commit/1b70e421d973ef03483bdd816863c9208f6153d7)；不接Windows入口守卫偏差、旧EXPECTED或整份矛盾文稿，不改原分支。原review_ready不是退出回执，原调用终态unknown，未重派／查已拒入口／清锁。
+
+- 非作者按固定源独立复验3项与8种子48回合／17477tick，原405击杀中282队杀；实际seed1 R1 tick52瞄敌却击杀友方，已形成真实反例。指导层在原整合单元另修Bot目标前挡线，不写原执行工作区。
+- 修后同矩阵48回合／25594tick，友方命中／队杀0且逐tick无controller重放hash一致；观察副本变更不污染结果。518＋29项、类型／构建及独审通过；边界详见[训练交接](../b-work-20261106.md#fps-训练场整合)。目标后误伤与不主动换位保留，不能称通用零友伤或产品验收。
+- 原seed1 R4距点6.73m的53tick一直看见敌人并执行交战停车，原“最后接近／安放触发”原因未证明；全部淘汰／held interact=0不是安拆闭环通过。“首错无”只限重放无分歧。FPS main仍fa8740d／Site v24未变；未触浏览器限制，视听实玩和完整reload/switch仍缺。
