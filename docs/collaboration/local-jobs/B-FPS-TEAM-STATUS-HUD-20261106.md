@@ -1,0 +1,37 @@
+# B-FPS-TEAM-STATUS-HUD-20261106 · 显示训练赛双方存活人数
+id: B-FPS-TEAM-STATUS-HUD-20261106
+owner: dot-B
+kind: build
+status: ready
+target_repo: https://github.com/dbvv1/FPS-Like
+base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
+result_branch: relay/b-fps-team-status-hud-20261106
+
+工作线：FPS。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+
+## 目标
+现有完整 5v5 HUD 已把存活人数附在目标长句末尾；将其提成独立可扫读信息，减轻目标/携弹长句的混杂，不新增重复计数或泄露敌人位置。实际可读性收益仍待看图和人玩。
+
+## 按哪个 Skill／规格
+按 game-module-from-case；固定 src/candidates/offline-training-v1/{ui/hud.ts,sim/types.ts,session/match.ts} 与真实 squads 测试。旧 legacy 1v1 不改。
+1. 在 ui/team-status.ts 导出 teamStatus(state,playerId)：沿原 actor.hp>0 生存定义与稳定 team 汇总己方/敌方 alive/total，找不到玩家返回 null，不新造 Actor.alive。不得显示位置、单人HP、武器、导航目标或隐藏敌人状态细节。
+2. 现有训练赛 Hud.update 读该函数，仅在原十人训练赛条件下，在 topbar 单独加「己方 X/Y · 敌方 X/Y」文本，同时移除 goal 长句中的重复「存活 X:Y」，保留目标/携弹提示。按 player.team 而非 attack/defend 分组，第三回合换边不换比分归属。只使用已有 topbar 文本结构，无新CSS或资产；其他人数沿旧行为。
+3. 回合开始、自然死亡/同帧互杀、安放后进攻方全灭但比赛未结算、第三回合后换边、六回合终局/重开均更新准确；不因计数为0自行终局，也不从统计直接推胜负。
+4. 用真实 Game 和现有 DOM 测试夹具产生状态，给同 team/side 在换边后的反例；保留原游戏 hash、菜单及 match panel。
+5. 不改 sim/types/game、weapon-generation/adapter、角色源或捕获脚本。原产品已有等价功能时仅核差量，不重复 UI。
+
+## 写入范围
+仅 src/candidates/offline-training-v1/ui/{team-status,hud}.ts 与新 tests/offline-training-v1/team-status.test.ts。不得改训练 client、样式、模拟与角色动画。
+
+## 怎样算做成
+真实 Game＋HUD DOM 测试、全量 npm test、类型与生产构建通过；非作者核没有位置/隐藏信息泄露。可读性、窄屏和实际战斗验收进入人工批次，未验前不提分。
+
+## 执行与交回
+- 开工先读最新 a1 main、§7、TASKS 与本卡，核相同 id/同目标已有卡、结果分支及本机实际写者。已有成果先接差量；未知仅隔离原调用，不以 ready/回交/分支静止推断退出，不重派、不清锁。
+- 仅用本机已装 Node/Python 及与固定源锁文件匹配的已有依赖；缺项只报具体缺项。不安装、不付费、不建凭据，不开 GUI/浏览器（含 headless）、GPU、音频设备或桌面/键鼠；不另排出图，不改接收器。
+- 本卡没有获准重试曾被拒的 full-branch fetch、本机重复核查、FPS .blend 上传或MOBA quiet原发布；不换路径/拆包绕过。按同一原生Workflow和三类非作者审查，复用已有证据，不替代实际运行。
+- 只交本 result_branch 与本卡当前结果，先跑适用检查、公开文件/提交身份扫描和diff；不合产品默认分支、不部署、不改其他任务。反馈只含成果、欠项和下一步，普通单元/探索时限沿原合同。
+- 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
+
+## 当前结果
+- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
