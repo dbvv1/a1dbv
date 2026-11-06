@@ -2,12 +2,12 @@
 id: B-PIPE-AUDIO-AUDITION-PACK-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-pipe-audio-audition-pack-20261106
 
-工作线：制作链。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+工作线：制作链。本卡已按固定交付物接收，原调用终态仍 unknown；优先 Star 品质闭环，其他线独立继续。
 
 ## 目标
 把已接收但未听的MOBA与FPS八段提示源准备成一次可审的试听批次，减少用户寻找文件的工作；不重制声音或接入游戏。
@@ -40,3 +40,9 @@ result_branch: relay/b-pipe-audio-audition-pack-20261106
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
 - 下一步：用户择时本地打开 audition.html 试听并回答三项判断；非作者核源与许可；真实叠播/同步/接线需后续另验，产品不自动接线。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 指导层固定接收
+
+2026-11-06：接收 23c1ab6 的既有八段原字节与本地播放器，已核源文件同 blob、全部 SHA-256／PCM 元数据及两份 recipe／manifest 摘要，CC0 许可有原声明。纠正 README／页面／核验器说明的“盲听”误称：标签可见，只作带标签试听；补齐本地打开方法与 MIT 完整声明，不改声音、脚本判定或重新打包。原18项回归通过，纳入[原人工批次](../b-work-20261106.md#八段试听材料接收)。
+
+accepted 仅指上述材料接收；未开浏览器、声卡或试听，未证明混音／实战节奏／事件同步、产品采用或品质提升。原 Workflow／CLI／外层 worker 独立终态回执未提供，仍 unknown；不以回交或本次接收推定退出，不清锁、不重复执行。

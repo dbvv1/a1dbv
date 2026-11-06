@@ -1,0 +1,64 @@
+Audition pack: B-PIPE-AUDIO-AUDITION-PACK-20261106
+
+The eight WAV files in audio/ are byte-for-byte copies of original,
+deterministically synthesized sound sources. They are not recordings,
+sample-library files, model output or commercial game audio.
+
+Source 1: MOBA-Like
+  Repository: https://github.com/dbvv1/MOBA-Like
+  Commit:     0b3d85d47b184ac48450e0a9d039fd3e0143c273
+  Directory:  asset-pipeline/ui-event-audio/
+  Files:      purchase-ok.wav, purchase-denied.wav, level-up.wav,
+              respawn-ready.wav
+  Attribution: Original deterministic Python waveform synthesis by the
+              MOBA-Like project.
+  License:    CC0-1.0 (as stated in that directory's README.md; the source
+              manifest.json does not declare a license field)
+
+Source 2: FPS-Like
+  Repository: https://github.com/dbvv1/FPS-Like
+  Commit:     ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a
+  Directory:  asset-pipeline/match-cues/
+  Files:      weapon-switch.wav, menu-confirm.wav, round-win.wav,
+              round-loss.wav
+  Attribution: Original deterministic Python synthesis by the FPS-Like
+              project.
+  License:    CC0-1.0 (as stated in that directory's manifest and README)
+
+License identifier: CC0-1.0
+License text: https://creativecommons.org/publicdomain/zero/1.0/
+
+The source projects released the recipes and generated waveforms under
+CC0-1.0. This pack copies the eight WAVs unchanged under the same terms.
+No gain normalization, mixing, synthesis, transcoding or resampling was
+applied. The recipe and source manifest are not copied into this pack; their
+full SHA-256 values are recorded under sourceBatches in manifest.json so the
+source state can be checked.
+
+The added pack files (manifest.json, audition.html, README.md, the
+verification script and tests) are part of the a1dbv repository and follow
+that repository's MIT License.
+
+Full a1dbv MIT notice for the added pack files:
+
+MIT License
+
+Copyright (c) 2026 dbvv1
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
