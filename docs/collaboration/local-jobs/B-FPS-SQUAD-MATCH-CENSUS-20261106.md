@@ -2,7 +2,7 @@
 id: B-FPS-SQUAD-MATCH-CENSUS-20261106
 owner: dot-B
 kind: build
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-squad-match-census-20261106
@@ -35,4 +35,8 @@ result_branch: relay/b-fps-squad-match-census-20261106
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 完成 observe 可选入口、8 seed×6 回合逐 tick 录制/重放与逐回合职责事实，3 份写入范围内文件均已交付；相关测试与 npm test 通过，8/8 seed 重放 hash 一致、0 条 600 tick 空转。openIssues：docs/verification/squad-census.md 第 9/14 行与第 16 行关于 CLI 输出/入口守卫修复的表述互相矛盾，评审未通过；浏览器/GPU/音频/桌面与缺依赖入口场景未运行。
+- 产物：[856f707](https://github.com/dbvv1/FPS-Like/commit/856f707d1cb1385bed31c1e4e1269a4a488d6cb6)，分支 `relay/b-fps-squad-match-census-20261106`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：负责人处理文档矛盾：把第 9/14 行限定为 observe 本身不改返回值、POSIX 下 CLI 输出不变，并明确 Windows 入口守卫修复属范围偏差；或回退守卫并调整 CLI 入口测试。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
