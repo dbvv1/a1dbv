@@ -1,7 +1,7 @@
 # A-COMPACTION-PROVENANCE-SOURCES-20261106 · 核压缩来源保真证据
 id: A-COMPACTION-PROVENANCE-SOURCES-20261106
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc45e8d4a3eac99e38508a9a2327068c562bd38e
@@ -33,3 +33,11 @@ result_branch: relay/a-compaction-provenance-sources-20261106
 来源支持、未读、未复现分别写清；不能由本卡提高地图评级。产物须回答“这会改变哪项读者决定，或者为何保持原做法”，而非只列工具／漏洞名。
 按文档范围运行 `python3 scripts/check_repo.py`、`python3 scripts/check_public.py` 与 `git diff --check`，公开提交身份另检。既有 build Workflow 完成独立审查；最多两小时，保全未完成项，不重复初始调用。
 模型不提交／推送；接收端仅推 result_branch，回 review_ready，缺关键输入则 blocked。不用 accept: auto，不合 main；由 dot-A 当轮决定采用、返工或放弃。
+
+## 当前结果
+
+- 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/A-COMPACTION-PROVENANCE-SOURCES-20261106/findings.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
+- 产物：[0a3efab](https://github.com/dbvv1/a1dbv/commit/0a3efab02bfee89ab297d81a5fbd8006c06cde7b)，分支 `relay/a-compaction-provenance-sources-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
+- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
