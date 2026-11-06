@@ -43,7 +43,11 @@ CLA／DCO／vouch 等个人步骤、验证要求、后续响应，以及当前�
 
 本仓 Goose LiteLLM 候选原来缺的是：给代理别名补视觉能力，并在请求格式化前生效、保留显式布尔配置。10 月 30 日核到上游 [#13239](https://github.com/aaif-goose/goose/pull/13239) 已合入相应实现，因而停止重投旧修复，保留历史补丁与回归结果。当前分支已修与用户安装的 release 已修要分别核；旧测试也只对应当时的候选。
 
-**依据**：[原问题 #13158](https://github.com/aaif-goose/goose/issues/13158)、[固定合入差量](https://github.com/aaif-goose/goose/commit/f131ff7e9bba223686b1d5e2243d6c1e07685097)、[本仓旧候选](../../experiments/candidate-reset-recovery/README.md)；Goose 来源及实现核对 2026-10-30，未运行当前 Goose。开放 PR 的部分覆盖见 [Qwen #15757](https://github.com/QwenLM/qwen-code/pull/15757)及[读者核查与纠正](../collaboration/local-jobs/artifacts/A-UPSTREAM-QWEN-GATE-READER-20261031/result.md)（2026-10-31）；本机附页／新读者隔离尚未独立证实，修改后照做验收仍待。
+**依据**：[原问题 #13158](https://github.com/aaif-goose/goose/issues/13158)、[固定合入差量](https://github.com/aaif-goose/goose/commit/f131ff7e9bba223686b1d5e2243d6c1e07685097)、[本仓旧候选](../../experiments/candidate-reset-recovery/README.md)；Goose 来源及实现核对 2026-10-30，未运行当前 Goose。
+
+**Qwen 已发行重名恢复，只续查剩余诊断差量。** #15757 已于 2026-10-31 合入并关闭 #15741，正式版 v0.26.6 于 2026-11-02 发布且包含该实现；不用再等它合并。它跨页统计工具名、丢弃整个重名组并保留唯一工具，所以旧 `create/create/inspect` 夹具现在应留下 `inspect`，不能继续预期重名转换抛错。原 14 项回归中依赖该夹具的 6 项预期已过时，其余 8 项也须在修订候选上补验。v0.26.6 源码的外层工具发现失败仍只返回空结果；没有其他能力且未发生可见性过滤时，调用方仍报通用空服务器错误。续做时保留已合分页／重名策略，用确实仍失败的非重名路径验证原因保留。发行与源码核查不等于当前客户端实测，旧基线的 409 项通过不能搬作新版结果；原 Unix socket 拒绝仍未解除。
+
+**依据**：[Qwen #15757](https://github.com/QwenLM/qwen-code/pull/15757)、[v0.26.6 发布记录](https://github.com/QwenLM/qwen-code/releases/tag/v0.26.6)、[该版本固定源码](https://github.com/QwenLM/qwen-code/blob/042c023b7beb4ad2a9ef95b2906b3564e3f23089/packages/core/src/tools/mcp-client.ts)、[旧候选测试](../../experiments/candidate-reset-recovery/qwen/change.patch)；合入、发行与测试预期静态核查 2026-11-06，未运行新版 Qwen。[原读者核查与纠正](../collaboration/local-jobs/artifacts/A-UPSTREAM-QWEN-GATE-READER-20261031/result.md)仅对应 2026-10-31；本机附页／新读者隔离尚未独立证实，修改后照做验收仍待，页面保持 🟡。
 
 ## 条件满足后：交可审结果，继续负责回应
 
