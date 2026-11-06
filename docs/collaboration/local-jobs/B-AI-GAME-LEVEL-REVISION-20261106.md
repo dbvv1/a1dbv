@@ -2,7 +2,7 @@
 id: B-AI-GAME-LEVEL-REVISION-20261106
 owner: dot-B
 kind: explore
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-ai-game-level-revision-20261106
@@ -36,8 +36,8 @@ result_branch: relay/b-ai-game-level-revision-20261106
 
 ## 当前结果
 
-- 第三轮 explore 已写入 sources.md（实际 683 行，git diff +273/−18；Workflow 自报 +254/−6/676 行与实际不一致）：新增 §1.3 渠道覆盖、§3.6–3.8 三项甲级（群侠传：幸存者、Fire Field、We're Gonna Need More Fireballs）、§4.6 四项 A-、§4.7 二十项 B、§5.7 三十八项 C、§7.2 约 68 组工具、§8.1 读不到渠道、§9.1 试玩建议、§10 排重；check_public 1412 文件 0 findings、check_repo 879 文件 0 errors 复跑通过。openIssues：独立事实审查 pass=false，4 条未修正——(1) 第 298 行镜之边缘 WEB v10 仍写“又补 44 根攀爬管”，原文为“攀爬管修复为 44 根”；(2) 第 191 行 More Fireballs 仍写“最后一波 25,000→250,000”，旧值 25,000 实为“最大一波”；(3) §3.7/3.8 将 Steam 商店页标为“可玩”但未写需购买（Fire Field 约 HK$61/US$9.99、More Fireballs US$11.99）且无免费 demo，第 13 行“A 级 7 项都有当前可玩入口”过宽；(4) 第 13 行“A- 4 项另计”与“Hora Cero 等补齐后再列 A-”自相矛盾。taskDone：候选收集与整理完成；pageStuck：无读者卡点文件；未运行验收：未试玩、未看完整连续实机、未播视频/音频，作者身份多为个人站/工作室/handle，逐件许可与成本多数未知；Survive the Night 可玩入口 2026-11-06 复检 404。
-- 产物：[7ef80e3](https://github.com/dbvv1/a1dbv/commit/7ef80e36951b5a9c57374b6b0a320accb88f737a)，分支 `relay/b-ai-game-level-revision-20261106`。
-- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
-- 下一步：按审查意见修正上述 4 处表述/口径并重跑事实审查；之后由负责人在实机试玩 Voltane（同车同输入同机位 3 圈基线）并补作者身份与许可/成本核查。
+- 第四轮 explore 写回完成：sources.md 由 683→875 行（git diff +203/−11）。新增 §1.4 第四轮渠道覆盖 12 行、§3.9 三项（Turbo Kartz A-、Skytumble、坦克大战 3D）、§4.8 11 项 B、§5.8 53 项 C、§7.3 约 100 组工具/方法、§8.2 读不到渠道、§9.2 试玩建议，并更新 §2/§10；上一轮 4 条表述/口径问题（镜之边缘 44 根攀爬管、More Fireballs 最大一波、Fire Field/More Fireballs 购买条件、A- 计数）已在本单元修正。本轮候选 223、链接核对 210，无新增 A 级；主线仍先试 Voltane，新增 Turbo Kartz（A-，4 条赛道按 EASY 按住油门不转向 0 撞墙标准把 13.6/11.1 m 弯半径、15 m 路宽改到 24/17 m）。检查通过：check_public 1412 文件 0 findings、check_repo 879 文件 0 errors、git diff --check 通过。openIssues：未试玩、未看完整连续实机/视频音频；作者身份与逐件许可/成本多数未知；Farthest Outpost、APEX CLUB、SURGE 等入口被本机内网 DNS/TLS 拦截；GitHub API 限流致部分查询未执行。taskDone=true；pageStuck=无读者卡点文件；未运行验收=实机试玩与同车同输入同机位 3 圈基线。
+- 产物：[d73a11f](https://github.com/dbvv1/a1dbv/commit/d73a11fb14446d0a4a61e95b3636d7225156c7fb)，分支 `relay/b-ai-game-level-revision-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
+- 下一步：负责人按 §9.2 实机试玩 Voltane（同车同输入同机位 3 圈基线）并核作者身份与逐件许可/成本；本单元产物可并入结果分支。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
