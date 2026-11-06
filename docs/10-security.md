@@ -332,6 +332,9 @@ anymd 不配置允许目录时，不会额外收窄操作系统允许的文件�
 - [ ] 保持 Agent 版本更新（安全修复很频繁）
 - [ ] 云服务和 API 账号已核对预算控制的覆盖范围、超额风险与停用后果
 - [ ] 备份 `~/.claude` 等目录下的会话记录（账号可能被封；Claude Code 默认只保留 30 天）
+- [ ] 录屏或分享 Claude Code 输出前，检查实际将公开的内容。`IS_DEMO` 隐藏欢迎头与 `/status` 的邮箱、组织名，不保证模型上下文或输出脱敏。公开提交仍按仓库既有身份与内容检查要求执行
+
+**依据（录屏／分享项）**：[一手] [Claude Code 环境变量](https://code.claude.com/docs/en/env-vars)、[privacy README（固定 `90380ef`）](https://github.com/anthropics/claude-code/blob/90380efca7f9d73e206fac453f841b6acd664f4d/mods/privacy/README.md)；2026-11-06 公开文档与源码核对，未运行客户端。
 
 ### 团队 / 组织
 - [ ] 托管设置：`strictKnownMarketplaces`（插件市场白名单）、`allowManagedHooksOnly`、`allowManagedPermissionRulesOnly`、`deniedModels` 等（参考 [examples/settings](https://github.com/anthropics/claude-code/tree/main/examples/settings) 的 strict 示例）
