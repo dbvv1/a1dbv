@@ -2,7 +2,7 @@
 id: B-AI-GAME-INPUT-UI-20261106
 owner: dot-B
 kind: explore
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-ai-game-input-ui-20261106
@@ -36,8 +36,8 @@ result_branch: relay/b-ai-game-input-ui-20261106
 
 ## 当前结果
 
-- explore 完成：sources.md 覆盖 22 个渠道、161 条已核候选，按 7 项门槛分四级并给出优先试玩 Bichitos Rumble 及 pointer:coarse + 915×412 触控 smoke 机制。文件 UTF-8/LF、无 BOM，无 tracked 改动。但独立审查 pass=false、reviewed=false，6 项事实/口径问题仍未修正（Bichitos 许可✅与图标待核矛盾及只差1项、ASHFALL 60/92 合并数、HUD_mejorado 生成来源、ASHFALL 版本/许可、梦境绮想截图口径、Westbridge AI 分工）；未执行实机、浏览器与音视频验证。Workflow 另留下未跟踪 scratch（.tmp/、tt.html、vg.html），非交付。
-- 产物：[94a1818](https://github.com/dbvv1/a1dbv/commit/94a1818f1b4a789b2fc0615ae0ce768205b98b5e)，分支 `relay/b-ai-game-input-ui-20261106`。
+- 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/B-AI-GAME-INPUT-UI-20261106/sources.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
+- 产物：[c6a1353](https://github.com/dbvv1/a1dbv/commit/c6a13530de676ecb6328c176f4778cdc499ae6f1)，分支 `relay/b-ai-game-input-ui-20261106`。
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
-- 下一步：负责人处理复核未关的 6 项，或授权再跑一轮修正后提交；同时确认 worktree 根目录 scratch 文件不纳入提交。
+- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
