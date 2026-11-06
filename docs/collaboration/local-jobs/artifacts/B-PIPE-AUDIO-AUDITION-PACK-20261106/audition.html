@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>汇成两案候选试听批次 · 八段提示源</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f6f3;
+    --panel: #ffffff;
+    --ink: #1f2328;
+    --muted: #5b6470;
+    --line: #d8d5cf;
+    --accent: #2f6f62;
+    --warn: #8a5a14;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17191c;
+      --panel: #202327;
+      --ink: #e8e6e1;
+      --muted: #a7adb6;
+      --line: #3a3f45;
+      --accent: #7fc7b4;
+      --warn: #e0b166;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2rem 1rem 3rem;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.65 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  }
+  header, main, footer { width: min(60rem, 100%); margin: 0 auto; }
+  h1 { font-size: 1.7rem; line-height: 1.25; margin: 0 0 .5rem; }
+  h2 { font-size: 1.25rem; margin: 2.2rem 0 .7rem; padding-bottom: .35rem; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 1.05rem; margin: 0 0 .25rem; }
+  p { margin: .5rem 0; }
+  .lede { color: var(--muted); max-width: 46rem; }
+  .status { display: inline-block; margin-top: .4rem; padding: .2rem .6rem; border: 1px solid var(--warn); border-radius: .4rem; color: var(--warn); font-size: .9rem; }
+  .source-line { color: var(--muted); font-size: .93rem; }
+  .cue {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: .55rem;
+    padding: 1rem 1.1rem 1.1rem;
+    margin: .9rem 0;
+  }
+  .character { color: var(--muted); }
+  .blind-hint { background: var(--panel); border: 1px solid var(--line); border-left: .25rem solid var(--accent); border-radius: .4rem; padding: .7rem 1rem; margin-top: 1rem; }
+  details { margin: .1rem 0 .9rem; }
+  summary { cursor: pointer; color: var(--muted); font-size: .93rem; }
+  details[open] summary { margin-bottom: .35rem; }
+  audio { width: 100%; margin: .55rem 0 .7rem; }
+  .meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: .18rem .9rem;
+    margin: 0;
+    font-size: .9rem;
+  }
+  .meta dt { color: var(--muted); }
+  .meta dd { margin: 0; min-width: 0; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: .88em;
+    overflow-wrap: anywhere;
+  }
+  .hash { color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th, td { text-align: left; padding: .38rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  ol.judgement > li { margin: .7rem 0; }
+  .caveat { background: var(--panel); border: 1px solid var(--line); border-left: .25rem solid var(--warn); border-radius: .4rem; padding: .7rem 1rem; margin-top: 1rem; }
+  .caveat h3 { color: var(--warn); }
+  .caveat ul { margin: .4rem 0; padding-left: 1.2rem; }
+  pre { background: var(--panel); border: 1px solid var(--line); border-radius: .4rem; padding: .7rem .9rem; overflow-x: auto; }
+  footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .88rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>汇成两案候选试听批次</h1>
+  <p class="lede">MOBA-Like 与 FPS-Like 两案已接收但未试听的八段提示源，按原字节复制到本目录，供一次连续试听。没有重制声音、没有增益归一、没有混音、没有转码、没有接入游戏。</p>
+  <p class="status">状态：未试听 · 未混音 · 未采用</p>
+  <p class="blind-hint"><strong>盲听提示：</strong>先按 MOBA 四段、FPS 四段的顺序播放，不要展开每段下方的“听后对照”，按顺序逐条写下听到的语义；全部听完后再展开对照，并回答后面的判断项。对照文字来自源配方描述，不是试听结果。</p>
+</header>
+<main>
+  <section id="summary">
+    <h2>一眼核对</h2>
+    <p>八段标签固定如下；完整 SHA-256 在每段卡片内。文件峰值只用于说明文件本身，不代表感知响度。</p>
+    <table>
+      <thead><tr><th>标签</th><th>来源</th><th>时长</th><th>文件峰值</th><th>SHA-256 前 12 位</th></tr></thead>
+      <tbody>
+        <tr><td><code>purchase-ok</code></td><td>MOBA-Like</td><td>0.220 s</td><td>-9.1003 dBFS</td><td><code>584e2b42f65a…</code></td></tr>
+        <tr><td><code>purchase-denied</code></td><td>MOBA-Like</td><td>0.220 s</td><td>-9.1003 dBFS</td><td><code>be848504a117…</code></td></tr>
+        <tr><td><code>level-up</code></td><td>MOBA-Like</td><td>0.550 s</td><td>-9.1003 dBFS</td><td><code>79145a079ae9…</code></td></tr>
+        <tr><td><code>respawn-ready</code></td><td>MOBA-Like</td><td>0.500 s</td><td>-9.1003 dBFS</td><td><code>8ce74273f9e4…</code></td></tr>
+        <tr><td><code>weapon-switch</code></td><td>FPS-Like</td><td>0.130 s</td><td>-12.0010 dBFS</td><td><code>933292203826…</code></td></tr>
+        <tr><td><code>menu-confirm</code></td><td>FPS-Like</td><td>0.090 s</td><td>-12.0010 dBFS</td><td><code>1c891e5f2945…</code></td></tr>
+        <tr><td><code>round-win</code></td><td>FPS-Like</td><td>0.460 s</td><td>-12.0010 dBFS</td><td><code>a0c148a84b3e…</code></td></tr>
+        <tr><td><code>round-loss</code></td><td>FPS-Like</td><td>0.460 s</td><td>-12.0010 dBFS</td><td><code>61b94e07702d…</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="questions">
+    <h2>判断项（需要人听）</h2>
+    <p>以下问题本批次没有答案。请使用同一台设备、同一个系统音量，按“盲听提示”先按分组顺序完整听一遍，逐条写下每段听成的语义，再回答。</p>
+    <ol class="judgement">
+      <li><strong>四声语义能否分。</strong>先不看卡片里的“听后对照”，只听声音：MOBA 四段能否分清购买成功、购买失败、升级、复活就绪？FPS 四段能否分清切枪、菜单确认、回合胜、回合负？写下你的对应关系后，再展开源描述对照。各案内部的轮廓是否会被听成同一类，尤其是成功／失败与胜／负这类成对音？</li>
+      <li><strong>是否尖锐或疲劳。</strong>正常音量下连续重放：起音是否刺耳，短音是否发尖；切枪与购买失败连续触发多次是否烦躁；升级三音是否显得拖；胜负与复活尾音是否过长。</li>
+      <li><strong>相同设备音量下是否差距过大。</strong>保持系统音量不动，按顺序听完八段：跨案（MOBA 与 FPS）和案内各段之间，响度差是否超过可接受范围？两案文件峰值本来不同：MOBA 四段约 −9.10 dBFS，FPS 四段约 −12.00 dBFS，相差约 2.9 dB；本批次按规格不做归一。请判断这个文件层差距在试听中是否明显，以及案内差异是否可接受。</li>
+    </ol>
+    <div class="caveat">
+      <h3>不能从这八段单片判断</h3>
+      <ul>
+        <li>这里没有真实交战叠播录音，无法判断枪声、技能音、战斗音乐同时播放时提示是否被遮住。</li>
+        <li>无法判断事件同步：声音是否只在真正提交的事件上触发、会不会漏播或重播，必须接入后验证。</li>
+        <li>无法判断混音层级、优先级、声像与空间化；八段都是单声道原始文件。</li>
+        <li>文件峰值不等于感知响度。本页不提供响度归一、不把不同案音色排成盲评分，也不声称哪一案更好。</li>
+      </ul>
+    </div>
+  </section>
+
+    <section id="moba">
+      <h2>MOBA-Like · 局内提示四段</h2>
+      <p class="source-line">购买成功、购买失败、升级、复活就绪。源仓库 MOBA-Like，固定 commit <code>0b3d85d47b184ac48450e0a9d039fd3e0143c273</code>，目录 <code>asset-pipeline/ui-event-audio/</code>，原声音许可 <strong>CC0-1.0</strong>。recipe 与源 manifest 的 SHA-256 记录在 <code>manifest.json</code> 的 <code>sourceBatches</code>。</p>
+      <article class="cue" id="purchase-ok">
+        <h3>purchase-ok</h3>
+        <audio controls preload="none" src="audio/moba-like/purchase-ok.wav"></audio>
+        <details>
+          <summary>听后对照（源描述，非试听结果）</summary>
+          <p class="character">Ascending two-tone confirmation; source contour 594 -&gt; 792 Hz over 0.22 s.</p>
+        </details>
+        <dl class="meta">
+          <dt>源 commit</dt><dd><code>0b3d85d47b184ac48450e0a9d039fd3e0143c273</code></dd>
+          <dt>相对路径</dt><dd><code>asset-pipeline/ui-event-audio/purchase-ok.wav</code></dd>
+          <dt>完整 SHA-256</dt><dd><code class="hash">584e2b42f65a11ec714d09d82203af662edae1b3f5f835f90fe9adedd185970a</code></dd>
+          <dt>时长</dt><dd>0.220 s（10,560 帧）</dd>
+          <dt>采样率</dt><dd>48,000 Hz</dd>
+          <dt>PCM 位深</dt><dd>16 bit（单声道 PCM）</dd>
+          <dt>许可</dt><dd>CC0-1.0</dd>
+        </dl>
+      </article>
+
+      <article class="cue" id="purchase-denied">
+        <h3>purchase-denied</h3>
+        <audio controls preload="none" src="audio/moba-like/purchase-denied.wav"></audio>
+        <details>
+          <summary>听后对照（源描述，非试听结果）</summary>
+          <p class="character">Descending two-tone rejection; source contour 468 -&gt; 351 Hz over 0.22 s.</p>
+        </details>
+        <dl class="meta">
+          <dt>源 commit</dt><dd><code>0b3d85d47b184ac48450e0a9d039fd3e0143c273</code></dd>
+          <dt>相对路径</dt><dd><code>asset-pipeline/ui-event-audio/purchase-denied.wav</code></dd>
+          <dt>完整 SHA-256</dt><dd><code class="hash">be848504a1179f914d563fdc8baade256952a145e02ffe78d8747c37e8d4685d</code></dd>
+          <dt>时长</dt><dd>0.220 s（10,560 帧）</dd>
+          <dt>采样率</dt><dd>48,000 Hz</dd>
+          <dt>PCM 位深</dt><dd>16 bit（单声道 PCM）</dd>
+          <dt>许可</dt><dd>CC0-1.0</dd>
+        </dl>
+      </article>
+
+      <article class="cue" id="level-up">
+        <h3>level-up</h3>
+        <audio controls preload="none" src="audio/moba-like/level-up.wav"></audio>
+        <details>
+          <summary>听后对照（源描述，非试听结果）</summary>
+          <p class="character">Ascending three-tone growth phrase; source contour 470.925 / 593.325 / 705.591 Hz over 0.55 s.</p>
+        </details>
+        <dl class="meta">
+          <dt>源 commit</dt><dd><code>0b3d85d47b184ac48450e0a9d039fd3e0143c273</code></dd>
+          <dt>相对路径</dt><dd><code>asset-pipeline/ui-event-audio/level-up.wav</code></dd>
+          <dt>完整 SHA-256</dt><dd><code class="hash">79145a079ae9ab05f825fa9f838a37a7a9614618be9f015db973e288af4e1014</code></dd>
+          <dt>时长</dt><dd>0.550 s（26,400 帧）</dd>
+          <dt>采样率</dt><dd>48,000 Hz</dd>
+          <dt>PCM 位深</dt><dd>16 bit（单声道 PCM）</dd>
+          <dt>许可</dt><dd>CC0-1.0</dd>
+        </dl>
+      </article>
+
+      <article class="cue" id="respawn-ready">
+        <h3>respawn-ready</h3>
+        <audio controls preload="none" src="audio/moba-like/respawn-ready.wav"></audio>
+        <details>
+          <summary>听后对照（源描述，非试听结果）</summary>
+          <p class="character">Single rising glide; source contour 270 -&gt; 540 Hz over 0.50 s.</p>
+        </details>
+        <dl class="meta">
+          <dt>源 commit</dt><dd><code>0b3d85d47b184ac48450e0a9d039fd3e0143c273</code></dd>
+          <dt>相对路径</dt><dd><code>asset-pipeline/ui-event-audio/respawn-ready.wav</code></dd>
+          <dt>完整 SHA-256</dt><dd><code class="hash">8ce74273f9e48343c7c8b85e9a7de9d37581efc8fbc533b10d2e8d3c198bf504</code></dd>
+          <dt>时长</dt><dd>0.500 s（24,000 帧）</dd>
+          <dt>采样率</dt><dd>48,000 Hz</dd>
+          <dt>PCM 位深</dt><dd>16 bit（单声道 PCM）</dd>
+          <dt>许可</dt><dd>CC0-1.0</dd>
+        </dl>
+      </article>
+    </section>
+
+    <section id="fps">
+      <h2>FPS-Like · 训练赛提示四段</h2>
+      <p class="source-line">切枪、菜单确认、回合胜、回合负。源仓库 FPS-Like，固定 commit <code>ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a</code>，目录 <code>asset-pipeline/match-cues/</code>，原声音许可 <strong>CC0-1.0</strong>。recipe 与源 manifest 的 SHA-256 记录在 <code>manifest.json</code> 的 <code>sourceBatches</code>。</p>
+      <article class="cue" id="weapon-switch">
+        <h3>weapon-switch</h3>
+        <audio controls preload="none" src="audio/fps-like/weapon-switch.wav"></audio>
+        <details>
+          <summary>听后对照（源描述，非试听结果）</summary>
+          <p class="character">Low-energy mechanical latch: filtered click, small low body and one quieter spring tick; 0.13 s.</p>
+        </details>
+        <dl class="meta">
+          <dt>源 commit</dt><dd><code>ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a</code></dd>
+          <dt>相对路径</dt><dd><code>asset-pipeline/match-cues/weapon-switch.wav</code></dd>
+          <dt>完整 SHA-256</dt><dd><code class="hash">933292203826cefd09433db4f57e1832b23853a96c2cf549dded8c277de4f5af</code></dd>
+          <dt>时长</dt><dd>0.130 s（6,240 帧）</dd>
+          <dt>采样率</dt><dd>48,000 Hz</dd>
+          <dt>PCM 位深</dt><dd>16 bit（单声道 PCM）</dd>
+          <dt>许可</dt><dd>CC0-1.0</dd>
+        </dl>
+      </article>
+
+      <article class="cue" id="menu-confirm">
+        <h3>menu-confirm</h3>
+        <audio controls preload="none" src="audio/fps-like/menu-confirm.wav"></audio>
+        <details>
+          <summary>听后对照（源描述，非试听结果）</summary>
+          <p class="character">Single soft pulse with one attack and one decay; 0.09 s.</p>
+        </details>
+        <dl class="meta">
+          <dt>源 commit</dt><dd><code>ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a</code></dd>
+          <dt>相对路径</dt><dd><code>asset-pipeline/match-cues/menu-confirm.wav</code></dd>
+          <dt>完整 SHA-256</dt><dd><code class="hash">1c891e5f294593fea26bedb909ebf3ea13a2c42a45ea631015ccb1af24dc54fe</code></dd>
+          <dt>时长</dt><dd>0.090 s（4,320 帧）</dd>
+          <dt>采样率</dt><dd>48,000 Hz</dd>
+          <dt>PCM 位深</dt><dd>16 bit（单声道 PCM）</dd>
+          <dt>许可</dt><dd>CC0-1.0</dd>
+        </dl>
+      </article>
+
+      <article class="cue" id="round-win">
+        <h3>round-win</h3>
+        <audio controls preload="none" src="audio/fps-like/round-win.wav"></audio>
+        <details>
+          <summary>听后对照（源描述，非试听结果）</summary>
+          <p class="character">Ascending two-tone result motif in the upper register (C5 to G5), second tone rings slightly longer; 0.46 s.</p>
+        </details>
+        <dl class="meta">
+          <dt>源 commit</dt><dd><code>ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a</code></dd>
+          <dt>相对路径</dt><dd><code>asset-pipeline/match-cues/round-win.wav</code></dd>
+          <dt>完整 SHA-256</dt><dd><code class="hash">a0c148a84b3e6f51c9419461dcc27d63fb8b63041ede626845bd60379c6ae611</code></dd>
+          <dt>时长</dt><dd>0.460 s（22,080 帧）</dd>
+          <dt>采样率</dt><dd>48,000 Hz</dd>
+          <dt>PCM 位深</dt><dd>16 bit（单声道 PCM）</dd>
+          <dt>许可</dt><dd>CC0-1.0</dd>
+        </dl>
+      </article>
+
+      <article class="cue" id="round-loss">
+        <h3>round-loss</h3>
+        <audio controls preload="none" src="audio/fps-like/round-loss.wav"></audio>
+        <details>
+          <summary>听后对照（源描述，非试听结果）</summary>
+          <p class="character">Descending two-tone result motif in the lower register (G4 to C4) with slower decay; 0.46 s.</p>
+        </details>
+        <dl class="meta">
+          <dt>源 commit</dt><dd><code>ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a</code></dd>
+          <dt>相对路径</dt><dd><code>asset-pipeline/match-cues/round-loss.wav</code></dd>
+          <dt>完整 SHA-256</dt><dd><code class="hash">61b94e07702df7a9176487f19c99e04e80c4d3c7d27dd87ee00c181a17171b88</code></dd>
+          <dt>时长</dt><dd>0.460 s（22,080 帧）</dd>
+          <dt>采样率</dt><dd>48,000 Hz</dd>
+          <dt>PCM 位深</dt><dd>16 bit（单声道 PCM）</dd>
+          <dt>许可</dt><dd>CC0-1.0</dd>
+        </dl>
+      </article>
+    </section>
+
+  <section id="verify">
+    <h2>离线核验</h2>
+    <p>格式、首末采样、完整 SHA-256 与 manifest 由 Python 标准库检查；不需要声卡、GUI 或浏览器。</p>
+    <pre><code>python3 verify_audition_pack.py
+python3 -m unittest -v test_audition_pack.py</code></pre>
+  </section>
+</main>
+<footer>
+  <p>来源：MOBA-Like @ <code>0b3d85d47b184ac48450e0a9d039fd3e0143c273</code> 的 <code>asset-pipeline/ui-event-audio/</code>；FPS-Like @ <code>ecb53c7464e4ccb8daba4353b94fc5bc9b8ef94a</code> 的 <code>asset-pipeline/match-cues/</code>。两案原声音按 CC0-1.0 释出，署名与许可声明及 CC0 全文链接见 <code>LICENSE.txt</code>。播放控件只引用本目录下的相对 WAV 文件。</p>
+</footer>
+</body>
+</html>
