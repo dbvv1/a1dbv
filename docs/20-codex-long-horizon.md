@@ -315,3 +315,41 @@ Claude Code 文档与 changelog 引入 `onFailure: "block"` 并修复部分 mana
 Gemini CLI Auto Memory 的文档设计是从历史提出 patch/Skill 草稿，存入 inbox 后由用户审阅应用。局限：这是实验性、默认关闭的功能设计，是否可用仍须按安装版本验证。
 
 **依据**：[一手] Gemini CLI Auto Memory 文档；[经验] 工程建议；核实 2026-10-22。
+
+## 13. 接收真实产物：复用检查与消费者边界
+
+### 旧写者状态未知时，接收固定成果与接管旧树分开
+
+**已正式交回固定提交、且任务允许独立接收时，可以在新工作树／克隆中审查、整合那一份产物；不要因此接管旧树或重启原调用。** 先固定基线与结果提交，核接收范围和其他在途写域，保留来源，再对新候选做独立复核。后来的分支更新不自动包含在本次接收内；原任务明确要求先核旧执行退出，或授权／产物归属不清时，仍停在该条件，不拿“新目录”绕过。固定对象只解决内容身份，不证明旧进程退出，也不解除发布限制。新树不改变平台已有拒绝，不换入口、账号或执行者绕过。
+
+**复用证据要看检查实际读了什么，不只看检查器代码。** 本仓候选从 [`31d89967`](https://github.com/dbvv1/a1dbv/commit/31d89967d10ba1c5071ab1346508791b63365915) 接到 [`cd9bf4a8`](https://github.com/dbvv1/a1dbv/commit/cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61)，只增加模板携带性测试并改模板说明；公开扫描器及其回归文件未变，但扫描输入、测试集合已变，所以仍重跑完整离线与最终公开扫描，不把上一提交的通过改贴到新版本。
+
+在已有这两个对象的本仓副本中可复核差量（只读已提交内容）：
+
+```sh
+git diff --name-only 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61
+git diff --quiet 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61 -- scripts/check_public.py tests/test_check_public.py
+git diff --quiet 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61 -- tests
+```
+
+第一条列出两个文件；后两条退出码分别为 0（指定代码无差异）、1（测试目录有差异，不是命令故障）。缺对象等错误另查，不能当作“相同”。该命令不核未提交／未跟踪文件、环境、依赖或外部状态；实际任务还要核这些输入。2026-11-04 本仓真实候选接续：上述差量已复核；4 项复制测试由非作者独立复跑通过。执行者的运行回执记录完整 offline 20 阶段与公开扫描通过，这两项未另作非作者全量复跑。这里是本次采用记录，不是模型长时可靠性或节省时间的对照实验。
+
+来源调查则交回主张、原文位置、版本日期及未读到的缺口，主线逐项核“来源支持哪个结论”；无需为纯来源核查跑代码套件。独立审查按风险加，已有有效审查复用，避免固定串行角色反复重读同一材料。
+
+**按故障类型核真实落地，交互修复要走到下一轮。** 本仓接收已有补丁时，分别用实际消费者检查下面三层，而不是只看实现者的测试替身或退出码：
+
+| 交回结果涉及 | 从真实入口查什么 | 本仓实测与仍有的边界 |
+|---|---|---|
+| 大范围依赖注入／装配迁移 | 打包后同连接读搜、错误后恢复、正常退出与保存内容 | [Repomix](../experiments/repomix-mcp-receipt/README.md) 两版链路一致；本云完整套件仍有 1 失败，候选托管检查 52 成功、2 跳过 |
+| 路径或持久化目标 | 回读目标及邻接对象，核既有状态是否保留 | [Aider](../experiments/aider-git-receipt/README.md) 基线界面目标 A、exit 0 却暂存 B；候选实际核两仓 index 修正了该路径，完整套件仍失败 |
+| 流式事件／审批生命周期 | 一次回答、回合完成、下一轮新请求、正常退出与会话落地 | [Goose ACP](../experiments/goose-acp-receipt/README.md) 基线重复旧卡后退出；候选合成 Allow／Reject 两轮继续，SQLite 与 `/exit` 均通过，真实 provider 与取消恢复未验 |
+| 持久化迁移／分批清理 | 中途与检查点失败后新进程恢复，再用真实读取接口核历史、重跑及后续新数据 | [OpenCode](../experiments/opencode-migration-receipt/README.md) 原候选保留已提交清理批次，两版均恢复可读历史；仅合成 SQLite／SessionStore，未验原大库与服务启动 |
+| 文档树／工作记录迁移 | 核每个源文件的去向、转换和备份，再让下一位生产工具读写读回 | [BMAD](../experiments/bmad-migration-receipt/README.md) 预览版 exit 0 仍丢隐藏／tmp；窄修后完整保全并经 tickets 消费，冲突须读 JSON，完整 Python 套件仍有 7 个失败子例 |
+| 审查回复／汇总判断 | 回到原回复逐条核 finding，再读缺失覆盖；保留独立接收记录 | [gstack](../experiments/gstack-review-receipt/README.md) 候选挡住汇总改写、缺原回复和换文件；整条事件连同 finding 删除仍可 clean，只作一致性补充 |
+| 后台报告／程序读文件 | 分开核转后台、真实退出、展示窗口与机器原件；解析后读回产物 | [Gemini CLI](../experiments/gemini-background-output/README.md) 修复尾部诊断后，两版尾窗仍不能解析完整 JSON；原件接住 501 项并复测 0 错误。[Deep Agents](../experiments/deepagents-artifact-receipt/README.md) 基线窗口标题使 JSON 解析失败，候选 raw 原件生成并读回正确汇总；限额在全读后检查，artifact 不等于不留存 |
+| 同一工作分支连续交付 | 连跑多轮，核源提交、过滤产物与目标接收；未合并旧分支须在写入前停止 | [GSD](../experiments/gsd-pr-replay/README.md) 候选三轮各接住新 1 个代码提交、目标规划为 0；基线第二轮冲突并删旧 `-pr` 引用，原工作历史保留。仅原 Bash＋真实工具的 local bare 消费，非完整 slash command |
+| worktree 交接／测试摘要 | 核代码实际落点与包的净 diff，再读 runner 原输出、locale、零测试和失败路径 | [Superpowers](../experiments/superpowers-worktree-receipt/README.md) 旧 main 正确 cwd 与候选 `-C` 均能接包；真实摘要补丁在 C.UTF-8 仍失败 3 项，误用 C 诊断写出的 complete 已纠正，修复未获接收 |
+
+**路径带符号链接时，还要跑真正依赖目标的消费者。** [OpenHands FileEditor](../experiments/openhands-symlink-receipt/README.md) 基线编辑报成功、第一个应用也通过，却把链接换成普通文件，第二应用和共享目标仍错；既有候选在三入口读回、同路径撤销中修正。其 `close()` 仍留下历史，托管功能 CI 仍待运行，保全责任不能省略。
+
+这些实测支持按风险选择消费者验收，不改变整套工具默认或[长程路线](decisions/long-tasks.md)的 🟡 状态；核实 2026-11-02。

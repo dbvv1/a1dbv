@@ -1,166 +1,102 @@
-# 长程开发：怎样分工、接回并交付完整结果
+# 子代理怎么组织，长任务怎样无人值守
 
-**🟡 让一位主 Agent 持续负责完整目标，按需要拆出独立调查、实现或验证；每批结果回来就接收，交付后继续原目标的剩余部分。** 默认用已有会话、Git 和项目检查，不先装编排器。共享决定多的小改动由主线连续完成；可独立写入的目标才分 worktree。本仓已有真实委派、接回与串行发布实践；新读者已用本路线候选页接回一项真实已返回结果，完整实施、整合与消费者验收路线仍待验。
+**🟡 一位主 Agent 持有完整目标，独立工作按需委派；结果回来就核产物、整合并继续剩余工作。** 先用已有会话、Git 和项目检查。无人值守还需要宿主实际把结果交回并继续执行，写下“下一步”不会自动唤醒 Agent。本仓已有委派与接收采用，完整路线的本机新读者和持续自动续接仍待验。
 
-## 从当前任务开始，不重新搭工作流
+<a id="从当前任务开始不重新搭工作流"></a>
 
-**先确认目标、输入和执行环境，再把下面一段交给主 Agent。** 准备需求／issue、项目指引、当前版本与未提交改动、已有子任务入口和项目验收命令；只给本任务所需材料。Codex、Claude Code 等宿主须实际提供所用的委派工具；没有时按同样验收串行做。离开本机后仍需运行的工作，要预先选择已配置可用的远端或云端，不能指望关机后本地进程继续。
+## 1. 用当前需求起步
+
+**先准备目标、项目入口和最终验收，再交给主 Agent。** 需有已配置可用的执行环境、项目依赖和权限；没有原生委派工具时按同样验收串行做。要离开或关闭本机，开跑前选已配置的远端／云端；本机任务需要电脑与客户端保持运行。
 
 ```text
-继续完成 <现有需求或 issue>，最终让 <用户> 能 <可观察结果>。
-保留 <必须留下的行为>；不做 <非目标／已取消项>。
+继续完成 <需求或 issue>，让 <用户> 能 <可观察结果>。
+保留 <必须留下的行为>；不做 <非目标与取消项>。
+项目入口是 <指令文件、源码、已有任务记录>；最终验收是 <命令和真实使用路径>。
 
-先核最新需求、项目规则、实际版本及改动、已有结果和当前写者。
-你保留完整目标、共享决定和最终验收；已有结果先接收，不重派。
-独立调查或验证按需委派；实现先定接口、依赖与唯一写入归属。
-每项交接给目标、必要输入、可写范围、验收和停点，不预定一套角色链。
+先核最新需求、项目规则、实际版本、工作区改动、已有结果和当前写者。
+你保留完整目标、共享决定和最终验收。已有结果先接收，不重派。
+按需委派独立调查、实现或验证；先定共同接口与单一写入归属。
+每项交接给目标、必要输入、写域、验收、结果位置和停点。
 
-结果回来后，核实际差量、运行输出与受检版本，判断接收、返工或阻塞。
-按依赖整合，复用未受影响的有效检查，只重验受影响或影响不明的路径；
-最终版本跑项目要求的交付检查和真实消费者入口。
-已获准发布时串行提交并回读目标仓库／分支与实际内容，另核该版本 CI。
-外部结果未知先查回执；明确拒绝只停对应动作，不换路重试。
-
-每个阶段结束都回到原目标：还有可执行的实施、接收或验收就继续；
-需要等子任务时保留原任务入口并接回结果，不重新派一份。
-只有完整验收完成、没有可继续的授权工作且确实阻塞，或目标已取消才收口。
-换人前确认旧写者停止，在现有记录留下可恢复产物、未完成项和下一步。
+结果回来后看实际 diff、运行输出和受检版本，决定接收、返工或阻塞。
+按依赖整合；复用未受影响的有效检查，重验受影响或影响不明的路径。
+在最终版本跑项目要求的检查，并从真实消费者入口验证成功和失败路径。
+每个阶段结束回到原目标，有可执行的实施、接收或验收就继续。
+未知外部写入先查实际结果；明确拒绝只停该动作，不换路重试。
+最终验收完成或确实阻塞再收口；阻塞留可恢复产物、缺项及下一步。
+已获准发布时串行提交并回读目标仓库、分支、提交与内容，另核该版本 CI。
 ```
 
-这段用于主线接回已有任务，也可给新任务起步；具体文件、依赖和停点由项目决定。同项结果和写者从项目已有任务入口、原调用与实际工作区核对；任务表没登记不等于没有写者。本仓入口是 [TASKS](../collaboration/TASKS.md) 与 [local-jobs](../collaboration/local-jobs/README.md)，其他项目用自己的入口。恢复时可直接采用[通用交接模板](../../templates/generic/.claude/skills/handoff/SKILL.md)，需要跨宿主迁移时再看 [checkpoint-resume](../../templates/codex/.agents/skills/checkpoint-resume/SKILL.md)。已有任务记录够用就不新增 JSON 台账。
+任务／写者从项目已有记录、原调用和实际工作区核对。本仓用 [TASKS](../collaboration/TASKS.md) 与 [local-jobs](../collaboration/local-jobs/README.md)，其他项目用自己的入口；表上没登记不能证明没有写者。短任务保留交接消息即可，跨会话沿用[现有交接模板](../../templates/generic/.claude/skills/handoff/SKILL.md)，无需另造台账。
 
-## 按依赖决定怎么拆
+<a id="按依赖决定怎么拆"></a>
 
-```mermaid
-flowchart LR
-  A[当前目标与已有结果] --> B[调查并收敛共享决定]
-  B --> C{工作能独立交付吗}
-  C -->|共享状态多| D[主线连续实现]
-  C -->|独立调查或验证| E[原生子代理]
-  C -->|独立写入面| F[单写者与独立 worktree]
-  D --> G[收到结果就核产物]
-  E --> G
-  F --> G
-  G --> H[依赖顺序整合与最终验收]
-  H --> I{原目标还有剩余吗}
-  I -->|有| A
-  I -->|无| J[发布读回或按明确停点交接]
-```
+## 2. 拆工作，不拆掉主线责任
 
-| 眼前的瓶颈 | 先选 | 什么时候换 |
+| 当前需要 | 先选 | 交回后谁继续 |
 |---|---|---|
-| 小改动、频繁来回、多个阶段共享大量状态 | **一位 Agent 连续完成**；重复流程写 Skill | 有自包含支线会淹没主上下文时，再委派 |
-| 独立读代码、日志调查、来源核对或风险审查 | **原生子代理**，返回结论与关键证据 | 主线无法说清必要输入或接收结果时，先收窄问题 |
-| 几个独立目标同时修改代码 | **每个写入面一个 worktree、一个写者** | 接口尚未定或会修改同一契约，先合回主线定决定 |
-| 队员确需持续互相协调、自主认领共享任务 | **再评估 Agent Teams 等编排** | 只有一次交回需求，普通子代理更轻；恢复支持须符合任务 |
-| 必须跨进程保存进行中的工具调用状态 | **才评估耐久宿主** | 原生继续与 Git 产物能接回时，保留现有工具 |
+| 小改动、步骤共享大量状态 | 一位 Agent 连续实现 | 原主线完成检查与交付 |
+| 独立查代码、日志或风险 | 原生子代理，交结论与证据入口 | 主线核事实，再作共享决定 |
+| 几项可独立写入的实现 | 每个写入面一个写者，需要隔离时用 worktree | 主线按依赖整合并验最终版本 |
+| 持续互相协调、自主认领共享任务 | 原生能力不够时再试 Teams 等编排 | 仍指定完整目标的负责人 |
+| 跨进程保存在途工具调用 | 确有缺口才评估耐久宿主 | 先核调用是否完成，再决定续跑 |
 
-**写域不同仍要对齐共同契约。** 调查可以先并行，写入前明确接口、数据含义、错误行为和依赖版本；上下游有依赖就按顺序接回，不能因为文件名不同就同时改决定。worktree 只隔离检出，未跟踪资料、依赖、端口、数据库和服务所有权要另行准备。 [Cline 的真实并发编辑](../../experiments/cline-parallel-edits/README.md)中，即使两处区段不重叠，基线两工具都报成功仍丢一项修改；既有候选仅修正同一 SDK 运行时的路径队列，不能代替跨进程单写者分工。
+**先对齐接口、数据含义和失败行为，再并行写。** 文件不同不代表决定独立；worktree 也不隔离端口、数据库、依赖或服务。所需未跟踪资料和环境要各自准备。Python editable 开发尤其要用测试的同一解释器核实际模块来源，避免在新树测到主检出；[命令、wheel 与 namespace 边界](../08-multi-agent.md#11-python-worktree确认测试实际导入哪份代码)按需读。
 
-**每个开发 worktree 用自己的 Python 环境，并用运行测试的同一解释器核对受测模块的来源。** uv 项目按 worktree 各建环境：根目录有 `pyproject.toml` 和 `uv.lock` 时运行 `uv sync --locked --project <worktree>`；默认 `.venv` 相对 workspace root 解析，跨项目共用一个绝对 `UV_PROJECT_ENVIRONMENT` 会互相覆盖；不要把 `.venv` 软链回主检出。共享环境里的 editable 安装可能通过 `.pth` 或构建后端生成的导入映射指向另一个 checkout，所以从正确 cwd 跑绿测试仍可能导入主检出，缺陷被掩盖。`uv sync` 成功或切对 cwd 都不等于来源正确，装完先核解释器与模块路径归属，再跑行为验收。
+已有 Git 和准备脚本够用就沿用。具体缺口才试 [Worktrunk 的依赖准备](../../experiments/worktrunk-ready.md)、[Portless 的端口与状态隔离](../../experiments/portless-state-isolation/README.md)或 [gh-stack 的依赖分支](../../experiments/gh-stack-submodule/README.md)。Teams 仍属实验功能，`/resume`／`/rewind` 不恢复 in-process 队员；普通具名子代理也可能互发消息，不能仅凭这一点选 Teams。
 
-```python
-# check_import.py：模块名与源码根换成读者自己的
-import importlib
-import pathlib
-import sys
+**依据**：[官方能力] [子代理与主循环](https://code.claude.com/docs/en/sub-agents#choose-between-subagents-and-main-conversation)、[Teams 比较与限制](https://code.claude.com/docs/en/agent-teams#compare-with-subagents)、[Pi Durable](https://earendil.com/posts/pi-durable/)，复核 2026-11-01；[使用反馈] [worktree 资料缺失](https://v2ex.com/t/1243449)，原核实 2026-10-26。工具试用范围与日期保留在对应入口，未比较整套编排的同任务收益。
 
-root = pathlib.Path("path/to/worktree/src").resolve()
-module = importlib.import_module("your_package.your_module")
-origin = pathlib.Path(module.__file__).resolve() if module.__file__ else None
-print(sys.executable, origin)
-sys.exit(0 if origin and root in origin.parents else 1)
-```
+## 3. 离开前，先看一次真实结果能否接回
 
-该示例会实际导入所选模块并执行其初始化代码；只用于你正要测试的可信项目模块。用运行测试的同一解释器执行，先看 `sys.executable` 是否为本项目环境，再按 `resolve()` 后的路径归属判断模块来源，不看字符串前缀、cwd 或上一条命令是否成功。来源检查只证明测对对象，之后仍要跑项目的行为验收。namespace package 顶层可能没有 `__file__`、`__path__` 又含多个位置，改核实际受测的子模块及顶层 `__path__`／`__spec__.submodule_search_locations`；哪些来源合法由项目契约决定，不能套单文件断言。
+**拿当前任务的第一个独立单元检查交接，不为测试制造中断或新建调度。** 用宿主已有且获准的运行入口，核以下三件事：
 
-**这只适用于 editable 源码开发／测试。** 验收发布 wheel 应在干净环境安装指定构建产物并核其身份；此时导入 `site-packages` 是正常结果，不能要求路径落回源码树，也不能用 `PYTHONPATH` 把 wheel 验收改回源码验收。已安装 distribution 的版本正确，也可能被当前目录的同名源码遮住；核实际模块与指定产物的安装位置、内容及行为。
+1. **工作确实执行。** 有本次工具返回、实际进程或新产物；只有 ready／running 标签不算。
+2. **主线确实接收。** 结果回来后，主线实际读取产物和检查结果，作接收或返工决定；不是只看到通知、输入已送达或一句完成摘要。
+3. **下一步确实开始。** 原目标还有剩余时，主线实际启动下一项实施或验收。保留原任务入口、版本和这一动作的证据，别把写下计划当已经续接。
 
-**依据**：[本仓窄复现] 2026-11-04，Python 3.12.14、真实 Git main／feature worktree、src 布局与 setuptools PEP 660 editable 安装：共享装有 main editable 的环境时，从 feature cwd 跑的行为断言 exit 0 却由 main/src 导入，同解释器解析 `module.__file__` 的来源断言 exit 1；独立环境装 feature 后来源断言 exit 0、行为断言 exit 1。断言均为 Python 子进程，未用 pytest／uv 或生产应用，也未覆盖 wheel、namespace。[官方环境契约] [uv 项目环境路径](https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path)：默认 `.venv`，相对路径按 workspace root 解析，跨项目共用绝对 `UV_PROJECT_ENVIRONMENT` 会互相覆盖。[开源项目] [y-agent 固定提交](https://github.com/luohy15/y-agent/commit/12d893faa7a9b1c6f3558a5a302fbf9bcc5d2827)（2026-08-07）把共享 `.venv` 改为每个 worktree 本地 `uv sync --locked --project <worktree>`，因共享 editable `.pth` 会让任一 checkout 的同步重定向其他 worktree 的导入；其改动与测试属上游，本仓未运行该产品。[真实使用反馈] [gflow-cli #760](https://github.com/ffroliva/gflow-cli/issues/760)（维护者报告，2026-09-08，已关闭）worktree 的 pytest 因主检出 editable 固定 `src/` 而导入主检出，发布门禁假绿，临时以 `PYTHONPATH` 指向 worktree。以上公开来源本轮核读 2026-11-04。
+只有前两项时，可把它当“一次后台任务已接回”；第三项尚无证据，就保留“持续自动续接未验”。本机需跨回合运行时，另核现有接收器／调度器是否保持工作、结果由谁接收；没有配置可用的触发入口就先按有人接回使用。不要靠不断发“继续”、重复派任务或增加权限补出一次伪无人值守测试。
 
-[wheel／namespace 可复跑检查](https://github.com/dbvv1/a1dbv/blob/59e2aac70221c2c23d4b4ae611fbf2c946b55da9/experiments/python-import-provenance/README.md)：2026-11-04，Python 3.12.14、云端 POSIX，四项合成消费者检查通过；覆盖 wheel 实际导入与字节一致、同名源码遮蔽被拒、namespace 合法双根和错根子模块被拒。非作者复跑及移除负例断言的变异检查通过。它补的是两类边界的机制证据，未验原生 Windows、真实应用或整条长程路线，不刷新上段 editable 实验的范围。
+<a id="旧写者状态未知时接收固定成果与接管旧树分开"></a>
 
-已有工具出现具体缺口时才补：Worktrunk 可辅助[依赖准备](../../experiments/worktrunk-ready.md)；Portless 的代理要由单一协调者管理，独立实例同时隔离[端口与状态目录](../../experiments/portless-state-isolation/README.md)；gh-stack 适合依赖未合入父层的分支，带子模块先核[恢复状态](../../experiments/gh-stack-submodule/README.md)，失败可能已部分生效，不按退出码盲重试。这些是分支选项，不是整套路线的必装清单。
+需要换执行者时确认旧写者停止，再交同一写域。已正式交回的固定成果若允许独立接收，可以在新树审查整合；这不等于旧进程已退出，也不能跳过原任务明确规定的退出条件。跨宿主恢复用 [checkpoint-resume](../../templates/codex/.agents/skills/checkpoint-resume/SKILL.md)，恢复仍须实际读取当前记录和工作区。
 
-Claude Code Teams 当前仍属实验功能，默认关闭，`/resume`／`/rewind` 不恢复 in-process 队员。普通具名子代理也能在可用工具与目标明确时传消息；选 Teams 看共享协调需求，不只看能否互发消息。Pi Durable 的中断任务恢复还要区分可安全重跑的调用与应交回中断状态的调用，不能由耐久存储推定外部写入可重做。
+**依据**：[宿主能力与边界](../08-multi-agent.md#21-启动与撤回后台不等于无人值守)，原核实 2026-10-15；[本仓状态实试](../../experiments/deepseek-superagent-receipt/README.md)，核实 2026-11-02：输入 delivered／read、assignment 与原任务完成分别处理，未运行 DSH／模型。这三步是据上述边界提出的本仓操作检查，尚非持续无人值守通过记录。
 
-**依据**：[官方能力] [Claude 子代理取舍](https://code.claude.com/docs/en/sub-agents#choose-between-subagents-and-main-conversation)、[Teams 比较与限制](https://code.claude.com/docs/en/agent-teams#compare-with-subagents)、[Pi Durable](https://earendil.com/posts/pi-durable/)，复核 2026-11-01；[真实使用反馈] [V2EX 的 worktree 资料缺失](https://v2ex.com/t/1243449)，原核实 2026-10-26。工具实试范围与原核实日在各入口；本仓未比较这些编排方式的同任务总收益。
+<a id="交出去什么收到后核什么"></a>
 
-## 交出去什么，收到后核什么
+## 4. 接回产物，跑到真正的消费者
 
-**交目标与契约，接产物与证据。** 实现者可以自行选择方法；主线不能把验收责任一起交掉。
+**接收从 diff 与原始输出开始，在最终版本的用户入口结束。**
 
-| 交接最小输入 | 接收时实际核对 |
+| 接收时要回答 | 实际看什么 |
 |---|---|
-| 目标、保留行为、非目标与最新决定 | 产物兑现原需求；没有用缩小范围替代未完成项 |
-| 必要文件／版本、接口与依赖、允许写域 | 实际 diff、完整产物及其他写者改动；不覆盖共享文件 |
-| 项目检查、真实消费者与失败路径 | 命令、退出状态、输出及受检版本；零测试、skip、未运行分别处理 |
-| 当前权限、外部动作和停点 | 操作是否已发生、结果是否可读回；不根据“已提交”自报判完成 |
-| 原任务入口与回传位置 | 已回结果先验收；未知运行先查，换人前核旧写者确实退出 |
+| 是不是交出去的目标 | 原需求、保留行为、最新取消项与实际 diff |
+| 有没有接错对象或覆盖别人 | 基线、结果提交、写域、其他在途改动 |
+| 所谓通过测了什么 | 真实命令、退出码、原输出、受检版本和相关环境；零测试、skip、失败与未运行分开 |
+| 原检查能否复用 | 受检代码、输入、依赖、环境和验收是否变化；仅 SHA 变化不代表全部失效 |
+| 用户从哪一步受益 | 实际 CLI／页面／读取接口的成功与失败路径，再核落地产物 |
 
-### 旧写者状态未知时，接收固定成果与接管旧树分开
+对于脚本修复，先保存原实现的失败或错误范围，修后用同一真实入口重试；函数测试之外还读回 CLI 输出及文件。交互修改走完本轮和下一轮；持久化修改用实际读取接口核内容与重跑。检查器代码没变但输入、测试集合变了，不能直接沿用旧通过。可复核的版本差量命令及各类真实案例集中在 [20 §13](../20-codex-long-horizon.md#13-接收真实产物复用检查与消费者边界)。
 
-**已正式交回固定提交、且任务允许独立接收时，可以在新工作树／克隆中审查、整合那一份产物；不要因此接管旧树或重启原调用。** 先固定基线与结果提交，核接收范围和其他在途写域，保留来源，再对新候选做独立复核。后来的分支更新不自动包含在本次接收内；原任务明确要求先核旧执行退出，或授权／产物归属不清时，仍停在该条件，不拿“新目录”绕过。固定对象只解决内容身份，不证明旧进程退出，也不解除发布限制。新树不改变平台已有拒绝，不换入口、账号或执行者绕过。
+只有观察到资源争用才错峰或排队，不统一减少 workers 或放宽超时。Windows 运行不了 POSIX 入口时，记清已跑的定向检查和未跑部分，将固定产物交给已有权限的 POSIX 执行环境继续；若必需验收没有可用执行者，整项保持未通过。
 
-**复用证据要看检查实际读了什么，不只看检查器代码。** 本仓候选从 [`31d89967`](https://github.com/dbvv1/a1dbv/commit/31d89967d10ba1c5071ab1346508791b63365915) 接到 [`cd9bf4a8`](https://github.com/dbvv1/a1dbv/commit/cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61)，只增加模板携带性测试并改模板说明；公开扫描器及其回归文件未变，但扫描输入、测试集合已变，所以仍重跑完整离线与最终公开扫描，不把上一提交的通过改贴到新版本。
+**依据**：[团队与项目实践] [Anthropic 主循环](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)、[Cognition 的单线写入](https://cognition.com/blog/multi-agents-working)、[HumanLayer 核验证证据](https://github.com/humanlayer/skills/blob/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/rpi/skills/rpi/references/implement-outline/process.md#L17-L39)、[Cursor 撤掉过强委派提示](https://cursor.com/blog/improved-token-efficiency)，复核 2026-11-01；[项目检查取舍] [n8n](https://github.com/n8n-io/n8n/blob/2e85535612dcdf6c641dca981814fba176244146/AGENTS.md#L344-L358)、[Inspector](https://github.com/modelcontextprotocol/inspector/blob/e3217388c8590bcf6796fd8d0528a875ade1ac1f/vitest.shared.mts#L81-L139)，原核实 2026-10-28。本路线是本仓采用组合，不是各家共同规定，也没有同任务提速对照。
 
-在已有这两个对象的本仓副本中可复核差量（只读已提交内容）：
+<a id="接回之后走到当前目标的终点"></a>
 
-```sh
-git diff --name-only 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61
-git diff --quiet 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61 -- scripts/check_public.py tests/test_check_public.py
-git diff --quiet 31d89967d10ba1c5071ab1346508791b63365915 cd9bf4a8c1b2748bab8214ce4d62678cf99e8f61 -- tests
-```
+## 5. 按原验收收口，不按回合收口
 
-第一条列出两个文件；后两条退出码分别为 0（指定代码无差异）、1（测试目录有差异，不是命令故障）。缺对象等错误另查，不能当作“相同”。该命令不核未提交／未跟踪文件、环境、依赖或外部状态；实际任务还要核这些输入。2026-11-04 本仓真实候选接续：上述差量已复核；4 项复制测试由非作者独立复跑通过。执行者的运行回执记录完整 offline 20 阶段与公开扫描通过，这两项未另作非作者全量复跑。这里是本次采用记录，不是模型长时可靠性或节省时间的对照实验。
+- **已回但未验收：** 当轮接收；有缺陷就向同任务给具体返工要求，不另派一份。
+- **一个动作阻塞：** 留目标、原因和恢复条件，继续不依赖它的工作。
+- **外部操作结果未知：** 按原请求查实际文件、提交或服务回执；已生效就只收结果，未知不重放。
+- **还有已授权的实施或验收：** 继续原目标；子任务结束不等于任务完成。
+- **已满足全部验收：** 按授权交付。发布另回读实际目标与内容，CI 按该提交的真实运行报告；未查到运行记未确认，不用发布成功替代消费者验收。
 
-来源调查则交回主张、原文位置、版本日期及未读到的缺口，主线逐项核“来源支持哪个结论”；无需为纯来源核查跑代码套件。独立审查按风险加，已有有效审查复用，避免固定串行角色反复重读同一材料。
+本仓 Memos 需求在独立审查中发现 raw Markdown 消费者遗漏并修复，部分匿名路径已验，剩余产品 QA 已取消；Sphinx 在首轮负结果后保留调查、纠正前提并继续 CLI 构建与输出比较。Foremerge 新读者只做通接回已返回结果，不覆盖完整实施或自动续接。这些范围保留，不升级为整条路线通过。
 
-**按故障类型核真实落地，交互修复要走到下一轮。** 本仓接收已有补丁时，分别用实际消费者检查下面三层，而不是只看实现者的测试替身或退出码：
+**采用依据**：[Memos 实施与剩余范围](../../experiments/memos-reading-adoption.md)、[Sphinx 同任务接续](../collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)，工程原核实 2026-10-25，Memos 取消状态核实 2026-10-31；[已发布的两文件交付](https://github.com/dbvv1/a1dbv/commit/c735c8ed27334f2d4cc9218fece214fa8f83c41b)，2026-11-01 核读远端，hosted CI 未确认；[Foremerge 原任务](../collaboration/local-jobs/A-LONG-ROUTE-FOREMERGE-READER-20261101.md)与[原读者卡点](../../reader-tests/A-LONG-ROUTE-FOREMERGE-READER-20261101-u1.md)，核实 2026-11-01。更强恢复机制的比较见 [20 §3–4](../20-codex-long-horizon.md#3-完成条件来自验收原文不能由总结重新定义)。
 
-| 交回结果涉及 | 从真实入口查什么 | 本仓实测与仍有的边界 |
-|---|---|---|
-| 大范围依赖注入／装配迁移 | 打包后同连接读搜、错误后恢复、正常退出与保存内容 | [Repomix](../../experiments/repomix-mcp-receipt/README.md) 两版链路一致；本云完整套件仍有 1 失败，候选托管检查 52 成功、2 跳过 |
-| 路径或持久化目标 | 回读目标及邻接对象，核既有状态是否保留 | [Aider](../../experiments/aider-git-receipt/README.md) 基线界面目标 A、exit 0 却暂存 B；候选实际核两仓 index 修正了该路径，完整套件仍失败 |
-| 流式事件／审批生命周期 | 一次回答、回合完成、下一轮新请求、正常退出与会话落地 | [Goose ACP](../../experiments/goose-acp-receipt/README.md) 基线重复旧卡后退出；候选合成 Allow／Reject 两轮继续，SQLite 与 `/exit` 均通过，真实 provider 与取消恢复未验 |
-| 持久化迁移／分批清理 | 中途与检查点失败后新进程恢复，再用真实读取接口核历史、重跑及后续新数据 | [OpenCode](../../experiments/opencode-migration-receipt/README.md) 原候选保留已提交清理批次，两版均恢复可读历史；仅合成 SQLite／SessionStore，未验原大库与服务启动 |
-| 文档树／工作记录迁移 | 核每个源文件的去向、转换和备份，再让下一位生产工具读写读回 | [BMAD](../../experiments/bmad-migration-receipt/README.md) 预览版 exit 0 仍丢隐藏／tmp；窄修后完整保全并经 tickets 消费，冲突须读 JSON，完整 Python 套件仍有 7 个失败子例 |
-| 审查回复／汇总判断 | 回到原回复逐条核 finding，再读缺失覆盖；保留独立接收记录 | [gstack](../../experiments/gstack-review-receipt/README.md) 候选挡住汇总改写、缺原回复和换文件；整条事件连同 finding 删除仍可 clean，只作一致性补充 |
-| 后台报告／程序读文件 | 分开核转后台、真实退出、展示窗口与机器原件；解析后读回产物 | [Gemini CLI](../../experiments/gemini-background-output/README.md) 修复尾部诊断后，两版尾窗仍不能解析完整 JSON；原件接住 501 项并复测 0 错误。[Deep Agents](../../experiments/deepagents-artifact-receipt/README.md) 基线窗口标题使 JSON 解析失败，候选 raw 原件生成并读回正确汇总；限额在全读后检查，artifact 不等于不留存 |
-| 同一工作分支连续交付 | 连跑多轮，核源提交、过滤产物与目标接收；未合并旧分支须在写入前停止 | [GSD](../../experiments/gsd-pr-replay/README.md) 候选三轮各接住新 1 个代码提交、目标规划为 0；基线第二轮冲突并删旧 `-pr` 引用，原工作历史保留。仅原 Bash＋真实工具的 local bare 消费，非完整 slash command |
-| worktree 交接／测试摘要 | 核代码实际落点与包的净 diff，再读 runner 原输出、locale、零测试和失败路径 | [Superpowers](../../experiments/superpowers-worktree-receipt/README.md) 旧 main 正确 cwd 与候选 `-C` 均能接包；真实摘要补丁在 C.UTF-8 仍失败 3 项，误用 C 诊断写出的 complete 已纠正，修复未获接收 |
+<a id="什么情况不值得继续拆"></a>
 
-**路径带符号链接时，还要跑真正依赖目标的消费者。** [OpenHands FileEditor](../../experiments/openhands-symlink-receipt/README.md) 基线编辑报成功、第一个应用也通过，却把链接换成普通文件，第二应用和共享目标仍错；既有候选在三入口读回、同路径撤销中修正。其 `close()` 仍留下历史，托管功能 CI 仍待运行，保全责任不能省略。
-
-这些实测支持按风险选择消费者验收，不改变整套工具默认或本页读者状态；核实 2026-11-02。
-
-**同机检查争用要测出来再调度。** 实现中跑定向反馈，交付时按项目要求验整合结果；只有观察到资源争用才错峰或排队，不统一降低 workers、放宽超时。n8n 的单 worker 定向入口与 Inspector 的排队比较是各自项目取舍，不能当所有仓库的配置默认。
-
-**依据**：[强团队与项目] [Anthropic：共享状态的步骤留在主循环](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)、[Cognition：并行判断与单线写入](https://cognition.com/blog/multi-agents-working)、[HumanLayer：先核验证证据、修失败再标通过](https://github.com/humanlayer/skills/blob/653b6411c1f70c275a18e37673b042ff99f67ceb/plugins/rpi/skills/rpi/references/implement-outline/process.md#L17-L39)、[Cursor：撤掉过强探索委派提示](https://cursor.com/blog/improved-token-efficiency)，原文复核 2026-11-01。这些支持减少无益交接、明确写入和验收责任；本页连续接收与交付路线是本仓采用组合，不是各家共同规定。项目检查取舍见 [n8n](https://github.com/n8n-io/n8n/blob/2e85535612dcdf6c641dca981814fba176244146/AGENTS.md#L344-L358) 与 [Inspector](https://github.com/modelcontextprotocol/inspector/blob/e3217388c8590bcf6796fd8d0528a875ade1ac1f/vitest.shared.mts#L81-L139)，原核实 2026-10-28。
-
-## 接回之后，走到当前目标的终点
-
-**先分类再行动，保留失败和仍有效的结果。**
-
-| 收到的状态 | 下一步 |
-|---|---|
-| 实现／调查已回，尚未验收 | 当轮核产物；可接收就按依赖整合，有实质缺陷就给同任务返工要求 |
-| 检查有效，但 main 或提交 SHA 已变 | 对比受检代码、输入、依赖与环境；无关变化复用原结果，受影响或影响不明的路径复验 |
-| 只有一项权限、环境或人工判断阻塞 | 留具体目标、原错误和恢复条件；继续不依赖它的实施与验收 |
-| 外部动作超时或回执缺失 | 先按原请求核文件、提交或服务状态；已生效只收结果，未知不重放 |
-| 旧状态可靠、目标未变 | 沿原任务继续；需求变了先更新剩余目标，取消项不复活 |
-| 旧写者或状态归属无法确认 | 保全现有差量，不接管同一写域；核清后再续接或另存重启 |
-
-**输入收到、执行回合结束，都不等于原任务完成。** [DeepSeek Superagent 的本地接收实试](../../experiments/deepseek-superagent-receipt/README.md)把原任务与 assignment、输入的 delivered／read 分开：同一请求重投不多接一单，context-only 回执不改变原授权，已有执行者拥有的追问须交回后才能重路由。真实仓库检查结束后，跨进程重开 SQLite，并由适配器显式报告 assignment 中断后，只重排未读 trigger，另附恢复提示；适配器回读原输出才报完成，合成失败仍保持 failed。可借的是这些状态区别，不是安装整套宿主；核心相信执行者报告，不能自行保证产物正确或外部操作只发生一次。本次未启动 DSH／模型，不改变原生协调默认与本页 🟡 状态；核实 2026-11-02。
-
-**最终接收分开看受验版本和实际落地。** 检查绑定其原版本，整合后的差量要能解释；发布则回读目标仓库、分支、精确提交与内容，CI 只按这个提交的实际运行报告。未找到 CI 运行证据时记未确认，确认未触发才记未运行；发布成功也不能替代必需消费者验收。批准范围内的实施、整合与接收仍有下一步时继续，不把“子任务结束”当整个目标完成。
-
-本仓 Memos 的真实清单需求在独审时发现编辑器 raw Markdown 消费者遗漏，沿同一需求修复；组件检查和部分匿名浏览器路径已验；owner 编辑、写后焦点等未验，剩余产品 QA 已取消，仅跟维护者反馈。Sphinx 性能任务则在首轮负结果后重判错误前提，保留已有调查和失败，在同任务继续做真实 CLI 构建与输出比较。两例支持上述接回路线的可操作性，没有证明自动无人值守、固定提速或跨模型优势。
-
-新读者另照本页接回已完成的 Foremerge 两版本试验，保留 0.5.1 的实际落地拒绝、0.6.0 的内容式核对及失败控制，判断不改变现有协调默认；负责人核产物并纠正建议文案，未重复有效实验。读者曾把模型阶段禁止提交当成交付未完成，负责人另核接收器随后发布的固定提交，而不是重派。该例只验证“接回已返回结果”这一段；读者补读的任务／写者入口已补在上方，完整开发路线仍待自然任务验证。
-
-**依据**：[本仓真实任务] [Memos 采用与剩余验收](../../experiments/memos-reading-adoption.md)、[Sphinx 同任务接续](../collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)，工程原核实 2026-10-25，Memos 匿名路径与取消状态核实 2026-10-31；[本仓实际发布] [prek 两文件交付](https://github.com/dbvv1/a1dbv/commit/c735c8ed27334f2d4cc9218fece214fa8f83c41b)，2026-11-01 已独审、检查并回读远端两文件，未确认 hosted CI。[本仓新读者] [真实任务与负责人接收](../collaboration/local-jobs/A-LONG-ROUTE-FOREMERGE-READER-20261101.md)、[原卡点记录](../../reader-tests/A-LONG-ROUTE-FOREMERGE-READER-20261101-u1.md)，2026-11-01；本次只补入口与实际接收范围，未把修订页再做一轮新盲读。恢复机制与强替代的已有比较见 [20 §3–4](../20-codex-long-horizon.md#3-完成条件来自验收原文不能由总结重新定义)。
-
-## 什么情况不值得继续拆
-
-**共享状态多、交接反复、主线已经接不完时，先缩回一位 Agent。** 看的是遗漏、返工、等待和最终结果，不能用代理数、调用数或运行时长作收益。只需一次交回就不用团队编排，只需保存产物就不用耐久平台；让流程围绕这次完整交付服务。
+**不值得继续拆时就合回主线。** 共享状态多、交接反复或主线已接不完时，用一位 Agent 连续完成。看遗漏、返工和最终结果，不用代理数、调用数或运行时长算收益。
