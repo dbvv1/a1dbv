@@ -2,12 +2,12 @@
 id: B-CORE-YARN-CHOICE-HANDOFF-20261106
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-core-yarn-choice-handoff-20261106
 
-工作线：核心模块。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+工作线：核心模块。本卡已部分接收固定源码职责；接收状态不证明原调用退出；优先 Star 品质闭环，其他线独立继续。
 
 ## 目标
 补已有 Yarn 真VM同步选项之后明确未验的异步点击交接，给 Unity 接入者可落地的接口和测试输入，不再重复 lineID 与 Option.ID 常识。
@@ -34,8 +34,8 @@ result_branch: relay/b-core-yarn-choice-handoff-20261106
 
 ## 当前结果
 
-- 完成 Yarn 异步选项交接来源清单：从 505 个去重候选中筛出 343 项并按决定排序，含六场景责任表、固定源行级链接、真实调用顺序、最小接口草案与六组可执行输入/期望。两轮非作者审查问题全部关闭，reviewed=true。未运行 Unity/.NET，六组输入/期望未执行；固定基线 3.2.8，3.3 async-vm 另列；部分候选理由与约 20 条不可读链接待复核。
-- 产物：[6c68b98](https://github.com/dbvv1/a1dbv/commit/6c68b982e1b4bf760bba394015b0b968e7acf329)，分支 `relay/b-core-yarn-choice-handoff-20261106`。
-- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
-- 下一步：在 Unity 工程执行「六组可执行输入/期望」并记录实际结果，执行前按固定提交复核接入者结论中的行号，优先核 P0.0 的 20 项。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- **部分接收（2026-11-06）**：[原交回 6c68b98](https://github.com/dbvv1/a1dbv/commit/6c68b982e1b4bf760bba394015b0b968e7acf329)保留；只将固定 3.2.8 的异步 Presenter／Runner 职责写入[已有真 VM 页](../../../experiments/yarn-localization-production/README.md#async-choice-handoff)与04入口，不接343项清单，不新建工具或引擎工程。
+- 实际差量：区分同步 SelectAvailable 与 Unity RunOptionsAsync；说明逐项本地化、并发 Presenter、协作取消、全部返回后 Runner 统一提交；全不可用沿 allowOptionFallthrough，关闭回调与在途选项任务分开。
+- **拒收过度保证**：固定源码不支持“旧排队点击必然穿透，所以必须一帧禁用／重建”；默认 Presenter 已禁用旧子视图并 Yield。Runner 对每个非 null 都会赋值，不是无条件 first-wins；Stop 等 OnDialogueCompleteAsync，不给 RunOptionsAsync 的退出时限。未编译的 C# 骨架及六组未执行输入不当成实现／验证成果。
+- 负责人和新上下文逐条核固定源码；原卡的 reviewed=true 不等于整份列表可采用。本次核读未运行 Unity／.NET；按钮、切语言、Stop 异步与六场景均未验证，模块成熟度及既有同步11组实测范围不变。
+- 卡状态表示该交回已处置；原调用退出无新回执，不重派、不续搜。后续仅在真实 Unity 项目有接入需求时沿该接口验，当前不新增泛化取消工具。

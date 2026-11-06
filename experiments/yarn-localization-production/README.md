@@ -55,6 +55,26 @@ dotnet run --no-restore
 
 依据：[核心 Option／ID／资格定义](https://github.com/YarnSpinnerTool/YarnSpinner/blob/5b3a4ff2d24e4f727e3f90fee5d8ce637474c305/YarnSpinner/Dialogue.cs)、[原 VM 的派发与选择](https://github.com/YarnSpinnerTool/YarnSpinner/blob/5b3a4ff2d24e4f727e3f90fee5d8ce637474c305/YarnSpinner/VirtualMachine.cs)；Unity v3.2.8 的 [OptionsPresenter](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/OptionsPresenter.cs)保留原选项，[OptionItem](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/OptionItem.cs)控制可交互并在提交时检查，[DialogueRunner](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs)最终提交 `DialogueOptionID`。核心与 Unity 插件均为 MIT；此处只借其职责，不复制一套 Presenter。
 
+<a id="async-choice-handoff"></a>
+## Unity 异步选项：Presenter 返回结果，Runner 提交给 VM
+
+**已有 Unity OptionsPresenter 继续用它；自定义 UI 也只返回本组 `DialogueOption` 或 `null`，不要在 Presenter 里再调用 `SetSelectedOption`／`Continue`。** 上节 `SelectAvailable` 是直接驱动核心 VM 的同步消费者，不能原样塞进 Unity Runner。固定插件 3.2.8 的入口是 `RunOptionsAsync(DialogueOption[], LineCancellationToken)`：Runner 先逐项 await 本地化，再并发调用 Presenter；得到非 null 后取消本组 token，等待全部 Presenter 返回，才统一向 VM 提交。
+
+取消是协作合同，不是 Runner 额外锁住“第一个答案”：每个非 null 返回值都可能覆盖当前选择。自定义 Presenter 的其他在途分支必须响应 `NextContentToken`、释放自己的 UI 并返回 null，否则另一个迟到答案仍可能改掉结果。沿原 token 和任务完成源接线，不新建第二套 VM 状态。
+
+| 时刻／需求 | 沿官方接缝处理什么 |
+|---|---|
+| 显示、翻译与重排 | 每个按钮保留本组 `DialogueOption`，显示顺序不改 `DialogueOptionID`；Runner 此处只在呈现前取译文，显示期间切语言沿项目自己的刷新策略 |
+| 同组重复选择 | 官方 `OptionItem` 在点击时查交互资格、已提交标志和取消 token，以 `TrySetResult` 完成共享等待；自定义输入沿同一完成源，不各自直接提交 VM |
+| 旧组结束、下一组复用按钮 | 默认 OptionsPresenter 已在旧组返回前禁用子视图并 Yield；复用对象会重绑新组选项。自定义延迟回调须保原组归属，不能仅凭重复的数值 ID 认领当前组；没有证据要求默认路径一律重建按钮或另加一帧禁用 |
+| 关闭对白 | 自定义 `OnDialogueCompleteAsync` 清理本方视图；`Stop()` 等这批完成回调，不等所有在途 `RunOptionsAsync`。后者仍须响应取消并结束，不能用 Stop 已返回推断所有选项工作已退出 |
+| 译文／资源迟到 | Runner 在呈现前等待逐项本地化，并传递本组 token；Provider 与项目自己的异步工作也须遵守取消／归属，不能把一个 token 当成所有资源都已取消的证明 |
+| 全部不可用 | 内置 OptionsPresenter 返回 null；所有 Presenter 都未选择时，Runner 按 `allowOptionFallthrough` 决定提交 `NoOptionSelected` 后继续，或报错停在等待处。Presenter 不擅自选第 0 项，也不重复驱动 VM |
+
+接入后用真实按钮验旧组延迟回调、同 ID 新组、关闭中返回、重复输入、切语言晚到和全不可用；观察最终剧情分支与旧 UI 是否消失，不能只检查一个布尔标志。以下依据只支持固定版本的接线责任，**未运行 Unity、未执行这些异步 UI 场景**；既有 11 组同步 VM 检查不覆盖它们。
+
+依据：[Runner 本地化与统一提交](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs#L908-L1001)、[完成回调](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/DialogueRunner/DialogueRunner.cs#L603-L643)、[OptionItem 点击检查](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/OptionItem.cs#L143-L159)、[OptionsPresenter 原组收尾](https://github.com/YarnSpinnerTool/YarnSpinner-Unity/blob/bfc5b6a2e8bc8978e777caeea3a827a0d408cc7d/Runtime/Views/OptionsPresenter.cs#L356-L361)，固定 v3.2.8 源码／MIT，2026-11-06 核对。只接本段职责，不采用未编译的替代 Presenter 草案，不混用 3.3 async-vm API。
+
 ## 实际检查与范围
 
 2026-10-26 在 .NET SDK 8.0.427／runtime 8.0.33 运行：六组检查通过，无 skip，包括真实双语派发、二改拒旧／接新、缺译／漏占位符、未知说话人、重复／隐式 ID、缺作者文件。错误退出非零；成功输出包含 `We need 2 fuses to open the hatch.`，040 的实际消费者显示 `Navigator: Too late.`。
