@@ -35,4 +35,9 @@ result_branch: relay/b-ai-game-input-ui-20261106
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- explore 完成：sources.md 覆盖 22 个渠道、161 条已核候选，按 7 项门槛分四级并给出优先试玩 Bichitos Rumble 及 pointer:coarse + 915×412 触控 smoke 机制。文件 UTF-8/LF、无 BOM，无 tracked 改动。但独立审查 pass=false、reviewed=false，6 项事实/口径问题仍未修正（Bichitos 许可✅与图标待核矛盾及只差1项、ASHFALL 60/92 合并数、HUD_mejorado 生成来源、ASHFALL 版本/许可、梦境绮想截图口径、Westbridge AI 分工）；未执行实机、浏览器与音视频验证。Workflow 另留下未跟踪 scratch（.tmp/、tt.html、vg.html），非交付。
+- 产物：[94a1818](https://github.com/dbvv1/a1dbv/commit/94a1818f1b4a789b2fc0615ae0ce768205b98b5e)，分支 `relay/b-ai-game-input-ui-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
+- 下一步：负责人处理复核未关的 6 项，或授权再跑一轮修正后提交；同时确认 worktree 根目录 scratch 文件不纳入提交。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
