@@ -2,13 +2,13 @@
 id: B-CORE-STABLE-SEATS-ADOPTION-20261106
 owner: dot-B
 kind: reader-test
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-core-stable-seats-adoption-20261106
 page: domains/game-dev/07-networking-and-server.md@bbb068cbdc97617856763414ace1d9d828b9c9d9
 
-工作线：核心模块。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+工作线：核心模块。本卡仅接收六席模拟成果并修正文；不以接收状态证明原进程退出；优先 Star 品质闭环，其他线独立继续。
 
 ## 目标
 让读者把当前 MOBA 六席命令封套用于两份真实模拟，核页面是否足够从旧三进程小样走到已采用协议；本卡不新建网络框架。
@@ -36,8 +36,8 @@ page: domains/game-dev/07-networking-and-server.md@bbb068cbdc97617856763414ace1d
 
 ## 当前结果
 
-- reader-test 一轮完成：两份独立 Simulation（seed 901、contentVersion 12、heroesPerTeam 3）在进程内以六席命令封套实跑，600 tick 逐 tick finalHash 与 CommandResult[] 全一致（含 31 个到达顺序不同的 tick），9,081 tick 仍 0 分歧；tick 9001 经原经济真实购买 wayfarer_boots、tick 9002 原 W 真实消耗法力/冷却；七项协议拒收均 throw 且 hash/tick 不变，合法重送只消费一次，[move,stop] 与反序 hash 不同。核对者独立复跑 run.mjs，输出与 run-output.json 逐字节相同（SHA-256 a35af784…f16a6ae），源码身份 774ba28 相对 7e1986f 的 src/sim 与 tests 无 diff。taskDone=false：卡面点名的 docs/decisions/instruction-files.md 共享指令层入口未交付（页面无该入口，读者按只看页面规则标未做）。pageStuck 共 6 项：CommandFrame 精确结构/inputSeats 公式缺失、未写协议 throw 与玩法 {accepted:false,reason} 返回机制（但读者记录夸大了，页面 §4 已写协议/玩法拒绝分开）、无六席与 600 tick 可运行例子、buyItem 经济边界未写（600 tick 约 40 金币、最便宜装备 600）、contentVersion 支持范围未列、共享指令层入口缺失。读者漏项 3 条：result.md 复现命令按原样不可执行（需 cwd 设固定 MOBA 源并传脚本绝对路径）、卡点 2 漏引 §4 第 282 行、去重探针与主跑 tick 6 混写未点明是两个 Simulation。未运行验收：TCP/WebSocket/端口、旧 server-lockstep/run.mjs、浏览器、Unity/Unreal、GPU/音频、公网认证、跨设备/丢包/延迟、完整终局结算。
-- 产物：[a550197](https://github.com/dbvv1/a1dbv/commit/a5501970d0ad492e42be64f3e70b8521a77178e4)，分支 `relay/b-core-stable-seats-adoption-20261106`。
-- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：负责人接收后决定：修 result.md 复现命令与去重探针表述、修正卡点 2 引用；确认 instruction-files 共享指令层缺口及 6 项页面卡点是否回写页面或任务卡。本单元不自动重读。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- **部分接收（2026-11-06）**：采纳六席 CPU 消费者证据与页面卡点，正文已补真实 CommandFrame/inputSeats、协议 throw 与玩法拒绝、600 tick 乱序路径及 tick9001购买的原经济条件。[原交回 a550197](https://github.com/dbvv1/a1dbv/commit/a5501970d0ad492e42be64f3e70b8521a77178e4)；[接收记录](artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md)。
+- 两份真实 Simulation 的600 tick逐帧hash/CommandResult一致，31 tick改变到达顺序；延长到9081 tick仍一致，9001购买、9002施法。7类协议拒绝不推进状态，合法重传一次；进程内模拟不是联网或跨设备确定性。
+- 原脚本/JSON保留，接收勘误修工作目录与绝对脚本路径、独立dedup探针和主跑的区分，并收窄“页面未说明拒绝”的原夸大；最新正文提供可照做入口。
+- **原 taskDone=false 保留**：共享指令页没有在该次读者任务真实采用，补链接不等于采用，TASKS“共同”不删。新版正文也未再经首次独立照做。卡状态表示成果已处置，不表示原任务所有验收完成。
+- TCP／socket、浏览器、跨设备／运行时、真实网络延迟丢包和完整对局未验证；不重跑本机读者，原调用退出没有新回执。

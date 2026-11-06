@@ -248,9 +248,72 @@ Unity RC 4.2.5／runtime 4.0.4 的接线是：初始化时选环境，登录已�
 
 实际结果与范围：[WP10 同例](../../docs/research/wp10-content.md#server-input-frames)。上述 TCP 两端实验仍固定 [MOBA `3bcda00f`](https://github.com/dbvv1/MOBA-Like/tree/3bcda00fb35361cc5a25ee74e3768a2f3678c563/src/sim)，不代表浏览器已经联网。
 
-**✅ 本地命令接缝已进入可玩案例。** [MOBA 主线采用](https://github.com/dbvv1/MOBA-Like/commit/8ade2d1012370692de31f3883a85338171dbcab3)把旁置试玩 `candidate.html` 的玩家与机器人输入送入同一个 `Simulation.commandFrame` → `sim.step`：模拟层按队伍／阵容分配稳定席位，信封包含目标 `tick` 与各席 `commands`，按席位升序消费，保留席内操作次序，空席也显式提交空数组。乱序到达不改变结果；同批同席相同输入只消费一次，冲突／缺席／错席／旧帧／未来帧在推进前拒绝。它不复用上述 TCP 实验的跨帧重送 ledger。
+<a id="stable-seat-consumer"></a>
+### 六席本地接入：直接消费原 CommandFrame
 
-`npm run sim` 的完整局与回放哈希一致，原 `formatVersion: 1/2` 存档可恢复并续演；新回放标记 `stable-seats-v1`，旧无标记回放仍按原输入顺序重演（2026-10-29 [源码／离线实跑]）。冻结的默认入口 `default-src` 尚未采用；这次接入的是旁置可玩版本的本地输入合同，不是 TCP 服务端、双端浏览器、Unity／Unreal 或公网联机。
+**✅ 本地命令接缝已进入旁置可玩案例；要接现有六席，复用 `commandFrame`，不要再写一个排序器。** [MOBA 主线采用](https://github.com/dbvv1/MOBA-Like/commit/8ade2d1012370692de31f3883a85338171dbcab3)已把 `candidate.html` 的玩家与机器人输入送入 `Simulation.commandFrame` → `sim.step`。下面采用固定 `7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64`，而非上文 TCP 小样的 `3bcda00f`；该源支持内容版本 `[1,2,7,8,9,10,11,12]`，本次用 12。
+
+**先从真实任务目录核共享指令，再接原模拟。** 按[共享指令页](../../docs/decisions/instruction-files.md#第二步核对加载入口与当前上下文)核 MOBA 根 `AGENTS.md`／`CLAUDE.md` 的实际加载与当前可见内容，再沿该页“第三步”将 `src/sim/` 确定性契约对应到本次输入／回放检查。手动读过文件只记为任务中读取，不冒充启动自动加载。下方六席读者原先没有采用该入口；这里补的是后续任务入口，不是共享方案的新读者验收。
+
+#### 1. 按模拟拥有的席位造完整下一帧
+
+`heroesPerTeam: 3` 产生六席；`seat = team * heroesPerTeam + rosterSlot`，team 为 0／1，slot 从 0 起。通过 `sim.inputSeats` 取实际 `{seat, heroId}`，不把本次的 heroId 9–14 硬编码到新对局。`CommandFrame` 的精确结构是：
+
+```ts
+interface CommandFrame {
+  tick: number; // 必须是 sim.state.tick + 1
+  inputs: readonly { seat: number; commands: readonly SimCommand[] }[];
+}
+
+const heroId = sim.inputSeats[0].heroId;
+const frame = sim.commandFrame([
+  { type: 'move', heroId, point: { x: -90, z: 0 } },
+  { type: 'stop', heroId },
+]);
+const results = sim.step(frame);
+```
+
+这里的 `sim` 使用下方脚本初始化。`commandFrame` 按 heroId 分组并深拷贝命令，自动补出其余席的 `commands: []`；返回封套，不是命令数组。`step(frame)` 按 seat 升序消费，保留同席 `[move, stop]` 的顺序。`cast` 必须含 `slot`、`targetId`、`direction`、`point`，不用的字段显式传 `null`；`buyItem` 只带 `type`、`heroId`、`itemId`。血量、法力与冷却不作为输入字段。
+
+| 输入情况 | 原 API 的结果 | 调用方怎样处理 |
+|---|---|---|
+| 同一封套内同 seat、内容相同的重复输入 | 只消费一次 | 保留完整命令字段及席内次序；不是永久去重 |
+| 同席内容冲突、缺席、错 heroId、坏字段、旧／未来 tick | `throw`，在 tick／状态推进前拒收整帧 | 修正输入来源；不能当成玩法返回值后继续推进 |
+| 形状合法但方向缺失、冷却中或金币不足 | 返回 `CommandResult[]` 中的 `{command, accepted: false, reason}`；运行中的对局照常推进 | 保留 `directionRequired`／`cooldown`／`notEnoughGold` 回执，两端消费相同命令 |
+
+此本地接口不是网络等待队列：每帧都要六席齐全。已消费帧再次提交会因 tick 过旧抛错，不复用 TCP 小样的跨帧重送 ledger；终局后的合法输入返回 `matchEnded`，不再推进。
+
+#### 2. 复跑已有六席消费者，分开验协议与购买
+
+**用交回的[原脚本](../../docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/run.mjs)，不要重建演示模拟。** 准备上述固定 MOBA 源码及与其锁文件一致的已有依赖。原运行用 Node 22.23.2；两端锁定同一运行时、内容和导航数据。脚本依次创建两个独立 Detour 实例，再创建 seed 901／contentVersion 12／每队三人的两个 `Simulation`，不监听端口。
+
+可从任意目录执行，先把前两条路径赋值中的占位符换成**已有仓库目录**：a1dbv 必须含本页链接的产物，MOBA 必须是上述固定源。`tsx` 从 MOBA 工作目录解析，脚本用绝对路径，输出另存，不覆盖交回证据：
+
+```sh
+set -eu
+A1_ROOT="$(cd '/path/to/a1dbv' && pwd -P)"
+MOBA_SOURCE="$(cd '/path/to/MOBA-Like' && pwd -P)"
+ARTIFACT="$A1_ROOT/docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106"
+TARGET=7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
+test "$(git -C "$MOBA_SOURCE" rev-parse HEAD)" = "$TARGET"
+git -C "$MOBA_SOURCE" diff --quiet HEAD -- src/sim src/content package.json package-lock.json
+(
+  cd "$MOBA_SOURCE"
+  node --version
+  MOBA_SOURCE="$MOBA_SOURCE" MOBA_TARGET_COMMIT="$TARGET" \
+    node --import tsx "$ARTIFACT/run.mjs" > "$ARTIFACT/run-output.recheck.json"
+)
+```
+
+验收看输出字段，不只看退出码：脚本遇分歧会停止循环并输出 JSON，未把全部失败汇总为非零退出。
+
+- **600 tick 协议窗口**：`window600.ticks = 600`、`perTickHashEqual = true`；`snapshotEquality.tick600FullSnapshotJsonEqual = true`。A 按 `[0,1,2,3,4,5]`、B 按 `[5,2,4,0,3,1]` 送席位封套；31 个 tick 的非空席顺序不同，100–129 tick 明确六席全空。同席反序对照 `orderControl.differ = true`。
+- **拒收与去重**：`failureProbes.allPass`、`validFrameAfterProbesAdvanced`、`dedupe.pass` 均为 true。主跑 tick 20 重送 seat 0 的 move；另起两个模拟、先空跑五帧的 dedupe 探针重送 seat 0 的 W，只产生一条结果并扣一次法力。主跑 tick 6 是 seat 1 的正常 W，不是该探针。
+- **购买单独延长**：本输入序列只靠被动金币，30 Hz 下每秒 2 金币，600 tick 约 40，买不起最低价 600 的 `wayfarer_boots`。购买在本 tick 的经济更新前处理，因此先在 tick 9000 结束时积到 600，再于 tick 9001 得到 `accepted: true`；tick 30 的 `notEnoughGold` 是正确结果。继续到 9081 tick，核 `extension` 的总 tick 与逐 tick 比较数均为 9081、两类 mismatch 都为 0、`firstMismatch = null`，并核 `receipts.tick9001` 的扣款／items 和 tick 9002 的 W 法力／冷却变化。不要改金币、价格或内容版本凑成 600 tick 购买成功；有击杀赏金的其他输入序列另算。
+
+依据：[固定源类型](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/src/sim/types.ts)、[消费与经济实现](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/src/sim/simulation.ts)与[读者原始报告](https://github.com/dbvv1/a1dbv/blob/a5501970d0ad492e42be64f3e70b8521a77178e4/docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md)，2026-11-06 接收；[负责人接收勘误](../../docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md#负责人接收勘误)保留读者未做项。本轮修页后未另请新读者实做，9,081 tick 仍为 running；网络／浏览器／跨设备／完整终局未验，CPU 一致性不是品质提升。
+
+此前 `npm run sim` 的完整局与回放哈希一致，原 `formatVersion: 1/2` 存档可恢复并续演；新回放标记 `stable-seats-v1`，旧无标记回放仍按原输入顺序重演（2026-10-29 [源码／离线实跑]）。这份历史完整局不是上述六席序列的终局证明。冻结默认入口 `default-src` 尚未采用；本次接的是旁置版本的本地输入合同。
 
 ## 5. 给 AI 的实施材料与验收
 
