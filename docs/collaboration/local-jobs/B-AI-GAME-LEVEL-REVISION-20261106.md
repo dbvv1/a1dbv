@@ -35,4 +35,9 @@ result_branch: relay/b-ai-game-level-revision-20261106
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- explore 单元完成已定候选收集并写入 sources.md（270 行：渠道覆盖 15 行、甲级 3 项 Voltane/Solhex/时囚 BetweenTicks、乙级 29 项、丙级 50 项、排除转交 9 组、工具线索 13 组，含优先试玩 Voltane 与“可见阻挡清单＋同车同输入同机位 3 圈基线”验证法）；主入口/过程页/截图 10 个链接 curl 200，未启动游戏、浏览器或播放器。openIssues：最终事实审查 pass=false 且未再修正，4 条仍在产物中——第99行 Fallen Citadel 把文档示例坐标写成实际回写项；第110行 Fang the Fox 误称无截图原 URL、且称需站点搜索证 AI 参与（页面已写明 Opus 5.5）；第111行 Blacklight 12 秒与同晚夜报 11 秒来源不一致且未补夜报链接；第127行 Epic Survivors 把正式版 app 3553800 当成 demo（实际 demo 为 4090630）。作者身份、许可/成本、完整实玩均未核。
+- 产物：[6354141](https://github.com/dbvv1/a1dbv/commit/6354141a0509b1fe10d1e02195237aefc03c173b)，分支 `relay/b-ai-game-level-revision-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
+- 下一步：修正上述 4 条后重跑事实审查；并由负责人在获准实机环境试玩 Voltane，按 Star 现有串行拍摄规则验证固定跑圈基线，再决定是否升级为品质推荐。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
