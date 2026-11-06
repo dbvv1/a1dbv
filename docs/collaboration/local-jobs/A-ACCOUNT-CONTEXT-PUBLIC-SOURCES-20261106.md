@@ -1,7 +1,7 @@
 # A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106 · 核公开账号上下文报告
 id: A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106
 owner: dot-A
-status: running
+status: blocked
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc45e8d4a3eac99e38508a9a2327068c562bd38e
@@ -34,3 +34,7 @@ result_branch: relay/a-account-context-public-sources-20261106
 产物必须回答“现有读者下一步需要改什么，或为什么不改”，不把缺证写成未发生。记录读取 UTC 与固定版本；官方未公开实现不能填补为肯定结论。
 按文档范围运行 `python3 scripts/check_repo.py`、`python3 scripts/check_public.py` 与 `git diff --check`，另检公开提交身份；既有 build Workflow 做独立审查，最多两小时。
 模型不提交／推送；接收端仅推 result_branch，回 review_ready；关键来源不足则 blocked 并保全可核部分。不用 accept: auto，不合 main，由 dot-A 当轮判断采用、返工或放弃。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
