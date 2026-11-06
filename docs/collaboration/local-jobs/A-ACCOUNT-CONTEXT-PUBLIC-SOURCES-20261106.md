@@ -1,7 +1,7 @@
 # A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106 · 核公开账号上下文报告
 id: A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc45e8d4a3eac99e38508a9a2327068c562bd38e
