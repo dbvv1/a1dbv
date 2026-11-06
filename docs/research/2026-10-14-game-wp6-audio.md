@@ -668,3 +668,19 @@ AC-V2A的原文同时写30片段与两个数据集各10，分母矛盾，不能�
 **撤回与人机分工。** 脚本能保母版、记录参数、定位被改区及检查旧映射；听者仍要判断同源身份、起音清晰、尾音自然及连续重复是否疲劳。截短破坏事件识别时恢复母版或换合格短版，不无限重抽；需要重建整个声源时重新比较三路，而非把修补指标当放行。[研究]
 
 本轮只读论文与许可，未运行模型／引擎、未试听、未下载权重。横评演示站本次无法访问，未核其音频或代码；正文结果来自可读论文，不把演示缺失记成模型失败。合格资产率、总成本和主动工时仍未知。[研究]
+
+
+<a id="ai-game-mix-ownership"></a>
+## 两个 AI 游戏实例：并发淘汰与增益控制别混在一起
+
+2026-11-06 补核固定源码；沿已回交候选定向接收，不把运行时参数、截图或作者评分当成本仓听验。
+
+**Claude of Tanks：让位不能挽救前置声部淘汰。** [固定混音参数](https://github.com/Kevin-Liu-01/Claude-of-Tanks/blob/2cd74ad4462f0554b9ea69832c4da5cc11eb89de/src/audio/mixPolicy.ts#L88-L137)中语音使环境床降低 10 dB、world 降低 4 dB，attack/release 为 0.04/0.45 秒，桌面／移动预算 32/16。[voicePool](https://github.com/Kevin-Liu-01/Claude-of-Tanks/blob/2cd74ad4462f0554b9ea69832c4da5cc11eb89de/src/audio/voicePool.ts#L126-L146)先执行单资产实例上限，释放同资产最旧实例；之后全局抢占才保护 loop，并只淘汰 priority 不高于新音的 one-shot，同级先淘汰旧音，没有合格者就丢新音。因此不能承诺“循环永不抢占”或“重要提示都发声”。借鉴的是分开核类别／全局获准与混音可辨识，不直接复制其数值。
+
+作者公开 Creator 计划及[前两轮 86,484 credits](https://github.com/Kevin-Liu-01/Claude-of-Tanks/blob/2cd74ad4462f0554b9ea69832c4da5cc11eb89de/docs/AUDIO.md#L925-L940)，后续另记增量，不是全部项目成本，也不折算金额。[许可](https://github.com/Kevin-Liu-01/Claude-of-Tanks/blob/2cd74ad4462f0554b9ea69832c4da5cc11eb89de/LICENSE-POLICY.md)将普通运行时代码默认列 MIT，音频、生成 manifest、tools/audio 等为保留内容；本次不搬媒体或工具。
+
+**Kart Royale：持续状态与瞬态事件不要争写一个 AudioParam。** [固定 Synth](https://github.com/ryancampbell/kart-royale/blob/036c0efb025f5ecf8fc31c405e9d818c61e03e21/src/audio/Synth.ts#L160-L190)将每帧 engineSide/musicSide 与 boost 事件 engineDuck/musicDuck 串接，避免平滑更新截断事件包络。[漂移蓄力](https://github.com/ryancampbell/kart-royale/blob/036c0efb025f5ecf8fc31c405e9d818c61e03e21/src/audio/Audio.ts#L1219-L1227)时音乐的**线性衰减量**为引擎的 1.25 倍：最高档 side=0.4 对应 engine gain=0.6、music gain=0.5，平滑时间 0.09 秒；不是音乐增益 1.25×，也不是仅释放 boost 时的规则。二改可验蓄力过程中插入 boost，持续层更新不抹掉瞬态包络，取消后各层按自己的责任恢复。
+
+作者称声音运行时合成、没有音频文件，但开发费用未披露，不写零成本。[LICENSE](https://github.com/ryancampbell/kart-royale/blob/036c0efb025f5ecf8fc31c405e9d818c61e03e21/LICENSE)为 MIT、[package 元数据](https://github.com/ryancampbell/kart-royale/blob/036c0efb025f5ecf8fc31c405e9d818c61e03e21/package.json#L14)为 ISC 的冲突仍待采用前澄清。[作者复盘](https://www.ryancampbell.com/kart-royale)承认截图评审漏掉操作故障；62/100 是作者流程中的分数，不是我们的验收。
+
+本轮未启动游戏、未播放视频／音频。两者只作为制作机制对照，不新增“品质已通过”的推荐；World of ClaudeCraft 保留既有动画页对照，不重复计新候选。原稿其余未通过事实见[接收记录](../collaboration/nonstar-return-intake-20261106.md)。

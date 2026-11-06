@@ -1052,6 +1052,18 @@ Unity 包的 UCL／Unity-dependent 条件、Celeste64 代码与资产分开许�
 - [一手] [AudioClip 导入](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AudioClip.html)区分解压常驻、压缩常驻与流式，代价分别是内存、播放解码和流式缓冲／读盘；平台覆盖改变结果。[`LoadAudioData`](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/AudioClip.LoadAudioData.html)默认同步，开启 loadInBackground 才异步；未 ready 就 Play 会推迟到数据就绪。[研究] 因此瞬时反馈的“不追补过期事件”必须在调用播放器**之前**由 ready／有效期判定落实，而不是把请求先交给引擎再丢项目队列。准备期按 `loadState` 查就绪；持续声恢复时重读当前活动状态，播放结束后按资源所有权释放。
 - [研究] 首版路由和让位继续用下表的原生职责。低成本实现是少量事件配置＋已有 AudioSource／Mixer，不为每次命中建一套可视化作者工具；只有复杂事件／互动音乐的编排维护成为实测瓶颈，再比较中间件及许可。源件的定位核心、立体声宽度与混音验收沿 [WP6](2026-10-14-game-wp6-audio.md#105-unityunreal同一质量目标不同原生职责)，未把短音 mono 规范扩展到整套声音。
 
+<a id="audio-owner-identity"></a>
+### 同一个播放器重用，不是同一次播放继续
+
+2026-11-06 固定源码补核；接收已有来源稿中的下列机制，不导入完整链接清单，不新增播放器框架。仅阅读源码，未运行这些引擎或听验。
+
+- **解绑与身份校验是两道防线。** [howler `_emit`／`off`](https://github.com/goldfire/howler.js/blob/003b917c40cb41cf382ba47ae0ed7a35ca2abe76/src/howler.core.js#L1835-L1916)先捕获函数再排零延时任务，之后删监听表不能召回它；回调执行时仍核本次播放身份。测试要写清每轮注册 `once('end', fn, soundId)` 与对应 id，不能只 stop 同一声音五次就宣称产生五个旧监听。
+- **旧完成标志也会污染新播放。** [Phaser 修复](https://github.com/phaserjs/phaser/blob/2dfd421495c4fafdf385ddc7fd9a001ccafdbfc0/src/sound/webaudio/WebAudioSound.js#L416-L459)先使旧 source 身份失效再 stop，并在清理入口复位 `hasEnded`。除了迟到回调，还要独立验“A 已结束但尚未 update 时重播 B”；只给回调加 generation 不覆盖后一类错误。
+- **池节点身份不是播放身份。** GF 的[检查](https://github.com/C76GN/gf-framework/blob/d837491870e17449b3daed9c191b9d1926f45df4/addons/gf/standard/utilities/audio/gf_audio_utility.gd#L13007-L13019)同时核节点有效、节点 session 与捕获值一致、session 弱引用仍指向该节点；SFX [完成入口](https://github.com/C76GN/gf-framework/blob/d837491870e17449b3daed9c191b9d1926f45df4/addons/gf/standard/utilities/audio/gf_audio_utility.gd#L13724-L13736)通过才回收。[回收](https://github.com/C76GN/gf-framework/blob/d837491870e17449b3daed9c191b9d1926f45df4/addons/gf/standard/utilities/audio/gf_audio_utility.gd#L13236-L13259)撤退役 tween、断开 finished、失效 session，再 stop／复位／按条件回池。借责任顺序，不据此整套采用该框架。
+- **完成信号与请求释放分别核。** Godot 4.5 的 [stop_basic](https://github.com/godotengine/godot/blob/876b290332ec6f2e6d173d08162a02aa7e6ca46d/scene/audio/audio_stream_player_internal.cpp#L273-L281)不发 finished；[process](https://github.com/godotengine/godot/blob/876b290332ec6f2e6d173d08162a02aa7e6ca46d/scene/audio/audio_stream_player_internal.cpp#L63-L89)移除过已结束播放就发一次无实例参数的 finished，不能据此认定整组都结束。停止方明确收尾，多实例另存身份。FMOD 官方 one-shot 则可 [CreateInstance → start → release](https://github.com/fmod/fmod-for-unity/blob/da38d508a55f50e9d002d69619ac0f92276dd991/Assets/Plugins/FMOD/src/RuntimeManager.cs#L1260-L1266)：请求释放不是立即销毁，不能写“完全停止才能调用 release”。不要把 Web Audio、Godot 和 Unreal 合并成两种统一结束契约。
+
+未接收原稿中“FMOD 必须等待 STOPPED 才能 release”的说法、GF 浮动行号，以及把 Wwise 排除项继续当作测试依据的做法，见[审查结论](../collaboration/nonstar-return-intake-20261106.md)。
+
 ### 先做一张事件表，再选混音手段
 
 [研究] AI 从现有调用点整理每类声音的：**触发事实、实例所有者、类别／并发、目标总线、让位条件、停止条件、暂停政策**。命中跟结算结果，普通脚步不因“有声”就压低整场；机器循环跟活跃状态更新同一实例，离开状态、对象销毁／回池与切场都必须收尾。播放失败或过期的请求不应遗留背景衰减；受音频锁或加载影响的等待态与已开始播放分开处理。
@@ -1128,3 +1140,4 @@ Unity 包的 UCL／Unity-dependent 条件、Celeste64 代码与资产分开许�
 [研究] 交给 Agent 的窄二改：先列现有碰撞事实由谁生成、谁移动、哪些消费者需要一次经过／当前占据／停留时长；复用原生事件／查询，保持攻击取消、回池与唯一结算政策。验收增加薄触发区完整穿越、起始已重叠、低速正常进入及实体墙对照。这里实跑了前述Box2D六组；贴身、移动双方与技能消费仍需项目测试，不用库通过代替玩法正确。
 
 **探索回执：** 核到2026-10-23的Box2D官方release、固定两版源码／许可与任务issue、Unity／Epic官方契约；Reddit 2025近战boxcast原帖读取失败，未使用摘要，未取得近期生产作品或中文社区的可靠同题反例。当前最佳近战方案未知，本项只补已证实的静止触发区选择与事件消费边界；未扩成近战教程或新增通用框架。
+

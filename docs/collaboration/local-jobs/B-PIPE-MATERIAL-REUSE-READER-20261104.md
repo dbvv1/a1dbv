@@ -2,7 +2,7 @@
 id: B-PIPE-MATERIAL-REUSE-READER-20261104
 owner: dot-B
 kind: reader-test
-status: review_ready
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-pipe-material-reuse-reader-20261104
@@ -36,3 +36,8 @@ page: domains/game-dev/assets/materials.md@463b4b9a95a8e6eadb98b730d8aa373a05dcb
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
 - 下一步：负责人接收：将单实例绑定改为对已绑定 quiet 的 clone 不重复注入或复用现有共享材质，补真实消费者路径及两类故障下第一实例共存的验证，补跑完整构建与关闭开关回放；页面侧按 6 条 pageStuck 回原页负责人。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
+
+## 负责人接收 · 2026-11-06
+
+已接受页面卡点并[改回原页](../../../domains/game-dev/assets/materials.md#quiet-material-family)，原 helper 拒收，读者任务仍 `taskDone=false`。另以真实生产消费者定向复核两实例共享／移除及二次注入反例，相关 12/12 CPU 通过，见[接收记录](../nonstar-return-intake-20261106.md)；这不补成原四路照做通过或画面验收。恢复条件：确认原调用终态，在修订页基础明确续接差量；不自动重派、重启或重新盲读。

@@ -201,9 +201,15 @@
 
 <a id="quiet-material-family"></a>
 
-**🧪 同族材质已有可复用源时，先接入既有保护区域与消费者，不为接线重生成资源。** MOBA 的 quiet 旁置复用三张 WebP、六建筑受保护石材区与五个标准件，以 `materials=quiet-family-v1` 选择；旧 `stylized-diffuse` 公开入口退休，普通页提示后恢复默认，固定出图入口直接报错。新候选替换旧单元而非继续叠加；默认仍保原 forest 渲染。
+**🧪 同族材质已有可复用源时，先接入既有保护区域与消费者，不为接线重生成资源。** MOBA 的 quiet 旁置复用三张 WebP、六建筑受保护石材区与五个标准件，以 `materials=quiet-family-v1` 选择；旧 `stylized-diffuse` 公开入口退休，普通页提示后恢复默认，固定出图入口直接报错。替换的是材质候选，不限制同一候选内增加摆放实例；默认仍保原 forest 渲染。
 
-**接收重点包括失败后的资源归属。** 五标准件若在缺少动作 clip 等后半构造时失败，已分配的路肩几何、材质和克隆骨架仍须释放，共享 GLB 源不能一起销毁；取消也不能再启动一轮默认资产请求。真实 GLB 故障测试与非作者审查验证了这些分支。550 项测试、构建、关闭开关的同输入回放通过；浏览器默认／quiet 从零推进 653／470 tick，但均自然回退 Canvas2D，没有呈现 quiet 材质。此处接收的是复用接线与失败恢复，WebGL 材质、同机位盲评及硬件成本仍待验，已随 Site v20（26d26c7）部署，线上默认／quiet／QW 分别实际推进 432／353／513 tick；这不补成材质显示或换默认的依据。[单份验收与固定源](https://github.com/dbvv1/MOBA-Like/blob/0811894da59740bdc10e0a2318174f3dbb0530d1/docs/side-release-acceptance.md#quiet-材质已有候选重放旁置门槛通过)，2026-11-03。[案例源码／CPU／浏览器功能实测]
+**新增建筑从已准备的模板克隆，不给实例再绑一次 shader。** 固定消费者的顺序是 `loadBattleAssets` → `loadQuietFamily` → `applyQuietBuildings` → `createBattlefield`。前三步由 world 准备一次；最后的 `sync` 用 `SkeletonUtils.clone(model.scene)` 增加摆放，沿用模板已处理的几何与材质。`prepareQuietStone`／`bindQuietStone` 是模板安装的内部步骤，不是每次摆放都调用的公开入口。对已经 quiet 化的副本重做这两步，会二次串接 `onBeforeCompile`，重复 GLSL 声明和 `quiet-stone-v1` cache key。入口见固定 [world](https://github.com/dbvv1/MOBA-Like/blob/b489ed38592dc184fffe2ab9b3b186441c7dc9bb/src/render/world.ts)、[模板绑定](https://github.com/dbvv1/MOBA-Like/blob/b489ed38592dc184fffe2ab9b3b186441c7dc9bb/src/render/quiet-buildings.ts)、[实例消费者](https://github.com/dbvv1/MOBA-Like/blob/b489ed38592dc184fffe2ab9b3b186441c7dc9bb/src/render/battlefield.ts)。[固定源码／CPU 反例，2026-11-06]
+
+**释放按所有者，不按楼的数量。** 两个同模板摆放应共享同一 `material`、`geometry`、原图集 `material.map` 和 `quietWall` 对象；重新解析同一 GLB 得到的新 Texture 不能算共享。单个实例移除只停／解绑自己的 mixer、释放克隆骨架并移出场景，不 dispose 共享几何、材质或纹理。world 退出时先移除全部消费者，再由 `applyQuietBuildings.dispose()` 恢复模板、释放其克隆几何／材质，`loadQuietFamily.dispose()` 释放三张 quiet 纹理，`assets.dispose()` 释放原 GLB 资源；上述三类资源所有者及 world 清理入口幂等，不能在单楼退出时调用 world 的释放入口。
+
+**失败矩阵要分开安装前与安装后。** 第二张纹理加载失败：加载器释放已取得的第一张，返回 `undefined`，未改旧表面；销毁后第一张迟到：释放迟到纹理，不启动后两张或一轮默认资产加载。六建筑注册后半失败：逆序恢复前面已改的模板，释放本轮克隆，不释放原图集或其他所有者的纹理。五标准件构造失败还须清理本轮路肩和骨架。测试“已装好的第一楼仍活着”必须保留真实第一实例再移除第二实例，不能用从未装 quiet 的 baseline 代替。加载入口见 [quiet-family](https://github.com/dbvv1/MOBA-Like/blob/b489ed38592dc184fffe2ab9b3b186441c7dc9bb/src/render/quiet-family.ts)。
+
+**接线证据与画面分开接收。** 原 `0811894` 记录的 550 项测试、构建、关闭开关的同输入回放通过；浏览器默认／quiet 从零推进 653／470 tick，但均自然回退 Canvas2D，未呈现 quiet 材质。随 Site v20（26d26c7）部署后默认／quiet／QW 推进 432／353／513 tick，同样不补成材质显示或换默认依据。[原验收](https://github.com/dbvv1/MOBA-Like/blob/0811894da59740bdc10e0a2318174f3dbb0530d1/docs/side-release-acceptance.md#quiet-材质已有候选重放旁置门槛通过)，2026-11-03。11-06 固定 `b489ed3` 的相关 12 项 CPU 检查通过，包括生产 `createBattlefield` 两实例共用与移除、错误 helper 二次注入反例；GLB 实际解析、纹理为内存替身，仅检查 shader 字符串而非编译。原读者四路任务仍未通过，WebGL、真实 WebP 解码、同机位盲评与硬件成本待验，详见[接收记录](../../../docs/collaboration/nonstar-return-intake-20261106.md)。
 
 | 玩家需要读懂什么 | 最小可复用做法 | 何时增加；何时撤回 |
 |---|---|---|
@@ -449,3 +455,4 @@ Unity six-way lighting 将六方向光照图在运行时按场景灯光混合，
 **Substance 库材料可以合规进入游戏，不等于可以拿来训练模型。** 官方当前 2025-04-22 条款允许作为更大作品发行，禁止独立提取／分发，并限制用资产及衍生输出创建、训练、测试或改进 AI。EmberGen 试用导出也不能直接商用，须按其商业许可条件核对。[一手]
 
 **Scenario 免费输出不进发行默认。** 当前价格页仅允许免费输出作个人／评估用途；付费商用许可也不等于输入不用于训练。自助账户数据使用与具体底模政策先按条款核，再决定是否上传项目素材。[一手；账户、训练、迁移与数据使用统一见[WP8资格表](../../../docs/research/2026-10-14-game-wp8-style-consistency.md#11-阶段-f-动态资格补核)，特效生成能力仍见WP5]
+
