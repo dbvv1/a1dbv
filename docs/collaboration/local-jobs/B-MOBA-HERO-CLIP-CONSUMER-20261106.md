@@ -2,7 +2,7 @@
 id: B-MOBA-HERO-CLIP-CONSUMER-20261106
 owner: dot-B
 kind: build
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-moba-hero-clip-consumer-20261106
@@ -35,4 +35,8 @@ result_branch: relay/b-moba-hero-clip-consumer-20261106
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- Build 单元完成：新增消费者测试以已接收两阵营 GLB 为夹具，直接调用生产 createMotion/createPresentation 的 sample/inspect/dispose，验证死亡接触修正（31 个 Root key 最大误差 8.7e-8 m；61 个源采样点世界空间 body/foot 最低点与 check_contact 口径一致）、idle/walk/attack/hurt 保真（15 骨世界矩阵差 <1e-9）及 A/B/C 实例隔离（B 最终姿态与参考差 <1e-9，dispose 后源几何/材质计数为 0）；生产接口无需改源码。实测：新测试 5/5 通过；npm test 572/573 通过，唯一失败为既有无关 tests/client/audio-skill.test.ts（单跑同样失败）；npm run build exit 0；check_contact reproduce 与 tolerance 0.005 均通过，源包 unittest 32 tests OK。未运行：npm run sim、browser-smoke/GPU/音频（无相关改动或合同禁止）。openIssues：无审查遗留；默认采用/换默认、画面与死亡接地观感、heroes recipe 端口、配套出图未做，待 dot-B 判断。
+- 产物：[43af65e](https://github.com/dbvv1/MOBA-Like/commit/43af65e88598bad3ca9f9effea35902cf7bd07f8)，分支 `relay/b-moba-hero-clip-consumer-20261106`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：待负责人决定是否按 README Adoption 纳入默认（写入范围外）并安排画面/死亡接地观感的人工验收；本单元无阻塞。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
