@@ -361,10 +361,18 @@ exclude_commands = ["uv"]
 | 干预 | 保存什么 | 主要验证问题 |
 |---|---|---|
 | 跨任务记忆 | 以前任务的经验，用于新任务 | 是否真正迁移、是否污染未来任务、维护成本何时回本 |
-| 同任务压缩/观察遮蔽 | 当前轨迹的摘要或部分观察 | 约束是否仍在、缓存影响、失败轨迹是否被拖长 |
+| 同任务压缩/观察遮蔽 | 当前轨迹的摘要或部分观察 | 约束及授权来源是否仍在、缓存影响、失败轨迹是否被拖长 |
 | 新上下文恢复 | 当前代码 + 权威需求 + 恢复包 | 是否漏掉依赖、重复工作或沿用过期证据 |
 
 三者可以同时存在，不能用其中一项的收益证明另外两项有效。新上下文不等于丢弃代码和证据，数据库也可以给新上下文提供可审计事实。
+
+<a id="压缩后保留授权来源"></a>
+
+**压缩还要保留“谁说的”，不能只检查一句约束有没有留下。** Compaction Laundering v1 的固定实验中，五种把消息拍平成带角色标签文本的输入，在短合成会话里把外部内容记成了用户批准；Codex 的角色类型对照为 15/15 未出现这次洗白。这是组件级摘要结果，不是当前产品安全率。作者的真实 pi v0.79.0 受控配对演示另测到 3/6 完整执行链，不能与摘要比例混用，也未实测 Claude Code。
+
+本仓独立重数了公开判定数据，并核到 pi v1.5.0 固定源码的 `generateSummaryWithUsage()` → `serializeConversation()` 调用链：消息仍以角色标签拼接为摘要输入文本。该静态观察不等于新版产品复现。它为“外部内容不授予权限”补充了压缩环节的证据；沿用[现有恢复检查点](decisions/context-management.md#跨压缩或新会话检查点保留下一步用得上的内容)，不新增操作流程。论文未验证“读过外部内容就重开”或转义补丁的效果，不据此改变默认压缩路线。本次未运行模型或攻击载荷，真实读者接续仍待验。
+
+**依据**：[研究：原文] [Compaction Laundering v1](https://arxiv.org/html/2610.29869v1) §6、E10、E15；[公开实验代码与数据] [四回合输入](https://github.com/pixee/compaction-laundering/blob/9ce87b71301c628dfcd9232b01f1ccbdb0e67b16/code/live/run_flattening.py)、[判定数据](https://github.com/pixee/compaction-laundering/blob/9ce87b71301c628dfcd9232b01f1ccbdb0e67b16/data/live/judged_result.json)、[配对演示记录](https://github.com/pixee/compaction-laundering/blob/9ce87b71301c628dfcd9232b01f1ccbdb0e67b16/demo/README.md)；[上游固定源码，未运行] [pi 序列化](https://github.com/earendil-works/pi/blob/f9a26365568127461c47a07a37dcb42c140a3ac5/packages/coding-agent/src/core/compaction/utils.ts#L120-L155)、[摘要调用](https://github.com/earendil-works/pi/blob/f9a26365568127461c47a07a37dcb42c140a3ac5/packages/coding-agent/src/core/compaction/compaction.ts#L699-L735)；[经验] 采用判断；核实 2026-11-06。
 
 ### 4.2 有收益，也有反例：不要只记摘要结论
 
