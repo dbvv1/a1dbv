@@ -37,6 +37,9 @@ result_branch: relay/b-star-quality-capture-20261106
 按本卡既有Workflow只读独审、适用公开扫描、diff空白、noreply身份检查，只快进推结果分支后回 review_ready。任何拒绝只停相应动作并保留证据，不换入口代发。
 
 ## 当前结果
-- 11-06 04:23 UTC只读核main `39032d4`：本卡自03:28:38 UTC发布后仍ready，已超40分钟，无领取更新；目标结果分支未找到，无可读取的本卡PNG、原调用或真实退出回执。本机是否已启动/当前占用/退出均unknown，不以无远端结果证明未运行。
-- 按运行细则§3，在TASKS「分工」标出等待并请检查本机开机、登录。原Star `2b7f948`图与11-05旧MOBA `774ba28`回执不作本次运行证据；MOBA继续blocked，不重排。
-- 恢复条件：本机开机且登录后，原接收端按同一id自然领取或交回已有调用/产物回执；先依据可读证据核原调用、工具是否结清、相关资源归属与独占输出。若已有调用仅收取原结果，不重派/重启；缺证或unknown继续等待。明确被拒的同一进程核查不重发、不换渠道；合法满足串行前置后才按本卡续接，不开第二张。
+
+- 完成两档（811646e8 / 7e87d4c3）三机位双拍：12 张 1280x720 软件 WebGL2 原图，6 条 capture 命令全部 exit 0，每拍 starSideStatus space=true/power=false/warnings=[]/backend=webgl2，双拍与 150ms 静置一致；compare.mjs 通过（coast 两机位两版像素不同，academy-depth 逐像素相同作跨档回归控制），manifest/comparison/report/receiver-exit 与 41 个公开脱敏交付文件齐备。未关闭问题：后台非作者盲评与 Star 记分卡分数更新未做（任务完成条件未达成）；结果分支尚未由接收端推送。未运行验收：npm test（本卡未要求且游戏源码未改）、硬件 GPU、手感与听感。
+- 产物：[dfea2d7](https://github.com/dbvv1/Star-Rush-Reborn/commit/dfea2d75f37f5041f1c9aa004a112973517fbcb3)，分支 `relay/b-star-quality-capture-20261106`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：接收端提交并快进推结果分支后，交后台非作者对 12 张同机位图做盲评并更新 Star 记分卡；硬件画面/手感/听感进待人工验收。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
