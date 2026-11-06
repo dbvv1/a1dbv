@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-OFFLINE-READER-20261106 · 照长任务路线修门禁范围
 id: A-LONG-ROUTE-OFFLINE-READER-20261106
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8b76f7db4940cb5923438ad91275b66c1bd0a6d3
@@ -39,3 +39,11 @@ page: docs/decisions/long-tasks.md@8b76f7db4940cb5923438ad91275b66c1bd0a6d3
 模型不提交／推送；接收端扫描文件及提交身份后只推 result_branch，回 review_ready；不用 accept: auto、不合 main。普通单元通常 60–90 分钟、最多两小时，沿原恢复合同保全，不重复起始调用。
 负责人取得固定结果后在云端独立接收，重放真实依赖消费者、完整 POSIX offline 及受影响失败路径，再串行合入 main、回读精确提交与内容；这属于同一目标的后续阶段，不能在本机回合结束时宣布全部完成。
 本卡支持实做和跨环境接回证据；无自然唤醒与无人值守连续接续的真实证据，仍保持该部分待验，不以派发、接收、提交或本卡完成直接将地图标绿。
+
+## 当前结果
+
+- reader-test 本轮观察结束并交负责人接收：在固定提交 8b76f7db 上完成实现与本地可跑验收。scripts/check_offline.py 的 Shell 发现改为按精确路径分量排除 .git/node_modules，保留排序、8 个基础阶段、命令参数与空集合行为；tests/test_check_offline.py 新增 3 个回归。本地复跑 21 用例 20 通过、1 个既有 Windows os.killpg error（非本次引入）；check_repo 879 文件 errors=[]、check_public 1411 文件 findings=[]、git diff --check 均 exit 0；真实消费者 pino 9.14.0 与 thread-stream 3.2.0 旧实现 10 阶段、候选 8 阶段且基础阶段逐项一致。taskDone=true；pageStuck 4 项：reader-test 独立性未获页面例外、Windows 无法跑完整 POSIX offline（缺 /bin/bash 与 jq）、页面不含本次具体改法与边界、Git Bash 临时路径交给原生 Python 的自误已用 cygpath 恢复。未运行验收：完整 POSIX offline 预检被 BLOCKED、exit 2、零阶段，需 POSIX 环境重放。openIssues：记录把任务文件嵌入副本的行号当成页面行号（写成第 74/126 行，页面实际为第 30/82 行），引用文字与结论不受影响。未提交、未推送。
+- 产物：[fcc32b8](https://github.com/dbvv1/a1dbv/commit/fcc32b8e72096c9b7d88a132f3181f40c8472340)，分支 `relay/a-long-route-offline-reader-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人需在 POSIX/云环境重放完整 scripts/check_offline.py 全量阶段（含 jq），并决定是否修正读者记录的行号引用；本单元三份产物已在工作树，待接收端扫描后提交。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
