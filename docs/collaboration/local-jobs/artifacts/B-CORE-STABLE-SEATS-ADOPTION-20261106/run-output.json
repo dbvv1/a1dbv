@@ -1,0 +1,3818 @@
+{
+  "schema": 1,
+  "scope": "Local same-version CPU seam: two in-process Simulations consume the adopted stable-seat command envelope. No TCP/WebSocket/port/browser/Unity/UE/public-network claim.",
+  "source": {
+    "rootName": "B-MOBA-FIXED-CAPTURE-20261105",
+    "headCommit": "774ba2827c19aba7675c13f679a3e4db7793a53e",
+    "targetCommit": "7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64",
+    "targetIsAncestorOfHead": true,
+    "sourceEquivalentAtTarget": true
+  },
+  "config": {
+    "seed": 901,
+    "contentVersion": 12,
+    "heroesPerTeam": 3
+  },
+  "navigation": {
+    "bytes": 11180,
+    "sha256": "4b704a2ae42a1216f2bc9b35c88497b713b087a76e261697ae86e6445fe8a1d5",
+    "instances": 2
+  },
+  "initial": {
+    "hashA": "5c5deac80803f1ea",
+    "hashB": "5c5deac80803f1ea",
+    "equal": true,
+    "seats": [
+      {
+        "seat": 0,
+        "heroId": 9
+      },
+      {
+        "seat": 1,
+        "heroId": 10
+      },
+      {
+        "seat": 2,
+        "heroId": 11
+      },
+      {
+        "seat": 3,
+        "heroId": 12
+      },
+      {
+        "seat": 4,
+        "heroId": 13
+      },
+      {
+        "seat": 5,
+        "heroId": 14
+      }
+    ],
+    "heroIdsByTeam": [
+      [
+        "veyra",
+        "veyra",
+        "veyra"
+      ],
+      [
+        "veyra",
+        "veyra",
+        "veyra"
+      ]
+    ],
+    "maxMatchSeconds": 1200
+  },
+  "arrivalOrders": {
+    "sideA": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "sideB": [
+      5,
+      2,
+      4,
+      0,
+      3,
+      1
+    ],
+    "differingTicksInWindow": 31
+  },
+  "window600": {
+    "ticks": 600,
+    "perTickHashEqual": true,
+    "hashes": [
+      "3cdc8572c71f3b1e",
+      "2f19177b755dd380",
+      "912d41655e1f357c",
+      "f72a1b69105f01c5",
+      "2333c4ddf66f4fc1",
+      "65fae66ef41d5442",
+      "36d050976203dcc7",
+      "4543035c5925f67d",
+      "86916d3f53d64165",
+      "75ce3add84d39df9",
+      "91093b9460e77856",
+      "3d4b5c13f9760d90",
+      "0b7395c7e3a73296",
+      "060dd8adca217faf",
+      "35f62ad6e044cef0",
+      "f98744b01b2cab73",
+      "56e21795b24cb4b9",
+      "7a77f1ff6288a0a8",
+      "53869e1a955517bb",
+      "1dda4cfb582495ce",
+      "86fefbf102f1cced",
+      "dd220844eb529c63",
+      "c55eea6566556576",
+      "99b6f2e6ee15463b",
+      "db6b9a8200a1e02e",
+      "5a77e3ef877faf2b",
+      "377082225aaf04e8",
+      "c93db349a2dfbef5",
+      "71fc243380adfa75",
+      "e2952fa759dc91c1",
+      "2e0e76a3ee33e2ed",
+      "113796d38c899b8b",
+      "1423298fc962a22e",
+      "47699ee19f98ec02",
+      "2ca1b0a8142f99c5",
+      "d101c074dc0a337b",
+      "9624ef8e43cf5d64",
+      "fb6bf8cafe82f010",
+      "886b4a4cf5eceee9",
+      "e8b702c1cf7fde80",
+      "9ebf1d08b0bdbe94",
+      "173b49f2dfdf63d9",
+      "150879655c6bf4d5",
+      "7e28bcf2790cd73c",
+      "d46c833d10da9874",
+      "ef7c825c02c52657",
+      "db6528655ab3fe8e",
+      "7417af4dfe72126c",
+      "9e1a5abdf6768739",
+      "f1aca833516e4754",
+      "5c1aba095c19e77d",
+      "5d404c77fa9efe88",
+      "6fa47ae9bb4b8091",
+      "62264767513a4abc",
+      "e593bb5ed12aff2f",
+      "61619b83568662f0",
+      "38f19e1455afd811",
+      "c8e5c2a6e55b0994",
+      "ab8534fccad566b2",
+      "ca110063d453685b",
+      "3038fe22b6a77ef7",
+      "6ec26bc1d2a236a5",
+      "ae54de8c1068d8a0",
+      "5a8277da016748fd",
+      "ca85e9f010963bcd",
+      "4956590645c78a4c",
+      "e5ca3b16b83861b8",
+      "1cca52fe7bdb3494",
+      "fa848b01c40d5e4e",
+      "09753f3371b7b101",
+      "88c6dc9eb9b95ce1",
+      "8204336c3e90dbe4",
+      "cf8c4ef89e163b5f",
+      "6b55dc201e708ac4",
+      "8c3c7cc671e4adcc",
+      "9301470c737051e8",
+      "ae888b44b870d3ce",
+      "d3a86ddb8df779fb",
+      "448a0649eaed1d24",
+      "687a1160520c601f",
+      "66b74a86406a7ef6",
+      "32f4a438b7da1aca",
+      "12a7f60bb8f21385",
+      "e4dc36823f15ebff",
+      "f902c7ce85220ad8",
+      "4863bc4e39f1b982",
+      "f1ae39fa76d5e040",
+      "c3a1d0d5854de2f3",
+      "dddfabcdbd078c76",
+      "8313a953337318ce",
+      "ab0ba9e8ab20b488",
+      "ed226d4be8165aab",
+      "ac485b7acbf0163c",
+      "28b13f9c4c5fbf0b",
+      "0b5937f6b82afd8c",
+      "db12ed4b131d2910",
+      "82df4741f04483a9",
+      "7fe0d4954f8034c3",
+      "59c3ece886dea86c",
+      "d473c355cf9d0fd9",
+      "a711e6b3b7b71f9d",
+      "3dc52685745232b5",
+      "2c628ca0d56043e7",
+      "5dd772137dc908dd",
+      "a9124d29a5df903f",
+      "102c64e0f2b4565d",
+      "0be153f99240fa3b",
+      "897427ac1458d212",
+      "5600ca17b5c919ad",
+      "f6f7e9e3a8ecb8cd",
+      "6e6fc4e6a1179f2a",
+      "fe90bf78ea481ba9",
+      "f5ffd81a9922befc",
+      "b321ffdc91f4e994",
+      "7f5c5f21eacf2356",
+      "68bef32409622e3a",
+      "350605aa20ddc600",
+      "c5c0a675c25584f0",
+      "f9b53ccd7b6ab96b",
+      "da4ef1d8770099ad",
+      "8cc4b4ec2a348769",
+      "a0ebe5ed5892ccb4",
+      "15e6e8bc344979c5",
+      "e4455d42b707f42b",
+      "043ce2d359d10eb6",
+      "36bed8ac9bd67a88",
+      "dc7f7f287052a6c2",
+      "2cc59c57a8d4bd38",
+      "241142b425767af3",
+      "17606e42c1e6d66c",
+      "8f1cbb4d17524d25",
+      "d1d7259dfac701a7",
+      "a75084c9e17e9235",
+      "0efb815e705c94d9",
+      "c66c987dbaa841ae",
+      "147353971ee290ae",
+      "cacb99acd7991809",
+      "50717598dec22b30",
+      "febee878a1e64027",
+      "8fe9fa67329eda61",
+      "e60cdb85fc0f415d",
+      "b6d61870fb1d6b3d",
+      "917f56263571a63d",
+      "c186cc8f1531ab17",
+      "e4b3d5ba3d8dbfe3",
+      "5dc7e2ca29e425a2",
+      "7893fb9d909042e4",
+      "b880178cc8b74edb",
+      "ecbf010f7fad5613",
+      "075ea1f577697953",
+      "d957d3b9a05c1574",
+      "080b73e3f55b4889",
+      "23fa38c7465e9bf1",
+      "4f17a4ba087223c6",
+      "a8f8d3eeaee514dd",
+      "c8d70f654ce1a720",
+      "c04b5e2b1c597aff",
+      "a0d0dc880c187499",
+      "fb11ee135b536bf2",
+      "5208cc0aac87feee",
+      "01fc94c409b0b64f",
+      "e99e854129eff530",
+      "4abd59b097f79d8c",
+      "63fcf6def8fb772c",
+      "075f59f5b3823a12",
+      "9435bce24aa2c09d",
+      "15f73cb7dc818865",
+      "dc137b41a3d074ca",
+      "bf652f8991891692",
+      "8629306ddbf802f3",
+      "739e7e23cf11fdd6",
+      "f79becf12124a0ed",
+      "4da31872c96df5e6",
+      "c56d6e955242a7fe",
+      "65650b90df264ab1",
+      "18fc227a0cd8b284",
+      "a93e2df898e01a0f",
+      "a13efdebc2e8035b",
+      "e36bfd08c3657c7b",
+      "af014605d9b47d40",
+      "8707dd2f92326f9a",
+      "b4cd87bc93d52948",
+      "bfd27f96d8d44a33",
+      "4aea93fda5c8fc5c",
+      "a213e1aa54b10e4f",
+      "55884dd8bd7900d9",
+      "2adadec5b18588fc",
+      "494cd7977c334ef2",
+      "29b44a0596c1e1f1",
+      "dd0b87130893a9e4",
+      "bd69452f4bd83e57",
+      "301a8419b0ff4440",
+      "b166dea22bb9f1f8",
+      "9eaa458806e35706",
+      "d5342bd4e0c5cf04",
+      "0ddeb652d0d77857",
+      "27b6b6b4adabe999",
+      "8160bfcd9bde927b",
+      "03d04219bd5bdc2e",
+      "4f61df641fc4b04d",
+      "29be0686a7bf3792",
+      "1d8f9e221b0a5f58",
+      "e20a2ae51cb07d9a",
+      "dcc1bdf198583831",
+      "4111ab02e9273b0b",
+      "bc54d001fbf2575b",
+      "f8e34736d4e8be6f",
+      "bf9c290e03f5588c",
+      "47ae95a87957d637",
+      "39d2bf9d81991c26",
+      "10336103ae0c012a",
+      "d1c636529d894859",
+      "3427db7432104164",
+      "78fd850a39321f1c",
+      "02e2eb2262952a4a",
+      "72b88094344b1e85",
+      "9215ac622fbd460d",
+      "2e363023a4f5c9e8",
+      "d5ce58ca447562d8",
+      "333c7dc9b35fc79b",
+      "fdb3cc7445fcadb6",
+      "faf82a2128ea0e41",
+      "7f0ffaff8bbf574e",
+      "6373ebf3e5786149",
+      "12667a25c3fd5c87",
+      "a3befa37f282f40b",
+      "a6927a31c3e90268",
+      "a89b9f4353d0419e",
+      "37008e5cd1bd9d86",
+      "219e16b8818888ac",
+      "3f14d7ca40b2a1e0",
+      "87a3eaffe0844ca4",
+      "03dc6b16b0a403ef",
+      "7865044ce91e106b",
+      "43f627cb17041711",
+      "aae7546dae4fc0e4",
+      "fc5a4b7c86c95e41",
+      "b06de8625026ac04",
+      "809d5324f394ddc4",
+      "037d50e697e78b63",
+      "faf9b2d69bef33a7",
+      "8b20601bc548c4c2",
+      "385a90ffac6a0cd4",
+      "9276db391bde8294",
+      "f3268cf73e56947c",
+      "03b850f3b4090193",
+      "33dd88c76b1bb64c",
+      "3ecd047ad5f64f54",
+      "b832c2074205cef7",
+      "16ff28c3e81b61c6",
+      "c9ca4a271d4f017d",
+      "d8948734b6eb263e",
+      "cac157d30c7ca178",
+      "c44e18a12ce074c0",
+      "096d81f4c172b677",
+      "69b9731f5e18b338",
+      "1df44202d33a7af3",
+      "789377553b4a25ab",
+      "e8f6fd1e64c97b7a",
+      "250f46828aee788a",
+      "e4bdcad20fc94335",
+      "f37ea3a7c16ccf91",
+      "7fc3219677c0da48",
+      "2c90284327c64009",
+      "6e3864924d452615",
+      "a5586de672a55050",
+      "8ac238e18475be81",
+      "90a2c2d2ce6ae598",
+      "2261eac2e726a8d4",
+      "07198649d1add5ad",
+      "eb584dfef497d6ae",
+      "618b3af97b8ee63e",
+      "d0c67215762f0f5a",
+      "9c304c715c1c4ef5",
+      "26f78eb34e6b37a5",
+      "52a777c588f7786d",
+      "0a4097d255329056",
+      "afa8fbd5acaf6166",
+      "743de44d79466c0a",
+      "2e102ffefa6f84a8",
+      "ca2ed83b2ee4911d",
+      "ca1e0cd4e319cc08",
+      "6cf03e8ed41d4155",
+      "b0c7e5c1348fc824",
+      "33f31e7bca8fd46a",
+      "37e0f8b9f1fbc85b",
+      "6e93da8df51977d8",
+      "5efd1d866a2c9888",
+      "8fa155bd444d7a2d",
+      "e4c97018d059fb60",
+      "47b0003153765eb1",
+      "a3192eeabe10faa4",
+      "130b731f811767f2",
+      "b9f75c6e3432e5cf",
+      "0218fa9d28a0fba2",
+      "dfb1e1b488114d59",
+      "e2807c2d9de8cb07",
+      "2992cf64afc73d7e",
+      "9654ec14ceb8e0ea",
+      "7b21df62e6126ee8",
+      "07608eb5aa7587af",
+      "9bb6b909a87a8fa3",
+      "8f33f576f1f430e5",
+      "5d145b996690c608",
+      "620db412f31da2fc",
+      "1c89de14a2646840",
+      "9b90e590d5546d7b",
+      "cdd66390b029e8c3",
+      "fdb07157450764cb",
+      "460229a844007222",
+      "4407a0888d05d9b9",
+      "2664756a4ff2749e",
+      "150d339a569e94c8",
+      "c8db090878b4a308",
+      "40fbe1334aeebd5f",
+      "1dcffde559fbb0b7",
+      "a714c79ceb73bdcd",
+      "5eced8398c346816",
+      "fa4a91dc13e3ba1b",
+      "f65b67ff74e74250",
+      "ecd90ae71c0bebf4",
+      "887eb81847658d20",
+      "131c42c010828178",
+      "a910f1e0b3d0165d",
+      "d3561285941832b3",
+      "6039655b7209821d",
+      "520542440ff29889",
+      "55079fc69b45455c",
+      "f83ffd0332f82477",
+      "501755c415184a7d",
+      "23697aebb50e6f61",
+      "0f183b4e32dca2cb",
+      "46d3551f7376c426",
+      "e223729f4ad1f265",
+      "9b0cd821576790d7",
+      "616c6b0627f22fe0",
+      "323c9aae2aeb7175",
+      "546fdbb8f8b1156b",
+      "766dd3f3eefd100d",
+      "1c7af2d6687c8026",
+      "8c1eef233e618945",
+      "48b0766c55ac8ad6",
+      "9a0c129c87e2a2ce",
+      "9e0b6d6e65ba7d32",
+      "d626c59fe4a6f623",
+      "809a9cc1f154799b",
+      "c5c0632ee2cd1e4c",
+      "b521a381520bea75",
+      "d68d9f3b2528a16e",
+      "a399e86e3a09f54e",
+      "9449266ed58167b6",
+      "00dadfbbe5f44ebf",
+      "07c9c69740be5b03",
+      "4220838e7d713980",
+      "d3f1138d2016ade9",
+      "628dc3a4e316c7da",
+      "9021000fdd6ed56d",
+      "ab51ca29cd0f23c0",
+      "f9767bc92b33b414",
+      "7db442d4842c14ae",
+      "dd583171ba64b679",
+      "00f153016437ff22",
+      "cada2a5519678448",
+      "78405060ef439ec3",
+      "ccc2b48364ec417e",
+      "cae9fa2d2d4ade6d",
+      "9eb678dbd5008e06",
+      "761d21ba554dc278",
+      "35a87be7bff21eb3",
+      "df1a7b1db5a0798b",
+      "cc18ed993e36756d",
+      "a1154244f6a93807",
+      "013bced58ca954e0",
+      "5a509130707c5e85",
+      "91ec460d5258aeae",
+      "1e92815eeadb8532",
+      "c99e00e770a07fa7",
+      "55e0e845e4323ccb",
+      "022ebe2f94621d09",
+      "8b7bb6e708ce5152",
+      "6af8fd9f8f3d2bb8",
+      "eb44ce7e46cd53f0",
+      "369011b827034a28",
+      "4dc359cc3afe3d79",
+      "8e4c21a6482a960d",
+      "796fba3fcd4f2239",
+      "1253bd4bdf289c4f",
+      "90bdf33385c9dd6d",
+      "60a128afb103c8a8",
+      "5050c998da92199c",
+      "5ed76dace40c1f65",
+      "72877b39d77d2601",
+      "4f50d8aae77a9641",
+      "3b60cdfd4c9dc428",
+      "bbc23a3760e3df81",
+      "4b971a91ce27963d",
+      "4ff080699e8cdfc1",
+      "2a45512a1ccbf7f7",
+      "3cd2bfca50f2bf4d",
+      "f8180a8ced3460c7",
+      "e89b8b53dd8be5d9",
+      "04842103e79e1feb",
+      "3b974d798437bbc8",
+      "1dead2fc29c9ff80",
+      "87bdde44c475a52a",
+      "44b36978212ef7b0",
+      "46ba9c076dc500fa",
+      "bc6b38208495b93b",
+      "5334008cd523ca36",
+      "33abd81cb23e0f21",
+      "612e6d72aea40a5f",
+      "2c3e699ed6276057",
+      "05b92ca92b278f79",
+      "6767b15db4e6bec0",
+      "185241c1d0e84a9e",
+      "9b4f01cc22078df7",
+      "38f29fff423b5ed6",
+      "b6587cc335df5f5f",
+      "aec421140ff2ca14",
+      "261aa39472a3a403",
+      "1d7d23ff0fa8d485",
+      "a7f96b7425fbf43d",
+      "bb5399cbf3eb6b7c",
+      "98cf7bd2cda95aad",
+      "14edb0d2d4cd584f",
+      "cbca2285548f5dd1",
+      "e520ff3d257c117f",
+      "941d7f8dc845cfef",
+      "ca201445cc8b7fbe",
+      "a1ea391493327ddf",
+      "bea94ff080506fc0",
+      "264c3ff554d90e33",
+      "745175195f6e2a33",
+      "a02c58eea1bb6045",
+      "3ab4818f2d4ac7fc",
+      "38a711a1eb7026e3",
+      "18c663bab52f09f0",
+      "393e667d1276ff20",
+      "b5ceb836762c79cf",
+      "8025f1dad0feffff",
+      "8764353da1ab878b",
+      "3e59e38c805c4b59",
+      "149bd7540ff25292",
+      "bf4805239a168c4a",
+      "5c64d57669369278",
+      "3506eee6047a2e5c",
+      "14d558766d6bcb7f",
+      "1528f87e8da4a208",
+      "1dcd0b47f8db6d46",
+      "e8ae3e8d3c533978",
+      "b8ea3d39bbde0613",
+      "b3ce5d2ec92c1f53",
+      "06de6b116bafb766",
+      "7da8f71eea6ef5ed",
+      "d490df693ebfcccd",
+      "89842769f672c835",
+      "283851af8f17666d",
+      "fe65ae04eb9a9700",
+      "061b086e8e6c9fba",
+      "74998c62c6d4aa48",
+      "69b69c3ef8f5c931",
+      "dca1b8a9be708766",
+      "83335eccd1397a1b",
+      "be6b93e13828098d",
+      "e1c41bc3b2f76ae3",
+      "9b2ebdff4cee3fd7",
+      "1d1213379550b2a4",
+      "0192be9228a7da5b",
+      "e60989d3d8883e50",
+      "21f1e7c13c9295a7",
+      "b17111fb235f459d",
+      "e95cf30662c1da01",
+      "689804a2525b96b2",
+      "6a2a00708dd30262",
+      "63f3cac917a6b2c1",
+      "57ca62cae52111ce",
+      "debcf043ea61ae26",
+      "a4a8e63e39d154f5",
+      "41b623a492884c7d",
+      "c73ad696feb82ea5",
+      "18fda7099955da3c",
+      "d179bf0df7b38018",
+      "d7220793bc388d00",
+      "8d6df97223db4ec5",
+      "ca75de04b3e21255",
+      "55c2adbd2f022c9f",
+      "d5c30063f0afdbdc",
+      "2b899abd05766222",
+      "daf724e7c1bf813d",
+      "9c6c711961af3779",
+      "af8f066bf9dfbb0e",
+      "e7d5fc20b2c89feb",
+      "cb22afa29de8395f",
+      "f166cf677f958d97",
+      "d000c3f1ab19e02b",
+      "bb78e1cf8890be71",
+      "68f835488cdd4d5f",
+      "a1d086fc112dfb1e",
+      "cdfbbc1bd0bc44a3",
+      "57ff938a229d0e4a",
+      "a29be601b1d75db9",
+      "192a5922bbc8e516",
+      "34cd0b2bdf57d940",
+      "660b2f25c6cdac70",
+      "efd89528d55c8052",
+      "3cd13d7a2c7d6690",
+      "3349aa12d92703ea",
+      "15a332e01453fd03",
+      "d3151a99e7600d5f",
+      "49119a8393a82ec8",
+      "c6584180799fb72f",
+      "2a7a00bf1d33a8c2",
+      "891dbf86342d5960",
+      "b9fdd369be9d6f7e",
+      "0deabceb61be2958",
+      "3324e42cd39ad1bb",
+      "0817222782ba4c5b",
+      "4e1bd7295d52e34b",
+      "482abaf3f096ca92",
+      "0cb682c768f19eb5",
+      "bd03beec6251611b",
+      "e8f49de36cc7bb1b",
+      "7cfa636752f42ede",
+      "17f71a26b36aecbf",
+      "968afc7ba2fb073c",
+      "d22368a02c864b6b",
+      "d188517c5feee7c3",
+      "7640cc16d065e90b",
+      "ef60f9f19c886dd8",
+      "3a399bc38445162f",
+      "bbb57ff99adcc8ab",
+      "f9003ce73dbc54bd",
+      "06ac981080f2db48",
+      "deb337f6c7b204a4",
+      "90af529ecbc03590",
+      "d3d5c72345dcb985",
+      "f984f638253b9f6a",
+      "5bd3250a65a5a99c",
+      "9ef1440c44f8b094",
+      "640fc09871b81800",
+      "bc6eb82b893e5ab0",
+      "060369c5ccc471c8",
+      "f4e81473c45cbb63",
+      "4fb00fee3bdcd401",
+      "4115e53074c722d8",
+      "38879ac91b7bf9cd",
+      "8cb71108c437321e",
+      "8678f5c828a0fe01",
+      "9f4a8699896a6a16",
+      "4344e5f64216df12",
+      "ce7701eccd302d0a",
+      "2f48091540ee80dd",
+      "37446e96fb445e9a",
+      "e7c9373272e8e296",
+      "217ccee5e31dfaa6",
+      "cad116e32ed8eea0",
+      "8705ee86df297fe0",
+      "aac2a0ab0097fc37",
+      "0d2be4bf7a1449eb",
+      "7d6074ba1dd60bc1",
+      "ad204458e30af879",
+      "9a3859ce5bd1c522",
+      "a0797b3135806fab",
+      "16278cecdac04bd4",
+      "9eecc238cb45c865",
+      "855bc63c1926cac9",
+      "15a254ad68890b2a",
+      "151af6b422e44bda",
+      "4d7c1d3e189d2b00",
+      "5f03ec5920747445",
+      "589f2dbb2836a3ff",
+      "0751e258f9204ce9",
+      "2465fd27af39af0b",
+      "cffc00572b55bf94",
+      "0c297817fe84c85d",
+      "027afb0e47d37161",
+      "ceb94daaecd1e6d2",
+      "d91f81b0fbbcc4c0",
+      "5c412c07f2268d3d",
+      "807e342ea6eedd15",
+      "37ca3484a343d9a4",
+      "1e36c5a098ce3100",
+      "7e3b68b0ea932033",
+      "1c55c9e42b9a6fdf",
+      "9c88a1df45167305",
+      "68a020546e198a8f",
+      "2bfdea6e7739c918",
+      "cd48a0df6f3260c4",
+      "8f50409d2ac6e95b",
+      "fbbe20d0b970c268",
+      "416d0db4bdf61df1",
+      "56f2478195edcf63",
+      "d062e4ccb0d7cb39",
+      "81f77044c7bfb020",
+      "57e26fb4bebcfa23",
+      "3f86a22de196341c",
+      "a58f6e8170586021",
+      "8aabac72935f9742",
+      "60b1c4c77db6e1b9",
+      "2a26c90e64796231"
+    ],
+    "emptySeatTicks": [
+      100,
+      129
+    ]
+  },
+  "extension": {
+    "totalTicksRun": 9081,
+    "perTickCompareTicks": 9081,
+    "hashMismatches": 0,
+    "resultsMismatches": 0,
+    "firstMismatch": null,
+    "checkpoints": [
+      {
+        "tick": 600,
+        "hash": "2a26c90e64796231",
+        "status": "running",
+        "gold": 40.000000000000306
+      },
+      {
+        "tick": 1200,
+        "hash": "40d6653159212097",
+        "status": "running",
+        "gold": 80.00000000000058
+      },
+      {
+        "tick": 1800,
+        "hash": "da6ed544c697ec7e",
+        "status": "running",
+        "gold": 119.99999999999831
+      },
+      {
+        "tick": 2400,
+        "hash": "7eb993ab850aa446",
+        "status": "running",
+        "gold": 159.99999999999605
+      },
+      {
+        "tick": 3000,
+        "hash": "63a5297c9c9b4655",
+        "status": "running",
+        "gold": 199.99999999999378
+      },
+      {
+        "tick": 3600,
+        "hash": "c9784f55ef5fb423",
+        "status": "running",
+        "gold": 239.9999999999915
+      },
+      {
+        "tick": 4200,
+        "hash": "9db15d6f25719fae",
+        "status": "running",
+        "gold": 279.99999999998926
+      },
+      {
+        "tick": 4800,
+        "hash": "e64ac71e1187eceb",
+        "status": "running",
+        "gold": 319.999999999987
+      },
+      {
+        "tick": 5400,
+        "hash": "ea4e61307b06918b",
+        "status": "running",
+        "gold": 359.9999999999847
+      },
+      {
+        "tick": 6000,
+        "hash": "4e2d9f20a6c0e9d5",
+        "status": "running",
+        "gold": 399.99999999998244
+      },
+      {
+        "tick": 6600,
+        "hash": "f58fbedc32cd69f1",
+        "status": "running",
+        "gold": 439.99999999998016
+      },
+      {
+        "tick": 7200,
+        "hash": "57c3b1789a40bb23",
+        "status": "running",
+        "gold": 479.9999999999779
+      },
+      {
+        "tick": 7800,
+        "hash": "f9327f72f8390345",
+        "status": "running",
+        "gold": 519.9999999999824
+      },
+      {
+        "tick": 8400,
+        "hash": "bb70d214c297fcc5",
+        "status": "running",
+        "gold": 560.0000000000142
+      },
+      {
+        "tick": 9000,
+        "hash": "16267b5d47319a47",
+        "status": "running",
+        "gold": 600.000000000046
+      },
+      {
+        "tick": 9081,
+        "hash": "69a022fd8772aa0c",
+        "status": "running",
+        "gold": 5.400000000046044
+      }
+    ],
+    "purchaseTick": 9001
+  },
+  "snapshotEquality": {
+    "tick600FullSnapshotJsonEqual": true,
+    "tick600HashA": "2a26c90e64796231"
+  },
+  "receipts": {
+    "tick5": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -93.38322840929598,
+            "z": 0.8731591567041522
+          },
+          "mana": 330,
+          "gold": 0.26666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -91.5,
+            "z": 0
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -93.35576835984367,
+            "z": -2.073798407062573
+          },
+          "mana": 330,
+          "gold": 0.26666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -95.19088744631159,
+            "z": 3.334760243590827
+          },
+          "mana": 330,
+          "gold": 0.26666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 93.5346403216383,
+            "z": -1.2349020180133223
+          },
+          "mana": 330,
+          "gold": 0.26666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.26666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 95.08063823251564,
+            "z": -3.9608882725856964
+          },
+          "mana": 330,
+          "gold": 0.26666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 10,
+            "slot": "W",
+            "targetId": null,
+            "direction": null,
+            "point": null
+          },
+          "accepted": false,
+          "reason": "directionRequired"
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -93.17154162538492,
+            "z": 0.7750105450897503
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -91.5,
+            "z": 0
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -93.35576835984367,
+            "z": -2.073798407062573
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -94.98860930788949,
+            "z": 3.2184503164094624
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 93.5346403216383,
+            "z": -1.2349020180133223
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 94.85079779064455,
+            "z": -4.00111035265305
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ]
+    },
+    "tick6": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -93.17154162538492,
+            "z": 0.7750105450897503
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -91.5,
+            "z": 0
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -93.35576835984367,
+            "z": -2.073798407062573
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -94.98860930788949,
+            "z": 3.2184503164094624
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 93.5346403216383,
+            "z": -1.2349020180133223
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 94.85079779064455,
+            "z": -4.00111035265305
+          },
+          "mana": 330,
+          "gold": 0.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 10,
+            "slot": "W",
+            "targetId": null,
+            "direction": {
+              "x": 1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": true,
+          "reason": null
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -92.95985484147386,
+            "z": 0.6768619334753485
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -91.5,
+            "z": 0
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 300.26666666666665,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 239,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -94.78633116946739,
+            "z": 3.102140389228098
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 93.5346403216383,
+            "z": -1.2349020180133223
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 94.62095734877346,
+            "z": -4.041332432720402
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ]
+    },
+    "tick7": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -92.95985484147386,
+            "z": 0.6768619334753485
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -91.5,
+            "z": 0
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 300.26666666666665,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 239,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -94.78633116946739,
+            "z": 3.102140389228098
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 93.5346403216383,
+            "z": -1.2349020180133223
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 94.62095734877346,
+            "z": -4.041332432720402
+          },
+          "mana": 330,
+          "gold": 0.39999999999999997,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 10,
+            "slot": "W",
+            "targetId": null,
+            "direction": {
+              "x": 1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": false,
+          "reason": "cooldown"
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -92.7481680575628,
+            "z": 0.5787133218609468
+          },
+          "mana": 330,
+          "gold": 0.4666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -91.5,
+            "z": 0
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 300.5333333333333,
+          "gold": 0.4666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 238,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -94.58405303104529,
+            "z": 2.9858304620467337
+          },
+          "mana": 330,
+          "gold": 0.4666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 93.5346403216383,
+            "z": -1.2349020180133223
+          },
+          "mana": 330,
+          "gold": 0.4666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.4666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 94.39111690690237,
+            "z": -4.081554512787755
+          },
+          "mana": 330,
+          "gold": 0.4666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ]
+    },
+    "tick11": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -92.1131077058296,
+            "z": 0.2842674870177425
+          },
+          "mana": 330,
+          "gold": 0.6666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -91.5,
+            "z": 0
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 301.33333333333326,
+          "gold": 0.6666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 235,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.97721861577898,
+            "z": 2.63690068050264
+          },
+          "mana": 330,
+          "gold": 0.6666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 93.5346403216383,
+            "z": -1.2349020180133223
+          },
+          "mana": 330,
+          "gold": 0.6666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.6666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.7015955812891,
+            "z": -4.202220752989813
+          },
+          "mana": 330,
+          "gold": 0.6666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 9,
+            "slot": "W",
+            "targetId": null,
+            "direction": {
+              "x": 1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": true,
+          "reason": null
+        },
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 12,
+            "slot": "W",
+            "targetId": null,
+            "direction": {
+              "x": -1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": true,
+          "reason": null
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -85.11310577392578,
+            "z": 0.28426748514175415
+          },
+          "mana": 300.26666666666665,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 239,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 301.5999999999999,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 234,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.77494047735688,
+            "z": 2.520590753321275
+          },
+          "mana": 330,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 300.26666666666665,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 239,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.47175513941801,
+            "z": -4.242442833057166
+          },
+          "mana": 330,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ]
+    },
+    "tick12": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -85.11310577392578,
+            "z": 0.28426748514175415
+          },
+          "mana": 300.26666666666665,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 239,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 301.5999999999999,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 234,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.77494047735688,
+            "z": 2.520590753321275
+          },
+          "mana": 330,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 300.26666666666665,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 239,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.47175513941801,
+            "z": -4.242442833057166
+          },
+          "mana": 330,
+          "gold": 0.7333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 9,
+            "slot": "W",
+            "targetId": null,
+            "direction": {
+              "x": 1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": false,
+          "reason": "cooldown"
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -85.11310577392578,
+            "z": 0.28426748514175415
+          },
+          "mana": 300.5333333333333,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 238,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 301.86666666666656,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 233,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.57266233893478,
+            "z": 2.4042808261399102
+          },
+          "mana": 330,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 300.5333333333333,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 238,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.24191469754692,
+            "z": -4.282664913124518
+          },
+          "mana": 330,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ]
+    },
+    "tick13": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -85.11310577392578,
+            "z": 0.28426748514175415
+          },
+          "mana": 300.5333333333333,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 238,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 301.86666666666656,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 233,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.57266233893478,
+            "z": 2.4042808261399102
+          },
+          "mana": 330,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -92,
+            "z": 1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 300.5333333333333,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 238,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.24191469754692,
+            "z": -4.282664913124518
+          },
+          "mana": 330,
+          "gold": 0.7999999999999999,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": 92,
+            "z": -4.5
+          },
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 11,
+            "slot": "Q",
+            "targetId": null,
+            "direction": {
+              "x": 1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": true,
+          "reason": null
+        },
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 14,
+            "slot": "Q",
+            "targetId": null,
+            "direction": {
+              "x": -1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": true,
+          "reason": null
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -85.11310577392578,
+            "z": 0.28426748514175415
+          },
+          "mana": 300.79999999999995,
+          "gold": 0.8666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 237,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 302.1333333333332,
+          "gold": 0.8666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 232,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.57266233893478,
+            "z": 2.4042808261399102
+          },
+          "mana": 290.26666666666665,
+          "gold": 0.8666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 134,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": "Q"
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 300.79999999999995,
+          "gold": 0.8666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 237,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 0.8666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.24191469754692,
+            "z": -4.282664913124518
+          },
+          "mana": 290.26666666666665,
+          "gold": 0.8666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 134,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": "Q"
+        }
+      ]
+    },
+    "tick20": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -85.11310577392578,
+            "z": 0.28426748514175415
+          },
+          "mana": 302.39999999999986,
+          "gold": 1.2666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 231,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 303.7333333333331,
+          "gold": 1.2666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 226,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.57266233893478,
+            "z": 2.4042808261399102
+          },
+          "mana": 291.86666666666656,
+          "gold": 1.2666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 128,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 302.39999999999986,
+          "gold": 1.2666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 231,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 330,
+          "gold": 1.2666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.24191469754692,
+            "z": -4.282664913124518
+          },
+          "mana": 291.86666666666656,
+          "gold": 1.2666666666666666,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 128,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "move",
+            "heroId": 9,
+            "point": {
+              "x": -88.5,
+              "z": -1.5
+            }
+          },
+          "accepted": true,
+          "reason": null
+        },
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 13,
+            "slot": "Q",
+            "targetId": null,
+            "direction": {
+              "x": -1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": true,
+          "reason": null
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -85.319544182146,
+            "z": 0.17551258614430104
+          },
+          "mana": 302.6666666666665,
+          "gold": 1.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 230,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -88.5,
+            "z": -1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 303.9999999999998,
+          "gold": 1.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 225,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.57266233893478,
+            "z": 2.4042808261399102
+          },
+          "mana": 292.1333333333332,
+          "gold": 1.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 127,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 302.6666666666665,
+          "gold": 1.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 230,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 290.26666666666665,
+          "gold": 1.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 134,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": "Q"
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.24191469754692,
+            "z": -4.282664913124518
+          },
+          "mana": 292.1333333333332,
+          "gold": 1.3333333333333333,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 127,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        }
+      ]
+    },
+    "tick30": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -87.177489856128,
+            "z": -0.8032815048327808
+          },
+          "mana": 305.0666666666664,
+          "gold": 1.9333333333333331,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 221,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -88.5,
+            "z": -1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 306.39999999999964,
+          "gold": 1.9333333333333331,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 216,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.57266233893478,
+            "z": 2.4042808261399102
+          },
+          "mana": 294.5333333333331,
+          "gold": 1.9333333333333331,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 118,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 305.0666666666664,
+          "gold": 1.9333333333333331,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 221,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 292.6666666666665,
+          "gold": 1.9333333333333331,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 125,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.24191469754692,
+            "z": -4.282664913124518
+          },
+          "mana": 294.5333333333331,
+          "gold": 1.9333333333333331,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 118,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "buyItem",
+            "heroId": 9,
+            "itemId": "wayfarer_boots"
+          },
+          "accepted": false,
+          "reason": "notEnoughGold"
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -87.38392826434823,
+            "z": -0.912036403830235
+          },
+          "mana": 305.33333333333303,
+          "gold": 1.9999999999999998,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 220,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": {
+            "x": -88.5,
+            "z": -1.5
+          },
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -86.35576629638672,
+            "z": -2.073798418045044
+          },
+          "mana": 306.6666666666663,
+          "gold": 1.9999999999999998,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 215,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -93.57266233893478,
+            "z": 2.4042808261399102
+          },
+          "mana": 294.7999999999997,
+          "gold": 1.9999999999999998,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 117,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 86.53463745117188,
+            "z": -1.234902024269104
+          },
+          "mana": 305.33333333333303,
+          "gold": 1.9999999999999998,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 220,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 93.3342761495555,
+            "z": 1.583639708857876
+          },
+          "mana": 292.93333333333317,
+          "gold": 1.9999999999999998,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 124,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 93.24191469754692,
+            "z": -4.282664913124518
+          },
+          "mana": 294.7999999999997,
+          "gold": 1.9999999999999998,
+          "hp": 720,
+          "maxHp": 720,
+          "items": [],
+          "cooldowns": {
+            "Q": 117,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        }
+      ]
+    },
+    "tick9001": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -91.5,
+            "z": 1.5
+          },
+          "mana": 414,
+          "gold": 600.000000000046,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -90,
+            "z": -0.5
+          },
+          "mana": 414,
+          "gold": 600.000000000046,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -90.5,
+            "z": 4.5
+          },
+          "mana": 414,
+          "gold": 600.000000000046,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 88.5,
+            "z": -1.5
+          },
+          "mana": 414,
+          "gold": 600.000000000046,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 91.5,
+            "z": 0.5
+          },
+          "mana": 414,
+          "gold": 600.000000000046,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 92,
+            "z": -3
+          },
+          "mana": 414,
+          "gold": 600.000000000046,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "buyItem",
+            "heroId": 9,
+            "itemId": "wayfarer_boots"
+          },
+          "accepted": true,
+          "reason": null
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -91.5,
+            "z": 1.5
+          },
+          "mana": 414,
+          "gold": 0.06666666671270984,
+          "hp": 1054,
+          "maxHp": 1054,
+          "items": [
+            "wayfarer_boots"
+          ],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -90,
+            "z": -0.5
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -90.5,
+            "z": 4.5
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 88.5,
+            "z": -1.5
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 91.5,
+            "z": 0.5
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 92,
+            "z": -3
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        }
+      ]
+    },
+    "tick9002": {
+      "before": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -91.5,
+            "z": 1.5
+          },
+          "mana": 414,
+          "gold": 0.06666666671270984,
+          "hp": 1054,
+          "maxHp": 1054,
+          "items": [
+            "wayfarer_boots"
+          ],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -90,
+            "z": -0.5
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -90.5,
+            "z": 4.5
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 88.5,
+            "z": -1.5
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 91.5,
+            "z": 0.5
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 92,
+            "z": -3
+          },
+          "mana": 414,
+          "gold": 600.0666666667128,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        }
+      ],
+      "results": [
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 9,
+            "slot": "W",
+            "targetId": null,
+            "direction": {
+              "x": 1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": true,
+          "reason": null
+        },
+        {
+          "command": {
+            "type": "cast",
+            "heroId": 12,
+            "slot": "W",
+            "targetId": null,
+            "direction": {
+              "x": -1,
+              "z": 0
+            },
+            "point": null
+          },
+          "accepted": true,
+          "reason": null
+        }
+      ],
+      "after": [
+        {
+          "seat": 0,
+          "heroId": 9,
+          "position": {
+            "x": -84.5,
+            "z": 1.5
+          },
+          "mana": 384.26666666666665,
+          "gold": 0.1333333333793765,
+          "hp": 1054,
+          "maxHp": 1054,
+          "items": [
+            "wayfarer_boots"
+          ],
+          "cooldowns": {
+            "Q": 0,
+            "W": 218,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 1,
+          "heroId": 10,
+          "position": {
+            "x": -90,
+            "z": -0.5
+          },
+          "mana": 414,
+          "gold": 600.1333333333795,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 2,
+          "heroId": 11,
+          "position": {
+            "x": -90.5,
+            "z": 4.5
+          },
+          "mana": 414,
+          "gold": 600.1333333333795,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 3,
+          "heroId": 12,
+          "position": {
+            "x": 81.5,
+            "z": -1.5
+          },
+          "mana": 384.26666666666665,
+          "gold": 600.1333333333795,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 239,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 4,
+          "heroId": 13,
+          "position": {
+            "x": 91.5,
+            "z": 0.5
+          },
+          "mana": 414,
+          "gold": 600.1333333333795,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        },
+        {
+          "seat": 5,
+          "heroId": 14,
+          "position": {
+            "x": 92,
+            "z": -3
+          },
+          "mana": 414,
+          "gold": 600.1333333333795,
+          "hp": 954,
+          "maxHp": 954,
+          "items": [],
+          "cooldowns": {
+            "Q": 0,
+            "W": 0,
+            "E": 0,
+            "R": 0
+          },
+          "moveGoal": null,
+          "castSlot": null
+        }
+      ]
+    }
+  },
+  "failureProbes": {
+    "probes": [
+      {
+        "name": "conflicting same-seat retry",
+        "expectedFragment": "conflicting input retry",
+        "actualMessage": "conflicting input retry",
+        "hashUnchanged": true,
+        "tickUnchanged": true,
+        "pass": true
+      },
+      {
+        "name": "wrong heroId for seat",
+        "expectedFragment": "input does not own this hero",
+        "actualMessage": "input does not own this hero",
+        "hashUnchanged": true,
+        "tickUnchanged": true,
+        "pass": true
+      },
+      {
+        "name": "missing seat",
+        "expectedFragment": "missing input seat",
+        "actualMessage": "missing input seat (send explicit empty commands)",
+        "hashUnchanged": true,
+        "tickUnchanged": true,
+        "pass": true
+      },
+      {
+        "name": "current tick (old frame)",
+        "expectedFragment": "input tick is not the next simulation tick",
+        "actualMessage": "input tick is not the next simulation tick",
+        "hashUnchanged": true,
+        "tickUnchanged": true,
+        "pass": true
+      },
+      {
+        "name": "future tick",
+        "expectedFragment": "input tick is not the next simulation tick",
+        "actualMessage": "input tick is not the next simulation tick",
+        "hashUnchanged": true,
+        "tickUnchanged": true,
+        "pass": true
+      },
+      {
+        "name": "extra gameplay field (mana override)",
+        "expectedFragment": "malformed frame command",
+        "actualMessage": "malformed frame command",
+        "hashUnchanged": true,
+        "tickUnchanged": true,
+        "pass": true
+      },
+      {
+        "name": "out-of-range seat",
+        "expectedFragment": "invalid input seat",
+        "actualMessage": "invalid input seat",
+        "hashUnchanged": true,
+        "tickUnchanged": true,
+        "pass": true
+      }
+    ],
+    "allPass": true,
+    "validFrameAfterProbesAdvanced": true,
+    "validFrameResultCount": 0
+  },
+  "dedupe": {
+    "duplicateSeat": 0,
+    "duplicateWasIdentical": true,
+    "resultCountWithDuplicate": 1,
+    "resultCountControl": 1,
+    "hashEqual": true,
+    "resultsEqual": true,
+    "manaBefore": 330,
+    "manaAfter": 300.26666666666665,
+    "cooldownW": 239,
+    "pass": true
+  },
+  "orderControl": {
+    "moveThenStopHash": "2f19177b755dd380",
+    "stopThenMoveHash": "438e4c3e88c25c8c",
+    "differ": true
+  },
+  "final": {
+    "tick": 9081,
+    "status": "running",
+    "winner": null,
+    "endReason": "running",
+    "hashA": "69a022fd8772aa0c",
+    "hashB": "69a022fd8772aa0c",
+    "equal": true,
+    "hero0": {
+      "seat": 0,
+      "heroId": 9,
+      "position": {
+        "x": -84.5,
+        "z": 1.5
+      },
+      "mana": 405.3333333333321,
+      "gold": 5.400000000046044,
+      "hp": 1054,
+      "maxHp": 1054,
+      "items": [
+        "wayfarer_boots"
+      ],
+      "cooldowns": {
+        "Q": 0,
+        "W": 139,
+        "E": 0,
+        "R": 0
+      },
+      "moveGoal": null,
+      "castSlot": null
+    }
+  },
+  "notes": [
+    "Each side owns a separate DetourNavigation instance built from the same lane.navmesh bytes.",
+    "Seat order differs between sides; production Simulation.frameCommands sorts by seat and preserves per-seat command order.",
+    "The main run is 600 framed ticks, then empty frames continue in the same two simulations only until the original economy makes wayfarer_boots (600 gold) affordable.",
+    "Ticks 100-129 are all-empty frames with six explicit empty seat arrays."
+  ]
+}
