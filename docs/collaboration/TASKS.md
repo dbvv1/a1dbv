@@ -8,27 +8,17 @@
 
 ## 11-06 Dot-A/B 临时表现纠偏（不改变 v1.3，不等待 v1.4）
 
-> 依据 11-06 最新 main、local-jobs 回执、三个产品仓库 main 和 Phase 3 记录。只纠偏当前工作选择与收口，不新增调度系统、不扩大权限、不要求 Claude 额度。
+[11-06 完整纠偏原文](https://github.com/dbvv1/a1dbv/blob/7128f6cf2390e8ca9f6bc92cd3806861c874e56e/docs/collaboration/TASKS.md)保留完整范围、权限和原入口；不新增调度系统或额度要求。
 
-- **Dot-A：先收口已有交付，不再扩研究队列。**
-  1. 先核对当前全部 `review_ready` 卡（TASKS 静态快照为 8 张）及其 result_branch/产物，逐项分类为：证据足够可接收、需一次明确补验、部分接收并保留欠项、拒绝/放弃。不得把 `review_ready` 当作已验收，也不得无限等待。
-  2. 优先完成 [账号上下文来源](local-jobs/A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106.md) 与 [Compaction 来源保真](local-jobs/A-COMPACTION-PROVENANCE-SOURCES-20261106.md) 的独立审查和采用决定；两者目前只有部分成稿、审查未完成，不得写成完整通过。另核 [Sentry 迁移合同](local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md) 与其他 review_ready 项的年龄和读者价值。
-  3. [长任务离线读者](local-jobs/A-LONG-ROUTE-OFFLINE-READER-20261106.md) 已有真实修复进入 main（19fdff08），不要重复实现；只处理 POSIX 完整离线检查未运行、Windows 环境边界等明确欠项，或记录为环境限制。
-  4. 在上述 review_ready 形成处置前，暂停新增广扫、Hook、模板/测试框架类新任务；允许无依赖且能直接改善读者答案页/地图的一个高价值单元继续。每项结束必须写出正式页面/真实采用变化，或明确不采用理由。
-  5. 本轮回报只给：review_ready 总数及逐项处置、进入 main/正式页面的实际成果、仍阻塞项及恢复条件、下一项唯一最高价值工作。Git 静态 0 ready/running 不得描述为本机停工。
+- **A 先收旧交付**：核全量review_ready（快照8）：接收／一次补验／部分接收／拒绝。优先账号上下文、Compaction独审、Sentry价值；不重做19fdff08，仅补POSIX／Windows边界。处置前停广扫／Hook／模板新卡，只允一个无依赖正文单元。回报逐项决定、正式采用、恢复条件与唯一下一项；Git状态不证明停工。
+- **B 先收产品**：Star唯一品质槽沿同ID核真实调用、槽位与阻塞；unknown不重派、不清锁、不绕过拒绝，先做独立工作。仅确认原调用不存在、槽空且原合同允许才自然领取。门槛仍12张同机位图、非作者盲评与真实分数变化。
+- **FPS**：接收[19563b0整合候选](b-work-20261106.md#fps-训练场整合)，main仍fa8740de，源reload/switch仍缺；真实消费者与CPU结果不算品质提升，补合法浏览器门槛。
+- **MOBA**：单线大乱斗按A/B/C；阶段A先赏金HUD、Q/W与死亡的真实可见反馈，沿已有卡依赖／槽位择一，不堆候选。CPU正确不等于玩家可读。
+- **其他B线**：只收能改变正文／案例的差量，停止无采用路径的来源、独立素材与重复工具卡；新工具须明确案例接入及运行／视听／操作验收。回报产品main／采用／最高验证与Star阻塞，不以a1提交数替代。
+- **共同**：阻塞只隔离依赖动作；核当前状态，不无变化重试或绕过权限，其他授权工作继续。每次回报须有新证据、行动或恢复条件。
 
-- **Dot-B：先完成产品品质闭环，再扩展工具和素材。**
-  1. **Star 唯一优先品质槽**：[B-STAR-QUALITY-CAPTURE](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md) 仍为 ready、无结果分支/可读 PNG；但其他非 Star 卡已有领取/回交，不能继续用“整机离线”解释。先通过现有接收端合法状态确认同 ID 是否已有调用、是否占用拍摄槽及真实阻塞原因。若状态 unknown，不重派、不启动第二份、不清锁、不绕过曾被拒的检查；先推进其他独立工作并记录恢复条件。若确认原调用不存在、槽空且原卡合同允许自然领取，再沿同一 ID 继续。验收仍是 12 张同机位图、非作者盲评和记分卡真实分数变化，不以脚本/CPU/部署/出图命令成功替代。
-  2. **FPS：** 先把已接收的角色 adapter、reload/switch 源动作和现有音频候选收敛到实际训练赛/完整回合。产品 main 仍停在 fa8740de；不得把分支候选、430 测试或 adapter 21/21 单测说成产品品质改善。若受浏览器 socket EPERM 限制，记录为局部浏览器门槛，继续不依赖浏览器的独立任务，不绕过权限。
-  3. **MOBA：** 严格按单线大乱斗及阶段 A/B/C。当前阶段 A 优先让已存在的赏金、Q/W、死亡反馈形成真实玩家可见的 HUD/动画/战斗反馈；已有 ready 卡 [赏金 HUD](local-jobs/B-MOBA-GOLD-HUD-20261106.md) 与 [Q/W 连续输入](local-jobs/B-MOBA-QUEUED-SKILLS-20261106.md) 按依赖和槽位择一执行，不同时堆更多候选。CPU 事件正确不等于玩家可读。
-  4. 核心模块、制作链、AI 游戏实例只接收能明确改变现有正文或案例的差量；停止无采用路径的来源收集、独立素材工具和重复工具卡。新工具任务必须写明目标案例、接入点、实际运行/画面/声音/操作验收。
-  5. B 本轮回报只给：每个案例正式产品 main 的实际变化、工具/知识进入产品的证据、最高层级质量证据（源码/测试/运行/视听/实玩）、Star 当前阻塞与恢复条件。不得用 a1dbv 提交数代替三个产品仓库进展。
-
-- **共同：阻塞只局部隔离。** 一次 Git/网络/浏览器/权限失败只暂停真实依赖的动作；重新核对当前状态，不继承旧失败为全局限制；停止无变化重复重试；继续其他已授权独立工作。不得绕过权限、凭据、不可逆副作用或平台拒绝。每次回报必须有新证据、新行动或明确恢复条件。
-
-- **B 临时纠偏**：优先跑通 Star：本机固定出图 → 后台非作者盲评 → 最大差距整层修改 → 同机位重拍 → 更新记分卡；完成条件：“Star 记分卡有一次带同机位图的分数变化”，完成即删。仅过 CPU 测试的工具／素材不计品质进展；闭环前只暂停 Star 同类中间工具卡与素材卡。其他案例、核心模块、制作链、AI 游戏实例照常，每线 3–6 张 ready 本机卡；三案候选验收与手感欠项保留。MOBA 先读失败原因并修好再排，同一时间只排一张出图卡。人听、人玩的攒批进[待人工验收](#待人工验收)；在做工作每小时推工作分支。
-- **共同**：B 在下一项帧同步或存档接入里，从[共享指令](../decisions/instruction-files.md)、[模型与 effort](../decisions/model-roles.md)、[依赖定位](../decisions/skills-and-plugins.md)中任选一项沿原入口采用；下次自然 UI 变更由新读者照[浏览器验收](../decisions/verification.md)实操补验，不以截图／静态 DOM 替代。各项结果写进提交说明后从本行删除。
-
+- **B 临时纠偏**：Star沿“固定出图→盲评→最大差距整层改→同机位重拍→评分”闭环，完成才删。暂停Star同类中间工具／素材，其他线按上方及完整原文边界继续；[人工批次](#待人工验收)保留；MOBA先修首错、仅一张出图，在做工作每小时推分支。
+- **共同采用欠项**：下次帧同步／存档实用共享指令、模型或依赖页之一；自然UI变更由新读者照浏览器页实操，不以截图／DOM替代。沿上方原文入口，结果写提交后删。
 
 ## Phase 3：7 天效果验证（11-04 至 11-11）
 
@@ -44,8 +34,6 @@
 - 10-26 历史已获准改写：开工 `git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune`，按远端重建分支，不推旧历史。
 - 11-06 main `1af556cd`：A 卡 83 accepted／13 cancelled／8 review_ready（含 [Sentry](local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md)）／5 blocked，0 ready/running。仅 Git 静态状态，本机活动 unknown，非退出证明。
 
-- **B 出图等待**（11-06 08:34 UTC）：[Star 唯一卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)自 03:28 仍 ready、无结果分支；其后其他卡持续领取／回交，不能归因整机离线。Star 调用／未领取原因 unknown，不重派。
-
 ## 项目板
 
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
@@ -57,7 +45,7 @@
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [成套重导出](../../domains/game-dev/assets/3d.md#asset-family-rebuild)已接；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)通路／命中未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，复用三图／保护区／标准件，画面未验。开放音频未听未用，Nature 恢复未知。3D：网关三源实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机`gen3d`／`glbprep`可用；按实测采用 3–5 件标准件。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [三份探索处置](b-work-20261106.md#三份实例探索处置)：仅收 Bichitos 触控识别与 Solhex 章节计时机制，发布迭代本轮不收，不扩表。原场景氛围来源已入[制作链](../../domains/game-dev/assets/materials.md#scene-atmosphere-revision)。均不新增品质推荐；Void Balls 启动失败、Warpact 未玩及原实机欠项保留，不重派。 |
 | SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | Site **v10 已部署**（11-06 02:53 UTC；产品源 811646e／Site 源 5c78194），海岸旁置已见街屋，默认入口不变。[唯一品质出图卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)仍 ready：两版三机位双拍／盲评未交；正式分、手感／听感及原 403／旧退出 unknown 欠项保留。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main [`fa8740d`](https://github.com/dbvv1/FPS-Like/commit/fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8) 已接[离线角色 adapter](local-jobs/B-FPS-TRAINING-CHARACTER-ADAPTER-20261104.md)，训练赛未接线；旧 fire 强清除缺切枪历史，reload/switch 源动作及画面验收待补，不计品质。原返工 Workflow／CLI 已退出，外层 worker 独立退出未知。430 测试／构建及另跑 adapter 21/21 通过。全场材质／ground 旁置、固定出图与迟到锁销毁修复保留；Site **v24 已部署**，线上仅默认菜单到达，shell HTTP 403，不绕过。默认／ground 各 2×144、四路暂停恢复及旧 Canvas 六回合证据保留；完整线上、WebGL smoke、图／手感／盲评待验。腰腿 `fc64c2b` CPU 已收，原执行退出未知。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`、Site **v24** 未变。[19563b0整合交接](b-work-20261106.md#fps-训练场整合)：真实View接五动作／代际／失败出口，音频显式开启。469＋29测试、类型／构建／独审过；六回合仅替身Renderer CPU证据。EPERM浏览器、源reload/switch和视听／实玩仍欠，未合main／部署／品质闭环；旧边界见交接。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收
