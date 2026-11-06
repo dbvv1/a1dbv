@@ -2,7 +2,7 @@
 id: B-CORE-BINDINGS-ADOPTION-20261106
 owner: dot-B
 kind: reader-test
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-core-bindings-adoption-20261106
@@ -35,4 +35,9 @@ page: experiments/moba-keybindings/README.md@bbb068cbdc97617856763414ace1d9d828b
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- reader-test 一轮观察结束：读者在独立 MOBA-Like 临时副本（消费者 7e1986f，与页面固定源 a829005 的 6 个源文件/4 个测试文件 diff 为空、锁文件 sha256 相同）按页面完成第二次真实改键——取消一次 Q→F 草稿、经冲突提示交换 W↔R、Stop 由 S 改 G、单次保存；controls 实际产出 cast slot R/W 与 stop，真实 Simulation 接受、蓝量下降、槽位冷却；HUD/controlsHelp/英雄提示同步为 Q/R/E/W 与 G: stop；同一存储新建 owner + 新对局保留绑定；setItem 抛错时 apply 失败且有效值与提示不被草稿部分切换；Restore defaults + Save 恢复默认并删键。4 文件 45 项 + 新增 2 项 = 47 项通过，tsc -p tsconfig.web.json 退出 0；未开浏览器/dev server/socket、未装依赖、未改产品。taskDone=true（仅 CPU DOM + 真实 Controls/Simulation）。pageStuck（页面卡点）：仅有的界面段只教 Q→F 与 Q↔W，缺第二组（Stop 行、W↔R、取消草稿）可照做步骤及 DOM 选择器；最小调用顺序里的 refreshRows/showSettingStatus/refreshHudKeys/closeSettings/canControlCurrentMatch 非产品导出且无真实签名；未给保存后刷新顺序与保存失败替身位置。未运行验收：真实浏览器刷新 localStorage/跨标签/断电、渲染、音频、GPU、原生 dialog 焦点与设备手感、完整套件与构建均未验证，CPU DOM 不能当浏览器实操通过。openIssues（verify 未修正项）：result.md 命令块对空 $WORK 直接 tar -x 到不存在的子目录，缺 mkdir -p，不能原样照做；读者‘没有设置入口’‘未指出断言文件’的表述与页面不符；‘现成存储替身’措辞不准确（实际自加 fail 标志，行为等价）；读者独立性自述前后不一致（声明未读 a1dbv 其他文档但后文列出读过两份）；页面 step 6‘工具条 A/S/Space 提示’与固定源实际控件（页脚 #controls-help）名称不符未被指出；新组合用例 onOpenChange 为空，未复现设置期间 controls.setEnabled(false)/清命令队列；第二组 W/R 的 HUD title 未直接断言；castSlot‘约 7 tick’为近似（实际首次 remainingTicks 8）。
+- 产物：[e1ea6f0](https://github.com/dbvv1/a1dbv/commit/e1ea6f0cd925b5e98832601d30cbaa94640c328d)，分支 `relay/b-core-bindings-adoption-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人需先修正 result.md 命令块（补 mkdir -p）与不准确表述，再决定是否按第二组路径补页面入口/选择器/真实刷新与失败替身说明；浏览器与真实设备验收仍需人工另行安排。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
