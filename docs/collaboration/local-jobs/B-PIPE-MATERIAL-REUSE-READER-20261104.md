@@ -2,7 +2,7 @@
 id: B-PIPE-MATERIAL-REUSE-READER-20261104
 owner: dot-B
 kind: reader-test
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 result_branch: relay/b-pipe-material-reuse-reader-20261104
@@ -31,4 +31,8 @@ page: domains/game-dev/assets/materials.md@463b4b9a95a8e6eadb98b730d8aa373a05dcb
 
 ## 当前结果
 
-- check_repo 有本单元新增错误或检查结果未知，未推送
+- reader-test 一轮已实跑至 CPU 对象与测试层：隔离副本新增单实例绑定与四路测试，三份 quiet 测试 14 项通过、tsc -p tsconfig.web.json 通过、全量 572 项 571 通过（1 项无关音频失败）。taskDone=false：非作者核对判未真正做成——applyQuietBuildingInstance 接到真实 battlefield clone 路径会二次绑定 quietStone（GLSL 重复声明、customProgramCacheKey 双后缀，会致 shader 编译失败），第二张失败与迟到完成两路无第一实例，map 断言只对模板自身材质成立、两实例 albedo map 实为不同 Texture，浏览器回退提示未验。pageStuck 6 项：缺实现入口与所有权/单实例解绑；'替换而非叠加'与新增实例字面冲突；失败归属只覆盖五标准件；'不复制纹理'无判定口径；四路矩阵不在页面；550 项未标 commit。未运行验收：浏览器/WebGL/GPU/shader 编译、真实 WebP 解码、同机位盲评、硬件预算，以及完整构建与关闭开关同输入回放。
+- 产物：[f0650b0](https://github.com/dbvv1/a1dbv/commit/f0650b00e64423e91fe54415061554750eedfd8f)，分支 `relay/b-pipe-material-reuse-reader-20261104`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人接收：将单实例绑定改为对已绑定 quiet 的 clone 不重复注入或复用现有共享材质，补真实消费者路径及两类故障下第一实例共存的验证，补跑完整构建与关闭开关回放；页面侧按 6 条 pageStuck 回原页负责人。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
