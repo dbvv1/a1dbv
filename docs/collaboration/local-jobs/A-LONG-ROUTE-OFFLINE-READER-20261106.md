@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-OFFLINE-READER-20261106 · 照长任务路线修门禁范围
 id: A-LONG-ROUTE-OFFLINE-READER-20261106
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 8b76f7db4940cb5923438ad91275b66c1bd0a6d3
