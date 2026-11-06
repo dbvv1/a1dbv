@@ -25,6 +25,8 @@
 - 10-26 历史已获准改写：开工 `git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune`，按远端重建分支，不推旧历史。
 - 11-06 main `1af556cd`：A 卡 83 accepted／13 cancelled／8 review_ready（含 [Sentry](local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md)）／5 blocked，0 ready/running。仅 Git 静态状态，本机活动 unknown，非退出证明。
 
+- **B 出图等待**（11-06 04:23 UTC）：[Star 唯一卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)自03:28入队，ready超40分钟无新回执；请检查开机/登录。调用unknown，不重派。
+
 ## 项目板
 
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
@@ -35,7 +37,7 @@
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07 ready／04 boot-input／05 生命周期已入 main（源码／CPU）；[FPS 前台时钟](../../domains/game-dev/04-client-modules.md#web-foreground-clock)已接 v20，三入口两轮通过。Star v7 存档／MOBA `ea7a064` 为旧实操；[完整改键链](../../experiments/moba-keybindings/README.md)已在 MOBA main，45 项 CPU／DOM＋类型检查通过，历史浏览器验改键／刷新保留；原生／手柄／多人未验。[Unity 源准备](../../experiments/unity-encounter/README.md)未实跑，原任务暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [成套重导出](../../domains/game-dev/assets/3d.md#asset-family-rebuild)已接；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)通路／命中未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，复用三图／保护区／标准件，画面未验。开放音频未听未用，Nature 恢复未知。3D：网关三源实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机`gen3d`／`glbprep`可用；按实测采用 3–5 件标准件。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [场景光照卡](local-jobs/B-AI-GAME-SCENE-LIGHTING-20261104.md)静态来源已接收，成套氛围配置已入[制作链](../../domains/game-dev/assets/materials.md#scene-atmosphere-revision)；三款未实玩／未看完实机，无新增品质推荐。Void Balls 原启动失败，Warpact 未玩；可用实机恢复后沿原线补验，不重派来源收集。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | 旧修复 `2b7f948` 三机位软件图已交回；[唯一品质出图卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)比较 `811646e8`/`7e87d4c3` 的 coast-space-v1：三机位双拍→非作者盲评/记分。准备排队，本机活动 unknown，无新PNG/分数；防回退/跨档状态/真实退出必验。Site v9三旁置保留；完整线上/3D/驾驶/听感待验，原403不绕过，旧取消任务退出/清理仍unknown。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | [唯一品质出图卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)：两版coast-space-v1三机位双拍→盲评/记分；仍ready、无可读新PNG/分数。旧修复图已交回；Site v9三旁置、手感/听感欠项及原403/旧退出unknown保留。 |
 | FPS | **FPS-Like 完整回合品质** | dot-B | main [`fa8740d`](https://github.com/dbvv1/FPS-Like/commit/fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8) 已接[离线角色 adapter](local-jobs/B-FPS-TRAINING-CHARACTER-ADAPTER-20261104.md)，训练赛未接线；旧 fire 强清除缺切枪历史，reload/switch 源动作及画面验收待补，不计品质。原返工 Workflow／CLI 已退出，外层 worker 独立退出未知。430 测试／构建及另跑 adapter 21/21 通过。全场材质／ground 旁置、固定出图与迟到锁销毁修复保留；Site **v24 已部署**，线上仅默认菜单到达，shell HTTP 403，不绕过。默认／ground 各 2×144、四路暂停恢复及旧 Canvas 六回合证据保留；完整线上、WebGL smoke、图／手感／盲评待验。腰腿 `fc64c2b` CPU 已收，原执行退出未知。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
