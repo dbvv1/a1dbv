@@ -40,3 +40,11 @@ result_branch: relay/b-fps-team-status-hud-20261106
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：负责人裁决 3 个 smoke 相关文件是否纳入（不纳入需回退其改动并调整/删除依赖 assertOfflineReady 的回归用例）；随后安排浏览器 smoke 与可读性/窄屏/实战人工验收。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 指导层固定接收
+
+2026-11-06 13:00 UTC：固定7a28c03已纳入原整合分支[9c56ad6](https://github.com/dbvv1/FPS-Like/blob/9c56ad673157525d549d2418d4b3c4d8525e3856/docs/training-integration.md)，未合产品main或部署。仅采用不可变产物，不重复派发本任务。本卡保留review_ready表示候选仍待浏览器接收，不据卡状态认定原调用退出或释放槽位。
+
+- **范围裁决**：接收tools/smoke.mjs、tools/smoke-offline-support.mjs、tests/offline-smoke.test.ts三项必要差量，只把旧goal计数迁至team-status取值／断言并拒绝缺失、隐藏、错误计数与重复旧文案。浏览器启动、WebGL2、自然六回合、重开／暂停与退出回执不改，不扩大捕获授权；原越界上报保留，不追认为原卡已经授权。
+- **独立核验**：固定tree a2152d7复原后，437项／类型／构建串行全过；固定源码实际有7项HUD测试。整合另加真实九机器人、默认规则、HUD逐tick六回合自然淘汰与新Game首帧复位，3038ticks、1:5；整合492＋adapter29项、双类型／构建、公扫与独审通过。并行跑两套全量时各一个测试进程异常退出，后续未改断言或门槛，串行全过。
+- **剩余闭环**：原调用终态无回执，保持unknown，不核被拒本机入口、不清锁。HUD与MatchPanel的CPU／DOM替身证据不等于浏览器布局；窄屏、战斗可读性和GPU仍欠。FPS main仍fa8740d、Site v24未变，socket EPERM不重试／不绕过；后续沿同一候选在获准可用环境验收，不新增旁置。
