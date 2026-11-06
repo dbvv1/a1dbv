@@ -298,6 +298,12 @@ Unity Particle System 提供 C# 粒子读写和物理交互，VFX Graph 偏 GPU 
 
 **范围与进度只读玩法，不另存一套。** 实际攻击范围由玩法命中查询的形状给出，表现层用同一组原点、方向、长度、半径和角度生成边界，不从贴图长宽比反推；蓄力进度读施放实例的同一进度，不新建第二套计时器。命中反馈只在收到确认结果后播：命中、格挡、免疫、落空分开，视觉到达和插值计时不算确认。这样第二次改缩短蓄力、取消或换形状时，改的是参数和事件，不是重画整段。所有者与正常链见[05 技能模块](../05-gameplay-architecture.md#实现起点定义施放效果和表现各管一件事)。[研究]
 
+<a id="source-hit-marker"></a>
+
+**接已有命中资产时，分开“动画弹跳”和“可读保持时间”。** FPS 训练候选把既有 CC0 `hit-feedback.glb` 的刻度、强调色与三段 scale 键接入实际 View／Hud：身体／要害的源动作只有120／180ms，保留原320ms读取窗口，不能播完 clip 就立即清标记；击杀用源700ms及既有终局尾帧，避免模拟停止后旧HUD常亮。只消费最新本地确认结果，新一枪落空撤掉旧提示，友伤不显示敌方击杀强调。源加载失败保留CSS；完成本帧渲染、回合和枪事件匹配后才交接，不能用ready提前关旧显示。[经验]
+
+**只接确有用途的部分。** 同一源的world burst也是八面体，与现有世界命中形状重复，本轮不接；场景通路仍待玩法／导航接入。完整强调刻度的CPU投影在1080p／80°约17.5px，源表中的14px不是实测像素保证。真实Game与GLTFLoader回归支持事件、时钟和资源所有权，画面／声音／真人手感未验，未合产品main或部署。来源与采用范围核实2026-11-06：[固定源](https://github.com/dbvv1/FPS-Like/tree/b198df62a56f4c520716fbc9cb4afac47dd62213/asset-pipeline/content-set)、[训练消费者](https://github.com/dbvv1/FPS-Like/blob/988ecea70d6bcb39e64484787e3213fc175e185e/src/candidates/offline-training-v1/render/source-hit.ts)与[采用边界](https://github.com/dbvv1/FPS-Like/blob/988ecea70d6bcb39e64484787e3213fc175e185e/docs/training-integration.md)。
+
 #### 每层只负责一件事
 
 | 层 | 主要传达 | 默认实现 | 不要拿它做 |
