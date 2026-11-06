@@ -1,6 +1,7 @@
 # B-AI-GAME-INPUT-UI-20261106 · 操作体验二改实例的候选来源
 
-> 整理日期：2026-11-06（同日修订）。修订中补齐了 Exelio／Overlock／群侠传／WELL／ASHFALL 的作者截图直链与 Bichitos 的版本号，并用 Steam `appdetails`、ISteamNews、`raw.githubusercontent.com` 和作者页复核。同日复核：Westbridge 的 Vercel 入口本机 TLS 握手失败（000），按门槛 1 移入 §5.2；Bichitos 的 itch 页截图按 BUILD_LOG 2026-08-18 记为 cover 630×500＋4 screenshots，直链未取到；元素突围、梦境绮想按 7 项各只差许可／成本，列入 §3.4；Claude of Duty 与 mshumer 的同名作已按仓库、提示词和文件树分开。下列“可玩”均指页面或仓库入口可达，不代表本端已启动、试玩或看完整实机。未登录、未发帖、未启动游戏、未播放视频或音频、未开浏览器。个别来源只给相对路径（如 Vibegames 的 `/aifighter/`），本文按同页域名补全为可点链接，未另搜。
+> 整理日期：2026-11-06（同日修订；同日第二轮增补见 §9，§1–§8 的“本轮”均指第一轮；§9 已按独立审查修正事实、等级与缺口计数）。修订中补齐了 Exelio／Overlock／群侠传／WELL／ASHFALL 的作者截图直链与 Bichitos 的版本号，并用 Steam `appdetails`、ISteamNews、`raw.githubusercontent.com` 和作者页复核。同日复核：Westbridge 的 Vercel 入口本机 TLS 握手失败（000），按门槛 1 移入 §5.2；Bichitos 的 itch 页截图按 BUILD_LOG 2026-08-18 记为 cover 630×500＋4 screenshots，直链未取到；元素突围、梦境绮想按 7 项各只差许可／成本，列入 §3.4；Claude of Duty 与 mshumer 的同名作已按仓库、提示词和文件树分开。下列“可玩”均指页面或仓库入口可达，不代表本端已启动、试玩或看完整实机。未登录、未发帖、未启动游戏、未播放视频或音频、未开浏览器。个别来源只给相对路径（如 Vibegames 的 `/aifighter/`），本文按同页域名补全为可点链接，未另搜。
+> **第二轮（u2）结论速览（详见 §9.3）：先取 Kiikurage/game-test 的输入抽象机制（它没有真人试玩／owner 试玩报告，不作为真人反馈闭环样本）；看商业 FPS 的真人试玩闭环读 STOREGGA；做键鼠／手柄／触控统一输入层读 PARALLAXIA 与 OVERTURN。只能取一套机制时以 Kiikurage 为准，第一轮 Bichitos Rumble 只作输入能力判定的对照。§1–§8 为第一轮记录，两轮首选不互相替代。**
 
 ## 1. 渠道覆盖表
 
@@ -67,7 +68,7 @@
 
 ## 3. 结论：建议先深挖的 3 项，另有 2 项并列甲级
 
-**先给结论。** 按任务门槛（可玩入口或完整连续实机、作者过程、作者静态截图、版本／日期、AI／人分工、一次具体二改、许可／成本未知项），本轮最值得先深挖三项：**Bichitos Rumble**（Vibe Jam 2026，移动端 HUD／输入判定与回归测试证据最完整，版本与资产许可分项最细；缺游戏画面截图直链）、**Exelio**（Steam 抢先体验，外部真人反馈→多次输入／UI 二改→可玩 demo 的链条最完整）、**Overlock**（触控／键鼠／菜单交接写得最细，版本与数值可复现）。若只试一款，先试 Bichitos Rumble；若要看“真人反馈怎样变成补丁”，先读 Exelio 的 DevLog #1／#2 与 Update 4／5。另有**元素突围**与**《梦境绮想》**按同样 7 项各只差许可／成本，列在 §3.4，按需选读。
+**先给结论。** 按任务门槛（可玩入口或完整连续实机、作者过程、作者静态截图、版本／日期、AI／人分工、一次具体二改、许可／成本未知项），本轮最值得先深挖三项：**Bichitos Rumble**（Vibe Jam 2026，移动端 HUD／输入判定与回归测试证据最完整，版本与资产许可分项最细；缺游戏画面截图直链）、**Exelio**（Steam 抢先体验，外部真人反馈→多次输入／UI 二改→可玩 demo 的链条最完整）、**Overlock**（触控／键鼠／菜单交接写得最细，版本与数值可复现）。第一轮内若只试一款，先试 Bichitos Rumble；若要看“真人反馈怎样变成补丁”，先读 Exelio 的 DevLog #1／#2 与 Update 4／5。另有**元素突围**与**《梦境绮想》**按同样 7 项各只差许可／成本，列在 §3.4，按需选读。
 
 **最强 1 项与可验证机制。** 优先试玩 **Bichitos Rumble**（<https://www.bichitosrumble.com>）。它记录的不是“再画一版 HUD”，而是把移动判定从只认 `innerWidth < 900` 改成 `hasTouchSupport() && (pointer:coarse || innerWidth < 900)`：宽度兜底保留，新增能力检测，并补 915×412 触控 smoke（只断言 `touch-mode`、摇杆与动作键可见）。这个机制可直接在现有 FPS／MOBA 的移动端入口验证：本轮建议在作者 smoke 之外再加 `visualViewport`、技能键不与摇杆重叠、暂停／背包关闭后不接受战斗输入三条断言；这三条只是建议，**本轮未执行**。
 
@@ -246,7 +247,7 @@
 - **《一二三大狗叫》** — <https://www.taptap.cn/moment/862883347402065970>。三人学生队 21 天用 TapTap 制造做第一人称战术射击，文章交代 AI／人工分工与携行具式装备组合的设计取舍。缺口：只见到（上）篇，未给操作／UI 二改与可玩版本证据。
 - **《WELL／涌现之井》反馈帖** — <https://www.taptap.cn/moment/864440330617880799>。玩家集中反馈卡牌 UI 占比过大遮挡视野、移动过慢且无教程、移动端闪退，作者逐条答复却以比赛 DDL 为由把修复推到赛后。缺口：这是问题清单和反对意见，尚无可验证的二改版本。
 - **Circvs Maximvs** — <https://www.vibegamesstudio.com/circus/>，日志 <https://www.vibegamesstudio.com/blog/2026-07-06-controller-day>。AI Agent 工作室对已上线 12 款游戏做手柄适配的完整记录：全菜单手柄导航、键盘焦点环、随最后使用设备切换的按键提示、拔线自动暂停，11/12 过 QA；截图 <https://www.vibegamesstudio.com/shots/circus/1.jpg>。缺口：需求来自管理层而非玩家反馈；无版本号与许可说明。
-- **Vibegames 其余同社作品（共同缺口：AI agent 作者、反馈来自内部 QA 而非真人玩家、无版本／许可、截图未给）**
+- **Vibegames 其余同社作品（共同缺口：AI agent 作者、反馈来自内部 QA 与玩家聚合遥测，但没有玩家原话／试玩报告、无版本／许可、截图未给）**
   - **AI Fighter／Antibody** — <https://www.vibegamesstudio.com/blog/2026-09-08-the-guard-that-had-never-fired>。AI Fighter 在触屏上 PAUSED 只是一行字、唯一出口是刷新，后来补成真正菜单；QA 因按错 Esc 漏测，正确键是 Enter，最后把映射写进三处大写文档。2026-07-26 又给 40 款游戏统一加触控套件：5 套控制方案、方向门、切设备即改屏幕提示，Antibody 用竖屏拖拽跟随、不设虚拟摇杆；可玩 <https://www.vibegamesstudio.com/aifighter/>、<https://www.vibegamesstudio.com/antibody/>。
   - **Blacklight** — <https://www.vibegamesstudio.com/blacklight/>。同社博客记录一次 FPS 输入／提示二改：QA 发现 7 次冷启动有 4 次玩家面壁、pointerlockchange 因事件不冒泡而从未生效，重建后 7/7 通过；又用“按开始后 60 秒内有一半玩家退出”的遥测重做开场逃生提示、提前目标卡和更短教学（<https://www.vibegamesstudio.com/blog/2026-09-08-the-guard-that-had-never-fired>）。
   - **Pulse Bloom** — <https://www.vibegamesstudio.com/pulsebloom/>。四条轨道映射到十字键与面键、合成手柄打 PERFECT。
@@ -332,11 +333,329 @@
 3. **Overlock**：核许可与成本；实机对照触控命中区、场景重载按键卡住、菜单／软键盘交接。
 4. **群侠传：幸存者**：实机确认 Steam 功能栏未列 Full controller support 与公告“全手柄”是否一致；核许可与成本；对照 V0.2.0 的图标随设备切换、底部提示条、UI 三档。
 
+**第一轮遗留问题第二轮未关闭。** §1–§8 中第一轮独立审查留下的 6 项事实／口径问题（Bichitos 许可与图标待核的矛盾、ASHFALL 的 60／92 合并数、HUD_mejorado 生成来源、ASHFALL 版本／许可、梦境绮想截图口径、Westbridge AI 分工）第二轮未重核，沿用原文；第二轮增补不表示这些问题已修正。
+
 **下一步（按顺序）。**
 
-1. 先试 Bichitos Rumble，按 §3 的机制在现有 FPS／MOBA 移动端入口做一次窄验证：`pointer:coarse || innerWidth<900` 判定、作者 915×412 smoke（`touch-mode`／摇杆／动作键）与本轮建议的 `visualViewport`、按钮不重叠、暂停／背包输入隔离断言（建议项未执行）。**未执行前不写成已通过。** 这是浏览器端判定，Unity／Unreal 需换成各自 Input System 的触摸／指针能力检测与安全区／分辨率 smoke，不能照抄；若问题是按键布局或遮挡而非宽度误判，先看 Exelio 的误触判定或 Overlock 的触控布局。
+1. 第一轮内先试 Bichitos Rumble，按 §3 的机制在现有 FPS／MOBA 移动端入口做一次窄验证：`pointer:coarse || innerWidth<900` 判定、作者 915×412 smoke（`touch-mode`／摇杆／动作键）与本轮建议的 `visualViewport`、按钮不重叠、暂停／背包输入隔离断言（建议项未执行）。**未执行前不写成已通过。** 这是浏览器端判定，Unity／Unreal 需换成各自 Input System 的触摸／指针能力检测与安全区／分辨率 smoke，不能照抄；若问题是按键布局或遮挡而非宽度误判，先看 Exelio 的误触判定或 Overlock 的触控布局。
 2. 读 Exelio 的 DevLog #1／#2 与 Update 4／5，再用 demo 复现“误触判定前置条件”和“材料需求前置到界面”两条改动。
 3. 读 Overlock 博客并实机对照触控／键鼠／菜单三条路径；截图直链已补，剩许可／成本，补齐后可作首选替换。
 4. 用免费 EA 版对照群侠传 V0.2.0 的手柄／UI 三档与提示条，确认公告与商店字段不一致是否影响实机。
 5. 若需要 Vibe Jam 2026 的更多样本，沿 Bichitos、Astropilot、Undead Siege 的仓库与作者页追，不重开已失败的 itch.io／Reddit 直连；itch 原页恢复后再补 Keep It Crispy 的版本、许可与评论。
 6. 中文侧只补可读原页：TapTap 的 WELL／梦境绮想／我记得已有正文，B 站与微信仍只作线索；不把搜索摘要写成作者原文。
+
+
+## 9. 第二轮增补：按来源角度重扫后的候选（2026-11-06）
+
+> 本节是第二轮（u2）产物。它与 §1–§8 不互相替代：第一轮按“已有清单逐项追”，第二轮按来源角度重新扫（GitHub 项目与 PR、Reddit／HN、TapTap 评价、B 站、itch devlog 索引、arXiv 与方法类工具、近三个月新东西），两轮候选有少量重叠但主体不同。本节的“本轮”指第二轮。
+> 本轮所有条目都跑过链接可达性检查（curl 状态码或页面标题），**只证明入口能打开、标题对得上，不证明正文里的每个数字都成立，也不代表本端已试玩、已看视频或已听完音频**。收集者给出的“缺口”按原文保留，未见到的内容不写成事实。
+
+### 9.1 第二轮渠道覆盖表
+
+下表的“得到”只计进入本节清单的条目（含工具与做法），按条目主要出处归并；同一作品跨渠道重复时只计一次，按多作合并的行（见最后一行）也未拆开。第二轮共纳入 **243 项**（游戏候选约 100 项，工具／做法／平台／索引约 140 项）。各行相加等于 243（=203+40），其中最后一行是未拆开的跨渠道／多作合并条目。
+
+| 渠道 | 实际看了什么、取法 | 得到 | 读不到及原因 |
+|---|---|---|---|
+| GitHub 与源码 | `raw.githubusercontent.com` 读 README／AGENTS.md／CLAUDE.md／docs／LICENSE／CHANGELOG／FIXES.md；网页读 PR、issue、commit、atom、tags；`git clone --depth 1` 两个仓库本地 grep；试仓库搜索与 issues/PR 搜索 | 约 72 项（含工具）：Kiikurage、abagames 系列、Long Silence、tresr、paprika3d、vibe-wars、autosplat、nodetool、GameCraft-Bench、Co-op Anything 等 | 未认证 REST 配额多次 60／60 用尽（本机出口），`gh` CLI 未安装；部分仓库无 README／LICENSE 或 main／master 均取不到正文；个别 issue 页只有标题列表 |
+| Reddit 与 Arctic Shift | 直连 www／old／api 全部 403／000 后，用 Arctic Shift 的 `posts/ids`、`comments/tree`、`comments/search`、`posts/search?author=`；本地过滤 r/aigamedev 600 帖、r/gamedev 1200、r/ClaudeGameDev 800、r/vibecoding 800、r/IndieDev 800，关键词 joystick／touch／gamepad／HUD／crosshair／aim／rebind／playtest／UI | 约 9 项 | 直连 403／000；eddrit 429、safereddit 连接关闭；Arctic Shift 偶发 422／429／超时，`query` 必须带 author 或 subreddit；部分帖正文 removed、个别作者时间线返回 null |
+| HN Algolia | `search` 与 `items/<id>` 读条目、链接与评论树；查 vibe coded game、touch controls、HUD、AI playtest、agent harness、Claudeslop、i-have-adhd、Ars 报道等 | 约 9 项（多为讨论与工具） | 无整站关键词检索等价物；个别 item 评论未取到；HN 只是入口，不能替代作者原文 |
+| TapTap | curl SSR 的 moment／app／review 页；`webapiv2/review/v2/list-by-app` 抓 15 款约 300 条评价，按摇杆／按钮／瞄准／开镜／遮挡／触控／灵敏度／误触／字体筛选；`app/v6/detail` 核 update_time；逐条 `review/<id>` 验证；翻聚光灯 GameJam 与 TapTap 制造日志 20＋篇 | 约 24 项 | 作者页 `/user/<id>` 返回 JS 反爬挑战或空壳；开发者页多数只显示一款；搜索页与评论区客户端渲染；部分游戏页 404（如 986433）；`moment` SSR 不含评论 |
+| Bilibili | `api.bilibili.com/x/web-interface/search/type` 跑 30＋组关键词；读 BV1HWxq6kEHH、BV1fJxY6ZEi2、BV1KqJk62EMQ、BV1Aepf6eESi、BV1XkeF6VE5i 等原页与合集 | 约 3 项 | `api.bilibili.com` 常 412、view 接口空响应；桌面 watch 页只给标题／简介／合集；空间页脚本渲染；按约束未播放视频／音频 |
+| itch.io 与 translate.goog | 直连 TLS 失败后改走 `*.translate.goog`；读 `/games/tag-fps`、`/games/ai-assisted/*` 单 facet 列表、`/devlogs` 1–10 页与 game-design 1–6 页共 788 条、67 个游戏页与作者页 | 0 项直接候选（只作线索） | 直连 schannel TLS exit 35／000、429；组合 facet 302 循环；translate 返回 400 或 302 自身；`devlog.xml` 404；Wayback／r.jina.ai 000；jam 页与作品池未读完 |
+| WebSearch（Bing／DDG／Mojeek／searx／Google） | 约 30–40 组中英日查询，只用于定位入口与被拦页摘要 | 0 项直接候选（不计入总数） | Bing 中国区返回无关攻略／词典，`site:` 与引号失效；DuckDuckGo 000；Mojeek 403；searx JS 验证；Google 302 到同意页 |
+| arXiv／ACL／Semantic Scholar | API、`arxiv.org/abs` 与 `html` 读摘要与参考文献；核 2604.19742、2605.28258、2601.07251、2610.08621、2610.26098、2607.00527、2606.17861、2605.17637、2604.07429、2512.02358、2610.33106、2604.18394、2510.15061、2610.14224、2610.22791 等 | 约 17 项 | arXiv API 本次多次无返回；Semantic Scholar references 429；部分只有摘要、正文未读 |
+| 作者博客与独立站 | WebFetch／curl 读原文、feed 与索引：Simon Willison、Meiklejohn、Elipar、xeve、jfkaislay、Makko、PixelPicked、Vibegames Studio、STOREGGA、GoodAIGuide、PixelLab 等 | 约 30 项 | 部分站点 TLS／403／Cloudflare；velven.ai 402；openai.com 403；gamesalchemy 000；wikidocs 403；部分 SPA 只给壳 |
+| 产品、平台、插件与索引 | Genex、OhMyGame、PlayDrop、Claudeslop、agent-plugins.org、UHP、agentskills.io、skills.sh、modl.ai、SeeleAgent、aicookd、Vibecade、awesome 列表、Claudeslop seeds | 约 34 项（多数工具／平台） | 部分页面 JS 渲染只给导航壳；eurekaleo／3jsbench 动态列表未枚举；部分对局页 404；GitHub Discussions 多未启用 |
+| Steam | `appdetails`、`storesearch`、`ISteamNews` 核发售、截图、手柄与可访问性字段 | 0 项新候选（旧卡已覆盖 Exelio、群侠传） | `appreviews` 302 回首页；`steamcommunity.com` 000；demo 页截图 0 张；部分商店字段与公告不一致 |
+| YouTube／X／小红书／即刻 | noembed 取标题与频道；按任务约束不播放视频 | 0 项 | X 登录墙；YouTube 连接关闭／空响应；小红书、即刻登录墙或无公开检索；按约束不播放视频／音频，无法判定是否连续实机 |
+| SEC 与媒体（PC Gamer、FRVR、Linear、fion.ac） | curl／WebFetch 读原始公告、报道与论文 | 约 5 项（背景与工具） | sec.gov 附件 403；arstechnica WAF 验证页；bloomberg 付费墙；pcgamer 正文截断 |
+| 跨渠道／多作合并未单列 | §9.6 中按多作合并为一行的条目（Elipar 六款、Vibe Jam 四款、Mine Rogue 四款、paprika3d 四款、PlayDrop 五款、abagames 六款、PixelPicked 五款等）及未归入上述单渠道的跨渠道条目 | 40 项 | — |
+
+### 9.2 排序口径
+
+排序沿用任务的七项门槛（可玩入口或完整连续实机、作者过程、作者静态截图、版本／日期、AI／人分工、一次具体二改、许可／成本），并加一条本轮优先级：**先看是否直接服务 MOBA／FPS 的移动与瞄准、技能与菜单交接、HUD 遮挡与提示层级**，其余做法与工具后置。等级只表示资料完整度，不是品质排名：
+
+- **甲级**：七项只差 1 项且缺口可标注。
+- **乙级**：有可玩入口、AI 参与已确认、作者过程与一次二改，但缺 2–3 项硬证据。
+- **丙级**：缺 4 项以上，或踩硬门槛（AI 参与未确认、可玩入口不成立、反馈只来自 agent 自评、原作者身份不清）；问题侧证据、承诺未落地、只有列表页的也在本级。
+- **丁级**：工具、做法、平台与索引，不是作品候选。
+
+本轮**不把“平台是 AI 原生”当成作者分工已确认**。TapTap 制造、gamesvibe、Spawn、Genex 等平台上的作品，只有作者原文或 README 写明“谁写代码、谁做设计、谁试玩”才算分工成立；只挂平台标签的按未确认处理。
+
+### 9.3 结论：第二轮最值得先深挖的三项
+
+**先给结论。** 按任务的七项门槛，第二轮最值得先深挖：**Kiikurage/game-test**（3D 动作 TPS，移动端横屏是明确目标，统一输入层与三次输入／UI 改动——#187 新增 HUD／UI 缩放／安全区、#245 新增情境按钮与操作提示、#263 修锁定横移翻转——最值得读；但可见的反馈证据只来自 agent 自审（issue #353），没有真人试玩／owner 试玩报告，不能当真人反馈闭环）、**STOREGGA**（UE5 水下 PvP 射击，逐版 playtest 构建＋可重绑定＋HUD 重排，是最接近“真人反馈→补丁→可玩版本”的射击样本）、**PARALLAXIA**（abagames，键鼠／手柄／触控统一输入；同组 OVERTURN 有最干净的手机端具体修复、390×844 触控测试与“提示跟随最后输入设备”）。**先取 Kiikurage 的输入抽象机制；真人反馈闭环先看 STOREGGA／PARALLAXIA。** 若要看商业 FPS 的试玩闭环，先读 **STOREGGA** 的 changelog Build 7–10；若要做输入抽象层，先读 **PARALLAXIA** 的修订史与 OVERTURN 的输入一节。
+
+**最强机制样本与可验证机制。** 先取 **Kiikurage/game-test** 的输入抽象机制（<https://kiikurage.github.io/game-test/>；仓库 <https://github.com/Kiikurage/game-test>）。它把键盘／手柄／触控三种设备收敛成同一个 `InputSnapshot`，用 `<html data-input-device="touch|kbm|gamepad">` 只在最后使用的设备上显示对应 UI，并在 `docs/controls.md` 里逐动作列出触屏按钮、手柄死区与响应曲线、0.25 秒闪避阈值、0.15 秒输入缓冲、260ms／56px 横划识别；仓库用 Playwright 固定输出 915×412 DPR3（Xperia 1 V 横屏）截图，`SHOT_SCRIPT` 可注入输入。可直接在现有 FPS／MOBA 的移动端入口验证的机制是：**用“最后输入设备”驱动 UI 变体，而不是用屏宽猜设备**；再补三条断言——`visualViewport` 尺寸与安全区、技能键不与摇杆重叠、暂停／背包关闭后不接受战斗输入。这三条是本轮建议，**未执行**。**许可与版本边界**：仓库无 LICENSE（全保留）、无版本号（package 0.0.0、无 tag／release），只能读机制，不能直接复制代码；引用时标 package 0.0.0／无 tag。**适用边界**：这是浏览器 DOM／Playwright 判定，Unity／Unreal 要换成各引擎 Input System 的触摸／指针检测与安全区／分辨率 smoke，不能照抄代码；若问题是按键布局或遮挡而非输入设备判定，改看 Exelio／Overlock 或 OVERTURN。
+
+**本轮唯一的甲级。** **Turbo Rumble**（手机扫码当手柄，CHANGELOG 1.0–1.6 有日期，Codex 写全部应用代码、人给需求与试玩反馈，PolyForm Noncommercial）七项只差成本未披露。它资料最全，但玩法是派对赛车，和 MOBA／FPS 输入／UI 的直接相关性低于 Kiikurage 的输入抽象、STOREGGA 与 PARALLAXIA 的射击／输入闭环，所以不列首选三项。**Chain Circuit Vault**（MIT，人机九阶段，Phase 8 按人选把画面改成 540×540、HUD 只留顶部中央分数）只有 `screenshot.gif` 连续录制（540×540、220 帧），没有作者静态截图，按门槛 3 降为乙级，缺口为版本号与静态截图（见 §9.5）。
+
+**为什么是这三项，而不是 TapTap 上写得更细的《刀光剑影》。** 《刀光剑影》的断触链路（触摸归属、按钮缓冲区、模拟鼠标双触发、整圆命中区、29 条多指断言）是本轮最具体的手机输入修复，但作者日志没有写明 AI 与人工分工，按门槛属硬缺口，只能作最强机制线索（§9.6.1 首条）。同理，《R.U.R.》《元素涌者》《丧尸涌现》都挂在 TapTap 制造下，但日志未写分工，不列候选。**本轮没有把平台能力当成作者证据。**
+
+### 9.4 甲级（1 项，只差 1 项）
+
+1. **Turbo Rumble** — <https://turborumble.rastwork.pl/>。2–8 人浏览器派对赛车，手机扫码当手柄是核心输入路径；README 明写全部应用代码由 OpenAI Codex（GPT-6.1 Sol）写，需求、设计方向与试玩反馈由 Benjamin Rast 提供；CHANGELOG 1.0–1.6（2026-10-23～25）逐版记录 controller lobby、断线玩家回收、驾驶与赛后回大厅等修复；PolyForm Noncommercial 许可。作者截图（README 标注为真实比赛画面，1280×720）：<https://raw.githubusercontent.com/dziksu/turbo-rumble/main/docs/gameplay.png>。缺口（1 项）：成本未披露。本端未实机，手机手柄的配对与延迟未验。
+
+**Chain Circuit Vault** 因只有动画 GIF、没有作者静态截图，按门槛 3 降入 §9.5 乙级（缺口 2 项：版本号、静态截图）。
+
+
+### 9.5 乙级：可玩、AI 参与已确认、有一次具体二改，仍缺 2–3 项（第 1 项为机制样本例外）
+
+按“离门槛还差几项”排序，每项末标缺口。只差 1 项的已在 §9.4。**第 1 项 Kiikurage 是统一输入层机制样本：其反馈证据只来自 agent 自审，按 §9.2 硬门槛归丙级，保留在此仅作机制说明，不计乙级数量。**
+
+1. **Kiikurage/game-test（统一输入层机制样本，按 §9.2 硬门槛归丙级，不列乙级）** — <https://kiikurage.github.io/game-test/>，仓库 <https://github.com/Kiikurage/game-test>、AGENTS <https://github.com/Kiikurage/game-test/blob/main/AGENTS.md>。WebGPU 3D 动作 TPS，横屏手机 915×412 是明确目标。AGENTS.md 规定 Opus 编排、Sonnet 实现、一票一 PR、合并前过 lint／typecheck／test／e2e；Playwright 真跑浏览器，`npm run shot` 固定输出 915×412 DPR3 与 1280×720 截图，`SHOT_SCRIPT` 可注入输入。已合并三次输入／UI 改动（不是三次修复）：PR #187 <https://github.com/Kiikurage/game-test/pull/187> 新增 HUD（HP／耐力／瓶／残影）＋UI 缩放＋安全区；PR #245 <https://github.com/Kiikurage/game-test/pull/245> 新增情境按钮与操作提示（PC“E 休む”／手柄“A 休む”／触控“タップ：休む”三套文案）＋拾取通知；PR #263 <https://github.com/Kiikurage/game-test/pull/263> 修复锁定横移时朝向 ±60° 反复翻转的输入／相机问题。issue #353 <https://github.com/Kiikurage/game-test/issues/353> 记录“E 关闭石碑对话后按键仍在先行输入里、同一步又重读”的缓冲 bug，但正文末尾标 “Generated by Claude Code”，并说明是在 PR #352 工作中发现：这是 AI 自动发现／自审，不是真人试玩或 owner 试玩报告；本轮未找到任何真人试玩或 owner 试玩报告的原文。按 §9.2 硬门槛（反馈只来自 agent 自评归丙级），本项只作统一输入层机制样本。缺口：仓库无 LICENSE、无版本号（package 0.0.0、无 tag／release）；成本未知；真人反馈闭环证据缺失。本端未启动游戏，仅核入口 200 与构建脚本。
+2. **Chain Circuit Vault** — 可玩 <https://abagames.github.io/ai-builds-games-humans-refine/games/chain_circuit_vault/build/web/index.html>，README（含第 8 节 Human Feedback Notes）<https://github.com/abagames/ai-builds-games-humans-refine/blob/main/docs/games/chain_circuit_vault/README.md>、AGENTS <https://github.com/abagames/ai-builds-games-humans-refine/blob/main/AGENTS.md>。MIT（同仓库 LICENSE 已核）；AGENTS.md 定九阶段“AI 造可玩 mini-game→人试玩给反馈→AI 改下一版”，Phase 7 只出评估报告、Phase 8 只按人选方案实现；Phase 8 的 Human Feedback Notes 明确记录按人要求把画面改成 540×540 正方形、HUD 简化成顶部中央只显示分数，并让 BGM 只在游玩时播放、失焦暂停；可玩构建可达。仓库只有 `screenshot.gif`（540×540、220 帧）连续实机录制，没有静态 PNG／JPG：<https://abagames.github.io/ai-builds-games-humans-refine/games/chain_circuit_vault/screenshot.gif>。缺口（2 项）：无版本号（测试记录 2026-03-14，仓库最后推送 2026-07-11）、无作者静态截图。适用边界：一键／四键桌面玩法，只覆盖 HUD 信息层级，不覆盖触控或瞄准。
+3. **Bash Fighter** — <https://bashfighter.com/>，仓库 <https://github.com/Bash-Entertainment/bash-fighter>、README <https://github.com/Bash-Entertainment/bash-fighter/blob/main/README.md>。20 人浏览器平台格斗，代码 AGPL-3.0，AI agent 日常开发；README 明确征集战斗重量、相机可读性与触控人体工学反馈，公开 commit 有“Landscape phones: shorter HUD list…”、倒计时缩小下移避免遮挡、“390px 反馈行放宽”，issue #35 记录聚焦按钮与全局键位双触发并已修（<https://github.com/Bash-Entertainment/bash-fighter/issues/35>）。作者截图（README 标注为真实对局）：<https://raw.githubusercontent.com/Bash-Entertainment/bash-fighter/main/docs/images/gameplay-ffa.png>。缺口（2 项）：人类在回路中的具体职责、版本号（package 0.0.1，无 tag／release）。bashfighter.com 是 JS 壳，正文以仓库 README 为准。
+4. **vibe-wars** — <https://github.com/gfxblit/vibe-wars/issues/21>。AI vibe-coded 的 Three.js 第一人称太空射击，issue #21／PR #24 把移动端触控从“绝对屏幕定位”改成相对虚拟摇杆（首触定原点、100px＝1.0、松手归零、锁定首指并补 50px／100px 单测），GitHub Pages 可玩。仓库 `package.json` 声明 `"version": "1.0.0"` 与 `"license": "ISC"`；实际没有 LICENSE 文件、没有 tag／release。缺口（2 项）：改动由作者自测发起、暂无真人试玩记录；无 LICENSE 文件（仅 package.json 声明 ISC）。本端未实机。
+5. **PARALLAXIA** — <https://abagames.github.io/agentic-gamedev-games/parallaxia/>。PARSEC47 原作者本人逐版试玩并拍板，README <https://github.com/abagames/agentic-gamedev-games/blob/main/docs/parallaxia/README.md>、REVISION_HISTORY <https://github.com/abagames/agentic-gamedev-games/blob/main/docs/parallaxia/REVISION_HISTORY.md>。修订史记录 2026-10-10 补手柄、10-12 把射击键扩到 Z／X／J／K／Space／Enter、触控拖动＋触屏开火；标题固定写 “Z / X / SPACE / TOUCH”，不随最后输入切换，并附 18 个机制探针与浏览器／模拟器验证。README 的已知限制与 REVISION_HISTORY 的 “Never measured, never checked” 明确写真机触控与真机手柄未验证。许可：仓库根 LICENSE 为 MIT（Copyright 2026 ABA Games）；原作 PARSEC47 为 BSD-2-Clause。缺口（2 项）：无静态截图直链（只有 `screenshot.gif` 连续实机）、版本号只有日期；本端未实机。
+6. **OVERTURN** — <https://abagames.github.io/agentic-gamedev-games/overturn/>，README <https://github.com/abagames/agentic-gamedev-games/blob/main/docs/overturn/README.md>、REVISION_HISTORY <https://github.com/abagames/agentic-gamedev-games/blob/main/docs/overturn/REVISION_HISTORY.md>。修订史记录用户追问“手机上怎么办”后修：整倍缩放只剩 224×288 小图、两指抬起任一指就停桌、暂停只有键盘；**触屏静音未做**（原文 “Left out: a mute control on touch (the device's volume serves)”）。开始与操作提示改成跟随最后输入设备，附 390×844 触控测试 `tests/touch.cjs` 与前后帧。许可：仓库根 LICENSE 为 MIT（Copyright 2026 ABA Games）。缺口（2 项）：无静态截图直链（只有 `screenshot.gif` 连续实机）、版本号未给；本端未实机。**这是本轮手机端输入修复最干净的一例**，机制可直接对照。
+7. **HEAD RUSH** — <https://abagames.github.io/agentic-gamedev-games/head-rush/>，修订史 <https://github.com/abagames/agentic-gamedev-games/blob/main/docs/head-rush/REVISION_HISTORY.md>。修订史明确标为 human-directed：按真人评审要求新增“当前输入将走哪条道”的前瞻虚线、字体 3×5→5×7、重做标题与档位标签并删掉近失判定。许可：仓库根 LICENSE 为 MIT（Copyright 2026 ABA Games）。缺口（2 项）：无静态截图直链（只有 `screenshot.gif` 连续实机）、版本号未确认。
+8. **UNDERTOW** — <https://abagames.github.io/agentic-gamedev-games/undertow/>，修订史 <https://github.com/abagames/agentic-gamedev-games/blob/main/docs/undertow/REVISION_HISTORY.md>。修订史第 5 节原样记下真人两句反馈——“返港得分被雷达挡住”“EXTRA SUB 与过关文字重叠”，随后让分数下沉、提示移到过关文字下方。许可：仓库根 LICENSE 为 MIT（Copyright 2026 ABA Games）。缺口（2 项）：无静态截图直链（只有 `screenshot.gif` 连续实机）、版本号未确认。
+9. **PILEUP** — <https://abagames.github.io/agentic-gamedev-games/pileup/>，修订史 <https://github.com/abagames/agentic-gamedev-games/blob/main/docs/pileup/REVISION_HISTORY.md> 共 8 次 session（s1–s8，其中 s2 记为 “4 runs, no comments yet”）；所列表现层改动在 s3 前的 Presentation 节，由两次 agent 只读帧审读触发（活轨加朝玩家流动的虚线、每区首局 READY 点名该区内容；出口／配额是更早按概念加入的结构改动，不在这批里），`ladder.mjs --compare` 显示 40 局与 before-presentation 一致、规则未动，可作“改动只落在呈现层”的边界样本。许可：仓库根 LICENSE 为 MIT（Copyright 2026 ABA Games）。缺口（2 项）：无静态截图直链（只有 `screenshot.gif` 连续实机）、版本号未确认。
+10. **STOREGGA** — <https://storegga.org/changelog>。UE5 水下 PvP 射击。作者 changelog 逐版记录真人可玩构建：Build 8 把每个动作改为可重绑定（含冲突提示与恢复默认）、加 F1 键位总览、把按键提示贴到深度／油门表旁并把拥挤方位弧读数清出 HUD；Build 10 再修 HULL／BATTERY 标签与视角提示重叠、被拒入局给出原因；Build 7–10 均为 playtest 版。作者 Reddit 帖（<https://www.reddit.com/r/vibecoding/comments/1xm0i4q/>）写明由作者写 73 条编号设计决策并做最终合并，Claude Opus 作为 lead session 与作者对话、切工作包、评审与合并（明确 “doesn't write the big features itself”），Sonnet／本地 Qwen 通道在各自 worktree 实现；并披露 18 天 8 个 playtest 构建、19.40B tokens、API 等效成本约 8,495 美元（原文 “API equivalent $8,495”，不含本地与 Gemini 作业）。缺口（3 项）：playtest 可能需申请、日期只到月份、许可未公开；本端未实机。适用边界：这是“射击 HUD 与键位重绑定”的直接参照，但 API 等效成本门槛高。
+11. **Road Rush** — <https://xeve.io/blog/road-rash-style-browser-game-claude-code>。作者记录真机 iPhone 截图暴露“竖屏一条细条、触控按钮盖住仪表盘、按住油门弹 iOS 长按菜单”后重做移动端：竖屏赛道在上、控制器填在拇指落点，横屏控件移入两侧黑边，转向改为“滑动距离即转向量”的 pad，触屏油门自动、Pause／Back 替代 Escape，并修 portrait 类名污染整页；可玩 <https://roadrush.xeve.io>。原文写 “We built Road Rush by describing the game to Claude Code in one sentence and then playing every version it produced.”，即人负责描述需求与逐版试玩、Claude Code 产出。缺口（3 项）：无版本号、无许可、未说明团队内具体分工（谁设计／谁验收）；本端未实机。
+12. **VibeFPS** — <https://github.com/ychoi-kr/vibefps>。README 明写 80% 以上代码由 AI 写，桌面 WASD＋鼠标、移动端左摇杆＋右半屏滑动瞄准；作者开发的 wikidocs 书摘要记录 v0.1.3 修“双手触控顺序 bug”——`touchmove` 只读 `e.touches[0]`、且 document 与摇杆元素重复监听导致右手位置被当摇杆，改为按 identifier 分别保存 `joystickFingerId`／`lookFingerId` 并统一到 document 路由；可玩 <https://ychoi-kr.github.io/vibefps/>。缺口（3 项）：项目为 2025 年、书章节被 Cloudflare 拦（细节仅见索引正文）、README 称 MIT 但仓库无 LICENSE 文件；本端未实机。
+13. **SKATE** — <https://genex.games/world/skate>，DESIGN.md <https://github.com/Rabneba/skate-threejs/blob/main/DESIGN.md>。作者 Simeon／Rabneba 的 Three.js 滑板，公开 DESIGN.md 记录触控层被 `#ui` 全屏 `pointer-events` 根节点挡住、手机改成单双轴摇杆并砍掉次要花式、暂停／重置移出弧区，另有 input-matrix 17/17 与手机质量档。缺口（3 项）：仓库无 LICENSE、版本号未给、作者截图直链未提取；本端未实机。
+14. **十 agent MMO 的移动 UI 修复** — <https://www.reddit.com/r/ClaudeGameDev/comments/1wdnxk8/i_run_my_mmos_development_as_ten_claude_agents/>。玩家报手机端拖拽选衣物时看不到变化；作者回复“I fixed the mobile UI, it should be a lot better now”，并说由 research agent 按行业最佳实践重做。缺口（3 项）：版本号、资产许可、作者截图未给；本端未实机。
+
+### 9.6 丙级：只作线索（缺 4 项以上或踩硬门槛）
+
+#### 9.6.1 中文侧：手机输入／UI 写得很细，但 AI 分工未确认
+
+这一组是本轮与 MOBA／FPS 最贴近的材料，按规则都不能算候选，但机制值得直接读。
+
+- **《刀光剑影》** — <https://www.taptap.cn/moment/867459934575395940>。本轮中文侧最强的手机输入闭环线索：作者记录玩家原话“移动和攻击同时按会断触、视角转来转去”，找到三条独立成因——手指划过任一 UI 元素时 `touchedElement≠nil` 导致当帧不记入 `seen`、下一帧被当作抬手；攻击按钮只挖了左半圆缓冲区；部分设备把触摸映射成鼠标左键导致同一次按压被处理两次；修复为首次按下固定触摸归属直到真实抬起、先处理消失的指针再分派新指针、有真实触摸时屏蔽模拟鼠标、缓冲区改整圆、失焦清空全部输入，并跑 29 条多指输入断言。同系列另一篇记录横屏三选一卡片按宽度判定窄屏而溢出、攻击键判定区与视觉 1:1、摇杆横轴从横移改转向。硬门槛是日志以第一人称写 Lua／NanoVG 实现，未逐项写 AI 与人工分工，且无公开版本号。可玩 <https://www.taptap.cn/app/966587>。**若负责人能补一条作者对 AI 分工的说明，它会是本轮最强的手机 MOBA 类输入样本。**
+- **《R.U.R.》** — <https://www.taptap.cn/moment/858055928883185042>。手机版接多指触控，左摇杆移动、右侧按住攻击自动瞄准，移动与攻击可同时进行；暂停与设置移到右上、次级操作收进“更多”、可见按钮缩小但保留触摸范围；另修小屏菜单里商店刷新按钮与强化三选一被底部入口挡住。AI 分工未写、无版本号，只用尺寸模拟未上真机。可玩 <https://www.taptap.cn/app/955305>。
+- **《从参加聚光灯比赛到我为天帝镇压世间一切》** — <https://www.taptap.cn/moment/858143557549034780>。手机横屏只保留左侧摇杆、右下技能区和闪避键，六个技能两行三列、图标缩小但触控热区留够，生命／灵力／波次放进安全区；冷却改径向读条，冷却中再按保留最近一次输入并在准备好时自动放出。游戏页有版本 1.2.0（2026-10-20）和实机视频，但 AI 分工未写。可玩 <https://www.taptap.cn/app/959371>。
+- **《元素涌者》** — <https://www.taptap.cn/moment/859937343522471969>。删掉电脑端屏幕虚拟摇杆、保留键鼠；手机端改浅色半透明圆形底盘＋实心摇杆头以看清下方场景；底部物品栏改四个环绕圆框、投掷瞄准加取消区、点击攻击后自动瞄准最近怪物。AI 分工未写。可玩 <https://www.taptap.cn/app/967137>。
+- **《丧尸涌现：逃离封锁区》** — <https://www.taptap.cn/moment/856911562001091661>。按分辨率重排顶部信息、小地图和操作区，按钮可点范围加下限，多指按“一边移动一边按其他操作”调整；作者承认不能保证所有机型并征集机型截图。AI 分工未写。可玩 <https://www.taptap.cn/app/961572>。
+- **《这法杖不对劲》** — <https://www.taptap.cn/moment/861615169455787584>。战斗接双摇杆（左走位、右瞄准施法，可边退边打），摇杆在手指落点出现，闪避与交互各有独立按钮；按小屏重排生命／魔力／法杖信息，并补暂停、打开装配、切换房间时的触摸清理。可玩入口未确认（游戏页 986433 返回 404），AI 分工未写，只作线索。
+- **《赛博逃生：霓虹弹幕生存挑战》** — <https://996pm.com/game/>。微信原文称 OpenClaw 用 12 小时生成 75KB 单文件，战斗界面为左下虚拟摇杆＋右下技能按钮＋HUD、角色自动射击；开发中遇到虚拟摇杆与页面滚动冲突，加 `touch-action:none` 修复。原文被微信验证页拦截，作者、日期、许可、成本未核；可玩页现为 v0.3.4。
+- **《火柴人对决》（线影武斗）** — <https://www.taptap.cn/moment/857335669830192402>。0.3.0 把手机操作布局交给玩家：固定摇杆／区域摇杆二选一、摇杆与战斗按钮可拖动改位置和大小、按设备记忆、重叠会提示。但这是输入自定义功能而非缺陷修复，文中“AI”指对手 AI，不能证明作品由 AI 制作。可玩 <https://www.taptap.cn/app/959534>。
+- **《变成黑洞》** — <https://www.taptap.cn/moment/861704636787066715>。与《刀光剑影》同作者的可玩街机：把匀速漂移改成“松手即停”（速度拆操控分量与引力分量）、移速 2.0→4.0，死亡界面写明具体死因。日志未写 AI 分工（UrhoX／Lua），需先核。
+- **《涌·墨卷》玩家评价与作者承诺** — <https://www.taptap.cn/review/50846548>。玩家指出手机端按键尺寸与位置是最遗憾处，作者回复“下一版会重做触控布局，闪避键加大并和攻击键拉开距离”，另承诺加可选引导开关；应用更新停在 2026-10-21（早于 10-23 评价），未见改后版本。
+
+#### 9.6.2 中文侧：问题侧证据与未落地的承诺
+
+- **《我记得》评价** — <https://www.taptap.cn/review/50966417>。玩家列移动端硬伤：滚铁环只有摇杆左上区域能跑、炼钢打光圈时射击方向变成点按钮的方向；作者回复“11 月末我再更新一版 适配好一点的”。当前版本（更新 2026-10-21）尚未包含。
+- **《热冰报告》评价** — <https://www.taptap.cn/review/50832566>。玩家报“控键和灵敏度没法调整，手感不太好”；作者回复“键控和灵敏度选项在下次更新会补上，并适配手机端”。未见已发货证据。
+- **《涌现之野》评价** — <https://www.taptap.cn/review/50966424>。玩家详述 PC 端按攻击键无法攻击且无提示、手机端反而显示 PC 键位提示、手机能攻击但装备与配方状态混乱；作者回复“后续会解决”。是“同一套操作在键鼠／触控间交接失败”的直接样本，修复未落地。
+- **《霓虹幸存者》评价** — <https://www.taptap.cn/review/48907279>。玩家建议底部天赋栏缩小或不显示，称后期非常挡视野；作者回复“会在之后的版本更新”。同作另有两条同题反馈。应用 2026-10-29 有更新，是否即此修复未核。
+- **《翻面：FLIPSIDE》评价** — <https://www.taptap.cn/review/50984533>。玩家报 PC 右键与手机触屏点开镜都无效，作者回复“正在全力优化”；另一条评价作者明确答“瞄准镜只有狙击枪有”。尚无已修复版本证据。
+- **《小药瓶》评价** — <https://www.taptap.cn/review/50949731>。玩家赞按键可自由调，但报“按键透明度不可调导致两侧遮挡有些严重”；作者回复“选项中是可以调整按键不透明的”。是 HUD 遮挡抱怨实为设置入口不可发现的反例。
+- **《史莱姆开工啦！》评价** — <https://www.taptap.cn/review/50807154>。玩家报进入第一人称闲逛后无法主动脱离；作者回复“退出闲逛在暂停界面有，下个版本换了位置啦”。改后版本未核。
+- **《少女大战猫猫》评价** — <https://www.taptap.cn/review/50963929>。玩家指出时停需要长按且有延迟、又与加速键挨得太近，建议改成点按切换；作者未回复。无二改记录。
+- **《探访神明》评价** — <https://www.taptap.cn/review/50182443>。玩家直接求“更改键位的设置”和“ESC 暂停游戏”；后续评价称键位可改但无 ESC 退出，且上方向＋攻击会误触退回上一房间。作者是否已改未核。
+- **《苍穹浩瀚》评价** — <https://www.taptap.cn/review/49110417>。玩家长评明确写“目前游戏移动端按钮没有映射完全”，同时肯定飞行手感；属移动端输入覆盖不全的直接证词。更新停在 2026-06，未见修复记录。
+
+#### 9.6.3 有具体二改但缺可玩入口、AI 分工或验证闭环
+
+- **Sector Scavengers Command Deck** — <https://blog.makko.ai/sector-scavengers-command-deck-devlog/>。用 AI 2D 工具一小时内生成数十版 Command Deck 布局；把塞满硬件／船／卡／船员／任务／残骸的侧栏拆成“长期成长左列＋本次备战中央面板”，页签改成 Choose Ship／Pick Crew／Equip Hardware，出发未完成时给校验反馈，并用非交互背景图托住单一主 CTA。无可玩链接、无版本与许可，驱动来自作者自查而非试玩。
+- **The Magus** — <https://www.jfkaislay.com/blogs/news/ai-game-development-one-hard-week-building-the-magus>。两个 AI 分工（架构师写 brief／审报告、构建者执行）＋作者每周真机 iPhone 玩 12 个构建；发现地下场景摇杆可用但所有屏幕按钮全死（Mac 测试台合成按键正常，属手机 UI raycast 路径失败），改为按钮直接读触摸屏作为 UI 之外的第二输入源、按 touch 去重、菜单打开时禁用并打印每次触摸命中。无公开可玩入口、无版本与许可。
+- **Noctivore** — <https://pixelpicked.com/devlog/noctivore/7O9WrTQrm3W>。作者因“拇指挡住战场”把六个街机小游戏的点击／长按／滑动输入扩展到 playfield 下方直到屏幕底边，Blood Drop Catcher 下半屏改成触控板，并把 Game Over 卡片移出扩展区避免点 Again 触发跳跃；可玩 <https://noctivore.app>。页面未披露 AI 参与、无版本／许可／截图。
+- **tresr-game 移动 HUD 修复** — <https://github.com/tresr-community/tresr-game/issues/88>。issue 逐条列出手机 HUD 问题：HP／SCORE／KEYS／SUPER 挤在左上并裁切、跳跃／攻击／大招键过小过近、横屏暂停键在底部中央够不到、HUD 压刘海与圆角；验收要求 48dp 触控目标、图标胶囊、`env(safe-area-inset-*)`、暂停移到右上；由 AI agent 在 PR #157 实现，commit 标注 Co-authored-by Claude Opus 4.6。仓库已归档、无可玩入口／版本／许可，反馈是维护者审计而非玩家。
+- **Zombie Outbreak（Elipar）** — <https://www.elipar.games/games/zombie-outbreak>，devlog <https://www.elipar.games/blog/devlog-aim-assist-that-moves-you>。作者专文记录一次触控瞄准二改：开火时在约 12° 内找最近僵尸、把相机 yaw 直接转过去再打 hitscan，而不是放大判定盒或弯曲弹道（理由是可感知的“明明打偏却命中”会骗人）。站内自述“original code, art and sound built in-house”，未披露 AI 参与，无版本号与真人反馈引文。
+- **Ski Slalom／Frozen Summit／Flag Dash／Neon Dodge／Pool Master／Lucky 6** — 同作者 Elipar 的六款浏览器小游戏，各有一条具体二改：<https://www.elipar.games/games/ski-slalom>（窗口级 keydown 无条件 `preventDefault` 吃掉聚焦按钮的合成 click，修为遇交互控件提前返回）、<https://www.elipar.games/games/frozen-summit>（外部投稿的相机 `yaw=π` 让“按前进”朝后走，改为 0 并改用坐标断言）、<https://www.elipar.games/games/flag-dash>（真实 iframe 348×465 下底部一行答案按钮被裁出屏幕、一个答案不可达，压缩约 85px 并加 `overflow-y:auto`）、<https://www.elipar.games/games/neon-dodge>（指针只设目标、每帧指数逼近，让触屏／鼠标／键盘共用同一移动路径）、<https://www.elipar.games/games/pool-master>（完美瞄准 bot 复现角袋把慢球弹回，38 球仅 6 进、0 分，改为库边缺口建模）、<https://www.elipar.games/games/lucky-6>（开发笔记声称有静音按钮，审计发现只有裸 beep，重建音频栈并补真静音控件）。六款均未披露 AI 分工，按门槛不列候选，但都是“一次具体输入／UI 修复”的可读样本。
+- **Grid Runner** — <https://www.elipar.games/games/grid-runner>。带 `rotateX` 的父元素 `getBoundingClientRect` 返回 1029px 投影宽、导致精灵错道，改为按未变换游戏视口计算车道。AI 归属未披露。
+- **Golf Buddies** — <https://golfbuddies.nl/game>（页面写“即将上架”）与 <https://golfbuddies.nl/spel/>（作者帖称已上 iOS／Android）。Cruising Bones 同作者的 ThreeJS＋Claude Code 高尔夫跑酷；玩家评论报“fore”提示动画触发过快、没播完就重置，帖内未见修复回执；无 build log，商店状态前后不一致。
+- **Momentum** — <http://momentum.immatt.com/>。v0.1 手机／桌面 Portal 竞速，移动端已定义左拇指拖动移动、右侧拖动视角、A／B 传送门与跳跃，但玩家评论报告手机上找不到前进方式，是“触控布局已做、仍缺输入闭环”的现成反例，尚无可核修复记录。
+- **Fly Pieter** — <https://fly.pieter.com/>。Claudeslop 收录的 100% AI（Cursor＋Three.js）飞行 MMO，站上有公开 ideas／bugs 入口，适合追真人操作与 HUD 反馈；条目内没有一次具体二改。
+- **Starter Kit Racing** — <https://mrdoob.github.io/Starter-Kit-Racing/>。Claudeslop 收录的 Claude 移植赛车，原 starter kit 与 CC0 资产来自 Kenney，可看 AI 移植的输入／赛道适配；无二改记录。
+- **Three.js Quake** — <https://mrdoob.github.io/three-quake/>。Claudeslop 收录的 Claude 移植 Quake，可对照 AI 移植 FPS 的输入映射与 HUD 还原；无二改记录。
+- **Stick & Steel** — <https://github.com/Rabneba/stick-steel>。Genex 收录、SKATE 同作者的开源作品，可核 AI 生成资产与输入实现；条目内无二改。
+- **Break and Steal an Egg** — <https://www.roblox.com/games/114326934417838/Break-and-Steal-an-Egg>。Roblox Q3 2026 股东信点名的“几乎全 AI 制作”作品，约 2.89 亿访问并进过同时在线前 20，可作大规模 AI 游戏对照；未见输入／UI 二改记录，游戏页本机 404（疑似机器人拦截）。
+- **WenWare（Time Travel Today）** — <https://wen-ware.com>。Vibe Jam 2026 第三名且移动端友好，输入是 360° 场景环视＋地图定位猜测而非 WASD，可作“非动作类移动输入与 HUD 信息层级”的对照（v1.21）；无 devlog。
+- **HALDANE-4** — <https://haldane4.denisbondare.com>。Cursor 生成、AI 负责大部分代码的 ASCII 恐怖冒险，Vibe Jam 2026 第 5 并获 Most Original；页面标称手机友好但只列键鼠操作，适合核对“移动端声明 vs 实际输入”的差距。
+- **Killing Wave** — <https://blog.ajb.bz/killing-wave-vibe-coded-first-person-shooter>。**摘要·未核**：检索摘要称 Claude Code 约 8 小时做出浏览器 FPS，作者把难点归为手感（移动加速度、鼠标灵敏度、输入延迟、帧稳定性）而非渲染；blog.ajb.bz 本机 curl 403（站点根同样 403，换浏览器 UA 仍 403），原文未读，摘要还称未给可玩地址、只有 YouTube 演示，按约束未看。
+- **Null Range／Eyrie／Undersphere／Spirit Call** — Vibe Jam 2026 的四个可玩入围作品：<https://nullrange.com/>（多人太空狗斗，手机横屏提示、灵敏度／画质设置与 HUD 可查）、<https://playeyrie.com/>（HUD 只留 SIT／TALK／Dash／Jump／Shoot）、<https://playundersphere.com/>（重力切换直接改变移动／相机输入）、<https://spirit-call.typeonce.dev/>（竖屏／横屏提示、三元素切换与四分钟战斗）。四款均未找到作者 devlog 或二改记录，只作移动端信息层级对照。
+- **ZOMBONK** — <https://www.tryaura.dev/updates/sinn-studio-aura-unreal-ai-agent-case-study/>。Sinn Studio 的 Quest 免费 VR 游戏，Aura 案例文记录 5 个月 EA 上线与 AI 代理参与生产，但没有一次具体输入／UI 二改，且未定位到官方商店原页。
+- **千星奇域“100 个游戏”创作记录** — <https://www.bilibili.com/video/BV1XkeF6VE5i/>。B 站创作者称用新增客户端控件／客户端脚本与 AI vibe coding 在同一奇域关卡做 100 多个小游戏合集（含大厅与搜索页），是中文侧继续追开发日志与 UI 适配的入口；只读到标题与简介，按约束未播放。
+- **Mine Rogue／Daily Pipes／Arkenfall／Tiberava** — 四个作者自述 AI 生成的可玩作品：<https://minerogue.francanobr.com/>（Claude Opus 5.5＋React）、<https://daily-pipes.com/>（Claude 写几乎全部代码的日更解谜）、<https://www.arkenfall.site/>（Claude Opus 5.5 生成代码、程序化世界、音效与音乐）、<https://tiberava.online/>（城市建造，作者以“vibecoded game got a glow up”记录一次改版）。AI 分工可核，但都没有针对输入／UI 的二改记录。
+- **Tree Appreciator／Pumpkin Farmer／Panache／Emberwick** — Simon Willison 10-28 文点名的四款可玩作品：<https://tools.simonwillison.net/tree-appreciator>、<https://simonw.github.io/pumpkin-farmer/>、<https://github.com/menufactory43/panache/>、<https://simonw.github.io/emberwick/v11/emberwick.html>。AI 生成可核，但试玩修复集中在任务逻辑／内容，不是输入／UI 二改。
+- **Gali Dash／Necromancer／Blocky Tanks／Grafite Sudoku／Hollow Night** — PixelPicked 与 PlayGama 的可玩样本：<https://www.pixelpicked.com/devlog/gali-dash-desi-street-run/3fF8fgvf3gx>（AI 辅助美术与代码的 Android 跑酷，操作仍为滑动）、<https://www.pixelpicked.com/devlog/necromancer-undead-legion-rpg/1YKB80HFPcZ>（外部测试者发现右手布局把传送键放进左拇指移动区，作者对调攻击／传送键并给三套控制预设；AI 用于装饰美术、音乐与音效，但游戏仍在开发、无公开试玩）、<https://pixelpicked.com/game/40fNZ5ObAEM/blocky-tanks>（v0.10.0 小地图可拖动、摇杆缩小、玩家列表上移避拇指；未声明 AI）、<https://pixelpicked.com/game/7SViDJjd0No/grafite-sudoku-offline-puzzle>（按单拇指重排数字盘、暂停菜单与返回手势；未声明 AI）、<https://playgama.ai/play/qwpaherohe>（Void Parry 同引擎万圣节版，仅换数据；无新输入改动）。
+- **Photo Finish Fiasco／Couch Up The Stairs／Hide in the Flock／Kaeru Flip** — paprika3d 的可玩示例：<https://qwop-horse-race.pages.dev>、<https://couch-up-the-stairs.pages.dev>、<https://hide-in-the-flock.pages.dev>、<https://kaeru.paprika3d.app>。前三者逐轮报告含键盘输入、双人键位、HUD 与结果卡改动，但仓库无 LICENSE、版本以轮次计；Kaeru Flip 源码与二改记录未公开。
+- **Velodrone／pocket-aces／Polarity Lasso Chain／Warp Chase Holdline／PROOFFALL CASCADE** — <https://ohuntley.com/drone/>（完整触控：左右虚拟摇杆、CAM／RST 按钮、TAP TO ARM，但无二改记录）、<https://github.com/achimala/pocket-aces>（触屏长按看进化线、键盘 Enter 攻击等，MIT＋CC BY，但无二改）、<https://abagames.github.io/ai-builds-games-humans-refine/games/polarity-lasso-chain/build/web/index.html>（单一动作映射 Space／左键／屏幕点触，Phase 7 评估后未采纳）、<https://abagames.github.io/ai-builds-games-humans-refine/games/warp-chase-holdline/build/web/index.html>（只靠按住时长的三输入方案，未记录人工二改）、<https://abagames.github.io/ai-builds-games-humans-refine/games/prooffall-cascade/build/web/index.html>（Human Feedback 记录补标题画面并把“按 pulse 关标题、开始游戏”接进首次启动状态；无版本／许可／截图）。
+- **DRAFT LINE／BLINK SCOPE／SKYHAUL／WRECKFALL／TWIN VECTOR／ZIG SABER** — abagames 的 agent 生成原型：<https://abagames.github.io/agentic-gamedev-games/draft-line/>、<https://abagames.github.io/agentic-gamedev-games/blink-scope/>、<https://abagames.github.io/agentic-gamedev-games/skyhaul/>、<https://abagames.github.io/agentic-gamedev-games/wreckfall/>、<https://abagames.github.io/agentic-gamedev-games/twin-vector/>、<https://abagames.github.io/agentic-gamedev-games/zig-saber/>。按 Agentic Gamedev Skills 生成的可玩原型，单作暂无二改记录，只补样本池。
+- **CHAIN DRIFT／COMET SLASH／VOLT KEEPER** — <https://abagames.github.io/crisp-game-lib-12-games/chain-drift/>、<https://abagames.github.io/crisp-game-lib-12-games/comet-slash/>、<https://abagames.github.io/crisp-game-lib-12-games/volt-keeper/>。同 skills 的另三款作品，补 14 款游戏池，无二改证据。
+- **The Long Silence** — <https://github.com/achimala/TheLongSilence>。522 星的真实 WebGL2 太空探索游戏，README 给出桌面与触控两套完整控制表（双摇杆、BST／SCAN／FOLD／MAP／ARC 按钮），`ui/` 下有 HUD、Codex、StarMap，`tools/` 有 `play.mjs`、`probe.mjs`；提交里有渲染与镜头，但未记录一次由真人反馈触发的移动／瞄准／HUD 二改，README 也没给可玩 URL。
+- **Raccoon Heist** — <https://simonwillison.net/2026/Aug/5/raccoon-heist/>。单提示生成的可玩 Three.js 游戏，真机测试暴露两类移动端缺陷并修复：`cssText` 覆盖 Three.js 内联尺寸导致手机 canvas 双倍大、胜利页 `.stars` 继承全屏样式后吞掉“下一夜”按钮的所有点击。人只给一句提示不做设计决策，无版本／许可，修复来自 AI 自测而非真人反馈。
+- **Merge Conflict** — <https://github.com/Leonxlnx/merge-conflict>。earshot 同一作者的浏览器 3D 格斗（v0.1.0，2026-10-06），支持键盘／鼠标／手柄并宣称 40 场 bot 模拟赛与 20/20 浏览器实机检查；没有真人反馈或触控二改。
+- **Void Parry（Nightdrive Labs）** — <https://dev.to/nightdrivelabs/a-game-portal-rejected-my-game-with-one-line-the-wasd-keys-arent-working-they-were-right-and-3p11>。平台以“WASD 不工作”拒收后定位到 canvas 的 `pointerdown` 调 `preventDefault` 让 iframe 拿不到键盘焦点，改为加载／开战／指针移动／广告关闭后恢复 focus，并加“不点击直接按 WASD”的双层 iframe 回归测试；同作者另一篇记录教程提示早于 0.28 秒护盾窗口、改为教学关护盾 3 倍且冷却 0.25 秒。可玩 <https://playgama.ai/play/ddg7todvr2>。缺口：AI 助手未点名、无版本号、无截图、无许可，属“问题真实但 AI 参与未确认”，只作输入焦点闭环线索。
+- **Claude of Legends** — 可玩 <https://claudeoflegends.com/>，仓库 <https://github.com/killian01/claude-of-legends>、README <https://github.com/killian01/claude-of-legends/blob/main/README.md>、资产许可 <https://github.com/killian01/claude-of-legends/blob/main/CREDITS.md>。单维护者＋Claude Code 48 小时做出的浏览器 5v5 MOBA，后在公开仓库继续打磨；README 标 MIT、v0.1.0、首提交 2026-08-26，给出三路地图／11 英雄／触屏点击操作与作者实机截图。**资产口径按当前 CREDITS**：8 个英雄用 KayKit／Quaternius 的共享 CC0 模型；Vesk／Korrath 用 Meshy、Sylra／Elowen 用 Tripo 生成（各按服务条款）；Star Orchard 地图是作者在 Blender 中借助 ChatGPT 制作（塔面画作用 OpenAI 图像模型生成），不是纯 AI 生成。README 仍写 11 个英雄，`src/sim/content/champions/index.ts` 的 registry 已注册 12 个（Ashvyn／Dain／Elowen／Fenn／Korrath／Maera／Nisk／Ostrand／Rhoka／Sylra／Torv／Vesk），差在 README 未随新增英雄更新。缺口：没有任何一次具体的移动／瞄准／HUD 二改记录，逐项资产许可与成本未核；按门槛只作 MOBA 输入形态线索，补到一次具体二改后可升乙级。
+- **Cruising Bones 更新 5** — <https://www.reddit.com/r/ClaudeGameDev/comments/1xitqds/update_5_on_cruising_bones/>。玩家指 UI 拥挤、尤其某处信息过载；作者承认并称“Have changed the HUD a lot over the course of this game”。有连续更新帖与视频，但缺具体改前／改后参数与版本号，只作 HUD 迭代线索。
+- **Tidebreaker／Tiny Toon Duel／Castle Clash／Forest Census／Closing Time** — PlayDrop 上 chongdashu 的五款作品：<https://www.playdrop.ai/@chongdashu/tidebreaker>（v1.0.0，键盘＋触控、无手柄）、<https://www.playdrop.ai/@chongdashu/tiny_toon_duel>（v1.0.1，仅桌面、不支持手柄）、<https://www.playdrop.ai/@chongdashu/castle_clash>（v1.0.1，“Vibe Coded PhaserJS game using skills”）、<https://www.playdrop.ai/@chongdashu/forest_census>（v1.0.3，开源 Three.js＋Codex CLI＋可复用 Three.js Agent Skill）、<https://www.playdrop.ai/@chongdashu/closing-time>（第一人称抓取／投掷 ragdoll）。五款都有版本、控制方式与 AI 参与线索，但都没有一次具体的输入／UI 二改记录，只作输入适配与“技能包直接参与实现”的样本。
+- **BANG BANG** — <https://qiita.com/JUN-ai/items/ad05897ba1fd2709e6af>。作者详述 Claude Code 开出 35＋PR 的浏览器 FPS：Pointer Lock 灵敏度／平滑、移动端左虚拟摇杆＋右侧拖拽视角、多指并用、HUD 用 `pointer-events:none` 放行输入；是移动 FPS 输入／UI 分工少见的逐项记录。缺口：文中 play 链接（`code-worldweb-production.up.railway.app/world`）现返回 404，试玩入口不成立；仓库仍在，版本／许可未给，只作线索。
+
+#### 9.6.4 反馈只来自 AI QA／聚合统计，或作者过程未读（维持 §9.2 硬门槛）
+
+- **Blacklight（Vibegames Studio）** — <https://www.vibegamesstudio.com/blog/2026-09-08-the-guard-that-had-never-fired>。工作室自述零人类（页脚：*a game studio with zero humans in it*／*staffed entirely by machines*），公开记录一次输入修复：`pointerlockchange` 守卫因事件不冒泡从未生效，首修被 QA 以 7 次冷启动中 4 次面壁打回，重绑监听后 7/7 通过；另按“开始后 60 秒内一半玩家退出”的遥测重做开场逃生提示与更短教学。没有人类在环，需求由工作室内部（AI）定；反馈来自 AI QA 与玩家聚合遥测，但没有玩家原话／试玩报告，按 §9.2 硬门槛归丙级，与 §5.2 对同社作品的分级一致。
+- **Antibody 与 Vibegames 触控套件** — <https://www.vibegamesstudio.com/blog/2026-07-26-we-dont-ship-features-we-ship-kits>。同一全 AI 工作室给 40 款游戏补触控：记录“近半访客在手机、旧版却假设键盘”，给出 5 套控制方案、横竖屏门、设备切换提示；Antibody 采用竖屏 drag-follow 而非虚拟摇杆，可直接对照 HUD／触控取舍。反馈来自聚合统计而非具体玩家原话，与 §5.2 同归丙级。
+- **Agentic Wars: Conquest** — <https://agenticwarsconquest.com/>。作者在 2026-10-31 更新帖明确写“按社区反馈重做触控 HUD，并给手柄补完整 UI 导航”，Claude Code 写码、Blender 出模型，浏览器／手机免费可玩。帖子原文未读，只有收集者摘要；按 §9.2 门槛 2，摘要只作线索，不能算作者过程。
+- **DEIN BEAST** — <https://www.jabali.ai/play/5f27b66e-f15f-468e-a912-a53a79a157ea/quick-game/dein-beast/>。24 小时 AI jam 作品，人类负责设计／系统／UI、jabali.ai 负责程序；明确做了触摸优先 UI、实时换人预览、常驻 HUD 与自动升级以减少点按疲劳，当前可玩。创作过程只有平台页描述，作者过程未读，同样只作线索。
+
+### 9.7 丁级：工具、做法、平台与索引（不是作品候选）
+
+这一层不进作品候选，但任务要的“可在现案例验证的具体机制”主要来自这里。与 MOBA／FPS 输入／UI 最直接相关的排在最前。
+
+#### 9.7.1 输入、试玩与验证
+
+- **Kiikurage `docs/controls.md`** — <https://github.com/Kiikurage/game-test/blob/main/docs/controls.md>。把键鼠、手柄、触屏合并成一个 `InputSnapshot`，逐动作列出触屏按钮、手柄死区／响应曲线、0.25 秒闪避阈值、0.15 秒输入缓冲、260ms／56px 横划识别，并用 `html[data-input-device]` 只在最后使用的设备上显示 UI。可直接当输入抽象层的实现基准。
+- **Kiikurage issue #353** — <https://github.com/Kiikurage/game-test/issues/353>。“按 E 关闭石碑对话后按键仍留在先行输入里，同一步又重读石碑”的真实输入缓冲 bug（正文末尾标 “Generated by Claude Code”，属 agent 自审发现）；仓库共 230 个 issue（165 个已关、65 个 open），可按标签继续挖手柄／触屏条目。
+- **Agentic Gamedev Skills（abagames）** — <https://github.com/abagames/agentic-gamedev-skills>。37 个游戏开发 skill 打包成 Codex／Claude 插件，其中 `auditing-game-screen-readability` 按游戏事件帧检查 HUD 被遮挡／不可读／多余元素，`probing-web-game-mechanics` 验证 UI 绑定，`maximizing-game-feel` 管响应与打击感；每个 SKILL.md 只留最短完整流程、长目录下放 references。
+- **mobile-touch-compatibility skill（ghuntley/ohuntley）** — <https://github.com/ghuntley/ohuntley/blob/trunk/.cursor/skills/mobile-touch-compatibility/SKILL.md>。Funland Arcade 给每个小游戏强制加的触控兼容 skill：`viewport-fit=cover`、canvas `touch-action`、安全区、`pointer:coarse` 时改提示、44px 命中区、`pointerdown` 后合成 click 双触发、竖横屏 375px 自检，并按 tap／离散动作／瞄准三类给参考实现。
+- **paprika3d issue #141** — <https://github.com/Keeno-Corp/paprika3d/issues/141>。`look` 的被摄主体固定，无法跟随玩家正在做什么，因此动态输入／HUD 问题会被自动审查漏掉。解释“为什么 AI 自评看不出操作问题”的一手工具侧证据。
+- **paprika3d issue #213** — <https://github.com/Keeno-Corp/paprika3d/issues/213>。固定步长在 100／120Hz 屏上的卡顿没有任何现有工具能看见，属输入手感／帧节奏的验证盲区。
+- **paprika3d issue #243** — <https://github.com/Keeno-Corp/paprika3d/issues/243>。`calibrate-hud.sh` 每次运行残留 200–300MB 的 `/tmp/calhud-*` 目录并撑爆磁盘，是 AI 游戏 HUD 自动检查工具的真实运维问题。
+- **Aura Autopilot（Ramen VR）** — <https://github.com/ramenvr/autopilot>。2026-10-30 开源的实时自主试玩 Agent，支持 UE 5.4–5.8／Unity 6／Godot 4；README 提供 Autopilot MCP 供 Claude Code／Codex 调用，官网自测 7/7 任务通过、平均 262 秒（对照 Claude Code 5/7、437 秒）。补“改完输入／UI 后谁来点一遍”的缺口。
+- **WAI Play** — <https://github.com/waiterve/wai-play>。2026-08-04 起的网页游戏自动试玩与质量诊断 Agent：真实浏览器用键盘、鼠标和游戏接口操作，截图与不超过 20 秒的录像绑定问题卡片，五维评分含“UI 与视觉”“操作反馈”，并把“测试可信度”与游戏质量分分开记。
+- **Ludra** — <https://github.com/ersingvn/ludra>。AI-agent-first 游戏引擎（v0.96，MIT）：游戏即 JSON；`ludra play --inputs` 无头回放脚本输入、`test`／`review`／`solve`／`fuzz`，还能把真人试玩录像变成测试；支持键盘、手柄和触屏。
+- **LGUI（LumioGames）** — <https://github.com/LumioGames/LGUI>。给 Agent 用的游戏 UI 框架（0.3.0，PolyForm Shield＋附加许可）：UI 用 FairyGUI 放在 `ui/`、逻辑用 TypeScript，浏览器里预览，`lgui check`／测试／截图都是命令，`lgui unity export` 把同一份界面导出 Unity；中文文档完整。
+- **Noobi.ai** — <https://github.com/Innate-Labs/Noobi.ai>。本地 Codex＋Godot 生产 Agent（开发者预览，macOS）：Planner→Implementer→Reviewer→构建→自动试玩，隐藏浏览器实际操作核心控制、截图、查动画连续性与运行时错误，失败最多回修 3 轮。
+- **Genex** — <https://github.com/genex-games/genex-desktop>。桌面 Agent（MIT）：自动安装 UE／Unity／Godot／Roblox 环境、构建并自己试玩；可混用 Opus／GPT 做主 Agent、worker 与 reviewer，Blender／Meshy／Tripo／ElevenLabs 走工具路由。
+- **OhMyGame** — <https://github.com/WhiteTowerAI/ohmygame>。2026-10 beta 5，Apache-2.0：Agent 在实时预览里跑并亲自试玩 Canvas／WebGL 游戏，发现问题再修；插件接 Godot／Unity／Unreal／Cocos，可发微信小游戏、抖音小游戏与 TapTap，40＋模型 BYOK。
+- **Tether** — <https://github.com/Seneku/Tether>。UE 5.8＋ 的 agent CLI（MIT，约 100 个子命令）：在常驻编辑器里做单人／多人 PIE 试玩（脚本或录制）、截图与视觉回归、关卡／蓝图／材质文本读写，把一轮编辑器往返从 12–24 秒压到 0.2–0.85 秒。
+- **UnrealEngine_Bridge** — <https://github.com/josephoibrahim/unrealengine_bridge>。与 Epic 官方 Unreal MCP 并存的 MIT MCP 层（58 工具）：编辑器 Python、视口感知＋scene diff、光照预设、UE↔X3D 往返；官方 MCP 的 UMG 工具面不足时补“改完 UI 到底变了什么”。
+- **千星沙箱模拟器（miliastra-beyond-simulator）** — <https://github.com/1475505/miliastra-beyond-simulator>。GPL-3.0 的 2D／Lua 游戏沙箱：11 类客户端控件的可视 UI 编辑（层级／位置／尺寸／锚点），鼠标、触屏、键盘试玩与单步调试，AI 可改工程、发输入、截图、录制回放用例；提供 MCP 与 DeepSeek Harness 插件。
+- **MiliastraAgent** — <https://github.com/ThRabbit-Studio/MiliastraAgent>。面向原神千星沙箱的 AI 开发套件，内置离线沙箱支持模拟点击、随机输入轰炸、单步调试，以及控件拼图、锚点布局等 UI 文档。
+- **Miliastra Toolbox** — <https://github.com/1475505/Miliastra-toolbox>。以 RAG 汇总官方奇匠学院与社区知识、经 MCP／Skill／HTTP 接入的千星沙箱工具，能查节点参数与关卡流程。
+- **genshin-miliastra-mcp** — <https://github.com/8itlab/genshin-miliastra-mcp>。另一套千星奇域 MCP：AI 摆场景、写 Genshin-TS 节点图、自动进游戏试玩并取回日志与截图，附三个 AI 从空地图做通关卡的盲测记录。
+- **modl.ai** — <https://modl.ai>。让 AI agent 按自然语言测试用例在真实构建里玩，CI 里报崩溃、缺资源、softlock 与性能掉帧；官方明确适合 UI 密集型、不适合极快或强时序玩法，每个游戏要定制模型、价格未公开。
+- **modl.ai ×《Saltsea Chronicles》** — <https://modl.ai/testing-content-heavy-games-with-ai-bots>。已发行叙事游戏用 AI bots 加人工分析做黑盒测试（视觉加模拟输入、无需 SDK）的公开案例，可对照自动化输入测试能抓到与抓不到什么。
+- **modl.ai × Riot《Lyra: Ascent》** — <https://modl.ai/riot-games-and-modl-shooter-bots>。为 VALORANT 类 2v2 战术射击做拟人 bot，用低分辨率射线感知替代像素输入、以 48 小时人类对局做模仿学习，论文 arXiv:2501.00078 可互证。
+- **SeeleAgent** — <https://newname.ai/products/seeleagent>。2026-10-17 上线的多模态游戏生成 Agent：一句提示产出可玩构建，并可导出 Unity／Unreal／Godot；页面未说明是否自动试玩或验证。
+- **UniKit AI** — <https://github.com/NintendaDev/unikit-ai>。MIT 的 npm 工具：为 Unity／Godot 4／UE5 生成 Agent 上下文、装技能／子代理／引擎 MCP 配置，流程 explore→plan→implement→review→verify→commit，并把修复蒸馏成项目规则。
+- **game-ui-design-workflow** — <https://github.com/guiguiyan930-source/game-ui-design-workflow>。398 星中文 Cursor Agent Skills 工作流：GDD／PRD→UI 规范与令牌→屏幕地图→逐页生成→组件拆解→雪碧图切分→9-slice／Atlas 与 Godot／Unity／Cocos JSON；把 UI 决策落成 `specs/` 契约。
+- **autosplat 触控输入提交** — <https://git.jkaindl.de/jkaindl/autosplat/commit/c4e30c4674dee1d8947cb0885b5b147f2b8d8dbe>。浏览器 3D 高斯泼溅漫游的一次具体触控二改：左半屏单指虚拟摇杆（56px 行程、死区、推满冲刺）、右半屏第二指拖动看向、`CompositeInput` 叠键盘与触控、仅 coarse-pointer 显示按钮，并加 9 条单测与 HUD 预览 smoke（提交署名含 Claude Opus 4.7）；不是游戏，真机触控仍为手工 smoke。
+- **nodetool PR #6656** — <https://github.com/nodetool-ai/nodetool/pull/6656>。2026-10-16 合并的输入／UI 边界修复：HUD 优先取得指针、letterbox 区域不计入 HUD 命中、pointer lock 失败仍可达鼠标绑定、暂停时清空并禁用实时输入，配 pointer-lock／失焦／多触／HUD 归属回归测试。
+- **phone-harness** — <https://github.com/phone-harness/phone-harness>。MIT（4.5k 星，2026-08-07）：让 Agent 用真手机（iPhone 镜像或 Android adb）滚动、点按、输入、读屏，也可用云手机；移动端触控 UI 从模拟器走向真机的入口。
+- **rpocket-team-eyeproof** — <https://github.com/Zarlibraium/rpocket-team-eyeproof>。2026-11-05 的新仓库：headless 提供截图、游戏 play-test、Blender 渲染与视频，并做量化对比；太新，只有仓库描述可核。
+- **dsh-game-studio** — <https://github.com/ZSeven-W/dsh-game-studio>。2026-11-05：在 DeepSeek Harness 侧边栏一句话生成小游戏、替换 AI 美术并导出。
+- **PlayDrop** — <https://www.playdrop.ai>。游戏托管／发现平台，逐作标注版本、玩家数、控制方式与手柄支持，可作后续候选池。
+
+#### 9.7.2 设计、UI 规范与反 slop
+
+- **anti-slop** — <https://github.com/miqdadbadjuber/anti-slop>。8.4k 星、MIT（2026-08-07）：给 Agent 的规则书，过滤模板化 AI UI、文案与“AI 味”代码；不指定风格，只做过滤器，适合作为游戏 UI 生成的前置约束。
+- **Anti-Slop UI** — <https://github.com/local-over/Anti-Slop-UI>。独立的一套 UI 生成框架，用确定性状态机加 111 条启发式抑制幻觉。
+- **peakoss/anti-slop** — <https://github.com/peakoss/anti-slop>。自动检测并关闭低质／AI slop PR 的 GitHub Action（AGPL-3.0、34 条检查），补生成之后的提交闸门。
+- **stupify** — <https://github.com/Octember/stupify>。用 Codex 按 CORPUS.md／RUBRIC.md 审 PR 的反 slop 代码审查器（MIT）。
+- **Antislop 论文** — <https://arxiv.org/abs/2510.15061>。从采样层用回溯抑制重复措辞，可与提示词规则集路线对照（不是同一项目）。
+- **DESIGN.md（google-labs-code）** — <https://github.com/google-labs-code/design.md>。Google Labs 规范（YAML tokens＋Markdown、Apache-2.0、alpha）提供 lint／diff／export，把视觉方向变成可校验契约。
+- **impeccable** — <https://github.com/pbakaus/impeccable>。skills.sh 设计榜收录的设计词汇表，polish／critique／bolder 等命令直接针对 AI slop。
+- **taste-skill** — <https://github.com/Leonxlnx/taste-skill>。用参考图＋浏览器检查替代泛化审美，补生成后验证环节。
+- **ui-ux-pro-max-skill** — <https://github.com/nextlevelbuilder/ui-ux-pro-max-skill>。跨平台 UI／UX 设计智能技能，可作设计规则基线。
+- **anthropics/skills** — <https://github.com/anthropics/skills>。官方技能库（frontend-design、canvas-design 等），是 Agent Skills 规范所指的权威实现集合。
+- **vercel-labs/agent-skills** — <https://github.com/vercel-labs/agent-skills>。含 Web Interface Guidelines（间距／字体／交互／可访问性），补检查细则。
+- **openui** — <https://github.com/thesysdev/openui>。生成式 UI 开放标准，讨论 AI 生成界面为何趋同。
+- **designer-mcp** — <https://github.com/Hela-Ecosystem/designer-mcp>。anti-slop 生态里的 MCP 服务，含 anti-slop 质量门、OKLCH token 与 WCAG 审计。
+- **W3C Design Tokens Format（DTCG）** — <https://www.designtokens.org/>。DESIGN.md 的 token 规范源头，可导出 DTCG。
+- **A2UI** — <https://a2ui.org/>。awesome-agent-harness 协议表里的“agent 生成声明式 UI”标准，直接对应 HUD／信息层级问题。
+- **AG-UI** — <https://docs.ag-ui.com/introduction>。UHP 生态页列出的 agent→前端交互协议，补“操作事件如何呈现给用户”的接口层。
+- **ACP（Agent Client Protocol）** — <https://agentclientprotocol.com/>。UHP 生态页明确区分 ACP＝Agent Client Protocol（非 Agent Communication Protocol），是编辑器／客户端驱动 coding agent 的接口。
+- **Claude Code output styles** — <https://code.claude.com/docs/en/output-styles>。i-have-adhd 评论区反复指出官方 output styles（含 Concise）才是惯用替代，是评估该 skill 必要性的基线。
+- **ricardobeat/skills（human）** — <https://github.com/ricardobeat/skills/tree/main/human>。另一份“human”写作 skill，可与 i-have-adhd 的 10 条输出规则对比。
+
+#### 9.7.3 Agent 运行时、harness 与插件标准
+
+- **Agent Plugins 1.0** — <https://agent-plugins.org>。2026-08-06 的开放打包标准：把 Agent Skills 与 MCP server 统一成可移植 plugin（`plugin.json`＋`skills/`＋`mcp.json`），TSC 含 Amazon、Cursor、Microsoft、OpenAI、Vercel。
+- **Agent Skills 规范** — <https://agentskills.io/specification>。Agent Plugins 明确建立在它之上（SKILL.md 前置元数据、渐进披露、skills-ref 校验）。
+- **Agent Skills** — <https://agentskills.io>。h3-game-sprites 等以它作为跨 agent 的技能格式与客户端列表。
+- **agent-plugins-spec** — <https://github.com/agentplugins/agent-plugins-spec>。Agent Plugins 1.0 的规范仓库与 Discussions，比官网多出版本与治理信息。
+- **Unified Harness Protocol（UHP）** — <https://unifiedharnessprotocol.org/>。HarnessRouter 维护的开放标准（2026-10-19 draft、Apache-2.0、104 项一致性检查）。
+- **HarnessRouter** — <https://github.com/HarnessRouter/harnessrouter>。Apache-2.0（2026-08-09）：给不同 agent harness 提供统一接口的自托管社区版。
+- **HarnessRouter Starter Kit** — <https://github.com/HarnessRouter/starter-kit>。官方起步模板，展示如何把 Codex、Claude Code、Pi 等 harness 接到同一层 API。
+- **System One Harness（SOH）** — <https://github.com/HarnessRouter/SystemOneHarness>。HarnessRouter 生态里被 HN 单独提交的 harness 实现，属其 30 个 harness base 之一。
+- **Harness2** — <https://github.com/google-research/harness2>。Google Research（2026-10-19，Apache-2.0）：递归 agent harnessing 框架，带 JobBench 等基准与渲染评测。
+- **Harness² 论文** — <https://arxiv.org/abs/2610.14224>。给出 Propose–Probe–Compose 与三个 benchmark 的原始数字，可核对 README 的增益。
+- **Self-Evolving Coding Agents via Harness-Policy Optimization** — <https://arxiv.org/abs/2610.22791>。研究 harness 与策略的联合优化，是同一问题线的后续。
+- **TokenEconomizer** — <https://github.com/microsoft/TokenEconomizer>。Microsoft Research／Berkeley，Apache-2.0，arXiv 2610.22732：黑盒成本控制；SWE-Bench 上五种 agent×model 平均降本 18.4–30.9%，30/30 单元更便宜，Pass@1 在 4/5 提升。
+- **shrt** — <https://github.com/N4darae/shrt>。2.3k 星、MIT（2026-09-03）：面向 coding agent 的契约驱动 gRPC 回归 harness，人工批准基线并快照调用。
+- **i-have-adhd** — <https://github.com/ayghri/i-have-adhd>。2026-09-08 的 skill（HN 542 分）：让 Agent 先给答案、别把结论埋进长报告；小但直击长任务交回的可读性。
+- **Pi** — <https://github.com/earendil-works/pi>。TokenEconomizer 明确适配的极简 coding harness（`pi install` 扩展机制），HarnessRouter 也把它列为可路由的 harness。
+- **Oh My Pi** — <https://github.com/can1357/oh-my-pi>。HarnessRouter 的 30 个 harness 基座之一，anti-slop 也提供它的插件安装方式。
+- **OpenClaw** — <https://github.com/openclaw/openclaw>。phone-harness 的集成对象、HarnessRouter 的 harness base 列表都出现它，是被两个候选交叉引用的开源 agent 运行时。
+- **clawhub.ai** — <https://clawhub.ai>。OpenClaw README 指向的插件／技能目录，是 OpenClaw 生态的收录列表与安装入口。
+- **ZeroClaw** — <https://github.com/zeroclaw-labs/zeroclaw>。UHP 生态页提到的开源自托管 agent 运行时（33k 星），可作 harness 侧替代实现。
+- **Jev（TypeSafe）** — <https://typesafe.ai>。System One Harness 首个支持模型，按有限动作空间逐步决策并实际驱动浏览器游戏，直接关联游戏输入闭环。
+- **DeepSeek Harness（dsh）** — <https://github.com/deepseek-ai/deepseek-harness>。dsh-game-studio 与千星沙箱模拟器都以它的插件形式运行，VibeGame 也把它列为被测 agent harness。
+- **Cordis** — <https://github.com/cordiverse/cordis>。DeepSeek Harness 的 everything-is-a-plugin 架构直接建在它上面，配套论文 arXiv:2608.25512 讲插件时空可组合性。
+- **rp1** — <https://github.com/rp1-run/rp1>。agent-plugins-spec issue #4 作者自述的跨 harness 插件提取项目。
+- **anthropics/claude-plugins-official** — <https://github.com/anthropics/claude-plugins-official>。agent-plugins issue #50 举的 marketplace.json 实例，是插件市场索引格式的参照。
+- **eljojo/no-autopilot** — <https://github.com/eljojo/no-autopilot>。peakoss/anti-slop issue #14 提议引入的 honesty trap PR 护栏。
+- **skills.sh** — <https://skills.sh>。anti-slop 与 REA 都挂靠的 agent skills 公开目录。
+- **Filibuster** — <https://filibuster.cloud>。Zabriskie 作者博客页脚链到的 agentic reliability 工具，专门暴露 agent 自写测试背后的未写假设。
+- **Zabriskie** — <https://zabriskie.app/>。Meiklejohn 系列文章的实际系统（现场音乐社交 app），264 处 attendance 逻辑等细节都指向它。
+- **The Shortcut Became the System** — <https://christophermeiklejohn.com/ai/agents/reliability/development/games/2026/09/14/the-shortcut-became-the-system.html>。2026-09-14 长文：Agent 只关掉眼前抱怨、把接缝留给下一任务；游戏美术、代码、QA 都有实例（门后管道被局部擦除、264 处重复逻辑、CI 前用 STATIC ONLY 冒充通过）。
+- **The Quickest Path to a Diff** — <https://christophermeiklejohn.com/ai/zabriskie/agents/reliability/performance/distributed/2026/09/04/the-quickest-path-to-a-diff.html>。同一项目的前一篇，解释 agent 如何把任务压缩成最小 diff。
+- **My Front of House of Cards** — <https://christophermeiklejohn.com/ai/zabriskie/agents/reliability/2026/09/12/my-house-of-cards.html>。同系列对 agent 改动累积成结构性债务的复盘。
+- **The Test Suite Was the Incident** — <https://christophermeiklejohn.com/ai/zabriskie/agents/reliability/testing/2026/06/10/the-test-suite-was-the-incident.html>。记录测试套件本身成为故障源，补“验证手段也会骗人”的一面。
+- **Every Card Will Show** — <https://christophermeiklejohn.com/ai/zabriskie/development/agents/2026/08/24/every-card-will-show.html>。同项目关于凭证／证明被代理化的记录，可与 QA 代理的实际验收做法对照。
+- **Babysitting the Agent** — <https://christophermeiklejohn.com/ai/zabriskie/agents/reliability/2026/05/03/click-the-button.html>。作者最早的系统性复盘（每次交付都要人工点一遍），是“作者亲自验收”这类证据的原型。
+- **Teaching Claude to QA a Mobile App** — <https://christophermeiklejohn.com/ai/zabriskie/development/android/ios/2026/03/22/teaching-claude-to-qa-a-mobile-app.html>。记录让 agent 按真人点击路径做移动端 UI QA，补“真人操作→修复”的验证方法。
+
+#### 9.7.4 资产、音频与视频工具
+
+- **earshot** — <https://github.com/Leonxlnx/earshot>。MIT、CPU-only 的“Agent 耳朵”（2026-10-15）：把音频转成可推理的文字、评分与时间点，能发现命中音晚 80ms、音效廉价、音乐 swell 位置不对；CLI＋Python API＋MCP。
+- **genny** — <https://github.com/ogomez92/genny>。面向 Agent 的游戏音效 CLI（2026-09-29）：合成器、鼓、SFX、汽车引擎声与 formant 机器人语音；和 earshot 配对可形成“生成—听—改”闭环。
+- **h3-game-sprites** — <https://github.com/gary149/h3-game-sprites>。Agent Skill：把 AI 生成视频转成 2D 精灵表（按运动弧长选关键帧、去溢色、脚踝锚点、全局缩放），一个角色 8 个动作约 5 美元。
+- **codixel** — <https://github.com/mankidev/codixel>。MIT 的 Claude Code 像素画技能（2026-10-31）：产出可动画的游戏 sprite、特效。
+- **3dixel** — <https://github.com/mankidev/3dixel>。codixel 同作者的 Blockbench 风格 3D 像素建模 skill，补资产管线。
+- **PixelLab** — <https://pixellab.ai>。Backpressure（SNES 游戏）作者复盘里实际使用的像素美术生成／编辑 API。
+- **HyperFrames** — <https://github.com/heygen-com/hyperframes>。OpenFilm README 点名的替代框架：HTML-first、Apache-2.0、9 个 agent skills、确定性渲染。
+- **Remotion** — <https://www.remotion.dev>。React-first 程序化视频框架，source-available（超过 3 人的公司需授权），是许可与成本基线。
+- **remotion-dev/skills** — <https://github.com/remotion-dev/skills>。Remotion 文档 AI Skills 页指向的官方技能库。
+- **openfilm** — <https://github.com/openfilm/openfilm>。开源 AI 视频 Agent（2026-10-04，4.9k 星）：把任意 coding agent 变成视频 agent 并带编辑器。
+
+#### 9.7.5 论文、基准与索引
+
+- **VibeGame（论文＋仓库）** — <https://arxiv.org/html/2610.33106v1>。2026-10 的 Prompt-to-Game 框架：AI-native 引擎把场景／节点／资产／脚本暴露为结构化文本，帧同步运行时允许 Agent 检查状态、注入动作、观察后果；8 个对抗 Agent 分实现／玩家／评审。仓库 `tettethu/VibeGame`。
+- **OpenGame** — <https://arxiv.org/abs/2604.18394>。端到端 Web 游戏 Agent 框架（2026-09-15 修订）：Template Skill 积累骨架、Debug Skill 维护修复协议，GameCoder-27B 配套，OpenGame-Bench 用 150 条提示按 Build Health、Visual Usability、Intent Alignment 评分。
+- **OpenGame 仓库** — <https://github.com/leigest519/OpenGame>。含可玩 demo、GameCoder-27B 与 OpenGame-Bench。
+- **PlayCoder** — <https://arxiv.org/abs/2604.19742>。专门评测 LLM 生成的 GUI／游戏代码能否按用户操作序列正确迁移状态，直接补“生成的界面图不等于可玩输入循环”这一缺口。
+- **GUI Agents for Continual Game Generation** — <https://arxiv.org/abs/2605.28258>。用 GUI 代理直接操作游戏界面来持续生成与迭代，提供以真实界面输入为闭环的生成范式。
+- **AutoUE** — <https://aclanthology.org/2026.findings-acl.111/>。多智能体在 Unreal Engine 内生成 3D 游戏并把 play-testing 作为最终评估环节。
+- **MeepleLM** — <https://arxiv.org/abs/2601.07251>。虚拟试玩者模拟多样化主观体验，是替代“没有真人试玩反馈”的一种方法；只能算模拟反馈。
+- **GameCraft-Bench（仓库）** — <https://github.com/FreedomIntelligence/gamecraft-bench>。140 个 Godot 任务、15 个品类，要求提交可启动工程和可回放演示轨迹，验证器启动游戏、回放输入并录证据评分。
+- **GameCraft-Bench（论文）** — <https://arxiv.org/abs/2606.17861>。要求 agent 在真实 Godot 引擎提交完整项目并附带可回放输入轨迹，由 verifier 重放实际游玩来打分。
+- **Beyond Playtesting** — <https://arxiv.org/abs/2512.02358>。面向 MMO 的生成式多智能体模拟试玩系统，补大规模玩家行为反馈的来源。
+- **Recursive Game Creator** — <https://arxiv.org/abs/2610.08621>。用 Designer／Builder／Player／Reviewer 的递归循环把可运行原型推向“好玩”。
+- **CEGame-Bench** — <https://arxiv.org/abs/2610.26098>。跨 Defold、Godot、Roblox Studio、Unity、Unreal 五个生产引擎的长程完整游戏创建基准，单次平均可达 295 步。
+- **AI-Native Games: A Survey and Roadmap** — <https://arxiv.org/abs/2607.00527>。给出“去掉运行时生成式 AI 核心玩法就会垮”的反事实判据，可用来筛掉只是 AI 加料的游戏。
+- **WebGameBench** — <https://arxiv.org/abs/2605.17637>。111 任务×12 agent 的“结构化需求→可玩浏览器游戏”基准，在真实浏览器里跑并判 EXCELLENT／USABLE／UNUSABLE，最好 76.9% usable 但仅 20.2% excellent。
+- **GameWorld benchmark** — <https://arxiv.org/abs/2604.07429>。34 款浏览器游戏、170 任务的通用游戏 agent 基准，标准化“键鼠原始输入”与“语义动作”两种接口并做状态可验证评分。
+- **awesome-ai-for-games** — <https://github.com/Eurekaleo/awesome-ai-for-games>。MIT（389 星，2026-09-04）：按游戏生命周期整理的 AI／基础模型研究索引。
+- **awesome-ai-game-dev-tools** — <https://github.com/SubmitGame/awesome-ai-game-dev-tools>。做游戏以及反编译、重混自有游戏的 AI 工具清单，每日刷新。
+- **3JSBench** — <https://3jsbench.com/>。3D 资产生成基准（任务名如 key-objects、coping），paprika3d README 用它的 150 次跑分证明合格率提升；没有玩法／输入内容。
+- **Awesome Game Mashups** — <https://github.com/bailo167/awesome-game-mashups>。226 条“把一款游戏搬进另一款”的项目清单（SkyCraft、Killcraft、OWCraft 等），是真实工程改造与 HUD／输入移植的样本池。
+- **Co-op Anything** — <https://github.com/cranebeaker/coop-anything>。1.9k 星（2026-10-16）：让 Agent 逆向任意单机游戏做联机 mod，并在游戏内用 bot 测试、打包成一键加入。
+- **Co-op Anything 的测试工具集** — <https://github.com/cranebeaker/coop-anything/blob/main/tools/README.md>。bridge（游戏内控制台 RPC、状态转储、存档／读档、截图）、gameslot／gamepool、hotreload、fakeworld 让 agent 用真实游戏客户端做输入与状态测试。
+- **CoOp:Anything 目录** — <https://coopanything.app>。上述 co-op 改造作品的公开索引站。
+- **Couchlink** — <https://github.com/cranebeaker/couchlink>。单机同屏工具：为每位玩家各跑一份游戏并转发输入，涉及多实例输入路由与会话交接。
+- **REA（reverse-engineering agent）** — <https://github.com/morluto/rea>。Co-op Anything 明确搭配的逆向工程 MCP，让 agent 读二进制、定位引擎与输入／状态接口。
+- **Universal Modder** — <https://github.com/rehan-remade/universal-modder>。让 agent 逆向并修改 PC 游戏、在运行中的游戏里测试，跨 Claude Code／Codex／Cursor 安装。
+- **Genex 插件目录** — <https://github.com/genex-games/genex-plugins>。Genex 官方插件市场索引，可界定其“agent 自测游戏”的能力边界。
+- **Epic Unreal MCP（官方文档）** — <https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor>。UE 5.8 官方实验性内嵌 MCP（约 830 个工具），Tether 与 UnrealEngine_Bridge 都拿它当对照基线。
+- **Epic 官方 Claude Code 技能插件** — <https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin>。MIT 技能插件，是这条线唯一的厂商官方实现。
+
+- **Harbor** — <https://github.com/harbor-framework/harbor>。GameCraft-Bench 运行其上的 agent 评测／环境框架（Terminal-Bench 团队），可复用来跑游戏项目的可玩性回归。
+
+#### 9.7.6 市场讨论与背景
+
+- **Claudeslop** — <https://claudeslop.bryanhu.com>。2026-10-26 上线的 AI 浏览器小游戏目录：Hot／New，按 Original／Inspired／Clone 分类，要求真实截图与 AI 参与披露。
+- **itch.io AI slop 清理** — <https://frvr.com/blog/news/indie-storefront-itch-io-deletes-a-couple-terabytes-of-ai-slop-as-the-marketplace-is-spammed-with-ai-games-and-assets/>。2026-11-03：itch.io 称删掉数 TB 的 AI 游戏／资产垃圾，游戏页创建两月翻倍但购买与下载没翻倍，并加“No AI”标签与更多披露过滤。
+- **Roblox 70,000 games in 5 months** — <https://www.pcgamer.com/software/ai/ai-powered-game-development-is-leading-to-an-explosion-of-content-roblox-says-as-it-brags-about-70-000-games-published-on-its-platform-in-the-last-5-months-alone/>。2026-10-30（PC Gamer 文章日期）：Roblox 称 5 个月发布 7 万款游戏、AI 辅助开发带来内容爆炸，同时 Steam 侧质疑质量。
+- **Roblox Q3 2026 shareholder letter** — <https://www.sec.gov/Archives/edgar/data/1315098/000162828026068235/ex991-q32026earningsshar.htm>。收集者记录其为“70,000 款 AI 游戏／80% top 100 用 AI”的原始出处，并称比 PC Gamer 转述多出 Build 的 50 万用户与两款 AI 游戏进入前 20 的细节；本机直连 403、正文未读，细节按收集者摘要保留。
+- **Linear：AI coding 让 CI 成瓶颈** — <https://linear.app/now/ci-bottleneck-reworked>。2026-09-21：AI coding 提高改动频率后 CI 成为瓶颈，Linear 记录如何改造流水线。
+- **Artificial Intelligence in the Firm** — <https://fion.ac/jellyfish.pdf>。Chen & Stratton，2026-11-01 版（首发 2026-01-07）：445 million work events、720,542 名员工、655 家公司（2021-01–2026-08；分析样本含 297,586,102 条 commits）。AI agent 采用后，review submission→approval 增加 56.1%（backlog +59.9%、active review +58.5%），收到至少一条评审意见的变更占比 +13.1%，每条变更评论数 +38.6%；AI assistant 无显著效应。是“评审瓶颈”说法的第一手出处。
+
+### 9.8 第二轮边界与欠项
+
+**本轮没有做到的事。** 未启动任何游戏、未开浏览器、未播放视频或音频、未登录、未发帖；所有“可玩”只是入口可达。本节共 278 个唯一链接（282 处；其中 3 个与 §1–§8 重复，275 个新唯一链接），逐一 curl 复核：失败 5 条——3 条 Reddit 直连 000（1wdnxk8、1xitqds、1xm0i4q）、sec.gov 403、blog.ajb.bz 403；Bilibili 桌面页 412 是本机反爬，单列另计；其余 272 条返回 200。链接检查只核状态码与标题，**没有核正文里的每个数字、没有逐张核作者截图、没有实机核手感／帧率／触控延迟**。因此本节不宣布任何作品达到品类标杆，也不把收集数当品质进展。
+
+**下一步（按顺序）。**
+
+1. 先取 **Kiikurage/game-test** 的输入抽象机制（不是真人反馈闭环样本：issue #353 由 Claude Code 自动发现，未见真人试玩／owner 试玩报告；真人反馈闭环先看 **STOREGGA／PARALLAXIA**），按 §9.3 的机制在现有 FPS／MOBA 移动端入口做一次窄验证：用“最后输入设备”驱动 UI 变体、`visualViewport` 与安全区、技能键不与摇杆重叠、暂停／背包关闭后不接受战斗输入。**未执行前不写成已通过。** 这是浏览器端 DOM／Playwright 判定，Unity／Unreal 要换成各引擎 Input System 的触摸／指针检测与安全区／分辨率 smoke，不能照抄。先记边界：仓库无 LICENSE（全保留）、无版本号（package 0.0.0、无 tag／release），不可直接复制代码，引用时标 package 0.0.0／无 tag。
+2. 读 **STOREGGA** 的 changelog Build 7–10，对照“可重绑定＋冲突提示＋F1 总览＋按键提示贴到仪表旁＋被拒入局给原因”，在自己的设置／HUD 里做一次窄验证；注意其成本与 playtest 门槛。
+3. 读 **PARALLAXIA** 的修订史与 **OVERTURN** 的输入一节（含 `tests/touch.cjs` 与 390×844 前後帧），把“统一动作映射＋提示跟随最后设备＋两指交接”搬成检查单。
+4. 补齐 **Chain Circuit Vault** 的版本号与作者静态截图（现有 `screenshot.gif` 是 540×540、220 帧的连续录制，不算静态截图），补齐后可从乙级升回甲级；**Turbo Rumble** 的截图直链已补（<https://raw.githubusercontent.com/dziksu/turbo-rumble/main/docs/gameplay.png>），只剩成本未披露。
+5. 中文侧只补可读原页：**《刀光剑影》** 优先补作者对 AI 分工的说明；补齐后它会是本轮最强的手机 MOBA 类输入样本。其余 TapTap 作品仍只作线索，不把平台标签当分工证据。
+6. 不再重试本机已失败的 itch.io 直连、Reddit 直连、微信验证页与 X 登录墙；这些渠道的新样本只能等入口恢复或由负责人提供可读原页。
