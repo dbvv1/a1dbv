@@ -36,8 +36,8 @@ result_branch: relay/b-ai-game-release-iteration-20261106
 
 ## 当前结果
 
-- 已产出 sources.md：渠道覆盖表（含 13 类渠道实际取法、得到项数、读不到原因）+ 89 项在册候选（通过 3、第一备选 13、条件性 53、排除/上下文 20；另 2 项转出 UI 卡，合计 91 条曾收集条目），前三项各有可玩入口、作者原文、静态截图原 URL、版本/发布日期、AI 与人分工、一次具体二改、许可与成本未知项；首推 Fire Field，并给出旧存档/旧状态迁移+回归的具体验证机制。审查未通过，6 项未关闭：(1) §3.1 毒叠层写成“蜘蛛 1.5 秒叠满”，漏掉补丁原文“三只蜘蛛围住”，且“每次被咬”窄于“每次中毒”（还含毒气陷阱、斩击流血）；(2) §3.2 1,142 名玩家收到的是“某个版本的欢迎消息”，被写成“某个版本”；(3) §3.2“作者把每条回复变成任务卡”属过述，原文是多数反馈只改下一步计划、不成卡（200 条回复/121 张玩家卡）；(4) §5.3 Traffic Architect 的“Most of it came from your reports…”只出现在 1.0.6–1.0.8，误归给 1.1.0；(5) §5.3 Huebound 的 The Please Stop the Humming 更新无公开原文可核，且“无 All Reviews 行”与商店页 5 条评价矛盾；(6) §4 Tropic Tumble 的降级理由“入口不可核”不成立，作者长文链到官方站（200）与 App Store/Google Play。未做项：itch.io 主域/子域 TLS 拦截致 Monkyupe、Tower of Time 的 itch 页与评论未直读；按要求未实玩、未看视频/音频、未登录。
-- 产物：[39c9f47](https://github.com/dbvv1/a1dbv/commit/39c9f47bb49e6037700678e78b2b9b731df6c26c)，分支 `relay/b-ai-game-release-iteration-20261106`。
+- sources.md 新增 §8（第 2 单元 220 条清单链接核实：2 项通过 Enarian、Realm of Eldermyr，18 项第一备选，翡翠经营模拟器因缺作者制作过程降为备选；另修正上轮 6 项事实问题），diff +335/−7，仅此一个交付文件。Workflow 最终审查未通过：3 项未关闭——(1) §8.4 放置地下城『三周内连发 28 条 1.3.x 补丁』实为 1.0.9→1.3.4 共 28 条更新且仅 6 条 1.3.x；(2) §8.4 云灵修仙 changelog 写『0.1.0 到 0.2.7』但当前已到 0.3.8；(3) §8.5 第 124 行骑砍上线日期混用 UTC（10-30/10-19）与页面日期（10-31/10-20）。另返回摘要称『3 项通过』与文件 §8.2/§8.3 实际『2 项通过』不一致，以文件为准。未实玩、未看视频/音频、未登录，itch.io 等渠道仍 TLS 不可达。3 个本单元遗留的 mirror-*.html 临时页已移至本次 scratch/leftover，工作区仅 sources.md 修改。
+- 产物：[bf262fa](https://github.com/dbvv1/a1dbv/commit/bf262fa75ed0a00d77295a0cd7a11299d7bc47f3)，分支 `relay/b-ai-game-release-iteration-20261106`。
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
-- 下一步：下一单元按原文修正上述 6 项并重跑事实/读者两路审查；渠道可达时补读 Monkyupe/Tower of Time 的 itch 页；保持不实玩、不登录、不使用浏览器的边界。
+- 下一步：下一单元按审查修正 3 项事实（放置地下城补丁跨度、云灵修仙 changelog 当前版本、TapTap 日期口径）并重跑事实/读者审查；渠道可达时补读 Monkyupe、Tower of Time 等 itch 页。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
