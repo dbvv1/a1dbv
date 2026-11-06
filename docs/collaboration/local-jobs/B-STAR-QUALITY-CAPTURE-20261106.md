@@ -2,7 +2,7 @@
 id: B-STAR-QUALITY-CAPTURE-20261106
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 7e87d4c32d5014612fcb7a8af8bc49d266d7238c
 result_branch: relay/b-star-quality-capture-20261106
@@ -38,8 +38,4 @@ result_branch: relay/b-star-quality-capture-20261106
 
 ## 当前结果
 
-- 完成两档（811646e8 / 7e87d4c3）三机位双拍：12 张 1280x720 软件 WebGL2 原图，6 条 capture 命令全部 exit 0，每拍 starSideStatus space=true/power=false/warnings=[]/backend=webgl2，双拍与 150ms 静置一致；compare.mjs 通过（coast 两机位两版像素不同，academy-depth 逐像素相同作跨档回归控制），manifest/comparison/report/receiver-exit 与 41 个公开脱敏交付文件齐备。未关闭问题：后台非作者盲评与 Star 记分卡分数更新未做（任务完成条件未达成）；结果分支尚未由接收端推送。未运行验收：npm test（本卡未要求且游戏源码未改）、硬件 GPU、手感与听感。
-- 产物：[dfea2d7](https://github.com/dbvv1/Star-Rush-Reborn/commit/dfea2d75f37f5041f1c9aa004a112973517fbcb3)，分支 `relay/b-star-quality-capture-20261106`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端提交并快进推结果分支后，交后台非作者对 12 张同机位图做盲评并更新 Star 记分卡；硬件画面/手感/听感进待人工验收。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
