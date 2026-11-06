@@ -2,7 +2,7 @@
 id: B-CORE-STABLE-SEATS-ADOPTION-20261106
 owner: dot-B
 kind: reader-test
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-core-stable-seats-adoption-20261106
@@ -35,4 +35,9 @@ page: domains/game-dev/07-networking-and-server.md@bbb068cbdc97617856763414ace1d
 - 区分通过、失败、未运行与待人工判断；测试、源包和排队数不当品质进展。发现真实首错保全最小证据，不改断言掩盖，不重复无新信息运行。
 
 ## 当前结果
-- 规格已定，待接收端在确认同单元无活跃调用且有空槽后认领；本次未发起模型、桌面或产品运行。
+
+- reader-test 一轮完成：两份独立 Simulation（seed 901、contentVersion 12、heroesPerTeam 3）在进程内以六席命令封套实跑，600 tick 逐 tick finalHash 与 CommandResult[] 全一致（含 31 个到达顺序不同的 tick），9,081 tick 仍 0 分歧；tick 9001 经原经济真实购买 wayfarer_boots、tick 9002 原 W 真实消耗法力/冷却；七项协议拒收均 throw 且 hash/tick 不变，合法重送只消费一次，[move,stop] 与反序 hash 不同。核对者独立复跑 run.mjs，输出与 run-output.json 逐字节相同（SHA-256 a35af784…f16a6ae），源码身份 774ba28 相对 7e1986f 的 src/sim 与 tests 无 diff。taskDone=false：卡面点名的 docs/decisions/instruction-files.md 共享指令层入口未交付（页面无该入口，读者按只看页面规则标未做）。pageStuck 共 6 项：CommandFrame 精确结构/inputSeats 公式缺失、未写协议 throw 与玩法 {accepted:false,reason} 返回机制（但读者记录夸大了，页面 §4 已写协议/玩法拒绝分开）、无六席与 600 tick 可运行例子、buyItem 经济边界未写（600 tick 约 40 金币、最便宜装备 600）、contentVersion 支持范围未列、共享指令层入口缺失。读者漏项 3 条：result.md 复现命令按原样不可执行（需 cwd 设固定 MOBA 源并传脚本绝对路径）、卡点 2 漏引 §4 第 282 行、去重探针与主跑 tick 6 混写未点明是两个 Simulation。未运行验收：TCP/WebSocket/端口、旧 server-lockstep/run.mjs、浏览器、Unity/Unreal、GPU/音频、公网认证、跨设备/丢包/延迟、完整终局结算。
+- 产物：[a550197](https://github.com/dbvv1/a1dbv/commit/a5501970d0ad492e42be64f3e70b8521a77178e4)，分支 `relay/b-core-stable-seats-adoption-20261106`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人接收后决定：修 result.md 复现命令与去重探针表述、修正卡点 2 引用；确认 instruction-files 共享指令层缺口及 6 项页面卡点是否回写页面或任务卡。本单元不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
