@@ -38,7 +38,7 @@
 
 随后点 **Rematch**，设置相同、对手变为 AirSwarm；按上一局复盘先造 3 辆 Flak，加 SAM／炮塔。实见 Elite 与 TRIPLEKILL 提示，仍在 **3:31** 败北；结算为 24 杀、10 损、采集 4,700，损失 5 辆采集车，建议转为保护采集。两局游戏时间合计 **6:05**，实际操作观察约 8 分钟；静音，未验声音、胜利流程或长期平衡。对手与操作均不同，击杀变化不能归因于防空策略或视作平衡改善；当前 3D 版也不在此次验收内。[经验]
 
-**可迁移的是“关键事件＋一条具体建议→真实重开后的决策”，不是统计数字越多越好。** 本次从防空转向护矿的注意变化，与作者发布说明中的经济／损失／关键战斗摘要及一条 `Next time` 建议相符；作者称模拟 1,200 场是其自述，本端未复现。MOBA／FPS 可试从真实失败事件提出一条可执行的下局调整，再观察玩家重开后是否采用；这是未采用的迁移建议，不能只生成复盘文字就算闭环。依据：[作者 v4 说明](https://simonwillison.net/2026/Oct/20/battledrones/#v4-the-fun-update)、[After-action report 发布说明](https://github.com/simonw/battledrones/blob/main/Battle%20Drones%20The%20Fun%20Update%20%E2%80%94%20Release%20Notes.md#the-after-action-report)与上述实际操作，核实 2026-11-02。[一手／经验／研究]
+**可迁移的是“关键事件＋一条具体建议→真实重开后的决策”，不是统计数字越多越好。** 本次从防空转向护矿的注意变化，与作者发布说明中的经济／损失／关键战斗摘要及一条 `Next time` 建议相符；作者称模拟 1,200 场是其自述，本端未复现。MOBA 可试从真实失败事件提出一条可执行的下局调整；FPS 已在既有训练赛候选中接入，详见下文 Firefly Lasso 条目。两者仍需观察玩家重开后是否采用，不能只生成复盘文字就算闭环。依据：[作者 v4 说明](https://simonwillison.net/2026/Oct/20/battledrones/#v4-the-fun-update)、[After-action report 发布说明](https://github.com/simonw/battledrones/blob/main/Battle%20Drones%20The%20Fun%20Update%20%E2%80%94%20Release%20Notes.md#the-after-action-report)与上述实际操作，核实 2026-11-02。[一手／经验／研究]
 
 ![2026-10-22 历史窄试玩截图：Airpad 建成后生产 Wasp，非本次两局画面](../img/2026-10-23-game-battledrones-v4.jpg)
 
@@ -190,14 +190,16 @@ LOB 已于 2026-09-09 [退出每夜改进循环](https://zerodev.games/shelved/)
 
 **作者的两次小修比“重做 UI”更具体：先解决重叠，再修不可见时仍消耗的阅读时间。** v85（10-18）让捕获／空圈／绳线断裂结果优先显示，教学提示暂避；v86（10-19）再保留被遮住提示的剩余阅读时间。本端看到了动作结果、教学提示和结算，但未逐帧测量隐藏计时，不能把作者修订记录当成本端通过的计时测试。更早 v27 的首次游玩保护也说明：教程首局和再次进入必须分开验。[一手日志／经验]
 
-**接到现有三个作品时，先辨认信息是否仍然有效。以下是源码核对后的窄迁移方案，尚未写入作品。** 不为套用案例新增投掷系统或通用消息队列。[研究]
+**接到现有三个作品时，先辨认信息是否仍然有效。FPS 已进入训练赛候选，MOBA／Star 仍是源码核对后的窄迁移方案。** 不为套用案例新增投掷系统或通用消息队列。[研究]
 
-| 当前作品已有入口 | 具体可试修改与必须保住的行为 |
+| 当前作品已有入口 | 当前采用状态与必须保住的行为 |
 |---|---|
-| FPS：`TrainingMatch` 已记录六回合的攻守、胜负、结束原因与命中；`MatchPanel` 已显示逐回合记录。 | 在现有结算选一条有事实支撑的下一局动作。例如进攻超时落败才提示先抵近目标并安放，防守守时获胜不触发同一劝告。沿真实重开观察是否先执行目标动作；不以结算文字出现或总分增长验收。 |
+| FPS：`TrainingMatch` 已记录六回合的攻守、胜负、结束原因与命中；`MatchPanel` 已显示逐回合记录。 | 候选已在原结算段落选一条有事实支撑的动作：进攻超时、安放后被拆、防守被引爆三类败局中取最多的一类，同数取最近一次。守时获胜不触发劝告，纯淘汰或低命中率不臆测原因。仍须实玩观察重开后是否执行目标动作。 |
 | MOBA：`createCommandNotice` 已给拒绝原因设两秒上限，并在眩晕／施法解除时提前清除。 | 保住这种有效期。若补教学提示，可在战斗结果出现时暂停其阅读计时；旧的“眩晕中”不能在状态解除后补播。测试应走提示→打断→状态解除→恢复，而非统一延长全部提示。 |
 | Star：已常驻上一圈，练习模式的 `updateCoach` 已按当前路线、侧滑等状态给动作指导；`announce` 另用短时 toast。 | 沿已有指导核打断与恢复，不重建教练。恢复时按当前路线／车辆状态重算，越过弯道后不补播旧指令；上一圈参考仍留原位。圈时只能说明快慢，不能凭它编造刹车过晚的原因，修正动作沿同赛道重跑观察。 |
 
-**交给 Agent 的二改验收可直接写成动作链：** 有用的教学提示刚出现→触发一次实际成功／失败反馈→结果退场→仍适用的提示可继续读；若其条件已结束则消失。然后完成本局并正常重开，核玩家能否据一条建议做出对应动作。与单纯加长显示时间相比，这同时防止读不到和过期误导；它是下一次项目试验规格，不是已采用模块。[研究]
+**交给 Agent 的二改验收可直接写成动作链：** 有用的教学提示刚出现→触发一次实际成功／失败反馈→结果退场→仍适用的提示可继续读；若其条件已结束则消失。然后完成本局并正常重开，核玩家能否据一条建议做出对应动作。与单纯加长显示时间相比，这同时防止读不到和过期误导。其中隐藏阅读时间与过期清除仍是试验规格；FPS 的结算建议已接入下述候选，玩家是否采纳尚未验证。[研究]
+
+**FPS 接入（2026-11-07 UTC）：从可读建议走到真实消费者。** 在既有 `dot-b/round-audio-consumer-20261106` 内修改 [`MatchPanel`](https://github.com/dbvv1/FPS-Like/blob/7cb7e67b6163668534103a4dfad772aaeaf82929/src/candidates/offline-training-v1/ui/match-panel.ts)，直接消费原 `TrainingMatch` 结果，不增采集字段、玩法或入口；携弹者与掩护者分别给动作，不把队伍失利当个人失误。[可复跑回归](https://github.com/dbvv1/FPS-Like/blob/7cb7e67b6163668534103a4dfad772aaeaf82929/tests/offline-training-v1/client-match.test.ts)执行真实 client／Game／Hud／Panel，双方各自然超时六个缩短回合：前五局无建议，终局正确计入三次进攻超时，重开成功后的新局首帧清除旧建议。被拆／引爆建议只用构造摘要测选择；DOM、输入、渲染及音频是替身。原 main 与 Site 未改，窄屏结算、按钮可达及玩家据建议改变动作仍待同一候选实机验收，接入不是品质提升证明。完整范围见[训练整合说明](https://github.com/dbvv1/FPS-Like/blob/7cb7e67b6163668534103a4dfad772aaeaf82929/docs/training-integration.md#用真实结算选择下一场练习)。[实现／无画面回归]
 
 来源与范围（2026-11-03 UTC）：[可玩 v86](https://zerodev.games/lasso/?src=devlog)与本端三次操作／截图（经验）；[ZeroDev Lab 作者说明](https://zerodev.games/)称游戏由 AI Agent 制作并迭代，[逐版日志](https://zerodev.games/devlog/)提供上述制作过程（一手自述），具体模型、提示、总成本和人工修订量未知。项目入口为 FPS [`match.ts`](https://github.com/dbvv1/FPS-Like/blob/297bc049823b476fdc128c5d37357d06730f9be2/src/candidates/offline-training-v1/session/match.ts)／[`match-panel.ts`](https://github.com/dbvv1/FPS-Like/blob/297bc049823b476fdc128c5d37357d06730f9be2/src/candidates/offline-training-v1/ui/match-panel.ts)、MOBA [`command-notice.ts`](https://github.com/dbvv1/MOBA-Like/blob/002ae06b67ec1196d773738e039bf0660fc25cf6/src/ui/command-notice.ts)、Star [`race-features.js`](https://github.com/dbvv1/Star-Rush-Reborn/blob/b43a938ce5841934246208d9997ed40ee456f196/race-features.js)／[`race.js`](https://github.com/dbvv1/Star-Rush-Reborn/blob/b43a938ce5841934246208d9997ed40ee456f196/race.js)（固定源码核读）。未复现 AI 制作、未取得独立玩家比较，不据此排质量榜；仅记录试玩截图，不复用游戏代码／素材。
