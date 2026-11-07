@@ -1,7 +1,7 @@
 # A-UPSTREAM-DATASETTE-DELTA-READER-20261107 · 新上游改动后的投稿判断
 id: A-UPSTREAM-DATASETTE-DELTA-READER-20261107
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e2628b9f12629796406c8eda7fd453107f5b1801
