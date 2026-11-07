@@ -1,0 +1,6 @@
+
+
+11-07 B 产品接收前的项目板快照（被更新状态取代，并非任务完成）：
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main [`7e1986f`](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/docs/side-release-acceptance.md)；quiet、镜头＋Q/W 共 3 候选，v12 前摇排队及出图保留。赏金事件已接、无可见提示。Site **v22 已部署**（运行源 002ae06）；新局失败保旧档，568 测试通过；线上默认／QW 398／342 tick、旧档保留通过，破坏性替换未实玩。恢复遮挡 8px 修复保留；窄屏／长滚动／无档、画面／听感／盲评待验。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master [ce7b870](https://github.com/dbvv1/Star-Rush-Reborn/blob/master/docs/quality.md) 仅收12图／双盲评，探索2→2，正式分未建；候选未合，Site **v10** 不变。[原唯一卡](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md) **review_ready**：六条拍摄exit0，外层待核；候选四路在官方预览读bundle受阻，未开局。纠偏未完成；原403及手感／听感欠项保留。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`／Site **v24** 未变。[d685bd6交接](b-work-20261106.md#fps-训练场整合)：接练习建议，修半场说明。535测试、类型／构建／独审过；仅CPU替身。EPERM、完整角色reload/switch及视听实玩未过，未合main／部署。 |
