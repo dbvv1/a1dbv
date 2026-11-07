@@ -1,0 +1,486 @@
+{
+  "task": "A-MCP-TIME-MIGRATION-READER-20261107",
+  "page_input": {
+    "path": "docs/decisions/migrations.md",
+    "commit": "65de22e9d1eae96ff7e68893f567a9ba546cf13a",
+    "bytes": 9628,
+    "sha256": "0857615edf64dd7d75c12fdfeaf51fed64cd6092dee7c3eb0e2d95480cc95f73",
+    "expected_sha256": "0857615edf64dd7d75c12fdfeaf51fed64cd6092dee7c3eb0e2d95480cc95f73",
+    "match": true
+  },
+  "repository": {
+    "url": "https://github.com/modelcontextprotocol/servers",
+    "base_commit": "2f8dc42931d96d083b45691a859619d45362713a",
+    "implementation_commit": "38fa696473ec9d83c87b470155693c174440c15d",
+    "scope": [
+      "src/time/README.md",
+      "src/time/src/mcp_server_time/server.py",
+      "src/time/tests/test_protocol.py",
+      "src/time/tests/test_eras.py"
+    ]
+  },
+  "environment": {
+    "interpreter": "CPython 3.13.5 (system python; no venv created)",
+    "dependency_source": "existing uv archive cache consumed read-only through PYTHONPATH; no package install, download, sync, or global configuration change",
+    "installed_new_packages": false,
+    "resolved_versions": {
+      "mcp": "2.3.0",
+      "mcp-types": "2.3.0",
+      "anyio": "4.15.1",
+      "httpx2": "2.13.1",
+      "httpcore2": "2.13.1",
+      "jsonschema": "4.26.0",
+      "pydantic": "2.13.4",
+      "pydantic-core": "2.46.4",
+      "tzlocal": "5.4.5",
+      "tzdata": "2026.6",
+      "cryptography": "50.0.2",
+      "cffi": "2.1.1"
+    },
+    "lock_pins_not_available_in_cache": {
+      "pydantic": "2.12.5",
+      "pydantic-core": "2.41.5",
+      "tzlocal": "5.3.1",
+      "tzdata": "2024.2",
+      "pytest": "9.0.3",
+      "pytest-asyncio": "1.4.0",
+      "freezegun": "1.5.1",
+      "ruff": "0.8.1",
+      "pyright": "1.1.389"
+    },
+    "project_metadata": "a minimal mcp-server-time 2026.10.10 dist-info was placed on PYTHONPATH so importlib.metadata.version() resolves; the project itself was not installed"
+  },
+  "migration": {
+    "patch": "migration.patch",
+    "patch_bytes": 13184,
+    "patch_sha256": "9ce2cdaeaaa2e5517c7c6f3fe2d8ea7f49adacd985ba46043d8ceebb10109755",
+    "applies_to_base": true,
+    "reproduces_implementation_commit": true,
+    "line_ending_note": "patch output is LF; the Windows checkout of the fetched commits is CRLF, so byte comparison was done after normalizing CRLF to LF",
+    "candidate_files": {
+      "src/time/README.md": {
+        "bytes": 9328,
+        "sha256_lf": "92fa0bb4eb211f753f4e43933569e64d8c1ec7781ea9909878409b323dc78e0f"
+      },
+      "src/time/src/mcp_server_time/server.py": {
+        "bytes": 12993,
+        "sha256_lf": "7fc33758043dba29444569282b7a985fc98c86d17947e290fa20bbc02c8ab8f7"
+      },
+      "src/time/tests/test_protocol.py": {
+        "bytes": 34696,
+        "sha256_lf": "1e49ce6ab658f7d92edb43abbf24db5f80b620f081e076e449c0196d8c6f3000"
+      },
+      "src/time/tests/test_eras.py": {
+        "bytes": 6037,
+        "sha256_lf": "dba66d0c55073c51afe1032a38022e9abef51642898beaf010f570a3c146d1b5"
+      }
+    }
+  },
+  "real_stdio": {
+    "method": "server launched as `python -m mcp_server_time --local-timezone UTC` child process; mcp 2.3.0 Client over stdio, pinning mode='legacy' and mode='2026-07-28' separately",
+    "required_request": "convert_time: source=UTC time=12:00 target=Etc/GMT-5 -> target datetime ends T17:00:00+05:00, time_difference=+5.0h",
+    "base": {
+      "summary": {
+        "all_ok": false,
+        "checks": {
+          "convert_17_00_plus5": false,
+          "invalid_timezone_is_error": false,
+          "legacy_era_served": true,
+          "missing_argument_is_error": false,
+          "modern_era_served": false,
+          "ping_legacy_only": false,
+          "raw_discover_answers_modern": false,
+          "reconnect_works": false,
+          "tools_identical_across_eras": false
+        }
+      },
+      "eras": {
+        "legacy": {
+          "ok": true,
+          "negotiated_version": "2025-11-25",
+          "connection_error": null,
+          "tools": [
+            "get_current_time",
+            "convert_time"
+          ],
+          "convert": {
+            "is_error": false,
+            "result_type": "complete",
+            "text": "{\n  \"source\": {\n    \"timezone\": \"UTC\",\n    \"datetime\": \"2026-11-07T12:00:00+00:00\",\n    \"day_of_week\": \"Saturday\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Etc/GMT-5\",\n    \"datetime\": \"2026-11-07T17:00:00+05:00\",\n    \"day_of_week\": \"Saturday\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+5.0h\"\n}"
+          },
+          "invalid_timezone": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Error processing mcp-server-time query: Invalid timezone: 'No time zone found with key Nope/Nowhere'"
+          },
+          "missing_argument": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Input validation error: 'target_timezone' is a required property"
+          },
+          "unknown_tool": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Error processing mcp-server-time query: Unknown tool: no_such_tool"
+          },
+          "ping": {
+            "ok": true
+          },
+          "resources_list": {
+            "exception": "MCPError",
+            "jsonrpc_code": -32601,
+            "jsonrpc_message": "Method not found",
+            "message": "Method not found",
+            "ok": false
+          }
+        },
+        "modern": {
+          "ok": false,
+          "negotiated_version": "2026-07-28",
+          "connection_error": null,
+          "tools": {
+            "raised": {
+              "exception": "MCPError",
+              "jsonrpc_code": -32602,
+              "jsonrpc_message": "Invalid request parameters",
+              "message": "Invalid request parameters"
+            }
+          },
+          "convert": {
+            "raised": {
+              "exception": "MCPError",
+              "jsonrpc_code": -32602,
+              "jsonrpc_message": "Invalid request parameters",
+              "message": "Invalid request parameters"
+            }
+          },
+          "invalid_timezone": {
+            "raised": {
+              "exception": "MCPError",
+              "jsonrpc_code": -32602,
+              "jsonrpc_message": "Invalid request parameters",
+              "message": "Invalid request parameters"
+            }
+          },
+          "missing_argument": {
+            "raised": {
+              "exception": "MCPError",
+              "jsonrpc_code": -32602,
+              "jsonrpc_message": "Invalid request parameters",
+              "message": "Invalid request parameters"
+            }
+          },
+          "unknown_tool": {
+            "raised": {
+              "exception": "MCPError",
+              "jsonrpc_code": -32602,
+              "jsonrpc_message": "Invalid request parameters",
+              "message": "Invalid request parameters"
+            }
+          },
+          "ping": {
+            "ok": true
+          },
+          "resources_list": {
+            "exception": "MCPError",
+            "jsonrpc_code": -32601,
+            "jsonrpc_message": "Method not found",
+            "message": "Method not found",
+            "ok": false
+          }
+        }
+      },
+      "reconnect": {
+        "2026-07-28": {
+          "exception": "ExceptionGroup",
+          "message": "unhandled errors in a TaskGroup (1 sub-exception)",
+          "ok": false,
+          "sub_exceptions": [
+            {
+              "exception": "ExceptionGroup",
+              "message": "unhandled errors in a TaskGroup (1 sub-exception)",
+              "sub_exceptions": [
+                {
+                  "exception": "MCPError",
+                  "jsonrpc_code": -32602,
+                  "jsonrpc_message": "Invalid request parameters",
+                  "message": "Invalid request parameters"
+                }
+              ]
+            }
+          ]
+        },
+        "legacy": {
+          "ok": true,
+          "protocol_version": "2025-11-25",
+          "tools": [
+            "get_current_time",
+            "convert_time"
+          ]
+        }
+      },
+      "raw_discover": {
+        "ok": true,
+        "process_returncode": 0,
+        "response": {
+          "error": {
+            "code": -32601,
+            "data": "server/discover",
+            "message": "Method not found"
+          },
+          "id": 1,
+          "jsonrpc": "2.0"
+        }
+      }
+    },
+    "candidate": {
+      "summary": {
+        "all_ok": true,
+        "checks": {
+          "convert_17_00_plus5": true,
+          "invalid_timezone_is_error": true,
+          "legacy_era_served": true,
+          "missing_argument_is_error": true,
+          "modern_era_served": true,
+          "ping_legacy_only": true,
+          "raw_discover_answers_modern": true,
+          "reconnect_works": true,
+          "tools_identical_across_eras": true
+        }
+      },
+      "eras": {
+        "legacy": {
+          "ok": true,
+          "negotiated_version": "2025-11-25",
+          "connection_error": null,
+          "tools": [
+            "get_current_time",
+            "convert_time"
+          ],
+          "convert": {
+            "is_error": false,
+            "result_type": "complete",
+            "text": "{\n  \"source\": {\n    \"timezone\": \"UTC\",\n    \"datetime\": \"2026-11-07T12:00:00+00:00\",\n    \"day_of_week\": \"Saturday\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Etc/GMT-5\",\n    \"datetime\": \"2026-11-07T17:00:00+05:00\",\n    \"day_of_week\": \"Saturday\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+5.0h\"\n}"
+          },
+          "invalid_timezone": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Error processing mcp-server-time query: Invalid timezone: 'No time zone found with key Nope/Nowhere'"
+          },
+          "missing_argument": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Input validation error: 'target_timezone' is a required property"
+          },
+          "unknown_tool": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Error processing mcp-server-time query: Unknown tool: no_such_tool"
+          },
+          "ping": {
+            "ok": true
+          },
+          "resources_list": {
+            "exception": "MCPError",
+            "jsonrpc_code": -32601,
+            "jsonrpc_message": "Method not found",
+            "message": "Method not found",
+            "ok": false
+          }
+        },
+        "modern": {
+          "ok": true,
+          "negotiated_version": "2026-07-28",
+          "connection_error": null,
+          "tools": [
+            "get_current_time",
+            "convert_time"
+          ],
+          "convert": {
+            "is_error": false,
+            "result_type": "complete",
+            "text": "{\n  \"source\": {\n    \"timezone\": \"UTC\",\n    \"datetime\": \"2026-11-07T12:00:00+00:00\",\n    \"day_of_week\": \"Saturday\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Etc/GMT-5\",\n    \"datetime\": \"2026-11-07T17:00:00+05:00\",\n    \"day_of_week\": \"Saturday\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+5.0h\"\n}"
+          },
+          "invalid_timezone": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Error processing mcp-server-time query: Invalid timezone: 'No time zone found with key Nope/Nowhere'"
+          },
+          "missing_argument": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Input validation error: 'target_timezone' is a required property"
+          },
+          "unknown_tool": {
+            "is_error": true,
+            "result_type": "complete",
+            "text": "Error processing mcp-server-time query: Unknown tool: no_such_tool"
+          },
+          "ping": {
+            "exception": "MCPError",
+            "jsonrpc_code": -32601,
+            "jsonrpc_message": "Method not found",
+            "message": "Method not found",
+            "ok": false
+          },
+          "resources_list": {
+            "exception": "MCPError",
+            "jsonrpc_code": -32601,
+            "jsonrpc_message": "Method not found",
+            "message": "Method not found",
+            "ok": false
+          }
+        }
+      },
+      "reconnect": {
+        "2026-07-28": {
+          "ok": true,
+          "protocol_version": "2026-07-28",
+          "tools": [
+            "get_current_time",
+            "convert_time"
+          ]
+        },
+        "legacy": {
+          "ok": true,
+          "protocol_version": "2025-11-25",
+          "tools": [
+            "get_current_time",
+            "convert_time"
+          ]
+        }
+      },
+      "raw_discover": {
+        "ok": true,
+        "process_returncode": 0,
+        "response": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "_meta": {
+              "io.modelcontextprotocol/serverInfo": {
+                "name": "mcp-time",
+                "version": "2026.10.10"
+              }
+            },
+            "cacheScope": "private",
+            "capabilities": {
+              "tools": {
+                "listChanged": false
+              }
+            },
+            "resultType": "complete",
+            "supportedVersions": [
+              "2026-07-28"
+            ],
+            "ttlMs": 0
+          }
+        }
+      }
+    }
+  },
+  "process_failure_path": {
+    "command": "python -m mcp_server_time --local-timezone Nope/Nowhere",
+    "base": {
+      "exit_code": 1,
+      "stderr": "Error: invalid --local-timezone 'Nope/Nowhere': not a known IANA timezone name",
+      "traceback": false
+    },
+    "candidate": {
+      "exit_code": 1,
+      "stderr": "Error: invalid --local-timezone 'Nope/Nowhere': not a known IANA timezone name",
+      "traceback": false
+    }
+  },
+  "native_tests": {
+    "runner": "pytest 9.2.0 from the existing uv cache",
+    "candidate": {
+      "test_entrypoints.py": {
+        "collected": 9,
+        "passed": 7,
+        "failed": 2,
+        "fail_reasons": [
+          "async test skipped: pytest-asyncio not available",
+          "console script mcp-server-time not installed (project not installed)"
+        ]
+      },
+      "test_protocol.py": {
+        "collected": 74,
+        "passed": 0,
+        "failed": 74,
+        "fail_reason": "pytest-asyncio not available: 'async def functions are not natively supported'"
+      },
+      "test_eras.py": {
+        "collected": 11,
+        "passed": 0,
+        "failed": 11,
+        "fail_reason": "pytest-asyncio not available"
+      },
+      "test_server.py": {
+        "collected": null,
+        "run": false,
+        "fail_reason": "ModuleNotFoundError: freezegun not available at collection"
+      }
+    },
+    "totals": {
+      "collected": 94,
+      "passed": 7,
+      "failed": 87,
+      "modules_not_collected": 1
+    },
+    "interpretation": "failures are environment gaps (missing pytest-asyncio/freezegun and an uninstalled console script), not migration regressions; native async suite is therefore unverified"
+  },
+  "static_checks": {
+    "ruff": {
+      "version": "0.17.3 (cached; project pin 0.8.1 not available)",
+      "base": {
+        "findings": 14
+      },
+      "candidate": {
+        "findings": 13
+      },
+      "delta": "one SIM117 finding removed, none introduced",
+      "format_check": "candidate: 7 files already formatted, exit 0"
+    },
+    "pyright": {
+      "ran": false,
+      "reason": "not installed; npx would download packages"
+    },
+    "mypy_other": {
+      "ran": false,
+      "reason": "project declares only pyright/ruff"
+    },
+    "repo_checks": {
+      "check_repo.py": {
+        "exit_code": 0,
+        "checked_files": 912,
+        "errors": []
+      },
+      "check_public.py": {
+        "mode": "staged scan over a temporary Git index for the added files",
+        "exit_code": 2,
+        "findings": [],
+        "status": "incomplete",
+        "note": "incomplete is caused only by pre-existing tracked binary images skipped by the text scanner; no findings in the added files"
+      }
+    }
+  },
+  "intentional_protocol_expectation_change": {
+    "file": "src/time/tests/test_protocol.py",
+    "from": "test_modern_era_is_not_served: raw server/discover expected JSON-RPC -32601 Method not found",
+    "to": "test_server_discover_answers_the_2026_07_28_era: raw server/discover expected result with supportedVersions=['2026-07-28'], resultType='complete', ttlMs=0, cacheScope='private'",
+    "real_stdio_evidence": {
+      "base": "-32601 Method not found",
+      "candidate": "result with the required fields"
+    }
+  },
+  "unverified": [
+    "native async tests (pytest-asyncio unavailable)",
+    "test_server.py unit tests (freezegun unavailable)",
+    "pyright type check (not installed)",
+    "console-script entrypoint test (project not installed; `python -m` used instead)",
+    "pinned tool versions (ruff 0.8.1, pytest-asyncio 1.4.0, freezegun 1.5.1, pyright 1.1.389) were not available; cached alternatives used",
+    "HTTP transports, other servers, TypeScript sequentialthinking, release matrix",
+    "upstream self-reported 133 tests were not reproduced"
+  ]
+}
