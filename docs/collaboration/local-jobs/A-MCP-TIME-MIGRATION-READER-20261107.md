@@ -1,7 +1,7 @@
 # A-MCP-TIME-MIGRATION-READER-20261107 · 按迁移答案接收 Python time 双协议实现
 id: A-MCP-TIME-MIGRATION-READER-20261107
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4d4d93493be06f241b8ecf2e451127e8bf380ae2
@@ -77,4 +77,9 @@ SQLite 父表重建曾级联删掉三条子记录，外键检查仍为空。接�
 批量与并行只在迁移单元可独立接收时增加，见[15 §5 的执行与恢复边界](../15-task-playbooks.md#5-大规模迁移与升级)。本页保持 🟡：已有实作能支持上述选择；Extruct 首轮读者指出的选路与旧 PR 接收卡点已回流，但其完整交付未验收，任务已取消，不作为本页新读者通过。
 ````
 ## 当前结果
-已准备固定全文与真实任务合同，等待既有接收端自然领取；未声称本机可用依赖、当前空槽、模型调用或读者验收已发生。
+
+- taskDone=true：按页面协议升级行只接 src/time 4 文件差量，migration.patch 可从固定基线 2f8dc42 重放且与已有实现 38fa696 逐字一致；真实 stdio 下候选通过 legacy 与 2026-07-28 两代客户端（convert_time UTC 12:00→Etc/GMT-5 得 17:00/+5.0h，工具 isError/JSON-RPC 错误/进程失败分类清楚），基线固定新版 tools/list 为 -32602 失败。未运行验收：缺 pytest-asyncio、freezegun、pyright，原生异步测试与单测未验（94 收集/7 通过/87 失败，均环境缺口），锁文件精确版本、控制台脚本、HTTP 与其他 server 未验。pageStuck：页面把 TypeScript SDK 2.3.1 的 mode:{pin} 写法未标语言前提，Python mcp 2.3.0 需 mode="2026-07-28"；『运行真实构建产物』未覆盖无构建步骤的 Python 入口。openIssues：(1) result.md 摘要把 freezegun 与 87 项失败并列归因，实际 87=86 项 pytest-asyncio+1 项 console script；(2) 报告称 check_public 的 incomplete 仅因图片，实际还含 8 个既有 .wav；(3) 未显式记录 skip 数（本次为 0）。reviewed=false，因核对者仍列 missed 项。
+- 产物：[2d88cc5](https://github.com/dbvv1/a1dbv/commit/2d88cc5042add88ecc69037faa98e5ead47875a5)，分支 `relay/a-mcp-time-migration-reader-20261107`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人接收并决定是否修正 result.md 与读者记录中的三处口径偏差（freezegun 归因、check_public incomplete 含 .wav、补记 skip=0），以及是否把页面两处前提缺口回流给 migrations.md 作者；reader-test 一轮已结束，不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
