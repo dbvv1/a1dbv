@@ -1,0 +1,3 @@
+2026-11-08（UTC+8）接收固定 FPS 候选的整仓验收前状态；已由 TASKS 新行取代，不表示产品任务完成。
+
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`／Site **v24**。[c3dc635](https://github.com/dbvv1/FPS-Like/blob/c3dc63535126c5ab11427235799581af7d190d6d/docs/training-integration.md)原训练候选修空弹／取消换弹音／击倒等待。47项、稀疏类型／bundle及独审过，非全量／生产构建。socket EPERM、完整角色reload/switch及浏览器／视听未过，未合main／部署。 |

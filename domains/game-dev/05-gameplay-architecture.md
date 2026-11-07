@@ -202,6 +202,12 @@ flowchart LR
 
 **采用边界：默认 5v5 尚未采用听声调查，不能据此宣称完整搜索循环。** Bot 虽保存声音线索，但有 `squadPlan` 时优先走编队目的地；仅非编队分支使用 4 秒内的最后线索去调查。既有 [Bot 测试](https://github.com/dbvv1/FPS-Like/blob/2b7ac87288f9595d3b1346b521a7eb456db108c9/tests/offline-training-v1/bot.test.ts)覆盖只听见不射击、失视停火等规则，[编队测试](https://github.com/dbvv1/FPS-Like/blob/2b7ac87288f9595d3b1346b521a7eb456db108c9/tests/offline-training-v1/squads.test.ts)覆盖隐藏敌人换位不改观察／计划、唯一负责人及死亡移交；这些不是玩家公平感的结论。上述实现已在网页默认版本采用，本次仅作源码与既有证据回写，未新增运行验收；客户端渲染、调试快照仍可访问完整世界，因此这里只证明离线 Bot 的决策输入边界，不证明联网反作弊或 Unity／UE 引擎落地。
 
+<a id="bot-ammo-recovery"></a>
+
+**候选补充，尚未进入 main／Site：武器偏好要服从实际资源。** 训练 Bot 原先在首选枪全空后反复请求无效换弹，即使备枪可用也不切换。固定候选 `5b5d864` 保留仍有弹或可换弹的首选枪，完全耗尽才选可用备枪，后续 tick 不切回空枪，换局补给后恢复偏好。两枪全空时停发无效射击／换弹；敌人可见时仍原地瞄准，不会因此自动撤退或继续拆弹。
+
+**让 Agent 用真实命令耗尽资源，再验替代动作是否稳定。** 双向切枪、备枪需换弹、原切枪冷却、真实伤害和换局恢复都要覆盖；普通对局未必触发耗弹，胜率不变也不能证明这条恢复路径正确。此候选的 500 局训练 1v1 与旧 Bot 报告和最终 hash 相同，进攻胜率仍为 64.6%，未达 40%–60% 目标；它不代表 5v5 平衡或玩家体验通过。实现与回归：[固定 Bot](https://github.com/dbvv1/FPS-Like/blob/5b5d864bee0c71554cc1480c5d67f6c7a114161d/src/candidates/offline-training-v1/sim/bot.ts)、[真实耗弹测试](https://github.com/dbvv1/FPS-Like/blob/5b5d864bee0c71554cc1480c5d67f6c7a114161d/tests/offline-training-v1/bot.test.ts)、[已有实测范围](https://github.com/dbvv1/FPS-Like/blob/5b5d864bee0c71554cc1480c5d67f6c7a114161d/docs/training-integration.md)。来源与源码复核：2026-11-07；浏览器／视听仍未验。[候选源码／CPU]
+
 #### 调参数：先确定玩家应获得什么机会
 
 | 调节项 | 想改变的体验 | 先验哪种失败 |
