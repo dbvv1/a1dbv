@@ -1,7 +1,7 @@
 # A-UPSTREAM-DATASETTE-DELTA-READER-20261107 · 新上游改动后的投稿判断
 id: A-UPSTREAM-DATASETTE-DELTA-READER-20261107
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e2628b9f12629796406c8eda7fd453107f5b1801
@@ -35,4 +35,9 @@ page: docs/decisions/upstream-contributions.md@a25b151c8cfbe38121d6de604a485146a
 沿既有 Git 接收端，不依赖 dot 桌面连接。按共享最多四任务及单写者合同，通常 60–90 分钟，最多两小时；不靠重复调用凑时。领取前先核原活动、独占写域和空槽，未知不能当已退出；同 id 不重放，输入变化沿原卡续接。Git 文件不证明执行或退出。
 
 ## 当前结果
-已按原 ID 首次排入 ready；旧 18d5eb4 仅保全，未有领取或结果。全远端与 main 未见同 ID 结果分支或重叠任务；这不是进程退出或空槽证明，接收端仍须先核实际调用、写域与共享容量。#3038 已合入且相对旧输入继续变化，保留本次新读者的真实判断任务。旧 Qwen 读者卡仍 accepted、不重派；原 Memos 跟进和 Sentry 未动。完整附页为 a25b151c 的原文，页面维持 🟡，未声称读者执行或采用。
+
+- reader-test 一轮观察完成：读者照 a25b151c 页面完成 Datasette 投稿前核查，结论为继续 #3015、先做有边界 rebase 并解决 tests/test_playwright.py 两处冲突、补跨特性回归与受影响检查；#3038 已合入且改同一段代码但用前端字面量内联绕开字符串绑定，未实现 #2946 的通用机制，独立缺口仍在。独立核对确认附页与固定版本逐行一致（diff 0）、PR 元数据与 main@3cb0f1b 一致、merge-tree 仅 test_playwright.py 冲突、QueryContext.named_parameter_values 被换成 typed 键违反 docs/template_context.rst 稳定契约，taskDone=true。openIssues：参考副本 input.txt 实际已存在（83bce683），result.md『接收端独立 input 产物缺失』表述不准；『main 上不存在这些符号』过绝对（_typed_params 仅测试名子串）；1.0a41 未标明 prerelease；缺模型/effort 栏。pageStuck 5 条（CONTRIBUTING/AGENTS/PR 模板不存在、『覆盖』在已合并但另一做法下无定义两处、规则沉默保留未知位置偏），另 1 条为任务只读边界。未运行 Datasette Python/Playwright/浏览器/应用，未复核 #3015 本地测试数字，未实际 rebase/push/评论/批准 CI；目标验收不据此通过。
+- 产物：[45a20ea](https://github.com/dbvv1/a1dbv/commit/45a20ead8bf0952e5515a40812b0e6915223a5bb)，分支 `relay/a-upstream-datasette-delta-reader-20261107`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人处理：(1) 修正 result.md 中 input.txt 缺失表述、符号过绝对与 prerelease 标注，补模型/effort 栏；(2) 将页面『覆盖』判定缺口（已合并但用另一做法绕开）交页面维护者补规则；(3) 投稿下一步按 result.md 由补丁作者执行 rebase，设计方向与 6 个 action_required CI 批准待 simonw 决定。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
