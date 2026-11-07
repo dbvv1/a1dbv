@@ -44,7 +44,7 @@ git diff -- package.json package-lock.json
 
 **Python 同样要固定两代 client，但选项写法不同：mcp 2.3.0 用 `mode="legacy"` 和 `mode="2026-07-28"`。** 不套 TypeScript 的 `{ pin: ... }`。启动项目真实入口；本项目以 editable 安装运行 `python -m mcp_server_time`，不需要 TypeScript 式重建，但须重启进程。原生 suite 另核已安装的 `mcp-server-time` 控制台脚本。
 
-未参与页面写作的读者只照固定迁移答案与项目材料，接收 #5126 的 time 四文件差量，完成两代 stdio、基线固定新版失败、工具／输入契约及失败路径。其 Windows 缓存环境缺测试依赖，不能据此判完整通过；负责人在 Linux 用原锁文件独立补验。需 Git、uv、Python 3.12、Node／npm（coverage 及 pyright 需要）和公开 PyPI／npm 网络；固定项目声明 >=3.10，本次为 3.12.14，未测其 `.python-version` 的 3.10。
+未参与页面写作的读者只照固定迁移答案与项目材料，接收 #5126 的 time 四文件差量，完成两代 stdio、基线固定新版失败、工具／输入契约及失败路径。其 Windows 缓存环境缺测试依赖，不能据此判完整通过；负责人在 Linux 用原锁文件独立补验。需 Git、uv、Python 3.12、Node／npm（coverage 及 pyright 需要）和公开 PyPI／npm 网络；固定项目声明 >=3.10，负责人首次补验为 3.12.14；后续独立云读者另按 `.python-version` 的 3.10 实做，结果见下。
 
 下面从含 `a1dbv/` 的父目录开始，另建副本，不复用上方已改过的 TypeScript 工作树：
 
@@ -73,6 +73,16 @@ git diff -- pyproject.toml uv.lock
 
 基线探针 exit 1 只有在 **legacy 各项为真、新版 tools/list 是 -32602、原始 server/discover 是 -32601** 时才是预期拒绝；依赖缺失或普通启动失败不能算。候选应 exit 0，20 个断言为真；两代转换均为 UTC 12:00 → `Etc/GMT-5` 17:00／+5.0h，工具错误与 JSON-RPC 错误分别核对。日期取实际运行日。两代“重连”是新子进程的新连接，不代表同一运行实例的状态隔离。末条依赖 diff 为空。
 
-2026-11-07 独立补验：基线 122／122、候选 133／133，零失败、错误或 skip；两侧格式、ruff、pyright、wheel／sdist 构建及原生 coverage gate 通过，各文件行／分支覆盖均 100%。原读者探针的摘要遗漏 legacy 断言等检查，接收时补齐并以 9 项回归测试防漏；原记录与后续云验分开保留。修订页仍须新读者照做，不提升读者地图评级。
+2026-11-07 独立补验：基线 122／122、候选 133／133，零失败、错误或 skip；两侧格式、ruff、pyright、wheel／sdist 构建及原生 coverage gate 通过，各文件行／分支覆盖均 100%。原读者探针的摘要遗漏 legacy 断言等检查，接收时补齐并以 9 项回归测试防漏；原记录与后续云验分开保留。本次负责人补验不算修订页的首次冷读，不提升读者地图评级。
 
-**依据与完整结果**：[读者交付及接收说明](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/result.md)、[双环境结果与命令](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/verification.json)、[真实需求 #4853](https://github.com/modelcontextprotocol/servers/issues/4853)、[已合实现 #5126](https://github.com/modelcontextprotocol/servers/pull/5126)。原始四文件补丁遵循[上游许可](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/SERVERS-LICENSE.txt)。未验 Windows 原生全套、Python 3.10、HTTP、其他 server、LLM 客户端、全仓发布门槛；未修改上游分支或部署。
+### 修订页的独立云读者：Python 3.10 已实跑，本机门槛仍未过
+
+另一未参与旧页与补验的新上下文，只读[固定修订页](https://github.com/dbvv1/a1dbv/blob/9d0321cc594034fb8267540895075376157e3848/docs/decisions/migrations.md)与目标项目／依赖资料，在独立 Linux 副本按原锁安装 Python 3.10.22、mcp 2.3.0 和真实 time 发行包。它自行写 stdio 消费者，先验基线再接相同四文件差量：基线固定新版 `tools/list` 被拒，候选两代均得到 17:00／+5.0h；完整工具声明相同，无效时区、缺参数、未支持方法分层及关闭后新进程连接通过。基线 122／候选 133 项原生测试、格式、lint、类型、构建及逐文件覆盖门槛均通过，零 skip。未复用旧探针或旧报告作为执行结果。
+
+**固定新版后仍要验真实响应，不能只看客户端的版本字段。** Python mcp 2.3.0 的显式现代 `mode` 会直接采用指定版本，并可合成 discovery 信息；只有实际请求被候选服务端处理成功，才证明新版可用。基线的真实失败与候选的真实成功是这轮迁移的判断依据。
+
+复跑这一轮时，把上文 `UV_PYTHON` 改为 `3.10`，准备命令用 `uv sync --frozen --all-extras --dev`，后续原生命令沿用。受限云目录还需分别把 `UV_CACHE_DIR`、`UV_PYTHON_INSTALL_DIR`、`PYRIGHT_PYTHON_CACHE_DIR` 与 `npm_config_cache` 指向任务自己的可写目录：仅设置 uv 缓存不会重定向 Pyright 的 npm 包装器缓存。该读者两侧首次 Pyright 因默认缓存目录不可写而失败，改用支持的独立缓存后重跑均为 0 errors；未放宽检查或改变系统权限。
+
+本次只补上修订页的云端冷读与 Python 3.10 证据。[本机 V2](../../docs/collaboration/local-jobs/A-MCP-TIME-MIGRATION-READER-V2-20261107.md)仍缺真实安装、测试依赖和控制台入口，禁止安装条件未变，`taskDone=false`；云读者不替代它，也不提升读者地图评级。构建产物的独立 wheel 安装与运行仍未验。
+
+**依据与完整结果**：[读者交付及接收说明](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/result.md)、[双环境结果与命令](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/verification.json)、[Python SDK 2.3.0 固定模式实现](https://github.com/modelcontextprotocol/python-sdk/blob/v2.3.0/src/mcp/client/client.py#L452-L467)、[真实需求 #4853](https://github.com/modelcontextprotocol/servers/issues/4853)、[已合实现 #5126](https://github.com/modelcontextprotocol/servers/pull/5126)。原始四文件补丁遵循[上游许可](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/SERVERS-LICENSE.txt)。云端冷读核实 2026-11-07；固定修订页 SHA-256 为 `3c47c5f82ea1d074e17d4483880919381577a8c3ad45cc10661bf5bc96375497`，10226 字节。未验 Windows 原生全套、HTTP、其他 server、LLM 客户端、全仓发布门槛；未修改上游分支或部署。
