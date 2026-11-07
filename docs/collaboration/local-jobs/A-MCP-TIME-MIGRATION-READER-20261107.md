@@ -1,7 +1,7 @@
 # A-MCP-TIME-MIGRATION-READER-20261107 · 按迁移答案接收 Python time 双协议实现
 id: A-MCP-TIME-MIGRATION-READER-20261107
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4d4d93493be06f241b8ecf2e451127e8bf380ae2
