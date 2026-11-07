@@ -1,7 +1,7 @@
 # A-MCP-TIME-MIGRATION-READER-V2-20261107 · 新读者实做修订后的 Python 迁移路线
 id: A-MCP-TIME-MIGRATION-READER-V2-20261107
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 38ebcee852c84364d30a1dd5a0fb05ca72ac99a1
@@ -72,4 +72,9 @@ SQLite 父表重建曾级联删掉三条子记录，外键检查仍为空。接�
 批量与并行只在迁移单元可独立接收时增加，见[15 §5 的执行与恢复边界](../15-task-playbooks.md#5-大规模迁移与升级)。本页保持 🟡：time 独立读者实际采用了固定两代客户端与只接必要差量的路线，暴露的语言／启动入口前提已在本节修正；修订版仍待新读者。Extruct 首轮读者的选路与旧 PR 卡点已回流，其任务后来取消，不算完整通过；负责人补验也不算新的首次冷读。
 ````
 ## 当前结果
-待接收端按原权限核依赖并领取；Git ready 不证明运行。本卡仍保留原生套件与本机门槛；已知环境缺项未变即 blocked，不重复执行来凑通过。
+
+- reader-test 一轮观察结束，交负责人接收；taskDone=false，pageStuck=true（页面/环境前提：本机缺 mcp、tzlocal、jsonschema、pytest、pytest-asyncio、freezegun、ruff、pyright 且 mcp-server-time 未安装，禁止安装下载）。已完成：页面固定提交 9d0321cc 指纹与附文逐字节一致；migration.patch 对基线 2f8dc42 干净应用、4 文件 blob 与候选 38fa696 全同；uv.lock/pyproject.toml/.python-version 未变且锁 mcp 2.3.0；源码 py_compile 通过。未运行：两代 stdio 真实入口、基线新版失败/候选新版成功、convert_time UTC12:00→Etc/GMT-5 17:00/+5.0h、工具列表与错误分层、关闭后新连接、原生 pytest、ruff/pyright、控制台入口。非读者核对确认页面两处修订（TS/Python pin 写法、真实入口）成立。openIssues：result.md 逐文件计数有两处错（README.md 实为 +6/−1、test_protocol.py 实为 +22/−14，总数与补丁哈希正确）；读者未补读 mcp 2.3.0 SDK 源码核对 mode/Server.run（不影响 blocked）。probe-time-eras.py 未真运行未交付。
+- 产物：[6239e43](https://github.com/dbvv1/a1dbv/commit/6239e43b1752ff1e7e4b753a30fa5b2219e9b959)，分支 `relay/a-mcp-time-migration-reader-v2-20261107`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人需提供满足 mcp 2.3.0、tzlocal、jsonschema、pytest、pytest-asyncio、freezegun、ruff、pyright 且已安装 mcp-server-time 控制台入口的环境，重跑两代 stdio 消费者、convert_time 17:00/+5.0h、错误分层、原生套件与静态检查；并修正 result.md 两处 ± 计数（可顺手补 mcp 2.3.0 SDK 源码的 mode/Server.run 核对）。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
