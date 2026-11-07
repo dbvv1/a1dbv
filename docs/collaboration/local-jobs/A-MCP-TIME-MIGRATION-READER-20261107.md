@@ -1,7 +1,7 @@
 # A-MCP-TIME-MIGRATION-READER-20261107 · 按迁移答案接收 Python time 双协议实现
 id: A-MCP-TIME-MIGRATION-READER-20261107
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4d4d93493be06f241b8ecf2e451127e8bf380ae2
@@ -78,8 +78,8 @@ SQLite 父表重建曾级联删掉三条子记录，外键检查仍为空。接�
 ````
 ## 当前结果
 
-- taskDone=true：按页面协议升级行只接 src/time 4 文件差量，migration.patch 可从固定基线 2f8dc42 重放且与已有实现 38fa696 逐字一致；真实 stdio 下候选通过 legacy 与 2026-07-28 两代客户端（convert_time UTC 12:00→Etc/GMT-5 得 17:00/+5.0h，工具 isError/JSON-RPC 错误/进程失败分类清楚），基线固定新版 tools/list 为 -32602 失败。未运行验收：缺 pytest-asyncio、freezegun、pyright，原生异步测试与单测未验（94 收集/7 通过/87 失败，均环境缺口），锁文件精确版本、控制台脚本、HTTP 与其他 server 未验。pageStuck：页面把 TypeScript SDK 2.3.1 的 mode:{pin} 写法未标语言前提，Python mcp 2.3.0 需 mode="2026-07-28"；『运行真实构建产物』未覆盖无构建步骤的 Python 入口。openIssues：(1) result.md 摘要把 freezegun 与 87 项失败并列归因，实际 87=86 项 pytest-asyncio+1 项 console script；(2) 报告称 check_public 的 incomplete 仅因图片，实际还含 8 个既有 .wav；(3) 未显式记录 skip 数（本次为 0）。reviewed=false，因核对者仍列 missed 项。
-- 产物：[2d88cc5](https://github.com/dbvv1/a1dbv/commit/2d88cc5042add88ecc69037faa98e5ead47875a5)，分支 `relay/a-mcp-time-migration-reader-20261107`。
-- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：负责人接收并决定是否修正 result.md 与读者记录中的三处口径偏差（freezegun 归因、check_public incomplete 含 .wav、补记 skip=0），以及是否把页面两处前提缺口回流给 migrations.md 作者；reader-test 一轮已结束，不自动重读。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- 部分接收：四文件补丁、双协议真实 stdio 复现与读者卡点。原产物 [2d88cc5](https://github.com/dbvv1/a1dbv/commit/2d88cc5042add88ecc69037faa98e5ead47875a5) 保留；接收说明见 [result.md](artifacts/A-MCP-TIME-MIGRATION-READER-20261107/result.md#负责人独立接收2026-11-07)。
+- 原读者 Windows 缓存环境为 94 收集／7 通过／87 失败／0 skip（86 项缺 asyncio 插件＋1 项控制台脚本未安装），freezegun 另阻止单测模块收集；不把环境阻塞说成没有回归。已修正失败归因、二进制扫描范围与 skip 口径。
+- 负责人独立 Linux／Python 3.12.14 固定锁补验：基线 122／122、候选 133／133，零 skip；两侧 ruff、格式、pyright、构建、coverage gate 均通过。加强探针后候选 20 项全过，9 项摘要回归通过；基线 legacy 通过、新版 -32602／-32601 拒绝，依赖／锁文件未改。
+- 正式采用：结果回流已发布的[协议迁移实作](../../../experiments/mcp-protocol-migration/README.md#python-time接读者结果再补完整原生验证)；迁移答案仅修语言与真实入口前提，仍留候选、地图维持 🟡。原读者 taskDone 只指其已做通的 stdio 部分，不能判修订页通过。
+- 唯一下一项：换新读者照修订页完成真实迁移；不重派 u1，不把负责人补验算冷读。原生 Windows、Python 3.10、HTTP／其他 server／LLM 客户端及全发布矩阵未验；不恢复其他 blocked／cancelled 任务。
