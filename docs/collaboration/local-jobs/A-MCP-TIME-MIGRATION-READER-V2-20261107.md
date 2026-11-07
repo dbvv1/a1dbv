@@ -1,7 +1,7 @@
 # A-MCP-TIME-MIGRATION-READER-V2-20261107 · 新读者实做修订后的 Python 迁移路线
 id: A-MCP-TIME-MIGRATION-READER-V2-20261107
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 38ebcee852c84364d30a1dd5a0fb05ca72ac99a1
